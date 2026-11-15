@@ -144,6 +144,7 @@ function msCheckPay_(sess, sid, bankIn, evIn, badges) {
   var prefix = 'ms:' + sid + ':', mine = moneyRowsFor_(sid).filter(function (r) { return r.key.indexOf(prefix) === 0; });
   var taken = mine.map(function (r) { return r.key.slice(prefix.length).replace(/#\d+$/, ''); });
   var out = [], rejected = [], paid = false;
+  var carried = typeof moneyCarried_ === 'function' ? moneyCarried_(mine, sid) : {};   /* right-answer pay of earlier days, now one row per day (MoneyArchive.js): still counts toward the limit per skill */
   function has(why) { return taken.indexOf(why) >= 0; }
   function count(re) { return taken.filter(function (w) { return re.test(w); }).length; }
   function checksOk(id) { return (evIn || []).filter(function (r) { return String(r.skill) === id && r.phase === 'check' && r.ok; }).length; }
@@ -157,7 +158,7 @@ function msCheckPay_(sess, sid, bankIn, evIn, badges) {
     if (!r || !r.ok) return;
     if (/^TCH\./.test(String(r.skill || ''))) return;   /* v128: teacher-made lessons never pay (CLAUDE.md money rule) */
     var skill = String(r.skill || '').slice(0, 40), item = String(r.phase || '').slice(0, 12) + '|' + String(r.item || '').slice(0, 120);
-    if (!skill || count(new RegExp('^ok:' + skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\|')) >= MS_PAY_RULE.okPerSkill) return;
+    if (!skill || count(new RegExp('^ok:' + skill.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\|')) + (carried[skill] || 0) >= MS_PAY_RULE.okPerSkill) return;
     if (has('ok:' + skill + '|' + item)) return;
     post('correct', 'ok:' + skill + '|' + item, 'Correct answer · ' + skill, skill);
     if (r.first) post('firstTry', 'first:' + skill + '|' + item, 'Right on the first try · ' + skill, skill);
