@@ -26,6 +26,7 @@ function sgQuest_() {
   try { bar += HtmlService.createHtmlOutputFromFile('HomePage').getContent(); } catch (e) {}   /* the front home page: logo, code pad, flying subjects, encouraging messages */   /* PATHFINDER: "Start your Pathfinder" card on his home screen */
   var i = page.lastIndexOf('</body>');
   if (bar) page = i < 0 ? page + bar : page.slice(0, i) + bar + page.slice(i);
+  try { if (typeof tlBootInline_ === 'function') page = tlBootInline_(page); } catch (e) {}   /* SPEED 4: two trips fewer when the page opens */
   return HtmlService.createHtmlOutput(tlSound_(tlTheme_(page, 'boy')))
     .setTitle('Tashbar Learning · Middle School')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')

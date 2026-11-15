@@ -88,3 +88,27 @@ function tlLoader2Src_(OLD) {
     rq.onerror = function () { ask([]); }; rq.onblocked = function () { ask([]); }; } catch (e) { ask([]); }
 }
 function tlLoader2_() { return '(' + tlLoader2Src_.toString() + ')(' + JSON.stringify(TL_TOOLS_LOADER) + ');'; }
+
+/* SPEED 4 (Nov 15): the page used to open, then ask the server two more questions before the keypad was ready
+   (msBootstrap, msQuestTools). Each question is a full trip to Google (1 to 2 seconds on a phone). Now the answers travel
+   inside the page itself. If anything goes wrong here the page is sent as before and asks by itself. */
+function tlBootInline_(page) {
+  var data = { boot: msBootstrap(), tools: msQuestTools() };
+  var json = JSON.stringify(data).replace(/</g, '\\u003c').replace(/\//g, '\\/').replace(/\*/g, '\\u002a');   /* no tag or comment marker can appear inside the page text */
+  var tag = '<script>window.TL_BOOT=' + json + ';<\/script>', i = page.indexOf('</head>');
+  return i < 0 ? page : page.slice(0, i) + tag + page.slice(i);
+}
+
+/* SPEED CHECK (run from the editor; it only reads). Shows how big each tab is, how close the database is to Google's limit
+   of 10,000,000 cells, and how long each big read takes. Run it on a normal school day and send the log to the builder. */
+function tlSpeedCheck() {
+  var ss = SpreadsheetApp.openById(TL.sheet), out = [], total = 0, t0 = Date.now();
+  var tabs = ss.getSheets().map(function (sh) { var cells = sh.getMaxRows() * sh.getMaxColumns(); total += cells; return { name: sh.getName(), rows: sh.getLastRow(), cols: sh.getLastColumn(), cells: cells, sh: sh }; });
+  tabs.sort(function (a, b) { return b.cells - a.cells; });
+  out.push('Database: ' + total + ' cells of 10,000,000 (' + Math.round(total / 100000) + '% full), ' + tabs.length + ' tabs. Opening it took ' + (Date.now() - t0) + ' ms.');
+  tabs.slice(0, 12).forEach(function (t) {
+    var ms = '-'; if (t.rows > 1 && t.cols > 0) { var a = Date.now(); t.sh.getRange(2, 1, t.rows - 1, t.cols).getValues(); ms = (Date.now() - a) + ' ms'; }
+    out.push(t.name + ': ' + t.rows + ' rows x ' + t.cols + ' columns, ' + t.cells + ' cells, a full read takes ' + ms);
+  });
+  var msg = out.join('\n'); Logger.log(msg); return msg;
+}

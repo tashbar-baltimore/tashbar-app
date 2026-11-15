@@ -482,7 +482,10 @@ if(A.view==='signin') render();
 (function(){ if(typeof pinGo!=='function'||typeof run!=='function') return; var oldPinGo=pinGo;
 pinGo=function(){
  if(!(A.pin.length===4&&!A.busy)) return; A.busy=true; render(); var pin=A.pin;
- run('msSignInFast',pin).then(function(r){
+ /* SPEED 4 (Nov 15): when a whole school signs in in the same minute, Google can turn a few boys away for a moment.
+    Try again quietly (twice, after 1 to 4 seconds) before showing any error. */
+ var signIn=function(n){ return run('msSignInFast',pin).catch(function(e){ if(n<=0) throw e; return new Promise(function(res){ setTimeout(res,1200+Math.random()*2500); }).then(function(){ return signIn(n-1); }); }); };
+ signIn(2).then(function(r){
   if(!r||!r.ok){ A.busy=false; SND.wrong(); A.err='That code didn\u2019t work. Try again.'; A.pin=''; return render(); }
   SRV.token=r.token; if(r.url) window.TL_APP_URL=r.url;
   if(r.role==='staff') return toStaff(r.token);
