@@ -2269,9 +2269,9 @@ return run('msAppUrl').then(u=>{ A.busy=false; A.staffUrl=u+'?sg=1'; try{ window
 .catch(()=>{ A.busy=false; A.pin=''; A.err='Signed in, but the teacher page didn’t open. Try again.'; render(); });
 }
 function tlPhotoTools(){ return window.TLT?TLT.tools():''; }
-function tlLoadTools(){ run('msQuestTools').then(t=>{ if(t&&t.css){ const s=document.createElement('style'); s.textContent=t.css; document.head.appendChild(s); } if(t&&t.js){ try{ (0,eval)(t.js); }catch(e){ console.error('QuestTools',e); } } if(A.view==='play'||A.view==='hub'||A.view==='result') render(); }).catch(e=>console.error('QuestTools',e)); }
+function tlLoadTools(){ (window.TL_BOOT&&TL_BOOT.tools?Promise.resolve(TL_BOOT.tools):run('msQuestTools')).then(t=>{ if(t&&t.css){ const s=document.createElement('style'); s.textContent=t.css; document.head.appendChild(s); } if(t&&t.js){ try{ (0,eval)(t.js); }catch(e){ console.error('QuestTools',e); } } if(A.view==='play'||A.view==='hub'||A.view==='result') render(); }).catch(e=>console.error('QuestTools',e)); }
 function boot(){
-run('msBootstrap').then(b=>{ ROSTER=(b.students||[]); A.bootErr=false; render(); if(!window.TLT) tlLoadTools(); })
+(window.TL_BOOT&&TL_BOOT.boot?Promise.resolve(TL_BOOT.boot):run('msBootstrap')).then(b=>{ ROSTER=(b.students||[]);   /* SPEED 4: the page now arrives with this answer inside it (Speed.js tlBootInline_): one trip fewer before the keypad works */ A.bootErr=false; render(); if(!window.TLT) tlLoadTools(); })
 .catch(()=>{ A.bootErr=true; render(); setTimeout(boot,15000); });
 }
 document.documentElement.setAttribute('data-theme','bright');
