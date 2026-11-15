@@ -112,13 +112,18 @@ function moneyArchiveStep_(dry) {
 
 /* LOOK ONLY: what would move tonight (first window). Changes nothing. */
 function moneyArchiveCheck() {
+  var evMsg = ''; try { evMsg = ' ' + evArchiveRun_(true); } catch (e) { evMsg = ' Answers tab: ' + (e && e.message ? e.message : e); }
   var r = moneyArchiveStep_(true);
-  var msg = 'T$ archive check: ' + r.moved + ' right-answer rows of ' + r.boys + ' boys ($' + (r.cents / 100).toFixed(2) + ') would move to the archive' + (r.left ? ', and more are waiting behind them.' : '.') + ' Nothing was changed.';
+  var msg = 'T$ archive check: ' + r.moved + ' right-answer rows of ' + r.boys + ' boys ($' + (r.cents / 100).toFixed(2) + ') would move to the archive' + (r.left ? ', and more are waiting behind them.' : '.') + ' Nothing was changed.' + evMsg;
   Logger.log(msg); return msg;
 }
 /* The nightly run. Safe to run by hand. Holds the school lock, so it runs when the boys are not working. */
 function moneyArchiveNightly() {
   if (Utilities.formatDate(new Date(), 'America/New_York', 'u') === '6') return 'Shabbos: not run.';
+  var evMsg = ''; try { evMsg = ' ' + evArchiveRun_(false); } catch (e) { evMsg = ' Answers tab: ' + (e && e.message ? e.message : e); }
+  return moneyArchiveMoney_() + evMsg;
+}
+function moneyArchiveMoney_() {
   var t0 = Date.now(), total = { moved: 0, cents: 0, runs: 0 }, lock = LockService.getScriptLock();
   while (Date.now() - t0 < MONEY_ARCH.MAX_MS) {
     if (!lock.tryLock(30000)) break;
@@ -137,4 +142,54 @@ function moneyArchiveInstall() {
   moneyArchiveRemove();
   ScriptApp.newTrigger('moneyArchiveNightly').timeBased().everyDays(1).atHour(2).inTimezone('America/New_York').create();
   return 'The nightly T$ archive is on (about 2 am, not on Shabbos).';
+}
+
+/* ===== The answers tab (MS_Evidence): every answer of every boy is one row here, so it grows fastest of all. =====
+   Staff screens and reports read only the newest rows (today, this week and last week). So each night the OLD rows move,
+   unchanged, to the same archive file (tabs "answers YYYY-MM"). Kept in the app: the last 21 days, and never more than 400,000 rows.
+   Today's rows never move. Nothing is deleted: the archive has every row.
+   Two things read further back and will not see moved rows: the old teacher page's list of a boy's last 500 answers, and the count of
+   right "check" answers for a photo answer on a skill he started more than 21 days ago. */
+var EV_ARCH = { KEEP_DAYS: 21, KEEP_ROWS: 400000, WINDOW: 20000, MAX_MS: 120000, PROP: 'EV_ARCHIVE_PENDING' };
+function evArchSig_(v) { var d = v[0] instanceof Date ? v[0].getTime() : String(v[0]); return [d, v[1], v[2], v[4]].join('|'); }
+/* one block of old rows from the top of the tab. Returns how many moved (0 = nothing old is left). */
+function evArchiveStep_(dry) {
+  var sh = msTab_('evidence'), n = sh.getLastRow(), W = MS.TABS.evidence.length; if (n < 2) return 0;
+  var today = moneyDay_(), cut = moneyShift_(today, -EV_ARCH.KEEP_DAYS), extra = Math.max(0, (n - 1) - EV_ARCH.KEEP_ROWS);
+  var len = Math.min(EV_ARCH.WINDOW, n - 1), vals = sh.getRange(2, 1, len, W).getValues(), k = 0;
+  for (; k < vals.length; k++) {
+    var at = vals[k][0] instanceof Date ? vals[k][0] : new Date(vals[k][0]), day = isNaN(at) ? '' : moneyDay_(at.toISOString());
+    if (day >= today) break;                           /* today's answers never move */
+    if (!(day < cut) && k >= extra) break;             /* young enough, and the tab is not over its size */
+  }
+  if (dry) return k;
+  var p = PropertiesService.getScriptProperties(), pend = null;
+  try { pend = JSON.parse(p.getProperty(EV_ARCH.PROP) || 'null'); } catch (e) { pend = null; }
+  /* a run that stopped after copying and before removing: those rows are already in the archive, so only remove them */
+  if (pend && pend.k > 0 && vals.length >= pend.k && evArchSig_(vals[0]) === pend.first && evArchSig_(vals[pend.k - 1]) === pend.last) {
+    sh.deleteRows(2, pend.k); SpreadsheetApp.flush(); p.deleteProperty(EV_ARCH.PROP); return pend.k; }
+  if (!k) return 0;
+  var rows = vals.slice(0, k), copied = false;
+  if (!copied) {
+    var byTab = {}; rows.forEach(function (v) { var a = v[0] instanceof Date ? v[0] : new Date(v[0]), d = isNaN(a) ? today : moneyDay_(a.toISOString()); (byTab[d.slice(0, 4) + '|answers ' + d.slice(0, 7)] = byTab[d.slice(0, 4) + '|answers ' + d.slice(0, 7)] || []).push(v); });
+    Object.keys(byTab).forEach(function (t) {
+      var tab = moneyArchTab_(moneyArchBook_(t.split('|')[0]), t.split('|')[1], MS.TABS.evidence), was = tab.getLastRow(), r = byTab[t];
+      tab.getRange(was + 1, 1, r.length, W).setValues(r); SpreadsheetApp.flush();
+      if (tab.getLastRow() !== was + r.length) throw new Error('the copy to the archive could not be confirmed. Nothing was removed.');
+    });
+    p.setProperty(EV_ARCH.PROP, JSON.stringify({ k: k, first: evArchSig_(rows[0]), last: evArchSig_(rows[k - 1]) }));
+  }
+  sh.deleteRows(2, k); SpreadsheetApp.flush();
+  p.deleteProperty(EV_ARCH.PROP);
+  return k;
+}
+function evArchiveRun_(dry) {
+  if (dry) { var w = evArchiveStep_(true); return 'Answers tab: ' + (w >= EV_ARCH.WINDOW ? 'at least ' : '') + w + ' old rows would move to the archive.'; }
+  var t0 = Date.now(), moved = 0, lock = LockService.getScriptLock();
+  while (Date.now() - t0 < EV_ARCH.MAX_MS) {
+    if (!lock.tryLock(30000)) break;
+    var k; try { k = evArchiveStep_(false); } finally { lock.releaseLock(); }
+    moved += k; if (k < EV_ARCH.WINDOW) break;
+  }
+  return 'Answers tab: moved ' + moved + ' old rows to the archive.';
 }
