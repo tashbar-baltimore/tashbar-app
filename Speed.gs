@@ -110,5 +110,9 @@ function tlSpeedCheck() {
     var ms = '-'; if (t.rows > 1 && t.cols > 0) { var a = Date.now(); t.sh.getRange(2, 1, t.rows - 1, t.cols).getValues(); ms = (Date.now() - a) + ' ms'; }
     out.push(t.name + ': ' + t.rows + ' rows x ' + t.cols + ' columns, ' + t.cells + ' cells, a full read takes ' + ms);
   });
+  /* how long the server needs to build the boy page and to answer the page's first question (what a phone waits for when it opens the link) */
+  try { var p0 = Date.now(), html = sgQuest_().getContent(); out.push('Building the boy page: ' + (Date.now() - p0) + ' ms, ' + html.length + ' characters.'); } catch (e) { out.push('Building the boy page failed: ' + e.message); }
+  try { var q0 = Date.now(), parts = msQuestToolsParts([]), size = 0; Object.keys(parts.parts).forEach(function (h) { size += parts.parts[h].length; }); out.push('Lesson add-ons for a new device: ' + (Date.now() - q0) + ' ms, ' + size + ' characters in ' + parts.order.length + ' pieces.'); } catch (e) { out.push('Lesson add-ons failed: ' + e.message); }
+  try { var r0 = Date.now(); msQuestToolsParts(msQuestToolsParts([]).order); out.push('Lesson add-ons for a device that already has them: about ' + Math.round((Date.now() - r0) / 2) + ' ms.'); } catch (e) {}
   var msg = out.join('\n'); Logger.log(msg); return msg;
 }
