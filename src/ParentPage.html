@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html><head><base target="_top"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tashbar Learning · Parents</title>
+<style>
+:root{--ink:#1F2937;--soft:#6B7280;--bg:#F5F7FB;--card:#fff;--line:#E5E7EB;--brand:#4F46E5;--brand2:#EEF2FF;--ok:#059669;--warn:#D97706;--bad:#DC2626;--gray:#9CA3AF}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:linear-gradient(135deg,#4F46E5,#7C3AED);color:#fff;padding:18px 16px 26px}
+header .row{max-width:980px;margin:0 auto;display:flex;align-items:center;gap:12px;justify-content:space-between}
+header h1{margin:0;font-size:22px}
+header p{margin:4px 0 0;opacity:.9;font-size:14px}
+button{font:inherit;cursor:pointer;border-radius:12px;border:0}
+.out{background:rgba(255,255,255,.18);color:#fff;padding:8px 14px}
+main{max-width:980px;margin:-14px auto 40px;padding:0 16px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab{background:#fff;border:2px solid var(--line);padding:8px 14px;font-weight:700;color:var(--ink)}
+.tab.on{border-color:var(--brand);background:var(--brand2);color:var(--brand)}
+.card{background:var(--card);border-radius:18px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:16px;margin-bottom:14px}
+.card h2{margin:0 0 10px;font-size:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--bg);border-radius:14px;padding:12px}
+.stat b{display:block;font-size:24px}
+.stat span{color:var(--soft);font-size:13px}
+.subj{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.sj{border:1px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.dot{width:14px;height:14px;border-radius:50%;flex:0 0 14px;margin-top:4px}
+.green{background:var(--ok)}.yellow{background:var(--warn)}.red{background:var(--bad)}.gray{background:var(--gray)}
+.sj small{color:var(--soft);display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--soft);font-size:13px;margin-top:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--brand2);color:var(--brand);border-radius:999px;padding:4px 10px;font-size:14px}
+.note{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:8px}
+.note small{color:var(--soft);display:block}
+.seen{color:var(--ok);font-weight:700;font-size:13px}
+.del{background:#FEE2E2;color:var(--bad);padding:6px 10px;font-size:14px}
+label{display:block;font-weight:700;font-size:14px;margin:10px 0 4px}
+input,select,textarea{font:inherit;width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:12px;background:#fff}
+textarea{min-height:90px;resize:vertical}
+.go{background:var(--brand);color:#fff;padding:11px 18px;font-weight:700;margin-top:12px}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.presets button{background:var(--bg);border:1px solid var(--line);padding:6px 10px;font-size:14px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:560px){.two{grid-template-columns:1fr}}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#111827;color:#fff;padding:12px 18px;border-radius:12px;display:none;max-width:90%;z-index:9}
+.muted{color:var(--soft)}
+.center{text-align:center;padding:40px 16px}
+</style></head>
+<body>
+<header><div class="row"><div><h1 id="hi">Parents</h1><p id="sub">Your children's learning, all in one place.</p></div><button class="out" id="out">Sign out</button></div></header>
+<main id="app"><div class="card center muted">Loading...</div></main>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+var S={token:null,d:null,kid:0,url:null};
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function toast(t){ var e=document.getElementById('toast'); e.textContent=t; e.style.display='block'; clearTimeout(e._t); e._t=setTimeout(function(){ e.style.display='none'; },3500); }
+function run(fn){ var a=[].slice.call(arguments,1); return new Promise(function(res,rej){ google.script.run.withSuccessHandler(res).withFailureHandler(function(e){ rej(e&&e.message?e.message:String(e)); })[fn].apply(null,a); }); }
+function sess(){ try{ return JSON.parse(sessionStorage.getItem('tl-session')||'null'); }catch(e){ return null; } }
+function home(){ return S.url?Promise.resolve(S.url):run('msAppUrl').then(function(u){ S.url=u; return u; }); }
+document.getElementById('out').onclick=function(){ try{ sessionStorage.removeItem('tl-session'); }catch(e){} home().then(function(u){ window.open(u,'_top'); }); };
+var REP={daily:'Every day (not on Shabbos)',weekdays:'Monday to Friday',once:'Once',next:'Next time they sign in'};
+function t12(hm){ if(!hm) return ''; var p=hm.split(':'),h=Number(p[0]),m=p[1]; return ((h%12)||12)+':'+m+(h<12?' AM':' PM'); }
+function money(c){ return c==null?'':(c<0?'-':'')+'$'+(Math.abs(c)/100).toFixed(2); }
+function when(ms){ if(!ms) return ''; var d=new Date(ms); return d.toLocaleDateString([], {weekday:'short'})+' '+d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }
+function render(){
+ var d=S.d, app=document.getElementById('app'); if(!d) return;
+ document.getElementById('hi').textContent='Shalom, '+(d.parent.title||d.parent.name);
+ if(!d.kids.length){ app.innerHTML='<div class="card center"><h2>No children are linked yet</h2><p class="muted">Please ask the school office to link your children to your parent code.</p></div>'; return; }
+ var k=d.kids[Math.min(S.kid,d.kids.length-1)], h='';
+ if(d.kids.length>1) h+='<div class="tabs">'+d.kids.map(function(x,i){ return '<button class="tab'+(i===S.kid?' on':'')+'" data-kid="'+i+'">'+esc(x.first)+'</button>'; }).join('')+'</div>';
+ var acc=k.practice7.tries?Math.round(100*k.practice7.right/k.practice7.tries):null;
+ h+='<div class="card"><h2>'+esc(k.name)+'</h2><div class="stats">'
+  +'<div class="stat"><b>'+k.week.length+'</b><span>skills mastered this week</span></div>'
+  +'<div class="stat"><b>'+k.month+'</b><span>mastered this month</span></div>'
+  +'<div class="stat"><b>'+(k.streak||0)+' 🔥</b><span>day streak</span></div>'
+  +'<div class="stat"><b>'+k.practice7.skills+'</b><span>skills practiced, last 7 days'+(acc!=null?' · '+acc+'% right':'')+'</span></div>'
+  +(k.balance!=null?'<div class="stat"><b>'+money(k.balance)+'</b><span>savings in the app</span></div>':'')
+  +'</div></div>';
+ h+='<div class="card"><h2>Subjects</h2>'+(k.subjects.length?'<div class="subj">'+k.subjects.map(function(s){ return '<div class="sj"><span class="dot '+esc(s.status)+'"></span><div><b>'+esc(s.name)+'</b>'+(s.level?' <span class="muted">· Level '+s.level+'</span>':'')+(s.now?'<small>Working on: '+esc(s.now)+'</small>':'')+'</div></div>'; }).join('')+'</div>':'<p class="muted">Subjects will show here after the first lessons.</p>')
+  +'<div class="legend"><span><i class="green"></i>On track</span><span><i class="yellow"></i>Learning now</span><span><i class="red"></i>Needs a little help</span><span><i class="gray"></i>Not started</span></div></div>';
+ h+='<div class="card"><h2>Mastered this week</h2>'+(k.week.length?'<div class="chips">'+k.week.map(function(w){ return '<span class="chip">'+esc(w)+'</span>'; }).join('')+'</div>':'<p class="muted">Nothing new yet this week. A kind word at home helps a lot!</p>')+'</div>';
+ var mine=k.notes.slice().sort(function(a,b){ return (a.time||'99').localeCompare(b.time||'99'); });
+ h+='<div class="card"><h2>Reminders on '+esc(k.first)+'’s screen</h2><p class="muted">They pop up on the screen at the time you pick, until '+esc(k.first)+' taps “Got it”.</p>'
+  +(mine.length?mine.map(function(n){ var w=n.repeat==='next'||n.kind==='note'?REP.next:(REP[n.repeat]||'')+(n.repeat==='once'&&n.date?' on '+esc(n.date):'')+(n.time?' at '+t12(n.time):'');
+    var seen=n.ack?'<span class="seen">✓ Seen '+esc(when(n.ack))+'</span>':'';
+    return '<div class="note"><div><b>'+esc(n.text)+'</b><small>'+w+' · from '+esc(n.from)+'</small>'+seen+'</div><button class="del" data-del="'+esc(n.id)+'">Remove</button></div>'; }).join(''):'<p class="muted">No reminders yet.</p>')
+  +'<label for="rt">New reminder</label><input id="rt" maxlength="240" placeholder="e.g. Time to take your medicine">'
+  +'<div class="presets">'+['Time to take your medicine 💊','Drink some water 💧','Eat your lunch 🥪','Get ready, you are being picked up early today 🚗','Remember your homework 📚','We are proud of you! ❤️'].map(function(p){ return '<button data-preset="'+esc(p)+'">'+esc(p)+'</button>'; }).join('')+'</div>'
+  +'<div class="two"><div><label for="rr">When</label><select id="rr"><option value="daily">Every day (not on Shabbos)</option><option value="weekdays">Monday to Friday</option><option value="once">Once, on a day</option><option value="next">Next time they sign in</option></select></div>'
+  +'<div id="tw"><label for="rtm">Time</label><input id="rtm" type="time" value="13:00"></div></div>'
+  +'<div id="dw" style="display:none"><label for="rd">Day</label><input id="rd" type="date" value="'+esc(d.today)+'"></div>'
+  +'<button class="go" id="add">Add reminder</button></div>';
+ h+='<div class="card"><h2>Message a teacher</h2>'+(k.teachers.length?'<label for="mt">To</label><select id="mt">'+k.teachers.map(function(t){ return '<option value="'+esc(t.id)+'">'+esc(t.name)+'</option>'; }).join('')+'</select><label for="mx">Message</label><textarea id="mx" maxlength="600" placeholder="Write your message about '+esc(k.first)+'"></textarea><button class="go" id="send">Send</button>':'<p class="muted">No teachers are set up for this school yet.</p>')+'</div>';
+ h+='<p class="muted" style="text-align:center;font-size:13px">You see only your own children. The school can change which children are linked to your code.</p>';
+ app.innerHTML=h;
+ app.querySelectorAll('[data-kid]').forEach(function(b){ b.onclick=function(){ S.kid=Number(b.getAttribute('data-kid')); render(); }; });
+ app.querySelectorAll('[data-preset]').forEach(function(b){ b.onclick=function(){ document.getElementById('rt').value=b.getAttribute('data-preset'); }; });
+ var rr=document.getElementById('rr'); if(rr) rr.onchange=function(){ document.getElementById('tw').style.display=rr.value==='next'?'none':''; document.getElementById('dw').style.display=rr.value==='once'?'':'none'; };
+ app.querySelectorAll('[data-del]').forEach(function(b){ b.onclick=function(){ if(!confirm('Remove this reminder?')) return; run('ppDeleteNote',S.token,b.getAttribute('data-del')).then(function(){ toast('Removed.'); load(); }).catch(toast); }; });
+ var add=document.getElementById('add'); if(add) add.onclick=function(){ var rep=rr.value; add.disabled=true;
+   run('ppSaveNote',S.token,k.id,{text:document.getElementById('rt').value,kind:rep==='next'?'note':'reminder',repeat:rep,time:document.getElementById('rtm').value,date:document.getElementById('rd').value})
+   .then(function(){ toast('Reminder added.'); load(); }).catch(function(e){ add.disabled=false; toast(e); }); };
+ var send=document.getElementById('send'); if(send) send.onclick=function(){ send.disabled=true;
+   run('ppMessageTeacher',S.token,k.id,document.getElementById('mt').value,document.getElementById('mx').value)
+   .then(function(){ toast('Sent. Thank you!'); document.getElementById('mx').value=''; send.disabled=false; }).catch(function(e){ send.disabled=false; toast(e); }); };
+}
+function load(){ return run('ppLoad',S.token).then(function(d){ S.d=d; render(); }).catch(function(e){
+ document.getElementById('app').innerHTML='<div class="card center"><h2>Please sign in again</h2><p class="muted">'+esc(e)+'</p><button class="go" id="again">Go to sign in</button></div>';
+ document.getElementById('again').onclick=function(){ home().then(function(u){ window.open(u,'_top'); }); }; }); }
+var s=sess(); if(s&&s.role==='parent'&&s.token&&Date.now()-(s.at||0)<6*3600e3){ S.token=s.token; load(); }
+else { document.getElementById('app').innerHTML='<div class="card center"><h2>Sign in with your parent code</h2><p class="muted">Type your 4-digit parent code on the sign-in pad.</p><button class="go" id="again">Go to sign in</button></div>';
+ document.getElementById('again').onclick=function(){ home().then(function(u){ window.open(u,'_top'); }); }; }
+})();
+</script>
+</body></html>

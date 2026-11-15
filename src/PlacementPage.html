@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><base target="_top">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#14284b;--navy2:#1f3a68;--gold:#e3b341;--gold2:#f6e3a8;--teal:#1f9e8f;--ink:#1b2333;--soft:#5d6779;--line:#e2e6ee;--bg:#f4f6fa;--card:#fff;--ok:#1f9e6b;--warn:#c77d12;--bad:#c2413b;--sel:#fff6dc}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque',Inter,sans-serif;margin:0;letter-spacing:-.01em}
+button{font:inherit;cursor:pointer}button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.top{background:var(--navy);color:#fff;border-bottom:4px solid var(--gold);padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top h1{font-size:20px}.top .sub{opacity:.75;font-size:13px}.top .sp{flex:1}
+.tb{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:7px 12px;text-decoration:none;font-weight:600;font-size:14px}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:18px;padding:18px 20px;max-width:1500px;margin:0 auto}
+@media(max-width:860px){.wrap{grid-template-columns:1fr;padding:12px}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 2px 10px rgba(20,40,75,.05);padding:16px}
+.side h2{font-size:16px;margin:2px 0 10px}.side .hint{color:var(--soft);font-size:13px;margin:0 0 10px}
+.search{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;margin-bottom:10px}
+.boys{display:flex;flex-direction:column;gap:4px;max-height:52vh;overflow:auto}
+.boy{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;border:1px solid transparent;background:none;text-align:left;width:100%}
+.boy:hover{background:#f0f3f8}.boy.on{background:var(--sel);border-color:var(--gold)}
+.boy .ck{width:20px;height:20px;border-radius:6px;border:2px solid #b8c0cf;display:grid;place-items:center;font-size:13px;color:#fff;flex:none}
+.boy.on .ck{background:var(--navy);border-color:var(--navy)}
+.boy .nm{font-weight:600;flex:1}.boy .lv{font-size:12px;color:var(--soft)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:10px;padding:9px 14px;font-weight:700;background:var(--navy);color:#fff}
+.btn.ghost{background:#eef1f6;color:var(--navy)}.btn.gold{background:var(--gold);color:var(--navy)}.btn.sm{padding:6px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:default}
+.groups{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.grp{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.grp b{flex:1}.grp small{color:var(--soft)}
+.x{background:none;border:0;color:var(--soft);font-size:18px;line-height:1;padding:2px 6px;border-radius:6px}.x:hover{background:#f3e3e2;color:var(--bad)}
+.head{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.head h2{font-size:26px}.head .who{color:var(--soft)}.head .sp{flex:1}
+.tog{display:flex;background:#eef1f6;border-radius:10px;padding:3px}.tog button{border:0;background:none;padding:6px 12px;border-radius:8px;font-weight:600;color:var(--soft)}.tog button.on{background:#fff;color:var(--navy);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.gridwrap{overflow-x:auto}
+table.grid{border-collapse:separate;border-spacing:4px;width:100%;min-width:640px}
+.grid th{font-size:12px;color:var(--soft);font-weight:600;text-align:center;padding:2px}
+.grid th.s{text-align:left;font-size:14px;color:var(--ink);white-space:nowrap;padding-right:8px}
+.grid th.s small{display:block;color:var(--soft);font-weight:500;font-size:12px}
+.cell{width:100%;min-width:46px;height:46px;border-radius:10px;border:1px solid var(--line);background:#fff;font-weight:700;color:var(--soft);position:relative}
+.cell:hover:not(:disabled){border-color:var(--navy);background:#f3f6fb}
+.cell.below{background:#e9eef7;color:#8a94a7;border-color:#e9eef7}
+.cell.at{background:var(--navy);color:#fff;border-color:var(--navy);box-shadow:0 0 0 3px var(--gold)}
+.cell.at::after{content:'★';position:absolute;top:2px;right:5px;font-size:10px;color:var(--gold)}
+.cell.some{background:var(--gold2);color:var(--navy);border-color:var(--gold)}
+.cell:disabled{background:repeating-linear-gradient(45deg,#f6f7fa,#f6f7fa 5px,#eef0f4 5px,#eef0f4 10px);border-color:#eef0f4;color:transparent;cursor:default}
+.cell .n{font-size:11px;display:block;font-weight:600}
+.clr{background:none;border:0;color:var(--soft);font-size:12px;text-decoration:underline;padding:0 4px}
+.panel{margin-top:16px}.panel h3{font-size:18px;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;text-align:left;max-width:260px}
+.chip b{display:block;font-size:14px}.chip small{color:var(--soft);font-size:12px}
+.chip.on{border-color:var(--navy);box-shadow:0 0 0 2px var(--navy);background:#f3f6fb}
+.chip .tag{display:inline-block;font-size:11px;font-weight:700;border-radius:20px;padding:1px 8px;margin-top:4px}
+.tag.ready{background:#dff3ea;color:var(--ok)}.tag.soon{background:#f1f2f5;color:var(--soft)}.tag.done{background:#e6ecfa;color:var(--navy2)}
+.lineup{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.lu{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fbfcfe}
+.lu h4{margin:0 0 4px;font:700 14px Inter}.lu .lvl{font:800 22px 'Bricolage Grotesque';color:var(--navy)}
+.lu ol{margin:6px 0 0;padding-left:20px;font-size:13px}.lu li{margin:2px 0}.lu .muted{color:var(--soft);font-size:13px}
+.ov{width:100%;border-collapse:collapse}.ov th,.ov td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center;font-size:14px}
+.ov th:first-child,.ov td:first-child{text-align:left}.ov td.n{font-weight:700;color:var(--navy)}.ov td.e{color:#c2c8d3}
+.ov tr.click{cursor:pointer}.ov tr.click:hover{background:#f6f8fb}
+.note{background:#fff8e6;border:1px solid #f1d58c;border-radius:12px;padding:10px 12px;font-size:14px;margin-bottom:12px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;z-index:50;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.empty{text-align:center;color:var(--soft);padding:40px 10px}
+/* sign-in + check (boys) */
+.center{min-height:calc(100vh - 70px);display:grid;place-items:center;padding:20px}
+.pad{max-width:420px;width:100%;text-align:center}
+.pad h2{font-size:28px;margin-bottom:6px}.pad p{color:var(--soft)}
+.dots{display:flex;justify-content:center;gap:12px;margin:18px 0}.dots i{width:18px;height:18px;border-radius:50%;border:3px solid var(--navy)}.dots i.f{background:var(--navy)}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.keys button{height:62px;border-radius:14px;border:1px solid var(--line);background:#fff;font:800 24px 'Bricolage Grotesque';color:var(--navy)}
+.keys button:active{background:#eef1f6}.err{color:var(--bad);font-weight:600;min-height:22px}
+.check{max-width:680px;width:100%}
+.prog{height:12px;background:#e6eaf2;border-radius:10px;overflow:hidden;margin:4px 0 16px}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .4s}
+.qcard{background:#fff;border-radius:22px;border:1px solid var(--line);box-shadow:0 10px 30px rgba(20,40,75,.08);padding:26px;text-align:center}
+.qcard .world{display:inline-block;background:var(--gold2);color:var(--navy);font-weight:700;border-radius:20px;padding:3px 12px;font-size:13px}
+.qq{font:800 30px/1.25 'Bricolage Grotesque';margin:16px 0;color:var(--navy)}
+.pic{font-size:38px;letter-spacing:6px;line-height:1.4;margin:6px 0 10px}
+.ans{display:flex;gap:10px;justify-content:center}.ans input{font:800 28px 'Bricolage Grotesque';width:200px;text-align:center;border:2px solid var(--line);border-radius:14px;padding:10px}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}.opts button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:16px;font:700 22px 'Bricolage Grotesque';color:var(--navy)}
+.opts button:hover{border-color:var(--navy)}
+.say{border:0;background:#eef1f6;border-radius:50%;width:44px;height:44px;font-size:20px}
+.big{font-size:18px;padding:14px 24px;border-radius:14px}
+.result .medal{font-size:72px}.result h2{font-size:34px}
+
+/* staff tabs + lesson library (2026-11-09) */
+.tabs{display:flex;gap:4px;background:rgba(255,255,255,.1);border-radius:12px;padding:3px}
+.tab{border:0;background:none;color:#dfe5f2;font-weight:700;font-size:14px;padding:7px 14px;border-radius:9px;min-height:36px}
+.tab.on{background:#fff;color:var(--navy)}
+.libwrap{padding:18px 20px;max-width:1500px;margin:0 auto}
+.pill{background:var(--gold2);color:var(--navy);font-weight:700;border-radius:20px;padding:4px 12px;font-size:13px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--soft);margin:0 0 10px}.legend span{display:flex;align-items:center;gap:6px}
+.legend .lc{width:18px;height:18px;min-width:0;border-radius:5px;display:inline-block}
+.lc{display:block;width:100%;min-width:40px;height:42px;border-radius:10px;border:1px solid var(--line);background:#fff;font-weight:800;color:var(--navy);font-size:15px}
+button.lc:hover{border-color:var(--navy)}
+.lc.mapped{background:#fff;border:2px dashed #9fd3cc}
+.lc.part{background:#d8f0ec;border-color:#9fd3cc}
+.lc.full{background:var(--teal);border-color:var(--teal);color:#fff}
+.lc.none{background:repeating-linear-gradient(45deg,#f6f7fa,#f6f7fa 5px,#eef0f4 5px,#eef0f4 10px);border-color:#eef0f4}
+.lc.sel{box-shadow:0 0 0 3px var(--gold);border-color:var(--navy)}
+table.lib{min-width:760px}
+@media(max-width:860px){.wrap.picked>main{order:-1}.grid.lib th.s{position:sticky;left:0;background:#fff;z-index:1;white-space:normal;min-width:92px;font-size:13px}table.lib{min-width:0}.lc{min-width:38px}.top{padding:10px 12px;gap:8px}.top .sub{display:none}.libwrap{padding:12px}.tabs{order:5;width:100%}.tab{flex:1}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+[hidden]{display:none!important}.wrap>main,.wrap>aside{min-width:0}.cell.at,.cell.at:hover{background:var(--navy);color:#fff;border-color:var(--navy)}a.btn{text-decoration:none;display:inline-block}.boy .ck{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;color:#fff;font-size:13px;flex:none;padding:0}.boy .nm{font-weight:600;flex:1;color:var(--ink);cursor:pointer}.rpass{text-align:left;background:#fbfcfe;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:18px;line-height:1.6;margin:8px 0 6px;color:var(--ink)}.rword{font:800 34px 'Bricolage Grotesque';color:var(--navy);margin:6px 0}.qcard .opts button{font-size:19px}
+.ssq .qq{font-size:22px;margin:12px 0}.ssq .opts button{font-size:17px;padding:12px;overflow-wrap:anywhere}.ssq .pic.map{font-size:15px;letter-spacing:0;line-height:1.45;white-space:pre-line;text-align:left;background:#F7F4EC;border-radius:12px;padding:10px 12px;overflow-wrap:anywhere}</style></head><body><div id="app"></div>
+<script>
+/* Tashbar placement page (TL-037). Staff: click a boy, then click where he is in each subject. Tick several boys (or pick a group) to place them together.
+   Boys (?check=1): a short adaptive math check that finds his starting level. */
+const S={token:null,data:null,sel:[],hi:false,q:'',mode:'staff',view:'loading',appUrl:'',padErr:'',mkgrp:false,page:'boys',lib:null,want:null};
+const C={view:'intro',name:'',placed:false,lv:1,asked:0,solid:{},miss:{},items:[],i:0,right:0,log:[],res:null};
+const run=(fn,...a)=>new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...a));
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=id=>document.getElementById(id);
+const msgOf=e=>String((e&&e.message)||e||'Something went wrong.').replace(/^Error:\s*/,'');
+function store(k,v){ try{ v==null?sessionStorage.removeItem(k):sessionStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function recall(k){ try{ return JSON.parse(sessionStorage.getItem(k)||'null'); }catch(e){ return null; } }
+let tt; function toast(m){ let t=$('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; t.setAttribute('role','status'); document.body.appendChild(t); } t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>{ t.hidden=true; },2800); }
+
+/* v167 EMBED (takeover3): when the boy app opens the check in its own window (?check=1&embed=1), talk to it with messages:
+   ask it for the sign-in (no code to type again), and tell it when the check is done or closed. Messages go only up the frame chain;
+   a sign-in is accepted only from a frame above this one. */
+function upPost(m){ try{ if(window===window.top) return; m.tlCheck=1; let w=window; for(let i=0;i<6&&w!==w.parent;i++){ w=w.parent; w.postMessage(m,'*'); } }catch(e){} }
+function fromAbove(src){ try{ let w=window; for(let i=0;i<6&&w!==w.parent;i++){ w=w.parent; if(w===src) return true; } }catch(e){} return false; }
+
+/* ---------- data helpers ---------- */
+const D=()=>S.data;
+const SHORT={MATH:'Math',READ:'Reading',LANG:'Writing',SCI:'Science',SOC:'Social St.',COMP:'Computing',HEB:'Lashon Hakodesh',ELEC:'Electives',VOC:'Trades'};
+const subj=k=>D().subjects.find(s=>s[0]===k);
+const placeOf=(id,k)=>((D().place[id]||{})[k])||null;
+const nameOf=id=>(D().students.find(s=>s.id===id)||{}).name||id;
+const mathLvl=id=>{ const m=/\.L(\d\d)\./.exec(String(id)); return m?+m[1]:0; };
+const rung=id=>D().math.find(r=>r[0]===id)||(D().read||[]).find(r=>r[0]===id)||(D().lang||[]).find(r=>r[0]===id)||[id,id,''];
+const listOf=k=>k==='READ'?(D().read||[]):k==='LANG'?(D().lang||[]):D().math;
+const lab=l=>l===1?'K':l<=13?'Gr '+(l-1):'College';
+
+/* ---------- sign in ---------- */
+let PIN='';
+function renderPad(msg){ S.view='pad'; PIN=''; S.padErr=msg||''; render(); }
+function padHTML(){ const kid=S.mode==='check';
+ return `<div class="center"><div class="card pad"><h2>${kid?'Find your '+SUBN()+' level':'Placement'}</h2><p>${kid?'Type your 4-digit code, then tap ✓.':'Staff: type your staff code, then tap ✓.'}</p>
+ <div class="dots" aria-hidden="true">${[0,1,2,3].map(i=>`<i class="${i<PIN.length?'f':''}"></i>`).join('')}</div><div class="err" role="alert">${esc(S.padErr)}</div>
+ <div class="keys">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-act="key" data-k="${n}">${n}</button>`).join('')}<button data-act="key" data-k="c" aria-label="Delete">⌫</button><button data-act="key" data-k="0">0</button><button data-act="key" data-k="go" aria-label="Sign in">✓</button></div></div></div>`; }
+function key(k){ if(k==='c') PIN=PIN.slice(0,-1); else if(k==='go'){ if(PIN.length>=4) return signIn(); } else if(PIN.length<8) PIN+=k; S.padErr=''; render(); }
+function signIn(){ const code=PIN; PIN=''; S.padErr='Checking…'; render();
+ run('msSignInCode',code).then(r=>{
+  if(!r||!r.ok){ S.padErr="That code didn't work. Try again."; return render(); }
+  if(S.mode==='check'){ if(r.role!=='kid'){ S.padErr='This check is for students. Type your own code.'; return render(); } S.token=r.token; store('tl-check',{token:r.token,at:Date.now()}); return kidHello(); }
+  if(r.role!=='staff'){ S.padErr='That is a student’s code. Staff codes only here.'; return render(); }
+  S.token=r.token; store('tl-session',{role:'staff',sid:null,at:Date.now(),token:r.token}); load();
+ }).catch(()=>{ S.padErr='Could not reach the school database. Check the Wi-Fi.'; render(); }); }
+
+/* ---------- staff ---------- */
+function load(){ S.view='loading'; render();
+ run('plLoad',S.token).then(d=>{ S.data=d; if(S.want&&d.students.some(s=>s.id===S.want)) S.sel=[S.want]; S.want=null; S.sel=S.sel.filter(id=>d.students.some(s=>s.id===id)); S.view='staff'; render(); })
+ .catch(e=>{ store('tl-session',null); S.token=null; renderPad(msgOf(e)); }); }
+function place(ids,k,l,start){ if(!ids.length) return;
+ const prev=JSON.stringify(D().place);
+ ids.forEach(id=>{ const p=(D().place[id]=D().place[id]||{}); if(l) p[k]={level:l,start:start||'',at:Date.now(),by:'staff'}; else delete p[k]; });
+ render();
+ run('plPlace',S.token,ids,k,l,start||'').then(pl=>{ D().place=pl; render(); toast(l?`Saved: ${ids.length>1?ids.length+' students':nameOf(ids[0])} in ${subj(k)[1]}, Level ${l}`:`Cleared ${subj(k)[1]}`); })
+ .catch(e=>{ D().place=JSON.parse(prev); render(); toast(msgOf(e)); }); }
+
+function sideHTML(){ const d=D(), q=S.q.toLowerCase(), list=d.students.filter(s=>!q||s.name.toLowerCase().includes(q));
+ return `<h2>Students</h2><p class="hint">Click a name to place them. Tick the boxes to place several students at once.</p>
+ <input class="search" id="q" placeholder="Search names" value="${esc(S.q)}" aria-label="Search names" autocomplete="off">
+ <div class="boys">${list.map(s=>{ const on=S.sel.includes(s.id), m=placeOf(s.id,'MATH');
+   return `<div class="boy ${on?'on':''}"><button class="ck" data-act="tick" data-id="${esc(s.id)}" aria-pressed="${on}" aria-label="Tick ${esc(s.name)}" style="border:2px solid ${on?'var(--navy)':'#b8c0cf'};background:${on?'var(--navy)':'#fff'}">${on?'✓':''}</button><button class="nm" data-act="open" data-id="${esc(s.id)}" style="border:0;background:none;text-align:left;padding:0">${esc(s.name)}</button><span class="lv">${m?'Math L'+m.level:'—'}</span></div>`; }).join('')||'<p class="hint">No students on the roster yet.</p>'}</div>
+ <div class="row" style="margin-top:10px"><button class="btn ghost sm" data-act="all">Tick all</button><button class="btn ghost sm" data-act="none" ${S.sel.length?'':'disabled'}>Untick</button><button class="btn ghost sm" data-act="over">Overview</button></div>
+ <h2 style="margin-top:20px">Groups</h2><p class="hint">Optional. Pick a group to place all its students in one click. Each student still keeps their own lineup.</p>
+ <div class="groups">${d.groups.map(g=>`<div class="grp"><button class="btn ghost sm" data-act="grp" data-id="${esc(g.id)}">${esc(g.name)}</button><small>${g.members.length} students</small><span style="flex:1"></span><button class="x" data-act="delgrp" data-id="${esc(g.id)}" aria-label="Delete group ${esc(g.name)}">×</button></div>`).join('')||'<p class="hint">No groups yet.</p>'}</div>
+ ${S.mkgrp?`<div class="row" style="margin-top:8px"><input class="search" id="gname" placeholder="Group name, e.g. Math Group A" style="margin:0;flex:1" maxlength="40"><button class="btn sm" data-act="savegrp">Save</button><button class="btn ghost sm" data-act="cancelgrp">Cancel</button></div>`
+  :`<div class="row" style="margin-top:8px"><button class="btn sm" data-act="newgrp" ${S.sel.length>1?'':'disabled'}>Make a group from ticked students</button></div>`}`; }
+
+function gridHTML(ids){ const d=D(), max=S.hi?16:9, lv=Array.from({length:max},(_,i)=>i+1);
+ return `<div class="gridwrap"><table class="grid"><thead><tr><th></th>${lv.map(l=>`<th>L${l}<br><span style="font-weight:500">${lab(l)}</span></th>`).join('')}</tr></thead><tbody>
+ ${d.subjects.filter(s=>S.hi||s[2]<=9).map(([k,name,lo,hi])=>{ const lvls=ids.map(i=>(placeOf(i,k)||{}).level||0), placed=lvls.filter(Boolean).length;
+   const cells=lv.map(l=>{ if(l<lo||l>hi) return `<td><button class="cell" disabled aria-label="${esc(name)} has no Level ${l}"></button></td>`;
+     const n=lvls.filter(x=>x===l).length; let cls='';
+     if(ids.length===1) cls=lvls[0]===l?'at':(lvls[0]&&l<lvls[0]?'below':''); else if(n) cls=n===ids.length?'at':'some';
+     return `<td><button class="cell ${cls}" data-act="place" data-k="${k}" data-l="${l}" aria-label="${esc(name)}, Level ${l}${cls==='at'?', current':''}">${l}${ids.length>1&&n&&n<ids.length?`<span class="n">${n} students</span>`:''}</button></td>`; }).join('');
+   const status=ids.length===1?(lvls[0]?'Level '+lvls[0]:'Not placed'):(placed?placed+' of '+ids.length+' placed':'Not placed');
+   return `<tr><th class="s">${esc(name)}<small>${status}${placed?` · <button class="clr" data-act="clear" data-k="${k}" aria-label="Clear ${esc(name)}">clear</button>`:''}</small></th>${cells}</tr>`; }).join('')}
+ </tbody></table></div>`; }
+
+function mathStartHTML(id,k){ k=k||'MATH'; const p=placeOf(id,k); if(!p||p.level>9) return '';
+ const B=new Set(D().built), mast=new Set(D().mastered[id]||[]), rungs=listOf(k).filter(r=>mathLvl(r[0])===p.level), start=p.start||(rungs[0]||[])[0];
+ return `<div class="card panel"><h3>${k==='READ'?'Reading Level '+p.level+' · Story Road':k==='LANG'?'Language Arts & Writing Level '+p.level:'Math Level '+p.level+' · '+esc(D().worlds[p.level]||'')}: which skill do they start on?</h3>
+ <p class="hint" style="color:var(--soft);margin:0 0 10px">Pick the first skill they have not mastered yet. They work forward from there, one skill at a time, and move up on their own when they master each one.</p>
+ <div class="chips">${rungs.map(r=>{ const on=r[0]===start, ready=B.has(r[0]), done=mast.has(r[0]);
+   return `<button class="chip ${on?'on':''}" data-act="start" data-k="${k}" data-s="${r[0]}" aria-pressed="${on}"><b>${esc(r[1])}</b><small>${esc(r[2])}</small><br><span class="tag ${done?'done':ready?'ready':'soon'}">${done?'Mastered':ready?'Lesson ready':'Lesson coming'}</span></button>`; }).join('')}</div></div>`; }
+
+function lineupHTML(id){ const d=D(), B=new Set(d.built), mast=new Set(d.mastered[id]||[]), pl=d.place[id]||{};
+ const boxes=d.subjects.map(([k,name])=>{ const p=pl[k]; if(!p) return ''; let body='';
+  if((k==='MATH'||k==='READ'||k==='LANG')&&p.level<=9){ const ids=listOf(k).map(r=>r[0]), s=p.start||ids.find(x=>mathLvl(x)===p.level), next=ids.slice(Math.max(0,ids.indexOf(s))).filter(x=>B.has(x)&&!mast.has(x)).slice(0,4);
+   body=next.length?`<div class="muted" style="margin-top:6px">Next up:</div><ol>${next.map(x=>`<li>${esc(rung(x)[1])} <span class="muted">L${mathLvl(x)}</span></li>`).join('')}</ol>`:'<p class="muted">No lessons built past this point yet.</p>'; }
+  else if(k==='READ'||k==='LANG') body='<p class="muted">Their reading and writing quests follow this level.</p>';
+  else if(k==='SOC') body='<p class="muted">Their Social Studies trail (Explorer Trail) starts at this level.</p>';
+  else body='<p class="muted">Lessons for this subject are being built.</p>';
+  const ch=d.checks[id+'|'+k];
+  return `<div class="lu"><h4>${esc(name)}</h4><div class="lvl">Level ${p.level}</div><div class="muted">${p.by==='check'?'From their placement check':'Set by a teacher'}${ch&&p.by!=='check'?` · their check said ${ch.level}`:''}</div>${body}</div>`; }).join('');
+ return `<div class="card panel"><h3>${esc(nameOf(id))}’s lineup</h3>${boxes?`<div class="lineup">${boxes}</div>`:'<p class="muted">Not placed yet. Click a box above, or have the student tap “Find your math level” after signing in.</p>'}</div>`; }
+
+function boyHTML(){ const ids=S.sel, one=ids.length===1, id=ids[0];
+ return `<div class="card"><div class="head"><div><h2>${one?esc(nameOf(id)):ids.length+' students together'}</h2>
+ <div class="who">${one?'Click the box where they are in each subject.':'Click a box to place all of them there. After that each student moves at their own pace.'}</div>
+ ${one?'':`<div class="who" style="margin-top:4px">${ids.map(i=>esc(nameOf(i))).join(', ')}</div>`}</div><span class="sp"></span>
+ <div class="tog" role="group" aria-label="Levels shown"><button class="${S.hi?'':'on'}" data-act="lo">K–8</button><button class="${S.hi?'on':''}" data-act="hi">All levels</button></div></div>
+ ${gridHTML(ids)}</div>${one?mathStartHTML(id)+mathStartHTML(id,'READ')+mathStartHTML(id,'LANG')+lineupHTML(id):''}`; }
+
+function overHTML(){ const d=D(), subs=d.subjects.filter(s=>s[2]<=9), none=d.students.filter(s=>!placeOf(s.id,'MATH')).length;
+ return `<div class="card"><div class="head"><div><h2>Every student at a glance</h2><div class="who">Their level in each subject. Click a row to open their card.</div></div></div>
+ ${none?`<div class="note">${none} of ${d.students.length} students have no Math level yet. Place them here, or have each student tap “Find your math level” after signing in.</div>`:''}
+ <div class="gridwrap"><table class="ov"><thead><tr><th>Student</th>${subs.map(s=>`<th>${esc(SHORT[s[0]]||s[1])}</th>`).join('')}</tr></thead><tbody>
+ ${d.students.map(s=>`<tr class="click" data-act="open" data-id="${esc(s.id)}" tabindex="0"><td><b>${esc(s.name)}</b></td>${subs.map(x=>{ const p=placeOf(s.id,x[0]); return p?`<td class="n">${p.level}</td>`:'<td class="e">·</td>'; }).join('')}</tr>`).join('')||`<tr><td colspan="${subs.length+1}" class="empty">No students on the roster yet.</td></tr>`}
+ </tbody></table></div></div>`; }
+
+
+/* ---------- lesson library (staff portal job, 2026-11-09): one grid, every subject by every level, no dropdowns ---------- */
+const LIBPFX={MATH:['MATH'],READ:['READ'],LANG:['LANG','WRIT'],SCI:['SCI'],SOC:['SOC','SS'],COMP:['COMP'],HEB:['HEB'],ELEC:['ELEC'],VOC:['VOC']};
+function libSkills(k,l){ const d=D(), B=new Set(d.built||[]);
+ if(k==='MATH'||k==='READ') return (k==='READ'?(d.read||[]):d.math).filter(r=>mathLvl(r[0])===l).map(r=>({id:r[0],name:r[1],what:r[2],ready:B.has(r[0])}));
+ return (d.built||[]).filter(id=>(LIBPFX[k]||[]).some(p=>id.indexOf(p+'.')===0)&&mathLvl(id)===l).map(id=>({id,name:id.split('.').slice(1).join(' · '),what:'',ready:true})); }
+function libHTML(){ const d=D(), lv=Array.from({length:16},(_,i)=>i+1); let total=0;
+ const rows=d.subjects.map(([k,name,lo,hi])=>`<tr><th class="s">${esc(name)}</th>${lv.map(l=>{ if(l<lo||l>hi) return `<td><span class="lc none" aria-hidden="true"></span></td>`;
+   const sk=libSkills(k,l), r=sk.filter(x=>x.ready).length; total+=r; const on=S.lib&&S.lib.k===k&&S.lib.l===l;
+   const cls=r&&r===sk.length?'full':r?'part':sk.length?'mapped':'';
+   return `<td><button class="lc ${cls}${on?' sel':''}" data-act="libcell" data-k="${k}" data-l="${l}" aria-pressed="${on}" aria-label="${esc(name)}, Level ${l}: ${r} lessons ready${sk.length?' of '+sk.length:''}">${r||''}</button></td>`; }).join('')}</tr>`).join('');
+ return `<div class="card"><div class="head"><div><h2>Lesson library</h2><div class="who">Every subject, every level. The number is how many lessons are ready. Click a square to see them.</div></div><span class="sp"></span><span class="pill">${total} lessons ready</span></div>
+ <div class="legend"><span><i class="lc full"></i>Every lesson ready</span><span><i class="lc part"></i>Some ready</span><span><i class="lc mapped"></i>Skills listed, lessons coming</span><span><i class="lc"></i>Not started</span></div>
+ <div class="gridwrap"><table class="grid lib"><thead><tr><th></th>${lv.map(l=>`<th>L${l}<br><span style="font-weight:500">${lab(l)}</span></th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div></div>${libPanel()}`; }
+function libPanel(){ if(!S.lib) return `<div class="card panel" id="libpanel"><p class="muted" style="margin:0;color:var(--soft)">Click any square above to see its lessons and which students are on that level.</p></div>`;
+ const {k,l}=S.lib, d=D(), sj=subj(k)||[k,k], sk=libSkills(k,l), r=sk.filter(x=>x.ready).length;
+ const boys=d.students.filter(s=>(placeOf(s.id,k)||{}).level===l);
+ return `<div class="card panel" id="libpanel"><h3>${esc(sj[1])} · Level ${l} <span style="font-weight:500;color:var(--soft);font-size:15px">(${lab(l)})</span></h3>
+ <p class="muted" style="margin:0 0 10px;color:var(--soft)">${sk.length?`${r} of ${sk.length} lessons ready.`:'No lessons here yet.'} Students play ready lessons on their own page; the rest are being built.</p>
+ ${sk.length?`<div class="chips">${sk.map(x=>`<div class="chip"><b>${esc(x.name)}</b>${x.what?`<small>${esc(x.what)}</small><br>`:''}<span class="tag ${x.ready?'ready':'soon'}">${x.ready?'Lesson ready':'Lesson coming'}</span></div>`).join('')}</div>`:''}
+ <h3 style="margin-top:16px;font-size:16px">Students on this level (${boys.length})</h3>
+ ${boys.length?`<div class="chips">${boys.map(s=>`<button class="chip" data-act="open" data-id="${esc(s.id)}"><b>${esc(s.name)}</b></button>`).join('')}</div>`:'<p class="muted" style="color:var(--soft);margin:0">No students placed here. Open “Students and levels” to place them.</p>'}</div>`; }
+
+/* ---------- boy's placement check ---------- */
+const WORLDS=['','Number Village','Tens Town','Hundred Hills','Times Tower','Million Mountain','Decimal Docks','Below-Zero Bay','Rational Ridge','Root Summit'];
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)), PK=a=>a[Math.floor(Math.random()*a.length)];
+const mix=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const NUM=(q,a,x)=>Object.assign({q,a},x||{}), MC=(q,o)=>({q,a:o[0],o:mix(o)});
+const EMO=['⭐','🍎','🎈','🐟','📘','🍪','🐑'];
+const BANK={
+ 1:[()=>{ const e=PK(EMO),n=R(4,10); return NUM(`How many ${e} are there?`,n,{pic:e.repeat(n)}); }, ()=>{ const a=R(1,4),b=R(1,5-a); return NUM(`${a} + ${b} = ?`,a+b); }, ()=>{ let a=R(1,10),b=R(1,10); while(b===a) b=R(1,10); return MC('Which number is more?',[String(Math.max(a,b)),String(Math.min(a,b))]); }],
+ 2:[()=>{ const a=R(6,9),b=R(5,9); return NUM(`${a} + ${b} = ?`,a+b); }, ()=>{ const a=R(11,18),b=R(3,9); return NUM(`${a} − ${b} = ?`,a-b); }, ()=>{ const t=R(2,9),o=R(0,9); return NUM(`${t} tens and ${o} ones make what number?`,t*10+o); }],
+ 3:[()=>{ const a=R(25,68),b=R(17,31); return NUM(`${a} + ${b} = ?`,a+b); }, ()=>{ const h=R(2,9),t=R(1,9),o=R(1,9); return NUM(`${h*100} + ${t*10} + ${o} = ?`,h*100+t*10+o); }, ()=>{ const a=R(61,95),b=R(17,48); return NUM(`${a} − ${b} = ?`,a-b); }],
+ 4:[()=>{ const a=R(6,9),b=R(6,9); return NUM(`${a} × ${b} = ?`,a*b); }, ()=>{ const a=R(3,9),b=R(4,9); return NUM(`${a*b} ÷ ${a} = ?`,b); }, ()=>{ const a=R(2,5),b=R(a+1,9); return MC('Which is bigger?',[`1/${a}`,`1/${b}`]); }],
+ 5:[()=>{ const a=R(23,89),b=R(3,8); return NUM(`${a} × ${b} = ?`,a*b); }, ()=>{ const d=R(3,8),q=R(12,29); return NUM(`${d*q} ÷ ${d} = ?`,q); }, ()=>{ const n=R(1,3),d=PK([4,5,7]),k=R(2,4); return NUM(`${n}/${d} = ?/${d*k}`,n*k); }],
+ 6:[()=>{ const a=R(11,49)/10,b=R(101,399)/100; return NUM(`${a} + ${b} = ?`,Math.round((a+b)*100)/100); }, ()=>{ const a=R(1,2); return NUM(`1/2 + ${a}/3 = ?/6`,3+2*a); }, ()=>{ const a=R(2,9),b=R(2,5),c=R(2,6); return NUM(`${a} + ${b} × ${c} = ?`,a+b*c); }],
+ 7:[()=>{ const a=R(3,9),b=R(a+1,15); return NUM(`−${a} + ${b} = ?`,b-a); }, ()=>{ const p=PK([10,20,25,50]),w=PK([40,60,80,120,200]); return NUM(`${p}% of ${w} = ?`,p*w/100); }, ()=>{ const n=PK([2,4,5]),u=PK([1.5,2,2.5,3]); return NUM(`${n} notebooks cost $${(n*u).toFixed(2)}. How many dollars is one notebook?`,u); }],
+ 8:[()=>{ const a=R(2,9),b=R(2,9); return NUM(`−${a} × ${b} = ?`,-a*b); }, ()=>{ const x=R(2,9),a=R(2,6),b=R(1,12); return NUM(`${a}x + ${b} = ${a*x+b}. What is x?`,x); }, ()=>{ const x=R(3,12),d=R(2,5); return NUM(`x ÷ ${d} = ${x}. What is x?`,x*d); }],
+ 9:[()=>{ const m=R(2,5),b=R(1,4),x=R(1,4); return NUM(`A line goes through (0, ${b}) and (${x}, ${b+m*x}). What is its slope?`,m); }, ()=>{ const n=R(4,12); return NUM(`\u221a${n*n} = ?`,n); }, ()=>{ const a=R(2,5),b=R(2,6); return NUM(`2 to the power ${a}, times 2 to the power ${b}, equals 2 to the power of what?`,a+b); }]
+};
+function parseNum(s){ s=String(s==null?'':s).trim().replace(/[$,\s]/g,'').replace(/[−–]/g,'-'); const f=/^(-?\d+)\/(\d+)$/.exec(s); if(f) return +f[1]/+f[2]; return s===''?NaN:Number(s); }
+/* Reading check (TL-041). ¿check=1&s=READ. Same steps as math: grade first, 3 questions a level, up after 2 right, down after a miss.
+Decoding items: the speaker reads only the instruction (it.say); the word or sentence he must read is on screen (it.word / it.pass) and never read aloud. */
+const RW=(q,o,x)=>Object.assign(MC(q,o),{say:q},x||{});
+const RPIC=[['🐟','f',['m','t']],['🌙','m',['s','b']],['☀️','s',['f','d']],['🎩','h',['k','n']],['🦁','l',['r','t']],['🐷','p',['b','d']],['🐢','t',['d','l']],['🔑','k',['g','t']],['🐐','g',['j','d']],['🦆','d',['b','t']],['🚌','b',['d','p']],['🪺','n',['m','h']]];
+const RNAME={'🐟':'fish','🌙':'moon','☀️':'sun','🎩':'hat','🦁':'lion','🐷':'pig','🐢':'turtle','🔑':'key','🐐':'goat','🦆':'duck','🚌':'bus','🪺':'nest'};
+const RCVC=[['🐱',['cat','cot','cut']],['🐶',['dog','dig','dug']],['🎩',['hat','hit','hut']],['🐛',['bug','bag','big']],['🛏️',['bed','bad','bid']],['🦊',['fox','fix','fax']],['🗺️',['map','mop','mat']],['🧢',['cap','cup','cop']],['🐀',['rat','rot','rut']],['🐷',['pig','peg','pit']]];
+const RSIGHT=[['said','siad','sadi'],['was','wsa','wos'],['you','yuo','oyu'],['they','thye','tehy'],['have','hvae','haev'],['come','cmoe','coem'],['what','waht','whta'],['there','thier','thrae']];
+const RDIG=[['🚢',['ship','chip','sip']],['🐟',['fish','fist','fizz']],['🛁',['bath','bash','bat']],['🦆',['duck','dock','deck']],['🐚',['shell','chill','sell']],['🐸',['frog','flog','fog']],['🥁',['drum','dram','dump']],['🦀',['crab','crib','grab']],['🚩',['flag','flat','lag']],['🎁',['gift','lift','gilt']],['🏕️',['tent','test','ten']],['🖐️',['hand','band','had']]];
+const RSIGHT2=[['because','becuase','becaus'],['friend','freind','frend'],['people','peeple','poeple'],['could','cuold','coud'],['where','wher','whree'],['again','agian','agen'],['water','watter','wotar'],['laugh','lagh','laff']];
+const RLONG=[['🪁',['kite','kit','kitty']],['🌧️',['rain','ran','rail']],['🦶',['feet','fat','fit']],['🐐',['goat','got','gate']],['🎂',['cake','coke','cape']],['🦴',['bone','bun','bane']],['🚂',['train','trim','tram']],['🍃',['leaf','loaf','life']],['🐌',['snail','sail','nail']],['🛶',['boat','bat','beat']]];
+const RLONG2=[['🌽',['corn','coin','cone']],['🐦',['bird','bard','bride']],['⭐',['star','stair','stare']],['🦉',['owl','oil','awl']],['🥄',['spoon','spin','span']],['🐢',['turtle','tattle','title']],['🪙',['coin','corn','cone']],['☁️',['cloud','clod','cold']],['🧸',['toy','tray','tie']],['🏠',['house','horse','hose']]];
+const RSHORT=[
+['Dov and Abba made a cake for Shabbos. Dov mixed the eggs. Abba put the cake in to bake.','Who mixed the eggs?',['Dov','Abba','Zeidy']],
+['Zev got on the bus. He sat in the back. The bus went to the yeshiva.','Where did the bus go?',['to the yeshiva','to the shop','to the park']],
+['Gad had a red kite. The wind was strong. The kite went up, up, up!','What made the kite go up?',['the wind','the rain','a dog']],
+['Chaim lost his pen. He looked in his bag. It was not there. Then he found it under his desk.','Where was the pen?',['under his desk','in his bag','on the bus']]];
+const RSHORT2=[
+['Yosef and his brother rode their bikes to the park. On the way, they saw an old man drop his groceries. The boys stopped, picked up every orange, and carried the bag to his door.','Why did the boys stop?',['to help the old man','to rest','to buy oranges']],
+['It was the first night of Chanukah. Shmuel lit one candle in the menorah by the window. His little brother asked why. "So everyone outside can see the light," said Shmuel.','Why was the menorah by the window?',['so people outside could see it','to keep it warm','because the table was full']],
+['Every morning, Eli feeds his fish before he goes to cheder. One day he forgot. When he came home, the fish swam fast to the top of the tank.','Why did the fish swim to the top?',['it was hungry','it was cold','it was sleeping']],
+['The class planted bean seeds in cups. They gave them water and put them in the sun. After one week, small green leaves came up.','What did the seeds need to grow?',['water and sun','music','a dark box']]];
+const RPASS=[
+{l:5,t:'Bees are small, but they do a big job. When a bee visits a flower to drink its nectar, yellow pollen sticks to its fuzzy legs. Then the bee flies to the next flower and some of the pollen falls off. This helps the plant make seeds and fruit. Without bees, farmers would grow far fewer apples, cherries and almonds.',
+ main:['Bees help plants make fruit and seeds.','Bees have fuzzy legs.','Farmers like almonds.'], inf:['Farmers want bees near their trees.','Bees are afraid of flowers.','Apples grow without any help.'], voc:['fuzzy',['covered with soft hair','very wet','hard and smooth']], pur:['to teach how bees help plants','to make you laugh','to sell honey']},
+{l:5,t:'Reuven wanted to win the spelling bee. Every night after supper he practiced ten words with his older brother. Some nights he was tired and wanted to stop, but he kept going. On the day of the bee, the last word was "neighbor." Reuven closed his eyes, pictured the letters, and spelled it right.',
+ main:['Reuven worked hard and won the spelling bee.','Reuven ate supper every night.','Spelling is easy.'], inf:['Practicing every night helped him.','His brother did not like him.','The bee was in the morning.'], voc:['practiced',['did again and again to get better','forgot about','laughed at']], pur:['to tell a story about not giving up','to teach how to spell neighbor','to explain what a bee is']},
+{l:6,t:'Long ago, people in many towns had no clocks. To know when to stop work for Mincha, they watched the shadows. In the morning a shadow is long and points west. At noon it is short. In the afternoon it grows long again and points east. A simple stick in the ground, called a sundial, could show the time all day, as long as the sun was out.',
+ main:['Before clocks, people used shadows to tell time.','Shadows are always short.','Sticks grow in the ground.'], inf:['A sundial does not work on a cloudy day.','A sundial works best at night.','People never needed to know the time.'], voc:['simple',['easy, not complicated','very old','expensive']], pur:['to explain how people told time with shadows','to convince you to buy a clock','to tell a funny story']},
+{l:6,t:'Naftali\'s team was losing by one point with ten seconds left. He had the ball and a clear shot, but he saw his friend Akiva standing even closer to the basket. Naftali passed. Akiva caught it and scored just as the buzzer sounded. In the locker room, everyone cheered for Akiva, and Akiva pointed at Naftali.',
+ main:['Naftali helped his team win by passing to a friend.','Akiva is tall.','Basketball has a buzzer.'], inf:['Akiva wanted Naftali to get credit too.','Akiva was angry at Naftali.','The team lost the game.'], voc:['clear',['open, with nothing in the way','see-through like glass','finished']], pur:['to show that teamwork matters','to teach the rules of basketball','to describe a locker room']},
+{l:7,t:'Many people think a desert is just empty sand, but the Negev in southern Israel is full of life. Ibex climb its steep cliffs, and tiny plants bloom after the winter rains. Farmers there have learned to grow tomatoes and dates using drip irrigation, a method that sends small drops of water straight to each plant\'s roots. Because almost no water is wasted, a dry land can feed many people.',
+ main:['The Negev desert supports life, and people have learned to farm it.','Ibex are good climbers.','Tomatoes need sand.'], inf:['Saving water is very important in the Negev.','It rains every day in the Negev.','Nothing can live in a desert.'], voc:['method',['a way of doing something','a kind of plant','a large animal']], pur:['to show that a desert can be full of life and farming','to warn people never to visit a desert','to tell a story about one farmer']},
+{l:7,t:'When the new boy, Tzvi, arrived in the middle of the year, he sat alone at lunch for a week. Binyamin noticed but said nothing; he was afraid his friends would tease him. On Friday, Binyamin remembered what his rebbe had taught about the mitzvah of making someone feel welcome. He picked up his tray, walked across the room, and asked Tzvi if he liked chess.',
+ main:['Binyamin overcame his fear and welcomed a new boy.','Tzvi liked chess.','Lunch is on Friday.'], inf:['Binyamin was nervous before he walked over.','Tzvi did not want any friends.','The rebbe told Binyamin exactly what to say.'], voc:['tease',['make fun of','help','teach']], pur:['to show the courage it takes to be kind','to explain the rules of chess','to describe a school lunchroom']},
+{l:8,t:'Some cities have begun replacing streetlights with LED lamps. LEDs use about half the electricity of older bulbs and last for years, so cities save money on power and repairs. Critics point out that the bright white light can disturb birds and make it harder to see the stars. Several towns now use warmer-colored LEDs that are shielded to shine only downward, trying to keep the savings while reducing the glare.',
+ main:['LED streetlights save money but raise concerns, so towns are adjusting them.','Birds like the stars.','Old bulbs are better.'], inf:['Shielded lights send less light up into the sky.','LEDs cost more electricity than old bulbs.','No one has any concerns about LEDs.'], voc:['glare',['harsh, bright light','a kind of bird','a low price']], pur:['to explain both sides of a city decision','to sell LED lamps','to tell a story about one bird']},
+{l:8,t:'Yehuda had always assumed his grandfather\'s watch-repair shop was a quiet, dull place. Then, one winter break, he spent a week there. He watched Zeidy open a pocket watch older than the country, lay out gears smaller than a grain of rice, and listen, head tilted, for a tick that was slightly wrong. By Thursday, Yehuda realized that what he had called dull was really patience, and that patience was a kind of skill.',
+ main:['Yehuda learned to value his grandfather\'s patient skill.','Watches have small gears.','Winter break lasts a week.'], inf:['Yehuda\'s opinion of the shop changed.','Zeidy was bored at work.','Yehuda already knew how to fix watches.'], voc:['assumed',['believed without checking','proved','fixed']], pur:['to show how a boy\'s view of his grandfather changed','to teach how to repair a watch','to describe the history of watches']},
+{l:9,t:'A school board is debating whether to start classes later in the morning. Supporters cite research showing that teenagers naturally fall asleep later and perform better on tests when they get more sleep. Opponents argue that a later start would push after-school activities and jobs into the evening and complicate bus schedules. Both sides agree that students\' health matters; they disagree about which trade-off is worse.',
+ main:['A school board is weighing the benefits and costs of a later start time.','Teenagers like buses.','Tests are hard.'], inf:['The decision will require giving something up either way.','Everyone on the board already agrees.','Research shows sleep does not matter.'], voc:['complicate',['make harder or more confusing','make cheaper','finish quickly']], pur:['to present both sides of a debate fairly','to convince readers to sleep less','to tell a story about one student']},
+{l:9,t:'The author of a popular article claims that reading on screens is "destroying" young people\'s attention. As evidence, he describes his own nephew, who could not finish a novel last summer. However, a single example cannot prove a claim about millions of readers. A careful reader would ask for studies that compare large groups, and would notice that the word "destroying" is chosen to alarm rather than to inform.',
+ main:['The article\'s claim is weak because its evidence is one example and its wording is exaggerated.','The nephew does not like novels.','Screens are bright.'], inf:['The writer of this passage wants readers to judge evidence carefully.','The writer agrees that screens destroy attention.','One example is enough to prove a claim.'], voc:['alarm',['frighten or worry','inform calmly','wake up with a clock']], pur:['to teach readers to question weak evidence','to warn parents about screens','to review a novel']}];
+const RQ={main:'What is this passage mostly about?',inf:'Which is most likely true, based on the passage?',voc:'What does this word mean in the passage?',pur:'Why did the author write this passage?'};
+function rLevelItems(l){
+ if(l===1) return [()=>{ const [e,a,w]=PK(RPIC); return RW(`This is a ${RNAME[e]}. Which letter makes its first sound?`,[a].concat(w),{pic:e}); },
+  ()=>{ const [e,o]=PK(RCVC); return RW('Read the words. Tap the word that matches the picture.',o,{pic:e}); },
+  ()=>RW('Tap the word that is spelled right.',PK(RSIGHT))].map(f=>f());
+ if(l===2) return [()=>{ const [e,o]=PK(RDIG.slice(0,5)); return RW('Read the words. Tap the word that matches the picture.',o,{pic:e}); },
+  ()=>{ const [e,o]=PK(RDIG.slice(5)); return RW('Read the words. Tap the word that matches the picture.',o,{pic:e}); },
+  ()=>RW('Tap the word that is spelled right.',PK(RSIGHT2))].map(f=>f());
+ if(l===3||l===4){ const L=l===3?RLONG:RLONG2, S=l===3?RSHORT:RSHORT2; const a=PK(L); let b=PK(L); while(b===a) b=PK(L); const s=PK(S);
+  return [RW('Read the words. Tap the word that matches the picture.',a[1],{pic:a[0]}),RW('Read the words. Tap the word that matches the picture.',b[1],{pic:b[0]}),RW('Read the story. Then answer: '+s[1],s[2],{pass:s[0]})]; }
+ const P=PK(RPASS.filter(x=>x.l===Math.min(l,9)));
+ const kinds=mix(['main','inf','voc','pur']).slice(0,3);
+ return kinds.map(k=>k==='voc'?RW(RQ.voc+' The word: '+P.voc[0],P.voc[1],{pass:P.t,word:P.voc[0]}):RW(RQ[k],P[k],{pass:P.t}));
+}
+
+/* Social Studies check (SS-PLACEMENT, LOG 2333; bank "08 SOCIAL STUDIES PLACEMENT bank — Levels 1-13" sha256 ed46aafd…8612, unchanged).
+   ?check=1&s=SS. Levels 1-13 (K = L01 ... grade 12 = L13). 3 of the lessons' own CHECK questions a level (first choice is right; shuffled here);
+   2 or 3 right = up one level, 0 or 1 = down one; he is placed at the first level he does not pass after passing the one below (bounds 1 and 13).
+   Saved under the placement key SOC; a teacher's placement wins. No pay.
+   HOLD: a question from a held lesson (same list as window.TL_SS_HOLD in SocialMore) is not asked; SS_ALT gives the stand-in
+   (the first CHECK question of the next lesson on that level). Release a lesson in BOTH lists. */
+const SS_PL={"L01": [{"skill": "SS.COMM.L01.01", "q": "What does a family do? Help each other, fight all day, or never talk?", "o": ["🤝 help each other", "😠 fight all day", "🤐 never talk"], "pic": "🏠"}, {"skill": "SS.HIST.L01.01", "q": "Which one is from long ago? A horse and wagon, a bus, or a plane?", "o": ["🐎 a horse and wagon", "🚌 a bus", "✈️ a plane"], "pic": "⏳"}, {"skill": "SS.CIV.L01.02", "q": "Which one is our country's flag? Stars and stripes, a red cross, or a red circle?", "o": ["🇺🇸 stars and stripes", "🇬🇧 a red cross", "🇯🇵 a red circle"], "pic": "🗺️"}], "L02": [{"skill": "SS.GEO.L02.01", "q": "Which way is west on a map? Left, right, or up?", "o": ["⬅️ left", "➡️ right", "⬆️ up"], "pic": "🧭"}, {"skill": "SS.HIST.L02.01", "q": "How many days are in a week? Count them. Seven, or six?", "o": ["7️⃣ seven", "6️⃣ six"], "pic": "Sun · Mon · Tue · Wed · Thu · Fri · Shabbos"}, {"skill": "SS.CIV.L02.01", "q": "Which one is a good neighbor? Says hello, or makes faces?", "o": ["👋 says hello", "😠 makes faces"], "pic": "🏘️"}], "L03": [{"skill": "SS.GEO.L03.01", "q": "Which one is a continent? Africa, Atlantic, or Baltimore?", "o": ["🌍 Africa", "⛵ Atlantic", "🏙️ Baltimore"], "pic": "🌎 North America · South America\n🌍 Europe · Africa\n🌏 Asia · Australia\n🐧 Antarctica"}, {"skill": "SS.COMM.L03.01", "q": "Which country has a big Jewish community? England, or Antarctica?", "o": ["🇬🇧 England", "🐧 Antarctica"], "pic": "🌍"}, {"skill": "SS.CIV.L03.01", "q": "Who is the leader of a city? The mayor, or the President?", "o": ["🏛️ the mayor", "🦅 the President"], "pic": "🏙️"}], "L04": [{"skill": "SS.GEO.L04.01", "q": "Where do Maryland's state leaders work? Annapolis, Baltimore, or Ocean City?", "o": ["Annapolis", "Baltimore", "Ocean City"], "pic": "🏛️"}, {"skill": "SS.JHIST.L04.01", "q": "Who came to Baltimore in 1840 and taught people to keep Shabbos? Rabbi Avraham Rice, Francis Scott Key, or George Washington?", "o": ["Rabbi Avraham Rice", "Francis Scott Key", "George Washington"], "pic": "🕯️"}, {"skill": "SS.HIST.L04.02", "q": "A diary written during a trip is what kind of source? Primary, or secondary?", "o": ["primary", "secondary"], "pic": "📔"}], "L05": [{"skill": "SS.GEO.L05.01", "q": "Which region has the Pacific coast and Alaska? The West, or the Southeast?", "o": ["the West", "the Southeast"], "pic": "U.S. REGIONS\n🌲 West: Rocky Mountains, Pacific coast, California, Alaska, Hawaii\n🌵 Southwest: deserts, Arizona, Texas\n🌽 Midwest: farms, Great Lakes, Illinois\n🗽 Northeast: New York, Boston\n🌴 Southeast: Florida, warm weather"}, {"skill": "SS.HIST.L05.02", "q": "The 13 colonies were along which ocean? The Atlantic, the Pacific, or the Indian?", "o": ["the Atlantic", "the Pacific", "the Indian"], "pic": "🌊"}, {"skill": "SS.HIST.L05.03", "q": "Who sailed on the Mayflower? The Pilgrims, Columbus, or the 23 Jews from Recife?", "o": ["the Pilgrims", "Columbus", "the 23 Jews from Recife"], "pic": "⛵"}], "L06": [{"skill": "SS.HIST.L06.01", "q": "Which event came first: the Boston Tea Party, or the Stamp Act? The Stamp Act, or the Boston Tea Party?", "o": ["the Stamp Act", "the Boston Tea Party"], "pic": "1765 Stamp Act → 1773 Boston Tea Party → 1775 fighting begins → 1776 Declaration → 1783 war ends"}, {"skill": "SS.CIV.L06.01", "q": "How many branches does the government have? Three, two, or five?", "o": ["three", "two", "five"], "pic": "🌳"}, {"skill": "SS.HIST.L06.03", "q": "From which country did America buy the Louisiana Territory? France, England, or Spain?", "o": ["France", "England", "Spain"], "pic": "🗺️"}], "L07": [{"skill": "SS.GEO.L07.01", "q": "The Jordan River ends in which sea? The Dead Sea, or the Mediterranean Sea?", "o": ["the Dead Sea", "the Mediterranean Sea"], "pic": "MIDDLE EAST (N ⬆️)\n        Lebanon   Syria\n🌊 Mediterranean ◀ Eretz Yisroel ▶ Jordan\n        Egypt (southwest)\n💧 Kinneret (north) — Jordan River — Dead Sea (south)"}, {"skill": "SS.HIST.L07.03", "q": "Who were the Chashmonaim? A family of Kohanim who fought for the Torah, Greek soldiers, or Roman kings?", "o": ["a family of Kohanim who fought for the Torah", "Greek soldiers", "Roman kings"], "pic": "🕎"}, {"skill": "SS.JHIST.L07.01", "q": "Who were the sages who learned the Mishnah deeply in Bavel? The Amoraim, the Chashmonaim, or the Pharaohs?", "o": ["the Amoraim", "the Chashmonaim", "the Pharaohs"], "pic": "🏫"}], "L08": [{"skill": "SS.JHIST.L08.01", "q": "Who wrote a commentary on Chumash and most of the Gemara? Rashi, the Rambam, or Rabbi Yehuda HaNasi?", "o": ["Rashi", "the Rambam", "Rabbi Yehuda HaNasi"], "pic": "📖"}, {"skill": "SS.JHIST.L08.03", "q": "Who was one of the greatest Torah scholars ever, from Lithuania? The Vilna Gaon, the Baal Shem Tov, or Haym Salomon?", "o": ["the Vilna Gaon", "the Baal Shem Tov", "Haym Salomon"], "pic": "📖"}, {"skill": "SS.JHIST.L08.04", "q": "What does 'kedoshim' mean when we speak of the Holocaust? The holy Jews who were murdered, the Nazi soldiers, or the Allied armies?", "o": ["the holy Jews who were murdered", "the Nazi soldiers", "the Allied armies"], "pic": "🕯️"}], "L09": [{"skill": "SS.HIST.L09.01", "q": "Which country was an Allied power? Britain, Italy, or Japan?", "o": ["Britain", "Italy", "Japan"], "pic": "WORLD WAR II (1939-1945)\nAllies: Britain, France, Soviet Union (1941), USA (Dec 1941)\nAxis: Germany, Italy, Japan\n1939 Germany invades Poland · 1941 Pearl Harbor · 1944 D-Day · 1945 war ends"}, {"skill": "SS.CIV.L09.01", "q": "Which two groups make up Congress? The House and the Senate, the President and the Court, or the mayor and the governor?", "o": ["the House and the Senate", "the President and the Court", "the mayor and the governor"], "pic": "🏛️"}, {"skill": "SS.HIST.L09.02", "q": "About how long did the Cold War last? About 44 years (1947-1991), about 4 years, or about 400 years?", "o": ["about 44 years (1947-1991)", "about 4 years", "about 400 years"], "pic": "⏳"}], "L10": [{"skill": "SS.GEO.L10.01", "q": "Which zone is closest to the equator? Tropical, or polar?", "o": ["tropical", "polar"], "pic": "CLIMATE ZONES\n🌴 Tropical: near the equator, hot and rainy\n🏜️ Dry: deserts, very little rain\n🍂 Temperate: four seasons (like Baltimore)\n🧊 Polar: near the poles, very cold"}, {"skill": "SS.HIST.L10.02", "q": "What does movable type mean? Separate letters that can be arranged and reused, a book with moving pictures, or a kind of ship?", "o": ["separate letters that can be arranged and reused", "a book with moving pictures", "a kind of ship"], "pic": "🔤"}, {"skill": "SS.CIV.L10.01", "q": "In a monarchy, who rules? A king or queen, the citizens, or no one?", "o": ["a king or queen", "the citizens", "no one"], "pic": "👑"}], "L11": [{"skill": "SS.HIST.L11.01", "q": "About when did the Industrial Revolution begin? About 1760, about 1960, or about 1060?", "o": ["about 1760", "about 1960", "about 1060"], "pic": "INDUSTRIAL REVOLUTION (began in Britain, about 1760)\n⚙️ steam engine (improved by James Watt) · 🏭 factories · 🚂 railroads (1825)\n➡️ people move from farms to cities"}, {"skill": "SS.JHIST.L11.02", "q": "Which yeshiva became the model for the Lithuanian yeshivos? Volozhin, Yavneh, or Ponevezh in Bnei Brak?", "o": ["Volozhin", "Yavneh", "Ponevezh in Bnei Brak"], "pic": "LITHUANIAN YESHIVA WORLD\n1803 Volozhin (Rav Chaim of Volozhin)\nRav Yisrael Salanter: the Mussar movement\nThe Chofetz Chaim (1838-1933): Chofetz Chaim and Mishnah Berurah"}, {"skill": "SS.HIST.L11.04", "q": "Which country became the Soviet Union? Russia, Italy, or Germany?", "o": ["Russia", "Italy", "Germany"], "pic": "DICTATORSHIPS\n1917 Russia: Lenin, communist revolution → Soviet Union\n1922 Italy: Mussolini, fascism\n1933 Germany: Hitler, Nazism\nAll: one party, secret police, no free press, no free religion"}], "L12": [{"skill": "SS.HIST.L12.01", "q": "Which invention lit homes with electricity? The light bulb, the telephone, or the steam engine?", "o": ["the light bulb", "the telephone", "the steam engine"], "pic": "💡"}, {"skill": "SS.JHIST.L12.01", "q": "In which state is Lakewood? New Jersey, Maryland, or New York?", "o": ["New Jersey", "Maryland", "New York"], "pic": "🗺️"}, {"skill": "SS.HIST.L12.05", "q": "Which part of an argument should come first? The claim, or the counterclaim?", "o": ["the claim", "the counterclaim"], "pic": "A HISTORICAL ARGUMENT\n1️⃣ Claim: what you say is true\n2️⃣ Evidence: facts from sources\n3️⃣ Reasoning: how the evidence proves the claim\n4️⃣ Counterclaim: answer the other side"}], "L13": [{"skill": "SS.CIV.L13.01", "q": "Who runs elections? The states, or the national government only?", "o": ["the states", "the national government only"], "pic": "FEDERALISM: POWERS ARE SHARED\n🇺🇸 National: print money · declare war · make treaties · run the post office\n🗺️ States: run schools · give driver's licenses · run elections\n🤝 Both: collect taxes · run courts · build roads"}, {"skill": "SS.ECON.L13.01", "q": "What does the unemployment rate measure? The share of job-seekers without a job, the total value of goods, or the number of banks?", "o": ["the share of job-seekers without a job", "the total value of goods", "the number of banks"], "pic": "MEASURING AN ECONOMY\n📊 GDP: total value of goods and services made in a year\n💲⬆️ Inflation: prices rising overall\n👷❓ Unemployment rate: share of job-seekers without a job\n📉 Recession: the economy shrinks"}, {"skill": "SS.CIV.L13.04", "q": "Volunteers who respond to medical emergencies in many Jewish communities belong to which group? Hatzolah, Bikur Cholim, or the askanim?", "o": ["Hatzolah", "Bikur Cholim", "the askanim"], "pic": "🚑"}]};
+const SS_HOLD=['SS.JHIST.L08.04','SS.JHIST.L09.01'];
+const SS_ALT={"L08": [{"skill": "SS.HIST.L08.01", "q": "In feudalism, what did the king give the lords? Land, ships, or newspapers?", "o": ["land", "ships", "newspapers"], "pic": "MIDDLE AGES\n👑 king\n🏰 lords\n⚔️ knights\n🌾 peasants (farmers)"}]};
+const SS_TOP=13, TOPL=()=>C.sub==='SOC'?SS_TOP:9, SUBN=()=>C.sub==='READ'?'reading':C.sub==='SOC'?'social studies':'math';
+function ssLevelItems(l){ const k='L'+String(l).padStart(2,'0'); const a=(SS_PL[k]||[]).filter(x=>SS_HOLD.indexOf(x.skill)<0);
+ (SS_ALT[k]||[]).forEach(x=>{ if(a.length<3&&SS_HOLD.indexOf(x.skill)<0&&!a.some(y=>y.skill===x.skill)) a.push(x); });
+ return mix(a.map(x=>Object.assign(MC(x.q,x.o),{pic:x.pic,skill:x.skill,map:/\n/.test(x.pic||'')||String(x.pic||'').length>14}))); }
+function kidHello(){ S.view='check'; C.view='wait'; render();
+ run('plCheckHello',S.token,C.sub).then(h=>{ C.name=h.name; C.placed=h.placed&&h.by==='staff'; C.view='intro'; render(); })
+ .catch(e=>{ store('tl-check',null); S.token=null; renderPad(msgOf(e)); }); }
+function startLevel(l){ C.lv=l; C.items=C.sub==='READ'?rLevelItems(l):C.sub==='SOC'?ssLevelItems(l):mix(BANK[l].map(f=>f())); C.i=0; C.right=0; C.view='q'; render(); }
+function answer(v){ const it=C.items[C.i]; if(!it) return; const ok=v!=null&&(it.o?v===it.a:Math.abs(parseNum(v)-it.a)<1e-6);
+ C.log.push({l:C.lv,q:it.q.slice(0,90),ok}); if(ok) C.right++; C.asked++; C.i++;
+ if(S.embed) upPost({effort:1,ok:!!ok});   /* v195: every answer lights the Olam Haba cloud in the boy app (OlamHaba.html) */
+ if(C.i<C.items.length) return render(); levelDone(); }
+function levelDone(){ const l=C.lv;
+ if(C.right>=2){ C.solid[l]=true; if(l===TOPL()) return finish(l); if(C.miss[l+1]) return finish(l+1); return startLevel(l+1); }
+ C.miss[l]=true; if(l===1||C.solid[l-1]) return finish(l); startLevel(l-1); }
+function finish(l){ C.view='save'; render();
+ run('plCheckSave',S.token,C.sub||'MATH',l,C.log).then(r=>{ C.res=r; C.view='result'; store('tl-check',null); render(); if(S.embed) upPost({saved:1,level:r&&r.level,applied:!!(r&&r.applied)}); })
+ .catch(e=>{ C.view='q'; C.i=Math.max(0,C.items.length-1); render(); toast('Could not save. Check the Wi-Fi and tap again.'); C.pending=l; }); }
+function checkHTML(){
+ if(C.view==='wait'||C.view==='save') return `<div class="center"><div class="card pad"><h2>${C.view==='save'?'Saving your level…':'One moment…'}</h2></div></div>`;
+ if(C.view==='intro') return `<div class="center"><div class="card pad"><div style="font-size:60px" aria-hidden="true">🧭</div><h2>Hi ${esc(C.name)}!</h2>
+  <p>Let’s find your ${SUBN()} level. Answer what you can. If you don’t know one yet, tap “I don’t know this yet.” This is not for marks. It just finds where your own path starts.</p>
+  <p><b>What grade are you in?</b></p><div class="keys">${['K','1','2','3','4','5','6','7','8','9','10','11','12'].slice(0,TOPL()).map((g,i)=>`<button data-act="grade" data-l="${i+1}">${g}</button>`).join('')}</div>
+  ${C.placed?'<p class="hint" style="margin-top:12px;color:var(--soft)">Your teacher already chose where you start. You can still take the check; they will see how you did.</p>':''}</div></div>`;
+ if(C.view==='result'){ const r=C.res;
+  return `<div class="center"><div class="card pad result"><div class="medal" aria-hidden="true">🏅</div><h2>${C.sub==='READ'?'Reading':C.sub==='SOC'?'Social Studies':'Math'} Level ${r.level}</h2><p style="font-size:19px"><b>${esc(r.world)}</b> is where your path starts.</p>
+  <p>${r.applied?(S.embed?'Your own lineup is ready. Tap below and press Play!':'Your own lineup is ready. Go back, sign in, and press Play!'):'Your teacher already set your starting point. They can see what you showed today.'}</p>
+  ${S.embed?`<button class="btn gold big" data-act="embed-done" type="button">Back to my quests</button>`:S.appUrl?`<a class="btn gold big" href="${esc(S.appUrl+'?ms=1')}">Back to my quests</a>`:''}</div></div>`; }
+ const it=C.items[C.i], pct=Math.min(92,Math.round(C.asked/(C.asked+5)*100));
+ return `<div class="center"><div class="check"><div class="row" style="justify-content:space-between"><b>${esc(C.name)}</b><span style="color:var(--soft)">Question ${C.asked+1}</span></div>
+ <div class="prog" aria-hidden="true"><i style="width:${pct}%"></i></div>
+ <div class="qcard${C.sub==='SOC'?' ssq':''}"><span class="world">Level ${C.lv} · ${C.sub==='READ'?'Story Road':C.sub==='SOC'?'Explorer Trail':WORLDS[C.lv]}</span>${it.pic?`<div class="pic${it.map?' map':''}" aria-hidden="true">${esc(it.pic)}</div>`:''}${it.pass?`<div class="rpass">${esc(it.pass)}</div>`:''}${it.word?`<div class="rword">${esc(it.word)}</div>`:''}
+ <div class="row" style="justify-content:center"><div class="qq">${esc(it.q)}</div><button class="say" data-act="say" aria-label="Read the question aloud">🔊</button></div>
+ ${it.o?`<div class="opts">${it.o.map(o=>`<button data-act="pick" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>`
+   :`<div class="ans"><input id="na" inputmode="decimal" autocomplete="off" aria-label="Your answer" placeholder="?"><button class="btn big" data-act="go">Next</button></div>`}
+ <p style="margin-top:16px"><button class="clr" data-act="skip">I don’t know this yet</button></p></div></div></div>`; }
+
+/* ---------- render + events ---------- */
+function topBar(){ const kid=S.mode==='check', back=S.embed&&kid?'':S.appUrl?`<a class="tb" href="${esc(S.appUrl+(kid?'?ms=1':'?ms=1&staff=1'))}">${kid?'Back to my quests':'Teacher page'}</a>`:'';
+ return `<header class="top"><h1>Tashbar Learning</h1><span class="sub">${kid?'Find your level':'Placement · every student their own lineup'}</span><span class="sp"></span>${S.token&&!kid&&S.view==='staff'?`<nav class="tabs" aria-label="Staff pages"><button class="tab ${S.page==='boys'?'on':''}" data-act="page" data-p="boys" aria-pressed="${S.page==='boys'}">Students and levels</button><button class="tab ${S.page==='lib'?'on':''}" data-act="page" data-p="lib" aria-pressed="${S.page==='lib'}">Lesson library</button></nav>`:''}${back}${S.token&&!kid&&S.view==='staff'?'<button class="tb" data-act="out">Sign out</button>':''}</header>`; }
+function render(){ const a=$('app'), hadQ=document.activeElement&&document.activeElement.id==='q';
+ if(S.view==='pad') a.innerHTML=topBar()+padHTML();
+ else if(S.view==='loading') a.innerHTML=topBar()+'<div class="empty">Loading…</div>';
+ else if(S.mode==='check') a.innerHTML=topBar()+checkHTML();
+ else if(S.page==='lib') a.innerHTML=topBar()+`<div class="libwrap">${libHTML()}</div>`;
+ else a.innerHTML=topBar()+`<div class="wrap${S.sel.length?' picked':''}"><aside class="card side">${sideHTML()}</aside><main>${S.sel.length?boyHTML():overHTML()}</main></div>`;
+ if(hadQ&&$('q')){ const q=$('q'); q.focus(); q.setSelectionRange(q.value.length,q.value.length); }
+ if($('na')) $('na').focus(); if(S.mkgrp&&$('gname')&&!hadQ) $('gname').focus(); }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-act]'); if(!b||b.disabled) return; const a=b.dataset.act;
+ if(a==='embed-close'){ upPost({close:1}); return; } if(a==='embed-done'){ upPost({done:1}); return; }
+ if(a==='key') return key(b.dataset.k);
+ if(a==='out'){ store('tl-session',null); S.token=null; S.data=null; S.sel=[]; if(S.appUrl){ try{ window.open(S.appUrl,'_top'); return; }catch(e){} } return renderPad(); }   /* sign out = straight home (2026-11-11) */
+ if(a==='open'){ S.sel=[b.dataset.id]; S.mkgrp=false; S.page='boys'; render(); return window.scrollTo(0,0); }
+ if(a==='page'){ S.page=b.dataset.p==='lib'?'lib':'boys'; render(); return window.scrollTo(0,0); }
+ if(a==='libcell'){ S.lib={k:b.dataset.k,l:+b.dataset.l}; render(); const p=$('libpanel'); if(p&&p.getBoundingClientRect().top>window.innerHeight-120) p.scrollIntoView({behavior:'smooth',block:'start'}); return; }
+ if(a==='tick'){ const id=b.dataset.id; S.sel=S.sel.includes(id)?S.sel.filter(x=>x!==id):S.sel.concat(id); return render(); }
+ if(a==='all'){ S.sel=D().students.map(s=>s.id); return render(); }
+ if(a==='none'||a==='over'){ S.sel=[]; S.mkgrp=false; return render(); }
+ if(a==='lo'||a==='hi'){ S.hi=a==='hi'; return render(); }
+ if(a==='grp'){ const g=D().groups.find(x=>x.id===b.dataset.id); if(g){ S.sel=g.members.filter(id=>D().students.some(s=>s.id===id)); render(); } return; }
+ if(a==='newgrp'){ S.mkgrp=true; return render(); }
+ if(a==='cancelgrp'){ S.mkgrp=false; return render(); }
+ if(a==='savegrp'){ const name=($('gname')||{}).value||''; return run('plSaveGroup',S.token,{name,members:S.sel}).then(g=>{ D().groups=g; S.mkgrp=false; render(); toast('Group saved.'); }).catch(err=>toast(msgOf(err))); }
+ if(a==='delgrp') return run('plDeleteGroup',S.token,b.dataset.id).then(g=>{ D().groups=g; render(); toast('Group deleted. The students keep their own placements.'); }).catch(err=>toast(msgOf(err)));
+ if(a==='place') return place(S.sel,b.dataset.k,+b.dataset.l,'');
+ if(a==='clear') return place(S.sel,b.dataset.k,0,'');
+ if(a==='start') return place(S.sel,b.dataset.k||'MATH',mathLvl(b.dataset.s),b.dataset.s);
+ if(a==='grade') return startLevel(Math.min(TOPL(),+b.dataset.l));
+ if(a==='pick') return answer(b.dataset.v);
+ if(a==='go'){ const v=($('na')||{}).value; if(String(v).trim()==='') return $('na').focus(); return answer(v); }
+ if(a==='skip') return answer(null);
+ if(a==='say'){ try{ const it=C.items[C.i]; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance((it.say||it.q).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/\?/g,' what ').replace(/√/g,'the square root of ')); u.rate=.95; speechSynthesis.speak(u); }catch(err){ toast('Read-aloud is not available on this device.'); } }
+});
+document.addEventListener('keydown',e=>{
+ if(S.view==='pad'){ if(/^\d$/.test(e.key)) key(e.key); else if(e.key==='Backspace') key('c'); else if(e.key==='Enter') key('go'); return; }
+ if(e.key==='Enter'&&e.target.id==='na'){ e.preventDefault(); const v=e.target.value; if(String(v).trim()!=='') answer(v); }
+ if(e.key==='Enter'&&e.target.id==='gname'){ e.preventDefault(); document.querySelector('[data-act="savegrp"]').click(); }
+ if(e.key==='Enter'&&e.target.closest&&e.target.closest('tr[data-act="open"]')) e.target.click();
+});
+document.addEventListener('input',e=>{ if(e.target.id==='q'){ S.q=e.target.value; render(); } });
+
+/* ---------- start ---------- */
+function boot(){
+ run('msAppUrl').then(u=>{ S.appUrl=u; if(S.view!=='loading') render(); }).catch(()=>{});
+ const go=params=>{ S.mode=params.check==='1'?'check':'staff'; C.sub=params.s==='READ'?'READ':(params.s==='SS'||params.s==='SOC')?'SOC':'MATH'; if(params.v==='lib') S.page='lib'; if(params.sid) S.want=String(params.sid).slice(0,40);
+  S.embed=S.mode==='check'&&params.embed==='1';
+  if(S.mode==='check'){ const t=recall('tl-check'); if(t&&t.token&&Date.now()-t.at<6*3600e3){ S.token=t.token; return kidHello(); }
+   if(S.embed){ let got=false; const on=e=>{ const d=e.data; if(got||!d||d.tlCheck!==1||!d.token||!fromAbove(e.source)) return; got=true; window.removeEventListener('message',on); S.token=String(d.token); store('tl-check',{token:S.token,at:Date.now()}); kidHello(); };
+     window.addEventListener('message',on); upPost({need:'token'}); setTimeout(()=>{ if(!got){ window.removeEventListener('message',on); renderPad(); } },4000); return; }
+   return renderPad(); }
+  const t=recall('tl-session'); if(t&&t.role==='staff'&&t.token){ S.token=t.token; return load(); } renderPad(); };
+ try{ google.script.url.getLocation(loc=>go(loc.parameter||{})); }catch(e){ go({}); }
+}
+render(); boot();
+</script>
+</body></html>

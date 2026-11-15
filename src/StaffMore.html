@@ -1,0 +1,156 @@
+<script>
+/* StaffMore.html — added to the staff screen by sgPage_ (StaffGrid.js), HoS DECISION 2230 (v128).
+   Three new pages for each staff member, signed in with his OWN staff code:
+   ✉️ Messages: notes boys sent to HIM (no one else sees them).  👥 My classes: his boys, his subjects; start a class on chosen lessons.
+   📝 My lessons: lessons he writes himself (questions with a right answer, wrong answers and an optional How to do it line).
+   Starting a class locks those boys' screens to only the lessons he picked until the time is up (ClassMode.html). */
+(function(){
+if(typeof S==='undefined'||typeof render!=='function'||typeof run!=='function') return;
+const X={cat:null,unread:0,inbox:null,cls:null,les:null,running:[],edit:null,lesEdit:null,start:null,q:'',err:'',busy:false};
+const SUBJECTS=['Limudei Kodesh','Lashon Hakodesh','Math','Reading','Writing','Science','Social Studies','Computing','Electives','Life and Money',"B'Simcha",'Other'];
+const PRE={LK:'Limudei Kodesh',HEB:'Limudei Kodesh · Lashon Hakodesh',MATH:'Math',READ:'Reading',LANG:'Writing',WRIT:'Writing',SCI:'Science',SS:'Social Studies',COMP:'Computing',ELEC:'Electives',LIFE:'Life and Money',SIM:"B'Simcha"};
+const msg=e=>String(e&&e.message||e).replace(/^Error:\s*/,'');
+const when=t=>{ try{ const d=new Date(t); return d.toLocaleDateString([], {month:'short',day:'numeric'})+' '+d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; } };
+try{ if(!document.getElementById('sx-css')){ const s=document.createElement('style'); s.id='sx-css'; s.textContent=`
+.sxb{position:relative}.sxb .n{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:#DC2626;color:#fff;font-size:13px;line-height:20px}
+.sxm{border:1px solid var(--line,#E5E7EB);border-radius:12px;padding:12px 14px;margin:10px 0;background:#fff}.sxm.new{border-color:#6366F1;background:#EEF2FF}
+.sxm .h{display:flex;justify-content:space-between;gap:10px;font-weight:700}.sxm .h small{font-weight:600;color:var(--soft,#6B7280)}.sxm p{white-space:pre-wrap;margin:8px 0 0}
+.sxc{border:1px solid var(--line,#E5E7EB);border-radius:12px;padding:12px 14px;margin:10px 0;background:#fff}.sxc .r{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.sxc button,.sxr button{border:1px solid var(--line,#D1D5DB);background:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer}
+.sxf label{display:block;font-weight:700;margin:10px 0 4px}.sxf input,.sxf select,.sxf textarea{width:100%;box-sizing:border-box;border:1px solid #D1D5DB;border-radius:10px;padding:9px 10px;font:inherit}
+.sxq{border:1px dashed #C7D2FE;border-radius:12px;padding:10px 12px;margin:10px 0;background:#FAFAFF}.sxq .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sxpick{max-height:260px;overflow:auto;border:1px solid #E5E7EB;border-radius:10px;padding:6px}.sxpick button{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid #F3F4F6;background:#fff;padding:8px;font:inherit;cursor:pointer}
+.sxpick button.on{background:#EEF2FF;font-weight:700}.drawer [data-sx="cancel"],.drawer [data-sx="addq"],.drawer [data-sx="delq"]{border:1px solid #D1D5DB;background:#fff;border-radius:10px;padding:10px 16px;font:inherit;font-weight:700;cursor:pointer;margin-top:8px}
+.sxchips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.sxchips span{background:#EEF2FF;border-radius:999px;padding:4px 10px;font-size:14px}`; document.head.appendChild(s); } }catch(e){}
+
+/* ---------- toolbar buttons ---------- */
+const _render=render;
+render=function(){ _render.apply(this,arguments);
+  try{ const bar=document.querySelector('#app .bar'); if(bar&&!bar.querySelector('[data-sx]')){ const tm=bar.querySelector('.tmb')||bar.firstChild;
+    const html=`<button class="add sxb" data-sx="msg">✉️ Messages${X.unread?`<span class="n">${X.unread}</span>`:''}</button><button class="add" data-sx="cls">👥 My classes</button><button class="add" data-sx="les">📝 My lessons</button>${S.d&&S.d.head?'<button class="add" data-sx="stf">👤 Staff accounts</button>':''}`;
+    if(tm&&tm.insertAdjacentHTML) tm.insertAdjacentHTML('afterend',html); else bar.insertAdjacentHTML('afterbegin',html); }
+    if(S.page==='sxmsg'||S.page==='sxcls'||S.page==='sxles'||S.page==='sxstf'){ const a=document.getElementById('app'); if(a) a.insertAdjacentHTML('beforeend',page()); }
+  }catch(e){ console.error('StaffMore',e); } };
+
+function wrap(title,body){ return `<div class="shade" data-act="close"></div><aside class="drawer wide" role="dialog" aria-label="${esc(title)}"><div class="dh"><h2>${esc(title)}</h2><button class="x" data-act="close" aria-label="Close">×</button></div>${body}<div class="err" role="alert">${esc(X.err)}</div></aside>`; }
+function page(){ return S.page==='sxmsg'?msgPage():S.page==='sxcls'?clsPage():S.page==='sxstf'?stfPage():lesPage(); }
+/* ---------- 👤 Staff accounts (Head of School only) ---------- */
+const ROLES=[['rebbe','Rebbe'],['teacher','Teacher'],['head','Head of School'],['office','Office'],['canteen','Canteen only']];
+function stfPage(){ const L=X.stf;
+  if(!L) return wrap('👤 Staff accounts','<p>Loading…</p>');
+  if(X.stfEdit){ const E2=X.stfEdit; return wrap(E2.id?'Edit staff account':'New staff account',`<div class="sxf"><label>Name<input id="sx-sname" value="${esc(E2.name||'')}" maxlength="60" placeholder="For example: Rabbi Cohen"></label>
+   <label>Role<select id="sx-srole">${ROLES.map(r=>`<option value="${r[0]}" ${r[0]===E2.role?'selected':''}>${r[1]}</option>`).join('')}</select></label>
+   <label>${E2.id?'New sign-in code (leave empty to keep the old one)':'Sign-in code (4 to 8 numbers)'}<input id="sx-scode" inputmode="numeric" autocomplete="off" maxlength="8" value="${esc(E2.code||'')}"></label>
+   ${E2.id?`<label><input type="checkbox" id="sx-sact" ${E2.active?'checked':''} style="width:auto"> Account is on (can sign in)</label>`:''}</div>
+   <p style="color:var(--soft)">Give the code to the staff member in person. Each staff member signs in with their own code, so their messages, classes and lessons are their own.</p>
+   <button class="big a" data-sx="savestf" ${X.busy?'disabled':''}>Save</button> <button data-sx="cancel">Cancel</button>`); }
+  let h=`<p style="color:var(--soft);margin:0 0 6px">Every staff member gets their own sign-in code. With it they see their own messages, classes and lessons.</p><button class="big a" data-sx="newstf">+ New staff account</button>`;
+  h+=L.map(x=>`<div class="sxc"><b>${esc(x.name)}</b> <small style="color:var(--soft)">· ${esc((ROLES.find(r=>r[0]===x.role)||[0,x.role])[1])}${x.active?'':' · off'}</small><div class="r"><button data-sx="editstf" data-id="${esc(x.id)}">Edit</button></div></div>`).join('');
+  return wrap('👤 Staff accounts',h); }
+
+/* ---------- ✉️ Messages ---------- */
+function msgPage(){ const L=X.inbox;
+  let h=`<p style="color:var(--soft);margin:0 0 6px">Notes the students wrote to you with "Talk to my Rebbe or Teacher". Only you can see these notes.</p>`;
+  if(!L) h+='<p>Loading…</p>'; else if(!L.length) h+='<p style="color:var(--soft)">No notes yet.</p>';
+  else h+=L.map(m=>`<div class="sxm${m.read?'':' new'}"><div class="h"><span>${m.read?'':'🔵 '}${esc(m.from)}</span><small>${esc(when(m.at))}</small></div><p>${esc(m.text)}</p></div>`).join('');
+  return wrap('✉️ Messages',h); }
+function loadInbox(){ run('crInbox',S.token).then(l=>{ X.inbox=l||[]; render(); (l||[]).filter(m=>!m.read).forEach(m=>run('crMarkRead',S.token,m.id).catch(()=>{})); X.unread=0; }).catch(e=>{ X.inbox=[]; X.err=msg(e); render(); }); }
+function poll(){ if(!S.token||!S.d) return; run('crUnread',S.token).then(n=>{ if(n!==X.unread){ X.unread=n||0; if(!S.page) render(); else { const b=document.querySelector('[data-sx="msg"]'); if(b) b.innerHTML='✉️ Messages'+(X.unread?`<span class="n">${X.unread}</span>`:''); } } }).catch(()=>{}); }
+setInterval(poll,60000); setTimeout(poll,4000);
+
+/* ---------- 👥 My classes ---------- */
+function boyName(id){ const b=(X.cls&&X.cls.boys||[]).find(x=>x.id===id); return b?b.name:id; }
+function nameOf(id){ if(/^TCH\./.test(id)){ const l=(X.les||[]).find(x=>'TCH.'+x.id===id); return l?l.title+' (my lesson)':id; } const c=X.catMap&&X.catMap[id]; if(c) return c; const n=S.d&&S.d.names&&S.d.names[id]; return n?(Array.isArray(n)?n[0]:n):id; }
+function clsPage(){ const C=X.cls;
+  if(!C) return wrap('👥 My classes','<p>Loading…</p>');
+  if(X.edit) return wrap(X.edit.id?'Edit class':'New class',classForm());
+  if(X.start) return wrap('Start class: '+X.start.name,startForm());
+  let h=`<p style="color:var(--soft);margin:0 0 6px">Your classes: your students and your subject. Start a class to lock the students' screens to the lessons you pick, for the time you pick.</p>
+  <button class="big a" data-sx="newcls">+ New class</button>`;
+  const run2=(X.running||[]).filter(r=>r.until>Date.now());
+  if(run2.length) h+=`<div class="sec"><h3>Running now</h3>${run2.map(r=>`<div class="fix"><span><b>${esc(r.clsName||r.name)}</b> · ends ${esc(clock(r.until))}<br><small style="color:var(--soft)">${(r.skills||[r.skill]).map(nameOf).map(esc).join(' · ')}</small></span><button data-sx="end" data-id="${esc(r.id)}">End</button></div>`).join('')}</div>`;
+  h+=C.classes.length?C.classes.map(c=>`<div class="sxc"><b>${esc(c.name)}</b> <small style="color:var(--soft)">· ${esc(c.subject||'')} · ${c.sids.length} student${c.sids.length===1?'':'s'}</small><div style="color:var(--soft);font-size:14px;margin-top:4px">${c.sids.map(boyName).map(esc).join(', ')}</div><div class="r"><button data-sx="startcls" data-id="${esc(c.id)}">▶ Start class</button><button data-sx="editcls" data-id="${esc(c.id)}">Edit</button><button data-sx="delcls" data-id="${esc(c.id)}">Remove</button></div></div>`).join(''):'<p style="color:var(--soft)">You have no classes yet.</p>';
+  return wrap('👥 My classes',h); }
+function classForm(){ const E2=X.edit, boys=(X.cls.boys||[]).filter(b=>!X.q||b.name.toLowerCase().includes(X.q.toLowerCase()));
+  return `<div class="sxf"><label>Class name<input id="sx-cname" value="${esc(E2.name||'')}" maxlength="60" placeholder="For example: 5th grade Chumash"></label>
+  <label>Subject<select id="sx-csubj"><option value="">Pick</option>${SUBJECTS.map(s=>`<option ${s===E2.subject?'selected':''}>${esc(s)}</option>`).join('')}</select></label>
+  <label>Students (${E2.sids.length} picked)<input id="sx-q" value="${esc(X.q)}" placeholder="Find a student"></label></div>
+  <div class="tmboys">${boys.map(b=>`<button class="${E2.sids.includes(b.id)?'on':''}" data-sx="cboy" data-id="${esc(b.id)}">${E2.sids.includes(b.id)?'✓ ':''}${esc(b.name)}</button>`).join('')}</div>
+  <button class="big a" data-sx="savecls" ${X.busy?'disabled':''}>Save class</button> <button data-sx="cancel">Cancel</button>`; }
+function startForm(){ const st=X.start, all=X.cat?X.cat.map(x=>x[0]):Object.keys((S.d&&S.d.names)||{}).filter(id=>/^[A-Z]+\./.test(id));
+  const q=X.q.toLowerCase(), mine=(X.les||[]).map(l=>'TCH.'+l.id);
+  const list=mine.concat(all.filter(id=>!q||nameOf(id).toLowerCase().includes(q)||(PRE[id.split('.')[0]]||'').toLowerCase().includes(q)).slice(0,120));
+  return `<p style="color:var(--soft);margin:0 0 6px">Pick one or more lessons. Until class ends, these students can open only these lessons.</p>
+  <div class="sxchips">${st.skills.length?st.skills.map(id=>`<span>${esc(nameOf(id))}</span>`).join(''):'<span>No lessons picked yet</span>'}</div>
+  <div class="sxf"><label>Find a lesson<input id="sx-q" value="${esc(X.q)}" placeholder="Type a subject or lesson name"></label></div>
+  <div class="sxpick">${list.map(id=>`<button class="${st.skills.includes(id)?'on':''}" data-sx="pick" data-id="${esc(id)}">${st.skills.includes(id)?'✓ ':''}${esc(nameOf(id))} <small style="color:var(--soft)">${esc(/^TCH\./.test(id)?'My lesson':PRE[id.split('.')[0]]||'')}</small></button>`).join('')}</div>
+  <div class="sec"><h3>How long</h3><div class="tmmins">${[20,30,45,60,90].map(m=>`<button class="${m===st.min?'on':''}" data-sx="min" data-m="${m}">${m} min</button>`).join('')}</div></div>
+  <button class="big a" data-sx="go" ${X.busy||!st.skills.length?'disabled':''}>Start class now</button> <button data-sx="cancel">Cancel</button>`; }
+function loadCls(){ if(!X.cat) run('crCatalog',S.token).then(c=>{ X.cat=c||[]; X.catMap={}; X.cat.forEach(x=>X.catMap[x[0]]=x[1]); render(); }).catch(()=>{}); Promise.all([run('crClasses',S.token),run('crLessons',S.token),run('crRunning',S.token)]).then(([c,l,r])=>{ X.cls=c; X.les=l||[]; X.running=r||[]; render(); }).catch(e=>{ X.cls={classes:[],boys:[]}; X.err=msg(e); render(); }); }
+
+/* ---------- 📝 My lessons ---------- */
+function blankQ(){ return {q:'',right:'',wrong:['','',''],how:''}; }
+function lesPage(){ const L=X.les;
+  if(!L) return wrap('📝 My lessons','<p>Loading…</p>');
+  if(X.lesEdit) return wrap(X.lesEdit.id?'Edit lesson':'New lesson',lesForm());
+  let h=`<p style="color:var(--soft);margin:0 0 6px">Write your own lessons. Each question has one right answer and up to three wrong answers (the app mixes their order). Add a short "How to do it" line that teaches the way to think, without giving the answer. Your lessons open for students when you start a class with them. They do not pay money.</p>
+  <button class="big a" data-sx="newles">+ New lesson</button>`;
+  h+=L.length?L.map(l=>`<div class="sxc"><b>${esc(l.title)}</b> <small style="color:var(--soft)">· ${esc(l.subject||'')} · ${l.qs.length} question${l.qs.length===1?'':'s'}</small><div class="r"><button data-sx="editles" data-id="${esc(l.id)}">Edit</button><button data-sx="delles" data-id="${esc(l.id)}">Remove</button></div></div>`).join(''):'<p style="color:var(--soft)">You have no lessons yet.</p>';
+  return wrap('📝 My lessons',h); }
+function lesForm(){ const E2=X.lesEdit;
+  return `<div class="sxf"><label>Title<input id="sx-ltitle" value="${esc(E2.title||'')}" maxlength="80" placeholder="For example: The Mishkan's vessels"></label>
+  <label>Subject<select id="sx-lsubj"><option value="">Pick</option>${SUBJECTS.map(s=>`<option ${s===E2.subject?'selected':''}>${esc(s)}</option>`).join('')}</select></label></div>
+  ${E2.qs.map((q,i)=>`<div class="sxq sxf"><b>Question ${i+1}</b>${E2.qs.length>1?` <button data-sx="delq" data-i="${i}" style="float:right">Remove</button>`:''}
+  <label>Question<input data-q="${i}" data-k="q" value="${esc(q.q)}" maxlength="240"></label>
+  <label>Right answer<input data-q="${i}" data-k="right" value="${esc(q.right)}" maxlength="120"></label>
+  <div class="two">${[0,1,2].map(j=>`<label>Wrong answer ${j+1}${j?' (optional)':''}<input data-q="${i}" data-k="w${j}" value="${esc(q.wrong[j]||'')}" maxlength="120"></label>`).join('')}</div>
+  <label>How to do it (optional: teach the way to think, not the answer)<input data-q="${i}" data-k="how" value="${esc(q.how)}" maxlength="300"></label></div>`).join('')}
+  <button data-sx="addq" ${E2.qs.length>=25?'disabled':''}>+ Add a question</button><br><br>
+  <button class="big a" data-sx="saveles" ${X.busy?'disabled':''}>Save lesson</button> <button data-sx="cancel">Cancel</button>`; }
+function loadLes(){ run('crLessons',S.token).then(l=>{ X.les=l||[]; render(); }).catch(e=>{ X.les=[]; X.err=msg(e); render(); }); }
+
+/* ---------- typing (kept without re-drawing, so the cursor stays put) ---------- */
+document.addEventListener('input',e=>{ const t=e.target;
+  if(t.id==='sx-q'){ X.q=t.value; clearTimeout(X.qt); X.qt=setTimeout(()=>{ render(); const n=document.getElementById('sx-q'); if(n){ n.focus(); n.setSelectionRange(n.value.length,n.value.length); } },250); return; }
+  if(t.id==='sx-sname'&&X.stfEdit) X.stfEdit.name=t.value;
+  if(t.id==='sx-scode'&&X.stfEdit) X.stfEdit.code=t.value.replace(/\D/g,'');
+  if(t.id==='sx-cname'&&X.edit) X.edit.name=t.value;
+  if(t.id==='sx-csubj'&&X.edit) X.edit.subject=t.value;
+  if(t.id==='sx-ltitle'&&X.lesEdit) X.lesEdit.title=t.value;
+  if(t.id==='sx-lsubj'&&X.lesEdit) X.lesEdit.subject=t.value;
+  if(t.dataset&&t.dataset.q!=null&&X.lesEdit){ const q=X.lesEdit.qs[+t.dataset.q], k=t.dataset.k; if(!q) return; if(/^w\d$/.test(k)) q.wrong[+k.slice(1)]=t.value; else q[k]=t.value; }
+});
+document.addEventListener('change',e=>{ const t=e.target; if(t.id==='sx-srole'&&X.stfEdit) X.stfEdit.role=t.value; if(t.id==='sx-sact'&&X.stfEdit) X.stfEdit.active=t.checked; if(t.id==='sx-csubj'&&X.edit) X.edit.subject=t.value; if(t.id==='sx-lsubj'&&X.lesEdit) X.lesEdit.subject=t.value; });
+
+/* ---------- clicks ---------- */
+function act2(fn,args,done){ X.busy=true; X.err=''; render(); return run(fn,S.token,...args).then(r=>{ X.busy=false; done(r); render(); }).catch(e=>{ X.busy=false; X.err=msg(e); render(); }); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-sx]'); if(!b) return; const a=b.dataset.sx, id=b.dataset.id;
+  S.last=Date.now();
+  if(a==='msg'){ S.open=null; S.card=null; S.add=false; S.tm=false; X.err=''; S.page='sxmsg'; X.inbox=null; render(); return loadInbox(); }
+  if(a==='cls'){ S.open=null; S.card=null; S.add=false; S.tm=false; X.err=''; X.edit=null; X.start=null; X.q=''; S.page='sxcls'; X.cls=null; render(); return loadCls(); }
+  if(a==='les'){ S.open=null; S.card=null; S.add=false; S.tm=false; X.err=''; X.lesEdit=null; S.page='sxles'; X.les=null; render(); return loadLes(); }
+  if(a==='stf'){ S.open=null; S.card=null; S.add=false; S.tm=false; X.err=''; X.stfEdit=null; S.page='sxstf'; X.stf=null; render(); return run('crStaffAdmin',S.token).then(l=>{ X.stf=l||[]; render(); }).catch(e=>{ X.stf=[]; X.err=msg(e); render(); }); }
+  if(a==='newstf'){ X.stfEdit={name:'',role:'teacher',code:'',active:true}; return render(); }
+  if(a==='editstf'){ const x=(X.stf||[]).find(y=>y.id===id); if(x) X.stfEdit={id:x.id,name:x.name,role:x.role,code:'',active:x.active}; return render(); }
+  if(a==='savestf'&&X.stfEdit){ const sc=document.getElementById('sx-scode'); if(sc) X.stfEdit.code=sc.value.replace(/\D/g,''); return act2('crStaffSave',[X.stfEdit],r=>{ X.stf=r||[]; X.stfEdit=null; toast('Staff account saved.'); }); }
+  if(a==='cancel'){ X.stfEdit=null; X.edit=null; X.start=null; X.lesEdit=null; X.q=''; X.err=''; return render(); }
+  if(a==='newcls'){ X.edit={name:'',subject:'',sids:[]}; X.q=''; return render(); }
+  if(a==='editcls'){ const c=X.cls.classes.find(x=>x.id===id); if(c) X.edit={id:c.id,name:c.name,subject:c.subject,sids:c.sids.slice()}; X.q=''; return render(); }
+  if(a==='cboy'&&X.edit){ const i=X.edit.sids.indexOf(id); if(i<0) X.edit.sids.push(id); else X.edit.sids.splice(i,1); return render(); }
+  if(a==='savecls') return act2('crSaveClass',[X.edit],r=>{ X.cls.classes=r; X.edit=null; X.q=''; toast('Class saved.'); });
+  if(a==='delcls'){ if(!confirm('Remove this class?')) return; return act2('crDeleteClass',[id],r=>{ X.cls.classes=r; }); }
+  if(a==='startcls'){ const c=X.cls.classes.find(x=>x.id===id); if(c){ X.start={id:c.id,name:c.name,skills:[],min:45}; X.q=(c.subject&&c.subject!=='Other')?c.subject:''; } return render(); }
+  if(a==='pick'&&X.start){ const i=X.start.skills.indexOf(id); if(i<0){ if(X.start.skills.length<12) X.start.skills.push(id); } else X.start.skills.splice(i,1); return render(); }
+  if(a==='min'&&X.start){ X.start.min=+b.dataset.m; return render(); }
+  if(a==='go'&&X.start) return act2('crStartClass',[X.start.id,X.start.skills,X.start.min],r=>{ X.start=null; X.q=''; run('crRunning',S.token).then(l=>{ X.running=l||[]; render(); }); try{ loadCls&&run('tmList',S.token).then(l=>{ S.cls=l||[]; }); }catch(x){} toast('Class started. The students’ screens are locked to your lessons.'); });
+  if(a==='end') return act2('crEndClass',[id],r=>{ X.running=(r||[]).filter(x=>x.byId); S.cls=r||[]; toast('Class ended.'); });
+  if(a==='newles'){ X.lesEdit={title:'',subject:'',intro:'',qs:[blankQ()]}; return render(); }
+  if(a==='editles'){ const l=X.les.find(x=>x.id===id); if(l) X.lesEdit={id:l.id,title:l.title,subject:l.subject,intro:l.intro,qs:l.qs.map(q=>({q:q.q,right:q.right,wrong:[0,1,2].map(j=>q.wrong[j]||''),how:q.how||''}))}; return render(); }
+  if(a==='addq'&&X.lesEdit){ X.lesEdit.qs.push(blankQ()); return render(); }
+  if(a==='delq'&&X.lesEdit){ X.lesEdit.qs.splice(+b.dataset.i,1); return render(); }
+  if(a==='saveles'&&X.lesEdit){ const L=X.lesEdit, out={id:L.id,title:L.title,subject:L.subject,intro:L.intro,qs:L.qs.map(q=>({q:q.q,right:q.right,wrong:q.wrong.filter(w=>String(w).trim()),how:q.how}))};
+    return act2('crSaveLesson',[out],r=>{ X.les=r||[]; X.lesEdit=null; toast('Lesson saved.'); }); }
+  if(a==='delles'){ if(!confirm('Remove this lesson?')) return; return act2('crDeleteLesson',[id],r=>{ X.les=r||[]; }); }
+},true);
+})();
+</script>

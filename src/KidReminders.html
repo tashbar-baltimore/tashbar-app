@@ -1,0 +1,26 @@
+<style>
+#kpr{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:99999;padding:16px}
+#kpr .kprc{background:#fff;border-radius:24px;max-width:460px;width:100%;padding:26px 22px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:kprIn .35s ease-out}
+#kpr .kprf{color:#6B7280;font-weight:700;font-size:15px;margin-bottom:6px}
+#kpr .kprt{font-size:26px;font-weight:800;color:#1F2937;line-height:1.3;margin:6px 0 18px}
+#kpr .kprb{background:#059669;color:#fff;border:0;border-radius:16px;font:inherit;font-size:22px;font-weight:800;padding:14px 30px;cursor:pointer;min-height:56px}
+#kpr .kpri{font-size:52px}
+@keyframes kprIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion: reduce){#kpr .kprc{animation:none}}
+</style>
+<div id="kpr" role="dialog" aria-modal="true" aria-labelledby="kprt"><div class="kprc"><div class="kpri">💌</div><div class="kprf" id="kprf"></div><div class="kprt" id="kprt"></div><button class="kprb" id="kprb">Got it! 👍</button></div></div>
+<script>
+(function(){
+ var Q=[], shown={}, busy=false, cur=null;
+ function tok(){ try{ return (typeof SRV!=='undefined'&&SRV.token&&typeof A!=='undefined'&&A.st&&A.view!=='signin')?SRV.token:null; }catch(e){ return null; } }
+ function show(){ if(cur||!Q.length) return; cur=Q.shift(); document.getElementById('kprf').textContent='A note from '+(cur.from||'home'); document.getElementById('kprt').textContent=cur.text; document.getElementById('kpr').style.display='flex';
+  try{ if(typeof SND!=='undefined'&&SND.win) SND.win(); }catch(e){} try{ document.getElementById('kprb').focus(); }catch(e){} }
+ document.getElementById('kprb').onclick=function(){ var t=tok(), n=cur; cur=null; document.getElementById('kpr').style.display='none';
+  if(t&&n) try{ google.script.run.withFailureHandler(function(){}).kpAck(t,n.id); }catch(e){} setTimeout(show,400); };
+ function poll(){ var t=tok(); if(!t||busy) return; busy=true;
+  try{ google.script.run.withSuccessHandler(function(r){ busy=false; ((r&&r.due)||[]).forEach(function(n){ if(!shown[n.id]){ shown[n.id]=1; Q.push(n); } }); show(); })
+   .withFailureHandler(function(){ busy=false; }).kpMine(t); }catch(e){ busy=false; } }
+ setTimeout(poll,6000); setInterval(poll,60000);
+ window.TL_KP={poll:poll};
+})();
+</script>

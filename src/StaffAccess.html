@@ -1,0 +1,121 @@
+<style>
+#acPill{position:fixed;left:12px;bottom:12px;z-index:9000;background:#111827;color:#fff;border-radius:999px;padding:8px 14px;font:600 13px system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.2);display:none;max-width:calc(100vw - 24px)}
+#acPill button{margin-left:10px;background:#6366F1;color:#fff;border:0;border-radius:999px;padding:5px 12px;font:inherit;cursor:pointer}
+#acPanel{position:fixed;inset:0;z-index:9500;background:rgba(15,23,42,.5);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px}
+#acPanel .acBox{background:#fff;border-radius:20px;max-width:980px;width:100%;padding:18px;font:15px/1.45 system-ui,sans-serif;color:#1F2937}
+#acPanel h2{margin:0 0 4px;font-size:22px}
+#acPanel .acTabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+#acPanel .acTab{border:2px solid #E5E7EB;background:#fff;border-radius:12px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
+#acPanel .acTab.on{border-color:#4F46E5;background:#EEF2FF;color:#4F46E5}
+#acPanel table{width:100%;border-collapse:collapse}
+#acPanel td,#acPanel th{border-bottom:1px solid #E5E7EB;padding:8px 6px;text-align:left;vertical-align:middle}
+#acPanel select,#acPanel input{font:inherit;padding:7px 9px;border:2px solid #E5E7EB;border-radius:10px;max-width:100%}
+#acPanel .acGo{background:#4F46E5;color:#fff;border:0;border-radius:10px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
+#acPanel .acSoft{background:#F3F4F6;color:#1F2937;border:0;border-radius:10px;padding:7px 12px;font:inherit;cursor:pointer}
+#acPanel .acX{float:right;background:#F3F4F6;border:0;border-radius:10px;padding:8px 12px;font:inherit;cursor:pointer}
+#acPanel .acMuted{color:#6B7280;font-size:14px}
+#acPanel .acCode{font:800 28px ui-monospace,Menlo,monospace;letter-spacing:4px;background:#ECFDF5;color:#065F46;border-radius:12px;padding:10px 16px;display:inline-block;margin:6px 0}
+#acPanel .acKids{max-height:170px;overflow:auto;border:1px solid #E5E7EB;border-radius:10px;padding:6px 10px;margin:6px 0}
+#acPanel .acKids label{display:block;padding:3px 0}
+#acPanel .acGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){#acPanel .acGrid{grid-template-columns:1fr}#acPanel table,#acPanel tbody,#acPanel tr,#acPanel td{display:block;width:100%}#acPanel th{display:none}#acPanel tr:has(> th){display:none}#acPanel tr{border:1px solid #E5E7EB;border-radius:12px;margin:0 0 8px;padding:6px 8px}#acPanel td{border:0;padding:4px 2px}#acPanel select,#acPanel input:not([type=checkbox]){width:100%}}
+</style>
+<div id="acPill"></div>
+<div id="acPanel" role="dialog" aria-modal="true"><div class="acBox" id="acBox"></div></div>
+<script>
+(function(){
+ var S={tab:'parents',d:null,sel:{}};
+ function tok(){ try{ var s=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return s&&s.role==='staff'?s.token:null; }catch(e){ return null; } }
+ function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+ function run(fn){ var a=[].slice.call(arguments,1); return new Promise(function(res,rej){ google.script.run.withSuccessHandler(res).withFailureHandler(function(e){ rej(e&&e.message?e.message:String(e)); })[fn].apply(null,a); }); }
+ var ROLE={head:'Head of School',admin:'School admin',rebbe:'Rebbe',teacher:'Teacher',office:'Office',canteen:'Canteen'};
+ var KIND={school:'School',family:'Family',homeschool:'Homeschool',group:'Group'};
+ function schoolName(id){ var s=(S.d.schools||[]).filter(function(x){ return x.id===id; })[0]; return s?s.name:id; }
+ function pill(info){
+  var p=document.getElementById('acPill'), what;
+  if(info.mode==='all') what='You see: all schools';
+  else if(info.mode==='classes') what='You see: your classes ('+info.count+' students) · '+info.schoolName;
+  else what='You see: '+info.schoolName+(info.count!=null?' ('+info.count+' students)':'');
+  if(info.fallback) what+=' · set up My classes to see only your own students';
+  p.innerHTML=esc(what)+'<button id="acCur">📚 Curriculum</button>'+(info.canAdmin?'<button id="acOpen">🔐 Access &amp; Parents</button>':'');
+  p.style.display='block';
+  var b=document.getElementById('acOpen'); if(b) b.onclick=open;
+  document.getElementById('acCur').onclick=function(){ run('msAppUrl').then(function(u){ window.open(u+'?cp=1','_top'); }).catch(alert); };
+ }
+ function open(){ document.getElementById('acPanel').style.display='flex'; load(); }
+ function close(){ document.getElementById('acPanel').style.display='none'; }
+ function load(){ var t=tok(); if(!t) return; document.getElementById('acBox').innerHTML='<p>Loading...</p>';
+  run('acAdminLoad',t).then(function(d){ S.d=d; draw(); }).catch(function(e){ document.getElementById('acBox').innerHTML='<button class="acX" id="acX">Close</button><p>'+esc(e)+'</p>'; document.getElementById('acX').onclick=close; }); }
+ function draw(){
+  var d=S.d, me=d.me, h='<button class="acX" id="acX">Close</button><h2>Access &amp; Parents</h2><p class="acMuted">'+(me.head?'Head of School: you see every school.':'School admin for '+esc(schoolName(me.school))+'.')+' Who sees what: the Head of School sees everything; a school admin sees one school; rebbeim and teachers see their own classes; a parent sees only their own children.</p>';
+  var tabs=[['parents','Parents'],['staff','Staff'],['students','Students']]; if(me.head) tabs.push(['schools','Schools']);
+  h+='<div class="acTabs">'+tabs.map(function(t){ return '<button class="acTab'+(S.tab===t[0]?' on':'')+'" data-tab="'+t[0]+'">'+t[1]+'</button>'; }).join('')+'</div><div id="acBody"></div>';
+  document.getElementById('acBox').innerHTML=h;
+  document.getElementById('acX').onclick=close;
+  document.querySelectorAll('#acBox [data-tab]').forEach(function(b){ b.onclick=function(){ S.tab=b.getAttribute('data-tab'); draw(); }; });
+  ({parents:drawParents,staff:drawStaff,students:drawStudents,schools:drawSchools})[S.tab]();
+ }
+ function body(h){ document.getElementById('acBody').innerHTML=h; }
+ function names(sids){ var m={}; S.d.students.forEach(function(s){ m[s.id]=s.name; }); return sids.map(function(x){ return m[x]||x; }).join(', '); }
+ function drawParents(){
+  var d=S.d, h='<p class="acMuted">Each parent gets a 4-digit code for the same sign-in pad. They see progress, set reminders that pop up on their child’s screen, and can message the teachers. Codes are shown once; you can always make a new one.</p>';
+  h+='<button class="acGo" id="acNewP">+ Add a parent</button><div id="acPForm"></div>';
+  h+='<table><tr><th>Parent</th><th>Children</th><th>Contact</th><th></th></tr>'+(d.parents.length?d.parents.map(function(p){ return '<tr'+(p.active?'':' style="opacity:.5"')+'><td><b>'+esc(p.title||p.name)+'</b>'+(p.title?'<div class="acMuted">'+esc(p.name)+'</div>':'')+(p.active?'':' (off)')+'</td><td>'+esc(names(p.sids))+'</td><td class="acMuted">'+esc([p.phone,p.email].filter(Boolean).join(' · '))+'<div>'+(p.last?'Last visit '+new Date(p.last).toLocaleDateString():'Never signed in')+'</div></td><td><button class="acSoft" data-edit="'+esc(p.id)+'">Edit</button> <button class="acSoft" data-code="'+esc(p.id)+'">New code</button></td></tr>'; }).join(''):'<tr><td colspan="4" class="acMuted">No parents yet.</td></tr>')+'</table>';
+  body(h);
+  document.getElementById('acNewP').onclick=function(){ parentForm(null); };
+  document.querySelectorAll('#acBody [data-edit]').forEach(function(b){ b.onclick=function(){ parentForm(d.parents.filter(function(p){ return p.id===b.getAttribute('data-edit'); })[0]); }; });
+  document.querySelectorAll('#acBody [data-code]').forEach(function(b){ b.onclick=function(){ if(!confirm('Make a new code? The old code stops working.')) return; run('acParentNewCode',tok(),b.getAttribute('data-code')).then(function(r){ showCode(r.code); }).catch(alert); }; });
+ }
+ function showCode(code){ document.getElementById('acPForm').innerHTML='<div style="background:#F0FDF4;border-radius:14px;padding:12px;margin:10px 0"><b>The parent’s sign-in code:</b><br><span class="acCode">'+esc(code)+'</span><div class="acMuted">Write it down and give it to the parent now. It will not be shown again.</div></div>'; }
+ function parentForm(p){
+  var d=S.d, sel={}; (p?p.sids:[]).forEach(function(x){ sel[x]=1; });
+  var h='<div style="border:2px solid #E5E7EB;border-radius:14px;padding:12px;margin:10px 0"><div class="acGrid"><div><b>Name</b><br><input id="apN" value="'+esc(p?p.name:'')+'" placeholder="e.g. Rivka Cohen"></div><div><b>Shown as</b> <span class="acMuted">(optional)</span><br><input id="apT" value="'+esc(p?p.title:'')+'" placeholder="e.g. Ima, Abba, Bubby"></div>'
+   +'<div><b>Phone</b><br><input id="apP" value="'+esc(p?p.phone:'')+'"></div><div><b>Email</b><br><input id="apE" value="'+esc(p?p.email:'')+'"></div></div>'
+   +'<b>Children</b> <input id="apF" placeholder="Search" style="margin-left:6px"><div class="acKids" id="apK">'+d.students.map(function(s){ return '<label data-n="'+esc(s.name.toLowerCase())+'"><input type="checkbox" value="'+esc(s.id)+'"'+(sel[s.id]?' checked':'')+'> '+esc(s.name)+(d.me.head?' <span class="acMuted">· '+esc(schoolName(s.school))+'</span>':'')+'</label>'; }).join('')+'</div>'
+   +(p?'<label><input type="checkbox" id="apA"'+(p.active?' checked':'')+'> Code is on</label>':'')
+   +'<button class="acGo" id="apS">'+(p?'Save':'Add parent and make a code')+'</button> <button class="acSoft" id="apC">Cancel</button></div>';
+  document.getElementById('acPForm').innerHTML=h;
+  document.getElementById('apF').oninput=function(){ var q=this.value.toLowerCase(); document.querySelectorAll('#apK label').forEach(function(l){ l.style.display=l.getAttribute('data-n').indexOf(q)>=0?'':'none'; }); };
+  document.getElementById('apC').onclick=function(){ document.getElementById('acPForm').innerHTML=''; };
+  document.getElementById('apS').onclick=function(){ var sids=[].map.call(document.querySelectorAll('#apK input:checked'),function(i){ return i.value; });
+   run('acSaveParent',tok(),{id:p?p.id:'',name:document.getElementById('apN').value,title:document.getElementById('apT').value,phone:document.getElementById('apP').value,email:document.getElementById('apE').value,sids:sids,active:p?document.getElementById('apA').checked:true})
+   .then(function(r){ return run('acAdminLoad',tok()).then(function(d2){ S.d=d2; drawParents(); if(r.code) showCode(r.code); }); }).catch(alert); };
+ }
+ function drawStaff(){
+  var d=S.d, h='<p class="acMuted">“Whole school” sees every student in that school. “My classes only” sees just the students in their classes (until they make a class, they still see the school, so nobody is locked out). Only the Head of School can make a school admin.</p>';
+  h+='<table><tr><th>Staff</th><th>Role</th><th>School</th><th>Sees</th><th></th></tr>'+d.staff.map(function(x){
+   if(x.role==='head') return '<tr><td><b>'+esc(x.name)+'</b></td><td>Head of School</td><td colspan="3" class="acMuted">Sees everything</td></tr>';
+   var roles=['rebbe','teacher','office'].concat(d.me.head||x.role==='admin'?['admin']:[]);
+   return '<tr data-sid="'+esc(x.id)+'"><td><b>'+esc(x.name)+'</b><div class="acMuted">'+x.classes+' class'+(x.classes===1?'':'es')+'</div></td>'
+    +'<td><select class="r">'+roles.map(function(r){ return '<option value="'+r+'"'+(x.role===r?' selected':'')+'>'+ROLE[r]+'</option>'; }).join('')+'</select></td>'
+    +'<td><select class="s"'+(d.me.head?'':' disabled')+'>'+d.schools.map(function(s){ return '<option value="'+esc(s.id)+'"'+(x.school===s.id?' selected':'')+'>'+esc(s.name)+'</option>'; }).join('')+'</select></td>'
+    +'<td><select class="m"><option value="school"'+(x.scope==='school'?' selected':'')+'>Whole school</option><option value="classes"'+(x.scope==='classes'?' selected':'')+'>My classes only</option></select></td>'
+    +'<td><button class="acGo">Save</button></td></tr>'; }).join('')+'</table><p class="acMuted">New staff codes are added in Staff accounts, as before.</p>';
+  body(h);
+  document.querySelectorAll('#acBody tr[data-sid] .acGo').forEach(function(b){ b.onclick=function(){ var tr=b.closest('tr');
+   run('acSaveStaffScope',tok(),tr.getAttribute('data-sid'),tr.querySelector('.s').value,tr.querySelector('.m').value,tr.querySelector('.r').value).then(function(){ b.textContent='Saved ✓'; setTimeout(function(){ b.textContent='Save'; },1500); }).catch(alert); }; });
+ }
+ function drawStudents(){
+  var d=S.d, h='<p class="acMuted">'+(d.me.head?'Pick students and move them to a school. Everyone starts in '+esc(schoolName('TASHBAR'))+'.':'The students in your school. Only the Head of School moves students between schools.')+'</p>';
+  h+='<input id="asF" placeholder="Search students" style="margin-bottom:8px">';
+  if(d.me.head) h+=' <select id="asTo">'+d.schools.filter(function(s){ return s.active!==false; }).map(function(s){ return '<option value="'+esc(s.id)+'">'+esc(s.name)+'</option>'; }).join('')+'</select> <button class="acGo" id="asMove">Move picked students</button>';
+  h+='<table><tr>'+(d.me.head?'<th></th>':'')+'<th>Student</th><th>School</th></tr>'+d.students.map(function(s){ return '<tr data-n="'+esc(s.name.toLowerCase())+'">'+(d.me.head?'<td><input type="checkbox" value="'+esc(s.id)+'"></td>':'')+'<td>'+esc(s.name)+'</td><td class="acMuted">'+esc(schoolName(s.school))+'</td></tr>'; }).join('')+'</table>';
+  body(h);
+  document.getElementById('asF').oninput=function(){ var q=this.value.toLowerCase(); document.querySelectorAll('#acBody tr[data-n]').forEach(function(r){ r.style.display=r.getAttribute('data-n').indexOf(q)>=0?'':'none'; }); };
+  var mv=document.getElementById('asMove'); if(mv) mv.onclick=function(){ var sids=[].map.call(document.querySelectorAll('#acBody tr[data-n] input:checked'),function(i){ return i.value; }); if(!sids.length) return alert('Pick students first.');
+   run('acMoveStudents',tok(),sids,document.getElementById('asTo').value).then(function(){ return run('acAdminLoad',tok()); }).then(function(d2){ S.d=d2; drawStudents(); }).catch(alert); };
+ }
+ function drawSchools(){
+  var d=S.d, h='<p class="acMuted">A school can be a real school, a family or a homeschool group. People in a school see only that school’s students.</p>';
+  h+='<table><tr><th>Name</th><th>Kind</th><th>Students</th><th></th></tr>'+d.schools.map(function(s){ var n=d.students.filter(function(x){ return x.school===s.id; }).length;
+   return '<tr data-id="'+esc(s.id)+'"><td><input class="n" value="'+esc(s.name)+'"></td><td><select class="k">'+d.kinds.map(function(k){ return '<option value="'+k+'"'+(s.kind===k?' selected':'')+'>'+KIND[k]+'</option>'; }).join('')+'</select></td><td>'+n+'</td><td><button class="acGo">Save</button></td></tr>'; }).join('')+'</table>';
+  h+='<h3>Add a school or family</h3><input id="aNs" placeholder="e.g. The Levy family"> <select id="aNk">'+d.kinds.map(function(k){ return '<option value="'+k+'">'+KIND[k]+'</option>'; }).join('')+'</select> <button class="acGo" id="aAdd">Add</button>';
+  body(h);
+  document.querySelectorAll('#acBody tr[data-id] .acGo').forEach(function(b){ b.onclick=function(){ var tr=b.closest('tr'); run('acSaveSchool',tok(),{id:tr.getAttribute('data-id'),name:tr.querySelector('.n').value,kind:tr.querySelector('.k').value}).then(function(){ b.textContent='Saved ✓'; }).catch(alert); }; });
+  document.getElementById('aAdd').onclick=function(){ run('acSaveSchool',tok(),{name:document.getElementById('aNs').value,kind:document.getElementById('aNk').value}).then(function(){ return run('acAdminLoad',tok()); }).then(function(d2){ S.d=d2; drawSchools(); }).catch(alert); };
+ }
+ function boot(n){ var t=tok(); if(!t){ if(n<20) setTimeout(function(){ boot(n+1); },1500); return; }
+  run('acMyScope',t).then(pill).catch(function(){ if(n<20) setTimeout(function(){ boot(n+1); },3000); }); }
+ setTimeout(function(){ boot(0); },1500);
+})();
+</script>

@@ -1,0 +1,48 @@
+<script>
+/* TalkRebbe.html — "Talk to my Rebbe or Teacher" (HoS DECISION 2230, v128). A card on the boy's home screen.
+   He picks ANY staff member from a list, writes a note, and sends it. Only that staff member sees it (Classroom.js crSend / crInbox).
+   No money, nothing in reports. Loaded by msQuestTools (Photos.js) after SimchaLife. */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined') return;
+const T={staff:null,to:'',text:'',busy:false,sent:''};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+try{ if(!document.getElementById('tr-css')){ const s=document.createElement('style'); s.id='tr-css'; s.textContent=`
+.trcard{margin:14px 0;border-radius:18px;background:#EEF2FF;border:2px solid #A5B4FC;display:flex;align-items:center;gap:14px;padding:14px 18px;color:#1E1B4B}
+.trcard .ti{font-size:34px}.trcard .tt{flex:1}.trcard b{display:block;font-size:19px}.trcard small{opacity:.8;font-size:15px}
+.trcard button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:800;background:#4338CA;color:#fff;cursor:pointer;min-height:48px}
+.trf{text-align:left;margin-top:6px}.trf label{display:block;font-weight:800;margin:12px 0 6px}
+.trf select,.trf textarea{width:100%;box-sizing:border-box;border:2px solid #C7D2FE;border-radius:14px;padding:12px;font:inherit;font-size:18px;background:#fff;color:#111827}
+.trf textarea{min-height:140px;resize:vertical}.trf .trn{font-size:14px;opacity:.7;text-align:right}
+.trf .trp{background:#F0FDF4;border-radius:12px;padding:10px 12px;margin-top:10px;font-size:15px;color:#065F46}`; document.head.appendChild(s); } }catch(e){}
+function cardHTML(){ return `<section class="trcard"><span class="ti" aria-hidden="true">✉️</span><span class="tt"><b>Talk to my Rebbe or Teacher</b><small>Write a note to any rebbe or teacher. Only they will see it.</small></span><button type="button" data-tr="open">Write a note</button></section>`; }
+const _find=window.tlFindLevelCard;
+window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ if(st&&A.view==='hub') h+=cardHTML(); }catch(e){} return h; };
+function form(){
+  const opts=(T.staff||[]).map(s=>`<option value="${E(s.id)}"${s.id===T.to?' selected':''}>${E(s.name)}</option>`).join('');
+  overlay(`<div class="oe">✉️</div><h2>Talk to my Rebbe or Teacher</h2>
+  <div class="trf"><label for="tr-to">Who is it for?</label>
+  ${T.staff?`<select id="tr-to"><option value="">Pick a rebbe or teacher</option>${opts}</select>`:'<p>Loading the list…</p>'}
+  <label for="tr-text">Your note</label><textarea id="tr-text" maxlength="1000" placeholder="Write what you want to say.">${E(T.text)}</textarea>
+  <div class="trn" id="tr-n">${T.text.length} / 1000</div>
+  <div class="trp">🔒 Only the person you pick will see this note.</div></div>
+  <p style="margin-top:14px"><button class="btn go big" data-tr="send"${T.busy?' disabled':''}>${T.busy?'Sending…':'Send my note'}</button> <button class="btn" data-act="closeov">Not now</button></p>`);
+  const ta=document.getElementById('tr-text'); if(ta) ta.addEventListener('input',()=>{ T.text=ta.value; const n=document.getElementById('tr-n'); if(n) n.textContent=T.text.length+' / 1000'; });
+  const sel=document.getElementById('tr-to'); if(sel) sel.addEventListener('change',()=>{ T.to=sel.value; });
+}
+function open(){
+  T.sent=''; form();
+  if(!T.staff&&typeof run==='function'&&SRV&&SRV.token) run('crStaffList',SRV.token).then(l=>{ T.staff=l||[]; if(A.overlay) form(); }).catch(()=>{ T.staff=[]; if(A.overlay) form(); });
+}
+function send(){
+  const ta=document.getElementById('tr-text'), sel=document.getElementById('tr-to'); if(ta) T.text=ta.value; if(sel) T.to=sel.value;
+  if(!T.to){ try{ toast('Pick who the note is for.'); }catch(e){} return; }
+  if(!T.text.trim()){ try{ toast('Write your note first.'); }catch(e){} return; }
+  T.busy=true; form();
+  run('crSend',SRV.token,T.to,T.text).then(r=>{ T.busy=false; T.text=''; T.to='';
+    overlay(`<div class="oe">✅</div><h2>Your note was sent</h2><p>It went to ${E(r&&r.to||'')}. Only they will see it.</p><button class="btn go big" data-act="closeov">Back</button>`);
+  }).catch(err=>{ T.busy=false; form(); try{ toast(String(err&&err.message||err).replace(/^Error:\s*/,'')); }catch(e){} });
+}
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-tr]'); if(!b) return; const a=b.dataset.tr; if(a==='open') open(); else if(a==='send') send(); });
+window.tlTalkRebbe=open;
+})();
+</script>

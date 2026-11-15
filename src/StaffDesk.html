@@ -1,0 +1,373 @@
+<script>
+/* StaffDesk.html — v182, + v186 ready-for-bechina and parent report, + v187 teach it together, + v188 goal tracks and Star of the week, + v189 thanks, teach from any Kodesh lesson, one goal for all, + v190 New since you last looked, + v191 reports for every parent at once, + v192 bechina sheet (takeover3, HoS 2026-11-13: "keep on going… do all of them… so easy, so fun, so helpful in every way").
+   Loaded by sgPage_ right AFTER StaffPlus (it uses window.SPX from StaffPlus). Server: StaffNotes.js.
+   1. 📌 PICK A LESSON for a boy (or for his whole group): from his card, from any Kodesh lesson row, or for a group stuck together.
+      He sees it on his home screen with one Start button (RebbePick.html). Done = he masters it, or passes the bechina.
+   2. 📝 NOTES on the boy card: note, praise, concern, parent contact, goal. Staff only. A praise or goal can also go to him
+      as a 🎉 shout-out (he sees it once, big, with confetti); the card shows when he saw it.
+   3. 📅 THIS WEEK tab: every boy's week at a glance, who is shining, who needs a nudge, who is stuck on the same lesson,
+      one-tap shout-outs, Print, Copy and Email the summary. Last week and earlier with the arrows.
+   4. Badges on every grid: 📌 open picks and 📝 recent notes next to each name. A "My desk" card on the Today tab.
+   No "double slash" in this file. */
+(function(){
+if(typeof S==='undefined'||typeof render!=='function'||typeof run!=='function'||!window.SPX) return;
+const X=window.SPX, SP=X.SP;
+const D={since:null,sinceT:0,ready:null,armLv:null,rep:null,armDel:null,desk:null,cat:null,catBusy:0,notes:{},wk:{},back:0,wkSort:'az',find:null,comp:{},busy:false,pop:null,started:false,focus:null};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const msg=e=>String(e&&e.message||e).replace(/^Error:\s*/,'');
+const ago=t=>{ if(!t) return ''; const m=Math.round((Date.now()-t)/60000); if(m<1) return 'just now'; if(m<60) return m+' min ago'; const h=Math.round(m/60); if(h<24) return h+' h ago'; const d=Math.round(h/24); return d===1?'yesterday':d+' days ago'; };
+const day=t=>{ try{ return new Date(t).toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'}); }catch(e){ return ''; } };
+const ymdDay=s=>{ const p=String(s).split('-').map(Number); return new Date(p[0],p[1]-1,p[2]); };
+const pct=(a,b)=>b?Math.round(100*a/b)+'%':'—';
+const say=t=>{ try{ toast(t); }catch(e){} };
+const KIND={note:['📝','Note'],praise:['🌟','Praise'],concern:['⚠️','Concern'],parent:['📞','Parent contact'],goal:['🎯','Goal'],star:['⭐','Star of the week']};
+const SUBJ=[['all','All'],['MATH','Math'],['READ','Reading'],['WRIT','Writing'],['SCI','Science'],['ELEC','Electives'],['LK','Limudei Kodesh']];
+const PRAISE=['Great effort today! 💪','Mazel tov on finishing a level! 🎉','Your kriyah is getting so smooth! 📜',"I'm proud of how you kept going! ⭐",'Amazing focus this week! 🔥'];
+const gsName=id=>{ try{ const n=S.d&&S.d.names&&S.d.names[id]; return n?(Array.isArray(n)?n[0]:n):''; }catch(e){ return ''; } };
+const boyName=id=>{ const b=(S.d&&S.d.boys||[]).find(x=>x.id===id); return b?b.name:id; };
+const first=id=>boyName(id).split(' ')[0];
+const lessonName=(id,fb)=>{ const c=D.cat&&D.cat.lessons.find(x=>x[0]===id); return c?c[1]:(fb||X.lkName(id)); };
+
+/* ---------- styles ---------- */
+function css(){ if(document.getElementById('sd-css')) return; const s=document.createElement('style'); s.id='sd-css'; s.textContent=`
+.sd-bd{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}.sd-bd i{font-style:normal;font-size:11px;font-weight:800;border-radius:999px;padding:1px 7px;background:#eef2ff;color:#3730a3}.sd-bd i.n{background:#fef3c7;color:#92400e}
+.sd-sec{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}.sd-sec h3{font-size:16px;margin:0 0 8px;display:flex;gap:8px;align-items:center}.sd-sec h3 small{font-weight:600;color:var(--soft);font-size:13px}
+.sd-pk{display:flex;gap:8px;align-items:center;padding:8px 10px;border-radius:10px;background:var(--bg);font-size:14px;margin-bottom:6px}.sd-pk.done{background:var(--gl)}.sd-pk span{flex:1}.sd-pk small{color:var(--soft)}
+.sd-x{border:0;background:none;color:var(--soft);font-size:18px;line-height:1;padding:2px 6px;cursor:pointer}.sd-x:hover{color:var(--r)}
+.sd-btn{border:0;border-radius:10px;padding:9px 14px;background:var(--navy);color:#fff;font-weight:800;font-size:14px;cursor:pointer}.sd-btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--line)}.sd-btn.gold{background:linear-gradient(90deg,#F59E0B,#EC4899);color:#fff}.sd-btn:disabled{opacity:.5}
+.sd-find{border:2px solid #c7d2fe;background:#f8faff;border-radius:14px;padding:10px;margin:8px 0}
+.sd-find input[type=search],.sd-find input[type=text],.sd-comp textarea,.sd-pop textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit;font-size:15px;box-sizing:border-box}
+.sd-find .res{display:grid;gap:4px;max-height:280px;overflow:auto;margin-top:8px}
+.sd-find .res button{display:flex;gap:8px;align-items:center;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;cursor:pointer}.sd-find .res button:hover{border-color:var(--navy)}.sd-find .res small{color:var(--soft);margin-left:auto;white-space:nowrap}
+.sd-find .sug{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.sd-find .sug button{border:1px dashed #a5b4fc;background:#fff;border-radius:999px;padding:5px 10px;font-weight:700;font-size:13px;cursor:pointer}
+.sd-find label{display:flex;gap:6px;align-items:center;font-size:14px;margin-top:6px}
+.sd-comp{display:grid;gap:8px}.sd-kinds{display:flex;flex-wrap:wrap;gap:6px}.sd-kinds button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font-weight:700;font-size:13px;cursor:pointer}.sd-kinds button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.sd-comp label{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:700}
+.sd-quick{display:flex;flex-wrap:wrap;gap:6px}.sd-quick button{border:1px dashed #f9a8d4;background:#fff7fb;border-radius:999px;padding:4px 10px;font-size:13px;cursor:pointer}
+.sd-nt{border-left:4px solid #cbd5e1;background:var(--bg);border-radius:10px;padding:8px 10px;margin-top:8px;font-size:14px}.sd-nt.praise{border-color:#f59e0b;background:#fffbeb}.sd-nt.concern{border-color:#ef4444;background:#fef2f2}.sd-nt.parent{border-color:#0ea5e9}.sd-nt.goal{border-color:#8b5cf6;background:#f5f3ff}
+.sd-nt .top{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--soft);font-weight:700}.sd-nt .top span{flex:1}.sd-nt p{margin:4px 0 0;white-space:pre-wrap}.sd-nt .sent{font-size:12px;font-weight:700;color:#b45309;margin-top:4px}
+.sd-wk-nav{display:inline-flex;gap:6px;align-items:center}.sd-wk-nav button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 12px;font-weight:800;cursor:pointer}.sd-wk-nav button:disabled{opacity:.4}
+.sd-dots{display:inline-flex;gap:3px}.sd-dots i{width:14px;height:14px;border-radius:4px;background:var(--grl);display:inline-block}.sd-dots i.a1{background:#bbf7d0}.sd-dots i.a2{background:#4ade80}.sd-dots i.a3{background:#16a34a}
+.sd-wt{width:100%;border-collapse:separate;border-spacing:0}.sd-wt th,.sd-wt td{padding:7px 8px;border-bottom:1px solid var(--line);font-size:14px;text-align:left;white-space:nowrap}.sd-wt thead th{position:sticky;top:0;background:#f8fafc;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);z-index:1}
+.sd-wt td.nm button{border:0;background:none;font-weight:800;font-size:14px;padding:0;cursor:pointer;color:var(--ink)}.sd-up{color:#15803d;font-weight:800}.sd-dn{color:#b91c1c;font-weight:800}
+.sd-shine{display:grid;gap:8px}.sd-shine div{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:12px;background:linear-gradient(90deg,#fffbeb,#fff)}.sd-shine b{flex:1}.sd-shine small{color:var(--soft)}
+.sd-stk{padding:8px 10px;border-radius:12px;background:#fef2f2;margin-bottom:8px;font-size:14px}.sd-stk b{display:block}.sd-stk .sp-pills{margin-top:6px}
+.sd-pop{position:fixed;z-index:200;left:50%;top:50%;transform:translate(-50%,-50%);width:min(480px,94vw);background:#fff;border-radius:20px;box-shadow:0 30px 80px rgba(20,30,70,.4);padding:18px}
+.sd-pop h3{margin:0 0 6px;font-size:19px}.sd-pop p{margin:0 0 10px;color:var(--soft);font-size:14px}.sd-pop .row{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.sd-shade{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:199}
+.sd-acts{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.sd-acts button{border:1px solid #c7d2fe;background:#eef2ff;color:#312e81;border-radius:999px;padding:7px 12px;font-weight:800;font-size:13px;cursor:pointer}.sd-acts button small{font-weight:700;opacity:.8}
+.sd-lvb{margin:8px 0;padding:10px 12px;border-radius:12px;background:#fef9c3;border:1px solid #fde047;font-weight:700;font-size:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.sd-lvb.done{background:var(--gl);border-color:#86efac}
+.sd-ready .sd-mini div{flex-wrap:wrap}
+.sd-rep-wrap{position:fixed;inset:0;z-index:200;overflow:auto;padding:20px 12px;display:flex;justify-content:center;align-items:flex-start}
+.sd-rep{width:min(760px,100%);background:#fff;border-radius:18px;box-shadow:0 30px 80px rgba(20,30,70,.4);padding:16px 18px}
+.sd-rep-bar{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.sd-paper{color:#111827;font-size:15px}.sd-paper .hd{display:flex;justify-content:space-between;gap:14px;border-bottom:3px solid #1e3a8a;padding-bottom:10px}
+.sd-paper .hd small{font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#1e3a8a;font-size:12px}.sd-paper h2{margin:4px 0;font-size:28px}.sd-paper .hd span{color:#4b5563}
+.sd-paper .big{font-size:44px;font-weight:800;color:#1e3a8a;text-align:center;line-height:1}.sd-paper .big small{display:block;font-size:12px;color:#4b5563;font-weight:700}
+.sd-paper .row4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}.sd-paper .row4 div{border:1px solid #e5e7eb;border-radius:12px;padding:8px;text-align:center}.sd-paper .row4 b{display:block;font-size:22px}.sd-paper .row4 small{color:#4b5563;font-weight:700;font-size:12px}
+.sd-paper .days{display:flex;gap:6px;margin:6px 0 4px}.sd-paper .days span{flex:1;text-align:center;border-radius:10px;background:#f3f4f6;padding:6px 0;font-weight:700;font-size:13px;color:#6b7280}.sd-paper .days span.on{background:#dcfce7;color:#166534}.sd-paper .days i{display:block;font-style:normal;min-height:18px}
+.sd-paper h3{font-size:16px;margin:14px 0 6px;color:#1e3a8a}.sd-paper ul{margin:0;padding-left:20px;columns:2}.sd-paper li{margin:2px 0}
+.sd-paper .where{display:flex;flex-wrap:wrap;gap:6px}.sd-paper .where span{background:#eef2ff;border-radius:999px;padding:4px 10px;font-size:13px}
+.sd-paper .q{display:block;margin:6px 0;font-style:italic}.sd-paper .q.off{opacity:.4}.sd-paper .q small{font-style:normal;color:#6b7280}
+.sd-paper textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;box-sizing:border-box}.sd-paper .msg{white-space:pre-wrap;display:none}
+.sd-page{border-top:2px dashed var(--line);margin-top:18px;padding-top:14px}.sd-page:first-of-type{border-top:0;margin-top:0;padding-top:0}.sd-paper .msg.show{display:block}
+@media print{ .sd-page{border:0;margin:0;padding:0;break-after:page;page-break-after:always} .sd-page:last-of-type{break-after:auto;page-break-after:auto} }
+.sd-bs table{width:100%;border-collapse:collapse;margin-top:12px}.sd-bs th,.sd-bs td{border:1px solid #cbd5e1;padding:7px 8px;text-align:left;font-size:14px;vertical-align:top}.sd-bs th{background:#eef2ff;font-size:12px;text-transform:uppercase;letter-spacing:.05em}.sd-bs td.bx{width:34px}.sd-bs td.nt{width:30%}.sd-bs .sum{margin-top:14px;font-weight:700}.sd-bs .sig{margin-top:22px}
+.sd-paper .ohp-line{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:8px 10px}.sd-paper .ohp-line small{color:#92400e}
+.sd-paper .ft{color:#9ca3af;font-size:12px;margin-top:16px;text-align:right}
+@media (max-width:600px){ .sd-paper .row4{grid-template-columns:repeat(2,1fr)} .sd-paper ul{columns:1} }
+@media print{ body.sd-printing #app>*:not(.sd-rep-wrap){display:none!important} body.sd-printing .sd-rep-wrap{position:static;padding:0;overflow:visible} body.sd-printing .sd-rep{box-shadow:none;border-radius:0;padding:0;width:100%} .sd-paper .q.off{display:none} .sd-paper .msg{display:block} .sd-paper .msg:empty{display:none} }
+.sd-goalt{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}.sd-goalt select{border:1px solid var(--line);border-radius:8px;padding:5px 8px}.sd-goalt small{color:var(--soft)}
+.sd-gp{margin-top:6px;font-size:13px}.sd-gp i{display:block;height:8px;border-radius:999px;background:#ede9fe;overflow:hidden;margin-top:3px}.sd-gp i b{display:block;height:100%;background:#8b5cf6}
+.sd-nt.star{border-color:#eab308;background:#fefce8}
+.sd-lnk{border:0;background:none;padding:0;font:inherit;font-weight:800;color:var(--ink);cursor:pointer;text-decoration:underline;text-decoration-color:var(--line)}
+.sd-mini{display:grid;gap:6px}.sd-mini div{display:flex;gap:8px;align-items:center;font-size:14px;padding:6px 8px;border-radius:10px;background:var(--bg)}.sd-mini div.done{background:var(--gl)}.sd-mini span{flex:1}.sd-mini small{color:var(--soft)}
+@media (max-width:600px){ .sd-wt .hm{display:none} .sd-pop{padding:14px} }
+@media print{ .sd-noprint,.sd-wk-nav{display:none!important} .sd-wt thead th{position:static} }
+`; document.head.appendChild(s); }
+
+/* ---------- data ---------- */
+function loadDesk(){ run('sgDesk',S.token).then(r=>{ D.desk=r; render(); }).catch(()=>{}); }
+function loadCat(){ if(D.cat||D.catBusy) return; D.catBusy=1; run('sgPickCatalog',S.token).then(r=>{ D.cat=r; D.catBusy=0; render(); }).catch(e=>{ D.catBusy=0; say(msg(e)); }); }
+function loadNotes(sid,force){ const n=D.notes[sid]; if(n&&!force&&n.at>Date.now()-60000) return; D.notes[sid]=Object.assign({},n||{},{at:Date.now()}); run('sgNotes',S.token,sid).then(r=>{ D.notes[sid]={at:Date.now(),d:r}; if(S.card===sid) render(); }).catch(()=>{}); }
+function loadWeek(back,force){ const w=D.wk[back]; if(w&&!force&&(w.busy||w.at>Date.now()-300000)) return; D.wk[back]=Object.assign({},w||{},{busy:1}); run('sgWeek',S.token,back).then(r=>{ D.wk[back]={at:Date.now(),d:r}; render(); }).catch(e=>{ D.wk[back]={at:Date.now(),err:msg(e)}; render(); }); }
+function sinceT(){ if(D.sinceT) return D.sinceT; let t=0; try{ t=Number(localStorage.getItem('sd-since'))||0; }catch(e){} D.sinceT=t||Date.now()-86400000; return D.sinceT; }
+function loadSince(){ run('sgSince',S.token,sinceT()).then(r=>{ D.since=r; render(); }).catch(()=>{}); }
+function loadReady(){ run('sgBechinaReady',S.token).then(r=>{ D.ready=r; render(); }).catch(()=>{}); }
+setInterval(()=>{ if(S.token&&S.d&&!document.hidden){ loadDesk(); if(SP.tab==='lk') loadReady(); if(SP.tab==='today') loadSince(); } },120000);
+
+/* ---------- picks ---------- */
+const picksOf=sid=>D.desk?D.desk.picks.filter(p=>p.sid===sid):[];
+const openPicks=sid=>picksOf(sid).filter(p=>!p.done);
+function pickBtn(sid,id,done){ if(done||!D.desk) return ''; const tb=`<button class="mkb ghost" data-sd="teach1" data-id="${E(sid)}" data-l="${E(id)}" title="Teach this lesson together (Teacher mode)">🧑‍🏫</button>`; const p=picksOf(sid).find(x=>x.id===id);
+ return tb+(p?`<button class="mkb ghost" data-sd="unpick" data-id="${E(sid)}" data-l="${E(id)}" title="Picked by ${E(p.by)}">📌 Picked · undo</button>`:`<button class="mkb ghost" data-sd="pick" data-id="${E(sid)}" data-l="${E(id)}" title="They will see it on their home screen">📌 Pick for this student</button>`); }
+function doPick(sids,id,note,undo){ if(D.busy) return; D.busy=true; render();
+ run('sgPick',S.token,sids,id,note||'',!!undo).then(r=>{ D.busy=false; D.desk=r; D.find=null; say(undo?'Pick removed.':sids.length>1?`Picked for ${sids.length} students. They will see it on their home screen.`:`Picked. ${first(sids[0])} will see it on their home screen.`); render(); })
+  .catch(e=>{ D.busy=false; say(msg(e)); render(); }); }
+function suggestions(sid){ const out=[]; const K=SP.lk&&SP.lk.boys.find(b=>b.id===sid);
+ if(K) SP.lk.tracks.forEach(t=>{ const c=K.cells[t[0]]; if(c&&c.now&&c.status!=='green') out.push([c.now,t[1]+': '+X.lkName(c.now)]); });
+ return out.slice(0,6); }
+function finderHTML(){ const F=D.find; if(!F) return ''; if(!D.cat){ loadCat(); return '<div class="sd-find">Loading every lesson…</div>'; }
+ const q=(F.q||'').trim().toLowerCase(), words=q.split(/\s+/).filter(Boolean);
+ const L=D.cat.lessons.filter(x=>(F.subj==='all'||(F.subj==='LK'?/^LK/.test(x[2]):x[2]===F.subj))&&(!words.length||words.every(w=>(x[1]+' '+x[0]).toLowerCase().includes(w)))).slice(0,40);
+ const tn=k=>{ const m=/^LK:(\w+)/.exec(k); return m?((D.cat.tracks||{})[m[1]]||m[1]):(SUBJ.find(s=>s[0]===k)||[0,k])[1]; };
+ const g=SP.grp&&SP.groups&&SP.groups.find(x=>x.id===SP.grp), sug=F.sids.length===1?suggestions(F.sids[0]):[];
+ return `<div class="sd-find" role="dialog" aria-label="Pick a lesson"><b>📌 Pick a lesson for ${F.sids.length===1?E(boyName(F.sids[0])):F.sids.length+' students'}</b>
+  ${sug.length?`<div class="sug"><small style="align-self:center;color:var(--soft)">Next lessons:</small>${sug.map(s=>`<button data-sd="pickgo" data-l="${E(s[0])}">${E(s[1])}</button>`).join('')}</div>`:''}
+  <input type="search" id="sd-fq" placeholder="Type a lesson name, e.g. fractions, Rashi, aleph" value="${E(F.q||'')}" autocomplete="off">
+  <div class="sp-chips" style="margin-top:6px">${SUBJ.map(s=>`<button class="${F.subj===s[0]?'on':''}" data-sd="fsub" data-f="${s[0]}">${s[1]}</button>`).join('')}</div>
+  <input type="text" id="sd-fn" placeholder="A word for the student (optional), e.g. Try this before Shabbos!" value="${E(F.note||'')}" maxlength="160" style="margin-top:6px">
+  ${F.sids.length===1&&g&&g.sids.indexOf(F.sids[0])>=0&&g.sids.length>1?`<label><input type="checkbox" id="sd-fall" ${F.all?'checked':''}> Pick it for everyone in ${E(g.name)} (${g.sids.length} students)</label>`:''}
+  <div class="res">${L.map(x=>`<button data-sd="pickgo" data-l="${E(x[0])}" ${D.busy?'disabled':''}><span>${E(x[1])}</span><small>${E(tn(x[2]))}${x[3]?' · Level '+x[3]:''}</small></button>`).join('')||'<p style="color:var(--soft);margin:6px">No lesson matches. Try another word.</p>'}</div>
+  <div style="text-align:right;margin-top:8px"><button class="sd-btn ghost" data-sd="fclose">Cancel</button></div></div>`; }
+
+/* ---------- boy card: picks + notes ---------- */
+function compOf(sid){ return D.comp[sid]=D.comp[sid]||{kind:'note',text:'',toBoy:false}; }
+function cardHTML(sid){ loadNotes(sid); const P=picksOf(sid), N=D.notes[sid]&&D.notes[sid].d, C=compOf(sid);
+ let h=`<div class="sd-sec sd-picks"><h3>📌 Lessons picked for this student <small>they see them on their home screen</small></h3>`;
+ h+=P.length?P.map(p=>`<div class="sd-pk ${p.done?'done':''}">${p.done?'✅':'⏳'}<span><b>${E(lessonName(p.id,p.name))}</b><br><small>${E(p.by)} · ${E(ago(p.at))}${p.note?' · “'+E(p.note)+'”':''}${p.done?' · done!':''}</small></span>${p.done?'':`<button class="sd-x" data-sd="unpick" data-id="${E(sid)}" data-l="${E(p.id)}" aria-label="Remove this pick">×</button>`}</div>`).join(''):'<p style="color:var(--soft);margin:0 0 6px">Nothing picked yet.</p>';
+ h+=D.find&&D.find.card===sid?finderHTML():`<button class="sd-btn ghost" data-sd="find" data-id="${E(sid)}">＋ Pick a lesson</button>`;
+ h+=`</div><div class="sd-sec sd-notes"><h3>📝 Notes <small>staff only; students and parents never see these, except a shout-out you send</small></h3><div class="sd-comp">
+  <div class="sd-kinds">${Object.keys(KIND).filter(k=>k!=='star').map(k=>`<button class="${C.kind===k?'on':''}" data-sd="kind" data-id="${E(sid)}" data-k="${k}">${KIND[k][0]} ${KIND[k][1]}</button>`).join('')}</div>
+  ${C.kind==='praise'?`<div class="sd-quick">${PRAISE.map(t=>`<button data-sd="quick" data-id="${E(sid)}" data-t="${E(t)}">${E(t)}</button>`).join('')}</div>`:''}
+  <textarea id="sd-nt-${E(sid)}" rows="2" maxlength="600" placeholder="${C.kind==='praise'?'What did they do well?':C.kind==='concern'?'What did you notice?':C.kind==='parent'?'Who did you speak to, and what was said?':C.kind==='goal'?'The goal, e.g. finish Chumash Level 2 by Chanukah':'Write a short note'}">${E(C.text)}</textarea>
+  ${C.kind==='goal'&&SP.lk?`<div class="sd-goalt"><small>Track it (optional): finish</small><select data-sd-gk="${E(sid)}" aria-label="Kodesh track"><option value="">no track</option>${SP.lk.tracks.map(t=>`<option value="${E(t[0])}" ${C.tk===t[0]?'selected':''}>${E(t[1])}</option>`).join('')}</select><select data-sd-gl="${E(sid)}" aria-label="Level">${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${Number(C.tl||0)===i+1?'selected':''}>Level ${i+1}</option>`).join('')}</select><small>They see a progress bar on their home screen.</small></div>`:''}
+  ${C.kind==='praise'||C.kind==='goal'?`<label><input type="checkbox" data-sd-chk="${E(sid)}" ${C.toBoy?'checked':''}> 🎉 Also show it to ${E(first(sid))} as a shout-out</label>`:''}
+  <div><button class="sd-btn ${C.toBoy?'gold':''}" data-sd="save" data-id="${E(sid)}" ${D.busy?'disabled':''}>${C.toBoy?'🎉 Save and send to the student':'Save note'}</button></div></div>`;
+ if(!N) h+='<p style="color:var(--soft)">Loading notes…</p>';
+ else h+=N.notes.map(n=>{ const k=KIND[n.kind]||KIND.note; return `<div class="sd-nt ${E(n.kind)}"><div class="top">${k[0]} ${E(k[1])}<span>· ${E(n.by)} · ${E(day(n.at))} (${E(ago(n.at))})</span><button class="sd-x" data-sd="del" data-n="${E(n.id)}" aria-label="Delete this note">${D.armDel===n.id?'<small style="color:var(--r);font-weight:800">Tap again to delete</small>':'×'}</button></div><p>${E(n.text)}</p>${n.progress?`<div class="sd-gp"><span>${E(n.progress.track)} through Level ${n.progress.level}: <b>${n.progress.done} of ${n.progress.total}</b></span><i><b style="width:${Math.round(100*n.progress.done/Math.max(1,n.progress.total))}%"></b></i></div>`:''}${n.toBoy?`<div class="sent">🎉 Sent to the student${n.seen?' · seen '+E(ago(n.seen)):' · not seen yet'}${n.thanks?' · ❤️ said thank you':''}</div>`:''}</div>`; }).join('')||'<p style="color:var(--soft);margin:8px 0 0">No notes yet.</p>';
+ return h+'</div>'; }
+function cardFix(){ if(!S.card) return; const d=[...document.querySelectorAll('#app aside.drawer')].pop(); if(!d||d.querySelector('.sd-picks')) return;
+ const wrap=document.createElement('div'); wrap.innerHTML=cardHTML(S.card); const day0=d.querySelector('.sp-day');
+ [...wrap.children].forEach(el=>{ if(day0) d.insertBefore(el,day0); else d.appendChild(el); });
+ const dh=d.querySelector('.dh'); if(dh&&!d.querySelector('.sd-acts')){ const p=openPicks(S.card).length; dh.insertAdjacentHTML('afterend',`<div class="sd-acts"><button data-sd="jump" data-to="sd-picks">📌 Pick a lesson${p?` <small>(${p} waiting)</small>`:''}</button><button data-sd="jump" data-to="sd-notes">📝 Add a note</button><button data-sd="jshout" data-id="${E(S.card)}">🎉 Shout-out</button><button data-sd="jump" data-to="sp-day">🕒 Their day</button><button data-sd="rep" data-id="${E(S.card)}">🖨 Report for parents</button></div>`); } }
+
+/* ---------- grid badges ---------- */
+function badges(){ if(!D.desk) return; document.querySelectorAll('#app th.nm button[data-id]').forEach(b=>{ if(b.querySelector('.sd-bd')) return; const id=b.dataset.id, p=openPicks(id).length, n=D.desk.notes[id];
+  const h=(p?`<i title="${p} lesson${p===1?'':'s'} picked for this student">📌${p}</i>`:'')+(n&&n.recent?`<i class="n" title="${n.recent} note${n.recent===1?'':'s'} in the last 30 days">${(KIND[n.kind]||KIND.note)[0]}${n.recent}</i>`:'');
+  if(h){ const s=document.createElement('span'); s.className='sd-bd'; s.innerHTML=h; const last=b.querySelector('.sp-last'); if(last) b.insertBefore(s,last); else b.appendChild(s); } }); }
+
+/* ---------- 📊 Today: my desk card ---------- */
+function deskCard(){ if(SP.tab!=='today'||!D.desk) return; const col=document.querySelector('#app .sp-cols>div:last-child'); if(!col||col.querySelector('.sd-desk')) return;
+ const P=D.desk.picks.filter(p=>X.inGrp(p.sid)).sort((a,b)=>b.at-a.at), open=P.filter(p=>!p.done), done=P.filter(p=>p.done);
+ const h=`<div class="sp-card sd-desk"><h3>📌 Picked lessons <small>${open.length} waiting · ${done.length} done</small></h3>${P.length?`<div class="sd-mini">${P.slice(0,10).map(p=>`<div class="${p.done?'done':''}">${p.done?'✅':'⏳'}<span><b>${E(boyName(p.sid))}</b> · ${E(lessonName(p.id,p.name))}</span><small ${!p.done&&Date.now()-p.at>3*86400000?'style="color:#b45309;font-weight:800" title="Picked more than 3 days ago and not done yet"':''}>${!p.done&&Date.now()-p.at>3*86400000?'⏰ ':''}${E(ago(p.at))}</small></div>`).join('')}</div>${P.length>10?`<p style="color:var(--soft);margin:6px 0 0">+${P.length-10} more</p>`:''}`:'<p style="color:var(--soft);margin:0">Open a student\'s card and tap <b>＋ Pick a lesson</b>. They see it on their home screen with one Start button.</p>'}
+  <p style="margin:10px 0 0"><button class="sd-btn ghost" data-sp="tab" data-t="wk">📅 See this week →</button></p></div>`;
+ col.insertAdjacentHTML('afterbegin',h); }
+
+/* ---------- 🎉 new since you last looked (v190) ---------- */
+function sinceCard(){ if(SP.tab!=='today'||!D.since) return; const col=document.querySelector('#app .sp-cols>div:first-child'); if(!col||col.querySelector('.sd-since')) return;
+ const B=D.since.boys.filter(b=>X.inGrp(b.id||b.sid)), nm=id=>D.since.names[id]||gsName(id)||X.lkName(id);
+ const when=new Date(D.since.since).toLocaleString([], {weekday:'short',hour:'numeric',minute:'2-digit'});
+ const h=`<div class="sp-card sd-since"><h3>🎉 New since ${E(when)} <small>${B.length?B.length+' student'+(B.length===1?'':'s'):'nothing new yet'}</small><span style="flex:1"></span>${B.length?'<button class="sd-btn ghost" data-sd="sinceok">✓ Seen it all</button>':''}</h3>
+  ${B.length?`<div class="sd-mini">${B.slice(0,20).map(b=>`<div><span><button class="sd-lnk" data-act="card" data-id="${E(b.sid)}">${E(b.name)}</button> ${b.n?`🏆 mastered ${b.n} lesson${b.n===1?'':'s'} <small>(${E(b.mastered.slice(0,3).map(nm).join(', '))}${b.n>3?'…':''})</small>`:''}${b.bechina?` · 🎓 ${b.bechina} bechina mark${b.bechina===1?'':'s'}`:''}${b.picks?` · 📌 finished ${b.picks} picked lesson${b.picks===1?'':'s'}`:''}${b.thanks?` · ❤️ thanked you`:''}</span><small>${E(ago(b.last))}</small><button class="mkb ghost" data-sd="shout" data-id="${E(b.sid)}" data-n="${b.n}" title="Send a shout-out">🎉</button></div>`).join('')}</div>${B.length>20?`<p style="color:var(--soft);margin:6px 0 0">+${B.length-20} more</p>`:''}`:'<p style="color:var(--soft);margin:0">When students master lessons, pass a bechina, finish a lesson you picked, or thank you, it shows here.</p>'}</div>`;
+ col.insertAdjacentHTML('afterbegin',h); }
+
+/* ---------- 📅 This week ---------- */
+function weekStats(w){ const B=w.boys.filter(b=>X.inGrp(b.id)); const nDays=w.days.filter(d=>ymdDay(d)<=new Date()).length||1;
+ const sum=k=>B.reduce((n,b)=>n+b[k],0); const act=B.filter(b=>b.days.some(Boolean));
+ const shine=B.filter(b=>b.mg+b.mk>0).sort((a,b)=>(b.mg+b.mk)-(a.mg+a.mk)||((b.ok+b.kok)/(b.a+b.ka||1))-((a.ok+a.kok)/(a.a+a.ka||1))).slice(0,5);
+ const jump=B.filter(b=>b.pa>=5&&(b.a+b.ka)>=b.pa*1.5&&(b.a+b.ka)-b.pa>=20).sort((a,b)=>((b.a+b.ka)/b.pa)-((a.a+a.ka)/a.pa)).slice(0,4);
+ const nudge=B.filter(b=>b.days.filter(Boolean).length<=Math.max(0,Math.min(1,nDays-2))).sort((a,b)=>(a.last||0)-(b.last||0));
+ const stuckMap={}; B.forEach(b=>(b.stuck||[]).forEach(s=>{ (stuckMap[s[0]]=stuckMap[s[0]]||[]).push(b); }));
+ const stuck=Object.keys(stuckMap).map(id=>[id,stuckMap[id]]).sort((a,b)=>b[1].length-a[1].length).slice(0,8);
+ return {B,act,nDays,sum,shine,jump,nudge,stuck}; }
+function weekLabel(w){ const a=ymdDay(w.start), b=ymdDay(w.days[5]); const f=d=>d.toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'}); return f(a)+' – '+f(b); }
+function weekText(w){ const T=weekStats(w), nm=id=>w.names[id]||gsName(id)||X.lkName(id); const L=[];
+ L.push('Tashbar weekly summary'+(X.grpName()?' · '+X.grpName():'')+' · '+weekLabel(w)); L.push('');
+ L.push(`Students learning: ${T.act.length} of ${T.B.length}`); L.push(`Answers: ${T.sum('a')} General Studies (${pct(T.sum('ok'),T.sum('a'))} right), ${T.sum('ka')} Kodesh (${pct(T.sum('kok'),T.sum('ka'))} right)`);
+ L.push(`Lessons mastered: ${T.sum('mg')+T.sum('mk')} (${T.sum('mg')} General Studies, ${T.sum('mk')} Kodesh) · bechinas passed: ${T.sum('marks')} · minutes learning: ${T.sum('min')}`);
+ if(T.shine.length){ L.push(''); L.push('Shining this week:'); T.shine.forEach(b=>L.push(`  ${b.name}: ${b.mg+b.mk} lessons mastered`)); }
+ if(T.nudge.length){ L.push(''); L.push('Needs a nudge: '+T.nudge.map(b=>b.name).join(', ')); }
+ if(T.stuck.length){ L.push(''); L.push('Stuck on:'); T.stuck.forEach(s=>L.push(`  ${nm(s[0])}: ${s[1].map(b=>b.name).join(', ')}`)); }
+ L.push(''); L.push('Every student (days active, answers, right, mastered):'); T.B.forEach(b=>L.push(`  ${b.name}: ${b.days.filter(Boolean).length} days, ${b.a+b.ka} answers, ${pct(b.ok+b.kok,b.a+b.ka)}, ${b.mg+b.mk} mastered${(b.stuck||[]).length?', stuck on '+b.stuck.length:''}${b.chm&&b.chm.wk&&b.chm.wk.length?', Chumash: '+b.chm.wk.map(x=>x[0]).join(', '):''}`));
+ return L.join('\n'); }
+function weekView(){ const back=D.back, W=D.wk[back]; if(!W||(!W.d&&!W.err)) loadWeek(back);
+ let h=`<div class="sp-view"><div class="sp-h2"><h2>📅 This week${X.grpName()?' · '+E(X.grpName()):''}</h2>${W&&W.d?`<small>${E(weekLabel(W.d))}</small>`:''}<span style="flex:1"></span>
+  <span class="sd-wk-nav"><button data-sd="wkb" data-v="${back+1}" ${back>=12?'disabled':''} aria-label="Week before">◀</button><button data-sd="wkb" data-v="0" ${back===0?'disabled':''}>This week</button><button data-sd="wkb" data-v="${back-1}" ${back===0?'disabled':''} aria-label="Next week">▶</button></span></div>`;
+ if(!W||!W.d) return h+`<div class="sp-card">${W&&W.err?`<p class="sp-err">${E(W.err)}</p>`:'Adding up the week… (a few seconds)'}</div></div>`;
+ const w=W.d, T=weekStats(w), nm=id=>w.names[id]||gsName(id)||X.lkName(id), sum=T.sum;
+ const prevA=T.B.reduce((n,b)=>n+b.pa,0), nowA=sum('a')+sum('ka'), ch=prevA?Math.round(100*(nowA-prevA)/prevA):null;
+ h+=`<div class="sp-kpis"><div class="sp-kpi"><small>Students learning</small><b>${T.act.length} / ${T.B.length}</b><span>${T.nudge.length?T.nudge.length+' need a nudge':'everyone came'}</span></div>
+  <div class="sp-kpi"><small>Answers</small><b>${nowA}</b><span>${ch==null?'':ch>=0?`<span class="sd-up">▲ ${ch}%</span> vs last week`:`<span class="sd-dn">▼ ${-ch}%</span> vs last week`}</span></div>
+  <div class="sp-kpi"><small>Right</small><b>${pct(sum('ok')+sum('kok'),nowA)}</b><span>GS ${pct(sum('ok'),sum('a'))} · Kodesh ${pct(sum('kok'),sum('ka'))}</span></div>
+  <div class="sp-kpi"><small>Lessons mastered</small><b>${sum('mg')+sum('mk')}</b><span>${sum('mg')} General Studies · ${sum('mk')} Kodesh</span></div>
+  <div class="sp-kpi"><small>Minutes learning</small><b>${sum('min')}</b><span>${T.act.length?Math.round(sum('min')/T.act.length)+' per student who came':''}${sum('marks')?' · '+sum('marks')+' bechinas':''}</span></div></div>`;
+ h+=`<div class="sp-tool sd-noprint"><button class="sd-btn ghost" data-sd="wkcopy">📋 Copy the summary</button><button class="sd-btn ghost" data-sd="wkmail">✉️ Email it</button><button class="sd-btn ghost" data-sp="print">🖨 Print</button><button class="sd-btn ghost" data-sd="wkre">↻ Refresh</button>${back===0?`<button class="sd-btn ghost" data-sd="cg">🎯 One goal for all ${T.B.length} students</button><button class="sd-btn ghost" data-sd="repall">🖨 Reports for all ${T.B.length} parents</button>`:''}</div>`;
+ h+=`<div class="sp-cols"><div>`;
+ h+=`<div class="sp-card"><h3>🌟 Shining this week <small>most lessons mastered</small></h3>${T.shine.length?`<div class="sd-shine">${T.shine.map((b,i)=>`<div><span>${['🥇','🥈','🥉','⭐','⭐'][i]}</span><b>${E(b.name)}</b><small>${b.mg+b.mk} mastered · ${pct(b.ok+b.kok,b.a+b.ka)} right</small><button class="sd-btn gold sd-noprint" data-sd="shout" data-id="${E(b.id)}" data-n="${b.mg+b.mk}">🎉 Shout-out</button>${back===0?`<button class="sd-btn ghost sd-noprint" data-sd="star" data-id="${E(b.id)}" data-n="${b.mg+b.mk}" title="A gold Star of the week banner on their home screen for 7 days">⭐ Star</button>`:''}</div>`).join('')}</div>`:'<p style="color:var(--soft);margin:0">No lessons mastered yet this week.</p>'}</div>`;
+ if(T.jump.length) h+=`<div class="sp-card"><h3>📈 Big jump <small>much more work than last week</small></h3><div class="sd-shine">${T.jump.map(b=>`<div><span>🚀</span><b>${E(b.name)}</b><small>${b.pa} → ${b.a+b.ka} answers</small><button class="sd-btn gold sd-noprint" data-sd="shout" data-id="${E(b.id)}" data-j="1">🎉 Shout-out</button></div>`).join('')}</div></div>`;
+ h+=`<div class="sp-card"><h3>🧱 Stuck on the same lesson <small>teach it together: five minutes at the board</small></h3>${T.stuck.length?T.stuck.map(s=>`<div class="sd-stk"><b>${E(nm(s[0]))}</b><small>${s[1].length} student${s[1].length===1?'':'s'}</small><div class="sp-pills">${s[1].map(b=>`<button data-act="card" data-id="${E(b.id)}">${E(b.name)}</button>`).join('')}</div>${back===0?`<button class="sd-btn sd-noprint" style="margin-top:8px" data-sd="teach" data-l="${E(s[0])}" data-ids="${E(s[1].map(b=>b.id).join(','))}" data-n="${E(nm(s[0]))}">🧑‍🏫 Teach it together now</button>`:''}</div>`).join(''):'<p style="color:var(--soft);margin:0">Nobody is stuck this week. 🎉</p>'}</div>`;
+ h+=`</div><div>`;
+ h+=`<div class="sp-card"><h3>👋 Needs a nudge <small>came on ${T.nDays>2?'one day or less':'no days'} so far</small></h3>${T.nudge.length?`<div class="sp-pills">${T.nudge.map(b=>`<button data-act="card" data-id="${E(b.id)}">${E(b.name)}${b.last?` <small style="color:var(--soft)">· ${E(ago(b.last))}</small>`:''}</button>`).join('')}</div>`:'<p style="color:var(--soft);margin:0">Everyone is coming. 🙌</p>'}</div>`;
+ const P=(D.desk?D.desk.picks:[]).filter(p=>X.inGrp(p.sid)); if(P.length){ const dn=P.filter(p=>p.done).length; h+=`<div class="sp-card"><h3>📌 Picked lessons <small>${dn} of ${P.length} done</small></h3><div class="sd-mini">${P.slice(0,8).map(p=>`<div class="${p.done?'done':''}">${p.done?'✅':'⏳'}<span><b>${E(boyName(p.sid))}</b> · ${E(lessonName(p.id,p.name))}</span></div>`).join('')}</div></div>`; }
+ h+=`</div></div>`;
+ const so=D.wkSort, rows=T.B.slice().sort((a,b)=>so==='most'?(b.mg+b.mk)-(a.mg+a.mk):so==='least'?(a.a+a.ka)-(b.a+b.ka):so==='stuck'?(b.stuck||[]).length-(a.stuck||[]).length:a.name.localeCompare(b.name));
+ const dl=w.days.map(d=>ymdDay(d).toLocaleDateString([], {weekday:'narrow'}));
+ h+=`<div class="sp-card"><h3 style="flex-wrap:wrap">Every student <small>tap a name for their card</small><span style="flex:1"></span><select data-sd-sort class="sd-noprint" aria-label="Sort"><option value="az" ${so==='az'?'selected':''}>A to Z</option><option value="most" ${so==='most'?'selected':''}>Most mastered</option><option value="least" ${so==='least'?'selected':''}>Least active</option><option value="stuck" ${so==='stuck'?'selected':''}>Most stuck</option></select></h3>
+  <div style="overflow:auto"><table class="sd-wt"><thead><tr><th>Student</th><th title="${E(dl.join(' '))}">Days</th><th class="hm">Minutes</th><th>Answers</th><th>Right</th><th>Mastered</th><th class="hm">Stuck on</th><th class="hm">vs last week</th></tr></thead><tbody>${rows.map(b=>{ const a=b.a+b.ka, d=a-b.pa;
+   return `<tr><td class="nm"><button data-act="card" data-id="${E(b.id)}">${E(b.name)}</button>${b.praise?' 🌟':''}</td><td><span class="sd-dots" aria-label="${b.days.filter(Boolean).length} days">${b.days.map((n,i)=>`<i class="${n>=30?'a3':n>=10?'a2':n?'a1':''}" title="${E(dl[i])}: ${n} answers"></i>`).join('')}</span></td><td class="hm">${b.min||'—'}</td><td>${a||'—'}${b.ka?` <small style="color:var(--soft)">(${b.ka} K)</small>`:''}</td><td>${pct(b.ok+b.kok,a)}</td><td>${b.mg+b.mk?`<b>${b.mg+b.mk}</b>${b.mk?` <small style="color:var(--soft)">(${b.mk} K)</small>`:''}`:'—'}</td><td class="hm">${(b.stuck||[]).length?`<span title="${E(b.stuck.map(s=>nm(s[0])).join(', '))}">🧱 ${E(nm(b.stuck[0][0]))}${b.stuck.length>1?' +'+(b.stuck.length-1):''}</span>`:''}</td><td class="hm">${b.pa||a?(d>0?`<span class="sd-up">▲ ${d}</span>`:d<0?`<span class="sd-dn">▼ ${-d}</span>`:'='):'—'}</td></tr>`; }).join('')}</tbody></table></div></div>`;
+ return h+'</div>'; }
+
+/* ---------- shout-out pop-up ---------- */
+function popHTML(){ const P=D.pop; if(!P) return ''; return `<div class="sd-shade" data-sd="popx"></div><div class="sd-pop" role="dialog" aria-label="Send a shout-out"><h3>${P.star?'⭐ Star of the week':'🎉 Shout-out'} for ${E(first(P.sid))}</h3><p>${P.star?'A gold Star of the week banner on their home screen for 7 days, and a big moment with confetti the first time they see it.':'They see it the next time they open their home screen, big, with confetti.'} It is also saved in their notes.</p>
+ <textarea id="sd-pt" rows="3" maxlength="600">${E(P.text)}</textarea><div class="sd-quick" style="margin-top:6px">${PRAISE.map(t=>`<button data-sd="popq" data-t="${E(t)}">${E(t)}</button>`).join('')}</div>
+ <div class="row"><button class="sd-btn ghost" data-sd="popx">Cancel</button><button class="sd-btn gold" data-sd="popgo" ${D.busy?'disabled':''}>🎉 Send it</button></div></div>`; }
+
+/* ---------- 🎓 ready for a level bechina (v185) ---------- */
+function readyList(){ return D.ready?D.ready.ready.filter(x=>X.inGrp(x.sid)):[]; }
+function readyCard(){ if(SP.tab!=='lk') return; const v=document.querySelector('#app .sp-main .sp-view'); if(!v||v.querySelector('.sd-ready')) return; if(!D.ready) return;
+ const L=readyList(), open=D.readyOpen; const by={}; L.forEach(x=>{ (by[x.sid]=by[x.sid]||[]).push(x); });
+ const h=`<div class="sp-card sd-ready"><h3>🎓 Ready for a level bechina <small>${L.length?`${Object.keys(by).length} student${Object.keys(by).length===1?'':'s'} finished a whole level in the app`:'nobody right now'}</small><span style="flex:1"></span>${L.length?`<button class="sd-btn ghost" data-sd="rdy">${open?'Hide':'Show them'}</button>`:''}</h3>
+  ${open&&L.length?`<div class="sd-mini">${L.slice(0,60).map(x=>{ const key=x.sid+'|'+x.k+'|'+x.level, arm=D.armLv===key; return `<div><span><b>${E(x.name)}</b> · ${E(x.track)} Level ${x.level} <small>(${x.n} lessons${x.at?', finished '+E(ago(x.at)):''})</small></span><button class="mkb ghost" data-sp="lksq" data-id="${E(x.sid)}" data-k="${E(x.k)}">Open</button><button class="mkb ${arm?'arm':''}" data-sd="lvb" data-id="${E(x.sid)}" data-k="${E(x.k)}" data-v="${x.level}" ${D.busy?'disabled':''}>${arm?'Tap again to confirm':'✓ Passed'}</button></div>`; }).join('')}</div>${L.length>60?`<p style="color:var(--soft);margin:6px 0 0">+${L.length-60} more</p>`:''}`:''}
+  <p style="color:var(--soft);font-size:13px;margin:8px 0 0">Give an oral bechina on the whole level. When the student passes, tap <b>✓ Passed</b>. It is saved with your name and date. It does not pay money.</p></div>`;
+ const g=v.querySelector('.sp-tool'); if(g) g.insertAdjacentHTML('beforebegin',h); else v.insertAdjacentHTML('beforeend',h); }
+function drawerLevel(){ const d=document.querySelector('.sp-drawer'); if(!d||d.querySelector('.sd-lvb')||!SP.lkOpen) return; const o=SP.lkOpen, det=SP.det[o.id+'|'+o.k]; if(!det||!det.lessons) return;
+ const on=d.querySelector('.sp-chips button.on'); const lv=on?Number(on.dataset.v):0; if(!lv) return; const L=det.lessons.filter(x=>x[2]===lv); if(!L.length) return;
+ const all=L.every(x=>x[3]||x[4]), marked=L.filter(x=>x[4]), key=o.id+'|'+o.k+'|'+lv, arm=D.armLv===key; let h='';
+ if(marked.length===L.length) h=`<div class="sd-lvb done">🎓 Level ${lv} bechina ✓ ${E(marked[0][4])}${marked[0][5]?' · '+E(day(marked[0][5])):''}</div>`;
+ else if(all&&!marked.length) h=`<div class="sd-lvb">🎓 Finished every lesson of Level ${lv} in the app. Ready for a level bechina. <button class="mkb ${arm?'arm':''}" data-sd="lvb" data-id="${E(o.id)}" data-k="${E(o.k)}" data-v="${lv}" ${D.busy?'disabled':''}>${arm?'Tap again to confirm':'✓ Passed the Level '+lv+' bechina'}</button></div>`;
+ h+=`<div style="margin:6px 0"><button class="mkb ghost" data-sd="bsheet" data-id="${E(o.id)}" data-k="${E(o.k)}" data-v="${lv}">🖨 Bechina sheet for Level ${lv}</button></div>`;
+ const lv0=d.querySelector('.lvls'); if(lv0) lv0.insertAdjacentHTML('beforebegin',h); }
+
+/* ---------- 🖨 weekly report for parents (v185) ---------- */
+function paperHTML(sid,w,b,N,inc,msg,single){
+ const nm=id=>w.names[id]||gsName(id)||X.lkName(id), dl=w.days.map(d=>ymdDay(d).toLocaleDateString([], {weekday:'short'}));
+ const g=(S.d.boys||[]).find(x=>x.id===sid), subs=(S.d.subjects||[]).filter(s=>g&&g.cells[s[0]]&&g.cells[s[0]].level);
+ const K=SP.lk&&SP.lk.boys.find(x=>x.id===sid), kt=K?SP.lk.tracks.filter(t=>K.cells[t[0]]&&K.cells[t[0]].done):[];
+ const a=b.a+b.ka;
+ return `<div class="sd-paper"><div class="hd"><div><small>Tashbar · Weekly report</small><h2>${E(b.name)}</h2><span>${E(weekLabel(w))}</span></div><div class="big">${b.days.filter(Boolean).length}<small>days learning</small></div></div>
+  <div class="row4"><div><b>${b.min||0}</b><small>minutes</small></div><div><b>${a}</b><small>answers</small></div><div><b>${pct(b.ok+b.kok,a)}</b><small>right</small></div><div><b>${b.mg+b.mk}</b><small>lessons mastered</small></div></div>
+  <div class="days">${b.days.map((n,i)=>`<span class="${n?'on':''}">${E(dl[i])}<i>${n?'✓':''}</i></span>`).join('')}</div>
+  ${b.mIds&&b.mIds.length?`<h3>🏆 Lessons mastered this week</h3><ul>${b.mIds.map(id=>`<li>${/^(LK|HEB)\./.test(id)?'📜 ':'📚 '}${E(nm(id))}</li>`).join('')}${b.mg+b.mk>b.mIds.length?`<li>…and ${b.mg+b.mk-b.mIds.length} more</li>`:''}</ul>`:''}
+  ${b.marks?`<p>🎓 Passed <b>${b.marks}</b> bechina${b.marks===1?'':'s'} with their rebbe this week.</p>`:''}
+  ${b.dav?`<p>🙏 Marked davening on <b>${b.dav}</b> day${b.dav===1?'':'s'} this week.</p>`:''}
+  ${b.chm&&(b.chm.wk.length||b.chm.n)?`<p>📖 <b>Chumash:</b> ${b.chm.wk.length?'this week mastered '+b.chm.wk.map(x=>'Parshas '+E(x[0])+' (Level '+x[1]+')').join(', ')+'. ':''}${b.chm.n?'In all, mastered '+b.chm.n+(b.chm.n===1?' parsha':' parshiyos')+' on the Chumash page.':''}</p>`:''}
+  ${a?`<p class="ohp-line">☁️ <b>Olam Haba:</b> ${b.ka>=b.a&&b.ka>0?'their Torah learning filled their Olam Haba cloud with light this week.':b.ka>0?'every try added light to their Olam Haba cloud this week, and their Torah learning made it shine brightest.':'every try added light to their Olam Haba cloud this week.'} <small>(We never count it: “According to the effort is the reward.” Avos 5:23)</small></p>`:''}
+  ${subs.length||kt.length?`<h3>📍 Where they are now</h3><div class="where">${subs.map(s=>`<span>${E(s[1])}: <b>Level ${g.cells[s[0]].level}</b></span>`).join('')}${kt.map(t=>{ const c=K.cells[t[0]]; return `<span>${E(t[1])}: <b>${c.status==='green'?'done ✅':'Level '+c.level}</b></span>`; }).join('')}</div>`:''}
+  ${N.length?`<h3>🌟 From their rebbe and teachers</h3>${N.map(n=>`<label class="q ${inc[n.id]?'':'off'}"><input type="checkbox" class="sd-noprint" data-sd-inc="${E(n.id)}" ${inc[n.id]?'checked':''}> “${E(n.text)}” <small>— ${E(n.by)}</small></label>`).join('')}`:''}
+  ${single?'<h3>✉️ A note to the parents</h3>':`<h3 class="msgh" style="${msg?'':'display:none'}">✉️ A note to the parents</h3>`}${single?`<textarea id="sd-repmsg" rows="3" class="sd-noprint" placeholder="Optional: a few words from you">${E(msg||'')}</textarea>`:''}<p class="msg${single?'':' show'}">${E(msg||'')}</p>
+  <p class="ft">Printed ${E(new Date().toLocaleDateString())} · Tashbar</p></div>`; }
+function repHTML(){ const R=D.rep; if(!R) return ''; if(R.all) return repAllHTML(); const sid=R.sid, W=D.wk[0]; if(!W||!W.d){ loadWeek(0); return `<div class="sd-shade" data-sd="repx"></div><div class="sd-pop sd-rep">Getting the week ready…</div>`; }
+ loadNotes(sid); const w=W.d, b=w.boys.find(x=>x.id===sid); if(!b) return `<div class="sd-shade" data-sd="repx"></div><div class="sd-pop sd-rep"><p>No week data for this student.</p><button class="sd-btn ghost" data-sd="repx">Close</button></div>`;
+ const N=(D.notes[sid]&&D.notes[sid].d&&D.notes[sid].d.notes||[]).filter(n=>(n.kind==='praise'||n.kind==='goal'||n.kind==='star')&&n.at>=ymdDay(w.start).getTime());
+ if(!R.inc){ R.inc={}; N.forEach(n=>R.inc[n.id]=1); }
+ return `<div class="sd-shade sd-noprint" data-sd="repx"></div><div class="sd-rep-wrap"><div class="sd-rep" id="sd-rep">
+  <div class="sd-noprint sd-rep-bar"><b>🖨 Weekly report for ${E(first(sid))}'s parents</b><span style="flex:1"></span><button class="sd-btn ghost" data-sd="repx">Close</button><button class="sd-btn" data-sd="repprint">🖨 Print</button></div>
+  ${paperHTML(sid,w,b,N,R.inc,R.msg,true)}</div></div>`; }
+/* v191: every shown boy's report at once, one page each (the same note to all parents, optional) */
+function repAllHTML(){ const R=D.rep, W=D.wk[0]; if(!W||!W.d){ loadWeek(0); return `<div class="sd-shade" data-sd="repx"></div><div class="sd-pop sd-rep">Getting the week ready…</div>`; }
+ const w=W.d, B=w.boys.filter(b=>X.inGrp(b.id)); if(!R.notes){ if(!R.busy){ R.busy=1; run('sgWeekNotes',S.token,B.map(b=>b.id),w.start).then(r=>{ R.notes=r||{}; const old=document.querySelector('.sd-rep-wrap'); if(old) old.remove(); render(); }).catch(()=>{ R.notes={}; render(); }); } return `<div class="sd-shade" data-sd="repx"></div><div class="sd-pop sd-rep">Getting ${B.length} reports ready…</div>`; }
+ const pages=B.map(b=>{ const N=R.notes[b.id]||[], inc={}; N.forEach(n=>inc[n.id]=1); return `<div class="sd-page">${paperHTML(b.id,w,b,N,inc,R.msg,false)}</div>`; }).join('');
+ return `<div class="sd-shade sd-noprint" data-sd="repx"></div><div class="sd-rep-wrap"><div class="sd-rep" id="sd-rep">
+  <div class="sd-noprint sd-rep-bar" style="flex-wrap:wrap"><b>🖨 ${B.length} weekly reports${X.grpName()?' · '+E(X.grpName()):''}</b><span style="flex:1"></span><button class="sd-btn ghost" data-sd="repx">Close</button><button class="sd-btn" data-sd="repprint">🖨 Print all ${B.length}</button>
+  <textarea id="sd-repmsg" rows="2" style="width:100%;margin-top:8px;border:1px solid var(--line);border-radius:10px;padding:8px;font:inherit;box-sizing:border-box" placeholder="Optional: one note for every student's parents, e.g. Good Shabbos! Parent-teacher evening is on Tuesday.">${E(R.msg||'')}</textarea></div>
+  ${pages}</div></div>`; }
+
+/* ---------- 🖨 bechina sheet (v192): a paper for the oral bechina, one level of one Kodesh track ---------- */
+function bsHTML(){ const B=D.bs; if(!B) return ''; const det=SP.det[B.sid+'|'+B.k], t=SP.lk&&SP.lk.tracks.find(x=>x[0]===B.k); if(!det||!det.lessons) return '';
+ const L=det.lessons.filter(x=>x[2]===B.lv), track=t?t[1]:B.k;
+ return `<div class="sd-shade sd-noprint" data-sd="bsx"></div><div class="sd-rep-wrap"><div class="sd-rep">
+  <div class="sd-noprint sd-rep-bar"><b>🖨 Bechina sheet</b><span style="flex:1"></span><button class="sd-btn ghost" data-sd="bsx">Close</button><button class="sd-btn" data-sd="repprint">🖨 Print</button></div>
+  <div class="sd-paper sd-bs"><div class="hd"><div><small>Tashbar · Bechina</small><h2>${E(boyName(B.sid))}</h2><span>${E(track)} · Level ${B.lv} · ${L.length} lessons</span></div><div class="big" style="font-size:16px;text-align:right;line-height:1.6">Date: ____________<br>Rebbe: ____________</div></div>
+  <table><thead><tr><th>#</th><th>Lesson</th><th>In the app</th><th>✓</th><th>✗</th><th>Notes</th></tr></thead><tbody>${L.map((x,i)=>`<tr><td>${i+1}</td><td>${E(x[1])}</td><td>${x[3]?'✅ mastered':x[4]?'🎓 bechina':'—'}</td><td class="bx"></td><td class="bx"></td><td class="nt"></td></tr>`).join('')}</tbody></table>
+  <p class="sum">Result: &nbsp; ☐ Passed the Level ${B.lv} bechina &nbsp;&nbsp; ☐ Review these and try again on ____________</p>
+  <p class="sig">Rebbe's signature: ________________________</p>
+  <p class="ft">After the student passes, tap <b>✓ Passed the Level ${B.lv} bechina</b> in their Kodesh drawer. · Printed ${E(new Date().toLocaleDateString())}</p></div></div></div>`; }
+
+/* ---------- 🎯 one goal for everyone shown (v189) ---------- */
+function cgHTML(){ const G=D.cg; if(!G) return ''; const W=D.wk[0], B=W&&W.d?W.d.boys.filter(b=>X.inGrp(b.id)):[];
+ return `<div class="sd-shade" data-sd="cgx"></div><div class="sd-pop" role="dialog" aria-label="One goal for everyone"><h3>🎯 One goal for ${B.length} students${X.grpName()?' in '+E(X.grpName()):''}</h3><p>Every student sees it on their home screen${G.tk?' with their own progress bar':''}, and it is saved in each student's notes.</p>
+ <textarea id="sd-cgt" rows="2" maxlength="600" placeholder="e.g. Everyone finishes Chumash Level 2 before Chanukah!">${E(G.text)}</textarea>
+ ${SP.lk?`<div class="sd-goalt" style="margin-top:8px"><small>Track it: finish</small><select id="sd-cgk"><option value="">no track</option>${SP.lk.tracks.map(t=>`<option value="${E(t[0])}" ${G.tk===t[0]?'selected':''}>${E(t[1])}</option>`).join('')}</select><select id="sd-cgl">${Array.from({length:12},(_,i)=>`<option value="${i+1}" ${Number(G.tl||1)===i+1?'selected':''}>Level ${i+1}</option>`).join('')}</select></div>`:''}
+ <div class="row"><button class="sd-btn ghost" data-sd="cgx">Cancel</button><button class="sd-btn gold" data-sd="cggo" ${D.busy||!B.length?'disabled':''}>🎯 Send to ${B.length} students</button></div></div>`; }
+
+/* ---------- 🧑‍🏫 teach it together (v187) ---------- */
+function teachHTML(){ const T=D.teach; if(!T) return ''; return `<div class="sd-shade" data-sd="teachx"></div><div class="sd-pop" role="dialog" aria-label="Teach it together"><h3>🧑‍🏫 Teach it together</h3>
+ <p><b>${E(T.name)}</b> for ${(T.all&&T.grp?T.grp.sids:T.sids).length>6?(T.all&&T.grp?T.grp.sids:T.sids).length+' students':(T.all&&T.grp?T.grp.sids:T.sids).map(id=>E(first(id))).join(', ')}. Their screens show ONLY this lesson until the time is up. Teach it at the board, then they practice it on their own screen.</p>
+ ${T.grp?`<label style="display:flex;gap:8px;align-items:center;font-weight:700;margin:0 0 8px"><input type="checkbox" id="sd-tall" ${T.all?'checked':''}> Teach it to everyone in ${E(T.grp.name)} (${T.grp.sids.length} students)</label>`:''}
+ <div class="sd-kinds">${[10,15,20,30,45].map(m=>`<button class="${T.min===m?'on':''}" data-sd="tmin" data-m="${m}">${m} minutes</button>`).join('')}</div>
+ <div class="row"><button class="sd-btn ghost" data-sd="teachx">Cancel</button><button class="sd-btn" data-sd="teachgo" ${D.busy?'disabled':''}>🧑‍🏫 Start the class</button></div></div>`; }
+
+/* ---------- render hook ---------- */
+const _render=render;
+render=function(){ _render.apply(this,arguments);
+ try{ if(S.out||!S.d||!S.d.boys) return; css();
+  if(!D.started){ D.started=true; loadDesk(); loadReady(); loadSince(); }
+  deskCard(); sinceCard(); badges(); cardFix(); readyCard(); drawerLevel();
+  if(D.rep){ const old=document.querySelector('.sd-rep-wrap'); if(!old){ document.getElementById('app').insertAdjacentHTML('beforeend',repHTML()); } }
+  if(D.bs&&!document.querySelector('.sd-rep-wrap')) document.getElementById('app').insertAdjacentHTML('beforeend',bsHTML());
+  document.body.classList.toggle('sd-printing',!!(D.rep||D.bs));
+  if(D.cg&&!document.querySelector('.sd-pop')) document.getElementById('app').insertAdjacentHTML('beforeend',cgHTML());
+  if(D.teach&&!document.querySelector('.sd-pop')) document.getElementById('app').insertAdjacentHTML('beforeend',teachHTML());
+  if(D.pop&&!document.querySelector('.sd-pop')) document.getElementById('app').insertAdjacentHTML('beforeend',popHTML());
+  const f=D.focus&&document.getElementById(D.focus); if(f){ f.focus(); try{ f.setSelectionRange(f.value.length,f.value.length); }catch(e){} D.focus=null; }
+ }catch(e){ console.error('StaffDesk',e); } };
+window.SPD={pickBtn,week:weekView};
+
+/* ---------- clicks, typing ---------- */
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-sd]'); if(!b) return; const a=b.dataset.sd, sid=b.dataset.id;
+ if(a==='pick'){ const id=b.dataset.l; doPick([sid],id,''); return; }
+ if(a==='unpick'){ doPick([sid],b.dataset.l,'',true); return; }
+ if(a==='find'){ D.find={card:sid,sids:[sid],q:'',subj:'all',note:'',all:false}; loadCat(); D.focus='sd-fq'; render(); return; }
+ if(a==='fclose'){ D.find=null; render(); return; }
+ if(a==='fsub'){ if(D.find){ D.find.subj=b.dataset.f; render(); } return; }
+ if(a==='pickgo'){ const F=D.find; if(!F) return; let sids=F.sids; if(F.all){ const g=SP.groups&&SP.groups.find(x=>x.id===SP.grp); if(g) sids=g.sids.slice(); } doPick(sids,b.dataset.l,F.note); return; }
+ if(a==='kind'){ const C=compOf(sid); C.kind=b.dataset.k; if(C.kind!=='praise'&&C.kind!=='goal') C.toBoy=false; D.focus='sd-nt-'+sid; render(); return; }
+ if(a==='quick'){ const C=compOf(sid); C.text=b.dataset.t; C.toBoy=true; D.focus='sd-nt-'+sid; render(); return; }
+ if(a==='save'){ const C=compOf(sid); if(!C.text.trim()){ D.focus='sd-nt-'+sid; say('Write a few words first.'); render(); return; } D.busy=true; render();
+  run('sgNote',S.token,sid,C.kind,C.text,C.toBoy,C.kind==='goal'&&C.tk?{k:C.tk,level:Number(C.tl||1)}:null).then(r=>{ D.busy=false; D.notes[sid]={at:Date.now(),d:r}; const sent=C.toBoy; D.comp[sid]={kind:'note',text:'',toBoy:false}; say(sent?`🎉 Sent! ${first(sid)} will see it on their home screen.`:'Note saved.'); loadDesk(); render(); })
+   .catch(err=>{ D.busy=false; say(msg(err)); render(); }); return; }
+ if(a==='del'){ if(D.armDel!==b.dataset.n){ D.armDel=b.dataset.n; render(); return; } D.armDel=null; run('sgNoteDelete',S.token,b.dataset.n).then(r=>{ D.notes[r.sid]={at:Date.now(),d:r}; loadDesk(); say('Note deleted.'); render(); }).catch(err=>say(msg(err))); return; }
+ if(a==='wkb'){ D.back=Math.max(0,Number(b.dataset.v)||0); render(); return; }
+ if(a==='wkre'){ loadWeek(D.back,true); return; }
+ if(a==='wkcopy'||a==='wkmail'){ const W=D.wk[D.back]; if(!W||!W.d) return; const t=weekText(W.d);
+  if(a==='wkcopy'){ try{ navigator.clipboard.writeText(t).then(()=>say('Copied. Paste it into an email or a message.'),()=>say('Could not copy.')); }catch(x){ say('Could not copy.'); } return; }
+  const sub='Tashbar weekly summary'+(X.grpName()?' · '+X.grpName():'')+' · '+weekLabel(W.d); location.href='mailto:?subject='+encodeURIComponent(sub)+'&body='+encodeURIComponent(t.length>1800?t.slice(0,1780)+'\n…':t); return; }
+ if(a==='shout'){ const n=Number(b.dataset.n)||0; D.pop={sid,text:b.dataset.j?`Wow, ${first(sid)}! You worked so much harder this week. Keep it up! 🚀`:`Mazel tov, ${first(sid)}! You mastered ${n} lesson${n===1?'':'s'} this week. Keep shining! 🌟`}; D.focus='sd-pt'; render(); return; }
+ if(a==='jump'){ const t=document.querySelector('aside.drawer .'+b.dataset.to); if(t) t.scrollIntoView({behavior:'smooth',block:'start'}); if(b.dataset.to==='sd-picks'&&!D.find){ D.find={card:S.card,sids:[S.card],q:'',subj:'all',note:'',all:false}; loadCat(); D.focus='sd-fq'; render(); setTimeout(()=>{ const f=document.querySelector('aside.drawer .sd-picks'); if(f) f.scrollIntoView({block:'start'}); },60); } if(b.dataset.to==='sd-notes'){ setTimeout(()=>{ const x=document.getElementById('sd-nt-'+S.card); if(x) x.focus(); },300); } return; }
+ if(a==='jshout'){ D.pop={sid,text:`Way to go, ${first(sid)}! 🌟`}; D.focus='sd-pt'; render(); return; }
+ if(a==='sinceok'){ D.sinceT=Date.now(); try{ localStorage.setItem('sd-since',String(D.sinceT)); }catch(x){} D.since={at:Date.now(),since:D.sinceT,boys:[],names:{}}; render(); return; }
+ if(a==='rdy'){ D.readyOpen=!D.readyOpen; render(); return; }
+ if(a==='lvb'){ const key=sid+'|'+b.dataset.k+'|'+b.dataset.v; if(D.armLv!==key){ D.armLv=key; render(); return; } D.armLv=null; D.busy=true; render();
+  run('sgLevelBechina',S.token,sid,b.dataset.k,Number(b.dataset.v)).then(r=>{ D.busy=false; D.ready=r; say('🎓 Level bechina saved. Mazel tov!'); try{ loadDet(sid,b.dataset.k,true); }catch(x){} try{ SP.det[sid+'|'+b.dataset.k]=null; }catch(x){} render(); }).catch(err=>{ D.busy=false; say(msg(err)); render(); }); return; }
+ if(a==='rep'){ D.rep={sid,msg:''}; S.card=null; loadWeek(0); loadNotes(sid,true); render(); return; }
+ if(a==='bsheet'){ D.bs={sid,k:b.dataset.k,lv:Number(b.dataset.v)}; SP.lkOpen=null; render(); return; }
+ if(a==='bsx'){ D.bs=null; render(); return; }
+ if(a==='repall'){ D.rep={all:1,msg:''}; render(); return; }
+ if(a==='repx'){ D.rep=null; render(); return; }
+ if(a==='repprint'){ window.print(); return; }
+ if(a==='star'){ const n=Number(b.dataset.n)||0; D.pop={sid,star:1,text:`You are this week's Star, ${first(sid)}! ${n} lesson${n===1?'':'s'} mastered. We are so proud of you! ⭐`}; D.focus='sd-pt'; render(); return; }
+ if(a==='cg'){ D.cg={text:'',tk:'',tl:1}; D.focus='sd-cgt'; render(); return; }
+ if(a==='cgx'){ D.cg=null; render(); return; }
+ if(a==='cggo'){ const G=D.cg, W=D.wk[0]; if(!G||!W||!W.d) return; const t=(document.getElementById('sd-cgt')||{}).value||G.text; if(!t.trim()){ say('Write the goal first.'); return; } const ids=W.d.boys.filter(b=>X.inGrp(b.id)).map(b=>b.id);
+  D.busy=true; render(); run('sgNoteMany',S.token,ids,'goal',t,true,G.tk?{k:G.tk,level:Number(G.tl||1)}:null).then(r=>{ D.busy=false; D.cg=null; D.desk=r; D.notes={}; say(`🎯 Goal sent to ${ids.length} students.`); render(); }).catch(err=>{ D.busy=false; say(msg(err)); render(); }); return; }
+ if(a==='teach1'){ const g=SP.grp&&SP.groups&&SP.groups.find(x=>x.id===SP.grp&&x.sids.indexOf(sid)>=0&&x.sids.length>1); D.teach={l:b.dataset.l,name:lessonName(b.dataset.l),sids:[sid],min:15,grp:g||null,all:false}; SP.lkOpen=null; render(); return; }
+ if(a==='teach'){ D.teach={l:b.dataset.l,name:b.dataset.n,sids:String(b.dataset.ids||'').split(',').filter(Boolean),min:15}; render(); return; }
+ if(a==='tmin'){ if(D.teach){ D.teach.min=Number(b.dataset.m)||15; render(); } return; }
+ if(a==='teachx'){ D.teach=null; render(); return; }
+ if(a==='teachgo'){ const T=D.teach; if(!T) return; D.busy=true; render(); run('sgTeachTogether',S.token,T.all&&T.grp?T.grp.sids:T.sids,T.l,T.min).then(r=>{ D.busy=false; D.teach=null; try{ if(typeof S!=='undefined') S.tmList=r; }catch(x){} const nb=(T.all&&T.grp?T.grp.sids:T.sids).length; say(`🧑‍🏫 Class started for ${nb} student${nb===1?'':'s'} for ${T.min} minutes. End it any time in Teacher mode.`); render(); }).catch(err=>{ D.busy=false; say(msg(err)); render(); }); return; }
+ if(a==='popx'){ D.pop=null; render(); return; }
+ if(a==='popq'){ if(D.pop){ D.pop.text=b.dataset.t; D.focus='sd-pt'; render(); } return; }
+ if(a==='popgo'){ const P=D.pop; if(!P||!P.text.trim()) return; D.busy=true; render(); run('sgNote',S.token,P.sid,P.star?'star':'praise',P.text,true).then(r=>{ D.busy=false; D.pop=null; D.notes[P.sid]={at:Date.now(),d:r}; say(`🎉 Sent! ${first(P.sid)} will see it on their home screen.`); loadDesk(); render(); }).catch(err=>{ D.busy=false; say(msg(err)); render(); }); return; }
+},true);
+document.addEventListener('input',e=>{ const t=e.target; if(!t||!t.id) return;
+ if(t.id==='sd-fq'&&D.find){ D.find.q=t.value; D.focus='sd-fq'; render(); return; }
+ if(t.id==='sd-fn'&&D.find){ D.find.note=t.value; return; }
+ if(t.id==='sd-pt'&&D.pop){ D.pop.text=t.value; return; }
+ if(t.id==='sd-cgt'&&D.cg){ D.cg.text=t.value; return; }
+ if(t.id==='sd-repmsg'&&D.rep){ D.rep.msg=t.value; document.querySelectorAll('.sd-paper .msg').forEach(m=>{ m.textContent=t.value; }); document.querySelectorAll('.sd-paper .msgh').forEach(h=>{ h.style.display=t.value?'':'none'; }); return; }
+ if(t.id.indexOf('sd-nt-')===0){ compOf(t.id.slice(6)).text=t.value; return; } });
+document.addEventListener('change',e=>{ const t=e.target; if(!t) return;
+ if(t.id==='sd-tall'&&D.teach){ D.teach.all=t.checked; const p=document.querySelector('.sd-pop'); if(p){ p.remove(); document.querySelector('.sd-shade')&&document.querySelector('.sd-shade').remove(); } render(); return; }
+ if(t.id==='sd-cgk'&&D.cg){ D.cg.tk=t.value; return; }
+ if(t.id==='sd-cgl'&&D.cg){ D.cg.tl=t.value; return; }
+ if(t.id==='sd-fall'&&D.find){ D.find.all=t.checked; return; }
+ if(t.dataset&&t.dataset.sdInc&&D.rep&&D.rep.inc){ D.rep.inc[t.dataset.sdInc]=t.checked?1:0; const l=t.closest('label'); if(l) l.classList.toggle('off',!t.checked); return; }
+ if(t.dataset&&t.dataset.sdGk){ compOf(t.dataset.sdGk).tk=t.value; if(t.value) compOf(t.dataset.sdGk).toBoy=true; render(); return; }
+ if(t.dataset&&t.dataset.sdGl){ compOf(t.dataset.sdGl).tl=t.value; return; }
+ if(t.dataset&&t.dataset.sdChk){ compOf(t.dataset.sdChk).toBoy=t.checked; render(); return; }
+ if(t.matches&&t.matches('[data-sd-sort]')){ D.wkSort=t.value; render(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ if(D.bs){ D.bs=null; render(); } else if(D.cg){ D.cg=null; render(); } else if(D.teach){ D.teach=null; render(); } else if(D.rep){ D.rep=null; render(); } else if(D.pop){ D.pop=null; render(); } else if(D.find){ D.find=null; render(); } } });
+if(S.d&&S.d.boys) render();
+})();
+</script>

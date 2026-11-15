@@ -1,0 +1,259 @@
+<style>
+#cp{position:fixed;inset:0;z-index:2147483000;background:#F7F8FB;color:#1F2937;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;display:flex;flex-direction:column}
+#cp *{box-sizing:border-box}
+#cp header{background:#1E293B;color:#fff;padding:10px 14px 10px 180px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#cp header h1{font-size:18px;margin:0;flex:1;min-width:200px}
+#cp header small{opacity:.75;font-weight:400}
+#cp button{font:inherit;cursor:pointer;border:0;border-radius:10px}
+#cp .cp-hb{background:rgba(255,255,255,.14);color:#fff;padding:7px 12px}
+#cp .cp-wrap{flex:1;display:flex;min-height:0}
+#cp nav{width:230px;background:#fff;border-right:1px solid #E5E7EB;overflow:auto;padding:8px}
+#cp nav button{display:flex;justify-content:space-between;width:100%;text-align:left;background:none;padding:9px 10px;margin:1px 0;color:#1F2937}
+#cp nav button.on{background:#EEF2FF;color:#4338CA;font-weight:700}
+#cp nav span{color:#6B7280;font-size:13px}
+#cp main{flex:1;overflow:auto;padding:12px 16px 60px}
+#cp .cp-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px;position:sticky;top:-12px;background:#F7F8FB;padding:8px 0;z-index:2}
+#cp .cp-bar input{flex:1;min-width:180px;padding:9px 12px;border:2px solid #E5E7EB;border-radius:10px;font:inherit}
+#cp .cp-sb{background:#fff;border:1px solid #D1D5DB;padding:8px 12px;color:#1F2937}
+#cp details.cp-lv{background:#fff;border:1px solid #E5E7EB;border-radius:14px;margin-bottom:10px}
+#cp details.cp-lv>summary{cursor:pointer;padding:10px 14px;font-weight:800;font-size:16px;list-style:none}
+#cp details.cp-lv>summary span{color:#6B7280;font-weight:400;font-size:13px;margin-left:6px}
+#cp .cp-sk{border-top:1px solid #F1F5F9;padding:8px 14px}
+#cp .cp-skh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#cp .cp-skh b{flex:1;min-width:160px}
+#cp .cp-id{color:#94A3B8;font:12px ui-monospace,Menlo,monospace}
+#cp .cp-bd{font-size:12px;border-radius:999px;padding:2px 8px;background:#F1F5F9;color:#475569}
+#cp .cp-bd.tt{background:#ECFDF5;color:#047857}
+#cp .cp-kb{background:#4F46E5;color:#fff;padding:5px 10px;font-size:13px}
+#cp .cp-mb{background:#F1F5F9;color:#1F2937;padding:5px 10px;font-size:13px}
+#cp .cp-mat{margin:8px 0 4px;padding:10px 12px;background:#FAFAFB;border-radius:10px;border:1px solid #EEF2F7}
+#cp .cp-mat h4{margin:10px 0 4px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:#6366F1}
+#cp .cp-mat h4:first-child{margin-top:0}
+#cp .cp-q{padding:5px 0;border-bottom:1px dashed #E5E7EB}
+#cp .cp-q:last-child{border-bottom:0}
+#cp .cp-ok{color:#047857;font-weight:700}
+#cp .cp-no{color:#9CA3AF}
+#cp .cp-how{color:#6B7280;font-size:13px;margin-top:2px}
+#cp .cp-he{font-family:"Taamey Frank CLM","SBL Hebrew","Noto Serif Hebrew","Times New Roman",serif;font-size:19px}
+#cp .cp-empty{color:#6B7280;padding:30px;text-align:center}
+#cpBack{position:fixed;top:10px;left:50%;transform:translateX(-50%);z-index:2147483001;background:#1E293B;color:#fff;border:0;border-radius:999px;padding:10px 18px;font:700 15px system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.25);display:none;cursor:pointer}
+@media(max-width:720px){#cp header{padding-left:110px}#cp nav{position:absolute;top:52px;bottom:0;left:0;z-index:5;box-shadow:4px 0 18px rgba(0,0,0,.15);display:none}#cp nav.open{display:block}#cp .cp-navt{display:inline-block}}
+@media(min-width:721px){#cp .cp-navt{display:none}}
+@media print{#cp{position:static}#cp header,#cp nav,#cp .cp-bar,#cp .cp-kb,#cp .cp-mb,#cpBack{display:none!important}#cp main{overflow:visible}#cp details.cp-lv{break-inside:avoid-page}}
+#cpF{position:fixed;inset:0;z-index:2147483002;background:rgba(15,23,42,.92);display:none;flex-direction:column;align-items:center;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#fff}
+#cpF *{box-sizing:border-box}
+#cpF .fh{width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px}
+#cpF .fh b{flex:1;font-size:16px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#cpF .fh button,#cpF .fn button{border:0;border-radius:999px;cursor:pointer;font:700 15px system-ui,sans-serif}
+#cpF .fx{background:rgba(255,255,255,.15);color:#fff;padding:8px 14px}
+#cpF .fst{flex:1;width:100%;display:flex;align-items:center;justify-content:center;gap:10px;min-height:0;padding:0 8px}
+#cpF .farr{background:rgba(255,255,255,.18);color:#fff;width:48px;height:48px;font-size:22px!important;flex:0 0 auto}
+#cpF .fphone{width:min(420px,calc(100vw - 130px));height:100%;max-height:calc(100vh - 150px);background:#111827;border-radius:34px;padding:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);display:flex;flex-direction:column}
+#cpF .fscr{flex:1;border-radius:24px;overflow:auto;background:var(--bg,#F8FAFC);color:#1F2937;position:relative}
+#cpF .fsnap{pointer-events:none;padding:10px}
+#cpF .fsnap .qcard{min-height:0!important;margin:0}
+#cpF .fsnap{zoom:.78}
+#cpF .fcap{background:#ECFDF5;color:#065F46;border-radius:0 0 22px 22px;padding:8px 12px;font-size:13px;max-height:34%;overflow:auto}
+#cpF .fcap .no{color:#9CA3AF}
+#cpF .ftag{display:inline-block;font:800 11px system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:3px 10px;margin-bottom:6px}
+#cpF .fchalk{min-height:100%;background:radial-gradient(ellipse at 30% 20%,#2f5d46,#1f4433 60%,#183829);color:#F8FAFC;padding:18px 16px;font:600 18px/1.45 'Andika','Comic Sans MS',system-ui,sans-serif}
+#cpF .fchalk .ftag{background:#FDE68A;color:#1F2937}
+#cpF .fchalk h3{font:800 24px/1.25 system-ui,sans-serif;color:#FEF9C3;margin:4px 0 10px}
+#cpF .fchalk .q{color:#BAE6FD;font-weight:800;border-left:4px solid #7DD3FC;padding-left:10px;margin:6px 0}
+#cpF .fchalk ol{margin:6px 0 6px 22px;padding:0}
+#cpF .fchalk .ans{display:inline-block;margin-top:8px;border:3px solid #FDE047;border-radius:999px;padding:4px 14px;color:#FDE047;font-weight:800}
+#cpF .fchalk .bad{color:#FCA5A5;text-decoration:line-through}#cpF .fchalk .good{color:#86EFAC}#cpF .fchalk .warm{color:#FDBA74}
+#cpF .fchalk .opt{display:inline-block;border:2px dashed #F8FAFC;border-radius:12px;padding:4px 12px;margin:4px 6px 0 0}
+#cpF .fchalk .opt.ok{border-style:solid;border-color:#86EFAC;color:#86EFAC}
+#cpF .fn{display:flex;gap:6px;align-items:center;padding:10px;flex-wrap:wrap;justify-content:center;max-width:100%}
+#cpF .fn .fc{font-weight:700;min-width:70px;text-align:center}
+#cpF .fn .fsec{background:rgba(255,255,255,.12);color:#fff;padding:6px 12px;font-size:13px!important}
+#cpF .fn .fsec.on{background:#FDE68A;color:#1F2937}
+#cp .cp-artg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+#cp .cp-art{background:#fff;border:1px solid #F5D0FE;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:4px}
+#cp .cp-art b{font-size:15px}
+#cp .cp-arti{font-size:30px}
+#cp .cp-art .cp-kb{align-self:flex-start;margin-top:6px}
+#cp .cp-fb{background:#0EA5E9;color:#fff;padding:5px 10px;font-size:13px}
+@media(max-width:560px){#cpF .farr{width:38px;height:38px}#cpF .fphone{width:calc(100vw - 96px);border-radius:24px;padding:8px}}
+</style>
+<div id="cp"><header><button class="cp-hb cp-navt" id="cpNav">☰ Subjects</button><h1>📚 Curriculum Preview <small id="cpWho"></small></h1><button class="cp-hb" id="cpStaff">← Staff screen</button></header>
+<div class="cp-wrap"><nav id="cpN"></nav><main id="cpM"><div class="cp-empty">Loading every lesson... this takes a few seconds the first time.</div></main></div></div>
+<button id="cpBack">← Back to staff view</button>
+<div id="cpF" role="dialog" aria-modal="true" aria-label="Full lesson preview"><div class="fh"><b id="cpFt"></b><button class="fx" id="cpFk">▶ Try it as a kid</button><button class="fx" id="cpFx">✕ Close</button></div><div class="fst"><button class="farr" id="cpFp" aria-label="Previous">◀</button><div class="fphone"><div class="fscr" id="cpFs"></div></div><button class="farr" id="cpFn" aria-label="Next">▶</button></div><div class="fn" id="cpFb"></div></div>
+<script>
+(function(){
+ var SUBJ=[['MATH','Math'],['READ','Reading'],['LANG','Writing & Language'],['SCI','Science'],['SS','Social Studies'],['COMP','Computing'],['LIFE','Life & Money'],['SIM',"B'Simcha"],['ELEC','Electives'],['LK','Limudei Kodesh'],['HEB','Lashon Hakodesh'],['VOC','Trades']];
+ var C={idx:null,subj:'MATH',q:'',open:{},token:null,url:null,kid:false};
+ function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+ function he(s){ return /[֐-׿]/.test(String(s))?'<span class="cp-he" dir="rtl">'+esc(s)+'</span>':esc(s); }
+ function bank(){ try{ return typeof BANK_ALL!=='undefined'?BANK_ALL:null; }catch(e){ return null; } }
+ function sess(){ try{ return JSON.parse(sessionStorage.getItem('tl-session')||'null'); }catch(e){ return null; } }
+ function call(fn){ var a=[].slice.call(arguments,1); return new Promise(function(res,rej){ google.script.run.withSuccessHandler(res).withFailureHandler(function(e){ rej(e&&e.message?e.message:String(e)); })[fn].apply(null,a); }); }
+ function subjOf(id){ var p=String(id).split('.')[0]; return p==='WRIT'?'LANG':p; }
+ function worldOf(id){ var p=String(id).split('.')[0]; return (p==='LK'||p==='HEB')?'LK':p==='LANG'?'WRIT':p; }
+ function lvl(id){ var m=/\.L(\d+)/.exec(id); return m?Number(m[1]):0; }
+ function nm(id){ try{ return skillName(id)||id; }catch(e){ var s=bank()[id]; return (s&&s.name)||id; } }
+ function items(s){ var out=[]; ['teach','we','practice','check'].forEach(function(ph){ (s[ph]||[]).forEach(function(it){ out.push([ph,it]); }); }); return out; }
+ function kinds(s){ var k={}; items(s).forEach(function(x){ var it=x[1]; if(it&&typeof it==='object') k[it.t||'tap']=1; }); return Object.keys(k); }
+ function allIds(){ var B=bank()||{}, o={}; Object.keys(B).forEach(function(k){ o[k]=1; });
+  [typeof MK8!=='undefined'?MK8:{}, window.TL_TEACH||{}, window.TL_DO||{}].forEach(function(src){ Object.keys(src).forEach(function(k){ if(o[k]||!/^[A-Z]+\.[A-Z]*\.?L\d+/.test(k)) return; try{ var n=skillName(k); if(n&&n!==k) o[k]=1; }catch(e){} }); });
+  return Object.keys(o); }
+ function build(){ var idx={}; SUBJ.forEach(function(x){ idx[x[0]]={}; }); try{ if(!A.st) A.st=loadStudent({id:'PREVIEW',name:'Preview Student'}); }catch(e){}
+  allIds().forEach(function(id){ var s=subjOf(id); if(!idx[s]) idx[s]={}; var L=lvl(id); (idx[s][L]=idx[s][L]||[]).push(id); });
+  Object.keys(idx).forEach(function(s){ Object.keys(idx[s]).forEach(function(L){ idx[s][L].sort(); }); }); C.idx=idx; }
+ function count(s){ var n=0; Object.keys(C.idx[s]||{}).forEach(function(L){ n+=C.idx[s][L].length; }); return n; }
+ function nav(){ var h=SUBJ.filter(function(x){ return count(x[0]); }).map(function(x){ return '<button data-s="'+x[0]+'" class="'+(C.subj===x[0]?'on':'')+'">'+esc(x[1])+'<span>'+count(x[0])+'</span></button>'; }).join('');
+  var n=document.getElementById('cpN'); n.innerHTML=h; n.querySelectorAll('[data-s]').forEach(function(b){ b.onclick=function(){ C.subj=b.getAttribute('data-s'); C.q=''; n.classList.remove('open'); nav(); main(); document.getElementById('cpM').scrollTop=0; }; }); }
+ function matches(id){ if(!C.q) return true; var q=C.q.toLowerCase(); if((nm(id)+' '+id).toLowerCase().indexOf(q)>=0) return true; try{ return JSON.stringify(bank()[id]).toLowerCase().indexOf(q)>=0||JSON.stringify((window.TL_TEACH||{})[id]||'').toLowerCase().indexOf(q)>=0; }catch(e){ return false; } }
+ function main(){
+  var m=document.getElementById('cpM'), B=bank(), T=window.TL_TEACH||{}, subjects=C.q?SUBJ.map(function(x){ return x[0]; }):[C.subj], h='';
+  h+='<div class="cp-bar"><input id="cpQ" placeholder="Search all subjects: a word, a topic, a skill name..." value="'+esc(C.q)+'"><button class="cp-sb" id="cpAll">Open all</button><button class="cp-sb" id="cpNone">Close all</button><button class="cp-sb" id="cpPrint">🖨 Print</button><button class="cp-sb" id="cpArt" style="background:#FDF2F8;border-color:#F9A8D4;color:#9D174D;font-weight:700">🎨 Art Studio</button></div>';
+  var any=false;
+  subjects.forEach(function(s){ var levels=Object.keys(C.idx[s]||{}).map(Number).sort(function(a,b){ return a-b; }); var sname=(SUBJ.filter(function(x){ return x[0]===s; })[0]||[s,s])[1];
+   var blocks=levels.map(function(L){ var ids=C.idx[s][L].filter(matches); if(!ids.length) return ''; any=true;
+     var tt=ids.filter(function(id){ return T[id]; }).length;
+     return '<details class="cp-lv"'+(C.q||C.open[s+L]?' open':'')+' data-k="'+s+L+'"><summary>'+(C.q?esc(sname)+' · ':'')+'Level '+L+'<span>'+ids.length+' skills · '+tt+' with Teacher Time</span></summary>'+ids.map(function(id){ var sk=B[id];
+      return '<div class="cp-sk" data-id="'+esc(id)+'"><div class="cp-skh"><b>'+esc(nm(id))+'</b><span class="cp-id">'+esc(id)+'</span>'+(sk?'<span class="cp-bd">'+items(sk).length+' items</span>':'<span class="cp-bd">fresh questions each time</span>')+(T[id]?'<span class="cp-bd cp-tt">Teacher Time ✓</span>':'')+(sk?kinds(sk).filter(function(k){ return k!=='tap'; }).map(function(k){ return '<span class="cp-bd">'+esc(k)+'</span>'; }).join(''):'')
+       +'<button class="cp-fb" data-fb="'+esc(id)+'" title="See the whole lesson, screen by screen, as a child sees it">🔍 Full preview</button><button class="cp-mb" data-mat="'+esc(id)+'">Show material ▾</button><button class="cp-kb" data-kid="'+esc(id)+'">▶ Kid view</button></div><div class="cp-matw"></div></div>'; }).join('')+'</details>'; }).join('');
+   if(blocks) h+=(C.q?'':'<h2 style="margin:6px 0 10px">'+esc(sname)+'</h2>')+blocks; });
+  if(!any) h+='<div class="cp-empty">Nothing matches.</div>';
+  m.innerHTML=h;
+  var qi=document.getElementById('cpQ'), t=null; qi.oninput=function(){ clearTimeout(t); t=setTimeout(function(){ C.q=qi.value.trim(); main(); var n=document.getElementById('cpQ'); n.focus(); n.setSelectionRange(n.value.length,n.value.length); },350); };
+  document.getElementById('cpAll').onclick=function(){ m.querySelectorAll('details.cp-lv').forEach(function(d){ d.open=true; C.open[d.getAttribute('data-k')]=1; }); };
+  document.getElementById('cpNone').onclick=function(){ m.querySelectorAll('details.cp-lv').forEach(function(d){ d.open=false; C.open[d.getAttribute('data-k')]=0; }); };
+  document.getElementById('cpArt').onclick=artStudio;
+  document.getElementById('cpPrint').onclick=function(){ m.querySelectorAll('details.cp-lv').forEach(function(d){ d.open=true; }); m.querySelectorAll('[data-mat]').forEach(function(b){ var w=b.closest('.cp-sk').querySelector('.cp-matw'); if(!w.innerHTML) w.innerHTML=material(b.getAttribute('data-mat')); }); setTimeout(function(){ window.print(); },300); };
+  m.querySelectorAll('details.cp-lv').forEach(function(d){ d.addEventListener('toggle',function(){ C.open[d.getAttribute('data-k')]=d.open?1:0; }); });
+  m.querySelectorAll('[data-mat]').forEach(function(b){ b.onclick=function(){ var w=b.closest('.cp-sk').querySelector('.cp-matw'); if(w.innerHTML){ w.innerHTML=''; b.textContent='Show material ▾'; } else { w.innerHTML=material(b.getAttribute('data-mat')); b.textContent='Hide material ▴'; } }; });
+  m.querySelectorAll('[data-kid]').forEach(function(b){ b.onclick=function(){ kid(b.getAttribute('data-kid')); }; });
+  m.querySelectorAll('[data-fb]').forEach(function(b){ b.onclick=function(){ flip(b.getAttribute('data-fb')); }; });
+ }
+ function howOf(id,q){ try{ var d=(window.TL_DO||{})[id]; if(!d) return ''; return (d.q&&d.q[q])||''; }catch(e){ return ''; } }
+ function itemHtml(id,it){
+  if(typeof it==='string') return '<div class="cp-q">'+he(it)+'</div>';
+  if(!it||typeof it!=='object') return '';
+  var t=it.t||'tap', h='<div class="cp-q"><span class="cp-bd">'+esc(t)+'</span> '+he(it.q||'');
+  if(it.pic&&String(it.pic).length<160) h+='<div class="cp-how">Picture: '+he(it.pic)+'</div>';
+  try{
+   if(t==='sort'){ h+='<div>'+(it.bins||[]).map(function(b){ return '<b>'+he(b.label)+':</b> '+(it.items||[]).filter(function(x){ return String(x.bin)===String(b.id); }).map(function(x){ return he(x.label); }).join(', '); }).join('<br>')+'</div>'; }
+   else if(t==='pairs'){ h+='<div>'+(it.pairs||[]).map(function(p){ return he(p[0])+' ↔ '+he(p[1]); }).join(' · ')+'</div>'; }
+   else if(t==='spotall'){ h+='<div>'+(it.cells||[]).map(function(c){ return '<span class="'+(c.ok?'cp-ok':'cp-no')+'">'+(c.ok?'✓ ':'')+he(c.label)+'</span>'; }).join(' · ')+'</div>'; }
+   else if(t==='order'){ var seq=it.tiles||it.o||it.order||[]; h+='<div><span class="cp-ok">In order:</span> '+seq.map(function(x){ return he(typeof x==='object'?(x.label||x.t||JSON.stringify(x)):x); }).join(' → ')+'</div>'; }
+   else if(Array.isArray(it.o)&&it.o.length){ var right=it.correct!==undefined?String(it.correct):it.a!==undefined?String(it.a):String(it.o[0]); h+='<div>'+it.o.map(function(o){ var ok=String(o)===right; return '<span class="'+(ok?'cp-ok':'cp-no')+'">'+(ok?'✓ ':'')+he(o)+'</span>'; }).join(' · ')+'</div>'; }
+   else if(it.a!==undefined) h+='<div><span class="cp-ok">Answer:</span> '+he(it.a)+(it.alt?' <span class="cp-no">(also: '+esc([].concat(it.alt).join(', '))+')</span>':'')+'</div>';
+  }catch(e){}
+  var hw=howOf(id,it.q)||it.how||it.h||''; if(hw) h+='<div class="cp-how">💡 '+esc(String(hw).replace(/\n/g,' · '))+'</div>';
+  if(it.why) h+='<div class="cp-how">Why: '+esc(it.why)+'</div>';
+  return h+'</div>';
+ }
+ function material(id){
+  var s=bank()[id]||{}, T=(window.TL_TEACH||{})[id], h='<div class="cp-mat">';
+  if(T){ h+='<h4>Teacher Time</h4><div><b>'+he(T.big||'')+'</b></div>'+(T.hook?'<div class="cp-how">Hook: '+he(T.hook)+'</div>':'');
+   if(T.intro) h+='<ul style="margin:4px 0 4px 18px;padding:0">'+T.intro.map(function(x){ return '<li>'+he(x)+'</li>'; }).join('')+'</ul>';
+   (T.ex||[]).forEach(function(e,i){ h+='<div class="cp-q"><b>Example '+(i+1)+':</b> '+he(e.q)+'<div class="cp-how">'+(e.steps||[]).map(he).join(' → ')+'</div><span class="cp-ok">→ '+he(e.a)+'</span></div>'; });
+   if(T.oops) h+='<div class="cp-q"><b>Watch out:</b> '+he(T.oops.q)+' <span class="cp-no">✗ '+he(T.oops.wrong)+'</span> <span class="cp-ok">✓ '+he(T.oops.right)+'</span><div class="cp-how">'+he(T.oops.why)+'</div></div>';
+   if(T.idea) h+='<div class="cp-how">Idea: '+T.idea.map(he).join(' ')+'</div>';
+   if(T.try) h+='<div class="cp-q"><b>Your turn:</b> '+he(T.try.q)+' <span class="cp-ok">✓ '+he(T.try.a)+'</span></div>'; }
+  if(s.peg) h+='<h4>Memory peg</h4><div>'+he(typeof s.peg==='object'?(s.peg.say||s.peg.show||''):s.peg)+'</div>';
+  var lab={teach:'Learn it',practice:'Practice',check:'On your own (mastery)'}, built=[];
+  try{ var mk=typeof MK8!=='undefined'?MK8[id]:null; if(mk&&mk.how) h+='<h4>How it is taught</h4>'+mk.how.map(function(x){ return '<div class="cp-q">'+he(x)+'</div>'; }).join(''); }catch(e){}
+  try{ built=buildMission(id)||[]; }catch(e){ h+='<div class="cp-how">Could not build this lesson here: '+esc(e.message)+'</div>'; }
+  if(!bank()[id]&&built.length) h+='<div class="cp-how" style="margin-top:6px">These questions are made fresh every time. This is one sample set; tap Show material again for a new one.</div>';
+  ['teach','practice','check'].forEach(function(ph){ var a=built.filter(function(it){ return it.phase===ph; }); if(!a.length) return; h+='<h4>'+lab[ph]+' ('+a.length+')</h4>'+a.map(function(it){ return itemHtml(id,it); }).join(''); });
+  if(s.re&&s.re.length) h+='<h4>Re-teach (if stuck)</h4>'+s.re.map(function(r){ return '<div class="cp-q">'+he((r&&(r.how||r.q||r.name))||'')+'</div>'; }).join('');
+  try{ var d=(window.TL_DO||{})[id]; if(d&&d.s) h+='<h4>How-to (whole skill)</h4><div class="cp-how">'+esc(String(d.s).replace(/\n/g,' · '))+'</div>'; }catch(e){}
+  return h+'</div>';
+ }
+
+
+ /* ART STUDIO (HoS 2026-11-15): every drawn art lesson in one gallery; tap a card to open it exactly as a child sees it. */
+ function artStudio(){ var m=document.getElementById('cpM'), L=window.TL_ART_LIST||[], A=window.ART||{}, B=bank()||{};
+  var cards=L.map(function(x,i){ var ok=typeof A[x.k]==='function'; var used=Object.keys(B).filter(function(id){ return x.m.test(id); });
+   return '<div class="cp-art"><div class="cp-arti">🎨</div><b>'+esc(x.t)+'</b><div class="cp-how">'+esc(x.sub)+'</div><div class="cp-how">Opens from: '+(used.length?used.slice(0,4).map(function(id){ return esc(nm(id)); }).join(' · ')+(used.length>4?' +'+(used.length-4)+' more':''):'(not linked to a lesson yet)')+'</div>'+(ok?'<button class="cp-kb" data-art="'+i+'">Open ▶</button>':'<span class="cp-bd">not loaded</span>')+'</div>'; }).join('');
+  m.innerHTML='<div class="cp-bar"><button class="cp-sb" id="cpArtBack">← Back to lessons</button><b style="flex:1">🎨 Art Studio: '+L.length+' drawn picture lessons</b></div><div class="cp-how" style="margin:0 0 10px">These are the hand-drawn picture lessons and games (Mishnayos Bava Metzia, Rashi, Gemara comics, Shas map, Chain of Mesorah). Children reach them from the lessons listed on each card: a 🎨 scene in Teacher Time and a 🎨 Picture lesson button on the question. Tap Open to see one exactly as a child does.</div><div class="cp-artg">'+cards+'</div>';
+  document.getElementById('cpArtBack').onclick=main;
+  m.querySelectorAll('[data-art]').forEach(function(b){ b.onclick=function(){ if(!window.tlArtOpen||!window.tlArtOpen(Number(b.getAttribute('data-art')))) alert('This picture lesson could not open here.'); }; });
+  m.scrollTop=0; }
+ /* FULL PREVIEW (HoS 2026-11-15): the whole lesson as a child sees it, screen by screen, in a phone frame. Questions are real snapshots of the app's own question cards. */
+ var F={sl:[],i:0,id:null};
+ function chalk(x){ var t=function(v){ return he(v==null?'':v); }, h='<div class="fchalk">', k=x.k;
+  var tag=function(v){ return '<span class="ftag">'+esc(v)+'</span>'; };
+  if(k==='welcome'){ h+=tag('👋 How we will learn this')+'<h3>Hi '+(x.nm?esc(x.nm):'there')+'!</h3><div>Today we are learning: <b>'+t(x.skill)+'</b></div><div class="warm">💡 Why? '+t(x.why)+'</div><ol><li>👀 I show you how, step by step.</li><li>🤝 We try one together.</li><li>🚀 You do '+(x.n||'the')+' questions. You will '+esc((x.kinds||[]).join(', '))+'.</li></ol>'; }
+  else if(k==='title'){ h+=tag(x.lab||'Today you will learn')+'<h3>'+t(x.big)+'</h3>'+(x.lines||[]).map(function(l){ return '<div>'+t(l)+'</div>'; }).join(''); }
+  else if(k==='idea'){ h+=tag(x.h||'Another way to see it')+(x.lines||[]).map(function(l){ return '<div>'+t(l)+'</div>'; }).join(''); }
+  else if(k==='ex'){ h+=tag(x.lead?'You lead (tap for each step)':(x.label||'Watch me'))+'<div class="q">'+t(x.q)+'</div>'+(x.pic&&String(x.pic).length<160?'<div style="font-size:34px">'+t(x.pic)+'</div>':'')+(x.vis&&window.TL_TB_VIS?window.TL_TB_VIS(x.vis):'')+'<ol>'+(x.steps||[]).map(function(st){ return '<li>'+t(st)+'</li>'; }).join('')+'</ol><span class="ans">'+t(x.a)+'</span>'; }
+  else if(k==='oops'){ h+=tag('Spot the mistake')+'<div class="q">'+t(x.q)+'</div><div class="bad">'+t(x.wrong)+'</div><div class="good">✔ '+t(x.right)+'</div><div>'+t(x.why)+'</div>'; }
+  else if(k==='try'){ var it=x.it||{}; h+=tag('Your turn, together')+'<div class="q">'+t(it.q)+'</div>'+(it.o||[]).map(function(o){ return '<span class="opt'+(String(o)===String(it.a)?' ok':'')+'">'+t(o)+'</span>'; }).join('')+(it.o?'':'<div class="good">Answer: '+t(it.a)+'</div>'); }
+  else if(k==='joke'){ h+=tag('😄 Joke break')+'<div>'+t(x.q)+'</div><div class="good" style="margin-top:8px">'+t(x.a)+'</div>'; }
+  else if(k==='move'){ h+=tag('🤸 Brain break')+'<h3>'+t(x.t)+'</h3><div>5… 4… 3… 2… 1… 🎉</div>'; }
+  else if(k==='draw'){ h+=tag('✏️ Draw it')+'<div>Grab a paper. Draw a quick picture of this:</div><div class="q">'+t(x.q)+'</div>'; }
+  else if(k==='flash'){ h+=tag('Guess first: true or false?')+(x.items||[]).map(function(f){ return '<div class="q">'+t(f.s)+'</div><div class="'+(f.ok?'good':'bad')+'" style="text-decoration:none">'+(f.ok?'✔ True':'✘ False')+'</div>'; }).join(''); }
+  else if(k==='tell'){ h+=tag('🗣️ Say it out loud')+'<div>Tell a friend what you learned, in your own words.</div><div class="good" style="margin-top:8px">How I would say it: '+t(x.big)+'</div>'; }
+  else if(k==='recap'){ h+=tag('Things to remember')+'<ol>'+(x.lines||[]).map(function(l){ return '<li>'+t(l)+'</li>'; }).join('')+'</ol><div>How sure do you feel? 😀 🙂 🤔</div>'; }
+  else if(k==='peek'){ h+=tag('👀 Sneak peek: your questions')+'<div class="q">'+t(x.q)+'</div><div class="warm">On this one you will '+t(x.kind)+'.</div>'+((x.how||[]).length?'<ol>'+x.how.map(function(l){ return '<li>'+t(l)+'</li>'; }).join('')+'</ol>':''); }
+  else if(k==='ready'){ h+=tag('🚀 You are ready!')+'<h3>Go for it!</h3><div>Remember the big idea:</div><div class="good">⭐ '+t(x.big)+'</div>'; }
+  else { h+=tag(k)+'<div>'+t(x.q||x.big||'')+'</div>'; }
+  return h+'</div>'; }
+ function capFor(id,it){ var t=it.t||(it.o?'tap':(it.a!=null?'num':'tap')), r='';
+  try{ if(t==='sort') r=(it.bins||[]).map(function(b){ return '<b>'+he(b.label)+':</b> '+(it.items||[]).filter(function(x){ return String(x.bin)===String(b.id); }).map(function(x){ return he(x.label); }).join(', '); }).join(' · ');
+   else if(t==='pairs') r=(it.pairs||[]).map(function(p){ return he(p[0])+' ↔ '+he(p[1]); }).join(' · ');
+   else if(t==='spotall') r='Right ones: '+(it.cells||[]).filter(function(c){ return c.ok; }).map(function(c){ return he(c.label); }).join(' · ');
+   else if(t==='order') r='In order: '+(it.tiles||it.order||[]).map(function(x){ return he(typeof x==='object'?(x.label||x.t||''):x); }).join(' → ');
+   else if(t==='write') r='Open writing: checked by the teacher.';
+   else { var a=it.correct!==undefined?it.correct:it.a!==undefined?it.a:(it.o||[])[0]; r='✓ Answer: '+he(a); } }catch(e){}
+  var hw=howOf(id,it.q); return '<div>'+r+'</div>'+(hw?'<div class="no">💡 How-to: '+esc(String(hw).replace(/\n/g,' · '))+'</div>':''); }
+ function snap(id){ var out=[], keep={view:A.view,play:A.play,ov:A.overlay};
+  try{ startMission(worldOf(id),id); var p=A.play; p._tt=1; p._tt3=1;
+   for(var i=0;i<p.items.length;i++){ p.i=i; p.fb=null; p.sel=null; p.tried=[]; p.order=[]; A.overlay=null; render();
+    var tb=document.getElementById('tchb'); if(tb) tb.remove();
+    var card=document.querySelector('#app .qcard'); var c=card?card.cloneNode(true):null;
+    if(c){ c.querySelectorAll('.tbbtn,.tbnudge,.tbask,button.nextbtn').forEach(function(x){ x.remove(); }); }
+    out.push({phase:p.items[i].phase,html:c?c.outerHTML:'<div class="cp-empty">This question is drawn by a special screen.</div>',it:p.items[i]}); }
+  }catch(e){ out.push({phase:'note',html:'<div class="cp-empty">Could not draw this lesson: '+esc(e.message)+'</div>',it:{}}); }
+  try{ var tb2=document.getElementById('tchb'); if(tb2) tb2.remove(); A.play=null; A.overlay=null; A.view='hub'; render(); }catch(e){}
+  return out; }
+ function flip(id){ var sl=[], T=window.TL_TEACH||{};
+  document.getElementById('cpFt').textContent='🔍 '+nm(id)+'  ·  '+id;
+  document.getElementById('cpFs').innerHTML='<div class="cp-empty" style="color:#475569">Drawing every screen of this lesson…</div>';
+  document.getElementById('cpF').style.display='flex'; F.id=id;
+  setTimeout(function(){
+   var qs=snap(id), S=[];
+   try{ if(window.TL_TB_PLAN){ var items=[]; try{ items=buildMission(id)||[]; }catch(e){} S=TL_TB_PLAN({id:id,items:items,kind:'skill',c:worldOf(id)})||[]; } }catch(e){ S=[]; }
+   S.forEach(function(x){ sl.push({sec:'Teacher Time',html:chalk(x)}); });
+   var lab={teach:'Learn it',we:'Try together',practice:'Practice',check:'On your own'};
+   qs.forEach(function(q,n){ sl.push({sec:lab[q.phase]||'Questions',html:'<div class="fsnap">'+q.html+'</div>',cap:capFor(id,q.it),n:n+1}); });
+   if(!sl.length) sl.push({sec:'',html:'<div class="cp-empty">Nothing to show for this lesson yet.</div>'});
+   F.sl=sl; F.i=0; show(); },60); }
+ function show(){ var x=F.sl[F.i]; if(!x) return; var scr=document.getElementById('cpFs');
+  scr.innerHTML=x.html+(x.cap?'':''); scr.scrollTop=0;
+  var ph=scr.parentNode, cap=ph.querySelector('.fcap'); if(cap) cap.remove(); if(x.cap){ ph.insertAdjacentHTML('beforeend','<div class="fcap"><span class="ftag" style="background:#047857;color:#fff">Question '+x.n+' · answer key</span>'+x.cap+'</div>'); }
+  var secs=[]; F.sl.forEach(function(s,i){ if(!secs.length||secs[secs.length-1].n!==s.sec) secs.push({n:s.sec,i:i}); });
+  document.getElementById('cpFb').innerHTML='<span class="fc">'+(F.i+1)+' / '+F.sl.length+'</span>'+secs.map(function(s){ return '<button class="fsec'+(x.sec===s.n?' on':'')+'" data-go="'+s.i+'">'+esc(s.n)+'</button>'; }).join('');
+  document.querySelectorAll('#cpFb [data-go]').forEach(function(b){ b.onclick=function(){ F.i=Number(b.getAttribute('data-go')); show(); }; });
+  document.getElementById('cpFp').disabled=F.i===0; document.getElementById('cpFn').disabled=F.i>=F.sl.length-1; }
+ function go(d){ var n=F.i+d; if(n<0||n>=F.sl.length) return; F.i=n; show(); }
+ document.getElementById('cpFp').onclick=function(){ go(-1); };
+ document.getElementById('cpFn').onclick=function(){ go(1); };
+ document.getElementById('cpFx').onclick=function(){ document.getElementById('cpF').style.display='none'; };
+ document.getElementById('cpFk').onclick=function(){ document.getElementById('cpF').style.display='none'; if(F.id) kid(F.id); };
+ document.addEventListener('keydown',function(e){ if(document.getElementById('cpF').style.display!=='flex') return; if(e.key==='ArrowRight'){ go(1); e.preventDefault(); } else if(e.key==='ArrowLeft'){ go(-1); e.preventDefault(); } else if(e.key==='Escape'){ document.getElementById('cpF').style.display='none'; } },true);
+ (function(){ var x0=null; var el=document.getElementById('cpFs'); el.addEventListener('touchstart',function(e){ x0=e.touches[0].clientX; },{passive:true}); el.addEventListener('touchend',function(e){ if(x0===null) return; var dx=e.changedTouches[0].clientX-x0; if(Math.abs(dx)>50) go(dx<0?1:-1); x0=null; },{passive:true}); })();
+ function kid(id){
+  try{ if(!C.kid){ SRV.token='preview'; A.st=loadStudent({id:'PREVIEW',name:'Preview Student'}); try{ SND.on=true; }catch(e){} C.kid=true; }
+   document.getElementById('cp').style.display='none'; document.getElementById('cpBack').style.display='block';
+   A.overlay=null; startMission(worldOf(id),id); render(); }catch(e){ alert('Could not open that lesson: '+e.message); staff(); }
+ }
+ function staff(){ try{ if(window.TL_TB&&TL_TB.el){ var x=[].filter.call(document.querySelectorAll('#tchb button'),function(b){ return /Start the questions/.test(b.textContent); })[0]; if(x) x.click(); } }catch(e){}
+  try{ A.overlay=null; A.play=null; A.view='hub'; render(); }catch(e){}
+  document.getElementById('cpBack').style.display='none'; document.getElementById('cp').style.display='flex'; }
+ document.getElementById('cpBack').onclick=staff;
+ document.getElementById('cpNav').onclick=function(){ document.getElementById('cpN').classList.toggle('open'); };
+ document.getElementById('cpStaff').onclick=function(){ var go=function(u){ window.open(u+'?sg=1','_top'); }; if(C.url) go(C.url); else call('msAppUrl').then(go); };
+ function denied(msg){ document.getElementById('cpM').innerHTML='<div class="cp-empty"><h2>Staff only</h2><p>'+esc(msg||'Please sign in with your staff code first, then open Curriculum Preview from the staff screen.')+'</p></div>'; }
+ function boot(n){ var B=bank(); if(B&&Object.keys(B).length>200&&window.TL_TB){ build(); nav(); main(); return; } if(n>120) { if(B&&Object.keys(B).length){ build(); nav(); main(); } return; } setTimeout(function(){ boot(n+1); },500); }
+ var s=sess(); if(!s||s.role!=='staff'||!s.token) return denied();
+ C.token=s.token;
+ call('cpLoad',s.token).then(function(r){ C.url=r.url; document.getElementById('cpWho').textContent=r&&r.name?'· '+r.name:''; boot(0); }).catch(function(e){ denied(e); });
+})();
+</script>

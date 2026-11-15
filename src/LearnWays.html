@@ -1,0 +1,125 @@
+<script>
+/* LearnWays.html (v243, developer2@; HoS 2026-11-15: "differentiated learning methods, not just the same old three-point answer.
+   How they learn has to be age and skill dependent. Think ambitiously.")
+   Every PRACTICE question can now be asked a different WAY. The way is picked from two things:
+     AGE  = the skill's level in its id (.L01. to .L09.): K-2 = L01-L03, Gr 3-4 = L04-L05, Gr 5-6 = L06-L07, Gr 7-8 = L08-L09.
+     FORM = how he is doing in THIS lesson right now: STRUGGLING (needed 3+ tries, or missed the first try twice in a row),
+            FLYING (the last 3 right on the first try; then every other question is changed), or STEADY.
+   The ways:
+     TWO TO CHOOSE  (struggling, any age): the right answer and one wrong one. A smaller step, so he can win it and keep going.
+     TYPE IT        (flying, Gr 3+; steady too every 3rd question in Gr 5-8): no choices, he types the answer. Remembering is
+                    stronger than recognizing. Numbers for Gr 3+; short words for Gr 5+. Two misses: the choices come back.
+     CHECK ORI      (flying, any age; steady every 3rd in Gr 5-8): "Ori says the answer is X. Is Ori right?" He must judge
+                    someone else's answer and, if it is wrong, pick the right one. Finding the mistake is how older boys learn.
+     LISTEN FIRST   (K-2, always, when sound is on): the question and its choices are read aloud. Bigger buttons.
+   Never touched: Learn examples, On your own (check) questions, Boss, Warm-up, Fast track, Review. Mastery, money and the
+   evidence the server keeps work exactly as before (the question text stays first in the evidence line).
+   Hebrew in a question: only TWO TO CHOOSE (no typing Hebrew, no English voice on Hebrew).
+   Hints that would name the real answer are hidden on a changed question (Island Rule; AnswerGuard cannot see the real answer there).
+   Loaded LAST (after HomeLift) by Photos.js msQuestToolsBody_ and Speed.js TL_PART_FILES. Attribute: data-lw. No "double slash" in this file. */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined'||typeof vPlay!=='function'||typeof answer!=='function') return;
+const LW=window.TL_LW={version:'lw-1.0',made:{two:0,type:0,ori:0},spoken:0};
+const HE=/[֐-׿]/;
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mix=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const low=s=>String(s==null?'':s).toLowerCase().replace(/[’']/g,'').replace(/\s+/g,' ').trim();
+
+try{ if(!document.getElementById('lw-css')){ const s=document.createElement('style'); s.id='lw-css'; s.textContent=`
+.lwtag{display:inline-flex;align-items:center;gap:8px;margin:0 0 10px;padding:6px 14px;border-radius:999px;font-weight:800;font-size:15px;line-height:1.3}
+.lwtag.lw-two{background:#ECFDF5;color:#065F46;box-shadow:inset 0 0 0 2px #A7F3D0}
+.lwtag.lw-type{background:#EEF2FF;color:#3730A3;box-shadow:inset 0 0 0 2px #C7D2FE}
+.lwtag.lw-ori{background:#FFF7E0;color:#7A4B00;box-shadow:inset 0 0 0 2px #F6CD4C}
+.play.lw-k2 .opt{font-size:24px;min-height:76px;padding:14px 18px}
+.play.lw-k2 .opt .k{font-size:20px}
+.play.lw-k2 .qtext{font-size:clamp(24px,3.2vw,32px);line-height:1.35}
+.lwrow{flex:none;width:100%;display:block;align-self:stretch}
+.lwori{display:block;font-size:.72em;margin-top:10px;padding:10px 14px;border-radius:14px;background:#FFFBEB;border:2px dashed #E9B949;color:#5B3A00;font-weight:800}
+@media (max-width:600px){.play.lw-k2 .opt{font-size:20px;min-height:64px}}`; document.head.appendChild(s); } }catch(e){}
+
+function lvlOf(id){ const m=/\.L(\d\d)\./.exec(String(id||'')); return m?+m[1]:4; }
+function bandOf(id){ const l=lvlOf(id); return l<=3?'k2':l<=5?'34':l<=7?'56':'78'; }
+function hasHe(it){ return HE.test(it.q||'')||(it.o||[]).some(x=>HE.test(String(x))); }
+/* results of the questions he already answered in this lesson (not the On your own ones) */
+function past(p){ const out=[]; for(let k=0;k<p.i;k++){ const r=p.results[k], x=p.items[k]; if(r&&x&&x.phase!=='check'&&x.phase!=='warm') out.push(r); } return out; }
+function formOf(p){ const r=past(p), l2=r.slice(-2), l3=r.slice(-3);
+  if(l2.some(x=>(x.tries||1)>=3)||(l2.length===2&&l2.every(x=>!x.first))) return 'struggling';
+  if(l3.length===3&&l3.every(x=>x.first)) return 'flying';
+  return 'steady'; }
+function eligible(p,it){ return it&&it.phase==='practice'&&it.t==='mc'&&Array.isArray(it.o)&&it.o.length>=2&&Array.isArray(it.shown)&&!it._lwd
+  &&(p.kind==='skill'||p.kind==='retry')&&!p.fast&&!it._bad; }
+const NUM=/^-?\$?\d{1,3}(,\d{3})*(\.\d+)?¢?$|^-?\$?\d+(\.\d+)?¢?$/;
+const STOP={yes:1,no:1,true:1,false:1,both:1,none:1,neither:1,all:1,same:1,more:1,less:1,right:1,wrong:1,left:1,up:1,down:1};
+function canType(it,band){ const c=String(it.correct).trim();
+  if(band==='k2'||hasHe(it)) return null;
+  if(NUM.test(c)&&typeof parseNum==='function'&&isFinite(parseNum(c))) return 'num';
+  if((band==='56'||band==='78')&&typeof window.TL_AK==='object'&&/^[A-Za-z][A-Za-z'\-]{1,18}( [A-Za-z][A-Za-z'\-]{1,18})?$/.test(c)&&!STOP[low(c)]
+     &&low(it.q).indexOf(low(c))<0&&!it.o.some(x=>x!==it.correct&&low(x)===low(c))) return 'word';
+  return null; }
+function canOri(it,band){ if(hasHe(it)) return false; const lim=band==='k2'?24:70; return it.o.every(x=>String(x).length<=lim&&String(x).trim()!==''); }
+/* Island Rule on a changed question: drop hint / re-teach lines that name the real answer */
+function guard(it){ const c=low(it._lwo.correct); if(c.length<2) return;
+  const gives=t=>{ const s=' '+low(t).replace(/[^a-z0-9$.]+/g,' ')+' ', w=' '+c.replace(/[^a-z0-9$.]+/g,' ').trim()+' '; return w.trim()&&s.indexOf(w)>=0&&low(it._lwo.q).indexOf(c)<0; };
+  if(it.h&&gives(it.h)) it.h='';
+  if(Array.isArray(it.re)) it.re=it.re.filter(t=>!gives(t)); }
+
+function make(p,it){
+  it._lwd=1; const band=bandOf(it.skill||p.id), form=formOf(p), n=past(p).length;
+  it._lwo={t:it.t,shown:it.shown.slice(),correct:it.correct,q:it.q,h:it.h,re:Array.isArray(it.re)?it.re.slice():it.re};
+  let way=null;
+  if(form==='struggling'&&it.o.length>=3) way='two';
+  else if(form==='flying'){ const ty=canType(it,band), ori=canOri(it,band); const prev=LW.last;
+    if(ty&&ori) way=prev==='type'?'ori':'type'; else if(ty) way='type'; else if(ori) way='ori';
+    if(n%2===0) way=null;   /* every other question stays plain while flying */ }
+  else if(form==='steady'&&(band==='56'||band==='78')&&n>=2&&n%3===2){ const ty=canType(it,band); way=ty?'type':canOri(it,band)?'ori':null; }
+  LW.last=way||'plain';
+  if(!way) return;
+  if(way==='two'){ const wrong=it.o.filter(x=>x!==it.correct); it.shown=mix([it.correct,wrong[Math.floor(Math.random()*wrong.length)]]); }
+  if(way==='type'){ const ty=canType(it,band), c=String(it.correct).trim();
+    if(ty==='num'){ it.t='num'; it.a=parseNum(c); it.unit=/^-?\$/.test(c)?'$':/¢$/.test(c)?'¢':it.unit; }
+    else { it.t='type'; it.a=c; it.alt=[]; it.kb='abc'; }
+    guard(it); }
+  if(way==='ori'){ const right=it.correct, wrong=it.o.filter(x=>x!==right), says=Math.random()<.5?right:wrong[Math.floor(Math.random()*wrong.length)];
+    const k2=band==='k2', yes=(k2?'✅ ':'')+'Yes, Ori is right', no=x=>(k2?'❌ ':'')+'No, it is '+x;
+    const others=it.o.filter(x=>x!==says);
+    it.shown=mix([yes].concat(others.map(no)));
+    it.correct=says===right?yes:no(right);
+    it.lwSays=String(says); guard(it); }
+  it._lw=way; LW.made[way]++;
+}
+function back(it){ const o=it._lwo; if(!o) return; it.t=o.t; it.correct=o.correct; it.shown=mix(o.shown); it.h=o.h; it.re=o.re; delete it.a; delete it.lwSays; it._lw='back'; }
+
+const TAG={ two:'🧩 Two to choose. One step at a time, you can do this.',
+  type:'⌨️ You are on a roll: no choices this time. Type it!',
+  ori:'🔎 Check Ori’s answer. Is Ori right?' };
+const _vp=vPlay;
+vPlay=function(){ try{ const p=A.play, it=p&&p.items[p.i]; if(eligible(p,it)) make(p,it); }catch(e){ console.warn('LearnWays',e); }
+  let h=_vp.apply(this,arguments);
+  try{ const p=A.play, it=p&&p.items[p.i]; if(!it) return h; const band=bandOf(it.skill||p.id);
+    h=h.replace('<div class="play"','<div class="play lw-'+band+'" data-lw="'+E(it._lw||'')+'"');
+    if(it._lw&&TAG[it._lw]&&it.phase!=='check'){ const ori=it._lw==='ori'?'<span class="lwori">Ori says: '+E(it.lwSays)+'</span>':'';
+      h=h.replace('<div class="qrow">','<div class="lwrow"><span class="lwtag lw-'+it._lw+'">'+E(TAG[it._lw])+'</span></div><div class="qrow">');
+      if(ori) h=h.replace(/(<p class="qtext[^"]*">[\s\S]*?)(<\/p>)/,'$1'+ori+'$2'); }
+  }catch(e){ console.warn('LearnWays draw',e); }
+  return h; };
+
+const _ans=answer;
+answer=function(ans,el){ const p=A.play, it=p&&p.items[p.i]; const r=_ans.apply(this,arguments);
+  try{ if(it&&it._lw){ if(p.results[p.i]) p.results[p.i].lw=it._lw;
+      if(it._lw==='type'&&p.fb&&!p.fb.ok&&p.tries>=2){ back(it); if(p.ak) p.ak=null; render(); } } }catch(e){}
+  return r; };
+
+/* LISTEN FIRST: K-2 hears the question and its choices once, when sound is on */
+let said='';
+function sayNow(){ try{ if(A.view!=='play'||!A.play||A.overlay||!SND.on) return; const p=A.play, it=p.items[p.i]; if(!it||it.phase==='check'&&p.kind==='boss') return;
+  if(bandOf(it.skill||p.id)!=='k2') return; const key=p.t0+':'+p.i; if(said===key) return;
+  if(document.querySelector('.ttb, .tt-board, #tt-ov, #tlad-ov, #tlrep-ov')) return;
+  if(typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking) return;
+  if(HE.test(it.q||'')||(it.shown||[]).some(x=>HE.test(String(x)))) { said=key; return; }
+  said=key; let t=String(it.q||''); if(it.lwSays) t+='. Ori says: '+it.lwSays+'. Is Ori right?';
+  else if(it.t==='mc'&&Array.isArray(it.shown)&&it.shown.length<=4&&it.shown.every(x=>String(x).length<40)) t+='. '+it.shown.map((x,k)=>'ABCD'[k]+': '+x).join('. ')+'.';
+  t=t.replace(/\s*\|\s*/g,' ');
+  if(typeof speak==='function'){ speak(t); LW.spoken++; } }catch(e){} }
+const _rd=render; render=function(){ const r=_rd.apply(this,arguments); try{ if(A.view==='play') setTimeout(sayNow,650); }catch(e){} return r; };
+})();
+</script>

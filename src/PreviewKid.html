@@ -1,0 +1,50 @@
+<style id="pk-css">
+/* PreviewKid.html (takeover3, v266; HoS 2026-11-15: "I would much rather it be like the real: you click on it and you see the picture of what
+   the kids are seeing. Just click it and see it."). Curriculum Preview becomes split-screen on wide screens: the list on the left, the REAL kid
+   screen on the right. Click any lesson (the whole row) and it plays right there; nothing is saved (Preview Student). It opens on the kid's
+   home screen, so the first thing a rebbe sees is what a child sees. Narrow screens keep the old full-screen Kid view. No double slash here. */
+body.cpk{padding-left:min(560px,44vw)!important}
+body.cpk #cp{right:auto!important;width:min(560px,44vw)!important;box-shadow:8px 0 30px rgba(15,23,42,.18);border-right:1px solid #CBD5E1}
+body.cpk #cp header{padding-left:14px!important}
+body.cpk #cp nav{width:150px!important}
+body.cpk #cpBack{display:none!important}
+body.cpk #tchb,body.cpk .overlay,body.cpk #pl-ov{left:min(560px,44vw)!important}
+body.cpk #tlclock{display:none!important}
+#pkBar{position:fixed;top:0;right:0;left:min(560px,44vw);z-index:2147483001;display:none;align-items:center;gap:10px;padding:8px 14px;background:linear-gradient(90deg,#FDE68A,#FBCFE8);color:#3B0764;font:700 14px system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+body.cpk #pkBar{display:flex}
+#pkBar b{flex:1}#pkBar button{border:0;border-radius:10px;padding:7px 12px;font:800 14px system-ui;cursor:pointer;background:#fff;color:#3B0764}
+body.cpk #app{margin-top:44px}
+#cp .cp-sk{cursor:pointer;transition:background .15s}#cp .cp-sk:hover{background:#F5F3FF}
+#cp .cp-sk.pkon{background:#EDE9FE;box-shadow:inset 5px 0 0 #7C3AED}
+#pkHint{margin:0 0 10px;padding:12px 14px;border-radius:14px;background:linear-gradient(110deg,#EEF2FF,#FDF2F8);border:2px solid #C7D2FE;font:700 15px system-ui;color:#3730A3}
+</style>
+<div id="pkBar"><b id="pkWhat">👀 This is exactly what a child sees · Preview Student · nothing is saved</b><button id="pkHub" type="button">🏠 Kid's home</button><button id="pkFull" type="button">⤢ Full screen</button></div>
+<script>
+(function(){
+if(!document.getElementById('cp')) return;
+/* preview answers every blocked server call with ok, so Class Mode thought a class lesson was running and covered the kid's home. In preview there is no class. */
+try{ var GS=window.google&&google.script, D0=GS&&Object.getOwnPropertyDescriptor(GS,'run'); if(D0&&D0.get){ var G0=D0.get; Object.defineProperty(GS,'run',{configurable:true,get:function(){ var base=G0.call(GS), s=null, p=new Proxy({},{get:function(t,k){ if(k==='withSuccessHandler') return function(fn){ s=fn; base=base.withSuccessHandler(fn); return p; }; if(k==='withFailureHandler') return function(fn){ base=base.withFailureHandler(fn); return p; }; if(k==='withUserObject') return function(o){ base=base.withUserObject(o); return p; }; if(k==='tmMine'||k==='sbMySchool') return function(){ setTimeout(function(){ if(s) s(null); },0); }; return function(){ return base[k].apply(base,arguments); }; }}); return p; }}); } }catch(e){}
+var WIDE=function(){ return window.innerWidth>=900; }, ON=false, CUR='';
+function el(i){ return document.getElementById(i); }
+function prepKid(){ try{ if(typeof SRV!=='undefined') SRV.token='preview'; if(typeof loadStudent==='function'&&(!A.st||A.st.id!=='PREVIEW')) A.st=loadStudent({id:'PREVIEW',name:'Preview Student'}); }catch(e){} }
+function split(on){ ON=!!on&&WIDE(); document.body.classList.toggle('cpk',ON); if(ON){ el('cp').style.display='flex'; } }
+function hub(){ try{ prepKid(); if(window.TL_TB&&TL_TB.el){ var x=[].filter.call(document.querySelectorAll('#tchb button'),function(b){ return /Start the questions/.test(b.textContent); })[0]; if(x) x.click(); } A.overlay=null; A.play=null; A.view='hub'; render(); }catch(e){} CUR=''; mark(); el('pkWhat').textContent='👀 The kid\'s home screen, exactly as a child sees it · nothing is saved'; }
+function mark(){ document.querySelectorAll('#cp .cp-sk').forEach(function(r){ r.classList.toggle('pkon',r.getAttribute('data-id')===CUR); }); }
+function hint(){ var m=el('cpM'); if(!m||el('pkHint')||!ON) return; var h=document.createElement('div'); h.id='pkHint'; h.textContent='👉 Click any lesson. It plays on the right, exactly as the kids see it.'; var bar=m.querySelector('.cp-bar'); if(bar&&bar.nextSibling) m.insertBefore(h,bar.nextSibling); else m.insertBefore(h,m.firstChild); }
+/* the whole lesson row opens it; the Kid view button too; then we bring the list back beside it */
+document.addEventListener('click',function(e){
+ var t=e.target; if(!t||!t.closest) return;
+ var row=t.closest('#cp .cp-sk');
+ if(row&&!t.closest('button')&&!t.closest('.cp-matw')){ var kb=row.querySelector('[data-kid]'); if(kb){ e.preventDefault(); kb.click(); } return; }
+ var k=t.closest('#cp [data-kid]'); if(k&&WIDE()){ CUR=k.getAttribute('data-kid'); var rw=k.closest('.cp-sk'), nm=rw?rw.querySelector('b'):null; setTimeout(function(){ split(true); mark(); el('pkWhat').textContent='👀 '+(nm?nm.textContent:'This lesson')+' · exactly what a child sees · nothing is saved'; },60); }
+},false);
+el('pkHub').onclick=hub;
+el('pkFull').onclick=function(){ split(false); el('cp').style.display='none'; var b=el('cpBack'); if(b) b.style.display='block'; };
+var cb=el('cpBack'); if(cb) cb.addEventListener('click',function(){ setTimeout(function(){ if(WIDE()){ split(true); hub(); hint(); } },80); });
+window.addEventListener('resize',function(){ if(!WIDE()&&ON) split(false); });
+/* start: when the list is ready, open split view on the kid's home screen */
+function boot(n){ var m=el('cpM'); if(m&&m.children.length&&typeof render==='function'&&typeof A!=='undefined'&&typeof loadStudent==='function'){ if(WIDE()){ split(true); hub(); hint(); } return; } if(n<160) setTimeout(function(){ boot(n+1); },500); }
+boot(0);
+try{ new MutationObserver(function(){ if(ON){ hint(); mark(); } }).observe(el('cpM')||document.body,{childList:true}); }catch(e){}
+})();
+</script>

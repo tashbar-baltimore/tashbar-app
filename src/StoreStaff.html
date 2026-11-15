@@ -1,0 +1,41 @@
+<script>
+/* StoreStaff.html — "🏪 Store orders" on the staff screen (v162, takeover4). Added by sgPage_ (StaffGrid.js) after StaffMore.
+   Real prizes that boys bought wait here. A staff member hands the prize out and taps "Handed out".
+   If it can't happen, "Cancel + refund" gives the boy all his money back (one ledger row, key refund:<order>).
+   Also shows: how much the boys gave back to Tashbar, and Canteen Cash from Canteen Cards this week. Server: Store.js. */
+(function(){
+if(typeof S==='undefined'||typeof render!=='function'||typeof run!=='function') return;
+const Y={d:null,err:'',busy:false};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=c=>'$'+(Number(c||0)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const when=t=>{ try{ const d=new Date(t); return d.toLocaleDateString([], {month:'short',day:'numeric'})+' '+d.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; } };
+const msg=e=>String(e&&e.message||e).replace(/^Error:\s*/,'');
+try{ if(!document.getElementById('sy-css')){ const s=document.createElement('style'); s.id='sy-css'; s.textContent=`
+.syo{border:1px solid var(--line,#E5E7EB);border-radius:12px;padding:12px 14px;margin:10px 0;background:#fff;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.syo .em{font-size:30px}.syo .t{flex:1;min-width:200px}.syo .t b{display:block}.syo .t small{color:var(--soft,#6B7280)}
+.syo button{border:1px solid #D1D5DB;background:#fff;border-radius:10px;padding:9px 14px;font:inherit;font-weight:700;cursor:pointer;min-height:44px}.syo button.ok{background:#059669;color:#fff;border-color:#059669}
+.sykp{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 12px}.sykp div{background:#F0FDF4;border:1px solid #A7F3D0;border-radius:12px;padding:10px 14px}.sykp b{display:block;font-size:20px;color:#065F46}
+.sybtn .n{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;border-radius:999px;background:#F59E0B;color:#fff;font-size:13px;line-height:20px}`; document.head.appendChild(s); } }catch(e){}
+const _render=render;
+render=function(){ _render.apply(this,arguments);
+  try{ const bar=document.querySelector('#app .bar'); if(bar&&S.d&&!bar.querySelector('[data-sy]')){ const n=Y.d?Y.d.waiting.length:0;
+      bar.insertAdjacentHTML('beforeend',`<button class="add sybtn" data-sy="open">🏪 Store orders${n?`<span class="n">${n}</span>`:''}</button>`); }
+    if(S.page==='systore'){ const a=document.getElementById('app'); if(a) a.insertAdjacentHTML('beforeend',page()); }
+  }catch(e){ console.error('StoreStaff',e); } };
+function page(){ const D=Y.d;
+  let h=`<p style="color:var(--soft);margin:0 0 6px">Real prizes the students bought with Tashbar dollars. Hand the prize to the student, then tap <b>Handed out</b>. If it can't happen, <b>Cancel + refund</b> gives them all their money back.</p>`;
+  if(!D) h+='<p>Loading…</p>';
+  else { h+=`<div class="sykp"><div>Given back to Tashbar<b>${$(D.given)}</b></div><div>Canteen Cash from Canteen Cards this week<b>${$(D.cardsWeek)}</b></div><div>Prizes waiting<b>${D.waiting.length}</b></div></div>`;
+    h+=D.waiting.length?D.waiting.map(o=>`<div class="syo"><span class="em">${o.emoji}</span><div class="t"><b>${E(o.label)}</b><small>${E(o.name)} · ${$(o.cents)} · ${E(when(o.at))}</small></div><button class="ok" data-sy="handed" data-id="${E(o.id)}" ${Y.busy?'disabled':''}>✅ Handed out</button><button data-sy="cancel" data-id="${E(o.id)}" ${Y.busy?'disabled':''}>↩️ Cancel + refund</button></div>`).join(''):'<p style="color:var(--soft)">No prizes waiting. 🎉</p>';
+    h+=`<h3>Recent store activity</h3>`+D.recent.map(o=>`<div class="syo"><span class="em">${o.emoji}</span><div class="t"><b>${E(o.label)}</b><small>${E(o.name)} · ${$(o.cents)} · ${E(o.status)} · ${E(when(o.upd||o.at))}</small></div></div>`).join(''); }
+  return `<div class="shade" data-sy="close"></div><aside class="drawer wide" role="dialog" aria-label="Store orders"><div class="dh"><h2>🏪 Store orders</h2><button class="x" data-sy="close" aria-label="Close">×</button></div>${h}<div class="err" role="alert">${E(Y.err)}</div></aside>`; }
+function load(){ run('stStaffOrders',S.token).then(d=>{ Y.d=d; render(); }).catch(e=>{ Y.err=msg(e); render(); }); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-sy]'); if(!b) return; const a=b.dataset.sy;
+  if(a==='open'){ S.page='systore'; Y.err=''; render(); load(); return; }
+  if(a==='close'){ S.page=null; render(); return; }
+  if(a==='handed'||a==='cancel'){ let note=''; if(a==='cancel'){ note=prompt('Why is it cancelled? (The student gets all their money back.)','')||''; if(note===null) return; }
+    Y.busy=true; render(); run('stStaffSet',S.token,b.dataset.id,a,note).then(d=>{ Y.busy=false; Y.d=d; render(); }).catch(err=>{ Y.busy=false; Y.err=msg(err); render(); }); }
+});
+setInterval(()=>{ if(S.token&&S.d&&!S.page) run('stStaffOrders',S.token).then(d=>{ const n=(Y.d&&Y.d.waiting.length)||0; Y.d=d; if(d.waiting.length!==n){ const btn=document.querySelector('[data-sy="open"]'); if(btn) btn.outerHTML=`<button class="add sybtn" data-sy="open">🏪 Store orders${d.waiting.length?`<span class="n">${d.waiting.length}</span>`:''}</button>`; } }).catch(()=>{}); },120000);
+})();
+</script>

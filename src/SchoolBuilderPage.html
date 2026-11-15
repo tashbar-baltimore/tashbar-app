@@ -1,0 +1,186 @@
+<style id="sb-css">
+/* SchoolBuilder.html (takeover3, v266; HoS 2026-11-15). The friendly front door to schools, families, homeschool pods and groups (server: SchoolBuilder.js).
+   1. A banner at the top of the staff screen: "See what the kids see" (Curriculum Preview) for everyone, "Schools & Families" for the HoS and school admins.
+   2. Schools & Families: a card for every school; a 4-step wizard (what, name and look, kids, parents); welcome cards with each new code;
+      a school page where kids visibly move between schools, with undo; add kids and parents; new code + card for any kid. No double slash in this file. */
+#sbBan{position:relative;z-index:5;display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:10px auto 0;max-width:1180px;padding:12px 16px;border-radius:20px;background:linear-gradient(110deg,#312E81,#6D28D9 55%,#DB2777);color:#fff;box-shadow:0 10px 30px rgba(49,46,129,.25);font:600 15px/1.35 system-ui,-apple-system,"Segoe UI",sans-serif}
+#sbBan .t{flex:1;min-width:220px}#sbBan .t b{display:block;font-size:19px}#sbBan .t small{opacity:.85}
+#sbBan button{border:0;border-radius:14px;padding:12px 18px;font:800 16px system-ui,sans-serif;cursor:pointer;min-height:48px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+#sbBan .see{background:#FDE68A;color:#3B0764}#sbBan .sch{background:#fff;color:#4C1D95}
+#sbBan button:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
+#sb{position:fixed;inset:0;z-index:9600;background:#F5F3FF;display:none;flex-direction:column;font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;color:#1F2937}
+#sb.on{display:flex}#sb *{box-sizing:border-box}
+#sb .hd{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(110deg,#312E81,#6D28D9);color:#fff}
+#sb .hd h2{margin:0;font-size:20px;flex:1}#sb .hd button{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:12px;padding:9px 14px;font:700 15px system-ui;cursor:pointer}
+#sb .bd{flex:1;overflow:auto;padding:16px;max-width:1100px;width:100%;margin:0 auto}
+#sb .lead{color:#4B5563;margin:0 0 14px}
+#sb .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+#sb .card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 6px 18px rgba(76,29,149,.08);border:2px solid transparent;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+#sb .card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(76,29,149,.16)}
+#sb .card .band{position:absolute;left:0;right:0;top:0;height:8px}
+#sb .card .em{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font-size:32px;margin:6px 0 8px}
+#sb .card h3{margin:0 0 2px;font-size:19px}#sb .card .k{color:#6B7280;font-size:13px;text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+#sb .card .n{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;color:#374151;font-weight:700;font-size:14px}
+#sb .new{border:3px dashed #A78BFA;background:linear-gradient(135deg,#FAF5FF,#EEF2FF);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:190px}
+#sb .new .plus{font-size:44px}#sb .new b{font-size:18px;color:#4C1D95}
+#sb .btn{border:0;border-radius:14px;padding:12px 18px;font:800 16px system-ui;cursor:pointer;min-height:48px;background:#6D28D9;color:#fff;box-shadow:0 4px 0 #4C1D95}
+#sb .btn.soft{background:#EDE9FE;color:#4C1D95;box-shadow:0 4px 0 #C4B5FD}#sb .btn.ghost{background:#fff;color:#374151;box-shadow:0 3px 0 #E5E7EB;border:2px solid #E5E7EB}
+#sb .btn:disabled{opacity:.55;cursor:default}
+#sb .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+#sb input,#sb select,#sb textarea{font:inherit;padding:10px 12px;border:2px solid #DDD6FE;border-radius:12px;background:#fff;min-height:46px}
+#sb input:focus,#sb select:focus,#sb textarea:focus{outline:3px solid #C4B5FD;border-color:#7C3AED}
+#sb .steps{display:flex;gap:6px;margin:0 0 16px}#sb .steps i{flex:1;height:8px;border-radius:9px;background:#DDD6FE}#sb .steps i.on{background:#7C3AED}
+#sb .kinds{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+#sb .kind{background:#fff;border:3px solid #E5E7EB;border-radius:20px;padding:18px;cursor:pointer;text-align:left;font:inherit}
+#sb .kind.on{border-color:#7C3AED;background:#F5F3FF}#sb .kind .em2{font-size:40px}#sb .kind b{display:block;font-size:18px;margin:4px 0}
+#sb .emos button{font-size:26px;width:52px;height:52px;border-radius:14px;border:3px solid transparent;background:#fff;cursor:pointer}
+#sb .emos button.on{border-color:#7C3AED;background:#EDE9FE}
+#sb .cols button{width:40px;height:40px;border-radius:50%;border:4px solid #fff;cursor:pointer;box-shadow:0 0 0 2px #E5E7EB}
+#sb .cols button.on{box-shadow:0 0 0 3px #1F2937}
+#sb .kid{display:flex;gap:8px;align-items:center;margin:6px 0}#sb .kid input{flex:1;min-width:140px}#sb .kid select{width:110px}
+#sb .x{border:0;background:#FEE2E2;color:#991B1B;border-radius:10px;width:40px;height:40px;cursor:pointer;font-size:18px}
+#sb .chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+#sb .chip{border:3px solid #E5E7EB;background:#fff;border-radius:999px;padding:8px 14px;font:700 15px system-ui;cursor:pointer;transition:transform .35s,opacity .35s}
+#sb .chip small{color:#6B7280;font-weight:600;margin-left:4px}#sb .chip.on{border-color:#7C3AED;background:#EDE9FE}
+#sb .chip.fly{transform:translateY(-30px) scale(.6);opacity:0}
+#sb .bar{position:sticky;bottom:0;background:#fff;border-radius:18px;padding:12px;box-shadow:0 -6px 20px rgba(0,0,0,.08);display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+#sb .dest{border:0;border-radius:999px;padding:10px 14px;font:800 15px system-ui;cursor:pointer;color:#fff}
+#sb .sec{background:#fff;border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 4px 14px rgba(76,29,149,.06)}
+#sb .sec h3{margin:0 0 6px}
+#sb .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111827;color:#fff;border-radius:14px;padding:12px 16px;font-weight:700;z-index:9700;display:flex;gap:12px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+#sb .toast button{background:#FDE68A;color:#1F2937;border:0;border-radius:10px;padding:7px 12px;font-weight:800;cursor:pointer}
+#sb .err{color:#B91C1C;font-weight:700;min-height:1.2em}
+#sb .party{text-align:center;padding:10px}#sb .party .big{font-size:56px}#sb .party h2{font-size:26px;margin:6px 0}
+#sbCards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+.sbc{background:#fff;border-radius:18px;overflow:hidden;border:2px solid #E5E7EB;break-inside:avoid;page-break-inside:avoid}
+.sbc .top{padding:12px 14px;color:#fff;font:800 16px system-ui}.sbc .mid{padding:12px 14px}
+.sbc .hi{font:800 20px system-ui;margin:0 0 4px}.sbc .code{font:900 40px ui-monospace,Menlo,monospace;letter-spacing:.25em;margin:6px 0;color:#1F2937}
+.sbc ol{margin:6px 0 0 18px;padding:0;font-size:13px;color:#374151}.sbc .url{font:12px ui-monospace,monospace;color:#6B7280;word-break:break-all;margin-top:6px}
+@media print{body.sbprint > *:not(#sb){display:none!important}body.sbprint #sb{position:static;display:block;background:#fff}body.sbprint #sb .hd,body.sbprint #sb .noprint{display:none!important}body.sbprint #sb .bd{max-width:none;padding:0}#sbCards{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){#sbBan{margin:8px;border-radius:16px}#sbBan button{flex:1}#sb .kid select{width:90px}}
+</style>
+<div id="sb" role="dialog" aria-modal="true" aria-label="Schools and Families"><div class="hd"><h2 id="sbT">🏫 Schools &amp; Families</h2><button data-sb="home" id="sbHome" class="noprint">🏠 All</button><button data-sb="close">✕ Close</button></div><div class="bd" id="sbB"></div></div>
+<script>
+(function(){
+var D=null, V={v:'home'}, W=null, BUSY=false, TO=null;
+var KINDS=[['family','🏡','A family','Your own children learning at home.','The Cohen Family'],['homeschool','🌱','A homeschool pod','A few families learning together.','Sunrise Homeschool Pod'],['group','👥','A group','A club, a shiur, a class or a camp.','Thursday Night Shiur'],['school','🏫','A school','A whole school with its own staff.','Yeshiva Ketana of …']];
+var KNAME={school:'School',family:'Family',homeschool:'Homeschool pod',group:'Group'};
+var GR=['K','1','2','3','4','5','6','7','8'];
+function tok(){ try{ var s=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return s&&s.role==='staff'?s.token:null; }catch(e){ return null; } }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function run(fn){ var a=[].slice.call(arguments,1); return new Promise(function(res,rej){ google.script.run.withSuccessHandler(res).withFailureHandler(function(e){ rej(e&&e.message?e.message:String(e)); })[fn].apply(null,a); }); }
+function $(i){ return document.getElementById(i); }
+function sch(id){ return (D.schools||[]).filter(function(s){ return s.id===id; })[0]||{name:id,emoji:'🏫',color:'#6D28D9'}; }
+function toast(msg,undo){ var o=document.querySelector('#sb .toast'); if(o) o.remove(); clearTimeout(TO); var t=document.createElement('div'); t.className='toast'; t.innerHTML='<span>'+esc(msg)+'</span>'+(undo?'<button data-sb="undo">↩ Undo</button>':''); $('sb').appendChild(t); V.undo=undo||null; TO=setTimeout(function(){ t.remove(); V.undo=null; },9000); }
+/* ---------- banner ---------- */
+function banner(info){ if($('sbBan')) return; var app=$('app'); if(!app) return; var b=document.createElement('div'); b.id='sbBan';
+ b.innerHTML='<div class="t"><b>👀 What are the kids learning?</b><small>See every lesson exactly the way a child sees it: tap a lesson and it plays.</small></div><button class="see" data-sb="see">👀 See what the kids see</button>'+(info&&info.canAdmin?'<button class="sch" data-sb="open">🏫 Schools &amp; Families</button>':'');
+ app.parentNode.insertBefore(b,app); }
+function boot(n){ var t=tok(); if(!t||!$('app')){ if(n<120) setTimeout(function(){ boot(n+1); },700); return; }
+ run('acMyScope',t).then(banner).catch(function(){ banner(null); }); }
+boot(0);
+/* ---------- screens ---------- */
+function open(){ $('sb').classList.add('on'); V={v:'home'}; $('sbB').innerHTML='<p class="lead">Loading…</p>'; load(); }
+function load(){ return run('sbLoad',tok()).then(function(d){ D=d; if(!d.canAdmin){ $('sbB').innerHTML='<p class="lead">Only the Head of School and school admins can manage schools.</p>'; return; } draw(); }).catch(function(e){ $('sbB').innerHTML='<p class="err">'+esc(e)+'</p>'; }); }
+function draw(){ var h=''; $('sbHome').style.display=V.v==='home'?'none':'';
+ if(V.v==='home') h=home(); else if(V.v==='wiz') h=wiz(); else if(V.v==='school') h=school(); else if(V.v==='done') h=done(); else if(V.v==='cards') h=cardsView();
+ $('sbB').innerHTML=h; $('sbB').scrollTop=0; }
+function home(){
+ var h='<p class="lead">Every school, family, homeschool pod and group has its <b>own private space</b>. Kids see only themselves, parents see only their own children, and staff see only their own school. Tashbar of Baltimore is the home school; everyone else gets their own.</p><div class="grid">';
+ if(D.head) h+='<div class="card new" data-sb="wiz"><div class="plus">✨</div><b>Start something new</b><span>A family, a homeschool pod, a group or a school, with its kids and parents, in 4 easy steps.</span></div>';
+ D.schools.forEach(function(s){ h+='<div class="card" data-sb="school" data-id="'+esc(s.id)+'"><div class="band" style="background:'+s.color+'"></div><div class="em" style="background:'+s.color+'22">'+esc(s.emoji)+'</div><div class="k">'+esc(KNAME[s.kind]||'School')+(s.def?' · home school':'')+'</div><h3>'+esc(s.name)+'</h3><div class="n"><span>🧒 '+s.kids+' kids</span><span>👪 '+s.parents+' parents</span><span>🧑‍🏫 '+s.staff+' staff</span></div></div>'; });
+ return h+'</div>'; }
+/* wizard */
+function wizStart(){ W={step:1,kind:'',name:'',emoji:'',color:D.colors[(D.schools.length)%D.colors.length],kids:[{name:'',grade:''},{name:'',grade:''}],parents:[{name:'',title:'',email:''}]}; V.v='wiz'; draw(); }
+function wiz(){ var s=W.step, h='<div class="steps">'+[1,2,3,4].map(function(i){ return '<i class="'+(i<=s?'on':'')+'"></i>'; }).join('')+'</div>';
+ if(s===1){ h+='<h2>What are you making?</h2><p class="lead">Pick the one that fits best. You can change it later.</p><div class="kinds">'+KINDS.map(function(k){ return '<button class="kind '+(W.kind===k[0]?'on':'')+'" data-sb="kind" data-k="'+k[0]+'"><div class="em2">'+k[1]+'</div><b>'+k[2]+'</b><span>'+k[3]+'</span></button>'; }).join('')+'</div>'; }
+ if(s===2){ var k=KINDS.filter(function(x){ return x[0]===W.kind; })[0]||KINDS[0];
+  h+='<h2>Give it a name and a look</h2><div class="row"><input id="wName" style="flex:1;min-width:240px;font-size:20px" placeholder="'+esc(k[4])+'" value="'+esc(W.name)+'" maxlength="80"></div>';
+  h+='<p class="lead">Pick an emoji</p><div class="row emos">'+D.emojis.map(function(e){ return '<button data-sb="emo" data-e="'+e+'" class="'+((W.emoji||k[1])===e?'on':'')+'">'+e+'</button>'; }).join('')+'</div>';
+  h+='<p class="lead">Pick a color</p><div class="row cols">'+D.colors.map(function(c){ return '<button data-sb="col" data-c="'+c+'" class="'+(W.color===c?'on':'')+'" style="background:'+c+'"></button>'; }).join('')+'</div>';
+  h+='<div class="sec"><div class="grid" style="grid-template-columns:minmax(0,320px)"><div class="card"><div class="band" style="background:'+W.color+'"></div><div class="em" style="background:'+W.color+'22">'+esc(W.emoji||k[1])+'</div><div class="k">'+esc(KNAME[W.kind])+'</div><h3 id="wPrev">'+esc(W.name||k[4])+'</h3><div class="n"><span>🧒 '+W.kids.filter(function(x){ return x.name; }).length+' kids</span></div></div></div></div>'; }
+ if(s===3){ h+='<h2>Who are the kids?</h2><p class="lead">Each child gets a secret 4-digit code to sign in. We make the codes for you.</p><div id="wKids">'+W.kids.map(function(x,i){ return '<div class="kid"><input data-kn="'+i+'" placeholder="Child\'s name" value="'+esc(x.name)+'" maxlength="60"><select data-kg="'+i+'"><option value="">Grade</option>'+GR.map(function(g){ return '<option'+(x.grade===g?' selected':'')+'>'+g+'</option>'; }).join('')+'</select><button class="x" data-sb="kdel" data-i="'+i+'" aria-label="Remove">✕</button></div>'; }).join('')+'</div>';
+  h+='<div class="row"><button class="btn soft" data-sb="kadd">＋ Another child</button><button class="btn ghost" data-sb="kpaste">📋 Paste a list</button></div><div id="wPaste" style="display:none"><textarea id="wPasteT" rows="5" style="width:100%" placeholder="One child per line: name, grade&#10;Moshe Cohen, 3&#10;Rivka Cohen, K"></textarea><button class="btn soft" data-sb="kpgo">Add these</button></div>'; }
+ if(s===4){ var kn=W.kids.filter(function(x){ return x.name; });
+  h+='<h2>Parents (optional)</h2><p class="lead">Each parent gets their own code and sees <b>only</b> their own children. You can skip this and add parents later.</p>'+W.parents.map(function(p,i){ return '<div class="sec"><div class="row"><select data-pt="'+i+'" style="width:120px"><option value="">Title</option>'+['Abba','Ima','Mr.','Mrs.','Rabbi','Rebbetzin','Dr.'].map(function(t){ return '<option'+(p.title===t?' selected':'')+'>'+t+'</option>'; }).join('')+'</select><input data-pn="'+i+'" placeholder="Parent\'s name" value="'+esc(p.name)+'" style="flex:1;min-width:180px"><input data-pe="'+i+'" placeholder="Email (optional)" value="'+esc(p.email)+'" style="flex:1;min-width:180px"></div><div class="chips">'+kn.map(function(k,j){ var on=!p.kids||p.kids.indexOf(j)>=0; return '<button class="chip '+(on?'on':'')+'" data-sb="pk" data-i="'+i+'" data-j="'+j+'">'+(on?'✓ ':'')+esc(k.name)+'</button>'; }).join('')+'</div></div>'; }).join('')+'<button class="btn soft" data-sb="padd">＋ Another parent</button>'; }
+ h+='<p class="err" id="wErr">'+esc(V.err||'')+'</p><div class="row noprint"><button class="btn ghost" data-sb="'+(s===1?'home':'back')+'">'+(s===1?'Cancel':'◀ Back')+'</button><span style="flex:1"></span><button class="btn" data-sb="'+(s===4?'create':'next')+'" '+(BUSY?'disabled':'')+'>'+(s===4?(BUSY?'Making it…':'✨ Make it!'):'Next ▶')+'</button></div>';
+ return h; }
+function grab(){ if(!W) return; var n=$('wName'); if(n) W.name=n.value.trim();
+ document.querySelectorAll('#sb [data-kn]').forEach(function(x){ W.kids[+x.dataset.kn].name=x.value.trim(); });
+ document.querySelectorAll('#sb [data-kg]').forEach(function(x){ W.kids[+x.dataset.kg].grade=x.value; });
+ document.querySelectorAll('#sb [data-pn]').forEach(function(x){ W.parents[+x.dataset.pn].name=x.value.trim(); });
+ document.querySelectorAll('#sb [data-pe]').forEach(function(x){ W.parents[+x.dataset.pe].email=x.value.trim(); });
+ document.querySelectorAll('#sb [data-pt]').forEach(function(x){ W.parents[+x.dataset.pt].title=x.value; }); }
+function check(){ var s=W.step; if(s===1&&!W.kind) return 'Pick one to start.'; if(s===2&&W.name.length<2) return 'Type a name.';
+ if(s===3){ var k=W.kids.filter(function(x){ return x.name; }); if(!k.length) return 'Add at least one child.'; var bad=k.filter(function(x){ return !x.grade; })[0]; if(bad) return 'Pick a grade for '+bad.name+'.'; }
+ return ''; }
+/* school page */
+function school(){ var s=sch(V.id), kids=D.kids.filter(function(k){ return k.school===s.id; }), sel=V.sel||{}, n=Object.keys(sel).length, pars=D.parents.filter(function(p){ return p.school===s.id; });
+ var h='<div class="sec" style="border-top:8px solid '+s.color+'"><div class="row"><div style="font-size:44px">'+esc(s.emoji)+'</div><div style="flex:1"><div class="k" style="color:#6B7280;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase">'+esc(KNAME[s.kind]||'School')+'</div><h2 style="margin:0">'+esc(s.name)+'</h2></div><button class="btn ghost" data-sb="style">🎨 Name &amp; look</button></div>';
+ if(V.style){ h+='<div class="row">'+(D.head?'<input id="stName" value="'+esc(s.name)+'" style="flex:1;min-width:200px">':'')+'</div><div class="row emos">'+D.emojis.map(function(e){ return '<button data-sb="semo" data-e="'+e+'" class="'+(s.emoji===e?'on':'')+'">'+e+'</button>'; }).join('')+'</div><div class="row cols">'+D.colors.map(function(c){ return '<button data-sb="scol" data-c="'+c+'" class="'+(s.color===c?'on':'')+'" style="background:'+c+'"></button>'; }).join('')+'</div><button class="btn" data-sb="ssave">Save</button>'; }
+ h+='</div><div class="sec"><h3>🧒 Kids ('+kids.length+')</h3><p class="lead">Tap kids to pick them'+(D.head?', then tap where they go':'')+'.</p><div class="chips">'+(kids.length?kids.map(function(k){ return '<button class="chip '+(sel[k.id]?'on':'')+'" data-sb="pick" data-id="'+esc(k.id)+'">'+(sel[k.id]?'✓ ':'')+esc(k.name)+(k.grade?'<small>gr '+esc(k.grade)+'</small>':'')+'</button>'; }).join(''):'<span class="lead">No kids yet.</span>')+'</div>';
+ if(n) h+='<div class="bar"><b>'+n+' picked</b>'+(D.head?'<span>Move to:</span>'+D.schools.filter(function(x){ return x.id!==s.id; }).map(function(x){ return '<button class="dest" style="background:'+x.color+'" data-sb="move" data-to="'+esc(x.id)+'">'+esc(x.emoji)+' '+esc(x.name)+'</button>'; }).join(''):'')+'<button class="btn soft" data-sb="codes">🖨 New codes &amp; cards</button><button class="btn ghost" data-sb="none">Clear</button></div>';
+ h+='<div class="row"><button class="btn soft" data-sb="addkids">＋ Add kids</button></div>';
+ if(V.add){ h+='<div id="wKids">'+V.add.map(function(x,i){ return '<div class="kid"><input data-an="'+i+'" placeholder="Child\'s name" value="'+esc(x.name)+'"><select data-ag="'+i+'"><option value="">Grade</option>'+GR.map(function(g){ return '<option'+(x.grade===g?' selected':'')+'>'+g+'</option>'; }).join('')+'</select></div>'; }).join('')+'</div><div class="row"><button class="btn ghost" data-sb="amore">＋ Another</button><button class="btn" data-sb="ago" '+(BUSY?'disabled':'')+'>'+(BUSY?'Adding…':'Add and make codes')+'</button></div>'; }
+ h+='</div><div class="sec"><h3>👪 Parents ('+pars.length+')</h3>'+(pars.length?pars.map(function(p){ var names=(p.sids||[]).map(function(i){ var k=D.kids.filter(function(x){ return x.id===i; })[0]; return k?k.name:''; }).filter(Boolean).join(', '); return '<div class="row" style="margin:6px 0"><b>'+esc((p.title?p.title+' ':'')+p.name)+'</b><span class="lead" style="margin:0">sees only: '+esc(names||'—')+'</span></div>'; }).join(''):'<p class="lead">No parents yet.</p>')+'<div class="row"><button class="btn soft" data-sb="addpar">＋ Add a parent</button></div>';
+ if(V.par){ h+='<div class="row"><select id="ppT" style="width:120px"><option value="">Title</option>'+['Abba','Ima','Mr.','Mrs.','Rabbi','Rebbetzin','Dr.'].map(function(t){ return '<option>'+t+'</option>'; }).join('')+'</select><input id="ppN" placeholder="Parent\'s name" style="flex:1;min-width:180px"><input id="ppE" placeholder="Email (optional)" style="flex:1;min-width:180px"></div><div class="chips">'+kids.map(function(k){ var on=V.par[k.id]; return '<button class="chip '+(on?'on':'')+'" data-sb="ppk" data-id="'+esc(k.id)+'">'+(on?'✓ ':'')+esc(k.name)+'</button>'; }).join('')+'</div><button class="btn" data-sb="pgo" '+(BUSY?'disabled':'')+'>Add parent and make a code</button>'; }
+ return h+'<p class="err">'+esc(V.err||'')+'</p></div>'; }
+/* welcome cards */
+function card(name,code,s,parent,kidsList){ var url=D.url||''; return '<div class="sbc"><div class="top" style="background:'+(s.color||'#6D28D9')+'">'+esc(s.emoji||'🏫')+' '+esc(s.name||'')+'</div><div class="mid"><div class="hi">'+(parent?'Welcome, '+esc(name)+'!':'Hi '+esc(String(name).split(' ')[0])+'! 👋')+'</div><div>'+(parent?'Your parent code:':'Your secret code:')+'</div><div class="code">'+esc(code)+'</div>'+(parent?'<div>You see only: <b>'+esc(kidsList||'')+'</b></div>':'')+'<ol><li>Open the learning app'+(url?' (link below)':'')+'.</li><li>Tap your 4 numbers on the code pad.</li><li>'+(parent?'See your child\'s learning, notes and progress.':'Start your adventure! 🚀')+'</li></ol>'+(url?'<div class="url">'+esc(url)+'</div>':'')+'</div></div>'; }
+function done(){ var r=V.res, s={name:r.name,emoji:r.emoji,color:(sch(r.id)||{}).color||W&&W.color}; return '<div class="party"><div class="big">🎉</div><h2>'+esc(r.emoji)+' '+esc(r.name)+' is ready!</h2><p class="lead">'+r.kids.length+' kid'+(r.kids.length===1?'':'s')+(r.parents.length?' and '+r.parents.length+' parent'+(r.parents.length===1?'':'s'):'')+' can sign in now. <b>These codes are shown only now</b>: print the cards or write them down.</p><div class="row noprint" style="justify-content:center"><button class="btn" data-sb="print">🖨 Print welcome cards</button><button class="btn soft" data-sb="school" data-id="'+esc(r.id)+'">Open '+esc(r.name)+'</button></div></div><div id="sbCards">'+r.kids.map(function(k){ return card(k.name,k.code,s,false); }).join('')+r.parents.map(function(p){ return card((p.title?p.title+' ':'')+p.name,p.code,s,true,p.kids.join(', ')); }).join('')+'</div>'; }
+function cardsView(){ var s=sch(V.id); return '<div class="party"><div class="big">🖨</div><h2>New sign-in cards</h2><p class="lead">The old codes no longer work. <b>These codes are shown only now.</b></p><div class="row noprint" style="justify-content:center"><button class="btn" data-sb="print">🖨 Print</button><button class="btn soft" data-sb="school" data-id="'+esc(V.id)+'">Back to '+esc(s.name)+'</button></div></div><div id="sbCards">'+(V.cards||[]).map(function(k){ return card(k.name,k.code,s,false); }).join('')+'</div>'; }
+/* ---------- clicks ---------- */
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sb]'); if(!b) return; var a=b.dataset.sb;
+ if(a==='see'){ run('msAppUrl').then(function(u){ window.open(u+'?cp=1','_top'); }).catch(function(x){ alert(x); }); return; }
+ if(a==='open') return open();
+ if(a==='close'){ $('sb').classList.remove('on'); return; }
+ if(a==='home'){ V={v:'home'}; return draw(); }
+ if(a==='wiz') return wizStart();
+ if(a==='kind'){ W.kind=b.dataset.k; W.step=2; V.err=''; return draw(); }
+ if(a==='emo'){ grab(); W.emoji=b.dataset.e; return draw(); }
+ if(a==='col'){ grab(); W.color=b.dataset.c; return draw(); }
+ if(a==='next'){ grab(); var m=check(); if(m){ V.err=m; return draw(); } V.err=''; W.step++; if(W.step===4) W.parents.forEach(function(p){ if(!p.kids) p.kids=W.kids.filter(function(x){ return x.name; }).map(function(x,j){ return j; }); }); return draw(); }
+ if(a==='back'){ grab(); W.step=Math.max(1,W.step-1); V.err=''; return draw(); }
+ if(a==='kadd'){ grab(); W.kids.push({name:'',grade:''}); draw(); var l=document.querySelectorAll('#sb [data-kn]'); if(l.length) l[l.length-1].focus(); return; }
+ if(a==='kdel'){ grab(); W.kids.splice(+b.dataset.i,1); if(!W.kids.length) W.kids.push({name:'',grade:''}); return draw(); }
+ if(a==='kpaste'){ var p=$('wPaste'); p.style.display=p.style.display==='none'?'block':'none'; return; }
+ if(a==='kpgo'){ grab(); var lines=String($('wPasteT').value||'').split(/\n+/).map(function(l){ return l.trim(); }).filter(Boolean);
+  lines.forEach(function(l){ var m=/^(.*?)[,\t;]\s*(?:grade\s*)?(K|k|\d)\s*$/.exec(l); var nm=m?m[1].trim():l, g=m?String(m[2]).toUpperCase():''; W.kids=W.kids.filter(function(x){ return x.name; }); W.kids.push({name:nm,grade:g}); });
+  return draw(); }
+ if(a==='padd'){ grab(); W.parents.push({name:'',title:'',email:'',kids:W.kids.filter(function(x){ return x.name; }).map(function(x,j){ return j; })}); return draw(); }
+ if(a==='pk'){ grab(); var pp=W.parents[+b.dataset.i], j=+b.dataset.j, at=pp.kids.indexOf(j); if(at>=0) pp.kids.splice(at,1); else pp.kids.push(j); return draw(); }
+ if(a==='create'){ grab(); if(BUSY) return; BUSY=true; V.err=''; draw();
+  var kids=W.kids.filter(function(x){ return x.name; });
+  run('sbCreate',tok(),{name:W.name,kind:W.kind,emoji:W.emoji||(KINDS.filter(function(k){ return k[0]===W.kind; })[0]||[])[1],color:W.color,kids:kids,parents:W.parents.filter(function(p){ return p.name; })})
+   .then(function(r){ BUSY=false; V={v:'done',res:r}; return run('sbLoad',tok()).then(function(d){ D=d; draw(); }); })
+   .catch(function(x){ BUSY=false; V.err=String(x); draw(); }); return; }
+ if(a==='school'){ V={v:'school',id:b.dataset.id,sel:{}}; return draw(); }
+ if(a==='pick'){ var id=b.dataset.id; V.sel=V.sel||{}; if(V.sel[id]) delete V.sel[id]; else V.sel[id]=1; return draw(); }
+ if(a==='none'){ V.sel={}; return draw(); }
+ if(a==='move'){ var to=b.dataset.to, ids=Object.keys(V.sel||{}), from=V.id, t=sch(to);
+  document.querySelectorAll('#sb .chip.on').forEach(function(c){ c.classList.add('fly'); });
+  run('sbMove',tok(),ids,to).then(function(r){ D=r.load; V.sel={}; draw(); toast('✓ Moved '+ids.length+' kid'+(ids.length===1?'':'s')+' to '+t.emoji+' '+t.name,{ids:ids,to:from}); }).catch(function(x){ V.err=String(x); draw(); }); return; }
+ if(a==='undo'&&V.undo){ var u=V.undo; V.undo=null; run('sbMove',tok(),u.ids,u.to).then(function(r){ D=r.load; draw(); toast('↩ Moved back.'); }).catch(function(x){ alert(x); }); return; }
+ if(a==='codes'){ var list=Object.keys(V.sel||{}); if(!list.length) return; if(!confirm('Make new sign-in codes for '+list.length+' kid'+(list.length===1?'':'s')+'? Their old codes will stop working.')) return;
+  var out=[], go=function(i){ if(i>=list.length){ V.cards=out; V.v='cards'; V.sel={}; return draw(); } run('sbNewCode',tok(),list[i]).then(function(r){ out.push(r); go(i+1); }).catch(function(x){ V.err=String(x); draw(); }); }; go(0); return; }
+ if(a==='addkids'){ V.add=V.add||[{name:'',grade:''},{name:'',grade:''}]; return draw(); }
+ if(a==='amore'){ grabAdd(); V.add.push({name:'',grade:''}); return draw(); }
+ if(a==='ago'){ grabAdd(); var ks=V.add.filter(function(x){ return x.name; }); if(!ks.length) return; if(ks.some(function(x){ return !x.grade; })){ V.err='Pick a grade for every child.'; return draw(); }
+  BUSY=true; draw(); run('sbAddKids',tok(),V.id,ks).then(function(r){ BUSY=false; V.add=null; V.cards=r.kids; V.v='cards'; return run('sbLoad',tok()).then(function(d){ D=d; draw(); }); }).catch(function(x){ BUSY=false; V.err=String(x); draw(); }); return; }
+ if(a==='addpar'){ V.par=V.par||{}; return draw(); }
+ if(a==='ppk'){ var k=b.dataset.id; if(V.par[k]) delete V.par[k]; else V.par[k]=1; var keep={t:($('ppT')||{}).value,n:($('ppN')||{}).value,e:($('ppE')||{}).value}; draw(); if($('ppT')) $('ppT').value=keep.t||''; if($('ppN')) $('ppN').value=keep.n||''; if($('ppE')) $('ppE').value=keep.e||''; return; }
+ if(a==='pgo'){ var nm=($('ppN')||{}).value||'', sids=Object.keys(V.par||{}); if(nm.trim().length<2){ V.err='Type the parent\'s name.'; return draw(); } if(!sids.length){ V.err='Tap at least one child.'; return draw(); }
+  BUSY=true; run('acSaveParent',tok(),{name:nm,title:($('ppT')||{}).value||'',email:($('ppE')||{}).value||'',sids:sids}).then(function(r){ BUSY=false; var s=sch(V.id), kidsList=sids.map(function(i){ var k=D.kids.filter(function(x){ return x.id===i; })[0]; return k?k.name:''; }).join(', ');
+   V.par=null; V.cards=[]; V.v='cards'; return run('sbLoad',tok()).then(function(d){ D=d; draw(); $('sbCards').innerHTML=card(nm,r.code,s,true,kidsList); }); }).catch(function(x){ BUSY=false; V.err=String(x); draw(); }); return; }
+ if(a==='style'){ V.style=!V.style; return draw(); }
+ if(a==='semo'){ V.st=V.st||{}; V.st.emoji=b.dataset.e; document.querySelectorAll('#sb .emos button').forEach(function(x){ x.classList.toggle('on',x===b); }); return; }
+ if(a==='scol'){ V.st=V.st||{}; V.st.color=b.dataset.c; document.querySelectorAll('#sb .cols button').forEach(function(x){ x.classList.toggle('on',x===b); }); return; }
+ if(a==='ssave'){ var st=V.st||{}, nn=$('stName'); if(nn&&nn.value.trim()) st.name=nn.value.trim(); run('sbStyle',tok(),V.id,st).then(function(d){ D=d; V.style=false; V.st=null; draw(); toast('✓ Saved'); }).catch(function(x){ V.err=String(x); draw(); }); return; }
+ if(a==='print'){ document.body.classList.add('sbprint'); setTimeout(function(){ window.print(); setTimeout(function(){ document.body.classList.remove('sbprint'); },500); },150); return; }
+});
+function grabAdd(){ document.querySelectorAll('#sb [data-an]').forEach(function(x){ V.add[+x.dataset.an].name=x.value.trim(); }); document.querySelectorAll('#sb [data-ag]').forEach(function(x){ V.add[+x.dataset.ag].grade=x.value; }); }
+document.addEventListener('input',function(e){ if(e.target&&e.target.id==='wName'){ var p=$('wPrev'); if(p) p.textContent=e.target.value||' '; } });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&$('sb').classList.contains('on')) $('sb').classList.remove('on'); });
+window.tlSchools=open;
+})();
+</script>

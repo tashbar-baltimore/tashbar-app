@@ -1,0 +1,82 @@
+/* Speed.js — v162 (takeover3, HoS 2026-11-13: "no 6-second waits, no 3-second button pushes").
+   1. msSignInFast(code): ONE trip to the server at sign-in instead of three (code check, then msLoad, then tmMine).
+      Returns exactly what msSignInCode returns, plus .load (= msLoad) and .tm (= tmMine) for a boy. HomePage.html uses it.
+   2. Add-ons cached PIECE BY PIECE on the Chromebook (IndexedDB "tashbar-parts"), instead of one 10 MB bundle with one hash.
+      After a publish a Chromebook downloads only the pieces that changed. The server also no longer reads every pack
+      at every page load just to answer "nothing changed": a pack piece is named by its sha256 from ContentPacks.js.
+      The pieces, joined in order, are byte for byte msQuestToolsBody_().js (same files, same order, same try/catch).
+      If anything goes wrong the page falls back to the old loader (msQuestToolsGet), so the add-ons always load.
+   KEEP IN STEP: TL_PART_FILES must list the same files in the same order as msQuestToolsBody_ in Photos.js. */
+var TL_PART_FILES = ['CanteenKid', 'MathMore', 'ReadMore', 'ScienceMore', 'ElectivesMore', 'FactsMore', 'TradesMore', 'ComputingMore', 'LifeMore', 'SocialMore',
+  'KodeshMore', 'SimchaMore', 'Shine', 'Helpers', 'Review', 'Adapt', 'Motivation', 'JokeJar', 'SimchaLife', 'TalkRebbe', 'KodeshQuestPage', 'KinderKriyah',
+  'Guides', 'Pictures', 'Music', ['HowToDo', 'HowToDo2'], 'FactsHowTo', 'AnswerGuard', 'HomePlus', 'StoreKid', 'Activities', 'KindsMore', 'RebbePick', 'OlamHaba', 'TorahPlus', 'ChumashPage', 'KriyahMore', 'TorahTracks', 'ArenaPage', 'ClassMode', 'HomeLift', 'LearnWays'];
+
+function msSignInFast(code) {
+  var r = msSignInCode(code);
+  if (r && r.ok) { try { r.url = ScriptApp.getService().getUrl(); } catch (e) {} }   /* v164: the page needs the app's address for the math check, Spark Path and staff: no extra trip later */
+  if (!r || !r.ok || r.role !== 'kid') return r;
+  try { r.load = msLoad(r.token); } catch (e) { r.load = null; }
+  try { r.tm = typeof tmMine === 'function' ? tmMine(r.token) : null; r.tmOk = true; } catch (e) { r.tmOk = false; }
+  return r;
+}
+
+function tlStrip_(t) { return String(t).replace(/^\s*<script>/, '').replace(/<\/script>\s*$/, ''); }
+var TL_PART_NOSEP = { ComputingMore: 1, LifeMore: 1, SocialMore: 1, KodeshMore: 1, SimchaMore: 1, Shine: 1, Helpers: 1, Review: 1, Adapt: 1 };   /* msQuestToolsBody_ joins these without "\n;" in front; copied so the pieces match it byte for byte */
+function tlWrap_(label, text) { return (TL_PART_NOSEP[label] ? '' : '\n;') + 'try{(0,eval)(' + JSON.stringify(text) + ');}catch(e){console.error("' + label + '",e);}'; }
+function tlMd5_(s) { return tlHex_(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, s, Utilities.Charset.UTF_8)); }
+function tlHasCode_(name) { try { HtmlService.createHtmlOutputFromFile(name).getContent(); return true; } catch (e) { return false; } }
+
+/* The pieces in order: [{h: hash, get: function () { return the piece's text }}]. */
+function tlToolParts_() {
+  /* SAFETY: if someone adds a file to msQuestToolsBody_ (Photos.js) and not to TL_PART_FILES, stop here: the page then uses the old loader (slower, still right) */
+  var listed = {}; TL_PART_FILES.forEach(function (f) { (typeof f === 'string' ? [f] : f).forEach(function (n) { listed[n] = 1; }); });
+  var src = String(msQuestToolsBody_), re = /tlFileText_\('([A-Za-z0-9_]+)'\)/g, m;
+  while ((m = re.exec(src))) if (!listed[m[1]]) throw new Error('Speed.js TL_PART_FILES is missing ' + m[1]);
+  var out = [{ h: 'M' + tlMd5_(QUEST_TOOLS.js), get: function () { return QUEST_TOOLS.js; } }];
+  TL_PART_FILES.forEach(function (f) {
+    var names = typeof f === 'string' ? [f] : f, label = names[0];
+    var packOnly = names.every(function (n) { return TL_PACKS[n] && !tlHasCode_(n); });
+    var build = function () {   /* same rules as msQuestToolsBody_: a missing file gives '' */
+      var t = ''; names.forEach(function (n, i) { try { t += (i ? '\n' : '') + tlStrip_(tlFileText_(n)); } catch (e) {} }); return tlWrap_(label, t);
+    };
+    if (packOnly) {
+      out.push({ h: 'P' + names.map(function (n) { return TL_PACKS[n][1].slice(0, 32); }).join('.'), get: function () {
+        /* no try here: if a pack cannot be read, the call fails and the page uses the old loader (never cache a broken piece under a pack's name) */
+        return tlWrap_(label, names.map(function (n) { return tlStrip_(tlFileText_(n)); }).join('\n')); } });
+    } else {
+      var js = build(); out.push({ h: 'M' + tlMd5_(js), get: function () { return js; } });
+    }
+  });
+  return out;
+}
+
+/* Called by the page's loader: have = the piece hashes this Chromebook already has. Sends only the missing pieces. */
+function msQuestToolsParts(have) {
+  var got = {}; (have || []).forEach(function (h) { got[String(h)] = 1; });
+  var parts = tlToolParts_(), order = [], send = {};
+  parts.forEach(function (p) { order.push(p.h); if (!got[p.h] && !send[p.h]) send[p.h] = p.get(); });
+  return { v: 2, order: order, parts: send };
+}
+
+/* The page's loader (runs in the browser). OLD = the previous loader, used if anything here fails. */
+function tlLoader2Src_(OLD) {
+  var DBN = 'tashbar-parts', ST = 'p', db = null, done = false;
+  function go(js) { try { (0, eval)(js); } catch (e) { console.error('QuestTools', e); } try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
+  function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } }
+  function store(mode) { return db.transaction(ST, mode).objectStore(ST); }
+  function getMany(ks, cb) { var out = {}, n = ks.length; if (!n || !db) return cb(out); try { var s = store('readonly'); ks.forEach(function (k) { var q = s.get(k); q.onsuccess = function () { out[k] = q.result; if (--n === 0) cb(out); }; q.onerror = function () { if (--n === 0) cb(out); }; }); } catch (e) { cb(out); } }
+  function save(parts, order) { if (!db) return; try { var s = store('readwrite'); Object.keys(parts).forEach(function (h) { s.put(parts[h], h); }); s.put(order, '__order');
+    var q = s.getAllKeys(); q.onsuccess = function () { (q.result || []).forEach(function (k) { if (k !== '__order' && order.indexOf(k) < 0) s.delete(k); }); }; } catch (e) {}
+    try { indexedDB.deleteDatabase('tashbar-tools'); } catch (e) {} }   /* the old one-piece copy (about 10 MB) is no longer needed */
+  function join(order, fresh, cached) { var a = []; for (var i = 0; i < order.length; i++) { var h = order[i], v = fresh[h] != null ? fresh[h] : cached[h]; if (typeof v !== 'string') return null; a.push(v); } return a.join(''); }
+  function offline(e) { if (done) return; getMany(['__order'], function (o) { var order = o.__order; if (!order || !order.length) return fallback(e);
+    getMany(order, function (c) { var js = join(order, {}, c); if (js === null) return fallback(e); done = true; go(js); }); }); }
+  function ask(have) { google.script.run.withSuccessHandler(function (r) { if (done) return; if (!r || !r.order || !r.parts) return fallback('bad reply');
+      var need = r.order.filter(function (h) { return r.parts[h] == null; });
+      getMany(need, function (cached) { var js = join(r.order, r.parts, cached); if (js === null) return fallback('missing piece'); done = true; go(js); save(r.parts, r.order); }); })
+    .withFailureHandler(offline).msQuestToolsParts(have); }
+  try { var rq = indexedDB.open(DBN, 1); rq.onupgradeneeded = function () { rq.result.createObjectStore(ST); };
+    rq.onsuccess = function () { db = rq.result; try { var q = store('readonly').getAllKeys(); q.onsuccess = function () { ask((q.result || []).filter(function (k) { return k !== '__order'; })); }; q.onerror = function () { ask([]); }; } catch (e) { ask([]); } };
+    rq.onerror = function () { ask([]); }; rq.onblocked = function () { ask([]); }; } catch (e) { ask([]); }
+}
+function tlLoader2_() { return '(' + tlLoader2Src_.toString() + ')(' + JSON.stringify(TL_TOOLS_LOADER) + ');'; }
