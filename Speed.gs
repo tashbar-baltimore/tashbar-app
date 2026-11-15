@@ -61,14 +61,22 @@ function msQuestToolsParts(have) {
 /* The page's loader (runs in the browser). OLD = the previous loader, used if anything here fails. */
 function tlLoader2Src_(OLD) {
   var DBN = 'tashbar-parts', ST = 'p', db = null, done = false;
-  function go(js) { try { (0, eval)(js); } catch (e) { console.error('QuestTools', e); } try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
+  /* SPEED 3 (Nov 15): the add-ons used to run as ONE block, and the screen froze (no typing, no animation) until all of it was done:
+     about a second on a Chromebook, several on a phone. Now each piece runs by itself, in the same order, and the screen gets a turn
+     between pieces. Each piece was already its own eval, so the code that runs is the same. */
+  function go(list) { var i = 0;
+    function shown() { try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
+    function step() { var t = Date.now();
+      while (i < list.length && Date.now() - t < 30) { try { (0, eval)(list[i]); } catch (e) { console.error('QuestTools', e); } i++; }
+      if (i < list.length) setTimeout(step, 0); else shown(); }
+    step(); }
   function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } }
   function store(mode) { return db.transaction(ST, mode).objectStore(ST); }
   function getMany(ks, cb) { var out = {}, n = ks.length; if (!n || !db) return cb(out); try { var s = store('readonly'); ks.forEach(function (k) { var q = s.get(k); q.onsuccess = function () { out[k] = q.result; if (--n === 0) cb(out); }; q.onerror = function () { if (--n === 0) cb(out); }; }); } catch (e) { cb(out); } }
   function save(parts, order) { if (!db) return; try { var s = store('readwrite'); Object.keys(parts).forEach(function (h) { s.put(parts[h], h); }); s.put(order, '__order');
     var q = s.getAllKeys(); q.onsuccess = function () { (q.result || []).forEach(function (k) { if (k !== '__order' && order.indexOf(k) < 0) s.delete(k); }); }; } catch (e) {}
     try { indexedDB.deleteDatabase('tashbar-tools'); } catch (e) {} }   /* the old one-piece copy (about 10 MB) is no longer needed */
-  function join(order, fresh, cached) { var a = []; for (var i = 0; i < order.length; i++) { var h = order[i], v = fresh[h] != null ? fresh[h] : cached[h]; if (typeof v !== 'string') return null; a.push(v); } return a.join(''); }
+  function join(order, fresh, cached) { var a = []; for (var i = 0; i < order.length; i++) { var h = order[i], v = fresh[h] != null ? fresh[h] : cached[h]; if (typeof v !== 'string') return null; a.push(v); } return a; }
   function offline(e) { if (done) return; getMany(['__order'], function (o) { var order = o.__order; if (!order || !order.length) return fallback(e);
     getMany(order, function (c) { var js = join(order, {}, c); if (js === null) return fallback(e); done = true; go(js); }); }); }
   function ask(have) { google.script.run.withSuccessHandler(function (r) { if (done) return; if (!r || !r.order || !r.parts) return fallback('bad reply');
