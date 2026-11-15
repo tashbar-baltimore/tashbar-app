@@ -114,7 +114,7 @@ function msLoad(token) {
     var ic = CacheService.getScriptCache(), ik = 'msint_' + sess.sid + '_' + moneyWeekStart_(moneyDay_());
     if (!ic.get(ik)) { var lk = LockService.getScriptLock(); lk.waitLock(20000); try { moneyInterest_(sess.sid); } finally { lk.releaseLock(); } try { ic.put(ik, '1', 21600); } catch (e) {} }
   }
-  msRows_('state').forEach(function (r) { if (msCanSee_(sess, String(r[0])) && !(sess.role === 'staff' && msIsTest_(r[0]))) { try { var s = JSON.parse(r[1]); s.balance = msBalanceDollars_(String(r[0])); s.ledger = msLedger_(String(r[0])); if (sess.role === 'kid') { try { if (typeof moneyChestStatus_ === 'function') s.chest = moneyChestStatus_(String(r[0])); } catch (e) {} } states[r[0]] = s; } catch (e) {} } });
+  msRows_('state').forEach(function (r) { if (msCanSee_(sess, String(r[0])) && !(sess.role === 'staff' && msIsTest_(r[0]))) { try { var s = JSON.parse(r[1]); s.rev = Number(r[3]) || 0;   /* v201: which save this is, so a Chromebook can tell if the school has anything newer than its own unsent work */ s.balance = msBalanceDollars_(String(r[0])); s.ledger = msLedger_(String(r[0])); if (sess.role === 'kid') { try { if (typeof moneyChestStatus_ === 'function') s.chest = moneyChestStatus_(String(r[0])); } catch (e) {} } states[r[0]] = s; } catch (e) {} } });
   try { if (typeof sgpMergeMarks_ === 'function') sgpMergeMarks_(states); } catch (e) {}   /* v177: rebbe bechina marks (KD_Marks, StaffViews.js) show as mastered on the boy's screen */
   return { role: sess.role, sid: sess.sid,
     roster: roster.filter(function (r) { return (msCanSee_(sess, r.id) || sess.role === 'staff') && !(sess.role === 'staff' && msIsTest_(r.id)); }).map(function (r) { var pl = null; try { if (typeof plPlanFor_ === 'function') pl = plPlanFor_(r.id, r.ranges); } catch (e) { pl = null; } return { id: r.id, name: r.name, ranges: pl ? pl.ranges : r.ranges, place: pl ? pl.place : null }; }),
@@ -176,15 +176,26 @@ function msSave(token, sid, state, evidenceRows, bankRows) {
     var evIn = (evidenceRows || []).slice(0, 60);
     var pay = msCheckPay_(sess, sid, (bankRows || []).slice(0, 10), evIn, (state && state.badges) || []);
     var balance = msBalanceDollars_(sid);
-    state = state || {}; state.balance = balance; state.ledger = msLedger_(sid);
-    var json = JSON.stringify(state); if (json.length > 45000) throw new Error('Too much data.');
     var sh = msTab_('state'), rows = msRows_('state'), idx = -1;
     for (var i = 0; i < rows.length; i++) if (String(rows[i][0]) === sid) { idx = i; break; }
     var ver = idx >= 0 ? Number(rows[idx][3] || 0) + 1 : 1;
+    state = state || {}; state.balance = balance; state.ledger = msLedger_(sid); state.rev = ver;
+    var json = JSON.stringify(state); if (json.length > 45000) throw new Error('Too much data.');
     var line = [sid, json, new Date(), ver];
     if (idx >= 0) sh.getRange(idx + 2, 1, 1, 4).setValues([line]); else sh.appendRow(line);
+    /* v201: a save that is retried (Wi-Fi drop, busy server) may send an answer twice. Each answer has an id from the page;
+       ids already stored are remembered for 6 hours and skipped, so the evidence tab gets every answer once. Pay was already safe (keys). */
+    var seenCache = CacheService.getScriptCache(), seenKey = 'ms_evid_' + sid, seen = [];
+    try { seen = JSON.parse(seenCache.get(seenKey) || '[]'); } catch (e) { seen = []; }
+    var newIds = [];
+    evIn = evIn.filter(function (r) {
+      var id = r && r.id ? String(r.id).slice(0, 24) : ''; if (!id) return true;
+      if (seen.indexOf(id) >= 0 || newIds.indexOf(id) >= 0) return false;
+      newIds.push(id); return true;
+    });
     var ev = evIn.map(function (r) { return [new Date(r.at || Date.now()), sid, String(r.skill || '').slice(0, 40), String(r.phase || '').slice(0, 12), String(r.item || '').slice(0, 120), r.ok ? 1 : 0, r.first ? 1 : 0, Number(r.tries) || 0, Number(r.hints) || 0, Math.round((Number(r.ms) || 0) / 1000)]; });
     if (ev.length) { var es = msTab_('evidence'); es.getRange(es.getLastRow() + 1, 1, ev.length, ev[0].length).setValues(ev); }
+    if (newIds.length) { try { seenCache.put(seenKey, JSON.stringify(seen.concat(newIds).slice(-400)), 21600); } catch (e) {} }
     if (pay.paid) moneyStreak_(sid);
     balance = msBalanceDollars_(sid);
     return { ok: true, version: ver, balance: balance, ledger: msLedger_(sid), rejected: pay.rejected.length, daily: pay.daily ? 10 : 0, chest: typeof moneyChestStatus_ === 'function' ? moneyChestStatus_(sid) : null };

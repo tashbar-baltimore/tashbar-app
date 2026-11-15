@@ -1759,7 +1759,7 @@ if(!w||w.stamp!==p.stamp){ st.win[c]={stamp:p.stamp,start:p.start}; st.boss[c]=f
 function tlAdvance(st){ if(!st||!st.place) return; let moved=false;
 Object.keys(st.place).forEach(c=>{ const P=tlPath(st,c); if(!P) return; const win=tlWindow(st,c);
 if(st.boss[c]&&win.length&&win.every(id=>mastered(st,id))){ const i=P.indexOf(win[win.length-1])+1; if(i<P.length){ st.win[c]={stamp:st.place[c].stamp,start:P[i]}; st.boss[c]=false; st.builds=(st.builds||0)+1; moved=true; } } });
-if(moved){ saveStudent(st); toast('The road ahead is open! Your next skills are ready.'); } }
+if(moved){ SAVEQ.now=true; saveStudent(st); toast('The road ahead is open! Your next skills are ready.'); } }
 function tlFindLevelCard(st){ if(!st||(st.place&&st.place.MATH)) return '';
 return `<div class="tlfind"><span class="tli" aria-hidden="true">\u{1F9ED}</span><div class="tlt"><b>Find your math level</b><small>A quick check of a few questions. Then your own math lineup is ready.</small></div><button class="btn big" type="button" onclick="tlFindLevel()">Start</button></div>`; }
 function tlFindLevel(){ try{ sessionStorage.setItem('tl-check',JSON.stringify({token:SRV.token,at:Date.now()})); }catch(e){}
@@ -1793,21 +1793,103 @@ const today=()=>new Date().toISOString().slice(0,10);
 const SRV={token:null,states:{},pendingEv:[]};
 const run=(fn,...args)=>new Promise((res,rej)=>{ if(!(window.google&&google.script&&google.script.run)) return rej(new Error('offline')); google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...args); });
 function loadStudent(r){
-const s=clone(SRV.states[r.id]||{});
+const s=saveRecover(r.id,clone(SRV.states[r.id]||{}));
 const st=Object.assign({id:r.id,name:r.name,ranges:{MATH:'A',READ:'A',WRIT:'A'},skills:{},fails:{},fallback:{},balance:0,ledger:[],flags:[],writing:{},signoffs:{},boss:{},weekBonus:false,
 xp:0,badges:[],worlds:[],day:{d:today(),n:0}},s);
 if(r.ranges) st.ranges=clone(r.ranges); tlApplyPlace(st,r); return st;
 }
+/* v201 SAVE ONCE PER LESSON (so 500 boys can work at the same time).
+   Every part of the app still calls saveStudent(st) whenever it likes, but a trip to Google now happens only:
+     - at the end of a lesson (finish() below, or new pay rows such as "Mastered ..."), or
+     - when 5 answers are waiting, or
+     - when he signs out, leaves the tab, or stops for 20 seconds (90 seconds at most; 5 minutes inside a lesson).
+   Only ONE save is on its way at a time; calls made meanwhile are joined into the next one.
+   Until Google says "saved", his work is also written to this Chromebook (localStorage "tl-unsaved-<id>").
+   A failed save is tried again by itself (15 s, 30 s, 60 s, then every 2 min, and when the Wi-Fi comes back).
+   If the Chromebook is closed first, the work is sent the next time he signs in on it (saveRecover).
+   Each answer carries an id, so the server never stores the same answer twice; pay was already safe (MiddleSchool.js). */
+const SAVE_EVERY=5, SAVE_QUIET=20000, SAVE_CAP=90000, SAVE_LESSON_CAP=300000, SAVE_EV_MAX=60, SAVE_BANK_MAX=10, SAVE_KEEP_DAYS=14;
+const SAVEQ={st:null,cbs:[],first:0,last:0,now:false,busy:false,fly:null,wait:0,retryT:null,n:0,sig:'',recover:null,calls:0,asked:0};
+function saveKey(sid){ return 'tl-unsaved-'+sid; }
+function saveId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
+function saveBank(st){ const prevLen=((SRV.states[st.id]||{}).ledger||[]).length, l=st.ledger||[]; return l.slice(0,Math.max(0,l.length-prevLen)); }
+/* write his unsent work to the Chromebook, or clear the note when nothing is waiting */
+function saveStash(){
+try{ const st=SAVEQ.st||A.st; if(!st||!SRV.token) return;
+const fly=SAVEQ.fly&&SAVEQ.fly.sid===st.id?SAVEQ.fly:null;
+const ev=(fly?fly.ev:[]).concat(SRV.pendingEv), bank=saveBank(st).concat(fly?fly.bank:[]);
+ev.forEach(r=>{ if(r&&!r.id) r.id=saveId(); });
+if(!SAVEQ.st&&!fly&&!ev.length&&!bank.length){ localStorage.removeItem(saveKey(st.id)); return; }
+localStorage.setItem(saveKey(st.id),JSON.stringify({v:1,sid:st.id,at:Date.now(),rev:Number((SRV.states[st.id]||{}).rev)||0,st:st,ev:ev,bank:bank}));
+}catch(e){} }
+/* at sign-in: work this Chromebook could not send last time. s = his record as the school has it now. */
+function saveRecover(sid,s){
+try{ const raw=localStorage.getItem(saveKey(sid)); if(!raw) return s; const w=JSON.parse(raw);
+if(!w||w.sid!==sid||!(Date.now()-w.at<SAVE_KEEP_DAYS*86400000)){ localStorage.removeItem(saveKey(sid)); return s; }
+const have={}; SRV.pendingEv.forEach(r=>{ if(r&&r.id) have[r.id]=1; });
+const ev=(w.ev||[]).filter(r=>r&&r.id&&!have[r.id]);
+SRV.pendingEv=ev.concat(SRV.pendingEv); SAVEQ.recover=sid;
+/* the school has nothing newer than what this Chromebook started from: carry on exactly where he stopped (pay rows included) */
+if(w.st&&(Number(w.rev)||0)===(Number(s.rev)||0)){ const bank=Array.isArray(w.bank)?w.bank:[], o=w.st;
+o.ledger=bank.concat(s.ledger||[]); o.balance=Math.round((Number(s.balance)||0)*100+bank.reduce((a,b)=>a+Math.round((Number(b.amt)||0)*100),0))/100;
+if('chest' in s) o.chest=s.chest; else delete o.chest; o.rev=s.rev; return o; }
+}catch(e){}
+return s; }
+function saveDue(){ const st=SAVEQ.st, now=Date.now(); if(!st) return false;
+if(SAVEQ.now||SRV.pendingEv.length>=SAVE_EVERY||saveBank(st).length) return true;
+if(A.view==='play') return now-SAVEQ.first>=SAVE_LESSON_CAP;
+return now-SAVEQ.last>=SAVE_QUIET||now-SAVEQ.first>=SAVE_CAP; }
 function saveStudent(st,onDone){
-const prevLen=((SRV.states[st.id]||{}).ledger||[]).length;
-const bank=st.ledger.slice(0,Math.max(0,st.ledger.length-prevLen)).slice(0,10);
-const ev=SRV.pendingEv.splice(0);
+if(!st) return; SAVEQ.asked++;
+if(SAVEQ.st&&SAVEQ.st.id!==st.id){ SAVEQ.cbs=[]; SAVEQ.first=0; }
+SAVEQ.st=st; if(onDone) SAVEQ.cbs.push(onDone); if(!SAVEQ.first) SAVEQ.first=Date.now(); SAVEQ.last=Date.now(); SAVEQ.n++;
+saveStash();
+if(!SAVEQ.busy&&!SAVEQ.retryT&&saveDue()) saveFlush(); }
+function saveFlush(){
+const st=SAVEQ.st; if(!st||SAVEQ.busy) return;
+if(SAVEQ.retryT){ clearTimeout(SAVEQ.retryT); SAVEQ.retryT=null; }
+const token=SRV.token, all=saveBank(st), bank=all.slice(-SAVE_BANK_MAX), mark=st.ledger.length-(all.length-bank.length);
+const ev=SRV.pendingEv.splice(0,SAVE_EV_MAX), over=SRV.pendingEv.length>0; ev.forEach(r=>{ if(r&&!r.id) r.id=saveId(); });
+const cbs=SAVEQ.cbs.splice(0), before=SRV.states[st.id]!==undefined?clone(SRV.states[st.id]):undefined, n=SAVEQ.n, back=SAVEQ.recover===st.id;
+if(back) SAVEQ.recover=null;
+SAVEQ.busy=true; SAVEQ.now=false; SAVEQ.first=0; SAVEQ.fly={sid:st.id,ev:ev,bank:bank}; SAVEQ.calls++;
 SRV.states[st.id]=clone(st);
-run('msSave',SRV.token,st.id,clone(st),ev,bank).then(r=>{
-if(r&&typeof r.balance==='number'){ st.balance=r.balance; if(Array.isArray(r.ledger)) st.ledger=r.ledger; SRV.states[st.id]=clone(st); }
-onDone&&onDone(r);
-}).catch(e=>{ toast('Couldn’t save to the school database. Check the Wi-Fi.'); onDone&&onDone(null); });
-}
+const same=()=>SRV.token===token&&SAVEQ.st===st;
+run('msSave',token,st.id,clone(st),ev,bank).then(r=>{
+SAVEQ.busy=false; SAVEQ.fly=null; SAVEQ.wait=0;
+if(!same()){ try{ if(SAVEQ.n===n) localStorage.removeItem(saveKey(st.id)); }catch(e){} return; }   /* he signed out meanwhile: nothing more to do here */
+if(r&&typeof r.balance==='number'){
+const added=st.ledger.slice(0,Math.max(0,st.ledger.length-mark));   /* pay rows made while this save was on its way: keep them for the next one */
+st.balance=r.balance; if(Array.isArray(r.ledger)) st.ledger=r.ledger; if(r.version) st.rev=r.version;
+SRV.states[st.id]=clone(st);
+if(added.length){ st.ledger=added.concat(st.ledger); st.balance=Math.round(st.balance*100+added.reduce((a,b)=>a+Math.round((Number(b.amt)||0)*100),0))/100; } }
+const more=SAVEQ.n!==n||over||saveBank(st).length>0;   /* answers an activity is still collecting (Spark Path) wait for its own save, as before */
+if(!more) SAVEQ.st=null; else if(!SAVEQ.first) SAVEQ.first=Date.now();
+saveStash();
+if(back){ try{ toast('Your work from last time is saved. ✓'); }catch(e){} }
+cbs.forEach(cb=>{ try{ cb(r); }catch(e){ console.error('save callback',e); } });
+if(more&&(over||saveDue())) saveFlush();
+}).catch(e=>{
+SAVEQ.busy=false; SAVEQ.fly=null;
+if(!same()) return;   /* signed out: his work stays on this Chromebook and is sent at his next sign-in */
+SRV.pendingEv=ev.concat(SRV.pendingEv); if(before===undefined) delete SRV.states[st.id]; else SRV.states[st.id]=before;
+SAVEQ.cbs=cbs.concat(SAVEQ.cbs); SAVEQ.now=true; if(!SAVEQ.first) SAVEQ.first=Date.now(); if(back) SAVEQ.recover=st.id;
+saveStash();
+const d=[15,30,60,120][Math.min(SAVEQ.wait,3)]*1000+Math.floor(Math.random()*5000); SAVEQ.wait++;   /* a few random seconds so a whole class does not retry in the same instant */
+SAVEQ.retryT=setTimeout(()=>{ SAVEQ.retryT=null; if(SAVEQ.st===st&&SRV.token&&A.st&&A.st.id===st.id) saveFlush(); },d);
+try{ toast('No Wi-Fi right now. Keep going! Your work is saved as soon as it is back.'); }catch(x){}
+}); }
+/* send whatever is waiting right now (sign out, leaving the tab) */
+function saveNow(){ try{ if(!SRV.token) return; const st=SAVEQ.st||A.st; if(!st) return;
+if(SRV.pendingEv.length||saveBank(st).length){ SAVEQ.st=st; SAVEQ.n++; }
+if(!SAVEQ.st) return; SAVEQ.now=true; saveStash(); if(!SAVEQ.busy) saveFlush(); }catch(e){} }
+setInterval(()=>{ try{ if(!SRV.token||!A.st) return;
+if(SAVEQ.recover===A.st.id&&!SAVEQ.busy&&!SAVEQ.retryT){ SAVEQ.now=true; saveStudent(A.st); return; }
+const sig=SAVEQ.n+'|'+SRV.pendingEv.length+'|'+(SAVEQ.busy?1:0); if(sig!==SAVEQ.sig){ SAVEQ.sig=sig; saveStash(); }
+if(SAVEQ.st&&!SAVEQ.busy&&!SAVEQ.retryT&&saveDue()) saveFlush(); }catch(e){} },2000);
+window.addEventListener('online',()=>{ if(SAVEQ.retryT&&!SAVEQ.busy) saveFlush(); });
+document.addEventListener('visibilitychange',()=>{ if(document.hidden) saveNow(); });
+window.addEventListener('pagehide',()=>saveNow());
 const SND={ctx:null,on:true,
 t(f,d,type,when,vol){ if(!this.on) return; try{ this.ctx=this.ctx||new (window.AudioContext||window.webkitAudioContext)(); const c=this.ctx,o=c.createOscillator(),g=c.createGain(); o.type=type||'triangle'; o.frequency.value=f; const t=c.currentTime+(when||0); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol||.16,t+.015); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+.05);}catch(e){} },
 tap(){ this.t(880,.05,'sine',0,.06); },
@@ -2071,6 +2153,7 @@ if(st.day.d!==today()) st.day={d:today(),n:0}; st.day.n++; A.session++; const p3
 const rows=p.results.filter(Boolean).map(x=>({at:Date.now(),student:st.id,skill:x.skill,phase:p.kind==='boss'?'boss':x.phase,item:x.q,first:!!x.first&&!x.pending,tries:x.tries||1,hints:0,ms:0,ok:!!x.ok&&!x.pending}));
 SRV.pendingEv=SRV.pendingEv.concat(rows);
 const paid=payout.reduce((a,x)=>a+x[1],0);
+SAVEQ.now=true;   /* v201: the end of a lesson is the moment his answers go to the school, all together */
 saveStudent(st,res=>{ const r=A.res; if(!res||!r||r.st!==st) return;
 if(res.daily){ r.payout.push(['Daily goal: 3 lessons today',res.daily]); }
 const extra=Math.round((res.balance-r.before.bal-paid-(res.daily||0))*100)/100;
@@ -2134,7 +2217,7 @@ if(a==='del'){ A.pin=A.pin.slice(0,-1); return render(); }
 if(a==='pin') return pinKey(b.dataset.n);
 if(a==='signin') return pinGo();
 if(a==='sound'){ SND.on=!SND.on; return render(); }
-if(a==='signout'){ if(window.TashbarSound) TashbarSound.signOut(); A.view='signin'; A.who=null; A.pin=''; A.st=null; A.play=null; A.res=null; A.overlay=null; SRV.token=null; SRV.states={}; SRV.pendingEv=[]; return render(); }
+if(a==='signout'){ saveNow(); SAVEQ.st=null; SAVEQ.cbs=[]; SAVEQ.first=0; SAVEQ.now=false; SAVEQ.recover=null; if(SAVEQ.retryT){ clearTimeout(SAVEQ.retryT); SAVEQ.retryT=null; } SAVEQ.wait=0; if(window.TashbarSound) TashbarSound.signOut(); A.view='signin'; A.who=null; A.pin=''; A.st=null; A.play=null; A.res=null; A.overlay=null; SRV.token=null; SRV.states={}; SRV.pendingEv=[]; return render(); }
 if(a==='reset') return overlay(`<div class="oe">🔄</div><h2>Start ${esc(A.st.name)} over?</h2><p>This clears his progress on this device.</p><button class="btn go big" data-act="reset-yes">Start over</button> <button class="btn big" data-act="closeov">Cancel</button>`);
 if(a==='locked'){ SND.wrong(); return toast('Finish the glowing one first. Each skill builds on the last.'); }
 if(a==='start') return startMission(b.dataset.c,b.dataset.id,'skill');
