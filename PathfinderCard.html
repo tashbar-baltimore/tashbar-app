@@ -1,0 +1,61 @@
+<script>
+/* PATHFINDER Phase 1 (2026-11-10, Claude Code builder): the "Start your Pathfinder" / "Finish your road" card on a boy's home screen.
+   Added after QuestPage by sgQuest_ (StaffGrid.gs), like SignOutBar. Reads QuestPage's A (view) and SRV (token); never changes them.
+   Shows only when the server says Pathfinder is open for this boy (test boys always; other boys only when their grade is in PF_LIVE_GRADES). */
+(function(){
+ var asked=null, info=null, url='';
+ function tok(){ try{ return typeof SRV!=='undefined'&&SRV&&SRV.token; }catch(e){ return null; } }
+ function onHub(){ try{ return typeof A!=='undefined'&&A&&A.view==='hub'&&!A.overlay; }catch(e){ return false; } }
+ var css=document.createElement('style');
+ css.textContent='.pf-card{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:2147483000;display:flex;align-items:center;gap:12px;max-width:min(440px,calc(100vw - 24px));background:#fff8e1;border:3px solid #E3B341;border-radius:20px;padding:12px 16px;box-shadow:0 8px 22px rgba(0,0,0,.22);font:600 17px system-ui,"Segoe UI",sans-serif;color:#1E1B4B}.pf-card .i{font-size:38px}.pf-card b{display:block;font-size:19px}.pf-card small{font-weight:500;color:#5d6779}.pf-card button{border:0;border-radius:14px;background:#1E1B4B;color:#fff;font:700 18px system-ui,sans-serif;min-height:52px;padding:0 18px;cursor:pointer}';
+ document.head.appendChild(css);
+ var card=document.createElement('div'); card.className='pf-card'; card.style.display='none'; document.body.appendChild(card);
+ function go(){ var t=tok(); if(!t) return; try{ sessionStorage.setItem('tl-pf',JSON.stringify({token:t,at:Date.now()})); }catch(e){}
+  if(url){ window.open(url+'?pf=1','_top'); return; }
+  google.script.run.withSuccessHandler(function(u){ url=u; window.open(u+'?pf=1','_top'); }).msAppUrl(); }
+ function paint(){ if(!info||!info.show){ card.style.display='none'; return; }
+  card.innerHTML='<span class="i" aria-hidden="true">\u{1F9ED}</span><span style="flex:1"><b>'+(info.started?'Finish your Pathfinder road':'Start your Pathfinder')+'</b><small>'+(info.started?info.done+' of '+info.of+' stops done'+(info.jars?' · 🫙 '+info.jars+' jar'+(info.jars>1?'s':'')+' waiting':'')+'. Your answers are saved.':'Find where you are in Reading and Math. Every real try earns coins.')+(info.draft?' (test)':'')+'</small></span><button type="button">'+(info.started?'Continue':'Start')+'</button>';
+  card.querySelector('button').onclick=go; }
+ setInterval(function(){
+  var t=tok(), hub=onHub();
+  if(!t){ asked=null; info=null; card.style.display='none'; return; }
+  if(asked!==t){ asked=t; info=null; google.script.run.withSuccessHandler(function(r){ info=r; paint(); }).withFailureHandler(function(){ info=null; }).pfHello(t);
+   google.script.run.withSuccessHandler(function(u){ url=u; }).msAppUrl(); }
+  card.style.display=hub&&info&&info.show?'':'none';
+ },1000);
+ /* v6 Stage 2 (Engine E + E2): the first lesson in Reading / Math after a Pathfinder placement opens with a 5-question check
+    (TEST boys only: pfHello lists the subjects in info.confirm, and only for TEST boys). The server picks and scores the questions,
+    moves his Level when the rules say so, and logs it. No money. Real boys: info.confirm is always empty, so nothing changes. */
+ var CF=null;
+ function cfEsc(x){ return String(x==null?'':x).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+ function cfClose(){ var o=document.getElementById('pf-cf'); if(o) o.remove(); }
+ function cfBox(h){ cfClose(); var o=document.createElement('div'); o.id='pf-cf'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); o.innerHTML='<div class="bx">'+h+'</div>'; document.body.appendChild(o); var f=o.querySelector('input,button'); if(f) f.focus(); return o; }
+ function cfQ(){ var it=CF.d.items[CF.i], h='<div class="pg">Question '+(CF.i+1)+' of '+CF.d.items.length+'</div>';
+  if(it.passage) h+='<div class="ps"><b>'+cfEsc(it.passage.title)+'</b><div>'+cfEsc(it.passage.text).replace(/\n/g,'<br>')+'</div></div>';
+  h+='<h2>'+cfEsc(it.stem)+'</h2>'+(it.show?'<p class="sh">'+cfEsc(it.show)+'</p>':'');
+  if(it.fmt==='CHOICE') h+=it.choices.map(function(c){ return '<button type="button" class="ch" data-v="'+cfEsc(c)+'">'+cfEsc(c)+'</button>'; }).join('');
+  else h+='<input id="pf-cf-in" autocomplete="off" aria-label="Your answer"><button type="button" class="go" data-v="">Next</button>';
+  var o=cfBox(h);
+  o.querySelectorAll('button[data-v]').forEach(function(b){ b.onclick=function(){ var v=it.fmt==='CHOICE'?b.getAttribute('data-v'):(document.getElementById('pf-cf-in')||{}).value||''; cfNext(v); }; });
+  var inp=document.getElementById('pf-cf-in'); if(inp) inp.onkeydown=function(e){ if(e.key==='Enter') cfNext(inp.value||''); }; }
+ function cfNext(v){ CF.ans.push({item:CF.d.items[CF.i].id,value:v}); CF.i++; if(CF.i<CF.d.items.length) return cfQ();
+  cfBox('<h2>Checking…</h2>');
+  google.script.run.withSuccessHandler(function(r){ if(info&&info.confirm) info.confirm=info.confirm.filter(function(k){ return k!==CF.c||r.next!=='done'; });
+    var go=CF.go, moved=r.moved, msg=moved>0?'Great work! You move up to Level '+r.level+'.':moved<0?'Let’s start one Level back, at Level '+r.level+'. That is how we build it strong.':r.next==='up'?'All right! Next time we will try a few from the Level above.':'Good. You stay on your road.';
+    var o=cfBox('<div class="ic">'+(moved>0||r.next==='up'?'🚀':'✅')+'</div><h2>'+r.right+' of '+r.of+' right</h2><p>'+msg+(moved?' Your road updates the next time you sign in.':'')+'</p><button type="button" class="go">'+(moved?'Back to my road':'Go to my lesson')+'</button>');
+    o.querySelector('button').onclick=function(){ cfClose(); CF=null; if(!moved) go(); }; })
+   .withFailureHandler(function(){ var go=CF.go; CF=null; cfClose(); go(); }).pfConfirmSave(tok(),CF.c,CF.ans); }
+ var _sm=window.startMission;
+ if(typeof _sm==='function') window.startMission=function(c,id,kind){ var self=this, args=arguments, go=function(){ return _sm.apply(self,args); };
+  try{ if(CF||!info||!info.confirm||info.confirm.indexOf(c)<0||(kind&&kind!=='skill')) return go();
+   CF={c:c,go:go,i:0,ans:[],d:null}; cfBox('<h2>One moment…</h2>');
+   google.script.run.withSuccessHandler(function(d){ if(!d||!d.items||!d.items.length){ CF=null; cfClose(); if(info&&info.confirm) google.script.run.withSuccessHandler(function(r){ if(r) info=r; }).pfHello(tok()); return go(); }
+     CF.d=d; var o=cfBox('<div class="ic">🧭</div><h2>Quick check first</h2><p>'+d.items.length+' questions from Level '+d.level+'. No hints. Just do your best: it helps us keep you on the right step.</p><button type="button" class="go">Let’s go</button>');
+     o.querySelector('button').onclick=cfQ; })
+    .withFailureHandler(function(){ CF=null; cfClose(); go(); }).pfConfirmStart(tok(),c);
+  }catch(e){ CF=null; cfClose(); return go(); } };
+ var cs=document.createElement('style');
+ cs.textContent='#pf-cf{position:fixed;inset:0;z-index:2147483600;background:rgba(20,18,50,.55);display:grid;place-items:center;padding:16px}#pf-cf .bx{background:#fff;border-radius:28px;max-width:640px;width:100%;max-height:92vh;overflow:auto;padding:24px;text-align:center;border:3px solid #E3B341;font:600 18px system-ui,"Segoe UI",sans-serif;color:#1E1B4B}#pf-cf .ic{font-size:56px}#pf-cf h2{margin:8px 0 14px;font-size:24px}#pf-cf .pg{color:#5d6779;font-size:15px}#pf-cf .ps{text-align:left;background:#fbfaf6;border-radius:14px;padding:12px;margin:10px 0;font-weight:500;line-height:1.5}#pf-cf .sh{font-size:22px}#pf-cf button{display:block;width:100%;border:0;border-radius:16px;min-height:56px;font-weight:800;font-size:19px;font-family:inherit;cursor:pointer;margin-top:10px;background:#F4F4F5;color:#1E1B4B}#pf-cf button.go{background:#4F46E5;color:#fff}#pf-cf input{width:100%;box-sizing:border-box;font-weight:700;font-size:24px;font-family:inherit;padding:12px;border-radius:14px;border:2px solid #c9c9d6;text-align:center}';
+ document.head.appendChild(cs);
+})();
+</script>

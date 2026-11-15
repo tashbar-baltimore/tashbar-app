@@ -1,0 +1,126 @@
+<script>
+/* KinderKriyah.html — Kodesh Quest v9 (KQ9, CHANGE 1530-ET, sha 15b8c44d…; page in the KodeshQuestPage pack since v178; v7 was CHANGE 1035-ET): v6 (K-8, 51 games) + 7 Island Lessons (8-step runner).
+   v159 (takeover4): v7 page; the boy's Quest progress (band, stars, lesson mastery, review dates) is saved in his state (st.kq) and comes back next visit;
+   "Talk to my Rebbe" inside a lesson opens the app's own Talk to my Rebbe note (TalkRebbe.html, v128). Island Lessons are practice, not grid mastery.
+   Earlier: v6 (CHANGE 2255, sha 7e94f5e4…).
+   Contains all of Kinder Kodesh v5 (v145). Installed v147 (takeover4). Earlier: v133 letter games, v137 v3, v145 Kinder Kodesh v5.
+   The drafter's whole page runs inside its own sealed frame (srcdoc, sandbox allow-scripts), so its styles never touch the app.
+   A "🎮 Kodesh Quest" card shows on the home screen for EVERY boy (K-8 bands; the boy picks his band; the sealed frame cannot remember it).
+   v148: each right answer is saved and paid by the server like any lesson (MONEY BRIDGE below). Practice games, not mastery.
+   SWITCH: window.KINDER_KRIYAH_LIVE = true -> every boy; false -> TEST- boys only.
+   v197 (takeover4, HoS 2026-11-15: "the Kodesh Quest should be part of the curriculum ... and that concept should be applied throughout"):
+   Kodesh Quest is no longer a separate home card. Every land is placed in the curriculum at its grade:
+     Kodesh lands -> the Limudei Kodesh panel (KodeshMore wiring v197): each track shows the Quest lands for the step he is on
+       (Kriyah: Aleph-Beis, Nekudos, Sounds, Word Town; Chumash: Parsha, Chumash Words, Build the Pasuk, Parsha Path, Find It in the Pasuk;
+       Lashon Hakodesh: Shoresh Builder; Mishnayos: Mishnah Who Says What; Gemara: Gemara Flow), and a new track
+       "Brachos, Davening and Yom Tov" is made of the Brachos, Davening, Middos, Yom Tov, Calendar and 19-Year-Cycle lands.
+     General Studies lands -> Today's Plan: Reading (ABC, Reading) and Math (Numbers, Math, Number Line, Times Tables) at his level (HomePlus v197).
+   A land node opens the Quest straight into that land (deep link). "All Kodesh Quest games" (bottom of the Limudei Kodesh panel) opens the map
+   with the Kodesh lands only. Grade = app level: K = level 1, 1st = 2, 2nd = 3, 3-4 = 4-5, 5-6 = 6-7, 7-8 = 8-9.
+   Also v197: wrong answers are sent too (ok:false rows, at most one per question) so the Olam Haba cloud counts the effort (takeover3 v194 note).
+   The server pays only ok rows (msCheckPay_: "if (!r || !r.ok) return"), so money does not change. */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined') return;
+window.KINDER_KRIYAH_LIVE = true;
+const PAGE=window.TL_KQ_PAGE||''; /* v178: the page now comes from the KodeshQuestPage pack (Drive), loaded just before this file */
+/* v148 MONEY BRIDGE (HoS DECISION 2026-11-13 0020: every curriculum is connected to the money system).
+   A tiny script is added to the sealed page: each right answer (the page's good()) sends {tlQuest:1, game, item, first} to the app.
+   The app checks it came from THIS frame, then saves it as an evidence row (skill LK.QUEST.<game>) through saveStudent/msSave.
+   The server pays it like any right answer (rule "correct", first try "firstTry"), at most once per question and 40 per game.
+   Nothing here sets an amount. */
+const INJECT='<scr'+'ipt>(function(){ if(typeof good!=="function") return; var g0=good; good=function(){ try{ parent.postMessage({tlQuest:1, game:String(S&&S.g&&S.g.id||""), item:String(S&&S.q&&(S.q.text||S.q.speak)||"").slice(0,80), first:!!(S&&S.miss===0)},"*"); }catch(e){} return g0.apply(this,arguments); };'
+ +' var lastBad=null; if(typeof bad==="function"){ var b0=bad; bad=function(){ try{ if(S&&!S.demoing&&S.q&&lastBad!==S.q){ lastBad=S.q; parent.postMessage({tlQuest:1, ok:false, game:String(S.g&&S.g.id||""), item:String(S.q.text||S.q.speak||"").slice(0,80), first:false},"*"); } }catch(e){} return b0.apply(this,arguments); }; }'
+ +' if(typeof done==="function"){ var d0=done; done=function(){ var r=d0.apply(this,arguments); try{ parent.postMessage({tlQuestDone:1, game:String(S&&S.g&&S.g.id||""), land:String(S&&S.g&&S.g.land||"")},"*"); }catch(e){} return r; }; } })();</scr'+'ipt>';
+/* v197 GO: placed after the page, it opens one land straight away (deep link) or the map with the Kodesh lands only.
+   The page's own names (LANDS, BANDS, curBand, land, home) are global in the frame; the band is NOT saved (store.set is not called). */
+const GS_LANDS=['abc','read','num','math','math2','math34'];
+function goScript(o){ const j=JSON.stringify({land:String(o.land||'').replace(/[^a-z0-9]/g,''),band:String(o.band||'').replace(/[^0-9K-]/g,''),kodesh:!!o.kodesh,gs:GS_LANDS}).replace(/</g,'\\u003c');
+ return '<scr'+'ipt>(function(){ var O='+j+'; try{ if(O.kodesh){ for(var i=LANDS.length-1;i>=0;i--){ if(O.gs.indexOf(LANDS[i].id)>=0) LANDS.splice(i,1); } }'
+  +' if(O.band&&BANDS[O.band]) curBand=O.band;'
+  +' if(O.land&&LANDS.some(function(w){ return w.id===O.land; })) land(O.land); else home(); }catch(e){} })();</scr'+'ipt>'; }
+let qT=null;
+window.addEventListener('message',e=>{ try{ const d=e.data; if(!d||d.tlQuest!==1) return;
+ const f=document.querySelector('#kkov iframe'); if(!f||e.source!==f.contentWindow) return;
+ if(typeof A==='undefined'||!A.st||typeof saveStudent!=='function'||typeof SRV==='undefined') return;
+ const game=String(d.game||'').replace(/[^A-Za-z0-9_-]/g,'').slice(0,28), item=String(d.item||'').replace(/<[^>]*>/g,'').slice(0,80); if(!game||!item) return;
+ const ok=d.ok!==false; SRV.pendingEv.push({at:Date.now(),student:A.st.id,skill:'LK.QUEST.'+game,phase:'practice',item:item,first:ok&&!!d.first,tries:ok?(d.first?1:2):1,hints:0,ms:0,ok:ok});
+ if(SRV.pendingEv.length>50) SRV.pendingEv.splice(0,SRV.pendingEv.length-50);
+ clearTimeout(qT); qT=setTimeout(()=>{ try{ saveStudent(A.st); }catch(x){} },2500);
+}catch(err){ console.error('Kodesh Quest bank',err); } });
+function on(st){ return !!(st&&(window.KINDER_KRIYAH_LIVE||/^TEST-/.test(String(st.id||'')))); }
+function needs(st){ return true; }   /* v147: Kodesh Quest covers K-8, so every boy */
+try{ if(!document.getElementById('kk-css')){ const s=document.createElement('style'); s.id='kk-css'; s.textContent=`
+.kkcard{margin:14px 0;border-radius:18px;background:#E0F2FE;border:2px solid #7DD3FC;display:flex;align-items:center;gap:14px;padding:14px 18px;color:#0C4A6E}
+.kkcard .ki{font-size:34px}.kkcard .kt{flex:1}.kkcard b{display:block;font-size:19px}.kkcard small{opacity:.85;font-size:15px}
+.kkcard button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:800;background:#0284C7;color:#fff;cursor:pointer;min-height:48px}
+.kkov{position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:10px}
+.kkov .kkbox{position:relative;width:min(980px,100%);height:min(94vh,900px);background:#D9EEFF;border-radius:22px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.kkov iframe{width:100%;height:100%;border:0;display:block}
+.kkov .kkx{position:absolute;top:10px;right:10px;z-index:2;border:0;border-radius:999px;background:#fff;color:#0C4A6E;font:800 18px system-ui,sans-serif;padding:10px 16px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2)}`; document.head.appendChild(s); } }catch(e){}
+/* v197 CURRICULUM MAP: land -> [track, lowest level, highest level]. Track = a Limudei Kodesh track (KodeshMore wiring) or READ / MATH.
+   Levels come from the land's own grade bands (K = 1, 1st = 2, 2nd = 3, 3-4 = 4-5, 5-6 = 6-7, 7-8 = 8-9). */
+const KQ_MAP={aleph:['KRI',1,1],nek:['KRI',1,2],sounds:['KRI',2,2],words:['KRI',2,2],
+ brachos:['MIN',1,2],davening:['MIN',1,1],middos:['MIN',1,2],yomtov:['MIN',1,2],cal56:['MIN',6,7],cycle78:['MIN',8,9],
+ parsha:['CHU',1,2],chumash1:['CHU',2,2],pasuk2:['CHU',3,3],parsha2:['CHU',3,3],find34:['CHU',4,5],
+ shoresh34:['LSH',4,5],mishnah56:['MSH',6,7],gemara78:['GEM',8,9],
+ abc:['READ',1,1],read:['READ',1,2],num:['MATH',1,1],math:['MATH',2,2],math2:['MATH',3,3],math34:['MATH',4,5]};
+const LV_BAND={1:'K',2:'1',3:'2',4:'3-4',5:'3-4',6:'5-6',7:'5-6',8:'7-8',9:'7-8'};
+/* the page's lands (name, picture, games and rounds), read once from the page text so the panel can show stars without opening the frame */
+const KQ_LANDS=(function(){ const out={}; try{ const i=PAGE.indexOf('const LANDS = ['), j=PAGE.indexOf('const ALLGAMES', i); if(i<0||j<0) return out; let cur=null;
+ PAGE.slice(i,j).split('\n').forEach(ln=>{ let m=/^\s*\{ id:'([a-z0-9]+)', name:'((?:[^'\\]|\\.)*)', bands:\[([^\]]*)\]/.exec(ln);
+  if(m){ cur=out[m[1]]={id:m[1],name:m[2].replace(/\\'/g,"'"),bands:m[3].replace(/'/g,'').split(',').map(x=>x.trim()),games:[]}; }
+  const re=/\{ id:'([a-z0-9]+)', name:'(?:[^'\\]|\\.)*', art:[^}]*?(?:rounds:(\d+))?\s*\}/g; let g;
+  if(cur){ const tail=m?ln.slice(ln.indexOf('games:[')):ln; while((g=re.exec(tail))) cur.games.push({id:g[1],rounds:g[2]?+g[2]:5}); } }); }catch(e){} return out; })();
+window.TL_KQ_LANDS=KQ_LANDS; window.TL_KQ_MAP=KQ_MAP;
+function landStars(st,id){ const w=KQ_LANDS[id]; if(!w) return [0,0]; const best=(st&&st.kq&&st.kq.best)||{}; let got=0,max=0; w.games.forEach(g=>{ max+=g.rounds; got+=Math.min(+best[g.id]||0,g.rounds); }); return [got,max]; }
+/* lands of one track for the step he is on (level L): the lands that cover L, plus earlier ones he has not finished; nothing at L -> the nearest */
+function landsFor(st,track,L){ L=Math.max(1,Math.min(9,+L||1));
+ const all=Object.keys(KQ_MAP).filter(k=>KQ_MAP[k][0]===track&&KQ_LANDS[k]);
+ let pick=all.filter(k=>KQ_MAP[k][1]<=L&&KQ_MAP[k][2]>=L);
+ all.filter(k=>KQ_MAP[k][2]<L&&KQ_MAP[k][2]>=L-1).forEach(k=>{ const s=landStars(st,k); if(s[0]<s[1]&&pick.indexOf(k)<0) pick.push(k); });
+ if(!pick.length){ const lower=all.filter(k=>KQ_MAP[k][1]<=L); const top=lower.length?Math.max(...lower.map(k=>KQ_MAP[k][1])):Math.min(...all.map(k=>KQ_MAP[k][1])); pick=all.filter(k=>KQ_MAP[k][1]===top); }
+ return pick; }
+const EK=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function bandFor(id,L){ const m=KQ_MAP[id]; const lv=Math.max(m[1],Math.min(m[2],+L||m[1])); const b=LV_BAND[lv]; const w=KQ_LANDS[id]; return (w&&w.bands.indexOf(b)>=0)?b:(w?w.bands[0]:'K'); }
+/* window.tlKQNodes(st, track, level) -> buttons for the panel row (class lkgame, NOT lknode: Today's Plan reads lknode) */
+window.tlKQNodes=function(st,track,L){ try{ if(!on(st)) return ''; return landsFor(st,track,L).map(id=>{ const w=KQ_LANDS[id], s=landStars(st,id), full=s[1]&&s[0]>=s[1];
+  return `<button type="button" class="lkgame${full?' done':''}" data-kk="land" data-land="${id}" data-band="${EK(bandFor(id,L))}" aria-label="Kodesh Quest: ${EK(w.name)}, ${s[0]} of ${s[1]} stars">🎮 ${EK(w.name)} <small>⭐ ${s[0]}/${s[1]}</small></button>`; }).join(''); }catch(e){ console.error('Kodesh Quest nodes',e); return ''; } };
+window.tlKQLands=landsFor; window.tlKQStars=landStars; window.tlKQBand=bandFor;
+try{ if(!document.getElementById('kk-css2')){ const s=document.createElement('style'); s.id='kk-css2'; s.textContent=`
+.lkgame{border:2px dashed #C9A227;border-radius:14px;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:48px;background:#FFFDF5;color:#1F2A44}
+.lkgame small{font-weight:600;color:#7A6A3A}.lkgame.done{border-style:solid;background:#F1E7C6}
+.lkgame:focus-visible{outline:3px solid #1F2A44;outline-offset:2px}
+.lkqall{margin-top:8px;border:0;border-radius:12px;padding:10px 14px;font:inherit;font-weight:800;background:#E0F2FE;color:#0C4A6E;cursor:pointer;min-height:48px}
+.hpgame{margin-inline-start:6px;border:2px dashed #22C55E!important;background:#F0FDF4!important;color:#15803D!important}`; document.head.appendChild(s); } }catch(e){}
+const _find=window.tlFindLevelCard;
+/* v197: the separate home card shows ONLY when the Limudei Kodesh panel is missing (Kodesh Quest now lives inside the curriculum) */
+window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ if(st&&A.view==='hub'&&on(st)&&needs(st)&&!/class="lkpanel"/.test(h)) h+=`<section class="kkcard"><span class="ki" aria-hidden="true">🎮</span><span class="kt"><b>Kodesh Quest</b><small>112 games and step-by-step Island Lessons for every grade: letters, brachos, pesukim, the parsha, the calendar and more.</small></span><button type="button" data-kk="open">Play</button></section>`; }catch(e){} return h; };
+function open(o){ o=o||{}; close(); const ov=document.createElement('div'); ov.className='kkov'; ov.id='kkov';
+  ov.innerHTML='<div class="kkbox"><button class="kkx" data-kk="close" aria-label="Close Kodesh Quest">✕ Done</button><iframe title="Kodesh Quest" sandbox="allow-scripts"></iframe></div>';
+  document.body.appendChild(ov); ov.querySelector('iframe').srcdoc=memScript()+PAGE+INJECT+((o.land||o.kodesh)?goScript(o):''); }
+function close(quiet){ const o=document.getElementById('kkov'); if(o){ o.remove(); if(quiet) return; try{ if(A.view==='hub'&&typeof render==='function') setTimeout(()=>{ try{ render(); }catch(x){} },0); }catch(e){} } }
+/* v159 PROGRESS: the sealed frame has no localStorage. A tiny shim placed BEFORE the page gives it one, filled from st.kq,
+   so the page reads its saved band, stars and lesson review dates as usual. The page posts every change as {type:'kqStore',key,value};
+   we keep it in st.kq (max 6000 characters; the biggest key, best stars, is dropped first) and save with the next saveStudent. */
+const KQ_KEYS=['band','best','mastery','units','played'];
+function memScript(){ let d={}; try{ const kq=(A.st&&A.st.kq)||{}; KQ_KEYS.forEach(k=>{ if(k in kq) d['kk-'+k]=JSON.stringify(kq[k]); }); }catch(e){ d={}; }
+  const j=JSON.stringify(d).replace(/</g,'\\u003c');
+  return '<scr'+'ipt>(function(){ var D='+j+'; try{ Object.defineProperty(window,"localStorage",{configurable:true,value:{getItem:function(k){ return Object.prototype.hasOwnProperty.call(D,k)?D[k]:null; },setItem:function(k,v){ D[k]=String(v); try{ if(String(k).indexOf("kk-")===0) parent.postMessage({type:"kqStore",key:String(k).slice(3),value:JSON.parse(v)},"*"); }catch(e){} },removeItem:function(k){ delete D[k]; }}}); }catch(e){} })();</scr'+'ipt>'; }
+let kT=null;
+window.addEventListener('message',e=>{ try{ const d=e.data; if(!d||typeof d!=='object') return;
+  const f=document.querySelector('#kkov iframe'); if(!f||e.source!==f.contentWindow) return;
+  if(d.type==='kqStore'){ if(!A.st||KQ_KEYS.indexOf(d.key)<0) return;
+    const kq=Object.assign({},A.st.kq||{}); kq[d.key]=d.value;
+    if(JSON.stringify(kq).length>12000) delete kq.best;
+    if(JSON.stringify(kq).length>12000) delete kq.played;
+    if(JSON.stringify(kq).length>12000) return;
+    A.st.kq=kq; clearTimeout(kT); kT=setTimeout(()=>{ try{ if(typeof saveStudent==='function') saveStudent(A.st); }catch(x){} },4000); }
+  else if(d.type==='talkToRebbe'){ close(true); if(typeof window.tlTalkRebbe!=='function') return; window.tlTalkRebbe();
+    const lesson=String(d.lesson||'').replace(/[^A-Za-z0-9 _-]/g,'').slice(0,40);
+    setTimeout(()=>{ try{ const ta=document.getElementById('tr-text'); if(ta&&!ta.value){ ta.value='I need help with a Kodesh Quest lesson'+(lesson?' ('+lesson+')':'')+'. '; ta.dispatchEvent(new Event('input')); ta.focus(); } }catch(x){} },60); }
+}catch(err){ console.error('Kodesh Quest progress',err); } });
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-kk]'); if(!b) return; const k=b.dataset.kk;
+ if(k==='open') open(); else if(k==='all') open({kodesh:true}); else if(k==='land'){ e.preventDefault(); e.stopPropagation(); open({land:b.dataset.land,band:b.dataset.band}); } else close(); },true);
+window.tlKinderKriyah=open; window.tlKQOpen=function(land,band){ open({land:land,band:band}); };
+})();
+</script>

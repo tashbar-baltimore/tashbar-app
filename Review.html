@@ -1,0 +1,40 @@
+<script>
+/* ===== Review: spaced review (v69, takeover builder, 2026-11-11). Loaded by msQuestTools after Helpers.
+   A mastered skill comes back 3 days, 2 weeks and 6 weeks after mastery as a quick review (its check questions, 2 at most).
+   A miss brings it back the next day ("let's fix this one"). Uses the page's own replay path, so a review never pays
+   and never changes mastery or money. Saved in the boy's state as st.rv[id] = [stage, dueDay, again] (1 when done). ===== */
+(function(){
+const DAY=864e5, GAP=[3,11,28], MAXCARD=3;
+const dayNo=t=>Math.floor((t-new Date(t).getTimezoneOffset()*6e4)/DAY);
+const subjOf=id=>{ const p=String(id).split('.')[0]; return p==='LANG'?'WRIT':p; };
+function nameOf(id){ try{ return (BANK_ALL[id]&&BANK_ALL[id].name)||(typeof skillName==='function'?skillName(id):id); }catch(e){ return id; } }
+function ensure(st){ if(!st) return {}; st.rv=st.rv||{}; const sk=st.skills||{};
+ Object.keys(sk).forEach(id=>{ const s=sk[id]; if(s&&s.m&&st.rv[id]===undefined) st.rv[id]=[0,dayNo(s.at||Date.now())+GAP[0],0]; }); return st.rv; }
+function due(st){ const rv=ensure(st), d=dayNo(Date.now());
+ return Object.keys(rv).filter(id=>Array.isArray(rv[id])&&rv[id][1]<=d&&st.skills[id]&&st.skills[id].m&&typeof CURR!=='undefined'&&CURR[subjOf(id)])
+  .sort((a,b)=>(rv[b][2]-rv[a][2])||(rv[a][1]-rv[b][1])).slice(0,MAXCARD); }
+function card(st){ const ids=due(st); if(!ids.length) return '';
+ return `<section class="rvcard"><div class="rvh"><span class="rvi" aria-hidden="true">🔁</span><div><b>Quick review</b><small>Two questions each. Keep what you learned strong!</small></div></div><div class="rvb">${ids.map(id=>{ const again=st.rv[id][2];
+  return `<button type="button" class="rvbtn${again?' again':''}" data-rv="${id}">${again?'🛠 Let’s fix this one: ':'▶ '}${String(nameOf(id)).replace(/[&<>"]/g,'')}</button>`; }).join('')}</div></section>`; }
+function start(id){ try{
+  const c=subjOf(id); startMission(c,id,'skill'); const p=A.play; if(!p) return;
+  const ch=p.items.filter(i=>i&&i.phase==='check').slice(0,2); if(!ch.length) return;
+  p.items=ch; p.i=0; p.kind='review'; p.replay=true; p.title='Quick review: '+p.title; A.overlay=null; render(); if(typeof phaseIntro==='function') phaseIntro();
+ }catch(e){ console.error('Review start',e); } }
+function after(st,id,ok){ const rv=ensure(st), r=rv[id]; if(!Array.isArray(r)) return; const d=dayNo(Date.now());
+ if(ok){ const s=r[0]+1; rv[id]=s>=GAP.length?1:[s,d+GAP[s],0]; } else rv[id]=[r[0],d+1,1]; }
+const _f=window.finish;
+if(typeof _f==='function') window.finish=function(){ try{ const p=A.play; if(p&&p.kind==='review'){ const ch=p.results.filter(r=>r&&r.phase==='check'); after(A.st,p.id,ch.length>0&&ch.every(r=>r.ok)); } }catch(e){ console.error('Review finish',e); } return _f.apply(this,arguments); };
+const _find=window.tlFindLevelCard;
+window.tlFindLevelCard=function(st){ let h=''; try{ h=card(st); }catch(e){ console.error('Review card',e); } try{ h+=_find?_find(st):''; }catch(e){} return h; };
+document.addEventListener('click',function(e){ const b=e.target.closest&&e.target.closest('[data-rv]'); if(!b) return; e.preventDefault(); e.stopPropagation(); start(b.getAttribute('data-rv')); },true);
+try{ if(!document.getElementById('tl-rv-css')){ const s=document.createElement('style'); s.id='tl-rv-css'; s.textContent=`
+.rvcard{margin:14px 0;border-radius:22px;background:#fff;border:2px solid #7C3AED;box-shadow:0 10px 28px rgba(76,29,149,.14);overflow:hidden}
+.rvh{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(135deg,#6D28D9,#A855F7);color:#fff}.rvh b{font-size:20px}.rvh small{display:block;opacity:.92}
+.rvi{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.18);font-size:30px;flex:none}
+.rvb{display:flex;flex-wrap:wrap;gap:10px;padding:12px 16px}
+.rvbtn{border:0;border-radius:14px;padding:12px 16px;min-height:52px;font-weight:800;font-size:17px;font-family:inherit;background:#6D28D9;color:#fff;cursor:pointer}
+.rvbtn.again{background:#B54708}.rvbtn:hover{filter:brightness(1.08)}`; document.head.appendChild(s); } }catch(e){}
+window.TLREVIEW={due,ensure,after,start};
+})();
+</script>

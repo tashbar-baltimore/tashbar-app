@@ -1,0 +1,55 @@
+<script>
+/* TradesMore.html — Trades (VOC) on the boy's home screen (v54, 2026-11-11, Head of School: "everything should be put in").
+   First strand: Spark Path · Electricity (VOC.ELEC L07-L09, 9 levels + boss), a self-contained lesson page in SparkPath.html,
+   served by the web app at ?spark=1 (sgRoute_ in StaffGrid.js). It opens in a window on top of the app, so the boy stays signed in.
+   Spark Path keeps its map on the device; since v59 it also sends answers and finished levels here, saved like any lesson (see below).
+   Loaded by msQuestTools() in its own eval, after ElectivesMore. Adds its panel through tlFindLevelCard like Science and Electives. */
+(function(){
+if(typeof run!=='function') return;
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let APP='';
+function css(){ if(document.getElementById('tr-css')) return; const s=document.createElement('style'); s.id='tr-css'; s.textContent=`
+.trpanel{grid-column:1/-1;border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 10px 30px rgba(20,30,60,.12);border:2px solid #F2C14E}
+.trpanel .th{display:flex;align-items:center;gap:14px;padding:16px 20px;background:linear-gradient(120deg,#1F2933,#3A2A12 60%,#B5602A);color:#fff}
+.trpanel .th .ic{font-size:34px}.trpanel .th b{display:block;font:800 22px var(--display,'Barlow'),sans-serif}.trpanel .th small{opacity:.9;font-size:15px}
+.trpanel .tb{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:16px 20px}
+.trpanel .tb p{margin:0;flex:1;min-width:220px;color:#475569;font-size:16px}
+.trpanel .go{border:0;border-radius:14px;padding:14px 22px;background:#FFC21A;color:#1F2933;font:800 18px var(--display,'Barlow'),sans-serif;box-shadow:0 5px 0 #B5602A;cursor:pointer}
+#tr-ov{position:fixed;inset:0;z-index:80;background:rgba(10,15,25,.6);display:grid;place-items:center;padding:12px}
+#tr-ov .box{width:min(1100px,100%);height:min(94vh,900px);background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+#tr-ov .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1F2933;color:#fff;font:700 17px var(--display,'Barlow'),sans-serif}
+#tr-ov .bar span{flex:1}#tr-ov .bar button{border:0;border-radius:10px;padding:10px 16px;font-weight:800;background:#fff;color:#1F2933;cursor:pointer}
+#tr-ov iframe{flex:1;border:0;width:100%}`; document.head.appendChild(s); }
+function panel(){ return `<section class="trpanel"><div class="th"><span class="ic" aria-hidden="true">⚡</span><span><b>Spark Path · Electricity</b><small>Trades: learn how electricity works, safely, step by step</small></span></div>
+<div class="tb"><p>9 levels and a boss challenge: circuits, switches, safety and more. Every level you finish is saved to your school record.</p><button class="go" data-tr="spark" type="button">Open Spark Path ⚡</button></div></section>`; }
+const _find=window.tlFindLevelCard;
+window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ css(); h+=panel(); }catch(e){ console.error('TradesMore panel',e); } return h; };
+function open(){ const go=u=>{ APP=u; css(); const d=document.createElement('div'); d.id='tr-ov'; d.innerHTML=`<div class="box" role="dialog" aria-label="Spark Path Electricity"><div class="bar"><span>⚡ Spark Path · Electricity</span><button data-tr="close" type="button">✕ Close</button></div><iframe src="${E(u+'?spark=1')}" title="Spark Path Electricity" allow="autoplay"></iframe></div>`; document.body.appendChild(d); };
+ if(!APP&&window.TL_APP_URL) APP=window.TL_APP_URL;   /* v164: known since sign-in */
+ if(APP) return go(APP); run('msAppUrl').then(go).catch(()=>{ try{ toast('Can’t open Spark Path right now. Check the Wi-Fi.'); }catch(e){} }); }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-tr]'); if(!b) return; if(b.dataset.tr==='spark'){ try{ SND.tap(); }catch(x){} open(); } if(b.dataset.tr==='close'){ const o=document.getElementById('tr-ov'); if(o) o.remove(); } });
+/* School record (v59): Spark Path (in the window above) sends each answer and each finished level here.
+   We save them exactly like a lesson from startMission: evidence rows + "Mastered <id>" through saveStudent/msSave.
+   The server checks every row (3 right checks for mastery) and sets every amount; nothing here sets money. */
+const SPARK_ID=/^VOC\.ELEC\.(L\d\d\.\d\d|BOSS)$/;
+function fromSpark(src){ const f=document.querySelector('#tr-ov iframe'); if(!f||!src) return false; let w=src;
+ for(let i=0;i<7&&w;i++){ if(w===f.contentWindow) return true; let p=null; try{ p=w.parent; }catch(e){ return false; } if(!p||p===w) break; w=p; } return false; }
+window.addEventListener('message',e=>{ try{
+ const d=e.data; if(!d||d.tlSpark!==1||!fromSpark(e.source)) return;
+ if(typeof A==='undefined'||!A.st||typeof saveStudent!=='function'||typeof SRV==='undefined') return; const st=A.st;
+ if(d.ev){ const r=d.ev; if(!SPARK_ID.test(String(r.skill))) return;
+  SRV.pendingEv.push({at:Date.now(),student:st.id,skill:String(r.skill),phase:String(r.phase||'').slice(0,12),item:String(r.item||'').slice(0,80),first:!!r.first&&!!r.ok,tries:Number(r.tries)||1,hints:0,ms:0,ok:!!r.ok});
+  if(SRV.pendingEv.length>50) SRV.pendingEv.splice(0,SRV.pendingEv.length-50); return; }
+ if(d.done){ const id=String(d.done); if(!SPARK_ID.test(id)||/BOSS/.test(id)) return;
+  if(d.pass){ if(!(st.skills[id]&&st.skills[id].m)){ const first=!(st.fails[id]>0); st.skills[id]={m:true,at:Date.now(),first,stars:first?2:1};
+    pay(st,PAY.skill,`Mastered ${id}`); if(first) pay(st,PAY.first,`First-try bonus: ${id}`);
+    if(!st.weekBonus&&masteredCount(st)>=3){ st.weekBonus=true; pay(st,PAY.week3,'3 skills this week'); } } }
+  else st.fails[id]=(st.fails[id]||0)+1;
+  saveStudent(st,res=>{ if(res&&d.pass){ try{ toast('Saved to your school record ⚡'); }catch(x){} } }); return; }
+ if(d.boss){ saveStudent(st); }
+}catch(err){ console.error('Spark Path record',err); } });
+/* Teacher mode: a class lesson closes Spark Path too */
+setInterval(()=>{ try{ if(window.TM_CLASS&&TM_CLASS()){ const o=document.getElementById('tr-ov'); if(o) o.remove(); } }catch(e){} },3000);
+window.TL_TRADES=1;
+})();
+</script>

@@ -1,0 +1,306 @@
+<script>
+/* StoreKid.html — the Tashbar Store and the cash show on every screen (v162, takeover4, Head of School 2026-11-13:
+   "the money should be the cash ... visible on each page ... make a store ... canteen card ... tzedakah back to Tashbar ... give to a friend").
+   Loaded by msQuestTools (Photos.js) right after HomePlus. Server: Store.js (stInfo, stBuy). Every amount comes from the server.
+   1. CASH PILL: your cash at the top of every screen (lessons, results, Kodesh Quest, every drawer). Tap it to open the store.
+      During a lesson it shows "+$ on the way" (an estimate; the server pays when the lesson is saved).
+   2. PAYCHECK: after each lesson, an itemized receipt prints line by line, gets a PAID stamp, and the cash flies into the bank.
+   3. PAYDAY: on Thursday or Friday, once a week, a "Payday" screen shows the week day by day.  4. INTEREST: "your money grew" once a week.
+   5. THE STORE: Fun (screen upgrades), Real prizes (staff hand them out), Canteen Cards (Tashbar $ -> Canteen Cash), Give (Tashbar or a friend).
+   6. SAVINGS GOAL: pick any item as your goal; a bar on the home page shows how close you are.
+   7. Your fun upgrades show: name frame, crown, title, home theme, a buddy, a star trail, silly sounds, gold coins.
+   No "double slash" anywhere in this file (HtmlService cuts it). */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined') return;
+const T=window.TLSTORE={info:null,at:0,open:false,tab:'fun',busy:false,err:'',confirm:null,gift:{to:'',amt:5,q:''},rec:null,lesson:null,loading:false};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const $=n=>{ try{ return fmt(n); }catch(e){ return '$'+Number(n||0).toFixed(2); } };
+const msg=e=>String(e&&e.message||e).replace(/^Error:\s*/,'');
+const rmo=()=>typeof RM!=='undefined'&&RM;
+const ST=()=>{ if(!A.st) return {}; A.st.store=A.st.store||{}; A.st.store.wear=A.st.store.wear||{}; return A.st.store; };
+const owned=id=>!!(T.info&&T.info.owned.indexOf(id)>=0);
+const item=id=>T.info?T.info.items.find(x=>x.id===id):null;
+window.TL_CASHPILL=true;
+
+/* ---------- styles ---------- */
+try{ if(!document.getElementById('st-css')){ const s=document.createElement('style'); s.id='st-css'; s.textContent=`
+#tlcash{position:fixed;bottom:16px;left:16px;z-index:10003;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 10px;border-radius:999px;background:linear-gradient(135deg,#065F46,#047857 60%,#10B981);color:#fff;font:800 20px/1 var(--display,system-ui),system-ui,sans-serif;box-shadow:0 8px 24px rgba(4,120,87,.45),inset 0 1px 0 rgba(255,255,255,.35);cursor:pointer;border:2px solid #FDE68A;transition:transform .15s}
+#tlcash:hover{transform:scale(1.05)}#tlcash .ci{font-size:26px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}#tlcash b{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+#tlcash i{font-style:normal;font-size:14px;background:#FDE68A;color:#78350F;border-radius:999px;padding:3px 9px;display:none}#tlcash i.on{display:inline-block}
+#tlcash.bump{animation:stbump .5s}@keyframes stbump{0%{transform:scale(1)}40%{transform:scale(1.22) rotate(-3deg)}100%{transform:scale(1)}}
+body.st-hide-pill #tlcash{display:none}body.tl-cashpill:not(.st-hide-pill) #app{padding-bottom:84px}html:has(body.tl-cashpill:not(.st-hide-pill)){scroll-padding-bottom:96px}body:has(#mupill) #tlcash{bottom:82px}.hp2 .hpbar .wallet::before{content:'💵'!important}
+@media (max-width:600px){#tlcash{bottom:10px;left:10px;font-size:16px;padding:6px 12px 6px 8px}#tlcash .ci{font-size:20px}}
+body.tl-cashpill #hpjar{display:none!important}
+.stov{position:fixed;inset:0;z-index:10004;background:rgba(10,25,20,.62);display:flex;align-items:center;justify-content:center;padding:12px}
+.stbox{position:relative;width:min(1100px,100%);height:min(94vh,900px);background:#F8FAF5;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.4);color:#14213D;font-family:var(--body,system-ui),system-ui,sans-serif}
+.sthead{background:linear-gradient(120deg,#064E3B,#047857 55%,#B45309);color:#fff;padding:18px 22px 0;position:relative}
+.sthead h2{margin:0;font:800 30px/1.1 var(--display,system-ui),system-ui,sans-serif;display:flex;align-items:center;gap:10px}.sthead small{opacity:.9;font-size:15px}
+.stbal{position:absolute;right:22px;top:16px;text-align:right}.stbal span{display:block;font-size:13px;opacity:.85;text-transform:uppercase;letter-spacing:.08em}.stbal b{font:800 34px/1 var(--display,system-ui),system-ui,sans-serif;color:#FDE68A;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.sttabs{display:flex;gap:6px;margin-top:14px;overflow-x:auto}.sttabs button{border:0;border-radius:14px 14px 0 0;padding:12px 16px;font:800 16px var(--display,system-ui),system-ui,sans-serif;background:rgba(255,255,255,.16);color:#fff;cursor:pointer;white-space:nowrap;min-height:48px}
+.sttabs button.on{background:#F8FAF5;color:#065F46}
+.stbody{flex:1;overflow:auto;padding:18px 22px 28px}
+.stx{position:absolute;top:14px;right:14px;z-index:3;border:0;border-radius:999px;background:#fff;color:#065F46;font:800 17px system-ui,sans-serif;padding:9px 15px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.sthead .stbal{right:120px}
+.stintro{margin:0 0 14px;color:#4B5563;font-size:16px}
+.stgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.stcard{position:relative;background:#fff;border-radius:20px;padding:16px;border:2px solid #E5E7EB;display:flex;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(20,33,61,.06)}
+.stcard .em{font-size:46px;line-height:1}.stcard h4{margin:0;font-size:18px}.stcard p{margin:0;color:#6B7280;font-size:14px;flex:1}
+.stcard .pr{align-self:flex-start;background:linear-gradient(135deg,#065F46,#10B981);color:#fff;font:800 17px var(--display,system-ui),system-ui,sans-serif;padding:5px 12px;border-radius:10px;box-shadow:inset 0 0 0 2px rgba(253,230,138,.6)}
+.stcard .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.stcard button{border:0;border-radius:12px;padding:10px 14px;font:800 15px var(--display,system-ui),system-ui,sans-serif;cursor:pointer;min-height:44px}
+.stcard .buy{background:#F59E0B;color:#451A03;box-shadow:0 3px 0 #B45309}.stcard .buy:disabled{background:#E5E7EB;color:#9CA3AF;box-shadow:none;cursor:default}
+.stcard .gl{background:#EEF2FF;color:#3730A3}.stcard .gl.on{background:#4338CA;color:#fff}.stcard .wr{background:#ECFDF5;color:#065F46}.stcard .wr.on{background:#059669;color:#fff}
+.stcard .need{font-size:13px;color:#B45309;font-weight:700}.stcard .nb{height:8px;border-radius:999px;background:#F3F4F6;overflow:hidden}.stcard .nb i{display:block;height:100%;background:linear-gradient(90deg,#F59E0B,#10B981)}
+.stcard.own{border-color:#10B981;background:#F0FDF4}.stcard .tag{position:absolute;top:10px;right:10px;font-size:12px;font-weight:800;background:#10B981;color:#fff;border-radius:999px;padding:3px 9px}
+.stcard.isgoal{border-color:#6366F1;box-shadow:0 0 0 4px rgba(99,102,241,.18)}
+.stbox .note{background:#FFFBEB;border:2px dashed #F59E0B;border-radius:16px;padding:12px 14px;margin:0 0 14px;color:#78350F;font-size:15px}
+.stbox .err{color:#B91C1C;font-weight:700;min-height:1px}
+.stlist{display:flex;flex-direction:column;gap:8px}.stlist .li{display:flex;align-items:center;gap:12px;background:#fff;border-radius:14px;padding:10px 14px;border:1px solid #E5E7EB}
+.stlist .li .em{font-size:28px}.stlist .li b{flex:1}.stlist .li .st{font-size:13px;font-weight:800;border-radius:999px;padding:3px 10px;background:#F3F4F6}
+.stlist .li .st.waiting{background:#FEF3C7;color:#92400E}.stlist .li .st.handed,.stlist .li .st.done{background:#D1FAE5;color:#065F46}.stlist .li .st.cancelled{background:#FEE2E2;color:#991B1B}
+.stwall{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:8px}.stwall span{background:linear-gradient(135deg,#B45309,#92400E);color:#FEF3C7;border-radius:6px;padding:10px 8px;text-align:center;font-weight:800;font-size:14px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.stsky{position:relative;height:200px;border-radius:18px;background:radial-gradient(ellipse at top,#1E3A8A,#0B1026 70%);overflow:hidden;margin-top:8px}.stsky span{position:absolute;color:#FDE68A;font-size:13px;font-weight:700;white-space:nowrap}.stsky span:before{content:'⭐ '}
+.stgift{background:#fff;border-radius:18px;padding:16px;border:2px solid #FBCFE8;margin-top:14px}.stgift input,.stgift select{width:100%;box-sizing:border-box;border:2px solid #E5E7EB;border-radius:12px;padding:11px;font:inherit;font-size:17px;margin:6px 0}
+.stgift .amts{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}.stgift .amts button{border:2px solid #F9A8D4;background:#fff;border-radius:12px;padding:10px 16px;font:800 17px var(--display,system-ui),system-ui,sans-serif;cursor:pointer;min-height:44px}.stgift .amts button.on{background:#DB2777;color:#fff;border-color:#DB2777}
+.stgo{border:0;border-radius:14px;padding:13px 20px;font:800 18px var(--display,system-ui),system-ui,sans-serif;cursor:pointer;background:#F59E0B;color:#451A03;box-shadow:0 4px 0 #B45309;min-height:48px}.stgo.alt{background:#fff;color:#374151;box-shadow:0 0 0 2px #D1D5DB}
+.stconf{position:absolute;inset:0;z-index:5;background:rgba(248,250,245,.94);display:flex;align-items:center;justify-content:center;padding:20px}
+.stconf .cb{background:#fff;border-radius:24px;padding:26px;max-width:460px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.2);border:3px solid #FDE68A}.stconf .cb .em{font-size:72px}.stconf .cb h3{margin:6px 0;font-size:24px}.stconf .cb p{color:#4B5563;font-size:16px}
+.stweek{display:flex;align-items:flex-end;gap:10px;height:200px;padding:10px 4px 0;border-bottom:3px solid #E5E7EB}.stweek div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:100%}
+.stweek i{display:block;width:100%;max-width:64px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#34D399,#047857);min-height:4px}.stweek i.best{background:linear-gradient(180deg,#FDE047,#D97706)}.stweek b{font-size:13px}.stweek small{font-weight:800;color:#6B7280}
+.stkpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}.stkpis div{background:#fff;border-radius:16px;padding:12px 14px;border:1px solid #E5E7EB}.stkpis span{display:block;color:#6B7280;font-size:13px;font-weight:700}.stkpis b{font:800 24px var(--display,system-ui),system-ui,sans-serif;color:#065F46}
+.strec{position:fixed;inset:0;z-index:10005;display:flex;align-items:center;justify-content:center;background:rgba(10,25,20,.5);padding:12px}
+.strec .paper{position:relative;width:min(420px,100%);background:#FFFEF7;border-radius:6px 6px 0 0;padding:22px 22px 30px;font:600 16px/1.35 ui-monospace,Menlo,Consolas,monospace;color:#1F2937;box-shadow:0 20px 60px rgba(0,0,0,.35);clip-path:polygon(0 0,100% 0,100% 100%,95% 97%,90% 100%,85% 97%,80% 100%,75% 97%,70% 100%,65% 97%,60% 100%,55% 97%,50% 100%,45% 97%,40% 100%,35% 97%,30% 100%,25% 97%,20% 100%,15% 97%,10% 100%,5% 97%,0 100%)}
+.strec h3{margin:0;text-align:center;font:800 22px var(--display,system-ui),system-ui,sans-serif;letter-spacing:.06em}.strec .sub{text-align:center;color:#6B7280;font-size:13px;margin-bottom:10px}
+.strec .ln{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px dashed #D1D5DB;opacity:0}.strec .ln.tot{border-bottom:0;border-top:3px double #1F2937;margin-top:6px;padding-top:10px;font-size:22px;font-weight:800}
+.strec .stamp{display:block;width:max-content;margin:10px auto 0;transform:rotate(-8deg) scale(2.2);opacity:0;border:4px solid #DC2626;color:#DC2626;font:900 26px var(--display,system-ui),system-ui,sans-serif;padding:0 14px;border-radius:10px;letter-spacing:.12em}
+.strec .stamp.on{animation:ststamp .35s cubic-bezier(.3,1.6,.5,1) forwards}@keyframes ststamp{to{transform:rotate(-8deg) scale(1);opacity:.9}}
+.strec .go{display:block;width:100%;margin-top:16px;border:0;border-radius:12px;padding:14px;background:#059669;color:#fff;font:800 19px var(--display,system-ui),system-ui,sans-serif;cursor:pointer;opacity:0}
+.stmoney{position:fixed;z-index:10006;pointer-events:none;font-size:34px;will-change:transform}
+.stgoalbar{display:flex;align-items:center;gap:14px;margin:0 0 16px;padding:14px 18px;border-radius:22px;background:linear-gradient(120deg,#ECFDF5,#FEF3C7);border:2px solid #A7F3D0;color:#064E3B}
+.stgoalbar .em{font-size:40px}.stgoalbar .t{flex:1;min-width:0}.stgoalbar b{display:block;font-size:18px}.stgoalbar small{color:#065F46;font-weight:700}
+.stgoalbar .bar{height:14px;border-radius:999px;background:#fff;overflow:hidden;margin:6px 0;box-shadow:inset 0 0 0 1px #A7F3D0}.stgoalbar .bar i{display:block;height:100%;background:linear-gradient(90deg,#10B981,#F59E0B);border-radius:999px;transition:width .8s}
+.stgoalbar button{border:0;border-radius:14px;padding:12px 18px;font:800 17px var(--display,system-ui),system-ui,sans-serif;background:#047857;color:#fff;cursor:pointer;min-height:48px;white-space:nowrap}
+.hpbar .tools .stbtn{border:0;border-radius:14px;padding:10px 14px;font:800 16px var(--display,system-ui),system-ui,sans-serif;background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;cursor:pointer;min-height:44px;box-shadow:0 3px 0 #92400E}
+.stpet{display:inline-block;font-size:26px;margin-right:6px;animation:stpet 2.6s ease-in-out infinite}@keyframes stpet{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px) rotate(-6deg)}}
+.stcrown{display:inline-block;margin-right:4px;transform:rotate(-12deg)}.sttitle{display:block;font-size:13px;font-weight:800;color:#B45309;letter-spacing:.04em;text-transform:uppercase}
+.st-frame-gold{padding:2px 12px;border-radius:12px;box-shadow:0 0 0 3px #F59E0B,0 0 14px rgba(245,158,11,.6);background:linear-gradient(135deg,#FFFBEB,#FEF3C7)}
+.st-frame-fire{padding:2px 12px;border-radius:12px;box-shadow:0 0 0 3px #EF4444,0 0 18px rgba(249,115,22,.75);animation:stfire 1.2s ease-in-out infinite alternate}@keyframes stfire{to{box-shadow:0 0 0 3px #F97316,0 0 26px rgba(239,68,68,.9)}}
+body.st-theme-space{background:radial-gradient(ellipse at 20% 0%,#312E81,#0B1026 60%) fixed!important}
+body.st-theme-ocean{background:linear-gradient(180deg,#BAE6FD,#0369A1 85%) fixed!important}
+body.st-theme-gold{background:linear-gradient(160deg,#FEF3C7,#E9C46A 50%,#B08968) fixed!important}
+.sttrail{position:fixed;z-index:10007;pointer-events:none;font-size:16px}
+.stpop{position:fixed;z-index:10006;pointer-events:none;font-size:46px}
+@media (max-width:600px){.sthead h2{font-size:22px}.sthead .stbal{position:static;text-align:left;margin-top:6px}.stbal b{font-size:26px}.stbody{padding:14px}.stgoalbar{flex-wrap:wrap}.stgoalbar .t{flex:1 1 180px}.stgoalbar button{flex:1 1 100%}.stweek{gap:4px}}
+@media (prefers-reduced-motion:reduce){.stpet,.st-frame-fire{animation:none}}`; document.head.appendChild(s); } }catch(e){}
+
+/* ---------- sounds (small, made here; no files) ---------- */
+let AC=null; function ac(){ try{ if(typeof SND!=='undefined'&&SND&&SND.on===false) return null; AC=AC||new (window.AudioContext||window.webkitAudioContext)(); return AC; }catch(e){ return null; } }
+function tone(f,w,d,v,type){ const c=ac(); if(!c) return; const t=c.currentTime+w, o=c.createOscillator(), g=c.createGain(); o.type=type||'triangle'; o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v||.12,t+.01); g.gain.exponentialRampToValueAtTime(.0008,t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+.05); }
+function noise(w,d,v,hz){ const c=ac(); if(!c) return; const t=c.currentTime+w, len=Math.floor(c.sampleRate*d), b=c.createBuffer(1,len,c.sampleRate), x=b.getChannelData(0); for(let k=0;k<len;k++) x[k]=(Math.random()*2-1)*Math.pow(1-k/len,2); const n=c.createBufferSource(); n.buffer=b; const f=c.createBiquadFilter(); f.type='highpass'; f.frequency.value=hz||2000; const g=c.createGain(); g.gain.value=v||.3; n.connect(f); f.connect(g); g.connect(c.destination); n.start(t); }
+function quack(){ const c=ac(); if(!c) return; const t=c.currentTime, o=c.createOscillator(), g=c.createGain(), f=c.createBiquadFilter(); o.type='sawtooth'; o.frequency.setValueAtTime(620,t); o.frequency.exponentialRampToValueAtTime(330,t+.18); f.type='bandpass'; f.frequency.value=1100; f.Q.value=3; g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(.3,t+.02); g.gain.exponentialRampToValueAtTime(.001,t+.22); o.connect(f); f.connect(g); g.connect(c.destination); o.start(t); o.stop(t+.25); }
+function drum(){ tone(110,0,.18,.35,'sine'); tone(160,.12,.16,.3,'sine'); noise(.24,.35,.25,4000); }
+function register(){ noise(0,.06,.35,1500); tone(1760,.06,.5,.12,'sine'); tone(2637,.12,.6,.1,'sine'); tone(3520,.2,.7,.08,'sine'); }
+function printer(n){ for(let k=0;k<n;k++) noise(k*.06,.04,.12,3000); }
+function thunk(){ tone(90,0,.25,.4,'sine'); noise(0,.08,.25,600); }
+function hooray(){ [[523,0],[659,.1],[784,.2],[1047,.32],[1319,.46],[1568,.6]].forEach(([f,w])=>{ tone(f,w,.45,.12,'triangle'); }); }
+
+/* ---------- flying money ---------- */
+function bills(){ return ST().wear&&ST().wear.coins==='gold-coins'?['🪙','🪙','💰','🥇']:['💵','💵','💵','💰']; }
+window.TL_CASH_EMOJI=()=>bills()[Math.floor(Math.random()*4)];
+function fly(fx,fy,tx,ty,n,list){ if(rmo()) return; list=list||bills(); for(let k=0;k<n;k++){ const e=document.createElement('i'); e.className='stmoney'; e.textContent=list[k%list.length]; e.style.left=fx+'px'; e.style.top=fy+'px'; document.body.appendChild(e);
+ const mx=(fx+tx)/2+(Math.random()-.5)*360, my=Math.min(fy,ty)-140-Math.random()*140;
+ e.animate([{transform:'translate(0,0) scale(.5) rotate(0)',opacity:0},{transform:`translate(${mx-fx}px,${my-fy}px) scale(1.3) rotate(${Math.random()*40-20}deg)`,opacity:1,offset:.45},{transform:`translate(${tx-fx}px,${ty-fy}px) scale(.45) rotate(${Math.random()*60-30}deg)`,opacity:.9}],{duration:950+k*40,delay:k*45,easing:'cubic-bezier(.3,.6,.4,1)',fill:'forwards'}).onfinish=()=>e.remove(); } }
+function center(el){ const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0}; return [r.left+r.width/2,r.top+r.height/2]; }
+function pillAt(){ const p=document.getElementById('tlcash'); if(p&&getComputedStyle(p).display!=='none') return center(p); const w=document.getElementById('wallet'); return w?center(w):[innerWidth-80,24]; }
+function confettiBurst(){ try{ if(typeof confetti==='function') confetti(); }catch(e){} }
+
+/* ---------- 1. cash pill ---------- */
+function lessonEst(){ const p=A.play; if(A.view!=='play'||!p) return 0; return (p.results||[]).filter(r=>r&&r.ok).reduce((a,r)=>a+1+(r.first?.5:0),0); }
+function modalOpen(){ return !!(document.getElementById('kkov')||document.getElementById('tr-ov')||document.getElementById('elec-ov')||document.getElementById('sci-ov')||(window.HP&&HP.open)||A.overlay||T.open); }
+let shownBal=null;
+function pill(){ try{
+  let p=document.getElementById('tlcash');
+  if(!A.st||A.view==='login'||(!A.view)){ if(p) p.remove(); return; }
+  if(!p){ p=document.createElement('div'); p.id='tlcash'; p.setAttribute('role','button'); p.tabIndex=0; p.setAttribute('aria-label','Your cash. Open the Tashbar Store'); p.innerHTML='<span class="ci" aria-hidden="true">💵</span><b id="tlcashv"></b><i id="tlcashp"></i>'; document.body.appendChild(p);
+    p.addEventListener('click',()=>openStore()); p.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openStore(); } }); }
+  document.body.classList.add('tl-cashpill');
+  const hideOnHub=A.view==='hub'&&!modalOpen()&&document.getElementById('wallet');
+  document.body.classList.toggle('st-hide-pill',!!hideOnHub);
+  const bal=Number(A.st.balance)||0, v=document.getElementById('tlcashv');
+  if(shownBal===null||bal<shownBal) shownBal=bal;
+  else if(bal>shownBal+.004){ const from=shownBal; shownBal=bal; roll(v,from,bal); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }
+  if(v&&!v.dataset.rolling) v.textContent=$(shownBal);
+  const est=lessonEst(), pe=document.getElementById('tlcashp'); if(pe){ pe.classList.toggle('on',est>0); if(est>0) pe.textContent='+'+$(est)+' on the way'; }
+}catch(e){} }
+function roll(v,from,to){ if(!v) return; v.dataset.rolling='1'; const t0=performance.now(), d=1300; const step=now=>{ const k=Math.min(1,(now-t0)/d); v.textContent=$(from+(to-from)*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(step); else { delete v.dataset.rolling; v.textContent=$(to); } }; requestAnimationFrame(step); }
+setInterval(pill,350);
+
+/* ---------- 2. paycheck after every lesson ---------- */
+const _sm=window.startMission||startMission;
+startMission=function(){ try{ T.lesson={at:Date.now(),done:false,tries:0}; }catch(e){} return _sm.apply(this,arguments); };
+function group(rows){ const m=new Map(); rows.forEach(r=>{ const k=String(r.why||'Earned')+'|'+r.amt; const g=m.get(k)||{why:String(r.why||'Earned'),amt:Number(r.amt)||0,n:0}; g.n++; m.set(k,g); }); return [...m.values()].sort((a,b)=>b.amt*b.n-a.amt*a.n); }
+function nice(why){ let w=String(why); try{ if(typeof prettyWhy==='function') w=prettyWhy(w); }catch(e){} return w.replace(/^ms:\S+\s*/,'').replace(/\s+/g,' ').slice(0,46); }
+setInterval(()=>{ try{
+  const L=T.lesson; if(!L||L.done||!A.st) return;
+  if(A.view!=='result'){ if(A.view!=='play') L.done=true; return; }
+  L.tries++; const rows=(A.st.ledger||[]).filter(r=>r&&r.at>=L.at-3000&&Number(r.amt)>0);
+  if(!rows.length){ if(L.tries>40) L.done=true; return; }
+  L.done=true; setTimeout(()=>receipt(rows),900);
+}catch(e){} },500);
+function receipt(rows){
+  if(document.querySelector('.strec')) return;
+  const g=group(rows), tot=rows.reduce((a,r)=>a+(Number(r.amt)||0),0), d=new Date();
+  const ov=document.createElement('div'); ov.className='strec'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-label','Your paycheck');
+  ov.innerHTML=`<div class="paper"><h3>💵 PAYCHECK</h3><div class="sub">TASHBAR BANK · ${E(d.toLocaleDateString([], {weekday:'long',month:'short',day:'numeric'}))}<br>Pay to: ${E(A.st.name||'')}</div>
+   ${g.map(x=>`<div class="ln"><span>${x.n>1?x.n+' × ':''}${E(nice(x.why))}</span><b>${$(x.amt*x.n)}</b></div>`).join('')}
+   <div class="ln tot"><span>TOTAL</span><b>${$(tot)}</b></div><div class="stamp">PAID</div><button class="go" type="button">💵 Put it in my bank!</button></div>`;
+  document.body.appendChild(ov);
+  const lines=[...ov.querySelectorAll('.ln')], btn=ov.querySelector('.go'), stamp=ov.querySelector('.stamp');
+  lines.forEach((l,k)=>setTimeout(()=>{ l.style.opacity=1; l.animate([{transform:'translateY(-8px)',opacity:0},{transform:'translateY(0)',opacity:1}],{duration:rmo()?1:260}); printer(2); },rmo()?0:250+k*260));
+  const tEnd=rmo()?50:300+lines.length*260;
+  setTimeout(()=>{ stamp.classList.add('on'); thunk(); },tEnd+200);
+  setTimeout(()=>{ btn.style.opacity=1; btn.focus(); },tEnd+600);
+  const close=()=>{ if(!ov.isConnected) return; const [fx,fy]=center(ov.querySelector('.paper')); ov.remove(); document.body.classList.remove('st-hide-pill'); const [tx,ty]=pillAt(); fly(fx,fy,tx,ty,Math.min(26,6+Math.round(tot/2))); register(); setTimeout(()=>{ const p=document.getElementById('tlcash'); if(p){ p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); } },900); };
+  btn.addEventListener('click',close); ov.addEventListener('click',e=>{ if(e.target===ov) close(); });
+  document.addEventListener('keydown',function k(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown',k); } });
+}
+
+/* ---------- server data ---------- */
+function load(force){ if(!A.st||!(typeof SRV!=='undefined'&&SRV.token)||T.loading) return Promise.resolve(T.info); if(!force&&T.info&&Date.now()-T.at<60000) return Promise.resolve(T.info);
+  T.loading=true; return run('stInfo',SRV.token).then(r=>{ T.loading=false; if(r&&r.ok){ T.info=r; T.at=Date.now(); syncOwned(); weekly(); } return T.info; }).catch(e=>{ T.loading=false; T.err=msg(e); return T.info; }); }
+function syncOwned(){ const s=ST(); s.owned=(T.info&&T.info.owned)||[]; Object.keys(s.wear).forEach(k=>{ if(s.owned.indexOf(s.wear[k])<0) delete s.wear[k]; }); }
+
+/* ---------- 3+4. payday and interest (once a week) ---------- */
+function weekly(){ try{ const I=T.info, s=ST(); if(!I||A.view!=='hub'||modalOpen()) return;
+  if(I.interest&&I.interest.cents>0&&s.intSeen!==I.interest.at){ s.intSeen=I.interest.at; save(); setTimeout(()=>interestShow(I.interest.cents),1200); return; }
+  const dow=new Date().getDay(); if((dow===4||dow===5)&&s.payday!==I.week.week&&I.week.earned>0){ s.payday=I.week.week; save(); setTimeout(()=>{ T.tab='week'; openStore(true); paydayShow(); },1500); }
+}catch(e){} }
+function save(){ try{ clearTimeout(T.sv); T.sv=setTimeout(()=>{ try{ saveStudent(A.st); }catch(e){} },1500); }catch(e){} }
+function bannerX(text,emoji){ if(typeof window.tlChaChing!=='function'&&rmo()) return; const b=document.createElement('div'); b.className='hpbanner'; b.innerHTML=`<span>${emoji||'💰'}</span><b>${E(text)}</b><span>${emoji||'💰'}</span>`; document.body.appendChild(b);
+ b.animate([{transform:'translate(-50%,-200%) rotate(-6deg) scale(.6)',opacity:0},{transform:'translate(-50%,0) rotate(-3deg) scale(1.1)',opacity:1,offset:.18},{transform:'translate(-50%,0) rotate(-3deg) scale(1)',opacity:1,offset:.8},{transform:'translate(-50%,-160%) rotate(-3deg) scale(.9)',opacity:0}],{duration:rmo()?600:2800,easing:'cubic-bezier(.2,.8,.3,1.2)'}).onfinish=()=>b.remove(); }
+function rainDown(n){ if(rmo()) return; const [tx,ty]=pillAt(); for(let k=0;k<n;k++){ const x=Math.random()*innerWidth; fly(x,-40,tx,ty,1); } }
+function interestShow(c){ bannerX('YOUR MONEY GREW! +'+$(c/100),'🏦'); hooray(); rainDown(18); try{ toast('🏦 The Tashbar Bank paid you '+$(c/100)+' interest for saving. Money that waits, grows!'); }catch(e){} }
+function paydayShow(){ bannerX('PAYDAY!','💵'); hooray(); setTimeout(register,500); rainDown(30); setTimeout(confettiBurst,600); }
+
+/* ---------- 5. the store ---------- */
+const TABS=[['fun','🎮 Fun'],['real','🎁 Real prizes'],['canteen','💳 Canteen Cards'],['give','💝 Give'],['mine','🧺 My stuff'],['week','📊 My week']];
+function openStore(keepTab){ if(!A.st) return; T.open=true; T.err=''; if(!keepTab&&!T.tab) T.tab='fun'; draw(); load(true).then(draw); }
+function closeStore(){ T.open=false; T.confirm=null; const o=document.getElementById('tlstore'); if(o) o.remove(); try{ render(); }catch(e){} }
+window.tlStore=openStore;
+function draw(){ if(!T.open) return; let o=document.getElementById('tlstore'); const keep=o&&o.querySelector('.stbody')?o.querySelector('.stbody').scrollTop:0;
+  if(!o){ o=document.createElement('div'); o.id='tlstore'; o.className='stov'; document.body.appendChild(o); }
+  const I=T.info, bal=Number(A.st.balance)||0;
+  o.innerHTML=`<div class="stbox" role="dialog" aria-modal="true" aria-label="Tashbar Store"><button class="stx" data-st="close" aria-label="Close the store">✕ Close</button>
+   <div class="sthead"><h2>🏪 Tashbar Store</h2><small>Spend it, save it, or give it. Everything here is paid with your Tashbar cash.</small>
+   <div class="stbal"><span>Your cash</span><b>${$(bal)}</b></div>
+   <div class="sttabs" role="tablist">${TABS.map(t=>`<button role="tab" aria-selected="${T.tab===t[0]}" class="${T.tab===t[0]?'on':''}" data-st="tab" data-t="${t[0]}">${t[1]}</button>`).join('')}</div></div>
+   <div class="stbody">${!I?'<p>Opening the store…</p>':body(I,bal)}<p class="err" role="alert">${E(T.err)}</p></div>${T.confirm?conf(T.confirm,bal):''}</div>`;
+  const b=o.querySelector('.stbody'); if(b) b.scrollTop=keep;
+  const f=o.querySelector('.stconf .stgo'); if(f) f.focus(); }
+function card(x,bal){ const own=owned(x.id), goal=ST().goal===x.id, worn=ST().wear[x.slot]===x.id, price=x.cents/100, need=Math.max(0,price-bal);
+  const wear=x.kind==='wear'&&own?`<button class="wr ${worn?'on':''}" data-st="wear" data-id="${x.id}">${worn?'✓ Using it':'Use it'}</button>`:'';
+  const canBuy=!(own&&(x.kind==='wear'||x.kind==='keep'));
+  return `<div class="stcard ${own?'own':''} ${goal?'isgoal':''}">${own?'<span class="tag">YOURS</span>':''}<span class="em" aria-hidden="true">${x.emoji}</span><h4>${E(x.name)}</h4><p>${E(x.desc)}</p>
+   <span class="pr">${$(price)}</span>${canBuy&&need>0?`<span class="need">Need ${$(need)} more</span><span class="nb"><i style="width:${Math.min(100,Math.round(bal/price*100))}%"></i></span>`:''}
+   <div class="row">${canBuy?`<button class="buy" data-st="buy" data-id="${x.id}" ${need>0||T.busy?'disabled':''}>Buy it</button>`:''}${wear}${canBuy&&!own&&x.kind!=='donate'?`<button class="gl ${goal?'on':''}" data-st="goal" data-id="${x.id}">${goal?'🎯 My goal':'🎯 Make it my goal'}</button>`:''}</div></div>`; }
+function body(I,bal){ const items=I.items.filter(x=>x.cat===T.tab);
+  if(T.tab==='fun') return `<p class="stintro">Fun upgrades for your screen. They are yours forever, right away.</p><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`;
+  if(T.tab==='real') return `<div class="note">🎁 Real prizes: after you buy one, a rebbe or teacher hands it to you. If it can’t happen, you get all your money back. Up to ${I.openPrizes} prizes can wait at a time.</div><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`;
+  if(T.tab==='canteen'){ const c=I.canteen, left=Math.max(0,(c.weekMax-c.weekUsed)/100);
+    return `<div class="note">💳 A Canteen Card turns Tashbar cash into Canteen Cash: <b>${$(c.rate)} Tashbar = $1.00 Canteen Cash</b>. Use Canteen Cash at the canteen for food. This week you can still get <b>${$(left)}</b> of Canteen Cash.${c.cash!==null&&c.cash!==undefined?` Your Canteen Cash now: <b>${$(c.cash)}</b>.`:' (You need a Canteen Cash account. Ask the office.)'}</div><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`; }
+  if(T.tab==='give'){ const fr=I.friends||[], q=T.gift.q.toLowerCase(), list=fr.filter(f=>!q||f.name.toLowerCase().indexOf(q)>=0).slice(0,60);
+    return `<div class="note">💝 Tzedakah: give some of your money back to Tashbar. Boys have given <b>${$(I.given.school/100)}</b> so far. You gave <b>${$(I.given.mine/100)}</b>. Thank you!</div>
+     <div class="stgrid">${items.filter(x=>x.kind==='donate').map(x=>card(x,bal)).join('')}</div>
+     <div class="stgift"><h3 style="margin:0">🎁 Send money to a friend</h3><p style="margin:4px 0;color:#6B7280">Up to ${$(I.gift.dayMax/100)} a day. You sent ${$(I.gift.today/100)} today.</p>
+      <label>Find your friend<input id="st-gq" value="${E(T.gift.q)}" placeholder="Type a name" autocomplete="off"></label>
+      <select id="st-gto" size="5" aria-label="Pick a friend">${list.map(f=>`<option value="${E(f.id)}" ${f.id===T.gift.to?'selected':''}>${E(f.name)}</option>`).join('')}</select>
+      <div class="amts">${[1,5,10,20,50].map(a=>`<button data-st="amt" data-a="${a}" class="${T.gift.amt===a?'on':''}">${$(a)}</button>`).join('')}</div>
+      <button class="stgo" data-st="sendgift" ${T.gift.to&&bal>=T.gift.amt&&!T.busy?'':'disabled'}>🎁 Send ${$(T.gift.amt)}</button></div>
+     <h3>🧱 The Builders’ Wall</h3><p class="stintro">Boys who gave a brick to Tashbar.</p><div class="stwall">${(I.wall||[]).map(n=>`<span>${E(n)}</span>`).join('')||'<em>Be the first brick!</em>'}</div>`; }
+  if(T.tab==='mine'){ const mine=I.items.filter(x=>owned(x.id));
+    return `<h3 style="margin-top:0">✨ My upgrades</h3>${mine.length?`<div class="stgrid">${mine.map(x=>card(x,bal)).join('')}</div>`:'<p class="stintro">Nothing yet. Visit the Fun tab!</p>'}
+     <h3>🧾 My orders</h3><div class="stlist">${(I.orders||[]).map(o=>`<div class="li"><span class="em">${o.emoji}</span><b>${E(o.label)}</b><span>${$(o.cents/100)}</span><span class="st ${E(o.status)}">${o.status==='waiting'?'⏳ On its way':o.status==='handed'?'✅ Got it':o.status==='cancelled'?'↩️ Money back':'✅ Done'}</span></div>`).join('')||'<p class="stintro">No orders yet.</p>'}</div>
+     <h3>⭐ The Tashbar sky</h3><div class="stsky">${(I.stars||[]).map((n,k)=>`<span style="left:${(k*37)%86+3}%;top:${(k*53)%80+6}%">${E(n)}</span>`).join('')||'<span style="left:30%;top:45%">Name the first star!</span>'}</div>`; }
+  if(T.tab==='week'){ const W=I.week, max=Math.max(1,...W.days.map(d=>d.cents)), best=W.days.reduce((a,d)=>d.cents>a.cents?d:a,W.days[0]), names=['Sun','Mon','Tue','Wed','Thu','Fri'];
+    const ch=A.st.chest||null;
+    return `<h3 style="margin-top:0">📊 My week</h3><div class="stweek">${W.days.map((d,k)=>`<div><b>${d.cents?$(d.cents/100):''}</b><i class="${d===best&&d.cents?'best':''}" style="height:${Math.round(d.cents/max*150)}px"></i><small>${names[k]}</small></div>`).join('')}</div>
+     <div class="stkpis"><div><span>Earned this week</span><b>${$(W.earned/100)}</b></div><div><span>Best day</span><b>${best.cents?names[W.days.indexOf(best)]:'—'}</b></div><div><span>Bank interest</span><b>${$(W.interest/100)}</b></div><div><span>Spent and given</span><b>${$(W.spent/100)}</b></div>${ch?`<div><span>Treasure chest</span><b>${ch.paid?'Opened! 🎉':Math.min(ch.days,ch.need)+' of '+ch.need+' days'}</b></div>`:''}</div>
+     <p class="stintro">🏦 Every Sunday the Tashbar Bank pays ${2}% interest on what you saved. Money that waits, grows!</p>`; }
+  return ''; }
+function conf(c,bal){ const x=item(c.id)||{}; const price=c.id==='gift'?T.gift.amt:x.cents/100; const fr=c.id==='gift'?((T.info.friends||[]).find(f=>f.id===T.gift.to)||{}).name:'';
+  if(c.done) return `<div class="stconf"><div class="cb"><div class="em">${c.emoji||x.emoji}</div><h3>${E(c.title)}</h3><p>${E(c.text)}</p><button class="stgo" data-st="ok">🎉 Yay!</button></div></div>`;
+  return `<div class="stconf"><div class="cb"><div class="em">${x.emoji}</div><h3>${c.id==='gift'?'Send '+$(price)+' to '+E(fr)+'?':'Buy '+E(x.name)+'?'}</h3><p>It costs <b>${$(price)}</b>. You will have <b>${$(bal-price)}</b> left.</p>
+   <button class="stgo" data-st="yes" ${T.busy?'disabled':''}>${T.busy?'One moment…':c.id==='gift'?'🎁 Yes, send it!':x.kind==='donate'?'💝 Yes, give it!':'💵 Yes, buy it!'}</button> <button class="stgo alt" data-st="no">Not now</button></div></div>`; }
+function buy(id){ const x=item(id); if(!x||T.busy) return; T.busy=true; T.err=''; draw();
+  const cid=(Date.now().toString(36)+Math.random().toString(36).slice(2,10)).replace(/[^a-z0-9]/g,'');
+  run('stBuy',SRV.token,id,{clientId:cid,to:T.gift.to,amount:T.gift.amt}).then(r=>{ T.busy=false;
+    if(!r||!r.ok){ T.confirm=null; T.err='Something went wrong. Try again.'; draw(); return; }
+    const from=Number(A.st.balance)||0; A.st.balance=r.balance; if(Array.isArray(r.ledger)){ A.st.ledger=r.ledger; try{ SRV.states[A.st.id]=Object.assign(SRV.states[A.st.id]||{},{balance:r.balance,ledger:r.ledger}); }catch(e){} }
+    shownBal=r.balance;
+    if(T.info){ if(x.kind==='wear'||x.kind==='keep') T.info.owned.push(x.id); T.info.orders.unshift(r.order); if(x.kind==='card'){ T.info.canteen.weekUsed+=x.card; if(r.cash!==null&&r.cash!==undefined) T.info.canteen.cash=r.cash; } if(x.kind==='donate') { T.info.given.mine+=x.cents; T.info.given.school+=x.cents; if(x.id==='brick') T.info.wall.unshift(A.st.name); } if(x.id==='star-named') T.info.stars.push(A.st.name); if(x.kind==='gift') T.info.gift.today+=Math.round(T.gift.amt*100); }
+    if(x.kind==='wear'){ ST().wear[x.slot]=x.id; }
+    if(ST().goal===x.id) delete ST().goal;
+    syncOwned(); save();
+    const done={wear:['It’s yours!','Your new '+x.name.toLowerCase()+' is on. Look at your home page!'],keep:['It’s yours!','Look up! Your star is in the Tashbar sky (My stuff tab).'],
+      prize:['Your prize is on its way!','A rebbe or teacher will hand it to you. You can see it in My stuff.'],card:['Canteen Cash added!',$(x.card/100)+' is now in your Canteen Cash'+(r.cash!=null?' (now '+$(r.cash)+')':'')+'. Buy food at the canteen!'],
+      donate:['Thank you for giving!','You gave '+$(x.cents/100)+' back to Tashbar. That is real tzedakah.'],gift:['Gift sent!','Your friend got '+$(T.gift.amt)+' from you. What a good friend!']}[x.kind]||['Done!',''];
+    T.confirm={id:x.id,done:true,emoji:x.emoji,title:done[0],text:done[1]}; draw(); spendShow(x,from-r.balance);
+  }).catch(e=>{ T.busy=false; T.confirm=null; T.err=msg(e); draw(); }); }
+function spendShow(x,amt){ const box=document.querySelector('.stconf .cb'), [tx,ty]=center(box), bal=document.querySelector('.stbal b'), [fx,fy]=center(bal);
+  fly(fx,fy,tx,ty,Math.min(24,4+Math.round(amt/50)), x.kind==='donate'?['💝','💵','💖']:x.kind==='gift'?['🎁','💵']:x.kind==='card'?['💳','💵']:bills()); register(); setTimeout(hooray,500);
+  if(x.kind==='donate'||x.cents>=100000) setTimeout(confettiBurst,700); if(x.kind==='donate') setTimeout(()=>bannerX('TZEDAKAH!','💝'),300); }
+
+/* ---------- clicks ---------- */
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-st]'); if(!b) return; const a=b.dataset.st;
+  if(a==='close'){ closeStore(); return; }
+  if(a==='open'){ e.preventDefault(); T.tab=b.dataset.t||T.tab||'fun'; openStore(true); return; }
+  if(a==='tab'){ T.tab=b.dataset.t; T.err=''; draw(); return; }
+  if(a==='buy'){ T.confirm={id:b.dataset.id}; draw(); return; }
+  if(a==='yes'){ buy(T.confirm.id); return; }
+  if(a==='no'||a==='ok'){ T.confirm=null; draw(); return; }
+  if(a==='goal'){ const s=ST(); s.goal=s.goal===b.dataset.id?null:b.dataset.id; if(!s.goal) delete s.goal; save(); draw(); return; }
+  if(a==='wear'){ const x=item(b.dataset.id), s=ST(); if(!x) return; if(s.wear[x.slot]===x.id) delete s.wear[x.slot]; else s.wear[x.slot]=x.id; save(); draw(); dress(); return; }
+  if(a==='amt'){ T.gift.amt=Number(b.dataset.a)||5; draw(); return; }
+  if(a==='sendgift'){ if(!T.gift.to) return; T.confirm={id:'gift'}; draw(); return; }
+});
+document.addEventListener('input',e=>{ if(e.target&&e.target.id==='st-gq'){ T.gift.q=e.target.value; const pos=e.target.selectionStart; draw(); const n=document.getElementById('st-gq'); if(n){ n.focus(); try{ n.setSelectionRange(pos,pos); }catch(x){} } } });
+document.addEventListener('change',e=>{ if(e.target&&e.target.id==='st-gto'){ T.gift.to=e.target.value; draw(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&T.open){ if(T.confirm){ T.confirm=null; draw(); } else closeStore(); } });
+
+/* ---------- 6+7. home: store button, goal bar, and the boy's upgrades ---------- */
+function goalBar(){ const s=ST(), I=T.info, bal=Number(A.st.balance)||0; const x=s.goal&&I?I.items.find(i=>i.id===s.goal):null;
+  if(x){ const price=x.cents/100, pct=Math.min(100,Math.round(bal/price*100)), left=Math.max(0,price-bal);
+    return `<section class="stgoalbar" aria-label="My savings goal"><span class="em" aria-hidden="true">${x.emoji}</span><div class="t"><small>🎯 SAVING FOR</small><b>${E(x.name)}</b><div class="bar"><i style="width:${pct}%"></i></div><small>${left>0?$(bal)+' of '+$(price)+' · '+$(left)+' to go':'You have enough! Go get it! 🎉'}</small></div><button type="button" data-st="open" data-t="${x.cat}">${left>0?'🏪 Store':'🛒 Get it!'}</button></section>`; }
+  return `<section class="stgoalbar" aria-label="Tashbar Store"><span class="em" aria-hidden="true">🏪</span><div class="t"><b>The Tashbar Store is open!</b><small>Fun upgrades, real prizes, Canteen Cards, and tzedakah. Pick a goal and save for it.</small></div><button type="button" data-st="open" data-t="fun">🏪 Open the store</button></section>`; }
+function dress(){ try{
+  const s=ST(), w=s.wear||{};
+  ['space','ocean','gold'].forEach(t=>document.body.classList.toggle('st-theme-'+t,w.theme==='theme-'+t&&A.view==='hub'));
+  const h=document.querySelector('.hp2 .hpbar .hello b'); if(h&&!h.dataset.st){ h.dataset.st='1';
+    if(w.hat==='crown') h.insertAdjacentHTML('afterbegin','<span class="stcrown" aria-hidden="true">👑</span>');
+    if(w.frame==='frame-gold') h.classList.add('st-frame-gold'); if(w.frame==='frame-fire') h.classList.add('st-frame-fire');
+    const pet=w.pet&&item(w.pet); if(pet) h.insertAdjacentHTML('afterbegin',`<span class="stpet" aria-hidden="true">${pet.emoji}</span>`);
+    const tt=w.title&&item(w.title); if(tt) h.insertAdjacentHTML('beforeend',`<span class="sttitle">${E(tt.name.replace(/^Title:\s*/,''))}</span>`); }
+}catch(e){} }
+const _r=render;
+render=function(){ const out=_r.apply(this,arguments); try{
+  if(A.st&&A.view==='hub'){ const hp=document.querySelector('.hp2');
+    if(hp&&!hp.querySelector('.stgoalbar')){ const bar=hp.querySelector('.hpbar'); if(bar) bar.insertAdjacentHTML('afterend',goalBar()); }
+    const tools=document.querySelector('.hp2 .hpbar .tools'); if(tools&&!tools.querySelector('.stbtn')) tools.insertAdjacentHTML('afterbegin','<button type="button" class="stbtn" data-st="open" data-t="fun" aria-label="Open the Tashbar Store">🏪 Store</button>');
+    dress(); if(!T.info||Date.now()-T.at>60000) load().then(()=>{ if(A.view==='hub'&&!T.open){ const g=document.querySelector('.stgoalbar'); if(g) g.outerHTML=goalBar(); dress(); } }); else weekly();
+    document.querySelectorAll('.bank td.amt, .bank .amt').forEach(td=>{ if(/\+\s*-|\+\$-|\+-\$/.test(td.textContent)){ td.textContent=td.textContent.replace(/\+\s*-\s*\$?|\+\$-/,'−$'); td.style.color='#B91C1C'; } });
+  } else document.body.classList.remove('st-theme-space','st-theme-ocean','st-theme-gold');
+  if(T.open) draw();
+}catch(e){ console.error('Store',e); } return out; };
+
+/* upgrades in play: buddy cheers, silly sounds, star trail */
+const _p3=window.p3Ans;
+window.p3Ans=function(p,it,ok){ try{ if(ok){ const w=ST().wear||{};
+  if(w.sound==='sound-duck') setTimeout(quack,140); if(w.sound==='sound-drum') setTimeout(drum,140);
+  const pet=w.pet&&item(w.pet); if(pet&&!rmo()){ const q=document.querySelector('.qcard'); const [x,y]=q?[q.getBoundingClientRect().right-40,q.getBoundingClientRect().top+10]:[innerWidth-90,120]; const e=document.createElement('i'); e.className='stpop'; e.textContent=pet.emoji; e.style.left=x+'px'; e.style.top=y+'px'; document.body.appendChild(e); e.animate([{transform:'translateY(30px) scale(.4)',opacity:0},{transform:'translateY(-20px) scale(1.2) rotate(-10deg)',opacity:1,offset:.4},{transform:'translateY(0) scale(1)',opacity:0}],{duration:1100}).onfinish=()=>e.remove(); }
+} }catch(e){} return _p3?_p3.apply(this,arguments):undefined; };
+let lastTrail=0;
+document.addEventListener('pointermove',e=>{ try{ if(rmo()||!A.st||(ST().wear||{}).trail!=='trail') return; const now=performance.now(); if(now-lastTrail<45) return; lastTrail=now;
+  const s=document.createElement('i'); s.className='sttrail'; s.textContent=['⭐','✨','🌟'][Math.floor(Math.random()*3)]; s.style.left=e.clientX+'px'; s.style.top=e.clientY+'px'; document.body.appendChild(s);
+  s.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(-50%,${10+Math.random()*20}px) scale(.3)`,opacity:0}],{duration:700}).onfinish=()=>s.remove(); }catch(x){} },{passive:true});
+})();
+</script>

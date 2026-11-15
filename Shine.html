@@ -1,0 +1,121 @@
+<script>
+/* ===== Shine: boy-page visual polish (v67, takeover builder, 2026-11-11). Loaded by msQuestTools after ComputingMore.
+   CSS only for looks, plus one small helper that puts the home-screen subject panels (Science, Electives, Trades, Computing)
+   side by side on wide screens. No game rules, money or lesson logic here. ===== */
+(function(){
+try{ if(!document.getElementById('tl-shine')){ const s=document.createElement('style'); s.id='tl-shine'; s.textContent=`
+.tlpanels{display:grid;grid-template-columns:1fr;gap:16px;margin:14px 0}
+@media(min-width:1100px){.tlpanels{grid-template-columns:1fr 1fr}.tlpanels>*{height:100%}}
+.tlpanels>*{margin:0!important;display:flex;flex-direction:column;grid-column:auto!important;width:auto!important;max-width:none!important}
+.scipanel,.elpanel,.trpanel,.cppanel,.lfpanel,.sspanel{border-radius:22px!important;box-shadow:0 10px 28px rgba(30,27,75,.10),0 2px 6px rgba(30,27,75,.06)!important;transition:transform .18s ease,box-shadow .18s ease}
+.scipanel:hover,.elpanel:hover,.trpanel:hover,.cppanel:hover,.lfpanel:hover,.sspanel:hover{transform:translateY(-2px);box-shadow:0 16px 36px rgba(30,27,75,.14),0 3px 8px rgba(30,27,75,.08)!important}
+.scipanel .sh,.elpanel .sh,.trpanel .sh,.cppanel .sh,.lfpanel .sh,.sspanel .sh{min-height:78px}
+.scipanel .si,.elpanel .si,.trpanel .si,.cppanel .si,.lfpanel .si,.sspanel .si{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.18);font-size:30px;flex:none}
+.elnode,.cpnode,.lfnode,.ssnode{transition:transform .12s ease,box-shadow .12s ease}
+.elnode:not(:disabled):hover,.cpnode:not(:disabled):hover,.lfnode:not(:disabled):hover,.ssnode:not(:disabled):hover{transform:translateY(-1px)}
+.elnode:not(:disabled):active,.cpnode:not(:disabled):active,.lfnode:not(:disabled):active,.ssnode:not(:disabled):active,button.btn:active{transform:translateY(1px) scale(.99)}
+.elnode.now,.cpnode.now,.lfnode.now,.ssnode.now{animation:tlpulse 2.4s ease-in-out infinite}
+@keyframes tlpulse{0%,100%{box-shadow:0 0 0 4px rgba(255,255,255,.0),0 0 0 4px rgba(201,154,46,.35)}50%{box-shadow:0 0 0 4px rgba(255,255,255,.0),0 0 0 9px rgba(201,154,46,.12)}}
+button:focus-visible,a:focus-visible{outline:3px solid #F5B301!important;outline-offset:3px}
+/* v71 accessibility: bigger tap targets, bigger pictures, a labeled "Say it again" (never automatic) */
+.opts{gap:14px!important}
+.opt{min-height:68px;padding:18px 20px!important;font-size:22px!important}
+.tile{min-height:56px;padding:14px 18px!important;font-size:21px!important}
+.tlpic:not(.tlpic-long){font-size:clamp(40px,8vw,64px)!important}
+.qrow .say{width:auto!important;height:52px!important;padding:0 16px!important;border-radius:16px!important;font-size:20px!important;display:inline-flex;align-items:center;gap:6px;font-weight:800;color:var(--ink,#1E1B4B);box-shadow:inset 0 0 0 2px rgba(79,70,229,.25)}
+.qrow .say::after{content:"Say it again";font-size:16px;font-family:inherit}
+@media(max-width:560px){.qrow .say::after{content:""}.qrow .say{padding:0 12px!important}}
+.btn.signout{font-weight:800}
+/* v79 home page order (Head of School 2026-11-12 "it seems very busy"): keep everything, but the next step comes first.
+   Order: top bar, thought for today, Up next, find-your-level, review, canteen, school goal, quest + week, journey map, more worlds, badges + bank. */
+#app:has(>header.hero){display:flex;flex-direction:column}
+#app:has(>header.hero)>*{order:4}
+#app:has(>header.hero)>header.hero{order:0}
+#app:has(>header.hero)>#tlinsp{order:1}#app:has(>header.hero)>.nextup{order:2}#app:has(>header.hero)>.tlfind{order:3}#app:has(>header.hero)>.rvcard{order:4}#app:has(>header.hero)>.cn-card{order:5}#app:has(>header.hero)>.sgoal{order:6}#app:has(>header.hero)>.p3hub{order:7}#app:has(>header.hero)>.hub{order:8}#app:has(>header.hero)>.tlpanels{order:9}#app:has(>header.hero)>.lower{order:10}#app:has(>header.hero)>.foot{order:11}
+#app>.nextup{position:relative;margin-top:10px;padding:40px 26px 22px!important;border-radius:28px!important;background:linear-gradient(120deg,#F59E0B,#FF8A3D 55%,#F472B6)!important;box-shadow:0 16px 40px rgba(245,158,11,.35),0 0 0 4px rgba(255,255,255,.7)!important}
+#app>.nextup::before{content:"⭐ Start here";position:absolute;top:10px;left:22px;z-index:1;background:#1E1B4B;color:#FDE68A;font:800 14px var(--display);letter-spacing:.06em;text-transform:uppercase;padding:5px 12px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+#app>.nextup h2{font-size:clamp(24px,3vw,34px)!important}
+#app>.nextup .ni{font-size:56px!important}
+#app>.nextup .btn{font-size:24px!important;padding:16px 34px!important;animation:tlgo 2.2s ease-in-out infinite}
+@keyframes tlgo{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+#tlinsp{display:flex;align-items:center;gap:14px;margin:12px 0 4px;padding:12px 18px;border-radius:20px;background:linear-gradient(110deg,#312E81,#4338CA 55%,#7C3AED);color:#fff;box-shadow:0 10px 26px rgba(49,46,129,.25);overflow:hidden;position:relative}
+#tlinsp::after{content:"";position:absolute;inset:0;background:radial-gradient(400px 120px at 90% 0%,rgba(253,230,138,.28),transparent 70%);pointer-events:none}
+#tlinsp .ii{font-size:34px;flex:none}
+#tlinsp .it{flex:1;min-width:0;transition:opacity .6s}#tlinsp .it.out{opacity:0}
+#tlinsp b{display:block;font:700 clamp(17px,1.9vw,22px)/1.3 var(--display)}
+#tlinsp small{display:block;color:#FDE68A;font:700 12px var(--display);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+#tlinsp .hi{flex:none;font:800 15px var(--display);background:rgba(255,255,255,.16);border-radius:999px;padding:6px 12px;white-space:nowrap}
+@media(max-width:640px){#tlinsp .hi{display:none}}
+.tlpanels::before{content:"🧭 More worlds to explore";grid-column:1/-1;font:800 clamp(20px,2.2vw,26px) var(--display);color:var(--ink,#1E1B4B);margin:4px 2px -4px}
+@media print{#tlinsp{display:none}}
+/* v79: during a lesson the clock moves out of the way of the Check button: top-left on wide screens, bottom-left (smaller) on small ones */
+@media(min-width:1130px){body.tlplay #tlclock{top:calc(8px + env(safe-area-inset-top,0px));bottom:auto;left:calc(14px + env(safe-area-inset-left,0px));right:auto}body.tlplay #tlclock:not(.big){transform:scale(.68);transform-origin:top left}}
+@media(max-width:1129px){body.tlplay #tlclock{left:calc(10px + env(safe-area-inset-left,0px));right:auto}body.tlplay #tlclock:not(.big){transform:scale(.62);transform-origin:bottom left}}
+.tl-logo.tl-logo-sm{height:34px;padding:2px 7px;margin-right:10px}.tl-logo.tl-logo-sm img{height:28px}@media(max-width:899px){.tl-logo.tl-logo-sm{display:none}}
+@media(max-width:560px){.tlfind{flex-wrap:wrap;padding:14px!important}.tlfind .tli{font-size:32px!important}.tlfind .tlt{min-width:0;flex:1 1 200px}.tlfind .btn{flex:1 1 100%}
+ #tlclock:not(.big){transform:scale(.78);transform-origin:bottom right}}
+@media(prefers-reduced-motion:reduce){#app>.nextup .btn{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.scipanel,.elpanel,.trpanel,.cppanel,.lfpanel,.sspanel,.elnode,.cpnode,.lfnode,.ssnode{transition:none!important;animation:none!important}}
+`; document.head.appendChild(s); } }catch(e){}
+const SEL='.scipanel,.elpanel,.trpanel,.cppanel,.lfpanel,.sspanel';
+function wrap(){
+ try{
+  try{ document.body.classList.toggle('tlplay',typeof A!=='undefined'&&A.view==='play'); }catch(e){}
+  try{ const g=document.querySelector('#app>.tlgoal'); if(g&&window.TL_LOGO&&!g.querySelector('.tl-logo')){ const l=document.createElement('span'); l.className='tl-logo tl-logo-sm'; const im=document.createElement('img'); im.alt='Tashbar of Baltimore'; im.src=window.TL_LOGO; l.appendChild(im); g.insertBefore(l,g.firstChild); } }catch(e){}   /* v79: logo on lesson screens too */
+  if(typeof A==='undefined'||A.view!=='hub') return;
+  const app=document.getElementById('app'); if(!app) return;
+  insp(app);
+  const ps=[...app.querySelectorAll(SEL)].filter(p=>!p.closest('.tlpanels'));
+  if(ps.length<2) return;
+  const parent=ps[0].parentNode; if(!ps.every(p=>p.parentNode===parent)) return;
+  const box=document.createElement('div'); box.className='tlpanels'; parent.insertBefore(box,ps[0]); ps.forEach(p=>box.appendChild(p));
+ }catch(e){}
+}
+/* v79: "thought for today" ribbon at the top of the home page. Words from window.TL_THOUGHTS (HomePage.html). */
+const TH=()=>(window.TL_THOUGHTS&&window.TL_THOUGHTS.length?window.TL_THOUGHTS:[["Mistakes are how your brain grows.","Tashbar thought"],["Small steps every day add up to big things.","Tashbar thought"]]);
+const pick=()=>{ const t=TH(); return t[Math.floor(Date.now()/12000)%t.length]; };
+const esc2=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function hello(){ const h=new Date().getHours(), n=(A.st&&A.st.name||A.name||'').toString().split(' ')[0]; return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(n?', '+n:'')+'!'; }
+function insp(app){ try{ if(app.querySelector(':scope>#tlinsp')||!app.querySelector(':scope>header.hero')) return; const t=pick(); const d=document.createElement('section'); d.id='tlinsp'; d.setAttribute('aria-label','Thought for today');
+  d.innerHTML=`<span class="ii" aria-hidden="true">💡</span><div class="it"><b>${esc2(t[0])}</b><small>${esc2(t[1])}</small></div><span class="hi">${esc2(hello())}</span>`; app.appendChild(d); }catch(e){} }
+setInterval(()=>{ try{ const x=document.querySelector('#tlinsp .it'); if(!x) return; x.classList.add('out'); setTimeout(()=>{ const t=pick(); x.innerHTML=`<b>${esc2(t[0])}</b><small>${esc2(t[1])}</small>`; x.classList.remove('out'); },650); }catch(e){} },12000);
+try{ new MutationObserver(()=>wrap()).observe(document.documentElement,{childList:true,subtree:true}); }catch(e){}
+/* v78: the always-there learning clock (Head of School 2026-11-11 22:25). Bottom-right corner, live time.
+   It slowly changes every 6 s between: the clock with hands -> the digital time -> the time in words, so boys learn
+   to tell time just by seeing it. Tap = bigger (hands + digital together); tap again = small. Reduced motion: hands + digital, no fading. */
+(function(){
+ if(document.getElementById('tlclock')) return;
+ const W=['twelve','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+ function words(h,m){ const H=h%12||12, N=(h+1)%12||12;
+  if(m===0) return `${H} o’clock`; if(m===15) return `quarter past ${H}`; if(m===30) return `half past ${H}`; if(m===45) return `quarter to ${N}`;
+  if(m<30) return `${m} past ${H}`; return `${60-m} to ${N}`; }
+ function face(){ let t=''; for(let i=0;i<60;i++){ const a=i*6*Math.PI/180, r1=i%5?44:40, x1=50+Math.sin(a)*r1, y1=50-Math.cos(a)*r1, x2=50+Math.sin(a)*47, y2=50-Math.cos(a)*47; t+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="#1E1B4B" stroke-width="${i%5?0.8:2}" stroke-linecap="round"/>`; }
+  for(let n=1;n<=12;n++){ const a=n*30*Math.PI/180; t+=`<text x="${(50+Math.sin(a)*33).toFixed(1)}" y="${(50-Math.cos(a)*33+4).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="800" fill="#1E1B4B" font-family="inherit">${n}</text>`; }
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#fff" stroke="#4F46E5" stroke-width="3"/>${t}<line id="tlc-h" x1="50" y1="50" x2="50" y2="27" stroke="#1E1B4B" stroke-width="5" stroke-linecap="round"/><line id="tlc-m" x1="50" y1="50" x2="50" y2="14" stroke="#4F46E5" stroke-width="3.2" stroke-linecap="round"/><line id="tlc-s" x1="50" y1="56" x2="50" y2="12" stroke="#E11D48" stroke-width="1.2" stroke-linecap="round"/><circle cx="50" cy="50" r="3.4" fill="#E11D48"/></svg>`; }
+ const el=document.createElement('button'); el.id='tlclock'; el.type='button'; el.setAttribute('aria-live','off');
+ el.innerHTML=`<span class="tlc-f tlc-a">${face()}</span><span class="tlc-f tlc-d"><b id="tlc-dt">--:--</b><small id="tlc-ap"></small></span><span class="tlc-f tlc-w" id="tlc-wd"></span>`;
+ const css=document.createElement('style'); css.textContent=`
+#tlclock{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:2147482999;width:96px;height:96px;border:0;border-radius:24px;padding:6px;background:#fff;box-shadow:0 8px 24px rgba(30,27,75,.18),inset 0 0 0 2px rgba(79,70,229,.25);cursor:pointer;font-family:inherit;display:grid;place-items:center;transition:width .25s,height .25s}
+#tlclock .tlc-f{grid-area:1/1;display:grid;place-items:center;width:100%;height:100%;opacity:0;transition:opacity .9s ease}
+#tlclock .tlc-f.on{opacity:1}#tlclock svg{width:84px;height:84px}
+#tlclock .tlc-d b{font-size:28px;font-weight:900;color:#1E1B4B;letter-spacing:1px;line-height:1}#tlclock .tlc-d small{display:block;font-size:13px;font-weight:800;color:#4F46E5;margin-top:2px;text-align:center}
+#tlclock .tlc-w{font-size:15px;font-weight:800;color:#1E1B4B;line-height:1.15;text-align:center;padding:0 4px}
+#tlclock.big{width:252px;height:136px}#tlclock.big .tlc-f{opacity:0}#tlclock.big .tlc-a{opacity:1;justify-items:start;padding-left:6px}#tlclock.big .tlc-d{opacity:1;justify-items:end;align-content:start;padding:16px 14px 0 0}#tlclock.big svg{width:108px;height:108px}#tlclock.big .tlc-d b{font-size:34px}
+#tlclock.big .tlc-w{opacity:1;align-self:end;justify-self:end;font-size:14px;width:120px;padding:0 12px 14px 0;height:auto;text-align:right}
+@media(prefers-reduced-motion:reduce){#tlclock{width:176px}#tlclock .tlc-f{transition:none}#tlclock .tlc-a,#tlclock .tlc-d{opacity:1}#tlclock .tlc-a{justify-items:start}#tlclock .tlc-d{justify-items:end;padding-right:10px}#tlclock .tlc-w{opacity:0}}
+@media print{#tlclock{display:none}}`;
+ document.head.appendChild(css); document.body.appendChild(el);
+ const F=[...el.querySelectorAll('.tlc-f')]; let k=0; F[0].classList.add('on');
+ function tick(){ const d=new Date(), h=d.getHours(), m=d.getMinutes(), sec=d.getSeconds();
+  const rot=(id,deg)=>{ const n=document.getElementById(id); if(n) n.setAttribute('transform',`rotate(${deg} 50 50)`); };
+  rot('tlc-h',(h%12)*30+m*0.5); rot('tlc-m',m*6+sec*0.1); rot('tlc-s',sec*6);
+  const H=h%12||12, dt=`${H}:${String(m).padStart(2,'0')}`, w=words(h,m);
+  document.getElementById('tlc-dt').textContent=dt; document.getElementById('tlc-ap').textContent=h<12?'morning':h<17?'afternoon':'evening'; document.getElementById('tlc-wd').textContent=w;
+  el.setAttribute('aria-label',`The time is ${dt}, ${w}. Tap to make the clock bigger.`); }
+ tick(); setInterval(tick,1000);
+ setInterval(()=>{ if(el.classList.contains('big')) return; F[k].classList.remove('on'); k=(k+1)%F.length; F[k].classList.add('on'); },6000);
+ el.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); el.classList.toggle('big'); },true);
+})();
+window.TLSHINE=1;
+})();
+</script>

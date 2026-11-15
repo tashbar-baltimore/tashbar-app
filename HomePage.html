@@ -1,0 +1,516 @@
+<!-- HomePage.html — the front home page (sign-in screen), added 2026-11-11 (v46) at the Head of School's request.
+     Only the code pad ("punch card") in the middle. Around it: the school logo, subjects flying across the screen, sparkles,
+     and warm, encouraging messages. Joined to QuestPage by sgQuest_ (StaffGrid.js) the same way as SignOutBar and PathfinderCard.
+     It replaces only the LOOK of vSignin(); the code pad keeps the same buttons (data-act pin/del/signin), so sign-in works as before.
+     The moving background lives outside #app, so it does not restart every time a number is tapped.
+     LOGO: the school logo is in HP_LOGO (a data: URL), shown on a white plaque with a gold ring. If it is emptied, a gold "T" crest shows. -->
+<style id="hp-css">
+body.hp-on{background:#1B1145!important}
+body.hp-on{overflow-x:hidden}
+body.hp-on .wrap{position:relative;z-index:1;padding:0!important;margin:0 auto!important;max-width:none!important}
+#hpbg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;display:none;
+ background:radial-gradient(900px 600px at 12% 8%,rgba(236,72,153,.45),transparent 60%),radial-gradient(900px 700px at 92% 95%,rgba(251,191,36,.42),transparent 60%),radial-gradient(800px 600px at 90% 5%,rgba(56,189,248,.35),transparent 60%),linear-gradient(140deg,#24125F 0%,#3B1D8F 45%,#5B21B6 75%,#7C2D92 100%)}
+body.hp-on #hpbg{display:block}
+#hpbg .glow{position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(60px);opacity:.35;animation:hpdrift 22s ease-in-out infinite alternate}
+#hpbg .g1{background:#F472B6;left:-20vmax;top:-20vmax}
+#hpbg .g2{background:#FBBF24;right:-25vmax;bottom:-25vmax;animation-delay:-8s}
+#hpbg .g3{background:#22D3EE;right:-10vmax;top:-30vmax;animation-delay:-14s;opacity:.22}
+@keyframes hpdrift{to{transform:translate(8vmax,6vmax) scale(1.15)}}
+#hpbg .st{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2px rgba(255,255,255,.8);animation:hptw 3s ease-in-out infinite}
+#hpbg .st.big{width:6px;height:6px;background:#FDE68A;box-shadow:0 0 12px 3px rgba(253,230,138,.9)}
+@keyframes hptw{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+#hpbg .fly{position:absolute;left:0;top:0;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 10px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(4px);color:#fff;font:700 clamp(15px,1.4vw,20px) var(--display,'Barlow'),sans-serif;white-space:nowrap;box-shadow:0 10px 30px rgba(20,0,60,.25);will-change:transform}
+#hpbg .fly i{font-style:normal;font-size:1.7em;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.3))}
+#hpbg .fly.solo{background:none;border:0;box-shadow:none;backdrop-filter:none;padding:0}
+#hpbg .fly.solo i{font-size:clamp(34px,3.6vw,52px)}
+@keyframes hpA{0%{transform:translate(-20vw,85vh) rotate(-8deg)}50%{transform:translate(50vw,55vh) rotate(6deg)}100%{transform:translate(120vw,10vh) rotate(-4deg)}}
+@keyframes hpB{0%{transform:translate(120vw,70vh) rotate(6deg)}50%{transform:translate(45vw,92vh) rotate(-6deg)}100%{transform:translate(-25vw,60vh) rotate(5deg)}}
+@keyframes hpC{0%{transform:translate(-20vw,8vh) rotate(4deg)}50%{transform:translate(40vw,22vh) rotate(-5deg)}100%{transform:translate(120vw,40vh) rotate(6deg)}}
+@keyframes hpD{0%{transform:translate(110vw,-10vh) rotate(-6deg)}50%{transform:translate(70vw,45vh) rotate(8deg)}100%{transform:translate(20vw,110vh) rotate(-4deg)}}
+@keyframes hpE{0%{transform:translate(5vw,110vh) rotate(0)}50%{transform:translate(15vw,45vh) rotate(10deg)}100%{transform:translate(35vw,-15vh) rotate(-6deg)}}
+@keyframes hpF{0%{transform:translate(90vw,115vh) rotate(0)}50%{transform:translate(80vw,50vh) rotate(-10deg)}100%{transform:translate(95vw,-15vh) rotate(8deg)}}
+#hpbg .bub{position:absolute;max-width:min(300px,26vw);padding:16px 20px;border-radius:24px;background:rgba(255,255,255,.95);color:#3B0764;font:700 clamp(17px,1.6vw,23px)/1.3 var(--display,'Barlow'),sans-serif;text-align:center;box-shadow:0 18px 40px rgba(20,0,60,.35),0 0 0 4px rgba(253,230,138,.55);transition:opacity .6s,transform .6s;animation:hpbob 5s ease-in-out infinite}
+#hpbg .bub.out{opacity:0;transform:scale(.85) translateY(10px)}
+#hpbg .bub::after{content:'';position:absolute;width:18px;height:18px;background:inherit;transform:rotate(45deg);bottom:-8px}
+#hpbg .b1{left:6vw;top:16vh}#hpbg .b1::after{right:30px}
+#hpbg .b2{left:8vw;bottom:14vh;animation-delay:-2s}#hpbg .b2::after{right:40px;top:-8px;bottom:auto}
+#hpbg .b3{right:6vw;top:18vh;animation-delay:-1s}#hpbg .b3::after{left:30px}
+#hpbg .b4{right:8vw;bottom:16vh;animation-delay:-3s}#hpbg .b4::after{left:40px;top:-8px;bottom:auto}
+#hpbg .b5{left:3vw;top:46vh;animation-delay:-1.5s;background:#FEF3C7}#hpbg .b5::after{display:none}
+#hpbg .b6{right:3vw;top:48vh;animation-delay:-2.5s;background:#E0F2FE}#hpbg .b6::after{display:none}
+@keyframes hpbob{0%,100%{translate:0 0}50%{translate:0 -10px}}
+.hp .thought{width:100%;box-sizing:border-box;display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:18px;background:rgba(255,255,255,.12);border:1px solid rgba(253,230,138,.45);text-align:left;min-height:64px}
+.hp .thought i{font-style:normal;font-size:30px;flex:none}
+.hp .thought div{transition:opacity .6s}.hp .thought div.out{opacity:0}
+.hp .thought b{display:block;font:700 clamp(15px,2vh,19px)/1.3 var(--display,'Barlow'),sans-serif;color:#fff}
+.hp .thought small{display:block;font:600 13px var(--body,'Barlow'),sans-serif;color:#FDE68A;margin-top:2px;letter-spacing:.04em;text-transform:uppercase}
+
+.hp{min-height:100vh;width:100vw;margin:0;padding:clamp(10px,2.4vh,30px) 16px;box-sizing:border-box;display:grid;place-items:center;text-align:center;color:#fff;position:relative}
+.hp .hpin{display:grid;justify-items:center;gap:clamp(8px,1.4vh,14px);width:min(500px,100%)}
+.hp .crest{position:relative;display:grid;place-items:center;width:clamp(80px,13vh,120px);height:clamp(80px,13vh,120px)}
+.hp .crest::before{content:'';position:absolute;inset:-14px;border-radius:50%;background:conic-gradient(from 0deg,#FDE68A,#F472B6,#60A5FA,#34D399,#FDE68A);filter:blur(14px);opacity:.75;animation:hpspin 6s linear infinite}
+.hp .crest .disc{position:relative;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF7D6,#FCD34D 45%,#D97706);display:grid;place-items:center;box-shadow:0 12px 30px rgba(0,0,0,.35),inset 0 -6px 14px rgba(146,64,14,.4);overflow:hidden}
+.hp .crest .disc b{font:800 clamp(44px,7vh,64px)/1 'Barlow Condensed',sans-serif;color:#5B21B6;text-shadow:0 2px 0 #FFF3C4}
+.hp .crest img{position:relative;max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 10px 24px rgba(0,0,0,.35))}
+.hp .crest.logo{width:min(360px,80vw,34vh);height:auto;padding:clamp(8px,1.4vh,14px) clamp(12px,1.8vh,20px);background:#fff;border-radius:22px;box-shadow:0 18px 40px rgba(20,0,60,.45),0 0 0 3px #E8C26A,0 0 0 7px rgba(255,255,255,.35)}
+.hp .crest.logo::before{inset:-12px;border-radius:30px;opacity:.55}
+.hp .crest.logo img{display:block;width:100%;height:auto;filter:none;border-radius:8px}
+@keyframes hpspin{to{transform:rotate(360deg)}}
+.hp .name{font:800 clamp(28px,5vh,46px)/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;padding-left:.14em;margin:0;background:linear-gradient(90deg,#FDE68A,#fff,#FBCFE8,#FDE68A);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:hpshine 6s linear infinite}
+@keyframes hpshine{to{background-position:300% 0}}
+.hp .hi{font:700 clamp(17px,2.4vh,23px) var(--body,'Barlow'),sans-serif;color:#FDE68A;margin:0}
+.hp .hi span{color:#fff}
+.hp .card{position:relative;width:100%;border-radius:30px;padding:3px;background:conic-gradient(from var(--hpa,0deg),#FDE68A,#F472B6,#A78BFA,#60A5FA,#34D399,#FDE68A);animation:hpring 5s linear infinite;box-shadow:0 30px 80px rgba(20,0,60,.55),0 0 60px rgba(253,230,138,.35)}
+@property --hpa{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes hpring{to{--hpa:360deg}}
+.hp .card .face{border-radius:27px;background:linear-gradient(180deg,#FFFFFF,#F5F3FF);color:#1E1B4B;padding:clamp(14px,2.6vh,26px) clamp(18px,2.4vw,28px) clamp(12px,2vh,20px);position:relative;overflow:hidden}
+.hp .card .face::before{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.8),transparent);transform:skewX(-18deg);animation:hpsheen 5s ease-in-out infinite;pointer-events:none}
+@keyframes hpsheen{0%,60%{left:-60%}100%{left:130%}}
+.hp .card h3{font:800 clamp(24px,3.6vh,32px)/1.1 var(--display,'Barlow'),sans-serif;margin:0;color:#3B0764}
+.hp .card .sub{font:600 clamp(14px,1.9vh,17px) var(--body,'Barlow'),sans-serif;color:#6B5B95;margin:4px 0 0}
+.hp .dots2{margin:clamp(10px,2vh,18px) 0!important}
+.hp .keys2{gap:clamp(10px,1.6vh,14px)!important}
+.hp .keys2 button{height:clamp(56px,8.6vh,84px)!important;font-size:clamp(30px,4.6vh,42px)!important;border-radius:20px!important}
+.hp .keys2 button:active{transform:translateY(3px) scale(.97)}
+.hp .go2.signbtn{margin:clamp(12px,2vh,18px) 0 4px;background:linear-gradient(90deg,#F59E0B,#EC4899,#8B5CF6);background-size:200% 100%;animation:hpshine 4s linear infinite;color:#fff;font:800 clamp(19px,2.6vh,23px) var(--display,'Barlow'),sans-serif;border-radius:18px;box-shadow:0 8px 0 #6D28D9,0 14px 26px rgba(139,92,246,.4);letter-spacing:.02em}
+.hp .go2.signbtn:disabled{animation:none;background:#C4B5FD;box-shadow:0 6px 0 #A78BFA;opacity:1}
+.hp .go2.signbtn:not(:disabled):active{transform:translateY(5px);box-shadow:0 2px 0 #6D28D9}
+.hp .err2{min-height:1.2em;margin:4px 0 0;color:#BE123C;font:700 16px var(--body,'Barlow'),sans-serif}
+.hp .busy2{margin:4px 0 0;color:#7C3AED;font:700 16px var(--body,'Barlow'),sans-serif}
+.hp .shake{animation:hpshake .4s}
+@keyframes hpshake{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+@media (max-width:760px){
+ #hpbg .bub{display:none}
+ #hpbg .fly{opacity:.4}
+ #hpbg .fly:not(.solo){font-size:13px}
+ .hp .hi{text-shadow:0 2px 8px rgba(30,0,60,.6)}
+}
+@media (max-height:640px){ #hpbg .b2,#hpbg .b4{display:none} }
+@media (max-width:1180px){ #hpbg .b5,#hpbg .b6{display:none} }
+@media (max-height:900px){ .hp .thought{display:none} }
+#hpbg .bub small{display:block;font-size:.62em;letter-spacing:.08em;text-transform:uppercase;color:#7C3AED;margin-top:6px}
+@media (prefers-reduced-motion:reduce){
+ #hpbg *,.hp *,.hp .card{animation:none!important;transition:none!important}
+ #hpbg .fly{display:none}
+}
+/* v157 (takeover3, HoS: "make sure everything is sharp"): pop-ups taller than the screen could not be read (top and bottom cut off, no scroll). Now they scroll and center only when they fit. */
+.overlay{overflow-y:auto!important;overscroll-behavior:contain;overflow-anchor:none;align-items:start!important}
+.overlay>.ocard{margin-block:auto}
+/* the floating clock covered "Let's go!" on phones, and pop-up buttons on small screens */
+@media (max-width:760px),(max-height:620px){body.hp-on #tlclock{display:none!important}}
+@media (max-width:760px){body:has(.overlay) #tlclock{display:none!important}}
+/* calmer sign-in screen: half the flying subject tags */
+#hpbg .fly.alt{display:none}
+/* v157 honey logo (HoS): a plain chalkboard, the honey dipper sweeps across and coats it all in glowing honey, back to chalk, again */
+.hp .crest.hl{width:min(400px,82vw,36vh);height:auto;padding:0;background:none;border-radius:22px;box-shadow:0 18px 40px rgba(20,0,60,.45)}
+.hp .crest.hl::before{display:none}.hp .crest.hl{filter:drop-shadow(0 0 18px rgba(255,201,60,.35))}
+</style>
+<script>/* v157: a new pop-up opens at its top (QuestPage focuses its first button after 50 ms, which scrolled tall ones down) */
+(function(){ var seen=null; function chk(){ var o=document.querySelector('.overlay'); if(o&&o!==seen){ seen=o; var top=function(){ try{ if(o.scrollHeight>o.clientHeight) o.scrollTop=0; }catch(e){} }; requestAnimationFrame(top); setTimeout(top,120); } else if(!o) seen=null; }
+ try{ new MutationObserver(chk).observe(document.body,{childList:true,subtree:true}); }catch(e){} })();</script>
+<link id="hl-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700;900&display=swap">
+<style id="hl-css">.hlogo{display:block;width:100%;height:auto;overflow:visible} .hlogo *{animation-duration:12s;animation-iteration-count:infinite;animation-delay:var(--hd,0s);animation-timing-function:ease-in-out} .hlogo .hl-cw{stroke-dasharray:420;stroke-dashoffset:420;fill-opacity:0;stroke-linejoin:round} .hlogo .w1{animation-name:hlw1}.hlogo .w2{animation-name:hlw2}.hlogo .w3{animation-name:hlw3}.hlogo .w4{animation-name:hlw4}.hlogo .w5{animation-name:hlw5}.hlogo .w6{animation-name:hlw6} @keyframes hlw1{0%{stroke-dashoffset:420;fill-opacity:0}7%{stroke-dashoffset:0;fill-opacity:0}9%,100%{stroke-dashoffset:0;fill-opacity:1}} @keyframes hlw2{0%,8%{stroke-dashoffset:420;fill-opacity:0}11%{stroke-dashoffset:0;fill-opacity:0}12%,100%{stroke-dashoffset:0;fill-opacity:1}} @keyframes hlw3{0%,11%{stroke-dashoffset:420;fill-opacity:0}14%{stroke-dashoffset:0;fill-opacity:0}15%,100%{stroke-dashoffset:0;fill-opacity:1}} @keyframes hlw4{0%,14%{stroke-dashoffset:420;fill-opacity:0}22%{stroke-dashoffset:0;fill-opacity:0}23.5%,100%{stroke-dashoffset:0;fill-opacity:1}} @keyframes hlw5{0%,22%{stroke-dashoffset:420;fill-opacity:0}25.5%{stroke-dashoffset:0;fill-opacity:0}26.5%,100%{stroke-dashoffset:0;fill-opacity:1}} @keyframes hlw6{0%,24.5%{stroke-dashoffset:420;fill-opacity:0}28%{stroke-dashoffset:0;fill-opacity:0}29%,100%{stroke-dashoffset:0;fill-opacity:1}} .hlogo .hl-chalk{animation-name:hlchalk} @keyframes hlchalk{0%,38.4%{opacity:1}40%,84%{opacity:.16}92%,95%{opacity:1}99%,100%{opacity:0}} .hlogo .hl-stick{opacity:0;animation-name:hlstick;animation-timing-function:linear} @keyframes hlstick{0%{opacity:1;transform:translate(42px,122px)}3%{transform:translate(62px,72px)}6%{transform:translate(98px,122px)}8%{transform:translate(108px,112px)}10.5%{transform:translate(124px,126px)}12%{transform:translate(238px,48px)}14%{transform:translate(286px,48px)}15%{transform:translate(182px,90px)}22%{transform:translate(344px,90px)}23%{transform:translate(222px,108px)}25.5%{transform:translate(302px,108px)}26%{transform:translate(180px,132px)}28%{opacity:1;transform:translate(344px,132px)}30%,100%{opacity:0;transform:translate(380px,152px)}} .hlogo .hl-board{animation-name:hlshake;animation-timing-function:linear} @keyframes hlshake{0%,38.3%{transform:none}38.6%{transform:translate(-5px,4px) rotate(-.6deg)}39%{transform:translate(6px,-3px) rotate(.5deg)}39.4%{transform:translate(-4px,2px)}39.8%{transform:translate(3px,-1px)}40.3%,100%{transform:none}} .hlogo .hl-dip{opacity:0;animation-name:hldip} @keyframes hldip{0%,29%{opacity:0;transform:translate(340px,-70px) rotate(30deg)}31%{opacity:1;transform:translate(300px,30px) rotate(18deg)}34%{transform:translate(276px,14px) rotate(44deg)}35.5%{transform:translate(262px,8px) rotate(64deg)}37%{transform:translate(254px,4px) rotate(84deg);animation-timing-function:cubic-bezier(.7,0,1,1)}  38.4%{transform:translate(200px,78px) rotate(-8deg);animation-timing-function:ease-out}39.4%{transform:translate(200px,62px) rotate(-3deg)}40.6%{transform:translate(206px,72px) rotate(-6deg)}48%{transform:translate(352px,64px) rotate(10deg)}56%{transform:translate(48px,84px) rotate(-14deg)}60%{opacity:1;transform:translate(-8px,-26px) rotate(-30deg)}62%,100%{opacity:0;transform:translate(-60px,-80px) rotate(-40deg)}} .hlogo .hl-splat,.hlogo .hl-mspl{transform-box:fill-box;transform-origin:50% 50%;transform:scale(0);animation-name:hlsplat;animation-timing-function:ease-out} @keyframes hlsplat{0%,38.3%{transform:scale(0);opacity:0}38.5%{transform:scale(.2);opacity:1}39.4%{transform:scale(1.3,1.2)}40.5%{transform:scale(.92,.96)}41.6%{transform:scale(1.06,1.02)}42.6%,100%{transform:scale(1);opacity:1}} .hlogo .hl-swipe{stroke-dasharray:1 3;stroke-dashoffset:1;animation-name:hlswipe} @keyframes hlswipe{0%,40.5%{stroke-dashoffset:1}56%,95%{stroke-dashoffset:0}96%,100%{stroke-dashoffset:1}} .hlogo .hl-honey{animation-name:hlhoney} @keyframes hlhoney{0%,83%{opacity:1;transform:none}91%{opacity:.9;transform:translateY(44px) scaleY(1.06)}96%,100%{opacity:0;transform:translateY(82px)}} .hlogo .hl-gold{animation-name:hlgold} @keyframes hlgold{0%,56%{opacity:.92}64%{opacity:1}70%{opacity:.86}76%{opacity:1}100%{opacity:1}} .hlogo .hl-drip{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);animation-name:hldrip} @keyframes hldrip{0%,42%{transform:scaleY(0)}52%{transform:scaleY(.7)}64%,100%{transform:scaleY(1)}} .hlogo .hl-drop{transform-box:fill-box;transform-origin:50% 50%;opacity:0;animation-name:hldrop} .hlogo .hl-drop.d2{animation-name:hldrop2} @keyframes hldrop{0%,60%{opacity:0;transform:translateY(0)}62%{opacity:1;transform:translateY(0)}74%{opacity:1;transform:translateY(20px)}76%,100%{opacity:0;transform:translateY(24px)}} @keyframes hldrop2{0%,66%{opacity:0;transform:translateY(0)}68%{opacity:1;transform:translateY(0)}78%{opacity:1;transform:translateY(14px)}80%,100%{opacity:0;transform:translateY(18px)}} .hlogo .hl-fly{opacity:0;animation-name:hlfly;animation-timing-function:ease-out} @keyframes hlfly{0%,38.4%{opacity:0;transform:translate(0,0) scale(.4)}38.6%{opacity:1}40.6%{opacity:1;transform:translate(var(--dx),var(--dy)) scale(1)}44%{opacity:1;transform:translate(var(--dx),calc(var(--dy) + 30px)) scale(.9)}46%,100%{opacity:0;transform:translate(var(--dx),calc(var(--dy) + 46px)) scale(.8)}} .hlogo .hl-puff{opacity:0;animation-name:hlpuff;animation-timing-function:ease-out} @keyframes hlpuff{0%,38.4%{opacity:0;transform:translate(0,0) scale(.3)}38.8%{opacity:.7}41.6%,100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(2.6)}} .hlogo .hl-ring{transform-box:fill-box;transform-origin:50% 50%;opacity:0;animation-name:hlring;animation-timing-function:ease-out}.hlogo .hl-ring.r2{animation-name:hlring2} @keyframes hlring{0%,38.4%{opacity:0;transform:scale(.2)}38.6%{opacity:1;transform:scale(.4)}41.5%,100%{opacity:0;transform:scale(5)}} @keyframes hlring2{0%,38.6%{opacity:0;transform:scale(.2)}38.9%{opacity:.9;transform:scale(.5)}42.5%,100%{opacity:0;transform:scale(6.5)}} .hlogo .hl-sheen{animation-name:hlsheen;animation-timing-function:linear} @keyframes hlsheen{0%,58%{transform:translateX(-160px) skewX(-18deg)}76%,100%{transform:translateX(560px) skewX(-18deg)}} @media (prefers-reduced-motion:reduce){.hlogo *{animation:none!important}.hlogo .hl-cw{stroke-dashoffset:0;fill-opacity:1}.hlogo .hl-chalk{opacity:.16}.hlogo .hl-swipe{stroke-dashoffset:0}  .hlogo .hl-splat,.hlogo .hl-mspl,.hlogo .hl-drip{transform:none;opacity:1}.hlogo .hl-dip,.hlogo .hl-ring,.hlogo .hl-stick,.hlogo .hl-fly,.hlogo .hl-puff,.hlogo .hl-drop,.hlogo .hl-sheen{display:none}}</style>
+<style id="hp3-css">
+/* v172 SIGN-IN v3 (takeover3, HoS: "make it pop, inviting, inspiring, next level"). Wide screens: a welcome panel + the code card side by side. */
+.hp .hp3{width:min(500px,100%);display:grid;justify-items:center;gap:clamp(8px,1.4vh,14px)}
+.hp .hp3 .hpL{display:grid;justify-items:center;gap:clamp(6px,1.2vh,12px);width:100%}
+.hp .hp3 .hpR{width:100%;display:grid;gap:8px;justify-items:center}
+.hp .hp3 .day{margin:0;font:700 clamp(13px,1.7vh,15px) var(--body,'Barlow'),sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#C4B5FD}
+.hp .hp3 .day b{color:#FDE68A;font-weight:800}
+.hp .hp3 .head{display:none;margin:0;font:800 clamp(30px,4.6vh,46px)/1.08 var(--display,'Barlow'),sans-serif;color:#fff;text-shadow:0 4px 18px rgba(30,0,70,.45);min-height:2.2em;transition:opacity .5s,transform .5s}
+.hp .hp3 .head.out{opacity:0;transform:translateY(8px)}
+.hp .hp3 .head em{font-style:normal;background:linear-gradient(90deg,#FDE68A,#FBBF24,#F472B6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hp .hp3 .inside{display:none;gap:10px;flex-wrap:wrap}
+.hp .hp3 .inside span{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 10px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font:700 15px var(--body,'Barlow'),sans-serif;animation:hp3float 6s ease-in-out infinite}
+.hp .hp3 .inside span:nth-child(2){animation-delay:-1.5s}.hp .hp3 .inside span:nth-child(3){animation-delay:-3s}.hp .hp3 .inside span:nth-child(4){animation-delay:-4.5s}
+.hp .hp3 .inside i{font-style:normal;font-size:22px}
+.hp .hp3 .inlbl{display:none;margin:4px 0 -2px;font:800 12px var(--body,'Barlow'),sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#FDE68A}
+@keyframes hp3float{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.hp .hp3 .kbtip{display:none;margin:2px 0 0;font:600 14px var(--body,'Barlow'),sans-serif;color:#DDD6FE}
+/* honey-drop code dots */
+.hp .hp3 .dots2{gap:22px!important}
+.hp .hp3 .dots2 i{width:26px!important;height:26px!important;border:3px solid #D6CCF5!important;border-radius:0 50% 50% 50%!important;transform:rotate(45deg);background:#fff;box-shadow:inset 0 2px 4px rgba(76,29,149,.12)}
+.hp .hp3 .dots2 i.on{background:radial-gradient(circle at 35% 30%,#FFF4C2,#FFC93C 45%,#E08E00)!important;border-color:#D97706!important;transform:rotate(45deg) scale(1.18)!important;box-shadow:0 0 0 6px rgba(251,191,36,.25),0 6px 14px rgba(217,119,6,.45)!important;animation:hp3drop .38s cubic-bezier(.3,1.6,.5,1)!important}
+@keyframes hp3drop{0%{transform:rotate(45deg) translate(-14px,-14px) scale(.3);opacity:.2}100%{transform:rotate(45deg) scale(1.18);opacity:1}}
+.hp .hp3 .go2.signbtn:not(:disabled){box-shadow:0 7px 0 #6D28D9,0 0 0 0 rgba(251,191,36,.7);animation:hpshine 4s linear infinite,hp3ready 1.6s ease-in-out infinite}
+@keyframes hp3ready{0%,100%{box-shadow:0 7px 0 #6D28D9,0 0 0 0 rgba(251,191,36,.6)}50%{box-shadow:0 7px 0 #6D28D9,0 0 0 12px rgba(251,191,36,0)}}
+/* opening: a honey jar fills */
+.hp .hp3 .opening{display:grid;justify-items:center;gap:6px;margin:6px 0 2px}
+.hp .hp3 .jar{position:relative;width:64px;height:72px;border:4px solid #B45309;border-radius:14px 14px 20px 20px;overflow:hidden;background:#FFFBEB}
+.hp .hp3 .jar::before{content:'';position:absolute;left:-8px;right:-8px;top:-10px;height:12px;background:#B45309;border-radius:6px}
+.hp .hp3 .jar i{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(180deg,#FFD866,#F59E0B);animation:hp3fill 1.4s ease-in-out infinite}
+@keyframes hp3fill{0%{height:8%}70%,100%{height:92%}}
+.hp .hp3 .opening b{font:800 17px var(--display,'Barlow'),sans-serif;color:#7C3AED}
+@media (min-width:1000px) and (min-height:600px){
+ .hp .hp3{width:min(1180px,100%);grid-template-columns:minmax(0,1.1fr) minmax(400px,.9fr);align-items:center;gap:clamp(28px,4vw,64px);justify-items:stretch}
+ .hp .hp3 .hpL{justify-items:start;text-align:left}
+ .hp .hp3 .hpL .crest.hl{width:min(560px,100%,56vh)}
+ .hp .hp3 .head,.hp .hp3 .inlbl{display:block}.hp .hp3 .inside{display:flex}
+ .hp .hp3 .kbtip{display:block}
+ .hp .hp3 .hpL .thought{max-width:560px}
+ .hp .hp3 .hpR .card{max-width:500px}
+ body.hp-on #hpbg .bub{display:none}
+ body.hp-on #hpbg .fly{opacity:.28}
+}
+@media (min-width:1000px) and (max-height:720px){ .hp .hp3 .inside,.hp .hp3 .inlbl{display:none} .hp .hp3 .head{font-size:clamp(26px,4.4vh,36px)} }
+@media (prefers-reduced-motion:reduce){ .hp .hp3 *{animation:none!important} }
+</style>
+<script>window.TL_THOUGHTS=window.TL_THOUGHTS||[["Who is wise? One who learns from every person.", "Pirkei Avos"], ["According to the effort is the reward.", "Pirkei Avos"], ["It is not up to you to finish the work, but you can’t stop trying.", "Pirkei Avos"], ["Don’t say “I’ll learn when I have time.” Maybe you won’t have time.", "Pirkei Avos"], ["One who is too shy to ask can’t learn.", "Pirkei Avos"], ["“I worked hard and I found it” — believe it!", "Chazal"], ["Mistakes are how your brain grows.", "Tashbar thought"], ["Hard means you are learning something new.", "Tashbar thought"], ["Small steps every day add up to big things.", "Tashbar thought"], ["Today, try to beat your own yesterday.", "Tashbar thought"], ["Smart people ask lots of questions.", "Tashbar thought"], ["You don’t have to be great to start. You have to start to be great.", "Tashbar thought"], ["When it gets hard, slow down — don’t give up.", "Tashbar thought"], ["Be proud of how hard you are trying.", "Tashbar thought"], ["Read it again. The second time, it makes more sense.", "Tashbar thought"], ["Help a friend today. Teaching is learning twice.", "Tashbar thought"]];</script>
+<script>
+(function(){
+if(typeof vSignin!=='function'||typeof render!=='function') return;
+var HP_LOGO=window.HP_LOGO||window.TL_LOGO||'';   /* v79: the logo now lives in Logo.js (window.TL_LOGO), added to every page by tlTheme_ */   /* school logo (New Tashbar Logo.jpg, cropped to 720px) */
+var SUBJ=[['📐','Math'],['📖','Reading'],['✍️','Writing'],['🔬','Science'],['🔨','Trades'],['🏦','My Bank'],['🗺️','Pathfinder'],['🧮','Numbers'],['🌍','Our World'],['💡','Ideas'],['🎵','Music'],['🏆','Badges']];
+var SOLO=['⭐','🌟','✨','💯','🚀','🎉','👑','💎'];
+var MSG=['We’re so happy you’re here! 😊','You can do hard things! 💪','Every try makes your brain stronger 🧠','Today is a great day to learn ☀️','Your Rebbeim are proud of you ⭐','Mistakes help you grow 🌱','One step at a time 👣','You’ve got this! 🚀','Hatzlacha rabbah today! ✨','Learning is a gift 🎁','Keep shining! 🌟','Big things start small 🌱','Your effort counts! 🏆','Let’s make today amazing! 🎉','Brave learners ask questions 🙋','A new skill is waiting for you 🔓','Hard work today, proud tomorrow 💪','You are a Tashbar talmid! 🏫','Try your best — that’s a win 🥇','Ask, try, learn, repeat 🔁','Your brain loves a challenge 🧠','Hashem gave you great gifts. Use them! 🎁','Be kind, work hard, have fun 😊','Every expert started as a beginner 🌱','Practice makes progress 📈','Think it through, you’ll get it 🤔','Small steps, big journey 🗺️','You make your Rebbeim proud 🌟'];
+var THOUGHT=window.TL_THOUGHTS||[];
+/* honey logo: the same 12 s loop (v167) keeps running when the screen re-draws (each number tapped) */
+var HL_T0=Date.now();
+function hlLogoSvg(ms) {
+  /* v167 HONEY SMASH (HoS: "much more dramatic: it gets written in chalk, then the honey smashes it and smears it"). One 12 s loop:
+     0-28% chalk writes the Aleph, A and TASHBAR stroke by stroke (a chalk stick moves, dust falls)
+     30-38% the honey dipper rises and winds up · 38.5% SMASH: the board shakes, a honey splat bursts, drops fly, chalk dust puffs
+     40-56% the dipper smears honey across the board; the letters turn to glowing gold; thick drips run and fall
+     58-80% the honey glows and shines · 84-97% it oozes down and away, the chalk is wiped, and it starts again.
+     ms = how far into the loop to start, so a re-render (each number tapped) does not restart it. Still when reduced motion is on. */
+  var F1 = "'Frank Ruhl Libre','Noto Serif Hebrew','David',serif", F2 = "'Frank Ruhl Libre',Georgia,serif";
+  var parts = [['w1', 70, 118, F1, 900, 104, 0, 'א'], ['w2', 116, 124, F2, 700, 34, 0, 'A'], ['w3', 262, 50, F1, 700, 17, 0, 'תשב״ר'],
+    ['w4', 262, 92, F2, 700, 40, 3, 'TASHBAR'], ['w5', 262, 108, 'Georgia,serif', 700, 11, 4, 'BALTIMORE'], ['w6', 262, 132, 'Georgia,serif', 700, 9.5, 2.2, 'LEARNING THAT TASTES SWEET']];
+  var T = function (cls, fill, chalk) {
+    return parts.map(function (p) {
+      return '<text class="' + cls + (chalk ? ' ' + p[0] : '') + '" x="' + p[1] + '" y="' + p[2] + '"' + (p[1] > 100 && p[1] !== 116 ? ' text-anchor="middle"' : ' text-anchor="middle"') +
+        ' font-family="' + p[3] + '" font-weight="' + p[4] + '" font-size="' + p[5] + '"' + (p[6] ? ' letter-spacing="' + p[6] + '"' : '') + ' fill="' + fill + '"' +
+        (chalk ? ' stroke="#F2F2EC" stroke-width="' + (p[5] > 30 ? 1.4 : .6) + '"' : '') + '>' + p[7] + '</text>';
+    }).join('') + '<rect class="' + cls + (chalk ? ' w5' : '') + '" x="164" y="103" width="38" height="1.6" fill="' + fill + '"/><rect class="' + cls + (chalk ? ' w5' : '') + '" x="322" y="103" width="38" height="1.6" fill="' + fill + '"/>';
+  };
+  var drops = [[-58, -44], [-30, -62], [6, -70], [40, -58], [70, -36], [-80, -6], [86, 4], [-52, 26], [54, 30], [18, 40]].map(function (d, i) {
+    return '<circle class="hl-fly" cx="200" cy="82" r="' + (2.4 + (i % 3) * 1.4) + '" style="--dx:' + d[0] + 'px;--dy:' + d[1] + 'px"/>'; }).join('');
+  var dust = [[-26, -10], [22, -14], [-8, 16], [30, 12], [0, -24]].map(function (d) {
+    return '<circle class="hl-puff" cx="200" cy="82" r="9" style="--dx:' + d[0] + 'px;--dy:' + d[1] + 'px"/>'; }).join('');
+  var drip = function (x, y, w, h) { return '<path class="hl-drip" d="M' + x + ' ' + y + ' q' + (w / 2) + ' 2 ' + w + ' 0 q-1 ' + (h * .6) + ' ' + (-w * .15) + ' ' + h + ' a' + (w * .35) + ' ' + (w * .35) + ' 0 1 1 ' + (-w * .7) + ' 0 q' + (-w * .15) + ' ' + (-h * .4) + ' ' + (-w * .15) + ' ' + (-h) + ' Z"/>'; };
+  return '<svg class="hlogo" viewBox="0 0 400 160" role="img" aria-label="Tashbar of Baltimore — Learning that tastes sweet" style="--hd:' + (-(ms || 0)) + 'ms">'
+    + '<defs>'
+    + '<filter id="hl-chalkf" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="4" result="n"/>'
+    + '<feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" result="d"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.1 1.35" result="s"/>'
+    + '<feComposite in="d" in2="s" operator="in"/></filter>'
+    + '<filter id="hl-dust" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" seed="9"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .09 0"/></filter>'
+    + '<filter id="hl-glow" x="-20%" y="-30%" width="140%" height="160%"><feGaussianBlur in="SourceAlpha" stdDeviation="4" result="b"/><feFlood flood-color="#FFB300" flood-opacity=".9"/><feComposite in2="b" operator="in"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>'
+    + '<linearGradient id="hl-hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF4C2"/><stop offset=".35" stop-color="#FFC93C"/><stop offset=".75" stop-color="#E89A06"/><stop offset="1" stop-color="#B86E00"/></linearGradient>'
+    + '<radialGradient id="hl-splatg" cx=".45" cy=".4" r=".7"><stop offset="0" stop-color="#FFE38A"/><stop offset=".45" stop-color="#FFC21F" stop-opacity=".95"/><stop offset="1" stop-color="#C77800" stop-opacity=".92"/></radialGradient>'
+    + '<linearGradient id="hl-glaze" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC93C" stop-opacity=".78"/><stop offset=".5" stop-color="#F0A000" stop-opacity=".66"/><stop offset="1" stop-color="#B86E00" stop-opacity=".78"/></linearGradient>'
+    + '<linearGradient id="hl-sh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#FFF8DC" stop-opacity=".65"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+    + '<linearGradient id="hl-wood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7A4A1E"/><stop offset=".5" stop-color="#B07A3E"/><stop offset="1" stop-color="#6B3F17"/></linearGradient>'
+    + '<clipPath id="hl-clip"><rect x="8" y="8" width="384" height="144" rx="14"/></clipPath>'
+    + '<mask id="hl-mask" maskUnits="userSpaceOnUse" x="-20" y="-20" width="440" height="220"><rect x="-20" y="-20" width="440" height="220" fill="#000"/>'
+    + '<ellipse class="hl-mspl" cx="200" cy="82" rx="78" ry="58" fill="#fff"/>'
+    + '<path class="hl-swipe" pathLength="1" d="M200 80 L420 70 L420 60 C320 40 260 120 180 90 S60 40 -20 90" fill="none" stroke="#fff" stroke-width="170" stroke-linecap="round"/></mask>'
+    + '</defs>'
+    + '<g class="hl-board">'
+    + '<rect x="1" y="1" width="398" height="158" rx="20" fill="url(#hl-wood)"/>'
+    + '<rect x="8" y="8" width="384" height="144" rx="14" fill="#1E2B28"/>'
+    + '<rect x="8" y="8" width="384" height="144" rx="14" filter="url(#hl-dust)"/>'
+    + '<path d="M30 140 q30 -6 60 0 M300 26 q24 -5 50 2" stroke="#fff" stroke-opacity=".08" stroke-width="5" fill="none" stroke-linecap="round"/>'
+    + '<line class="hl-rule" x1="152" y1="30" x2="152" y2="132" stroke="#F4F4F0" stroke-opacity=".25" stroke-width="1.5" stroke-dasharray="3 5"/>'
+    /* chalk, written stroke by stroke */
+    + '<g class="hl-chalk" filter="url(#hl-chalkf)">' + T('hl-cw', '#F2F2EC', true) + '</g>'
+    /* the honey: splat + smear + golden letters + drips */
+    + '<g class="hl-honey">'
+    + '<path class="hl-splat" d="M200 34 C214 30 222 46 234 44 C252 40 262 52 258 64 C272 70 276 86 262 92 C268 106 254 118 240 112 C232 128 212 130 204 118 C192 132 170 128 166 114 C150 118 136 106 144 94 C128 88 130 70 144 66 C138 52 152 40 166 46 C176 34 190 38 200 34 Z" fill="url(#hl-splatg)" stroke="#B86E00" stroke-opacity=".5" stroke-width="1.2"/>'
+    + '<circle class="hl-ring" cx="200" cy="82" r="22" fill="none" stroke="#FFE38A" stroke-width="5"/><circle class="hl-ring r2" cx="200" cy="82" r="22" fill="none" stroke="#fff" stroke-width="2.5"/>'
+    + '<g mask="url(#hl-mask)"><g clip-path="url(#hl-clip)">'
+    + '<rect x="8" y="8" width="384" height="144" fill="url(#hl-glaze)"/>'
+    + '<path d="M8 8 H392 V22 q-14 12 -26 0 t-30 3 t-40 -2 t-36 4 t-44 -3 t-40 2 t-38 0 t-44 4 t-30 -2 t-38 1 t-8 0 Z" fill="#FFC93C" opacity=".8"/>'
+    + '<rect class="hl-sheen" x="0" y="8" width="70" height="144" fill="url(#hl-sh)" transform="skewX(-18)"/>'
+    + '</g><g class="hl-gold" filter="url(#hl-glow)">' + T('hl-gw', 'url(#hl-hg)', false) + '</g></g>'
+    + '<g fill="url(#hl-hg)">' + drip(40, 113, 10, 20) + drip(86, 115, 9, 30) + drip(118, 121, 6, 14) + drip(60, 18, 8, 18) + drip(230, 20, 9, 24) + drip(350, 19, 8, 16) + drip(188, 120, 12, 32) + drip(214, 116, 8, 22)
+    + '<circle class="hl-drop" cx="90.5" cy="148" r="3.4"/><circle class="hl-drop d2" cx="194" cy="154" r="4"/></g>'
+    + '<g fill="url(#hl-hg)">' + drops + '</g></g>'
+    + '<g class="hl-dust" fill="#F2F2EC">' + dust + '</g>'
+    + '</g>'
+    /* the chalk stick */
+    + '<g class="hl-stick"><rect x="-3" y="-11" width="6" height="16" rx="2" fill="#FBFBF7" stroke="#C9C9C0" stroke-width=".8" transform="rotate(28)"/></g>'
+    /* the honey dipper */
+    + '<g class="hl-dip"><g transform="translate(0 -28)">'
+    + '<rect x="-4.5" y="-74" width="9" height="82" rx="4.5" fill="#C08A4A" stroke="#7A4A1E" stroke-width="1.5"/>'
+    + '<ellipse cx="0" cy="22" rx="19" ry="22" fill="url(#hl-hg)" stroke="#9A5A00" stroke-width="1.5"/>'
+    + '<path d="M-18 11 h36 M-19 21 h38 M-18 31 h36" stroke="#9A5A00" stroke-width="2.4" stroke-linecap="round"/>'
+    + '<path d="M-3 43 q3 12 0 20 q-3 -8 0 -20" fill="#FFC93C"/>'
+    + '</g></g>'
+    + '</svg>';
+}
+
+function bg(){
+ if(document.getElementById('hpbg')) return;
+ var h='<div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>', i, paths=['hpA','hpB','hpC','hpD','hpE','hpF'];
+ for(i=0;i<46;i++) h+='<span class="st'+(i%7===0?' big':'')+'" style="left:'+((i*37.3)%100).toFixed(1)+'%;top:'+((i*61.7)%100).toFixed(1)+'%;animation-delay:'+(-(i*0.37)%3).toFixed(2)+'s"></span>';
+ SUBJ.forEach(function(s,k){ var d=26+(k%4)*6; h+='<span class="fly'+(k%2?' alt':'')+'" style="animation:'+paths[k%6]+' '+d+'s linear infinite;animation-delay:'+(-k*d/SUBJ.length*1.7).toFixed(1)+'s"><i>'+s[0]+'</i>'+s[1]+'</span>'; });
+ SOLO.forEach(function(s,k){ var d=18+(k%3)*7; h+='<span class="fly solo" style="animation:'+paths[(k+3)%6]+' '+d+'s linear infinite;animation-delay:'+(-k*4.1).toFixed(1)+'s"><i>'+s+'</i></span>'; });
+ for(i=1;i<=6;i++) h+='<div class="bub b'+i+'" aria-hidden="true">'+MSG[(i*3)%MSG.length]+'</div>';
+ var d=document.createElement('div'); d.id='hpbg'; d.setAttribute('aria-hidden','true'); d.innerHTML=h; document.body.insertBefore(d,document.body.firstChild);
+ var n=0; setInterval(function(){ if(!document.body.classList.contains('hp-on')) return; var b=d.querySelectorAll('.bub'), x=b[n%b.length]; n++;
+  x.classList.add('out'); setTimeout(function(){ if((x.classList.contains('b5')||x.classList.contains('b6'))&&THOUGHT.length){ var t=THOUGHT[(Math.floor(Date.now()/3100)+n*3)%THOUGHT.length]; x.innerHTML=esc(t[0])+'<small>'+esc(t[1])+'</small>'; } else x.textContent=MSG[(Math.floor(Date.now()/3100)+n*5)%MSG.length]; x.classList.remove('out'); },650); },3100);
+}
+function greet2(){ var h=new Date().getHours(); return h<12?'Good morning!':h<17?'Good afternoon!':'Good evening!'; }
+/* v172 sign-in v3 helpers: the day line, the date with the Hebrew date, and a rotating inspiring headline */
+var HEADS=[['Today you will learn','something <em>amazing</em>.'],['Every right answer','fills your <em>bank</em>.'],['Mistakes help your','brain <em>grow</em>.'],['Small steps every day','make a <em>big journey</em>.'],['Learning that','<em>tastes sweet</em>.'],['Your Rebbeim and teachers','are <em>proud of you</em>.']];
+function headHtml(){ var h=HEADS[Math.floor(Date.now()/7000)%HEADS.length]; return h[0]+'<br>'+h[1]; }
+function dayLine(){ var d=new Date().getDay(); return d===5?'Erev Shabbos! Let’s make it a great one.':d===0?'A brand-new week starts now!':'We’re so glad you came!'; }
+function dateLine(){ var n=new Date(), out=''; try{ out=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'}); }catch(e){}
+ try{ var hb=new Intl.DateTimeFormat('en-u-ca-hebrew',{day:'numeric',month:'long',year:'numeric'}).format(n); if(hb&&/\d/.test(hb)) out+=' · '+hb; }catch(e){} return out; }
+setInterval(function(){ var x=document.getElementById('hp3h'); if(!x) return; x.classList.add('out'); setTimeout(function(){ x.innerHTML=headHtml(); x.classList.remove('out'); },500); },7000);
+/* v197: on Chanukah the honey is olive oil, a chalk menorah is drawn and tonight's lights are lit; on Pesach it is wine.
+   v195 HONEY WRITES, ENDLESS (HoS 2026-11-15: "make the Aleph to Tav much more natural, as if someone is writing it, and A to Z; a continuous loop
+   that keeps rewriting it in chalk, including the TASHBAR logo; all chalk smeared with honey, natural but very exciting"). Each ~35 s loop: the hand
+   writes the tile, א–ת, A–Z, תשב״ר and TASHBAR stroke by stroke (lifting between strokes), BALTIMORE and the tagline; the dipper rewrites every
+   stroke in honey (a thin stream falls from it) and drizzles around the tile; drips; glints; a felt eraser wipes the board; again.
+   v193 (HoS 2026-11-15: "an app icon like a periodic table tile: Aleph to Tav, A to Z smaller next to it; much more realistic
+   chalk writing; much more realistic honey that follows the same path as the chalk, rewriting what the chalk wrote").
+   A chalk stick writes the tile, then א – ת (right to left) and A – Z, stroke by stroke, with dust; the wordmark is wiped in; then a honey
+   dipper traces the SAME strokes in thick glossy honey (moving glints), drips grow and fall, and the tagline turns to honey.
+   Plays once (SMIL); a re-render jumps to the same moment (setCurrentTime), so tapping numbers never restarts it. Reduced motion: final picture. */
+/* hlogo3 — HONEY WRITES, the endless version. One SVG; SMIL timeline that loops forever (master clock #hlL).
+   Each loop: a chalk stick writes the tile, א – ת and A – Z, then תשב״ר and TASHBAR by hand (lifting between strokes),
+   BALTIMORE and the tagline; a honey dipper then rewrites EVERY stroke in glossy honey (a thin stream falls from the dipper),
+   drizzles around the tile, drips grow and fall; the honey glints; a felt eraser wipes the board; it starts again.
+   No double slash anywhere (HtmlService rule). */
+/* v197 themes (HoS: "Chanukah: the honey becomes olive oil and lights a menorah; Pesach"). window.TL_LOGO_THEME overrides (tests). */
+function hlTheme_() {
+  if (window.TL_LOGO_THEME) return window.TL_LOGO_THEME;
+  try {
+    var f = new Intl.DateTimeFormat('en-u-ca-hebrew', { day: 'numeric', month: 'long' }), H = function (d) { var p = f.formatToParts(d); return { d: +p.filter(function (x) { return x.type === 'day'; })[0].value, m: p.filter(function (x) { return x.type === 'month'; })[0].value }; };
+    var now = new Date(), h = H(now);
+    if (h.m === 'Kislev' && h.d === 24) return { k: 'chanukah', night: 1 };
+    for (var i = 0; i < 8; i++) { var x = new Date(now); x.setDate(x.getDate() - i); var hx = H(x); if (hx.m === 'Kislev' && hx.d === 25) return { k: 'chanukah', night: Math.min(8, i + 2) }; }
+    if (h.m === 'Nisan' && h.d >= 14 && h.d <= 22) return { k: 'pesach' };
+  } catch (e) {}
+  return null;
+}
+function hlLogo3Svg() {
+  var TH = hlTheme_() || {}, CH = TH.k === 'chanukah', PE = TH.k === 'pesach';
+  var CYC = 34, R = function (x) { return x.toFixed(2); };
+  var B = function (x) { return 'hlL.begin+' + R(x) + 's'; };
+  var SP = 'calcMode="spline" keyTimes="0;1" keySplines=".42 0 .58 1"';
+  /* [path, chalk width, honey width, seconds, group]  group: t = tile, h = Hebrew, e = English, w = wordmark */
+  var S = [
+    ['M24 14 C70 13 130 13 180 14 C188 14 192 18 192 26 C193 60 193 100 192 136 C192 144 188 148 180 148 C130 149 70 149 24 148 C16 148 12 144 12 136 C11 100 11 60 12 26 C12 18 16 14 24 14', 2.2, 3.2, 1.1, 't'],
+    /* aleph: diagonal, then the yud arm, then the leg */
+    ['M98 59 C103 63 112 74 120 84 S133 100 137 103', 6.5, 10, .62, 'h'],
+    ['M131 57 C136 60 136 68 129 74 C126 77 123 78 120 79', 6, 9, .4, 'h'],
+    ['M111 80 C104 85 101 92 101 100 C101 103 99 104 95 104', 6, 9, .46, 'h'],
+    ['M87 83 C83 82 79 82 74 83', 5, 8, .22, 'h'],
+    /* tav: roof and right leg, then the left leg and its foot */
+    ['M25 61 C36 59 50 59 58 60 C65 61 68 64 68 71 C68 82 68 93 68 103', 6.5, 10, .72, 'h'],
+    ['M35 62 C35 75 35 88 34 99 C34 103 31 104 26 104', 6, 9, .42, 'h'],
+    /* A - Z */
+    ['M143 104 C145 97 148 89 150 83 C152 89 155 97 157 104', 3.4, 5.5, .34, 'e'],
+    ['M146 97 C149 96 152 96 155 97', 3, 5, .15, 'e'],
+    ['M160 95 C161.5 94.6 163.5 94.6 165 95.2', 2.6, 4.5, .1, 'e'],
+    ['M168 84 C172 83 176 83 180 84 C176 90 172 97 168 104 C172 103 177 103 181 104', 3.4, 5.5, .42, 'e'],
+    /* תשב״ר (right to left): tav, shin, beis, gershayim, reish */
+    ['M317 34 C320 34 323 34 326 34 C328 34 328 36 328 38 C328 41 328 44 328 46', 2.2, 3.4, .3, 'w'],
+    ['M319 35 C319 38 319 42 319 45 C319 46 318 46 316 46', 2, 3.2, .16, 'w'],
+    ['M313 34 C313 37 313 40 313 42 C313 45 311 46 308 46 C305 46 302 46 300 44 C300 41 300 37 300 34', 2.2, 3.4, .32, 'w'],
+    ['M306 35 C307 38 307 41 306 44', 2, 3.2, .12, 'w'],
+    ['M286 34 C289 34 292 34 294 34 C296 34 297 35 297 37 C297 40 297 43 297 45 M285 46 C290 46 294 46 299 46', 2.2, 3.4, .32, 'w'],
+    ['M282 33 C282 35 281 37 281 38 M279 33 C279 35 278 37 278 38', 2, 3, .12, 'w'],
+    ['M266 34 C268 34 271 34 273 34 C275 34 276 35 276 37 C276 40 276 43 276 46', 2.2, 3.4, .24, 'w'],
+    /* TASHBAR, by hand */
+    ['M213 63 C220 62 227 62 234 63 M224 63 C224 71 224 80 224 88', 3.6, 5.6, .42, 'w'],
+    ['M239 88 C242 80 246 71 249 63 C252 71 256 80 259 88 M243 79 C247 78 251 78 255 79', 3.6, 5.6, .5, 'w'],
+    ['M282 67 C279 62 266 61 265 68 C264 75 282 74 283 81 C284 88 270 90 264 84', 3.6, 5.6, .46, 'w'],
+    ['M290 63 C290 71 290 80 290 88 M308 63 C308 71 308 80 308 88 M290 76 C296 75 302 75 308 76', 3.6, 5.6, .5, 'w'],
+    ['M315 88 C315 80 315 71 315 63 C330 62 331 75 316 75 C334 74 335 89 315 88', 3.6, 5.6, .52, 'w'],
+    ['M336 88 C339 80 343 71 346 63 C349 71 353 80 356 88 M340 79 C344 78 348 78 352 79', 3.6, 5.6, .5, 'w'],
+    ['M361 88 C361 80 361 71 361 63 C377 62 377 76 362 76 M367 76 C371 80 375 84 380 88', 3.6, 5.6, .5, 'w']
+  ];
+  if (CH) {   /* the menorah: base, center stem, 8 cups + the shamash (in the tile, above the letters) */
+    S.splice(1, 0, ['M70 51 C85 50 115 50 130 51 M100 51 C100 46 100 41 100 35', 2, 3, .45, 't'],
+      ['M46 46 C46 43 46 41 46 38 M58 46 C58 43 58 41 58 38 M70 46 C70 43 70 41 70 38 M82 46 C82 43 82 41 82 38 M118 46 C118 43 118 41 118 38 M130 46 C130 43 130 41 130 38 M142 46 C142 43 142 41 142 38 M154 46 C154 43 154 41 154 38', 2, 2.6, .9, 't'],
+      ['M46 46 C60 50 88 50 100 46 C112 50 140 50 154 46', 1.8, 2.6, .5, 't']);
+  }
+  /* a slightly uneven human hand: each letter group is turned a hair */
+  var tilt = { t: 0, h: -1.2, e: 1.5, w: -.6 };
+  var stick = '<g transform="rotate(-24)"><rect x="-3.2" y="-17" width="7" height="18" rx="2.6" fill="#f7f4ea"/><rect x="-3.2" y="-17" width="2.4" height="18" rx="1.2" fill="#fff" opacity=".85"/><rect x="2.2" y="-17" width="1.6" height="18" rx=".8" fill="#d7d1bf"/><ellipse cx=".3" cy="1" rx="3.4" ry="1.4" fill="#fff" opacity=".6"/></g>';
+  var LQ = CH ? ['#c9b62a', '#d8cf5a', '#6b5f10'] : PE ? ['#9b1030', '#c2264a', '#4a0618'] : ['#f0a514', '#e9a420', '#a96a00'];
+  var dipper = CH ? '<g transform="rotate(38)"><path d="M0 -4 C-.6 6 .6 10 0 24" stroke="' + LQ[0] + '" stroke-width="1.6" fill="none" opacity=".9"/><path d="M-8 -30 C-12 -20 -10 -8 -3 -4 H3 C10 -8 12 -20 8 -30 Z" fill="#c7a46a"/><path d="M-5 -30 H5 V-36 H-5 Z" fill="#a8804a"/><path d="M8 -26 C14 -26 14 -16 8 -14" stroke="#a8804a" stroke-width="2" fill="none"/><ellipse cx="-4" cy="-20" rx="2" ry="5" fill="#fff4d6" opacity=".55"/></g>'
+    : '<g transform="rotate(30)"><path d="M0 -6 C-.6 6 .6 10 0 26" stroke="' + LQ[0] + '" stroke-width="1.6" fill="none" opacity=".9"/><rect x="-2" y="-50" width="4" height="36" rx="2" fill="#b7793d"/><rect x="-2" y="-50" width="1.4" height="36" rx=".7" fill="#e3ad6e"/>'
+    + '<ellipse cx="0" cy="-8" rx="7.5" ry="9.5" fill="' + LQ[1] + '"/><path d="M-7.2 -12 H7.2 M-7.6 -8 H7.6 M-7.2 -4 H7.2" stroke="' + LQ[2] + '" stroke-width="1.4"/><ellipse cx="-2.6" cy="-11" rx="2" ry="3.6" fill="#fff4c4" opacity=".75"/><path d="M-2 0 C-2 4 2 4 2 0 Z" fill="' + LQ[0] + '"/></g>';
+  var t = .6, ck = '', hy = '', tools = '', dust = '', reset = '', prevEnd = null, prevG = null;
+  var start = function (d) { var m = /M\s*([\d.]+)\s+([\d.]+)/.exec(d); return [+m[1], +m[2]]; };
+  var end = function (d) { var n = d.replace(/[A-Za-z]/g, ' ').trim().split(/\s+/); return [+n[n.length - 2], +n[n.length - 1]]; };
+  var air = function (a, b, at, dur, el) {   /* the hand lifts and moves to the next stroke */
+    var mx = (a[0] + b[0]) / 2, my = Math.min(a[1], b[1]) - 14;
+    return '<g opacity="0"><set attributeName="opacity" to=".9" begin="' + B(at) + '" dur="' + R(dur) + 's"/><g><animateMotion path="M' + a[0] + ' ' + a[1] + ' Q' + mx + ' ' + my + ' ' + b[0] + ' ' + b[1] + '" begin="' + B(at) + '" dur="' + R(dur) + 's" fill="freeze" ' + SP + '/><g transform="translate(1.5 -2) scale(1.08)">' + el + '</g></g></g>'; };
+  var stroke = function (s, cls, w, at, dur, extra) {
+    return '<path d="' + s[0] + '" pathLength="1" stroke-dasharray="1 2" stroke-dashoffset="1" stroke-width="' + w + '" class="' + cls + '"' + (extra || '') + '>'
+      + '<set attributeName="stroke-dashoffset" to="1" begin="hlL.begin"/><animate attributeName="stroke-dashoffset" from="1" to="0" begin="' + B(at) + '" dur="' + R(dur) + 's" fill="freeze" ' + SP + '/></path>'; };
+  var ride = function (s, at, dur, el) {
+    return '<g opacity="0"><set attributeName="opacity" to="1" begin="' + B(at) + '" dur="' + R(dur) + 's"/><g><animateMotion path="' + s[0].replace(/ M[^M]*/g, '') + '" begin="' + B(at) + '" dur="' + R(dur) + 's" fill="freeze" keyPoints="0;1" ' + SP + '/>' + el + '</g></g>'; };
+  var grp = function (g, inner) { var a = tilt[g] || 0; return a ? '<g transform="rotate(' + a + ' ' + (g === 'h' ? 80 : g === 'e' ? 162 : 298) + ' 80)">' + inner + '</g>' : inner; };
+  /* ---- chalk ---- */
+  var C = { t: '', h: '', e: '', w: '' };
+  S.forEach(function (s, i) {
+    if (prevEnd) { var gap = s[4] !== prevG ? .28 : .1; tools += air(prevEnd, start(s[0]), t, gap, stick); t += gap; }
+    var d = s[3] * (.92 + ((i * 37) % 17) / 100);   /* a little uneven, like a person */
+    C[s[4]] += stroke(s, 'ck', s[1], t, d) + (s[1] > 3 ? stroke(s, 'ck2', s[1] * .45, t, d, ' transform="translate(.6 -.5)"') : '');
+    tools += ride(s, t, d, stick);
+    var e = end(s[0]); dust += '<circle cx="' + e[0] + '" cy="' + e[1] + '" r="1.2" fill="#fff" opacity="0"><animate attributeName="opacity" values="0;.8;0" begin="' + B(t + d * .85) + '" dur="1.3s"/><animate attributeName="cy" values="' + e[1] + ';' + (e[1] + 24) + '" begin="' + B(t + d * .85) + '" dur="1.3s"/></circle>';
+    prevEnd = end(s[0]); prevG = s[4]; t += d;
+  });
+  var smallAt = t + .2;   /* BALTIMORE and the tagline: written quickly along the line */
+  var wipeSmall = '<mask id="h3sm"><rect x="200" y="94" width="0" height="50" fill="#fff"><set attributeName="width" to="0" begin="hlL.begin"/><animate attributeName="width" from="0" to="200" begin="' + B(smallAt) + '" dur="1.6s" fill="freeze" ' + SP + '/></rect></mask>';
+  tools += '<g opacity="0"><set attributeName="opacity" to="1" begin="' + B(smallAt) + '" dur="1.6s"/><g><animateMotion path="M222 104 C260 103 330 103 376 104 M376 104 C330 130 260 130 220 130" begin="' + B(smallAt) + '" dur="1.6s" fill="freeze" ' + SP + '/>' + stick + '</g></g>';
+  var chalkEnd = smallAt + 1.7;
+  /* ---- honey: the same strokes, in the same order ---- */
+  t = chalkEnd + .9; var Hy = { t: '', h: '', e: '', w: '' }, honeyOrder = S.slice(1).concat([S[0]]), last = null;
+  honeyOrder.forEach(function (s, i) {
+    if (last) { var g2 = .09; tools += air(last, start(s[0]), t, g2, dipper); t += g2; }
+    var d = s[3] * (s[4] === 't' ? 1.0 : .82);
+    Hy[s[4]] += stroke(s, 'hy', s[2], t, d) + stroke(s, 'hh', Math.max(1, s[2] * .22), t, d, ' transform="translate(-' + R(s[2] * .14) + ' -' + R(s[2] * .2) + ')"');
+    tools += ride(s, t, d, dipper); last = end(s[0]); t += d;
+  });
+  var honeyEnd = t; CYC = Math.ceil(honeyEnd + 4.5 + 3.4);
+  var TAG = CH ? 'A LIGHT FOR LEARNING · CHANUKAH' : PE ? "CHAG KASHER V'SAMEACH" : 'LEARNING THAT TASTES SWEET';
+  var flames = '';
+  if (CH) {   /* tonight's lights, lit one by one from the shamash, flickering */
+    var cups = [46, 58, 70, 82, 118, 130, 142, 154], lit = cups.slice(8 - (TH.night || 1)), fl = function (x, y, at) {
+      return '<g opacity="0"><set attributeName="opacity" to="0" begin="hlL.begin"/><animate attributeName="opacity" from="0" to="1" begin="' + B(at) + '" dur=".4s" fill="freeze"/>'
+        + '<ellipse cx="' + x + '" cy="' + (y - 4) + '" rx="2.6" ry="4.6" fill="#ffb21a"><animate attributeName="ry" values="4.6;5.4;4.2;5;4.6" dur="1.1s" repeatCount="indefinite"/></ellipse>'
+        + '<ellipse cx="' + x + '" cy="' + (y - 3.4) + '" rx="1.2" ry="2.4" fill="#fff6c8"/><circle cx="' + x + '" cy="' + (y - 4) + '" r="7" fill="#ffd34d" opacity=".25"/></g>'; };
+    flames += fl(100, 35, honeyEnd + .2);
+    lit.slice().reverse().forEach(function (x, i) { flames += fl(x, 38, honeyEnd + .7 + i * .35); });
+  }
+  var gold = '<g opacity="0"><set attributeName="opacity" to="0" begin="hlL.begin"/><animate attributeName="opacity" from="0" to="1" begin="' + B(honeyEnd - 1.2) + '" dur="1.2s" fill="freeze"/>'
+    + '<text x="298" y="104" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="10.5" letter-spacing="4.5" class="hyt">BALTIMORE</text>'
+    + '<text x="298" y="130" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="8.4" textLength="178" lengthAdjust="spacingAndGlyphs" class="hyt">' + TAG + '</text>'
+    + '<g font-family="Georgia,serif" font-weight="700" font-size="11" class="hyt"><text x="20" y="30">22</text><text x="183" y="30" text-anchor="end">26</text></g></g>';
+  /* drips at the feet of the letters: they grow, a drop falls now and then */
+  var drip = function (x, y, h, w, at, every) {
+    return '<g transform="translate(' + x + ' ' + y + ')" opacity="0"><set attributeName="opacity" to="1" begin="' + B(at) + '" dur="' + R(CYC - at - 4.2) + 's"/><g><animateTransform attributeName="transform" type="scale" from="1 0" to="1 1" begin="' + B(at) + '" dur="1.8s" fill="freeze" ' + SP + '/>'
+      + '<path class="hd" d="M-' + w + ' -2 C-' + w + ' ' + (h * .5) + ' -' + (w * .45) + ' ' + (h * .7) + ' -' + (w * .5) + ' ' + h + ' A' + (w * .55) + ' ' + (w * .55) + ' 0 1 0 ' + (w * .5) + ' ' + h + ' C' + (w * .45) + ' ' + (h * .7) + ' ' + w + ' ' + (h * .5) + ' ' + w + ' -2 Z"/></g>'
+      + '<circle class="hd" cx="0" cy="' + (h + 2) + '" r="' + R(w * .55) + '" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.1;.8;1" begin="' + B(at + every) + '" dur="1.1s"/><animate attributeName="cy" values="' + (h + 2) + ';' + (h + 36) + '" begin="' + B(at + every) + '" dur="1.1s" calcMode="spline" keyTimes="0;1" keySplines=".6 0 1 1"/></circle></g>'; };
+  var hs = chalkEnd + .9;
+  var drips = drip(137, 103, 14, 3.6, hs + .9, 2.4) + drip(68, 103, 18, 3.8, hs + 2.3, 3.2) + drip(28, 103, 10, 3, hs + 2.8, 4.4) + drip(97, 103, 8, 2.8, hs + 1.4, 5.1)
+    + drip(157, 103, 6, 2.2, hs + 3.4, 3.3) + drip(224, 87, 9, 2.6, hs + 5.2, 2.6) + drip(290, 87, 7, 2.4, hs + 6.4, 3.1) + drip(380, 87, 8, 2.4, hs + 8.2, 2.2) + drip(328, 46, 6, 1.8, hs + 4.4, 3.6);
+  /* the eraser wipes the board, and it all starts again */
+  var wipeAt = CYC - 3.4;
+  var wipeMask = '<mask id="h3wipe"><rect x="0" y="0" width="400" height="160" fill="#fff"/><rect x="-20" y="0" width="0" height="160" fill="#000"><set attributeName="width" to="0" begin="hlL.begin"/><animate attributeName="width" from="0" to="440" begin="' + B(wipeAt) + '" dur="2.6s" fill="freeze" ' + SP + '/></rect></mask>';
+  var eraser = '<g opacity="0"><set attributeName="opacity" to="1" begin="' + B(wipeAt) + '" dur="2.6s"/><g><animateMotion path="M-10 30 C40 130 60 30 110 130 C160 30 190 130 230 30 C270 130 300 30 340 130 C370 60 390 90 420 80" begin="' + B(wipeAt) + '" dur="2.6s" fill="freeze" ' + SP + '/>'
+    + '<g transform="rotate(-8)"><rect x="-22" y="-12" width="44" height="18" rx="4" fill="#8a5a2b"/><rect x="-22" y="-12" width="44" height="6" rx="3" fill="#b07a42"/><rect x="-22" y="3" width="44" height="7" rx="2" fill="#3c3f44"/><rect x="-22" y="8" width="44" height="2" fill="#5d6168"/></g></g></g>';
+  return '<svg class="hlogo3" viewBox="0 0 400 160" role="img" aria-label="Tashbar of Baltimore: learning that tastes sweet">'
+    + '<defs>'
+    + '<linearGradient id="h3wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b98048"/><stop offset=".3" stop-color="#8a5526"/><stop offset=".55" stop-color="#a86a33"/><stop offset=".8" stop-color="#6e3f18"/><stop offset="1" stop-color="#94592a"/></linearGradient>'
+    + '<radialGradient id="h3slate" cx=".4" cy=".35" r=".9"><stop offset="0" stop-color="#3a4a43"/><stop offset=".6" stop-color="#26332e"/><stop offset="1" stop-color="#18211e"/></radialGradient>'
+    + '<filter id="h3noise" filterUnits="userSpaceOnUse" x="0" y="0" width="400" height="160"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" seed="7"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .07 0"/></filter>'
+    + '<filter id="h3smudge" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="6"/></filter>'
+    + '<filter id="h3chalk" filterUnits="userSpaceOnUse" x="0" y="0" width="400" height="160"><feTurbulence type="fractalNoise" baseFrequency="1.35" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" result="d"/>'
+    + '<feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.25 1.4" result="g"/><feComposite in="d" in2="g" operator="in"/></filter>'
+    + '<linearGradient id="h3honey" x1="0" y1="0" x2="0" y2="1">' + (CH ? '<stop offset="0" stop-color="#f6f0a6"/><stop offset=".45" stop-color="#cdb92e"/><stop offset="1" stop-color="#7d6c12"/>' : PE ? '<stop offset="0" stop-color="#c0334f"/><stop offset=".45" stop-color="#850d2b"/><stop offset="1" stop-color="#3a0312"/>' : '<stop offset="0" stop-color="#ffd860"/><stop offset=".45" stop-color="#f3a614"/><stop offset="1" stop-color="#b8650a"/>') + '</linearGradient>'
+    + '<filter id="h3gloss" filterUnits="userSpaceOnUse" x="0" y="0" width="400" height="160"><feGaussianBlur in="SourceAlpha" stdDeviation="1.8" result="b"/>'
+    + '<feSpecularLighting in="b" surfaceScale="5" specularConstant="1.2" specularExponent="26" lighting-color="#fff7d6" result="s"><fePointLight x="40" y="10" z="70"><animate attributeName="x" values="20;380;20" dur="7s" repeatCount="indefinite"/></fePointLight></feSpecularLighting>'
+    + '<feComposite in="s" in2="SourceAlpha" operator="in" result="sp"/><feOffset in="SourceAlpha" dx=".6" dy="2.4" result="o"/><feGaussianBlur in="o" stdDeviation="1.6" result="ob"/><feFlood flood-color="#3b1f00" flood-opacity=".55"/><feComposite in2="ob" operator="in" result="sh"/>'
+    + '<feMerge><feMergeNode in="sh"/><feMergeNode in="SourceGraphic"/><feMergeNode in="sp"/></feMerge></filter>'
+    + wipeSmall + wipeMask
+    + '</defs>'
+    + '<style>.hlogo3 .ck{fill:none;stroke:#f2efe4;stroke-linecap:round;stroke-linejoin:round;filter:url(#h3chalk)}.hlogo3 .ck2{fill:none;stroke:#fff;stroke-linecap:round;opacity:.5;filter:url(#h3chalk)}'
+    + '.hlogo3 .hy{fill:none;stroke:url(#h3honey);stroke-linecap:round;stroke-linejoin:round;opacity:.95;filter:url(#h3gloss)}.hlogo3 .hh{fill:none;stroke:#fff6cf;stroke-linecap:round;opacity:.55}'
+    + '.hlogo3 .hd{fill:url(#h3honey);filter:url(#h3gloss)}.hlogo3 .wm{fill:#f1eee3;filter:url(#h3chalk)}.hlogo3 .hyt{fill:url(#h3honey);filter:url(#h3gloss)}</style>'
+    + '<rect width="0" height="0"><animate id="hlL" attributeName="width" values="0;0" dur="' + CYC + 's" begin="0s;hlL.end"/></rect>'
+    + '<rect x="1" y="1" width="398" height="158" rx="12" fill="url(#h3wood)"/><rect x="1" y="1" width="398" height="158" rx="12" fill="none" stroke="#4a2a0e" stroke-width="1.5"/>'
+    + '<rect x="7" y="7" width="386" height="146" rx="7" fill="url(#h3slate)"/><rect x="7" y="7" width="386" height="146" rx="7" filter="url(#h3noise)"/>'
+    + '<g filter="url(#h3smudge)" opacity=".16"><ellipse cx="90" cy="40" rx="60" ry="14" fill="#fff"/><ellipse cx="300" cy="128" rx="80" ry="10" fill="#fff"/><ellipse cx="250" cy="30" rx="40" ry="8" fill="#fff"/></g>'
+    + '<rect x="7" y="7" width="386" height="146" rx="7" fill="none" stroke="#000" stroke-opacity=".45" stroke-width="3"/>'
+    + '<g mask="url(#h3wipe)">'
+    + '<g class="wm" opacity="0" font-family="Georgia,serif" font-weight="700" font-size="11"><set attributeName="opacity" to="0" begin="hlL.begin"/><animate attributeName="opacity" from="0" to="1" begin="' + B(1.3) + '" dur=".4s" fill="freeze"/><text x="20" y="30">22</text><text x="183" y="30" text-anchor="end">26</text></g>'
+    + C.t + grp('h', C.h) + grp('e', C.e) + grp('w', C.w)
+    + '<g mask="url(#h3sm)"><path d="M200 24 C200 60 201 100 200 136" stroke="#f1eee3" stroke-width="1.1" stroke-dasharray="3 4" opacity=".5" fill="none"/>'
+    + '<text class="wm" x="298" y="104" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="10.5" letter-spacing="4.5">BALTIMORE</text>'
+    + '<text class="wm" x="298" y="130" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="8.4" textLength="178" lengthAdjust="spacingAndGlyphs">' + TAG + '</text></g>'
+    + dust + Hy.t + grp('h', Hy.h) + grp('e', Hy.e) + grp('w', Hy.w) + gold + drips + flames
+    + '</g>'
+    + tools + eraser
+    + '<rect x="40" y="150" width="320" height="5" rx="2" fill="#5d3514" opacity=".9"/><rect x="300" y="146" width="22" height="5" rx="2.5" fill="#f4f1e6"/>'
+    + '</svg>';
+}
+var oldSignin=vSignin;
+var _rHL=render; render=function(){ var r=_rHL.apply(this,arguments); try{ var g=document.querySelector('svg.hlogo3'); if(g&&!g.__hl){ g.__hl=1; var e=(Date.now()-HL_T0)/1000, rm=false; try{ rm=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(x){} if(rm){ g.setCurrentTime(29.5); g.pauseAnimations(); } else if(e>.05) g.setCurrentTime(e); } }catch(x){} return r; };
+vSignin=function(){
+ if(A.staffUrl) return oldSignin();
+ var crest=window.HP_HONEY!==false?'<div class="crest hl">'+hlLogo3Svg()+'</div>':HP_LOGO?'<div class="crest logo"><img src="'+esc(HP_LOGO)+'" alt="Tashbar of Baltimore"></div>':'<div class="crest"><div class="disc"><b>T</b></div></div>';
+ var pad=A.busy?'<div class="opening" role="status"><div class="jar" aria-hidden="true"><i></i></div><b>Opening your day…</b></div>':
+  '<div class="keys2">'+[1,2,3,4,5,6,7,8,9].map(function(n){ return '<button data-act="pin" data-n="'+n+'">'+n+'</button>'; }).join('')+'<span></span><button data-act="pin" data-n="0">0</button><button class="kx" data-act="del" aria-label="Delete">⌫</button></div>'+
+  '<button class="go2 signbtn" data-act="signin" '+(A.pin.length<4?'disabled':'')+'>'+(A.pin.length<4?'Let’s go! 🚀':'Let’s go! 🚀 Tap me!')+'</button><p class="err2" role="alert">'+esc(A.err||'')+'</p>';
+ return '<section class="hp"><div class="hpin hp3">'+
+  '<div class="hpL">'+crest+(HP_LOGO||window.HP_HONEY!==false?'':'<p class="name">TASHBAR</p>')+
+   '<p class="hi">'+greet2()+' <span>'+esc(dayLine())+'</span></p>'+
+   '<p class="day">'+esc(dateLine())+'</p>'+
+   '<p class="head" id="hp3h">'+headHtml()+'</p>'+
+   '<p class="inlbl">Waiting for you inside</p><div class="inside" aria-hidden="true"><span><i>🗺️</i>Your journey map</span><span><i>💰</i>Bank &amp; Store</span><span><i>🫙</i>Joke Jar</span><span><i>🎵</i>Music</span></div>'+
+   thoughtHtml()+'</div>'+
+  '<div class="hpR"><div class="card '+(A.err?'shake':'')+'" style="--c:#7C3AED"><div class="face">'+
+   '<h3>Punch in your code</h3><p class="sub">'+(A.bootErr?'Can’t reach the school. Check the Wi-Fi.':'Your 4 numbers open today’s adventure!')+'</p>'+
+   '<div class="dots2" aria-label="'+A.pin.length+' of 4 numbers">'+[0,1,2,3].map(function(k){ return '<i class="'+(k<A.pin.length?'on':'')+'"></i>'; }).join('')+'</div>'+pad+
+  '</div></div><p class="kbtip">⌨️ You can type your code on the keyboard, then press Enter.</p></div>'+
+ '</div></section>';
+};
+function thoughtHtml(){ if(!THOUGHT.length) return ''; var t=THOUGHT[Math.floor(Date.now()/9000)%THOUGHT.length]; return '<div class="thought" aria-live="off"><i aria-hidden="true">💭</i><div id="hpth"><b>'+esc(t[0])+'</b><small>'+esc(t[1])+'</small></div></div>'; }
+setInterval(function(){ var x=document.getElementById('hpth'); if(!x||!THOUGHT.length) return; x.classList.add('out'); setTimeout(function(){ var t=THOUGHT[Math.floor(Date.now()/9000)%THOUGHT.length]; x.innerHTML='<b>'+esc(t[0])+'</b><small>'+esc(t[1])+'</small>'; x.classList.remove('out'); },650); },9000);
+var oldRender=render;
+render=function(){ var r=oldRender.apply(this,arguments); var on=A.view==='signin'&&!A.staffUrl; if(on) bg(); document.body.classList.toggle('hp-on',on); return r; };
+if(A.view==='signin') render();
+})();
+</script>
+<script>/* v162 speed (takeover3, HoS: "no 6-second waits"): sign-in in ONE trip to the server (msSignInFast in Speed.js) instead of three
+   (code check, then msLoad, then ClassMode's tmMine). Same steps as QuestPage's pinGo; the class answer is handed to ClassMode
+   (window.TL_PRE_TM). If the fast call fails for any reason, the old pinGo runs exactly as before. */
+(function(){ if(typeof pinGo!=='function'||typeof run!=='function') return; var oldPinGo=pinGo;
+pinGo=function(){
+ if(!(A.pin.length===4&&!A.busy)) return; A.busy=true; render(); var pin=A.pin;
+ run('msSignInFast',pin).then(function(r){
+  if(!r||!r.ok){ A.busy=false; SND.wrong(); A.err='That code didn\u2019t work. Try again.'; A.pin=''; return render(); }
+  SRV.token=r.token; if(r.url) window.TL_APP_URL=r.url;
+  if(r.role==='staff') return toStaff(r.token);
+  if(window.TashbarSound) TashbarSound.signIn('ms',r.token);
+  window.TL_PRE_TM={sid:r.sid,at:Date.now(),ok:!!r.tmOk,r:r.tm||null};
+  return (r.load?Promise.resolve(r.load):run('msLoad',r.token)).then(function(d){
+   SRV.states=d.states||{}; var me=(d.roster||[]).find(function(x){ return x.id===r.sid; })||{id:r.sid,name:r.name};
+   if(!ROSTER.some(function(x){ return x.id===me.id; })) ROSTER.push({id:me.id,name:me.name});
+   A.busy=false; A.pin=''; SND.win(); A.st=loadStudent(me); if(A.st.day.d!==today()) A.st.day={d:today(),n:0}; A.session=0; bumpStreak(A.st); A.view='hub'; render(); welcome(); setTimeout(function(){ window.TLT&&TLT.notes(); },2500);
+  });
+ }).catch(function(e){ A.busy=false; if(A.view!=='signin') { A.err='Can\u2019t reach the school. Check the Wi-Fi and try again.'; A.pin=''; return render(); } A.pin=pin; return oldPinGo(); });
+};
+/* v164: with the app's address already known (it came with sign-in), these open at once instead of asking the server first */
+if(typeof toStaff==='function'){ var oldToStaff=toStaff; toStaff=function(token){ var u=window.TL_APP_URL; if(!u) return oldToStaff(token);
+ try{ sessionStorage.setItem('tl-session',JSON.stringify({role:'staff',sid:null,at:Date.now(),token:token})); }catch(e){}
+ A.busy=false; A.staffUrl=u+'?sg=1'; try{ window.open(u+'?sg=1','_top'); }catch(e){} render(); return Promise.resolve(); }; }
+if(typeof tlFindLevel==='function'){ var oldFind=tlFindLevel;
+ /* v167: the math check opens INSIDE the app (a window on top, like Spark Path). The app hands it his sign-in, and when it is done
+    his progress is reloaded so the new math path is ready at once: no new page, no second sign-in. Old way if the address is unknown. */
+ var plCss=function(){ if(document.getElementById('pl-ov-css')) return; var st=document.createElement('style'); st.id='pl-ov-css'; st.textContent=
+  '#pl-ov{position:fixed;inset:0;z-index:70;background:rgba(15,10,40,.6);display:grid;place-items:center;padding:12px;animation:fade .2s}'+
+  '#pl-ov .box{width:min(980px,100%);height:min(760px,100%);background:#fff;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.4)}'+
+  '#pl-ov .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(90deg,#4338CA,#7C3AED);color:#fff;font:800 17px var(--display,system-ui)}'+
+  '#pl-ov .bar span{flex:1}#pl-ov .bar button{border:0;border-radius:999px;padding:8px 14px;font:800 15px var(--body,system-ui);background:rgba(255,255,255,.2);color:#fff;cursor:pointer}'+
+  '#pl-ov iframe{flex:1;border:0;width:100%}#pl-ov .load{position:absolute;inset:auto;color:#4338CA;font-weight:800}'; document.head.appendChild(st); };
+ var plFrame=function(){ var f=document.querySelector('#pl-ov iframe'); return f||null; };
+ var plFrom=function(src){ var f=plFrame(); if(!f||!src) return false; var w=src; for(var i=0;i<7&&w;i++){ if(w===f.contentWindow) return true; var p=null; try{ p=w.parent; }catch(e){ return false; } if(!p||p===w) break; w=p; } return false; };
+ var plDown=function(win,m,depth){ try{ win.postMessage(m,'*'); }catch(e){} if(depth<=0) return; try{ for(var i=0;i<win.frames.length;i++) plDown(win.frames[i],m,depth-1); }catch(e){} };
+ var plClose=function(){ var o=document.getElementById('pl-ov'); if(o) o.remove(); };
+ var PLN={MATH:['\u{1F9ED}','math'],READ:['\u{1F4D6}','reading'],SS:['\u{1F30D}','Social Studies']}, plSub='MATH';
+ var plRefresh=function(){ if(!SRV.token||!A.st) return; var sid=A.st.id, nm=A.st.name, word=(PLN[plSub]||PLN.MATH)[1];
+  run('msLoad',SRV.token).then(function(d){ if(!A.st||A.st.id!==sid) return; SRV.states=d.states||{}; var me=(d.roster||[]).find(function(x){ return x.id===sid; })||{id:sid,name:nm};
+   A.st=loadStudent(me); if(A.view==='hub') render(); try{ toast('Your '+word+' path is ready! Press Play.'); }catch(e){} }).catch(function(){ try{ toast('Your level is saved. Sign out and in to see your new path.'); }catch(e){} }); };
+ window.addEventListener('message',function(e){ var d=e.data; if(!d||d.tlCheck!==1||!plFrom(e.source)) return;
+  if(d.need==='token'){ var f=plFrame(); if(f&&SRV.token) plDown(f.contentWindow,{tlCheck:1,token:SRV.token},3); return; }
+  if(d.saved){ plRefresh(); return; }
+  if(d.done||d.close){ plClose(); if(d.done) { try{ SND.win(); }catch(x){} } } });
+ document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-pl="close"]'); if(b) plClose(); });
+ /* v172: one window for every level check: MATH, READ (Reading) and SS (Social Studies) */
+ window.tlOpenCheck=function(sub){ sub=PLN[sub]?sub:'MATH'; var u=window.TL_APP_URL;
+  if(!u){ if(sub==='MATH') return oldFind(); run('msAppUrl').then(function(x){ window.TL_APP_URL=x; window.tlOpenCheck(sub); }).catch(function(){ try{ toast('Could not open the check. Try again.'); }catch(e){} }); return; }
+  plSub=sub; try{ sessionStorage.setItem('tl-check',JSON.stringify({token:SRV.token,at:Date.now()})); }catch(e){}
+  try{ SND.tap(); }catch(x){} plCss(); plClose(); if(A.overlay){ A.overlay=null; render(); } var nm=PLN[sub], title='Find your '+nm[1]+' level', d=document.createElement('div'); d.id='pl-ov';
+  d.innerHTML='<div class="box" role="dialog" aria-label="'+title+'"><div class="bar"><span>'+nm[0]+' '+title+'</span><button type="button" data-pl="close">\u2715 Close</button></div><iframe src="'+esc(u+'?pl=1&check=1&embed=1'+(sub==='MATH'?'':'&s='+sub))+'" title="'+title+'"></iframe></div>';
+  document.body.appendChild(d); };
+ tlFindLevel=function(){ return window.tlOpenCheck('MATH'); }; }
+})();</script>

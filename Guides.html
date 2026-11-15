@@ -1,0 +1,51 @@
+<script>
+/* Tashbar UPGRADE Phase 4 (2026-11-10): two guide characters, drawn (not photos, not real people).
+   Working names "Rabbi K" (dark beard, glasses) and "Rabbi S" (gray beard) until the Head of School picks names: change GUIDE_NAMES below.
+   Rabbi K welcomes the boy and introduces each part of a lesson; Rabbi S cheers at level-ups, quests, boss wins and mystery boxes.
+   Loaded by msQuestTools after Motivation. Only wraps overlay()/p3Full(); if this file fails, pop-ups look as before. */
+const GUIDE_NAMES={K:'Rabbi K',S:'Rabbi S'};
+function guideSVG(who,mood){
+ const K=who==='K';
+ const beard=K?'#3B2A1E':'#D6D3D1', beardHi=K?'#5A4130':'#F5F5F4', skin='#F1C6A0', skinSh='#E3AE85', hair=K?'#2B1D14':'#A8A29E';
+ const arm=mood==='cheer'?`<path d="M38 150 Q20 120 28 92" stroke="#1F2433" stroke-width="18" fill="none" stroke-linecap="round"/><circle cx="29" cy="88" r="10" fill="${skin}"/><path d="M162 150 Q180 120 172 92" stroke="#1F2433" stroke-width="18" fill="none" stroke-linecap="round"/><circle cx="171" cy="88" r="10" fill="${skin}"/>`
+  : mood==='wave'?`<path d="M162 152 Q184 128 176 98" stroke="#1F2433" stroke-width="18" fill="none" stroke-linecap="round"/><g class="gwave"><circle cx="175" cy="92" r="11" fill="${skin}"/><path d="M168 84 v-10 M174 82 v-12 M180 83 v-10 M185 88 l6 -6" stroke="${skinSh}" stroke-width="4" stroke-linecap="round"/></g>`:'';
+ const eyes=K?`<circle cx="84" cy="83" r="13" fill="#fff" fill-opacity=".35" stroke="#1F2433" stroke-width="3.5"/><circle cx="116" cy="83" r="13" fill="#fff" fill-opacity=".35" stroke="#1F2433" stroke-width="3.5"/><path d="M97 83h6" stroke="#1F2433" stroke-width="3.5"/><path d="M78 85 q6 -6 12 0 M110 85 q6 -6 12 0" stroke="#1F2433" stroke-width="3.5" fill="none" stroke-linecap="round"/>`
+  :`<path d="M77 84 q7 -7 14 0 M109 84 q7 -7 14 0" stroke="#3F3A36" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M74 72 q9 -5 18 -1 M108 71 q9 -4 18 1" stroke="${beardHi}" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+ return `<svg class="guide-svg" viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Rabbi ${who}">
+ <ellipse cx="100" cy="204" rx="66" ry="6" fill="#000" opacity=".12"/>
+ ${arm}
+ <path d="M30 210 Q32 150 100 140 Q168 150 170 210Z" fill="#1F2433"/>
+ <path d="M80 142 L100 196 L120 142Z" fill="#fff"/><path d="M100 150 L94 160 L100 196 L106 160Z" fill="#111827" opacity="${K?1:0}"/>
+ <path d="M70 146 L100 200 L84 150Z M130 146 L100 200 L116 150Z" fill="#2D3446"/>
+ <rect x="56" y="70" width="10" height="26" rx="5" fill="${skin}"/><rect x="134" y="70" width="10" height="26" rx="5" fill="${skin}"/>
+ <path d="M60 92 q-6 12 2 22 q-8 6 -2 14" stroke="${hair}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M140 92 q6 12 -2 22 q8 6 2 14" stroke="${hair}" stroke-width="5" fill="none" stroke-linecap="round"/>
+ <ellipse cx="100" cy="84" rx="38" ry="42" fill="${skin}"/>
+ <path d="M64 92 Q62 140 100 152 Q138 140 136 92 Q128 112 116 108 Q100 116 84 108 Q72 112 64 92Z" fill="${beard}"/>
+ <path d="M80 118 q20 14 40 0" stroke="${beardHi}" stroke-width="3" fill="none" opacity=".6"/><path d="M90 132 q10 6 20 0" stroke="${beardHi}" stroke-width="3" fill="none" opacity=".5"/>
+ <path d="M84 105 Q100 98 116 105 Q108 110 100 108 Q92 110 84 105Z" fill="${beard}"/>
+ <path d="M90 110 q10 9 20 0" fill="#C2410C" stroke="#7C2D12" stroke-width="2"/>
+ <circle cx="76" cy="98" r="6" fill="#F59E8B" opacity=".45"/><circle cx="124" cy="98" r="6" fill="#F59E8B" opacity=".45"/>
+ <ellipse cx="100" cy="97" rx="6" ry="5" fill="${skinSh}"/>
+ ${eyes}
+ <ellipse cx="100" cy="56" rx="62" ry="11" fill="#0B0F19"/>
+ <path d="M64 56 Q62 22 100 18 Q138 22 136 56Z" fill="#111827"/><path d="M86 22 Q100 30 114 22" stroke="#2A3242" stroke-width="3" fill="none"/>
+ <rect x="64" y="44" width="72" height="9" fill="#2A3242"/>
+ </svg>`;
+}
+
+function guideTag(who,mood,big){ return `<span class="gd${big?' big':''}">${guideSVG(who,mood)}<small>${GUIDE_NAMES[who]}</small></span>`; }
+(function(){
+ const cele=/Milestone|Welcome to |Boss beaten|beaten|Daily Quest|Mystery|LEVEL|Badge/;
+ if(typeof window.overlay==='function'&&!window.overlay.__g){ const _ov=window.overlay;
+  window.overlay=function(inner){ try{ const c=cele.test(inner); inner=String(inner).replace(/^<div class="oe">([\s\S]*?)<\/div>/,(m,e)=>`<div class="oe">${guideTag(c?'S':'K',c?'cheer':'wave')}<span class="oem">${e}</span></div>`); }catch(e){} return _ov(inner); };
+  window.overlay.__g=true; }
+ if(typeof window.p3Full==='function'&&!window.p3Full.__g){ const _pf=window.p3Full;
+  window.p3Full=function(inner,cls){ try{ if(!/p3print/.test(inner)) inner=guideTag('S','cheer',true)+inner; }catch(e){} return _pf(inner,cls); };
+  window.p3Full.__g=true; }
+ document.head.insertAdjacentHTML('beforeend',`<style id="guides-css">.ocard .oe:has(.gd){width:auto!important;height:auto!important;background:none!important;box-shadow:none!important;display:flex!important;align-items:flex-end;justify-content:center;gap:16px}.ocard .oe .oem{width:100px;height:100px;border-radius:28px;background:#fff;display:grid;place-items:center;font-size:58px;line-height:1;box-shadow:0 14px 30px rgba(0,0,0,.2);margin-bottom:16px}
+.gd{display:inline-flex;flex-direction:column;align-items:center;width:112px;flex:none;animation:gdin .6s cubic-bezier(.3,1.5,.5,1) both}.gd .guide-svg{width:100%;height:auto;display:block}.gd small{font:700 13px var(--display);color:#FDE047;background:#1E1B4B;border-radius:999px;padding:2px 10px;margin-top:-6px;position:relative}
+.gd.big{width:150px}.p3fc .gd small{color:#FDE047}
+.gwave{transform-box:fill-box;transform-origin:20% 90%;animation:gdwave 1.2s ease-in-out 2}@keyframes gdwave{0%,100%{transform:rotate(0)}30%{transform:rotate(-14deg)}60%{transform:rotate(10deg)}}
+@keyframes gdin{from{transform:translateY(24px) scale(.85);opacity:0}to{transform:none;opacity:1}}@media (prefers-reduced-motion:reduce){.gd,.gwave{animation:none}}</style>`);
+})();
+</script>

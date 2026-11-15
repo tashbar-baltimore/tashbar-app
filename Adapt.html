@@ -1,0 +1,43 @@
+<script>
+/* ===== Adapt: the right level, automatically (v70, takeover builder, 2026-11-11). Loaded after Review.
+   1. Fast track: after 2 skills in a row mastered perfectly (3 stars) in a subject, the next new skill offers
+      "⚡ Fast track": the 3 check questions first. All right = mastered (the page's normal mastery rule and pay); any miss =
+      he does the full lesson (normal retry). He can always choose the full lesson.
+   2. Step back: when the page says "check in" (same skill failed twice), offer a 2-question warm-up on the skill he
+      mastered just before in that subject (Review, no money). The staff "Needs you now" strip shows him too.
+   State: st.ff[subject] = perfect masteries in a row. ===== */
+(function(){
+const subjOf=id=>{ const p=String(id).split('.')[0]; return p==='LANG'?'WRIT':p; };
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function nameOf(id){ try{ return (BANK_ALL[id]&&BANK_ALL[id].name)||(typeof skillName==='function'?skillName(id):id); }catch(e){ return id; } }
+function close(){ const o=document.getElementById('tlad-ov'); if(o) o.remove(); }
+function box(html){ close(); const o=document.createElement('div'); o.id='tlad-ov'; o.setAttribute('role','dialog'); o.innerHTML=`<div class="bx">${html}</div>`; document.body.appendChild(o); const f=o.querySelector('button'); f&&f.focus(); }
+const _s=window.startMission;
+if(typeof _s==='function') window.startMission=function(c,id,kind){ const r=_s.apply(this,arguments);
+ try{ const p=A.play, st=A.st; if(!p||p.replay||(kind&&kind!=='skill')) return r; if(((st.ff||{})[c]||0)<2) return r;
+  if(!p.items.some(i=>i&&i.phase==='check')) return r;
+  setTimeout(()=>box(`<div class="ic">⚡</div><h2>You are flying!</h2><p>You mastered your last skills perfectly. Want to try the 3 check questions for <b>${esc(nameOf(id))}</b> right now? Get all 3 right and you skip ahead.</p><button type="button" class="go" data-tlad="fast">⚡ Fast track</button><button type="button" class="alt" data-tlad="close">Do the full lesson</button>`),350);
+ }catch(e){ console.error('Adapt start',e); } return r; };
+function fast(){ try{ const p=A.play; if(!p) return close(); const ch=p.items.filter(i=>i&&i.phase==='check'); if(!ch.length) return close();
+ p.items=ch; p.i=0; p.fast=true; p.title='⚡ '+p.title; A.overlay=null; close(); render(); if(typeof phaseIntro==='function') phaseIntro(); }catch(e){ console.error('Adapt fast',e); close(); } }
+function before(st,id){ const c=subjOf(id), sk=st.skills||{}; let best=null;
+ Object.keys(sk).forEach(k=>{ if(k!==id&&subjOf(k)===c&&sk[k]&&sk[k].m&&(!best||sk[k].at>sk[best].at)) best=k; }); return best; }
+const _f=window.finish;
+if(typeof _f==='function') window.finish=function(){ const r=_f.apply(this,arguments);
+ try{ const R=A.res, st=A.st; if(!R||!st||R.kind==='boss'||R.kind==='review') return r; const c=R.c; st.ff=st.ff||{};
+  if(R.outcome==='mastered') st.ff[c]=R.stars>=3?(st.ff[c]||0)+1:0;
+  else if(R.outcome==='retry'||R.outcome==='checkin') st.ff[c]=0;
+  if(R.outcome==='checkin'){ const prev=before(st,R.id);
+   if(prev&&window.TLREVIEW) setTimeout(()=>box(`<div class="ic">🧱</div><h2>Let’s build the step underneath</h2><p>This one is tricky. Warm up with <b>${esc(nameOf(prev))}</b> (2 quick questions), then try again. Your rebbe will also come help.</p><button type="button" class="go" data-tlad="warm" data-id="${esc(prev)}">🧱 Warm up now</button><button type="button" class="alt" data-tlad="close">Not now</button>`),900);
+  } }catch(e){ console.error('Adapt finish',e); } return r; };
+document.addEventListener('click',function(e){ const b=e.target.closest&&e.target.closest('[data-tlad]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const a=b.getAttribute('data-tlad');
+ if(a==='fast') return fast(); if(a==='close') return close(); if(a==='warm'){ close(); try{ A.view='hub'; A.play=null; A.overlay=null; window.TLREVIEW.start(b.getAttribute('data-id')); }catch(err){ console.error('Adapt warm',err); } } },true);
+try{ if(!document.getElementById('tl-ad-css')){ const s=document.createElement('style'); s.id='tl-ad-css'; s.textContent=`
+#tlad-ov{position:fixed;inset:0;z-index:9998;background:rgba(20,18,50,.55);display:grid;place-items:center;padding:16px}
+#tlad-ov .bx{background:#fff;border-radius:28px;max-width:520px;width:100%;padding:24px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.3);border:3px solid #F5B301}
+#tlad-ov .ic{font-size:56px;line-height:1}#tlad-ov h2{margin:8px 0;font-size:26px;color:#1E1B4B}#tlad-ov p{color:#3F3F46;font-size:18px;margin:0 0 16px}
+#tlad-ov button{display:block;width:100%;border:0;border-radius:16px;min-height:58px;font-weight:800;font-size:19px;font-family:inherit;cursor:pointer;margin-top:10px}
+#tlad-ov .go{background:#4F46E5;color:#fff}#tlad-ov .alt{background:#F4F4F5;color:#1E1B4B}`; document.head.appendChild(s); } }catch(e){}
+window.TLADAPT=1;
+})();
+</script>

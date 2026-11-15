@@ -1,0 +1,885 @@
+<title>Spark Path Electricity</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Lexend:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one narrow workbench column; a copper trace links the level "bulbs" on the map, each bulb lights when mastered. */
+:root{
+  --bg:#EDF1F3; --board:#FAFBFC; --ink:#16212B; --muted:#56687A; --line:#C9D3DB;
+  --copper:#B5602A; --glow:#FFC21A; --go:#1E8C57; --stop:#C6352B; --blue:#2D61D4;
+  --plastic:#2A3946; --glass:#E7EEF4; --water:#5AA7E0;
+  --f-display:"Chakra Petch", "Arial Narrow", system-ui, sans-serif;
+  --f-body:"Lexend", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E151B; --board:#16202A; --ink:#E5ECF1; --muted:#93A5B4; --line:#2B3946;
+  --copper:#DA8642; --glow:#FFCB3D; --go:#3BC27E; --stop:#F2665D; --blue:#7298FF;
+  --plastic:#A9B9C6; --glass:#24323F; --water:#4C95CC; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0E151B; --board:#16202A; --ink:#E5ECF1; --muted:#93A5B4; --line:#2B3946;
+  --copper:#DA8642; --glow:#FFCB3D; --go:#3BC27E; --stop:#F2665D; --blue:#7298FF;
+  --plastic:#A9B9C6; --glass:#24323F; --water:#4C95CC; color-scheme:dark }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:760px;margin:0 auto}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.top{display:flex;align-items:center;gap:12px;padding:16px 0 12px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.top h1{font-size:1.35rem;flex:1;min-width:0}
+.cash{font-family:var(--f-mono);font-weight:700;background:var(--board);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-variant-numeric:tabular-nums}
+.btn{border:0;border-radius:12px;padding:12px 20px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff;min-height:48px}
+.btn.alt{background:var(--board);color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{min-height:38px;padding:6px 14px;font-size:.95rem}
+.btn:disabled{opacity:.45;cursor:default}
+.iconbtn{border:1.5px solid var(--line);background:var(--board);border-radius:10px;width:42px;height:42px;display:inline-grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn svg{width:22px;height:22px}
+.intro{color:var(--muted);margin:0 0 18px;max-width:60ch}
+/* map */
+.map{position:relative;display:grid;gap:14px;padding-left:34px}
+.map::before{content:"";position:absolute;left:14px;top:20px;bottom:20px;width:5px;border-radius:3px;background:var(--copper);opacity:.85}
+.stop{position:relative;display:flex;gap:14px;align-items:center;background:var(--board);border:1.5px solid var(--line);border-radius:16px;padding:12px 14px;cursor:pointer;text-align:left;width:100%}
+.stop[disabled]{cursor:default;opacity:.6}
+.stop .bulbnode{position:absolute;left:-36px;top:50%;transform:translateY(-50%);width:34px;height:34px}
+.stop .num{font-family:var(--f-display);font-size:.8rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+.stop h3{font-size:1.12rem}
+.stop p{margin:2px 0 0;color:var(--muted);font-size:.93rem}
+.stop .meta{margin-left:auto;flex:none;font-size:.85rem;font-weight:600}
+.stop.next{border-color:var(--blue);box-shadow:0 0 0 3px color-mix(in srgb,var(--blue) 18%,transparent)}
+.stop.boss{border-style:dashed}
+.tag{display:inline-block;font-size:.75rem;font-weight:600;border-radius:999px;padding:2px 9px;border:1px solid var(--line)}
+.tag.done{background:color-mix(in srgb,var(--go) 16%,transparent);border-color:transparent;color:var(--go)}
+.tag.next{background:var(--blue);color:#fff;border-color:transparent}
+.staff{margin-top:26px;background:var(--board);border:1.5px solid var(--line);border-radius:16px;padding:4px 16px}
+.staff summary{cursor:pointer;font-weight:600;padding:12px 0}
+.staff h3{font-size:1rem;margin:14px 0 6px}
+.staff table{border-collapse:collapse;width:100%;font-size:.88rem}
+.staff td,.staff th{border-top:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:top}
+.tbl{overflow-x:auto}
+.staff ul{padding-left:20px;margin:6px 0}
+.mono{font-family:var(--f-mono);font-size:.85em}
+/* lesson */
+.phases{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 14px}
+.phase{font-size:.82rem;font-weight:600;padding:4px 12px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.phase.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.phase.ok{color:var(--go);border-color:var(--go)}
+.card{background:var(--board);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:14px}
+.art{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.art svg{width:100%;max-width:440px;height:auto}
+.art.two svg{max-width:300px;flex:1 1 220px}
+.say{display:flex;gap:12px;align-items:flex-start}
+.say p{margin:0;font-size:1.08rem;max-width:62ch}
+.q{font-size:1.12rem;font-weight:500}
+.opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.opt{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:14px;cursor:pointer;font-weight:500;text-align:left;min-height:56px}
+.opt.right{border-color:var(--go);background:color-mix(in srgb,var(--go) 14%,var(--board))}
+.opt.wrong{border-color:var(--stop);background:color-mix(in srgb,var(--stop) 10%,var(--board))}
+.opt.safe{border-color:var(--go)} .opt.danger{border-color:var(--stop)}
+.fb{border-radius:12px;padding:10px 14px;font-weight:500}
+.fb.good{background:color-mix(in srgb,var(--go) 14%,transparent);color:var(--go)}
+.fb.bad{background:color-mix(in srgb,var(--stop) 12%,transparent);color:var(--stop)}
+.fb.info{background:color-mix(in srgb,var(--blue) 12%,transparent);color:var(--blue)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row.end{justify-content:flex-end}
+.dots{display:flex;gap:6px;margin-left:auto}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.ok{background:var(--go)} .dots i.no{background:var(--stop)} .dots i.cur{background:var(--blue)}
+.hinttap{font-size:.9rem;color:var(--muted);text-align:center}
+.bench{border:2px dashed var(--copper);border-radius:14px;padding:12px 14px}
+.bench b{font-family:var(--f-display);letter-spacing:.04em}
+.big{font-family:var(--f-display);font-size:2rem}
+.meterbar{height:16px;border-radius:8px;background:var(--line);overflow:hidden}
+.meterbar i{display:block;height:100%;width:0;background:var(--glow);transition:width .1s linear}
+.dial{display:flex;gap:8px;flex-wrap:wrap}
+.dial .btn.on{outline:3px solid var(--glow)}
+/* svg parts */
+.board{fill:var(--board)}
+.mask{fill:var(--board)}
+.w{stroke:var(--copper);stroke-width:5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.e{stroke:var(--blue);stroke-width:5;fill:none;stroke-dasharray:1 18;stroke-linecap:round;animation:flow 1.1s linear infinite}
+.st-short .e{animation-duration:.25s;stroke:var(--stop)}
+.st-dim .e{animation-duration:3s}
+@keyframes flow{to{stroke-dashoffset:-19}}
+.tip{fill:var(--copper)}
+.bat{fill:var(--plastic)} .batcap{fill:var(--copper)} .batband{fill:var(--glow)}
+.battxt{fill:var(--bg);font:700 15px var(--f-mono)}
+.lbl{fill:var(--muted);font:500 12px var(--f-body)}
+.lblb{fill:var(--ink);font:600 13px var(--f-body)}
+.glass{fill:var(--glass);stroke:var(--muted);stroke-width:2}
+.fil{stroke:var(--muted);stroke-width:2;fill:none}
+.base{fill:var(--muted)}
+.halo{fill:var(--glow);opacity:0}
+.on .halo{opacity:.55}
+.on .glass{fill:var(--glow)}
+.on .fil{stroke:#B65C00}
+.dimbulb .halo{opacity:.2}
+.dimbulb .glass{fill:color-mix(in srgb,var(--glow) 45%,var(--glass))}
+.ledd{fill:color-mix(in srgb,#E0352B 35%,var(--glass));stroke:#C02A22;stroke-width:1.5}
+.on .ledd{fill:#FF3B30}
+.on .ledhalo{opacity:.6}
+.ledhalo{fill:#FF5B4F;opacity:0}
+.burnt .ledd{fill:#6B6B6B;stroke:#444}
+.resb{fill:#D8B98A;stroke:#8A6A3E;stroke-width:1.5}
+.sw{stroke:var(--ink);stroke-width:5;stroke-linecap:round}
+.pivot{fill:var(--ink)}
+.hit{fill:transparent;stroke:var(--blue);stroke-width:2;stroke-dasharray:5 4}
+.slot.edit{cursor:pointer}
+.slot.edit:hover .hit,.slot.edit:focus .hit{fill:color-mix(in srgb,var(--blue) 10%,transparent)}
+.slot:focus{outline:none}
+.hotlbl{fill:var(--stop);font:700 16px var(--f-display)}
+.metal{fill:#9AA7B2;stroke:#5E6B75;stroke-width:1.5}
+.gold{fill:#D6A23A;stroke:#8F6A1A;stroke-width:1.5}
+.pink{fill:#F09AAE;stroke:#B8566E;stroke-width:1.5}
+.woodf{fill:#B98552;stroke:#7A5530;stroke-width:1.5}
+.plas{fill:#4E86D9;stroke:#2D5BA5;stroke-width:1.5}
+.rub{fill:none;stroke:#C9A15A;stroke-width:4}
+.clipj{fill:var(--stop)}
+.redf{fill:var(--stop)} .gof{fill:var(--go)} .inkf{fill:var(--ink)} .mutedf{fill:var(--muted)} .glowf{fill:var(--glow)} .bluef{fill:var(--blue)}
+.reds{stroke:var(--stop);fill:none} .inks{stroke:var(--ink);fill:none} .muteds{stroke:var(--muted);fill:none}
+.waterpipe{stroke:var(--water);stroke-width:16;fill:none;stroke-linejoin:round;opacity:.45}
+.waterflow{stroke:var(--water);stroke-width:6;fill:none;stroke-dasharray:4 14;stroke-linecap:round;animation:flow 1s linear infinite}
+.spin{animation:spin 4s linear infinite;transform-box:view-box}
+.spinfast{animation:spin 1.2s linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tapbulb{cursor:pointer}
+.disp{fill:#C9D9B8;stroke:var(--ink);stroke-width:2}
+.disptxt{font:700 26px var(--f-mono);fill:#1B2A12}
+.meterbody{fill:#F2B705;stroke:var(--ink);stroke-width:2}
+.burst{position:fixed;inset:0;pointer-events:none;z-index:20}
+@media (prefers-reduced-motion: reduce){.e,.waterflow,.spin,.spinfast{animation:none}}
+@media (max-width:480px){body{font-size:16px}.card{padding:14px}.stop .meta{display:none}}
+.how{margin:6px 0 12px;padding:10px 14px;border-radius:14px;background:var(--board);border:2px solid var(--glow)}.how .row{margin:0}.how ol{margin:6px 0 0;padding-left:1.4em;display:grid;gap:4px}.how li{line-height:1.45}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <button class="iconbtn" id="backBtn" aria-label="Back to the map" hidden><svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7" class="inks" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <h1 id="title">Spark Path: Electricity</h1>
+    <span class="cash" id="cash" aria-label="Dollars earned" hidden style="display:none">$0</span><!-- builder v54: hidden; Spark Path dollars are not school bank money (money rule) -->
+  </header>
+  <main id="app"></main>
+</div>
+<canvas class="burst" id="burst" aria-hidden="true"></canvas>
+
+<script>
+/* ---------- state ---------- */
+const LS='tashbar-spark-electricity-v1';
+let S={done:{},cash:0,unlockAll:false};
+try{const r=localStorage.getItem(LS); if(r) S=Object.assign(S,JSON.parse(r));}catch(e){}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S));}catch(e){}}
+const app=document.getElementById('app');
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ---------- read aloud ---------- */
+function speak(t){try{const s=window.speechSynthesis; if(!s) return; s.cancel(); const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,'')); u.rate=.95; const v=s.getVoices().find(v=>/en-US/.test(v.lang)&&/Google|Natural|Samantha/.test(v.name)); if(v) u.voice=v; s.speak(u);}catch(e){}}
+const SPK='<svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" class="inkf"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" class="inks" stroke-width="2" stroke-linecap="round"/></svg>';
+function sayBtn(t){return `<button class="iconbtn" data-say="${esc(t)}" aria-label="Read aloud">${SPK}</button>`;}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-say]'); if(b) speak(b.dataset.say);});
+
+/* ---------- sound ---------- */
+let AC=null;
+function tone(f=880,d=.22,type='sine',vol=.15){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const o=AC.createOscillator(),g=AC.createGain(); o.type=type;o.frequency.value=f; g.gain.value=vol; o.connect(g);g.connect(AC.destination); o.start(); g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d); o.stop(AC.currentTime+d);}catch(e){}}
+const yay=()=>{tone(660,.12);setTimeout(()=>tone(990,.18),110);};
+const nope=()=>tone(220,.2,'triangle',.1);
+
+/* ---------- circuit engine ---------- */
+const COND={wire:1,bulb:1,swClosed:1,led:1,res470:1,res1M:1,coin:1,foil:1,clip:1,nail:1,
+  gap:0,swOpen:0,bulbOut:0,ledRev:0,eraser:0,wood:0,spoon:0,band:0};
+const NAMES={wire:'wire',gap:'gap',bulb:'bulb',bulbOut:'empty socket',swOpen:'switch (open)',swClosed:'switch (closed)',
+  led:'LED',ledRev:'LED (backwards)',res470:'470 Ω resistor',res1M:'1,000,000 Ω resistor',coin:'coin',foil:'foil',clip:'paper clip',nail:'steel nail',
+  eraser:'eraser',wood:'wood stick',spoon:'plastic spoon',band:'rubber band'};
+function evalC(c){
+  const k=[c.top,c.right,c.bottom];
+  if(c.dead) return 'open';
+  if(k.some(x=>!COND[x])) return 'open';
+  const led=k.includes('led'), bulb=k.includes('bulb'), r470=k.includes('res470'), r1M=k.includes('res1M');
+  if(!led&&!bulb&&!r470&&!r1M) return 'short';
+  if(led){ if(!r470&&!r1M) return 'burnt'; if(r1M) return 'dim'; return 'lit'; }
+  if(bulb) return r1M?'dim':'lit';
+  return 'dim';
+}
+function comp(kind,st,rot=0){
+  const tx=(x,y,cls,txt)=>`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" class="${cls}" transform="rotate(${-rot} ${x} ${y})">${txt}</text>`;
+  const stub=(a)=>`<line x1="-34" x2="${-a}" y1="0" y2="0" class="w"/><line x1="${a}" x2="34" y1="0" y2="0" class="w"/>`;
+  switch(kind){
+    case 'wire': return `<line x1="-34" x2="34" class="w"/>`;
+    case 'gap': return stub(13)+`<circle cx="-13" r="4" class="tip"/><circle cx="13" r="4" class="tip"/>`;
+    case 'bulb': case 'bulbOut': {
+      const cls= kind==='bulbOut'?'':(st==='lit'?'on':st==='dim'?'dimbulb':'');
+      return stub(9)+`<g class="${cls}"><circle cy="-26" r="30" class="halo"/><rect x="-9" y="-11" width="18" height="11" rx="2" class="base"/>`+
+        (kind==='bulbOut'?`<circle cy="-25" r="14" class="muteds" stroke-width="2" stroke-dasharray="4 4"/>`:`<circle cy="-25" r="14" class="glass"/><path d="M-5 -11 V-22 Q0 -31 5 -22 V-11" class="fil"/>`)+`</g>`; }
+    case 'swOpen': return stub(18)+`<circle cx="-18" r="5" class="pivot"/><circle cx="18" r="4" class="pivot"/><line x1="-18" y1="0" x2="12" y2="-19" class="sw"/>`;
+    case 'swClosed': return stub(18)+`<circle cx="-18" r="5" class="pivot"/><circle cx="18" r="4" class="pivot"/><line x1="-18" y1="0" x2="18" y2="-1" class="sw"/>`;
+    case 'led': case 'ledRev': {
+      const cls= kind==='led'?(st==='lit'?'on':st==='burnt'?'burnt':''):'';
+      const plus= kind==='led'?-1:1;
+      return stub(8)+`<g class="${cls}"><circle cy="-22" r="22" class="ledhalo"/><rect x="-11" y="-12" width="22" height="4" rx="1" class="ledd"/><path d="M-9 -12 V-24 A9 9 0 0 1 9 -24 V-12 Z" class="ledd"/>`+
+        tx(plus*20,-10,'lblb','+')+tx(-plus*20,-10,'lblb','−')+
+        (st==='burnt'&&kind==='led'?tx(0,-42,'hotlbl','POP!'):'')+`</g>`; }
+    case 'res470': case 'res1M': {
+      const bands= kind==='res470'?['#E6C200','#7A3EC8','#8B4A1E']:['#8B4A1E','#111','#2E8B57'];
+      return stub(16)+`<rect x="-17" y="-7" width="34" height="14" rx="6" class="resb"/>`+bands.map((b,i)=>`<rect x="${-9+i*7}" y="-7" width="3.5" height="14" fill="${b}"/>`).join('')+
+        tx(0,rot===90?44:22,'lbl',kind==='res470'?'470 Ω':'1,000,000 Ω'); }
+    default: return stub(16)+`<path d="M-24 -5 L-14 0 L-24 5Z M24 -5 L14 0 L24 5Z" class="clipj"/>`+itemArt(kind)+tx(0,rot===90?48:24,'lbl',NAMES[kind]||kind);
+  }
+}
+function itemArt(k){
+  switch(k){
+    case 'coin': return `<circle r="11" class="gold"/><circle r="7" fill="none" stroke="#8F6A1A"/>`;
+    case 'nail': return `<rect x="-14" y="-2.5" width="26" height="5" class="metal"/><rect x="-16" y="-7" width="4" height="14" class="metal"/><path d="M12 -2.5 L17 0 L12 2.5Z" class="metal"/>`;
+    case 'foil': return `<path d="M-14 -7 L-6 -10 L2 -6 L9 -10 L14 -4 L12 6 L4 9 L-4 6 L-12 9 L-15 1Z" class="metal"/>`;
+    case 'clip': return `<path d="M-13 4 H9 a4 4 0 0 0 0 -8 H-9 a3 3 0 0 0 0 6 H6" fill="none" stroke="#7D8A94" stroke-width="2.5"/>`;
+    case 'eraser': return `<rect x="-13" y="-7" width="26" height="14" rx="3" class="pink"/>`;
+    case 'wood': return `<rect x="-15" y="-4" width="30" height="8" rx="2" class="woodf"/>`;
+    case 'spoon': return `<ellipse cx="-7" cy="0" rx="8" ry="6" class="plas"/><rect x="0" y="-2" width="15" height="4" rx="2" class="plas"/>`;
+    case 'band': return `<ellipse rx="12" ry="7" class="rub"/>`;
+  }
+  return '';
+}
+function batt(label,dead){
+  return `<g><rect x="-22" y="-44" width="44" height="88" class="mask"/><rect x="-6" y="-42" width="12" height="7" rx="2" class="batcap"/><rect x="-17" y="-36" width="34" height="74" rx="5" class="bat"/><rect x="-17" y="-36" width="34" height="20" rx="5" class="batband"/>`+
+    `<text y="-21" text-anchor="middle" class="battxt" style="fill:#16212B">+</text><text y="30" text-anchor="middle" class="battxt">−</text>`+
+    `<text x="-24" y="4" text-anchor="end" class="lblb">${label}</text>${dead?'<text x="-24" y="20" text-anchor="end" class="lbl">dead</text>':''}</g>`;
+}
+function circ(c,o={}){
+  const st=evalC(c); const ed=o.edit||{};
+  const flow= (st==='lit'||st==='short'||st==='dim');
+  const slot=(name,x,y,rot)=>{
+    const e=ed[name]; const k=c[name];
+    return `<g transform="translate(${x} ${y}) rotate(${rot})" class="slot${e?' edit':''}" ${e?`data-slot="${name}" role="button" tabindex="0" aria-label="${name} part: ${NAMES[k]}. Tap to change."`:''}>`+
+      `<rect x="-36" y="-9" width="72" height="18" class="mask"/>`+(e?`<rect x="-40" y="-46" width="80" height="78" rx="10" class="hit"/>`:'')+comp(k,st,rot)+`</g>`;
+  };
+  return `<svg viewBox="0 0 400 250" class="circ st-${st}" role="img" aria-label="Circuit: battery, ${NAMES[c.top]}, ${NAMES[c.right]}, ${NAMES[c.bottom]}">`+
+   `<rect x="2" y="2" width="396" height="246" rx="16" class="board"/>`+
+   `<path d="M60 40 H350 V205 H60 Z" class="w"/>`+
+   (flow?`<path d="M60 165 V205 H350 V40 H60 V80" class="e"/>`:'')+
+   slot('top',205,40,0)+slot('right',350,122,90)+slot('bottom',205,205,180)+
+   `<g transform="translate(60 122)">${batt(c.bat||'1.5V',c.dead)}</g>`+
+   (st==='short'?`<text x="60" y="236" text-anchor="middle" class="hotlbl">HOT!</text>`:'')+
+   `</svg>`;
+}
+/* note: bottom slot is rotated 180 so a bulb there points inward */
+
+/* ---------- series / parallel ---------- */
+function bulbAt(x,y,rot,state,id){
+  const cls= state==='out'?'':state;
+  return `<g transform="translate(${x} ${y}) rotate(${rot})" class="tapbulb" data-bulb="${id}" role="button" tabindex="0" aria-label="Bulb ${id}. Tap to ${state==='out'?'screw it back in':'unscrew it'}">`+
+    `<rect x="-30" y="-48" width="60" height="62" fill="transparent"/><rect x="-11" y="-6" width="22" height="12" class="mask"/>`+
+    `<g class="${cls}"><circle cy="-22" r="26" class="halo"/><rect x="-8" y="-9" width="16" height="9" rx="2" class="base"/>`+
+    (state==='out'?`<circle cy="-21" r="12" class="muteds" stroke-width="2" stroke-dasharray="4 4"/>`:`<circle cy="-21" r="12" class="glass"/><path d="M-4 -9 V-18 Q0 -26 4 -18 V-9" class="fil"/>`)+`</g></g>`;
+}
+function spSvg(mode,outs){
+  const a=outs.A, b=outs.B; let sa,sb;
+  if(mode==='series'){const on=!a&&!b; sa=a?'out':on?'dimbulb':''; sb=b?'out':on?'dimbulb':'';}
+  else {sa=a?'out':'on'; sb=b?'out':'on';}
+  const bt=`<g transform="translate(40 121) scale(.8)">${batt('3V')}</g>`;
+  if(mode==='series') return `<svg viewBox="0 0 230 200" role="img" aria-label="Series circuit"><rect x="1" y="1" width="228" height="198" rx="14" class="board"/>`+
+    `<text x="115" y="22" text-anchor="middle" class="lblb">Series: one path</text><path d="M40 66 H200 V176 H40 Z" class="w"/>`+bulbAt(95,66,0,sa,'A')+bulbAt(160,66,0,sb,'B')+bt+`</svg>`;
+  return `<svg viewBox="0 0 230 200" role="img" aria-label="Parallel circuit"><rect x="1" y="1" width="228" height="198" rx="14" class="board"/>`+
+    `<text x="115" y="22" text-anchor="middle" class="lblb">Parallel: two paths</text><path d="M40 66 H200 V176 H40 Z M120 66 V176" class="w"/>`+bulbAt(120,121,-90,sa,'A')+bulbAt(200,121,-90,sb,'B')+bt+`</svg>`;
+}
+
+/* ---------- pictures ---------- */
+const A={
+ atom:()=>`<svg viewBox="0 0 400 220" role="img" aria-label="An atom with electrons going around it"><rect width="400" height="220" rx="16" class="board"/>
+  <circle cx="200" cy="110" r="52" class="muteds" stroke-width="1.5" stroke-dasharray="3 5"/><circle cx="200" cy="110" r="88" class="muteds" stroke-width="1.5" stroke-dasharray="3 5"/>
+  <g class="redf"><circle cx="194" cy="104" r="9"/><circle cx="207" cy="108" r="9"/><circle cx="198" cy="118" r="9"/></g><g class="mutedf"><circle cx="208" cy="120" r="8"/><circle cx="190" cy="114" r="8"/></g>
+  <g class="spin" style="transform-origin:200px 110px"><circle cx="252" cy="110" r="7" class="bluef"/><circle cx="148" cy="110" r="7" class="bluef"/></g>
+  <g class="spin" style="transform-origin:200px 110px;animation-duration:7s"><circle cx="200" cy="22" r="7" class="bluef"/><circle cx="288" cy="110" r="7" class="bluef"/><circle cx="200" cy="198" r="7" class="bluef"/></g>
+  <text x="20" y="200" class="lblb">blue = electrons</text><text x="300" y="30" class="lblb">atom</text></svg>`,
+ pipe:()=>`<svg viewBox="0 0 400 230" role="img" aria-label="Water loop: a pump pushes water around and turns a wheel"><rect width="400" height="230" rx="16" class="board"/>
+  <path d="M70 50 H330 V180 H70 Z" class="waterpipe"/><path d="M70 150 V180 H330 V50 H70 V80" class="waterflow"/>
+  <rect x="44" y="82" width="52" height="66" rx="8" class="bat"/><text x="70" y="121" text-anchor="middle" class="battxt">PUMP</text>
+  <g transform="translate(330 115)"><circle r="26" class="mask"/><g class="spinfast"><circle r="22" class="muteds" stroke-width="3"/><path d="M0 -22V22M-22 0H22M-15 -15L15 15M15 -15L-15 15" class="muteds" stroke-width="3"/></g></g>
+  <text x="70" y="168" text-anchor="middle" class="lbl">= battery</text><text x="270" y="155" text-anchor="end" class="lbl">wheel = bulb</text><text x="200" y="40" text-anchor="middle" class="lbl">water = electrons</text></svg>`,
+ inside:()=>`<svg viewBox="0 0 400 200" role="img" aria-label="Inside a battery, chemicals push electrons out of the minus end"><rect width="400" height="200" rx="16" class="board"/>
+  <rect x="70" y="60" width="240" height="80" rx="12" class="bat"/><rect x="70" y="60" width="70" height="80" rx="12" class="batband"/><rect x="310" y="85" width="14" height="30" rx="3" class="batcap"/>
+  <text x="105" y="108" text-anchor="middle" class="battxt" style="fill:#16212B">−</text><text x="285" y="108" text-anchor="middle" class="battxt">+</text>
+  <g class="bluef"><circle cx="160" cy="80" r="5"/><circle cx="175" cy="96" r="5"/><circle cx="160" cy="114" r="5"/><circle cx="182" cy="122" r="5"/><circle cx="168" cy="132" r="5"/></g>
+  <path d="M100 58 C100 20 300 20 315 82" class="inks" stroke-width="2.5" stroke-dasharray="6 5"/><path d="M308 72 L316 84 L322 70" class="inks" stroke-width="2.5"/>
+  <text x="200" y="170" text-anchor="middle" class="lblb">Chemicals push electrons out the − end, around the loop, back to +</text></svg>`,
+ gen:()=>`<svg viewBox="0 0 400 220" role="img" aria-label="Spinning magnet inside a coil of wire lights a bulb"><rect width="400" height="220" rx="16" class="board"/>
+  <g transform="translate(130 110)"><circle r="64" class="muteds" stroke-width="1"/>${[...Array(9)].map((_,i)=>`<ellipse cx="${-48+i*12}" cy="0" rx="5" ry="62" class="w" stroke-width="3"/>`).join('')}
+  <g class="spinfast"><rect x="-40" y="-11" width="40" height="22" class="redf"/><rect x="0" y="-11" width="40" height="22" class="bluef"/><text x="-20" y="5" text-anchor="middle" class="battxt">N</text><text x="20" y="5" text-anchor="middle" class="battxt">S</text></g></g>
+  <path d="M178 70 H290 V95 M178 150 H290 V130" class="w"/><g transform="translate(290 112) rotate(0)" class="on"><circle cy="-6" r="30" class="halo"/><rect x="-9" y="8" width="18" height="12" class="base"/><circle cy="-6" r="15" class="glass"/></g>
+  <text x="130" y="205" text-anchor="middle" class="lblb">magnet spins inside a coil of wire</text></svg>`,
+ solar:()=>`<svg viewBox="0 0 400 210" role="img" aria-label="Sunlight on a solar panel lights a bulb"><rect width="400" height="210" rx="16" class="board"/>
+  <circle cx="70" cy="60" r="26" class="glowf"/>${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;return `<line x1="${70+Math.cos(a)*34}" y1="${60+Math.sin(a)*34}" x2="${70+Math.cos(a)*46}" y2="${60+Math.sin(a)*46}" stroke="var(--glow)" stroke-width="4" stroke-linecap="round"/>`}).join('')}
+  <path d="M110 70 L170 110 M100 95 L160 128" stroke="var(--glow)" stroke-width="3" stroke-dasharray="6 6"/>
+  <g transform="translate(150 105) skewX(-18)"><rect width="110" height="70" class="bat"/>${[1,2,3].map(i=>`<line x1="${i*27.5}" y1="0" x2="${i*27.5}" y2="70" class="muteds"/>`).join('')}<line x1="0" y1="35" x2="110" y2="35" class="muteds"/></g>
+  <path d="M250 140 H320 V120" class="w"/><g transform="translate(320 105)" class="on"><circle cy="-4" r="28" class="halo"/><rect x="-9" y="8" width="18" height="12" class="base"/><circle cy="-4" r="14" class="glass"/></g>
+  <text x="200" y="198" text-anchor="middle" class="lblb">light pushes electrons in the panel</text></svg>`,
+ turbine:()=>`<svg viewBox="0 0 400 210" role="img" aria-label="Wind turbine spins a generator that sends power to a house"><rect width="400" height="210" rx="16" class="board"/>
+  <rect x="96" y="80" width="8" height="110" class="mutedf"/><g transform="translate(100 78)"><g class="spinfast" style="animation-duration:3s"><path d="M0 0 L-4 -60 L4 -60Z M0 0 L54 26 L50 33Z M0 0 L-50 33 L-54 26Z" class="mutedf"/></g><circle r="7" class="inkf"/></g>
+  <path d="M104 175 H260" class="w"/><path d="M260 175 V120 L300 90 L340 120 V175 Z" class="muteds" stroke-width="3"/><rect x="290" y="135" width="22" height="22" class="glowf"/>
+  <text x="200" y="40" text-anchor="middle" class="lblb">Big generators make the power for homes</text></svg>`,
+ outlet:()=>`<svg viewBox="0 0 400 210" role="img" aria-label="Wall outlet with a red stop sign"><rect width="400" height="210" rx="16" class="board"/>
+  <rect x="140" y="30" width="120" height="150" rx="14" fill="#F4F1EA" stroke="#8A8F94" stroke-width="2"/><rect x="162" y="62" width="8" height="26" rx="2" fill="#333"/><rect x="230" y="62" width="8" height="30" rx="2" fill="#333"/><path d="M193 120 a7 7 0 0 1 14 0 v8 h-14z" fill="#333"/>
+  <circle cx="200" cy="105" r="88" class="reds" stroke-width="10"/><line x1="138" y1="167" x2="262" y2="43" class="reds" stroke-width="10"/>
+  <text x="330" y="100" text-anchor="middle" class="hotlbl">120 V</text><text x="330" y="122" text-anchor="middle" class="lblb">NEVER</text></svg>`,
+ short:()=>`<svg viewBox="0 0 400 200" role="img" aria-label="A wire straight from plus to minus makes the battery hot"><rect width="400" height="200" rx="16" class="board"/>
+  <g transform="translate(150 100)">${batt('1.5V')}</g><path d="M150 58 V36 H250 V160 H150 V142" class="w"/>
+  <path d="M190 100 q8 -10 0 -20 q-8 -10 0 -20 M210 104 q8 -10 0 -20 q-8 -10 0 -20" class="reds" stroke-width="3"/><text x="290" y="105" class="hotlbl">HOT!</text><text x="290" y="125" class="lblb">short circuit</text></svg>`,
+ bench:()=>`<svg viewBox="0 0 400 190" role="img" aria-label="AA battery and 9 volt battery, both OK"><rect width="400" height="190" rx="16" class="board"/>
+  <g transform="translate(120 95)">${batt('AA 1.5V')}</g><g transform="translate(270 95)"><rect x="-26" y="-40" width="52" height="78" rx="6" class="bat"/><rect x="-26" y="-40" width="52" height="16" class="batband"/><circle cx="-10" cy="-48" r="6" class="batcap"/><rect x="5" y="-54" width="12" height="12" class="batcap"/><text x="0" y="12" text-anchor="middle" class="battxt">9V</text></g>
+  <path d="M330 70 l12 14 l26 -32" stroke="var(--go)" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="200" y="180" text-anchor="middle" class="lblb">12 volts or less only</text></svg>`,
+ wire:()=>`<svg viewBox="0 0 400 180" role="img" aria-label="A wire: copper inside, plastic coat outside"><rect width="400" height="180" rx="16" class="board"/>
+  <rect x="40" y="70" width="230" height="40" rx="20" class="plas"/><path d="M270 80 H360 M270 90 H362 M270 100 H360" class="w" stroke-width="4"/>
+  <text x="150" y="58" text-anchor="middle" class="lblb">plastic coat = insulator</text><text x="320" y="132" text-anchor="middle" class="lblb">copper = conductor</text></svg>`,
+ legs:()=>`<svg viewBox="0 0 400 220" role="img" aria-label="An LED with a long leg marked plus and a short leg marked minus"><rect width="400" height="220" rx="16" class="board"/>
+  <g transform="translate(200 70)"><path d="M-24 10 V-16 A24 24 0 0 1 24 -16 V10 Z" class="ledd"/><rect x="-28" y="10" width="56" height="8" class="ledd"/><line x1="-12" y1="18" x2="-12" y2="130" class="muteds" stroke-width="4"/><line x1="12" y1="18" x2="12" y2="96" class="muteds" stroke-width="4"/></g>
+  <text x="150" y="190" text-anchor="end" class="lblb">long leg = +</text><text x="226" y="178" class="lblb">short leg = −</text></svg>`,
+ res:()=>`<svg viewBox="0 0 400 170" role="img" aria-label="A resistor is like a narrow spot in a pipe"><rect width="400" height="170" rx="16" class="board"/>
+  <path d="M30 70 H150 L175 82 H225 L250 70 H370 M30 110 H150 L175 98 H225 L250 110 H370" class="muteds" stroke-width="3"/><path d="M40 90 H360" class="waterflow"/>
+  <text x="200" y="140" text-anchor="middle" class="lblb">a resistor is a narrow spot: it slows the flow</text>
+  <g transform="translate(200 40)">${comp('res470','')}</g></svg>`,
+ meter:(disp='1.58')=>`<svg viewBox="0 0 400 230" role="img" aria-label="A multimeter with red and black probes"><rect width="400" height="230" rx="16" class="board"/>
+  <rect x="140" y="16" width="120" height="196" rx="16" class="meterbody"/><rect x="152" y="30" width="96" height="44" rx="4" class="disp"/><text x="200" y="62" text-anchor="middle" class="disptxt">${disp}</text>
+  <circle cx="200" cy="130" r="30" class="inkf"/><line x1="200" y1="130" x2="200" y2="104" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  <text x="200" y="96" text-anchor="middle" class="lblb">V⎓</text><text x="244" y="134" class="lblb">beep</text><text x="148" y="134" class="lblb">off</text>
+  <circle cx="178" cy="190" r="7" fill="#C6352B"/><circle cx="222" cy="190" r="7" fill="#222"/><path d="M178 190 C120 220 70 200 60 150" stroke="#C6352B" stroke-width="5" fill="none"/><path d="M222 190 C280 220 330 200 340 150" stroke="#555" stroke-width="5" fill="none"/>
+  <text x="60" y="140" text-anchor="middle" class="lblb">red +</text><text x="340" y="140" text-anchor="middle" class="lblb">black −</text></svg>`,
+ house:()=>`<svg viewBox="0 0 400 210" role="img" aria-label="A house where every room has its own path"><rect width="400" height="210" rx="16" class="board"/>
+  <path d="M60 190 V90 L200 30 L340 90 V190 Z" class="muteds" stroke-width="3"/><path d="M80 175 H320 M80 105 H320" class="w"/>${[120,200,280].map(x=>`<path d="M${x} 105 V175" class="w"/><g transform="translate(${x} 150)" class="on"><circle cy="-10" r="18" class="halo"/><circle cy="-10" r="9" class="glass"/></g>`).join('')}
+  <text x="200" y="202" text-anchor="middle" class="lblb">each room gets its own path</text></svg>`,
+ mezuzah:()=>`<svg viewBox="0 0 400 210" role="img" aria-label="A wooden mezuzah case with a small red LED"><rect width="400" height="210" rx="16" class="board"/>
+  <rect x="170" y="20" width="60" height="170" rx="12" class="woodf"/><text x="200" y="70" text-anchor="middle" font-family="serif" font-size="30" class="inkf">ש</text>
+  <g transform="translate(200 150)" class="on"><circle r="20" class="ledhalo"/><circle r="7" class="ledd"/></g><path d="M230 150 H300 V120" class="w" stroke-width="3"/><g transform="translate(300 100) scale(.55)">${batt('9V')}</g>
+  <text x="80" y="110" text-anchor="middle" class="lblb">Master project:</text><text x="80" y="130" text-anchor="middle" class="lbl">a lit mezuzah case</text></svg>`,
+ cup:()=>`<svg viewBox="0 0 400 230" role="img" aria-label="A cup of water next to a circuit"><rect width="400" height="230" rx="16" class="board"/>
+  <g transform="translate(-30 0) scale(.8)">${circ({bat:'1.5V',top:'bulb',right:'wire',bottom:'wire'}).replace(/^<svg[^>]*>|<\/svg>$/g,'')}</g>
+  <path d="M300 80 L310 190 H360 L370 80 Z" class="muteds" stroke-width="3"/><path d="M303 110 H367 L360 190 H310Z" fill="var(--water)" opacity=".6"/><path d="M290 70 q-6 12 0 16" stroke="var(--water)" stroke-width="3" fill="none"/></svg>`,
+ frayed:()=>`<svg viewBox="0 0 400 190" role="img" aria-label="A lamp cord with torn plastic and bare wire showing"><rect width="400" height="190" rx="16" class="board"/>
+  <rect x="300" y="70" width="60" height="44" rx="8" fill="#F4F1EA" stroke="#8A8F94" stroke-width="2"/><rect x="360" y="80" width="22" height="6" fill="#999"/><rect x="360" y="98" width="22" height="6" fill="#999"/>
+  <path d="M40 92 H160" stroke="#3A3F44" stroke-width="16" stroke-linecap="round"/><path d="M220 92 H300" stroke="#3A3F44" stroke-width="16"/><path d="M160 86 l15 -12 M160 92 l22 2 M160 98 l16 14 M220 86 l-14 -10 M220 98 l-18 12 M168 92 H212" class="w" stroke-width="3"/>
+  <text x="190" y="150" text-anchor="middle" class="hotlbl">bare wire</text><text x="190" y="172" text-anchor="middle" class="lblb">plugged into the wall</text></svg>`,
+ clipOutlet:()=>`<svg viewBox="0 0 400 200" role="img" aria-label="A paper clip being pushed into a wall outlet"><rect width="400" height="200" rx="16" class="board"/>
+  <rect x="140" y="25" width="120" height="150" rx="14" fill="#F4F1EA" stroke="#8A8F94" stroke-width="2"/><rect x="162" y="57" width="8" height="26" rx="2" fill="#333"/><rect x="230" y="57" width="8" height="30" rx="2" fill="#333"/><path d="M193 115 a7 7 0 0 1 14 0 v8 h-14z" fill="#333"/>
+  <path d="M166 70 V20 H110 a10 10 0 0 0 0 20 H150" fill="none" stroke="#7D8A94" stroke-width="5"/></svg>`
+};
+function mini(c){return circ(c);}
+
+/* ---------- item types ---------- */
+const mc=(q,opts,a,hint,art,extra={})=>Object.assign({t:'mc',q,opts,a,hint,art},extra);
+const sort=(q,art,safe,hint)=>({t:'mc',q,opts:['Safe on our bench','Stop! Never'],a:safe?0:1,hint,art,fixed:true,sort:true});
+const build=(q,c,edit,goal,hint)=>({t:'build',q,c,edit,goal,hint});
+const gen=(secs,q)=>({t:'gen',secs,q});
+const sp=(q,opts,a,hint)=>({t:'sp',q,opts,a,hint});
+const meter=(target,q,opts,a,hint)=>({t:'meter',target,q,opts,a,hint});
+const meter4=(broken,hint)=>({t:'meter4',broken,hint,q:'One of these 4 wires is broken inside its plastic coat. Set the dial to beep, test each wire, then tap the broken one.'});
+const C=(top,right,bottom,bat='1.5V',x={})=>Object.assign({bat,top,right,bottom},x);
+
+/* ---------- levels ---------- */
+const LEVELS=[
+{id:'VOC.ELEC.L07.01',name:'Safety First',sub:'What we touch and what we never touch',
+ learn:[
+  {art:A.bench,text:'In Tashbar Trades we only use small batteries: AA batteries (1.5 volts) and 9-volt batteries. Twelve volts or less. A small battery has a small push, and that keeps us safe.'},
+  {art:A.outlet,text:'A wall outlet has about 120 volts. That is 80 times the push of an AA battery, and it can stop a heart. We never open, poke, or wire anything to a wall outlet, plug, or cord.'},
+  {art:A.short,text:'Never connect a wire straight from + to −. That is a short circuit, and the battery gets hot fast. If anything gets hot, smells, or smokes: let go, step back, and tell the adult.'}],
+ practice:[
+  sort('A battery, two wires and a small bulb. Safe or stop?',()=>mini(C('bulb','wire','wire')),true,'AA batteries are only 1.5 volts. This is exactly what our bench is for.'),
+  sort('A paper clip pushed into a wall outlet. Safe or stop?',A.clipOutlet,false,'Wall outlets have 120 volts. Never put anything into an outlet.'),
+  sort('A lamp cord with bare wire showing, still plugged in. Safe or stop?',A.frayed,false,'A damaged cord on wall power can shock or start a fire. Don\'t touch it. Tell an adult.'),
+  sort('A 9-volt battery, an LED and a resistor. Safe or stop?',()=>mini(C('led','res470','wire','9V')),true,'9 volts is under our 12-volt limit, and the resistor protects the LED.'),
+  sort('A wire going straight from + to − with nothing else. Safe or stop?',A.short,false,'That is a short circuit. The battery gets hot. Always put a bulb, LED or resistor in the loop.'),
+  sort('Building a circuit right next to a cup of water. Safe or stop?',A.cup,false,'Keep water away from every circuit, and work with dry hands. Move the cup first.')],
+ check:[
+  mc('What is the most voltage we use on our bench?',['12 volts or less','120 volts','Any amount, if an adult is there'],0),
+  mc('Your battery suddenly feels hot. What do you do first?',['Let go, step back, tell the adult','Hold it tighter so it can\'t move','Put it in your pocket'],0),
+  mc('Can we use this for our projects?',['No. Never in our shop.','Yes, with gloves','Yes, if it is quick'],0,null,A.outlet)],
+ bench:'With the supervisor: point to the AA and 9V batteries in the kit, name the 3 safety rules out loud, and show where the "STOP" spot is if something gets hot.'},
+
+{id:'VOC.ELEC.L07.02',name:'What Is Electricity?',sub:'Electrons moving in a loop',
+ learn:[
+  {art:A.atom,text:'Everything is made of tiny atoms. Atoms have even tinier parts called electrons. In metal, some electrons can hop from atom to atom.'},
+  {art:A.pipe,text:'Think of water in a pipe loop. The pump pushes the water around, and the water turns a wheel. A battery is the pump: it pushes electrons around a wire loop. The push is called voltage. The flow is called current.'},
+  {art:()=>mini(C('bulb','wire','wire')),text:'When electrons flow through a bulb, the bulb lights up. The blue dots show the flow. Electricity is moving electrons doing work for us.'}],
+ practice:[
+  build('The loop has a gap. Tap the gap to add a wire and make the electrons flow.',C('bulb','gap','wire'),{right:['gap','wire']},'lit','Electrons need a full path. Tap the dashed box on the right side.'),
+  mc('What does the battery do?',['Pushes electrons around the loop','Makes the wire','Stores light inside it'],0,'The battery is like the pump in the water loop.',A.pipe),
+  mc('Voltage means…',['The push','The flow','The color of the wire'],0,'Voltage is how hard the battery pushes.'),
+  build('Two gaps this time. Close them both.',C('bulb','gap','gap'),{right:['gap','wire'],bottom:['gap','wire']},'lit','Every gap must get a wire. One gap is enough to stop the flow.'),
+  mc('In the water loop, the pump is like the…',['Battery','Bulb','Wire'],0,'The pump does the pushing. In a circuit, the battery pushes.',A.pipe),
+  mc('Current means…',['How much is flowing','How hard it pushes','How long the wire is'],0,'Current is the flow, like how much water moves through the pipe.')],
+ check:[
+  mc('What are the tiny parts that flow through a wire?',['Electrons','Batteries','Bulbs'],0,null,A.atom),
+  build('Make the bulb light.',C('bulb','wire','gap'),{bottom:['gap','wire']},'lit'),
+  mc('The push from a battery is called…',['Voltage','Current','Copper'],0)],
+ bench:'With the supervisor: light a bulb with an AA battery in a holder and two clip leads. Point to where the electrons leave the battery and where they come back.'},
+
+{id:'VOC.ELEC.L07.03',name:'Making Electricity',sub:'Chemicals, magnets and light',
+ learn:[
+  {art:A.inside,text:'A battery uses chemicals. Inside, the chemicals push electrons out of the minus end. They travel around the loop and come back to the plus end. When the chemicals are used up, the battery is dead.'},
+  {art:A.gen,text:'A generator spins a magnet inside a coil of copper wire. The moving magnet pushes electrons through the wire. Faster spinning means more push.'},
+  {art:A.solar,text:'A solar panel turns light into a push on electrons. And the power that reaches homes comes from giant generators, spun by wind, falling water, or steam.'}],
+ practice:[
+  gen(2,'Be the generator! Tap SPIN fast to turn the magnet. Keep the bulb bright for 2 seconds.'),
+  mc('A battery makes its push using…',['Chemicals','Sunlight','A spinning magnet'],0,'Inside a battery, chemicals push the electrons.',A.inside),
+  mc('A solar panel makes its push using…',['Light','Chemicals','Water'],0,'Solar panels need light. No light, no push.',A.solar),
+  mc('A wind turbine turns a generator. What is spinning inside it?',['A magnet near a coil of wire','A battery','A light bulb'],0,'Every generator spins a magnet near a coil of wire.',A.turbine),
+  mc('You spin a generator faster. What happens to the bulb?',['It gets brighter','It gets dimmer','Nothing changes'],0,'Faster spinning means more push, so the bulb glows brighter.'),
+  gen(4,'Harder now. Keep the bulb bright for 4 seconds.')],
+ check:[
+  mc('Which one uses a spinning magnet?',['A generator','A battery','A solar panel'],0),
+  mc('A flashlight battery stops working. Why?',['Its chemicals are used up','Its magnet stopped','It needs sunlight'],0),
+  mc('Where does the power for homes mostly come from?',['Giant generators','Tiny AA batteries','The wires make it'],0,null,A.turbine)],
+ bench:'With the supervisor: spin a hand-crank flashlight or toy generator and watch the bulb. Try slow, then fast. Tell the supervisor what changed.'},
+
+{id:'VOC.ELEC.L07.04',name:'The Closed Loop',sub:'Build a complete circuit',
+ learn:[
+  {art:()=>mini(C('bulb','wire','wire')),text:'A circuit is a closed loop: out of the battery, through the bulb, and back to the battery. The word circuit comes from circle.'},
+  {art:()=>mini(C('bulb','gap','wire')),text:'One gap anywhere stops all of the flow. The electrons can\'t jump across air. The bulb goes dark.'},
+  {art:A.short,text:'A loop also needs a load, like a bulb, an LED or a motor. A loop of only wire is a short circuit, and it gets hot. Every circuit you build has a load.'}],
+ practice:[
+  build('Fix the circuit so the bulb lights.',C('gap','wire','bulb'),{top:['gap','wire']},'lit','The gap is on the top. Tap it.'),
+  mc('Will this bulb light?',['No, there is a gap','Yes'],0,'Look for any spot where the wire is broken.',()=>mini(C('bulb','wire','gap'))),
+  build('This board is missing two pieces. Make it light.',C('gap','bulb','gap'),{top:['gap','wire'],bottom:['gap','wire']},'lit','Close every gap. Count them: two.'),
+  mc('Will this bulb light?',['Yes, the loop is closed','No'],0,'Follow the wire all the way around. No gaps means it lights.',()=>mini(C('wire','bulb','wire'))),
+  mc('This loop has only wire and no bulb. What happens?',['It gets hot. Short circuit!','A bright light','Nothing at all'],0,'A loop without a load is a short circuit.',()=>mini(C('wire','wire','wire'))),
+  build('Put the bulb in the loop to make it light. Tap a spot to change what is there.',C('wire','wire','gap'),{bottom:['gap','wire','bulb']},'lit','A wire there would make a short. The bulb is the load.')],
+ check:[
+  build('Make the bulb light.',C('bulb','gap','wire'),{right:['gap','wire']},'lit'),
+  mc('Will this bulb light?',['No, there is a gap','Yes'],0,null,()=>mini(C('gap','bulb','wire'))),
+  mc('Why does every circuit need a load like a bulb?',['Without one it is a short and gets hot','To make it look nice','It doesn\'t need one'],0)],
+ bench:'With the supervisor: build a battery, bulb and clip-lead circuit. Unclip one lead to open the loop, then clip it back. Supervisor signs off in the app.'},
+
+{id:'VOC.ELEC.L07.05',name:'Conductors and Insulators',sub:'What lets electricity through',
+ learn:[
+  {art:()=>mini(C('bulb','coin','wire')),text:'A conductor lets electrons flow through it. Metals are conductors: copper, steel, aluminum foil, coins.'},
+  {art:()=>mini(C('bulb','eraser','wire')),text:'An insulator stops the flow. Plastic, rubber, dry wood, glass and paper are insulators.'},
+  {art:A.wire,text:'A wire uses both. The copper inside carries the electrons. The plastic coat outside keeps them in, and protects your hands.'}],
+ practice:['coin','eraser','foil','wood','clip','band'].map(k=>{const ok=COND[k]===1;return mc(`We put a ${NAMES[k]} in the gap. Will the bulb light?`,['Yes, it conducts','No, it insulates'],ok?0:1,ok?'Metals are conductors. It lets the electrons through.':'It is not metal, so it is an insulator. It blocks the flow.',()=>mini(C('bulb',k,'wire')),{fixed:true,reveal:true});}),
+ check:[
+  mc('We put a steel nail in the gap. Will the bulb light?',['Yes, it conducts','No, it insulates'],0,null,()=>mini(C('bulb','nail','wire')),{fixed:true,reveal:true}),
+  mc('We put a plastic spoon in the gap. Will the bulb light?',['Yes, it conducts','No, it insulates'],1,null,()=>mini(C('bulb','spoon','wire')),{fixed:true,reveal:true}),
+  mc('Why does a wire have a plastic coat?',['Plastic is an insulator, so it keeps the flow in','Plastic makes the flow faster','It is only for color'],0,null,A.wire)],
+ bench:'With the supervisor: make a conductor tester (battery, bulb, two leads with an open gap). Test 6 things from the classroom and sort them into two piles.'},
+
+{id:'VOC.ELEC.L07.06',name:'Switches',sub:'Open and close the loop on purpose',
+ learn:[
+  {art:()=>`<div class="art two">${mini(C('bulb','swOpen','wire'))}${mini(C('bulb','swClosed','wire'))}</div>`,html:true,text:'A switch is a gate in the loop. Open switch: there is a gap, so the light is off. Closed switch: the loop is complete, so the light is on.'},
+  {art:()=>mini(C('bulb','swClosed','wire')),text:'The light switch on your wall does the same thing: it opens and closes a loop. We never open a wall switch. That is wall power.'},
+  {art:()=>mini(C('bulb','swClosed','gap')),text:'A switch only works if the rest of the loop is closed. Here the switch is closed, but there is still a gap, so the bulb stays dark.'}],
+ practice:[
+  build('Tap the switch to turn the light ON.',C('bulb','swOpen','wire'),{right:['swOpen','swClosed']},'lit','Closed means the lever touches the other side.'),
+  build('Now turn the light OFF with the switch.',C('bulb','swClosed','wire'),{right:['swOpen','swClosed']},'off','Open the switch to make a gap on purpose.'),
+  build('The switch is on but the light is dark. Find the problem and fix it.',C('bulb','swClosed','gap'),{right:['swClosed','swOpen'],bottom:['gap','wire']},'lit','The switch is fine. Look at the bottom wire.'),
+  mc('A doorbell button is a switch. When you press it, the loop is…',['Closed','Open'],0,'Pressing the button touches two metal parts together, closing the loop.'),
+  mc('Is the bulb on or off?',['Off, the switch is open','On'],0,'Look at the switch lever. Is it touching?',()=>mini(C('bulb','swOpen','wire'))),
+  build('Two parts are wrong. Make it light.',C('bulb','swOpen','gap'),{right:['swOpen','swClosed'],bottom:['gap','wire']},'lit','Close the switch AND close the gap.')],
+ check:[
+  build('Make the light turn on.',C('swOpen','bulb','gap'),{top:['swOpen','swClosed'],bottom:['gap','wire']},'lit'),
+  mc('An open switch makes…',['A gap, so the light is off','A short circuit','The battery stronger'],0),
+  mc('Is the bulb on or off?',['On, the switch is closed','Off'],0,null,()=>mini(C('bulb','swClosed','wire')))],
+ bench:'With the supervisor: add a slide switch to your bulb circuit. Turn it on and off 3 times. Supervisor signs off.'},
+
+{id:'VOC.ELEC.L08.01',name:'Series and Parallel',sub:'One path or many paths',
+ learn:[
+  {art:()=>spSvg('series',{A:0,B:0}),text:'Series means one path. The electrons go through bulb A, then bulb B. If one bulb comes out, the path is broken and both go dark. Bulbs in series also glow dimmer.'},
+  {art:()=>spSvg('parallel',{A:0,B:0}),text:'Parallel means separate paths. Each bulb gets its own loop to the battery. Take one out and the other stays bright.'},
+  {art:A.house,text:'Homes are wired in parallel, so turning off the kitchen light doesn\'t turn off the whole house. Sukkah lights on one string are often in series: one bad bulb, and the whole string goes dark.'}],
+ practice:[
+  sp('Unscrew one bulb in each circuit. In which circuit does the other bulb stay on?',['Parallel','Series'],0,'Tap a bulb in each circuit to unscrew it, and watch the other bulb.'),
+  sp('With all bulbs in, which circuit has brighter bulbs?',['Parallel','Series'],0,'In series, the two bulbs share one push. In parallel, each gets the full push.'),
+  sp('How many paths does the series circuit have?',['One','Two'],0,'Trace the wire with your finger. Series has only one way around.'),
+  mc('One bulb on a string of sukkah lights burns out, and every bulb goes dark. The string is wired in…',['Series','Parallel'],0,'One path broken means everything stops. That is series.'),
+  mc('Your home is wired in…',['Parallel','Series'],0,'Each room has its own path, so lights can be on or off separately.',A.house),
+  sp('Unscrew bulb A in the parallel circuit. What happens to bulb B?',['It stays on','It goes off'],0,'Parallel bulbs each have their own path.')],
+ check:[
+  sp('Which circuit has only one path for the electrons?',['Series','Parallel'],0),
+  mc('In parallel, one bulb is taken out. The other bulb…',['Stays on','Goes off'],0),
+  mc('Why are homes wired in parallel?',['So each light works on its own','To make every light dimmer','To use less wire'],0,null,A.house)],
+ bench:'With the supervisor: build two bulbs in series, then the same two bulbs in parallel. Unscrew one bulb in each and compare. Supervisor signs off.'},
+
+{id:'VOC.ELEC.L08.02',name:'Using a Meter',sub:'Measure volts and check continuity',
+ learn:[
+  {art:()=>A.meter('1.58'),text:'A multimeter measures electricity. The red probe goes on +, the black probe on −. Turn the dial to V to measure the push, in volts.'},
+  {art:()=>A.meter('1.58'),text:'A fresh AA battery reads about 1.5 to 1.6 volts. A dead one reads much lower, under 1.2. A fresh 9-volt reads about 9.'},
+  {art:()=>A.meter('beep'),text:'Beep mode checks continuity: is the path unbroken? Touch both ends of a wire. A beep means the path is good. No beep means it is broken inside. Only use beep mode with the battery taken out.'}],
+ practice:[
+  meter('aa','Set the dial to V and test this AA battery. Is it good?',['Good','Dead'],0,'Turn the dial to V first, then touch the probes. About 1.5 volts means good.'),
+  meter('aaDead','Test this AA battery in V mode. Is it good?',['Good','Dead'],1,'Under 1.2 volts means it is used up.'),
+  meter('nine','Test this 9-volt battery. Is it good?',['Good','Dead'],0,'A good 9-volt reads close to 9.'),
+  meter('wireGood','Set the dial to beep and test this wire. Is the path good?',['Good','Broken'],0,'A beep means the path is unbroken.'),
+  meter('wireBroken','Test this wire in beep mode. Is the path good?',['Good','Broken'],1,'No beep, and the screen says OL (open loop), so it is broken.'),
+  meter4(2,'Test each wire. The one with no beep is broken.')],
+ check:[
+  meter('aaDead','Test this battery. Is it good?',['Good','Dead'],1),
+  meter('wireBroken','Test this wire. Is the path good?',['Good','Broken'],1),
+  mc('Which mode do you use to measure a battery?',['V (volts)','Beep','Off'],0)],
+ bench:'With the supervisor: measure 3 real batteries and write the readings. Use beep mode to test 2 clip leads. Supervisor signs off.'},
+
+{id:'VOC.ELEC.L09.01',name:'LED Light Builder',sub:'Wire an LED the right way',
+ learn:[
+  {art:A.legs,text:'An LED is a light that only lets electrons go one way. The long leg is plus. The short leg is minus. Put it in backwards and it stays dark. It doesn\'t break, just flip it.'},
+  {art:A.res,text:'An LED can\'t take a big push alone, so it needs a resistor. A resistor is a narrow spot that slows the flow. With a 9-volt battery we use a 470 ohm resistor.'},
+  {art:A.mezuzah,text:'This is your Master project: wire a small LED into a mezuzah case or a display shelf. Battery, resistor, LED, and a switch if you want one.'}],
+ practice:[
+  build('This LED is in backwards. Tap it to flip it.',C('ledRev','res470','wire','9V'),{top:['ledRev','led']},'lit','Long leg (+) goes toward the + side of the battery.'),
+  build('There is no resistor. Tap the right side and pick the 470 Ω resistor.',C('led','wire','wire','9V'),{right:['wire','res470','res1M']},'lit','Without a resistor the LED pops. 1,000,000 Ω slows the flow too much to see.'),
+  mc('What happens with no resistor on a 9-volt battery?',['The LED burns out','It is extra bright and fine','Nothing'],0,'Too much flow burns the LED out.',()=>mini(C('led','wire','wire','9V'))),
+  mc('Which leg of an LED is plus?',['The long leg','The short leg'],0,'Long = plus.',A.legs),
+  build('Fix both problems: flip the LED and add the right resistor.',C('ledRev','wire','wire','9V'),{top:['ledRev','led'],right:['wire','res470','res1M']},'lit','Two fixes: LED direction, then the resistor.'),
+  build('Build the mezuzah light: LED, resistor, and a switch that is ON.',C('ledRev','wire','swOpen','9V'),{top:['ledRev','led'],right:['wire','res470','res1M'],bottom:['swOpen','swClosed']},'lit','Three things to set: LED direction, 470 Ω, switch closed.')],
+ check:[
+  build('Make the LED light safely.',C('ledRev','wire','wire','9V'),{top:['ledRev','led'],right:['wire','res470','res1M']},'lit'),
+  mc('The LED is dark. It is in backwards. What do you do?',['Flip it around','Throw it out','Add more batteries'],0),
+  mc('What does the resistor do?',['Slows the flow to protect the LED','Makes more electricity','Stores light'],0,null,A.res)],
+ bench:'With the supervisor: wire a real LED with a 470 Ω resistor to a 9V battery clip. Then build it into your project. Supervisor signs off.'}
+];
+const BOSS={id:'VOC.ELEC.BOSS',name:'Boss: Fix-It Shop',sub:'8 mixed jobs from every level. Get 7 right to win.'};
+
+/* ---------- map ---------- */
+function bulbNode(state){
+  const on=state==='done';
+  return `<svg class="bulbnode" viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="15" r="16" fill="var(--glow)" opacity="${on?.45:0}"/><circle cx="17" cy="14" r="10" fill="${on?'var(--glow)':'var(--board)'}" stroke="${state==='next'?'var(--blue)':'var(--muted)'}" stroke-width="2.5"/><rect x="12" y="23" width="10" height="7" rx="2" fill="var(--muted)"/></svg>`;
+}
+function unlocked(i){ if(S.unlockAll) return true; if(i===0) return true; return !!S.done[LEVELS[i-1].id]; }
+function showMap(){
+  $('#backBtn').hidden=true; $('#title').textContent='Spark Path: Electricity'; updCash();
+  const all=LEVELS.length, n=LEVELS.filter(l=>S.done[l.id]).length;
+  let nextFound=false;
+  let html=`<p class="intro">Learn how electricity is made and how it moves, one level at a time. Each level has 3 picture lessons, 6 practice games, and 3 check questions. Get all 3 checks right to light up the level. <b>${n} of ${all}</b> levels lit.</p><div class="map">`;
+  LEVELS.forEach((l,i)=>{
+    const done=!!S.done[l.id], open=unlocked(i); let st='locked';
+    if(done) st='done'; else if(open && !nextFound){st='next';nextFound=true;} else if(open) st='open';
+    html+=`<button class="stop ${st==='next'?'next':''}" data-lv="${i}" ${open?'':'disabled'}>${bulbNode(st)}<div style="min-width:0"><div class="num">Level ${i+1} · ${l.id}</div><h3>${l.name}</h3><p>${l.sub}</p></div><span class="meta">${done?'<span class="tag done">Lit</span>':st==='next'?'<span class="tag next">Start</span>':open?'<span class="tag">Open</span>':'<span class="tag">Locked</span>'}</span></button>`;
+  });
+  const bossOpen=S.unlockAll||n===all; const bd=!!S.done[BOSS.id];
+  html+=`<button class="stop boss ${bossOpen&&!bd?'next':''}" data-lv="boss" ${bossOpen?'':'disabled'}>${bulbNode(bd?'done':bossOpen?'next':'locked')}<div style="min-width:0"><div class="num">Boss</div><h3>${BOSS.name}</h3><p>${BOSS.sub}</p></div><span class="meta">${bd?'<span class="tag done">Won</span>':bossOpen?'<span class="tag next">Start</span>':'<span class="tag">Locked</span>'}</span></button></div>`;
+  html+=staffPanel();
+  app.innerHTML=html;
+  app.querySelectorAll('.stop').forEach(b=>b.onclick=()=>{const v=b.dataset.lv; v==='boss'?startBoss():startLevel(+v);});
+  const ua=$('#unlockAll'); if(ua){ua.checked=!!S.unlockAll; ua.onchange=()=>{S.unlockAll=ua.checked;save();showMap();};}
+  const rs=$('#resetAll'); if(rs) rs.onclick=()=>{ if(rs.dataset.armed){S={done:{},cash:0,unlockAll:false};save();showMap();} else {rs.dataset.armed=1; rs.textContent='Tap again to erase progress on this device';} };
+  window.scrollTo(0,0);
+}
+function staffPanel(){
+  return `<details class="staff"><summary>For staff: skill IDs, safety rules, bench sign-offs</summary>
+  <h3>Safety rules for this track</h3><ul><li>Batteries only: AA (1.5 V) and 9 V. Never over 12 V. No wall-current wiring at this age.</li><li>A qualified adult supervises every bench session. Kits stay locked until the boy passes Level 1.</li><li>Every circuit has a load (bulb, LED or resistor). No shorts.</li><li>Beep mode only with the battery removed.</li></ul>
+  <h3>Ladder</h3><div class="tbl"><table><tr><th>#</th><th>Skill ID</th><th>Skill</th><th>Needs</th></tr>
+  ${LEVELS.map((l,i)=>`<tr><td>${i+1}</td><td class="mono">${l.id}</td><td>${l.name}: ${l.sub}</td><td>${i?LEVELS[i-1].name:'Start'}</td></tr>`).join('')}
+  <tr><td>Boss</td><td class="mono">${BOSS.id}</td><td>Mixed fault-finding, 7 of 8</td><td>All 9 levels</td></tr></table></div>
+  <p style="font-size:.88rem;color:var(--muted)">L08.01, L08.02 and L09.01 are the Blueprint's Journeyman/Master electrical skills. L07.01–L07.06 are new draft IDs added underneath them.</p>
+  <h3>Bench tasks (hands-on, supervisor signs off)</h3><ol style="padding-left:20px;font-size:.92rem">${LEVELS.map(l=>`<li>${l.bench}</li>`).join('')}</ol>
+  <h3>Kit per bench</h3><p style="font-size:.92rem;margin:0 0 8px">2 AA holders + AA batteries, 9V battery clip, 4 clip leads, 2 small bulbs (2.5 V) in holders, slide switch, red LEDs, 470 Ω resistors, basic multimeter with beep mode, a tray of test items (coin, foil, nail, eraser, wood stick, rubber band).</p>
+  <h3>Preview</h3><label class="row" style="padding-bottom:10px"><input type="checkbox" id="unlockAll"> Open all levels on this device</label>
+  <div style="padding-bottom:14px"><button class="btn alt small" id="resetAll">Erase progress on this device</button></div></details>`;
+}
+function updCash(){$('#cash').textContent='$'+S.cash;}
+
+/* ---------- How to do it (HOW TO DO IT RULE, DECISION 2026-11-11 1130): short steps for EVERY question, keyed by exact question text.
+   A question text used more than once has one entry that fits every use. \n = new step. ---------- */
+const SP_DO={
+/* L07.01 Safety First */
+'A battery, two wires and a small bulb. Safe or stop?':'Look at the power: is it a small battery or the wall?\nA small battery (12 volts or less) is our bench.\nNothing bare, wet or hot? Then it is safe. Tap your answer.',
+'A paper clip pushed into a wall outlet. Safe or stop?':'Look at the power: is it a small battery or the wall?\nThe wall outlet has 120 volts. That can hurt you badly.\nAnything with the wall is a STOP. Tap your answer.',
+'A lamp cord with bare wire showing, still plugged in. Safe or stop?':'Ask: is it plugged into the wall?\nAsk: can you see bare metal wire?\nWall power plus bare wire is a STOP. Tap your answer.',
+'A 9-volt battery, an LED and a resistor. Safe or stop?':'Check the battery size: is it 12 volts or less?\nCheck for a load (bulb, LED or resistor) in the loop.\nSmall battery and a load means safe. Tap your answer.',
+'A wire going straight from + to − with nothing else. Safe or stop?':'Follow the wire from + all the way to −.\nDid it pass through a bulb, LED or resistor?\nNothing in the loop is a short circuit: it gets hot. Tap your answer.',
+'Building a circuit right next to a cup of water. Safe or stop?':'Look around the circuit, not only at it.\nWater and electricity must never meet.\nIf water is close, it is a STOP until you move it. Tap your answer.',
+'What is the most voltage we use on our bench?':'Think of our two batteries: AA is 1.5 volts, the square one is 9 volts.\nOur rule sets a top number above them.\nTap the choice with that small top number.',
+'Your battery suddenly feels hot. What do you do first?':'Hot means danger. Your hands come first.\nThink: get away from it, then get help.\nTap the choice that does both.',
+'Can we use this for our projects?':'Look at the picture: is it a small battery or a wall outlet?\nA wall outlet is never used in our shop.\nTap your answer.',
+/* L07.02 What Is Electricity? */
+'The loop has a gap. Tap the gap to add a wire and make the electrons flow.':'Find the dashed box. That is the gap.\nTap it until it shows a wire.\nPress Test it.',
+'What does the battery do?':'Think of the water loop.\nWhat job does the pump do for the water?\nThe battery does that same job for the electrons. Tap it.',
+'Voltage means…':'Two words: voltage and current.\nA river\'s current is the water moving along, so current is the flow.\nVoltage is what makes it move. Which choice makes things move? Tap it.',
+'Two gaps this time. Close them both.':'Count the dashed boxes: there are two.\nTap each one until it shows a wire.\nPress Test it.',
+'In the water loop, the pump is like the…':'Ask: what does a pump do? It pushes.\nWhich circuit part pushes the electrons?\nTap it.',
+'Current means…':'Memory hook: a river\'s current is the water moving along.\nAsk: is a current the push, or the amount going by?\nTap the choice that fits a river.',
+'What are the tiny parts that flow through a wire?':'Think of the atom picture.\nThe tiny parts that hop from atom to atom have a name that sounds like the start of electricity.\nSay each choice out loud. Tap the one that matches.',
+'Make the bulb light.':'Follow the loop with your finger from + back to −.\nFind the dashed box with a gap and tap it until it is a wire.\nCheck there is a bulb in the loop, then press Test it.',
+'The push from a battery is called…':'Two words to remember: voltage and current.\nWhich one is the push?\nTap it.',
+/* L07.03 Making Electricity */
+'Be the generator! Tap SPIN fast to turn the magnet. Keep the bulb bright for 2 seconds.':'Put your finger on SPIN.\nTap it fast, over and over, without stopping.\nWatch the bar fill up while the bulb stays bright.',
+'A battery makes its push using…':'Think about what is inside a battery.\nWhen the stuff inside is used up, the battery is dead.\nTap the choice that names that stuff.',
+'A solar panel makes its push using…':'Ask: when does a solar panel work, in the dark or in the sun?\nWhat comes from the sun?\nTap it.',
+'A wind turbine turns a generator. What is spinning inside it?':'Think of the SPIN game you just played.\nWhat did you spin to make the bulb glow?\nEvery generator spins that same thing. Tap it.',
+'You spin a generator faster. What happens to the bulb?':'Faster spinning means a bigger push.\nA bigger push means more flow through the bulb.\nTap what more flow does to a bulb.',
+'Harder now. Keep the bulb bright for 4 seconds.':'Put your finger on SPIN.\nTap fast and steady. Do not stop, even for a moment.\nKeep going until the bar is full.',
+'Which one uses a spinning magnet?':'Remember the three ways: chemicals, light and spinning.\nWhich machine spins a magnet in a coil of wire?\nTap it.',
+'A flashlight battery stops working. Why?':'Ask: what is inside a battery that makes the push?\nCan it last forever, or does it run out?\nTap the choice that explains it.',
+'Where does the power for homes mostly come from?':'Homes need a LOT of power.\nWind, falling water or steam spin something very big.\nTap the choice that names it.',
+/* L07.04 The Closed Loop */
+'Fix the circuit so the bulb lights.':'Follow the loop with your finger.\nFind the dashed gap and tap it until it is a wire.\nPress Test it.',
+'Will this bulb light?':'Put your finger on + and trace the whole loop back to −.\nCheck for a gap, and check that the switch, if there is one, is closed.\nNo break anywhere means it lights. Tap your answer.',
+'This board is missing two pieces. Make it light.':'Count the dashed gaps: there are two.\nTap each one until it is a wire.\nPress Test it.',
+'This loop has only wire and no bulb. What happens?':'Trace the loop: is there a bulb, LED or resistor in it?\nA loop with nothing to slow the flow is a short circuit.\nTap what a short circuit does.',
+'Put the bulb in the loop to make it light. Tap a spot to change what is there.':'Tap the dashed box to see each choice.\nA plain wire there makes a short. You need the load.\nStop on the bulb, then press Test it.',
+'Why does every circuit need a load like a bulb?':'Think: what happens in a loop with only wire?\nThe flow is too big and the wire gets hot.\nTap the choice that says that.',
+/* L07.05 Conductors and Insulators */
+'We put a coin in the gap. Will the bulb light?':'Ask: is a coin made of metal?\nMetal lets electrons through: it conducts.\nTap your answer.',
+'We put a eraser in the gap. Will the bulb light?':'Ask: is an eraser made of metal?\nThings that are not metal block the flow: they insulate.\nTap your answer.',
+'We put a foil in the gap. Will the bulb light?':'Ask: is foil made of metal?\nMetal lets electrons through: it conducts.\nTap your answer.',
+'We put a wood stick in the gap. Will the bulb light?':'Ask: is wood a metal?\nThings that are not metal block the flow: they insulate.\nTap your answer.',
+'We put a paper clip in the gap. Will the bulb light?':'Ask: is a paper clip made of metal?\nMetal lets electrons through: it conducts.\nTap your answer.',
+'We put a rubber band in the gap. Will the bulb light?':'Ask: is rubber a metal?\nThings that are not metal block the flow: they insulate.\nTap your answer.',
+'We put a steel nail in the gap. Will the bulb light?':'Ask: is steel a metal?\nMetal lets electrons through: it conducts.\nTap your answer.',
+'We put a plastic spoon in the gap. Will the bulb light?':'Ask: is plastic a metal?\nThings that are not metal block the flow: they insulate.\nTap your answer.',
+'Why does a wire have a plastic coat?':'Copper inside carries the flow. Plastic outside blocks it.\nAsk: why keep the flow inside the copper?\nTap the choice about insulators.',
+/* L07.06 Switches */
+'Tap the switch to turn the light ON.':'Find the switch (the dashed box).\nON means the lever touches the other side and closes the loop.\nTap until it is closed, then press Test it.',
+'Now turn the light OFF with the switch.':'Find the switch (the dashed box).\nOFF means the lever is lifted: a gap on purpose.\nTap until it is open, then press Test it.',
+'The switch is on but the light is dark. Find the problem and fix it.':'The switch is already closed, so look at the rest of the loop.\nFind the dashed gap and tap it until it is a wire.\nPress Test it.',
+'A doorbell button is a switch. When you press it, the loop is…':'Pressing the button makes the bell ring.\nThe bell rings only when the loop has no gap.\nTap the word for a loop with no gap.',
+'Is the bulb on or off?':'Look at the switch lever.\nIs it touching the other side (closed) or lifted (open)?\nClosed means on, open means off. Tap your answer.',
+'Two parts are wrong. Make it light.':'Count the dashed boxes: a switch and a gap.\nClose the switch, then tap the gap until it is a wire.\nPress Test it.',
+'Make the light turn on.':'Look at every dashed box.\nClose the switch and fill any gap with a wire.\nPress Test it.',
+'An open switch makes…':'Picture the lever lifted up.\nCan the electrons jump across the air?\nWhat does that do to the light? Tap it.',
+/* L08.01 Series and Parallel */
+'Unscrew one bulb in each circuit. In which circuit does the other bulb stay on?':'Tap one bulb in the left circuit and watch the other bulb.\nDo the same in the right circuit.\nTap the circuit where the other bulb stayed lit.',
+'With all bulbs in, which circuit has brighter bulbs?':'Look at both circuits with all the bulbs in.\nCompare how bright the bulbs glow.\nTap the circuit with the brighter bulbs.',
+'How many paths does the series circuit have?':'Put your finger on + in the series circuit.\nTrace every way the wire can go back to −.\nCount the paths and tap the number.',
+'One bulb on a string of sukkah lights burns out, and every bulb goes dark. The string is wired in…':'Ask: when one bulb stopped, did ALL of them stop?\nThat happens when there is only one path.\nTap the word for one path.',
+'Your home is wired in…':'Think: when you turn off your room light, does the kitchen go dark?\nNo. Each room has its own path.\nTap the word for many paths.',
+'Unscrew bulb A in the parallel circuit. What happens to bulb B?':'Tap bulb A in the parallel circuit to unscrew it.\nWatch bulb B.\nTap what you saw.',
+'Which circuit has only one path for the electrons?':'Trace each circuit with your finger.\nCount the ways around from + to −.\nTap the circuit with just one way.',
+'In parallel, one bulb is taken out. The other bulb…':'In parallel, each bulb has its own path.\nTaking one out does not break the other path.\nTap what happens to the other bulb.',
+'Why are homes wired in parallel?':'Think: when you turn off your room light, does the kitchen go dark?\nWhy not? What does parallel give each light?\nTap the choice that explains it.',
+/* L08.02 Using a Meter */
+'Set the dial to V and test this AA battery. Is it good?':'Turn the dial to V.\nTouch red to + and black to −. Read the number.\nAbout 1.5 is good. Under 1.2 is dead. Tap your answer.',
+'Test this AA battery in V mode. Is it good?':'Turn the dial to V.\nTouch red to + and black to −. Read the number.\nAbout 1.5 is good. Under 1.2 is dead. Tap your answer.',
+'Test this 9-volt battery. Is it good?':'Turn the dial to V.\nTouch red to + and black to −. Read the number.\nClose to 9 is good. Much lower is dead. Tap your answer.',
+'Set the dial to beep and test this wire. Is the path good?':'Turn the dial to beep.\nTouch one probe to each end of the wire.\nA beep means the path is good. No beep or OL means broken. Tap your answer.',
+'Test this wire in beep mode. Is the path good?':'Turn the dial to beep.\nTouch one probe to each end of the wire.\nA beep means good. No beep or OL means broken. Tap your answer.',
+'One of these 4 wires is broken inside its plastic coat. Set the dial to beep, test each wire, then tap the broken one.':'Turn the dial to beep.\nTest wire A, then B, then C, then D, one at a time.\nTap the wire that did NOT beep.',
+'Test this battery. Is it good?':'Turn the dial to V and touch red to +, black to −.\nRead the number and compare it to the battery size.\nNear its size is good. Far below is dead. Tap your answer.',
+'Test this wire. Is the path good?':'Turn the dial to beep.\nTouch one probe to each end of the wire.\nBeep means good. No beep or OL means broken. Tap your answer.',
+'Which mode do you use to measure a battery?':'A battery gives a push. What is the push called?\nLook at the letters on the meter dial.\nWhich one is the first letter of that word? Tap it.',
+/* L09.01 LED Light Builder */
+'This LED is in backwards. Tap it to flip it.':'Find the LED in the dashed box.\nThe long leg (+) must point toward the + side of the battery.\nTap to flip it, then press Test it.',
+'There is no resistor. Tap the right side and pick the 470 Ω resistor.':'Tap the dashed box on the right side.\nKeep tapping until it says 470 Ω (not 1,000,000).\nPress Test it.',
+'What happens with no resistor on a 9-volt battery?':'The resistor slows the flow.\nWithout it, too much flow rushes through the LED.\nTap what too much flow does to an LED.',
+'Which leg of an LED is plus?':'Look at the LED: one leg is long, one is short.\nMemory hook: plus means MORE, so it gets the leg with more metal.\nTap that leg.',
+'Fix both problems: flip the LED and add the right resistor.':'First, flip the LED so the long leg points to +.\nNext, tap the right side until it shows 470 Ω.\nPress Test it.',
+'Build the mezuzah light: LED, resistor, and a switch that is ON.':'Flip the LED so the long leg points to +.\nSet the resistor to 470 Ω.\nClose the switch, then press Test it.',
+'Make the LED light safely.':'Check the LED: long leg toward +. Flip it if needed.\nCheck the resistor: it must be 470 Ω.\nPress Test it.',
+'The LED is dark. It is in backwards. What do you do?':'An LED only works one way round.\nIf it is backwards, turn it the other way.\nTap the choice that does that.',
+'What does the resistor do?':'Think of the narrow spot in a water pipe.\nWhat does a narrow spot do to the water going through?\nWhy would a tiny LED need that? Tap the choice.'
+};
+function spHow(it){ const t=SP_DO[it.q]; if(!t) return '';
+  const lines=t.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+  return `<div class="how"><div class="row"><b>How to do it</b>${sayBtn(lines.join('. '))}</div><ol>${lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ol></div>`; }
+/* ---------- school record (v59): when Spark Path runs inside the boy's app, send each answer and each finished level
+   up to the app. The app saves them like any other lesson; the server checks them and sets every amount. ---------- */
+function spPost(m){ try{ if(window===window.top) return; m.tlSpark=1; let w=window; for(let i=0;i<6&&w!==w.parent;i++){ w=w.parent; w.postMessage(m,'*'); } }catch(e){} }
+/* ---------- lesson runner ---------- */
+let R=null;
+function startLevel(i){ const L=LEVELS[i]; R={L,i,phase:'learn',k:0,results:[],first:true}; render(); }
+function startBoss(){
+  const pool=LEVELS.flatMap(l=>l.check);
+  R={L:Object.assign({},BOSS,{check:shuffle(pool).slice(0,8)}),boss:true,phase:'check',k:0,results:[]}; render();
+}
+function header(){
+  const ph=R.boss?[['check','8 jobs']]:[['learn','Learn'],['practice','Practice'],['check','Check']];
+  const order=['learn','practice','check','done'];
+  return `<div class="phases">${ph.map(([p,n])=>`<span class="phase ${R.phase===p?'on':order.indexOf(R.phase)>order.indexOf(p)?'ok':''}">${n}</span>`).join('')}</div>`;
+}
+function dots(total){
+  let s='<span class="dots" aria-hidden="true">';
+  for(let j=0;j<total;j++){const r=R.results[j]; s+=`<i class="${r===true?'ok':r===false?'no':j===R.k?'cur':''}"></i>`;}
+  return s+'</span>';
+}
+function render(){
+  $('#backBtn').hidden=false; $('#title').textContent=R.L.name;
+  if(R.phase==='learn') return renderLearn();
+  if(R.phase==='practice'||R.phase==='check') return renderItem();
+  if(R.phase==='done') return renderDone();
+}
+function renderLearn(){
+  const c=R.L.learn[R.k];
+  const art= c.html? c.art() : `<div class="art">${c.art()}</div>`;
+  app.innerHTML=header()+`<section class="card"><div class="row"><b>Picture lesson ${R.k+1} of 3</b><span class="dots">${[0,1,2].map(j=>`<i class="${j<R.k?'ok':j===R.k?'cur':''}"></i>`).join('')}</span></div>${art}<div class="say">${sayBtn(c.text)}<p>${c.text}</p></div>
+  <div class="row end">${R.k>0?'<button class="btn alt" id="prev">Back</button>':''}<button class="btn" id="next">${R.k<2?'Next picture':'Start practice'}</button></div></section>`;
+  $('#next').onclick=()=>{ if(R.k<2){R.k++;} else {R.phase='practice';R.k=0;R.results=[];} render(); window.scrollTo(0,0); };
+  const p=$('#prev'); if(p) p.onclick=()=>{R.k--;render();};
+}
+function current(){ return R.phase==='practice'? R.L.practice[R.k] : R.L.check[R.k]; }
+function total(){ return R.phase==='practice'? R.L.practice.length : R.L.check.length; }
+function renderItem(){
+  const it=current(), isCheck=R.phase==='check';
+  const label= R.boss?`Job ${R.k+1} of ${total()}`: isCheck?`Check ${R.k+1} of 3 · no hints`:`Practice ${R.k+1} of 6`;
+  app.innerHTML=header()+`<section class="card" id="itemCard"><div class="row"><b>${label}</b>${dots(total())}</div>${spHow(it)}<div id="itemBody"></div><div id="fb" aria-live="polite"></div><div class="row end" id="nav"></div></section>`;
+  R.tries=0;
+  ITEMS[it.t](it,$('#itemBody'),(ok,explain)=>answered(ok,explain,it));
+  window.scrollTo(0,0);
+}
+function answered(ok,explain,it){
+  const isCheck=R.phase==='check'; const fb=$('#fb'), nav=$('#nav');
+  if(isCheck){
+    R.results[R.k]=ok; ok?yay():nope();
+    spPost({ev:{skill:R.boss?BOSS.id:R.L.id,phase:R.boss?'sparkboss':'check',item:it.q,ok:!!ok,first:!!ok,tries:1}});
+    fb.innerHTML= ok?`<div class="fb good">Correct.</div>`:`<div class="fb bad">Not this time.${explain?' '+explain:''}</div>`;
+    nav.innerHTML=`<button class="btn" id="go">${R.k<total()-1?'Next':'See result'}</button>`;
+    $('#itemBody').querySelectorAll('button,[role=button],[data-slot]').forEach(b=>{if(!b.dataset.say&&!b.classList.contains('keep')) {b.disabled=true;b.style.pointerEvents='none';}});
+    $('#go').onclick=()=>{ if(R.k<total()-1){R.k++;renderItem();} else {R.phase='done';render();} };
+    $('#go').focus();
+    return true;
+  }
+  R.tries++;
+  if(ok){ if(R.results[R.k]===undefined) R.results[R.k]=R.tries===1; yay();
+    spPost({ev:{skill:R.L.id,phase:'practice',item:it.q,ok:true,first:R.tries===1,tries:R.tries}});
+    fb.innerHTML=`<div class="fb good">${R.tries===1?'Yes! First try.':'Got it.'}${explain?' '+explain:''}</div>`;
+    nav.innerHTML=`<button class="btn" id="go">${R.k<total()-1?'Next':'Go to the check'}</button>`;
+    $('#go').onclick=()=>{ if(R.k<total()-1){R.k++;renderItem();} else {R.phase='check';R.k=0;R.results=[];renderItem();} };
+    $('#go').focus(); return true;
+  }
+  nope();
+  const hint=it.hint||'Look again.';
+  fb.innerHTML=`<div class="fb bad">Not yet. <span style="font-weight:400">${hint}</span> Try again.</div>`;
+  speak('Not yet. '+hint);
+  return false;
+}
+function renderDone(){
+  if(R.boss){
+    const n=R.results.filter(Boolean).length, win=n>=7;
+    if(win&&!S.done[BOSS.id]){S.done[BOSS.id]=true;S.cash+=30;save();burst();}
+    spPost({boss:BOSS.id,n,win});
+    updCash();
+    app.innerHTML=`<section class="card" style="text-align:center"><div class="big">${n} of 8</div><h2>${win?'Fix-It Shop beaten!':'Not yet'}</h2><p>${win?'You fixed '+n+' of 8 jobs. The whole Spark Path is lit.':'You need 7 of 8. Look at the levels where you missed, then try the boss again.'}</p><div class="row" style="justify-content:center"><button class="btn" id="map">Back to the map</button>${win?'':'<button class="btn alt" id="again">Try again</button>'}</div></section>`;
+    $('#map').onclick=showMap; const a=$('#again'); if(a) a.onclick=startBoss; return;
+  }
+  const n=R.results.filter(Boolean).length, pass=n===3, L=R.L;
+  let paid=false;
+  if(pass&&!S.done[L.id]){S.done[L.id]=true;S.cash+=20;paid=true;save();burst();}
+  spPost({done:L.id,pass});
+  updCash();
+  const nextI=R.i+1<LEVELS.length?R.i+1:null;
+  app.innerHTML=header().replace('class="phase on"','class="phase ok"')+`<section class="card"><div style="text-align:center"><div class="big">${n} of 3</div><h2>${pass?'Level lit!':'Not yet'}</h2><p>${pass?'You mastered '+L.name+'.':'You need all 3. Practice again, then retry the check. You\'ve got this.'}</p></div>
+   ${pass?`<div class="bench"><b>BENCH TASK</b> <span class="tag">with your supervisor</span><p style="margin:6px 0 0">${L.bench}</p></div>`:''}
+   <div class="row" style="justify-content:center">${pass?(nextI!==null?`<button class="btn" id="nx">Next level: ${LEVELS[nextI].name}</button>`:'<button class="btn" id="bs">Take on the Boss</button>'):'<button class="btn" id="rp">Practice again</button><button class="btn alt" id="rc">Retry the check</button>'}<button class="btn alt" id="map">Map</button></div></section>`;
+  $('#map').onclick=showMap;
+  const nx=$('#nx'); if(nx) nx.onclick=()=>startLevel(nextI);
+  const bs=$('#bs'); if(bs) bs.onclick=startBoss;
+  const rp=$('#rp'); if(rp) rp.onclick=()=>{R.phase='practice';R.k=0;R.results=[];renderItem();};
+  const rc=$('#rc'); if(rc) rc.onclick=()=>{R.phase='check';R.k=0;R.results=[];renderItem();};
+}
+$('#backBtn').onclick=()=>{try{speechSynthesis.cancel()}catch(e){} stopGen(); showMap();};
+
+/* ---------- item renderers ---------- */
+const artOf=a=>a?(typeof a==='function'?a():a):'';
+const ITEMS={
+ mc(it,el,done){
+  const order= it.fixed? it.opts.map((_,i)=>i) : shuffle(it.opts.map((_,i)=>i));
+  const isCheck=R.phase==='check';
+  el.innerHTML=(it.art?`<div class="art" id="mcart">${artOf(it.art)}</div>`:'')+`<div class="say">${sayBtn(it.q)}<p class="q">${it.q}</p></div><div class="opts">${order.map(i=>`<button class="opt ${it.sort?(i===0?'safe':'danger'):''}" data-i="${i}">${esc(it.opts[i])}</button>`).join('')}</div>`;
+  if(it.reveal) el.querySelector('#mcart').innerHTML=revealHide(it);
+  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i, ok=i===it.a;
+    b.classList.add(ok?'right':'wrong');
+    if(it.reveal&&(ok||isCheck)) el.querySelector('#mcart').innerHTML=artOf(it.art);
+    const fin=done(ok, isCheck&&!ok?'The answer: '+it.opts[it.a]+'.':'');
+    if(fin||isCheck) el.querySelectorAll('.opt').forEach(x=>x.disabled=true);
+    if(isCheck&&!ok) el.querySelector(`.opt[data-i="${it.a}"]`).classList.add('right');
+  });
+ },
+ build(it,el,done){
+  const c=Object.assign({},it.c); const isCheck=R.phase==='check';
+  const draw=()=>{ const st=evalC(c);
+    el.innerHTML=`<div class="say">${sayBtn(it.q)}<p class="q">${it.q}</p></div><div class="art">${circ(c,{edit:it.edit})}</div><p class="hinttap">Tap a dashed box to change that part. Then press Test it.</p><div class="row end"><button class="btn" id="test">Test it</button></div>`;
+    el.querySelectorAll('[data-slot]').forEach(g=>{const f=()=>{const s=g.dataset.slot, list=it.edit[s]; c[s]=list[(list.indexOf(c[s])+1)%list.length]; tone(520,.05,'square',.05); draw(); const n=el.querySelector(`[data-slot="${s}"]`); n&&n.focus();};
+      g.addEventListener('click',f); g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}});});
+    $('#test').onclick=()=>{ const s=evalC(c); const hasGap=[c.top,c.right,c.bottom].includes('gap');
+      const ok= it.goal==='lit'? s==='lit' : (s==='open'&&!hasGap);
+      const why= s==='short'?'That made a short circuit. It gets hot!': s==='burnt'?'The LED popped. It needs a resistor.': s==='dim'?'Too much resistance: the flow is too small to light it.': s==='open'&&it.goal==='lit'?'The loop is still open somewhere.':'';
+      if(!ok&&why&&!isCheck){ $('#fb').innerHTML=''; }
+      const fin=done(ok, why);
+      if(!ok&&why&&!isCheck){ $('#fb').insertAdjacentHTML('afterbegin',`<div class="fb info">${why}</div>`); }
+      if(fin||isCheck){ el.querySelectorAll('[data-slot]').forEach(g=>{g.style.pointerEvents='none';g.removeAttribute('tabindex');}); $('#test').disabled=true; }
+    };
+  };
+  draw();
+ },
+ gen(it,el,done){
+  el.innerHTML=`<div class="say">${sayBtn(it.q)}<p class="q">${it.q}</p></div>
+   <div class="art"><svg viewBox="0 0 400 220" role="img" aria-label="Generator: magnet inside a coil connected to a bulb"><rect width="400" height="220" rx="16" class="board"/>
+   <g transform="translate(130 110)">${[...Array(9)].map((_,i)=>`<ellipse cx="${-48+i*12}" cy="0" rx="5" ry="62" class="w" stroke-width="3"/>`).join('')}<g id="mag"><rect x="-40" y="-11" width="40" height="22" class="redf"/><rect x="0" y="-11" width="40" height="22" class="bluef"/><text x="-20" y="5" text-anchor="middle" class="battxt">N</text><text x="20" y="5" text-anchor="middle" class="battxt">S</text></g></g>
+   <path d="M178 70 H300 V95 M178 150 H300 V130" class="w"/><g transform="translate(300 112)"><circle id="gh" cy="-6" r="34" fill="var(--glow)" opacity="0"/><rect x="-9" y="8" width="18" height="12" class="base"/><circle id="gg" cy="-6" r="15" class="glass"/></g></svg></div>
+   <div><div class="meterbar" aria-hidden="true"><i id="gbar"></i></div><p class="hinttap" id="gtxt">Bright time: 0.0 of ${it.secs} seconds</p></div>
+   <div class="row" style="justify-content:center"><button class="btn keep" id="spin" style="min-width:200px;font-size:1.2rem">SPIN!</button></div>`;
+  let v=0,ang=0,held=0,last=performance.now(),fin=false;
+  const btn=$('#spin'); const kick=()=>{v=Math.min(1.5,v+.2);};
+  btn.addEventListener('pointerdown',e=>{e.preventDefault();kick();});
+  btn.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();kick();}});
+  const loop=t=>{ const dt=Math.min(.05,(t-last)/1000); last=t; v=Math.max(0,v-dt*.9); ang+=v*900*dt;
+    const m=document.getElementById('mag'); if(!m){return;}
+    m.setAttribute('transform',`rotate(${ang})`);
+    const b=Math.min(1,v/.9); document.getElementById('gh').setAttribute('opacity',(b*.6).toFixed(2));
+    document.getElementById('gg').style.fill=`color-mix(in srgb, var(--glow) ${Math.round(b*100)}%, var(--glass))`;
+    if(b>.7&&!fin) held+=dt; else if(!fin) held=Math.max(0,held-dt*.5);
+    $('#gbar').style.width=Math.min(100,held/it.secs*100)+'%'; $('#gtxt').textContent=`Bright time: ${Math.min(held,it.secs).toFixed(1)} of ${it.secs} seconds`;
+    if(held>=it.secs&&!fin){fin=true; btn.disabled=true; done(true,'You made electricity with motion, just like a power plant.');}
+    GEN=requestAnimationFrame(loop); };
+  stopGen(); GEN=requestAnimationFrame(loop);
+ },
+ sp(it,el,done){
+  const outs={series:{A:0,B:0},parallel:{A:0,B:0}}; const isCheck=R.phase==='check';
+  el.innerHTML=`<div class="say">${sayBtn(it.q)}<p class="q">${it.q}</p></div><div class="art two" id="sps"></div><p class="hinttap">Tap a bulb to unscrew it. Tap again to screw it back in.</p><div class="opts">${it.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div>`;
+  const draw=()=>{ $('#sps').innerHTML=spSvg('series',outs.series)+spSvg('parallel',outs.parallel);
+    $('#sps').querySelectorAll('svg').forEach((s,si)=>{const mode=si?'parallel':'series'; s.querySelectorAll('[data-bulb]').forEach(b=>{const f=()=>{outs[mode][b.dataset.bulb]^=1; tone(400,.05,'square',.05); draw();}; b.addEventListener('click',f); b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}});});});
+  };
+  draw();
+  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=+b.dataset.i===it.a; b.classList.add(ok?'right':'wrong'); const fin=done(ok,isCheck&&!ok?'The answer: '+it.opts[it.a]+'.':''); if(fin||isCheck) el.querySelectorAll('.opt').forEach(x=>x.disabled=true); if(isCheck&&!ok) el.querySelector(`.opt[data-i="${it.a}"]`).classList.add('right');});
+ },
+ meter(it,el,done){
+  const isCheck=R.phase==='check'; let mode='off', reading='';
+  const T={aa:{kind:'bat',v:'1.58',lbl:'AA'},aaDead:{kind:'bat',v:'0.42',lbl:'AA'},nine:{kind:'bat',v:'9.21',lbl:'9V'},wireGood:{kind:'wire',ok:1},wireBroken:{kind:'wire',ok:0}}[it.target];
+  const tgt= T.kind==='bat'? `<g transform="translate(70 115)">${batt(T.lbl)}</g>` : `<path d="M30 120 H120" stroke="#2D5BA5" stroke-width="12" stroke-linecap="round"/><path d="M18 120 H30 M120 120 H132" class="w"/>`;
+  const draw=(touch)=>{
+    $('#mt').innerHTML=`<svg viewBox="0 0 400 230" role="img" aria-label="Meter reading ${reading||'blank'}"><rect width="400" height="230" rx="16" class="board"/>${tgt}
+     <g transform="translate(130 0)"><rect x="110" y="16" width="120" height="196" rx="16" class="meterbody"/><rect x="122" y="30" width="96" height="44" rx="4" class="disp"/><text x="170" y="62" text-anchor="middle" class="disptxt" style="font-size:${reading.length>5?18:26}px">${reading}</text>
+     <text x="170" y="100" text-anchor="middle" class="lblb">${mode==='V'?'V⎓':mode==='beep'?'beep':'off'}</text><circle cx="170" cy="140" r="26" class="inkf"/><line x1="170" y1="140" x2="${mode==='V'?170:mode==='beep'?194:146}" y2="${mode==='V'?116:140}" stroke="#fff" stroke-width="5" stroke-linecap="round"/></g>
+     ${touch? (T.kind==='bat'?`<path d="M282 195 C220 230 120 40 70 75" stroke="#C6352B" stroke-width="4" fill="none"/><path d="M318 195 C300 240 120 230 70 160" stroke="#555" stroke-width="4" fill="none"/>`:`<path d="M282 195 C220 230 40 180 18 120" stroke="#C6352B" stroke-width="4" fill="none"/><path d="M318 195 C330 240 150 200 132 120" stroke="#555" stroke-width="4" fill="none"/>`):''}</svg>`;
+  };
+  el.innerHTML=`<div class="say">${sayBtn(it.q)}<p class="q">${it.q}</p></div><div class="art" id="mt"></div>
+   <div class="row" style="justify-content:center"><span class="dial" role="group" aria-label="Meter dial"><button class="btn alt small keep" data-m="off">Off</button><button class="btn alt small keep" data-m="V">V (volts)</button><button class="btn alt small keep" data-m="beep">Beep</button></span><button class="btn small keep" id="touch">Touch the probes</button></div><div id="mnote"></div>
+   <div class="opts">${it.opts.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join('')}</div>`;
+  const setM=m=>{mode=m; reading=''; el.querySelectorAll('[data-m]').forEach(b=>b.classList.toggle('on',b.dataset.m===mode)); $('#mnote').innerHTML=''; draw(false);};
+  el.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{tone(300,.04,'square',.05);setM(b.dataset.m);});
+  $('#touch').onclick=()=>{ let note='';
+    if(mode==='off'){reading='';note='The meter is off. Turn the dial first.';}
+    else if(T.kind==='bat'){ if(mode==='V'){reading=T.v;} else {reading='—'; note='Beep mode is only for parts with no battery in them. Use V for batteries.';} }
+    else { if(mode==='beep'){ reading=T.ok?'0.2':'OL'; if(T.ok) tone(2400,.35,'square',.08); note=T.ok?'BEEP! The path is unbroken.':'No beep. OL means open loop.'; } else {reading='0.00'; note='0 volts: a wire has no push of its own. Use beep mode for wires.';} }
+    draw(true); $('#mnote').innerHTML=note?`<div class="fb info">${note}</div>`:'';
+  };
+  setM('off');
+  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=+b.dataset.i===it.a; b.classList.add(ok?'right':'wrong'); const fin=done(ok,isCheck&&!ok?'The answer: '+it.opts[it.a]+'.':''); if(fin||isCheck) el.querySelectorAll('.opt').forEach(x=>x.disabled=true); if(isCheck&&!ok) el.querySelector(`.opt[data-i="${it.a}"]`).classList.add('right');});
+ },
+ meter4(it,el,done){
+  let mode='off'; const L='ABCD';
+  el.innerHTML=`<div class="say">${sayBtn(it.q)}<p class="q">${it.q}</p></div>
+   <div class="row" style="justify-content:center"><span class="dial"><button class="btn alt small keep" data-m="off">Off</button><button class="btn alt small keep" data-m="V">V (volts)</button><button class="btn alt small keep" data-m="beep">Beep</button></span></div>
+   <div class="opts">${[0,1,2,3].map(i=>`<div class="card" style="padding:12px;gap:8px"><svg viewBox="0 0 200 40" aria-hidden="true"><path d="M20 20 H180" stroke="#2D5BA5" stroke-width="12" stroke-linecap="round"/><path d="M6 20 H20 M180 20 H194" class="w"/></svg><div class="row"><b>Wire ${L[i]}</b><span class="mono" id="r${i}" style="margin-left:auto">—</span></div><button class="btn alt small keep" data-t="${i}">Test wire ${L[i]}</button></div>`).join('')}</div>
+   <p class="q" style="margin:0">Which wire is broken?</p><div class="opts">${[0,1,2,3].map(i=>`<button class="opt" data-i="${i}">Wire ${L[i]}</button>`).join('')}</div>`;
+  el.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m; el.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('on',x===b)); tone(300,.04,'square',.05);});
+  el.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const i=+b.dataset.t, r=$('#r'+i);
+    if(mode!=='beep'){ r.textContent= mode==='V'?'0.00 V':'off'; $('#fb').innerHTML=`<div class="fb info">Set the dial to Beep to check a wire.</div>`; return; }
+    $('#fb').innerHTML=''; if(i===it.broken){ r.textContent='OL · no beep'; } else { r.textContent='beep ✓'; tone(2400,.3,'square',.08);} });
+  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{const ok=+b.dataset.i===it.broken; b.classList.add(ok?'right':'wrong'); const fin=done(ok,''); if(fin) el.querySelectorAll('.opt').forEach(x=>x.disabled=true);});
+ }
+};
+function revealHide(it){ // show the circuit with the test item but no flow yet
+  const svg=artOf(it.art); return svg.replace(/<path d="M60 165[^>]*class="e"\/>/,'').replace(/class="on"/g,'').replace(/st-(lit|open)/,'st-wait');
+}
+let GEN=null; function stopGen(){ if(GEN) cancelAnimationFrame(GEN); GEN=null; }
+
+/* ---------- celebration ---------- */
+function burst(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cv=$('#burst'), x=cv.getContext('2d'); cv.width=innerWidth; cv.height=innerHeight;
+  const cols=['#FFC21A','#B5602A','#2D61D4','#1E8C57'];
+  const P=[...Array(90)].map(()=>({x:innerWidth/2,y:innerHeight*.35,vx:(Math.random()-.5)*12,vy:Math.random()*-11-3,s:Math.random()*5+3,c:cols[Math.floor(Math.random()*4)],l:1}));
+  let f=0; const step=()=>{ x.clearRect(0,0,cv.width,cv.height); P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.l-=.012; x.globalAlpha=Math.max(0,p.l); x.fillStyle=p.c; x.fillRect(p.x,p.y,p.s,p.s*1.6);}); if(++f<110) requestAnimationFrame(step); else x.clearRect(0,0,cv.width,cv.height); };
+  step(); yay(); setTimeout(()=>tone(1320,.25),260);
+}
+
+showMap();
+</script>

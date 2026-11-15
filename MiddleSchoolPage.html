@@ -1,0 +1,1505 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body><title>Tashbar Pilot Week</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Andika:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a staff roster that opens each boy's week as four lanes (Math, Reading, Writing, Trades) x Mon–Fri; missions play full-width over it. Same palette and faces as the Tashbar app v3 preview. */
+:root{
+ --bg:#F5F7FC; --card:#FFFFFF; --ink:#1E2747; --soft:#4A5577; --line:#D9E1F1; --accent:#5B3BE0; --accent-l:#ECE8FF;
+ --ok:#1C7F4D; --ok-l:#E1F4E9; --wait:#8A5A00; --wait-l:#FFF1D6; --bad:#B4321F; --bad-l:#FFE8E3; --gold:#E0A100; --gold-l:#FFF4CC;
+ --math:#2F6FE4; --math-l:#E6EEFD; --read:#0E8F7E; --read-l:#DFF4F0; --writ:#C9581A; --writ-l:#FCEBDF; --voc:#8A5A2B; --voc-l:#F3E9DE;
+ --display:'Fredoka',ui-rounded,'Segoe UI',system-ui,sans-serif; --body:'Andika','Segoe UI',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#11162D;--card:#1A2142;--ink:#EEF2FF;--soft:#B3BCDB;--line:#2F3966;--accent:#A792FF;--accent-l:#2A2558;--ok:#5CD496;--ok-l:#173828;--wait:#FFC46B;--wait-l:#3A2C14;--bad:#FF8A78;--bad-l:#43221E;--gold:#FFCB45;--gold-l:#3B3112;--math:#7FA8FF;--math-l:#1D2B52;--read:#4FD1BC;--read-l:#14332F;--writ:#FF9B61;--writ-l:#3A2416;--voc:#D9A774;--voc-l:#33271C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11162D;--card:#1A2142;--ink:#EEF2FF;--soft:#B3BCDB;--line:#2F3966;--accent:#A792FF;--accent-l:#2A2558;--ok:#5CD496;--ok-l:#173828;--wait:#FFC46B;--wait-l:#3A2C14;--bad:#FF8A78;--bad-l:#43221E;--gold:#FFCB45;--gold-l:#3B3112;--math:#7FA8FF;--math-l:#1D2B52;--read:#4FD1BC;--read-l:#14332F;--writ:#FF9B61;--writ-l:#3A2416;--voc:#D9A774;--voc-l:#33271C;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:17px/1.55 var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;text-wrap:balance}
+h1{font-size:clamp(28px,5.5vw,40px)} h2{font-size:22px}
+p{margin:0} a{color:var(--accent)}
+.mono{font-family:var(--mono);font-size:.82em;letter-spacing:-.01em}
+.small{font-size:14px;color:var(--soft)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.wrap{max-width:1100px;margin:0 auto;padding-block:14px 64px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:6px 14px}
+.brand{font-family:var(--display);font-weight:700;font-size:18px;display:flex;gap:8px;align-items:center;color:var(--ink);text-decoration:none}
+.brand .logo{width:30px;height:30px;border-radius:9px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:15px}
+.seg{display:inline-flex;background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;font:600 15px var(--display);color:var(--soft);padding:6px 14px;border-radius:999px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:#fff}
+#app{display:grid;gap:22px;grid-template-columns:minmax(0,1fr)}
+.hero{display:grid;gap:4px}.sub{color:var(--soft)}
+.note{background:var(--wait-l);color:var(--wait);border-radius:12px;padding:10px 14px}
+.empty{background:var(--card);border:1.5px dashed var(--line);border-radius:18px;padding:28px;display:grid;gap:8px}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:12px;min-width:0}
+.card.danger{border-style:dashed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row.center{justify-content:center}
+.btn{font:600 16px var(--display);color:var(--ink);border:1.5px solid var(--ink);background:var(--card);border-radius:999px;padding:8px 16px;cursor:pointer;min-height:42px;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 0 var(--ink)}
+.btn:active{transform:translateY(2px);box-shadow:none}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.sm{font-size:14px;padding:4px 12px;min-height:34px;box-shadow:0 1.5px 0 var(--ink)}
+.btn.go{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000)}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#fff;box-shadow:none}
+.btn.warn{background:var(--wait-l);border-color:var(--wait);color:var(--wait);box-shadow:none}
+.btn.bad{background:var(--bad);border-color:var(--bad);color:#fff;box-shadow:none}
+.btn.ghost{border-color:transparent;box-shadow:none;background:transparent}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.goal{background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:12px 16px;display:grid;gap:8px}
+.goal-top{display:flex;justify-content:space-between;gap:8px;font-family:var(--display)}
+.track{height:14px;background:var(--accent-l);border-radius:999px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:999px;transition:width .6s}
+.tw{overflow-x:auto;min-width:0}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font:600 13px var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--soft)}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.roster{background:var(--card);border-radius:16px;overflow:hidden;min-width:760px}
+.idlink{font-size:16px;font-weight:600;text-decoration:none;background:var(--accent-l);padding:3px 9px;border-radius:8px;display:inline-block}
+.idlink:hover{text-decoration:underline}
+.rchip,.pill{display:inline-block;font:600 13px var(--display);padding:2px 8px;border-radius:999px;margin:2px 3px 2px 0;white-space:nowrap}
+.pill{font-family:var(--mono);font-weight:400;font-size:12px}
+.c-math{--c:var(--math);--cl:var(--math-l)} .c-read{--c:var(--read);--cl:var(--read-l)} .c-writ{--c:var(--writ);--cl:var(--writ-l)} .c-voc{--c:var(--voc);--cl:var(--voc-l)}
+.rchip,.pill{background:var(--cl);color:var(--c)}
+.alert{background:var(--bad-l);color:var(--bad);font:600 13px var(--display);border-radius:999px;padding:2px 9px;white-space:nowrap}
+.foot{max-width:70ch}
+.kidgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+.kidcard{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px;display:grid;gap:4px;text-decoration:none;color:var(--ink);box-shadow:0 4px 0 var(--line)}
+.kidcard:hover{border-color:var(--accent)} .kidcard .id{font-size:20px;font-weight:600;color:var(--accent)} .kidcard .nm{font-family:var(--display);font-size:20px}
+.coin{font:600 15px var(--display);color:var(--wait)}
+.crumbs a{font-family:var(--display);text-decoration:none}
+.shead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.shead .id{font-size:18px;color:var(--accent);font-weight:600}
+.bank{display:grid;grid-template-columns:auto auto;align-items:center;column-gap:10px;background:var(--gold-l);border-radius:18px;padding:10px 18px}
+.bank b{font:700 34px var(--display);font-variant-numeric:tabular-nums}
+.bank .small{grid-column:1/-1}
+.coinbig{width:40px;height:40px;border-radius:50%;background:var(--gold);color:#3b2a00;display:grid;place-items:center;font:700 14px var(--display);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18)}
+.ranges{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.rbox{background:var(--cl);border-radius:14px;padding:12px;display:grid;gap:2px;justify-items:start}
+.rbox>span:first-child{font:600 15px var(--display);color:var(--c)} .rbox b{font:700 30px var(--display);color:var(--c)}
+.week{display:grid;gap:14px}
+.lane{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:12px;display:grid;gap:10px;min-width:0}
+.lanehead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.lanehead b{font:700 19px var(--display);color:var(--c)} .li{width:34px;height:34px;border-radius:10px;background:var(--cl);display:grid;place-items:center;font-size:18px}
+.cells{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.cell{border:1.5px solid var(--line);border-radius:14px;padding:10px;display:grid;gap:5px;align-content:start;min-width:0;background:var(--bg)}
+.cell.now{border:2px solid var(--c);background:var(--cl);box-shadow:0 3px 0 var(--c)}
+.cell.done{background:var(--ok-l);border-color:transparent}
+.cell.locked{opacity:.62}
+.cell.rest{background:transparent;border-style:dashed;opacity:.7}
+.cell.boss.now{background:linear-gradient(135deg,var(--gold-l),var(--cl))}
+.day{font:700 13px var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+.sid{font-size:11.5px;color:var(--soft);overflow-wrap:anywhere}
+.sn{font:600 15px/1.25 var(--display)}
+.tag{font:600 12px var(--display);border-radius:999px;padding:1px 8px;justify-self:start}
+.t-done{background:var(--ok);color:#fff}.t-now{background:var(--c);color:#fff}.t-lock{background:var(--line);color:var(--soft)}.t-wait{background:var(--wait-l);color:var(--wait)}
+.cta{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-top:2px}
+.payv{font:600 13px var(--display);color:var(--wait);background:var(--gold-l);border-radius:999px;padding:1px 8px}
+.fbnote{background:var(--wait-l);color:var(--ink);border-radius:12px;padding:8px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.q{border:1.5px solid var(--line);border-radius:14px;padding:12px;display:grid;gap:8px}
+.q.flag{background:var(--wait-l);border-color:transparent}
+.qh{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+blockquote{margin:0;padding:10px 14px;border-left:4px solid var(--accent);background:var(--bg);border-radius:8px;white-space:pre-wrap}
+.inp{font:inherit;color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;width:100%}
+.inp.big{font:600 24px var(--display);max-width:260px}
+.area{min-height:180px;resize:vertical}
+/* play */
+.play{position:relative;display:grid;gap:14px}
+.ptop{display:flex;align-items:center;gap:10px}
+.ptitle{flex:1;display:grid;min-width:0}.ptitle b{font:700 20px var(--display);color:var(--c)}.ptitle .mono{color:var(--soft)}
+.phase{font:600 14px var(--display);border-radius:999px;padding:4px 12px;background:var(--cl);color:var(--c)}
+.phase.ph-check{background:var(--ink);color:var(--card)}
+.dots{display:flex;gap:5px;flex-wrap:wrap}
+.d{width:22px;height:8px;border-radius:999px;background:var(--line);display:block}
+.d.cur{background:var(--c)}.d.ok{background:var(--ok)}.d.no{background:var(--bad)}
+.pbody{display:grid;gap:16px}
+.pbody.withp{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (max-width:820px){.pbody.withp{grid-template-columns:1fr}}
+.passage{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:16px;display:grid;gap:8px;align-content:start;min-width:0}
+.ph{display:flex;justify-content:space-between;align-items:center;font-family:var(--display)}
+.ptext{font-size:17px;line-height:1.7;max-width:62ch}
+.qcard{background:var(--card);border:2px solid var(--c);border-radius:20px;padding:18px;display:grid;gap:14px;align-content:start;min-width:0}
+.how{background:var(--cl);border-radius:14px;padding:12px 14px;display:grid;gap:4px}.how b{font-family:var(--display);color:var(--c)}
+.warnbox{background:var(--wait-l)}
+.qrow{display:flex;gap:8px;align-items:flex-start}
+.qtext{font:600 21px/1.35 var(--display);flex:1}.qtext.pre{font-family:var(--mono);font-size:19px;white-space:pre-wrap}
+.opts{display:grid;gap:10px}
+.opt{font:500 18px/1.35 var(--body);text-align:left;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:12px 16px;cursor:pointer;min-height:52px}
+.opt:hover:not(:disabled){border-color:var(--c)}
+.opt.sel{border-color:var(--c)} .opt.right{background:var(--ok-l);border-color:var(--ok)} .opt.wrongsel{background:var(--bad-l);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.numrow{display:flex;gap:10px;flex-wrap:wrap}
+.tiles,.built{display:flex;flex-wrap:wrap;gap:8px;min-height:52px;align-items:center}
+.built{border:2px dashed var(--line);border-radius:14px;padding:8px}
+.tile{font:600 17px var(--display);background:var(--cl);color:var(--ink);border:2px solid var(--c);border-radius:12px;padding:8px 12px;cursor:pointer;box-shadow:0 2px 0 var(--c)}
+.tile.on{background:var(--card)}
+.checks{display:grid;gap:6px}.chk{display:flex;gap:8px;align-items:center}
+.chk input{width:22px;height:22px;accent-color:var(--accent)}
+.wc{justify-self:end}
+.fb{border-radius:14px;padding:10px 14px}.fb.good{background:var(--ok-l);color:var(--ok)}.fb.bad{background:var(--bad-l);color:var(--ink)}
+.fb b{font-family:var(--display);margin-right:6px}
+.next{justify-self:end}
+.tape{overflow-x:auto}.tape svg{width:100%;max-width:640px;min-width:320px;height:auto;display:block}
+.tb{fill:#F4D35E;stroke:#8A6D00;stroke-width:1.5}.tk{stroke:#1E1E1E;stroke-width:1.6}.tn{font:600 15px var(--display);fill:#1E1E1E}.arr{fill:#D7263D}.arrl{stroke:#D7263D;stroke-width:2.5}
+.result{background:var(--card);border:2px solid var(--c);border-radius:24px;padding:28px 20px;display:grid;gap:12px;justify-items:center;text-align:center}
+.burst{font-size:64px;animation:pop .6s ease-out}
+@keyframes pop{0%{transform:scale(.3)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.burst{animation:none}.fill{transition:none}}
+.paybox{background:var(--gold-l);border-radius:16px;padding:12px 18px;min-width:min(320px,100%);display:grid;gap:4px}
+.pl{display:flex;justify-content:space-between;gap:16px;font-family:var(--display)}.pl b{color:var(--wait)}.pl.tot{border-top:1.5px solid var(--gold);padding-top:4px;font-size:20px}
+#conf{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.whobar{display:flex;align-items:center;gap:10px}.whoname{font:600 15px var(--display)}
+.signin{display:grid;gap:18px;min-width:0;grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center;padding-block:8px 24px}
+.signin>.btn.sm{justify-self:start}
+.sihead{display:grid;gap:6px;justify-items:center}
+.wave{font-size:44px}
+.signin .kidgrid{width:100%;max-width:880px}
+button.kidcard{font:inherit;cursor:pointer;justify-items:center;text-align:center}
+.avatar{width:56px;height:56px;border-radius:50%;background:var(--accent-l);color:var(--accent);display:grid;place-items:center;font:700 26px var(--display)}
+.avatar.big{width:84px;height:84px;font-size:40px}
+.staffbtn{margin-top:4px}
+.pins{display:flex;gap:14px;justify-content:center}
+.pin{width:20px;height:20px;border-radius:50%;border:2.5px solid var(--accent);display:block}
+.pin.on{background:var(--accent)}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@media (prefers-reduced-motion:reduce){.shake{animation:none}}
+.sierr{color:var(--bad);font-family:var(--display)}
+.keypad{display:grid;grid-template-columns:repeat(3,76px);gap:12px}
+.key{font:700 28px var(--display);height:68px;border-radius:18px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;box-shadow:0 3px 0 var(--line)}
+.key:active{transform:translateY(3px);box-shadow:none}
+.key.go{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000)}
+.key:disabled{opacity:.4;cursor:not-allowed}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--card);font-family:var(--display);padding:10px 18px;border-radius:999px;z-index:20;max-width:calc(100% - 32px)}
+@media (max-width:760px){
+ .cells{grid-template-columns:1fr 1fr}
+ .cell.boss{grid-column:1/-1}
+ .qtext{font-size:19px}
+}
+@media (max-width:420px){.cells{grid-template-columns:1fr}}
+
+/* staff screens (2026-11-09): names first, no money, simple on phones */
+.staffnav{margin-top:12px;gap:8px;display:flex;flex-wrap:wrap}.staffnav .btn,.bank .btn{text-decoration:none;display:inline-block}
+.nmlink{font-weight:700;font-size:16px;text-decoration:none}
+.bank .btn{grid-column:1/-1;margin-top:6px;text-align:center}
+@media(max-width:640px){table.roster th:nth-child(2),table.roster td:nth-child(2),table.roster th:nth-child(3),table.roster td:nth-child(3){display:none}}
+</style>
+<div class="wrap">
+ <div class="topbar">
+  <a class="brand" href="#"><span class="logo">T</span>Tashbar Learning · Middle School</a>
+  <div class="whobar" id="whoBar"></div>
+ </div>
+ <main id="app" aria-live="polite"></main>
+</div>
+<div id="toast" role="status" hidden></div>
+<script>
+/* Reading curriculum content. Convention: o[0] is the correct option (shuffled on screen). */
+const PASS = {
+shtender: {title:'The Shtender', text:`On Sunday morning, Avi went to his grandfather's workshop behind the house. Zeidy was building a shtender for the shul.
+
+"You can help me sand the top," Zeidy said. He gave Avi a block of wood wrapped in sandpaper. Avi rubbed the wood in long, smooth lines, the way Zeidy showed him. By lunchtime the top felt as smooth as glass.
+
+In the afternoon, they screwed the legs on and carried the shtender to the shul together. The gabbai put it at the front, right next to the aron kodesh.`},
+siddur: {title:'The Lost Siddur', text:`After Mincha on Tuesday, Moshe could not find his siddur. He looked under his seat and on the bookshelf. Then he remembered: he had used it on the bus that morning.
+
+Moshe ran outside just as the bus driver, Mr. Klein, was walking toward the building. In his hand was a small blue siddur. "I found this on the back seat," Mr. Klein said.
+
+Moshe thanked him and wrote his name inside the cover so it would never get lost again.`},
+bridge: {title:'The Brooklyn Bridge', text:`When the Brooklyn Bridge opened in 1883, it was the longest suspension bridge in the world. Its chief engineer, John Roebling, died from an injury before construction began, so his son Washington took over.
+
+Washington Roebling became sick from working deep under the river in the caissons, the huge underwater boxes used to build the towers' foundations. Unable to visit the site, he watched through a telescope from his window and sent instructions every day.
+
+The work was dangerous. More than twenty workers died during the fourteen years of building. Still, the bridge was built to last. Roebling made it six times stronger than it needed to be. More than 140 years later, over 100,000 vehicles cross it every day.`},
+railroad: {title:'The Transcontinental Railroad', text:`In 1869, workers drove a final spike at Promontory Summit, Utah, joining two railroads into one line across the country. Before that, a trip from New York to California took months by wagon or by ship around South America. After the railroad, the same trip took about a week.
+
+Building it was brutal work. Crews blasted tunnels through solid granite in the Sierra Nevada mountains, sometimes moving forward only a foot a day. Thousands of workers from China did much of this dangerous work for the Central Pacific line.`},
+broken: {title:'The Broken Shtender', text:`Shlomo had worked on his shtender for three weeks in Trades Co. It was his first big project, and he planned to give it to his father for his birthday.
+
+On Thursday, as he carried it across the shop, he tripped on a cord. The shtender hit the floor, and one leg snapped. Shlomo felt his face get hot. He wanted to throw the pieces in the scrap bin and never think about it again.
+
+Mr. Adler, the shop teacher, picked up the broken leg and turned it over. "The break is clean," he said. "A good joint will make it stronger than before. But it's your choice."
+
+Shlomo stared at the pieces for a long time. Then he picked up a clamp. He stayed after school twice that week, gluing and shaping a new joint.
+
+On Sunday, he gave his father the shtender. His father ran his hand over the repaired leg. "This is the best part," he said.`},
+longway: {title:'The Long Way Home', text:`Pinchas was the fastest runner in his grade, and he knew it. During the yeshiva field day, he raced ahead of everyone in the long run.
+
+Near the finish, he heard a shout behind him. A younger boy, Hillel, had fallen and was holding his ankle. Pinchas could hear the other runners catching up.
+
+He stopped, turned around and jogged back. He helped Hillel stand and walked him slowly to the first-aid table. Pinchas finished the race last.
+
+That afternoon, the menahel handed out the awards. The last one was a new award, made that day. It said "True Winner" and had Pinchas's name on it.`},
+drill: {title:'Cordless Drill: Quick Start', text:`1. Charge the battery fully before first use (about 1 hour). The light turns green when charged.
+2. Slide the battery into the handle until it clicks.
+3. Set the direction switch: push right for forward (drilling), left for reverse (removing screws).
+4. Turn the clutch ring to choose torque. Lower numbers (1–5) for small screws; higher numbers (15–20) for large screws. Use the drill symbol for drilling holes.
+5. Always wear safety glasses.
+
+WARNING: Do not use near water. Remove the battery before changing bits.`},
+cutsheet: {title:'Pine Board Cut Sheet', text:`Project: Small sefarim shelf
+Material: one 1 × 8 pine board, 8 feet long
+
+Cuts:
+• 2 sides — 24 inches each
+• 3 shelves — 14 inches each
+
+Kerf: allow 1/8 inch for each saw cut.
+Note: Cut sides first. Sand all edges before assembly.`},
+};
+
+const READ = {
+'READ.PHON.L03.01': {name:'Split big words into syllables',
+ teach:[
+  {how:'Two consonants between two vowels? Split between them. The first part is closed, so its vowel is short: nap | kin.', q:'Split the word: napkin', o:['nap | kin','na | pkin','napk | in']},
+  {how:'Only one consonant between vowels? Try splitting before it. The first part is open, so its vowel says its name: ro | bot.', q:'Split the word: robot', o:['ro | bot','rob | ot','r | obot']},
+  {how:'A word that ends in a consonant + le keeps those three letters together: ta | ble.', q:'Split the word: table', o:['ta | ble','tab | le','t | able']},
+ ],
+ practice:[
+  {q:'Split the word: basket', o:['bas | ket','ba | sket','bask | et'], h:'Two consonants (s, k) sit between the vowels. Split between them.'},
+  {q:'Split the word: pilot', o:['pi | lot','pil | ot','p | ilot'], h:'One consonant between the vowels. Split before it; the i says its name.'},
+  {q:'Split the word: puzzle', o:['puz | zle','pu | zzle','puzz | le'], h:'Consonant + le stays together at the end.'},
+  {q:'How many syllables are in "fantastic"?', o:['3','2','4'], h:'Clap it: fan · tas · tic.'},
+  {q:'Split the word: helmet', o:['hel | met','he | lmet','helm | et'], h:'Split between the two middle consonants, l and m.'},
+  {q:'Which word has an open first syllable (a long vowel)?', o:['music','muffin','mitten'], h:'Mu | sic: the u says its name.'},
+ ],
+ check:[
+  {q:'Split the word: magnet', o:['mag | net','ma | gnet','magn | et']},
+  {q:'Split the word: candle', o:['can | dle','cand | le','ca | ndle']},
+  {q:'How many syllables are in "invention"?', o:['3','2','4']},
+ ]},
+
+'READ.PHON.L04.01': {name:'Prefixes and suffixes',
+ teach:[
+  {how:'un- means "not." Unlocked means not locked.', q:'What does "unsafe" mean?', o:['not safe','very safe','safe again']},
+  {how:'re- means "again." Rebuild means build again.', q:'What does "reread" mean?', o:['read again','not read','read before']},
+  {how:'-ful means "full of." -less means "without."', q:'What does "careless" mean?', o:['without care','full of care','care again']},
+ ],
+ practice:[
+  {q:'What does "preheat" mean?', o:['heat before','heat again','not heat'], h:'pre- means before.'},
+  {q:'What does "helpful" mean?', o:['full of help','without help','help again'], h:'-ful means full of.'},
+  {q:'Which word means "not able"?', o:['unable','enable','ablest'], h:'Which prefix means not?'},
+  {q:'What does "misread" mean?', o:['read wrongly','read again','read before'], h:'mis- means wrongly.'},
+  {q:'What is a "builder"?', o:['a person who builds','building again','not building'], h:'-er can mean a person who does something.'},
+  {q:'A tool with no use is ___.', o:['useless','useful','reuse'], h:'Which suffix means without?'},
+ ],
+ check:[
+  {q:'What does "disagree" mean?', o:['not agree','agree again','agree before']},
+  {q:'What does "fearless" mean?', o:['without fear','full of fear','fear again']},
+  {q:'What does "rewrite" mean?', o:['write again','not write','write wrongly']},
+ ]},
+
+'READ.VOC.L04.01': {name:'Use context clues for new words',
+ teach:[
+  {how:'Look at the words around a hard word. They often explain it.', q:'"The road was so narrow that only one car could pass." Narrow means:', o:['not wide','very long','bumpy']},
+  {how:'Sometimes the sentence gives the opposite. Look for "but" or "unlike."', q:'"Yosef was timid, but his brother was bold and loud." Timid means:', o:['shy','brave','noisy']},
+  {how:'Sometimes the sentence gives examples.', q:'"Hand tools, such as hammers and saws, hung on the wall." Hand tools are:', o:['tools you hold and use by hand','tools that run on power','tools for cooking']},
+ ],
+ practice:[
+  {q:'"The bread was stale, hard and dry from sitting out all week." Stale means:', o:['old and dry','fresh','sweet'], h:'The clue words are "hard and dry."'},
+  {q:'"The rebbe was elated when the whole class knew the answer; he smiled from ear to ear." Elated means:', o:['very happy','angry','tired'], h:'How does someone feel when he smiles from ear to ear?'},
+  {q:'"The path was hazardous, with loose rocks and a steep drop." Hazardous means:', o:['dangerous','pretty','easy'], h:'Loose rocks and a steep drop are a clue.'},
+  {q:'"Dovid was famished after the long fast and ate two bowls of soup." Famished means:', o:['very hungry','full','sleepy'], h:'He ate two bowls after a fast.'},
+  {q:'"Unlike the fragile glass cup, the metal cup did not break when it fell." Fragile means:', o:['easy to break','heavy','shiny'], h:'"Unlike" tells you it is the opposite of not breaking.'},
+  {q:'"The boys had to conserve water on the trip, using only a little each day." Conserve means:', o:['save','spill','heat'], h:'Using only a little each day is a clue.'},
+ ],
+ check:[
+  {q:'"The workshop was cluttered, with wood scraps and tools covering every table." Cluttered means:', o:['messy and full','clean','empty']},
+  {q:'"Chaim was reluctant to jump in the cold lake and waited a long time." Reluctant means:', o:['not wanting to','excited','fast']},
+  {q:'"The old bridge was sturdy enough to hold a heavy truck." Sturdy means:', o:['strong','weak','new']},
+ ]},
+
+'READ.COMP.L04.01': {name:'Answer who, what, where and when',
+ teach:[
+  {p:'shtender', how:'"Who" questions ask about a person. Find the name in the story.', q:'Who was building the shtender?', o:['Zeidy','Avi','the gabbai']},
+  {p:'shtender', how:'"When" questions ask about time. Look for a day or a time word.', q:'When did Avi go to the workshop?', o:['Sunday morning','Friday afternoon','Monday night']},
+  {p:'shtender', how:'"Where" questions ask about a place.', q:'Where was the workshop?', o:['behind the house','in the shul','at school']},
+ ],
+ practice:[
+  {p:'shtender', q:'What did Zeidy give Avi?', o:['a block of wood wrapped in sandpaper','a hammer','a box of screws'], h:'Look in the second paragraph.'},
+  {p:'shtender', q:'How did Avi sand the wood?', o:['in long, smooth lines','in small circles','very fast'], h:'Find the word "rubbed."'},
+  {p:'shtender', q:'How did the top feel by lunchtime?', o:['as smooth as glass','rough','wet'], h:'Find the word "lunchtime."'},
+  {p:'shtender', q:'What did they do in the afternoon?', o:['screwed the legs on','painted the top','went to the store'], h:'Find the word "afternoon."'},
+  {p:'shtender', q:'Who put the shtender at the front?', o:['the gabbai','Avi','Zeidy'], h:'Look at the last sentence.'},
+  {p:'shtender', q:'Where did the shtender go in the shul?', o:['next to the aron kodesh','by the door','in the kitchen'], h:'Look at the last sentence.'},
+ ],
+ check:[
+  {p:'siddur', q:'What did Moshe lose?', o:['his siddur','his hat','his lunch']},
+  {p:'siddur', q:'Where had he used it that morning?', o:['on the bus','in the shul','at home']},
+  {p:'siddur', q:'What did Moshe do so it would not get lost again?', o:['wrote his name inside the cover','put it in his bag','gave it to his rebbe']},
+ ]},
+
+'READ.COMP.L05.01': {name:'Main idea and supporting details',
+ teach:[
+  {how:'The main idea is what the whole paragraph is mostly about. The details support it.', p:'Honeybees are busy workers. Some bees gather nectar from flowers. Others guard the hive. Still others take care of the young bees. Every bee has a job.', q:'What is the main idea?', o:['Every bee in a hive has a job.','Bees guard the hive.','Flowers have nectar.']},
+  {how:'A detail is one small part. The main idea covers all the details.', p:'A good hammer has a few important parts. The head strikes the nail. The claw pulls nails out. The handle gives you grip and swing.', q:'What is the main idea?', o:['A hammer has parts that each do a job.','The claw pulls nails out.','Handles are made of wood.']},
+  {how:'Often the first sentence states the main idea.', p:'Baltimore has a long history as a port city. Ships have brought goods into its harbor for over 250 years. Today, huge cargo ships still unload cars and machines there.', q:'What is the main idea?', o:['Baltimore has long been an important port.','Cargo ships are huge.','Cars come from far away.']},
+ ],
+ practice:[
+  {p:'Camels are built for the desert. Their humps store fat for energy. Their wide feet keep them from sinking in sand. Long eyelashes keep sand out of their eyes.', q:'What is the main idea?', o:["Camels' bodies help them live in the desert.",'Camels have long eyelashes.','Sand is hot.'], h:'Which choice covers ALL the details, not just one?'},
+  {p:'Saving money takes a plan. First, decide what you are saving for. Next, set aside a little each week. Finally, don’t spend it on things you don’t need.', q:'What is the main idea?', o:['Saving money takes a plan.','Decide what you want.','Spending is fun.'], h:'Look at the first sentence.'},
+  {p:'Before the Erie Canal, moving goods from New York City to the Great Lakes took weeks by wagon. After the canal opened in 1825, boats did it in days, and shipping costs fell sharply.', q:'What is the main idea?', o:['The Erie Canal made shipping goods much faster and cheaper.','Wagons were slow.','The canal opened in 1825.'], h:'What changed because of the canal?'},
+  {p:'Many animals get ready for winter. Squirrels bury nuts. Some birds fly south. Bears eat a lot and then sleep for months.', q:'What is the main idea?', o:['Animals prepare for winter in different ways.','Bears sleep in winter.','Birds fly south.'], h:'Squirrels, birds and bears are all examples of what?'},
+  {p:'A sharp saw is safer than a dull one. A dull saw needs more force, so it can slip. A sharp saw cuts with less pushing and stays on the line.', q:'What is the main idea?', o:['A sharp saw is safer to use than a dull one.','Saws can slip.','Lines guide a cut.'], h:'Look at the first sentence.'},
+  {p:'The human heart is a strong pump. It beats about 100,000 times a day. With each beat it pushes blood through the whole body.', q:'What is the main idea?', o:['The heart is a powerful pump that never stops working.','Blood moves.','Bodies are big.'], h:'What are all the details about?'},
+ ],
+ check:[
+  {p:'Lighthouses kept sailors safe for hundreds of years. Their bright lights warned ships away from rocks. Their horns sounded in fog. Each one had a keeper who kept the light burning all night.', q:'What is the main idea?', o:['Lighthouses helped keep ships safe.','Lighthouses had keepers.','Fog is thick.']},
+  {p:'Recycling paper helps in several ways. It saves trees. It uses less water than making new paper. It also keeps trash out of landfills.', q:'What is the main idea?', o:['Recycling paper has many benefits.','Paper comes from trees.','Landfills are full.']},
+  {p:'Ants work as a team. When one ant finds food, it leaves a scent trail. Other ants follow the trail and carry the food home together.', q:'What is the main idea?', o:['Ants work together to find and carry food.','Ants leave a scent.','Food is heavy.']},
+ ]},
+
+'READ.COMP.L05.02': {name:'Sequence and cause and effect',
+ teach:[
+  {how:'Signal words like first, next, then and finally show order.', p:'First, Eli measured the board. Next, he marked a line. Then he cut along the line. Finally, he sanded the edge.', q:'What did Eli do right after he marked the line?', o:['cut along the line','sanded the edge','measured the board']},
+  {how:'A cause is WHY something happened. The effect is WHAT happened. Look for "because" or "so."', p:'Because it rained all night, the baseball field was full of puddles, so the game was moved to Monday.', q:'Why was the game moved?', o:['The field was full of puddles from the rain.','It was Monday.','The players were tired.']},
+  {how:'One effect can cause another, like a chain.', p:'The power went out during the storm. The freezer stopped working, so the ice cream melted.', q:'What caused the ice cream to melt?', o:['The freezer stopped when the power went out.','The storm was loud.','It was summer.']},
+ ],
+ practice:[
+  {p:'Shimon forgot to water the plant for two weeks. Its leaves turned brown and dry.', q:'What was the effect of forgetting to water the plant?', o:['The leaves turned brown and dry.','Shimon forgot.','Plants need sun.'], h:'The effect is what happened.'},
+  {p:'To make the challah, Ari’s father mixed the dough, let it rise for an hour, braided it, and then baked it.', q:'What happened right after the dough rose?', o:['It was braided.','It was mixed.','It was baked.'], h:'Find "rise," then read the next step.'},
+  {p:'The bus was late, so Yehuda missed the start of davening. He davened quickly, then joined the class.', q:'Why did Yehuda miss the start of davening?', o:['The bus was late.','He davened quickly.','He joined the class.'], h:'Look before the word "so."'},
+  {p:'In the spring, the snow on the mountains melts. The water flows into rivers. The rivers rise and sometimes flood the towns nearby.', q:'What happens right before the rivers rise?', o:['The water flows into the rivers.','The towns flood.','It is winter.'], h:'Put the events in a line.'},
+  {p:'The class saved money for three weeks. Then they voted on a prize. Finally, they bought a new basketball.', q:'What did the class do first?', o:['saved money for three weeks','voted on a prize','bought a basketball'], h:'Look for the first event.'},
+  {p:'A frost hit the orchard in May. Many apple blossoms froze, so the farmer picked far fewer apples that fall.', q:'What was one effect of the May frost?', o:['The farmer picked fewer apples.','It was May.','The orchard was big.'], h:'What happened because of the frost?'},
+ ],
+ check:[
+  {p:'Menachem left his bike in the rain for a week. The chain rusted, so now it squeaks and is hard to pedal.', q:'Why is the bike hard to pedal?', o:['The chain rusted in the rain.','Menachem is tired.','The bike is new.']},
+  {p:'First, turn off the power. Next, remove the old bulb. Then screw in the new bulb. Last, turn the power back on.', q:'What is the second step?', o:['Remove the old bulb.','Turn off the power.','Screw in the new bulb.']},
+  {p:'The town built a new bridge over the river. Now trucks no longer drive through the center of town, and the streets are quieter.', q:'What made the streets quieter?', o:['Trucks use the new bridge instead of driving through town.','The river is wide.','The town is small.']},
+ ]},
+
+'READ.COMP.L06.01': {name:'Make inferences from clues',
+ teach:[
+  {how:'An inference uses clues in the text plus what you already know. The text does not say it straight out.', p:'Binyamin’s shoes were muddy, his coat was wet, and he was shivering when he came in.', q:'What can you infer?', o:['It was rainy and cold outside.','It was a sunny day.','Binyamin was at home all day.']},
+  {how:'Ask yourself: which clues point to the answer?', p:'Mr. Levy looked at the clock, tapped his foot and sighed. The bus was twenty minutes late.', q:'How does Mr. Levy probably feel?', o:['impatient','happy','sleepy']},
+  {how:'Pick the answer the clues support best, not just one that could be true.', p:'The table was set with the white cloth, two candlesticks and a covered challah.', q:'What is most likely about to happen?', o:['a Shabbos meal','a science class','a ball game']},
+ ],
+ practice:[
+  {p:'Yitzy grinned and held up his test so everyone could see it.', q:'What can you infer?', o:['He did well on the test.','He failed the test.','He lost his test.'], h:'Would you show everyone a bad test?'},
+  {p:'The ground was covered with branches, and a tree lay across the road.', q:'What most likely happened?', o:['There was a strong storm.','It was a calm night.','Someone planted a tree.'], h:'What knocks down trees?'},
+  {p:'Reuven yawned again and again and rubbed his eyes during the shiur.', q:'What can you infer?', o:['Reuven is tired.','Reuven is hungry.','Reuven is excited.'], h:'Yawning and rubbing eyes are clues.'},
+  {p:'The baker came out covered in flour, holding a tray of fresh rolls.', q:'What was the baker just doing?', o:['baking','painting','driving'], h:'Flour and fresh rolls.'},
+  {p:'Every seat was full, and people stood along the walls to hear the speaker.', q:'What can you infer about the speaker?', o:['Many people wanted to hear him.','No one liked him.','He spoke very quietly.'], h:'Why would people stand to listen?'},
+  {p:'Akiva checked his list twice, packed his tefillin, and set his alarm for 5:30.', q:'What can you infer?', o:['He has an early trip or day tomorrow.','He plans to sleep late.','He lost his tefillin.'], h:'Why set an alarm so early and pack?'},
+ ],
+ check:[
+  {p:'The puppy’s tail wagged fast, and it ran in circles when the boys came home.', q:'How does the puppy feel?', o:['excited','scared','bored']},
+  {p:'Nosson’s hands were covered in sawdust, and there was a pencil behind his ear.', q:'Where was Nosson most likely?', o:['in the woodshop','at the swimming pool','at the dentist']},
+  {p:'The lights in the store were off, and a sign on the door said "See you Sunday."', q:'What can you infer?', o:['The store is closed now.','The store is having a sale.','The store just opened.']},
+ ]},
+
+'READ.VOC.L06.01': {name:'Greek and Latin roots',
+ teach:[
+  {how:'Roots carry meaning. "port" means carry: a portable tool can be carried.', q:'What does "transport" mean?', o:['carry across','look across','write across']},
+  {how:'"graph" means write. An autograph is a name you write yourself.', q:'A paragraph is something that is:', o:['written','heard','carried']},
+  {how:'"tele" means far. A telescope helps you see far away.', q:'Which word means "sound from far away"?', o:['telephone','microphone','photograph']},
+ ],
+ practice:[
+  {q:'"aqua" means water. An aquarium holds:', o:['water and fish','books','tools'], h:'Think water.'},
+  {q:'"spect" means look. To inspect means to:', o:['look at closely','carry in','write down'], h:'spect = look.'},
+  {q:'"bio" means life. Biology is the study of:', o:['living things','rocks','numbers'], h:'bio = life.'},
+  {q:'"micro" means small. A microscope helps you see:', o:['very small things','things far away','sounds'], h:'micro = small.'},
+  {q:'"struct" means build. A structure is something:', o:['built','written','seen'], h:'struct = build.'},
+  {q:'"dict" means say. To predict is to:', o:['say before it happens','look again','carry away'], h:'pre = before, dict = say.'},
+ ],
+ check:[
+  {q:'"geo" means earth. Geography is the study of:', o:['the earth and its places','stars','music']},
+  {q:'"aud" means hear. An audience is a group that:', o:['listens','writes','builds']},
+  {q:'"therm" means heat. A thermometer measures:', o:['temperature','distance','weight']},
+ ]},
+
+'READ.COMP.L07.01': {name:'Cite text evidence for an answer',
+ teach:[
+  {p:'bridge', how:'Evidence is the exact sentence that proves an answer. Pick the one that would convince someone.', q:'Which sentence shows the bridge was a record-breaker?', o:['When the Brooklyn Bridge opened in 1883, it was the longest suspension bridge in the world.','The work was dangerous.','His son Washington took over.']},
+  {p:'bridge', how:'Make sure the evidence matches the claim, not just the topic.', q:'Claim: Washington Roebling kept leading the work even when he was sick. Best evidence?', o:['Unable to visit the site, he watched through a telescope from his window and sent instructions every day.','Washington Roebling became sick from working deep under the river.','Still, the bridge was built to last.']},
+  {p:'bridge', how:'Choose the most specific sentence.', q:'Claim: Building the bridge cost lives. Best evidence?', o:['More than twenty workers died during the fourteen years of building.','The work was dangerous.','It was the longest suspension bridge in the world.']},
+ ],
+ practice:[
+  {p:'bridge', q:'Claim: The bridge was built to be very strong. Best evidence?', o:['Roebling made it six times stronger than it needed to be.','The bridge opened in 1883.','Its chief engineer was John Roebling.'], h:'Look for a sentence about strength.'},
+  {p:'bridge', q:'Claim: The bridge is still important today. Best evidence?', o:['More than 140 years later, over 100,000 vehicles cross it every day.','Still, the bridge was built to last.','The work was dangerous.'], h:'Which sentence talks about today?'},
+  {p:'bridge', q:'Which detail explains why Washington Roebling became sick?', o:['He worked deep under the river in the caissons.','He watched through a telescope.','His father was the chief engineer.'], h:'Find the word "sick."'},
+  {p:'bridge', q:'Claim: John Roebling never saw construction begin. Best evidence?', o:['John Roebling died from an injury before construction began.','His son Washington took over.','It was the longest suspension bridge.'], h:'Find "before construction."'},
+  {p:'bridge', q:'Which words explain what caissons are?', o:["the huge underwater boxes used to build the towers' foundations",'the longest suspension bridge in the world','over 100,000 vehicles cross it every day'], h:'Look right after the word "caissons."'},
+  {p:'bridge', q:'How long did it take to build the bridge?', o:['fourteen years','six years','140 years'], h:'Look in the sentence about workers.'},
+ ],
+ check:[
+  {p:'railroad', q:'Claim: The railroad made cross-country travel much faster. Best evidence?', o:['After the railroad, the same trip took about a week.','Building it was brutal work.','In 1869, workers drove a final spike at Promontory Summit.']},
+  {p:'railroad', q:'Claim: Some of the work went very slowly. Best evidence?', o:['Crews blasted tunnels through solid granite, sometimes moving forward only a foot a day.','Thousands of workers from China did much of this dangerous work.','The railroad joined two lines into one.']},
+  {p:'railroad', q:'Claim: Before the railroad, travel west was hard. Best evidence?', o:['A trip from New York to California took months by wagon or by ship around South America.','Workers drove a final spike at Promontory Summit, Utah.','After the railroad, the same trip took about a week.']},
+ ]},
+
+'READ.COMP.L07.02': {name:'Write an objective summary',
+ teach:[
+  {how:'A summary gives the main points, short, in your own words. It leaves out small details.', p:'The Wright brothers ran a bicycle shop in Ohio. They used money from the shop to build gliders and test their ideas about flight. In 1903, at Kitty Hawk, North Carolina, they flew the first powered airplane for 12 seconds.', q:'Which is the best objective summary?', o:['The Wright brothers used money from their bicycle shop to develop flight and flew the first powered airplane in 1903.','The Wright brothers were the most amazing inventors ever.','The first flight lasted 12 seconds.']},
+  {how:'An objective summary leaves out opinions. No "I think," no "amazing."', p:'Maple syrup comes from the sap of maple trees. In early spring, farmers drill small holes and collect the sap. They boil it for hours until most of the water is gone. It takes about 40 gallons of sap to make one gallon of syrup.', q:'Which is the best objective summary?', o:['Farmers collect maple sap in spring and boil it for hours; about 40 gallons of sap make one gallon of syrup.','Maple syrup is the best topping in the world.','Farmers drill small holes.']},
+  {how:'Keep the main events in order.', p:'Yaakov wanted to join the chess club, but he kept losing. He studied one opening every night for a month. At the next tournament, he won three games.', q:'Which is the best objective summary?', o:['Yaakov kept losing at chess, studied every night for a month, and then won three tournament games.','I think Yaakov should have tried harder sooner.','Yaakov studied one opening.']},
+ ],
+ practice:[
+  {p:'Coral reefs cover a tiny part of the ocean floor, yet about a quarter of all ocean fish live around them. Warmer water can cause corals to turn white and die. Scientists are testing ways to grow new coral and replant reefs.', q:'Which is the best objective summary?', o:['Coral reefs support many fish, are harmed by warming water, and scientists are trying to regrow them.','Coral reefs are beautiful and everyone should visit one.','Corals can turn white.'], h:'Find the choice with every main point and no opinion.'},
+  {p:'The Pony Express carried mail between Missouri and California in 1860 and 1861. Riders changed horses every 10 to 15 miles and delivered letters in about ten days. It ended when the telegraph line was finished.', q:'Which is the best objective summary?', o:['The Pony Express delivered mail across the West in about ten days until the telegraph replaced it in 1861.','The Pony Express riders were the bravest people in history.','Riders changed horses often.'], h:'"Bravest" is an opinion. One detail is not a summary.'},
+  {p:'Dovid’s family moved to a new city. At first he missed his friends. Then he joined the afternoon basketball league, and by Chanukah he had made two close friends.', q:'Which is the best objective summary?', o:['After moving, Dovid missed his old friends, joined a basketball league, and made new friends by Chanukah.','Moving is always hard and nobody likes it.','Dovid joined a basketball league.'], h:'Keep the events in order.'},
+  {p:'Volcanoes form where melted rock, called magma, pushes up through cracks in the earth’s crust. When magma reaches the surface it is called lava. Over many eruptions, layers of cooled lava can build a mountain.', q:'Which is the best objective summary?', o:['Volcanoes form when magma rises through the crust, erupts as lava, and builds up layers over time.','Volcanoes are the scariest thing in nature.','Magma is melted rock.'], h:'Which choice covers the whole process?'},
+  {p:'A town wanted a new playground. Students wrote letters to the town council, raised money at a bake sale, and helped plan the design. The playground opened the next summer.', q:'Which is the best objective summary?', o:['Students wrote letters, raised money and helped plan, and the new playground opened the next summer.','The students’ bake sale had great cookies.','The town council got letters.'], h:'Main events, in order, no opinion.'},
+  {p:'Honey almost never spoils. It has very little water and is slightly acidic, so germs cannot grow in it. Jars of honey thousands of years old have been found still safe to eat.', q:'Which is the best objective summary?', o:['Honey lasts a very long time because its low water and acid stop germs from growing.','Honey is the tastiest food there is.','Old jars of honey were found.'], h:'"Tastiest" is an opinion.'},
+ ],
+ check:[
+  {p:'Benjamin Franklin started a library in Philadelphia so people could share books. Members paid a small fee, and the money bought more books. It became one of the first lending libraries in America.', q:'Which is the best objective summary?', o:['Franklin started a library in Philadelphia where members’ fees bought shared books; it was one of America’s first lending libraries.','Franklin was a genius who did everything right.','Members paid a small fee.']},
+  {p:'Ezra broke his arm in the fall and could not write for six weeks. He learned to type with one hand and finished all his assignments on time.', q:'Which is the best objective summary?', o:['Ezra broke his arm, learned to type with one hand, and still finished his work on time.','Ezra was very unlucky.','Ezra could not write.']},
+  {p:'Glaciers are huge sheets of ice that move slowly downhill. As they move, they scrape rock and carve valleys. Many lakes in the northern United States were formed by glaciers long ago.', q:'Which is the best objective summary?', o:['Glaciers are slow-moving ice that carve the land, forming valleys and many northern U.S. lakes.','Glaciers are amazing and cold.','Glaciers scrape rock.']},
+ ]},
+
+'READ.LIT.L07.01': {name:'Character, conflict and theme',
+ teach:[
+  {p:'broken', how:'A character’s actions and words show what he is like.', q:'What does Shlomo’s choice to stay after school show about him?', o:['He doesn’t give up.','He is careless.','He doesn’t care about his father.']},
+  {p:'broken', how:'The conflict is the problem the main character faces.', q:'What is Shlomo’s main conflict?', o:['His shtender breaks and he must decide whether to fix it.','He can’t find the shop.','His father doesn’t like woodwork.']},
+  {p:'broken', how:'The theme is the lesson the story teaches. It applies beyond this one story.', q:'Which is the best theme?', o:['Fixing a mistake can make something better than before.','Shops are dangerous.','Birthdays are fun.']},
+ ],
+ practice:[
+  {p:'broken', q:'How did Shlomo feel right after the leg snapped?', o:['upset and embarrassed','proud','bored'], h:'Look at "face get hot" and what he wanted to do.'},
+  {p:'broken', q:'What caused the shtender to break?', o:['Shlomo tripped on a cord.','Mr. Adler dropped it.','The wood was rotten.'], h:'Look at Thursday.'},
+  {p:'broken', q:'What role does Mr. Adler play?', o:['He guides Shlomo but lets him decide.','He fixes the shtender for him.','He makes Shlomo throw it away.'], h:'Read his last words: "it’s your choice."'},
+  {p:'broken', q:'What is the turning point of the story?', o:['Shlomo picks up a clamp.','Shlomo trips on the cord.','Shlomo starts the project.'], h:'When does Shlomo decide what to do?'},
+  {p:'broken', q:'Why does his father say "This is the best part"?', o:['The repair shows Shlomo’s effort and growth.','The leg is a different color.','He didn’t notice the repair.'], h:'He ran his hand over the repaired leg.'},
+  {p:'broken', q:'How does Shlomo change in the story?', o:['He goes from wanting to quit to working hard to fix it.','He goes from happy to angry.','He does not change.'], h:'Compare the beginning and the end.'},
+ ],
+ check:[
+  {p:'longway', q:'What is Pinchas’s conflict?', o:['He must choose between winning and helping Hillel.','He forgets the race route.','He is too slow.']},
+  {p:'longway', q:'What does stopping to help show about Pinchas?', o:['He cares more about others than about winning.','He was tired.','He didn’t like running.']},
+  {p:'longway', q:'Which is the best theme?', o:['Kindness matters more than winning.','Running is good exercise.','Field days are long.']},
+ ]},
+
+'READ.VOC.L08.01': {name:'Figurative language',
+ teach:[
+  {how:'A simile compares two things using "like" or "as."', q:'"The gym was as hot as an oven." This is a:', o:['simile','fact','question']},
+  {how:'A metaphor compares by saying one thing IS another.', q:'"The classroom was a beehive of activity." What does it mean?', o:['The room was busy and full of movement.','There were bees in the class.','The class was quiet.']},
+  {how:'An idiom is a saying that does not mean its exact words.', q:'"It’s raining cats and dogs." What does it mean?', o:['It is raining very hard.','Animals are falling.','It is a light rain.']},
+ ],
+ practice:[
+  {q:'"Chaim was a rock for his friends." This means Chaim was:', o:['dependable and strong','hard and cold','heavy'], h:'What is good about a rock?'},
+  {q:'"The old car coughed and groaned up the hill." Giving a thing human actions is called:', o:['personification','simile','rhyme'], h:'Cars don’t really cough. People do.'},
+  {q:'"I’ve told you a million times." This big exaggeration is called:', o:['hyperbole','simile','fact'], h:'Not really a million.'},
+  {q:'"Hit the books" means:', o:['study hard','hit something','throw books'], h:'It’s an idiom.'},
+  {q:'"His words were as sharp as a knife." This means his words were:', o:['hurtful','helpful','quiet'], h:'What does a sharp knife do?'},
+  {q:'"Time flies when you’re learning something fun." This means:', o:['Time seems to pass quickly.','Clocks have wings.','Time stops.'], h:'How fast do flying things move?'},
+ ],
+ check:[
+  {q:'"The wind howled through the trees." This is:', o:['personification','simile','hyperbole']},
+  {q:'"The test was a breeze." This means the test was:', o:['easy','windy','long']},
+  {q:'"Moshe was as quiet as a mouse." This is a:', o:['simile','metaphor','idiom']},
+ ]},
+
+'READ.COMP.L09.01': {name:'Judge an argument’s claims and evidence',
+ teach:[
+  {how:'The claim is what the writer wants you to believe or do.', p:'Our school should start a woodshop. Students who learn trades gain skills they can use for life. A survey of local builders found that 7 out of 10 cannot find enough trained workers.', q:'What is the writer’s claim?', o:['The school should start a woodshop.','7 out of 10 builders can’t find workers.','Students gain skills.']},
+  {how:'Strong evidence is a fact, number or example that is relevant and reliable.', p:'Our school should start a woodshop. Students who learn trades gain skills they can use for life. A survey of local builders found that 7 out of 10 cannot find enough trained workers.', q:'Which is the strongest evidence in the paragraph?', o:['the survey of local builders','the word "should"','the title "school"']},
+  {how:'Weak evidence: one person’s story, a feeling, or something unrelated.', p:'Phones should be banned during class. My friend’s cousin says phones made his grades worse.', q:'Why is this evidence weak?', o:['One person’s story isn’t enough to prove it.','It uses numbers.','It is about phones.']},
+ ],
+ practice:[
+  {p:'The city should add bike lanes on Park Avenue. Last year, 40 bike accidents happened there, and cities that added lanes saw accidents drop by about half.', q:'How strong is the evidence?', o:['Strong: it gives local numbers and results from other cities.','Weak: it is only an opinion.','Weak: it is unrelated to bikes.'], h:'Does it use facts tied to the claim?'},
+  {p:'Everyone should eat breakfast because it is the best meal and I always feel great after it.', q:'What is the main weakness?', o:['It relies on the writer’s own feelings, not facts.','It has too many statistics.','It is too long.'], h:'Where is the proof?'},
+  {p:'Recess should be longer. Studies show students pay better attention after active breaks. Also, longer recess is more fun.', q:'Which reason is the least strong evidence?', o:['Longer recess is more fun.','Students pay better attention after breaks.','Studies were done.'], h:'Which one is just a feeling?'},
+  {p:'We should not build the new mall, because the people who want it are greedy.', q:'What is wrong with this argument?', o:['It attacks people instead of giving reasons about the mall.','It uses too much evidence.','It has no claim.'], h:'Is "greedy" a reason about the mall?'},
+  {p:'Last year our library lent 80,000 books and ran 300 free classes, and half its visitors have no internet at home.', q:'Which claim does this evidence best support?', o:['Libraries are still needed.','Books are old.','Internet is expensive.'], h:'What do all three facts show?'},
+  {p:'Either we cancel the trip or the whole school will fail its exams.', q:'What is the problem with this reasoning?', o:['It gives only two choices when there are more.','It uses a statistic.','It is about a trip.'], h:'Are there really only two options?'},
+ ],
+ check:[
+  {p:'Our town should plant more trees. Trees lower summer temperatures on streets by several degrees, and a city study found shaded streets need less road repair.', q:'How strong is this evidence?', o:['Strong: it gives facts and a study connected to the claim.','Weak: it is a personal story.','Weak: it is off topic.']},
+  {p:'This game is the best because everybody is buying it.', q:'What is the weakness?', o:['Being popular doesn’t prove it is the best.','It gives too many facts.','It is too short.']},
+  {p:'Students should learn to budget. In one survey, most adults said they wished they had learned about money in school, and students in budgeting classes saved more later.', q:'What is the claim?', o:['Students should learn to budget.','Adults wished they learned about money.','Students saved more.']},
+ ]},
+
+'READ.LIT.L09.01': {name:'Author’s purpose and point of view',
+ teach:[
+  {how:'Authors write to inform, to persuade, or to entertain.', p:'Lightning heats the air around it to about 50,000°F, which is hotter than the surface of the sun.', q:'The author’s main purpose is to:', o:['inform','persuade','entertain']},
+  {how:'First person uses "I" and "we." Third person uses "he" and "they."', p:'I tightened the last screw and stepped back. My first shelf actually stood straight.', q:'What point of view is this?', o:['first person','third person','second person']},
+  {how:'The author’s viewpoint is his opinion. Strong words give it away.', p:'Wasting food is a shameful habit we must break today.', q:'What is the author’s viewpoint on wasting food?', o:['It is wrong and must stop.','It doesn’t matter.','It is sometimes good.']},
+ ],
+ practice:[
+  {p:'Come to the Trades Co. market this Sunday! Every shelf is handmade, and every purchase supports student workers.', q:'The author’s purpose is to:', o:['persuade','inform','entertain'], h:'Is he trying to get you to do something?'},
+  {p:'The ostrich tried to hide behind a lamppost, but its long neck stuck out like a flagpole, and all the birds laughed.', q:'The author’s purpose is to:', o:['entertain','inform','persuade'], h:'Is this meant to be funny?'},
+  {p:'Dovid looked at the broken window. He knew he should tell the truth, but his stomach twisted.', q:'What point of view is this?', o:['third person','first person','second person'], h:'Look for "he" or "I."'},
+  {p:'Some people think homework helps students practice. Others think it takes away family time. Both sides have research to back them up.', q:'What is the author’s viewpoint here?', o:['The author stays neutral and presents both sides.','The author is against homework.','The author loves homework.'], h:'Does he pick a side?'},
+  {p:'The new bridge is a disaster: ugly, overpriced and late.', q:'Which words show the author’s viewpoint?', o:['disaster, ugly, overpriced','the new bridge','is'], h:'Look for strong opinion words.'},
+  {p:'A healthy plant needs light, water and air. Without light, plants cannot make food.', q:'Why did the author write this?', o:['to explain what plants need','to sell plants','to tell a funny story'], h:'Is he teaching, selling or joking?'},
+ ],
+ check:[
+  {p:'You need to see this exhibit. It’s the best one the museum has ever had, and tickets are almost gone!', q:'The author’s purpose is to:', o:['persuade','inform','entertain']},
+  {p:'We hiked for hours, and I was sure we were lost until I spotted the trail marker.', q:'What point of view is this?', o:['first person','third person','second person']},
+  {p:'Bees pollinate about one-third of the food crops we eat, including apples and almonds.', q:'The author’s purpose is to:', o:['inform','persuade','entertain']},
+ ]},
+
+'READ.COMP.L09.02': {name:'Read technical documents',
+ teach:[
+  {p:'drill', how:'Technical writing gives steps in order. Read each step fully before acting.', q:'What must you do before first use?', o:['Charge the battery fully.','Change the bit.','Set the clutch to 20.']},
+  {p:'drill', how:'Look for the exact detail: numbers, settings, colors.', q:'How do you know the battery is charged?', o:['The light turns green.','The drill beeps.','It gets warm.']},
+  {p:'drill', how:'Warnings tell you what NOT to do. They matter most.', q:'What should you do before changing a bit?', o:['Remove the battery.','Charge the battery.','Turn the clutch to 1.']},
+ ],
+ practice:[
+  {p:'drill', q:'You want to remove a screw. Which way should the direction switch go?', o:['left','right','up'], h:'Step 3.'},
+  {p:'drill', q:'Which clutch setting is best for a small screw?', o:['3','18','the drill symbol'], h:'Step 4: lower numbers for small screws.'},
+  {p:'drill', q:'Which setting should you use to drill a hole?', o:['the drill symbol','1','5'], h:'End of step 4.'},
+  {p:'drill', q:'Where should you NOT use the drill?', o:['near water','in a workshop','on wood'], h:'Read the warning.'},
+  {p:'drill', q:'What should you always wear?', o:['safety glasses','a watch','gloves with fringes'], h:'Step 5.'},
+  {p:'drill', q:'How long does the first charge take?', o:['about 1 hour','about 5 minutes','about 1 day'], h:'Step 1.'},
+ ],
+ check:[
+  {p:'cutsheet', q:'Which pieces should be cut first?', o:['the sides','the shelves','it doesn’t matter']},
+  {p:'cutsheet', q:'How many shelf pieces are needed?', o:['3','2','5']},
+  {p:'cutsheet', q:'What must you do before assembly?', o:['Sand all edges.','Paint the board.','Charge the drill.']},
+ ]},
+
+'READ.COMP.L09.03': {name:'Check facts across sources',
+ teach:[
+  {how:'When sources disagree, trust the one that is more reliable and more recent.', p:'Source A (encyclopedia, 2024): Mount Everest is 29,032 feet tall.\nSource B (travel brochure, 1985): Mount Everest is about 29,000 feet tall.', q:'Which source should you use for the exact height?', o:['Source A: it is recent and from a reference work.','Source B: it is older.','Neither: they disagree completely.']},
+  {how:'A fact that two reliable sources agree on is well supported.', p:'Source A (encyclopedia): The Chesapeake Bay is the largest estuary in the United States.\nSource B (Maryland state website): The Chesapeake Bay is the nation’s largest estuary.', q:'What can you conclude?', o:['Both reliable sources agree, so the fact is well supported.','The sources disagree.','Neither source can be trusted.']},
+  {how:'An opinion is not a fact, even when it appears in a source.', p:'Blog post: The Erie Canal was the most boring project ever built.', q:'Can you use this as a fact in a report?', o:['No, it is an opinion.','Yes, it is from a blog.','Yes, it uses the word "most."']},
+ ],
+ practice:[
+  {p:'Source A (science museum website): Light from the sun takes about 8 minutes to reach Earth.\nSource B (forum comment): Sunlight reaches us instantly.', q:'Which is more reliable?', o:['Source A','Source B','Both equally'], h:'Who wrote each one?'},
+  {p:'Source A (2010 guide): The town has 12,000 people.\nSource B (2023 census): The town has 14,500 people.', q:'Which number should a report use for today?', o:['14,500','12,000','the average of the two'], h:'Which is newer and official?'},
+  {p:'Source A (encyclopedia): The Liberty Bell is in Philadelphia.\nSource B (National Park Service): The Liberty Bell is displayed in Philadelphia, Pennsylvania.', q:'What do the sources show?', o:['They agree on the fact.','They disagree.','Neither is reliable.'], h:'Compare what they say.'},
+  {p:'Advertisement: Our glue is the strongest in the world!', q:'How should a researcher treat this?', o:['As a sales claim that needs checking.','As a proven fact.','As a scientific study.'], h:'Who benefits from the claim?'},
+  {p:'Source A says a project took 14 years. Source B says it took 12 years.', q:'What is the best next step?', o:['Check a third reliable source.','Pick the bigger number.','Use both numbers without explaining.'], h:'How do you break a tie?'},
+  {p:'Source: a history textbook written by a professor, with a list of references.', q:'Why is this likely reliable?', o:['An expert wrote it and lists references.','It is long.','It has pictures.'], h:'Think about who wrote it.'},
+ ],
+ check:[
+  {p:'Source A (personal website, no author): Spiders are insects.\nSource B (university biology page): Spiders are arachnids, not insects.', q:'Which should you trust?', o:['Source B','Source A','Both']},
+  {p:'Source A (2005 map): The highway has 4 lanes.\nSource B (2024 state road report): The highway was widened to 6 lanes in 2019.', q:'How many lanes does the highway have now?', o:['6','4','5']},
+  {p:'Opinion column: Baseball is the greatest sport ever invented.', q:'How should this be used in a report?', o:['As one person’s opinion, not a fact.','As a proven fact.','As data.']},
+ ]},
+};
+
+/* Writing curriculum content (WRIT + LANG). o[0] correct. t:'order' tiles in correct order. t:'write' open writing. */
+const WRIT = {
+'LANG.SENT.L03.01': {name:'Complete sentences: fix fragments and run-ons',
+ teach:[
+  {how:'A complete sentence has a subject (who) and a predicate (what he does), and it is a complete thought.', q:'Which is a complete sentence?', o:['The boys built a birdhouse.','Built a birdhouse.','The boys with the hammer.']},
+  {how:'A fragment is missing a part. Ask: Who? Did what?', q:'"Running down the hall." What is missing?', o:['who is running','an ending mark','a verb']},
+  {how:'A run-on joins two sentences with no break. Fix it with a period, or with a comma and "and," "but" or "so."', q:'Which fixes the run-on "I finished my work I went outside"?', o:['I finished my work. I went outside.','I finished my work I, went outside.','I finished. my work I went outside.']},
+ ],
+ practice:[
+  {q:'Which is a complete sentence?', o:['Yossi fixed the chair.','Fixed the chair yesterday.','Yossi and the chair.'], h:'Who? Did what? Both must be there.'},
+  {q:'Which is a fragment?', o:['Because it was raining.','It was raining.','We stayed inside.'], h:'Which one leaves you waiting for more?'},
+  {q:'Which is a run-on?', o:['The bell rang we ran to class.','The bell rang, and we ran to class.','The bell rang.'], h:'Look for two sentences with no break.'},
+  {q:'Fix: "The saw is sharp be careful."', o:['The saw is sharp. Be careful.','The saw is sharp be. Careful.','The saw, is sharp be careful.'], h:'Split the two thoughts with a period.'},
+  {q:'Which is a complete sentence?', o:['After Maariv, we went home.','After Maariv.','Went home after Maariv.'], h:'Who went home?'},
+  {q:'"The tall boy in the front row." What does it need?', o:['a predicate (what he did)','a subject','a capital letter'], h:'We know who. What did he do?'},
+ ],
+ check:[
+  {q:'Which is a complete sentence?', o:['The shop smells like fresh wood.','Smells like fresh wood.','The shop with fresh wood.']},
+  {q:'Which is a fragment?', o:['When the bus came.','The bus came.','We got on the bus.']},
+  {q:'Fix: "My brother likes math he solves puzzles every day."', o:['My brother likes math. He solves puzzles every day.','My brother likes math he. Solves puzzles every day.','My brother, likes math he solves puzzles every day.']},
+ ]},
+
+'LANG.MECH.L04.01': {name:'Capitals, end marks and commas in a list',
+ teach:[
+  {how:'Start every sentence with a capital. Names of people, places and days get capitals too.', q:'Which is correct?', o:['On Monday, Eli went to Baltimore.','on Monday, Eli went to baltimore.','On monday, eli went to Baltimore.']},
+  {how:'A statement ends with a period. A question ends with a question mark. Strong feeling ends with an exclamation point.', q:'Which mark ends this? "Where is the tape measure_"', o:['?','.','!']},
+  {how:'Put commas between three or more items in a list.', q:'Which is correct?', o:['We need nails, screws, and glue.','We need nails screws and glue.','We need, nails screws, and glue.']},
+ ],
+ practice:[
+  {q:'Which is correct?', o:['Mr. Stern lives on Park Heights Avenue.','mr. stern lives on park heights avenue.','Mr. stern lives on Park heights Avenue.'], h:'Names of people and streets get capitals.'},
+  {q:'Which mark ends this? "Watch out for the falling board_"', o:['!','?','.'], h:'It is a warning with strong feeling.'},
+  {q:'Which is correct?', o:['I packed a ruler, a pencil, and an eraser.','I packed a ruler a pencil, and an eraser.','I packed, a ruler, a pencil and, an eraser.'], h:'A comma goes after each item except the last.'},
+  {q:'Which word should always start with a capital letter?', o:['Tuesday','morning','table'], h:'Days of the week are names.'},
+  {q:'Which mark ends this? "The shelf has three boards_"', o:['.','?','!'], h:'It just tells a fact.'},
+  {q:'Which is correct?', o:['Did you finish the cut list?','did you finish the cut list?','Did you finish the cut list.'], h:'Capital first, and it asks something.'},
+ ],
+ check:[
+  {q:'Which is correct?', o:['On Friday, Avi and Shmuel cleaned the shop.','on friday, Avi and shmuel cleaned the shop.','On Friday avi and Shmuel cleaned the Shop.']},
+  {q:'Which is correct?', o:['Bring a hammer, a saw, and a clamp.','Bring a hammer a saw and a clamp.','Bring, a hammer a saw, and a clamp.']},
+  {q:'Which mark ends this? "How long is the board_"', o:['?','.','!']},
+ ]},
+
+'WRIT.SENT.L04.01': {name:'Combine sentences with and, but, so',
+ teach:[
+  {how:'Use "and" to join two ideas that go together.', q:'Combine: "Eli measured the board. Eli cut the board."', o:['Eli measured and cut the board.','Eli measured the board but cut the board.','Eli measured the board so Eli cut.']},
+  {how:'Use "but" to show a difference.', q:'Combine: "The saw is old. It still cuts well."', o:['The saw is old, but it still cuts well.','The saw is old, so it still cuts well.','The saw is old, and it is new.']},
+  {how:'Use "so" to show a result.', q:'Combine: "It was raining. We played inside."', o:['It was raining, so we played inside.','It was raining, but we played inside.','It was raining and, we played inside.']},
+ ],
+ practice:[
+  {t:'order', q:'Build one sentence from: "The glue was wet. We waited."', tiles:['The glue was wet,','so','we waited.'], h:'Cause first, then "so," then the result.'},
+  {t:'order', q:'Build one sentence from: "Yosef likes math. He likes science."', tiles:['Yosef','likes','math','and','science.'], h:'Start with who, end with the second subject.'},
+  {q:'Choose the joining word: "I studied hard, ___ I passed the test."', o:['so','but','or'], h:'Passing was the result.'},
+  {q:'Choose the joining word: "The box was heavy, ___ we carried it together."', o:['so','but','or'], h:'Carrying it together was the result.'},
+  {t:'order', q:'Build one sentence from: "The shop was noisy. Dovid stayed focused."', tiles:['The shop was noisy,','but','Dovid stayed focused.'], h:'These two ideas are different. Use "but."'},
+  {q:'Choose the joining word: "Chaim wanted to play, ___ he had to finish his work first."', o:['but','so','and'], h:'He wanted one thing, but had to do another.'},
+ ],
+ check:[
+  {q:'Combine: "The board was too long. Avi cut it."', o:['The board was too long, so Avi cut it.','The board was too long, but Avi cut it.','The board was too long and, Avi.']},
+  {t:'order', q:'Build one sentence from: "Menachem sanded the shelf. He painted it."', tiles:['Menachem sanded the shelf','and','painted it.']},
+  {q:'Choose the joining word: "It was late, ___ the boys kept learning."', o:['but','so','or']},
+ ]},
+
+'WRIT.PARA.L04.01': {name:'Paragraph: topic sentence, three details, closing',
+ teach:[
+  {how:'A topic sentence tells what the whole paragraph is about.', q:'Which is the best topic sentence for a paragraph about shop safety?', o:['Three rules keep everyone safe in the shop.','I like wood.','Saws are made of metal.']},
+  {how:'Every detail must support the topic sentence.', q:'Topic: "Shabbos at our house is peaceful." Which detail does NOT belong?', o:['My bike has a flat tire.','We eat slowly and sing zemiros.','Nobody rushes to go anywhere.']},
+  {how:'A closing sentence wraps up, often by saying the main idea in new words.', q:'Best closing for a paragraph about why a workshop is a great class?', o:['For all these reasons, the workshop is the best part of my week.','Wood has a smell.','My neighbor has a garage.']},
+ ],
+ practice:[
+  {q:'Best topic sentence for a paragraph about Baltimore’s harbor?', o:['Baltimore’s harbor is busy with ships, boats and visitors.','Water is wet.','I went to the beach once.'], h:'It should cover the whole paragraph.'},
+  {q:'Topic: "Saving money is smart." Which detail supports it?', o:['Savings help you buy something big later.','Money is green.','My friend has a wallet.'], h:'Which one explains why saving is smart?'},
+  {q:'Which detail does NOT belong in a paragraph about how to plant a seed?', o:['My favorite color is blue.','Dig a small hole.','Water it every day.'], h:'Which one is off topic?'},
+  {q:'In a paragraph, what comes first?', o:['the topic sentence','the closing sentence','a detail'], h:'It tells what the paragraph is about.'},
+  {q:'Best closing for a paragraph about the first day of Trades Co.?', o:['By the end of the day, I knew this would be my favorite class.','The shop has a door.','Tomorrow is Tuesday.'], h:'It should wrap up the main idea.'},
+  {q:'Topic: "Winter is my favorite season." Which is a strong detail?', o:['I love sledding down the big hill near the shul.','Summer is hot.','Some trees are tall.'], h:'Which one shows why he likes winter?'},
+ ],
+ check:[
+  {q:'Best topic sentence for a paragraph about caring for tools?', o:['Taking care of your tools makes them last longer.','Tools are in the shop.','I have a red hammer.']},
+  {q:'Topic: "Our class trip was exciting." Which detail does NOT belong?', o:['My cousin lives in Ohio.','We rode a ferry across the harbor.','We saw a real submarine.']},
+  {t:'write', q:'Write a paragraph about your favorite thing to build or make. Use a topic sentence, three details and a closing sentence.', min:40, checks:['I started with a topic sentence.','I wrote three details.','I ended with a closing sentence.']},
+ ]},
+
+'WRIT.PARA.L05.01': {name:'Paragraph with transition words',
+ teach:[
+  {how:'Transitions connect ideas. First, next, then and finally show order.', q:'"___, gather your tools. Next, measure the board."', o:['First','However','Finally']},
+  {how:'"However" shows a contrast: something different from what came before.', q:'"The plan looked easy. ___, the cuts were tricky."', o:['However','For example','First']},
+  {how:'"For example" brings in an example. "As a result" shows an effect.', q:'"We practiced every day. ___, we won the game."', o:['As a result','For example','However']},
+ ],
+ practice:[
+  {q:'"Many trees lose their leaves in fall. ___, maples turn bright red first."', o:['For example','However','Finally'], h:'Maples are an example of trees.'},
+  {q:'"Sand the wood. ___, wipe away the dust."', o:['Then','However','For example'], h:'This is the next step.'},
+  {q:'"Avi wanted to go outside. ___, it was raining."', o:['However','As a result','First'], h:'Rain is a problem, a contrast.'},
+  {q:'"The bridge was closed. ___, traffic was slow all day."', o:['As a result','For example','First'], h:'Slow traffic was the effect.'},
+  {q:'"___, put away every tool before you leave."', o:['Finally','However','For example'], h:'This is the last step.'},
+  {q:'Which transition shows a contrast?', o:['On the other hand','Next','For example'], h:'Contrast means the other side.'},
+ ],
+ check:[
+  {q:'"The shelf wobbled. ___, we added a brace."', o:['As a result','For example','However']},
+  {q:'"Some tools need power. ___, a hammer does not."', o:['However','As a result','First']},
+  {t:'write', q:'Write a paragraph of at least 5 sentences about your morning routine. Use at least three transitions, such as first, next, then, after that or finally.', min:50, checks:['I used at least three transition words.','My steps are in order.','I have a topic sentence and a closing.']},
+ ]},
+
+'WRIT.PARA.L05.02': {name:'Step-by-step how-to paragraph',
+ teach:[
+  {how:'A how-to paragraph teaches the steps in order so someone else can do it.', q:'What should a how-to paragraph start with?', o:['A sentence that says what you will make or do','The last step','A joke']},
+  {how:'Each step starts with an action word: cut, measure, sand.', q:'Which is the clearest step?', o:['Measure 12 inches from the end of the board.','Then you sort of do the measuring.','Boards are nice.']},
+  {how:'Put the steps in the order they really happen.', t:'order', q:'Put the steps in order to make a sandwich.', tiles:['Take two slices of bread.','Spread on the filling.','Put the slices together.']},
+ ],
+ practice:[
+  {t:'order', q:'Put the steps in order to plant a seed.', tiles:['Dig a small hole.','Drop in the seed.','Cover it with soil.','Water it.'], h:'What must happen before the seed goes in?'},
+  {q:'Which step is missing? "Fill the kettle. ___. Pour the hot water."', o:['Heat the water.','Drink the tea.','Buy a kettle.'], h:'What happens between filling and pouring?'},
+  {t:'order', q:'Put the steps in order to hang a picture.', tiles:['Mark the spot on the wall.','Hammer in the nail.','Hang the picture on the nail.'], h:'Mark first, hang last.'},
+  {q:'Which detail helps the reader most?', o:['Use a 1/4-inch drill bit.','Use a bit.','Use something good.'], h:'Exact sizes help.'},
+  {q:'Which is the best last sentence for a how-to paragraph?', o:['Now your birdhouse is ready to hang outside.','I like birds.','First, get wood.'], h:'It should finish the job.'},
+  {t:'order', q:'Put the steps in order to wash your hands.', tiles:['Wet your hands.','Rub with soap for 20 seconds.','Rinse with water.','Dry with a towel.'], h:'Wet, soap, rinse, dry.'},
+ ],
+ check:[
+  {t:'order', q:'Put the steps in order to change a light bulb.', tiles:['Turn off the light.','Unscrew the old bulb.','Screw in the new bulb.','Turn the light on.']},
+  {q:'Which step is clearest?', o:['Sand the edges until they feel smooth.','Do the sanding thing.','Sanding happens.']},
+  {t:'write', q:'Write a how-to paragraph that teaches a skill you know, such as folding a paper airplane or setting the table for Shabbos. Give at least four steps in order.', min:50, checks:['I said what we are making or doing.','I gave at least four steps in order.','Each step starts with an action word.']},
+ ]},
+
+'LANG.GRAM.L05.01': {name:'Keep verb tense consistent',
+ teach:[
+  {how:'Keep the same time in a sentence. If it happened in the past, use past-tense verbs.', q:'Which is correct?', o:['Yesterday we walked to shul and davened.','Yesterday we walk to shul and davened.','Yesterday we walked to shul and daven.']},
+  {how:'Past: walked, built. Present: walk, build. Future: will walk, will build.', q:'"Tomorrow, Eli ___ the shelf."', o:['will paint','painted','paints']},
+  {how:'Some past-tense verbs change spelling: go → went, make → made.', q:'"Last week Shmuel ___ a birdhouse."', o:['made','make','maked']},
+ ],
+ practice:[
+  {q:'Which is correct?', o:['He opened the box and took out the drill.','He opened the box and takes out the drill.','He opens the box and took out the drill.'], h:'Both verbs should be past.'},
+  {q:'"Every day, Ari ___ to school."', o:['walks','walked','will walked'], h:'"Every day" is present.'},
+  {q:'"Last night we ___ our homework."', o:['finished','finish','will finish'], h:'"Last night" is past.'},
+  {q:'Which is correct?', o:['The boys ran to the field and played ball.','The boys run to the field and played ball.','The boys ran to the field and play ball.'], h:'Match both verbs.'},
+  {q:'"Yesterday I ___ a new word."', o:['learned','learn','will learn'], h:'Yesterday is past.'},
+  {q:'"Next week the class ___ the museum."', o:['will visit','visited','visits'], h:'Next week is future.'},
+ ],
+ check:[
+  {q:'Which is correct?', o:['Chaim swept the floor and washed the tables.','Chaim sweeps the floor and washed the tables.','Chaim swept the floor and washes the tables.']},
+  {q:'"Last Sunday we ___ to the lake."', o:['went','go','goed']},
+  {q:'"Tomorrow I ___ my cut list."', o:['will check','checked','checks']},
+ ]},
+
+'WRIT.PARA.L06.01': {name:'Summary paragraph',
+ teach:[
+  {how:'A summary tells only the main points, in your own words, in order.', q:'What belongs in a summary?', o:['the main events or ideas','every small detail','your opinion']},
+  {p:'shtender', how:'Leave out small details and your opinions.', q:'Which detail should you leave OUT of a summary of "The Shtender"?', o:['Avi rubbed the wood in long, smooth lines.','Zeidy and Avi built a shtender.','They brought it to the shul.']},
+  {p:'shtender', how:'Start by naming the main character and what the story is about.', q:'Best first sentence for a summary of "The Shtender"?', o:['Avi helps his grandfather build a shtender for the shul.','The wood was smooth as glass.','I think Avi is nice.']},
+ ],
+ practice:[
+  {q:'How long should a summary be compared to the original?', o:['much shorter','the same length','longer'], h:'Only the main points.'},
+  {p:'siddur', q:'Best one-sentence summary of "The Lost Siddur"?', o:['Moshe lost his siddur, the bus driver returned it, and Moshe wrote his name in it.','Moshe looked under his seat.','The siddur was small and blue.'], h:'Problem, what happened, how it ended.'},
+  {q:'Which does NOT belong in a summary?', o:['I think the story was boring.','the main character’s problem','how the problem was solved'], h:'Leave out opinions.'},
+  {q:'A summary should be written:', o:['in your own words','copied word for word','as questions'], h:'Retell, don’t copy.'},
+  {p:'Camels are built for the desert. Their humps store fat for energy. Their wide feet keep them from sinking in sand. Long eyelashes keep sand out of their eyes.', q:'Best one-sentence summary?', o:['Camels have body parts that help them survive in the desert.','Camels have eyelashes.','Camels are my favorite animal.'], h:'Cover everything in one idea.'},
+  {q:'What order should a summary follow?', o:['the same order as the original','random order','most exciting first'], h:'Keep the original order.'},
+ ],
+ check:[
+  {p:'The Pony Express carried mail between Missouri and California in 1860 and 1861. Riders changed horses every 10 to 15 miles and delivered letters in about ten days. It ended when the telegraph line was finished.', q:'Best summary sentence?', o:['The Pony Express carried mail across the West in about ten days until the telegraph replaced it.','Riders changed horses.','The Pony Express was cool.']},
+  {q:'Which belongs in a summary?', o:['the main problem and how it ends','the color of a character’s shirt','what you would have done']},
+  {p:'longway', t:'write', q:'Read "The Long Way Home." Write a summary paragraph of 3 to 5 sentences in your own words.', min:35, checks:['I named the main character and his problem.','I told the main events in order.','I left out my opinion and small details.']},
+ ]},
+
+'WRIT.ESSAY.L07.01': {name:'State a claim with reasons',
+ teach:[
+  {how:'A claim is a statement people could argue about. A fact can be proven.', q:'Which is a claim?', o:['Every middle school should teach a trade.','Baltimore is in Maryland.','A foot has 12 inches.']},
+  {how:'Good reasons explain WHY the claim is right.', q:'Claim: "Students should keep a budget." Best reason?', o:['A budget helps you save for things you really want.','Budgets are on paper.','My friend has a budget.']},
+  {how:'A strong claim is clear and specific.', q:'Which claim is clearest?', o:['Our school should add a 20-minute reading period every day.','Reading is kind of good.','Stuff should change.']},
+ ],
+ practice:[
+  {q:'Which is a fact, not a claim?', o:['Water freezes at 32°F.','Winter is the best season.','Schools should start later.'], h:'Which one can be proven?'},
+  {q:'Claim: "The school should start a woodshop." Which reason is strongest?', o:['Students learn measuring and planning skills they will use for life.','Wood smells nice.','I want to use a saw.'], h:'Which reason helps everyone, not just you?'},
+  {q:'Which claim is clear and specific?', o:['The town should build a bike path along the river by next summer.','Things in town are bad.','Bikes exist.'], h:'What, where, when.'},
+  {q:'Which reason does NOT support "Students should learn to cook"?', o:['Kitchens have windows.','Cooking teaches measuring and fractions.','Knowing how to cook helps you stay healthy.'], h:'Which one has nothing to do with the claim?'},
+  {q:'Which is a claim?', o:['Homework should be limited to one hour a night.','Homework is given in school.','Some students do homework.'], h:'Could someone disagree?'},
+  {q:'Claim: "Every shop should have a first-aid kit." Best reason?', o:['Small injuries can be treated right away.','Kits are white.','Tape is sticky.'], h:'Why does it matter?'},
+ ],
+ check:[
+  {q:'Which is a claim?', o:['Our yeshiva should hold a monthly chesed day.','Our yeshiva has a gym.','June has 30 days.']},
+  {q:'Claim: "Students should earn money for mastering skills." Best reason?', o:['Rewards for real progress can motivate students to keep learning.','Dollars are green.','Money is paper.']},
+  {t:'write', q:'Write a claim about something you think should change in school or your community. Give two reasons that support it.', min:40, checks:['My claim is something people could argue about.','I gave two reasons.','Each reason explains WHY.']},
+ ]},
+
+'WRIT.ESSAY.L07.02': {name:'Quote evidence and explain it',
+ teach:[
+  {how:'Evidence backs your claim. Quote the exact words, inside quotation marks.', q:'Which correctly quotes the text?', o:['The article says, "Over 100,000 vehicles cross it every day."','The article says over 100,000 vehicles cross it every day."','The article says, Over 100,000 vehicles cross it every day.']},
+  {how:'After the quote, explain how it proves your claim.', q:'Claim: The Brooklyn Bridge is still important. Quote: "Over 100,000 vehicles cross it every day." Best explanation?', o:['This shows that huge numbers of people still depend on the bridge.','This is a quote.','Bridges are made of steel.']},
+  {how:'Introduce a quote with a lead-in, such as "According to the article,".', q:'Which is the best lead-in?', o:['According to the article,','Quote:','Here is words:']},
+ ],
+ practice:[
+  {p:'railroad', q:'Claim: The railroad changed travel. Best evidence?', o:['"After the railroad, the same trip took about a week."','"Building it was brutal work."','"In 1869, workers drove a final spike."'], h:'Which quote is about travel?'},
+  {q:'Claim: Sharp tools are safer. Quote: "A dull saw needs more force, so it can slip." Best explanation?', o:['This shows that dull tools can cause accidents, so keeping tools sharp is a safety rule.','This sentence is about saws.','Saws are sharp.'], h:'Connect the quote back to the claim.'},
+  {q:'Which is punctuated correctly?', o:['Mr. Adler said, "A good joint will make it stronger."','Mr. Adler said "a good joint will make it stronger".','Mr. Adler said, a good joint will make it stronger.'], h:'Comma, quotation marks, capital, period inside.'},
+  {q:'What is the job of the explanation after a quote?', o:['to show how the quote proves the claim','to repeat the quote','to change the topic'], h:'Why did you pick this quote?'},
+  {p:'longway', q:'Claim: Pinchas showed kindness. Best evidence?', o:['"He stopped, turned around and jogged back."','"Pinchas was the fastest runner in his grade."','"That afternoon, the menahel handed out the awards."'], h:'Which quote shows him helping?'},
+  {q:'Which is the WEAKEST explanation of a quote?', o:['This quote is good.','This shows Pinchas gave up winning to help someone in need.','This proves he cared more about Hillel than the race.'], h:'Which one doesn’t explain anything?'},
+ ],
+ check:[
+  {p:'bridge', q:'Claim: Washington Roebling was determined. Best evidence?', o:['"He watched through a telescope from his window and sent instructions every day."','"The work was dangerous."','"The Brooklyn Bridge opened in 1883."']},
+  {q:'Which is punctuated correctly?', o:['The manual says, "Always wear safety glasses."','The manual says "always wear safety glasses"','The manual says, Always wear safety glasses.']},
+  {p:'bridge', t:'write', q:'Claim: The Brooklyn Bridge was a great achievement. Write 3 to 5 sentences: state the claim, quote one piece of evidence from the passage, and explain how it proves the claim.', min:40, checks:['I stated the claim.','I quoted exact words in quotation marks.','I explained how the quote proves the claim.']},
+ ]},
+
+'LANG.GRAM.L08.01': {name:'Clauses and complex sentences',
+ teach:[
+  {how:'An independent clause can stand alone. A dependent clause cannot; it starts with words like because, when, although or if.', q:'Which is a dependent clause?', o:['because the glue was wet','the glue was wet','we waited']},
+  {how:'A complex sentence has one independent clause and at least one dependent clause.', q:'Which is a complex sentence?', o:['When the bell rang, we went to Mincha.','The bell rang.','The bell rang, and we went to Mincha.']},
+  {how:'When the dependent clause comes first, put a comma after it.', q:'Which is punctuated correctly?', o:['If it rains, the trip will move to Monday.','If it rains the trip, will move to Monday.','If, it rains the trip will move to Monday.']},
+ ],
+ practice:[
+  {q:'Which is the independent clause in "Although the board was long, it fit in the car"?', o:['it fit in the car','Although the board was long','the board'], h:'Which part can stand alone?'},
+  {q:'Which word starts a dependent clause?', o:['because','and','the'], h:'And joins two independent clauses.'},
+  {q:'Combine with "because": "We stayed inside. It was snowing."', o:['We stayed inside because it was snowing.','Because we stayed inside it was snowing.','We stayed inside, it was snowing because.'], h:'Because goes before the reason.'},
+  {q:'Which is a complex sentence?', o:['Since the saw was dull, Eli sharpened it.','Eli sharpened the saw.','The saw was dull, so Eli sharpened it.'], h:'Look for since, because, when, if.'},
+  {q:'Which is punctuated correctly?', o:['After we finished, we cleaned the shop.','After we finished we, cleaned the shop.','After, we finished we cleaned the shop.'], h:'The comma goes after the dependent clause.'},
+  {q:'Which is a dependent clause?', o:['until the paint dries','the paint dries','wait'], h:'It can’t stand alone.'},
+ ],
+ check:[
+  {q:'Which is a complex sentence?', o:['Before he cut the board, Avi checked his measurement.','Avi checked his measurement.','Avi checked his measurement, and he cut the board.']},
+  {q:'Combine with "when": "The light turns green. The battery is charged."', o:['When the light turns green, the battery is charged.','The light turns green when, the battery is charged.','When the light turns green the battery, is charged.']},
+  {q:'Which word starts a dependent clause?', o:['although','but','or']},
+ ]},
+
+'WRIT.ESSAY.L08.02': {name:'Answer a counterclaim',
+ teach:[
+  {how:'A counterclaim is the other side’s view. Naming it makes your argument stronger.', q:'Claim: "School should start at 9:00." Which is a counterclaim?', o:['Some people say a later start would make the day end too late.','School should start at 9:00.','Sleep helps students learn.']},
+  {how:'A rebuttal answers the counterclaim with a reason or evidence.', q:'Counterclaim: "Woodshop is too dangerous." Best rebuttal?', o:['With safety training, a license for each tool and an adult supervising, the risk is small.','Woodshop is fun.','Some people don’t like wood.']},
+  {how:'Use phrases like "Some people argue…" and "However, …".', q:'Which sentence introduces a counterclaim?', o:['Some people argue that phones help students learn.','Phones are made of glass.','In conclusion, phones are bad.']},
+ ],
+ practice:[
+  {q:'Claim: "Students should earn money for mastering skills." Which is a counterclaim?', o:['Some people worry students will care about money more than learning.','Money is fun.','Students like rewards.'], h:'What would someone on the other side say?'},
+  {q:'Best rebuttal to "Pay will make students care only about money"?', o:['Pay only comes from real mastery, so the only way to earn is to learn.','Money is good.','Students should work.'], h:'Answer the worry with a reason.'},
+  {q:'Which word often starts a rebuttal?', o:['However','Firstly','Because'], h:'It turns back to your side.'},
+  {q:'Why include a counterclaim?', o:['It shows you understand the other side and makes your argument stronger.','It makes the essay longer.','It changes your claim.'], h:'Think about convincing a reader.'},
+  {q:'Counterclaim: "Electives take time away from core subjects." Best rebuttal?', o:['Trades electives use math and reading every day, so they support core skills.','Electives are nice.','Core subjects are hard.'], h:'Show the elective helps the core.'},
+  {q:'Which is NOT a counterclaim to "We need a new library"?', o:['Libraries hold books.','Some say most people read online now.','Others argue the money should fix the roads.'], h:'Which one doesn’t argue against it?'},
+ ],
+ check:[
+  {q:'Claim: "Homework should be limited." Which is a counterclaim?', o:['Some people say homework helps students practice skills.','Homework should be limited.','Students are busy.']},
+  {q:'Best rebuttal to "A school garden costs too much"?', o:['Seeds and soil are cheap, and the garden can sell produce to cover its costs.','Gardens are green.','Some people like gardens.']},
+  {t:'write', q:'Claim: "Middle schools should offer a trades class." Write 3 to 5 sentences: give one counterclaim and a rebuttal that answers it.', min:40, checks:['I stated a counterclaim fairly.','I answered it with a reason or evidence.','I used phrases like "Some people argue" and "However."']},
+ ]},
+
+'WRIT.RES.L09.01': {name:'Find and judge sources',
+ teach:[
+  {how:'Reliable sources have a known expert author or organization and are up to date.', q:'Which source is most reliable for facts about bridges?', o:['A university engineering department website','An anonymous comment','An ad for car insurance']},
+  {how:'Check the date. For facts that change, newer is better.', q:'You need Baltimore’s population today. Which source?', o:['Recent U.S. Census data','A 1990 almanac','A novel set in Baltimore']},
+  {how:'Watch for bias: is the source trying to sell or persuade?', q:'Which source is most likely biased about a drill?', o:['The drill company’s ad','A consumer testing report','A government safety notice']},
+ ],
+ practice:[
+  {q:'Which website ending belongs to a U.S. government agency?', o:['.gov','.com','.biz'], h:'gov = government.'},
+  {q:'Which is the best source for a report on volcanoes?', o:['A national geological survey website','A social media post','A video game'], h:'Who are the experts?'},
+  {q:'Why is a source with no author less reliable?', o:['You can’t check who wrote it or whether he is an expert.','It is shorter.','It has more pictures.'], h:'Who stands behind it?'},
+  {q:'Two sources disagree. What should you do?', o:['Check a third reliable source.','Use the one you like.','Leave the topic out.'], h:'Break the tie.'},
+  {q:'Which is a primary source about the Brooklyn Bridge opening?', o:['A newspaper article printed the day it opened in 1883','A 2020 encyclopedia article','A modern travel blog'], h:'Primary = from the time it happened.'},
+  {q:'Which source is most up to date on bike helmet laws?', o:['The state government’s current website','A 1998 magazine','A friend’s opinion'], h:'Laws change. Find the official, current one.'},
+ ],
+ check:[
+  {q:'Which is most reliable for facts about tornadoes?', o:['The National Weather Service website','An anonymous forum','A movie about storms']},
+  {q:'Which source is most likely biased?', o:['A company website selling the product','A university study','A government report']},
+  {q:'Which is a primary source?', o:['A soldier’s letter written during the war','A textbook chapter about the war','A website summary of the war']},
+ ]},
+
+'WRIT.RES.L09.02': {name:'Paraphrase and cite',
+ teach:[
+  {how:'Paraphrasing means saying the idea in your own words and your own sentence shape. Changing one or two words is still copying.', p:'Original: "Honey almost never spoils because germs cannot grow in it."', q:'Which is the best paraphrase?', o:['Germs can’t live in honey, so it lasts a very long time.','Honey almost never spoils because germs cannot grow in it.','Honey almost never goes bad because germs cannot grow in it.']},
+  {how:'Even a paraphrase needs a citation: say where the idea came from.', q:'Which sentence includes a citation?', o:['According to the National Park Service, the Liberty Bell is in Philadelphia.','The Liberty Bell is in Philadelphia.','I think the Liberty Bell is in Philadelphia.']},
+  {how:'Use quotation marks only when you copy exact words.', q:'You copy five words exactly from a source. You must:', o:['put them in quotation marks and cite the source','change one word','leave out the source']},
+ ],
+ practice:[
+  {p:'Original: "The Erie Canal cut shipping costs by about 90 percent."', q:'Which is the best paraphrase?', o:['Shipping became roughly ten times cheaper after the Erie Canal opened.','The Erie Canal cut shipping costs by about 90 percent.','The Erie Canal cut shipping prices by about 90 percent.'], h:'Change the sentence shape, not just one word.'},
+  {q:'What is plagiarism?', o:['using someone else’s words or ideas without credit','citing a source','writing your own ideas'], h:'Credit matters.'},
+  {p:'Original: "Bees pollinate about one-third of the crops we eat."', q:'Which is the best paraphrase?', o:['Roughly a third of our food crops depend on bees to pollinate them.','Bees pollinate about one-third of the crops we eat.','Bees pollinate about a third of the crops we eat.'], h:'Rebuild the sentence.'},
+  {q:'Which is a correct short citation?', o:['(National Weather Service, 2024)','[the internet]','(I read it)'], h:'Name the source and year.'},
+  {q:'When should you cite a source?', o:['whenever you use its facts, ideas or words','only for exact quotes','never in a short report'], h:'Ideas count too.'},
+  {p:'Original: "Glaciers carve valleys as they slowly move downhill."', q:'Which is the best paraphrase?', o:['As glaciers creep down slopes, they cut out valleys.','Glaciers carve valleys as they slowly move downhill.','Glaciers carve valleys as they slowly go downhill.'], h:'New words and new order.'},
+ ],
+ check:[
+  {p:'Original: "Lightning heats the air to about 50,000 degrees Fahrenheit."', q:'Which is the best paraphrase?', o:['A lightning bolt can make the air around it roughly 50,000°F.','Lightning heats the air to about 50,000 degrees Fahrenheit.','Lightning warms the air to about 50,000 degrees Fahrenheit.']},
+  {q:'Which needs a citation?', o:['a statistic you found in an article','your own opinion','a story about your own day']},
+  {q:'Which sentence uses a source correctly?', o:['According to NASA, sunlight takes about 8 minutes to reach Earth.','Sunlight takes about 8 minutes to reach Earth, I copied this.','Sunlight takes about 8 minutes, trust me.']},
+ ]},
+
+'WRIT.ESSAY.L09.01': {name:'Business writing',
+ teach:[
+  {how:'A business letter has a greeting, a clear purpose in the first sentence, details, and a polite closing.', q:'Best first sentence for a letter to a lumber store?', o:['I am writing to ask for a price on ten pine boards for our school shop.','Hi! What’s up?','Wood is great.']},
+  {how:'Use a polite, professional tone. No slang.', q:'Which closing is professional?', o:['Thank you for your help. Sincerely, Avi Gold, Tashbar Trades Co.','Later!','Bye, from me.']},
+  {how:'Be specific: what, how many, when.', q:'Which request is clearest?', o:['Please deliver 10 pine boards, 1 × 8 × 8 feet, by Friday, November 20.','Please send some wood soon.','We need stuff for shop.']},
+ ],
+ practice:[
+  {q:'Which tone is right for a customer note?', o:['polite and clear','silly','angry'], h:'You want customers to come back.'},
+  {q:'A customer’s shelf arrived scratched. Best first sentence?', o:['Thank you for letting us know about the scratch; we will fix it this week.','That’s not our fault.','Scratches happen.'], h:'Thank, then fix.'},
+  {q:'What belongs in an invoice?', o:['item, price, quantity and total','a joke','your favorite tool'], h:'What does the customer pay for?'},
+  {q:'Best subject line for an email to the menahel about the market?', o:['Trades Co. market: request to use the gym on Sunday','Hi','Question??'], h:'Say exactly what it is about.'},
+  {q:'Which sentence is too informal for a business letter?', o:['Hey, gimme the boards ASAP.','Please let me know the total cost.','We would like to place an order.'], h:'Look for slang.'},
+  {q:'Proofreading a business letter matters because:', o:['mistakes make the company look careless','it makes the letter longer','teachers like red pens'], h:'Think about the customer.'},
+ ],
+ check:[
+  {q:'Best first sentence for a letter asking a hardware store to donate sandpaper?', o:['Our school trades class is asking local businesses to donate sandpaper for student projects.','Give us sandpaper.','Hello, sandpaper is rough.']},
+  {q:'Which closing is professional?', o:['Sincerely,','See ya,','Peace out,']},
+  {t:'write', q:'Write a short customer note (4 to 6 sentences) from Tashbar Trades Co. to a family who bought a sefarim shelf. Thank them, explain how to care for the shelf, and invite them to the next market.', min:45, checks:['I used a greeting and a polite closing.','My purpose is clear in the first sentence.','I used a professional tone with no slang.']},
+ ]},
+
+'WRIT.RES.L09.03': {name:'Short research report',
+ teach:[
+  {how:'A research report starts with a thesis: one sentence that says what the report will show.', q:'Best thesis for a report on the Erie Canal?', o:['The Erie Canal made shipping cheaper and helped New York City grow into a major port.','The Erie Canal is a canal.','I like canals.']},
+  {how:'Group your notes by subtopic. Each subtopic becomes a paragraph.', q:'Notes: "cost dropped 90%," "opened 1825," "NYC trade grew," "dug by hand." Which two fit a paragraph on economic effects?', o:['cost dropped 90% and NYC trade grew','opened 1825 and dug by hand','dug by hand and NYC trade grew']},
+  {how:'End with a conclusion that restates the thesis and why it matters.', q:'Best conclusion sentence?', o:['By lowering costs and linking markets, the Erie Canal changed how America traded.','The end.','Canals have water.']},
+ ],
+ practice:[
+  {q:'Which is a researchable question?', o:['How did the transcontinental railroad change travel times?','Do I like trains?','What is my favorite color?'], h:'It can be answered with facts.'},
+  {q:'Which note is a fact you would need to cite?', o:['The railroad was finished in 1869.','Trains are cool.','I want to ride a train.'], h:'Facts from sources get cited.'},
+  {q:'What is the best order for a short report?', o:['thesis, body paragraphs, conclusion','conclusion, thesis, body','body only'], h:'Start with what you will show.'},
+  {q:'Which detail best supports the thesis "Bees are vital to farming"?', o:['Bees pollinate about one-third of food crops.','Bees are yellow.','Some bees live in hives.'], h:'Which one is about farming?'},
+  {q:'Where does the list of sources go?', o:['at the end of the report','in the title','nowhere'], h:'After the conclusion.'},
+  {q:'Which is the best report title?', o:['How Glaciers Shaped the Great Lakes','Stuff About Ice','Report'], h:'Specific and clear.'},
+ ],
+ check:[
+  {q:'Best thesis for a report on lighthouses?', o:['Lighthouses saved countless ships by warning sailors of danger before modern navigation.','Lighthouses are tall.','I visited a lighthouse.']},
+  {q:'Notes: "warned ships of rocks," "built of stone," "foghorns in bad weather," "keepers lived inside." Which two fit a paragraph on how lighthouses kept ships safe?', o:['warned ships of rocks and foghorns in bad weather','built of stone and keepers lived inside','keepers lived inside and built of stone']},
+  {t:'write', p:'Source 1 (Union Pacific history page): Before 1869, crossing the country by wagon took about four to six months.\nSource 2 (National Park Service, Golden Spike): After the railroad opened, a coast-to-coast trip took about a week.', q:'Write one report paragraph (5 to 7 sentences) on how the transcontinental railroad changed travel. Use both sources and name each one.', min:60, checks:['I started with a topic sentence.','I used facts from both sources and named them.','I explained why the change mattered.']},
+ ]},
+};
+
+/* Math generators, the tape-measure generator and Trades content. Every call makes a fresh item, so retries never repeat. */
+const RI=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const PICK=a=>a[Math.floor(Math.random()*a.length)];
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a||1};
+function fracStr(n,d){ if(d<0){n=-n;d=-d} const g=gcd(n,d); n/=g; d/=g; if(d===1) return String(n);
+  const neg=n<0; n=Math.abs(n); const w=Math.floor(n/d), r=n%d; return (neg?'-':'')+(w?w+' ':'')+r+'/'+d; }
+function money(c){ return '$'+(c/100).toFixed(2); }
+function uniq(list){ const out=[]; for(const x of list){ if(!out.includes(x)) out.push(x); } return out; }
+function opts(correct, distract){ const o=uniq([correct, ...distract.filter(x=>x!==correct)]); while(o.length<3) o.push(String(Number(o[o.length-1])+1 || o.length)); return o.slice(0,3); }
+const N=(q,a,h,extra)=>Object.assign({t:'num',q,a,h},extra||{});
+const M=(q,o,h)=>({q,o,h});
+
+const GEN = {
+'MATH.OPS.L03.01': {name:'Add and subtract within 100',
+ how:['To add, add the tens, then the ones: 47 + 28 → 60 + 15 = 75.','To subtract, take away the tens, then the ones: 83 − 25 → 63 − 5 = 58.','Check subtraction by adding back: 58 + 25 = 83.'],
+ gen(){ if(Math.random()<.5){ const a=RI(12,68), b=RI(11,99-a); return N(`${a} + ${b} = ?`, a+b, 'Add the tens first, then add the ones.'); }
+   const a=RI(31,99), b=RI(11,a-6); return N(`${a} − ${b} = ?`, a-b, 'Take away the tens, then the ones. Regroup a ten if you need more ones.'); }},
+'MATH.PV.L03.01': {name:'Read, write and compare numbers to 1,000',
+ how:['Each digit has a place: 482 = 4 hundreds, 8 tens, 2 ones.','To compare, look at the hundreds first. If they match, look at the tens.','> means greater than. < means less than. The open side faces the bigger number.'],
+ gen(){ const k=RI(0,2);
+  if(k===0){ const n=RI(102,989); const pl=PICK(['hundreds','tens','ones']); const d={hundreds:Math.floor(n/100),tens:Math.floor(n/10)%10,ones:n%10}[pl]; return N(`What digit is in the ${pl} place of ${n}?`, d, 'Hundreds is the first digit, tens the middle, ones the last.'); }
+  if(k===1){ const h=RI(1,9),t=RI(0,9),o=RI(0,9); return N(`${h} hundreds, ${t} tens and ${o} ones make what number?`, h*100+t*10+o, 'Write the hundreds digit, then the tens, then the ones.'); }
+  let a=RI(100,999), b=Math.random()<.15?a:RI(100,999); if(Math.random()<.4){ b=Math.floor(a/100)*100+RI(0,99); }
+  const s=a>b?'>':a<b?'<':'='; return M(`Which sign goes in the box? ${a} ☐ ${b}`, [s,...['>','<','='].filter(x=>x!==s)], 'Compare the hundreds, then the tens, then the ones.'); }},
+'MATH.OPS.L03.02': {name:'Add and subtract within 1,000 with regrouping',
+ how:['Line up ones under ones, tens under tens, hundreds under hundreds.','Adding: when a column makes 10 or more, carry 1 to the next column.','Subtracting: when the top digit is too small, borrow 1 from the next column.'],
+ gen(){ if(Math.random()<.5){ const a=RI(118,689), b=RI(105,980-a); return N(`${a} + ${b} = ?`, a+b, 'Start with the ones. Carry when a column reaches 10.'); }
+   const a=RI(305,990), b=RI(108,a-50); return N(`${a} − ${b} = ?`, a-b, 'Start with the ones. Borrow from the next column when the top digit is smaller.'); }},
+'MATH.MEAS.L03.04': {name:'Count money and make change',
+ how:['A quarter is 25¢, a dime is 10¢, a nickel is 5¢, a penny is 1¢.','Count the biggest coins first, then add the smaller ones.','Change = what you paid − the price. $1 = 100¢.'],
+ gen(){ if(Math.random()<.5){ const q=RI(0,3),d=RI(0,4),n=RI(0,3),p=RI(0,4); if(q+d+n+p===0) return this.gen(); return N(`How many cents? ${q} quarters, ${d} dimes, ${n} nickels, ${p} pennies`, q*25+d*10+n*5+p, 'Quarters 25¢ each, dimes 10¢, nickels 5¢, pennies 1¢.', {unit:'¢'}); }
+   const item=PICK(['pencil','eraser','ruler','pack of nails','sticker']); const pr=RI(1,19)*5; return N(`A ${item} costs ${pr}¢. You pay with $1. How much change, in cents?`, 100-pr, '$1 is 100¢. Subtract the price from 100.', {unit:'¢'}); }},
+
+'MATH.OPS.L05.01': {name:'Multiply multi-digit numbers',
+ how:['Break the bigger number into parts: 34 × 6 = 30 × 6 + 4 × 6 = 180 + 24 = 204.','For 2-digit × 2-digit, multiply by the ones, then by the tens, then add.','Estimate first to check: 48 × 21 is about 50 × 20 = 1,000.'],
+ gen(){ if(Math.random()<.5){ const a=RI(112,899), b=RI(3,9); return N(`${a} × ${b} = ?`, a*b, 'Multiply the hundreds, tens and ones by the small number, then add the parts.'); }
+   const a=RI(13,89), b=RI(12,49); return N(`${a} × ${b} = ?`, a*b, `Try ${a} × ${b%10} plus ${a} × ${b-b%10}.`); }},
+'MATH.OPS.L05.02': {name:'Long division with remainders',
+ how:['Divide, multiply, subtract, bring down. Repeat.','What is left over at the end is the remainder. It must be smaller than the divisor.','Check: quotient × divisor + remainder = the starting number.'],
+ gen(){ const d=RI(3,9), qq=RI(21,149), r=RI(0,d-1); const n=qq*d+r; return N(`${n} ÷ ${d} = ?  (type like 23 R4)`, r?`${qq}R${r}`:`${qq}`, `Check with ${d} × your answer + remainder = ${n}.`, {kind:'rem'}); }},
+'MATH.FRAC.L05.01': {name:'Equivalent fractions and comparing fractions',
+ how:['Multiply the top and bottom by the same number to get an equal fraction: 2/3 = 4/6.','To compare, give both fractions the same bottom number.','With the same bottom, the bigger top is the bigger fraction.'],
+ gen(){ if(Math.random()<.5){ const b=RI(2,6), a=RI(1,b-1), k=RI(2,5); const c=`${a*k}/${b*k}`; const ds=[`${a+k}/${b+k}`,`${a*k}/${b*k+1}`,`${a*k+1}/${b*k}`,`${a}/${b*k}`].filter(x=>{const [p,q]=x.split('/').map(Number);return p*b!==a*q}); return M(`Which fraction is equal to ${a}/${b}?`, opts(c,ds), `Multiply ${a} and ${b} by the same number.`); }
+   let b1=RI(2,8), a1=RI(1,b1-1), b2=RI(2,8), a2=RI(1,b2-1); const L=a1*b2, R=a2*b1; const s=L>R?'>':L<R?'<':'='; return M(`Which sign goes in the box? ${a1}/${b1} ☐ ${a2}/${b2}`, [s,...['>','<','='].filter(x=>x!==s)], `Rename both with ${b1*b2} on the bottom, then compare the tops.`); }},
+'MATH.FRAC.L05.02': {name:'Add and subtract fractions with like denominators',
+ how:['Same bottom number? Add or subtract only the tops: 3/8 + 2/8 = 5/8.','The bottom number stays the same.','Simplify if you can: 4/8 = 1/2.'],
+ gen(){ const d=RI(4,12); if(Math.random()<.5){ const a=RI(1,d-1), b=RI(1,d-1); return N(`${a}/${d} + ${b}/${d} = ?`, (a+b)/d, `Add the tops: ${a} + ${b}. Keep ${d} on the bottom.`, {kind:'frac'}); }
+   const a=RI(2,d), b=RI(1,a-1); return N(`${a}/${d} − ${b}/${d} = ?`, (a-b)/d, `Subtract the tops: ${a} − ${b}. Keep ${d} on the bottom.`, {kind:'frac'}); }},
+
+'MATH.ALG.L07.02': {name:'Ratios and unit rates',
+ how:['A unit rate is "per one": the cost of ONE item, miles in ONE hour.','Divide the total by the number of items: $4.50 ÷ 6 pens = $0.75 per pen.','Use unit rates to compare deals: the lower price per item is the better buy.'],
+ gen(){ const k=RI(0,2);
+  if(k===0){ const n=RI(3,9), u=RI(3,40)*5; const item=PICK(['pens','screws (per pack)','notebooks','pine boards','clamps']); return N(`${n} ${item} cost ${money(n*u)}. What is the cost of 1? (in dollars)`, u/100, `Divide ${money(n*u)} by ${n}.`, {unit:'$'}); }
+  if(k===1){ const h=RI(2,6), s=RI(9,14)*5; return N(`A bus travels ${h*s} miles in ${h} hours. How many miles per hour?`, s, `Divide ${h*s} by ${h}.`); }
+  const a=RI(3,8), ua=RI(20,60), b=a+RI(2,6), ub=ua+PICK([-6,-3,3,6]); const better=ua<ub?`${a} for ${money(a*ua)}`:`${b} for ${money(b*ub)}`; const worse=ua<ub?`${b} for ${money(b*ub)}`:`${a} for ${money(a*ua)}`; return M(`Which is the better buy? ${a} for ${money(a*ua)} or ${b} for ${money(b*ub)}`, [better,worse,'They cost the same per item'], 'Find the price of ONE in each deal.'); }},
+'MATH.ALG.L08.02': {name:'Percents: discounts, tax and interest',
+ how:['Percent means "out of 100": 20% = 0.20.','Discount: price × percent = amount off. Sale price = price − amount off.','Tax or interest: amount × percent = the extra. New total = amount + extra.'],
+ gen(){ const k=RI(0,2);
+  if(k===0){ const p=PICK([10,20,25,50]), pr=RI(2,12)*20; return N(`A drill costs $${pr}. It is ${p}% off. What is the sale price, in dollars?`, pr*(100-p)/100, `${p}% of ${pr} is ${pr*p/100}. Subtract it.`, {unit:'$'}); }
+  if(k===1){ const p=PICK([5,6,10]), pr=RI(2,15)*10; return N(`A toolbox costs $${pr} plus ${p}% tax. What is the total, in dollars?`, pr*(100+p)/100, `${p}% of ${pr} is ${(pr*p/100)}. Add it.`, {unit:'$'}); }
+  const p=PICK([5,10]), b=RI(2,10)*20; return N(`Your savings of $${b} earn ${p}% interest. How many dollars of interest do you earn?`, b*p/100, `${p}% of ${b} = ${b} × ${p/100}.`); }},
+'MATH.NUM.L07.01': {name:'Integers: add and subtract negative numbers',
+ how:['On a number line, adding a positive moves right; adding a negative moves left.','Subtracting a number is the same as adding its opposite: 5 − (−3) = 5 + 3 = 8.','Think of temperature: −4° then warming 10° is 6°.'],
+ gen(){ let a=RI(-15,15)||-7, b=RI(-15,15)||4; if(Math.random()<.5){ return N(`${a} + (${b}) = ?`, a+b, b<0?'Adding a negative moves left on the number line.':'Adding a positive moves right on the number line.'); }
+   return N(`${a} − (${b}) = ?`, a-b, `Change it to adding the opposite: ${a} + (${-b}).`); }},
+'MATH.ALG.L07.04': {name:'Write and evaluate expressions',
+ how:['To evaluate, put the number in for the letter, then follow order of operations.','3x means 3 times x. When x = 5, 3x + 4 = 15 + 4 = 19.','"5 more than twice n" means 2n + 5.'],
+ gen(){ const k=RI(0,2);
+  if(k===0){ const a=RI(2,9), b=RI(1,20), x=RI(2,10); return N(`Evaluate ${a}x + ${b} when x = ${x}.`, a*x+b, `${a} × ${x} first, then add ${b}.`); }
+  if(k===1){ const a=RI(2,6), b=RI(1,9), x=RI(1,8); return N(`Evaluate ${a}(x + ${b}) when x = ${x}.`, a*(x+b), `Parentheses first: ${x} + ${b}, then multiply by ${a}.`); }
+  const a=RI(2,9), b=RI(1,12); const w={2:'twice',3:'three times',4:'four times',5:'five times',6:'six times',7:'seven times',8:'eight times',9:'nine times'}[a];
+  return M(`Which expression means "${b} more than ${w} n"?`, [`${a}n + ${b}`,`${b}n + ${a}`,`${a}(n + ${b})`], `"${w} n" is ${a}n. "${b} more" means + ${b}.`); }},
+
+'MATH.ALG.L09.01': {name:'Slope and rate of change',
+ how:['Slope = rise ÷ run = (change in y) ÷ (change in x).','From (2, 3) to (6, 11): rise 8, run 4, slope 2.','A negative slope means the line goes down from left to right.'],
+ gen(){ const x1=RI(-5,5), y1=RI(-6,6), run=PICK([1,2,3,4]), m=PICK([-3,-2,-1,1,2,3,0.5,-0.5]); const x2=x1+run*(m%1?2:1); const y2=y1+m*(x2-x1); return N(`What is the slope of the line through (${x1}, ${y1}) and (${x2}, ${y2})?`, m, `Rise: ${y2} − (${y1}). Run: ${x2} − (${x1}). Divide.`, {kind:'frac'}); }},
+'MATH.FUNC.L09.02': {name:'Graph and write linear equations',
+ how:['Slope-intercept form: y = mx + b. m is the slope, b is where the line crosses the y-axis.','A line with slope 3 crossing at (0, 2) is y = 3x + 2.','To find y for a given x, plug x in: y = 3(4) + 2 = 14.'],
+ gen(){ const m=PICK([-4,-3,-2,2,3,4,5]), b=RI(-9,9)||3; const fmt=(m,b)=>`y = ${m}x ${b<0?'−':'+'} ${Math.abs(b)}`; const k=RI(0,2);
+  if(k===0) return M(`Which equation has slope ${m} and crosses the y-axis at ${b}?`, [fmt(m,b),fmt(b,m),fmt(-m,b)].filter((v,i,a)=>a.indexOf(v)===i).concat([fmt(m,-b)]).slice(0,3), 'y = mx + b: m is the slope, b is the y-intercept.');
+  if(k===1) return N(`What is the y-intercept of ${fmt(m,b)}?`, b, 'It is the number added at the end (b).');
+  const x=RI(-3,5); return N(`For ${fmt(m,b)}, what is y when x = ${x}?`, m*x+b, `Multiply ${m} × ${x}, then add ${b}.`); }},
+'MATH.ALG.L09.04': {name:'Systems of two linear equations',
+ how:['A system has two equations. The solution makes BOTH true.','Add the equations to cancel a variable: (x + y) + (x − y) = 2x.','Put your answer back into both equations to check.'],
+ gen(){ const x=RI(-4,12), y=RI(-4,12); const ask=PICK(['x','y']); if(Math.random()<.5) return N(`x + y = ${x+y}\nx − y = ${x-y}\nWhat is ${ask}?`, ask==='x'?x:y, 'Add the two equations to get 2x, then find y.', {pre:true});
+   const a=RI(2,4); return N(`${a}x + y = ${a*x+y}\nx + y = ${x+y}\nWhat is ${ask}?`, ask==='x'?x:y, `Subtract the second equation from the first to get ${a-1}x.`, {pre:true}); }},
+'MATH.ALG.L09.02': {name:'Exponents and scientific notation',
+ how:['2⁵ means 2 × 2 × 2 × 2 × 2 = 32.','Multiplying powers of the same base: add the exponents. 3² × 3³ = 3⁵.','Scientific notation: one digit before the decimal, times a power of 10. 4,500,000 = 4.5 × 10⁶.'],
+ gen(){ const sup=n=>String(n).split('').map(c=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[c]).join(''); const k=RI(0,2);
+  if(k===0){ const b=PICK([2,3,4,5,10]), e=b===2?RI(3,7):RI(2,4); return N(`${b}${sup(e)} = ?`, Math.pow(b,e), `Multiply ${b} by itself ${e} times.`); }
+  if(k===1){ const b=PICK([2,3,5,7]), e1=RI(2,6), e2=RI(2,6); return N(`${b}${sup(e1)} × ${b}${sup(e2)} = ${b} to what power?`, e1+e2, 'Same base: add the exponents.'); }
+  const d=RI(11,99), e=RI(4,8); const n=d*Math.pow(10,e-1); const lead=(d/10).toString(); return M(`Write ${n.toLocaleString('en-US')} in scientific notation.`, [`${lead} × 10${sup(e)}`,`${d} × 10${sup(e-1)}`,`${lead} × 10${sup(e+1)}`], 'Move the decimal until one digit is in front; count the moves.'); }},
+
+'VOC.MEAS.L07.01': {name:'Read a tape measure to 1/16 inch',
+ how:['The longest lines mark whole inches. The next longest mark halves, then quarters, then eighths.','The shortest lines are sixteenths. There are 16 in every inch.','Count sixteenths from the last whole inch, then simplify: 6/16 = 3/8.'],
+ gen(){ const w=RI(0,2), k=RI(1,15); const pos=w+k/16; const c=fracStr(w*16+k,16)+' in'; const near=[k+1,k-1,k+2,k-2].filter(x=>x>=1&&x<=15&&x!==k).map(x=>fracStr(w*16+x,16)+' in'); return {q:'Where is the red arrow?', o:opts(c,near), h:'Count the small marks from the last whole inch. Each is 1/16.', tape:pos}; }},
+};
+
+const TRADE = {
+'VOC.SAFE.L07.01': {name:'Shop rules, eye and ear protection',
+ teach:[
+  {how:'Safety glasses go on before any tool starts, every time.', q:'When do you put on safety glasses?', o:['before using any tool','only for big cuts','after you finish']},
+  {how:'Loose sleeves and strings can catch in spinning tools.', q:'Before using a drill, you should:', o:['roll up loose sleeves and tuck in your tzitzis strings','put on gloves with long fringes','leave your jacket open']},
+  {how:'Loud power tools need ear protection.', q:'Which tool needs ear protection?', o:['circular saw','pencil','tape measure']},
+ ],
+ practice:[
+  {q:'A tool’s cord is frayed. What do you do?', o:['Stop and tell the adult in charge.','Wrap it in tape and use it.','Hide it.'], h:'Damaged tools get reported, never used.'},
+  {q:'Where should your hands be when sawing?', o:['away from the blade’s path','in front of the blade','on the blade'], h:'Never in the path of the blade.'},
+  {q:'Which tools may you use?', o:['only the ones you hold a license for','any tool on the wall','whatever a friend lends you'], h:'Each tool needs its own license.'},
+  {q:'What is the first thing to do if someone is hurt?', o:['Tell the supervising adult right away.','Keep working.','Clean up the mess first.'], h:'The adult in charge must know first.'},
+  {q:'How should you carry a chisel?', o:['blade pointing down, at your side','in your pocket','blade up near your face'], h:'Sharp end down and away.'},
+  {q:'Before leaving the shop, you:', o:['put tools away and sweep your area','leave everything out','unplug only your friend’s tools'], h:'Leave it ready for the next person.'},
+ ],
+ check:[
+  {q:'Before using a drill, what goes on first?', o:['safety glasses','gloves with fringes','headphones with music']},
+  {q:'You see a spill on the shop floor. What do you do?', o:['Clean it or tell the adult so no one slips.','Walk around it.','Ignore it.']},
+  {q:'Can you use the saw if you only have a drill license?', o:['No','Yes, if you’re careful','Yes, if no one is looking']},
+ ]},
+'VOC.MEAS.L07.02': {name:'Read a simple plan and cut list',
+ teach:[
+  {p:'stool', how:'A cut list names every piece, how many, and its size.', q:'How many legs does the stool need?', o:['2','1','4']},
+  {p:'stool', how:'Add the lengths of the pieces cut from one board to see if it is long enough.', t:'num', q:'What is the total length of the top and both legs, in inches?', a:32},
+  {p:'stool', how:'Each saw cut turns a little wood to dust. That is the kerf.', t:'num', q:'How many inches of kerf do 4 cuts make, at 1/8 inch each?', a:0.5, kind:'frac'},
+ ],
+ practice:[
+  {p:'stool', q:'How wide is the brace?', o:['3 in','10 in','14 in'], h:'Look at the brace line.'},
+  {p:'stool', t:'num', q:'Total length of all four pieces (top, 2 legs, brace), in inches?', a:46, h:'16 + 8 + 8 + 14.'},
+  {p:'stool', q:'Is the 48-inch board long enough for all the pieces plus 4 cuts (1/2 inch of kerf)?', o:['Yes: 46 1/2 inches fits in 48','No: it needs 50 inches','No: it needs 60 inches'], h:'46 + 1/2 = 46 1/2.'},
+  {p:'stool', t:'num', q:'How many inches of board are left after all pieces and kerf?', a:1.5, kind:'frac', h:'48 − 46 1/2.'},
+  {p:'stool', q:'Which piece is the longest?', o:['Top (16 in)','Brace (14 in)','Leg (8 in)'], h:'Compare the lengths.'},
+  {p:'stool', q:'The plan says "1 × 10 pine." What does the 10 describe?', o:['the board’s width','the board’s length in feet','the number of boards'], h:'Lumber is named thickness × width.'},
+ ],
+ check:[
+  {p:'shelfplan', t:'num', q:'What is the total length of all the pieces, in inches?', a:90},
+  {p:'shelfplan', t:'num', q:'How many saw cuts are needed (one per piece)?', a:5},
+  {p:'shelfplan', t:'num', q:'How many inches of board are left after all pieces and 5 cuts? (type like 5 3/8)', a:5.375, kind:'frac'},
+ ]},
+};
+PASS.stool={title:'Plan: Step Stool', text:`Stock: one 1 × 10 pine board, 48 inches long
+
+Cut list:
+• Top: 1 piece, 16 in long × 10 in wide
+• Legs: 2 pieces, 8 in long × 10 in wide
+• Brace: 1 piece, 14 in long × 3 in wide
+
+Allow 1/8 inch for each saw cut.`};
+PASS.shelfplan={title:'Plan: Sefarim Shelf', text:`Stock: one 1 × 8 pine board, 96 inches long
+
+Cut list:
+• Sides: 2 pieces, 24 in each
+• Shelves: 3 pieces, 14 in each
+
+Kerf: 1/8 inch per cut.`};
+
+/* ===== Tashbar Middle School Pilot Week: app ===== */
+const CURR = {
+ MATH:{label:'Math', icon:'🧮', cls:'c-math', world:'Builder’s Yard'},
+ READ:{label:'Reading', icon:'📖', cls:'c-read', world:'Story Road'},
+ WRIT:{label:'Writing', icon:'✏️', cls:'c-writ', world:'Writer’s Desk'},
+ VOC:{label:'Trades', icon:'🔨', cls:'c-voc', world:'Trades Co.'},
+};
+const DAYS=['Mon','Tue','Wed','Thu','Fri'];
+const WEEK = {
+ MATH:{A:['MATH.OPS.L03.01','MATH.PV.L03.01','MATH.OPS.L03.02','MATH.MEAS.L03.04'],B:['MATH.OPS.L05.01','MATH.OPS.L05.02','MATH.FRAC.L05.01','MATH.FRAC.L05.02'],C:['MATH.ALG.L07.02','MATH.ALG.L08.02','MATH.NUM.L07.01','MATH.ALG.L07.04'],D:['MATH.ALG.L09.01','MATH.FUNC.L09.02','MATH.ALG.L09.04','MATH.ALG.L09.02']},
+ READ:{A:['READ.PHON.L03.01','READ.PHON.L04.01','READ.VOC.L04.01','READ.COMP.L04.01'],B:['READ.COMP.L05.01','READ.COMP.L05.02','READ.COMP.L06.01','READ.VOC.L06.01'],C:['READ.COMP.L07.01','READ.COMP.L07.02','READ.LIT.L07.01','READ.VOC.L08.01'],D:['READ.COMP.L09.01','READ.LIT.L09.01','READ.COMP.L09.02','READ.COMP.L09.03']},
+ WRIT:{A:['LANG.SENT.L03.01','LANG.MECH.L04.01','WRIT.SENT.L04.01','WRIT.PARA.L04.01'],B:['WRIT.PARA.L05.01','WRIT.PARA.L05.02','LANG.GRAM.L05.01','WRIT.PARA.L06.01'],C:['WRIT.ESSAY.L07.01','WRIT.ESSAY.L07.02','LANG.GRAM.L08.01','WRIT.ESSAY.L08.02'],D:['WRIT.RES.L09.01','WRIT.RES.L09.02','WRIT.ESSAY.L09.01','WRIT.RES.L09.03']},
+ VOC:['VOC.SAFE.L07.01','VOC.MEAS.L07.01','VOC.MEAS.L07.02'],
+};
+const VOC_DAYS=[0,2,4];
+const RANGES=['A','B','C','D'];
+const RANGE_NAME={A:'Foundations',B:'Building',C:'On Level',D:'Accelerated'};
+/* T$ amounts shown here match the one rules table in Money.gs (dollars). The server pays; this is only the display. */
+const PAY={skill:10, first:5, week3:15, boss:25, revise:5, signoff:10};
+function td(v){ const c=Math.round((Number(v)||0)*100), a=Math.abs(c); return (c<0?'−':'')+Math.floor(a/100)+'.'+String(a%100).padStart(2,'0'); }
+const BANK_ALL = Object.assign({}, READ, WRIT, TRADE);
+
+function skillName(id){ return (GEN[id]||BANK_ALL[id]||{}).name || id; }
+function currOf(id){ if(id.startsWith('MATH')) return 'MATH'; if(id.startsWith('READ')) return 'READ'; if(id.startsWith('VOC')) return 'VOC'; return 'WRIT'; }
+function rangeBelow(r){ const i=RANGES.indexOf(r); return i>0?RANGES[i-1]:null; }
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; }
+function clone(x){ return JSON.parse(JSON.stringify(x)); }
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- missions ---------- */
+function prepItem(raw, phase){
+ const it=clone(raw); it.phase=phase;
+ if(!it.t) it.t = it.tape!==undefined ? 'mc' : (it.o?'mc':'num');
+ if(it.t==='mc'){ it.correct=it.o[0]; it.shown=shuffle(it.o); }
+ if(it.t==='order'){ it.correct=it.tiles.join(' '); it.shown=shuffle(it.tiles); if(it.shown.join(' ')===it.correct && it.tiles.length>1) it.shown=it.tiles.slice().reverse(); }
+ return it;
+}
+function buildMission(id){
+ if(GEN[id]){ const g=GEN[id]; const mk=(ph,i)=>{const it=g.gen(); if(ph==='teach') it.how=g.how[i]; return prepItem(it,ph)};
+  return [0,1,2].map(i=>mk('teach',i)).concat([0,1,2,3,4,5].map(i=>mk('practice',i)),[0,1,2].map(i=>mk('check',i))); }
+ const s=BANK_ALL[id];
+ return s.teach.map(x=>prepItem(x,'teach')).concat(s.practice.map(x=>prepItem(x,'practice')), s.check.map(x=>prepItem(x,'check')));
+}
+function buildRetry(id){ // second round: practice again, then check again
+ const all=buildMission(id); return all.filter(i=>i.phase!=='teach');
+}
+function buildBoss(c, range){
+ const ids=WEEK[c][range]; const out=[];
+ ids.forEach(id=>{ let pool;
+  if(GEN[id]) pool=[GEN[id].gen(),GEN[id].gen()];
+  else pool=shuffle(BANK_ALL[id].practice.concat(BANK_ALL[id].check).filter(x=>x.t!=='write')).slice(0,2);
+  pool.forEach(x=>{ const it=prepItem(x,'check'); it.skill=id; out.push(it); }); });
+ return shuffle(out);
+}
+function parseNum(s){
+ s=String(s).trim().replace(/[$¢,]/g,'').replace(/\b(in|inches|dollars|cents|mph)\b/gi,'').replace(/[−–]/g,'-').trim();
+ if(!s) return NaN;
+ let m=s.match(/^(-?)(\d+)\s+(\d+)\/(\d+)$/); if(m){ const v=+m[2]+ (+m[3])/(+m[4]); return m[1]?-v:v; }
+ m=s.match(/^(-?\d+)\/(-?\d+)$/); if(m){ return (+m[1])/(+m[2]); }
+ if(/^-?(\d+\.?\d*|\.\d+)$/.test(s)) return parseFloat(s);
+ return NaN;
+}
+function checkAnswer(it, ans){
+ if(it.t==='mc') return ans===it.correct;
+ if(it.t==='order') return ans===it.correct;
+ if(it.t==='num'){
+  if(it.kind==='rem'){ const n=String(ans).toUpperCase().replace(/\s+/g,'').replace(/R0$/,''); return n===String(it.a); }
+  const v=parseNum(ans); return isFinite(v) && Math.abs(v-it.a)<1e-6; }
+ if(it.t==='write') return true;
+ return false;
+}
+
+/* ---------- student state ---------- */
+function newStudent(r){ return {id:r.id, name:r.name, ranges:clone(r.ranges), skills:{}, fails:{}, fallback:{}, balance:0, ledger:[], flags:[], writing:{}, signoffs:{}, boss:{}, weekBonus:false, v:1}; }
+function pay(st, amt, why){ st.balance=Math.round((Number(st.balance)||0)*100+amt*100)/100; st.ledger.unshift({at:Date.now(), amt, why}); }
+function flag(st, text, kind){ st.flags.unshift({at:Date.now(), text, kind:kind||'info', open:true}); }
+function mastered(st,id){ return !!(st.skills[id]&&st.skills[id].m); }
+function coreList(st,c){ return WEEK[c][st.ranges[c]]; }
+function nextFor(st,c){
+ if(c==='VOC'){ return WEEK.VOC.find(id=>!mastered(st,id))||null; }
+ const fb=st.fallback[c]; if(fb && !mastered(st,fb)) return fb;
+ return coreList(st,c).find(id=>!mastered(st,id)) || null;
+}
+function bossReady(st,c){ return coreList(st,c).every(id=>mastered(st,id)); }
+function cellStatus(st,c,id){
+ if(mastered(st,id)) return 'done';
+ return nextFor(st,c)===id ? 'now' : 'locked';
+}
+function masteredCount(st){ return Object.values(st.skills).filter(s=>s.m).length; }
+
+/* ---------- store (db capability, with in-memory fallback for previews) ---------- */
+const Store = {
+ db:null, live:false, roster:null, students:{}, listeners:[],
+ async init(){
+  try{ const c=window.claude; this.db = c && c.use ? await c.use('db') : null; }catch(e){ this.db=null; }
+  if(!this.db){ this.live=false; this.roster=this.roster||{students:[]}; App.render(); return; }
+  this.live=true;
+  let loaded=false; const timer=setTimeout(()=>{ if(!loaded){ App.note='Saved data hasn’t loaded yet. Check your connection.'; App.render(); } },10000);
+  this.db.doc('config/roster').onSnapshot(s=>{ loaded=true; clearTimeout(timer); App.note=''; this.roster=s.exists?s.data():{students:[]}; App.render(); }, e=>{ App.note='Saved data can’t be reached right now.'; App.render(); });
+  this.db.collection('students').onSnapshot(q=>{ q.docs.forEach(d=>{ this.students[d.id]=d.data(); }); App.render(); }, ()=>{});
+ },
+ async verify(who,digits){ const ro=this.roster||{}; const want= who==='staff'? ro.staffCode : ((ro.students||[]).find(r=>r.id===who)||{}).code; return {ok: !!want && digits===String(want)}; },
+ student(id){ const r=(this.roster&&this.roster.students||[]).find(x=>x.id===id); if(!r) return null; return this.students[id]?clone(this.students[id]):newStudent(r); },
+ async save(st){ st.v=(st.v||0)+1; this.students[st.id]=clone(st); App.render(); if(this.db){ try{ await this.db.doc('students/'+st.id).set(clone(st)); }catch(e){ App.toast('Couldn’t save: '+(e&&e.code||'error')); } } },
+ async addEvidence(sid, rows){ const k='ev_'+sid; this[k]=(this[k]||[]).concat(rows);
+  if(this.db){ try{ const ref=this.db.doc('evidence/'+sid); const cur=await ref.get(); const old=cur.exists?(cur.data().rows||[]):[]; await ref.set({rows:old.concat(rows).slice(-1500)}); }catch(e){} } },
+ async evidence(sid){ if(this.db){ try{ const d=await this.db.doc('evidence/'+sid).get(); return d.exists?(d.data().rows||[]):[]; }catch(e){ return []; } } return this['ev_'+sid]||[]; },
+ async resetStudent(id){ const r=this.roster.students.find(x=>x.id===id); const st=newStudent(r); this.students[id]=st; App.render(); if(this.db){ await this.db.doc('students/'+id).set(clone(st)); await this.db.doc('evidence/'+id).set({rows:[]}); } else { this['ev_'+id]=[]; } },
+};
+
+/* ---------- sound + speech ---------- */
+const FX={ctx:null, on:true,
+ tone(f,d,type,when){ if(!this.on) return; try{ this.ctx=this.ctx||new (window.AudioContext||window.webkitAudioContext)(); const c=this.ctx, o=c.createOscillator(), g=c.createGain(); o.type=type||'sine'; o.frequency.value=f; const t=c.currentTime+(when||0); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.18,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+.05);}catch(e){} },
+ right(){ this.tone(660,.12,'triangle'); this.tone(990,.18,'triangle',.1); },
+ wrong(){ this.tone(220,.18,'sine'); },
+ win(){ [523,659,784,1047].forEach((f,i)=>this.tone(f,.22,'triangle',i*.12)); },
+};
+function speak(text){ try{ if(!('speechSynthesis' in window)) return App.toast('Read-aloud isn’t available on this device.'); speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.rate=.95; speechSynthesis.speak(u);}catch(e){ App.toast('Read-aloud isn’t available here.'); } }
+
+/* ---------- app ---------- */
+const App = {
+ mode:'staff', session:null, si:{step:'pick',who:null,digits:'',tries:0,until:0}, note:'', play:null, view:null, evRows:null, confirm:null,
+ el:null,
+ start(){ this.el=document.getElementById('app'); try{ const s=JSON.parse(sessionStorage.getItem('tl-session')||'null'); if(s&&s.role){ this.session=s; this.mode=s.role==='staff'?'staff':'kid'; } }catch(e){}
+  window.addEventListener('hashchange',()=>{ this.play=null; this.evRows=null; this.render(); });
+  document.addEventListener('click',e=>this.onClick(e)); document.addEventListener('input',e=>this.onInput(e));
+  this.render(); Store.init(); try{ google.script.run.withSuccessHandler(u=>{ this._home=u+'?ms=1'; this._base=u; if(this.mode==='staff') this.render(); }).msAppUrl(); }catch(e){} },
+ sid(){ const h=decodeURIComponent(location.hash.slice(1)); return /^[A-Z][A-Z0-9]{0,5}-?\d{1,4}$/.test(h)?h:null; }, /* 2026-11-09: real roster IDs (T0xx, TP-0x), not just practice TMS-1xx */
+ toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.hidden=false; clearTimeout(this._tt); this._tt=setTimeout(()=>t.hidden=true,3200); },
+ async signIn(role,sid,token){ this.session={role,sid:sid||null,at:Date.now(),token:token||null}; if(Store.afterSignIn) await Store.afterSignIn(this.session); this.mode=role==='staff'?'staff':'kid'; this.si={step:'pick',who:null,digits:'',tries:0,until:0}; try{ sessionStorage.setItem('tl-session',JSON.stringify(this.session)); }catch(e){} location.hash = role==='kid'?sid:''; this.render(); FX.right(); },
+ signOut(){ this.session=null; this.play=null; this.evRows=null; try{ sessionStorage.removeItem('tl-session'); }catch(e){} if(location.hash) location.hash=''; this.render(); if(this._home){ try{ window.top.location.href=this._home; }catch(e){} } },
+ renderSignIn(){
+  const R=(Store.roster&&Store.roster.students)||[]; const si=this.si;
+  if(!R.length) return `<section class="empty"><h2>Getting ready…</h2><p>${Store.live?'Loading students…':'Saving is off in this view, so sign-in can’t load. Open the published page.'}</p></section>`;
+  if(si.step==='pick') return `<section class="signin"><div class="sihead"><span class="wave">👋</span><h1>Who’s learning today?</h1><p class="sub">Tap your name.</p></div>
+   <div class="kidgrid">${R.map(r=>`<button class="kidcard" data-act="si-pick" data-sid="${r.id}"><span class="avatar" aria-hidden="true">${esc(r.name[0])}</span><span class="nm">${esc(r.name)}</span><span class="mono id">${r.id}</span></button>`).join('')}</div>
+   <button class="btn ghost staffbtn" data-act="si-staff">🔑 Staff sign-in</button></section>`;
+  const who = si.who==='staff'?{name:'Staff',id:'Teacher dashboard'}:R.find(r=>r.id===si.who);
+  const wait = si.until>Date.now() ? Math.ceil((si.until-Date.now())/1000) : 0;
+  const dots=[0,1,2,3].map(i=>`<i class="pin ${i<si.digits.length?'on':''}"></i>`).join('');
+  const keys=['1','2','3','4','5','6','7','8','9','del','0','go'].map(k=>k==='del'?`<button class="key" data-act="si-del" aria-label="Delete">⌫</button>`:k==='go'?`<button class="key go" data-act="si-go" ${si.digits.length<4||wait?'disabled':''} aria-label="Sign in">→</button>`:`<button class="key" data-act="si-key" data-k="${k}" ${wait?'disabled':''}>${k}</button>`).join('');
+  return `<section class="signin"><button class="btn ghost sm" data-act="si-back">← Not me</button><div class="sihead"><span class="avatar big" aria-hidden="true">${esc(who.name[0])}</span><h1>Hi, ${esc(who.name)}</h1><p class="sub">${si.who==='staff'?'Type the staff code.':'Type your 4-digit code.'}</p></div>
+   <div class="pins ${si.err?'shake':''}" aria-label="${si.digits.length} of 4 digits">${dots}</div>
+   ${wait?`<p class="sierr">Too many tries. Wait ${wait} seconds.</p>`:si.err?`<p class="sierr">That code doesn’t match. Try again.</p>`:''}
+   <div class="keypad">${keys}</div></section>`;
+ },
+
+ render(){
+  if(!this.el) return;
+  const sid=this.sid();
+  const wb=document.getElementById('whoBar');
+  if(wb) wb.innerHTML = this.session ? `<span class="whoname">${this.session.role==='staff'?'🔑 Staff':'👤 '+esc((Store.student(this.session.sid)||{}).name||this.session.sid)}</span><button class="btn sm" data-act="signout">Sign out</button>` : '';
+  if(!this.session){ this.el.innerHTML=(this.note?`<p class="note">${esc(this.note)}</p>`:'')+this.renderSignIn(); return; }
+  if(this.session.role==='kid' && sid!==this.session.sid){ location.hash=this.session.sid; return; }
+  if(this.play){ this.el.innerHTML=this.renderPlay(); this.afterPlay(); return; }
+  this.el.innerHTML = (this.note?`<p class="note">${esc(this.note)}</p>`:'') + (sid? this.renderStudent(sid) : this.renderRoster());
+ },
+
+ renderRoster(){
+  const R=(Store.roster&&Store.roster.students)||[];
+  if(!R.length) return `<section class="empty"><h2>No students yet</h2><p>${Store.live?'Loading the roster…':'Saving is off in this view, so the roster can’t load. Open the published page to see the pilot students.'}</p></section>`;
+  const sts=R.map(r=>Store.student(r.id));
+  const total=sts.reduce((a,s)=>a+masteredCount(s),0), goal=R.length*15;
+  const head = this.mode==='kid'
+   ? `<header class="hero"><h1>Who’s working?</h1><p class="sub">Tap your ID.</p></header>`
+   : `<header class="hero"><h1>Your students</h1><p class="sub">${R.length} boys · tap a name to open him</p>${this._base?`<div class="row staffnav"><a class="btn" target="_top" href="${esc(this._base)}?so=1">Today’s sign-off</a><a class="btn" target="_top" href="${esc(this._base)}?pl=1">Set levels</a><a class="btn" target="_top" href="${esc(this._base)}?pl=1&amp;v=lib">Lesson library</a></div>`:''}</header>`;
+  const bar = `<section class="goal" aria-label="Class goal"><div class="goal-top"><b>Class goal</b><span class="mono">${total} / ${goal} skills</span></div><div class="track"><div class="fill" style="width:${Math.min(100,total/goal*100)}%"></div></div></section>`;
+  if(false) return head+bar+`<div class="kidgrid">${sts.map(s=>`<a class="kidcard" href="#${s.id}"><span class="mono id">${s.id}</span><span class="nm">${esc(s.name)}</span><span class="coin">$${td(s.balance)}</span></a>`).join('')}</div>`;
+  const rows=sts.map(s=>{ const open=s.flags.filter(f=>f.open).length + Object.values(s.writing).filter(w=>w.status==='pending').length + WEEK.VOC.filter(id=>mastered(s,id)&&!s.signoffs[id]).length;
+   const nexts=['MATH','READ','WRIT','VOC'].map(c=>{const n=nextFor(s,c); return `<span class="pill ${CURR[c].cls}" title="${CURR[c].label}: ${n?esc(skillName(n)):'week done'}">${CURR[c].icon} ${n? n.split('.').slice(1).join('.') : (c!=='VOC'&&!s.boss[c]&&bossReady(s,c)?'BOSS':'✓')}</span>`}).join('');
+   return `<tr><td><a class="idlink nmlink" href="#${s.id}">${esc(s.name)}</a><div class="small mono">${s.id}</div></td>
+    <td class="rg">${['MATH','READ','WRIT'].map(c=>`<span class="rchip ${CURR[c].cls}" title="${CURR[c].label} range">${CURR[c].label[0]}·${s.ranges[c]}</span>`).join('')}</td>
+    <td class="nx">${nexts}</td><td class="num">${masteredCount(s)}</td><td>${open?`<span class="alert">${open} to check</span>`:'<span class="small">—</span>'}</td></tr>`; }).join('');
+  return head+bar+`<div class="tw"><table class="roster"><thead><tr><th>Boy</th><th>Ranges</th><th>Waiting now</th><th class="num">Mastered</th><th>To check</th></tr></thead><tbody>${rows}</tbody></table></div>
+   <p class="small foot">Skill IDs match the Tashbar Learning skill map. Ranges: A Foundations (L03–L05) · B Building (L05–L06) · C On Level (L07–L08) · D Accelerated (L09+).</p>`;
+ },
+
+ renderStudent(sid){
+  const st=Store.student(sid); if(!st) return `<section class="empty"><h2>${esc(sid)} isn’t on the roster</h2><p><a href="#">Back to the roster</a></p></section>`;
+  const kid=this.mode==='kid';
+  const top=`${kid?'':'<div class="crumbs"><a href="#">← Roster</a></div>'}
+   <header class="shead"><div><span class="mono id">${st.id}</span><h1>${kid?'Your week, '+esc(st.name):esc(st.name)}</h1>${kid?'':`<span class="small">Personal code: <span class="mono">${esc(((Store.roster.students.find(r=>r.id===st.id)||{}).code)||'not set')}</span></span>`}</div>
+   ${kid?`<div class="bank"><span class="coinbig">$</span><b>${td(st.balance)}</b><span class="small">${masteredCount(st)} skills mastered</span></div>`:`<div class="bank"><b>${masteredCount(st)}</b><span class="small">skills mastered</span>${this._base?`<a class="btn" target="_top" href="${esc(this._base)}?pl=1&amp;sid=${encodeURIComponent(st.id)}">Set his levels</a>`:''}</div>`}</header>`;
+  const grid=this.renderWeek(st,kid);
+  if(kid) return top+grid;
+  return top+this.renderRanges(st)+grid+this.renderQueue(st)+this.renderEvidence(st)+
+   `<section class="card danger"><h2>Reset</h2><p class="small">Clears this student’s progress and evidence. Use it to rerun the pilot.</p>${this.confirm===st.id?`<div class="row"><button data-act="reset-yes" data-sid="${st.id}" class="btn bad">Yes, reset ${st.id}</button><button data-act="reset-no" class="btn">Cancel</button></div>`:`<button data-act="reset" data-sid="${st.id}" class="btn">Reset ${st.id}</button>`}</section>`;
+ },
+ renderRanges(st){
+  return `<section class="card"><h2>Ranges</h2><div class="ranges">${['MATH','READ','WRIT'].map(c=>`<div class="rbox ${CURR[c].cls}"><span>${CURR[c].icon} ${CURR[c].label}</span><b>${st.ranges[c]}</b><span class="small">${RANGE_NAME[st.ranges[c]]}</span><div class="row"><button class="btn sm" data-act="range" data-c="${c}" data-d="-1" ${st.ranges[c]==='A'?'disabled':''} aria-label="Move ${CURR[c].label} down a range">▼</button><button class="btn sm" data-act="range" data-c="${c}" data-d="1" ${st.ranges[c]==='D'?'disabled':''} aria-label="Move ${CURR[c].label} up a range">▲</button></div></div>`).join('')}<div class="rbox c-voc"><span>🔨 Trades</span><b>App.</b><span class="small">Apprentice</span></div></div></section>`;
+ },
+ renderWeek(st,kid){
+  const cell=(c,id,day)=>{ const s=cellStatus(st,c,id); const w=st.writing[id]; const so=c==='VOC'&&mastered(st,id);
+   const tag = s==='done'?'<span class="tag t-done">✓ Mastered</span>': s==='now'?'<span class="tag t-now">Ready</span>':'<span class="tag t-lock">Locked</span>';
+   const extra = (w&&w.status==='revise')?`<button class="btn sm warn" data-act="revise" data-id="${id}">Revise writing</button>`:(w&&w.status==='pending'&&!kid)?'<span class="tag t-wait">Writing to review</span>':(so&&!st.signoffs[id])?'<span class="tag t-wait">Hands-on sign-off</span>':'';
+   const btn = s==='now'?`<button class="btn go" data-act="play" data-id="${id}">▶ ${kid?'Go':'Play'}</button>`: s==='done'?`<button class="btn sm ghost" data-act="replay" data-id="${id}">Practice</button>`:'';
+   return `<div class="cell ${s} ${CURR[c].cls}"><span class="day">${day}</span><span class="mono sid">${id}</span><span class="sn">${esc(skillName(id))}</span>${tag}${extra}<div class="cta">${btn}${kid&&s!=='done'?`<span class="payv">$${td(PAY.skill)}</span>`:''}</div></div>`; };
+  const rows=['MATH','READ','WRIT'].map(c=>{ const list=coreList(st,c); const fb=st.fallback[c]&&!mastered(st,st.fallback[c])?st.fallback[c]:null;
+   const bossS = st.boss[c]?'done':bossReady(st,c)?'now':'locked';
+   const boss=`<div class="cell boss ${bossS} ${CURR[c].cls}"><span class="day">Fri</span><span class="mono sid">BOSS · ${c}</span><span class="sn">Boss challenge: all 4 skills</span>${bossS==='done'?'<span class="tag t-done">🏆 Won</span>':bossS==='now'?'<span class="tag t-now">Ready</span>':'<span class="tag t-lock">Locked</span>'}<div class="cta">${bossS==='now'?`<button class="btn go" data-act="boss" data-c="${c}">▶ ${kid?'Go':'Play'}</button>`:''}${kid&&bossS!=='done'?`<span class="payv">$${td(PAY.boss)}</span>`:''}</div></div>`;
+   return `<div class="lane"><div class="lanehead ${CURR[c].cls}"><span class="li">${CURR[c].icon}</span><b>${CURR[c].label}</b><span class="small">Range ${st.ranges[c]} · ${CURR[c].world}</span></div>
+    ${fb?`<div class="fbnote">↩ Review first: <span class="mono">${fb}</span> ${esc(skillName(fb))} <button class="btn go sm" data-act="play" data-id="${fb}">▶ Go</button></div>`:''}
+    <div class="cells">${list.map((id,i)=>cell(c,id,DAYS[i])).join('')}${boss}</div></div>`; }).join('');
+  const voc=`<div class="lane"><div class="lanehead c-voc"><span class="li">🔨</span><b>Trades</b><span class="small">Apprentice · Mon, Wed, Fri</span></div><div class="cells">${DAYS.map((d,i)=>{ const k=VOC_DAYS.indexOf(i); return k>=0?cell('VOC',WEEK.VOC[k],d):`<div class="cell rest c-voc"><span class="day">${d}</span><span class="sn">Catch-up and revision</span></div>`; }).join('')}</div></div>`;
+  return `<section class="week"><h2>This week</h2>${rows}${voc}</section>`;
+ },
+ renderQueue(st){
+  const items=[];
+  Object.entries(st.writing).forEach(([id,w])=>{ if(w.status==='pending') items.push(`<div class="q"><div class="qh"><span class="mono">${id}</span><b>${esc(skillName(id))}</b>${w.rev?'<span class="tag t-wait">Revised</span>':''}</div><blockquote>${esc(w.text)}</blockquote>
+   <label class="small" for="note-${id}">Note for a send-back</label><input id="note-${id}" class="inp" placeholder="What to fix" value="${esc(w.note||'')}"><div class="row"><button class="btn ok" data-act="approve" data-id="${id}">Approve</button><button class="btn warn" data-act="sendback" data-id="${id}">Send back</button></div></div>`); });
+  WEEK.VOC.forEach(id=>{ if(mastered(st,id)&&!st.signoffs[id]) items.push(`<div class="q"><div class="qh"><span class="mono">${id}</span><b>${esc(skillName(id))}</b></div><p class="small">App part mastered. Sign off once he shows it in the shop with you watching.</p><button class="btn ok" data-act="signoff" data-id="${id}">Sign off</button></div>`); });
+  st.flags.forEach((f,i)=>{ if(f.open) items.push(`<div class="q flag"><div class="qh"><b>⚑ ${esc(f.text)}</b></div><span class="small">${new Date(f.at).toLocaleString()}</span><button class="btn sm" data-act="dismiss" data-i="${i}">Mark seen</button></div>`); });
+  return `<section class="card"><h2>Needs staff ${items.length?`<span class="alert">${items.length}</span>`:''}</h2>${items.length?items.join(''):'<p class="small">Nothing waiting. Writing reviews, trades sign-offs and drop alerts show up here.</p>'}</section>`;
+ },
+ renderBank(st){
+  return `<section class="card"><h2>Bank</h2><div class="tw"><table class="ledger"><thead><tr><th>When</th><th>For</th><th class="num">$</th></tr></thead><tbody>${st.ledger.slice(0,40).map(l=>`<tr><td class="small">${new Date(l.at).toLocaleString([], {weekday:'short',hour:'numeric',minute:'2-digit'})}</td><td>${esc(l.why)}</td><td class="num">${l.amt<0?'':'+'}${td(l.amt)}</td></tr>`).join('')||'<tr><td colspan="3" class="small">No pay yet. Every right answer pays $1.00.</td></tr>'}</tbody></table></div><p class="small">Interest: 2% every Sunday on your savings, up to $20.00. Hints are free; mistakes never cost money. Tashbar Dollars are learning money, not Canteen Cash.</p></section>`;
+ },
+ renderEvidence(st){
+  const rows=this.evRows&&this.evRows.sid===st.id?this.evRows.rows:null;
+  return `<section class="card"><h2>Evidence</h2><p class="small">One row per answer, tied to a skill ID, in the shape the app’s Google Sheet uses.</p><div class="row"><button class="btn" data-act="ev-load" data-sid="${st.id}">${rows?'Refresh':'Show answers'}</button><button class="btn" data-act="ev-csv" data-sid="${st.id}">Export CSV</button></div>${rows?`<p class="small">${rows.length} answers saved.</p><div class="tw"><table class="ev"><thead><tr><th>When</th><th>Skill ID</th><th>Phase</th><th>First try</th><th class="num">Tries</th><th class="num">Hints</th><th class="num">Secs</th></tr></thead><tbody>${rows.slice(-60).reverse().map(r=>`<tr><td class="small">${new Date(r.at).toLocaleString([], {weekday:'short',hour:'numeric',minute:'2-digit'})}</td><td class="mono">${r.skill}</td><td>${r.phase}</td><td>${r.first?'✓':'✗'}</td><td class="num">${r.tries}</td><td class="num">${r.hints}</td><td class="num">${Math.round(r.ms/1000)}</td></tr>`).join('')}</tbody></table></div>`:''}</section>`;
+ },
+
+ /* ----- play ----- */
+ startPlay(kind, id, opt){
+  const st=Store.student(this.sid()); if(!st) return;
+  let items, title, c;
+  if(kind==='boss'){ c=id; items=buildBoss(c, st.ranges[c]); title='Boss challenge'; }
+  else if(kind==='revise'){ c=currOf(id); const s=BANK_ALL[id]; const w=s.check.find(x=>x.t==='write'); const it=prepItem(w,'check'); it.prev=st.writing[id].text; it.note=st.writing[id].note; items=[it]; title=skillName(id); }
+  else { c=currOf(id); items=buildMission(id); title=skillName(id); }
+  this.play={kind, id, c, items, i:0, title, results:[], tries:0, hints:0, t0:Date.now(), fb:null, sel:null, order:[], text:'', ticks:{}, replay:!!(opt&&opt.replay), round:1, reveal:false};
+  this.render(); window.scrollTo(0,0);
+ },
+ renderPlay(){
+  const p=this.play; if(p.done) return this.renderResult();
+  const it=p.items[p.i]; const C=CURR[p.c];
+  const phaseName={teach:'Learn',practice:'Practice',check:'On your own'}[it.phase];
+  const dots=p.items.map((x,k)=>`<i class="d ${k<p.i?(p.results[k]&&p.results[k].ok?'ok':'no'):k===p.i?'cur':''} ph-${x.phase}"></i>`).join('');
+  let passage='';
+  if(it.p){ const P=PASS[it.p]; passage = P? `<aside class="passage"><div class="ph"><b>${esc(P.title)}</b><button class="btn sm ghost" data-act="say" data-text="${esc(P.text)}" aria-label="Read the passage aloud">🔊</button></div><div class="ptext">${esc(P.text).replace(/\n/g,'<br>')}</div></aside>` : `<aside class="passage"><div class="ph"><b>Read</b><button class="btn sm ghost" data-act="say" data-text="${esc(it.p)}" aria-label="Read aloud">🔊</button></div><div class="ptext">${esc(it.p).replace(/\n/g,'<br>')}</div></aside>`; }
+  const how = it.phase==='teach' && it.how ? `<div class="how"><b>How it works</b><p>${esc(it.how)}</p></div>`:'';
+  const q=`<div class="qrow"><p class="qtext ${it.pre?'pre':''}">${esc(it.q).replace(/\n/g,'<br>')}</p><button class="btn sm ghost" data-act="say" data-text="${esc(it.q)}" aria-label="Read the question aloud">🔊</button></div>`;
+  let body='';
+  const locked = p.fb && (p.fb.ok || it.phase==='check');
+  if(it.tape!==undefined) body+=tapeSVG(it.tape);
+  if(it.t==='mc') body+=`<div class="opts">${it.shown.map((o,k)=>`<button class="opt ${p.sel===o?(p.fb?(p.fb.ok?'right':'wrongsel'):'sel'):''} ${locked&&o===it.correct&&it.phase!=='check'?'right':''}" data-act="pick" data-k="${k}" ${locked?'disabled':''}>${esc(o)}</button>`).join('')}</div>`;
+  if(it.t==='num') body+=`<form class="numrow" data-act="numform"><label for="numin" class="vh">Your answer</label><input id="numin" class="inp big" inputmode="decimal" autocomplete="off" placeholder="${it.unit==='$'?'$':it.unit==='¢'?'¢':'Answer'}" ${locked?'disabled':''}><button class="btn go" ${locked?'disabled':''}>Check</button></form>`;
+  if(it.t==='order') body+=`<div class="built" aria-label="Your sentence">${p.order.map((k,j)=>`<button class="tile on" data-act="untile" data-j="${j}" ${locked?'disabled':''}>${esc(it.shown[k])}</button>`).join('')||'<span class="small">Tap the tiles in order.</span>'}</div><div class="tiles">${it.shown.map((t,k)=>p.order.includes(k)?'':`<button class="tile" data-act="tile" data-k="${k}" ${locked?'disabled':''}>${esc(t)}</button>`).join('')}</div>${p.order.length===it.shown.length&&!locked?'<button class="btn go" data-act="ordercheck">Check</button>':''}`;
+  if(it.t==='write'){ const words=(p.text.trim().match(/\S+/g)||[]).length; body+=`${it.note?`<div class="how warnbox"><b>Teacher note</b><p>${esc(it.note)}</p></div>`:''}<label for="wr" class="vh">Your writing</label><textarea id="wr" class="inp area" rows="8" placeholder="Write here…">${esc(p.text|| it.prev || '')}</textarea><div class="wc small"><span id="wcount">${words}</span> / ${it.min} words</div><div class="checks">${it.checks.map((c,k)=>`<label class="chk"><input type="checkbox" data-act="tick" data-k="${k}" ${p.ticks[k]?'checked':''}> ${esc(c)}</label>`).join('')}</div><button class="btn go" data-act="submitwrite" id="wsub">Turn it in</button>`; }
+  let fb='';
+  if(p.fb){ fb = p.fb.ok ? `<div class="fb good" role="status"><b>${PICK(['Yes!','Nailed it.','Right on.','That’s it.'])}</b>${it.phase==='check'?'':''}</div>`
+    : it.phase==='check' ? `<div class="fb bad" role="status"><b>Not this time.</b> ${it.t!=='write'?'Answer: '+esc(it.t==='num'?fracOrNum(it):it.correct):''}</div>`
+    : `<div class="fb bad" role="status"><b>Try again.</b> ${esc(it.h||it.how||'Look again carefully.')}</div>`; }
+  const next = locked ? `<button class="btn go next" data-act="next">${p.i===p.items.length-1?'Finish':'Next →'}</button>`:'';
+  return `<div class="play ${C.cls}"><div class="ptop"><button class="btn sm ghost" data-act="quit" aria-label="Leave the mission">✕</button><div class="ptitle"><span class="mono">${p.kind==='boss'?'BOSS · '+p.c:p.id}</span><b>${C.icon} ${esc(p.title)}</b></div><span class="phase ph-${it.phase}">${p.kind==='boss'?'Boss':phaseName}</span></div>
+   <div class="dots" aria-label="Item ${p.i+1} of ${p.items.length}">${dots}</div>
+   <div class="pbody ${passage?'withp':''}">${passage}<div class="qcard">${how}${q}${body}${fb}${next}</div></div></div>`;
+ },
+ afterPlay(){ const n=document.getElementById('numin'); if(n&&!n.disabled) n.focus(); },
+ answer(ans){
+  const p=this.play, it=p.items[p.i]; const ok=checkAnswer(it,ans);
+  p.tries++; if(!p.fb||!p.fb.ok){}
+  if(it.phase!=='check' && !ok) p.hints++;
+  p.fb={ok}; ok?FX.right():FX.wrong();
+  if(ok || it.phase==='check'){ p.results[p.i]={ok, first:p.tries===1&&ok, tries:p.tries, hints:p.hints, ms:Date.now()-p.t0, phase:it.phase, skill:it.skill||p.id, q:it.q.slice(0,80)}; }
+  this.render();
+ },
+ next(){ const p=this.play; p.i++; p.fb=null; p.sel=null; p.order=[]; p.tries=0; p.hints=0; p.t0=Date.now(); if(p.i>=p.items.length){ this.finish(); return; } this.render(); window.scrollTo(0,0); },
+ async finish(){
+  const p=this.play; const st=Store.student(this.sid()); p.done=true;
+  const rows=p.results.filter(Boolean).map(r=>({at:Date.now(), student:st.id, skill:r.skill, phase:p.kind==='boss'?'boss':r.phase, item:r.q, first:r.first, tries:r.tries, hints:r.hints, ms:r.ms, ok:r.ok}));
+  const checks=p.results.filter(r=>r&&r.phase==='check');
+  p.payout=[];
+  if(p.kind==='revise'){ const w=st.writing[p.id]; w.text=p.text; w.status='pending'; w.rev=(w.rev||0)+1; pay(st,PAY.revise,`Revision: ${p.id}`); p.payout.push(['Revision',PAY.revise]); flag(st,`${p.id} writing revised, ready to review`,'review'); p.outcome='revised'; }
+  else if(p.kind==='boss'){ const right=checks.filter(r=>r.ok).length; p.score=right; if(right>=7){ if(!st.boss[p.c]){ st.boss[p.c]=true; pay(st,PAY.boss,`Boss challenge: ${CURR[p.c].label}`); p.payout.push(['Boss win',PAY.boss]); } p.outcome='bosswin'; } else p.outcome='bossmiss'; }
+  else if(p.replay){ p.outcome= checks.every(r=>r.ok)?'replayok':'replaymiss'; }
+  else {
+   const allOk = checks.length===3 && checks.every(r=>r.ok); const id=p.id;
+   if(allOk){ const first=!(st.fails[id]>0); st.skills[id]={m:true, at:Date.now(), first}; pay(st,PAY.skill,`Mastered ${id}`); p.payout.push(['Skill mastered',PAY.skill]);
+    if(first){ pay(st,PAY.first,`First-try bonus: ${id}`); p.payout.push(['First try',PAY.first]); }
+    if(!st.weekBonus && masteredCount(st)>=3){ st.weekBonus=true; pay(st,PAY.week3,'3 skills this week'); p.payout.push(['3 skills this week',PAY.week3]); }
+    const c=currOf(id); if(st.fallback[c]===id){ delete st.fallback[c]; flag(st,`${id} review mastered; back to ${coreList(st,c).find(x=>!mastered(st,x))||'the week plan'}`,'info'); }
+    if(p.text){ st.writing[id]={text:p.text, status:'pending', at:Date.now()}; }
+    p.outcome='mastered';
+   } else {
+    st.fails[id]=(st.fails[id]||0)+1; p.outcome='retry';
+    if(p.text){ st.writing[id]={text:p.text, status:'draft', at:Date.now()}; }
+    if(st.fails[id]>=2){ const c=currOf(id); const below=c==='VOC'?null:rangeBelow(st.ranges[c]);
+     if(below && !st.fallback[c]){ const pre=WEEK[c][below][3]; if(!mastered(st,pre)){ st.fallback[c]=pre; p.outcome='dropped'; p.pre=pre; flag(st,`Missed ${id} twice. Moved to prerequisite ${pre} (Range ${below}).`,'drop'); st.fails[id]=0; } else { flag(st,`Missed ${id} twice; prerequisite ${pre} already mastered. Please check in.`,'drop'); } }
+     else if(!below){ flag(st,`Missed ${id} twice at Range A. Please check in.`,'drop'); }
+    }
+   }
+  }
+  await Store.addEvidence(st.id, rows);
+  await Store.save(st);
+  if(p.payout.length){ FX.win(); setTimeout(confetti,30); }
+ },
+ renderResult(){
+  const p=this.play; const C=CURR[p.c]; const tot=(p.payout||[]).reduce((a,x)=>a+x[1],0);
+  const checks=p.results.filter(r=>r&&r.phase==='check'); const right=checks.filter(r=>r.ok).length;
+  let head, msg, btns=`<button class="btn" data-act="quit">Back to my week</button>`;
+  switch(p.outcome){
+   case 'mastered': head='Skill mastered!'; msg=`${right} of ${checks.length} on your own. The next skill is open now.`; break;
+   case 'retry': head='Almost there'; msg=`${right} of 3 on your own. Practice once more, then try the check again.`; btns=`<button class="btn go" data-act="retry">Practice again</button>`+btns; break;
+   case 'dropped': head='Let’s build the base first'; msg=`You’ll work on ${p.pre}: ${skillName(p.pre)}. When it’s solid, you’ll come right back.`; break;
+   case 'bosswin': head='Boss beaten!'; msg=`${p.score} of 8. This strand is done for the week.`; break;
+   case 'bossmiss': head='So close'; msg=`${p.score} of 8. You need 7. Try again.`; btns=`<button class="btn go" data-act="boss" data-c="${p.c}">Try again</button>`+btns; break;
+   case 'revised': head='Sent to your teacher'; msg='Your revised writing is turned in.'; break;
+   case 'replayok': head='Still solid'; msg='Practice only. No pay for repeats.'; break;
+   default: head='Practice done'; msg='Practice only.';
+  }
+  return `<div class="play ${C.cls}"><div class="result"><div class="burst">${p.payout&&p.payout.length?'🏆':'💪'}</div><h1>${head}</h1><p>${esc(msg)}</p>
+   ${tot&&this.mode==='kid'?`<div class="paybox">${p.payout.map(x=>`<div class="pl"><span>${x[0]}</span><b>+$${td(x[1])}</b></div>`).join('')}<div class="pl tot"><span>Total</span><b>+$${td(tot)}</b></div></div>`:''}
+   <div class="row center">${btns}</div></div><canvas id="conf" aria-hidden="true"></canvas></div>`;
+ },
+
+ async onClick(e){
+  const b=e.target.closest('[data-act]'); if(!b) return; const a=b.dataset.act;
+  if(['tick','numform'].includes(a)) return;
+  const p=this.play;
+  if(a==='say'){ speak(b.dataset.text); return; }
+  if(a==='signout') return this.signOut();
+  if(a==='si-pick'){ this.si.step='code'; this.si.who=b.dataset.sid; this.si.digits=''; this.si.err=false; return this.render(); }
+  if(a==='si-staff'){ this.si.step='code'; this.si.who='staff'; this.si.digits=''; this.si.err=false; return this.render(); }
+  if(a==='si-back'){ this.si.step='pick'; this.si.who=null; this.si.digits=''; this.si.err=false; return this.render(); }
+  if(a==='si-key'){ if(this.si.digits.length<4){ this.si.digits+=b.dataset.k; this.si.err=false; } return this.render(); }
+  if(a==='si-del'){ this.si.digits=this.si.digits.slice(0,-1); return this.render(); }
+  if(a==='si-go'){ const si=this.si; if(si.busy) return; si.busy=true; let res; try{ res=await Store.verify(si.who, si.digits); }catch(err){ res={ok:false}; } si.busy=false;
+   if(res&&res.ok){ return this.signIn(si.who==='staff'?'staff':'kid', si.who==='staff'?null:si.who, res.token); }
+   si.tries++; si.digits=''; si.err=true; FX.wrong(); if(si.tries>=5||(res&&res.wait)){ si.until=Date.now()+30000; si.tries=0; setTimeout(()=>this.render(),30500); } return this.render(); }
+  if(a==='play') return this.startPlay('mission', b.dataset.id);
+  if(a==='replay') return this.startPlay('mission', b.dataset.id, {replay:true});
+  if(a==='boss') return this.startPlay('boss', b.dataset.c);
+  if(a==='revise') return this.startPlay('revise', b.dataset.id);
+  if(a==='quit'){ this.play=null; this.render(); return; }
+  if(a==='pick'&&p){ const it=p.items[p.i]; p.sel=it.shown[+b.dataset.k]; return this.answer(p.sel); }
+  if(a==='tile'&&p){ p.order.push(+b.dataset.k); p.fb=null; return this.render(); }
+  if(a==='untile'&&p){ p.order.splice(+b.dataset.j,1); p.fb=null; return this.render(); }
+  if(a==='ordercheck'&&p){ const it=p.items[p.i]; const ans=p.order.map(k=>it.shown[k]).join(' '); this.answer(ans); if(!p.fb.ok && it.phase!=='check'){ p.order=[]; this.render(); } return; }
+  if(a==='submitwrite'&&p){ const it=p.items[p.i]; const words=(p.text.trim().match(/\S+/g)||[]).length; if(words<it.min) return this.toast(`Write at least ${it.min} words. You have ${words}.`); if(it.checks.some((c,k)=>!p.ticks[k])) return this.toast('Tick each box when your writing does it.'); this.answer(p.text); return; }
+  if(a==='next'&&p) return this.next();
+  if(a==='retry'&&p){ const id=p.id; this.play=null; this.startPlay('mission', id); this.play.items=buildRetry(id); this.render(); return; }
+  const sid=this.sid(); if(!sid) return; const st=Store.student(sid);
+  if(a==='range'){ const c=b.dataset.c, i=RANGES.indexOf(st.ranges[c])+(+b.dataset.d); if(i<0||i>3) return; st.ranges[c]=RANGES[i]; delete st.fallback[c]; if(Store.setRange) Store.setRange(st.id,c,RANGES[i]); flag(st,`${CURR[c].label} moved to Range ${RANGES[i]} by staff`,'info'); st.flags[0].open=false; await Store.save(st); this.toast(`${CURR[c].label} is now Range ${RANGES[i]}.`); }
+  if(a==='approve'){ st.writing[b.dataset.id].status='approved'; await Store.save(st); this.toast('Approved.'); }
+  if(a==='sendback'){ const id=b.dataset.id; const n=document.getElementById('note-'+id); st.writing[id].status='revise'; st.writing[id].note=(n&&n.value.trim())||'Please revise and add more detail.'; await Store.save(st); this.toast('Sent back. He’ll see a Revise button.'); }
+  if(a==='signoff'){ const id=b.dataset.id; st.signoffs[id]={at:Date.now()}; pay(st,PAY.signoff,`Hands-on sign-off: ${id}`); await Store.save(st); this.toast('Signed off.'); }
+  if(a==='dismiss'){ st.flags[+b.dataset.i].open=false; await Store.save(st); }
+  if(a==='reset'){ this.confirm=sid; this.render(); }
+  if(a==='reset-no'){ this.confirm=null; this.render(); }
+  if(a==='reset-yes'){ this.confirm=null; await Store.resetStudent(sid); this.evRows=null; this.toast(`${sid} reset.`); this.render(); }
+  if(a==='ev-load'){ this.evRows={sid, rows:await Store.evidence(sid)}; this.render(); }
+  if(a==='ev-csv'){ const rows=await Store.evidence(sid); const csv=['timestamp,student_id,skill_id,phase,item,correct,first_try,attempts,hints,seconds'].concat(rows.map(r=>[new Date(r.at).toISOString(),r.student,r.skill,r.phase,'"'+String(r.item).replace(/"/g,'""')+'"',r.ok?1:0,r.first?1:0,r.tries,r.hints,Math.round(r.ms/1000)].join(','))).join('\n');
+   let saved=false; try{ const dl=window.claude&&await window.claude.use('downloads'); if(dl){ await dl.save({filename:`evidence-${sid}.csv`, data:csv}); saved=true; } }catch(err){}
+   if(!saved){ try{ await navigator.clipboard.writeText(csv); this.toast('CSV copied. Paste it into the Sheet.'); }catch(err){ this.toast('Couldn’t export here.'); } } }
+ },
+ onInput(e){ const p=this.play; if(!p) return; if(e.target.id==='wr'){ p.text=e.target.value; const w=document.getElementById('wcount'); if(w) w.textContent=(p.text.trim().match(/\S+/g)||[]).length; }
+  if(e.target.dataset&&e.target.dataset.act==='tick'){ p.ticks[e.target.dataset.k]=e.target.checked; } },
+};
+function fracOrNum(it){ if(it.kind==='rem') return String(it.a).replace('R',' R'); if(it.kind==='frac') return fracStr(Math.round(it.a*16000),16000); return (Math.round(it.a*100)/100).toString(); }
+document.addEventListener('submit',e=>{ if(e.target.dataset.act==='numform'){ e.preventDefault(); const v=document.getElementById('numin').value; if(v.trim()) App.answer(v); } });
+
+/* ---------- tape measure drawing ---------- */
+function tapeSVG(pos){
+ const W=640, x0=20, inch=200; let t='';
+ for(let k=0;k<=48;k++){ const x=x0+k*inch/16; const h= k%16===0?46: k%8===0?34: k%4===0?26: k%2===0?19:12; t+=`<line x1="${x}" y1="10" x2="${x}" y2="${10+h}" class="tk"/>`; if(k%16===0) t+=`<text x="${x+4}" y="74" class="tn">${k/16}</text>`; }
+ const ax=x0+pos*inch;
+ return `<div class="tape"><svg viewBox="0 0 ${W} 110" role="img" aria-label="Tape measure with a red arrow"><rect x="10" y="8" width="${W-20}" height="72" rx="6" class="tb"/>${t}<path d="M${ax} 82 l-9 20 h18 z" class="arr"/><line x1="${ax}" y1="8" x2="${ax}" y2="84" class="arrl"/></svg></div>`;
+}
+/* ---------- confetti ---------- */
+function confetti(){ const cv=document.getElementById('conf'); if(!cv||matchMedia('(prefers-reduced-motion: reduce)').matches) return; const r=cv.getBoundingClientRect(); cv.width=r.width; cv.height=r.height; const g=cv.getContext('2d'); const cols=['#5B3BE0','#F2B705','#1C7F4D','#2F6FE4','#D9661F'];
+ const ps=Array.from({length:90},()=>({x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*3,s:5+Math.random()*6,c:PICK(cols),r:Math.random()*6}));
+ let f=0; (function step(){ g.clearRect(0,0,cv.width,cv.height); ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.r+=.1; g.save(); g.translate(p.x,p.y); g.rotate(p.r); g.fillStyle=p.c; g.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); g.restore();}); if(++f<150) requestAnimationFrame(step); else g.clearRect(0,0,cv.width,cv.height); })(); }
+
+/* ---------- Apps Script store: saves to the school staging Google Sheet ---------- */
+(function(){
+ if(!(window.google && google.script && google.script.run)) return;
+ const run=(fn,...args)=>new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(e=>rej(e))[fn](...args));
+ const tok=()=>App.session&&App.session.token;
+ Object.assign(Store,{
+  live:true, pendingEv:{},
+  async init(){
+   try{ const b=await run('msBootstrap'); this.roster={students:b.students}; App.note=''; }
+   catch(e){ App.note='The school database can’t be reached right now. Try again in a minute.'; this.roster={students:[]}; }
+   if(App.session&&App.session.token){ try{ await this.reload(); }catch(e){ App.signOut(); } }
+   App.render();
+  },
+  async reload(){ const d=await run('msLoad', tok()); this.roster={students:d.roster.length?d.roster:this.roster.students}; this.students={}; Object.entries(d.states||{}).forEach(([k,v])=>this.students[k]=v); App.render(); },
+  async verify(who,digits){ return await run('msSignIn', who, digits); },
+  async afterSignIn(sess){ App.session=sess; await this.reload(); },
+  async save(st){
+   const prev=this.students[st.id]; const prevLen=prev?(prev.ledger||[]).length:0;
+   const bank=st.ledger.slice(0, Math.max(0, st.ledger.length-prevLen));
+   const ev=this.pendingEv[st.id]||[]; this.pendingEv[st.id]=[];
+   st.v=(st.v||0)+1; this.students[st.id]=clone(st); App.render();
+   try{ const r=await run('msSave', tok(), st.id, clone(st), ev, bank); if(r&&typeof r.balance==='number'&&this.students[st.id]){ this.students[st.id].balance=r.balance; if(Array.isArray(r.ledger)) this.students[st.id].ledger=r.ledger; App.render(); } }
+   catch(e){ App.toast('Couldn’t save to the school database. Check the Wi-Fi, then try again.'); }
+  },
+  async addEvidence(sid, rows){ this.pendingEv[sid]=(this.pendingEv[sid]||[]).concat(rows); },
+  async evidence(sid){ try{ return await run('msEvidence', tok(), sid); }catch(e){ return []; } },
+  async resetStudent(id){ await run('msReset', tok(), id); delete this.students[id]; App.render(); },
+  setRange(sid,c,r){ run('msSetRange', tok(), sid, c, r).catch(()=>App.toast('Couldn’t save the range change.')); },
+ });
+})();
+
+App.start();
+
+</script>
+<style>
+#td-corner{position:fixed;top:10px;right:12px;z-index:9000;display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 8px;border-radius:999px;border:3px solid #B98A12;background:#FFF4CC;color:#3D2C00;font:700 18px/1 system-ui,sans-serif;box-shadow:0 3px 0 #B98A12,0 6px 14px #0002;cursor:pointer;min-height:44px}
+#td-corner[hidden]{display:none}
+#td-corner .td-coin{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#FFC93C;border:2px solid #8A6400;color:#5A3F00;font-size:16px}
+#td-corner.td-pop{animation:tdPop .7s ease-out}
+#td-corner .td-plus{position:absolute;right:10px;top:100%;margin-top:4px;padding:3px 8px;border-radius:999px;background:#1C7F4D;color:#fff;font-size:14px;animation:tdUp 1.6s ease-out forwards;pointer-events:none}
+@keyframes tdPop{0%{transform:scale(1)}30%{transform:scale(1.18) rotate(-3deg)}60%{transform:scale(.96)}100%{transform:scale(1)}}
+@keyframes tdUp{0%{opacity:0;transform:translateY(-6px)}15%{opacity:1}100%{opacity:0;transform:translateY(14px)}}
+@media (prefers-reduced-motion:reduce){#td-corner.td-pop,#td-corner .td-plus{animation:none}}
+@media (max-width:640px){#td-corner{top:auto;bottom:12px}}
+</style>
+<script>
+/* TL-015 corner balance (boy's view) + TL-017 best built-in Google voice. */
+(function(){
+ 'use strict';
+ const nlScore=v=>{const n=String(v.name||''),g=/google/i.test(n),nat=/natural|neural|enhanced|premium|\bhd\b|wavenet|studio|chirp|journey/i.test(n);return (g?1000:0)+(g&&nat?400:0)+(/^google us english$/i.test(n)?200:0)+(/en[-_]US/i.test(v.lang)?60:/en[-_]GB/i.test(v.lang)?30:0)+(/microsoft mark/i.test(n)?300:0)+(!g&&nat?150:0)+(v.localService?5:0)-(/espeak|compact|novelty|whisper|bad news|bells|zarvox|albert|bubbles|cellos|jester|organ|superstar|trinoids|wobble/i.test(n)?900:0);};
+ let nlPicked=null;
+ function nlVoice(){try{if(nlPicked)return nlPicked;const vs=window.speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));const best=vs.slice().sort((a,b)=>nlScore(b)-nlScore(a))[0]||null;if(best)nlPicked=best;return best;}catch(e){return null;}}
+ try{if(window.speechSynthesis&&window.speechSynthesis.addEventListener)window.speechSynthesis.addEventListener('voiceschanged',()=>{nlPicked=null;});}catch(e){}
+ try{if(window.speechSynthesis&&!window.speechSynthesis.__nl){const ss=window.speechSynthesis,orig=ss.speak.bind(ss);
+  ss.speak=function(u){try{if(u&&!u.voice){const v=nlVoice();if(v){u.voice=v;u.lang=v.lang;}else if(!ss.getVoices().length){let done=false;const go=()=>{if(done)return;done=true;try{const w=nlVoice();if(w){u.voice=w;u.lang=w.lang;}}catch(e){}orig(u);};try{ss.addEventListener('voiceschanged',go,{once:true});}catch(e){}setTimeout(go,1200);return;}}}catch(e){}return orig(u);};ss.__nl=true;window.nlVoice=nlVoice;}}catch(e){}
+ let shown=null,who='',actx=null;
+ function coin(){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;actx=actx||new AC();const t=actx.currentTime;[[1319,0,.09],[1760,.08,.18]].forEach(([f,s,d])=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+s);g.gain.exponentialRampToValueAtTime(.16,t+s+.012);g.gain.exponentialRampToValueAtTime(.0001,t+s+d);o.connect(g);g.connect(actx.destination);o.start(t+s);o.stop(t+s+d+.03);});}catch(e){}}
+ function paint(){try{
+  const s=App.session,b=document.getElementById('td-corner')||(()=>{const x=document.createElement('button');x.id='td-corner';x.type='button';x.onclick=()=>{const k=document.querySelector('.ledger');if(k)k.scrollIntoView({behavior:'smooth',block:'center'});};document.body.append(x);return x;})();
+  if(!s||s.role!=='kid'||!s.sid){b.hidden=true;shown=null;return;}
+  if(who!==s.sid){who=s.sid;shown=null;}
+  const st=Store&&Store.students&&Store.students[s.sid],v=Math.round((Number(st&&st.balance)||0)*100);
+  b.hidden=false;if(v===shown)return;
+  b.innerHTML='<span class="td-coin" aria-hidden="true">$</span><b>$'+td(v/100)+'</b>';b.setAttribute('aria-label','My bank: $'+td(v/100)+'. Tap to see my bank statement.');
+  if(shown!==null&&v>shown){b.classList.remove('td-pop');void b.offsetWidth;b.classList.add('td-pop');coin();const p=document.createElement('span');p.className='td-plus';p.setAttribute('aria-hidden','true');p.textContent='+$'+td((v-shown)/100);b.append(p);setTimeout(()=>p.remove(),1700);}
+  shown=v;}catch(e){}}
+ try{const r=App.render.bind(App);App.render=function(){const out=r.apply(this,arguments);paint();return out;};}catch(e){}
+ setInterval(paint,1500);paint();
+})();
+</script>
+<a id="tl-pl" target="_top" href="#" style="position:fixed;right:18px;bottom:18px;z-index:60;background:#14284b;color:#fff;border:3px solid #e3b341;border-radius:14px;padding:12px 18px;font:700 16px Inter,system-ui,sans-serif;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.2)" hidden>🧭 Placement</a>
+<script>/* TL-037: link to the Placement page (place each boy, or a group, on the skill grid) */
+try{ google.script.run.withSuccessHandler(function(u){ var a=document.getElementById('tl-pl'); a.href=u+'?pl=1'; a.hidden=false; }).msAppUrl(); }catch(e){}
+</script>
+<div id="tl-ph" hidden style="position:fixed;left:18px;bottom:18px;z-index:60"><button id="tl-phb" style="background:#0F766E;color:#fff;border:0;border-radius:14px;padding:12px 18px;font:700 16px Inter,system-ui,sans-serif;box-shadow:0 6px 18px rgba(0,0,0,.2)">📷 Photos to check</button></div>
+<div id="tl-php" hidden style="position:fixed;inset:5vh 5vw;z-index:70;background:#fff;color:#111;border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.35);overflow:auto;padding:18px;font:16px Inter,system-ui,sans-serif"></div>
+<script>/* Nov 8: teacher photo check. Shown only when PHOTO_TEACHER_REVIEW = true in Photos.gs (now OFF). */
+(function(){ try{ var tok=function(){ try{ return (JSON.parse(sessionStorage.getItem('tl-session')||'null')||{}).token; }catch(e){ return null; } };
+ var P=document.getElementById('tl-php'), esc=function(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); };
+ function load(){ P.hidden=false; P.innerHTML='<p>Loading…</p>'; google.script.run.withSuccessHandler(function(list){ P.innerHTML='<button id="tl-phx" style="float:right">Close</button><h2>Photos to check</h2>'+(list.length?'':'<p>Nothing waiting.</p>')+list.map(function(x){ return '<div style="border:1px solid #ddd;border-radius:12px;padding:12px;margin:10px 0"><b>'+esc(x.studentId)+'</b> · '+esc(x.skill)+'<p>'+esc(x.prompt)+'</p><p>Expected: <b>'+esc(x.expected)+'</b> · Reader saw: <i>'+esc(x.ocrText)+'</i></p>'+(x.img?'<img src="'+x.img+'" style="max-width:100%;max-height:50vh;border-radius:8px">':'')+'<p><button data-ph="'+esc(x.photoId)+'" data-m="right" style="background:#15803D;color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:700">Right</button> <button data-ph="'+esc(x.photoId)+'" data-m="wrong" style="border:1px solid #999;border-radius:10px;padding:10px 18px;font-weight:700">Not yet</button></p></div>'; }).join(''); }).msPhotoList(tok()); }
+ P.addEventListener('click',function(e){ var b=e.target.closest('button'); if(!b) return; if(b.id==='tl-phx'){ P.hidden=true; return; } if(b.dataset.ph){ b.disabled=true; google.script.run.withSuccessHandler(load).withFailureHandler(function(err){ alert(err.message||err); }).msPhotoMark(tok(),b.dataset.ph,b.dataset.m); } });
+ document.getElementById('tl-phb').onclick=load;
+ google.script.run.withSuccessHandler(function(on){ if(on) document.getElementById('tl-ph').hidden=false; }).msPhotoReviewOn();
+ }catch(e){} })();
+</script>
+</body></html>

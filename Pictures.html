@@ -1,0 +1,71 @@
+<script>
+/* Tashbar UPGRADE Phase 4 part 4 (2026-11-10): a clear picture for the key words on every lesson screen.
+   Drawn pictures only (the Chromebook's colour emoji set), checked against the picture rules:
+   boys and men only, frum settings, kosher food. PIC_BAN blocks anything that breaks a rule, even if a lesson asks for it.
+   Each picture shows with its word under it, so pictures also teach reading.
+   No pictures are added when the boy is choosing a picture (that would give the answer away) or when the lesson already shows one.
+   Loaded by msQuestTools after Guides. Only wraps render(); if this file fails, lessons look as before. */
+const PIC_BAN=/[\u{1F469}\u{1F467}\u{1F475}\u{1F483}\u{1F478}\u{1F930}\u{1F9D5}\u{1F470}\u{1F931}\u{1F485}\u{1F484}\u{1F457}\u{1F460}\u{1F459}\u{1F45B}\u{1FA71}\u{1F437}\u{1F416}\u{1F417}\u{1F953}\u{1F990}\u{1F980}\u{1F99E}\u{1F991}\u{1F419}\u{1F9AA}\u{1F364}\u{1F363}\u{26EA}\u{271D}\u{1F384}\u{1F385}\u{1F936}\u{1F54C}\u{262A}\u{1F6D5}\u{1F549}\u{2626}\u{1F37A}\u{1F37B}\u{1F378}\u{1F379}\u{1F942}\u{1F37E}\u{1F383}\u{1F47B}\u{1F48B}\u{1F48F}\u{1F491}\u{1F9DB}\u{1F9DF}\u{1F9D9}\u{1F9DA}\u{1F9DC}\u{1F52E}\u{1F355}\u{1F32D}\u{1F354}\u{2640}]/u;
+const PIC_W={
+/* people (boys and men only) */
+boy:'👦',boys:'👦',man:'👨',men:'👨',father:'👨',abba:'👨',dad:'👨',zeidy:'👴',zaidy:'👴',grandfather:'👴',grandpa:'👴',rebbi:'👨‍🏫',rabbi:'👨‍🏫',teacher:'👨‍🏫',student:'👦',students:'👦',friend:'👦',friends:'👦',brother:'👦',baby:'👶',doctor:'👨‍⚕️',farmer:'👨‍🌾',chef:'👨‍🍳',cook:'👨‍🍳',baker:'👨‍🍳',builder:'👷‍♂️',worker:'👷‍♂️',firefighter:'👨‍🚒',pilot:'👨‍✈️',scientist:'👨‍🔬',mechanic:'👨‍🔧',carpenter:'👷‍♂️',plumber:'👨‍🔧',electrician:'👨‍🔧',king:'👑',
+/* Yiddishkeit */
+shul:'🕍',synagogue:'🕍',torah:'📜',sefer:'📖',siddur:'📖',candle:'🕯️',candles:'🕯️',shabbos:'🕯️',shabbat:'🕯️',menorah:'🕎',chanukah:'🕎',challah:'🍞',kiddush:'🍷',sukkah:'🛖',shofar:'📯',matzah:'🫓',matzo:'🫓',mitzvah:'⭐',chesed:'💛',tzedakah:'🪙',bracha:'🙌',brachah:'🙌',beracha:'🙌',
+/* school & home */
+book:'📖',books:'📚',paragraph:'📝',story:'📖',stories:'📚',poem:'📜',pencil:'✏️',pen:'🖊️',paper:'📄',notebook:'📓',ruler:'📏',scissors:'✂️',glue:'🧴',backpack:'🎒',bag:'🎒',desk:'🪑',chair:'🪑',table:'🪑',school:'🏫',classroom:'🏫',computer:'💻',clock:'🕒',time:'🕒',hour:'🕐',hours:'🕐',minute:'⏱️',minutes:'⏱️',calendar:'📅',week:'📅',weeks:'📅',month:'📅',months:'📅',year:'📅',years:'📅',
+house:'🏠',home:'🏠',door:'🚪',window:'🪟',bed:'🛏️',lamp:'💡',key:'🔑',box:'📦',boxes:'📦',basket:'🧺',bucket:'🪣',cup:'🥤',cups:'🥤',bottle:'🍼',plate:'🍽️',plates:'🍽️',bowl:'🥣',spoon:'🥄',fork:'🍴',pot:'🍲',pan:'🍳',jar:'🫙',jars:'🫙',bell:'🔔',gift:'🎁',ball:'⚽',balls:'⚽',kite:'🪁',bike:'🚲',bicycle:'🚲',toy:'🧸',toys:'🧸',hat:'🎩',cap:'🧢',coat:'🧥',shirt:'👕',shoe:'👟',shoes:'👟',sock:'🧦',socks:'🧦',umbrella:'☂️',map:'🗺️',flag:'🚩',
+/* money & canteen */
+money:'💵',dollar:'💵',dollars:'💵',cent:'🪙',cents:'🪙',coin:'🪙',coins:'🪙',penny:'🪙',pennies:'🪙',nickel:'🪙',dime:'🪙',quarter:'🪙',bank:'🏦',store:'🏪',shop:'🏪',price:'🏷️',cost:'🏷️',buy:'🛒',bought:'🛒',sell:'🏷️',sold:'🏷️',
+/* kosher food */
+food:'🍽️',apple:'🍎',apples:'🍎',banana:'🍌',bananas:'🍌',orange:'🍊',oranges:'🍊',grapes:'🍇',lemon:'🍋',pear:'🍐',pears:'🍐',cherry:'🍒',cherries:'🍒',strawberry:'🍓',strawberries:'🍓',watermelon:'🍉',melon:'🍈',peach:'🍑',carrot:'🥕',carrots:'🥕',potato:'🥔',potatoes:'🥔',corn:'🌽',cucumber:'🥒',tomato:'🍅',tomatoes:'🍅',pepper:'🫑',onion:'🧅',bread:'🍞',bagel:'🥯',bagels:'🥯',pretzel:'🥨',pretzels:'🥨',cookie:'🍪',cookies:'🍪',cake:'🎂',cakes:'🎂',cupcake:'🧁',cupcakes:'🧁',pie:'🥧',pies:'🥧',muffin:'🧁',muffins:'🧁',egg:'🥚',eggs:'🥚',milk:'🥛',juice:'🧃',water:'💧',honey:'🍯',soup:'🍲',rice:'🍚',popcorn:'🍿',candy:'🍬',candies:'🍬',lollipop:'🍭',
+/* animals (no pigs) */
+dog:'🐶',dogs:'🐶',puppy:'🐶',cat:'🐱',cats:'🐱',kitten:'🐱',fish:'🐟',bird:'🐦',birds:'🐦',duck:'🦆',ducks:'🦆',hen:'🐔',chicken:'🐔',chick:'🐥',cow:'🐄',cows:'🐄',horse:'🐴',horses:'🐴',sheep:'🐑',goat:'🐐',goats:'🐐',lamb:'🐑',rabbit:'🐰',bunny:'🐰',mouse:'🐭',mice:'🐭',frog:'🐸',frogs:'🐸',turtle:'🐢',snail:'🐌',bee:'🐝',bees:'🐝',ant:'🐜',ants:'🐜',butterfly:'🦋',spider:'🕷️',worm:'🪱',bug:'🐛',bugs:'🐛',insect:'🐛',insects:'🐛',lion:'🦁',bear:'🐻',fox:'🦊',deer:'🦌',owl:'🦉',eagle:'🦅',whale:'🐋',dolphin:'🐬',shark:'🦈',elephant:'🐘',monkey:'🐒',giraffe:'🦒',zebra:'🦓',camel:'🐫',snake:'🐍',beaver:'🦫',squirrel:'🐿️',animal:'🐾',animals:'🐾',pet:'🐶',pets:'🐶',nest:'🪺',feather:'🪶',
+/* nature & science */
+sun:'☀️',moon:'🌙',star:'⭐',stars:'⭐',sky:'🌤️',cloud:'☁️',clouds:'☁️',rain:'🌧️',snow:'❄️',wind:'🌬️',storm:'⛈️',lightning:'⚡',rainbow:'🌈',weather:'⛅',season:'🍂',seasons:'🍂',winter:'⛄',summer:'☀️',spring:'🌷',autumn:'🍂',tree:'🌳',trees:'🌳',leaf:'🍃',leaves:'🍃',flower:'🌻',flowers:'🌻',plant:'🌱',plants:'🌱',seed:'🌱',seeds:'🌱',root:'🌱',roots:'🌱',grass:'🌿',forest:'🌲',mountain:'⛰️',mountains:'⛰️',hill:'⛰️',river:'🏞️',lake:'🏞️',ocean:'🌊',sea:'🌊',wave:'🌊',beach:'🏖️',sand:'🏖️',desert:'🏜️',rock:'🪨',rocks:'🪨',stone:'🪨',soil:'🟫',dirt:'🟫',mud:'🟫',ice:'🧊',fire:'🔥',heat:'🔥',hot:'🔥',cold:'🥶',earth:'🌍',world:'🌍',planet:'🪐',planets:'🪐',space:'🚀',magnet:'🧲',magnets:'🧲',battery:'🔋',energy:'⚡',electricity:'⚡',thermometer:'🌡️',temperature:'🌡️',microscope:'🔬',telescope:'🔭',experiment:'🧪',scientists:'👨‍🔬',eye:'👀',eyes:'👀',ear:'👂',ears:'👂',nose:'👃',tongue:'👅',hand:'✋',hands:'✋',foot:'🦶',feet:'🦶',leg:'🦵',legs:'🦵',bone:'🦴',bones:'🦴',heart:'❤️',brain:'🧠',teeth:'🦷',tooth:'🦷',senses:'👀',sound:'🔊',sounds:'🔊',music:'🎵',shadow:'🌑',air:'💨',
+/* trades & tools */
+tool:'🧰',tools:'🧰',hammer:'🔨',nail:'🔩',nails:'🔩',screw:'🔩',screws:'🔩',wrench:'🔧',screwdriver:'🪛',drill:'🪛',tape:'📏',wood:'🪵',board:'🪵',boards:'🪵',brick:'🧱',bricks:'🧱',ladder:'🪜',safety:'🦺',goggles:'🥽',gloves:'🧤',helmet:'⛑️',rope:'🪢',knot:'🪢',
+/* travel */
+car:'🚗',cars:'🚗',bus:'🚌',truck:'🚚',train:'🚂',plane:'✈️',airplane:'✈️',boat:'⛵',ship:'🚢',road:'🛣️',bridge:'🌉',city:'🏙️',town:'🏘️',farm:'🚜',park:'🏞️',
+/* math */
+
+/* more words found in the lessons */
+shtender:'📖',shtenders:'📖',beis:'🕍',medrash:'🕍',seforim:'📚',yeshiva:'🏫',cheder:'🏫',yossi:'👦',eli:'👦',baruch:'👦',chaim:'👦',dovid:'👦',avi:'👦',moshe:'👦',gad:'👦',shmuel:'👦',yaakov:'👦',ari:'👦',dov:'👦',
+marble:'🔵',marbles:'🔵',ribbon:'🎀',shelf:'📚',shelves:'📚',sticker:'⭐',stickers:'⭐',block:'🧱',blocks:'🧱',piece:'🧩',pieces:'🧩',puzzle:'🧩',hop:'🐸',hops:'🐸',railroad:'🛤️',tracks:'🛤️',travel:'🧳',morning:'🌅',night:'🌙',evening:'🌆',workshop:'🛠️',game:'🎲',games:'🎲',team:'🤝',
+hexagon:'🔷',pentagon:'🔷',octagon:'🛑',corner:'📐',corners:'📐',measure:'📏',measured:'📏',measuring:'📏',long:'📏',longer:'📏',wide:'📏',width:'📏',tall:'📏',taller:'📏',height:'📏',estimate:'🎯',nearest:'🎯',round:'🎯',rounding:'🎯',even:'⚫',odd:'⚪',row:'🪑',rows:'🪑',slope:'📈',axis:'📈',intercept:'📈',point:'📍',points:'📍',coordinate:'📍',equation:'🟰',expression:'🔣',variable:'🔣',decimal:'🔟',tenth:'🔟',tenths:'🔟',hundredth:'💯',hundredths:'💯',whole:'🥧',percent:'💯',ratio:'⚖️',greatest:'🔝',least:'🔻',bigger:'🔝',smaller:'🔻',cut:'✂️',cuts:'✂️',split_:'✂️',
+claim:'💬',counterclaim:'💬',rebuttal:'💬',argument:'💬',opinion:'💬',evidence:'🔎',research:'🔎',researchable:'🔎',source:'📰',sources:'📰',website:'💻',summary:'📝',report:'📝',citation:'📚',question:'❓',questions:'❓',clause:'✏️',punctuated:'✏️',punctuation:'✏️',comma:'✏️',spelling:'🔤',spelled:'🔤',request:'🙋‍♂️',letter_:'✉️',email:'📧',title:'🏷️',topic:'🏷️',detail:'🔎',details:'🔎',
+add:'➕',plus:'➕',sum:'➕',total:'➕',subtract:'➖',minus:'➖',difference:'➖',multiply:'✖️',times:'✖️',product:'✖️',divide:'➗',equal:'🟰',equals:'🟰',fraction:'🥧',fractions:'🥧',half:'🥧',halves:'🥧',third:'🥧',thirds:'🥧',fourth:'🥧',fourths:'🥧',triangle:'🔺',triangles:'🔺',square:'🟥',squares:'🟥',circle:'⚪',circles:'⚪',rectangle:'▭',cube:'🧊',shape:'🔷',shapes:'🔷',length:'📏',inch:'📏',inches:'📏',centimeter:'📏',centimeters:'📏',meter:'📏',meters:'📏',weight:'⚖️',weigh:'⚖️',pound:'⚖️',pounds:'⚖️',graph:'📊',chart:'📊',pattern:'🔁',patterns:'🔁',dice:'🎲',tens:'🔟',ten:'🔟',hundred:'💯',hundreds:'💯',angle:'📐',area:'⬛',
+/* feelings & actions */
+happy:'😊',sad:'😢',tired:'😴',sick:'🤒',hurt:'🤕',angry:'😠',scared:'😨',run:'🏃‍♂️',runs:'🏃‍♂️',ran:'🏃‍♂️',write:'✍️',writes:'✍️',wrote:'✍️',sing:'🎵',sang:'🎵',sleep:'😴',slept:'😴',eat:'🍽️',ate:'🍽️',bake:'🧁',baked:'🧁',build:'🔨',built:'🔨',fix:'🔧',fixed:'🔧',swim:'🏊‍♂️',jump:'🤸‍♂️',climb:'🧗‍♂️',throw:'⚾',catch:'🧤',kick:'⚽',win:'🏆',won:'🏆',think:'💭',help:'🤝',helped:'🤝',share:'🤝',shared:'🤝',give:'🎁',gave:'🎁',walk:'🚶‍♂️',walked:'🚶‍♂️',wash:'🧼',washed:'🧼',grow:'🌱',grew:'🌱'
+};
+function picWords(text,max){ const out=[], seen=new Set(); const toks=String(text||'').replace(/[’]/g,"'").match(/[A-Za-z]+/g)||[];
+ toks.forEach((tok,k)=>{ if(out.length>=max) return; const w=tok.toLowerCase(); let e=PIC_W[w], lab=tok;
+  if(!e&&w.length>3&&w.endsWith('s')&&PIC_W[w.slice(0,-1)]) e=PIC_W[w.slice(0,-1)];
+  if(w==='beis'&&(toks[k+1]||'').toLowerCase()==='medrash') lab=tok+' '+toks[k+1];
+  if(!e||seen.has(e)||PIC_BAN.test(e)) return; seen.add(e); out.push([e,lab]); });
+ return out; }
+function picHasEmoji(s){ return /\p{Extended_Pictographic}/u.test(String(s||'')); }
+function picFor(it,c){ if(!it||it.pic||it.tape!==undefined) return []; const opts=(it.shown||it.o||[]);
+ if(opts.some(o=>picHasEmoji(o))) return []; /* boy is choosing a picture: don't give it away */
+ if(c==='READ'&&/match(es)? the picture|which picture|build the word|sound|letter|rhym|spell|syllable|split/i.test(it.q)) return []; /* decoding: the word must be read, not seen */
+ if(it.t==='order'&&/word/i.test(it.q)) return [];
+ const words=picWords(it.q+' '+(it.p||''),3); let l=(c==='MATH'?picMath(it,it.phase):[]).concat(words).slice(0,3); if(!l.length) l=picFallback(c,it); return l; }
+function picDots(n,color,gone){ let h=''; for(let k=0;k<n;k++) h+=`<i class="pxd${gone&&k>=n-gone?' gone':''}" style="background:${color}"></i>`; return h; }
+function picMath(it,phase){ const q=String(it.q||''); const m=q.match(/^\s*(\d+)\s*([+\-−×x÷])\s*(\d+)\s*=\s*\?/); const icon={'+':['➕','add'],'-':['➖','subtract'],'−':['➖','subtract'],'×':['✖️','multiply'],'x':['✖️','multiply'],'÷':['➗','divide']};
+ if(!m){ const op=(q.match(/[+−×÷]/)||[])[0]; return op?[[icon[op][0],icon[op][1]]]:[]; }
+ const a=+m[1], op=m[2], b=+m[3], ic=icon[op]; if(phase==='check') return [[ic[0],ic[1]]];
+ if((op==='+')&&a<=10&&b<=10) return [['MODEL',`<span class="pxg">${picDots(a,'#4338CA')}</span><b class="pxop">+</b><span class="pxg">${picDots(b,'#EAB308')}</span>`,'add']];
+ if((op==='-'||op==='−')&&a<=20&&b<=a) return [['MODEL',`<span class="pxg">${picDots(a,'#4338CA',b)}</span>`,'take away '+b]];
+ if((op==='×'||op==='x')&&a<=10&&b<=10&&a*b<=60){ let r=''; for(let k=0;k<a;k++) r+=`<span class="pxr">${picDots(b,'#16A34A')}</span>`; return [['MODEL',`<span class="pxarr">${r}</span>`,a+' rows of '+b]]; }
+ return [[ic[0],ic[1]]]; }
+function picFallback(c,it){ if(c==='WRIT') return [['✍️','writing']]; if(c==='READ') return /\?/.test(it.q)?[['📖','story']]:[]; if(c==='MATH') return [['🔢','math']]; if(c==='VOC') return [['🧰','trades']]; return []; }
+function picRowHTML(list){ return list.length?`<div class="pxrow" aria-hidden="true">${list.map(x=>x[0]==='MODEL'?`<figure class="px pxm"><span class="pxmodel">${x[1]}</span><figcaption>${esc(x[2])}</figcaption></figure>`:`<figure class="px"><span class="pxe">${x[0]}</span><figcaption>${esc(x[1])}</figcaption></figure>`).join('')}</div>`:''; }
+function picHowHTML(it){ if(!it||!it.how||it.phase!=='teach') return ''; const l=picWords(it.how,2); return l.length?`<span class="pxhow" aria-hidden="true">${l.map(x=>x[0]).join(' ')}</span>`:''; }
+function picDecorate(){ try{ if(A.view!=='play'||!A.play) return; const p=A.play, it=p.items[p.i]; const card=document.querySelector('.qcard'); if(!card||card.querySelector('.pxrow')) return;
+ const row=card.querySelector('.qrow'); const l=picFor(it,p.c); if(row&&l.length) row.insertAdjacentHTML('afterend',picRowHTML(l));
+ const how=card.querySelector('.how b'); if(how&&!card.querySelector('.pxhow')){ const h=picHowHTML(it); if(h) how.insertAdjacentHTML('afterend',h); }
+ /* rule guard: hide any picture in the lesson that breaks the picture rules */
+ card.querySelectorAll('.tlpic,.opt,.pxe').forEach(el=>{ if(PIC_BAN.test(el.textContent)) el.textContent=el.textContent.replace(new RegExp(PIC_BAN.source,'gu'),'⭐'); });
+ }catch(e){ console.error('Pictures',e); } }
+(function(){ if(typeof window.render==='function'&&!window.render.__px){ const _r=window.render; window.render=function(){ const out=_r.apply(this,arguments); picDecorate(); return out; }; window.render.__px=true; }
+ document.head.insertAdjacentHTML('beforeend',`<style id="pictures-css">.pxrow{display:flex;flex-wrap:wrap;gap:12px;margin:4px 0 14px}.px{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:112px;padding:12px 14px 8px;border-radius:18px;background:linear-gradient(180deg,#FEFCE8,#FEF3C7);border:2px solid #FDE68A;box-shadow:0 4px 0 #FDE68A;animation:pxin .45s cubic-bezier(.3,1.5,.5,1) both}.px:nth-child(2){animation-delay:.08s}.px:nth-child(3){animation-delay:.16s}.pxe{font-size:clamp(48px,5.5vw,68px);line-height:1.1}.px figcaption{font:700 17px var(--display,inherit);color:#1E1B4B;margin-top:2px}/* math models */.pxm{min-width:160px}.pxmodel{display:flex;align-items:center;gap:12px;min-height:70px}.pxg{display:grid;grid-template-columns:repeat(5,22px);gap:6px}.pxd{display:block;width:22px;height:22px;border-radius:50%}.pxd.gone{opacity:.25;outline:2px dashed #94A3B8;background:transparent!important}.pxop{font:800 34px var(--display,inherit);color:#1E1B4B}.pxarr{display:grid;gap:4px}.pxr{display:flex;gap:4px}.pxhow{margin:0 8px;font-size:26px}@keyframes pxin{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}@media (prefers-reduced-motion:reduce){.px{animation:none}}</style>`); })();
+</script>

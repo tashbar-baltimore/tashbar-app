@@ -1,0 +1,27 @@
+<script>
+/* Phase 1 (07 BUILD PROMPT v3, 2026-11-09): Sign out in the same top-right corner on every boy screen, auto sign-out after 5 quiet minutes, staff Placement button hidden on boy screens. */
+(function(){
+ var IDLE=5*60000, last=Date.now();
+ ['pointerdown','keydown','touchstart','wheel'].forEach(function(ev){ document.addEventListener(ev,function(){ last=Date.now(); },{passive:true,capture:true}); });
+ function signedIn(){ try{ return typeof A!=='undefined'&&A&&A.view!=='signin'&&!!A.st; }catch(e){ return false; } }
+ /* Head of School 2026-11-11: any Sign out saves the boy's work first (state + answers not yet sent), then signs out to the home keypad. */
+ document.addEventListener('click',function(e){ var t=e.target&&e.target.closest&&e.target.closest('[data-act="signout"]'); if(!t) return;
+  try{ if(typeof A!=='undefined'&&A&&A.st&&typeof SRV!=='undefined'&&SRV&&SRV.token&&typeof saveStudent==='function') saveStudent(A.st); }catch(err){} }, true);
+ function doOut(){ var b=document.createElement('button'); b.type='button'; b.setAttribute('data-act','signout'); b.style.display='none'; document.body.appendChild(b); b.click(); b.remove(); }
+ var css=document.createElement('style');
+ css.textContent='.tl-out{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));z-index:2147483001;border:0;border-radius:12px;padding:12px 22px;min-height:48px;font:700 17px system-ui,"Segoe UI",sans-serif;background:#1E1B4B;color:#fff;box-shadow:0 6px 16px rgba(0,0,0,.25);cursor:pointer}';
+ document.head.appendChild(css);
+ var fb=document.createElement('button'); fb.type='button'; fb.className='tl-out'; fb.textContent='Sign out'; fb.style.display='none';
+ fb.addEventListener('click',function(e){ e.stopPropagation(); doOut(); });
+ document.body.appendChild(fb);
+ function fixedUp(x){ for(var i=0;x&&i<4;i++,x=x.parentElement){ if(getComputedStyle(x).position==='fixed') return true; } return false; }
+ function tick(){
+  var on=signedIn();
+  var inpage=Array.prototype.some.call(document.querySelectorAll('[data-act="signout"]'),function(x){ return x!==fb&&x.offsetParent!==null; });
+  fb.style.display=on&&!inpage?'':'none';
+  Array.prototype.forEach.call(document.querySelectorAll('a,button'),function(x){ if(x!==fb&&/Placement/.test(x.textContent||'')&&fixedUp(x)) x.style.display='none'; });
+  if(on&&Date.now()-last>IDLE){ last=Date.now(); doOut(); }
+ }
+ setInterval(tick,1000); tick();
+})();
+</script>

@@ -1,0 +1,62 @@
+<script>
+/* AnswerGuard.html — v164 (takeover3, HoS 2026-11-13: "fix all this"). Island Rule: a box that teaches must never hand a boy THIS question's answer.
+   Found live: a worked example could match the random question exactly (MATH.PV.L01.01 "13 is one ten and 3 ones",
+   MATH.OPS.L02.06 fact family 5 + 8 = 13, MATH.NUM.L09.02 the square root of 49 is 7) and a How-to line said "a parallelogram has 2 pairs" (MATH.GEO.L06.02).
+   What it does, for EVERY skill whose answer is a number:
+   1. Teach step: if the worked example gives this question's answer, a new question is made for that example (generated skills).
+   2. After a miss: re-teach lines that give the answer are skipped.
+   3. The "How to do it" box: if it would show the answer, it shows the skill's safe steps instead.
+   "Gives the answer" = the answer number is in the text, is not in the question, and the question's own numbers are in the text too (or it has none).
+   v172: also word answers (multiple choice): the box names the right choice and none of the wrong ones (see givesWord).
+   Loaded after HowToDo/FactsHowTo (Photos.js + Speed.js TL_PART_FILES). No "double slash" in this file. */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined') return;
+const SAFE={   /* method-only steps for skills whose general steps state an answer */
+ 'MATH.GEO.L06.02':'Shape Detective!\nDraw the shape in the air with your finger.\nFind the sides that face each other and never meet. Count those pairs.\nCheck the corners and the side lengths, then answer.',
+ 'MATH.PV.L01.01':'Ten Frame!\nA teen number starts with 1. That 1 means one full ten.\nThe last digit tells how many ones are left over.\nLook at your number, then answer.',
+ 'MATH.OPS.L02.06':'Count Up!\nStart at the number you know. Count up to the total.\nPut up one finger for each number you say.\nThe fingers up are the missing number.',
+ 'MATH.NUM.L09.02':'Root Finder!\nThink of the squares you know: 1, 4, 9, 16, 25 and so on.\nFind the number inside the root on your list.\nWhich number, times itself, made it? Check by multiplying.'
+};
+const GEN_STEPS='Look at the numbers in this question.\nUse the steps from the lesson with these numbers.\nWork it out, check it, then answer.';
+const WORD_STEPS='Read the question again, slowly.\nThink about what each choice means.\nCross out the ones that do not fit, then tap the best one.';
+const norm=s=>String(s==null?'':s).replace(/[−–]/g,'-').replace(/,(?=\d{3}\b)/g,'');
+const nums=s=>(norm(s).match(/-?\d+(?:\.\d+)?/g)||[]).map(x=>String(+x));
+function ansOf(it){ if(!it) return null; let a=it.t==='mc'?it.correct:it.a; if(a==null) return null; a=norm(a).trim(); return /^-?\d+(\.\d+)?$/.test(a)?String(+a):null; }
+function givesNum(it,text){ const a=ansOf(it); if(a===null||!text) return false; const qn=nums(it.q), tn=nums(text);
+ if(qn.indexOf(a)>=0) return false; if(tn.indexOf(a)<0) return false; return qn.every(n=>tn.indexOf(n)>=0); }
+/* v172: word answers (multiple choice). The box gives it away if it names the right choice word for word, names none of the
+   wrong choices, and the question itself does not already contain it. Very short or yes/no style answers are not checked. */
+const STOP={yes:1,no:1,true:1,false:1,both:1,none:1,neither:1,all:1,same:1,more:1,less:1,right:1,wrong:1,left:1,up:1,down:1};
+const clean=s=>' '+String(s==null?'':s).toLowerCase().replace(/[\u2019']/g,'').replace(/[^a-z0-9\u0590-\u05ff]+/g,' ').trim()+' ';
+function givesWord(it,text){ if(!it||it.t!=='mc'||it.correct==null||!text) return false; const a=clean(it.correct); const core=a.trim();
+ if(core.length<4||STOP[core]||/^\d+$/.test(core)) return false; const t=clean(text);
+ if(clean(it.q).indexOf(a)>=0) return false; if(t.indexOf(a)<0) return false;
+ const others=(it.o||it.shown||[]).filter(o=>o!==it.correct).map(clean).filter(x=>x.trim().length>=3);
+ return !others.some(o=>t.indexOf(o)>=0); }
+function gives(it,text){ return givesNum(it,text)||(it&&it.phase!=='teach'&&givesWord(it,text)); }   /* word answers: practice and check only (a teach card is MEANT to explain, then ask; audit: 131 of 136 word hits were teach cards) */
+window.tlGivesAnswer=gives;
+/* 1. teach step: keep the example, change the question */
+if(typeof buildMission==='function'&&typeof GEN!=='undefined'){ const _bm=buildMission;
+ buildMission=function(id){ const arr=_bm.apply(this,arguments); try{ const g=GEN[id]; if(!g||typeof g.gen!=='function') return arr;
+   arr.forEach((it,i)=>{ if(it.phase!=='teach'||!it.how||!gives(it,it.how)) return; for(let k=0;k<40;k++){ const n=prepItem(g.gen(),'teach'); n.how=it.how; if(!gives(n,n.how)){ arr[i]=n; return; } }
+     it.how=SAFE[id]||GEN_STEPS; });
+ }catch(e){ console.error('AnswerGuard teach',e); } return arr; }; }
+/* 2. after a miss: skip re-teach lines that give the answer */
+if(typeof window.tlKindMiss==='function'){ const _km=window.tlKindMiss;
+ window.tlKindMiss=function(p,it){ try{ if(it&&Array.isArray(it.re)&&it.re.some(r=>gives(it,typeof r==='string'?r:(r&&r.how)))){ const c=Object.assign({},it); c.re=it.re.filter(r=>!gives(it,typeof r==='string'?r:(r&&r.how))); arguments[1]=c; } }catch(e){}
+  return _km.apply(this,arguments); }; }
+/* 3. the How to do it box */
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function safeFor(it,p){ const id=it.sk||it.skill||it.sid||(p&&p.kind!=='boss'?p.id:'')||''; const d=(typeof TL_DO!=='undefined'&&TL_DO[id])||{};
+ if(SAFE[id]&&!gives(it,SAFE[id])) return SAFE[id]; if(d.s&&!gives(it,d.s)) return d.s; return ansOf(it)!==null?GEN_STEPS:WORD_STEPS; }
+const _r=render;
+render=function(){ const r=_r.apply(this,arguments);
+ try{ if(A.view==='play'&&A.play){ const p=A.play, it=p.items[p.i], box=document.querySelector('#app .qcard > .how'); if(it&&box&&gives(it,box.textContent)){
+   const t=safeFor(it,p), lines=t.split(/\n+/).filter(Boolean);
+   const html='<ol class="htd">'+lines.map(l=>'<li>'+E(l)+'</li>').join('')+'</ol>';
+   const old=box.querySelector('ol.htd, p'); if(old) old.outerHTML=html; else box.insertAdjacentHTML('beforeend',html);
+   const say=box.querySelector('[data-act="say"]'); if(say) say.dataset.text=lines.join('. ');
+ } } }catch(e){ console.error('AnswerGuard box',e); }
+ return r; };
+})();
+</script>

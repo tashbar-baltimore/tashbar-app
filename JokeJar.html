@@ -1,0 +1,369 @@
+<script>
+/* TASHBAR JOKE JAR — starter bank v1 (DRAFT, 2026-11-12). Clean, kind, short. For Limudei Chol lessons only.
+   v163: Joke Jar 2 — guess the punchline, then flip the card upside down to read it (see JOKE JAR 2 below). */
+/* band: K2 | 35 | 68   subj: math | reading | science | computing | social | any */
+/* q = setup (spoken), a = punchline (shown after "Tap to find out"). Every joke must pass joke_check.js. */
+window.TL_JOKES = window.TL_JOKES || [];
+window.TL_JOKES.push(
+ { id: 'J001', band: 'K2', subj: 'any', q: 'What has hands but cannot clap?', a: 'A clock!' },
+ { id: 'J002', band: 'K2', subj: 'science', q: 'What gets wetter the more it dries?', a: 'A towel!' },
+ { id: 'J003', band: 'K2', subj: 'science', q: 'What kind of tree fits in your hand?', a: 'A palm tree!' },
+ { id: 'J004', band: 'K2', subj: 'any', q: 'Why did the bicycle fall over?', a: 'It was two-tired!' },
+ { id: 'J005', band: 'K2', subj: 'any', q: 'What has lots of teeth but can never bite?', a: 'A comb!' },
+ { id: 'J006', band: 'K2', subj: 'any', q: 'What do you call a bear with no teeth?', a: 'A gummy bear!' },
+ { id: 'J007', band: 'K2', subj: 'math', q: 'Why can a nose never be twelve inches long?', a: 'Then it would be a foot!' },
+ { id: 'J008', band: 'K2', subj: 'any', q: 'What did one plate say to the other plate?', a: 'Lunch is on me!' },
+ { id: 'J009', band: 'K2', subj: 'science', q: 'What runs all day but never walks?', a: 'Water in a river!' },
+ { id: 'J010', band: 'K2', subj: 'math', q: 'What goes up and never comes down?', a: 'How old you are!' },
+ { id: 'J011', band: 'K2', subj: 'reading', q: 'Which letter of the alphabet is a drink?', a: 'T! (Tea!)' },
+ { id: 'J012', band: 'K2', subj: 'reading', q: 'Which letter is full of water and fish?', a: 'C! (The sea!)' },
+ { id: 'J013', band: 'K2', subj: 'science', q: 'Why did the sun go to school?', a: 'To get even brighter!' },
+ { id: 'J014', band: 'K2', subj: 'any', q: 'What kind of key opens a banana?', a: 'A mon-KEY!' },
+ { id: 'J015', band: 'K2', subj: 'math', q: 'Why was the math book sad?', a: 'It had too many problems!' },
+ { id: 'J017', band: 'K2', subj: 'science', q: 'Why is the ocean so friendly?', a: 'It always waves!' },
+ { id: 'J018', band: 'K2', subj: 'any', q: 'What has one eye but cannot see?', a: 'A needle!' },
+ { id: 'J019', band: 'K2', subj: 'math', q: 'Why was the number six nervous?', a: 'Because seven eight nine!' },
+ { id: 'J020', band: 'K2', subj: 'any', q: 'What can you catch but never throw?', a: 'A cold!' },
+ { id: 'J021', band: '35', subj: 'math', q: 'Why should you never argue with a 90-degree angle?', a: 'Because it is always right!' },
+ { id: 'J022', band: '35', subj: 'math', q: 'Why did the two fours skip lunch?', a: 'They already eight!' },
+ { id: 'J023', band: '35', subj: 'math', q: 'What is a math teacher\'s favorite season?', a: 'Sum-mer!' },
+ { id: 'J024', band: '35', subj: 'math', q: 'I told my friend a joke about fractions.', a: 'It was only half funny.' },
+ { id: 'J025', band: '35', subj: 'math', q: 'Why is the obtuse angle always grumpy?', a: 'It is never right!' },
+ { id: 'J026', band: '35', subj: 'reading', q: 'Why did the boy read a book about glue?', a: 'He just could not put it down!' },
+ { id: 'J027', band: '35', subj: 'reading', q: 'Why did the period stop talking?', a: 'It knew the sentence was over.' },
+ { id: 'J028', band: '35', subj: 'reading', q: 'Why did the noun want to be a verb?', a: 'It was tired of sitting still. It wanted to DO something!' },
+ { id: 'J029', band: '35', subj: 'any', q: 'Why did the boy bring a ladder to school?', a: 'He heard it was a high school!' },
+ { id: 'J030', band: '35', subj: 'science', q: 'Why can\'t you trust atoms?', a: 'They make up everything!' },
+ { id: 'J031', band: '35', subj: 'science', q: 'Why did the plant go to the math tutor?', a: 'It needed help with its square roots!' },
+ { id: 'J032', band: '35', subj: 'science', q: 'Why did the moon skip dessert?', a: 'It was already full!' },
+ { id: 'J034', band: '35', subj: 'computing', q: 'Why did the robot take a nap?', a: 'To recharge its batteries!' },
+ { id: 'J035', band: '35', subj: 'computing', q: 'Why was the loop so tired?', a: 'It kept going around and around and around...' },
+ { id: 'J036', band: '35', subj: 'computing', q: 'Why did the computer sneeze?', a: 'It had a bad case of the bugs!' },
+ { id: 'J037', band: '35', subj: 'social', q: 'Which state has the most streets?', a: 'Rhode Island! (Road Island!)' },
+ { id: 'J038', band: '35', subj: 'social', q: 'Which state is the best student?', a: 'Alabama: four A\'s and one B!' },
+ { id: 'J039', band: '35', subj: 'social', q: 'What is the capital of Maryland?', a: 'M! (The capital letter!)' },
+ { id: 'J040', band: '35', subj: 'any', q: 'What has a neck but no head?', a: 'A bottle!' },
+ { id: 'J041', band: '68', subj: 'math', q: 'Parallel lines have so much in common.', a: 'It is a shame they will never meet.' },
+ { id: 'J042', band: '68', subj: 'math', q: 'Why was the equal sign so humble?', a: 'It knew it was not less than or greater than anyone else.' },
+ { id: 'J043', band: '68', subj: 'math', q: 'What do you call a number that will not stay in one place?', a: 'A roamin\' numeral!' },
+ { id: 'J045', band: '68', subj: 'reading', q: 'The past, the present and the future walked into a room.', a: 'It was tense.' },
+ { id: 'J046', band: '68', subj: 'reading', q: 'I was going to tell you a time-travel joke...', a: '...but you did not like it.' },
+ { id: 'J047', band: '68', subj: 'reading', q: 'What do you call a closet full of words that mean the same thing?', a: 'A word-robe!' },
+ { id: 'J048', band: '68', subj: 'science', q: 'I would tell you a chemistry joke...', a: '...but I know I would not get a reaction.' },
+ { id: 'J049', band: '68', subj: 'science', q: 'Why are protons so cheerful?', a: 'They are always positive!' },
+ { id: 'J050', band: '68', subj: 'science', q: 'What did the thermometer say to the measuring cup?', a: 'You may have graduated, but I have more degrees.' },
+ { id: 'J051', band: '68', subj: 'computing', q: 'There are 10 kinds of people in the world.', a: 'Those who understand binary, and those who do not.' },
+ { id: 'J053', band: '68', subj: 'computing', q: 'How many programmers does it take to change a light bulb?', a: 'None. That is a hardware problem.' },
+ { id: 'J054', band: '68', subj: 'social', q: 'Why were the Middle Ages so dark?', a: 'There were too many knights.' },
+ { id: 'J055', band: '68', subj: 'social', q: 'Why did the king go to the dentist?', a: 'To get his teeth crowned!' },
+ { id: 'J056', band: '68', subj: 'any', q: 'What has cities but no houses, forests but no trees, and water but no fish?', a: 'A map!' },
+ { id: 'J057', band: '68', subj: 'any', q: 'The more you take, the more you leave behind. What are they?', a: 'Footsteps!' },
+ { id: 'J058', band: '68', subj: 'math', q: 'Why did the student bring a ruler to bed?', a: 'To see how long he slept.' },
+ { id: 'J059', band: '68', subj: 'science', q: 'Why did the magnet have so many friends?', a: 'It was very attractive!' },
+ { id: 'J060', band: '68', subj: 'any', q: 'What word becomes shorter when you add two letters to it?', a: 'Short! (Short + er = shorter.)' },
+ /* v164 (takeover3): 90 new jokes, 30 per band; checked by joke_check (rebuilt) HARD 0 + builder read. Struck J016, J033, J044 (LOG NOTE strike + kodesh rule). */
+ { id: "J101", band: "K2", subj: "any", q: "What has keys but cannot open a door?", a: "A piano!" },
+ { id: "J102", band: "K2", subj: "science", q: "What goes up when the rain comes down?", a: "An umbrella!" },
+ { id: "J103", band: "K2", subj: "any", q: "What has four wheels and lots of flies?", a: "A garbage truck!" },
+ { id: "J104", band: "K2", subj: "science", q: "What did the big flower say to the little flower?", a: "Hi, bud!" },
+ { id: "J105", band: "K2", subj: "reading", q: "What is black and white and read all over?", a: "A newspaper!" },
+ { id: "J106", band: "K2", subj: "math", q: "What did the triangle say to the circle?", a: "You are pointless!" },
+ { id: "J107", band: "K2", subj: "science", q: "Why did the cow want to go to space?", a: "To see the moooon!" },
+ { id: "J108", band: "K2", subj: "science", q: "What kind of room has no doors and no windows?", a: "A mushroom!" },
+ { id: "J109", band: "K2", subj: "any", q: "What gets bigger the more you take away from it?", a: "A hole!" },
+ { id: "J110", band: "K2", subj: "reading", q: "What starts with T, ends with T, and has T in it?", a: "A teapot!" },
+ { id: "J111", band: "K2", subj: "math", q: "Why did the boy sit on the clock?", a: "He wanted to be on time!" },
+ { id: "J112", band: "K2", subj: "science", q: "What do you call a sleeping dinosaur?", a: "A dino-snore!" },
+ { id: "J113", band: "K2", subj: "any", q: "Why did the cookie go to the nurse?", a: "It felt crummy!" },
+ { id: "J114", band: "K2", subj: "science", q: "Why do bees hum?", a: "They do not know the words!" },
+ { id: "J115", band: "K2", subj: "any", q: "What is full of holes but still holds water?", a: "A sponge!" },
+ { id: "J116", band: "K2", subj: "math", q: "What did one penny say to the other penny?", a: "We make cents!" },
+ { id: "J117", band: "K2", subj: "science", q: "Why are frogs always so happy?", a: "They eat whatever bugs them!" },
+ { id: "J118", band: "K2", subj: "science", q: "What kind of shoes do frogs wear?", a: "Open-toad shoes!" },
+ { id: "J119", band: "K2", subj: "any", q: "What has lots of rings but no fingers?", a: "A telephone!" },
+ { id: "J120", band: "K2", subj: "reading", q: "Why is the letter E so sleepy?", a: "It is always in bed!" },
+ { id: "J121", band: "K2", subj: "science", q: "What do you call a snowman in the summer?", a: "A puddle!" },
+ { id: "J122", band: "K2", subj: "any", q: "Why did the banana go to the doctor?", a: "It was not peeling well!" },
+ { id: "J123", band: "K2", subj: "science", q: "Why do birds fly south for the winter?", a: "It is too far to walk!" },
+ { id: "J124", band: "K2", subj: "math", q: "What has a head and a tail but no body?", a: "A coin!" },
+ { id: "J125", band: "K2", subj: "reading", q: "Which letter is a buzzing bug?", a: "B! (A bee!)" },
+ { id: "J126", band: "K2", subj: "any", q: "Why did the egg hide?", a: "It was a little chicken!" },
+ { id: "J127", band: "K2", subj: "science", q: "What do you call a bear in the rain?", a: "A drizzly bear!" },
+ { id: "J128", band: "K2", subj: "any", q: "What goes up and down but never moves?", a: "The stairs!" },
+ { id: "J129", band: "K2", subj: "science", q: "Why did the leaf go to the doctor?", a: "It was feeling green!" },
+ { id: "J130", band: "K2", subj: "reading", q: "What has words but never talks?", a: "A book!" },
+ { id: "J131", band: "35", subj: "math", q: "What is a math teacher’s favorite tree?", a: "Geome-tree!" },
+ { id: "J132", band: "35", subj: "science", q: "What did the tree say when spring finally came?", a: "What a re-leaf!" },
+ { id: "J133", band: "35", subj: "math", q: "Why did the boy do his times tables on the floor?", a: "He was told not to use tables!" },
+ { id: "J134", band: "35", subj: "reading", q: "What do you call a dinosaur that knows lots of words?", a: "A thesaurus!" },
+ { id: "J135", band: "35", subj: "science", q: "Why did the scientist put a knocker on his door?", a: "He wanted to win the no-bell prize!" },
+ { id: "J136", band: "35", subj: "social", q: "Why can the Mississippi River see so well?", a: "It has four I’s!" },
+ { id: "J137", band: "35", subj: "science", q: "Why didn’t the sun go to college?", a: "It already had a million degrees!" },
+ { id: "J138", band: "35", subj: "math", q: "What did the calculator say to the boy?", a: "You can count on me!" },
+ { id: "J139", band: "35", subj: "computing", q: "Why did the computer go to the doctor?", a: "It caught a virus!" },
+ { id: "J140", band: "35", subj: "computing", q: "What is a computer’s favorite snack?", a: "Microchips!" },
+ { id: "J141", band: "35", subj: "reading", q: "What is the longest word in the dictionary?", a: "Smiles! There is a mile between the first and last letter!" },
+ { id: "J142", band: "35", subj: "science", q: "Why is it hard to keep a secret in a cornfield?", a: "There are too many ears listening!" },
+ { id: "J143", band: "35", subj: "social", q: "What is the fastest country in the world?", a: "Russia! (Rush-a!)" },
+ { id: "J144", band: "35", subj: "science", q: "Why do seagulls fly over the sea and not the bay?", a: "Over the bay they would be bagels!" },
+ { id: "J145", band: "35", subj: "math", q: "How do you make the number one disappear?", a: "Add a G, and it is gone!" },
+ { id: "J146", band: "35", subj: "science", q: "What kind of music do the planets sing?", a: "Nep-tunes!" },
+ { id: "J147", band: "35", subj: "math", q: "What do you get when you divide a pumpkin’s edge by its width?", a: "Pumpkin pi!" },
+ { id: "J148", band: "35", subj: "computing", q: "Why was the computer cold?", a: "It left its Windows open!" },
+ { id: "J149", band: "35", subj: "science", q: "What did the ground say to the earthquake?", a: "You crack me up!" },
+ { id: "J150", band: "35", subj: "any", q: "Why should you watch out for the stairs?", a: "They are always up to something!" },
+ { id: "J151", band: "35", subj: "social", q: "Where do pencils go on vacation?", a: "Pencil-vania!" },
+ { id: "J152", band: "35", subj: "any", q: "What has a thumb and four fingers but is not alive?", a: "A glove!" },
+ { id: "J153", band: "35", subj: "reading", q: "Why was the library building so tall?", a: "It had so many stories!" },
+ { id: "J154", band: "35", subj: "math", q: "How do you stay warm in a cold room?", a: "Go to the corner. It is always 90 degrees!" },
+ { id: "J155", band: "35", subj: "science", q: "What do you call a lazy kangaroo?", a: "A pouch potato!" },
+ { id: "J156", band: "35", subj: "science", q: "Why do fish live in salt water?", a: "Pepper makes them sneeze!" },
+ { id: "J157", band: "35", subj: "any", q: "What kind of band never plays any music?", a: "A rubber band!" },
+ { id: "J158", band: "35", subj: "reading", q: "Which word is spelled wrong in every dictionary?", a: "Wrong!" },
+ { id: "J159", band: "35", subj: "social", q: "Why is the river so rich?", a: "It has two banks!" },
+ { id: "J160", band: "35", subj: "reading", q: "What is a sailor’s favorite letter?", a: "The C! (The sea!)" },
+ { id: "J161", band: "68", subj: "science", q: "What did the scientist say when he found two helium atoms?", a: "HeHe!" },
+ { id: "J162", band: "68", subj: "science", q: "One atom says, “I lost an electron!” The other asks, “Are you sure?”", a: "“Yes, I am positive!”" },
+ { id: "J163", band: "68", subj: "math", q: "What do you call an angle that is very cute?", a: "Acute angle!" },
+ { id: "J164", band: "68", subj: "math", q: "Why should you never start a conversation with pi?", a: "It goes on forever!" },
+ { id: "J165", band: "68", subj: "social", q: "Where was the Declaration of Independence signed?", a: "At the bottom!" },
+ { id: "J166", band: "68", subj: "science", q: "Why did the germ cross the microscope?", a: "To get to the other slide!" },
+ { id: "J167", band: "68", subj: "computing", q: "Why do programmers like dark mode?", a: "Because light attracts bugs!" },
+ { id: "J168", band: "68", subj: "reading", q: "What is the difference between a cat and a comma?", a: "A cat has claws at the end of its paws. A comma is a pause at the end of a clause!" },
+ { id: "J169", band: "68", subj: "science", q: "What is a physicist’s favorite lunch?", a: "Fission chips!" },
+ { id: "J170", band: "68", subj: "math", q: "Why was the math lesson so long?", a: "The teacher kept going off on a tangent!" },
+ { id: "J171", band: "68", subj: "science", q: "What does a tiny particle duck say?", a: "Quark!" },
+ { id: "J172", band: "68", subj: "math", q: "Why was the boy upset when he was called average?", a: "It was a mean thing to say!" },
+ { id: "J173", band: "68", subj: "science", q: "Why are chemists so good at solving problems?", a: "They have all the solutions!" },
+ { id: "J174", band: "68", subj: "science", q: "Why didn’t the photon check a suitcase at the airport?", a: "It was traveling light!" },
+ { id: "J175", band: "68", subj: "math", q: "How do you know seven is odd?", a: "Take away the S, and it is even!" },
+ { id: "J176", band: "68", subj: "computing", q: "Why was the computer so tired when it got home?", a: "It had a hard drive!" },
+ { id: "J177", band: "68", subj: "social", q: "Which U.S. state is the loudest?", a: "Illi-noise!" },
+ { id: "J178", band: "68", subj: "science", q: "Who is the world’s greatest electricity detective?", a: "Sherlock Ohms!" },
+ { id: "J179", band: "68", subj: "science", q: "What did one tectonic plate say when it bumped another?", a: "Sorry! My fault!" },
+ { id: "J180", band: "68", subj: "math", q: "Why do mathematicians love the forest?", a: "All the natural logs!" },
+ { id: "J181", band: "68", subj: "reading", q: "What is a pirate’s favorite letter?", a: "You would think R, but it is the C!" },
+ { id: "J182", band: "68", subj: "science", q: "What kind of tree does a chemist climb?", a: "A chemis-tree!" },
+ { id: "J183", band: "68", subj: "computing", q: "Why did the spreadsheet get such good grades?", a: "It knew all its cells!" },
+ { id: "J184", band: "68", subj: "math", q: "What is an owl’s favorite subject?", a: "Owl-gebra!" },
+ { id: "J185", band: "68", subj: "science", q: "How do astronauts organize a party?", a: "They planet!" },
+ { id: "J186", band: "68", subj: "science", q: "What did Mars say to Saturn?", a: "Give me a ring sometime!" },
+ { id: "J187", band: "68", subj: "computing", q: "What is a computer’s favorite beat?", a: "An algo-rhythm!" },
+ { id: "J188", band: "68", subj: "math", q: "Why did the boy wear glasses in math class?", a: "They helped his di-vision!" },
+ { id: "J189", band: "68", subj: "science", q: "What do you call a tooth that is made of iron?", a: "A metal filling... no, a magnet’s best friend!" },
+ { id: "J190", band: "68", subj: "reading", q: "Why did the sentence go to the doctor?", a: "It had a bad case of run-ons!" }
+);
+/* Cheers: one short line after a right answer (no unlock). Never after a wrong answer. */
+window.TL_CHEERS = window.TL_CHEERS || [
+ 'Your brain just did ten push-ups!', 'So right, it is practically a right angle!', 'Correct! Somewhere a calculator is jealous.',
+ 'Boom! Nailed it. (Gently. We are not hammering anything.)', 'Right again! Are you sure you are not a textbook?',
+ 'Correct! Your pencil is proud of you.', 'Yes! That was smoother than a fresh jar of honey.', 'You got it! Even the owl is impressed. Hoo knew?',
+ 'Right! Keep this up and the questions will start asking YOU for help.'
+];
+
+/* ===== JOKE JAR (DECISION 1726, v112): A Joke Jar + B My Joke Book + C cheers.
+   Limudei Chol only. Kodesh and B'Simcha lessons (LK, HEB, SIM) get plain warm cheers, never jokes.
+   Never after a wrong answer. Always skippable. No money. No server data: the Joke Book and votes live in this device's browser only.
+   SWITCH: window.TL_JOKE_LIVE = false -> TEST- boys only (pilot); true -> every boy. ===== */
+(function(){
+window.TL_JOKE_LIVE = true;   /* HoS DECISION 2230: live for every boy */
+const J = window.TL_JOKES || [], CH = window.TL_CHEERS || [];
+const KCH = ['Yasher koach!', 'Beautiful learning!', 'Keep it up!', 'Wonderful!', 'Chazak!'];
+const GAP = 5 * 60 * 1000;
+let last = 0;
+function on(){ const st = A && A.st; return !!(st && (window.TL_JOKE_LIVE || /^TEST-/.test(String(st.id || '')))); }
+function kodesh(p, it){ const id = String((it && it.skill) || (p && p.id) || ''); return (p && (p.c === 'LK' || p.c === 'SIM')) || /^(LK|HEB|SIM)\./.test(id); }
+function band(p){ const m = String((p && p.id) || '').match(/\.L(\d+)/); const L = m ? +m[1] : 4; return L <= 3 ? 'K2' : L <= 6 ? '35' : '68'; }
+const SUBJ = { MATH: 'math', READ: 'reading', LANG: 'reading', WRIT: 'reading', SCI: 'science', COMP: 'computing', SS: 'social' };
+function subj(p){ const id = String((p && p.id) || ''); const k = id.split('.')[0]; return SUBJ[k] || SUBJ[p && p.c] || ''; }
+function key(){ return 'tlJokes:' + String((A.st && A.st.id) || 'x'); }
+function book(){ try { return JSON.parse(localStorage.getItem(key()) || '{}') || {}; } catch (e) { return {}; } }
+function save(b){ try { localStorage.setItem(key(), JSON.stringify(b)); } catch (e) {} }
+function pick(p){
+  const b = book(), seen = b.seen || [], bd = band(p), s = subj(p);
+  let pool = J.filter(j => j && j.band === bd);
+  if (!pool.length) pool = J.slice();
+  let fresh = pool.filter(j => seen.indexOf(j.id) < 0);
+  if (!fresh.length) { b.seen = seen.filter(id => !pool.some(j => j.id === id)); save(b); fresh = pool; }
+  const sub = fresh.filter(j => j.subj === s);
+  const from = sub.length ? sub : fresh;
+  return from[Math.floor(Math.random() * from.length)];
+}
+function E(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+/* ===== JOKE JAR 2 — "Guess it, then flip it!" (v163, takeover3, HoS 2026-11-13: "only the question shows; the answer is upside down; flip it to see; be ambitious").
+   1. The jar pops and a joke card flies out. The top of the card has the question. The punchline is printed UPSIDE DOWN on the bottom half.
+   2. GUESS FIRST: three punchlines to pick from (the real one + two from other jokes of the same grade band), or "I give up".
+   3. FLIP IT: tap the card, the Flip button, or drag the card round with a finger. It spins upside down with a drumroll and a ba-dum-tss,
+      and the punchline is now the right way up. Guessed right = "You cracked it!" and it counts toward a Joke Rank.
+   4. MY JOKE BOOK: every joke he has opened, as flip cards (answers upside down), to quiz his family. Shows his rank.
+   Rules kept from v112: Limudei Chol only, never after a wrong answer, always skippable, no money, saved only on this device.
+   No "double slash" anywhere in this file (HtmlService cuts it). ===== */
+const RANKS = [[0, '🙂', 'Giggler'], [3, '😄', 'Chuckler'], [8, '🕵️', 'Joke Detective'], [15, '🎓', 'Pun Professor'], [30, '👑', 'Joke Master']];
+function rank(n){ let r = RANKS[0]; RANKS.forEach(x => { if (n >= x[0]) r = x; }); const nx = RANKS.find(x => x[0] > n); return { e: r[1], t: r[2], next: nx ? (nx[0] - n) + ' more to ' + nx[2] : 'Top rank!' }; }
+function shuffle(a){ for (let i = a.length - 1; i > 0; i--) { const k = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[k]; a[k] = t; } return a; }
+function still(){ try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+let JS = null;   /* the joke on screen: {id, q, a, opts, pick, stage 1 guess | 2 flip | 3 done} */
+function jcss(){ if (document.getElementById('jj-css')) return; const s = document.createElement('style'); s.id = 'jj-css'; s.textContent = `
+.jj-jarw{display:inline-block;animation:jjwob .9s ease-in-out 2}
+@keyframes jjwob{0%,100%{transform:rotate(0)}25%{transform:rotate(-14deg) scale(1.1)}50%{transform:rotate(12deg)}75%{transform:rotate(-6deg)}}
+.jj-wrap{perspective:900px;margin:6px auto 12px;max-width:420px;padding:0 14px}
+.jj-card{position:relative;border-radius:22px;background:linear-gradient(180deg,#FFFBEB 0,#FEF3C7 49.6%,#FDE68A 50%,#FFFBEB 100%);border:3px solid #F59E0B;
+ box-shadow:0 14px 30px rgba(146,64,14,.28),inset 0 0 0 6px rgba(255,255,255,.55);color:#3B1D00;cursor:pointer;user-select:none;touch-action:none;
+ transform-origin:50% 50%;animation:jjin .7s cubic-bezier(.2,1.5,.4,1) both;min-height:230px;display:grid;grid-template-rows:1fr 8px 1fr}
+.jj-card:focus-visible{outline:4px solid #7C3AED;outline-offset:4px}
+@keyframes jjin{0%{transform:translateY(80px) scale(.45) rotate(-10deg);opacity:0}100%{transform:none;opacity:1}}
+.jj-half{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 18px;text-align:center;gap:6px}
+.jj-half small{font:800 11px var(--body,system-ui);letter-spacing:.12em;text-transform:uppercase;color:#B45309}
+.jj-qt{margin:0;font:800 clamp(18px,4.6vw,23px)/1.25 var(--display,system-ui)}
+.jj-at{margin:0;font:900 clamp(19px,5vw,25px)/1.25 var(--display,system-ui);color:#7C2D12}
+.jj-at.hid{letter-spacing:.3em;color:#D97706}
+.jj-fold{border-top:2px dashed rgba(180,83,9,.45);margin:0 18px}
+.jj-bot{transform:rotate(180deg)}
+.jj-card.flipped{transform:rotate(180deg);animation:none}
+.jj-card.spin{animation:jjspin 1.1s cubic-bezier(.5,0,.3,1.25) forwards}
+@keyframes jjspin{0%{transform:rotate(var(--a0,0deg))}45%{transform:rotate(100deg) rotateX(28deg) scale(1.12)}100%{transform:rotate(180deg)}}
+.jj-card.done{box-shadow:0 0 0 6px #FDE047,0 18px 40px rgba(234,179,8,.45)}
+.jj-hint{margin:2px 0 10px;font-weight:700;color:var(--soft,#5B6478)}
+.jj-opts{display:grid;gap:8px;margin:0 auto 8px;max-width:420px;padding:0 14px}
+.jj-opts .btn{width:100%;white-space:normal;line-height:1.25;text-align:left;justify-content:flex-start}
+.jj-opts .btn.pick{outline:4px solid #7C3AED;background:#EDE9FE}
+.jj-opts .btn.right{background:#DCFCE7;border-color:#16A34A}
+.jj-opts .btn:disabled{opacity:1;cursor:default}
+.jj-res{font:900 22px var(--display,system-ui);margin:4px 0 2px}
+.jj-rank{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:4px 8px;align-items:center;background:#F5F3FF;border-radius:999px;padding:6px 14px;font-weight:800;color:#4C1D95;margin:4px 0 8px}
+.jj-rank small{font-weight:700;color:#6D28D9}
+.jj-votes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.jj-votes .btn{font-size:18px}
+.jj-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.jj-book{max-height:48vh;overflow:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;padding:4px 14px 6px;text-align:center}
+.jj-mini{min-height:150px;animation:none;border-width:2px;transition:transform .7s cubic-bezier(.5,0,.3,1.25)}
+.jj-mini .jj-qt{font-size:15px}.jj-mini .jj-at{font-size:16px}.jj-mini .jj-half{padding:8px 10px}
+.jj-mini.flipped{transform:rotate(180deg)}
+@media (prefers-reduced-motion:reduce){.jj-card,.jj-jarw{animation:none!important}.jj-mini{transition:none}}
+`; document.head.appendChild(s); }
+
+/* ---------- sound: drumroll + ba-dum-tss (quiet; off when the boy turned sound off) ---------- */
+let AC = null;
+function ac(){ try { if (window.SND && SND.on === false) return null; AC = AC || (window.SND && SND.ctx) || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); return AC; } catch (e) { return null; } }
+function noise(c, t, dur, vol, hp){ const n = c.createBufferSource(), b = c.createBuffer(1, Math.ceil(c.sampleRate * dur), c.sampleRate), d = b.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  n.buffer = b; const f = c.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = hp || 1000; const g = c.createGain(); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur); n.connect(f); f.connect(g); g.connect(c.destination); n.start(t); n.stop(t + dur + .02); }
+function tom(c, t, f0, vol){ const o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f0 * .55, t + .18); g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + .22); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + .25); }
+function drumroll(sec){ const c = ac(); if (!c) return; const t0 = c.currentTime; for (let x = 0; x < sec; x += .045) noise(c, t0 + x, .05, .025 + .07 * (x / sec), 1800); }
+function badumtss(){ const c = ac(); if (!c) return; const t = c.currentTime + .02; tom(c, t, 210, .32); tom(c, t + .16, 150, .34); noise(c, t + .34, .7, .22, 5000); }
+
+/* ---------- the joke card ---------- */
+function cardHTML(s, mini){
+  const flipped = s.stage === 3 || s.flipped, ans = s.stage === 1 && !mini ? '? ? ? ?' : s.a;
+  return '<div class="jj-card' + (mini ? ' jj-mini' : '') + (flipped ? ' flipped' : '') + (s.stage === 3 && !mini ? ' done' : '') + '"' + (mini ? ' data-act="jj-bflip"' : ' id="jj-card" data-act="jj-flip" role="button" tabindex="0" aria-label="Flip the card upside down to read the answer"') + '>' +
+    '<div class="jj-half jj-top"><small>' + (mini ? '🫙 Joke' : '🫙 The Joke Jar') + '</small><p class="jj-qt">' + E(s.q) + '</p></div><div class="jj-fold"></div>' +
+    '<div class="jj-half jj-bot"><p class="jj-at' + (ans === s.a ? '' : ' hid') + '">' + E(ans) + '</p><small>' + (mini ? 'flip me' : '🙃 Upside down!') + '</small></div></div>';
+}
+function ctlHTML(s){
+  const b = book(), n = (b.cracked || []).length, rk = rank(n);
+  if (s.stage === 1) return '<p class="jj-hint">Guess the punchline first!</p><div class="jj-opts">' +
+    s.opts.map((o, i) => '<button class="btn" data-act="jj-guess" data-i="' + i + '">' + E(o) + '</button>').join('') +
+    '</div><div class="jj-row"><button class="btn" data-act="jj-guess" data-i="-1">🤷 I give up</button> <button class="btn" data-act="say" data-text="' + E(s.q) + '" aria-label="Read the joke to me">🔊 Read it</button></div>';
+  const opts = '<div class="jj-opts">' + s.opts.map((o, i) => '<button class="btn' + (i === s.pick ? ' pick' : '') + (s.stage === 3 && o === s.a ? ' right' : '') + '" disabled>' + (s.stage === 3 && o === s.a ? '✅ ' : i === s.pick ? '👉 ' : '') + E(o) + '</button>').join('') + '</div>';
+  if (s.stage === 2) return '<p class="jj-hint">' + (s.pick < 0 ? 'No guess? No problem!' : 'Locked in!') + ' Now turn the card upside down 🙃</p>' +
+    '<button class="btn go big" data-act="jj-flip">🙃 Flip it!</button><p class="jj-hint" style="font-size:14px;margin-top:8px">Tip: you can also spin the card with your finger.</p>';
+  const ok = s.pick >= 0 && s.opts[s.pick] === s.a;
+  return '<p class="jj-res">' + (ok ? '🕵️ You cracked it!' : s.pick < 0 ? '😆 Ba-dum-tss!' : '😜 Gotcha!') + '</p>' + (!ok && s.pick >= 0 ? '<p class="jj-hint">You guessed: “' + E(s.opts[s.pick]) + '”. Good try!</p>' : '') +
+    '<div class="jj-rank">' + rk.e + ' ' + rk.t + ' <small>· ' + n + ' cracked · ' + rk.next + '</small></div>' +
+    '<p class="jj-hint" style="margin-top:6px">How was it?</p><div class="jj-votes">' +
+    ['groan:😩 Groan', 'good:🙂 Good one', 'lol:🤣 Hilarious'].map(v => { const k = v.split(':')[0], t = v.split(':')[1]; return '<button class="btn" data-act="jj-vote" data-v="' + k + '" data-id="' + E(s.id) + '">' + t + '</button>'; }).join('') +
+    '</div><div class="jj-row"><button class="btn" data-act="say" data-text="' + E(s.q + ' ... ' + s.a) + '">🔊 Read it</button> <button class="btn" data-act="jj-book">📖 My Joke Book</button> <button class="btn go" data-act="closeov">Back to work</button></div>';
+}
+function inner(s){ return '<div class="oband"><div class="oe"><span class="jj-jarw">🫙</span></div></div><h2>The Joke Jar opened!</h2><div class="jj-wrap">' + cardHTML(s) + '</div><div id="jj-ctl">' + ctlHTML(s) + '</div>'; }
+/* keep the saved pop-up in step, so a redraw of the page shows the same stage */
+function keep(){ if (!JS || !A.overlay || !A.overlay.jj) return; const h = A.overlay.html, i = h.indexOf('aria-modal="true"'), k = i < 0 ? -1 : h.indexOf('>', i);
+  if (k < 0) return; A.overlay.html = h.slice(0, k + 1) + inner(Object.assign({}, JS)) + '</div></div>'; }
+function paint(){ keep(); const c = document.getElementById('jj-ctl'); if (c) c.innerHTML = ctlHTML(JS); const card = document.getElementById('jj-card');
+  if (card && JS.stage === 2) { const at = card.querySelector('.jj-at'); if (at) { at.textContent = JS.a; at.classList.remove('hid'); } } }
+
+function show(p){
+  if (!J.length || typeof overlay !== 'function') return;
+  const j = pick(p); if (!j) return;
+  last = Date.now(); jcss();
+  const b = book(); b.seen = (b.seen || []).filter(x => x !== j.id).concat(j.id); b.got = b.got || []; if (b.got.indexOf(j.id) < 0) b.got.push(j.id); save(b);
+  const same = J.filter(x => x && x.id !== j.id && x.a !== j.a && x.band === j.band), other = shuffle((same.length >= 2 ? same : J.filter(x => x && x.id !== j.id && x.a !== j.a)).slice()).slice(0, 2).map(x => x.a);
+  JS = { id: j.id, q: j.q, a: j.a, opts: shuffle([j.a].concat(other)), pick: null, stage: 1 };
+  overlay(inner(JS)); if (A.overlay) A.overlay.jj = 1;
+  try { if (window.SND && SND.coin) SND.coin(1); } catch (er) {}
+}
+function guess(i){ if (!JS || JS.stage !== 1) return; JS.pick = i; JS.stage = 2; paint(); try { if (window.SND && SND.tap) SND.tap(); } catch (e) {} const f = document.querySelector('#jj-ctl .btn.go'); f && f.focus(); }
+function finish(card){ if (!JS || JS.stage === 3) return; JS.stage = 3;
+  const ok = JS.pick >= 0 && JS.opts[JS.pick] === JS.a; const b = book(); b.cracked = b.cracked || []; if (ok && b.cracked.indexOf(JS.id) < 0) b.cracked.push(JS.id); save(b);
+  if (card) { card.classList.remove('spin'); card.style.transform = ''; card.style.transition = ''; card.classList.add('flipped', 'done'); }
+  badumtss(); paint(); if (ok) { try { confetti(); } catch (e) {} }
+  const v = document.querySelector('#jj-ctl .jj-votes .btn'); if (v) { try { v.focus({ preventScroll: true }); } catch (e) {} }
+  const c2 = document.getElementById('jj-card'); if (c2 && c2.scrollIntoView) { try { c2.scrollIntoView({ block: 'nearest', behavior: still() ? 'auto' : 'smooth' }); } catch (e) {} } }
+function flip(){ if (!JS) return; if (JS.stage === 1) { const h = document.querySelector('#jj-ctl .jj-hint'); if (h) { h.textContent = 'Guess first! Or tap “I give up”.'; h.animate && h.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }, { transform: 'scale(1)' }], { duration: 400 }); } return; }
+  if (JS.stage !== 2) return; const card = document.getElementById('jj-card'); if (!card || still()) return finish(card);
+  if (JS.busy) return; JS.busy = 1; drumroll(1); card.classList.add('spin'); setTimeout(() => { JS.busy = 0; finish(card); }, 1120); }
+/* spin the card with a finger: drag sideways, let go past a quarter turn and it flips */
+let drag = null, swallow = 0;
+document.addEventListener('pointerdown', e => { const card = e.target.closest && e.target.closest('#jj-card'); if (!card || !JS || JS.stage !== 2 || JS.busy || still()) return;
+  drag = { card, x: e.clientX, a: 0, id: e.pointerId }; try { card.setPointerCapture(e.pointerId); } catch (er) {} card.style.animation = 'none'; card.style.transition = 'none'; });
+document.addEventListener('pointermove', e => { if (!drag || e.pointerId !== drag.id) return; drag.a = Math.max(0, Math.min(180, Math.abs(e.clientX - drag.x) * 1.1)); drag.card.style.transform = 'rotate(' + drag.a + 'deg)'; });
+function endDrag(e){ if (!drag || (e && e.pointerId !== drag.id)) return; const d = drag; drag = null; if (d.a < 8) { d.card.style.transform = ''; d.card.style.animation = ''; return; }
+  swallow = Date.now(); d.card.style.transition = 'transform .45s cubic-bezier(.3,1.4,.5,1)';
+  if (d.a >= 70) { drumroll(.4); d.card.style.transform = 'rotate(180deg)'; setTimeout(() => finish(d.card), 460); } else { d.card.style.transform = 'rotate(0deg)'; setTimeout(() => { d.card.style.transition = ''; d.card.style.animation = ''; }, 460); } }
+document.addEventListener('pointerup', endDrag); document.addEventListener('pointercancel', endDrag);
+document.addEventListener('click', e => { if (swallow && Date.now() - swallow < 400) { swallow = 0; e.stopPropagation(); e.preventDefault(); } }, true);   /* a finger spin is not a tap (and never closes the pop-up) */
+document.addEventListener('keydown', e => { const el = document.activeElement;
+  if ((e.key === ' ' || e.key === 'Enter') && el && el.id === 'jj-card') { e.preventDefault(); e.stopPropagation(); flip(); return; }
+  if (e.key === 'Enter' && A.overlay && A.overlay.jj && el && el.tagName === 'BUTTON' && el.closest && el.closest('.ocard')) e.stopPropagation();   /* Enter presses the button (the page would close the pop-up) */
+}, true);
+
+function showBook(){
+  jcss(); const b = book(), got = (b.got || []).map(id => J.find(j => j.id === id)).filter(Boolean), n = (b.cracked || []).length, rk = rank(n);
+  JS = null;
+  overlay('<div class="oe">📖</div><h2>My Joke Book</h2><div class="jj-rank">' + rk.e + ' ' + rk.t + ' <small>· ' + n + ' cracked · ' + rk.next + '</small></div>' +
+    '<p>' + got.length + ' of ' + J.length + ' jokes collected. Ask someone at home, then flip the card!</p>' +
+    (got.length ? '<div class="jj-book">' + got.map(j => cardHTML({ q: j.q, a: j.a, stage: 2 }, true)).join('') + '</div>' : '<p>Get 3 right in a row on the first try to open the jar.</p>') +
+    '<div class="jj-row"><button class="btn go big" data-act="closeov">Back to work</button></div>');
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-act]'); if (!b) return; const a = b.dataset.act;
+  if (a === 'jj-guess') { guess(+b.dataset.i); return; }
+  if (a === 'jj-flip') { flip(); return; }
+  if (a === 'jj-bflip') { b.classList.toggle('flipped'); try { if (window.SND && SND.tap) SND.tap(); } catch (er) {} return; }
+  if (a === 'jj-vote') { const bk = book(); bk.votes = bk.votes || {}; bk.votes[b.dataset.id] = b.dataset.v; save(bk); JS = null; A.overlay = null; render(); return; }
+  if (a === 'jj-book') { showBook(); return; }
+});
+
+/* C: cheers + A: the jar after 3 first-try rights in a row (about 1 in 3, at most every 5 minutes) */
+const prev = window.p3Ans;
+window.p3Ans = function(p, it, ok){
+  try { if (prev) prev.apply(this, arguments); } catch (e) { console.error('JokeJar p3Ans prev', e); }
+  try {
+    if (!ok || !on() || !p || !p.fb) return;
+    const first = p.tries === 1;
+    if (p._jjm !== p.misses) { p._jj = 0; p._jjm = p.misses; }
+    p._jj = first ? (p._jj || 0) + 1 : 0;
+    if (first && p.combo < 3 && Math.random() < 0.25) {
+      const L = kodesh(p, it) ? KCH : (CH.length ? CH : null);
+      if (L) p.fb.cheer = L[Math.floor(Math.random() * L.length)];
+    }
+    if (kodesh(p, it)) return;
+    if (p._jj >= 3 && Date.now() - last > GAP && Math.random() < 1 / 3) {
+      p._jj = 0; const pp = p;
+      setTimeout(() => { if (A.play === pp && A.view === 'play' && !A.overlay) show(pp); }, 900);
+    }
+  } catch (e) { console.error('JokeJar', e); }
+};
+/* A: always after passing a skill's check (Limudei Chol only) */
+const prevR = window.p3RunResult;
+window.p3RunResult = function(r, t){
+  try { if (prevR) prevR.apply(this, arguments); } catch (e) { console.error('JokeJar p3RunResult prev', e); }
+  try {
+    if (!on() || !r || (r.outcome !== 'mastered' && r.outcome !== 'bosswin')) return;
+    if (r.c === 'LK' || r.c === 'SIM' || /^(LK|HEB|SIM)\./.test(String(r.id || ''))) return;
+    let n = 0; const tick = () => { if (A.view !== 'result' || A.res !== r) return; if (!A.overlay) return show({ id: r.id, c: r.c }); if (++n < 20) setTimeout(tick, 1000); };
+    setTimeout(tick, (t || 0) + 4000);
+  } catch (e) { console.error('JokeJar result', e); }
+};
+window.tlJokeJarShow = show; window.tlJokeBook = showBook;
+window.tlJokeStats = function(){ try { const b = book(), n = (b.cracked || []).length, r = rank(n); return { got: (b.got || []).length, cracked: n, total: J.length, rank: r.e + ' ' + r.t }; } catch (e) { return null; } };   /* v164: for the home tile (HomePlus) */
+})();
+</script>

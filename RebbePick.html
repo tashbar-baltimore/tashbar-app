@@ -1,0 +1,112 @@
+<script>
+/* RebbePick.html — v182 (takeover3, HoS 2026-11-13). The boy's side of the staff desk (StaffNotes.js sgMyDesk / sgShoutSeen).
+   On his home screen, right under the top bar: "From my rebbe".
+   1. 🎉 SHOUT-OUTS: praise his rebbe or teacher sent him. A new one opens BIG, once, with confetti and a cheer; then it stays
+      as a small card for two weeks.
+   2. 📌 PICKED FOR YOU: lessons his rebbe or teacher picked for him, each with one Start button. When he masters one it shows
+      "✅ Done! Rabbi X will see it", and the result screen tells him so.
+   Loaded in msQuestToolsBody_ (Photos.js) after Activities and before ClassMode; also in Speed.js TL_PART_FILES (same place).
+   Display only: nothing here pays money or changes mastery. A running Teacher-mode class still locks the screen (ClassMode wraps us).
+   No "double slash" in this file. */
+(function(){
+if(typeof render!=='function'||typeof vHub!=='function'||typeof startMission!=='function'||typeof A==='undefined') return;
+const RP={sid:null,d:null,at:0,busy:false,shown:{},big:null,toasted:{}};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const subjOf=id=>{ const p=String(id).split('.')[0]; return p==='HEB'?'LK':p==='LANG'?'WRIT':p; };
+const ICON={MATH:'📐',READ:'📖',WRIT:'✍️',SCI:'🔬',ELEC:'⚛️',LK:'📜'};
+const nameOf=(id,fb)=>{ try{ return (typeof BANK_ALL!=='undefined'&&BANK_ALL[id]&&BANK_ALL[id].name)||fb||(typeof skillName==='function'?skillName(id):id); }catch(e){ return fb||id; } };
+const isDone=p=>{ try{ return p.done||(typeof mastered==='function'&&A.st&&mastered(A.st,p.id)); }catch(e){ return !!p.done; } };
+const ago=t=>{ const d=Math.round((Date.now()-t)/86400000); return d<=0?'today':d===1?'yesterday':d+' days ago'; };
+function css(){ if(document.getElementById('rp-css')) return; const s=document.createElement('style'); s.id='rp-css'; s.textContent=`
+.rp{max-width:1180px;margin:14px auto 4px;padding:0 16px;display:grid;gap:12px}
+.rp-h{display:flex;align-items:center;gap:10px;font:800 15px var(--body,'Barlow'),sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#6D28D9}
+.rp-shout{position:relative;overflow:hidden;display:flex;gap:14px;align-items:center;border-radius:22px;padding:16px 18px;background:linear-gradient(120deg,#FEF3C7,#FCE7F3 55%,#EDE9FE);box-shadow:0 10px 28px rgba(124,58,237,.16)}
+.rp-shout .ic{font-size:40px;line-height:1;animation:rpwig 2.4s ease-in-out infinite}
+.rp-shout b{display:block;font:800 20px/1.25 var(--display,'Barlow'),sans-serif;color:#1E1B4B}
+.rp-shout small{display:block;margin-top:4px;color:#6B7280;font:700 14px var(--body,'Barlow'),sans-serif}
+.rp-picks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(380px,100%),1fr));gap:10px}
+.rp-pick{display:flex;gap:12px;align-items:center;border-radius:20px;padding:14px 16px;background:#fff;border:3px solid #C4B5FD;box-shadow:0 8px 0 #DDD6FE;text-align:left;font:inherit;cursor:pointer;transition:transform .12s}
+.rp-pick:hover{transform:translateY(-2px)}.rp-pick:active{transform:translateY(4px);box-shadow:0 3px 0 #DDD6FE}
+.rp-pick .ic{font-size:34px;line-height:1}.rp-pick .tx{flex:1;min-width:0}
+.rp-pick b{display:block;font:800 18px/1.2 var(--display,'Barlow'),sans-serif;color:#1E1B4B}
+.rp-pick small{display:block;color:#6B7280;font:600 14px var(--body,'Barlow'),sans-serif;margin-top:3px}
+.rp-pick q{display:block;color:#7C3AED;font:700 15px var(--body,'Barlow'),sans-serif;margin-top:4px;quotes:"“" "”"}
+.rp-pick .go{flex:none;border-radius:14px;padding:10px 14px;background:linear-gradient(90deg,#8B5CF6,#EC4899);color:#fff;font:800 16px var(--display,'Barlow'),sans-serif}
+.rp-pick.done{border-color:#86EFAC;box-shadow:0 8px 0 #BBF7D0;background:#F0FDF4}.rp-pick.done .go{background:#22C55E}
+.rp-ov{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(30,20,80,.55);padding:16px;animation:rpfade .25s ease-out}
+.rp-ov .box{width:min(520px,100%);background:#fff;border-radius:30px;padding:26px 22px 22px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.35);animation:rppop .5s cubic-bezier(.2,1.6,.4,1)}
+.rp-ov .big{font-size:84px;line-height:1;animation:rpwig 1.6s ease-in-out infinite}
+.rp-ov small{display:inline-block;margin-top:10px;background:#EDE9FE;color:#5B21B6;border-radius:999px;padding:6px 14px;font:800 14px var(--body,'Barlow'),sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.rp-ov h2{font:800 clamp(24px,4vw,32px)/1.2 var(--display,'Barlow'),sans-serif;margin:12px 0 6px;color:#1E1B4B}
+.rp-ov p{font:700 20px/1.4 var(--body,'Barlow'),sans-serif;color:#374151;margin:6px 0 0;white-space:pre-wrap}
+.rp-ov button{margin-top:20px;border:0;border-radius:18px;padding:16px 28px;background:linear-gradient(90deg,#F59E0B,#EC4899,#8B5CF6);color:#fff;font:800 22px var(--display,'Barlow'),sans-serif;box-shadow:0 7px 0 #6D28D9;cursor:pointer}
+.rp-ov button:active{transform:translateY(4px);box-shadow:0 3px 0 #6D28D9}
+small.rp-tag{display:inline-block;margin-top:6px;background:#EDE9FE;color:#5B21B6;border-radius:999px;padding:6px 14px;font:800 14px var(--body,'Barlow'),sans-serif;letter-spacing:.06em;text-transform:uppercase}
+p.rp-say{font:700 21px/1.45 var(--body,'Barlow'),sans-serif;color:#374151;white-space:pre-wrap}
+.rp-ov .box{padding-top:10px}.rp-ov .oe{font-size:84px}
+.rp-star{position:relative;overflow:hidden;display:flex;gap:14px;align-items:center;border-radius:22px;padding:16px 20px;background:linear-gradient(120deg,#FDE68A,#FBBF24 45%,#F59E0B);box-shadow:0 10px 0 #B45309,0 16px 30px rgba(180,83,9,.3);color:#451A03}
+.rp-star .ic{font-size:44px;animation:rpwig 2.4s ease-in-out infinite}.rp-star small{display:block;font:800 13px var(--body,'Barlow'),sans-serif;letter-spacing:.14em}.rp-star b{display:block;font:800 21px/1.25 var(--display,'Barlow'),sans-serif}.rp-star em{font-style:normal;font:700 14px var(--body,'Barlow'),sans-serif;opacity:.8}.rp-star>span:nth-child(2){flex:1}
+.rp-star::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-100%);animation:rpshine 3.5s ease-in-out infinite}
+.rp-goal{display:flex;gap:14px;align-items:center;border-radius:20px;padding:14px 18px;background:#fff;border:3px solid #DDD6FE}.rp-goal.done{border-color:#86EFAC;background:#F0FDF4}.rp-goal .ic{font-size:38px}.rp-goal .tx{flex:1;min-width:0}
+.rp-goal small{display:block;color:#6D28D9;font:800 13px var(--body,'Barlow'),sans-serif}.rp-goal b{display:block;font:800 19px/1.25 var(--display,'Barlow'),sans-serif;color:#1E1B4B}.rp-goal em{display:block;font-style:normal;color:#6B7280;font:700 14px var(--body,'Barlow'),sans-serif;margin-top:4px}
+.rp-goal .bar{display:block;height:14px;border-radius:999px;background:#EDE9FE;overflow:hidden;margin-top:8px}.rp-goal .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#8B5CF6,#EC4899);transition:width .8s}.rp-goal.done .bar i{background:#22C55E}
+.rp-ty{flex:none;border:0;border-radius:999px;padding:9px 14px;background:#fff;color:#BE185D;font:800 15px var(--body,'Barlow'),sans-serif;box-shadow:0 3px 0 #FBCFE8;cursor:pointer;position:relative;z-index:1}.rp-ty:active{transform:translateY(2px);box-shadow:none}.rp-ty.done{background:transparent;box-shadow:none;color:#9D174D;cursor:default}
+@keyframes rpshine{0%,60%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@media (prefers-reduced-motion:reduce){.rp-star::after,.rp-star .ic{animation:none}}
+@keyframes rpwig{0%,100%{transform:rotate(0)}20%{transform:rotate(-10deg) scale(1.08)}40%{transform:rotate(8deg)}60%{transform:rotate(-4deg)}}
+@keyframes rppop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes rpfade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.rp-shout .ic,.rp-ov .big,.rp-ov .box,.rp-ov{animation:none}}
+@media (max-width:600px){.rp-picks{grid-template-columns:1fr}.rp-shout b{font-size:18px}}
+`; document.head.appendChild(s); }
+
+/* ---------- data ---------- */
+function load(force){ if(!(typeof SRV!=='undefined'&&SRV&&SRV.token&&A.st)) return; const sid=A.st.id, tok=SRV.token; if(RP.busy) return; if(!force&&RP.sid===sid&&Date.now()-RP.at<180000) return;
+ RP.busy=true; run('sgMyDesk',tok).then(r=>{ RP.busy=false; if(!A.st||A.st.id!==sid) return; const had=RP.sid===sid&&RP.d?JSON.stringify(RP.d.picks)+JSON.stringify(RP.d.shouts):''; RP.sid=sid; RP.d=r; RP.at=Date.now();
+   const now=JSON.stringify(r.picks)+JSON.stringify(r.shouts); if(now!==had&&A.view==='hub') render(); }).catch(()=>{ RP.busy=false; RP.at=Date.now(); }); }
+
+/* ---------- home screen section ---------- */
+function section(){ const d=RP.d; if(!d||!A.st||d.sid!==A.st.id) return ''; const P=d.picks||[]; if(!P.length&&!(d.shouts||[]).length) return '';
+ const open=P.filter(p=>!isDone(p)), done=P.filter(isDone).slice(0,2), show=open.slice(0,4).concat(done);
+ let h=`<section class="rp" aria-label="From my rebbe"><div class="rp-h">💌 From my rebbe</div>`;
+ const star=(d.shouts||[]).find(s=>s.kind==='star'), goals=(d.shouts||[]).filter(s=>s.kind==='goal'&&s.progress).slice(0,2), rest=(d.shouts||[]).filter(s=>s.kind!=='star'&&!(s.kind==='goal'&&s.progress)).slice(0,2);
+ const ty=s=>s.thanked?'<span class="rp-ty done">❤️ Thanked</span>':`<button type="button" class="rp-ty" data-rp="thanks" data-id="${E(s.id)}">❤️ Thank you</button>`;
+ if(star) h+=`<div class="rp-star"><span class="ic" aria-hidden="true">⭐</span><span><small>STAR OF THE WEEK</small><b>${E(star.text)}</b><em>from ${E(star.by)}</em></span>${ty(star)}</div>`;
+ h+=goals.map(s=>{ const p=s.progress, pc=Math.round(100*p.done/Math.max(1,p.total)), done=p.done>=p.total; return `<div class="rp-goal ${done?'done':''}"><span class="ic" aria-hidden="true">${done?'🏆':'🎯'}</span><span class="tx"><small>${done?'Goal reached! 🎉':'My goal'} · from ${E(s.by)}</small><b>${E(s.text)}</b><span class="bar"><i style="width:${Math.max(3,pc)}%"></i></span><em>${E(p.track)} through Level ${p.level}: ${p.done} of ${p.total} lessons${done?'':' · '+(p.total-p.done)+' to go!'}</em></span></div>`; }).join('');
+ h+=rest.map(s=>`<div class="rp-shout"><span class="ic" aria-hidden="true">${s.kind==='torah'?'📜':s.kind==='shabbos'?'🕯️':s.kind==='goal'?'🎯':'🎉'}</span><span style="flex:1"><b>${E(s.text)}</b><small>${s.kind==='torah'?'Torah moment':s.kind==='shabbos'?'Good Shabbos':s.kind==='goal'?'Your goal':'Shout-out'} from ${E(s.by)} · ${E(ago(s.at))}</small></span>${ty(s)}</div>`).join('');
+ if(show.length) h+=`<div class="rp-picks">${show.map(p=>{ const dn=isDone(p), ic=ICON[subjOf(p.id)]||'📘';
+  return `<button type="button" class="rp-pick ${dn?'done':''}" data-rp="go" data-id="${E(p.id)}"><span class="ic" aria-hidden="true">${dn?'✅':ic}</span><span class="tx"><small>${dn?'Done! '+E(p.by)+' will see it':'📌 '+E(p.by)+' picked this for you'}</small><b>${E(nameOf(p.id,p.name))}</b>${p.note&&!dn?`<q>${E(p.note)}</q>`:''}</span><span class="go">${dn?'Again':'Start ▶'}</span></button>`; }).join('')}</div>`;
+ return h+'</section>'; }
+function bigShout(){ const d=RP.d; if(!d||!A.st||d.sid!==A.st.id||RP.big||A.view!=='hub'||A.overlay||document.querySelector('.rp-ov,.overlay,.hpchestov')) return;
+ const s=(d.shouts||[]).find(x=>!x.seen&&!RP.shown[x.id]); if(!s) return; RP.shown[s.id]=1; RP.big=s;
+ const first=String(A.st.name||'').split(' ')[0], goal=s.kind==='goal', star=s.kind==='star', torah=s.kind==='torah', shab=s.kind==='shabbos';
+ const inner=`<div class="oe">${torah?'📜':shab?'🕯️':star?'⭐':goal?'🎯':'🎉'}</div><small class="rp-tag">${torah?'A Torah moment from':shab?'Good Shabbos from':star?'Star of the week · from':goal?'A goal from':'A shout-out from'} ${E(s.by)}</small><h2>${torah?'A Torah moment, '+E(first)+'!':shab?'Good Shabbos, '+E(first)+'!':star?'You are the Star of the Week, '+E(first)+'!':goal?'Here is your goal!':'Way to go, '+E(first)+'!'}</h2><p class="rp-say">${E(s.text)}</p>${goal&&s.progress?`<p class="rp-say" style="font-size:17px;color:#6D28D9">${E(s.progress.track)} through Level ${s.progress.level}: ${s.progress.done} of ${s.progress.total} lessons done</p>`:''}<button class="btn go big" data-rp="shoutok">${star?'Yay! 🏆':goal?'I can do it! 💪':'Thank you! 😊'}</button>`;
+ RP.cur=s; try{ if(typeof SND!=='undefined'&&SND.win) SND.win(); }catch(e){} try{ if(typeof confetti==='function') confetti(); }catch(e){}
+ if(typeof overlay==='function'){ overlay(inner); return; }
+ const o=document.createElement('div'); o.className='rp-ov'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); o.innerHTML='<div class="box">'+inner+'</div>'; document.body.appendChild(o); }
+function shoutDone(thanks){ const s=RP.cur; RP.cur=null; RP.big=null; const o=document.querySelector('.rp-ov'); if(o) o.remove(); if(A.overlay){ A.overlay=null; render(); }
+ if(s&&s.kind==='torah'&&window.tlOH) setTimeout(()=>window.tlOH.torah(s.by),350);
+ if(s){ s.seen=true; if(thanks) s.thanked=true; try{ run('sgShoutSeen',SRV.token,[s.id],!!thanks).catch(()=>{}); }catch(e){} if(thanks){ try{ toast('❤️ Your thank-you was sent to '+s.by+'.'); }catch(e){} } } setTimeout(bigShout,800); }
+function start(id){ const subj=subjOf(id);
+ if(subj==='SCI'||subj==='ELEC'){ const b=document.createElement('button'); if(subj==='SCI') b.dataset.sci='open'; else b.dataset.elec='open'; b.dataset.id=id; b.style.display='none'; document.body.appendChild(b); b.click(); b.remove();
+  if(document.getElementById(subj==='SCI'?'sci-ov':'elec-ov')) return; }
+ const have=(typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]);
+ if(!have){ try{ toast('That lesson is still loading. Try again in a moment.'); }catch(e){} return; }
+ A.overlay=null; try{ if(typeof SND!=='undefined') SND.tap(); }catch(e){} startMission(subj,id,'skill'); }
+
+/* ---------- install ---------- */
+const _vHub=vHub;
+vHub=function(){ const h=_vHub.apply(this,arguments); try{ if(!A.st) return h; css(); load(); const s=section(); if(!s) return h;
+  const i=h.indexOf('</header>'); return i>=0&&h.indexOf('hpbar')>=0&&h.indexOf('hpbar')<i?h.slice(0,i+9)+s+h.slice(i+9):s+h; }catch(e){ console.error('RebbePick',e); return h; } };
+const _render=render;
+render=function(){ const r=_render.apply(this,arguments);
+ try{ if(RP.big&&RP.cur&&!A.overlay&&!document.querySelector('.rp-ov')) setTimeout(()=>{ if(RP.big&&!A.overlay) shoutDone(); },0);
+  if(A.view==='hub') setTimeout(bigShout,400); else if(!RP.wait){ RP.wait=1; }
+  if(A.view==='result'&&A.play&&RP.d&&A.st){ const p=(RP.d.picks||[]).find(x=>x.id===A.play.id&&!x.done); if(p&&!RP.toasted[p.id]&&typeof mastered==='function'&&mastered(A.st,p.id)){ RP.toasted[p.id]=1; p.done=true; setTimeout(()=>{ try{ toast('📌✅ You finished the lesson '+p.by+' picked for you! '+p.by+' will see it.'); }catch(e){} },900); } } }catch(e){}
+ return r; };
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-rp]'); if(!b) return; if(b.dataset.rp==='go') start(b.dataset.id); if(b.dataset.rp==='shoutok'){ e.stopPropagation(); shoutDone(true); }
+ if(b.dataset.rp==='thanks'){ e.stopPropagation(); const d=RP.d, s=d&&(d.shouts||[]).find(x=>x.id===b.dataset.id); if(!s||s.thanked) return; s.thanked=true; try{ run('sgShoutSeen',SRV.token,[s.id],true).catch(()=>{}); }catch(x){} try{ if(typeof SND!=='undefined') SND.tap(); }catch(x){} try{ toast('❤️ Your thank-you was sent to '+s.by+'.'); }catch(x){} render(); } },true);
+window.tlRP=()=>RP.d; window.tlRPStart=id=>start(id);
+let lastSid=null; setInterval(()=>{ const sid=A.st&&A.view!=='signin'?A.st.id:null; if(sid!==lastSid){ lastSid=sid; RP.d=null; RP.at=0; RP.shown={}; if(sid) load(true); return; } if(sid&&A.view==='hub'&&!document.hidden){ load(); bigShout(); } },1500);
+})();
+</script>

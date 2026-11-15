@@ -1,0 +1,514 @@
+<script>
+/* IN HASHEM'S HANDS — bitachon + simcha content v1 (2026-11-12). Adds to window.TL_SIMCHA. */
+/* Tone: joyful, warm, everyday. Never promises a boy he will get what he wants; never uses bitachon to brush off a feeling. */
+window.TL_SIMCHA = window.TL_SIMCHA || {};
+Object.assign(window.TL_SIMCHA, {
+ /* "What would help you today?" — one tap at sign-in. No mood rating, no weather: the boy picks what he wants. */
+ need: [
+  { icon: '🌟', label: 'Some chizuk', reply: 'You are not alone. Hashem is holding your hand, every step today.' },
+  { icon: '📜', label: 'A vort', reply: 'Here is today\'s vort.' },
+  { icon: '🚀', label: 'I\'m ready, let\'s go!', reply: 'Let\'s go! Learning b\'simcha starts now.' },
+  { icon: '✉️', label: 'Talk to my Rebbe privately', reply: 'Write a note. Only your rebbe will see it.' },
+ ],
+ /* Chizuk Minute — one strong line at a time, said slowly (replaces "Hashem's Got This") */
+ chizuk: [
+  'Sit tall. Take one slow breath.',
+  'Say it with me: Hashem made me, and Hashem loves me.',
+  'Hashem is holding my hand right now.',
+  'I lean on Hashem. He never lets go.',
+  'I do my part. I rely on Hashem for the rest.',
+  'Whatever today brings, I am in Hashem\'s hands.',
+  'One more breath. Now back to learning, strong and b\'simcha.',
+ ],
+ /* Vort of the Day — a short Torah thought a boy can retell at home */
+ vort: [
+  { text: 'The first words of the day are Modeh Ani: thank You. A day that starts with thanks starts with simcha.', src: 'Modeh Ani' },
+  { text: 'Yaakov slept alone under the stars, and Hashem told him: I am with you, and I will guard you wherever you go.', src: 'Bereishis 28:15' },
+  { text: 'The mon came down every morning, just enough for that day. Hashem gives us what we need, one day at a time.', src: 'Shemos 16:4' },
+  { text: 'Hashem is my shepherd; I will not be missing anything. A sheep with a good shepherd can relax and enjoy the grass.', src: 'Tehillim 23:1' },
+  { text: 'Whatever happened, Nachum Ish Gamzu said: this too is for the good. He looked for the good before he could see it.', src: 'Taanis 21a' },
+  { text: 'Every morning and night we say: into His hand I trust my soul. We go to sleep, and wake up, in Hashem\'s hands.', src: 'Adon Olam' },
+ ],
+ /* Simcha of Today — one reason to be happy today */
+ today: [
+  { text: 'This is the day Hashem made; let us be glad and happy in it!', src: 'Tehillim 118:24' },
+  'Today you get to learn something you did not know yesterday.',
+  'Today is a brand-new day, made just for you.',
+  'Today someone will smile because of you.',
+  'Today every right answer, and every brave try, counts.',
+ ],
+ /* Bitachon Sparks (Torah lines in English with sources) */
+ bitachon: [
+  { text: 'Into His hand I trust my soul, when I sleep and when I wake. Hashem is with me; I will not fear.', src: 'Adon Olam' },
+  { text: 'Even when I walk in a dark valley, I will not be afraid, because You are with me.', src: 'Tehillim 23:4' },
+  { text: 'Hashem is your guardian; Hashem is your shade at your right hand.', src: 'Tehillim 121:5' },
+  { text: 'Trust in Hashem and do good.', src: 'Tehillim 37:3' },
+  { text: 'One who trusts in Hashem is surrounded by kindness.', src: 'Tehillim 32:10' },
+  { text: 'Blessed is the man who trusts in Hashem.', src: 'Yirmiyahu 17:7' },
+  { text: 'Throw your worries onto Hashem, and He will hold you up.', src: 'Tehillim 55:23' },
+  { text: 'Everything Hashem does is for the good.', src: 'Berachos 60b' },
+  { text: 'Gam zu l\'tovah: this too is for the good.', src: 'Taanis 21a' },
+ ],
+ /* Short everyday bitachon lines (no source needed) */
+ hands: [
+  'You are in Hashem\'s hands, all day long.',
+  'Hashem made you, and Hashem loves you.',
+  'Do your part. Hashem does the rest.',
+  'Hashem sees every try, even the ones nobody else sees.',
+  'Nothing is too big for Hashem, and nothing is too small to ask for.',
+  'You never learn alone. Hashem is right here.',
+  'Worried? Tell Hashem. Then tell Abba or your rebbe.',
+  'A hard question is just a chance to try with Hashem\'s help.',
+ ],
+ /* After a long try on a hard question: effort is the boy's part */
+ hishtadlus: [
+  'You did your part. That is what Hashem asks.',
+  'Hard work is your job. The results are in Hashem\'s hands.',
+  'Every try counts in Shamayim.',
+ ],
+ /* End of the day: "Where did you see Hashem today?" (tap one; private to the boy, saved only in his own journal) */
+ moments: [
+  { icon: '🔍', text: 'I found something I lost' }, { icon: '🧩', text: 'someone helped me just in time' },
+  { icon: '💡', text: 'I finally understood something' }, { icon: '🌈', text: 'something hard turned out good' },
+  { icon: '🍎', text: 'I had what I needed' }, { icon: '☀️', text: 'I saw something beautiful' },
+  { icon: '✏️', text: 'I wrote my own Hashem moment' },
+ ],
+});
+/* HASHEM MOMENTS — short original stories (one a week in the reading area; each ends with a question for the Shabbos table) */
+window.TL_HASHEM_MOMENTS = [
+ { id: 'HM01', band: 'K2', title: 'The Lost Glove', text: 'Dovi lost his blue glove at recess. He looked under the slide and behind the bench. Nothing. He whispered, "Hashem, please help me." The next morning Yossi came over with a blue glove. "I found it in the coat closet!" Dovi smiled big. "Hashem sent you, Yossi!"', ask: 'Who did Hashem send to help Dovi?' },
+ { id: 'HM02', band: 'K2', title: 'Rain on Trip Day', text: 'The class trip to the farm was rained out. Chaim felt sad. His rebbe said, "Gam zu l\'tovah." So the class built a giant block city instead. The next week the sun was out, and when they got to the farm, three baby goats had just been born!', ask: 'What good thing came after the rain?' },
+ { id: 'HM03', band: 'K2', title: 'Moishe Asks for Sun', text: 'Moishe asked Hashem for a sunny day. It rained. "Did Hashem not hear me?" he asked. Abba said, "Hashem always hears. Sometimes the answer is yes, sometimes no, and sometimes not now. Look how the garden is drinking!" Moishe smiled at the happy, wet flowers.', ask: 'What are three ways Hashem can answer?' },
+ { id: 'HM04', band: 'K2', title: 'Just the Right Size', text: 'Shimmy needed new shoes, and the store had only one pair left in his size. They were bright blue, his favorite color. "Hashem knew!" said Shimmy, and he hopped all the way home.', ask: 'What small thing did Hashem arrange for Shimmy?' },
+ { id: 'HM05', band: '35', title: 'The Late Bus', text: 'Mendy\'s bus was twenty minutes late, and he was grumpy. While he waited, he noticed a new boy standing alone. "I\'m Mendy," he said. "I\'m Shmuli," said the boy. By the time the bus came, they were laughing. That year they became best friends. Mendy still says, "That late bus was right on time."', ask: 'Why did Mendy say the late bus was right on time?' },
+ { id: 'HM06', band: '35', title: 'I Did My Part', text: 'Ari studied hard for the spelling bee. The night before, he could not sleep. Abba taught him the end of Adon Olam: into His hand I trust my soul. Ari whispered it and fell asleep. He came in third place, and he was happy anyway. "I did my part," he said. "The rest was in Hashem\'s hands."', ask: 'What was Ari\'s part, and what was Hashem\'s part?' },
+ { id: 'HM07', band: '35', title: 'Zeidy\'s Missed Train', text: 'When Zeidy was young, he missed his train by one minute. He was upset. On the next train he sat next to an old man who needed a tenth man for a minyan at the next station. Zeidy got off with him, helped make the minyan, and made a friend for life. "Every minute is planned," Zeidy says.', ask: 'What did Zeidy learn from the missed train?' },
+ { id: 'HM08', band: '35', title: 'The Snow Day', text: 'Yehuda was supposed to give his first speech on Thursday, and he was nervous. Thursday was a snow day! He used the extra day to practice with Abba. On Friday his speech went great. "Hashem gave me one more day," he said.', ask: 'How did the snow day help Yehuda?' },
+ { id: 'HM09', band: '68', title: 'The Sprained Ankle', text: 'Eli sprained his ankle the week before the big game. He was crushed. The coach asked him to keep score instead. Eli noticed patterns in how the team played and shared them. They won, and the coach said, "We could not have done it without you." Eli learned he loved planning plays, and he still does.', ask: 'Eli could not play. How did Hashem still give him a part?' },
+ { id: 'HM10', band: '68', title: 'The Wrong Turn', text: 'On the way to Zeidy\'s house, Abba took a wrong turn and groaned. A few blocks later they saw a car stuck in the snow. Abba and Avi pushed it free. The driver thanked them again and again. Back in the car, Abba laughed. "I guess that was not a wrong turn after all."', ask: 'Can you think of a time something "wrong" turned out right?' },
+ { id: 'HM11', band: '68', title: 'Worried About Tomorrow', text: 'Chaim worried about everything: tests, games, what other boys thought. His rebbe gave him a card that said "Do your part, Hashem does the rest." Chaim kept it in his pocket. Before each worry he did one small thing to prepare, touched the card, and let the rest go. Little by little, the worries got smaller.', ask: 'What did Chaim do before each worry?' },
+ { id: 'HM12', band: '68', title: 'The Broken Laptop', text: 'Dovid\'s laptop broke two days before his science fair project was due, and every file was gone. He wanted to give up. Instead he started over on paper with his brother\'s help. The new project was simpler and clearer, and it won first place. "Starting over made it better," he said. "Gam zu l\'tovah."', ask: 'What did Dovid do instead of giving up?' },
+];
+
+/* EMUNAH & BITACHON LINES v1 — "Hashem is taking care of you." (2026-11-12) */
+/* Every Torah line is quoted in English with its source. Placement rules: at most ONE emunah line per screen; never on the same */
+/* screen as a joke; rotate so a boy does not see the same line twice in a week; shown in a calm, respectful style (not a pop-up). */
+window.TL_EMUNAH = {
+ /* A. Torah lines (pesukim, tefillah, Chazal, seforim). band: all | 35 | 68 (older boys) */
+ torah: [
+  { band: 'all', text: 'Hashem is my shepherd; I will not be missing anything.', src: 'Tehillim 23:1' },
+  { band: 'all', text: 'I lift my eyes to the mountains. Where will my help come from? My help is from Hashem, Maker of heaven and earth.', src: 'Tehillim 121:1-2' },
+  { band: 'all', text: 'The Guardian of Yisrael does not slumber and does not sleep.', src: 'Tehillim 121:4' },
+  { band: 'all', text: 'Hashem is my light and my help; whom shall I fear?', src: 'Tehillim 27:1' },
+  { band: 'all', text: 'Hashem is with me; I will not be afraid.', src: 'Tehillim 118:6' },
+  { band: 'all', text: 'Taste and see that Hashem is good; fortunate is the one who trusts in Him.', src: 'Tehillim 34:9' },
+  { band: 'all', text: 'Hashem is good to all, and His kindness is on everything He made.', src: 'Tehillim 145:9' },
+  { band: 'all', text: 'You open Your hand and give every living thing what it needs.', src: 'Tehillim 145:16 (Ashrei)' },
+  { band: 'all', text: 'Thank Hashem, for He is good; His kindness lasts forever.', src: 'Tehillim 136:1' },
+  { band: 'all', text: 'This is the day Hashem made; let us be glad and happy in it.', src: 'Tehillim 118:24' },
+  { band: 'all', text: 'Trust in Hashem and do good.', src: 'Tehillim 37:3' },
+  { band: 'all', text: 'Throw your worries onto Hashem, and He will hold you up.', src: 'Tehillim 55:23' },
+  { band: 'all', text: 'I am with you, and I will guard you wherever you go.', src: 'Bereishis 28:15' },
+  { band: 'all', text: 'Do not be afraid, for I am with you.', src: 'Yeshayahu 41:10' },
+  { band: 'all', text: 'Be strong and brave. Hashem goes with you; He will not leave you.', src: 'Devarim 31:6' },
+  { band: 'all', text: 'Into His hand I trust my soul. Hashem is with me; I will not fear.', src: 'Adon Olam' },
+  { band: 'all', text: 'Thank You for Your miracles that are with us every day, evening, morning and afternoon.', src: 'Shemoneh Esrei, Modim' },
+  { band: 'all', text: 'Everything Hashem does is for the good.', src: 'Berachos 60b' },
+  { band: 'all', text: 'Gam zu l\'tovah: this too is for the good.', src: 'Nachum Ish Gamzu, Taanis 21a' },
+  { band: '35', text: 'Those who hope in Hashem get new strength; they rise up on wings like eagles.', src: 'Yeshayahu 40:31' },
+  { band: '35', text: 'Trust in Hashem with all your heart. In all your ways, know Him.', src: 'Mishlei 3:5-6' },
+  { band: '35', text: 'Roll your path onto Hashem; trust in Him, and He will act.', src: 'Tehillim 37:5' },
+  { band: '35', text: 'One who trusts in Hashem is surrounded by kindness.', src: 'Tehillim 32:10' },
+  { band: '35', text: 'Blessed is the man who trusts in Hashem.', src: 'Yirmiyahu 17:7' },
+  { band: '35', text: 'Think good, and it will be good.', src: 'the Tzemach Tzedek' },
+  { band: '35', text: 'Even a leaf blown by the wind is guided by Hashem.', src: 'teaching of the Baal Shem Tov' },
+  { band: '68', text: 'One who trusts in Hashem has peace of mind.', src: 'Chovos Halevavos, Shaar HaBitachon' },
+  { band: '68', text: 'A person does not even bump his finger below unless it was decided above.', src: 'Chullin 7b' },
+  { band: '68', text: 'All the everyday things that happen to us are hidden miracles.', src: 'Ramban, end of Parshas Bo' },
+  { band: '68', text: 'There is no such thing as giving up hope.', src: 'Rebbe Nachman, Likutei Moharan II:78' },
+  { band: '68', text: 'It is a great mitzvah to always be happy.', src: 'Rebbe Nachman, Likutei Moharan II:24' },
+ ],
+ /* B. Short lines in our own words (no source needed). "Hashem is taking care of you." */
+ care: [
+  'Hashem is taking care of you, right now and all day.',
+  'You are never alone. Hashem is with you.',
+  'Hashem made you, Hashem loves you, and Hashem is looking after you.',
+  'Every single thing in your day passes through Hashem\'s loving hands.',
+  'Hashem knows exactly what you need today.',
+  'Do your part with simcha. Hashem takes care of the rest.',
+  'Hashem sees every effort, even the quiet ones.',
+  'Nothing is too big for Hashem, and nothing is too small to ask Him for.',
+  'You can always talk to Hashem, in any words, any time.',
+  'Hashem gave you today. That means today has a purpose.',
+  'Hashem believes in you. That is why He gave you this challenge.',
+  'Every morning Hashem gives you a fresh start.',
+  'The same Hashem who runs the whole world is taking care of you.',
+  'When you can\'t see the good yet, Hashem already knows it.',
+ ],
+ /* C. WHERE THEY GO (the builder reads this map; one line per screen at most) */
+ places: [
+  { where: 'Sign-in screen', what: 'Today\'s Vort or one Torah line (rotates daily)' },
+  { where: 'Chizuk Minute', what: 'care lines, said slowly, ending with a Torah line' },
+  { where: 'Before a check (quiz)', what: 'one line: "Do your part with simcha. Hashem takes care of the rest."' },
+  { where: 'After two tries on one question', what: 'one care line under the gentle try-again message' },
+  { where: 'Skill finished', what: 'Mazel tov + one Torah line about thanks (Tehillim 136:1, Modim)' },
+  { where: 'Level finished', what: 'a certificate with Tehillim 118:24 or Yeshayahu 40:31' },
+  { where: 'Loading screens', what: 'one short care line in small, calm type' },
+  { where: 'End of the day', what: 'Where did you see Hashem today? + Modim line' },
+  { where: 'Friday before Shabbos', what: 'Good Shabbos + Tehillim 145:16 or a Hashem Moments story question' },
+  { where: 'Badges and certificates', what: 'one Torah line printed small under the badge name' },
+  { where: 'Classroom posters and Shabbos cards', what: 'a weekly "Emunah Line of the Week" for the whole school' },
+ ],
+};
+
+/* ===== B'SIMCHA morning (v119, CHANGE 1632 v2.2, first slice): once a day on the home screen, Today's Vort + Simcha of Today,
+   then "What would help you today?": Some chizuk (the Chizuk Minute), A vort (a bitachon line with its source), I'm ready.
+   NOT in this slice: "Talk to my Rebbe privately" (needs a private server path; a later build), journal, stories, Gam Zu L'Tovah game.
+   Never beside a joke (the Joke Jar never opens on the home screen). No money, no server data: "shown today" is kept in this browser only.
+   SWITCH: window.TL_SIM_MORNING_LIVE = false -> TEST- boys only; true -> every boy. ===== */
+(function(){
+window.TL_SIM_MORNING_LIVE = true;   /* HoS DECISION 2230 */
+const S = window.TL_SIMCHA || {};
+function on(){ const st = A && A.st; return !!(st && (window.TL_SIM_MORNING_LIVE || /^TEST-/.test(String(st.id || '')))); }
+function E(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function day(){ const d = new Date(); return d.getFullYear() * 1000 + Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5); }
+function pickDay(L, k){ if (!L || !L.length) return null; return L[(day() + (k || 0)) % L.length]; }
+function line(x){ if (!x) return ''; if (typeof x === 'string') return '<p class="sm-line">' + E(x) + '</p>'; return '<p class="sm-line">' + E(x.text) + '</p>' + (x.src ? '<p class="sm-src">' + E(x.src) + '</p>' : ''); }
+function key(){ return 'tlSimMorning:' + String((A.st && A.st.id) || 'x'); }
+function shown(){ try { return localStorage.getItem(key()) === String(day()); } catch (e) { return true; } }
+function mark(){ try { localStorage.setItem(key(), String(day())); } catch (e) {} }
+try { if (!document.getElementById('sm-css')) { const s = document.createElement('style'); s.id = 'sm-css'; s.textContent = '.sm-line{font-size:1.15em;line-height:1.5;margin:.3em 0}.sm-src{font-size:.85em;opacity:.7;margin:0 0 .6em}.sm-h{font-weight:800;margin:.8em 0 .2em;color:#4338CA}.sm-needs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}'; document.head.appendChild(s); } } catch (e) {}
+function needs(){ return (S.need || []).filter(n => !/rebbe/i.test(n.label)); }
+function morning(){
+  mark();
+  const v = pickDay(S.vort), t = pickDay(S.today, 3);
+  overlay('<div class="oe">'+tlOri('happy')+'</div><h2>Today\'s Vort</h2>' + line(v) +
+    (t ? '<p class="sm-h">Simcha of Today</p>' + line(t) : '') +
+    '<p class="sm-h">What would help you today?</p><div class="sm-needs">' +
+    needs().map((n, i) => '<button class="btn" data-act="sm-need" data-i="' + i + '">' + E(n.icon) + ' ' + E(n.label) + '</button>').join('') + '</div>');
+}
+function chizuk(i){
+  const L = S.chizuk || []; if (!L.length) { A.overlay = null; render(); return; }
+  const last = i >= L.length - 1;
+  overlay('<div class="oe">'+tlOri('calm')+'</div><h2>Chizuk Minute</h2><p class="sm-line" style="font-size:1.4em">' + E(L[i]) + '</p><p style="opacity:.6">' + (i + 1) + ' of ' + L.length + '</p>' +
+    (last ? '<button class="btn go big" data-act="closeov">Back to learning</button>' : '<button class="btn go big" data-act="sm-chizuk" data-i="' + (i + 1) + '">Next</button>'));
+  try { if (typeof speak === 'function') speak(L[i]); } catch (e) {}
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-act]'); if (!b) return; const a = b.dataset.act;
+  if (a === 'sm-need') { const n = needs()[+b.dataset.i]; if (!n) return;
+    if (/chizuk/i.test(n.label)) return chizuk(0);
+    if (/vort/i.test(n.label)) { const x = pickDay(S.bitachon, 1) || pickDay(S.hands); overlay('<div class="oe">📜</div><h2>A vort for you</h2>' + line(x) + '<button class="btn go big" data-act="closeov">Back to learning</button>'); return; }
+    overlay('<div class="oe">🚀</div><h2>' + E(n.reply) + '</h2><button class="btn go big" data-act="closeov">Let\'s go</button>'); return; }
+  if (a === 'sm-chizuk') return chizuk(+b.dataset.i);
+});
+let q = 0;
+function check(){ q = 0; try { if (A && A.view === 'hub' && A.st && !A.overlay && on() && !shown() && typeof overlay === 'function') setTimeout(() => { if (A.view === 'hub' && !A.overlay && !shown()) morning(); }, 1200); } catch (e) {} }
+try { new MutationObserver(() => { if (!q) { q = 1; requestAnimationFrame(check); } }).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
+window.tlSimMorning = morning;
+})();
+
+/* HASHEM MOMENTS STORIES batch 2 (HM013-HM120) — paste right after bitachon.js (which holds HM01-HM12). 108 stories; with the first 12, 40 per grade band. */
+/* Draft 2026-11-12, curriculum@ Claude. TEST boys only until a rebbe approves the PROOF. */
+/* Hashem Moments stories, batch 2 — K-2 band (36 new; with HM01-HM04 the band has 40). */
+/* Each story: first (something seems to go wrong) + then (the good that came). The Gam Zu L'Tovah game shows "first", */
+/* lets the boy pick a guess, then flips to "then". Guesses are never graded: any guess that looks for the good is a good guess. */
+/* Boys, Abba and Zeidy only; nothing scary; kosher food; no promised outcomes. */
+(function () {
+const S = [
+ ['K2', 'The Spilled Juice', 'At breakfast Avi spilled his grape juice all over the table. "Oh no!" he said.', 'While Abba helped him wipe it up, they found Avi\'s lost siddur under the napkins. "Hashem helped us find it," Abba smiled.', 'What did Avi find while cleaning up?', ['his lost siddur', 'a new toy', 'a cookie']],
+ ['K2', 'No Swings Left', 'At recess every swing was taken. Yanky stood and waited, feeling left out.', 'A boy on the slide called, "Want to build a sand castle with me?" They built the biggest castle ever and became friends.', 'What good came while Yanky waited?', ['a new friend', 'a free swing', 'an early bell']],
+ ['K2', 'The Broken Crayon', 'Shloimy\'s favorite green crayon snapped in half. He frowned.', 'Then he gave one half to Moishe, who had no green. They colored a whole forest together. "Now we both have green!"', 'How did the broken crayon help?', ['he could share half', 'it colored faster', 'it turned blue']],
+ ['K2', 'Waiting for Zeidy', 'Zeidy was late picking up Chaim from cheder, and Chaim waited on the bench.', 'He watched a little bird feed its babies in the tree. When Zeidy came, Chaim said, "I saw Hashem feed the birds!"', 'What did Chaim see while he waited?', ['birds being fed', 'a garbage truck', 'a rainbow']],
+ ['K2', 'The Tall Shelf', 'Dovi could not reach his favorite sefer on the tall shelf.', 'His big brother came by and lifted him up. Dovi got the sefer, and then they learned it together. "Best part of my day," said Dovi.', 'What good came from the tall shelf?', ['learning with his brother', 'a new shelf', 'a nap']],
+ ['K2', 'Too Much Kugel', 'Abba made a very big kugel for Shabbos. "That is too much!" said Mendy.', 'On Friday, Zeidy brought three guests he met in shul. The kugel was just enough for everyone. "Hashem knew," Abba smiled.', 'Why was the big kugel just right?', ['guests came to eat', 'it shrank', 'nobody liked it']],
+ ['K2', 'The Lost Ball', 'Pinny\'s ball rolled over the fence into the neighbor\'s yard.', 'He knocked on the door. The neighbor, old Mr. Gold, gave the ball back and invited Pinny and Abba to see his new puppy. Now Pinny visits every week.', 'What good came from the lost ball?', ['a new friend next door', 'a bigger ball', 'a fence door']],
+ ['K2', 'Rainy Recess', 'It rained, and recess was inside. Shimon was sad.', 'His rebbe taught a new niggun, and the whole class sang and clapped. Shimon sang it all the way home.', 'What did the class do inside?', ['learned a new niggun', 'slept', 'went home']],
+ ['K2', 'The Long Line', 'The line at the bakery for challah was very long. Eli tapped his foot.', 'In line he met his friend Yossi and his Zeidy. They talked and laughed until it was their turn. "That was the fastest long line ever!" said Eli.', 'Who did Eli meet in line?', ['his friend Yossi', 'nobody', 'a lion']],
+ ['K2', 'No Blue Paint', 'Yitzy wanted to paint the sky, but the blue paint was all gone.', 'He mixed a little purple and white instead and made a sky at sunset. His rebbe hung it on the wall!', 'What did Yitzy paint instead?', ['a sunset sky', 'nothing', 'a car']],
+ ['K2', 'The Missing Mitten', 'Gedalya could only find one mitten. He put his hand in his pocket.', 'In the pocket he found a note from Abba: "I love you. Have a great day!" Gedalya smiled all morning.', 'What did Gedalya find in his pocket?', ['a note from Abba', 'a candy', 'a key']],
+ ['K2', 'Seat by the Window', 'Ari wanted the bus seat by the window, but someone took it.', 'He sat next to a new boy who was nervous. Ari told him a joke, and the boy laughed all the way to school.', 'How did Ari help the new boy?', ['he made him laugh', 'he took his seat', 'he went home']],
+ ['K2', 'The Tower Fell', 'Moishe\'s block tower fell down all at once. He felt like crying.', 'Abba said, "Let\'s build it again, stronger." They built a wider base, and the new tower was the tallest one yet.', 'What made the new tower better?', ['a wider base', 'more glue', 'stickier blocks']],
+ ['K2', 'Early to Bed', 'Abba said it was time for bed, but Leibel wanted to play more.', 'The next morning he woke up early and saw the sun rise, pink and gold. "Mah rabu maasecha, Hashem!" Abba said.', 'What did Leibel see in the morning?', ['the sun rising', 'snow', 'a parade']],
+ ['K2', 'The Flat Tire', 'Abba\'s bike got a flat tire on the way to shul.', 'They walked the rest of the way and found a lost wallet on the path. They gave it to the gabbai, and its owner was so happy.', 'What did they find on the walk?', ['a lost wallet', 'a puppy', 'a balloon']],
+ ['K2', 'Cloudy Day', 'Shmuli wanted to see the moon for Kiddush Levana, but it was cloudy.', 'Abba said, "Let\'s daven for a clear night." The next night was clear, and they said it together with Zeidy.', 'Who said Kiddush Levana with them?', ['Zeidy', 'nobody', 'the bus driver']],
+ ['K2', 'Out of Cereal', 'There was no cereal left for breakfast. Dovid frowned.', 'Abba made pancakes instead, and Dovid helped flip them. "Can we run out of cereal more often?" he laughed.', 'What did they make instead?', ['pancakes', 'nothing', 'soup']],
+ ['K2', 'The Quiet Friend', 'Nachum wanted to play tag, but his friend Avrumi wanted to read.', 'Nachum sat down to read too. The book was about a boy who did a big chessed, and Nachum loved it.', 'What did Nachum find out?', ['he loved the book', 'tag was over', 'books are boring']],
+ ['K2', 'A Wobbly Tooth', 'Zevi\'s front tooth was wobbly, and he could not bite his apple.', 'Abba cut the apple into little slices. They said the brachah together and had a slice party.', 'How did Zevi eat the apple?', ['in little slices', 'he could not', 'with a spoon']],
+ ['K2', 'The Wrong Bus Stop', 'Abba and Yaakov got off at the wrong bus stop.', 'Right there was a park with ducks. They fed them crumbs from their bagel and laughed. Then they caught the next bus.', 'What was at the wrong stop?', ['a park with ducks', 'a store', 'nothing']],
+ ['K2', 'Lost Sticker', 'Baruch lost the gold sticker his rebbe gave him.', 'At home, Abba gave him a big hug and said, "I am proud of you, sticker or no sticker." That felt even better.', 'What felt better than the sticker?', ['Abba\'s hug', 'a new sticker', 'a candy']],
+ ['K2', 'Snow Boots', 'Simcha\'s snow boots were too small.', 'He gave them to his little brother, who was so excited. And Zeidy took Simcha to buy new ones, with room to grow.', 'Who got Simcha\'s old boots?', ['his little brother', 'nobody', 'a dog']],
+ ['K2', 'The Noisy Truck', 'A loud truck woke Ephraim up early on Sunday.', 'He went to the window and saw it was planting new trees on the street! "Hashem\'s world is getting greener," he said.', 'What was the truck doing?', ['planting trees', 'taking toys', 'honking']],
+ ['K2', 'Forgot the Snack', 'Hillel forgot his snack at home.', 'His friend Moishe had two apples and gave him one. The next day, Hillel brought an extra snack for Moishe.', 'What did Hillel do the next day?', ['brought Moishe a snack', 'forgot again', 'stayed home']],
+ ['K2', 'The Torn Page', 'A page in Yehuda\'s parsha sheet got torn.', 'He and Abba taped it carefully, and while they fixed it, Abba told him the whole parsha story again. Now Yehuda knows it by heart.', 'What did Yehuda learn while fixing it?', ['the parsha story', 'how to tear', 'nothing']],
+ ['K2', 'Too Windy for Kites', 'It was too windy to fly kites, so Shaya stayed in.', 'He and Zeidy baked challah instead. Shaya braided his own little challah for Shabbos.', 'What did Shaya make with Zeidy?', ['his own challah', 'a kite', 'a mess']],
+ ['K2', 'The Missing Puzzle Piece', 'One piece of Tzvi\'s puzzle was missing.', 'Days later, it turned up in his slipper! "Hashem kept it safe for me," he laughed, and he finished the puzzle.', 'Where was the puzzle piece?', ['in his slipper', 'in the sink', 'gone forever']],
+ ['K2', 'Last in Line', 'Aharon was last in line for washing before lunch.', 'Because he was last, he saw that a younger boy could not reach the cup. Aharon helped him wash. His rebbe saw and smiled.', 'Who did Aharon help?', ['a younger boy', 'nobody', 'the rebbe']],
+ ['K2', 'The Closed Store', 'The toy store was closed when Abba and Mordy got there.', 'They walked home a new way and found a little shul with a sign: "Story hour for boys, every Sunday." Mordy goes every week now.', 'What did they find on the new way?', ['a shul story hour', 'another toy store', 'a closed road']],
+ ['K2', 'Cold Soup', 'Mendel\'s soup got cold while he talked.', 'Abba warmed it up, and while they waited, Mendel told Abba all about his day. "That was my favorite talk," said Abba.', 'What did Mendel and Abba do while waiting?', ['talked about his day', 'sang loudly', 'went to sleep']],
+ ['K2', 'A Bumpy Ride', 'The road to Zeidy\'s house was bumpy, and Asher felt bored.', 'Abba started a game: name one thing Hashem made for each bump. By the end they had a list of fifty!', 'What game did they play?', ['naming things Hashem made', 'counting cars', 'no game']],
+ ['K2', 'The Dropped Lollipop', 'Shalom dropped his lollipop on the floor.', 'Just then his friend came over, sad because he had none. Shalom\'s rebbe gave each of them a new one. "Double simcha!" said Shalom.', 'How many boys got a new lollipop?', ['two', 'none', 'one']],
+ ['K2', 'Snow Day at Home', 'It snowed so much that cheder was closed, and Michoel missed his friends.', 'Zeidy came over with cocoa and taught him a new Tehillim. Michoel said it every night after that.', 'What did Zeidy teach Michoel?', ['a new Tehillim', 'a card trick', 'nothing']],
+ ['K2', 'No Room on the Bench', 'There was no room on the bench at the park.', 'So Shmuel and Abba sat on the grass and watched an ant carry a crumb bigger than itself. "Hashem made it strong!" Shmuel said.', 'What did they watch?', ['an ant carrying a crumb', 'a TV', 'a bus']],
+ ['K2', 'The Lost Kippah', 'Ari\'s kippah blew off in the wind.', 'A man walking by caught it and gave it back. He was a new neighbor, and that Shabbos he came for the seudah.', 'Who caught the kippah?', ['a new neighbor', 'a bird', 'nobody']],
+ ['K2', 'One More Minute', 'Abba was on a call, and Yisroel had to wait one more minute to show him his drawing.', 'In that minute, Yisroel added a big sun to the picture. Abba said, "That sun makes it perfect!"', 'What did Yisroel add while he waited?', ['a big sun', 'a frown', 'nothing']],
+];
+const start = 13;
+window.TL_HASHEM_MOMENTS = (window.TL_HASHEM_MOMENTS || []).concat(S.map((s, i) => ({ id: 'HM' + String(start + i).padStart(3, '0'), band: s[0], title: s[1], first: s[2], then: s[3], text: s[2] + ' ' + s[3], ask: s[4], guesses: s[5] })));
+})();
+/* Hashem Moments stories, batch 2 — grades 3-5 band (36 new; with HM05-HM08 the band has 40). Same shape as stories_k2.js. */
+(function () {
+const S = [
+ ['35', 'The Missed Ride', 'Yossi\'s carpool left without him, and he had to wait for Abba to drive him to cheder late.', 'In the car, Abba shared a vort on the parsha. Yossi repeated it at the Shabbos table, and Zeidy said it was the best vort he had heard all week.', 'What did Yossi gain from the late ride?', ['a vort from Abba', 'an extra nap', 'a new bike']],
+ ['35', 'Not Picked First', 'At recess, Moishe was picked last for the team. He felt small.', 'On the bench, he noticed a boy who had not been picked at all. Moishe sat with him and taught him to throw. The next week, that boy picked Moishe first.', 'What did Moishe notice on the bench?', ['a boy left out', 'a lost ball', 'a bird nest']],
+ ['35', 'The Cancelled Siyum', 'The class siyum was postponed for a week. Shimmy was disappointed.', 'That extra week, his Zeidy came to visit from far away. Zeidy came to the siyum and danced with Shimmy. "Hashem moved the date for me," Zeidy laughed.', 'Who could come because the siyum moved?', ['Zeidy', 'nobody new', 'the mailman']],
+ ['35', 'Wrong Answer', 'Dovi got a hard Chumash question wrong in front of the class. His face turned red.', 'His rebbe said, "Great mistake! Now we can all learn the Rashi that answers it." The whole class learned it, and Dovi will never forget it.', 'Why was it a "great mistake"?', ['everyone learned from it', 'it was funny', 'it was right after all']],
+ ['35', 'The Long Wait at the Doctor', 'Ari and Abba waited a long time for a checkup.', 'In the waiting room, Ari saw an older man reading Tehillim alone. Ari said Tehillim with him. The man said, "You made my morning."', 'What did Ari do while waiting?', ['said Tehillim with a man', 'played a game', 'complained']],
+ ['35', 'No Seats on the Train', 'Every seat on the train was full, and Pinchas had to stand.', 'Standing by the door, he saw a man with heavy bags at the next stop and helped him carry them. The man was his new rebbe for next year!', 'Who did Pinchas help?', ['his future rebbe', 'a stranger he never saw again', 'nobody']],
+ ['35', 'The Spelling List', 'Chaim lost his spelling list the night before the test.', 'He called his friend Eli to ask for the words. They quizzed each other on the phone, and both did better than ever.', 'How did losing the list help?', ['he studied with a friend', 'the test was cancelled', 'he got a new pencil']],
+ ['35', 'Power Out', 'The lights went out on a weeknight, and Mendy could not finish his reading.', 'The family lit candles and Abba told stories about Zeidy as a boy. Mendy called it "the best blackout ever."', 'What did the family do in the dark?', ['told stories by candlelight', 'went to bed early', 'watched a show']],
+ ['35', 'A Tie Game', 'Yitzy\'s team tied the game, and nobody won.', 'Both teams shook hands and ate pizza together. Yitzy made two new friends from the other team.', 'What good came from the tie?', ['new friends', 'a trophy', 'a rematch']],
+ ['35', 'The Lost Library Book', 'Shloime could not find his library book, and it was due.', 'He searched his room and found it — along with three things he had lost for months. He returned the book and cleaned his whole room.', 'What else did Shloime find?', ['three lost things', 'nothing', 'a new book']],
+ ['35', 'Too Hot for Baseball', 'It was too hot to play baseball, so the boys stayed in shul after Mincha.', 'Their rebbe started a Mishnayos chabura. By the end of the summer, they made a siyum.', 'What did the boys start instead of baseball?', ['a Mishnayos chabura', 'a nap', 'a pool party']],
+ ['35', 'The Broken Watch', 'Zevi\'s watch broke, and he did not know the time at recess.', 'He asked an older boy, Shmuel, for the time. They started talking, and Shmuel became his learning partner on Sundays.', 'Who did Zevi meet?', ['a new learning partner', 'the principal', 'nobody']],
+ ['35', 'Rained-Out Lag BaOmer', 'The Lag BaOmer bonfire was rained out.', 'The yeshiva held a kumzitz in the gym instead. Avrumi\'s rebbe told a story about Rabbi Shimon bar Yochai that he still remembers.', 'Where did the kumzitz happen?', ['in the gym', 'in the rain', 'nowhere']],
+ ['35', 'Zeidy\'s Old Chumash', 'Nosson\'s new Chumash had not arrived yet.', 'Zeidy lent him his own old Chumash, full of notes from when Zeidy was young. Nosson read every note. "I am learning with Zeidy\'s handwriting!"', 'What was special in Zeidy\'s Chumash?', ['Zeidy\'s old notes', 'stickers', 'a map']],
+ ['35', 'A Wrong Delivery', 'A package came to Ezra\'s house by mistake.', 'Ezra and Abba walked it three houses down. The neighbor was a new family who did not know anyone. That Shabbos they came for the seudah.', 'Who did they meet?', ['a new family', 'a delivery driver', 'nobody']],
+ ['35', 'Stuck in Traffic', 'Abba and Yaakov were stuck in traffic on the way to a bar mitzvah.', 'Abba said, "Let\'s learn while we wait." They finished a whole perek of Mishnayos in the car.', 'What did they finish in traffic?', ['a perek of Mishnayos', 'a bag of chips', 'nothing']],
+ ['35', 'The Unwanted Job', 'Hillel was given the job of sweeping the shul after the kiddush. He wanted to play.', 'As he swept, the rav thanked him and asked him to help with the Chanukah menorah lighting. Hillel lit the shammash that year.', 'What honor did Hillel get?', ['lighting the shammash', 'a candy bar', 'a day off']],
+ ['35', 'The Missing Shoe', 'Before Shabbos, Baruch could not find his other Shabbos shoe.', 'Looking under his bed, he found the tzedakah box he had lost. He filled it up before candle lighting.', 'What did Baruch find?', ['his tzedakah box', 'a mouse', 'a toy car']],
+ ['35', 'A Hard Gemara', 'Shaya did not understand the Gemara, even after two tries.', 'He asked his rebbe after class. They learned it slowly together, and Shaya understood it so well that he explained it to the class the next day.', 'What did Shaya do the next day?', ['explained it to the class', 'skipped class', 'forgot it']],
+ ['35', 'No Pizza Left', 'By the time Avi got to the table, the pizza was gone.', 'His friend Dov had saved him a slice. "I knew you would come," Dov said. Avi felt the warmth of a true friend.', 'Who saved Avi a slice?', ['his friend Dov', 'nobody', 'the pizza man']],
+ ['35', 'The Closed Park', 'The park was closed for repairs on Sunday.', 'Abba and Eliezer went to visit Zeidy instead. Zeidy had been hoping for company that day. "You came just when I needed it," he said.', 'Why was the visit just right?', ['Zeidy hoped for company', 'it was raining', 'the park opened']],
+ ['35', 'Forgot the Lines', 'At the play, Naftali forgot his lines. Everyone was quiet.', 'He made up a line that made the whole room laugh, then remembered the rest. People said that was the best part of the play.', 'What did people remember most?', ['Naftali\'s funny line', 'the costumes', 'the snacks']],
+ ['35', 'Not Enough Siddurim', 'There were not enough siddurim at the new minyan.', 'Avraham had an idea: a siddur drive. He collected forty siddurim from neighbors. Now the minyan has plenty.', 'What did Avraham start?', ['a siddur drive', 'a game', 'a new shul']],
+ ['35', 'The Late Pizza Delivery', 'The pizza for the class party came an hour late.', 'While they waited, the rebbe ran a trivia game on the parsha. The boys loved it so much they asked for trivia every Friday.', 'What did the class do while waiting?', ['parsha trivia', 'went home', 'complained']],
+ ['35', 'A Tear in the Coat', 'Yechezkel tore his coat on a fence.', 'Zeidy showed him how to sew it. Now Yechezkel fixes buttons for the whole family.', 'What did Zeidy teach him?', ['how to sew', 'how to climb', 'nothing']],
+ ['35', 'Moving Seats', 'The rebbe moved Gavriel to a new seat, away from his friends.', 'His new neighbor was a boy who was struggling. Gavriel helped him every day, and by Pesach the boy was reading fluently.', 'Who did Gavriel help?', ['his new neighbor', 'his old friends', 'nobody']],
+ ['35', 'The Wrong Size', 'Abba bought Michoel a hat that was too big.', 'Michoel stuffed it with a folded paper and laughed. Two years later, it fits him perfectly. "Hashem bought it ahead of time," he jokes.', 'Why does the hat fit now?', ['Michoel grew', 'it shrank', 'he cut it']],
+ ['35', 'Missed the Brachah', 'Eli forgot to say a brachah before eating his apple and felt bad.', 'He said a brachah on his next snack slowly and carefully. Then he made himself a little brachos card to remember. His whole class copied the idea.', 'What did Eli make?', ['a brachos card', 'an apple pie', 'a mistake list']],
+ ['35', 'The Sleepover That Wasn\'t', 'Shmuel\'s sleepover at his cousin\'s house was cancelled.', 'Instead, Abba took him to the early minyan, just the two of them, and then out for bagels. "Our own special morning," Abba said.', 'What did Shmuel and Abba do?', ['early minyan and bagels', 'nothing', 'a long drive']],
+ ['35', 'The Second Try', 'Dovid did not make the Chidon team the first time.', 'He kept learning, and the next year he made the team. "The extra year made me ready," he said.', 'What did Dovid do after not making it?', ['kept learning', 'gave up', 'complained']],
+ ['35', 'Broken Window', 'A ball broke the shul window. Everyone looked at Asher, who had thrown it.', 'Asher told the gabbai the truth and offered to help pay. The gabbai was so impressed that he asked Asher to be a junior gabbai.', 'What did Asher\'s honesty bring?', ['a junior gabbai job', 'trouble', 'nothing']],
+ ['35', 'The Empty Table', 'Nobody signed up to bring drinks for the class Chanukah party.', 'Yehoshua and Abba brought cider and cups. The rebbe asked Yehoshua to say the brachah for everyone. He felt ten feet tall.', 'What honor did Yehoshua get?', ['saying the brachah', 'leaving early', 'a prize']],
+ ['35', 'The Muddy Trip', 'The class trip trail was muddy, and everyone\'s shoes got dirty.', 'Because of the mud, they saw deer tracks and followed them to a stream with fish. The rebbe said Mah rabu maasecha Hashem right there.', 'What did the mud show them?', ['deer tracks', 'a lost key', 'nothing']],
+ ['35', 'The Best Seat', 'Zeidy could not hear well over the zemiros at the Shabbos table.', 'So Elchonon sat right next to him and repeated everything with a smile. Zeidy said, "This is the best seat at the table."', 'Where did Elchonon sit?', ['next to Zeidy', 'far away', 'outside']],
+ ['35', 'The Last Seat on the Bus', 'Moshe got the last seat, next to a boy he did not know.', 'They talked the whole ride and found out their Zeidys learned together sixty years ago. Now they learn together too.', 'What did the boys find out?', ['their Zeidys learned together', 'they live far away', 'nothing']],
+ ['35', 'Snow on Erev Shabbos', 'A big snowstorm came on Erev Shabbos, and the family guests could not come.', 'Abba invited the neighbor who was home alone. He told amazing stories all Shabbos, and he has come every month since.', 'Who came instead?', ['the neighbor', 'nobody', 'a snowman']],
+];
+const start = 49;
+window.TL_HASHEM_MOMENTS = (window.TL_HASHEM_MOMENTS || []).concat(S.map((s, i) => ({ id: 'HM' + String(start + i).padStart(3, '0'), band: s[0], title: s[1], first: s[2], then: s[3], text: s[2] + ' ' + s[3], ask: s[4], guesses: s[5] })));
+})();
+/* Hashem Moments stories, batch 2 — grades 6-8 band (36 new; with HM09-HM12 the band has 40). Same shape as stories_k2.js. */
+/* Older boys: some stories end with the good not yet seen, to teach that bitachon is trust, not a guaranteed happy ending. */
+(function () {
+const S = [
+ ['68', 'The Yeshiva That Said No', 'Akiva was not accepted to the mesivta he wanted. He was crushed and felt like everyone was talking about it.', 'At the other mesivta, he found a rebbe who saw his love for Navi and gave him a chabura to lead. Two years later Akiva said, "Hashem knew which rebbe I needed."', 'What did Akiva find at the other mesivta?', ['a rebbe who saw his strengths', 'an easier schedule', 'nothing special']],
+ ['68', 'The Speech Nobody Heard', 'Yisroel prepared a long bar mitzvah pshat, but the microphone stopped working halfway through.', 'He stepped closer to the crowd and spoke from the heart instead of the paper. Afterward, people said it was the most real speech they had heard all year.', 'What did Yisroel do when the mic stopped?', ['spoke from the heart', 'sat down', 'started over']],
+ ['68', 'Second Place', 'Meir came in second in the Mishnayos bechina by one question.', 'The boy who came first had just moved to town and knew nobody. Meir congratulated him warmly, and they became chavrusos. "Losing that question gained me a chavrusa," Meir says.', 'What did Meir gain from coming second?', ['a chavrusa', 'a prize', 'a rematch']],
+ ['68', 'The Cut Budget', 'The yeshiva could not afford the class trip this year.', 'Shmuel\'s class decided to raise money themselves by selling hamantaschen in Adar. They raised enough for the trip and gave the extra to tzedakah.', 'What did the class learn to do?', ['raise money together', 'complain', 'cancel everything']],
+ ['68', 'The Missed Season', 'Chaim had to miss the whole hockey season because of a family move in the middle of winter.', 'In the new neighborhood, the shul had a night seder for boys. Chaim joined and found that he loved learning Gemara late into the evening.', 'What did Chaim discover after the move?', ['a love for night seder', 'a new hockey team', 'nothing']],
+ ['68', 'A Friend Moved Away', 'Eliyahu\'s best friend moved to Eretz Yisrael. Eliyahu felt lonely for months, and he told his rebbe.', 'His rebbe paired him with a quiet boy in the class who needed a friend. Now Eliyahu has two best friends: one far away, and one right next to him.', 'Who did the rebbe pair Eliyahu with?', ['a quiet boy who needed a friend', 'the rebbe\'s son', 'nobody']],
+ ['68', 'The Rejected Article', 'Avraham\'s article for the yeshiva newsletter was not chosen.', 'He asked the editor how to improve. He rewrote it three times. The next issue opened with his article, and the editor asked him to join the staff.', 'What did Avraham do after the no?', ['asked how to improve', 'stopped writing', 'blamed the editor']],
+ ['68', 'Snowed In for Shabbos', 'A storm kept Dovid\'s family snowed in at Zeidy\'s for Shabbos. Dovid missed his friend\'s bar mitzvah.', 'That Shabbos, Zeidy told stories Dovid had never heard about how Zeidy came to America. Dovid wrote them all down after Shabbos.', 'What did Dovid gain from the storm?', ['Zeidy\'s stories', 'a snowman', 'a long nap']],
+ ['68', 'The Overbooked Flight', 'The family\'s flight to Eretz Yisrael was overbooked, and they had to wait a day.', 'The next day they sat next to a man who was a sofer. He showed Moshe how a mezuzah is written, and Moshe decided to learn safrus.', 'Who did Moshe meet?', ['a sofer', 'a pilot', 'nobody']],
+ ['68', 'Not Chosen for the Choir', 'Naftali was not chosen for the yeshiva choir.', 'The director asked him to run the sound board instead. Naftali discovered he loved the technical side, and he now runs the sound for the whole shul on weekdays.', 'What did Naftali discover?', ['he loved running the sound', 'he hated music', 'nothing']],
+ ['68', 'The Long Commute', 'Ephraim\'s family moved, and his bus ride became forty minutes long.', 'He started learning a daf of Gemara on the bus each morning with another boy. In two years they finished a masechta and made a siyum on the bus.', 'What did Ephraim do with the long ride?', ['learned Gemara', 'slept', 'complained']],
+ ['68', 'The Unanswered Question', 'Binyamin davened for a long time for something he wanted very much, and it did not happen.', 'He told his rebbe he felt hurt. His rebbe said, "Hashem heard every word. Sometimes the answer is not now, or not this." Binyamin kept davening, and he found that the davening itself brought him closer to Hashem.', 'What did Binyamin find even without a yes?', ['closeness to Hashem', 'a new toy', 'a reason to stop']],
+ ['68', 'The Group Project', 'Yosef got a group project partner who never seemed to do his share.', 'Yosef asked him what was wrong. The boy admitted he did not understand the material. Yosef taught him, and the project became their best work. The boy thanked him for months.', 'What did Yosef find out?', ['his partner needed help', 'his partner was lazy', 'nothing']],
+ ['68', 'Wrong Train Station', 'Abba and Pinchas got off at the wrong station on a trip to Zeidy.', 'Waiting for the next train, they met a man who needed one more for a minyan for Mincha. They made the minyan in the station.', 'What did they help make?', ['a minyan', 'a phone call', 'a sandwich']],
+ ['68', 'Grounded From the Ball Game', 'Shlomo missed the big ball game because he had not finished his chores.', 'He finished them and then sat with Zeidy, who was visiting. Zeidy taught him to play chess, and now they play every week by phone and in person.', 'What did Zeidy teach Shlomo?', ['chess', 'baseball', 'nothing']],
+ ['68', 'The Lost Notes', 'Two days before a big test, Mordechai lost all his notes.', 'He asked three boys to share theirs. Reviewing together, they each filled in what the others had missed. All four did their best ever.', 'How did losing the notes help?', ['they reviewed together', 'the test was cancelled', 'he skipped it']],
+ ['68', 'Bumped From the Team', 'Eitan was cut from the basketball team in eighth grade.', 'He started coaching the younger boys\' team instead. He discovered he loved helping others grow, and he still does that today as a counselor.', 'What did Eitan discover?', ['he loved coaching', 'he hated sports', 'nothing']],
+ ['68', 'The Delayed Package', 'Zev\'s new tefillin were delayed and would not arrive by his bar mitzvah.', 'Zeidy lent him his own tefillin for the first week. Zev put on the same tefillin Zeidy wore at his own bar mitzvah. "I would not trade that week for anything," he says.', 'Whose tefillin did Zev wear?', ['Zeidy\'s', 'a stranger\'s', 'nobody\'s']],
+ ['68', 'A Long Shabbos', 'Avi felt bored on a long summer Shabbos afternoon.', 'He wandered to the shul and found the rav learning alone. The rav invited him to learn Pirkei Avos. They learned together every Shabbos that summer.', 'Who did Avi learn with?', ['the rav', 'nobody', 'his brother']],
+ ['68', 'The Burned Kugel', 'Yaakov tried to surprise his family with a kugel and burned the bottom.', 'Abba cut off the bottom and said the top was the best he had ever tasted. Yaakov learned to set a timer, and his kugel is now a Shabbos favorite.', 'What did Yaakov learn?', ['to set a timer', 'to stop cooking', 'nothing']],
+ ['68', 'Missed the Shiur', 'Gedalya overslept and missed the early shiur.', 'He listened to a recording later and wrote down three questions. He brought them to the maggid shiur, who said they were the best questions of the week.', 'What did Gedalya bring the maggid shiur?', ['three good questions', 'an excuse', 'nothing']],
+ ['68', 'Too Shy to Lead', 'Simcha was asked to lead bentching at a siyum, and he was too shy.', 'Zeidy practiced with him all week. At the siyum, his voice shook at first, then grew strong. Afterward he said, "I did not know I could."', 'Who helped Simcha practice?', ['Zeidy', 'nobody', 'a teacher online']],
+ ['68', 'The Empty Mailbox', 'Hillel wrote to a famous rosh yeshiva with a question and heard nothing back for months.', 'Then a letter came with a long, careful answer. The rosh yeshiva wrote that he had been thinking about the question all that time. Hillel keeps the letter in his Gemara.', 'Why was the answer worth the wait?', ['it was long and careful', 'it was short', 'it never came']],
+ ['68', 'A Change of Plans', 'The family\'s summer vacation was cancelled because Abba had to work.', 'They did day trips instead: a farm, a lake, a museum, and a visit to Zeidy every Sunday. Michoel says it was his favorite summer.', 'What did they do instead?', ['day trips', 'nothing', 'stayed in bed']],
+ ['68', 'The Tough Rebbe', 'Shimon thought his new rebbe was too strict and complained about it.', 'By the end of the year, Shimon could learn a whole blatt on his own. He wrote the rebbe a thank-you letter: "You believed I could do more than I thought."', 'What did Shimon realize?', ['the rebbe believed in him', 'the rebbe was mean', 'nothing']],
+ ['68', 'Wrong Size Suit', 'Yehuda\'s bar mitzvah suit came in the wrong size two days before.', 'The tailor down the street fixed it overnight and refused to take money. "My own Zeidy was a tailor," he said. Yehuda invited him to the bar mitzvah.', 'Who did Yehuda invite?', ['the tailor', 'nobody', 'the mailman']],
+ ['68', 'The Lost Game', 'Yeshiva league finals: Aharon\'s team lost by one basket.', 'In the locker room, their coach said, "I am proud of how you played: fair and kind." The other team\'s coach came over and said the same. Aharon remembers that more than any trophy.', 'What does Aharon remember most?', ['being praised for playing fair', 'the score', 'the trophy']],
+ ['68', 'The Rained-Out Siyum', 'The outdoor siyum for the whole neighborhood was rained out.', 'They moved it into the small shul, so crowded that everyone danced shoulder to shoulder. People called it the most joyful siyum in years.', 'Why was the indoor siyum special?', ['everyone danced close together', 'there was cake', 'it was short']],
+ ['68', 'A Question Without an Answer', 'Reuven asked his rebbe a hard question about why something sad happened to a friend\'s family.', 'His rebbe said, "I do not know why. I do know Hashem loves them, and we can help them." The class made meals for the family for a month. Reuven learned that we can trust and act even without an answer.', 'What did the class do?', ['made meals for the family', 'nothing', 'argued']],
+ ['68', 'Delayed Bar Mitzvah Trip', 'Yitzchak\'s bar mitzvah trip to Eretz Yisrael was pushed off for a year.', 'That year, his younger brother turned twelve, and they went together. Standing at the Kosel side by side, Yitzchak said, "Now I see why we waited."', 'Who went with Yitzchak?', ['his younger brother', 'nobody', 'his whole class']],
+ ['68', 'The Spare Room', 'Moshe had to give up his room when Zeidy moved in with the family.', 'Living with Zeidy, Moshe learned with him every night. When Moshe went off to mesivta, he said those nights were the greatest gift of his life.', 'What did Moshe do with Zeidy every night?', ['learned together', 'watched TV', 'nothing']],
+ ['68', 'Unfair Grade', 'Elozor felt his grade on a project was unfair.', 'He spoke respectfully to his teacher, who explained what was missing. Elozor fixed it, and he learned how to talk calmly when he disagrees. That skill helped him all year.', 'What skill did Elozor learn?', ['to disagree calmly', 'to shout', 'to give up']],
+ ['68', 'The Wrong Chumash', 'Nechemya grabbed the wrong Chumash for shul, a big old one.', 'Inside, he found a note from a boy who used it fifty years ago: "I hope you love this sefer as much as I did." Nechemya added his own note for the next boy.', 'What did Nechemya add?', ['his own note', 'a sticker', 'nothing']],
+ ['68', 'Stuck at Home', 'Chaim twisted his knee playing ball and had to rest at home for a week.', 'He used the time to review all of Mishnayos Brachos that he had learned. When he came back, he finished first in the class bechina.', 'How did Chaim use the week?', ['reviewing Mishnayos', 'watching shows', 'sleeping']],
+ ['68', 'The Brother Who Took the Room', 'Shloime\'s little brother got the bigger bedroom. Shloime felt jealous.', 'He decided to say mazel tov and help decorate it. His brother was so happy that he invited Shloime to learn in his room every night. Now it is "their" room.', 'What did Shloime decide to do?', ['say mazel tov and help', 'stay angry', 'take the room back']],
+ ['68', 'Still Waiting', 'Asher had been waiting all year for something he hoped for, and it still had not happened.', 'He wrote in his journal, "I do not see the good yet. I know Hashem is taking care of me." He kept learning and helping others. He still does not know the end of the story, and he is calm anyway.', 'How can someone feel calm before the ending?', ['trusting Hashem is taking care of him', 'pretending it does not matter', 'giving up hope']],
+];
+const start = 85;
+window.TL_HASHEM_MOMENTS = (window.TL_HASHEM_MOMENTS || []).concat(S.map((s, i) => ({ id: 'HM' + String(start + i).padStart(3, '0'), band: s[0], title: s[1], first: s[2], then: s[3], text: s[2] + ' ' + s[3], ask: s[4], guesses: s[5] })));
+})();
+
+/* gamzu.js — THE GAM ZU L'TOVAH GAME (plan v2.2, feature E). Draft for the builder; Kodesh-adjacent: TEST boys only until a rebbe approves. */
+/* A boy reads the first half of a Hashem Moments story (something seems to go wrong), picks the good he thinks might come */
+/* from three possible goods (or "I'm not sure yet, but I trust Hashem"), then flips the card to see what happened. Guesses are NEVER graded: */
+/* every guess that looks for the good earns a Good-Finder star. Ends with the story's Shabbos-table question. */
+/* Needs window.TL_HASHEM_MOMENTS (bitachon.js + stories_k2.js + stories_35.js + stories_68.js). No Hebrew letters on screen. */
+/* Usage: TL_GAMZU.mount(document.getElementById('gamzu'), { band: 'K2' | '35' | '68', rounds: 5 }) */
+(function () {
+/* First/then splits and guesses for the first 12 stories (HM01-HM12), which were written as one paragraph. */
+const SPLIT = {
+  HM01: ['Dovi lost his blue glove at recess. He looked under the slide and behind the bench. Nothing. He whispered, "Hashem, please help me."', 'The next morning Yossi came over with a blue glove. "I found it in the coat closet!" Dovi smiled big. "Hashem sent you, Yossi!"', ['a friend found it', 'he got a new one', 'he forgot about it']],
+  HM02: ['The class trip to the farm was rained out. Chaim felt sad. His rebbe said, "Gam zu l\'tovah."', 'So the class built a giant block city instead. The next week the sun was out, and when they got to the farm, three baby goats had just been born!', ['they saw baby goats later', 'the farm closed', 'they stayed home all week']],
+  HM03: ['Moishe asked Hashem for a sunny day. It rained. "Did Hashem not hear me?" he asked.', 'Abba said, "Hashem always hears. Sometimes the answer is yes, sometimes no, and sometimes not now. Look how the garden is drinking!" Moishe smiled at the happy, wet flowers.', ['the garden got a drink', 'the sun came out at once', 'the rain was purple']],
+  HM04: ['Shimmy needed new shoes, and the store had only one pair left in his size.', 'They were bright blue, his favorite color. "Hashem knew!" said Shimmy, and he hopped all the way home.', ['they were his favorite color', 'they were too big', 'they squeaked']],
+  HM05: ['Mendy\'s bus was twenty minutes late, and he was grumpy.', 'While he waited, he noticed a new boy standing alone. "I\'m Mendy," he said. "I\'m Shmuli," said the boy. That year they became best friends. Mendy still says, "That late bus was right on time."', ['he made a best friend', 'he went back home', 'the bus never came']],
+  HM06: ['Ari studied hard for the spelling bee. The night before, he could not sleep.', 'Abba taught him the end of Adon Olam: into His hand I trust my soul. Ari whispered it and fell asleep. He came in third place, and he was happy anyway. "I did my part," he said.', ['he slept and felt calm', 'he won first place for sure', 'he stayed up all night']],
+  HM07: ['When Zeidy was young, he missed his train by one minute. He was upset.', 'On the next train he sat next to an old man who needed a tenth man for a minyan at the next station. Zeidy got off with him, helped make the minyan, and made a friend for life.', ['he helped make a minyan', 'he got lost', 'he went home']],
+  HM08: ['Yehuda was supposed to give his first speech on Thursday, and he was nervous. Thursday was a snow day!', 'He used the extra day to practice with Abba. On Friday his speech went great. "Hashem gave me one more day," he said.', ['an extra day to practice', 'no speech at all', 'a longer speech']],
+  HM09: ['Eli sprained his ankle the week before the big game. He was crushed.', 'The coach asked him to keep score instead. Eli noticed patterns in how the team played and shared them. They won, and Eli learned he loved planning plays.', ['he found a new way to help', 'he played anyway', 'he quit the team']],
+  HM10: ['On the way to Zeidy\'s house, Abba took a wrong turn and groaned.', 'A few blocks later they saw a car stuck in the snow. Abba and Avi pushed it free. "I guess that was not a wrong turn after all," Abba laughed.', ['they helped someone stuck', 'they got lost for hours', 'they turned back home']],
+  HM11: ['Chaim worried about everything: tests, games, what other boys thought.', 'His rebbe gave him a card: "Do your part, Hashem does the rest." Before each worry Chaim did one small thing to prepare, touched the card, and let the rest go. Little by little, the worries got smaller.', ['his worries got smaller', 'he stopped trying', 'the worries vanished at once']],
+  HM12: ['Dovid\'s laptop broke two days before his science fair project was due, and every file was gone. He wanted to give up.', 'Instead he started over on paper with his brother\'s help. The new project was simpler and clearer, and it won first place. "Starting over made it better," he said.', ['starting over made it better', 'he skipped the fair', 'the files came back']],
+};
+/* The real good, phrased as an answer to "What good might come?" (HM013-HM120). HM01-HM12 use SPLIT[...][2][0]. */
+const GOOD = {"HM013": "he finds something he lost", "HM014": "a new friend", "HM015": "a chance to share", "HM016": "seeing Hashem feed the birds", "HM017": "learning with his big brother", "HM018": "just enough food for surprise guests", "HM019": "a new friend next door", "HM020": "a new niggun to sing", "HM021": "time with a good friend", "HM022": "an even prettier picture", "HM023": "a loving note from Abba", "HM024": "a chance to cheer someone up", "HM025": "a stronger tower", "HM026": "a beautiful sunrise", "HM027": "a chance to return a lost wallet", "HM028": "saying it together with Zeidy", "HM029": "a fun breakfast with Abba", "HM030": "a book he loves", "HM031": "a slice party with Abba", "HM032": "a park with ducks to feed", "HM033": "a big hug from Abba", "HM034": "a happy little brother", "HM035": "new trees on the street", "HM036": "a kind friend and a chance to pay it back", "HM037": "learning the parsha by heart", "HM038": "baking challah with Zeidy", "HM039": "finding it safe and sound", "HM040": "a chance to help a younger boy", "HM041": "a new Sunday story hour", "HM042": "a special talk with Abba", "HM043": "a game about Hashem's world", "HM044": "a treat for a friend too", "HM045": "learning a new Tehillim with Zeidy", "HM046": "seeing how strong Hashem made an ant", "HM047": "a new neighbor at the Shabbos table", "HM048": "a better drawing", "HM049": "a vort from Abba", "HM050": "a chance to include a boy left out", "HM051": "Zeidy can come to the siyum", "HM052": "the whole class learns something", "HM053": "a chance to say Tehillim with someone", "HM054": "meeting his future rebbe", "HM055": "studying with a friend", "HM056": "stories by candlelight", "HM057": "new friends on the other team", "HM058": "finding three lost things", "HM059": "a new Mishnayos chabura", "HM060": "a new learning partner", "HM061": "a kumzitz with a story to remember", "HM062": "learning from Zeidy's own notes", "HM063": "welcoming a new family", "HM064": "finishing a perek in the car", "HM065": "the honor of lighting the shammash", "HM066": "finding his tzedakah box", "HM067": "understanding it well enough to teach it", "HM068": "a friend who saved him a slice", "HM069": "a visit just when Zeidy hoped for one", "HM070": "the funniest part of the play", "HM071": "enough siddurim for the minyan", "HM072": "a new Friday trivia game", "HM073": "learning to sew from Zeidy", "HM074": "helping a boy who needed it", "HM075": "a hat that fits him later", "HM076": "a brachos card the whole class uses", "HM077": "a special morning with Abba", "HM078": "making the team the next year", "HM079": "a new job as junior gabbai", "HM080": "the honor of saying the brachah", "HM081": "deer tracks and a stream with fish", "HM082": "the best seat, next to Zeidy", "HM083": "a new chavrusa with a family connection", "HM084": "a new friend at the Shabbos table", "HM085": "a rebbe who saw his strengths", "HM086": "a speech from the heart", "HM087": "a new chavrusa", "HM088": "raising the money together", "HM089": "a love for night seder", "HM090": "a new friend who needed one", "HM091": "a better article and a spot on the staff", "HM092": "Zeidy's stories, written down", "HM093": "meeting a sofer", "HM094": "a new skill he loves", "HM095": "a siyum on the bus", "HM096": "feeling closer to Hashem", "HM097": "a chance to help a partner", "HM098": "helping make a minyan", "HM099": "learning chess with Zeidy", "HM100": "reviewing together and doing better", "HM101": "discovering he loves coaching", "HM102": "wearing Zeidy's tefillin", "HM103": "learning with the rav", "HM104": "a kugel the family loves", "HM105": "better questions for the maggid shiur", "HM106": "finding his strong voice", "HM107": "a long, careful answer", "HM108": "a summer of day trips", "HM109": "learning more than he thought he could", "HM110": "a kind tailor and a new friend", "HM111": "praise for playing fair", "HM112": "the most joyful siyum in years", "HM113": "a chance to help a family", "HM114": "a trip together with his brother", "HM115": "nights of learning with Zeidy", "HM116": "learning to disagree calmly", "HM117": "a note from long ago", "HM118": "time to review and do well", "HM119": "a brother who shares his room", "HM120": "calm trust while he waits"};
+const TRUST = "I'm not sure yet, but I trust Hashem";
+/* Every choice on a card is a possible GOOD: the story's real good (guesses[0]) plus two other goods from this pool. */
+/* (guesses[1] and [2] in the story data are not shown; the game never offers a gloomy choice.) */
+const GOODS = {
+  K2: ['a new friend', 'a chance to help someone', 'something fun to learn', 'time with Abba or Zeidy', 'a nice surprise later', 'a chance to share'],
+  '35': ['a new friend', 'a chance to do a chessed', 'learning something new', 'time with Abba or Zeidy', 'a better plan later', 'a chance to grow stronger'],
+  '68': ['a new friend or chavrusa', 'a chance to do a chessed', 'discovering a new strength', 'time with family', 'a better path later on', 'growing in bitachon'],
+};
+const CHEERS = ['Good-Finder star!', 'You looked for the good!', 'That is the gam zu l\'tovah way!', 'Great eyes for the good!'];
+const hash = s => { let h = 2166136261; for (const c of s) { h ^= c.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h; };
+const shuffle = (a, seed) => { a = a.slice(); let h = hash(seed); for (let k = a.length - 1; k > 0; k--) { h = Math.imul(h ^ (h >>> 15), 2246822519) >>> 0; const j = h % (k + 1); [a[k], a[j]] = [a[j], a[k]]; } return a; };
+function cards(band) {
+  return (window.TL_HASHEM_MOMENTS || []).map(s => {
+    const sp = SPLIT[s.id]; const c = sp ? Object.assign({}, s, { first: sp[0], then: sp[1], guesses: sp[2], good: sp[2][0] }) : Object.assign({}, s, { good: GOOD[s.id] || (s.guesses && s.guesses[0]) });
+    return c.first && c.then && c.guesses ? c : null;
+  }).filter(c => c && (!band || c.band === band));
+}
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+function mount(root, opts) {
+  opts = opts || {}; const deck = shuffle(cards(opts.band), String(opts.seed || Date.now())).slice(0, opts.rounds || 5);
+  let i = 0, stars = 0;
+  function show() {
+    root.innerHTML = '';
+    if (i >= deck.length) {
+      const end = el('div', 'gz-card gz-end');
+      end.append(el('div', 'gz-big', '⭐ ' + stars + ' Good-Finder stars'), el('p', 'gz-line', 'Every time you looked for the good, you did what Nachum Ish Gamzu did. Hashem is taking care of you.'));
+      const again = el('button', 'gz-btn', 'Play again'); again.onclick = () => { i = 0; stars = 0; show(); }; end.append(again);
+      root.append(end); return;
+    }
+    const c = deck[i]; const card = el('div', 'gz-card');
+    card.append(el('div', 'gz-step', 'Card ' + (i + 1) + ' of ' + deck.length), el('h3', 'gz-title', c.title), el('p', 'gz-first', c.first), el('p', 'gz-q', 'What good might come?'));
+    const pool = (GOODS[c.band] || GOODS['35']).filter(g => g !== c.good);
+    const opts2 = shuffle([c.good].concat(shuffle(pool, c.id + 'p').slice(0, 2)), c.id).concat([TRUST]); const list = el('div', 'gz-opts');
+    opts2.forEach(g => { const b = el('button', 'gz-btn gz-opt', g); b.onclick = () => flip(card, c, g, list); list.append(b); });
+    card.append(list); root.append(card);
+  }
+  function flip(card, c, g, list) {
+    stars++; list.querySelectorAll('button').forEach(b => { b.disabled = true; if (b.textContent === g) b.classList.add('gz-picked'); });
+    const back = el('div', 'gz-back');
+    const hit = g === c.good, trust = g === TRUST;
+    back.append(el('div', 'gz-cheer', '⭐ ' + (trust ? 'Trusting before you see it is real bitachon!' : hit ? 'You spotted it! ' + CHEERS[i % CHEERS.length] : CHEERS[i % CHEERS.length])));
+    back.append(el('div', 'gz-label', 'What happened'), el('p', 'gz-then', c.then));
+    back.append(el('div', 'gz-label', 'For the Shabbos table'), el('p', 'gz-ask', c.ask));
+    const next = el('button', 'gz-btn gz-next', i + 1 < deck.length ? 'Next card' : 'See my stars'); next.onclick = () => { i++; show(); };
+    back.append(next); card.append(back); next.focus(); try{ next.scrollIntoView({block:'nearest'}); }catch(e){}
+  }
+  show();
+}
+window.TL_GAMZU = { mount, cards, SPLIT, TRUST, GOODS };
+})();
+
+/* ===== v132: Hashem Moments (weekly story) + Gam Zu L'Tovah game on the boy home screen (curriculum@ DECISION 2058: approved, live).
+   Band: from his B'Simcha place (Levels 1-3 = K-2, 4-6 = 3-5, 7-9 = 6-8). Never graded, no money, no server data. ===== */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined') return;
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function band(){ try{ const st=A.st, ids=Object.keys(BANK_ALL).filter(x=>/^SIM\./.test(x)); const next=ids.find(id=>!(st&&st.skills&&st.skills[id]&&st.skills[id].m))||ids[ids.length-1]; const L=+((String(next||'').match(/\.L(\d+)\./)||[0,1])[1]); return L<=3?'K2':L<=6?'35':'68'; }catch(e){ return '35'; } }
+function week(){ const d=new Date(), j=new Date(d.getFullYear(),0,1); return Math.floor((d-j)/6048e5); }
+function story(){ const L=(window.TL_HASHEM_MOMENTS||[]).filter(s=>s.band===band()); return L.length?L[week()%L.length]:null; }
+try{ if(!document.getElementById('hm-css')){ const s=document.createElement('style'); s.id='hm-css'; s.textContent=`
+.hmcard{margin:14px 0;border-radius:18px;background:#F0FDF4;border:2px solid #86EFAC;padding:14px 18px;color:#14532D}
+.hmcard .hh{display:flex;align-items:center;gap:12px}.hmcard .hi{font-size:32px}.hmcard b{font-size:19px;display:block}.hmcard small{opacity:.8;font-size:15px}
+.hmcard .hb{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.hmcard button{border:0;border-radius:14px;padding:12px 16px;font:inherit;font-weight:800;background:#16A34A;color:#fff;cursor:pointer;min-height:48px}
+.hmcard button.alt{background:#fff;color:#14532D;border:2px solid #86EFAC}
+.hm-story{text-align:left;font-size:1.12em;line-height:1.55}.hm-ask{margin-top:12px;background:#FEF9C3;border-radius:12px;padding:10px 12px;text-align:left}
+#gz-root{text-align:left;max-height:min(58vh,520px);overflow-y:auto;overscroll-behavior:contain;padding-right:4px}.gz-card{background:#fff;border-radius:16px;padding:6px 2px}.gz-step{font-size:14px;opacity:.7}.gz-title{margin:6px 0;font-size:1.3em}
+.gz-first,.gz-then{font-size:1.1em;line-height:1.5}.gz-q{font-weight:800;margin:12px 0 8px}.gz-opts{display:grid;gap:8px}
+.gz-btn{border:2px solid #C7D2FE;background:#F8FAFF;border-radius:14px;padding:12px 14px;font:inherit;font-weight:700;cursor:pointer;text-align:left;min-height:48px}
+.gz-btn:disabled{opacity:.6}.gz-btn.gz-picked{opacity:1;border-color:#16A34A;background:#DCFCE7}.gz-back{margin-top:14px;border-top:2px dashed #D1D5DB;padding-top:10px}
+.gz-cheer{font-weight:800;color:#15803D;margin-bottom:8px}.gz-label{font-size:13px;text-transform:uppercase;letter-spacing:.05em;opacity:.7;margin-top:8px}
+.gz-ask{background:#FEF9C3;border-radius:12px;padding:10px 12px}.gz-next{margin-top:12px;background:#16A34A;color:#fff;border-color:#16A34A;text-align:center;width:100%}
+.gz-end{text-align:center}.gz-big{font-size:1.6em;font-weight:800;margin:10px 0}`; document.head.appendChild(s); } }catch(e){}
+function cardHTML(){ const s=story(); return `<section class="hmcard"><div class="hh"><span class="hi" aria-hidden="true">🌈</span><span><b>Hashem Moments</b><small>${s?'This week: '+E(s.title):'Stories about seeing Hashem in your day'}</small></span></div><div class="hb"><button type="button" data-hm="story">📖 Read this week's story</button><button type="button" class="alt" data-hm="game">🎲 Play Gam Zu L'Tovah</button></div></section>`; }
+const _find=window.tlFindLevelCard;
+window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ if(st&&A.view==='hub'&&window.SIM_LIVE!==false) h+=cardHTML(); }catch(e){} return h; };
+function openStory(){ const s=story(); if(!s) return;
+  overlay(`<div class="oe">📖</div><h2>${E(s.title)}</h2><div class="hm-story">${E(s.text||((s.first||'')+' '+(s.then||'')))}</div><div class="hm-ask">🕯️ For the Shabbos table: ${E(s.ask||'')}</div><p style="margin-top:14px"><button class="btn go big" data-act="closeov">Back</button></p>`);
+  try{ if(typeof speak==='function') speak(s.text||''); }catch(e){} }
+function openGame(){ overlay(`<div class="oe">${tlOri('cheer')}</div><h2>Gam Zu L'Tovah</h2><div id="gz-root"></div><p style="margin-top:14px"><button class="btn" data-act="closeov">Back to my day</button></p>`);
+  setTimeout(()=>{ const r=document.getElementById('gz-root'); if(r&&window.TL_GAMZU) TL_GAMZU.mount(r,{band:band(),rounds:5,seed:String((A.st&&A.st.id)||'')+week()}); },30); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-hm]'); if(!b) return; if(b.dataset.hm==='story') openStory(); else openGame(); });
+window.tlHashemMoment=openStory; window.tlGamZu=openGame;
+})();
+
+
+/* ORI the lantern — B'Simcha mascot (original design, 2026-11-12). Name from "Hashem ori" (Tehillim 27:1). An object, not a person: keeps the no-person-picture rule. */
+/* Moods: happy (default), cheer (sparkles, open smile: after a skill, Gam Zu game, wonders), calm (closed eyes: Chizuk Minute, Simcha Minute breath). */
+/* The .glow group pulses gently; respect prefers-reduced-motion. Usage: el.innerHTML = TL_ORI('cheer') */
+function ori(mood) {
+  const eyes = mood === 'calm'
+    ? '<path d="M41 63q4 3 8 0M55 63q4 3 8 0" stroke="#5a3b00" stroke-width="2.6" fill="none" stroke-linecap="round"/>'
+    : '<circle cx="45" cy="62" r="3.2" fill="#5a3b00"/><circle cx="59" cy="62" r="3.2" fill="#5a3b00"/>';
+  const mouth = mood === 'cheer' ? '<path d="M44 70q8 9 16 0" stroke="#5a3b00" stroke-width="2.6" fill="#ffb36b" stroke-linecap="round"/>' : '<path d="M46 71q6 5 12 0" stroke="#5a3b00" stroke-width="2.6" fill="none" stroke-linecap="round"/>';
+  const spark = mood === 'cheer' ? '<g fill="#f2c14e"><path d="M14 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M90 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></g>' : '';
+  return `<svg viewBox="0 0 104 112" width="100%" height="100%" role="img" aria-label="Ori the lantern${mood === 'cheer' ? ', cheering' : mood === 'calm' ? ', calm' : ''}">
+  ${spark}<path d="M40 14q12-12 24 0" stroke="#8a6a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <rect x="34" y="16" width="36" height="9" rx="4" fill="#b8862b"/>
+  <path d="M30 26h44l6 62q0 6-6 6H30q-6 0-6-6z" fill="#fff4d0" stroke="#b8862b" stroke-width="3"/>
+  <g class="glow"><ellipse cx="52" cy="58" rx="20" ry="24" fill="#ffd36b" opacity=".55"/><path d="M52 34q10 12 4 22q-4 6-4 6t-4-6q-6-10 4-22z" fill="#f08a24" opacity=".35"/></g>
+  <path d="M38 28v62M66 28v62" stroke="#e8cf91" stroke-width="2"/>
+  ${eyes}${mouth}<circle cx="39" cy="70" r="3.5" fill="#ffb36b" opacity=".6"/><circle cx="65" cy="70" r="3.5" fill="#ffb36b" opacity=".6"/>
+  <rect x="28" y="94" width="48" height="9" rx="4" fill="#b8862b"/></svg>`;
+}
+window.TL_ORI = ori;
+
+/* Static SVGs for print and slides: */
+/* happy */
+/*
+<svg viewBox="0 0 104 112" width="100%" height="100%" role="img" aria-label="Ori the lantern">
+  <path d="M40 14q12-12 24 0" stroke="#8a6a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <rect x="34" y="16" width="36" height="9" rx="4" fill="#b8862b"/>
+  <path d="M30 26h44l6 62q0 6-6 6H30q-6 0-6-6z" fill="#fff4d0" stroke="#b8862b" stroke-width="3"/>
+  <g class="glow"><ellipse cx="52" cy="58" rx="20" ry="24" fill="#ffd36b" opacity=".55"/><path d="M52 34q10 12 4 22q-4 6-4 6t-4-6q-6-10 4-22z" fill="#f08a24" opacity=".35"/></g>
+  <path d="M38 28v62M66 28v62" stroke="#e8cf91" stroke-width="2"/>
+  <circle cx="45" cy="62" r="3.2" fill="#5a3b00"/><circle cx="59" cy="62" r="3.2" fill="#5a3b00"/><path d="M46 71q6 5 12 0" stroke="#5a3b00" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="39" cy="70" r="3.5" fill="#ffb36b" opacity=".6"/><circle cx="65" cy="70" r="3.5" fill="#ffb36b" opacity=".6"/>
+  <rect x="28" y="94" width="48" height="9" rx="4" fill="#b8862b"/></svg>
+*/
+/* cheer */
+/*
+<svg viewBox="0 0 104 112" width="100%" height="100%" role="img" aria-label="Ori the lantern, cheering">
+  <g fill="#f2c14e"><path d="M14 30l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M90 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/></g><path d="M40 14q12-12 24 0" stroke="#8a6a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <rect x="34" y="16" width="36" height="9" rx="4" fill="#b8862b"/>
+  <path d="M30 26h44l6 62q0 6-6 6H30q-6 0-6-6z" fill="#fff4d0" stroke="#b8862b" stroke-width="3"/>
+  <g class="glow"><ellipse cx="52" cy="58" rx="20" ry="24" fill="#ffd36b" opacity=".55"/><path d="M52 34q10 12 4 22q-4 6-4 6t-4-6q-6-10 4-22z" fill="#f08a24" opacity=".35"/></g>
+  <path d="M38 28v62M66 28v62" stroke="#e8cf91" stroke-width="2"/>
+  <circle cx="45" cy="62" r="3.2" fill="#5a3b00"/><circle cx="59" cy="62" r="3.2" fill="#5a3b00"/><path d="M44 70q8 9 16 0" stroke="#5a3b00" stroke-width="2.6" fill="#ffb36b" stroke-linecap="round"/><circle cx="39" cy="70" r="3.5" fill="#ffb36b" opacity=".6"/><circle cx="65" cy="70" r="3.5" fill="#ffb36b" opacity=".6"/>
+  <rect x="28" y="94" width="48" height="9" rx="4" fill="#b8862b"/></svg>
+*/
+/* calm */
+/*
+<svg viewBox="0 0 104 112" width="100%" height="100%" role="img" aria-label="Ori the lantern, calm">
+  <path d="M40 14q12-12 24 0" stroke="#8a6a2a" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <rect x="34" y="16" width="36" height="9" rx="4" fill="#b8862b"/>
+  <path d="M30 26h44l6 62q0 6-6 6H30q-6 0-6-6z" fill="#fff4d0" stroke="#b8862b" stroke-width="3"/>
+  <g class="glow"><ellipse cx="52" cy="58" rx="20" ry="24" fill="#ffd36b" opacity=".55"/><path d="M52 34q10 12 4 22q-4 6-4 6t-4-6q-6-10 4-22z" fill="#f08a24" opacity=".35"/></g>
+  <path d="M38 28v62M66 28v62" stroke="#e8cf91" stroke-width="2"/>
+  <path d="M41 63q4 3 8 0M55 63q4 3 8 0" stroke="#5a3b00" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M46 71q6 5 12 0" stroke="#5a3b00" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="39" cy="70" r="3.5" fill="#ffb36b" opacity=".6"/><circle cx="65" cy="70" r="3.5" fill="#ffb36b" opacity=".6"/>
+  <rect x="28" y="94" width="48" height="9" rx="4" fill="#b8862b"/></svg>
+*/
+
+
+/* v134: Ori the lantern (B'Simcha mascot, an object, not a person) on the morning card, Chizuk Minute and Gam Zu game. */
+(function(){ try{ if(!document.getElementById('ori-css')){ const s=document.createElement('style'); s.id='ori-css'; s.textContent='.ori{display:inline-block;width:72px;height:78px;vertical-align:middle}.ori .glow{animation:origlow 2.6s ease-in-out infinite;transform-origin:52px 58px}@keyframes origlow{0%,100%{opacity:.75}50%{opacity:1}}@media (prefers-reduced-motion: reduce){.ori .glow{animation:none}}'; document.head.appendChild(s); } }catch(e){} window.tlOri=m=>'<span class="ori">'+(window.TL_ORI?TL_ORI(m||'happy'):'🏮')+'</span>'; })();
+</script>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><base target="_top">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tashbar Canteen</title>
+<style>
+:root{--bg:#FFF7ED;--card:#fff;--ink:#1F2937;--mut:#6B7280;--line:#FED7AA;--pri:#EA580C;--pri2:#C2410C;--ok:#059669;--no:#DC2626}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-user-select:none;user-select:none}
+header{background:var(--pri);color:#fff;padding:10px 16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+header h1{margin:0;font-size:22px;margin-right:auto}
+header button{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:12px;padding:10px 14px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;min-height:44px}
+main{padding:16px;max-width:1200px;margin:0 auto}
+.card{background:var(--card);border-radius:20px;padding:18px;box-shadow:0 2px 0 var(--line);margin-bottom:14px}
+.banner{border-radius:14px;padding:10px 14px;background:#FEF3C7;margin-bottom:12px;font-size:16px}
+.banner.err{background:#FEE2E2}.banner.ok{background:#D1FAE5}
+.big{font-size:30px;font-weight:800;margin:4px 0 12px}
+.names{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.names button{background:#fff;border:2px solid var(--line);border-radius:16px;padding:16px 10px;font:inherit;font-weight:700;cursor:pointer;min-height:64px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chips button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;min-height:44px}
+.chips button.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.pad{max-width:360px;margin:0 auto;text-align:center}.dots{font-size:40px;letter-spacing:14px;height:56px}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+.keys button{font:inherit;font-size:30px;font-weight:800;padding:18px 0;border-radius:18px;border:2px solid var(--line);background:#fff;cursor:pointer}
+.shop{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.tile{background:#fff;border:3px solid var(--line);border-radius:20px;padding:12px;text-align:center;cursor:pointer;font:inherit;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.tile .em{font-size:56px;line-height:1}.tile img{width:84px;height:84px;object-fit:contain}
+.tile .nm{font-weight:800}.tile .pr{font-size:22px;font-weight:800;color:var(--pri2)}
+.tile.out{opacity:.4;cursor:default}.tile .so{color:var(--no);font-weight:800}
+.cart{position:sticky;top:10px}
+.line{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #F3F4F6}
+.line .q{display:flex;gap:6px;align-items:center;margin-left:auto}
+.line .q button{width:40px;height:40px;border-radius:12px;border:2px solid var(--line);background:#fff;font:inherit;font-weight:800;cursor:pointer}
+.tot{display:flex;justify-content:space-between;font-size:20px;font-weight:800;margin-top:10px}
+.btn{border:0;border-radius:16px;padding:16px 20px;font:inherit;font-weight:800;cursor:pointer;background:#F3F4F6;min-height:56px}
+.btn.go{background:var(--ok);color:#fff;font-size:24px;width:100%;margin-top:12px}.btn.go:disabled{background:#9CA3AF}
+.btn.warn{background:var(--no);color:#fff}.btn.wide{width:100%;margin-top:8px}
+.cash{font-size:44px;font-weight:900;color:var(--pri2)}
+table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #F3F4F6;text-align:left}td.n,th.n{text-align:right}
+input,select{font:inherit;padding:10px;border:2px solid var(--line);border-radius:12px;min-height:48px;width:100%}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;align-items:end}
+.form label{font-size:14px;color:var(--mut);display:block}
+.note{color:var(--mut);font-size:15px}
+@media (max-width:820px){.shop{grid-template-columns:1fr}.cart{position:static}}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+.ch{display:flex;align-items:center;gap:8px;margin:4px 0 10px;font-size:22px}.ch span{background:var(--pri);color:#fff;border-radius:999px;padding:2px 12px;font-size:18px}.ch.ready span{background:var(--ok)}
+.oc{background:#fff;border:3px solid var(--line);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 6px 16px #EA580C14}.oc.ready{border-color:#34D399;background:#F0FDF4}
+.oc .oh{display:flex;justify-content:space-between;align-items:baseline;font-size:20px}.oc .oi{margin:8px 0;font-size:18px}.oc .oi div{display:flex;justify-content:space-between;padding:3px 0}
+.oc .ob{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.oc .ob .btn{min-height:52px;padding:10px 14px}.btn.rdy{background:#FEF3C7}.btn.pk{background:var(--ok);color:#fff;flex:1}.btn.cx{background:#FEE2E2;color:var(--no)}
+.obadge{background:#fff;color:var(--pri2);border-radius:999px;padding:0 9px;margin-left:6px;font-weight:900}.obadge.hot{background:#FDE047;color:#7C2D12;animation:kb 1s ease-in-out infinite}@keyframes kb{50%{transform:scale(1.15)}}
+.mform{display:grid;grid-template-columns:200px 1fr;gap:18px;align-items:start}.prev .tile{min-height:190px}
+.emo{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.emo button{font-size:28px;width:52px;height:52px;border-radius:14px;border:2px solid var(--line);background:#fff;cursor:pointer}.emo button.on{border-color:var(--pri);background:#FFEDD5}
+.onoff{display:flex;gap:8px;margin-top:12px}.onoff button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:10px 16px;font:inherit;font-weight:800;cursor:pointer;min-height:48px}.onoff button.on{border-color:var(--ok);background:#D1FAE5}
+@media (max-width:820px){.cols,.mform{grid-template-columns:1fr}}
+.phrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.phbtn{display:inline-flex;align-items:center;gap:6px;background:#1f6f4a;color:#fff;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;min-height:48px}.phx{border:2px solid #ddd;background:#fff;border-radius:12px;padding:10px 14px;font-weight:700;min-height:48px}
+</style></head><body>
+<div id="app"></div>
+<script>
+const K={token:null,me:null,boot:null,view:'signin',pin:'',err:'',msg:'',boy:null,cls:'',cart:{},saleId:null,busy:false,cashier:'staff',done:null,timer:null,idle:null,menu:null,edit:null,rep:null,last:null};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function run(fn,...a){return new Promise((ok,no)=>google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...a));}
+function money(n){return (n<0?'−$':'$')+Math.abs(Number(n)||0).toFixed(2);}
+function uid(){return 'S'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);}
+function fail(e){K.busy=false;K.err=(e&&e.message)||String(e);if(/sign in again/i.test(K.err)){K.token=null;K.view='signin';try{sessionStorage.removeItem('cn-token');}catch(x){}}render();}
+function idle(){clearTimeout(K.idle); if(['code','shop'].includes(K.view)) K.idle=setTimeout(home,60000);}
+function home(){clearTimeout(K.timer);K.view='start';K.boy=null;K.cart={};K.pin='';K.err='';K.msg='';K.saleId=null;K.done=null;render();}
+
+function start(){ try{K.token=sessionStorage.getItem('cn-token');}catch(e){} if(K.token) boot(); else render(); }
+function signIn(){ if(K.pin.length<4||K.busy) return; K.busy=true; render();
+  run('cnKioskSignIn',K.pin).then(r=>{K.busy=false;K.pin=''; if(!r||!r.ok){K.err=r&&r.wait?'Too many tries. Wait 10 minutes.':'That code didn’t work.';return render();}
+    K.token=r.token; try{sessionStorage.setItem('cn-token',r.token);}catch(e){} K.err=''; boot(); }).catch(fail); }
+function boot(){ K.busy=true; render(); run('cnKioskBoot',K.token).then(b=>{K.busy=false;K.boot=b;K.me=b.me; if(!K.cls&&b.boys.length) K.cls=''; home(); loadOrders(true); pollOrders();}).catch(fail); }
+function signOut(){ try{sessionStorage.removeItem('cn-token');}catch(e){} K.token=null;K.view='signin';render(); }
+
+function pickBoy(id){ const b=K.boot.boys.find(x=>x.id===id); K.boy={id:b.id,name:b.name}; K.pin=''; K.err=''; K.view='code'; render(); idle(); }
+function checkBoy(){ if(K.pin.length<4||K.busy) return; K.busy=true; render();
+  run('cnKioskCheckBoy',K.token,K.boy.id,K.pin).then(r=>{K.busy=false;K.pin='';
+    if(!r||!r.ok){K.err=r&&r.wait?'Too many tries. Ask the canteen staff.':'That code didn’t work. Try again.';return render();}
+    K.boy=Object.assign(K.boy,{ticket:r.ticket,balance:r.balance}); K.cart={}; K.saleId=uid(); K.err=''; K.view='shop'; render(); idle(); }).catch(fail); }
+function cartLines(){ return Object.keys(K.cart).filter(id=>K.cart[id]>0).map(id=>({m:K.boot.menu.find(x=>x.id===id),q:K.cart[id]})).filter(l=>l.m); }
+function cartTotal(){ return Math.round(cartLines().reduce((s,l)=>s+Math.round(l.m.price*100)*l.q,0))/100; }
+function add(id,d){ const m=K.boot.menu.find(x=>x.id===id); if(!m) return; let q=(K.cart[id]||0)+d; if(q<0) q=0; if(m.stock!==''&&q>m.stock) q=m.stock; if(q>20) q=20; K.cart[id]=q; K.saleId=uid(); K.err=''; render(); idle(); }
+function buy(){ if(K.busy) return; const lines=cartLines(); if(!lines.length) return;
+  K.busy=true; render();
+  const sale=K.saleId;
+  run('cnKioskBuy',K.token,K.boy.ticket,lines.map(l=>({id:l.m.id,qty:l.q})),K.cashier,sale).then(r=>{K.busy=false;
+    if(!r.ok&&r.short){K.err=`Not enough Canteen Cash. This costs ${money(r.total)} and you have ${money(r.before)}.`;return render();}
+    K.done=r; K.view='done'; render(); boot2(); let n=10; K.timer=setInterval(()=>{n--; const c=document.getElementById('cd'); if(c) c.textContent=n; if(n<=0){clearInterval(K.timer);home();}},1000);
+  }).catch(fail); }
+function boot2(){ run('cnKioskBoot',K.token).then(b=>{K.boot=b;}).catch(()=>{}); }
+
+function vSignin(){ return `<div class="card pad"><div class="big">🥨 Canteen sign-in</div><p class="note">Canteen staff code</p><div class="dots">${'●'.repeat(K.pin.length)}${'○'.repeat(4-K.pin.length)}</div>${K.err?`<div class="banner err">${esc(K.err)}</div>`:''}${keys()}</div>`; }
+function keys(){ return `<div class="keys">${[1,2,3,4,5,6,7,8,9,'⌫',0,'✓'].map(k=>`<button data-key="${k}">${k}</button>`).join('')}</div>`; }
+function vStart(){
+  const b=K.boot, classes=[...new Set(b.boys.map(x=>x.cls||'Other'))].sort();
+  let h=''; if(b.sheet==='test') h+='<div class="banner">Practice mode: purchases go to the TEST COPY, not real Canteen Cash.</div>';
+  if(K.msg) h+=`<div class="banner ok">${esc(K.msg)}</div>`; if(K.err) h+=`<div class="banner err">${esc(K.err)}</div>`;
+  h+=`<div class="card"><div class="row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><b>Cashier:</b><select id="cashier" style="width:auto">${['staff'].concat(b.crew.map(c=>c.id)).map(id=>`<option value="${esc(id)}" ${K.cashier===id?'selected':''}>${id==='staff'?'Staff ('+esc(b.me.name)+')':esc((b.crew.find(c=>c.id===id)||{}).name)+' · Crew'}</option>`).join('')}</select><span class="note">${b.crew.length?'':'No Canteen Crew boys yet: they finish the Canteen Crew course first.'}</span></div></div>`;
+  h+=`<div class="card"><div class="big">👋 Tap your name</div><div class="chips"><button class="${K.cls===''?'on':''}" data-cls="">All</button>${classes.map(c=>`<button class="${K.cls===c?'on':''}" data-cls="${esc(c)}">${esc(c)}</button>`).join('')}</div><div class="names">${b.boys.filter(x=>!K.cls||(x.cls||'Other')===K.cls).map(x=>`<button data-boy="${esc(x.id)}">${esc(x.name)}</button>`).join('')}</div></div>`;
+  if(!b.menu.length) h+='<div class="banner">The menu is empty. Tap <b>Menu</b> to add items and switch them on.</div>';
+  return h;
+}
+function vCode(){ return `<div class="card pad"><div class="big">${esc(K.boy.name)}</div><p>Type your 4-digit code</p><div class="dots">${'●'.repeat(K.pin.length)}${'○'.repeat(4-K.pin.length)}</div>${K.err?`<div class="banner err">${esc(K.err)}</div>`:''}${keys()}<button class="btn wide" data-act="home">Not me · back</button></div>`; }
+function vShop(){
+  const b=K.boy, lines=cartLines(), tot=cartTotal(), bal=b.balance, left=bal==null?null:Math.round((bal-tot)*100)/100;
+  let h=`<div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px"><div><div class="big" style="margin:0">${esc(b.name)}</div><div class="note">Canteen Cash</div><div class="cash">${bal==null?'No account':money(bal)}</div></div><button class="btn" data-act="home">Cancel</button></div>`;
+  if(K.err) h+=`<div class="banner err">${esc(K.err)}</div>`;
+  h+='<div class="shop"><div class="tiles">'+K.boot.menu.map(m=>{const out=m.stock!==''&&m.stock<=0;return `<button class="tile ${out?'out':''}" ${out?'disabled':''} data-add="${esc(m.id)}">${m.pic?`<img src="${esc(m.pic)}" alt="">`:`<span class="em">${esc(m.emoji||'🍪')}</span>`}<span class="nm">${esc(m.name)}</span><span class="pr">${money(m.price)}</span>${out?'<span class="so">Sold out</span>':m.stock!==''&&m.stock<=3?`<span class="note">${m.stock} left</span>`:''}</button>`;}).join('')+'</div>';
+  h+=`<div class="card cart"><b>Cart</b>${lines.length?lines.map(l=>`<div class="line"><span>${esc(l.m.emoji||'')} ${esc(l.m.name)}</span><span class="q"><button data-sub="${esc(l.m.id)}">−</button><b>${l.q}</b><button data-add="${esc(l.m.id)}">+</button></span></div>`).join(''):'<p class="note">Tap items to add them.</p>'}
+    <div class="tot"><span>Total</span><span>${money(tot)}</span></div>${bal!=null?`<div class="tot" style="font-size:17px;color:${left<0?'var(--no)':'var(--mut)'}"><span>Left after</span><span>${money(left)}</span></div>`:''}
+    <button class="btn go" data-act="buy" ${(!lines.length||K.busy||bal==null||left<0)?'disabled':''}>${K.busy?'Buying…':'Buy'}</button>${left<0?'<p class="note" style="color:var(--no)">Not enough Canteen Cash. Take something out.</p>':''}</div></div>`;
+  return h;
+}
+function vDone(){ const r=K.done; return `<div class="card pad" style="max-width:520px"><div style="font-size:70px">✅</div><div class="big">${esc(K.boy.name)}</div><p>${esc(r.items)} · ${money(r.total)}</p><p class="note">New Canteen Cash balance</p><div class="cash">${money(r.after)}</div><p class="note">Back to start in <b id="cd">10</b> seconds</p><button class="btn wide" data-act="home">Next customer</button></div>`; }
+
+/* staff screens */
+function loadMenu(){ K.busy=true; render(); run('cnMenuList',K.token).then(m=>{K.busy=false;K.menu=m;K.view='menu';render();}).catch(fail); }
+/* ---- v61: app orders board. Boys order in the app (Pending); staff mark Ready; "Picked up" charges through the normal kiosk sale. ---- */
+let ORD=null, ordTimer=null;
+function ago(t){ const m=Math.round((Date.now()-t)/60000); return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' h ago'; }
+function pollOrders(){ clearInterval(ordTimer); ordTimer=setInterval(()=>{ if(K.token&&(K.view==='orders'||K.view==='start')) loadOrders(true); },20000); }
+function loadOrders(quiet){ if(!quiet){K.busy=true; render();} run('cnKioskOrders',K.token).then(r=>{K.busy=false; const before=ORD?ORD.open.filter(o=>o.status==='pending').length:0; ORD=r; const now=r.open.filter(o=>o.status==='pending').length; if(quiet&&now>before) ding(); if(!quiet) K.view='orders'; if(!quiet||K.view==='orders'||K.view==='start') render(); }).catch(e=>{ if(!quiet) fail(e); }); }
+function ding(){ try{ const c=new (window.AudioContext||window.webkitAudioContext)(); [660,880].forEach((f,i)=>{ const o=c.createOscillator(),g=c.createGain(); o.frequency.value=f; o.connect(g); g.connect(c.destination); g.gain.setValueAtTime(.15,c.currentTime+i*.18); g.gain.exponentialRampToValueAtTime(.001,c.currentTime+i*.18+.25); o.start(c.currentTime+i*.18); o.stop(c.currentTime+i*.18+.3); }); }catch(e){} }
+function ordCard(o){ return `<div class="oc ${o.status}"><div class="oh"><b>${esc(o.name)}</b><span class="note">${ago(o.at)}</span></div><div class="oi">${o.items.map(i=>`<div><span>${esc(i.emoji||'🍪')} ${esc(i.name)}</span><b>x${i.qty}</b></div>`).join('')}</div><div class="note">About ${money(o.est)} · pays at pickup</div>
+  <div class="ob">${o.status==='pending'?`<button class="btn rdy" data-ord="ready" data-id="${esc(o.id)}">🔔 Ready</button>`:''}<button class="btn pk" data-ord="pick" data-id="${esc(o.id)}">✅ Picked up · pay</button><button class="btn cx" data-ord="cancel" data-id="${esc(o.id)}">✕</button></div></div>`; }
+function vOrders(){ const r=ORD||{open:[],done:[]}, pend=r.open.filter(o=>o.status==='pending'), rdy=r.open.filter(o=>o.status==='ready');
+  let h=''; if(K.msg) h+=`<div class="banner ok">${esc(K.msg)}</div>`; if(K.err) h+=`<div class="banner err">${esc(K.err)}</div>`;
+  h+=`<div class="card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div class="big" style="margin:0">🛎️ App orders</div><span class="note">Updates by itself every 20 seconds. Money comes off only when you press Picked up.</span><span style="margin-left:auto"><b>Cashier:</b> ${cashierSel()}</span></div></div>
+  <div class="cols"><div><h3 class="ch new">🧾 New <span>${pend.length}</span></h3>${pend.map(ordCard).join('')||'<p class="note">No new orders.</p>'}</div><div><h3 class="ch ready">🔔 Ready for pickup <span>${rdy.length}</span></h3>${rdy.map(ordCard).join('')||'<p class="note">Nothing waiting.</p>'}</div></div>`;
+  if(r.done.length) h+=`<div class="card"><b>Done today</b><table>${r.done.map(o=>`<tr><td>${o.status==='picked'?'✅':'✖️'} ${esc(o.name)}</td><td>${o.items.map(i=>esc(i.name)+(i.qty>1?' x'+i.qty:'')).join(', ')}</td><td class="note">${esc(o.note)}</td></tr>`).join('')}</table></div>`;
+  return h; }
+function cashierSel(){ const b=K.boot; return `<select id="cashier" style="width:auto;display:inline-block">${['staff'].concat(b.crew.map(c=>c.id)).map(id=>`<option value="${esc(id)}" ${K.cashier===id?'selected':''}>${id==='staff'?'Staff ('+esc(b.me.name)+')':esc((b.crew.find(c=>c.id===id)||{}).name)+' · Crew'}</option>`).join('')}</select>`; }
+function ordAct(a,id){ const o=ORD&&ORD.open.find(x=>x.id===id); if(!o||K.busy) return; K.err=''; K.msg='';
+  if(a==='cancel'){ const why=prompt('Cancel '+o.name+'’s order? Write a short reason (optional):',''); if(why===null) return; K.busy=true; render(); return run('cnKioskOrderSet',K.token,id,'cancelled',why).then(r=>{K.busy=false;ORD=r;K.msg='Order cancelled. Nothing was charged.';render();}).catch(fail); }
+  if(a==='ready'){ K.busy=true; render(); return run('cnKioskOrderSet',K.token,id,'ready','').then(r=>{K.busy=false;ORD=r;K.msg='🔔 '+o.name+' can see his order is ready.';render();}).catch(fail); }
+  if(a==='pick'){ K.busy=true; render(); return run('cnKioskOrderPickup',K.token,id,K.cashier).then(r=>{K.busy=false;
+    if(!r.ok){ K.err=r.short?`${o.name} doesn’t have enough Canteen Cash (${money(r.before)}; this costs ${money(r.total)}). Change or cancel the order.`:'Could not finish this order.'; return render(); }
+    ORD=r.orders||ORD; K.msg=r.dup?'Already picked up.':`✅ ${r.name}: ${r.items} · ${money(r.total)}. New balance ${money(r.after)}.`; boot2(); render(); }).catch(fail); }
+}
+/* ---- v61: friendlier menu editor ---- */
+const EMO=['🥨','🍪','🍫','🍬','🍭','🧃','💧','🥤','🍎','🍌','🍊','🍇','🍿','🥯','🍕','🌯','🧁','🍩','🥜','🍦'];
+function vMenu(){
+  const e=K.edit||{id:'',name:'',price:'',emoji:'🍪',pic:'',stock:'',on:true}; const pv=K.pv||e;
+  let h=`<div class="card"><div class="big">🧾 Canteen Menu</div><p class="note">Add each food: name, price, a picture (emoji or a link), and how many you have. Switch an item <b>Off</b> to hide it from the boys and the kiosk.</p>`;
+  if(K.err) h+=`<div class="banner err">${esc(K.err)}</div>`; if(K.msg) h+=`<div class="banner ok">${esc(K.msg)}</div>`;
+  h+=`<div class="mform"><div class="prev"><div class="tile" style="pointer-events:none">${pv.pic?`<img src="${esc(pv.pic)}" alt="">`:`<span class="em">${esc(pv.emoji||'🍪')}</span>`}<span class="nm">${esc(pv.name||'Item name')}</span><span class="pr">${pv.price!==''&&!isNaN(pv.price)?money(Number(pv.price)):'$0.00'}</span></div><div class="note" style="text-align:center">This is how it looks</div></div>
+  <div><div class="form"><label>Food name<input id="f_name" value="${esc(e.name)}" maxlength="40" placeholder="e.g. Pretzels"></label><label>Price ($)<input id="f_price" inputmode="decimal" value="${esc(e.price)}" placeholder="0.50"></label><label>How many do you have? (blank = don’t count)<input id="f_stock" inputmode="numeric" value="${esc(e.stock)}"></label></div>
+  <label class="note" style="display:block;margin-top:10px">Picture: tap an emoji</label><div class="emo">${EMO.map(x=>`<button data-emo="${x}" class="${(pv.emoji||e.emoji)===x?'on':''}">${x}</button>`).join('')}<input id="f_emoji" value="${esc(e.emoji)}" maxlength="8" style="width:80px" aria-label="Other emoji"></div>
+  <div class="note" style="margin-top:10px">…or a real photo of the food</div><div class="phrow"><label class="phbtn">📷 Take or choose a photo<input type="file" accept="image/*" id="f_file" style="display:none"></label>${/^data:/.test(pv.pic||'')?'<button class="phx" data-act="nophoto">Remove photo</button>':''}</div>
+  <label class="note" style="display:block;margin-top:8px">…or a picture link (optional, https://)<input id="f_pic" value="${esc(/^data:/.test(e.pic||'')?'':e.pic)}"></label>
+  <div class="onoff"><button data-on="1" class="${e.on?'on':''}">✅ On sale</button><button data-on="0" class="${e.on?'':'on'}">⏸️ Off</button></div>
+  <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap"><button class="btn go" style="width:auto;margin:0" data-act="msave">${e.id?'💾 Save changes':'➕ Add to menu'}</button>${e.id?'<button class="btn" data-act="mnew">New item</button>':''}</div></div></div></div>`;
+  const list=K.menu||[];
+  h+=`<div class="card"><b>On the menu (${list.filter(m=>m.on).length} on, ${list.filter(m=>!m.on).length} off)</b><div class="tiles" style="margin-top:10px">${list.map(m=>`<div class="tile ${m.on?'':'out'}" style="cursor:default">${m.pic?`<img src="${esc(m.pic)}" alt="">`:`<span class="em">${esc(m.emoji||'🍪')}</span>`}<span class="nm">${esc(m.name)}</span><span class="pr">${money(m.price)}</span><span class="note">${m.stock===''?'not counted':m.stock+' left'}</span><div style="display:flex;gap:6px"><button class="btn" style="min-height:44px;padding:8px 12px" data-medit="${esc(m.id)}">✏️ Edit</button><button class="btn" style="min-height:44px;padding:8px 12px" data-mtog="${esc(m.id)}">${m.on?'⏸️ Off':'✅ On'}</button></div></div>`).join('')||'<p class="note">Nothing yet. Add the first food above.</p>'}</div></div>`;
+  return h;
+}
+function readForm(){ const g=id=>{const el=document.getElementById(id);return el?el.value:'';}; return {id:K.edit?K.edit.id:'',name:g('f_name'),price:g('f_price'),emoji:g('f_emoji'),pic:(g('f_pic').trim()||(K.photo!==undefined?K.photo:(K.edit&&/^data:/.test(K.edit.pic||'')?K.edit.pic:''))),stock:g('f_stock').trim(),on:K.on!==undefined?K.on:(K.edit?K.edit.on:true)}; }
+function saveMenu(){ const it=readForm(); if(!it.name.trim()){K.err='Give the food a name.';return render();} if(it.price===''||isNaN(Number(it.price))){K.err='Type a price, like 0.50';return render();}
+  K.busy=true; run('cnMenuSave',K.token,it).then(()=>{K.busy=false;K.edit=null;K.pv=null;K.on=undefined;K.photo=undefined;K.msg='Saved ✓ '+it.name;K.err='';boot2();loadMenu();}).catch(fail); }
+function togMenu(id){ const m=(K.menu||[]).find(x=>x.id===id); if(!m) return; K.busy=true; run('cnMenuSave',K.token,{id:m.id,name:m.name,price:m.price,emoji:m.emoji,pic:m.pic,stock:m.stock,on:!m.on}).then(()=>{K.busy=false;K.msg=m.name+(m.on?' is off the menu.':' is on sale.');boot2();loadMenu();}).catch(fail); }
+function loadRep(){ K.busy=true; render(); run('cnKioskReport',K.token,null).then(r=>{K.busy=false;K.rep=r;K.view='rep';render();}).catch(fail); }
+function vRep(){ const r=K.rep; return `<div class="card"><div class="big">📊 Today’s sales · ${esc(r.date)}</div><table><tr><td>Sales</td><td class="n">${r.sales}</td></tr><tr><td>Sold</td><td class="n">${money(r.gross)}</td></tr><tr><td>Voided (${r.voids})</td><td class="n">${money(-r.voided)}</td></tr><tr><th>Total</th><th class="n">${money(r.net)}</th></tr></table></div>
+  <div class="card"><b>Items sold</b><table>${r.items.map(i=>`<tr><td>${esc(i.name)}</td><td class="n">${i.qty}</td></tr>`).join('')||'<tr><td class="note">None yet.</td></tr>'}</table></div>
+  <div class="card"><b>Low stock (3 or fewer)</b><table>${r.low.map(i=>`<tr><td>${esc(i.name)}</td><td class="n">${i.stock}</td></tr>`).join('')||'<tr><td class="note">Nothing low.</td></tr>'}</table></div>`; }
+function loadLast(){ K.busy=true; render(); run('cnKioskLastSale',K.token).then(r=>{K.busy=false;K.last=r;K.view='void';render();}).catch(fail); }
+function vVoid(){ const l=K.last; if(!l) return '<div class="card"><p>No sale to void.</p></div>';
+  return `<div class="card pad" style="max-width:560px"><div class="big">↩️ Void last sale</div><p><b>${esc(l.name)}</b> · ${esc(l.date)}<br>${esc(l.items)} · <b>${money(l.total)}</b><br><span class="note">Cashier: ${esc(l.cashier)}</span></p><label class="note">Reason (required)<input id="vreason" maxlength="120" placeholder="e.g. wrong boy, changed his mind"></label>${K.err?`<div class="banner err">${esc(K.err)}</div>`:''}<button class="btn warn wide" data-act="dovoid">Void this sale and give the money back</button><p class="note">Nothing is deleted: a reversal line is added with your reason.</p></div>`; }
+function doVoid(){ const reason=(document.getElementById('vreason').value||'').trim(); if(reason.length<3){K.err='Write a reason.';return render();}
+  K.busy=true; run('cnKioskVoid',K.token,K.last.saleId,reason).then(r=>{K.busy=false; boot2(); home(); K.msg=`Voided. ${money(r.refunded)} given back.`; render();}).catch(fail); }
+
+function render(){
+  const el=document.getElementById('app');
+  const staff=K.token&&K.boot;
+  const hdr=`<header><h1>🥨 Tashbar Canteen</h1>${staff?`<button data-act="home">Start</button><button data-act="void">Void last sale</button><button data-act="rep">Today’s sales</button><button data-act="orders">🛎️ Orders${ORD&&ORD.open.length?`<span class="obadge ${ORD.open.some(o=>o.status==='pending')?'hot':''}">${ORD.open.length}</span>`:''}</button><button data-act="menu">Menu</button><button data-act="out">Sign out</button>`:''}</header>`;
+  let b='';
+  if(!K.token) b=vSignin(); else if(!K.boot) b='<div class="card">Loading…</div>';
+  else b=K.view==='code'?vCode():K.view==='shop'?vShop():K.view==='done'?vDone():K.view==='menu'?vMenu():K.view==='rep'?vRep():K.view==='void'?vVoid():K.view==='orders'?vOrders():vStart();
+  el.innerHTML=hdr+'<main>'+b+'</main>';
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button'); if(!t||t.disabled) return; const d=t.dataset;
+  if(d.key!==undefined){ const k=d.key; if(k==='⌫') K.pin=K.pin.slice(0,-1); else if(k==='✓'){} else if(K.pin.length<4) K.pin+=k; K.err=''; render(); idle(); if(K.pin.length===4) (K.token?checkBoy():signIn()); return; }
+  if(d.boy) return pickBoy(d.boy);
+  if(d.cls!==undefined){ K.cls=d.cls; return render(); }
+  if(d.add) return add(d.add,1);
+  if(d.sub) return add(d.sub,-1);
+  if(d.medit){ K.edit=K.menu.find(m=>m.id===d.medit); K.pv=null; K.on=undefined; K.photo=undefined; K.msg=''; K.err=''; window.scrollTo(0,0); return render(); }
+  if(d.mtog) return togMenu(d.mtog);
+  if(d.emo){ K.photo=''; const fp=document.getElementById('f_pic'); if(fp) fp.value=''; const f=readForm(); f.emoji=d.emo; f.pic=''; K.edit=Object.assign({},K.edit||{},f); K.pv=f; return render(); }
+  if(d.on!==undefined){ const f=readForm(); K.on=d.on==='1'; f.on=K.on; K.edit=Object.assign({},K.edit||{},f); K.pv=f; return render(); }
+  if(d.ord) return ordAct(d.ord,d.id);
+  switch(d.act){
+    case 'home': return home(); case 'buy': return buy(); case 'out': return signOut();
+    case 'menu': K.edit=null; K.msg=''; K.err=''; return loadMenu(); case 'msave': return saveMenu(); case 'mnew': K.edit=null; K.pv=null; K.on=undefined; K.photo=undefined; return render();
+    case 'nophoto': { K.photo=''; const f=readForm(); f.pic=''; K.edit=Object.assign({},K.edit||{},f,{pic:''}); K.pv=f; return render(); }
+    case 'orders': K.err=''; K.msg=''; return loadOrders(false);
+    case 'rep': K.err=''; return loadRep(); case 'void': K.err=''; return loadLast(); case 'dovoid': return doVoid();
+  }
+});
+document.addEventListener('change',e=>{ if(e.target.id==='cashier') K.cashier=e.target.value;
+  if(e.target.id==='f_file'&&e.target.files&&e.target.files[0]){ const file=e.target.files[0], rd=new FileReader();
+    rd.onload=()=>{ const im=new Image(); im.onload=()=>{ let side=320, q=.72, url='';
+      for(let n=0;n<4;n++){ const sc=Math.min(1,side/Math.max(im.width,im.height)), c=document.createElement('canvas'); c.width=Math.round(im.width*sc); c.height=Math.round(im.height*sc); const x=c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(im,0,0,c.width,c.height); url=c.toDataURL('image/jpeg',q); if(url.length<=45000) break; side=Math.round(side*.8); q=Math.max(.5,q-.08); }
+      if(url.length>45000){ K.err='That photo is too big. Try another one.'; return render(); }
+      K.photo=url; const fp=document.getElementById('f_pic'); if(fp) fp.value=''; const f=readForm(); f.pic=url; K.edit=Object.assign({},K.edit||{},f); K.pv=f; K.err=''; render(); };
+      im.onerror=()=>{ K.err='That file is not a picture.'; render(); }; im.src=rd.result; };
+    rd.readAsDataURL(file); } });
+document.addEventListener('input',e=>{ if(K.view==='menu'&&/^f_/.test(e.target.id)){ K.pv=readForm(); const p=document.querySelector('.prev'); if(p){ const v=K.pv; p.querySelector('.nm').textContent=v.name||'Item name'; p.querySelector('.pr').textContent=v.price!==''&&!isNaN(v.price)?money(Number(v.price)):'$0.00'; const em=p.querySelector('.em'); if(em&&e.target.id==='f_emoji') em.textContent=v.emoji||'🍪'; } } });
+start();
+</script></body></html>

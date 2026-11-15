@@ -1,0 +1,178 @@
+<script>
+/* ===== CanteenKid (v18, 2026-11-09, by CLAUDE): the boy's Canteen Cash card + the Canteen Crew course =====
+Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit: log it in HQ.
+- Canteen Cash card: VIEW ONLY, read from the rewards sheet (cnKidInfo). It is NOT Tashbar Bank money.
+- Canteen Crew: 6 lessons in Trades Co. (VOC), same format as MathMore: 'ID':{name, how[3], gen()}.
+  Shown only to boys a staff member assigned (Daily Sign-Off page, Canteen Crew tab). They pay Tashbar Bank $ like every lesson, never Canteen Cash.
+  how[0] = unit opener (why it matters), how[1] = the rule, how[2] = a full worked example. Every hint names the step and what to try next. */
+(function(){
+  const $m=n=>'$'+(Math.round(n*100)/100).toFixed(2);
+  const r2=n=>Math.round(n*100)/100;
+  const op=(r,w)=>{ const o=[String(r)]; w.forEach(x=>{ x=String(x); if(o.indexOf(x)<0) o.push(x); }); return o.slice(0,3); };
+  const nm=()=>{ try{ return PICK(TLB); }catch(e){ return PICK(['Moshe','Dovid','Yosef','Chaim','Eli','Shmuel']); } };
+  const SNACK=[['pretzels','🥨'],['water','💧'],['chips','🥔'],['lollipop','🍭'],['granola bar','🥣'],['apple juice','🧃'],['cookie','🍪'],['popcorn','🍿']];
+  const price=()=>PICK([0.25,0.5,0.75,1,1.25,1.5,1.75,2]);
+  const CREW={
+  'VOC.CREW.01':{name:'Honest Service', how:[
+    'Welcome to the Canteen Crew! A cashier is trusted with other boys’ money. Honesty (yashrus) and a kind word turn a snack line into a kiddush Hashem.',
+    'Three rules: (1) Every sale is charged exactly right, never more, never less. (2) Every customer is treated with respect, even when he is rude or slow. (3) Friends pay like everyone else.',
+    'Worked example: your friend says “Just give me a free bag of pretzels, nobody will know.” You smile and say: “I can’t give away the canteen’s food. I can ring it up for you.” That is honest AND friendly.'],
+    gen(){ const x=nm(), k=RI(0,5);
+      if(k===0) return MX(`${x} is your good friend. He asks you to give him a snack for free. What do you do?`, op('Kindly say no and offer to ring it up',['Give it, he is your friend','Give it but charge someone else']), 'Rule 2 and 3: friends pay like everyone else. Say no kindly, then offer to ring it up.');
+      if(k===1) return MX(`You charged ${x} ${$m(1.5)} but the snack costs ${$m(1)}. You notice after he walks away. What do you do?`, op('Tell the staff so the extra is given back',['Keep quiet, it is small','Keep the extra for the canteen']), 'Rule 1: every sale is charged exactly right. The 50¢ belongs to him. Tell the staff so they can void and fix it.');
+      if(k===2) return MX(`A boy in line is rude and says “Hurry up!” What is the best answer?`, op('“Sure, I’m going as fast as I can. What would you like?”',['“Wait your turn!”','Ignore him and serve someone else']), 'Rule 2: respect every customer, even a rude one. Stay calm and friendly.');
+      if(k===3) return MX(`A younger boy can’t reach the counter and is shy. What do you do?`, op('Lean down, smile and ask what he would like',['Serve the older boys first','Tell him to come back later']), 'A good cashier serves everyone with patience. Help the shy boy first, kindly.');
+      if(k===4) return MX(`${x} types his code wrong 3 times. He asks you to type it for him. What do you do?`, op('Never type a boy’s code; let him try or get the staff',['Ask him to tell you the code','Pick his name and guess']), 'A code is private. Only the boy types his own code. If he is stuck, call the canteen staff.');
+      return MX(`At the end of the day the canteen shows ${$m(2)} more sales than the food that left the shelf. What should you do?`, op('Tell the staff right away so they can check',['Change the numbers so they match','Say nothing']), 'Honest people report a mistake; they never hide it. Tell the staff.'); }},
+  'VOC.CREW.02':{name:'Running the Kiosk', how:[
+    'The kiosk is the canteen’s cash register. When you run it well, the line moves fast and every boy pays the right amount from his Canteen Cash.',
+    'The steps, in order: 1) The boy taps his name. 2) The boy types his own 4-digit code. 3) He sees his Canteen Cash. 4) Tap items into the cart. 5) Check the total and “Left after”. 6) Tap Buy ONE time. 7) Read the new balance with him.',
+    'Worked example: Dovid taps his name and types his code. He has $3.00. He wants chips ($1.00) and water ($0.50). Total $1.50, left after $1.50. You tap Buy once and say: “Done! You have $1.50 left.”'],
+    gen(){ const k=RI(0,5);
+      const steps=['Tap his name','Type his code','Add items to the cart','Tap Buy'];
+      if(k===0){ const i=RI(0,2); return MX(`What comes right after “${steps[i]}”?`, op(steps[i+1],steps.filter((s,j)=>j!==i+1).slice(0,2)), 'Say the steps in order: name, code, cart, Buy. Which one comes next?'); }
+      if(k===1){ const b=PICK([1,1.5,2,2.5]), c=r2(b+PICK([0.25,0.5,1])); return MX(`A boy has ${$m(b)} Canteen Cash. His cart costs ${$m(c)}. What happens?`, op('Buy is blocked; take something out',['It goes through and he owes money','You pay the difference']), `Compare: is ${$m(c)} more than ${$m(b)}? If the cart costs more than he has, the kiosk blocks Buy.`); }
+      if(k===2) return MX('You tapped Buy and the screen is slow. What do you do?', op('Wait; never tap Buy twice',['Tap Buy again quickly','Start the sale over']), 'Step 6: tap Buy ONE time. The kiosk is careful not to charge twice, but you wait for it.');
+      if(k===3) return MX('You charged the wrong boy by mistake. What is the right fix?', op('Ask the staff to use “Void last sale” with a reason',['Delete the line from the sheet','Charge the right boy and forget it']), 'Mistakes are fixed with “Void last sale” by the canteen staff. It adds a reversal with a reason. Nothing is deleted.');
+      if(k===4) return MX('An item shows “Sold out”. A boy really wants it. What do you say?', op('“Sorry, it’s sold out. Would you like something else?”',['Sell it anyway','Look for one in the back and add it']), 'Sold out means stock is 0. Offer something else kindly.');
+      const p1=price(), p2=price(), t=r2(p1+p2), b=r2(t+PICK([0.25,0.5,1,1.5,2]));
+      return N(`A boy has ${$m(b)}. He buys two items: ${$m(p1)} and ${$m(p2)}. What will the screen show as “Left after”? (Type dollars, like 1.25)`, r2(b-t), `Step 5: first add the two items (${$m(p1)} + ${$m(p2)} = ${$m(t)}). Then subtract that from ${$m(b)}.`); }},
+  'VOC.CREW.03':{name:'Money Math and Change', how:[
+    'A cashier must be quick and exact with money. These are the same skills every store uses, and you will use them your whole life.',
+    'Total = add every item. Balance left = balance − total. Change (when someone pays with coins or bills) = money given − price. Line up the cents: $1.00 is 100¢, $0.75 is 75¢.',
+    'Worked example: chips $1.25 and a lollipop $0.25. Total = $1.25 + $0.25 = $1.50. If he pays with a $2 bill, change = $2.00 − $1.50 = $0.50.'],
+    gen(){ const k=RI(0,3), [s1,e1]=PICK(SNACK), [s2,e2]=PICK(SNACK), p1=price(), p2=price();
+      if(k===0) return N(`${e1} ${s1} costs ${$m(p1)} and ${e2} ${s2} costs ${$m(p2)}. What is the total? (Type dollars, like 1.75)`, r2(p1+p2), `Add the cents first: ${Math.round(p1*100)}¢ + ${Math.round(p2*100)}¢. Then write it in dollars.`, {pic:e1+' + '+e2});
+      if(k===1){ const paid=PICK([1,2,5].filter(v=>v>=p1)); return N(`${e1} ${s1} costs ${$m(p1)}. A boy pays with ${$m(paid)}. How much change? (Type dollars)`, r2(paid-p1), `Change = money given − price: ${$m(paid)} − ${$m(p1)}. Count up from ${$m(p1)} to ${$m(paid)}.`); }
+      if(k===2){ const t=r2(p1+p2), bal=r2(t+PICK([0.25,0.5,1,1.25,2])); return N(`A boy has ${$m(bal)} Canteen Cash. He buys ${s1} (${$m(p1)}) and ${s2} (${$m(p2)}). What is his new balance? (Type dollars)`, r2(bal-t), `Two steps: total = ${$m(p1)} + ${$m(p2)} = ${$m(t)}. Then ${$m(bal)} − ${$m(t)}.`); }
+      const q=RI(2,4); return N(`${q} boys each buy ${s1} at ${$m(p1)}. How much is that all together? (Type dollars)`, r2(q*p1), `${q} times ${$m(p1)}: add ${$m(p1)} ${q} times, or multiply ${Math.round(p1*100)}¢ × ${q}.`, {pic:Array(q).fill(e1).join(' ')}); }},
+  'VOC.CREW.04':{name:'Stock and Restocking', how:[
+    'Stock is how many of each item the canteen has. If you watch the stock, the canteen never runs out of what boys want, and nothing goes to waste.',
+    'Stock left = stock at the start − number sold. When stock is 3 or less it is “low”: tell the staff to restock. To fill the shelf to a target: target − stock left = how many to add.',
+    'Worked example: we started with 12 water bottles and sold 9. Left = 12 − 9 = 3, so water is low. The shelf holds 15, so we add 15 − 3 = 12 bottles.'],
+    gen(){ const k=RI(0,3), [s,e]=PICK(SNACK), st=RI(8,24), sold=RI(2,st-1);
+      if(k===0) return N(`We started the day with ${st} ${s}. We sold ${sold}. How many are left?`, st-sold, `Stock left = start − sold: ${st} − ${sold}.`, {pic:e});
+      if(k===1){ const left=RI(0,8), tgt=PICK([12,15,20,24]); return N(`The shelf holds ${tgt} ${s}. There are ${left} left. How many should we add to fill it?`, tgt-left, `How many to add = target − left: ${tgt} − ${left}.`, {pic:e}); }
+      if(k===2){ const left=RI(0,7); return MX(`There are ${left} ${s} left. What should the cashier do?`, left===0?op('It shows Sold out; tell the staff',['Keep selling','Nothing']):left<=3?op('Tell the staff it is low',['Nothing, there are some left','Switch it off']):op('Nothing yet; there are enough',['Tell the staff it is sold out','Stop selling it']), 'Low means 3 or less. 0 means sold out. Compare the number left to 3.'); }
+      const a=RI(3,9), b=RI(3,9); return N(`On Monday we sold ${a} ${s}. On Tuesday we sold ${b}. How many did we sell in the two days?`, a+b, `Add the two days: ${a} + ${b}.`); }},
+  'VOC.CREW.05':{name:'End-of-Day Report', how:[
+    'At the end of the day the canteen checks its numbers. A clear report shows the staff what sold, how much money came in, and if anything needs fixing.',
+    'Total sales = add every sale. A void (a sale that was cancelled) is subtracted. The best seller is the item sold the most times.',
+    'Worked example: sales $1.50, $2.00, $0.75 and one void of $0.75. Total = 1.50 + 2.00 + 0.75 = $4.25, minus the void $0.75 = $3.50.'],
+    gen(){ const k=RI(0,2);
+      if(k===0){ const s=[price(),price(),price()], t=r2(s[0]+s[1]+s[2]); return N(`Today’s sales were ${s.map($m).join(', ')}. What is the total? (Type dollars)`, t, `Add them one at a time: ${$m(s[0])} + ${$m(s[1])} = ${$m(r2(s[0]+s[1]))}, then add ${$m(s[2])}.`); }
+      if(k===1){ const s=[price(),price(),price()], v=s[RI(0,2)], t=r2(s[0]+s[1]+s[2]); return N(`Sales: ${s.map($m).join(', ')}. One sale of ${$m(v)} was voided. What is the real total? (Type dollars)`, r2(t-v), `First add all sales (${$m(t)}). Then subtract the void, ${$m(v)}.`); }
+      const items=SNACK.slice(0,4).map(x=>[x[0],RI(1,12)]); const best=items.slice().sort((a,b)=>b[1]-a[1]); if(best[0][1]===best[1][1]) best[0][1]++;
+      return MX(`Items sold today: ${items.map(x=>x[0]+' '+x[1]).join(', ')}. Which item sold the most?`, op(best[0][0],[best[1][0],best[2][0]]), 'Look at the numbers, not the names. Which number is biggest?'); }},
+  'VOC.CREW.06':{name:'Price, Cost and Profit', how:[
+    'Every store buys its food for less than it sells it. The difference pays for the store. Knowing this is how real businesses decide prices.',
+    'Cost = what the canteen paid for one item. Price = what a boy pays. Profit on one item = price − cost. Profit on many = profit on one × how many.',
+    'Worked example: a bag of chips costs the canteen $0.60 and sells for $1.00. Profit = $1.00 − $0.60 = $0.40. Sell 5 bags: 5 × $0.40 = $2.00 profit.'],
+    gen(){ const k=RI(0,3), [s,e]=PICK(SNACK), pr=PICK([0.75,1,1.25,1.5,2]), co=r2(pr-PICK([0.15,0.25,0.35,0.5]));
+      if(k===0) return N(`${e} ${s} costs the canteen ${$m(co)}. We sell it for ${$m(pr)}. What is the profit on one? (Type dollars)`, r2(pr-co), `Profit = price − cost: ${$m(pr)} − ${$m(co)}.`, {pic:e});
+      if(k===1){ const q=RI(2,6), p=r2(pr-co); return N(`Profit on one ${s} is ${$m(p)}. We sold ${q}. What is the total profit? (Type dollars)`, r2(p*q), `Total profit = profit on one × how many: ${$m(p)} × ${q}.`); }
+      if(k===2){ const a=[s,pr,co], [s2]=PICK(SNACK.filter(x=>x[0]!==s)), pr2=PICK([0.5,1,1.5,2]), co2=r2(pr2-PICK([0.1,0.2,0.3,0.6])); const p1=r2(pr-co), p2=r2(pr2-co2); if(p1===p2) return N(`${s}: price ${$m(pr)}, cost ${$m(co)}. Profit on one? (Type dollars)`, p1, 'Profit = price − cost.');
+        return MX(`${s}: price ${$m(pr)}, cost ${$m(co)}. ${s2}: price ${$m(pr2)}, cost ${$m(co2)}. Which one earns more profit on each sale?`, op(p1>p2?s:s2,[p1>p2?s2:s,'They are the same']), `Work out each profit (price − cost): ${s} = ${$m(p1)}, ${s2} = ${$m(p2)}. Which is bigger?`); }
+      return MX(`A snack costs the canteen ${$m(co)}. Which price makes a profit?`, op($m(r2(co+0.25)),[$m(co),$m(r2(Math.max(0,co-0.1)))]), `A profit means the price is MORE than the cost (${$m(co)}).`); }}
+  };
+  try{ Object.assign(GEN, CREW); }catch(e){ console.error('CanteenKid GEN',e); }
+
+  /* ---- Canteen Cash card + Crew card on the boy's home screen ---- */
+  const K={info:null,at:0,busy:false};
+  const css=document.createElement('style');
+  css.textContent='.cn-card{display:flex;gap:14px;align-items:center;border-radius:20px;padding:14px 18px;margin:12px 0;background:linear-gradient(135deg,#FFEDD5,#FED7AA);border:2px solid #FB923C;color:#7C2D12}.cn-card .cn-i{font-size:38px}.cn-card .cn-a{font-size:30px;font-weight:900;margin-left:auto}.cn-card small{display:block;opacity:.85;font-size:13px}.cn-crew{background:linear-gradient(135deg,#ECFEFF,#CFFAFE);border-color:#22D3EE;color:#164E63;flex-wrap:wrap}.cn-crew .cn-ls{display:flex;gap:8px;flex-wrap:wrap;width:100%}.cn-crew .cn-ls button{border:2px solid #22D3EE;background:#fff;border-radius:14px;padding:8px 12px;font:inherit;font-weight:700;cursor:pointer;min-height:44px}.cn-crew .cn-ls button.done{background:#CFFAFE}';
+  document.head.appendChild(css);
+  function tok(){ try{ return SRV.token; }catch(e){ return null; } }
+  function fetchInfo(){
+    const t=tok(); if(!t||K.busy) return; K.busy=true;
+    google.script.run.withSuccessHandler(r=>{ K.busy=false; K.info=r&&r.ok?r:null; K.at=Date.now(); try{ if(A.view==='hub') render(); }catch(e){} }).withFailureHandler(()=>{ K.busy=false; K.at=Date.now(); }).cnKidInfo(t);
+  }
+  /* ---- v61 App orders: menu + order + tracker (Pending -> Ready -> Picked up). Money comes off only at pickup, at the canteen. ---- */
+  const O={open:false,menu:null,cash:null,cart:{},busy:false,err:'',order:null,recent:[],cid:null,poll:null,lastStatus:null};
+  const ocss=document.createElement('style');
+  ocss.textContent=`.cn-ord{margin-left:auto;border:0;border-radius:16px;padding:12px 18px;font-weight:900;font-size:18px;font-family:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,#F97316,#DB2777);box-shadow:0 8px 18px #DB277755;min-height:52px;white-space:nowrap}
+.cn-card{flex-wrap:wrap}.cn-st{width:100%;display:flex;gap:10px;align-items:center;background:#fff;border-radius:16px;padding:10px 14px;font-weight:800;border:2px dashed #FB923C}
+.cn-st.ready{border:3px solid #10B981;background:#ECFDF5;color:#065F46;animation:cnpulse 1.4s ease-in-out infinite}@keyframes cnpulse{50%{box-shadow:0 0 0 8px #10B98133}}
+#cn-shop{position:fixed;inset:0;z-index:90;background:#1E1B4Bcc;backdrop-filter:blur(3px);display:grid;place-items:center;padding:10px}
+#cn-shop .bx{background:linear-gradient(180deg,#FFF7ED,#fff);width:min(1000px,100%);max-height:96vh;overflow:auto;border-radius:26px;box-shadow:0 30px 70px #0006;padding:18px}
+#cn-shop .hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}#cn-shop .hd h2{margin:0;font-size:28px;font-weight:900;color:#9A3412}
+#cn-shop .cash{margin-left:auto;background:#fff;border:2px solid #FDBA74;border-radius:999px;padding:8px 16px;font-weight:900;font-size:20px;color:#9A3412}
+#cn-shop .x{border:0;background:#fff;border-radius:14px;width:52px;height:52px;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #FED7AA}
+#cn-shop .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+#cn-shop .it{background:#fff;border:3px solid #FED7AA;border-radius:22px;padding:12px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+#cn-shop .it.on{border-color:#F97316;box-shadow:0 8px 20px #F9731633}#cn-shop .it.out{opacity:.45}
+#cn-shop .it .em{font-size:52px;line-height:1.1}#cn-shop .it img{width:80px;height:80px;object-fit:contain}
+#cn-shop .it .nm{font-weight:900}#cn-shop .it .pr{font-weight:900;font-size:20px;color:#C2410C}
+#cn-shop .q{display:flex;gap:8px;align-items:center}#cn-shop .q button{width:46px;height:46px;border-radius:14px;border:2px solid #FDBA74;background:#fff;font-weight:900;font-size:22px;font-family:inherit;cursor:pointer}
+#cn-shop .q b{min-width:22px;font-size:20px}
+#cn-shop .bar{position:sticky;bottom:-18px;margin:14px -18px -18px;padding:14px 18px;background:#fff;border-top:2px solid #FED7AA;display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-radius:0 0 26px 26px}
+#cn-shop .go{margin-left:auto;border:0;border-radius:18px;padding:16px 26px;font-weight:900;font-size:21px;font-family:inherit;color:#fff;cursor:pointer;background:linear-gradient(135deg,#F97316,#DB2777,#7C3AED);box-shadow:0 10px 24px #DB277755;min-height:58px}
+#cn-shop .go:disabled{background:#CBD5E1;box-shadow:none;cursor:default}
+#cn-shop .err{background:#FFF1F2;border:2px solid #FECDD3;color:#9F1239;border-radius:14px;padding:10px 14px;font-weight:800;margin-bottom:10px}
+#cn-shop .steps{display:flex;gap:10px;margin:18px 0;flex-wrap:wrap}#cn-shop .step{flex:1;min-width:150px;text-align:center;background:#fff;border:3px solid #E5E7EB;border-radius:20px;padding:16px 10px;color:#94A3B8;font-weight:900}
+#cn-shop .step .e{font-size:44px;display:block;filter:grayscale(1);opacity:.5}#cn-shop .step.on{border-color:#F97316;color:#9A3412;box-shadow:0 8px 22px #F9731633}#cn-shop .step.on .e{filter:none;opacity:1}
+#cn-shop .step.done{border-color:#10B981;color:#065F46}#cn-shop .step.done .e{filter:none;opacity:1}
+#cn-shop .list{background:#fff;border-radius:18px;padding:12px 16px;border:2px solid #FED7AA}#cn-shop .list div{display:flex;justify-content:space-between;padding:4px 0;font-weight:700}
+#cn-shop .sm{color:#64748B;font-size:14px}#cn-shop .lnk{border:2px solid #FECDD3;background:#fff;color:#BE123C;border-radius:14px;padding:10px 16px;font-weight:800;font-size:16px;font-family:inherit;cursor:pointer;min-height:48px}`;
+  document.head.appendChild(ocss);
+  const $$=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money=n=>(n<0?'−':'')+'$'+Math.abs(Number(n)||0).toFixed(2);
+  function inClass(){ try{ return !!(window.TM_CLASS&&TM_CLASS()); }catch(e){ return false; } }
+  function call(fn,...a){ return new Promise((ok,no)=>google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...a)); }
+  function oLoad(){ const t=tok(); if(!t) return; call('cnOrderMenu',t).then(r=>{ O.menu=r.menu; O.cash=r.cash; O.order=(r.open||[])[0]||null; O.recent=r.recent||[]; noteStatus(); oDraw(); }).catch(e=>{ O.err=(e&&e.message)||'Could not load the menu.'; oDraw(); }); }
+  function noteStatus(){ const s=O.order&&O.order.status; if(s==='ready'&&O.lastStatus!=='ready'){ try{ SND.right(3); }catch(e){} } O.lastStatus=s||null; }
+  function oOpen(){ if(inClass()) return; O.open=true; O.err=''; O.cart={}; O.cid=null; oDraw(); oLoad(); clearInterval(O.poll); O.poll=setInterval(()=>{ if(O.open) oLoad(); },15000); }
+  function oClose(){ O.open=false; clearInterval(O.poll); const d=document.getElementById('cn-shop'); if(d) d.remove(); K.at=0; try{ if(A.view==='hub') render(); }catch(e){} }
+  function lines(){ return (O.menu||[]).filter(m=>O.cart[m.id]>0).map(m=>({m,q:O.cart[m.id]})); }
+  function total(){ return lines().reduce((s,l)=>s+Math.round(l.m.price*100)*l.q,0)/100; }
+  function stepsHTML(o){ const s=o.status, st=[['pending','🧾','Order sent'],['ready','🔔','Ready! Come get it'],['picked','😋','Picked up']], idx=s==='picked'?2:s==='ready'?1:0;
+    return `<div class="steps">${st.map((x,i)=>`<div class="step ${i<idx?'done':i===idx?'on':''}"><span class="e">${x[1]}</span>${i<idx?'✓ ':''}${x[2]}</div>`).join('')}</div>`; }
+  function oDraw(){
+    if(!O.open) return; let d=document.getElementById('cn-shop'); if(!d){ d=document.createElement('div'); d.id='cn-shop'; d.setAttribute('role','dialog'); d.setAttribute('aria-label','Canteen order'); document.body.appendChild(d); }
+    let h=`<div class="bx"><div class="hd"><span style="font-size:40px">🍕</span><h2>${O.order?'Your order':'Canteen menu'}</h2><span class="cash">🥨 ${O.cash==null?'…':money(O.cash)}</span><button class="x" data-cno="close" aria-label="Close">✕</button></div>`;
+    if(O.err) h+=`<div class="err">${$$(O.err)}</div>`;
+    if(!O.menu&&!O.order) h+='<p class="sm">Loading the menu… 🍪</p>';
+    else if(O.order){ const o=O.order;
+      h+=stepsHTML(o)+`<div class="list">${o.items.map(i=>`<div><span>${$$(i.emoji||'🍪')} ${$$(i.name)}${i.qty>1?' x'+i.qty:''}</span><span>${money(i.price*i.qty)}</span></div>`).join('')}<div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>About</span><span>${money(o.est)}</span></div></div>
+      <p class="sm" style="margin-top:12px">${o.status==='ready'?'<b style="color:#065F46;font-size:18px">🔔 Your order is ready! Go to the canteen and say your name.</b>':'The canteen is getting it ready. You pay when you pick it up, from your Canteen Cash.'}</p>
+      ${o.status==='pending'?'<button class="lnk" data-cno="cancel">Cancel my order</button>':''}`; }
+    else if(!O.menu.length) h+='<p style="font-weight:800">The canteen menu is empty right now. Check again soon! 🍪</p>';
+    else { const L=lines(), t=total(), left=O.cash==null?null:Math.round((O.cash-t)*100)/100;
+      h+=`<div class="grid">${O.menu.map(m=>{ const q=O.cart[m.id]||0; return `<div class="it ${q?'on':''} ${m.out?'out':''}">${m.pic?`<img src="${$$(m.pic)}" alt="">`:`<span class="em">${$$(m.emoji||'🍪')}</span>`}<span class="nm">${$$(m.name)}</span><span class="pr">${money(m.price)}</span>${m.out?'<b style="color:#BE123C">Sold out</b>':`<div class="q"><button data-cno="sub" data-id="${$$(m.id)}" aria-label="One less">−</button><b>${q}</b><button data-cno="add" data-id="${$$(m.id)}" aria-label="One more">+</button></div>`}</div>`; }).join('')}</div>
+      <div class="bar"><div><div style="font-weight:900;font-size:20px">Total ${money(t)}</div><div class="sm">${O.cash==null?'You don’t have a Canteen Cash account yet. Ask the office.':left<0?'<b style="color:#BE123C">Not enough Canteen Cash. Take something out.</b>':'You pay when you pick it up. Left after: '+money(left)}</div></div>
+      <button class="go" data-cno="order" ${(!L.length||O.busy||O.cash==null||left<0)?'disabled':''}>${O.busy?'Sending…':'Order it! 🚀'}</button></div>`;
+      if(O.recent.length) h+=`<p class="sm" style="margin-top:14px">Last orders: ${O.recent.map(o=>`${o.status==='picked'?'✅':'✖️'} ${o.items.map(i=>$$(i.name)).join(', ')}`).join(' · ')}</p>`; }
+    d.innerHTML=h+'</div>';
+  }
+  document.addEventListener('click',e=>{ const b=e.target.closest('[data-cno]'); if(!b) return; const a=b.dataset.cno;
+    if(a==='open') return oOpen(); if(a==='close') return oClose();
+    if(a==='add'||a==='sub'){ const m=(O.menu||[]).find(x=>x.id===b.dataset.id); if(!m) return; let q=(O.cart[m.id]||0)+(a==='add'?1:-1); q=Math.max(0,Math.min(10,q)); if(m.left!=null) q=Math.min(q,m.left); O.cart[m.id]=q; O.cid=null; O.err=''; try{ SND.tap(); }catch(x){} return oDraw(); }
+    if(a==='order'){ if(O.busy) return; O.busy=true; O.cid=O.cid||(Date.now().toString(36)+Math.random().toString(36).slice(2,8)); oDraw();
+      return call('cnOrderPlace',tok(),lines().map(l=>({id:l.m.id,qty:l.q})),O.cid).then(r=>{ O.busy=false;
+        if(!r.ok&&r.short){ O.err=`Not enough Canteen Cash: this costs ${money(r.total)} and you have ${money(r.cash)}.`; return oDraw(); }
+        O.order=r.order; O.cart={}; O.err=''; noteStatus(); try{ SND.right(5); }catch(x){} oDraw(); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not send the order.'; oDraw(); }); }
+    if(a==='cancel'&&O.order){ if(O.busy) return; O.busy=true; return call('cnOrderCancel',tok(),O.order.id).then(()=>{ O.busy=false; O.order=null; O.err=''; oLoad(); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not cancel.'; oLoad(); }); }
+  });
+  window.cnOrderButton=function(i){ if(!i||i.cash==null||inClass()) return '';
+    const o=i.order; let h='';
+    if(o) h+=`<div class="cn-st ${o.status==='ready'?'ready':''}">${o.status==='ready'?'🔔 Your order is ready! Go to the canteen.':'🧾 Your order is sent. The canteen is getting it ready.'}<button class="cn-ord" data-cno="open" style="padding:8px 14px;font-size:15px;min-height:44px">See order</button></div>`;
+    else if(i.menuN) h+=`<button class="cn-ord" data-cno="open">🍕 Order food</button>`;
+    return h; };
+  function cards(){
+    try{
+      if(typeof A==='undefined'||A.view!=='hub'||!A.st) return;
+      if(Date.now()-K.at>((K.info&&K.info.order)?20000:60000)) fetchInfo();
+      const i=K.info, app=document.getElementById('app'); if(!i||!app||app.querySelector('.cn-card')) return;
+      let h='';
+      if(i.cash!==null&&i.cash!==undefined) h+=`<div class="cn-card" aria-label="Canteen Cash"><span class="cn-i">🥨</span><div><b>Canteen Cash</b><small>For the school canteen. Your teachers add it at sign-off: on time, did your work, middos. This is not your Tashbar Bank money.</small></div><span class="cn-a">${i.cash<0?'−':''}$${Math.abs(i.cash).toFixed(2)}</span>${window.cnOrderButton?cnOrderButton(i):''}</div>`;
+      if(i.crew&&i.crew.assigned){ const st=A.st;
+        h+=`<div class="cn-card cn-crew"><span class="cn-i">🧑‍🍳</span><div><b>Canteen Crew course</b><small>${i.crew.isCrew?'You are Canteen Crew! You can be cashier at the canteen.':'Finish all 6 lessons to become Canteen Crew.'}</small></div><span class="cn-a" style="font-size:22px">${i.crew.all.filter(id=>(st.skills[id]&&st.skills[id].m)||i.crew.done.indexOf(id)>=0).length} / 6</span><div class="cn-ls">${i.crew.all.map((id,k)=>{ const d=(st.skills[id]&&st.skills[id].m)||i.crew.done.indexOf(id)>=0; return `<button class="${d?'done':''}" data-act="start" data-id="${id}" data-c="VOC">${d?'✓':k+1}. ${CREW[id].name}</button>`; }).join('')}</div></div>`; }
+      if(!h) return;
+      const anchor=app.querySelector('.nextup');
+      if(anchor) anchor.insertAdjacentHTML('afterend',h); else app.insertAdjacentHTML('afterbegin',h);
+    }catch(e){ console.error('CanteenKid card',e); }
+  }
+  try{ if(typeof render==='function'&&!window.__cnWrap){ window.__cnWrap=true; const _r=render; render=function(){ const out=_r.apply(this,arguments); cards(); return out; }; } }catch(e){ console.error('CanteenKid wrap',e); }
+  window.TLCN=Object.keys(CREW).length;
+})();
+</script>

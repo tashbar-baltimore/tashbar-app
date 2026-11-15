@@ -1,0 +1,113 @@
+<script>
+/* TorahPlus.html — v197 (takeover3, Head of School 2026-11-15: "do all of them"). On the boy's home screen, right under the top bar:
+   1. SHABBOS AND YOM TOV MODE: Erev Shabbos (Friday) a Shabbos table with candles that flicker: "Good Shabbos!", this week's Torah learning,
+      and his rebbe's Shabbos message. Chanukah: a menorah lit for tonight's night. Purim, Erev Pesach, Erev Sukkos, Erev Shavuos, Erev Rosh
+      Hashanah and Rosh Chodesh each get their own greeting. (Hebrew date from the browser's Hebrew calendar.)
+   2. DAVENING: "Did you daven today?" Shacharis · Mincha · Maariv. Each one he marks lights the Olam Haba cloud as Torah effort (and sings).
+      Saved in his own state (st.dav = { "yyyy-mm-dd": ["shacharis", …] }); the staff weekly report shows the days.
+   3. PARSHA OF THE WEEK: the Parsha his rebbe set this week (StaffNotes sgSetParsha), with its lesson and one Start button.
+   4. MY TORAH SCROLL: every Kodesh lesson he has mastered, on a parchment scroll that unrolls (newest at the bottom).
+   Display only; no money. Loaded after OlamHaba, before ClassMode (Photos.js and Speed.js). v199: the Parsha card also opens the Chumash page (ChumashPage.html, data-chmopen). No "double slash" in this file. */
+(function(){
+if(typeof render!=='function'||typeof vHub!=='function'||typeof A==='undefined') return;
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const now=()=>window.TL_TODAY?new Date(window.TL_TODAY):new Date();
+const ymd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const isK=id=>/^(LK|HEB)\./.test(String(id));
+const nameOf=id=>{ try{ return (typeof BANK_ALL!=='undefined'&&BANK_ALL[id]&&BANK_ALL[id].name)||(typeof skillName==='function'?skillName(id):id); }catch(e){ return id; } };
+function heb(d){ try{ const p=new Intl.DateTimeFormat('en-u-ca-hebrew',{day:'numeric',month:'long'}).formatToParts(d); return {day:+p.find(x=>x.type==='day').value,month:p.find(x=>x.type==='month').value}; }catch(e){ return null; } }
+/* which Jewish day is it? */
+function occasion(){ const d=now(), h=heb(d); if(!h) return d.getDay()===5?{k:'shabbos'}:null;
+ const add=n=>{ const x=new Date(d); x.setDate(x.getDate()+n); return heb(x); };
+ /* Chanukah: count back to 25 Kislev */
+ /* Chanukah (daytime): 24 Kislev = tonight the 1st light; i days after 25 Kislev = tonight light i+2; the 8th day = Zos Chanukah (all eight burned last night) */
+ if(h.month==='Kislev'&&h.day===24) return {k:'chanukah',night:1,shabbos:d.getDay()===5};
+ for(let i=0;i<8;i++){ const x=add(-i); if(x&&x.month==='Kislev'&&x.day===25){ return {k:'chanukah',night:Math.min(8,i+2),zos:i===7,shabbos:d.getDay()===5}; } }
+ if((h.month==='Adar'||h.month==='Adar II')&&h.day===14) return {k:'purim'};
+ if((h.month==='Adar'||h.month==='Adar II')&&h.day===15) return {k:'shushan'};
+ if(h.month==='Nisan'&&h.day===14) return {k:'erev',name:'Pesach',heb:'פֶּסַח'};
+ if(h.month==='Tishri'&&h.day===14) return {k:'erev',name:'Sukkos',heb:'סֻכּוֹת'};
+ if(h.month==='Sivan'&&h.day===5) return {k:'erev',name:'Shavuos',heb:'שָׁבוּעוֹת'};
+ if(h.month==='Elul'&&h.day===29) return {k:'erevrh'};
+ if(d.getDay()===5) return {k:'shabbos'};
+ if(h.day===1||h.day===30) return {k:'rc',month:h.day===30?(add(1)||{}).month:h.month};
+ return null; }
+function weekStart(){ const d=now(); const s=new Date(d); s.setHours(0,0,0,0); s.setDate(s.getDate()-s.getDay()); return s.getTime(); }
+function torahThisWeek(st){ const sk=(st&&st.skills)||{}, w=weekStart(); return Object.keys(sk).filter(id=>isK(id)&&sk[id]&&sk[id].m&&Number(sk[id].at)>=w).sort((a,b)=>sk[a].at-sk[b].at); }
+function torahAll(st){ const sk=(st&&st.skills)||{}; return Object.keys(sk).filter(id=>isK(id)&&sk[id]&&sk[id].m).sort((a,b)=>(Number(sk[a].at)||0)-(Number(sk[b].at)||0)); }
+function css(){ if(document.getElementById('tp-css')) return; const s=document.createElement('style'); s.id='tp-css'; s.textContent=`
+.tp{max-width:1180px;margin:12px auto 4px;padding:0 16px;display:grid;gap:12px}
+.tp-occ{position:relative;overflow:hidden;border-radius:24px;padding:18px 20px;display:flex;gap:18px;align-items:center;color:#fff8e7;background:linear-gradient(135deg,#1e1b4b,#312e81 55%,#4c1d95);box-shadow:0 14px 34px rgba(30,27,75,.35)}
+.tp-occ.shab{background:linear-gradient(135deg,#0f172a,#1e3a8a 60%,#3730a3)}.tp-occ.chan{background:linear-gradient(135deg,#0b2545,#13315c 60%,#1d4e89)}.tp-occ.purim{background:linear-gradient(135deg,#7c2d12,#be185d 55%,#7e22ce)}.tp-occ.light{background:linear-gradient(135deg,#065f46,#0e7490);}
+.tp-occ h2{margin:0;font:800 clamp(22px,3vw,30px)/1.15 var(--display,'Barlow'),sans-serif}.tp-occ .he{font:700 26px 'Frank Ruhl Libre','David',serif;direction:rtl;color:#fde68a}
+.tp-occ p{margin:6px 0 0;font:600 16px/1.4 var(--body,'Barlow'),sans-serif;opacity:.95}.tp-occ ul{margin:6px 0 0;padding-left:20px;font:600 15px/1.45 var(--body,'Barlow'),sans-serif}
+.tp-occ .msg{margin-top:8px;background:rgba(255,255,255,.12);border-radius:12px;padding:8px 12px;font:700 15px var(--body,'Barlow'),sans-serif}
+.tp-occ .art{flex:none;width:140px;height:110px}
+.tp-candle .fl{transform-origin:50% 100%;animation:tpfl 1.1s ease-in-out infinite alternate}.tp-candle .fl.b{animation-duration:.9s;animation-delay:-.4s}
+@keyframes tpfl{0%{transform:scale(1,1) rotate(-2deg)}50%{transform:scale(.92,1.08) rotate(2deg)}100%{transform:scale(1.04,.95) rotate(-1deg)}}
+.tp-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:12px}
+.tp-card{border-radius:20px;background:#fff;border:2px solid #e9e3ff;padding:14px 16px;box-shadow:0 6px 0 #ede9fe}
+.tp-card h3{margin:0 0 8px;font:800 18px var(--display,'Barlow'),sans-serif;color:#1e1b4b;display:flex;gap:8px;align-items:center}.tp-card h3 small{font:700 13px var(--body,'Barlow'),sans-serif;color:#6b7280;margin-left:auto}
+.tp-dav{display:flex;gap:8px;flex-wrap:wrap}.tp-dav button{flex:1;min-width:90px;border:2px solid #c7d2fe;background:#eef2ff;color:#312e81;border-radius:14px;padding:11px 8px;font:800 16px var(--display,'Barlow'),sans-serif;cursor:pointer}
+.tp-dav button.on{background:linear-gradient(135deg,#fde68a,#f59e0b);border-color:#d97706;color:#451a03;box-shadow:0 0 0 3px rgba(245,158,11,.25)}
+.tp-dav button small{display:block;font:700 12px 'Frank Ruhl Libre','David',serif;direction:rtl;opacity:.85}
+.tp-par .nm{font:800 22px var(--display,'Barlow'),sans-serif;color:#7c2d12}.tp-par .nt{color:#6b7280;font:600 14px var(--body,'Barlow'),sans-serif;margin:4px 0 8px}
+.tp-btn{border:0;border-radius:14px;padding:10px 16px;background:linear-gradient(90deg,#8b5cf6,#ec4899);color:#fff;font:800 16px var(--display,'Barlow'),sans-serif;cursor:pointer}.tp-btn.done{background:#22c55e}
+.tp-scr{display:flex;gap:12px;align-items:center}.tp-scr .mini{flex:none;width:64px;height:54px}.tp-scr b{font:800 26px var(--display,'Barlow'),sans-serif;color:#7c2d12}
+.tp-sheet{position:fixed;inset:0;z-index:10005;display:grid;place-items:center;background:rgba(40,24,8,.55);padding:16px}
+.tp-scroll{width:min(560px,100%);max-height:88vh;display:flex;flex-direction:column;filter:drop-shadow(0 30px 60px rgba(0,0,0,.4))}
+.tp-rod{height:26px;border-radius:13px;background:linear-gradient(180deg,#8b5a2b,#5c3317 60%,#3f2410);position:relative;z-index:2}.tp-rod::before,.tp-rod::after{content:"";position:absolute;top:-6px;width:20px;height:38px;border-radius:10px;background:linear-gradient(180deg,#a86b35,#5c3317)}.tp-rod::before{left:-8px}.tp-rod::after{right:-8px}
+.tp-parch{margin:-6px 14px;padding:22px 26px;overflow:auto;background:radial-gradient(ellipse at 30% 20%,#fff8e1,#f5e3b8 70%,#ead196);color:#3b2a10;max-height:0;transition:max-height 1.6s ease}
+.tp-parch.open{max-height:68vh}.tp-parch h2{text-align:center;margin:0;font:800 24px var(--display,'Barlow'),sans-serif}.tp-parch .he{text-align:center;font:700 30px 'Frank Ruhl Libre','David',serif;direction:rtl;color:#7c2d12}
+.tp-parch ol{margin:12px 0 0;padding-left:26px;font:700 16px/1.7 var(--body,'Barlow'),sans-serif}.tp-parch ol li small{color:#8a6b3a;font-weight:600}.tp-parch .x{display:block;margin:14px auto 0;border:0;border-radius:14px;padding:10px 22px;background:#7c2d12;color:#fff8e1;font:800 17px var(--display,'Barlow'),sans-serif;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.tp-candle .fl{animation:none}.tp-parch{transition:none}}
+@media (max-width:600px){.tp-occ{flex-direction:column;text-align:center}.tp-occ .art{width:120px;height:90px}}
+`; document.head.appendChild(s); }
+/* little drawings: Shabbos candles, a menorah lit for tonight, a scroll */
+function candles(){ const c=(x)=>`<g class="tp-candle"><rect x="${x-7}" y="44" width="14" height="44" rx="3" fill="#fff7ed"/><rect x="${x-7}" y="44" width="5" height="44" fill="#ffffff" opacity=".7"/><path class="fl ${x>70?'b':''}" d="M${x} 20 C${x+9} 32 ${x+6} 42 ${x} 44 C${x-6} 42 ${x-9} 32 ${x} 20 Z" fill="#fbbf24"/><path class="fl ${x>70?'b':''}" d="M${x} 29 C${x+4} 35 ${x+3} 41 ${x} 43 C${x-3} 41 ${x-4} 35 ${x} 29 Z" fill="#fff7cc"/></g>`;
+ return `<svg class="art" viewBox="0 0 140 110" aria-hidden="true"><ellipse cx="70" cy="96" rx="58" ry="10" fill="#fde68a" opacity=".25"/><rect x="34" y="86" width="72" height="8" rx="4" fill="#d4a017"/>${c(48)}${c(92)}</svg>`; }
+function menorah(n){ const xs=[14,26,38,50,90,102,114,126], sh=70; let h=`<svg class="art" viewBox="0 0 140 110" aria-hidden="true"><path d="M70 96 V60 M58 100 H82" stroke="#e5b84b" stroke-width="5" stroke-linecap="round"/>`;
+ xs.forEach((x,i)=>{ const r=Math.abs(x-70); h+=`<path d="M${x} 60 Q${x} ${60+r*.5} 70 ${60+r*.55}" stroke="#e5b84b" stroke-width="3" fill="none"/><rect x="${x-3}" y="46" width="6" height="14" rx="2" fill="#fff7ed"/>`;
+  const lit=8-i<=n; if(lit) h+=`<g class="tp-candle"><path class="fl ${i%2?'b':''}" d="M${x} 33 C${x+5} 40 ${x+4} 45 ${x} 46 C${x-4} 45 ${x-5} 40 ${x} 33 Z" fill="#fbbf24"/></g>`; });
+ h+=`<rect x="${sh-4}" y="36" width="8" height="24" rx="2" fill="#fff7ed"/><g class="tp-candle"><path class="fl" d="M${sh} 20 C${sh+6} 28 ${sh+5} 35 ${sh} 36 C${sh-5} 35 ${sh-6} 28 ${sh} 20 Z" fill="#fbbf24"/></g></svg>`; return h; }
+function scrollArt(){ return `<svg class="mini" viewBox="0 0 64 54" aria-hidden="true"><rect x="10" y="8" width="44" height="38" fill="#f5e3b8"/><path d="M16 18 H48 M16 25 H48 M16 32 H40" stroke="#b08850" stroke-width="2"/><rect x="4" y="2" width="10" height="50" rx="5" fill="#7c4a1e"/><rect x="50" y="2" width="10" height="50" rx="5" fill="#7c4a1e"/></svg>`; }
+/* the Jewish-day banner */
+function occHTML(st){ const o=occasion(); if(!o) return ''; const first=String(st.name||'').split(' ')[0], wk=torahThisWeek(st), rp=window.tlRP&&window.tlRP();
+ const shabMsg=rp&&(rp.shouts||[]).find(s=>s.kind==='shabbos');
+ if(o.k==='shabbos'||(o.k==='chanukah'&&o.shabbos)){ const list=wk.slice(-5).map(nameOf);
+  return `<div class="tp-occ shab">${o.k==='chanukah'?menorah(o.night):candles()}<div><div class="he">שַׁבָּת שָׁלוֹם</div><h2>Good Shabbos, ${E(first)}!</h2>${wk.length?`<p>This week you learned <b>${wk.length}</b> Torah lesson${wk.length===1?'':'s'}. Bring them to your Shabbos table!</p><ul>${list.map(n=>`<li>${E(n)}</li>`).join('')}</ul>`:'<p>Share one thing you learned this week at your Shabbos table!</p>'}${shabMsg?`<div class="msg">🕯️ ${E(shabMsg.text)} <small>— ${E(shabMsg.by)}</small></div>`:''}${o.k==='chanukah'&&!o.zos?`<p>And before Shabbos: the ${o.night}${['st','nd','rd'][o.night-1]||'th'} light of Chanukah!</p>`:''}</div></div>`; }
+ if(o.k==='chanukah') return `<div class="tp-occ chan">${menorah(o.night)}<div><div class="he">${o.zos?'זֹאת חֲנֻכָּה':'חֲנֻכָּה שָׂמֵחַ'}</div><h2>${o.zos?'Zos Chanukah':'Happy Chanukah'}, ${E(first)}!</h2><p>${o.zos?'Last night all eight lights burned bright. Keep the light of Torah burning all year!':'Tonight we light <b>'+(o.night===8?'all eight lights':o.night+(o.night===1?' light':' lights'))+'</b>. Every lesson you learn adds light, just like the menorah. ✨'}</p></div></div>`;
+ if(o.k==='purim'||o.k==='shushan') return `<div class="tp-occ purim"><svg class="art" viewBox="0 0 140 110" aria-hidden="true"><text x="70" y="78" text-anchor="middle" font-size="64">🎭</text></svg><div><div class="he">${o.k==='purim'?'פּוּרִים שָׂמֵחַ':'שׁוּשַׁן פּוּרִים'}</div><h2>${o.k==='purim'?'Freilichen Purim':'Happy Shushan Purim'}, ${E(first)}!</h2><p>Mishloach manos, matanos la'evyonim, the Megillah and the seudah. Have a joyful Purim!</p></div></div>`;
+ if(o.k==='erev') return `<div class="tp-occ light">${candles()}<div><div class="he">חַג שָׂמֵחַ · ${o.heb}</div><h2>Good Yom Tov, ${E(first)}!</h2><p>Tonight is ${o.name}. Bring something you learned to the Yom Tov table!</p></div></div>`;
+ if(o.k==='erevrh') return `<div class="tp-occ light"><svg class="art" viewBox="0 0 140 110" aria-hidden="true"><text x="70" y="78" text-anchor="middle" font-size="58">🍎🍯</text></svg><div><div class="he">כְּתִיבָה וַחֲתִימָה טוֹבָה</div><h2>A good and sweet new year, ${E(first)}!</h2><p>Tonight is Rosh Hashanah. Learning that tastes sweet, all year long!</p></div></div>`;
+ if(o.k==='rc') return `<div class="tp-occ light" style="padding:12px 18px"><div><div class="he">חֹדֶשׁ טוֹב</div><h2 style="font-size:20px">Chodesh Tov, ${E(first)}! A new month of learning${o.month?' ('+E(o.month)+')':''}.</h2></div></div>`;
+ return ''; }
+const DAV=[['shacharis','Shacharis','שַׁחֲרִית'],['mincha','Mincha','מִנְחָה'],['maariv','Maariv','מַעֲרִיב']];
+function davHTML(st){ const today=ymd(now()), got=(st.dav&&st.dav[today])||[];
+ return `<div class="tp-card"><h3>🙏 Did you daven today?<small>${got.length?'Your tefillah lights up your Olam Haba ✨':'Tap each one you davened'}</small></h3><div class="tp-dav">${DAV.map(d=>`<button type="button" class="${got.indexOf(d[0])>=0?'on':''}" data-tp="dav" data-d="${d[0]}"><small>${d[2]}</small>${got.indexOf(d[0])>=0?'✓ ':''}${d[1]}</button>`).join('')}</div></div>`; }
+function parHTML(){ const rp=window.tlRP&&window.tlRP(), p=rp&&rp.parsha; if(!p||!p.name) return '';
+ return `<div class="tp-card tp-par"><h3>📜 Parsha of the week<small>from ${E(p.by||'your rebbe')}</small></h3><div class="nm">Parshas ${E(p.name)}</div>${p.note?`<div class="nt">${E(p.note)}</div>`:''}${p.lesson?`<button type="button" class="tp-btn ${p.done?'done':''}" data-tp="par" data-id="${E(p.lesson)}">${p.done?'✓ Done! Learn it again':'Learn it ▶'} <small style="font-weight:600;opacity:.9">${E(p.lessonName||'')}</small></button>`:''}${window.tlChm?`<button type="button" class="tp-btn" style="margin-top:6px" data-chmopen="${E(p.name)}">📜 The whole Parsha in the Chumash ▶</button>`:''}</div>`; }
+function scrHTML(st){ const n=torahAll(st).length; return `<div class="tp-card"><h3>📜 My Torah scroll<small>${n?'it grows with every Torah lesson':'master a Kodesh lesson to begin'}</small></h3><div class="tp-scr">${scrollArt()}<div><b>${n}</b> <span style="font:700 15px var(--body,'Barlow'),sans-serif;color:#6b7280">Torah lesson${n===1?'':'s'} on your scroll</span></div><span style="flex:1"></span><button type="button" class="tp-btn" data-tp="scroll">Open ▶</button></div></div>`; }
+function section(){ const st=A.st; if(!st) return ''; css(); const occ=occHTML(st), row=davHTML(st)+parHTML()+scrHTML(st);
+ return `<section class="tp" aria-label="Torah and tefillah">${occ}<div class="tp-row">${row}</div></section>`; }
+function openScroll(){ const st=A.st; if(!st||document.querySelector('.tp-sheet')) return; const L=torahAll(st), sk=st.skills||{}, first=String(st.name||'').split(' ')[0];
+ const day=t=>{ try{ return t?new Date(Number(t)).toLocaleDateString([], {month:'short',day:'numeric'}):''; }catch(e){ return ''; } };
+ const s=document.createElement('div'); s.className='tp-sheet'; s.setAttribute('role','dialog'); s.setAttribute('aria-modal','true');
+ s.innerHTML=`<div class="tp-scroll"><div class="tp-rod"></div><div class="tp-parch"><div class="he">תּוֹרָה צִוָּה לָנוּ מֹשֶׁה</div><h2>${E(first)}'s Torah Scroll</h2>
+ ${L.length?`<ol>${L.map(id=>`<li>${E(nameOf(id))} <small>· ${E(day(sk[id].at))}${sk[id].bechina?' · 🎓 bechina':''}</small></li>`).join('')}</ol>`:'<p style="text-align:center;font:600 16px var(--body,Barlow),sans-serif">Your scroll is ready. Every Kodesh lesson you master is written here.</p>'}
+ <button type="button" class="x">Roll it up</button></div><div class="tp-rod"></div></div>`;
+ document.body.appendChild(s); requestAnimationFrame(()=>requestAnimationFrame(()=>{ const p=s.querySelector('.tp-parch'); p.classList.add('open'); setTimeout(()=>{ p.scrollTop=p.scrollHeight; },1600); }));
+ const close=()=>s.remove(); s.querySelector('.x').onclick=close; s.onclick=e=>{ if(e.target===s) close(); }; }
+/* ---------- install ---------- */
+const _vHub=vHub;
+vHub=function(){ const h=_vHub.apply(this,arguments); try{ if(!A.st) return h; const s=section(); if(!s) return h; const i=h.indexOf('</header>'); return i>=0&&h.indexOf('hpbar')>=0&&h.indexOf('hpbar')<i?h.slice(0,i+9)+s+h.slice(i+9):s+h; }catch(e){ console.error('TorahPlus',e); return h; } };
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-tp]'); if(!b) return; const a=b.dataset.tp, st=A.st; if(!st) return;
+ if(a==='dav'){ const d=b.dataset.d, today=ymd(now()); st.dav=st.dav||{}; const L=st.dav[today]=st.dav[today]||[]; const i=L.indexOf(d);
+  if(i>=0){ L.splice(i,1); } else { L.push(d); try{ if(window.tlOH){ const r=b.getBoundingClientRect(); window.tlOH.effort(true,true,{x:r.left+r.width/2,y:r.top+r.height/2}); window.tlOH.surge(true,'תְּפִלָּה','Your tefillah lights up your Olam Haba! ✨'); } }catch(x){} }
+  Object.keys(st.dav).sort().slice(0,-40).forEach(k=>delete st.dav[k]);   /* keep the last 40 days */
+  try{ if(typeof saveStudent==='function') saveStudent(st); }catch(x){} render(); return; }
+ if(a==='par'){ if(window.tlRPStart) window.tlRPStart(b.dataset.id); return; }
+ if(a==='scroll'){ try{ if(typeof SND!=='undefined') SND.tap(); }catch(x){} openScroll(); return; } });
+setInterval(()=>{ try{ if(A.view==='hub'&&window.tlRP&&window.tlRP()&&!document.querySelector('.tp-par')&&window.tlRP().parsha&&window.tlRP().parsha.name&&!document.querySelector('.tp-sheet')) render(); }catch(e){} },3000);
+})();
+</script>
