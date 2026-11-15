@@ -41,8 +41,19 @@ function msRows_(name) {
   if (n < 2) return [];
   return sh.getRange(2, 1, n - 1, MS.TABS[name].length).getValues();
 }
+/* SPEED 2 (Nov 15): ONE boy's saved record, without reading every boy's record (each can be 45,000 characters).
+   Reads the id column, then only his row. Returns { sh, idx (0-based, -1 = none yet), row: [id, json, updated, version] }. */
+function msStateRow_(sid) {
+  var sh = msTab_('state'), n = sh.getLastRow(); sid = String(sid);
+  if (n >= 2) { var ids = sh.getRange(2, 1, n - 1, 1).getValues();
+    for (var i = 0; i < ids.length; i++) if (String(ids[i][0]) === sid) return { sh: sh, idx: i, row: sh.getRange(i + 2, 1, 1, MS.TABS.state.length).getValues()[0] }; }
+  return { sh: sh, idx: -1, row: null };
+}
 /* Creates the tabs and the made-up practice roster once. Never touches other tabs. */
 function msEnsureSetup_() {
+  /* SPEED 2 (Nov 15): this ran at EVERY page load and EVERY sign-in and waited in the same line as the saves.
+     Once the tabs are known to exist, remember it for 6 hours and skip the wait. */
+  var okCache = CacheService.getScriptCache(); try { if (okCache.get('ms_setup_ok')) return; } catch (e) {}
   var lock = LockService.getScriptLock(); lock.waitLock(20000);
   try {
     var sh = msTab_('roster');
@@ -53,6 +64,7 @@ function msEnsureSetup_() {
     msTab_('state'); msTab_('evidence');
     var props = PropertiesService.getScriptProperties();
     if (!props.getProperty('MS_STAFF_HASH')) { var s = Utilities.getUuid(); props.setProperty('MS_STAFF_SALT', s); props.setProperty('MS_STAFF_HASH', msHash_(s, MS.STAFF_PRACTICE_CODE)); }
+    try { okCache.put('ms_setup_ok', '1', 21600); } catch (e) {}
   } finally { lock.releaseLock(); }
 }
 function msRoster_() {
@@ -114,7 +126,8 @@ function msLoad(token) {
     var ic = CacheService.getScriptCache(), ik = 'msint_' + sess.sid + '_' + moneyWeekStart_(moneyDay_());
     if (!ic.get(ik)) { var lk = LockService.getScriptLock(); lk.waitLock(20000); try { moneyInterest_(sess.sid); } finally { lk.releaseLock(); } try { ic.put(ik, '1', 21600); } catch (e) {} }
   }
-  msRows_('state').forEach(function (r) { if (msCanSee_(sess, String(r[0])) && !(sess.role === 'staff' && msIsTest_(r[0]))) { try { var s = JSON.parse(r[1]); s.rev = Number(r[3]) || 0;   /* v201: which save this is, so a Chromebook can tell if the school has anything newer than its own unsent work */ s.balance = msBalanceDollars_(String(r[0])); s.ledger = msLedger_(String(r[0])); if (sess.role === 'kid') { try { if (typeof moneyChestStatus_ === 'function') s.chest = moneyChestStatus_(String(r[0])); } catch (e) {} } states[r[0]] = s; } catch (e) {} } });
+  var stRows = msRows_; if (sess.role === 'kid') { var mine = msStateRow_(sess.sid); stRows = function () { return mine.row ? [mine.row] : []; }; }   /* SPEED 2: a boy needs only his own row */
+  stRows('state').forEach(function (r) { if (msCanSee_(sess, String(r[0])) && !(sess.role === 'staff' && msIsTest_(r[0]))) { try { var s = JSON.parse(r[1]); s.rev = Number(r[3]) || 0;   /* SPEED 1: which save this is, so a Chromebook can tell if the school has anything newer than its own unsent work */ s.balance = msBalanceDollars_(String(r[0])); s.ledger = msLedger_(String(r[0])); if (sess.role === 'kid') { try { if (typeof moneyChestStatus_ === 'function') s.chest = moneyChestStatus_(String(r[0])); } catch (e) {} } states[r[0]] = s; } catch (e) {} } });
   try { if (typeof sgpMergeMarks_ === 'function') sgpMergeMarks_(states); } catch (e) {}   /* v177: rebbe bechina marks (KD_Marks, StaffViews.js) show as mastered on the boy's screen */
   return { role: sess.role, sid: sess.sid,
     roster: roster.filter(function (r) { return (msCanSee_(sess, r.id) || sess.role === 'staff') && !(sess.role === 'staff' && msIsTest_(r.id)); }).map(function (r) { var pl = null; try { if (typeof plPlanFor_ === 'function') pl = plPlanFor_(r.id, r.ranges); } catch (e) { pl = null; } return { id: r.id, name: r.name, ranges: pl ? pl.ranges : r.ranges, place: pl ? pl.place : null }; }),
@@ -171,25 +184,25 @@ function msSave(token, sid, state, evidenceRows, bankRows) {
   var sess = msSession_(token); sid = String(sid || '');
   if (!msCanSee_(sess, sid)) throw new Error('Not allowed.');
   if (!msRoster_().some(function (r) { return r.id === sid; })) throw new Error('Unknown student.');
-  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  var lock = LockService.getScriptLock(), bank = null; lock.waitLock(20000);
   try {
+    bank = moneyStore_(); if (bank.hold) bank.hold();   /* SPEED 2: all of this save's T$ rows go to the sheet in ONE write (below), not one write per row */
     var evIn = (evidenceRows || []).slice(0, 60);
     var pay = msCheckPay_(sess, sid, (bankRows || []).slice(0, 10), evIn, (state && state.badges) || []);
     var balance = msBalanceDollars_(sid);
-    var sh = msTab_('state'), rows = msRows_('state'), idx = -1;
-    for (var i = 0; i < rows.length; i++) if (String(rows[i][0]) === sid) { idx = i; break; }
-    var ver = idx >= 0 ? Number(rows[idx][3] || 0) + 1 : 1;
+    var cur = msStateRow_(sid), sh = cur.sh, idx = cur.idx;   /* SPEED 2: only his row, not every boy's record */
+    var ver = idx >= 0 ? Number(cur.row[3] || 0) + 1 : 1;
     state = state || {}; state.balance = balance; state.ledger = msLedger_(sid); state.rev = ver;
     var json = JSON.stringify(state); if (json.length > 45000) throw new Error('Too much data.');
     var line = [sid, json, new Date(), ver];
     if (idx >= 0) sh.getRange(idx + 2, 1, 1, 4).setValues([line]); else sh.appendRow(line);
-    /* v201: a save that is retried (Wi-Fi drop, busy server) may send an answer twice. Each answer has an id from the page;
+    /* SPEED 1: a save that is retried (Wi-Fi drop, busy server) may send an answer twice. Each answer has an id from the page;
        ids already stored are remembered for 6 hours and skipped, so the evidence tab gets every answer once. Pay was already safe (keys). */
     var seenCache = CacheService.getScriptCache(), seenKey = 'ms_evid_' + sid, seen = [];
     try { seen = JSON.parse(seenCache.get(seenKey) || '[]'); } catch (e) { seen = []; }
     var newIds = [];
     evIn = evIn.filter(function (r) {
-      var id = r && r.id ? String(r.id).slice(0, 24) : ''; if (!id) return true;
+      var id = r && r.id ? String(r.id).slice(0, 40) : ''; if (!id) return true;
       if (seen.indexOf(id) >= 0 || newIds.indexOf(id) >= 0) return false;
       newIds.push(id); return true;
     });
@@ -199,7 +212,7 @@ function msSave(token, sid, state, evidenceRows, bankRows) {
     if (pay.paid) moneyStreak_(sid);
     balance = msBalanceDollars_(sid);
     return { ok: true, version: ver, balance: balance, ledger: msLedger_(sid), rejected: pay.rejected.length, daily: pay.daily ? 10 : 0, chest: typeof moneyChestStatus_ === 'function' ? moneyChestStatus_(sid) : null };
-  } finally { lock.releaseLock(); }
+  } finally { try { if (bank && bank.flush) bank.flush(); } finally { lock.releaseLock(); } }
 }
 function msSetRange(token, sid, curr, range) {
   var sess = msSession_(token); if (sess.role !== 'staff') throw new Error('Staff only.');

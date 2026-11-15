@@ -20,7 +20,11 @@ function sgdRows_(name, len) { var sh = msBook_().getSheetByName(name); if (!sh)
 function sgdTrue_(v) { return v === true || String(v).toUpperCase() === 'TRUE'; }
 function sgdT_(v) { if (!v) return 0; var t = (v instanceof Date ? v : new Date(v)).getTime(); return isNaN(t) ? 0 : t; }
 function sgdRoster_() { var o = {}; msRoster_().forEach(function (r) { o[r.id] = r.name; }); return o; }
-function sgdStates_(only) { var o = {}; msRows_('state').forEach(function (r) { var sid = String(r[0]); if (only && !only[sid]) return; try { o[sid] = JSON.parse(r[1]); } catch (e) {} }); return o; }
+function sgdStates_(only) { var o = {};
+  var few = only ? Object.keys(only) : null;
+  if (few && few.length <= 3 && typeof msStateRow_ === 'function') {   /* SPEED 2: a boy's own desk reads only his record, not every boy's */
+    few.forEach(function (sid) { var r = msStateRow_(sid).row; if (r) { try { o[sid] = JSON.parse(r[1]); } catch (e) {} } }); return o; }
+  msRows_('state').forEach(function (r) { var sid = String(r[0]); if (only && !only[sid]) return; try { o[sid] = JSON.parse(r[1]); } catch (e) {} }); return o; }
 
 /* every lesson a staff member may pick: General Studies (the Teacher mode list) + Limudei Kodesh. [id, name, subject, level] */
 function sgdCatalog_() {

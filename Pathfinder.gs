@@ -490,8 +490,10 @@ function pfGrade_(r, sessGrade) {
 }
 function pfSessionsOf_(sid) {
   var sh = pfTab_('sessions'), n = sh.getLastRow(); if (n < 2) return [];
-  var v = sh.getRange(2, 1, n - 1, PF.TABS.sessions.length).getValues(), out = [];
-  for (var i = 0; i < v.length; i++) if (String(v[i][1]) === sid) out.push({ row: i + 2, id: String(v[i][0]), sid: sid, status: String(v[i][2]), kind: String(v[i][3]), grade: v[i][4], created: v[i][5], updated: v[i][6], by: String(v[i][7]), state: pfJson_(v[i][8], {}), flags: pfJson_(v[i][9], []) });
+  /* SPEED 2 (Nov 15): read the student column, then only this boy's rows (each row holds a whole Pathfinder, so reading every boy's was slow at sign-in and at every answer) */
+  var who = sh.getRange(2, 2, n - 1, 1).getValues(), out = [];
+  for (var i = 0; i < who.length; i++) if (String(who[i][0]) === sid) { var r = sh.getRange(i + 2, 1, 1, PF.TABS.sessions.length).getValues()[0];
+    out.push({ row: i + 2, id: String(r[0]), sid: sid, status: String(r[2]), kind: String(r[3]), grade: r[4], created: r[5], updated: r[6], by: String(r[7]), state: pfJson_(r[8], {}), flags: pfJson_(r[9], []) }); }
   return out;
 }
 function pfActive_(sid) {

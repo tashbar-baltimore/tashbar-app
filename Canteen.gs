@@ -336,7 +336,8 @@ function cnBalances_() {
 function cnBalance_(sid) { var o = cnBalances_(); return Object.prototype.hasOwnProperty.call(o, sid) ? o[sid] : null; }
 function cnStates_() { var o = {}; msRows_('state').forEach(function (r) { try { o[String(r[0])] = JSON.parse(r[1]); } catch (e) {} }); return o; }
 function cnCrewDone_(sid, states) {
-  var st = (states || cnStates_())[sid] || {}, sk = st.skills || {}, keys = [];
+  var st = {}; if (states) st = states[sid] || {}; else { var one = msStateRow_(sid).row; if (one) { try { st = JSON.parse(one[1]); } catch (e) {} } }   /* SPEED 2: one boy = only his record */
+  var sk = st.skills || {}, keys = [];
   try { if (typeof moneyRowsFor_ === 'function') keys = moneyRowsFor_(sid).map(function (r) { return r.key; }); } catch (e) {}
   return CN.CREW.filter(function (id) { return (sk[id] && sk[id].m) || keys.indexOf('ms:' + sid + ':Mastered ' + id) >= 0; });
 }

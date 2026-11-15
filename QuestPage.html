@@ -1798,7 +1798,7 @@ const st=Object.assign({id:r.id,name:r.name,ranges:{MATH:'A',READ:'A',WRIT:'A'},
 xp:0,badges:[],worlds:[],day:{d:today(),n:0}},s);
 if(r.ranges) st.ranges=clone(r.ranges); tlApplyPlace(st,r); return st;
 }
-/* v201 SAVE ONCE PER LESSON (so 500 boys can work at the same time).
+/* SPEED 1 (Nov 15) SAVE ONCE PER LESSON (so 500 boys can work at the same time).
    Every part of the app still calls saveStudent(st) whenever it likes, but a trip to Google now happens only:
      - at the end of a lesson (finish() below, or new pay rows such as "Mastered ..."), or
      - when 5 answers are waiting, or
@@ -2153,7 +2153,7 @@ if(st.day.d!==today()) st.day={d:today(),n:0}; st.day.n++; A.session++; const p3
 const rows=p.results.filter(Boolean).map(x=>({at:Date.now(),student:st.id,skill:x.skill,phase:p.kind==='boss'?'boss':x.phase,item:x.q,first:!!x.first&&!x.pending,tries:x.tries||1,hints:0,ms:0,ok:!!x.ok&&!x.pending}));
 SRV.pendingEv=SRV.pendingEv.concat(rows);
 const paid=payout.reduce((a,x)=>a+x[1],0);
-SAVEQ.now=true;   /* v201: the end of a lesson is the moment his answers go to the school, all together */
+SAVEQ.now=true;   /* SPEED 1: the end of a lesson is the moment his answers go to the school, all together */
 saveStudent(st,res=>{ const r=A.res; if(!res||!r||r.st!==st) return;
 if(res.daily){ r.payout.push(['Daily goal: 3 lessons today',res.daily]); }
 const extra=Math.round((res.balance-r.before.bal-paid-(res.daily||0))*100)/100;

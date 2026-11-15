@@ -20,7 +20,7 @@
   var t=tok(), hub=onHub();
   if(!t){ asked=null; info=null; card.style.display='none'; return; }
   if(asked!==t){ asked=t; info=null; google.script.run.withSuccessHandler(function(r){ info=r; paint(); }).withFailureHandler(function(){ info=null; }).pfHello(t);
-   google.script.run.withSuccessHandler(function(u){ url=u; }).msAppUrl(); }
+   if(window.TL_APP_URL) url=window.TL_APP_URL; else google.script.run.withSuccessHandler(function(u){ url=u; }).msAppUrl(); }   /* SPEED 2: sign-in already brought the app address */
   card.style.display=hub&&info&&info.show?'':'none';
  },1000);
  /* v6 Stage 2 (Engine E + E2): the first lesson in Reading / Math after a Pathfinder placement opens with a 5-question check

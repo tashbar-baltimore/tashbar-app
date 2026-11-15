@@ -70,9 +70,16 @@ render=function(){
 document.addEventListener('click',e=>{ const b=e.target.closest('[data-tm]'); if(!b) return; if(b.dataset.tm==='go'){ try{ SND.tap(); }catch(x){} startClass(b.dataset.id); } },true);
 /* v162: the class answer arrives WITH sign-in (msSignInFast, HomePage.html sets window.TL_PRE_TM), so no extra trip and no wait */
 function use(r){ if(r&&r.until&&r.now) r.until=Date.now()+(r.until-r.now); if(r) addTeacherLessons(r); TMC.s=r||null; TMC.done=0; }
-function pre(sid){ const p=window.TL_PRE_TM; if(!p||p.sid!==sid||!p.ok||Date.now()-p.at>120000) return false; window.TL_PRE_TM=null; use(p.r); TMC.checked=sid; return true; }
+function pre(sid){ const p=window.TL_PRE_TM; if(!p||p.sid!==sid||!p.ok||Date.now()-p.at>120000) return false; window.TL_PRE_TM=null; use(p.r); TMC.checked=sid; lastAsk=Date.now(); gap=nextGap(); return true; }
+/* SPEED 2 (Nov 15): 500 boys asking "is there a class?" every 25 seconds was the biggest stream of trips to Google.
+   Now: every 45 s on the home screen, every 90 s inside a lesson, every 30 s while his class is running (so "End class" is seen soon),
+   never while the tab is in the background (it asks as soon as he comes back). A few random seconds are added so a whole school
+   does not ask in the same instant. Sign-in still gets the answer at once (msSignInFast). */
+let lastAsk=0, gap=0;
+function nextGap(){ return (TMC.s?30000:(A.view==='play'||A.view==='result')?90000:45000)+Math.floor(Math.random()*10000); }
 function check(){
  if(!(SRV&&SRV.token&&A.st&&A.view!=='signin')) return;
+ lastAsk=Date.now(); gap=nextGap();
  const sid=A.st.id, tok=SRV.token;
  run('tmMine',tok).then(r=>{ if(SRV.token!==tok) return; const was=TMC.s, first=TMC.checked!==sid; TMC.checked=sid;
    if(r&&r.until&&r.now) r.until=Date.now()+(r.until-r.now);
@@ -86,7 +93,7 @@ function check(){
 }
 /* a class that runs out while the server cannot be reached still ends on time */
 setInterval(()=>{ if(TMC.s&&TMC.s.until&&Date.now()>TMC.s.until){ TMC.s=null; if(A.view==='hub') render(); } },5000);
-setInterval(check,25000);
+setInterval(()=>{ if(document.hidden) return; if(Date.now()-lastAsk>=gap) check(); },5000);
 let lastSid=null; setInterval(()=>{ const sid=A.st&&A.view!=='signin'?A.st.id:null; if(sid===lastSid) return; lastSid=sid;
  if(!sid){ TMC.s=null; TMC.done=0; TMC.checked=null; return; }
  if(TMC.checked===sid) return;                                    /* already answered at sign-in */

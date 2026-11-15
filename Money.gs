@@ -62,7 +62,11 @@ function moneyStore_() {
   if (MONEY_LIVE_) return MONEY_LIVE_;
   var ss = SpreadsheetApp.openById(TL.sheet), sh = ss.getSheetByName(MONEY.TAB), H = MONEY.HEAD;
   if (!sh) { sh = ss.insertSheet(MONEY.TAB); sh.getRange(1, 1, 1, H.length).setValues([H]).setFontWeight('bold'); sh.setFrozenRows(1); }
-  var cache = null;
+  var cache = null, held = null;   /* held: rows waiting for one write (SPEED 2, see hold/flush) */
+  function write(objs) {
+    var vals = objs.map(function (o) { return [o.id, new Date(o.at), o.sid, o.type, o.cents, o.reason, o.lessonId, o.itemId, o.by, o.key]; });
+    sh.getRange(sh.getLastRow() + 1, 1, vals.length, H.length).setValues(vals);
+  }
   function toObj(r) {
     return { id: String(r[0]), at: r[1] instanceof Date ? r[1].toISOString() : String(r[1]), sid: String(r[2]), type: String(r[3]),
       cents: Number(r[4]) || 0, reason: String(r[5]), lessonId: String(r[6] || ''), itemId: String(r[7] || ''), by: String(r[8] || ''), key: String(r[9] || '') };
@@ -71,11 +75,16 @@ function moneyStore_() {
     rows: function () { if (cache) return cache; var n = sh.getLastRow(); cache = n < 2 ? [] : sh.getRange(2, 1, n - 1, H.length).getValues().filter(function (r) { return r[0]; }).map(toObj); return cache; },
     append: function (objs) {
       if (!objs.length) return;
-      var vals = objs.map(function (o) { return [o.id, new Date(o.at), o.sid, o.type, o.cents, o.reason, o.lessonId, o.itemId, o.by, o.key]; });
-      sh.getRange(sh.getLastRow() + 1, 1, vals.length, H.length).setValues(vals);
+      if (held) { this.rows(); cache = cache.concat(objs); held = held.concat(objs); return; }   /* counted at once (balance, "paid already?"), written at flush */
+      write(objs);
       if (cache) cache = cache.concat(objs);
     },
+    /* SPEED 2 (Nov 15): msSave posts up to 20 rows; hold() keeps them and flush() writes them together, in the same order.
+       The caller holds the school lock from hold() to flush(), and flush() runs even when the save fails part-way (as before, rows already earned stay). */
+    hold: function () { if (!held) held = []; },
+    flush: function () { var b = held; held = null; if (b && b.length) write(b); },
     remove: function (pred) {
+      this.flush();
       var n = sh.getLastRow(); if (n < 2) return 0;
       var vals = sh.getRange(2, 1, n - 1, H.length).getValues(), gone = 0;
       for (var i = vals.length - 1; i >= 0; i--) if (vals[i][0] && pred(toObj(vals[i]))) { sh.deleteRow(i + 2); gone++; }
