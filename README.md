@@ -16,9 +16,9 @@ This repository is where the app is built. **Nobody edits in the Apps Script edi
 ## How a change gets to the students
 1. A creator makes a branch and opens a **pull request**. The **test** check runs by itself.
 2. The Head of School or a lead reads it, taps **Approve**, then **Merge**.
-3. **push-to-test** puts it on the test link (the `/dev` link). Students do not see it yet.
-4. When ready: **Actions → publish → Run workflow**. Both live links move to one new version, with a release note listing what was merged.
-5. If something is wrong: **Actions → rollback**, type the earlier version number, **Run workflow**.
+3. Merged work waits on `main`. Students do not see it yet.
+4. When ready: the Head of School tells one builder chat **"publish"**. Both live links move to one new version, with a release note listing what was merged.
+5. If something is wrong: tell that chat **"roll back to version N"**.
 
 ## Start here
 - Creators: read [CONTRIBUTING.md](CONTRIBUTING.md), then [docs/HOW-TO-WRITE-A-LESSON.md](docs/HOW-TO-WRITE-A-LESSON.md).

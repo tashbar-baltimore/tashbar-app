@@ -3,8 +3,8 @@
 Imported from the Drive note "02 CURRENT_STATE v269" (2026-11-15 23:58Z, written by builder takeover4). The Drive notes stay the record until the switch to GitHub is approved.
 
 ## Live
-- Both live links are on **v269**. Access: `ANYONE_ANONYMOUS`.
-- `main` in this repository holds **v268** ("Import live v268"). v269 was published from the editor afterwards. `main` must be re-imported from the editor on the day of the switch (see docs/PUBLISHING.md).
+- Both live links are on **v272**. Access: `ANYONE_ANONYMOUS`.
+- `main` was re-imported from the editor at v272 on 2026-11-16 and tagged `v272`.
 
 ## Recent releases
 - **v262 / v264:** Teacher Time real teaching frame: "How we will learn this" welcome, a sneak peek of a real question, "You are ready"; it opens on every unmastered lesson; "Teach me how" teaches the exact question.

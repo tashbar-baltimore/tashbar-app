@@ -40,26 +40,37 @@ function sbLoad(token) {
   return { canAdmin: true, head: !!me.head, myschool: me.school, def: AC.DEF, schools: schools, kids: kids, parents: parents, emojis: SB.EMO, colors: SB.COLORS, url: ScriptApp.getService().getUrl() };
 }
 function sbGrade_(g) { g = String(g == null ? '' : g).trim().toUpperCase().replace(/^GRADE\s*/, ''); if (g === 'K' || g === 'KG' || g === '0') return 0; var n = Number(g); return n >= 1 && n <= 8 && Math.round(n) === n ? n : -1; }
-function sbFreeCode_(used) {
-  for (var k = 0; k < 600; k++) { var c = ('000' + Math.floor(Math.random() * 10000)).slice(-4); if (used[c] || !sgCodeOk_(c) || sgCodeTaken_(c)) continue; used[c] = 1; return c; }
+/* v270 speed: every code already in use (staff, parents, kids) is read ONCE per save, not once per child per try. */
+function sbTaken_() {
+  var pairs = [], st = msBook_().getSheetByName('MS_Staff'), n = st ? st.getLastRow() : 0;
+  if (n > 1) st.getRange(2, 1, n - 1, 4).getValues().forEach(function (r) { if (r[0]) pairs.push([String(r[2]), String(r[3])]); });
+  if (typeof acParentRows_ === 'function') acParentRows_().forEach(function (p) { if (p.salt) pairs.push([p.salt, p.hash]); });
+  msRows_('roster').forEach(function (r) { if (r[0] && r[5]) pairs.push([r[5], String(r[6])]); });
+  return function (c) { if (msStaffMatch_(c)) return true; for (var i = 0; i < pairs.length; i++) if (msHash_(pairs[i][0], c) === pairs[i][1]) return true; return false; };
+}
+function sbFreeCode_(used, taken) {
+  taken = taken || sgCodeTaken_;
+  for (var k = 0; k < 600; k++) { var c = ('000' + Math.floor(Math.random() * 10000)).slice(-4); if (used[c] || !sgCodeOk_(c) || taken(c)) continue; used[c] = 1; return c; }
   throw new Error('Could not make a code. Try again.');
 }
 /* inside sgLock_: adds the kids to the roster and to the school; returns [{id,name,grade,code}] */
 function sbAddKidsLocked_(school, kids, who) {
-  var sh = msTab_('roster'), rows = msRows_('roster'), names = {}, max = 0, used = {}, out = [];
+  var sh = msTab_('roster'), rows = msRows_('roster'), names = {}, max = 0, used = {}, out = [], add = [], mrows = [], taken = sbTaken_();
   rows.forEach(function (r) { if (r[7] !== false) names[String(r[1]).toLowerCase()] = 1; var m = /^T(\d+)$/.exec(String(r[0])); if (m) max = Math.max(max, Number(m[1])); });
-  var mem = acTab_('MS_SchoolMembers');
   kids.forEach(function (k) {
     var name = String(k.name || '').replace(/\s+/g, ' ').trim().slice(0, 60), gn = sbGrade_(k.grade);
     if (name.length < 2) throw new Error('Every child needs a name.');
     if (gn < 0) throw new Error('Pick a grade K to 8 for ' + name + '.');
     if (names[name.toLowerCase()]) throw new Error(name + ' is already on the list. Add a last name or an initial to tell them apart.');
     names[name.toLowerCase()] = 1;
-    var id = 'T' + ('00' + (++max)).slice(-3), band = plBand_(gn + 1), salt = Utilities.getUuid(), code = sbFreeCode_(used);
-    sh.appendRow([id, name, band, band, band, salt, msHash_(salt, code), true, 'grade ' + (gn === 0 ? 'K' : gn) + ' · added ' + sgToday_() + ' by ' + who + ' (School Builder)']);
-    if (school !== AC.DEF) mem.appendRow([id, school, new Date(), who]);
+    var id = 'T' + ('00' + (++max)).slice(-3), band = plBand_(gn + 1), salt = Utilities.getUuid(), code = sbFreeCode_(used, taken);
+    add.push([id, name, band, band, band, salt, msHash_(salt, code), true, 'grade ' + (gn === 0 ? 'K' : gn) + ' · added ' + sgToday_() + ' by ' + who + ' (School Builder)']);
+    if (school !== AC.DEF) mrows.push([id, school, new Date(), who]);
     out.push({ id: id, name: name, grade: gn === 0 ? 'K' : String(gn), code: code });
   });
+  /* v270 speed: all new rows in one write per tab (was one appendRow per child) */
+  if (add.length) sh.getRange(sh.getLastRow() + 1, 1, add.length, add[0].length).setValues(add);
+  if (mrows.length) { var mem = acTab_('MS_SchoolMembers'); mem.getRange(mem.getLastRow() + 1, 1, mrows.length, 4).setValues(mrows); }
   return out;
 }
 function sbCleanKids_(kids) { kids = (kids || []).filter(function (k) { return k && String(k.name || '').trim(); }); if (kids.length > SB.MAXKIDS) throw new Error('Up to ' + SB.MAXKIDS + ' children at a time.'); return kids; }
@@ -100,6 +111,11 @@ function sbNewCode(token, sid) {
 }
 function sbMySchool(token) {
   var s = msSession_(token); if (!s || s.role !== 'kid' || !s.sid) return null;
+  /* v270 speed: every kid asks this at sign-in; keep the answer 10 minutes. The key carries TL_ACCESS_VER, which every school or move change bumps, so a change shows at once. */
+  var c = CacheService.getScriptCache(), ver = PropertiesService.getScriptProperties().getProperty('TL_ACCESS_VER') || '1', key = 'sbMy:' + ver + ':' + s.sid, hit = c.get(key);
+  if (hit) { try { return JSON.parse(hit); } catch (e) {} }
   var id = acSchoolOf_(s.sid), sc = acSchools_().filter(function (x) { return x.id === id; })[0] || { id: AC.DEF, name: AC.DEFNAME, kind: 'school' }, m = sbMeta_()[id] || {};
-  return { id: id, name: sc.name, kind: sc.kind, emoji: m.emoji || sbKindEmoji_(sc.kind), color: m.color || '', def: id === AC.DEF };
+  var out = { id: id, name: sc.name, kind: sc.kind, emoji: m.emoji || sbKindEmoji_(sc.kind), color: m.color || '', def: id === AC.DEF };
+  try { c.put(key, JSON.stringify(out), 600); } catch (e) {}
+  return out;
 }

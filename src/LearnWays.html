@@ -14,12 +14,16 @@
      LISTEN FIRST   (K-2, always, when sound is on): the question and its choices are read aloud. Bigger buttons.
    Never touched: Learn examples, On your own (check) questions, Boss, Warm-up, Fast track, Review. Mastery, money and the
    evidence the server keeps work exactly as before (the question text stays first in the evidence line).
+   v271 MEMORY: st.lw[subject] = [right on first try, answered] over his recent practice (about the last 20) in that subject.
+     At the start of a lesson (before 3 answers) that memory sets his form: 85%+ = FLYING from the start; under 50% = SHAKY:
+     every question is read aloud (any grade, sound on) so reading is not what holds him back. Once he answers 3, this lesson decides.
+   v271 WAYS TODAY: the end-of-lesson card shows the ways he learned (typed, checked Ori and caught a mistake, smaller steps).
    Hebrew in a question: only TWO TO CHOOSE (no typing Hebrew, no English voice on Hebrew).
    Hints that would name the real answer are hidden on a changed question (Island Rule; AnswerGuard cannot see the real answer there).
    Loaded LAST (after HomeLift) by Photos.js msQuestToolsBody_ and Speed.js TL_PART_FILES. Attribute: data-lw. No "double slash" in this file. */
 (function(){
 if(typeof render!=='function'||typeof A==='undefined'||typeof vPlay!=='function'||typeof answer!=='function') return;
-const LW=window.TL_LW={version:'lw-1.0',made:{two:0,type:0,ori:0},spoken:0};
+const LW=window.TL_LW={version:'lw-1.1',made:{two:0,type:0,ori:0},spoken:0};
 const HE=/[֐-׿]/;
 const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const mix=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
@@ -35,6 +39,8 @@ try{ if(!document.getElementById('lw-css')){ const s=document.createElement('sty
 .play.lw-k2 .qtext{font-size:clamp(24px,3.2vw,32px);line-height:1.35}
 .lwrow{flex:none;width:100%;display:block;align-self:stretch}
 .lwori{display:block;font-size:.72em;margin-top:10px;padding:10px 14px;border-radius:14px;background:#FFFBEB;border:2px dashed #E9B949;color:#5B3A00;font-weight:800}
+.lwways{margin:12px auto;max-width:560px;padding:12px 16px;border-radius:16px;background:#FFF7E0;border:2px solid #F6CD4C;color:#5B3A00;text-align:left}
+.lwways b{display:block;font-size:16px;margin-bottom:4px}.lwways span{font-weight:700;font-size:15px}
 @media (max-width:600px){.play.lw-k2 .opt{font-size:20px;min-height:64px}}`; document.head.appendChild(s); } }catch(e){}
 
 function lvlOf(id){ const m=/\.L(\d\d)\./.exec(String(id||'')); return m?+m[1]:4; }
@@ -42,9 +48,14 @@ function bandOf(id){ const l=lvlOf(id); return l<=3?'k2':l<=5?'34':l<=7?'56':'78
 function hasHe(it){ return HE.test(it.q||'')||(it.o||[]).some(x=>HE.test(String(x))); }
 /* results of the questions he already answered in this lesson (not the On your own ones) */
 function past(p){ const out=[]; for(let k=0;k<p.i;k++){ const r=p.results[k], x=p.items[k]; if(r&&x&&x.phase!=='check'&&x.phase!=='warm') out.push(r); } return out; }
+function subjOf(id){ const q=String(id||'').split('.'); return q[0]==='LK'?q[0]+'.'+(q[1]||''):q[0]; }
+function hist(id){ try{ const m=A.st&&A.st.lw&&A.st.lw[subjOf(id)]; return Array.isArray(m)&&m[1]>=8?m[0]/m[1]:null; }catch(e){ return null; } }
+function note(id,ok){ try{ const st=A.st; if(!st) return; st.lw=st.lw&&typeof st.lw==='object'?st.lw:{}; const k=subjOf(id); let m=Array.isArray(st.lw[k])?st.lw[k]:[0,0];
+  m=[m[0]+(ok?1:0),m[1]+1]; if(m[1]>20) m=[Math.round(m[0]*15/m[1]),15]; st.lw[k]=m; }catch(e){} }
 function formOf(p){ const r=past(p), l2=r.slice(-2), l3=r.slice(-3);
   if(l2.some(x=>(x.tries||1)>=3)||(l2.length===2&&l2.every(x=>!x.first))) return 'struggling';
   if(l3.length===3&&l3.every(x=>x.first)) return 'flying';
+  if(r.length<3){ const h=hist(p.id); if(h!==null&&h>=.85) return 'flying'; if(h!==null&&h<.5) return 'shaky'; }
   return 'steady'; }
 function eligible(p,it){ return it&&it.phase==='practice'&&it.t==='mc'&&Array.isArray(it.o)&&it.o.length>=2&&Array.isArray(it.shown)&&!it._lwd
   &&(p.kind==='skill'||p.kind==='retry')&&!p.fast&&!it._bad; }
@@ -64,7 +75,7 @@ function guard(it){ const c=low(it._lwo.correct); if(c.length<2) return;
   if(Array.isArray(it.re)) it.re=it.re.filter(t=>!gives(t)); }
 
 function make(p,it){
-  it._lwd=1; const band=bandOf(it.skill||p.id), form=formOf(p), n=past(p).length;
+  it._lwd=1; const band=bandOf(it.skill||p.id), form=formOf(p), n=past(p).length; it._lwForm=form;
   it._lwo={t:it.t,shown:it.shown.slice(),correct:it.correct,q:it.q,h:it.h,re:Array.isArray(it.re)?it.re.slice():it.re};
   let way=null;
   if(form==='struggling'&&it.o.length>=3) way='two';
@@ -104,7 +115,9 @@ vPlay=function(){ try{ const p=A.play, it=p&&p.items[p.i]; if(eligible(p,it)) ma
   return h; };
 
 const _ans=answer;
-answer=function(ans,el){ const p=A.play, it=p&&p.items[p.i]; const r=_ans.apply(this,arguments);
+answer=function(ans,el){ const p=A.play, it=p&&p.items[p.i], t0=p?p.tries:-1; const r=_ans.apply(this,arguments);
+  try{ if(it&&t0===0&&p.tries===1&&(it.phase==='practice'||it.phase==='teach')&&(p.kind==='skill'||p.kind==='retry')&&!p.replay) note(it.skill||p.id,!!(p.fb&&p.fb.ok));
+    if(it&&it._lw==='ori'&&p.fb&&p.fb.ok&&p.results[p.i]&&it.lwSays!==String(it._lwo.correct)) p.results[p.i].caught=1; }catch(e){}
   try{ if(it&&it._lw){ if(p.results[p.i]) p.results[p.i].lw=it._lw;
       if(it._lw==='type'&&p.fb&&!p.fb.ok&&p.tries>=2){ back(it); if(p.ak) p.ak=null; render(); } } }catch(e){}
   return r; };
@@ -112,14 +125,23 @@ answer=function(ans,el){ const p=A.play, it=p&&p.items[p.i]; const r=_ans.apply(
 /* LISTEN FIRST: K-2 hears the question and its choices once, when sound is on */
 let said='';
 function sayNow(){ try{ if(A.view!=='play'||!A.play||A.overlay||!SND.on) return; const p=A.play, it=p.items[p.i]; if(!it||it.phase==='check'&&p.kind==='boss') return;
-  if(bandOf(it.skill||p.id)!=='k2') return; const key=p.t0+':'+p.i; if(said===key) return;
+  if(bandOf(it.skill||p.id)!=='k2'&&!(it._lwForm==='shaky'||(it.phase!=='check'&&formOf(p)==='shaky'))) return; const key=p.t0+':'+p.i; if(said===key) return;
   if(document.querySelector('.ttb, .tt-board, #tt-ov, #tlad-ov, #tlrep-ov')) return;
   if(typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking) return;
   if(HE.test(it.q||'')||(it.shown||[]).some(x=>HE.test(String(x)))) { said=key; return; }
   said=key; let t=String(it.q||''); if(it.lwSays) t+='. Ori says: '+it.lwSays+'. Is Ori right?';
   else if(it.t==='mc'&&Array.isArray(it.shown)&&it.shown.length<=4&&it.shown.every(x=>String(x).length<40)) t+='. '+it.shown.map((x,k)=>'ABCD'[k]+': '+x).join('. ')+'.';
-  t=t.replace(/\s*\|\s*/g,' ');
+  t=t.replace(/\s*\|\s*/g,' ').replace(/([.?!])\.+/g,'$1');
   if(typeof speak==='function'){ speak(t); LW.spoken++; } }catch(e){} }
+/* WAYS TODAY on the end-of-lesson card */
+let tally=null;
+if(typeof finish==='function'){ const _fi=finish; finish=function(){ try{ const p=A.play; tally=null; if(p){ const t={type:0,ori:0,caught:0,two:0}; (p.results||[]).forEach(x=>{ if(x&&x.ok&&x.lw&&t[x.lw]!==undefined){ t[x.lw]++; if(x.caught) t.caught++; } }); if(t.type+t.ori+t.two) tally=t; } }catch(e){} return _fi.apply(this,arguments); }; }
+if(typeof vResult==='function'){ const _vr=vResult; vResult=function(){ let h=_vr.apply(this,arguments); try{ if(tally){ const t=tally, bits=[];
+  if(t.type) bits.push('\u2328\uFE0F typed '+t.type+' answer'+(t.type>1?'s':'')+' with no choices');
+  if(t.ori) bits.push('\uD83D\uDD0E checked Ori '+t.ori+' time'+(t.ori>1?'s':'')+(t.caught?' and caught '+t.caught+' mistake'+(t.caught>1?'s':''):''));
+  if(t.two) bits.push('\uD83E\uDDE9 took '+t.two+' smaller step'+(t.two>1?'s':''));
+  const card='<div class="lwways" role="note"><b>Ways you learned today</b><span>'+bits.map(E).join(' \u00B7 ')+'</span></div>';
+  h=h.replace(/(<div class="stamp[^>]*>[^<]*<\/div>)/,'$1'+card); } }catch(e){} return h; }; }
 const _rd=render; render=function(){ const r=_rd.apply(this,arguments); try{ if(A.view==='play') setTimeout(sayNow,650); }catch(e){} return r; };
 })();
 </script>
