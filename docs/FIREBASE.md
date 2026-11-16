@@ -22,7 +22,29 @@ The old `/exec` links still work exactly as before and are what students use unt
 ## Moved to Firebase so far (no student data)
 `ping`, `msQuestTools`, `msQuestToolsParts`, `apiKidPage`, `apiStaffPage`. These are the calls every device makes on opening. The function asks Apps Script once every 2 minutes and answers everyone from memory: about 0.1 s each instead of 5 to 13 s, and no load on Apps Script.
 
-## Not moved yet (the real Stage 2)
+## The engine for the rest (built and tested, not carrying real data)
+- `server/runtime.js` runs the app's own server code (`src/*.js`) UNCHANGED outside Apps Script, on stand-ins for SpreadsheetApp, CacheService, LockService, PropertiesService, Utilities and HtmlService. A fresh copy of the code starts for each request (about 8 ms).
+- `server/fsstore.js` keeps that data in Firestore: each spreadsheet tab is stored as blocks of rows. Data is loaded when the code first touches it and the function is run again. A change is written in ONE transaction that first checks no tab it read has changed; otherwise everything is reloaded and the function runs again. Nothing a half-finished run wrote (rows, cache, settings) carries into the next run.
+- The function has a TEST LANE (`fbtest: "SELFTEST_<number>"`) that runs this on Firebase with made-up practice students only. Real calls never take that path and it refuses any other book name.
+
+### Tests (all with made-up students)
+| Test | What it shows |
+|---|---|
+| `node server/selftest.js` | the real msBootstrap, msSignInCode, msLoad, msSave run in plain memory; a made-up reward is refused; a repeated save pays once |
+| `node server/fstest-local.js` | the Firestore layer (stand-in database) gives exactly the same balances as the one-at-a-time memory run, including 6 saves at the same moment |
+| `node server/fbtest-http.js` | the same on the LIVE Firebase server and real Firestore: balances 82.5 and 68, every ledger entry exactly once |
+
+Measured on Firebase (2026-11-16): sign-in about 0.5 s, load 0.7 to 1.5 s, save about 1 s, six saves at once 2 to 6 s each. Apps Script: 4 to 5 s for the simplest call, and about 30 at once.
+The Firebase times are high because each tab or cache entry the code touches costs one rerun; batching those is the next speed step.
+
+## Still to do before real students use it
+1. Copy the school database (every tab) from Google Sheets into Firestore, and check it row for row. The clasp sign-in cannot read Sheets, so this needs an export call inside the Apps Script project.
+2. Google Sheets auto-typing: the stand-in turns "12" into 12, "TRUE" into true and simple dates into dates. Real data will show where it differs; compare results call by call before trusting it.
+3. Stand-ins not built: Google Drive (photos, lesson packs come from the fast host instead), Google Docs, email, timers.
+4. Shadow run: send real calls to both servers, answer from Apps Script, compare the answers, fix differences.
+5. Switch test students, then one class, then everyone; copy Firestore back to Sheets nightly so reports keep working; keep Apps Script ready to switch back.
+
+## Order of the move
 1. Sign-in (`msSignInCode`, `msSignInFast`), load (`msLoad`), save (`msSave`): needs student state in Firestore, a copy back to Sheets so staff screens keep working, and test students first.
 2. Money (`Money.js`, `msCheckPay_`, store, interest, prizes): port the rules unchanged, compare every balance against the Sheets ledger nightly before switching.
 3. Staff screens (`sg*`, `cr*`, `ac*`, `sb*`): one tab at a time, reading only what each screen needs.
