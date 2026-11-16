@@ -6,11 +6,11 @@
    3. Lesson packs and add-ons: ask the server which pieces are current, take each piece from the device, else from
       the fast file host, else from the server. */
 (function () {
-  var API = '__API_URL__', H = window.TL_PAGE_HASH || '', KIND = window.TL_PAGE_KIND === 'staff' ? 'staff' : 'kid';
+  var API = '__API_URL__', APPS = '__APPS_URL__', H = window.TL_PAGE_HASH || '', KIND = window.TL_PAGE_KIND === 'staff' ? 'staff' : 'kid';
   var PAGE_FN = KIND === 'staff' ? 'apiStaffPage' : 'apiKidPage', PAGE_KEY = KIND === 'staff' ? '/__page_staff' : '/__page', HASH_URL = KIND === 'staff' ? '/staff/page-hash.json' : '/page-hash.json';
   /* links: ?sg=1 is the staff portal (also on this host); the other special pages still live on the Apps Script link */
   try { var q = location.search || ''; if (KIND === 'kid' && /[?&]sg=1/.test(q)) { location.replace('/staff/'); return; }
-    if (API && /[?&](pf|cp|pp|canteen|so|pl|spark)=/.test(q)) { location.replace(API + q); return; } } catch (e) {}
+    if (APPS && /[?&](pf|cp|pp|canteen|so|pl|spark)=/.test(q)) { location.replace(APPS + q); return; } } catch (e) {}
   function inject(html, h, at) { var i = html.indexOf('<head>'); if (i < 0) return null;
     return html.slice(0, i + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><script>window.TL_PAGE_HASH=' + JSON.stringify(h) + ';window.TL_PAGE_BUILT=' + Number(at) + ';window.TL_PAGE_FROM="device";window.TL_PAGE_KIND="' + KIND + '";<\/script><script src="/boot.js"><\/script>' + html.slice(i + 6); }
   function remote(fn, args) {

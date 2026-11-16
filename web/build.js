@@ -3,7 +3,8 @@
    Run: NODE_USE_ENV_PROXY=1 node web/build.js [API_URL]   (default: the first live /exec link). Needs no local src/ or packs/. */
 const fs = require('fs'), path = require('path'), zlib = require('zlib');
 const OUT = path.join(__dirname, 'dist');
-const API = process.argv[2] || 'https://script.google.com/macros/s/AKfycbwcTw8upBIAN3n1D36TON-3u6_VQdo-6zLYJT_bMa11yeFwN9IhL_saGDciQP5QK70pEw/exec';
+const API = process.argv[2] || 'https://script.google.com/macros/s/AKfycbwcTw8upBIAN3n1D36TON-3u6_VQdo-6zLYJT_bMa11yeFwN9IhL_saGDciQP5QK70pEw/exec';   /* where this build reads the live page from */
+const CALLS = process.env.TL_CALLS_URL || 'https://api-q26c275eaa-uk.a.run.app';   /* where the pages send their server calls: the Firebase server function */
 async function call(fn, args) {
   for (let i = 0; i < 4; i++) { try {
     const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ api: 1, fn, args }), redirect: 'follow' });
@@ -19,7 +20,7 @@ async function call(fn, args) {
   for (const h of parts.order) { if (!/^[A-Za-z0-9_.-]+$/.test(h)) throw new Error('Unexpected part name ' + h); const js = parts.parts[h]; fs.writeFileSync(path.join(OUT, 'parts', h + '.js'), js); bytes += Buffer.byteLength(js); gz += zlib.gzipSync(js).length; }
   fs.writeFileSync(path.join(OUT, 'parts', 'manifest.json'), JSON.stringify({ v: parts.v || 2, order: parts.order }));
   fs.writeFileSync(path.join(OUT, 'tools.json'), JSON.stringify(tools));
-  fs.writeFileSync(path.join(OUT, 'boot.js'), fs.readFileSync(path.join(__dirname, 'boot.js'), 'utf8').replace('__API_URL__', API));
+  fs.writeFileSync(path.join(OUT, 'boot.js'), fs.readFileSync(path.join(__dirname, 'boot.js'), 'utf8').replace('__API_URL__', CALLS).replace('__APPS_URL__', API));
   fs.copyFileSync(path.join(__dirname, 'sw.js'), path.join(OUT, 'sw.js'));
   fs.writeFileSync(path.join(OUT, 'page-hash.json'), JSON.stringify({ h: pageR.h }));
   let page = pageR.html; const at = page.indexOf('<head>'); if (at < 0) throw new Error('no <head> in the student page');
