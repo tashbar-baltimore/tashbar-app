@@ -15,8 +15,10 @@ cfg = {'headers': [
   {'glob': '/parts/*.js', 'headers': {'Cache-Control': 'public, max-age=31536000, immutable'}},
   {'glob': '/parts/manifest.json', 'headers': {'Cache-Control': 'no-cache'}},
   {'glob': '/index.html', 'headers': {'Cache-Control': 'no-cache'}},
-  {'glob': '/shim.js', 'headers': {'Cache-Control': 'no-cache'}},
-  {'glob': '/tools.json', 'headers': {'Cache-Control': 'no-cache'}}]}
+  {'glob': '/boot.js', 'headers': {'Cache-Control': 'no-cache'}},
+  {'glob': '/tools.json', 'headers': {'Cache-Control': 'no-cache'}},
+  {'glob': '/sw.js', 'headers': {'Cache-Control': 'no-cache'}},
+  {'glob': '/page-hash.json', 'headers': {'Cache-Control': 'no-cache'}}]}
 ver = call('POST', f'{API}/sites/{proj}/versions', {'config': cfg})['name']
 files, blobs = {}, {}
 for d, _, fs in os.walk(ROOT):

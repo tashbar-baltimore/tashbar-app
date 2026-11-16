@@ -1,0 +1,67 @@
+/* Runs first on the Firebase-hosted student page. Three jobs:
+   1. SELF-UPDATE: the files on Firebase are a fast snapshot. The Apps Script server is the truth. After each open the
+      page asks the server "is my page still current?" (apiKidPage). If not, the new page is kept on the device and
+      used from the next open on. So a new publish reaches students without anyone rebuilding Firebase.
+   2. Stand in for google.script.run: every server call is one small POST to the Apps Script /exec link.
+   3. Lesson packs and add-ons: ask the server which pieces are current, take each piece from the device, else from
+      the fast file host, else from the server. */
+(function () {
+  var API = '__API_URL__', H = window.TL_PAGE_HASH || '';
+  function inject(html, h, at) { var i = html.indexOf('<head>'); if (i < 0) return null;
+    return html.slice(0, i + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><script>window.TL_PAGE_HASH=' + JSON.stringify(h) + ';window.TL_PAGE_BUILT=' + Number(at) + ';window.TL_PAGE_FROM="device";<\/script><script src="/boot.js"><\/script>' + html.slice(i + 6); }
+  function remote(fn, args) {
+    if (!API) return Promise.reject(new Error('The server link is not set.'));
+    return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ api: 1, fn: fn, args: args }), redirect: 'follow' })
+      .then(function (r) { return r.json(); }).then(function (j) { if (!j || !j.ok) throw new Error((j && j.error) || 'Server error'); return j.result; });
+  }
+  function getJSON(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + u); return r.json(); }); }
+  var manifest = null; function staticList() { return manifest || (manifest = getJSON('/parts/manifest.json').then(function (m) { return m.order || []; }, function () { return []; })); }
+  function cacheGet(k) { return window.caches ? caches.open('tl-page').then(function (c) { return c.match(k); }).then(function (r) { return r ? r.json() : null; }).catch(function () { return null; }) : Promise.resolve(null); }
+  function cachePut(k, o) { return caches.open('tl-page').then(function (c) { return o ? c.put(k, new Response(JSON.stringify(o), { headers: { 'Content-Type': 'application/json' } })) : c.delete(k); }); }
+  function keptParts() { return cacheGet('/__parts'); }
+  /* in the background: ask the server for its current list of pieces. If it differs, keep the new list and the new
+     pieces on the device for the next open. If the fast host has caught up, drop what was kept. */
+  function verifyParts(order, onHost, kept) { var known = {}; onHost.forEach(function (h) { known[h] = 1; }); if (kept && kept.parts) Object.keys(kept.parts).forEach(function (h) { known[h] = 1; });
+    remote('msQuestToolsParts', [Object.keys(known)]).then(function (r) { if (!r || !r.order) return; var same = r.order.length === onHost.length && r.order.every(function (h, i) { return h === onHost[i]; });
+      if (same) { window.TL_PARTS_CHECK = 'current'; if (kept) cachePut('/__parts', null); return; }
+      var parts = {}; r.order.forEach(function (h) { if (r.parts && typeof r.parts[h] === 'string') parts[h] = r.parts[h]; else if (kept && kept.parts && typeof kept.parts[h] === 'string') parts[h] = kept.parts[h]; });
+      var changed = r.order.length !== order.length || r.order.some(function (h, i) { return h !== order[i]; });
+      cachePut('/__parts', { order: r.order, parts: parts }).then(function () { window.TL_PARTS_CHECK = changed ? 'newer kept for next open' : 'current (kept on device)'; }, function () { window.TL_PARTS_CHECK = 'newer, but the device could not keep it'; });
+    }, function (e) { window.TL_PARTS_CHECK = 'check failed: ' + e.message; }); }
+  var local = {
+    msQuestTools: function () { return window.TL_PAGE_FROM === 'device' ? remote('msQuestTools', []) : getJSON('/tools.json').catch(function () { return remote('msQuestTools', []); }); },
+    msQuestToolsParts: function (have) { have = have || []; var mine = {}; have.forEach(function (h) { mine[h] = 1; });
+      /* fast path: the list kept on this device (if the server had newer pieces last time), else the fast host's list */
+      return Promise.all([staticList(), keptParts()]).then(function (a) { var onHost = a[0], kept = a[1], order = kept && kept.order && kept.order.length ? kept.order : onHost;
+        if (!order.length) return remote('msQuestToolsParts', [have]);
+        var hostHas = {}; onHost.forEach(function (h) { hostHas[h] = 1; }); var parts = {}, need = order.filter(function (h) { return !mine[h]; });
+        return Promise.all(need.map(function (h) { if (kept && kept.parts && typeof kept.parts[h] === 'string') return kept.parts[h];
+            if (!hostHas[h]) throw new Error('part not on host ' + h); return fetch('/parts/' + h + '.js').then(function (x) { if (!x.ok) throw new Error('part ' + h); return x.text(); }); }))
+          .then(function (texts) { need.forEach(function (h, i) { parts[h] = texts[i]; }); setTimeout(function () { verifyParts(order, onHost, kept); }, 8000); return { v: 2, order: order, parts: parts }; })
+          .catch(function () { return remote('msQuestToolsParts', [have]); }); });
+    },
+    msAppUrl: function () { return Promise.resolve(API || location.origin + '/'); }
+  };
+  function chain(ok, no, user) {
+    return new Proxy({}, { get: function (_, k) {
+      if (k === 'withSuccessHandler') return function (f) { return chain(f, no, user); };
+      if (k === 'withFailureHandler') return function (f) { return chain(ok, f, user); };
+      if (k === 'withUserObject') return function (u) { return chain(ok, no, u); };
+      return function () { var args = Array.prototype.slice.call(arguments);
+        (local[k] ? local[k].apply(null, args) : remote(k, args)).then(function (r) { if (ok) ok(r, user); }, function (e) { if (no) no(e, user); else console.error(k, e); }); };
+    } });
+  }
+  window.google = window.google || {}; window.google.script = { run: chain(null, null, undefined), host: { close: function () {}, setHeight: function () {}, origin: location.origin }, url: { getLocation: function (cb) { cb({ parameter: {}, parameters: {}, hash: location.hash }); } }, history: { push: function () {}, replace: function () {} } };
+  window.TL_STATIC_HOST = true;
+  /* 1b. after the page is up, check with the server. A newer page is kept on the device (Cache Storage) and the
+     service worker (sw.js) serves it from the next open on. When the fast host catches up, the kept copy is dropped. */
+  function keep(doc) { return caches.open('tl-page').then(function (c) { return doc ? c.put('/__page', new Response(doc, { headers: { 'Content-Type': 'text/html; charset=utf-8' } })) : c.delete('/__page'); }); }
+  function check() { remote('apiKidPage', [H]).then(function (r) {
+      if (r && r.same) { window.TL_PAGE_CHECK = 'current';
+        if (window.TL_PAGE_FROM === 'device') getJSON('/page-hash.json').then(function (j) { if (j && j.h === H) keep(null); }, function () {}); return; }
+      if (r && r.h && r.html) { var doc = inject(r.html, r.h, Date.now()); if (!doc) { window.TL_PAGE_CHECK = 'newer, but not understood'; return; }
+        keep(doc).then(function () { window.TL_PAGE_CHECK = 'newer kept for next open'; }, function () { window.TL_PAGE_CHECK = 'newer, but the device could not keep it'; }); }
+      else window.TL_PAGE_CHECK = 'no answer'; }, function (e) { window.TL_PAGE_CHECK = 'check failed: ' + e.message; }); }
+  try { if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js'); } catch (e) {}
+  if (API && window.caches) { if (document.readyState === 'complete') setTimeout(check, 4000); else window.addEventListener('load', function () { setTimeout(check, 4000); }); }
+})();
