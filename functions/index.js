@@ -102,10 +102,10 @@ exports.api = onRequest({ region: 'us-east4', cors: true, memory: '1GiB', timeou
   try {
     if (req.method !== 'POST') return res.status(200).json({ ok: true, result: 'Tashbar server' });
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body && Object.keys(req.body).length ? req.body : JSON.parse((req.rawBody || '{}').toString()));
+    if (body && body.api === 1 && body.admin) return res.status(200).json(await admin(String(body.admin), String(body.key || ''), body.a || {}).catch(e => ({ ok: false, error: 'admin step failed: ' + String(e.message || e).slice(0, 300) })));
     const fn = String((body && body.fn) || '');
     if (!body || body.api !== 1 || !/^[a-z][A-Za-z0-9]*$/.test(fn)) return res.status(200).json({ ok: false, error: 'Not an app request.' });
     const args = Array.isArray(body.args) ? body.args.slice(0, 8) : [];
-    if (body.admin) return res.status(200).json(await admin(String(body.admin), String(body.key || ''), body.a || {}).catch(e => ({ ok: false, error: 'admin step failed: ' + String(e.message || e).slice(0, 300) })));
     if (body.fbtest) return res.status(200).json(await testLane(String(body.fbtest), fn, args));
     if (Object.prototype.hasOwnProperty.call(MOVED, fn)) return res.status(200).json({ ok: true, result: await MOVED[fn].apply(null, args) });
     res.status(200).type('application/json').send(await appsScript(fn, args));

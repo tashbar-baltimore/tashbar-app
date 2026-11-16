@@ -60,3 +60,9 @@ Measured pass-through times that show why: a simple call 4 to 5 s, `sgLoad` 16 s
 ## Things the owner changed by hand
 - Firebase project created; Blaze billing turned on.
 - Organization policy "Domain restricted sharing" overridden to Allow all for this one project, so the function can be public.
+
+## First import done (2026-11-16 17:58Z): a STAGING copy, not in use
+- The function's admin lane (`admin: importStart / importStep / importReport`, key required) copied both books into Firestore as `IMPORT_1794851229312__main` and `IMPORT_1794851229312__canteen`. Job record: `sys/import_1794851229312`.
+- Result: 82 of 82 tabs, 52,711 rows, 210 blocks, 0 blocks with a bad checksum. Canteen: every count equal. Main: three tabs gained rows while the copy ran because students were using the app (TL Money +6, MS_Evidence +8, TL_Store +1). So a copy taken while the app is in use is a snapshot; the real switch needs a short pause or a catch-up pass.
+- Nothing reads this copy for real calls. Script settings (`apiExport(key,'props')`) are NOT imported yet.
+- Next: point the test lane at the staging copy for READ-ONLY comparisons with Apps Script (the function compares and reports only same or different), then fix what differs.

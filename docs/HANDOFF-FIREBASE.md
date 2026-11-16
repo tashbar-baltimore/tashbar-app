@@ -51,3 +51,9 @@ first and follow the rules there exactly. Then: (1) tell me in 5 short lines wha
 nothing broke, (4) carry on with the next unfinished item under "What is left, in order".
 Work on your own. Stop only when I must sign in to Google or make a real decision. Short, plain updates.
 ```
+
+## First import done (2026-11-16 17:58Z): a STAGING copy, not in use
+- The function's admin lane (`admin: importStart / importStep / importReport`, key required) copied both books into Firestore as `IMPORT_1794851229312__main` and `IMPORT_1794851229312__canteen`. Job record: `sys/import_1794851229312`.
+- Result: 82 of 82 tabs, 52,711 rows, 210 blocks, 0 blocks with a bad checksum. Canteen: every count equal. Main: three tabs gained rows while the copy ran because students were using the app (TL Money +6, MS_Evidence +8, TL_Store +1). So a copy taken while the app is in use is a snapshot; the real switch needs a short pause or a catch-up pass.
+- Nothing reads this copy for real calls. Script settings (`apiExport(key,'props')`) are NOT imported yet.
+- Next: point the test lane at the staging copy for READ-ONLY comparisons with Apps Script (the function compares and reports only same or different), then fix what differs.
