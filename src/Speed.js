@@ -8,7 +8,7 @@
       If anything goes wrong the page falls back to the old loader (msQuestToolsGet), so the add-ons always load.
    KEEP IN STEP: TL_PART_FILES must list the same files in the same order as msQuestToolsBody_ in Photos.js. */
 var TL_PART_FILES = ['CanteenKid', 'MathMore', 'ReadMore', 'ScienceMore', 'ElectivesMore', 'FactsMore', 'TradesMore', 'ComputingMore', 'LifeMore', 'SocialMore',
-  'KodeshMore', 'SimchaMore', 'Shine', 'Helpers', 'Review', 'Adapt', 'Motivation', 'JokeJar', 'SimchaLife', 'TalkRebbe', 'KodeshQuestPage', 'KinderKriyah',
+  'KodeshMore', 'SimchaMore', 'Shine', 'Helpers', 'Review', 'Adapt', 'Motivation', 'JokeJar', 'SimchaLife', 'TalkRebbe', ['KodeshQuestPage', 'KodeshArt2'], 'KinderKriyah',
   'Guides', 'Pictures', 'Music', ['HowToDo', 'HowToDo2'], 'FactsHowTo', 'AnswerGuard', 'HomePlus', 'StoreKid', 'Activities', 'KindsMore', 'RebbePick', 'OlamHaba', 'TorahPlus', 'ChumashPage', 'KriyahMore', 'TorahTracks', 'ArenaPage', 'ClassMode', 'HomeLift', 'LearnWays'];
 
 function msSignInFast(code) {

@@ -154,7 +154,7 @@ var SG_STRAND = {
   COMP: { DIG: 'Using the computer', PROG: 'Coding', TYPE: 'Typing' },
   LIFE: { FIN: 'Money', BUD: 'Budgeting', STUDY: 'Study habits' },
   SOC: { COMM: 'Community', GEO: 'Maps and places', HIST: 'History', JHIST: 'Jewish history', CIV: 'Citizenship', ECON: 'Economics' },
-  ELEC: { NUC: 'Nuclear Science', LOGIC: 'Logic', SPEAK: 'Speaking', ART: 'Art', MUS: 'Music' }
+  ELEC: { NUC: 'Nuclear Science', LOGIC: 'Logic', SPEAK: 'Speaking', ART: 'Art', MUS: 'Music', PHOTO: 'Photography', PIANO: 'Piano', SEW: 'Sewing', FIX: 'Fix-It', KNOT: 'Knots', BEAT: 'Music Maker' }
 };
 var SG_CURR = { MATH: 'Tashbar Math K-8 · Number Road', READ: 'Tashbar Reading K-8 · Story Road', LANG: 'Writing and Language Arts K-8', SCI: 'Niflaos HaBorei Science K-8', SOC: 'Social Studies · Explorer Trail', COMP: 'Computing · Computer Town', HEB: 'Limudei Kodesh · Lashon Hakodesh L1-9 (a track of the Limudei Kodesh panel)', ELEC: 'Electives · Journey Into the Atom · Thinking & Arts', VOC: 'Trades · Spark Path (Electricity)', LIFE: 'Life & Money · Main Street' };
 function sgCatalog_() {
