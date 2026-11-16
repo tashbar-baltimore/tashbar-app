@@ -19,4 +19,4 @@ async function time(browser, url, label, frames) {
   console.log(label, JSON.stringify(out)); await ctx.close();
 }
 srv.listen(0, async () => { const port = srv.address().port; const fsx = require('fs'); const s = fsx.readFileSync(path.join(DIST, 'shim.js'), 'utf8'); fsx.writeFileSync(path.join(DIST, 'shim.js'), s.replace("var API = '';", "var API = 'http://localhost:" + port + "/api';"));
-  const b = await chromium.launch(); await time(b, 'http://localhost:' + port + '/', 'FILE HOST (trial):'); if (process.env.LIVE) await time(b, LIVE, 'LIVE APPS SCRIPT:  '); await b.close(); srv.close(); });
+  const b = await chromium.launch(); if (process.env.URL) await time(b, process.env.URL, 'FIREBASE (real):   '); else await time(b, 'http://localhost:' + port + '/', 'FILE HOST (trial):'); if (process.env.LIVE) await time(b, LIVE, 'LIVE APPS SCRIPT:  '); await b.close(); srv.close(); });

@@ -14,7 +14,7 @@
       Remove a file from the code ONLY after the health note shows it "ok" from real use.
    4. Every reader goes through tlFileText_(name): Photos.js (boy page add-ons), Placement.js, TeacherMode.js, StaffGrid.js, Family.js.
    Tools for builders: HQ "07 CONTENT PACKS — how to add or change lessons" (steps + pack tool). */
-var TL_PACK_STAMP = 'v272';   /* bump with every TL_PACKS change, so PACK HEALTH is rewritten at once */
+var TL_PACK_STAMP = 'v276';   /* bump with every TL_PACKS change, so PACK HEALTH is rewritten at once */
 var TL_PACK_FOLDER = '1hA-VSPnck5gCAuJYUB_yhPI3y2RvnOT_';
 var TL_PACKS = {
   /* name:        [Drive file id,                         sha256 of the exact bytes,                                          bytes  ]
@@ -29,10 +29,10 @@ var TL_PACKS = {
   KodeshMore:     ['1PkMM5LdZtqXyTmMDGVKCoZ62e-cvEVAT', '30d37cdb2873872bf12f7ccbe9276cba00efcc50a025c0ee45aed7a33399d14a', 2186642],   /* v269 (takeover4): live e10a7c25 + esti3@ MOVEOFF_GEM2..GEM8 (Gemara L07-L09 off tap) */
   FactsMore:      ['1Z_MseTjl_ORln-vcC1p3ISwZnbNgemtL', 'c9cd1e5862a5c019a94e152e92a617378fc4bbc52281ee8e0a02d99ee4271050', 274446],   /* v190: + QA 1114 Part B, Fact Finders hint rows only (8).  v173: + TL_FACT_KINDS1 (60 new-kind items, bands; takeover4). v161: Fact Finders K-12 lessons + home panel (CHANGE 0125-ET developer2@), loaded after ElectivesMore */
   FactsHowTo:     ['1Ctj3JLBjdT9T6Snizyajdz64Rt7QfhJl', '668ce00851fefef0a5be14e9891711fe0fcfb5e21db017ed294e81ad9a500ff5', 218438],   /* v191: + QA 1114 Part A Fact Finders box + TL_FF_BOX2 (2 misleading boxes).  v190: + QA 1114 Part A, Fact Finders box only (1).  v173: + TL_FACT_KDO1 (60 boxes). v161: Fact Finders How to do it (1,170 boxes), loaded after HowToDo2 */
-  KodeshQuestPage: ['1DoruyauzpcyYnA1j7iLg6Bwaszqa_9tS', '71deb84971bb352fcb79990315a71241e2e0dfd9aacf121a4dd41fb8d1bbdaf1', 2180214],   /* v268 (takeover4): live cfcf525a + ART MOUNT: esti3@ E3 art lessons A-V (24, window.ART.lk_*) */
+  KodeshQuestPage: ['1ww95zopmDe9URlExTsEn3VUMVKgMj6Fd', 'ab7ba342b706f08beef795937c6947014952edf2e971d3f0023a37ce691e8de8', 2390505],   /* v275 (takeover4): live 71deb849 + esti3@ KODESH-E3-K2-FIX-2: lk_keilim / lk_chesronos / lk_kinyan v2 K2 replaced in place, lk_onaah v2.1 + lk_sela v2.1 K2 added (Hebrew terms in Hebrew letters) */
   MathMore:       ['1sLwjGZaNaxZV11VjEBeoNaxKcEo3URUj', '0800e737ad88aeadddebe51c59eb617d936292415c118553fdc1e77bfa117ce7', 202153],
   LifeMore:       ['1OUAXEX2DIRWEymOvkm8PEms9lLlI8x-r', 'db1173f395ade01ab592bed328aef3f8086f86891da6f16bd2a44144f5075e6c', 248164],   /* v228 (takeover4): = esti1@ CANDIDATE: + TL_LIFE_NAMES1 (names and family pass, 33 items) */
-  KindsMore:      ['1XUUJ-H03kgxWoJbYI-MvbdDox8d4w7Sf', '5578c956a062115eefed8266415ef79767e6ea373499b63b4988fcc156a0fc2f', 1553968]   /* v259 (takeover4): v251 + TL_OFFTAP (MOVE OFF TAP for ELEC/LIFE/SIM practice: pairs, spotall, type + How-to boxes) */
+  KindsMore:      ['12X05R7Rkyr4zZfpWvVytHDgZpQobHinu', 'bf7215ee0a9fc4ab969a43b295875a3d53732c8c35e4bbc1e3a2382da829b405', 1561806]   /* v275 (takeover4): live 5578c956 with the 49 Lashon Hakodesh Teacher Time lessons rewritten in Hebrew letters (HoS rule K2: no transliteration) */
 };
 var TL_PACK_CHUNK = 25000;          /* characters per cache entry (cache values must stay under 100 KB) */
 var TL_PACK_TTL = 21600;            /* 6 hours in the server cache */

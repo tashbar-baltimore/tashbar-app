@@ -67,7 +67,7 @@ buildMission=function(id){
   let items=clean(_bm.apply(this,arguments),id);
   try{ const s=(typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||null;
     /* check[] stays tap/order: a new kind that slipped into check is turned into practice so it never decides mastery */
-    items.forEach(it=>{ if(it.phase==='check'&&KINDS.indexOf(it.t)>=0){ it.phase='practice'; } });
+    items.forEach(it=>{ if(it.phase==='check'&&KINDS.indexOf(it.t)>=0&&!it.chk){ it.phase='practice'; } });   /* v271: a check item marked chk:true (TL_OFFTAP, one per skill) may be hands-on */
     if(s&&Array.isArray(s.we)&&s.we.length){ const we=clean(s.we.slice(0,3).map((x,k)=>{ const it=prepItem(x,'practice'); const st=Array.isArray(x.steps)?x.steps:[]; it._we={steps:st,show:Math.max(0,st.length-1-k)}; return it; }),id+' we');
       const at=items.findIndex(x=>x.phase==='practice'); if(at>=0) items.splice(at,0,...we); }
   }catch(e){ console.warn('try together',e); }
@@ -321,6 +321,8 @@ window.TL_ART_LIST=[
  {k:'lk_scOpen',a:[],t:'Coins with a money changer',sub:'Mishnah Bava Metzia 3:11 + 3:12 · cross-stitch',m:MSHART},
  {k:'lk_p3Open',a:[],t:'Perek Hamafkid: the board game',sub:'Perek 3 chazarah',m:MSHART},
  {k:'lk_knOpen',a:[],t:'The shadow puppet theater',sub:'Mishnah Bava Metzia 4:1 + 4:2',m:MSHART},
+ {k:'lk_onOpen',a:[],t:'The market sketchbook: a sixth too much?',sub:'Mishnah Bava Metzia 4:3 + 4:4 · watercolor',m:MSHART},
+ {k:'lk_slOpen',a:[],t:'The worn coin blueprint',sub:'Mishnah Bava Metzia 4:5 + 4:6 · blueprint',m:MSHART},
  {k:'lk_rdhOpen',a:[],t:'Find the dibbur hamaschil',sub:'Rashi whiteboard · Vayigash',m:/^LK\.RAS\.L04\.0[2-5]/},
  {k:'lk_rtOpen',a:[],t:"Rashi's toolbox",sub:'Ink and watercolor · Vayigash-Vayechi',m:/^LK\.RAS\.L0[56]\./},
  {k:'lk_rt2Open',a:[],t:"Rashi's toolbox, part 2",sub:'Felt board · Shemos-Va\'eira',m:/^LK\.RAS\.L0[67]\./},
@@ -356,7 +358,12 @@ function frame(S,p,H,L,sub){ const id=p.id, small=L<=3, nm=firstName(), t=S.find
  const pk=items.find(x=>x.phase==='practice'&&!x.pic&&String(x.q).length<180)||items.find(x=>!x.pic&&String(x.q).length<180);
  if(pk){ const at=S.findIndex(x=>x.k==='try'); const peek={k:'peek',q:String(pk.q),kind:KINDSAY[kindOf(pk)]||'answer it',how:howLines(id,pk.q)}; if(at>0) S.splice(at,0,peek); else S.push(peek); }
  try{ const arts=artFor(id); if(arts.length){ const at=S.findIndex(x=>x.k==='peek'||x.k==='try'); const sc={k:'art',list:arts.slice(0,3).map(x=>({i:window.TL_ART_LIST.indexOf(x),t:x.t,sub:x.sub}))}; if(at>0) S.splice(at,0,sc); else S.push(sc); } }catch(e){}
+ try{ const tx=textFor(id,p); if(tx){ const w=S.findIndex(x=>x.k==='welcome'); S.splice(w+1,0,{k:'text',tx,n:tx.split(/\s+/).length}); } }catch(e){}   /* v275 K1 TEXT FIRST (HoS 2026-11-16): Kodesh lessons open on the real words, big */
  S.push({k:'ready',big,n:(p.items||[]).length,nm}); }
+function textFor(id,p){ if(!/^LK\./.test(String(id))) return ''; const HB=/[\u05D0-\u05EA]/, c={};
+ (p.items||[]).forEach(it=>{ const t=String(it&&it.pic||'').replace(/\s+/g,' ').trim(); if(t.length<6||!HB.test(t)||t.split(' ').length<2||/[a-z]{3}/i.test(t)||/\p{Extended_Pictographic}/u.test(t)) return; c[t]=(c[t]||0)+1; });
+ const best=Object.keys(c).sort((a,b)=>(b.length-a.length)||(c[b]-c[a]))[0]||''; if(!best) return '';
+ if(best.length<=240) return best; const cut=best.slice(0,240); return cut.slice(0,cut.lastIndexOf(' '))+' …'; }
 /* v242 VARIETY (HoS 2026-11-15: not always the same; different learning methods by age). Each lesson gets one of 4 routes, picked by its skill id so neighbouring lessons differ:
    0 classic + say-it-out-loud, 1 pretest (true/false guess first, then teach) + recap, 2 detective first (mistake before the examples) + you-lead, 3 you-lead + recap.
    Small children (L1-L3) also get story labels and draw-it breaks. */
@@ -399,6 +406,7 @@ function css(){ if(document.getElementById('tb-css')) return; const s=document.c
 #tchb .ln.on{animation:tbwrite var(--d,900ms) steps(28,end) forwards}
 #tchb .ln.st{display:flex;gap:10px;align-items:flex-start}#tchb .ln.st i{flex:0 0 auto;font-style:normal;width:30px;height:30px;border-radius:50%;border:2px solid #FDE68A;color:#FDE68A;display:grid;place-items:center;font:800 16px var(--display,system-ui),sans-serif;margin-top:2px}
 #tchb .q{font-weight:800;color:#BAE6FD;border-left:4px solid #7DD3FC;padding-left:12px}
+#tchb .tbtext{font-size:34px;line-height:1.6;margin:8px 0;padding:10px 14px;text-align:right;unicode-bidi:plaintext;font-family:'Noto Serif Hebrew','Frank Ruhl Libre',serif;background:rgba(255,255,255,.08);border-radius:12px;border-right:5px solid #C9A227}@media (max-width:600px){#tchb .tbtext{font-size:26px}}
 #tchb .pic{font-size:44px;line-height:1.2;margin:4px 0;unicode-bidi:plaintext;font-family:'Noto Serif Hebrew','Frank Ruhl Libre',serif}
 #tchb .answ{display:inline-block;position:relative;margin-top:10px;padding:6px 18px;font:800 28px var(--display,system-ui),sans-serif;color:#FDE047}
 #tchb .answ svg{position:absolute;inset:-8px -14px;width:calc(100% + 28px);height:calc(100% + 16px);overflow:visible}
@@ -478,7 +486,7 @@ const TB={el:null,S:[],i:0,p:null,small:false,paused:false,tok:0,tries:0};
 window.TL_TB=TB;
 function open(p,force,quick,qit){ if(!p||document.getElementById('tchb')) return; css(); let S=[]; try{ S=plan(p); }catch(e){ console.error('Teacher plan',e); return; } if(!S.length) return;
  if(qit){ const H=window.TL_TEACH[p.id]||{}, ex=S.find(x=>x.k==='ex'), t=S.find(x=>x.k==='title'); S=[{k:'helpq',q:String(qit.q),pic:qit.pic,kind:KINDSAY[kindOf(qit)]||'answer it',how:howLines(p.id,qit.q,6)}]; if(ex) S.push(Object.assign({},ex,{label:'A question just like it',lead:false})); S.push({k:'helpgo',big:H.big||(t&&t.big)||''}); }
- if(quick){ let ex=0; S=S.filter(x=>{ if(x.k==='ex'){ ex++; return ex===1; } return /^(welcome|title|ex|peek|try|ready)$/.test(x.k); }); const w=S.find(x=>x.k==='welcome'); if(w) w.quick=true; }
+ if(quick){ let ex=0; S=S.filter(x=>{ if(x.k==='ex'){ ex++; return ex===1; } return /^(welcome|text|title|ex|peek|try|ready)$/.test(x.k); }); const w=S.find(x=>x.k==='welcome'); if(w) w.quick=true; }
  TB.S=S; TB.i=0; TB.p=p; TB.small=lvlOf(p.id)<=3; TB.paused=false; TB.tries=0;
  themeCss(); const th=themeOf(p.id), TC=TH[th]||TH.chalk, ch=TC.c?CHARS[TC.c]:null; TB.th=th; TB.stars=0;
  const o=document.createElement('div'); o.id='tchb'; o.className=(TB.small?'small ':'')+'th-'+th+(/^(play|marker|map|beis)$/.test(th)?' light':''); o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); o.setAttribute('aria-label','Teacher Time: '+nameOf(p.id,p));
@@ -489,9 +497,10 @@ function open(p,force,quick,qit){ if(!p||document.getElementById('tchb')) return
 function close(){ hush(); clearTimeout(TB.at); clearTimeout(TB.mt); TB.tok++; const o=document.getElementById('tchb'); if(o) o.remove(); TB.el=null; try{ const inp=document.querySelector('#app .qcard input'); if(inp) inp.focus(); }catch(e){} }
 function dots(){ TB.el.querySelectorAll('.dots i').forEach((d,k)=>d.classList.toggle('on',k<=TB.i)); const last=TB.i>=TB.S.length-1; const g=TB.el.querySelector('[data-tb="next"]'); g.textContent=last?(TB.S[0]&&TB.S[0].k==='helpq'?'Back to my question ▶':'Start the questions ▶'):'Next ▶'; }
 /* write lines one by one, each while the teacher says it */
+function mixDir(el){ try{ [el].concat([...el.querySelectorAll('.ln,.q,span,div')]).forEach(x=>{ const t=x.textContent||''; if(/[A-Za-z]{2}/.test(t)&&/[\u05D0-\u05EA]/.test(t)&&!x.classList.contains('tbtext')){ x.dir='ltr'; x.style.unicodeBidi='isolate'; } }); }catch(e){} }   /* v275: an English line that starts with Hebrew must still read left to right */
 function write(list,after){ const my=++TB.tok, W=TB.el.querySelector('.wr'); let k=0;
  const step=()=>{ if(my!==TB.tok) return; if(TB.paused){ TB.resume=step; return; } if(k>=list.length){ TB.el.classList.remove('talk'); if(after) after(); return; }
-  const x=list[k++]; W.insertAdjacentHTML('beforeend',x.html); const el=W.lastElementChild; const d=Math.min(2600,Math.max(500,(x.say||'').length*32));
+  const x=list[k++]; W.insertAdjacentHTML('beforeend',x.html); const el=W.lastElementChild; mixDir(el); const d=Math.min(2600,Math.max(500,(x.say||'').length*32));
   if(el.classList.contains('ln')){ el.style.setProperty('--d',d+'ms'); requestAnimationFrame(()=>el.classList.add('on')); }
   el.scrollIntoView({block:'nearest',behavior:'smooth'});
   if(x.say){ TB.el.classList.add('talk'); talk(x.say,()=>{ TB.el&&TB.el.classList.remove('talk'); setTimeout(step,x.pause||250); }); } else setTimeout(step,x.pause||250); };
@@ -570,6 +579,11 @@ function scene(){ if(!TB.el) return; hush(); clearTimeout(TB.at); const s=TB.S[T
    {html:'<div class="ln st"><i>2</i><span>🤝 We try one together.</span></div>',say:'Two. We try one together.'},
    {html:`<div class="ln st"><i>3</i><span>🚀 You do ${s.n||'the'} questions. You will ${E(s.kinds.join(', '))}.</span></div>`,say:'Three. You do the questions. You will '+s.kinds.join(', ')+'.'},
    {html:'<div class="ln">Stuck later? Tap <b>🧑‍🏫 Teach me how</b> on any question.</div>',say:'Stuck later? Tap teach me how, on any question.'}],()=>auto(true)); }
+ else if(s.k==='text'){ write([{html:'<span class="lab">📜 THE REAL WORDS: WE LEARN FROM THE TEXT</span>',say:'Here are the real words.'},
+   {html:'<div class="ln">These are the real words from the sefer. Today we learn them.</div>',say:'These are the real words from the sefer. Today we learn them.'},
+   {html:`<div class="ln tbtext" dir="rtl" lang="he">${E(s.tx)}</div>`,say:'Look at the words. Read them slowly with me.'},
+   {html:'<div class="ln st"><i>1</i><span>👆 Point to each word as you read it.</span></div>',say:'One. Point to each word as you read it.'},
+   {html:'<div class="ln st"><i>2</i><span>❓ Every question today comes from these words.</span></div>',say:'Two. Every question today comes from these words.'}],()=>auto(true)); }
  else if(s.k==='peek'){ const list=[{html:'<span class="lab">👀 SNEAK PEEK: YOUR QUESTIONS</span>',say:'Sneak peek! Here is a question just like the ones you will get.'},L(s.q,'q'),{html:`<div class="ln warm">On this one you will ${E(s.kind)}.</div>`,say:'On this one you will '+s.kind+'.'}];
   if(s.how.length){ list.push({html:'<div class="ln">How to do it:</div>',say:'How to do it.'}); s.how.forEach((t,j)=>list.push({html:`<div class="ln st"><i>${j+1}</i><span>${E(t)}</span></div>`,say:t})); }
   list.push({html:'<div class="ln good">Same idea as what we just learned. You can do it!</div>',say:'Same idea as what we just learned. You can do it!'});
@@ -626,6 +640,206 @@ render=function(){ const r=_render.apply(this,arguments);
     if(p.fb&&!p.fb.ok&&p.tries>=2&&!card.querySelector('.tbask')){ card.insertAdjacentHTML('beforeend','<button type="button" class="tbask" data-tt="1">🧑‍🏫 Want the teacher to show you again?</button>'); } } }
  }catch(e){ console.error('Teacher Time',e); }
  return r; };
+/* ---------- 9a. TEACHER TIME SHOW (v273, takeover2; HoS 2026-11-16: "the voice is very annoying, very monotonous, very repetitive ...
+   the words are boring ... it has to jump right into it, it can't waste kids' time ... go crazy, over the top exciting ...
+   some of the words should jump out ... all sorts of different things in each one").
+   This block only WRAPS section 9's own functions (plan, talk, write, scene, open, fx); the lessons themselves are not changed.
+   1. JUMP RIGHT IN: no "here is our plan" welcome, no sneak peek, no "you are ready" speech. Every lesson opens with a 10-second
+      CHALLENGE. Right: "you already know this" and a SKIP button straight to the questions. Missed: the lesson, then a REMATCH at the end.
+   2. A DIFFERENT SHOW EVERY TIME: 6 formats (detective case, game show, breaking news, mission control, escape room, sports),
+      picked by skill and by day: own labels, own character name, own colors, own voice.
+   3. VOICE: a cast of male voices (FAMILY LIFE rule) with their own pitch and speed; every line has its own music (excited lines faster,
+      answers slower, a little variation so nothing sounds the same twice). Voice modes: Full / Quick / Quiet (the boy picks; remembered).
+      Quick (default from Level 4): the voice says the hype, the question and the answer; steps animate silently, with reading time.
+   4. NOTHING REPEATS: big phrase banks for every moment; the last 80 phrases a boy heard are remembered and skipped.
+   5. KEY WORDS POP: the lesson's key words are found automatically and pop out in color in every line (authors may also write *word*).
+   6. THE TRAP: the mistake scene becomes "spot the teacher's mistake": the teacher gives the wrong answer with confidence; the boy shouts STOP.
+   7. STREAKS: a fire counter for right answers in a row; a short final stamp (CASE SOLVED, ESCAPED!, MISSION COMPLETE...).
+   Jokes in about 1 lesson of 3; movement breaks only for K-2. No "slash slash" anywhere in this file (HtmlService rule). ---------- */
+try{
+const SHOW={v:1};
+window.TL_SHOW=SHOW;
+const SB={
+ hype:['Ready? Here we go!','Let\'s GO!','Buckle up!','Oh, this one is good.','Here comes the fun part!','Lights, camera, learning!','Hold on to your kippah!','Game on!','Okay, eyes on the board!','Watch closely!','This is the best part!','Let\'s crack it!','Here we go, champ!','Get ready to be amazed.','Brain: switched ON!','Three, two, one: go!','Alright, let\'s do this!','Look at this!','Zoom in with me.','Ooh, I love this one.','Focus mode: on!','You are going to like this.','Okay, watch my moves!','Pay attention, this is the secret.','Fasten your seatbelt!'],
+ guess:['Your guess? Tap it!','Quick! Which one?','Gut feeling: tap it!','What do you think? Go!','Take a shot!','Pick one, fast!','Trust your brain: tap!','Lock in your answer!','Before I say it: your guess?','Which one, detective?','Tap your best guess!','Ready, aim, tap!','Show me what you know!'],
+ yes:['BOOM! You got it!','Yes! Nailed it!','You are on fire!','Wow, sharp thinking!','Exactly right!','Bullseye!','Look at you go!','Perfect!','That is it!','Smart move!','Correct, superstar!','Right on the money!','You crushed it!','Brilliant!','Yes, yes, YES!','Like a pro!','Spot on!','Excellent!','Champion move!','That is what I am talking about!'],
+ no:['Ooh, so close! Watch this.','Nice try! Here is the trick.','Hmm, not quite. Watch me.','Almost! Let me show you.','Good guess! Here is the secret.','Tricky one! Look.','No worries, watch this.','Close! Here is how.','That is a smart mistake. Watch.','Not yet, but watch this.'],
+ reveal:['And the answer is…','Drumroll please…','Here it comes…','The answer:','Ta-da!','Ready for it?','And…','Boom:','Here is the answer:','Wait for it…'],
+ trapAsk:['Watch me do this one. I am super sure!','Easy! I know this one for sure.','Let me show off a little. Watch!','I bet I get this right. Ready?','Okay, watch the expert. Ha!','This one is a piece of cake. Watch me.'],
+ trapQ:['Am I right? Or should you stop me?','Did I get it? Be honest!','Right, or WRONG?','Is that correct, or did I mess up?','Should you shout STOP?','Check my work, quick!'],
+ trapGot:['You caught me! I made that mistake on purpose.','STOPPED! Great eyes, you found my mistake.','Busted! You are a better teacher than me.','Ha! You did not fall for my trap!','Caught red-handed! Great catch.','You spotted it! Most kids miss that one.'],
+ trapMiss:['Gotcha! I made a mistake on purpose. Look again.','Oops! I tricked you. That was wrong. Watch.','Ha! That was my trap. Here is the real way.','Careful! I fooled you. Let me fix it.'],
+ coldGo:['Ten-second challenge! Can you get this BEFORE I teach it?','Beat the teacher! Answer this before the lesson.','Pop quiz, zero pressure: try this one first!','Challenge time! Let us see what you already know.','Before I say anything: try this one!','Quick! Ten seconds. Go!'],
+ coldYes:['Whoa! You already know this! Skip ahead?','Amazing! You beat the teacher! Want to skip to the questions?','Look at that! You did not even need me. Skip ahead?','Genius! You can skip the lesson, or watch the quick version.'],
+ coldNo:['Tricky one! Give me sixty seconds and you will crush it.','No problem! In one minute you will get that one right.','Good try! Watch closely, then we do a rematch.','That one is tricky. Let me show you the secret, then you get a rematch!'],
+ rematch:['REMATCH! Remember the first question? Now you know the secret.','Rematch time! Same question, new you.','Here it is again. This time you know the trick!','Round two! Show me what you learned.'],
+ step:['First,','Next,','Then,','Now,','And then,','Look,','Here is the trick:','Watch this:','Next move:','Step it up:'],
+ final:['You did it! Now show me in the questions.','Lesson complete! Time to shine.','That is the whole trick. Go get those questions!','You are ready. Go crush it!','Awesome learning! Let\'s go!','Now you know it. Prove it!'],
+ rule:['Here is the golden rule:','Remember this one thing:','The secret in one line:','Write this on your brain:','If you remember one thing, remember this:','The rule:'],
+ idea:['Another way to see it:','Here is a cool way to think about it:','Picture it like this:','Try it this way:','Here is a trick that helps:']
+};
+const SHOWN_KEY='tb-said';
+let SAID=[]; try{ SAID=JSON.parse(localStorage.getItem(SHOWN_KEY)||'[]')||[]; }catch(e){ SAID=[]; }
+function say1(k){ const a=SB[k]||['']; const fresh=a.filter(x=>SAID.indexOf(x)<0); const pool=fresh.length?fresh:a; const t=pool[Math.floor(Math.random()*pool.length)];
+ SAID.push(t); if(SAID.length>80) SAID=SAID.slice(-80); try{ localStorage.setItem(SHOWN_KEY,JSON.stringify(SAID)); }catch(e){} return t; }
+SHOW.say1=say1;
+const FMT={
+ det:{n:'DETECTIVE CASE',ic:'🕵️',who:'DETECTIVE DOV',v:{p:.82,r:.96},lab:{cold:'🔍 THE CASE',title:'📁 THE CASE FILE',ex:['🔎 CLUE #1','🔎 CLUE #2'],trap:'🚨 SUSPECT ALERT',idea:'🗝️ THE KEY CLUE',try:'🕵️ CRACK THE CASE',final:'✅ CASE SOLVED!'}},
+ game:{n:'GAME SHOW',ic:'🎤',who:'HOST SHIMMY',v:{p:1.12,r:1.1},lab:{cold:'🎤 OPENING QUESTION',title:'🎯 TONIGHT\'S CATEGORY',ex:['🔔 ROUND 1','🔔 ROUND 2'],trap:'❌ THE BUZZER',idea:'🏆 WINNING STRATEGY',try:'💰 BONUS ROUND',final:'🏆 WINNER!'}},
+ news:{n:'BREAKING NEWS',ic:'📺',who:'ANCHOR EZRA',v:{p:.95,r:1.04},lab:{cold:'📺 BREAKING',title:'📰 TODAY\'S HEADLINE',ex:['🎙️ LIVE REPORT','🎙️ UPDATE'],trap:'⚠️ CORRECTION!',idea:'🗞️ THE STORY',try:'🎤 YOU REPORT',final:'📺 THAT\'S A WRAP!'}},
+ mission:{n:'MISSION CONTROL',ic:'🚀',who:'CAPTAIN ARI',v:{p:.9,r:1.02},lab:{cold:'🚀 LAUNCH TEST',title:'🛰️ THE MISSION',ex:['🔥 STAGE 1','🔥 STAGE 2'],trap:'🛑 SYSTEM ERROR',idea:'🧭 FLIGHT RULE',try:'👨‍🚀 YOU FLY IT',final:'🌕 MISSION COMPLETE!'}},
+ escape:{n:'ESCAPE ROOM',ic:'🔐',who:'KEYMASTER KOBI',v:{p:.86,r:.98},lab:{cold:'🔐 THE LOCKED DOOR',title:'🗺️ THE MAP',ex:['🔓 LOCK 1','🔓 LOCK 2'],trap:'💣 BOOBY TRAP',idea:'🗝️ MASTER KEY',try:'🚪 THE LAST LOCK',final:'🎉 ESCAPED!'}},
+ sport:{n:'GAME DAY',ic:'🏆',who:'COACH MAX',v:{p:1.05,r:1.12},lab:{cold:'⚾ FIRST PITCH',title:'📋 THE GAME PLAN',ex:['🏃 PLAY 1','🏃 PLAY 2'],trap:'🚩 FOUL!',idea:'📋 THE PLAYBOOK',try:'🏏 YOU ARE UP',final:'🏆 HOME RUN!'}}
+};
+const FK=Object.keys(FMT);
+function dayNo(){ return Math.floor(Date.now()/864e5); }
+function fmtFor(id){ const H=window.TL_TEACH[id]||{}; if(H.show&&FMT[H.show]) return H.show; return FK[(hsh(id)+dayNo())%FK.length]; }
+/* ----- key words ----- */
+const STOPW=new Set('this that with from your have what when where which will they them then than there their these those about into over only just like make made more most much must each every some some very what were been being does done other first next after before again here here\'s same also each both such ever even ones that\'s it\'s let\'s look find word words tap read show give take tell says said know left right line lines step steps answer question thing things good great time times part parts back down need want help says'.split(' '));
+function kwFor(id,H,S){ const txt=[]; if(H&&H.big) txt.push(H.big,H.big); ((H&&H.idea)||[]).forEach(x=>txt.push(x)); if(H&&H.oops&&H.oops.right) txt.push(String(H.oops.right));
+ S.forEach(s=>{ if(s.k==='title') txt.push(...(s.lines||[])); if(s.k==='ex') txt.push(s.q,...(s.steps||[])); });
+ const cnt={}; txt.join(' ').replace(/\*[^*]+\*/g,' ').split(/[^A-Za-z'’-]+/).forEach(w=>{ const k=w.toLowerCase().replace(/^['’-]+|['’-]+$/g,''); if(k.length<4||STOPW.has(k)) return; cnt[k]=(cnt[k]||0)+1; });
+ const bigW=new Set(String((H&&H.big)||'').toLowerCase().split(/[^a-z'’-]+/));
+ return Object.keys(cnt).filter(k=>cnt[k]>=2||bigW.has(k)&&cnt[k]>=1&&k.length>=5).sort((a,b)=>cnt[b]-cnt[a]).slice(0,7); }
+function kwHtml(html){ const K=TB.kw||[]; let n=0;
+ return String(html).split(/(<[^>]+>)/).map(seg=>{ if(!seg||seg.charAt(0)==='<') return seg;
+  seg=seg.replace(/\*([^*<>]{1,60})\*/g,(m,w)=>'<b class="kw kw'+(n++%4)+'" style="--kd:'+(n*90)+'ms">'+w+'</b>');
+  if(!K.length) return seg;
+  const re=new RegExp('\\b('+K.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')(s|es|ed|ing)?\\b','gi');
+  return seg.split(/(<b class="kw[^>]*>[^<]*<\/b>)/).map(p=>p.charAt(0)==='<'?p:p.replace(re,m=>'<b class="kw kw'+(n++%4)+'" style="--kd:'+(n*90)+'ms">'+m+'</b>')).join(''); }).join(''); }
+SHOW.kwHtml=kwHtml;
+/* ----- the plan: jump right in ----- */
+const _plan=plan;
+plan=function(p){ const S0=_plan(p); try{ return showPlan(S0,p); }catch(e){ console.error('Teacher show',e); return S0; } };
+function showPlan(S,p){ const id=p.id, Lv=lvlOf(id), small=Lv<=3, H=window.TL_TEACH[id]||{}, sub=subjOf(id), r=hsh(id);
+ const f=fmtFor(id), F=FMT[f]; S=S.filter(x=>!/^(welcome|peek|ready|tell)$/.test(x.k));
+ if(!small) S=S.filter(x=>x.k!=='move'); if((r+dayNo())%3!==0) S=S.filter(x=>x.k!=='joke');
+ S=S.filter(x=>x.k!=='recap');
+ const t=S.find(x=>x.k==='title'); if(t){ t.lab=F.lab.title; t.fmt=f; }
+ let n=0; S.forEach(x=>{ if(x.k==='ex'){ x.label=F.lab.ex[Math.min(n,1)].replace(/^\S+\s/,''); x.flab=F.lab.ex[Math.min(n,1)]; n++; } if(x.k==='idea'&&x.h==='Another way to see it') x.h=F.lab.idea; });
+ const oo=S.findIndex(x=>x.k==='oops'); if(oo>=0&&String(S[oo].wrong||'').length<90) S[oo]=Object.assign({},S[oo],{k:'trap',lab:F.lab.trap});
+ const tr=S.find(x=>x.k==='try'); const o=tr&&opts(tr.it);
+ if(tr&&o&&o.length>=2&&o.length<=4){ S.unshift({k:'cold',it:tr.it,lab:F.lab.cold,fmt:f}); tr.rematch=true; tr.lab=F.lab.try; }
+ else if(tr) tr.lab=F.lab.try;
+ S.push({k:'final',lab:F.lab.final,big:H.big||(t&&(t.lines||[])[0])||(t&&t.big)||'',fmt:f});
+ S.fmt=f; return S; }
+/* ----- open: format, character, voice mode button, streak ----- */
+const _open=open;
+open=function(p,force,quick,qit){ _open(p,force,quick,qit); try{ dress(); }catch(e){ console.error('Teacher show dress',e); } };
+function vmode(){ let m=''; try{ m=localStorage.getItem('tb-vmode')||''; }catch(e){} return /^(full|quick|quiet)$/.test(m)?m:(TB.small?'full':'quick'); }
+const VMI0={full:'🔊 Full voice',quick:'⚡ Quick voice',quiet:'🔇 Quiet'}, VMI1={full:'🔊',quick:'⚡',quiet:'🔇'};
+const VMI=new Proxy({},{get:(o,k)=>((window.innerWidth||1000)<600?VMI1:VMI0)[k]});
+function dress(){ if(!TB.el||TB.el.classList.contains('show')) return; showCss(); const id=TB.p&&TB.p.id, f=TB.S.fmt||fmtFor(id), F=FMT[f]; TB.fmt=f; TB.streak=0; TB.best=0; TB.coldOk=false; TB.coldDone=false; TB.vmode=vmode();
+ TB.kw=kwFor(id,window.TL_TEACH[id]||{},TB.S);
+ TB.el.classList.add('show','f-'+f);
+ const b=TB.el.querySelector('.tch b'); if(b&&subjOf(id)!=='LK') b.textContent=F.who;
+ const sl=TB.el.querySelector('.slate'); if(sl&&!sl.querySelector('.fmtban')) sl.insertAdjacentHTML('afterbegin',`<div class="fmtban">${F.ic} ${E(F.n)}</div>`);
+ const st=TB.el.querySelector('.stars'); if(st&&!TB.el.querySelector('.tbstk')) st.insertAdjacentHTML('afterend','<span class="tbstk" aria-label="streak"></span>');
+ const ag=TB.el.querySelector('[data-tb="again"]'); if(ag&&!TB.el.querySelector('[data-tbv]')) ag.insertAdjacentHTML('afterend',`<button type="button" data-tbv="1" aria-label="Voice">${VMI[TB.vmode]}</button>`); }
+/* ----- streaks ride on the sounds ----- */
+const _fx=fx;
+fx=function(k){ _fx(k); try{ if(!TB.el) return; if(k==='ding'||k==='tada'){ TB.streak=(TB.streak||0)+1; TB.best=Math.max(TB.best||0,TB.streak); const e=TB.el.querySelector('.tbstk'); if(e&&TB.streak>=2){ e.textContent='🔥 x'+TB.streak; e.classList.remove('hot'); void e.offsetWidth; e.classList.add('hot'); } }
+ else if(k==='boing'){ TB.streak=0; const e=TB.el.querySelector('.tbstk'); if(e) e.textContent=''; } }catch(e){} };
+/* ----- voice: a cast, with music in every line ----- */
+let VOICES=[]; function loadV(){ try{ VOICES=(speechSynthesis.getVoices()||[]).filter(v=>/^en/i.test(v.lang)); }catch(e){ VOICES=[]; } }
+try{ if(window.speechSynthesis){ loadV(); speechSynthesis.addEventListener&&speechSynthesis.addEventListener('voiceschanged',loadV); } }catch(e){}
+function maleVoice(){ if(!VOICES.length) loadV(); const pref=[/UK English Male/i,/Google.*Male/i,/\bDaniel\b/i,/\bAlex\b/i,/\bFred\b/i,/\bGuy\b/i,/\bDavid\b/i,/\bMark\b/i,/\bAaron\b/i,/\bArthur\b/i,/\bMale\b/i];
+ for(const r of pref){ const v=VOICES.find(x=>r.test(x.name)); if(v) return v; } return null; }
+const _talk=talk;
+talk=function(text,done){ let t=String(text||'').replace(/\*/g,'').replace(/[֐-׿ְ-ׇ]+/g,' ').replace(/[_]{2,}/g,' blank ').replace(/[×]/g,' times ').replace(/[÷]/g,' divided by ').replace(/−/g,' minus ').replace(/[^\x20-\x7E’‘“”…]/g,' ').replace(/\s+/g,' ').trim();
+ if(!TB.el||!TB.el.classList.contains('show')) return _talk(text,done);
+ if(TB.vmode==='quiet'||!soundOn()||!t||!window.speechSynthesis){ return setTimeout(done,Math.max(700,String(text||'').length*(TB.small?42:30))); }
+ let fin=false; const end=()=>{ if(fin) return; fin=true; done(); };
+ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); const F=FMT[TB.fmt]||FMT.det, v=maleVoice(); if(v) u.voice=v;
+  let p=F.v.p, r=F.v.r*(TB.small?.92:1); if(/!\s*$/.test(t)){ r*=1.08; p+=.12; } else if(/\?\s*$/.test(t)){ p+=.08; } if(/^(so the answer|the answer|and the answer|ta-da|boom)/i.test(t)){ r*=.9; p-=.05; } if(t.length>110) r*=1.04;
+  p+=(Math.random()-.5)*.1; r+=(Math.random()-.5)*.06; u.pitch=Math.max(.5,Math.min(1.8,p)); u.rate=Math.max(.75,Math.min(1.35,r)); u.onend=end; u.onerror=end; speechSynthesis.speak(u); TB.u=u; }catch(e){ return setTimeout(end,1500); }
+ setTimeout(end,Math.max(2500,t.length*95)); };
+/* ----- write: key words pop, lively entrances, quick voice reads less ----- */
+const _write=write;
+write=function(list,after){ if(!TB.el||!TB.el.classList.contains('show')) return _write(list,after);
+ const L2=(list||[]).map(x=>{ if(!x||typeof x.html!=='string') return x; let h=x.html, say=x.say;
+  if(/class="(big |)ln|class="answ|class="lab/.test(h)||/class="ln/.test(h)) h=kwHtml(h);
+  h=h.replace(/class="ln(?![^"]*\ban\d)/,'class="ln an'+(Math.floor(Math.random()*4)));
+  if(TB.vmode==='quick'&&!TB.small&&say&&(/class="ln st"/.test(x.html)||/class="ln ?"/.test(x.html)&&String(say).length>70)) { const n=String(say).length; say=''; return Object.assign({},x,{html:h,say,pause:Math.min(3200,Math.max(900,n*48))}); }
+  return Object.assign({},x,{html:h,say}); });
+ return _write(L2,after); };
+/* ----- the new scenes ----- */
+const _scene=scene;
+scene=function(){ if(!TB.el) return; if(!TB.el.classList.contains('show')){ try{ dress(); }catch(e){} } const s=TB.S[TB.i]; if(!s||!/^(cold|trap|final)$/.test(s.k)||!TB.el.classList.contains('show')){
+  if(s&&s.k==='try'&&s.rematch&&TB.el.classList.contains('show')) return rematchScene(s);
+  if(s&&s.k==='title'&&TB.el.classList.contains('show')) return titleScene(s);
+  if(s&&s.k==='idea'&&TB.el.classList.contains('show')) return ideaScene(s);
+  return _scene(); }
+ hush(); clearTimeout(TB.at); const W=TB.el.querySelector('.wr'); W.innerHTML=''; dots(); fx('pop');
+ if(s.k==='cold') coldScene(s,W); else if(s.k==='trap') trapScene(s,W); else finalScene(s,W); };
+function picH(it){ return it.pic&&String(it.pic).length<160?[{html:`<div class="pic ln">${E(it.pic)}</div>`,say:''}]:[]; }
+function coldScene(s,W){ const it=s.it, o=opts(it), right=ans(it); TB.coldDone=false;
+ write([{html:`<span class="lab big2">${E(s.lab)}</span>`,say:say1('coldGo')},L(it.q,'q')].concat(picH(it)),()=>{ if(!TB.el||TB.S[TB.i]!==s) return;
+  W.insertAdjacentHTML('beforeend',`<div class="ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="17"/></svg><b>10</b></div><div class="opts cold">${o.map(x=>`<button type="button" data-tbc="${E(x)}">${E(x)}</button>`).join('')}</div>`);
+  let n=10; const ring=W.querySelector('.ring'), num=ring&&ring.querySelector('b'); if(ring) ring.classList.add('go');
+  const tick=()=>{ if(!TB.el||TB.S[TB.i]!==s||TB.coldDone) return; n--; if(num) num.textContent=n>0?n:'⏰'; if(n>0) TB.mt=setTimeout(tick,1000); else { fx('pop'); } }; TB.mt=setTimeout(tick,1000);
+  TB.cold=v=>{ if(TB.coldDone) return; TB.coldDone=true; clearTimeout(TB.mt); const ok=String(v)===String(right); if(ring) ring.remove();
+   W.querySelectorAll('[data-tbc]').forEach(b=>{ b.disabled=true; if(b.dataset.tbc===String(right)&&ok) b.classList.add('ok'); else if(b.dataset.tbc===v) b.classList.add('no'); });
+   TB.coldOk=ok;
+   if(ok){ fx('tada'); star(); star(); try{ if(typeof confetti==='function') confetti(); }catch(e){}
+    write([{html:`<div class="ln good big2">${E(say1('coldYes'))}</div>`,say:''}],()=>{ if(!TB.el) return; W.insertAdjacentHTML('beforeend','<div class="pick"><button type="button" data-tbk="skip">⚡ Skip to the questions</button><button type="button" data-tbk="watch">🎬 Quick lesson first</button></div>'); talk('You already know this! Skip ahead, or watch the quick lesson?',()=>{}); }); }
+   else { fx('boing'); write([{html:`<div class="ln warm">${E(say1('coldNo'))}</div>`,say:''}],()=>{ talk('No problem. Watch closely, then you get a rematch!',()=>{}); auto(true); }); } }; }); }
+function trapScene(s,W){ write([{html:`<span class="lab">${E(s.lab)}</span>`,say:say1('trapAsk')},L(s.q,'q'),{html:`<div class="ln trapans">🧑‍🏫 My answer: <b>${E(s.wrong)}</b></div>`,say:HEBR.test(String(s.wrong))?'Here is my answer.':'My answer: '+s.wrong+'.'}],()=>{ if(!TB.el) return;
+  W.insertAdjacentHTML('beforeend',`<div class="ln on ask">${E(say1('trapQ'))}</div><div class="pick trap"><button type="button" data-tbt="stop">✋ STOP! That is wrong!</button><button type="button" data-tbt="ok">👍 Looks right</button></div>`);
+  TB.trap=v=>{ TB.trap=null; const ok=v==='stop'; W.querySelectorAll('[data-tbt]').forEach(b=>{ b.disabled=true; b.classList.add(b.dataset.tbt==='stop'?'ok':'no'); }); const tw=W.querySelector('.trapans'); if(tw) tw.classList.add('crossed');
+   if(ok){ fx('ding'); star(); } else fx('boing');
+   const m=ok?say1('trapGot'):say1('trapMiss');
+   write([{html:`<div class="ln ${ok?'good':'warm'}">${E(m)}</div>`,say:m},{html:`<div class="ln good">✔ ${E(s.right)}</div>`,say:HEBR.test(String(s.right))?'Here is the right one.':'The right answer: '+s.right},L(s.why||'')].filter(x=>x.say!==''||x.html.indexOf('good')>=0),()=>auto(true)); }; }); }
+function finalScene(s,W){ const nm=firstName(); const st=TB.stars||0, best=TB.best||0;
+ write([{html:`<div class="tbstamp">${E(s.lab)}</div>`,say:''},{html:`<span class="lab">${E(say1('rule').toUpperCase())}</span>`,say:''},{html:`<div class="big ln">⭐ ${E(s.big)}</div>`,say:s.big},
+  {html:`<div class="ln good">${st?'⭐ '+st+' star'+(st===1?'':'s'):''}${best>=2?' &nbsp; 🔥 best streak x'+best:''}</div>`,say:''},
+  {html:`<div class="ln">${E((nm?nm+', ':'')+say1('final'))}</div>`,say:(nm?nm+', ':'')+'go for it!'}],()=>{ if(!TB.el) return; fx('tada'); star();
+  TB.el.querySelector('.wr').insertAdjacentHTML('beforeend','<div class="pick"><button type="button" class="gobig" data-tb="end">🚀 GO! Start the questions</button></div>'); }); }
+function titleScene(s){ hush(); clearTimeout(TB.at); const W=TB.el.querySelector('.wr'); W.innerHTML=''; dots(); fx('pop'); const lines=(s.lines||[]).slice(0,TB.small?3:5);
+ write([{html:`<span class="lab">${E(s.lab||'THE BIG IDEA')}</span>`,say:say1('hype')},{html:`<div class="big ln">${E(s.big)}</div>`,say:s.big}].concat(lines.map(t=>L(t))),()=>auto(true)); }
+function ideaScene(s){ hush(); clearTimeout(TB.at); const W=TB.el.querySelector('.wr'); W.innerHTML=''; dots(); fx('pop');
+ write([{html:`<span class="lab">${E(String(s.h).toUpperCase())}</span>`,say:say1('idea')}].concat((s.lines||[]).map(t=>({html:`<div class="ln idea">💡 ${E(t)}</div>`,say:t}))),()=>auto(true)); }
+function rematchScene(s){ hush(); clearTimeout(TB.at); const W=TB.el.querySelector('.wr'); W.innerHTML=''; dots(); fx('pop');
+ if(TB.coldOk||!TB.S.some(x=>x.k==='cold')) return tryScene(s);
+ write([{html:'<span class="lab big2">🥊 REMATCH!</span>',say:say1('rematch')}],()=>{ if(TB.el&&TB.S[TB.i]===s) tryScene(s); }); }
+/* ----- buttons of the show ----- */
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-tbc],[data-tbt],[data-tbk],[data-tbv]'); if(!b||!TB.el||!TB.el.contains(b)) return; e.preventDefault(); e.stopPropagation();
+ if(b.dataset.tbc!=null){ if(TB.cold) TB.cold(b.dataset.tbc); return; }
+ if(b.dataset.tbt!=null){ if(TB.trap) TB.trap(b.dataset.tbt); return; }
+ if(b.dataset.tbk==='skip'){ hush(); return close(); }
+ if(b.dataset.tbk==='watch'){ clearTimeout(TB.at); TB.i++; return scene(); }
+ if(b.dataset.tbv!=null){ const order=['full','quick','quiet']; TB.vmode=order[(order.indexOf(TB.vmode)+1)%3]; try{ localStorage.setItem('tb-vmode',TB.vmode); }catch(e2){} b.textContent=VMI[TB.vmode]; if(TB.vmode==='quiet') hush(); return; } },true);
+/* ----- look of the show ----- */
+function showCss(){ if(document.getElementById('tb-show-css')) return; const s=document.createElement('style'); s.id='tb-show-css'; s.textContent=`
+#tchb.show .fmtban{position:absolute;top:12px;left:12px;max-width:150px;white-space:normal!important;text-align:center;padding:4px 12px;border-radius:999px;font:900 14px var(--display,system-ui),sans-serif;letter-spacing:.12em;background:var(--fa,#FDE047);color:#111827;box-shadow:0 3px 0 rgba(0,0,0,.25);z-index:3;animation:tbban 3s ease-in-out infinite}
+@keyframes tbban{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg) scale(1.05)}}
+#tchb.show.f-det{--fa:#FBBF24;--fb:#92400E}#tchb.show.f-game{--fa:#F472B6;--fb:#9D174D}#tchb.show.f-news{--fa:#F87171;--fb:#991B1B}#tchb.show.f-mission{--fa:#60A5FA;--fb:#1E3A8A}#tchb.show.f-escape{--fa:#A78BFA;--fb:#5B21B6}#tchb.show.f-sport{--fa:#4ADE80;--fb:#166534}
+#tchb.show .lab{background:var(--fa,#FDE047);color:#111827;animation:tblab .5s cubic-bezier(.2,1.6,.4,1) both}
+#tchb.show .lab.big2{font-size:22px;padding:6px 18px}
+@keyframes tblab{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
+#tchb.show .kw{display:inline-block;font-weight:900;padding:0 3px;border-radius:6px;animation:tbkw .55s cubic-bezier(.2,1.8,.4,1) both;animation-delay:var(--kd,0ms)}
+#tchb.show .kw0{color:#FDE047;background:rgba(253,224,71,.14)}#tchb.show .kw1{color:#67E8F9;background:rgba(103,232,249,.14)}#tchb.show .kw2{color:#F9A8D4;background:rgba(249,168,212,.14)}#tchb.show .kw3{color:#86EFAC;background:rgba(134,239,172,.14)}
+#tchb.show.light .kw0{color:#B45309;background:#FEF3C7}#tchb.show.light .kw1{color:#1D4ED8;background:#DBEAFE}#tchb.show.light .kw2{color:#BE185D;background:#FCE7F3}#tchb.show.light .kw3{color:#15803D;background:#DCFCE7}
+@keyframes tbkw{0%{transform:scale(1)}40%{transform:scale(1.35) rotate(-3deg)}100%{transform:scale(1)}}
+#tchb.show .ln.an0,#tchb.show .ln.an1,#tchb.show .ln.an2,#tchb.show .ln.an3{clip-path:none!important}
+#tchb.show .ln.an0{animation:tbin0 .45s ease-out both!important}#tchb.show .ln.an1{animation:tbin1 .45s ease-out both!important}#tchb.show .ln.an2{animation:tbin2 .5s cubic-bezier(.2,1.5,.4,1) both!important}#tchb.show .ln.an3{animation:tbin3 .45s ease-out both!important}
+@keyframes tbin0{from{transform:translateX(-40px);opacity:.2}to{transform:none;opacity:1}}@keyframes tbin1{from{transform:translateX(40px);opacity:.2}to{transform:none;opacity:1}}@keyframes tbin2{from{transform:scale(.6);opacity:.2}to{transform:none;opacity:1}}@keyframes tbin3{from{transform:translateY(-24px);opacity:.2}to{transform:none;opacity:1}}
+#tchb.show .big{clip-path:none!important;animation:tbbig .6s cubic-bezier(.2,1.6,.4,1) both!important}@keyframes tbbig{from{transform:scale(.5);opacity:0}to{transform:none;opacity:1}}
+#tchb.show .answ{animation:tbstamp .5s cubic-bezier(.2,1.8,.4,1) both;font-size:34px}@keyframes tbstamp{0%{transform:scale(2.4) rotate(-10deg);opacity:0}100%{transform:none;opacity:1}}
+#tchb.show .ring{position:relative;width:64px;height:64px;margin:6px 0}#tchb.show .ring svg{width:64px;height:64px;transform:rotate(-90deg)}#tchb.show .ring circle{fill:none;stroke:var(--fa,#FDE047);stroke-width:4;stroke-dasharray:107;stroke-dashoffset:0}
+#tchb.show .ring.go circle{animation:tbring 10s linear forwards}@keyframes tbring{to{stroke-dashoffset:107}}#tchb.show .ring b{position:absolute;inset:0;display:grid;place-items:center;font:900 24px var(--display,system-ui),sans-serif}
+#tchb.show .trapans{font-size:26px}#tchb.show .trapans b{color:var(--fa,#FDE047)}#tchb.show.light .trapans b{color:var(--fb,#92400E)}#tchb.show .trapans.crossed b{text-decoration:line-through;text-decoration-thickness:4px;text-decoration-color:#EF4444}
+#tchb.show .pick.trap button[data-tbt="stop"]{background:#EF4444;color:#fff;border-color:#B91C1C;font-size:26px}
+#tchb.show .tbstamp{display:inline-block;margin:6px 0 10px;padding:8px 22px;border:5px solid var(--fb,#991B1B);color:var(--fb,#991B1B);background:rgba(255,255,255,.9);border-radius:14px;font:900 34px var(--display,system-ui),sans-serif;letter-spacing:.06em;transform:rotate(-6deg);animation:tbstamp .6s cubic-bezier(.2,1.8,.4,1) both}
+#tchb.show .gobig{font-size:28px!important;padding:12px 26px!important;background:#22C55E!important;color:#fff!important;border-color:#15803D!important;animation:tbwob2 1.2s ease-in-out infinite!important}@keyframes tbwob2{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+#tchb.show .tbstk{font:900 18px var(--display,system-ui),sans-serif;color:#F97316;margin-left:8px;min-width:10px}#tchb.show .tbstk.hot{animation:tbkw .6s cubic-bezier(.2,1.8,.4,1)}
+#tchb.show .ln.idea{font-size:1.08em}
+#tchb.show [data-tbv]{font-size:14px}
+#tchb.show .opts.cold button.ok{opacity:1!important;background:#22C55E!important;color:#fff!important;border-color:#15803D!important;border-style:solid!important}
+@media(max-width:560px){#tchb.show .bar{flex-wrap:wrap;justify-content:center;gap:6px;row-gap:6px}#tchb.show .bar .dots{display:none}#tchb.show .fmtban{font-size:10px;top:4px;left:4px;max-width:110px}#tchb.show .tbstamp{font-size:24px}#tchb.show .lab.big2{font-size:17px}}`; document.head.appendChild(s); }
+}catch(e){ console.error('Teacher Time Show',e); }
+try{ const _planK1=plan; plan=function(p){ const S=_planK1(p); try{ const i=S.findIndex(x=>x.k==='text'); if(i>0){ const t=S.splice(i,1)[0]; S.unshift(t); } }catch(e){} return S; }; }catch(e){ console.error('K1 text first',e); }   /* v275 K1 TEXT FIRST (takeover4, HoS 2026-11-16): a Kodesh lesson opens on the real words, before any challenge question */
+
 window.tlTeacher=()=>open(A.play,true); window.TL_TB_PLAN=plan;
 })();
 
