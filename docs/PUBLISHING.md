@@ -2,7 +2,7 @@
 
 ## We use the LIGHT VERSION (Head of School, 2026-11-16)
 - Creators open pull requests. The `test` check runs by itself. The Head of School or a lead approves and merges.
-- **Going live:** the Head of School tells ONE builder chat "publish". That chat, signed in to clasp as the school owner, runs `tools/publish-from-chat.sh publish`. It runs the tests, stops if anyone changed the editor by hand, pushes main, makes ONE version, moves BOTH live links, checks them, and tags the commit `vN`.
+- **Going live:** the Head of School tells ONE builder chat "publish". That chat, signed in to clasp as the school owner, runs `tools/publish-from-chat.sh publish`. It runs the tests, stops if anyone changed the editor by hand, pushes main, makes ONE version, moves BOTH live links, checks them, and records the live version in `live.json`.
 - **Rolling back:** the same chat points both live links at an earlier version (`clasp update-deployment <id> -V <n>` for both ids in `tools/clasp-ci.sh`) and checks them.
 - Nobody else pushes to the editor. GitHub does not force these rules on the free plan; everyone follows them.
 - Lesson packs: a pack change still needs a chat with Drive access to upload the file and put its id, sha256 and size in `src/ContentPacks.js` in the same pull request.

@@ -4,7 +4,7 @@ Imported from the Drive note "02 CURRENT_STATE v269" (2026-11-15 23:58Z, written
 
 ## Live
 - Both live links are on **v272**. Access: `ANYONE_ANONYMOUS`.
-- `main` was re-imported from the editor at v272 on 2026-11-16 and tagged `v272`.
+- `main` was re-imported from the editor at v272 on 2026-11-16.
 
 ## Recent releases
 - **v262 / v264:** Teacher Time real teaching frame: "How we will learn this" welcome, a sneak peek of a real question, "You are ready"; it opens on every unmastered lesson; "Teach me how" teaches the exact question.
