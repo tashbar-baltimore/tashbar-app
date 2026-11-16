@@ -6,9 +6,13 @@
    3. Lesson packs and add-ons: ask the server which pieces are current, take each piece from the device, else from
       the fast file host, else from the server. */
 (function () {
-  var API = '__API_URL__', H = window.TL_PAGE_HASH || '';
+  var API = '__API_URL__', H = window.TL_PAGE_HASH || '', KIND = window.TL_PAGE_KIND === 'staff' ? 'staff' : 'kid';
+  var PAGE_FN = KIND === 'staff' ? 'apiStaffPage' : 'apiKidPage', PAGE_KEY = KIND === 'staff' ? '/__page_staff' : '/__page', HASH_URL = KIND === 'staff' ? '/staff/page-hash.json' : '/page-hash.json';
+  /* links: ?sg=1 is the staff portal (also on this host); the other special pages still live on the Apps Script link */
+  try { var q = location.search || ''; if (KIND === 'kid' && /[?&]sg=1/.test(q)) { location.replace('/staff/'); return; }
+    if (API && /[?&](pf|cp|pp|canteen|so|pl|spark)=/.test(q)) { location.replace(API + q); return; } } catch (e) {}
   function inject(html, h, at) { var i = html.indexOf('<head>'); if (i < 0) return null;
-    return html.slice(0, i + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><script>window.TL_PAGE_HASH=' + JSON.stringify(h) + ';window.TL_PAGE_BUILT=' + Number(at) + ';window.TL_PAGE_FROM="device";<\/script><script src="/boot.js"><\/script>' + html.slice(i + 6); }
+    return html.slice(0, i + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><script>window.TL_PAGE_HASH=' + JSON.stringify(h) + ';window.TL_PAGE_BUILT=' + Number(at) + ';window.TL_PAGE_FROM="device";window.TL_PAGE_KIND="' + KIND + '";<\/script><script src="/boot.js"><\/script>' + html.slice(i + 6); }
   function remote(fn, args) {
     if (!API) return Promise.reject(new Error('The server link is not set.'));
     return fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ api: 1, fn: fn, args: args }), redirect: 'follow' })
@@ -40,7 +44,7 @@
           .then(function (texts) { need.forEach(function (h, i) { parts[h] = texts[i]; }); setTimeout(function () { verifyParts(order, onHost, kept); }, 8000); return { v: 2, order: order, parts: parts }; })
           .catch(function () { return remote('msQuestToolsParts', [have]); }); });
     },
-    msAppUrl: function () { return Promise.resolve(API || location.origin + '/'); }
+    msAppUrl: function () { return Promise.resolve(location.origin + '/'); }
   };
   function chain(ok, no, user) {
     return new Proxy({}, { get: function (_, k) {
@@ -55,10 +59,10 @@
   window.TL_STATIC_HOST = true;
   /* 1b. after the page is up, check with the server. A newer page is kept on the device (Cache Storage) and the
      service worker (sw.js) serves it from the next open on. When the fast host catches up, the kept copy is dropped. */
-  function keep(doc) { return caches.open('tl-page').then(function (c) { return doc ? c.put('/__page', new Response(doc, { headers: { 'Content-Type': 'text/html; charset=utf-8' } })) : c.delete('/__page'); }); }
-  function check() { remote('apiKidPage', [H]).then(function (r) {
+  function keep(doc) { return caches.open('tl-page').then(function (c) { return doc ? c.put(PAGE_KEY, new Response(doc, { headers: { 'Content-Type': 'text/html; charset=utf-8' } })) : c.delete(PAGE_KEY); }); }
+  function check() { remote(PAGE_FN, [H]).then(function (r) {
       if (r && r.same) { window.TL_PAGE_CHECK = 'current';
-        if (window.TL_PAGE_FROM === 'device') getJSON('/page-hash.json').then(function (j) { if (j && j.h === H) keep(null); }, function () {}); return; }
+        if (window.TL_PAGE_FROM === 'device') getJSON(HASH_URL).then(function (j) { if (j && j.h === H) keep(null); }, function () {}); return; }
       if (r && r.h && r.html) { var doc = inject(r.html, r.h, Date.now()); if (!doc) { window.TL_PAGE_CHECK = 'newer, but not understood'; return; }
         keep(doc).then(function () { window.TL_PAGE_CHECK = 'newer kept for next open'; }, function () { window.TL_PAGE_CHECK = 'newer, but the device could not keep it'; }); }
       else window.TL_PAGE_CHECK = 'no answer'; }, function (e) { window.TL_PAGE_CHECK = 'check failed: ' + e.message; }); }

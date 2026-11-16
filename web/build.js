@@ -26,5 +26,11 @@ async function call(fn, args) {
   page = page.slice(0, at + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Tashbar Learning</title><script>window.TL_PAGE_HASH="' + pageR.h + '";window.TL_PAGE_BUILT=' + Date.now() + ';</script><script src="/boot.js"></script>' + page.slice(at + 6);
   if (!/^\s*<!doctype/i.test(page)) page = '<!doctype html>\n' + page;
   fs.writeFileSync(path.join(OUT, 'index.html'), page);
-  console.log('built web/dist from the live server: page ' + Math.round(Buffer.byteLength(page) / 1024) + ' KB (hash ' + pageR.h.slice(0, 8) + '), ' + parts.order.length + ' parts, ' + (bytes / 1048576).toFixed(1) + ' MB (' + (gz / 1048576).toFixed(1) + ' MB compressed)');
+  /* the staff portal, the same way */
+  const st = await call('apiStaffPage', ['']); if (!st.html) throw new Error('The server did not send the staff page.');
+  let sp = st.html; const sa = sp.indexOf('<head>'); if (sa < 0) throw new Error('no <head> in the staff page');
+  sp = sp.slice(0, sa + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Tashbar Learning · Staff</title><script>window.TL_PAGE_KIND="staff";window.TL_PAGE_HASH="' + st.h + '";window.TL_PAGE_BUILT=' + Date.now() + ';</script><script src="/boot.js"></script>' + sp.slice(sa + 6);
+  if (!/^\s*<!doctype/i.test(sp)) sp = '<!doctype html>\n' + sp;
+  fs.mkdirSync(path.join(OUT, 'staff'), { recursive: true }); fs.writeFileSync(path.join(OUT, 'staff', 'index.html'), sp); fs.writeFileSync(path.join(OUT, 'staff', 'page-hash.json'), JSON.stringify({ h: st.h }));
+  console.log('built web/dist from the live server: page ' + Math.round(Buffer.byteLength(page) / 1024) + ' KB (hash ' + pageR.h.slice(0, 8) + '), ' + parts.order.length + ' parts, ' + (bytes / 1048576).toFixed(1) + ' MB (' + (gz / 1048576).toFixed(1) + ' MB compressed); staff page ' + Math.round(st.html.length / 1024) + ' KB (hash ' + st.h.slice(0, 8) + ')');
 })().catch(e => { console.error('BUILD FAILED: ' + e.message); process.exit(1); });

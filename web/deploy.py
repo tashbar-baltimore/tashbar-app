@@ -18,7 +18,8 @@ cfg = {'headers': [
   {'glob': '/boot.js', 'headers': {'Cache-Control': 'no-cache'}},
   {'glob': '/tools.json', 'headers': {'Cache-Control': 'no-cache'}},
   {'glob': '/sw.js', 'headers': {'Cache-Control': 'no-cache'}},
-  {'glob': '/page-hash.json', 'headers': {'Cache-Control': 'no-cache'}}]}
+  {'glob': '/page-hash.json', 'headers': {'Cache-Control': 'no-cache'}},
+  {'glob': '/staff/**', 'headers': {'Cache-Control': 'no-cache'}}]}
 ver = call('POST', f'{API}/sites/{proj}/versions', {'config': cfg})['name']
 files, blobs = {}, {}
 for d, _, fs in os.walk(ROOT):
