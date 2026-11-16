@@ -48,6 +48,43 @@ function shared(name, load) {
 }
 const pageAnswer = (name) => async (have) => { const p = await shared(name, () => appsScriptResult(name, [''])); return String(have || '') === p.h ? { h: p.h, same: true } : { h: p.h, html: p.html }; };
 
+/* ADMIN LANE: copying the school's records from Apps Script into Firestore, server to server. Every call must carry
+   the export key (kept in Secret Manager as tl-export-key; the function gets it as the environment value TL_EXPORT_KEY).
+   Records are stored under a STAGING book name (IMPORT_<stamp>__main / __canteen). Nothing reads them for real calls.
+   Replies carry counts and yes/no only, never the records themselves. */
+const crypto = require('crypto');
+const md5 = t => crypto.createHash('md5').update(t, 'utf8').digest('hex');
+async function admin(action, key, a) {
+  const KEY = process.env.TL_EXPORT_KEY || ''; if (!KEY || !key || key.length !== KEY.length || !crypto.timingSafeEqual(Buffer.from(String(key)), Buffer.from(KEY))) return { ok: false, error: 'Not allowed.' };
+  const { FsServer } = require('./app/server/fsstore.js'); DB = DB || new Firestore(); const srv = new FsServer(DB, {});
+  const job = DB.collection('sys').doc('import_' + String(a.stamp || '').replace(/[^0-9A-Za-z_]/g, ''));
+  if (action === 'importStart') { const stamp = String(Date.now()); const books = {};
+    for (const b of ['main', 'canteen']) { const t = await appsScriptResult('apiExport', [KEY, 'tabs', b]); books[b] = t.tabs.map(x => ({ name: x.name, rows: x.rows, cols: x.cols, next: 1, per: 0, done: x.rows < 1, blocks: 0, bad: 0 })); }
+    await DB.collection('sys').doc('import_' + stamp).set({ stamp, started: new Date().toISOString(), books });
+    return { ok: true, result: { stamp, tabs: { main: books.main.length, canteen: books.canteen.length }, rows: { main: books.main.reduce((n, x) => n + x.rows, 0), canteen: books.canteen.reduce((n, x) => n + x.rows, 0) } } }; }
+  if (action === 'importStep') { const d = await job.get(); if (!d.exists) return { ok: false, error: 'No such import.' }; const st = d.data(); const t0 = Date.now(); let moved = 0;
+    for (const b of ['main', 'canteen']) for (const tab of st.books[b]) { const book = 'IMPORT_' + st.stamp + '__' + b;
+      while (!tab.done && Date.now() - t0 < 200000) {
+        const want = tab.per && tab.per < 50 ? 400 : 3000; const r = await appsScriptResult('apiExport', [KEY, 'rows', b, tab.name, [tab.next, want]]); const body = JSON.stringify(r.rows);
+        if (md5(body) !== r.sum && r.rows.length) tab.bad++;
+        if (!tab.per) { const biggest = r.rows.reduce((m, row) => Math.max(m, JSON.stringify(row).length), 1); tab.per = Math.max(1, Math.min(400, Math.floor(600000 / biggest))); tab.text = r.text || {}; }
+        if ((tab.next - 1) % tab.per !== 0) throw new Error('import is out of step on ' + tab.name);
+        const last = r.rows.length < want || tab.next + r.rows.length > r.last;                    /* nothing after this batch */
+        const use = last ? r.rows.length : Math.floor(r.rows.length / tab.per) * tab.per;           /* keep whole blocks; the tail is fetched again next time */
+        if (!last && use < 1) throw new Error('rows of ' + tab.name + ' are too large for one block');
+        for (let i = 0; i < use; i += tab.per) { const slice = r.rows.slice(i, Math.min(use, i + tab.per)); const c = Math.floor((tab.next - 1 + i) / tab.per); const txt = JSON.stringify(slice); if (txt.length > 950000) throw new Error('a block of ' + tab.name + ' is too large'); await srv.tabRef(book, tab.name).collection('chunks').doc('c' + c).set({ rows: txt, sum: md5(txt) }); tab.blocks++; }
+        moved += use; tab.next += use;
+        if (last) { tab.done = true; tab.got = tab.next - 1; await srv.tabRef(book, tab.name).set({ ver: 1, nRows: tab.got, per: tab.per, text: tab.text || {} }); }
+      }
+      if (!tab.done) { await job.set(st); return { ok: true, result: { done: false, movedRows: moved, at: b + ' / tab ' + (st.books[b].indexOf(tab) + 1) + ' of ' + st.books[b].length } }; } }
+    for (const b of ['main', 'canteen']) await srv.bookRef('IMPORT_' + st.stamp + '__' + b).set({ tabs: st.books[b].map(x => x.name), ver: 1 });
+    st.finished = new Date().toISOString(); await job.set(st); return { ok: true, result: { done: true, movedRows: moved } }; }
+  if (action === 'importReport') { const d = await job.get(); if (!d.exists) return { ok: false, error: 'No such import.' }; const st = d.data(); const out = {};
+    for (const b of ['main', 'canteen']) { const tabs = st.books[b]; out[b] = { tabs: tabs.length, done: tabs.filter(x => x.done).length, rowsExpected: tabs.reduce((n, x) => n + x.rows, 0), rowsStored: tabs.reduce((n, x) => n + (x.got || 0), 0), blocks: tabs.reduce((n, x) => n + x.blocks, 0), blocksWithBadChecksum: tabs.reduce((n, x) => n + x.bad, 0), tabsWhereCountsDiffer: tabs.filter(x => x.done && (x.got || 0) !== x.rows).map(x => x.name + ' ' + x.rows + '->' + (x.got || 0)) }; }
+    return { ok: true, result: { stamp: st.stamp, finished: st.finished || null, books: out } }; }
+  return { ok: false, error: 'Unknown admin action.' };
+}
+
 const MOVED = {
   ping: async () => ({ pong: true, at: new Date().toISOString(), server: 'firebase' }),
   msQuestTools: () => shared('msQuestTools', () => appsScriptResult('msQuestTools', [])),
@@ -61,13 +98,14 @@ const MOVED = {
   apiStaffPage: pageAnswer('apiStaffPage')
 };
 
-exports.api = onRequest({ region: 'us-east4', cors: true, memory: '1GiB', timeoutSeconds: 300, maxInstances: 50, minInstances: 1 }, async (req, res) => {
+exports.api = onRequest({ region: 'us-east4', cors: true, memory: '1GiB', timeoutSeconds: 300, secrets: ['TL_EXPORT_KEY'], maxInstances: 50, minInstances: 1 }, async (req, res) => {
   try {
     if (req.method !== 'POST') return res.status(200).json({ ok: true, result: 'Tashbar server' });
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body && Object.keys(req.body).length ? req.body : JSON.parse((req.rawBody || '{}').toString()));
     const fn = String((body && body.fn) || '');
     if (!body || body.api !== 1 || !/^[a-z][A-Za-z0-9]*$/.test(fn)) return res.status(200).json({ ok: false, error: 'Not an app request.' });
     const args = Array.isArray(body.args) ? body.args.slice(0, 8) : [];
+    if (body.admin) return res.status(200).json(await admin(String(body.admin), String(body.key || ''), body.a || {}).catch(e => ({ ok: false, error: 'admin step failed: ' + String(e.message || e).slice(0, 300) })));
     if (body.fbtest) return res.status(200).json(await testLane(String(body.fbtest), fn, args));
     if (Object.prototype.hasOwnProperty.call(MOVED, fn)) return res.status(200).json({ ok: true, result: await MOVED[fn].apply(null, args) });
     res.status(200).type('application/json').send(await appsScript(fn, args));
