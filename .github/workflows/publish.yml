@@ -1,0 +1,49 @@
+name: publish
+# The ONLY way anything goes live. Makes ONE version from main and points BOTH live links at it.
+on:
+  workflow_dispatch:
+concurrency: { group: google-editor, cancel-in-progress: false }
+permissions:
+  contents: write
+  pull-requests: read
+jobs:
+  publish:
+    if: vars.GITHUB_PUBLISHING == 'on' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment: live
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Access setting must stay "Anyone"
+        run: |
+          grep -q 'ANYONE_ANONYMOUS' src/appsscript.json
+      - name: Sign in (token is never printed)
+        env: { CLASPRC: '${{ secrets.CLASPRC }}' }
+        run: source tools/clasp-ci.sh && login
+      - name: Refuse if the live script differs from main
+        run: source tools/clasp-ci.sh && pull_editor /tmp/editor && same_as /tmp/editor src
+      - name: Write the release note (pull requests merged since the last publish)
+        run: |
+          last=$(git tag --list 'v[0-9]*' --sort=-v:refname | head -1)
+          range="${last:+$last..}HEAD"
+          git log --first-parent --pretty='%s' $range | grep -v '^Import live' | head -12 | sed 's/^/- /' > /tmp/note.txt || true
+          [ -s /tmp/note.txt ] || echo "- no changes listed" > /tmp/note.txt
+          echo "Since ${last:-the start}:"; cat /tmp/note.txt
+      - name: Create ONE version
+        id: ver
+        run: |
+          note="GitHub publish: $(tr '\n' ' ' < /tmp/note.txt | cut -c1-200)"
+          out=$(clasp create-version "$note" | tail -1); echo "$out"
+          n=$(echo "$out" | grep -o '[0-9]\+$'); [ -n "$n" ] || { echo "Could not read the new version number."; exit 1; }
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+      - name: Point BOTH live links at it
+        run: source tools/clasp-ci.sh && deploy_both "${{ steps.ver.outputs.n }}" "v${{ steps.ver.outputs.n }} (GitHub publish)"
+      - name: Check both live links
+        run: source tools/clasp-ci.sh && check_live
+      - name: Tag the commit
+        run: |
+          git config user.name "tashbar-publish"; git config user.email "noreply@github.com"
+          git tag -a "v${{ steps.ver.outputs.n }}" -F /tmp/note.txt && git push origin "v${{ steps.ver.outputs.n }}"
+          { echo "## Published v${{ steps.ver.outputs.n }}"; cat /tmp/note.txt; } >> "$GITHUB_STEP_SUMMARY"
