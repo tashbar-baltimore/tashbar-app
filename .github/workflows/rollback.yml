@@ -1,0 +1,31 @@
+name: rollback
+# Points BOTH live links back at an earlier version. Does not change the code in main.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number to go back to (for example 268)'
+        required: true
+concurrency: { group: google-editor, cancel-in-progress: false }
+permissions:
+  contents: read
+jobs:
+  rollback:
+    if: vars.GITHUB_PUBLISHING == 'on'
+    runs-on: ubuntu-latest
+    environment: live
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Sign in (token is never printed)
+        env: { CLASPRC: '${{ secrets.CLASPRC }}' }
+        run: source tools/clasp-ci.sh && login
+      - name: Check the version exists
+        run: |
+          [[ "${{ inputs.version }}" =~ ^[0-9]+$ ]] || { echo "Type a version number only."; exit 1; }
+          clasp list-versions | grep -q "^${{ inputs.version }} " || { echo "Version ${{ inputs.version }} does not exist (it may have been deleted)."; exit 1; }
+      - name: Point BOTH live links at it
+        run: source tools/clasp-ci.sh && deploy_both "${{ inputs.version }}" "ROLLBACK to v${{ inputs.version }}"
+      - name: Check both live links
+        run: source tools/clasp-ci.sh && check_live
