@@ -57,3 +57,9 @@ Work on your own. Stop only when I must sign in to Google or make a real decisio
 - Result: 82 of 82 tabs, 52,711 rows, 210 blocks, 0 blocks with a bad checksum. Canteen: every count equal. Main: three tabs gained rows while the copy ran because students were using the app (TL Money +6, MS_Evidence +8, TL_Store +1). So a copy taken while the app is in use is a snapshot; the real switch needs a short pause or a catch-up pass.
 - Nothing reads this copy for real calls. Script settings (`apiExport(key,'props')`) are NOT imported yet.
 - Next: point the test lane at the staging copy for READ-ONLY comparisons with Apps Script (the function compares and reports only same or different), then fix what differs.
+
+## Real-data checks (2026-11-17 02:10Z)
+- v343: `apiExport(key,'balances')` and helper `apiBalances_` in ApiRoute.js.
+- Function admin actions `compare` (read-only fn, reports same / differing paths) and `compareBalances` (counts only).
+- Import 1794880519353: every one of 81 students' balances identical to the cent; msBootstrap identical.
+- Next: signed-in calls (need a comparison that creates a session on both sides server-side), the store, staff views; Drive stand-ins; shadow run.

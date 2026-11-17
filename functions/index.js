@@ -99,6 +99,18 @@ async function admin(action, key, a) {
       if (x !== y) diffs.push(path); })(A, B.result, fn);
     return { ok: true, result: { same: !diffs.length, differences: diffs, firebaseMs: B.ms, runs: B.runs } };
   }
+  if (action === 'compareBalances') {
+    /* every student's balance: live ledger vs the Firebase copy. Reports counts only, never names or amounts. */
+    const d = await job.get(); if (!d.exists || !d.data().finished) return { ok: false, error: 'No finished import.' }; const st = d.data();
+    const live = await appsScriptResult('apiExport', [KEY, 'props']);
+    const props = Object.assign({}, live, { SCHOOL_STAGING_DATABASE_ID: 'IMPORT_' + st.stamp + '__main', CANTEEN_SHEET_ID: 'IMPORT_' + st.stamp + '__canteen' });
+    const stg = new FsServer(DB, { ns: 'IMPORT_' + st.stamp, props });
+    const [A, B] = await Promise.all([appsScriptResult('apiExport', [KEY, 'balances']), stg.run('apiBalances_', [])]);
+    if (B.error) return { ok: true, result: { firebaseError: String(B.error).slice(0, 200) } };
+    const ids = new Set([...Object.keys(A), ...Object.keys(B.result)]); let same = 0, differ = 0, onlyOne = 0, centsOff = 0;
+    ids.forEach(i => { if (!(i in A) || !(i in B.result)) onlyOne++; else if (A[i] === B.result[i]) same++; else { differ++; centsOff += Math.abs(A[i] - B.result[i]); } });
+    return { ok: true, result: { students: ids.size, same, differ, onlyOnOneSide: onlyOne, totalCentsApart: centsOff, firebaseMs: B.ms } };
+  }
   return { ok: false, error: 'Unknown admin action.' };
 }
 
