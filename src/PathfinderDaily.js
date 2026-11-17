@@ -161,7 +161,7 @@ function pfdBlock_(D, k, dir, grade, set, now, cur) {
   if (!pfdHasLevel_(k, to)) return 'no lessons at that level yet';
   if (dir > 0 && S.area === 'kodesh') {
     if (grade != null && to > grade + 2) return 'age lock: grade + 1 needs the rebbe';
-    if (k === 'CHU' && D.s.KRI && to > D.s.KRI.level + 1) return 'capped by Kriyah';
+    if (k === 'CHU' && D.s.KRI && !D.s.KRI.done && D.s.KRI.level < 4 && to > D.s.KRI.level + 1) return 'capped by Kriyah';   /* not once Kriyah is complete */
     if (k === 'RAS' && D.s.CHU && to > D.s.CHU.level) return 'capped by Chumash';
   }
   return '';

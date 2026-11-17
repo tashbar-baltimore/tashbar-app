@@ -48,7 +48,13 @@ var PFK = {
      for grades 3-8 Levels 1-2 are "review available", not "not yet" */
   TRACKS: ['HAL', 'MID', 'NAV', 'PAR', 'TEF', 'YT'],
   TRACK_NAMES: { HAL: 'Halacha', MID: 'Middos and Pirkei Avos', NAV: 'Navi', PAR: 'Parsha', TEF: 'Tefillah', YT: 'Yom Tov' },
-  KRI_TOP: 4   /* Kriyah Levels 1-4: placed at 4 = Kriyah complete */
+  KRI_TOP: 4,   /* Kriyah Levels 1-4: placed at 4 = Kriyah complete */
+  /* ONLY WHAT A YESHIVA TEACHES (Head of School 2026-11-17: "no one knows what makaf or esnachta is. These are not taught skills…
+     do better research what classic yeshivish style is teaching and expecting"). Typical boys' yeshiva: K-1 Aleph-Bais, nekudos,
+     reading; late 1st-2nd Chumash with shorashim, prefixes and suffixes; 3rd Rashi and Rashi script; 3rd-4th Mishnayos; 5th-6th Gemara.
+     Trop marks (makaf, esnachta), Targum Onkelos and Ramban are not part of the elementary curriculum, and "which seder / which sefer"
+     is trivia, not a skill. Questions of these kinds are never asked (53 of 406; the bank file itself is unchanged). */
+  NOT_TAUGHT: [/joined by a little line on top/i, /half-way rest mark/i, /^In which seder of the Mishnah/i, /^In which sefer of the Torah/i, /brings the Targum/i, /^Ramban\b/i]
 };
 
 /* ================================================================== BANK ADAPTER (pure) */
@@ -76,8 +82,9 @@ function pfkClips_() {
   return o;
 }
 /* Can this item be asked? ctx = {appr, seen, clips} */
+function pfkTaught_(it) { if (it.pic && it.pic.kind === 'ramban') return false; for (var i = 0; i < PFK.NOT_TAUGHT.length; i++) if (PFK.NOT_TAUGHT[i].test(String(it.stem || ''))) return false; return true; }
 function pfkUsable_(it, ctx) {
-  if (!it || !it.fmt) return false;                                                   /* Read to Rebbe (stage C) and unknown formats */
+  if (!it || !it.fmt || !pfkTaught_(it)) return false;                                                   /* Read to Rebbe (stage C) and unknown formats */
   var ok = typeof pfItemOk_ === 'function' ? pfItemOk_(it, ctx.appr) : (ctx.appr ? it.status === 'Approved' && !it.hold : true);
   if (!ok) return false;                                                              /* a real boy: Approved with no hold only */
   if (it.fmt === 'LISTEN' && !(ctx.clips || {})[it.clip]) return false;               /* 8.4: missing clip -> the item is skipped */
@@ -242,6 +249,8 @@ function pfkCaps_(raw, grade, plan, override, rtr) {
   PFK.ORDER.forEach(function (k) {
     var o = { level: null, start_skill: null, how_sure: 'first look', flags: [] }, r = raw[k];
     if (k === 'KRI' && rtr && rtr.n) { r = pfkKriyahMerge_(r, rtr); if (r) { o.tap = r.tap; o.rtr = r.rtr; } }
+    if (k === 'KRI' && r && r.level != null && r.level < PFK.KRI_TOP && (r.flags || []).indexOf('may be higher: rebbe check') >= 0) {   /* he passed every Kriyah question there is */
+      r = { level: PFK.KRI_TOP, flags: (r.flags || []).filter(function (x) { return x !== 'may be higher: rebbe check'; }).concat(['passed every Kriyah question: Kriyah complete (the rebbe may check with Read to Rebbe)']), tap: r.tap, rtr: r.rtr }; }
     if (plan.indexOf(k) < 0 && !(k === 'KRI' && rtr && rtr.n)) o.flags.push(PFK_NOT_YET_[k]);
     else if (k === 'MSH' && (!out.CHU || out.CHU.level == null || out.CHU.level < 4)) o.flags.push('not yet: Chumash Level 4 first');
     else if (k === 'GEM' && (g == null || g < 5)) o.flags.push('not yet: grade 5+');
@@ -250,7 +259,7 @@ function pfkCaps_(raw, grade, plan, override, rtr) {
     else {
       var lv = r.level; o.flags = (r.flags || []).slice();
       if (lv != null && age != null && lv > age) { lv = age; o.flags.push('age lock: grade + 1'); }
-      if (lv != null && k === 'CHU' && out.KRI && out.KRI.level != null && lv > out.KRI.level + 1) { lv = out.KRI.level + 1; o.flags.push('capped by Kriyah'); }
+      if (lv != null && k === 'CHU' && out.KRI && out.KRI.level != null && out.KRI.level < PFK.KRI_TOP && lv > out.KRI.level + 1) {   /* the Kriyah cap holds back a boy still building his reading; once Kriyah is complete it does not limit Chumash (HoS 2026-11-17) */ lv = out.KRI.level + 1; o.flags.push('capped by Kriyah'); }
       if (lv != null && k === 'RAS' && out.CHU && out.CHU.level != null && lv > out.CHU.level) { lv = out.CHU.level; o.flags.push('capped by Chumash'); }
       o.level = lv; if (r.level !== lv) o.tested = r.level;
     }
@@ -449,8 +458,6 @@ function pfkView_(S, r, extra) {
 /* Head of School 2026-11-17 ("which word has a dash that's read as two? I don't know what that is"): kid-clear English for the bank's
    confusing instructions. Same task, same answer, no extra hint; only the English the boy reads and hears changes. */
 var PFK_STEMS = {
-  'Two words here are joined by a little line on top and are read as one. Tap them.': 'Find the makaf! Two words are hooked together by a little line on top, so you read them as one. Tap them.',
-  'Find the word with the half-way rest mark (a small wishbone under the word). Tap it.': 'Find the esnachta! It looks like a little wishbone under a word, and it marks the middle of the pasuk. Tap that word.',
   'What does the glowing word mean? Count every part.': 'What does the glowing word mean? Careful: every little piece of the word counts.',
   'No nekudos here. What does the glowing word mean? Count every part.': 'No nekudos this time! What does the glowing word mean? Every little piece of the word counts.',
   'No nekudos here. What does the glowing word mean?': 'No nekudos this time! What does the glowing word mean?',
