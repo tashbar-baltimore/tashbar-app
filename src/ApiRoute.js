@@ -48,6 +48,7 @@ function apiExport(key, what, book, tab, span) {
   if (hex(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, String(key || ''), Utilities.Charset.UTF_8)) !== API_EXPORT_HASH) { cache.put('api_export_bad', String(bad + 1), 600); throw new Error('Not allowed.'); }
   if (what === 'props') return PropertiesService.getScriptProperties().getProperties();
   if (what === 'balances') return apiBalances_();
+  if (what === 'prints') return apiPrints_();
   var id = book === 'canteen' ? cnBookId_() : TL.sheet, ss = SpreadsheetApp.openById(id);
   if (what === 'tabs') return { id: id, tabs: ss.getSheets().map(function (s) { return { name: s.getName(), rows: s.getLastRow(), cols: s.getLastColumn() }; }) };
   if (what === 'rows') {
@@ -66,3 +67,17 @@ function apiExport(key, what, book, tab, span) {
 /* Every student's balance in cents, from the one ledger. Read only. Used by the Firebase money check: the same
    function runs on the Firebase copy and the two answers are compared on the server. */
 function apiBalances_() { var out = {}; msRows_('roster').forEach(function (r) { if (r[0]) out[String(r[0])] = moneyBalance_(String(r[0])); }); return out; }
+
+/* For each student, md5 fingerprints of what his screen loads, part by part. Read only; only fingerprints leave
+   the server. The same function runs on the Firebase copy and the fingerprints are compared there. */
+function apiPrints_() {
+  var md5 = function (v) { return Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, JSON.stringify(v === undefined ? null : v), Utilities.Charset.UTF_8).map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join(''); };
+  var out = {}, rows = msRows_('state'), byId = {}; rows.forEach(function (r) { byId[String(r[0])] = r; });
+  msRows_('roster').forEach(function (r) { var sid = String(r[0]); if (!sid) return; var p = {};
+    try { var st = byId[sid] ? JSON.parse(byId[sid][1]) : null; p.state = md5(st); } catch (e) { p.state = 'err'; }
+    try { p.balance = md5(msBalanceDollars_(sid)); } catch (e) { p.balance = 'err'; }
+    try { p.ledger = md5(msLedger_(sid)); } catch (e) { p.ledger = 'err'; }
+    try { p.plan = typeof plPlanFor_ === 'function' ? md5(plPlanFor_(sid, { MATH: String(r[2]), READ: String(r[3]), WRIT: String(r[4]) })) : '-'; } catch (e) { p.plan = 'err'; }
+    out[sid] = p; });
+  return out;
+}

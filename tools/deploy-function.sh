@@ -6,5 +6,5 @@ node --check functions/index.js
 python3 web/token.py /tmp/.fbtok >/dev/null
 export CLOUDSDK_AUTH_ACCESS_TOKEN=$(cat /tmp/.fbtok) CLOUDSDK_CORE_PROJECT=tashbar-learning-live CLOUDSDK_CORE_DISABLE_PROMPTS=1 CLOUDSDK_BILLING_QUOTA_PROJECT=tashbar-learning-live
 printf 'node_modules\n' > functions/.gcloudignore
-gcloud functions deploy api --gen2 --region=us-east4 --runtime=nodejs22 --source=functions --entry-point=api --trigger-http --allow-unauthenticated --memory=1Gi --timeout=300s --max-instances=50 --min-instances=1 --set-secrets=TL_EXPORT_KEY=tl-export-key:latest 2>&1 | grep -E "state:|ERROR|uri:" || true
+gcloud functions deploy api --gen2 --region=us-east4 --runtime=nodejs22 --source=functions --entry-point=api --trigger-http --allow-unauthenticated --memory=4Gi --cpu=2 --timeout=300s --max-instances=50 --min-instances=1 --set-secrets=TL_EXPORT_KEY=tl-export-key:latest 2>&1 | grep -E "state:|ERROR|uri:" || true
 rm -f /tmp/.fbtok

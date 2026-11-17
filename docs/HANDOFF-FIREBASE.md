@@ -63,3 +63,4 @@ Work on your own. Stop only when I must sign in to Google or make a real decisio
 - Function admin actions `compare` (read-only fn, reports same / differing paths) and `compareBalances` (counts only).
 - Import 1794880519353: every one of 81 students' balances identical to the cent; msBootstrap identical.
 - Next: signed-in calls (need a comparison that creates a session on both sides server-side), the store, staff views; Drive stand-ins; shadow run.
+- v345: `apiExport(key,'prints')` / `apiPrints_`; function action `comparePrints`. Import 1794882271989: 81 of 81 students fully identical (progress, balance, statement, plan). Function memory raised to 4 GiB.

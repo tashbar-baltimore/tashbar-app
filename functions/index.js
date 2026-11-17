@@ -111,6 +111,21 @@ async function admin(action, key, a) {
     ids.forEach(i => { if (!(i in A) || !(i in B.result)) onlyOne++; else if (A[i] === B.result[i]) same++; else { differ++; centsOff += Math.abs(A[i] - B.result[i]); } });
     return { ok: true, result: { students: ids.size, same, differ, onlyOnOneSide: onlyOne, totalCentsApart: centsOff, firebaseMs: B.ms } };
   }
+  if (action === 'comparePrints') {
+    /* each student's screen, part by part, by fingerprint only. Reports counts per part, never ids or values. */
+    const d = await job.get(); if (!d.exists || !d.data().finished) return { ok: false, error: 'No finished import.' }; const st = d.data();
+    const live = await appsScriptResult('apiExport', [KEY, 'props']);
+    const props = Object.assign({}, live, { SCHOOL_STAGING_DATABASE_ID: 'IMPORT_' + st.stamp + '__main', CANTEEN_SHEET_ID: 'IMPORT_' + st.stamp + '__canteen' });
+    const stg = new FsServer(DB, { ns: 'IMPORT_' + st.stamp, props });
+    const [A, B] = await Promise.all([appsScriptResult('apiExport', [KEY, 'prints']), stg.run('apiPrints_', [])]);
+    if (B.error) return { ok: true, result: { firebaseError: String(B.error).slice(0, 200) } };
+    const parts = {}; let students = 0, allSame = 0;
+    for (const sid of new Set([...Object.keys(A), ...Object.keys(B.result)])) { students++; const x = A[sid] || {}, y = B.result[sid] || {}; let ok = true;
+      for (const k of new Set([...Object.keys(x), ...Object.keys(y)])) { const c = parts[k] || (parts[k] = { same: 0, differ: 0, errLive: 0, errFirebase: 0 });
+        if (x[k] === 'err') c.errLive++; if (y[k] === 'err') c.errFirebase++; if (x[k] === y[k]) c.same++; else { c.differ++; ok = false; } }
+      if (ok) allSame++; }
+    return { ok: true, result: { students, studentsFullyIdentical: allSame, parts, firebaseMs: B.ms } };
+  }
   return { ok: false, error: 'Unknown admin action.' };
 }
 
@@ -127,7 +142,7 @@ const MOVED = {
   apiStaffPage: pageAnswer('apiStaffPage')
 };
 
-exports.api = onRequest({ region: 'us-east4', cors: true, memory: '1GiB', timeoutSeconds: 300, secrets: ['TL_EXPORT_KEY'], maxInstances: 50, minInstances: 1 }, async (req, res) => {
+exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2, timeoutSeconds: 300, secrets: ['TL_EXPORT_KEY'], maxInstances: 50, minInstances: 1 }, async (req, res) => {
   try {
     if (req.method !== 'POST') return res.status(200).json({ ok: true, result: 'Tashbar server' });
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body && Object.keys(req.body).length ? req.body : JSON.parse((req.rawBody || '{}').toString()));
