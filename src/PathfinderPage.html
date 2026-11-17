@@ -375,6 +375,15 @@ document.addEventListener('click',e=>{ const t=e.target.closest('[data-ract]'); 
 /* ---------- start ---------- */
 (function boot(){
  const go=loc=>{ const q=(loc&&loc.parameter)||{};
+  /* PATHFINDER ON FIREBASE (Head of School 2026-11-17: "move Pathfinder to Firebase"). The school's live data is on the Firebase
+     server since 05:25Z; this Apps Script page only draws the screens. Every server call (questions, answers, pay, Kodesh, the
+     one-time sign-in code) goes to the Firebase server, so it reads and writes the same database as the rest of the app.
+     Builders can still use the old Sheets copy with ?old=1. */
+  if(q.old!=='1'&&!window.PF_FIRE){ window.PF_FIRE='https:'+'/'+'/api-q26c275eaa-uk.a.run.app/';
+   const fire=(fn,args)=>fetch(window.PF_FIRE,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({api:1,fn:fn,args:args}),redirect:'follow'}).then(r=>r.json()).then(j=>{ if(!j||!j.ok) throw new Error((j&&j.error)||'Server error'); return j.result; });
+   const chain=(ok,no)=>new Proxy({},{get:(_,k)=>k==='withSuccessHandler'?(f2=>chain(f2,no)):k==='withFailureHandler'?(f2=>chain(ok,f2)):k==='withUserObject'?(()=>chain(ok,no)):function(){ const a=Array.prototype.slice.call(arguments); fire(k,a).then(r=>{ if(ok) ok(r); },e=>{ if(no) no(e); else console.error(k,e); }); }});
+   try{ google.script.run=chain(null,null); }catch(e){ try{ Object.defineProperty(google.script,'run',{value:chain(null,null),configurable:true,writable:true}); }catch(x){} }
+   if(!q.back) PFBACK='https:'+'/'+'/tashbar-learning-live.web.app/'; }
   try{ if(q.back){ const u=new URL(q.back); if(u.protocol==='https:'&&['tashbar-learning-live.web.app','tashbar-learning-live.firebaseapp.com'].indexOf(u.host)>=0) PFBACK=u.origin+'/'; } }catch(e){}
   if(q.h&&/^[0-9a-f]{24}$/.test(q.h)&&!q.report&&!q.rebbe){ const h=q.h; delete q.h; return run('pfHandoffRedeem',h).then(r=>{ if(r&&r.token) store('tl-pf',{token:r.token,at:Date.now()}); go({parameter:q}); }).catch(()=>go({parameter:q})); }
   run('msAppUrl').then(u=>{ P.appUrl=u; if(P.v) P.v.appUrl=P.v.appUrl||u; }).catch(()=>{});

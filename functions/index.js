@@ -184,6 +184,21 @@ async function admin(action, key, a) {
     return { ok: true, result: { live: true, stamp } };
   }
   if (action === 'codeStatus') { CODEAT = 0; await syncCode(); return { ok: true, result: { codeHash: CODEHASH || '(from deploy)', checked: new Date(CODEAT).toISOString() } }; }
+  if (action === 'sheetsCopy') {
+    /* Nightly: every live tab is copied into the read-only "21 FIREBASE NIGHTLY COPY" spreadsheet (Apps Script writes it; rows travel server to server). */
+    await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' };
+    const SHEET = '1di5MMew_3DSbi9u2FbyyOQAADsp_A0KPHfpeMeJtdqI', pd = await DB.collection('sys').doc('props_LIVE').get(), props = pd.exists ? pd.data().map : {};
+    const books = [['main', props.SCHOOL_STAGING_DATABASE_ID], ['canteen', props.CANTEEN_SHEET_ID]].filter(x => x[1]);
+    const store = { books: {}, cache: {}, read: {} }; await LIVE.srv.preload(store, books.map(x => x[1]));
+    const cell = v => (v == null ? '' : v instanceof Date ? v.toISOString() : typeof v === 'object' ? (v.$d ? new Date(v.$d).toISOString() : JSON.stringify(v)) : v);
+    let tabs = 0, rows = 0; const t0 = Date.now();
+    for (const [label, id] of books) { const bk = store.books[id]; if (!bk) continue;
+      for (const t of bk.order) { const all = (bk.tabs[t].rows || []).filter(r => r && r.length).map(r => r.map(cell)); const name = (label === 'main' ? '' : 'canteen · ') + t;
+        for (let i = 0; i < Math.max(all.length, 1); i += 3000) await appsScriptResult('apiExport', [KEY, 'drive', 'sheetWrite', [SHEET, name, i, all.slice(i, i + 3000), i === 0]]);
+        tabs++; rows += all.length; } }
+    await appsScriptResult('apiExport', [KEY, 'drive', 'sheetWrite', [SHEET, 'ℹ about this copy', 0, [['Read-only copy of the live Firebase data. Rebuilt every night. Changes here do nothing.'], ['Last copied', new Date().toISOString()], ['Tabs', tabs], ['Rows', rows]], true]]);
+    return { ok: true, result: { tabs, rows, seconds: Math.round((Date.now() - t0) / 1000) } };
+  }
   if (action === 'photoCron') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('photoCron', []); return r.error ? { ok: false, error: String(r.error).slice(0, 200) } : { ok: true, result: r.result }; }
   if (action === 'goOff') { await DB.collection('sys').doc('live').set({ on: false, since: new Date().toISOString() }); LIVE = null; return { ok: true, result: { live: false } }; }
   return { ok: false, error: 'Unknown admin action.' };

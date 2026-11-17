@@ -46,6 +46,16 @@ function apiDrive_(name, a) {
   if (name === 'file') { var f = DriveApp.getFileById(String(a[0])), b = f.getBlob(), by = b.getBytes(); if (by.length > 25 * 1024 * 1024) throw new Error('File too big.');
     return { name: f.getName(), size: f.getSize(), type: b.getContentType(), b64: Utilities.base64Encode(by) }; }
   if (name === 'fileMeta') { var g = DriveApp.getFileById(String(a[0])); return { name: g.getName(), size: g.getSize(), type: g.getMimeType() }; }
+  if (name === 'sheetWrite') {   /* only into the nightly-copy spreadsheet */
+    if (String(a[0]) !== '1di5MMew_3DSbi9u2FbyyOQAADsp_A0KPHfpeMeJtdqI') throw new Error('Not allowed.');
+    var ss = SpreadsheetApp.openById(String(a[0])), nm = String(a[1]).slice(0, 99), sh = ss.getSheetByName(nm) || ss.insertSheet(nm), rows = a[3] || [], at = Number(a[2]) || 0;
+    if (a[4]) sh.clear();
+    if (rows.length) { var w = rows.reduce(function (m, r) { return Math.max(m, r.length); }, 1); rows = rows.map(function (r) { r = r.map(function (v) { if (typeof v !== 'string') return v; v = v.length > 49000 ? v.slice(0, 49000) : v; return /^[=+\-@]/.test(v) ? "'" + v : v; }); while (r.length < w) r.push(''); return r; });
+      if (sh.getMaxColumns() < w) sh.insertColumnsAfter(sh.getMaxColumns(), w - sh.getMaxColumns());
+      sh.getRange(at + 1, 1, rows.length, w).setValues(rows); }
+    var s1 = ss.getSheetByName('Sheet1'); if (s1 && ss.getSheets().length > 1) ss.deleteSheet(s1);
+    return true;
+  }
   if (name === 'photoSave') return photoSaveHere_(String(a[0]), String(a[1]), String(a[2]));
   if (name === 'photoResults') { var out = [], it = DriveApp.getFolderById(PHOTO.CHECK_ID).getFiles();
     while (it.hasNext() && out.length < 20) { var x = it.next(); if (/^results_.*\.json$/i.test(x.getName())) out.push({ id: x.getId(), text: x.getBlob().getDataAsString() }); } return out; }
