@@ -82,6 +82,23 @@ async function admin(action, key, a) {
   if (action === 'importReport') { const d = await job.get(); if (!d.exists) return { ok: false, error: 'No such import.' }; const st = d.data(); const out = {};
     for (const b of ['main', 'canteen']) { const tabs = st.books[b]; out[b] = { tabs: tabs.length, done: tabs.filter(x => x.done).length, rowsExpected: tabs.reduce((n, x) => n + x.rows, 0), rowsStored: tabs.reduce((n, x) => n + (x.got || 0), 0), blocks: tabs.reduce((n, x) => n + x.blocks, 0), blocksWithBadChecksum: tabs.reduce((n, x) => n + x.bad, 0), tabsWhereCountsDiffer: tabs.filter(x => x.done && (x.got || 0) !== x.rows).map(x => x.name + ' ' + x.rows + '->' + (x.got || 0)) }; }
     return { ok: true, result: { stamp: st.stamp, finished: st.finished || null, books: out } }; }
+  if (action === 'compare') {
+    /* Run one READ-ONLY call on live Apps Script and on the staging copy; report only whether they match and,
+       if not, the paths that differ. Never the values. */
+    const SAFE = { msBootstrap: 1 }; const fn = String(a.fn || ''); if (!SAFE[fn]) return { ok: false, error: 'Only read-only calls may be compared.' };
+    const d = await job.get(); if (!d.exists || !d.data().finished) return { ok: false, error: 'No finished import.' }; const st = d.data();
+    const live = await appsScriptResult('apiExport', [KEY, 'props']);
+    const props = Object.assign({}, live, { SCHOOL_STAGING_DATABASE_ID: 'IMPORT_' + st.stamp + '__main', CANTEEN_SHEET_ID: 'IMPORT_' + st.stamp + '__canteen' });
+    const stg = new FsServer(DB, { ns: 'IMPORT_' + st.stamp, props });
+    const [A, B] = await Promise.all([appsScriptResult(fn, a.args || []), stg.run(fn, a.args || [])]);
+    if (B.error) return { ok: true, result: { same: false, firebaseError: String(B.error).slice(0, 200) } };
+    const diffs = []; (function walk(x, y, path) { if (diffs.length > 40) return;
+      if (typeof x !== typeof y || Array.isArray(x) !== Array.isArray(y) || (x === null) !== (y === null)) { diffs.push(path + ' (type)'); return; }
+      if (x && typeof x === 'object') { if (Array.isArray(x) && x.length !== y.length) diffs.push(path + ' (length ' + x.length + ' vs ' + y.length + ')');
+        const ks = new Set([...Object.keys(x), ...Object.keys(y)]); for (const k of ks) { if (!(k in x) || !(k in y)) { diffs.push(path + '.' + k + ' (missing on ' + (k in x ? 'Firebase' : 'Apps Script') + ')'); continue; } walk(x[k], y[k], path + (Array.isArray(x) ? '[' + k + ']' : '.' + k)); } return; }
+      if (x !== y) diffs.push(path); })(A, B.result, fn);
+    return { ok: true, result: { same: !diffs.length, differences: diffs, firebaseMs: B.ms, runs: B.runs } };
+  }
   return { ok: false, error: 'Unknown admin action.' };
 }
 
