@@ -494,7 +494,7 @@ function pfDoGet_(e) {
   try { if (typeof pftApply_ === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderTapUI').getContent(); } catch (x) {}   /* PF-TAP1: tap-question screen (TEST boys only get tap questions) */
   try { if (typeof pfuView_ === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderUxPage').getContent(); } catch (x) {}
   try { if (typeof PF_ART !== 'undefined') more += HtmlService.createHtmlOutputFromFile('PathfinderArtUI').getContent(); } catch (x) {}   /* the question pictures (PathfinderArt.js) */
-  try { more += HtmlService.createHtmlOutputFromFile('PathfinderFun').getContent(); } catch (x) {}   /* Pip, the treasure trail and the no-wait card: Head of School 2026-11-16 (page only) */   /* v7.2 Stage 5 screens (PathfinderUx.js); they act only when the server marks a TEST boy */
+  try { more += HtmlService.createHtmlOutputFromFile('PathfinderQuest').getContent(); } catch (x) {}   /* PATHFINDER QUEST: explorer, trail stations, treasure chests, Coin Catch, lands, ranks (Head of School 2026-11-17; page only) */   /* v7.2 Stage 5 screens (PathfinderUx.js); they act only when the server marks a TEST boy */
   if (more) html = html.replace('</body>', function () { return more + '</body>'; });   /* a function: "$" in the script stays as written */
   return HtmlService.createHtmlOutput(tlTheme_(html, (e && e.parameter && (e.parameter.report || e.parameter.rebbe)) ? 'staff' : 'boy'))   /* &rebbe=: the Read to Rebbe card (staff; PathfinderKodeshRebbe.js) */
     .setTitle('Tashbar Learning · Pathfinder')

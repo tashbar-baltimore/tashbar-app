@@ -446,10 +446,26 @@ function pfkView_(S, r, extra) {
   return { kodesh: kv, appUrl: ScriptApp.getService().getUrl(), name: r.name, first: String(r.name).split(' ')[0], grade: g, young: g != null && g <= 2, draft: pfIsTest_(S.sid), practice: { right: 3, of: 3 }, version: PF.VERSION, road: {}, lands: {} };
 }
 /* What the page may see of an item: never the key (no answer, no answer_index). Hebrew only from the bank. */
-function pfkSay_(it) { return /^No read-aloud/i.test(it.audio) ? '' : String(it.stem).replace(/[֐-׿יִ-ﭏ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+/* Head of School 2026-11-17 ("which word has a dash that's read as two? I don't know what that is"): kid-clear English for the bank's
+   confusing instructions. Same task, same answer, no extra hint; only the English the boy reads and hears changes. */
+var PFK_STEMS = {
+  'Two words here are joined by a little line on top and are read as one. Tap them.': 'Find the makaf! Two words are hooked together by a little line on top, so you read them as one. Tap them.',
+  'Find the word with the half-way rest mark (a small wishbone under the word). Tap it.': 'Find the esnachta! It looks like a little wishbone under a word, and it marks the middle of the pasuk. Tap that word.',
+  'What does the glowing word mean? Count every part.': 'What does the glowing word mean? Careful: every little piece of the word counts.',
+  'No nekudos here. What does the glowing word mean? Count every part.': 'No nekudos this time! What does the glowing word mean? Every little piece of the word counts.',
+  'No nekudos here. What does the glowing word mean?': 'No nekudos this time! What does the glowing word mean?',
+  'Tap the same letter in regular letters.': 'This letter is in Rashi script. Find the same letter in regular print and tap it.',
+  'Tap the word that is exactly the same.': 'Find the twin! Tap the word that is exactly the same.',
+  'The glowing word is a short form of two words. What does it mean?': 'The glowing word is a shortcut for two words (roshei teivos). What does it mean?',
+  'Two Rashis are printed one after the other. Tap the first word of the second Rashi.': 'Two Rashis are printed back to back. Where does the second Rashi start? Tap its first word.',
+  'In this Rashi, Rashi brings the Targum (Onkelos). Tap the word that tells you.': 'In this Rashi, Rashi quotes the Targum (Onkelos). Tap the word that shows it.',
+  'Listen to the sound. Tap the letter that makes it.': 'Listen to the sound. Which letter makes that sound? Tap it.'
+};
+function pfkStem_(it) { return PFK_STEMS[it.stem] || it.stem; }
+function pfkSay_(it) { return /^No read-aloud/i.test(it.audio) ? '' : String(pfkStem_(it)).replace(/[֐-׿יִ-ﭏ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
 function pfkPresent_(it, S, sec) {
   var p = it.pic || {}, heb = /[֐-׿]/;
-  var o = { id: it.id, fmt: it.fmt, stem: it.stem, say: pfkSay_(it), draft: pfIsTest_(S.sid) && it.status !== 'Approved',   /* the draft tag only for TEST boys */ n: sec.ans.length + 1,
+  var o = { id: it.id, fmt: it.fmt, stem: pfkStem_(it), say: pfkSay_(it), draft: pfIsTest_(S.sid) && it.status !== 'Approved',   /* the draft tag only for TEST boys */ n: sec.ans.length + 1,
     pic: { kind: p.kind || '', units: p.text ? pfkUnits_(p.text) : [], hl: (p.highlight || []).slice(), font: p.font === 'rashi' ? 'rashi' : 'square', trop: !!p.trop, big: !!p.big, ref: p.ref || '',
       rashi: p.rashi || '', rashiFont: p.rashi ? (p.rashi_font === 'rashi' ? 'rashi' : 'square') : '' } };
   if (it.fmt === 'CHOICE' || it.fmt === 'LISTEN' || it.fmt === 'SAME') { o.choices = pfShuffle_([it.ans].concat(it.wrong.map(function (w) { return w[0]; })), it.id + '|' + S.id); o.hebChoices = o.choices.some(function (c) { return heb.test(c); }); }
