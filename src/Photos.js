@@ -74,6 +74,12 @@ function photoMatch_(ocr, expected) {
   return cands.some(function (t) { var v = photoVal_(t); return isFinite(v) && Math.abs(v - ev) < 1e-6; });
 }
 
+function photoSaveHere_(sid, name, b64) {
+  var bytes = Utilities.base64Decode(b64); if (bytes.length > PHOTO.MAX_BYTES) throw new Error('That picture is too big. Please try again.');
+  var file = photoStudentFolder_(sid).createFile(Utilities.newBlob(bytes, 'image/jpeg', name)), text = '', note = '';
+  try { text = photoOcr_(file.getId()); } catch (e) { note = 'reader error: ' + String(e.message || e).slice(0, 120); }
+  return { fileId: file.getId(), text: text, note: note };
+}
 /* ---------- call from the boy's page ---------- */
 /* item = "<phase>|<question text>" (the same key the answer flow uses). expected '' = writing (the text fills his box). */
 function msPhotoSubmit(token, sid, skill, item, prompt, expected, dataUrl) { tlGuard_(token, sid);
@@ -83,14 +89,14 @@ function msPhotoSubmit(token, sid, skill, item, prompt, expected, dataUrl) { tlG
   skill = String(skill || '').slice(0, 40); item = String(item || '').slice(0, 135); prompt = String(prompt || '').slice(0, 300); expected = String(expected || '').slice(0, 60);
   var m = /^data:image\/(jpeg|jpg|png);base64,(.+)$/.exec(String(dataUrl || ''));
   if (!m) throw new Error('That picture did not come through. Please try again.');
-  var bytes = Utilities.base64Decode(m[2]);
-  if (bytes.length > PHOTO.MAX_BYTES) throw new Error('That picture is too big. Please try again.');
+  if (m[2].length * 3 / 4 > PHOTO.MAX_BYTES) throw new Error('That picture is too big. Please try again.');
   var day = Utilities.formatDate(new Date(), 'America/New_York', 'yyyy-MM-dd_HHmmss');
   var safe = function (s) { return String(s).replace(/[^A-Za-z0-9-]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'x'; };
   var name = day + '_' + safe(skill) + '_' + safe(item.split('|').slice(1).join(' ')) + '.jpg';
-  var file = photoStudentFolder_(sid).createFile(Utilities.newBlob(bytes, 'image/jpeg', name));
-  var text = '', status = 'waiting', note = '';
-  try { text = photoOcr_(file.getId()); } catch (e) { note = 'reader error: ' + String(e.message || e).slice(0, 120); }
+  /* saving the picture and reading it need Google Drive: done by the Apps Script app (photoSaveHere_); the record is kept here */
+  var saved = typeof TL_REMOTE_ === 'function' ? TL_REMOTE_('photoSave', [sid, name, m[2]]) : photoSaveHere_(sid, name, m[2]);
+  var file = { getId: function () { return saved.fileId; } };
+  var text = saved.text || '', status = 'waiting', note = saved.note || '';
   if (!expected) { status = text.trim() ? 'right' : 'waiting'; note = note || 'writing: text put in their box'; }
   else if (photoMatch_(text, expected)) status = 'right';
   var id = 'ph-' + Utilities.getUuid().slice(0, 13);
@@ -136,30 +142,28 @@ function photoApply_(o, mark, note, by) {
 
 /* ---------- 15-minute trigger ---------- */
 function photoCron() {
+  /* The school's records live on Firebase now: this runs there (every 15 minutes), asking the Apps Script app only for the Drive files.
+     On Apps Script itself it does nothing, so marks and money are never written to the old Sheets. */
+  if (typeof TL_REMOTE_ !== 'function') return { skipped: 'runs on Firebase' };
   var lock = LockService.getScriptLock(); lock.waitLock(25000);
   try {
-    var check = DriveApp.getFolderById(PHOTO.CHECK_ID), done = DriveApp.getFolderById(PHOTO.DONE_ID);
-    /* (b) apply results files */
-    var files = check.getFiles(), rows = null, applied = 0;
-    while (files.hasNext()) {
-      var f = files.next(), n = f.getName();
-      if (!/^results_.*\.json$/i.test(n)) continue;
+    var files = TL_REMOTE_('photoResults', []), rows = null, applied = 0, used = [];
+    files.forEach(function (f) {
       rows = rows || photoRows_();
       var list = [];
-      try { list = JSON.parse(f.getBlob().getDataAsString()); if (!Array.isArray(list)) list = list && list.results || []; } catch (e) { list = []; }
+      try { list = JSON.parse(f.text); if (!Array.isArray(list)) list = list && list.results || []; } catch (e) { list = []; }
       list.slice(0, 500).forEach(function (r) {
         var mark = String(r && r.mark || '').toLowerCase(); if (mark !== 'right' && mark !== 'wrong') return;
         var o = rows.filter(function (x) { return x.photoId === String(r.photoId || ''); })[0];
         if (photoApply_(o, mark, String(r.note || ''), 'claude')) { o.status = mark; applied++; }
       });
-      f.moveTo(done);
-    }
-    /* (a) list what is still waiting */
+      used.push(f.id);
+    });
     var waiting = photoRows_().filter(function (o) { return String(o.status) === 'waiting'; }).map(function (o) {
       return { photoId: o.photoId, driveFileId: o.driveFileId, prompt: String(o.prompt), expected: String(o.expected) };
     });
-    var body = JSON.stringify(waiting, null, 1), old = check.getFilesByName('waiting_photos.json');
-    if (old.hasNext()) old.next().setContent(body); else check.createFile('waiting_photos.json', body, 'application/json');
+    if (used.length) TL_REMOTE_('photoDone', [used]);
+    TL_REMOTE_('photoWaiting', [JSON.stringify(waiting, null, 1)]);
     return { applied: applied, waiting: waiting.length };
   } finally { lock.releaseLock(); }
 }

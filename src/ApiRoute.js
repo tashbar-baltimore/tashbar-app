@@ -40,6 +40,20 @@ function apiStaffPage(have) {
      apiExport(key, 'tabs', book)                 -> the tabs of a book ('main' or 'canteen') with their sizes
      apiExport(key, 'rows', book, tab, [from, n]) -> up to 4000 rows, dates marked {$d: milliseconds}, with an md5 of the block
      apiExport(key, 'props')                      -> the script's stored settings */
+/* apiExport(key, 'drive', name, args): the Firebase server keeps every record; it asks this app only for what needs Google Drive.
+   Nothing here reads or writes the school's database tabs. */
+function apiDrive_(name, a) {
+  if (name === 'file') { var f = DriveApp.getFileById(String(a[0])), b = f.getBlob(), by = b.getBytes(); if (by.length > 25 * 1024 * 1024) throw new Error('File too big.');
+    return { name: f.getName(), size: f.getSize(), type: b.getContentType(), b64: Utilities.base64Encode(by) }; }
+  if (name === 'fileMeta') { var g = DriveApp.getFileById(String(a[0])); return { name: g.getName(), size: g.getSize(), type: g.getMimeType() }; }
+  if (name === 'photoSave') return photoSaveHere_(String(a[0]), String(a[1]), String(a[2]));
+  if (name === 'photoResults') { var out = [], it = DriveApp.getFolderById(PHOTO.CHECK_ID).getFiles();
+    while (it.hasNext() && out.length < 20) { var x = it.next(); if (/^results_.*\.json$/i.test(x.getName())) out.push({ id: x.getId(), text: x.getBlob().getDataAsString() }); } return out; }
+  if (name === 'photoDone') { var done = DriveApp.getFolderById(PHOTO.DONE_ID); (a[0] || []).forEach(function (id) { try { DriveApp.getFileById(String(id)).moveTo(done); } catch (e) {} }); return true; }
+  if (name === 'photoWaiting') { var ck = DriveApp.getFolderById(PHOTO.CHECK_ID), old = ck.getFilesByName('waiting_photos.json'), body = String(a[0] || '[]');
+    if (old.hasNext()) old.next().setContent(body); else ck.createFile('waiting_photos.json', body, 'application/json'); return true; }
+  throw new Error('Not allowed.');
+}
 var API_EXPORT_HASH = '594fdccf352810cfc28b62f5cae14034270893cd03e3527db1dcf13797ba0ae0';
 function apiExport(key, what, book, tab, span) {
   var cache = CacheService.getScriptCache(), bad = Number(cache.get('api_export_bad') || 0);
@@ -50,6 +64,7 @@ function apiExport(key, what, book, tab, span) {
   if (what === 'balances') return apiBalances_();
   if (what === 'prints') return apiPrints_();
   if (what === 'staffprints') return apiStaffPrints_();
+  if (what === 'drive') return apiDrive_(String(book || ''), tab || []);
   var id = book === 'canteen' ? cnBookId_() : TL.sheet, ss = SpreadsheetApp.openById(id);
   if (what === 'tabs') return { id: id, tabs: ss.getSheets().map(function (s) { return { name: s.getName(), rows: s.getLastRow(), cols: s.getLastColumn() }; }) };
   if (what === 'rows') {

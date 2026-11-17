@@ -12,6 +12,16 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { Firestore } = require('@google-cloud/firestore');
 const vm = require('vm');
+/* Google Drive work is asked of the Apps Script app (apiExport 'drive'). Drive files are kept here for 30 minutes (music, Chumash). */
+const DRIVE_FILES = new Map(); let DRIVE_BYTES = 0;
+async function driveRemote(name, args) {
+  const KEY = process.env.TL_EXPORT_KEY || '';
+  if (name !== 'file') return appsScriptResult('apiExport', [KEY, 'drive', name, args]);
+  const id = String(args[0]), hit = DRIVE_FILES.get(id); if (hit && Date.now() - hit.at < 1800000) return hit.v;
+  const v = await appsScriptResult('apiExport', [KEY, 'drive', 'file', [id]]); const n = (v && v.b64 || '').length;
+  if (n < 30e6) { DRIVE_FILES.set(id, { at: Date.now(), v, n }); DRIVE_BYTES += n; for (const [k, x] of DRIVE_FILES) { if (DRIVE_BYTES < 300e6) break; DRIVE_FILES.delete(k); DRIVE_BYTES -= x.n; } }
+  return v;
+}
 let DB = null, FS = {}, LIVE = null, CODEHASH = '', CODEAT = 0;
 /* Keep the server code the same as the live Apps Script editor: every 2 minutes ask Apps Script for its source
    (apiExport 'source', key-protected); if it changed, load it. A file that does not parse is refused and the old code stays. */
@@ -26,7 +36,7 @@ async function liveState() {
   if (LIVE && Date.now() - LIVE.at < 10000) return LIVE;
   DB = DB || new Firestore(); const d = await DB.collection('sys').doc('live').get(); const on = d.exists && d.data().on;
   const { FsServer } = require('./app/server/fsstore.js');
-  if (on && (!LIVE || !LIVE.srv || LIVE.stamp !== d.data().stamp)) LIVE = { on, at: Date.now(), stamp: d.data().stamp, srv: new FsServer(DB, { ns: 'LIVE', preload: true }) };
+  if (on && (!LIVE || !LIVE.srv || LIVE.stamp !== d.data().stamp)) LIVE = { on, at: Date.now(), stamp: d.data().stamp, srv: new FsServer(DB, { ns: 'LIVE', preload: true, remote: driveRemote }) };
   else LIVE = Object.assign(LIVE || {}, { on, at: Date.now() });
   return LIVE;
 }

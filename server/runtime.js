@@ -21,7 +21,7 @@ const chain = o => new Proxy(o, { get: (t, k) => (k in t ? t[k] : (typeof k === 
 
 /* When the store is lazy (Firestore), data is fetched only when the code first touches it: the stand-in notes what is
    missing and throws; the caller loads it and runs the function again from the start. */
-function need(store, kind, key) { const e = new Error('NEED ' + kind + ' ' + key); e.__need = { kind, key }; (store.needs || (store.needs = [])).push(e.__need); throw e; }
+function need(store, kind, key) { const e = new Error('NEED ' + kind + ' ' + String(key).slice(0, 120)); e.__need = { kind, key }; (store.needs || (store.needs = [])).push(e.__need); throw e; }
 function makeBook(store, id) {
   if (store.lazy && !store.books[id]) need(store, 'book', id);
   const book = store.books[id] || (store.books[id] = { tabs: {}, order: [] });
@@ -96,6 +96,13 @@ function createRuntime(opts) {
     getAll(keys) { const o = {}; keys.forEach(k => { const v = cache.get(k); if (v !== null) o[k] = v; }); return o; }, putAll(o, secs) { Object.keys(o).forEach(k => cache.put(k, o[k], secs)); }, removeAll(keys) { keys.forEach(k => cache.remove(k)); } };
   const props = { getProperty: k => (k in store.props ? store.props[k] : null), setProperty(k, v) { store.props[k] = String(v); store.dirtyProps = 1; return props; }, deleteProperty(k) { delete store.props[k]; store.dirtyProps = 1; return props; }, getProperties: () => Object.assign({}, store.props), setProperties(o) { Object.assign(store.props, o); return props; } };
   const digest = (alg, v) => [...crypto.createHash(alg === 'MD5' ? 'md5' : alg === 'SHA_1' ? 'sha1' : 'sha256').update(typeof v === 'string' ? Buffer.from(v, 'utf8') : Buffer.from(v)).digest()].map(b => (b > 127 ? b - 256 : b));
+  /* Things only Google can do (Drive files, saving a photo) are asked of the Apps Script app ('remote'); the records stay here.
+     Each answer is fetched once per call and kept for the reruns. */
+  const remote = (name, args) => { const k = JSON.stringify([name, args || []]); const m = store.remote || {}; if (Object.prototype.hasOwnProperty.call(m, k)) { const v = m[k]; if (v && v.__err) throw new Error(v.__err); return v; } return need(store, 'remote', k); };
+  const bytesOf = b64 => [...Buffer.from(String(b64 || ''), 'base64')].map(b => (b > 127 ? b - 256 : b));
+  const driveFile = id => { const info = () => remote('file', [id]), meta = () => remote('fileMeta', [id]); let blob = null;
+    return { getId: () => id, getName: () => meta().name, getSize: () => meta().size, getMimeType: () => meta().type, setTrashed() {},
+      getBlob: () => blob || (blob = (() => { const i = info(), by = bytesOf(i.b64); return { getBytes: () => by, getDataAsString: () => Buffer.from(i.b64, 'base64').toString('utf8'), getContentType: () => i.type, getName: () => i.name }; })()) }; };
   const nope = what => () => { throw new Error(what + ' is not available on this server yet.'); };
   const ctx = { console, JSON, Math, Date, Intl,
     SpreadsheetApp: { openById: id => makeBook(store, String(id)), flush() {}, create: nope('Creating a new spreadsheet') },
@@ -108,9 +115,10 @@ function createRuntime(opts) {
       newBlob: (data, type, name) => ({ getBytes: () => (typeof data === 'string' ? [...Buffer.from(data, 'utf8')] : data), getDataAsString: () => (typeof data === 'string' ? data : Buffer.from(data).toString('utf8')), getContentType: () => type, getName: () => name }) },
     HtmlService: { createHtmlOutputFromFile: n => out(html(n)), createHtmlOutput: h => out(h || ''), createTemplateFromFile: n => ({ evaluate: () => out(html(n)) }), XFrameOptionsMode: { DEFAULT: 1, ALLOWALL: 2 }, SandboxMode: { IFRAME: 1 } },
     ContentService: { createTextOutput: s => ({ s, setMimeType() { return this; }, getContent() { return this.s; } }), MimeType: { JSON: 'json', TEXT: 'text' } },
+    TL_REMOTE_: (name, args) => remote(name, args),
     ScriptApp: { getService: () => ({ getUrl: () => opts.appUrl || 'https://tashbar-learning-live.web.app/' }), getProjectTriggers: () => [], newTrigger: nope('Timers'), deleteTrigger() {} },
     Session: { getActiveUser: () => ({ getEmail: () => '' }), getEffectiveUser: () => ({ getEmail: () => opts.owner || '' }), getScriptTimeZone: () => 'America/New_York' },
-    Logger: { log() {} }, DriveApp: { getFileById: nope('Google Drive files'), getFolderById: nope('Google Drive folders') }, Drive: {}, DocumentApp: { openById: nope('Google Docs') }, MailApp: { sendEmail: nope('Email') }, UrlFetchApp: { fetch: nope('Outside web calls') } };
+    Logger: { log() {} }, DriveApp: { getFileById: id => driveFile(String(id)), getFolderById: nope('Google Drive folders') }, Drive: {}, DocumentApp: { openById: nope('Google Docs') }, MailApp: { sendEmail: nope('Email') }, UrlFetchApp: { fetch: nope('Outside web calls') } };
   vm.createContext(ctx); const loadErrors = [];
   for (const sc of compiled()) { try { sc.script.runInContext(ctx); } catch (e) { if (e && e.__need) throw e; loadErrors.push(sc.file + ': ' + String(e).slice(0, 160)); } }
   vm.runInContext("function apiTimeOne_(fn){ var c=CacheService.getScriptCache(), tok='cmp-t'; c.put('ms_tok_'+tok, JSON.stringify({role:'staff',sid:null,pid:null,staff:null,who:{id:'CMP',name:'Comparison',role:'head'}}),600); TL_SCOPE_=null; TL_SCOPE_INFO_=null; var t=Date.now(); try{ eval(fn)(tok); }catch(e){} return Date.now()-t; }", ctx);
