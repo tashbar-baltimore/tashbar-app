@@ -18,7 +18,10 @@ async function driveRemote(name, args) {
   const KEY = process.env.TL_EXPORT_KEY || '';
   if (name !== 'file') return appsScriptResult('apiExport', [KEY, 'drive', name, args]);
   const id = String(args[0]), hit = DRIVE_FILES.get(id); if (hit && Date.now() - hit.at < 1800000) return hit.v;
-  const v = await appsScriptResult('apiExport', [KEY, 'drive', 'file', [id]]); const n = (v && v.b64 || '').length;
+  let v = null; const { Storage } = require('@google-cloud/storage'), obj = new Storage().bucket('tashbar-learning-live-backups').file('drive/' + id);
+  try { const [m] = await obj.getMetadata(); if (Date.now() - new Date(m.updated).getTime() < 864e5) { const [buf] = await obj.download(); v = { name: (m.metadata || {}).name || '', size: buf.length, type: m.contentType || '', b64: buf.toString('base64') }; } } catch (e) { v = null; }   /* fast copy, refreshed daily */
+  if (!v) { v = await appsScriptResult('apiExport', [KEY, 'drive', 'file', [id]]); obj.save(Buffer.from(v.b64 || '', 'base64'), { contentType: v.type || 'application/octet-stream', metadata: { metadata: { name: v.name || '' } } }).catch(() => {}); }
+  const n = (v && v.b64 || '').length;
   if (n < 30e6) { DRIVE_FILES.set(id, { at: Date.now(), v, n }); DRIVE_BYTES += n; for (const [k, x] of DRIVE_FILES) { if (DRIVE_BYTES < 300e6) break; DRIVE_FILES.delete(k); DRIVE_BYTES -= x.n; } }
   return v;
 }
