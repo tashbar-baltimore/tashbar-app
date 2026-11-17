@@ -78,12 +78,19 @@ function formatDate(d, tz, f) {      /* the Java date patterns this code uses */
   return String(f).replace(/'([^']*)'|yyyy|yy|MMMM|MMM|MM|M|dd|d|EEEE|EEE|E|HH|H|hh|h|mm|ss|a|u/g, (t, lit) => lit !== undefined ? lit : ({ yyyy: p.year, yy: p.year.slice(2), MMMM: long('month'), MMM: short('month'), MM: p.month, M: String(+p.month), dd: p.day, d: String(+p.day), EEEE: long('weekday'), EEE: p.weekday, E: p.weekday, HH: H, H: String(+H), hh: ('0' + h12).slice(-2), h: String(h12), mm: p.minute, ss: p.second, a: +H < 12 ? 'AM' : 'PM', u: String(dow) }[t]));
 }
 
-let COMPILED = null;
+/* The server code: from src/ on disk, or (when the live code has been fetched) from setCode(files). */
+let COMPILED = null, CODE = null;
+function setCode(files) {   /* files: [{name, type: 'SERVER_JS'|'HTML', source}] exactly as the Apps Script editor holds them */
+  const js = files.filter(f => f.type === 'SERVER_JS').sort((a, b) => (a.name < b.name ? -1 : 1));
+  const compiledNew = js.map(f => ({ file: f.name + '.js', script: new vm.Script(f.source, { filename: f.name + '.js' }) }));   /* throws if a file does not parse: the old code stays */
+  const html = {}; files.filter(f => f.type === 'HTML').forEach(f => { html[f.name] = f.source; });
+  COMPILED = compiledNew; CODE = { html };
+}
 function compiled() { return COMPILED || (COMPILED = fs.readdirSync(SRC).filter(x => x.endsWith('.js')).sort().map(f => ({ file: f, script: new vm.Script(fs.readFileSync(path.join(SRC, f), 'utf8'), { filename: f }) }))); }
 function createRuntime(opts) {
   opts = opts || {}; const store = opts.store || { books: {}, dirty: {}, cache: {}, props: {} };
   store.dirty = store.dirty || {}; store.cache = store.cache || {}; store.props = store.props || {};
-  const html = n => { const p = path.join(SRC, n + '.html'); if (!fs.existsSync(p)) throw new Error('No HTML file named ' + n); return fs.readFileSync(p, 'utf8'); };
+  const html = n => { if (CODE && Object.prototype.hasOwnProperty.call(CODE.html, n)) return CODE.html[n]; const p = path.join(SRC, n + '.html'); if (!fs.existsSync(p)) throw new Error('No HTML file named ' + n); return fs.readFileSync(p, 'utf8'); };
   const out = h => ({ h, setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; }, setFaviconUrl() { return this; }, setSandboxMode() { return this; }, getContent() { return this.h; }, append(x) { this.h += x; return this; } });
   const cache = { get(k) { if (store.lazy && !store.cacheComplete && !(k in store.cache)) need(store, 'cache', k); const e = store.cache[k]; if (!e) return null; if (e.until < Date.now()) return null; return e.v; }, put(k, v, secs) { store.cache[k] = { v: String(v), until: Date.now() + 1000 * Math.min(21600, secs || 600) }; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; }, remove(k) { store.cache[k] = null; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; },
     getAll(keys) { const o = {}; keys.forEach(k => { const v = cache.get(k); if (v !== null) o[k] = v; }); return o; }, putAll(o, secs) { Object.keys(o).forEach(k => cache.put(k, o[k], secs)); }, removeAll(keys) { keys.forEach(k => cache.remove(k)); } };
@@ -111,4 +118,4 @@ function createRuntime(opts) {
   return { ctx, store, loadErrors, has: fn => vm.runInContext('typeof ' + fn + ' === "function"', ctx),
     call(fn, args) { if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(fn)) throw new Error('bad name'); ctx.__args = JSON.parse(JSON.stringify(args || [])); return JSON.parse(vm.runInContext('JSON.stringify((function(){ var r = ' + fn + '.apply(null, __args); return r === undefined ? null : r; })())', ctx)); } };
 }
-module.exports = { createRuntime, coerce, formatDate };
+module.exports = { createRuntime, coerce, formatDate, setCode };

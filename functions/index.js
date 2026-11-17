@@ -12,12 +12,21 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { Firestore } = require('@google-cloud/firestore');
 const vm = require('vm');
-let DB = null, FS = {}, LIVE = null;
+let DB = null, FS = {}, LIVE = null, CODEHASH = '', CODEAT = 0;
+/* Keep the server code the same as the live Apps Script editor: every 2 minutes ask Apps Script for its source
+   (apiExport 'source', key-protected); if it changed, load it. A file that does not parse is refused and the old code stays. */
+async function syncCode() {
+  if (Date.now() - CODEAT < 120000) return; CODEAT = Date.now();
+  try { const KEY = process.env.TL_EXPORT_KEY || ''; const r = await appsScriptResult('apiExport', [KEY, 'source']);
+    if (r && r.files && r.hash && r.hash !== CODEHASH) { require('./app/server/runtime.js').setCode(r.files); CODEHASH = r.hash; console.log('server code updated', r.hash.slice(0, 12), r.files.length + ' files'); }
+  } catch (e) { console.warn('code sync failed (old code stays):', String(e.message || e).slice(0, 200)); }
+}
 /* Is Firebase answering the app's calls? Read every 10 s. */
 async function liveState() {
   if (LIVE && Date.now() - LIVE.at < 10000) return LIVE;
   DB = DB || new Firestore(); const d = await DB.collection('sys').doc('live').get(); const on = d.exists && d.data().on;
   const { FsServer } = require('./app/server/fsstore.js');
+  await syncCode();
   if (on && (!LIVE || !LIVE.srv || LIVE.stamp !== d.data().stamp)) LIVE = { on, at: Date.now(), stamp: d.data().stamp, srv: new FsServer(DB, { ns: 'LIVE', preload: true }) };
   else LIVE = Object.assign(LIVE || {}, { on, at: Date.now() });
   return LIVE;
@@ -165,6 +174,7 @@ async function admin(action, key, a) {
     await DB.collection('sys').doc('props_LIVE').set({ map: props }); await DB.collection('sys').doc('live').set({ on: true, stamp, since: new Date().toISOString() }); LIVE = null;
     return { ok: true, result: { live: true, stamp } };
   }
+  if (action === 'codeStatus') { CODEAT = 0; await syncCode(); return { ok: true, result: { codeHash: CODEHASH || '(from deploy)', checked: new Date(CODEAT).toISOString() } }; }
   if (action === 'goOff') { await DB.collection('sys').doc('live').set({ on: false, since: new Date().toISOString() }); LIVE = null; return { ok: true, result: { live: false } }; }
   return { ok: false, error: 'Unknown admin action.' };
 }
