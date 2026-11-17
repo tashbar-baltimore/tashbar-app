@@ -45,9 +45,11 @@ function apiStaffPage(have) {
 var API_LIVE_DEPLOYMENT = 'AKfycbwcTw8upBIAN3n1D36TON-3u6_VQdo-6zLYJT_bMa11yeFwN9IhL_saGDciQP5QK70pEw';
 function apiSource_() {
   var base = 'https://script.googleapis.com/v1/projects/' + ScriptApp.getScriptId(), h = { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() };
-  var dep = JSON.parse(UrlFetchApp.fetch(base + '/deployments/' + API_LIVE_DEPLOYMENT, { headers: h }).getContentText());
-  var ver = dep.deploymentConfig && dep.deploymentConfig.versionNumber; if (!ver) throw new Error('No live version found.');
-  var c = JSON.parse(UrlFetchApp.fetch(base + '/content?versionNumber=' + ver, { headers: h }).getContentText());
+  var get = function (u) { var r = UrlFetchApp.fetch(u, { headers: h, muteHttpExceptions: true }); if (r.getResponseCode() !== 200) throw new Error('Apps Script API ' + r.getResponseCode() + ': ' + r.getContentText().slice(0, 300)); return JSON.parse(r.getContentText()); };
+  var ver = 0, tok = '';   /* the newest version = the one builders publish to the live link */
+  do { var p = get(base + '/versions?pageSize=50' + (tok ? '&pageToken=' + encodeURIComponent(tok) : '')); (p.versions || []).forEach(function (v) { if (v.versionNumber > ver) ver = v.versionNumber; }); tok = p.nextPageToken || ''; } while (tok);
+  if (!ver) throw new Error('No version found.');
+  var c = get(base + '/content?versionNumber=' + ver);
   var files = (c.files || []).map(function (f) { return { name: f.name, type: f.type, source: f.source }; });
   var hash = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, ver + '|' + files.map(function (f) { return f.name + '|' + f.source.length; }).join(','), Utilities.Charset.UTF_8).map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join('');
   return { version: ver, hash: hash, files: files };
