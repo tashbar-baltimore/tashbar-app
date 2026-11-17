@@ -4,7 +4,7 @@
 
 var SGP_TRACK_NAMES = { KRI: 'Kriyah', CHU: 'Chumash', RAS: 'Rashi', MSH: 'Mishnayos', GEM: 'Gemara', LSH: 'Lashon Hakodesh', KES: 'Krias Shema', PAR: 'Parsha', NAV: 'Navi',
   MFG: 'Mefarshim', TEF: 'Tefillah', HAL: 'Halacha', YT: 'Yomim Tovim', MID: 'Middos', TOL: 'Toldos' };
-var SGP_TRACK_ORDER = ['KRI', 'CHU', 'RAS', 'MSH', 'GEM', 'LSH', 'TEF', 'HAL', 'PAR', 'NAV', 'YT', 'MID', 'KES', 'MFG', 'TOL'];
+var SGP_TRACK_ORDER = ['KRI', 'CHU', 'RAS', 'MSH', 'GEM', 'LSH', 'TEF', 'HAL', 'PAR', 'NAV', 'YT', 'MID', 'KES', 'MFG', 'TOL', 'CHEM'];
 
 /* the Kodesh lessons in teaching order, per track, with names (from KodeshMore; HEB.* = Lashon Hakodesh) */
 /* v190: the parsed list is cached (key = pack stamp, so a new KodeshMore pack is read at once) and kept for the rest of the call */
@@ -33,7 +33,7 @@ function sgpKodeshLessonsRead_() {
   var tx = ''; try { tx = tlFileText_('TorahTracks'); } catch (e) {}   /* v204: Halacha, Tefillah, Yom Tov, Middos, Parsha, Navi */
   if (tx) { var tre = /['"](LK\.([A-Z]+)\.L(\d\d)\.\d\d(?:\.[a-z])?)['"]\s*:\s*\{\s*name\s*:\s*(['"])((?:\\.|(?!\4)[^\\])*)\4/g;
     while ((m = tre.exec(tx))) { if (seen[m[1]]) continue; seen[m[1]] = 1; (order[m[2]] = order[m[2]] || []).push(m[1]); names[m[1]] = m[5].replace(/\\(.)/g, '$1'); }
-    ['TEF', 'HAL', 'PAR', 'NAV', 'YT', 'MID'].forEach(function (k) { if (order[k]) order[k].sort(); }); }
+    ['TEF', 'HAL', 'PAR', 'NAV', 'YT', 'MID', 'CHEM'].forEach(function (k) { if (order[k]) order[k].sort(); }); }
   if (order.LSH) order.LSH.sort(function (a, b) { return plMathLevel_(a) - plMathLevel_(b); });   /* HEB ladder by level */
   return { order: order, names: names };
 }

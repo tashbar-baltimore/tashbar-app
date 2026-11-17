@@ -1,0 +1,41 @@
+<!-- PF-TAP1 tap-question screen (07 PATHFINDER BUILD PROMPT v7.2 Stage 3), added before </body> by pfDoGet_. 2026-11-16, by CLAUDE (Claude Code builder).
+     Draws the passage as tap targets from the server's units (same engine as scoring: PF_TAP in PathfinderTap.js). Tap a sentence (or a word);
+     tap another to change; Done sends "#index". Feature lines (Title:, Heading:, Source N:, captions, boxes) are shown but cannot be tapped.
+     Targets are at least 44 px tall; the spaces between units are plain text and do nothing. No answer key ever reaches the page. -->
+<style>
+.passage.tapp .ptxt{white-space:pre-wrap;line-height:44px}
+.tapu{padding:10px 1px;border-radius:8px;cursor:pointer;-webkit-box-decoration-break:clone;box-decoration-break:clone;-webkit-tap-highlight-color:transparent;outline:none}
+.tapu:hover{background:#eef3ff}
+.tapu:focus-visible{box-shadow:0 0 0 3px #2f5bd3}
+.tapu.on{background:#ffe680;box-shadow:0 0 0 2px #c79a00}
+.tfeat{font-weight:800;color:var(--ink,#1E1B4B)}
+.taphint{color:var(--soft,#5d6779);font-size:15px;margin:8px 0 0;text-align:center}
+.taphint button{background:none;border:0;color:#2f5bd3;text-decoration:underline;font:inherit;cursor:pointer;padding:12px 4px;min-height:44px}
+@media (max-width:480px){.passage.tapp{padding:10px 12px;font-size:19px}}
+</style>
+<script>
+window.PFTAPUI=(function(){
+ const S={id:null,i:null};
+ const e=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function cur(it){ if(S.id!==it.id){ S.id=it.id; S.i=null; } return S; }
+ /* the passage, cut exactly where the server cut it; units come in text order with character offsets */
+ function passage(it){ const p=it.passage||{}, T=it.tap||{units:[]}, txt=String(T.text||p.text||''), st=cur(it); let h='', at=0;
+  T.units.forEach(u=>{ h+=e(txt.slice(at,u.s)); const t=txt.slice(u.s,u.e);
+   if(u.i<0) h+=`<span class="tfeat">${e(t)}</span>`;
+   else h+=`<span class="tapu${st.i===u.i?' on':''}" role="button" tabindex="0" aria-pressed="${st.i===u.i}" data-act="tapu" data-u="${u.i}">${e(t)}</span>`;
+   at=u.e; });
+  h+=e(txt.slice(at));
+  const X=(p.extras||[]).map(x=>typeof extraHTML==='function'?extraHTML(x,it.draft):'').join('');
+  return `<div class="passage tapp"><h4>${e(p.title||'Read this')}</h4>${X}<div class="ptxt">${h}</div></div>`; }
+ function hint(it){ const w=(it.tap||{}).kind==='word';
+  return `<p class="taphint">${w?'Tap a word in the story.':'Tap a sentence in the passage.'} To change, tap another one. Then tap Done.<br><button type="button" data-act="tapoff">I can’t tap on this screen</button></p>`; }
+ function can(it){ return cur(it).i!=null; }
+ function value(it){ return '#'+cur(it).i; }
+ function click(a,t,v){
+  if(a==='tapu'){ const it=v&&v.cur&&v.cur.item; if(!it||P.busy) return true; cur(it).i=+t.dataset.u; render(); return true; }
+  if(a==='tapoff'){ if(P.busy) return true; call('pftTapOff',[true]); return true; }
+  return false; }
+ document.addEventListener('keydown',ev=>{ const t=ev.target; if(!t||!t.classList||!t.classList.contains('tapu')) return; if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); t.click(); } });
+ return {passage,hint,can,value,click,state:S};
+})();
+</script>

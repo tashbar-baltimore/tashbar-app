@@ -4,24 +4,46 @@
    Shows only when the server says Pathfinder is open for this boy (test boys always; other boys only when their grade is in PF_LIVE_GRADES). */
 (function(){
  var asked=null, info=null, url='';
+ window.pfCardInfo_=function(){ return info; };   /* v7.2 merge fix: PathfinderGo waits for this (the first-lesson check list) before it opens a lesson */
  function tok(){ try{ return typeof SRV!=='undefined'&&SRV&&SRV.token; }catch(e){ return null; } }
  function onHub(){ try{ return typeof A!=='undefined'&&A&&A.view==='hub'&&!A.overlay; }catch(e){ return false; } }
  var css=document.createElement('style');
  css.textContent='.pf-card{position:fixed;left:calc(12px + env(safe-area-inset-left,0px));bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:2147483000;display:flex;align-items:center;gap:12px;max-width:min(440px,calc(100vw - 24px));background:#fff8e1;border:3px solid #E3B341;border-radius:20px;padding:12px 16px;box-shadow:0 8px 22px rgba(0,0,0,.22);font:600 17px system-ui,"Segoe UI",sans-serif;color:#1E1B4B}.pf-card .i{font-size:38px}.pf-card b{display:block;font-size:19px}.pf-card small{font-weight:500;color:#5d6779}.pf-card button{border:0;border-radius:14px;background:#1E1B4B;color:#fff;font:700 18px system-ui,sans-serif;min-height:52px;padding:0 18px;cursor:pointer}';
  document.head.appendChild(css);
  var card=document.createElement('div'); card.className='pf-card'; card.style.display='none'; document.body.appendChild(card);
- function go(){ var t=tok(); if(!t) return; try{ sessionStorage.setItem('tl-pf',JSON.stringify({token:t,at:Date.now()})); }catch(e){}
-  if(url){ window.open(url+'?pf=1','_top'); return; }
-  google.script.run.withSuccessHandler(function(u){ url=u; window.open(u+'?pf=1','_top'); }).msAppUrl(); }
+ function go(q){ q=typeof q==='string'?q:'?pf=1'; var t=tok(); if(!t) return; try{ sessionStorage.setItem('tl-pf',JSON.stringify({token:t,at:Date.now()})); }catch(e){}
+  /* web.app hand-off: a one-time code carries his sign-in to the Pathfinder page, and back= brings him home to web.app after */
+  var H=['tashbar-learning-live.web.app','tashbar-learning-live.firebaseapp.com'], fb=H.indexOf(location.host)>=0, back=fb?'&back='+encodeURIComponent(location.origin+'/'):'';
+  var open=function(code){ var full=q+(code?'&h='+code:'')+back; if(url){ window.open(url+full,'_top'); return; } google.script.run.withSuccessHandler(function(u){ url=u; window.open(u+full,'_top'); }).msAppUrl(); };
+  google.script.run.withSuccessHandler(function(c){ open(c||''); }).withFailureHandler(function(){ open(''); }).pfHandoff(t); }
+ /* EVERY BOY STARTS WITH PATHFINDER (Head of School 2026-11-16): a full-screen gate over his home screen until he has finished the
+    general Pathfinder and then the Kodesh Pathfinder (server: PathfinderGate.js pfGateInfo). Not during a rest stop. The sign-out
+    bar (z-index 2147483001) stays above it. */
+ var gate=null, gEl=null;
+ var gcss=document.createElement('style');
+ gcss.textContent='#pf-gate{position:fixed;inset:0;z-index:2147483000;background:linear-gradient(160deg,#16274A,#2b4c8c);color:#fff;display:grid;place-items:center;padding:20px;font-family:system-ui,sans-serif;text-align:center}#pf-gate .bx{max-width:560px}#pf-gate .ic{font-size:76px;line-height:1}#pf-gate h1{font:800 32px/1.2 Georgia,serif;margin:14px 0 8px}#pf-gate p{font-size:19px;line-height:1.45;opacity:.92;margin:0 0 22px}#pf-gate button{border:0;border-radius:18px;padding:18px 34px;font:800 22px system-ui;background:#F0B847;color:#16274A;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.25)}#pf-gate button:focus-visible{outline:4px solid #fff;outline-offset:3px}#pf-gate small{display:block;margin-top:16px;opacity:.75;font-size:14px}';
+ document.head.appendChild(gcss);
+ function gateHide(){ if(gEl){ gEl.remove(); gEl=null; } }
+ function gateShow(){ var k=gate.next==='kodesh', h=gate.general||{}, key=gate.next+(h.done||0);
+  if(gEl&&gEl.dataset.k===key) return; gateHide();
+  gEl=document.createElement('div'); gEl.id='pf-gate'; gEl.dataset.k=key; gEl.setAttribute('role','dialog'); gEl.setAttribute('aria-modal','true');
+  gEl.innerHTML='<div class="bx"><div class="ic">'+(k?'\u{1F4DC}':'\u{1F9ED}')+'</div><h1>'+(k?(gate.kodesh.started?'Finish your Kodesh Pathfinder':'Next: your Kodesh Pathfinder'):(h.started?'Finish your Pathfinder':'First, your Pathfinder'))+'</h1><p>'+
+   (k?'Kriyah, Chumash and more. It finds exactly where your Kodesh learning starts. Just do your best!':'A few short sets of questions so your lessons start in exactly the right place: not too easy, not too hard. Some will feel hard. That is fine. Just do your best!')+
+   (!k&&h.started?' You have done '+h.done+' of '+h.of+' stops. Your answers are saved.':'')+'</p><button type="button">'+(k||h.started?'Keep going →':'Start →')+'</button><small>Your lessons open right after.</small></div>';
+  document.body.appendChild(gEl); var b=gEl.querySelector('button'); b.onclick=function(){ go(k?'?pf=1&test=kodesh':'?pf=1'); }; try{ b.focus(); }catch(e){} }
  function paint(){ if(!info||!info.show){ card.style.display='none'; return; }
+  if(gate&&gate.next==='rest'){ card.innerHTML='<span class="i" aria-hidden="true">\u{1F9ED}</span><span style="flex:1"><b>Pathfinder rest stop</b><small>Come back at '+new Date(gate.rest).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})+'. Your answers are saved.</small></span>'; return; }
   card.innerHTML='<span class="i" aria-hidden="true">\u{1F9ED}</span><span style="flex:1"><b>'+(info.started?'Finish your Pathfinder road':'Start your Pathfinder')+'</b><small>'+(info.started?info.done+' of '+info.of+' stops done'+(info.jars?' · 🫙 '+info.jars+' jar'+(info.jars>1?'s':'')+' waiting':'')+'. Your answers are saved.':'Find where you are in Reading and Math. Every real try earns coins.')+(info.draft?' (test)':'')+'</small></span><button type="button">'+(info.started?'Continue':'Start')+'</button>';
   card.querySelector('button').onclick=go; }
  setInterval(function(){
   var t=tok(), hub=onHub();
   if(!t){ asked=null; info=null; card.style.display='none'; return; }
-  if(asked!==t){ asked=t; info=null; google.script.run.withSuccessHandler(function(r){ info=r; paint(); }).withFailureHandler(function(){ info=null; }).pfHello(t);
+  if(asked!==t){ asked=t; info=null; gate=null; gateHide(); google.script.run.withSuccessHandler(function(r){ info=r; paint(); }).withFailureHandler(function(){ info=null; }).pfHello(t);
+   google.script.run.withSuccessHandler(function(r){ gate=r; paint(); }).withFailureHandler(function(){ gate=null; }).pfGateInfo(t);
    google.script.run.withSuccessHandler(function(u){ url=u; }).msAppUrl(); }
-  card.style.display=hub&&info&&info.show?'':'none';
+  if(gate&&gate.rest&&gate.next==='rest'&&Date.now()>=gate.rest){ gate.next='general'; gate.rest=0; }
+  card.style.display=hub&&info&&info.show&&!(gate&&(gate.next==='general'||gate.next==='kodesh'))?'':'none';
+  if(hub&&gate&&(gate.next==='general'||gate.next==='kodesh')) gateShow(); else gateHide();
  },1000);
  /* v6 Stage 2 (Engine E + E2): the first lesson in Reading / Math after a Pathfinder placement opens with a 5-question check
     (TEST boys only: pfHello lists the subjects in info.confirm, and only for TEST boys). The server picks and scores the questions,

@@ -233,7 +233,10 @@ function acParentNewCode(token, pid) {
 
 /* ---------- parent portal ---------- */
 function ppPage_() {
-  return HtmlService.createHtmlOutput(tlTheme_(HtmlService.createHtmlOutputFromFile('ParentPage').getContent(), 'staff'))
+  var page = HtmlService.createHtmlOutputFromFile('ParentPage').getContent(), add = '';
+  try { add = HtmlService.createHtmlOutputFromFile('ParentLibrary').getContent(); } catch (e) {}   /* Library.js: Practice at home (parents assign; HoS 2026-11-16) */
+  var i = page.lastIndexOf('</body>'); if (add) page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
+  return HtmlService.createHtmlOutput(tlTheme_(page, 'staff'))
     .setTitle('Tashbar Learning · Parents').addMetaTag('viewport', 'width=device-width, initial-scale=1').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DEFAULT);
 }
 function ppMe_(token) {
@@ -342,6 +345,7 @@ function cpPage_() {
   var page = HtmlService.createHtmlOutputFromFile('QuestPage').getContent(), add = '';
   try { add = HtmlService.createHtmlOutputFromFile('CurriculumPreview').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('CurriculumGuide').getContent(); } catch (e) {}   /* v243 takeover2: Curriculum Guide overview, coverage, What's new, review status (server: CurriculumReview.js) */
+  try { add += HtmlService.createHtmlOutputFromFile('CgIntent').getContent(); } catch (e) {}   /* v349 cloud builder 1: esti1@ TL_CG_INTENT1+2, staff-only TL_INTENT + TL_METHOD data for the Curriculum Guide */
   try { add += HtmlService.createHtmlOutputFromFile('PreviewKid').getContent(); } catch (e) {}   /* v266 takeover3: split screen, click a lesson and see the real kid screen */
   var h = page.indexOf('<head>'); page = h < 0 ? cpPrelude_() + page : page.slice(0, h + 6) + cpPrelude_() + page.slice(h + 6);
   var i = page.lastIndexOf('</body>'); page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);

@@ -1,0 +1,232 @@
+<style>
+/* KODESH PATHFINDER screens (PF-TWO1 stage B, TEST boys only). Added before </body> of PathfinderPage by pfDoGet_.
+   The server keeps every key; this page draws the item and sends what he tapped. Hebrew comes only from the bank (via the server). */
+.kq-he{font-family:"Noto Serif Hebrew","SBL Hebrew","Taamey Frank CLM","Times New Roman",serif;direction:rtl;unicode-bidi:isolate}
+.kq-rashi{font-family:"Noto Rashi Hebrew","Noto Serif Hebrew",serif;direction:rtl;unicode-bidi:isolate}
+.kq-text{display:flex;flex-wrap:wrap;gap:6px 10px;justify-content:flex-start;align-items:center;direction:rtl;text-align:right;font-size:30px;line-height:1.8;background:#fffdf6;border:2px solid #efe6c8;border-radius:16px;padding:14px 18px;margin:12px 0}
+.kq-text.small{font-size:26px}
+.kq-u{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 4px;border-radius:10px}
+.kq-u.hl{background:#fff1a8;box-shadow:0 0 0 3px #f4d35e,0 0 14px 4px rgba(244,211,94,.75)}
+button.kq-u{min-width:44px;min-height:48px;padding:2px 8px;border:2px solid #e4e0d6;background:#fff;font:inherit;color:inherit;cursor:pointer}
+button.kq-u:hover{border-color:#c9d7ff}
+button.kq-u.sel{border-color:var(--blue);background:#eef3ff;box-shadow:0 0 0 3px #c9d7ff inset}
+.kq-big{font-size:clamp(64px,12vw,110px);line-height:1.3;text-align:center;margin:10px 0;padding:6px 10px;background:#f3f1ff;border-radius:16px}
+.kq-rbox{margin:6px 0 12px;border:2px dashed #c9c2ad;border-radius:14px;padding:10px 14px;background:#fff}
+.kq-rbox small{display:block;color:var(--soft);font-size:13px;margin-bottom:2px;direction:ltr;text-align:left}
+.kq-rbox .kq-rashi{font-size:26px;line-height:1.7;text-align:right;display:block}
+.kq-ref{color:var(--soft);font-size:13px;text-align:left}
+.ch.kq-he,.ch.kq-rashi{font-size:40px;font-weight:500;min-height:96px}
+.kq-dots{display:inline-flex;gap:5px;align-items:center;margin-left:6px}.kq-dots i{width:12px;height:12px;border-radius:50%;background:#d9d5ea;display:inline-block}
+.kq-dots i.on{background:var(--blue)}.kq-dots i.now{background:#fff;border:3px solid var(--gold)}
+.kq-play{min-width:120px;min-height:96px;border-radius:24px;border:3px solid var(--gold);background:var(--gold2);font-size:46px}
+.kq-tiles{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+.kq-tiles button{min-height:56px;border:3px solid var(--line);border-radius:14px;background:#fff;font-size:20px;font-weight:600;text-align:left;padding:8px 14px;display:flex;gap:12px;align-items:center}
+.kq-tiles button b{display:inline-flex;width:34px;height:34px;border-radius:50%;background:#eef3ff;align-items:center;justify-content:center}
+.kq-tiles button.sel{border-color:var(--blue)}
+.kq-mtn{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:16px 0}
+.kq-mtn div{min-width:120px;border-radius:18px;padding:12px;color:#fff;font-weight:700;text-align:center}
+.kq-mtn div span{display:block;font-size:36px}
+.kq-rep td,.kq-rep th{font-size:14px}
+@media(max-width:560px){.kq-text{font-size:26px;padding:10px 12px}.ch.kq-he,.ch.kq-rashi{font-size:34px}}
+/* Read to Rebbe card (stage C, staff only): the passage large, a 60-second timer, wrong-word and last-word taps */
+.rb-boys{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.rb-boys button{min-height:64px;border:2px solid var(--line);border-radius:14px;background:#fff;text-align:left;padding:8px 12px;font-size:17px}
+.rb-boys button small{display:block;color:var(--soft);font-size:13px}
+.rb-pass{display:flex;gap:10px;flex-wrap:wrap}.rb-pass button{min-height:64px;min-width:150px;border:3px solid var(--line);border-radius:14px;background:#fff;font-size:18px;font-weight:700;padding:6px 12px}
+.rb-pass button small{display:block;font-weight:500;font-size:13px;color:var(--soft)}.rb-pass button.sug{border-color:var(--gold);background:var(--gold2)}.rb-pass button.on{border-color:var(--blue);background:#eef3ff}
+.rb-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:5;background:var(--card);padding:8px 0}
+.rb-time{font-size:44px;font-weight:800;min-width:96px;text-align:center;border-radius:14px;background:#eef3ff;color:var(--blue);padding:2px 10px;font-variant-numeric:tabular-nums}
+.rb-time.out{background:#fde2e2;color:var(--bad)}
+.rb-track{flex:1;min-width:160px;height:14px;border-radius:999px;background:#e9e6f5;overflow:hidden}.rb-track i{display:block;height:100%;background:linear-gradient(90deg,#7c6cf0,#2f5bd3)}
+.rb-hint{font-weight:700;font-size:17px}.rb-hint.now{color:var(--bad)}
+.rb-text{display:flex;flex-wrap:wrap;gap:8px 4px;direction:rtl;text-align:right;font-size:38px;line-height:2.05;background:#fffdf6;border:2px solid #efe6c8;border-radius:16px;padding:14px 18px;margin:12px 0}
+.rb-text.trop{font-family:"Taamey Frank CLM","Noto Serif Hebrew","SBL Hebrew","Times New Roman",serif}
+.rb-w{position:relative;min-width:44px;min-height:56px;border:2px solid transparent;border-radius:10px;background:transparent;padding:0 6px;font:inherit;color:inherit;cursor:pointer}
+.rb-w:hover{border-color:#c9d7ff}.rb-w:disabled{cursor:default}
+.rb-w.bad{background:#fde2e2;border-color:#e57373;color:#8e1b1b;text-decoration:underline wavy #c62828 2px;text-underline-offset:8px}
+.rb-w.last{border-color:var(--blue);background:#eef3ff;box-shadow:0 0 0 3px #c9d7ff}
+.rb-w.last:after{content:"last";position:absolute;top:-10px;left:50%;transform:translateX(-50%);direction:ltr;font:700 11px system-ui,sans-serif;background:var(--blue);color:#fff;border-radius:6px;padding:0 5px;line-height:16px}
+.rb-w.past{opacity:.32}
+.rb-res{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:10px 0}
+.rb-res div{background:#f7f6f2;border-radius:12px;padding:10px;font-size:26px;font-weight:800}.rb-res small{display:block;font-size:13px;color:var(--soft);font-weight:600}
+.rb-ok{color:var(--ok)}.rb-no{color:var(--bad)}
+.rb-says{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}.rb-says button{min-height:56px;border:3px solid var(--line);border-radius:14px;background:#fff;font-size:17px;font-weight:700;padding:6px 14px}.rb-says button.on{border-color:var(--blue);background:#eef3ff}
+.rb-hist{width:100%;border-collapse:collapse;margin-top:6px;font-size:15px}.rb-hist th,.rb-hist td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line)}.rb-hist th{color:var(--soft);font-weight:600}
+.rb-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
+@media(max-width:560px){.rb-text{font-size:30px}.rb-time{font-size:34px}}
+</style>
+<script>
+/* Kodesh Pathfinder (?pf=1&test=kodesh). TEST boys only: the server refuses everyone else.
+   Hebrew tap: units are the space-separated words (a maqaf group is one unit), drawn right to left, each at least 44 px.
+   Speech: only the English stem, with any Hebrew letters removed first; Hebrew is never sent to speech.
+   Listen-and-tap: plays the recorded clip the server sends (items without a clip never reach the page). */
+window.PFKUI=(function(){
+ const K={sel:null,tap:null,order:[],forId:null,brkUntil:0,brkN:-1,ack:null,spoken:null,audio:null,shownAt:0};
+ const noHeb=s=>String(s||'').replace(/[֐-׿יִ-ﭏ]+/g,' ').replace(/\s+/g,' ').trim();
+ function say(t,done){ t=noHeb(t); if(!t){ done&&done(); return; } speak(t,done); }
+ function fonts(){ if(document.getElementById('pfk-fonts')) return; const l=document.createElement('link'); l.id='pfk-fonts'; l.rel='stylesheet';
+  l.href='https:'+'/'+'/fonts.googleapis.com/css2?family=Noto+Rashi+Hebrew:wght@400;700&family=Noto+Serif+Hebrew:wght@400;600&display=swap'; document.head.appendChild(l); }
+ function boot(){ fonts(); render(); run('pfkStart',P.token).then(v=>{ P.v=v; render(); }).catch(e=>{ P.err=msgOf(e); render(); }); }
+ function reset(it){ if(K.forId===it.id) return; K.forId=it.id; K.sel=null; K.tap=null; K.order=[]; K.shownAt=Date.now(); }
+ const fontCls=f=>f==='rashi'?'kq-rashi':'kq-he';
+ function dots(s){ let h=''; for(let i=0;i<s.asked;i++) h+='<i class="on"></i>'; return `<span class="kq-dots" aria-label="progress">${h}<i class="now"></i></span>`; }
+ function unitsHTML(it){ const p=it.pic, hl=p.hl||[], cls=fontCls(p.font);
+  if(it.tap) return `<div class="kq-text ${cls}" dir="rtl" role="group" aria-label="words">${p.units.map((u,i)=>`<button class="kq-u${K.tap===i?' sel':''}" data-act="kqtap" data-i="${i}" lang="he">${esc(u)}</button>`).join('')}</div>`;
+  return `<div class="kq-text ${cls}" dir="rtl" lang="he">${p.units.map((u,i)=>`<span class="kq-u${hl.indexOf(i)>=0?' hl':''}">${esc(u)}</span>`).join('')}</div>`; }
+ function picHTML(it){ const p=it.pic; let h='';
+  if(it.fmt==='LISTEN') h+=`<div class="center" style="margin:14px 0"><button class="kq-play" data-act="kqplay" aria-label="Play the sound again">🔊</button></div>`;
+  if(p.kind==='letters'||p.kind==='word'){ if(p.units.length) h+=`<div class="kq-big ${fontCls(p.font)}" dir="rtl" lang="he">${esc(p.units.join(' '))}</div>`; }
+  else if(p.units.length){ if(p.kind==='ramban') h+=`<div class="kq-ref" style="margin:8px 0 2px">Ramban</div>`; h+=unitsHTML(it); }
+  if(p.rashi) h+=`<div class="kq-rbox"><small>Rashi</small><span class="${fontCls(p.rashiFont)}" dir="rtl" lang="he">${esc(p.rashi)}</span></div>`;
+  if(p.ref) h+=`<div class="kq-ref">${esc(p.ref)}</div>`;
+  return h; }
+ function canNext(it){ return it.tap?K.tap!=null:it.fmt==='ORDER'?K.order.length===(it.tiles||[]).length:K.sel!=null; }
+ function valueOf(it){ return it.tap?String(K.tap):it.fmt==='ORDER'?K.order.map(i=>it.tiles[i]).join(' | '):it.choices[K.sel]; }
+ function itemHTML(v){ const k=v.kodesh, it=k.item, s=k.section; reset(it);
+  let h=`<div class="card"><div class="qhead">${esc(s.label)} ${dots(s)}${it.draft?' <span class="draft">draft</span>':''}</div>`;
+  h+=`<div class="stem">${it.say?'<button class="say" data-act="kqsay" aria-label="Read the question to me">🔊</button>':''}<span>${esc(it.stem)}</span></div>`;
+  h+=picHTML(it);
+  if(it.choices){ const opt=it.fmt==='SAME'||it.hebChoices?'kq-he':'';
+   h+=`<div class="choices">${it.choices.map((c,i)=>`<button class="ch ${opt}${K.sel===i?' sel':''}" data-act="kqpick" data-i="${i}" ${opt?'dir="rtl" lang="he"':''}>${esc(c)}</button>`).join('')}</div>`; }
+  if(it.fmt==='ORDER') h+=`<p style="color:var(--soft);margin:10px 0 0">Tap them in order: first, then next. Tap again to take one back.</p><div class="kq-tiles">${it.tiles.map((t,i)=>{ const at=K.order.indexOf(i); return `<button data-act="kqtile" data-i="${i}" class="${at>=0?'sel':''}"><b>${at>=0?at+1:''}</b>${esc(t)}</button>`; }).join('')}</div>`;
+  h+=`</div><p class="err" role="alert">${esc(P.err)}</p><div class="foot"><button class="big" data-act="kqnext" ${!canNext(it)||P.busy?'disabled':''}>${P.busy?'Saving…':'Next ➜'}</button></div>`;
+  return h; }
+ function brkHTML(){ const left=Math.max(0,Math.ceil((K.brkUntil-Date.now())/1000));
+  return `<div class="card center"><h2>Stretch break 🙆‍♂️</h2><p>Stand up, reach up high, and take a deep breath.</p><div class="breathe" aria-hidden="true"></div><div class="breath" id="kqbrk">${left}</div></div>`; }
+ function betweenHTML(v){ const k=v.kodesh, f=k.finished, n=k.section;
+  return `<div class="card center"><div style="font-size:56px">🚩</div><h2>${esc(f.label)}: done!</h2><p>Your flag is on the mountain.${n?' Next is '+esc(n.label)+'.':''}</p><button class="big gold" data-act="kqgo">Keep climbing ➜</button></div>`; }
+ function endHTML(v){ const k=v.kodesh, S=(k.sections||[]).filter(s=>s.status==='done');
+  return `<div class="card center"><div style="font-size:64px">🏔️</div><h2>You finished the Kodesh Pathfinder!</h2><p>Thank you. Your teachers will use this to set your path.</p>
+  <div class="kq-mtn">${S.map(s=>`<div style="background:${esc(s.color)}"><span>${s.ic}</span>${esc(s.label)} 🚩</div>`).join('')}</div>
+  ${v.appUrl?`<a class="big gold" href="${esc(v.appUrl)}">Back to my lessons</a>`:''} ${v.draft?'<button class="big ghost" data-act="kqagain">Start it again (test)</button>':''}</div>`; }
+ function html(v){ const k=v.kodesh;
+  if(k.brk&&K.brkN!==k.n){ K.brkN=k.n; K.brkUntil=Date.now()+10000; }
+  if(K.brkUntil>Date.now()) return brkHTML();
+  if(k.end) return endHTML(v);
+  if(k.finished&&k.item&&K.ack!==k.item.id) return betweenHTML(v);
+  if(k.item) return itemHTML(v);
+  return `<div class="card center"><h2>${P.err?esc(P.err):'One moment…'}</h2></div>`; }
+ function play(it){ try{ if(K.audio) K.audio.pause(); if(!it.clip) return; K.audio=new Audio(it.clip); K.audio.play().catch(()=>{}); }catch(e){} }
+ let brkT=null;
+ function after(v){ const k=v.kodesh; clearInterval(brkT);
+  if(K.brkUntil>Date.now()){ brkT=setInterval(()=>{ const b=$('kqbrk'); if(Date.now()>=K.brkUntil){ clearInterval(brkT); K.brkUntil=0; render(); } else if(b) b.textContent=Math.ceil((K.brkUntil-Date.now())/1000); },500); return; }
+  const it=k.item; if(!it||k.end||(k.finished&&K.ack!==it.id)) return;
+  if(K.spoken!==it.id){ K.spoken=it.id; K.shownAt=Date.now();
+   if(it.fmt==='LISTEN') say(it.say,()=>play(it)); else if(v.young&&it.say) say(it.say); } }
+ function click(a,t,v){ if(!v||!v.kodesh) return false;
+  const it=v.kodesh.item;
+  if(a==='kqpick'){ K.sel=+t.dataset.i; render(); return true; }
+  if(a==='kqtap'){ K.tap=+t.dataset.i; render(); return true; }
+  if(a==='kqtile'){ const i=+t.dataset.i, at=K.order.indexOf(i); if(at>=0) K.order.splice(at,1); else K.order.push(i); render(); return true; }
+  if(a==='kqsay'){ if(it) say(it.say); return true; }
+  if(a==='kqplay'){ if(it) play(it); return true; }
+  if(a==='kqgo'){ if(it) K.ack=it.id; render(); return true; }
+  if(a==='kqagain'){ K.ack=null; call('pfkStart',[true]); return true; }
+  if(a==='kqnext'){ if(!it||!canNext(it)||P.busy) return true; try{ speechSynthesis.cancel(); if(K.audio) K.audio.pause(); }catch(e){}
+   const ms=Math.max(0,Date.now()-K.shownAt); call('pfkAnswer',[{item:it.id,value:valueOf(it),ms:ms}]); return true; }
+  return false; }
+ /* staff report: the Kodesh profile (numbers are for staff and rebbeim only) and the rebbe's override */
+ /* stage C: Read to Rebbe readings (numbers only) and the link to the rebbe card */
+ function rtrRep(R){ const kd=R.kodesh, rd=kd.readings||[], sm=kd.rtr, u=(P.appUrl||'')+'?pf=1&rebbe='+encodeURIComponent(R.sid||P.sid||'');
+  let h=`<h4 style="margin:12px 0 4px">Read to Rebbe</h4>`;
+  if(rd.length) h+=`<table><tr><th>When</th><th>Passage</th><th>Words right a minute</th><th>Accuracy</th><th>Result</th><th>Rebbe says</th><th>By</th></tr>${rd.map(r=>`<tr><td>${esc(new Date(r.at).toLocaleDateString())}</td><td>Level ${r.level}</td><td>${r.wcpm}</td><td>${Math.round(r.accuracy*1000)/10}%</td><td>${r.pass?'passed':'not passed'}</td><td>${esc(r.says)}</td><td>${esc(r.by)}</td></tr>`).join('')}</table><p style="margin:6px 0">Read to Rebbe level: ${sm&&sm.level!=null?'Level '+sm.level:'none passed yet'}${sm&&sm.flags.length?' · '+sm.flags.map(esc).join('; '):''}</p>`;
+  else h+=`<p style="color:var(--soft);margin:0 0 6px">No reading yet.</p>`;
+  return h+`<a class="big ghost" href="${esc(u)}" target="_top">📖 Read to Rebbe</a>`; }
+ function rep(R){ const kd=R.kodesh; if(!kd) return ''; const N=kd.names||{}, last=kd.profiles[kd.profiles.length-1];
+  let h=`<div class="card kq-rep"><h3>Kodesh Pathfinder <span class="tag" style="background:#ffe9b3;border-radius:8px;padding:2px 8px;font-size:13px">TEST · draft questions</span></h3>`;
+  if(!last) return h+`<p>${kd.open&&kd.open.length?'In progress: '+esc(kd.open[0].done.map(k=>N[k]||k).join(', ')||'just started')+'.':'Not taken yet.'}</p>${rtrRep(R)}</div>`;
+  const P0=last.profile;
+  h+=`<p style="color:var(--soft);margin:0 0 8px">${esc(P0.date)} · Form ${esc(P0.form)} · saved by ${esc(last.by)}</p><table><tr><th>Section</th><th>Level</th><th>Start skill</th><th>How sure</th><th>Notes</th></tr>`;
+  Object.keys(P0.strands).forEach(k=>{ const o=P0.strands[k]; h+=`<tr><td>${esc(N[k]||k)}</td><td>${o.level==null?'—':o.level}${o.tested!=null?' (tested '+o.tested+')':''}${o.suggest!=null?' (lessons suggest '+o.suggest+')':''}</td><td>${esc(o.start_skill||'')}</td><td>${esc(o.how_sure||'')}</td><td>${(o.flags||[]).map(esc).join('; ')}</td></tr>`; });
+  h+=`</table><h4 style="margin:12px 0 4px">Sections</h4><table><tr><th>Section</th><th>Questions</th><th>Right</th><th>By level (right / asked)</th><th>Ended</th></tr>`;
+  kd.sections.filter(s=>s.session===last.session).forEach(s=>{ h+=`<tr><td>${esc(N[s.strand]||s.strand)}</td><td>${s.items}</td><td>${s.right}</td><td>${(s.byLevel||[]).map(b=>'L'+b[0]+': '+b[1]+'/'+b[2]).join(' · ')}</td><td>${esc(s.stop||'')}</td></tr>`; });
+  h+=`</table><h4 style="margin:12px 0 4px">Rebbe override</h4><p style="color:var(--soft);margin:0 0 6px">Your choice wins and is locked. It is saved with your name and the time. Leave the level empty to clear it.</p>
+  <select id="kqs" style="font:inherit;padding:8px;border-radius:10px">${Object.keys(P0.strands).map(k=>`<option value="${esc(k)}">${esc(N[k]||k)}</option>`).join('')}</select>
+  <input id="kql" type="number" min="1" max="9" style="width:90px;font:inherit;padding:8px;border-radius:10px;border:2px solid var(--line)" placeholder="Level">
+  <button class="big ghost" data-kract="ov">Save</button>${rtrRep(R)}</div>`;
+  return h; }
+ document.addEventListener('click',e=>{ const t=e.target.closest&&e.target.closest('[data-kract]'); if(!t||P.mode!=='report'||P.busy) return;
+  const s=($('kqs')||{}).value, l=($('kql')||{}).value; P.busy=true; render();
+  run('pfkOverride',P.token,P.sid,s,l===''?null:+l).then(()=>run('pfReport',P.token,P.sid)).then(r=>{ P.busy=false; P.rep=r; render(); }).catch(err=>{ P.busy=false; P.err=msgOf(err); render(); }); });
+ return {boot,html,after,click,rep,_K:K};
+})();
+/* READ TO REBBE (stage C, PF-TWO1 4.2 and 8.5). STAFF ONLY: ?pf=1&rebbe=<id> (or ?pf=1&rebbe=1 to pick a boy). TEST boys only.
+   The rebbe reads with the boy on his own screen: 60-second timer, tap each word read wrong, then tap the last word reached.
+   Only the numbers are saved (no audio, no recording, not even which words). Nothing here is spoken. */
+window.PFKUI.rebbe=(function(){
+ const R={boys:null,card:null,sid:'',pid:null,phase:'choose',wrong:{},last:null,t0:0,secs:0,fix:false,says:'',saved:null,tick:null,err:''};
+ const pct=a=>Math.round((Number(a)||0)*1000)/10+'%';
+ function pas(){ return R.card&&R.card.passages.filter(p=>p.id===R.pid)[0]; }
+ function score(p){ const last=R.last, reached=last+1, secs=Math.min(R.card.seconds,Math.round(R.secs*10)/10); let w=0; Object.keys(R.wrong).forEach(i=>{ if(+i<=last) w++; });
+  const right=reached-w, wcpm=Math.round(right*60/secs), acc=Math.round(right/reached*1000)/1000; return {reached,wrong:w,right,seconds:secs,wcpm,accuracy:acc,pass:wcpm>=p.line.wcpm&&acc>=p.line.acc-1e-9}; }
+ function stopT(){ clearInterval(R.tick); R.tick=null; }
+ function fresh(){ stopT(); R.wrong={}; R.last=null; R.t0=0; R.secs=0; R.fix=false; R.says=''; R.saved=null; }
+ function top(){ return `<header class="top"><h1>📖 Read to Rebbe${R.card?' · '+esc(R.card.name):''}</h1><span class="tag">TEST · draft · staff only</span>${P.appUrl?`<a href="${esc(P.appUrl+'?sg=1')}">Back to staff screen</a>`:''}</header>`; }
+ function boysHTML(){ if(!R.boys) return `<div class="card center"><h2>${P.err?esc(P.err):'Loading…'}</h2></div>`;
+  return `${P.err?`<div class="card center"><h2>${esc(P.err)}</h2></div>`:''}<div class="card"><h2>Pick a boy</h2><p style="color:var(--soft)">While the Kodesh Pathfinder is in testing, only TEST students are listed.</p>
+  <div class="rb-boys">${R.boys.map(b=>`<button data-rb="boy" data-id="${esc(b.id)}"><b>${esc(b.name)}</b><small>${b.grade==null?'grade unknown':b.grade===0?'K':'grade '+b.grade}${b.readings?' · Read to Rebbe Level '+(b.level==null?'not passed':b.level):''}</small></button>`).join('')||'<p>No TEST students in your list.</p>'}</div></div>`; }
+ function histHTML(){ const C=R.card, sm=C.summary; let h='';
+  if(C.readings.length){ h+=`<table class="rb-hist"><tr><th>When</th><th>Passage</th><th>Words right a minute</th><th>Accuracy</th><th>Result</th><th>Rebbe says</th></tr>${C.readings.slice().reverse().map(r=>`<tr><td>${esc(new Date(r.at).toLocaleString())}</td><td>Level ${r.level}</td><td>${r.wcpm}</td><td>${pct(r.accuracy)}</td><td class="${r.pass?'rb-ok':'rb-no'}">${r.pass?'passed':'not passed'}</td><td>${esc(r.says)}</td></tr>`).join('')}</table>`;
+   h+=`<p><b>Read to Rebbe level:</b> ${sm&&sm.level!=null?'Level '+sm.level:'none passed yet'}${sm&&sm.flags.length?' · '+sm.flags.map(esc).join('; '):''}${C.grade!=null&&C.grade>=C.tapRuleFromGrade&&sm?' · Kriyah tap section: '+(sm.tapNeeded?'<b>given</b> (accuracy below 95%'+(sm.level==null?' or no passage passed':'')+')':'not needed (95%+)'):''}</p>`; }
+  return h; }
+ function chooseHTML(){ const C=R.card;
+  return `<div class="card"><h2>${esc(C.name)} <span style="color:var(--soft);font-size:18px">${C.grade==null?'grade unknown':C.grade===0?'K':'grade '+C.grade}</span></h2>${histHTML()}
+  <h3 style="margin-top:12px">Pick a passage</h3><div class="rb-pass">${C.passages.map(p=>`<button data-rb="pas" data-id="${esc(p.id)}" class="${p.level===C.suggest?'sug':''}">Level ${p.level}<small>${p.words} words · pass ${p.line.wcpm} a minute, ${Math.round(p.line.acc*100)}%${p.trop?' · with trop':''}${p.level===C.suggest?' · suggested':''}</small></button>`).join('')}</div>
+  <p style="color:var(--soft);font-size:14px">Pass lines are provisional.</p><div class="rb-row"><button class="big ghost" data-rb="list">Pick another boy</button></div></div>`; }
+ function wordsHTML(p){ const ph=R.phase, tap=ph==='run'||ph==='last';
+  return `<div class="rb-text kq-he${p.trop?' trop':''}" dir="rtl" lang="he" role="group" aria-label="passage">${p.units.map((u,i)=>{ const c=['rb-w']; if(R.wrong[i]) c.push('bad'); if(R.last===i) c.push('last'); if(R.last!=null&&i>R.last) c.push('past');
+   return `<button class="${c.join(' ')}" data-rb="w" data-i="${i}" ${tap?'':'disabled'} lang="he">${esc(u)}</button>`; }).join('')}</div>`; }
+ function readHTML(){ const p=pas(), ph=R.phase, left=ph==='ready'?R.card.seconds:ph==='run'?Math.max(0,Math.ceil(R.card.seconds-(Date.now()-R.t0)/1000)):0, frac=ph==='ready'?1:ph==='run'?Math.max(0,1-(Date.now()-R.t0)/1000/R.card.seconds):0;
+  const hint=ph==='ready'?'Ask him to read out loud. Tap Start as he begins.':ph==='run'?'Tap each word he reads wrong. Tap it again to undo.':R.fix?'Tap a word to mark or unmark it wrong.':'Time! Now tap the last word he reached.';
+  let h=`<div class="card"><div class="rb-bar"><span class="rb-time${ph==='last'?' out':''}" id="rbtime" aria-live="off">${ph==='last'?Math.round(R.secs)+'s':left}</span><span class="rb-track"><i id="rbbar" style="width:${Math.round(frac*100)}%"></i></span><span class="rb-hint${ph==='last'&&!R.fix?' now':''}" id="rbhint">${hint}</span></div>
+  <p style="margin:0;color:var(--soft)">Level ${p.level} passage · ${esc(p.ref)} · ${p.words} words · wrong so far: <b id="rbn">${Object.keys(R.wrong).length}</b></p>${wordsHTML(p)}<div class="rb-row">`;
+  if(ph==='ready') h+=`<button class="big gold" data-rb="start">▶ Start 60 seconds</button><button class="big ghost" data-rb="back">Pick another passage</button>`;
+  if(ph==='run') h+=`<button class="big" data-rb="done">He finished the passage</button><button class="big ghost" data-rb="cancel">Stop and start over</button>`;
+  if(ph==='last') h+=`<button class="big gold" data-rb="see" ${R.last==null?'disabled':''}>See the result</button><button class="big ghost" data-rb="fix">${R.fix?'Back to: tap the last word':'Fix a wrong word'}</button><button class="big ghost" data-rb="cancel">Start over</button>`;
+  return h+`</div></div>`; }
+ function resHTML(){ const p=pas(), s=R.saved?R.saved.reading:score(p), C=R.card;
+  let h=`<div class="card"><h2>Level ${p.level} passage: <span class="${s.pass?'rb-ok':'rb-no'}">${s.pass?'passed':'not passed'}</span></h2>
+  <div class="rb-res"><div><small>Words right a minute</small>${s.wcpm} <small>pass line ${p.line.wcpm}</small></div><div><small>Accuracy</small>${pct(s.accuracy)} <small>pass line ${Math.round(p.line.acc*100)}%</small></div><div><small>Words reached</small>${s.reached} of ${p.words}</div><div><small>Read wrong</small>${s.wrong}</div><div><small>Time</small>${s.seconds}s</div></div>`;
+  if(!R.saved){ h+=`<h3>Is this his Kriyah level?</h3><p style="color:var(--soft);margin:0">Your answer helps tune the pass lines. It is saved with the numbers.</p><div class="rb-says">${C.says.map(x=>`<button data-rb="says" data-k="${esc(x.k)}" class="${R.says===x.k?'on':''}">${esc(x.t)}</button>`).join('')}</div>
+   <p style="color:var(--soft);font-size:14px">Only these numbers and your answer are saved. No recording, and not which words.</p><div class="rb-row"><button class="big gold" data-rb="save" ${!R.says||P.busy?'disabled':''}>${P.busy?'Saving…':'Save'}</button><button class="big ghost" data-rb="cancel">Read it again</button></div>`; }
+  else { const sm=R.saved.summary, pr=R.saved.profile, nx=C.passages.filter(q=>q.level===C.suggest)[0];
+   h+=`<p class="rb-ok"><b>Saved.</b> Rebbe says: ${esc((C.says.filter(x=>x.k===R.saved.says)[0]||{}).t||R.saved.says)}.</p>${histHTML()}
+   ${pr&&pr.strands&&pr.strands.KRI?`<p><b>Kriyah level in his profile:</b> ${pr.strands.KRI.level==null?'—':'Level '+pr.strands.KRI.level}${(pr.strands.KRI.flags||[]).length?' · '+pr.strands.KRI.flags.map(esc).join('; '):''}</p>`:''}
+   <div class="rb-row">${nx?`<button class="big gold" data-rb="pas" data-id="${esc(nx.id)}">Next: Level ${nx.level} passage</button>`:''}<button class="big ghost" data-rb="back">Pick a passage</button><button class="big ghost" data-rb="list">Pick another boy</button></div>`; }
+  return h+`</div>`; }
+ function rebbeHTML(){ let h=top()+`<div class="wrap">`;
+  if(!R.card) h+=boysHTML();
+  else if(R.phase==='choose') h+=chooseHTML();
+  else if(R.phase==='result') h+=resHTML();
+  else h+=readHTML();
+  return h+`<p class="err" role="alert">${R.card?esc(P.err):''}</p></div>`; }
+ function tick(){ const left=R.card.seconds-(Date.now()-R.t0)/1000, t=$('rbtime'), b=$('rbbar');
+  if(left<=0){ stopT(); R.secs=R.card.seconds; R.phase='last'; render(); return; }
+  if(t) t.textContent=Math.ceil(left); if(b) b.style.width=Math.max(0,left/R.card.seconds*100)+'%'; }
+ function openBoy(id){ P.busy=true; P.err=''; R.card=null; fresh(); R.phase='choose'; render();
+  return run('pfkRtrCard',P.token,id).then(c=>{ P.busy=false; R.card=c; R.sid=c.sid; render(); }).catch(e=>{ P.busy=false; P.err=msgOf(e); render(); }); }
+ function boot(q){ fonts0(); render(); run('pfkRtrBoys',P.token).then(b=>{ R.boys=b; render(); }).catch(e=>{ P.err=msgOf(e); render(); });
+  if(q&&q!=='1'&&q!=='true') openBoy(String(q)); }
+ function fonts0(){ if(document.getElementById('pfk-fonts')) return; const l=document.createElement('link'); l.id='pfk-fonts'; l.rel='stylesheet';
+  l.href='https:'+'/'+'/fonts.googleapis.com/css2?family=Noto+Rashi+Hebrew:wght@400;700&family=Noto+Serif+Hebrew:wght@400;600&display=swap'; document.head.appendChild(l); }
+ document.addEventListener('click',e=>{ const t=e.target.closest&&e.target.closest('[data-rb]'); if(!t||t.disabled||P.mode!=='rebbe') return; const a=t.dataset.rb;
+  if(a==='boy') return openBoy(t.dataset.id);
+  if(a==='list'){ R.card=null; fresh(); P.err=''; if(!R.boys) run('pfkRtrBoys',P.token).then(b=>{ R.boys=b; render(); }).catch(e2=>{ P.err=msgOf(e2); render(); }); return render(); }
+  if(a==='pas'){ fresh(); R.pid=t.dataset.id; R.phase='ready'; P.err=''; return render(); }
+  if(a==='back'){ fresh(); R.phase='choose'; return render(); }
+  if(a==='start'){ fresh(); R.t0=Date.now(); R.phase='run'; render(); R.tick=setInterval(tick,200); return; }
+  if(a==='cancel'){ fresh(); R.phase='ready'; return render(); }
+  if(a==='done'){ stopT(); R.secs=Math.min(R.card.seconds,(Date.now()-R.t0)/1000); R.last=pas().units.length-1; R.phase='last'; return render(); }
+  if(a==='fix'){ R.fix=!R.fix; return render(); }
+  if(a==='w'){ const i=+t.dataset.i;
+   if(R.phase==='run'||(R.phase==='last'&&R.fix)){ if(R.wrong[i]) delete R.wrong[i]; else R.wrong[i]=1; t.classList.toggle('bad',!!R.wrong[i]); const n=$('rbn'); if(n) n.textContent=Object.keys(R.wrong).length; return; }
+   if(R.phase==='last'){ R.last=i; return render(); } return; }
+  if(a==='see'){ if(R.last==null) return; if(R.secs<5){ P.err='That reading was too short to score. Start over.'; return render(); } P.err=''; R.phase='result'; return render(); }
+  if(a==='says'){ R.says=t.dataset.k; return render(); }
+  if(a==='save'){ if(!R.says||P.busy) return; P.busy=true; P.err=''; render();
+   run('pfkRtrSave',P.token,R.sid,{item:R.pid,wrong:Object.keys(R.wrong).map(Number),last:R.last,seconds:R.secs,says:R.says}).then(r=>{ P.busy=false; R.saved=r; R.card=r.card; render(); }).catch(e2=>{ P.busy=false; P.err=msgOf(e2); render(); }); return; }
+ });
+ return {html:rebbeHTML,boot,_R:R,score};
+})();
+window.PFKUI.rebbeHTML=window.PFKUI.rebbe.html; window.PFKUI.rebbeBoot=window.PFKUI.rebbe.boot;
+</script>

@@ -134,7 +134,7 @@ function msLoad(token) {
   stRows.forEach(function (r) { if (msCanSee_(sess, String(r[0])) && !(sess.role === 'staff' && msIsTest_(r[0]))) { try { var s = JSON.parse(r[1]); s.balance = msBalanceDollars_(String(r[0])); s.ledger = msLedger_(String(r[0])); if (sess.role === 'kid') { try { if (typeof moneyChestStatus_ === 'function') s.chest = moneyChestStatus_(String(r[0])); } catch (e) {} } states[r[0]] = s; } catch (e) {} } });
   try { if (typeof sgpMergeMarks_ === 'function') sgpMergeMarks_(states); } catch (e) {}   /* v177: rebbe bechina marks (KD_Marks, StaffViews.js) show as mastered on the boy's screen */
   return { role: sess.role, sid: sess.sid,
-    roster: roster.filter(function (r) { return (msCanSee_(sess, r.id) || sess.role === 'staff') && !(sess.role === 'staff' && msIsTest_(r.id)); }).map(function (r) { var pl = null; try { if (typeof plPlanFor_ === 'function') pl = plPlanFor_(r.id, r.ranges); } catch (e) { pl = null; } return { id: r.id, name: r.name, ranges: pl ? pl.ranges : r.ranges, place: pl ? pl.place : null }; }),
+    roster: roster.filter(function (r) { return (msCanSee_(sess, r.id) || sess.role === 'staff') && !(sess.role === 'staff' && msIsTest_(r.id)); }).map(function (r) { var pl = null; try { if (typeof plPlanFor_ === 'function') pl = plPlanFor_(r.id, r.ranges); } catch (e) { pl = null; } var o = { id: r.id, name: r.name, ranges: pl ? pl.ranges : r.ranges, place: pl ? pl.place : null }; try { if (sess.role === 'kid' && r.id === sess.sid && typeof pfdForLoad_ === 'function') { var pd = pfdForLoad_(r.id, states[r.id]); if (pd) o.pfd = pd; } } catch (e) {} return o; }),   /* PF stage D (PathfinderDaily.js): his daily path; TEST boys only, real boys get no new field */
     states: states };
 }
 /* T$ is checked here, not trusted from the browser. Pay goes into the ONE T$ ledger (Money.gs) in integer cents;
@@ -203,7 +203,10 @@ function msSave(token, sid, state, evidenceRows, bankRows) { tlGuard_(token, sid
     if (ev.length) { var es = msTab_('evidence'); es.getRange(es.getLastRow() + 1, 1, ev.length, ev[0].length).setValues(ev); }
     if (pay.paid) moneyStreak_(sid);
     balance = msBalanceDollars_(sid);
-    return { ok: true, version: ver, balance: balance, ledger: msLedger_(sid), rejected: pay.rejected.length, daily: pay.daily ? 10 : 0, chest: typeof moneyChestStatus_ === 'function' ? moneyChestStatus_(sid) : null };
+    var out = { ok: true, version: ver, balance: balance, ledger: msLedger_(sid), rejected: pay.rejected.length, daily: pay.daily ? 10 : 0, chest: typeof moneyChestStatus_ === 'function' ? moneyChestStatus_(sid) : null };
+    try { if (typeof pf72HdAfterSave_ === 'function') pf72HdAfterSave_(sid, evIn); } catch (e) {}   /* PF v7.2 rule HD (PathfinderPlaceHD.js): TEST boys only, returns at once for real boys, adds nothing to out */
+    try { if (typeof pfdAfterSave_ === 'function') { var pd = pfdAfterSave_(sid, evIn, state); if (pd) out.pfd = pd; } } catch (e) {}   /* PF stage D: quick climb + today's path; TEST boys only (no money: pay above is untouched) */
+    return out;
   } finally { lock.releaseLock(); }
 }
 function msSetRange(token, sid, curr, range) { tlGuard_(token, sid);

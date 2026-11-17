@@ -1,0 +1,164 @@
+<style>
+/* PathfinderUxPage.html: v7.2 Stage 5 screens (items 13, 18, 25) for TEST boys. Added to PathfinderPage by pfDoGet_ (Pathfinder.js).
+   Server side: PathfinderUx.js. Everything here waits for the server's v.pfu mark, which only a TEST boy's view carries;
+   for any other boy every wrapped function calls the original unchanged. No "double slash" anywhere in this file (HtmlService). */
+body.pfu-fx{cursor:var(--pfu-arrow),auto}
+body.pfu-fx button,body.pfu-fx a,body.pfu-fx [data-act],body.pfu-fx [data-ux],body.pfu-fx .otile{cursor:var(--pfu-hand),pointer}
+body.pfu-fx input{cursor:text}
+.pfu-splash{position:fixed;z-index:99999;pointer-events:none;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:3px solid var(--c,#6D3CE8)}
+.pfu-scr{text-align:center;max-width:720px;margin:14px auto}
+.pfu-scr .pic{border:0;font-size:84px;line-height:1.1;margin:6px 0;padding:0}
+.pfu-scr h2{font-size:30px;line-height:1.3;margin:10px 0}.pfu-scr p,.pfu-scr li{font-size:22px;line-height:1.5}
+.pfu-scr ul{list-style:none;padding:0;margin:10px 0}.pfu-scr li{background:#f7f6f2;border-radius:14px;padding:10px 14px;margin:8px 0}
+.pfu-k2 h2{font-size:34px}
+.pfu-row{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:18px}
+.pfu-say{border:0;background:var(--gold2);border-radius:14px;min-width:64px;min-height:64px;font-size:30px}
+.pfu-arrow{min-width:120px;min-height:96px;border-radius:24px;border:0;background:#1f8f3a;color:#fff;font-size:56px;font-weight:900;box-shadow:0 6px 0 #146b2a}
+.pfu-arrow:focus-visible,.pfu-pic:focus-visible,.pfu-say:focus-visible{outline:4px solid #2f5bd3;outline-offset:3px}
+.pfu-dots{display:flex;gap:8px;justify-content:center;margin-top:12px}.pfu-dots i{width:12px;height:12px;border-radius:50%;background:#d9d5ea}.pfu-dots i.on{background:var(--ink)}
+.pfu-pics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px auto 0;max-width:600px}
+.pfu-pic{min-height:140px;border:3px solid var(--line);border-radius:22px;background:#fff;font-size:72px;line-height:1}
+.pfu-path{flex:1;min-width:220px;display:flex;align-items:center;gap:6px}
+.pfu-path i{flex:1;height:22px;border-radius:999px;background:#e9e6f5;border:2px solid #d9d5ea;position:relative}
+.pfu-path i.on{background:linear-gradient(90deg,#7c6cf0,#2f5bd3);border-color:#2f5bd3}
+.pfu-stones{flex:1;display:flex;gap:6px;position:relative}.pfu-feet{position:absolute;top:-22px;margin-left:-12px;font-style:normal;font-size:20px;transition:left .5s}
+.pfu-path b{font-size:16px;color:var(--ok);white-space:nowrap}
+.pfu-cash{position:fixed;left:50%;top:40%;transform:translate(-50%,-50%);z-index:99998;pointer-events:none;background:#fff8e1;border:4px solid #E3B341;border-radius:26px;padding:18px 34px;font:900 46px system-ui,sans-serif;color:#1b7a34;box-shadow:0 18px 40px rgba(0,0,0,.25);text-align:center}
+.pfu-cash small{display:block;font-size:18px;color:var(--ink);font-weight:700}
+.pfu-rb .bx{border:2px solid #efe6c8;border-radius:16px;padding:12px 16px;margin:10px 0;background:#fffdf6}
+.pfu-rb h4{margin:0 0 6px;font-size:18px}.pfu-rb .lv{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+.pfu-rb .lv button{min-width:48px;min-height:48px;border-radius:12px;border:2px solid var(--line);background:#fff;font-weight:800}
+.pfu-rb .lv button[aria-pressed="true"]{border-color:var(--blue);background:#eef3ff}
+@media(max-width:560px){.pfu-scr h2{font-size:26px}.pfu-pic{min-height:110px;font-size:56px}.pfu-cash{font-size:34px;padding:14px 20px}}
+@media(prefers-reduced-motion:reduce){.pfu-cash{transition:none}}
+</style>
+<script>
+(function(){
+ if(typeof render!=='function'||typeof P==='undefined'||typeof call!=='function') return;
+ const S2='/'+'/';
+ const U=window.PFU_UI={introDone:false,intro:0,snd:null,sndFix:null,d1:null,chaKey:null,rb:null,rbFor:null,dev:null};
+ const on=()=>P.mode==='kid'&&P.v&&P.v.pfu&&P.v.pfu.on;
+ const k2=()=>on()&&P.v.pfu.band==='K-2';
+ /* ---------- PF-FIRSTDAY1 v2 wording, word for word (the same text is in PathfinderUx.js PFU.TEXT) ---------- */
+ const INTRO={'3-8':[['hello','Hello, {first}! This is Pathfinder.'],['what','Pathfinder helps us find the best place to start your lessons.'],['how','Some questions will feel easy and some will feel hard. That is how it works. Nobody gets every one.'],['try','Just try your best. If you are not sure, choose the answer you think is best.'],['time','There is no rush. You can take a short rest when the app offers one.'],['go','Ready? Tap Start.']],
+  'K-2':[['hello','Hi, {first}! Let us play.'],['listen','Put on your headphones.'],['what','You will look, listen and tap.'],['how','Some are easy. Some are hard. That is fine.'],['try','Just do your best.'],['go','Tap the big green arrow to start.']]};
+ const PIC={hello:'👋',listen:'🎧',what:'🧭',how:'🌗',try:'💪',time:'🌿',go:'🚀',done:'🏅',strengths:'🌟',roads:'🛤️',own_goal:'🎯',retake:'🤝',changes:'🌱',today:'📘'};
+ const fill=(t,f)=>String(t).replace(/\{(\w+)\}/g,(m,k)=>f[k]!=null?String(f[k]):m);
+ /* ---------- bigger cursor + a splash on every tap (HoS DECISION 2026-11-13 00:20, PF-ALIGN1): same for every tap, never a hint;
+    at most about 3 splashes a second; none with reduced motion ---------- */
+ function fxOn(){ if(document.body.classList.contains('pfu-fx')) return; const ns='http:'+S2+'www.w3.org/2000/svg';
+  const arrow=`<svg xmlns='${ns}' width='40' height='40' viewBox='0 0 40 40'><path d='M6 3 L6 33 L14 25 L19 37 L25 34 L20 23 L31 23 Z' fill='#FDE047' stroke='#14213D' stroke-width='2.5' stroke-linejoin='round'/></svg>`;
+  const hand=`<svg xmlns='${ns}' width='40' height='40' viewBox='0 0 40 40'><path d='M6 3 L6 33 L14 25 L19 37 L25 34 L20 23 L31 23 Z' fill='#34D399' stroke='#14213D' stroke-width='2.5' stroke-linejoin='round'/><circle cx='31' cy='9' r='6' fill='#F472B6' stroke='#14213D' stroke-width='2'/></svg>`;
+  const u=x=>'url("data:image/svg+xml;utf8,'+x.replace(/#/g,'%23').replace(/</g,'%3C').replace(/>/g,'%3E')+'") 6 3';
+  document.body.style.setProperty('--pfu-arrow',u(arrow)); document.body.style.setProperty('--pfu-hand',u(hand)); document.body.classList.add('pfu-fx'); }
+ const COLS=['#6D3CE8','#EC4899','#F59E0B','#10B981','#3B82F6'];
+ let lastSplash=0, ci=0;
+ document.addEventListener('pointerdown',e=>{ try{ if(!on()) return; const t=Date.now(); if(t-lastSplash<340||matchMedia('(prefers-reduced-motion: reduce)').matches) return; lastSplash=t;
+  const r=document.createElement('i'); r.className='pfu-splash'; r.style.left=e.clientX+'px'; r.style.top=e.clientY+'px'; r.style.setProperty('--c',COLS[ci++%COLS.length]); document.body.appendChild(r);
+  if(r.animate) r.animate([{transform:'scale(1)',opacity:1},{transform:'scale(5)',opacity:0}],{duration:480,easing:'ease-out',fill:'forwards'}); setTimeout(()=>r.remove(),520); }catch(x){} },true);
+ /* ---------- sounds: one soft "got it" after every K-2 answer (right or wrong alike); one cha-ching at the end of a section ---------- */
+ let AC2=null; const ac=()=>{ try{ return AC2=AC2||new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } };
+ function tone(f,w,d,vol,type){ const c=ac(); if(!c) return; const t=c.currentTime+w, o=c.createOscillator(), g=c.createGain(); o.type=type||'sine'; o.frequency.value=f; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+.05); }
+ function gotIt(){ tone(587,0,.22,.07,'sine'); }
+ function chaChing(cents,label){ if(!(cents>0)) return; try{ const c=ac(); if(c){ const t=c.currentTime, len=Math.floor(c.sampleRate*.09), buf=c.createBuffer(1,len,c.sampleRate), d=buf.getChannelData(0); for(let k=0;k<len;k++) d[k]=(Math.random()*2-1)*Math.pow(1-k/len,2);
+    const n=c.createBufferSource(); n.buffer=buf; const hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=2500; const gn=c.createGain(); gn.gain.value=.3; n.connect(hp); hp.connect(gn); gn.connect(c.destination); n.start(t);
+    [[2093,.10],[2637,.18],[3136,.26],[4186,.34]].forEach(([f,w])=>tone(f,w,.8,.12,'sine')); } }catch(e){}
+  const b=document.createElement('div'); b.className='pfu-cash'; b.setAttribute('role','status'); b.innerHTML=`🪙 +${esc(money(cents))}<small>${esc(label)}</small>`; document.body.appendChild(b);
+  if(b.animate&&!matchMedia('(prefers-reduced-motion: reduce)').matches) b.animate([{opacity:0,transform:'translate(-50%,-40%) scale(.85)'},{opacity:1,transform:'translate(-50%,-50%) scale(1)',offset:.2},{opacity:1,offset:.8},{opacity:0}],{duration:2400,easing:'ease-out'});
+  setTimeout(()=>b.remove(),2400); }
+ U.chaChing=chaChing;
+ /* ---------- speech with a volume (the sound check plays its word at 70%) ---------- */
+ function sayVol(text,vol,done){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(String(text)); u.rate=.85; u.volume=vol; let f=false; const fin=()=>{ if(!f){ f=true; done&&done(); } }; u.onend=fin; u.onerror=fin; setTimeout(fin,1500+String(text).length*95); speechSynthesis.speak(u); }catch(e){ done&&done(); } }
+ function device(){ if(U.dev) return U.dev; let id=''; try{ id=localStorage.getItem('pf-dev')||''; if(!id){ id='D-'+Math.random().toString(36).slice(2,8).toUpperCase(); localStorage.setItem('pf-dev',id); } }catch(e){ id='D-unknown'; }
+  const ua=navigator.userAgent||'', os=/CrOS/.test(ua)?'Chromebook':/iPad|iPhone/.test(ua)?'iPad/iPhone':/Android/.test(ua)?'Android':/Windows/.test(ua)?'Windows':/Mac/.test(ua)?'Mac':'other';
+  const br=/Edg\x2F/.test(ua)?'Edge':/Chrome\x2F/.test(ua)?'Chrome':/Firefox\x2F/.test(ua)?'Firefox':/Safari\x2F/.test(ua)?'Safari':'browser';
+  return U.dev={id,info:os+' · '+br+' · '+(screen.width||0)+'x'+(screen.height||0)}; }
+ /* ---------- shared screen frame ---------- */
+ function frame(body){ return `<div class="${P.v&&P.v.young||k2()?'young':''}">`+topBar()+`<div class="wrap">${body}</div></div>`; }
+ function nextBtn(label,act,extra){ return k2()?`<button class="pfu-arrow" data-ux="${act}" ${extra||''} aria-label="${esc(label)}">➜</button>`:`<button class="big gold" data-ux="${act}" ${extra||''}>${esc(label)}</button>`; }
+ /* ---------- intro (before the practice questions; PF-NOTICE1) ---------- */
+ function introHTML(){ const L=INTRO[P.v.pfu.band], i=Math.min(U.intro,L.length-1), s=L[i], txt=fill(s[1],{first:P.v.first||''}), last=i===L.length-1;
+  return `<div class="card pfu-scr ${k2()?'pfu-k2':''}" data-pfu-screen="intro-${s[0]}"><div class="pic" aria-hidden="true">${PIC[s[0]]||'⭐'}</div><h2 id="pfu-text">${esc(txt)}</h2>
+  <div class="pfu-row"><button class="pfu-say" data-ux="say" aria-label="Read it to me">🔊</button>${last?(k2()?`<button class="pfu-arrow" data-ux="istart" aria-label="Big green arrow: start">➜</button>`:`<button class="big gold" data-ux="istart">Start</button>`):nextBtn('Next','inext')}</div>
+  <div class="pfu-dots" aria-hidden="true">${L.map((x,j)=>`<i class="${j<=i?'on':''}"></i>`).join('')}</div></div>`; }
+ /* ---------- sound check (PF-AUD1) ---------- */
+ function sndHTML(){ const S=P.v.pfuSound;
+  if(U.sndFix) return `<div class="card pfu-scr pfu-k2" data-pfu-screen="sound-fix"><div class="pic" aria-hidden="true">🎧</div><h2 id="pfu-text">Let's make the sound clearer! Please call your teacher.</h2>
+   <p style="font-size:17px;color:var(--soft)">For the teacher: please check the volume, the headphones and the room, then tap the button to run the sound check again.</p>
+   <div class="pfu-row"><button class="big gold" data-ux="sretry" ${P.busy?'disabled':''}>Run the sound check again</button></div></div>`;
+  const key=S.sets.map(x=>x.word).join('|'); if(!U.snd||U.snd.key!==key) U.snd={key,i:0,picks:[],heard:-1};
+  const i=Math.min(U.snd.i,S.sets.length-1), set=S.sets[i];
+  return `<div class="card pfu-scr pfu-k2" data-pfu-screen="sound"><h2>Sound check!</h2><p id="pfu-text">Listen. Tap the picture you hear.</p>
+   <div class="pfu-pics">${set.opts.map(o=>`<button class="pfu-pic" data-ux="spick" data-w="${esc(o.w)}" aria-label="${esc(o.w)}" ${P.busy?'disabled':''}>${o.e}</button>`).join('')}</div>
+   <div class="pfu-row"><button class="pfu-say" data-ux="shear" aria-label="Hear it again">🔊</button></div>
+   <div class="pfu-dots" aria-hidden="true">${S.sets.map((x,j)=>`<i class="${j<=i?'on':''}"></i>`).join('')}</div></div>`; }
+ function sndSpeak(){ const S=P.v.pfuSound; if(!S||U.sndFix||!U.snd) return; const set=S.sets[U.snd.i]; if(!set||U.snd.heard===U.snd.i) return; U.snd.heard=U.snd.i;
+  const first=U.snd.i===0; if(first) sayVol('Listen. Tap the picture you hear.',1,()=>setTimeout(()=>sayVol(set.word,S.volume||.7),250)); else setTimeout(()=>sayVol(set.word,S.volume||.7),300); }
+ function sndPick(w){ const S=P.v.pfuSound; U.snd.picks[U.snd.i]=w; if(U.snd.i<S.sets.length-1){ U.snd.i++; return render(); }
+  P.busy=true; render(); run('pfuSoundSave',P.token,U.snd.picks,device()).then(r=>{ P.busy=false; U.snd=null;
+   if(r.ok){ U.sndFix=null; return call('pfOpen',[r.subject||S.subject]); } U.sndFix={subject:S.subject}; render(); speak("Let's make the sound clearer! Please call your teacher."); })
+   .catch(e=>{ P.busy=false; P.err=msgOf(e); render(); }); }
+ /* ---------- day-1 screens (PF-FIRSTDAY1 v2): done, strengths, roads, (own goal), (retake), path grows, first lesson today ---------- */
+ function d1HTML(){ const D=U.d1; if(!D||!D.d) return `<div class="card center"><h2>One moment…</h2></div>`;
+  const L=D.d.screens, i=Math.min(D.i,L.length-1), s=L[i], last=i===L.length-1, K=D.d.k2;
+  let body=`<div class="pic" aria-hidden="true">${s.id==='roads'&&s.k?(((P.v.lands||{})[s.k]||{}).ic||PIC.roads):PIC[s.id]||'⭐'}</div><h2 id="pfu-text">${esc(s.head)}</h2>`;
+  if(!K&&s.lines&&s.lines.length) body+=s.id==='strengths'||s.id==='roads'?`<ul>${s.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>`:s.lines.map(l=>`<p>${esc(l)}</p>`).join('');
+  let btn=nextBtn('Next','dnext');
+  if(last) btn=s.lesson?(K?`<button class="pfu-arrow" data-ux="lesson" aria-label="Start my first lesson">➜</button>`:`<button class="big gold" data-ux="lesson">Start my first lesson</button>`):`<button class="big gold" data-ux="droad">See my road</button>`;
+  return `<div class="card pfu-scr ${K?'pfu-k2':''}" data-pfu-screen="day1-${s.id}">${body}<div class="pfu-row"><button class="pfu-say" data-ux="say" aria-label="Read it to me">🔊</button>${btn}</div>
+   <div class="pfu-dots" aria-hidden="true">${L.map((x,j)=>`<i class="${j<=i?'on':''}"></i>`).join('')}</div></div>`; }
+ function screenText(){ const el=document.getElementById('pfu-text'); let t=el?el.textContent:''; if(U.d1&&U.d1.d&&!U.d1.d.k2){ const s=U.d1.d.screens[U.d1.i]; if(s&&s.lines) t+=' '+s.lines.join('. '); } return t; }
+ let spokenKey=null;
+ function autoSpeak(key){ if(!k2()&&!(U.d1&&U.d1.d&&U.d1.d.k2)) return; if(spokenKey===key) return; spokenKey=key; setTimeout(()=>speak(screenText()),250); }   /* K-2: every screen is read aloud */
+ /* ---------- item 13 for K-2 TEST boys: progress path (no numbers), "Done", no right/wrong sounds, "Take your time" ---------- */
+ const _hud=hudHTML; hudHTML=function(){ const v=P.v; if(!on()||!v.pfu.kind||!v.cur) return _hud();
+  const g=v.pfu.prog||{steps:0,of:8,near:false}, n=g.of||8; let st='';
+  for(let j=0;j<n;j++) st+=`<i class="${j<g.steps?'on':''}"></i>`;
+  st=`<span class="pfu-stones">${st}<em class="pfu-feet" style="left:${Math.round(100*(g.frac||0))}%" aria-hidden="true">👣</em></span>`;
+  return `<div class="hud">${v.jar?`<div class="jar" title="Your jar"><span style="font-size:24px">🫙</span><span><b>${money(v.jar.cents)}</b> jar · yours when you finish trying every question</span></div>`:''}<div class="pfu-path" role="img" aria-label="${g.near?'Your path: almost done':'Your path'}">${st}${g.near?'<b>Almost done!</b>':''}</div><span class="earned" aria-label="Earned so far">${money(v.earned||0)}</span></div>`; };
+ const _item=itemHTML; itemHTML=function(){ let h=_item(); if(!on()||!P.v.pfu.kind) return h;
+  return h.replace(/ · question \d+/,'').replace(/>Next ➜</,'>Done ✓<'); };
+ const _slow=slowHTML; slowHTML=function(){ if(!on()||!P.v.pfu.kind) return _slow(); const left=Math.max(0,Math.ceil((P.v.pause.until-Date.now())/1000));
+  return `<div class="card center"><div style="font-size:64px">🌿</div><h2>Take your time.</h2><p>Read it once more.</p>${left?`<div class="breath" id="breath">${left}</div>`:`<button class="big gold" data-act="ready" ${P.busy?'disabled':''}>I’m ready</button>`}</div>`; };
+ const _aa=afterAnswer; afterAnswer=function(v){ if(!v||!v.pfu||!v.pfu.on) return _aa(v);
+  const w=Object.assign({},v,{paid:null});                       /* the cha-ching waits for the end of the section (HoS 2026-11-16) */
+  if(v.pfu.kind||(v.finished&&v.pfu.k2)){ w.spark=null; w.cheer=null; gotIt(); }   /* K-2: the same soft sound after every answer */
+  return _aa(w); };
+ /* ---------- render ---------- */
+ const _render=render; render=function(){ if(!on()) return _render(); fxOn(); const v=P.v, a=$('app');
+  if(v.finished&&!v.cur){ const key=(v.finished.section||'')+'|'+(v.pfu.secTotal||0)+'|'+(v.earned||0); if(U.chaKey!==key){ U.chaKey=key; if(v.pfu.secTotal>0) setTimeout(()=>chaChing(v.pfu.secTotal,(v.finished.label||'')+' done!'),150); } }
+  if(v.finished&&!v.cur&&v.finished.coreDone&&!v.finished.v5){ if(!U.d1){ U.d1={i:0,d:null}; run('pfuDay1',P.token).then(d=>{ if(d&&d.screens&&d.screens.length){ U.d1.d=d; } else U.d1.skip=1; render(); }).catch(()=>{ U.d1.skip=1; render(); }); }
+   if(!U.d1.skip&&!U.d1.closed){ a.innerHTML=frame(d1HTML()); if(U.d1.d) autoSpeak('d1-'+U.d1.i); return; } }
+  if(v.pfuSound&&!v.pause){ a.innerHTML=frame(sndHTML()); sndSpeak(); return; }
+  if(!v.practice&&!v.pause&&!U.introDone&&!P.pr&&!v.kodesh){ a.innerHTML=frame(introHTML()); autoSpeak('intro-'+U.intro); return; }
+  if(v.pause&&v.pause.kind==='slow'&&v.pfu.kind&&typeof lastSpokenId!=='undefined'&&lastSpokenId!=='slow'+v.pause.until){ lastSpokenId='slow'+v.pause.until; if(v.young||k2()) speak('Take your time. Read it once more.'); }
+  return _render(); };
+ document.addEventListener('click',e=>{ const t=e.target.closest&&e.target.closest('[data-ux]'); if(!t||t.disabled) return; const a=t.dataset.ux;
+  if(a==='say') return speak(screenText());
+  if(a==='inext'){ U.intro++; return render(); }
+  if(a==='istart'){ U.introDone=true; try{ speechSynthesis.cancel(); }catch(x){} return render(); }
+  if(a==='spick') return sndPick(t.dataset.w);
+  if(a==='shear'){ const S=P.v.pfuSound; if(S&&U.snd) sayVol(S.sets[U.snd.i].word,S.volume||.7); return; }
+  if(a==='sretry'){ const sub=U.sndFix&&U.sndFix.subject; U.sndFix=null; U.snd=null; return call('pfOpen',[sub||(P.v.pfuSound||{}).subject]); }
+  if(a==='dnext'){ U.d1.i++; return render(); }
+  if(a==='droad'){ U.d1.closed=1; P.v.finished=null; return render(); }
+  if(a==='lesson'){ const L=U.d1.d.lesson; try{ sessionStorage.setItem('tl-pfgo',JSON.stringify({c:L.c,id:L.id,sid:U.d1.d.sid||'',at:Date.now()})); }catch(x){}
+   const url=(P.v&&P.v.appUrl)||P.appUrl; U.d1.closed=1; if(url){ try{ window.open(url,'_top'); return; }catch(x){} } return render(); }
+ });
+ /* ---------- staff report: the rebbe's 5 screens on top (TEST boys only), and the office's sound-check device list ---------- */
+ const _rep=repHTML; repHTML=function(){ let h=_rep(); if(P.mode!=='report'||!P.rep||!/^TEST-/.test(P.sid||'')) return h;
+  if(U.rbFor!==P.sid){ U.rbFor=P.sid; U.rb=null; run('pfuRebbe',P.token,P.sid).then(d=>{ U.rb=d; render(); }).catch(()=>{}); run('pfuSoundReport',P.token).then(d=>{ U.dv=d; render(); }).catch(()=>{}); }
+  const R=U.rb; if(!R) return h; const S=k=>R.screens.find(x=>x.id===k)||{head:'',text:''};
+  const sure=x=>`<span title="How sure">🔎 ${esc(x)}</span>`;
+  const prof=`<div class="bx" data-pfu-rebbe="profile"><h4>${esc(S('profile').head)}</h4><p>${esc(S('profile').text)}</p><table><tr><th>Result</th><th>What we know</th><th>How sure</th></tr>${R.rows.map(x=>`<tr><td>${esc(x.subject)} level</td><td>${x.status==='retake'?'Waiting for a retake':'Starting level '+esc(x.level)+(x.lo!=null&&x.hi!=null&&x.hi!==x.lo?' (could be '+esc(x.lo)+'–'+esc(x.hi)+')':'')}${x.placed&&x.placed!==x.level?' · now Level '+esc(x.placed)+(x.by&&x.by!=='pathfinder'?' (set by '+esc(x.by)+')':''):''}</td><td>${sure(x.sure)}</td></tr>`).join('')}<tr><td>Flags</td><td>${R.flags.length?esc(R.flags.length+' (see Look closer)'):'None'}</td><td>${sure('Early — check in class')}</td></tr></table></div>`;
+  const ovr=`<div class="bx" data-pfu-rebbe="override"><h4>${esc(S('override').head)}</h4><p>${esc(S('override').text)}</p>${R.rows.map(x=>`<div class="lv"><b style="min-width:80px">${esc(x.subject)}</b>${[1,2,3,4,5,6,7,8,9].map(l=>`<button data-ux="ov" data-k="${esc(x.k)}" data-l="${l}" aria-pressed="${(x.placed||x.level)===l}" aria-label="${esc(x.subject)} Level ${l}">${l}</button>`).join('')}</div>`).join('')}</div>`;
+  const box=k=>`<div class="bx" data-pfu-rebbe="${k}"><h4>${esc(S(k).head)}</h4><p>${esc(S(k).text)}</p></div>`;
+  const dv=U.dv&&U.dv.length?`<div class="card"><h3>Sound check: devices (office)</h3><p style="color:var(--soft)">Device id and type only, never a boy's name. Devices that fail most often come first.</p><table><tr><th>Device</th><th>Type</th><th>Checks</th><th>Failed</th><th>Fixed after a fail</th></tr>${U.dv.map(d=>`<tr><td>${esc(d.device)}</td><td>${esc(d.info)}</td><td>${d.checks}</td><td>${d.failed}</td><td>${d.fixed}</td></tr>`).join('')}</table></div>`:'';
+  const card=`<div class="card pfu-rb"><h3>For his rebbe (TEST)</h3>${prof}${box('watch')}${ovr}${box('flags')}${box('home')}<p class="err">${esc(U.rbErr||'')}</p></div>`;
+  const at=h.indexOf('<div class="wrap rep">'); h=at<0?h:h.slice(0,at+22)+card+h.slice(at+22);
+  const end=h.lastIndexOf('</div>'); return end<0?h+dv:h.slice(0,end)+dv+h.slice(end); };
+ document.addEventListener('click',e=>{ const t=e.target.closest&&e.target.closest('[data-ux="ov"]'); if(!t||P.mode!=='report') return;
+  const k=t.dataset.k, l=+t.dataset.l; if(!confirm('Set '+(k==='READ'?'Reading':'Math')+' to Level '+l+'? Your choice wins and is saved with your name.')) return;
+  U.rbErr=''; run('pfuOverride',P.token,P.sid,k,l).then(d=>{ U.rb=d; return run('pfReport',P.token,P.sid); }).then(r=>{ P.rep=r; render(); }).catch(err=>{ U.rbErr=msgOf(err); render(); }); });
+})();
+</script>

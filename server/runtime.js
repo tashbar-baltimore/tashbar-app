@@ -27,12 +27,13 @@ function makeBook(store, id) {
   const book = store.books[id] || (store.books[id] = { tabs: {}, order: [] });
   const sheet = name => {
     if (store.lazy && !book.tabs[name].rows) need(store, 'tab', id + '|' + name);
-    const tab = book.tabs[name]; const rows = tab.rows, text = tab.text || (tab.text = {});
-    const width = () => rows.reduce((a, r) => Math.max(a, r.length), 0);
-    const cell = (r, c) => { const row = rows[r - 1]; const v = row ? row[c - 1] : ''; return v === undefined ? '' : v; };
+    const tab = book.tabs[name]; const text = tab.text || (tab.text = {});
+    const cow = () => { if (tab.shared) { tab.rows = tab.rows.map(r => r.slice()); tab.shared = false; } };   /* copy on first write: the shared copy is never changed */
+    const width = () => tab.rows.reduce((a, r) => Math.max(a, r.length), 0);
+    const cell = (r, c) => { const row = tab.rows[r - 1]; const v = row ? row[c - 1] : ''; return v === undefined ? '' : v; };
     const mark = r => { store.dirty[id + '|' + name] = 1; const d = store.dirtyRows || (store.dirtyRows = {}); const k = id + '|' + name; if (d[k] === undefined || r < d[k].min) (d[k] = d[k] || { min: r, rows: {} }).min = Math.min(d[k].min, r); d[k].rows[r] = 1; };
-    const put = (r, c, v) => { mark(r); while (rows.length < r) rows.push([]); const row = rows[r - 1]; while (row.length < c) row.push(''); row[c - 1] = text[c] ? (v === null || v === undefined ? '' : (typeof v === 'string' ? v : v)) : coerce(v); store.dirty[id + '|' + name] = 1; };
-    const lastRow = () => { let n = rows.length; while (n > 0 && rows[n - 1].every(x => x === '' || x === undefined)) n--; return n; };
+    const put = (r, c, v) => { cow(); mark(r); while (tab.rows.length < r) tab.rows.push([]); const row = tab.rows[r - 1]; while (row.length < c) row.push(''); row[c - 1] = text[c] ? (v === null || v === undefined ? '' : (typeof v === 'string' ? v : v)) : coerce(v); store.dirty[id + '|' + name] = 1; };
+    const lastRow = () => { let n = tab.rows.length; while (n > 0 && tab.rows[n - 1].every(x => x === '' || x === undefined)) n--; return n; };
     const range = (r, c, nr, nc) => chain({
       getRow: () => r, getColumn: () => c, getNumRows: () => nr, getNumColumns: () => nc,
       getValues: () => { const out = []; for (let i = 0; i < nr; i++) { const row = []; for (let j = 0; j < nc; j++) row.push(cell(r + i, c + j)); out.push(row); } return out; },
@@ -44,13 +45,13 @@ function makeBook(store, id) {
       clearContent() { return this.setValue(''); }, clear() { return this.setValue(''); }
     });
     const self = chain({
-      getName: () => name, getSheetName: () => name, getLastRow: lastRow, getLastColumn: width, getMaxRows: () => Math.max(1000, rows.length), getMaxColumns: () => Math.max(26, width()),
+      getName: () => name, getSheetName: () => name, getLastRow: lastRow, getLastColumn: width, getMaxRows: () => Math.max(1000, tab.rows.length), getMaxColumns: () => Math.max(26, width()),
       getRange: (r, c, nr, nc) => range(r, c, nr === undefined ? 1 : nr, nc === undefined ? 1 : nc),
       getDataRange: () => range(1, 1, Math.max(1, lastRow()), Math.max(1, width())),
       appendRow(arr) { const n = lastRow() + 1; arr.forEach((v, j) => put(n, j + 1, v)); if (!arr.length) put(n, 1, ''); return self; },
-      deleteRow(r) { rows.splice(r - 1, 1); mark(r); (store.shifted || (store.shifted = {}))[id + '|' + name] = Math.min(r, (store.shifted[id + '|' + name] || r)); return self; },
-      deleteRows(r, n) { rows.splice(r - 1, n); mark(r); (store.shifted || (store.shifted = {}))[id + '|' + name] = Math.min(r, (store.shifted[id + '|' + name] || r)); return self; },
-      createTextFinder(q) { let whole = false; const f = { matchEntireCell(b) { whole = !!b; return f; }, matchCase() { return f; }, findAll() { const out = []; rows.forEach((row, i) => row.forEach((v, j) => { const s = String(v); if (whole ? s === String(q) : s.indexOf(String(q)) >= 0) out.push(range(i + 1, j + 1, 1, 1)); })); return out; }, findNext() { return f.findAll()[0] || null; } }; return f; }
+      deleteRow(r) { cow(); tab.rows.splice(r - 1, 1); mark(r); (store.shifted || (store.shifted = {}))[id + '|' + name] = Math.min(r, (store.shifted[id + '|' + name] || r)); return self; },
+      deleteRows(r, n) { cow(); tab.rows.splice(r - 1, n); mark(r); (store.shifted || (store.shifted = {}))[id + '|' + name] = Math.min(r, (store.shifted[id + '|' + name] || r)); return self; },
+      createTextFinder(q) { let whole = false; const f = { matchEntireCell(b) { whole = !!b; return f; }, matchCase() { return f; }, findAll() { const out = []; tab.rows.forEach((row, i) => row.forEach((v, j) => { const s = String(v); if (whole ? s === String(q) : s.indexOf(String(q)) >= 0) out.push(range(i + 1, j + 1, 1, 1)); })); return out; }, findNext() { return f.findAll()[0] || null; } }; return f; }
     });
     return self;
   };
@@ -78,7 +79,7 @@ function createRuntime(opts) {
   store.dirty = store.dirty || {}; store.cache = store.cache || {}; store.props = store.props || {};
   const html = n => { const p = path.join(SRC, n + '.html'); if (!fs.existsSync(p)) throw new Error('No HTML file named ' + n); return fs.readFileSync(p, 'utf8'); };
   const out = h => ({ h, setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; }, setFaviconUrl() { return this; }, setSandboxMode() { return this; }, getContent() { return this.h; }, append(x) { this.h += x; return this; } });
-  const cache = { get(k) { if (store.lazy && !(k in store.cache)) need(store, 'cache', k); const e = store.cache[k]; if (!e) return null; if (e.until < Date.now()) return null; return e.v; }, put(k, v, secs) { store.cache[k] = { v: String(v), until: Date.now() + 1000 * Math.min(21600, secs || 600) }; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; }, remove(k) { store.cache[k] = null; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; },
+  const cache = { get(k) { if (store.lazy && !store.cacheComplete && !(k in store.cache)) need(store, 'cache', k); const e = store.cache[k]; if (!e) return null; if (e.until < Date.now()) return null; return e.v; }, put(k, v, secs) { store.cache[k] = { v: String(v), until: Date.now() + 1000 * Math.min(21600, secs || 600) }; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; }, remove(k) { store.cache[k] = null; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; },
     getAll(keys) { const o = {}; keys.forEach(k => { const v = cache.get(k); if (v !== null) o[k] = v; }); return o; }, putAll(o, secs) { Object.keys(o).forEach(k => cache.put(k, o[k], secs)); }, removeAll(keys) { keys.forEach(k => cache.remove(k)); } };
   const props = { getProperty: k => (k in store.props ? store.props[k] : null), setProperty(k, v) { store.props[k] = String(v); store.dirtyProps = 1; return props; }, deleteProperty(k) { delete store.props[k]; store.dirtyProps = 1; return props; }, getProperties: () => Object.assign({}, store.props), setProperties(o) { Object.assign(store.props, o); return props; } };
   const digest = (alg, v) => [...crypto.createHash(alg === 'MD5' ? 'md5' : alg === 'SHA_1' ? 'sha1' : 'sha256').update(typeof v === 'string' ? Buffer.from(v, 'utf8') : Buffer.from(v)).digest()].map(b => (b > 127 ? b - 256 : b));

@@ -106,7 +106,10 @@ h2{font-size:26px;margin:6px 0 10px}h3{font-size:20px;margin:4px 0 8px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body><div id="app"><div class="wrap"><div class="card center"><h2>One moment…</h2></div></div></div>
 <script>
-const run=(fn,...a)=>new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...a));
+const run=(fn,...a)=>new Promise((res,rej)=>google.script.run.withSuccessHandler(r=>res(pfBackFix(r))).withFailureHandler(rej)[fn](...a));
+/* web.app hand-off: when he came from tashbar-learning-live.web.app (back=), every "back to my lessons" link takes him there */
+let PFBACK='';
+function pfBackFix(r){ if(!PFBACK||!r) return r; if(typeof r==='string'&&r.indexOf('script.google.com')>=0) return PFBACK; if(typeof r==='object'&&typeof r.appUrl==='string') r.appUrl=PFBACK; return r; }
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const $=id=>document.getElementById(id);
 const rich=s=>esc(s).replace(/&lt;(\/?)i&gt;/g,'<$1i>');   /* v5: book titles in Language Arts are in italics */
@@ -148,10 +151,12 @@ setInterval(()=>{ if(P.mode==='kid'&&P.token&&!P.out&&Date.now()-P.last>5*60000)
 function topBar(){ const v=P.v||{}; return `<header class="top"><h1>🧭 Pathfinder${v.first?' · '+esc(v.first):''}</h1>${v.draft?'<span class="tag">TEST · draft questions</span>':''}${v.appUrl?`<a href="${esc(v.appUrl)}">Back to my lessons</a>`:''}</header>`; }
 function render(){ const a=$('app');
  if(P.mode==='report') return a.innerHTML=repHTML();
+ if(P.mode==='rebbe') return a.innerHTML=window.PFKUI&&PFKUI.rebbeHTML?PFKUI.rebbeHTML():`<div class="wrap"><div class="card center"><h2>${P.err?esc(P.err):'One moment…'}</h2></div></div>`;   /* Read to Rebbe card (staff; PathfinderKodeshUI) */
  if(P.out) return a.innerHTML=topBar()+`<div class="wrap"><div class="card center"><h2>You are signed out.</h2><p>Everything you answered is saved. Sign in again and tap “Continue your Pathfinder” to pick up on the same question.</p>${P.v&&P.v.appUrl?`<a class="big" href="${esc(P.v.appUrl)}">Go to sign-in</a>`:''}</div></div>`;
  if(!P.v) return a.innerHTML=topBar()+`<div class="wrap"><div class="card center">${P.err?`<h2>Pathfinder</h2><p>${esc(P.err)}</p>`:'<h2>One moment…</h2>'}</div></div>`;
  const v=P.v; let body='';
- if(v.pause&&v.pause.kind==='slow') body=slowHTML();
+ if(v.kodesh&&window.PFKUI) body=PFKUI.html(v);                /* Kodesh Pathfinder (PathfinderKodesh.html), TEST boys only */
+ else if(v.pause&&v.pause.kind==='slow') body=slowHTML();
  else if(v.pause&&v.pause.kind==='stretch') body=stretchHTML();
  else if(v.pause&&v.pause.kind==='sitting') body=sitHTML();
  else if(v.finished&&!v.cur) body=finHTML();
@@ -210,11 +215,13 @@ function gridHTML(it){ const g=it.grid||[0,8], lo=g[0], hi=g[1], n=hi-lo, u=30, 
  if(lo<0) h+=`<text x="${X(hi)-4}" y="${Y(0)-6}" font-size="13" text-anchor="end" fill="#1E1B4B" font-weight="700">x</text><text x="${X(0)+6}" y="${Y(hi)+12}" font-size="13" fill="#1E1B4B" font-weight="700">y</text>`;
  if(P.pt) h+=`<circle cx="${X(P.pt[0])}" cy="${Y(P.pt[1])}" r="9" fill="#2f5bd3" stroke="#fff" stroke-width="3"/>`;
  return `<div class="gridw"><svg id="grid" viewBox="0 0 ${W} ${W}" data-lo="${lo}" data-hi="${hi}" data-u="${u}" data-pad="${pad}" role="img" aria-label="Grid from ${lo} to ${hi}. Tap a point.">${h}</svg></div><p class="center" style="color:var(--soft);font-size:15px;margin:6px 0 0">Tap where the point goes. Tap again to move it.</p>`; }
-function canNext(it){ return it.fmt==='CHOICE'?P.sel!=null:it.fmt==='ORDER'?!!P.moved:it.fmt==='POINT'?!!P.pt:!!String(P.typed||'').trim(); }
-function valueOf(it){ return it.fmt==='CHOICE'?it.choices[P.sel]:it.fmt==='ORDER'?P.order.join(', '):it.fmt==='POINT'?P.pt.join(','):String(P.typed||'').trim(); }
+function canNext(it){ if(it.fmt==='TAP'&&window.PFTAPUI) return PFTAPUI.can(it);   /* PF-TAP1 */
+ return it.fmt==='CHOICE'?P.sel!=null:it.fmt==='ORDER'?!!P.moved:it.fmt==='POINT'?!!P.pt:!!String(P.typed||'').trim(); }
+function valueOf(it){ if(it.fmt==='TAP'&&window.PFTAPUI) return PFTAPUI.value(it);   /* PF-TAP1: "#index" of the unit he tapped */
+ return it.fmt==='CHOICE'?it.choices[P.sel]:it.fmt==='ORDER'?P.order.join(', '):it.fmt==='POINT'?P.pt.join(','):String(P.typed||'').trim(); }
 function itemHTML(){ const v=P.v, c=v.cur, it=c.item, lab=x=>(it.labels&&it.labels[x])||x; let hud=hudHTML();
  let h=hud+`<div class="card"><div class="qhead">${esc(v.road[c.section].label)} · question ${it.n}${it.draft?' <span class="draft">draft</span>':''}</div>`;
- if(it.passage) h+=passageHTML(it.passage,it.draft);
+ if(it.passage) h+=it.fmt==='TAP'&&window.PFTAPUI?PFTAPUI.passage(it):passageHTML(it.passage,it.draft);   /* PF-TAP1: tap targets */
  if(it.screen){ const em=picEmoji(it.screen); h+=`<div class="pic">${em?`<span class="em">${em}</span>`:''}${it.draft?'Picture (art coming): ':''}${esc(it.screen)}</div>`; }
  h+=`<div class="stem"><button class="say" data-act="say" aria-label="Read the question to me">🔊</button><span>${rich(it.stem)}</span></div>`;
  if(it.show) h+=`<div class="show${/\s/.test(it.show)?' sent':''}">${esc(it.show)}</div>`;
@@ -222,9 +229,10 @@ function itemHTML(){ const v=P.v, c=v.cur, it=c.item, lab=x=>(it.labels&&it.labe
    return `<button class="ch${P.sel===i?' sel':''}" data-act="pick" data-i="${i}" aria-label="${hide?'picture '+(i+1):esc(String(L).replace(/<\/?i>/g,''))}">${em?`<span class="em">${em}</span>`:''}${hide?'':em?`<small>${esc(L)}</small>`:rich(L)}</button>`; }).join('')}</div>`;
  else if(it.fmt==='ORDER') h+=orderHTML(it);
  else if(it.fmt==='POINT') h+=gridHTML(it);
+ else if(it.fmt==='TAP') h+=window.PFTAPUI?PFTAPUI.hint(it):'';   /* PF-TAP1 */
  else h+=padHTML(it.rem);
  h+=`</div><p class="err" role="alert">${esc(P.err)}</p>`;
- h+=`<div class="foot">${P.idk?`<button class="idk" data-act="idk" ${P.busy?'disabled':''}>I don’t know this yet</button>`:''}<button class="big" data-act="next" ${!canNext(it)||P.busy?'disabled':''}>${P.busy?'Saving…':'Next ➜'}</button></div>`;
+ h+=`<div class="foot">${P.idk?`<button class="idk" data-act="idk" ${P.busy?'disabled':''}>I don’t know this yet</button>`:''}<button class="big" data-act="next" ${!canNext(it)||P.busy?'disabled':''}>${P.busy?'Saving…':it.fmt==='TAP'?'Done ✓':'Next ➜'}</button></div>`;
  return h; }
 function slowHTML(){ const left=Math.max(0,Math.ceil((P.v.pause.until-Date.now())/1000));
  return `<div class="card center"><div style="font-size:64px">🌿</div><h2>Let’s slow down</h2><p>Take your time — every question counts. Read each question, then answer. Your teacher can see how you are doing.</p>${left?`<div class="breath" id="breath">${left}</div><p style="color:var(--soft)">Breathe in… and out…</p>`:`<button class="big gold" data-act="ready" ${P.busy?'disabled':''}>I’m ready</button>`}</div>`; }
@@ -245,6 +253,7 @@ function finHTML(){ const f=P.v.finished;
 /* ---------- after render: speech, timers, drag ---------- */
 let lastSpokenId=null, idkTimer=null, slowTimer=null;
 function after(){ const v=P.v; if(!v) return;
+ if(v.kodesh&&window.PFKUI){ PFKUI.after(v); return; }
  clearInterval(slowTimer); if(v.pause&&v.pause.kind==='slow'&&Date.now()<v.pause.until) slowTimer=setInterval(()=>{ const b=$('breath'); if(Date.now()>=v.pause.until){ clearInterval(slowTimer); render(); } else if(b) b.textContent=Math.ceil((v.pause.until-Date.now())/1000); },500);
  clearInterval(window.__brT); if(v.pause&&v.pause.kind==='stretch'){ let n=0; const w=$('bword'); window.__brT=setInterval(()=>{ n++; const b=$('bword'); if(b) b.textContent=(Math.floor(n/4)%2? 'Breathe out… ':'Breathe in… ')+(n%4+1); if(Date.now()>=v.pause.until&&!document.querySelector('[data-act="ready"]')) render(); },1000);
    if(lastSpokenId!=='stretch'+v.pause.until){ lastSpokenId='stretch'+v.pause.until; if(v.young) speak('Stretch break. Stand up, reach up high, and breathe with the circle.'); } }
@@ -285,7 +294,9 @@ document.addEventListener('input',e=>{ if(e.target&&e.target.id==='ansbox'){ P.t
 /* ---------- actions ---------- */
 function call(fn,args,ok){ P.busy=true; P.err=''; render(); return run(fn,P.token,...args).then(v=>{ P.busy=false; P.v=v; P.sel=null; P.typed=''; P.ask=null; P.pt=null; P.orderFor=null; P.moved=false; if(v.reveal){ P.reveal=v.reveal; clearTimeout(window.__lvT); window.__lvT=setTimeout(()=>{ if(P.reveal){ P.reveal=null; render(); } },2800); if(v.young) speak('Welcome to '+((v.lands||{})[v.reveal]||{}).name); } ok&&ok(v); render(); if(fn==='pfAnswer') afterAnswer(v); }).catch(e=>{ P.busy=false; const m=msgOf(e); if(/sign in/i.test(m)){ P.out=true; store('tl-pf',null); } P.err=m; render(); }); }
 document.addEventListener('click',e=>{ if(e.target.closest&&e.target.closest('#grid')&&P.v&&P.v.cur&&!P.busy) return pickPoint(e); const t=e.target.closest('[data-act]'); if(!t||t.disabled) return; const a=t.dataset.act, v=P.v;
+ if(window.PFKUI&&PFKUI.click(a,t,v)) return;
  if(window.PF5UI&&PF5UI.click(a,t,v)) return;
+ if(window.PFTAPUI&&PFTAPUI.click(a,t,v)) return;   /* PF-TAP1: tap a sentence / word, or "I can't tap" */
  if(a==='say'){ if(!v.practice) return speak(PRAC[P.pr?P.pr.i:0].say); const it=v.cur&&v.cur.item; if(it) speak(it.say||it.stem); return; }
  if(a==='story'){ const it=v.cur.item; return speak(it.passage.text); }
  if(a==='pick'){ if(!v.practice){ P.sel=t.dataset.v; } else P.sel=+t.dataset.i; return render(); }
@@ -310,6 +321,18 @@ document.addEventListener('keydown',e=>{ if(P.mode!=='kid'||!P.v||!P.v.cur||P.bu
 
 /* ---------- staff report ---------- */
 const CLS={solid:'Solid',working:'Working on it',not:'Not yet'};
+/* PF stage D: staff see the numbers (levels, minutes, climb and booster events). The boy never sees this card. */
+function dailyRep(D){ if(D.error) return `<div class="card"><h3>Daily path (stage D)</h3><p>${esc(D.error)}</p></div>`;
+ const dt=t=>new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+ const row=t=>`<tr><td>${t.booster?'🚀 Booster: ':''}${esc(t.name)}</td><td>Level ${esc(t.level)}${t.lessonsAt!=null&&t.lessonsAt!==t.level?' <small>(lessons at '+esc(t.lessonsAt)+')</small>':''}</td><td>${t.start?esc(t.startName)+' <small>('+esc(t.start)+')</small>':'all done at this level'}</td><td>${esc(t.left)}</td></tr>`;
+ const st=x=>`<tr><td>${esc(x.name)}</td><td>Level ${esc(x.level)}${x.placed!==x.level?' <small>(placed '+esc(x.placed)+')</small>':''}</td><td>${x.gradeLevel==null?'?':esc(x.gradeLevel)}</td><td>${x.locked?'🔒 '+esc(x.lockBy):''}${x.hold?' '+esc(x.hold):''}</td><td>${esc(x.sure)}</td><td>${x.suggest!=null?'lessons suggest Level '+esc(x.suggest):''}</td></tr>`;
+ const ev=e=>`<li>${dt(e.at)} · <b>${esc(e.k)}</b> · ${esc(e.kind)}${e.from!=null&&e.to!=null?' · Level '+esc(e.from)+' → '+esc(e.to):e.to!=null?' · Level '+esc(e.to):''} · ${esc(e.text)}</li>`;
+ return `<div class="card"><h3>Daily path from the Pathfinder (stage D, TEST boys only)</h3>
+ <p style="color:var(--soft)">Grade ${D.grade==null?'unknown':esc(D.grade)} · band ${esc(D.band)} · about ${esc(D.total)} minutes a day${D.booster?' + a '+esc(D.boostMin)+'-minute booster':''}. Kodesh first, the same order every day. Minutes are a setting (K-2 ${esc(D.minutes['K-2'])}, 3-5 ${esc(D.minutes['3-5'])}, 6-8 ${esc(D.minutes['6-8'])}). The boy sees subjects and lessons, never these levels.</p>
+ <table style="width:100%;border-collapse:collapse"><tr><th align="left">Stop today</th><th align="left">His level</th><th align="left">Lesson</th><th align="left">Left at level</th></tr>${D.stops.map(row).join('')}${D.booster?row(D.booster):''}</table>
+ <h4>Levels and quick climb</h4><table style="width:100%;border-collapse:collapse"><tr><th align="left">Subject</th><th align="left">Level</th><th align="left">Grade level</th><th align="left">Lock</th><th align="left">How sure</th><th align="left">Suggestion</th></tr>${D.strands.map(st).join('')}</table>
+ ${D.boost?`<p>🚀 Booster on <b>${esc(D.boost.k)}</b> since ${dt(D.boost.start)} (until within 1 level of grade, or 4 weeks).</p>`:''}
+ <h4>Climb and booster events</h4>${D.events.length?`<ul>${D.events.map(ev).join('')}</ul>`:'<p>None yet.</p>'}</div>`; }
 function repHTML(){ const R=P.rep; if(!R) return `<div class="wrap"><div class="card center"><h2>${P.err?esc(P.err):'Loading the report…'}</h2>${P.err?`<a class="big" href="${esc(P.appUrl||'#')}">Go to sign-in</a>`:''}</div></div>`;
  const nm=id=>R.names[id]||id, last=R.sessions[R.sessions.length-1];
  let h=`<header class="top"><h1>Pathfinder report · ${esc(R.name)}</h1>${R.live?'':'<span class="tag">TEST · draft questions</span>'}<a href="${esc((P.appUrl||'')+'?sg=1')}">Back to staff screen</a></header><div class="wrap rep">`;
@@ -333,6 +356,8 @@ function repHTML(){ const R=P.rep; if(!R) return `<div class="wrap"><div class="
    <p style="color:var(--soft);font-size:14px;margin-top:10px">Levels are places on the Blueprint ladder, not grade equivalents. “est.” = not asked; set from their overall result.</p></div>`; });
   h+=`</div>`; });
  if(window.PF5UI) h+=PF5UI.repNotes(R);
+ if(window.PFKUI&&R.kodesh) h+=PFKUI.rep(R);
+ if(R.daily&&R.daily.on) h+=dailyRep(R.daily);   /* PF stage D (PathfinderDaily.js): his daily path, climbs and booster; TEST boys only */
  h+=`<div class="card"><h3>Staff actions</h3><p style="color:var(--soft)">Any staff member may do these. Each one is saved with your name and the time.</p>
  <label style="display:block;margin-bottom:10px">Reason (optional)<br><input id="why" maxlength="200" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:2px solid var(--line)" placeholder="e.g. Was sick that morning"></label>
  <button class="big" data-ract="retake" ${P.busy?'disabled':''}>Start a retake</button> <button class="big ghost" data-ract="unrel" ${P.busy?'disabled':''}>Mark the last one unreliable and retake</button>
@@ -348,11 +373,16 @@ document.addEventListener('click',e=>{ const t=e.target.closest('[data-ract]'); 
 /* ---------- start ---------- */
 (function boot(){
  const go=loc=>{ const q=(loc&&loc.parameter)||{};
+  try{ if(q.back){ const u=new URL(q.back); if(u.protocol==='https:'&&['tashbar-learning-live.web.app','tashbar-learning-live.firebaseapp.com'].indexOf(u.host)>=0) PFBACK=u.origin+'/'; } }catch(e){}
+  if(q.h&&/^[0-9a-f]{24}$/.test(q.h)&&!q.report&&!q.rebbe){ const h=q.h; delete q.h; return run('pfHandoffRedeem',h).then(r=>{ if(r&&r.token) store('tl-pf',{token:r.token,at:Date.now()}); go({parameter:q}); }).catch(()=>go({parameter:q})); }
   run('msAppUrl').then(u=>{ P.appUrl=u; if(P.v) P.v.appUrl=P.v.appUrl||u; }).catch(()=>{});
   if(q.report){ P.mode='report'; P.sid=q.report; const t=store('tl-session'); if(!t||t.role!=='staff'||!t.token||Date.now()-(t.at||0)>6*3600e3){ P.err='Please sign in with your staff code first.'; return render(); }
    P.token=t.token; render(); return run('pfReport',P.token,P.sid).then(r=>{ P.rep=r; render(); }).catch(e=>{ P.err=msgOf(e); render(); }); }
+  if(q.rebbe){ P.mode='rebbe'; const t=store('tl-session'); if(!t||t.role!=='staff'||!t.token||Date.now()-(t.at||0)>6*3600e3){ P.err='Please sign in with your staff code first.'; return render(); }   /* ?pf=1&rebbe=<id> (or 1 to pick a boy): Read to Rebbe */
+   P.token=t.token; let n=0; const rb=()=>window.PFKUI&&PFKUI.rebbeBoot?PFKUI.rebbeBoot(q.rebbe):++n<100?setTimeout(rb,50):(P.err='This part is not open yet.',render()); return rb(); }
   const t=store('tl-pf'); if(!t||!t.token||Date.now()-(t.at||0)>6*3600e3){ P.err='Please sign in on the main page first, then tap “Start your Pathfinder”.'; run('msAppUrl').then(u=>{ P.v=null; P.appUrl=u; render(); $('app').querySelector('.card').insertAdjacentHTML('beforeend',`<a class="big" href="${esc(u)}">Go to sign-in</a>`); }).catch(()=>render()); return render(); }
-  P.token=t.token; run('pfStart',P.token).then(v=>{ P.v=v; render(); }).catch(e=>{ P.err=msgOf(e); render(); }); };
+  P.token=t.token; if(q.test==='kodesh'){ let n=0; const kb=()=>window.PFKUI?PFKUI.boot():++n<100?setTimeout(kb,50):(P.err='This part is not open yet.',render()); return kb(); }   /* ?pf=1&test=kodesh: Kodesh Pathfinder (PathfinderKodesh.html loads after this script) */
+  run('pfStart',P.token).then(v=>{ P.v=v; render(); }).catch(e=>{ P.err=msgOf(e); render(); }); };
  try{ google.script.url.getLocation(go); }catch(e){ go({parameter:{}}); }
 })();
 </script></body></html>

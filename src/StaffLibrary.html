@@ -1,0 +1,377 @@
+<!-- StaffLibrary.html — the Library & One-Tap Command Center for staff (server: Library.js). Claude Code builder, 2026-11-16.
+     Opens from the "Library" button. Loads the Library and the roster ONCE; every action is one libApply call that returns
+     only what changed, so the screen never reloads and never sends you back to the name. Undo for 30 seconds. -->
+<style>
+#lbx-btn{position:fixed;left:14px;bottom:14px;z-index:9000;border:0;border-radius:999px;padding:10px 16px;font:700 14px/1 system-ui,-apple-system,"Segoe UI",sans-serif;background:#16274A;color:#fff;box-shadow:0 6px 18px rgba(10,20,40,.25);cursor:pointer;display:none}
+#lbx-btn b{color:#F0B847}
+#lbx{--bg:#F5F3EE;--panel:#fff;--ink:#16233D;--soft:#5B6880;--line:#E2DED4;--line2:#EEEBE3;--navy:#16274A;--honey:#E3A72F;--honey-soft:#FCF1D8;--honey-ink:#6B4A06;--sel:#E8EEFB;--sel-line:#3E63B6;--good:#2E8B57;--good-soft:#E3F3EA;--warn:#B7791F;--warn-soft:#FBF0DC;--bad:#C0392B;--bad-soft:#FBE6E3;
+  position:fixed;inset:0;z-index:9500;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+@media (prefers-color-scheme:dark){#lbx{--bg:#0F1625;--panel:#162033;--ink:#E9EDF5;--soft:#9AA6BC;--line:#26324A;--line2:#1D2840;--navy:#0A1222;--honey:#F0B847;--honey-soft:#3A2E14;--honey-ink:#F6D58C;--sel:#1E2D4D;--sel-line:#7C9CE6;--good:#5CC48A;--good-soft:#14301F;--warn:#E3A74A;--warn-soft:#33270F;--bad:#EE7D70;--bad-soft:#3A1A17}}
+#lbx[hidden],#lbx [hidden]{display:none!important}
+#lbx *{box-sizing:border-box}
+#lbx button,#lbx input,#lbx select{font:inherit;color:inherit}
+#lbx button{cursor:pointer}
+#lbx .top{background:var(--navy);color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#lbx .top h1{margin:0 auto 0 0;font:700 18px/1.2 Georgia,"Times New Roman",serif}
+#lbx .top small{display:block;font:500 11px system-ui;opacity:.75;letter-spacing:.05em;text-transform:uppercase}
+#lbx .tb{border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:8px;padding:6px 12px;font-weight:600}
+#lbx .tb.on{background:var(--honey);color:#16274A;border-color:var(--honey)}
+#lbx .sync{font-size:12px;opacity:.9;display:flex;gap:6px;align-items:center}
+#lbx .sync i{width:9px;height:9px;border-radius:50%;background:#5CC48A;display:inline-block}
+#lbx .sync.busy i{background:var(--honey)}#lbx .sync.err i{background:#EE7D70}
+#lbx .body{flex:1;min-height:0;display:grid;grid-template-columns:300px 220px minmax(0,1fr)}
+#lbx .pane{min-height:0;display:flex;flex-direction:column;background:var(--panel);border-right:1px solid var(--line)}
+#lbx .ph{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+#lbx .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#lbx .search{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 10px}
+#lbx .chip{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600}
+#lbx .chip[aria-pressed="true"]{background:var(--navy);color:#fff;border-color:var(--navy)}
+#lbx .scroll{overflow:auto;min-height:0;flex:1}
+#lbx .gh{padding:7px 12px;background:var(--bg);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);display:flex;gap:8px;align-items:center;position:sticky;top:0;z-index:1}
+#lbx .boy{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 12px;cursor:pointer;user-select:none;border-left:3px solid transparent}
+#lbx .boy:hover{background:var(--line2)}#lbx .boy.on{background:var(--sel);border-left-color:var(--sel-line)}
+#lbx .boy .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#lbx .boy small{display:block;color:var(--soft);font-size:11.5px}
+#lbx .lv{font:600 11.5px ui-monospace,Menlo,monospace;border-radius:6px;padding:2px 6px;background:var(--line2);white-space:nowrap}
+#lbx .src{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border-radius:4px;padding:1px 5px;margin-left:3px;background:var(--line2);color:var(--soft)}
+#lbx .src.staff{background:var(--honey-soft);color:var(--honey-ink)}#lbx .src.pathfinder{background:var(--good-soft);color:var(--good)}#lbx .src.check{background:var(--sel);color:var(--sel-line)}
+#lbx .nav{overflow:auto;padding:8px 6px;background:var(--panel);border-right:1px solid var(--line)}
+#lbx .nav h3{margin:8px 8px 4px;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--soft)}
+#lbx .nav button{display:flex;width:100%;justify-content:space-between;text-align:left;border:0;background:transparent;padding:6px 8px;border-radius:7px}
+#lbx .nav button:hover{background:var(--line2)}#lbx .nav button[aria-current="true"]{background:var(--navy);color:#fff}
+#lbx .nav button span{opacity:.6;font:12px ui-monospace,Menlo,monospace}
+#lbx .shelves{overflow:auto;padding:14px 16px 130px;min-width:0}
+#lbx .shelves h2{margin:0;font:700 22px/1.2 Georgia,"Times New Roman",serif}
+#lbx .lede{color:var(--soft);margin:2px 0 12px}
+#lbx .strand{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden}
+#lbx .sh{display:flex;gap:10px;align-items:baseline;padding:9px 12px 4px;flex-wrap:wrap}
+#lbx .sh .code{font:12px ui-monospace,Menlo,monospace;color:var(--soft)}
+#lbx .note{font-size:11.5px;color:var(--warn);background:var(--warn-soft);border-radius:5px;padding:1px 6px}
+#lbx .lvls{display:flex;gap:6px;padding:4px 12px 10px;overflow-x:auto}
+#lbx .lvl{flex:0 0 auto;min-width:76px;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:5px 8px;text-align:left}
+#lbx .lvl[aria-pressed="true"]{border-color:var(--sel-line);background:var(--sel);box-shadow:inset 0 0 0 1px var(--sel-line)}
+#lbx .lvl b{display:block;font-size:12.5px}#lbx .lvl small{font-size:11px;color:var(--soft)}
+#lbx .bar{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:4px;background:var(--line2)}#lbx .bar i{display:block;height:100%}
+#lbx .cards{border-top:1px solid var(--line2);padding:10px 12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+#lbx .card{border:1px solid var(--line);border-radius:9px;background:var(--panel);padding:7px 9px;text-align:left;display:flex;flex-direction:column;gap:2px;min-width:0}
+#lbx .card[aria-pressed="true"]{border-color:var(--sel-line);background:var(--sel);box-shadow:inset 0 0 0 1px var(--sel-line)}
+#lbx .card .code{font:11px ui-monospace,Menlo,monospace;color:var(--soft)}#lbx .card .t{font-weight:600;line-height:1.3}#lbx .card .k{font-size:12px;color:var(--honey-ink)}
+#lbx .card .tag{font-size:10.5px;font-weight:700;color:var(--soft)}
+#lbx .act{position:absolute;left:0;right:0;bottom:0;background:var(--panel);border-top:2px solid var(--honey);box-shadow:0 -6px 20px rgba(10,20,40,.12);padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#lbx .say{flex:1 1 260px;min-width:0}#lbx .say small{display:block;color:var(--soft);font-size:12px}
+#lbx .ab{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 12px;font-weight:600}
+#lbx .ab.pri{background:var(--navy);color:#fff;border-color:var(--navy)}#lbx .ab:disabled{opacity:.4;cursor:not-allowed}
+#lbx select{border:1px solid var(--line);border-radius:8px;padding:7px 8px;background:var(--panel)}
+#lbx .toast{position:absolute;right:16px;bottom:84px;background:var(--navy);color:#fff;border-radius:10px;padding:10px 12px;display:flex;gap:12px;align-items:center;max-width:min(480px,calc(100vw - 32px));box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:3}
+#lbx .toast button{border:0;background:var(--honey);color:#16274A;border-radius:7px;padding:5px 10px;font-weight:700}
+#lbx .toast.err{background:#8E2A20}
+#lbx .hist{border-top:1px solid var(--line);max-height:32%;overflow:auto;padding:8px 12px 80px;font-size:12px;color:var(--soft)}
+#lbx .hist b{color:var(--ink)}
+#lbx .empty{color:var(--soft);padding:14px}
+#lbx .view{flex:1;min-height:0;overflow:auto;padding:16px 16px 40px}
+#lbx .view h2{margin:0 0 4px;font:700 22px/1.2 Georgia,"Times New Roman",serif}
+#lbx .tw{overflow-x:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;margin-top:10px}
+#lbx table.mm{border-collapse:collapse;width:100%;min-width:720px;font-variant-numeric:tabular-nums}
+#lbx .mm th,#lbx .mm td{padding:6px 8px;border-bottom:1px solid var(--line2);text-align:center;font-size:12.5px}
+#lbx .mm th{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);position:sticky;top:0;background:var(--panel)}
+#lbx .mm td:first-child,#lbx .mm th:first-child{text-align:left;white-space:nowrap}
+#lbx .mm button{border:0;border-radius:6px;padding:4px 0;width:100%;font:600 12px ui-monospace,Menlo,monospace}
+#lbx .c-ahead{background:var(--good-soft);color:var(--good)}#lbx .c-on{background:var(--line2);color:var(--ink)}#lbx .c-below{background:var(--warn-soft);color:var(--warn)}#lbx .c-far{background:var(--bad-soft);color:var(--bad)}#lbx .c-none{background:transparent;color:var(--soft)}
+#lbx .mm small{display:block;font:500 10.5px system-ui;opacity:.8}
+#lbx .need{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#lbx .need .who{flex:1 1 220px;min-width:0}#lbx .need small{display:block;color:var(--soft)}
+#lbx .pill{font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 6px;background:var(--bad-soft);color:var(--bad)}#lbx .pill.q{background:var(--warn-soft);color:var(--warn)}
+#lbx .plform{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#lbx .plform input{border:1px solid var(--line);border-radius:8px;padding:7px 8px;background:var(--panel);min-width:0;width:200px}
+@media (max-width:900px){#lbx .body{grid-template-columns:minmax(0,1fr)}#lbx .pane{max-height:38vh;border-right:0;border-bottom:1px solid var(--line)}
+  #lbx .nav{display:flex;gap:4px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}#lbx .nav h3{display:none}#lbx .nav button{white-space:nowrap;width:auto;border:1px solid var(--line)}#lbx .nav button span{display:none}
+  #lbx .hist{display:none}#lbx .toast{bottom:auto;top:60px}}
+</style>
+<button id="lbx-btn" type="button" title="The Library and one-tap assigning">&#128218; <b>Library</b> &amp; Assign</button>
+<div id="lbx" hidden role="dialog" aria-label="Library and Command Center"></div>
+<script>
+(function(){
+'use strict';
+var L = { view:'cc', pls:[], map:null, mapAt:0, plView:null, plForm:false, cat:null, ros:null, tick:{}, last:null, subj:null, sel:null, open:{}, q:'', bq:'', undo:null, hist:[], busy:0, toastT:null };
+var btn = document.getElementById('lbx-btn'), box = document.getElementById('lbx');
+function tok(){ try { return (typeof S !== 'undefined' && S && S.token) ? S.token : null; } catch (e) { return null; } }
+function call(fn){ var a = [].slice.call(arguments, 1); return new Promise(function(ok, no){ google.script.run.withSuccessHandler(ok).withFailureHandler(function(e){ no(e && e.message ? e.message : String(e)); })[fn].apply(null, a); }); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+setInterval(function(){ btn.style.display = tok() && box.hidden ? 'block' : 'none'; }, 800);
+btn.onclick = openLib;
+document.addEventListener('keydown', function(e){ if (box.hidden) return; var typing = /INPUT|SELECT|TEXTAREA/.test((document.activeElement||{}).tagName||'');
+  if (e.key === 'Escape') { if (L.q) { L.q=''; draw(); } else if (L.sel) { L.sel=null; draw(); } else closeLib(); return; }
+  if (e.key === '/' && !typing) { e.preventDefault(); var q = document.getElementById('lbx-q'); if (q) q.focus(); return; }
+  if (typing || e.metaKey || e.ctrlKey) return; var k = e.key.toLowerCase();
+  if (k === 'p') doAct('place'); else if (k === 'a') doAct('assign'); else if (k === 'b') doAct('block'); else if (k === 'z' && L.undo) doUndo(); });
+
+/* ---------- loading (once) ---------- */
+function openLib(){
+  box.hidden = false; document.body.style.overflow = 'hidden';
+  if (L.cat && L.ros) { draw(); return; }
+  box.innerHTML = '<div class="top"><h1>Library &amp; Command Center</h1><button class="tb" data-x="close">Close</button></div><div class="empty">Opening the Library…</div>';
+  box.querySelector('[data-x=close]').onclick = closeLib;
+  var cached = null; try { cached = JSON.parse(localStorage.getItem('lbx_cat2') || 'null'); } catch (e) {}
+  var t = tok();
+  Promise.all([cached ? Promise.resolve(cached) : call('libCatalog', t), call('libRoster', t)]).then(function(r){
+    L.cat = r[0]; L.ros = r[1]; prep();
+    if (!cached) { try { localStorage.setItem('lbx_cat2', JSON.stringify(L.cat)); } catch (e) {} }
+    else call('libCatalog', t).then(function(c){ if (c.stamp !== L.cat.stamp || c.cards.length !== L.cat.cards.length) { L.cat = c; prep(); draw(); try { localStorage.setItem('lbx_cat2', JSON.stringify(c)); } catch (e) {} } }).catch(function(){});
+    draw(); loadHist(); loadPls();
+  }).catch(function(e){ box.querySelector('.empty').textContent = 'The Library did not open: ' + e + ' Close and try again.'; });
+}
+function closeLib(){ box.hidden = true; document.body.style.overflow = ''; }
+function loadPls(){ call('libPlaylists', tok()).then(function(p){ L.pls = p || []; if (L.view === 'cc') { var n = document.getElementById('lbx-nav'); if (n) { var st = n.scrollTop; draw(); } } }).catch(function(){}); }
+function loadMap(force){ if (!force && L.map && Date.now() - L.mapAt < 60000) return; call('libMap', tok()).then(function(m){ L.map = m; L.mapAt = Date.now(); if (L.view !== 'cc') draw(); }).catch(function(e){ L.mapErr = String(e); if (L.view !== 'cc') draw(); }); }
+function loadHist(){ call('libHistory', tok()).then(function(h){ L.hist = h; var el = document.getElementById('lbx-h'); if (el) el.innerHTML = histHTML(); }).catch(function(){}); }
+
+/* ---------- the Library model ---------- */
+var WINGS = ['Torah','Learning','Skills','Heart'], SUBJ = {}, BYS = {}, CARD = {}, SUBJKEYS = {};
+function prep(){
+  SUBJ = {}; BYS = {}; CARD = {};
+  Object.keys(L.cat.strands).forEach(function(k){ var s = L.cat.strands[k]; var id = s.wing + '|' + s.subj; (SUBJ[id] = SUBJ[id] || { wing:s.wing, name:s.subj, strands:[] });
+    if (!SUBJ[id].strands.some(function(x){ return x.name === s.name; })) SUBJ[id].strands.push({ code:k, name:s.name, place:s.place, band:s.band, codes:[k] }); else SUBJ[id].strands.filter(function(x){ return x.name === s.name; })[0].codes.push(k); });
+  L.cat.cards.forEach(function(c){ var o = { code:c[0], title:c[1], kid:c[2], strand:c[3], lv:c[4], order:c[5], live:c[6], kind:c[7] }; CARD[o.code] = o;
+    var s = L.cat.strands[o.strand], id = s.wing + '|' + s.subj, st = SUBJ[id].strands.filter(function(x){ return x.codes.indexOf(o.strand) >= 0; })[0]; (BYS[id + '|' + st.name] = BYS[id + '|' + st.name] || []).push(o); });
+  Object.keys(BYS).forEach(function(k){ BYS[k].sort(function(a,b){ return a.lv - b.lv || a.order - b.order; }); });
+  SUBJKEYS = {}; (L.cat.subjects || []).forEach(function(s){ SUBJKEYS[s[0]] = { name:s[1], min:s[2], max:s[3] }; });
+  if (!L.subj) L.subj = SUBJ['Learning|Math'] ? 'Learning|Math' : Object.keys(SUBJ)[0];
+}
+function cardsOf(subjId, st){ return BYS[subjId + '|' + st.name] || []; }
+function bandName(l){ return ['','Band K-2','Band 3-5','Band 6-8'][l] || ('L' + l); }
+function lvName(st, l){ return st.band ? bandName(l) : 'L' + l; }
+function gradeName(st, l){ if (st.band) return ['','grades K-2','grades 3-5','grades 6-8'][l] || ''; return l === 1 ? 'Kindergarten' : l <= 9 ? 'Grade ' + (l - 1) : 'High school'; }
+function levelsOf(subjId, st){ var have = {}; cardsOf(subjId, st).forEach(function(c){ have[c.lv] = 1; }); var ks = Object.keys(have).map(Number).sort(function(a,b){return a-b;}); if (!ks.length) return []; var out = []; for (var i = ks[0]; i <= ks[ks.length-1]; i++) out.push(i); return out; }
+function placeKeyOf(st){ return st.place || ''; }
+var DEFKEYS = { MATH:1, READ:1, LANG:1, SCI:1, SOC:1, HEB:1 };
+function placeOf(b, key){ return key && b.place ? b.place[key] : null; }
+function levelOf(b, key){ var p = placeOf(b, key); if (p && p.lv) return p; if (DEFKEYS[key] && b.grade != null) return { lv: b.grade + 1, by: 'default' }; return null; }   /* default = grade + 1, shown only, never written */
+function canLevel(){ var r = L.ros && L.ros.me ? String(L.ros.me.role || '') : ''; return { head:1, admin:1, rebbe:1, teacher:1, '':1 }[r] === 1; }
+
+/* ---------- drawing ---------- */
+function ticked(){ return L.ros.boys.filter(function(b){ return L.tick[b.id]; }); }
+function draw(){
+  var keep = {}; ['lbx-roster','lbx-shelves','lbx-nav'].forEach(function(id){ var el = document.getElementById(id); if (el) keep[id] = el.scrollTop; });
+  var h = '<div class="top"><div style="margin-right:auto"><h1>Library &amp; Command Center</h1><small>Tick boys · tap a level or a lesson · one tap does them all</small></div>'
+    + ['cc','map','needs'].map(function(v){ return '<button class="tb' + (L.view === v ? ' on' : '') + '" data-v="' + v + '">' + {cc:'Command Center', map:'Mastery Map', needs:'Needs you'}[v] + '</button>'; }).join('')
+    + '<button class="tb" data-x="pfx" title="Pathfinder: today\'s five CSV files for the daily check">Pathfinder export</button>'
+    + '<span class="sync' + (L.busy ? ' busy' : '') + '" id="lbx-sync"><i></i><span>' + (L.busy ? 'Saving…' : 'All saved') + '</span></span><button class="tb" data-x="close">Close</button></div>';
+  if (L.view !== 'cc') { box.innerHTML = h + '<div class="view" id="lbx-view">' + (L.view === 'map' ? mapHTML() : needsHTML()) + '</div><div class="toast" id="lbx-toast" hidden></div>'; wireView(); return; }
+  h += '<div class="body"><div class="pane"><div class="ph"><div class="row"><input class="search" id="lbx-bq" placeholder="Find a boy" value="' + esc(L.bq) + '"><button class="chip" data-x="clear">Clear</button></div><div class="row">' + groupChips() + '</div>' + (ticked().length && canLevel() ? '<div class="row"><span style="font-size:12px;color:var(--soft)">Grade for ' + ticked().length + ':</span><select id="lbx-gr" aria-label="Grade"><option value="0">K</option>' + [1,2,3,4,5,6,7,8].map(function(g){ return '<option>' + g + '</option>'; }).join('') + '</select><button class="chip" data-x="grade">Set grade</button></div>' : '') + (ticked().length ? '<div class="row"><button class="chip" data-x="report">Report cards for ' + ticked().length + '</button></div>' : '') + '</div><div class="scroll" id="lbx-roster">' + rosterHTML() + '</div><div class="hist" id="lbx-h">' + histHTML() + '</div></div>';
+  h += '<nav class="nav" id="lbx-nav"><div style="padding:4px 4px 8px"><input class="search" id="lbx-q" placeholder="Search the Library ( / )" value="' + esc(L.q) + '" style="width:100%"></div>' + navHTML() + '</nav>';
+  h += '<div class="shelves" id="lbx-shelves">' + shelvesHTML() + '</div></div>';
+  h += actHTML();
+  box.innerHTML = h;
+  Object.keys(keep).forEach(function(id){ var el = document.getElementById(id); if (el) el.scrollTop = keep[id]; });
+  wire();
+}
+function groupChips(){ return (L.ros.groups || []).slice(0, 12).map(function(g, i){ var all = g.sids.length && g.sids.every(function(id){ return L.tick[id]; }); return '<button class="chip" data-g="' + i + '" aria-pressed="' + !!all + '">' + esc(g.name) + '</button>'; }).join('') + '<button class="chip" data-x="all">Everyone</button>'; }
+function curKey(){ var st = curStrand(); return st ? placeKeyOf(st) : (SUBJ[L.subj] && SUBJ[L.subj].strands[0] ? placeKeyOf(SUBJ[L.subj].strands[0]) : ''); }
+function curStrand(){ if (!L.sel) return null; var S = SUBJ[L.sel.subj]; return S ? S.strands.filter(function(x){ return x.name === L.sel.st; })[0] : null; }
+function rosterHTML(){
+  var key = curKey(), q = L.bq.toLowerCase(), h = '', list = L.ros.boys.filter(function(b){ return !q || b.name.toLowerCase().indexOf(q) >= 0; });
+  var real = list.filter(function(b){ return !b.test; }), test = list.filter(function(b){ return b.test; });
+  function rows(arr){ return arr.map(function(b){ var p = levelOf(b, key), on = !!L.tick[b.id], picks = (L.ros.picks[b.id] || []).length;
+    return '<div class="boy' + (on ? ' on' : '') + '" role="checkbox" tabindex="0" aria-checked="' + on + '" data-b="' + esc(b.id) + '"><input type="checkbox" tabindex="-1" ' + (on ? 'checked' : '') + '><div style="min-width:0"><div class="nm">' + esc(b.name) + '</div><small>' + (b.grade != null ? (b.grade ? 'Grade ' + b.grade : 'K') : 'No grade') + (picks ? ' · ' + picks + ' assigned' : '') + '</small></div><div>' + (p && p.lv ? '<span class="lv">' + (key === 'CHM' ? 'Ch ' : 'L') + p.lv + '</span><span class="src ' + esc(p.by) + '">' + esc(p.by === 'staff' ? 'Set' : p.by === 'default' ? 'grade' : p.by) + '</span>' : (key ? '<span class="src">none</span>' : '')) + '</div></div>'; }).join(''); }
+  h += '<div class="gh">Boys · ' + real.length + (key ? ' · showing ' + esc(keyName(key)) : '') + '</div>' + (rows(real) || '<div class="empty">No boy matches.</div>');
+  if (test.length) h += '<div class="gh">Test boys</div>' + rows(test);
+  return h;
+}
+var KTR = { 'K:KRI':'Kriyah', 'K:CHU':'Chumash', 'K:RAS':'Rashi', 'K:MSH':'Mishnayos', 'K:GEM':'Gemara' };
+function keyName(k){ return k === 'CHM' ? 'Chumash page level' : KTR[k] ? KTR[k] : (SUBJKEYS[k] ? SUBJKEYS[k].name : k); }
+function navHTML(){ var un = (L.cat.unshelved || []).length; var h = (un ? '<button data-un="1" style="color:var(--warn)">' + un + ' lesson' + (un === 1 ? '' : 's') + ' without a shelf<span>!</span></button>' : '') + '<h3>Playlists</h3>' + (L.pls.length ? L.pls.map(function(p){ return '<button data-pl="' + esc(p.id) + '" aria-current="' + (L.plView === p.id && !L.q) + '">' + esc(p.name) + '<span>' + p.cards.length + '</span></button>'; }).join('') : '<div class="empty" style="padding:4px 8px;font-size:12px">None yet. Choose lessons, then “Save as playlist”.</div>'); WINGS.forEach(function(w){ var ids = Object.keys(SUBJ).filter(function(k){ return SUBJ[k].wing === w; }); if (!ids.length) return; h += '<h3>' + w + '</h3>';
+  ids.forEach(function(k){ var n = SUBJ[k].strands.reduce(function(t, st){ return t + cardsOf(k, st).length; }, 0); h += '<button data-s="' + esc(k) + '" aria-current="' + (k === L.subj && !L.q && !L.plView) + '">' + esc(SUBJ[k].name) + '<span>' + n + '</span></button>'; }); }); return h; }
+function counts(key, l){ var t = ticked(); if (!t.length || !key) return null; var r = { past:0, on:0, below:0, none:0, n:t.length };
+  t.forEach(function(b){ var p = levelOf(b, key); if (!p || !p.lv) r.none++; else if (p.lv > l) r.past++; else if (p.lv === l) r.on++; else r.below++; }); return r; }
+function cardHTML(c, subjId, stName){ var pressed = L.sel && L.sel.type === 'card' && L.sel.code === c.code;
+  return '<button class="card" data-c="' + esc(c.code) + '" data-sj="' + esc(subjId) + '" data-st="' + esc(stName) + '" aria-pressed="' + !!pressed + '"><span class="code">' + esc(c.code) + (c.kind === 'K' ? ' · Kodesh' : '') + (c.live ? '' : ' · not built yet') + '</span><span class="t">' + esc(c.title || c.code) + '</span>' + (c.kid && c.kid !== c.title ? '<span class="k">Boys see: ' + esc(c.kid) + '</span>' : '') + '</button>'; }
+function shelvesHTML(){
+  if (L.q) { var q = L.q.toLowerCase(), hits = [];
+    Object.keys(BYS).forEach(function(k){ var parts = k.split('|'), sj = parts[0] + '|' + parts[1], st = parts[2]; BYS[k].forEach(function(c){ if (hits.length < 80 && (c.code + ' ' + c.title + ' ' + c.kid + ' ' + st).toLowerCase().indexOf(q) >= 0) hits.push([c, sj, st]); }); });
+    return '<h2>Search: “' + esc(L.q) + '”</h2><p class="lede">' + hits.length + (hits.length === 80 ? '+' : '') + ' lessons. Tap one to choose it.</p><div class="cards" style="border:0;padding:0">' + hits.map(function(x){ return cardHTML(x[0], x[1], x[2]); }).join('') + '</div>'; }
+  if (L.unView) return '<h2>Lessons without a shelf</h2><p class="lede">These lesson codes are in the app but their subject is not on the Library map yet. A builder adds the code\'s prefix to LIB.STRANDS in Library.js.</p><div class="cards" style="border:0;padding:0">' + L.cat.unshelved.map(function(c){ return '<div class="card"><span class="code">' + esc(c) + '</span></div>'; }).join('') + '</div>';
+  if (L.plView) { var P = L.pls.filter(function(x){ return x.id === L.plView; })[0]; if (!P) { L.plView = null; } else {
+    var pressed = L.sel && L.sel.type === 'playlist' && L.sel.id === P.id;
+    return '<h2>' + esc(P.name) + '</h2><p class="lede">Playlist by ' + esc(P.owner) + ' · ' + P.cards.length + ' lessons. Tick boys and press Assign to give them all of it.</p>'
+      + '<div class="row" style="margin-bottom:10px"><button class="ab' + (pressed ? ' pri' : '') + '" data-plsel="' + esc(P.id) + '">' + (pressed ? 'Playlist chosen' : 'Choose this playlist') + '</button>' + (P.ownerId === String(L.ros.me.id) || L.ros.me.head ? '<button class="ab" data-pldel="' + esc(P.id) + '">Delete playlist</button>' : '') + '</div>'
+      + '<div class="cards" style="border:0;padding:0">' + P.cards.map(function(code){ var c = CARD[code]; if (!c) return '<div class="card"><span class="code">' + esc(code) + '</span><span class="t">Not in the Library any more</span></div>'; var s = L.cat.strands[c.strand]; return cardHTML(c, s.wing + '|' + s.subj, s.name); }).join('') + '</div>'; } }
+  var S = SUBJ[L.subj]; if (!S) return '<div class="empty">Choose a subject.</div>';
+  var total = S.strands.reduce(function(t, st){ return t + cardsOf(L.subj, st).length; }, 0);
+  var h = '<h2>' + esc(S.name) + '</h2><p class="lede">' + S.wing + ' wing · ' + S.strands.length + ' shelves · ' + total + ' lessons</p>';
+  S.strands.forEach(function(st){ var list = cardsOf(L.subj, st), key = placeKeyOf(st), lv = levelsOf(L.subj, st);
+    h += '<div class="strand"><div class="sh"><b>' + esc(st.name) + '</b><span class="code">' + esc(st.codes.join(' · ')) + '</span>' + (key ? '' : '<span class="note">Placement for this track comes with the boy\'s Path. Assign or mark passed for now.</span>') + (/^K:/.test(key) ? '<span class="note">Place sets his daily-path level for this track</span>' : '') + '</div>';
+    if (!list.length) { h += '<div class="empty">These lessons are not listed yet.</div></div>'; return; }
+    h += '<div class="lvls">';
+    lv.forEach(function(l){ var n = list.filter(function(c){ return c.lv === l; }).length, ct = key && key !== 'CHM' ? counts(key, l) : null, pressed = L.sel && L.sel.type === 'level' && L.sel.subj === L.subj && L.sel.st === st.name && L.sel.lv === l;
+      var bar = ct ? '<div class="bar"><i style="width:' + (ct.past/ct.n*100) + '%;background:var(--good)"></i><i style="width:' + (ct.on/ct.n*100) + '%;background:var(--sel-line)"></i><i style="width:' + (ct.below/ct.n*100) + '%;background:var(--honey)"></i></div>' : '';
+      h += '<button class="lvl" data-l="' + l + '" data-st="' + esc(st.name) + '" aria-pressed="' + !!pressed + '"><b>' + lvName(st, l) + '</b><small>' + gradeName(st, l) + ' · ' + n + '</small>' + bar + '</button>'; });
+    h += '</div>';
+    var o = L.open[L.subj + '|' + st.name]; if (o) { var ls = list.filter(function(c){ return c.lv === o; }); h += '<div class="cards">' + (ls.map(function(c){ return cardHTML(c, L.subj, st.name); }).join('') || '<div class="empty">No lessons on this level yet.</div>') + '</div>'; }
+    h += '</div>'; });
+  return h;
+}
+function histHTML(){ if (!L.hist || !L.hist.length) return '<b>History</b><br>No actions yet.'; return '<b>History</b>' + L.hist.slice(0, 25).map(function(x){ var d = new Date(x.at); return '<div>' + esc(x.by) + ' · ' + esc(x.action) + ' · ' + x.n + ' boy' + (x.n === 1 ? '' : 's') + (x.key ? ' · ' + esc(keyName(x.key)) + (x.level ? ' ' + x.level : '') : '') + (x.cards && x.cards.length ? ' · ' + esc(x.cards[0]) + (x.cards.length > 1 ? ' +' + (x.cards.length - 1) : '') : '') + ' · ' + d.toLocaleDateString([], {month:'short', day:'numeric'}) + ' ' + d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}) + '</div>'; }).join(''); }
+
+/* ---------- the action bar ---------- */
+function plan(){
+  var t = ticked(), n = t.length, st = curStrand(), sel = L.sel, out = { n:n, place:null, assign:[], block:null, pass:[], say:'', hint:'' };
+  if (!sel) { out.say = n ? n + ' boy' + (n > 1 ? 's' : '') + ' ticked.' : 'Tick some boys, then tap a level or a lesson.'; out.hint = n ? 'Now tap a level or a lesson in the Library.' : 'Shift-click ticks a range. / searches the Library.'; return out; }
+  if (sel.type === 'playlist') { var P = L.pls.filter(function(x){ return x.id === sel.id; })[0] || { cards:[], name:'' };
+    out.assign = P.cards.filter(function(c){ return CARD[c] && CARD[c].live; }); out.say = (n ? n + ' boy' + (n > 1 ? 's' : '') + ' · ' : '') + 'Playlist “' + P.name + '”'; out.hint = 'Assign puts its ' + out.assign.length + ' lessons on their list.'; return out; }
+  var key = st ? placeKeyOf(st) : '';
+  if (sel.type === 'level') { var cards = cardsOf(sel.subj, st).filter(function(c){ return c.lv === sel.lv; });
+    if (key && /^K:/.test(key)) out.place = { key:key, level:sel.lv, label: keyName(key) + ' Level ' + sel.lv };
+    else if (key && key !== 'CHM' && !st.band) { var sk = SUBJKEYS[key]; if (sk && sel.lv >= sk.min && sel.lv <= sk.max) out.place = { key:key, level:sel.lv, label: sk.name + ' Level ' + sel.lv }; }
+    out.assign = cards.filter(function(c){ return c.live; }).slice(0, 12).map(function(c){ return c.code; });
+    out.pass = cards.filter(function(c){ return c.kind === 'K'; }).slice(0, 12).map(function(c){ return c.code; });
+    out.say = (n ? n + ' boy' + (n > 1 ? 's' : '') + ' · ' : '') + st.name + ' ' + lvName(st, sel.lv);
+    out.hint = out.place ? 'Place sets their ' + keyName(key) + ' level (it wins over tests). Assign puts these ' + out.assign.length + ' lessons on their list.' : 'Assign puts these ' + out.assign.length + ' lessons on their list.'; }
+  else { var c = CARD[sel.code]; out.assign = c.live ? [c.code] : []; out.block = c.live ? c.code : null; out.pass = c.kind === 'K' ? [c.code] : [];
+    out.say = (n ? n + ' boy' + (n > 1 ? 's' : '') + ' · ' : '') + '“' + (c.title || c.code) + '”'; out.hint = c.live ? 'Assign it, lock their screens to it for a class, or mark it passed.' : 'This lesson is not built yet, so it cannot be assigned.'; }
+  if (st && st.codes.indexOf('LK.CHU') >= 0) out.chm = true;
+  return out;
+}
+function actHTML(){ var p = plan(), n = p.n, dis = function(x){ return n && x ? '' : ' disabled'; };
+  var lvOk = canLevel(); if (!lvOk) { p.place = null; p.pass = []; p.chm = false; p.hint = (p.hint ? p.hint + ' ' : '') + 'Your role can assign lessons; a rebbe, teacher or admin sets levels.'; }
+  return '<div class="act"><div class="say"><b>' + esc(p.say) + '</b><small>' + esc(p.hint) + '</small></div>'
+    + '<button class="ab pri" data-a="place"' + dis(p.place) + '>Place here (P)</button>'
+    + (p.chm ? '<select id="lbx-chm" aria-label="Chumash page level">' + [1,2,3,4,5,6,7,8].map(function(i){ return '<option>' + i + '</option>'; }).join('') + '</select><button class="ab" data-a="placechm"' + dis(1) + '>Set Chumash page level</button>' : '')
+    + '<select id="lbx-due" aria-label="Due"><option value="">No due date</option><option value="1">Due tomorrow</option><option value="fri">Due Friday</option><option value="7">Due in a week</option></select><button class="ab" data-a="assign"' + dis(p.assign.length) + '>Assign (A)</button>'
+    + '<select id="lbx-min" aria-label="Class block length"><option>20</option><option selected>40</option><option>60</option><option>90</option></select><button class="ab" data-a="block"' + dis(p.block) + '>Class block (B)</button>'
+    + '<button class="ab" data-a="pass"' + dis(p.pass.length) + '>Mark passed</button>'
+    + (L.sel && L.sel.type !== 'playlist' && p.assign.length ? (L.plForm ? '<span class="plform"><select id="lbx-plw"><option value="">New playlist</option>' + L.pls.filter(function(x){ return x.ownerId === String(L.ros.me.id) || L.ros.me.head; }).map(function(x){ return '<option value="' + esc(x.id) + '">Add to: ' + esc(x.name) + '</option>'; }).join('') + '</select><input id="lbx-pln" placeholder="Playlist name" maxlength="60"><button class="ab pri" data-a="plsave">Save</button><button class="ab" data-a="plcancel">Cancel</button></span>' : '<button class="ab" data-a="plform">Save as playlist</button>') : '')
+    + '</div>'
+    + '<div class="toast" id="lbx-toast" hidden></div>'; }
+
+/* ---------- events ---------- */
+function pfxOpen(){
+  var w = window.open('', '_blank'); if (!w) { toast('Allow pop-ups for this page, then try again.', false, true); return; }
+  w.document.write('<p style="font:16px system-ui;padding:20px">Making today\'s Pathfinder files…</p>');
+  call('pfExportToday', tok()).then(function(r){ var h = '<!doctype html><html><head><meta charset="utf-8"><title>Pathfinder export ' + esc(r.day) + '</title><style>body{font:14px system-ui;margin:20px;color:#16233D}h1{font:700 20px Georgia,serif}.f{margin:14px 0}a{font-weight:700}textarea{width:100%;height:120px;font:12px ui-monospace,monospace}</style></head><body><h1>Pathfinder export · ' + esc(r.day) + '</h1><p>App codes only. Run <b>pf_pilot_analyze_v6.js --live</b> on these five files, then post the one-line LOG NOTE (PF-LIVE-RUN1).</p>';
+    Object.keys(r.files).forEach(function(n){ var csv = r.files[n], href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv); h += '<div class="f"><a download="' + esc(n) + '" href="' + href + '">' + esc(n) + '</a> · ' + (csv.split('\n').length - 2) + ' rows<br><textarea readonly>' + esc(csv) + '</textarea></div>'; });
+    w.document.open(); w.document.write(h + '</body></html>'); w.document.close(); })
+  .catch(function(e){ w.document.body.innerHTML = '<p style="font:16px system-ui;padding:20px">Could not make the files: ' + esc(e) + '</p>'; });
+}
+function wire(){
+  box.querySelector('[data-x=close]').onclick = closeLib;
+  var px = box.querySelector('[data-x=pfx]'); if (px) px.onclick = pfxOpen;
+  var bq = document.getElementById('lbx-bq'); bq.oninput = function(){ L.bq = bq.value; document.getElementById('lbx-roster').innerHTML = rosterHTML(); };
+  var q = document.getElementById('lbx-q'); q.oninput = function(){ L.q = q.value.trim(); document.getElementById('lbx-shelves').innerHTML = shelvesHTML(); };
+  box.querySelector('[data-x=clear]').onclick = function(){ L.tick = {}; draw(); };
+  var rb = box.querySelector('[data-x=report]'); if (rb) rb.onclick = reportCards;
+  var gb = box.querySelector('[data-x=grade]'); if (gb) gb.onclick = function(){ var t = ticked().map(function(b){ return b.id; }); if (t.length) apply({ action:'grade', boys:t, grade:+document.getElementById('lbx-gr').value }); };
+  box.querySelectorAll('.ph [data-g]').forEach(function(el){ el.onclick = function(){ var g = L.ros.groups[+el.dataset.g], all = g.sids.every(function(id){ return L.tick[id]; }); g.sids.forEach(function(id){ if (all) delete L.tick[id]; else L.tick[id] = 1; }); draw(); }; });
+  box.querySelector('[data-x=all]').onclick = function(){ var all = L.ros.boys.every(function(b){ return L.tick[b.id]; }); L.ros.boys.forEach(function(b){ if (all) delete L.tick[b.id]; else L.tick[b.id] = 1; }); draw(); };
+  var ro = document.getElementById('lbx-roster');
+  ro.onclick = function(e){ var r = e.target.closest('.boy'); if (!r) return; var id = r.dataset.b, vis = [].map.call(ro.querySelectorAll('.boy'), function(x){ return x.dataset.b; }), i = vis.indexOf(id);
+    if (e.shiftKey && L.last != null && vis.indexOf(L.last) >= 0) { var a = Math.min(i, vis.indexOf(L.last)), b = Math.max(i, vis.indexOf(L.last)); for (var k = a; k <= b; k++) L.tick[vis[k]] = 1; } else { if (L.tick[id]) delete L.tick[id]; else L.tick[id] = 1; }
+    L.last = id; draw(); };
+  ro.onkeydown = function(e){ if ((e.key === ' ' || e.key === 'Enter') && e.target.classList.contains('boy')) { e.preventDefault(); e.target.click(); } };
+  document.getElementById('lbx-nav').onclick = function(e){ if (e.target.closest('[data-un]')) { L.unView = true; L.plView = null; draw(); return; } L.unView = false; var pl = e.target.closest('[data-pl]'); if (pl) { L.plView = pl.dataset.pl; L.sel = { type:'playlist', id:pl.dataset.pl }; L.q = ''; draw(); return; }
+    var b = e.target.closest('[data-s]'); if (!b) return; L.subj = b.dataset.s; L.plView = null; L.q = ''; if (L.sel && L.sel.type === 'playlist') L.sel = null; draw(); document.getElementById('lbx-shelves').scrollTop = 0; };
+  box.querySelectorAll('[data-v]').forEach(function(el){ el.onclick = function(){ L.view = el.dataset.v; if (L.view !== 'cc') loadMap(); draw(); }; });
+  document.getElementById('lbx-shelves').onclick = function(e){
+    var ps = e.target.closest('[data-plsel]'); if (ps) { L.sel = (L.sel && L.sel.type === 'playlist' && L.sel.id === ps.dataset.plsel) ? null : { type:'playlist', id:ps.dataset.plsel }; draw(); return; }
+    var pd = e.target.closest('[data-pldel]'); if (pd) { if (pd.dataset.sure) { call('libDeletePlaylist', tok(), pd.dataset.pldel).then(function(p){ L.pls = p; L.plView = null; L.sel = null; draw(); toast('Playlist deleted.'); }).catch(function(x){ toast('Not deleted: ' + x, false, true); }); } else { pd.dataset.sure = '1'; pd.textContent = 'Press again to delete'; } return; }
+    var l = e.target.closest('.lvl'); if (l) { var st = l.dataset.st, lv = +l.dataset.l, k = L.subj + '|' + st;
+      if (L.sel && L.sel.type === 'level' && L.sel.subj === L.subj && L.sel.st === st && L.sel.lv === lv) { L.sel = null; L.open[k] = 0; } else { L.sel = { type:'level', subj:L.subj, st:st, lv:lv }; L.open[k] = lv; } draw(); return; }
+    var c = e.target.closest('.card'); if (c) { var code = c.dataset.c; L.sel = (L.sel && L.sel.type === 'card' && L.sel.code === code) ? null : { type:'card', code:code, subj:c.dataset.sj, st:c.dataset.st, lv:CARD[code].lv }; draw(); } };
+  box.querySelectorAll('[data-a]').forEach(function(el){ el.onclick = function(){ doAct(el.dataset.a); }; });
+}
+function setSync(state, text){ var s = document.getElementById('lbx-sync'); if (!s) return; s.className = 'sync' + (state ? ' ' + state : ''); s.lastChild.textContent = text; }
+function toast(msg, undo, err){ var el = document.getElementById('lbx-toast'); if (!el) return; el.hidden = false; el.className = 'toast' + (err ? ' err' : ''); el.innerHTML = '<span>' + esc(msg) + '</span>' + (undo ? '<button type="button">Undo</button>' : '');
+  if (undo) el.querySelector('button').onclick = doUndo; clearTimeout(L.toastT); L.toastT = setTimeout(function(){ el.hidden = true; L.undo = null; }, err ? 9000 : 30000); }
+function apply(req, done){
+  L.busy++; setSync('busy', 'Saving…');
+  call('libApply', tok(), req).then(function(r){ L.busy--; merge(r); L.undo = r.undo; if (done) done(r); draw(); setSync('', 'All saved'); toast(r.msg, !!r.undo); loadHist(); })
+    .catch(function(e){ L.busy--; draw(); setSync('err', 'Not saved'); toast('Not saved: ' + e, false, true); });
+}
+function merge(r){ var ix = {}; L.ros.boys.forEach(function(b){ ix[b.id] = b; });
+  Object.keys(r.changed || {}).forEach(function(sid){ var c = r.changed[sid], b = ix[sid]; if (!b) return;
+    if (c.key) { if (c.place) b.place[c.key] = c.place; else delete b.place[c.key]; }
+    if ('grade' in c) b.grade = c.grade;
+    if (c.picks) { var P = L.ros.picks[sid] = L.ros.picks[sid] || []; (c.picks.add || []).forEach(function(id){ if (P.indexOf(id) < 0) P.push(id); }); (c.picks.remove || []).forEach(function(id){ var i = P.indexOf(id); if (i >= 0) P.splice(i, 1); }); } }); }
+function doAct(a){
+  var p = plan();
+  if (a === 'plform') { L.plForm = true; draw(); var i = document.getElementById('lbx-pln'); if (i) i.focus(); return; }
+  if (a === 'plcancel') { L.plForm = false; draw(); return; }
+  if (a === 'plsave') { var w = document.getElementById('lbx-plw').value, nm = document.getElementById('lbx-pln').value.trim(), old = L.pls.filter(function(x){ return x.id === w; })[0];
+    var req = old ? { id:old.id, name:nm || old.name, cards:old.cards.concat(p.assign.filter(function(c){ return old.cards.indexOf(c) < 0; })) } : { name:nm, cards:p.assign };
+    setSync('busy', 'Saving…'); call('libSavePlaylist', tok(), req).then(function(list){ L.pls = list; L.plForm = false; draw(); setSync('', 'All saved'); toast(old ? 'Added to “' + old.name + '”.' : 'Saved the playlist “' + nm + '”.'); }).catch(function(x){ setSync('err', 'Not saved'); toast('Not saved: ' + x, false, true); }); return; }
+  var t = ticked().map(function(b){ return b.id; }); if (!t.length || !L.sel) return;
+  if (a === 'place' && p.place) apply({ action:'place', boys:t, key:p.place.key, level:p.place.level });
+  else if (a === 'placechm') apply({ action:'place', boys:t, key:'CHM', level:+document.getElementById('lbx-chm').value });
+  else if (a === 'assign' && p.assign.length) apply({ action:'assign', boys:t, cards:p.assign, due:dueDate((document.getElementById('lbx-due') || {}).value) });
+  else if (a === 'block' && p.block) apply({ action:'block', boys:t, cards:[p.block], minutes:+document.getElementById('lbx-min').value });
+  else if (a === 'pass' && p.pass.length) apply({ action:'pass', boys:t, cards:p.pass });
+}
+/* ---------- one-tap report cards (printable; nothing is saved) ---------- */
+function reportCards(){
+  var boys = ticked(); if (!boys.length) return;
+  var w = window.open('', '_blank'); if (!w) { toast('Your browser blocked the report window. Allow pop-ups for this page and try again.', false, true); return; }
+  w.document.write('<p style="font:16px system-ui;padding:20px">Making ' + boys.length + ' report cards…</p>');
+  call('libMap', tok()).then(function(m){ L.map = m; L.mapAt = Date.now();
+    var d = new Date(), h = '<!doctype html><html><head><meta charset="utf-8"><title>Report cards</title><style>body{font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;color:#16233D;margin:0;padding:24px}h1{font:700 22px Georgia,serif;margin:0}h2{font:700 15px system-ui;margin:16px 0 6px}.card{page-break-after:always;max-width:760px;margin:0 auto 40px}.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:3px solid #E3A72F;padding-bottom:8px}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #E2DED4;padding:6px 8px;text-align:left}th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#5B6880}.muted{color:#5B6880}.pb{margin:20px 0}button{font:600 14px system-ui;padding:8px 14px;border-radius:8px;border:1px solid #16274A;background:#16274A;color:#fff}@media print{.pb{display:none}}</style></head><body><div class="pb"><button onclick="window.print()">Print</button></div>';
+    boys.forEach(function(b){ var r = m.boys[b.id] || {}; r.prog = r.prog || {}; r.stuck = r.stuck || []; r.month = r.month || {}; r.recent = r.recent || []; var dd = daysAgo(r.last);
+      h += '<div class="card"><div class="top"><h1>' + esc(b.name) + '</h1><span class="muted">' + (b.grade != null ? (b.grade ? 'Grade ' + b.grade : 'Kindergarten') + ' · ' : '') + d.toLocaleDateString([], { month:'long', day:'numeric', year:'numeric' }) + '</span></div>';
+      h += '<h2>Where he is</h2><table><tr><th>Subject</th><th>Level</th><th>Against grade</th><th>This level</th></tr>';
+      MAPCOLS.forEach(function(c){ var p = b.place[c[0]] || levelOf(b, c[0]); if (!p || !p.lv) return; var exp = b.grade != null ? b.grade + 1 : null, dl = exp != null && !/^K:/.test(c[0]) ? p.lv - exp : null, pr = r.prog[c[0]];
+        h += '<tr><td>' + c[1] + '</td><td>Level ' + p.lv + (p.by === 'default' ? ' <span class="muted">(not set yet)</span>' : '') + '</td><td>' + (dl == null ? '' : dl > 0 ? dl + ' ahead' : dl === 0 ? 'on grade' : (-dl) + ' below') + '</td><td>' + (pr ? pr[0] + ' of ' + pr[1] + ' lessons' : '') + '</td></tr>'; });
+      h += '</table><h2>Mastered in the last 30 days</h2>' + (Object.keys(r.month).length ? '<table>' + Object.keys(r.month).map(function(s){ return '<tr><td>' + esc(s) + '</td><td>' + r.month[s] + ' lesson' + (r.month[s] === 1 ? '' : 's') + '</td></tr>'; }).join('') + '</table><p class="muted">Most recent: ' + esc(r.recent.join(', ')) + '</p>' : '<p class="muted">Nothing mastered in the last 30 days.</p>');
+      h += '<h2>Needs practice</h2>' + (r.stuck.length ? '<ul>' + r.stuck.map(function(s){ return '<li>' + esc(s[2]) + ' <span class="muted">(' + s[1] + ' misses)</span></li>'; }).join('') + '</ul>' : '<p class="muted">Not stuck on anything.</p>');
+      var pk = L.ros.picks[b.id] || []; h += '<h2>Assigned to him</h2>' + (pk.length ? '<ul>' + pk.map(function(id){ return '<li>' + esc(CARD[id] ? CARD[id].title : id) + '</li>'; }).join('') + '</ul>' : '<p class="muted">Nothing assigned right now.</p>');
+      h += '<p class="muted">Last active: ' + (dd == null ? 'no work saved yet' : dd === 0 ? 'today' : dd + ' days ago') + ' · ' + (r.mastered || 0) + ' lessons mastered in all.</p></div>'; });
+    w.document.open(); w.document.write(h + '</body></html>'); w.document.close();
+  }).catch(function(e){ w.document.body.innerHTML = '<p style="font:16px system-ui;padding:20px">Could not make the report cards: ' + esc(e) + '</p>'; });
+}
+/* ---------- Mastery Map + Needs you ---------- */
+var MAPCOLS = [['MATH','Math','Learning|Math'],['READ','Reading','Learning|Reading'],['LANG','Writing','Learning|Writing & Language'],['SCI','Science','Learning|Science'],['SOC','Social Studies','Learning|Social Studies'],['HEB','Lashon Hakodesh','Torah|Kriyah & Lashon Hakodesh'],['K:KRI','Kriyah','Torah|Kriyah & Lashon Hakodesh'],['K:CHU','Chumash','Torah|Chumash & Mefarshim'],['K:RAS','Rashi','Torah|Chumash & Mefarshim'],['K:MSH','Mishnayos','Torah|Mishnah & Gemara'],['K:GEM','Gemara','Torah|Mishnah & Gemara']];
+function daysAgo(ms){ if (!ms) return null; return Math.floor((Date.now() - ms) / 864e5); }
+function inGroupFilter(b){ var g = L.mapGroup; if (g == null || g === '') return true; var G = L.ros.groups[+g]; return !G || G.sids.indexOf(b.id) >= 0; }
+function groupSelect(){ return '<select id="lbx-mg" aria-label="Show"><option value="">Everyone</option>' + (L.ros.groups || []).map(function(g, i){ return '<option value="' + i + '"' + (String(L.mapGroup) === String(i) ? ' selected' : '') + '>' + esc(g.name) + '</option>'; }).join('') + '</select>'; }
+function mapHTML(){
+  if (!L.map) return '<h2>Mastery Map</h2><div class="empty">' + (L.mapErr ? 'The map did not load: ' + esc(L.mapErr) : 'Reading every boy\'s progress…') + '</div>';
+  var h = '<h2>Mastery Map</h2><div class="row" style="justify-content:space-between"><span style="color:var(--soft)">Each square: his level against his grade, and how much of that level he has mastered. Tap a square to open the Command Center with that boy and subject.</span>' + groupSelect() + '</div>';
+  h += '<div class="row" style="margin-top:8px;font-size:12px;color:var(--soft);gap:14px"><span><b style="color:var(--good)">■</b> ahead of grade</span><span><b>■</b> on grade</span><span><b style="color:var(--warn)">■</b> 1 below</span><span><b style="color:var(--bad)">■</b> 2 or more below</span><span>no grade on file: grey</span></div>';
+  h += '<div class="tw"><table class="mm"><thead><tr><th>Boy</th>' + MAPCOLS.map(function(c){ return '<th>' + c[1] + '</th>'; }).join('') + '<th>Last active</th><th>Stuck</th></tr></thead><tbody>';
+  L.ros.boys.filter(function(b){ return !b.test && inGroupFilter(b); }).forEach(function(b){ var m = L.map.boys[b.id] || { prog:{}, stuck:[] }, d = daysAgo(m.last);
+    h += '<tr><td><b>' + esc(b.name) + '</b> <span style="color:var(--soft)">' + (b.grade != null ? 'G' + b.grade : '') + '</span></td>';
+    MAPCOLS.forEach(function(c){ var p = b.place[c[0]] || (c[0] === 'K:CHU' && b.place.CHM ? { lv:b.place.CHM.lv, chm:1 } : null) || levelOf(b, c[0]); if (!p || !p.lv) { h += '<td><button class="c-none" data-mb="' + esc(b.id) + '" data-ms="' + esc(c[2]) + '">–</button></td>'; return; }
+      var cls = 'c-on'; if (!p.chm && b.grade != null) { var dlt = p.lv - (b.grade + 1); cls = dlt > 0 ? 'c-ahead' : dlt === 0 ? 'c-on' : dlt === -1 ? 'c-below' : 'c-far'; } else if (b.grade == null) cls = 'c-none';
+      var pr = m.prog[c[0]]; h += '<td><button class="' + cls + '" data-mb="' + esc(b.id) + '" data-ms="' + esc(c[2]) + '"' + (p.by === 'default' ? ' style="opacity:.55" title="Default: grade + 1. No one has set this yet."' : '') + '>' + (p.chm ? 'Ch ' : 'L') + p.lv + (pr ? '<small>' + pr[0] + '/' + pr[1] + '</small>' : '') + '</button></td>'; });
+    h += '<td>' + (d == null ? '–' : d === 0 ? 'today' : d + ' d') + '</td><td>' + (m.stuck.length ? '<span class="pill">' + m.stuck.length + '</span>' : '') + '</td></tr>'; });
+  return h + '</tbody></table></div>';
+}
+function needsHTML(){
+  if (!L.map) return '<h2>Needs you</h2><div class="empty">' + (L.mapErr ? 'Did not load: ' + esc(L.mapErr) : 'Looking for boys who are stuck or quiet…') + '</div>';
+  var q = L.map.quietDays || 5, items = [], never = [];
+  L.ros.boys.filter(function(b){ return !b.test && inGroupFilter(b); }).forEach(function(b){ var m = L.map.boys[b.id] || { stuck:[] }, d = daysAgo(m.last);
+    m.stuck.forEach(function(s){ items.push({ b:b, kind:'stuck', code:s[0], fails:s[1], name:s[2] }); });
+    (m.overdue || []).forEach(function(o){ items.push({ b:b, kind:'overdue', code:o[0], due:o[1], name:o[2] }); });
+    if (d != null && d >= q) items.push({ b:b, kind:'quiet', days:d }); else if (d == null) never.push(b); });
+  var h = '<h2>Needs you</h2><div class="row" style="justify-content:space-between"><span style="color:var(--soft)">Boys with an overdue lesson, stuck on a lesson (3+ misses, not mastered), or with no work for ' + q + '+ days.</span>' + groupSelect() + '</div><div style="margin-top:10px">';
+  var nv = never.length ? '<div class="need"><div class="who"><b>' + never.length + ' boy' + (never.length === 1 ? ' has' : 's have') + ' not saved any work yet</b><small>' + esc(never.slice(0, 12).map(function(b){ return b.name; }).join(', ') + (never.length > 12 ? ', …' : '')) + '</small></div><button class="ab" data-na="never">Tick them in the Command Center</button></div>' : '';
+  L.needNever = never;
+  if (!items.length) return h + '<div class="empty">Nobody is stuck or quiet right now.</div>' + nv + '</div>';
+  items.sort(function(a, b){ var o = { overdue:0, stuck:1, quiet:2, never:3 }; return o[a.kind] - o[b.kind] || (b.fails || b.days || 0) - (a.fails || a.days || 0); });
+  items.slice(0, 120).forEach(function(it, i){ h += '<div class="need"><div class="who"><b>' + esc(it.b.name) + '</b> ' + (it.kind === 'overdue' ? '<span class="pill">overdue</span><small>“' + esc(it.name) + '” was due ' + esc(it.due) + ' and is not mastered yet</small>' : it.kind === 'stuck' ? '<span class="pill">stuck</span><small>Missed “' + esc(it.name) + '” ' + it.fails + ' times · ' + esc(it.code) + '</small>' : it.kind === 'quiet' ? '<span class="pill q">quiet</span><small>No work saved for ' + it.days + ' days</small>' : '<span class="pill q">no work yet</span><small>Has not saved any work</small>') + '</div>'
+    + ((it.kind === 'stuck' || it.kind === 'overdue') && CARD[it.code] && CARD[it.code].live ? '<button class="ab" data-na="assign" data-i="' + i + '">Assign it again</button>' : '') + '<button class="ab" data-na="open" data-i="' + i + '">Open in Command Center</button></div>'; });
+  L.needItems = items; return h + nv + '</div>';
+}
+function wireView(){
+  box.querySelector('[data-x=close]').onclick = closeLib;
+  var px = box.querySelector('[data-x=pfx]'); if (px) px.onclick = pfxOpen;
+  box.querySelectorAll('[data-v]').forEach(function(el){ el.onclick = function(){ L.view = el.dataset.v; if (L.view !== 'cc') loadMap(); draw(); }; });
+  var mg = document.getElementById('lbx-mg'); if (mg) mg.onchange = function(){ L.mapGroup = mg.value; draw(); };
+  var v = document.getElementById('lbx-view');
+  v.onclick = function(e){ var c = e.target.closest('[data-mb]'); if (c) { L.tick = {}; L.tick[c.dataset.mb] = 1; L.subj = c.dataset.ms; L.plView = null; L.sel = null; L.q = ''; L.view = 'cc'; draw(); return; }
+    var n = e.target.closest('[data-na]'); if (!n) return;
+    if (n.dataset.na === 'never') { L.tick = {}; (L.needNever || []).forEach(function(b){ L.tick[b.id] = 1; }); L.view = 'cc'; draw(); return; }
+    var it = L.needItems[+n.dataset.i];
+    if (n.dataset.na === 'open') { L.tick = {}; L.tick[it.b.id] = 1; L.view = 'cc'; if (it.code && CARD[it.code]) { var s = L.cat.strands[CARD[it.code].strand]; L.subj = s.wing + '|' + s.subj; L.sel = { type:'card', code:it.code, subj:L.subj, st:s.name, lv:CARD[it.code].lv }; L.open[L.subj + '|' + s.name] = CARD[it.code].lv; } draw(); return; }
+    if (n.dataset.na === 'assign') apply({ action:'assign', boys:[it.b.id], cards:[it.code], note:'Try this one again' }); };
+}
+function dueDate(v){ if (!v) return ''; var d = new Date(); if (v === 'fri') { var add = (5 - d.getDay() + 7) % 7; d.setDate(d.getDate() + (add || 7)); } else d.setDate(d.getDate() + Number(v)); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function doUndo(){ if (!L.undo) return; var u = L.undo; L.undo = null; apply(u); }
+})();
+</script>

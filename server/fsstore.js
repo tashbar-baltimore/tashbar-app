@@ -46,13 +46,31 @@ class FsServer {
         const nChunks = Math.ceil(rows.length / per); if (shifted) for (let c = Math.floor((shifted - 1) / per); c < nChunks + 1; c++) chunks[c] = 1;
         Object.keys(chunks).map(Number).forEach(c => { const slice = rows.slice(c * per, (c + 1) * per); const ref = self.tabRef(b, t).collection('chunks').doc('c' + c); if (slice.length) { const body = pack(slice); if (body.length > 950000) throw new Error('A block of rows in ' + t + ' is too large to store.'); tx.set(ref, { rows: body }); } else tx.delete(ref); });
         tx.set(self.tabRef(b, t), { ver: (tab.ver || 0) + 1, nRows: rows.length, per, text: tab.text || {} }); }
-      dirtyCache.forEach(k => { const e = store.cache[k], ref = db.collection('cache').doc(ck(self.ns + '|' + k)); if (e) tx.set(ref, { k, v: e.v, until: e.until, expireAt: new Date(e.until) }); else tx.delete(ref); });
+      dirtyCache.forEach(k => { const e = store.cache[k], ref = db.collection('cache').doc(ck(self.ns + '|' + k)); if (e) tx.set(ref, { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until) }); else tx.delete(ref); });
       if (store.dirtyProps) tx.set(db.collection('sys').doc('props' + (self.ns ? '_' + self.ns : '')), { map: store.props });
       return true;
     });
     if (ok) for (const key of dirtyTabs) { const i = key.indexOf('|'), tab = store.books[key.slice(0, i)].tabs[key.slice(i + 1)]; if (tab && tab.rows) this.mem.tabs[key] = { ver: (tab.ver || 0) + 1, rows: tab.rows.map(r => r.slice()) }; }
     else for (const k of Object.keys(store.read)) if (k.indexOf('tab|') === 0) delete this.mem.tabs[k.slice(4)];   /* someone else wrote: forget this instance's copies */
     return ok;
+  }
+
+  /* PRELOAD: bring every tab of the given books into this instance's memory, re-reading only tabs whose version
+     changed, plus every live cache entry of this namespace. After this a call normally runs ONCE. */
+  async preload(store, books) {
+    for (const b of books) {
+      const bd = await this.bookRef(b).get(); const names = bd.exists ? (bd.data().tabs || []) : [];
+      const metas = await this.bookRef(b).collection('tabs').get(); const meta = {}; metas.forEach(d => { meta[decodeURIComponent(d.id)] = d.data(); });
+      const tabs = {}; store.books[b] = { tabs, order: names.slice() }; store.read['book|' + b] = 0;
+      await Promise.all(names.map(async t => { const key = b + '|' + t, m = meta[t] || { ver: 0, nRows: 0, per: perFor(t), text: {} }; let hit = this.mem.tabs[key];
+        if (!hit || hit.ver !== (m.ver || 0)) { const cs = await this.tabRef(b, t).collection('chunks').get(); const parts = []; cs.forEach(c => { parts[Number(c.id.slice(1))] = unpack(c.data().rows); });
+          const rows = []; for (let k = 0; k < parts.length; k++) if (parts[k]) parts[k].forEach((r, j) => { rows[k * (m.per || perFor(t)) + j] = r; }); for (let k = 0; k < rows.length; k++) if (!rows[k]) rows[k] = [];
+          hit = this.mem.tabs[key] = { ver: m.ver || 0, rows }; }
+        tabs[t] = { rows: hit.rows, shared: true, text: Object.assign({}, m.text || {}), per: m.per || perFor(t), ver: m.ver || 0 }; store.read['tab|' + key] = m.ver || 0; }));
+    }
+    if (global.gc) global.gc();
+    const now = Date.now(); if (!this.memCache || now - this.memCache.at > 5000) { const q = await this.db.collection('cache').where('ns', '==', this.ns).get(); const c = {}; q.forEach(d => { const x = d.data(); if (x.until > now) c[x.k] = { v: x.v, until: x.until }; }); this.memCache = { at: now, c }; }
+    Object.assign(store.cache, this.memCache.c); store.cacheComplete = true;
   }
 
   /* Run one server function to the end. Returns { result } or { error }, plus how many loads and reruns it took. */
@@ -63,10 +81,11 @@ class FsServer {
       const store = { lazy: true, books: {}, cache: {}, props: Object.assign({}, props), dirty: {}, read: {}, needs: [] };
       /* start with the books and tabs this function needed last time, so it usually runs once or twice instead of once per tab */
       const loaded = ((this.hints || (this.hints = {}))[fn] || []).slice();
-      for (let pass = 0; pass < 40; pass++) {
+      for (let pass = 0; pass < 400; pass++) {
         /* fresh copies of what is loaded so far (a rerun must not see the last run's writes) */
         store.dirty = {}; store.dirtyRows = {}; store.dirtyCache = {}; store.dirtyBooks = {}; store.shifted = {}; store.dirtyProps = 0; store.needs = []; store.props = Object.assign({}, props); store.cache = {}; store.books = {}; store.read = {};   /* nothing a half-finished run wrote may leak into the next run: not rows, not cache entries, not settings */
-        for (const n of loaded) { try { await this.load(store, n); } catch (e) { throw new Error('loading ' + n.kind + ' ' + n.key + ': ' + (e.message || e)); } }
+        if (this.opts.preload) { const bs = [props.SCHOOL_STAGING_DATABASE_ID, props.CANTEEN_SHEET_ID].filter(Boolean); await this.preload(store, bs); }
+        for (const n of loaded) { if (this.opts.preload && n.kind === 'tab' && store.books[n.key.split('|')[0]]) continue; try { await this.load(store, n); } catch (e) { throw new Error('loading ' + n.kind + ' ' + n.key + ': ' + (e.message || e)); } }
         const rt = createRuntime({ store, appUrl: this.opts.appUrl, packs: this.opts.packs }); runs++;
         let out, err = null; try { out = rt.call(fn, args); } catch (e) { err = e; }
         if (store.needs.length) { const seen = {}; loaded.forEach(n => { seen[n.kind + n.key] = 1; }); const fresh = store.needs.filter(n => !seen[n.kind + n.key] && (seen[n.kind + n.key] = 1)); if (!fresh.length && err && err.__need) throw new Error('could not load ' + err.message); for (const n of fresh) { loaded.push(n); loads++; } if (fresh.length) continue; }

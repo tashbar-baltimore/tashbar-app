@@ -10,7 +10,16 @@
    - PF_LIVE_GRADES = [] (07 PATHFINDER BUILD PROMPT v4, replaces PF.LIVE): an empty list means only TEST- boys can open it. A boy who
      is not a TEST boy sees Pathfinder only if his grade (K = 0) is in the list, and is given ONLY Approved questions with no hold.
      TEST boys keep getting Draft questions, and their screens say "draft". Changing the list needs a Head of School DECISION in the LOG. */
-var PF_LIVE_GRADES = [];
+/* PF-BUILD-V8 Stage 9, DAY 1 (HoS DECISION 1634-ET; 12/12 PASS 2026-11-16): grades 3, 4, 5 from the next school day, 2026-11-17
+   (school time zone), so nothing opens tonight. Day 3 adds 6,7,8 and day 5 adds K,1,2 ONLY after the daily pf_pilot_analyze_v6 --live
+   check, each with a LOG NOTE (PF-LIVE-RUN1). To stop new boys at once: PF_PAUSE_NEW = true. */
+var PF_LIVE_START = '2026-11-17';
+var PF_LIVE_GRADES = [0, 1, 2, 3, 4, 5, 6, 7, 8];   /* v338: Head of School 2026-11-16 ~20:25 ET: every grade K-8, live NOW (no staged 3-5 / 6-8 / K-2 days). [] = TEST boys only. */
+/* PF-BUILD-V8 Stage 9 (live start; HoS DECISION 1634-ET). PF_PAUSE_NEW: when true no NEW real boy starts Pathfinder (placed boys,
+   boys already in a session and lessons are unaffected). PF_LIVE_DRAFTS: HoS DECISION 1923-ET, real boys get Draft questions too
+   (never "held" ones); the pilot's daily PULL lines remove bad ones. */
+var PF_PAUSE_NEW = false;
+var PF_LIVE_DRAFTS = true;
 var PF = {
   VERSION: 'pf-2.2.0',
   /* v6 MASTER Stage 2 (Engine E + E2, 2026-11-12). New sections start on ENGINE_VERSION; a section remembers the engine it began
@@ -56,7 +65,8 @@ var PF = {
 
 /* ================================================================== ENGINE (pure: no Google services, tested in Node) */
 function pfSig_(x) { return 1 / (1 + Math.exp(-x)); }
-function pfGuess_(it) { return it.fmt === 'CHOICE' ? 1 / Math.max(2, 1 + (it.wrong || []).length) : 0; }
+function pfGuess_(it) { if (it.fmt === 'TAP') return it.tapC || 0;   /* PF-TAP1: tap guess rate from the engine (PathfinderTap.js) */
+  return it.fmt === 'CHOICE' ? 1 / Math.max(2, 1 + (it.wrong || []).length) : 0; }
 function pfP_(th, b, c) { return c + (1 - c) * pfSig_(th - b); }
 function pfInfo_(th, it) { var c = pfGuess_(it), s = pfSig_(th - it.b), p = c + (1 - c) * s, d = (1 - c) * s * (1 - s); return d * d / Math.max(1e-9, p * (1 - p)); }
 /* Posterior over a grid (EAP). ans: [{b, c, x}] with x 1 right / 0 wrong. Returns {theta, se}. */
@@ -110,6 +120,8 @@ function pfLz_(list, th) {
 var PF_IX_ = null;
 function pfIx_() {
   if (PF_IX_) return PF_IX_;
+  if (typeof pfTopupApply_ === 'function') pfTopupApply_();   /* v291: 4cc@ top-ups PF-B15 + PF-B16 (PathfinderTopup.js) */
+  if (typeof pftApply_ === 'function') pftApply_();   /* PF-TAP1: tap questions + new passages, all Draft (PathfinderBankTap.js) */
   var B = PF_BANK, byId = {}, bySubj = { MATH: [], READ: [], LANG: [] }, byPassage = {};
   B.items.forEach(function (it) {
     byId[it.id] = it;
@@ -120,7 +132,7 @@ function pfIx_() {
   return (PF_IX_ = { byId: byId, bySubj: bySubj, byPassage: byPassage });
 }
 /* appr: a boy who is not a TEST boy (only Approved questions with no hold). TEST boys also get Draft questions. */
-function pfItemOk_(it, appr) { if (appr) return it.status === 'Approved' && !it.hold; return it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft'; }
+function pfItemOk_(it, appr) { if (appr === 2) return (it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft') && !it.hold; if (appr) return it.status === 'Approved' && !it.hold; return it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft'; }
 function pfLadder_(subj) { var L = typeof plList_ === 'function' ? plList_(subj) : null; return (L || []).map(function (x) { return x[0]; }).filter(function (id) { return subj !== 'LANG' || /^LANG\./.test(id); }); }
 function pfSkill_(id) { return PF_BANK.skills[id] || (typeof pf5Ix_ === 'function' ? pf5Ix_().laSkills[id] : null) || null; }
 /* The highest level with enough usable questions (PF.ENGINE.ceilMin), in the subject or in one strand. */
@@ -150,6 +162,7 @@ function pfAvail_(sec, seen) {
   sec.ans.forEach(function (a) { var it = ix.byId[a.i]; skillN[it.skill] = (skillN[it.skill] || 0) + 1; if (it.passage) { if (capP && !passUsed[it.passage]) passLv[it.level] = (passLv[it.level] || 0) + 1; passUsed[it.passage] = 1; } });
   return ix.bySubj[sec.subj].filter(function (it) {
     if (!pfItemOk_(it, sec.appr) || used[it.id]) return false;
+    if (typeof pftHide_ === 'function' && pftHide_(sec, it)) return false;   /* PF-TAP1 twins: never both, tap form first (TEST only) */
     if (it.passage && passUsed[it.passage]) return false;                  /* a passage's questions come together, once */
     if (capP && it.passage && (passLv[it.level] || 0) >= pfPassCap_(it.level)) return false;   /* E: passage cap per level */
     if ((skillN[it.skill] || 0) >= pfEng_(sec.subj).perSkillMax && sec.phase === 'adaptive') return false;
@@ -164,7 +177,8 @@ function pfRelevantStrands_(sec, avail, lvl) {
 function pfPickAdaptive_(sec, seen, rnd) {
   var avail = pfAvail_(sec, seen); if (!avail.length) return null;
   var fresh = avail.filter(function (x) { return x.fresh; }); if (fresh.length) avail = fresh;  /* a retake draws questions he has not seen */
-  var lvl = pfLevelOf_(sec.theta), window = [], d;
+  var thPick = sec.pfuK && typeof pfuPickTheta_ === 'function' ? pfuPickTheta_(sec) : sec.theta;   /* v7.2 item 13 (PathfinderUx.js): K-2 TEST boys aim at estimate - 0.62 (warm-ups - 1.5); everyone else: the estimate */
+  var lvl = pfLevelOf_(thPick), window = [], d;
   for (d = 0; d <= 8 && !window.length; d++) window = avail.filter(function (x) { return Math.abs(x.it.level - lvl) <= d; });  /* on-grade first, then one level at a time */
   var counts = pfStrandCounts_(sec), strands = {};
   window.forEach(function (x) { strands[x.it.strand] = 1; });
@@ -175,7 +189,7 @@ function pfPickAdaptive_(sec, seen, rnd) {
     var pool = window.filter(function (x) { return x.it.strand === order[k] && (!last || x.it.skill !== last.skill); });
     if (sameFmt) { var vary = pool.filter(function (x) { return x.it.fmt !== sameFmt; }); if (vary.length) pool = vary; }
     if (!pool.length) continue;
-    pool.sort(function (a, b) { return pfInfo_(sec.theta, b.it) - pfInfo_(sec.theta, a.it); });
+    pool.sort(function (a, b) { return pfInfo_(thPick, b.it) - pfInfo_(thPick, a.it); });
     var top = pool.slice(0, Math.min(3, pool.length)), pick = top[Math.floor(rnd() * top.length) % top.length].it;
     return pick;
   }
@@ -226,8 +240,9 @@ function pfNext_(sec, seen, rnd) {
     else it = pfPickAdaptive_(sec, seen, rnd);
   }
   if (!it && sec.phase === 'boundary') { it = pfPickBoundary_(sec, seen, rnd); if (!it) sec.phase = 'done'; else sec.bnd.push(it.id); }
+  if (!it && sec.pfuK && typeof pfuKind_ === 'function') it = pfuKind_(sec, seen, rnd);   /* v7.2 item 13: one uncounted kind last question (K-2 TEST boys) */
   if (!it) { sec.done = true; return null; }
-  if (it.passage && sec.phase === 'adaptive') sec.queue = (pfIx_().byPassage[it.passage] || []).filter(function (id) { return id !== it.id && pfItemOk_(pfIx_().byId[id], sec.appr); });
+  if (it.passage && sec.phase === 'adaptive') sec.queue = (pfIx_().byPassage[it.passage] || []).filter(function (id) { return id !== it.id && pfItemOk_(pfIx_().byId[id], sec.appr) && !(typeof pftHide_ === 'function' && pftHide_(sec, pfIx_().byId[id], it.id)); });   /* PF-TAP1 twins */
   return it;
 }
 
@@ -267,6 +282,7 @@ function pfPointOf_(it, resp) {
 }
 /* Score one response. resp: typed text (TYPE), the chosen value (CHOICE), the tile order (ORDER) or "x,y" (POINT). Returns {x, code}. */
 function pfScore_(it, resp) {
+  if (it.fmt === 'TAP' && typeof pftScore_ === 'function') return pftScore_(it, resp);   /* PF-TAP1: tap a sentence / a word (PathfinderTap.js) */
   if (it.fmt === 'ORDER') {
     var k = pfOrderKey_(resp); if (k === pfOrderKey_(it.ans)) return { x: 1, code: '' };
     var wo = (it.wrong || []).filter(function (p) { return pfOrderKey_(p[0]) === k; })[0];   /* a coded wrong order is named */
@@ -437,7 +453,7 @@ function pfSimulate_(n, subj, seed, o) {
 /* What the page may see of an item: never the answer key. Choice order is shuffled once and kept, so a resume shows the same screen. */
 function pfShuffle_(arr, seedStr) { var h = 0, i; for (i = 0; i < seedStr.length; i++) h = (h * 31 + seedStr.charCodeAt(i)) | 0; var a = arr.slice(); for (i = a.length - 1; i > 0; i--) { h = (h * 1103515245 + 12345) | 0; var j = Math.abs(h) % (i + 1), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 function pfPresent_(it, sec, salt) {
-  var out = { id: it.id, fmt: it.fmt, stem: it.stem, say: it.say || '', pic: it.pic || '', show: it.show || '', cmode: it.cmode || 'text', screen: it.screenNote || '', unit: it.unit || '', audioOnly: !!it.audioOnly, level: it.level, strand: it.strand, draft: it.status !== 'Approved', subject: it.subject };
+  var out = { id: it.id, fmt: it.fmt, stem: it.stem, say: it.say || '', pic: it.pic || '', show: it.show || '', cmode: it.cmode || 'text', screen: it.screenNote || '', unit: it.unit || '', audioOnly: !!it.audioOnly, level: it.level, strand: it.strand, draft: it.status !== 'Approved' && !(sec && sec.appr), subject: it.subject };   /* draft tag / 'art coming' only for TEST boys (appr 0); live boys never see it */
   if (it.labels) out.labels = it.labels;
   out.minMs = pfRapidMs_(it, pfEngOf_(sec));
   if (it.fmt === 'CHOICE') out.choices = pfShuffle_([it.ans].concat((it.wrong || []).map(function (w) { return w[0]; })), it.id + '|' + salt);
@@ -445,6 +461,7 @@ function pfPresent_(it, sec, salt) {
   if (it.fmt === 'POINT') out.grid = (it.grid || [0, 8]).slice();
   if (it.fmt === 'TYPE' && /\d\s*R\s*\d/.test(String(it.ans))) out.rem = true;  /* "write the remainder with R": the pad shows an R key */
   if (it.passage) { var P = PF_BANK.passages[it.passage]; if (P) { out.passage = { id: P.id, title: P.title, text: P.text, listen: !!P.listen, kind: P.kind || '', sources: P.sources || 0 }; if (P.extras) out.passage.extras = P.extras; } }
+  if (it.fmt === 'TAP' && typeof pftPresent_ === 'function') pftPresent_(it, out);   /* PF-TAP1: the tap units with offsets, no key */
   out.n = sec.ans.length + 1;
   return out;
 }
@@ -454,8 +471,11 @@ function pfDoGet_(e) {
   /* v5: the screens for the v5 stops live in PathfinderMore.html, added before </body> */
   var html = HtmlService.createHtmlOutputFromFile('PathfinderPage').getContent(), more = '';
   try { more = HtmlService.createHtmlOutputFromFile('PathfinderMore').getContent(); } catch (x) {}
+  try { if (typeof pfkStart === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderKodeshUI').getContent(); } catch (x) {}   /* Kodesh Pathfinder screens (PathfinderKodesh.js; TEST boys only) */
+  try { if (typeof pftApply_ === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderTapUI').getContent(); } catch (x) {}   /* PF-TAP1: tap-question screen (TEST boys only get tap questions) */
+  try { if (typeof pfuView_ === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderUxPage').getContent(); } catch (x) {}   /* v7.2 Stage 5 screens (PathfinderUx.js); they act only when the server marks a TEST boy */
   if (more) html = html.replace('</body>', function () { return more + '</body>'; });   /* a function: "$" in the script stays as written */
-  return HtmlService.createHtmlOutput(tlTheme_(html, (e && e.parameter && e.parameter.report) ? 'staff' : 'boy'))
+  return HtmlService.createHtmlOutput(tlTheme_(html, (e && e.parameter && (e.parameter.report || e.parameter.rebbe)) ? 'staff' : 'boy'))   /* &rebbe=: the Read to Rebbe card (staff; PathfinderKodeshRebbe.js) */
     .setTitle('Tashbar Learning · Pathfinder')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DEFAULT);
@@ -475,10 +495,14 @@ function pfLiveGrade_(g) { return g != null && g !== '' && PF_LIVE_GRADES.indexO
 function pfEnabled_(sid, r) {
   if (pfIsTest_(sid)) return true;
   if (!PF_LIVE_GRADES.length) return false;
+  if (PF_PAUSE_NEW && !pfActive_(sid)) return false;   /* Stage 9: paused = no NEW boy starts */
   var S = pfActive_(sid), g = S && S.grade !== '' ? Number(S.grade) : pfGrade_(r || { id: sid }, null);
   return pfLiveGrade_(g);
 }
-function pfAppr_(sid) { return pfIsTest_(sid) ? 0 : 1; }
+function pfAppr_(sid) { return pfIsTest_(sid) ? 0 : (PF_LIVE_DRAFTS ? 2 : 1); }   /* 0 TEST (everything), 1 real boy Approved only, 2 real boy Approved/Reviewed/Draft, never held */
+/* PF-BUILD-V8 Stage 9: the v7.2 build (sound check, intro and day-1 screens, one cha-ching per section, first-lesson check, tap) runs
+   for TEST boys and for a real boy whose grade is live (PF_LIVE_GRADES). With PF_LIVE_GRADES = [] this is TEST boys only, as before. */
+function pfV8On_(sid) { return pfIsTest_(sid) || (PF_LIVE_GRADES.length > 0 && pfEnabled_(sid)); }
 function pfKid_(token) { var s = msSession_(token); if (s.role !== 'kid') throw new Error('Please sign in with your own code.'); return s; }
 function pfStaff_(token) { var s = msSession_(token); if (s.role !== 'staff') throw new Error('Staff only. Sign in with a staff code.'); return s; }
 function pfWho_(s) { return s && s.who ? s.who.name + ' (' + s.who.id + ')' : 'staff'; }
@@ -538,6 +562,7 @@ function pfView_(S, r, extra) {
     jar: sec && !sec.done && PF.CORE.indexOf(k) >= 0 ? { cents: sec.jar || PF_PAY.JAR } : null, breakReadyS: PF.BREAK.readyS,
     v5: typeof pf5View_ === 'function' ? pf5View_(S) : null };
   if (extra) Object.keys(extra).forEach(function (x) { v[x] = extra[x]; });
+  if (typeof pfuView_ === 'function' && pfV8On_(S.sid)) v.pfu = pfuView_(S, r, v);   /* v7.2 Stage 5 (PathfinderUx.js): TEST boys only; a real boy's view is unchanged */
   return v;
 }
 function pfMe_(token) {
@@ -556,7 +581,7 @@ function pfHello(token) {
   var jars = road ? PF.CORE.filter(function (k) { return road[k].status === 'going'; }).length : 0;
   var more = last && pfIsTest_(s.sid) && typeof pf5Left_ === 'function' ? pf5Left_(last) : 0;   /* v5: TEST boys come back for the v5 stops */
   return { show: !last || last.status === 'active' && done < PF.CORE.length || (last.status === 'core' && more > 0), started: !!last, done: done, of: PF.CORE.length, left: PF.CORE.length - done, jars: jars, draft: pfIsTest_(s.sid), more: more,
-    confirm: pfIsTest_(s.sid) ? pfConfirmPending_(all) : [] };   /* E2: subjects whose next lesson opens with the 5-question check */
+    confirm: pfV8On_(s.sid) ? pfConfirmPending_(all) : [] };   /* E2: subjects whose next lesson opens with the 5-question check */
 }
 function pfStart(token) {
   var r = pfMe_(token);
@@ -568,6 +593,7 @@ function pfStart(token) {
     if (S.state.pause && S.state.pause.kind === 'slow' && now >= S.state.pause.until) S.state.pause = null;
     S.state.payV = S.state.payV || PF_PAY.VERSION;
     S.state.pause = pause || S.state.pause;
+    if (typeof pfuGate_ === 'function' && pfV8On_(r.id) && S.state.cursec && !S.state.pause) { var gv = pfuGate_(S, r, S.state.cursec, now); if (gv) return gv; }   /* v7.2 item 18: back in the middle of a section = sound check first (TEST boys) */
     pfSaveSession_(S);
     return pfView_(S, r);
   });
@@ -593,6 +619,7 @@ function pfOpen(token, subject) {
     var pause = pfSitting_(S, now); if (pause) { S.state.pause = pause; pfSaveSession_(S); return pfView_(S, r); }
     if (S.state.pause && (S.state.pause.kind === 'slow' || S.state.pause.kind === 'stretch')) { pfSaveSession_(S); return pfView_(S, r); }
     S.state.pause = null; var extra = {}; S.state.payV = S.state.payV || PF_PAY.VERSION;
+    if (typeof pfuGate_ === 'function' && pfV8On_(r.id)) { var gv = pfuGate_(S, r, subject, now); if (gv) return gv; }   /* v7.2 item 18: sound check before every sitting (TEST boys) */
     if (v5 && subject !== 'LANG') return pf5Open_(S, r, subject, now);
     if (v5 && !pf5ReadyFor_(S, subject)) throw new Error('That part of the road opens later.');
     var sec = S.state.sections[subject];
@@ -604,8 +631,10 @@ function pfOpen(token, subject) {
       if (PF.CORE.indexOf(subject) >= 0) sec.jar = PF_PAY.JAR;
       else { var rl = pf5LevelOf_(S, 'READ'); if (rl) { sec.startLevel = rl; sec.mu = sec.theta = pfThetaOfLevel_(rl); sec.sd = sec.se = PF.ENGINE.sdCurrent; } }   /* Language Arts starts at his Reading estimate; no jar */
       extra.reveal = subject;
+      if (typeof pfuSecInit_ === 'function') pfuSecInit_(S, r, sec, subject);   /* v7.2 Stage 5: marks TEST boys' sections only */
     }
     S.state.cursec = subject; sec.appr = pfAppr_(r.id);
+    if (typeof pftSecHook_ === 'function') pftSecHook_(S, sec);   /* PF-TAP1: "no tap on this device" setting (TEST only) */
     if (!sec.cur) { var it = pfNext_(sec, pfSeen_(S)); if (!it) return pfFinish_(S, r, subject, extra); pfSetCur_(sec, it, now); }
     pfSaveSession_(S);
     return pfView_(S, r, extra);
@@ -619,12 +648,15 @@ function pfAnswer(token, a) {
     var k = S.state.cursec, sec = k && S.state.sections[k];
     if (!sec || !sec.cur) return pfView_(S, r);                               /* nothing pending (a double tap): just show where he is */
     if (!a || String(a.item) !== sec.cur.i) return pfView_(S, r, { stale: true });
+    if (sec.pfuKq && sec.cur.i === sec.pfuKq && typeof pfuKindAnswer_ === 'function') return pfuKindAnswer_(S, r, k, sec, a, now);   /* v7.2 item 13: the kind last question is saved, never scored or paid */
     sec.appr = pfAppr_(r.id);
     var it = pfIx_().byId[sec.cur.i], value = String(a.value == null ? '' : a.value).slice(0, 60), pNow = sec.cur.p, extra = {};
     var rec = pfRecord_(sec, it, value, Math.max(0, Number(a.ms) || 0), !!a.idk, a.conf === 'sure' || a.conf === 'unsure' ? a.conf : '');
+    if (it.fmt === 'TAP' && !a.idk && typeof pftLog_ === 'function') value = pftLog_(it, value, rec);   /* PF-TAP1 item 5: store the unit he tapped (index + text) */
     pfTab_('answers').appendRow([new Date(), S.id, r.id, k, sec.ans.length, it.id, it.skill, it.strand, it.level, it.fmt, value, rec.x, rec.c, rec.t, rec.r, rec.k, rec.f, Math.round(sec.theta * 100) / 100, Math.round(sec.se * 100) / 100, rec.ph === 'b' ? 'boundary' : 'adaptive', it.status !== 'Approved' ? 'draft' : '']);
     S.state.sit.last = now; rec.p = pNow;
     pfAfterAnswer_(S, r, k, sec, it, rec, extra);
+    if (typeof pfuAfter_ === 'function' && pfV8On_(r.id)) pfuAfter_(S, k, sec, rec, extra, now);   /* v7.2 Stage 5: counts the pay for the one end-of-section cha-ching; K-2 "Take your time" cap */
     if (sec.rapidRun >= PF.RAPID.run) {                                        /* 3 rapid guesses in a row */
       sec.rapidRun = 0; S.state.pause = { kind: 'slow', until: now + PF.RAPID.slowMs, section: k };
       S.flags.push({ at: new Date(now).toISOString(), by: 'pathfinder', action: 'paused: 3 rapid guesses in a row in ' + k, alert: 1 });
@@ -650,11 +682,14 @@ function pfFinish_(S, r, k, extra) {
   var sec = S.state.sections[k]; sec.done = true; sec.cur = null; S.state.cursec = null;
   var res = pfResult_(sec, pfLadder_(k)), applied = false;
   var core = PF.CORE.indexOf(k) >= 0;   /* v5: Language Arts is reported, not placed, and pays nothing */
-  if (res.status === 'done' && core) { plUpsert_(r.id, k, plMathLevel_(res.start), res.start, 'pathfinder'); applied = true; }
+  var v72 = typeof pf72On_ === 'function' && pf72On_(r.id), lockP = v72 && core && res.status === 'done' ? pf72Locked_(r.id, k) : null;   /* v7.2 Stage 2 (f), TEST only: a staff level locks */
+  if (lockP) res.flags.push('Pathfinder suggests Level ' + plMathLevel_(res.start) + '. The level staff set (Level ' + lockP.level + ', by ' + lockP.by + ') stays: it is locked.');
+  if (res.status === 'done' && core && !lockP) { plUpsert_(r.id, k, plMathLevel_(res.start), res.start, 'pathfinder'); applied = true; }
   res.applied = applied;
   /* E2: the first lesson after Pathfinder opens with a 5-question check of the placed level (TEST boys only while PF_LIVE_GRADES = []) */
-  if (applied && res.engine === 'E' && pfIsTest_(r.id)) { var cf = S.state.confirm = S.state.confirm || {}; cf[k] = { stage: 'placed', level: plMathLevel_(res.start), from: plMathLevel_(res.start), at: Date.now(), hist: [] }; }
+  if (applied && res.engine === 'E' && pfV8On_(r.id)) { var cf = S.state.confirm = S.state.confirm || {}; cf[k] = { stage: 'placed', level: plMathLevel_(res.start), from: plMathLevel_(res.start), at: Date.now(), hist: [] }; }
   var eDetail = res.engine === 'E' ? { kind: 'core', engine: 'E', placedLevel: res.placedLevel, z: res.z, seRaw: res.seRaw, lz: res.lz, cusum: res.cusum } : null;
+  if (v72) pf72LzResearch_(res, eDetail);   /* v7.2 Stage 1 (F8.1), TEST only: lz kept in detail.research only, never output */
   pfTab_('results').appendRow([new Date(), S.id, r.id, k, res.status, res.level, res.start, res.theta, res.se, JSON.stringify(res.range), res.confidence, JSON.stringify(res.strands), JSON.stringify(res.skills).slice(0, 45000), JSON.stringify(res.gaps), JSON.stringify(res.errors), JSON.stringify(res.flags), res.used, applied ? 'yes' : 'no', 'pathfinder'].concat(core ? (eDetail ? [JSON.stringify(eDetail)] : []) : [JSON.stringify({ kind: 'lang', startLevel: sec.startLevel, top2: Object.keys(res.errors).sort(function (a, b) { return res.errors[b] - res.errors[a]; }).slice(0, 2) })]));
   sec.result = { status: res.status, level: res.level, start: res.start, applied: applied, confidence: res.confidence, gaps: res.gaps };
   var road = pfRoad_(S), coreDone = core && PF.CORE.every(function (c) { return road[c].status !== 'todo' && road[c].status !== 'going'; });
@@ -805,9 +840,12 @@ function pfReport(token, sid) { tlGuard_(token, sid);
   });
   var names = {}; ['MATH', 'READ', 'LANG'].forEach(function (k) { (plList_(k) || []).forEach(function (x) { names[x[0]] = x[1]; }); });
   var codes = {}; res.forEach(function (x) { Object.keys(x.errors).forEach(function (c) { codes[c] = typeof pf5CodeName_ === 'function' ? pf5CodeName_(c) : (PF_BANK.codes || {})[c] || c; }); });
-  return { name: r.name, sid: sid, staff: pfWho_(s), live: !pfIsTest_(sid), liveGrades: PF_LIVE_GRADES.slice(), strandNames: PF.STRANDS, names: names, codes: codes, stops: PF.STOPS,
+  var out = { name: r.name, sid: sid, staff: pfWho_(s), live: !pfIsTest_(sid), liveGrades: PF_LIVE_GRADES.slice(), strandNames: PF.STRANDS, names: names, codes: codes, stops: PF.STOPS,
     notes: typeof pf5Notes_ === 'function' ? pf5Notes_(sid) : [], aboutFamilyAsk: typeof PF_X !== 'undefined' ? (PF_X.about_me || []).filter(function (x) { return x.id === 'family'; }).map(function (x) { return x.screen; })[0] || '' : '',
-    sessions: all.map(function (o) { return { id: o.id, status: o.status, kind: o.kind, grade: o.grade, created: new Date(o.created).getTime(), by: o.by, flags: o.flags, practice: o.state.practice, young: o.state.young, road: pfRoad_(o), effort: pfEffort_(o), confirm: o.state.confirm || null }; }), results: res, place: plPlacements_()[sid] || {} };
+    sessions: all.map(function (o) { return { id: o.id, status: o.status, kind: o.kind, grade: o.grade, created: new Date(o.created).getTime(), by: o.by, flags: o.flags, practice: o.state.practice, young: o.state.young, road: pfRoad_(o), effort: pfEffort_(o), confirm: o.state.confirm || null }; }), results: res, place: plPlacements_()[sid] || {}, kodesh: typeof pfkReport_ === 'function' ? pfkReport_(sid) : null };
+  try { var pd = typeof pfdReport_ === 'function' ? pfdReport_(sid) : null; if (pd) out.daily = pd; } catch (e) {}
+  if (typeof pf72On_ === 'function' && pf72On_(sid)) { pf72StripLz_(out); try { var hd = pf72HdReport_(sid); if (hd) out.hd = hd; } catch (e) {} }   /* v7.2 Stages 1 and 4 (TEST only): no lz; rule HD levels */   /* PF stage D: his daily path, climbs and booster (TEST boys only) */
+  return out;
 }
 /* Any staff member may start a retake or mark a session unreliable; logged with who and when. */
 function pfRetake(token, sid, why, unreliable) { tlGuard_(token, sid);
@@ -838,6 +876,7 @@ function pfGapsMap_() {
   return (PF_GAPS_ = out);
 }
 function pfPlanPatch_(sid, p, out) {
+  if (typeof pf72On_ === 'function' && pf72On_(sid)) return pf72PlanPatch_(sid, p, out);   /* v7.2 Stage 2 (c) (TEST only): not-yet first, shown skipped */
   Object.keys(out).forEach(function (k) {
     var o = out[k], pk = p[k]; if (!o || !o.path || !pk || pk.by !== 'pathfinder') return;
     var g = pfGapsMap_()[sid + '|' + k]; if (!g || g.start !== o.start || !g.gaps.length) return;
@@ -890,7 +929,7 @@ function pfAnsweredBy_(sid) {
   return seen;
 }
 function pfConfirmStart(token, subj) {
-  var r = pfMe_(token); subj = String(subj); if (!pfIsTest_(r.id) || PF.CORE.indexOf(subj) < 0) return null;
+  var r = pfMe_(token); subj = String(subj); if (!pfV8On_(r.id) || PF.CORE.indexOf(subj) < 0) return null;
   return pfLock_(function () {
     var S = pfConfirmSession_(r.id, subj); if (!S) return null;
     var c = S.state.confirm[subj], now = Date.now(); if (!c || c.stage === 'done') return null;
@@ -910,15 +949,16 @@ function pfConfirmStart(token, subj) {
 }
 /* answers: [{item, value}] in the order shown. Scored here; the page never sees a key. */
 function pfConfirmSave(token, subj, answers) {
-  var r = pfMe_(token); subj = String(subj); if (!pfIsTest_(r.id) || PF.CORE.indexOf(subj) < 0) throw new Error('This check is not open.');
+  var r = pfMe_(token); subj = String(subj); if (!pfV8On_(r.id) || PF.CORE.indexOf(subj) < 0) throw new Error('This check is not open.');
   return pfLock_(function () {
     var S = pfConfirmSession_(r.id, subj), c = S && S.state.confirm[subj]; if (!c || c.stage === 'done' || !c.items) throw new Error('This check is finished.');
     var got = {}; (answers || []).forEach(function (a) { if (a && a.item != null) got[String(a.item)] = String(a.value == null ? '' : a.value).slice(0, 60); });
     var marks = c.items.map(function (id) { return got[id] != null ? pfScore_(pfIx_().byId[id], got[id]).x : 0; }), right = marks.reduce(function (x, y) { return x + y; }, 0);
-    var step = pfConfirmStep_(c.stage, right, !!c.typed), from = c.level, to = Math.max(1, Math.min(9, from + step.move)), at = Date.now(), checked = c.stage === 'up' ? from + 1 : from;
+    var step = typeof pf72On_ === 'function' && pf72On_(r.id) ? pf72ConfirmStep_(S, subj, c, marks, right) : pfConfirmStep_(c.stage, right, !!c.typed), from = c.level, to = Math.max(1, Math.min(9, from + step.move)), at = Date.now(), checked = c.stage === 'up' ? from + 1 : from;
     if (to !== from) { plUpsert_(r.id, subj, to, plFirst_(subj, to), 'pathfinder'); c.level = to; }
     /* logged here, apart from his Pathfinder answers: a confirmation never changes his Pathfinder estimate */
     c.hist.push({ at: at, stage: c.stage, level: checked, typed: c.typed ? 1 : 0, right: right, of: c.items.length, items: c.items.slice(), values: c.items.map(function (id) { return got[id] == null ? '' : got[id]; }), marks: marks, log: step.log, from: from, to: to });
+    if (step.est) c.hist[c.hist.length - 1].est = step.est;   /* v7.2 item 6: the combined estimate (staff only) */
     S.flags.push({ at: new Date(at).toISOString(), by: 'pathfinder', action: step.log + ' · ' + (subj === 'READ' ? 'Reading' : 'Math') + ' check of Level ' + checked + ': ' + right + '/' + c.items.length + (to !== from ? ' · Level ' + from + ' → ' + to : '') });
     c.stage = step.next; c.items = null; c.itemsFor = ''; if (step.next === 'recheck') c.wait = 1;
     pfSaveSession_(S);
@@ -948,7 +988,7 @@ function pfSelfTest(opts) {
       var c = per[it.level] = per[it.level] || { items: 0, approved: 0, draft: 0, held: 0 }; c.items++; if (it.status === 'Approved' && !it.hold) c.approved++; else c.draft++; if (it.hold) c.held++;
       (bySkill[it.skill] = bySkill[it.skill] || []).push(it);
       if (ladder.indexOf(it.skill) < 0) out.problems.push(it.id + ': skill not on the map');
-      if (!it.wrong || !it.wrong.length) out.problems.push(it.id + ': no coded wrong answers');
+      if (it.fmt !== 'TAP' && (!it.wrong || !it.wrong.length)) out.problems.push(it.id + ': no coded wrong answers');   /* PF-TAP1: a tap question has no wrong list (any other unit is wrong) */
       (it.wrong || []).forEach(function (w) { if (!w[1] || !(PF_BANK.codes || {})[w[1]]) out.problems.push(it.id + ': undefined code ' + w[1]); });
       if (pfScore_(it, it.ans).x !== 1) out.problems.push(it.id + ': its own answer does not score right');
       (it.accept || []).forEach(function (a) { if (pfScore_(it, a).x !== 1) out.problems.push(it.id + ': accepted form "' + a + '" does not score right'); });
@@ -970,7 +1010,7 @@ function pfSelfTest(opts) {
     out[k].simulation = pfSimulate_(200, k, 11);
   });
   /* every A/B passage pair asks the same skills, in the same order */
-  var pairs = {}; Object.keys(PF_BANK.passages).forEach(function (pid) { var m = /^(.*)\.([AB])$/.exec(pid); if (m) (pairs[m[1]] = pairs[m[1]] || {})[m[2]] = (ix.byPassage[pid] || []).slice().sort().map(function (id) { return ix.byId[id].skill; }).join(','); });
+  var pairs = {}; Object.keys(PF_BANK.passages).forEach(function (pid) { var m = /^(.*)\.([AB])$/.exec(pid); if (m) (pairs[m[1]] = pairs[m[1]] || {})[m[2]] = (ix.byPassage[pid] || []).filter(function (id) { return ix.byId[id].fmt !== 'TAP'; }).sort().map(function (id) { return ix.byId[id].skill; }).join(','); });
   out.passagePairs = Object.keys(pairs).length;
   Object.keys(pairs).forEach(function (k) { var p = pairs[k]; if (!p.A || !p.B) out.problems.push(k + ': passage has no A/B partner'); else if (p.A !== p.B) out.problems.push(k + ': versions A and B ask different skills'); });
   /* answer boxes: the typed forms the v4 banks list */
@@ -982,8 +1022,11 @@ function pfSelfTest(opts) {
   ['MATH', 'READ'].forEach(function (k) { var sec = pfNewSection_(k, 4, 0, false, false, 1), it, n = 0;
     while ((it = pfNext_(sec, null, function () { return 0.3; })) && n++ < 60) { if (it.status !== 'Approved' || it.hold) { out.problems.push('a real student was given ' + it.id + ' (' + it.status + ')'); break; } pfRecord_(sec, it, it.ans, 20000, false, ''); } });
   if (opts.levels) out.levels = pfSimTable_(opts.levels);
+  if (typeof pfuSelfTest_ === 'function') { var ux = pfuSelfTest_(); out.ux = ux; ux.problems.forEach(function (x) { out.problems.push('ux: ' + x); }); }   /* v7.2 Stage 5 (PathfinderUx.js) */
   if (typeof pf5SelfTest_ === 'function') { var v5 = pf5SelfTest_(); out.v5 = v5; v5.problems.forEach(function (x) { out.problems.push('v5: ' + x); }); }
+  if (typeof pf72SelfTest_ === 'function') { var v72 = pf72SelfTest_(); out.v72 = v72; v72.problems.forEach(function (x) { out.problems.push('v7.2: ' + x); }); }   /* v7.2 Stages 1, 2, 4 unit tests */
   var pay = pfPaySelfTest_(); out.pay = pay; pay.problems.forEach(function (x) { out.problems.push('pay: ' + x); });
+  if (typeof pftSelfTest_ === 'function') { var tp = pftSelfTest_(); out.tap = tp; tp.problems.forEach(function (x) { out.problems.push('tap: ' + x); }); }   /* PF-TAP1 */
   try { ['sessions', 'answers', 'results', 'queue', 'notes'].forEach(pfTab_); out.tabs = 'PF_Sessions, PF_Answers, PF_Results, PF_Queue, PF_Notes ready'; } catch (e) { out.tabs = 'not checked: ' + e.message; }
   Logger.log(JSON.stringify(out, null, 1));
   return out;

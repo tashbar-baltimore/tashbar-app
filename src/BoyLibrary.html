@@ -1,0 +1,75 @@
+<script>
+/* BoyLibrary.html — "My Library" on the boy's home screen (server: Library.js libMyLibrary). Claude Code builder, 2026-11-16.
+   Loaded LAST in msQuestToolsBody_ (Photos.js), after DailyPath, and LAST in Speed.js TL_PART_FILES (KEEP IN STEP).
+   1. A "My Library" card on his home screen opens a bookshelf of his subjects at his own level.
+   2. Gold spine = he mastered it. Glowing spine = his next lesson. A pin = his rebbe or a parent assigned it (with the due day).
+   3. He never sees a level number (PF-TWO1 4.6): shelves say Done, Now and Next.
+   4. Tapping a book starts that lesson, the same way the rebbe's "picked for you" card does (RebbePick.html start).
+   Server switch LIB.BOY_LIVE: false = TEST- boys only; for every other boy the server answers {off:true} and nothing shows.
+   Display only: nothing here pays money or changes mastery. No double slash in this file (HtmlService rule). */
+(function(){
+if(typeof render!=='function'||typeof vHub!=='function'||typeof A==='undefined') return;
+const BL=window.TLBL=window.TLBL||{sid:null,d:null,busy:false,open:false,tab:0};
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tok=()=>{ try{ return (typeof SRV!=='undefined'&&SRV&&SRV.token)?SRV.token:null; }catch(e){ return null; } };
+function css(){ if(document.getElementById('bl-css')) return; const s=document.createElement('style'); s.id='bl-css'; s.textContent=
+ '.bl-card{display:flex;align-items:center;gap:14px;margin:12px auto;max-width:760px;width:calc(100% - 24px);border:0;border-radius:18px;padding:14px 18px;background:linear-gradient(135deg,#2563EB,#38BDF8);color:#fff;font:700 18px/1.2 system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 18px rgba(10,20,40,.18);text-align:left}'+
+ '.bl-card .ic{font-size:34px}.bl-card small{display:block;font:500 13px system-ui;opacity:.85;margin-top:3px}'+
+ '.bl-ov{position:fixed;inset:0;z-index:8800;background:#F7F1E3;color:#1E2A44;display:flex;flex-direction:column;font:16px/1.4 system-ui,sans-serif}'+
+ '.bl-top{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(135deg,#2563EB,#0EA5E9);color:#fff}.bl-top h2{margin:0 auto 0 0;font:800 22px/1.2 Georgia,serif}'+
+ '.bl-top button{border:0;border-radius:12px;padding:10px 16px;font:700 16px system-ui;background:#F0B847;color:#16274A;cursor:pointer}'+
+ '.bl-tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 12px;background:#EFE5CC}.bl-tabs button{flex:0 0 auto;border:2px solid transparent;border-radius:14px;padding:8px 12px;font:700 15px system-ui;background:#fff;color:#1E2A44;cursor:pointer}'+
+ '.bl-tabs button[aria-pressed="true"]{border-color:#2563EB;background:#2563EB;color:#fff}'+
+ '.bl-body{flex:1;overflow:auto;padding:14px 12px 40px;max-width:900px;width:100%;margin:0 auto}'+
+ '.bl-shelf{margin:0 0 22px}.bl-shelf h3{margin:0 0 6px;font:800 17px system-ui;color:#6B4A06}'+
+ '.bl-books{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;padding:10px 10px 0;background:linear-gradient(#fff0,#fff0 calc(100% - 12px),#8B5E34 calc(100% - 12px));border-radius:6px;min-height:150px}'+
+ '.bl-b{position:relative;width:46px;height:132px;border:0;border-radius:5px 5px 0 0;cursor:pointer;background:#D9D3C4;color:#1E2A44;writing-mode:vertical-rl;transform:rotate(180deg);font:700 12px/1.1 system-ui;padding:8px 4px;text-align:left;overflow:hidden;box-shadow:inset -4px 0 0 rgba(0,0,0,.08)}'+
+ '.bl-b.m{background:linear-gradient(90deg,#E3A72F,#F6D58C);color:#4a3205}.bl-b.nx{background:#3E63B6;color:#fff;box-shadow:0 0 0 4px #F0B847,0 0 18px #F0B847}'+
+ '.bl-b.pk::after{content:"📌";position:absolute;top:4px;left:50%;transform:translateX(-50%) rotate(180deg);font-size:15px;writing-mode:horizontal-tb}'+
+ '.bl-b:focus-visible{outline:3px solid #16274A;outline-offset:2px}'+
+ '.bl-pick{display:flex;gap:10px;align-items:center;background:#fff;border-radius:14px;padding:10px 12px;margin:0 0 8px;box-shadow:0 2px 6px rgba(0,0,0,.06)}.bl-pick b{flex:1}.bl-pick small{color:#5A6785}'+
+ '.bl-pick button{border:0;border-radius:10px;padding:8px 14px;font:700 15px system-ui;background:#2563EB;color:#fff;cursor:pointer}'+
+ '.bl-key{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:#5A6785;margin:0 0 12px}.bl-key i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}'+
+ '.bl-empty{color:#5A6785;padding:20px;text-align:center}';
+ document.head.appendChild(s); }
+function load(force){ const st=A.st; if(!st||!tok()) return; if(BL.sid!==st.id){ BL.sid=st.id; BL.d=null; }
+ if(BL.busy||(BL.d&&!force)) return; BL.busy=true;
+ run('libMyLibrary',tok()).then(r=>{ BL.busy=false; if(!A.st||A.st.id!==BL.sid) return; BL.d=r||{off:true}; if(BL.d.on&&A.view==='hub'&&!BL.shown){ BL.shown=1; try{ render(); }catch(e){} } if(BL.open) draw(); })
+  .catch(()=>{ BL.busy=false; }); }
+const done=id=>!!(A.st&&A.st.skills&&A.st.skills[id]&&A.st.skills[id].m);
+function start(id){ const p=String(id).split('.')[0], subj=p==='HEB'?'LK':p==='LANG'?'WRIT':p; close();
+ if(subj==='SCI'||subj==='ELEC'){ const b=document.createElement('button'); if(subj==='SCI') b.dataset.sci='open'; else b.dataset.elec='open'; b.dataset.id=id; b.style.display='none'; document.body.appendChild(b); b.click(); b.remove();
+  if(document.getElementById(subj==='SCI'?'sci-ov':'elec-ov')) return; }
+ const have=(typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]);
+ if(!have&&subj!=='LK'){ try{ toast('That lesson is still loading. Try again in a moment.'); }catch(e){} return; }
+ A.overlay=null; try{ if(typeof SND!=='undefined') SND.tap(); }catch(e){} startMission(subj,id,'skill'); }
+function close(){ BL.open=false; const o=document.getElementById('bl-ov'); if(o) o.remove(); document.body.style.overflow=''; }
+function openLib(){ BL.open=true; BL.tab=0; css(); load(); draw(); }
+function draw(){ let o=document.getElementById('bl-ov'); if(!o){ o=document.createElement('div'); o.id='bl-ov'; o.className='bl-ov'; o.setAttribute('role','dialog'); o.setAttribute('aria-label','My Library'); document.body.appendChild(o); document.body.style.overflow='hidden';
+  o.addEventListener('click',e=>{ const t=e.target.closest('[data-bl]'); if(!t) return; const k=t.dataset.bl; if(k==='close') close(); else if(k==='tab'){ BL.tab=+t.dataset.i; draw(); } else if(k==='go') start(t.dataset.id); }); }
+ const d=BL.d, first=String((A.st&&A.st.name)||'').split(' ')[0];
+ let h='<div class="bl-top"><h2>📚 '+E(first?first+'’s Library':'My Library')+'</h2><button type="button" data-bl="close">Close</button></div>';
+ if(!d||!d.on){ o.innerHTML=h+'<div class="bl-empty">'+(d?'Your Library is not open yet.':'Opening your Library…')+'</div>'; return; }
+ const pk={}; (d.picks||[]).forEach(p=>{ pk[p[0]]=p; });
+ const tabs=[{name:'For me',icon:'📌'}].concat(d.shelves); if(BL.tab>=tabs.length) BL.tab=0;
+ h+='<div class="bl-tabs">'+tabs.map((s,i)=>'<button type="button" data-bl="tab" data-i="'+i+'" aria-pressed="'+(i===BL.tab)+'">'+s.icon+' '+E(s.name)+'</button>').join('')+'</div><div class="bl-body">';
+ if(BL.tab===0){ const open=(d.picks||[]).filter(p=>!done(p[0]));
+  h+=open.length?open.map(p=>'<div class="bl-pick"><span style="font-size:24px">📌</span><b>'+E(p[1])+'<br><small>From '+E(p[2])+(p[3]?' · due '+E(dayName(p[3])):'')+'</small></b><button type="button" data-bl="go" data-id="'+E(p[0])+'">Start</button></div>').join('')
+   :'<div class="bl-empty">Nothing assigned right now. Pick any subject above and choose a book!</div>'; }
+ else { const sh=tabs[BL.tab], groups=[['before','Earlier','Books from before your shelf'],['now','Now','Your shelf right now'],['next','Next','Peek ahead'],['track','Your books','In order']];
+  let nextId=null; ['now','track','next','before'].some(k=>sh.books.some(b=>{ if(b[2]===k&&!done(b[0])){ nextId=b[0]; return true; } return false; }));
+  h+='<div class="bl-key"><span><i style="background:#E3A72F"></i>you mastered it</span><span><i style="background:#3E63B6"></i>your next book</span><span>📌 assigned to you</span></div>';
+  groups.forEach(g=>{ const bs=sh.books.filter(b=>b[2]===g[0]); if(!bs.length) return;
+   h+='<div class="bl-shelf"><h3>'+g[1]+' <small style="font-weight:500;color:#5A6785">'+g[2]+'</small></h3><div class="bl-books">'+bs.map(b=>{ const m=done(b[0]), n=b[0]===nextId; return '<button type="button" class="bl-b'+(m?' m':'')+(n?' nx':'')+(pk[b[0]]?' pk':'')+'" data-bl="go" data-id="'+E(b[0])+'" title="'+E(b[1])+'" aria-label="'+E(b[1])+(m?', mastered':'')+(n?', your next book':'')+'">'+E(b[1])+'</button>'; }).join('')+'</div></div>'; }); }
+ o.innerHTML=h+'</div>'; }
+function dayName(iso){ try{ const d=new Date(iso+'T12:00:00'), t=new Date(); t.setHours(12,0,0,0); const n=Math.round((d-t)/864e5); if(n===0) return 'today'; if(n===1) return 'tomorrow'; if(n<0) return 'already'; if(n<7) return d.toLocaleDateString([], {weekday:'long'}); return d.toLocaleDateString([], {month:'short',day:'numeric'}); }catch(e){ return iso; } }
+/* ---------- install: a card on his home screen, after the header ---------- */
+const _vHub=vHub;
+vHub=function(){ const h=_vHub.apply(this,arguments); try{ if(!A.st) return h; css(); load(); if(!BL.d||!BL.d.on) return h;
+  const open=(BL.d.picks||[]).filter(p=>!done(p[0])).length;
+  const card='<button type="button" class="bl-card" data-bl-open="1"><span class="ic">📚</span><span>My Library<small>'+(open?open+' book'+(open===1?'':'s')+' picked for you':'Choose a book from your shelves')+'</small></span></button>';
+  const i=h.indexOf('</header>'); return i>=0?h.slice(0,i+9)+card+h.slice(i+9):card+h; }catch(e){ console.error('BoyLibrary',e); return h; } };
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-bl-open]'); if(b){ e.preventDefault(); openLib(); } });
+document.addEventListener('keydown',e=>{ if(BL.open&&e.key==='Escape') close(); });
+})();
+</script>

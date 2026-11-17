@@ -4,7 +4,7 @@
    Not a new door: google.script.run can already call any top-level function whose name does not end in "_".
    This route is narrower: only the names in API_ALLOW (what the student page really calls). Every function keeps
    its own checks (sign-in token, tries limit, the server sets every money amount). */
-var API_ALLOW = ["pfkPilotExport", "pfExportToday", "libMyLibrary", "libApply", "libCatalog", "libDeletePlaylist", "libHistory", "libMap", "libParentAssign", "libParentCatalog", "libPlaylists", "libRoster", "libSavePlaylist", "acAdminLoad", "acMoveStudents", "acMyScope", "acParentNewCode", "acSaveParent", "acSaveSchool", "acSaveStaffScope", "apiExport", "apiKidPage", "apiStaffPage", "arAnswer", "arCfAns", "arCfDone", "arCfGet", "arCfList", "arCfMake", "arJoin", "arMyStats", "arOpen", "arPoll", "arSet", "arTeach", "chAnswer", "chJoin", "chOpen", "chPoll", "chQs", "chStep", "chmParsha", "cnKidInfo", "cnOrderCancel", "cnOrderMenu", "cnOrderPlace", "crCatalog", "crClasses", "crDeleteClass", "crDeleteLesson", "crEndClass", "crInbox", "crLessons", "crMarkRead", "crRunning", "crSaveClass", "crSaveLesson", "crSend", "crStaffAdmin", "crStaffList", "crStaffSave", "crStartClass", "crUnread", "kpAck", "kpMine", "msAppUrl", "msBootstrap", "msLoad", "msMusicInfo", "msMusicPart", "msPhotoNotes", "msPhotoSubmit", "msQuestTools", "msQuestToolsGet", "msQuestToolsParts", "msReport", "msSave", "msSchoolGoal", "msSignInCode", "msSignInFast", "pfConfirmSave", "pfConfirmStart", "pfHello", "sbAddKids", "sbCreate", "sbLoad", "sbMove", "sbMySchool", "sbNewCode", "sbStyle", "sgAddStudent", "sgArchive", "sgAwardPrizes", "sgBechinaReady", "sgBoyDay", "sgChmSetLevel", "sgClassSky", "sgDesk", "sgFamily", "sgFamilyBulk", "sgFamilySet", "sgFixPoints", "sgFreeCode", "sgGive", "sgGroups", "sgKodesh", "sgKodeshBoy", "sgKodeshGrid", "sgKodeshMark", "sgLevel", "sgLevelBechina", "sgLevels", "sgLoad", "sgMoney", "sgMusicSet", "sgMyDesk", "sgNote", "sgNoteDelete", "sgNoteMany", "sgNotes", "sgNow", "sgParshaInfo", "sgPick", "sgPickCatalog", "sgReportDone", "sgReports", "sgSetCode", "sgSetParsha", "sgShoutSeen", "sgSince", "sgTeachTogether", "sgToday", "sgUndoFix", "sgWeek", "sgWeekNotes", "soundGet", "soundSave", "stBuy", "stInfo", "stStaffOrders", "stStaffSet", "tmCatalog", "tmEnd", "tmExtend", "tmList", "tmMine", "tmStart"];
+var API_ALLOW = ["pfHandoff", "pfHandoffRedeem", "pfGateInfo", "pfkPilotExport", "pfExportToday", "libMyLibrary", "libApply", "libCatalog", "libDeletePlaylist", "libHistory", "libMap", "libParentAssign", "libParentCatalog", "libPlaylists", "libRoster", "libSavePlaylist", "acAdminLoad", "acMoveStudents", "acMyScope", "acParentNewCode", "acSaveParent", "acSaveSchool", "acSaveStaffScope", "apiExport", "apiKidPage", "apiStaffPage", "arAnswer", "arCfAns", "arCfDone", "arCfGet", "arCfList", "arCfMake", "arJoin", "arMyStats", "arOpen", "arPoll", "arSet", "arTeach", "chAnswer", "chJoin", "chOpen", "chPoll", "chQs", "chStep", "chmParsha", "cnKidInfo", "cnOrderCancel", "cnOrderMenu", "cnOrderPlace", "crCatalog", "crClasses", "crDeleteClass", "crDeleteLesson", "crEndClass", "crInbox", "crLessons", "crMarkRead", "crRunning", "crSaveClass", "crSaveLesson", "crSend", "crStaffAdmin", "crStaffList", "crStaffSave", "crStartClass", "crUnread", "kpAck", "kpMine", "msAppUrl", "msBootstrap", "msLoad", "msMusicInfo", "msMusicPart", "msPhotoNotes", "msPhotoSubmit", "msQuestTools", "msQuestToolsGet", "msQuestToolsParts", "msReport", "msSave", "msSchoolGoal", "msSignInCode", "msSignInFast", "pfConfirmSave", "pfConfirmStart", "pfHello", "sbAddKids", "sbCreate", "sbLoad", "sbMove", "sbMySchool", "sbNewCode", "sbStyle", "sgAddStudent", "sgArchive", "sgAwardPrizes", "sgBechinaReady", "sgBoyDay", "sgChmSetLevel", "sgClassSky", "sgDesk", "sgFamily", "sgFamilyBulk", "sgFamilySet", "sgFixPoints", "sgFreeCode", "sgGive", "sgGroups", "sgKodesh", "sgKodeshBoy", "sgKodeshGrid", "sgKodeshMark", "sgLevel", "sgLevelBechina", "sgLevels", "sgLoad", "sgMoney", "sgMusicSet", "sgMyDesk", "sgNote", "sgNoteDelete", "sgNoteMany", "sgNotes", "sgNow", "sgParshaInfo", "sgPick", "sgPickCatalog", "sgReportDone", "sgReports", "sgSetCode", "sgSetParsha", "sgShoutSeen", "sgSince", "sgTeachTogether", "sgToday", "sgUndoFix", "sgWeek", "sgWeekNotes", "soundGet", "soundSave", "stBuy", "stInfo", "stStaffOrders", "stStaffSet", "tmCatalog", "tmEnd", "tmExtend", "tmList", "tmMine", "tmStart"];
 function doPost(e) {
   var out = function (o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); };
   try {
@@ -49,6 +49,7 @@ function apiExport(key, what, book, tab, span) {
   if (what === 'props') return PropertiesService.getScriptProperties().getProperties();
   if (what === 'balances') return apiBalances_();
   if (what === 'prints') return apiPrints_();
+  if (what === 'staffprints') return apiStaffPrints_();
   var id = book === 'canteen' ? cnBookId_() : TL.sheet, ss = SpreadsheetApp.openById(id);
   if (what === 'tabs') return { id: id, tabs: ss.getSheets().map(function (s) { return { name: s.getName(), rows: s.getLastRow(), cols: s.getLastColumn() }; }) };
   if (what === 'rows') {
@@ -79,5 +80,21 @@ function apiPrints_() {
     try { p.ledger = md5(msLedger_(sid)); } catch (e) { p.ledger = 'err'; }
     try { p.plan = typeof plPlanFor_ === 'function' ? md5(plPlanFor_(sid, { MATH: String(r[2]), READ: String(r[3]), WRIT: String(r[4]) })) : '-'; } catch (e) { p.plan = 'err'; }
     out[sid] = p; });
+  return out;
+}
+
+/* md5 fingerprints of the read-only staff screens, as the Head of School sees them. A temporary session lives only
+   inside this call (random token, deleted at the end, never returned). Only fingerprints leave the server. */
+var API_STAFF_SCREENS = ['sgLoad','sgDesk','sgToday','sgWeek','sgMoney','sgLevels','sgKodeshGrid','sgReports','sgNotes','sgNow','sgGroups','acMyScope','stStaffOrders','tmList','tmCatalog','crCatalog','sgParshaInfo','sgPickCatalog','sgWeekNotes','sgClassSky','sbLoad','acAdminLoad'];
+function apiStaffPrints_() {
+  var md5 = function (v) { return Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, JSON.stringify(v === undefined ? null : v), Utilities.Charset.UTF_8).map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join(''); };
+  var c = CacheService.getScriptCache(), tok = 'cmp-' + Utilities.getUuid(), out = {};
+  c.put('ms_tok_' + tok, JSON.stringify({ role: 'staff', sid: null, pid: null, staff: null, who: { id: 'CMP', name: 'Comparison', role: 'head' } }), 600);
+  try {
+    API_STAFF_SCREENS.forEach(function (fn) { TL_SCOPE_ = null; TL_SCOPE_INFO_ = null; var f = null;
+      try { f = eval(fn); } catch (e) { f = null; }
+      if (typeof f !== 'function') { out[fn] = 'missing'; return; }
+      try { out[fn] = md5(f(tok)); } catch (e) { out[fn] = 'err ' + md5(String(e && e.message || e)).slice(0, 8); } });
+  } finally { c.remove('ms_tok_' + tok); try { c.remove('tl_scope_' + acVer_() + '_' + tok); } catch (e) {} }
   return out;
 }

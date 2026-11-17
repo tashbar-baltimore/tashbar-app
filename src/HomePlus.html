@@ -25,6 +25,7 @@ const HP=window.HP=window.HP||{open:null,tab:'map'};
 const SLASH2='/'+'/';
 /* WHAT'S NEW: newest first. k = the panel class it opens. A NEW ribbon shows for 21 days after d. */
 const NEW=[
+ {d:'2026-11-17',i:'🕵️',t:'Mistake Detective',s:'Spot it, fix it, prove it: 6 cases from your own lessons',k:'mdcard'},
  {d:'2026-11-15',i:'🎮',t:'Kodesh Quest is now in your learning',s:'Games at every Kodesh step, and ABC and Math games in Today\'s Plan',k:'lkpanel'},
  {d:'2026-11-13',i:'🫙',t:'Joke Jar 2',s:'Guess the punchline, then flip the card! 146 jokes',k:'jokes'},
  {d:'2026-11-13',i:'🧭',t:'Fact Finders',s:'Key facts about our world, K to 12',k:'ffpanel'},
@@ -40,7 +41,7 @@ const GROUPS=[
  ['Discover','🔭',[['scipanel','🔬','Science'],['sspanel','🌍','Social Studies'],['lfpanel','💵','Life & Money'],['ffpanel','🧭','Fact Finders']]],
  ['Electives','✨',[['elpanel','⚛️','Journey Into the Atom'],['arpanel','🎨','Thinking & Arts'],['cppanel','💻','Computer Town']]],
  ['Trades','🛠️',[['trpanel','⚡','Spark Path'],['w-VOC','🔧','Trades Co']]],
- ['Play & learn','🎮',[['kkcard','🎮','Kodesh Quest']]],
+ ['Play & learn','🎮',[['kkcard','🎮','Kodesh Quest'],['mdcard','🕵️','Mistake Detective']]],
  ['Heart & soul','💛',[['simpanel','😊',"B'Simcha"],['hmcard','🌈','Hashem Moments']]]
 ];
 const dayStr=t=>new Date(t).toDateString();
@@ -147,8 +148,8 @@ function css(){ if(document.getElementById('hpl-css')) return; const s=document.
 /* ---------- pieces ---------- */
 function ring(pct,label){ const r=22,c=2*Math.PI*r,o=c*(1-Math.max(0,Math.min(100,pct))/100);
  return `<svg viewBox="0 0 54 54" aria-hidden="true"><circle cx="27" cy="27" r="${r}" fill="none" stroke="#E6E9F2" stroke-width="6"/><circle cx="27" cy="27" r="${r}" fill="none" stroke="#6D3CE8" stroke-width="6" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${o.toFixed(1)}" transform="rotate(-90 27 27)"/><text x="27" y="32" text-anchor="middle" font-size="15" font-weight="800" fill="#14213D">${E(label)}</text></svg>`; }
-function grad(k){ const G={scipanel:'#0EA5E9,#2563EB',sspanel:'#F59E0B,#D97706',lfpanel:'#10B981,#047857',elpanel:'#6366F1,#312E81',arpanel:'#EC4899,#9333EA',cppanel:'#06B6D4,#0E7490',trpanel:'#F97316,#B45309','w-VOC':'#EA580C,#9A3412',kkcard:'#22C55E,#15803D',simpanel:'#FBBF24,#F97316',ffpanel:'#14B8A6,#0F766E',hmcard:'#A855F7,#6D28D9'};
- return 'linear-gradient(135deg,'+(G[k]||'#64748B,#334155')+')'; }
+function grad(k){ const G={scipanel:'#0EA5E9,#2563EB',sspanel:'#F59E0B,#D97706',lfpanel:'#10B981,#047857',elpanel:'#6366F1,#4F46E5',arpanel:'#EC4899,#9333EA',cppanel:'#06B6D4,#0E7490',trpanel:'#F97316,#B45309','w-VOC':'#EA580C,#9A3412',kkcard:'#22C55E,#15803D',simpanel:'#FBBF24,#F97316',ffpanel:'#14B8A6,#0F766E',hmcard:'#A855F7,#6D28D9',mdcard:'#14B8A6,#0EA5E9'};
+ return 'linear-gradient(135deg,'+(G[k]||'#38BDF8,#6366F1')+')'; }
 function progressOf(el){ const all=el.querySelectorAll('button[class*="node"]'); if(!all.length) return null; let d=0; all.forEach(b=>{ if(/\bdone\b/.test(b.className)) d++; }); return [d,all.length]; }
 
 function steps(st,tpl){
@@ -187,12 +188,14 @@ function steps(st,tpl){
  return out;
 }
 
+/* PF stage D (DailyPath.html): a TEST boy with a Pathfinder profile gets his daily path; for every other boy tlPfdPlan returns null and the plan is unchanged */
+function pfdPlan(st,p,tpl){ try{ if(typeof window.tlPfdPlan==='function'){ const q=window.tlPfdPlan(st,p,tpl); if(q) return q; } }catch(e){ console.error('DailyPath',e); } return p; }
 function home(st){
  const tpl=document.createElement('div'); tpl.innerHTML=HP._vHub();
  const q=s=>tpl.querySelector(s), take=s=>{ const e=q(s); if(e) e.remove(); return e; };
  const L=lvlInfo(masteredCount(st)), i=ROSTER.findIndex(r=>r.id===st.id);
  const wallet=q('#wallet'), tools=q('header .tools'), tr=q('.trcard button');
- const plan=steps(st,tpl), nDone=plan.filter(x=>x.done).length, nxt=plan.findIndex(x=>!x.done&&x.btn);
+ const plan=pfdPlan(st,steps(st,tpl),tpl), nDone=plan.filter(x=>x.done).length, nxt=plan.findIndex(x=>!x.done&&x.btn);
  const first=st.name.split(' ')[0], hr=new Date().getHours(), hello=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
  const bigBtn=nxt>=0?plan[nxt].btn.replace(/<button /,'<button class="big" ').replace(/>[^<]*<\/button>$/,'>▶ '+(nDone?'Keep going':'Start my day')+'</button>'):'<button class="big" type="button" data-hp="tab" data-t="map">🏆 Plan done! See your map</button>';
  const stepsH=plan.map((x,k)=>`<li class="hpstep ${x.done?'done':k===nxt?'next':''}"><span class="si" aria-hidden="true">${x.i}</span><span class="st"><b>${E(x.n)}</b><small>${E(x.s)}</small></span>${x.done?'<span class="chip">✓ Done today</span>':(k===nxt?'<span class="chip">Next</span>':'')}${x.done&&!/Keep going/.test(x.btn)?'':x.btn}${x.game||''}</li>`).join('');
@@ -216,6 +219,7 @@ function home(st){
  let groups=GROUPS.map(([g,gi,list])=>list.map(([k,ic,tt])=>tile(k,ic,tt,g)).join('')+(g==='Play & learn'?jokeTile():'')+(g==='Discover'?lvTile():'')).join('');
  const more=Object.keys(panels).filter(k=>!used.has(k)&&!skip.has(k)&&!/^w-/.test(k)).map(k=>{ const el=panels[k]; const em=(el.textContent.match(/\p{Extended_Pictographic}/u)||['⭐'])[0]; return tile(k,em,null,'More'); }).join('');
  groups=`<div class="hptiles">${groups}${more}</div>`;
+ try{ if(typeof window.tlPfdLock==='function'){ const g2=window.tlPfdLock(st,plan,groups); if(g2) groups=g2; } }catch(e){ console.error('DailyPath lock',e); }   /* PF stage D (DailyPath.html): adventures open after the day's path; TEST boys with a path only */
  const news=NEW.filter(isNew).filter(n=>panels[n.k]||n.k==='lkpanel'||(n.k==='jokes'&&typeof window.tlJokeBook==='function')).map(n=>`<button type="button" data-hp="${n.k==='jokes'?'jokes':'open'}" data-k="${n.k}"><span class="hpnewtag">NEW</span><span class="ni" aria-hidden="true">${n.i}</span><span><b>${E(n.t)}</b><small>${E(n.s)}</small></span></button>`).join('');
  const side=['.p3quest','.rvcard','.sgoal','.p3week'].map(s=>{ const e=q(s); return e?e.outerHTML:''; }).join('');
  const tabs=[['map','🗺️ Journey map','.journey'],['badges','🏅 Badges','.badgepanel'],['bank','🏦 Bank','.bank']].filter(t=>q(t[2]));

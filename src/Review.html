@@ -1,40 +1,257 @@
 <script>
 /* ===== Review: spaced review (v69, takeover builder, 2026-11-11). Loaded by msQuestTools after Helpers.
-   A mastered skill comes back 3 days, 2 weeks and 6 weeks after mastery as a quick review (its check questions, 2 at most).
+   A mastered skill comes back 3 days, 2 weeks and 6 weeks after mastery as a quick review.
    A miss brings it back the next day ("let's fix this one"). Uses the page's own replay path, so a review never pays
-   and never changes mastery or money. Saved in the boy's state as st.rv[id] = [stage, dueDay, again] (1 when done). ===== */
+   and never changes mastery or money. Saved in the boy's state as st.rv[id] = [stage, dueDay, again] (1 when done).
+   v2 DAILY MIX (cloud builder 1, 2026-11-16; HoS: "raise the benefit of the entire app for children's skill building"):
+   1. ONE round, MIXED: every due skill (up to 6) in one short round of 8 questions at most, shuffled so the same skill is
+      never twice in a row. Mixed recall is harder than one skill at a time, and it is what makes skills stick.
+   2. FRESH questions: taken from the skill's practice / re-teach items (and generators), not the 3 check questions the boy
+      already saw when he mastered it. The check questions are used only when a skill has nothing else.
+   3. A skill he missed last time gets 2 questions; every other skill 1 (2 when only a few are due).
+   4. A 4th, longer gap: 3 days, 11, 28, then 60 days (a skill that passed the old 3rd review just finishes, as before).
+   5. Same state format (st.rv), same rule: never pays, never changes mastery or money. One question at a time is
+      answered first-try (check style); a miss shows the right answer and its How-to box, and the skill returns tomorrow.
+   v2.1 (cloud builder 1): the result screen of a Daily Mix says what happened ("6 of 7 right", which skills are strong, which
+   need a fix) instead of the generic replay line, and every missed skill gets a "Fix it now" button that opens that skill's
+   60-second Quick Hit lesson (block 9q) right there. Still never pays, so the round has no "get paid" intro card and no
+   flying-coin "+$1" effects while answering (those effects are decoration only, but they would tell him he earned money).
+   No slash-slash in this file (HtmlService rule). ===== */
 (function(){
-const DAY=864e5, GAP=[3,11,28], MAXCARD=3;
+const DAY=864e5, GAP=[3,11,28,60], MAXSK=6, MAXQ=8;
 const dayNo=t=>Math.floor((t-new Date(t).getTimezoneOffset()*6e4)/DAY);
 const subjOf=id=>{ const p=String(id).split('.')[0]; return p==='LANG'?'WRIT':p; };
 function nameOf(id){ try{ return (BANK_ALL[id]&&BANK_ALL[id].name)||(typeof skillName==='function'?skillName(id):id); }catch(e){ return id; } }
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function ensure(st){ if(!st) return {}; st.rv=st.rv||{}; const sk=st.skills||{};
  Object.keys(sk).forEach(id=>{ const s=sk[id]; if(s&&s.m&&st.rv[id]===undefined) st.rv[id]=[0,dayNo(s.at||Date.now())+GAP[0],0]; }); return st.rv; }
 function due(st){ const rv=ensure(st), d=dayNo(Date.now());
  return Object.keys(rv).filter(id=>Array.isArray(rv[id])&&rv[id][1]<=d&&st.skills[id]&&st.skills[id].m&&typeof CURR!=='undefined'&&CURR[subjOf(id)])
-  .sort((a,b)=>(rv[b][2]-rv[a][2])||(rv[a][1]-rv[b][1])).slice(0,MAXCARD); }
-function card(st){ const ids=due(st); if(!ids.length) return '';
- return `<section class="rvcard"><div class="rvh"><span class="rvi" aria-hidden="true">🔁</span><div><b>Quick review</b><small>Two questions each. Keep what you learned strong!</small></div></div><div class="rvb">${ids.map(id=>{ const again=st.rv[id][2];
-  return `<button type="button" class="rvbtn${again?' again':''}" data-rv="${id}">${again?'🛠 Let’s fix this one: ':'▶ '}${String(nameOf(id)).replace(/[&<>"]/g,'')}</button>`; }).join('')}</div></section>`; }
+  .sort((a,b)=>(rv[b][2]-rv[a][2])||(rv[a][1]-rv[b][1])).slice(0,MAXSK); }
+const shuffle=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+const keyQ=it=>String(it&&it.q)+'|'+String(it&&it.pic||'');
+function freshFor(id,n){ let all=[]; try{ all=buildMission(id)||[]; }catch(e){ return []; }
+ const checks=all.filter(x=>x&&x.phase==='check'), seen=new Set(checks.map(keyQ));
+ const ok=x=>x&&x.q&&x.t!=='write'&&!x.hintOnly;
+ let pool=shuffle(all.filter(x=>ok(x)&&x.phase!=='check'&&x.phase!=='teach'&&!seen.has(keyQ(x))));
+ if(pool.length<n) pool=pool.concat(shuffle(all.filter(x=>ok(x)&&x.phase==='teach'&&!seen.has(keyQ(x)))));
+ if(pool.length<n) pool=pool.concat(shuffle(checks.filter(ok)));
+ const out=[], used=new Set(); for(const x of pool){ if(out.length>=n) break; const k=keyQ(x); if(used.has(k)) continue; used.add(k); out.push(x); }
+ return out.map(x=>Object.assign({},x,{phase:'check',skill:id,sk:id,rvMix:1})); }
+function interleave(groups){ const out=[]; let last=null; const g=groups.map(a=>a.slice()).filter(a=>a.length);
+ while(g.some(a=>a.length)){ g.sort((a,b)=>b.length-a.length); let pick=g.find(a=>a.length&&a[0].skill!==last)||g.find(a=>a.length); const it=pick.shift(); out.push(it); last=it.skill; }
+ return out; }
+function plan(st){ const ids=due(st); if(!ids.length) return null; const rv=st.rv, groups=[];
+ let total=0; ids.forEach(id=>{ const n=(rv[id][2]||ids.length<=3)?2:1; const items=freshFor(id,n); if(items.length){ groups.push(items); total+=items.length; } });
+ if(!groups.length) return null; let items=interleave(groups); if(items.length>MAXQ) items=items.slice(0,MAXQ);
+ const used=[...new Set(items.map(x=>x.skill))]; return {ids:used,items}; }
+function card(st){ const ids=due(st); if(!ids.length) return ''; const again=ids.filter(id=>st.rv[id][2]);
+ const q=Math.min(MAXQ,ids.reduce((s,id)=>s+((st.rv[id][2]||ids.length<=3)?2:1),0));
+ return `<section class="rvcard"><div class="rvh"><span class="rvi" aria-hidden="true">🔀</span><div><b>Daily Mix</b><small>${q} quick questions from ${ids.length} skill${ids.length>1?'s':''} you already know. Keep them strong!</small></div></div><div class="rvb"><button type="button" class="rvbtn go" data-rvmix="1">▶ Start the Daily Mix</button><div class="rvlist">${ids.map(id=>`<span class="rvchip${st.rv[id][2]?' again':''}">${st.rv[id][2]?'🛠 ':''}${E(nameOf(id))}</span>`).join('')}</div>${again.length?'<small class="rvnote">🛠 = missed last time: 2 questions today.</small>':''}</div></section>`; }
+function startMix(){ try{ const st=A.st, pl=plan(st); if(!pl) return;
+  const first=pl.items[0].skill; startMission(subjOf(first),first,'skill'); const p=A.play; if(!p) return;
+  fxOff(); p.items=pl.items; p.i=0; p.kind='review'; p.replay=true; p.mix=pl.ids; p.title='Daily Mix'; A.overlay=null; render();
+ }catch(e){ console.error('Daily Mix start',e); } }
 function start(id){ try{
-  const c=subjOf(id); startMission(c,id,'skill'); const p=A.play; if(!p) return;
-  const ch=p.items.filter(i=>i&&i.phase==='check').slice(0,2); if(!ch.length) return;
-  p.items=ch; p.i=0; p.kind='review'; p.replay=true; p.title='Quick review: '+p.title; A.overlay=null; render(); if(typeof phaseIntro==='function') phaseIntro();
+  const c=subjOf(id); startMission(c,id,'skill'); const p=A.play; if(!p) return; const it=freshFor(id,2); if(!it.length) return;
+  fxOff(); p.items=it; p.i=0; p.kind='review'; p.replay=true; p.title='Quick review: '+p.title; A.overlay=null; render();
  }catch(e){ console.error('Review start',e); } }
 function after(st,id,ok){ const rv=ensure(st), r=rv[id]; if(!Array.isArray(r)) return; const d=dayNo(Date.now());
  if(ok){ const s=r[0]+1; rv[id]=s>=GAP.length?1:[s,d+GAP[s],0]; } else rv[id]=[r[0],d+1,1]; }
 const _f=window.finish;
-if(typeof _f==='function') window.finish=function(){ try{ const p=A.play; if(p&&p.kind==='review'){ const ch=p.results.filter(r=>r&&r.phase==='check'); after(A.st,p.id,ch.length>0&&ch.every(r=>r.ok)); } }catch(e){ console.error('Review finish',e); } return _f.apply(this,arguments); };
+if(typeof _f==='function') window.finish=function(){ try{ const p=A.play; if(p&&p.kind==='review'){ const res=p.results.filter(r=>r&&r.phase==='check');
+   const ids=p.mix||[p.id], out={}; ids.forEach(id=>{ const mine=res.filter(r=>(r.skill||p.id)===id); if(mine.length){ const ok=mine.every(r=>r.ok); out[id]=ok; after(A.st,id,ok); } });
+   p.rvOut=out; p.rvRight=res.filter(r=>r.ok).length; p.rvTotal=res.length; fxBack(); } }catch(e){ console.error('Review finish',e); } return _f.apply(this,arguments); };
+function fixNow(id){ try{ let items=[]; try{ items=buildMission(id)||[]; }catch(e){}
+  const p={id,items,kind:'skill',i:0,c:subjOf(id),title:nameOf(id)};
+  if(window.TL_QH&&typeof TL_QH.open==='function'&&TL_QH.open(p,false)) return; start(id); }catch(e){ console.error('Daily Mix fix',e); } }
+/* a review never pays: no flying coins or "+$1" while answering (the HP_FX money effects are off from start to finish) */
+let FXKEEP; function fxOff(){ if(FXKEEP===undefined){ FXKEEP=window.HP_FX; window.HP_FX=false; } }
+function fxBack(){ if(FXKEEP!==undefined){ window.HP_FX=FXKEEP; FXKEEP=undefined; } }
+const _vr=window.vResult;
+if(typeof _vr==='function') window.vResult=function(){ let h=_vr.apply(this,arguments); try{ const p=A.play; if(!(A.res&&p&&p.kind==='review'&&p.rvOut)) return h;
+  const ids=Object.keys(p.rvOut), bad=ids.filter(id=>!p.rvOut[id]), good=ids.filter(id=>p.rvOut[id]);
+  const stamp=bad.length?(good.length?'Strong work!':'Let’s fix these'):'All strong!';
+  const msg=`${p.rvRight} of ${p.rvTotal} right.`+(good.length?` Still strong: ${good.map(id=>E(nameOf(id))).join(', ')}.`:'')+(bad.length?' These come back tomorrow. Fix them now in one minute each:':' See you at the next Daily Mix!');
+  const fix=bad.length?`<div class="rvfix">${bad.map(id=>`<button type="button" class="rvbtn again" data-rvfix="${E(id)}">🛠 Fix it now: ${E(nameOf(id))}</button>`).join('')}</div>`:'';
+  h=h.replace(/(<div class="stamp[^"]*" id="stamp">)[^<]*(<\/div>)/,(m,a,b)=>a+stamp+b).replace(/<p class="msg">[^<]*<\/p>/,()=>'<p class="msg">'+msg+'</p>'+fix);
+ }catch(e){ console.error('Daily Mix result',e); } return h; };
 const _find=window.tlFindLevelCard;
-window.tlFindLevelCard=function(st){ let h=''; try{ h=card(st); }catch(e){ console.error('Review card',e); } try{ h+=_find?_find(st):''; }catch(e){} return h; };
-document.addEventListener('click',function(e){ const b=e.target.closest&&e.target.closest('[data-rv]'); if(!b) return; e.preventDefault(); e.stopPropagation(); start(b.getAttribute('data-rv')); },true);
+window.tlFindLevelCard=function(st){ let h=''; try{ if(!(A.view==='play'&&A.play&&A.play.kind==='review')) fxBack(); }catch(e){} try{ h=card(st); }catch(e){ console.error('Review card',e); } try{ h+=_find?_find(st):''; }catch(e){} return h; };
+document.addEventListener('click',function(e){ const m=e.target.closest&&e.target.closest('[data-rvmix]'); if(m){ e.preventDefault(); e.stopPropagation(); return startMix(); }
+ const fx=e.target.closest&&e.target.closest('[data-rvfix]'); if(fx){ e.preventDefault(); e.stopPropagation(); return fixNow(fx.getAttribute('data-rvfix')); }
+ const b=e.target.closest&&e.target.closest('[data-rv]'); if(!b) return; e.preventDefault(); e.stopPropagation(); start(b.getAttribute('data-rv')); },true);
 try{ if(!document.getElementById('tl-rv-css')){ const s=document.createElement('style'); s.id='tl-rv-css'; s.textContent=`
 .rvcard{margin:14px 0;border-radius:22px;background:#fff;border:2px solid #7C3AED;box-shadow:0 10px 28px rgba(76,29,149,.14);overflow:hidden}
 .rvh{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(135deg,#6D28D9,#A855F7);color:#fff}.rvh b{font-size:20px}.rvh small{display:block;opacity:.92}
 .rvi{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.18);font-size:30px;flex:none}
-.rvb{display:flex;flex-wrap:wrap;gap:10px;padding:12px 16px}
-.rvbtn{border:0;border-radius:14px;padding:12px 16px;min-height:52px;font-weight:800;font-size:17px;font-family:inherit;background:#6D28D9;color:#fff;cursor:pointer}
-.rvbtn.again{background:#B54708}.rvbtn:hover{filter:brightness(1.08)}`; document.head.appendChild(s); } }catch(e){}
-window.TLREVIEW={due,ensure,after,start};
+.rvb{display:flex;flex-direction:column;gap:10px;padding:12px 16px}
+.rvbtn{border:0;border-radius:14px;padding:12px 16px;min-height:52px;font-weight:800;font-size:18px;font-family:inherit;background:#6D28D9;color:#fff;cursor:pointer;align-self:flex-start}
+.rvbtn:hover{filter:brightness(1.08)}
+.rvlist{display:flex;flex-wrap:wrap;gap:8px}.rvchip{border-radius:999px;padding:6px 12px;background:#EDE9FE;color:#4C1D95;font-weight:700;font-size:14px}.rvchip.again{background:#FFEDD5;color:#9A3412}
+.rvnote{color:#9A3412;font-weight:600}.rvfix{display:flex;flex-direction:column;gap:10px;margin:14px auto 0;max-width:520px}.rvfix .rvbtn{align-self:stretch;background:#B54708}`; document.head.appendChild(s); } }catch(e){}
+window.TLREVIEW={due,ensure,after,start,startMix,plan,fixNow,v:2.1};
 })();
+/* ===== MISTAKE DETECTIVE v1 (cloud builder 1, 2026-11-17; HoS: "be ambitious, be creative", raise skill building).
+   Error analysis game. Uses the 1,374 Teacher Time "oops" cases already in TL_TEACH (q, wrong, right, why).
+   A round = 6 cases from NON-Kodesh skills THIS boy has worked on (fallback: early levels). Kodesh (LK, HEB) is left to the Kodesh lanes. Each case:
+   1 SPOT IT: a boy answered. Is he right? (about 1 in 4 cases is a trap: the answer shown is the right one)
+   2 FIX IT: pick the right answer (right, the mistake, and a mistake from a nearby lesson)
+   3 PROVE IT: pick the clue that explains it (this case's why, and 2 whys from other lessons)
+   Then a big SOLVED stamp and the full answer with its why. Ranks at the end: Rookie, Detective, Inspector, Chief Inspector.
+   Pays nothing, saves nothing on the server, never touches mastery, money or st. Best score per device in localStorage only.
+   v339: bright look (HoS 2026-11-17: no dark backgrounds).
+   Home card through tlFindLevelCard; on the HomePlus home it is the Play & learn tile 'Mistake Detective' (one tap opens the game). Off switch: window.TL_MD_OFF=1. No slash-slash (HtmlService). ===== */
+(function(){
+if(window.TL_MD) return;
+const E=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; };
+const norm=s=>String(s||'').trim().toLowerCase().replace(/[.!?]+$/,'');
+const NAMES=['Moshe','Dovid','Yossi','Chaim','Shmuli','Eli','Avi','Mendy','Yehuda','Ari','Tzvi','Benny'];
+const RANKS=[[16,'Chief Inspector','🏆'],[12,'Inspector','🥇'],[8,'Detective','🕵️'],[0,'Rookie Detective','🔎']];
+const ROUND=6;
+function nameOf(id){ try{ return (BANK_ALL[id]&&BANK_ALL[id].name)||id; }catch(e){ return id; } }
+function okCase(x){ return x&&x.q&&x.wrong&&x.right&&x.why&&String(x.wrong).length<70&&String(x.right).length<70&&String(x.q).length<170&&norm(x.wrong)!==norm(x.right); }
+function casesFor(id){ if(/^(LK|HEB)\./.test(id)) return []; const T=window.TL_TEACH||{}; const o=T[id]&&T[id].oops; if(!o) return []; return (Array.isArray(o)?o:[o]).filter(okCase).map(x=>({id:id,q:String(x.q).replace(/\s*Oops!?\s*$/i,'').trim(),wrong:String(x.wrong),right:String(x.right),why:String(x.why)})); }
+function lvl(id){ const m=String(id).match(/\.L(\d\d)/); return m?+m[1]:99; }
+function pool(){ const st=(window.A&&A.st)||{}, sk=st.skills||{}, T=window.TL_TEACH||{};
+ const mine=Object.keys(sk).filter(id=>T[id]&&T[id].oops);
+ const mast=mine.filter(id=>sk[id]&&sk[id].m), rest=mine.filter(id=>!(sk[id]&&sk[id].m));
+ let ids=shuffle(mast).concat(shuffle(rest)), out=[];
+ ids.forEach(id=>{ out=out.concat(casesFor(id)); });
+ if(out.length<ROUND){ const subj=new Set(mine.map(id=>id.split('.')[0]));
+  let fb=Object.keys(T).filter(id=>!/^(LK|HEB)\./.test(id)&&lvl(id)<=3&&(!subj.size||subj.has(id.split('.')[0])));
+  if(fb.length<20) fb=Object.keys(T).filter(id=>!/^(LK|HEB)\./.test(id)&&lvl(id)<=3);
+  shuffle(fb).forEach(id=>{ if(out.length<40) out=out.concat(casesFor(id)); }); }
+ return out; }
+function allCases(){ const T=window.TL_TEACH||{}; if(allCases.c) return allCases.c; let a=[]; Object.keys(T).forEach(id=>{ a=a.concat(casesFor(id)); }); return (allCases.c=a); }
+function near(c,field,n){ const fam=c.id.split('.').slice(0,2).join('.'), subj=c.id.split('.')[0], used=new Set([norm(c.right),norm(c.wrong),norm(c[field])]);
+ const pick=[], all=allCases();
+ const tiers=[x=>x.id.split('.').slice(0,2).join('.')===fam&&x.id!==c.id, x=>x.id.split('.')[0]===subj&&x.id!==c.id, x=>x.id!==c.id];
+ for(const t of tiers){ for(const x of shuffle(all.filter(t))){ if(pick.length>=n) break; const v=x[field], k=norm(v); if(!v||used.has(k)) continue; if(field!=='why'&&Math.abs(v.length-c[field].length)>40) continue; used.add(k); pick.push(v); } if(pick.length>=n) break; }
+ return pick; }
+function build(){ const p=pool(); if(p.length<3) return null; const seen=new Set(), list=[];
+ for(const c of shuffle(p)){ if(list.length>=ROUND) break; const k=c.id+'|'+c.q; if(seen.has(k)) continue; seen.add(k);
+  const trap=Math.random()<0.25, who=NAMES[Math.floor(Math.random()*NAMES.length)];
+  const fix=shuffle([c.right,c.wrong].concat(near(c,'wrong',1))), why=shuffle([c.why].concat(near(c,'why',2)));
+  list.push(Object.assign({},c,{trap:trap,who:who,shown:trap?c.right:c.wrong,fix:fix,whys:why})); }
+ return list; }
+/* ---------- sound (tiny WebAudio, no files) ---------- */
+let AC=null; function tone(f,d,type,vol,when){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const t=AC.currentTime+(when||0); const o=AC.createOscillator(), g=AC.createGain(); o.type=type||'sine'; o.frequency.setValueAtTime(f,t); g.gain.setValueAtTime(vol||.12,t); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d); }catch(e){} }
+const SND={ ok:()=>{ tone(660,.12,'triangle'); tone(990,.18,'triangle',.12,.1); }, no:()=>{ tone(196,.25,'sawtooth',.06); }, stamp:()=>{ tone(90,.25,'square',.15); tone(60,.3,'sine',.2,.02); }, tick:()=>tone(1200,.04,'square',.04),
+ fanfare:()=>{ [523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.12,i*.12)); } };
+function say(t){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(String(t).replace(/[^\w\s.,!?'$%:;\-()]/g,' ')); u.rate=.95; speechSynthesis.speak(u); }catch(e){} }
+const RM=(()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } })();
+/* ---------- best score, this device only ---------- */
+function bestKey(){ try{ return 'tl_md_best_'+((A&&A.st&&A.st.id)||'x'); }catch(e){ return 'tl_md_best_x'; } }
+function getBest(){ try{ return +localStorage.getItem(bestKey())||0; }catch(e){ return 0; } }
+function setBest(v){ try{ localStorage.setItem(bestKey(),String(v)); }catch(e){} }
+/* ---------- game ---------- */
+const G={};
+function el(){ let d=document.getElementById('mdx'); if(!d){ d=document.createElement('div'); d.id='mdx'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Mistake Detective'); document.body.appendChild(d); } return d; }
+function open(){ if(window.TL_MD_OFF) return; const list=build(); if(!list){ return; } G.list=list; G.i=0; G.pts=0; G.solved=0; G.step=0; G.lock=false; el().className='on'; intro(); }
+function close(){ const d=document.getElementById('mdx'); if(d){ d.className=''; d.innerHTML=''; } try{ speechSynthesis.cancel(); }catch(e){} }
+function top(){ const n=G.list.length; let dots=''; for(let i=0;i<n;i++) dots+=`<i class="mddot${i<G.i?' done':''}${i===G.i?' cur':''}"></i>`;
+ return `<div class="mdtop"><button type="button" class="mdx-close" data-md="close" aria-label="Close">✕</button><div class="mdtitle">🕵️ MISTAKE DETECTIVE</div><div class="mdpts" aria-label="Points">⭐ ${G.pts}</div></div><div class="mddots">${dots}</div>`; }
+function intro(){ const best=getBest(); el().innerHTML=`<div class="mdwrap mdintro">${top()}
+ <div class="mdhero"><div class="mdglass" aria-hidden="true">🔍</div><h1>Can you catch the mistake?</h1>
+ <p class="mdbig">${G.list.length} cases from lessons <b>you</b> learned.</p>
+ <div class="mdsteps"><div><b>1</b><span>SPOT IT</span><small>Is he right?</small></div><div><b>2</b><span>FIX IT</span><small>What is right?</small></div><div><b>3</b><span>PROVE IT</span><small>Why?</small></div></div>
+ <p class="mdwarn">Careful, detective: some answers are <b>right</b>. Don't get tricked!</p>
+ ${best?`<p class="mdbest">Your best: ⭐ ${best}</p>`:''}
+ <button type="button" class="mdgo" data-md="start">Open case #1 ▶</button></div></div>`; focusGo(); }
+function caseHead(c){ return `<div class="mdcase${RM?'':' mdin'}"><div class="mdfile"><span class="mdno">CASE #${G.i+1}</span><span class="mdtopic">${E(nameOf(c.id))}</span></div>
+ <div class="mdq"><small>The question</small><div class="mdqt">${E(c.q)}</div><button type="button" class="mdspk" data-md="say" aria-label="Read it to me">🔊</button></div>
+ <div class="mdans"><div class="mdface" aria-hidden="true">🧒</div><div><small>${E(c.who)} answered:</small><div class="mdshown">“${E(c.shown)}”</div></div></div>`; }
+function step1(){ const c=G.list[G.i]; G.step=1; G.lock=false; el().innerHTML=`<div class="mdwrap">${top()}${caseHead(c)}
+ <div class="mdprompt"><span class="mdstep">1 · SPOT IT</span> Is ${E(c.who)} right?</div>
+ <div class="mdbtns two"><button type="button" class="mdb mdok" data-md="s1" data-v="1"><b>1</b> 👍 He is right</button><button type="button" class="mdb mdnob" data-md="s1" data-v="0"><b>2</b> 👎 He made a mistake</button></div><div class="mdfb" aria-live="polite"></div></div></div>`; }
+function opts(arr,kind){ return `<div class="mdbtns">${arr.map((t,i)=>`<button type="button" class="mdb opt" data-md="${kind}" data-i="${i}"><b>${i+1}</b> ${E(t)}</button>`).join('')}</div>`; }
+function step2(){ const c=G.list[G.i]; G.step=2; G.lock=false; const box=el().querySelector('.mdnext'); el().querySelector('.mdcase').insertAdjacentHTML('beforeend',`<div class="mdnext"><div class="mdprompt"><span class="mdstep">2 · FIX IT</span> What is the right answer?</div>${opts(c.fix,'s2')}<div class="mdfb" aria-live="polite"></div></div>`); if(box) box.remove(); scrollEnd(); }
+function step3(){ const c=G.list[G.i]; G.step=3; G.lock=false; el().querySelector('.mdcase').insertAdjacentHTML('beforeend',`<div class="mdnext"><div class="mdprompt"><span class="mdstep">3 · PROVE IT</span> Which clue cracks the case?</div>${opts(c.whys,'s3')}<div class="mdfb" aria-live="polite"></div></div>`); scrollEnd(); }
+function scrollEnd(){ try{ const w=el().querySelector('.mdwrap'); w.scrollTo({top:w.scrollHeight,behavior:RM?'auto':'smooth'}); }catch(e){} }
+function lockBtns(scope,good,bad){ scope.querySelectorAll('.mdb').forEach(b=>{ b.disabled=true; }); if(good) good.classList.add('mdright'); if(bad&&bad!==good) bad.classList.add('mdwrong'); }
+function lastScope(){ const n=el().querySelectorAll('.mdnext'); return n.length?n[n.length-1]:el().querySelector('.mdwrap'); }
+function fb(scope,ok,msg){ const f=scope.querySelector('.mdfb'); if(f){ f.className='mdfb '+(ok?'mdgood':'mdbad'); f.innerHTML=msg; } if(ok) SND.ok(); else SND.no(); }
+function answer(kind,btn){ if(G.lock) return; G.lock=true; const c=G.list[G.i], scope=lastScope();
+ if(kind==='s1'){ const saidRight=btn.getAttribute('data-v')==='1', ok=saidRight===c.trap; if(ok) G.pts++;
+  const good=scope.querySelector(`.mdb[data-v="${c.trap?1:0}"]`); lockBtns(scope,good,btn);
+  fb(scope,ok,ok?(c.trap?'Sharp! That answer <b>is</b> right. Not every case has a mistake.':'Good eye! There <b>is</b> a mistake.'):(c.trap?'Tricky one! That answer was actually <b>right</b>.':'Look again: that answer has a <b>mistake</b>.'));
+  setTimeout(()=>{ if(c.trap){ G.pts+= ok?1:0; step3(); } else step2(); },1100); return; }
+ if(kind==='s2'){ const i=+btn.getAttribute('data-i'), ok=norm(c.fix[i])===norm(c.right); if(ok) G.pts++;
+  const good=[...scope.querySelectorAll('.mdb')].find(b=>norm(c.fix[+b.getAttribute('data-i')])===norm(c.right)); lockBtns(scope,good,btn);
+  fb(scope,ok,ok?'Fixed! ✔':'The right answer is: <b>'+E(c.right)+'</b>'); setTimeout(step3,1100); return; }
+ if(kind==='s3'){ const i=+btn.getAttribute('data-i'), ok=c.whys[i]===c.why; if(ok) G.pts++;
+  const good=[...scope.querySelectorAll('.mdb')].find(b=>c.whys[+b.getAttribute('data-i')]===c.why); lockBtns(scope,good,btn);
+  fb(scope,ok,ok?'Proved it! 🔍':'This is the clue that proves it.'); setTimeout(()=>closed(ok),1100); return; } }
+function closed(lastOk){ const c=G.list[G.i]; G.solved++; SND.stamp(); const d=el();
+ d.querySelector('.mdcase').insertAdjacentHTML('beforeend',`<div class="mdnext mdsolved"><div class="mdstamp${RM?'':' go'}" aria-hidden="true">SOLVED</div>
+ <div class="mdtruth"><div><small>Right answer</small><b>${E(c.right)}</b></div>${c.trap?'':`<div class="mdx-wrong"><small>The mistake</small><s>${E(c.wrong)}</s></div>`}<div class="mdwhy">💡 ${E(c.why)}</div></div>
+ <button type="button" class="mdgo" data-md="next">${G.i+1<G.list.length?'Next case ▶':'See my rank ▶'}</button></div>`); scrollEnd(); setTimeout(focusGo,300); }
+function rankOf(p,max){ const s=Math.round(p*18/Math.max(1,max)); for(const r of RANKS) if(s>=r[0]) return r; return RANKS[RANKS.length-1]; }
+function end(){ const max=G.list.reduce((s,c)=>s+3,0), r=rankOf(G.pts,max), best=getBest(), nb=G.pts>best; if(nb) setBest(G.pts); SND.fanfare();
+ el().innerHTML=`<div class="mdwrap mdend">${top()}<div class="mdhero"><div class="mdbadge${RM?'':' pop'}">${r[2]}</div><h1>${E(r[1])}!</h1>
+ <p class="mdbig">⭐ ${G.pts} of ${max} · ${G.solved} cases closed</p>${nb&&best?'<p class="mdbest">🎉 New best!</p>':''}
+ <p class="mdtip">Detectives learn the most from mistakes. Every clue you read today makes the right answer stick.</p>
+ <div class="mdbtns two"><button type="button" class="mdgo" data-md="again">🔁 New cases</button><button type="button" class="mdgo mdalt" data-md="close">Done</button></div></div></div>`; if(!RM) confetti(); focusGo(); }
+function confetti(){ const d=el(); for(let i=0;i<60;i++){ const p=document.createElement('i'); p.className='mdcf'; p.style.left=(Math.random()*100)+'vw'; p.style.background=['#FACC15','#F43F5E','#22C55E','#3B82F6','#A855F7','#FB923C'][i%6]; p.style.animationDelay=(Math.random()*.6)+'s'; p.style.animationDuration=(1.6+Math.random()*1.4)+'s'; d.appendChild(p); setTimeout(()=>p.remove(),3500); } }
+function focusGo(){ try{ const b=el().querySelector('.mdgo'); if(b) b.focus({preventScroll:true}); }catch(e){} }
+document.addEventListener('click',function(e){ const tile=e.target.closest&&e.target.closest('[data-hp="open"][data-k="mdcard"]'); if(tile&&!window.TL_MD_OFF){ e.preventDefault(); e.stopPropagation(); return open(); }
+ const t=e.target.closest&&e.target.closest('[data-md],[data-mdopen]'); if(!t) return;
+ if(t.hasAttribute('data-mdopen')){ e.preventDefault(); e.stopPropagation(); return open(); }
+ if(!t.closest('#mdx')) return; e.preventDefault(); e.stopPropagation(); const a=t.getAttribute('data-md');
+ if(a==='close') return close(); if(a==='start') return step1(); if(a==='again') return open();
+ if(a==='say'){ const c=G.list[G.i]; return say(c.q+'. '+c.who+' answered: '+c.shown); }
+ if(a==='next'){ G.i++; return G.i<G.list.length?step1():end(); }
+ if(a==='s1'||a==='s2'||a==='s3') return answer(a,t); },true);
+document.addEventListener('keydown',function(e){ const d=document.getElementById('mdx'); if(!d||d.className!=='on') return;
+ if(e.key==='Escape'){ e.preventDefault(); return close(); }
+ const n=parseInt(e.key,10); if(n>=1&&n<=4&&!G.lock){ const sc=lastScope(); const bs=[...sc.querySelectorAll('.mdb:not([disabled])')]; if(bs[n-1]){ e.preventDefault(); bs[n-1].click(); } }
+ else if(e.key==='Enter'){ const g=d.querySelector('.mdgo'); if(g&&document.activeElement!==g){ e.preventDefault(); g.click(); } } },true);
+function card(st){ if(window.TL_MD_OFF) return ''; let n=0; try{ n=pool().length; }catch(e){ return ''; } if(n<3) return ''; const best=getBest();
+ return `<section class="mdcard"><div class="mdch"><span class="mdci" aria-hidden="true">🕵️</span><div><b>Mistake Detective</b><small>Spot it. Fix it. Prove it. ${ROUND} cases from your lessons.</small></div></div><div class="mdcb"><button type="button" class="mdcbtn" data-mdopen="1">🔍 Start a case</button>${best?`<span class="mdcbest">Best: ⭐ ${best}</span>`:''}</div></section>`; }
+const _find=window.tlFindLevelCard;
+window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ h+=card(st); }catch(e){ console.error('Mistake Detective card',e); } return h; };
+try{ if(!document.getElementById('tl-md-css')){ const s=document.createElement('style'); s.id='tl-md-css'; s.textContent=`
+.mdcard{margin:14px 0;border-radius:22px;background:#fff;border:2px solid #0F766E;box-shadow:0 10px 28px rgba(15,118,110,.16);overflow:hidden}
+.mdch{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(135deg,#14B8A6,#0EA5E9);color:#fff}.mdch b{font-size:20px}.mdch small{display:block;opacity:.92}
+.mdci{width:52px;height:52px;display:grid;place-items:center;border-radius:16px;background:rgba(255,255,255,.16);font-size:30px;flex:none}
+.mdcb{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 16px}.mdcbtn{border:0;border-radius:14px;padding:12px 18px;min-height:52px;font-weight:800;font-size:18px;font-family:inherit;background:#0F766E;color:#fff;cursor:pointer}.mdcbtn:hover{filter:brightness(1.1)}.mdcbest{font-weight:800;color:#0F766E}
+#mdx{display:none}#mdx.on{display:block;position:fixed;inset:0;z-index:99990;background:radial-gradient(circle at 50% -10%,#BAE6FD 0,#E0F2FE 40%,rgba(224,242,254,0) 70%),radial-gradient(circle at 50% 120%,#FDE68A 0,rgba(253,230,138,0) 55%),linear-gradient(180deg,#F0F9FF,#FFFBEB);color:#0F172A;font-family:inherit}
+#mdx .mdwrap{height:100%;overflow-y:auto;padding:12px 16px 40px;box-sizing:border-box;max-width:980px;margin:0 auto}
+#mdx .mdtop{display:flex;align-items:center;gap:12px}.mdtitle{flex:1;font-weight:900;letter-spacing:.08em;font-size:clamp(18px,3.2vw,26px);color:#0F766E;text-shadow:0 2px 0 #CCFBF1}
+.mdpts{font-weight:900;font-size:clamp(20px,3.4vw,28px);background:#FACC15;color:#1F2937;border-radius:999px;padding:4px 16px}
+.mdx-close{border:0;background:#fff;box-shadow:0 2px 8px rgba(15,23,42,.12);color:#0F172A;font-size:22px;width:46px;height:46px;border-radius:14px;cursor:pointer}
+.mddots{display:flex;gap:8px;justify-content:center;margin:10px 0 14px}.mddot{width:16px;height:16px;border-radius:50%;background:#CBD5E1}.mddot.done{background:#22C55E}.mddot.cur{background:#F59E0B;box-shadow:0 0 0 4px rgba(245,158,11,.25)}
+.mdhero{text-align:center;padding:10px 0}.mdhero h1{font-size:clamp(30px,6vw,54px);margin:6px 0;line-height:1.1;color:#0F172A}
+.mdglass{font-size:clamp(70px,13vw,120px);display:inline-block;animation:mdsweep 2.6s ease-in-out infinite}
+@keyframes mdsweep{0%,100%{transform:translateX(-30px) rotate(-12deg)}50%{transform:translateX(30px) rotate(12deg)}}
+.mdbig{font-size:clamp(20px,3.6vw,30px);margin:6px 0 14px}.mdwarn{font-size:clamp(17px,2.8vw,22px);color:#B45309}.mdbest{font-size:20px;font-weight:800;color:#0F766E}.mdtip{font-size:clamp(17px,2.6vw,21px);color:#334155;max-width:640px;margin:10px auto 18px}
+.mdsteps{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:8px 0 16px}.mdsteps div{background:#fff;border:2px solid #99F6E4;box-shadow:0 6px 16px rgba(15,118,110,.12);border-radius:18px;padding:10px 16px;min-width:140px}
+.mdsteps b{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:#FACC15;color:#111;font-size:20px;margin-right:6px}.mdsteps span{font-weight:900;font-size:20px;letter-spacing:.05em}.mdsteps small{display:block;color:#475569;font-size:16px;margin-top:4px}
+.mdgo{border:0;border-radius:18px;padding:14px 28px;min-height:60px;font-weight:900;font-size:clamp(20px,3.4vw,26px);font-family:inherit;background:linear-gradient(135deg,#FACC15,#F59E0B);color:#111;cursor:pointer;box-shadow:0 6px 0 #92400E;margin:8px}
+.mdgo:active{transform:translateY(3px);box-shadow:0 3px 0 #92400E}.mdgo.mdalt{background:#E2E8F0;box-shadow:0 6px 0 #64748B}.mdgo:focus-visible,.mdb:focus-visible{outline:4px solid #38BDF8;outline-offset:3px}
+.mdcase{background:#FFFBEB;color:#1F2937;border-radius:24px;padding:16px;box-shadow:0 14px 36px rgba(15,23,42,.14);position:relative;border:3px solid #FDE68A}
+.mdcase.mdin{animation:mdslide .45s cubic-bezier(.2,.9,.3,1.2)}@keyframes mdslide{from{transform:translateY(40px) rotate(-2deg);opacity:0}to{transform:none;opacity:1}}
+.mdfile{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.mdno{background:#B91C1C;color:#fff;font-weight:900;letter-spacing:.1em;border-radius:8px;padding:4px 12px;font-size:18px}.mdtopic{font-weight:800;color:#78350F;font-size:17px}
+.mdq{position:relative;background:#fff;border:2px dashed #D97706;border-radius:16px;padding:12px 56px 12px 14px}.mdq small,.mdans small,.mdtruth small{display:block;font-weight:800;color:#92400E;font-size:15px;text-transform:uppercase;letter-spacing:.06em}
+.mdqt{font-size:clamp(22px,3.6vw,32px);font-weight:800;line-height:1.25;margin-top:4px}.mdspk{position:absolute;right:8px;top:8px;border:0;background:#FEF3C7;border-radius:12px;width:42px;height:42px;font-size:22px;cursor:pointer}
+.mdans{display:flex;gap:12px;align-items:center;margin:12px 0;background:#EFF6FF;border-radius:16px;padding:10px 14px}.mdface{font-size:44px}.mdshown{font-size:clamp(22px,3.6vw,32px);font-weight:900;color:#1E3A8A}
+.mdprompt{font-size:clamp(21px,3.4vw,28px);font-weight:900;margin:14px 0 8px;color:#111827}.mdstep{display:inline-block;background:#0F766E;color:#fff;border-radius:10px;padding:2px 10px;font-size:.7em;letter-spacing:.08em;margin-right:8px;vertical-align:middle}
+.mdbtns{display:grid;gap:10px}.mdbtns.two{grid-template-columns:1fr 1fr}
+.mdb{display:flex;align-items:center;gap:10px;text-align:left;border:3px solid #CBD5E1;background:#fff;color:#111827;border-radius:16px;padding:12px 14px;min-height:60px;font-size:clamp(18px,3vw,24px);font-weight:800;font-family:inherit;cursor:pointer;transition:transform .12s}
+.mdb b{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#E2E8F0;font-size:17px}.mdb:hover:not([disabled]){transform:translateY(-2px);border-color:#0F766E}
+.mdb.mdok{border-color:#22C55E}.mdb.mdnob{border-color:#F43F5E}.mdb.mdright{background:#DCFCE7;border-color:#16A34A}.mdb.mdwrong{background:#FFE4E6;border-color:#E11D48}.mdb[disabled]{cursor:default}
+.mdfb{min-height:30px;font-size:clamp(18px,2.8vw,22px);font-weight:800;margin-top:8px}.mdfb.mdgood{color:#15803D}.mdfb.mdbad{color:#B91C1C}
+.mdsolved{position:relative;text-align:center;padding-top:8px}.mdstamp{display:inline-block;font-weight:900;font-size:clamp(40px,8vw,72px);color:#DC2626;border:6px solid #DC2626;border-radius:14px;padding:0 18px;transform:rotate(-10deg);letter-spacing:.08em;opacity:.9}
+.mdstamp.go{animation:mdstamp .5s cubic-bezier(.3,1.6,.5,1)}@keyframes mdstamp{0%{transform:scale(3) rotate(-25deg);opacity:0}100%{transform:rotate(-10deg) scale(1);opacity:.9}}
+.mdtruth{display:grid;gap:8px;text-align:left;background:#fff;border-radius:16px;padding:12px 14px;margin:12px 0;border:2px solid #FDE68A}.mdtruth b{font-size:clamp(20px,3.2vw,28px);color:#15803D}.mdtruth s{font-size:clamp(18px,2.8vw,22px);color:#9F1239}
+.mdwhy{font-size:clamp(19px,3vw,24px);font-weight:700;color:#1F2937}
+.mdbadge{font-size:clamp(90px,18vw,150px)}.mdbadge.pop{animation:mdpop .7s cubic-bezier(.3,1.7,.5,1)}@keyframes mdpop{from{transform:scale(0) rotate(-40deg)}to{transform:none}}
+.mdcf{position:fixed;top:-12px;width:10px;height:16px;border-radius:3px;animation:mdfall linear forwards;z-index:99991}@keyframes mdfall{to{transform:translateY(105vh) rotate(720deg)}}
+@media (max-width:560px){.mdbtns.two{grid-template-columns:1fr}.mdsteps div{min-width:0;flex:1}}
+@media (prefers-reduced-motion:reduce){.mdglass{animation:none}}`; document.head.appendChild(s); } }catch(e){}
+window.TL_MD={open,close,pool,build,v:1};
+})();
+
 </script>

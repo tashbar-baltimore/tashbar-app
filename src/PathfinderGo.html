@@ -1,0 +1,22 @@
+<script>
+/* PathfinderGo.html (v7.2 Stage 5, item 25; 2026-11-16, Claude Code builder). Added after QuestPage by sgQuest_ (StaffGrid.js).
+   The last Pathfinder day-1 screen ("Your first lesson today", PathfinderUxPage.html, TEST boys only) leaves a note in this tab
+   (sessionStorage tl-pfgo = {c, id, sid, at}) and goes back to the app. When that same boy is on his home screen again, this opens
+   that lesson once, through the page's own startMission (so the first-lesson check in PathfinderCard still runs first).
+   No note = nothing happens: a boy who is not a TEST boy never gets one. Notes older than 30 minutes are thrown away. */
+(function(){
+ function note(){ try{ return JSON.parse(sessionStorage.getItem('tl-pfgo')||'null'); }catch(e){ return null; } }
+ function drop(){ try{ sessionStorage.removeItem('tl-pfgo'); }catch(e){} }
+ var waited=0;
+ var t=setInterval(function(){
+  var n=note(); if(!n){ clearInterval(t); return; }
+  if(!n.at||Date.now()-n.at>30*60000||!/^TEST-/.test(String(n.sid||''))){ drop(); clearInterval(t); return; }
+  try{
+   if(typeof A==='undefined'||!A||!A.st||A.view!=='hub'||A.overlay||typeof window.startMission!=='function') return;
+   if(String(A.st.id)!==String(n.sid)){ drop(); clearInterval(t); return; }
+   if(typeof window.pfCardInfo_==='function'&&!window.pfCardInfo_()&&++waited<20) return;   /* v7.2 merge fix: wait (up to 20 s) until PathfinderCard knows his first-lesson checks, so the check runs first */
+   drop(); clearInterval(t); window.startMission(n.c,n.id,'skill');
+  }catch(e){ drop(); clearInterval(t); }
+ },1000);
+})();
+</script>

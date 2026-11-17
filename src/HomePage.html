@@ -5,7 +5,7 @@
      The moving background lives outside #app, so it does not restart every time a number is tapped.
      LOGO: the school logo is in HP_LOGO (a data: URL), shown on a white plaque with a gold ring. If it is emptied, a gold "T" crest shows. -->
 <style id="hp-css">
-body.hp-on{background:#1B1145!important}
+body.hp-on{background:#1B1145!important}body.sg5-on{background:#F0F9FF!important}
 body.hp-on{overflow-x:hidden}
 body.hp-on .wrap{position:relative;z-index:1;padding:0!important;margin:0 auto!important;max-width:none!important}
 #hpbg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;display:none;
@@ -527,6 +527,138 @@ vSignin=function(){
   '</div></div><p class="kbtip">⌨️ You can type your code on the keyboard, then press Enter.</p></div>'+
  '</div></section>';
 };
+/* ===== SIGN-IN v5 "HONEY MORNING" (cloud builder 1, 2026-11-17). HoS: "the first page where the keypad is ... super upgraded";
+   "just have inspiring things on the front ... the keypad and the honey"; "update that whole logo, make it much sharper, much more
+   professional, but keeping the feel"; "I don't like the dark backgrounds".
+   ONE bright page: the new honey logo, a greeting with the English and Hebrew date, ONE rotating inspiring line with its source,
+   and the code pad. No tiles, no flying words, no dark sky.
+   LOGO v5: the same chalkboard, 22|26 tile (aleph-tav, A-Z), the Hebrew name and TASHBAR, BALTIMORE and the tagline, now drawn with clean
+   type and glossy honey. It writes itself in chalk, fills with honey, then honey drips and a shine passes over it. A re-draw (each number
+   tapped) never restarts it (the clock is kept in --e). On Chanukah and Pesach the v197 holiday logo is shown instead.
+   CODE PAD: same buttons (data-act pin / del / signin), so sign-in works exactly as before. The 4 slots are honeycomb cells that fill
+   with honey. On the 4th number it signs in by itself (a short pause first). Off switch: window.TL_SIGNIN_V5 = false -> the v172 page.
+   No slash-slash in this file (HtmlService rule). ===== */
+var SG5_T0=Date.now();
+function sg5Logo(){
+ var e=((Date.now()-SG5_T0)/1000).toFixed(2), HF="'Frank Ruhl Libre','Noto Serif Hebrew','David',serif", SF="Georgia,'Times New Roman',serif";
+ return '<svg class="sg5logo" viewBox="0 0 560 210" role="img" aria-label="Tashbar of Baltimore: learning that tastes sweet" style="--e:'+e+'">'
+ +'<defs>'
+ +'<linearGradient id="sg5wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D49A5A"/><stop offset=".5" stop-color="#B07338"/><stop offset="1" stop-color="#8A5526"/></linearGradient>'
+ +'<linearGradient id="sg5slate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2F5240"/><stop offset="1" stop-color="#1D3529"/></linearGradient>'
+ +'<linearGradient id="sg5honey" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3C2"/><stop offset=".32" stop-color="#FFD24D"/><stop offset=".7" stop-color="#F2A600"/><stop offset="1" stop-color="#B76B00"/></linearGradient>'
+ +'<filter id="sg5gloss" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="1.6" stdDeviation="1.1" flood-color="#3D2200" flood-opacity=".55"/></filter>'
+ +'<filter id="sg5grain"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 0"/></filter>'
+ +'<linearGradient id="sg5shine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+ +'<clipPath id="sg5clip"><text x="375" y="128" text-anchor="middle" font-family="'+SF+'" font-weight="700" font-size="50" letter-spacing="7">TASHBAR</text><text x="375" y="72" text-anchor="middle" font-family="'+HF+'" font-weight="700" font-size="42">תשב״ר</text></clipPath>'
+ +'</defs>'
+ +'<rect x="3" y="3" width="554" height="204" rx="24" fill="url(#sg5wood)"/>'
+ +'<rect x="3" y="3" width="554" height="204" rx="24" fill="none" stroke="#6E4019" stroke-width="2"/>'
+ +'<rect x="15" y="15" width="530" height="180" rx="15" fill="url(#sg5slate)"/>'
+ +'<rect x="15" y="15" width="530" height="180" rx="15" filter="url(#sg5grain)" opacity=".07"/>'
+ +'<path d="M40 60 q80 -30 170 -8 M300 170 q90 14 200 -6" stroke="#fff" stroke-opacity=".05" stroke-width="22" fill="none" stroke-linecap="round"/>'
+ /* the element tile */
+ +'<g class="sg5w" style="--dl:.1s"><rect x="36" y="33" width="144" height="144" rx="14" fill="none" stroke="#F4F1E6" stroke-width="3.2" pathLength="100"/></g>'
+ +'<text class="sg5c sg5f" style="--dl:.5s" x="49" y="56" font-family="'+SF+'" font-weight="700" font-size="14" fill="#F4F1E6">22</text>'
+ +'<text class="sg5c sg5f" style="--dl:.6s" x="167" y="56" text-anchor="end" font-family="'+SF+'" font-weight="700" font-size="14" fill="#F4F1E6">26</text>'
+ +'<text class="sg5h" style="--dl:.7s" x="108" y="122" text-anchor="middle" font-family="'+HF+'" font-weight="700" font-size="56" fill="url(#sg5honey)" filter="url(#sg5gloss)">א–ת</text>'
+ +'<text class="sg5c sg5f" style="--dl:1.1s" x="108" y="160" text-anchor="middle" font-family="'+SF+'" font-weight="700" font-size="23" letter-spacing="2" fill="#F4F1E6">A–Z</text>'
+ +'<line class="sg5f" style="--dl:1.2s" x1="208" y1="42" x2="208" y2="168" stroke="#F4F1E6" stroke-opacity=".28" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>'
+ /* the name */
+ +'<text class="sg5h" style="--dl:1.3s" x="375" y="72" text-anchor="middle" font-family="'+HF+'" font-weight="700" font-size="42" fill="url(#sg5honey)" filter="url(#sg5gloss)">תשב״ר</text>'
+ +'<text class="sg5h" style="--dl:1.7s" x="375" y="128" text-anchor="middle" font-family="'+SF+'" font-weight="700" font-size="50" letter-spacing="7" fill="url(#sg5honey)" filter="url(#sg5gloss)">TASHBAR</text>'
+ +'<g clip-path="url(#sg5clip)"><rect class="sg5shine" x="-80" y="20" width="70" height="130" fill="url(#sg5shine)" transform="skewX(-18)"/></g>'
+ /* honey drips under the name */
+ +'<g fill="url(#sg5honey)" filter="url(#sg5gloss)">'
+ +'<path class="sg5drip" style="--dl:2.6s" d="M273 129 h10 q-1 9 -5 14 q-4 -5 -5 -14z"/>'
+ +'<path class="sg5drip" style="--dl:3.4s" d="M367 129 h12 q-1 9 -6 13 q-5 -4 -6 -13z"/>'
+ +'<path class="sg5drip" style="--dl:4.2s" d="M462 129 h9 q-1 8 -4.5 12 q-3.5 -4 -4.5 -12z"/>'
+ +'<circle class="sg5drop" style="--dl:5s" cx="373" cy="145" r="3.2"/>'
+ +'</g>'
+ +'<text class="sg5c sg5f" style="--dl:2.1s" x="375" y="160" text-anchor="middle" font-family="'+SF+'" font-weight="700" font-size="12.5" letter-spacing="8" fill="#F4F1E6">BALTIMORE</text>'
+ +'<text class="sg5f" style="--dl:2.4s" x="375" y="182" text-anchor="middle" font-family="'+SF+'" font-style="italic" font-weight="700" font-size="12.5" letter-spacing="1.5" fill="#FFD24D">Learning that tastes sweet</text>'
+ /* chalk ledge */
+ +'<rect x="15" y="190" width="530" height="5" rx="2" fill="#6E4019" opacity=".55"/><rect x="470" y="186" width="26" height="6" rx="3" fill="#F4F1E6"/><rect x="430" y="187" width="30" height="7" rx="3" fill="#EFE7D2" opacity=".9"/>'
+ +'</svg>';
+}
+function sg5Holiday(){ try{ var f=new Intl.DateTimeFormat('en-u-ca-hebrew',{day:'numeric',month:'long'}), H=function(d){ var p=f.formatToParts(d); return {d:+p.filter(function(x){ return x.type==='day'; })[0].value,m:p.filter(function(x){ return x.type==='month'; })[0].value}; };
+ if(window.TL_LOGO_THEME) return true; var n=new Date(), h=H(n); if(h.m==='Kislev'&&h.d>=24) return true; if(h.m==='Tevet'&&h.d<=3) return true; if(h.m==='Nisan'&&h.d>=14&&h.d<=22) return true; }catch(e){} return false; }
+var prevSignin5=vSignin;
+vSignin=function(){
+ if(A.staffUrl||window.TL_SIGNIN_V5===false) return prevSignin5();
+ var logo=sg5Holiday()?'<div class="sg5hol">'+hlLogo3Svg()+'</div>':sg5Logo();
+ var t=THOUGHT.length?THOUGHT[Math.floor(Date.now()/9000)%THOUGHT.length]:null;
+ var cells=[0,1,2,3].map(function(k){ return '<i class="'+(k<A.pin.length?'on':'')+'"></i>'; }).join('');
+ var pad=A.busy?'<div class="sg5open" role="status"><div class="sg5jar" aria-hidden="true"><i></i></div><b>Opening your day…</b></div>':
+  '<div class="sg5keys">'+[1,2,3,4,5,6,7,8,9].map(function(n){ return '<button type="button" data-act="pin" data-n="'+n+'">'+n+'</button>'; }).join('')+'<span></span><button type="button" data-act="pin" data-n="0">0</button><button type="button" class="sg5del" data-act="del" aria-label="Delete">⌫</button></div>'+
+  '<button type="button" class="sg5go signbtn" data-act="signin" '+(A.pin.length<4?'disabled':'')+'>Let’s go!</button><p class="sg5err" role="alert">'+esc(A.err||'')+'</p>';
+ return '<section class="sg5"><div class="sg5L">'+
+   '<div class="sg5logo-w">'+logo+'</div>'+
+   '<p class="sg5hi">'+esc(greet2())+' <span>'+esc(dayLine())+'</span></p>'+
+   '<p class="sg5day">'+esc(dateLine())+'</p>'+
+  '</div>'+
+  '<div class="sg5R"><div class="sg5card'+(A.err?' shake':'')+'">'+
+   '<h1>Enter your code</h1><p class="sg5sub">'+(A.bootErr?'Can’t reach the school. Check the Wi-Fi.':'Your 4 numbers open today’s learning.')+'</p>'+
+   '<div class="dots2 sg5cells'+(A.err?' bad':'')+'" aria-label="'+A.pin.length+' of 4 numbers">'+cells+'</div>'+pad+
+  '</div><p class="sg5tip">⌨️ You can type your code, too.</p></div>'+
+ (t?'<figure class="sg5q"><span class="sg5qm" aria-hidden="true">“</span><div id="hpth"><b>'+esc(t[0])+'</b><small>'+esc(t[1])+'</small></div></figure>':'')+
+ '</section>';
+};
+/* the 4th number signs in by itself */
+if(typeof pinKey==='function'){ var prevPinKey5=pinKey; pinKey=function(n){ var r=prevPinKey5.apply(this,arguments);
+ try{ if(window.TL_SIGNIN_V5!==false&&A.view==='signin'&&A.pin.length===4&&!A.busy){ var p=A.pin; setTimeout(function(){ if(A.view==='signin'&&A.pin===p&&!A.busy) pinGo(); },420); } }catch(e){} return r; }; }
+(function(){ var _r=render; render=function(){ var r=_r.apply(this,arguments); try{ var on=A.view==='signin'&&!A.staffUrl&&window.TL_SIGNIN_V5!==false; document.body.classList.toggle('sg5-on',on);
+ var g=document.querySelector('svg.sg5logo'); if(g) g.style.setProperty('--e',((Date.now()-SG5_T0)/1000).toFixed(2)); }catch(e){} return r; }; })();
+(function(){ if(document.getElementById('sg5-css')) return; var s=document.createElement('style'); s.id='sg5-css'; s.textContent=''
++'body.sg5-on{background:#F0F9FF!important}body.sg5-on #hpbg{display:none!important}'
++'body.sg5-on::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(700px 480px at 8% 0%,rgba(253,224,71,.55),rgba(253,224,71,0) 70%),radial-gradient(800px 600px at 100% 100%,rgba(251,191,36,.35),rgba(251,191,36,0) 65%),radial-gradient(700px 500px at 95% 5%,rgba(125,211,252,.55),rgba(125,211,252,0) 70%),linear-gradient(165deg,#E0F2FE 0%,#F8FAFC 45%,#FFF7E0 100%)}'
++'.sg5{position:relative;z-index:1;min-height:100vh;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(320px,440px);grid-template-areas:"l r" "q r";column-gap:clamp(20px,4vw,56px);row-gap:clamp(10px,2vh,18px);align-items:center;align-content:center;max-width:1180px;margin:0 auto;padding:clamp(14px,3vh,32px) clamp(16px,3vw,36px)}'
++'.sg5L{grid-area:l;align-self:end;display:grid;gap:clamp(8px,1.6vh,16px);justify-items:center;text-align:center}'
++'.sg5logo-w{width:min(640px,100%);filter:drop-shadow(0 18px 30px rgba(120,72,20,.28))}.sg5logo-w svg{display:block;width:100%;height:auto}.sg5hol svg{display:block;width:100%;height:auto}'
++'.sg5hi{margin:4px 0 0;font:800 clamp(22px,3.2vh,30px)/1.2 var(--display,"Barlow"),sans-serif;color:#0F172A}.sg5hi span{display:block;font:600 clamp(16px,2.2vh,20px)/1.35 var(--body,"Barlow"),sans-serif;color:#475569}'
++'.sg5day{margin:0;font:800 13px var(--body,"Barlow"),sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#B45309}'
++'.sg5q{grid-area:q;align-self:start;justify-self:center;position:relative;margin:0;max-width:560px;width:100%;box-sizing:border-box;background:#fff;border:2px solid #FDE68A;border-radius:22px;padding:16px 22px 16px 58px;text-align:left;box-shadow:0 10px 26px rgba(180,83,9,.12)}'
++'.sg5qm{position:absolute;left:14px;top:-6px;font:900 72px/1 Georgia,serif;color:#F59E0B}'
++'.sg5q #hpth{transition:opacity .6s,transform .6s}.sg5q #hpth.out{opacity:0;transform:translateY(6px)}'
++'.sg5q b{display:block;font:800 clamp(18px,2.6vh,24px)/1.3 var(--display,"Barlow"),sans-serif;color:#1E293B}.sg5q small{display:block;margin-top:6px;font:800 13px var(--body,"Barlow"),sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#B45309}'
++'.sg5R{grid-area:r;display:grid;gap:10px;justify-items:center}'
++'.sg5card{width:100%;box-sizing:border-box;background:#fff;border-radius:32px;padding:clamp(16px,2.6vh,26px) clamp(16px,2vw,26px);box-shadow:0 24px 60px rgba(14,116,144,.18),0 0 0 4px #FDE68A;text-align:center}'
++'.sg5card.shake{animation:hpshake .4s}'
++'.sg5card h1{margin:0;font:900 clamp(26px,3.8vh,34px)/1.1 var(--display,"Barlow"),sans-serif;color:#0F172A}.sg5sub{margin:6px 0 0;font:700 15px var(--body,"Barlow"),sans-serif;color:#64748B}'
++'.sg5cells{display:flex!important;justify-content:center;gap:14px!important;margin:clamp(12px,2vh,20px) 0}'
++'.sg5cells i{position:relative;display:block;width:46px!important;height:52px!important;border:0!important;border-radius:0!important;transform:none!important;background:#F59E0B!important;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);transition:transform .2s}'
++'.sg5cells i::after{content:"";position:absolute;inset:3px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:#FFFBEB}'
++'.sg5cells i.on{animation:sg5pop .35s cubic-bezier(.3,1.6,.5,1)}.sg5cells i.on::after{background:radial-gradient(circle at 35% 28%,#FFF6CC 0,#FFD24D 35%,#F2A600 70%,#C27400 100%)}'
++'.sg5cells.bad i{background:#EF4444!important}.sg5cells.bad i::after{background:#FEE2E2}'
++'@keyframes sg5pop{0%{transform:scale(.6)}100%{transform:scale(1)}}'
++'.sg5keys{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.4vh,12px)}'
++'.sg5keys button{min-height:clamp(54px,8.6vh,72px);border:0;border-radius:20px;background:linear-gradient(180deg,#FFFFFF,#F1F5F9);color:#0F172A;font:900 clamp(26px,4vh,34px) var(--display,"Barlow"),sans-serif;cursor:pointer;box-shadow:0 5px 0 #CBD5E1,0 8px 16px rgba(15,23,42,.08);transition:transform .08s,box-shadow .08s,background .15s}'
++'.sg5keys button:hover{background:linear-gradient(180deg,#FFFBEB,#FEF3C7)}'
++'.sg5keys button:active{transform:translateY(4px);box-shadow:0 1px 0 #CBD5E1}'
++'.sg5keys .sg5del{background:linear-gradient(180deg,#FFF1F2,#FFE4E6);color:#E11D48;box-shadow:0 5px 0 #FECDD3}'
++'.sg5keys button:focus-visible,.sg5go:focus-visible{outline:4px solid #38BDF8;outline-offset:3px}'
++'.sg5go{margin-top:clamp(10px,1.8vh,16px);width:100%;min-height:clamp(56px,8vh,66px);border:0;border-radius:20px;font:900 clamp(22px,3.2vh,26px) var(--display,"Barlow"),sans-serif;color:#3B2200;background:linear-gradient(180deg,#FDE68A,#FBBF24 55%,#F59E0B);box-shadow:0 6px 0 #B45309;cursor:pointer}'
++'.sg5go[disabled]{background:#E2E8F0;color:#94A3B8;box-shadow:0 6px 0 #CBD5E1;cursor:default}'
++'.sg5go:not([disabled]){animation:sg5glow 1.4s ease-in-out infinite}@keyframes sg5glow{50%{box-shadow:0 6px 0 #B45309,0 0 0 8px rgba(251,191,36,.35)}}'
++'.sg5err{min-height:22px;margin:8px 0 0;font:800 16px var(--body,"Barlow"),sans-serif;color:#DC2626}'
++'.sg5tip{margin:0;font:600 14px var(--body,"Barlow"),sans-serif;color:#64748B}'
++'.sg5open{display:grid;justify-items:center;gap:14px;padding:30px 0}.sg5open b{font:900 22px var(--display,"Barlow"),sans-serif;color:#B45309}'
++'.sg5jar{position:relative;width:70px;height:84px;border:4px solid #F59E0B;border-radius:14px 14px 22px 22px;overflow:hidden;background:#FFFBEB}.sg5jar i{position:absolute;left:0;right:0;bottom:0;height:10%;background:linear-gradient(180deg,#FFD24D,#F2A600);animation:sg5fill 1.6s ease-in-out infinite}@keyframes sg5fill{to{height:92%}}'
+/* logo animation (the clock --e keeps it from restarting on re-draw) */
++'.sg5logo .sg5w rect{stroke-dasharray:100;stroke-dashoffset:100;animation:sg5draw 1s ease-out forwards;animation-delay:calc(var(--dl,0s) - var(--e,0) * 1s)}'
++'.sg5logo .sg5w{--dl:.1s}'
++'@keyframes sg5draw{to{stroke-dashoffset:0}}'
++'.sg5logo .sg5f{opacity:0;animation:sg5fade .6s ease-out forwards;animation-delay:calc(var(--dl,0s) - var(--e,0) * 1s)}@keyframes sg5fade{to{opacity:1}}'
++'.sg5logo .sg5h{stroke:#F4F1E6;stroke-width:1.2;stroke-dasharray:420;stroke-dashoffset:420;fill-opacity:0;animation:sg5write 1.6s ease-out forwards;animation-delay:calc(var(--dl,0s) - var(--e,0) * 1s)}'
++'@keyframes sg5write{60%{stroke-dashoffset:0;fill-opacity:0}100%{stroke-dashoffset:0;fill-opacity:1;stroke-opacity:0}}'
++'.sg5logo .sg5drip{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);animation:sg5drip 7s ease-in-out infinite;animation-delay:calc(var(--dl,0s) - var(--e,0) * 1s)}'
++'@keyframes sg5drip{0%{transform:scaleY(0)}25%,80%{transform:scaleY(1)}100%{transform:scaleY(0)}}'
++'.sg5logo .sg5drop{opacity:0;animation:sg5drop 7s ease-in infinite;animation-delay:calc(var(--dl,0s) - var(--e,0) * 1s)}'
++'@keyframes sg5drop{0%,22%{opacity:0;transform:translateY(0)}26%{opacity:1;transform:translateY(0)}36%{opacity:1;transform:translateY(5px)}40%,100%{opacity:0;transform:translateY(7px)}}'
++'.sg5logo .sg5shine{animation:sg5shine 6s ease-in-out infinite;animation-delay:calc(3s - var(--e,0) * 1s)}@keyframes sg5shine{0%,70%{transform:skewX(-18deg) translateX(0)}100%{transform:skewX(-18deg) translateX(620px)}}'
++'@media (max-width:860px){.sg5{grid-template-columns:minmax(0,1fr);grid-template-areas:"l" "r" "q";align-content:start}.sg5L{align-self:auto}.sg5hi span{display:inline}.sg5logo-w{width:min(420px,100%)}}'
++'@media (prefers-reduced-motion:reduce){.sg5logo *{animation:none!important;opacity:1!important;stroke-dashoffset:0!important;fill-opacity:1!important}.sg5logo .sg5h{stroke-opacity:0}.sg5logo .sg5drop{opacity:0!important}.sg5go{animation:none}}';
+document.head.appendChild(s); })();
+
 function thoughtHtml(){ if(!THOUGHT.length) return ''; var t=THOUGHT[Math.floor(Date.now()/9000)%THOUGHT.length]; return '<div class="thought" aria-live="off"><i aria-hidden="true">💭</i><div id="hpth"><b>'+esc(t[0])+'</b><small>'+esc(t[1])+'</small></div></div>'; }
 setInterval(function(){ var x=document.getElementById('hpth'); if(!x||!THOUGHT.length) return; x.classList.add('out'); setTimeout(function(){ var t=THOUGHT[Math.floor(Date.now()/9000)%THOUGHT.length]; x.innerHTML='<b>'+esc(t[0])+'</b><small>'+esc(t[1])+'</small>'; x.classList.remove('out'); },650); },9000);
 var oldRender=render;

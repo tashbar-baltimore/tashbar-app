@@ -25,6 +25,7 @@ function sgQuest_() {
   var page = HtmlService.createHtmlOutputFromFile('QuestPage').getContent(), bar = '';
   try { bar = HtmlService.createHtmlOutputFromFile('SignOutBar').getContent(); } catch (e) { bar = ''; }
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderCard').getContent(); } catch (e) {}
+  try { bar += HtmlService.createHtmlOutputFromFile('PathfinderGo').getContent(); } catch (e) {}   /* v7.2 Stage 5: opens the first lesson after a TEST boy's Pathfinder day-1 screens (inert otherwise) */
   try { bar += HtmlService.createHtmlOutputFromFile('HomePage').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('KidReminders').getContent(); } catch (e) {}   /* Access.js: reminders from home pop up at their time */   /* the front home page: logo, code pad, flying subjects, encouraging messages */   /* PATHFINDER: "Start your Pathfinder" card on his home screen */
   var i = page.lastIndexOf('</body>');
@@ -43,6 +44,7 @@ function sgPage_() {
   try { add += HtmlService.createHtmlOutputFromFile('StaffLive').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('StaffAccess').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('SchoolBuilderPage').getContent(); } catch (e) {}   /* v266 takeover3: Schools & Families front door + See what the kids see banner (SchoolBuilder.js) */   /* Access.js: schools, roles, parents (Head of School and school admins) */   /* v197: walk-around (phone), class Olam Haba sky, Torah moments, bechina day, Parsha of the week; LAST (uses SPX and SPD) */
+  try { add += HtmlService.createHtmlOutputFromFile('StaffLibrary').getContent(); } catch (e) {}   /* Library & One-Tap Command Center (Library.js); floating button, own overlay, LAST */
   var i = page.lastIndexOf('</body>'); if (add) page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
   return HtmlService.createHtmlOutput(tlTheme_(page, 'staff'))
     .setTitle('Tashbar Learning · Staff')
@@ -154,7 +156,7 @@ var SG_STRAND = {
   COMP: { DIG: 'Using the computer', PROG: 'Coding', TYPE: 'Typing' },
   LIFE: { FIN: 'Money', BUD: 'Budgeting', STUDY: 'Study habits' },
   SOC: { COMM: 'Community', GEO: 'Maps and places', HIST: 'History', JHIST: 'Jewish history', CIV: 'Citizenship', ECON: 'Economics' },
-  ELEC: { NUC: 'Nuclear Science', LOGIC: 'Logic', SPEAK: 'Speaking', ART: 'Art', MUS: 'Music', PHOTO: 'Photography', PIANO: 'Piano', SEW: 'Sewing', FIX: 'Fix-It', KNOT: 'Knots', BEAT: 'Music Maker' }
+  ELEC: { NUC: 'Nuclear Science', LOGIC: 'Logic', SPEAK: 'Speaking', ART: 'Art', MUS: 'Music', PHOTO: 'Photography', PIANO: 'Piano', SEW: 'Sewing', FIX: 'Fix-It', KNOT: 'Knots', BEAT: 'Music Maker', WOOD: 'Woodshop', KITCH: 'Kitchen' }
 };
 var SG_CURR = { MATH: 'Tashbar Math K-8 · Number Road', READ: 'Tashbar Reading K-8 · Story Road', LANG: 'Writing and Language Arts K-8', SCI: 'Niflaos HaBorei Science K-8', SOC: 'Social Studies · Explorer Trail', COMP: 'Computing · Computer Town', HEB: 'Limudei Kodesh · Lashon Hakodesh L1-9 (a track of the Limudei Kodesh panel)', ELEC: 'Electives · Journey Into the Atom · Thinking & Arts', VOC: 'Trades · Spark Path (Electricity)', LIFE: 'Life & Money · Main Street' };
 function sgCatalog_() {

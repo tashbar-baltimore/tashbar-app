@@ -1,0 +1,99 @@
+<script>
+/* DailyPath.html — PF stage D (blueprint PF-TWO1 sections 4.5, 4.6 and 5; server: PathfinderDaily.js). Boy-page add-on.
+   Loaded LAST (after LearnWays) by Photos.js msQuestToolsBody_ and listed LAST in Speed.js TL_PART_FILES (KEEP IN STEP).
+   Only a boy whose sign-in data carries .pfd gets anything here. The server sends .pfd to TEST- boys with a Pathfinder profile
+   only (PFD_LIVE = false), so for every other boy each function below returns null and the home page is exactly as before.
+   1. TODAY'S PATH (HomePlus calls window.tlPfdPlan): one stop per subject at his own level, Kodesh first, then Math, Reading,
+      Writing, then the school's other steps (Science or Social Studies), the same order every day; a 5-minute booster stop last.
+      Each stop plays the first lesson at his level he has not mastered. Minutes come from the server setting (never fixed here).
+   2. The boy never sees a level number or "below grade": stops show the subject, the lesson name and "about N min".
+   3. Quick climb moments (the server decides; msSave returns .pfd.moments): "Level up!" or "Let's build this step". Never "down".
+   4. Adventures (electives and games) open after the day's path (HomePlus calls window.tlPfdLock).
+   No money: nothing here pays, shows or changes an amount. No "double slash" in this file (HtmlService rule). */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined') return;
+const PFD=window.TLPFD=window.TLPFD||{by:{},asked:{}};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const KOD=['KRI','HEB','CHU','RAS','MSH','GEM'];
+const PRE={KRI:/^LK\.KRI\./,HEB:/^HEB\./,CHU:/^LK\.CHU\./,RAS:/^LK\.RAS\./,MSH:/^LK\.MSH\./,GEM:/^LK\.GEM\./,MATH:/^MATH\./,READ:/^READ\./,LANG:/^(LANG|WRIT)\./};
+const clean=n=>String(n||'').replace(/\s*\bLevel\s*\d+\b/gi,'').replace(/\s*\b\d+-\d+\b/g,'').replace(/\s+:/g,':').replace(/^\s*:\s*/,'').trim();
+function data(st){ return (st&&PFD.by[st.id])||null; }
+function isM(st,id){ const s=st&&st.skills&&st.skills[id]; return !!(s&&s.m); }
+function mToday(st,id){ const s=st&&st.skills&&st.skills[id]; return !!(s&&s.m&&s.at&&new Date(s.at).toDateString()===new Date().toDateString()); }
+function nToday(st,k){ const re=PRE[k]; if(!re) return 0; return Object.keys(st.skills||{}).filter(id=>re.test(id)&&mToday(st,id)).length; }
+function playable(id){ try{ if(typeof GEN!=='undefined'&&GEN[id]) return true; }catch(e){} try{ return !!(typeof BANK_ALL!=='undefined'&&BANK_ALL[id]); }catch(e){ return false; } }
+function worldName(c,fb){ try{ return (WORLD[c]&&WORLD[c].name)||fb; }catch(e){ return fb; } }
+
+/* one stop of his path -> a HomePlus plan step {i,n,s,done,btn} */
+function stopStep(st,t,min,mainHas){
+ const ids=(t.ids||[]).filter(playable), nid=ids.find(id=>!isM(st,id)), n=nToday(st,t.k), need=t.booster&&mainHas?2:1, dn=n>=need;
+ const nm=t.booster?'Booster: '+t.name:(t.area==='kodesh'?t.name:worldName(t.c,t.name));
+ let btn='', s;
+ if(nid){ const lbl=n?'Keep going':'Play', lesson=clean((t.names&&t.names[nid])||(typeof skillName==='function'?skillName(nid):nid));
+  btn=t.c==='LK'?`<button type="button" data-lk="go" data-id="${E(nid)}">${lbl}</button>`:`<button type="button" data-act="start" data-id="${E(nid)}" data-c="${E(t.c)}">${lbl}</button>`;
+  s='Next: '+lesson+' · about '+min+' min'+(t.booster?' extra':''); }
+ else if((t.ids||[]).length&&t.area==='kodesh'){ btn='<button type="button" data-hp="open" data-k="lkpanel">Open</button>'; s='Open to see your next step · about '+min+' min'; }
+ else s='Everything here is done. Great work!';
+ return {i:t.booster?'🚀':t.ic,n:nm,s,done:dn||(!nid&&!btn),btn,pfd:t.k};
+}
+/* HomePlus: the plan for a boy with a path, else null (unchanged plan) */
+window.tlPfdPlan=function(st,plan,tpl){
+ const d=data(st); if(!d||!Array.isArray(d.stops)||!d.stops.length) return null;
+ const has=k=>d.stops.some(t=>t.k===k), hasKod=d.stops.some(t=>t.area==='kodesh');
+ const byC={MATH:'MATH',READ:'READ',WRIT:'LANG'};
+ const names={MATH:[worldName('MATH','Number Road'),'Find your math level'],READ:[worldName('READ','Story Road'),'Find your reading level'],WRIT:[worldName('WRIT','Writer’s Desk')]};
+ const isLK=x=>x.n==='Limudei Kodesh', cOf=x=>Object.keys(names).find(c=>names[c].indexOf(x.n)>=0)||null;
+ const others=plan.filter(x=>!isLK(x)&&!cOf(x));
+ const mains=d.stops.length+(hasKod?0:plan.filter(isLK).length)+['MATH','READ','WRIT'].filter(c=>!has(byC[c])).reduce((a,c)=>a+plan.filter(x=>cOf(x)===c).length,0)+others.length;
+ const min=Math.max(2,Math.round((Number(d.total)||35)/Math.max(1,mains)));
+ const out=[];
+ if(hasKod) d.stops.filter(t=>t.area==='kodesh').forEach(t=>out.push(stopStep(st,t,min,false)));
+ else plan.filter(isLK).forEach(x=>out.push(x));
+ ['MATH','READ','WRIT'].forEach(c=>{ const t=d.stops.find(z=>z.k===byC[c]);
+  if(t) out.push(stopStep(st,t,min,false)); else plan.filter(x=>cOf(x)===c).forEach(x=>out.push(x)); });
+ others.forEach(x=>out.push(x));
+ if(d.booster) out.push(stopStep(st,d.booster,Number(d.boostMin)||5,has(d.booster.k)));
+ return out;
+};
+/* HomePlus: adventures stay closed until the day's path is done (only for a boy with a path) */
+window.tlPfdLock=function(st,plan,groups){
+ const d=data(st); if(!d||!plan||!plan.length||plan.every(x=>x.done)) return null;
+ css();
+ return '<p class="pfdlocknote">🔒 Finish today’s path to open your adventures.</p>'+String(groups).replace(/<button type="button" class="hptile"([^>]*?)data-hp="(open|jokes)"/g,'<button type="button" class="hptile pfdlocked" disabled aria-disabled="true"$1data-hp="$2"');
+};
+
+/* the climb moment (no numbers, never "down") */
+function moment(list){ const m=(list||[])[0]; if(!m) return; css();
+ const up=m.kind==='up', old=document.getElementById('pfd-ov'); if(old) old.remove();
+ const o=document.createElement('div'); o.id='pfd-ov'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true');
+ o.innerHTML=up?`<div class="bx up"><div class="ic">⛰️</div><h2>Level up!</h2><p>You climbed higher in <b>${E(m.name)}</b>. New stops are on your path.</p><button type="button" data-pfd="ok">Keep climbing</button></div>`
+  :`<div class="bx"><div class="ic">🧱</div><h2>Let’s build this step</h2><p>In <b>${E(m.name)}</b> we will make this step strong first. You’ve got this!</p><button type="button" data-pfd="ok">Let’s go</button></div>`;
+ document.body.appendChild(o); try{ if(up){ if(typeof SND!=='undefined'&&SND.win) SND.win(); if(typeof confetti==='function') confetti(); } }catch(e){}
+ const b=o.querySelector('button'); if(b) b.focus(); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-pfd]'); if(!b) return; const o=document.getElementById('pfd-ov'); if(o) o.remove(); });
+window.tlPfdMoment=moment;
+/* the moment waits until he is back on his home screen with no other window open (result, paycheck, Olam Haba pearl, Adapt), then shows once */
+function later(list){ PFD.pending=list; if(PFD.wait) return; PFD.wait=setInterval(()=>{ try{ if(!PFD.pending){ clearInterval(PFD.wait); PFD.wait=null; return; }
+ if(A.view==='hub'&&!A.overlay&&!document.querySelector('[role="dialog"]:not(#pfd-ov), .strec, .oh2pearl')){ const m=PFD.pending; PFD.pending=null; clearInterval(PFD.wait); PFD.wait=null; moment(m); } }catch(e){ clearInterval(PFD.wait); PFD.wait=null; } },700); }
+
+function css(){ if(document.getElementById('pfd-css')) return; const s=document.createElement('style'); s.id='pfd-css'; s.textContent=`
+.pfdlocknote{margin:0 0 10px;font-weight:800;color:#5B6478}
+.hptile.pfdlocked{filter:grayscale(.75);opacity:.55;cursor:not-allowed}
+#pfd-ov{position:fixed;inset:0;z-index:9999;background:rgba(20,18,50,.55);display:grid;place-items:center;padding:16px}
+#pfd-ov .bx{background:#fff;border-radius:28px;max-width:520px;width:100%;padding:26px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.3);border:3px solid #F5B301}
+#pfd-ov .bx.up{border-color:#22C55E}
+#pfd-ov .ic{font-size:64px;line-height:1}#pfd-ov h2{margin:8px 0;font-size:30px;color:#1E1B4B}#pfd-ov p{color:#3F3F46;font-size:19px;margin:0 0 16px}
+#pfd-ov button{display:block;width:100%;border:0;border-radius:16px;min-height:58px;font-weight:800;font-size:20px;font-family:inherit;cursor:pointer;background:#4F46E5;color:#fff}`; document.head.appendChild(s); }
+
+/* his path arrives with sign-in (msLoad roster entry .pfd) ... */
+if(typeof loadStudent==='function'&&!PFD._ls){ PFD._ls=loadStudent; loadStudent=function(r){ const st=PFD._ls.apply(this,arguments); try{ if(r&&r.pfd) PFD.by[r.id]=r.pfd; else if(r&&r.id) delete PFD.by[r.id]; }catch(e){} return st; }; }
+/* ... and again with every save (the quick climb runs on the server there) */
+if(typeof saveStudent==='function'&&!PFD._ss){ PFD._ss=saveStudent; saveStudent=function(st,cb){ return PFD._ss.call(this,st,function(r){
+ try{ if(r&&r.pfd&&st&&st.id){ PFD.by[st.id]=r.pfd; if(r.pfd.moments&&r.pfd.moments.length) later(r.pfd.moments); if(A.view==='hub') render(); } }catch(e){ console.error('DailyPath save',e); }
+ if(cb) return cb.apply(this,arguments); }); }; }
+/* the add-ons arrived after a TEST boy signed in: ask once */
+try{ const st=A.st; if(st&&/^TEST-/.test(String(st.id||''))&&!PFD.by[st.id]&&!PFD.asked[st.id]&&typeof run==='function'&&typeof SRV!=='undefined'&&SRV.token){ PFD.asked[st.id]=1;
+ run('pfdToday',SRV.token).then(d=>{ if(d&&A.st&&A.st.id===st.id){ PFD.by[st.id]=d; if(A.view==='hub') render(); } }).catch(()=>{}); } }catch(e){}
+window.TL_PFD=1;
+})();
+</script>
