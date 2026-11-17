@@ -184,6 +184,7 @@ async function admin(action, key, a) {
     return { ok: true, result: { live: true, stamp } };
   }
   if (action === 'codeStatus') { CODEAT = 0; await syncCode(); return { ok: true, result: { codeHash: CODEHASH || '(from deploy)', checked: new Date(CODEAT).toISOString() } }; }
+  if (action === 'photoCron') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('photoCron', []); return r.error ? { ok: false, error: String(r.error).slice(0, 200) } : { ok: true, result: r.result }; }
   if (action === 'goOff') { await DB.collection('sys').doc('live').set({ on: false, since: new Date().toISOString() }); LIVE = null; return { ok: true, result: { live: false } }; }
   return { ok: false, error: 'Unknown admin action.' };
 }
