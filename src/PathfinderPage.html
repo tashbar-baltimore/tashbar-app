@@ -222,11 +222,13 @@ function valueOf(it){ if(it.fmt==='TAP'&&window.PFTAPUI) return PFTAPUI.value(it
 function itemHTML(){ const v=P.v, c=v.cur, it=c.item, lab=x=>(it.labels&&it.labels[x])||x; let hud=hudHTML();
  let h=hud+`<div class="card"><div class="qhead">${esc(v.road[c.section].label)} · question ${it.n}${it.draft?' <span class="draft">draft</span>':''}</div>`;
  if(it.passage) h+=it.fmt==='TAP'&&window.PFTAPUI?PFTAPUI.passage(it):passageHTML(it.passage,it.draft);   /* PF-TAP1: tap targets */
- if(it.screen){ const em=picEmoji(it.screen); h+=`<div class="pic">${em?`<span class="em">${em}</span>`:''}${it.draft?'Picture (art coming): ':''}${esc(it.screen)}</div>`; }
+ if(it.art&&window.PFART) h+=PFART.html(it.art);   /* the drawn picture the question needs (PathfinderArt) */
+ else if(it.screen){ const em=picEmoji(it.screen); h+=`<div class="pic">${em?`<span class="em">${em}</span>`:''}${it.draft?'Picture (art coming): ':''}${esc(it.screen)}</div>`; }
  h+=`<div class="stem"><button class="say" data-act="say" aria-label="Read the question to me">🔊</button><span>${rich(it.stem)}</span></div>`;
  if(it.show) h+=`<div class="show${/\s/.test(it.show)?' sent':''}">${esc(it.show)}</div>`;
  if(it.fmt==='CHOICE') h+=`<div class="choices">${it.choices.map((x,i)=>{ const L=lab(x), em=it.cmode==='pic'?emojiFor(L):'', hide=em&&(it.show||it.audioOnly);
-   return `<button class="ch${P.sel===i?' sel':''}" data-act="pick" data-i="${i}" aria-label="${hide?'picture '+(i+1):esc(String(L).replace(/<\/?i>/g,''))}">${em?`<span class="em">${em}</span>`:''}${hide?'':em?`<small>${esc(L)}</small>`:rich(L)}</button>`; }).join('')}</div>`;
+   const ap=it.art&&it.art.choices&&window.PFART?PFART.choice(it.art.choices[x]):'';
+   return `<button class="ch${P.sel===i?' sel':''}" data-act="pick" data-i="${i}" aria-label="${hide?'picture '+(i+1):esc(String(L).replace(/<\/?i>/g,''))}">${ap}${em?`<span class="em">${em}</span>`:''}${hide?'':em?`<small>${esc(L)}</small>`:rich(L)}</button>`; }).join('')}</div>`;
  else if(it.fmt==='ORDER') h+=orderHTML(it);
  else if(it.fmt==='POINT') h+=gridHTML(it);
  else if(it.fmt==='TAP') h+=window.PFTAPUI?PFTAPUI.hint(it):'';   /* PF-TAP1 */

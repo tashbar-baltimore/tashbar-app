@@ -155,6 +155,12 @@ function moneyPost_(e) {
   if (type === 'correction' && cents === 0) return null;
   var key = String(e.key || '').slice(0, 300);
   if (key && moneyHasKey_(key)) return null;   /* each event pays once */
+  /* Head of School 2026-11-16: until he finishes the Pathfinder, automatic earnings are paid at a quarter (PathfinderGate.js).
+     Not the Pathfinder's own pay, and never a staff row (bonus / correction are other types; a staff-written earn has e.by). */
+  if (type === 'earn' && String(e.lessonId || '') !== 'PATHFINDER' && !e.by && typeof pfRewardRate_ === 'function') {
+    var rate = 1; try { rate = pfRewardRate_(sid); } catch (x) { rate = 1; }
+    if (rate < 1) { cents = Math.max(1, Math.round(cents * rate)); e.reason = String(e.reason || '') + ' (1/4 until the Pathfinder is done)'; }
+  }
   var row = { id: 'txn-' + Utilities.getUuid(), at: e.at || new Date().toISOString(), sid: sid, type: type, cents: cents,
     reason: String(e.reason || '').slice(0, 200), lessonId: String(e.lessonId || '').slice(0, 120), itemId: String(e.itemId || '').slice(0, 120),
     by: String(e.by || 'system').slice(0, 254), key: key };

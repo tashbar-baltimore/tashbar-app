@@ -12,7 +12,18 @@
      Only 12 duels a day count, and at most 4 a day with the same chavrusa. Titles grow with points (ArenaPage shows them).
    No public ranking: a boy sees his own points, title and trophies; the rebbe sees the duels (StaffNotes sgParshaInfo → arena).
    A rebbe can switch the Arena off (SG_Settings 'arena' {on:false}), for example during class. Match state lives in the script cache (6 h). */
-var AR = { TTL: 21600, DUELS: 'AR_Duels', DH: ['at', 'code', 'subject', 'topic', 'host_id', 'host_name', 'guest_id', 'guest_name', 'host_score', 'guest_score', 'host_ms', 'guest_ms', 'winner_id', 'n'],
+/* v358 ARENA 2.0 (takeover2, HoS 2026-11-17: "super upgrade the chavrusa duel arena. in all aspects and options and creativity and ambition and excitement").
+   All server-checked, nothing a page can fake:
+   - MODES: classic (10 questions, 8 min) and LIGHTNING (up to 20 questions, 75 seconds: as many right as you can).
+   - POWER-UPS, once each per duel: SPLIT (the server hides wrong choices), SECOND CHANCE (armed on a question: a wrong answer is not
+     counted and you may answer again once), DOUBLE (armed on a question: a right answer scores 2). Score = points; the winner has more points
+     (a tie goes to the faster time, as before). AR_Duels keeps right answers in host_score/guest_score (so the Parsha Siyum rule is unchanged)
+     and adds mode, host_pts, guest_pts.
+   - AVATARS (picked on the page, shown on the podium). CHEERS: only kind, fixed messages can be sent to the chavrusa (no free text).
+   - HANDSHAKE: after the duel both tap Yasher Koach; when both did, each gets +1 Arena point (AR_Shake; counted with the daily cap).
+   - WEEKLY QUESTS in arMyStats (display): play 3, two subjects, teach 1, 3 handshakes, a Lightning round. */
+var AR2 = { LT_MS: 75000, LT_MAX: 20, CHEERS: ['yasher', 'wow', 'fire', 'clap', 'try', 'smile'], SHAKE: 'AR_Shake', SH: ['at', 'code', 'host_id', 'guest_id'] };
+var AR = { TTL: 21600, DUELS: 'AR_Duels', DH: ['at', 'code', 'subject', 'topic', 'host_id', 'host_name', 'guest_id', 'guest_name', 'host_score', 'guest_score', 'host_ms', 'guest_ms', 'winner_id', 'n', 'mode', 'host_pts', 'guest_pts'],
   TEACH: 'AR_Teach', TH: ['at', 'code', 'teacher_id', 'learner_id'], PER_DAY: 12, PER_PAIR: 4, LIMIT_MS: 8 * 60000 };
 
 function arKid_(token) { var s = msSession_(token); if (!s || !s.sid || s.role === 'staff') throw new Error('Please sign in again.'); return s; }
@@ -24,12 +35,17 @@ function arPut_(m) { arC_().put('ar|' + m.code, JSON.stringify(m), AR.TTL); }
 function arLock_(fn) { var l = LockService.getScriptLock(); l.waitLock(15000); try { return fn(); } finally { l.releaseLock(); } }
 function arStr_(s, n) { return String(s == null ? '' : s).slice(0, n); }
 
+function arPts_(p) { var t = 0; (p.ans || []).forEach(function (a) { if (a && a.ok) t += a.x2 ? 2 : 1; }); return t; }
+function arAv_(x) { x = arStr_(x, 8); return /^[^<>&"'\s]{1,8}$/.test(x) ? x : ''; }
 function arView_(m, sid) {
   var me = m.host.id === sid ? m.host : m.guest, them = m.host.id === sid ? m.guest : m.host;
-  var sc = function (p) { return p ? p.ans.filter(function (a) { return a && a.ok; }).length : 0; }, cnt = function (p) { return p ? p.ans.filter(Boolean).length : 0; };
-  var v = { code: m.code, state: m.state, label: m.label, subject: m.subject, n: m.qs.length, start: m.start || 0, now: Date.now(),
-    me: { name: me ? me.name : '', done: cnt(me), score: sc(me) }, them: them ? { name: them.name, done: cnt(them), score: sc(them) } : null,
-    host: m.host.id === sid };
+  var sc = function (p) { return p ? arPts_(p) : 0; }, cnt = function (p) { return p ? p.ans.filter(Boolean).length : 0; };
+  var pu = function (p) { var u = (p && p.pu) || {}; return { split: u.split != null, sh: u.sh != null, x2: u.x2 != null, shAt: u.sh != null && !u.shUsed ? u.sh : -1, x2At: u.x2 != null ? u.x2 : -1, hide: (p && p.hide) || {}, tried: (p && p.tried) || {} }; };
+  var v = { code: m.code, state: m.state, label: m.label, subject: m.subject, n: m.qs.length, start: m.start || 0, now: Date.now(), mode: m.mode || 'classic', limit: m.limit || AR.LIMIT_MS,
+    me: { name: me ? me.name : '', done: cnt(me), score: sc(me), right: me ? me.ans.filter(function (a) { return a && a.ok; }).length : 0, av: (me && me.av) || '', pu: pu(me) },
+    them: them ? { name: them.name, done: cnt(them), score: sc(them), av: them.av || '' } : null,
+    host: m.host.id === sid, cheers: (m.cheers || []).filter(function (c) { return c.to === sid; }).slice(-6),
+    shake: { me: !!(m.shake && m.shake[sid]), them: !!(m.shake && them && m.shake[them.id]), done: !!m.shook } };
   if (m.state !== 'wait') v.qs = m.qs;
   if (m.state === 'done') {
     v.res = m.res;
@@ -41,7 +57,7 @@ function arView_(m, sid) {
 /* the host opens a duel: pack = { subject, topic, label, qs:[{q, o:[…], pic, a}] } (a = index of the right choice, chosen on his page) */
 function arOpen(token, pack) {
   var s = arKid_(token); if (!arOn_()) throw new Error('The Arena is closed right now. Ask your rebbe!');
-  pack = pack || {}; var qs = Array.isArray(pack.qs) ? pack.qs.slice(0, 15) : [];
+  pack = pack || {}; var lt = pack.mode === 'lightning', qs = Array.isArray(pack.qs) ? pack.qs.slice(0, lt ? AR2.LT_MAX : 15) : [];
   if (qs.length < 5) throw new Error('This topic does not have enough questions yet. Pick another one!');
   var A = [], Q = qs.map(function (q) { var o = (Array.isArray(q.o) ? q.o : []).slice(0, 6).map(function (x) { return arStr_(x, 160); }), a = Math.round(Number(q.a));
     if (o.length < 2 || !(a >= 0 && a < o.length)) throw new Error('A question was not ready. Try again.'); A.push(a);
@@ -49,40 +65,40 @@ function arOpen(token, pack) {
   return arLock_(function () {
     var code = ''; for (var t = 0; t < 30; t++) { code = String(1000 + Math.floor(Math.random() * 9000)); if (!arGet_(code)) break; }
     var m = { code: code, at: Date.now(), subject: arStr_(pack.subject, 20), topic: arStr_(pack.topic, 40), label: arStr_(pack.label, 80), qs: Q, a: A,
-      host: { id: s.sid, name: arName_(s.sid), ans: [] }, guest: null, state: 'wait' };
+      host: { id: s.sid, name: arName_(s.sid), ans: [], av: arAv_(pack.av), pu: {} }, guest: null, state: 'wait', mode: lt ? 'lightning' : 'classic', limit: lt ? AR2.LT_MS : AR.LIMIT_MS, cheers: [], shake: {} };
     arPut_(m); return arView_(m, s.sid);
   });
 }
-function arJoin(token, code) {
+function arJoin(token, code, av) {
   var s = arKid_(token); if (!arOn_()) throw new Error('The Arena is closed right now. Ask your rebbe!'); code = String(code || '').replace(/\D/g, '');
   return arLock_(function () {
     var m = arGet_(code); if (!m) throw new Error('No duel has the code ' + code + '. Check the number with your chavrusa.');
     if (m.host.id === s.sid) throw new Error('That is your own duel. Give the code to your chavrusa!');
     if (m.guest && m.guest.id !== s.sid) throw new Error('That duel already has two players.');
-    if (!m.guest) { m.guest = { id: s.sid, name: arName_(s.sid), ans: [] }; m.state = 'go'; m.start = Date.now() + 3500; arPut_(m); }
+    if (!m.guest) { m.guest = { id: s.sid, name: arName_(s.sid), ans: [], av: arAv_(av), pu: {} }; m.state = 'go'; m.start = Date.now() + 3500; arPut_(m); }
     return arView_(m, s.sid);
   });
 }
 function arFinish_(m) {
   if (m.state === 'done') return;
   var sc = function (p) { return p.ans.filter(function (a) { return a && a.ok; }).length; }, ms = function (p) { var t = 0; p.ans.forEach(function (a) { if (a) t = Math.max(t, a.ms); }); return t || 9e9; };
-  var hs = sc(m.host), gs = m.guest ? sc(m.guest) : 0, hm = ms(m.host), gm = m.guest ? ms(m.guest) : 9e9, w = '';
-  if (m.guest) { if (hs !== gs) w = hs > gs ? m.host.id : m.guest.id; else if (hs > 0 && Math.abs(hm - gm) > 1500) w = hm < gm ? m.host.id : m.guest.id; }
-  m.res = { hs: hs, gs: gs, winner: w, tie: !w, hostName: m.host.name, guestName: m.guest ? m.guest.name : '' };
+  var hs = sc(m.host), gs = m.guest ? sc(m.guest) : 0, hp = arPts_(m.host), gp = m.guest ? arPts_(m.guest) : 0, hm = ms(m.host), gm = m.guest ? ms(m.guest) : 9e9, w = '';
+  if (m.guest) { if (hp !== gp) w = hp > gp ? m.host.id : m.guest.id; else if (hp > 0 && Math.abs(hm - gm) > 1500) w = hm < gm ? m.host.id : m.guest.id; }
+  m.res = { hs: hp, gs: gp, hr: hs, gr: gs, winner: w, tie: !w, hostName: m.host.name, guestName: m.guest ? m.guest.name : '', mode: m.mode || 'classic' };
   m.state = 'done';
-  try { sgdTab_(AR.DUELS, AR.DH).appendRow([new Date(), m.code, m.subject, m.label, m.host.id, m.host.name, m.guest ? m.guest.id : '', m.guest ? m.guest.name : '', hs, gs, hm < 9e9 ? hm : '', gm < 9e9 ? gm : '', w, m.qs.length]); } catch (e) {}
+  try { sgdTab_(AR.DUELS, AR.DH).appendRow([new Date(), m.code, m.subject, m.label, m.host.id, m.host.name, m.guest ? m.guest.id : '', m.guest ? m.guest.name : '', hs, gs, hm < 9e9 ? hm : '', gm < 9e9 ? gm : '', w, m.qs.length, m.mode || 'classic', hp, gp]); } catch (e) {}
   try { arC_().remove('arst|' + m.host.id); if (m.guest) arC_().remove('arst|' + m.guest.id); } catch (e) {}
 }
 function arCheckEnd_(m) {
   if (m.state !== 'go' || !m.guest) return false;
   var n = m.qs.length, hd = m.host.ans.filter(Boolean).length === n, gd = m.guest.ans.filter(Boolean).length === n;
-  if ((hd && gd) || Date.now() - (m.start || 0) > AR.LIMIT_MS) { arFinish_(m); return true; }
+  if ((hd && gd) || Date.now() - (m.start || 0) > (m.limit || AR.LIMIT_MS)) { arFinish_(m); return true; }
   return false;
 }
 function arPoll(token, code) {
   var s = arKid_(token); var m = arGet_(String(code || ''));
   if (!m) throw new Error('This duel has ended.');
-  if (m.state === 'go' && Date.now() - (m.start || 0) > AR.LIMIT_MS) { arLock_(function () { m = arGet_(m.code); if (arCheckEnd_(m)) arPut_(m); }); }
+  if (m.state === 'go' && Date.now() - (m.start || 0) > (m.limit || AR.LIMIT_MS)) { arLock_(function () { m = arGet_(m.code); if (arCheckEnd_(m)) arPut_(m); }); }
   return arView_(m, s.sid);
 }
 function arAnswer(token, code, i, choice) {
@@ -90,8 +106,13 @@ function arAnswer(token, code, i, choice) {
   return arLock_(function () {
     var m = arGet_(String(code || '')); if (!m) throw new Error('This duel has ended.');
     var p = m.host.id === s.sid ? m.host : (m.guest && m.guest.id === s.sid ? m.guest : null); if (!p) throw new Error('You are not in this duel.');
+    if (m.state === 'go' && Date.now() - (m.start || 0) > (m.limit || AR.LIMIT_MS)) { arCheckEnd_(m); arPut_(m); }
     if (m.state !== 'go' || !(i >= 0 && i < m.qs.length)) return { ok: false, right: null, view: arView_(m, s.sid) };
-    var ok = false; if (!p.ans[i]) { ok = choice === m.a[i]; p.ans[i] = { c: choice, ok: ok, ms: Math.max(0, Date.now() - (m.start || Date.now())) }; } else ok = p.ans[i].ok;
+    var u = p.pu = p.pu || {}, ok = false;
+    if (!p.ans[i]) { ok = choice === m.a[i];
+      if (!ok && u.sh === i && !u.shUsed) { u.shUsed = true; p.tried = p.tried || {}; p.tried[i] = choice; arPut_(m); return { ok: false, retry: true, wrong: choice, right: null, view: arView_(m, s.sid) }; }
+      if (u.sh === i) u.shUsed = true;
+      p.ans[i] = { c: choice, ok: ok, ms: Math.max(0, Date.now() - (m.start || Date.now())), x2: u.x2 === i && ok }; } else ok = p.ans[i].ok;
     arCheckEnd_(m); arPut_(m);
     return { ok: ok, right: m.a[i], view: arView_(m, s.sid) };
   });
@@ -108,6 +129,44 @@ function arTeach(token, code) {
     return { ok: true, teacher: other.name };
   });
 }
+/* v358 POWER-UPS: kind 'split' | 'sh' (second chance) | 'x2' (double), once each per duel, on a question not yet answered */
+function arPower(token, code, kind, i) {
+  var s = arKid_(token); i = Math.round(Number(i)); kind = String(kind || '');
+  return arLock_(function () {
+    var m = arGet_(String(code || '')); if (!m) throw new Error('This duel has ended.');
+    var p = m.host.id === s.sid ? m.host : (m.guest && m.guest.id === s.sid ? m.guest : null); if (!p) throw new Error('You are not in this duel.');
+    var u = p.pu = p.pu || {};
+    if (m.state !== 'go' || ['split', 'sh', 'x2'].indexOf(kind) < 0 || !(i >= 0 && i < m.qs.length) || p.ans[i] || u[kind] != null) return { ok: false, view: arView_(m, s.sid) };
+    u[kind] = i; var out = { ok: true, kind: kind };
+    if (kind === 'split') { var n = m.qs[i].o.length, wrong = []; for (var k = 0; k < n; k++) if (k !== m.a[i]) wrong.push(k);
+      for (var j = wrong.length - 1; j > 0; j--) { var r = Math.floor(Math.random() * (j + 1)); var t = wrong[j]; wrong[j] = wrong[r]; wrong[r] = t; }
+      var hide = wrong.slice(0, Math.max(0, Math.min(wrong.length - 1, n >= 4 ? 2 : 1))); p.hide = p.hide || {}; p.hide[i] = hide; out.hide = hide; }
+    arPut_(m); out.view = arView_(m, s.sid); return out;
+  });
+}
+/* v358 CHEERS: only these kind messages, at most one every 2 seconds */
+function arCheer(token, code, k) {
+  var s = arKid_(token); k = String(k || ''); if (AR2.CHEERS.indexOf(k) < 0) return { ok: false };
+  return arLock_(function () {
+    var m = arGet_(String(code || '')); if (!m || !m.guest) return { ok: false };
+    var me = m.host.id === s.sid ? m.host : (m.guest.id === s.sid ? m.guest : null); if (!me) return { ok: false };
+    var other = me === m.host ? m.guest : m.host, now = Date.now(); if (me.lastCheer && now - me.lastCheer < 2000) return { ok: false, slow: true };
+    me.lastCheer = now; m.cheers = (m.cheers || []).concat([{ id: now + '-' + Math.floor(Math.random() * 1000), to: other.id, from: me.name, k: k, t: now }]).slice(-20);
+    arPut_(m); return { ok: true };
+  });
+}
+/* v358 HANDSHAKE (sportsmanship): both tap Yasher Koach after the duel → each +1 Arena point, once per duel */
+function arShake(token, code) {
+  var s = arKid_(token);
+  return arLock_(function () {
+    var m = arGet_(String(code || '')); if (!m || m.state !== 'done' || !m.guest) return { ok: false };
+    if (m.host.id !== s.sid && m.guest.id !== s.sid) return { ok: false };
+    m.shake = m.shake || {}; m.shake[s.sid] = 1;
+    if (!m.shook && m.shake[m.host.id] && m.shake[m.guest.id]) { m.shook = true;
+      try { sgdTab_(AR2.SHAKE, AR2.SH).appendRow([new Date(), m.code, m.host.id, m.guest.id]); arC_().remove('arst|' + m.host.id); arC_().remove('arst|' + m.guest.id); } catch (e) {} }
+    arPut_(m); return { ok: true, done: !!m.shook, view: arView_(m, s.sid) };
+  });
+}
 /* points for one boy (server truth) */
 function arPoints_(sid, duels, teach) {
   var day = {}, pair = {}, pts = 0, wins = 0, played = 0, taught = 0, wk = 0, weekAgo = Date.now() - 7 * 86400000, subj = {};
@@ -117,17 +176,26 @@ function arPoints_(sid, duels, teach) {
     var p = 1; played++; var w = String(r[12]); if (w === sid) { p += 3; wins++; } else if (!w) p += 1;
     pts += p; if (t > weekAgo) wk += p; subj[r[2]] = (subj[r[2]] || 0) + (w === sid ? 1 : 0); });
   teach.forEach(function (r) { if (String(r[2]) === sid) { pts += 2; taught++; var t = r[0] instanceof Date ? r[0].getTime() : new Date(r[0]).getTime(); if (t > weekAgo) wk += 2; } });
+  /* v358 handshakes (+1 each, at most 12 a day) and the weekly quests */
+  var shakes = 0, sday = {}, qw = { played: 0, subj: {}, taught: 0, shakes: 0, lightning: 0 };
+  (arPoints_.shk || []).forEach(function (r) { if (String(r[2]) !== sid && String(r[3]) !== sid) return; var t = r[0] instanceof Date ? r[0].getTime() : new Date(r[0]).getTime(), dk = Utilities.formatDate(new Date(t), 'America/New_York', 'yyyy-MM-dd');
+    sday[dk] = (sday[dk] || 0) + 1; if (sday[dk] > AR.PER_DAY) return; pts += 1; shakes++; if (t > weekAgo) { wk += 1; qw.shakes++; } });
+  duels.forEach(function (r) { var h = String(r[4]), g = String(r[6]); if ((h !== sid && g !== sid) || !g) return; var t = r[0] instanceof Date ? r[0].getTime() : new Date(r[0]).getTime(); if (t <= weekAgo) return;
+    qw.played++; qw.subj[r[2]] = 1; if (String(r[14]) === 'lightning') qw.lightning++; });
+  teach.forEach(function (r) { if (String(r[2]) !== sid) return; var t = r[0] instanceof Date ? r[0].getTime() : new Date(r[0]).getTime(); if (t > weekAgo) qw.taught++; });
+  var quests = [['⚔️', 'Play 3 showdowns', Math.min(3, qw.played), 3], ['🌈', 'Duel in 2 different subjects', Math.min(2, Object.keys(qw.subj).length), 2], ['🕯️', 'Teach your chavrusa once', Math.min(1, qw.taught), 1],
+    ['🤝', 'Shake hands 3 times: Yasher Koach!', Math.min(3, qw.shakes), 3], ['⚡', 'Play a Lightning Round', Math.min(1, qw.lightning), 1]];
   /* v225 PARSHA SIYUM: every Parsha duel or challenge with 7+ right counts (no daily cap) */
   var pars = {}; duels.forEach(function (r) { var h = String(r[4]), g = String(r[6]); if (h !== sid && g !== sid) return; var m = /^Parshas (.+?) \(Level/.exec(String(r[3] || '')); if (!m) return;
     var sc = Number(h === sid ? r[8] : r[9]) || 0, n = Number(r[13]) || 10; if (sc >= Math.ceil(n * 0.7)) pars[m[1]] = 1; });
   var cday = {}, classes = 0, teamWins = 0;
   (arPoints_.cls || []).forEach(function (r) { if (String(r[2]) !== sid) return; var t = r[0] instanceof Date ? r[0].getTime() : new Date(r[0]).getTime(), dk = Utilities.formatDate(new Date(t), 'America/New_York', 'yyyy-MM-dd');
     cday[dk] = (cday[dk] || 0) + 1; if (cday[dk] > CH.PER_DAY) return; var p = 1 + (r[7] === true || String(r[7]) === 'true' ? 2 : 0); pts += p; classes++; if (p > 1) teamWins++; if (t > weekAgo) wk += p; });
-  return { pts: pts, wins: wins, played: played, taught: taught, week: wk, subj: subj, classes: classes, teamWins: teamWins, pars: Object.keys(pars) };
+  return { pts: pts, wins: wins, played: played, taught: taught, week: wk, subj: subj, classes: classes, teamWins: teamWins, pars: Object.keys(pars), shakes: shakes, quests: quests, lwins: duels.filter(function (r) { return String(r[12]) === sid && String(r[14]) === 'lightning'; }).length };
 }
 function arMyStats(token) {
   var s = arKid_(token), c = arC_(), k = 'arst|' + s.sid, hit = c.get(k); if (hit) { var o = JSON.parse(hit); o.on = arOn_(); return o; }
-  arPoints_.cls = sgdRows_('AR_Class', 8); var out = arPoints_(s.sid, sgdRows_(AR.DUELS, AR.DH.length), sgdRows_(AR.TEACH, AR.TH.length)); out.on = arOn_();
+  arPoints_.cls = sgdRows_('AR_Class', 8); arPoints_.shk = sgdRows_(AR2.SHAKE, AR2.SH.length); var out = arPoints_(s.sid, sgdRows_(AR.DUELS, AR.DH.length), sgdRows_(AR.TEACH, AR.TH.length)); out.on = arOn_();
   try { c.put(k, JSON.stringify(out), 600); } catch (e) {}
   return out;
 }

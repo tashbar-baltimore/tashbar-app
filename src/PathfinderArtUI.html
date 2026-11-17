@@ -1,0 +1,131 @@
+<style>
+.pfart{display:flex;justify-content:center;margin:10px 0 14px}.pfart svg{display:block}
+.pfart .pfa-box{background:#fffdf7;border:2px solid #efe3c4;border-radius:18px;padding:10px 12px;max-width:100%}
+.pfa-ch{display:block;margin:0 auto 4px;pointer-events:none}.pfa-ch svg{height:58px;width:auto;max-width:100%}
+.pfa-tbl{border-collapse:collapse;font:600 16px system-ui,sans-serif;background:#fff}.pfa-tbl td,.pfa-tbl th{border:2px solid #9aa6c2;padding:8px 12px;text-align:center}.pfa-tbl th{background:#eef2fb}.pfa-tbl caption{font-weight:800;padding:4px}
+</style>
+<script>
+/* PathfinderArt.html: draws the pictures the Pathfinder questions need (specs in PathfinderArt.js, sent as it.art). SVG only.
+   Head of School 2026-11-16. No double slash anywhere in this file (HtmlService rule). */
+window.PFART=(function(){
+ const F='font-family="system-ui,sans-serif"';
+ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const svg=(w,h,body,lab)=>`<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="width:100%;max-width:${w}px;height:auto" role="img" aria-label="${esc(lab||'picture')}">${body}</svg>`;
+ const txt=(x,y,t,o)=>{ o=o||{}; return `<text x="${x}" y="${y}" ${F} font-size="${o.s||16}" font-weight="${o.w||600}" fill="${o.c||'#24324f'}" text-anchor="${o.a||'middle'}"${o.dy?` dominant-baseline="middle"`:''}>${esc(t)}</text>`; };
+ const line=(x1,y1,x2,y2,o)=>{ o=o||{}; return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${o.c||'#24324f'}" stroke-width="${o.w||2}"${o.d?` stroke-dasharray="${o.d}"`:''} stroke-linecap="round"/>`; };
+ let seed=7; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+ function dreidel(x,y,s){ return `<g transform="translate(${x-s/2},${y-s/2}) scale(${s/40})"><rect x="17" y="0" width="6" height="9" rx="2" fill="#7b5a2e"/><rect x="7" y="8" width="26" height="20" rx="4" fill="#3b7dd8" stroke="#24324f" stroke-width="2"/><path d="M7 26 L20 40 L33 26 Z" fill="#3b7dd8" stroke="#24324f" stroke-width="2"/><text x="20" y="23" ${F} font-size="13" font-weight="800" fill="#fff" text-anchor="middle">D</text></g>`; }
+ function icon(e,x,y,s){ return e==='dreidel'?dreidel(x,y,s*1.05):`<text x="${x}" y="${y}" font-size="${s}" text-anchor="middle" dominant-baseline="central">${e}</text>`; }
+ function emoji(sp){ const n=sp.n, s=sp.small?30:44, gap=sp.wide?s*1.9:s*1.12; let pts=[];
+  if(sp.lay==='circle'){ const R=Math.max(60,n*16); for(let i=0;i<n;i++){ const a=-Math.PI/2+i*2*Math.PI/n; pts.push([R+40+R*Math.cos(a),R+40+R*Math.sin(a)]); } return svg(2*R+80,2*R+80,pts.map(p=>icon(sp.e,p[0],p[1],s)).join(''),n+' things in a circle'); }
+  if(sp.lay==='scatter'){ seed=n*31+7; const cols=4, cw=s*1.9, rh=s*1.6, rows=Math.ceil(n/cols); const cells=[]; for(let i=0;i<cols*rows;i++) cells.push(i); for(let i=cells.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)), t=cells[i]; cells[i]=cells[j]; cells[j]=t; }
+   cells.slice(0,n).forEach(c=>pts.push([30+(c%cols)*cw+rnd()*s*0.6,30+Math.floor(c/cols)*rh+rnd()*s*0.5])); return svg(cols*cw+50,rows*rh+50,pts.map(p=>icon(sp.e,p[0]+s/2,p[1]+s/2,s)).join(''),n+' things'); }
+  const c=sp.lay==='rows'?sp.c:Math.min(n,10), r=Math.ceil(n/c); for(let i=0;i<n;i++) pts.push([s*0.7+(i%c)*gap,s*0.7+Math.floor(i/c)*s*1.25]);
+  return svg(Math.round(s*0.4+c*gap),Math.round(s*0.4+r*s*1.25),pts.map(p=>icon(sp.e,p[0],p[1],s)).join(''),n+' things'); }
+ function table(sp){ const w=420,h=230; let b=`<rect x="110" y="80" width="200" height="70" rx="14" fill="#c99a5b" stroke="#7b5a2e" stroke-width="3"/><rect x="190" y="70" width="40" height="14" rx="3" fill="#f6e7b0"/>`; const top=Math.ceil(sp.n/2), bot=sp.n-top;
+  for(let i=0;i<top;i++) b+=icon(sp.e,110+200*(i+0.5)/top,48,40); for(let i=0;i<bot;i++) b+=icon(sp.e,110+200*(i+0.5)/bot,185,40); return svg(w,h,b,sp.n+' boys at a table'); }
+ function sets(sp){ return `<div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;justify-content:center">`+sp.sets.map((x,i)=>(i&&sp.join?`<b style="font:800 22px system-ui;color:#5a6785">${esc(sp.join)}</b>`:'')+`<div class="pfa-box">${emoji(Object.assign({},x,{small:1}))}</div>`).join('')+`</div>`; }
+ function balls(sp){ let x=34,b=''; sp.groups.forEach(g=>{ for(let i=0;i<g.n;i++){ b+=`<circle cx="${x}" cy="40" r="22" fill="${g.c}" stroke="#24324f" stroke-width="2"/><circle cx="${x-7}" cy="32" r="6" fill="#fff" opacity=".45"/>`; x+=52; } }); return svg(x,80,b,'balls'); }
+ function tenframe(sp){ const cw=44, fw=5*cw+8; let b='', x=8; sp.frames.forEach(n=>{ b+=`<rect x="${x}" y="8" width="${5*cw}" height="${2*cw}" fill="#fff" stroke="#24324f" stroke-width="3"/>`; for(let i=1;i<5;i++) b+=line(x+i*cw,8,x+i*cw,8+2*cw); b+=line(x,8+cw,x+5*cw,8+cw);
+   for(let i=0;i<n;i++) b+=`<circle cx="${x+cw/2+(i%5)*cw}" cy="${8+cw/2+Math.floor(i/5)*cw}" r="15" fill="#d9363e"/>`; x+=fw+16; });
+  if(sp.loose){ for(let i=0;i<sp.loose;i++) b+=`<circle cx="${x+18+(i%4)*36}" cy="${30+Math.floor(i/4)*36}" r="15" fill="#d9363e"/>`; x+=4*36+20; }
+  return svg(x,2*cw+20,b,'ten frame'); }
+ function pencil(x,y,len,c){ return `<g><rect x="${x+14}" y="${y-9}" width="${Math.max(10,len-32)}" height="18" fill="${c||'#f2c230'}" stroke="#24324f" stroke-width="2"/><rect x="${x}" y="${y-9}" width="16" height="18" rx="4" fill="#ef8fa6" stroke="#24324f" stroke-width="2"/><path d="M${x+len-18} ${y-9} L${x+len} ${y} L${x+len-18} ${y+9} Z" fill="#f5deb3" stroke="#24324f" stroke-width="2"/><path d="M${x+len-6} ${y-3} L${x+len} ${y} L${x+len-6} ${y+3} Z" fill="#24324f"/></g>`; }
+ function lengths(sp){ let b=''; sp.bars.forEach((p,i)=>{ const y=30+i*44; b+=sp.obj==='pencil'?pencil(10+p[0],y,p[1]):`<path d="M${10+p[0]} ${y} q ${p[1]/4} -8 ${p[1]/2} 0 t ${p[1]/2} 0" fill="none" stroke="${['#d9363e','#2f6fd6','#2e9b47','#8e44ad'][i]}" stroke-width="6" stroke-linecap="round"/>`; }); return svg(360,30+sp.bars.length*44,b,sp.bars.length+' '+sp.obj+'s'); }
+ function mix(sp){ let x=30,b=''; sp.items.forEach(g=>{ for(let i=0;i<g.n;i++){ if(g.s==='car'){ b+=icon('🚗',x+6,44,44); x+=58; }
+   else if(g.s==='button'){ const r=g.big?24:14; b+=`<circle cx="${x+r}" cy="44" r="${r}" fill="${g.c}" stroke="#24324f" stroke-width="2"/>`+[[-1,-1],[1,-1],[-1,1],[1,1]].map(d=>`<circle cx="${x+r+d[0]*r*0.3}" cy="${44+d[1]*r*0.3}" r="${Math.max(2,r*0.12)}" fill="#24324f" opacity=".55"/>`).join(''); x+=2*r+14; }
+   else { b+=`<circle cx="${x+20}" cy="44" r="20" fill="${g.c}" stroke="#24324f" stroke-width="2"/>`; x+=52; } } x+=14; }); return svg(x,90,b,'things to sort'); }
+ function shapePath(s,x,y,w,h){ if(s==='circle') return `<ellipse cx="${x+w/2}" cy="${y+h/2}" rx="${w/2}" ry="${h/2}"/>`; if(s==='tri') return `<path d="M${x+w/2} ${y} L${x+w} ${y+h} L${x} ${y+h} Z"/>`; if(s==='trid') return `<path d="M${x} ${y} L${x+w} ${y} L${x+w/2} ${y+h} Z"/>`;
+  if(s==='rhombus') return `<path d="M${x+w/2} ${y} L${x+w} ${y+h/2} L${x+w/2} ${y+h} L${x} ${y+h/2} Z"/>`; if(s==='hexagon'){ const cx=x+w/2, cy=y+h/2, r=Math.min(w,h)/2; let d=''; for(let i=0;i<6;i++){ const a=Math.PI/180*(60*i); d+=(i?'L':'M')+(cx+r*Math.cos(a)).toFixed(1)+' '+(cy+r*Math.sin(a)).toFixed(1)+' '; } return `<path d="${d}Z"/>`; }
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}"/>`; }
+ function shape(sp){ const big=sp.big||sp.size!=='small', s=sp.small&&!sp.big?60:big?150:80, w=sp.s==='rect'?s*2:s; return svg(w+24,s+24,`<g fill="${sp.c||'#f6d36b'}" stroke="#24324f" stroke-width="3">${shapePath(sp.s,12,12,w,s)}</g>`,sp.s); }
+ function shapes(sp){ let x=8,b=''; sp.list.forEach(s=>{ const w=s==='square'||s==='circle'||s==='tri'||s==='trid'?42:42; b+=`<g fill="#f6d36b" stroke="#24324f" stroke-width="2.5">${shapePath(s,x,8,w,42)}</g>`; x+=w+8; }); return svg(x,58,b,sp.list.length+' shapes'); }
+ function base10(sp){ const u=12; let x=8,b=''; for(let i=0;i<sp.h;i++){ b+=`<rect x="${x}" y="8" width="${10*u}" height="${10*u}" fill="#7fb3e8" stroke="#24324f" stroke-width="2"/>`; for(let k=1;k<10;k++){ b+=line(x+k*u,8,x+k*u,8+10*u,{w:1,c:'#3c6aa6'})+line(x,8+k*u,x+10*u,8+k*u,{w:1,c:'#3c6aa6'}); } x+=10*u+14; }
+  for(let i=0;i<sp.t;i++){ b+=`<rect x="${x}" y="8" width="${u}" height="${10*u}" fill="#f2c230" stroke="#24324f" stroke-width="2"/>`; for(let k=1;k<10;k++) b+=line(x,8+k*u,x+u,8+k*u,{w:1,c:'#9a7a10'}); x+=u+8; } if(sp.t) x+=8;
+  for(let i=0;i<sp.o;i++){ b+=`<rect x="${x+(i%3)*(u+6)}" y="${8+10*u-u-Math.floor(i/3)*(u+6)}" width="${u}" height="${u}" fill="#6cc070" stroke="#24324f" stroke-width="2"/>`; } if(sp.o) x+=3*(u+6);
+  return svg(x+8,10*u+16,b,'base ten blocks'); }
+ function units(sp){ const u=sp.unit==='hand'?40:sp.unit==='clip'?54:30, L=sp.n*u; let b='';
+  if(sp.obj==='pencil') b+=pencil(20,30,L); else if(sp.obj==='sefer') b+=`<rect x="20" y="8" width="${L}" height="44" rx="5" fill="#7b3f2a" stroke="#24324f" stroke-width="2"/><rect x="${20+L*0.35}" y="20" width="${L*0.3}" height="20" rx="3" fill="#e8c35a"/>`; else b+=`<rect x="20" y="14" width="${L}" height="20" rx="4" fill="#c99a5b" stroke="#7b5a2e" stroke-width="2"/><rect x="28" y="34" width="10" height="26" fill="#a87b45"/><rect x="${20+L-18}" y="34" width="10" height="26" fill="#a87b45"/>`;
+  for(let i=0;i<sp.n;i++){ const x=20+i*u, y=72; if(sp.unit==='cube') b+=`<rect x="${x}" y="${y}" width="${u}" height="${u}" fill="#e85d5d" stroke="#24324f" stroke-width="2"/>`; else if(sp.unit==='clip') b+=`<rect x="${x+3}" y="${y+6}" width="${u-6}" height="16" rx="8" fill="none" stroke="#5a6785" stroke-width="3"/><rect x="${x+11}" y="${y+10}" width="${u-22}" height="8" rx="4" fill="none" stroke="#5a6785" stroke-width="2.5"/>`; else b+=icon('✋',x+u/2,y+18,34); }
+  return svg(L+40,72+(sp.unit==='cube'?u:36)+10,b,sp.obj+' and '+sp.n+' units'); }
+ function picgraph(sp){ let b='', y=30; sp.rows.forEach(r=>{ b+=txt(70,y,r[0],{a:'end',dy:1}); for(let i=0;i<r[2];i++) b+=icon(r[1],100+i*40,y,30); b+=line(84,y+22,100+8*40,y+22,{w:1,c:'#c9d1e3'}); y+=48; }); return svg(100+8*40,y,b,'picture graph'); }
+ function frac(sp){ const n=sp.parts, k=sp.shaded, fill=sp.fill||'#7fb3e8'; let b='';
+  if(sp.shape==='circle'){ const cx=110,cy=110,r=95; for(let i=0;i<n;i++){ const a0=-Math.PI/2+i*2*Math.PI/n, a1=a0+2*Math.PI/n, x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0), x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+    b+=`<path d="M${cx} ${cy} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${2*Math.PI/n>Math.PI?1:0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z" fill="${i<k?fill:(sp.fill?sp.fill:'#fff')}" stroke="#24324f" stroke-width="3"/>`; } return svg(220,220,b,'circle in '+n+' equal parts'); }
+  const w=300/n; for(let i=0;i<n;i++) b+=`<rect x="${10+i*w}" y="10" width="${w}" height="110" fill="${i<k?fill:'#fff'}" stroke="#24324f" stroke-width="3"/>`; return svg(320,130,b,'rectangle in '+n+' equal parts'); }
+ function cubes(sp){ let b=''; for(let i=0;i<sp.n;i++){ const x=10+i*44; b+=`<rect x="${x}" y="22" width="34" height="34" fill="#e85d5d" stroke="#24324f" stroke-width="2"/><path d="M${x} 22 l8 -10 h34 l-8 10 Z" fill="#f08c8c" stroke="#24324f" stroke-width="2"/><path d="M${x+34} 22 l8 -10 v34 l-8 10 Z" fill="#b84444" stroke="#24324f" stroke-width="2"/>`; } return svg(20+sp.n*44,66,b,sp.n+' cubes'); }
+ function ruler(sp){ const u=46, x0=24; let b=`<rect x="${x0-10}" y="70" width="${sp.max*u+20}" height="44" fill="#f6e7b0" stroke="#24324f" stroke-width="2"/>`;
+  for(let i=0;i<=sp.max*4;i++){ const x=x0+i*u/4, h=i%4===0?18:i%2===0?11:7; b+=line(x,70,x,70+h,{w:i%4===0?2:1}); if(i%4===0) b+=txt(x,104,String(i/4),{s:15}); }
+  b+=sp.obj==='pencil'?pencil(x0+sp.from*u,46,(sp.to-sp.from)*u):`<rect x="${x0+sp.from*u+8}" y="36" width="${(sp.to-sp.from)*u-24}" height="20" fill="#2e9b47" stroke="#24324f" stroke-width="2"/><path d="M${x0+sp.to*u-16} 36 L${x0+sp.to*u} 46 L${x0+sp.to*u-16} 56 Z" fill="#2e9b47" stroke="#24324f" stroke-width="2"/><rect x="${x0+sp.from*u}" y="36" width="10" height="20" fill="#1f6e33" stroke="#24324f" stroke-width="2"/>`;
+  b+=line(x0+sp.from*u,30,x0+sp.from*u,70,{w:1,d:'4 4',c:'#5a6785'})+line(x0+sp.to*u,30,x0+sp.to*u,70,{w:1,d:'4 4',c:'#5a6785'});
+  return svg(sp.max*u+48,122,b+txt(sp.max*u+30,64,'inches',{s:12,a:'end',c:'#5a6785'}),sp.obj+' on a ruler'); }
+ function clock(sp){ const c=110,r=96; let b=`<circle cx="${c}" cy="${c}" r="${r}" fill="#fff" stroke="#24324f" stroke-width="5"/>`;
+  for(let i=1;i<=12;i++){ const a=Math.PI/180*(i*30-90); b+=txt(c+(r-25)*Math.cos(a),c+(r-25)*Math.sin(a)+6,String(i),{s:18,w:700}); }
+  for(let i=0;i<60;i++){ const a=Math.PI/180*(i*6-90), r1=i%5?r-6:r-11; b+=line(c+r1*Math.cos(a),c+r1*Math.sin(a),c+(r-2)*Math.cos(a),c+(r-2)*Math.sin(a),{w:i%5?1:2.5}); }
+  const ha=Math.PI/180*(((sp.h%12)+sp.m/60)*30-90), ma=Math.PI/180*(sp.m*6-90);
+  b+=line(c,c,c+52*Math.cos(ha),c+52*Math.sin(ha),{w:8})+line(c,c,c+68*Math.cos(ma),c+68*Math.sin(ma),{w:5,c:'#2f6fd6'})+`<circle cx="${c}" cy="${c}" r="7" fill="#24324f"/>`;
+  return svg(220,220,b,'a clock'); }
+ function coins(sp){ const C={quarter:[30,'#c9ccd3','QUARTER'],dime:[22,'#c9ccd3','ONE DIME'],nickel:[26,'#bfc3cb','FIVE CENTS'],penny:[24,'#c47a3e','ONE CENT']}; let x=10,b='';
+  sp.list.forEach(k=>{ if(k==='dollar'){ b+=`<rect x="${x}" y="14" width="130" height="62" rx="6" fill="#cfe8c9" stroke="#2e6b35" stroke-width="3"/><circle cx="${x+65}" cy="45" r="20" fill="none" stroke="#2e6b35" stroke-width="2"/>`+txt(x+65,52,'$1',{s:20,w:800,c:'#2e6b35'})+txt(x+16,32,'1',{s:13,c:'#2e6b35'})+txt(x+114,70,'1',{s:13,c:'#2e6b35'}); x+=142; return; }
+   const c=C[k]; b+=`<circle cx="${x+c[0]}" cy="45" r="${c[0]}" fill="${c[1]}" stroke="#5a6785" stroke-width="3"/>`+txt(x+c[0],49,c[2],{s:Math.max(6,c[0]*0.27),w:800,c:'#24324f'}); x+=2*c[0]+10; }); return svg(x,90,b,'coins'); }
+ function numline(sp){ const x0=30,L=420; let b=line(x0-14,50,x0+L+14,50,{w:3}); for(let i=0;i<=sp.parts;i++){ const x=x0+L*i/sp.parts; b+=line(x,36,x,64,{w:3}); } b+=txt(x0,90,'0',{s:20,w:800})+txt(x0+L,90,'1',{s:20,w:800}); return svg(L+60,100,b,'number line from 0 to 1 in '+sp.parts+' equal parts'); }
+ function fracbars(sp){ let b='', y=10; sp.bars.forEach(r=>{ const w=400/r.parts; for(let i=0;i<r.parts;i++) b+=`<rect x="${10+i*w}" y="${y}" width="${w}" height="46" fill="${i<r.shaded?'#7fb3e8':'#fff'}" stroke="#24324f" stroke-width="3"/>`; y+=62; }); return svg(420,y,b,'fraction bars'); }
+ function cellsSvg(cells,rows,cols){ const u=46; let b=''; cells.forEach(p=>{ b+=`<rect x="${10+p[1]*u}" y="${10+p[0]*u}" width="${u}" height="${u}" fill="#bfe0bf" stroke="#24324f" stroke-width="2.5"/>`; }); return svg(20+cols*u,20+rows*u,b,cells.length+' unit squares'); }
+ function grid(sp){ const c=[]; for(let r=0;r<sp.rows;r++) for(let k=0;k<sp.cols;k++) c.push([r,k]); return cellsSvg(c,sp.rows,sp.cols); }
+ function tri(sp){ if(sp.base){ const b=`<path d="M40 210 L400 210 L150 40 Z" fill="#f6d36b" stroke="#24324f" stroke-width="3"/>`+line(150,40,150,210,{w:2,d:'7 6'})+`<rect x="150" y="196" width="14" height="14" fill="none" stroke="#24324f" stroke-width="1.5"/>`+txt(220,236,sp.base,{s:18,w:800})+txt(166,135,sp.height,{s:18,w:800,a:'start'})+txt(76,118,sp.slant,{s:18,w:800});
+   return svg(440,250,b,'triangle'); }
+  const b=`<path d="M40 210 L360 210 L250 50 Z" fill="#f6d36b" stroke="#24324f" stroke-width="3"/>`+txt(200,238,sp.sides[2],{s:18,w:800})+txt(330,124,sp.sides[0],{s:18,w:800,a:'start'})+txt(122,120,sp.sides[1],{s:18,w:800,a:'end'}); return svg(420,250,b,'triangle'); }
+ function rtri(sp){ const b=`<path d="M60 220 L380 220 L60 40 Z" fill="#f6d36b" stroke="#24324f" stroke-width="3"/><rect x="60" y="200" width="20" height="20" fill="none" stroke="#24324f" stroke-width="2"/>`+txt(220,248,sp.a,{s:18,w:800})+txt(48,135,sp.b,{s:18,w:800,a:'end'}); return svg(420,260,b,'right triangle'); }
+ function bar(sp){ const top=sp.ticks[sp.ticks.length-1], H=240, x0=60, y0=270, w=300; let b='';
+  sp.ticks.forEach(t=>{ const y=y0-H*t/top; b+=line(x0,y,x0+w,y,{w:1,c:'#c9d1e3'})+txt(x0-10,y+5,String(t),{s:14,a:'end'}); }); b+=line(x0,y0-H,x0,y0,{w:2.5})+line(x0,y0,x0+w,y0,{w:2.5});
+  sp.bars.forEach((r,i)=>{ const h=H*r[1]/top; b+=`<rect x="${x0+60+i*120}" y="${y0-h}" width="90" height="${h}" fill="#2f6fd6"/>`+txt(x0+105+i*120,y0+22,r[0],{s:14}); });
+  return svg(x0+w+20,y0+36,b,'bar graph'); }
+ function book(sp){ if(sp.view==='page') return svg(360,250,`<rect x="10" y="10" width="340" height="230" rx="10" fill="#fffdf4" stroke="#24324f" stroke-width="3"/><rect x="40" y="30" width="280" height="130" rx="8" fill="#cfe7ff"/><circle cx="110" cy="80" r="22" fill="#ffd34d"/><path d="M60 150 L140 95 L200 140 L240 110 L300 150 Z" fill="#6cc070"/>`+txt(180,205,'The sun is up.',{s:26,w:700}),'a book page');
+  return svg(460,230,`<rect x="10" y="20" width="190" height="190" rx="8" fill="#e85d5d" stroke="#24324f" stroke-width="3"/>`+txt(105,80,'My Book',{s:24,w:800,c:'#fff'})+`<circle cx="105" cy="140" r="30" fill="#ffd34d"/><rect x="215" y="20" width="30" height="190" rx="5" fill="#b84444" stroke="#24324f" stroke-width="3"/><rect x="260" y="20" width="190" height="190" rx="8" fill="#e85d5d" stroke="#24324f" stroke-width="3"/>`,'a closed book: two covers and the spine'); }
+ function boxes(sp){ const b=txt(40,92,'D',{s:56,w:700,a:'start'})+txt(80,92,'an',{s:56,w:700,a:'start'})+txt(190,92,'sat',{s:56,w:700,a:'start'})+txt(282,92,'.',{s:56,w:700,a:'start'})+
+   `<rect x="34" y="38" width="46" height="70" fill="none" stroke="#d9363e" stroke-width="3" stroke-dasharray="6 4"/><rect x="186" y="38" width="96" height="70" fill="none" stroke="#2f6fd6" stroke-width="3" stroke-dasharray="6 4"/><rect x="280" y="38" width="26" height="70" fill="none" stroke="#2e9b47" stroke-width="3" stroke-dasharray="6 4"/><rect x="152" y="38" width="30" height="70" fill="none" stroke="#8e44ad" stroke-width="3" stroke-dasharray="6 4"/>`;
+  return svg(340,130,b,'a line of words with four boxes'); }
+ function protractor(sp){ const cx=200,cy=200,r=170; let b=`<path d="M${cx-r} ${cy} A${r} ${r} 0 0 1 ${cx+r} ${cy} Z" fill="#eef6ff" stroke="#24324f" stroke-width="2.5"/>`;
+  for(let d=0;d<=180;d+=5){ const a=Math.PI/180*d, l=d%10?8:14; b+=line(cx+r*Math.cos(a),cy-r*Math.sin(a),cx+(r-l)*Math.cos(a),cy-(r-l)*Math.sin(a),{w:d%10?1:1.8}); if(d%10===0){ b+=txt(cx+(r-26)*Math.cos(a),cy-(r-26)*Math.sin(a)+4,String(d),{s:11,w:700}); b+=txt(cx+(r-48)*Math.cos(a),cy-(r-48)*Math.sin(a)+4,String(180-d),{s:10,w:600,c:'#c0392b'}); } }
+  const a2=Math.PI/180*sp.ray; b+=line(cx,cy,sp.from==='left'?cx-r-10:cx+r+10,cy,{w:4,c:'#2f6fd6'})+line(cx,cy,cx+(r+10)*Math.cos(a2),cy-(r+10)*Math.sin(a2),{w:4,c:'#2f6fd6'})+`<circle cx="${cx}" cy="${cy}" r="5" fill="#24324f"/>`;
+  return svg(400,215,b,'an angle on a protractor'); }
+ function angles2(sp){ let b='', x=40; sp.a.forEach(g=>{ const a=Math.PI/180*g.deg; b+=line(x,190,x+g.len,190,{w:4})+line(x,190,x+g.len*Math.cos(a),190-g.len*Math.sin(a),{w:4})+`<path d="M${x+26} 190 A26 26 0 0 0 ${x+26*Math.cos(a)} ${190-26*Math.sin(a)}" fill="none" stroke="#d9363e" stroke-width="2.5"/>`+txt(x-14,196,g.name,{s:22,w:800}); x+=Math.max(g.len,90)+80; }); return svg(x,210,b,'two angles'); }
+ function lineplot(sp){ const n=sp.ticks.length, x0=40, step=Math.min(110,440/(n-1)), y0=200; let b=txt(x0+step*(n-1)/2,22,sp.title,{s:17,w:800})+line(x0-20,y0,x0+step*(n-1)+20,y0,{w:2.5});
+  sp.ticks.forEach((t,i)=>{ const x=x0+i*step; b+=line(x,y0-6,x,y0+6,{w:2})+txt(x,y0+26,t,{s:15}); for(let k=0;k<sp.x[i];k++) b+=txt(x,y0-18-k*28,'X',{s:24,w:800,c:'#2f6fd6'}); });
+  return svg(x0+step*(n-1)+40,y0+38,b,'line plot'); }
+ function expr(sp){ return `<div class="pfa-box" style="font:800 34px Georgia,serif;color:#24324f;padding:14px 22px">${esc(sp.text)}</div>`; }
+ function iso(sp){ const u=30, dx=u*0.6, dy=u*0.4, L=sp.l, W=sp.w, H=sp.h, ox=20, oy=20+W*dy; let b='';
+  for(let r=0;r<H;r++) for(let c=0;c<L;c++) b+=`<rect x="${ox+c*u}" y="${oy+r*u}" width="${u}" height="${u}" fill="#e85d5d" stroke="#24324f" stroke-width="1.5"/>`;
+  for(let k=0;k<W;k++) for(let c=0;c<L;c++){ const x=ox+c*u+k*dx, y=oy-k*dy; b+=`<path d="M${x} ${y} l${dx} ${-dy} h${u} l${-dx} ${dy} Z" fill="#f08c8c" stroke="#24324f" stroke-width="1.5"/>`; }
+  for(let k=0;k<W;k++) for(let r=0;r<H;r++){ const x=ox+L*u+k*dx, y=oy+r*u-k*dy; b+=`<path d="M${x} ${y} l${dx} ${-dy} v${u} l${-dx} ${dy} Z" fill="#b84444" stroke="#24324f" stroke-width="1.5"/>`; }
+  return svg(ox+L*u+W*dx+20,oy+H*u+20,b,'a box made of cubes'); }
+ function coord(sp){ const u=34, n=sp.max, x0=40, y0=20+n*u; let b='';
+  for(let i=0;i<=n;i++){ b+=line(x0+i*u,y0,x0+i*u,y0-n*u,{w:1,c:'#c9d1e3'})+line(x0,y0-i*u,x0+n*u,y0-i*u,{w:1,c:'#c9d1e3'})+txt(x0+i*u,y0+20,String(i),{s:13})+txt(x0-12,y0-i*u+5,String(i),{s:13,a:'end'}); }
+  b+=line(x0,y0,x0+n*u,y0,{w:2.5})+line(x0,y0,x0,y0-n*u,{w:2.5})+`<circle cx="${x0+sp.pt[0]*u}" cy="${y0-sp.pt[1]*u}" r="8" fill="#d9363e"/>`; return svg(x0+n*u+20,y0+30,b,'a dot on a grid'); }
+ function net(sp){ const s=26, L=sp.l*s, W=sp.w*s; let b='', x=20+W, y=10; const lab=(t,x1,y1)=>txt(x1,y1,t,{s:13,w:700});
+  for(let i=0;i<4;i++){ b+=`<rect x="${x}" y="${y+i*W}" width="${L}" height="${W}" fill="#fff3c9" stroke="#24324f" stroke-width="2.5"/>`; }
+  b+=`<rect x="${x-W}" y="${y+W}" width="${W}" height="${W}" fill="#ffd9a8" stroke="#24324f" stroke-width="2.5"/><rect x="${x+L}" y="${y+W}" width="${W}" height="${W}" fill="#ffd9a8" stroke="#24324f" stroke-width="2.5"/>`;
+  b+=lab(sp.l+' '+sp.unit,x+L/2,y-0+W/2+5)+lab(sp.w+' '+sp.unit,x+L+W/2,y+W+W/2+5)+lab(sp.w+' '+sp.unit,x-W/2,y+W+W/2+5)+txt(x+L+6,y+W/2+5,sp.w+' '+sp.unit,{s:12,a:'start'});
+  return svg(x+L+W+40,y+4*W+20,b,'the net of a box'); }
+ function hist(sp){ const top=sp.ticks[sp.ticks.length-1], H=200, x0=50, y0=240, bw=80; let b=txt(x0+bw*sp.bins.length/2+30,20,sp.title,{s:17,w:800});
+  sp.ticks.forEach(t=>{ const y=y0-H*t/top; b+=line(x0,y,x0+bw*sp.bins.length,y,{w:1,c:'#c9d1e3'})+txt(x0-8,y+5,String(t),{s:14,a:'end'}); });
+  sp.v.forEach((v,i)=>{ const h=H*v/top; b+=`<rect x="${x0+i*bw}" y="${y0-h}" width="${bw}" height="${h}" fill="#7fb3e8" stroke="#24324f" stroke-width="2"/>`+txt(x0+i*bw+bw/2,y0+22,sp.bins[i],{s:14}); });
+  b+=line(x0,y0-H,x0,y0,{w:2.5})+line(x0,y0,x0+bw*sp.bins.length,y0,{w:2.5})+txt(x0,y0-H-10,'boys',{s:13,c:'#5a6785'}); return svg(x0+bw*sp.bins.length+20,y0+34,b,'histogram'); }
+ function boxplot(sp){ const lo=sp.axis[0], hi=sp.axis[sp.axis.length-1], x0=30, W=420, X=v=>x0+W*(v-lo)/(hi-lo), y=70; let b=line(x0,130,x0+W,130,{w:2.5});
+  sp.axis.forEach(t=>{ b+=line(X(t),124,X(t),136,{w:2})+txt(X(t),156,String(t),{s:14}); });
+  b+=line(X(sp.min),y,X(sp.q1),y,{w:3})+line(X(sp.q3),y,X(sp.max),y,{w:3})+line(X(sp.min),y-14,X(sp.min),y+14,{w:3})+line(X(sp.max),y-14,X(sp.max),y+14,{w:3})+`<rect x="${X(sp.q1)}" y="${y-28}" width="${X(sp.q3)-X(sp.q1)}" height="56" fill="#cfe7ff" stroke="#24324f" stroke-width="3"/>`+line(X(sp.med),y-28,X(sp.med),y+28,{w:4,c:'#d9363e'});
+  return svg(x0+W+30,170,b,'box plot'); }
+ function parallel(sp){ /* transversal at 70 degrees, so the marked interior angle is 110 degrees */ const b=line(20,70,440,70,{w:3})+line(20,190,440,190,{w:3})+line(190,250,277,10,{w:3})+txt(30,62,'→',{s:16,a:'start'})+txt(30,182,'→',{s:16,a:'start'})+
+   txt(268,100,sp.known,{s:18,w:800,c:'#d9363e',a:'start'})+txt(186,172,'?',{s:24,w:800,c:'#2f6fd6',a:'end'})+`<path d="M277 70 A22 22 0 0 1 247.5 90.7" fill="none" stroke="#d9363e" stroke-width="2.5"/><path d="M190 190 A22 22 0 0 1 219.5 169.3" fill="none" stroke="#2f6fd6" stroke-width="2.5"/>`;
+  return svg(460,260,b,'two parallel lines cut by a third line'); }
+ function extangle(sp){ /* exact: angle A = a, angle B = b (law of sines), base AC from (40,200) to (300,200) */ const r=Math.PI/180, C3=180-sp.a-sp.b, AB=260*Math.sin(C3*r)/Math.sin(sp.b*r), Bx=40+AB*Math.cos(sp.a*r), By=200-AB*Math.sin(sp.a*r), ex=300+30*Math.cos((180-C3)*r), ey=200-30*Math.sin((180-C3)*r);
+  const b=`<path d="M40 200 L300 200 L${Bx.toFixed(1)} ${By.toFixed(1)} Z" fill="#f6d36b" stroke="#24324f" stroke-width="3"/>`+line(300,200,440,200,{w:3})+txt(92,192,sp.a+'°',{s:18,w:800})+txt(Bx,By+34,sp.b+'°',{s:18,w:800})+txt(338,180,'?',{s:24,w:800,c:'#2f6fd6'})+`<path d="M330 200 A30 30 0 0 0 ${ex.toFixed(1)} ${ey.toFixed(1)}" fill="none" stroke="#2f6fd6" stroke-width="2.5"/>`;
+  return svg(450,220,b,'a triangle with one side extended'); }
+ function scatter(sp){ seed=99; const x0=60,y0=230,W=360,H=200; let b=line(x0,y0,x0+W,y0,{w:2.5})+line(x0,y0,x0,y0-H,{w:2.5})+txt(x0+W/2,y0+30,sp.x,{s:14})+`<text x="18" y="${y0-H/2}" ${F} font-size="14" font-weight="600" fill="#24324f" text-anchor="middle" transform="rotate(-90 18 ${y0-H/2})">${esc(sp.y)}</text>`;
+  for(let i=0;i<14;i++){ const t=(i+0.5)/14, px=x0+20+t*(W-40), py=y0-20-t*(H-50)-(rnd()-0.5)*50; b+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="6" fill="#2f6fd6"/>`; } return svg(x0+W+20,y0+40,b,'scatter plot'); }
+ function table2(sp){ return `<table class="pfa-tbl">${sp.title?`<caption>${esc(sp.title)}</caption>`:''}<tr>${sp.head.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>${sp.rows.map(r=>`<tr>${r.map((c,i)=>i?`<td>${esc(c)}</td>`:`<th>${esc(c)}</th>`).join('')}</tr>`).join('')}</table>`; }
+ const K={emoji,table,sets,balls,tenframe,lengths,mix,shape,shapes,base10,units,picgraph,frac,cubes,ruler,clock,coins,numline,fracbars,grid,cells:sp=>cellsSvg(sp.cells,sp.rows,sp.cols),tri,rtri,bar,book,boxes,protractor,angles2,lineplot,expr,iso,coord,net,hist,boxplot,parallel,extangle,scatter,table:sp=>sp.head?table2(sp):table(sp)};
+ function draw(sp){ try{ const f=K[sp&&sp.k]; return f?f(sp):''; }catch(e){ return ''; } }
+ return { html:sp=>{ const d=draw(sp); return d?`<div class="pfart">${/^<(table|div)/.test(d)?d:`<div class="pfa-box">${d}</div>`}</div>`:''; }, choice:sp=>{ const d=sp?draw(sp):''; return d?`<span class="pfa-ch">${d}</span>`:''; }, draw };
+})();
+</script>

@@ -4,7 +4,7 @@
    Not a new door: google.script.run can already call any top-level function whose name does not end in "_".
    This route is narrower: only the names in API_ALLOW (what the student page really calls). Every function keeps
    its own checks (sign-in token, tries limit, the server sets every money amount). */
-var API_ALLOW = ["pfHandoff", "pfHandoffRedeem", "pfGateInfo", "pfkPilotExport", "pfExportToday", "libMyLibrary", "libApply", "libCatalog", "libDeletePlaylist", "libHistory", "libMap", "libParentAssign", "libParentCatalog", "libPlaylists", "libRoster", "libSavePlaylist", "acAdminLoad", "acMoveStudents", "acMyScope", "acParentNewCode", "acSaveParent", "acSaveSchool", "acSaveStaffScope", "apiExport", "apiKidPage", "apiStaffPage", "arAnswer", "arCfAns", "arCfDone", "arCfGet", "arCfList", "arCfMake", "arJoin", "arMyStats", "arOpen", "arPoll", "arSet", "arTeach", "chAnswer", "chJoin", "chOpen", "chPoll", "chQs", "chStep", "chmParsha", "cnKidInfo", "cnOrderCancel", "cnOrderMenu", "cnOrderPlace", "crCatalog", "crClasses", "crDeleteClass", "crDeleteLesson", "crEndClass", "crInbox", "crLessons", "crMarkRead", "crRunning", "crSaveClass", "crSaveLesson", "crSend", "crStaffAdmin", "crStaffList", "crStaffSave", "crStartClass", "crUnread", "kpAck", "kpMine", "msAppUrl", "msBootstrap", "msLoad", "msMusicInfo", "msMusicPart", "msPhotoNotes", "msPhotoSubmit", "msQuestTools", "msQuestToolsGet", "msQuestToolsParts", "msReport", "msSave", "msSchoolGoal", "msSignInCode", "msSignInFast", "pfConfirmSave", "pfConfirmStart", "pfHello", "sbAddKids", "sbCreate", "sbLoad", "sbMove", "sbMySchool", "sbNewCode", "sbStyle", "sgAddStudent", "sgArchive", "sgAwardPrizes", "sgBechinaReady", "sgBoyDay", "sgChmSetLevel", "sgClassSky", "sgDesk", "sgFamily", "sgFamilyBulk", "sgFamilySet", "sgFixPoints", "sgFreeCode", "sgGive", "sgGroups", "sgKodesh", "sgKodeshBoy", "sgKodeshGrid", "sgKodeshMark", "sgLevel", "sgLevelBechina", "sgLevels", "sgLoad", "sgMoney", "sgMusicSet", "sgMyDesk", "sgNote", "sgNoteDelete", "sgNoteMany", "sgNotes", "sgNow", "sgParshaInfo", "sgPick", "sgPickCatalog", "sgReportDone", "sgReports", "sgSetCode", "sgSetParsha", "sgShoutSeen", "sgSince", "sgTeachTogether", "sgToday", "sgUndoFix", "sgWeek", "sgWeekNotes", "soundGet", "soundSave", "stBuy", "stInfo", "stStaffOrders", "stStaffSet", "tmCatalog", "tmEnd", "tmExtend", "tmList", "tmMine", "tmStart"];
+var API_ALLOW = ["pfHandoff", "pfHandoffRedeem", "pfGateInfo", "pfkPilotExport", "pfExportToday", "libMyLibrary", "libApply", "libCatalog", "libDeletePlaylist", "libHistory", "libMap", "libParentAssign", "libParentCatalog", "libPlaylists", "libRoster", "libSavePlaylist", "acAdminLoad", "acMoveStudents", "acMyScope", "acParentNewCode", "acSaveParent", "acSaveSchool", "acSaveStaffScope", "apiExport", "apiKidPage", "apiStaffPage", "arAnswer", "arCheer", "arPower", "arShake", "arCfAns", "arCfDone", "arCfGet", "arCfList", "arCfMake", "arJoin", "arMyStats", "arOpen", "arPoll", "arSet", "arTeach", "chAnswer", "chJoin", "chOpen", "chPoll", "chQs", "chStep", "chmParsha", "cnKidInfo", "cnOrderCancel", "cnOrderMenu", "cnOrderPlace", "crCatalog", "crClasses", "crDeleteClass", "crDeleteLesson", "crEndClass", "crInbox", "crLessons", "crMarkRead", "crRunning", "crSaveClass", "crSaveLesson", "crSend", "crStaffAdmin", "crStaffList", "crStaffSave", "crStartClass", "crUnread", "kpAck", "kpMine", "msAppUrl", "msBootstrap", "msLoad", "msMusicInfo", "msMusicPart", "msPhotoNotes", "msPhotoSubmit", "msQuestTools", "msQuestToolsGet", "msQuestToolsParts", "msReport", "msSave", "msSchoolGoal", "msSignInCode", "msSignInFast", "pfConfirmSave", "pfConfirmStart", "pfHello", "sbAddKids", "sbCreate", "sbLoad", "sbMove", "sbMySchool", "sbNewCode", "sbStyle", "sgAddStudent", "sgArchive", "sgAwardPrizes", "sgBechinaReady", "sgBoyDay", "sgChmSetLevel", "sgClassSky", "sgDesk", "sgFamily", "sgFamilyBulk", "sgFamilySet", "sgFixPoints", "sgFreeCode", "sgGive", "sgGroups", "sgKodesh", "sgKodeshBoy", "sgKodeshGrid", "sgKodeshMark", "sgLevel", "sgLevelBechina", "sgLevels", "sgLoad", "sgMoney", "sgMusicSet", "sgMyDesk", "sgNote", "sgNoteDelete", "sgNoteMany", "sgNotes", "sgNow", "sgParshaInfo", "sgPick", "sgPickCatalog", "sgReportDone", "sgReports", "sgSetCode", "sgSetParsha", "sgShoutSeen", "sgSince", "sgTeachTogether", "sgToday", "sgUndoFix", "sgWeek", "sgWeekNotes", "soundGet", "soundSave", "stBuy", "stInfo", "stStaffOrders", "stStaffSet", "tmCatalog", "tmEnd", "tmExtend", "tmList", "tmMine", "tmStart"];
 function doPost(e) {
   var out = function (o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); };
   try {
@@ -40,6 +40,19 @@ function apiStaffPage(have) {
      apiExport(key, 'tabs', book)                 -> the tabs of a book ('main' or 'canteen') with their sizes
      apiExport(key, 'rows', book, tab, [from, n]) -> up to 4000 rows, dates marked {$d: milliseconds}, with an md5 of the block
      apiExport(key, 'props')                      -> the script's stored settings */
+/* apiExport(key, 'source') -> the code of the version the live link runs ({files:[{name,type,source}], hash, version}),
+   so the Firebase server can load new code by itself a few minutes after a builder publishes. Read-only. */
+var API_LIVE_DEPLOYMENT = 'AKfycbwcTw8upBIAN3n1D36TON-3u6_VQdo-6zLYJT_bMa11yeFwN9IhL_saGDciQP5QK70pEw';
+function apiSource_() {
+  var base = 'https://script.googleapis.com/v1/projects/' + ScriptApp.getScriptId(), h = { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() };
+  var dep = JSON.parse(UrlFetchApp.fetch(base + '/deployments/' + API_LIVE_DEPLOYMENT, { headers: h }).getContentText());
+  var ver = dep.deploymentConfig && dep.deploymentConfig.versionNumber; if (!ver) throw new Error('No live version found.');
+  var c = JSON.parse(UrlFetchApp.fetch(base + '/content?versionNumber=' + ver, { headers: h }).getContentText());
+  var files = (c.files || []).map(function (f) { return { name: f.name, type: f.type, source: f.source }; });
+  var hash = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, ver + '|' + files.map(function (f) { return f.name + '|' + f.source.length; }).join(','), Utilities.Charset.UTF_8).map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join('');
+  return { version: ver, hash: hash, files: files };
+}
+function apiAllowSource() { return apiSource_().version; }   /* the Head of School runs this once in the editor to approve the new permission */
 var API_EXPORT_HASH = '594fdccf352810cfc28b62f5cae14034270893cd03e3527db1dcf13797ba0ae0';
 function apiExport(key, what, book, tab, span) {
   var cache = CacheService.getScriptCache(), bad = Number(cache.get('api_export_bad') || 0);
@@ -50,6 +63,7 @@ function apiExport(key, what, book, tab, span) {
   if (what === 'balances') return apiBalances_();
   if (what === 'prints') return apiPrints_();
   if (what === 'staffprints') return apiStaffPrints_();
+  if (what === 'source') return apiSource_();
   var id = book === 'canteen' ? cnBookId_() : TL.sheet, ss = SpreadsheetApp.openById(id);
   if (what === 'tabs') return { id: id, tabs: ss.getSheets().map(function (s) { return { name: s.getName(), rows: s.getLastRow(), cols: s.getLastColumn() }; }) };
   if (what === 'rows') {

@@ -479,9 +479,10 @@ function pfkAnswer(token, a) {
     var st = S.state, k = st.cur, sec = k && st.secs[k];
     if (!sec || !sec.cur) return pfkView_(S, r);
     if (!a || String(a.item) !== sec.cur.i) return pfkView_(S, r, { stale: 1 });
-    var it = pfkIx_().byId[sec.cur.i], value = String(a.value == null ? '' : a.value).slice(0, 400), ctx = pfkCtx_(S);
+    var it = pfkIx_().byId[sec.cur.i], value = a.idk ? '' : String(a.value == null ? '' : a.value).slice(0, 400), ctx = pfkCtx_(S);   /* "I don't know this yet" (Head of School 2026-11-16): a miss, saved as IDK */
     var rec = pfkRecord_(sec, it, value, Math.max(0, Number(a.ms) || 0), ctx, now);
-    pfkAnswerRow_(S, k, sec, it, value, rec);
+    if (a.idk) rec.c = 'IDK';
+    pfkAnswerRow_(S, k, sec, it, a.idk ? "(I don't know this yet)" : value, rec);
     st.n = (st.n || 0) + 1; if (st.n % PFK.BREAK_EVERY === 0) extra.brk = 1;           /* a 10-second stretch every 8 questions */
     if (sec.done) { pfkSectionRow_(S, k, sec); extra.finished = { k: k, label: PFK.NAMES[k] }; }
     pfkAdvance_(S, ctx, now, extra);
