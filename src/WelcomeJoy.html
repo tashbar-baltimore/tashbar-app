@@ -1,0 +1,86 @@
+<script>
+/* WelcomeJoy.html (Head of School 2026-11-17: "make the welcome much more exciting, happier, better graphics, an exciting noise when the kid opens up,
+   energetic music throughout"). Display and sound only: changes no data, money or mastery.
+   1. A bright full-screen welcome: sunshine sky, a turning sun, the boy's first name bouncing in letter by letter in rainbow colors,
+      a confetti burst, balloons and stars floating up, and a big gold "Let's go!" button.
+   2. A short happy fanfare when it opens (made in the browser, no file). It follows the boy's sound switch.
+   3. "Let's go!" starts the Happy Mix music the first time, unless the boy already picked a kind of music or the school turned music off.
+      If he turns music off later, it stays off.
+   Loaded LAST (Photos.js msQuestToolsBody_ and Speed.js). Respects reduced motion. If anything fails, the old welcome shows.
+   No double slash in this file (HtmlService rule). */
+(function(){
+if(typeof welcome!=='function'||typeof overlay!=='function'||typeof A==='undefined') return;
+const WJ=window.WJ=window.WJ||{};
+if(WJ.on) return; WJ.on=true;
+const RM=()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } };
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const COLORS=['#F43F5E','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EC4899','#14B8A6','#EAB308'];
+const CHEERS=['Ready for an awesome day?','Today is going to be great!','Let’s make today amazing!','Your brain is ready to grow!','Time to shine!','Another day to get stronger!'];
+function css(){ if(document.getElementById('wjy-css')) return; const s=document.createElement('style'); s.id='wjy-css'; s.textContent=`
+.overlay:has(.wjy){background:radial-gradient(900px 520px at 50% 115%,rgba(253,224,71,.85),rgba(253,224,71,0) 62%),radial-gradient(700px 420px at 12% 0%,rgba(244,114,182,.45),rgba(244,114,182,0) 60%),radial-gradient(700px 420px at 92% 6%,rgba(56,189,248,.5),rgba(56,189,248,0) 60%),linear-gradient(170deg,#E0F7FF 0%,#FFF6D8 55%,#FFE3B3 100%)!important;backdrop-filter:none!important;overflow:hidden}
+.ocard:has(.wjy){background:transparent!important;box-shadow:none!important;border:0!important;max-width:880px!important;width:100%!important;overflow:visible!important;padding:0!important}
+.ocard:has(.wjy)>*{margin-inline:0!important}
+.wjy{position:relative;text-align:center;color:#1E1B4B;padding:6px 16px 10px;animation:wjin .7s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes wjin{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.wjy .wjsun{width:170px;height:170px;margin:0 auto -6px;position:relative}
+.wjy .wjsun svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 26px rgba(250,204,21,.9))}
+.wjy .wjsun .r{transform-origin:85px 85px;animation:wjspin 14s linear infinite}
+@keyframes wjspin{to{transform:rotate(360deg)}}
+.wjy .wjsun .face{transform-origin:85px 85px;animation:wjbob 2.4s ease-in-out infinite}
+@keyframes wjbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.wjy .wjhi{font:800 22px var(--display,'Barlow'),sans-serif;color:#B45309;letter-spacing:.06em;text-transform:uppercase;margin:6px 0 2px}
+.wjy .wjname{font:900 clamp(46px,8vw,84px)/1.02 var(--display,'Barlow'),sans-serif;margin:0 0 8px;letter-spacing:-.01em}
+.wjy .wjname span{display:inline-block;animation:wjpop .6s cubic-bezier(.2,1.6,.4,1) both,wjwave 3s ease-in-out infinite;text-shadow:0 4px 0 rgba(30,27,75,.18)}
+@keyframes wjpop{0%{transform:translateY(40px) scale(.3);opacity:0}100%{transform:translateY(0) scale(1);opacity:1}}
+@keyframes wjwave{0%,100%{translate:0 0}50%{translate:0 -7px}}
+.wjy .wjcheer{font:700 21px var(--body,'Nunito'),sans-serif;color:#334155;margin:0 0 18px}
+.wjy .wjchips{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:0 auto 24px;max-width:760px}
+.wjy .wjchip{display:flex;align-items:center;gap:10px;background:#fff;border-radius:18px;padding:12px 18px;box-shadow:0 8px 22px rgba(30,27,75,.12);border:3px solid #FDE68A;font:800 18px var(--body,'Nunito'),sans-serif;animation:wjpop .55s cubic-bezier(.2,1.5,.4,1) both}
+.wjy .wjchip b{font-size:28px;line-height:1}.wjy .wjchip small{display:block;font:800 12px var(--body,'Nunito'),sans-serif;color:#94A3B8;text-transform:uppercase;letter-spacing:.08em}
+.wjy .wjchip.fire{border-color:#FDBA74}.wjy .wjchip.next{border-color:#93C5FD}.wjy .wjchip.bank{border-color:#86EFAC}
+.wjy .btn.go,.wjy .go{min-height:74px!important;padding:0 64px!important;border:0!important;border-radius:999px!important;background:linear-gradient(180deg,#FEF08A,#FACC15 50%,#EAB308)!important;color:#1E1B4B!important;font:900 30px var(--display,'Barlow'),sans-serif!important;cursor:pointer;box-shadow:0 8px 0 #CA8A04,0 18px 34px rgba(202,138,4,.45)!important;animation:wjpulse 1.6s ease-in-out infinite}
+.wjy .go:hover{transform:translateY(-2px)}.wjy .go:active{transform:translateY(5px);box-shadow:0 3px 0 #CA8A04!important}
+.wjy .go:focus-visible{outline:4px solid #1E1B4B;outline-offset:5px}
+@keyframes wjpulse{0%,100%{scale:1}50%{scale:1.06}}
+.wjfloat{position:fixed;bottom:-70px;font-size:40px;pointer-events:none;animation:wjrise linear infinite;z-index:0}
+@keyframes wjrise{0%{transform:translateY(0) rotate(-8deg);opacity:0}8%{opacity:1}100%{transform:translateY(-120vh) rotate(8deg);opacity:.9}}
+.wjconf{position:fixed;inset:0;pointer-events:none;z-index:99999}
+@media (prefers-reduced-motion:reduce){.wjy,.wjy *{animation:none!important}.wjfloat{display:none}}
+`; document.head.appendChild(s); }
+function sun(){ const rays=Array.from({length:12},(_,i)=>`<path d="M85 6 L93 30 L77 30 Z" fill="${i%2?'#FDBA74':'#FDE047'}" transform="rotate(${i*30} 85 85)"/>`).join('');
+ return `<div class="wjsun" aria-hidden="true"><svg viewBox="0 0 170 170"><defs><radialGradient id="wjsg" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#FFFBEB"/><stop offset=".5" stop-color="#FDE047"/><stop offset="1" stop-color="#F59E0B"/></radialGradient></defs><g class="r">${rays}</g><g class="face"><circle cx="85" cy="85" r="50" fill="url(#wjsg)"/><circle cx="68" cy="78" r="6" fill="#1E1B4B"/><circle cx="102" cy="78" r="6" fill="#1E1B4B"/><circle cx="70" cy="76" r="2" fill="#fff"/><circle cx="104" cy="76" r="2" fill="#fff"/><circle cx="58" cy="96" r="7" fill="#FB7185" opacity=".55"/><circle cx="112" cy="96" r="7" fill="#FB7185" opacity=".55"/><path d="M66 98 Q85 118 104 98" stroke="#1E1B4B" stroke-width="5" fill="none" stroke-linecap="round"/></g></svg></div>`; }
+function floats(){ if(RM()) return ''; const em=['🎈','⭐','🎉','✨','🎈','🌟','🎊','⭐','🎈','✨'];
+ return em.map((e,i)=>`<span class="wjfloat" aria-hidden="true" style="left:${4+i*9.6}%;animation-duration:${7+(i*1.7)%5}s;animation-delay:${(i*0.55).toFixed(2)}s;font-size:${30+(i*7)%22}px">${e}</span>`).join(''); }
+function confetti(){ if(RM()) return; try{ const c=document.createElement('canvas'); c.className='wjconf'; document.body.appendChild(c); const x=c.getContext('2d'); let W=c.width=innerWidth, H=c.height=innerHeight;
+ const P=Array.from({length:180},(_,i)=>({x:W/2+(Math.random()-.5)*120,y:H*.42,vx:(Math.random()-.5)*16,vy:-Math.random()*17-5,r:Math.random()*7+4,c:COLORS[i%COLORS.length],a:Math.random()*6,va:(Math.random()-.5)*.4,s:Math.random()<.5}));
+ const t0=performance.now(); (function f(t){ const k=(t-t0)/1000; x.clearRect(0,0,W,H); P.forEach(p=>{ p.vy+=.45; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.a+=p.va; x.save(); x.translate(p.x,p.y); x.rotate(p.a); x.globalAlpha=Math.max(0,1-k/4); x.fillStyle=p.c; if(p.s) x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2); else { x.beginPath(); x.arc(0,0,p.r/2,0,7); x.fill(); } x.restore(); }); if(k<4) requestAnimationFrame(f); else c.remove(); })(t0);
+ }catch(e){} }
+function soundOn(){ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } }
+function fanfare(){ if(!soundOn()) return; try{ const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; const c=WJ.ctx||(WJ.ctx=new AC()); if(c.state==='suspended') c.resume();
+ const out=c.createGain(); out.gain.value=.22; out.connect(c.destination); const now=c.currentTime+.05;
+ const note=(f,t,d,type,v)=>{ const o=c.createOscillator(), g=c.createGain(); o.type=type||'triangle'; o.frequency.value=f; g.gain.setValueAtTime(0,now+t); g.gain.linearRampToValueAtTime(v||1,now+t+.015); g.gain.exponentialRampToValueAtTime(.001,now+t+d); o.connect(g); g.connect(out); o.start(now+t); o.stop(now+t+d+.05); };
+ const kick=t=>{ const o=c.createOscillator(), g=c.createGain(); o.frequency.setValueAtTime(150,now+t); o.frequency.exponentialRampToValueAtTime(40,now+t+.15); g.gain.setValueAtTime(.9,now+t); g.gain.exponentialRampToValueAtTime(.001,now+t+.2); o.connect(g); g.connect(out); o.start(now+t); o.stop(now+t+.25); };
+ [523.25,659.25,783.99,1046.5,783.99,1046.5].forEach((f,i)=>{ note(f,i*.09,.16,'square',.35); note(f,i*.09,.2,'triangle',.7); });
+ kick(0); kick(.36); kick(.54);
+ [1046.5,1318.5,1568].forEach(f=>{ note(f,.56,.9,'triangle',.55); note(f/2,.56,.9,'sawtooth',.12); });
+ note(2093,.58,.5,'sine',.25); note(2637,.68,.45,'sine',.2);
+ }catch(e){} }
+function startMusic(){ try{ const M=window.TashbarMusic; if(!M||!A.st) return; if(M.state&&M.state.info&&M.state.info.off) return; const m=M.prefs();
+ if(!m.joy){ m.joy=1; if(m.mood==='off') m.mood='mix'; try{ if(typeof saveStudent==='function') saveStudent(A.st); }catch(e){} }
+ if(m.mood!=='off'){ M.play(false); setTimeout(()=>{ try{ if(!M.state.audio&&muPrefs().mood!=='off') M.play(false); }catch(e){} },3500); } }catch(e){} }
+WJ.prev=WJ.prev||welcome;
+welcome=function(){ try{
+ css(); const st=A.st||{}, n=(st.streak||{}).n||1, first=String(st.name||'').trim().split(/\s+/)[0]||'friend';
+ const hr=new Date().getHours(), hi=hr<12?'Good morning!':hr<17?'Good afternoon!':'Good evening!', d=Math.floor(Date.now()/864e5);
+ let up=''; try{ const sug=typeof suggestion==='function'?suggestion(st):null; up=sug?(sug.kind==='boss'?'Boss challenge':(typeof skillName==='function'?skillName(sug.id):'')):''; }catch(e){}
+ let bank=''; try{ bank=typeof fmt==='function'?fmt(st.balance||0):'$'+Number(st.balance||0).toFixed(2); }catch(e){}
+ const letters=Array.from(first).map((ch,i)=>`<span style="color:${COLORS[i%COLORS.length]};animation-delay:${(.15+i*.07).toFixed(2)}s,${(1+i*.12).toFixed(2)}s">${E(ch)}</span>`).join('');
+ const chips=[`<div class="wjchip fire" style="animation-delay:.6s"><b>🔥</b><div><small>Streak</small>${n} day${n===1?'':'s'} in a row</div></div>`,
+  up?`<div class="wjchip next" style="animation-delay:.7s"><b>🎯</b><div><small>Up next</small>${E(up)}</div></div>`:'',
+  bank?`<div class="wjchip bank" style="animation-delay:.8s"><b>💵</b><div><small>Tashbar Bank</small>${E(bank)}</div></div>`:''].join('');
+ overlay(`<div class="wjy">${floats()}${sun()}<p class="wjhi">${hi} Welcome back</p><h2 class="wjname" aria-label="${E(first)}">${letters}</h2><p class="wjcheer">${CHEERS[d%CHEERS.length]}</p><div class="wjchips">${chips}</div><button class="btn go" data-act="closeov">Let’s go! 🚀</button></div>`);
+ setTimeout(()=>{ confetti(); fanfare(); },120);
+ }catch(e){ console.error('WelcomeJoy',e); return WJ.prev.apply(this,arguments); } };
+document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-act="closeov"]'); if(b&&b.closest('.wjy')) startMusic(); },true);
+})();
+</script>
