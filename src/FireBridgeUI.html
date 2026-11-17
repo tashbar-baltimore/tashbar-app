@@ -1,0 +1,28 @@
+<script>
+/* EVERYTHING ON FIREBASE (Head of School 2026-11-17). Put at the top of each page this Apps Script link still draws (FireBridge.js).
+   1. If the link carried a one-time sign-in code (tlh), trade it in right away, before the page starts, and keep the sign-in where
+      the page looks for it (tl-session; a boy's placement check also tl-check).
+   2. Every google.script.run call goes to the Firebase server instead of this Apps Script copy.
+   3. "Home" (msAppUrl) is the new site. */
+(function(){
+ var F=window.TL_FIRE; if(!F||!F.api||window.TL_FIRE_ON) return; window.TL_FIRE_ON=1;
+ function post(fn,args){ return JSON.stringify({api:1,fn:fn,args:args||[]}); }
+ if(F.tlh){ try{ var x=new XMLHttpRequest(); x.open('POST',F.api,false); x.setRequestHeader('Content-Type','text/plain;charset=utf-8'); x.send(post('tlHandoffRedeem',[F.tlh]));
+   var j=JSON.parse(x.responseText||'null'), r=j&&j.ok&&j.result;
+   if(r&&r.token){ sessionStorage.setItem('tl-session',JSON.stringify({role:r.role,sid:r.sid||null,at:Date.now(),token:r.token}));
+     if(r.role==='kid') sessionStorage.setItem('tl-check',JSON.stringify({token:r.token,at:Date.now()})); }
+  }catch(e){} F.tlh=''; }
+ function fire(fn,args){ if(fn==='msAppUrl') return Promise.resolve(F.home);
+  return fetch(F.api,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:post(fn,args),redirect:'follow'}).then(function(r){ return r.json(); })
+   .then(function(j){ if(!j||!j.ok) throw new Error((j&&j.error)||'Server error'); return j.result; }); }
+ function chain(ok,no,user){ return new Proxy({},{get:function(_,k){
+   if(k==='withSuccessHandler') return function(f){ return chain(f,no,user); };
+   if(k==='withFailureHandler') return function(f){ return chain(ok,f,user); };
+   if(k==='withUserObject') return function(u){ return chain(ok,no,u); };
+   return function(){ var a=Array.prototype.slice.call(arguments); fire(String(k),a).then(function(v){ if(ok) ok(v,user); },function(e){ if(no) no(e,user); else console.error(k,e); }); }; }}); }
+ try{ window.google=window.google||{}; google.script=google.script||{}; }catch(e){}
+ var mine=chain(null,null);
+ try{ google.script.run=mine; }catch(e){}
+ try{ if(google.script.run!==mine) Object.defineProperty(google.script,'run',{value:mine,configurable:true,writable:true}); }catch(e){}
+})();
+</script>

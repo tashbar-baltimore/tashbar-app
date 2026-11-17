@@ -135,7 +135,7 @@ function stInfo(token) {
     canteen: { cash: cash, rate: STORE.CANTEEN_RATE, weekMax: STORE.CANTEEN_WEEK, weekUsed: stCardWeek_(sid) },
     gift: { dayMax: STORE.GIFT_DAY, today: stGiftToday_(sid) }, friends: friends,
     given: { school: stGivenAll_(), mine: mine.filter(function (o) { return /^(give-|brick)/.test(o.item) && o.status !== 'cancelled'; }).reduce(function (a, o) { return a + o.cents; }, 0) },
-    wall: wall, stars: stars, week: stWeek_(sid), interest: stLastInterest_(sid), openPrizes: STORE.OPEN_PRIZES
+    wall: wall, stars: stars, week: stWeek_(sid), interest: null, pf: cnPfRate_(sid), openPrizes: STORE.OPEN_PRIZES
   };
 }
 
@@ -182,12 +182,18 @@ function stDone_(sid, o) {
   var cash = null; try { if (/^card-/.test(o.item)) cash = cnBalance_(sid); } catch (e) {}
   return { ok: true, order: stOut_(o), balance: moneyBalance_(sid) / 100, ledger: msLedger_(sid), cash: cash };
 }
-/* A credit row in Canteen Purchases (a minus amount, like a void), so the rewards sheet's own formula adds it to Canteen Cash. */
+/* A Canteen Card: v378 the Canteen Wallet row (CN_Wallet, 'card') is what counts. The office row in Canteen Purchases (a minus amount, like a void)
+   is still written for real boys. The wallet is opened BEFORE the sheet row. */
 function stCanteenCredit_(sid, cardCents, oid) {
-  var ss = cnBook_(), cp = ss.getSheetByName('Canteen Purchases'), scan = cnCpScan_(cp);
-  for (var i = 0; i < scan.v.length; i++) if (String(scan.v[i][5]).indexOf('Store card ' + oid + ' ') === 0) return;   /* already written */
-  var row = scan.last + 1; if (row > CN.CP_LAST) throw new Error('The purchase list is full.');
-  cp.getRange(row, 1, 1, 6).setValues([[cnDay_(), sid, 'Tashbar Store: Canteen Card', -cardCents / 100, 'Tashbar Store', 'Store card ' + oid + ' · T$ ' + (cardCents * STORE.CANTEEN_RATE / 100).toFixed(2)]]);
+  if (cnWalHas_('card:' + oid)) return;
+  if (!cnWalOpen_(sid)) throw new Error('No Canteen Cash account.');
+  if (!cnTestSid_(sid)) {
+    var ss = cnBook_(), cp = ss.getSheetByName('Canteen Purchases'), scan = cnCpScan_(cp), have = false;
+    for (var i = 0; i < scan.v.length; i++) if (String(scan.v[i][5]).indexOf('Store card ' + oid + ' ') === 0) have = true;
+    if (!have) { var row = scan.last + 1; if (row > CN.CP_LAST) throw new Error('The purchase list is full.');
+      cp.getRange(row, 1, 1, 6).setValues([[cnDay_(), sid, 'Tashbar Store: Canteen Card', -cardCents / 100, 'Tashbar Store', 'Store card ' + oid + ' · T$ ' + (cardCents * STORE.CANTEEN_RATE / 100).toFixed(2)]]); }
+  }
+  cnWalPost_(sid, cardCents, 'card', 'card:' + oid, 'Tashbar Store', 'Canteen Card from your Tashbar $ (T$' + (cardCents * STORE.CANTEEN_RATE / 100).toFixed(0) + ')');
   SpreadsheetApp.flush();
 }
 

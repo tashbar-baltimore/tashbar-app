@@ -133,7 +133,12 @@ function pfIx_() {
   return (PF_IX_ = { byId: byId, bySubj: bySubj, byPassage: byPassage });
 }
 /* appr: a boy who is not a TEST boy (only Approved questions with no hold). TEST boys also get Draft questions. */
-function pfItemOk_(it, appr) { if (appr === 2) return (it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft') && !it.hold; if (appr) return it.status === 'Approved' && !it.hold; return it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft'; }
+/* FULL-INFORMATION RULE (Head of School 2026-11-17: "every question has all the information a student needs to answer it").
+   A question listed in PF_INFO_HOLD (PathfinderInfoHold.js: the picture, table, numbers or text it needs is not on screen, or the
+   button words give the answer) is never given to a real boy, in either Pathfinder, until it is fixed in the bank and taken off
+   the list. TEST boys still see it, so staff can check the fix. */
+function pfInfoHeld_(it) { return typeof PF_INFO_HOLD !== 'undefined' && !!(it && PF_INFO_HOLD[it.id]); }
+function pfItemOk_(it, appr) { if (appr && pfInfoHeld_(it)) return false; if (appr === 2) return (it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft') && !it.hold; if (appr) return it.status === 'Approved' && !it.hold; return it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft'; }
 function pfLadder_(subj) { var L = typeof plList_ === 'function' ? plList_(subj) : null; return (L || []).map(function (x) { return x[0]; }).filter(function (id) { return subj !== 'LANG' || /^LANG\./.test(id); }); }
 function pfSkill_(id) { return PF_BANK.skills[id] || (typeof pf5Ix_ === 'function' ? pf5Ix_().laSkills[id] : null) || null; }
 /* The highest level with enough usable questions (PF.ENGINE.ceilMin), in the subject or in one strand. */
@@ -469,7 +474,18 @@ function pfSimulate_(n, subj, seed, o) {
 }
 
 /* What the page may see of an item: never the answer key. Choice order is shuffled once and kept, so a resume shows the same screen. */
-function pfShuffle_(arr, seedStr) { var h = 0, i; for (i = 0; i < seedStr.length; i++) h = (h * 31 + seedStr.charCodeAt(i)) | 0; var a = arr.slice(); for (i = a.length - 1; i > 0; i--) { h = (h * 1103515245 + 12345) | 0; var j = Math.abs(h) % (i + 1), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+/* ANSWER ORDER FIX (Head of School 2026-11-17: "someone claimed that all the answers were D ... you want the answers to be random").
+   The old shuffle took its pick from the lowest bits of a plain LCG, which repeat in a fixed pattern: with 4 choices the right
+   answer (always listed first) landed on D 99.7% of the time. Now: FNV-1a hash of the seed, then mulberry32, and the pick uses the
+   whole number. Still fixed per seed (same question, same test = same order on a reload); A, B, C, D each about 25%. */
+function pfShuffle_(arr, seedStr) {
+  var s = 2166136261, i; seedStr = String(seedStr);
+  for (i = 0; i < seedStr.length; i++) { s ^= seedStr.charCodeAt(i); s = Math.imul(s, 16777619); }
+  function rnd() { s = (s + 0x6D2B79F5) | 0; var t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+  var a = arr.slice();
+  for (i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
 function pfPresent_(it, sec, salt) {
   var out = { id: it.id, fmt: it.fmt, stem: it.stem, say: it.say || '', pic: it.pic || '', show: it.show || '', cmode: it.cmode || 'text', screen: it.screenNote || '', unit: it.unit || '', audioOnly: !!it.audioOnly, level: it.level, strand: it.strand, draft: it.status !== 'Approved' && !(sec && sec.appr), subject: it.subject };   /* draft tag / 'art coming' only for TEST boys (appr 0); live boys never see it */
   if (it.labels) out.labels = it.labels;

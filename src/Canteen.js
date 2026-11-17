@@ -6,6 +6,8 @@
      3 goals a session (On time, Did his work, Middos), $0.20 each (Program Rules B6); AM+PM Mon-Thu, AM only Fri and Sun.
    - Canteen Cash goes down only through canteen purchases (one row per sale in Canteen Purchases).
    Nothing a boy does in the app adds Canteen Cash. Formulas in the rewards sheet are never written to.
+   v378 (Head of School 2026-11-17, canteen overhaul): Canteen Cash is COUNTED BY CODE in the tab CN_Wallet (see "Canteen Wallet" below),
+   because the Firebase database never runs the sheet's formula. Boys pay the moment they order in the app; the canteen taps Done or Still waiting.
    Pages: ?so=1 staff tools (SignOffPage.html), ?canteen=1 kiosk (CanteenPage.html). Boy card + Canteen Crew lessons: CanteenKid.html. */
 var CN = {
   TEST_ID: '1L-L0M59vJmO3kd48CuTdw8xzKe-vDtVbN5jVA5yx3ZE',   /* TEST COPY - Tashbar Cash Rewards - canteen trial */
@@ -232,6 +234,9 @@ function cnSignoffSave(token, req) {
   var lock = LockService.getScriptLock(); lock.waitLock(30000);
   try {
     var ss = cnBook_(), dp = ss.getSheetByName('Daily Points'), acct = cnHasAccount_(), btz = cnBookTz_(ss);
+    try { cnSheetH_(); } catch (e) {}
+    rows.forEach(function (x) { if (acct[x.b.id]) cnWalOpen_(x.b.id); });   /* v378: wallets open BEFORE new sheet rows */
+    var credits = [];
     var col = session === 'AM' ? 3 : 7, stamp = Utilities.formatDate(new Date(), cnTz_(), 'HH:mm');
     var v = dp.getRange(CN.FIRST, 1, CN.DP_LAST - CN.FIRST + 1, 2).getValues(), idx = {}, last = CN.FIRST - 1;
     for (var i = 0; i < v.length; i++) { if (v[i][1] !== '' && v[i][1] !== null) { last = i + CN.FIRST; var d = cnYmd_(v[i][0], btz); if (d) idx[d + '|' + String(v[i][1])] = i + CN.FIRST; } }
@@ -260,9 +265,17 @@ function cnSignoffSave(token, req) {
         var p = String(pqr[0] || ''); if (p.indexOf('app sign-off') < 0) p = p ? p + '; app sign-off' : 'app sign-off';
         var q = String(pqr[1] || ''); if (q.indexOf(s.name) < 0) q = q ? q + '; ' + s.name : s.name;
         dp.getRange(row, 16, 1, 3).setValues([[p, q, note.join(' | ')]]);
+        credits.push({ sid: x.b.id, goals: x.att === 'A' ? 0 : x.ot + x.wk + x.md });
         written++;
       } else skipped++;
       log.push([now, date, session, cls, s.id, s.name, x.b.id, x.att, x.ot, x.wk, x.md, acct[x.b.id] ? action : 'no rewards account']);
+    });
+    /* v378 Canteen Wallet: 20 cents a goal; a fix writes only the difference */
+    credits.forEach(function (c) {
+      var pre = 'so:' + date + '|' + session + '|' + c.sid, have = 0, n = 0;
+      cnWalRows_().forEach(function (r) { if (r.key.indexOf(pre + '#') === 0) { have += r.cents; n++; } });
+      var want = c.goals * CN.GOAL_CENTS;
+      if (want !== have) cnWalPost_(c.sid, want - have, 'signoff', pre + '#' + (n + 1), s.name, 'Sign-off ' + date + ' ' + session + ': ' + c.goals + ' of 3 goals' + (n ? ' (fixed)' : ''));
     });
     var lt = cnLogTab_(); lt.getRange(lt.getLastRow() + 1, 1, log.length, log[0].length).setValues(log);
     SpreadsheetApp.flush();
@@ -327,13 +340,105 @@ function cnSetStaffClass(token, staffId, which, cls) {
   return { ok: true };
 }
 
-/* ---------- Canteen Cash (view only for the boy) ---------- */
-function cnBalances_() {
-  var sa = cnBook_().getSheetByName('Student Accounts'), v = sa.getRange(5, 1, sa.getLastRow() - 4, 8).getValues(), o = {};
+/* ---------- Canteen Wallet (v378, Head of School 2026-11-17 "total overhaul of the canteen money"): Canteen Cash is counted by CODE ----------
+   Why: the rewards sheet's balance (Student Accounts H) is a spreadsheet formula. The Firebase school database keeps values only and never
+   runs formulas, so that number froze. Now every boy's Canteen Cash = the sum of his rows in the tab CN_Wallet (school book):
+   - one 'open' row = his column H balance the first time his wallet is touched (made BEFORE any new rewards-sheet row is written),
+   - then one row per change: 'signoff' (3 goals x 20 cents a session, a fix writes only the difference), 'sale' and 'void' (kiosk),
+     'order' (paid the moment he orders in the app) and 'refund' (cancelled order), 'card' (Canteen Card from the Tashbar Store).
+   Every row has a unique key, so a double tap never charges twice. The office rows in the rewards sheet are still written as before.
+   A boy whose wallet was never touched still shows his column H number. TEST- boys get $5.00 practice money and never touch the rewards sheet.
+   Callers that write must hold the script lock. */
+CN.WAL = 'CN_Wallet';
+CN.WAL_HDR = ['at', 'student_id', 'cents', 'kind', 'key', 'by', 'note'];
+CN.GOAL_CENTS = 20;
+CN.TEST_START = 500;
+var CN_WAL_MEMO_ = null, CN_H_MEMO_ = null;
+function cnWalTab_() {
+  var b = msBook_(), sh = b.getSheetByName(CN.WAL);
+  if (!sh) { sh = b.insertSheet(CN.WAL); sh.getRange(1, 1, 1, CN.WAL_HDR.length).setValues([CN.WAL_HDR]).setFontWeight('bold'); sh.setFrozenRows(1); }
+  return sh;
+}
+function cnWalRows_() {
+  if (CN_WAL_MEMO_) return CN_WAL_MEMO_;
+  var sh = cnWalTab_(), n = sh.getLastRow(), out = [];
+  if (n >= 2) sh.getRange(2, 1, n - 1, CN.WAL_HDR.length).getValues().forEach(function (r) {
+    if (!r[1]) return;
+    out.push({ at: r[0] ? new Date(r[0]).getTime() : 0, sid: String(r[1]), cents: Math.round(Number(r[2]) || 0), kind: String(r[3] || ''), key: String(r[4] || ''), by: String(r[5] || ''), note: String(r[6] || '') });
+  });
+  return (CN_WAL_MEMO_ = out);
+}
+function cnSheetH_() {
+  if (CN_H_MEMO_) return CN_H_MEMO_;
+  var sa = cnBook_().getSheetByName('Student Accounts'), v = sa.getRange(5, 1, Math.max(1, sa.getLastRow() - 4), 8).getValues(), o = {};
   v.forEach(function (r) { if (r[0]) o[String(r[0])] = Math.round(Number(r[7] || 0) * 100) / 100; });
+  return (CN_H_MEMO_ = o);
+}
+function cnTestSid_(sid) { try { return typeof msIsTest_ === 'function' && !!msIsTest_(String(sid)); } catch (e) { return false; } }
+function cnBalances_() {
+  var h = {}, o = {}, sum = {}, open = {};
+  try { h = cnSheetH_(); } catch (e) {}
+  cnWalRows_().forEach(function (r) { sum[r.sid] = (sum[r.sid] || 0) + r.cents; if (r.kind === 'open') open[r.sid] = 1; });
+  Object.keys(h).forEach(function (sid) { o[sid] = open[sid] ? (sum[sid] || 0) / 100 : h[sid]; });
+  Object.keys(open).forEach(function (sid) { if (!Object.prototype.hasOwnProperty.call(o, sid)) o[sid] = (sum[sid] || 0) / 100; });
   return o;
 }
-function cnBalance_(sid) { var o = cnBalances_(); return Object.prototype.hasOwnProperty.call(o, sid) ? o[sid] : null; }
+function cnBalance_(sid) {
+  sid = String(sid || ''); var o = cnBalances_();
+  if (Object.prototype.hasOwnProperty.call(o, sid)) return o[sid];
+  return cnTestSid_(sid) ? CN.TEST_START / 100 : null;
+}
+function cnWalHas_(key) { return cnWalRows_().some(function (r) { return r.key === key; }); }
+function cnWalAppend_(row) {
+  cnWalTab_().appendRow(row);
+  if (CN_WAL_MEMO_) CN_WAL_MEMO_.push({ at: row[0].getTime(), sid: String(row[1]), cents: Number(row[2]), kind: String(row[3]), key: String(row[4]), by: String(row[5]), note: String(row[6]) });
+}
+/* make the 'open' row once; false = this boy has no Canteen Cash account */
+function cnWalOpen_(sid) {
+  sid = String(sid || '');
+  if (cnWalRows_().some(function (r) { return r.sid === sid && r.kind === 'open'; })) return true;
+  var h = {}; try { h = cnSheetH_(); } catch (e) {}
+  var has = Object.prototype.hasOwnProperty.call(h, sid);
+  if (!has && !cnTestSid_(sid)) return false;
+  cnWalAppend_([new Date(), sid, has ? Math.round(h[sid] * 100) : CN.TEST_START, 'open', 'open:' + sid, 'system',
+    has ? 'Opening balance from the rewards sheet (Student Accounts H)' : 'TEST practice money']);
+  return true;
+}
+function cnWalPost_(sid, cents, kind, key, by, note) {
+  sid = String(sid || ''); cents = Math.round(Number(cents) || 0);
+  if (key && cnWalHas_(key)) return { ok: true, dup: true };
+  if (!cnWalOpen_(sid)) throw new Error('No Canteen Cash account for this student. Ask the office.');
+  cnWalAppend_([new Date(), sid, cents, String(kind), String(key || ''), String(by || '').slice(0, 60), String(note || '').slice(0, 160)]);
+  return { ok: true };
+}
+/* the boy's money story: his last rows, newest first */
+function cnWalStory_(sid, n) {
+  return cnWalRows_().filter(function (r) { return r.sid === sid; }).slice(-(n || 8)).reverse().map(function (r) {
+    return { at: r.at, cents: r.cents, kind: r.kind, note: r.kind === 'open' ? (cnTestSid_(sid) ? 'Practice money to start' : 'Money you already had') : r.note };
+  });
+}
+/* Head of School fix: a written reason, its own row (like a staff correction in the Tashbar Bank) */
+function cnWalletFix(token, sid, dollars, reason) {
+  var s = cnStaff_(token); cnHead_(s);
+  sid = String(sid || ''); reason = cnClean_(reason, 120); if (reason.length < 3) throw new Error('Write a reason.');
+  var cents = Math.round(Number(dollars) * 100); if (!cents || Math.abs(cents) > 10000) throw new Error('Amount must be between -$100 and $100, not 0.');
+  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try { cnWalPost_(sid, cents, 'fix', 'fix:' + sid + ':' + Date.now(), s.name, reason); return { ok: true, balance: cnBalance_(sid) }; }
+  finally { lock.releaseLock(); }
+}
+/* a row in Canteen Purchases for the office (never for TEST boys) */
+function cnCpRow_(sid, items, total, cashier, note) {
+  if (cnTestSid_(sid)) return;
+  var cp = cnBook_().getSheetByName('Canteen Purchases'), scan = cnCpScan_(cp), row = scan.last + 1;
+  if (row > CN.CP_LAST) throw new Error('The purchase list is full.');
+  cp.getRange(row, 1, 1, 6).setValues([[cnDay_(), sid, items, total, cashier, note]]);
+}
+function cnStockAdj_(items, sign) {
+  var msh = cnMenuSheet_(), menu = {}; cnMenu_(false).forEach(function (m) { menu[m.id] = m; });
+  (items || []).forEach(function (i) { var m = menu[i.id]; if (m && m.stock !== '') msh.getRange(m.row, 6).setValue(Math.max(0, m.stock + sign * i.qty)); });
+}
+function cnPfRate_(sid) { try { return typeof pfRewardRate_ === 'function' ? pfRewardRate_(sid) : 1; } catch (e) { return 1; } }
+
 function cnStates_() { var o = {}; msRows_('state').forEach(function (r) { try { o[String(r[0])] = JSON.parse(r[1]); } catch (e) {} }); return o; }
 function cnCrewDone_(sid, states) {
   var st = (states || cnStates_())[sid] || {}, sk = st.skills || {}, keys = [];
@@ -347,7 +452,7 @@ function cnKidInfo(token) {
   var isCrew = !!b && (b.crew === 'crew' || done.length === CN.CREW.length);
   if (isCrew && b.crew !== 'crew') msTab_('roster').getRange(b.row, 12).setValue('crew');
   var open = null, menuN = 0; try { open = cnOrders_().filter(function (o) { return o.sid === sid && cnOrdOpen_(o); }).map(cnOrdOut_)[0] || null; menuN = cnMenu_(true).length; } catch (e) {}   /* v61 app orders */
-  return { ok: true, cash: cnBalance_(sid), order: open, menuN: menuN, crew: { assigned: !!b && (b.crew === 'assigned' || b.crew === 'crew'), isCrew: isCrew, done: done, all: CN.CREW } };
+  return { ok: true, cash: cnBalance_(sid), pf: cnPfRate_(sid), order: open, menuN: menuN, crew: { assigned: !!b && (b.crew === 'assigned' || b.crew === 'crew'), isCrew: isCrew, done: done, all: CN.CREW } };
 }
 
 /* ---------- Canteen Crew (staff assign) ---------- */
@@ -489,12 +594,14 @@ function cnKioskBuy(token, ticket, cart, cashier, saleId) {
     SpreadsheetApp.flush();
     var before = cnBalance_(sid);
     if (before === null) throw new Error('No Canteen Cash account for this student. Ask the office.');
+    cnWalOpen_(sid);
     var total = cents / 100;
     if (Math.round(before * 100) < cents) return { ok: false, short: true, before: before, total: total };
     var row = scan.last + 1;
     if (row > CN.CP_LAST) throw new Error('The purchase list is full (row ' + CN.CP_LAST + '). Tell the office.');
     var itemsText = lines.map(function (l) { return l.m.name + (l.q > 1 ? ' x' + l.q : ''); }).join(', ');
     cp.getRange(row, 1, 1, 6).setValues([[cnDay_(), sid, itemsText, total, cashierName, 'Sale ' + saleId + ' · kiosk ' + k.name]]);
+    cnWalPost_(sid, -cents, 'sale', 'sale:' + saleId, cashierName, itemsText);
     var msh = cnMenuSheet_(ss);
     lines.forEach(function (l) { if (l.m.stock !== '') msh.getRange(l.m.row, 6).setValue(l.m.stock - l.q); });
     SpreadsheetApp.flush();
@@ -526,7 +633,9 @@ function cnKioskVoid(token, saleId, reason) {
     var ss = cnBook_(), cp = ss.getSheetByName('Canteen Purchases'), scan = cnCpScan_(cp), last = cnLastSale_(scan);
     if (!last || last.saleId !== String(saleId)) throw new Error('That is not the last sale any more. Look again.');
     var row = scan.last + 1; if (row > CN.CP_LAST) throw new Error('The purchase list is full. Tell the office.');
+    cnWalOpen_(last.sid);
     cp.getRange(row, 1, 1, 6).setValues([[cnDay_(), last.sid, 'VOID of ' + last.items, -last.total, k.name, 'Void of Sale ' + last.saleId + ': ' + reason]]);
+    cnWalPost_(last.sid, Math.round(last.total * 100), 'void', 'void:' + last.saleId, k.name, 'Void: ' + last.items + ' (' + reason + ')');
     /* put the stock back */
     var msh = cnMenuSheet_(ss), menu = cnMenu_(false, ss);
     last.items.split(', ').forEach(function (t) { var m = /^(.*?)(?: x(\d+))?$/.exec(t), it = menu.filter(function (x) { return x.name === m[1]; })[0]; if (it && it.stock !== '') msh.getRange(it.row, 6).setValue(it.stock + Number(m[2] || 1)); });
@@ -539,8 +648,8 @@ function cnKioskReport(token, date) {
   var ss = cnBook_(), scan = cnCpScan_(ss.getSheetByName('Canteen Purchases')), sales = 0, total = 0, voids = 0, voidTotal = 0, items = {};
   scan.v.forEach(function (r) {
     if (cnYmd_(r[0], scan.tz) !== date) return; var f = String(r[5]);
-    if (/^Sale /.test(f)) { sales++; total += Number(r[3]) || 0; String(r[2]).split(', ').forEach(function (t) { var m = /^(.*?)(?: x(\d+))?$/.exec(t); items[m[1]] = (items[m[1]] || 0) + Number(m[2] || 1); }); }
-    else if (/^Void of Sale /.test(f)) { voids++; voidTotal += -(Number(r[3]) || 0); String(r[2]).replace(/^VOID of /, '').split(', ').forEach(function (t) { var m = /^(.*?)(?: x(\d+))?$/.exec(t); items[m[1]] = (items[m[1]] || 0) - Number(m[2] || 1); }); }
+    if (/^(Sale|Order) /.test(f)) { sales++; total += Number(r[3]) || 0; String(r[2]).split(', ').forEach(function (t) { var m = /^(.*?)(?: x(\d+))?$/.exec(t); items[m[1]] = (items[m[1]] || 0) + Number(m[2] || 1); }); }
+    else if (/^(Void of Sale|Refund of Order) /.test(f)) { voids++; voidTotal += -(Number(r[3]) || 0); String(r[2]).replace(/^(VOID|REFUND) of /, '').split(', ').forEach(function (t) { var m = /^(.*?)(?: x(\d+))?$/.exec(t); items[m[1]] = (items[m[1]] || 0) - Number(m[2] || 1); }); }
   });
   var menu = cnMenu_(false, ss);
   return { date: date, sales: sales, voids: voids, gross: Math.round(total * 100) / 100, voided: Math.round(voidTotal * 100) / 100, net: Math.round((total - voidTotal) * 100) / 100,
@@ -558,11 +667,12 @@ function cnSelfTest() {
   Logger.log(out.join('\n')); return out.join('\n');
 }
 
-/* ---------- App orders (v61, 2026-11-11, Head of School: every boy may order; money comes off only at pickup) ----------
-   Boy's app: sees the menu (items switched On) and his Canteen Cash, sends an order -> Pending.
-   Canteen kiosk: Orders tab -> Ready -> Picked up. "Picked up" charges through cnKioskBuy (same purchase row, stock and balance check
-   as a counter sale; the sale id is the order id, so a double tap never charges twice). Cancelled orders charge nothing.
-   Orders live in the school database tab CN_Orders (never in the rewards sheet). */
+/* ---------- App orders (v378, Head of School 2026-11-17: "when they buy, the money is then deducted"; the canteen taps Done or Still waiting) ----------
+   Boy's app: sees his Canteen Cash and the menu. Too-expensive food is locked. Buy = the money comes off RIGHT AWAY (wallet row 'order').
+   Canteen kiosk, Orders tab: ✅ Done (food handed over), ⏳ Still waiting (the boy sees the canteen is making it), ✕ Can't make it (all money back).
+   The boy may cancel while it waits: all money back. Stock comes off at order time and goes back on a refund.
+   Older orders from before v378 were not paid yet: Done charges them through the normal kiosk sale, as before.
+   Orders live in the school database tab CN_Orders. Column sale_id = 'paid' marks an order paid when ordered. */
 CN.ORD = 'CN_Orders';
 CN.ORD_HDR = ['order_id', 'student_id', 'name', 'items_json', 'est_total', 'status', 'created_at', 'updated_at', 'by', 'sale_id', 'note'];
 function cnOrdTab_() {
@@ -579,14 +689,16 @@ function cnOrders_() {
   }).filter(function (o) { return o.id; });
 }
 function cnOrdSet_(o, status, by, saleId, note) {
-  cnOrdTab_().getRange(o.row, 6, 1, 6).setValues([[status, new Date(o.at), new Date(), String(by || '').slice(0, 60), saleId || o.saleId || '', String(note || o.note || '').slice(0, 120)]]);
+  cnOrdTab_().getRange(o.row, 6, 1, 6).setValues([[status, new Date(o.at), new Date(), String(by || '').slice(0, 60), saleId || o.saleId || '', String(note == null ? o.note : note).slice(0, 120)]]);
 }
-function cnOrdOut_(o) { return { id: o.id, sid: o.sid, name: o.name, items: o.items, est: o.est, status: o.status, at: o.at, upd: o.upd, by: o.by, note: o.note }; }
+function cnOrdCents_(o) { return (o.items || []).reduce(function (a, i) { return a + Math.round(Number(i.price) * 100) * (Number(i.qty) || 0); }, 0) || Math.round(o.est * 100); }
+function cnOrdText_(o) { return (o.items || []).map(function (i) { return i.name + (i.qty > 1 ? ' x' + i.qty : ''); }).join(', '); }
+function cnOrdOut_(o) { return { id: o.id, sid: o.sid, name: o.name, items: o.items, est: o.est, status: o.status, at: o.at, upd: o.upd, by: o.by, note: o.note, paid: o.saleId === 'paid', seen: /^Still waiting/.test(o.note) }; }
 function cnOrdOpen_(o) { return o.status === 'pending' || o.status === 'ready'; }
 function cnKidSid_(token) { var s = msSession_(token); if (s.role !== 'kid' || !s.sid) throw new Error('Sign in with your own code.'); return s.sid; }
 function cnOrderMenu(token) {
   var sid = cnKidSid_(token), mine = cnOrders_().filter(function (o) { return o.sid === sid; });
-  return { ok: true, cash: cnBalance_(sid),
+  return { ok: true, cash: cnBalance_(sid), pf: cnPfRate_(sid), story: cnWalStory_(sid, 8),
     menu: cnMenu_(true).map(function (m) { return { id: m.id, name: m.name, price: m.price, emoji: m.emoji, pic: m.pic, out: m.stock !== '' && m.stock <= 0, left: m.stock === '' ? null : m.stock }; }),
     open: mine.filter(cnOrdOpen_).map(cnOrdOut_), recent: mine.filter(function (o) { return !cnOrdOpen_(o); }).slice(-3).reverse().map(cnOrdOut_) };
 }
@@ -596,54 +708,78 @@ function cnOrderPlace(token, cart, clientId) {
   var lock = LockService.getScriptLock(); lock.waitLock(20000);
   try {
     var all = cnOrders_(), dup = all.filter(function (o) { return o.id === id; })[0];
-    if (dup) return { ok: true, order: cnOrdOut_(dup) };
-    if (all.some(function (o) { return o.sid === sid && cnOrdOpen_(o); })) throw new Error('You already have an order waiting. Pick it up or cancel it first.');
+    if (dup) return { ok: true, order: cnOrdOut_(dup), cash: cnBalance_(sid) };
+    if (all.some(function (o) { return o.sid === sid && cnOrdOpen_(o); })) throw new Error('You already have food waiting. Get it at the canteen first.');
     var cash = cnBalance_(sid); if (cash === null) throw new Error('You don’t have a Canteen Cash account yet. Ask the office.');
     var menu = {}; cnMenu_(true).forEach(function (m) { menu[m.id] = m; });
     var qty = {}; (cart || []).slice(0, 20).forEach(function (c) { var k = String(c.id || ''), q = Math.floor(Number(c.qty) || 0); if (q > 0) qty[k] = (qty[k] || 0) + q; });
     var items = [], cents = 0;
     Object.keys(qty).forEach(function (k) {
-      var m = menu[k], q = Math.min(qty[k], 10); if (!m) throw new Error('Something in your order is not on the menu any more.');
+      var m = menu[k], q = Math.min(qty[k], 10); if (!m) throw new Error('Something you picked is not on the menu any more.');
       if (m.stock !== '' && q > m.stock) throw new Error(m.name + (m.stock ? ': only ' + m.stock + ' left.' : ' is sold out.'));
       items.push({ id: m.id, qty: q, name: m.name, emoji: m.emoji, price: m.price }); cents += Math.round(m.price * 100) * q;
     });
-    if (!items.length) throw new Error('Your order is empty.');
+    if (!items.length) throw new Error('Pick some food first.');
     if (Math.round(cash * 100) < cents) return { ok: false, short: true, cash: cash, total: cents / 100 };
-    var b = cnBoys_().filter(function (x) { return x.id === sid; })[0], now = new Date();
-    cnOrdTab_().appendRow([id, sid, b ? b.name : sid, JSON.stringify(items), cents / 100, 'pending', now, now, 'app', '', '']);
-    return { ok: true, order: { id: id, sid: sid, items: items, est: cents / 100, status: 'pending', at: now.getTime(), upd: now.getTime() } };
+    var b = cnBoys_().filter(function (x) { return x.id === sid; })[0], now = new Date(), o = { id: id, items: items, est: cents / 100 }, text = cnOrdText_(o);
+    cnWalOpen_(sid);
+    cnWalPost_(sid, -cents, 'order', 'ord:' + id, 'app', text);
+    try { cnCpRow_(sid, text, cents / 100, 'App order', 'Order ' + id + ' · paid in the app'); } catch (e) {}
+    try { cnStockAdj_(items, -1); } catch (e) {}
+    cnOrdTab_().appendRow([id, sid, b ? b.name : sid, JSON.stringify(items), cents / 100, 'pending', now, now, 'app', 'paid', '']);
+    return { ok: true, before: cash, cash: cnBalance_(sid), order: { id: id, sid: sid, items: items, est: cents / 100, status: 'pending', at: now.getTime(), upd: now.getTime(), paid: true, seen: false } };
   } finally { lock.releaseLock(); }
+}
+/* all money back for a paid order (once) */
+function cnOrdRefund_(o, by, why) {
+  if (!cnWalHas_('ord:' + o.id)) return 0;
+  var cents = cnOrdCents_(o);
+  var r = cnWalPost_(o.sid, cents, 'refund', 'ref:' + o.id, by, 'Money back: ' + cnOrdText_(o) + (why ? ' (' + why + ')' : ''));
+  if (r.dup) return 0;
+  try { cnCpRow_(o.sid, 'REFUND of ' + cnOrdText_(o), -cents / 100, String(by || '').slice(0, 40), 'Refund of Order ' + o.id + (why ? ': ' + why : '')); } catch (e) {}
+  try { cnStockAdj_(o.items, 1); } catch (e) {}
+  return cents;
 }
 function cnOrderCancel(token, orderId) {
   var sid = cnKidSid_(token), lock = LockService.getScriptLock(); lock.waitLock(20000);
   try {
     var o = cnOrders_().filter(function (x) { return x.id === String(orderId) && x.sid === sid; })[0];
     if (!o) throw new Error('Order not found.');
-    if (o.status !== 'pending') throw new Error(o.status === 'ready' ? 'Your order is already ready. Tell the canteen if you don’t want it.' : 'This order is closed.');
-    cnOrdSet_(o, 'cancelled', 'boy', '', 'Cancelled by the student');
-    return { ok: true };
+    if (!cnOrdOpen_(o)) throw new Error('This order is closed.');
+    if (o.note && /^Still waiting/.test(o.note)) throw new Error('The canteen is already making it. Ask at the canteen.');
+    var back = cnOrdRefund_(o, 'boy', 'cancelled by the student');
+    cnOrdSet_(o, 'cancelled', 'boy', '', 'Cancelled by the student' + (back ? ', money back' : ''));
+    return { ok: true, back: back / 100, cash: cnBalance_(sid) };
   } finally { lock.releaseLock(); }
 }
 /* kiosk side */
 function cnKioskOrders(token) {
   cnKiosk_(token); var today = cnDay_(), all = cnOrders_();
-  return { open: all.filter(cnOrdOpen_).map(cnOrdOut_), done: all.filter(function (o) { return !cnOrdOpen_(o) && cnDay_(new Date(o.upd || o.at)) === today; }).slice(-12).reverse().map(cnOrdOut_) };
+  return { open: all.filter(cnOrdOpen_).map(cnOrdOut_), done: all.filter(function (o) { return !cnOrdOpen_(o) && cnDay_(new Date(o.upd || o.at)) === today; }).slice(-15).reverse().map(cnOrdOut_) };
 }
-function cnKioskOrderSet(token, orderId, status, reason) {
-  var k = cnKiosk_(token); if (status !== 'ready' && status !== 'cancelled' && status !== 'pending') throw new Error('Bad status.');
-  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+/* status: 'done' (food handed over), 'waiting' (still making it), 'cancelled' (can't make it: all money back). 'ready' and 'pending' kept for old screens. */
+function cnKioskOrderSet(token, orderId, status, reason, cashier) {
+  var k = cnKiosk_(token);
+  if (['done', 'waiting', 'cancelled', 'ready', 'pending'].indexOf(status) < 0) throw new Error('Bad status.');
+  var o = cnOrders_().filter(function (x) { return x.id === String(orderId); })[0]; if (!o) throw new Error('Order not found.');
+  if (status === 'done' && o.saleId !== 'paid') return cnKioskOrderPickup(token, orderId, cashier);   /* an older, unpaid order */
+  var lock = LockService.getScriptLock(), res = {}; lock.waitLock(20000);
   try {
-    var o = cnOrders_().filter(function (x) { return x.id === String(orderId); })[0]; if (!o) throw new Error('Order not found.');
-    if (!cnOrdOpen_(o)) throw new Error('This order is already ' + (o.status === 'picked' ? 'picked up' : o.status) + '.');
-    cnOrdSet_(o, status, k.name, '', status === 'cancelled' ? 'Cancelled at the canteen' + (reason ? ': ' + cnClean_(reason, 80) : '') : '');
-    return cnKioskOrders(token);
+    o = cnOrders_().filter(function (x) { return x.id === String(orderId); })[0];
+    if (!cnOrdOpen_(o)) { if (status === 'done' && o.status === 'picked') res.dup = true; else throw new Error('This order is already ' + (o.status === 'picked' ? 'done' : o.status) + '.'); }
+    else if (status === 'done') cnOrdSet_(o, 'picked', k.name, 'paid', 'Given by ' + k.name);
+    else if (status === 'waiting' || status === 'pending') cnOrdSet_(o, 'pending', k.name, '', 'Still waiting · the canteen is making it');
+    else if (status === 'ready') cnOrdSet_(o, 'ready', k.name, '', 'Ready');
+    else { var why = cnClean_(reason, 80); res.back = cnOrdRefund_(o, k.name, why || 'the canteen could not make it') / 100; cnOrdSet_(o, 'cancelled', k.name, '', 'Cancelled at the canteen' + (why ? ': ' + why : '') + (res.back ? ', money back' : '')); }
   } finally { lock.releaseLock(); }
+  var out = cnKioskOrders(token); out.ok = true; out.name = o.name; out.res = res; out.orders = { open: out.open, done: out.done }; return out;
 }
 function cnKioskOrderPickup(token, orderId, cashier) {
   var k = cnKiosk_(token), o = cnOrders_().filter(function (x) { return x.id === String(orderId); })[0];
   if (!o) throw new Error('Order not found.');
   if (o.status === 'picked') return { ok: true, dup: true, orders: cnKioskOrders(token) };
   if (!cnOrdOpen_(o)) throw new Error('This order was cancelled.');
+  if (o.saleId === 'paid') { var r0 = cnKioskOrderSet(token, orderId, 'done'); return { ok: true, paidBefore: true, total: o.est, after: cnBalance_(o.sid), items: cnOrdText_(o), name: o.name, orders: r0.orders }; }
   var ticket = Utilities.getUuid(); CacheService.getScriptCache().put('cn_boy_' + ticket, o.sid, 300);
   var r = cnKioskBuy(token, ticket, o.items.map(function (i) { return { id: i.id, qty: i.qty }; }), cashier, o.id);   /* same checks and purchase row as a counter sale */
   if (!r.ok) return { ok: false, short: !!r.short, before: r.before, total: r.total, name: o.name };

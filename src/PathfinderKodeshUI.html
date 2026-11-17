@@ -96,7 +96,7 @@ window.PFKUI=(function(){
  function betweenHTML(v){ const k=v.kodesh, f=k.finished, n=k.section;
   return `<div class="card center"><div style="font-size:56px">🚩</div><h2>${esc(f.label)}: done!</h2><p>Your flag is on the mountain.${n?' Next is '+esc(n.label)+'.':''}</p><button class="big gold" data-act="kqgo">Keep climbing ➜</button></div>`; }
  function endHTML(v){ const k=v.kodesh, S=(k.sections||[]).filter(s=>s.status==='done');
-  return `<div class="card center"><div style="font-size:64px">🏔️</div><h2>You finished the Kodesh Pathfinder!</h2><p>Thank you. Your teachers will use this to set your path.</p>
+  return `<div class="card center"><div style="font-size:64px">🏔️</div><h2>You finished the Kodesh Pathfinder!</h2><p>Great job! Every answer helps your path fit you just right.</p>
   <div class="kq-mtn">${S.map(s=>`<div style="background:${esc(s.color)}"><span>${s.ic}</span>${esc(s.label)} 🚩</div>`).join('')}</div>
   ${v.appUrl?`<a class="big gold" href="${esc(v.appUrl)}">Back to my lessons</a>`:''} ${v.draft?'<button class="big ghost" data-act="kqagain">Start it again (test)</button>':''}</div>`; }
  function html(v){ const k=v.kodesh;

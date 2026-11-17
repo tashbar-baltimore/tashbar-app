@@ -9,7 +9,7 @@
    KEEP IN STEP: TL_PART_FILES must list the same files in the same order as msQuestToolsBody_ in Photos.js. */
 var TL_PART_FILES = ['CanteenKid', 'MathMore', 'ReadMore', 'ScienceMore', 'ElectivesMore', 'FactsMore', 'TradesMore', 'ComputingMore', 'LifeMore', 'SocialMore',
   'KodeshMore', 'SimchaMore', 'Shine', 'Helpers', 'Review', 'Adapt', 'Motivation', 'JokeJar', 'SimchaLife', 'TalkRebbe', ['KodeshQuestPage', 'KodeshArt2'], 'KinderKriyah',
-  'Guides', 'Pictures', 'Music', ['HowToDo', 'HowToDo2', 'HowToDo3'], 'FactsHowTo', 'AnswerGuard', 'HomePlus', 'StoreKid', 'Activities', ['KindsMore', 'KindsMore2', 'KindsMore3'], 'RebbePick', 'OlamHaba', 'TorahPlus', 'ChumashPage', 'KriyahMore', ['TorahTracks', 'TaryagQuest'], 'ArenaPage', 'ClassMode', 'HomeLift', 'LearnWays', 'DailyPath', 'BoyLibrary'];   /* PF stage D: DailyPath LAST, as in msQuestToolsBody_ */
+  'Guides', 'Pictures', 'Music', ['HowToDo', 'HowToDo2', 'HowToDo3'], 'FactsHowTo', 'AnswerGuard', 'HomePlus', 'StoreKid', 'Activities', ['KindsMore', 'KindsMore2', 'KindsMore3'], 'RebbePick', 'OlamHaba', 'TorahPlus', 'ChumashPage', 'KriyahMore', ['TorahTracks', 'TaryagQuest'], 'ArenaPage', 'ClassMode', 'HomeLift', 'LearnWays', 'DailyPath', ['BoyLibrary', 'HomeLayout', 'MasteryReview', 'WelcomeJoy']];   /* PF stage D: DailyPath LAST, as in msQuestToolsBody_ */
 
 function msSignInFast(code) {
   var r = msSignInCode(code);

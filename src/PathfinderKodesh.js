@@ -463,7 +463,7 @@ var PFK_STEMS = {
   'No nekudos here. What does the glowing word mean?': 'No nekudos this time! What does the glowing word mean?',
   'Tap the same letter in regular letters.': 'This letter is in Rashi script. Find the same letter in regular print and tap it.',
   'Tap the word that is exactly the same.': 'Find the twin! Tap the word that is exactly the same.',
-  'The glowing word is a short form of two words. What does it mean?': 'The glowing word is a shortcut for two words (roshei teivos). What does it mean?',
+  'The glowing word is a short form of two words. What does it mean?': 'The glowing word is written in short form (with a little mark, like \u05f4 or \u05f3). What does it stand for?',
   'Two Rashis are printed one after the other. Tap the first word of the second Rashi.': 'Two Rashis are printed back to back. Where does the second Rashi start? Tap its first word.',
   'In this Rashi, Rashi brings the Targum (Onkelos). Tap the word that tells you.': 'In this Rashi, Rashi quotes the Targum (Onkelos). Tap the word that shows it.',
   'Listen to the sound. Tap the letter that makes it.': 'Listen to the sound. Which letter makes that sound? Tap it.'

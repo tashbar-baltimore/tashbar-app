@@ -25,6 +25,7 @@ function sgQuest_() {
   var page = HtmlService.createHtmlOutputFromFile('QuestPage').getContent(), bar = '';
   try { bar = HtmlService.createHtmlOutputFromFile('SignOutBar').getContent(); } catch (e) { bar = ''; }
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderCard').getContent(); } catch (e) {}
+  try { bar += HtmlService.createHtmlOutputFromFile('FireLinks').getContent(); } catch (e) {}   /* EVERYTHING ON FIREBASE: links from web.app carry the sign-in (FireBridge.js) */
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderGo').getContent(); } catch (e) {}   /* v7.2 Stage 5: opens the first lesson after a TEST boy's Pathfinder day-1 screens (inert otherwise) */
   try { bar += HtmlService.createHtmlOutputFromFile('HomePage').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('KidReminders').getContent(); } catch (e) {}   /* Access.js: reminders from home pop up at their time */   /* the front home page: logo, code pad, flying subjects, encouraging messages */   /* PATHFINDER: "Start your Pathfinder" card on his home screen */
@@ -44,6 +45,7 @@ function sgPage_() {
   try { add += HtmlService.createHtmlOutputFromFile('StaffLive').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('StaffAccess').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('SchoolBuilderPage').getContent(); } catch (e) {}   /* v266 takeover3: Schools & Families front door + See what the kids see banner (SchoolBuilder.js) */   /* Access.js: schools, roles, parents (Head of School and school admins) */   /* v197: walk-around (phone), class Olam Haba sky, Torah moments, bechina day, Parsha of the week; LAST (uses SPX and SPD) */
+  try { add += HtmlService.createHtmlOutputFromFile('FireLinks').getContent(); } catch (e) {}   /* EVERYTHING ON FIREBASE: links from web.app carry the sign-in (FireBridge.js) */
   try { add += HtmlService.createHtmlOutputFromFile('StaffLibrary').getContent(); } catch (e) {}   /* Library & One-Tap Command Center (Library.js); floating button, own overlay, LAST */
   var i = page.lastIndexOf('</body>'); if (add) page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
   return HtmlService.createHtmlOutput(tlTheme_(page, 'staff'))

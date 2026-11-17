@@ -37,7 +37,9 @@ var MONEY = {
     monthImproved3:  { cents: 5000,  label: 'Most improved this month: 3rd place' },
     monthSchoolGoal: { cents: 2500,  label: 'School goal reached this month' }
   },
-  INTEREST: { percent: 2, capCents: 2000 },          /* every Sunday, on the balance before that Sunday */
+  /* v378 Head of School 2026-11-17: NO INTEREST. "Jews don't give each other interest and they don't charge interest" (ribbis).
+     Interest is taught only as a topic in the financial literacy class. Old 'interest' rows already paid stay in the ledger. */
+  INTEREST: { percent: 0, capCents: 0, off: true },
   CANTEEN_RATE: null,                               /* v162: the real rate is STORE.CANTEEN_RATE in Store.js (Canteen Cards). */
   SINCE: '2026-11-06',                              /* no interest or streak pay for days before this */
   REVISION_MAX: 3,
@@ -184,6 +186,7 @@ function moneyStreak_(sid) {
 
 /* Weekly interest, paid once for the most recent Sunday, on the balance before that Sunday. */
 function moneyInterest_(sid) {
+  if (!MONEY.INTEREST || MONEY.INTEREST.off || !(MONEY.INTEREST.percent > 0)) return null;   /* v378: no interest */
   var sunday = moneyWeekStart_(moneyDay_());
   if (sunday < MONEY.SINCE) return null;
   var key = 'interest:' + sid + ':' + sunday;
@@ -238,7 +241,7 @@ function moneySummary_(sid) {
 }
 function moneyPublicRules_() {
   return { version: MONEY.VERSION, rules: Object.keys(MONEY.RULES).map(function (k) { return { id: k, label: MONEY.RULES[k].label, cents: MONEY.RULES[k].cents }; }),
-    interest: MONEY.INTEREST, canteenRate: MONEY.CANTEEN_RATE, transfer: false };
+    interest: null, canteenRate: MONEY.CANTEEN_RATE, transfer: false };
 }
 
 /* ---------- hooks used by Code.gs ---------- */

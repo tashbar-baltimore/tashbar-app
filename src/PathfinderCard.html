@@ -30,7 +30,7 @@
   gEl=document.createElement('div'); gEl.id='pf-gate'; gEl.dataset.k=key; gEl.setAttribute('role','dialog'); gEl.setAttribute('aria-modal','true');
   gEl.innerHTML='<div class="bx"><div class="ic">'+(k?'\u{1F4DC}':'\u{1F9ED}')+'</div><h1>'+(k?(gate.kodesh.started?'Finish your Kodesh Pathfinder':'Next: your Kodesh Pathfinder'):(h.started?'Finish your Pathfinder':'First, your Pathfinder'))+'</h1><p>'+
    (k?'Kriyah, Chumash and more. It finds exactly where your Kodesh learning starts. Just do your best!':'A few short sets of questions so your lessons start in exactly the right place: not too easy, not too hard. Some will feel hard. That is fine. Just do your best!')+
-   (!k&&h.started?' You have done '+h.done+' of '+h.of+' stops. Your answers are saved.':'')+'</p>'+(gate.rate<1?'<div class="rw">\u{1FA99} Right now your lessons pay 1/4. Finish your Pathfinder and you earn the full amount!</div><br>':'')+'<button type="button" class="go">'+((k?gate.kodesh.started:h.started)?'Keep going →':'Start →')+'</button><button type="button" class="later">Not now</button></div>';
+   (!k&&h.started?' You have done '+h.done+' of '+h.of+' stops. Your answers are saved.':'')+'</p>'+(gate.rate<1?(window.tlQuarterHTML?window.tlQuarterHTML(gate.rate):'<div class="rw">\u{1FA99} Right now you get only 25\u00A2 (one quarter) of every $1 you earn. Finish your Pathfinder and you get the whole dollar!</div>')+'<br>':'')+'<button type="button" class="go">'+((k?gate.kodesh.started:h.started)?'Keep going →':'Start →')+'</button><button type="button" class="later">Not now</button></div>';
   document.body.appendChild(gEl); var b=gEl.querySelector('.go'); b.onclick=function(){ go(k?'?pf=1&test=kodesh':'?pf=1'); }; gEl.querySelector('.later').onclick=function(){ gateSeen(); gateHide(); }; try{ b.focus(); }catch(e){} }
  function gateKey(){ return 'tl-pfinv-'+String(tok()||'').slice(-12); }
  function gateSeen(){ try{ sessionStorage.setItem(gateKey(),'1'); }catch(e){} }
@@ -49,7 +49,7 @@
   if(gate&&gate.rest&&gate.next==='rest'&&Date.now()>=gate.rest){ gate.next='general'; gate.rest=0; }
   var inv=hub&&gate&&(gate.next==='general'||gate.next==='kodesh')&&!gateWasSeen();
   card.style.display=hub&&!inv&&((info&&info.show)||(gate&&gate.next==='kodesh'))?'':'none';
-  if(!info||!info.show){ if(gate&&gate.next==='kodesh'&&card.dataset.k!=='kodesh'){ card.dataset.k='kodesh'; card.innerHTML='<span class="i" aria-hidden="true">\u{1F4DC}</span><span style="flex:1"><b>Your Kodesh Pathfinder</b><small>'+(gate.rate<1?'Lessons pay 1/4 until you finish.':'Find where your Kodesh learning starts.')+'</small></span><button type="button">Start</button>'; card.querySelector('button').onclick=function(){ go('?pf=1&test=kodesh'); }; } }
+  if(!info||!info.show){ if(gate&&gate.next==='kodesh'&&card.dataset.k!=='kodesh'){ card.dataset.k='kodesh'; card.innerHTML='<span class="i" aria-hidden="true">\u{1F4DC}</span><span style="flex:1"><b>Your Kodesh Pathfinder</b><small>'+(gate.rate<1?'You get only 25\u00A2 of every $1 until you finish.':'Find where your Kodesh learning starts.')+'</small></span><button type="button">Start</button>'; card.querySelector('button').onclick=function(){ go('?pf=1&test=kodesh'); }; } }
   if(inv) gateShow(); else gateHide();
  },1000);
  /* v6 Stage 2 (Engine E + E2): the first lesson in Reading / Math after a Pathfinder placement opens with a 5-question check

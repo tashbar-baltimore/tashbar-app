@@ -87,76 +87,151 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
     const t=tok(); if(!t||K.busy) return; K.busy=true;
     google.script.run.withSuccessHandler(r=>{ K.busy=false; K.info=r&&r.ok?r:null; K.at=Date.now(); try{ if(A.view==='hub') render(); }catch(e){} }).withFailureHandler(()=>{ K.busy=false; K.at=Date.now(); }).cnKidInfo(t);
   }
-  /* ---- v61 App orders: menu + order + tracker (Pending -> Ready -> Picked up). Money comes off only at pickup, at the canteen. ---- */
-  const O={open:false,menu:null,cash:null,cart:{},busy:false,err:'',order:null,recent:[],cid:null,poll:null,lastStatus:null};
+  /* ---- v378 CANTEEN, simple enough for a 6-year-old (Head of School 2026-11-17 "total overhaul"):
+     1 See your money (big, in dollars AND coins)  2 Tap food (too expensive = locked 🔒)  3 Buy: the money comes off right away
+     4 The canteen taps Done when it hands you the food (or Still waiting). Money coach tips teach as you shop.
+     The Pathfinder quarter rule is shown with a picture of a dollar cut into 4 quarters. ---- */
+  const O={open:false,menu:null,cash:null,pf:1,story:[],tray:{},busy:false,err:'',order:null,recent:[],cid:null,poll:null,lastStatus:null,step:'shop',last:null,tip:0,showStory:false};
   const ocss=document.createElement('style');
   ocss.textContent=`.cn-ord{margin-left:auto;border:0;border-radius:16px;padding:12px 18px;font-weight:900;font-size:18px;font-family:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,#F97316,#DB2777);box-shadow:0 8px 18px #DB277755;min-height:52px;white-space:nowrap}
 .cn-card{flex-wrap:wrap}.cn-st{width:100%;display:flex;gap:10px;align-items:center;background:#fff;border-radius:16px;padding:10px 14px;font-weight:800;border:2px dashed #FB923C}
-.cn-st.ready{border:3px solid #10B981;background:#ECFDF5;color:#065F46;animation:cnpulse 1.4s ease-in-out infinite}@keyframes cnpulse{50%{box-shadow:0 0 0 8px #10B98133}}
-#cn-shop{position:fixed;inset:0;z-index:90;background:rgba(254,215,170,.6);backdrop-filter:blur(3px);display:grid;place-items:center;padding:10px}
-#cn-shop .bx{background:linear-gradient(180deg,#FFF7ED,#fff);width:min(1000px,100%);max-height:96vh;overflow:auto;border-radius:26px;box-shadow:0 30px 70px #0006;padding:18px}
-#cn-shop .hd{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}#cn-shop .hd h2{margin:0;font-size:28px;font-weight:900;color:#9A3412}
-#cn-shop .cash{margin-left:auto;background:#fff;border:2px solid #FDBA74;border-radius:999px;padding:8px 16px;font-weight:900;font-size:20px;color:#9A3412}
-#cn-shop .x{border:0;background:#fff;border-radius:14px;width:52px;height:52px;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #FED7AA}
+.cn-st.ready{border:3px solid #10B981;background:#ECFDF5;color:#065F46}
+#cn-shop{position:fixed;inset:0;z-index:90;background:rgba(254,215,170,.65);backdrop-filter:blur(3px);display:grid;place-items:center;padding:8px}
+#cn-shop .bx{background:linear-gradient(180deg,#FFF7ED,#fff);width:min(1000px,100%);max-height:97vh;overflow:auto;border-radius:26px;box-shadow:0 30px 70px #0006;padding:16px 18px 0}
+#cn-shop .hd{display:flex;align-items:center;gap:10px;margin-bottom:10px}#cn-shop .hd h2{margin:0;font-size:28px;font-weight:900;color:#9A3412;flex:1}
+#cn-shop .ib{border:0;background:#fff;border-radius:14px;min-width:52px;height:52px;font-size:22px;cursor:pointer;box-shadow:0 2px 0 #FED7AA;font-family:inherit;font-weight:800}
+#cn-shop .wal{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:linear-gradient(135deg,#065F46,#047857);color:#fff;border-radius:22px;padding:14px 18px;margin-bottom:12px}
+#cn-shop .wal .lb{font-size:15px;font-weight:800;opacity:.9}#cn-shop .wal .am{font-size:46px;font-weight:900;line-height:1}
+#cn-shop .coins{display:flex;flex-wrap:wrap;gap:4px;align-items:center;max-width:520px}
+.cn-c{display:inline-grid;place-items:center;border-radius:50%;font-weight:900;color:#3F2D00;box-shadow:inset 0 -3px 0 #0003,0 1px 2px #0004;font-size:11px}
+.cn-c.d{border-radius:6px;width:46px;height:24px;background:#BBF7D0;color:#14532D;font-size:12px}.cn-c.q{width:34px;height:34px;background:radial-gradient(circle at 35% 35%,#FEF9C3,#EAB308)}
+.cn-c.di{width:24px;height:24px;background:radial-gradient(circle at 35% 35%,#F1F5F9,#94A3B8)}.cn-c.n{width:29px;height:29px;background:radial-gradient(circle at 35% 35%,#F8FAFC,#A8A29E)}.cn-c.p{width:22px;height:22px;background:radial-gradient(circle at 35% 35%,#FED7AA,#C2410C);color:#fff}
+#cn-shop .words{font-size:14px;opacity:.95;margin-top:4px}
+#cn-shop .steps4{display:flex;gap:6px;margin:4px 0 12px;flex-wrap:wrap}#cn-shop .steps4 span{flex:1;min-width:120px;background:#fff;border:2px solid #FED7AA;border-radius:14px;padding:8px;text-align:center;font-weight:900;color:#9A3412;font-size:15px}
+#cn-shop .steps4 span.on{background:#F97316;border-color:#F97316;color:#fff}
+@media (max-width:560px){#cn-shop .bx{padding:12px 12px 0}#cn-shop .steps4 span{min-width:0;font-size:13px;padding:6px 3px}#cn-shop .wal{padding:10px 14px;gap:8px}#cn-shop .wal .am{font-size:38px}.tlq.mini .row{display:none}#cn-shop .grid{grid-template-columns:repeat(2,1fr);gap:8px}#cn-shop .it{min-height:150px}#cn-shop .tray{margin:12px -12px 0;padding:10px 12px}#cn-shop .mathl{font-size:19px}#cn-shop .hd h2{font-size:24px}}
 #cn-shop .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-#cn-shop .it{background:#fff;border:3px solid #FED7AA;border-radius:22px;padding:12px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
-#cn-shop .it.on{border-color:#F97316;box-shadow:0 8px 20px #F9731633}#cn-shop .it.out{opacity:.45}
-#cn-shop .it .em{font-size:52px;line-height:1.1}#cn-shop .it img{width:80px;height:80px;object-fit:contain}
-#cn-shop .it .nm{font-weight:900}#cn-shop .it .pr{font-weight:900;font-size:20px;color:#C2410C}
-#cn-shop .q{display:flex;gap:8px;align-items:center}#cn-shop .q button{width:46px;height:46px;border-radius:14px;border:2px solid #FDBA74;background:#fff;font-weight:900;font-size:22px;font-family:inherit;cursor:pointer}
-#cn-shop .q b{min-width:22px;font-size:20px}
-#cn-shop .bar{position:sticky;bottom:-18px;margin:14px -18px -18px;padding:14px 18px;background:#fff;border-top:2px solid #FED7AA;display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-radius:0 0 26px 26px}
-#cn-shop .go{margin-left:auto;border:0;border-radius:18px;padding:16px 26px;font-weight:900;font-size:21px;font-family:inherit;color:#fff;cursor:pointer;background:linear-gradient(135deg,#F97316,#DB2777,#7C3AED);box-shadow:0 10px 24px #DB277755;min-height:58px}
-#cn-shop .go:disabled{background:#CBD5E1;box-shadow:none;cursor:default}
+#cn-shop .it{position:relative;background:#fff;border:3px solid #FED7AA;border-radius:22px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;font-family:inherit;cursor:pointer;min-height:170px}
+#cn-shop .it.in{border-color:#F97316;box-shadow:0 8px 20px #F9731633}#cn-shop .it .n{position:absolute;top:6px;right:8px;background:#F97316;color:#fff;border-radius:999px;min-width:28px;height:28px;display:grid;place-items:center;font-weight:900}
+#cn-shop .it.lock,#cn-shop .it.out{background:#F1F5F9;border-color:#CBD5E1;cursor:default}#cn-shop .it.lock .em,#cn-shop .it.lock img,#cn-shop .it.out .em{filter:grayscale(1);opacity:.45}
+#cn-shop .it .lk{font-size:13px;font-weight:900;color:#475569;background:#E2E8F0;border-radius:10px;padding:3px 8px}
+#cn-shop .it .em{font-size:54px;line-height:1.1}#cn-shop .it img{width:80px;height:80px;object-fit:contain}#cn-shop .it .nm{font-weight:900;font-size:17px}#cn-shop .it .pr{font-weight:900;font-size:22px;color:#C2410C}
+#cn-shop .tray{position:sticky;bottom:0;margin:14px -18px 0;padding:12px 18px;background:#fff;border-top:3px solid #FED7AA;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#cn-shop .tray .ti{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex:1}#cn-shop .tray .ti button{border:2px solid #FDBA74;background:#FFF7ED;border-radius:999px;padding:6px 12px;font:inherit;font-weight:800;cursor:pointer;min-height:44px}
+#cn-shop .mathl{font-size:22px;font-weight:900;color:#0F172A}#cn-shop .mathl .mi{color:#BE123C}#cn-shop .mathl .eq{color:#047857}
+#cn-shop .go{border:0;border-radius:18px;padding:16px 26px;font-weight:900;font-size:22px;font-family:inherit;color:#fff;cursor:pointer;background:linear-gradient(135deg,#16A34A,#059669);box-shadow:0 10px 24px #05966955;min-height:60px}
+#cn-shop .go:disabled{background:#CBD5E1;box-shadow:none;cursor:default}#cn-shop .no{border:3px solid #CBD5E1;background:#fff;border-radius:18px;padding:14px 22px;font-weight:900;font-size:20px;font-family:inherit;cursor:pointer;min-height:60px}
 #cn-shop .err{background:#FFF1F2;border:2px solid #FECDD3;color:#9F1239;border-radius:14px;padding:10px 14px;font-weight:800;margin-bottom:10px}
-#cn-shop .steps{display:flex;gap:10px;margin:18px 0;flex-wrap:wrap}#cn-shop .step{flex:1;min-width:150px;text-align:center;background:#fff;border:3px solid #E5E7EB;border-radius:20px;padding:16px 10px;color:#94A3B8;font-weight:900}
-#cn-shop .step .e{font-size:44px;display:block;filter:grayscale(1);opacity:.5}#cn-shop .step.on{border-color:#F97316;color:#9A3412;box-shadow:0 8px 22px #F9731633}#cn-shop .step.on .e{filter:none;opacity:1}
-#cn-shop .step.done{border-color:#10B981;color:#065F46}#cn-shop .step.done .e{filter:none;opacity:1}
-#cn-shop .list{background:#fff;border-radius:18px;padding:12px 16px;border:2px solid #FED7AA}#cn-shop .list div{display:flex;justify-content:space-between;padding:4px 0;font-weight:700}
-#cn-shop .sm{color:#64748B;font-size:14px}#cn-shop .lnk{border:2px solid #FECDD3;background:#fff;color:#BE123C;border-radius:14px;padding:10px 16px;font-weight:800;font-size:16px;font-family:inherit;cursor:pointer;min-height:48px}`;
+#cn-shop .coach{display:flex;gap:10px;align-items:flex-start;background:#EFF6FF;border:2px solid #BFDBFE;border-radius:16px;padding:10px 14px;margin:12px 0;color:#1E3A8A;font-weight:700}#cn-shop .coach b.h{display:block;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#2563EB}
+#cn-shop .big{text-align:center;padding:10px 0}#cn-shop .big .e{font-size:64px}#cn-shop .big h3{font-size:30px;margin:6px 0;color:#0F172A}
+#cn-shop .yn{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:16px 0 18px}
+#cn-shop .trk{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}#cn-shop .trk div{flex:1;min-width:140px;text-align:center;background:#fff;border:3px solid #E5E7EB;border-radius:20px;padding:14px 8px;color:#94A3B8;font-weight:900}
+#cn-shop .trk .e{font-size:42px;display:block;filter:grayscale(1);opacity:.5}#cn-shop .trk .on{border-color:#F97316;color:#9A3412;box-shadow:0 8px 22px #F9731633}#cn-shop .trk .on .e,#cn-shop .trk .ok .e{filter:none;opacity:1}#cn-shop .trk .ok{border-color:#10B981;color:#065F46}
+#cn-shop .list{background:#fff;border-radius:18px;padding:12px 16px;border:2px solid #FED7AA}#cn-shop .list div{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-weight:700}
+#cn-shop .sm{color:#64748B;font-size:14px}#cn-shop .lnk{border:2px solid #FECDD3;background:#fff;color:#BE123C;border-radius:14px;padding:10px 16px;font-weight:800;font-size:16px;font-family:inherit;cursor:pointer;min-height:48px}
+#cn-shop .story .p{color:#047857}#cn-shop .story .m{color:#BE123C}
+.tlq{background:linear-gradient(135deg,#FEF9C3,#FDE68A);border:3px solid #EAB308;border-radius:20px;padding:12px 16px;margin:10px 0;color:#713F12}
+.tlq .h{font-weight:900;font-size:19px}.tlq .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0;font-weight:900}
+.tlq .bill{background:#BBF7D0;color:#14532D;border-radius:8px;padding:8px 12px;font-size:20px;box-shadow:inset 0 -3px 0 #0002}
+.tlq .split{display:flex;gap:3px}.tlq .split i{font-style:normal;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:#E5E7EB;color:#94A3B8;border:2px dashed #CBD5E1}
+.tlq .split i.on{background:radial-gradient(circle at 35% 35%,#FEF9C3,#EAB308);color:#3F2D00;border:2px solid #A16207}
+.cn-open #tlcash{display:none!important}
+.tlq p{margin:6px 0 0;font-weight:700;font-size:15px}.tlq.mini{padding:6px 12px;margin:0 0 10px}.tlq.mini p{display:none}.tlq.mini .h{font-size:16px}.tlq.mini .row{margin:4px 0 0}.tlq.mini .split i{width:34px;height:34px;font-size:10px}`;
   document.head.appendChild(ocss);
   const $$=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const money=n=>(n<0?'−':'')+'$'+Math.abs(Number(n)||0).toFixed(2);
+  const cents=n=>Math.round((Number(n)||0)*100);
+  const amt=c=>c<100?c+'¢':money(c/100);
   function inClass(){ try{ return !!(window.TM_CLASS&&TM_CLASS()); }catch(e){ return false; } }
   function call(fn,...a){ return new Promise((ok,no)=>google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn](...a)); }
-  function oLoad(){ const t=tok(); if(!t) return; call('cnOrderMenu',t).then(r=>{ O.menu=r.menu; O.cash=r.cash; O.order=(r.open||[])[0]||null; O.recent=r.recent||[]; noteStatus(); oDraw(); }).catch(e=>{ O.err=(e&&e.message)||'Could not load the menu.'; oDraw(); }); }
-  function noteStatus(){ const s=O.order&&O.order.status; if(s==='ready'&&O.lastStatus!=='ready'){ try{ SND.right(3); }catch(e){} } O.lastStatus=s||null; }
-  function oOpen(){ if(inClass()) return; O.open=true; O.err=''; O.cart={}; O.cid=null; oDraw(); oLoad(); clearInterval(O.poll); O.poll=setInterval(()=>{ if(O.open) oLoad(); },15000); }
-  function oClose(){ O.open=false; clearInterval(O.poll); const d=document.getElementById('cn-shop'); if(d) d.remove(); K.at=0; try{ if(A.view==='hub') render(); }catch(e){} }
-  function lines(){ return (O.menu||[]).filter(m=>O.cart[m.id]>0).map(m=>({m,q:O.cart[m.id]})); }
-  function total(){ return lines().reduce((s,l)=>s+Math.round(l.m.price*100)*l.q,0)/100; }
-  function stepsHTML(o){ const s=o.status, st=[['pending','🧾','Order sent'],['ready','🔔','Ready! Come get it'],['picked','😋','Picked up']], idx=s==='picked'?2:s==='ready'?1:0;
-    return `<div class="steps">${st.map((x,i)=>`<div class="step ${i<idx?'done':i===idx?'on':''}"><span class="e">${x[1]}</span>${i<idx?'✓ ':''}${x[2]}</div>`).join('')}</div>`; }
+  function say(t){ try{ const u=new SpeechSynthesisUtterance(String(t).replace(/<[^>]+>/g,' ').replace(/\$(\d+)\.(\d\d)/g,(m,d,c)=>d+' dollars and '+c+' cents').replace(/(\d+)¢/g,'$1 cents')); u.rate=.95; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} }
+  /* money as real coins: dollars, quarters, dimes, nickels, pennies */
+  function coinsHTML(c,max){ c=Math.max(0,Math.round(c)); const parts=[[100,'d','$1'],[25,'q','25¢'],[10,'di','10¢'],[5,'n','5¢'],[1,'p','1¢']]; let h='', n=0; max=max||14;
+    for(const [v,k,l] of parts){ let q=Math.floor(c/v); c-=q*v; if(k==='d'&&q>max-2){ h+=`<span class="cn-c d">$1</span><b style="margin:0 4px">× ${q}</b>`; n+=2; continue; } while(q-->0&&n<max){ h+=`<span class="cn-c ${k}" title="${l}">${l}</span>`; n++; } }
+    return h||'<span class="sm" style="color:#fff">no coins yet</span>'; }
+  function coinWords(c){ c=Math.max(0,Math.round(c)); const d=Math.floor(c/100), q=Math.floor((c%100)/25), r=c%25, w=[];
+    if(d) w.push(d+(d===1?' dollar':' dollars')); if(q) w.push(q+(q===1?' quarter':' quarters')); if(r) w.push(r+(r===1?' cent':' cents')); return w.join(' and ')||'nothing yet'; }
+  /* the Pathfinder quarter rule, as a picture (also used by the Tashbar Store and the home card) */
+  window.tlQuarterHTML=function(rate,mini){ if(!(rate<1)) return '';
+    return `<div class="tlq ${mini?'mini':''}" role="note"><div class="h">🧭 Finish your Pathfinder to get ALL your money!</div>
+      <div class="row"><span class="bill">$1.00</span><span>you earn</span><span>➜</span><span class="split"><i class="on">25¢</i><i>25¢</i><i>25¢</i><i>25¢</i></span><span>➜</span><span>you get only <span style="font-size:22px">25¢</span></span></div>
+      <p>A <b>quarter</b> is a coin worth <b>25 cents</b>. <b>4 quarters make 1 dollar.</b> Until you finish your Pathfinder, you get only 1 quarter (25¢) for every dollar you earn. Finish it, and you get all 4 quarters: the whole dollar!</p></div>`; };
+  const TIPS=[
+    ['Need or want?','Water is a need. A treat is a want. Both are OK. Just think before you buy.'],
+    ['Save some!','Money you do not spend today is still yours tomorrow. You can save up for something bigger.'],
+    ['Compare','Two snacks you like? The cheaper one leaves you more money.'],
+    ['Look at "Left after"','Every time you buy, your money goes down. Check how much will be left.'],
+    ['Tzedakah','Some money can help others. You can give in the Tashbar Store.'],
+    ['Locked 🔒','Locked food costs more than you have. Save up, and it opens by itself!']];
+  function coach(t){ const x=t||TIPS[O.tip%TIPS.length]; return `<div class="coach"><span style="font-size:30px">🦉</span><div><b class="h">Money coach · ${$$(x[0])}</b>${$$(x[1])}</div></div>`; }
+  function trayLines(){ return (O.menu||[]).filter(m=>O.tray[m.id]>0).map(m=>({m,q:O.tray[m.id]})); }
+  function trayCents(){ return trayLines().reduce((s,l)=>s+cents(l.m.price)*l.q,0); }
+  function oLoad(){ const t=tok(); if(!t) return; call('cnOrderMenu',t).then(r=>{ O.menu=r.menu; O.cash=r.cash; O.pf=r.pf==null?1:r.pf; O.story=r.story||[]; O.order=(r.open||[])[0]||null; O.recent=r.recent||[]; noteStatus(); oDraw(); }).catch(e=>{ O.err=(e&&e.message)||'Could not load the menu.'; oDraw(); }); }
+  function noteStatus(){ const o=O.order, s=o?(o.seen?'seen':o.status):null; if(s&&s!==O.lastStatus&&O.lastStatus){ try{ SND.right(3); }catch(e){} } if(!o&&O.lastStatus){ const r=O.recent[0]; if(r&&r.status==='picked') O.err='😋 The canteen gave you your food. Enjoy! Say a bracha!'; else if(r&&r.status==='cancelled') O.err='↩️ The canteen could not make it. All your money is back.'; O.step='shop'; O.last=null; } O.lastStatus=s; }
+  function oOpen(){ if(inClass()) return; O.open=true; document.body.classList.add('cn-open'); O.err=''; O.tray={}; O.cid=null; O.step='shop'; O.tip=Math.floor(Math.random()*TIPS.length); oDraw(); oLoad(); clearInterval(O.poll); O.poll=setInterval(()=>{ if(O.open) oLoad(); },15000); }
+  function oClose(){ O.open=false; document.body.classList.remove('cn-open'); clearInterval(O.poll); try{ speechSynthesis.cancel(); }catch(e){} const d=document.getElementById('cn-shop'); if(d) d.remove(); K.at=0; try{ if(A.view==='hub') render(); }catch(e){} }
+  function wallet(){ const c=cents(O.cash);
+    return `<div class="wal"><div><div class="lb">🥨 Your canteen money</div><div class="am">${O.cash==null?'…':money(O.cash)}</div></div><div><div class="coins">${O.cash==null?'':coinsHTML(c)}</div><div class="words">${O.cash==null?'':'That is '+coinWords(c)+'.'}</div></div></div>`; }
+  function steps(n){ return `<div class="steps4">${['1 Pick food 👆','2 Pay 💵','3 Get your food 😋'].map((s,i)=>`<span class="${i===n?'on':''}">${s}</span>`).join('')}</div>`; }
+  function vShop(){ const have=cents(O.cash), used=trayCents(), left=have-used, L=trayLines();
+    let h=steps(0)+`<div class="grid">${O.menu.map(m=>{ const p=cents(m.price), q=O.tray[m.id]||0, lock=!m.out&&p>left, cls=m.out?'out':q?'in':lock?'lock':'';
+      return `<button class="it ${cls}" data-cno="add" data-id="${$$(m.id)}" ${m.out||lock?'aria-disabled="true"':''} aria-label="${$$(m.name)}, ${amt(p)}${m.out?', sold out':lock?', locked':''}">${q?`<span class="n">${q}</span>`:''}${m.pic?`<img src="${$$(m.pic)}" alt="">`:`<span class="em">${$$(m.emoji||'🍪')}</span>`}<span class="nm">${$$(m.name)}</span><span class="pr">${amt(p)}</span>${m.out?'<span class="lk">Sold out</span>':lock&&q?'<span class="lk">No money for one more</span>':lock?`<span class="lk">🔒 Need ${amt(p-left)} more</span>`:''}</button>`; }).join('')}</div>`;
+    h+=coach(O.menu.some(m=>!m.out&&cents(m.price)>left)&&!L.length?TIPS[5]:null)+window.tlQuarterHTML(O.pf);
+    h+=`<div class="tray"><div class="ti">${L.length?L.map(l=>`<button data-cno="sub" data-id="${$$(l.m.id)}" aria-label="Take out one ${$$(l.m.name)}">${$$(l.m.emoji||'🍪')} ${$$(l.m.name)}${l.q>1?' ×'+l.q:''} ✕</button>`).join(''):'<span class="sm" style="font-size:16px;font-weight:800">👆 Tap the food you want.</span>'}
+      ${L.length?`<div class="mathl" style="width:100%">${money(have/100)} <span class="mi">− ${money(used/100)}</span> <span class="eq">= ${money(left/100)} left</span></div>`:''}</div>
+      <button class="go" data-cno="check" ${!L.length||O.busy?'disabled':''}>Next ➜</button></div>`;
+    return h; }
+  function vCheck(){ const have=cents(O.cash), used=trayCents(), L=trayLines();
+    return steps(1)+`<div class="big"><div class="e">${L.map(l=>$$(l.m.emoji||'🍪')).join(' ')}</div><h3>Pay ${money(used/100)}?</h3>
+      <div class="list" style="max-width:460px;margin:0 auto;text-align:left">${L.map(l=>`<div><span>${$$(l.m.emoji||'🍪')} ${$$(l.m.name)}${l.q>1?' ×'+l.q:''}</span><span>${money(cents(l.m.price)*l.q/100)}</span></div>`).join('')}
+      <div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>You have</span><span>${money(have/100)}</span></div><div><span>You pay</span><span style="color:#BE123C">− ${money(used/100)}</span></div><div style="font-size:20px"><span>Left after</span><span style="color:#047857">${money((have-used)/100)}</span></div></div>
+      <div class="yn"><button class="go" data-cno="buy" ${O.busy?'disabled':''}>${O.busy?'Paying…':'✅ Yes, buy it!'}</button><button class="no" data-cno="back">↩ No, go back</button></div>
+      <p class="sm">The money comes off your canteen money right now. Then go to the canteen and get your food.</p></div>`+coach(TIPS[3]); }
+  function vTrack(){ const o=O.order, done=o.status==='picked', seen=o.seen||o.status==='ready', st=[['🛒','I paid'],['👀','The canteen is making it'],['😋','I got my food']], idx=done?3:seen?1:0;
+    let h=steps(2);
+    if(O.last) h+=`<div class="big"><div class="e">✅</div><h3>You paid ${money(O.last.total)}!</h3><div class="mathl">${money(O.last.before)} <span class="mi">− ${money(O.last.total)}</span> <span class="eq">= ${money(O.last.after)}</span></div><p style="font-weight:800">Now you have ${money(O.last.after)} (${coinWords(cents(O.last.after))}).</p></div>`;
+    h+=`<div class="trk">${st.map((x,i)=>`<div class="${i<idx||(i===0)?'ok':i===idx?'on':''}"><span class="e">${x[0]}</span>${i<idx||i===0?'✓ ':''}${x[1]}</div>`).join('')}</div>`;
+    h+=`<p style="font-size:20px;font-weight:900;text-align:center;color:#065F46">${seen?'⏳ The canteen saw your order. It is still being made.':'🚶 Go to the canteen and say your name. They will give you your food.'}</p>
+      <div class="list">${o.items.map(i=>`<div><span>${$$(i.emoji||'🍪')} ${$$(i.name)}${i.qty>1?' ×'+i.qty:''}</span><span>${money(cents(i.price)*i.qty/100)}</span></div>`).join('')}<div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>Paid ✓</span><span>${money(o.est)}</span></div></div>`;
+    if(o.status==='pending'&&!o.seen) h+=`<p style="text-align:center;margin-top:12px"><button class="lnk" data-cno="cancel">Changed my mind: cancel and get my money back</button></p>`;
+    return h+coach(['Good habit','After you buy, check your money. Do you know how much you have left?']); }
+  function vStory(){ if(!O.story.length) return ''; return `<details class="story" ${O.showStory?'open':''} style="margin:12px 0"><summary style="font-weight:900;cursor:pointer;min-height:44px;display:flex;align-items:center">📒 My money story</summary><div class="list">${O.story.map(r=>`<div><span>${$$(r.note||r.kind)}</span><b class="${r.cents>=0?'p':'m'}">${r.cents>=0?'+':'−'}${amt(Math.abs(r.cents))}</b></div>`).join('')}</div><p class="sm">Money comes in when your teachers sign you off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Tashbar Store. It goes out when you buy.</p></details>`; }
   function oDraw(){
-    if(!O.open) return; let d=document.getElementById('cn-shop'); if(!d){ d=document.createElement('div'); d.id='cn-shop'; d.setAttribute('role','dialog'); d.setAttribute('aria-label','Canteen order'); document.body.appendChild(d); }
-    let h=`<div class="bx"><div class="hd"><span style="font-size:40px">🍕</span><h2>${O.order?'Your order':'Canteen menu'}</h2><span class="cash">🥨 ${O.cash==null?'…':money(O.cash)}</span><button class="x" data-cno="close" aria-label="Close">✕</button></div>`;
-    if(O.err) h+=`<div class="err">${$$(O.err)}</div>`;
-    if(!O.menu&&!O.order) h+='<p class="sm">Loading the menu… 🍪</p>';
-    else if(O.order){ const o=O.order;
-      h+=stepsHTML(o)+`<div class="list">${o.items.map(i=>`<div><span>${$$(i.emoji||'🍪')} ${$$(i.name)}${i.qty>1?' x'+i.qty:''}</span><span>${money(i.price*i.qty)}</span></div>`).join('')}<div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>About</span><span>${money(o.est)}</span></div></div>
-      <p class="sm" style="margin-top:12px">${o.status==='ready'?'<b style="color:#065F46;font-size:18px">🔔 Your order is ready! Go to the canteen and say your name.</b>':'The canteen is getting it ready. You pay when you pick it up, from your Canteen Cash.'}</p>
-      ${o.status==='pending'?'<button class="lnk" data-cno="cancel">Cancel my order</button>':''}`; }
+    if(!O.open) return; let d=document.getElementById('cn-shop'); if(!d){ d=document.createElement('div'); d.id='cn-shop'; d.setAttribute('role','dialog'); d.setAttribute('aria-label','Canteen'); document.body.appendChild(d); }
+    let h=`<div class="bx"><div class="hd"><span style="font-size:40px">🍕</span><h2>Canteen</h2><button class="ib" data-cno="say" aria-label="Read it to me">🔊</button><button class="ib" data-cno="close" aria-label="Close">✕</button></div>`;
+    if(O.err) h+=`<div class="err" role="alert">${$$(O.err)}</div>`;
+    h+=wallet()+window.tlQuarterHTML(O.pf,true);
+    if(!O.menu&&!O.order) h+='<p class="sm">Opening the canteen… 🍪</p>';
+    else if(O.cash==null&&!O.order) h+='<p style="font-weight:800">You don’t have canteen money yet. Ask the office.</p>';
+    else if(O.order) h+=vTrack();
     else if(!O.menu.length) h+='<p style="font-weight:800">The canteen menu is empty right now. Check again soon! 🍪</p>';
-    else { const L=lines(), t=total(), left=O.cash==null?null:Math.round((O.cash-t)*100)/100;
-      h+=`<div class="grid">${O.menu.map(m=>{ const q=O.cart[m.id]||0; return `<div class="it ${q?'on':''} ${m.out?'out':''}">${m.pic?`<img src="${$$(m.pic)}" alt="">`:`<span class="em">${$$(m.emoji||'🍪')}</span>`}<span class="nm">${$$(m.name)}</span><span class="pr">${money(m.price)}</span>${m.out?'<b style="color:#BE123C">Sold out</b>':`<div class="q"><button data-cno="sub" data-id="${$$(m.id)}" aria-label="One less">−</button><b>${q}</b><button data-cno="add" data-id="${$$(m.id)}" aria-label="One more">+</button></div>`}</div>`; }).join('')}</div>
-      <div class="bar"><div><div style="font-weight:900;font-size:20px">Total ${money(t)}</div><div class="sm">${O.cash==null?'You don’t have a Canteen Cash account yet. Ask the office.':left<0?'<b style="color:#BE123C">Not enough Canteen Cash. Take something out.</b>':'You pay when you pick it up. Left after: '+money(left)}</div></div>
-      <button class="go" data-cno="order" ${(!L.length||O.busy||O.cash==null||left<0)?'disabled':''}>${O.busy?'Sending…':'Order it! 🚀'}</button></div>`;
-      if(O.recent.length) h+=`<p class="sm" style="margin-top:14px">Last orders: ${O.recent.map(o=>`${o.status==='picked'?'✅':'✖️'} ${o.items.map(i=>$$(i.name)).join(', ')}`).join(' · ')}</p>`; }
-    d.innerHTML=h+'</div>';
+    else if(O.step==='check'&&trayLines().length) h+=vCheck();
+    else { O.step='shop'; h+=vShop(); }
+    h+=vStory();
+    d.innerHTML=h+'<div style="height:16px"></div></div>';
   }
+  function sayNow(){ const o=O.order; let t='You have '+coinWords(cents(O.cash))+' of canteen money. ';
+    if(O.pf<1) t+='Until you finish your Pathfinder, you get only one quarter, 25 cents, for every dollar you earn. ';
+    if(o) t+=o.status==='picked'?'You got your food.':o.seen?'The canteen saw your order. It is still being made.':'You paid. Go to the canteen and say your name.';
+    else if(O.step==='check') t+='Do you want to pay '+coinWords(trayCents())+'? Tap yes, buy it. Or tap no, go back.';
+    else t+='Tap the food you want. Food with a lock costs more than you have.';
+    say(t); }
   document.addEventListener('click',e=>{ const b=e.target.closest('[data-cno]'); if(!b) return; const a=b.dataset.cno;
-    if(a==='open') return oOpen(); if(a==='close') return oClose();
-    if(a==='add'||a==='sub'){ const m=(O.menu||[]).find(x=>x.id===b.dataset.id); if(!m) return; let q=(O.cart[m.id]||0)+(a==='add'?1:-1); q=Math.max(0,Math.min(10,q)); if(m.left!=null) q=Math.min(q,m.left); O.cart[m.id]=q; O.cid=null; O.err=''; try{ SND.tap(); }catch(x){} return oDraw(); }
-    if(a==='order'){ if(O.busy) return; O.busy=true; O.cid=O.cid||(Date.now().toString(36)+Math.random().toString(36).slice(2,8)); oDraw();
-      return call('cnOrderPlace',tok(),lines().map(l=>({id:l.m.id,qty:l.q})),O.cid).then(r=>{ O.busy=false;
-        if(!r.ok&&r.short){ O.err=`Not enough Canteen Cash: this costs ${money(r.total)} and you have ${money(r.cash)}.`; return oDraw(); }
-        O.order=r.order; O.cart={}; O.err=''; noteStatus(); try{ SND.right(5); }catch(x){} oDraw(); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not send the order.'; oDraw(); }); }
-    if(a==='cancel'&&O.order){ if(O.busy) return; O.busy=true; return call('cnOrderCancel',tok(),O.order.id).then(()=>{ O.busy=false; O.order=null; O.err=''; oLoad(); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not cancel.'; oLoad(); }); }
+    if(a==='open') return oOpen(); if(a==='close') return oClose(); if(a==='say') return sayNow();
+    if(a==='add'||a==='sub'){ const m=(O.menu||[]).find(x=>x.id===b.dataset.id); if(!m) return;
+      if(a==='add'){ if(m.out) return; if(cents(m.price)>cents(O.cash)-trayCents()){ O.err='🔒 '+m.name+' costs '+amt(cents(m.price))+'. You need '+amt(cents(m.price)-(cents(O.cash)-trayCents()))+' more.'; try{ SND.tap(); }catch(x){} return oDraw(); } }
+      let q=(O.tray[m.id]||0)+(a==='add'?1:-1); q=Math.max(0,Math.min(10,q)); if(m.left!=null) q=Math.min(q,m.left); O.tray[m.id]=q; O.cid=null; O.err=''; try{ SND.tap(); }catch(x){} return oDraw(); }
+    if(a==='check'){ O.step='check'; O.err=''; return oDraw(); } if(a==='back'){ O.step='shop'; return oDraw(); }
+    if(a==='buy'){ if(O.busy) return; O.busy=true; O.cid=O.cid||(Date.now().toString(36)+Math.random().toString(36).slice(2,8)); const before=O.cash; oDraw();
+      return call('cnOrderPlace',tok(),trayLines().map(l=>({id:l.m.id,qty:l.q})),O.cid).then(r=>{ O.busy=false;
+        if(!r.ok&&r.short){ O.err=`Not enough money: this costs ${money(r.total)} and you have ${money(r.cash)}.`; O.cash=r.cash; O.step='shop'; return oDraw(); }
+        O.last={before:r.before!=null?r.before:before,total:r.order.est,after:r.cash}; O.cash=r.cash; O.order=r.order; O.tray={}; O.err=''; O.step='paid'; noteStatus(); try{ SND.right(5); }catch(x){} oDraw(); setTimeout(oLoad,800); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not buy. Try again.'; oDraw(); }); }
+    if(a==='cancel'&&O.order){ if(O.busy) return; O.busy=true; return call('cnOrderCancel',tok(),O.order.id).then(r=>{ O.busy=false; O.order=null; O.last=null; O.step='shop'; O.err=''; if(r&&r.back) O.err='↩️ Cancelled. '+money(r.back)+' is back in your canteen money.'; oLoad(); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not cancel.'; oLoad(); }); }
   });
   window.cnOrderButton=function(i){ if(!i||i.cash==null||inClass()) return '';
     const o=i.order; let h='';
-    if(o) h+=`<div class="cn-st ${o.status==='ready'?'ready':''}">${o.status==='ready'?'🔔 Your order is ready! Go to the canteen.':'🧾 Your order is sent. The canteen is getting it ready.'}<button class="cn-ord" data-cno="open" style="padding:8px 14px;font-size:15px;min-height:44px">See order</button></div>`;
-    else if(i.menuN) h+=`<button class="cn-ord" data-cno="open">🍕 Order food</button>`;
+    if(o) h+=`<div class="cn-st ${o.seen?'ready':''}">${o.status==='picked'?'😋 You got your food.':o.seen?'⏳ The canteen is making your food.':'🛒 You paid. Go to the canteen and get your food.'}<button class="cn-ord" data-cno="open" style="padding:8px 14px;font-size:15px;min-height:44px">See it</button></div>`;
+    else if(i.menuN) h+=`<button class="cn-ord" data-cno="open">🍕 Buy food</button>`;
     return h; };
   function cards(){
     try{
@@ -164,7 +239,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
       if(Date.now()-K.at>((K.info&&K.info.order)?20000:60000)) fetchInfo();
       const i=K.info, app=document.getElementById('app'); if(!i||!app||app.querySelector('.cn-card')) return;
       let h='';
-      if(i.cash!==null&&i.cash!==undefined) h+=`<div class="cn-card" aria-label="Canteen Cash"><span class="cn-i">🥨</span><div><b>Canteen Cash</b><small>For the school canteen. Your teachers add it at sign-off: on time, did your work, middos. This is not your Tashbar Bank money.</small></div><span class="cn-a">${i.cash<0?'−':''}$${Math.abs(i.cash).toFixed(2)}</span>${window.cnOrderButton?cnOrderButton(i):''}</div>`;
+      if(i.cash!==null&&i.cash!==undefined) h+=`<div class="cn-card" aria-label="Canteen Cash"><span class="cn-i">🥨</span><div><b>Canteen money</b><small>Spend it on food at the school canteen. It comes from your teachers at sign-off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Tashbar Store.</small></div><span class="cn-a">${i.cash<0?'−':''}$${Math.abs(i.cash).toFixed(2)}</span>${window.cnOrderButton?cnOrderButton(i):''}${i.pf<1&&window.tlQuarterHTML?'<div style="width:100%">'+window.tlQuarterHTML(i.pf,true)+'</div>':''}</div>`;
       if(i.crew&&i.crew.assigned){ const st=A.st;
         h+=`<div class="cn-card cn-crew"><span class="cn-i">🧑‍🍳</span><div><b>Canteen Crew course</b><small>${i.crew.isCrew?'You are Canteen Crew! You can be cashier at the canteen.':'Finish all 6 lessons to become Canteen Crew.'}</small></div><span class="cn-a" style="font-size:22px">${i.crew.all.filter(id=>(st.skills[id]&&st.skills[id].m)||i.crew.done.indexOf(id)>=0).length} / 6</span><div class="cn-ls">${i.crew.all.map((id,k)=>{ const d=(st.skills[id]&&st.skills[id].m)||i.crew.done.indexOf(id)>=0; return `<button class="${d?'done':''}" data-act="start" data-id="${id}" data-c="VOC">${d?'✓':k+1}. ${CREW[id].name}</button>`; }).join('')}</div></div>`; }
       if(!h) return;
