@@ -12,7 +12,16 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { Firestore } = require('@google-cloud/firestore');
 const vm = require('vm');
-let DB = null, FS = {};
+let DB = null, FS = {}, LIVE = null;
+/* Is Firebase answering the app's calls? Read every 10 s. */
+async function liveState() {
+  if (LIVE && Date.now() - LIVE.at < 10000) return LIVE;
+  DB = DB || new Firestore(); const d = await DB.collection('sys').doc('live').get(); const on = d.exists && d.data().on;
+  const { FsServer } = require('./app/server/fsstore.js');
+  if (on && (!LIVE || !LIVE.srv || LIVE.stamp !== d.data().stamp)) LIVE = { on, at: Date.now(), stamp: d.data().stamp, srv: new FsServer(DB, { ns: 'LIVE', preload: true }) };
+  else LIVE = Object.assign(LIVE || {}, { on, at: Date.now() });
+  return LIVE;
+}
 /* TEST LANE: the app's own server code running here with its data in Firestore, in made-up books named SELFTEST_<number>.
    It cannot touch real data: the book name is forced, and real calls never take this path. */
 async function testLane(book, fn, args) {
@@ -139,6 +148,24 @@ async function admin(action, key, a) {
       if (x === y) same++; }
     return { ok: true, result: { screens: Object.keys(screens).length, same, detail: screens, firebaseMs: B.ms } };
   }
+  if (action === 'timeStaff') {
+    /* run each staff screen on the staging copy with a temporary internal head session; report time and reruns only */
+    const d = await job.get(); const st = d.data(); const live = await appsScriptResult('apiExport', [KEY, 'props']);
+    const props = Object.assign({}, live, { SCHOOL_STAGING_DATABASE_ID: 'IMPORT_' + st.stamp + '__main', CANTEEN_SHEET_ID: 'IMPORT_' + st.stamp + '__canteen' });
+    const stg = new FsServer(DB, { ns: 'IMPORT_' + st.stamp, props, preload: true }); const out = {}; const t0 = Date.now();
+    const names = a.only ? [a.only] : ['sgLoad','sgDesk','sgToday','sgWeek','sgMoney','sgLevels','sgKodeshGrid','sgReports','sgNotes','sgNow','sgGroups','acMyScope','stStaffOrders','tmList','tmCatalog','crCatalog','sgParshaInfo','sgPickCatalog','sgWeekNotes','sgClassSky','sbLoad','acAdminLoad'];
+    for (const fn of names) { if (Date.now() - t0 > 240000) { out[fn] = 'skipped (time)'; continue; } const r = await stg.run('apiTimeOne_', [fn]); out[fn] = r.error ? 'error ' + String(r.error).slice(0, 60) : (r.ms + ' ms, runs ' + r.runs + ', loads ' + r.loads + ', inner ' + r.result + ' ms'); }
+    return { ok: true, result: out };
+  }
+  if (action === 'goLive') {
+    /* From now on the app's calls are answered by Firebase from the given import (which becomes the live database). */
+    const stamp = String(a.stamp || ''); const d = await DB.collection('sys').doc('import_' + stamp).get(); if (!d.exists || !d.data().finished) return { ok: false, error: 'No finished import with that number.' };
+    const live = await appsScriptResult('apiExport', [KEY, 'props']);
+    const props = Object.assign({}, live, { SCHOOL_STAGING_DATABASE_ID: 'IMPORT_' + stamp + '__main', CANTEEN_SHEET_ID: 'IMPORT_' + stamp + '__canteen' });
+    await DB.collection('sys').doc('props_LIVE').set({ map: props }); await DB.collection('sys').doc('live').set({ on: true, stamp, since: new Date().toISOString() }); LIVE = null;
+    return { ok: true, result: { live: true, stamp } };
+  }
+  if (action === 'goOff') { await DB.collection('sys').doc('live').set({ on: false, since: new Date().toISOString() }); LIVE = null; return { ok: true, result: { live: false } }; }
   return { ok: false, error: 'Unknown admin action.' };
 }
 
@@ -165,6 +192,10 @@ exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2
     const args = Array.isArray(body.args) ? body.args.slice(0, 8) : [];
     if (body.fbtest) return res.status(200).json(await testLane(String(body.fbtest), fn, args));
     if (Object.prototype.hasOwnProperty.call(MOVED, fn)) return res.status(200).json({ ok: true, result: await MOVED[fn].apply(null, args) });
+    const L = await liveState();
+    if (L.on) { const r = await L.srv.run(fn, args);
+      if (r.error && /not available on this server yet|is not defined|NEED /.test(r.error)) { /* Drive, Docs, email...: still answered by Apps Script */ return res.status(200).type('application/json').send(await appsScript(fn, args)); }
+      return res.status(200).json(r.error ? { ok: false, error: r.error } : { ok: true, result: r.result === undefined ? null : r.result }); }
     res.status(200).type('application/json').send(await appsScript(fn, args));
   } catch (e) { res.status(200).json({ ok: false, error: String((e && e.message) || e).slice(0, 300) }); }
 });

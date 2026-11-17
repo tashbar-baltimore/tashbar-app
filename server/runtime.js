@@ -26,6 +26,7 @@ function makeBook(store, id) {
   if (store.lazy && !store.books[id]) need(store, 'book', id);
   const book = store.books[id] || (store.books[id] = { tabs: {}, order: [] });
   const sheet = name => {
+    (store.touched || (store.touched = {}))[id + '|' + name] = 1;   /* only tabs the code really opened count for clashes */
     if (store.lazy && !book.tabs[name].rows) need(store, 'tab', id + '|' + name);
     const tab = book.tabs[name]; const text = tab.text || (tab.text = {});
     const cow = () => { if (tab.shared) { tab.rows = tab.rows.map(r => r.slice()); tab.shared = false; } };   /* copy on first write: the shared copy is never changed */
@@ -64,12 +65,17 @@ function makeBook(store, id) {
   });
 }
 
+const FMT = {};   /* building a date formatter is slow; build each one once */
+function fmtr(tz, kind) { const k = tz + '|' + kind; return FMT[k] || (FMT[k] = kind === 'parts'
+  ? new Intl.DateTimeFormat('en-US', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, weekday: 'short' })
+  : new Intl.DateTimeFormat('en-US', { timeZone: tz, [kind.split(':')[0]]: kind.split(':')[1] })); }
 function formatDate(d, tz, f) {      /* the Java date patterns this code uses */
-  d = d instanceof Date ? d : new Date(d);
-  const p = {}; new Intl.DateTimeFormat('en-US', { timeZone: tz || 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, weekday: 'short' }).formatToParts(d).forEach(x => { p[x.type] = x.value; });
-  const long = t => new Intl.DateTimeFormat('en-US', { timeZone: tz || 'America/New_York', [t]: 'long' }).format(d), short = t => new Intl.DateTimeFormat('en-US', { timeZone: tz || 'America/New_York', [t]: 'short' }).format(d);
+  d = d instanceof Date ? d : new Date(d); tz = tz || 'America/New_York';
+  const p = {}; fmtr(tz, 'parts').formatToParts(d).forEach(x => { p[x.type] = x.value; });
+  const long = t => fmtr(tz, t + ':long').format(d), short = t => fmtr(tz, t + ':short').format(d);
   const H = p.hour === '24' ? '00' : p.hour, h12 = ((+H + 11) % 12) + 1;
-  return String(f).replace(/'([^']*)'|yyyy|yy|MMMM|MMM|MM|M|dd|d|EEEE|EEE|E|HH|H|hh|h|mm|ss|a|u/g, (t, lit) => lit !== undefined ? lit : ({ yyyy: p.year, yy: p.year.slice(2), MMMM: long('month'), MMM: short('month'), MM: p.month, M: String(+p.month), dd: p.day, d: String(+p.day), EEEE: long('weekday'), EEE: p.weekday, E: p.weekday, HH: H, H: String(+H), hh: ('0' + h12).slice(-2), h: String(h12), mm: p.minute, ss: p.second, a: +H < 12 ? 'AM' : 'PM', u: String(((new Date(d.toLocaleString('en-US', { timeZone: tz || 'America/New_York' })).getDay() + 6) % 7) + 1) }[t]));
+  const dow = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[p.weekday];
+  return String(f).replace(/'([^']*)'|yyyy|yy|MMMM|MMM|MM|M|dd|d|EEEE|EEE|E|HH|H|hh|h|mm|ss|a|u/g, (t, lit) => lit !== undefined ? lit : ({ yyyy: p.year, yy: p.year.slice(2), MMMM: long('month'), MMM: short('month'), MM: p.month, M: String(+p.month), dd: p.day, d: String(+p.day), EEEE: long('weekday'), EEE: p.weekday, E: p.weekday, HH: H, H: String(+H), hh: ('0' + h12).slice(-2), h: String(h12), mm: p.minute, ss: p.second, a: +H < 12 ? 'AM' : 'PM', u: String(dow) }[t]));
 }
 
 let COMPILED = null;
@@ -100,6 +106,7 @@ function createRuntime(opts) {
     Logger: { log() {} }, DriveApp: { getFileById: nope('Google Drive files'), getFolderById: nope('Google Drive folders') }, Drive: {}, DocumentApp: { openById: nope('Google Docs') }, MailApp: { sendEmail: nope('Email') }, UrlFetchApp: { fetch: nope('Outside web calls') } };
   vm.createContext(ctx); const loadErrors = [];
   for (const sc of compiled()) { try { sc.script.runInContext(ctx); } catch (e) { if (e && e.__need) throw e; loadErrors.push(sc.file + ': ' + String(e).slice(0, 160)); } }
+  vm.runInContext("function apiTimeOne_(fn){ var c=CacheService.getScriptCache(), tok='cmp-t'; c.put('ms_tok_'+tok, JSON.stringify({role:'staff',sid:null,pid:null,staff:null,who:{id:'CMP',name:'Comparison',role:'head'}}),600); TL_SCOPE_=null; TL_SCOPE_INFO_=null; var t=Date.now(); try{ eval(fn)(tok); }catch(e){} return Date.now()-t; }", ctx);
   if (opts.packs) { ctx.__pack = opts.packs; vm.runInContext('tlPackRead_=function(name){ return __pack(name); }; tlPackHealth_=function(){};', ctx); }
   return { ctx, store, loadErrors, has: fn => vm.runInContext('typeof ' + fn + ' === "function"', ctx),
     call(fn, args) { if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(fn)) throw new Error('bad name'); ctx.__args = JSON.parse(JSON.stringify(args || [])); return JSON.parse(vm.runInContext('JSON.stringify((function(){ var r = ' + fn + '.apply(null, __args); return r === undefined ? null : r; })())', ctx)); } };

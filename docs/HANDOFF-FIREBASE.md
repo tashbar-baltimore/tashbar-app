@@ -64,3 +64,11 @@ Work on your own. Stop only when I must sign in to Google or make a real decisio
 - Import 1794880519353: every one of 81 students' balances identical to the cent; msBootstrap identical.
 - Next: signed-in calls (need a comparison that creates a session on both sides server-side), the store, staff views; Drive stand-ins; shadow run.
 - v345: `apiExport(key,'prints')` / `apiPrints_`; function action `comparePrints`. Import 1794882271989: 81 of 81 students fully identical (progress, balance, statement, plan). Function memory raised to 4 GiB.
+
+## LIVE ON FIREBASE (2026-11-17 ~05:20Z, Head of School: no real users yet, data may be lost, go live before the school launch)
+- Firebase answers every app call from Firestore (namespace `LIVE`, books `IMPORT_1794892187532__main` / `__canteen`, settings in `sys/props_LIVE`). Switch: `sys/live` `{on}`; admin actions `goLive` (key + stamp) and `goOff`.
+- Calls that need Google Drive/Docs/email (photos, music, sounds) fail on the Firebase engine with "not available on this server yet" and are passed to Apps Script automatically. Those still write Google Sheets, which is no longer the main database.
+- Measured: student list 0.25 s, sign-in refusal 0.2 s, bad-token refusal 0.2 s (Apps Script: 4 to 5 s). Staff screens 0.2 to 0.5 s inside the engine (date formatter fix).
+- USE ONLY https://tashbar-learning-live.web.app (students) and /staff/. The old /exec links still run on Google Sheets: a separate, now stale database.
+- IMPORTANT FOR BUILDERS: publishing in the Apps Script editor does NOT update the Firebase server code. After any publish that changes a `.js` file, someone must pull the editor into `src/` and run `./tools/deploy-function.sh`. Page and lesson-pack changes (.html, packs) DO reach Firebase by themselves.
+- Not done: real sign-in by a person, photo/music/sound on Firebase, nightly jobs (money archive), staff-screen comparison (the live side errored with the comparison session), copy back to Sheets.

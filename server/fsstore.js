@@ -36,7 +36,7 @@ class FsServer {
     if (!dirtyTabs.length && !dirtyCache.length && !store.dirtyProps && !Object.keys(store.dirtyBooks || {}).length) return true;
     const db = this.db, self = this;
     const ok = await db.runTransaction(async tx => {
-      const keys = Object.keys(store.read).filter(k => k.indexOf('tab|') === 0);     /* every tab this run read */
+      const keys = Object.keys(store.read).filter(k => k.indexOf('tab|') === 0 && (!store.touched || store.touched[k.slice(4)] || (store.dirty || {})[k.slice(4)]));     /* only tabs this run opened */
       const metas = keys.length ? await tx.getAll(...keys.map(k => { const key = k.slice(4), i = key.indexOf('|'); return self.tabRef(key.slice(0, i), key.slice(i + 1)); })) : [];
       for (let i = 0; i < keys.length; i++) { const v = metas[i].exists ? (metas[i].data().ver || 0) : 0; if (v !== store.read[keys[i]]) return false; }
       for (const b of Object.keys(store.dirtyBooks || {})) tx.set(self.bookRef(b), { tabs: store.books[b].order }, { merge: true });
@@ -83,7 +83,7 @@ class FsServer {
       const loaded = ((this.hints || (this.hints = {}))[fn] || []).slice();
       for (let pass = 0; pass < 400; pass++) {
         /* fresh copies of what is loaded so far (a rerun must not see the last run's writes) */
-        store.dirty = {}; store.dirtyRows = {}; store.dirtyCache = {}; store.dirtyBooks = {}; store.shifted = {}; store.dirtyProps = 0; store.needs = []; store.props = Object.assign({}, props); store.cache = {}; store.books = {}; store.read = {};   /* nothing a half-finished run wrote may leak into the next run: not rows, not cache entries, not settings */
+        store.touched = {}; store.dirty = {}; store.dirtyRows = {}; store.dirtyCache = {}; store.dirtyBooks = {}; store.shifted = {}; store.dirtyProps = 0; store.needs = []; store.props = Object.assign({}, props); store.cache = {}; store.books = {}; store.read = {};   /* nothing a half-finished run wrote may leak into the next run: not rows, not cache entries, not settings */
         if (this.opts.preload) { const bs = [props.SCHOOL_STAGING_DATABASE_ID, props.CANTEEN_SHEET_ID].filter(Boolean); await this.preload(store, bs); }
         for (const n of loaded) { if (this.opts.preload && n.kind === 'tab' && store.books[n.key.split('|')[0]]) continue; try { await this.load(store, n); } catch (e) { throw new Error('loading ' + n.kind + ' ' + n.key + ': ' + (e.message || e)); } }
         const rt = createRuntime({ store, appUrl: this.opts.appUrl, packs: this.opts.packs }); runs++;
