@@ -38,6 +38,7 @@ class FsServer {
     const dirtyTabs = Object.keys(store.dirty || {}), dirtyCache = Object.keys(store.dirtyCache || {});
     if (!dirtyTabs.length && !dirtyCache.length && !store.dirtyProps && !Object.keys(store.dirtyBooks || {}).length) return true;
     const db = this.db, self = this;
+    let later = [];
     const ok = await db.runTransaction(async tx => {
       const keys = Object.keys(store.read).filter(k => k.indexOf('tab|') === 0 && (!store.touched || store.touched[k.slice(4)] || (store.dirty || {})[k.slice(4)]));     /* only tabs this run opened */
       const metas = keys.length ? await tx.getAll(...keys.map(k => { const key = k.slice(4), i = key.indexOf('|'); return self.tabRef(key.slice(0, i), key.slice(i + 1)); })) : [];
@@ -49,10 +50,18 @@ class FsServer {
         const nChunks = Math.ceil(rows.length / per); if (shifted) for (let c = Math.floor((shifted - 1) / per); c < nChunks + 1; c++) chunks[c] = 1;
         Object.keys(chunks).map(Number).forEach(c => { const slice = rows.slice(c * per, (c + 1) * per); const ref = self.tabRef(b, t).collection('chunks').doc('c' + c); if (slice.length) { const body = pack(slice); if (body.length > 950000) throw new Error('A block of rows in ' + t + ' is too large to store.'); tx.set(ref, { rows: body }); } else tx.delete(ref); });
         tx.set(self.tabRef(b, t), { ver: (tab.ver || 0) + 1, nRows: rows.length, per, text: tab.text || {} }); }
-      dirtyCache.forEach(k => { const e = store.cache[k], ref = db.collection('cache').doc(ck(self.ns + '|' + k)); const at = Date.now(); if (e) tx.set(ref, { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until), at }); else tx.set(ref, { ns: self.ns, k, v: '', until: 0, expireAt: new Date(at), at }); });   /* a removed entry stays as a marker for a moment, so other copies see the removal */
+      /* sign-in tickets and other small entries are saved with the rows; big or many entries are saved right after, in batches */
+      const inTx = dirtyCache.filter(k => /^(ms_tok_|ms_try_|tl_scope_)/.test(k)).slice(0, 50), inTxSet = {}; inTx.forEach(k => { inTxSet[k] = 1; }); later = dirtyCache.filter(k => !inTxSet[k]);
+      inTx.forEach(k => { const e = store.cache[k], ref = db.collection('cache').doc(ck(self.ns + '|' + k)); const at = Date.now(); if (e) tx.set(ref, { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until), at }); else tx.set(ref, { ns: self.ns, k, v: '', until: 0, expireAt: new Date(at), at }); });
       if (store.dirtyProps) tx.set(db.collection('sys').doc('props' + (self.ns ? '_' + self.ns : '')), { map: store.props });
       return true;
     });
+    if (ok && later.length) { const mc = this.memCache && this.memCache.c; let batch = db.batch(), n = 0, bytes = 0; const at = Date.now();
+      for (const k of later) { const e = store.cache[k]; if (e && mc && mc[k] && mc[k].v === e.v && Math.abs(mc[k].until - e.until) < 600000) continue;   /* unchanged: skip */
+        const ref = db.collection('cache').doc(ck(self.ns + '|' + k)), doc = e ? { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until), at } : { ns: self.ns, k, v: '', until: 0, expireAt: new Date(at), at }; const sz = (doc.v || '').length + 200;
+        if (n && (n >= 400 || bytes + sz > 8e6)) { await batch.commit().catch(() => {}); batch = db.batch(); n = 0; bytes = 0; }
+        batch.set(ref, doc); n++; bytes += sz; if (mc) { if (e) mc[k] = { v: e.v, until: e.until }; else delete mc[k]; } }
+      if (n) await batch.commit().catch(() => {}); }
     if (ok) for (const key of dirtyTabs) { const i = key.indexOf('|'), tab = store.books[key.slice(0, i)].tabs[key.slice(i + 1)]; if (tab && tab.rows) this.mem.tabs[key] = { ver: (tab.ver || 0) + 1, rows: tab.rows.map(r => r.slice()) }; }
     else for (const k of Object.keys(store.read)) if (k.indexOf('tab|') === 0) delete this.mem.tabs[k.slice(4)];   /* someone else wrote: forget this instance's copies */
     return ok;

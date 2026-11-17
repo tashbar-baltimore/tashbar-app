@@ -79,7 +79,7 @@ function formatDate(d, tz, f) {      /* the Java date patterns this code uses */
 }
 
 /* The server code: from src/ on disk, or (when the live code has been fetched) from setCode(files). */
-let COMPILED = null, CODE = null;
+let COMPILED = null, CODE = null; const PACKMEM = new Map();
 function setCode(files) {   /* files: [{name, type: 'SERVER_JS'|'HTML', source}] exactly as the Apps Script editor holds them */
   const js = files.filter(f => f.type === 'SERVER_JS').sort((a, b) => (a.name < b.name ? -1 : 1));
   const compiledNew = js.map(f => ({ file: f.name + '.js', script: new vm.Script(f.source, { filename: f.name + '.js' }) }));   /* throws if a file does not parse: the old code stays */
@@ -121,9 +121,12 @@ function createRuntime(opts) {
     Logger: { log() {} }, DriveApp: { getFileById: id => driveFile(String(id)), getFolderById: nope('Google Drive folders') }, Drive: {}, DocumentApp: { openById: nope('Google Docs') }, MailApp: { sendEmail: nope('Email') }, UrlFetchApp: { fetch: nope('Outside web calls') } };
   vm.createContext(ctx); const loadErrors = [];
   for (const sc of compiled()) { try { sc.script.runInContext(ctx); } catch (e) { if (e && e.__need) throw e; loadErrors.push(sc.file + ': ' + String(e).slice(0, 160)); } }
-  vm.runInContext("function apiTimeOne_(fn){ var c=CacheService.getScriptCache(), tok='cmp-t'; c.put('ms_tok_'+tok, JSON.stringify({role:'staff',sid:null,pid:null,staff:null,who:{id:'CMP',name:'Comparison',role:'head'}}),600); TL_SCOPE_=null; TL_SCOPE_INFO_=null; var t=Date.now(); try{ eval(fn)(tok); }catch(e){} return Date.now()-t; }", ctx);
+  /* Lesson packs: kept in this server copy's memory by their checksum (fetched from Drive once, checked), not cut into hundreds of shared-memory pieces. */
+  ctx.TL_PACKMEM_ = (sha, text) => { if (text === undefined) return PACKMEM.has(sha) ? PACKMEM.get(sha) : null; PACKMEM.set(String(sha), String(text)); return true; };
+  vm.runInContext("if (typeof tlPackRead_ === 'function') tlPackRead_ = function (name, p) { var t = TL_PACKMEM_(p[1]); if (t !== null) return t; try { var b = DriveApp.getFileById(p[0]).getBlob(), h = tlHex_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, b.getBytes())); if (h !== p[1]) return null; t = b.getDataAsString('UTF-8'); TL_PACKMEM_(p[1], t); return t; } catch (e) { if (e && e.__need) throw e; return null; } };", ctx);
+  vm.runInContext("function apiTimeOne_(fn){ var c=CacheService.getScriptCache(), tok='cmp-'+Utilities.getUuid(); c.put('ms_tok_'+tok, JSON.stringify({role:'staff',sid:null,pid:null,staff:null,who:{id:'CMP',name:'Comparison',role:'head'}}),600); TL_SCOPE_=null; TL_SCOPE_INFO_=null; var t=Date.now(); try{ eval(fn)(tok); }catch(e){} var ms=Date.now()-t; c.remove('ms_tok_'+tok); return ms; }", ctx);
   if (opts.packs) { ctx.__pack = opts.packs; vm.runInContext('tlPackRead_=function(name){ return __pack(name); }; tlPackHealth_=function(){};', ctx); }
   return { ctx, store, loadErrors, has: fn => vm.runInContext('typeof ' + fn + ' === "function"', ctx),
     call(fn, args) { if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(fn)) throw new Error('bad name'); ctx.__args = JSON.parse(JSON.stringify(args || [])); return JSON.parse(vm.runInContext('JSON.stringify((function(){ var r = ' + fn + '.apply(null, __args); return r === undefined ? null : r; })())', ctx)); } };
 }
-module.exports = { createRuntime, coerce, formatDate, setCode };
+module.exports = { createRuntime, coerce, formatDate, setCode, packPut: (sha, text) => PACKMEM.set(String(sha), String(text)), packHas: sha => PACKMEM.has(String(sha)) };

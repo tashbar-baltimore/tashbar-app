@@ -199,6 +199,12 @@ async function admin(action, key, a) {
     await appsScriptResult('apiExport', [KEY, 'drive', 'sheetWrite', [SHEET, 'ℹ about this copy', 0, [['Read-only copy of the live Firebase data. Rebuilt every night. Changes here do nothing.'], ['Last copied', new Date().toISOString()], ['Tabs', tabs], ['Rows', rows]], true]]);
     return { ok: true, result: { tabs, rows, seconds: Math.round((Date.now() - t0) / 1000) } };
   }
+  if (action === 'timeLive') {   /* times each staff screen on the live data with a random one-off head session (removed after); returns timings only */
+    await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const out = {}; const t0 = Date.now();
+    const names = a.only ? [a.only] : ['sgLoad','sgNow','tmList','tmCatalog','sgDesk','sgToday','sgWeek','sgLevels','sgKodeshGrid','sgReports','sgNotes','sgGroups','acMyScope','sgWeekNotes','sgClassSky','acAdminLoad'];
+    for (const fn of names) { if (Date.now() - t0 > 240000) { out[fn] = 'skipped'; continue; } const s = Date.now(); const r = await LIVE.srv.run('apiTimeOne_', [fn]); out[fn] = r.error ? 'error ' + String(r.error).slice(0, 60) : ((Date.now() - s) + ' ms total, ' + r.result + ' ms code, runs ' + r.runs + ', loads ' + r.loads); }
+    return { ok: true, result: out };
+  }
   if (action === 'photoCron') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('photoCron', []); return r.error ? { ok: false, error: String(r.error).slice(0, 200) } : { ok: true, result: r.result }; }
   if (action === 'goOff') { await DB.collection('sys').doc('live').set({ on: false, since: new Date().toISOString() }); LIVE = null; return { ok: true, result: { live: false } }; }
   return { ok: false, error: 'Unknown admin action.' };
@@ -217,8 +223,22 @@ const MOVED = {
   apiStaffPage: pageAnswer('apiStaffPage')
 };
 
-/* Warm-up: a new server copy loads the school database as soon as it starts, so no one waits for it. */
-setTimeout(() => { liveState().then(() => LIVE && LIVE.srv && LIVE.srv.run('msBootstrap', [])).then(() => console.log('warm: database loaded')).catch(e => console.warn('warm-up failed:', String(e.message || e).slice(0, 120))); }, 0);
+/* Lesson packs: every copy loads all of them at start, in parallel, from a Cloud Storage copy (filled from Drive the first time; checked by sha256). */
+async function packWarm() {
+  const vm = require('vm'), crypto = require('crypto'), rt = require('./app/server/runtime.js');
+  const probe = rt.createRuntime({ store: { books: {}, props: {} } }); const packs = JSON.parse(vm.runInContext('JSON.stringify(typeof TL_PACKS === "object" ? TL_PACKS : {})', probe.ctx));
+  const { Storage } = require('@google-cloud/storage'); const bucket = new Storage().bucket('tashbar-learning-live-backups'); let n = 0, fromDrive = 0;
+  const list = Object.keys(packs).map(k => packs[k]).filter(p => p && p[0] && p[1] && !rt.packHas(p[1]));
+  const one = async p => { const f = bucket.file('packs/' + p[1] + '.txt'); let buf = null;
+    try { buf = (await f.download())[0]; } catch (e) { buf = null; }
+    if (!buf || crypto.createHash('sha256').update(buf).digest('hex') !== p[1]) { const v = await driveRemote('file', [p[0]]); buf = Buffer.from(v.b64, 'base64'); if (crypto.createHash('sha256').update(buf).digest('hex') !== p[1]) return; fromDrive++; f.save(buf).catch(() => {}); }
+    rt.packPut(p[1], buf.toString('utf8')); n++; };
+  for (let i = 0; i < list.length; i += 8) await Promise.all(list.slice(i, i + 8).map(p => one(p).catch(() => {})));
+  console.log('warm: ' + n + ' of ' + list.length + ' lesson packs ready (' + fromDrive + ' from Drive)');
+}
+setTimeout(() => { packWarm().catch(e => console.warn('pack warm-up failed:', String(e.message || e).slice(0, 120))).then(() => liveState()).then(() => LIVE && LIVE.srv && LIVE.srv.run('msBootstrap', [])).then(() => console.log('warm: database loaded')).catch(e => console.warn('warm-up failed:', String(e.message || e).slice(0, 120))); }, 0);
+/* log any very large answer, by name only */
+function noteSize(fn, body) { try { const n = Buffer.byteLength(body); if (n > 4e6) console.warn('large answer', fn, Math.round(n / 1e6) + ' MB'); } catch (e) {} }
 exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2, timeoutSeconds: 300, secrets: ['TL_EXPORT_KEY'], maxInstances: 50, minInstances: 1 }, async (req, res) => {
   try {
     if (req.method !== 'POST') return res.status(200).json({ ok: true, result: 'Tashbar server' });
@@ -228,11 +248,11 @@ exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2
     if (!body || body.api !== 1 || !/^[a-z][A-Za-z0-9]*$/.test(fn)) return res.status(200).json({ ok: false, error: 'Not an app request.' });
     const args = Array.isArray(body.args) ? body.args.slice(0, 8) : [];
     if (body.fbtest) return res.status(200).json(await testLane(String(body.fbtest), fn, args));
-    if (Object.prototype.hasOwnProperty.call(MOVED, fn)) return res.status(200).json({ ok: true, result: await MOVED[fn].apply(null, args) });
+    if (Object.prototype.hasOwnProperty.call(MOVED, fn)) { const j = JSON.stringify({ ok: true, result: await MOVED[fn].apply(null, args) }); noteSize(fn, j); return res.status(200).type('application/json').send(j); }
     const L = await liveState();
     if (L.on) { const r = await L.srv.run(fn, args);
       if (r.error && /not available on this server yet|is not defined|NEED /.test(r.error)) { /* Drive, Docs, email...: still answered by Apps Script */ return res.status(200).type('application/json').send(await appsScript(fn, args)); }
-      return res.status(200).json(r.error ? { ok: false, error: r.error } : { ok: true, result: r.result === undefined ? null : r.result }); }
-    res.status(200).type('application/json').send(await appsScript(fn, args));
+      const j = JSON.stringify(r.error ? { ok: false, error: r.error } : { ok: true, result: r.result === undefined ? null : r.result }); noteSize(fn, j); if (r.ms > 3000) console.warn('slow call', fn, r.ms + ' ms, runs ' + r.runs + ', loads ' + r.loads); return res.status(200).type('application/json').send(j); }
+    console.log('passed to Apps Script:', fn); res.status(200).type('application/json').send(await appsScript(fn, args));
   } catch (e) { res.status(200).json({ ok: false, error: String((e && e.message) || e).slice(0, 300) }); }
 });
