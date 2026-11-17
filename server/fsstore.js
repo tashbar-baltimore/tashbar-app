@@ -49,7 +49,7 @@ class FsServer {
         const nChunks = Math.ceil(rows.length / per); if (shifted) for (let c = Math.floor((shifted - 1) / per); c < nChunks + 1; c++) chunks[c] = 1;
         Object.keys(chunks).map(Number).forEach(c => { const slice = rows.slice(c * per, (c + 1) * per); const ref = self.tabRef(b, t).collection('chunks').doc('c' + c); if (slice.length) { const body = pack(slice); if (body.length > 950000) throw new Error('A block of rows in ' + t + ' is too large to store.'); tx.set(ref, { rows: body }); } else tx.delete(ref); });
         tx.set(self.tabRef(b, t), { ver: (tab.ver || 0) + 1, nRows: rows.length, per, text: tab.text || {} }); }
-      dirtyCache.forEach(k => { const e = store.cache[k], ref = db.collection('cache').doc(ck(self.ns + '|' + k)); if (e) tx.set(ref, { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until) }); else tx.delete(ref); });
+      dirtyCache.forEach(k => { const e = store.cache[k], ref = db.collection('cache').doc(ck(self.ns + '|' + k)); const at = Date.now(); if (e) tx.set(ref, { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until), at }); else tx.set(ref, { ns: self.ns, k, v: '', until: 0, expireAt: new Date(at), at }); });   /* a removed entry stays as a marker for a moment, so other copies see the removal */
       if (store.dirtyProps) tx.set(db.collection('sys').doc('props' + (self.ns ? '_' + self.ns : '')), { map: store.props });
       return true;
     });
@@ -72,7 +72,13 @@ class FsServer {
         tabs[t] = { rows: hit.rows, shared: true, text: Object.assign({}, m.text || {}), per: m.per || perFor(t), ver: m.ver || 0 }; store.read['tab|' + key] = m.ver || 0; }));
     }
     if (global.gc) global.gc();
-    const now = Date.now(); if (!this.memCache || now - this.memCache.at > 5000) { const q = await this.db.collection('cache').where('ns', '==', this.ns).get(); const c = {}; q.forEach(d => { const x = d.data(); if (x.until > now) c[x.k] = { v: x.v, until: x.until }; }); this.memCache = { at: now, c }; }
+    const now = Date.now();
+    /* shared memory (sign-ins, saved pieces): loaded in full once, then only what changed since the last look (every 2 seconds) */
+    if (!this.memCache || now - this.memCache.full > 600000) { const q = await this.db.collection('cache').where('ns', '==', this.ns).get(); const c = {}; let top = 0; q.forEach(d => { const x = d.data(); if (x.at > top) top = x.at; if (x.until > now) c[x.k] = { v: x.v, until: x.until }; }); this.memCache = { at: now, full: now, top: top || now, c }; }
+    else if (now - this.memCache.at > 2000) { const since = this.memCache.top - 10000; this.memCache.at = now;
+      try { const q = await this.db.collection('cache').where('ns', '==', this.ns).where('at', '>', since).get(); const c = this.memCache.c;
+        q.forEach(d => { const x = d.data(); if (x.at > this.memCache.top) this.memCache.top = x.at; if (x.until > now) c[x.k] = { v: x.v, until: x.until }; else delete c[x.k]; }); }
+      catch (e) { this.memCache.full = 0; } }
     Object.assign(store.cache, this.memCache.c); store.cacheComplete = true;
   }
 

@@ -217,6 +217,8 @@ const MOVED = {
   apiStaffPage: pageAnswer('apiStaffPage')
 };
 
+/* Warm-up: a new server copy loads the school database as soon as it starts, so no one waits for it. */
+setTimeout(() => { liveState().then(() => LIVE && LIVE.srv && LIVE.srv.run('msBootstrap', [])).then(() => console.log('warm: database loaded')).catch(e => console.warn('warm-up failed:', String(e.message || e).slice(0, 120))); }, 0);
 exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2, timeoutSeconds: 300, secrets: ['TL_EXPORT_KEY'], maxInstances: 50, minInstances: 1 }, async (req, res) => {
   try {
     if (req.method !== 'POST') return res.status(200).json({ ok: true, result: 'Tashbar server' });
