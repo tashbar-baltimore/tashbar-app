@@ -64,8 +64,15 @@
       if (r && r.same) { window.TL_PAGE_CHECK = 'current';
         if (window.TL_PAGE_FROM === 'device') getJSON(HASH_URL).then(function (j) { if (j && j.h === H) keep(null); }, function () {}); return; }
       if (r && r.h && r.html) { var doc = inject(r.html, r.h, Date.now()); if (!doc) { window.TL_PAGE_CHECK = 'newer, but not understood'; return; }
-        keep(doc).then(function () { window.TL_PAGE_CHECK = 'newer kept for next open'; }, function () { window.TL_PAGE_CHECK = 'newer, but the device could not keep it'; }); }
+        keep(doc).then(function () { window.TL_PAGE_CHECK = 'newer kept for next open'; NEWER = r.h; swapIfIdle(); }, function () { window.TL_PAGE_CHECK = 'newer, but the device could not keep it'; }); }
       else window.TL_PAGE_CHECK = 'no answer'; }, function (e) { window.TL_PAGE_CHECK = 'check failed: ' + e.message; }); }
+  /* A newer page goes on screen at once, but only while nobody is working: the sign-in screen is showing (or the tab is hidden).
+     Chromebooks that stay open all day check again every 2 minutes. */
+  var NEWER = false;
+  function idle() { try { if (KIND === 'staff') return !(typeof S !== 'undefined' && S && S.token); return typeof A !== 'undefined' && A && A.view === 'signin' && !A.pin; } catch (e) { return false; } }
+  function swapIfIdle() { if (!NEWER || !idle()) return; var k = 'tl-swapped-' + KIND; try { if (sessionStorage.getItem(k) === NEWER) return; sessionStorage.setItem(k, NEWER); } catch (e) { return; } location.reload(); }   /* once per new page: never a reload loop */
+  setInterval(function () { if (NEWER) return swapIfIdle(); if (idle() || document.hidden) check(); }, 120000);
+  setInterval(swapIfIdle, 15000);
   try { if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js'); } catch (e) {}
   if (API && window.caches) { if (document.readyState === 'complete') setTimeout(check, 4000); else window.addEventListener('load', function () { setTimeout(check, 4000); }); }
 })();
