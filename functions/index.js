@@ -26,7 +26,6 @@ async function liveState() {
   if (LIVE && Date.now() - LIVE.at < 10000) return LIVE;
   DB = DB || new Firestore(); const d = await DB.collection('sys').doc('live').get(); const on = d.exists && d.data().on;
   const { FsServer } = require('./app/server/fsstore.js');
-  syncCode();   /* in the background: never slows a call down */
   if (on && (!LIVE || !LIVE.srv || LIVE.stamp !== d.data().stamp)) LIVE = { on, at: Date.now(), stamp: d.data().stamp, srv: new FsServer(DB, { ns: 'LIVE', preload: true }) };
   else LIVE = Object.assign(LIVE || {}, { on, at: Date.now() });
   return LIVE;

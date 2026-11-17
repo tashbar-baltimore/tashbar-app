@@ -40,21 +40,6 @@ function apiStaffPage(have) {
      apiExport(key, 'tabs', book)                 -> the tabs of a book ('main' or 'canteen') with their sizes
      apiExport(key, 'rows', book, tab, [from, n]) -> up to 4000 rows, dates marked {$d: milliseconds}, with an md5 of the block
      apiExport(key, 'props')                      -> the script's stored settings */
-/* apiExport(key, 'source') -> the code of the version the live link runs ({files:[{name,type,source}], hash, version}),
-   so the Firebase server can load new code by itself a few minutes after a builder publishes. Read-only. */
-var API_LIVE_DEPLOYMENT = 'AKfycbwcTw8upBIAN3n1D36TON-3u6_VQdo-6zLYJT_bMa11yeFwN9IhL_saGDciQP5QK70pEw';
-function apiSource_() {
-  var base = 'https://script.googleapis.com/v1/projects/' + ScriptApp.getScriptId(), h = { Authorization: 'Bearer ' + ScriptApp.getOAuthToken() };
-  var get = function (u) { var r = UrlFetchApp.fetch(u, { headers: h, muteHttpExceptions: true }); if (r.getResponseCode() !== 200) throw new Error('Apps Script API ' + r.getResponseCode() + ': ' + r.getContentText().slice(0, 300)); return JSON.parse(r.getContentText()); };
-  var ver = 0, tok = '';   /* the newest version = the one builders publish to the live link */
-  do { var p = get(base + '/versions?pageSize=50' + (tok ? '&pageToken=' + encodeURIComponent(tok) : '')); (p.versions || []).forEach(function (v) { if (v.versionNumber > ver) ver = v.versionNumber; }); tok = p.nextPageToken || ''; } while (tok);
-  if (!ver) throw new Error('No version found.');
-  var c = get(base + '/content?versionNumber=' + ver);
-  var files = (c.files || []).map(function (f) { return { name: f.name, type: f.type, source: f.source }; });
-  var hash = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, ver + '|' + files.map(function (f) { return f.name + '|' + f.source.length; }).join(','), Utilities.Charset.UTF_8).map(function (b) { return ('0' + (b & 255).toString(16)).slice(-2); }).join('');
-  return { version: ver, hash: hash, files: files };
-}
-function apiAllowSource() { return apiSource_().version; }   /* the Head of School runs this once in the editor to approve the new permission */
 var API_EXPORT_HASH = '594fdccf352810cfc28b62f5cae14034270893cd03e3527db1dcf13797ba0ae0';
 function apiExport(key, what, book, tab, span) {
   var cache = CacheService.getScriptCache(), bad = Number(cache.get('api_export_bad') || 0);
@@ -65,7 +50,6 @@ function apiExport(key, what, book, tab, span) {
   if (what === 'balances') return apiBalances_();
   if (what === 'prints') return apiPrints_();
   if (what === 'staffprints') return apiStaffPrints_();
-  if (what === 'source') return apiSource_();
   var id = book === 'canteen' ? cnBookId_() : TL.sheet, ss = SpreadsheetApp.openById(id);
   if (what === 'tabs') return { id: id, tabs: ss.getSheets().map(function (s) { return { name: s.getName(), rows: s.getLastRow(), cols: s.getLastColumn() }; }) };
   if (what === 'rows') {
