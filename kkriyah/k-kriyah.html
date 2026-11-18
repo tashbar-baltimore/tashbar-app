@@ -1,0 +1,386 @@
+<title>Kindergarten Kriyah Lessons</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;800&display=swap">
+<style>
+/* TL-LESSON-KIT v1 (Little Explorers world). One bright single theme for K-1. Menu of 16 lessons; each lesson = 8 stations shown by the train. */
+:root{
+  --sky:#E8F6FF; --mat:#FFF6D8; --ink:#1F2A44; --sun:#FFC83D; --leaf:#2FBF71; --berry:#FF5D73; --sea:#3D8BFF; --grape:#8E5BFF;
+  --card:#FFFFFF; --soft:#6B7A99;
+  --f-head:"Baloo 2","Comic Sans MS","Trebuchet MS",system-ui,sans-serif; --f-body:"Nunito","Trebuchet MS",system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(circle at 15% 10%,#FFF9C4 0,transparent 35%),linear-gradient(180deg,var(--sky),var(--mat));color:var(--ink);font-family:var(--f-body);font-size:18px}
+.wrap{max-width:980px;margin:0 auto;padding-block:14px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px;min-height:100%;box-sizing:border-box}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top h1{font-family:var(--f-head);font-weight:800;font-size:26px;margin:0;flex:1;min-width:200px}
+.top h1 small{display:block;font-family:var(--f-body);font-size:13px;color:var(--soft);font-weight:600}
+.pill{border:0;border-radius:999px;padding:8px 14px;font:800 15px var(--f-body);background:var(--card);color:var(--ink);box-shadow:0 3px 0 #d9d2b8;cursor:pointer}
+.mode{display:inline-block;background:#FFE7EB;color:#b4233b;border-radius:10px;padding:2px 10px;font-weight:800;font-size:13px}
+.track{position:relative;height:46px;background:var(--card);border-radius:24px;box-shadow:0 4px 0 #e6dfc2;display:flex;align-items:center;padding:0 16px}
+.track .rail{position:absolute;left:24px;right:24px;top:50%;height:6px;background:repeating-linear-gradient(90deg,#c9b98a 0 14px,transparent 14px 22px);transform:translateY(-50%)}
+.track .st{position:relative;flex:1;display:flex;justify-content:center}
+.track .st i{width:16px;height:16px;border-radius:50%;background:#e8e2cc;border:3px solid #fff;box-shadow:0 0 0 2px #e8e2cc}
+.track .st.done i{background:var(--leaf);box-shadow:0 0 0 2px var(--leaf)}
+.train{position:absolute;top:2px;font-size:30px;transition:left .8s cubic-bezier(.5,1.6,.4,1);transform:translateX(-50%)}
+.stage{flex:1;background:var(--card);border-radius:34px;box-shadow:0 10px 0 #eadfb8,0 20px 40px rgba(31,42,68,.12);padding:20px;display:flex;flex-direction:column;gap:14px;min-height:540px;position:relative;overflow:hidden}
+.say{display:flex;align-items:center;gap:12px}
+.spk{flex:0 0 auto;width:64px;height:64px;border-radius:50%;border:0;background:var(--sea);color:#fff;font-size:30px;cursor:pointer;box-shadow:0 5px 0 #2a63c0}
+.spk.talk{animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.cap{font:800 22px/1.3 var(--f-head);min-height:58px;display:flex;align-items:center}
+.scene{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.row{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.g5{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.g5>div{display:flex;gap:4px}
+.basket{position:relative;min-width:140px;min-height:110px;border-radius:0 0 60px 60px;background:linear-gradient(180deg,#F7C77B,#D9963E);border:6px solid #B87528;display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:4px;padding:10px 10px 16px;box-sizing:border-box}
+.basket.big{min-width:230px;min-height:140px;background:linear-gradient(180deg,#FFD98A,#E5A64A)}
+.basket .lab{position:absolute;top:-30px;left:50%;transform:translateX(-50%);font:800 22px var(--f-head);background:var(--card);border-radius:12px;padding:0 10px;box-shadow:0 2px 0 #e6dfc2;white-space:nowrap}
+.tapme{cursor:pointer}
+.o{font-size:42px;line-height:1;display:inline-block;transition:transform .25s,filter .25s,opacity .4s;user-select:none}
+.o.sm{font-size:30px}
+.o.hl{transform:scale(1.35) translateY(-6px);filter:drop-shadow(0 0 8px #FFC83D)}
+.o.lone{filter:drop-shadow(0 0 8px #FF5D73)}
+.o.gone{opacity:.15;transform:scale(.7)}
+.o.ghost{opacity:.18}
+.o.pop{animation:pop .45s cubic-bezier(.3,1.8,.5,1)}
+@keyframes pop{0%{transform:scale(0) translateY(-40px)}100%{transform:scale(1)}}
+.o.fly{animation:fly 1.1s ease-out both}
+@keyframes fly{0%{transform:translate(200px,-110px) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+.o.flyaway{animation:flyaway 1.1s ease-in both}
+@keyframes flyaway{100%{transform:translate(-220px,-140px) rotate(20deg);opacity:0}}
+.tray{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:60px;padding:8px 14px;border-radius:20px;background:#F3F7FF}
+.tray .o{cursor:pointer}
+.plus,.eq{font:800 46px var(--f-head);color:var(--grape)}
+.big-num{font:800 72px/1 var(--f-head);color:var(--berry)}
+.card-num{font:800 96px/1 var(--f-head);color:var(--sea);background:#F3F7FF;border-radius:28px;padding:10px 30px}
+.choices{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.ch{min-width:108px;height:108px;padding:0 10px;border-radius:30px;border:0;background:var(--sun);color:var(--ink);font:800 52px var(--f-head);box-shadow:0 7px 0 #D49A12;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ch.wide{font-size:38px;min-width:150px}
+.ch small{font-size:12px;letter-spacing:1px;color:#7a5a00;max-width:100px;word-break:break-all;line-height:1.1}
+.ch:active{transform:translateY(4px);box-shadow:0 3px 0 #D49A12}
+.ch.no,.pic.no{opacity:.3;pointer-events:none}
+.ch.yes{background:var(--leaf);color:#fff;box-shadow:0 7px 0 #1f8a51}
+.pic{border:5px solid #E6E0CC;border-radius:26px;padding:10px 14px;background:#FFFDF5;cursor:pointer;display:flex;gap:10px;align-items:center;justify-content:center;box-shadow:0 5px 0 #e6dfc2;min-width:96px;min-height:96px;font:inherit;color:inherit}
+.pic .o{font-size:30px}
+.pic.yes{border-color:var(--leaf);background:#E9FBF1}
+.pic.huge .o{font-size:56px}
+.pic.barpic{width:290px;max-width:86vw;justify-content:flex-start;padding-right:30px;box-sizing:border-box}
+.frame{display:grid;grid-template-columns:repeat(5,60px);grid-template-rows:repeat(2,60px);gap:6px;background:#3D8BFF;padding:8px;border-radius:18px}
+.frame>div{background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.frame .o{font-size:38px}
+.frame.mini{grid-template-columns:repeat(5,22px);grid-template-rows:repeat(2,22px);gap:3px;padding:4px;border-radius:8px}
+.frame.mini .o{font-size:16px}
+.frame .tapme{cursor:pointer}
+.go{border:0;border-radius:28px;padding:16px 32px;font:800 28px var(--f-head);background:var(--leaf);color:#fff;box-shadow:0 7px 0 #1f8a51;cursor:pointer}
+.go.alt{background:var(--sea);box-shadow:0 7px 0 #2a63c0}
+.tiles{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:620px}
+.tile{width:54px;height:54px;border-radius:14px;background:#FFF1C9;display:flex;align-items:center;justify-content:center;font:800 26px var(--f-head);box-shadow:0 3px 0 #e8d391}
+.tile.q{background:#E7DEFF;color:var(--grape)}
+.tile.hl{background:var(--sun);transform:translateY(-4px)}
+.tile.ten{background:#D6F5E3}
+.car{min-width:70px;height:62px;border-radius:14px 14px 8px 8px;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;font:800 32px var(--f-head);position:relative;box-shadow:0 4px 0 #c43a4f}
+.car.q{background:var(--grape);box-shadow:0 4px 0 #6a3fd0}
+.car.hl{transform:translateY(-6px)}
+.car::after{content:"";position:absolute;bottom:-12px;left:10px;right:10px;height:14px;background:radial-gradient(circle at 10px 7px,#1F2A44 6px,transparent 7px),radial-gradient(circle at calc(100% - 10px) 7px,#1F2A44 6px,transparent 7px)}
+.bar{height:30px;border-radius:15px 4px 4px 15px;position:relative;box-shadow:inset 0 -5px 0 rgba(0,0,0,.12)}
+.bar::after{content:"";position:absolute;right:-18px;top:0;border-left:18px solid currentColor;border-top:15px solid transparent;border-bottom:15px solid transparent}
+.bar.units{background-image:repeating-linear-gradient(90deg,transparent 0 22px,rgba(255,255,255,.9) 22px 24px)!important}
+.bars{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.tower{display:flex;flex-direction:column-reverse;gap:2px;align-items:center;min-height:40px}
+.tower i{width:44px;height:26px;border-radius:6px;display:block}
+.bin{min-width:130px;min-height:120px;border-radius:20px;background:#F3F7FF;border:5px dashed #B9C7E6;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:4px;padding:8px;position:relative;cursor:pointer;font:inherit}
+.bin .tag{position:absolute;top:-26px;left:50%;transform:translateX(-50%);font-size:34px;background:#fff;border-radius:14px;padding:0 6px}
+.bin .o{font-size:28px}
+.cell{position:relative;width:150px;height:150px}
+.cell span{position:absolute;font-size:44px;line-height:1}
+.spot{position:absolute;width:52px;height:52px;border-radius:50%;border:4px dashed var(--grape);background:rgba(142,91,255,.08);cursor:pointer}
+.shelf{display:flex;flex-direction:column;gap:0;background:#C98B4A;padding:8px;border-radius:12px}
+.shelf>div{height:72px;border-bottom:8px solid #8B5A2B;background:#F5E3C8;display:flex;align-items:flex-end;justify-content:center;gap:24px;padding:0 20px}
+.shelf .o{font-size:46px}
+.path{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.path .tile{position:relative}
+.path .bun{position:absolute;top:-38px;font-size:34px;transition:none}
+.night{background:linear-gradient(180deg,#1B2350,#3B3F8F);border-radius:24px;width:min(560px,92%);height:220px;position:relative}
+.scatter{position:relative;width:min(360px,90%);height:230px;background:#F7FBFF;border-radius:24px}
+.scatter .o{position:absolute}
+.zaidy{font-size:76px}
+.note{font-size:13px;color:var(--soft);text-align:center}
+.burst{position:absolute;inset:0;pointer-events:none}
+.start{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.start .hero{font-size:84px;letter-spacing:6px}
+.start h2{font:800 40px/1.1 var(--f-head);margin:0;text-wrap:balance}
+.start p{margin:0;color:var(--soft);max-width:52ch}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;width:100%}
+.lt{border:0;border-radius:26px;background:#FFFDF5;box-shadow:0 6px 0 #e6dfc2;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font:800 17px/1.15 var(--f-head);color:var(--ink);position:relative}
+.lt .e{font-size:44px}
+.lt small{font:600 12px var(--f-body);color:var(--soft)}
+.lt .done{position:absolute;top:6px;right:10px;font-size:22px}
+.svgsh{display:block}
+button:focus-visible,.bin:focus-visible,.tapme:focus-visible{outline:4px solid var(--grape);outline-offset:3px}
+@media (max-width:560px){.path .tile{width:34px;height:40px;font-size:18px}.o{font-size:34px}.ch{min-width:84px;height:84px;font-size:40px}.ch.wide{font-size:28px;min-width:110px}.frame{grid-template-columns:repeat(5,46px);grid-template-rows:repeat(2,46px)}.frame .o{font-size:28px}.cap{font-size:18px}.basket.big{min-width:170px}.card-num{font-size:72px}.big-num{font-size:56px}.tile{width:44px;height:44px;font-size:21px}.car{min-width:54px;font-size:26px}.bin{min-width:120px}.stage{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.ltr{display:inline-block;min-width:80px;font:900 72px var(--f-head);color:#1F2A44;line-height:1}
+.ltr.big{font-size:120px;margin:0 16px}
+.word{font:900 76px var(--f-head);letter-spacing:.06em;color:#1F2A44;background:#FFFDF5;border-radius:22px;padding:6px 26px;box-shadow:0 5px 0 #e6dfc2}
+.word.sm{font-size:44px;letter-spacing:.02em}
+.big1 .o{font-size:96px}.big1 small,.pic-w small{display:block;font:800 22px var(--f-head);color:#1F2A44}
+.pic-w{flex-direction:column;min-width:150px;min-height:150px}
+.pic-w .o{font-size:76px}
+.pic .word{font-size:60px;box-shadow:none;background:transparent}
+.wordb{min-width:auto}
+.heb{display:inline-block;min-width:70px;font:700 78px 'Frank Ruhl Libre','SBL Hebrew','Times New Roman',serif;color:#1F2A44;line-height:1.1;direction:rtl}
+.heb.big{font-size:150px;margin:0 18px}.heb.sm{font-size:60px;margin:0 6px}.heb.q{color:#94A3B8}
+.heb-row{direction:rtl;flex-wrap:wrap;gap:8px}
+</style>
+<div class="wrap">
+  <div class="top">
+    <h1 id="h1">Kindergarten Kriyah <small>11 lessons in the new style · Little Explorers</small></h1>
+    <span class="mode">Preview: nothing is saved to the school</span>
+    <button class="pill" id="home" type="button" hidden>🏠 All lessons</button>
+    <button class="pill" id="mute" type="button" aria-pressed="false">🔊 Voice on</button>
+  </div>
+  <div class="track" id="track" aria-label="Lesson progress" hidden><div class="rail"></div><div id="stations" style="display:contents"></div><div class="train" id="train" aria-hidden="true">🚂</div></div>
+  <div class="stage" id="stage">
+    <div class="say"><button class="spk" id="spk" type="button" aria-label="Say it again">🔊</button><div class="cap" id="cap" aria-live="polite"></div></div>
+    <div class="scene" id="scene"></div>
+    <canvas class="burst" id="burst"></canvas>
+  </div>
+  <p class="note">Every lesson: warm-up · story · mini-movie · we do it together · practice in 5+ kinds of games · real life · check · celebrate. Every instruction is spoken, so no reading is needed.</p>
+</div>
+<script>
+(function(){
+"use strict";
+/* ================= KIT CORE ================= */
+const FAST=/fast/.test(location.search)?0.04:1;
+const STATIONS=['Warm-up','Story','Movie','Together','Practice','Real life','Check','Hooray'];
+const TH=[{e:'🍎',n:'apples'},{e:'🐟',n:'fish'},{e:'🚗',n:'cars'},{e:'⚽',n:'balls'},{e:'⭐',n:'stars'},{e:'🍪',n:'cookies'},{e:'🐥',n:'chicks'},{e:'🎈',n:'balloons'},{e:'🍓',n:'strawberries'},{e:'🧸',n:'teddy bears'},{e:'🐞',n:'ladybugs'},{e:'🌷',n:'flowers'},{e:'🍩',n:'donuts'},{e:'🐸',n:'frogs'},{e:'🦋',n:'butterflies'},{e:'🍋',n:'lemons'}];
+const $=id=>document.getElementById(id), scene=$('scene'), cap=$('cap');
+let muted=false, lastLine='', themeI=Math.floor(Math.random()*TH.length), stars=0, MODE='help', BOT=null, BUSY=false;
+window.__kit={bot:()=>BOT};
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const any=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function T(){ themeI=(themeI+1+Math.floor(Math.random()*4))%TH.length; return TH[themeI]; }
+const wait=ms=>new Promise(r=>setTimeout(r,ms*FAST));
+const helpOn=()=>MODE!=='check';
+let voice=null; function pickVoice(){ try{ const vs=speechSynthesis.getVoices(); voice=vs.find(v=>/en-US/i.test(v.lang)&&/female|samantha|google us/i.test(v.name))||vs.find(v=>/^en/i.test(v.lang))||null; }catch(e){} }
+try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){}
+function say(t){ lastLine=t; cap.textContent=t; const spk=$('spk');
+  return new Promise(res=>{ const fb=setTimeout(()=>{ spk.classList.remove('talk'); res(); },Math.max(900,t.length*62)*FAST);
+    if(muted||FAST<1||!('speechSynthesis' in window)) return;
+    try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); if(voice) u.voice=voice; u.rate=.92; u.pitch=1.1; spk.classList.add('talk');
+      u.onend=()=>{ clearTimeout(fb); spk.classList.remove('talk'); setTimeout(res,180); }; speechSynthesis.speak(u); }catch(e){} }); }
+$('spk').onclick=()=>{ if(lastLine) say(lastLine); };
+$('mute').onclick=()=>{ muted=!muted; $('mute').textContent=muted?'🔇 Voice off':'🔊 Voice on'; $('mute').setAttribute('aria-pressed',String(muted)); if(muted) try{ speechSynthesis.cancel(); }catch(e){} };
+let AC=null; function tone(f,d,type){ if(FAST<1) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const o=AC.createOscillator(), g=AC.createGain(); o.type=type||'sine'; o.frequency.value=f; g.gain.setValueAtTime(.18,AC.currentTime); g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d); o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime+d); }catch(e){} }
+const chime=()=>{ tone(784,.18); setTimeout(()=>tone(1047,.3),140); }, soft=()=>tone(220,.25,'triangle'), plink=n=>tone(440+(n%12)*60,.12);
+function station(i){ $('stations').innerHTML=STATIONS.map((s,k)=>'<div class="st'+(k<i?' done':'')+'" title="'+s+'"><i></i></div>').join(''); $('train').style.left='calc(24px + '+(i/(STATIONS.length-1))+' * (100% - 48px))'; }
+function confetti(){ const c=$('burst'), x=c.getContext('2d'); c.width=c.offsetWidth; c.height=c.offsetHeight; const P=Array.from({length:120},()=>({x:c.width/2,y:c.height/2,vx:(Math.random()-.5)*14,vy:Math.random()*-14-4,r:4+Math.random()*6,c:any(['#FFC83D','#2FBF71','#FF5D73','#3D8BFF','#8E5BFF'])}));
+  let t=0; (function f(){ x.clearRect(0,0,c.width,c.height); P.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.45; x.fillStyle=p.c; x.fillRect(p.x,p.y,p.r,p.r); }); if(++t<90) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height); })(); }
+/* drawing helpers */
+const O=(e,cls)=>'<span class="o'+(cls?' '+cls:'')+'">'+e+'</span>';
+const objs=(e,n,cls)=>Array.from({length:n},()=>O(e,cls)).join('');
+function g5(e,n,cls){ let h='<div class="g5">'; for(let r=0;r<n;r+=5) h+='<div>'+objs(e,Math.min(5,n-r),cls)+'</div>'; return h+'</div>'; }
+function scatter(e,n,id){ const cells=shuffle(Array.from({length:24},(_,i)=>i)).slice(0,n); return '<div class="scatter" id="'+(id||'sc')+'">'+cells.map(c=>'<span class="o" style="left:calc('+((c%6)*16+2+Math.random()*4)+'%);top:'+(Math.floor(c/6)*24+4+Math.random()*6)+'%">'+e+'</span>').join('')+'</div>'; }
+function frame(n,e,id,o){ o=o||{}; let h='<div class="frame'+(o.mini?' mini':'')+'"'+(id?' id="'+id+'"':'')+'>'; for(let i=0;i<10;i++){ const e2=(o.e2&&i>=o.split)?o.e2:e; h+='<div data-i="'+i+'">'+(i<n?O(e2):(o.ghost?O('⚪','ghost'):''))+'</div>'; } return h+'</div>'; }
+const lockAll=()=>scene.querySelectorAll('button,.pic,.ch,.bin,.spot').forEach(x=>x.onclick=null);
+const view=h=>{ BOT=null; scene.innerHTML=h; };
+async function countAloud(sel,start,step){ start=start||0; step=step||1; const os=[...scene.querySelectorAll(sel)]; for(let i=0;i<os.length;i++){ os[i].classList.add('hl'); plink(i); await say(String(start+step*(i+1))); os[i].classList.remove('hl'); } }
+function numOpts(ans,lo,hi,extra){ const s=new Set([ans]); (extra||[]).forEach(v=>{ if(s.size<3&&v!==ans&&v>=lo&&v<=hi) s.add(v); }); let guard=0; while(s.size<3&&guard++<60){ const d=ans+any([-2,-1,1,2]); if(d>=lo&&d<=hi) s.add(d); } while(s.size<3) s.add(Math.max(...s)+1); return shuffle([...s]); }
+function numRow(ans,lo,hi,dots,extra){ return '<div class="choices">'+numOpts(ans,lo,hi,extra).map(v=>'<button class="ch" type="button" data-v="'+v+'"'+(v===ans?' data-ok="1"':'')+' aria-label="'+v+'">'+v+(dots&&v<=10?'<small>'+'•'.repeat(v)+'</small>':'')+'</button>').join('')+'</div>'; }
+async function wrongHelp(help,again){ BUSY=true; try{ await wrongHelp2(help,again); } finally { BUSY=false; } }
+async function wrongHelp2(help,again){ if(helpOn()&&help){ if(typeof help==='string'){ await say('Let’s count together.'); await countAloud(help); } else await help(); await say(again||'Now try again.'); } else await say('Look again. Try once more.'); }
+function pickNum(ans,help,again){ BOT=null; return new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(+b.dataset.v===ans){ b.classList.add('yes'); chime(); scene.querySelectorAll('.ch').forEach(x=>x.onclick=null); res(first); } else { first=false; b.classList.add('no'); soft(); await wrongHelp(help,again||'Now tap the number.'); } }); }); }
+async function numQ(html,prompt,ans,o){ o=o||{}; view(html+numRow(ans,o.lo==null?0:o.lo,o.hi==null?Math.max(10,ans+2):o.hi,o.dots&&MODE==='help',o.extra)); await say(prompt); return pickNum(ans,o.help,o.again); }
+/* pick one picture: items [{h, ok, cls}] */
+function pickQ(pre,items,prompt,help,o){ o=o||{}; view(pre+'<div class="row">'+items.map(it=>'<button class="pic '+(it.cls||'')+'" type="button"'+(it.ok?' data-ok="1"':'')+(it.label?' aria-label="'+it.label+'"':'')+'>'+it.h+'</button>').join('')+'</div>'+(o.post||''));
+  return say(prompt).then(()=>new Promise(res=>{ let first=true; scene.querySelectorAll('.row:last-of-type .pic, .pic').forEach(p=>p.onclick=async()=>{ if(BUSY) return; if(p.dataset.ok){ p.classList.add('yes'); chime(); scene.querySelectorAll('.pic').forEach(x=>x.onclick=null); res(first); } else { first=false; p.classList.add('no'); soft(); await wrongHelp(help,o.again||'Try again.'); } }); })); }
+function tapGo(sel){ return new Promise(r=>{ const els=[...scene.querySelectorAll(sel)]; els.forEach(e=>{ e.classList.add('tapme'); e.onclick=()=>{ els.forEach(x=>x.onclick=null); r(); }; }); BOT=()=>els[0]&&els[0].click(); }); }
+const PRAISE=['Yes!','Great job!','You got it!','Super!','Wow!','Right!'];
+/* ================= SHAPES ================= */
+const SH={circle:'<circle cx="50" cy="50" r="42"/>',square:'<rect x="12" y="12" width="76" height="76" rx="3"/>',rectangle:'<rect x="4" y="27" width="92" height="46" rx="3"/>',triangle:'<polygon points="50,8 93,88 7,88"/>',hexagon:'<polygon points="27,8 73,8 96,50 73,92 27,92 4,50"/>'};
+const VERT={square:[[12,12],[88,12],[88,88],[12,88]],rectangle:[[4,27],[96,27],[96,73],[4,73]],triangle:[[50,8],[93,88],[7,88]],hexagon:[[27,8],[73,8],[96,50],[73,92],[27,92],[4,50]]};
+const SIDES={triangle:3,square:4,rectangle:4,hexagon:6};
+const COLS=['#FF5D73','#3D8BFF','#2FBF71','#FFC83D','#8E5BFF','#FF8A3D'];
+function shp(name,o){ o=o||{}; const s=o.s||84, c=o.c||any(COLS), r=o.r||0; return '<svg class="svgsh" viewBox="0 0 100 100" width="'+s+'" height="'+s+'" style="transform:rotate('+r+'deg)" aria-hidden="true"><g fill="'+c+'" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+SH[name]+'</g>'+(o.inner||'')+'</svg>'; }
+const SOLIDS=[{n:'sphere',like:'a ball',e:['⚽','🏀','🌍','🔮']},{n:'cube',like:'a block',e:['🎲','🧊','📦']},{n:'cone',like:'an ice cream cone',e:['🍦','🎉','🔺']},{n:'cylinder',like:'a can',e:['🥫','🥁','🧻']}];
+SOLIDS[2].e=['🍦','🎉']; /* cone pictures only */
+function piece(kind,c,r,s){ s=s||60; const P={rtri:'<polygon points="8,8 92,92 8,92"/>',sq:'<rect x="10" y="10" width="80" height="80"/>',halfhex:'<polygon points="27,30 73,30 96,72 4,72"/>',tri:'<polygon points="50,10 92,85 8,85"/>'}; return '<svg viewBox="0 0 100 100" width="'+s+'" height="'+s+'" style="transform:rotate('+(r||0)+'deg)" aria-hidden="true"><g fill="'+c+'" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+P[kind]+'</g></svg>'; }
+const BUILDS={
+  square:{pieces:['rtri','rtri'],rot:[0,180],made:'<polygon points="8,8 92,8 92,92" fill="#3D8BFF"/><polygon points="8,8 92,92 8,92" fill="#FF5D73"/>',name:'square',cnt:2,word:'two triangles'},
+  rectangle:{pieces:['sq','sq'],rot:[0,0],made:'<rect x="4" y="27" width="46" height="46" fill="#2FBF71"/><rect x="50" y="27" width="46" height="46" fill="#FFC83D"/>',name:'rectangle',cnt:2,word:'two squares'},
+  hexagon:{pieces:['halfhex','halfhex'],rot:[0,180],made:'<polygon points="27,8 73,8 96,50 4,50" fill="#8E5BFF"/><polygon points="4,50 96,50 73,92 27,92" fill="#FF8A3D"/>',name:'hexagon',cnt:2,word:'two halves'},
+  bigsquare:{pieces:['sq','sq','sq','sq'],rot:[0,0,0,0],made:'<rect x="8" y="8" width="42" height="42" fill="#FF5D73"/><rect x="50" y="8" width="42" height="42" fill="#3D8BFF"/><rect x="8" y="50" width="42" height="42" fill="#2FBF71"/><rect x="50" y="50" width="42" height="42" fill="#FFC83D"/>',name:'square',cnt:4,word:'four small squares'},
+  hex6:{pieces:['tri','tri','tri','tri','tri','tri'],rot:[0,180,0,180,0,180],made:'<polygon points="27,8 73,8 96,50 73,92 27,92 4,50" fill="#FFC83D"/><g stroke="#1F2A44" stroke-width="3"><line x1="27" y1="8" x2="73" y2="92"/><line x1="73" y1="8" x2="27" y2="92"/><line x1="4" y1="50" x2="96" y2="50"/></g>',name:'hexagon',cnt:6,word:'six triangles'}
+};
+const madeSvg=(b,s)=>'<svg viewBox="0 0 100 100" width="'+(s||110)+'" height="'+(s||110)+'" aria-hidden="true"><g stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+b.made+'</g></svg>';
+/* ================= GAME LIBRARY ================= */
+/* KINDERGARTEN KRIYAH games (Head of School 2026-11-18). Letters are built from code points (no hand-typed Hebrew). Letter NAMES are Litvish
+   (Beis, Sav, Tes); the app's voice says each Hebrew letter inside an English sentence by its name. No single letter sounds are spoken alone. */
+const G={};
+const H=n=>String.fromCharCode(n), DAG=H(0x5BC), SHIN_DOT=H(0x5C1), SIN_DOT=H(0x5C2);
+const LT={alef:[0x5D0,'Aleph'],beis:[0x5D1,'Beis',DAG],veis:[0x5D1,'Veis'],gimmel:[0x5D2,'Gimmel'],daled:[0x5D3,'Daled'],hei:[0x5D4,'Hei'],vav:[0x5D5,'Vav'],zayin:[0x5D6,'Zayin'],ches:[0x5D7,'Ches'],tes:[0x5D8,'Tes'],yud:[0x5D9,'Yud'],
+ kaf:[0x5DB,'Kaf',DAG],chaf:[0x5DB,'Chaf'],lamed:[0x5DC,'Lamed'],mem:[0x5DE,'Mem'],nun:[0x5E0,'Nun'],samech:[0x5E1,'Samech'],ayin:[0x5E2,'Ayin'],pei:[0x5E4,'Pei',DAG],fei:[0x5E4,'Fei'],tzadi:[0x5E6,'Tzadi'],kuf:[0x5E7,'Kuf'],reish:[0x5E8,'Reish'],
+ shin:[0x5E9,'Shin',SHIN_DOT],sin:[0x5E9,'Sin',SIN_DOT],tav:[0x5EA,'Tav',DAG],sav:[0x5EA,'Sav'],
+ fchaf:[0x5DA,'Final Chaf'],fmem:[0x5DD,'Final Mem'],fnun:[0x5DF,'Final Nun'],ffei:[0x5E3,'Final Fei'],ftzadi:[0x5E5,'Final Tzadi']};
+const ch=k=>H(LT[k][0])+(LT[k][2]||''), nm=k=>LT[k][1];
+const LOOKS={beis:['kaf','veis','chaf'],veis:['chaf','beis','kaf'],kaf:['beis','chaf'],chaf:['veis','kaf'],daled:['reish','fchaf'],reish:['daled','fchaf'],hei:['ches','tav','sav'],ches:['hei','tav','sav'],tav:['ches','hei','sav'],sav:['ches','hei','tav'],
+ vav:['zayin','fnun','yud'],zayin:['vav','fnun'],fnun:['vav','zayin'],tes:['mem','samech'],mem:['tes','samech','fmem'],samech:['fmem','mem','tes'],fmem:['samech','mem'],ayin:['tzadi','shin'],tzadi:['ayin','ftzadi'],gimmel:['nun','tzadi'],nun:['gimmel','kaf'],
+ yud:['vav','reish'],alef:['ayin','tzadi'],lamed:['kuf','chaf'],kuf:['hei','lamed'],pei:['fei','kaf'],fei:['pei','chaf'],shin:['sin','ayin'],sin:['shin','ayin'],fchaf:['daled','reish'],ffei:['fchaf','fei'],ftzadi:['tzadi','fnun']};
+const TIPS={alef:'Aleph has two arms, like it is waving hello.',beis:'Beis has a dot inside, like a house with someone home.',veis:'Veis is a Beis with no dot.',gimmel:'Gimmel has a little foot, like it is walking.',daled:'Daled has a corner on top, like a door.',hei:'Hei has a little window on the side.',vav:'Vav is tall and straight, like a nail.',zayin:'Zayin has a hat on top.',ches:'Ches is closed on top, like a gate.',tes:'Tes curls inside, like a basket.',yud:'Yud is the smallest letter, like a dot in the air.',kaf:'Kaf is round, with a dot inside.',chaf:'Chaf is round with no dot.',lamed:'Lamed is the tallest letter, it reaches up high.',mem:'Mem has a little open space at the bottom.',nun:'Nun is like a bent knee.',samech:'Samech is round and closed, like a circle.',ayin:'Ayin has two eyes looking up.',pei:'Pei has a mouth with a dot inside.',fei:'Fei has a mouth with no dot.',tzadi:'Tzadi has a hand reaching up.',kuf:'Kuf has a leg that goes down low.',reish:'Reish is round on top, like a head.',shin:'Shin has three arms and a dot on the right.',sin:'Sin has three arms and a dot on the left.',tav:'Tav has a foot and a dot inside.',sav:'Sav has a foot and no dot.',fchaf:'Final Chaf goes down long at the end of a word.',fmem:'Final Mem is closed like a box, at the end of a word.',fnun:'Final Nun goes straight down at the end of a word.',ffei:'Final Fei goes down long at the end of a word.',ftzadi:'Final Tzadi goes down long at the end of a word.'};
+const lb=(k,cls)=>({h:'<span class="heb">'+ch(k)+'</span>',label:nm(k),cls:cls||''});
+function dis(k,pool,n){ const near=(LOOKS[k]||[]).filter(x=>x!==k); const rest=shuffle(pool.filter(x=>x!==k&&near.indexOf(x)<0)); return shuffle(near).concat(rest).filter((x,i,a)=>a.indexOf(x)===i&&ch(x)!==ch(k)).slice(0,n); }
+let SET=['alef','beis','gimmel','daled','hei'];
+const ALL=['alef','beis','gimmel','daled','hei','vav','zayin','ches','tes','yud','kaf','lamed','mem','nun','samech','ayin','pei','tzadi','kuf','reish','shin','tav'];
+G.tapLetter=async c=>{ const k=c.k||any(c.set||SET); const items=shuffle([Object.assign(lb(k),{ok:1})].concat(dis(k,c.set||SET.concat(ALL),2).map(x=>lb(x))));
+  const f=await pickQ('<div class="row big1">'+O('👆')+'</div>',items,'Tap the '+ch(k)+'.',async()=>{ await say('This is '+ch(k)+'. '+(TIPS[k]||'')); });
+  return [f,'That is '+ch(k)+'!']; };
+G.sameLetter=async c=>{ const k=c.k||any(c.set||SET); const items=shuffle([Object.assign(lb(k),{ok:1})].concat(dis(k,c.set||SET.concat(ALL),2).map(x=>lb(x))));
+  const f=await pickQ('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>',items,'Find the letter that looks just the same.',async()=>{ await say('Look closely. '+(TIPS[k]||'')); });
+  return [f,'Same! That is '+ch(k)+'.']; };
+G.lookAlike=async c=>{ const pool=(c.set||SET).filter(k=>(LOOKS[k]||[]).length); const k=any(pool.length?pool:(c.set||SET)), other=(LOOKS[k]||dis(k,ALL,1))[0];
+  const f=await pickQ('<div class="row big1">'+O('🔎')+'</div>',shuffle([Object.assign(lb(k),{ok:1}),lb(other)]),'These two look alike! Tap the '+ch(k)+'.',async()=>{ await say(TIPS[k]||('Look for '+ch(k)+'.')); });
+  return [f,'You found the '+ch(k)+'!']; };
+G.countLetter=async c=>{ const k=c.k||any(c.set||SET), n=R(2,4), others=dis(k,c.set||SET.concat(ALL),2); const row=shuffle(Array.from({length:n},()=>k).concat(Array.from({length:6-n},()=>any(others))));
+  view('<div class="row big1">'+row.map(x=>'<span class="heb sm">'+ch(x)+'</span>').join('')+'</div>'+numRow(n,1,5,false,[1,2,3,4,5])); await say('How many '+ch(k)+' can you find?');
+  const f=await pickNum(n,async()=>{ await say('Let’s look for '+ch(k)+' one at a time.'); },'Now tap how many.');
+  return [f,n+' of them!']; };
+G.nextLetter=async c=>{ const ord=c.order||ALL, i=R(0,Math.max(0,ord.length-3)), a=ord[i], b=ord[i+1], nx=ord[i+2]; if(!nx) return G.tapLetter(c);
+  const items=shuffle([Object.assign(lb(nx),{ok:1})].concat(dis(nx,ord.filter(x=>x!==a&&x!==b),2).map(x=>lb(x))));
+  const f=await pickQ('<div class="row big1"><span class="heb sm">'+ch(a)+'</span><span class="heb sm">'+ch(b)+'</span><span class="heb sm q">?</span></div>',items,ch(a)+', '+ch(b)+'... which letter comes next?',async()=>{ await say(ch(a)+', '+ch(b)+', '+ch(nx)+'. That is the order of the Aleph-Beis.'); });
+  return [f,ch(nx)+' comes next!']; };
+/* words built from code points; each letter key of the word, so a letter can be found inside it */
+const WORDS=[{w:['shin','beis','sav'],en:'Shabbos',e:'🕯️'},{w:['tav','vav','reish','hei'],en:'Torah',e:'📜'},{w:['mem','zayin','vav','zayin','hei'],en:'mezuzah',e:'🚪'},{w:['alef','beis','alef'],en:'Abba',e:'👨'},{w:['alef','mem','alef'],en:'Imma',e:'👩'},{w:['ches','lamed','hei'],en:'challah',e:'🍞'},{w:['samech','vav','kaf','hei'],en:'sukkah',e:'🛖'},{w:['tzadi','yud','tzadi','yud','sav'],en:'tzitzis',e:'🧵'},{w:['beis','reish','kaf','hei'],en:'bracha',e:'🙏'},{w:['lamed','vav','lamed','beis'],en:'lulav',e:'🌿'}];
+G.findInWord=async c=>{ const set=c.set||SET; const cand=WORDS.filter(x=>x.w.some(k=>set.indexOf(k)>=0)); const wd=any(cand.length?cand:WORDS); const opts=wd.w.filter(k=>set.indexOf(k)>=0); const k=any(opts.length?opts:wd.w);
+  view('<div class="row big1">'+O(wd.e)+'<small>'+wd.en+'</small></div><div class="row heb-row">'+wd.w.map((x,i)=>'<button class="pic hl" type="button"'+(ch(x)===ch(k)?' data-ok="1"':'')+' aria-label="'+nm(x)+'"><span class="heb">'+ch(x)+'</span></button>').join('')+'</div>');
+  const f=await new Promise(res=>{ say('This word is '+wd.en+'. Tap a '+ch(k)+' in it.').then(()=>{ let first=true; scene.querySelectorAll('.heb-row .pic').forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(b.dataset.ok){ b.classList.add('yes'); chime(); scene.querySelectorAll('.heb-row .pic').forEach(x=>x.onclick=null); res(first); } else { first=false; b.classList.add('no'); soft(); await wrongHelp(async()=>{ await say(TIPS[k]||('Look for '+ch(k)+'.')); },'Tap the '+ch(k)+'.'); } }); }); });
+  return [f,'You found '+ch(k)+' in '+wd.en+'!']; };
+G.dotPick=async c=>{ const pairs=c.pairs||[['beis','veis'],['kaf','chaf']]; const p=any(pairs), want=any(p), other=p[0]===want?p[1]:p[0];
+  const f=await pickQ('<div class="row big1">'+O('⚫')+'</div>',shuffle([Object.assign(lb(want),{ok:1}),lb(other)]),'Tap the '+ch(want)+'.',async()=>{ await say(TIPS[want]||''); });
+  return [f,'Yes! '+ch(want)+'.']; };
+const FINALS=[['kaf','fchaf'],['mem','fmem'],['nun','fnun'],['pei','ffei'],['tzadi','ftzadi']];
+G.finalPick=async c=>{ const p=any(FINALS); const third=any(FINALS.filter(q=>q[1]!==p[1]))[1]; const items=shuffle([Object.assign(lb(p[1]),{ok:1}),lb(p[0]),lb(third)]);
+  const f=await pickQ('<div class="row big1">'+O('🏁')+'</div>',items,'Which one is '+nm(p[1])+', the letter at the end of a word?',async()=>{ await say(TIPS[p[1]]||''); });
+  return [f,'That is '+nm(p[1])+'!']; };
+
+/* ================= MOVIE HELPERS ================= */
+async function M(html){ view(html); await wait(200); }
+/* ================= LESSONS ================= */
+const L=[
+{id:'LK.KRI.L01.01.a',t:'Aleph-Beis 1: Aleph to Hei',e:'✡️',sub:'aleph to hei',
+ warm:[['sameLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['sameLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('✡️')+'</div>'); await say('Mommy lights the Shabbos candles. Next to her is a Siddur full of letters. Let’s meet the first letters of the Aleph-Beis!'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["alef", "beis", "gimmel", "daled", "hei"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['sameLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['lookAlike',{set:["alef", "beis", "gimmel", "daled", "hei"]}]],
+ practice:[['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['sameLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['lookAlike',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['countLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['findInWord',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['lookAlike',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}]],
+ real:['findInWord',{set:["alef", "beis", "gimmel", "daled", "hei"],intro:'Let’s find our letters in words from our home and shul!'}],
+ check:[['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['lookAlike',{set:["alef", "beis", "gimmel", "daled", "hei"]}],['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei"]}]]},
+{id:'LK.KRI.L01.01.b',t:'Aleph-Beis 2: Vav to Yud',e:'🌟',sub:'vav to yud',
+ warm:[['tapLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}],['sameLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('🌟')+'</div>'); await say('On the mezuzah there are letters from the Torah. Let’s learn five more letters!'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["vav", "zayin", "ches", "tes", "yud"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['tapLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}],['sameLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}],['lookAlike',{set:["vav", "zayin", "ches", "tes", "yud"]}]],
+ practice:[['tapLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}],['sameLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}],['lookAlike',{set:["vav", "zayin", "ches", "tes", "yud"]}],['countLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}],['findInWord',{set:["vav", "zayin", "ches", "tes", "yud"]}],['tapLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}],['lookAlike',{set:["vav", "zayin", "ches", "tes", "yud"]}],['tapLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}]],
+ real:['findInWord',{set:["vav", "zayin", "ches", "tes", "yud"],intro:'Let’s find our letters in words from our home and shul!'}],
+ check:[['tapLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}],['lookAlike',{set:["vav", "zayin", "ches", "tes", "yud"]}],['tapLetter',{set:["vav", "zayin", "ches", "tes", "yud"]}]]},
+{id:'LK.KRI.L01.02.a',t:'Aleph-Beis 3: Kaf to Mem',e:'📘',sub:'kaf to mem',
+ warm:[['tapLetter',{set:["kaf", "lamed", "mem"]}],['sameLetter',{set:["kaf", "lamed", "mem"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('📘')+'</div>'); await say('Lamed is the tallest letter. It reaches up to the sky! Let’s meet Kaf, Lamed and Mem.'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["kaf", "lamed", "mem"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['tapLetter',{set:["kaf", "lamed", "mem"]}],['sameLetter',{set:["kaf", "lamed", "mem"]}],['lookAlike',{set:["kaf", "lamed", "mem"]}]],
+ practice:[['tapLetter',{set:["kaf", "lamed", "mem"]}],['sameLetter',{set:["kaf", "lamed", "mem"]}],['lookAlike',{set:["kaf", "lamed", "mem"]}],['countLetter',{set:["kaf", "lamed", "mem"]}],['findInWord',{set:["kaf", "lamed", "mem"]}],['tapLetter',{set:["kaf", "lamed", "mem"]}],['lookAlike',{set:["kaf", "lamed", "mem"]}],['tapLetter',{set:["kaf", "lamed", "mem"]}]],
+ real:['findInWord',{set:["kaf", "lamed", "mem"],intro:'Let’s find our letters in words from our home and shul!'}],
+ check:[['tapLetter',{set:["kaf", "lamed", "mem"]}],['lookAlike',{set:["kaf", "lamed", "mem"]}],['tapLetter',{set:["kaf", "lamed", "mem"]}]]},
+{id:'LK.KRI.L01.02.b',t:'Aleph-Beis 4: Nun to Fei',e:'🎈',sub:'nun to fei',
+ warm:[['tapLetter',{set:["nun", "samech", "ayin", "pei"]}],['sameLetter',{set:["nun", "samech", "ayin", "pei"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('🎈')+'</div>'); await say('Samech is round like a ring, and Ayin has two eyes. Let’s meet four new letters.'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["nun", "samech", "ayin", "pei"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['tapLetter',{set:["nun", "samech", "ayin", "pei"]}],['sameLetter',{set:["nun", "samech", "ayin", "pei"]}],['lookAlike',{set:["nun", "samech", "ayin", "pei"]}]],
+ practice:[['tapLetter',{set:["nun", "samech", "ayin", "pei"]}],['sameLetter',{set:["nun", "samech", "ayin", "pei"]}],['lookAlike',{set:["nun", "samech", "ayin", "pei"]}],['countLetter',{set:["nun", "samech", "ayin", "pei"]}],['findInWord',{set:["nun", "samech", "ayin", "pei"]}],['tapLetter',{set:["nun", "samech", "ayin", "pei"]}],['lookAlike',{set:["nun", "samech", "ayin", "pei"]}],['tapLetter',{set:["nun", "samech", "ayin", "pei"]}]],
+ real:['findInWord',{set:["nun", "samech", "ayin", "pei"],intro:'Let’s find our letters in words from our home and shul!'}],
+ check:[['tapLetter',{set:["nun", "samech", "ayin", "pei"]}],['lookAlike',{set:["nun", "samech", "ayin", "pei"]}],['tapLetter',{set:["nun", "samech", "ayin", "pei"]}]]},
+{id:'LK.KRI.L01.02.c',t:'Aleph-Beis 5: Tzadi to Reish',e:'🌳',sub:'tzadi to reish',
+ warm:[['tapLetter',{set:["tzadi", "kuf", "reish"]}],['sameLetter',{set:["tzadi", "kuf", "reish"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('🌳')+'</div>'); await say('A tzaddik is a good person. The letter Tzadi starts that word! Let’s meet Tzadi, Kuf and Reish.'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["tzadi", "kuf", "reish"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['tapLetter',{set:["tzadi", "kuf", "reish"]}],['sameLetter',{set:["tzadi", "kuf", "reish"]}],['lookAlike',{set:["tzadi", "kuf", "reish"]}]],
+ practice:[['tapLetter',{set:["tzadi", "kuf", "reish"]}],['sameLetter',{set:["tzadi", "kuf", "reish"]}],['lookAlike',{set:["tzadi", "kuf", "reish"]}],['countLetter',{set:["tzadi", "kuf", "reish"]}],['findInWord',{set:["tzadi", "kuf", "reish"]}],['tapLetter',{set:["tzadi", "kuf", "reish"]}],['lookAlike',{set:["tzadi", "kuf", "reish"]}],['tapLetter',{set:["tzadi", "kuf", "reish"]}]],
+ real:['findInWord',{set:["tzadi", "kuf", "reish"],intro:'Let’s find our letters in words from our home and shul!'}],
+ check:[['tapLetter',{set:["tzadi", "kuf", "reish"]}],['lookAlike',{set:["tzadi", "kuf", "reish"]}],['tapLetter',{set:["tzadi", "kuf", "reish"]}]]},
+{id:'LK.KRI.L01.02.d',t:'Aleph-Beis 6: Shin to Sav',e:'🕯️',sub:'shin to sav',
+ warm:[['tapLetter',{set:["shin", "tav"]}],['sameLetter',{set:["shin", "tav"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('🕯️')+'</div>'); await say('Shabbos starts with Shin! Let’s meet the last letters of the Aleph-Beis.'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["shin", "tav"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['tapLetter',{set:["shin", "tav"]}],['sameLetter',{set:["shin", "tav"]}],['lookAlike',{set:["shin", "tav"]}]],
+ practice:[['tapLetter',{set:["shin", "tav"]}],['sameLetter',{set:["shin", "tav"]}],['lookAlike',{set:["shin", "tav"]}],['countLetter',{set:["shin", "tav"]}],['findInWord',{set:["shin", "tav"]}],['tapLetter',{set:["shin", "tav"]}],['lookAlike',{set:["shin", "tav"]}],['tapLetter',{set:["shin", "tav"]}]],
+ real:['findInWord',{set:["shin", "tav"],intro:'Let’s find our letters in words from our home and shul!'}],
+ check:[['tapLetter',{set:["shin", "tav"]}],['lookAlike',{set:["shin", "tav"]}],['tapLetter',{set:["shin", "tav"]}]]},
+{id:'LK.KRI.L01.03.a',t:'Aleph-Beis 7: The Final Letters',e:'🏁',sub:'the final letters',
+ warm:[['tapLetter',{set:['kaf','mem','nun','pei','tzadi']}],['sameLetter',{set:['kaf','mem','nun','pei','tzadi']}]],
+ story:async()=>{ await M('<div class="row big1">'+O('🏁')+'</div>'); await say('Some letters wear a special shape when they come at the end of a word. These are the final letters!'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["fchaf", "fmem", "fnun", "ffei", "ftzadi"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['finalPick'],['finalPick'],['sameLetter',{set:["fchaf", "fmem", "fnun", "ffei", "ftzadi"]}]],
+ practice:[['finalPick'],['sameLetter',{set:["fchaf", "fmem", "fnun", "ffei", "ftzadi"]}],['finalPick'],['tapLetter',{set:["fchaf", "fmem", "fnun", "ffei", "ftzadi"]}],['finalPick'],['countLetter',{set:["fchaf", "fmem", "fnun", "ffei", "ftzadi"]}],['finalPick'],['finalPick']],
+ real:['finalPick',{intro:'The word Shalom ends with a Final Mem. Help find the final letters!'}],
+ check:[['finalPick'],['finalPick'],['tapLetter',{set:["fchaf", "fmem", "fnun", "ffei", "ftzadi"]}]]},
+{id:'LK.KRI.L01.04.a',t:'Aleph-Beis 8: The Whole Aleph-Beis',e:'🏆',sub:'the whole aleph-beis',
+ warm:[['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['sameLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('🏆')+'</div>'); await say('You know so many letters now! Let’s play with the whole Aleph-Beis, from Aleph all the way to Sav.'); },
+ movie:async()=>{ await M('<div class="row heb-row">'+ALL.map(k=>'<span class="heb sm">'+ch(k)+'</span>').join('')+'</div>'); await say('Here is the whole Aleph-Beis! Aleph, Beis, Gimmel, Daled... all the way to Tav. You know them all!'); },
+ together:[['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['sameLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['lookAlike',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}]],
+ practice:[['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['sameLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['lookAlike',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['nextLetter',{}],['findInWord',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['lookAlike',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}]],
+ real:['findInWord',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"],intro:'Let’s find our letters in words from our home and shul!'}],
+ check:[['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['lookAlike',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}],['tapLetter',{set:["alef", "beis", "gimmel", "daled", "hei", "vav", "zayin", "ches", "tes", "yud", "kaf", "lamed", "mem", "nun", "samech", "ayin", "pei", "tzadi", "kuf", "reish", "shin", "tav"]}]]},
+{id:'LK.KRI.L01.05.a',t:'Dot Letters 1: Beis-Veis and Kaf-Chaf',e:'⚫',sub:'beis-veis and kaf-chaf',
+ warm:[['tapLetter',{set:["beis", "veis", "kaf", "chaf"]}],['sameLetter',{set:["beis", "veis", "kaf", "chaf"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('⚫')+'</div>'); await say('Some letters change when they have a dot inside. A dot can change Veis into Beis!'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["beis", "veis", "kaf", "chaf"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['dotPick',{pairs:[["beis","veis"],["kaf","chaf"]]}],['dotPick',{pairs:[["beis","veis"],["kaf","chaf"]]}],['lookAlike',{set:["beis", "veis", "kaf", "chaf"]}]],
+ practice:[['dotPick',{pairs:[["beis","veis"],["kaf","chaf"]]}],['tapLetter',{set:["beis", "veis", "kaf", "chaf"]}],['dotPick',{pairs:[["beis","veis"],["kaf","chaf"]]}],['lookAlike',{set:["beis", "veis", "kaf", "chaf"]}],['dotPick',{pairs:[["beis","veis"],["kaf","chaf"]]}],['findInWord',{set:["beis", "veis", "kaf", "chaf"]}],['dotPick',{pairs:[["beis","veis"],["kaf","chaf"]]}],['sameLetter',{set:["beis", "veis", "kaf", "chaf"]}]],
+ real:['findInWord',{set:["beis", "veis", "kaf", "chaf"],intro:'Look at the words we see every Shabbos!'}],
+ check:[['dotPick',{pairs:[["beis","veis"],["kaf","chaf"]]}],['dotPick',{pairs:[["beis","veis"],["kaf","chaf"]]}],['tapLetter',{set:["beis", "veis", "kaf", "chaf"]}]]},
+{id:'LK.KRI.L01.05.b',t:'Dot Letters 2: Pei-Fei and Tav-Sav',e:'🔵',sub:'pei-fei and tav-sav',
+ warm:[['tapLetter',{set:["pei", "fei", "tav", "sav"]}],['sameLetter',{set:["pei", "fei", "tav", "sav"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('🔵')+'</div>'); await say('More dot letters! A dot turns Fei into Pei, and Sav into Tav.'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["pei", "fei", "tav", "sav"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['dotPick',{pairs:[["pei","fei"],["tav","sav"]]}],['dotPick',{pairs:[["pei","fei"],["tav","sav"]]}],['lookAlike',{set:["pei", "fei", "tav", "sav"]}]],
+ practice:[['dotPick',{pairs:[["pei","fei"],["tav","sav"]]}],['tapLetter',{set:["pei", "fei", "tav", "sav"]}],['dotPick',{pairs:[["pei","fei"],["tav","sav"]]}],['lookAlike',{set:["pei", "fei", "tav", "sav"]}],['dotPick',{pairs:[["pei","fei"],["tav","sav"]]}],['findInWord',{set:["pei", "fei", "tav", "sav"]}],['dotPick',{pairs:[["pei","fei"],["tav","sav"]]}],['sameLetter',{set:["pei", "fei", "tav", "sav"]}]],
+ real:['findInWord',{set:["pei", "fei", "tav", "sav"],intro:'Look at the words we see every Shabbos!'}],
+ check:[['dotPick',{pairs:[["pei","fei"],["tav","sav"]]}],['dotPick',{pairs:[["pei","fei"],["tav","sav"]]}],['tapLetter',{set:["pei", "fei", "tav", "sav"]}]]},
+{id:'LK.KRI.L01.05.c',t:'Dot Letters 3: Shin and Sin, and Review',e:'🔥',sub:'shin and sin, and review',
+ warm:[['tapLetter',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"]}],['sameLetter',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"]}]],
+ story:async()=>{ await M('<div class="row big1">'+O('🔥')+'</div>'); await say('Shin and Sin look the same, but watch the dot! On the right it is Shin. On the left it is Sin.'); },
+ movie:async()=>{ await say('Movie time! Let’s meet each letter.'); for(const k of ["shin", "sin", "beis", "veis"]){ await M('<div class="row big1"><span class="heb big">'+ch(k)+'</span></div>'); await say('This is '+ch(k)+'. '+(TIPS[k]||'')); } },
+ together:[['dotPick',{pairs:[["shin","sin"],["beis","veis"],["kaf","chaf"],["pei","fei"],["tav","sav"]]}],['dotPick',{pairs:[["shin","sin"],["beis","veis"],["kaf","chaf"],["pei","fei"],["tav","sav"]]}],['lookAlike',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"]}]],
+ practice:[['dotPick',{pairs:[["shin","sin"],["beis","veis"],["kaf","chaf"],["pei","fei"],["tav","sav"]]}],['tapLetter',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"]}],['dotPick',{pairs:[["shin","sin"],["beis","veis"],["kaf","chaf"],["pei","fei"],["tav","sav"]]}],['lookAlike',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"]}],['dotPick',{pairs:[["shin","sin"],["beis","veis"],["kaf","chaf"],["pei","fei"],["tav","sav"]]}],['findInWord',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"]}],['dotPick',{pairs:[["shin","sin"],["beis","veis"],["kaf","chaf"],["pei","fei"],["tav","sav"]]}],['sameLetter',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"]}]],
+ real:['findInWord',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"],intro:'Look at the words we see every Shabbos!'}],
+ check:[['dotPick',{pairs:[["shin","sin"],["beis","veis"],["kaf","chaf"],["pei","fei"],["tav","sav"]]}],['dotPick',{pairs:[["shin","sin"],["beis","veis"],["kaf","chaf"],["pei","fei"],["tav","sav"]]}],['tapLetter',{set:["shin", "sin", "beis", "veis", "kaf", "chaf", "pei", "fei", "tav", "sav"]}]]},
+];
+
+/* ================= RUNNER ================= */
+let done={}; try{ done=JSON.parse(localStorage.getItem('kkriyah-done')||'{}')||{}; }catch(e){}
+async function play(spec,mode){ MODE=mode; const [kind,cfg]=spec; const c=Object.assign({},cfg||{}); if(c.intro) await say(c.intro); const r=await G[kind](c); BOT=null; const first=r[0], line=r[1]||'';
+  if(first){ stars++; await say(any(PRAISE)+' '+line); } else await say(line+' Good trying!'); await wait(250); return first; }
+async function lesson(Ls){ stars=0; $('track').hidden=false; $('home').hidden=false; $('h1').innerHTML=Ls.t+' <small>'+Ls.id+' · '+Ls.sub+'</small>';
+  station(0); await say('Warm-up!'); for(const s of Ls.warm) await play(s,'help');
+  station(1); await Ls.story();
+  station(2); await say('Movie time! Watch and listen.'); await Ls.movie();
+  station(3); await say('Now let’s do it together!'); for(const s of Ls.together) await play(s,'help');
+  station(4); await say('Your turn to practice!'); for(const s of shuffle(Ls.practice.slice(0,5)).concat(shuffle(Ls.practice.slice(5)))) await play(s,'practice');
+  station(5); await play(Ls.real,'practice');
+  station(6); await say('Quick check. Do it all by yourself!'); let ok=0; for(const s of Ls.check) ok+=(await play(s,'check'))?1:0;
+  station(7); confetti(); chime(); setTimeout(chime,400*FAST); done[Ls.id]=Math.max(done[Ls.id]||0,ok); try{ localStorage.setItem('kkriyah-done',JSON.stringify(done)); }catch(e){}
+  view('<div class="start" id="fin"><div class="hero">⭐🎉⭐</div><h2>You did it!</h2><p>'+(ok===3?'You know '+Ls.t+'!':'Great working! We will practice this again soon.')+' You earned '+stars+' stars.</p><div class="row" style="font-size:36px">'+'⭐'.repeat(Math.min(stars,16))+'</div><div class="row"><button class="go alt" id="again" type="button">↻ Play again</button><button class="go" id="menu2" type="button">🏠 More lessons</button></div></div>');
+  window.__kit.last={id:Ls.id,ok:ok,stars:stars};
+  await say(ok===3?'You did it! Hop on the train to your next station!':'Great working! You are on the right trail.');
+  $('again').onclick=()=>lesson(Ls); $('menu2').onclick=menu; }
+function menu(){ try{ speechSynthesis.cancel(); }catch(e){} $('track').hidden=true; $('home').hidden=true; $('h1').innerHTML='Kindergarten Kriyah <small>11 lessons in the new style · Little Explorers</small>';
+  view('<div class="menu">'+L.map((l,i)=>'<button class="lt" type="button" data-i="'+i+'">'+(done[l.id]!=null?'<span class="done">'+(done[l.id]===3?'⭐':'✓')+'</span>':'')+'<span class="e">'+l.e+'</span>'+l.t+'<small>'+l.sub+'</small></button>').join('')+'</div>');
+  cap.textContent='Pick a lesson. Each one talks to you.'; scene.querySelectorAll('.lt').forEach(b=>b.onclick=()=>{ tone(523,.1); lesson(L[+b.dataset.i]); }); }
+$('home').onclick=()=>{ location.hash=''; location.reload(); };
+window.__kit.lessons=L.map(l=>l.id); window.__kit.start=i=>lesson(L[i]);
+const h=location.hash.slice(1), hi=L.findIndex(l=>l.id===h); if(hi>=0) lesson(L[hi]); else menu();
+})();
+</script>
