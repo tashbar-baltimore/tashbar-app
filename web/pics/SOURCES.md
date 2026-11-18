@@ -11,3 +11,11 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - yarden-river.jpg | Library of Congress, Matson collection, LC-DIG-matpc-10419 "Jordan River", cropped | No known restrictions on publication | American Colony / Matson
 - nile-sailboats.jpg | Library of Congress, Matson collection, LC-DIG-matpc-03859 "Egypt. River scenes. The Nile", left half of stereo pair | No known restrictions on publication | American Colony / Matson
 - sinai-desert-camel.jpg | Library of Congress, Matson collection, LC-DIG-matpc-01951 "To Sinai via the desert", left half of stereo pair | No known restrictions on publication | American Colony / Matson
+- mishkan-timna-model.jpg | https://commons.wikimedia.org/wiki/File:Stiftshuette_Modell_Timnapark.jpg (960px copy) | CC BY-SA 3.0 | Ruk7
+- shofar-alone.jpg | https://commons.wikimedia.org/wiki/File:Shofar-16-Zachi-Evenor.jpg (960px copy) | CC BY 2.0 | Zachi Evenor
+- arba-minim-market.jpg | https://commons.wikimedia.org/wiki/File:PikiWiki_Israel_23362_Four_Species_market_in_Bnei_Brak_(cropped).JPG (960px copy) | CC BY 2.5 | Dr. Avishai Teicher
+- sukkah-canvas.jpg | https://commons.wikimedia.org/wiki/File:Canvas_sukkah_in_the_street.JPG (960px copy) | CC BY-SA 3.0 | Bachrach44
+- tzitzis-tallis-katan.jpg | https://commons.wikimedia.org/wiki/File:Arba_Kanfot.jpg (960px copy) | CC BY-SA 4.0 | LGLou
+- matzah-shmurah.jpg | https://commons.wikimedia.org/wiki/File:Shmurah_Matzah_03.jpg (960px copy) | CC BY-SA 4.0 | Jacek Proszyk
+- mezuzah-case.jpg | https://commons.wikimedia.org/wiki/File:Macedonian_Mezuzah.jpg (960px copy) | CC BY-SA 3.0 | PretoriaTravel
+- sefer-torah-yad.jpg | https://commons.wikimedia.org/wiki/File:Torah_at_the_state_library_of_Victoria.jpg (960px copy) | CC BY-SA 4.0 | Azoma
