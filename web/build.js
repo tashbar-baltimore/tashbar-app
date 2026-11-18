@@ -22,6 +22,8 @@ async function call(fn, args) {
   fs.writeFileSync(path.join(OUT, 'tools.json'), JSON.stringify(tools));
   fs.writeFileSync(path.join(OUT, 'boot.js'), fs.readFileSync(path.join(__dirname, 'boot.js'), 'utf8').replace('__API_URL__', CALLS).replace('__APPS_URL__', API));
   fs.copyFileSync(path.join(__dirname, 'sw.js'), path.join(OUT, 'sw.js'));
+  /* PICS-1: real pictures for lessons (RealPics.html), served at /pics/ */
+  const PICS = path.join(__dirname, 'pics'); if (fs.existsSync(PICS)) fs.cpSync(PICS, path.join(OUT, 'pics'), { recursive: true });
   fs.writeFileSync(path.join(OUT, 'page-hash.json'), JSON.stringify({ h: pageR.h }));
   let page = pageR.html; const at = page.indexOf('<head>'); if (at < 0) throw new Error('no <head> in the student page');
   page = page.slice(0, at + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Tashbar Learning</title><script>window.TL_PAGE_HASH="' + pageR.h + '";window.TL_PAGE_BUILT=' + Date.now() + ';</script><script src="/boot.js"></script>' + page.slice(at + 6);
