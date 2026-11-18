@@ -1,0 +1,39 @@
+<script>
+/* StuckSpotsPage.html — "Where kids get stuck" on the staff screen (Head of School 2026-11-18). READ ONLY: data from sgStuckSpots (StuckSpots.js).
+   A bright button "🧩 Where kids get stuck" opens a list of the questions most often missed on the first try in the last 14 days,
+   with how many boys tried each and how many asked for help, so a rebbe can see what to reteach. Added by sgPage_ after StaffReviewPage.
+   No double slash in this file (HtmlService rule). */
+(function(){
+if(typeof render!=='function'||typeof S==='undefined'||typeof run!=='function') return;
+const SS=window.SS=window.SS||{open:false,d:null,at:0};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function body(){ const D=SS.d;
+ if(!D) return '<p class="ss-soft">Loading…</p>';
+ if(D.err) return '<p class="ss-soft">Could not load: '+E(D.err)+'</p>';
+ if(!D.rows.length) return '<p class="ss-soft">Not enough answers yet in the last 14 days. This list fills up as the boys learn.</p>';
+ return '<table class="ss-tab"><thead><tr><th>Subject / skill</th><th>Question</th><th>Missed first try</th><th>Boys</th><th>Asked for help</th></tr></thead><tbody>'+
+  D.rows.map(r=>`<tr><td><b>${E(r.name)}</b><small>${E(r.phase)}</small></td><td>${E(r.item)}</td><td><span class="ss-bar"><i style="width:${Math.min(100,r.missPct)}%"></i></span><b class="${r.missPct>=50?'bad':''}">${r.missPct}%</b><small>of ${r.tries}</small></td><td>${r.boys}</td><td>${r.help}</td></tr>`).join('')+'</tbody></table>'; }
+function draw(){ let o=document.getElementById('ss-ov'); if(!SS.open){ if(o) o.remove(); return; } if(!o){ o=document.createElement('div'); o.id='ss-ov'; document.body.appendChild(o); }
+ o.innerHTML=`<div class="ss-ov" data-ss="bg"><div class="ss-card" role="dialog" aria-modal="true" aria-label="Where kids get stuck"><div class="ss-hd"><h2>🧩 Where kids get stuck</h2><button type="button" class="ss-x" data-ss="close" aria-label="Close">✕</button></div><p class="ss-soft">The questions missed most on the first try in the last 14 days (only boys you can see). A short reteach of the top few helps the most.</p>${body()}</div></div>`; }
+function openIt(){ SS.open=true; if(!SS.d||SS.at<Date.now()-60000){ SS.d=null; SS.at=Date.now(); run('sgStuckSpots',S.token).then(d=>{ SS.d=d||{rows:[]}; draw(); }).catch(e=>{ SS.d={err:String(e&&e.message||e)}; draw(); }); } draw(); }
+function fix(){ const show=!!(S.token&&S.d&&S.d.boys); let b=document.getElementById('ss-btn');
+ if(!show){ if(b) b.remove(); return; }
+ if(!b){ b=document.createElement('button'); b.type='button'; b.id='ss-btn'; b.dataset.ss='open'; b.innerHTML='🧩 Where kids get stuck'; document.body.appendChild(b); } }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-ss]'); if(!b) return; const a=b.dataset.ss;
+ if(a==='open'){ e.preventDefault(); openIt(); } else if(a==='close'||(a==='bg'&&e.target===b)){ SS.open=false; draw(); } });
+const _ssRender=render;
+render=function(){ const out=_ssRender.apply(this,arguments); try{ fix(); }catch(e){ console.error('StuckSpots',e); } return out; };
+document.head.insertAdjacentHTML('beforeend',`<style id="ss-css">
+#ss-btn{position:fixed;right:18px;bottom:18px;z-index:800;border:0;border-radius:999px;padding:12px 20px;background:linear-gradient(180deg,#FDE047,#F59E0B);color:#1E1B4B;font:800 16px system-ui,sans-serif;cursor:pointer;box-shadow:0 5px 0 #B45309,0 10px 20px rgba(180,83,9,.25)}
+#ss-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #B45309}
+.ss-ov{position:fixed;inset:0;z-index:9000;background:rgba(240,249,255,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:16px}
+.ss-card{background:#fff;color:#0F172A;border-radius:22px;border:3px solid #FDE68A;max-width:980px;width:100%;max-height:88vh;overflow:auto;padding:20px 22px;box-shadow:0 24px 60px rgba(30,27,75,.18)}
+.ss-hd{display:flex;justify-content:space-between;align-items:center}.ss-hd h2{margin:0;font-size:22px}.ss-x{border:0;background:#EEF2FF;border-radius:10px;width:40px;height:40px;font-size:18px;cursor:pointer}
+.ss-soft{color:#64748B;font-size:14px;margin:6px 0 12px}
+.ss-tab{width:100%;border-collapse:collapse;font-size:14px}.ss-tab th,.ss-tab td{padding:9px 8px;border-bottom:1px solid #E2E8F0;text-align:left;vertical-align:top}
+.ss-tab td small{display:block;color:#94A3B8;font-size:12px}.ss-tab td b.bad{color:#B91C1C}
+.ss-bar{display:block;width:110px;height:8px;border-radius:99px;background:#F1F5F9;margin-bottom:4px;overflow:hidden}.ss-bar i{display:block;height:100%;background:linear-gradient(90deg,#F59E0B,#EF4444)}
+</style>`);
+try{ fix(); }catch(e){}
+})();
+</script>

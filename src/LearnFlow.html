@@ -6,17 +6,24 @@
    2. HELP ME: every question card gets one friendly "Help me" button that opens the lesson's teaching card again
       (the method, never the answer). In the Learn stage the step-by-step "Teach me how" button sits on that card too.
    3. After a wrong answer the Help me button glows and wiggles to invite the boy to use it.
+   4. WRONG ANSWERS TEACH: when a boy picks a wrong Hebrew letter, a friendly bubble names the letter he picked and its sound
+      ("You picked ד: that is Daled. It says d."), so he learns from the miss without being shown the right answer (he tries again).
    If anything fails, the lesson shows as before. Respects reduced motion. No double slash in this file (HtmlService rule). */
 (function(){
 if(typeof render!=='function'||typeof A==='undefined') return;
 const LF=window.LF=window.LF||{};
 if(LF.on) return; LF.on=true;
 LF.seen=LF.seen||{}; LF.last=LF.last||null;
+const LET={'א':['Aleph','no sound by itself'],'ב':['Beis','b (with a dot) or v'],'ג':['Gimmel','g'],'ד':['Daled','d'],'ה':['Hei','h'],'ו':['Vav','v'],'ז':['Zayin','z'],'ח':['Ches','ch'],'ט':['Tes','t'],'י':['Yud','y'],'כ':['Kaf','k (with a dot) or ch'],'ך':['Final Kaf','ch'],'ל':['Lamed','l'],'מ':['Mem','m'],'ם':['Final Mem','m'],'נ':['Nun','n'],'ן':['Final Nun','n'],'ס':['Samech','s'],'ע':['Ayin','no sound by itself'],'פ':['Pei','p (with a dot) or f'],'ף':['Final Fei','f'],'צ':['Tzadi','tz'],'ץ':['Final Tzadi','tz'],'ק':['Kuf','k'],'ר':['Reish','r'],'ש':['Shin','sh (dot on the right) or s (dot on the left)'],'ת':['Tav','t (with a dot) or s']};
+function why(sel){ const t=String(sel==null?'':sel).replace(/[\u0591-\u05C7]/g,'').replace(/[^\u05D0-\u05EA]/g,''); if(t.length!==1||!LET[t]) return '';
+ const L=LET[t]; return `You picked <span class="lf-he">${t}</span>: that is <b>${L[0]}</b>. It says <b>${L[1]}</b>. Look again!`; }
 function css(){ if(document.getElementById('lf-css')) return; const s=document.createElement('style'); s.id='lf-css'; s.textContent=`
 body.lf-on .qcard .how{display:none!important}
 body:has(#tqh) .lf-card{display:none!important}
 .lf-help{display:inline-flex;width:auto!important;align-self:flex-start;align-items:center;gap:10px;margin:6px 0 12px;border:0;border-radius:999px;padding:12px 24px;background:linear-gradient(180deg,#FEF08A,#FACC15);color:#1E1B4B;font:900 20px var(--display,'Barlow'),sans-serif;cursor:pointer;box-shadow:0 5px 0 #CA8A04,0 10px 18px rgba(202,138,4,.25)}
 .lf-help:active{transform:translateY(4px);box-shadow:0 1px 0 #CA8A04}
+.lf-why{margin:4px 0 12px;padding:12px 16px;border-radius:16px;background:#FFF7ED;border:2px solid #FDBA74;color:#7C2D12;font:700 20px/1.4 'Andika',var(--body,'Nunito'),sans-serif;animation:lfpop .4s cubic-bezier(.2,1.4,.4,1) both}
+.lf-why .lf-he{font:700 34px 'Frank Ruhl Libre','SBL Hebrew',serif;vertical-align:middle;margin:0 4px}
 .lf-help.lf-nudge{animation:lfwig .9s ease-in-out 3;box-shadow:0 5px 0 #CA8A04,0 0 0 8px rgba(250,204,21,.35),0 10px 18px rgba(202,138,4,.25)}
 @keyframes lfwig{0%,100%{transform:rotate(0)}20%{transform:rotate(-5deg) scale(1.06)}40%{transform:rotate(5deg) scale(1.06)}60%{transform:rotate(-3deg)}80%{transform:rotate(3deg)}}
 .lf-card{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:20px;background:radial-gradient(900px 500px at 50% 112%,rgba(253,224,71,.6),rgba(253,224,71,0) 60%),linear-gradient(170deg,#E0F2FE,#FFF7E0);animation:lfin .35s ease-out both}
@@ -56,7 +63,11 @@ function decorate(){
  if(LF.how&&!card.querySelector('.lf-help')){ const b=document.createElement('button'); b.type='button'; b.className='lf-help'; b.dataset.lf='help'; b.innerHTML='<span aria-hidden="true">💡</span> Help me';
   const opts=card.querySelector('.opts'); if(opts) opts.insertAdjacentElement('beforebegin',b); else card.appendChild(b); }
  try{ card.querySelectorAll('div,p,span').forEach(x=>{ if(x.children.length<=2&&/^\W*Stuck\? Tap Teach me how/.test((x.textContent||'').trim())&&!x.dataset.lfd){ x.dataset.lfd=1; x.innerHTML='💡 Stuck? Tap <b>Help me</b> to see how it works again.'; } }); }catch(e){}
- const wrong=card.querySelector('.opt.no, .opt.bad, .opt.wrong, .opt[aria-invalid="true"]'); const hb=card.querySelector('.lf-help'); if(hb) hb.classList.toggle('lf-nudge',!!wrong);
+ let wrong=false, sel=null; try{ const p=A.play; wrong=!!(p&&p.fb&&p.fb.ok===false); sel=p?p.sel:null; }catch(e){}
+ const hb=card.querySelector('.lf-help'); if(hb) hb.classList.toggle('lf-nudge',wrong);
+ let wb=card.querySelector('.lf-why'); const msg=wrong?why(sel):'';
+ if(msg){ if(!wb||wb.dataset.sel!==String(sel)){ if(wb) wb.remove(); wb=document.createElement('div'); wb.className='lf-why'; wb.dataset.sel=String(sel); wb.setAttribute('role','status'); wb.innerHTML='🤔 '+msg; const opts=card.querySelector('.opts'); if(opts) opts.insertAdjacentElement('beforebegin',wb); else card.appendChild(wb); } }
+ else if(wb) wb.remove();
 }
 document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-lf]'); if(!b) return; const k=b.dataset.lf;
  if(k==='go'){ close(); }

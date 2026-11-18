@@ -240,6 +240,17 @@ async function packWarm() {
   console.log('warm: ' + n + ' of ' + list.length + ' lesson packs ready (' + fromDrive + ' from Drive)');
 }
 setTimeout(() => { packWarm().catch(e => console.warn('pack warm-up failed:', String(e.message || e).slice(0, 120))).then(() => liveState()).then(() => LIVE && LIVE.srv && LIVE.srv.run('msBootstrap', [])).then(() => console.log('warm: database loaded')).catch(e => console.warn('warm-up failed:', String(e.message || e).slice(0, 120))); }, 0);
+/* Only the functions on the app's approved list (API_ALLOW, ApiRoute.js) may be called from a page, exactly as on Apps Script. */
+let ALLOW = null;
+function allowed(fn) {
+  if (!ALLOW) { try { const rt = require('./app/server/runtime.js'), vm = require('vm'), fs = require('fs'), path = require('path'); const p = rt.createRuntime({ store: { books: {}, props: {} } });
+      ALLOW = new Set(JSON.parse(vm.runInContext('JSON.stringify(typeof API_ALLOW !== "undefined" ? API_ALLOW : [])', p.ctx)));
+      /* plus every function some page of the app calls (pages served on Firebase and the pages linked from it); editor-only tools stay blocked */
+      const dir = path.join(__dirname, 'app', 'src'); const pats = [/run\(\s*'([a-z][A-Za-z0-9]*)'/g, /remote\(\s*'([a-z][A-Za-z0-9]*)'/g, /google\.script\.run(?:\.with\w+\([^)]*\))*\.([a-z][A-Za-z0-9]*)\(/g, /\.withSuccessHandler\([^)]*\)\.([a-z][A-Za-z0-9]*)\(/g, /call\(\s*'([a-z][A-Za-z0-9]*)'/g];
+      fs.readdirSync(dir).filter(x => x.endsWith('.html')).forEach(x => { const s = fs.readFileSync(path.join(dir, x), 'utf8'); pats.forEach(re => { for (const m of s.matchAll(re)) ALLOW.add(m[1]); }); });
+      console.log('allow list: ' + ALLOW.size + ' functions'); } catch (e) { console.error('allow list failed', e.message); ALLOW = null; return true; } }
+  return ALLOW.has(fn);
+}
 /* log any very large answer, by name only */
 function noteSize(fn, body) { try { const n = Buffer.byteLength(body); if (n > 4e6) console.warn('large answer', fn, Math.round(n / 1e6) + ' MB'); } catch (e) {} }
 exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2, timeoutSeconds: 300, secrets: ['TL_EXPORT_KEY'], maxInstances: 50, minInstances: 1 }, async (req, res) => {
@@ -252,6 +263,7 @@ exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2
     const args = Array.isArray(body.args) ? body.args.slice(0, 8) : [];
     if (body.fbtest) return res.status(200).json(await testLane(String(body.fbtest), fn, args));
     if (Object.prototype.hasOwnProperty.call(MOVED, fn)) { const j = JSON.stringify({ ok: true, result: await MOVED[fn].apply(null, args) }); noteSize(fn, j); return res.status(200).type('application/json').send(j); }
+    if (!allowed(fn)) return res.status(200).json({ ok: false, error: 'Not allowed.' });   /* same approved list as the Apps Script app (API_ALLOW in ApiRoute.js) */
     const L = await liveState();
     if (L.on) { const r = await L.srv.run(fn, args);
       if (r.error && /not available on this server yet|is not defined|NEED /.test(r.error)) { /* Drive, Docs, email...: still answered by Apps Script */ return res.status(200).type('application/json').send(await appsScript(fn, args)); }
