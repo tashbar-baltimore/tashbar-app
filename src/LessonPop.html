@@ -42,7 +42,7 @@ html body .tl-out{background:#fff!important;color:#1E1B4B!important;border:2px s
 `; document.head.appendChild(s);
 /* answers that are Hebrew letters or words get the extra-big size */
 const HE=/[\u0590-\u05FF]/, LAT=/[A-Za-z]/;
-function mark(){ document.querySelectorAll('#tqh .tq-op:not(.lp-x),.qcard .opts .opt:not(.lp-x)').forEach(b=>{ b.classList.add('lp-x'); const t=b.textContent||''; if(HE.test(t)&&!LAT.test(t)&&t.trim().length<=14) b.classList.add('lp-he'); }); }
+function mark(){ document.querySelectorAll('#tqh .tq-op:not(.lp-x),.qcard .opts .opt:not(.lp-x)').forEach(b=>{ b.classList.add('lp-x'); const t=b.textContent||''; const lat=(t.match(/[A-Za-z]/g)||[]).length; if(HE.test(t)&&lat<=1&&t.trim().length<=16) b.classList.add('lp-he'); }); }
 try{ new MutationObserver(()=>{ mark(); }).observe(document.body,{childList:true,subtree:true}); }catch(e){}
 mark();
 })();
