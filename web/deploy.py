@@ -19,7 +19,8 @@ cfg = {'headers': [
   {'glob': '/tools.json', 'headers': {'Cache-Control': 'no-cache'}},
   {'glob': '/sw.js', 'headers': {'Cache-Control': 'no-cache'}},
   {'glob': '/page-hash.json', 'headers': {'Cache-Control': 'no-cache'}},
-  {'glob': '/staff/**', 'headers': {'Cache-Control': 'no-cache'}}]}
+  {'glob': '/staff/**', 'headers': {'Cache-Control': 'no-cache'}},
+  {'glob': '/curriculum/**', 'headers': {'Cache-Control': 'public, max-age=300', 'Access-Control-Allow-Origin': '*'}}]}
 ver = call('POST', f'{API}/sites/{proj}/versions', {'config': cfg})['name']
 files, blobs = {}, {}
 for d, _, fs in os.walk(ROOT):
@@ -28,7 +29,13 @@ for d, _, fs in os.walk(ROOT):
         files['/' + os.path.relpath(p, ROOT).replace(os.sep, '/')] = h; blobs[h] = gz
 res = call('POST', f'{API}/{ver}:populateFiles', {'files': files})
 need = res.get('uploadRequiredHashes', []); up = res.get('uploadUrl')
-for h in need: call('POST', f'{up}/{h}', raw=blobs[h], ctype='application/octet-stream')
+from concurrent.futures import ThreadPoolExecutor
+def put(h):
+    for k in range(4):
+        try: return call('POST', f'{up}/{h}', raw=blobs[h], ctype='application/octet-stream')
+        except Exception:
+            if k == 3: raise
+with ThreadPoolExecutor(24) as ex: list(ex.map(put, need))
 call('PATCH', f'{API}/{ver}?update_mask=status', {'status': 'FINALIZED'})
 call('POST', f'{API}/sites/{proj}/releases?versionName={ver}', {'message': note})
 print(f'deployed {len(files)} files ({len(need)} uploaded, {sum(len(b) for b in blobs.values())/1048576:.1f} MB compressed) to https://{proj}.web.app')

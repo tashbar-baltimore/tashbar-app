@@ -38,6 +38,27 @@ table.dm-grid{ border-collapse:collapse; width:100%; font-size:13px; } .dm-grid 
 #dm-pick .bx h3{ margin:0 0 8px; } #dm-pick .list{ max-height:50vh; overflow:auto; border:1px solid #E2E8F0; border-radius:10px; margin:8px 0; }
 #dm-pick label{ display:flex; gap:8px; padding:7px 10px; border-bottom:1px solid #F1F5F9; cursor:pointer; } #dm-pick .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 #dm-pick .go{ background:#4338CA; color:#fff; border:0; border-radius:10px; padding:10px 16px; font:800 15px system-ui; cursor:pointer; } #dm-pick .no{ background:#EEF2F6; border:0; border-radius:10px; padding:10px 16px; font:700 15px system-ui; cursor:pointer; }
+
+/* LESSON PLAN view: one lesson, full screen, nothing else around it (HoS 2026-11-18) */
+#dm-plan{ position:fixed; inset:0; z-index:2147483200; background:#fff; overflow:auto; font:500 16px/1.55 system-ui,"Segoe UI",sans-serif; color:#111827; }
+#dm-plan .bar{ position:sticky; top:0; z-index:2; display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:10px 16px; background:#F8FAFC; border-bottom:1px solid #E5E7EB; }
+#dm-plan .bar button,#dm-plan .bar a{ border:0; border-radius:10px; padding:9px 14px; font:700 14px system-ui; cursor:pointer; background:#EEF2FF; color:#312E81; text-decoration:none; }
+#dm-plan .bar .x{ margin-left:auto; background:#111827; color:#fff; } #dm-plan .bar .pos{ color:#64748B; font:600 13px system-ui; }
+#dm-plan .doc{ max-width:860px; margin:0 auto; padding:22px 18px 80px; }
+#dm-plan h1{ font-size:30px; line-height:1.2; margin:4px 0 6px; } #dm-plan .crumb{ color:#64748B; font:700 13px system-ui; letter-spacing:.02em; text-transform:uppercase; }
+#dm-plan .lead{ font-size:17px; color:#374151; } #dm-plan h2{ font-size:21px; margin:28px 0 8px; padding-top:14px; border-top:2px solid #E5E7EB; }
+#dm-plan h2 small{ color:#64748B; font-weight:600; font-size:14px; } #dm-plan .meta{ display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+#dm-plan .q{ border:1px solid #E5E7EB; border-radius:14px; padding:12px 14px; margin:10px 0; break-inside:avoid; }
+#dm-plan .q .k{ display:inline-block; font:800 11px system-ui; text-transform:uppercase; letter-spacing:.04em; color:#4338CA; background:#EEF2FF; border-radius:6px; padding:2px 7px; margin-right:6px; }
+#dm-plan .q .n{ font:800 14px system-ui; color:#64748B; margin-right:6px; } #dm-plan .q .qq{ font-weight:650; }
+#dm-plan .how{ background:#F0F9FF; border-left:4px solid #0EA5E9; border-radius:8px; padding:8px 12px; margin:6px 0; }
+#dm-plan ul.ch{ list-style:none; padding:0; margin:6px 0; display:flex; flex-wrap:wrap; gap:6px; } #dm-plan ul.ch li{ border:1px solid #D1D5DB; border-radius:10px; padding:4px 10px; }
+#dm-plan ul.ch li.ok{ border-color:#16A34A; background:#DCFCE7; font-weight:700; } #dm-plan .he{ font-family:'Frank Ruhl Libre','SBL Hebrew','Noto Serif Hebrew',serif; font-size:1.35em; }
+#dm-plan .ans{ color:#166534; font-weight:700; } #dm-plan .hint{ color:#6B7280; font-size:14px; } #dm-plan details{ margin-top:4px; } #dm-plan summary{ cursor:pointer; color:#4338CA; font-size:14px; }
+#dm-plan table.pp{ border-collapse:collapse; margin:6px 0; } #dm-plan table.pp td{ border:1px solid #E5E7EB; padding:4px 10px; }
+#dm-plan .bins{ display:flex; gap:10px; flex-wrap:wrap; } #dm-plan .bins div{ border:1px dashed #94A3B8; border-radius:10px; padding:6px 10px; min-width:140px; }
+#dm-plan .tt{ background:#FFFBEB; border:1px solid #FDE68A; border-radius:14px; padding:12px 16px; } #dm-plan .tt b{ display:block; margin-top:6px; }
+@media print{ body > *:not(#dm-plan){ display:none !important; } #dm-plan{ position:static; overflow:visible; } #dm-plan .bar{ display:none; } }
 @media (max-width:620px){ .dm-sk{ grid-template-columns:34px 1fr; } .dm-acts{ grid-column:1 / -1; flex-direction:row; flex-wrap:wrap; } }
 </style>
 <script>
@@ -70,7 +91,7 @@ function skillRow(t,s){ const st=status(s), r=RV[s.rv];
  const chips=(s.f.indexOf('k')>=0?'<span class="dm-chip g">🎮 Full game lesson</span>':'')+(s.f.indexOf('t')>=0?'<span class="dm-chip">🧑‍🏫 Teacher Time</span>':'')+(s.f.indexOf('g')>=0?'<span class="dm-chip">✨ How-to + endless questions</span>':'')+(s.f.indexOf('l')>=0?'<span class="dm-chip">🧪 Lab</span>':'')+(s.f.indexOf('w')>=0?'<span class="dm-chip">✍️ Writing</span>':'')+(st==='some'&&s.built&&s.rv?'<span class="dm-chip y">Thin</span>':'')+(r?`<span class="dm-chip ${r[0]}">${r[1]}</span>`:(s.built?'<span class="dm-chip y">Not reviewed</span>':''));
  const smp=(s.s||[]).length?'<div class="smp">e.g. '+s.s.slice(0,2).map(E).join(' · ')+'</div>':'';
  const how=(s.h||[]).length?'<div class="smp">How-to: '+E(s.h[0])+'</div>':'';
- const su=(M.data&&M.data.url)?M.data.url+'?cp=1&skill='+encodeURIComponent(s.id):''; const acts=s.built?(su?`<a class="dm-btn" target="_blank" rel="noopener" href="${E(su)}">👁 See it</a>`:'')+`<button type="button" class="dm-btn" data-dmap="assign" data-id="${E(s.id)}">➕ Assign to boys</button>`+(t.place?`<button type="button" class="dm-btn" data-dmap="place" data-id="${E(s.id)}" data-t="${E(t.key)}">🎯 Start boys here</button>`:''):'<button type="button" class="dm-btn" data-dmap="ask" data-id="'+E(s.id)+'">📝 Ask for this lesson</button>';
+ const su=(M.data&&M.data.url)?M.data.url+'?cp=1&skill='+encodeURIComponent(s.id):''; const acts=s.built?`<button type="button" class="dm-btn" data-dmplan="open" data-t="${E(t.key)}" data-id="${E(s.id)}" style="background:#1E1B4B;color:#fff">📄 Lesson plan</button>`+(su?`<a class="dm-btn" target="_blank" rel="noopener" href="${E(su)}">👁 See it</a>`:'')+`<button type="button" class="dm-btn" data-dmap="assign" data-id="${E(s.id)}">➕ Assign to boys</button>`+(t.place?`<button type="button" class="dm-btn" data-dmap="place" data-id="${E(s.id)}" data-t="${E(t.key)}">🎯 Start boys here</button>`:''):'<button type="button" class="dm-btn" data-dmap="ask" data-id="'+E(s.id)+'">📝 Ask for this lesson</button>';
  return `<div class="dm-sk ${st}" id="dm-${E(s.id)}"><span class="o">${s.o}</span><div><b>${E(s.n)}</b> <small style="color:#94A3B8">${E(s.id)}</small>${s.b?`<div class="d">In the app: ${E(s.b)}</div>`:''}${s.d?`<div class="d">${E(s.d)}</div>`:''}<div class="in">${inside}${s.built&&s.k?' · '+kinds(s.k).map(E).join(', '):''}</div><div>${chips}</div>${smp}${how}<div class="d">${s.us?`👦 ${s.us} boys started · ${s.um} mastered`:'Not used by any boy yet'}</div></div><div class="dm-acts">${acts}</div></div>`; }
 function levelPanel(D){ if(!M.sel) return '<p class="dm-soft" style="color:#64748B">Tap a number in the map to see every lesson at that level, in teaching order, with exactly what is inside.</p>';
  const t=D.tracks.find(x=>x.key===M.sel[0]); if(!t) return ''; const ss=t.skills.filter(s=>s.lv===M.sel[1]);
@@ -138,6 +159,54 @@ document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closes
   run('dpTask',S.token,dept,'add',{text:'Need a lesson: '+x[1].n+' ('+x[1].id+'), '+LV(x[0],x[1].lv)+' of '+x[0].name}).then(()=>{ M.msg='Added to the department To do list.'; rerender(); }).catch(err=>{ M.msg=String(err&&err.message||err); rerender(); }); return; }
 },true);
 document.addEventListener('input',e=>{ if(e.target&&e.target.classList&&e.target.classList.contains('dm-q')){ M.q=e.target.value; rerender(); } });
+/* ---------- LESSON PLAN view ---------- */
+const PLAN={ cache:{}, id:null };
+const CUR_BASE=window.TL_CURR_BASE||(location.hostname.indexOf('web.app')>=0||location.hostname.indexOf('firebaseapp')>=0?location.origin:'https:'+String.fromCharCode(47,47)+'tashbar-learning-live.web.app')+'/curriculum/';
+const HEB=/[֐-׿]/;
+function fetchPlan(id){ if(PLAN.cache[id]) return Promise.resolve(PLAN.cache[id]); return fetch(CUR_BASE+encodeURIComponent(id)+'.json').then(r=>{ if(!r.ok) throw new Error('Lesson file not found ('+r.status+')'); return r.json(); }).then(j=>{ PLAN.cache[id]=j; return j; }); }
+function T(x){ const t=String(x==null?'':x); return HEB.test(t)?'<span class="he" dir="auto">'+E(t)+'</span>':E(t); }
+function itemHTML(it,n){ const kind=KIND[it.t]||it.t; let h=`<div class="q"><span class="n">${n}</span><span class="k">${E(kind)}</span>${it.pic&&!HEB.test(it.pic)?E(it.pic)+' ':''}<span class="qq">${T(it.q||it.p||'')}</span>`;
+ if(it.how) h+=`<div class="how">${T(it.how)}</div>`;
+ if(it.t==='mc'&&Array.isArray(it.o)) h+='<ul class="ch">'+it.o.map((o,i)=>`<li class="${i===0?'ok':''}">${i===0?'✓ ':''}${T(o)}</li>`).join('')+'</ul>';
+ else if(it.t==='order'&&Array.isArray(it.tiles)) h+=`<div class="ans">Right order: ${it.tiles.map(T).join(' → ')}</div>`;
+ else if(it.t==='pairs'&&Array.isArray(it.pairs)) h+='<table class="pp">'+it.pairs.map(p=>`<tr><td>${T(p[0])}</td><td>↔ ${T(p[1])}</td></tr>`).join('')+'</table>';
+ else if(it.t==='sort'&&Array.isArray(it.bins)) h+='<div class="bins">'+it.bins.map(b=>`<div><b>${T(b.label)}</b><br>${(it.items||[]).filter(x=>x.bin===b.id).map(x=>T(x.label)).join(', ')}</div>`).join('')+'</div>';
+ else if(it.t==='spotall'&&Array.isArray(it.cells)) h+='<ul class="ch">'+it.cells.map(c=>`<li class="${c.ok?'ok':''}">${c.ok?'✓ ':''}${T(c.label)}</li>`).join('')+'</ul>';
+ else if(it.t==='write') h+=`<div class="hint">At least ${E(it.min||'')} words.${(it.checks||[]).length?' He checks: '+it.checks.map(E).join(' · '):''}</div>`;
+ else if(it.a!=null) h+=`<div class="ans">Answer: ${T(it.a)}${(it.alt||[]).length?' (also: '+it.alt.map(T).join(', ')+')':''}${it.unit?' '+E(it.unit):''}</div>`;
+ if(it.h) h+=`<div class="hint">Hint: ${T(it.h)}</div>`; if(it.why) h+=`<div class="hint">Why: ${T(it.why)}</div>`;
+ if(Array.isArray(it.re)&&it.re.length) h+=`<details><summary>If he gets it wrong (${it.re.length} ways to re-teach)</summary>${it.re.map(r=>`<div class="hint">• ${T(r)}</div>`).join('')}</details>`;
+ return h+'</div>'; }
+function ttHTML(tt){ if(!tt) return ''; let h='<div class="tt">'; if(tt.hook) h+=`<b>Hook</b>${T(tt.hook)}`; if(tt.big) h+=`<b>Big idea</b>${T(tt.big)}`;
+ if(Array.isArray(tt.intro)) h+='<b>Teach</b>'+tt.intro.map(x=>`<div>• ${T(x)}</div>`).join('');
+ if(Array.isArray(tt.ex)) h+='<b>Worked examples</b>'+tt.ex.map(x=>`<div style="margin:4px 0"><i>${T(x.q||'')}</i>${Array.isArray(x.steps)?x.steps.map(s2=>`<div>→ ${T(s2)}</div>`).join(''):''}${x.a!=null?`<div class="ans">${T(x.a)}</div>`:''}</div>`).join('');
+ [['idea','Key idea'],['oops','Watch out for'],['try','Your turn'],['remember','Remember'],['joke','Smile']].forEach(k=>{ const v=tt[k[0]]; if(v) h+=`<b>${k[1]}</b>`+(Array.isArray(v)?v.map(x=>`<div>• ${T(typeof x==='string'?x:JSON.stringify(x))}</div>`).join(''):T(typeof v==='string'?v:JSON.stringify(v))); });
+ return h+'</div>'; }
+function trackOrder(tkey){ const D=M.data; const t=D&&D.tracks.find(x=>x.key===tkey); return t?t.skills.filter(s=>s.built):[]; }
+function drawPlan(tkey,id,L){ const x=findSkill(id); const t=x?x[0]:null, s=x?x[1]:null; const list=trackOrder(tkey), i=list.findIndex(z=>z.id===id);
+ let o=document.getElementById('dm-plan'); if(!o){ o=document.createElement('div'); o.id='dm-plan'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); document.body.appendChild(o); document.documentElement.style.overflow='hidden'; }
+ const su=(M.data&&M.data.url)?M.data.url+'?cp=1&skill='+encodeURIComponent(id):'';
+ const bar=`<div class="bar"><button type="button" data-dmplan="prev" ${i<=0?'disabled':''}>◀ Previous</button><button type="button" data-dmplan="next" ${i<0||i>=list.length-1?'disabled':''}>Next ▶</button><span class="pos">${i>=0?'Lesson '+(i+1)+' of '+list.length+' in '+E(t?t.name:''):''}</span>${su?`<a target="_blank" rel="noopener" href="${E(su)}">👁 See it as a boy</a>`:''}<button type="button" data-dmap="assign" data-id="${E(id)}">➕ Assign</button>${t&&t.place?`<button type="button" data-dmap="place" data-id="${E(id)}">🎯 Start boys here</button>`:''}<button type="button" data-dmplan="print">🖨 Print</button><button type="button" class="x" data-dmplan="close">✕ Close</button></div>`;
+ let doc='<div class="doc">';
+ if(s){ doc+=`<div class="crumb">${E(t.name)} · ${E(LV(t,s.lv))} · step ${s.o} in teaching order</div><h1>${T(s.n)}</h1>${s.d?`<p class="lead">${T(s.d)}</p>`:''}${s.b?`<p class="hint">In the app: ${T(s.b)}</p>`:''}<div class="meta">${s.f.indexOf('k')>=0?'<span class="dm-chip g">🎮 Full game lesson</span>':''}${s.f.indexOf('t')>=0?'<span class="dm-chip">🧑‍🏫 Teacher Time</span>':''}${RV[s.rv]?`<span class="dm-chip ${RV[s.rv][0]}">${RV[s.rv][1]}</span>`:'<span class="dm-chip y">Not reviewed</span>'}<span class="dm-chip">${s.us?s.us+' boys started · '+s.um+' mastered':'Not used yet'}</span></div>`; }
+ if(!L) doc+='<p>Loading the lesson…</p>'; else if(L.err) doc+='<p style="color:#991B1B">Could not load this lesson: '+E(L.err)+'</p>';
+ else { if(L.kl) doc+='<p class="how">🎮 This skill also has a <b>full game lesson</b> (8 stations: warm-up, story, mini-movie, together, practice games, real life, check). Open “See it as a boy” to play it.</p>';
+  if(L.tt) doc+='<h2>🧑‍🏫 Teacher Time <small>the teaching moment before practice</small></h2>'+ttHTML(L.tt);
+  if(L.gen){ doc+='<h2>📘 How to do it <small>shown to the boy step by step</small></h2>'+(L.how||[]).map((x,k)=>`<div class="q"><span class="n">${k+1}</span>${T(x)}</div>`).join('');
+   doc+='<h2>✏️ Questions <small>new ones every time: 3 teach + 6 practice + 3 check (3 right in the check = mastered). Samples:</small></h2>'+(L.samples||[]).map((it,k)=>itemHTML(it,k+1)).join(''); }
+  else { if((L.teach||[]).length) doc+=`<h2>1 · Teach <small>I do, we do (${L.teach.length})</small></h2>`+L.teach.map((it,k)=>itemHTML(it,k+1)).join('');
+   if((L.practice||[]).length) doc+=`<h2>2 · Practice <small>you do (${L.practice.length})</small></h2>`+L.practice.map((it,k)=>itemHTML(it,k+1)).join('');
+   if((L.check||[]).length) doc+=`<h2>3 · Check <small>${L.check.length} questions; all right = mastered</small></h2>`+L.check.map((it,k)=>itemHTML(it,k+1)).join(''); } }
+ o.innerHTML=bar+doc+'</div>'; o.scrollTop=0; PLAN.id=id; PLAN.t=tkey; }
+function openPlan(tkey,id){ drawPlan(tkey,id,PLAN.cache[id]||null); if(!PLAN.cache[id]) fetchPlan(id).then(L=>{ if(PLAN.id===id) drawPlan(tkey,id,L); }).catch(e=>{ if(PLAN.id===id) drawPlan(tkey,id,{err:String(e&&e.message||e)}); });
+ const list=trackOrder(tkey), i=list.findIndex(z=>z.id===id); if(list[i+1]) fetchPlan(list[i+1].id).catch(()=>{}); }
+M.openPlan=openPlan;
+function closePlan(){ const o=document.getElementById('dm-plan'); if(o) o.remove(); document.documentElement.style.overflow=''; PLAN.id=null; }
+function step(d){ const list=trackOrder(PLAN.t), i=list.findIndex(z=>z.id===PLAN.id); const n=list[i+d]; if(n) openPlan(PLAN.t,n.id); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dmplan]'); if(!b) return; e.preventDefault(); const a=b.dataset.dmplan;
+ if(a==='close') return closePlan(); if(a==='next') return step(1); if(a==='prev') return step(-1); if(a==='print') return window.print();
+ if(a==='open') return openPlan(b.dataset.t,b.dataset.id); },true);
+document.addEventListener('keydown',e=>{ if(!PLAN.id) return; if(e.key==='Escape'){ e.stopPropagation(); closePlan(); } else if(e.key==='ArrowRight') step(1); else if(e.key==='ArrowLeft') step(-1); },true);
 /* the TOP BAND: curriculum and placement first, big, at the top of the staff screen */
 function band(){ const show=!!(S.token&&S.d&&S.d.boys); let b=document.getElementById('dm-band'); if(!show){ if(b) b.remove(); return; } if(b) return;
  b=document.createElement('div'); b.id='dm-band'; b.setAttribute('role','navigation'); b.setAttribute('aria-label','Curriculum and placement');
