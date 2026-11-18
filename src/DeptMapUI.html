@@ -1,0 +1,223 @@
+<style id="dm-css">
+/* DeptMapUI.html — DEPARTMENTS: the 🗺️ COURSE MAP + the top band on the staff screen (Head of School 2026-11-18: "curriculum and placement
+   should be the most prominent part ... not a little button at the bottom ... big picture and small picture ... exact, accurate").
+   Server: DeptMap.js dmMap. Assign / place go through the Library's libApply (its rules, undo, history). No double slash in this file. */
+#dm-band{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; max-width:1180px; margin:10px auto 6px; padding:0 12px; font-family:system-ui,"Segoe UI",sans-serif; }
+#dm-band button{ display:flex; align-items:center; gap:12px; text-align:left; border:0; border-radius:18px; padding:16px 18px; min-height:88px; cursor:pointer; color:#fff; box-shadow:0 8px 20px rgba(30,27,75,.16); font:800 20px/1.15 system-ui,sans-serif; }
+#dm-band button small{ display:block; font:600 13px/1.3 system-ui,sans-serif; opacity:.92; margin-top:3px; }
+#dm-band button .ic{ font-size:34px; line-height:1; }
+#dm-band .b1{ background:linear-gradient(135deg,#4338CA,#6D28D9); } #dm-band .b2{ background:linear-gradient(135deg,#0F766E,#0891B2); } #dm-band .b3{ background:linear-gradient(135deg,#B45309,#DB2777); } #dm-band .b4{ background:linear-gradient(135deg,#1F2937,#475569); }
+@media (max-width:860px){ #dm-band{ grid-template-columns:1fr 1fr; } #dm-band button{ min-height:70px; font-size:17px; } }
+@media (max-width:460px){ #dm-band{ grid-template-columns:1fr; } }
+.dm{ font:500 15px/1.45 system-ui,"Segoe UI",sans-serif; color:#1b2333; }
+.dm-stats{ display:flex; flex-wrap:wrap; gap:8px; margin:4px 0 12px; }
+.dm-stat{ background:#F1F5F9; border-radius:12px; padding:8px 12px; } .dm-stat b{ display:block; font-size:22px; line-height:1.1; }
+.dm-stat.warn{ background:#FEF3C7; } .dm-stat.bad{ background:#FEE2E2; } .dm-stat.good{ background:#DCFCE7; }
+.dm-tabs{ display:flex; gap:6px; flex-wrap:wrap; margin:6px 0 10px; } .dm-tabs button{ border:1px solid #CBD5E1; background:#fff; border-radius:999px; padding:7px 14px; font:700 14px system-ui; cursor:pointer; } .dm-tabs button.on{ background:#1E1B4B; color:#fff; border-color:#1E1B4B; }
+.dm-tools{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:0 0 10px; } .dm-tools input{ flex:1 1 260px; border:1px solid #CBD5E1; border-radius:10px; padding:9px 12px; font:500 15px system-ui; }
+.dm-tools button,.dm-btn{ border:0; border-radius:10px; padding:8px 12px; font:700 13px system-ui; cursor:pointer; background:#EEF2FF; color:#312E81; }
+.dm-fam{ margin:14px 0 4px; font:800 18px system-ui; }
+.dm-gridw{ overflow-x:auto; border:1px solid #E2E8F0; border-radius:12px; }
+table.dm-grid{ border-collapse:collapse; width:100%; font-size:13px; } .dm-grid th,.dm-grid td{ border-bottom:1px solid #EEF2F7; padding:5px 6px; text-align:center; white-space:nowrap; }
+.dm-grid th:first-child,.dm-grid td:first-child{ text-align:left; position:sticky; left:0; background:#fff; z-index:1; max-width:220px; overflow:hidden; text-overflow:ellipsis; }
+.dm-cell{ display:inline-block; min-width:38px; padding:5px 6px; border-radius:8px; font-weight:800; cursor:pointer; border:2px solid transparent; }
+.dm-cell.full{ background:#DCFCE7; color:#166534; } .dm-cell.some{ background:#FEF3C7; color:#92400E; } .dm-cell.plan{ background:#FEE2E2; color:#991B1B; } .dm-cell.empty{ background:#fff; color:#94A3B8; border:2px dashed #CBD5E1; cursor:default; }
+.dm-cell.on{ border-color:#1E1B4B; }
+.dm-key{ display:flex; gap:12px; flex-wrap:wrap; font-size:12px; color:#475569; margin:6px 0; } .dm-key i{ display:inline-block; width:14px; height:14px; border-radius:4px; vertical-align:-2px; margin-right:4px; }
+.dm-lvl{ border:1px solid #E2E8F0; border-radius:14px; padding:12px; margin:12px 0; background:#FCFDFF; }
+.dm-lvl h3{ margin:0 0 6px; font-size:18px; }
+.dm-sk{ display:grid; grid-template-columns:44px 1fr auto; gap:10px; padding:10px 4px; border-top:1px solid #EEF2F7; align-items:start; }
+.dm-sk .o{ font:800 15px system-ui; color:#475569; background:#F1F5F9; border-radius:10px; text-align:center; padding:6px 0; }
+.dm-sk b{ font-size:16px; } .dm-sk .d{ color:#475569; font-size:13px; } .dm-sk .in{ font-size:13px; margin-top:3px; } .dm-sk .smp{ font-size:12px; color:#64748B; margin-top:3px; font-style:italic; }
+.dm-sk.plan b{ color:#991B1B; } .dm-chip{ display:inline-block; background:#EEF2FF; color:#3730A3; border-radius:999px; padding:1px 8px; font:700 11px system-ui; margin:2px 3px 0 0; }
+.dm-chip.g{ background:#DCFCE7; color:#166534; } .dm-chip.r{ background:#FEE2E2; color:#991B1B; } .dm-chip.y{ background:#FEF3C7; color:#92400E; }
+.dm-acts{ display:flex; flex-direction:column; gap:6px; } .dm-acts .dm-btn{ white-space:nowrap; }
+.dm-gap{ border:1px solid #E2E8F0; border-radius:12px; padding:10px 12px; margin:8px 0; } .dm-gap h4{ margin:0 0 6px; font-size:16px; } .dm-gap li{ margin:2px 0; } .dm-gap a{ color:#3730A3; cursor:pointer; text-decoration:underline; }
+#dm-pick{ position:fixed; inset:0; z-index:2147483100; background:rgba(15,18,40,.5); display:flex; align-items:flex-start; justify-content:center; padding:24px 12px; overflow:auto; }
+#dm-pick .bx{ background:#fff; border-radius:18px; padding:18px; width:min(640px,100%); font:500 15px system-ui; }
+#dm-pick .bx h3{ margin:0 0 8px; } #dm-pick .list{ max-height:50vh; overflow:auto; border:1px solid #E2E8F0; border-radius:10px; margin:8px 0; }
+#dm-pick label{ display:flex; gap:8px; padding:7px 10px; border-bottom:1px solid #F1F5F9; cursor:pointer; } #dm-pick .row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+#dm-pick .go{ background:#4338CA; color:#fff; border:0; border-radius:10px; padding:10px 16px; font:800 15px system-ui; cursor:pointer; } #dm-pick .no{ background:#EEF2F6; border:0; border-radius:10px; padding:10px 16px; font:700 15px system-ui; cursor:pointer; }
+
+/* LESSON PLAN view: one lesson, full screen, nothing else around it (HoS 2026-11-18) */
+#dm-plan{ position:fixed; inset:0; z-index:2147483200; background:#fff; overflow:auto; font:500 16px/1.55 system-ui,"Segoe UI",sans-serif; color:#111827; }
+#dm-plan .bar{ position:sticky; top:0; z-index:2; display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:10px 16px; background:#F8FAFC; border-bottom:1px solid #E5E7EB; }
+#dm-plan .bar button,#dm-plan .bar a{ border:0; border-radius:10px; padding:9px 14px; font:700 14px system-ui; cursor:pointer; background:#EEF2FF; color:#312E81; text-decoration:none; }
+#dm-plan .bar .x{ margin-left:auto; background:#111827; color:#fff; } #dm-plan .bar .pos{ color:#64748B; font:600 13px system-ui; }
+#dm-plan .doc{ max-width:860px; margin:0 auto; padding:22px 18px 80px; }
+#dm-plan h1{ font-size:30px; line-height:1.2; margin:4px 0 6px; } #dm-plan .crumb{ color:#64748B; font:700 13px system-ui; letter-spacing:.02em; text-transform:uppercase; }
+#dm-plan .lead{ font-size:17px; color:#374151; } #dm-plan h2{ font-size:21px; margin:28px 0 8px; padding-top:14px; border-top:2px solid #E5E7EB; }
+#dm-plan h2 small{ color:#64748B; font-weight:600; font-size:14px; } #dm-plan .meta{ display:flex; flex-wrap:wrap; gap:6px; margin:8px 0; }
+#dm-plan .q{ border:1px solid #E5E7EB; border-radius:14px; padding:12px 14px; margin:10px 0; break-inside:avoid; }
+#dm-plan .q .k{ display:inline-block; font:800 11px system-ui; text-transform:uppercase; letter-spacing:.04em; color:#4338CA; background:#EEF2FF; border-radius:6px; padding:2px 7px; margin-right:6px; }
+#dm-plan .q .n{ font:800 14px system-ui; color:#64748B; margin-right:6px; } #dm-plan .q .qq{ font-weight:650; }
+#dm-plan .how{ background:#F0F9FF; border-left:4px solid #0EA5E9; border-radius:8px; padding:8px 12px; margin:6px 0; }
+#dm-plan ul.ch{ list-style:none; padding:0; margin:6px 0; display:flex; flex-wrap:wrap; gap:6px; } #dm-plan ul.ch li{ border:1px solid #D1D5DB; border-radius:10px; padding:4px 10px; }
+#dm-plan ul.ch li.ok{ border-color:#16A34A; background:#DCFCE7; font-weight:700; } #dm-plan .he{ font-family:'Frank Ruhl Libre','SBL Hebrew','Noto Serif Hebrew',serif; font-size:1.35em; }
+#dm-plan .ans{ color:#166534; font-weight:700; } #dm-plan .hint{ color:#6B7280; font-size:14px; } #dm-plan details{ margin-top:4px; } #dm-plan summary{ cursor:pointer; color:#4338CA; font-size:14px; }
+#dm-plan table.pp{ border-collapse:collapse; margin:6px 0; } #dm-plan table.pp td{ border:1px solid #E5E7EB; padding:4px 10px; }
+#dm-plan .bins{ display:flex; gap:10px; flex-wrap:wrap; } #dm-plan .bins div{ border:1px dashed #94A3B8; border-radius:10px; padding:6px 10px; min-width:140px; }
+#dm-plan .tt{ background:#FFFBEB; border:1px solid #FDE68A; border-radius:14px; padding:12px 16px; } #dm-plan .tt b{ display:block; margin-top:6px; }
+@media print{ body > *:not(#dm-plan){ display:none !important; } #dm-plan{ position:static; overflow:visible; } #dm-plan .bar{ display:none; } }
+@media (max-width:620px){ .dm-sk{ grid-template-columns:34px 1fr; } .dm-acts{ grid-column:1 / -1; flex-direction:row; flex-wrap:wrap; } }
+</style>
+<script>
+(function(){
+if(window.DPMAP||typeof render!=='function'||typeof S==='undefined'||typeof run!=='function') return;
+const M=window.DPMAP={ dept:null, data:null, view:'grid', sel:null, q:'', fam:'', busy:false, msg:'', roster:null };
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const KIND={ mc:'Pick the answer', num:'Type a number', type:'Type it', order:'Put in order', sort:'Sort', pairs:'Match pairs', spotall:'Tap every one', write:'Write', tf:'True or false', fill:'Fill the blank', tap:'Tap', drag:'Drag', hot:'Tap the picture', build:'Build', count:'Count', seq:'Sequence', match:'Match', choose:'Choose' };
+const LV=(t,L)=>L==null?'No level':(t.gs?'Level '+L+' ('+(L===1?'K':'Gr '+(L-1))+')':'Level '+L);
+const RV={ ok:['g','✓ Approved'], rebbe:['g','✓ Rebbe-checked'], flag:['r','⚑ Flagged'] };
+function kinds(k){ return String(k||'').split(',').filter(Boolean).map(x=>{ const p=x.split(':'); return (KIND[p[0]]||p[0])+' ×'+p[1]; }); }
+function status(s){ if(!s.built) return 'plan'; const thin=s.f.indexOf('g')<0&&s.f.indexOf('k')<0&&(s.p<M.data.thinAt||String(s.k).split(',').filter(Boolean).length<2); return thin||!s.rv?'some':'full'; }
+function load(dept){ M.dept=dept; M.data=null; M.sel=null; M.msg=''; M.q=''; M.fam=''; M.view='grid'; rerender();
+ run('dmMap',S.token,dept).then(r=>{ if(M.dept===dept){ M.data=r; rerender(); } }).catch(e=>{ M.data={err:String(e&&e.message||e)}; rerender(); }); }
+M.load=load;
+function stats(D){ const T=D.totals, g=D.gaps; const st=(n,l,c)=>`<div class="dm-stat ${c||''}"><b>${n}</b>${l}</div>`;
+ return `<div class="dm-stats">${st(T.skills,'skills in teaching order')}${st(T.built,'with a lesson','good')}${st(g.planned.length,'planned, no lesson yet',g.planned.length?'bad':'good')}${st(g.empty.length,'empty levels',g.empty.length?'bad':'good')}${st(g.thin.length,'thin lessons',g.thin.length?'warn':'good')}${st(T.games,'full game lessons')}${st(T.teach,'with Teacher Time / How-to')}${st(T.reviewed,'reviewed',T.reviewed<T.built?'warn':'good')}${st(T.items+(T.generated?' + '+T.generated+' gen.':''),'questions written'+(T.generated?' (+ skills that make new questions every time)':''))}</div>`; }
+function grid(D){ const fams=D.fam.filter(f=>D.tracks.some(t=>t.fam===f[0])&&(!M.fam||M.fam===f[0])); let h='';
+ const allL=[]; D.tracks.forEach(t=>t.skills.forEach(s=>{ if(s.lv!=null&&allL.indexOf(s.lv)<0) allL.push(s.lv); })); allL.sort((a,b)=>a-b);
+ fams.forEach(f=>{ const tr=D.tracks.filter(t=>t.fam===f[0]); const L=[]; tr.forEach(t=>t.skills.forEach(s=>{ if(s.lv!=null&&L.indexOf(s.lv)<0) L.push(s.lv); })); L.sort((a,b)=>a-b); const lo=L[0], hi=L[L.length-1], cols=[]; for(let x=lo;x<=hi;x++) cols.push(x);
+  const gsHead=tr.every(t=>t.gs);
+  h+=`<div class="dm-fam">${f[1]} ${E(f[2])} <small style="font-weight:600;color:#64748B">${tr.reduce((a,t)=>a+t.skills.length,0)} skills</small></div><div class="dm-gridw"><table class="dm-grid"><thead><tr><th>Track</th>${cols.map(x=>`<th>${gsHead?(x===1?'K':'Gr '+(x-1)):'L'+x}</th>`).join('')}</tr></thead><tbody>`;
+  tr.forEach(t=>{ h+=`<tr><td title="${E(t.name)}"><b>${E(t.name)}</b></td>`+cols.map(x=>{ const ss=t.skills.filter(s=>s.lv===x); if(!ss.length) return `<td>${x>=t.lo&&x<=t.hi?'<span class="dm-cell empty" title="No lessons at this level">0</span>':''}</td>`;
+    const st=ss.map(status), c=st.indexOf('plan')>=0?'plan':st.indexOf('some')>=0?'some':'full', on=M.sel&&M.sel[0]===t.key&&M.sel[1]===x?' on':'';
+    return `<td><span class="dm-cell ${c}${on}" data-dmap="cell" data-t="${E(t.key)}" data-l="${x}" title="${E(t.name)} · ${E(LV(t,x))}: ${ss.length} skills">${ss.length}</span></td>`; }).join('')+'</tr>'; });
+  h+='</tbody></table></div>'; });
+ return `<div class="dm-key"><span><i style="background:#DCFCE7"></i>complete and reviewed</span><span><i style="background:#FEF3C7"></i>thin or not reviewed yet</span><span><i style="background:#FEE2E2"></i>planned, lesson missing</span><span><i style="border:2px dashed #CBD5E1"></i>empty level (a gap)</span></div>`+h; }
+function skillRow(t,s){ const st=status(s), r=RV[s.rv];
+ const inside=s.built?(s.f.indexOf('g')>=0?`${s.t} teach steps · new questions every time (${s.p} practice + ${s.c} check per lesson)`:`${s.t} teach · ${s.p} practice · ${s.c} check`):'<b style="color:#991B1B">No lesson yet</b> (planned in the teaching order)';
+ const chips=(s.f.indexOf('k')>=0?'<span class="dm-chip g">🎮 Full game lesson</span>':'')+(s.f.indexOf('t')>=0?'<span class="dm-chip">🧑‍🏫 Teacher Time</span>':'')+(s.f.indexOf('g')>=0?'<span class="dm-chip">✨ How-to + endless questions</span>':'')+(s.f.indexOf('l')>=0?'<span class="dm-chip">🧪 Lab</span>':'')+(s.f.indexOf('w')>=0?'<span class="dm-chip">✍️ Writing</span>':'')+(st==='some'&&s.built&&s.rv?'<span class="dm-chip y">Thin</span>':'')+(r?`<span class="dm-chip ${r[0]}">${r[1]}</span>`:(s.built?'<span class="dm-chip y">Not reviewed</span>':''));
+ const smp=(s.s||[]).length?'<div class="smp">e.g. '+s.s.slice(0,2).map(E).join(' · ')+'</div>':'';
+ const how=(s.h||[]).length?'<div class="smp">How-to: '+E(s.h[0])+'</div>':'';
+ const su=(M.data&&M.data.url)?M.data.url+'?cp=1&skill='+encodeURIComponent(s.id):''; const acts=s.built?`<button type="button" class="dm-btn" data-dmplan="open" data-t="${E(t.key)}" data-id="${E(s.id)}" style="background:#1E1B4B;color:#fff">📄 Lesson plan</button>`+(su?`<a class="dm-btn" target="_blank" rel="noopener" href="${E(su)}">👁 See it</a>`:'')+`<button type="button" class="dm-btn" data-dmap="assign" data-id="${E(s.id)}">➕ Assign to boys</button>`+(t.place?`<button type="button" class="dm-btn" data-dmap="place" data-id="${E(s.id)}" data-t="${E(t.key)}">🎯 Start boys here</button>`:''):'<button type="button" class="dm-btn" data-dmap="ask" data-id="'+E(s.id)+'">📝 Ask for this lesson</button>';
+ return `<div class="dm-sk ${st}" id="dm-${E(s.id)}"><span class="o">${s.o}</span><div><b>${E(s.n)}</b> <small style="color:#94A3B8">${E(s.id)}</small>${s.b?`<div class="d">In the app: ${E(s.b)}</div>`:''}${s.d?`<div class="d">${E(s.d)}</div>`:''}<div class="in">${inside}${s.built&&s.k?' · '+kinds(s.k).map(E).join(', '):''}</div><div>${chips}</div>${smp}${how}<div class="d">${s.us?`👦 ${s.us} boys started · ${s.um} mastered`:'Not used by any boy yet'}</div></div><div class="dm-acts">${acts}</div></div>`; }
+function levelPanel(D){ if(!M.sel) return '<p class="dm-soft" style="color:#64748B">Tap a number in the map to see every lesson at that level, in teaching order, with exactly what is inside.</p>';
+ const t=D.tracks.find(x=>x.key===M.sel[0]); if(!t) return ''; const ss=t.skills.filter(s=>s.lv===M.sel[1]);
+ return `<div class="dm-lvl"><h3>${E(t.name)} · ${E(LV(t,M.sel[1]))} <small style="color:#64748B">${ss.length} skills, in teaching order</small></h3>${ss.map(s=>skillRow(t,s)).join('')}</div>`; }
+function trackList(D){ const q=M.q.trim().toLowerCase(); let h=''; let n=0;
+ D.tracks.filter(t=>!M.fam||t.fam===M.fam).forEach(t=>{ const ss=t.skills.filter(s=>!q||(s.n+' '+s.id+' '+(s.d||'')+' '+(s.b||'')).toLowerCase().includes(q)); if(!ss.length) return; n+=ss.length;
+  const byL={}; ss.forEach(s=>{ (byL[s.lv==null?'—':s.lv]=byL[s.lv==null?'—':s.lv]||[]).push(s); });
+  h+=`<div class="dm-lvl"><h3>${E(t.name)} <small style="color:#64748B">${ss.length} skills${t.empty.length?` · <span style="color:#991B1B">empty level${t.empty.length>1?'s':''}: ${t.empty.join(', ')}</span>`:''}</small></h3>`+Object.keys(byL).map(L=>`<div style="font:800 14px system-ui;margin:10px 0 0;color:#334155">${E(L==='—'?'No level':LV(t,Number(L)))}</div>`+byL[L].map(s=>skillRow(t,s)).join('')).join('')+'</div>'; });
+ return (q?`<p style="color:#64748B">${n} skills match.</p>`:'')+(h||'<p>No skills match.</p>'); }
+function gapsView(D){ const by={}; D.tracks.forEach(t=>t.skills.forEach(s=>{ by[s.id]=[t,s]; })); const g=D.gaps;
+ const li=ids=>ids.slice(0,400).map(id=>{ const x=by[id]; return x?`<li><a data-dmap="go" data-t="${E(x[0].key)}" data-l="${x[1].lv==null?'':x[1].lv}" data-id="${E(id)}">${E(x[1].n)}</a> <small style="color:#64748B">${E(x[0].name)} · ${E(LV(x[0],x[1].lv))}</small></li>`:''; }).join('')+(ids.length>400?`<li>…and ${ids.length-400} more</li>`:'');
+ const box=(ic,title,why,ids,html)=>`<div class="dm-gap"><h4>${ic} ${title} <small style="color:#64748B">${html!=null?'':ids.length}</small></h4><p style="margin:0 0 6px;color:#475569;font-size:13px">${why}</p>${html!=null?html:(ids.length?'<ul>'+li(ids)+'</ul>':'<p style="color:#166534">None. 👍</p>')}</div>`;
+ const emp=g.empty.length?'<ul>'+g.empty.map(e=>{ const t=D.tracks.find(x=>x.key===e[0]); return `<li><b>${E(e[1])}</b>: ${E(LV(t,e[2]))} has no lessons</li>`; }).join('')+'</ul>':'<p style="color:#166534">None. 👍</p>';
+ return box('🟥','Planned in the teaching order, but no lesson yet','These skills are on the ladder, so boys would reach them, but nothing is built.',g.planned)
+  +box('⬜','Empty levels inside a track','A track has lessons below and above this level, but none at it.',[],emp)
+  +box('🟨','Thin lessons','Fewer than '+D.thinAt+' practice questions, or only one kind of question.',g.thin)
+  +box('🧑‍🏫','No Teacher Time or How-to','Lessons with no teaching moment before the practice.',g.noTeach)
+  +box('🔍','Not reviewed yet','No one has approved or checked these in the Curriculum Guide or the department Curriculum tab.',g.unreviewed); }
+M.html=function(){ const D=M.data; if(!D) return '<p>Loading the course map…</p>'; if(D.err) return '<p>Could not load: '+E(D.err)+'</p>';
+ const fams=D.fam.filter(f=>D.tracks.some(t=>t.fam===f[0]));
+ const tab=(k,l)=>`<button type="button" class="${M.view===k?'on':''}" data-dmap="view" data-v="${k}">${l}</button>`;
+ const ftab=(k,l)=>`<button type="button" class="${M.fam===k?'on':''}" data-dmap="fam" data-f="${k}">${l}</button>`;
+ let h=`<div class="dm">${M.msg?`<p style="font-weight:700;color:#166534">${E(M.msg)}</p>`:''}${stats(D)}<div class="dm-tabs">${tab('grid','🗺️ Big picture')}${tab('list','📋 Every lesson, in order')}${tab('gaps','🧩 Gaps and what to work on')}</div>`;
+ if(fams.length>1) h+=`<div class="dm-tabs">${ftab('','All subjects')}${fams.map(f=>ftab(f[0],f[1]+' '+f[2])).join('')}</div>`;
+ if(M.view==='grid') h+=grid(D)+levelPanel(D);
+ else if(M.view==='list') h+=`<div class="dm-tools"><input class="dm-q" type="search" placeholder="Find a skill or lesson (try: fractions, nekudos, Rashi)" value="${E(M.q)}" aria-label="Find a skill"><button type="button" data-dmap="csv">⬇️ Download as a spreadsheet</button></div>`+trackList(D);
+ else h+=gapsView(D);
+ return h+`<p style="color:#94A3B8;font-size:12px;margin-top:14px">Counted from the live lessons on ${E(String(D.built||'').slice(0,10))}. Levels: Level 1 = kindergarten for general studies; Kodesh tracks use their own levels.</p></div>`; };
+M.schoolCard=function(){ return `<button type="button" class="dp-card" data-dmap="school" style="grid-column:1 / -1;background:linear-gradient(135deg,#EEF2FF,#ECFEFF);border:2px solid #A5B4FC"><span class="ic">🏫</span><b>Whole school course map</b><small>Every subject, every level, every lesson in teaching order. See what we have, what is missing, and what needs work.</small></button>`; };
+function rerender(){ const b=document.querySelector('#dp-ov .dp-body'); if(!b||!window.DP) return; if(!((DP.view==='dept'&&DP.tab==='map')||DP.view==='school')) return;
+ const a=document.activeElement, keep=a&&a.classList&&a.classList.contains('dm-q'), pos=keep?a.selectionStart:0; b.innerHTML=M.html();
+ if(keep){ const q=b.querySelector('.dm-q'); if(q){ q.focus(); try{ q.setSelectionRange(pos,pos); }catch(e){} } } }
+M.rerender=rerender;
+function openSchool(){ DP.open=true; DP.view='school'; DP.tab='map'; load('ALL'); if(typeof window.dpDraw==='function') window.dpDraw(); setTimeout(rerender,0); }
+M.openSchool=openSchool;
+function findSkill(id){ const D=M.data; if(!D) return null; for(const t of D.tracks){ const s=t.skills.find(x=>x.id===id); if(s) return [t,s]; } return null; }
+/* assign / place through the Library (libApply) */
+function picker(title,go){ const close=()=>{ const p=document.getElementById('dm-pick'); if(p) p.remove(); };
+ const draw=()=>{ let p=document.getElementById('dm-pick'); if(!p){ p=document.createElement('div'); p.id='dm-pick'; document.body.appendChild(p); }
+  const R=M.roster; if(!R){ p.innerHTML='<div class="bx"><p>Loading your boys…</p></div>'; return; } if(R.err){ p.innerHTML='<div class="bx"><p>'+E(R.err)+'</p><button class="no" data-dmp="x">Close</button></div>'; return; }
+  const boys=R.boys.filter(b=>!b.test), grades=[...new Set(boys.map(b=>b.grade).filter(g=>g!=null))].sort((a,b)=>a-b);
+  p.innerHTML=`<div class="bx" role="dialog" aria-modal="true"><h3>${title}</h3><div class="row"><input class="dmp-q" placeholder="Find a boy" style="flex:1;min-width:160px;border:1px solid #CBD5E1;border-radius:10px;padding:8px"><select class="dmp-g"><option value="">Tick a whole grade…</option>${grades.map(g=>`<option value="${g}">${g===0?'Kindergarten':'Grade '+g}</option>`).join('')}</select>${(R.groups||[]).length?`<select class="dmp-gr"><option value="">Tick a group…</option>${R.groups.map(g=>`<option value="${E(g.id)}">${E(g.name)}</option>`).join('')}</select>`:''}</div><div class="list">${boys.map(b=>`<label data-n="${E(b.name.toLowerCase())}"><input type="checkbox" value="${E(b.id)}" data-g="${b.grade==null?'':b.grade}"> ${E(b.name)} <small style="color:#64748B">${b.grade==null?'':b.grade===0?'K':'Gr '+b.grade}</small></label>`).join('')}</div><div class="row"><button class="go" data-dmp="go">Do it</button><button class="no" data-dmp="x">Cancel</button><span class="dmp-msg" style="font-weight:700"></span></div></div>`;
+  const q=p.querySelector('.dmp-q'); q.oninput=()=>{ const v=q.value.toLowerCase(); p.querySelectorAll('.list label').forEach(l=>{ l.style.display=l.dataset.n.includes(v)?'':'none'; }); };
+  p.querySelector('.dmp-g').onchange=e=>{ const g=e.target.value; p.querySelectorAll('.list input').forEach(i=>{ if(g!==''&&i.dataset.g===g) i.checked=true; }); };
+  const gr=p.querySelector('.dmp-gr'); if(gr) gr.onchange=e=>{ const G=R.groups.find(x=>x.id===e.target.value); if(!G) return; p.querySelectorAll('.list input').forEach(i=>{ if((G.members||[]).indexOf(i.value)>=0) i.checked=true; }); };
+  p.onclick=e=>{ const b=e.target.closest('[data-dmp]'); if(!b) { if(e.target===p) close(); return; } if(b.dataset.dmp==='x') return close();
+   const ids=[...p.querySelectorAll('.list input:checked')].map(i=>i.value); const m=p.querySelector('.dmp-msg'); if(!ids.length){ m.textContent='Tick at least one boy.'; return; }
+   b.disabled=true; m.textContent='Saving…'; go(ids).then(r=>{ close(); M.msg=(r&&r.msg)||'Done.'; rerender(); setTimeout(()=>{ M.msg=''; rerender(); },6000); }).catch(err=>{ b.disabled=false; m.textContent=String(err&&err.message||err); }); }; };
+ draw(); if(!M.roster) run('libRoster',S.token).then(r=>{ M.roster=r; draw(); }).catch(e=>{ M.roster={err:String(e&&e.message||e)}; draw(); }); }
+function csv(){ const D=M.data; if(!D) return; const rows=[['Subject','Track','Level','Order','Skill ID','Skill','What it teaches','Lesson built','Teach','Practice','Check','Question kinds','Extras','Boys started','Boys mastered','Review']];
+ D.tracks.forEach(t=>{ const fam=(D.fam.find(f=>f[0]===t.fam)||['','',t.fam])[2]; t.skills.forEach(s=>rows.push([fam,t.name,LV(t,s.lv),s.o,s.id,s.n,s.d||'',s.built?'yes':'NO',s.t,s.p,s.c,kinds(s.k).join('; '),[s.f.indexOf('k')>=0?'game lesson':'',s.f.indexOf('t')>=0?'Teacher Time':'',s.f.indexOf('g')>=0?'endless questions':'',s.f.indexOf('l')>=0?'lab':''].filter(Boolean).join('; '),s.us,s.um,s.rv||''])); });
+ const text=rows.map(r=>r.map(v=>{ v=String(v==null?'':v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(',')).join('\n');
+ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['﻿'+text],{type:'text/csv'})); a.download='Tashbar course map - '+(D.dept.name||'')+'.csv'; document.body.appendChild(a); a.click(); setTimeout(()=>a.remove(),0); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dmap]'); if(!b) return; const a=b.dataset.dmap; e.preventDefault(); e.stopPropagation();
+ if(a==='school') return openSchool();
+ if(a==='view'){ M.view=b.dataset.v; return rerender(); } if(a==='fam'){ M.fam=b.dataset.f; return rerender(); }
+ if(a==='cell'){ M.sel=[b.dataset.t,Number(b.dataset.l)]; rerender(); setTimeout(()=>{ const p=document.querySelector('#dp-ov .dm-lvl'); if(p) p.scrollIntoView({behavior:'smooth',block:'start'}); },30); return; }
+ if(a==='go'){ M.view='grid'; M.sel=[b.dataset.t,b.dataset.l===''?null:Number(b.dataset.l)]; rerender(); setTimeout(()=>{ const x=document.getElementById('dm-'+b.dataset.id); if(x){ x.scrollIntoView({behavior:'smooth',block:'center'}); x.style.background='#FFFBEB'; } },40); return; }
+ if(a==='csv') return csv();
+ if(a==='assign'){ const x=findSkill(b.dataset.id); if(!x) return; return picker('➕ Assign “'+E(x[1].n)+'” to…',ids=>run('libApply',S.token,{action:'assign',boys:ids,cards:[x[1].id],note:'From the course map'})); }
+ if(a==='place'){ const x=findSkill(b.dataset.id); if(!x) return; const t=x[0], s=x[1];
+  return picker('🎯 Start boys at '+E(LV(t,s.lv))+' of '+E(t.name)+(t.gs?', beginning with “'+E(s.n)+'”':'')+'…',ids=>run('libApply',S.token,{action:'place',boys:ids,key:t.place,level:s.lv,start:t.gs?s.id:''})); }
+ if(a==='ask'){ const x=findSkill(b.dataset.id); if(!x) return; const dept=M.dept&&M.dept!=='ALL'?M.dept:'';
+  if(!dept||typeof run!=='function'){ M.msg='Open this skill from its department to ask for the lesson there (To do list).'; return rerender(); }
+  run('dpTask',S.token,dept,'add',{text:'Need a lesson: '+x[1].n+' ('+x[1].id+'), '+LV(x[0],x[1].lv)+' of '+x[0].name}).then(()=>{ M.msg='Added to the department To do list.'; rerender(); }).catch(err=>{ M.msg=String(err&&err.message||err); rerender(); }); return; }
+},true);
+document.addEventListener('input',e=>{ if(e.target&&e.target.classList&&e.target.classList.contains('dm-q')){ M.q=e.target.value; rerender(); } });
+/* ---------- LESSON PLAN view ---------- */
+const PLAN={ cache:{}, id:null };
+const CUR_BASE=window.TL_CURR_BASE||(location.hostname.indexOf('web.app')>=0||location.hostname.indexOf('firebaseapp')>=0?location.origin:'https:'+String.fromCharCode(47,47)+'tashbar-learning-live.web.app')+'/curriculum/';
+const HEB=/[֐-׿]/;
+function fetchPlan(id){ if(PLAN.cache[id]) return Promise.resolve(PLAN.cache[id]); return fetch(CUR_BASE+encodeURIComponent(id)+'.json').then(r=>{ if(!r.ok) throw new Error('Lesson file not found ('+r.status+')'); return r.json(); }).then(j=>{ PLAN.cache[id]=j; return j; }); }
+function T(x){ const t=String(x==null?'':x); return HEB.test(t)?'<span class="he" dir="auto">'+E(t)+'</span>':E(t); }
+function itemHTML(it,n){ const kind=KIND[it.t]||it.t; let h=`<div class="q"><span class="n">${n}</span><span class="k">${E(kind)}</span>${it.pic&&!HEB.test(it.pic)?E(it.pic)+' ':''}<span class="qq">${T(it.q||it.p||'')}</span>`;
+ if(it.how) h+=`<div class="how">${T(it.how)}</div>`;
+ if(it.t==='mc'&&Array.isArray(it.o)) h+='<ul class="ch">'+it.o.map((o,i)=>`<li class="${i===0?'ok':''}">${i===0?'✓ ':''}${T(o)}</li>`).join('')+'</ul>';
+ else if(it.t==='order'&&Array.isArray(it.tiles)) h+=`<div class="ans">Right order: ${it.tiles.map(T).join(' → ')}</div>`;
+ else if(it.t==='pairs'&&Array.isArray(it.pairs)) h+='<table class="pp">'+it.pairs.map(p=>`<tr><td>${T(p[0])}</td><td>↔ ${T(p[1])}</td></tr>`).join('')+'</table>';
+ else if(it.t==='sort'&&Array.isArray(it.bins)) h+='<div class="bins">'+it.bins.map(b=>`<div><b>${T(b.label)}</b><br>${(it.items||[]).filter(x=>x.bin===b.id).map(x=>T(x.label)).join(', ')}</div>`).join('')+'</div>';
+ else if(it.t==='spotall'&&Array.isArray(it.cells)) h+='<ul class="ch">'+it.cells.map(c=>`<li class="${c.ok?'ok':''}">${c.ok?'✓ ':''}${T(c.label)}</li>`).join('')+'</ul>';
+ else if(it.t==='write') h+=`<div class="hint">At least ${E(it.min||'')} words.${(it.checks||[]).length?' He checks: '+it.checks.map(E).join(' · '):''}</div>`;
+ else if(it.a!=null) h+=`<div class="ans">Answer: ${T(it.a)}${(it.alt||[]).length?' (also: '+it.alt.map(T).join(', ')+')':''}${it.unit?' '+E(it.unit):''}</div>`;
+ if(it.h) h+=`<div class="hint">Hint: ${T(it.h)}</div>`; if(it.why) h+=`<div class="hint">Why: ${T(it.why)}</div>`;
+ if(Array.isArray(it.re)&&it.re.length) h+=`<details><summary>If he gets it wrong (${it.re.length} ways to re-teach)</summary>${it.re.map(r=>`<div class="hint">• ${T(r)}</div>`).join('')}</details>`;
+ return h+'</div>'; }
+function ttHTML(tt){ if(!tt) return ''; let h='<div class="tt">'; if(tt.hook) h+=`<b>Hook</b>${T(tt.hook)}`; if(tt.big) h+=`<b>Big idea</b>${T(tt.big)}`;
+ if(Array.isArray(tt.intro)) h+='<b>Teach</b>'+tt.intro.map(x=>`<div>• ${T(x)}</div>`).join('');
+ if(Array.isArray(tt.ex)) h+='<b>Worked examples</b>'+tt.ex.map(x=>`<div style="margin:4px 0"><i>${T(x.q||'')}</i>${Array.isArray(x.steps)?x.steps.map(s2=>`<div>→ ${T(s2)}</div>`).join(''):''}${x.a!=null?`<div class="ans">${T(x.a)}</div>`:''}</div>`).join('');
+ [['idea','Key idea'],['oops','Watch out for'],['try','Your turn'],['remember','Remember'],['joke','Smile']].forEach(k=>{ const v=tt[k[0]]; if(v) h+=`<b>${k[1]}</b>`+(Array.isArray(v)?v.map(x=>`<div>• ${T(typeof x==='string'?x:JSON.stringify(x))}</div>`).join(''):T(typeof v==='string'?v:JSON.stringify(v))); });
+ return h+'</div>'; }
+function trackOrder(tkey){ const D=M.data; const t=D&&D.tracks.find(x=>x.key===tkey); return t?t.skills.filter(s=>s.built):[]; }
+function drawPlan(tkey,id,L){ const x=findSkill(id); const t=x?x[0]:null, s=x?x[1]:null; const list=trackOrder(tkey), i=list.findIndex(z=>z.id===id);
+ let o=document.getElementById('dm-plan'); if(!o){ o=document.createElement('div'); o.id='dm-plan'; o.setAttribute('role','dialog'); o.setAttribute('aria-modal','true'); document.body.appendChild(o); document.documentElement.style.overflow='hidden'; }
+ const su=(M.data&&M.data.url)?M.data.url+'?cp=1&skill='+encodeURIComponent(id):'';
+ const bar=`<div class="bar"><button type="button" data-dmplan="prev" ${i<=0?'disabled':''}>◀ Previous</button><button type="button" data-dmplan="next" ${i<0||i>=list.length-1?'disabled':''}>Next ▶</button><span class="pos">${i>=0?'Lesson '+(i+1)+' of '+list.length+' in '+E(t?t.name:''):''}</span>${su?`<a target="_blank" rel="noopener" href="${E(su)}">👁 See it as a boy</a>`:''}<button type="button" data-dmap="assign" data-id="${E(id)}">➕ Assign</button>${t&&t.place?`<button type="button" data-dmap="place" data-id="${E(id)}">🎯 Start boys here</button>`:''}<button type="button" data-dmplan="print">🖨 Print</button><button type="button" class="x" data-dmplan="close">✕ Close</button></div>`;
+ let doc='<div class="doc">';
+ if(s){ doc+=`<div class="crumb">${E(t.name)} · ${E(LV(t,s.lv))} · step ${s.o} in teaching order</div><h1>${T(s.n)}</h1>${s.d?`<p class="lead">${T(s.d)}</p>`:''}${s.b?`<p class="hint">In the app: ${T(s.b)}</p>`:''}<div class="meta">${s.f.indexOf('k')>=0?'<span class="dm-chip g">🎮 Full game lesson</span>':''}${s.f.indexOf('t')>=0?'<span class="dm-chip">🧑‍🏫 Teacher Time</span>':''}${RV[s.rv]?`<span class="dm-chip ${RV[s.rv][0]}">${RV[s.rv][1]}</span>`:'<span class="dm-chip y">Not reviewed</span>'}<span class="dm-chip">${s.us?s.us+' boys started · '+s.um+' mastered':'Not used yet'}</span></div>`; }
+ if(!L) doc+='<p>Loading the lesson…</p>'; else if(L.err) doc+='<p style="color:#991B1B">Could not load this lesson: '+E(L.err)+'</p>';
+ else { if(L.kl) doc+='<p class="how">🎮 This skill also has a <b>full game lesson</b> (8 stations: warm-up, story, mini-movie, together, practice games, real life, check). Open “See it as a boy” to play it.</p>';
+  if(L.tt) doc+='<h2>🧑‍🏫 Teacher Time <small>the teaching moment before practice</small></h2>'+ttHTML(L.tt);
+  if(L.gen){ doc+='<h2>📘 How to do it <small>shown to the boy step by step</small></h2>'+(L.how||[]).map((x,k)=>`<div class="q"><span class="n">${k+1}</span>${T(x)}</div>`).join('');
+   doc+='<h2>✏️ Questions <small>new ones every time: 3 teach + 6 practice + 3 check (3 right in the check = mastered). Samples:</small></h2>'+(L.samples||[]).map((it,k)=>itemHTML(it,k+1)).join(''); }
+  else { if((L.teach||[]).length) doc+=`<h2>1 · Teach <small>I do, we do (${L.teach.length})</small></h2>`+L.teach.map((it,k)=>itemHTML(it,k+1)).join('');
+   if((L.practice||[]).length) doc+=`<h2>2 · Practice <small>you do (${L.practice.length})</small></h2>`+L.practice.map((it,k)=>itemHTML(it,k+1)).join('');
+   if((L.check||[]).length) doc+=`<h2>3 · Check <small>${L.check.length} questions; all right = mastered</small></h2>`+L.check.map((it,k)=>itemHTML(it,k+1)).join(''); } }
+ o.innerHTML=bar+doc+'</div>'; o.scrollTop=0; PLAN.id=id; PLAN.t=tkey; }
+function openPlan(tkey,id){ drawPlan(tkey,id,PLAN.cache[id]||null); if(!PLAN.cache[id]) fetchPlan(id).then(L=>{ if(PLAN.id===id) drawPlan(tkey,id,L); }).catch(e=>{ if(PLAN.id===id) drawPlan(tkey,id,{err:String(e&&e.message||e)}); });
+ const list=trackOrder(tkey), i=list.findIndex(z=>z.id===id); if(list[i+1]) fetchPlan(list[i+1].id).catch(()=>{}); }
+M.openPlan=openPlan;
+function closePlan(){ const o=document.getElementById('dm-plan'); if(o) o.remove(); document.documentElement.style.overflow=''; PLAN.id=null; }
+function step(d){ const list=trackOrder(PLAN.t), i=list.findIndex(z=>z.id===PLAN.id); const n=list[i+d]; if(n) openPlan(PLAN.t,n.id); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dmplan]'); if(!b) return; e.preventDefault(); const a=b.dataset.dmplan;
+ if(a==='close') return closePlan(); if(a==='next') return step(1); if(a==='prev') return step(-1); if(a==='print') return window.print();
+ if(a==='open') return openPlan(b.dataset.t,b.dataset.id); },true);
+document.addEventListener('keydown',e=>{ if(!PLAN.id) return; if(e.key==='Escape'){ e.stopPropagation(); closePlan(); } else if(e.key==='ArrowRight') step(1); else if(e.key==='ArrowLeft') step(-1); },true);
+/* the TOP BAND: curriculum and placement first, big, at the top of the staff screen */
+function band(){ const show=!!(S.token&&S.d&&S.d.boys); let b=document.getElementById('dm-band'); if(!show){ if(b) b.remove(); return; } if(b) return;
+ b=document.createElement('div'); b.id='dm-band'; b.setAttribute('role','navigation'); b.setAttribute('aria-label','Curriculum and placement');
+ b.innerHTML=`<button type="button" class="b1" data-dmap="school"><span class="ic">🗺️</span><span>What we teach<small>Whole school course map: every subject, level and lesson, and the gaps</small></span></button>`
+  +`<button type="button" class="b2" data-dp="launch"><span class="ic">🏫</span><span>Curriculum &amp; Departments<small>Your department: its lessons, to-do and boys</small></span></button>`
+  +`<button type="button" class="b3" data-dmband="levels"><span class="ic">🎯</span><span>Placement &amp; levels<small>Where every boy is, and set his level</small></span></button>`
+  +`<button type="button" class="b4" data-dmband="find"><span class="ic">🔎</span><span>Find a student<small>One page with everything about him</small></span></button>`;
+ const sl=document.getElementById('slBar'); if(sl&&sl.parentNode) sl.parentNode.insertBefore(b,sl.nextSibling); else document.body.insertBefore(b,document.body.firstChild); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dmband]'); if(!b) return; e.preventDefault();
+ if(b.dataset.dmband==='find'){ const q=document.getElementById('slQ'); if(q){ q.scrollIntoView({behavior:'smooth',block:'center'}); q.focus(); } return; }
+ if(b.dataset.dmband==='levels'){ const t=document.querySelector('[data-sp="tab"][data-t="lv"]'); if(t){ t.click(); setTimeout(()=>{ const m=document.querySelector('.sp-main')||t; m.scrollIntoView({behavior:'smooth',block:'start'}); },60); } return; } });
+const _r=render; render=function(){ const o=_r.apply(this,arguments); try{ band(); }catch(e){} return o; }; try{ band(); }catch(e){}
+})();
+</script>
