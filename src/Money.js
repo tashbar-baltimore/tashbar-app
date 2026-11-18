@@ -37,7 +37,9 @@ var MONEY = {
     monthImproved3:  { cents: 5000,  label: 'Most improved this month: 3rd place' },
     monthSchoolGoal: { cents: 2500,  label: 'School goal reached this month' }
   },
-  INTEREST: { percent: 2, capCents: 2000 },          /* every Sunday, on the balance before that Sunday */
+  /* v378 Head of School 2026-11-17: NO INTEREST. "Jews don't give each other interest and they don't charge interest" (ribbis).
+     Interest is taught only as a topic in the financial literacy class. Old 'interest' rows already paid stay in the ledger. */
+  INTEREST: { percent: 0, capCents: 0, off: true },
   CANTEEN_RATE: null,                               /* v162: the real rate is STORE.CANTEEN_RATE in Store.js (Canteen Cards). */
   SINCE: '2026-11-06',                              /* no interest or streak pay for days before this */
   REVISION_MAX: 3,
@@ -155,6 +157,12 @@ function moneyPost_(e) {
   if (type === 'correction' && cents === 0) return null;
   var key = String(e.key || '').slice(0, 300);
   if (key && moneyHasKey_(key)) return null;   /* each event pays once */
+  /* Head of School 2026-11-16: until he finishes the Pathfinder, automatic earnings are paid at a quarter (PathfinderGate.js).
+     Not the Pathfinder's own pay, and never a staff row (bonus / correction are other types; a staff-written earn has e.by). */
+  if (type === 'earn' && String(e.lessonId || '') !== 'PATHFINDER' && !e.by && typeof pfRewardRate_ === 'function') {
+    var rate = 1; try { rate = pfRewardRate_(sid); } catch (x) { rate = 1; }
+    if (rate < 1) { cents = Math.max(1, Math.round(cents * rate)); e.reason = String(e.reason || '') + ' (1/4 until the Pathfinder is done)'; }
+  }
   var row = { id: 'txn-' + Utilities.getUuid(), at: e.at || new Date().toISOString(), sid: sid, type: type, cents: cents,
     reason: String(e.reason || '').slice(0, 200), lessonId: String(e.lessonId || '').slice(0, 120), itemId: String(e.itemId || '').slice(0, 120),
     by: String(e.by || 'system').slice(0, 254), key: key };
@@ -178,6 +186,7 @@ function moneyStreak_(sid) {
 
 /* Weekly interest, paid once for the most recent Sunday, on the balance before that Sunday. */
 function moneyInterest_(sid) {
+  if (!MONEY.INTEREST || MONEY.INTEREST.off || !(MONEY.INTEREST.percent > 0)) return null;   /* v378: no interest */
   var sunday = moneyWeekStart_(moneyDay_());
   if (sunday < MONEY.SINCE) return null;
   var key = 'interest:' + sid + ':' + sunday;
@@ -232,7 +241,7 @@ function moneySummary_(sid) {
 }
 function moneyPublicRules_() {
   return { version: MONEY.VERSION, rules: Object.keys(MONEY.RULES).map(function (k) { return { id: k, label: MONEY.RULES[k].label, cents: MONEY.RULES[k].cents }; }),
-    interest: MONEY.INTEREST, canteenRate: MONEY.CANTEEN_RATE, transfer: false };
+    interest: null, canteenRate: MONEY.CANTEEN_RATE, transfer: false };
 }
 
 /* ---------- hooks used by Code.gs ---------- */

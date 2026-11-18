@@ -4,7 +4,7 @@
    Not a new door: google.script.run can already call any top-level function whose name does not end in "_".
    This route is narrower: only the names in API_ALLOW (what the student page really calls). Every function keeps
    its own checks (sign-in token, tries limit, the server sets every money amount). */
-var API_ALLOW = ["pfHandoff", "pfHandoffRedeem", "pfGateInfo", "pfkPilotExport", "pfExportToday", "libMyLibrary", "libApply", "libCatalog", "libDeletePlaylist", "libHistory", "libMap", "libParentAssign", "libParentCatalog", "libPlaylists", "libRoster", "libSavePlaylist", "acAdminLoad", "acMoveStudents", "acMyScope", "acParentNewCode", "acSaveParent", "acSaveSchool", "acSaveStaffScope", "apiExport", "apiKidPage", "apiStaffPage", "arAnswer", "arCfAns", "arCfDone", "arCfGet", "arCfList", "arCfMake", "arJoin", "arMyStats", "arOpen", "arPoll", "arSet", "arTeach", "chAnswer", "chJoin", "chOpen", "chPoll", "chQs", "chStep", "chmParsha", "cnKidInfo", "cnOrderCancel", "cnOrderMenu", "cnOrderPlace", "crCatalog", "crClasses", "crDeleteClass", "crDeleteLesson", "crEndClass", "crInbox", "crLessons", "crMarkRead", "crRunning", "crSaveClass", "crSaveLesson", "crSend", "crStaffAdmin", "crStaffList", "crStaffSave", "crStartClass", "crUnread", "kpAck", "kpMine", "msAppUrl", "msBootstrap", "msLoad", "msMusicInfo", "msMusicPart", "msPhotoNotes", "msPhotoSubmit", "msQuestTools", "msQuestToolsGet", "msQuestToolsParts", "msReport", "msSave", "msSchoolGoal", "msSignInCode", "msSignInFast", "pfConfirmSave", "pfConfirmStart", "pfHello", "sbAddKids", "sbCreate", "sbLoad", "sbMove", "sbMySchool", "sbNewCode", "sbStyle", "sgAddStudent", "sgArchive", "sgAwardPrizes", "sgBechinaReady", "sgBoyDay", "sgChmSetLevel", "sgClassSky", "sgDesk", "sgFamily", "sgFamilyBulk", "sgFamilySet", "sgFixPoints", "sgFreeCode", "sgGive", "sgGroups", "sgKodesh", "sgKodeshBoy", "sgKodeshGrid", "sgKodeshMark", "sgLevel", "sgLevelBechina", "sgLevels", "sgLoad", "sgMoney", "sgMusicSet", "sgMyDesk", "sgNote", "sgNoteDelete", "sgNoteMany", "sgNotes", "sgNow", "sgParshaInfo", "sgPick", "sgPickCatalog", "sgReportDone", "sgReports", "sgSetCode", "sgSetParsha", "sgShoutSeen", "sgSince", "sgTeachTogether", "sgToday", "sgUndoFix", "sgWeek", "sgWeekNotes", "soundGet", "soundSave", "stBuy", "stInfo", "stStaffOrders", "stStaffSet", "tmCatalog", "tmEnd", "tmExtend", "tmList", "tmMine", "tmStart"];
+var API_ALLOW = ["tlHandoff", "tlHandoffRedeem", "pfHandoff", "pfHandoffRedeem", "pfGateInfo", "pfkPilotExport", "pfExportToday", "libMyLibrary", "libApply", "libCatalog", "libDeletePlaylist", "libHistory", "libMap", "libParentAssign", "libParentCatalog", "libPlaylists", "libRoster", "libSavePlaylist", "acAdminLoad", "acMoveStudents", "acMyScope", "acParentNewCode", "acSaveParent", "acSaveSchool", "acSaveStaffScope", "apiExport", "apiKidPage", "apiStaffPage", "arAnswer", "arCheer", "arPower", "arShake", "arCfAns", "arCfDone", "arCfGet", "arCfList", "arCfMake", "arJoin", "arMyStats", "arOpen", "arPoll", "arSet", "arTeach", "chAnswer", "chJoin", "chOpen", "chPoll", "chQs", "chStep", "chmParsha", "cnKidInfo", "cnOrderCancel", "cnOrderMenu", "cnOrderPlace", "crCatalog", "crClasses", "crDeleteClass", "crDeleteLesson", "crEndClass", "crInbox", "crLessons", "crMarkRead", "crRunning", "crSaveClass", "crSaveLesson", "crSend", "crStaffAdmin", "crStaffList", "crStaffSave", "crStartClass", "crUnread", "kpAck", "kpMine", "msAppUrl", "msBootstrap", "msLoad", "msMusicInfo", "msMusicPart", "msPhotoNotes", "msPhotoSubmit", "msQuestTools", "msQuestToolsGet", "msQuestToolsParts", "msReport", "msSave", "msSchoolGoal", "msSignInCode", "msSignInFast", "pfConfirmSave", "pfConfirmStart", "pfHello", "sbAddKids", "sbCreate", "sbLoad", "sbMove", "sbMySchool", "sbNewCode", "sbStyle", "sgAddStudent", "sgArchive", "sgAwardPrizes", "sgBechinaReady", "sgBoyDay", "sgChmSetLevel", "sgClassSky", "sgDesk", "sgFamily", "sgFamilyBulk", "sgFamilySet", "sgFixPoints", "sgFreeCode", "sgGive", "sgGroups", "sgKodesh", "sgKodeshBoy", "sgKodeshGrid", "sgKodeshMark", "sgLevel", "sgLevelBechina", "sgLevels", "sgLoad", "sgMoney", "sgMusicSet", "sgMyDesk", "sgNote", "sgNoteDelete", "sgNoteMany", "sgNotes", "sgNow", "sgParshaInfo", "sgPick", "sgPickCatalog", "sgReportDone", "sgReports", "sgSetCode", "sgSetParsha", "sgShoutSeen", "sgSince", "sgTeachTogether", "sgToday", "sgUndoFix", "sgWeek", "sgWeekNotes", "soundGet", "soundSave", "stBuy", "stInfo", "stStaffOrders", "stStaffSet", "tmCatalog", "tmEnd", "tmExtend", "tmList", "tmMine", "tmStart"];
 function doPost(e) {
   var out = function (o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); };
   try {
@@ -40,6 +40,30 @@ function apiStaffPage(have) {
      apiExport(key, 'tabs', book)                 -> the tabs of a book ('main' or 'canteen') with their sizes
      apiExport(key, 'rows', book, tab, [from, n]) -> up to 4000 rows, dates marked {$d: milliseconds}, with an md5 of the block
      apiExport(key, 'props')                      -> the script's stored settings */
+/* apiExport(key, 'drive', name, args): the Firebase server keeps every record; it asks this app only for what needs Google Drive.
+   Nothing here reads or writes the school's database tabs. */
+function apiDrive_(name, a) {
+  if (name === 'file') { var f = DriveApp.getFileById(String(a[0])), b = f.getBlob(), by = b.getBytes(); if (by.length > 25 * 1024 * 1024) throw new Error('File too big.');
+    return { name: f.getName(), size: f.getSize(), type: b.getContentType(), b64: Utilities.base64Encode(by) }; }
+  if (name === 'fileMeta') { var g = DriveApp.getFileById(String(a[0])); return { name: g.getName(), size: g.getSize(), type: g.getMimeType() }; }
+  if (name === 'sheetWrite') {   /* only into the nightly-copy spreadsheet */
+    if (String(a[0]) !== '1di5MMew_3DSbi9u2FbyyOQAADsp_A0KPHfpeMeJtdqI') throw new Error('Not allowed.');
+    var ss = SpreadsheetApp.openById(String(a[0])), nm = String(a[1]).slice(0, 99), sh = ss.getSheetByName(nm) || ss.insertSheet(nm), rows = a[3] || [], at = Number(a[2]) || 0;
+    if (a[4]) sh.clear();
+    if (rows.length) { var w = rows.reduce(function (m, r) { return Math.max(m, r.length); }, 1); rows = rows.map(function (r) { r = r.map(function (v) { if (typeof v !== 'string') return v; v = v.length > 49000 ? v.slice(0, 49000) : v; return /^[=+\-@]/.test(v) ? "'" + v : v; }); while (r.length < w) r.push(''); return r; });
+      if (sh.getMaxColumns() < w) sh.insertColumnsAfter(sh.getMaxColumns(), w - sh.getMaxColumns());
+      sh.getRange(at + 1, 1, rows.length, w).setValues(rows); }
+    var s1 = ss.getSheetByName('Sheet1'); if (s1 && ss.getSheets().length > 1) ss.deleteSheet(s1);
+    return true;
+  }
+  if (name === 'photoSave') return photoSaveHere_(String(a[0]), String(a[1]), String(a[2]));
+  if (name === 'photoResults') { var out = [], it = DriveApp.getFolderById(PHOTO.CHECK_ID).getFiles();
+    while (it.hasNext() && out.length < 20) { var x = it.next(); if (/^results_.*\.json$/i.test(x.getName())) out.push({ id: x.getId(), text: x.getBlob().getDataAsString() }); } return out; }
+  if (name === 'photoDone') { var done = DriveApp.getFolderById(PHOTO.DONE_ID); (a[0] || []).forEach(function (id) { try { DriveApp.getFileById(String(id)).moveTo(done); } catch (e) {} }); return true; }
+  if (name === 'photoWaiting') { var ck = DriveApp.getFolderById(PHOTO.CHECK_ID), old = ck.getFilesByName('waiting_photos.json'), body = String(a[0] || '[]');
+    if (old.hasNext()) old.next().setContent(body); else ck.createFile('waiting_photos.json', body, 'application/json'); return true; }
+  throw new Error('Not allowed.');
+}
 var API_EXPORT_HASH = '594fdccf352810cfc28b62f5cae14034270893cd03e3527db1dcf13797ba0ae0';
 function apiExport(key, what, book, tab, span) {
   var cache = CacheService.getScriptCache(), bad = Number(cache.get('api_export_bad') || 0);
@@ -50,6 +74,7 @@ function apiExport(key, what, book, tab, span) {
   if (what === 'balances') return apiBalances_();
   if (what === 'prints') return apiPrints_();
   if (what === 'staffprints') return apiStaffPrints_();
+  if (what === 'drive') return apiDrive_(String(book || ''), tab || []);
   var id = book === 'canteen' ? cnBookId_() : TL.sheet, ss = SpreadsheetApp.openById(id);
   if (what === 'tabs') return { id: id, tabs: ss.getSheets().map(function (s) { return { name: s.getName(), rows: s.getLastRow(), cols: s.getLastColumn() }; }) };
   if (what === 'rows') {

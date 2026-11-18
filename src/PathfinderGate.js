@@ -24,6 +24,7 @@ function pfGateInfo(token) {
   var g = out.general && out.general.show, k = out.kodesh && out.kodesh.show;
   out.next = g ? (out.rest ? 'rest' : 'general') : k ? 'kodesh' : '';
   out.show = !!out.next;
+  out.rate = typeof pfRewardRate_ === 'function' ? pfRewardRate_(sid) : 1;   /* quarter rewards until done (optional Pathfinder) */
   return out;
 }
 
@@ -44,3 +45,22 @@ function pfHandoffRedeem(code) {
   var o = JSON.parse(raw); try { var s = msSession_(o.token); if (!s || s.role !== 'kid' || String(s.sid) !== o.sid) return null; } catch (e) { return null; }
   return { token: o.token };
 }
+
+/* OPTIONAL PATHFINDER, QUARTER REWARDS (Head of School 2026-11-16, replaces "everyone must start with the Pathfinder"):
+   the Pathfinder is NOT required. A boy who has not finished it (the general Pathfinder while it is open for him, then the Kodesh
+   Pathfinder) earns PF_REWARD.rate (one quarter) of every automatic T$ earning, rounded, at least 1 cent. Once he finishes, every
+   earning is full again. Not cut: the Pathfinder's own pay (lessonId PATHFINDER), staff bonuses and corrections (other types),
+   interest, store, gifts and refunds. The ledger reason says so. A boy who cannot take a part (no grade on the roster, or Pathfinder
+   paused for new boys) is not cut for that part. */
+var PF_REWARD = { ON: true, rate: 0.25 };
+var PF_OWES_MEMO_ = {};
+function pfOwes_(sid) {
+  sid = String(sid || ''); if (PF_OWES_MEMO_[sid]) return PF_OWES_MEMO_[sid];
+  var c = null, out = { general: false, kodesh: false };
+  try { c = CacheService.getScriptCache(); var hit = c.get('pf_owes_' + sid); if (hit) return (PF_OWES_MEMO_[sid] = JSON.parse(hit)); } catch (e) {}
+  try { if (typeof pfEnabled_ === 'function' && pfEnabled_(sid)) out.general = !pfSessionsOf_(sid).some(function (S) { return S.status === 'core' || S.status === 'complete'; }); } catch (e) {}
+  try { if (typeof pfkAllowed_ === 'function' && pfkAllowed_(sid)) out.kodesh = !pfkSessionsOf_(sid).some(function (S) { return S.status === 'complete'; }); } catch (e) {}
+  try { if (c) c.put('pf_owes_' + sid, JSON.stringify(out), out.general || out.kodesh ? 120 : 21600); } catch (e) {}
+  return (PF_OWES_MEMO_[sid] = out);
+}
+function pfRewardRate_(sid) { if (!PF_REWARD.ON) return 1; var o = pfOwes_(sid); return o.general || o.kodesh ? PF_REWARD.rate : 1; }

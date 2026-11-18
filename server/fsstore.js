@@ -23,6 +23,9 @@ class FsServer {
 
   async load(store, n) {
     if (n.kind === 'book') { const d = await this.bookRef(n.key).get(); const names = d.exists ? (d.data().tabs || []) : []; const tabs = {}; names.forEach(x => { tabs[x] = {}; }); store.books[n.key] = { tabs, order: names.slice() }; store.read['book|' + n.key] = d.exists ? (d.data().ver || 0) : 0; return; }
+    if (n.kind === 'remote') { const memo = store.remoteMemo || (store.remoteMemo = {}); if (!Object.prototype.hasOwnProperty.call(memo, n.key)) { const [name, args] = JSON.parse(n.key);
+        if (!this.opts.remote) throw new Error('Google Drive is not connected on this server.'); try { memo[n.key] = await this.opts.remote(name, args); } catch (e) { memo[n.key] = { __err: String(e.message || e).slice(0, 300) }; } }
+      (store.remote || (store.remote = {}))[n.key] = memo[n.key]; return; }
     if (n.kind === 'cache') { const d = await this.db.collection('cache').doc(ck(this.ns + '|' + n.key)).get(); store.cache[n.key] = d.exists ? { v: d.data().v, until: d.data().until } : null; return; }
     if (n.kind === 'tab') { const i = n.key.indexOf('|'), b = n.key.slice(0, i), t = n.key.slice(i + 1); const meta = await this.tabRef(b, t).get(); const m = meta.exists ? meta.data() : { ver: 0, nRows: 0, per: perFor(t), text: {} };
       const hit = this.mem.tabs[n.key]; let rows;
@@ -35,6 +38,7 @@ class FsServer {
     const dirtyTabs = Object.keys(store.dirty || {}), dirtyCache = Object.keys(store.dirtyCache || {});
     if (!dirtyTabs.length && !dirtyCache.length && !store.dirtyProps && !Object.keys(store.dirtyBooks || {}).length) return true;
     const db = this.db, self = this;
+    let later = [];
     const ok = await db.runTransaction(async tx => {
       const keys = Object.keys(store.read).filter(k => k.indexOf('tab|') === 0 && (!store.touched || store.touched[k.slice(4)] || (store.dirty || {})[k.slice(4)]));     /* only tabs this run opened */
       const metas = keys.length ? await tx.getAll(...keys.map(k => { const key = k.slice(4), i = key.indexOf('|'); return self.tabRef(key.slice(0, i), key.slice(i + 1)); })) : [];
@@ -46,10 +50,18 @@ class FsServer {
         const nChunks = Math.ceil(rows.length / per); if (shifted) for (let c = Math.floor((shifted - 1) / per); c < nChunks + 1; c++) chunks[c] = 1;
         Object.keys(chunks).map(Number).forEach(c => { const slice = rows.slice(c * per, (c + 1) * per); const ref = self.tabRef(b, t).collection('chunks').doc('c' + c); if (slice.length) { const body = pack(slice); if (body.length > 950000) throw new Error('A block of rows in ' + t + ' is too large to store.'); tx.set(ref, { rows: body }); } else tx.delete(ref); });
         tx.set(self.tabRef(b, t), { ver: (tab.ver || 0) + 1, nRows: rows.length, per, text: tab.text || {} }); }
-      dirtyCache.forEach(k => { const e = store.cache[k], ref = db.collection('cache').doc(ck(self.ns + '|' + k)); if (e) tx.set(ref, { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until) }); else tx.delete(ref); });
+      /* sign-in tickets and other small entries are saved with the rows; big or many entries are saved right after, in batches */
+      const inTx = dirtyCache.filter(k => /^(ms_tok_|ms_try_|tl_scope_)/.test(k)).slice(0, 50), inTxSet = {}; inTx.forEach(k => { inTxSet[k] = 1; }); later = dirtyCache.filter(k => !inTxSet[k]);
+      inTx.forEach(k => { const e = store.cache[k], ref = db.collection('cache').doc(ck(self.ns + '|' + k)); const at = Date.now(); if (e) tx.set(ref, { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until), at }); else tx.set(ref, { ns: self.ns, k, v: '', until: 0, expireAt: new Date(at), at }); });
       if (store.dirtyProps) tx.set(db.collection('sys').doc('props' + (self.ns ? '_' + self.ns : '')), { map: store.props });
       return true;
     });
+    if (ok && later.length) { const mc = this.memCache && this.memCache.c; let batch = db.batch(), n = 0, bytes = 0; const at = Date.now();
+      for (const k of later) { const e = store.cache[k]; if (e && mc && mc[k] && mc[k].v === e.v && Math.abs(mc[k].until - e.until) < 600000) continue;   /* unchanged: skip */
+        const ref = db.collection('cache').doc(ck(self.ns + '|' + k)), doc = e ? { ns: self.ns, k, v: e.v, until: e.until, expireAt: new Date(e.until), at } : { ns: self.ns, k, v: '', until: 0, expireAt: new Date(at), at }; const sz = (doc.v || '').length + 200;
+        if (n && (n >= 400 || bytes + sz > 8e6)) { await batch.commit().catch(() => {}); batch = db.batch(); n = 0; bytes = 0; }
+        batch.set(ref, doc); n++; bytes += sz; if (mc) { if (e) mc[k] = { v: e.v, until: e.until }; else delete mc[k]; } }
+      if (n) await batch.commit().catch(() => {}); }
     if (ok) for (const key of dirtyTabs) { const i = key.indexOf('|'), tab = store.books[key.slice(0, i)].tabs[key.slice(i + 1)]; if (tab && tab.rows) this.mem.tabs[key] = { ver: (tab.ver || 0) + 1, rows: tab.rows.map(r => r.slice()) }; }
     else for (const k of Object.keys(store.read)) if (k.indexOf('tab|') === 0) delete this.mem.tabs[k.slice(4)];   /* someone else wrote: forget this instance's copies */
     return ok;
@@ -69,7 +81,13 @@ class FsServer {
         tabs[t] = { rows: hit.rows, shared: true, text: Object.assign({}, m.text || {}), per: m.per || perFor(t), ver: m.ver || 0 }; store.read['tab|' + key] = m.ver || 0; }));
     }
     if (global.gc) global.gc();
-    const now = Date.now(); if (!this.memCache || now - this.memCache.at > 5000) { const q = await this.db.collection('cache').where('ns', '==', this.ns).get(); const c = {}; q.forEach(d => { const x = d.data(); if (x.until > now) c[x.k] = { v: x.v, until: x.until }; }); this.memCache = { at: now, c }; }
+    const now = Date.now();
+    /* shared memory (sign-ins, saved pieces): loaded in full once, then only what changed since the last look (every 2 seconds) */
+    if (!this.memCache || now - this.memCache.full > 600000) { const q = await this.db.collection('cache').where('ns', '==', this.ns).get(); const c = {}; let top = 0; q.forEach(d => { const x = d.data(); if (x.at > top) top = x.at; if (x.until > now) c[x.k] = { v: x.v, until: x.until }; }); this.memCache = { at: now, full: now, top: top || now, c }; }
+    else if (now - this.memCache.at > 2000) { const since = this.memCache.top - 10000; this.memCache.at = now;
+      try { const q = await this.db.collection('cache').where('ns', '==', this.ns).where('at', '>', since).get(); const c = this.memCache.c;
+        q.forEach(d => { const x = d.data(); if (x.at > this.memCache.top) this.memCache.top = x.at; if (x.until > now) c[x.k] = { v: x.v, until: x.until }; else delete c[x.k]; }); }
+      catch (e) { this.memCache.full = 0; } }
     Object.assign(store.cache, this.memCache.c); store.cacheComplete = true;
   }
 
@@ -77,13 +95,14 @@ class FsServer {
   async run(fn, args) {
     const t0 = Date.now(); let loads = 0, runs = 0;
     const propsDoc = await this.db.collection('sys').doc('props' + (this.ns ? '_' + this.ns : '')).get(); const props = Object.assign({}, this.opts.props || {}, propsDoc.exists ? propsDoc.data().map : {});
+    const runMemo = {};
     for (let attempt = 0; attempt < 8; attempt++) {
-      const store = { lazy: true, books: {}, cache: {}, props: Object.assign({}, props), dirty: {}, read: {}, needs: [] };
+      const store = { lazy: true, books: {}, cache: {}, props: Object.assign({}, props), dirty: {}, read: {}, needs: [], remoteMemo: runMemo };   /* Google answers are kept for the whole call, even across retries: a photo is saved once */
       /* start with the books and tabs this function needed last time, so it usually runs once or twice instead of once per tab */
       const loaded = ((this.hints || (this.hints = {}))[fn] || []).slice();
       for (let pass = 0; pass < 400; pass++) {
         /* fresh copies of what is loaded so far (a rerun must not see the last run's writes) */
-        store.touched = {}; store.dirty = {}; store.dirtyRows = {}; store.dirtyCache = {}; store.dirtyBooks = {}; store.shifted = {}; store.dirtyProps = 0; store.needs = []; store.props = Object.assign({}, props); store.cache = {}; store.books = {}; store.read = {};   /* nothing a half-finished run wrote may leak into the next run: not rows, not cache entries, not settings */
+        store.touched = {}; store.dirty = {}; store.dirtyRows = {}; store.dirtyCache = {}; store.dirtyBooks = {}; store.shifted = {}; store.dirtyProps = 0; store.needs = []; store.props = Object.assign({}, props); store.cache = {}; store.books = {}; store.read = {}; store.remote = {};   /* nothing a half-finished run wrote may leak into the next run: not rows, not cache entries, not settings */
         if (this.opts.preload) { const bs = [props.SCHOOL_STAGING_DATABASE_ID, props.CANTEEN_SHEET_ID].filter(Boolean); await this.preload(store, bs); }
         for (const n of loaded) { if (this.opts.preload && n.kind === 'tab' && store.books[n.key.split('|')[0]]) continue; try { await this.load(store, n); } catch (e) { throw new Error('loading ' + n.kind + ' ' + n.key + ': ' + (e.message || e)); } }
         const rt = createRuntime({ store, appUrl: this.opts.appUrl, packs: this.opts.packs }); runs++;
@@ -91,7 +110,7 @@ class FsServer {
         if (store.needs.length) { const seen = {}; loaded.forEach(n => { seen[n.kind + n.key] = 1; }); const fresh = store.needs.filter(n => !seen[n.kind + n.key] && (seen[n.kind + n.key] = 1)); if (!fresh.length && err && err.__need) throw new Error('could not load ' + err.message); for (const n of fresh) { loaded.push(n); loads++; } if (fresh.length) continue; }
         if (err && !err.__need) { /* a real error from the app's own code: nothing is saved */ return { error: String(err.message || err), ms: Date.now() - t0, loads, runs }; }
         let done; try { done = await this.commit(store); } catch (e) { throw new Error('saving (' + Object.keys(store.dirty).join(', ') + ' / cache ' + Object.keys(store.dirtyCache || {}).length + '): ' + (e.message || e)); }
-        if (done) { this.hints[fn] = loaded.filter(n => n.kind !== 'cache'); return { result: out, ms: Date.now() - t0, loads, runs, wrote: Object.keys(store.dirty).length }; }
+        if (done) { this.hints[fn] = loaded.filter(n => n.kind !== 'cache' && n.kind !== 'remote'); return { result: out, ms: Date.now() - t0, loads, runs, wrote: Object.keys(store.dirty).length }; }
         break;      /* someone else changed a tab we read: start over */
       }
       await new Promise(r => setTimeout(r, 40 + Math.random() * 120 * (attempt + 1)));

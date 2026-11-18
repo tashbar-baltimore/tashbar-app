@@ -558,7 +558,7 @@ function plBand_(level) { return level <= 4 ? 'A' : level <= 6 ? 'B' : level <= 
 function plBuilt_() {
   var c = CacheService.getScriptCache(), hit = c.get('pl_built_v11');
   if (hit) return JSON.parse(hit);
-  var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ElectivesMore') + plFileText_('ComputingMore') + plFileText_('LifeMore') + plFileText_('SocialMore'), re = /['"]((?:MATH|READ|WRIT|LANG|VOC|SCI|ELEC|COMP|LIFE|SS)\.[A-Z]+\.L\d\d\.\d\d)['"]\s*\]?\s*[:=]\s*\{\s*["']?name["']?\s*:/g, m, out = [];
+  var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ScienceMore2') + plFileText_('ElectivesMore') + plFileText_('ComputingMore') + plFileText_('LifeMore') + plFileText_('SocialMore'), re = /['"]((?:MATH|READ|WRIT|LANG|VOC|SCI|ELEC|COMP|LIFE|SS)\.[A-Z]+\.L\d\d\.\d\d)['"]\s*\]?\s*[:=]\s*\{\s*["']?name["']?\s*:/g, m, out = [];
   while ((m = re.exec(html))) if (out.indexOf(m[1]) < 0) out.push(m[1]);
   c.put('pl_built_v11', JSON.stringify(out), 300);
   return out;

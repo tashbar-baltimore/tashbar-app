@@ -84,6 +84,7 @@ function pfPost_(ans, mu, sd) {
 /* v5: Language Arts runs the same engine with its own stop rule (PF5.ENGINE_LANG); Math and Reading use PF.ENGINE unchanged */
 var PF_ENG_ = {};
 function pfEng_(subj) {
+  if (subj === 'READ' && typeof PF_AIM !== 'undefined' && PF_AIM.ON && PF_AIM.READ) { if (!PF_ENG_.READ) { var r = {}; Object.keys(PF.ENGINE).forEach(function (k) { r[k] = PF.ENGINE[k]; }); Object.keys(PF_AIM.READ).forEach(function (k) { r[k] = PF_AIM.READ[k]; }); PF_ENG_.READ = r; } return PF_ENG_.READ; }   /* kind aim: a shorter Reading section */
   if (subj !== 'LANG' || typeof PF5 === 'undefined') return PF.ENGINE;
   if (!PF_ENG_[subj]) { var o = {}; Object.keys(PF.ENGINE).forEach(function (k) { o[k] = PF.ENGINE[k]; }); Object.keys(PF5.ENGINE_LANG).forEach(function (k) { o[k] = PF5.ENGINE_LANG[k]; }); PF_ENG_[subj] = o; }
   return PF_ENG_[subj];
@@ -132,7 +133,12 @@ function pfIx_() {
   return (PF_IX_ = { byId: byId, bySubj: bySubj, byPassage: byPassage });
 }
 /* appr: a boy who is not a TEST boy (only Approved questions with no hold). TEST boys also get Draft questions. */
-function pfItemOk_(it, appr) { if (appr === 2) return (it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft') && !it.hold; if (appr) return it.status === 'Approved' && !it.hold; return it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft'; }
+/* FULL-INFORMATION RULE (Head of School 2026-11-17: "every question has all the information a student needs to answer it").
+   A question listed in PF_INFO_HOLD (PathfinderInfoHold.js: the picture, table, numbers or text it needs is not on screen, or the
+   button words give the answer) is never given to a real boy, in either Pathfinder, until it is fixed in the bank and taken off
+   the list. TEST boys still see it, so staff can check the fix. */
+function pfInfoHeld_(it) { return typeof PF_INFO_HOLD !== 'undefined' && !!(it && PF_INFO_HOLD[it.id]); }
+function pfItemOk_(it, appr) { if (appr && pfInfoHeld_(it)) return false; if (appr === 2) return (it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft') && !it.hold; if (appr) return it.status === 'Approved' && !it.hold; return it.status === 'Approved' || it.status === 'Reviewed' || it.status === 'Draft'; }
 function pfLadder_(subj) { var L = typeof plList_ === 'function' ? plList_(subj) : null; return (L || []).map(function (x) { return x[0]; }).filter(function (id) { return subj !== 'LANG' || /^LANG\./.test(id); }); }
 function pfSkill_(id) { return PF_BANK.skills[id] || (typeof pf5Ix_ === 'function' ? pf5Ix_().laSkills[id] : null) || null; }
 /* The highest level with enough usable questions (PF.ENGINE.ceilMin), in the subject or in one strand. */
@@ -162,6 +168,7 @@ function pfAvail_(sec, seen) {
   sec.ans.forEach(function (a) { var it = ix.byId[a.i]; skillN[it.skill] = (skillN[it.skill] || 0) + 1; if (it.passage) { if (capP && !passUsed[it.passage]) passLv[it.level] = (passLv[it.level] || 0) + 1; passUsed[it.passage] = 1; } });
   return ix.bySubj[sec.subj].filter(function (it) {
     if (!pfItemOk_(it, sec.appr) || used[it.id]) return false;
+    if (sec.appr && it.screenNote && !(typeof PF_ART !== 'undefined' && PF_ART[it.id])) return false;   /* a live boy never gets a question whose picture is not drawn yet */
     if (typeof pftHide_ === 'function' && pftHide_(sec, it)) return false;   /* PF-TAP1 twins: never both, tap form first (TEST only) */
     if (it.passage && passUsed[it.passage]) return false;                  /* a passage's questions come together, once */
     if (capP && it.passage && (passLv[it.level] || 0) >= pfPassCap_(it.level)) return false;   /* E: passage cap per level */
@@ -173,11 +180,27 @@ function pfRelevantStrands_(sec, avail, lvl) {
   var s = {}; avail.forEach(function (x) { if (Math.abs(x.it.level - lvl) <= 1) s[x.it.strand] = (s[x.it.strand] || 0) + 1; });
   return s;
 }
+/* KIND AIM (Head of School 2026-11-16: "a very boring test… the next question is even harder"). Questions are aimed a bit below his
+   estimate so he gets about 7 in 10 right instead of 5 in 10; the first 2 are warm-ups; after "I don't know this yet" or two misses
+   in a row the next one is a breather (well below his estimate). Only the CHOICE of question changes: every answer is scored exactly
+   as before. pfSimulate_ (400 boys a subject, realistic world): Math right level 66% (was 69%) at the same length; Reading with the
+   shorter section (24, cap 28) 59% (was 62%) and 6 fewer questions; a miss is almost always one level too easy (the climb fixes it).
+   K-2 keep their v7.2 offsets (pfuPickTheta_) and also get the breather. */
+var PF_AIM = { ON: true, pick: -0.85, warm: -1.5, warmN: 2, relief: -1.6, READ: { maxItems: 24, totalMax: 28 } };
+function pfAimTheta_(sec) {
+  var th = sec.pfuK && typeof pfuPickTheta_ === 'function' ? pfuPickTheta_(sec) : sec.theta;
+  if (!PF_AIM.ON) return th;
+  var a = sec.ans, n = a.length, last = n ? a[n - 1] : null, prev = n > 1 ? a[n - 2] : null;
+  var relief = last && !last.r && (last.k || (!last.x && prev && !prev.x && !prev.r));
+  if (relief) return Math.min(th, sec.theta + PF_AIM.relief);
+  if (sec.pfuK) return th;
+  return sec.theta + (n < PF_AIM.warmN ? PF_AIM.warm : PF_AIM.pick);
+}
 /* Next item for the adaptive phase. rnd: random 0..1 function (seeded in tests). */
 function pfPickAdaptive_(sec, seen, rnd) {
   var avail = pfAvail_(sec, seen); if (!avail.length) return null;
   var fresh = avail.filter(function (x) { return x.fresh; }); if (fresh.length) avail = fresh;  /* a retake draws questions he has not seen */
-  var thPick = sec.pfuK && typeof pfuPickTheta_ === 'function' ? pfuPickTheta_(sec) : sec.theta;   /* v7.2 item 13 (PathfinderUx.js): K-2 TEST boys aim at estimate - 0.62 (warm-ups - 1.5); everyone else: the estimate */
+  var thPick = pfAimTheta_(sec);   /* v7.2 item 13 (PathfinderUx.js): K-2 TEST boys aim at estimate - 0.62 (warm-ups - 1.5); everyone else: the estimate */
   var lvl = pfLevelOf_(thPick), window = [], d;
   for (d = 0; d <= 8 && !window.length; d++) window = avail.filter(function (x) { return Math.abs(x.it.level - lvl) <= d; });  /* on-grade first, then one level at a time */
   var counts = pfStrandCounts_(sec), strands = {};
@@ -451,10 +474,22 @@ function pfSimulate_(n, subj, seed, o) {
 }
 
 /* What the page may see of an item: never the answer key. Choice order is shuffled once and kept, so a resume shows the same screen. */
-function pfShuffle_(arr, seedStr) { var h = 0, i; for (i = 0; i < seedStr.length; i++) h = (h * 31 + seedStr.charCodeAt(i)) | 0; var a = arr.slice(); for (i = a.length - 1; i > 0; i--) { h = (h * 1103515245 + 12345) | 0; var j = Math.abs(h) % (i + 1), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+/* ANSWER ORDER FIX (Head of School 2026-11-17: "someone claimed that all the answers were D ... you want the answers to be random").
+   The old shuffle took its pick from the lowest bits of a plain LCG, which repeat in a fixed pattern: with 4 choices the right
+   answer (always listed first) landed on D 99.7% of the time. Now: FNV-1a hash of the seed, then mulberry32, and the pick uses the
+   whole number. Still fixed per seed (same question, same test = same order on a reload); A, B, C, D each about 25%. */
+function pfShuffle_(arr, seedStr) {
+  var s = 2166136261, i; seedStr = String(seedStr);
+  for (i = 0; i < seedStr.length; i++) { s ^= seedStr.charCodeAt(i); s = Math.imul(s, 16777619); }
+  function rnd() { s = (s + 0x6D2B79F5) | 0; var t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+  var a = arr.slice();
+  for (i = a.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
 function pfPresent_(it, sec, salt) {
   var out = { id: it.id, fmt: it.fmt, stem: it.stem, say: it.say || '', pic: it.pic || '', show: it.show || '', cmode: it.cmode || 'text', screen: it.screenNote || '', unit: it.unit || '', audioOnly: !!it.audioOnly, level: it.level, strand: it.strand, draft: it.status !== 'Approved' && !(sec && sec.appr), subject: it.subject };   /* draft tag / 'art coming' only for TEST boys (appr 0); live boys never see it */
   if (it.labels) out.labels = it.labels;
+  if (typeof PF_ART !== 'undefined' && PF_ART[it.id]) { out.art = PF_ART[it.id]; out.screen = ''; }   /* PathfinderArt.js: the drawn picture, never the note text (it can give the answer) */
   out.minMs = pfRapidMs_(it, pfEngOf_(sec));
   if (it.fmt === 'CHOICE') out.choices = pfShuffle_([it.ans].concat((it.wrong || []).map(function (w) { return w[0]; })), it.id + '|' + salt);
   if (it.fmt === 'ORDER') out.tiles = (it.tiles || []).slice();                 /* in the order the question lists them */
@@ -473,7 +508,9 @@ function pfDoGet_(e) {
   try { more = HtmlService.createHtmlOutputFromFile('PathfinderMore').getContent(); } catch (x) {}
   try { if (typeof pfkStart === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderKodeshUI').getContent(); } catch (x) {}   /* Kodesh Pathfinder screens (PathfinderKodesh.js; TEST boys only) */
   try { if (typeof pftApply_ === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderTapUI').getContent(); } catch (x) {}   /* PF-TAP1: tap-question screen (TEST boys only get tap questions) */
-  try { if (typeof pfuView_ === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderUxPage').getContent(); } catch (x) {}   /* v7.2 Stage 5 screens (PathfinderUx.js); they act only when the server marks a TEST boy */
+  try { if (typeof pfuView_ === 'function') more += HtmlService.createHtmlOutputFromFile('PathfinderUxPage').getContent(); } catch (x) {}
+  try { if (typeof PF_ART !== 'undefined') more += HtmlService.createHtmlOutputFromFile('PathfinderArtUI').getContent(); } catch (x) {}   /* the question pictures (PathfinderArt.js) */
+  try { more += HtmlService.createHtmlOutputFromFile('PathfinderQuest').getContent(); } catch (x) {}   /* PATHFINDER QUEST: explorer, trail stations, treasure chests, Coin Catch, lands, ranks (Head of School 2026-11-17; page only) */   /* v7.2 Stage 5 screens (PathfinderUx.js); they act only when the server marks a TEST boy */
   if (more) html = html.replace('</body>', function () { return more + '</body>'; });   /* a function: "$" in the script stays as written */
   return HtmlService.createHtmlOutput(tlTheme_(html, (e && e.parameter && (e.parameter.report || e.parameter.rebbe)) ? 'staff' : 'boy'))   /* &rebbe=: the Read to Rebbe card (staff; PathfinderKodeshRebbe.js) */
     .setTitle('Tashbar Learning · Pathfinder')

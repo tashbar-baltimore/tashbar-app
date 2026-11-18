@@ -115,27 +115,31 @@ function vDone(){ const r=K.done; return `<div class="card pad" style="max-width
 
 /* staff screens */
 function loadMenu(){ K.busy=true; render(); run('cnMenuList',K.token).then(m=>{K.busy=false;K.menu=m;K.view='menu';render();}).catch(fail); }
-/* ---- v61: app orders board. Boys order in the app (Pending); staff mark Ready; "Picked up" charges through the normal kiosk sale. ---- */
+/* ---- v378 orders board (Head of School 2026-11-17): the boy PAID when he ordered. Tap ✅ Done when you hand him the food,
+   ⏳ Still waiting so he sees you are making it, ✕ Can't make it = all his money goes back. ---- */
 let ORD=null, ordTimer=null;
 function ago(t){ const m=Math.round((Date.now()-t)/60000); return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' h ago'; }
-function pollOrders(){ clearInterval(ordTimer); ordTimer=setInterval(()=>{ if(K.token&&(K.view==='orders'||K.view==='start')) loadOrders(true); },20000); }
-function loadOrders(quiet){ if(!quiet){K.busy=true; render();} run('cnKioskOrders',K.token).then(r=>{K.busy=false; const before=ORD?ORD.open.filter(o=>o.status==='pending').length:0; ORD=r; const now=r.open.filter(o=>o.status==='pending').length; if(quiet&&now>before) ding(); if(!quiet) K.view='orders'; if(!quiet||K.view==='orders'||K.view==='start') render(); }).catch(e=>{ if(!quiet) fail(e); }); }
+function pollOrders(){ clearInterval(ordTimer); ordTimer=setInterval(()=>{ if(K.token&&(K.view==='orders'||K.view==='start')) loadOrders(true); },15000); }
+function loadOrders(quiet){ if(!quiet){K.busy=true; render();} run('cnKioskOrders',K.token).then(r=>{K.busy=false; const before=ORD?ORD.open.filter(o=>!o.seen).length:0; ORD=r; const now=r.open.filter(o=>!o.seen).length; if(quiet&&now>before) ding(); if(!quiet) K.view='orders'; if(!quiet||K.view==='orders'||K.view==='start') render(); }).catch(e=>{ if(!quiet) fail(e); }); }
 function ding(){ try{ const c=new (window.AudioContext||window.webkitAudioContext)(); [660,880].forEach((f,i)=>{ const o=c.createOscillator(),g=c.createGain(); o.frequency.value=f; o.connect(g); g.connect(c.destination); g.gain.setValueAtTime(.15,c.currentTime+i*.18); g.gain.exponentialRampToValueAtTime(.001,c.currentTime+i*.18+.25); o.start(c.currentTime+i*.18); o.stop(c.currentTime+i*.18+.3); }); }catch(e){} }
-function ordCard(o){ return `<div class="oc ${o.status}"><div class="oh"><b>${esc(o.name)}</b><span class="note">${ago(o.at)}</span></div><div class="oi">${o.items.map(i=>`<div><span>${esc(i.emoji||'🍪')} ${esc(i.name)}</span><b>x${i.qty}</b></div>`).join('')}</div><div class="note">About ${money(o.est)} · pays at pickup</div>
-  <div class="ob">${o.status==='pending'?`<button class="btn rdy" data-ord="ready" data-id="${esc(o.id)}">🔔 Ready</button>`:''}<button class="btn pk" data-ord="pick" data-id="${esc(o.id)}">✅ Picked up · pay</button><button class="btn cx" data-ord="cancel" data-id="${esc(o.id)}">✕</button></div></div>`; }
-function vOrders(){ const r=ORD||{open:[],done:[]}, pend=r.open.filter(o=>o.status==='pending'), rdy=r.open.filter(o=>o.status==='ready');
+function ordCard(o){ return `<div class="oc ${o.seen?'ready':''}">${o.practice?'<div class="banner" style="margin:0 0 8px;font-weight:800">🧪 PRACTICE order from a TEST account. Do not give real food. Tap Done to close it.</div>':''}<div class="oh"><b style="font-size:26px">${esc(o.name)}</b><span class="note">${ago(o.at)}</span></div>
+  <div class="oi" style="font-size:22px">${o.items.map(i=>`<div><span>${esc(i.emoji||'🍪')} ${esc(i.name)}</span><b>× ${i.qty}</b></div>`).join('')}</div>
+  <div class="note" style="font-weight:800;color:${o.paid?'#047857':'#B45309'}">${o.paid?'✅ PAID '+money(o.est)+' (already taken from his Canteen Cash)':'Not paid yet: '+money(o.est)+' comes off when you tap Done'}</div>
+  <div class="ob" style="display:grid;grid-template-columns:2fr 1.4fr .8fr;gap:8px;margin-top:10px"><button class="btn pk" style="font-size:22px;min-height:70px" data-ord="done" data-id="${esc(o.id)}">✅ Done<br><small>food given</small></button><button class="btn rdy" style="font-size:18px;min-height:70px" data-ord="wait" data-id="${esc(o.id)}">⏳ Still waiting</button><button class="btn cx" style="min-height:70px" data-ord="cancel" data-id="${esc(o.id)}" aria-label="Can't make it">✕<br><small>can’t make it</small></button></div></div>`; }
+function vOrders(){ const r=ORD||{open:[],done:[]}, fresh=r.open.filter(o=>!o.seen), wait=r.open.filter(o=>o.seen);
   let h=''; if(K.msg) h+=`<div class="banner ok">${esc(K.msg)}</div>`; if(K.err) h+=`<div class="banner err">${esc(K.err)}</div>`;
-  h+=`<div class="card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div class="big" style="margin:0">🛎️ App orders</div><span class="note">Updates by itself every 20 seconds. Money comes off only when you press Picked up.</span><span style="margin-left:auto"><b>Cashier:</b> ${cashierSel()}</span></div></div>
-  <div class="cols"><div><h3 class="ch new">🧾 New <span>${pend.length}</span></h3>${pend.map(ordCard).join('')||'<p class="note">No new orders.</p>'}</div><div><h3 class="ch ready">🔔 Ready for pickup <span>${rdy.length}</span></h3>${rdy.map(ordCard).join('')||'<p class="note">Nothing waiting.</p>'}</div></div>`;
-  if(r.done.length) h+=`<div class="card"><b>Done today</b><table>${r.done.map(o=>`<tr><td>${o.status==='picked'?'✅':'✖️'} ${esc(o.name)}</td><td>${o.items.map(i=>esc(i.name)+(i.qty>1?' x'+i.qty:'')).join(', ')}</td><td class="note">${esc(o.note)}</td></tr>`).join('')}</table></div>`;
+  h+=`<div class="card"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><div class="big" style="margin:0">🛎️ Orders</div><span class="note">Boys pay in the app when they order. Tap <b>✅ Done</b> when you hand over the food. Tap <b>⏳ Still waiting</b> so the boy sees you are making it. Updates by itself.</span><span style="margin-left:auto"><b>Cashier:</b> ${cashierSel()}</span></div></div>
+  <div class="cols"><div><h3 class="ch new">🆕 New <span>${fresh.length}</span></h3>${fresh.map(ordCard).join('')||'<p class="note">No new orders.</p>'}</div><div><h3 class="ch ready">⏳ Still waiting <span>${wait.length}</span></h3>${wait.map(ordCard).join('')||'<p class="note">Nothing waiting.</p>'}</div></div>`;
+  if(r.done.length) h+=`<div class="card"><b>Finished today</b><table>${r.done.map(o=>`<tr><td>${o.status==='picked'?'✅':'↩️'} ${esc(o.name)}</td><td>${o.items.map(i=>esc(i.name)+(i.qty>1?' ×'+i.qty:'')).join(', ')}</td><td class="note">${esc(o.note)}</td></tr>`).join('')}</table></div>`;
   return h; }
 function cashierSel(){ const b=K.boot; return `<select id="cashier" style="width:auto;display:inline-block">${['staff'].concat(b.crew.map(c=>c.id)).map(id=>`<option value="${esc(id)}" ${K.cashier===id?'selected':''}>${id==='staff'?'Staff ('+esc(b.me.name)+')':esc((b.crew.find(c=>c.id===id)||{}).name)+' · Crew'}</option>`).join('')}</select>`; }
 function ordAct(a,id){ const o=ORD&&ORD.open.find(x=>x.id===id); if(!o||K.busy) return; K.err=''; K.msg='';
-  if(a==='cancel'){ const why=prompt('Cancel '+o.name+'’s order? Write a short reason (optional):',''); if(why===null) return; K.busy=true; render(); return run('cnKioskOrderSet',K.token,id,'cancelled',why).then(r=>{K.busy=false;ORD=r;K.msg='Order cancelled. Nothing was charged.';render();}).catch(fail); }
-  if(a==='ready'){ K.busy=true; render(); return run('cnKioskOrderSet',K.token,id,'ready','').then(r=>{K.busy=false;ORD=r;K.msg='🔔 '+o.name+' can see their order is ready.';render();}).catch(fail); }
-  if(a==='pick'){ K.busy=true; render(); return run('cnKioskOrderPickup',K.token,id,K.cashier).then(r=>{K.busy=false;
-    if(!r.ok){ K.err=r.short?`${o.name} doesn’t have enough Canteen Cash (${money(r.before)}; this costs ${money(r.total)}). Change or cancel the order.`:'Could not finish this order.'; return render(); }
-    ORD=r.orders||ORD; K.msg=r.dup?'Already picked up.':`✅ ${r.name}: ${r.items} · ${money(r.total)}. New balance ${money(r.after)}.`; boot2(); render(); }).catch(fail); }
+  const after=r=>{ K.busy=false; if(r&&r.open) ORD={open:r.open,done:r.done}; else if(r&&r.orders) ORD=r.orders; };
+  if(a==='cancel'){ const why=prompt('Can’t make '+o.name+'’s order? '+(o.paid?'He gets ALL his money back. ':'')+'Write a short reason (optional):',''); if(why===null) return; K.busy=true; render(); return run('cnKioskOrderSet',K.token,id,'cancelled',why,K.cashier).then(r=>{ after(r); K.msg='↩️ Order cancelled.'+(r&&r.res&&r.res.back?' '+money(r.res.back)+' went back to '+o.name+'.':' Nothing was charged.'); render(); }).catch(fail); }
+  if(a==='wait'){ K.busy=true; render(); return run('cnKioskOrderSet',K.token,id,'waiting','',K.cashier).then(r=>{ after(r); K.msg='⏳ '+o.name+' can see you are making it.'; render(); }).catch(fail); }
+  if(a==='done'||a==='pick'){ K.busy=true; render(); return run('cnKioskOrderSet',K.token,id,'done','',K.cashier).then(r=>{ K.busy=false;
+    if(r&&r.ok===false){ K.err=r.short?`${o.name} doesn’t have enough Canteen Cash (${money(r.before)}; this costs ${money(r.total)}). Change or cancel the order.`:'Could not finish this order.'; return render(); }
+    after(r); K.msg='✅ Done: '+o.name+' got '+o.items.map(i=>i.name+(i.qty>1?' ×'+i.qty:'')).join(', ')+'.'; try{ boot2(); }catch(e){} render(); }).catch(fail); }
 }
 /* ---- v61: friendlier menu editor ---- */
 const EMO=['🥨','🍪','🍫','🍬','🍭','🧃','💧','🥤','🍎','🍌','🍊','🍇','🍿','🥯','🍕','🌯','🧁','🍩','🥜','🍦'];
@@ -171,7 +175,7 @@ function doVoid(){ const reason=(document.getElementById('vreason').value||'').t
 function render(){
   const el=document.getElementById('app');
   const staff=K.token&&K.boot;
-  const hdr=`<header><h1>🥨 Tashbar Canteen</h1>${staff?`<button data-act="home">Start</button><button data-act="void">Void last sale</button><button data-act="rep">Today’s sales</button><button data-act="orders">🛎️ Orders${ORD&&ORD.open.length?`<span class="obadge ${ORD.open.some(o=>o.status==='pending')?'hot':''}">${ORD.open.length}</span>`:''}</button><button data-act="menu">Menu</button><button data-act="out">Sign out</button>`:''}</header>`;
+  const hdr=`<header><h1>🥨 Tashbar Canteen</h1>${staff?`<button data-act="home">Start</button><button data-act="void">Void last sale</button><button data-act="rep">Today’s sales</button><button data-act="orders">🛎️ Orders${ORD&&ORD.open.length?`<span class="obadge ${ORD.open.some(o=>!o.seen)?'hot':''}">${ORD.open.length}</span>`:''}</button><button data-act="menu">Menu</button><button data-act="out">Sign out</button>`:''}</header>`;
   let b='';
   if(!K.token) b=vSignin(); else if(!K.boot) b='<div class="card">Loading…</div>';
   else b=K.view==='code'?vCode():K.view==='shop'?vShop():K.view==='done'?vDone():K.view==='menu'?vMenu():K.view==='rep'?vRep():K.view==='void'?vVoid():K.view==='orders'?vOrders():vStart();

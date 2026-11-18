@@ -5,7 +5,7 @@
    1. CASH PILL: your cash at the top of every screen (lessons, results, Kodesh Quest, every drawer). Tap it to open the store.
       During a lesson it shows "+$ on the way" (an estimate; the server pays when the lesson is saved).
    2. PAYCHECK: after each lesson, an itemized receipt prints line by line, gets a PAID stamp, and the cash flies into the bank.
-   3. PAYDAY: on Thursday or Friday, once a week, a "Payday" screen shows the week day by day.  4. INTEREST: "your money grew" once a week.
+   3. PAYDAY: on Thursday or Friday, once a week, a "Payday" screen shows the week day by day.  4. (v378 Head of School: no interest, so no "your money grew" screen.)
    5. THE STORE: Fun (screen upgrades), Real prizes (staff hand them out), Canteen Cards (Tashbar $ -> Canteen Cash), Give (Tashbar or a friend).
    6. SAVINGS GOAL: pick any item as your goal; a bar on the home page shows how close you are.
    7. Your fun upgrades show: name frame, crown, title, home theme, a buddy, a star trail, silly sounds, gold coins.
@@ -172,14 +172,12 @@ function syncOwned(){ const s=ST(); s.owned=(T.info&&T.info.owned)||[]; Object.k
 
 /* ---------- 3+4. payday and interest (once a week) ---------- */
 function weekly(){ try{ const I=T.info, s=ST(); if(!I||A.view!=='hub'||modalOpen()) return;
-  if(I.interest&&I.interest.cents>0&&s.intSeen!==I.interest.at){ s.intSeen=I.interest.at; save(); setTimeout(()=>interestShow(I.interest.cents),1200); return; }
   const dow=new Date().getDay(); if((dow===4||dow===5)&&s.payday!==I.week.week&&I.week.earned>0){ s.payday=I.week.week; save(); setTimeout(()=>{ T.tab='week'; openStore(true); paydayShow(); },1500); }
 }catch(e){} }
 function save(){ try{ clearTimeout(T.sv); T.sv=setTimeout(()=>{ try{ saveStudent(A.st); }catch(e){} },1500); }catch(e){} }
 function bannerX(text,emoji){ if(typeof window.tlChaChing!=='function'&&rmo()) return; const b=document.createElement('div'); b.className='hpbanner'; b.innerHTML=`<span>${emoji||'💰'}</span><b>${E(text)}</b><span>${emoji||'💰'}</span>`; document.body.appendChild(b);
  b.animate([{transform:'translate(-50%,-200%) rotate(-6deg) scale(.6)',opacity:0},{transform:'translate(-50%,0) rotate(-3deg) scale(1.1)',opacity:1,offset:.18},{transform:'translate(-50%,0) rotate(-3deg) scale(1)',opacity:1,offset:.8},{transform:'translate(-50%,-160%) rotate(-3deg) scale(.9)',opacity:0}],{duration:rmo()?600:2800,easing:'cubic-bezier(.2,.8,.3,1.2)'}).onfinish=()=>b.remove(); }
 function rainDown(n){ if(rmo()) return; const [tx,ty]=pillAt(); for(let k=0;k<n;k++){ const x=Math.random()*innerWidth; fly(x,-40,tx,ty,1); } }
-function interestShow(c){ bannerX('YOUR MONEY GREW! +'+$(c/100),'🏦'); hooray(); rainDown(18); try{ toast('🏦 The Tashbar Bank paid you '+$(c/100)+' interest for saving. Money that waits, grows!'); }catch(e){} }
 function paydayShow(){ bannerX('PAYDAY!','💵'); hooray(); setTimeout(register,500); rainDown(30); setTimeout(confettiBurst,600); }
 
 /* ---------- 5. the store ---------- */
@@ -192,7 +190,7 @@ function draw(){ if(!T.open) return; let o=document.getElementById('tlstore'); c
   const I=T.info, bal=Number(A.st.balance)||0;
   o.innerHTML=`<div class="stbox" role="dialog" aria-modal="true" aria-label="Tashbar Store"><button class="stx" data-st="close" aria-label="Close the store">✕ Close</button>
    <div class="sthead"><h2>🏪 Tashbar Store</h2><small>Spend it, save it, or give it. Everything here is paid with your Tashbar cash.</small>
-   <div class="stbal"><span>Your cash</span><b>${$(bal)}</b></div>
+   <div class="stbal"><span>Your cash</span><b>${$(bal)}</b></div>${I&&I.pf<1&&window.tlQuarterHTML?window.tlQuarterHTML(I.pf,true):''}
    <div class="sttabs" role="tablist">${TABS.map(t=>`<button role="tab" aria-selected="${T.tab===t[0]}" class="${T.tab===t[0]?'on':''}" data-st="tab" data-t="${t[0]}">${t[1]}</button>`).join('')}</div></div>
    <div class="stbody">${!I?'<p>Opening the store…</p>':body(I,bal)}<p class="err" role="alert">${E(T.err)}</p></div>${T.confirm?conf(T.confirm,bal):''}</div>`;
   const b=o.querySelector('.stbody'); if(b) b.scrollTop=keep;
@@ -207,7 +205,7 @@ function body(I,bal){ const items=I.items.filter(x=>x.cat===T.tab);
   if(T.tab==='fun') return `<p class="stintro">Fun upgrades for your screen. They are yours forever, right away.</p><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`;
   if(T.tab==='real') return `<div class="note">🎁 Real prizes: after you buy one, a rebbe or teacher hands it to you. If it can’t happen, you get all your money back. Up to ${I.openPrizes} prizes can wait at a time.</div><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`;
   if(T.tab==='canteen'){ const c=I.canteen, left=Math.max(0,(c.weekMax-c.weekUsed)/100);
-    return `<div class="note">💳 A Canteen Card turns Tashbar cash into Canteen Cash: <b>${$(c.rate)} Tashbar = $1.00 Canteen Cash</b>. Use Canteen Cash at the canteen for food. This week you can still get <b>${$(left)}</b> of Canteen Cash.${c.cash!==null&&c.cash!==undefined?` Your Canteen Cash now: <b>${$(c.cash)}</b>.`:' (You need a Canteen Cash account. Ask the office.)'}</div><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`; }
+    return `<div class="note">🍕 Canteen Cash is the money you spend on food at the canteen. You buy in the app (tap <b>🍕 Buy food</b> on your home page) and the money comes off right away.</div><div class="note">💳 A Canteen Card turns Tashbar cash into Canteen Cash: <b>${$(c.rate)} Tashbar = $1.00 Canteen Cash</b>. Use Canteen Cash at the canteen for food. This week you can still get <b>${$(left)}</b> of Canteen Cash.${c.cash!==null&&c.cash!==undefined?` Your Canteen Cash now: <b>${$(c.cash)}</b>.`:' (You need a Canteen Cash account. Ask the office.)'}</div><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`; }
   if(T.tab==='give'){ const fr=I.friends||[], q=T.gift.q.toLowerCase(), list=fr.filter(f=>!q||f.name.toLowerCase().indexOf(q)>=0).slice(0,60);
     return `<div class="note">💝 Tzedakah: give some of your money back to Tashbar. Students have given <b>${$(I.given.school/100)}</b> so far. You gave <b>${$(I.given.mine/100)}</b>. Thank you!</div>
      <div class="stgrid">${items.filter(x=>x.kind==='donate').map(x=>card(x,bal)).join('')}</div>
@@ -224,8 +222,8 @@ function body(I,bal){ const items=I.items.filter(x=>x.cat===T.tab);
   if(T.tab==='week'){ const W=I.week, max=Math.max(1,...W.days.map(d=>d.cents)), best=W.days.reduce((a,d)=>d.cents>a.cents?d:a,W.days[0]), names=['Sun','Mon','Tue','Wed','Thu','Fri'];
     const ch=A.st.chest||null;
     return `<h3 style="margin-top:0">📊 My week</h3><div class="stweek">${W.days.map((d,k)=>`<div><b>${d.cents?$(d.cents/100):''}</b><i class="${d===best&&d.cents?'best':''}" style="height:${Math.round(d.cents/max*150)}px"></i><small>${names[k]}</small></div>`).join('')}</div>
-     <div class="stkpis"><div><span>Earned this week</span><b>${$(W.earned/100)}</b></div><div><span>Best day</span><b>${best.cents?names[W.days.indexOf(best)]:'—'}</b></div><div><span>Bank interest</span><b>${$(W.interest/100)}</b></div><div><span>Spent and given</span><b>${$(W.spent/100)}</b></div>${ch?`<div><span>Treasure chest</span><b>${ch.paid?'Opened! 🎉':Math.min(ch.days,ch.need)+' of '+ch.need+' days'}</b></div>`:''}</div>
-     <p class="stintro">🏦 Every Sunday the Tashbar Bank pays ${2}% interest on what you saved. Money that waits, grows!</p>`; }
+     <div class="stkpis"><div><span>Earned this week</span><b>${$(W.earned/100)}</b></div><div><span>Best day</span><b>${best.cents?names[W.days.indexOf(best)]:'—'}</b></div><div><span>Spent and given</span><b>${$(W.spent/100)}</b></div>${ch?`<div><span>Treasure chest</span><b>${ch.paid?'Opened! 🎉':Math.min(ch.days,ch.need)+' of '+ch.need+' days'}</b></div>`:''}</div>
+     <p class="stintro">🏦 The Tashbar Bank never pays or charges interest: Jews do not lend with interest (ribbis). Saving is still smart: money you keep today can buy something bigger later.</p>`; }
   return ''; }
 function conf(c,bal){ const x=item(c.id)||{}; const price=c.id==='gift'?T.gift.amt:x.cents/100; const fr=c.id==='gift'?((T.info.friends||[]).find(f=>f.id===T.gift.to)||{}).name:'';
   if(c.done) return `<div class="stconf"><div class="cb"><div class="em">${c.emoji||x.emoji}</div><h3>${E(c.title)}</h3><p>${E(c.text)}</p><button class="stgo" data-st="ok">🎉 Yay!</button></div></div>`;

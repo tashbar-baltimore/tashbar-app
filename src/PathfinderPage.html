@@ -172,7 +172,7 @@ function render(){ const a=$('app');
 /* ---------- road ---------- */
 function roadHTML(){ const v=P.v, R=v.road, keys=Object.keys(R), LD=v.lands||{}, coreK=['READ','MATH'].find(k=>R[k].status==='going')||['READ','MATH'].find(k=>R[k].status==='todo'), moreK=coreK?null:(keys.find(k=>R[k].extra&&R[k].ready&&R[k].status==='going')||keys.find(k=>R[k].extra&&R[k].ready&&R[k].status==='todo')), nextK=coreK||moreK;
  const jars=keys.filter(k=>R[k].status==='going'&&!R[k].extra).length, bd=v.badges||[];
- return `<div class="card"><h2>${coreK?'Your Pathfinder road':moreK?'You reached the Finish line! More stops are open':'You reached the Finish line!'}</h2><p style="margin:0;color:var(--soft)">${coreK?'Each stop finds where you are. Every real try earns coins, right or wrong. When you do not know one, tap “I don’t know this yet”.':moreK?'Your Reading and Math paths are ready. The new stops help your teachers get to know you. They do not earn coins.':'Great work. Your Reading and Math paths are ready. The other stops open later.'}</p>
+ return `<div class="card"><h2>${coreK?'Your Pathfinder road':moreK?'You reached the Finish line! More stops are open':'You reached the Finish line!'}</h2><p style="margin:0;color:var(--soft)">${coreK?'Each stop finds where you are. Every real try earns coins, right or wrong. When you do not know one, tap “I don’t know this yet”.':moreK?'Your Reading and Math paths are ready. The new stops show how much you have grown. They do not earn coins.':'Great work. Your Reading and Math paths are ready. The other stops open later.'}</p>
  ${jars?`<p style="margin:8px 0 0;font-weight:700;color:#7a4b00">🫙 ${jars} jar${jars>1?'s':''} waiting for you: finish the stop to get ${jars>1?'them':'it'}.</p>`:''}
  ${bd.length?`<div class="badges">${bd.map(b=>`<span class="badge">${b==='pathfinder'?'🏅 Pathfinder':'🎖️ Explorer · '+esc((R[b.replace('explorer-','')]||{}).label||'')}</span>`).join('')}</div>`:''}</div>
  <div class="roadwrap"><div class="road">${keys.map(k=>{ const s=R[k], done=s.status!=='todo'&&s.status!=='going'&&s.status!=='skip', L=LD[k]||{};
@@ -222,11 +222,13 @@ function valueOf(it){ if(it.fmt==='TAP'&&window.PFTAPUI) return PFTAPUI.value(it
 function itemHTML(){ const v=P.v, c=v.cur, it=c.item, lab=x=>(it.labels&&it.labels[x])||x; let hud=hudHTML();
  let h=hud+`<div class="card"><div class="qhead">${esc(v.road[c.section].label)} · question ${it.n}${it.draft?' <span class="draft">draft</span>':''}</div>`;
  if(it.passage) h+=it.fmt==='TAP'&&window.PFTAPUI?PFTAPUI.passage(it):passageHTML(it.passage,it.draft);   /* PF-TAP1: tap targets */
- if(it.screen){ const em=picEmoji(it.screen); h+=`<div class="pic">${em?`<span class="em">${em}</span>`:''}${it.draft?'Picture (art coming): ':''}${esc(it.screen)}</div>`; }
+ if(it.art&&window.PFART) h+=PFART.html(it.art);   /* the drawn picture the question needs (PathfinderArt) */
+ else if(it.screen){ const em=picEmoji(it.screen); h+=`<div class="pic">${em?`<span class="em">${em}</span>`:''}${it.draft?'Picture (art coming): ':''}${esc(it.screen)}</div>`; }
  h+=`<div class="stem"><button class="say" data-act="say" aria-label="Read the question to me">🔊</button><span>${rich(it.stem)}</span></div>`;
  if(it.show) h+=`<div class="show${/\s/.test(it.show)?' sent':''}">${esc(it.show)}</div>`;
  if(it.fmt==='CHOICE') h+=`<div class="choices">${it.choices.map((x,i)=>{ const L=lab(x), em=it.cmode==='pic'?emojiFor(L):'', hide=em&&(it.show||it.audioOnly);
-   return `<button class="ch${P.sel===i?' sel':''}" data-act="pick" data-i="${i}" aria-label="${hide?'picture '+(i+1):esc(String(L).replace(/<\/?i>/g,''))}">${em?`<span class="em">${em}</span>`:''}${hide?'':em?`<small>${esc(L)}</small>`:rich(L)}</button>`; }).join('')}</div>`;
+   const ap=it.art&&it.art.choices&&window.PFART?PFART.choice(it.art.choices[x]):'';
+   return `<button class="ch${P.sel===i?' sel':''}" data-act="pick" data-i="${i}" aria-label="${hide||ap?'picture '+(i+1):esc(String(L).replace(/<\/?i>/g,''))}">${ap}${em?`<span class="em">${em}</span>`:''}${hide||ap?'':em?`<small>${esc(L)}</small>`:rich(L)}</button>`; }).join('')}</div>`;
  else if(it.fmt==='ORDER') h+=orderHTML(it);
  else if(it.fmt==='POINT') h+=gridHTML(it);
  else if(it.fmt==='TAP') h+=window.PFTAPUI?PFTAPUI.hint(it):'';   /* PF-TAP1 */
@@ -235,7 +237,7 @@ function itemHTML(){ const v=P.v, c=v.cur, it=c.item, lab=x=>(it.labels&&it.labe
  h+=`<div class="foot">${P.idk?`<button class="idk" data-act="idk" ${P.busy?'disabled':''}>I don’t know this yet</button>`:''}<button class="big" data-act="next" ${!canNext(it)||P.busy?'disabled':''}>${P.busy?'Saving…':it.fmt==='TAP'?'Done ✓':'Next ➜'}</button></div>`;
  return h; }
 function slowHTML(){ const left=Math.max(0,Math.ceil((P.v.pause.until-Date.now())/1000));
- return `<div class="card center"><div style="font-size:64px">🌿</div><h2>Let’s slow down</h2><p>Take your time — every question counts. Read each question, then answer. Your teacher can see how you are doing.</p>${left?`<div class="breath" id="breath">${left}</div><p style="color:var(--soft)">Breathe in… and out…</p>`:`<button class="big gold" data-act="ready" ${P.busy?'disabled':''}>I’m ready</button>`}</div>`; }
+ return `<div class="card center"><div style="font-size:64px">🌿</div><h2>Let’s slow down</h2><p>Take your time — every question counts. Read each question, then answer. You are on the right trail. Keep going!</p>${left?`<div class="breath" id="breath">${left}</div><p style="color:var(--soft)">Breathe in… and out…</p>`:`<button class="big gold" data-act="ready" ${P.busy?'disabled':''}>I’m ready</button>`}</div>`; }
 function stretchHTML(){ const left=Math.max(0,Math.ceil((P.v.pause.until-Date.now())/1000));
  return `<div class="card center"><h2>Stretch break 🙆‍♂️</h2><p>Stand up, reach up high, then roll your shoulders. Now breathe with the circle.</p><div class="breathe" aria-hidden="true"></div><div class="bword" id="bword">Breathe in… 1, 2, 3, 4</div>${left?'':`<button class="big gold" data-act="ready" ${P.busy?'disabled':''}>I’m ready</button>`}</div>`; }
 function landHTML(k){ const L=(P.v.lands||{})[k]||{name:'',ic:'⭐',color:'#1E1B4B'}, s=(P.v.road||{})[k]||{};
@@ -244,7 +246,7 @@ function sureHTML(){ return `<div class="ov"><div class="card"><h2>How sure are 
 function sitHTML(){ const t=new Date(P.v.pause.until);
  return `<div class="card center"><div style="font-size:64px">🌟</div><h2>Great work today!</h2><p>Everything is saved. Time for a break. You can come back at ${esc(t.toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}))} or later and pick up right where you stopped.</p>${P.v.appUrl?`<a class="big gold" href="${esc(P.v.appUrl)}">Back to my lessons</a>`:''}</div>`; }
 function finHTML(){ const f=P.v.finished;
- if(f.v5) return `<div class="card center"><div style="font-size:64px">🎖️</div><h2>${esc(f.label)} done!</h2><div class="badges" style="justify-content:center"><span class="badge">🎖️ Explorer badge · ${esc(f.label)}</span></div><p>Thank you. This helps your teachers know how to help you.</p><button class="big gold" data-act="road">See my road</button></div>`;
+ if(f.v5) return `<div class="card center"><div style="font-size:64px">🎖️</div><h2>${esc(f.label)} done!</h2><div class="badges" style="justify-content:center"><span class="badge">🎖️ Explorer badge · ${esc(f.label)}</span></div><p>Great job! Every answer helps your path fit you just right.</p><button class="big gold" data-act="road">See my road</button></div>`;
  return `<div class="card center"><div style="font-size:64px">${f.coreDone?'🏅':'🎖️'}</div><h2>${esc(f.label)} done!</h2>
  <div class="badges" style="justify-content:center"><span class="badge">🎖️ Explorer badge · ${esc(f.label)}</span>${f.coreDone?'<span class="badge">🏅 Pathfinder badge</span>':''}</div>
  ${f.jar?`<p style="font-size:22px;font-weight:800;color:var(--ok)">🫙 Your jar: +${money(f.jar)}</p>`:''}${f.finish?`<p style="font-size:22px;font-weight:800;color:var(--ok)">🏁 Finish line: +${money(f.finish)}</p>`:''}
@@ -373,6 +375,15 @@ document.addEventListener('click',e=>{ const t=e.target.closest('[data-ract]'); 
 /* ---------- start ---------- */
 (function boot(){
  const go=loc=>{ const q=(loc&&loc.parameter)||{};
+  /* PATHFINDER ON FIREBASE (Head of School 2026-11-17: "move Pathfinder to Firebase"). The school's live data is on the Firebase
+     server since 05:25Z; this Apps Script page only draws the screens. Every server call (questions, answers, pay, Kodesh, the
+     one-time sign-in code) goes to the Firebase server, so it reads and writes the same database as the rest of the app.
+     Builders can still use the old Sheets copy with ?old=1. */
+  if(q.old!=='1'&&!window.PF_FIRE){ window.PF_FIRE='https:'+'/'+'/api-q26c275eaa-uk.a.run.app/';
+   const fire=(fn,args)=>fetch(window.PF_FIRE,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({api:1,fn:fn,args:args}),redirect:'follow'}).then(r=>r.json()).then(j=>{ if(!j||!j.ok) throw new Error((j&&j.error)||'Server error'); return j.result; });
+   const chain=(ok,no)=>new Proxy({},{get:(_,k)=>k==='withSuccessHandler'?(f2=>chain(f2,no)):k==='withFailureHandler'?(f2=>chain(ok,f2)):k==='withUserObject'?(()=>chain(ok,no)):function(){ const a=Array.prototype.slice.call(arguments); fire(k,a).then(r=>{ if(ok) ok(r); },e=>{ if(no) no(e); else console.error(k,e); }); }});
+   try{ google.script.run=chain(null,null); }catch(e){ try{ Object.defineProperty(google.script,'run',{value:chain(null,null),configurable:true,writable:true}); }catch(x){} }
+   if(!q.back) PFBACK='https:'+'/'+'/tashbar-learning-live.web.app/'; }
   try{ if(q.back){ const u=new URL(q.back); if(u.protocol==='https:'&&['tashbar-learning-live.web.app','tashbar-learning-live.firebaseapp.com'].indexOf(u.host)>=0) PFBACK=u.origin+'/'; } }catch(e){}
   if(q.h&&/^[0-9a-f]{24}$/.test(q.h)&&!q.report&&!q.rebbe){ const h=q.h; delete q.h; return run('pfHandoffRedeem',h).then(r=>{ if(r&&r.token) store('tl-pf',{token:r.token,at:Date.now()}); go({parameter:q}); }).catch(()=>go({parameter:q})); }
   run('msAppUrl').then(u=>{ P.appUrl=u; if(P.v) P.v.appUrl=P.v.appUrl||u; }).catch(()=>{});

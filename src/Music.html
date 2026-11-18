@@ -13,7 +13,7 @@ function muCtx(){ if(!MU.ctx){ const AC=window.AudioContext||window.webkitAudioC
 function muLoadSfx(){ const c=muCtx(); if(!c) return; Object.keys(MU_SFX).forEach(k=>{ if(MU.sfx[k]) return; fetch(MU_SFX[k]).then(r=>r.arrayBuffer()).then(a=>c.decodeAudioData(a)).then(b=>{ MU.sfx[k]=b; }).catch(()=>{}); }); }
 function muFx(k,vol,rate){ try{ if(!SND.on) return false; const c=muCtx(), b=MU.sfx[k]; if(!c||!b) return false; const s=c.createBufferSource(), g=c.createGain(); s.buffer=b; if(rate) s.playbackRate.value=rate; g.gain.value=(vol==null?.8:vol)*muSfxVol(); s.connect(g); g.connect(c.destination); s.start(); return true; }catch(e){ return false; } }
 function muSfxVol(){ const m=muPrefs(); return .35+.65*(m.vol==null?.6:m.vol); }
-function muPrefs(){ const st=A.st; if(!st) return {mood:'off',vol:.6}; st.music=st.music||{mood:'off',vol:.6}; if(st.music.mood==='niggun') st.music.mood='off'; return st.music; }
+function muPrefs(){ const st=A.st; if(!st) return {mood:'off',vol:.6}; st.music=st.music||{mood:'off',vol:.6}; if(st.music.mood==='niggun') st.music.mood='off'; if(st.music.mood==='club') st.music.mood='mix'; return st.music; }
 /* real sound effects in place of the synth beeps (synth stays as a fallback until the files decode) */
 (function(){ const o={right:SND.right.bind(SND),wrong:SND.wrong.bind(SND),coin:SND.coin.bind(SND),win:SND.win.bind(SND),level:SND.level.bind(SND),tap:SND.tap.bind(SND)};
  SND.right=function(combo){ if(!muFx('right',.75,1+Math.min(combo||0,8)*.03)) o.right(combo); };
@@ -41,8 +41,108 @@ const MU_MOODS=[
  ['focus','🎹','Focus','Calm and steady']
 ];
 const MU_HAPPY=['happy','parade','swing','sunny','hero','arcade','game','energy'];
+/* ---------- High-energy music (Head of School 2026-11-17: "much more rocking ... techno, trance, EDM ... very high energy"; v384: never call it "club", put it all in Happy Mix).
+   Every high-energy track is ORIGINAL, made live in the browser by Web Audio from a fixed recipe (style + seed): no files to download, nothing copyrighted.
+   A track runs about 2.5 to 3 minutes: intro, build-up (riser + snare roll), drop, break, build-up, drop, outro.
+   It uses the same volume, fade, Next, quieter-in-lessons and school music-off rules as the recorded music (it behaves like an Audio element). */
+const MU_CLUB_MOODS=[
+ ['edm','💥','EDM Drops','Big build-ups, bigger drops'],
+ ['trance','🌌','Trance','Soaring, high-energy 138'],
+ ['techno','⚡','Techno','Pounding 128 beats'],
+ ['dnb','🏎️','Drum & Bass','Super fast 174']
+];
+const MU_CLUB_GENRES=['edm','trance','techno','dnb'];
+const MU_CLUB_NAME={edm:'EDM',trance:'Trance',techno:'Techno',dnb:'Drum & Bass'};
+const MU_CLUB=[
+ ['edm','Victory Lap'],['edm','Rocket Fuel'],['edm','Thunder Jump'],['edm','Max Power'],
+ ['trance','Starlight Surge'],['trance','Skyline Dreams'],['trance','Sunrise Velocity'],['trance','Aurora Climb'],
+ ['techno','Laser Lift'],['techno','Turbo Circuit'],['techno','Neon Grid'],['techno','Power Station'],
+ ['dnb','Hyper Drive'],['dnb','Comet Chase'],['dnb','Lightning Run'],['dnb','Rapid Fire']
+].map((r,i)=>({id:'beat'+(i+1),mood:r[0],title:r[1],by:'Tashbar Beats · '+MU_CLUB_NAME[r[0]],seed:(i+1)*7919,synth:true}));
+const MU_CLUB_GEN={
+ edm:{bpm:128,form:[['intro',8],['build',8],['drop',16],['break',8],['build',8],['drop',16],['outro',8]]},
+ trance:{bpm:138,form:[['intro',16],['build',8],['drop',16],['break',16],['build',8],['drop',16],['outro',8]]},
+ techno:{bpm:128,form:[['intro',16],['groove',16],['build',8],['drop',16],['break',8],['build',8],['drop',16],['outro',8]]},
+ dnb:{bpm:174,form:[['intro',16],['build',8],['drop',32],['break',16],['build',8],['drop',32],['outro',8]]}
+};
+function muRng(seed){ let s=(seed>>>0)||1; return ()=>{ s^=s<<13; s>>>=0; s^=s>>>17; s^=s<<5; s>>>=0; return s/4294967296; }; }
+function muHz(m){ return 440*Math.pow(2,(m-69)/12); }
+function muNoise(c){ if(c.__muNoise) return c.__muNoise; const n=c.sampleRate*2, b=c.createBuffer(1,n,c.sampleRate), d=b.getChannelData(0); const R=muRng(12345); for(let i=0;i<n;i++) d[i]=R()*2-1; c.__muNoise=b; return b; }
+function muClubPlan(t){ const g=MU_CLUB_GEN[t.mood], R=muRng(t.seed), pick=a=>a[Math.floor(R()*a.length)];
+ const P={mood:t.mood,g,SC:[0,2,3,5,7,8,10],root:pick([45,43,41,40,38,44,42]),prog:pick([[0,5,2,6],[0,6,5,6],[5,6,0,4],[0,3,5,4],[0,5,3,4],[5,3,0,6]]),
+  arp:pick([[0,1,2,3,2,1,0,1],[0,2,1,3,0,2,1,3],[0,1,2,3,4,3,2,1],[3,2,1,0,1,2,3,4]]),motif:[],acid:[],stab:[],bars:[],cut:.45+R()*.5};
+ for(let i=0;i<16;i++) P.motif.push(i%8===0?0:R()<.28?-1:Math.floor(R()*5));
+ for(let s=0;s<16;s++) P.acid.push({on:s===0||R()<.62,up:R()<.22?12:R()<.15?7:0,acc:R()<.3,slide:R()<.2});
+ for(let s=0;s<16;s++) P.stab.push(s===0||([3,6,10,12,14].indexOf(s)>=0&&R()<.75));
+ g.form.forEach(f=>{ for(let b=0;b<f[1];b++) P.bars.push({sec:f[0],b,len:f[1]}); });
+ P.spb=60/g.bpm; P.steps=P.bars.length*16; return P; }
+function muDeg(P,d,oct){ const o=Math.floor(d/7), k=((d%7)+7)%7; return P.root+12*(o+(oct||0))+P.SC[k]; }
+function muVoice(c,type,f,t,dur,vol,dest,cut,q,att,det){ const o=c.createOscillator(), g=c.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(det) o.detune.setValueAtTime(det,t); let n=o;
+ if(cut){ const fl=c.createBiquadFilter(); fl.type='lowpass'; fl.frequency.setValueAtTime(Math.min(cut,18000),t); fl.Q.value=q||.8; o.connect(fl); n=fl; }
+ const a=att||.005; n.connect(g); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+a); g.gain.setTargetAtTime(0,t+Math.max(a,dur*.7),dur*.2+.01);
+ if(Array.isArray(dest)) dest.forEach(d=>g.connect(d)); else g.connect(dest); o.start(t); o.stop(t+dur+.5); return n; }
+function muSaws(c,f,t,dur,vol,dest,cut,att){ [-14,0,14].forEach(d=>muVoice(c,'sawtooth',f,t,dur,vol/3,dest,cut,.7,att,d)); }
+function muKick(c,t,v,dest,dnb){ const o=c.createOscillator(), g=c.createGain(); o.type='sine'; o.frequency.setValueAtTime(dnb?190:165,t); o.frequency.exponentialRampToValueAtTime(dnb?55:45,t+(dnb?.08:.13));
+ g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.001,t+(dnb?.3:.42)); o.connect(g); g.connect(dest); o.start(t); o.stop(t+.5); }
+function muNz(c,t,dest,type,fq,q,v,dec){ const s=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain(); s.buffer=muNoise(c); f.type=type; f.frequency.setValueAtTime(fq,t); f.Q.value=q;
+ g.gain.setValueAtTime(v,t); g.gain.exponentialRampToValueAtTime(.001,t+dec); s.connect(f); f.connect(g); g.connect(dest); s.start(t,(t*7.13)%1.5); s.stop(t+dec+.05); }
+function muClap(c,t,v,dest){ muNz(c,t,dest,'bandpass',1500,1.1,v*.7,.02); muNz(c,t+.011,dest,'bandpass',1400,1.1,v*.7,.02); muNz(c,t+.022,dest,'bandpass',1300,1,v,.19); }
+function muSnare(c,t,v,dest){ muNz(c,t,dest,'bandpass',2200,.8,v,.16); muVoice(c,'triangle',190,t,.06,v*.8,dest); }
+function muRiser(c,t,dur,v,dest){ const s=c.createBufferSource(), f=c.createBiquadFilter(), g=c.createGain(); s.buffer=muNoise(c); s.loop=true; f.type='bandpass'; f.Q.value=2.5;
+ f.frequency.setValueAtTime(300,t); f.frequency.exponentialRampToValueAtTime(9000,t+dur); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(v,t+dur*.98); g.gain.linearRampToValueAtTime(0,t+dur);
+ s.connect(f); f.connect(g); g.connect(dest); s.start(t); s.stop(t+dur+.05); }
+function muImpact(c,t,v,dest){ muNz(c,t,dest,'lowpass',4000,.5,v,1.8); const o=c.createOscillator(), g=c.createGain(); o.type='sine'; o.frequency.setValueAtTime(75,t); o.frequency.exponentialRampToValueAtTime(30,t+1);
+ g.gain.setValueAtTime(v*1.6,t); g.gain.exponentialRampToValueAtTime(.001,t+1.2); o.connect(g); g.connect(dest); o.start(t); o.stop(t+1.3); }
+function muClubNodes(c,P,dest){ const out=c.createGain(), comp=c.createDynamicsCompressor(); comp.threshold.value=-16; comp.knee.value=8; comp.ratio.value=5; comp.attack.value=.004; comp.release.value=.18;
+ out.connect(comp); comp.connect(dest||c.destination); const duck=c.createGain(); duck.connect(out);
+ const send=c.createGain(), dl=c.createDelay(2), fb=c.createGain(), lp=c.createBiquadFilter(); send.gain.value=.22; dl.delayTime.value=P.spb*.75; fb.gain.value=.32; lp.type='lowpass'; lp.frequency.value=3200;
+ send.connect(dl); dl.connect(lp); lp.connect(fb); fb.connect(dl); lp.connect(duck); return {out,comp,duck,send}; }
+function muClubStep(c,P,N,i,t){ const bar=P.bars[i>>4]; if(!bar) return; const s=i&15, sec=bar.sec, b=bar.b, L=bar.len, st=P.spb/4, G=P.mood, dnb=G==='dnb';
+ const d0=P.prog[(i>>4)&3], tones=[d0,d0+2,d0+4,d0+7,d0+9], pr=(b*16+s)/(L*16);
+ const drop=sec==='drop', build=sec==='build', brk=sec==='break', intro=sec==='intro', outro=sec==='outro', groove=sec==='groove';
+ const gap=build&&b===L-1&&s>=8&&G!=='techno', lateBuild=build&&b>=L-4&&G!=='techno', sweep=build?.25+.75*pr:1;
+ /* drums */
+ let kick=dnb?(s===0||s===10)&&!brk&&!gap&&!(build&&b>=L-2)&&!(intro&&b<4):s%4===0&&!brk&&!gap&&!lateBuild&&!(intro&&G==='trance'&&b<4);
+ if(kick){ muKick(c,t,dnb?.85:.95,N.out,dnb); if(!dnb){ N.duck.gain.cancelScheduledValues(t); N.duck.gain.setValueAtTime(.3,t); N.duck.gain.linearRampToValueAtTime(1,t+P.spb*.55); } }
+ if(dnb){ if((s===4||s===12)&&!brk&&!gap&&!(intro&&b<8)&&!(build&&b>=L-2)) muSnare(c,t,.42,N.out); }
+ else if((s===4||s===12)&&(drop||groove||outro||(intro&&b>=L/2))) muClap(c,t,.38,N.out);
+ if(build&&!gap){ const div=b<L/2?4:b<L-2?2:1; if(s%div===0) (dnb?muSnare:muClap)(c,t,.08+.3*pr,N.out); }
+ if(build&&b===0&&s===0) muRiser(c,t,L*16*st,.13,N.out);
+ if(drop&&b===0&&s===0) muImpact(c,t,.32,N.out);
+ if(!gap&&!(intro&&b<2)){ if(dnb){ if(s%2===0&&!brk) muNz(c,t,N.out,'highpass',7500,.7,s%4===2?.13:.07,.04); }
+  else { if(s%4===2&&!(intro&&b<4)&&!brk) muNz(c,t,N.out,'highpass',7000,.7,.14,.2); if((drop||groove||(G==='techno'&&brk))&&s%2===1) muNz(c,t,N.out,'highpass',8500,.7,.06,.04); } }
+ /* bass */
+ const bassOn=!gap&&!brk&&!(intro&&b<L/2)&&!lateBuild; const rootB=muDeg(P,d0,-1);
+ if(bassOn){
+  if(G==='techno'){ const a=P.acid[s]; if(a.on){ const f=muHz(rootB+a.up), fl=muVoice(c,'sawtooth',f,t,st*(a.slide?1.8:.9),a.acc?.2:.14,N.duck,300,13);
+    fl.frequency.setValueAtTime(300,t); fl.frequency.exponentialRampToValueAtTime(300+(a.acc?2600:1300)*P.cut*sweep,t+.012); fl.frequency.exponentialRampToValueAtTime(260,t+st*1.2); } }
+  else if(G==='trance'||(G==='edm'&&!drop)){ if(s%4!==0) muVoice(c,'sawtooth',muHz(rootB),t,st*.8,.17,N.duck,850*sweep,2); }
+  else if(G==='edm'){ if(s===0||s===8){ muVoice(c,'square',muHz(rootB),t,P.spb*1.9,.13,N.duck,700); muVoice(c,'sine',muHz(rootB-12),t,P.spb*1.9,.22,N.duck); } }
+  else if(s===0||s===8){ [-12,12].forEach(dt=>muVoice(c,'sawtooth',muHz(rootB),t,P.spb*1.9,.1,N.duck,520,3,.01,dt)); muVoice(c,'sine',muHz(rootB-12),t,P.spb*1.9,.22,N.duck,0,0,.01); } }
+ /* pads and arps */
+ const padOn=(G==='trance'&&(brk||drop||build||(intro&&b>=8)))||(G==='edm'&&(brk||build))||(dnb&&(brk||intro));
+ if(padOn&&s===0) tones.slice(0,3).forEach(d=>muSaws(c,muHz(muDeg(P,d,0)),t,P.spb*4,brk?.09:.06,N.duck,2400*sweep,.25));
+ const arpOn=(G==='trance'&&(drop||brk||build))||(G==='techno'&&brk)||(G==='edm'&&brk)||(dnb&&brk);
+ if(arpOn&&!gap&&(G==='trance'||s%2===0)){ const k=P.arp[(i>>(G==='trance'?0:1))%P.arp.length]; muVoice(c,'sawtooth',muHz(muDeg(P,tones[k],1)),t,st*.9,.075,[N.duck,N.send],2600*sweep,3); }
+ /* lead */
+ if(drop&&!gap){
+  if(G==='edm'){ if(P.stab[s]) tones.slice(0,3).forEach(d=>muSaws(c,muHz(muDeg(P,d,1)),t,st*1.6,.075,[N.duck,N.send],4200)); }
+  else if(G==='trance'){ if(s%2===0){ const m=P.motif[(i>>1)&15]; if(m>=0) muSaws(c,muHz(muDeg(P,tones[m],1)),t,st*1.8,.09,[N.duck,N.send],5200); } }
+  else if(dnb){ if(s%2===0){ const m=P.motif[(i>>1)&15]; if(m>=0) muVoice(c,'square',muHz(muDeg(P,tones[m],1)),t,st*1.6,.06,[N.duck,N.send],3000); } }
+  else if(P.stab[s]&&s%2===0) tones.slice(0,3).forEach(d=>muVoice(c,'sawtooth',muHz(muDeg(P,d,0)),t,st*.8,.045,[N.duck,N.send],1600,4)); } }
+/* plays like an Audio element: volume, play(), pause(), onended */
+function muClubPlayer(t){ const P=muClubPlan(t), A2={_v:0,onended:null}; let c=null,N=null,timer=null,i=0,t0=0,done=false;
+ Object.defineProperty(A2,'volume',{get:()=>A2._v,set:v=>{ A2._v=v; if(N) try{ N.out.gain.setTargetAtTime(v*1.15,c.currentTime,.04); }catch(e){} }});
+ function off(){ if(timer) clearInterval(timer); timer=null; if(N){ const n=N; try{ n.out.gain.setTargetAtTime(0,c.currentTime,.05); }catch(e){} setTimeout(()=>{ try{ n.comp.disconnect(); }catch(e){} },400); N=null; } }
+ A2.play=function(){ c=muCtx(); if(!c) return Promise.reject(new Error('No Web Audio')); if(N) return Promise.resolve(); N=muClubNodes(c,P); N.out.gain.value=A2._v*1.15; t0=c.currentTime+.15; i=0;
+  const tick=()=>{ if(done||!N) return; const ahead=c.currentTime+1.2; while(i<P.steps&&t0+i*P.spb/4<ahead){ try{ muClubStep(c,P,N,i,t0+i*P.spb/4); }catch(e){} i++; }
+   if(i>=P.steps&&timer){ clearInterval(timer); timer=null; const end=t0+P.steps*P.spb/4; setTimeout(()=>{ if(!done){ done=true; off(); if(A2.onended) A2.onended(); } },Math.max(0,(end-c.currentTime)*1000)+1500); } };
+  timer=setInterval(tick,200); tick(); return c.state==='running'?Promise.resolve():c.resume(); };
+ A2.pause=function(){ done=true; off(); };
+ A2.duration=P.steps*P.spb/4; return A2; }
+MU_MOODS.splice(1,0,...MU_CLUB_MOODS); MU_HAPPY.push(...MU_CLUB_GENRES); MU_MOODS[0][3]='Everything, shuffled: happy, EDM, trance, techno';
 function muIcon(mood){ const r=MU_MOODS.find(x=>x[0]===mood); return r?r[1]:'🎵'; }
-function muTracks(mood){ const all=(MU.info&&MU.info.tracks)||[]; return mood==='mix'?all.filter(t=>MU_HAPPY.indexOf(t.mood)>=0):all.filter(t=>t.mood===mood); }
+function muTracks(mood){ const all=((MU.info&&MU.info.tracks)||[]).concat(MU_CLUB); return mood==='mix'?all.filter(t=>MU_HAPPY.indexOf(t.mood)>=0):mood==='club'?all.filter(t=>MU_CLUB_GENRES.indexOf(t.mood)>=0):all.filter(t=>t.mood===mood); }
 function muNextTrack(mood){ const list=muTracks(mood); if(!list.length) return null; MU.q=MU.q||{};
  let q=(MU.q[mood]||[]).filter(id=>list.some(t=>t.id===id));
  if(!q.length){ q=list.map(t=>t.id); for(let i=q.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [q[i],q[j]]=[q[j],q[i]]; } if(q.length>1&&MU.track&&q[0]===MU.track.id) q.push(q.shift()); }
@@ -60,7 +160,7 @@ function muPlay(next){ const m=muPrefs(); if(!SRV.token||!A.st||m.mood==='off'||
   if(!muTracks(m.mood).length) return;
  if(MU.audio&&MU.track&&!next&&MU.track.pick===m.mood) return muFade(muTarget(),500);
  const t0=muNextTrack(m.mood); if(!t0) return; const t=Object.assign({},t0,{pick:m.mood}); MU.loading=true; muUI();
- muFetch(t).then(url=>{ MU.loading=false; if(muPrefs().mood!==t.pick) return; if(MU.audio) MU.audio.pause(); const a=new Audio(url); a.volume=0; a.onended=()=>{ if(MU.audio===a) muPlay(true); }; MU.audio=a; MU.track=t; a.play().then(()=>muFade(muTarget(),1200)).catch(()=>{}); muUI(); muToast(t); })
+ (t.synth?Promise.resolve(''):muFetch(t)).then(url=>{ MU.loading=false; if(muPrefs().mood!==t.pick) return; if(MU.audio) MU.audio.pause(); const a=t.synth?muClubPlayer(t):new Audio(url); a.volume=0; a.onended=()=>{ if(MU.audio===a) muPlay(true); }; MU.audio=a; MU.track=t; a.play().then(()=>muFade(muTarget(),1200)).catch(()=>{}); muUI(); muToast(t); })
   .catch(e=>{ MU.loading=false; console.error('Music',e); muUI(); toast('The music didn’t load. Check the Wi-Fi.'); }); }
 function muLoadInfo(){ if(MU.info||!SRV.token) return Promise.resolve(MU.info); return run('msMusicInfo',SRV.token).then(i=>{ MU.info=i; return i; }).catch(()=>null); }
 function muPlace(){ if(A.view==='play'&&A.play){ const it=A.play.items[A.play.i]; return A.play.c==='READ'||(it&&(it.p||it.t==='write'))?.25:.45; } return 1; }

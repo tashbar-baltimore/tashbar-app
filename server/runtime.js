@@ -21,7 +21,7 @@ const chain = o => new Proxy(o, { get: (t, k) => (k in t ? t[k] : (typeof k === 
 
 /* When the store is lazy (Firestore), data is fetched only when the code first touches it: the stand-in notes what is
    missing and throws; the caller loads it and runs the function again from the start. */
-function need(store, kind, key) { const e = new Error('NEED ' + kind + ' ' + key); e.__need = { kind, key }; (store.needs || (store.needs = [])).push(e.__need); throw e; }
+function need(store, kind, key) { const e = new Error('NEED ' + kind + ' ' + String(key).slice(0, 120)); e.__need = { kind, key }; (store.needs || (store.needs = [])).push(e.__need); throw e; }
 function makeBook(store, id) {
   if (store.lazy && !store.books[id]) need(store, 'book', id);
   const book = store.books[id] || (store.books[id] = { tabs: {}, order: [] });
@@ -78,17 +78,31 @@ function formatDate(d, tz, f) {      /* the Java date patterns this code uses */
   return String(f).replace(/'([^']*)'|yyyy|yy|MMMM|MMM|MM|M|dd|d|EEEE|EEE|E|HH|H|hh|h|mm|ss|a|u/g, (t, lit) => lit !== undefined ? lit : ({ yyyy: p.year, yy: p.year.slice(2), MMMM: long('month'), MMM: short('month'), MM: p.month, M: String(+p.month), dd: p.day, d: String(+p.day), EEEE: long('weekday'), EEE: p.weekday, E: p.weekday, HH: H, H: String(+H), hh: ('0' + h12).slice(-2), h: String(h12), mm: p.minute, ss: p.second, a: +H < 12 ? 'AM' : 'PM', u: String(dow) }[t]));
 }
 
-let COMPILED = null;
+/* The server code: from src/ on disk, or (when the live code has been fetched) from setCode(files). */
+let COMPILED = null, CODE = null; const PACKMEM = new Map();
+function setCode(files) {   /* files: [{name, type: 'SERVER_JS'|'HTML', source}] exactly as the Apps Script editor holds them */
+  const js = files.filter(f => f.type === 'SERVER_JS').sort((a, b) => (a.name < b.name ? -1 : 1));
+  const compiledNew = js.map(f => ({ file: f.name + '.js', script: new vm.Script(f.source, { filename: f.name + '.js' }) }));   /* throws if a file does not parse: the old code stays */
+  const html = {}; files.filter(f => f.type === 'HTML').forEach(f => { html[f.name] = f.source; });
+  COMPILED = compiledNew; CODE = { html };
+}
 function compiled() { return COMPILED || (COMPILED = fs.readdirSync(SRC).filter(x => x.endsWith('.js')).sort().map(f => ({ file: f, script: new vm.Script(fs.readFileSync(path.join(SRC, f), 'utf8'), { filename: f }) }))); }
 function createRuntime(opts) {
   opts = opts || {}; const store = opts.store || { books: {}, dirty: {}, cache: {}, props: {} };
   store.dirty = store.dirty || {}; store.cache = store.cache || {}; store.props = store.props || {};
-  const html = n => { const p = path.join(SRC, n + '.html'); if (!fs.existsSync(p)) throw new Error('No HTML file named ' + n); return fs.readFileSync(p, 'utf8'); };
+  const html = n => { if (CODE && Object.prototype.hasOwnProperty.call(CODE.html, n)) return CODE.html[n]; const p = path.join(SRC, n + '.html'); if (!fs.existsSync(p)) throw new Error('No HTML file named ' + n); return fs.readFileSync(p, 'utf8'); };
   const out = h => ({ h, setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; }, setFaviconUrl() { return this; }, setSandboxMode() { return this; }, getContent() { return this.h; }, append(x) { this.h += x; return this; } });
-  const cache = { get(k) { if (store.lazy && !store.cacheComplete && !(k in store.cache)) need(store, 'cache', k); const e = store.cache[k]; if (!e) return null; if (e.until < Date.now()) return null; return e.v; }, put(k, v, secs) { store.cache[k] = { v: String(v), until: Date.now() + 1000 * Math.min(21600, secs || 600) }; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; }, remove(k) { store.cache[k] = null; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; },
+  const cache = { get(k) { if (store.lazy && !(k in store.cache) && (!store.cacheComplete || /^ms_tok_/.test(k))) need(store, 'cache', k);   /* a sign-in made seconds ago on another server copy is not in this copy's 5-second list yet: look it up directly */ const e = store.cache[k]; if (!e) return null; if (e.until < Date.now()) return null; return e.v; }, put(k, v, secs) { store.cache[k] = { v: String(v), until: Date.now() + 1000 * Math.min(21600, secs || 600) }; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; }, remove(k) { store.cache[k] = null; (store.dirtyCache || (store.dirtyCache = {}))[k] = 1; },
     getAll(keys) { const o = {}; keys.forEach(k => { const v = cache.get(k); if (v !== null) o[k] = v; }); return o; }, putAll(o, secs) { Object.keys(o).forEach(k => cache.put(k, o[k], secs)); }, removeAll(keys) { keys.forEach(k => cache.remove(k)); } };
   const props = { getProperty: k => (k in store.props ? store.props[k] : null), setProperty(k, v) { store.props[k] = String(v); store.dirtyProps = 1; return props; }, deleteProperty(k) { delete store.props[k]; store.dirtyProps = 1; return props; }, getProperties: () => Object.assign({}, store.props), setProperties(o) { Object.assign(store.props, o); return props; } };
   const digest = (alg, v) => [...crypto.createHash(alg === 'MD5' ? 'md5' : alg === 'SHA_1' ? 'sha1' : 'sha256').update(typeof v === 'string' ? Buffer.from(v, 'utf8') : Buffer.from(v)).digest()].map(b => (b > 127 ? b - 256 : b));
+  /* Things only Google can do (Drive files, saving a photo) are asked of the Apps Script app ('remote'); the records stay here.
+     Each answer is fetched once per call and kept for the reruns. */
+  const remote = (name, args) => { const k = JSON.stringify([name, args || []]); const m = store.remote || {}; if (Object.prototype.hasOwnProperty.call(m, k)) { const v = m[k]; if (v && v.__err) throw new Error(v.__err); return v; } return need(store, 'remote', k); };
+  const bytesOf = b64 => [...Buffer.from(String(b64 || ''), 'base64')].map(b => (b > 127 ? b - 256 : b));
+  const driveFile = id => { const info = () => remote('file', [id]), meta = () => remote('fileMeta', [id]); let blob = null;
+    return { getId: () => id, getName: () => meta().name, getSize: () => meta().size, getMimeType: () => meta().type, setTrashed() {},
+      getBlob: () => blob || (blob = (() => { const i = info(), by = bytesOf(i.b64); return { getBytes: () => by, getDataAsString: () => Buffer.from(i.b64, 'base64').toString('utf8'), getContentType: () => i.type, getName: () => i.name }; })()) }; };
   const nope = what => () => { throw new Error(what + ' is not available on this server yet.'); };
   const ctx = { console, JSON, Math, Date, Intl,
     SpreadsheetApp: { openById: id => makeBook(store, String(id)), flush() {}, create: nope('Creating a new spreadsheet') },
@@ -101,14 +115,18 @@ function createRuntime(opts) {
       newBlob: (data, type, name) => ({ getBytes: () => (typeof data === 'string' ? [...Buffer.from(data, 'utf8')] : data), getDataAsString: () => (typeof data === 'string' ? data : Buffer.from(data).toString('utf8')), getContentType: () => type, getName: () => name }) },
     HtmlService: { createHtmlOutputFromFile: n => out(html(n)), createHtmlOutput: h => out(h || ''), createTemplateFromFile: n => ({ evaluate: () => out(html(n)) }), XFrameOptionsMode: { DEFAULT: 1, ALLOWALL: 2 }, SandboxMode: { IFRAME: 1 } },
     ContentService: { createTextOutput: s => ({ s, setMimeType() { return this; }, getContent() { return this.s; } }), MimeType: { JSON: 'json', TEXT: 'text' } },
+    TL_REMOTE_: (name, args) => remote(name, args),
     ScriptApp: { getService: () => ({ getUrl: () => opts.appUrl || 'https://tashbar-learning-live.web.app/' }), getProjectTriggers: () => [], newTrigger: nope('Timers'), deleteTrigger() {} },
     Session: { getActiveUser: () => ({ getEmail: () => '' }), getEffectiveUser: () => ({ getEmail: () => opts.owner || '' }), getScriptTimeZone: () => 'America/New_York' },
-    Logger: { log() {} }, DriveApp: { getFileById: nope('Google Drive files'), getFolderById: nope('Google Drive folders') }, Drive: {}, DocumentApp: { openById: nope('Google Docs') }, MailApp: { sendEmail: nope('Email') }, UrlFetchApp: { fetch: nope('Outside web calls') } };
+    Logger: { log() {} }, DriveApp: { getFileById: id => driveFile(String(id)), getFolderById: nope('Google Drive folders') }, Drive: {}, DocumentApp: { openById: nope('Google Docs') }, MailApp: { sendEmail: nope('Email') }, UrlFetchApp: { fetch: nope('Outside web calls') } };
   vm.createContext(ctx); const loadErrors = [];
   for (const sc of compiled()) { try { sc.script.runInContext(ctx); } catch (e) { if (e && e.__need) throw e; loadErrors.push(sc.file + ': ' + String(e).slice(0, 160)); } }
-  vm.runInContext("function apiTimeOne_(fn){ var c=CacheService.getScriptCache(), tok='cmp-t'; c.put('ms_tok_'+tok, JSON.stringify({role:'staff',sid:null,pid:null,staff:null,who:{id:'CMP',name:'Comparison',role:'head'}}),600); TL_SCOPE_=null; TL_SCOPE_INFO_=null; var t=Date.now(); try{ eval(fn)(tok); }catch(e){} return Date.now()-t; }", ctx);
+  /* Lesson packs: kept in this server copy's memory by their checksum (fetched from Drive once, checked), not cut into hundreds of shared-memory pieces. */
+  ctx.TL_PACKMEM_ = (sha, text) => { if (text === undefined) return PACKMEM.has(sha) ? PACKMEM.get(sha) : null; PACKMEM.set(String(sha), String(text)); return true; };
+  vm.runInContext("if (typeof tlPackRead_ === 'function') tlPackRead_ = function (name, p) { var t = TL_PACKMEM_(p[1]); if (t !== null) return t; try { var b = DriveApp.getFileById(p[0]).getBlob(), h = tlHex_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, b.getBytes())); if (h !== p[1]) return null; t = b.getDataAsString('UTF-8'); TL_PACKMEM_(p[1], t); return t; } catch (e) { if (e && e.__need) throw e; return null; } };", ctx);
+  vm.runInContext("function apiTimeOne_(fn){ var c=CacheService.getScriptCache(), tok='cmp-'+Utilities.getUuid(); c.put('ms_tok_'+tok, JSON.stringify({role:'staff',sid:null,pid:null,staff:null,who:{id:'CMP',name:'Comparison',role:'head'}}),600); TL_SCOPE_=null; TL_SCOPE_INFO_=null; var t=Date.now(); try{ eval(fn)(tok); }catch(e){} var ms=Date.now()-t; c.remove('ms_tok_'+tok); return ms; }", ctx);
   if (opts.packs) { ctx.__pack = opts.packs; vm.runInContext('tlPackRead_=function(name){ return __pack(name); }; tlPackHealth_=function(){};', ctx); }
   return { ctx, store, loadErrors, has: fn => vm.runInContext('typeof ' + fn + ' === "function"', ctx),
     call(fn, args) { if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(fn)) throw new Error('bad name'); ctx.__args = JSON.parse(JSON.stringify(args || [])); return JSON.parse(vm.runInContext('JSON.stringify((function(){ var r = ' + fn + '.apply(null, __args); return r === undefined ? null : r; })())', ctx)); } };
 }
-module.exports = { createRuntime, coerce, formatDate };
+module.exports = { createRuntime, coerce, formatDate, setCode, packPut: (sha, text) => PACKMEM.set(String(sha), String(text)), packHas: sha => PACKMEM.has(String(sha)) };

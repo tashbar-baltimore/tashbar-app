@@ -126,10 +126,7 @@ function msSignIn(who, code) {
 function msLoad(token) {
   var sess = msSession_(token);
   var roster = msRoster_(), states = {};
-  if (sess.role === 'kid') {   /* v67 speed: the weekly interest check needs the school-wide lock only once per boy per week (then remembered), not at every sign-in */
-    var ic = CacheService.getScriptCache(), ik = 'msint_' + sess.sid + '_' + moneyWeekStart_(moneyDay_());
-    if (!ic.get(ik)) { var lk = LockService.getScriptLock(); lk.waitLock(20000); try { moneyInterest_(sess.sid); } finally { lk.releaseLock(); } try { ic.put(ik, '1', 21600); } catch (e) {} }
-  }
+  /* v378 Head of School 2026-11-17: no interest, so no weekly interest check at sign-in. */
   var stRows = sess.role === 'kid' ? msStateRowOf_(String(sess.sid)) : msRows_('state');   /* v214 speed: a boy reads only his own row */
   stRows.forEach(function (r) { if (msCanSee_(sess, String(r[0])) && !(sess.role === 'staff' && msIsTest_(r[0]))) { try { var s = JSON.parse(r[1]); s.balance = msBalanceDollars_(String(r[0])); s.ledger = msLedger_(String(r[0])); if (sess.role === 'kid') { try { if (typeof moneyChestStatus_ === 'function') s.chest = moneyChestStatus_(String(r[0])); } catch (e) {} } states[r[0]] = s; } catch (e) {} } });
   try { if (typeof sgpMergeMarks_ === 'function') sgpMergeMarks_(states); } catch (e) {}   /* v177: rebbe bechina marks (KD_Marks, StaffViews.js) show as mastered on the boy's screen */

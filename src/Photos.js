@@ -74,6 +74,12 @@ function photoMatch_(ocr, expected) {
   return cands.some(function (t) { var v = photoVal_(t); return isFinite(v) && Math.abs(v - ev) < 1e-6; });
 }
 
+function photoSaveHere_(sid, name, b64) {
+  var bytes = Utilities.base64Decode(b64); if (bytes.length > PHOTO.MAX_BYTES) throw new Error('That picture is too big. Please try again.');
+  var file = photoStudentFolder_(sid).createFile(Utilities.newBlob(bytes, 'image/jpeg', name)), text = '', note = '';
+  try { text = photoOcr_(file.getId()); } catch (e) { note = 'reader error: ' + String(e.message || e).slice(0, 120); }
+  return { fileId: file.getId(), text: text, note: note };
+}
 /* ---------- call from the boy's page ---------- */
 /* item = "<phase>|<question text>" (the same key the answer flow uses). expected '' = writing (the text fills his box). */
 function msPhotoSubmit(token, sid, skill, item, prompt, expected, dataUrl) { tlGuard_(token, sid);
@@ -83,14 +89,14 @@ function msPhotoSubmit(token, sid, skill, item, prompt, expected, dataUrl) { tlG
   skill = String(skill || '').slice(0, 40); item = String(item || '').slice(0, 135); prompt = String(prompt || '').slice(0, 300); expected = String(expected || '').slice(0, 60);
   var m = /^data:image\/(jpeg|jpg|png);base64,(.+)$/.exec(String(dataUrl || ''));
   if (!m) throw new Error('That picture did not come through. Please try again.');
-  var bytes = Utilities.base64Decode(m[2]);
-  if (bytes.length > PHOTO.MAX_BYTES) throw new Error('That picture is too big. Please try again.');
+  if (m[2].length * 3 / 4 > PHOTO.MAX_BYTES) throw new Error('That picture is too big. Please try again.');
   var day = Utilities.formatDate(new Date(), 'America/New_York', 'yyyy-MM-dd_HHmmss');
   var safe = function (s) { return String(s).replace(/[^A-Za-z0-9-]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'x'; };
   var name = day + '_' + safe(skill) + '_' + safe(item.split('|').slice(1).join(' ')) + '.jpg';
-  var file = photoStudentFolder_(sid).createFile(Utilities.newBlob(bytes, 'image/jpeg', name));
-  var text = '', status = 'waiting', note = '';
-  try { text = photoOcr_(file.getId()); } catch (e) { note = 'reader error: ' + String(e.message || e).slice(0, 120); }
+  /* saving the picture and reading it need Google Drive: done by the Apps Script app (photoSaveHere_); the record is kept here */
+  var saved = typeof TL_REMOTE_ === 'function' ? TL_REMOTE_('photoSave', [sid, name, m[2]]) : photoSaveHere_(sid, name, m[2]);
+  var file = { getId: function () { return saved.fileId; } };
+  var text = saved.text || '', status = 'waiting', note = saved.note || '';
   if (!expected) { status = text.trim() ? 'right' : 'waiting'; note = note || 'writing: text put in their box'; }
   else if (photoMatch_(text, expected)) status = 'right';
   var id = 'ph-' + Utilities.getUuid().slice(0, 13);
@@ -136,30 +142,28 @@ function photoApply_(o, mark, note, by) {
 
 /* ---------- 15-minute trigger ---------- */
 function photoCron() {
+  /* The school's records live on Firebase now: this runs there (every 15 minutes), asking the Apps Script app only for the Drive files.
+     On Apps Script itself it does nothing, so marks and money are never written to the old Sheets. */
+  if (typeof TL_REMOTE_ !== 'function') return { skipped: 'runs on Firebase' };
   var lock = LockService.getScriptLock(); lock.waitLock(25000);
   try {
-    var check = DriveApp.getFolderById(PHOTO.CHECK_ID), done = DriveApp.getFolderById(PHOTO.DONE_ID);
-    /* (b) apply results files */
-    var files = check.getFiles(), rows = null, applied = 0;
-    while (files.hasNext()) {
-      var f = files.next(), n = f.getName();
-      if (!/^results_.*\.json$/i.test(n)) continue;
+    var files = TL_REMOTE_('photoResults', []), rows = null, applied = 0, used = [];
+    files.forEach(function (f) {
       rows = rows || photoRows_();
       var list = [];
-      try { list = JSON.parse(f.getBlob().getDataAsString()); if (!Array.isArray(list)) list = list && list.results || []; } catch (e) { list = []; }
+      try { list = JSON.parse(f.text); if (!Array.isArray(list)) list = list && list.results || []; } catch (e) { list = []; }
       list.slice(0, 500).forEach(function (r) {
         var mark = String(r && r.mark || '').toLowerCase(); if (mark !== 'right' && mark !== 'wrong') return;
         var o = rows.filter(function (x) { return x.photoId === String(r.photoId || ''); })[0];
         if (photoApply_(o, mark, String(r.note || ''), 'claude')) { o.status = mark; applied++; }
       });
-      f.moveTo(done);
-    }
-    /* (a) list what is still waiting */
+      used.push(f.id);
+    });
     var waiting = photoRows_().filter(function (o) { return String(o.status) === 'waiting'; }).map(function (o) {
       return { photoId: o.photoId, driveFileId: o.driveFileId, prompt: String(o.prompt), expected: String(o.expected) };
     });
-    var body = JSON.stringify(waiting, null, 1), old = check.getFilesByName('waiting_photos.json');
-    if (old.hasNext()) old.next().setContent(body); else check.createFile('waiting_photos.json', body, 'application/json');
+    if (used.length) TL_REMOTE_('photoDone', [used]);
+    TL_REMOTE_('photoWaiting', [JSON.stringify(waiting, null, 1)]);
     return { applied: applied, waiting: waiting.length };
   } finally { lock.releaseLock(); }
 }
@@ -199,7 +203,7 @@ function msQuestToolsBody_() {
   /* TL-038: MathMore.html (Math Levels 4+) rides along with the Quest tools, in its own eval so an error there cannot break Write it / Take a picture. */
   var mm = '', rm = '', sm = '';
   try { rm = tlFileText_('ReadMore').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* TL-041: Reading lessons, own eval */
-  try { sm = tlFileText_('ScienceMore').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* SCI-PAGE 2026-11-10: Science lessons, own eval, after ReadMore */
+  try { sm = tlFileText_('ScienceMore').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} try { sm += '\n' + tlFileText_('ScienceMore2').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* SCI-PAGE 2026-11-10: Science lessons, own eval, after ReadMore */
   var el = ''; try { el = tlFileText_('ElectivesMore').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v50: Electives (Nuclear Science first), own eval, after ScienceMore */
   var ffm = ''; try { ffm = tlFileText_('FactsMore').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v161: Fact Finders K-12 (needs BANK_ALL, startMission, tlFindLevelCard), eval right after ElectivesMore */
   var agd = ''; try { agd = tlFileText_('AnswerGuard').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v164: AnswerGuard (no box, example or hint may show THIS question's answer), eval right after FactsHowTo; also in Speed.js TL_PART_FILES */
@@ -234,13 +238,13 @@ function msQuestToolsBody_() {
   var tpl = ''; try { tpl = tlFileText_('TorahPlus').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v197: TorahPlus (Shabbos/Yom Tov, davening, Parsha, Torah scroll), after OlamHaba, before ClassMode. Also in Speed.js. */
   var chp = ''; try { chp = tlFileText_('ChumashPage').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v199: the Chumash page (all 54 parshiyos, every word; Chumash.js), after TorahPlus, before ClassMode. Also in Speed.js. */
   var krm = ''; try { krm = tlFileText_('KriyahMore').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v203: the nekudos (Kriyah K3), after ChumashPage, before ClassMode. Also in Speed.js. */
-  var ttk = ''; try { ttk = tlFileText_('TorahTracks').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v204: Torah Tracks (Halacha, Tefillah, Yom Tov, Middos, Parsha, Navi), after KriyahMore, before ClassMode. Also in Speed.js. */
+  var ttk = ''; try { ttk = tlFileText_('TorahTracks').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} try { ttk += '\n' + tlFileText_('TaryagQuest').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* Taryag Quest (lane T, all 613 mitzvos in the Rambam's order), joined right after TorahTracks (also in Speed.js) */ /* v204: Torah Tracks (Halacha, Tefillah, Yom Tov, Middos, Parsha, Navi), after KriyahMore, before ClassMode. Also in Speed.js. */
   var arn = ''; try { arn = tlFileText_('ArenaPage').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v212: Chavrusa Arena (duels in every subject; Arena.js), after TorahTracks. Also in Speed.js. */
   var tmx = ''; try { tmx = tlFileText_('ClassMode').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v51: Teacher mode lock on the boy page, LAST so it wraps everything */
   var hlf = ''; try { hlf = tlFileText_('HomeLift').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v208: HomeLift (chizuk band, no empty space, Olam Haba white-and-gold cloud), LAST, after ClassMode. Also in Speed.js TL_PART_FILES. */
   var lwy = ''; try { lwy = tlFileText_('LearnWays').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* v243: LearnWays (practice questions asked a different way by age and form), LAST, after HomeLift. Also in Speed.js TL_PART_FILES. */
   var dpt = ''; try { dpt = tlFileText_('DailyPath').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* PF stage D: DailyPath (daily path from the Pathfinder profile, quick climb moments; TEST boys with a profile only), LAST, after LearnWays. Also in Speed.js TL_PART_FILES. */
-  var blb = ''; try { blb = tlFileText_('BoyLibrary').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* Library: My Library on the boy's home screen (Library.js libMyLibrary; LIB.BOY_LIVE), LAST, after DailyPath. Also in Speed.js TL_PART_FILES. */
+  var blb = ''; try { blb = tlFileText_('BoyLibrary').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} try { blb += '\n' + tlFileText_('HomeLayout').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} try { blb += '\n' + tlFileText_('MasteryReview').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} try { blb += '\n' + tlFileText_('WelcomeJoy').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} /* HoS 2026-11-17: WelcomeJoy (bright celebration welcome, fanfare, Happy Mix on Let's go), after MasteryReview (also in Speed.js) */ /* HoS TEACHING RULE (DECISION 1005-ET): spaced review until automatic + review in every lesson (MasteryReview.html, MR_LIVE), after HomeLayout (also in Speed.js) */ /* HOME-OVERHAUL: organized home + Library v2 (TEST- boys only, HOME_LAYOUT_LIVE), joined LAST after BoyLibrary (also in Speed.js) */ /* Library: My Library on the boy's home screen (Library.js libMyLibrary; LIB.BOY_LIVE), LAST, after DailyPath. Also in Speed.js TL_PART_FILES. */
   var ck = ''; try { ck = tlFileText_('CanteenKid').replace(/^\s*<script>/,'').replace(/<\/script>\s*$/,''); } catch (e) {} return { css: QUEST_TOOLS.css, js: QUEST_TOOLS.js + '\n;try{(0,eval)(' + JSON.stringify(ck) + ');}catch(e){console.error("CanteenKid",e);}' + '\n;try{(0,eval)(' + JSON.stringify(mm) + ');}catch(e){console.error("MathMore",e);}' + '\n;try{(0,eval)(' + JSON.stringify(rm) + ');}catch(e){console.error("ReadMore",e);}' + '\n;try{(0,eval)(' + JSON.stringify(sm) + ');}catch(e){console.error("ScienceMore",e);}' + '\n;try{(0,eval)(' + JSON.stringify(el) + ');}catch(e){console.error("ElectivesMore",e);}' + '\n;try{(0,eval)(' + JSON.stringify(ffm) + ');}catch(e){console.error("FactsMore",e);}' + '\n;try{(0,eval)(' + JSON.stringify(trd) + ');}catch(e){console.error("TradesMore",e);}try{(0,eval)(' + JSON.stringify(cpm) + ');}catch(e){console.error("ComputingMore",e);}try{(0,eval)(' + JSON.stringify(lfm) + ');}catch(e){console.error("LifeMore",e);}try{(0,eval)(' + JSON.stringify(ssm) + ');}catch(e){console.error("SocialMore",e);}try{(0,eval)(' + JSON.stringify(kdm) + ');}catch(e){console.error("KodeshMore",e);}try{(0,eval)(' + JSON.stringify(smm) + ');}catch(e){console.error("SimchaMore",e);}try{(0,eval)(' + JSON.stringify(shn) + ');}catch(e){console.error("Shine",e);}try{(0,eval)(' + JSON.stringify(hlp) + ');}catch(e){console.error("Helpers",e);}try{(0,eval)(' + JSON.stringify(rvw) + ');}catch(e){console.error("Review",e);}try{(0,eval)(' + JSON.stringify(adp) + ');}catch(e){console.error("Adapt",e);}' + '\n;try{(0,eval)(' + JSON.stringify(mo) + ');}catch(e){console.error("Motivation",e);}' + '\n;try{(0,eval)(' + JSON.stringify(jj) + ');}catch(e){console.error("JokeJar",e);}' + '\n;try{(0,eval)(' + JSON.stringify(sml) + ');}catch(e){console.error("SimchaLife",e);}' + '\n;try{(0,eval)(' + JSON.stringify(trb) + ');}catch(e){console.error("TalkRebbe",e);}' + '\n;try{(0,eval)(' + JSON.stringify(kqp) + ');}catch(e){console.error("KodeshQuestPage",e);}' + '\n;try{(0,eval)(' + JSON.stringify(kkr) + ');}catch(e){console.error("KinderKriyah",e);}' + '\n;try{(0,eval)(' + JSON.stringify(gd) + ');}catch(e){console.error("Guides",e);}' + '\n;try{(0,eval)(' + JSON.stringify(px) + ');}catch(e){console.error("Pictures",e);}' + '\n;try{(0,eval)(' + JSON.stringify(mu) + ');}catch(e){console.error("Music",e);}' + '\n;try{(0,eval)(' + JSON.stringify(htd) + ');}catch(e){console.error("HowToDo",e);}' + '\n;try{(0,eval)(' + JSON.stringify(ffh) + ');}catch(e){console.error("FactsHowTo",e);}' + '\n;try{(0,eval)(' + JSON.stringify(agd) + ');}catch(e){console.error("AnswerGuard",e);}' + '\n;try{(0,eval)(' + JSON.stringify(hpl) + ');}catch(e){console.error("HomePlus",e);}' + '\n;try{(0,eval)(' + JSON.stringify(sto) + ');}catch(e){console.error("StoreKid",e);}' + '\n;try{(0,eval)(' + JSON.stringify(akt) + ');}catch(e){console.error("Activities",e);}' + '\n;try{(0,eval)(' + JSON.stringify(kmo) + ');}catch(e){console.error("KindsMore",e);}' + '\n;try{(0,eval)(' + JSON.stringify(rpk) + ');}catch(e){console.error("RebbePick",e);}' + '\n;try{(0,eval)(' + JSON.stringify(ohv) + ');}catch(e){console.error("OlamHaba",e);}' + '\n;try{(0,eval)(' + JSON.stringify(tpl) + ');}catch(e){console.error("TorahPlus",e);}' + '\n;try{(0,eval)(' + JSON.stringify(chp) + ');}catch(e){console.error("ChumashPage",e);}' + '\n;try{(0,eval)(' + JSON.stringify(krm) + ');}catch(e){console.error("KriyahMore",e);}' + '\n;try{(0,eval)(' + JSON.stringify(ttk) + ');}catch(e){console.error("TorahTracks",e);}' + '\n;try{(0,eval)(' + JSON.stringify(arn) + ');}catch(e){console.error("ArenaPage",e);}' + '\n;try{(0,eval)(' + JSON.stringify(tmx) + ');}catch(e){console.error("ClassMode",e);}' + '\n;try{(0,eval)(' + JSON.stringify(hlf) + ');}catch(e){console.error("HomeLift",e);}' + '\n;try{(0,eval)(' + JSON.stringify(lwy) + ');}catch(e){console.error("LearnWays",e);}' + '\n;try{(0,eval)(' + JSON.stringify(dpt) + ');}catch(e){console.error("DailyPath",e);}' + '\n;try{(0,eval)(' + JSON.stringify(blb) + ');}catch(e){console.error("BoyLibrary",e);}' };
 }
 /* v67 speed (takeover builder): the boy page used to download every add-on (about 2.9 MB) at every sign-in.
