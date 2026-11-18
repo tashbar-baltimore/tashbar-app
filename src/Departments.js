@@ -8,6 +8,7 @@
      Every call is checked here on the server (sgStaff_ + membership); Access.js scope still limits which boys anyone sees.
    - READ ONLY for lessons, progress and money. Setup (members, moves) is stored in the script setting TL_DEPTS (small JSON).
    Page: DepartmentsPage.html (added in sgPage_). Calls are in API_ALLOW: dpMine, dpOpen, dpAdmin, dpSave. */
+var DP_BASE = '2026-11-18';   /* everything that existed on the day departments started counts as not new */
 var DP_DEFAULT = [
   { id: 'K', name: 'Kindergarten', icon: '🧸', grades: [0, 0], subj: null, goal: 'Everything our kindergarten boys learn.' },
   { id: 'G12', name: 'Early Grades (1–2)', icon: '🌱', grades: [1, 2], subj: null, goal: 'Grades 1 and 2, every subject.' },
@@ -108,7 +109,7 @@ function dpOpen(token, deptId) {
     var fits = !d.grades || (known ? (Number(b.grade) >= d.grades[0] && Number(b.grade) <= d.grades[1]) : b.started > 0);
     if (fits) boys.push(b);
   });
-  var lessons = ids.map(function (id) { return { id: id, name: cat[id], subj: dpSubj_(id), grade: dpGrade_(id), started: started[id] || 0, mastered: mastered[id] || 0, isNew: !!(seen[id] && seen[id] >= newSince) }; })
+  var lessons = ids.map(function (id) { return { id: id, name: cat[id], subj: dpSubj_(id), grade: dpGrade_(id), started: started[id] || 0, mastered: mastered[id] || 0, isNew: !!(seen[id] && seen[id] >= newSince && seen[id] > DP_BASE) }; })
     .sort(function (a, b) { return (a.subj < b.subj ? -1 : a.subj > b.subj ? 1 : 0) || ((a.grade == null ? 99 : a.grade) - (b.grade == null ? 99 : b.grade)) || (a.id < b.id ? -1 : 1); });
   boys.sort(function (a, b) { return b.last - a.last; });
   var mem = cfg.members[deptId] || {};
