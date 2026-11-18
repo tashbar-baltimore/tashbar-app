@@ -5,7 +5,7 @@
    1. CASH PILL: your cash at the top of every screen (lessons, results, Kodesh Quest, every drawer). Tap it to open the store.
       During a lesson it shows "+$ on the way" (an estimate; the server pays when the lesson is saved).
    2. PAYCHECK: after each lesson, an itemized receipt prints line by line, gets a PAID stamp, and the cash flies into the bank.
-   3. PAYDAY: on Thursday or Friday, once a week, a "Payday" screen shows the week day by day.  4. INTEREST: "your money grew" once a week.
+   3. PAYDAY: on Thursday or Friday, once a week, a "Payday" screen shows the week day by day.  4. (v378 Head of School: no interest, so no "your money grew" screen.)
    5. THE STORE: Fun (screen upgrades), Real prizes (staff hand them out), Canteen Cards (Tashbar $ -> Canteen Cash), Give (Tashbar or a friend).
    6. SAVINGS GOAL: pick any item as your goal; a bar on the home page shows how close you are.
    7. Your fun upgrades show: name frame, crown, title, home theme, a buddy, a star trail, silly sounds, gold coins.
@@ -178,7 +178,6 @@ function save(){ try{ clearTimeout(T.sv); T.sv=setTimeout(()=>{ try{ saveStudent
 function bannerX(text,emoji){ if(typeof window.tlChaChing!=='function'&&rmo()) return; const b=document.createElement('div'); b.className='hpbanner'; b.innerHTML=`<span>${emoji||'💰'}</span><b>${E(text)}</b><span>${emoji||'💰'}</span>`; document.body.appendChild(b);
  b.animate([{transform:'translate(-50%,-200%) rotate(-6deg) scale(.6)',opacity:0},{transform:'translate(-50%,0) rotate(-3deg) scale(1.1)',opacity:1,offset:.18},{transform:'translate(-50%,0) rotate(-3deg) scale(1)',opacity:1,offset:.8},{transform:'translate(-50%,-160%) rotate(-3deg) scale(.9)',opacity:0}],{duration:rmo()?600:2800,easing:'cubic-bezier(.2,.8,.3,1.2)'}).onfinish=()=>b.remove(); }
 function rainDown(n){ if(rmo()) return; const [tx,ty]=pillAt(); for(let k=0;k<n;k++){ const x=Math.random()*innerWidth; fly(x,-40,tx,ty,1); } }
-function interestShow(c){ bannerX('YOUR MONEY GREW! +'+$(c/100),'🏦'); hooray(); rainDown(18); try{ toast('🏦 The Tashbar Bank paid you '+$(c/100)+' interest for saving. Money that waits, grows!'); }catch(e){} }
 function paydayShow(){ bannerX('PAYDAY!','💵'); hooray(); setTimeout(register,500); rainDown(30); setTimeout(confettiBurst,600); }
 
 /* ---------- 5. the store ---------- */

@@ -148,7 +148,7 @@ function crLessonBody_(id) {
 function crCatalog_() {
   var c = CacheService.getScriptCache(), hit = c.get('cr_cat_v1'); if (hit) return JSON.parse(hit);
   var html = '';
-  ['MathMore', 'ReadMore', 'ScienceMore', 'ElectivesMore', 'ComputingMore', 'LifeMore', 'SocialMore', 'KodeshMore', 'SimchaMore'].forEach(function (f) { try { html += tlFileText_(f); } catch (e) {} });
+  ['MathMore', 'ReadMore', 'ScienceMore', 'ScienceMore2', 'ElectivesMore', 'ComputingMore', 'LifeMore', 'SocialMore', 'KodeshMore', 'SimchaMore'].forEach(function (f) { try { html += tlFileText_(f); } catch (e) {} });
   try { html += HtmlService.createHtmlOutputFromFile('QuestPage').getContent(); } catch (e) {}
   var re = /['"]((?:MATH|READ|WRIT|LANG|VOC|SCI|ELEC|COMP|LIFE|SS|LK|HEB|SIM)(?:\.[A-Z]+)?\.L\d\d\.\d\d(?:\.[a-z])?)['"]\s*\]?\s*[:=]\s*\{\s*["']?name["']?\s*:\s*(['"`])((?:\\.|(?!\2)[^\\])*)\2/g, m, seen = {}, out = [];
   while ((m = re.exec(html))) { if (seen[m[1]]) continue; seen[m[1]] = 1; out.push([m[1], m[3].replace(/\\(.)/g, '$1').slice(0, 90)]); }

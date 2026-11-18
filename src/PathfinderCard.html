@@ -36,7 +36,7 @@
  function gateSeen(){ try{ sessionStorage.setItem(gateKey(),'1'); }catch(e){} }
  function gateWasSeen(){ try{ return sessionStorage.getItem(gateKey())==='1'; }catch(e){ return false; } }
  function paint(){ if(!info||!info.show){ card.style.display='none'; return; }
-  if(gate&&gate.next!=='rest'&&gate.rate<1){ var sm=card.querySelector('small'); if(sm&&sm.textContent.indexOf('1/4')<0) sm.textContent+=' Lessons pay 1/4 until you finish.'; }
+  if(gate&&gate.next!=='rest'&&gate.rate<1){ var sm=card.querySelector('small'); if(sm&&sm.textContent.indexOf('25\u00A2')<0) sm.textContent+=' You get only 25\u00A2 of every $1 until you finish.'; }
   if(gate&&gate.next==='rest'){ card.innerHTML='<span class="i" aria-hidden="true">\u{1F9ED}</span><span style="flex:1"><b>Pathfinder rest stop</b><small>Come back at '+new Date(gate.rest).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})+'. Your answers are saved.</small></span>'; return; }
   card.innerHTML='<span class="i" aria-hidden="true">\u{1F9ED}</span><span style="flex:1"><b>'+(info.started?'Finish your Pathfinder road':'Start your Pathfinder')+'</b><small>'+(info.started?info.done+' of '+info.of+' stops done'+(info.jars?' · 🫙 '+info.jars+' jar'+(info.jars>1?'s':'')+' waiting':'')+'. Your answers are saved.':'Find where you are in Reading and Math. Every real try earns coins.')+(info.draft?' (test)':'')+'</small></span><button type="button">'+(info.started?'Continue':'Start')+'</button>';
   card.querySelector('button').onclick=go; }

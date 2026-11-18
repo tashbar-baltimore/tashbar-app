@@ -109,7 +109,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
 #cn-shop .words{font-size:14px;opacity:.95;margin-top:4px}
 #cn-shop .steps4{display:flex;gap:6px;margin:4px 0 12px;flex-wrap:wrap}#cn-shop .steps4 span{flex:1;min-width:120px;background:#fff;border:2px solid #FED7AA;border-radius:14px;padding:8px;text-align:center;font-weight:900;color:#9A3412;font-size:15px}
 #cn-shop .steps4 span.on{background:#F97316;border-color:#F97316;color:#fff}
-@media (max-width:560px){#cn-shop .bx{padding:12px 12px 0}#cn-shop .steps4 span{min-width:0;font-size:13px;padding:6px 3px}#cn-shop .wal{padding:10px 14px;gap:8px}#cn-shop .wal .am{font-size:38px}.tlq.mini .row{display:none}#cn-shop .grid{grid-template-columns:repeat(2,1fr);gap:8px}#cn-shop .it{min-height:150px}#cn-shop .tray{margin:12px -12px 0;padding:10px 12px}#cn-shop .mathl{font-size:19px}#cn-shop .hd h2{font-size:24px}}
+@media (max-width:560px){#cn-shop .bx{padding:12px 12px 0}#cn-shop .steps4 span{min-width:0;font-size:13px;padding:6px 3px}#cn-shop .wal{padding:10px 14px;gap:8px}#cn-shop .wal .am{font-size:38px}.tlq.mini .split i{width:28px;height:28px}.tlq.mini .bill{font-size:15px;padding:4px 8px}#cn-shop .grid{grid-template-columns:repeat(2,1fr);gap:8px}#cn-shop .it{min-height:150px}#cn-shop .tray{margin:12px -12px 0;padding:10px 12px}#cn-shop .mathl{font-size:19px}#cn-shop .hd h2{font-size:24px}}
 #cn-shop .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 #cn-shop .it{position:relative;background:#fff;border:3px solid #FED7AA;border-radius:22px;padding:12px 8px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;font-family:inherit;cursor:pointer;min-height:170px}
 #cn-shop .it.in{border-color:#F97316;box-shadow:0 8px 20px #F9731633}#cn-shop .it .n{position:absolute;top:6px;right:8px;background:#F97316;color:#fff;border-radius:999px;min-width:28px;height:28px;display:grid;place-items:center;font-weight:900}
@@ -136,6 +136,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
 .tlq .split{display:flex;gap:3px}.tlq .split i{font-style:normal;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:#E5E7EB;color:#94A3B8;border:2px dashed #CBD5E1}
 .tlq .split i.on{background:radial-gradient(circle at 35% 35%,#FEF9C3,#EAB308);color:#3F2D00;border:2px solid #A16207}
 .cn-open #tlcash{display:none!important}
+.tlq .qs{font-weight:800;font-size:15px;margin-top:4px}
 .tlq p{margin:6px 0 0;font-weight:700;font-size:15px}.tlq.mini{padding:6px 12px;margin:0 0 10px}.tlq.mini p{display:none}.tlq.mini .h{font-size:16px}.tlq.mini .row{margin:4px 0 0}.tlq.mini .split i{width:34px;height:34px;font-size:10px}`;
   document.head.appendChild(ocss);
   const $$=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -152,10 +153,11 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
   function coinWords(c){ c=Math.max(0,Math.round(c)); const d=Math.floor(c/100), q=Math.floor((c%100)/25), r=c%25, w=[];
     if(d) w.push(d+(d===1?' dollar':' dollars')); if(q) w.push(q+(q===1?' quarter':' quarters')); if(r) w.push(r+(r===1?' cent':' cents')); return w.join(' and ')||'nothing yet'; }
   /* the Pathfinder quarter rule, as a picture (also used by the Tashbar Store and the home card) */
-  window.tlQuarterHTML=function(rate,mini){ if(!(rate<1)) return '';
-    return `<div class="tlq ${mini?'mini':''}" role="note"><div class="h">🧭 Finish your Pathfinder to get ALL your money!</div>
-      <div class="row"><span class="bill">$1.00</span><span>you earn</span><span>➜</span><span class="split"><i class="on">25¢</i><i>25¢</i><i>25¢</i><i>25¢</i></span><span>➜</span><span>you get only <span style="font-size:22px">25¢</span></span></div>
-      <p>A <b>quarter</b> is a coin worth <b>25 cents</b>. <b>4 quarters make 1 dollar.</b> Until you finish your Pathfinder, you get only 1 quarter (25¢) for every dollar you earn. Finish it, and you get all 4 quarters: the whole dollar!</p></div>`; };
+  window.tlQuarterHTML=function(rate,mini){ if(!(rate<1)) return ''; const on=Math.max(1,Math.min(3,Math.round(rate*4))), get=on*25;
+    return `<div class="tlq ${mini?'mini':''}" role="note"><div class="h">🧭 Lesson money: finish your Pathfinder to get ALL of it!</div>
+      <div class="row"><span class="bill">$1.00</span><span>you earn</span><span>➜</span><span class="split">${[0,1,2,3].map(k=>`<i class="${k<on?'on':''}">25¢</i>`).join('')}</span><span>➜</span><span>you get only <span style="font-size:22px">${get}¢</span></span></div>
+      <div class="qs">A <b>quarter</b> = 25¢. <b>4 quarters = $1.00.</b>${mini?' Your canteen money is not cut.':''}</div>
+      <p>A <b>quarter</b> is a coin worth <b>25 cents</b>. <b>4 quarters make 1 dollar.</b> Until you finish your Pathfinder, you get only ${on===1?'1 quarter':on+' quarters'} (${get}¢) for every dollar you earn in lessons. Finish it, and you get all 4 quarters: the whole dollar! Canteen money from your teachers is never cut.</p></div>`; };
   const TIPS=[
     ['Need or want?','Water is a need. A treat is a want. Both are OK. Just think before you buy.'],
     ['Save some!','Money you do not spend today is still yours tomorrow. You can save up for something bigger.'],
@@ -176,7 +178,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
   function vShop(){ const have=cents(O.cash), used=trayCents(), left=have-used, L=trayLines();
     let h=steps(0)+`<div class="grid">${O.menu.map(m=>{ const p=cents(m.price), q=O.tray[m.id]||0, lock=!m.out&&p>left, cls=m.out?'out':q?'in':lock?'lock':'';
       return `<button class="it ${cls}" data-cno="add" data-id="${$$(m.id)}" ${m.out||lock?'aria-disabled="true"':''} aria-label="${$$(m.name)}, ${amt(p)}${m.out?', sold out':lock?', locked':''}">${q?`<span class="n">${q}</span>`:''}${m.pic?`<img src="${$$(m.pic)}" alt="">`:`<span class="em">${$$(m.emoji||'🍪')}</span>`}<span class="nm">${$$(m.name)}</span><span class="pr">${amt(p)}</span>${m.out?'<span class="lk">Sold out</span>':lock&&q?'<span class="lk">No money for one more</span>':lock?`<span class="lk">🔒 Need ${amt(p-left)} more</span>`:''}</button>`; }).join('')}</div>`;
-    h+=coach(O.menu.some(m=>!m.out&&cents(m.price)>left)&&!L.length?TIPS[5]:null)+window.tlQuarterHTML(O.pf);
+    h+=coach(O.menu.some(m=>!m.out&&cents(m.price)>left)&&!L.length?TIPS[5]:null);
     h+=`<div class="tray"><div class="ti">${L.length?L.map(l=>`<button data-cno="sub" data-id="${$$(l.m.id)}" aria-label="Take out one ${$$(l.m.name)}">${$$(l.m.emoji||'🍪')} ${$$(l.m.name)}${l.q>1?' ×'+l.q:''} ✕</button>`).join(''):'<span class="sm" style="font-size:16px;font-weight:800">👆 Tap the food you want.</span>'}
       ${L.length?`<div class="mathl" style="width:100%">${money(have/100)} <span class="mi">− ${money(used/100)}</span> <span class="eq">= ${money(left/100)} left</span></div>`:''}</div>
       <button class="go" data-cno="check" ${!L.length||O.busy?'disabled':''}>Next ➜</button></div>`;
@@ -187,17 +189,17 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
       <div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>You have</span><span>${money(have/100)}</span></div><div><span>You pay</span><span style="color:#BE123C">− ${money(used/100)}</span></div><div style="font-size:20px"><span>Left after</span><span style="color:#047857">${money((have-used)/100)}</span></div></div>
       <div class="yn"><button class="go" data-cno="buy" ${O.busy?'disabled':''}>${O.busy?'Paying…':'✅ Yes, buy it!'}</button><button class="no" data-cno="back">↩ No, go back</button></div>
       <p class="sm">The money comes off your canteen money right now. Then go to the canteen and get your food.</p></div>`+coach(TIPS[3]); }
-  function vTrack(){ const o=O.order, done=o.status==='picked', seen=o.seen||o.status==='ready', st=[['🛒','I paid'],['👀','The canteen is making it'],['😋','I got my food']], idx=done?3:seen?1:0;
+  function vTrack(){ const o=O.order, done=o.status==='picked', seen=o.seen||o.status==='ready', st=[['🛒',o.paid===false?'I ordered':'I paid'],['👀','The canteen is making it'],['😋','I got my food']], idx=done?3:seen?1:0;
     let h=steps(2);
     if(O.last) h+=`<div class="big"><div class="e">✅</div><h3>You paid ${money(O.last.total)}!</h3><div class="mathl">${money(O.last.before)} <span class="mi">− ${money(O.last.total)}</span> <span class="eq">= ${money(O.last.after)}</span></div><p style="font-weight:800">Now you have ${money(O.last.after)} (${coinWords(cents(O.last.after))}).</p></div>`;
     h+=`<div class="trk">${st.map((x,i)=>`<div class="${i<idx||(i===0)?'ok':i===idx?'on':''}"><span class="e">${x[0]}</span>${i<idx||i===0?'✓ ':''}${x[1]}</div>`).join('')}</div>`;
     h+=`<p style="font-size:20px;font-weight:900;text-align:center;color:#065F46">${seen?'⏳ The canteen saw your order. It is still being made.':'🚶 Go to the canteen and say your name. They will give you your food.'}</p>
-      <div class="list">${o.items.map(i=>`<div><span>${$$(i.emoji||'🍪')} ${$$(i.name)}${i.qty>1?' ×'+i.qty:''}</span><span>${money(cents(i.price)*i.qty/100)}</span></div>`).join('')}<div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>Paid ✓</span><span>${money(o.est)}</span></div></div>`;
-    if(o.status==='pending'&&!o.seen) h+=`<p style="text-align:center;margin-top:12px"><button class="lnk" data-cno="cancel">Changed my mind: cancel and get my money back</button></p>`;
+      <div class="list">${o.items.map(i=>`<div><span>${$$(i.emoji||'🍪')} ${$$(i.name)}${i.qty>1?' ×'+i.qty:''}</span><span>${money(cents(i.price)*i.qty/100)}</span></div>`).join('')}<div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>${o.paid===false?'You pay at the canteen':'Paid ✓'}</span><span>${money(o.est)}</span></div></div>`;
+    if(o.status==='pending'&&!o.seen&&Date.now()-o.at<110000) h+=`<p style="text-align:center;margin-top:12px"><button class="lnk" data-cno="cancel">Changed my mind: cancel and get my money back</button></p>`;
     return h+coach(['Good habit','After you buy, check your money. Do you know how much you have left?']); }
   function vStory(){ if(!O.story.length) return ''; return `<details class="story" ${O.showStory?'open':''} style="margin:12px 0"><summary style="font-weight:900;cursor:pointer;min-height:44px;display:flex;align-items:center">📒 My money story</summary><div class="list">${O.story.map(r=>`<div><span>${$$(r.note||r.kind)}</span><b class="${r.cents>=0?'p':'m'}">${r.cents>=0?'+':'−'}${amt(Math.abs(r.cents))}</b></div>`).join('')}</div><p class="sm">Money comes in when your teachers sign you off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Tashbar Store. It goes out when you buy.</p></details>`; }
   function oDraw(){
-    if(!O.open) return; let d=document.getElementById('cn-shop'); if(!d){ d=document.createElement('div'); d.id='cn-shop'; d.setAttribute('role','dialog'); d.setAttribute('aria-label','Canteen'); document.body.appendChild(d); }
+    if(!O.open) return; let d=document.getElementById('cn-shop'); if(!d){ d=document.createElement('div'); d.id='cn-shop'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Canteen'); document.body.appendChild(d); }
     let h=`<div class="bx"><div class="hd"><span style="font-size:40px">🍕</span><h2>Canteen</h2><button class="ib" data-cno="say" aria-label="Read it to me">🔊</button><button class="ib" data-cno="close" aria-label="Close">✕</button></div>`;
     if(O.err) h+=`<div class="err" role="alert">${$$(O.err)}</div>`;
     h+=wallet()+window.tlQuarterHTML(O.pf,true);
@@ -208,8 +210,11 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
     else if(O.step==='check'&&trayLines().length) h+=vCheck();
     else { O.step='shop'; h+=vShop(); }
     h+=vStory();
-    d.innerHTML=h+'<div style="height:16px"></div></div>';
+    const sc=d.querySelector('.bx')?d.querySelector('.bx').scrollTop:0; if(d.__h===h) return; d.__h=h;
+    d.innerHTML=h+'<div style="height:16px"></div></div>'; const bx=d.querySelector('.bx'); if(bx) bx.scrollTop=sc;
+    const det=d.querySelector('details.story'); if(det) det.addEventListener('toggle',()=>{ O.showStory=det.open; d.__h=null; });
   }
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&O.open) oClose(); });
   function sayNow(){ const o=O.order; let t='You have '+coinWords(cents(O.cash))+' of canteen money. ';
     if(O.pf<1) t+='Until you finish your Pathfinder, you get only one quarter, 25 cents, for every dollar you earn. ';
     if(o) t+=o.status==='picked'?'You got your food.':o.seen?'The canteen saw your order. It is still being made.':'You paid. Go to the canteen and say your name.';
@@ -226,7 +231,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
       return call('cnOrderPlace',tok(),trayLines().map(l=>({id:l.m.id,qty:l.q})),O.cid).then(r=>{ O.busy=false;
         if(!r.ok&&r.short){ O.err=`Not enough money: this costs ${money(r.total)} and you have ${money(r.cash)}.`; O.cash=r.cash; O.step='shop'; return oDraw(); }
         O.last={before:r.before!=null?r.before:before,total:r.order.est,after:r.cash}; O.cash=r.cash; O.order=r.order; O.tray={}; O.err=''; O.step='paid'; noteStatus(); try{ SND.right(5); }catch(x){} oDraw(); setTimeout(oLoad,800); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not buy. Try again.'; oDraw(); }); }
-    if(a==='cancel'&&O.order){ if(O.busy) return; O.busy=true; return call('cnOrderCancel',tok(),O.order.id).then(r=>{ O.busy=false; O.order=null; O.last=null; O.step='shop'; O.err=''; if(r&&r.back) O.err='↩️ Cancelled. '+money(r.back)+' is back in your canteen money.'; oLoad(); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not cancel.'; oLoad(); }); }
+    if(a==='cancel'&&O.order){ if(O.busy) return; O.busy=true; O.lastStatus=null; return call('cnOrderCancel',tok(),O.order.id).then(r=>{ O.busy=false; O.order=null; O.last=null; O.step='shop'; O.err=''; if(r&&r.back) O.err='↩️ Cancelled. '+money(r.back)+' is back in your canteen money.'; oLoad(); }).catch(err=>{ O.busy=false; O.err=(err&&err.message)||'Could not cancel.'; oLoad(); }); }
   });
   window.cnOrderButton=function(i){ if(!i||i.cash==null||inClass()) return '';
     const o=i.order; let h='';

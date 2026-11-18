@@ -674,6 +674,7 @@ function cnSelfTest() {
    Older orders from before v378 were not paid yet: Done charges them through the normal kiosk sale, as before.
    Orders live in the school database tab CN_Orders. Column sale_id = 'paid' marks an order paid when ordered. */
 CN.ORD = 'CN_Orders';
+CN.CANCEL_MS = 2 * 60000;   /* v379: a boy may cancel in the app only in the first 2 minutes */
 CN.ORD_HDR = ['order_id', 'student_id', 'name', 'items_json', 'est_total', 'status', 'created_at', 'updated_at', 'by', 'sale_id', 'note'];
 function cnOrdTab_() {
   var b = msBook_(), sh = b.getSheetByName(CN.ORD);
@@ -693,7 +694,7 @@ function cnOrdSet_(o, status, by, saleId, note) {
 }
 function cnOrdCents_(o) { return (o.items || []).reduce(function (a, i) { return a + Math.round(Number(i.price) * 100) * (Number(i.qty) || 0); }, 0) || Math.round(o.est * 100); }
 function cnOrdText_(o) { return (o.items || []).map(function (i) { return i.name + (i.qty > 1 ? ' x' + i.qty : ''); }).join(', '); }
-function cnOrdOut_(o) { return { id: o.id, sid: o.sid, name: o.name, items: o.items, est: o.est, status: o.status, at: o.at, upd: o.upd, by: o.by, note: o.note, paid: o.saleId === 'paid', seen: /^Still waiting/.test(o.note) }; }
+function cnOrdOut_(o) { return { id: o.id, sid: o.sid, name: o.name, items: o.items, est: o.est, status: o.status, at: o.at, upd: o.upd, by: o.by, note: o.note, paid: o.saleId === 'paid', seen: /^Still waiting/.test(o.note), practice: cnTestSid_(o.sid) }; }
 function cnOrdOpen_(o) { return o.status === 'pending' || o.status === 'ready'; }
 function cnKidSid_(token) { var s = msSession_(token); if (s.role !== 'kid' || !s.sid) throw new Error('Sign in with your own code.'); return s.sid; }
 function cnOrderMenu(token) {
@@ -708,7 +709,7 @@ function cnOrderPlace(token, cart, clientId) {
   var lock = LockService.getScriptLock(); lock.waitLock(20000);
   try {
     var all = cnOrders_(), dup = all.filter(function (o) { return o.id === id; })[0];
-    if (dup) return { ok: true, order: cnOrdOut_(dup), cash: cnBalance_(sid) };
+    if (dup) { if (dup.sid !== sid) throw new Error('Try again.'); return { ok: true, order: cnOrdOut_(dup), cash: cnBalance_(sid) }; }
     if (all.some(function (o) { return o.sid === sid && cnOrdOpen_(o); })) throw new Error('You already have food waiting. Get it at the canteen first.');
     var cash = cnBalance_(sid); if (cash === null) throw new Error('You don’t have a Canteen Cash account yet. Ask the office.');
     var menu = {}; cnMenu_(true).forEach(function (m) { menu[m.id] = m; });
@@ -720,12 +721,15 @@ function cnOrderPlace(token, cart, clientId) {
       items.push({ id: m.id, qty: q, name: m.name, emoji: m.emoji, price: m.price }); cents += Math.round(m.price * 100) * q;
     });
     if (!items.length) throw new Error('Pick some food first.');
-    if (Math.round(cash * 100) < cents) return { ok: false, short: true, cash: cash, total: cents / 100 };
+    var charged = cnWalHas_('ord:' + id);   /* a retry after a half-finished order: the money already came off */
+    if (!charged && Math.round(cash * 100) < cents) return { ok: false, short: true, cash: cash, total: cents / 100 };
     var b = cnBoys_().filter(function (x) { return x.id === sid; })[0], now = new Date(), o = { id: id, items: items, est: cents / 100 }, text = cnOrdText_(o);
-    cnWalOpen_(sid);
-    cnWalPost_(sid, -cents, 'order', 'ord:' + id, 'app', text);
-    try { cnCpRow_(sid, text, cents / 100, 'App order', 'Order ' + id + ' · paid in the app'); } catch (e) {}
-    try { cnStockAdj_(items, -1); } catch (e) {}
+    if (!charged) {
+      cnWalOpen_(sid);
+      cnWalPost_(sid, -cents, 'order', 'ord:' + id, 'app', text);
+      try { cnCpRow_(sid, text, cents / 100, 'App order', 'Order ' + id + ' · paid in the app'); } catch (e) {}
+      if (!cnTestSid_(sid)) try { cnStockAdj_(items, -1); } catch (e) {}   /* practice orders never take real stock */
+    }
     cnOrdTab_().appendRow([id, sid, b ? b.name : sid, JSON.stringify(items), cents / 100, 'pending', now, now, 'app', 'paid', '']);
     return { ok: true, before: cash, cash: cnBalance_(sid), order: { id: id, sid: sid, items: items, est: cents / 100, status: 'pending', at: now.getTime(), upd: now.getTime(), paid: true, seen: false } };
   } finally { lock.releaseLock(); }
@@ -737,7 +741,7 @@ function cnOrdRefund_(o, by, why) {
   var r = cnWalPost_(o.sid, cents, 'refund', 'ref:' + o.id, by, 'Money back: ' + cnOrdText_(o) + (why ? ' (' + why + ')' : ''));
   if (r.dup) return 0;
   try { cnCpRow_(o.sid, 'REFUND of ' + cnOrdText_(o), -cents / 100, String(by || '').slice(0, 40), 'Refund of Order ' + o.id + (why ? ': ' + why : '')); } catch (e) {}
-  try { cnStockAdj_(o.items, 1); } catch (e) {}
+  if (!cnTestSid_(o.sid)) try { cnStockAdj_(o.items, 1); } catch (e) {}
   return cents;
 }
 function cnOrderCancel(token, orderId) {
@@ -747,6 +751,7 @@ function cnOrderCancel(token, orderId) {
     if (!o) throw new Error('Order not found.');
     if (!cnOrdOpen_(o)) throw new Error('This order is closed.');
     if (o.note && /^Still waiting/.test(o.note)) throw new Error('The canteen is already making it. Ask at the canteen.');
+    if (o.status !== 'pending' || Date.now() - o.at > CN.CANCEL_MS) throw new Error('It is too late to cancel in the app. Ask at the canteen.');   /* v379: no cancel after the food could be in his hands */
     var back = cnOrdRefund_(o, 'boy', 'cancelled by the student');
     cnOrdSet_(o, 'cancelled', 'boy', '', 'Cancelled by the student' + (back ? ', money back' : ''));
     return { ok: true, back: back / 100, cash: cnBalance_(sid) };
