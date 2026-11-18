@@ -18,7 +18,22 @@ const RP_BASE = 'https://tashbar-learning-live.web.app/pics/';
 TL_PIC_ADD({
   'gemara-vilna-berachos-2a': { file: 'gemara-vilna-berachos-2a.jpg', w: 960, h: 1557, alt: 'A page of Gemara: Berachos daf 2, amud aleph, Vilna Shas',
     source: 'https://commons.wikimedia.org/wiki/File:Berakhot2a.jpg', licence: 'Public domain', author: 'Widow and Brothers Romm, Vilna' }
-}, {});
+}, (function () {
+  /* PICS-KODESH batch 1: the daf. Teaching screens show the boxes; question screens show the same page with NO boxes, so the answer is not given away. */
+  const G = 'gemara-vilna-berachos-2a', CAP = 'A real daf: Berachos daf 2, amud aleph (Vilna Shas)';
+  const RASHI = { box: [68.75, 9, 22.7, 53.5], label: 'Rashi', from: 'left', at: 0.3 };
+  const TOSAFOS = { box: [12.5, 4.5, 17.9, 76], label: 'Tosafos', from: 'right', at: 0.62 };
+  const GEMARA = { box: [31.5, 9.5, 36.5, 53], label: 'Mishna and Gemara', from: 'bottom', at: 0.5 };
+  const look = { id: G, mark: [], cap: 'Look at the daf. Where is Rashi?' };
+  return {
+    'LK.GEM.L06.01|Where on the daf are the Mishna and the Gemara?': { id: G, mark: [GEMARA, RASHI], cap: CAP },
+    'LK.GEM.L06.01|Daf 4. Where is Rashi on the daf?': look,
+    'LK.GEM.L06.01|Daf 4. Tap every true sentence about where Rashi is.': look,
+    'LK.GEM.L07.01|This Rashi starts with which words?': { id: G, mark: [RASHI], cap: 'Rashi: the inside column, next to the Gemara, in Rashi script' },
+    'LK.GEM.L07.01|Rashi 6. Where is Rashi printed on the daf?': look,
+    'LK.GEM.L07.01|Rashi 6. Where is each one printed on the daf? Sort the cards.': { id: G, mark: [], cap: 'Look at the daf.' }
+  };
+})());
 
 function rpNorm(s) { return String(s || '').replace(/\s+/g, ' ').trim(); }
 function rpFind(id, it) { const M = window.TL_PIC_MAP; if (!it) return null; return M[id + '|' + rpNorm(it.q)] || M[id + '|*'] || null; }
@@ -47,7 +62,8 @@ function rpZoom(fig) { const id = fig.getAttribute('data-rp'), P = window.TL_PIC
   d.addEventListener('click', e => { if (e.target === d || e.target.classList.contains('rpclose')) d.remove(); }); document.body.appendChild(d); }
 function rpDecorate() { try { if (typeof A === 'undefined' || A.view !== 'play' || !A.play) return; const p = A.play, it = p.items[p.i]; const card = document.querySelector('.qcard'); if (!card || card.querySelector('.rp')) return;
   const use = rpFind(p.id, it); if (!use) return; const h = rpHTML(use); if (!h) return;
-  const old = card.querySelector('.tlpic'); if (old) { old.insertAdjacentHTML('beforebegin', h); old.classList.add('rpfall'); }
+  const old = card.querySelector('.tlpic');   /* an emoji picture is replaced; Hebrew text the boy must read (a Rashi, a pasuk) always stays */
+  if (old) { old.insertAdjacentHTML('beforebegin', h); const t = old.textContent || ''; if (!/[\u0590-\u05FF]/.test(t) && t.length < 40) old.classList.add('rpfall'); }
   else { const row = card.querySelector('.qrow') || card.firstElementChild; if (row) row.insertAdjacentHTML('afterend', h); }
   const fig = card.querySelector('.rp'); fig.querySelector('.rpz').onclick = () => rpZoom(fig); fig.querySelector('.rpbox').onclick = () => rpZoom(fig);
  } catch (e) { console.error('RealPics', e); } }
