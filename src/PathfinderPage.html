@@ -103,10 +103,38 @@ h2{font-size:26px;margin:6px 0 10px}h3{font-size:20px;margin:4px 0 8px}
 .flag{background:#fde2e2;color:#8e1b1b;border-radius:10px;padding:6px 10px;margin:4px 0;font-size:15px}
 .sk{display:flex;flex-wrap:wrap;gap:6px}.sk span{font-size:13px}
 @media(max-width:560px){.choices{grid-template-columns:1fr 1fr}.pad{grid-template-columns:repeat(5,52px)}.pad button{height:54px}.wrap{padding:12px 12px 130px}}
+#pfwait{position:fixed;inset:0;z-index:9999;background:rgba(246,244,238,.82);backdrop-filter:blur(2px);display:grid;place-items:center;padding:16px}
+#pfwait .pfw-box{background:#fff;border-radius:24px;box-shadow:0 20px 60px #0003;padding:26px 24px;max-width:460px;width:100%;text-align:center}
+#pfwait h2{margin:10px 0 4px;font-size:30px}#pfwait .pfw-m{font-size:19px;margin:6px 0}#pfwait .pfw-s{color:#64748B;font-size:16px;margin:4px 0}
+#pfwait .pfw-ok{font-weight:800;font-size:19px;color:#047857;margin:10px 0 0}
+#pfwait .pfw-spin{display:flex;gap:10px;justify-content:center}#pfwait .pfw-spin i{width:18px;height:18px;border-radius:50%;background:#2563EB;animation:pfwb 1s ease-in-out infinite}
+#pfwait .pfw-spin i:nth-child(2){animation-delay:.15s;background:#16A34A}#pfwait .pfw-spin i:nth-child(3){animation-delay:.3s;background:#F59E0B}
+@keyframes pfwb{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-12px);opacity:1}}
+#pfwait .pfw-bar{height:10px;border-radius:99px;background:#E5E7EB;overflow:hidden;margin:14px 0 6px}#pfwait .pfw-bar i{display:block;height:100%;width:40%;border-radius:99px;background:#2563EB;animation:pfwr 1.4s linear infinite}
+@keyframes pfwr{from{transform:translateX(-100%)}to{transform:translateX(260%)}}
+#pfwait .pfw-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px}#pfwait .pfw-btns button{min-height:56px;padding:12px 20px;border-radius:16px;border:0;font:inherit;font-weight:800;font-size:19px;cursor:pointer;background:#2563EB;color:#fff}
+#pfwait .pfw-btns button[data-pfw="leave"]{background:#F1F5F9;color:#0F172A}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head><body><div id="app"><div class="wrap"><div class="card center"><h2>One moment…</h2></div></div></div>
 <script>
-const run=(fn,...a)=>new Promise((res,rej)=>google.script.run.withSuccessHandler(r=>res(pfBackFix(r))).withFailureHandler(rej)[fn](...a));
+/* v392 Head of School 2026-11-18: "people are complaining that it keeps on getting stuck ... show that it's being loaded and it's not stuck".
+   Every server call that takes longer than 0.7 s shows a big "Loading… it is not stuck" screen with a seconds counter.
+   After 20 s: "Try again" (safe: pfAnswer returns where he is when the same answer arrives twice) and "Leave for now" (answers are saved). */
+const PFW={n:0,g:0,t0:0,timer:null,fn:'',slow:null,quiet:{msAppUrl:1,pfuSoundSave:1,pfSeenAlert:1,pfHandoffRedeem:1}};
+const run=(fn,...a)=>{ const q=!!PFW.quiet[fn]; if(!q) pfWaitStart(fn); const g=PFW.g; let done=false; const end=()=>{ if(!done&&!q){ done=true; if(g===PFW.g) pfWaitEnd(); } };
+ return new Promise((res,rej)=>google.script.run.withSuccessHandler(r=>{ end(); res(pfBackFix(r)); }).withFailureHandler(e=>{ end(); rej(e); })[fn](...a)); };
+function pfWaitMsg(){ const f=PFW.fn; return /Answer$/.test(f)?'Saving your answer and getting the next question…':/Start$/.test(f)?'Getting your Pathfinder ready…':/Retake/.test(f)?'Getting a new Pathfinder ready…':'Loading…'; }
+function pfWaitStart(fn){ PFW.fn=fn; PFW.n++; if(PFW.n===1){ PFW.t0=Date.now(); PFW.slow=null; clearInterval(PFW.timer); PFW.timer=setInterval(pfWaitTick,400); } }
+function pfWaitEnd(){ PFW.n=Math.max(0,PFW.n-1); if(!PFW.n){ clearInterval(PFW.timer); const o=document.getElementById('pfwait'); if(o) o.remove(); } }
+function pfWaitTick(){ if(!PFW.n) return; const s=(Date.now()-PFW.t0)/1000; if(s<0.7) return; const slow=s>=20; let o=document.getElementById('pfwait');
+ if(!o||PFW.slow!==slow){ PFW.slow=slow; if(!o){ o=document.createElement('div'); o.id='pfwait'; o.setAttribute('role','status'); o.setAttribute('aria-live','polite'); document.body.appendChild(o); }
+  o.innerHTML=`<div class="pfw-box"><div class="pfw-spin" aria-hidden="true"><i></i><i></i><i></i></div><h2>${slow?'Still loading…':'Loading…'}</h2><p class="pfw-m">${pfWaitMsg()}</p><div class="pfw-bar" aria-hidden="true"><i></i></div><p class="pfw-s"><b id="pfw-sec">0</b> sec</p>`+
+   (slow?`<p class="pfw-m">This is taking longer than usual, maybe because many boys are working at the same time. Your answers are saved.</p><div class="pfw-btns"><button data-pfw="retry">🔄 Try again</button><button data-pfw="leave">🏠 Leave for now</button></div>`:`<p class="pfw-ok">It is NOT stuck. Please wait.</p>`)+`</div>`; }
+ const sec=document.getElementById('pfw-sec'); if(sec) sec.textContent=Math.floor(s); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-pfw]'); if(!b) return; e.stopPropagation(); const a=b.dataset.pfw;
+ PFW.n=0; PFW.g++; clearInterval(PFW.timer); const o=document.getElementById('pfwait'); if(o) o.remove();
+ if(a==='leave'){ const u=PFBACK||(P&&P.appUrl)||''; if(u) location.href=u; else location.reload(); return; }
+ if(P&&P.lastCall&&P.lastCall[0]===PFW.fn){ P.busy=false; const c=P.lastCall; call(c[0],c[1],c[2]); } else location.reload(); },true);
 /* web.app hand-off: when he came from tashbar-learning-live.web.app (back=), every "back to my lessons" link takes him there */
 let PFBACK='';
 function pfBackFix(r){ if(!PFBACK||!r) return r; if(typeof r==='string'&&r.indexOf('script.google.com')>=0) return PFBACK; if(typeof r==='object'&&typeof r.appUrl==='string') r.appUrl=PFBACK; return r; }
@@ -294,7 +322,7 @@ function updNext(){ const it=P.v&&P.v.cur&&P.v.cur.item; const b=document.queryS
 document.addEventListener('input',e=>{ if(e.target&&e.target.id==='ansbox'){ P.typed=e.target.value.slice(0,16); updNext(); } });
 
 /* ---------- actions ---------- */
-function call(fn,args,ok){ P.busy=true; P.err=''; render(); return run(fn,P.token,...args).then(v=>{ P.busy=false; P.v=v; P.sel=null; P.typed=''; P.ask=null; P.pt=null; P.orderFor=null; P.moved=false; if(v.reveal){ P.reveal=v.reveal; clearTimeout(window.__lvT); window.__lvT=setTimeout(()=>{ if(P.reveal){ P.reveal=null; render(); } },2800); if(v.young) speak('Welcome to '+((v.lands||{})[v.reveal]||{}).name); } ok&&ok(v); render(); if(fn==='pfAnswer') afterAnswer(v); }).catch(e=>{ P.busy=false; const m=msgOf(e); if(/sign in/i.test(m)){ P.out=true; store('tl-pf',null); } P.err=m; render(); }); }
+function call(fn,args,ok){ P.lastCall=[fn,args,ok]; P.busy=true; P.err=''; render(); return run(fn,P.token,...args).then(v=>{ P.busy=false; P.v=v; P.sel=null; P.typed=''; P.ask=null; P.pt=null; P.orderFor=null; P.moved=false; if(v.reveal){ P.reveal=v.reveal; clearTimeout(window.__lvT); window.__lvT=setTimeout(()=>{ if(P.reveal){ P.reveal=null; render(); } },2800); if(v.young) speak('Welcome to '+((v.lands||{})[v.reveal]||{}).name); } ok&&ok(v); render(); if(fn==='pfAnswer') afterAnswer(v); }).catch(e=>{ P.busy=false; const m=msgOf(e); if(/sign in/i.test(m)){ P.out=true; store('tl-pf',null); } P.err=m; render(); }); }
 document.addEventListener('click',e=>{ if(e.target.closest&&e.target.closest('#grid')&&P.v&&P.v.cur&&!P.busy) return pickPoint(e); const t=e.target.closest('[data-act]'); if(!t||t.disabled) return; const a=t.dataset.act, v=P.v;
  if(window.PFKUI&&PFKUI.click(a,t,v)) return;
  if(window.PF5UI&&PF5UI.click(a,t,v)) return;
