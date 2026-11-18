@@ -20,7 +20,12 @@ const DOORS=[
 function css(){ if(document.getElementById('hf-css')) return; const s=document.createElement('style'); s.id='hf-css'; s.textContent=`
 body.hf-on.hf-home .hlx-lib,body.hf-on.hf-home .hlx-games,body.hf-on.hf-home .hlx-mine{display:none!important}
 body.hf-on.hf-lib .hlx-games,body.hf-on.hf-lib .hlx-mine,body.hf-on.hf-games .hlx-lib,body.hf-on.hf-games .hlx-mine,body.hf-on.hf-mine .hlx-lib,body.hf-on.hf-mine .hlx-games{display:none!important}
-body.hf-on:not(.hf-home) .hf-doors{display:none}
+body.hf-on:not(.hf-home) .hf-doors,body.hf-on:not(.hf-home) .hf-kl{display:none}
+.hf-kl{display:flex;align-items:center;gap:18px;margin:22px 0 0;padding:20px 24px;border-radius:28px;background:linear-gradient(120deg,#FEF08A,#FDBA74 55%,#F9A8D4);box-shadow:0 10px 0 rgba(234,88,12,.25),0 18px 34px rgba(234,88,12,.2);animation:hfin .6s cubic-bezier(.2,1.4,.4,1) both}
+.hf-kl .ic{font-size:72px;line-height:1;animation:hfbob 3s ease-in-out infinite}
+.hf-kl .tx{flex:1;display:flex;flex-direction:column;gap:4px;color:#7C2D12}.hf-kl b{font:900 36px/1 var(--display,'Barlow'),sans-serif}.hf-kl small{font:700 18px var(--body,'Nunito'),sans-serif}
+.hf-kl button{border:0;border-radius:999px;padding:16px 34px;background:linear-gradient(180deg,#4ADE80,#16A34A);color:#fff;font:900 26px var(--display,'Barlow'),sans-serif;cursor:pointer;box-shadow:0 6px 0 #15803D}
+.hf-kl button:active{transform:translateY(5px);box-shadow:0 1px 0 #15803D}
 .hf-doors{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:22px 0 10px}
 @media (max-width:820px){.hf-doors{grid-template-columns:1fr}}
 .hf-door{position:relative;overflow:hidden;border:0;border-radius:30px;min-height:230px;padding:26px 24px;color:#fff;text-align:left;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;box-shadow:0 14px 0 rgba(30,27,75,.18),0 22px 40px rgba(30,27,75,.18);transition:transform .18s ease,box-shadow .18s ease;animation:hfin .6s cubic-bezier(.2,1.4,.4,1) both}
@@ -62,6 +67,9 @@ function decorate(){
  const who=String(A.st.id||''); if(who!==HF.who){ HF.who=who; HF.door='home'; }
  ['home','lib','games','mine'].forEach(k=>document.body.classList.toggle('hf-'+k,HF.door===k));
  if(!document.querySelector('.hf-doors')){ const w=document.createElement('div'); w.className='hf-doors'; w.innerHTML=doorsHtml(); top.insertAdjacentElement('afterend',w); }
+ try{ const kOn=!!(window.KL&&KL.on&&KL.on()); let kb=document.querySelector('.hf-kl');
+  if(kOn&&!kb){ kb=document.createElement('div'); kb.className='hf-kl'; kb.innerHTML='<span class="ic" aria-hidden="true">🍎</span><span class="tx"><b>Kindergarten Math</b><small>16 lessons that talk to you: count, add, shapes and more.</small></span><button type="button" data-kl="open">Play ▶</button>'; const dd=document.querySelector('.hf-doors'); if(dd) dd.insertAdjacentElement('beforebegin',kb); }
+  else if(!kOn&&kb) kb.remove(); }catch(e){}
  if(!document.querySelector('.hf-back')){ const b=document.createElement('button'); b.type='button'; b.className='hf-back'; b.dataset.hf='home'; b.innerHTML='<span aria-hidden="true">🏠</span> Back home'; top.insertAdjacentElement('afterend',b); }
 }
 function go(k){ HF.door=k; try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(e){} decorate(); try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); } }
