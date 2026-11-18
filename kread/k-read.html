@@ -1,0 +1,448 @@
+<title>Kindergarten Reading Lessons</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@600;800&display=swap">
+<style>
+/* TL-LESSON-KIT v1 (Little Explorers world). One bright single theme for K-1. Menu of 16 lessons; each lesson = 8 stations shown by the train. */
+:root{
+  --sky:#E8F6FF; --mat:#FFF6D8; --ink:#1F2A44; --sun:#FFC83D; --leaf:#2FBF71; --berry:#FF5D73; --sea:#3D8BFF; --grape:#8E5BFF;
+  --card:#FFFFFF; --soft:#6B7A99;
+  --f-head:"Baloo 2","Comic Sans MS","Trebuchet MS",system-ui,sans-serif; --f-body:"Nunito","Trebuchet MS",system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(circle at 15% 10%,#FFF9C4 0,transparent 35%),linear-gradient(180deg,var(--sky),var(--mat));color:var(--ink);font-family:var(--f-body);font-size:18px}
+.wrap{max-width:980px;margin:0 auto;padding-block:14px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px;min-height:100%;box-sizing:border-box}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top h1{font-family:var(--f-head);font-weight:800;font-size:26px;margin:0;flex:1;min-width:200px}
+.top h1 small{display:block;font-family:var(--f-body);font-size:13px;color:var(--soft);font-weight:600}
+.pill{border:0;border-radius:999px;padding:8px 14px;font:800 15px var(--f-body);background:var(--card);color:var(--ink);box-shadow:0 3px 0 #d9d2b8;cursor:pointer}
+.mode{display:inline-block;background:#FFE7EB;color:#b4233b;border-radius:10px;padding:2px 10px;font-weight:800;font-size:13px}
+.track{position:relative;height:46px;background:var(--card);border-radius:24px;box-shadow:0 4px 0 #e6dfc2;display:flex;align-items:center;padding:0 16px}
+.track .rail{position:absolute;left:24px;right:24px;top:50%;height:6px;background:repeating-linear-gradient(90deg,#c9b98a 0 14px,transparent 14px 22px);transform:translateY(-50%)}
+.track .st{position:relative;flex:1;display:flex;justify-content:center}
+.track .st i{width:16px;height:16px;border-radius:50%;background:#e8e2cc;border:3px solid #fff;box-shadow:0 0 0 2px #e8e2cc}
+.track .st.done i{background:var(--leaf);box-shadow:0 0 0 2px var(--leaf)}
+.train{position:absolute;top:2px;font-size:30px;transition:left .8s cubic-bezier(.5,1.6,.4,1);transform:translateX(-50%)}
+.stage{flex:1;background:var(--card);border-radius:34px;box-shadow:0 10px 0 #eadfb8,0 20px 40px rgba(31,42,68,.12);padding:20px;display:flex;flex-direction:column;gap:14px;min-height:540px;position:relative;overflow:hidden}
+.say{display:flex;align-items:center;gap:12px}
+.spk{flex:0 0 auto;width:64px;height:64px;border-radius:50%;border:0;background:var(--sea);color:#fff;font-size:30px;cursor:pointer;box-shadow:0 5px 0 #2a63c0}
+.spk.talk{animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.cap{font:800 22px/1.3 var(--f-head);min-height:58px;display:flex;align-items:center}
+.scene{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.row{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.g5{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.g5>div{display:flex;gap:4px}
+.basket{position:relative;min-width:140px;min-height:110px;border-radius:0 0 60px 60px;background:linear-gradient(180deg,#F7C77B,#D9963E);border:6px solid #B87528;display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:4px;padding:10px 10px 16px;box-sizing:border-box}
+.basket.big{min-width:230px;min-height:140px;background:linear-gradient(180deg,#FFD98A,#E5A64A)}
+.basket .lab{position:absolute;top:-30px;left:50%;transform:translateX(-50%);font:800 22px var(--f-head);background:var(--card);border-radius:12px;padding:0 10px;box-shadow:0 2px 0 #e6dfc2;white-space:nowrap}
+.tapme{cursor:pointer}
+.o{font-size:42px;line-height:1;display:inline-block;transition:transform .25s,filter .25s,opacity .4s;user-select:none}
+.o.sm{font-size:30px}
+.o.hl{transform:scale(1.35) translateY(-6px);filter:drop-shadow(0 0 8px #FFC83D)}
+.o.lone{filter:drop-shadow(0 0 8px #FF5D73)}
+.o.gone{opacity:.15;transform:scale(.7)}
+.o.ghost{opacity:.18}
+.o.pop{animation:pop .45s cubic-bezier(.3,1.8,.5,1)}
+@keyframes pop{0%{transform:scale(0) translateY(-40px)}100%{transform:scale(1)}}
+.o.fly{animation:fly 1.1s ease-out both}
+@keyframes fly{0%{transform:translate(200px,-110px) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+.o.flyaway{animation:flyaway 1.1s ease-in both}
+@keyframes flyaway{100%{transform:translate(-220px,-140px) rotate(20deg);opacity:0}}
+.tray{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:60px;padding:8px 14px;border-radius:20px;background:#F3F7FF}
+.tray .o{cursor:pointer}
+.plus,.eq{font:800 46px var(--f-head);color:var(--grape)}
+.big-num{font:800 72px/1 var(--f-head);color:var(--berry)}
+.card-num{font:800 96px/1 var(--f-head);color:var(--sea);background:#F3F7FF;border-radius:28px;padding:10px 30px}
+.choices{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.ch{min-width:108px;height:108px;padding:0 10px;border-radius:30px;border:0;background:var(--sun);color:var(--ink);font:800 52px var(--f-head);box-shadow:0 7px 0 #D49A12;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ch.wide{font-size:38px;min-width:150px}
+.ch small{font-size:12px;letter-spacing:1px;color:#7a5a00;max-width:100px;word-break:break-all;line-height:1.1}
+.ch:active{transform:translateY(4px);box-shadow:0 3px 0 #D49A12}
+.ch.no,.pic.no{opacity:.3;pointer-events:none}
+.ch.yes{background:var(--leaf);color:#fff;box-shadow:0 7px 0 #1f8a51}
+.pic{border:5px solid #E6E0CC;border-radius:26px;padding:10px 14px;background:#FFFDF5;cursor:pointer;display:flex;gap:10px;align-items:center;justify-content:center;box-shadow:0 5px 0 #e6dfc2;min-width:96px;min-height:96px;font:inherit;color:inherit}
+.pic .o{font-size:30px}
+.pic.yes{border-color:var(--leaf);background:#E9FBF1}
+.pic.huge .o{font-size:56px}
+.pic.barpic{width:290px;max-width:86vw;justify-content:flex-start;padding-right:30px;box-sizing:border-box}
+.frame{display:grid;grid-template-columns:repeat(5,60px);grid-template-rows:repeat(2,60px);gap:6px;background:#3D8BFF;padding:8px;border-radius:18px}
+.frame>div{background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.frame .o{font-size:38px}
+.frame.mini{grid-template-columns:repeat(5,22px);grid-template-rows:repeat(2,22px);gap:3px;padding:4px;border-radius:8px}
+.frame.mini .o{font-size:16px}
+.frame .tapme{cursor:pointer}
+.go{border:0;border-radius:28px;padding:16px 32px;font:800 28px var(--f-head);background:var(--leaf);color:#fff;box-shadow:0 7px 0 #1f8a51;cursor:pointer}
+.go.alt{background:var(--sea);box-shadow:0 7px 0 #2a63c0}
+.tiles{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:620px}
+.tile{width:54px;height:54px;border-radius:14px;background:#FFF1C9;display:flex;align-items:center;justify-content:center;font:800 26px var(--f-head);box-shadow:0 3px 0 #e8d391}
+.tile.q{background:#E7DEFF;color:var(--grape)}
+.tile.hl{background:var(--sun);transform:translateY(-4px)}
+.tile.ten{background:#D6F5E3}
+.car{min-width:70px;height:62px;border-radius:14px 14px 8px 8px;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;font:800 32px var(--f-head);position:relative;box-shadow:0 4px 0 #c43a4f}
+.car.q{background:var(--grape);box-shadow:0 4px 0 #6a3fd0}
+.car.hl{transform:translateY(-6px)}
+.car::after{content:"";position:absolute;bottom:-12px;left:10px;right:10px;height:14px;background:radial-gradient(circle at 10px 7px,#1F2A44 6px,transparent 7px),radial-gradient(circle at calc(100% - 10px) 7px,#1F2A44 6px,transparent 7px)}
+.bar{height:30px;border-radius:15px 4px 4px 15px;position:relative;box-shadow:inset 0 -5px 0 rgba(0,0,0,.12)}
+.bar::after{content:"";position:absolute;right:-18px;top:0;border-left:18px solid currentColor;border-top:15px solid transparent;border-bottom:15px solid transparent}
+.bar.units{background-image:repeating-linear-gradient(90deg,transparent 0 22px,rgba(255,255,255,.9) 22px 24px)!important}
+.bars{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.tower{display:flex;flex-direction:column-reverse;gap:2px;align-items:center;min-height:40px}
+.tower i{width:44px;height:26px;border-radius:6px;display:block}
+.bin{min-width:130px;min-height:120px;border-radius:20px;background:#F3F7FF;border:5px dashed #B9C7E6;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:4px;padding:8px;position:relative;cursor:pointer;font:inherit}
+.bin .tag{position:absolute;top:-26px;left:50%;transform:translateX(-50%);font-size:34px;background:#fff;border-radius:14px;padding:0 6px}
+.bin .o{font-size:28px}
+.cell{position:relative;width:150px;height:150px}
+.cell span{position:absolute;font-size:44px;line-height:1}
+.spot{position:absolute;width:52px;height:52px;border-radius:50%;border:4px dashed var(--grape);background:rgba(142,91,255,.08);cursor:pointer}
+.shelf{display:flex;flex-direction:column;gap:0;background:#C98B4A;padding:8px;border-radius:12px}
+.shelf>div{height:72px;border-bottom:8px solid #8B5A2B;background:#F5E3C8;display:flex;align-items:flex-end;justify-content:center;gap:24px;padding:0 20px}
+.shelf .o{font-size:46px}
+.path{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.path .tile{position:relative}
+.path .bun{position:absolute;top:-38px;font-size:34px;transition:none}
+.night{background:linear-gradient(180deg,#1B2350,#3B3F8F);border-radius:24px;width:min(560px,92%);height:220px;position:relative}
+.scatter{position:relative;width:min(360px,90%);height:230px;background:#F7FBFF;border-radius:24px}
+.scatter .o{position:absolute}
+.zaidy{font-size:76px}
+.note{font-size:13px;color:var(--soft);text-align:center}
+.burst{position:absolute;inset:0;pointer-events:none}
+.start{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.start .hero{font-size:84px;letter-spacing:6px}
+.start h2{font:800 40px/1.1 var(--f-head);margin:0;text-wrap:balance}
+.start p{margin:0;color:var(--soft);max-width:52ch}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;width:100%}
+.lt{border:0;border-radius:26px;background:#FFFDF5;box-shadow:0 6px 0 #e6dfc2;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font:800 17px/1.15 var(--f-head);color:var(--ink);position:relative}
+.lt .e{font-size:44px}
+.lt small{font:600 12px var(--f-body);color:var(--soft)}
+.lt .done{position:absolute;top:6px;right:10px;font-size:22px}
+.svgsh{display:block}
+button:focus-visible,.bin:focus-visible,.tapme:focus-visible{outline:4px solid var(--grape);outline-offset:3px}
+@media (max-width:560px){.path .tile{width:34px;height:40px;font-size:18px}.o{font-size:34px}.ch{min-width:84px;height:84px;font-size:40px}.ch.wide{font-size:28px;min-width:110px}.frame{grid-template-columns:repeat(5,46px);grid-template-rows:repeat(2,46px)}.frame .o{font-size:28px}.cap{font-size:18px}.basket.big{min-width:170px}.card-num{font-size:72px}.big-num{font-size:56px}.tile{width:44px;height:44px;font-size:21px}.car{min-width:54px;font-size:26px}.bin{min-width:120px}.stage{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.ltr{display:inline-block;min-width:80px;font:900 72px var(--f-head);color:#1F2A44;line-height:1}
+.ltr.big{font-size:120px;margin:0 16px}
+.word{font:900 76px var(--f-head);letter-spacing:.06em;color:#1F2A44;background:#FFFDF5;border-radius:22px;padding:6px 26px;box-shadow:0 5px 0 #e6dfc2}
+.word.sm{font-size:44px;letter-spacing:.02em}
+.big1 .o{font-size:96px}.big1 small,.pic-w small{display:block;font:800 22px var(--f-head);color:#1F2A44}
+.pic-w{flex-direction:column;min-width:150px;min-height:150px}
+.pic-w .o{font-size:76px}
+.pic .word{font-size:60px;box-shadow:none;background:transparent}
+.wordb{min-width:auto}
+</style>
+<div class="wrap">
+  <div class="top">
+    <h1 id="h1">Kindergarten Reading <small>13 lessons in the new style · Little Explorers</small></h1>
+    <span class="mode">Preview: nothing is saved to the school</span>
+    <button class="pill" id="home" type="button" hidden>🏠 All lessons</button>
+    <button class="pill" id="mute" type="button" aria-pressed="false">🔊 Voice on</button>
+  </div>
+  <div class="track" id="track" aria-label="Lesson progress" hidden><div class="rail"></div><div id="stations" style="display:contents"></div><div class="train" id="train" aria-hidden="true">🚂</div></div>
+  <div class="stage" id="stage">
+    <div class="say"><button class="spk" id="spk" type="button" aria-label="Say it again">🔊</button><div class="cap" id="cap" aria-live="polite"></div></div>
+    <div class="scene" id="scene"></div>
+    <canvas class="burst" id="burst"></canvas>
+  </div>
+  <p class="note">Every lesson: warm-up · story · mini-movie · we do it together · practice in 5+ kinds of games · real life · check · celebrate. Every instruction is spoken, so no reading is needed.</p>
+</div>
+<script>
+(function(){
+"use strict";
+/* ================= KIT CORE ================= */
+const FAST=/fast/.test(location.search)?0.04:1;
+const STATIONS=['Warm-up','Story','Movie','Together','Practice','Real life','Check','Hooray'];
+const TH=[{e:'🍎',n:'apples'},{e:'🐟',n:'fish'},{e:'🚗',n:'cars'},{e:'⚽',n:'balls'},{e:'⭐',n:'stars'},{e:'🍪',n:'cookies'},{e:'🐥',n:'chicks'},{e:'🎈',n:'balloons'},{e:'🍓',n:'strawberries'},{e:'🧸',n:'teddy bears'},{e:'🐞',n:'ladybugs'},{e:'🌷',n:'flowers'},{e:'🍩',n:'donuts'},{e:'🐸',n:'frogs'},{e:'🦋',n:'butterflies'},{e:'🍋',n:'lemons'}];
+const $=id=>document.getElementById(id), scene=$('scene'), cap=$('cap');
+let muted=false, lastLine='', themeI=Math.floor(Math.random()*TH.length), stars=0, MODE='help', BOT=null, BUSY=false;
+window.__kit={bot:()=>BOT};
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const any=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function T(){ themeI=(themeI+1+Math.floor(Math.random()*4))%TH.length; return TH[themeI]; }
+const wait=ms=>new Promise(r=>setTimeout(r,ms*FAST));
+const helpOn=()=>MODE!=='check';
+let voice=null; function pickVoice(){ try{ const vs=speechSynthesis.getVoices(); voice=vs.find(v=>/en-US/i.test(v.lang)&&/female|samantha|google us/i.test(v.name))||vs.find(v=>/^en/i.test(v.lang))||null; }catch(e){} }
+try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){}
+function say(t){ lastLine=t; cap.textContent=t; const spk=$('spk');
+  return new Promise(res=>{ const fb=setTimeout(()=>{ spk.classList.remove('talk'); res(); },Math.max(900,t.length*62)*FAST);
+    if(muted||FAST<1||!('speechSynthesis' in window)) return;
+    try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); if(voice) u.voice=voice; u.rate=.92; u.pitch=1.1; spk.classList.add('talk');
+      u.onend=()=>{ clearTimeout(fb); spk.classList.remove('talk'); setTimeout(res,180); }; speechSynthesis.speak(u); }catch(e){} }); }
+$('spk').onclick=()=>{ if(lastLine) say(lastLine); };
+$('mute').onclick=()=>{ muted=!muted; $('mute').textContent=muted?'🔇 Voice off':'🔊 Voice on'; $('mute').setAttribute('aria-pressed',String(muted)); if(muted) try{ speechSynthesis.cancel(); }catch(e){} };
+let AC=null; function tone(f,d,type){ if(FAST<1) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const o=AC.createOscillator(), g=AC.createGain(); o.type=type||'sine'; o.frequency.value=f; g.gain.setValueAtTime(.18,AC.currentTime); g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d); o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime+d); }catch(e){} }
+const chime=()=>{ tone(784,.18); setTimeout(()=>tone(1047,.3),140); }, soft=()=>tone(220,.25,'triangle'), plink=n=>tone(440+(n%12)*60,.12);
+function station(i){ $('stations').innerHTML=STATIONS.map((s,k)=>'<div class="st'+(k<i?' done':'')+'" title="'+s+'"><i></i></div>').join(''); $('train').style.left='calc(24px + '+(i/(STATIONS.length-1))+' * (100% - 48px))'; }
+function confetti(){ const c=$('burst'), x=c.getContext('2d'); c.width=c.offsetWidth; c.height=c.offsetHeight; const P=Array.from({length:120},()=>({x:c.width/2,y:c.height/2,vx:(Math.random()-.5)*14,vy:Math.random()*-14-4,r:4+Math.random()*6,c:any(['#FFC83D','#2FBF71','#FF5D73','#3D8BFF','#8E5BFF'])}));
+  let t=0; (function f(){ x.clearRect(0,0,c.width,c.height); P.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.45; x.fillStyle=p.c; x.fillRect(p.x,p.y,p.r,p.r); }); if(++t<90) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height); })(); }
+/* drawing helpers */
+const O=(e,cls)=>'<span class="o'+(cls?' '+cls:'')+'">'+e+'</span>';
+const objs=(e,n,cls)=>Array.from({length:n},()=>O(e,cls)).join('');
+function g5(e,n,cls){ let h='<div class="g5">'; for(let r=0;r<n;r+=5) h+='<div>'+objs(e,Math.min(5,n-r),cls)+'</div>'; return h+'</div>'; }
+function scatter(e,n,id){ const cells=shuffle(Array.from({length:24},(_,i)=>i)).slice(0,n); return '<div class="scatter" id="'+(id||'sc')+'">'+cells.map(c=>'<span class="o" style="left:calc('+((c%6)*16+2+Math.random()*4)+'%);top:'+(Math.floor(c/6)*24+4+Math.random()*6)+'%">'+e+'</span>').join('')+'</div>'; }
+function frame(n,e,id,o){ o=o||{}; let h='<div class="frame'+(o.mini?' mini':'')+'"'+(id?' id="'+id+'"':'')+'>'; for(let i=0;i<10;i++){ const e2=(o.e2&&i>=o.split)?o.e2:e; h+='<div data-i="'+i+'">'+(i<n?O(e2):(o.ghost?O('⚪','ghost'):''))+'</div>'; } return h+'</div>'; }
+const lockAll=()=>scene.querySelectorAll('button,.pic,.ch,.bin,.spot').forEach(x=>x.onclick=null);
+const view=h=>{ BOT=null; scene.innerHTML=h; };
+async function countAloud(sel,start,step){ start=start||0; step=step||1; const os=[...scene.querySelectorAll(sel)]; for(let i=0;i<os.length;i++){ os[i].classList.add('hl'); plink(i); await say(String(start+step*(i+1))); os[i].classList.remove('hl'); } }
+function numOpts(ans,lo,hi,extra){ const s=new Set([ans]); (extra||[]).forEach(v=>{ if(s.size<3&&v!==ans&&v>=lo&&v<=hi) s.add(v); }); let guard=0; while(s.size<3&&guard++<60){ const d=ans+any([-2,-1,1,2]); if(d>=lo&&d<=hi) s.add(d); } while(s.size<3) s.add(Math.max(...s)+1); return shuffle([...s]); }
+function numRow(ans,lo,hi,dots,extra){ return '<div class="choices">'+numOpts(ans,lo,hi,extra).map(v=>'<button class="ch" type="button" data-v="'+v+'"'+(v===ans?' data-ok="1"':'')+' aria-label="'+v+'">'+v+(dots&&v<=10?'<small>'+'•'.repeat(v)+'</small>':'')+'</button>').join('')+'</div>'; }
+async function wrongHelp(help,again){ BUSY=true; try{ await wrongHelp2(help,again); } finally { BUSY=false; } }
+async function wrongHelp2(help,again){ if(helpOn()&&help){ if(typeof help==='string'){ await say('Let’s count together.'); await countAloud(help); } else await help(); await say(again||'Now try again.'); } else await say('Look again. Try once more.'); }
+function pickNum(ans,help,again){ BOT=null; return new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(+b.dataset.v===ans){ b.classList.add('yes'); chime(); scene.querySelectorAll('.ch').forEach(x=>x.onclick=null); res(first); } else { first=false; b.classList.add('no'); soft(); await wrongHelp(help,again||'Now tap the number.'); } }); }); }
+async function numQ(html,prompt,ans,o){ o=o||{}; view(html+numRow(ans,o.lo==null?0:o.lo,o.hi==null?Math.max(10,ans+2):o.hi,o.dots&&MODE==='help',o.extra)); await say(prompt); return pickNum(ans,o.help,o.again); }
+/* pick one picture: items [{h, ok, cls}] */
+function pickQ(pre,items,prompt,help,o){ o=o||{}; view(pre+'<div class="row">'+items.map(it=>'<button class="pic '+(it.cls||'')+'" type="button"'+(it.ok?' data-ok="1"':'')+(it.label?' aria-label="'+it.label+'"':'')+'>'+it.h+'</button>').join('')+'</div>'+(o.post||''));
+  return say(prompt).then(()=>new Promise(res=>{ let first=true; scene.querySelectorAll('.row:last-of-type .pic, .pic').forEach(p=>p.onclick=async()=>{ if(BUSY) return; if(p.dataset.ok){ p.classList.add('yes'); chime(); scene.querySelectorAll('.pic').forEach(x=>x.onclick=null); res(first); } else { first=false; p.classList.add('no'); soft(); await wrongHelp(help,o.again||'Try again.'); } }); })); }
+function tapGo(sel){ return new Promise(r=>{ const els=[...scene.querySelectorAll(sel)]; els.forEach(e=>{ e.classList.add('tapme'); e.onclick=()=>{ els.forEach(x=>x.onclick=null); r(); }; }); BOT=()=>els[0]&&els[0].click(); }); }
+const PRAISE=['Yes!','Great job!','You got it!','Super!','Wow!','Right!'];
+/* ================= SHAPES ================= */
+const SH={circle:'<circle cx="50" cy="50" r="42"/>',square:'<rect x="12" y="12" width="76" height="76" rx="3"/>',rectangle:'<rect x="4" y="27" width="92" height="46" rx="3"/>',triangle:'<polygon points="50,8 93,88 7,88"/>',hexagon:'<polygon points="27,8 73,8 96,50 73,92 27,92 4,50"/>'};
+const VERT={square:[[12,12],[88,12],[88,88],[12,88]],rectangle:[[4,27],[96,27],[96,73],[4,73]],triangle:[[50,8],[93,88],[7,88]],hexagon:[[27,8],[73,8],[96,50],[73,92],[27,92],[4,50]]};
+const SIDES={triangle:3,square:4,rectangle:4,hexagon:6};
+const COLS=['#FF5D73','#3D8BFF','#2FBF71','#FFC83D','#8E5BFF','#FF8A3D'];
+function shp(name,o){ o=o||{}; const s=o.s||84, c=o.c||any(COLS), r=o.r||0; return '<svg class="svgsh" viewBox="0 0 100 100" width="'+s+'" height="'+s+'" style="transform:rotate('+r+'deg)" aria-hidden="true"><g fill="'+c+'" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+SH[name]+'</g>'+(o.inner||'')+'</svg>'; }
+const SOLIDS=[{n:'sphere',like:'a ball',e:['⚽','🏀','🌍','🔮']},{n:'cube',like:'a block',e:['🎲','🧊','📦']},{n:'cone',like:'an ice cream cone',e:['🍦','🎉','🔺']},{n:'cylinder',like:'a can',e:['🥫','🥁','🧻']}];
+SOLIDS[2].e=['🍦','🎉']; /* cone pictures only */
+function piece(kind,c,r,s){ s=s||60; const P={rtri:'<polygon points="8,8 92,92 8,92"/>',sq:'<rect x="10" y="10" width="80" height="80"/>',halfhex:'<polygon points="27,30 73,30 96,72 4,72"/>',tri:'<polygon points="50,10 92,85 8,85"/>'}; return '<svg viewBox="0 0 100 100" width="'+s+'" height="'+s+'" style="transform:rotate('+(r||0)+'deg)" aria-hidden="true"><g fill="'+c+'" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+P[kind]+'</g></svg>'; }
+const BUILDS={
+  square:{pieces:['rtri','rtri'],rot:[0,180],made:'<polygon points="8,8 92,8 92,92" fill="#3D8BFF"/><polygon points="8,8 92,92 8,92" fill="#FF5D73"/>',name:'square',cnt:2,word:'two triangles'},
+  rectangle:{pieces:['sq','sq'],rot:[0,0],made:'<rect x="4" y="27" width="46" height="46" fill="#2FBF71"/><rect x="50" y="27" width="46" height="46" fill="#FFC83D"/>',name:'rectangle',cnt:2,word:'two squares'},
+  hexagon:{pieces:['halfhex','halfhex'],rot:[0,180],made:'<polygon points="27,8 73,8 96,50 4,50" fill="#8E5BFF"/><polygon points="4,50 96,50 73,92 27,92" fill="#FF8A3D"/>',name:'hexagon',cnt:2,word:'two halves'},
+  bigsquare:{pieces:['sq','sq','sq','sq'],rot:[0,0,0,0],made:'<rect x="8" y="8" width="42" height="42" fill="#FF5D73"/><rect x="50" y="8" width="42" height="42" fill="#3D8BFF"/><rect x="8" y="50" width="42" height="42" fill="#2FBF71"/><rect x="50" y="50" width="42" height="42" fill="#FFC83D"/>',name:'square',cnt:4,word:'four small squares'},
+  hex6:{pieces:['tri','tri','tri','tri','tri','tri'],rot:[0,180,0,180,0,180],made:'<polygon points="27,8 73,8 96,50 73,92 27,92 4,50" fill="#FFC83D"/><g stroke="#1F2A44" stroke-width="3"><line x1="27" y1="8" x2="73" y2="92"/><line x1="73" y1="8" x2="27" y2="92"/><line x1="4" y1="50" x2="96" y2="50"/></g>',name:'hexagon',cnt:6,word:'six triangles'}
+};
+const madeSvg=(b,s)=>'<svg viewBox="0 0 100 100" width="'+(s||110)+'" height="'+(s||110)+'" aria-hidden="true"><g stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+b.made+'</g></svg>';
+/* ================= GAME LIBRARY ================= */
+/* KINDERGARTEN READING games (Head of School 2026-11-18). Sounds are taught through WHOLE WORDS (no single letter sounds from the voice). */
+const G={};
+const W={cat:'🐱',hat:'🎩',bat:'🦇',map:'🗺️',cap:'🧢',dog:'🐶',log:'🪵',frog:'🐸',sun:'☀️',bus:'🚌',cup:'☕',bug:'🐛',duck:'🦆',pig:'🐷',six:'6️⃣',fish:'🐟',dish:'🍽️',bed:'🛏️',hen:'🐔',ten:'🔟',pen:'🖊️',net:'🥅',fox:'🦊',box:'📦',pot:'🍲',sock:'🧦',lock:'🔒',rock:'🪨',clock:'⏰',bee:'🐝',tree:'🌳',key:'🔑',moon:'🌙',spoon:'🥄',boat:'⛵',goat:'🐐',coat:'🧥',ball:'⚽',bell:'🔔',cake:'🎂',snake:'🐍',car:'🚗',star:'⭐',house:'🏠',mouse:'🐭',train:'🚂',rain:'🌧️',king:'👑',ring:'💍',apple:'🍎',egg:'🥚',banana:'🍌',book:'📖',milk:'🥛',kite:'🪁',sock2:'🧦',lamp:'💡',bear:'🐻',chair:'🪑',butterfly:'🦋',elephant:'🐘',rabbit:'🐰',pencil:'✏️',umbrella:'☂️',monkey:'🐵',tomato:'🍅',cupcake:'🧁',ladybug:'🐞',rainbow:'🌈',bow:'🎀',football:'🏈',popcorn:'🍿',starfish:'🌟',sunflower:'🌻',flower:'🌸',corn:'🌽',foot:'🦶',cow:'🐮',horse:'🐴',candle:'🕯️',ant:'🐜',octopus:'🐙',igloo:'🧊',van:'🚐',web:'🕸️',jam:'🍯',nut:'🥜',zip:'🤐'};
+const pic=(w,cls)=>({h:O(W[w])+'<small>'+w+'</small>',label:w,cls:'pic-w'+(cls?' '+cls:'')});
+const RHY=[['cat','hat','bat'],['dog','log','frog'],['bee','tree','key'],['moon','spoon'],['boat','goat','coat'],['fish','dish'],['cake','snake'],['car','star'],['house','mouse'],['sock','lock','rock','clock'],['train','rain'],['fox','box'],['ten','hen','pen'],['cap','map'],['king','ring'],['ball','bell']];
+const OTHERS=Object.keys(W).filter(w=>w!=='sock2');
+function notRhyme(set,n){ return shuffle(OTHERS.filter(w=>!RHY.some(r=>r.indexOf(w)>=0&&r.some(x=>set.indexOf(x)>=0))&&set.indexOf(w)<0)).slice(0,n); }
+G.rhymePick=async c=>{ const set=any(RHY), s=shuffle(set), t=s[0], a=s[1], d=notRhyme(set,2);
+  const items=shuffle([Object.assign(pic(a),{ok:1})].concat(d.map(x=>pic(x))));
+  const f=await pickQ('<div class="row big1">'+O(W[t])+'<small>'+t+'</small></div>',items,'Which one rhymes with '+t+'?',async()=>{ await say(t+', '+a+'. They sound the same at the end!'); });
+  return [f,t+' and '+a+' rhyme!']; };
+G.rhymeYN=async c=>{ const set=any(RHY), s=shuffle(set), yes=Math.random()<.55, a=s[0], b=yes?s[1]:notRhyme(set,1)[0];
+  const f=await pickQ('<div class="row big1">'+O(W[a])+'<small>'+a+'</small>'+O(W[b])+'<small>'+b+'</small></div>',[{h:O('👍'),ok:yes,cls:'huge',label:'yes'},{h:O('👎'),ok:!yes,cls:'huge',label:'no'}],'Do '+a+' and '+b+' rhyme? Thumbs up for yes, thumbs down for no.',async()=>{ await say(a+'... '+b+'. Listen to the end of each word.'); });
+  return [f,yes?a+' and '+b+' rhyme!':a+' and '+b+' do not rhyme.']; };
+const BEATS=[['cat',1],['dog',1],['sun',1],['apple',2],['rabbit',2],['pencil',2],['monkey',2],['cupcake',2],['banana',3],['butterfly',3],['elephant',3],['umbrella',3],['tomato',3],['ladybug',3]];
+const SPLIT={apple:'ap... ple',rabbit:'rab... bit',pencil:'pen... cil',monkey:'mon... key',cupcake:'cup... cake',banana:'ba... na... na',butterfly:'but... ter... fly',elephant:'el... e... phant',umbrella:'um... brel... la',tomato:'to... ma... to',ladybug:'la... dy... bug'};
+G.beats=async c=>{ const b=any(BEATS), w=b[0], n=b[1];
+  view('<div class="row big1">'+O(W[w])+'<small>'+w+'</small></div>'+numRow(n,1,3,false,[1,2,3])); await say('Clap the beats in '+w+'. How many beats?');
+  const f=await pickNum(n,async()=>{ await say('Let’s clap it: '+(SPLIT[w]||w)+'. '+n+(n===1?' beat.':' beats.')); },'Now tap how many beats.');
+  return [f,w+' has '+n+(n===1?' beat.':' beats.')]; };
+const FIRST={b:['ball','bee','bus','book','banana','bed','bear'],s:['sun','sock','six'],m:['moon','mouse','milk','map','monkey'],d:['dog','duck'],k:['cat','cup','car','cake','key','kite','king'],f:['fish','fox','foot','flower'],p:['pig','pen','pot','pencil','popcorn'],h:['hat','hen','house','horse'],r:['rock','ring','rain','rabbit'],l:['log','lock','lamp','ladybug'],t:['ten','tomato'],g:['goat'],w:['web'],v:['van']};
+const LET={b:'B',s:'S',m:'M',d:'D',k:null,f:'F',p:'P',h:'H',r:'R',l:'L',t:'T',g:'G',w:'W',v:'V'};
+function firstSet(){ const ks=Object.keys(FIRST).filter(k=>FIRST[k].length>=2); const k=any(ks), pair=shuffle(FIRST[k]).slice(0,2); const others=shuffle(ks.filter(x=>x!==k)).slice(0,2).map(x=>any(FIRST[x])); return {k,t:pair[0],a:pair[1],others}; }
+G.firstSame=async c=>{ const s=firstSet();
+  const f=await pickQ('<div class="row big1">'+O(W[s.t])+'<small>'+s.t+'</small></div>',shuffle([Object.assign(pic(s.a),{ok:1})].concat(s.others.map(x=>pic(x)))),'Which one starts with the same sound as '+s.t+'?',async()=>{ await say(s.t+'... '+s.a+'. Listen to the very first sound of each word.'); });
+  return [f,s.t+' and '+s.a+' start the same way!']; };
+G.firstLetter=async c=>{ const ks=Object.keys(FIRST).filter(k=>LET[k]); const k=any(ks), w=any(FIRST[k]); const wrong=shuffle(ks.filter(x=>x!==k)).slice(0,2);
+  const items=shuffle([{h:'<span class="ltr">'+LET[k]+'</span>',ok:1,label:LET[k]}].concat(wrong.map(x=>({h:'<span class="ltr">'+LET[x]+'</span>',label:LET[x]}))));
+  const f=await pickQ('<div class="row big1">'+O(W[w])+'<small>'+w+'</small></div>',items,w+'. Which letter does '+w+' start with?',async()=>{ await say(w+' starts with the letter '+LET[k]+'.'); });
+  return [f,w+' starts with '+LET[k]+'!']; };
+const COMPOUND=[['cup','cake','cupcake'],['rain','bow','rainbow'],['foot','ball','football'],['pop','corn','popcorn'],['sun','flower','sunflower'],['star','fish','starfish'],['butter','fly','butterfly'],['lady','bug','ladybug']];
+G.blend=async c=>{ const x=any(COMPOUND), w=x[2]; const d=shuffle(OTHERS.filter(o=>o!==w&&COMPOUND.every(cc=>cc[2]!==o))).slice(0,2);
+  const f=await pickQ('<div class="row big1">'+O('👂')+'</div>',shuffle([Object.assign(pic(w),{ok:1})].concat(d.map(o=>pic(o)))),'Listen: '+x[0]+'... '+x[1]+'. Put them together. What word is it?',async()=>{ await say(x[0]+'... '+x[1]+'... '+w+'!'); });
+  return [f,x[0]+' and '+x[1]+' make '+w+'!']; };
+const CHOP=[['cupcake','cup','cake'],['rainbow','rain','bow'],['football','foot','ball'],['popcorn','pop','corn'],['sunflower','sun','flower'],['starfish','star','fish']];
+G.chop=async c=>{ const x=any(CHOP), keep=x[2]; const d=shuffle(OTHERS.filter(o=>o!==keep&&o!==x[0])).slice(0,2);
+  const f=await pickQ('<div class="row big1">'+O(W[x[0]])+'<small>'+x[0]+'</small></div>',shuffle([Object.assign(pic(keep),{ok:1})].concat(d.map(o=>pic(o)))),'Say '+x[0]+'. Now say it without '+x[1]+'. What is left?',async()=>{ await say(x[0]+'. Take away '+x[1]+'... '+keep+' is left!'); });
+  return [f,x[0]+' without '+x[1]+' is '+keep+'!']; };
+G.chopCount=async c=>{ const b=any(BEATS.filter(x=>x[1]>1)), w=b[0], n=b[1];
+  view('<div class="row big1">'+O(W[w])+'<small>'+w+'</small></div>'+numRow(n,1,3,false,[1,2,3])); await say('Chop '+w+' into parts. How many parts?');
+  const f=await pickNum(n,async()=>{ await say('Chop, chop: '+(SPLIT[w]||w)+'. '+n+' parts.'); },'Now tap how many parts.');
+  return [f,w+' has '+n+' parts.']; };
+const ABC='ABCDEFGHIJKLMNOPRSTUVWZ'.split('');
+const LOOK={b:['d','p'],d:['b','p'],p:['q','b'],m:['n','w'],n:['m','h'],u:['n','v'],w:['m','v'],e:['a','c'],a:['o','e'],h:['n','b'],i:['l','j'],t:['f','l']};
+G.letterMatch=async c=>{ const U=any(ABC), l=U.toLowerCase(); const wr=(LOOK[l]||shuffle('acdefhkmnorstuz'.split('').filter(x=>x!==l)).slice(0,2)).slice(0,2);
+  const items=shuffle([{h:'<span class="ltr">'+l+'</span>',ok:1,label:l}].concat(wr.map(x=>({h:'<span class="ltr">'+x+'</span>',label:x}))));
+  const f=await pickQ('<div class="row big1"><span class="ltr big">'+U+'</span></div>',items,'This is big '+U+'. Find little '+U+'.',async()=>{ await say('Big '+U+' and little '+U+' are the same letter. Look at the shape.'); });
+  return [f,'Big '+U+', little '+U+'!']; };
+G.letterTap=async c=>{ const U=any(ABC); const wr=shuffle(ABC.filter(x=>x!==U)).slice(0,2);
+  const f=await pickQ('<div class="row big1">'+O('🔤')+'</div>',shuffle([{h:'<span class="ltr">'+U+'</span>',ok:1,label:U}].concat(wr.map(x=>({h:'<span class="ltr">'+x+'</span>',label:x})))),'Tap the letter '+U+'.',async()=>{ await say('Look for '+U+'.'); });
+  return [f,'That is '+U+'!']; };
+const VOWEL={a:['cat','hat','map','bat','cap','jam','van'],e:['bed','hen','ten','pen','net','web'],i:['pig','six','zip'],o:['dog','fox','box','pot','sock','log'],u:['sun','bus','cup','bug','duck','nut']};
+const VKEY={a:['apple','a'],e:['egg','e'],i:['igloo','i'],o:['octopus','o'],u:['umbrella','u']};
+G.vowelPick=async c=>{ const v=any(Object.keys(VOWEL)), w=any(VOWEL[v]); const others=shuffle(Object.keys(VOWEL).filter(x=>x!==v)).slice(0,2).map(x=>any(VOWEL[x]));
+  const k=VKEY[v];
+  const f=await pickQ('<div class="row big1">'+O(W[k[0]])+'<small>'+k[0]+'</small></div>',shuffle([Object.assign(pic(w),{ok:1})].concat(others.map(o=>pic(o)))),'Which word has the same middle sound as the start of '+k[0]+'?',async()=>{ await say(k[0]+'... '+w+'. Listen to the middle of '+w+'.'); });
+  return [f,w+' has the same sound as '+k[0]+'!']; };
+const CVC=['cat','hat','map','bat','cap','van','bed','hen','ten','pen','net','web','pig','six','dog','fox','box','pot','log','sun','bus','cup','bug','nut'];
+G.readWord=async c=>{ const w=any(CVC), d=shuffle(CVC.filter(x=>x!==w&&x[1]!==w[1])).slice(0,1).concat(shuffle(CVC.filter(x=>x!==w&&x[1]===w[1])).slice(0,1));
+  const items=shuffle([{h:O(W[w]),ok:1,label:w,cls:'huge'}].concat(d.map(x=>({h:O(W[x]),label:x,cls:'huge'}))));
+  const f=await pickQ('<div class="row big1"><span class="word">'+w+'</span></div>',items,'Read the word. Tap its picture.',async()=>{ await say('Let’s read it together: '+w.split('').join('... ')+'. '+w+'!'); });
+  return [f,'You read '+w+'!']; };
+G.wordForPic=async c=>{ const w=any(CVC), d=shuffle(CVC.filter(x=>x!==w&&x[0]===w[0])).slice(0,1).concat(shuffle(CVC.filter(x=>x!==w&&x[0]!==w[0])).slice(0,1));
+  const items=shuffle([{h:'<span class="word">'+w+'</span>',ok:1,label:w}].concat(d.map(x=>({h:'<span class="word">'+x+'</span>',label:x}))));
+  const f=await pickQ('<div class="row big1">'+O(W[w])+'</div>',items,'Which word says the name of this picture?',async()=>{ await say('This is a '+w+'. Look at every letter.'); });
+  return [f,'Yes, '+w+'!']; };
+const SNAP=['the','a','I','is','and','see','can','we','to','my','go','like','you','it','in','at'];
+G.snap=async c=>{ const w=any(SNAP), d=shuffle(SNAP.filter(x=>x!==w)).slice(0,2);
+  const items=shuffle([{h:'<span class="word">'+w+'</span>',ok:1,label:w}].concat(d.map(x=>({h:'<span class="word">'+x+'</span>',label:x}))));
+  const f=await pickQ('<div class="row big1">'+O('⚡')+'</div>',items,'Snap word! Tap: '+w+'.',async()=>{ await say(w+'. Look for the word '+w+'.'); });
+  return [f,'Snap! '+w+'!']; };
+const LINES=[['I','see','a','cat'],['We','can','go'],['I','like','my','dog'],['The','sun','is','hot'],['I','can','see','the','moon']];
+G.firstWord=async c=>{ const s=any(LINES);
+  view('<div class="row big1">'+O('📖')+'</div><div class="row">'+s.map((w,i)=>'<button class="pic wordb" type="button"'+(i===0?' data-ok="1"':'')+'><span class="word sm">'+w+'</span></button>').join('')+'</div>');
+  const f=await new Promise(res=>{ say('Where do we start reading? Tap the first word.').then(()=>{ let first=true; scene.querySelectorAll('.wordb').forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(b.dataset.ok){ b.classList.add('yes'); chime(); scene.querySelectorAll('.wordb').forEach(x=>x.onclick=null); res(first); } else { first=false; b.classList.add('no'); soft(); await wrongHelp(async()=>{ await say('We start at the left, the side of your first finger... and read across.'); },'Tap the first word.'); } }); }); });
+  return [f,'We start at the left!']; };
+G.wordCount=async c=>{ const s=any(LINES), n=s.length;
+  view('<div class="row big1"><span class="word sm">'+s.join('&nbsp;&nbsp;&nbsp;')+'</span></div>'+numRow(n,2,6,false));
+  await say('How many words are in this sentence? The spaces show where words end.');
+  const f=await pickNum(n,async()=>{ await say('Let’s count the words.'); for(let i=0;i<n;i++){ plink(i); await say(String(i+1)); } },'Now tap how many words.');
+  return [f,n+' words!']; };
+G.whichWay=async c=>{ const f=await pickQ('<div class="row big1">'+O('📖')+'</div>',[{h:O('➡️'),ok:1,cls:'huge',label:'left to right'},{h:O('⬅️'),cls:'huge',label:'right to left'}],'When we read an English book, which way do we read?',async()=>{ await say('English goes from left to right, like this arrow. Hebrew goes the other way!'); });
+  return [f,'Left to right!']; };
+const STORIES=[
+ {t:'Sam has a red ball. He kicks the ball. The ball goes up, up, up!',q:'What does Sam kick?',a:'ball',d:['book','cake']},
+ {t:'A little duck swims in the pond. The duck says quack, quack. Then the duck goes to sleep.',q:'Who swims in the pond?',a:'duck',d:['cat','pig']},
+ {t:'It is Erev Shabbos. Mommy bakes a cake. Dovid helps her put candles on the table.',q:'What does Mommy bake?',a:'cake',d:['apple','fish']},
+ {t:'The cat wants milk. She sees a cup of milk. She drinks it all up!',q:'What does the cat drink?',a:'milk',d:['jam','egg']},
+ {t:'Moshe finds a star in the sky. Then he finds two more. Three stars! It is time for Havdalah.',q:'What does Moshe find in the sky?',a:'star',d:['moon','kite']},
+ {t:'A bee flies to a flower. The bee drinks from the flower. Buzz, buzz, says the bee.',q:'Where does the bee fly?',a:'flower',d:['tree','house']}];
+G.story=async c=>{ const s=c.s||any(STORIES); view('<div class="row big1">'+O('📖')+O('👂')+'</div>'); await say(s.t);
+  const f=await pickQ('<div class="row big1">'+O('🤔')+'</div>',shuffle([Object.assign(pic(s.a),{ok:1})].concat(s.d.map(x=>pic(x)))),s.q,async()=>{ await say('Listen again. '+s.t); });
+  return [f,'Yes, the '+s.a+'!']; };
+G.storyFirst=async c=>{ const s=any(STORIES.filter(x=>x.first)) ;return G.story(c); };
+
+/* ================= MOVIE HELPERS ================= */
+async function M(html){ view(html); await wait(200); }
+/* ================= LESSONS ================= */
+const L=[
+{id:'READ.PA.L01.01',t:'Book Explorer',e:'📖',sub:'how books work',
+ warm:[['whichWay'],['letterTap']],
+ story:async()=>{ await M('<div class="row big1">'+O('📚')+'</div>'); await say('Dovid got a new book for his birthday. He holds it the right way, opens the front cover, and starts at the top.'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('📖')+'</div>'); await say('Watch me. This is the front cover. I open the book and start at the top of the page.');
+   await M('<div class="row big1"><span class="word sm">I&nbsp;&nbsp;&nbsp;see&nbsp;&nbsp;&nbsp;a&nbsp;&nbsp;&nbsp;cat</span></div>'); await say('I read from left to right. I, see, a, cat. Each word has a space after it.'); },
+ together:[['whichWay'],['firstWord'],['wordCount']],
+ practice:[['firstWord'],['wordCount'],['whichWay'],['firstWord'],['wordCount'],['firstWord'],['whichWay'],['wordCount']],
+ real:['story',{s:STORIES[2],intro:'Let’s read a Shabbos story together!'}],
+ check:[['firstWord'],['wordCount'],['whichWay']]},
+{id:'READ.PA.L01.02',t:'Rhyme Time',e:'🎩',sub:'hear and make rhymes',
+ warm:[['letterTap'],['beats']],
+ story:async()=>{ await M('<div class="row big1">'+O('🐱')+O('🎩')+'</div>'); await say('A cat found a hat. A cat in a hat! Cat, hat. They sound the same at the end. That is a rhyme!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🐝')+O('🌳')+O('🔑')+'</div>'); await say('Watch me. Bee, tree, key. They all end the same way. They rhyme!');
+   await M('<div class="row big1">'+O('🐶')+O('☀️')+'</div>'); await say('Dog and sun? Dog... sun. They do not end the same. No rhyme.'); },
+ together:[['rhymeYN'],['rhymePick'],['rhymeYN']],
+ practice:[['rhymePick'],['rhymeYN'],['rhymePick'],['rhymeYN'],['rhymePick'],['rhymeYN'],['rhymePick'],['rhymePick']],
+ real:['rhymePick',{intro:'At the Shabbos table we make up rhymes. Help Abba find a rhyme!'}],
+ check:[['rhymePick'],['rhymeYN'],['rhymePick']]},
+{id:'READ.PA.L01.03',t:'Clap the Beats',e:'👏',sub:'count word parts',
+ warm:[['rhymeYN'],['letterTap']],
+ story:async()=>{ await M('<div class="row big1">'+O('🍌')+'</div>'); await say('Every word has beats, like a drum. Ba... na... na. Banana has three beats!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🐱')+'</div>'); await say('Watch me clap. Cat. One clap. One beat.'); await M('<div class="row big1">'+O('🍎')+'</div>'); await say('Ap... ple. Two claps. Two beats.'); await M('<div class="row big1">'+O('🦋')+'</div>'); await say('But... ter... fly. Three claps. Three beats!'); },
+ together:[['beats'],['beats'],['chopCount']],
+ practice:[['beats'],['chopCount'],['beats'],['chopCount'],['beats'],['beats'],['chopCount'],['beats']],
+ real:['beats',{intro:'Let’s clap the beats in the foods on our Yom Tov table!'}],
+ check:[['beats'],['chopCount'],['beats']]},
+{id:'READ.PA.L01.04',t:'First Sound Detective',e:'🔎',sub:'hear the first sound',
+ warm:[['rhymePick'],['beats']],
+ story:async()=>{ await M('<div class="row big1">'+O('⚽')+O('🐝')+O('🚌')+'</div>'); await say('Detective time! Ball, bee, bus. They all start with the same sound!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🌙')+O('🐭')+'</div>'); await say('Watch me. Moon, mouse. Moon and mouse start the same way. The very first sound matches.'); await M('<div class="row big1">'+O('🌙')+O('🐶')+'</div>'); await say('Moon, dog. They start with different sounds.'); },
+ together:[['firstSame'],['firstSame'],['firstSame']],
+ practice:[['firstSame'],['firstSame'],['beats'],['firstSame'],['rhymePick'],['firstSame'],['firstSame'],['firstSame']],
+ real:['firstSame',{intro:'In the grocery store, Mommy needs things that start like ball. Help her!'}],
+ check:[['firstSame'],['firstSame'],['firstSame']]},
+{id:'READ.PA.L01.05',t:'Blend It',e:'🧩',sub:'put word parts together',
+ warm:[['beats'],['firstSame']],
+ story:async()=>{ await M('<div class="row big1">'+O('☕')+O('🎂')+'</div>'); await say('Cup and cake are friends. When they hold hands, they make a new word: cupcake!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🌧️')+O('🎀')+'</div>'); await say('Watch me. Rain... bow. I push them together... rainbow!'); await M('<div class="row big1">'+O('🌈')+'</div>'); await say('Rainbow! Two parts make one word.'); },
+ together:[['blend'],['blend'],['blend']],
+ practice:[['blend'],['blend'],['beats'],['blend'],['blend'],['firstSame'],['blend'],['blend']],
+ real:['blend',{intro:'After the rain, Hashem made a beautiful sign in the sky. Put the parts together!'}],
+ check:[['blend'],['blend'],['blend']]},
+{id:'READ.PA.L01.06',t:'Chop It',e:'🔪',sub:'take words apart',
+ warm:[['blend'],['beats']],
+ story:async()=>{ await M('<div class="row big1">'+O('🍿')+'</div>'); await say('Popcorn! Pop... corn. If we chop off pop, what is left? Corn!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🏈')+'</div>'); await say('Watch me. Football. Foot... ball. I chop off foot... and ball is left.'); },
+ together:[['chop'],['chopCount'],['chop']],
+ practice:[['chop'],['chopCount'],['chop'],['blend'],['chop'],['chopCount'],['chop'],['chop']],
+ real:['chop',{intro:'Let’s play a word game on the way to shul!'}],
+ check:[['chop'],['chop'],['chopCount']]},
+{id:'READ.PHON.L01.01',t:'Letter Lineup',e:'🔤',sub:'know the letters',
+ warm:[['letterTap'],['letterTap']],
+ story:async()=>{ await M('<div class="row big1"><span class="ltr big">A</span><span class="ltr big">a</span></div>'); await say('Every letter has two shapes: a big letter and a little letter. Big A and little a are the same letter!'); },
+ movie:async()=>{ await M('<div class="row big1"><span class="ltr big">B</span><span class="ltr big">b</span></div>'); await say('Watch me. Big B, little b. Same letter.'); await M('<div class="row big1"><span class="ltr big">b</span><span class="ltr big">d</span></div>'); await say('Careful! Little b and little d look alike. They face different ways.'); },
+ together:[['letterMatch'],['letterTap'],['letterMatch']],
+ practice:[['letterMatch'],['letterTap'],['letterMatch'],['letterTap'],['letterMatch'],['letterMatch'],['letterTap'],['letterMatch']],
+ real:['letterMatch',{intro:'The letters on the cereal box got mixed up. Help match them!'}],
+ check:[['letterMatch'],['letterTap'],['letterMatch']]},
+{id:'READ.PHON.L01.02',t:'Sound Match',e:'🔗',sub:'letters and their sounds',
+ warm:[['firstSame'],['letterMatch']],
+ story:async()=>{ await M('<div class="row big1">'+O('🐟')+'<span class="ltr big">F</span></div>'); await say('Fish starts with the letter F. Fish, foot, fox. They all start with F!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🌙')+'<span class="ltr big">M</span></div>'); await say('Watch me. Moon. Moon starts with M. Mouse starts with M too. Milk starts with M!'); },
+ together:[['firstLetter'],['firstLetter'],['firstSame']],
+ practice:[['firstLetter'],['firstSame'],['firstLetter'],['firstLetter'],['letterMatch'],['firstLetter'],['firstSame'],['firstLetter']],
+ real:['firstLetter',{intro:'Shmuel is labeling the toy bins. Which letter goes on each bin?'}],
+ check:[['firstLetter'],['firstLetter'],['firstLetter']]},
+{id:'READ.PHON.L01.03',t:'Short Vowel Sounds',e:'🍎',sub:'a, e, i, o, u in the middle',
+ warm:[['firstLetter'],['rhymePick']],
+ story:async()=>{ await M('<div class="row big1">'+O('🍎')+O('🥚')+O('🧊')+O('🐙')+O('☂️')+'</div>'); await say('Apple, egg, igloo, octopus, umbrella. These words help us hear the vowel sounds!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🍎')+O('🐱')+'</div>'); await say('Watch me. Apple. Cat. The start of apple sounds like the middle of cat.'); await M('<div class="row big1">'+O('☂️')+O('☀️')+'</div>'); await say('Umbrella. Sun. The start of umbrella sounds like the middle of sun!'); },
+ together:[['vowelPick'],['vowelPick'],['vowelPick']],
+ practice:[['vowelPick'],['vowelPick'],['rhymePick'],['vowelPick'],['vowelPick'],['firstLetter'],['vowelPick'],['vowelPick']],
+ real:['vowelPick',{intro:'Let’s find vowel sounds in the things in our house!'}],
+ check:[['vowelPick'],['vowelPick'],['vowelPick']]},
+{id:'READ.PHON.L01.04',t:'Read CVC',e:'🐱',sub:'read short words',
+ warm:[['vowelPick'],['letterMatch']],
+ story:async()=>{ await M('<div class="row big1"><span class="word">cat</span>'+O('🐱')+'</div>'); await say('Letters hold hands to make words. C, a, t. Cat! You can read it!'); },
+ movie:async()=>{ await M('<div class="row big1"><span class="word">sun</span></div>'); await say('Watch me read. I look at each letter, left to right. S, u, n. Sun!'); await M('<div class="row big1"><span class="word">sun</span>'+O('☀️')+'</div>'); await say('Sun. I read it!'); },
+ together:[['readWord'],['wordForPic'],['readWord']],
+ practice:[['readWord'],['wordForPic'],['readWord'],['readWord'],['wordForPic'],['readWord'],['wordForPic'],['readWord']],
+ real:['readWord',{intro:'Read the labels on the boxes in the Sukkah!'}],
+ check:[['readWord'],['wordForPic'],['readWord']]},
+{id:'READ.FLU.L01.01',t:'Snap Words',e:'⚡',sub:'words we know in a snap',
+ warm:[['readWord'],['letterTap']],
+ story:async()=>{ await M('<div class="row big1"><span class="word">the</span></div>'); await say('Some words we see all the time. The, and, is, I. We learn them so well we read them in a snap!'); },
+ movie:async()=>{ await M('<div class="row big1"><span class="word sm">I&nbsp;&nbsp;&nbsp;see&nbsp;&nbsp;&nbsp;the&nbsp;&nbsp;&nbsp;cat</span></div>'); await say('Watch me. I, see, the... cat. I, see and the are snap words!'); },
+ together:[['snap'],['snap'],['snap']],
+ practice:[['snap'],['snap'],['readWord'],['snap'],['snap'],['snap'],['firstWord'],['snap']],
+ real:['snap',{intro:'Find the snap words in the note Mommy left on the fridge!'}],
+ check:[['snap'],['snap'],['snap']]},
+{id:'READ.COMP.L01.01',t:'Tiny Tales',e:'📚',sub:'who and what in a story',
+ warm:[['snap'],['rhymeYN']],
+ story:async()=>{ await M('<div class="row big1">'+O('🦆')+'</div>'); await say('Stories tell us who is in them and what they do. Let’s listen for who!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🐱')+O('🥛')+'</div>'); await say('Watch me. The cat wants milk. Who is in the story? The cat! What does she want? Milk!'); },
+ together:[['story'],['story'],['story']],
+ practice:[['story'],['story'],['story'],['story'],['story'],['story'],['story'],['story']],
+ real:['story',{s:STORIES[4],intro:'A Motzei Shabbos story!'}],
+ check:[['story'],['story'],['story']]},
+{id:'READ.COMP.L01.02',t:'Story Listener',e:'👂',sub:'listen and remember',
+ warm:[['story'],['snap']],
+ story:async()=>{ await M('<div class="row big1">'+O('👂')+'</div>'); await say('Good listeners open their ears and make a picture in their mind. Let’s be great listeners!'); },
+ movie:async()=>{ await M('<div class="row big1">'+O('🐝')+O('🌸')+'</div>'); await say('Watch me listen. A bee flies to a flower. I make a picture: a bee and a flower. Where does the bee fly? To the flower!'); },
+ together:[['story'],['story'],['story']],
+ practice:[['story'],['story'],['story'],['story'],['story'],['story'],['story'],['story']],
+ real:['story',{s:STORIES[2],intro:'Listen to this Erev Shabbos story!'}],
+ check:[['story'],['story'],['story']]}
+];
+
+/* ================= RUNNER ================= */
+let done={}; try{ done=JSON.parse(localStorage.getItem('kread-done')||'{}')||{}; }catch(e){}
+async function play(spec,mode){ MODE=mode; const [kind,cfg]=spec; const c=Object.assign({},cfg||{}); if(c.intro) await say(c.intro); const r=await G[kind](c); BOT=null; const first=r[0], line=r[1]||'';
+  if(first){ stars++; await say(any(PRAISE)+' '+line); } else await say(line+' Good trying!'); await wait(250); return first; }
+async function lesson(Ls){ stars=0; $('track').hidden=false; $('home').hidden=false; $('h1').innerHTML=Ls.t+' <small>'+Ls.id+' · '+Ls.sub+'</small>';
+  station(0); await say('Warm-up!'); for(const s of Ls.warm) await play(s,'help');
+  station(1); await Ls.story();
+  station(2); await say('Movie time! Watch and listen.'); await Ls.movie();
+  station(3); await say('Now let’s do it together!'); for(const s of Ls.together) await play(s,'help');
+  station(4); await say('Your turn to practice!'); for(const s of shuffle(Ls.practice.slice(0,5)).concat(shuffle(Ls.practice.slice(5)))) await play(s,'practice');
+  station(5); await play(Ls.real,'practice');
+  station(6); await say('Quick check. Do it all by yourself!'); let ok=0; for(const s of Ls.check) ok+=(await play(s,'check'))?1:0;
+  station(7); confetti(); chime(); setTimeout(chime,400*FAST); done[Ls.id]=Math.max(done[Ls.id]||0,ok); try{ localStorage.setItem('kread-done',JSON.stringify(done)); }catch(e){}
+  view('<div class="start" id="fin"><div class="hero">⭐🎉⭐</div><h2>You did it!</h2><p>'+(ok===3?'You know '+Ls.t+'!':'Great working! We will practice this again soon.')+' You earned '+stars+' stars.</p><div class="row" style="font-size:36px">'+'⭐'.repeat(Math.min(stars,16))+'</div><div class="row"><button class="go alt" id="again" type="button">↻ Play again</button><button class="go" id="menu2" type="button">🏠 More lessons</button></div></div>');
+  window.__kit.last={id:Ls.id,ok:ok,stars:stars};
+  await say(ok===3?'You did it! Hop on the train to your next station!':'Great working! You are on the right trail.');
+  $('again').onclick=()=>lesson(Ls); $('menu2').onclick=menu; }
+function menu(){ try{ speechSynthesis.cancel(); }catch(e){} $('track').hidden=true; $('home').hidden=true; $('h1').innerHTML='Kindergarten Reading <small>13 lessons in the new style · Little Explorers</small>';
+  view('<div class="menu">'+L.map((l,i)=>'<button class="lt" type="button" data-i="'+i+'">'+(done[l.id]!=null?'<span class="done">'+(done[l.id]===3?'⭐':'✓')+'</span>':'')+'<span class="e">'+l.e+'</span>'+l.t+'<small>'+l.sub+'</small></button>').join('')+'</div>');
+  cap.textContent='Pick a lesson. Each one talks to you.'; scene.querySelectorAll('.lt').forEach(b=>b.onclick=()=>{ tone(523,.1); lesson(L[+b.dataset.i]); }); }
+$('home').onclick=()=>{ location.hash=''; location.reload(); };
+window.__kit.lessons=L.map(l=>l.id); window.__kit.start=i=>lesson(L[i]);
+const h=location.hash.slice(1), hi=L.findIndex(l=>l.id===h); if(hi>=0) lesson(L[hi]); else menu();
+})();
+</script>
