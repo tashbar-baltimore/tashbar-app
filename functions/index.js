@@ -208,6 +208,7 @@ async function admin(action, key, a) {
     for (const fn of names) { if (Date.now() - t0 > 240000) { out[fn] = 'skipped'; continue; } const s = Date.now(); const r = await LIVE.srv.run('apiTimeOne_', [fn]); out[fn] = r.error ? 'error ' + String(r.error).slice(0, 60) : ((Date.now() - s) + ' ms total, ' + r.result + ' ms code, runs ' + r.runs + ', loads ' + r.loads); }
     return { ok: true, result: out };
   }
+  if (action === 'deptCheck') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('apiDeptCheck_', []); return r.error ? { ok: false, error: String(r.error).slice(0, 300) } : { ok: true, result: r.result }; }
   if (action === 'photoCron') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('photoCron', []); return r.error ? { ok: false, error: String(r.error).slice(0, 200) } : { ok: true, result: r.result }; }
   if (action === 'goOff') { await DB.collection('sys').doc('live').set({ on: false, since: new Date().toISOString() }); LIVE = null; return { ok: true, result: { live: false } }; }
   return { ok: false, error: 'Unknown admin action.' };

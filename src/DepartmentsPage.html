@@ -1,0 +1,105 @@
+<script>
+/* DepartmentsPage.html — DEPARTMENTS on the staff screen, Phase 1 (Head of School 2026-11-18). Data from Departments.js (dpMine, dpOpen, dpAdmin, dpSave).
+   A "🏫 My departments" button opens a full-screen view: the departments this person belongs to (the Head of School sees all), then one department
+   with its Lessons (sorted in automatically, New badges, started and mastered counts, search), Students (progress in this department only; tap a
+   boy to open his card) and People. The Head of School also gets "Set up": who is in each department (member or head) and the Unsorted lessons.
+   The server checks every call. No double slash in this file (HtmlService rule). */
+(function(){
+if(typeof render!=='function'||typeof S==='undefined'||typeof run!=='function') return;
+const DP=window.DP=window.DP||{open:false,view:'home',mine:null,dept:null,d:null,tab:'lessons',q:'',admin:null,busy:false,msg:''};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SUBJ={MATH:['📐','Math'],READ:['📖','Reading & Writing'],SCI:['🔬','Science'],SOC:['🌍','Social Studies'],LK:['📜','Limudei Kodesh'],ELEC:['🛠️','Electives & Trades'],HEART:['💗','Heart & Soul'],'':['📦','Other']};
+const GR=g=>g==null||g===''?'':(Number(g)===0?'K':'Gr '+g);
+const ago=t=>{ if(!t) return 'not yet'; const d=Math.floor((Date.now()-t)/864e5); return d<=0?'today':d===1?'yesterday':d+' days ago'; };
+function err(e){ return String(e&&e.message||e); }
+function homeHTML(){ const M=DP.mine; if(!M) return '<p class="dp-soft">Loading…</p>'; if(M.err) return '<p class="dp-soft">Could not load: '+E(M.err)+'</p>';
+ if(!M.depts.length) return '<div class="dp-empty"><b>You are not in a department yet.</b><p>Ask the Head of School to add you to your department.</p></div>';
+ return '<div class="dp-grid">'+M.depts.map(d=>`<button type="button" class="dp-card" data-dp="open" data-id="${E(d.id)}"><span class="ic">${d.icon}</span><b>${E(d.name)}</b><small>${E(d.goal||'')}</small><span class="dp-chips"><i>${d.lessons} lessons</i>${d.members?`<i>${d.members} people</i>`:''}${d.role&&d.role!=='hos'?`<i class="me">${d.role==='head'?'You lead it':'You are in it'}</i>`:''}</span></button>`).join('')+'</div>'; }
+function lessonsHTML(D){ const q=DP.q.trim().toLowerCase(); const L=D.lessons.filter(l=>!q||l.name.toLowerCase().includes(q)||l.id.toLowerCase().includes(q));
+ const groups={}; L.forEach(l=>{ (groups[l.subj]=groups[l.subj]||[]).push(l); });
+ const nNew=D.lessons.filter(l=>l.isNew).length;
+ let h=`<div class="dp-tools"><input class="dp-q" type="search" placeholder="Find a lesson…" value="${E(DP.q)}" aria-label="Find a lesson"><span class="dp-soft">${D.lessons.length} lessons${nNew?` · <b class="dp-new">${nNew} new</b>`:''}</span></div>`;
+ if(!L.length) return h+'<p class="dp-soft">No lessons match.</p>';
+ Object.keys(groups).forEach(k=>{ const s=SUBJ[k]||SUBJ['']; h+=`<h3 class="dp-sub">${s[0]} ${E(s[1])} <small>${groups[k].length}</small></h3><div class="dp-ls">`+groups[k].map(l=>`<div class="dp-l${l.isNew?' isnew':''}"><span class="g">${E(GR(l.grade))}</span><b>${E(l.name)}</b>${l.isNew?'<span class="dp-badge">New</span>':''}<small>${E(l.id)}</small><span class="n"><i title="started">▶ ${l.started}</i><i title="mastered">⭐ ${l.mastered}</i></span></div>`).join('')+'</div>'; });
+ return h; }
+function boysHTML(D){ if(!D.boys.length) return '<p class="dp-soft">No students in this department yet. Students show here once their grade is set or they start a lesson here.</p>';
+ return '<table class="dp-tab"><thead><tr><th>Student</th><th>Grade</th><th>Started here</th><th>Mastered here</th><th>Last active</th></tr></thead><tbody>'+D.boys.map(b=>`<tr data-dp="boy" data-id="${E(b.id)}"><td><b>${E(b.name)}</b></td><td>${E(GR(b.grade))||'–'}</td><td>${b.started}</td><td>${b.mastered}</td><td>${E(ago(b.last))}</td></tr>`).join('')+'</tbody></table>'; }
+function peopleHTML(D){ const m=D.members||[]; let h=m.length?'<ul class="dp-ppl">'+m.map(p=>`<li><b>${E(p.name)}</b> <span class="dp-role ${p.role}">${p.role==='head'?'Department head':'Member'}</span></li>`).join('')+'</ul>':'<p class="dp-soft">No one is assigned yet.</p>';
+ if(D.role==='hos'||D.role==='head') h+='<p class="dp-soft">To add people, use '+(D.role==='hos'?'⚙️ Set up on the departments page.':'the Head of School’s Set up, or ask the Head of School.')+'</p>'; return h; }
+function deptHTML(){ const D=DP.d; if(!D) return '<p class="dp-soft">Loading…</p>'; if(D.err) return '<p class="dp-soft">Could not load: '+E(D.err)+'</p>';
+ const t=(k,l)=>`<button type="button" class="dp-tabb${DP.tab===k?' on':''}" data-dp="tab" data-t="${k}">${l}</button>`;
+ return `<div class="dp-dh"><span class="ic">${D.dept.icon}</span><div><h2>${E(D.dept.name)}</h2><p>${E(D.dept.goal||'')}</p></div></div><div class="dp-tabs">${t('lessons','📚 Lessons')}${t('boys','👦 Students')}${t('people','👥 People')}</div><div class="dp-body">${DP.tab==='boys'?boysHTML(D):DP.tab==='people'?peopleHTML(D):lessonsHTML(D)}</div>`; }
+function adminHTML(){ const A=DP.admin; if(!A) return '<p class="dp-soft">Loading…</p>'; if(A.err) return '<p class="dp-soft">Could not load: '+E(A.err)+'</p>';
+ const opt=A.staff.map(s=>`<option value="${E(s.id)}">${E(s.name)}</option>`).join('');
+ let h='<h3 class="dp-sub">👥 Who is in each department</h3><div class="dp-adm">';
+ A.depts.forEach(d=>{ const m=A.members[d.id]||{}; const ppl=Object.keys(m).map(k=>{ const s=A.staff.find(x=>x.id===k); return `<span class="dp-pill ${m[k]}">${E(s?s.name:k)} · ${m[k]==='head'?'head':'member'} <button type="button" data-dp="rm" data-dept="${E(d.id)}" data-staff="${E(k)}" aria-label="Remove">✕</button></span>`; }).join('');
+  h+=`<div class="dp-arow"><b>${d.icon} ${E(d.name)}</b><div class="dp-pills">${ppl||'<span class="dp-soft">no one yet</span>'}</div><div class="dp-add"><select data-sel="staff-${E(d.id)}"><option value="">Add a person…</option>${opt}</select><select data-sel="role-${E(d.id)}"><option value="member">as member</option><option value="head">as department head</option></select><button type="button" class="dp-btn" data-dp="add" data-dept="${E(d.id)}">Add</button></div></div>`; });
+ h+='</div><h3 class="dp-sub">📦 Unsorted lessons <small>'+A.unsortedCount+'</small></h3>';
+ if(!A.unsorted.length) h+='<p class="dp-soft">Every lesson is in a department. 👍</p>';
+ else { const dsel=A.depts.map(d=>`<option value="${E(d.id)}">${d.icon} ${E(d.name)}</option>`).join(''); h+='<p class="dp-soft">These lessons could not be sorted by subject or grade. Pick a department for each.</p><div class="dp-ls">'+A.unsorted.map(u=>`<div class="dp-l"><b>${E(u.name)}</b><small>${E(u.id)}</small><span class="n"><select data-sel="mv-${E(u.id)}">${dsel}</select><button type="button" class="dp-btn" data-dp="move" data-skill="${E(u.id)}">Put it there</button></span></div>`).join('')+'</div>'; }
+ return h; }
+function draw(){ let o=document.getElementById('dp-ov'); if(!DP.open){ if(o) o.remove(); return; } if(!o){ o=document.createElement('div'); o.id='dp-ov'; document.body.appendChild(o); }
+ const back=DP.view!=='home'?'<button type="button" class="dp-back" data-dp="home">← All departments</button>':'';
+ const setup=DP.view==='home'&&DP.mine&&DP.mine.hos?'<button type="button" class="dp-setup" data-dp="admin">⚙️ Set up departments</button>':'';
+ const body=DP.view==='dept'?deptHTML():DP.view==='admin'?adminHTML():homeHTML();
+ const ae=document.activeElement, keepQ=ae&&ae.classList&&ae.classList.contains('dp-q'), pos=keepQ?ae.selectionStart:0;
+ o.innerHTML=`<div class="dp-ov"><div class="dp-wrap" role="dialog" aria-modal="true" aria-label="My departments"><div class="dp-top">${back}<h1>🏫 ${DP.view==='admin'?'Set up departments':'My departments'}</h1>${setup}<button type="button" class="dp-x" data-dp="close" aria-label="Close">✕</button></div>${DP.msg?`<p class="dp-msg">${E(DP.msg)}</p>`:''}${body}</div></div>`;
+ if(keepQ){ const q=o.querySelector('.dp-q'); if(q){ q.focus(); try{ q.setSelectionRange(pos,pos); }catch(e){} } } }
+function loadMine(){ DP.mine=null; draw(); run('dpMine',S.token).then(r=>{ DP.mine=r; draw(); }).catch(e=>{ DP.mine={err:err(e)}; draw(); }); }
+function openDept(id){ DP.view='dept'; DP.dept=id; DP.d=null; DP.tab='lessons'; DP.q=''; draw(); run('dpOpen',S.token,id).then(r=>{ if(DP.dept===id){ DP.d=r; draw(); } }).catch(e=>{ DP.d={err:err(e)}; draw(); }); }
+function loadAdmin(){ DP.view='admin'; DP.admin=null; draw(); run('dpAdmin',S.token).then(r=>{ DP.admin=r; draw(); }).catch(e=>{ DP.admin={err:err(e)}; draw(); }); }
+function save(what,a){ DP.msg='Saving…'; draw(); run('dpSave',S.token,what,a).then(()=>{ DP.msg='Saved ✓'; loadAdmin(); setTimeout(()=>{ DP.msg=''; draw(); },2000); }).catch(e=>{ DP.msg=err(e); draw(); }); }
+const sel=k=>{ const x=document.querySelector(`#dp-ov [data-sel="${k}"]`); return x?x.value:''; };
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dp]'); if(!b) return; const a=b.dataset.dp; e.preventDefault();
+ if(a==='launch'){ DP.open=true; DP.view='home'; loadMine(); }
+ else if(a==='close'){ DP.open=false; draw(); }
+ else if(a==='home'){ DP.view='home'; DP.msg=''; if(!DP.mine) loadMine(); else draw(); }
+ else if(a==='open') openDept(b.dataset.id);
+ else if(a==='tab'){ DP.tab=b.dataset.t; draw(); }
+ else if(a==='boy'){ DP.open=false; draw(); S.card=b.dataset.id; render(); }
+ else if(a==='admin') loadAdmin();
+ else if(a==='add'){ const d=b.dataset.dept, s=sel('staff-'+d); if(!s){ DP.msg='Pick a person first.'; draw(); return; } save('member',{dept:d,staff:s,role:sel('role-'+d)||'member'}); }
+ else if(a==='rm') save('member',{dept:b.dataset.dept,staff:b.dataset.staff,role:''});
+ else if(a==='move') save('move',{skill:b.dataset.skill,dept:sel('mv-'+b.dataset.skill)});
+});
+document.addEventListener('input',e=>{ if(e.target&&e.target.classList&&e.target.classList.contains('dp-q')){ DP.q=e.target.value; draw(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&DP.open){ DP.open=false; draw(); } });
+function fix(){ const show=!!(S.token&&S.d&&S.d.boys); let b=document.getElementById('dp-btn'); if(!show){ if(b) b.remove(); return; }
+ if(!b){ b=document.createElement('button'); b.type='button'; b.id='dp-btn'; b.dataset.dp='launch'; b.innerHTML='🏫 My departments'; document.body.appendChild(b); } }
+const _dpRender=render;
+render=function(){ const out=_dpRender.apply(this,arguments); try{ fix(); }catch(e){ console.error('Departments',e); } return out; };
+document.head.insertAdjacentHTML('beforeend',`<style id="dp-css">
+#dp-btn{position:fixed;right:18px;bottom:76px;z-index:800;border:0;border-radius:999px;padding:12px 20px;background:linear-gradient(180deg,#A78BFA,#7C3AED);color:#fff;font:800 16px system-ui,sans-serif;cursor:pointer;box-shadow:0 5px 0 #5B21B6,0 10px 20px rgba(91,33,182,.25)}
+#dp-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #5B21B6}
+.dp-ov{position:fixed;inset:0;z-index:9100;background:linear-gradient(170deg,#EEF2FF,#FDF4FF 50%,#FFF7ED);overflow:auto}
+.dp-wrap{max-width:1180px;margin:0 auto;padding:22px 20px 60px;color:#0F172A;font-family:system-ui,sans-serif}
+.dp-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.dp-top h1{margin:0;font-size:28px;flex:1}
+.dp-x{border:0;background:#fff;border-radius:12px;width:44px;height:44px;font-size:20px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.dp-back,.dp-setup{border:0;border-radius:999px;padding:10px 16px;background:#fff;color:#3730A3;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.dp-soft{color:#64748B;font-size:14px}.dp-msg{background:#ECFDF5;border:1px solid #A7F3D0;border-radius:10px;padding:8px 12px;font-weight:700}
+.dp-empty{background:#fff;border-radius:18px;padding:30px;text-align:center}
+.dp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.dp-card{position:relative;text-align:left;border:0;border-radius:22px;padding:20px;background:#fff;cursor:pointer;display:flex;flex-direction:column;gap:6px;box-shadow:0 8px 0 #E0E7FF,0 12px 26px rgba(79,70,229,.12);transition:transform .15s}
+.dp-card:hover{transform:translateY(-4px)}.dp-card .ic{font-size:44px}.dp-card b{font-size:21px}.dp-card small{color:#475569;font-size:14px}
+.dp-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.dp-chips i{font-style:normal;font-size:12px;font-weight:800;background:#EEF2FF;color:#3730A3;border-radius:999px;padding:4px 10px}.dp-chips i.me{background:#FEF3C7;color:#92400E}
+.dp-dh{display:flex;gap:14px;align-items:center;background:linear-gradient(120deg,#6366F1,#A855F7 60%,#EC4899);color:#fff;border-radius:22px;padding:18px 22px}.dp-dh .ic{font-size:50px}.dp-dh h2{margin:0;font-size:28px}.dp-dh p{margin:4px 0 0;opacity:.95}
+.dp-tabs{display:flex;gap:8px;margin:14px 0}.dp-tabb{border:0;border-radius:999px;padding:10px 18px;background:#fff;font-weight:800;cursor:pointer;color:#334155}.dp-tabb.on{background:#1E1B4B;color:#fff}
+.dp-body{background:#fff;border-radius:20px;padding:16px 18px}
+.dp-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}.dp-q{flex:1;min-width:220px;border:2px solid #C7D2FE;border-radius:12px;padding:10px 14px;font-size:16px}
+.dp-new{color:#DB2777}.dp-sub{margin:16px 0 8px;font-size:18px}.dp-sub small{color:#94A3B8;font-weight:700}
+.dp-ls{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:8px}
+.dp-l{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;padding:10px 12px;border-radius:14px;background:#F8FAFC;border:1px solid #E2E8F0}
+.dp-l.isnew{background:#FDF2F8;border-color:#F9A8D4}.dp-l .g{grid-row:span 2;font-weight:900;font-size:13px;background:#EEF2FF;color:#3730A3;border-radius:10px;padding:6px 8px;min-width:42px;text-align:center}
+.dp-l b{font-size:15px}.dp-l small{grid-column:2;color:#94A3B8;font-size:12px}.dp-l .n{grid-row:1/span 2;grid-column:3;display:flex;gap:8px;align-items:center}.dp-l .n i{font-style:normal;font-size:13px;font-weight:800;color:#475569}
+.dp-badge{justify-self:start;background:#DB2777;color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:2px 8px;margin-left:6px}
+.dp-tab{width:100%;border-collapse:collapse;font-size:15px}.dp-tab th,.dp-tab td{padding:10px 8px;border-bottom:1px solid #E2E8F0;text-align:left}.dp-tab tbody tr{cursor:pointer}.dp-tab tbody tr:hover{background:#F8FAFC}
+.dp-ppl{list-style:none;padding:0}.dp-ppl li{padding:8px 0}.dp-role{font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px;background:#EEF2FF;color:#3730A3}.dp-role.head{background:#FEF3C7;color:#92400E}
+.dp-adm{display:flex;flex-direction:column;gap:10px}.dp-arow{background:#fff;border-radius:16px;padding:12px 14px;display:grid;grid-template-columns:240px 1fr;gap:8px 14px;align-items:center}
+.dp-pills{display:flex;flex-wrap:wrap;gap:6px}.dp-pill{background:#EEF2FF;border-radius:999px;padding:4px 6px 4px 12px;font-size:13px;font-weight:700}.dp-pill.head{background:#FEF3C7}.dp-pill button{border:0;background:transparent;cursor:pointer;font-size:13px}
+.dp-add{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}.dp-add select,.dp-l select{border:1px solid #CBD5E1;border-radius:10px;padding:8px;font-size:14px}
+.dp-btn{border:0;border-radius:10px;padding:8px 14px;background:#4F46E5;color:#fff;font-weight:800;cursor:pointer}
+@media (max-width:700px){.dp-arow{grid-template-columns:1fr}}
+</style>`);
+try{ fix(); }catch(e){}
+})();
+</script>
