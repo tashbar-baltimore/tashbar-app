@@ -76,7 +76,14 @@ function shared(name, load) {
   if (!s.busy) s.busy = load().then(v => { s.value = v; s.at = Date.now(); s.busy = null; return v; }, e => { s.busy = null; if (s.value !== undefined) return s.value; throw e; });
   return s.value !== undefined ? Promise.resolve(s.value) : s.busy;   /* serve the old copy while a refresh runs */
 }
-const pageAnswer = (name) => async (have) => { const p = await shared(name, () => appsScriptResult(name, [''])); return String(have || '') === p.h ? { h: p.h, same: true } : { h: p.h, html: p.html }; };
+/* SELF-BUILD (firebase builder 2026-11-18): Apps Script hit its 200-version limit, so new work could not reach the boys.
+   When sys/selfbuild {on:true}, the pages and lesson pieces are built HERE from this server's own copy of the editor code (app/src,
+   copied at each deploy) instead of from the Apps Script deployment's version. Any error -> the Apps Script answer, as before. */
+let SELF = { on: false, at: 0 };
+async function selfOn() { if (Date.now() - SELF.at < 15000) return SELF.on; SELF.at = Date.now(); try { DB = DB || new Firestore(); const d = await DB.collection('sys').doc('selfbuild').get(); SELF.on = !!(d.exists && d.data().on); } catch (e) {} return SELF.on; }
+async function selfRun(fn, args) { await liveState(); if (!LIVE || !LIVE.srv) throw new Error('not live'); const r = await LIVE.srv.run(fn, args); if (r.error) throw new Error(fn + ': ' + r.error); return r.result; }
+async function srcOf(fn, args) { if (await selfOn()) { try { return await selfRun(fn, args); } catch (e) { console.warn('self-build failed, using Apps Script:', String(e.message || e).slice(0, 160)); } } return appsScriptResult(fn, args); }
+const pageAnswer = (name) => async (have) => { const p = await shared(name, () => srcOf(name, [''])); return String(have || '') === p.h ? { h: p.h, same: true } : { h: p.h, html: p.html }; };
 
 /* ADMIN LANE: copying the school's records from Apps Script into Firestore, server to server. Every call must carry
    the export key (kept in Secret Manager as tl-export-key; the function gets it as the environment value TL_EXPORT_KEY).
@@ -209,6 +216,18 @@ async function admin(action, key, a) {
     return { ok: true, result: out };
   }
   if (action === 'deptCheck') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('apiDeptCheck_', []); return r.error ? { ok: false, error: String(r.error).slice(0, 300) } : { ok: true, result: r.result }; }
+  if (action === 'selfCompare') {   /* counts and hashes only: the Apps Script answers vs the ones built here */
+    const out = {};
+    for (const fn of ['apiKidPage', 'apiStaffPage', 'msQuestTools', 'msQuestToolsParts']) { const args = fn === 'msQuestToolsParts' ? [[]] : fn === 'msQuestTools' ? [] : [''];
+      const t0 = Date.now(); let a = null, b = null, ea = '', eb = '';
+      try { a = await appsScriptResult(fn, args); } catch (e) { ea = String(e.message || e).slice(0, 120); }
+      const t1 = Date.now(); try { b = await selfRun(fn, args); } catch (e) { eb = String(e.message || e).slice(0, 200); }
+      const sum = x => !x ? null : fn === 'msQuestToolsParts' ? { parts: x.order.length, bytes: Object.values(x.parts).reduce((s, p) => s + p.length, 0), same: x.order.join(',') } : fn === 'msQuestTools' ? { jsBytes: (x.js || '').length, cssBytes: (x.css || '').length } : { h: x.h, bytes: (x.html || '').length };
+      const A = sum(a), B = sum(b); if (A && B && A.same) { const sa = new Set(A.same.split(',')), sb = B.same.split(','); B.onlyHere = sb.filter(h => !sa.has(h)).length; B.notHere = [...sa].filter(h => sb.indexOf(h) < 0).length; delete A.same; delete B.same; }
+      out[fn] = { appsScript: A || ea, here: B || eb, msHere: Date.now() - t1, msAppsScript: t1 - t0 }; }
+    return { ok: true, result: out };
+  }
+  if (action === 'selfSet') { DB = DB || new Firestore(); await DB.collection('sys').doc('selfbuild').set({ on: !!a.on, at: new Date().toISOString() }); SELF.at = 0; Object.keys(store).forEach(k => delete store[k]); return { ok: true, result: { on: !!a.on } }; }
   if (action === 'photoCron') { await liveState(); if (!LIVE || !LIVE.srv) return { ok: false, error: 'Not live.' }; const r = await LIVE.srv.run('photoCron', []); return r.error ? { ok: false, error: String(r.error).slice(0, 200) } : { ok: true, result: r.result }; }
   if (action === 'goOff') { await DB.collection('sys').doc('live').set({ on: false, since: new Date().toISOString() }); LIVE = null; return { ok: true, result: { live: false } }; }
   return { ok: false, error: 'Unknown admin action.' };
@@ -216,9 +235,9 @@ async function admin(action, key, a) {
 
 const MOVED = {
   ping: async () => ({ pong: true, at: new Date().toISOString(), server: 'firebase' }),
-  msQuestTools: () => shared('msQuestTools', () => appsScriptResult('msQuestTools', [])),
+  msQuestTools: () => shared('msQuestTools', () => srcOf('msQuestTools', [])),
   msQuestToolsParts: async (have) => {
-    const all = await shared('msQuestToolsParts', async () => { const r = await appsScriptResult('msQuestToolsParts', [[]]); if (!r || !r.order || r.order.some(h => typeof r.parts[h] !== 'string')) throw new Error('incomplete parts'); return r; });
+    const all = await shared('msQuestToolsParts', async () => { const r = await srcOf('msQuestToolsParts', [[]]); if (!r || !r.order || r.order.some(h => typeof r.parts[h] !== 'string')) throw new Error('incomplete parts'); return r; });
     const got = {}; (Array.isArray(have) ? have : []).forEach(h => { got[String(h)] = 1; });
     const parts = {}; all.order.forEach(h => { if (!got[h]) parts[h] = all.parts[h]; });
     return { v: all.v || 2, order: all.order, parts };
