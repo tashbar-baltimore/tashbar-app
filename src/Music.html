@@ -13,7 +13,7 @@ function muCtx(){ if(!MU.ctx){ const AC=window.AudioContext||window.webkitAudioC
 function muLoadSfx(){ const c=muCtx(); if(!c) return; Object.keys(MU_SFX).forEach(k=>{ if(MU.sfx[k]) return; fetch(MU_SFX[k]).then(r=>r.arrayBuffer()).then(a=>c.decodeAudioData(a)).then(b=>{ MU.sfx[k]=b; }).catch(()=>{}); }); }
 function muFx(k,vol,rate){ try{ if(!SND.on) return false; const c=muCtx(), b=MU.sfx[k]; if(!c||!b) return false; const s=c.createBufferSource(), g=c.createGain(); s.buffer=b; if(rate) s.playbackRate.value=rate; g.gain.value=(vol==null?.8:vol)*muSfxVol(); s.connect(g); g.connect(c.destination); s.start(); return true; }catch(e){ return false; } }
 function muSfxVol(){ const m=muPrefs(); return .35+.65*(m.vol==null?.6:m.vol); }
-function muPrefs(){ const st=A.st; if(!st) return {mood:'off',vol:.6}; st.music=st.music||{mood:'off',vol:.6}; if(st.music.mood==='niggun') st.music.mood='off'; return st.music; }
+function muPrefs(){ const st=A.st; if(!st) return {mood:'off',vol:.6}; st.music=st.music||{mood:'off',vol:.6}; if(st.music.mood==='niggun') st.music.mood='off'; if(st.music.mood==='club') st.music.mood='mix'; return st.music; }
 /* real sound effects in place of the synth beeps (synth stays as a fallback until the files decode) */
 (function(){ const o={right:SND.right.bind(SND),wrong:SND.wrong.bind(SND),coin:SND.coin.bind(SND),win:SND.win.bind(SND),level:SND.level.bind(SND),tap:SND.tap.bind(SND)};
  SND.right=function(combo){ if(!muFx('right',.75,1+Math.min(combo||0,8)*.03)) o.right(combo); };
@@ -41,12 +41,11 @@ const MU_MOODS=[
  ['focus','🎹','Focus','Calm and steady']
 ];
 const MU_HAPPY=['happy','parade','swing','sunny','hero','arcade','game','energy'];
-/* ---------- Club music (Head of School 2026-11-17: "much more rocking ... techno, trance, EDM ... club music, very high energy").
-   Every Club track is ORIGINAL, made live in the browser by Web Audio from a fixed recipe (style + seed): no files to download, nothing copyrighted.
+/* ---------- High-energy music (Head of School 2026-11-17: "much more rocking ... techno, trance, EDM ... very high energy"; v384: never call it "club", put it all in Happy Mix).
+   Every high-energy track is ORIGINAL, made live in the browser by Web Audio from a fixed recipe (style + seed): no files to download, nothing copyrighted.
    A track runs about 2.5 to 3 minutes: intro, build-up (riser + snare roll), drop, break, build-up, drop, outro.
    It uses the same volume, fade, Next, quieter-in-lessons and school music-off rules as the recorded music (it behaves like an Audio element). */
 const MU_CLUB_MOODS=[
- ['club','🎧','Club Mix','Techno, trance, EDM, drum & bass'],
  ['edm','💥','EDM Drops','Big build-ups, bigger drops'],
  ['trance','🌌','Trance','Soaring, high-energy 138'],
  ['techno','⚡','Techno','Pounding 128 beats'],
@@ -59,7 +58,7 @@ const MU_CLUB=[
  ['trance','Starlight Surge'],['trance','Skyline Dreams'],['trance','Sunrise Velocity'],['trance','Aurora Climb'],
  ['techno','Laser Lift'],['techno','Turbo Circuit'],['techno','Neon Grid'],['techno','Power Station'],
  ['dnb','Hyper Drive'],['dnb','Comet Chase'],['dnb','Lightning Run'],['dnb','Rapid Fire']
-].map((r,i)=>({id:'club'+(i+1),mood:r[0],title:r[1],by:'Tashbar Beats · '+MU_CLUB_NAME[r[0]],seed:(i+1)*7919,synth:true}));
+].map((r,i)=>({id:'beat'+(i+1),mood:r[0],title:r[1],by:'Tashbar Beats · '+MU_CLUB_NAME[r[0]],seed:(i+1)*7919,synth:true}));
 const MU_CLUB_GEN={
  edm:{bpm:128,form:[['intro',8],['build',8],['drop',16],['break',8],['build',8],['drop',16],['outro',8]]},
  trance:{bpm:138,form:[['intro',16],['build',8],['drop',16],['break',16],['build',8],['drop',16],['outro',8]]},
@@ -141,7 +140,7 @@ function muClubPlayer(t){ const P=muClubPlan(t), A2={_v:0,onended:null}; let c=n
   timer=setInterval(tick,200); tick(); return c.state==='running'?Promise.resolve():c.resume(); };
  A2.pause=function(){ done=true; off(); };
  A2.duration=P.steps*P.spb/4; return A2; }
-MU_MOODS.splice(1,0,...MU_CLUB_MOODS);
+MU_MOODS.splice(1,0,...MU_CLUB_MOODS); MU_HAPPY.push(...MU_CLUB_GENRES); MU_MOODS[0][3]='Everything, shuffled: happy, EDM, trance, techno';
 function muIcon(mood){ const r=MU_MOODS.find(x=>x[0]===mood); return r?r[1]:'🎵'; }
 function muTracks(mood){ const all=((MU.info&&MU.info.tracks)||[]).concat(MU_CLUB); return mood==='mix'?all.filter(t=>MU_HAPPY.indexOf(t.mood)>=0):mood==='club'?all.filter(t=>MU_CLUB_GENRES.indexOf(t.mood)>=0):all.filter(t=>t.mood===mood); }
 function muNextTrack(mood){ const list=muTracks(mood); if(!list.length) return null; MU.q=MU.q||{};
