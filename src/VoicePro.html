@@ -1,0 +1,36 @@
+<script>
+/* VoicePro.html (Head of School 2026-11-18: "get a different voice for everything ... better audio with expression and passion").
+   Everything the app says with the device voice (speechSynthesis) is played instead in a natural Google voice (Chirp 3 HD), made by the
+   Firebase server (GET ?tts=1) and saved there, so each phrase is made once. Hebrew uses Google's Israeli-Hebrew voice FOR NOW; Litvish
+   recordings replace it item by item. If a phrase does not arrive within 4 seconds, or anything fails, the device voice says it as before.
+   Also inside sealed lesson frames (e.g. Kindergarten Math): this same code is put at the top of every srcdoc frame.
+   Changes no data, money or mastery. No double slash in this file (HtmlService rule). */
+(function(){
+const SRC=String(arguments.callee);
+if(typeof window==='undefined'||!window.speechSynthesis||window.__VP) return; window.__VP=1;
+const API='https:'+String.fromCharCode(47,47)+'api-q26c275eaa-uk.a.run.app/';
+const ss=window.speechSynthesis, realSpeak=ss.speak.bind(ss), realCancel=ss.cancel.bind(ss);
+let cur=null, q=[], off=false;
+const HE=/[֐-׿]/, LAT=/[A-Za-z]{2,}/;
+function langOf(t){ return HE.test(t)&&!LAT.test(t)?'he':'en'; }
+function clean(t,l){ t=String(t||'').replace(/\s+/g,' ').trim(); if(l==='en') t=t.replace(/[֑-ׇ]/g,''); return t; }
+function fire(u,n){ try{ const f=u['on'+n]; if(typeof f==='function') f.call(u,{type:n,utterance:u}); }catch(e){} try{ u.dispatchEvent(new Event(n)); }catch(e){} }
+function next(){ if(cur||!q.length) return; const it=q.shift(), u=it.u; let done=false, started=false;
+ const a=new Audio(it.url); cur=a; a.preload='auto'; try{ a.volume=Math.max(0,Math.min(1,u.volume==null?1:u.volume)); }catch(e){}
+ const finish=ok=>{ if(done) return; done=true; clearTimeout(tm); if(cur===a) cur=null; if(!ok){ try{ realSpeak(u); }catch(e){} } else fire(u,'end'); next(); };
+ const tm=setTimeout(()=>{ if(!started){ try{ a.pause(); }catch(e){} finish(false); } },4000);
+ a.onplaying=()=>{ if(!started){ started=true; clearTimeout(tm); fire(u,'start'); } };
+ a.onended=()=>finish(true); a.onerror=()=>finish(false);
+ const p=a.play(); if(p&&p.catch) p.catch(()=>finish(false)); }
+ss.speak=function(u){ try{ if(off||!u||!u.text) return realSpeak(u); const l=langOf(u.text), t=clean(u.text,l); if(!t||t.length>600) return realSpeak(u);
+  const r=Math.max(.75,Math.min(1.25,Number(u.rate)||1)).toFixed(2);
+  q.push({u,url:API+'?tts=1&l='+l+'&r='+r+'&t='+encodeURIComponent(t)}); next(); }catch(e){ return realSpeak(u); } };
+ss.cancel=function(){ q=[]; if(cur){ try{ cur.pause(); }catch(e){} cur=null; } realCancel(); };
+try{ Object.defineProperty(ss,'speaking',{configurable:true,get:()=>!!cur||q.length>0}); }catch(e){}
+try{ Object.defineProperty(ss,'pending',{configurable:true,get:()=>q.length>0}); }catch(e){}
+window.TL_VOICE={ off:v=>{ off=!!v; }, on:()=>!off };
+/* sealed lesson frames: put this same code at the top of every srcdoc */
+try{ const d=Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype,'srcdoc');
+ if(d&&d.set){ Object.defineProperty(HTMLIFrameElement.prototype,'srcdoc',{configurable:true,get:d.get,set:function(v){ v=String(v); const tag='<scr'+'ipt>('+SRC+')();<'+'/script>'; if(v.indexOf('__VP')<0){ v=/<head[^>]*>/i.test(v)?v.replace(/<head[^>]*>/i,m=>m+tag):tag+v; } return d.set.call(this,v); }}); } }catch(e){}
+})();
+</script>

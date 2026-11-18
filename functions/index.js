@@ -241,6 +241,25 @@ async function packWarm() {
   console.log('warm: ' + n + ' of ' + list.length + ' lesson packs ready (' + fromDrive + ' from Drive)');
 }
 setTimeout(() => { packWarm().catch(e => console.warn('pack warm-up failed:', String(e.message || e).slice(0, 120))).then(() => liveState()).then(() => LIVE && LIVE.srv && LIVE.srv.run('msBootstrap', [])).then(() => console.log('warm: database loaded')).catch(e => console.warn('warm-up failed:', String(e.message || e).slice(0, 120))); }, 0);
+/* ===== VOICE: natural, expressive speech for the whole app (Google Chirp 3 HD). GET ?tts=1&t=<text>&l=en|he&r=<rate>.
+   Each phrase is made once, kept in Cloud Storage (tts/<sha>.mp3) and in memory, then reused: fast and cheap. Text up to 600 characters.
+   Hebrew uses Google's Israeli-Hebrew voice FOR NOW (Head of School 2026-11-18); Litvish recordings replace it item by item. */
+const TTS_VOICE = { en: 'en-US-Chirp3-HD-Puck', he: 'he-IL-Chirp3-HD-Puck' };
+const TTS_MEM = new Map(); let TTS_MADE = 0, TTS_WIN = Date.now();
+async function ttsToken() { const r = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token', { headers: { 'Metadata-Flavor': 'Google' } }); return (await r.json()).access_token; }
+async function tts(text, lang, rate) {
+  const crypto = require('crypto'); lang = lang === 'he' ? 'he' : 'en'; rate = Math.max(0.75, Math.min(1.25, Number(rate) || 1));
+  const voice = TTS_VOICE[lang], key = crypto.createHash('sha256').update(voice + '|' + rate.toFixed(2) + '|' + text).digest('hex');
+  if (TTS_MEM.has(key)) return TTS_MEM.get(key);
+  const { Storage } = require('@google-cloud/storage'), obj = new Storage().bucket('tashbar-learning-live-backups').file('tts/' + key + '.mp3');
+  try { const [buf] = await obj.download(); TTS_MEM.set(key, buf); return buf; } catch (e) {}
+  if (Date.now() - TTS_WIN > 600000) { TTS_WIN = Date.now(); TTS_MADE = 0; } if (++TTS_MADE > 1500) throw new Error('busy');
+  const body = { input: { text }, voice: { languageCode: lang === 'he' ? 'he-IL' : 'en-US', name: voice }, audioConfig: { audioEncoding: 'MP3', speakingRate: rate } };
+  const r = await fetch('https://texttospeech.googleapis.com/v1/text:synthesize', { method: 'POST', headers: { Authorization: 'Bearer ' + await ttsToken(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const j = await r.json(); if (!j.audioContent) throw new Error('voice: ' + JSON.stringify(j).slice(0, 160));
+  const buf = Buffer.from(j.audioContent, 'base64'); obj.save(buf, { contentType: 'audio/mpeg' }).catch(() => {});
+  if (TTS_MEM.size > 3000) TTS_MEM.delete(TTS_MEM.keys().next().value); TTS_MEM.set(key, buf); return buf;
+}
 /* Only the functions on the app's approved list (API_ALLOW, ApiRoute.js) may be called from a page, exactly as on Apps Script. */
 let ALLOW = null;
 function allowed(fn) {
@@ -256,6 +275,11 @@ function allowed(fn) {
 function noteSize(fn, body) { try { const n = Buffer.byteLength(body); if (n > 4e6) console.warn('large answer', fn, Math.round(n / 1e6) + ' MB'); } catch (e) {} }
 exports.api = onRequest({ region: 'us-east4', cors: true, memory: '4GiB', cpu: 2, timeoutSeconds: 300, secrets: ['TL_EXPORT_KEY'], maxInstances: 50, minInstances: 1 }, async (req, res) => {
   try {
+    if (req.method === 'GET' && req.query && req.query.tts) {
+      const t = String(req.query.t || '').replace(/\s+/g, ' ').trim().slice(0, 600); if (!t) return res.status(400).send('no text');
+      try { const buf = await tts(t, String(req.query.l || ''), req.query.r); res.set('Cache-Control', 'public, max-age=31536000, immutable'); return res.status(200).type('audio/mpeg').send(buf); }
+      catch (e) { console.warn('voice failed', String(e.message || e).slice(0, 160)); return res.status(503).send('voice unavailable'); }
+    }
     if (req.method !== 'POST') return res.status(200).json({ ok: true, result: 'Tashbar server' });
     const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body && Object.keys(req.body).length ? req.body : JSON.parse((req.rawBody || '{}').toString()));
     if (body && body.api === 1 && body.admin) return res.status(200).json(await admin(String(body.admin), String(body.key || ''), body.a || {}).catch(e => ({ ok: false, error: 'admin step failed: ' + String(e.message || e).slice(0, 300) })));
