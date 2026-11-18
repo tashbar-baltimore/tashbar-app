@@ -4,7 +4,7 @@
    on the part the lesson talks about (e.g. the Gemara page with Rashi boxed).
    - TL_PICS:    the picture library. id -> {file, w, h, alt, source, licence, author}. Files are served by Firebase Hosting under /pics/.
    - TL_PIC_MAP: which screen shows which picture. Key 'LESSON.ID|question text' (one screen) or 'LESSON.ID|*' (every screen of
-                 that lesson that has no picture of its own). Value {id, mark:[{box:[x,y,w,h] in % of the picture, label, from}], say}.
+                 that lesson that has no picture of its own). Value {id, mark:[{box:[x,y,w,h] in % of the picture, label, from}], cap, keep}. keep: true also keeps the old emoji picture.
                  from = the side the arrow comes from: 'left' | 'right' | 'top' | 'bottom' (default 'left');
                  at = where along that side the arrow points, 0..1 (default 0.5), so two labels do not sit on each other.
    Lanes ADD entries with TL_PIC_ADD({...library...}, {...map...}) in their own file; nothing in the lesson packs changes.
@@ -17,7 +17,16 @@ const RP_BASE = 'https://tashbar-learning-live.web.app/pics/';
 
 TL_PIC_ADD({
   'gemara-vilna-berachos-2a': { file: 'gemara-vilna-berachos-2a.jpg', w: 960, h: 1557, alt: 'A page of Gemara: Berachos daf 2, amud aleph, Vilna Shas',
-    source: 'https://commons.wikimedia.org/wiki/File:Berakhot2a.jpg', licence: 'Public domain', author: 'Widow and Brothers Romm, Vilna' }
+    source: 'https://commons.wikimedia.org/wiki/File:Berakhot2a.jpg', licence: 'Public domain', author: 'Widow and Brothers Romm, Vilna' },
+  /* batch 3 (2026-11-18): Library of Congress, Matson collection, "no known restrictions on publication" */
+  'mishkan-model-schick': { file: 'mishkan-model-schick.jpg', w: 740, h: 440, alt: 'A model of the Mishkan: the courtyard, the Mizbeach and the Ohel Moed',
+    source: 'https://www.loc.gov/pictures/item/2019698466/ (LC-DIG-matpc-11787)', licence: 'No known restrictions (Library of Congress)', author: 'Dr. Conrad Schick model; photo American Colony / Matson' },
+  'tefillin-shel-rosh-shel-yad': { file: 'tefillin-shel-rosh-shel-yad.jpg', w: 920, h: 540, alt: 'Tefillin: the shel rosh and the shel yad, with their straps and covers',
+    source: 'Library of Congress, LC-DIG-matpc-03893', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  'shofar-blowing-closeup': { file: 'shofar-blowing-closeup.jpg', w: 660, h: 860, alt: 'A Jew in a tallis blowing a shofar',
+    source: 'Library of Congress, LC-DIG-matpc-19320', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  'beis-hamikdash-model-schick': { file: 'beis-hamikdash-model-schick.jpg', w: 520, h: 510, alt: 'A model of the second Beis Hamikdash, as Dr. Schick built it',
+    source: 'Library of Congress, LC-DIG-matpc-00134', licence: 'No known restrictions (Library of Congress)', author: 'Dr. Conrad Schick model; photo American Colony / Matson' }
 }, (function () {
   /* PICS-KODESH batch 1: the daf. Teaching screens show the boxes; question screens show the same page with NO boxes, so the answer is not given away. */
   const G = 'gemara-vilna-berachos-2a', CAP = 'A real daf: Berachos daf 2, amud aleph (Vilna Shas)';
@@ -25,13 +34,56 @@ TL_PIC_ADD({
   const TOSAFOS = { box: [12.5, 4.5, 17.9, 76], label: 'Tosafos', from: 'right', at: 0.62 };
   const GEMARA = { box: [31.5, 9.5, 36.5, 53], label: 'Mishna and Gemara', from: 'bottom', at: 0.5 };
   const look = { id: G, mark: [], cap: 'Look at the daf. Where is Rashi?' };
+  const MISHNA = { box: [31.5, 9.5, 36.5, 29], label: 'Mishna', from: 'right', at: 0.35 };
+  const GEMSTART = { box: [46, 37.4, 6.5, 2.8], label: 'Gemara starts: גמ׳', from: 'bottom', at: 0.5 };
+  const KING = { box: [31.5, 9.5, 36.5, 53], label: 'Gemara: the king in the middle', from: 'bottom', at: 0.5 };
+  const DAFNUM = { box: [12.3, 0.2, 3.8, 2.2], label: 'Daf ב, amud aleph', from: 'bottom', at: 0.5 };
+  const look0 = { id: G, mark: [], cap: 'Look at the daf.' };
+  const MK = 'mishkan-model-schick', TF = 'tefillin-shel-rosh-shel-yad', SH = 'shofar-blowing-closeup';
+  const OHEL = { box: [46, 1, 33, 45], label: 'Ohel Moed', from: 'left', at: 0.5 };
+  const MIZB = { box: [37.5, 48, 12, 16], label: 'Mizbeach', from: 'bottom', at: 0.5 };
+  const GATE = { box: [16.5, 67, 19, 20], label: 'Gate', from: 'top', at: 0.3 };
+  const TFMARK = [{ box: [17.5, 34.5, 17.5, 25], label: 'Shel rosh (head)', from: 'top', at: 0.5 }, { box: [73.5, 39, 17.5, 26], label: 'Shel yad (arm)', from: 'top', at: 0.5 }];
+  const HORN = { box: [2, 10.5, 44, 37.5], label: 'A ram\u2019s horn', from: 'right', at: 0.15 };
   return {
     'LK.GEM.L06.01|Where on the daf are the Mishna and the Gemara?': { id: G, mark: [GEMARA, RASHI], cap: CAP },
     'LK.GEM.L06.01|Daf 4. Where is Rashi on the daf?': look,
     'LK.GEM.L06.01|Daf 4. Tap every true sentence about where Rashi is.': look,
     'LK.GEM.L07.01|This Rashi starts with which words?': { id: G, mark: [RASHI], cap: 'Rashi: the inside column, next to the Gemara, in Rashi script' },
     'LK.GEM.L07.01|Rashi 6. Where is Rashi printed on the daf?': look,
-    'LK.GEM.L07.01|Rashi 6. Where is each one printed on the daf? Sort the cards.': { id: G, mark: [], cap: 'Look at the daf.' }
+    'LK.GEM.L07.01|Rashi 6. Where is each one printed on the daf? Sort the cards.': { id: G, mark: [], cap: 'Look at the daf.' },
+    /* batch 2 (2026-11-18): more daf screens on the same page */
+    'LK.GEM.L06.02|On the daf, which comes first?': { id: G, mark: [MISHNA, GEMSTART], cap: 'First the Mishna, then the Gemara starts at גמ׳' },
+    'LK.GEM.L06.04|Which comes first?': { id: G, mark: [MISHNA, GEMSTART], cap: 'First the Mishna, then the Gemara starts at גמ׳' },
+    'LK.GEM.L06.04|What is in the middle of the daf?': { id: G, mark: [KING], cap: CAP },
+    'LK.GEM.L06.01|What do we call the back side of a daf?': { id: G, mark: [DAFNUM], cap: 'This side is the front: amud aleph. Turn the page for amud beis.' },
+    'LK.GEM.L07.05|Are Rashi letters a different alphabet?': { id: G, mark: [{ box: RASHI.box, label: 'Rashi script', from: 'left', at: 0.3 }], cap: 'Rashi script: the same letters, a different shape' },
+    'LK.GEM.L06.01|Daf Check 3. On the daf, what is printed in the middle in big letters?': look0,
+    'LK.GEM.L06.02|Mishna or Gemara 6. Put them in the order they come on the daf.': look0,
+    'LK.GEM.L06.01|Daf Find All. Tap every true sentence about the daf.': look0,
+    'LK.GEM.L06.01|Daf Match. Match each part of the daf to what it is.': look0,
+    'LK.GEM.L07.01|Rashi Find All. Tap every true sentence about Rashi on the daf.': look0,
+    'LK.MSH.L09.01|Same or Small. On the daf, is the mishna printed in the same letters as the Gemara, or in small letters? Type same or small.': look0,
+    /* batch 3: Mishkan, Beis Hamikdash, tefillin, shofar. Teaching screens get boxes; question screens show the picture only. */
+    'LK.CHU.L05.03|Mishkan Words 1. Find aron in this pasuk. What is it?': { id: MK, mark: [OHEL], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words 3. What is a korban?': { id: MK, mark: [MIZB], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words 3. Find korban in this pasuk. What is it?': { id: MK, mark: [MIZB], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.06|What does Parshas Terumah tell us?': { id: MK, mark: [OHEL, MIZB, GATE], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.06|Parshas Terumah is in which sefer?': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words Check 3. What is the Ohel Moed?': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words 7. Find mizbayach in this pasuk. What is it?': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words 7. Find mizbeiach in this pasuk. What is it?': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.06|Sum up Bamidbar 9:15 to 23, the cloud over the Mishkan.': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHEM.L03.04|Who destroyed the second Beis Hamikdash?': { id: 'beis-hamikdash-model-schick', mark: [], cap: 'A model of the second Beis Hamikdash' },
+    'LK.CHEM.L03.04|Tap every true fact about the second Beis Hamikdash.': { id: 'beis-hamikdash-model-schick', mark: [], cap: 'A model of the second Beis Hamikdash' },
+    'LK.CHEM.L03.04|Tap every way we remember the Beis Hamikdash.': { id: 'beis-hamikdash-model-schick', mark: [], cap: 'A model of the second Beis Hamikdash' },
+    'LK.MSH.L04.01|The Chumash says to make tefillin. Which Torah teaches HOW to make them?': { id: TF, mark: TFMARK, cap: 'Square and black, with straps: the Torah She\u2019be\u2019al Peh teaches how' },
+    'LK.MSH.L08.02|The Chumash says to make tefillin. Which Torah teaches HOW to make them?': { id: TF, mark: [], cap: 'Real tefillin' },
+    'SIM.L09.01|Put a bar mitzvah boy\'s new day in order. The cards say: put on tefillin daven with the minyan wake up and say Modeh Ani': { id: TF, mark: TFMARK, cap: 'Real tefillin' },
+    'ELEC.SPEAK.L02.01|Which tells one thing about a shofar: it comes from an animal\'s horn, or I like to eat pizza for supper?': { id: SH, mark: [HORN], cap: 'A real shofar' },
+    'ELEC.MUS.L01.01|Is the shofar\'s blast loud, or soft?': { id: SH, mark: [], cap: 'A real shofar' },
+    'ELEC.MUS.L01.02|Which sound is long: the shofar\'s tekiah, or one tap on a drum?': { id: SH, mark: [], cap: 'A real shofar', keep: true },
+    'ELEC.LOGIC.L02.04|If the shofar blows on Rosh Hashanah, then what do we do: listen quietly, or talk to friends?': { id: SH, mark: [], cap: 'A real shofar' }
   };
 })());
 
@@ -59,14 +111,22 @@ function rpHTML(use) { const P = window.TL_PICS[use.id]; if (!P) return '';
     `<figcaption>${rpEsc(use.cap || P.alt)}<button type="button" class="rpz" aria-label="Make the picture bigger">🔍</button></figcaption></figure>`; }
 function rpZoom(fig) { const id = fig.getAttribute('data-rp'), P = window.TL_PICS[id]; if (!P) return; const d = document.createElement('div'); d.className = 'rpzoom';
   d.innerHTML = `<div class="rpzin">${fig.querySelector('.rpbox').outerHTML}<p class="rpcred">Picture: ${rpEsc(P.author)} · ${rpEsc(P.licence)}</p><button type="button" class="rpclose">Close ✕</button></div>`;
-  d.addEventListener('click', e => { if (e.target === d || e.target.classList.contains('rpclose')) d.remove(); }); document.body.appendChild(d); }
+  d.addEventListener('click', e => { if (e.target === d || e.target.classList.contains('rpclose')) d.remove(); }); document.body.appendChild(d); requestAnimationFrame(() => rpFit(d.querySelector('.rpbox'))); }
 function rpDecorate() { try { if (typeof A === 'undefined' || A.view !== 'play' || !A.play) return; const p = A.play, it = p.items[p.i]; const card = document.querySelector('.qcard'); if (!card || card.querySelector('.rp')) return;
   const use = rpFind(p.id, it); if (!use) return; const h = rpHTML(use); if (!h) return;
   const old = card.querySelector('.tlpic');   /* an emoji picture is replaced; Hebrew text the boy must read (a Rashi, a pasuk) always stays */
-  if (old) { old.insertAdjacentHTML('beforebegin', h); const t = old.textContent || ''; if (!/[\u0590-\u05FF]/.test(t) && t.length < 40) old.classList.add('rpfall'); }
+  if (old) { old.insertAdjacentHTML('beforebegin', h); const t = old.textContent || ''; if (!use.keep && !/[\u0590-\u05FF]/.test(t) && t.length < 40) old.classList.add('rpfall'); }
   else { const row = card.querySelector('.qrow') || card.firstElementChild; if (row) row.insertAdjacentHTML('afterend', h); }
   const fig = card.querySelector('.rp'); fig.querySelector('.rpz').onclick = () => rpZoom(fig); fig.querySelector('.rpbox').onclick = () => rpZoom(fig);
+  rpFit(fig.querySelector('.rpbox')); requestAnimationFrame(() => rpFit(fig.querySelector('.rpbox')));
  } catch (e) { console.error('RealPics', e); } }
+/* keep every label inside the picture (a label near an edge would be cut off) */
+function rpFit(box) { if (!box) return; const b = box.getBoundingClientRect(); if (!b.width) return;
+  box.querySelectorAll('.rpt').forEach(el => { el.style.marginLeft = el.style.marginTop = '0px'; const r = el.getBoundingClientRect(); let dx = 0, dy = 0;
+    if (r.left < b.left + 4) dx = b.left + 4 - r.left; else if (r.right > b.right - 4) dx = b.right - 4 - r.right;
+    if (r.top < b.top + 4) dy = b.top + 4 - r.top; else if (r.bottom > b.bottom - 4) dy = b.bottom - 4 - r.bottom;
+    el.style.marginLeft = dx + 'px'; el.style.marginTop = dy + 'px'; }); }
+window.addEventListener('resize', () => document.querySelectorAll('.rpbox').forEach(rpFit));
 (function () {
   if (typeof window.render === 'function' && !window.render.__rp) { const _r = window.render; window.render = function () { const out = _r.apply(this, arguments); rpDecorate(); return out; }; window.render.__rp = true; }
   document.head.insertAdjacentHTML('beforeend', `<style id="realpics-css">
