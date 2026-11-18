@@ -4,7 +4,7 @@
    on the part the lesson talks about (e.g. the Gemara page with Rashi boxed).
    - TL_PICS:    the picture library. id -> {file, w, h, alt, source, licence, author}. Files are served by Firebase Hosting under /pics/.
    - TL_PIC_MAP: which screen shows which picture. Key 'LESSON.ID|question text' (one screen) or 'LESSON.ID|*' (every screen of
-                 that lesson that has no picture of its own). Value {id, mark:[{box:[x,y,w,h] in % of the picture, label, from}], say}.
+                 that lesson that has no picture of its own). Value {id, mark:[{box:[x,y,w,h] in % of the picture, label, from}], cap, keep}. keep: true also keeps the old emoji picture.
                  from = the side the arrow comes from: 'left' | 'right' | 'top' | 'bottom' (default 'left');
                  at = where along that side the arrow points, 0..1 (default 0.5), so two labels do not sit on each other.
    Lanes ADD entries with TL_PIC_ADD({...library...}, {...map...}) in their own file; nothing in the lesson packs changes.
@@ -17,7 +17,45 @@ const RP_BASE = 'https://tashbar-learning-live.web.app/pics/';
 
 TL_PIC_ADD({
   'gemara-vilna-berachos-2a': { file: 'gemara-vilna-berachos-2a.jpg', w: 960, h: 1557, alt: 'A page of Gemara: Berachos daf 2, amud aleph, Vilna Shas',
-    source: 'https://commons.wikimedia.org/wiki/File:Berakhot2a.jpg', licence: 'Public domain', author: 'Widow and Brothers Romm, Vilna' }
+    source: 'https://commons.wikimedia.org/wiki/File:Berakhot2a.jpg', licence: 'Public domain', author: 'Widow and Brothers Romm, Vilna' },
+  /* batch 3 (2026-11-18): Library of Congress, Matson collection, "no known restrictions on publication" */
+  'mishkan-model-schick': { file: 'mishkan-model-schick.jpg', w: 740, h: 440, alt: 'A model of the Mishkan: the courtyard, the Mizbeach and the Ohel Moed',
+    source: 'https://www.loc.gov/pictures/item/2019698466/ (LC-DIG-matpc-11787)', licence: 'No known restrictions (Library of Congress)', author: 'Dr. Conrad Schick model; photo American Colony / Matson' },
+  'tefillin-shel-rosh-shel-yad': { file: 'tefillin-shel-rosh-shel-yad.jpg', w: 920, h: 540, alt: 'Tefillin: the shel rosh and the shel yad, with their straps and covers',
+    source: 'Library of Congress, LC-DIG-matpc-03893', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  'shofar-blowing-closeup': { file: 'shofar-blowing-closeup.jpg', w: 660, h: 860, alt: 'A Jew in a tallis blowing a shofar',
+    source: 'Library of Congress, LC-DIG-matpc-19320', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  'beis-hamikdash-model-schick': { file: 'beis-hamikdash-model-schick.jpg', w: 520, h: 510, alt: 'A model of the second Beis Hamikdash, as Dr. Schick built it',
+    source: 'Library of Congress, LC-DIG-matpc-00134', licence: 'No known restrictions (Library of Congress)', author: 'Dr. Conrad Schick model; photo American Colony / Matson' },
+  /* batch 4 (2026-11-18): places, Library of Congress Matson collection */
+  'pyramids-giza-camel': { file: 'pyramids-giza-camel.jpg', w: 963, h: 627, alt: 'The pyramids in Mitzrayim, with a camel in front', source: 'Library of Congress, LC-DIG-matpc-23056', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  'dead-sea-shore': { file: 'dead-sea-shore.jpg', w: 850, h: 674, alt: 'The shore of the Dead Sea, with high cliffs', source: 'Library of Congress, LC-DIG-matpc-15280', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  'yarden-river': { file: 'yarden-river.jpg', w: 983, h: 696, alt: 'The Yarden (Jordan River), with trees on its banks', source: 'Library of Congress, LC-DIG-matpc-10419', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  'nile-sailboats': { file: 'nile-sailboats.jpg', w: 461, h: 559, alt: 'Sailboats on the Nile in Mitzrayim', source: 'Library of Congress, LC-DIG-matpc-03859', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  'sinai-desert-camel': { file: 'sinai-desert-camel.jpg', w: 461, h: 615, alt: 'A wide, dry desert in Sinai, with a camel', source: 'Library of Congress, LC-DIG-matpc-01951', licence: 'No known restrictions (Library of Congress)', author: 'American Colony / Matson' },
+  /* batch 5 (2026-11-18): Wikimedia Commons, free licences (credit shown in the zoom view) */
+  'mishkan-timna-model': { file: 'mishkan-timna-model.jpg', w: 960, h: 640, alt: "The life-size model of the Mishkan in the desert at Timna: the courtyard, the Mizbeach and the Ohel Moed", source: "https://commons.wikimedia.org/wiki/File:Stiftshuette_Modell_Timnapark.jpg", licence: "CC BY-SA 3.0", author: "Ruk7" },
+  'shofar-alone': { file: 'shofar-alone.jpg', w: 960, h: 678, alt: "A shofar, a ram\u2019s horn", source: "https://commons.wikimedia.org/wiki/File:Shofar-16-Zachi-Evenor.jpg", licence: "CC BY 2.0", author: "Zachi Evenor" },
+  'arba-minim-market': { file: 'arba-minim-market.jpg', w: 960, h: 854, alt: "Men choosing an esrog, with lulavim on the table", source: "https://commons.wikimedia.org/wiki/File:PikiWiki_Israel_23362_Four_Species_market_in_Bnei_Brak_(cropped).JPG", licence: "CC BY 2.5", author: "Dr. Avishai Teicher" },
+  'sukkah-canvas': { file: 'sukkah-canvas.jpg', w: 960, h: 720, alt: "A sukkah", source: "https://commons.wikimedia.org/wiki/File:Canvas_sukkah_in_the_street.JPG", licence: "CC BY-SA 3.0", author: "Bachrach44" },
+  'tzitzis-tallis-katan': { file: 'tzitzis-tallis-katan.jpg', w: 866, h: 1300, alt: "A tallis katan with tzitzis on its corners", source: "https://commons.wikimedia.org/wiki/File:Arba_Kanfot.jpg", licence: "CC BY-SA 4.0", author: "LGLou" },
+  'matzah-shmurah': { file: 'matzah-shmurah.jpg', w: 960, h: 840, alt: "A round shmurah matzah", source: "https://commons.wikimedia.org/wiki/File:Shmurah_Matzah_03.jpg", licence: "CC BY-SA 4.0", author: "Jacek Proszyk" },
+  'mezuzah-case': { file: 'mezuzah-case.jpg', w: 715, h: 1300, alt: "A mezuzah case", source: "https://commons.wikimedia.org/wiki/File:Macedonian_Mezuzah.jpg", licence: "CC BY-SA 3.0", author: "PretoriaTravel" },
+  'sefer-torah-yad': { file: 'sefer-torah-yad.jpg', w: 960, h: 720, alt: "An open sefer Torah with a yad", source: "https://commons.wikimedia.org/wiki/File:Torah_at_the_state_library_of_Victoria.jpg", licence: "CC BY-SA 4.0", author: "Azoma" },
+  /* batch 6 (2026-11-18): history and civics, Library of Congress */
+  'lloyd-street-synagogue-baltimore': { file: 'lloyd-street-synagogue-baltimore.jpg', w: 983, h: 687, alt: "The Lloyd Street Synagogue in Baltimore, built in 1845", source: "HABS MD-174, https://www.loc.gov/item/md0174/", licence: "No known restrictions (U.S. Government photo)", author: "Historic American Buildings Survey" },
+  'touro-synagogue-newport': { file: 'touro-synagogue-newport.jpg', w: 932, h: 676, alt: "The Touro Synagogue in Newport, Rhode Island, opened in 1763", source: "HABS RI-83, https://www.loc.gov/item/ri0083/", licence: "No known restrictions (U.S. Government photo)", author: "Historic American Buildings Survey" },
+  'roman-aqueduct': { file: 'roman-aqueduct.jpg', w: 963, h: 635, alt: "A Roman aqueduct: a bridge that carried water", source: "https://www.loc.gov/item/2025712623/", licence: "No known restrictions on publication", author: "Library of Congress, Photochrom print" },
+  'white-house': { file: 'white-house.jpg', w: 430, h: 394, alt: "The White House in Washington", source: "https://www.loc.gov/item/2017645173/", licence: "No known restrictions on publication", author: "George Stacy, stereograph (left half)" },
+  'supreme-court-building': { file: 'supreme-court-building.jpg', w: 840, h: 872, alt: "The Supreme Court building in Washington", source: "https://www.loc.gov/item/2017761241/", licence: "No known restrictions (FSA/OWI)", author: "U.S. Farm Security Administration / Office of War Information" },
+  'george-washington': { file: 'george-washington.jpg', w: 453, h: 492, alt: "George Washington", source: "https://www.loc.gov/item/2009633819/", licence: "No known restrictions on publication", author: "after Gilbert Stuart" },
+  'us-capitol': { file: 'us-capitol.jpg', w: 799, h: 356, alt: "The United States Capitol, where Congress meets", source: "https://www.loc.gov/item/2003677127/", licence: "No known restrictions on publication", author: "Library of Congress print" },
+  'abraham-lincoln': { file: 'abraham-lincoln.jpg', w: 1100, h: 1521, alt: "President Abraham Lincoln", source: "https://www.loc.gov/item/scsm000764/", licence: "Public domain (1860s photograph)", author: "Mathew Brady studio" },
+  /* batch 7 (2026-11-18): science, Wikimedia Commons (NASA public domain and free licences) */
+  'sun-nasa': { file: 'sun-nasa.jpg', w: 960, h: 916, alt: "The sun, photographed from space by NASA", source: "https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA's_Solar_Dynamics_Observatory_-_20100819.jpg", licence: "Public domain", author: "NASA / SDO (AIA)" },
+  'full-moon': { file: 'full-moon.jpg', w: 960, h: 969, alt: "The full moon", source: "https://commons.wikimedia.org/wiki/File:Full_Moon_Luc_Viatour.jpg", licence: "CC BY-SA 3.0", author: "Luc Viatour" },
+  'planets-montage': { file: 'planets-montage.jpg', w: 883, h: 1100, alt: "The planets of our solar system (NASA pictures put together)", source: "https://commons.wikimedia.org/wiki/File:Released_to_Public_Solar_System_Montage_(NASA)_(420390416).jpg", licence: "Public domain", author: "NASA" },
+  'leaf-veins': { file: 'leaf-veins.jpg', w: 960, h: 720, alt: "A green leaf, up close, with its veins", source: "https://commons.wikimedia.org/wiki/File:Background_green_leave_macro.jpg", licence: "Public domain", author: "unknown (public domain)" }
 }, (function () {
   /* PICS-KODESH batch 1: the daf. Teaching screens show the boxes; question screens show the same page with NO boxes, so the answer is not given away. */
   const G = 'gemara-vilna-berachos-2a', CAP = 'A real daf: Berachos daf 2, amud aleph (Vilna Shas)';
@@ -25,13 +63,145 @@ TL_PIC_ADD({
   const TOSAFOS = { box: [12.5, 4.5, 17.9, 76], label: 'Tosafos', from: 'right', at: 0.62 };
   const GEMARA = { box: [31.5, 9.5, 36.5, 53], label: 'Mishna and Gemara', from: 'bottom', at: 0.5 };
   const look = { id: G, mark: [], cap: 'Look at the daf. Where is Rashi?' };
+  const MISHNA = { box: [31.5, 9.5, 36.5, 29], label: 'Mishna', from: 'right', at: 0.35 };
+  const GEMSTART = { box: [46, 37.4, 6.5, 2.8], label: 'Gemara starts: גמ׳', from: 'bottom', at: 0.5 };
+  const KING = { box: [31.5, 9.5, 36.5, 53], label: 'Gemara: the king in the middle', from: 'bottom', at: 0.5 };
+  const DAFNUM = { box: [12.3, 0.2, 3.8, 2.2], label: 'Daf ב, amud aleph', from: 'bottom', at: 0.5 };
+  const look0 = { id: G, mark: [], cap: 'Look at the daf.' };
+  const MK = 'mishkan-model-schick', TF = 'tefillin-shel-rosh-shel-yad', SH = 'shofar-blowing-closeup';
+  const OHEL = { box: [46, 1, 33, 45], label: 'Ohel Moed', from: 'left', at: 0.5 };
+  const MIZB = { box: [37.5, 48, 12, 16], label: 'Mizbeach', from: 'bottom', at: 0.5 };
+  const GATE = { box: [16.5, 67, 19, 20], label: 'Gate', from: 'top', at: 0.3 };
+  const TFMARK = [{ box: [17.5, 34.5, 17.5, 25], label: 'Shel rosh (head)', from: 'top', at: 0.5 }, { box: [73.5, 39, 17.5, 26], label: 'Shel yad (arm)', from: 'top', at: 0.5 }];
+  const HORN = { box: [2, 10.5, 44, 37.5], label: 'A ram\u2019s horn', from: 'right', at: 0.15 };
   return {
     'LK.GEM.L06.01|Where on the daf are the Mishna and the Gemara?': { id: G, mark: [GEMARA, RASHI], cap: CAP },
     'LK.GEM.L06.01|Daf 4. Where is Rashi on the daf?': look,
     'LK.GEM.L06.01|Daf 4. Tap every true sentence about where Rashi is.': look,
     'LK.GEM.L07.01|This Rashi starts with which words?': { id: G, mark: [RASHI], cap: 'Rashi: the inside column, next to the Gemara, in Rashi script' },
     'LK.GEM.L07.01|Rashi 6. Where is Rashi printed on the daf?': look,
-    'LK.GEM.L07.01|Rashi 6. Where is each one printed on the daf? Sort the cards.': { id: G, mark: [], cap: 'Look at the daf.' }
+    'LK.GEM.L07.01|Rashi 6. Where is each one printed on the daf? Sort the cards.': { id: G, mark: [], cap: 'Look at the daf.' },
+    /* batch 2 (2026-11-18): more daf screens on the same page */
+    'LK.GEM.L06.02|On the daf, which comes first?': { id: G, mark: [MISHNA, GEMSTART], cap: 'First the Mishna, then the Gemara starts at גמ׳' },
+    'LK.GEM.L06.04|Which comes first?': { id: G, mark: [MISHNA, GEMSTART], cap: 'First the Mishna, then the Gemara starts at גמ׳' },
+    'LK.GEM.L06.04|What is in the middle of the daf?': { id: G, mark: [KING], cap: CAP },
+    'LK.GEM.L06.01|What do we call the back side of a daf?': { id: G, mark: [DAFNUM], cap: 'This side is the front: amud aleph. Turn the page for amud beis.' },
+    'LK.GEM.L07.05|Are Rashi letters a different alphabet?': { id: G, mark: [{ box: RASHI.box, label: 'Rashi script', from: 'left', at: 0.3 }], cap: 'Rashi script: the same letters, a different shape' },
+    'LK.GEM.L06.01|Daf Check 3. On the daf, what is printed in the middle in big letters?': look0,
+    'LK.GEM.L06.02|Mishna or Gemara 6. Put them in the order they come on the daf.': look0,
+    'LK.GEM.L06.01|Daf Find All. Tap every true sentence about the daf.': look0,
+    'LK.GEM.L06.01|Daf Match. Match each part of the daf to what it is.': look0,
+    'LK.GEM.L07.01|Rashi Find All. Tap every true sentence about Rashi on the daf.': look0,
+    'LK.MSH.L09.01|Same or Small. On the daf, is the mishna printed in the same letters as the Gemara, or in small letters? Type same or small.': look0,
+    /* batch 3: Mishkan, Beis Hamikdash, tefillin, shofar. Teaching screens get boxes; question screens show the picture only. */
+    'LK.CHU.L05.03|Mishkan Words 1. Find aron in this pasuk. What is it?': { id: MK, mark: [OHEL], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words 3. What is a korban?': { id: MK, mark: [MIZB], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words 3. Find korban in this pasuk. What is it?': { id: MK, mark: [MIZB], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.06|What does Parshas Terumah tell us?': { id: MK, mark: [OHEL, MIZB, GATE], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.06|Parshas Terumah is in which sefer?': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words Check 3. What is the Ohel Moed?': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words 7. Find mizbayach in this pasuk. What is it?': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.03|Mishkan Words 7. Find mizbeiach in this pasuk. What is it?': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHU.L05.06|Sum up Bamidbar 9:15 to 23, the cloud over the Mishkan.': { id: MK, mark: [], cap: 'A model of the Mishkan' },
+    'LK.CHEM.L03.04|Who destroyed the second Beis Hamikdash?': { id: 'beis-hamikdash-model-schick', mark: [], cap: 'A model of the second Beis Hamikdash' },
+    'LK.CHEM.L03.04|Tap every true fact about the second Beis Hamikdash.': { id: 'beis-hamikdash-model-schick', mark: [], cap: 'A model of the second Beis Hamikdash' },
+    'LK.CHEM.L03.04|Tap every way we remember the Beis Hamikdash.': { id: 'beis-hamikdash-model-schick', mark: [], cap: 'A model of the second Beis Hamikdash' },
+    'LK.MSH.L04.01|The Chumash says to make tefillin. Which Torah teaches HOW to make them?': { id: TF, mark: TFMARK, cap: 'Square and black, with straps: the Torah She\u2019be\u2019al Peh teaches how' },
+    'LK.MSH.L08.02|The Chumash says to make tefillin. Which Torah teaches HOW to make them?': { id: TF, mark: [], cap: 'Real tefillin' },
+    'SIM.L09.01|Put a bar mitzvah boy\'s new day in order. The cards say: put on tefillin daven with the minyan wake up and say Modeh Ani': { id: TF, mark: TFMARK, cap: 'Real tefillin' },
+    'ELEC.SPEAK.L02.01|Which tells one thing about a shofar: it comes from an animal\'s horn, or I like to eat pizza for supper?': { id: SH, mark: [HORN], cap: 'A real shofar' },
+    'ELEC.MUS.L01.01|Is the shofar\'s blast loud, or soft?': { id: SH, mark: [], cap: 'A real shofar' },
+    'ELEC.MUS.L01.02|Which sound is long: the shofar\'s tekiah, or one tap on a drum?': { id: SH, mark: [], cap: 'A real shofar', keep: true },
+    'ELEC.LOGIC.L02.04|If the shofar blows on Rosh Hashanah, then what do we do: listen quietly, or talk to friends?': { id: SH, mark: [], cap: 'A real shofar' },
+    /* batch 4: places (Mitzrayim, the Nile, the Dead Sea, the Yarden, the midbar). Captions never give a question's answer away. */
+    "ELEC.FPAST.L07.01|Which ancient land built the great pyramids?": { id: 'pyramids-giza-camel', mark: [], cap: "The great pyramids" },
+    "ELEC.FPAST.L07.01|Which river flows through Egypt?": { id: 'nile-sailboats', mark: [], cap: "Sailboats on a river in Egypt" },
+    "LK.CHEM.L01.03|Which book tells how we left Mitzrayim?": { id: 'pyramids-giza-camel', mark: [], cap: "Mitzrayim: the pyramids" },
+    "LK.CHU.L09.04|In which sefer does Yetzias Mitzrayim happen?": { id: 'pyramids-giza-camel', mark: [], cap: "Mitzrayim: the pyramids" },
+    "LK.CHEM.L02.03|What was the first plague?": { id: 'nile-sailboats', mark: [], cap: "The Nile, the river of Mitzrayim" },
+    "SIM.L09.04|Why did Moshe not strike the Nile on his own? He was too tired that day, he did not like water, or the river had protected him?": { id: 'nile-sailboats', mark: [], cap: "The Nile" },
+    "ELEC.FWORLD.L11.01|Which river is usually listed as the longest in the world?": { id: 'nile-sailboats', mark: [], cap: "Boats on the Nile" },
+    "ELEC.FWORLD.L09.01|What record does the Dead Sea hold?": { id: 'dead-sea-shore', mark: [], cap: "The shore of the Dead Sea" },
+    "ELEC.FWORLD.L09.01|Which river flows from the Kinneret into the Dead Sea?": { id: 'yarden-river', mark: [], cap: "The Yarden (Jordan River)" },
+    "LK.CHU.L06.03|Sefarim 2. How does sefer Devarim begin?": { id: 'yarden-river', mark: [], cap: "The Yarden" },
+    "ELEC.FWORLD.L06.01|What is the largest hot desert in the world?": { id: 'sinai-desert-camel', mark: [], cap: "A hot desert (Sinai)" },
+    "LK.CHU.L06.06|What does Bamidbar mean?": { id: 'sinai-desert-camel', mark: [], cap: "A midbar: a desert" },
+    "LK.CHU.L09.04|What does the name Bamidbar mean?": { id: 'sinai-desert-camel', mark: [], cap: "A midbar: a desert" },
+    "LK.CHU.L06.03|Sefarim 1. Where does sefer Bamidbar begin?": { id: 'sinai-desert-camel', mark: [], cap: "The midbar (the Sinai desert)" },
+    "SCI.LAND.L04.04|What do deserts have very little of?": { id: 'sinai-desert-camel', mark: [], cap: "A real desert" },
+    "SIM.L04.07|How much mon came down each day? None on most days, enough for a whole year, or just enough for that day?": { id: 'sinai-desert-camel', mark: [], cap: "The midbar, where the mon came down" },
+    /* batch 5: arba minim, sukkah, tzitzis, matzah, mezuzah, sefer Torah, shofar, the Mishkan at Timna */
+    "SIM.L03.03|Look at the picture. On which Yom Tov do we shake the lulav? Shavuos, Pesach, or Sukkos?": { id: 'arba-minim-market', mark: [{ box: [70, 50, 12, 11], label: 'Esrog', from: 'left', at: 0.5 }, { box: [0, 62, 55, 26], label: 'Lulavim', from: 'top', at: 0.6 }], cap: "Choosing an esrog and a lulav" },
+    "ELEC.SPEAK.L02.01|You show your lulav. Which tells one thing about it: we shake it on Sukkos, or I ate a big lunch today?": { id: 'arba-minim-market', mark: [{ box: [70, 50, 12, 11], label: 'Esrog', from: 'left', at: 0.5 }, { box: [0, 62, 55, 26], label: 'Lulavim', from: 'top', at: 0.6 }], cap: "Lulavim and esrogim" },
+    "ELEC.LOGIC.L02.03|Lulav, etrog, hadassim, ball. Which is out on Sukkos: the ball, or the etrog?": { id: 'arba-minim-market', mark: [], cap: "Real lulavim and esrogim", keep: true },
+    "SIM.L03.03|Which Yom Tov is called the time of our simcha?": { id: 'sukkah-canvas', mark: [], cap: "A sukkah" },
+    "LK.CHEM.L01.06|In which month is Sukkos?": { id: 'sukkah-canvas', mark: [], cap: "A sukkah" },
+    "ELEC.SPEAK.L05.01|After a talk about building a sukkah, which is a good question?": { id: 'sukkah-canvas', mark: [], cap: "A sukkah" },
+    "ELEC.SPEAK.L04.01|Abba tells the guests how he built the sukkah. Which way of telling is easiest to follow?": { id: 'sukkah-canvas', mark: [], cap: "A sukkah" },
+    "SIM.L04.03|Avi's friend has a bigger sukkah. What can Avi think? My sukkah is too small and bad, I wish I had his instead, or my sukkah is perfect for us?": { id: 'sukkah-canvas', mark: [], cap: "A sukkah" },
+    "LK.TRY.OPEN.01|How many knots on each corner of tzitzis?": { id: 'tzitzis-tallis-katan', mark: [{ box: [11, 45, 16, 48], label: 'Tzitzis', from: 'right', at: 0.4 }, { box: [65, 45, 17, 53], label: '', from: 'left', at: 0.4 }], cap: "Tzitzis on the corners of a tallis katan" },
+    "LK.TRY.OPEN.01|What do the tzitzis remind us of?": { id: 'tzitzis-tallis-katan', mark: [], cap: "Tzitzis" },
+    "LK.TRY.OPEN.01|Tzitzis math: how do we get 613?": { id: 'tzitzis-tallis-katan', mark: [], cap: "Tzitzis" },
+    "SIM.L09.05|In the worked example, how did Yechiel teach the knots? By doing it for him forever; all at once, very fast; or one knot at a time with praise?": { id: 'tzitzis-tallis-katan', mark: [], cap: "Tzitzis" },
+    "SIM.L03.03|Look at the picture. Matzah! Which Yom Tov is it? Sukkos, Rosh Hashanah, or Pesach?": { id: 'matzah-shmurah', mark: [], cap: "Shmurah matzah" },
+    "COMP.DIG.L05.01|In the worked example, what goes on the first slide? All the steps, the title, or the summary?": { id: 'matzah-shmurah', mark: [], cap: "Shmurah matzah" },
+    "LK.MSH.L08.02|Read the word from Shema. A mezuzah goes on these. What does it mean? The doorposts of, the gates of, or the tables of?": { id: 'mezuzah-case', mark: [], cap: "A mezuzah case" },
+    "LK.MSH.L08.02|Read the line from Shema about the mezuzah. What does the second word mean? Under, on, or between?": { id: 'mezuzah-case', mark: [], cap: "A mezuzah case" },
+    "LK.MSH.L08.02|What does sefer Torah mean? A Torah scroll, or a siddur?": { id: 'sefer-torah-yad', mark: [], cap: "A sefer Torah with a yad" },
+    "ELEC.ART.L02.02|On Simchas Torah, which is bigger: the Sefer Torah, or the little flag?": { id: 'sefer-torah-yad', mark: [], cap: "A real sefer Torah", keep: true },
+    "COMP.DIG.L05.01|Ari will teach his class about the shul's new sefer Torah. What should his slides do? Show as many colors as possible; say every word he will say; or help him teach, one idea at a time?": { id: 'sefer-torah-yad', mark: [], cap: "A sefer Torah with a yad" },
+    "ELEC.MUS.L02.02|On Rosh Hashanah, which family is the shofar in: blow instruments, or string instruments?": { id: 'shofar-alone', mark: [], cap: "A shofar" },
+    "ELEC.SPEAK.L02.01|One fact about a shofar?": { id: 'shofar-alone', mark: [], cap: "A shofar" },
+    "ELEC.MUS.L01.01|The shofar's blast is?": { id: 'shofar-alone', mark: [], cap: "A shofar" },
+    "ELEC.LOGIC.L02.03|Shofar, trumpet, drum, apple. Why is the apple out: it makes no music, or it is round and red?": { id: 'shofar-alone', mark: [], cap: "A real shofar", keep: true },
+    "SCI.INQ.L01.01|Which part helps you hear the shofar?": { id: 'shofar-alone', mark: [], cap: "A shofar" },
+    "LK.CHU.L05.05|Twice 1. Which words are the command to make the Aron?": { id: 'mishkan-timna-model', mark: [{ box: [36.5, 40, 39.5, 24], label: 'Ohel Moed', from: 'top', at: 0.5 }, { box: [14, 59, 13.5, 12], label: 'Mizbeach', from: 'bottom', at: 0.5 }], cap: "The life-size Mishkan model at Timna" },
+    "LK.CHU.L05.05|Twice 7. In which parsha does Hashem command how to make the Mishkan?": { id: 'mishkan-timna-model', mark: [], cap: "A model of the Mishkan" },
+    "LK.CHU.L05.05|Twice Check 3. In which parsha does the Torah tell the Mishkan being built?": { id: 'mishkan-timna-model', mark: [], cap: "A model of the Mishkan" },
+    "LK.CHU.L05.06|Who built the Aron?": { id: 'mishkan-timna-model', mark: [{ box: [36.5, 40, 39.5, 24], label: 'Ohel Moed', from: 'top', at: 0.5 }, { box: [14, 59, 13.5, 12], label: 'Mizbeach', from: 'bottom', at: 0.5 }], cap: "The life-size Mishkan model at Timna" },
+    "LK.CHU.L05.06|In this pasuk, what does t'rumaw mean?": { id: 'mishkan-timna-model', mark: [], cap: "The Mishkan was built from the gifts" },
+    "LK.CHU.L05.06|What does terumah mean?": { id: 'mishkan-timna-model', mark: [], cap: "The Mishkan was built from the gifts" },
+    "LK.CHU.L05.06|Which is a vessel of the Mishkan?": { id: 'mishkan-timna-model', mark: [], cap: "A model of the Mishkan" },
+    "LK.CHEM.L04.37|Where are the 39 melachos listed?": { id: 'mishkan-timna-model', mark: [], cap: "The melachos follow the jobs of building the Mishkan" },
+    "LK.CHEM.L04.37|How many are in the list of The 39 Melachos: Building the Mishkan?": { id: 'mishkan-timna-model', mark: [], cap: "A model of the Mishkan" },
+    /* batch 6: history and civics */
+    "SS.JHIST.L04.01|What is the oldest shul building in Maryland? The Lloyd Street Synagogue, Fort McHenry, or the B&O station?": { id: 'lloyd-street-synagogue-baltimore', mark: [], cap: "The Lloyd Street Synagogue, Baltimore (1845)" },
+    "SS.JHIST.L04.01|Have Jews lived in Baltimore for a long time? Yes, or no?": { id: 'lloyd-street-synagogue-baltimore', mark: [], cap: "The Lloyd Street Synagogue, Baltimore (1845)" },
+    "SS.JHIST.L05.01|What is the oldest shul building still standing in America? The Touro Synagogue, the Lloyd Street Synagogue, or Fort McHenry?": { id: 'touro-synagogue-newport', mark: [], cap: "The Touro Synagogue, Newport (1763)" },
+    "SS.CIV.L06.02|To whom did George Washington write his famous 1790 letter? The Jews of Newport, the king of England, or the Pilgrims?": { id: 'touro-synagogue-newport', mark: [], cap: "The Touro Synagogue in Newport" },
+    "SS.HIST.L07.04|Which language did the Romans speak? Latin, Greek, or Yiddish?": { id: 'roman-aqueduct', mark: [{ box: [3, 18, 94, 62], label: 'Aqueduct: a water bridge', from: 'bottom', at: 0.5 }], cap: "A Roman aqueduct" },
+    "SS.CIV.L06.01|Which branch makes the laws? Congress (legislative), the President (executive), or the Supreme Court (judicial)?": { id: 'us-capitol', mark: [], cap: "The Capitol, where Congress meets" },
+    "SS.CIV.L06.01|Does Congress make the laws? Yes, or no?": { id: 'us-capitol', mark: [], cap: "The Capitol, where Congress meets" },
+    "SS.CIV.L09.01|What is a bill? An idea for a new law, a finished law, or a kind of tax?": { id: 'us-capitol', mark: [], cap: "The Capitol, where Congress meets" },
+    "SS.CIV.L09.01|Does Congress vote on bills? Yes, or no?": { id: 'us-capitol', mark: [], cap: "The Capitol, where Congress meets" },
+    "ELEC.FWORLD.L05.01|What is the capital of the United States?": { id: 'us-capitol', mark: [], cap: "The Capitol building" },
+    "SS.CIV.L13.02|How many justices are on the Supreme Court? 9, 100, or 435?": { id: 'supreme-court-building', mark: [], cap: "The Supreme Court building" },
+    "SS.CIV.L13.02|Does the Supreme Court have 9 justices? Yes, or no?": { id: 'supreme-court-building', mark: [], cap: "The Supreme Court building" },
+    "SS.HIST.L12.03|What did the Supreme Court decide in Brown v. Board of Education (1954)? Segregated public schools were unconstitutional, schools must close, or only adults may vote?": { id: 'supreme-court-building', mark: [], cap: "The Supreme Court building" },
+    "SS.CIV.L06.01|Who leads the whole country? The President, or the governor?": { id: 'white-house', mark: [], cap: "The White House" },
+    "SS.CIV.L13.03|Is a President's term 4 years? Yes, or no?": { id: 'white-house', mark: [], cap: "The White House" },
+    "SS.HIST.L06.02|Who led the American army? George Washington, Thomas Jefferson, or Francis Scott Key?": { id: 'george-washington', mark: [], cap: "George Washington" },
+    "SS.HIST.L06.03|Which amendment ended slavery? The 13th Amendment, the First Amendment, or the Bill of Rights?": { id: 'abraham-lincoln', mark: [], cap: "President Abraham Lincoln" },
+    "SS.HIST.L05.03|Which President made Thanksgiving a national holiday? Abraham Lincoln, George Washington, or the king of England?": { id: 'abraham-lincoln', mark: [], cap: "President Abraham Lincoln" },
+    /* batch 7: science (sun, moon, planets, leaf) */
+    "SCI.SKY.L05.01|What is the sun?": { id: 'sun-nasa', mark: [], cap: "The sun, photographed by NASA" },
+    "SCI.SKY.L05.01|About how many Earths could line up across the sun?": { id: 'sun-nasa', mark: [], cap: "The sun, photographed by NASA" },
+    "SCI.SKY.L05.01|About how long does sunlight take to reach the earth?": { id: 'sun-nasa', mark: [], cap: "The sun, photographed by NASA" },
+    "SCI.SKY.L05.03|What are craters?": { id: 'full-moon', mark: [{ box: [45, 74, 12, 12], label: 'A crater', from: 'right', at: 0.5 }], cap: "The moon, through a telescope" },
+    "SCI.SKY.L05.03|Is there air to breathe on the moon?": { id: 'full-moon', mark: [], cap: "The moon, through a telescope" },
+    "SCI.SKY.L05.03|Why are astronaut footprints still on the moon?": { id: 'full-moon', mark: [], cap: "The moon, through a telescope" },
+    "SCI.SKY.L02.01|The moon is a whole, round circle. What do we call it?": { id: 'full-moon', mark: [], cap: "The moon" },
+    "SCI.SKY.L03.03|On which day of the month is the moon full?": { id: 'full-moon', mark: [], cap: "The moon, round and bright" },
+    "SCI.SKY.L04.03|When is the moon full?": { id: 'full-moon', mark: [], cap: "The moon, round and bright" },
+    "SCI.EARTH.L02.01|When is the moon full and round?": { id: 'full-moon', mark: [], cap: "The moon, round and bright" },
+    "SCI.MATT.L04.01|On the moon, would you weigh more or less?": { id: 'full-moon', mark: [], cap: "The moon" },
+    "SCI.SKY.L05.02|Which planet is closest to the sun?": { id: 'planets-montage', mark: [], cap: "The planets (NASA pictures, not to scale)" },
+    "SCI.SKY.L05.02|Which planet is the biggest?": { id: 'planets-montage', mark: [], cap: "The planets (NASA pictures, not to scale)" },
+    "SCI.SKY.L05.02|Why can we see planets in the night sky?": { id: 'planets-montage', mark: [], cap: "The planets (NASA pictures)" },
+    "SCI.PLANT.L04.01|Where does a plant make its food?": { id: 'leaf-veins', mark: [], cap: "A leaf, up close" },
+    "SCI.PLANT.L04.01|Which three things does a leaf use to make food?": { id: 'leaf-veins', mark: [{ box: [44, 28, 22, 22], label: 'Veins carry water', from: 'left', at: 0.5 }], cap: "A leaf, up close" },
+    "SCI.PLANT.L04.01|What does a leaf give off that we breathe?": { id: 'leaf-veins', mark: [], cap: "A leaf, up close" },
+    "SCI.PLANT.L02.02|Why are leaves spread out wide?": { id: 'leaf-veins', mark: [], cap: "A leaf, up close" }
   };
 })());
 
@@ -59,14 +229,22 @@ function rpHTML(use) { const P = window.TL_PICS[use.id]; if (!P) return '';
     `<figcaption>${rpEsc(use.cap || P.alt)}<button type="button" class="rpz" aria-label="Make the picture bigger">🔍</button></figcaption></figure>`; }
 function rpZoom(fig) { const id = fig.getAttribute('data-rp'), P = window.TL_PICS[id]; if (!P) return; const d = document.createElement('div'); d.className = 'rpzoom';
   d.innerHTML = `<div class="rpzin">${fig.querySelector('.rpbox').outerHTML}<p class="rpcred">Picture: ${rpEsc(P.author)} · ${rpEsc(P.licence)}</p><button type="button" class="rpclose">Close ✕</button></div>`;
-  d.addEventListener('click', e => { if (e.target === d || e.target.classList.contains('rpclose')) d.remove(); }); document.body.appendChild(d); }
+  d.addEventListener('click', e => { if (e.target === d || e.target.classList.contains('rpclose')) d.remove(); }); document.body.appendChild(d); requestAnimationFrame(() => rpFit(d.querySelector('.rpbox'))); }
 function rpDecorate() { try { if (typeof A === 'undefined' || A.view !== 'play' || !A.play) return; const p = A.play, it = p.items[p.i]; const card = document.querySelector('.qcard'); if (!card || card.querySelector('.rp')) return;
   const use = rpFind(p.id, it); if (!use) return; const h = rpHTML(use); if (!h) return;
   const old = card.querySelector('.tlpic');   /* an emoji picture is replaced; Hebrew text the boy must read (a Rashi, a pasuk) always stays */
-  if (old) { old.insertAdjacentHTML('beforebegin', h); const t = old.textContent || ''; if (!/[\u0590-\u05FF]/.test(t) && t.length < 40) old.classList.add('rpfall'); }
+  if (old) { old.insertAdjacentHTML('beforebegin', h); const t = old.textContent || ''; if (!use.keep && !/[\u0590-\u05FF]/.test(t) && t.length < 40) old.classList.add('rpfall'); }
   else { const row = card.querySelector('.qrow') || card.firstElementChild; if (row) row.insertAdjacentHTML('afterend', h); }
   const fig = card.querySelector('.rp'); fig.querySelector('.rpz').onclick = () => rpZoom(fig); fig.querySelector('.rpbox').onclick = () => rpZoom(fig);
+  rpFit(fig.querySelector('.rpbox')); requestAnimationFrame(() => rpFit(fig.querySelector('.rpbox')));
  } catch (e) { console.error('RealPics', e); } }
+/* keep every label inside the picture (a label near an edge would be cut off) */
+function rpFit(box) { if (!box) return; const b = box.getBoundingClientRect(); if (!b.width) return;
+  box.querySelectorAll('.rpt').forEach(el => { el.style.marginLeft = el.style.marginTop = '0px'; const r = el.getBoundingClientRect(); let dx = 0, dy = 0;
+    if (r.left < b.left + 4) dx = b.left + 4 - r.left; else if (r.right > b.right - 4) dx = b.right - 4 - r.right;
+    if (r.top < b.top + 4) dy = b.top + 4 - r.top; else if (r.bottom > b.bottom - 4) dy = b.bottom - 4 - r.bottom;
+    el.style.marginLeft = dx + 'px'; el.style.marginTop = dy + 'px'; }); }
+window.addEventListener('resize', () => document.querySelectorAll('.rpbox').forEach(rpFit));
 (function () {
   if (typeof window.render === 'function' && !window.render.__rp) { const _r = window.render; window.render = function () { const out = _r.apply(this, arguments); rpDecorate(); return out; }; window.render.__rp = true; }
   document.head.insertAdjacentHTML('beforeend', `<style id="realpics-css">
