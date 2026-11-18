@@ -30,7 +30,7 @@ function dpSubj_(id) {
   if (p === 'SCI') return 'SCI';
   if (p === 'SS' || p === 'SOC' || p === 'HIST' || p === 'JHIST' || p === 'GEO' || p === 'CIV') return 'SOC';
   if (p === 'LK' || p === 'HEB' || p === 'KOD' || p === 'TQ') return 'LK';
-  if (p === 'COMP' || p === 'ELEC' || p === 'LIFE' || p === 'TRADE' || p === 'TR' || p === 'ART' || p === 'THINK') return 'ELEC';
+  if (p === 'COMP' || p === 'ELEC' || p === 'LIFE' || p === 'TRADE' || p === 'TR' || p === 'ART' || p === 'THINK' || p === 'VOC') return 'ELEC';
   if (p === 'SIM' || p === 'BS' || p === 'BSIM' || p === 'HS' || p === 'MID' || p === 'HM') return 'HEART';
   return '';
 }
