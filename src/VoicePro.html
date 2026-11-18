@@ -12,8 +12,19 @@ const API='https:'+String.fromCharCode(47,47)+'api-q26c275eaa-uk.a.run.app/';
 const ss=window.speechSynthesis, realSpeak=ss.speak.bind(ss), realCancel=ss.cancel.bind(ss);
 let cur=null, q=[], off=false;
 const HE=/[֐-׿]/, LAT=/[A-Za-z]{2,}/;
-function langOf(t){ return HE.test(t)&&!LAT.test(t)?'he':'en'; }
-function clean(t,l){ t=String(t||'').replace(/\s+/g,' ').trim(); if(l==='en') t=t.replace(/[֑-ׇ]/g,''); return t; }
+/* HEBREW (Head of School 2026-11-18): a phrase that is only Hebrew is said by Google's Hebrew voice, a little slower. A Hebrew letter inside an
+   English sentence ("This letter is א") is said by its name (Aleph) so the English voice does not skip it. Fix names one by one in LIT. */
+const LIT={'א':['Aleph',''],'ב':['Veis','v','Beis','b'],'ג':['Gimmel','g'],'ד':['Daled','d'],'ה':['Hei','h'],'ו':['Vav','v'],'ז':['Zayin','z'],'ח':['Ches','kh'],'ט':['Tes','t'],'י':['Yud','y'],'כ':['Chaf','kh','Kaf','k'],'ך':['Final Chaf','kh'],'ל':['Lamed','l'],'מ':['Mem','m'],'ם':['Final Mem','m'],'נ':['Nun','n'],'ן':['Final Nun','n'],'ס':['Samech','s'],'ע':['Ayin',''],'פ':['Fei','f','Pei','p'],'ף':['Final Fei','f'],'צ':['Tzadi','tz'],'ץ':['Final Tzadi','tz'],'ק':['Kuf','k'],'ר':['Reish','r'],'ש':['Shin','sh'],'ת':['Sav','s','Tav','t']};
+const VOW={'ָ':'aw','ַ':'ah','ֵ':'ay','ֶ':'eh','ִ':'ee','ֹ':'oy','ֺ':'oy','ֻ':'oo','ְ':'uh','ֲ':'ah','ֳ':'aw','ֱ':'eh'};
+function cl(c){ const L=LIT[c[0]]; if(!L) return null; const dag=c.indexOf('ּ')>0, sin=c.indexOf('ׂ')>0; const name=sin?'Sin':(dag&&L[2]?L[2]:L[0]), snd=sin?'s':(dag&&L[3]!=null?L[3]:L[1]);
+ let v=''; for(const k in VOW) if(c.indexOf(k)>0){ v=VOW[k]; break; } return {name,snd,v}; }
+function heWord(w){ const cs=w.match(/[א-ת][֑-ׇ]*/g)||[]; const parts=cs.map(cl).filter(Boolean); if(!parts.length) return '';
+ if(parts.length===1&&!parts[0].v) return parts[0].name;
+ if(parts.length===2&&parts[1].name==='Vav'&&!parts[0].v){ const vv=cs[1].indexOf('ּ')>0?'oo':(cs[1].indexOf('ֹ')>0?'oy':''); if(vv) return parts[0].snd+vv; }
+ const out=parts.map(p=>(p.snd||'')+(p.v||'')).join(''); return out||parts[0].name; }
+function langOf(t){ return HE.test(t)&&!LAT.test(t)?'he':'en'; }   /* Hebrew-only phrases: Google's Hebrew voice, slower (HoS 2026-11-18 chose this over spelled-out sounds) */
+function hasHe(t){ return HE.test(t); }
+function clean(t,l){ t=String(t||'').replace(/\s+/g,' ').trim(); if(l==='he') return t; t=t.replace(/[א-ת][א-ת֑-ׇ]*/g,w=>' '+heWord(w)+' ').replace(/\s+([.,!?])/g,'$1').replace(/\s+/g,' ').trim(); return t; }
 function fire(u,n){ try{ const f=u['on'+n]; if(typeof f==='function') f.call(u,{type:n,utterance:u}); }catch(e){} try{ u.dispatchEvent(new Event(n)); }catch(e){} }
 function next(){ if(cur||!q.length) return; const it=q.shift(), u=it.u; let done=false, started=false;
  const a=new Audio(it.url); cur=a; a.preload='auto'; try{ a.volume=Math.max(0,Math.min(1,u.volume==null?1:u.volume)); }catch(e){}
@@ -23,7 +34,7 @@ function next(){ if(cur||!q.length) return; const it=q.shift(), u=it.u; let done
  a.onended=()=>finish(true); a.onerror=()=>finish(false);
  const p=a.play(); if(p&&p.catch) p.catch(()=>finish(false)); }
 ss.speak=function(u){ try{ if(off||!u||!u.text) return realSpeak(u); const l=langOf(u.text), t=clean(u.text,l); if(!t||t.length>600) return realSpeak(u);
-  const r=Math.max(.75,Math.min(1.25,Number(u.rate)||1)).toFixed(2);
+  const r=Math.max(.75,Math.min(1.25,(Number(u.rate)||1)*(l==='he'?0.85:1))).toFixed(2);
   q.push({u,url:API+'?tts=1&l='+l+'&r='+r+'&t='+encodeURIComponent(t)}); next(); }catch(e){ return realSpeak(u); } };
 ss.cancel=function(){ q=[]; if(cur){ try{ cur.pause(); }catch(e){} cur=null; } realCancel(); };
 try{ Object.defineProperty(ss,'speaking',{configurable:true,get:()=>!!cur||q.length>0}); }catch(e){}

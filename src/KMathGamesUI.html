@@ -80,7 +80,7 @@
  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
  function art(name,c){ return ART[name]?ART[name](c):''; }
  function obj(name,c,n,extra){ return '<div class="kmg-obj'+(extra||'')+'"'+(n!=null?' data-i="'+n+'"':'')+'>'+art(name,c)+'</div>'; }
- function T(){ return window.TLW||{ say:function(){}, sound:function(){}, cheer:function(){}, word:function(k){ return k==='again'?'Let’s try that one again.':'Great job!'; } }; }
+ function T(){ return window.TLWorld||{ say:function(){}, sound:function(){}, cheer:function(){}, word:function(k){ return k==='again'?'Let’s try that one again.':'Great job!'; } }; }
  function speak(it){ if(!it||!it.say) return; T().say(null,it.say,{force:true}); }
  function start(opts){
   S={ o:opts, skills:(opts.skills||[]).filter(function(s){ return kindsFor(s.name); }), si:0, r:opts.random||rand01 }; S.theme=themer(S.r);
