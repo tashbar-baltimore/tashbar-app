@@ -1,0 +1,51 @@
+<script>
+/* StaffReviewPage.html — TEACHING RULE Stage C, the REBBE VIEW (Head of School DECISION 2026-11-17 1005-ET; rabbikhaver-cloud-builder-3, 2026-11-18).
+   Added to the staff screen by sgPage_ (StaffGrid.js) before StaffLibrary. READ ONLY: data from sgBoyReview / sgReviewAll (StaffReview.js).
+   1. In every boy's card (drawer): "⚡ Automatic and slipping": how many skills are automatic, which skills are slipping (missed in review,
+      not won back yet), how many reviews are due today. Each slipping skill can be given to him again with the card's normal buttons.
+   2. "See every boy": one list of all the boys this staff member may see, slipping first.
+   Words for staff: AUTOMATIC = right on the first try, no hints, not rushed, in 3 spaced reviews on later days. No double slash in this file. */
+(function(){
+if(typeof render!=='function'||typeof S==='undefined'||typeof run!=='function') return;
+const RV=window.RV=window.RV||{boy:{},all:null,allAt:0,open:false};
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function loadBoy(id){ const x=RV.boy[id]; if(x&&x.at>Date.now()-60000) return; RV.boy[id]={at:Date.now(),d:null,err:''};
+ run('sgBoyReview',S.token,id).then(r=>{ RV.boy[id]={at:Date.now(),d:r,err:''}; if(S.card===id) render(); }).catch(e=>{ RV.boy[id]={at:Date.now(),d:null,err:String(e&&e.message||e)}; if(S.card===id) render(); }); }
+function boxHTML(id){ const x=RV.boy[id]||{}; const D=x.d;
+ let h='<div class="rv-box"><h3>⚡ Automatic and slipping</h3>';
+ if(x.err) return h+'<p class="rv-soft">Could not load: '+E(x.err)+'</p></div>';
+ if(!D) return h+'<p class="rv-soft">Loading…</p></div>';
+ if(!D.tracked) return h+'<p class="rv-soft">No reviews yet. Skills join review the day after he masters them.</p><button type="button" class="rv-all" data-rv="all">See every boy</button></div>';
+ h+=`<div class="rv-nums"><span class="rv-n ok"><b>${D.auto.length}</b> automatic</span><span class="rv-n bad"><b>${D.slip.length}</b> slipping</span><span class="rv-n"><b>${D.building}</b> building</span><span class="rv-n"><b>${D.due}</b> due today</span></div>`;
+ if(D.slip.length) h+='<p class="rv-lbl">Slipping: he missed these in review and has not won them back yet. A short reteach helps.</p><ul class="rv-list">'+D.slip.map(s=>`<li>⚠️ ${E(s[1])} <small>${E(s[0])}</small></li>`).join('')+'</ul>';
+ else h+='<p class="rv-lbl">Nothing is slipping. 👍</p>';
+ if(D.auto.length) h+=`<details class="rv-det"><summary>Automatic (${D.auto.length})</summary><ul class="rv-list">`+D.auto.map(s=>`<li>⚡ ${E(s[1])}</li>`).join('')+'</ul></details>';
+ return h+'<button type="button" class="rv-all" data-rv="all">See every boy</button></div>'; }
+function fix(){ if(!S.card) return; const d=[...document.querySelectorAll('#app aside.drawer')].pop(); if(!d||d.querySelector('.rv-box')) return;
+ loadBoy(S.card); d.insertAdjacentHTML('beforeend',boxHTML(S.card)); }
+function allHTML(){ const L=RV.all;
+ let b='';
+ if(!L) b='<p class="rv-soft">Loading…</p>';
+ else if(L.err) b='<p class="rv-soft">Could not load: '+E(L.err)+'</p>';
+ else if(!L.rows.length) b='<p class="rv-soft">No boys to show.</p>';
+ else b='<table class="rv-tab"><thead><tr><th>Boy</th><th>⚠️ Slipping</th><th>⚡ Automatic</th><th>Due today</th><th>In review</th></tr></thead><tbody>'+
+  L.rows.map(r=>`<tr data-rv="boy" data-id="${E(r.id)}"><td>${E(r.name)}</td><td class="${r.slip?'bad':''}">${r.slip}</td><td>${r.auto}</td><td>${r.due}</td><td>${r.tracked}</td></tr>`).join('')+'</tbody></table>';
+ return `<div class="rv-ov" data-rv="close-bg"><div class="rv-card" role="dialog" aria-modal="true" aria-label="Automatic and slipping, every boy"><div class="rv-hd"><h2>⚡ Automatic and slipping</h2><button type="button" class="rv-x" data-rv="close" aria-label="Close">✕</button></div>
+ <p class="rv-soft">Slipping first. Tap a boy to open his card. Automatic = right on the first try, no hints, not rushed, in 3 spaced reviews on later days.</p>${b}</div></div>`; }
+function drawAll(){ let o=document.getElementById('rv-ov'); if(!RV.open){ if(o) o.remove(); return; } if(!o){ o=document.createElement('div'); o.id='rv-ov'; document.body.appendChild(o); } o.innerHTML=allHTML(); }
+function openAll(){ RV.open=true; if(!RV.all||RV.allAt<Date.now()-60000){ RV.all=null; RV.allAt=Date.now(); run('sgReviewAll',S.token).then(rows=>{ RV.all={rows:rows||[]}; drawAll(); }).catch(e=>{ RV.all={err:String(e&&e.message||e)}; drawAll(); }); } drawAll(); }
+document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-rv]'); if(!b) return; const a=b.dataset.rv;
+ if(a==='all'){ e.preventDefault(); openAll(); }
+ else if(a==='close'||(a==='close-bg'&&e.target===b)){ RV.open=false; drawAll(); }
+ else if(a==='boy'){ RV.open=false; drawAll(); S.card=b.dataset.id; render(); } });
+const _rvRender=render;
+render=function(){ const out=_rvRender.apply(this,arguments); try{ fix(); }catch(e){ console.error('StaffReview',e); } return out; };
+document.head.insertAdjacentHTML('beforeend',`<style id="rv-css">.rv-box{margin:14px 0 6px;padding:12px 14px;border-radius:14px;background:#F5F3FF;border:1px solid #DDD6FE}.rv-box h3{margin:0 0 8px;font-size:17px}
+.rv-nums{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.rv-n{background:#fff;border-radius:10px;padding:6px 10px;font-size:14px}.rv-n b{font-size:18px;margin-right:4px}.rv-n.ok b{color:#047857}.rv-n.bad b{color:#B91C1C}
+.rv-lbl{margin:6px 0;font-size:14px}.rv-soft{color:var(--soft,#64748B);font-size:14px;margin:4px 0}.rv-list{margin:4px 0 8px;padding-left:18px}.rv-list li{margin:3px 0}.rv-list small{color:var(--soft,#64748B)}
+.rv-det summary{cursor:pointer;font-weight:700;margin:6px 0}.rv-all{margin-top:6px;border:0;border-radius:10px;padding:8px 12px;background:#4338CA;color:#fff;font-weight:700;cursor:pointer}
+.rv-ov{position:fixed;inset:0;z-index:9000;background:rgba(15,23,42,.45);display:flex;align-items:center;justify-content:center;padding:16px}.rv-card{background:#fff;color:#0F172A;border-radius:18px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:18px}
+.rv-hd{display:flex;justify-content:space-between;align-items:center}.rv-hd h2{margin:0;font-size:20px}.rv-x{border:0;background:#EEF2FF;border-radius:10px;width:40px;height:40px;font-size:18px;cursor:pointer}
+.rv-tab{width:100%;border-collapse:collapse;font-size:14px}.rv-tab th,.rv-tab td{padding:8px;border-bottom:1px solid #E2E8F0;text-align:left}.rv-tab tbody tr{cursor:pointer}.rv-tab tbody tr:hover{background:#F8FAFC}.rv-tab td.bad{color:#B91C1C;font-weight:800}</style>`);
+})();
+</script>

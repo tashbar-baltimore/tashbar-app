@@ -1,0 +1,49 @@
+<script>
+/* LessonPop.html (Head of School 2026-11-18: "keep making it pop ... graphic audit and make all the updates you can").
+   Display only: changes no data, money, mastery or answers. Brightens the lesson screens found dark or plain in the audit:
+   1. Lesson header: a bright sky-to-violet gradient instead of dark navy.
+   2. Question card: a rainbow top edge instead of the dark stripe; a soft colored glow.
+   3. Answer buttons: bigger, centered, colorful border, a gentle lift when pointed at and a bounce when tapped.
+   4. "Teach me how": a real friendly button (it was a plain gray box).
+   5. 10-second challenge banner: bright sunshine instead of navy with brown letters.
+   6. Progress pips: colorful; Sign out: light instead of a heavy dark button.
+   Respects reduced motion. CSS only, so if anything is off the page still works as before. No double slash in this file (HtmlService rule). */
+(function(){
+if(document.getElementById('lpop-css')) return;
+const s=document.createElement('style'); s.id='lpop-css'; s.textContent=`
+html body .phero{background:radial-gradient(500px 160px at 85% 0%,rgba(253,224,71,.45),rgba(253,224,71,0) 70%),linear-gradient(120deg,#2563EB 0%,#7C3AED 55%,#DB2777 100%)!important;box-shadow:0 10px 26px rgba(124,58,237,.28)!important}
+html body .play .qcard{box-shadow:0 14px 34px rgba(99,102,241,.16)!important;border-top:7px solid transparent!important;background-image:linear-gradient(#fff,#fff),linear-gradient(90deg,#F59E0B,#EF4444,#EC4899,#8B5CF6,#3B82F6,#10B981)!important;background-origin:border-box!important;background-clip:padding-box,border-box!important}
+html body .qcard .opts .opt{min-height:78px;border-radius:22px!important;border:3px solid #C7D2FE!important;background:linear-gradient(180deg,#FFFFFF,#EEF2FF)!important;box-shadow:0 6px 0 #C7D2FE,0 10px 20px rgba(99,102,241,.12)!important;text-align:center!important;justify-content:center;font-size:clamp(28px,2.8vw,36px)!important;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+html body .qcard .opts .opt.lk-he{font-size:clamp(52px,5.2vw,68px)!important;min-height:104px}
+html body .qcard .qrow{font-size:clamp(30px,3.2vw,42px)!important;line-height:1.25!important}
+html body .qcard .qrow *{font-size:inherit}
+html body .qcard{font-size:22px}
+html body .qcard .opts .opt:nth-child(4n+1){border-color:#93C5FD!important;box-shadow:0 6px 0 #93C5FD,0 10px 20px rgba(59,130,246,.14)!important}
+html body .qcard .opts .opt:nth-child(4n+2){border-color:#F9A8D4!important;box-shadow:0 6px 0 #F9A8D4,0 10px 20px rgba(236,72,153,.14)!important}
+html body .qcard .opts .opt:nth-child(4n+3){border-color:#FCD34D!important;box-shadow:0 6px 0 #FCD34D,0 10px 20px rgba(245,158,11,.14)!important}
+html body .qcard .opts .opt:nth-child(4n+4){border-color:#86EFAC!important;box-shadow:0 6px 0 #86EFAC,0 10px 20px rgba(16,185,129,.14)!important}
+html body .qcard .opts .opt:hover:not(:disabled){transform:translateY(-3px)}
+html body .qcard .opts .opt:active:not(:disabled){transform:translateY(5px);box-shadow:0 1px 0 #C7D2FE!important}
+html body .qcard .tbbtn{border:0!important;border-radius:999px!important;padding:12px 26px!important;width:auto!important;background:linear-gradient(180deg,#60A5FA,#3B82F6)!important;color:#fff!important;font:800 19px var(--body,'Nunito'),sans-serif!important;cursor:pointer;box-shadow:0 5px 0 #1D4ED8,0 10px 18px rgba(59,130,246,.25)!important;margin-top:8px}
+html body .qcard .tbbtn:active{transform:translateY(4px);box-shadow:0 1px 0 #1D4ED8!important}
+html body .tq-tag{background:linear-gradient(90deg,#F97316,#EC4899)!important;color:#fff!important}
+html body .tq-hd{background:linear-gradient(90deg,#FDE047,#FDBA74 60%,#F9A8D4)!important;color:#7C2D12!important;border-radius:14px!important;padding:8px 14px!important;-webkit-text-fill-color:#7C2D12!important}
+html body .tq-op{border-radius:20px!important;border-color:#C7D2FE!important;background:linear-gradient(180deg,#fff,#EEF2FF)!important;text-align:center!important;font-size:30px!important;min-height:84px!important;box-shadow:0 5px 0 #C7D2FE!important}
+html body .tq-op.tq-ok{background:#DCFCE7!important;border-color:#16A34A!important}
+html body .tq-op.tq-no{background:#FEE2E2!important;border-color:#DC2626!important}
+html body .pips .pip.cur,html body .pips .pip.done{background:linear-gradient(90deg,#F59E0B,#EC4899,#8B5CF6)!important}
+html body .tl-out{background:#fff!important;color:#1E1B4B!important;border:2px solid #C7D2FE!important;box-shadow:0 4px 0 #C7D2FE!important}
+#tqh .tq-q{font-size:clamp(30px,3vw,38px)!important}
+#tqh .tq-pic{font-size:52px!important;text-align:center!important}
+#tqh .tq-op,#tqh .tq-op *{font-size:30px!important}
+#tqh .tq-op.lp-he,#tqh .tq-op.lp-he *,html body .qcard .opts .opt.lp-he,html body .qcard .opts .opt.lp-he *{font-size:clamp(52px,5.2vw,68px)!important;font-family:'Frank Ruhl Libre','SBL Hebrew',serif!important}
+#tqh .tq-op.lp-he{min-height:104px!important}
+@media (prefers-reduced-motion:reduce){html body .qcard .opts .opt{transition:none}}
+`; document.head.appendChild(s);
+/* answers that are Hebrew letters or words get the extra-big size */
+const HE=/[\u0590-\u05FF]/, LAT=/[A-Za-z]/;
+function mark(){ document.querySelectorAll('#tqh .tq-op:not(.lp-x),.qcard .opts .opt:not(.lp-x)').forEach(b=>{ b.classList.add('lp-x'); const t=b.textContent||''; if(HE.test(t)&&!LAT.test(t)&&t.trim().length<=14) b.classList.add('lp-he'); }); }
+try{ new MutationObserver(()=>{ mark(); }).observe(document.body,{childList:true,subtree:true}); }catch(e){}
+mark();
+})();
+</script>

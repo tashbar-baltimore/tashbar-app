@@ -46,6 +46,7 @@ function sgPage_() {
   try { add += HtmlService.createHtmlOutputFromFile('StaffAccess').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('SchoolBuilderPage').getContent(); } catch (e) {}   /* v266 takeover3: Schools & Families front door + See what the kids see banner (SchoolBuilder.js) */   /* Access.js: schools, roles, parents (Head of School and school admins) */   /* v197: walk-around (phone), class Olam Haba sky, Torah moments, bechina day, Parsha of the week; LAST (uses SPX and SPD) */
   try { add += HtmlService.createHtmlOutputFromFile('FireLinks').getContent(); } catch (e) {}   /* EVERYTHING ON FIREBASE: links from web.app carry the sign-in (FireBridge.js) */
+  try { add += HtmlService.createHtmlOutputFromFile('StaffReviewPage').getContent(); } catch (e) {}   /* v387 Teaching rule Stage C: rebbe view, automatic and slipping (StaffReview.js) */
   try { add += HtmlService.createHtmlOutputFromFile('StaffLibrary').getContent(); } catch (e) {}   /* Library & One-Tap Command Center (Library.js); floating button, own overlay, LAST */
   var i = page.lastIndexOf('</body>'); if (add) page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
   return HtmlService.createHtmlOutput(tlTheme_(page, 'staff'))

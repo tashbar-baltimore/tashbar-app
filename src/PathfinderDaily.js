@@ -41,6 +41,27 @@ var PFD = {
   MAX_EVENTS: 80
 };
 
+/* ================================================================== KNOWLEDGE STOP (v385, rabbikhaver-cloud-builder-3, 2026-11-18)
+   PF-TWO1 4.5 says the path ends with "the school's other steps (Science or Social Studies)"; it was never built, so new Science
+   (Levels 7-8, v383) never reached a boy's day. Head of School 2026-11-17: "do all the stuff that's ready", decisions delegated.
+   ONE stop a day, after Writing: Science and Social Studies take turns by day. Placed BY GRADE (no Pathfinder test for these):
+   Level = grade + 1 (K = Level 1; grade 6 = Science Level 7; grade 7 = Science Level 8), or the staff placement (Placement / Command
+   Center) when a teacher set one. Built fresh each day and NOT stored in his state: no climb, booster or age lock touches it.
+   Grade unknown = no knowledge stop (exactly as before). No money. */
+PFD.NAMES.SCI = 'Science'; PFD.NAMES.SOC = 'Social Studies'; PFD.ICONS.SCI = '🔬'; PFD.ICONS.SOC = '🗺️'; PFD.PAGE.SCI = 'SCI'; PFD.PAGE.SOC = 'SS';
+var PFD_PLACE_ = null;   /* this boy's PL_Place row, set by pfdState_ for the request (never saved) */
+function pfdKnowledgeStop_(skills, grade, now) {
+  if (grade == null || grade === '' || isNaN(Number(grade))) return null;
+  var d = new Date(now), day = Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(), 0, 1)) / 86400000);
+  var order = day % 2 === 0 ? ['SCI', 'SOC'] : ['SOC', 'SCI'];
+  for (var i = 0; i < order.length; i++) { var k = order[i]; if (!pfdLadder_(k).length) continue;
+    var pl = PFD_PLACE_ && PFD_PLACE_[k] && PFD_PLACE_[k].level ? PFD_PLACE_[k] : null;
+    var lv = pl ? Number(pl.level) : Math.max(1, Number(grade) + 1);
+    var t = pfdStop_(k, { level: lv, locked: false }, skills, grade); if (!t.start) continue;   /* everything mastered there: try the other subject */
+    t.area = 'general'; t.level = lv; t.name = PFD.NAMES[k]; t.knowledge = 1; t.placedBy = pl ? 'staff' : 'grade'; return t; }
+  return null;
+}
+
 /* ================================================================== GATE */
 function pfdOn_(sid) { if (PFD_LIVE) return true; return typeof pfIsTest_ === 'function' ? pfIsTest_(sid) : /^TEST-/.test(String(sid)); }
 
@@ -75,6 +96,7 @@ function pfdStrandOf_(skill) {
   if (/^HEB\./.test(id)) return 'HEB';
   if ((m = /^LK\.([A-Z]+)\./.exec(id))) return m[1];
   if ((m = /^(MATH|READ|LANG|WRIT)\./.exec(id))) return m[1] === 'WRIT' ? 'LANG' : m[1];
+  if ((m = /^(SCI|SS)\./.exec(id))) return m[1] === 'SS' ? 'SOC' : 'SCI';   /* v385 knowledge stop: names only (no D.s strand, so climb skips it) */
   return null;
 }
 function pfdDayKey_(now) { var d = new Date(now); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
@@ -243,6 +265,7 @@ function pfdPath_(D, skills, grade, set, now) {
   set.kodesh.concat(set.general).forEach(function (k) { var S = D.s[k]; if (!S || S.done) return; var t = pfdStop_(k, S, skills, grade);
     t.area = S.area; t.level = S.level; t.name = PFD.NAMES[k]; if (k === 'CHU' && kriDone) t.kriyahTime = 1; stops.push(t);
     if (!S.first && t.start) S.first = { lv: t.lessonsAt, skill: t.start, at: now };   /* his first lesson after this placement (pilot check KJ) */ });
+  try { var ks = pfdKnowledgeStop_(skills, grade, now); if (ks) stops.push(ks); } catch (e) {}   /* v385: Science or Social Studies, by grade */
   var booster = null;
   if (bk && D.s[bk]) { booster = pfdStop_(bk, D.s[bk], skills, grade); booster.area = D.s[bk].area; booster.level = D.s[bk].level; booster.name = PFD.NAMES[bk]; booster.booster = 1; }
   return { day: pfdDayKey_(now), band: pfdBand_(grade), total: set.minutes[pfdBand_(grade)], boostMin: set.booster.minutes, stops: stops, booster: booster };
@@ -289,6 +312,7 @@ function pfdState_(sid, now) {
   var kp = {}; try { kp = typeof libKodeshPlace_ === 'function' ? (libKodeshPlace_(sid) || {}) : {}; } catch (e) { kp = {}; }   /* LIBRARY: a staff Kodesh placement (Command Center) */
   if (!prof.kodesh && !Object.keys(prof.general).length && !Object.keys(kp).length) return null;
   var R = pfdRead_(sid), place = {}; try { place = (plPlacements_() || {})[sid] || {}; } catch (e) { place = {}; }
+  PFD_PLACE_ = place;   /* v385: the knowledge stop reads a staff Science / Social Studies placement from here */
   pfdSync_(R.D, prof, place, pfdHold_(sid), set, now, kp);
   if (!Object.keys(R.D.s).length) return null;
   return { R: R, set: set, grade: pfdGrade_(sid) };

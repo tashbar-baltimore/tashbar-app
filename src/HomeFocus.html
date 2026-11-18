@@ -52,7 +52,7 @@ html body .overlay .ocard{animation:hfpop .45s cubic-bezier(.2,1.5,.4,1) both}
 `; document.head.appendChild(s); }
 function count(sel,inner){ try{ const s=document.querySelector(sel); return s?s.querySelectorAll(inner).length:0; }catch(e){ return 0; } }
 function doorsHtml(){ const n={lib:count('.hlx-lib','.hlx-card'),games:count('.hlx-games','.hptile,button'),mine:count('.hlx-mine','button')};
- const c={lib:n.lib?n.lib+' subjects':'',games:n.games?n.games+' games':'',mine:''};
+ const c={lib:n.lib?n.lib+' subjects':'',games:n.games?n.games+' games':'',mine:'Store · Bank · Trophies'};
  return DOORS.map(d=>`<button type="button" class="hf-door" data-hf="${d.k}" style="background:${d.bg}" aria-label="${d.name}: ${d.sub}"><span class="ico" aria-hidden="true">${d.ico}</span><b>${d.name}</b><small>${d.sub}</small>${c[d.k]?`<span class="cnt">${c[d.k]}</span>`:''}</button>`).join(''); }
 function decorate(){
  const top=document.querySelector('.hlx-top'), ok=A.view==='hub'&&!!A.st&&!!top&&!!document.querySelector('.hlx-lib');
