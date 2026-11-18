@@ -7,5 +7,5 @@ node web/build.js
 [ -d node_modules/jsdom ] || npm i --no-save --no-audit --no-fund jsdom@24.1.3 >/dev/null
 node tools/curriculum_index.js web/dist src/Placement.js src/CurriculumIndex.js web/dist/curriculum || echo "curriculum index skipped"
 python3 web/token.py /tmp/.fbtok
-python3 web/deploy.py tashbar-learning-live /tmp/.fbtok "${1:-rebuild from live}"
+python3 web/deploy_add.py tashbar-learning-live /tmp/.fbtok "${1:-rebuild from live}"   # ADD-ONLY: keeps other builders' live files (pics/, curriculum/ ...)
 rm -f /tmp/.fbtok
