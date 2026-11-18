@@ -49,7 +49,7 @@ body:has(#tqh) .lf-card{display:none!important}
 function playKey(){ try{ return A.play?String(A.play.skill||A.play.id||A.play.c||'')+'|'+String(A.play.startedAt||A.play.t0||''):''; }catch(e){ return ''; } }
 function sayText(t){ try{ const u=new SpeechSynthesisUtterance(String(t).replace(/[֐-׿]+/g,' ').replace(/\s+/g,' ').trim()); u.rate=.92; speechSynthesis.cancel(); speechSynthesis.speak(u); }catch(e){} }
 function close(){ const c=document.querySelector('.lf-card'); if(c) c.remove(); try{ speechSynthesis.cancel(); }catch(e){} }
-function open(html,txt){ close(); css(); const hasSteps=!!document.querySelector('.qcard .how .tbbtn'); let kid=''; try{ const p=A.play, it=p&&p.items&&p.items[p.i], sk=String((it&&it.skill)||(p&&p.id)||''); if(window.KL&&KL.on&&KL.on()&&KL.has(sk)) kid=sk.replace(/[^A-Za-z0-9.]/g,''); }catch(e){}
+function open(html,txt){ close(); css(); const hasSteps=!!document.querySelector('.qcard .how .tbbtn'); let kid=''; try{ const p=A.play, it=p&&p.items&&p.items[p.i], sk=String((it&&it.skill)||(p&&p.id)||''); if(window.KL&&KL.on&&KL.on()&&KL.has(sk)) kid=sk.replace(/[^A-Za-z0-9.]/g,''); else if(window.KR&&KR.on&&KR.on()&&KR.has(sk)) kid=sk.replace(/[^A-Za-z0-9.]/g,''); }catch(e){}
  const d=document.createElement('div'); d.className='lf-card'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Learn it');
  d.innerHTML=`<div class="lf-box"><div class="lf-top"><span class="ic" aria-hidden="true">💡</span><div><small>Learn it</small><h2>Here’s how it works</h2></div><button type="button" class="lf-say" data-lf="say">🔊 Read it to me</button></div><div class="lf-body">${html}</div><div class="lf-row">${kid?`<button type="button" class="lf-steps" data-lf="kl" data-id="${kid}">🍎 Play the fun lesson</button>`:''}${hasSteps?'<button type="button" class="lf-steps" data-lf="steps">👣 Show me step by step</button>':''}<button type="button" class="lf-go" data-lf="go">I’m ready! ✓</button></div></div>`;
  document.body.appendChild(d); LF.txt=txt; setTimeout(()=>{ const g=d.querySelector('.lf-go'); if(g) g.focus(); },60); }
@@ -73,7 +73,7 @@ document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.tar
  if(k==='go'){ close(); }
  else if(k==='say'){ sayText(LF.txt||''); }
  else if(k==='help'){ if(LF.how) open(LF.how.html,LF.how.txt); }
- else if(k==='kl'){ close(); try{ KL.open(b.dataset.id); }catch(x){} }
+ else if(k==='kl'){ close(); try{ const id=b.dataset.id; if(window.KL&&KL.has(id)) KL.open(id); else if(window.KR&&KR.has(id)) KR.open(id); }catch(x){} }
  else if(k==='steps'){ close(); const t=document.querySelector('.qcard .how .tbbtn'); if(t){ document.body.classList.remove('lf-on'); t.click(); setTimeout(()=>{ try{ decorate(); }catch(x){} },50); } }
  e.preventDefault(); e.stopPropagation(); },true);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.querySelector('.lf-card')) close(); });
