@@ -48,7 +48,11 @@ function sgPage_() {
   try { add += HtmlService.createHtmlOutputFromFile('FireLinks').getContent(); } catch (e) {}   /* EVERYTHING ON FIREBASE: links from web.app carry the sign-in (FireBridge.js) */
   try { add += HtmlService.createHtmlOutputFromFile('StaffReviewPage').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('StuckSpotsPage').getContent(); } catch (e) {}
-  try { add += HtmlService.createHtmlOutputFromFile('DepartmentsPage').getContent(); } catch (e) {}   /* HoS 2026-11-18: Departments, Phase 1 (Departments.js) */   /* HoS 2026-11-18: Where kids get stuck (StuckSpots.js), read only */   /* v387 Teaching rule Stage C: rebbe view, automatic and slipping (StaffReview.js) */
+  try { add += HtmlService.createHtmlOutputFromFile('DepartmentsPage').getContent(); } catch (e) {}
+  try { add += HtmlService.createHtmlOutputFromFile('DeptTodoUI').getContent(); } catch (e) {}
+  try { add += HtmlService.createHtmlOutputFromFile('DeptCurrUI').getContent(); } catch (e) {}   /* HoS 2026-11-18: the department head's Curriculum tab + niche departments (DeptCurr.js) */   /* HoS 2026-11-18: Departments Phase 2, the To do board (DeptTodo.js) */   /* HoS 2026-11-18: Departments, Phase 1 (Departments.js) */   /* HoS 2026-11-18: Where kids get stuck (StuckSpots.js), read only */   /* v387 Teaching rule Stage C: rebbe view, automatic and slipping (StaffReview.js) */
+  try { add += HtmlService.createHtmlOutputFromFile('StudentLookupUI').getContent(); } catch (e) {}   /* STUDENT LOOKUP (HoS 2026-11-18): Find a student, one page, everything changeable (StudentLookup.js) */
+  try { add += HtmlService.createHtmlOutputFromFile('GradeIntakeUI').getContent(); } catch (e) {}   /* LEARN BY LEVEL section 3: Class lists, Grades to confirm, Move up, Learn by level on the student page (GradeIntake.js) */
   try { add += HtmlService.createHtmlOutputFromFile('StaffLibrary').getContent(); } catch (e) {}   /* Library & One-Tap Command Center (Library.js); floating button, own overlay, LAST */
   var i = page.lastIndexOf('</body>'); if (add) page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
   return HtmlService.createHtmlOutput(tlTheme_(page, 'staff'))

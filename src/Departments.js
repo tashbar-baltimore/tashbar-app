@@ -63,6 +63,12 @@ function dpCatalog_() {
 function dpIn_(d, id, moves) {
   if ((moves[id] || []).indexOf(d.id) >= 0) return true;
   var s = dpSubj_(id), g = dpGrade_(id);
+  if (d.and) {   /* niche department (DeptCurr.js dpDeptAdd): every rule it has must match */
+    if (d.subj && d.subj.indexOf(s) < 0) return false;
+    if (d.grades && !(g != null && g >= d.grades[0] && g <= d.grades[1])) return false;
+    if (d.pre && !d.pre.some(function (p) { return String(id).indexOf(p + '.') === 0 || String(id) === p; })) return false;
+    return !!(d.subj || d.grades || d.pre);
+  }
   if (d.subj && d.subj.indexOf(s) >= 0) return true;
   if (d.grades && g != null && g >= d.grades[0] && g <= d.grades[1]) return true;
   return false;

@@ -1,0 +1,209 @@
+<script>
+(function(){ try{ if(!document.getElementById("kmg-css")){ var s=document.createElement("style"); s.id="kmg-css"; s.textContent="\n/* K-1 MATH GAMES (LEARN BY LEVEL section 4.1). Math Level 1 skills as game rounds: 5 quick items, touch and drag, spoken, no reading needed.\n   Each item is recorded under its own skill_id through the app's existing evidence call (opts.record). The look comes from the world tokens\n   (WorldThemeUI.html). Answer positions use a fair Fisher-Yates shuffle with crypto randomness. No double slash in this file. */\n.kmg{ --kmg-o:clamp(64px,9.5vw,124px); --kmg-s:clamp(46px,5.8vw,80px); --kmg-c:clamp(52px,7vw,92px); position:relative; max-width:1100px; margin:0 auto; font-family:var(--w-font-body,'Fredoka',system-ui,sans-serif); color:var(--w-ink,#2B2350); user-select:none; -webkit-user-select:none; touch-action:none; }\n.kmg-top{ display:flex; align-items:center; gap:14px; margin-bottom:12px; }\n.kmg-hear,.kmg-x{ width:var(--w-tap,84px); height:var(--w-tap,84px); border-radius:50%; border:0; background:var(--w-accent2,#2FB5E8); color:#fff; font-size:calc(var(--w-tap,84px) * .42); cursor:pointer; box-shadow:var(--w-shadow); flex:none; }\n.kmg-x{ background:var(--w-surface,#fff); color:var(--w-soft,#555); border:var(--w-border,3px) solid var(--w-line,#ddd); margin-left:auto; }\n.kmg-dots{ display:flex; gap:10px; flex:1; justify-content:center; }\n.kmg-dots i{ width:calc(var(--w-tap,84px) * .3); height:calc(var(--w-tap,84px) * .3); border-radius:50%; background:var(--w-line,#eee); border:3px solid rgba(0,0,0,.06); transition:background .3s; }\n.kmg-dots i.ok{ background:var(--w-good,#22A85A); } .kmg-dots i.now{ background:var(--w-accent,#FF7A3D); transform:scale(1.15); }\n.kmg-stage{ position:relative; background:var(--w-surface,#fff); border-radius:var(--w-radius,30px); box-shadow:var(--w-shadow); border:var(--w-border,4px) solid var(--w-line,#eee); min-height:min(58vh,520px); padding:18px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; overflow:hidden; }\n.kmg-say{ font:600 calc(var(--w-fs,22px) * 1.05)/1.2 var(--w-font-display,'Fredoka',sans-serif); text-align:center; color:var(--w-soft,#555); min-height:1.2em; }\nbody.world-explorers .kmg-say{ font-size:20px; opacity:.75; }\n.kmg-row{ display:flex; flex-wrap:wrap; gap:14px; justify-content:center; align-items:flex-end; }\n.kmg-obj{ width:var(--kmg-o); height:var(--kmg-o); position:relative; cursor:pointer; transition:transform .25s var(--w-ease,ease); }\n.kmg-obj svg{ width:100%; height:100%; display:block; pointer-events:none; }\n.kmg-obj.counted::after{ content:attr(data-n); position:absolute; right:-6px; top:-8px; background:var(--w-accent,#FF7A3D); color:#fff; border-radius:999px; min-width:30px; height:30px; font:700 18px/30px var(--w-font-display,sans-serif); text-align:center; }\n.kmg-obj.gone{ opacity:.18; filter:grayscale(1); transform:translateY(-14px) scale(.85); }\n.kmg-obj.gone::before{ content:\"\"; position:absolute; inset:6px; border:3px dashed var(--w-soft,#888); border-radius:50%; }\n.kmg-tray{ background:var(--w-bg,#FFF6DC); border:var(--w-border,4px) solid var(--w-line,#eee); border-radius:var(--w-radius,30px); padding:14px; min-width:150px; min-height:140px; display:flex; flex-wrap:wrap; gap:8px; align-content:center; justify-content:center; cursor:pointer; transition:transform .2s; }\n.kmg-tray.pick:hover{ transform:translateY(-4px); }\n.kmg-choices{ display:flex; gap:var(--w-gap,22px); justify-content:center; flex-wrap:wrap; margin-top:16px; }\n.kmg-ch{ min-width:var(--w-btn-h,120px); height:var(--w-btn-h,120px); border-radius:var(--w-radius-btn,999px); border:var(--w-border,4px) solid var(--w-line,#eee); background:var(--w-surface,#fff); color:var(--w-ink,#2B2350);\n font:700 calc(var(--w-btn-h,120px) * .46)/1 var(--w-font-display,'Fredoka',sans-serif); cursor:pointer; box-shadow:var(--w-shadow); padding:0 18px; transition:transform .2s var(--w-ease,ease); }\n.kmg-ch:active{ transform:scale(.94); }\n.kmg-glow{ animation:kmgGlow 1s ease-in-out infinite; } @keyframes kmgGlow{ 50%{ box-shadow:0 0 0 10px rgba(255,201,64,.55),var(--w-shadow); transform:scale(1.05); } }\n.kmg-bad{ animation:kmgShake .4s; } @keyframes kmgShake{ 25%{ transform:translateX(-8px); } 75%{ transform:translateX(8px); } }\n.kmg-good{ background:var(--w-good,#22A85A) !important; color:#fff !important; border-color:transparent !important; }\n.kmg-drop{ border:4px dashed var(--w-line,#ccc); border-radius:var(--w-radius,24px); }\n.kmg-drop.hot{ border-color:var(--w-accent2,#2FB5E8); background:rgba(47,181,232,.08); }\n.kmg-drag{ cursor:grab; touch-action:none; } .kmg-drag.lift{ position:fixed; z-index:2147482000; pointer-events:none; transform:scale(1.15); filter:drop-shadow(0 10px 12px rgba(0,0,0,.25)); }\n.kmg-frame{ display:grid; grid-template-columns:repeat(5,var(--kmg-c)); gap:6px; background:var(--w-accent4,#B66CF0); padding:8px; border-radius:14px; }\n.kmg-frame > div{ width:var(--kmg-c); height:var(--kmg-c); background:#fff; border-radius:8px; display:grid; place-items:center; }\n.kmg-frame > div .kmg-obj{ --kmg-o:calc(var(--kmg-c) * .84); }\n.kmg-strip{ display:flex; gap:10px; } .kmg-strip b{ width:var(--w-btn-h,110px); height:var(--w-btn-h,110px); border-radius:18px; background:var(--w-bg,#FFF6DC); border:var(--w-border,4px) solid var(--w-line,#eee); display:grid; place-items:center; font:700 calc(var(--w-btn-h,110px) * .4)/1 var(--w-font-display,sans-serif); }\n.kmg-strip b.q{ border-style:dashed; color:var(--w-accent,#FF7A3D); }\n.kmg-big{ font:700 calc(var(--w-btn-h,120px) * 1.1)/1 var(--w-font-display,sans-serif); color:var(--w-accent,#FF7A3D); }\n.kmg-scene{ position:relative; width:min(100%,760px); aspect-ratio:16/9; }\n.kmg-scene svg.bg{ position:absolute; inset:0; width:100%; height:100%; }\n.kmg-shape{ position:absolute; cursor:pointer; } .kmg-shape svg{ width:100%; height:100%; display:block; }\n.kmg-shape.found{ filter:drop-shadow(0 0 8px var(--w-good,#22A85A)); } .kmg-shape.found::after{ content:\"\u2713\"; position:absolute; right:-6px; top:-10px; color:var(--w-good,#22A85A); font:900 28px sans-serif; }\n.kmg-zone{ position:absolute; border-radius:18px; }\n.kmg-pencil{ height:clamp(52px,6.5vw,80px); cursor:pointer; margin:8px 0; } .kmg-pencil svg{ height:100%; display:block; }\n.kmg-hint{ font-size:calc(var(--w-fs,22px) * .85); color:var(--w-soft,#666); }\nbody.world-adventurers .kmg-stage{ border-style:dashed; }\n@media (max-width:600px){ .kmg{ --kmg-o:54px; --kmg-s:40px; --kmg-c:50px; } .kmg-ch{ min-width:88px; height:88px; font-size:40px; } .kmg-strip b{ width:62px; height:62px; font-size:28px; } .kmg-tray{ min-width:96px; padding:8px; } }\n"; document.head.appendChild(s); } }catch(e){} })();
+
+(function(){
+ if(window.KMG) return;
+ /* ---------- fair randomness (same idea as the fixed pfShuffle_, v374) ---------- */
+ function rand01(){ try{ var a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]/4294967296; }catch(e){ return Math.random(); } }
+ function ri(r,lo,hi){ return lo+Math.floor(r()*(hi-lo+1)); }
+ function shuffle(arr,r){ r=r||rand01; var a=arr.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(r()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+ function choicesFor(ans,cands,r,lo,hi){ var set=[ans]; cands.forEach(function(c){ if(set.length<3&&c!==ans&&c>=lo&&c<=hi&&set.indexOf(c)<0) set.push(c); });
+  var d=1; while(set.length<3){ [ans+d,ans-d].forEach(function(c){ if(set.length<3&&c>=lo&&c<=hi&&set.indexOf(c)<0) set.push(c); }); d++; } return shuffle(set,r); }
+ /* ---------- art: clean, big SVG objects kids know ---------- */
+ var C={ red:'#E8433A', green:'#4CB944', blue:'#2F7FE0', yellow:'#FFC940', orange:'#FF8A3D', purple:'#9B5DE5' };
+ function svg(vb,body){ return '<svg viewBox="'+vb+'" aria-hidden="true">'+body+'</svg>'; }
+ var ART={
+  apple:function(c){ c=c||C.red; return svg('0 0 100 100','<path d="M50 30C38 18 14 22 14 50c0 26 18 42 30 42 4 0 4-2 6-2s2 2 6 2c12 0 30-16 30-42 0-28-24-32-36-20z" fill="'+c+'"/><path d="M50 30c0-8 2-14 8-20" stroke="#6B3E1E" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M56 18c10-8 22-6 24 0-8 6-18 6-24 0z" fill="#4CB944"/><ellipse cx="34" cy="44" rx="6" ry="10" fill="#fff" opacity=".35"/>'); },
+  ball:function(c){ c=c||C.blue; return svg('0 0 100 100','<circle cx="50" cy="50" r="40" fill="'+c+'"/><path d="M10 50h80M50 10c-18 22-18 58 0 80M50 10c18 22 18 58 0 80" stroke="#fff" stroke-width="5" fill="none" opacity=".85"/>'); },
+  star:function(c){ c=c||C.yellow; return svg('0 0 100 100','<path d="M50 6l12 30 32 2-25 20 9 32-28-18-28 18 9-32L6 38l32-2z" fill="'+c+'" stroke="#E0A800" stroke-width="3" stroke-linejoin="round"/>'); },
+  dreidel:function(c){ c=c||C.blue; return svg('0 0 100 100','<rect x="44" y="4" width="12" height="20" rx="4" fill="#8A5A2B"/><path d="M22 24h56v38L50 96 22 62z" fill="'+c+'"/><path d="M22 24h56v10H22z" fill="#fff" opacity=".3"/>'); },
+  fish:function(c){ c=c||C.orange; return svg('0 0 100 100','<path d="M14 50c14-24 46-28 64 0-18 28-50 24-64 0z" fill="'+c+'"/><path d="M76 50l18-16v32z" fill="'+c+'"/><circle cx="32" cy="46" r="5" fill="#222"/>'); },
+  car:function(c){ c=c||C.red; return svg('0 0 100 100','<path d="M10 62h80v-12l-14-4-10-16H36L24 46l-14 4z" fill="'+c+'"/><path d="M38 34h26l8 12H30z" fill="#BFE6FF"/><circle cx="30" cy="66" r="10" fill="#333"/><circle cx="72" cy="66" r="10" fill="#333"/>'); },
+  cookie:function(c){ return svg('0 0 100 100','<circle cx="50" cy="50" r="40" fill="'+(c||'#D9A066')+'"/><circle cx="36" cy="38" r="5" fill="#5A3A1E"/><circle cx="60" cy="34" r="4" fill="#5A3A1E"/><circle cx="64" cy="58" r="5" fill="#5A3A1E"/><circle cx="40" cy="64" r="4" fill="#5A3A1E"/><circle cx="50" cy="50" r="3" fill="#5A3A1E"/>'); },
+  siddur:function(c){ c=c||'#1F4E99'; return svg('0 0 100 100','<rect x="20" y="12" width="60" height="76" rx="6" fill="'+c+'"/><rect x="26" y="12" width="6" height="76" fill="#000" opacity=".2"/><rect x="40" y="34" width="28" height="4" rx="2" fill="#FFD54A"/><rect x="40" y="44" width="28" height="4" rx="2" fill="#FFD54A"/><rect x="40" y="54" width="20" height="4" rx="2" fill="#FFD54A"/>'); },
+  candle:function(c){ c=c||'#FFFFFF'; return svg('0 0 100 100','<path d="M50 6c8 10 10 18 0 26-10-8-8-16 0-26z" fill="#FFB300"/><rect x="47" y="30" width="6" height="8" fill="#333"/><rect x="36" y="38" width="28" height="54" rx="4" fill="'+c+'" stroke="#CFC6B8" stroke-width="3"/>'); },
+  truck:function(c){ c=c||C.green; return svg('0 0 100 100','<rect x="8" y="34" width="54" height="32" rx="4" fill="'+c+'"/><path d="M62 42h18l12 12v12H62z" fill="'+c+'"/><rect x="68" y="46" width="12" height="9" fill="#BFE6FF"/><circle cx="26" cy="70" r="9" fill="#333"/><circle cx="76" cy="70" r="9" fill="#333"/>'); },
+  bird:function(c){ c=c||C.blue; return svg('0 0 100 100','<ellipse cx="48" cy="56" rx="30" ry="22" fill="'+c+'"/><circle cx="72" cy="40" r="14" fill="'+c+'"/><path d="M84 40l12 4-12 4z" fill="#FFB300"/><circle cx="75" cy="37" r="3" fill="#222"/><path d="M36 50c8-16 26-16 30 0z" fill="#fff" opacity=".35"/>'); },
+  hat:function(c){ c=c||'#222'; return svg('0 0 100 100','<ellipse cx="50" cy="70" rx="44" ry="10" fill="'+c+'"/><path d="M26 70V36c0-8 48-8 48 0v34z" fill="'+c+'"/><rect x="26" y="56" width="48" height="6" fill="#555"/>'); },
+  boy:function(){ return svg('0 0 100 120','<circle cx="50" cy="56" r="30" fill="#FFD9B8"/><circle cx="40" cy="54" r="4" fill="#222"/><circle cx="60" cy="54" r="4" fill="#222"/><path d="M40 68q10 8 20 0" stroke="#222" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="24" y="86" width="52" height="34" rx="14" fill="#2F7FE0"/>'); },
+  plate:function(){ return svg('0 0 100 100','<ellipse cx="50" cy="60" rx="44" ry="20" fill="#fff" stroke="#BFC7D6" stroke-width="4"/><ellipse cx="50" cy="60" rx="26" ry="10" fill="none" stroke="#DCE2EC" stroke-width="3"/>'); },
+  cup:function(c){ c=c||C.purple; return svg('0 0 100 100','<path d="M24 26h52l-6 60H30z" fill="'+c+'"/><path d="M76 38c14 0 14 26 0 26" stroke="'+c+'" stroke-width="7" fill="none"/>'); },
+  basket:function(c){ c=c||'#C8873E'; return svg('0 0 140 90','<path d="M8 30h124l-14 56H22z" fill="'+c+'"/><path d="M20 44h100M24 60h92M28 74h84" stroke="#9A6224" stroke-width="4"/><path d="M30 30c0-30 80-30 80 0" stroke="#9A6224" stroke-width="7" fill="none"/>'); },
+  cat:function(c){ c=c||'#F2A13B'; return svg('0 0 100 100','<path d="M22 30l8-22 16 16h8l16-16 8 22v30c0 20-16 32-28 32S22 80 22 60z" fill="'+c+'"/><circle cx="38" cy="50" r="5" fill="#222"/><circle cx="62" cy="50" r="5" fill="#222"/><path d="M50 58l-5 6h10z" fill="#E86A8A"/><path d="M50 64v6M50 70q-6 6-12 2M50 70q6 6 12 2" stroke="#222" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M14 60h18M14 68h18M68 60h18M68 68h18" stroke="#222" stroke-width="2"/>'); },
+  duck:function(c){ c=c||'#FFD23F'; return svg('0 0 100 100','<ellipse cx="50" cy="66" rx="36" ry="22" fill="'+c+'"/><circle cx="66" cy="36" r="18" fill="'+c+'"/><path d="M82 36l16 4-16 6z" fill="#FF8A3D"/><circle cx="70" cy="32" r="3.5" fill="#222"/><path d="M28 60c10-8 24-8 30 4" stroke="#E8B800" stroke-width="5" fill="none" stroke-linecap="round"/>'); },
+  sun:function(c){ return svg('0 0 100 100','<circle cx="50" cy="50" r="24" fill="#FFC940"/><g stroke="#FFC940" stroke-width="7" stroke-linecap="round"><path d="M50 8v12M50 80v12M8 50h12M80 50h12M20 20l9 9M71 71l9 9M20 80l9-9M71 29l9-9"/></g>'); },
+  pencil:function(len,c){ var w=Math.round(len); return '<svg viewBox="0 0 '+(w+40)+' 46" aria-hidden="true"><rect x="0" y="8" width="'+w+'" height="30" fill="'+(c||C.yellow)+'"/><rect x="0" y="8" width="16" height="30" fill="#F28CB1"/><rect x="16" y="8" width="8" height="30" fill="#B8BCC6"/><path d="M'+w+' 8l36 15-36 15z" fill="#F2D2A9"/><path d="M'+(w+26)+' 19l10 4-10 4z" fill="#333"/></svg>'; }
+ };
+ var THEMES=['apple','ball','star','dreidel','fish','car','cookie','siddur','candle','truck','bird'];
+ var NAMES={ apple:['apple','apples'], ball:['ball','balls'], star:['star','stars'], dreidel:['dreidel','dreidels'], fish:['fish','fish'], car:['car','cars'], cookie:['cookie','cookies'], siddur:['siddur','siddurim'], candle:['candle','candles'], truck:['truck','trucks'], bird:['bird','birds'] };
+ function themer(r){ var last=null; return function(){ var t; do{ t=THEMES[Math.floor(r()*THEMES.length)]; }while(t===last); last=t; return t; }; }
+ function pl(t,n){ return NAMES[t][n===1?0:1]; }
+ var SAY_N=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen','twenty'];
+ /* ---------- item makers (no page code: tested in Node) ---------- */
+ var GEN={
+  match:function(r,t){ var pair=r()<.5?['boy','hat']:['plate','cup'], n=ri(r,3,5); return { kind:'match', a:pair[0], b:pair[1], n:n, extra:ri(r,0,2), answer:n, say:pair[0]==='boy'?'Give every boy one hat.':'Put one cup on every plate.' }; },
+  count:function(r,t){ var n=ri(r,1,10); return { kind:'count', theme:t, n:n, answer:n, choices:choicesFor(n,[n+1,n-1,n+2,n-2],r,1,20), say:'Tap each '+pl(t,1)+' to count. How many '+pl(t,2)+'?' }; },
+  numname:function(r,t){ var n=ri(r,1,10), ch=choicesFor(n,[n+1,n-1,n+2,n-2],r,1,12); return { kind:'numname', theme:t, n:n, answer:n, trays:ch, say:'Find the tray with '+SAY_N[n]+' '+pl(t,n)+'.' }; },
+  more:function(r,t){ var a=ri(r,1,10), b; do{ b=ri(r,1,10); }while(b===a); var trays=shuffle([a,b],r); return { kind:'more', theme:t, trays:trays, answer:Math.max(a,b), say:'Which tray has more '+pl(t,2)+'?' }; },
+  sort:function(r,t){ var bySize=r()<.35, cols=shuffle(['red','green','blue','yellow','orange','purple'],r).slice(0,2), items=[], n=6, k=ri(r,2,4);
+   var sortable=['apple','ball','car','fish','bird','truck','dreidel']; if(sortable.indexOf(t)<0) t=sortable[Math.floor(r()*sortable.length)];
+   for(var i=0;i<n;i++) items.push(i<k?0:1); items=shuffle(items,r);
+   return { kind:'sort', theme:t, by:bySize?'size':'color', cols:cols, items:items, answer:k, say:bySize?'Big ones in the big basket, small ones in the small basket.':'Put each '+pl(t,1)+' in the basket with the same color.' }; },
+  add:function(r,t){ var a=ri(r,1,5), b=ri(r,1,Math.min(5,10-a)), s=a+b; return { kind:'add', theme:t, a:a, b:b, answer:s, choices:choicesFor(s,[s+1,s-1,a,b],r,1,10), say:SAY_N[a]+' '+pl(t,a)+' and '+SAY_N[b]+' more. How many '+pl(t,2)+' now?' }; },
+  take:function(r,t){ var n=ri(r,3,10), k=ri(r,1,n-1), left=n-k; return { kind:'take', theme:t==='bird'||r()<.4?'bird':t, n:n, k:k, answer:left, choices:choicesFor(left,[left+1,left-1,k,n],r,0,10), say:'' }; },
+  maketen:function(r,t){ var n=ri(r,1,9); return { kind:'maketen', theme:'dreidel'===t||r()<.5?'dreidel':t, n:n, answer:10-n, choices:choicesFor(10-n,[11-n,9-n,n],r,0,10), say:'Fill the ten frame. How many more make ten?' }; },
+  breakapart:function(r,t){ var n=ri(r,3,10), a=ri(r,1,n-1); return { kind:'breakapart', theme:t, n:n, a:a, answer:n-a, choices:choicesFor(n-a,[n-a+1,n-a-1,a,n],r,0,10), say:SAY_N[n]+' is '+SAY_N[a]+' and how many more?' }; },
+  teen:function(r,t){ var k=ri(r,1,9), n=10+k; return { kind:'teen', theme:t, k:k, answer:n, choices:choicesFor(n,[k,n+1,n-1,n+10],r,1,20), say:'Ten and some more. How many '+pl(t,2)+'?' }; },
+  count100:function(r,t){ var s=ri(r,1,6)*10, seq=[s,s+10,s+20], ans=s+30; return { kind:'strip', step:10, seq:seq, answer:ans, choices:choicesFor(ans,[ans+10,ans-10,ans+1,s+21],r,10,100), say:'Count by tens. What comes next?' }; },
+  startany:function(r,t){ var s=ri(r,1,96), seq=[s,s+1,s+2], ans=s+3; return { kind:'strip', step:1, seq:seq, answer:ans, choices:choicesFor(ans,[ans+1,ans-1,ans+10,s+2],r,1,100), say:'Keep counting. What comes next?' }; },
+  shape:function(r,t){ var kinds=['circle','triangle','square','rectangle'], target=kinds[Math.floor(r()*4)], n=ri(r,6,8), tc=ri(r,2,4), list=[];
+   for(var i=0;i<n;i++) list.push(i<tc?target:kinds.filter(function(k){ return k!==target; })[Math.floor(r()*3)]);
+   list=shuffle(list,r); var cols=['#E8433A','#2F7FE0','#4CB944','#FFC940','#9B5DE5','#FF8A3D'];
+   var spots=shuffle([[3,6],[28,4],[53,6],[78,4],[3,54],[28,56],[53,54],[78,56]],r);
+   return { kind:'shape', target:target, answer:tc, shapes:list.map(function(k,i){ return { k:k, x:spots[i][0], y:spots[i][1], s:ri(r,15,18), rot:k==='circle'?0:ri(r,-15,15), c:cols[Math.floor(r()*cols.length)] }; }), say:'Tap every '+target+'.' }; },
+  where:function(r,t){ var pos=['on','under','next to'][Math.floor(r()*3)]; return { kind:'where', theme:'ball', answer:pos, say:'Put the ball '+pos.toUpperCase()+' the table.' }; },
+  longer:function(r,t){ var lens=shuffle([150,240,330].map(function(x){ return x+ri(r,-15,15); }),r), want=r()<.5?'longest':'shortest', idx=want==='longest'?lens.indexOf(Math.max.apply(null,lens)):lens.indexOf(Math.min.apply(null,lens));
+   return { kind:'longer', lens:lens, want:want, answer:idx, say:'Tap the '+want+' pencil.' }; },
+  heavy:function(r,t){ var pairs=[['feather','rock'],['leaf','apple'],['balloon','book']], p=pairs[Math.floor(r()*3)], side=shuffle([0,1],r); return { kind:'heavy', items:[p[side[0]],p[side[1]]], answer:side.indexOf(1), say:'The scale shows which is heavier. Tap the heavier one.' }; }
+ };
+ /* Level 1 skill names (curriculum ladder plList_('MATH'), ids MATH.*.L01.*) -> game kinds. Matched by name, so the skill_id always comes
+    from the server list and is never guessed here. A skill with no match is listed in KMG.uncovered for the builder. */
+ var SKILLS=[ [/hat\s*match|one.?to.?one/i,['match']], [/count the stars/i,['count']], [/number names/i,['numname']], [/which is more|more or less|fewer/i,['more']],
+  [/count to 100/i,['count100']], [/start anywhere/i,['startany']], [/put together.*take away/i,['add','take']], [/add it up/i,['add']], [/take away/i,['take']],
+  [/break it apart/i,['breakapart']], [/ten friends|make ten/i,['maketen']], [/teen tens/i,['teen']], [/shape/i,['shape']], [/where is it/i,['where']],
+  [/longer|shorter|length/i,['longer']], [/sort/i,['sort']], [/heav|light/i,['heavy']], [/count/i,['count']] ];
+ function kindsFor(name){ for(var i=0;i<SKILLS.length;i++) if(SKILLS[i][0].test(String(name||''))) return SKILLS[i][1]; return null; }
+ function makeRound(skill,r,theme){ r=r||rand01; theme=theme||themer(r); var kinds=kindsFor(skill.name)||[], items=[];
+  for(var i=0;i<5;i++){ var k=kinds[i%kinds.length]; var it=GEN[k](r,theme(),skill); it.skillId=skill.id; it.skillName=skill.name; items.push(it); } return items; }
+ /* ---------- the page ---------- */
+ var S=null;
+ function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+ function art(name,c){ return ART[name]?ART[name](c):''; }
+ function obj(name,c,n,extra){ return '<div class="kmg-obj'+(extra||'')+'"'+(n!=null?' data-i="'+n+'"':'')+'>'+art(name,c)+'</div>'; }
+ function T(){ return window.TLW||{ say:function(){}, sound:function(){}, cheer:function(){}, word:function(k){ return k==='again'?'Let’s try that one again.':'Great job!'; } }; }
+ function speak(it){ if(!it||!it.say) return; T().say(null,it.say,{force:true}); }
+ function start(opts){
+  S={ o:opts, skills:(opts.skills||[]).filter(function(s){ return kindsFor(s.name); }), si:0, r:opts.random||rand01 }; S.theme=themer(S.r);
+  KMG.uncovered=(opts.skills||[]).filter(function(s){ return !kindsFor(s.name); }).map(function(s){ return s.name; });
+  if(!S.skills.length){ opts.mount.innerHTML='<div class="kmg"><div class="kmg-stage"><div class="kmg-say">No games yet for these skills.</div></div></div>'; return; }
+  var want=opts.skillId?S.skills.findIndex(function(s){ return s.id===opts.skillId; }):0; S.si=want<0?0:want; newRound(); }
+ function newRound(){ var sk=S.skills[S.si]; S.items=makeRound(sk,S.r,S.theme); S.at=0; S.okCount=0; S.mode='you'; S.miss=0; frame(); show(S.items[0]); }
+ function frame(){ var m=S.o.mount; m.innerHTML='<div class="kmg" role="application" aria-label="Math game"><div class="kmg-top"><button class="kmg-hear" type="button" aria-label="Hear it again">🔊</button><div class="kmg-dots" aria-hidden="true">'+[0,1,2,3,4].map(function(){ return '<i></i>'; }).join('')+'</div><button class="kmg-x" type="button" aria-label="Close">✕</button></div><div class="kmg-stage"></div><div class="kmg-choices"></div></div>';
+  m.querySelector('.kmg-hear').onclick=function(){ speak(S.cur); }; m.querySelector('.kmg-x').onclick=function(){ if(S.o.onClose) S.o.onClose(); }; dots(); }
+ function dots(){ var d=S.o.mount.querySelectorAll('.kmg-dots i'); d.forEach(function(x,i){ x.className=i<S.at?'ok':(i===S.at?'now':''); }); }
+ function stage(){ return S.o.mount.querySelector('.kmg-stage'); } function chbox(){ return S.o.mount.querySelector('.kmg-choices'); }
+ function show(it,guided){ S.cur=it; S.t0=Date.now(); S.mistake=false; S.guided=!!guided; KMG.current=it; var st=stage(), cb=chbox(); cb.innerHTML=''; st.innerHTML='';
+  R[it.kind](it,st,cb); if(guided) setTimeout(function(){ glowAnswer(); },2600); setTimeout(function(){ speak(it); },250); }
+ function choiceRow(it,cb){ cb.innerHTML=it.choices.map(function(v,i){ var lab=it.labels?it.labels[i]:v; return '<button class="kmg-ch'+(it.chClass?' '+it.chClass:'')+'" type="button" data-v="'+esc(v)+'"'+(it.lang?' lang="'+it.lang+'" dir="'+(it.lang==='he'?'rtl':'ltr')+'"':'')+'>'+lab+'</button>'; }).join('');
+  cb.querySelectorAll('.kmg-ch').forEach(function(b){ b.onclick=function(){ answer(String(b.getAttribute('data-v'))===String(it.answer),b); }; }); }
+ function glowAnswer(){ var it=S.cur; if(!it) return; var el=null, root=S.o.mount;
+  if(it.choices) el=[].slice.call(root.querySelectorAll('.kmg-ch')).filter(function(x){ return x.getAttribute('data-v')===String(it.answer); })[0];
+  else if(it.kind==='numname'||it.kind==='more') el=root.querySelector('.kmg-tray[data-v="'+it.answer+'"]');
+  else if(it.kind==='longer'||it.kind==='heavy'||it.idxAnswer) el=root.querySelector('[data-idx="'+it.answer+'"]');
+  else if(it.kind==='where') el=root.querySelector('.kmg-zone[data-z="'+it.answer+'"]');
+  else if(it.kind==='shape') root.querySelectorAll('.kmg-shape[data-k="'+it.target+'"]:not(.found)').forEach(function(x){ x.classList.add('kmg-glow'); });
+  else root.querySelectorAll('.kmg-drop').forEach(function(x){ x.classList.add('hot'); });
+  if(el) el.classList.add('kmg-glow'); }
+ /* one answer. Right: next item. Wrong (first time): "Let's try that one again", then I do (show how), we do (together, not recorded), you do (new item, recorded). */
+ function answer(ok,btn){ if(S.lock) return; var it=S.cur;
+  if(ok){ if(btn) btn.classList.add('kmg-good'); T().sound('right'); finish(true); return; }
+  S.mistake=true; T().sound('again'); if(btn){ btn.classList.add('kmg-bad'); setTimeout(function(){ btn.classList.remove('kmg-bad'); },450); }
+  if(S.mode==='we'){ glowAnswer(); return; }
+  if(S.mode==='you'&&!S.recorded){ record(it,false); S.recorded=true; }
+  S.lock=true; var msg=T().word('again'); setSay(msg); T().say('phrase:try-again',msg,{force:true});
+  setTimeout(function(){ S.lock=false; iDo(it); },1300); }
+ function setSay(t){ var s=stage().querySelector('.kmg-say'); if(s) s.textContent=t; }
+ function record(it,ok){ if(S.guided) return; try{ if(S.o.record) S.o.record({ skillId:it.skillId, correct:ok, firstTry:!S.mistake||!ok, ms:Date.now()-S.t0, kind:it.kind, game:true }); }catch(e){} }
+ function iDo(it){ S.mode='i'; show(it); var st=stage();
+  setSay('Watch me.'); T().say('phrase:watch',''); var objs=[].slice.call(st.querySelectorAll('.kmg-obj:not(.gone)')), countKinds={count:1,add:1,teen:1,take:1,breakapart:1,maketen:1};
+  var i=0, step=function(){ if(countKinds[it.kind]&&i<objs.length&&i<20){ var o=objs[i]; if(!(it.kind==='maketen'&&!o.closest('.kmg-frame'))){ o.classList.add('counted'); o.setAttribute('data-n',i+1); } i++; setTimeout(step,450); return; }
+   glowAnswer(); setTimeout(function(){ S.mode='we'; var w=GEN[it.kind==='strip'?(it.step===10?'count100':'startany'):it.kind](S.r,S.theme(),S.skills[S.si]); w.skillId=it.skillId; w.skillName=it.skillName; setTimeout(function(){ show(w,true); setSay('Let’s do one together.'); },200); },1800); };
+  setTimeout(step,500); }
+ function finish(ok){ var it=S.cur;
+  if(S.mode==='we'){ S.mode='you'; S.lock=true; setTimeout(function(){ S.lock=false; var y=GEN[it.kind==='strip'?(it.step===10?'count100':'startany'):it.kind](S.r,S.theme(),S.skills[S.si]); y.skillId=it.skillId; y.skillName=it.skillName; S.recorded=false; show(y); setSay('Now you try!'); },900); return; }
+  if(S.mode==='i') return;
+  if(!S.recorded) record(it,!S.mistake); if(!S.mistake) S.okCount++;
+  S.recorded=false; S.at++; dots(); S.lock=true;
+  setTimeout(function(){ S.lock=false;
+   if(S.at>=5){ T().cheer('right',S.okCount===5?T().word('next'):''); var sk=S.skills[S.si]; if(S.o.onRound) S.o.onRound({ skillId:sk.id, right:S.okCount, of:5 });
+    setTimeout(function(){ if(S.o.onDone&&S.o.oneRound) return S.o.onDone(); S.si=(S.si+(S.o.stay?0:1))%S.skills.length; newRound(); },2100); return; }
+   show(S.items[S.at]); },700); }
+ /* drag helper: drag an object onto a drop zone. Tap-then-tap also works (tap the object, then tap the place). */
+ function dragify(root,onDrop){ var held=null, ghost=null, sel=null;
+  root.querySelectorAll('.kmg-drag').forEach(function(d){
+   d.addEventListener('pointerdown',function(e){ if(S.lock||d.classList.contains('placed')) return; e.preventDefault(); held=d; var b=d.getBoundingClientRect();
+    ghost=d.cloneNode(true); ghost.classList.add('lift'); ghost.style.width=b.width+'px'; ghost.style.height=b.height+'px'; ghost.style.left=(e.clientX-b.width/2)+'px'; ghost.style.top=(e.clientY-b.height/2)+'px'; document.body.appendChild(ghost); d.style.opacity='.3'; T().sound('tap'); });
+  });
+  function move(e){ if(!ghost) return; ghost.style.left=(e.clientX-ghost.offsetWidth/2)+'px'; ghost.style.top=(e.clientY-ghost.offsetHeight/2)+'px';
+   root.querySelectorAll('.kmg-drop').forEach(function(z){ var b=z.getBoundingClientRect(); z.classList.toggle('hot',e.clientX>b.left&&e.clientX<b.right&&e.clientY>b.top&&e.clientY<b.bottom); }); }
+  function up(e){ if(!ghost) return; var target=null; root.querySelectorAll('.kmg-drop').forEach(function(z){ var b=z.getBoundingClientRect(); if(e.clientX>b.left&&e.clientX<b.right&&e.clientY>b.top&&e.clientY<b.bottom) target=z; if(!S.guided) z.classList.remove('hot'); });
+   ghost.remove(); ghost=null; var h=held; held=null; h.style.opacity='';
+   var moved=Math.abs((e.clientX||0)-(h._x||e.clientX))>2;
+   if(target) onDrop(h,target); else { if(sel) sel.classList.remove('kmg-glow'); sel=h; h.classList.add('kmg-glow'); } }
+  document.addEventListener('pointermove',move); document.addEventListener('pointerup',up);
+  root.querySelectorAll('.kmg-drop').forEach(function(z){ z.addEventListener('click',function(){ if(sel&&!S.lock){ var s=sel; sel=null; s.classList.remove('kmg-glow'); onDrop(s,z); } }); });
+  S.cleanup=function(){ document.removeEventListener('pointermove',move); document.removeEventListener('pointerup',up); }; }
+ function clean(){ if(S&&S.cleanup){ S.cleanup(); S.cleanup=null; } }
+ function countTap(st,it,then){ var n=0; st.querySelectorAll('.kmg-obj.tap').forEach(function(o){ o.onclick=function(){ if(o.classList.contains('counted')) return; n++; o.classList.add('counted'); o.setAttribute('data-n',n); T().sound('tap'); T().say('number:'+n,SAY_N[n]||String(n),{force:true}); if(then) then(n); }; }); }
+ /* renderers */
+ var R={
+  count:function(it,st,cb){ clean(); var h='<div class="kmg-say"></div><div class="kmg-row">'; for(var i=0;i<it.n;i++) h+=obj(it.theme,null,i,' tap'); st.innerHTML=h+'</div>'; countTap(st,it); choiceRow(it,cb); },
+  numname:function(it,st,cb){ clean(); st.innerHTML='<div class="kmg-say"></div><div class="kmg-big">'+it.n+'</div><div class="kmg-row">'+it.trays.map(function(v){ var o=''; for(var i=0;i<v;i++) o+=obj(it.theme); return '<div class="kmg-tray pick" data-v="'+v+'" style="--kmg-o:var(--kmg-s)">'+o+'</div>'; }).join('')+'</div>';
+   st.querySelectorAll('.kmg-tray').forEach(function(t){ t.onclick=function(){ answer(Number(t.getAttribute('data-v'))===it.answer,t); }; }); },
+  more:function(it,st,cb){ clean(); st.innerHTML='<div class="kmg-say"></div><div class="kmg-row" style="gap:40px">'+it.trays.map(function(v){ var o=''; for(var i=0;i<v;i++) o+=obj(it.theme); return '<div class="kmg-tray pick" data-v="'+v+'" style="--kmg-o:var(--kmg-s);max-width:min(46vw,460px)">'+o+'</div>'; }).join('')+'</div>';
+   st.querySelectorAll('.kmg-tray').forEach(function(t){ t.onclick=function(){ answer(Number(t.getAttribute('data-v'))===it.answer,t); }; }); },
+  add:function(it,st,cb){ clean(); var g=function(n){ var o=''; for(var i=0;i<n;i++) o+=obj(it.theme); return o; };
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-row" style="gap:30px"><div class="kmg-tray" style="--kmg-o:var(--kmg-s)">'+g(it.a)+'</div><div class="kmg-big" style="font-size:64px">+</div><div class="kmg-tray" style="--kmg-o:var(--kmg-s)">'+g(it.b)+'</div></div><div class="kmg-hint">▼</div><div class="kmg-tray kmg-all" style="--kmg-o:var(--kmg-s);min-width:min(80%,520px);opacity:.25"></div>';
+   var mine2=st.firstChild; setTimeout(function(){ if(S.cur!==it||st.firstChild!==mine2) return; var all=st.querySelector('.kmg-all'); if(!all) return; all.innerHTML=g(it.a+it.b); all.querySelectorAll('.kmg-obj').forEach(function(o){ o.classList.add('tap'); }); all.style.opacity='1'; countTap(all,it); },1100); choiceRow(it,cb); },
+  take:function(it,st,cb){ clean(); var o=''; for(var i=0;i<it.n;i++) o+=obj(it.theme,null,i,' tap');
+   it.say=SAY_N[it.n]+' '+pl(it.theme,it.n)+'. '+SAY_N[it.k]+' '+(it.theme==='bird'?'fly':'go')+' away. How many are left?';
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-row" style="--kmg-o:var(--kmg-s)">'+o+'</div>';
+   var mine=st.firstChild; setTimeout(function(){ if(S.cur!==it||st.firstChild!==mine) return; var all=st.querySelectorAll('.kmg-obj'); for(var j=it.n-it.k;j<it.n;j++){ if(!all[j]) continue; all[j].classList.add('gone'); all[j].classList.remove('tap'); } countTap(st,it); },1300); choiceRow(it,cb); },
+  breakapart:function(it,st,cb){ clean(); var g=function(n){ var o=''; for(var i=0;i<n;i++) o+=obj(it.theme,null,null,' tap'); return o; };
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-big" style="font-size:80px">'+it.n+'</div><div class="kmg-row" style="gap:30px"><div class="kmg-tray" style="--kmg-o:var(--kmg-s)"><b class="kmg-big" style="font-size:40px;width:100%;text-align:center">'+it.a+'</b>'+g(it.a)+'</div><div class="kmg-tray" style="--kmg-o:var(--kmg-s)"><b class="kmg-big" style="font-size:40px;width:100%;text-align:center">?</b>'+g(it.n-it.a)+'</div></div>';
+   countTap(st,it); choiceRow(it,cb); },
+  teen:function(it,st,cb){ clean(); var cells=''; for(var i=0;i<10;i++) cells+='<div>'+obj(it.theme,null,null,' tap')+'</div>'; var extra=''; for(var j=0;j<it.k;j++) extra+=obj(it.theme,null,null,' tap');
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-row" style="gap:30px;align-items:center"><div class="kmg-frame">'+cells+'</div><div class="kmg-tray" style="--kmg-o:var(--kmg-s);max-width:min(40vw,420px)">'+extra+'</div></div>'; countTap(st,it); choiceRow(it,cb); },
+  maketen:function(it,st,cb){ clean(); var cells=''; for(var i=0;i<10;i++) cells+='<div class="'+(i<it.n?'':'kmg-drop')+'" data-cell="'+i+'">'+(i<it.n?obj(it.theme,C.blue):'')+'</div>'; var pile=''; for(var j=0;j<10-it.n+2;j++) pile+='<div class="kmg-obj kmg-drag">'+art(it.theme,C.orange)+'</div>';
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-frame">'+cells+'</div><div class="kmg-row kmg-pile" style="--kmg-o:var(--kmg-s)">'+pile+'</div>';
+   var added=0; dragify(st,function(d,z){ if(z.firstChild){ answer(false); return; } z.appendChild(d); d.classList.add('placed'); d.classList.remove('kmg-drag'); z.classList.remove('kmg-drop','hot'); added++; T().sound('tap'); T().say('number:'+(it.n+added),SAY_N[it.n+added],{force:true});
+    if(added===10-it.n){ setSay('How many did you add?'); T().say(null,'How many more made ten?',{force:true}); choiceRow(it,cb); } });
+   if(S.mode==='i'||S.guided){ choiceRow(it,cb); } },
+  strip:function(it,st,cb){ clean(); st.innerHTML='<div class="kmg-say"></div><div class="kmg-strip">'+it.seq.map(function(v){ return '<b>'+v+'</b>'; }).join('')+'<b class="q">?</b></div>'; choiceRow(it,cb); },
+  match:function(it,st,cb){ clean(); var top='', bot='';
+   for(var i=0;i<it.n;i++) top+='<div class="kmg-drop" data-slot="'+i+'" style="width:clamp(96px,12vw,150px);height:'+(it.a==='boy'?'clamp(130px,16vw,200px)':'clamp(96px,12vw,150px)')+';display:flex;flex-direction:column;align-items:center;justify-content:flex-end;position:relative"><div class="kmg-obj" style="--kmg-o:100%">'+art(it.a)+'</div></div>';
+   for(var j=0;j<it.n+it.extra;j++) bot+='<div class="kmg-obj kmg-drag" style="--kmg-o:clamp(70px,9vw,110px)">'+art(it.b)+'</div>';
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-row" style="gap:20px">'+top+'</div><div class="kmg-row" style="gap:16px;margin-top:20px">'+bot+'</div>';
+   var done=0; dragify(st,function(d,z){ if(z.getAttribute('data-has')){ answer(false); return; } z.setAttribute('data-has','1'); z.classList.remove('kmg-drop','hot'); d.classList.add('placed'); d.classList.remove('kmg-drag'); d.style.cssText+=';position:absolute;top:'+(it.a==='boy'?'-6px':'-30px')+';left:10%;--kmg-o:80%'; z.appendChild(d); done++; T().sound('tap');
+    if(done===it.n) answer(true); }); },
+  sort:function(it,st,cb){ clean(); var cols=it.cols, big=it.by==='size';
+   var bask=[0,1].map(function(b){ return '<div class="kmg-drop" data-b="'+b+'" style="width:min(40%,280px);padding:10px;display:flex;flex-direction:column;align-items:center"><div style="width:'+(big?(b===0?70:40):56)+'px;height:'+(big?(b===0?70:40):56)+'px">'+art(it.theme,big?C.red:C[cols[b]])+'</div><div style="width:100%;max-width:220px">'+art('basket')+'</div><div class="kmg-in kmg-row" style="--kmg-o:40px"></div></div>'; }).join('');
+   var pile=it.items.map(function(g,i){ var sz=big?(g===0?96:52):74; return '<div class="kmg-obj kmg-drag" data-g="'+g+'" style="--kmg-o:'+sz+'px">'+art(it.theme,big?C.red:C[cols[g]])+'</div>'; }).join('');
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-row" style="gap:40px;width:100%">'+bask+'</div><div class="kmg-row">'+pile+'</div>';
+   var left=it.items.length; dragify(st,function(d,z){ if(d.getAttribute('data-g')!==z.getAttribute('data-b')){ answer(false); return; } d.classList.add('placed'); d.classList.remove('kmg-drag'); d.style.setProperty('--kmg-o','40px'); z.querySelector('.kmg-in').appendChild(d); left--; T().sound('tap'); if(!left) answer(true); });
+   it.target=null; },
+  shape:function(it,st,cb){ clean(); var draw=function(k,c){ return { circle:'<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="'+c+'"/></svg>', square:'<svg viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="4" fill="'+c+'"/></svg>',
+    triangle:'<svg viewBox="0 0 100 100"><path d="M50 6l46 86H4z" fill="'+c+'"/></svg>', rectangle:'<svg viewBox="0 0 100 100"><rect x="2" y="26" width="96" height="48" rx="4" fill="'+c+'"/></svg>' }[k]; };
+   st.innerHTML='<div class="kmg-say"></div><div style="display:flex;align-items:center;gap:12px"><div style="width:clamp(70px,9vw,110px);height:clamp(70px,9vw,110px)">'+draw(it.target,'none').replace('fill="none"','fill="none" stroke="currentColor" stroke-width="7"')+'</div></div><div class="kmg-scene">'+it.shapes.map(function(s,i){ return '<div class="kmg-shape" data-k="'+s.k+'" style="left:'+s.x+'%;top:'+s.y+'%;width:'+s.s+'%;transform:rotate('+s.rot+'deg)">'+draw(s.k,s.c)+'</div>'; }).join('')+'</div>';
+   var found=0; st.querySelectorAll('.kmg-shape').forEach(function(sh){ sh.style.aspectRatio='1'; sh.onclick=function(){ if(sh.classList.contains('found')) return; if(sh.getAttribute('data-k')===it.target){ sh.classList.add('found'); sh.classList.remove('kmg-glow'); found++; T().sound('tap'); if(found===it.answer) answer(true); } else answer(false,sh); }; }); },
+  where:function(it,st,cb){ clean();
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-hint" style="font:700 30px var(--w-font-display)">'+esc(it.answer.toUpperCase())+'</div><div class="kmg-scene" style="max-width:640px">'+
+    '<svg class="bg" viewBox="0 0 160 90" aria-hidden="true"><rect x="0" y="80" width="160" height="10" fill="#E9D8B8"/><rect x="40" y="40" width="80" height="8" rx="2" fill="#B07A45"/><rect x="46" y="48" width="6" height="32" fill="#8A5A2B"/><rect x="108" y="48" width="6" height="32" fill="#8A5A2B"/></svg>'+
+    '<div class="kmg-zone kmg-drop" data-z="on" style="left:25%;top:6%;width:50%;height:36%"></div><div class="kmg-zone kmg-drop" data-z="under" style="left:34%;top:56%;width:32%;height:33%"></div><div class="kmg-zone kmg-drop" data-z="next to" style="left:78%;top:44%;width:20%;height:46%"></div></div>'+
+    '<div class="kmg-obj kmg-drag" style="--kmg-o:clamp(70px,9vw,110px)">'+art('ball',C.red)+'</div>';
+   dragify(st,function(d,z){ var ok=z.getAttribute('data-z')===it.answer; if(ok){ d.classList.add('placed'); d.classList.remove('kmg-drag'); d.style.cssText+=';position:absolute;left:calc(50% - 30px);top:calc(50% - 30px);--kmg-o:60px'; z.appendChild(d); } answer(ok,ok?null:d); }); },
+  longer:function(it,st,cb){ clean(); var cols=[C.yellow,C.blue,C.green];
+   st.innerHTML='<div class="kmg-say"></div><div class="kmg-hint" style="font:700 30px var(--w-font-display)">'+(it.want==='longest'?'⟷ longest':'↔ shortest')+'</div><div style="display:flex;flex-direction:column;align-items:flex-start;border-left:6px solid var(--w-line,#ccc);padding-left:4px">'+it.lens.map(function(l,i){ return '<div class="kmg-pencil" data-idx="'+i+'" role="button" aria-label="pencil">'+ART.pencil(l,cols[i])+'</div>'; }).join('')+'</div>';
+   st.querySelectorAll('.kmg-pencil').forEach(function(p){ p.onclick=function(){ answer(Number(p.getAttribute('data-idx'))===it.answer,p); }; }); },
+  heavy:function(it,st,cb){ clean(); var pic={ feather:'🪶', rock:'🪨', leaf:'🍃', apple:'🍎', balloon:'🎈', book:'📕' }, heavyLeft=it.answer===0;
+   st.innerHTML='<div class="kmg-say"></div><svg viewBox="0 0 200 110" style="width:min(100%,520px)" aria-hidden="true"><rect x="96" y="40" width="8" height="60" fill="#777"/><rect x="70" y="100" width="60" height="8" rx="3" fill="#777"/><g transform="rotate('+(heavyLeft?-12:12)+' 100 40)"><rect x="20" y="36" width="160" height="6" rx="3" fill="#555"/><path d="M10 42h50l-6 14H16z" fill="#999"/><path d="M140 42h50l-6 14h-38z" fill="#999"/></g></svg><div class="kmg-row" style="gap:120px">'+it.items.map(function(x,i){ return '<button class="kmg-ch" type="button" data-idx="'+i+'" style="font-size:64px">'+pic[x]+'</button>'; }).join('')+'</div>';
+   st.querySelectorAll('[data-idx]').forEach(function(b){ b.onclick=function(){ answer(Number(b.getAttribute('data-idx'))===it.answer,b); }; }); }
+ };
+ /* plug-in hook: another file adds game kinds that use this same round, voice, record and I do / we do / you do engine.
+    gen(r, theme) returns an item {kind, answer, choices?, say}; render(it, stage, choiceBox) draws it; re matches skill names. */
+ function addKind(kind,gen,render,re,kinds){ GEN[kind]=gen; R[kind]=render; if(re) SKILLS.unshift([re,kinds||[kind]]); }
+ window.KMG={ start:start, GEN:GEN, R:R, ART:ART, makeRound:makeRound, kindsFor:kindsFor, shuffle:shuffle, choicesFor:choicesFor, THEMES:THEMES, themer:themer, addKind:addKind,
+  answer:function(ok,el){ answer(ok,el); }, choiceRow:function(it,cb){ choiceRow(it,cb); }, dragify:function(root,f){ dragify(root,f); }, uncovered:[], current:null };
+})();
+
+</script>

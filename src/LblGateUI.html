@@ -1,0 +1,85 @@
+<script>
+(function(){ try{ if(!document.getElementById("lg-css")){ var s=document.createElement("style"); s.id="lg-css"; s.textContent="\n/* LEARN BY LEVEL on the real home (HomeFocus three doors + My Library). Needs WorldThemeUI.html (TLW, TL_PLAN) and LearnByLevel.js (lblPlan).\n   1. Learn door = TODAY: at most 3 big buttons from plan.today; one tap starts that subject's next lesson at his level.\n   2. My Library moves into My Stuff and shows ONLY his open subjects and his level's lessons (done lessons stay for review).\n   3. Nothing above his level anywhere: Library cards, search, shelves, \"pick up where you left off\", old links and startMission itself.\n   4. K-1 Math on Today opens the K math games (KMathGamesUI.html) when he is at Math Level 1.\n   TEST boys only (TL_PLAN is set by WorldThemeUI only for TEST- boys until window.TL_LBL_LIVE = true). No double slash in this file. */\nbody.lg-today #hlx-lib > :not(#lg-today){ display:none !important; }\n#hlx-lib .hlx-card[hidden],#hlx-lib .hlx-grp[hidden],#hlx-lib .hlx-rec[hidden],#hlx-lib .hlx-nb[hidden],#hlx-res [hidden],#hlx-shelf [hidden]{ display:none !important; }\nbody.lg-today #hlx-lib{ background:transparent !important; border:0 !important; box-shadow:none !important; padding:0 !important; }\n#lg-today .w-page{ min-height:auto; background:none; padding:6px 0 18px; }\nbody.world-explorers #lg-today .w-today{ min-height:auto; }\n#lg-libbtn{ display:flex; align-items:center; gap:12px; width:100%; margin:0 0 12px; border:0; border-radius:var(--w-radius,22px); padding:18px 20px; background:var(--w-surface,#fff); color:var(--w-ink,#1E1B4B);\n box-shadow:var(--w-shadow,0 6px 0 #C7D2FE); font:800 22px var(--w-font-display,system-ui),sans-serif; cursor:pointer; text-align:left; }\n#lg-libbtn small{ display:block; font:600 15px var(--w-font-body,system-ui),sans-serif; color:var(--w-soft,#64748B); }\n#lg-back{ margin:0 0 12px; border:0; border-radius:999px; padding:10px 18px; background:var(--w-accent,#4F46E5); color:var(--w-accent-ink,#fff); font:800 17px var(--w-font-display,system-ui),sans-serif; cursor:pointer; }\n#lg-msg{ position:fixed; inset:0; z-index:2147482800; display:grid; place-items:center; background:rgba(20,20,40,.35); }\n#lg-msg .box{ background:var(--w-surface,#fff); color:var(--w-ink,#222); border-radius:var(--w-radius,24px); padding:26px 28px; max-width:min(480px,92vw); text-align:center; font:700 var(--w-fs,20px)/1.35 var(--w-font-display,system-ui),sans-serif; box-shadow:0 20px 60px rgba(0,0,0,.25); }\n#lg-msg .box button{ margin-top:16px; }\n#lg-games{ position:fixed; inset:0; z-index:2147482700; background:var(--w-bg,#FFF6DC); overflow:auto; padding:16px; box-sizing:border-box; }\n"; document.head.appendChild(s); } }catch(e){} })();
+
+(function(){
+ if(window.LG_ON) return; window.LG_ON=1;
+ var LG=window.LG={ sid:null, full:false, cur:null, asked:null };
+ function plan(){ try{ var p=window.TL_PLAN; return p&&typeof A!=='undefined'&&A&&A.st&&String(A.st.id)===String(p.sid)&&p.open?p:null; }catch(e){ return null; } }
+ /* subject and level of a lesson id, e.g. MATH.OPS.L01.01 -> MATH, 1; LK.KRI.L01.06.a -> KRI, 1 */
+ function subjOf(id){ id=String(id||''); var m=/^LK\.([A-Z]+)\./.exec(id); if(m) return m[1];
+  if(/^LANG\./.test(id)) return 'WRIT'; if(/^HEB\./.test(id)) return 'LSH'; if(/^ELEC\.NUC\./.test(id)) return 'NUC'; if(/^ELEC\.F[A-Z]+\./.test(id)) return 'FF';
+  m=/^(MATH|READ|WRIT|SCI|SS|LIFE|COMP|VOC|SIM)\./.exec(id); return m?m[1]:null; }
+ function lvlOf(id){ var m=/\.L(\d{1,2})(\.|$)/.exec(String(id||'')); return m?Number(m[1]):null; }
+ function assigned(id){ try{ var d=window.TLBL&&TLBL.d; return !!d&&JSON.stringify(d).indexOf('"'+id+'"')>=0; }catch(e){ return false; } }
+ /* strict: exactly his level (what the Library lists). Not strict: his level or below (lessons may still review older skills). */
+ function allowed(id,strict){ var p=plan(); if(!p) return true; var s=subjOf(id); if(!s) return true; if(assigned(id)) return true;
+  if(p.open.indexOf(s)<0) return false; var L=lvlOf(id), my=p.levels[s]&&Number(p.levels[s].level); if(L==null||!my) return true; return strict?L===my:L<=my; }
+ window.LBL_ALLOWED=allowed;
+ function store(k,v){ try{ if(arguments.length>1) localStorage.setItem(k,JSON.stringify(v)); return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }
+ function today(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+ function doneKey(){ var p=plan(); return 'lg-done-'+(p?p.sid:'')+'-'+today(); }
+ function done(){ return store(doneKey())||[]; }
+ function week(){ var p=plan(); if(!p) return 0; var n=0, d=new Date(); for(var i=0;i<7;i++){ var x=new Date(d.getFullYear(),d.getMonth(),d.getDate()-i); if(i>0&&x.getDay()===6) break; var k='lg-done-'+p.sid+'-'+x.getFullYear()+'-'+(x.getMonth()+1)+'-'+x.getDate(); n+=(store(k)||[]).length; if(x.getDay()===0) break; } return n; }
+ function say(t){ try{ if(window.TLW) TLW.say(null,t); }catch(e){} }
+ function msg(t){ var o=document.getElementById('lg-msg'); if(o) o.remove(); o=document.createElement('div'); o.id='lg-msg';
+  o.innerHTML='<div class="box" role="alertdialog"><div>'+t+'</div><button class="w-btn" type="button">OK</button></div>'; document.body.appendChild(o);
+  o.querySelector('button').onclick=function(){ o.remove(); }; say(t.replace(/<[^>]+>/g,'')); }
+ function blocked(){ msg((window.TLW&&TLW.world==='navigators')?'This lesson is not part of your plan yet. Your teachers will open it when you are ready.':'That one opens later. Let’s do today’s lessons!'); }
+ /* --- backstop 1: startMission itself --- */
+ function wrapStart(){ if(typeof startMission!=='function'||startMission.__lg) return; var _sm=startMission;
+  var w=function(c,id,kind){ if(id&&(!kind||kind==='skill')&&!allowed(id,false)){ blocked(); return; } if(LG.pending&&LG.pending.id===id){ LG.cur=LG.pending; } LG.pending=null; return _sm.apply(this,arguments); };
+  w.__lg=1; try{ startMission=w; window.startMission=w; }catch(e){} }
+ /* --- backstop 2: any lesson button or old link on the page (Kodesh, Social Studies, Fact Finders, ...) --- */
+ document.addEventListener('click',function(e){ if(!plan()) return; var b=e.target&&e.target.closest&&e.target.closest('[data-id]'); if(!b) return;
+  var d=b.dataset, isLesson=d.act==='start'||d.lk==='go'||d.ss==='go'||d.fact==='go'||d.life==='go'||d.comp==='go'||d.elec==='open'||d.arts==='go';
+  if(isLesson&&!allowed(d.id,false)){ e.preventDefault(); e.stopPropagation(); blocked(); } },true);
+ /* --- Library: only open subjects, only his level --- */
+ function filterLib(){ var p=plan(), lib=document.getElementById('hlx-lib'); if(!p||!lib) return;
+  lib.querySelectorAll('.hlx-card[data-sub]').forEach(function(c){ var k=c.getAttribute('data-sub'); if(p.open.indexOf(k)<0) c.hidden=true; });
+  lib.querySelectorAll('.hlx-grp').forEach(function(g){ var any=[].slice.call(g.querySelectorAll('.hlx-card')).some(function(c){ return !c.hidden; }); if(!any) g.hidden=true; });
+  lib.querySelectorAll('.hlx-rec[data-id],.hlx-nb[data-id]').forEach(function(b){ if(!allowed(b.getAttribute('data-id'),true)) b.hidden=true; });
+  try{ if(window.HLX&&Array.isArray(HLX.rows)&&!HLX.rows.__lg){ var r=HLX.rows.filter(function(x){ return x.state==='done'?allowed(x.id,false):allowed(x.id,true); }); r.__lg=1; HLX.rows=r; } }catch(e){} }
+ function filterBox(root){ var p=plan(); if(!p||!root) return;
+  root.querySelectorAll('[data-id]').forEach(function(b){ var ok=b.classList.contains('done')?allowed(b.getAttribute('data-id'),false):allowed(b.getAttribute('data-id'),true); if(!ok) b.hidden=true; });
+  root.querySelectorAll('[data-hlxshelf]').forEach(function(b){ if(p.open.indexOf(b.getAttribute('data-hlxshelf'))<0) b.hidden=true; }); }
+ /* --- Today in the Learn door; My Library in My Stuff --- */
+ function nextFor(k){ var p=plan(), lib=document.getElementById('hlx-lib'); if(!p||!lib) return null; var card=lib.querySelector('.hlx-card[data-sub="'+k+'"]'); if(!card) return null;
+  var nb=card.querySelector('.hlx-nb[data-id]'); if(nb&&allowed(nb.getAttribute('data-id'),true)) return { btn:nb, id:nb.getAttribute('data-id') };
+  var row=(window.HLX&&HLX.rows||[]).filter(function(x){ return x.sub===k&&x.state!=='done'&&allowed(x.id,true); })[0];
+  if(row&&nb){ var t=nb.cloneNode(true); t.setAttribute('data-id',row.id); t.hidden=true; card.appendChild(t); return { btn:t, id:row.id, temp:true }; }
+  var main=card.querySelector('.hlx-main'); return main?{ btn:main, id:null }:null; }
+ function openToday(k){ var p=plan(); if(!p) return;
+  if(k==='MATH'&&window.KMG&&p.levels.MATH&&Number(p.levels.MATH.level)===1&&(p.world&&p.world.key==='explorers'||p.grade!=null&&p.grade<=2)){ return games(); }
+  var n=nextFor(k); if(!n){ msg('Your next lesson is getting ready. Ask your rebbe or teacher.'); return; }
+  LG.pending={ k:k, id:n.id }; n.btn.click(); if(n.temp) setTimeout(function(){ if(n.btn.parentNode) n.btn.remove(); },0); }
+ function games(){ var lib=document.getElementById('hlx-lib'), p=plan(); var skills=(window.HLX&&HLX.rows||[]).filter(function(x){ return x.sub==='MATH'&&lvlOf(x.id)===1; }).map(function(x){ return { id:x.id, name:(typeof skillName==='function'?String(skillName(x.id)||x.id).replace(/^[^:]{0,26}:\s*/,''):x.id) }; });
+  var g=document.getElementById('lg-games'); if(g) g.remove(); g=document.createElement('div'); g.id='lg-games'; document.body.appendChild(g);
+  var right=0, n=0;
+  KMG.start({ mount:g, skills:skills, record:function(ev){ n++; if(ev.correct) right++; if(typeof window.LBL_RECORD==='function') window.LBL_RECORD(ev); },
+   onRound:function(){ var d=done(); if(d.indexOf('MATH')<0){ d.push('MATH'); store(doneKey(),d); } }, onClose:function(){ g.remove(); try{ render(); }catch(e){} } }); }
+ function decorate(){ var p=plan(); document.body.classList.remove('lg-today'); if(!p||A.view!=='hub') return;
+  wrapStart(); filterLib(); filterBox(document.getElementById('hlx-res')); filterBox(document.getElementById('hlx-shelf'));
+  var door=document.querySelector('.hf-door[data-hf="lib"]'); if(door){ var c=door.querySelector('.cnt'); if(c) c.textContent=p.today.length+' for today'; var s=door.querySelector('small'); if(s) s.textContent='Your lessons for today'; }
+  var lib=document.getElementById('hlx-lib'); if(!lib) return;
+  var inLearn=document.body.classList.contains('hf-lib')&&!LG.full;
+  var t=document.getElementById('lg-today'); if(!t){ t=document.createElement('div'); t.id='lg-today'; lib.insertBefore(t,lib.firstChild); }
+  if(inLearn){ document.body.classList.add('lg-today'); if(window.TLW) TLW.today(t,p,{ done:done(), goal:{ done:week(), of:15 }, onOpen:openToday, onMore:function(keys){ store(doneKey(),[]); decorate(); } }); }
+  else { t.innerHTML=LG.full?'<button id="lg-back" type="button">← Back to Today</button>':''; var bk=document.getElementById('lg-back'); if(bk) bk.onclick=function(){ LG.full=false; if(window.HF) HF.door='lib'; render(); }; }
+  var mine=document.querySelector('.hlx-mine'); if(mine&&!document.getElementById('lg-libbtn')){ var b=document.createElement('button'); b.id='lg-libbtn'; b.type='button'; b.innerHTML='<span aria-hidden="true">📚</span><span>My Library<small>Your subjects and lessons</small></span>';
+   b.onclick=function(){ LG.full=true; if(window.HF) HF.door='lib'; render(); }; var h=mine.querySelector('.hlx-h'); if(h&&h.nextSibling) mine.insertBefore(b,h.nextSibling); else mine.insertBefore(b,mine.firstChild); }
+ }
+ /* a finished lesson that started from Today ticks that subject off for today */
+ function afterRender(){ try{ var p=plan(); if(!p) return;
+   if(A.view==='result'&&LG.cur){ var d=done(); if(d.indexOf(LG.cur.k)<0){ d.push(LG.cur.k); store(doneKey(),d); } LG.cur=null; }
+   if(String(A.st.id)!==LG.sid){ LG.sid=String(A.st.id); LG.full=false; }
+   decorate(); }catch(e){ try{ console.warn('LblGate',e); }catch(x){} } }
+ function hook(){ if(typeof render!=='function'||typeof A==='undefined') return setTimeout(hook,500); if(render.__lg) return;
+  var _r=render; var w=function(){ var r=_r.apply(this,arguments); afterRender(); setTimeout(afterRender,80); return r; }; w.__lg=1; render=w; window.render=w;
+  /* his plan: ask once per boy after sign-in (WorldThemeUI does the asking, TEST boys only) */
+  setInterval(function(){ try{ if(A&&A.st&&window.TLW&&TLW.start&&LG.asked!==String(A.st.id)){ LG.asked=String(A.st.id); TLW.start(); } }catch(e){} },1500); }
+ document.addEventListener('tl-plan',function(){ try{ render(); }catch(e){} });
+ new MutationObserver(function(){ if(!plan()) return; filterBox(document.getElementById('hlx-res')); filterBox(document.getElementById('hlx-shelf')); }).observe(document.documentElement,{ childList:true, subtree:true });
+ hook();
+})();
+
+</script>

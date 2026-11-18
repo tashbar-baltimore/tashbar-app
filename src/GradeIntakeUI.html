@@ -1,0 +1,111 @@
+<style id="gi-css">
+/* GRADE INTAKE, staff screens (LEARN BY LEVEL section 3). Server: GradeIntake.js + LearnByLevel.js.
+   1. "🏫 Class lists and grades" button beside Find a student: paste a class list -> preview -> Save all; Grades to confirm; Move everyone up (preview + undo).
+   2. Adds a "Learn by level" section to each Find-a-student page: his world, open subjects, levels, and "Open a subject for this boy".
+   Staff may see level numbers; boys never do. No double slash in this file. */
+#giBtn{ border:0; border-radius:12px; padding:10px 14px; font:700 15px system-ui,sans-serif; background:#EEF2FF; color:#312E81; cursor:pointer; white-space:nowrap; min-height:44px; }
+#giBtn b{ background:#B91C1C; color:#fff; border-radius:999px; padding:1px 8px; margin-left:6px; font-size:13px; }
+#giOv{ position:fixed; inset:0; z-index:2147482500; background:rgba(15,18,40,.45); display:flex; justify-content:center; align-items:flex-start; overflow:auto; padding:24px 12px; }
+#giPg{ background:#fff; color:#1b2333; width:min(900px,100%); border-radius:20px; padding:20px 22px; font:500 16px/1.45 system-ui,"Segoe UI",sans-serif; box-shadow:0 20px 50px rgba(0,0,0,.3); }
+#giPg h2{ margin:0 0 4px; font-size:26px; } #giPg h3{ margin:0 0 8px; font-size:19px; }
+#giPg .x{ float:right; border:0; background:#eef0f6; border-radius:10px; font-size:20px; width:40px; height:40px; cursor:pointer; }
+#giPg section{ border-top:1px solid #e2e5ee; padding:14px 0 8px; }
+#giPg textarea{ width:100%; min-height:150px; box-sizing:border-box; border:1px solid #c7cbe0; border-radius:10px; padding:10px; font:500 15px ui-monospace,Menlo,monospace; }
+#giPg button.b{ border:0; border-radius:12px; padding:10px 16px; font:700 15px system-ui,sans-serif; cursor:pointer; background:#4338CA; color:#fff; min-height:44px; }
+#giPg button.g{ background:#eef0f6; color:#1b2333; } #giPg button:disabled{ opacity:.5; cursor:default; }
+#giPg select{ border:1px solid #c7cbe0; border-radius:10px; padding:8px; font:500 15px system-ui,sans-serif; }
+#giPg table{ width:100%; border-collapse:collapse; font-size:15px; } #giPg td,#giPg th{ text-align:left; padding:6px 8px; border-bottom:1px solid #eef0f6; vertical-align:top; }
+#giPg .tag{ display:inline-block; border-radius:999px; padding:1px 10px; font-weight:700; font-size:13px; }
+#giPg .t-new{ background:#DCFCE7; color:#166534; } #giPg .t-update{ background:#DBEAFE; color:#1E40AF; } #giPg .t-same{ background:#F1F5F9; color:#475569; } #giPg .t-unclear{ background:#FEF3C7; color:#92400E; }
+#giPg .row{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0; }
+#giPg .muted{ color:#5b6578; font-size:14px; } #giPg .err{ color:#B91C1C; font-weight:700; } #giPg .ok{ color:#15803D; font-weight:700; }
+#giPg .code{ font:800 26px ui-monospace,Menlo,monospace; letter-spacing:.14em; background:#F0FDF4; border:2px solid #16A34A; border-radius:10px; padding:4px 10px; }
+.giLbl{ border-top:1px solid #e2e5ee; padding:14px 0 6px; } .giLbl h3{ margin:0 0 8px; font-size:18px; }
+.giLbl .chips{ display:flex; flex-wrap:wrap; gap:6px; } .giLbl .chip{ border:1px solid #c7cbe0; border-radius:999px; padding:3px 10px; font-size:14px; background:#F8FAFC; white-space:nowrap; }
+.giLbl .chip.x{ background:#EEF2FF; border-color:#A5B4FC; }
+@media (max-width:560px){ #giPg{ padding:16px 14px; } #giPg td,#giPg th{ padding:5px 4px; font-size:14px; } }
+</style>
+<script>
+(function(){
+ if(window.GI_ON) return; window.GI_ON=1;
+ var G=null, busy=false;
+ function tok(){ try{ var s=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return s&&s.role==='staff'?s.token:null; }catch(e){ return null; } }
+ function run(fn){ var a=[].slice.call(arguments,1); return new Promise(function(res,rej){ google.script.run.withSuccessHandler(res).withFailureHandler(function(e){ rej(e&&e.message?e.message:String(e)); })[fn].apply(null,a); }); }
+ function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+ function el(id){ return document.getElementById(id); }
+ var NAMES={ KRI:'Kriyah', CHU:'Chumash', RAS:'Rashi', MSH:'Mishnayos', GEM:'Gemara', NAV:'Navi', MATH:'Math', READ:'Reading', WRIT:'Writing', SCI:'Science', SS:'Social Studies', COMP:'Computer Town', ARTS:'Thinking & Arts', NUC:'Journey Into the Atom', SPARK:'Spark Path', VOC:'Trades Co', LIFE:'Life & Money', FF:'Fact Finders', LSH:'Lashon Hakodesh', HAL:'Halacha', TEF:'Tefillah', YT:'Yomim Tovim', MID:'Middos', PAR:'Parsha', CHEM:'Chemdas', TRY:'Taryag Quest', HM:'Hashem Moments', SIM:'B’Simcha' };
+ /* ---------- the button (next to Find a student) ---------- */
+ var giNo=false;
+ function button(){ if(giNo||el('giBtn')||!tok()) return; var bar=el('slBar'); if(!bar) return;
+  var b=document.createElement('button'); b.id='giBtn'; b.type='button'; b.textContent='🏫 Class lists and grades'; b.onclick=open; bar.appendChild(b);
+  run('lblGradesToConfirm',tok()).then(function(l){ if(l&&l.length){ var n=document.createElement('b'); n.textContent=l.length; n.title=l.length+' grades to confirm'; b.appendChild(n); } }).catch(function(){ giNo=true; b.remove(); });   /* not head/admin: no button, and do not ask again on this page */
+ }
+ function open(){ G={ text:'', prev:null, saved:null, confirm:null, up:null, upDone:null, err:'', msg:'' }; draw(); loadConfirm(); }
+ function close(){ var o=el('giOv'); if(o) o.remove(); G=null; }
+ function loadConfirm(){ run('lblGradesToConfirm',tok()).then(function(l){ G.confirm=l||[]; draw(); }).catch(function(e){ G.err=String(e); draw(); }); }
+ function gradeSel(id,val){ return '<select id="'+id+'" aria-label="Grade">'+['K','1','2','3','4','5','6','7','8'].map(function(g){ return '<option'+(String(val)===g?' selected':'')+'>'+g+'</option>'; }).join('')+'</select>'; }
+ function draw(){ if(!G) return; var o=el('giOv'); if(!o){ o=document.createElement('div'); o.id='giOv'; o.addEventListener('click',onClick); o.addEventListener('mousedown',function(e){ if(e.target===o) close(); }); document.body.appendChild(o); }
+  var h='<div id="giPg" role="dialog" aria-modal="true" aria-label="Class lists and grades"><button class="x" data-gi="close" aria-label="Close">✕</button><h2>🏫 Class lists and grades</h2><div class="muted">A boy’s grade decides how the app looks for him. His levels decide what he learns.</div>';
+  if(G.err) h+='<p class="err">'+esc(G.err)+'</p>'; if(G.msg) h+='<p class="ok">'+esc(G.msg)+'</p>';
+  /* grades to confirm */
+  h+='<section><h3>✋ Grades to confirm</h3>';
+  if(!G.confirm) h+='<p class="muted">Loading…</p>';
+  else if(!G.confirm.length) h+='<p class="muted">Nothing to confirm. Boys with no grade on file are asked once when they sign in; their answers show up here.</p>';
+  else h+='<table><tr><th>Student</th><th>He said</th><th>Grade</th><th></th></tr>'+G.confirm.map(function(c,i){ return '<tr><td>'+esc(c.name)+'</td><td>'+esc(c.said)+'</td><td>'+gradeSel('giC'+i,c.said)+'</td><td><button class="b" data-gi="confirm" data-i="'+i+'" '+(busy?'disabled':'')+'>Confirm</button></td></tr>'; }).join('')+'</table><p class="muted">Until you confirm, his answer only changes the look. It never opens subjects or levels.</p>';
+  h+='</section>';
+  /* class lists */
+  h+='<section><h3>📋 Class lists</h3><p class="muted">Paste from a spreadsheet: one boy per line, <b>First Last, Grade</b> (a class or rebbe after another comma is optional). Tabs work too.</p>';
+  h+='<textarea id="giT" placeholder="Moshe Cohen, 3&#10;Yossi Levi, K, Rabbi Gold">'+esc(G.text)+'</textarea><div class="row"><button class="b" data-gi="preview" '+(busy?'disabled':'')+'>Preview</button></div>';
+  if(G.prev){ var c=G.prev.count;
+   h+='<p><span class="tag t-new">'+c.new+' new</span> <span class="tag t-update">'+c.update+' grade change</span> <span class="tag t-same">'+c.same+' no change</span> <span class="tag t-unclear">'+c.unclear+' to fix</span></p>';
+   h+='<table><tr><th>Line</th><th>Name</th><th>Grade</th><th></th></tr>'+G.prev.rows.map(function(r){ return '<tr><td>'+r.line+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.was&&r.status==='update'?r.was+' → '+r.grade:r.grade)+'</td><td><span class="tag t-'+r.status+'">'+{new:'new',update:'grade change',same:'no change',unclear:'fix'}[r.status]+'</span>'+(r.why?' <span class="muted">'+esc(r.why)+'</span>':'')+'</td></tr>'; }).join('')+'</table>';
+   if(c.new&&!G.prev.canAdd) h+='<p class="muted">Adding new students is not switched on yet (one line for the builder). Grade changes will still be saved.</p>';
+   h+='<div class="row"><button class="b" data-gi="save" '+(busy||!(c.new||c.update)?'disabled':'')+'>Save all</button><span class="muted">Lines marked “fix” are skipped. Fix them above and press Preview again.</span></div>'; }
+  if(G.saved){ var s=G.saved; h+='<p class="ok">Saved: '+s.updated.length+' grade change'+(s.updated.length===1?'':'s')+', '+s.added.length+' new student'+(s.added.length===1?'':'s')+'.</p>';
+   if(s.added.length) h+='<p><b>New sign-in codes.</b> Write them down or hand them out now. For safety they are shown only this once.</p><table>'+s.added.map(function(a){ return '<tr><td>'+esc(a.name)+'</td><td>Grade '+esc(a.grade)+'</td><td><span class="code">'+esc(a.code)+'</span></td></tr>'; }).join('')+'</table>';
+   if(s.waiting.length) h+='<p class="muted">Waiting to be added: '+esc(s.waiting.join(', '))+'</p>'; }
+  h+='</section>';
+  /* move up */
+  h+='<section><h3>🎓 New school year: move everyone up one grade</h3><p class="muted">Each boy’s look moves up with his grade. His levels stay the same. You can undo.</p>';
+  if(!G.up) h+='<div class="row"><button class="b g" data-gi="uppreview" '+(busy?'disabled':'')+'>Show who moves up</button></div>';
+  else { h+='<p>'+G.up.up.length+' boys move up one grade.'+(G.up.stay.length?' '+G.up.stay.length+' finished grade 8 and stay as they are for you to decide.':'')+'</p>';
+   h+='<details><summary>See the list</summary><table>'+G.up.up.map(function(u){ return '<tr><td>'+esc(u.name)+'</td><td>'+esc(u.from)+' → '+esc(u.to)+'</td></tr>'; }).join('')+G.up.stay.map(function(u){ return '<tr><td>'+esc(u.name)+'</td><td>stays 8: '+esc(u.why)+'</td></tr>'; }).join('')+'</table></details>';
+   h+='<div class="row"><button class="b" data-gi="up" '+(busy||!G.up.up.length?'disabled':'')+'>Move everyone up</button>'+(G.up.canUndo?'<button class="b g" data-gi="undo" '+(busy?'disabled':'')+'>Undo the last move up</button>':'')+'</div>'; }
+  h+='</section></div>'; o.innerHTML=h; }
+ function act(p){ busy=true; G.err=''; G.msg=''; draw(); return p.then(function(r){ busy=false; return r; },function(e){ busy=false; if(G){ G.err=String(e); draw(); } throw e; }); }
+ function onClick(e){ var t=e.target.closest('[data-gi]'); if(!t||t.disabled||!G) return; var a=t.getAttribute('data-gi'), T=tok();
+  if(a==='close') return close();
+  if(a==='preview'){ G.text=el('giT').value; G.saved=null; return act(run('lblClassPreview',T,G.text)).then(function(p){ G.prev=p; draw(); }).catch(function(){}); }
+  if(a==='save'){ G.text=el('giT').value; return act(run('lblClassSave',T,G.text)).then(function(s){ G.saved=s; G.prev=null; G.msg='Saved.'; draw(); }).catch(function(){}); }
+  if(a==='confirm'){ var c=G.confirm[Number(t.getAttribute('data-i'))], g=el('giC'+t.getAttribute('data-i')).value; return act(run('lblConfirmGrade',T,c.id,g)).then(function(){ G.msg=c.name+': grade '+g+' saved.'; loadConfirm(); }).catch(function(){}); }
+  if(a==='uppreview') return act(run('lblGradeUpPreview',T)).then(function(p){ G.up=p; draw(); }).catch(function(){});
+  if(a==='up') return act(run('lblGradeUp',T)).then(function(r){ G.msg=r.moved+' boys moved up one grade.'; return run('lblGradeUpPreview',T); }).then(function(p){ G.up=p; draw(); }).catch(function(){});
+  if(a==='undo') return act(run('lblGradeUpUndo',T)).then(function(r){ G.msg=r.back+' boys put back.'+(r.keptBecauseChangedSince.length?' Kept as changed since: '+r.keptBecauseChangedSince.join(', ')+'.':''); return run('lblGradeUpPreview',T); }).then(function(p){ G.up=p; draw(); }).catch(function(){});
+ }
+ /* ---------- "Learn by level" section on each Find-a-student page ---------- */
+ var lblFor=null;
+ function addLbl(){ var pg=el('slPg'); if(!pg||pg.querySelector('.giLbl')) return; var h2=pg.querySelector('h2'); if(!h2) return;
+  var sec=document.createElement('section'); sec.className='giLbl'; sec.innerHTML='<h3>🧭 Learn by level</h3><p class="muted">Loading…</p>';
+  var before=[].slice.call(pg.querySelectorAll('section')).pop(); pg.insertBefore(sec,before||null);
+  var id=pg.getAttribute('data-sid'); if(lblFor===id&&lblCache){ fillLbl(sec,id,lblCache); if(Date.now()-lblAt<1500) return; } else { lblFor=id; lblCache=null; } lblAt=Date.now(); drawLbl(sec,id); }
+ var lblCache=null, lblAt=0;
+ function drawLbl(sec,id){ run('lblPlanStaff',tok(),id).then(function(p){ if(lblFor!==id) return; lblCache=p; var cur=document.querySelector('#slPg .giLbl'); if(cur) fillLbl(cur,id,p); }).catch(function(e){ var cur=document.querySelector('#slPg .giLbl'); if(cur) cur.innerHTML='<h3>🧭 Learn by level</h3><p class="err">'+esc(e)+'</p>'; }); }
+ function fillLbl(sec,id,p){
+   var h='<h3>🧭 Learn by level</h3>';
+   if(!p.world) h+='<p class="err">No grade on file. Set his grade above, so the app knows his look and subjects.</p>';
+   else { h+='<p><b>Look:</b> '+esc(p.world.name)+(p.gradeUnconfirmed?' <span class="muted">(from his own answer, grade '+esc(p.lookGrade)+'; confirm it in Class lists and grades)</span>':'')+'</p>';
+    h+='<p style="margin:6px 0 4px"><b>Subjects and levels</b> <span class="muted">(staff only; boys never see level numbers)</span></p><div class="chips">'+p.open.map(function(k){ var l=p.levels[k]||{}; return '<span class="chip'+(p.extra.indexOf(k)>=0?' x':'')+'">'+esc(NAMES[k]||k)+' · Level '+esc(l.level)+' <span class="muted">('+esc(l.source||'')+')</span></span>'; }).join('')+'</div>';
+    h+='<p style="margin:10px 0 4px"><b>Today:</b> '+p.today.map(function(k){ return esc(NAMES[k]||k); }).join(', ')+'</p>'; }
+   var all=Object.keys(NAMES).filter(function(k){ return p.open.indexOf(k)<0; });
+   h+='<div class="row" style="margin-top:8px"><select class="giOpenSel" aria-label="Open a subject for this boy"><option value="">Open a subject for this boy…</option>'+all.map(function(k){ return '<option value="'+k+'">'+esc(NAMES[k])+'</option>'; }).join('')+'</select><button class="b" type="button" data-giopen="1" style="border:0;border-radius:12px;padding:10px 16px;font:700 15px system-ui,sans-serif;background:#4338CA;color:#fff;cursor:pointer">Open it</button></div>';
+   if(p.extra.length) h+='<div class="row">'+p.extra.map(function(k){ return '<button type="button" data-giclose="'+k+'" style="border:0;border-radius:12px;padding:8px 12px;background:#eef0f6;cursor:pointer;font:600 14px system-ui,sans-serif">Close '+esc(NAMES[k]||k)+' for him</button>'; }).join('')+'</div>';
+   h+='<p class="muted">Only this boy sees a subject you open here.</p>';
+   sec.innerHTML=h;
+   var ob=sec.querySelector('[data-giopen]'); if(ob) ob.onclick=function(){ var k=sec.querySelector('.giOpenSel').value; if(!k) return; ob.disabled=true; run('lblSetOpen',tok(),id,k,true).then(function(){ drawLbl(sec,id); }).catch(function(e){ ob.disabled=false; alert(e); }); };
+   sec.querySelectorAll('[data-giclose]').forEach(function(b){ b.onclick=function(){ b.disabled=true; run('lblSetOpen',tok(),id,b.getAttribute('data-giclose'),false).then(function(){ drawLbl(sec,id); }).catch(function(e){ b.disabled=false; alert(e); }); }; });
+ }
+ /* Student Lookup marks the open student on its page (data-sid). Redraws of that page drop our section, so we add it back. */
+ new MutationObserver(function(){ var pg=el('slPg'); if(pg&&pg.getAttribute('data-sid')&&pg.querySelector('h2')&&!pg.querySelector('.giLbl')) addLbl(); button(); }).observe(document.body,{ childList:true, subtree:true });
+ (function wait(){ if(tok()) button(); if(!el('giBtn')&&!giNo) setTimeout(wait,1500); })();
+})();
+</script>

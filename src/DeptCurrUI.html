@@ -1,0 +1,97 @@
+<script>
+/* DeptCurrUI.html — DEPARTMENTS: the 📚 CURRICULUM tab, the department head's main screen (DeptCurr.js dpCurr / dpReview).
+   A grade-by-topic map of every lesson in the department, filters (needs review, flagged, new or changed, problems, not used yet),
+   and per lesson: See it (Curriculum Preview, exactly as a boy sees it), Approve, Rebbe-checked, Flag with a note, Add a task.
+   An empty cell in the map = no lesson yet; tap it to ask for one (it becomes a department task). rabbikhaver-cloud-builder-1, 2026-11-18. */
+(function(){
+ const C=window.DPCURR=window.DPCURR||{dept:null,data:null,f:'all',g:null,t:null,q:'',busy:false,msg:'',more:0};
+ const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const TR={OPS:'Operations',NUM:'Numbers',NBT:'Place value',FRAC:'Fractions',DEC:'Decimals',GEO:'Geometry',MEAS:'Measurement',DATA:'Data',STAT:'Statistics',ALG:'Algebra',RAT:'Ratios',EXP:'Expressions',FUN:'Functions',PROB:'Probability',INT:'Integers',MONEY:'Money',TIME:'Time',
+  PHON:'Phonics',LV:'Vowels & spelling',FLU:'Fluency',VOC:'Vocabulary',COMP:'Comprehension',LIT:'Literature',INFO:'Informational',SENT:'Sentences',GRAM:'Grammar',MECH:'Punctuation',
+  MATT:'Matter',PHYS:'Physics',SKY:'Earth & sky',LAND:'Earth',ANIM:'Animals',PLANT:'Plants',BODY:'Human body',INQ:'Science skills',ENG:'Engineering',
+  HIST:'History',JHIST:'Jewish history',CIV:'Civics',ECON:'Economics',FIN:'Money',DIG:'Digital',PROG:'Programming',TYPE:'Typing',
+  TEF:'Tefillah',HAL:'Halacha',YT:'Yom Tov',MID:'Middos',NAV:'Navi',PAR:'Parsha',CHU:'Chumash',RASHI:'Rashi',MISH:'Mishnayos',GEM:'Gemara',TRY:'Taryag',KRI:'Kriyah',LSK:'Lashon Kodesh'};
+ const GN=g=>g==null?'Any':g===0?'K':'Gr '+g;
+ function rerender(){ const b=document.querySelector('#dp-ov .dp-body'); if(b&&window.DP&&DP.tab==='lessons'){ const a=document.activeElement, focusQ=a&&a.classList&&a.classList.contains('dcq'); b.innerHTML=C.html(); if(focusQ){ const q=b.querySelector('.dcq'); if(q){ q.focus(); q.setSelectionRange(q.value.length,q.value.length); } } } }
+ C.load=function(id){ C.dept=id; C.data=null; C.f='all'; C.g=null; C.t=null; C.q=''; C.more=0; C.msg=''; run('dpCurr',S.token,id).then(r=>{ if(C.dept===id){ C.data=r; rerender(); } }).catch(e=>{ C.data={err:String(e&&e.message||e)}; rerender(); }); };
+ const trk=id=>{ const p=String(id).split('.'); return p.length>2?p[1]:p[0]; };
+ function rows(){ const D=window.DP&&DP.d, X=C.data||{}, R=X.rev||{}; if(!D) return [];
+  return (D.lessons||[]).map(l=>{ const r=R[l.id]||{}; const prob=(X.reports||{})[l.id]||0, miss=(X.miss||{})[l.id]||0, fix=(X.fixes||{})[l.id]||'';
+   return Object.assign({},l,{t:trk(l.id),s:r.s||'',note:r.note||'',by:r.by||'',changed:!!r.changed,neu:!!(r.isNew||r.recent||l.isNew),prob:prob,miss:miss,fix:fix,bad:!!(prob||miss>=50||fix)}); }); }
+ const PASS={all:()=>true,todo:r=>!r.s||r.changed,flag:r=>r.s==='flag',neu:r=>r.neu||r.changed,prob:r=>r.bad,unused:r=>!r.started};
+ function badge(r){ if(r.s==='flag') return '<span class="dcb flag">🚩 Flagged</span>'; if(r.changed) return '<span class="dcb chg">✏️ Changed since review</span>'; if(r.s==='rebbe') return '<span class="dcb ok">✅ Rebbe-checked</span>'; if(r.s==='ok') return '<span class="dcb ok">✅ Approved</span>'; return '<span class="dcb todo">⏳ Not reviewed</span>'; }
+ function seeUrl(id){ const u=(C.data&&C.data.url)||''; return u?u+'?cp=1&skill='+encodeURIComponent(id):''; }
+ C.html=function(){ const D=window.DP&&DP.d; if(!D) return '<p class="dp-soft">Loading…</p>'; const X=C.data; if(X&&X.err) return '<p class="dp-soft">Could not load: '+E(X.err)+'</p>';
+  const all=rows(), head=!!(X&&X.canReview);
+  const cnt=k=>all.filter(PASS[k]).length;
+  let h=`<div class="dch"><div><b>${all.length} lessons in ${E(D.dept.name)}</b><small>${X?'Tap a box in the map to see those lessons. Tap a lesson to see it exactly as a boy sees it.':'Loading review status…'}</small></div>${X&&X.url?`<a class="dcsee" target="_blank" rel="noopener" href="${E(X.url+'?cp=1')}">👀 Open the Curriculum Preview</a>`:''}</div>`;
+  h+=`<div class="dck">${[['all','📚','All lessons'],['todo','⏳','Need review'],['flag','🚩','Flagged'],['neu','🆕','New or changed'],['prob','⚠️','Problems'],['unused','💤','Not used yet']].map(x=>`<button type="button" class="${C.f===x[0]?'on':''}" data-dc="f" data-v="${x[0]}"><span>${x[1]}</span><b>${cnt(x[0])}</b><small>${x[2]}</small></button>`).join('')}</div>`;
+  if(C.msg) h+=`<p class="dcmsg">${E(C.msg)}</p>`;
+  const gs=[...new Set(all.map(r=>r.grade))].sort((a,b)=>(a==null?99:a)-(b==null?99:b)), range=D.dept&&DP.d?null:null;
+  const want=[0,1,2,3,4,5,6,7,8].filter(g=>gs.includes(g)||(gs.some(x=>x!=null)&&g>=Math.min(...gs.filter(x=>x!=null))&&g<=Math.max(...gs.filter(x=>x!=null))));
+  const cols=want.concat(gs.includes(null)?[null]:[]), ts=[...new Set(all.map(r=>r.t))].sort();
+  if(all.length&&ts.length<=40){ h+=`<div class="dcmap"><table><thead><tr><th>Topic</th>${cols.map(g=>`<th class="${C.g===g?'on':''}">${GN(g)}</th>`).join('')}</tr></thead><tbody>${ts.map(t=>`<tr><th title="${E(t)}">${E(TR[t]||t)}</th>${cols.map(g=>{ const c=all.filter(r=>r.t===t&&r.grade===g); if(!c.length) return g==null?'<td></td>':`<td><button type="button" class="dce" data-dc="ask" data-t="${E(t)}" data-g="${g}" title="No lesson yet. Tap to ask for one.">＋</button></td>`;
+     const fl=c.filter(r=>r.s==='flag').length, td=c.filter(r=>!r.s||r.changed).length, bad=c.filter(r=>r.bad).length, on=C.g===g&&C.t===t;
+     return `<td><button type="button" class="dcc${on?' on':''}${fl?' fl':td?' td':' ok'}" data-dc="cell" data-t="${E(t)}" data-g="${g==null?'':g}" title="${c.length} lessons${fl?', '+fl+' flagged':''}${td?', '+td+' to review':''}">${c.length}${bad?'<i>⚠️</i>':''}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table><p class="dcleg"><span class="dcc ok">3</span> all reviewed <span class="dcc td">3</span> some need review <span class="dcc fl">3</span> has a flagged lesson <span class="dce">＋</span> no lesson yet: tap to ask for one</p></div>`; }
+  const vis=all.filter(PASS[C.f]).filter(r=>(C.g===null||r.grade===C.g)&&(C.t===null||r.t===C.t)).filter(r=>!C.q||(r.name+' '+r.id).toLowerCase().includes(C.q.toLowerCase()))
+   .sort((a,b)=>((a.grade==null?99:a.grade)-(b.grade==null?99:b.grade))||a.t.localeCompare(b.t)||a.id.localeCompare(b.id));
+  h+=`<div class="dcbar"><input class="dcq" value="${E(C.q)}" placeholder="Search lessons…" aria-label="Search lessons">${C.g!==null||C.t!==null?`<button type="button" class="dcclr" data-dc="clr">✕ ${E(C.t?(TR[C.t]||C.t):'')} ${C.g!==null?GN(C.g):''}</button>`:''}<span>${vis.length} shown</span></div>`;
+  const lim=120+C.more;
+  h+=`<ul class="dcl">${vis.slice(0,lim).map(r=>{ const u=seeUrl(r.id);
+   return `<li class="${r.s==='flag'?'flag':''}"><div class="dcm"><div class="dct">${badge(r)}${r.neu?'<span class="dcb neu">🆕 New</span>':''}<b>${E(r.name)}</b></div><small>${E(r.id)} · ${GN(r.grade)} · ${E(TR[r.t]||r.t)} · ${r.started?r.started+' started · '+r.mastered+' mastered':'not used yet'}${r.by?' · reviewed by '+E(r.by):''}</small>
+    ${r.note?`<div class="dcn">📝 ${E(r.note)}</div>`:''}${r.prob||r.miss>=50||r.fix?`<div class="dcp">${r.prob?`<span>🚩 ${r.prob} problem report${r.prob>1?'s':''}</span>`:''}${r.miss>=50?`<span>🔁 ${r.miss}% of first tries missed</span>`:''}${r.fix?`<span title="${E(r.fix)}">🛠️ Known error: ${E(r.fix.slice(0,90))}${r.fix.length>90?'…':''}</span>`:''}</div>`:''}</div>
+    <div class="dca">${u?`<a class="dcbtn see" target="_blank" rel="noopener" href="${E(u)}">👀 See it</a>`:''}${head?`<button type="button" class="dcbtn ok" data-dc="rv" data-s="ok" data-id="${E(r.id)}">✅ Approve</button><button type="button" class="dcbtn fl" data-dc="rv" data-s="flag" data-id="${E(r.id)}">🚩 Flag</button>${r.s?`<button type="button" class="dcbtn" data-dc="rv" data-s="" data-id="${E(r.id)}">Clear</button>`:''}`:''}<button type="button" class="dcbtn" data-dc="task" data-id="${E(r.id)}">➕ Task</button></div></li>`; }).join('')}</ul>`;
+  if(vis.length>lim) h+=`<p style="text-align:center"><button type="button" class="dcbtn" data-dc="more">Show more (${vis.length-lim} left)</button></p>`;
+  if(!vis.length) h+='<p class="dp-soft">No lessons match.</p>';
+  if(!head&&X) h+='<p class="dp-soft">Only the department head or the Head of School can approve or flag lessons. You can add tasks.</p>';
+  return h; };
+ function task(text){ run('dpTask',S.token,C.dept,'add',{text:text}).then(r=>{ C.msg='Added to the To do list ✓'; try{ if(window.DPTODO&&DPTODO.dept===C.dept) DPTODO.data=r; }catch(e){} rerender(); setTimeout(()=>{ C.msg=''; rerender(); },2200); }).catch(e=>{ C.msg=String(e&&e.message||e); rerender(); }); }
+ document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dc]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const a=b.dataset.dc;
+  if(a==='f'){ C.f=b.dataset.v; C.more=0; rerender(); }
+  else if(a==='cell'){ const g=b.dataset.g===''?null:Number(b.dataset.g), t=b.dataset.t; if(C.g===g&&C.t===t){ C.g=null; C.t=null; } else { C.g=g; C.t=t; } C.more=0; rerender(); const l=document.querySelector('#dp-ov .dcl'); if(l) l.scrollIntoView({behavior:'smooth',block:'start'}); }
+  else if(a==='clr'){ C.g=null; C.t=null; rerender(); }
+  else if(a==='more'){ C.more+=200; rerender(); }
+  else if(a==='ask'){ const t=b.dataset.t, g=Number(b.dataset.g); const w=prompt(`No ${TR[t]||t} lesson for ${GN(g)} yet. What should it teach? (This goes on the department To do list.)`,''); if(w===null) return; task(`Need a lesson: ${TR[t]||t}, ${GN(g)}. ${w}`.trim()); }
+  else if(a==='task'){ const r=rows().find(x=>x.id===b.dataset.id); const w=prompt(`Task about “${r?r.name:b.dataset.id}”:`,''); if(!w) return; task(`[${b.dataset.id} ${r?r.name:''}] ${w}`); }
+  else if(a==='rv'){ if(C.busy) return; const s=b.dataset.s, id=b.dataset.id; let note=''; if(s==='flag'){ note=prompt('What needs fixing in this lesson?',''); if(!note) return; }
+   C.busy=true; C.msg='Saving…'; rerender(); run('dpReview',S.token,C.dept,id,s,note).then(r=>{ C.busy=false; C.data=r; C.msg=s==='ok'?'Approved ✓':s==='flag'?'Flagged ✓ (it also shows in the Curriculum Guide)':'Cleared ✓'; rerender(); setTimeout(()=>{ C.msg=''; rerender(); },2000); }).catch(err=>{ C.busy=false; C.msg=String(err&&err.message||err); rerender(); }); }
+ },true);
+ let qt=null; document.addEventListener('input',e=>{ if(e.target&&e.target.classList&&e.target.classList.contains('dcq')){ e.stopPropagation(); C.q=e.target.value; clearTimeout(qt); qt=setTimeout(rerender,250); } },true);
+ /* Head of School: make a NICHE department for one person's area (DeptCurr.js dpDeptAdd). Shown at the top of the Departments setup page. */
+ const FAM=[['LK','📜 Kodesh'],['MATH','📐 Math'],['READ','📖 Reading & Writing'],['SCI','🔬 Science'],['SOC','🌍 Social Studies'],['ELEC','🛠️ Electives'],['HEART','💗 Heart & Soul']];
+ C.newDeptHTML=function(A){ const gs=[['','—'],['0','K'],['1','1'],['2','2'],['3','3'],['4','4'],['5','5'],['6','6'],['7','7'],['8','8']].map(x=>`<option value="${x[0]}">${x[1]}</option>`).join('');
+  const niche=(A&&A.depts||[]).filter(d=>/^N[0-9A-Z]{5,}$/.test(d.id));
+  return `<h3 class="dp-sub">🎯 Make a department for one person's area</h3><div class="dcnew"><p class="dp-soft">A department head builds and keeps up the lessons for one age group, one subject, or one niche. Pick what belongs in it: everything you pick must match (for example Math + grades K to K = Kindergarten Math, or the code LK.TRY = the Taryag Quest).</p>
+   <div class="dcnr"><input data-dcn="name" maxlength="40" placeholder="Name, e.g. Kindergarten Math"><input data-dcn="icon" maxlength="4" placeholder="Icon" style="max-width:80px"></div>
+   <div class="dcnr dcnf">${FAM.map(f=>`<label><input type="checkbox" data-dcn="subj" value="${f[0]}"> ${f[1]}</label>`).join('')}</div>
+   <div class="dcnr"><label>Grades from <select data-dcn="g0">${gs}</select></label><label>to <select data-dcn="g1">${gs}</select></label><input data-dcn="pre" placeholder="Lesson codes (optional), e.g. LK.TRY or MATH.FRAC" style="flex:1;min-width:220px"></div>
+   <div class="dcnr"><input data-dcn="goal" maxlength="120" placeholder="What this department is for (one line)" style="flex:1"><button type="button" class="dp-btn" data-dc="mkdept">➕ Make department</button></div>
+   ${niche.length?`<div class="dcnr">${niche.map(d=>`<span class="dp-pill">${d.icon} ${E(d.name)} <button type="button" data-dc="rmdept" data-id="${E(d.id)}" aria-label="Remove">✕</button></span>`).join('')}</div>`:''}</div>`; };
+ function adminReload(){ const x=document.createElement('button'); x.type='button'; x.dataset.dp='admin'; x.style.display='none'; document.body.appendChild(x); x.click(); x.remove(); }
+ document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dc="mkdept"],[data-dc="rmdept"]'); if(!b) return; e.preventDefault(); e.stopPropagation();
+  const box=b.closest('.dcnew'), v=k=>{ const x=box.querySelector(`[data-dcn="${k}"]`); return x?x.value:''; };
+  if(b.dataset.dc==='rmdept'){ if(!confirm('Remove this department? Its lessons stay; only the department is hidden.')) return; run('dpDeptRetire',S.token,b.dataset.id).then(adminReload).catch(err=>alert(String(err&&err.message||err))); return; }
+  const a={name:v('name'),icon:v('icon'),g0:v('g0'),g1:v('g1'),pre:v('pre'),goal:v('goal'),subj:[...box.querySelectorAll('[data-dcn="subj"]:checked')].map(x=>x.value)};
+  b.disabled=true; b.textContent='Making…'; run('dpDeptAdd',S.token,a).then(()=>{ adminReload(); try{ window.DP&&(DP.mine=null); }catch(x){} }).catch(err=>{ b.disabled=false; b.textContent='➕ Make department'; alert(String(err&&err.message||err)); }); },true);
+ const css=document.createElement('style'); css.textContent=`
+.dch{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 10px}.dch small{display:block;color:#64748B;font-size:14px}.dch>div{flex:1}
+.dcsee{background:#1E1B4B;color:#fff;border-radius:12px;padding:10px 14px;font-weight:800;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.dck{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:8px;margin:0 0 12px}.dck button{border:2px solid #E2E8F0;background:#F8FAFC;border-radius:16px;padding:8px;cursor:pointer;font:inherit;text-align:center}
+.dck button.on{border-color:#4F46E5;background:#EEF2FF}.dck span{display:block;font-size:20px}.dck b{display:block;font-size:22px}.dck small{color:#475569;font-weight:700;font-size:13px}
+.dcmap{overflow-x:auto;margin:0 0 12px;border:2px solid #E2E8F0;border-radius:16px;background:#fff}.dcmap table{border-collapse:collapse;width:100%;font-size:14px}
+.dcmap th,.dcmap td{padding:4px;text-align:center;border-bottom:1px solid #F1F5F9}.dcmap tbody th{text-align:left;font-weight:700;white-space:nowrap;padding-left:10px;color:#334155}.dcmap thead th{color:#475569;padding:8px 4px}.dcmap thead th.on{color:#4F46E5}
+.dcc,.dce{min-width:42px;min-height:38px;border-radius:10px;border:2px solid transparent;font:inherit;font-weight:900;cursor:pointer;position:relative;display:inline-block;line-height:34px}
+.dcc.ok{background:#DCFCE7;color:#166534}.dcc.td{background:#FEF9C3;color:#854D0E}.dcc.fl{background:#FEE2E2;color:#991B1B}.dcc.on{border-color:#1E1B4B}.dcc i{position:absolute;top:-8px;right:-6px;font-style:normal;font-size:12px}
+.dce{background:#fff;border:2px dashed #CBD5E1;color:#94A3B8}.dce:hover{border-color:#4F46E5;color:#4F46E5}.dcleg{font-size:13px;color:#64748B;padding:6px 10px;margin:0;display:flex;gap:8px;align-items:center;flex-wrap:wrap}.dcleg .dcc,.dcleg .dce{min-width:28px;min-height:24px;line-height:20px;font-size:12px;cursor:default}
+.dcbar{display:flex;gap:8px;align-items:center;margin:0 0 8px;flex-wrap:wrap}.dcbar span{color:#64748B;font-size:14px}.dcq{flex:1;min-width:200px;font:inherit;font-size:16px;border:2px solid #CBD5E1;border-radius:12px;padding:10px;min-height:46px}
+.dcclr{border:0;background:#EEF2FF;color:#3730A3;border-radius:999px;padding:8px 12px;font-weight:800;cursor:pointer;min-height:40px}
+.dcl{list-style:none;margin:0;padding:0}.dcl li{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;background:#fff;border:2px solid #E2E8F0;border-radius:16px;padding:10px 12px;margin:0 0 8px}.dcl li.flag{border-color:#FCA5A5;background:#FFF5F5}
+.dcm{flex:1;min-width:240px}.dct{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.dct b{font-size:17px}.dcm small{display:block;color:#64748B;font-size:13px;margin-top:3px}
+.dcb{border-radius:999px;padding:2px 9px;font-size:12px;font-weight:800;white-space:nowrap}.dcb.ok{background:#DCFCE7;color:#166534}.dcb.todo{background:#F1F5F9;color:#475569}.dcb.flag{background:#FEE2E2;color:#991B1B}.dcb.chg{background:#FEF9C3;color:#854D0E}.dcb.neu{background:#E0E7FF;color:#3730A3}
+.dcn{margin-top:6px;background:#FFFBEB;border-radius:10px;padding:6px 10px;font-size:14px;color:#78350F}.dcp{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.dcp span{background:#FFF1F2;color:#9F1239;border-radius:10px;padding:3px 8px;font-size:13px;font-weight:700}
+.dca{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.dcbtn{border:2px solid #E2E8F0;background:#fff;border-radius:12px;padding:8px 12px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;min-height:42px;text-decoration:none;color:#0F172A;display:inline-flex;align-items:center}
+.dcnew{background:#fff;border:2px solid #E2E8F0;border-radius:16px;padding:12px;margin:0 0 14px}.dcnr{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.dcnr input,.dcnr select{font:inherit;font-size:15px;border:2px solid #CBD5E1;border-radius:10px;padding:8px;min-height:42px}.dcnf label{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:999px;padding:8px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;font-size:15px}.dcnf input{min-height:0;padding:0;width:18px;height:18px;margin:0}
+.dcbtn.see{background:#1E1B4B;color:#fff;border-color:#1E1B4B}.dcbtn.ok{border-color:#86EFAC}.dcbtn.fl{border-color:#FCA5A5}.dcmsg{background:#ECFDF5;color:#065F46;border-radius:12px;padding:8px 12px;font-weight:800}`;
+ document.head.appendChild(css);
+})();
+</script>

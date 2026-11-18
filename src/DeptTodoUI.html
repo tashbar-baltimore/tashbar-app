@@ -1,0 +1,55 @@
+<script>
+/* DeptTodoUI.html — DEPARTMENTS Phase 2: the "✅ To do" tab inside a department (DeptTodo.js dpTodo / dpTask).
+   Opens first in every department. Shows, in this order: boys who need you now, slipping skills, questions to reteach,
+   problem reports, known content errors, and the department's own task list. rabbikhaver-cloud-builder-1, 2026-11-18. */
+(function(){
+ const T=window.DPTODO=window.DPTODO||{dept:null,data:null,busy:false,msg:'',show:{}};
+ const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const ago=t=>{ if(!t) return ''; const m=Math.round((Date.now()-t)/60000); return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'; };
+ const KIND={stuck:['🆘','Stuck: missed {n} in a row'],checkin:['🧑‍🏫','Failed the check {n} times today'],guess:['⚡','Guessing fast ({n} quick answers)'],idle:['💤','Stopped {n} min ago']};
+ const REDRAW=()=>{ try{ if(window.DP&&DP.open) document.dispatchEvent(new CustomEvent('dp-redraw')); }catch(e){} };
+ function rerender(){ const b=document.querySelector('#dp-ov .dp-body'); if(b&&window.DP&&DP.tab==='todo') b.innerHTML=T.html(); }
+ T.load=function(id){ T.dept=id; T.data=null; T.msg=''; rerender(); run('dpTodo',S.token,id).then(r=>{ if(T.dept===id){ T.data=r; rerender(); } }).catch(e=>{ T.data={err:String(e&&e.message||e)}; rerender(); }); };
+ T.count=function(){ const D=T.data; if(!D||D.err) return ''; const n=(D.now||[]).length+(D.reports||[]).length+(D.fixes||[]).filter(f=>!f.done).length+(D.tasks||[]).filter(t=>t.status!=='done').length; return n?` <span class="dtd-n">${n}</span>`:''; };
+ function sec(key,icon,title,n,body,empty){ const open=T.show[key]!==false; return `<section class="dtd-sec"><button type="button" class="dtd-h" data-dtd="tog" data-k="${key}"><span>${icon}</span><b>${title}</b><span class="dtd-c ${n?'on':''}">${n}</span><span class="dtd-ar">${open?'▾':'▸'}</span></button>${open?(n?body:`<p class="dtd-empty">${empty}</p>`):''}</section>`; }
+ T.html=function(){ const D=T.data; if(!D) return '<p class="dp-soft">Gathering everything that needs doing…</p>'; if(D.err) return '<p class="dp-soft">Could not load: '+E(D.err)+'</p>';
+  const now=D.now||[], slip=D.slip||[], rt=D.reteach||[], rp=D.reports||[], fx=D.fixes||[], tk=D.tasks||[];
+  const openFx=fx.filter(f=>!f.done), openTk=tk.filter(t=>t.status!=='done');
+  let h=`<div class="dtd-top"><div><b>Everything waiting in ${E(D.dept.name)}</b><small>Updated ${new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}</small></div><button type="button" class="dtd-re" data-dtd="reload">↻ Refresh</button></div>`;
+  h+=`<div class="dtd-sum">${[['🆘',now.length,'need you now'],['📉',slip.length,'skills slipping'],['🔁',rt.length,'to reteach'],['🚩',rp.length,'problem reports'],['🛠️',openFx.length,'content fixes'],['✅',openTk.length,'open tasks']].map(x=>`<div class="${x[1]?'on':''}"><span>${x[0]}</span><b>${x[1]}</b><small>${x[2]}</small></div>`).join('')}</div>`;
+  if(T.msg) h+=`<p class="dtd-msg">${E(T.msg)}</p>`;
+  h+=sec('now','🆘','Boys who need you now',now.length,`<ul class="dtd-l">${now.map(x=>{ const k=KIND[x.kind]||['•','{n}']; return `<li><span class="dtd-i">${k[0]}</span><div><b>${E(x.name)}</b> · ${E(k[1].replace('{n}',x.n))}<small>${E(x.skillName)} · ${ago(x.at)}</small></div><button type="button" class="dtd-b" data-dp="boy" data-id="${E(x.sid)}">Open</button></li>`; }).join('')}</ul>`,'Nobody is stuck on this department’s lessons right now. (Today only, real students.)');
+  h+=sec('slip','📉','Skills slipping (mastered, then missed in review)',slip.length,`<ul class="dtd-l">${slip.map(x=>`<li><span class="dtd-i">📉</span><div><b>${E(x.skillName)}</b> · ${x.n} boy${x.n>1?'s':''}<small>${E(x.boys.join(', '))}${x.n>x.boys.length?' …':''}</small></div></li>`).join('')}</ul>`,'No skills slipping here.');
+  h+=sec('rt','🔁','Questions to reteach (most missed, last 14 days)',rt.length,`<ul class="dtd-l">${rt.map(x=>`<li><span class="dtd-i">🔁</span><div><b>${x.missPct}% missed</b> · ${E(x.name)}<small>“${E(x.item)}” · ${x.boys} boys · ${x.tries} tries${x.help?' · '+x.help+' asked for help':''}</small></div></li>`).join('')}</ul>`,'No question here is missed often.');
+  h+=sec('rp','🚩','Problem reports from boys and staff',rp.length,`<ul class="dtd-l">${rp.map((x,i)=>`<li><span class="dtd-i">🚩</span><div><b>${E(x.skillName)}</b> · ${x.n} report${x.n>1?'s':''}<small>“${E(x.item)}” · ${E(Object.keys(x.reasons||{}).join(', '))}${x.notes&&x.notes.length?' · '+E(x.notes.join(' | ')):''}</small></div><button type="button" class="dtd-b" data-dtd="rep" data-i="${i}">Mark fixed</button></li>`).join('')}</ul>`,'No open problem reports.');
+  h+=sec('fx','🛠️','Known content errors to fix (curriculum review)',openFx.length,`<ul class="dtd-l">${fx.map(f=>`<li class="${f.done?'done':''}"><span class="dtd-i">${f.done?'✅':'🛠️'}</span><div>${E(f.text)}<small>${f.skillName?E(f.skillName)+' · ':''}${f.done?'Fixed · '+E(f.doneBy)+' '+E(f.doneAt):'From HQ “09 CURRICULUM COLD READ”'}</small></div><button type="button" class="dtd-b" data-dtd="${f.done?'fixopen':'fixdone'}" data-k="${E(f.key)}">${f.done?'Reopen':'Done'}</button></li>`).join('')}</ul>`,'No known content errors in this department.');
+  const ppl=D.people||[];
+  h+=sec('tk','✅','Our task list',openTk.length,`<ul class="dtd-l">${tk.map(t=>{ const late=t.status!=='done'&&t.due&&t.due<D.today; return `<li class="${t.status==='done'?'done':''}"><span class="dtd-i">${t.status==='done'?'✅':late?'⏰':'⬜'}</span><div>${E(t.text)}<small>${t.ownerName?'For '+E(t.ownerName)+' · ':''}${t.due?(late?'<b class="late">Late: '+E(t.due)+'</b>':'Due '+E(t.due))+' · ':''}by ${E(t.by)}${t.status==='done'?' · done by '+E(t.doneBy)+' '+E(t.doneAt):''}</small></div><button type="button" class="dtd-b" data-dtd="${t.status==='done'?'reopen':'done'}" data-id="${E(t.id)}">${t.status==='done'?'Reopen':'Done'}</button><button type="button" class="dtd-x" data-dtd="remove" data-id="${E(t.id)}" aria-label="Remove">✕</button></li>`; }).join('')}</ul>`,'No tasks yet. Add the first one below.');
+  h+=`<div class="dtd-add"><input class="dtd-t" maxlength="300" placeholder="Add a task for this department…" aria-label="New task"><select class="dtd-o" aria-label="For whom"><option value="">Anyone</option>${ppl.map(p=>`<option value="${E(p.id)}">${E(p.name)}</option>`).join('')}</select><input class="dtd-d" type="date" aria-label="Due date"><button type="button" class="dtd-go" data-dtd="add">Add</button></div>`;
+  return h; };
+ function act(what,a){ if(T.busy) return; T.busy=true; T.msg='Saving…'; rerender(); run('dpTask',S.token,T.dept,what,a).then(r=>{ T.busy=false; T.data=r; T.msg='Saved ✓'; rerender(); setTimeout(()=>{ T.msg=''; rerender(); },1800); }).catch(e=>{ T.busy=false; T.msg=String(e&&e.message||e); rerender(); }); }
+ document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dtd]'); if(!b) return; e.preventDefault(); e.stopPropagation(); const a=b.dataset.dtd, D=T.data;
+  if(a==='tog'){ const k=b.dataset.k; T.show[k]=T.show[k]===false; rerender(); }
+  else if(a==='reload') T.load(T.dept);
+  else if(a==='rep'&&D){ const x=(D.reports||[])[+b.dataset.i]; if(x) act('report',{skill:x.skill,item:x.item}); }
+  else if(a==='fixdone'||a==='fixopen') act(a,{key:b.dataset.k});
+  else if(a==='done'||a==='reopen') act(a,{id:b.dataset.id});
+  else if(a==='remove'){ if(confirm('Remove this task?')) act('remove',{id:b.dataset.id}); }
+  else if(a==='add'){ const box=b.closest('.dtd-add'), t=box.querySelector('.dtd-t').value.trim(); if(t.length<3){ T.msg='Write the task first.'; rerender(); return; } act('add',{text:t,owner:box.querySelector('.dtd-o').value,due:box.querySelector('.dtd-d').value}); }
+ },true);
+ const css=document.createElement('style'); css.textContent=`
+.dtd-top{display:flex;align-items:center;gap:10px;margin:0 0 10px}.dtd-top small{display:block;color:#64748B;font-size:13px}.dtd-re{margin-left:auto;border:0;border-radius:12px;padding:10px 14px;background:#EEF2FF;color:#3730A3;font-weight:800;cursor:pointer;min-height:44px}
+.dtd-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:0 0 14px}.dtd-sum div{background:#F8FAFC;border:2px solid #E2E8F0;border-radius:16px;padding:10px;text-align:center}.dtd-sum div.on{background:#FFF7ED;border-color:#FDBA74}
+.dtd-sum span{font-size:22px;display:block}.dtd-sum b{font-size:24px;display:block}.dtd-sum small{color:#475569;font-size:13px;font-weight:700}
+.dtd-sec{background:#fff;border:2px solid #E2E8F0;border-radius:18px;margin:0 0 10px;overflow:hidden}
+.dtd-h{display:flex;gap:10px;align-items:center;width:100%;border:0;background:#F8FAFC;padding:12px 14px;font:inherit;font-size:17px;cursor:pointer;text-align:left;min-height:52px}.dtd-h b{flex:1}
+.dtd-c{background:#E2E8F0;color:#475569;border-radius:999px;padding:2px 10px;font-weight:900}.dtd-c.on{background:#F97316;color:#fff}.dtd-ar{color:#64748B}
+.dtd-l{list-style:none;margin:0;padding:4px 10px}.dtd-l li{display:flex;gap:10px;align-items:center;padding:10px 4px;border-bottom:1px solid #F1F5F9;font-size:16px}.dtd-l li:last-child{border-bottom:0}.dtd-l li>div{flex:1}
+.dtd-l small{display:block;color:#64748B;font-size:14px;margin-top:2px}.dtd-l li.done{opacity:.6}.dtd-i{font-size:20px}.late{color:#B91C1C}
+.dtd-b{border:0;border-radius:12px;padding:8px 14px;background:#1E1B4B;color:#fff;font-weight:800;cursor:pointer;min-height:44px;white-space:nowrap}.dtd-x{border:0;background:none;color:#94A3B8;font-size:18px;cursor:pointer;min-width:36px;min-height:44px}
+.dtd-empty{color:#64748B;margin:0;padding:12px 16px}.dtd-msg{background:#ECFDF5;color:#065F46;border-radius:12px;padding:8px 12px;font-weight:800}
+.dtd-add{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}.dtd-add input,.dtd-add select{font:inherit;font-size:16px;border:2px solid #CBD5E1;border-radius:12px;padding:10px;min-height:46px}.dtd-add .dtd-t{flex:1;min-width:220px}
+.dtd-go{border:0;border-radius:12px;padding:10px 20px;background:#16A34A;color:#fff;font-weight:900;font-size:16px;cursor:pointer;min-height:46px}.dtd-n{background:#F97316;color:#fff;border-radius:999px;padding:0 8px;margin-left:4px;font-size:13px}`;
+ document.head.appendChild(css);
+})();
+</script>

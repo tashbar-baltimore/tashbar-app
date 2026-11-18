@@ -251,7 +251,8 @@
  document.getElementById('cpNav').onclick=function(){ document.getElementById('cpN').classList.toggle('open'); };
  document.getElementById('cpStaff').onclick=function(){ var go=function(u){ window.open(u+'?sg=1','_top'); }; if(C.url) go(C.url); else call('msAppUrl').then(go); };
  function denied(msg){ document.getElementById('cpM').innerHTML='<div class="cp-empty"><h2>Staff only</h2><p>'+esc(msg||'Please sign in with your staff code first, then open Curriculum Preview from the staff screen.')+'</p></div>'; }
- function boot(n){ var B=bank(); if(B&&Object.keys(B).length>200&&window.TL_TB){ build(); nav(); main(); return; } if(n>120) { if(B&&Object.keys(B).length){ build(); nav(); main(); } return; } setTimeout(function(){ boot(n+1); },500); }
+ function deep(){ try{ google.script.url.getLocation(function(l){ var id=String((l&&l.parameter&&l.parameter.skill)||''); if(!/^[A-Z]+\.[A-Za-z0-9.]+$/.test(id)) return; C.subj=subjOf(id); C.q=id; nav(); main(); }); }catch(e){} }   /* ?cp=1&skill=ID from a department's Curriculum tab */
+ function boot(n){ var B=bank(); if(B&&Object.keys(B).length>200&&window.TL_TB){ build(); nav(); main(); deep(); return; } if(n>120) { if(B&&Object.keys(B).length){ build(); nav(); main(); deep(); } return; } setTimeout(function(){ boot(n+1); },500); }
  var s=sess(); if(!s||s.role!=='staff'||!s.token) return denied();
  C.token=s.token;
  call('cpLoad',s.token).then(function(r){ C.url=r.url; document.getElementById('cpWho').textContent=r&&r.name?'· '+r.name:''; boot(0); }).catch(function(e){ denied(e); });
