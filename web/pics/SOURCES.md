@@ -27,3 +27,7 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - george-washington.jpg | https://www.loc.gov/item/2009633819/ | No known restrictions on publication | after Gilbert Stuart
 - us-capitol.jpg | https://www.loc.gov/item/2003677127/ | No known restrictions on publication | Library of Congress print
 - abraham-lincoln.jpg | https://www.loc.gov/item/scsm000764/ | Public domain (1860s photograph) | Mathew Brady studio
+- sun-nasa.jpg | https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA's_Solar_Dynamics_Observatory_-_20100819.jpg (960px copy) | Public domain | NASA / SDO (AIA)
+- full-moon.jpg | https://commons.wikimedia.org/wiki/File:Full_Moon_Luc_Viatour.jpg (960px copy) | CC BY-SA 3.0 | Luc Viatour
+- planets-montage.jpg | https://commons.wikimedia.org/wiki/File:Released_to_Public_Solar_System_Montage_(NASA)_(420390416).jpg (960px copy) | Public domain | NASA
+- leaf-veins.jpg | https://commons.wikimedia.org/wiki/File:Background_green_leave_macro.jpg (960px copy) | Public domain | unknown (public domain)
