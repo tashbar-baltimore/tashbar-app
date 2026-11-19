@@ -40,5 +40,17 @@ async function call(fn, args) {
   sp = sp.slice(0, sa + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Tashbar Learning · Staff</title><script>window.TL_PAGE_KIND="staff";window.TL_PAGE_HASH="' + st.h + '";window.TL_PAGE_BUILT=' + Date.now() + ';</script><script src="/boot.js"></script>' + sp.slice(sa + 6);
   if (!/^\s*<!doctype/i.test(sp)) sp = '<!doctype html>\n' + sp;
   fs.mkdirSync(path.join(OUT, 'staff'), { recursive: true }); fs.writeFileSync(path.join(OUT, 'staff', 'index.html'), sp); fs.writeFileSync(path.join(OUT, 'staff', 'page-hash.json'), JSON.stringify({ h: st.h }));
+  /* ALL PAGES ON FIREBASE (HoS 2026-11-19): the pages the Apps Script link still drew (canteen, sign-off, placement check, parents,
+     Curriculum Preview, Spark Path, Pathfinder) are drawn once here and served as fast files at /pages/<kind>/ (apiPageHtml,
+     FireBridge.js). boot.js and FireLinks.html send links there. A page that does not draw is skipped: its old link keeps working. */
+  const PAGES = ['canteen', 'so', 'pl', 'pp', 'cp', 'spark', 'pf', 'pfstaff'], made = [];
+  for (const k of PAGES) { try { let h = await call('apiPageHtml', [k]); if (typeof h !== 'string' || h.indexOf('TL_FIRE_ON') < 0) throw new Error('no page');
+      const hi = h.search(/<head[^>]*>/i); const add = '<meta name="viewport" content="width=device-width, initial-scale=1">' + (/<title>/i.test(h) ? '' : '<title>Tashbar Learning</title>');
+      if (hi >= 0) { const j = h.indexOf('>', hi) + 1; h = h.slice(0, j) + add + h.slice(j); }
+      if (!/^\s*<!doctype/i.test(h)) h = '<!doctype html>\n' + h;
+      fs.mkdirSync(path.join(OUT, 'pages', k), { recursive: true }); fs.writeFileSync(path.join(OUT, 'pages', k, 'index.html'), h); made.push(k);
+    } catch (e) { console.warn('page ' + k + ' skipped (its old link keeps working): ' + e.message); } }
+  fs.mkdirSync(path.join(OUT, 'pages'), { recursive: true }); fs.writeFileSync(path.join(OUT, 'pages', 'list.json'), JSON.stringify({ pages: made }));
+  console.log('pages on Firebase: ' + (made.join(', ') || 'none'));
   console.log('built ' + OUT + ' from ' + (FROM_REPO ? 'THIS REPOSITORY' : 'the live server') + ': page ' + Math.round(Buffer.byteLength(page) / 1024) + ' KB (hash ' + pageR.h.slice(0, 8) + '), ' + parts.order.length + ' parts, ' + (bytes / 1048576).toFixed(1) + ' MB (' + (gz / 1048576).toFixed(1) + ' MB compressed); staff page ' + Math.round(st.html.length / 1024) + ' KB (hash ' + st.h.slice(0, 8) + ')');
 })().catch(e => { console.error('BUILD FAILED: ' + e.message); process.exit(1); });

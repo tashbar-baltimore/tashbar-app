@@ -3,7 +3,9 @@
    Preview, sign-off, canteen kiosk, placement and Pathfinder report are still drawn by the Apps Script link, a different site that
    cannot see the web.app sign-in. When a link to one of them is tapped, ask the server for a one-time code (tlHandoff: 2 minutes,
    works once), and open the page with it (&tlh=). The page trades it back (FireBridgeUI.html). The sign-in never goes in a link.
-   Links that already carry a code (the Pathfinder card's &h=) and pages inside a frame are left alone. */
+   Links that already carry a code (the Pathfinder card's &h=) and pages inside a frame are left alone.
+   ALL PAGES ON FIREBASE (HoS 2026-11-19): those pages are now fast files on this same site (/pages/<kind>/, web/build.js), so the
+   link opens them here instead of on the slow Apps Script link. The one-time code still carries the sign-in into a new tab. */
 (function(){
  var HOSTS=['tashbar-learning-live.web.app','tashbar-learning-live.firebaseapp.com']; if(HOSTS.indexOf(location.host)<0||window.TL_FIRELINKS) return; window.TL_FIRELINKS=1;
  var EXEC='https:'+'/'+'/script.google.com/macros/s/AKfycbwcTw8upBIAN3n1D36TON-3u6_VQdo-6zLYJT_bMa11yeFwN9IhL_saGDciQP5QK70pEw/exec';
@@ -13,10 +15,13 @@
  function tokFor(q){ var s=sess(), k=kidTok(); if(KID.test(q)&&!/[?&](report|rebbe)=/.test(q)) return k||(s&&s.token)||null; return (s&&s.token)||k||null; }
  function ours(u){ try{ var x=new URL(String(u),location.href); if(!(x.origin===location.origin||x.href.indexOf(EXEC)===0)) return null;
    if(!RX.test(x.search)||/[?&](h|tlh|old)=/.test(x.search)) return null; return x; }catch(e){ return null; } }
+ function kindOf(q){ if(/[?&]old=1(&|$)/.test(q)) return ''; if(/[?&]canteen=1(&|$)/.test(q)) return 'canteen'; if(/[?&]so=1(&|$)/.test(q)) return 'so'; if(/[?&]pp=1(&|$)/.test(q)) return 'pp'; if(/[?&]cp=1(&|$)/.test(q)) return 'cp';
+  if(/[?&]pl=1(&|$)/.test(q)&&/[?&]check=1(&|$)/.test(q)) return 'pl'; if(/[?&]pf=1(&|$)/.test(q)) return /[?&](report|rebbe)=/.test(q)?'pfstaff':'pf'; return ''; }
  var realOpen=window.open;
  function go(x,target){ var q=x.search, t=tokFor(q), back=/[?&]back=/.test(q)?'':'&back='+encodeURIComponent(location.origin+'/');
   var w=(target==='_blank')?realOpen.call(window,'about:blank','_blank'):null;
-  var fin=function(code){ var u=EXEC+q+(code?'&tlh='+code:'')+back+x.hash; if(w){ try{ w.location.href=u; return; }catch(e){} } if(target&&target!=='_top'&&target!=='_self'&&target!=='_blank') realOpen.call(window,u,target); else location.href=u; };
+  var pk=kindOf(q), base=pk?location.origin+'/pages/'+pk+'/':EXEC;   /* ALL PAGES ON FIREBASE (2026-11-19): the fast copy on this site */
+  var fin=function(code){ var u=base+q+(code?'&tlh='+code:'')+back+x.hash; if(w){ try{ w.location.href=u; return; }catch(e){} } if(target&&target!=='_top'&&target!=='_self'&&target!=='_blank') realOpen.call(window,u,target); else location.href=u; };
   if(!t) return fin('');
   try{ google.script.run.withSuccessHandler(function(c){ fin(typeof c==='string'?c:''); }).withFailureHandler(function(){ fin(''); }).tlHandoff(t); }catch(e){ fin(''); } }
  window.open=function(u,target){ var x=u&&ours(u); if(!x) return realOpen.apply(window,arguments); go(x,target||'_blank'); return null; };
