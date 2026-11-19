@@ -6,6 +6,7 @@ name: firebase-deploy
 #   site   = rebuild the student + staff pages from the live server and add them to Firebase Hosting (keeps /pics, /curriculum)
 #   server = deploy the Firebase server function "api" from src/ + server/ in main
 #   both   = server first, then site
+#   publish-from-github = THE NORMAL WAY: server + site, both from THIS REPOSITORY, live (auto-publish uses this)
 #   preview-from-github = build the pages from THIS REPOSITORY and put them on a private preview link (live site untouched)
 on:
   workflow_dispatch:
@@ -13,8 +14,8 @@ on:
       what:
         description: 'What to publish'
         type: choice
-        options: [site, server, both, preview-from-github]
-        default: site
+        options: [publish-from-github, preview-from-github, site, server, both]
+        default: publish-from-github
       note:
         description: 'Short release note'
         required: false
@@ -49,11 +50,11 @@ jobs:
       - uses: google-github-actions/setup-gcloud@v2
 
       - name: Server tests (made-up students only)
-        if: inputs.what != 'site'
+        if: inputs.what == 'server' || inputs.what == 'both' || inputs.what == 'publish-from-github'
         run: node server/selftest.js
 
       - name: Deploy the server function "api"
-        if: inputs.what != 'site'
+        if: inputs.what == 'server' || inputs.what == 'both' || inputs.what == 'publish-from-github'
         run: |
           rm -rf functions/app && mkdir -p functions/app && cp -r server src functions/app/ && mkdir -p functions/app/packs && cp packs/*.html functions/app/packs/ 2>/dev/null || true
           echo "packs shipped with the server: $(ls functions/app/packs | wc -l)"
@@ -67,8 +68,8 @@ jobs:
       - name: Build the site from the live server
         if: inputs.what == 'site' || inputs.what == 'both'
         run: node web/build.js
-      - name: Build the site from THIS REPOSITORY (preview only, live site not changed)
-        if: inputs.what == 'preview-from-github'
+      - name: Build the site from THIS REPOSITORY
+        if: inputs.what == 'preview-from-github' || inputs.what == 'publish-from-github'
         run: TL_FROM_REPO=1 node web/build.js
 
       - name: Add the site to Firebase Hosting (keeps every file already live)

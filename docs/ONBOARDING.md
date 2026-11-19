@@ -10,14 +10,14 @@ Every builder works the same way: their own Claude account + their own free GitH
    ```
    Work in tashbar-baltimore/tashbar-app. Read CLAUDE.md and CONTRIBUTING.md first and follow them.
    My task: <one task, or "take the next open issue labelled for me">.
-   When done, open a pull request with tests passing. Do not publish.
+   When done, open a pull request with the tests passing. It goes live by itself.
    ```
 
 ## The Head of School (or a lead) does
 - Invite the person: GitHub → `tashbar-baltimore` → **People** → **Invite member** → their school email → role **Member**.
-- Review and merge their pull requests. When ready to go live: **Actions → firebase-deploy → Run workflow**.
+- Nothing. Pull requests that pass the tests are merged and published automatically (auto-publish). To stop one, add the label `hold`; to pause everything, set the repository variable `AUTO_PUBLISH` to `off`.
 
 ## Why this way
 - One source (this repository), many builders in parallel on separate branches: no editor lock, no daily Google sign-in.
 - `CLAUDE.md` loads the rules and the teaching standard into every Claude session automatically, so nobody has to paste the long standing prompt.
-- Nothing reaches the boys until a pull request passes the tests and someone presses publish.
+- Nothing reaches the boys unless it passes the tests; then it goes live by itself, and any release can be undone by publishing the version before it.
