@@ -1,4 +1,5 @@
 name: firebase-deploy
+# Publishes to Firebase straight from GitHub. (The function stays public: its access is set once in Google Cloud, not on each deploy.)
 # Publishes to Firebase straight from GitHub. No clasp, no daily Google sign-in, no stored keys.
 # GitHub proves who it is to Google (keyless "workload identity"); only the main branch of this repository is allowed.
 # Run it by hand: Actions -> firebase-deploy -> Run workflow -> choose what to publish.
@@ -57,7 +58,7 @@ jobs:
           node --check functions/index.js
           printf 'node_modules\n' > functions/.gcloudignore
           gcloud functions deploy api --project="$PROJECT" --gen2 --region=us-east4 --runtime=nodejs22 \
-            --source=functions --entry-point=api --trigger-http --allow-unauthenticated \
+            --source=functions --entry-point=api --trigger-http \
             --memory=4Gi --cpu=2 --timeout=1800s --max-instances=50 --min-instances=4 --concurrency=6 \
             --set-secrets=TL_EXPORT_KEY=tl-export-key:latest --quiet
 
