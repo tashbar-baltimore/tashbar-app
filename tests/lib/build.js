@@ -43,7 +43,9 @@ function kid() {
 function staff() {
   const { ctx, loadErrors } = sandbox();
   let page = null, error = null;
-  try { page = vm.runInContext('(function(){ var r = doGet({parameter:{sg:"1"},parameters:{sg:["1"]},queryString:"sg=1"}); return r && r.getContent ? r.getContent() : null; })()', ctx); } catch (e) { error = String(e && e.stack || e).slice(0, 400); }
+  /* The live staff portal is the Firebase page, built from apiStaffPage (web/build.js does the same). The old Apps Script
+     doGet now only shows "Tashbar has moved", so it is the fallback. */
+  try { page = vm.runInContext('(function(){ if (typeof apiStaffPage === "function") { var s = apiStaffPage(""); if (s && s.html) return s.html; } var r = doGet({parameter:{sg:"1"},parameters:{sg:["1"]},queryString:"sg=1"}); return r && r.getContent ? r.getContent() : null; })()', ctx); } catch (e) { error = String(e && e.stack || e).slice(0, 400); }
   return { page, error, loadErrors };
 }
 
