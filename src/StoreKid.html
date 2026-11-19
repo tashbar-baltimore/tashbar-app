@@ -104,8 +104,8 @@ body.st-theme-gold{background:linear-gradient(160deg,#FEF3C7,#E9C46A 50%,#B08968
 .stshelf{margin:18px 0 8px;font:900 20px var(--display,system-ui),system-ui,sans-serif;color:#1F2937}.stshelf:first-child{margin-top:4px}.stshelf small{display:block;font:700 14px var(--body,system-ui),system-ui,sans-serif;color:#6B7280}
 .stcard .soon{display:block;margin-top:6px;font-weight:800;font-size:14px;color:#7C3AED}
 .stcard.hol{background:linear-gradient(160deg,#FFFBEB,#EEF2FF)}
-.sttr{position:fixed;z-index:10007;pointer-events:none;border-radius:50%}
-.stem{position:fixed;z-index:10007;pointer-events:none;line-height:1}
+.sttr{position:fixed;z-index:2147483198;pointer-events:none;border-radius:50%}
+.stem{position:fixed;z-index:2147483198;pointer-events:none;line-height:1}
 .hpbar .tools .stcannon{border:0;border-radius:14px;padding:8px 12px;font-size:22px;background:linear-gradient(135deg,#F472B6,#A855F7);color:#fff;cursor:pointer;min-height:44px;box-shadow:0 3px 0 #6B21A8}
 @media (prefers-reduced-motion:reduce){.stpet,.st-frame-fire,.st-frame-rainbow{animation:none}}`; document.head.appendChild(s); } }catch(e){}
 
@@ -331,12 +331,22 @@ const TAPS={'tap-rainbow':{cols:RAINBOW},'tap-stars':{cols:['#FACC15','#F59E0B',
  'tap-fireworks':{cols:['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'],big:true},'tap-gold':{cols:['#FACC15','#EAB308','#CA8A04'],em:['🪙','✨']},
  'hol-sukkah':{cols:['#16A34A','#FACC15'],em:['🍋','🌿','🍇','⭐']},'hol-menorah':{cols:['#2563EB','#CBD5E1','#FACC15'],em:['🕎','✨','🔥']},'hol-fruit':{cols:['#7C3AED','#65A30D','#CA8A04'],em:['🍇','🫒','🌾','🌳']},
  'hol-masks':{cols:['#A855F7','#F43F5E','#FACC15'],em:['🎭','🎉','🥁','👑']},'hol-arrows':{cols:['#EA580C','#FACC15'],em:['🏹','✨']},'hol-flowers':{cols:['#EC4899','#FACC15','#22C55E'],em:['🌸','🌼','🌿','🌷']}};
+window.tlStoreTrailOn=()=>{ try{ return !!(A.st&&TRAILS[(ST().wear||{}).trail]); }catch(e){ return false; } };
 window.tlTapStyle=()=>{ try{ if(!A.st) return null; return TAPS[(ST().wear||{}).tap]||null; }catch(e){ return null; } };
 /* trails: follow the mouse (pointer events) and the finger (touch events, which keep coming while the page scrolls) */
 const TRAILS={'trail':{em:['⭐','✨','🌟'],gap:30},'trail-rainbow':{rb:true,gap:7},'trail-comet':{comet:true,gap:7},'trail-sparkle':{em:['✨'],gap:22,small:true},'trail-bubbles':{em:['🫧'],gap:34,up:true},
- 'hol-honey':{em:['🍎','🍯'],gap:34},'hol-flames':{em:['🔥','✨','🕯️'],gap:28,up:true},'hol-sea':{em:['🌊','💧'],gap:30},'hol-bonfire':{em:['🔥','✨'],gap:26,up:true}};
+ 'hol-honey':{em:['🍎','🍯'],gap:34},'hol-flames':{em:['🔥','✨','🕯️'],gap:28,up:true},'hol-sea':{em:['🌊','💧'],gap:30},'hol-bonfire':{em:['🔥','✨'],gap:26,up:true},'hol-donuts':{donut:true,gap:30}};
+/* Chanukah rolling donuts: small real donuts (a ring with a hole), five frostings, that roll away from the finger in random directions */
+const DONUTS=[['#F9A8D4','#FFFFFF'],['#7C4A2D','#FDE68A'],['#FFFFFF','#F43F5E'],['#3B82F6','#FFFFFF'],['#E8A33D','#7C2D12']];
+function donutSvg(k){ const f=DONUTS[k%DONUTS.length], ring='M10 1a9 9 0 1 0 .01 0zM10 7a3 3 0 1 1-.01 0z', top='M10 2.6a7.4 7.4 0 1 0 .01 0zM10 6.4a3.6 3.6 0 1 1-.01 0z';
+  let sp=''; for(let i=0;i<7;i++){ const a=i/7*Math.PI*2+k, r=5.3; sp+=`<rect x="${(10+Math.cos(a)*r-.9).toFixed(2)}" y="${(10+Math.sin(a)*r-.35).toFixed(2)}" width="1.8" height=".7" rx=".35" fill="${i%2?f[1]:'#FACC15'}" transform="rotate(${Math.round(a*57)} ${(10+Math.cos(a)*r).toFixed(2)} ${(10+Math.sin(a)*r).toFixed(2)})"/>`; }
+  return `<svg viewBox="0 0 20 20" width="100%" height="100%" aria-hidden="true"><path d="${ring}" fill="#D69A55" fill-rule="evenodd"/><path d="${top}" fill="${f[0]}" fill-rule="evenodd"/>${k%DONUTS.length===1||k%DONUTS.length===4?'':sp}<path d="M5.2 6.2a6.4 6.4 0 0 1 4-2.4" stroke="#fff" stroke-opacity=".55" stroke-width=".9" fill="none" stroke-linecap="round"/></svg>`; }
+function donut(x,y){ if(TLIVE>=TCAP) return; TLIVE++; const e=document.createElement('i'), sz=14+Math.round(Math.random()*5); e.className='stdonut'; e.innerHTML=donutSvg(tk++);
+  e.style.cssText=`position:fixed;z-index:2147483198;pointer-events:none;width:${sz}px;height:${sz}px;left:${x-sz/2}px;top:${y-sz/2}px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))`; document.body.appendChild(e);
+  const a=Math.random()*Math.PI*2, dist=45+Math.random()*75, dx=Math.cos(a)*dist, dy=Math.sin(a)*dist, turn=(dist/(Math.PI*sz))*360*(dx<0?-1:1), ms=900+Math.random()*450;
+  e.animate([{transform:'translate(0,0) rotate(0deg) scale(.4)',opacity:0},{transform:`translate(${dx*.12}px,${dy*.12}px) rotate(${turn*.12}deg) scale(1)`,opacity:1,offset:.1},{transform:`translate(${dx}px,${dy}px) rotate(${turn}deg) scale(1)`,opacity:1,offset:.8},{transform:`translate(${dx*1.04}px,${dy*1.04}px) rotate(${turn*1.04}deg) scale(.9)`,opacity:0}],{duration:ms,easing:'cubic-bezier(.12,.75,.3,1)'}).onfinish=()=>{ e.remove(); TLIVE--; }; }
 let TL=null, TLIVE=0, thue=0, tk=0; const TCAP=90;
-function tdot(x,y,t){ if(TLIVE>=TCAP) return; const e=document.createElement('i'); TLIVE++;
+function tdot(x,y,t){ if(t.donut){ donut(x,y); return; } if(TLIVE>=TCAP) return; const e=document.createElement('i'); TLIVE++;
   if(t.em){ e.className='stem'; e.textContent=t.em[tk++%t.em.length]; e.style.fontSize=(t.small?13:18)+'px'; e.style.left=x+'px'; e.style.top=y+'px'; document.body.appendChild(e);
     e.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(-50%,${t.up?-(18+Math.random()*16):(10+Math.random()*20)}px) scale(.3)`,opacity:0}],{duration:t.up?900:700,easing:'ease-out'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
   const sz=t.rb?14:12; e.className='sttr'; e.style.width=e.style.height=sz+'px'; e.style.left=(x-sz/2)+'px'; e.style.top=(y-sz/2)+'px';
