@@ -33,6 +33,22 @@ function staticChecks() {
   }
   if (!bad) ok(Object.keys(T).length + ' lesson packs match ContentPacks.js');
   report.counts.packs = Object.keys(T).length;
+  picsCheck();
+}
+
+/* PICS-1: every picture link must pass tools/pics-check.js (real screen, real file, licence recorded, size limits,
+   no marks on question screens, labels only with words the screen's "how" line teaches). */
+function picsCheck() {
+  const { execFileSync } = require('child_process'), os = require('os');
+  const tmp = path.join(os.tmpdir(), 'tl-screens-' + process.pid + '.json');
+  try {
+    execFileSync('python3', [path.join(B.ROOT, 'tools', 'pics-screens.py'), tmp], { stdio: 'pipe' });
+    const out = execFileSync('node', [path.join(B.ROOT, 'tools', 'pics-check.js'), path.join(B.SRC, 'RealPics.html'), tmp, path.join(B.ROOT, 'web', 'pics')], { stdio: 'pipe' }).toString().trim().split('\n').pop();
+    ok('pictures: ' + out);
+  } catch (e) {
+    const lines = String((e.stdout || '') + (e.stderr || '') || e).trim().split('\n');
+    lines.slice(0, -1).slice(0, 40).forEach(l => fail('pictures: ' + l)); fail('pictures: ' + lines[lines.length - 1]);
+  } finally { try { fs.unlinkSync(tmp); } catch (e) {} }
 }
 
 const FAKE = ({ tools, parts }) => {
