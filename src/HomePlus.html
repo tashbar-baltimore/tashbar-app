@@ -291,9 +291,9 @@ body.hpfx button,body.hpfx a,body.hpfx [data-act],body.hpfx [role=button],body.h
 body.hpfx input,body.hpfx textarea{cursor:text}
 #tlclock{width:78px!important;height:78px!important;border-radius:20px!important;z-index:40!important;opacity:.95}#tlclock svg{width:66px!important;height:66px!important}#tlclock .tlc-d b{font-size:22px!important}#tlclock .tlc-w{font-size:12px!important}#tlclock.big{width:252px!important;height:136px!important;z-index:9600!important}#tlclock.big svg{width:108px!important;height:108px!important}
 body.hp-modal #tlclock:not(.big),body.hp-modal #mupill{display:none!important}
-.hpsplash{position:fixed;z-index:99999;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:3px solid var(--c,#6D3CE8)}
-.hpdot{position:fixed;z-index:99999;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--c,#FDE047)}
-.hpem{position:fixed;z-index:99999;pointer-events:none;line-height:1;width:20px;height:20px;margin:-10px 0 0 -10px;text-align:center}
+.hpsplash{position:fixed;z-index:2147483200;pointer-events:none;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;border:3px solid var(--c,#6D3CE8)}
+.hpdot{position:fixed;z-index:2147483200;pointer-events:none;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--c,#FDE047)}
+.hpem{position:fixed;z-index:2147483200;pointer-events:none;line-height:1;width:20px;height:20px;margin:-10px 0 0 -10px;text-align:center}
 .hpcoin{position:fixed;z-index:99999;pointer-events:none;font-size:30px;line-height:1;filter:drop-shadow(0 3px 4px rgba(0,0,0,.3))}
 .hpcash{position:fixed;z-index:99999;pointer-events:none;left:50%;top:38%;transform:translate(-50%,-50%);font:900 64px system-ui,sans-serif;color:#16A34A;text-shadow:0 4px 0 #064E3B,0 10px 30px rgba(0,0,0,.35);-webkit-text-stroke:2px #fff;white-space:nowrap}
 #wallet.hpglow{animation:hpglow 1.6s ease-out}
@@ -329,20 +329,49 @@ function splash(x,y,trail,sty){ if(typeof RM!=='undefined'&&RM) return; if(sty==
   const a=k/n*Math.PI*2+Math.random()*.4, dist=((trail?14:26)+Math.random()*(trail?16:28))*far;
   d.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${Math.cos(a)*dist}px,${Math.sin(a)*dist}px) scale(.3)`,opacity:0}],{duration:(trail?380:480)+Math.random()*200,easing:'ease-out'}).onfinish=done(d); } }
 window.tlSplash=splash;
-/* SWIPE TRAIL: while a finger (or a held mouse button) moves, drop splashes along the path, evenly spaced, so it follows the finger */
-/* Mouse and pen use pointer events. A finger uses touch events: the browser stops pointer events (pointercancel) as soon as a
+/* SWIPE TRAIL v2 (moshe@ session, 2026-11-19): THE DEFAULT TRAIL follows every movement, smoothly.
+   1. BLADE: a glowing ribbon, like a sword in a fruit game, drawn on one see-through canvas. It follows the mouse all the time and the
+      finger while it swipes; thicker while pressed. Smooth curves (midpoint curves), a tapered tail that fades in about a quarter second,
+      colors from the tap style (the Store's tap blast if he bought one). It draws only while something moves, then stops.
+   2. SPLASHES: while pressed, a light splash every 38 px along the path (the same tap splash), at most 60 pieces on screen.
+   If he wears a Store trail (StoreKid.html, window.tlStoreTrailOn), that trail shows instead of the blade.
+   Mouse and pen use pointer events. A finger uses touch events: the browser stops pointer events (pointercancel) as soon as a
    swipe starts scrolling the page, but touchmove keeps coming, so the trail keeps following the finger while the page scrolls. */
-const SW={}, STEP=22, CAP=60;
+const SW={}, STEP=38, CAP=60;
 function trailTo(p,x,y){ const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
  while(dd>=STEP){ p.x+=ux*STEP; p.y+=uy*STEP; dd-=STEP; if(LIVE<CAP) splash(p.x,p.y,true); } }
-document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ splash(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
-document.addEventListener('pointermove',e=>{ const p=SW['p'+e.pointerId]; if(!p||!window.HP_FX) return;
- if(!e.buttons){ delete SW['p'+e.pointerId]; return; }
- try{ const pts=e.getCoalescedEvents?e.getCoalescedEvents():[]; (pts.length?pts:[e]).forEach(q=>trailTo(p,q.clientX,q.clientY)); }catch(x){} },{capture:true,passive:true});
-['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,e=>{ delete SW['p'+e.pointerId]; },true));
-document.addEventListener('touchstart',e=>{ if(!window.HP_FX) return; for(const t of e.changedTouches) SW['t'+t.identifier]={x:t.clientX,y:t.clientY}; },{capture:true,passive:true});
-document.addEventListener('touchmove',e=>{ if(!window.HP_FX) return; try{ for(const t of e.changedTouches){ const p=SW['t'+t.identifier]; if(p) trailTo(p,t.clientX,t.clientY); } }catch(x){} },{capture:true,passive:true});
-['touchend','touchcancel'].forEach(t=>document.addEventListener(t,e=>{ for(const u of e.changedTouches) delete SW['t'+u.identifier]; },{capture:true,passive:true}));
+const BL={cv:null,cx:null,pts:[],raf:0,down:false,dpr:1};
+function bladeOn(){ try{ if(!window.HP_FX||(typeof RM!=='undefined'&&RM)) return false; if(typeof window.tlStoreTrailOn==='function'&&window.tlStoreTrailOn()) return false; return true; }catch(e){ return false; } }
+function bladeCanvas(){ if(BL.cv&&BL.cv.isConnected) return BL.cx; const c=document.createElement('canvas'); c.id='hpblade'; c.setAttribute('aria-hidden','true');
+ c.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;z-index:2147483199;pointer-events:none'; document.body.appendChild(c); BL.cv=c; BL.cx=c.getContext('2d'); bladeSize(); return BL.cx; }
+function bladeSize(){ if(!BL.cv) return; BL.dpr=Math.min(2,window.devicePixelRatio||1); BL.cv.width=Math.round(innerWidth*BL.dpr); BL.cv.height=Math.round(innerHeight*BL.dpr); }
+window.addEventListener('resize',bladeSize,{passive:true});
+function bladeAdd(x,y){ if(!bladeOn()) return; const now=performance.now(), L=BL.pts[BL.pts.length-1];
+ if(L&&Math.hypot(x-L.x,y-L.y)>260) BL.pts=[]; if(L&&Math.hypot(x-L.x,y-L.y)<2) return;
+ BL.pts.push({x:x,y:y,t:now,w:BL.down?1:.6}); if(BL.pts.length>80) BL.pts.splice(0,BL.pts.length-80); if(!BL.raf) BL.raf=requestAnimationFrame(bladeDraw); }
+function bladeDraw(){ BL.raf=0; const cx=bladeCanvas(); if(!cx) return; const d=BL.dpr, now=performance.now(), LIFE=260;
+ BL.pts=BL.pts.filter(q=>now-q.t<LIFE); cx.setTransform(1,0,0,1,0,0); cx.clearRect(0,0,BL.cv.width,BL.cv.height);
+ const P=BL.pts; if(P.length<2){ if(P.length) BL.raf=requestAnimationFrame(bladeDraw); return; }
+ let sty=null; try{ sty=typeof window.tlTapStyle==='function'?window.tlTapStyle():null; }catch(e){}
+ const cols=(sty&&sty.cols&&sty.cols.length)?sty.cols:COLS;
+ cx.setTransform(d,0,0,d,0,0); cx.lineCap='round'; cx.lineJoin='round';
+ for(let i=1;i<P.length;i++){ const a=P[i-1], b=P[i], k=i/(P.length-1), age=1-(now-b.t)/LIFE;
+  const m0=i>1?{x:(P[i-2].x+a.x)/2,y:(P[i-2].y+a.y)/2}:a, m1={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+  const w=(3+11*b.w)*k*Math.max(0,age);
+  if(w<.3) continue;
+  cx.beginPath(); cx.moveTo(m0.x,m0.y); cx.quadraticCurveTo(a.x,a.y,m1.x,m1.y); if(i===P.length-1) cx.lineTo(b.x,b.y);
+  const c=cols[Math.floor(k*(cols.length-1)+.5)%cols.length];
+  cx.globalAlpha=Math.min(1,.25+age); cx.strokeStyle=c; cx.shadowColor=c; cx.shadowBlur=12; cx.lineWidth=w; cx.stroke();
+  cx.shadowBlur=0; cx.globalAlpha=Math.min(1,.2+age)*.9; cx.strokeStyle='#FFFFFF'; cx.lineWidth=w*.35; cx.stroke(); }
+ cx.globalAlpha=1; BL.raf=requestAnimationFrame(bladeDraw); }
+document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ splash(e.clientX,e.clientY); BL.down=true; BL.pts=[]; bladeAdd(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
+document.addEventListener('pointermove',e=>{ if(!window.HP_FX||e.pointerType==='touch') return;
+ try{ const pts=e.getCoalescedEvents?e.getCoalescedEvents():[], list=pts.length?pts:[e]; list.forEach(q=>bladeAdd(q.clientX,q.clientY));
+  const p=SW['p'+e.pointerId]; if(!p) return; if(!e.buttons){ delete SW['p'+e.pointerId]; BL.down=false; return; } list.forEach(q=>trailTo(p,q.clientX,q.clientY)); }catch(x){} },{capture:true,passive:true});
+['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,e=>{ delete SW['p'+e.pointerId]; if(e.pointerType!=='touch') BL.down=false; },true));
+document.addEventListener('touchstart',e=>{ if(!window.HP_FX) return; BL.down=true; for(const t of e.changedTouches) SW['t'+t.identifier]={x:t.clientX,y:t.clientY}; },{capture:true,passive:true});
+document.addEventListener('touchmove',e=>{ if(!window.HP_FX) return; try{ const t0=e.touches[0]; if(t0) bladeAdd(t0.clientX,t0.clientY); for(const t of e.changedTouches){ const p=SW['t'+t.identifier]; if(p) trailTo(p,t.clientX,t.clientY); } }catch(x){} },{capture:true,passive:true});
+['touchend','touchcancel'].forEach(t=>document.addEventListener(t,e=>{ for(const u of e.changedTouches) delete SW['t'+u.identifier]; if(!e.touches.length) BL.down=false; },{capture:true,passive:true}));
 /* sounds */
 function ac(){ try{ if(!SND.on) return null; SND.ctx=SND.ctx||new (window.AudioContext||window.webkitAudioContext)(); return SND.ctx; }catch(e){ return null; } }
 function chaSound(){ const c=ac(); if(!c) return; const t=c.currentTime;
