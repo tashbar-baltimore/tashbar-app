@@ -9,13 +9,26 @@
    - give:    give back to Tashbar (tzedakah) or send dollars to a friend.
    All prices and limits are in STORE below. Change them only here. Amounts are whole cents. */
 var STORE = {
-  VERSION: 'store-1.0.0',
+  VERSION: 'store-1.1.0',
   TAB: 'TL_Store',
   HEAD: ['order_id', 'at', 'student_id', 'name', 'item_id', 'item', 'cents', 'status', 'updated_at', 'by', 'note', 'extra'],
   CANTEEN_RATE: 200,          /* Tashbar $200 = $1.00 Canteen Cash */
   CANTEEN_WEEK: 500,          /* at most $5.00 Canteen Cash from the store per boy per week (cents of Canteen Cash) */
   GIFT_DAY: 10000,            /* a boy may send at most $100 a day to friends */
   OPEN_PRIZES: 3,             /* at most 3 real prizes waiting to be handed out at a time */
+  /* Holiday shop windows on the Hebrew calendar (New York day). A window is [fromMonth, fromDay, toMonth, toDay] with months numbered
+     Tishri 1, Heshvan 2, Kislev 3, Tevet 4, Shevat 5, Adar I 5.5, Adar / Adar II 6, Nisan 7, Iyar 8, Sivan 9, Tamuz 10, Av 11, Elul 12.
+     Each opens about two weeks before the Yom Tov and closes after it. */
+  SEASONS: [
+    { id: 'yamim',     name: 'Rosh Hashanah', emoji: '🍎', win: [[12, 1, 12, 30], [1, 1, 1, 10]] },
+    { id: 'sukkos',    name: 'Sukkos',        emoji: '🌿', win: [[1, 1, 1, 23]] },
+    { id: 'chanukah',  name: 'Chanukah',      emoji: '🕎', win: [[3, 1, 4, 3]] },
+    { id: 'tubishvat', name: 'Tu BiShvat',    emoji: '🌳', win: [[4, 20, 5, 15]] },
+    { id: 'purim',     name: 'Purim',         emoji: '🎭', win: [[5.5, 20, 6, 15]] },   /* from Rosh Chodesh Adar; in a leap year from Adar I 20 */
+    { id: 'pesach',    name: 'Pesach',        emoji: '🌊', win: [[6, 16, 7, 22]] },
+    { id: 'lagbaomer', name: 'Lag BaOmer',    emoji: '🔥', win: [[8, 1, 8, 18]] },
+    { id: 'shavuos',   name: 'Shavuos',       emoji: '🌸', win: [[8, 19, 9, 7]] }
+  ],
   ITEMS: [
     /* ---------- FUN: on the screen, yours right away ---------- */
     { id: 'frame-gold',  cat: 'fun', emoji: '🖼️', name: 'Gold name frame',        cents: 15000, kind: 'wear', slot: 'frame', desc: 'Your name shines in a gold frame on your home page.' },
@@ -35,6 +48,43 @@ var STORE = {
     { id: 'sound-drum',  cat: 'fun', emoji: '🥁', name: 'Drum roll sounds',       cents: 10000, kind: 'wear', slot: 'sound', desc: 'Ba-dum-tss on every right answer.' },
     { id: 'gold-coins',  cat: 'fun', emoji: '🪙', name: 'Solid gold coins',       cents: 25000, kind: 'wear', slot: 'coins', desc: 'Your money shows rain gold coins and gold bars.' },
     { id: 'star-named',  cat: 'fun', emoji: '⭐', name: 'Name a star in the Tashbar sky', cents: 100000, kind: 'keep', desc: 'A star with your name goes up in the Tashbar sky for everyone to see.' },
+    /* ---------- FUN SHOP 2 (2026-11-19, moshe@ session): tap blasts, trails, app colors, bonuses, holiday editions.
+       grp = the shelf in the Fun tab. slot 'tap' = how the tap and swipe splash looks (HomePlus); 'trail' = what follows the mouse or finger;
+       'color' = a color theme for every page of the app. season = a holiday edition: it can be BOUGHT only in that holiday's window
+       (STORE.SEASONS, Hebrew calendar); once bought it is yours forever. ---------- */
+    { id: 'tap-rainbow',   cat: 'fun', grp: 'tap', emoji: '🌈', name: 'Rainbow blast',      cents: 15000, kind: 'wear', slot: 'tap', desc: 'Every tap and swipe bursts into rainbow colors.' },
+    { id: 'tap-stars',     cat: 'fun', grp: 'tap', emoji: '⭐', name: 'Star blast',         cents: 15000, kind: 'wear', slot: 'tap', desc: 'Every tap and swipe shoots out little stars.' },
+    { id: 'tap-confetti',  cat: 'fun', grp: 'tap', emoji: '🎊', name: 'Confetti blast',     cents: 15000, kind: 'wear', slot: 'tap', desc: 'Confetti pops out wherever you tap and swipe.' },
+    { id: 'tap-fireworks', cat: 'fun', grp: 'tap', emoji: '🎆', name: 'Fireworks blast',    cents: 20000, kind: 'wear', slot: 'tap', desc: 'Big fireworks colors on every tap and swipe.' },
+    { id: 'tap-gold',      cat: 'fun', grp: 'tap', emoji: '🪙', name: 'Gold coin blast',    cents: 25000, kind: 'wear', slot: 'tap', desc: 'Shiny gold coins fly out of every tap and swipe.' },
+    { id: 'trail-rainbow', cat: 'fun', grp: 'trail', emoji: '🌈', name: 'Rainbow ribbon trail', cents: 30000, kind: 'wear', slot: 'trail', desc: 'A rainbow ribbon follows your mouse or finger everywhere.' },
+    { id: 'trail-comet',   cat: 'fun', grp: 'trail', emoji: '☄️', name: 'Comet tail trail',  cents: 25000, kind: 'wear', slot: 'trail', desc: 'A blazing comet tail follows you around the screen.' },
+    { id: 'trail-sparkle', cat: 'fun', grp: 'trail', emoji: '✨', name: 'Sparkle dust trail', cents: 20000, kind: 'wear', slot: 'trail', desc: 'Sparkly dust falls behind your mouse or finger.' },
+    { id: 'trail-bubbles', cat: 'fun', grp: 'trail', emoji: '🫧', name: 'Bubble trail',      cents: 20000, kind: 'wear', slot: 'trail', desc: 'Bubbles float up wherever you go.' },
+    { id: 'color-ocean',   cat: 'fun', grp: 'color', emoji: '🌊', name: 'Ocean Blue app colors',   cents: 40000, kind: 'wear', slot: 'color', desc: 'The whole app turns cool ocean blue: home, lessons and all.' },
+    { id: 'color-forest',  cat: 'fun', grp: 'color', emoji: '🌲', name: 'Forest Green app colors', cents: 40000, kind: 'wear', slot: 'color', desc: 'The whole app turns fresh forest green.' },
+    { id: 'color-sunset',  cat: 'fun', grp: 'color', emoji: '🌅', name: 'Sunset app colors',       cents: 40000, kind: 'wear', slot: 'color', desc: 'Warm orange and pink, like the sky before Maariv.' },
+    { id: 'color-candy',   cat: 'fun', grp: 'color', emoji: '🍬', name: 'Cotton Candy app colors', cents: 40000, kind: 'wear', slot: 'color', desc: 'Soft pink and sky blue on every page.' },
+    { id: 'color-royal',   cat: 'fun', grp: 'color', emoji: '👑', name: 'Royal Purple and Gold app colors', cents: 50000, kind: 'wear', slot: 'color', desc: 'Purple and gold, fit for a king, on every page.' },
+    { id: 'bonus-cannon',  cat: 'fun', grp: 'bonus', emoji: '🎉', name: 'Confetti cannon button', cents: 30000, kind: 'keep', desc: 'A 🎉 button on your home page. Tap it any time for a confetti party.' },
+    { id: 'frame-rainbow', cat: 'fun', grp: 'bonus', emoji: '💡', name: 'Name in rainbow lights', cents: 35000, kind: 'wear', slot: 'frame', desc: 'Your name glows in moving rainbow lights.' },
+    { id: 'bonus-combo',   cat: 'fun', grp: 'bonus', emoji: '🔥', name: 'Combo fireworks',       cents: 30000, kind: 'wear', slot: 'combo', desc: 'Every 3 right answers in a row set off fireworks.' },
+    { id: 'hol-honey',     cat: 'fun', grp: 'holiday', season: 'yamim',    emoji: '🍎', name: 'Apples and honey trail',      cents: 25000, kind: 'wear', slot: 'trail', desc: 'Rosh Hashanah edition: apples and honey follow your finger. A sweet new year!' },
+    { id: 'hol-newyear',   cat: 'fun', grp: 'holiday', season: 'yamim',    emoji: '📯', name: 'Golden New Year app colors', cents: 40000, kind: 'wear', slot: 'color', desc: 'Rosh Hashanah edition: white and gold on every page.' },
+    { id: 'hol-sukkah',    cat: 'fun', grp: 'holiday', season: 'sukkos',   emoji: '🌿', name: 'Sukkah decorations blast',   cents: 25000, kind: 'wear', slot: 'tap', desc: 'Sukkos edition: every tap bursts into sukkah decorations.' },
+    { id: 'hol-schach',    cat: 'fun', grp: 'holiday', season: 'sukkos',   emoji: '🛖', name: 'Sukkah green app colors',    cents: 40000, kind: 'wear', slot: 'color', desc: 'Sukkos edition: schach green and esrog yellow on every page.' },
+    { id: 'hol-flames',    cat: 'fun', grp: 'holiday', season: 'chanukah', emoji: '🕯️', name: 'Chanukah flames trail',      cents: 25000, kind: 'wear', slot: 'trail', desc: 'Chanukah edition: little flames follow your mouse or finger.' },
+    { id: 'hol-menorah',   cat: 'fun', grp: 'holiday', season: 'chanukah', emoji: '🕎', name: 'Menorah light blast',        cents: 25000, kind: 'wear', slot: 'tap', desc: 'Chanukah edition: every tap lights up like the menorah.' },
+    { id: 'hol-chanukah',  cat: 'fun', grp: 'holiday', season: 'chanukah', emoji: '💙', name: 'Chanukah blue and silver app colors', cents: 40000, kind: 'wear', slot: 'color', desc: 'Chanukah edition: blue, silver and gold on every page.' },
+    { id: 'hol-fruit',     cat: 'fun', grp: 'holiday', season: 'tubishvat', emoji: '🌳', name: 'Seven species blast',       cents: 25000, kind: 'wear', slot: 'tap', desc: 'Tu BiShvat edition: grapes, olives and wheat burst out of every tap.' },
+    { id: 'hol-masks',     cat: 'fun', grp: 'holiday', season: 'purim',    emoji: '🎭', name: 'Purim party blast',          cents: 25000, kind: 'wear', slot: 'tap', desc: 'Purim edition: masks and party poppers on every tap.' },
+    { id: 'hol-purim',     cat: 'fun', grp: 'holiday', season: 'purim',    emoji: '👑', name: 'Purim party app colors',     cents: 40000, kind: 'wear', slot: 'color', desc: 'Purim edition: bright royal party colors, like Mordechai’s royal clothes.' },
+    { id: 'hol-sea',       cat: 'fun', grp: 'holiday', season: 'pesach',   emoji: '🌊', name: 'Splitting Sea trail',        cents: 25000, kind: 'wear', slot: 'trail', desc: 'Pesach edition: the waves split wherever your finger goes.' },
+    { id: 'hol-spring',    cat: 'fun', grp: 'holiday', season: 'pesach',   emoji: '🌱', name: 'Pesach spring app colors',   cents: 40000, kind: 'wear', slot: 'color', desc: 'Pesach edition: fresh spring green and sky blue on every page.' },
+    { id: 'hol-bonfire',   cat: 'fun', grp: 'holiday', season: 'lagbaomer', emoji: '🔥', name: 'Bonfire sparks trail',      cents: 25000, kind: 'wear', slot: 'trail', desc: 'Lag BaOmer edition: bonfire sparks fly behind your finger.' },
+    { id: 'hol-arrows',    cat: 'fun', grp: 'holiday', season: 'lagbaomer', emoji: '🏹', name: 'Bow and arrow blast',       cents: 25000, kind: 'wear', slot: 'tap', desc: 'Lag BaOmer edition: arrows fly out of every tap.' },
+    { id: 'hol-flowers',   cat: 'fun', grp: 'holiday', season: 'shavuos',  emoji: '🌸', name: 'Shavuos flower blast',       cents: 25000, kind: 'wear', slot: 'tap', desc: 'Shavuos edition: flowers and greenery burst out of every tap.' },
+    { id: 'hol-shavuos',   cat: 'fun', grp: 'holiday', season: 'shavuos',  emoji: '🌼', name: 'Shavuos garden app colors',  cents: 40000, kind: 'wear', slot: 'color', desc: 'Shavuos edition: green and flower colors on every page, like the shul on Shavuos.' },
     /* ---------- REAL: a staff member hands it out ---------- */
     { id: 'p-cert',      cat: 'real', emoji: '📃', name: 'Certificate of Excellence to take home', cents: 25000, kind: 'prize', desc: 'A real certificate with your name, signed by the Head of School.' },
     { id: 'p-song',      cat: 'real', emoji: '🎶', name: 'Pick the class niggun',  cents: 30000, kind: 'prize', desc: 'You choose the niggun the class sings today.' },
@@ -65,6 +115,21 @@ var STORE = {
 /* the ledger types the store adds (Money.js checks every type) */
 (function () { ['spend', 'gift', 'giftin', 'refund'].forEach(function (t) { if (MONEY.TYPES.indexOf(t) < 0) MONEY.TYPES.push(t); }); })();
 
+/* Today's Hebrew date as [month number (see STORE.SEASONS), day], New York time. null if this server has no Hebrew calendar. */
+function stHebDay_(when) {
+  try {
+    var parts = new Intl.DateTimeFormat('en-u-ca-hebrew', { timeZone: 'America/New_York', day: 'numeric', month: 'long' }).formatToParts(when || new Date());
+    var m = '', d = 0; parts.forEach(function (p) { if (p.type === 'month') m = p.value; if (p.type === 'day') d = Number(p.value); });
+    var N = { 'Tishri': 1, 'Tishrei': 1, 'Heshvan': 2, 'Cheshvan': 2, 'Kislev': 3, 'Tevet': 4, 'Teves': 4, 'Shevat': 5, 'Adar I': 5.5, 'Adar': 6, 'Adar II': 6, 'Nisan': 7, 'Iyar': 8, 'Sivan': 9, 'Tamuz': 10, 'Tammuz': 10, 'Av': 11, 'Elul': 12 }[m];
+    return N && d ? [N, d] : null;
+  } catch (e) { return null; }
+}
+/* the holiday windows open today: { chanukah: true, ... } */
+function stSeasonsOpen_(when) {
+  var h = stHebDay_(when), open = {}; if (!h) return open; var v = h[0] * 100 + h[1];
+  STORE.SEASONS.forEach(function (s) { s.win.forEach(function (w) { if (v >= w[0] * 100 + w[1] && v <= w[2] * 100 + w[3]) open[s.id] = true; }); });
+  return open;
+}
 function stItem_(id) { return STORE.ITEMS.filter(function (x) { return x.id === id; })[0] || null; }
 function stTab_() {
   var b = msBook_(), sh = b.getSheetByName(STORE.TAB);
@@ -118,7 +183,7 @@ function stGivenAll_() {
 
 /* ---------- the boy's store ---------- */
 function stInfo(token) {
-  var sid = stKid_(token), test = msIsTest_(sid), orders = stOrders_();
+  var sid = stKid_(token), test = msIsTest_(sid), orders = stOrders_(), seas = stSeasonsOpen_();
   var mine = orders.filter(function (o) { return o.sid === sid; });
   var owned = {}; mine.forEach(function (o) { var it = stItem_(o.item); if (it && (it.kind === 'wear' || it.kind === 'keep') && o.status !== 'cancelled') owned[it.id] = 1; });
   var cash = null; try { cash = cnBalance_(sid); } catch (e) {}
@@ -130,7 +195,8 @@ function stInfo(token) {
   var stars = orders.filter(function (o) { return o.item === 'star-named' && o.status !== 'cancelled' && msIsTest_(o.sid) === test; }).map(function (o) { return o.name; });
   return {
     ok: true, version: STORE.VERSION, balance: moneyBalance_(sid) / 100,
-    items: STORE.ITEMS.map(function (x) { return { id: x.id, cat: x.cat, emoji: x.emoji, name: x.name, cents: x.cents, kind: x.kind, slot: x.slot || '', desc: x.desc, card: x.card || 0 }; }),
+    items: STORE.ITEMS.map(function (x) { return { id: x.id, cat: x.cat, grp: x.grp || '', season: x.season || '', open: !x.season || !!seas[x.season], emoji: x.emoji, name: x.name, cents: x.cents, kind: x.kind, slot: x.slot || '', desc: x.desc, card: x.card || 0 }; }),
+    seasons: STORE.SEASONS.map(function (s) { return { id: s.id, name: s.name, emoji: s.emoji, open: !!seas[s.id] }; }),
     owned: Object.keys(owned), orders: mine.slice(-25).reverse().map(stOut_),
     canteen: { cash: cash, rate: STORE.CANTEEN_RATE, weekMax: STORE.CANTEEN_WEEK, weekUsed: stCardWeek_(sid) },
     gift: { dayMax: STORE.GIFT_DAY, today: stGiftToday_(sid) }, friends: friends,
@@ -151,6 +217,7 @@ function stBuy(token, itemId, opt) {
     var mine = orders.filter(function (o) { return o.sid === sid; });
     var cents = it.cents, to = null, extra = '';
     if (it.kind === 'wear' || it.kind === 'keep') { if (mine.some(function (o) { return o.item === it.id && o.status !== 'cancelled'; })) throw new Error('You already have it!'); }
+    if (it.season && !stSeasonsOpen_()[it.season]) { var sn = STORE.SEASONS.filter(function (z) { return z.id === it.season; })[0]; throw new Error('This ' + (sn ? sn.name : 'holiday') + ' edition is sold only in the weeks before ' + (sn ? sn.name : 'the holiday') + '. It will be back!'); }
     if (it.kind === 'prize' && mine.filter(function (o) { return o.status === 'waiting'; }).length >= STORE.OPEN_PRIZES) throw new Error('You have ' + STORE.OPEN_PRIZES + ' prizes waiting. Get them first.');
     if (it.kind === 'card') {
       var cash = cnBalance_(sid); if (cash === null) throw new Error('You don’t have a Canteen Cash account yet. Ask the office.');
@@ -226,6 +293,8 @@ function stStaffSet(token, oid, action, note) {
 function stSelfTest() {
   var ids = {}, out = [];
   STORE.ITEMS.forEach(function (x) { if (ids[x.id]) throw Error('Duplicate store id ' + x.id); ids[x.id] = 1; if (x.kind !== 'gift' && !(x.cents > 0)) throw Error('Bad price ' + x.id); if (x.kind === 'card' && x.cents !== x.card * STORE.CANTEEN_RATE) throw Error('Card price off ' + x.id); });
+  var sids = {}; STORE.SEASONS.forEach(function (z) { sids[z.id] = 1; });
+  STORE.ITEMS.forEach(function (x) { if (x.season && !sids[x.season]) throw Error('Unknown season ' + x.season + ' on ' + x.id); if (x.kind === 'wear' && !x.slot) throw Error('No slot ' + x.id); });
   out.push(STORE.ITEMS.length + ' items OK; types ' + MONEY.TYPES.join(','));
   Logger.log(out.join('\n')); return out.join('\n');
 }
