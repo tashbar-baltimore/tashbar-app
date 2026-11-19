@@ -7,6 +7,9 @@
 #sbBan .t{flex:1;min-width:220px}#sbBan .t b{display:block;font-size:19px}#sbBan .t small{opacity:.85}
 #sbBan button{border:0;border-radius:14px;padding:12px 18px;font:800 16px system-ui,sans-serif;cursor:pointer;min-height:48px;box-shadow:0 4px 0 rgba(0,0,0,.2)}
 #sbBan .see{background:#FDE68A;color:#3B0764}#sbBan .sch{background:#fff;color:#4C1D95}
+#sbBan{padding:16px 18px} #sbBan .t b{font-size:22px} #sbBan .sfb{flex-basis:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px} #sbBan .sfx{flex-basis:100%;display:flex;gap:10px;flex-wrap:wrap}
+#sbBan .sfs{background:#fff;color:#1E1B4B;font:900 18px system-ui,sans-serif;min-height:64px;display:flex;align-items:center;justify-content:center;gap:10px} #sbBan .sfs span{font-size:26px}
+@media (max-width:640px){ #sbBan .sfb{grid-template-columns:repeat(2,minmax(0,1fr))} #sbBan .sfs{font-size:16px;min-height:56px} }
 #sbBan button:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.2)}
 #sb{position:fixed;inset:0;z-index:9600;background:#F5F3FF;display:none;flex-direction:column;font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;color:#1F2937}
 #sb.on{display:flex}#sb *{box-sizing:border-box}
@@ -74,7 +77,11 @@ function sch(id){ return (D.schools||[]).filter(function(s){ return s.id===id; }
 function toast(msg,undo){ var o=document.querySelector('#sb .toast'); if(o) o.remove(); clearTimeout(TO); var t=document.createElement('div'); t.className='toast'; t.innerHTML='<span>'+esc(msg)+'</span>'+(undo?'<button data-sb="undo">↩ Undo</button>':''); $('sb').appendChild(t); V.undo=undo||null; TO=setTimeout(function(){ t.remove(); V.undo=null; },9000); }
 /* ---------- banner ---------- */
 function banner(info){ if($('sbBan')) return; var app=$('app'); if(!app) return; var b=document.createElement('div'); b.id='sbBan';
- b.innerHTML='<div class="t"><b>👀 What are the kids learning?</b><small>See every lesson exactly the way a child sees it: tap a lesson and it plays.</small></div><button class="see" data-sb="see">👀 See what the kids see</button>'+(info&&info.canAdmin?'<button class="sch" data-sb="open">🏫 Schools &amp; Families</button>':'');
+ /* HoS 2026-11-19: the curriculum tree is the first thing on the staff portal ("the second you open up the staff portal, you should see it at the top").
+    The subject buttons open the Skill flow chart (SkillFlowUI.html, [data-sfopen]); "See what the kids see" plays any lesson as a boy sees it. */
+ b.innerHTML='<div class="t"><b>🌳 Our curriculum, Kindergarten to 8th grade</b><small>Every skill in order, like a family tree: what comes first, what comes next, how well each one is taught, and what is missing. Tap a subject.</small></div>'
+  +'<div class="sfb">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button class="sfs" data-sfopen="'+x[0]+'"><span>'+x[1]+'</span>'+x[2]+'</button>'; }).join('')+'</div>'
+  +'<div class="sfx"><button class="see" data-sb="see">👀 See what the kids see</button>'+(info&&info.canAdmin?'<button class="sch" data-sb="open">🏫 Schools &amp; Families</button>':'')+'</div>';
  app.parentNode.insertBefore(b,app); }
 function boot(n){ var t=tok(); if(!t||!$('app')){ if(n<120) setTimeout(function(){ boot(n+1); },700); return; }
  run('acMyScope',t).then(banner).catch(function(){ banner(null); }); }
