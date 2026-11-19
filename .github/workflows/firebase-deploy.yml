@@ -82,7 +82,7 @@ jobs:
 
       - name: Check the live app answers
         run: |
-          for u in https://$PROJECT.web.app/ https://$PROJECT.web.app/staff/; do
+          for u in https://$PROJECT.web.app/ https://$PROJECT.web.app/staff/ https://$PROJECT.web.app/pages/canteen/; do
             c=$(curl -s -o /dev/null -w '%{http_code}' "$u"); echo "$c $u"; [ "$c" = 200 ] || exit 1
           done
           curl -sf -X POST -H 'Content-Type: text/plain' -d '{"api":1,"fn":"ping","args":[]}' "$API_URL" | grep -q '"pong":true' && echo "200 server ping"
