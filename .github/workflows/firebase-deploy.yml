@@ -54,7 +54,8 @@ jobs:
       - name: Deploy the server function "api"
         if: inputs.what != 'site'
         run: |
-          rm -rf functions/app && mkdir -p functions/app && cp -r server src functions/app/
+          rm -rf functions/app && mkdir -p functions/app && cp -r server src functions/app/ && mkdir -p functions/app/packs && cp packs/*.html functions/app/packs/ 2>/dev/null || true
+          echo "packs shipped with the server: $(ls functions/app/packs | wc -l)"
           node --check functions/index.js
           printf 'node_modules\n' > functions/.gcloudignore
           gcloud functions deploy api --project="$PROJECT" --gen2 --region=us-east4 --runtime=nodejs22 \
