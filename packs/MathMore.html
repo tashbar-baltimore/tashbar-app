@@ -48,7 +48,7 @@ how:['Times 3: double it, then add one more group. 3 × 7 = 14 + 7 = 21.','Times
 gen(){ const f=PICK([3,4,6]), n=RI(1,10), k=RI(0,2);
 const hint=f===3?`Double ${n} is ${2*n}. Add one more ${n}.`:f===4?`Double ${n} is ${2*n}. Double it again.`:`3 ${X} ${n} is ${3*n}. Double it.`;
 if(k===0) return N(`${f} ${X} ${n} = ?`, f*n, hint, {pic:rows('\u{1F535}',f,n)});
-if(k===1) return N(`${nm()} sets up ${f} Shabbos tables. Each table gets ${n} challah rolls. How many rolls?`, f*n, hint, {pic:rows('\u{1F956}',f,n)});
+if(k===1) return N(`${nm()} sets up ${f} Shabbos tables. Each table gets ${n} challah roll${n>1?'s':''}. How many rolls?`, f*n, hint, {pic:rows('\u{1F956}',f,n)});
 return N(`${n} ${X} ${f} = ?`, f*n, `Turn it around: ${n} ${X} ${f} is the same as ${f} ${X} ${n}. ${hint}`); }},
 'MATH.OPS.L04.06':{name:'Times Tower 7-8-9',
 how:['Times 9: times 10, then take away one group. 9 × 6 = 60 − 6 = 54.','Times 8: double three times. 8 × 3: 6, 12, 24.','Times 7: times 5 plus times 2. 7 × 6 = 30 + 12 = 42.'],
@@ -848,7 +848,7 @@ re:['Start from what you know: 1/9 = 0.111…. So 2/9 = 0.222…, 3/9 = 0.333…
 gen(){ const k=RI(0,4);
  if(k===0){ const d=RI(1,8); return N(`Write 0.${d}${d}${d}… as a fraction. ${FP9}`, d/9, `One digit repeats, so put it over 9: ${d} over 9. Then simplify if you can.`); }
  const ab=RI(1,98); if(ab%11===0) return this.gen(); const s=String(ab).padStart(2,'0');
- if(k===1) return N(`Write 0.${s}${s}${s}… as a fraction in lowest terms. ${FP9}`, ab/99, `Two digits repeat, so put ${ab} over 99. Then divide the top and bottom by the same number to simplify.`);
+ if(k===1) return N(`Write 0.${s}${s}${s}… as a fraction in lowest terms. ${FP9}`, ab/99, `Two digits repeat, so put ${ab} over 99. Then divide the top and bottom by the same number to simplify.`, {lowest:true});
  if(k===2){ const o=[fr9(ab,99), fr9(ab,100), fr9(ab,9)]; if(!uq9(o)) return this.gen(); return MX(`Which fraction equals 0.${s}${s}${s}…?`, o, `Two digits repeat, so the fraction is ${ab} over 99, simplified. Over 100 would be a decimal that stops.`); }
  const w=RI(1,5), d=RI(1,8);
  if(k===3) return N(`Write ${w}.${d}${d}${d}… as a mixed number. ${FT9}`, w+d/9, `Keep the whole number ${w}. The repeating part 0.${d}${d}${d}… is ${d} over 9. Put them together.`);
