@@ -17,7 +17,7 @@ var TL_FIRE = {
 };
 function tlFirePage_(p) { return TL_FIRE.PAGES.some(function (k) { return p[k] === '1'; }) || (p.pl === '1' && p.check === '1'); }
 /* still drawn here: those pages and Spark Path (no server calls). Plain ?pl=1 is the old sign-in screen, so it goes to web.app too. */
-function tlFireStays_(p) { return tlFirePage_(p) || p.spark === '1'; }
+function tlFireStays_(p) { return tlFirePage_(p) || p.spark === '1' || p.alg === '1'; }   /* and Algebra Ascent (no server calls) */
 
 function doGet(e) {
   var p = (e && e.parameter) || {};
@@ -66,7 +66,7 @@ function tlHandoffRedeem(code) {
    google.script (settings from the link, "home" = the site) and FireBridgeUI.html, so every call goes to the Firebase server and
    a sign-in carried by a one-time code (&tlh=) still works. No sign-in rule, money or data changes. */
 var TL_PAGE_KINDS = { canteen: { canteen: '1' }, so: { so: '1' }, pl: { pl: '1', check: '1' }, pp: { pp: '1' }, cp: { cp: '1' },
-  spark: { spark: '1' }, pf: { pf: '1' }, pfstaff: { pf: '1', report: '1' } };
+  spark: { spark: '1' }, alg: { alg: '1' }, pf: { pf: '1' }, pfstaff: { pf: '1', report: '1' } };
 function apiPageHtml(kind) {
   var p = TL_PAGE_KINDS[String(kind || '')]; if (!p) throw new Error('Unknown page.');
   var e = { parameter: JSON.parse(JSON.stringify(p)) }, out = tlDoGetBase_(e), html = out && typeof out.getContent === 'function' ? out.getContent() : '';

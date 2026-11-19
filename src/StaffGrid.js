@@ -17,6 +17,7 @@ function sgRoute_(e) {
   if (p.pp === '1' && typeof ppPage_ === 'function') return ppPage_();   /* Access.js: the parent portal */
   if (p.cp === '1' && typeof cpPage_ === 'function') return cpPage_();   /* Access.js: Curriculum Preview (staff) */
   if (p.spark === '1') return HtmlService.createHtmlOutput((function (h) { try { var i = h.indexOf('</head>'); return i < 0 || typeof tlLogoTag_ !== 'function' ? h : h.slice(0, i) + tlLogoTag_() + h.slice(i); } catch (e) { return h; } })(HtmlService.createHtmlOutputFromFile('SparkPath').getContent())).setTitle('Spark Path · Electricity').addMetaTag('viewport', 'width=device-width, initial-scale=1').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);   /* v54: Trades · Electricity lessons, opened inside the boy page (TradesMore.html) */                                 /* the one staff screen (reached by a staff code) */
+  if (p.alg === '1') return HtmlService.createHtmlOutput((function (h) { try { var i = h.indexOf('</head>'); return i < 0 || typeof tlLogoTag_ !== 'function' ? h : h.slice(0, i) + tlLogoTag_() + h.slice(i); } catch (e) { return h; } })(HtmlService.createHtmlOutputFromFile('AlgebraAscent').getContent())).setTitle('Algebra Ascent').addMetaTag('viewport', 'width=device-width, initial-scale=1').setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);   /* 2026-11-19: Algebra Ascent, opened inside the boy page (AlgebraMore.html) */
   /* everything else (plain link, ?ms=1, old ?ms=1&staff=1, old ?pl=1) = the ONE sign-in screen; old Owner screen retired */
   return sgQuest_();
 }

@@ -1,0 +1,37 @@
+<script>
+/* AlgebraMore.html — Algebra Ascent on the boy's home screen (Head of School 2026-11-19: "add it to the app").
+   Algebra Ascent (Algebra 1 through graduate algebra, 73 lessons in 10 camps) is a self-contained lesson page in AlgebraAscent.html,
+   served at ?alg=1 (sgRoute_ in StaffGrid.js; on Firebase at /pages/alg/, built by web/build.js). It opens in a window on top of
+   the app, the same way Spark Path does (TradesMore.html), so the boy stays signed in.
+   Its map and stars are kept on the device. Nothing here saves to the school record or touches money.
+   Loaded by msQuestTools() in its own eval, right after TradesMore. Adds its panel through tlFindLevelCard. No slash-slash (HtmlService). */
+(function(){
+if(typeof run!=='function') return;
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let APP='';
+function css(){ if(document.getElementById('alg-css')) return; const s=document.createElement('style'); s.id='alg-css'; s.textContent=`
+.algpanel{grid-column:1/-1;border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 10px 30px rgba(20,30,60,.12);border:2px solid #C7D3DB}
+.algpanel .th{display:flex;align-items:center;gap:14px;padding:16px 20px;background:linear-gradient(120deg,#13202E,#2A4A5E 60%,#2A7A62);color:#fff}
+.algpanel .th svg{width:40px;height:40px;flex:none}.algpanel .th b{display:block;font:800 22px var(--display,'Barlow'),sans-serif}.algpanel .th small{opacity:.9;font-size:15px}
+.algpanel .tb{display:flex;flex-wrap:wrap;align-items:center;gap:14px;padding:16px 20px}
+.algpanel .tb p{margin:0;flex:1;min-width:220px;color:#475569;font-size:16px}
+.algpanel .go{border:0;border-radius:14px;padding:14px 22px;background:#D9512A;color:#fff;font:800 18px var(--display,'Barlow'),sans-serif;box-shadow:0 5px 0 #8E3218;cursor:pointer}
+#alg-ov{position:fixed;inset:0;z-index:80;background:rgba(10,15,25,.6);display:grid;place-items:center;padding:12px}
+#alg-ov .box{width:min(1100px,100%);height:min(94vh,900px);background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
+#alg-ov .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,#13202E,#2A7A62);color:#fff;font:700 17px var(--display,'Barlow'),sans-serif}
+#alg-ov .bar span{flex:1}#alg-ov .bar button{border:0;border-radius:10px;padding:10px 16px;font-weight:800;background:#fff;color:#13202E;cursor:pointer}
+#alg-ov iframe{flex:1;border:0;width:100%}`; document.head.appendChild(s); }
+const PEAK='<svg viewBox="0 0 40 40" aria-hidden="true"><path d="M3 34 L15 13 L21 22 L26 15 L37 34 Z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><path d="M26 15 L26 6 L33 8.5 L26 11" fill="#FF7A4D" stroke="#FF7A4D" stroke-width="1.6" stroke-linejoin="round"/></svg>';
+function panel(){ return `<section class="algpanel"><div class="th">${PEAK}<span><b>Algebra Ascent</b><small>For boys ready for high-school math: Algebra 1 and up</small></span></div>
+<div class="tb"><p>73 lessons on a trail map, from Algebra 1 to college algebra and beyond. Every lesson teaches first, then hands-on practice, then a short check.</p><button class="go" data-alg="open" type="button">Open Algebra Ascent</button></div></section>`; }
+const _find=window.tlFindLevelCard;
+window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ css(); h+=panel(); }catch(e){ console.error('AlgebraMore panel',e); } return h; };
+function open(){ const go=u=>{ APP=u; css(); const d=document.createElement('div'); d.id='alg-ov'; d.innerHTML=`<div class="box" role="dialog" aria-label="Algebra Ascent"><div class="bar"><span>Algebra Ascent</span><button data-alg="close" type="button">✕ Close</button></div><iframe src="${E(u+'?alg=1')}" title="Algebra Ascent" allow="autoplay"></iframe></div>`; document.body.appendChild(d); };
+ if(!APP&&window.TL_APP_URL) APP=window.TL_APP_URL;
+ if(APP) return go(APP); run('msAppUrl').then(go).catch(()=>{ try{ toast('Can’t open Algebra Ascent right now. Check the Wi-Fi.'); }catch(e){} }); }
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-alg]'); if(!b) return; if(b.dataset.alg==='open'){ try{ SND.tap(); }catch(x){} open(); } if(b.dataset.alg==='close'){ const o=document.getElementById('alg-ov'); if(o) o.remove(); } });
+/* Teacher mode: a class lesson closes Algebra Ascent too */
+setInterval(()=>{ try{ if(window.TM_CLASS&&TM_CLASS()){ const o=document.getElementById('alg-ov'); if(o) o.remove(); } }catch(e){} },3000);
+window.TL_ALGEBRA=1;
+})();
+</script>

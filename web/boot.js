@@ -12,9 +12,9 @@
   try { var q = location.search || ''; if (KIND === 'kid' && /[?&]sg=1/.test(q)) { location.replace('/staff/'); return; }
     /* ALL PAGES ON FIREBASE (2026-11-19): those pages are fast files on this site now (/pages/<kind>/, built by web/build.js) */
     var pk = /[?&]canteen=1(&|$)/.test(q) ? 'canteen' : /[?&]so=1(&|$)/.test(q) ? 'so' : /[?&]pp=1(&|$)/.test(q) ? 'pp' : /[?&]cp=1(&|$)/.test(q) ? 'cp'
-      : /[?&]spark=1(&|$)/.test(q) ? 'spark' : (/[?&]pl=1(&|$)/.test(q) && /[?&]check=1(&|$)/.test(q)) ? 'pl' : /[?&]pf=1(&|$)/.test(q) ? (/[?&](report|rebbe)=/.test(q) ? 'pfstaff' : 'pf') : '';
+      : /[?&]spark=1(&|$)/.test(q) ? 'spark' : /[?&]alg=1(&|$)/.test(q) ? 'alg' : (/[?&]pl=1(&|$)/.test(q) && /[?&]check=1(&|$)/.test(q)) ? 'pl' : /[?&]pf=1(&|$)/.test(q) ? (/[?&](report|rebbe)=/.test(q) ? 'pfstaff' : 'pf') : '';
     if (pk && !/[?&]old=1(&|$)/.test(q)) { location.replace('/pages/' + pk + '/' + q + location.hash); return; }
-    if (APPS && /[?&](pf|cp|pp|canteen|so|pl|spark)=/.test(q)) { location.replace(APPS + q); return; } } catch (e) {}
+    if (APPS && /[?&](pf|cp|pp|canteen|so|pl|spark|alg)=/.test(q)) { location.replace(APPS + q); return; } } catch (e) {}
   function inject(html, h, at) { var i = html.indexOf('<head>'); if (i < 0) return null;
     return html.slice(0, i + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><script>window.TL_PAGE_HASH=' + JSON.stringify(h) + ';window.TL_PAGE_BUILT=' + Number(at) + ';window.TL_PAGE_FROM="device";window.TL_PAGE_KIND="' + KIND + '";<\/script><script src="/boot.js"><\/script>' + html.slice(i + 6); }
   function remote(fn, args) {

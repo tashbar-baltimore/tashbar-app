@@ -43,7 +43,7 @@ async function call(fn, args) {
   /* ALL PAGES ON FIREBASE (HoS 2026-11-19): the pages the Apps Script link still drew (canteen, sign-off, placement check, parents,
      Curriculum Preview, Spark Path, Pathfinder) are drawn once here and served as fast files at /pages/<kind>/ (apiPageHtml,
      FireBridge.js). boot.js and FireLinks.html send links there. A page that does not draw is skipped: its old link keeps working. */
-  const PAGES = ['canteen', 'so', 'pl', 'pp', 'cp', 'spark', 'pf', 'pfstaff'], made = [];
+  const PAGES = ['canteen', 'so', 'pl', 'pp', 'cp', 'spark', 'alg', 'pf', 'pfstaff'], made = [];
   for (const k of PAGES) { try { let h = await call('apiPageHtml', [k]); if (typeof h !== 'string' || h.indexOf('TL_FIRE_ON') < 0) throw new Error('no page');
       const hi = h.search(/<head[^>]*>/i); const add = '<meta name="viewport" content="width=device-width, initial-scale=1">' + (/<title>/i.test(h) ? '' : '<title>Tashbar Learning</title>');
       if (hi >= 0) { const j = h.indexOf('>', hi) + 1; h = h.slice(0, j) + add + h.slice(j); }
