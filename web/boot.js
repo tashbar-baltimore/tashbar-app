@@ -74,8 +74,14 @@
      Chromebooks that stay open all day check again every 2 minutes. */
   var NEWER = false;
   function idle() { try { if (KIND === 'staff') return !(typeof S !== 'undefined' && S && S.token); return typeof A !== 'undefined' && A && A.view === 'signin' && !A.pin; } catch (e) { return false; } }
-  function swapIfIdle() { if (!NEWER || !idle()) return; var k = 'tl-swapped-' + KIND; try { if (sessionStorage.getItem(k) === NEWER) return; sessionStorage.setItem(k, NEWER); } catch (e) { return; } location.reload(); }   /* once per new page: never a reload loop */
-  setInterval(function () { if (NEWER) return swapIfIdle(); if (idle() || document.hidden) check(); }, 120000);
+  /* STAFF (HoS 2026-11-19 "I opened the staff page and I don't see it"): a signed-in staff member is never "idle", so a new staff page
+     never went on screen. Now a bar offers it: tap to update (the sign-in is kept in this tab). */
+  function staffBar() { if (KIND !== 'staff' || !NEWER || document.getElementById('tl-newver')) return; var b = document.createElement('div'); b.id = 'tl-newver';
+    b.setAttribute('role', 'status'); b.style.cssText = 'position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:2147483646;display:flex;gap:12px;align-items:center;background:#16202C;color:#fff;padding:10px 12px 10px 18px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.3);font:700 15px system-ui,sans-serif;max-width:calc(100vw - 24px)';
+    b.innerHTML = '<span>✨ A new version of the staff portal is ready.</span><button type="button" style="border:0;border-radius:999px;padding:8px 16px;background:#FDE047;color:#16202C;font:800 14px system-ui,sans-serif;cursor:pointer">Update now</button>';
+    b.querySelector('button').onclick = function () { location.reload(); }; (document.body || document.documentElement).appendChild(b); }
+  function swapIfIdle() { staffBar(); if (!NEWER || !idle()) return; var k = 'tl-swapped-' + KIND; try { if (sessionStorage.getItem(k) === NEWER) return; sessionStorage.setItem(k, NEWER); } catch (e) { return; } location.reload(); }   /* once per new page: never a reload loop */
+  setInterval(function () { if (NEWER) return swapIfIdle(); if (idle() || document.hidden || KIND === 'staff') check(); }, 120000);   /* staff: check every 2 minutes even while signed in (the bar asks before reloading) */
   /* lesson pieces changed (a new add-on such as the new voice) without a new page: also reload on the sign-in screen, once per change */
   var PARTS0 = null; getJSON('/parts/manifest.json').then(function (m) { PARTS0 = (m.order || []).join(','); }, function () {});
   setInterval(function () { if (NEWER || PARTS0 == null) return; getJSON('/parts/manifest.json').then(function (m) { var now = (m.order || []).join(','); if (now && now !== PARTS0) { NEWER = 'parts:' + now.length + ':' + now.slice(-24); swapIfIdle(); } }, function () {}); }, 120000);
