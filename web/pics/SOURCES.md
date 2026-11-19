@@ -112,3 +112,127 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - wilted-plant.webp | https://commons.wikimedia.org/wiki/File:Gurken_K%C3%A4lteschaden_bei_9%C2%B0C,_Josef_Schlaghecken.jpg | CC BY-SA 4.0 | Schlaghecken Josef
 - wind-turbines.webp | https://www.loc.gov/item/2010630507/ | Public domain (LOC Carol M. Highsmith Archive, no known restrictions) | Carol M. Highsmith
 - yuri-gagarin.webp | https://commons.wikimedia.org/wiki/File:Yuri_Gagarin_(1961)_-_Restoration.jpg | Public domain | Arto Jousi / /Suomen valokuvataiteen museo / Alma Media / Uuden Suomen kokoelma; Restored by Adam Cuerden
+- africa-colonies-1913-map.webp | https://commons.wikimedia.org/wiki/File:Colonial_Africa_1913_map.svg | CC BY-SA 3.0 | Eric Gaba (Sting)
+- apple-tree-with-apples.webp | https://commons.wikimedia.org/wiki/File:Apple-Tree-P1410754_(36717641784).jpg | CC0 | citytransportinfo
+- arch-of-titus-menorah.webp | https://commons.wikimedia.org/wiki/File:Carrying_off_the_Menorah_from_the_Temple_in_Jerusalem_depicted_on_a_frieze_on_the_Arch_of_Titus_in_the_Forum_Romanum.JPG | Public domain | Laurel Lodged
+- b-and-o-steam-locomotive.webp | https://commons.wikimedia.org/wiki/File:William_Mason_locomotive_at_the_B%26O_Railway_Museum,_October_2017.jpg | CC BY 2.0 | Mike Steele
+- baltimore-city-hall.webp | https://commons.wikimedia.org/wiki/File:1city_hall_baltimore.jpg | Public domain | Marylandstater
+- baltimore-map-with-key.webp | https://www.loc.gov/item/sanborn03573_001/ | Public domain (published 1890; Library of Congress, no known restrictions) | Sanborn Map Company
+- baltimore-skyline.webp | https://commons.wikimedia.org/wiki/File:View_of_revitalized_Inner_Harbor,_Baltimore,_Maryland_LCCN2011634087.tif | Public domain (Library of Congress, Carol M. Highsmith Archive) | Carol M. Highsmith
+- bee-bot-floor-robot.webp | https://commons.wikimedia.org/wiki/File:Bee_-_Bot.jpg | CC BY-SA 4.0 | María Laura Martín Gascón
+- beis-hamikdash-model-heichal.webp | https://commons.wikimedia.org/wiki/File:Jerusalem_Modell_BW_3.JPG | Public domain | Berthold Werner
+- berachos-first-mishnah.webp | https://commons.wikimedia.org/wiki/File:Berakhot2a.jpg | Public domain | Widow and Brothers Romm, Vilna (Vilna Shas)
+- bill-of-rights.webp | https://commons.wikimedia.org/wiki/File:Bill_of_Rights_-_DPLA_-_a65f6d0b6210c18d17c596908ebcf270_(page_1).jpg | Public domain | National Archives and Records Administration. Office of the Federal Register. 4/1/1985
+- box-of-crayons.webp | https://commons.wikimedia.org/wiki/File:Box_of_crayons_IMG_0009.jpg | CC BY 2.0 | Collin Anderson
+- boy-on-bicycle.webp | https://www.loc.gov/item/2016713286/ | No known restrictions on publication (LOC, C.M. Bell Collection) | C.M. Bell (Firm : Washington, D.C.), photographer
+- burning-sparkler.webp | https://commons.wikimedia.org/wiki/File:Sparkler_in_action.JPG | CC BY 3.0 DE | High Contrast
+- canada-parliament-ottawa.webp | https://commons.wikimedia.org/wiki/File:Centre_Block_-_Parliament_Hill.jpg | CC BY-SA 3.0 | Saffron Blaze
+- card-filing-cabinet.webp | https://commons.wikimedia.org/wiki/File:Card_Filing_Cabinet.jpg | CC BY-SA 4.0 | Watty62
+- challah-on-shabbos-tray.webp | https://commons.wikimedia.org/wiki/File:Challah_Bread_Six_Braid_1.JPG | CC BY 3.0 | Aviv Hod
+- chocolate-chip-cookies.webp | https://commons.wikimedia.org/wiki/File:Chocolate_Chip_Cookies_(52830876991).jpg | CC BY 2.0 | Choo Yut Shing
+- chromebook-keyboard.webp | https://commons.wikimedia.org/wiki/File:Dell_chromebook_11_keyboard_(26024149946).jpg | CC BY 2.0 | Jimmy Burns from St Petersburg, FL, USA
+- color-wheel.webp | https://commons.wikimedia.org/wiki/File:Itten%27s_wheel_real_colors_digital_adaptation.jpg | CC0 | EugeGreco (after Johannes Itten)
+- computer-monitor.webp | https://commons.wikimedia.org/wiki/File:Computer_monitor.jpg | Public domain | Zzubnik
+- computer-mouse.webp | https://commons.wikimedia.org/wiki/File:ComputerMouseCloseup3.jpg | CC0 | Raysonho @ Open Grid Scheduler / Grid Engine
+- constitution-we-the-people.webp | https://commons.wikimedia.org/wiki/File:US_Constitution_Preamble.png | Public domain | Constitutional Convention, derivative image by Hidden Lemon
+- courtroom-jury-box.webp | https://commons.wikimedia.org/wiki/File:Jury_box_in_the_courtroom_of_the_Van_Buren_County_Courthouse_in_Clinton,_Arkansas.jpg | CC0 | Brandonrush
+- ctrl-key.webp | https://commons.wikimedia.org/wiki/File:CtrlWindowsAlt.jpg | CC0 | Raysonho @ Open Grid Scheduler / Grid Engine
+- cyrus-cylinder.webp | https://commons.wikimedia.org/wiki/File:Cyrus_Cylinder,_Babylon,_Iraq,_mid_500s_BC,_cuneiform_on_clay_-_British_Museum_-_DSC01316.jpg | CC0 | Daderot
+- d-day-landing.webp | https://commons.wikimedia.org/wiki/File:Omaha_Beach_Landing_Craft.jpg | Public domain | U.S. Army Signal Corps
+- declaration-of-independence.webp | https://commons.wikimedia.org/wiki/File:US-original-Declaration-1776.jpg | Public domain | Continental Congress (printed by John Dunlap)
+- dog-sitting-on-grass.webp | https://commons.wikimedia.org/wiki/File:A_dog_sitting_outside_near_a_lake.jpg | CC0 | Kristin Hardwick
+- dumbbells.webp | https://commons.wikimedia.org/wiki/File:A_pair_of_dumbbells.jpeg | Public domain | Dajo767 (Wikimedia Commons user)
+- eniac-room-computer.webp | https://commons.wikimedia.org/wiki/File:ENIAC-changing_a_tube.jpg | Public domain (US Army photo) | U.S. Army, from M. Weik, The ENIAC Story
+- europe-1914-alliances-map.webp | https://commons.wikimedia.org/wiki/File:Europe_1914.jpg | Public domain | Department of History, United States Military Academy
+- first-computer-bug-moth.webp | https://commons.wikimedia.org/wiki/File:First_Computer_Bug,_1947.jpg | Public domain (US Navy) | US Navy; courtesy of the Naval Surface Warfare Center, Dahlgren, VA
+- first-touch-smartphone.webp | https://commons.wikimedia.org/wiki/File:IPhone_First_Generation_(cropped).jpg | CC BY-SA 2.0 | Carl Berkeley from Riverside California
+- first-transistor-replica.webp | https://commons.wikimedia.org/wiki/File:Replica-of-first-transistor.jpg | Public domain (US Government) | US federal government employee
+- flag-in-wind.webp | https://commons.wikimedia.org/wiki/File:An_American_flag_waving_in_the_wind_on_a_flagpole.jpg | CC BY-SA 4.0 | Kiddo27
+- footprints-in-sand.webp | https://www.loc.gov/item/2017885479/ | No known restrictions on publication (Library of Congress, Carol M. Highsmith Archive) | Carol M. Highsmith
+- freight-train-cars.webp | https://www.loc.gov/item/2014630943/ | No known restrictions on publication (Library of Congress, Carol M. Highsmith Archive) | Carol M. Highsmith
+- glass-of-milk.webp | https://commons.wikimedia.org/wiki/File:Glass_of_milk_on_table.jpg | CC BY-SA 4.0 | PotatoCow25
+- glass-of-water.webp | https://commons.wikimedia.org/wiki/File:Glass-of-water.jpg | Public domain | Derek Jensen (Tysto)
+- granite-rock.webp | https://commons.wikimedia.org/wiki/File:Granite.jpg | CC BY-SA 2.0 br | Eurico Zimbres (FGEL/UERJ)
+- grapes-on-the-vine.webp | https://commons.wikimedia.org/wiki/File:Edle_Weinrebe,_%27Vitis_vinifera%27_subsp._%27vinifera.jpg | CC BY 2.0 | eflon (Alex from Ithaca, NY)
+- gutenberg-printing-press.webp | https://commons.wikimedia.org/wiki/File:Gutenberg_press.png | CC0 | International Printing Museum
+- hand-bones-drawing.webp | https://commons.wikimedia.org/wiki/File:Gray219.png | Public domain | Henry Vandyke Carter (Gray's Anatomy, 1918)
+- har-sinai-jebel-musa.webp | https://www.loc.gov/item/2019695771/ | No known restrictions on publication (LOC, Matson Collection) | American Colony (Jerusalem), Photo Department
+- hasmonean-coin.webp | https://commons.wikimedia.org/wiki/File:John_Hyrcanus.jpg | CC BY-SA 3.0 | CNG
+- haym-salomon-stamp.webp | https://commons.wikimedia.org/wiki/File:Haym_Salomon_stamp.jpg | Public domain | Unknown author (United States Postal Service, 1975)
+- headset-with-microphone.webp | https://commons.wikimedia.org/wiki/File:Headphones_with_Microphone.jpg | CC BY-SA 3.0 | Richard Wheeler (Zephyris)
+- honey-jars-and-honeycomb.webp | https://commons.wikimedia.org/wiki/File:Dipper_stick_and_honey_in_a_jar.jpg | CC BY 2.0 | Shixart1985
+- horses-grazing-one-and-many.webp | https://commons.wikimedia.org/wiki/File:Wild_horses_grazing_(53657504062).jpg | Public domain (US Government, BLM) | Jonathan D. Mallory, BLM Utah
+- house-plan-and-elevation.webp | https://www.loc.gov/item/mt0696/ | Public domain (Historic American Buildings Survey, US Government; LOC: no known restrictions) | Historic American Buildings Survey; delineator Laura Landon, 2004
+- inkjet-printer.webp | https://commons.wikimedia.org/wiki/File:Canon_Inkjet_Printer_2009.JPG | CC BY-SA 3.0 | Smartway777
+- inspecting-with-magnifier.webp | https://www.loc.gov/item/2017838982/ | No known restrictions (Library of Congress, FSA/OWI, US Government) | Arthur S. Siegel
+- intel-8086-cpu-chip.webp | https://commons.wikimedia.org/wiki/File:Intel_C8086.jpg | CC BY-SA 4.0 | Thomas Nguyen
+- keyboard-us-layout.webp | https://commons.wikimedia.org/wiki/File:Magic_Keyboard_US.jpg | CC BY-SA 4.0 | YipC
+- king-george-iii.webp | https://commons.wikimedia.org/wiki/File:George_III_in_Coronation_Robes.jpg | Public domain | Allan Ramsay
+- kosel-stones-at-night.webp | https://commons.wikimedia.org/wiki/File:Western_Wall_at_night_(20101).jpg | CC BY-SA 4.0 | Rhododendrites
+- leaf-green-turning-colours.webp | https://commons.wikimedia.org/wiki/File:3coloured_leaf.jpg | Public domain | Unknown (Commons uploader; self-scanned)
+- liberty-bell.webp | https://commons.wikimedia.org/wiki/File:The_Original_Liberty_Bell_in_Philadelphia_(August_2015).jpg | CC BY-SA 4.0 | Vintage Fan 5678
+- lightning.webp | https://commons.wikimedia.org/wiki/File:Lightning_NOAA.jpg | Public domain | C. Clark
+- lone-tree-in-field.webp | https://commons.wikimedia.org/wiki/File:Lone_Tree_in_field_-_geograph.org.uk_-_6153245.jpg | CC BY-SA 2.0 | Brian Deegan
+- louisiana-purchase-map.webp | https://commons.wikimedia.org/wiki/File:National-atlas-1970-1810-loupurchase-1.png | Public domain | U.S. National Atlas (1970), via Wikimedia user Sf46
+- marsh-wren-singing.webp | https://commons.wikimedia.org/wiki/File:Marsh_wren_at_Hammonasset_Beach_(12908).jpg | CC BY-SA 4.0 | Rhododendrites
+- maryland-counties-map.webp | https://commons.wikimedia.org/wiki/File:Map_of_maryland_counties.jpg | Public domain | US Office of Management and Budget, Washington, D.C.
+- maryland-state-house.webp | https://commons.wikimedia.org/wiki/File:Maryland_State_House_from_College_Ave.JPG | CC BY-SA 3.0 | Martin Falbisoner
+- mayflower-ii.webp | https://commons.wikimedia.org/wiki/File:The_Mayflower_II_in_Plymouth_Harbor,_Plymouth_MA.jpg | CC BY 3.0 | John Phelan
+- megillas-esther-scroll.webp | https://commons.wikimedia.org/wiki/File:Megillat_Ester_scroll_-_Jewish_Museum_and_Tolerance_Center.jpg | CC0 | Лапоть (Wikimedia Commons user)
+- mezuzah-klaf-shema.webp | https://commons.wikimedia.org/wiki/File:Mezuzah_scroll_ashkenaz_real_front.JPG | CC BY-SA 3.0 | Mezuzah Scrolls (mezuzahscrolls.wordpress.com)
+- mikraos-gedolos-bereishis-1.webp | https://commons.wikimedia.org/wiki/File:MG1618-A1-Bereshit.pdf (page 9) | Public domain | Mikraos Gedolos, Basel 1618-1619 edition
+- mishnah-kaufmann-manuscript.webp | https://commons.wikimedia.org/wiki/File:Mishnah_kaufmann.jpg | CC BY-SA 3.0 | The Education Center of the National Library of Israel; manuscript: Library of the Hungarian Academy of Sciences, Budapest
+- mishnayos-bava-metzia-1-2.webp | https://commons.wikimedia.org/wiki/File:Mishnah-D-Nezikin1-Vilna.pdf (page 52) | Public domain | Romm publishing house, Vilna (1921 edition)
+- mount-everest.webp | https://commons.wikimedia.org/wiki/File:Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg | CC BY-SA 2.5 | Luca Galuzzi (Lucag)
+- movable-metal-type.webp | https://commons.wikimedia.org/wiki/File:Metal_movable_type.jpg | CC BY 2.5 | Willi Heidelbach
+- neighborhood-rowhouses.webp | https://commons.wikimedia.org/wiki/File:Rowhouses,_West_North_Avenue,_Baltimore,_MD_(33199682691).jpg | CC0 | Eli Pousson / Baltimore Heritage
+- ner-israel-bais-medrash.webp | https://commons.wikimedia.org/wiki/File:BaisMedrashInterior.jpg | Public domain | Rippeym3 at English Wikipedia
+- ner-israel-beis-medrash.webp | https://commons.wikimedia.org/wiki/File:BaisMedrashInterior.jpg | Public domain | Rippeym3 at English Wikipedia
+- old-globe-on-stand.webp | https://commons.wikimedia.org/wiki/File:Terrestrial_Globe_MET_240594.jpg | CC0 | James Wilson (globe maker); Metropolitan Museum of Art
+- piano-keys.webp | https://commons.wikimedia.org/wiki/File:Piano_keys_jacob.jpg | CC BY-SA 4.0 | Jcrg34
+- pile-of-carrots.webp | https://commons.wikimedia.org/wiki/File:Pile_of_Carrots.jpg | CC BY-SA 4.0 | Adimora chidinma
+- pnyx-speakers-platform.webp | https://commons.wikimedia.org/wiki/File:Pnyx_Bema_2.jpg | CC BY-SA 4.0 | Tomisti
+- pocket-calculator.webp | https://commons.wikimedia.org/wiki/File:Citizen_SLD-100NR_calculator.jpg | CC BY-SA 4.0 | LoMit
+- ponevezh-yeshiva-bnei-brak.webp | https://commons.wikimedia.org/wiki/File:PikiWiki_Israel_21316_Ponevezh_Yeshiva_in_Bnei_Brak.JPG | CC BY 2.5 | Dr. Avishai Teicher (PikiWiki Israel)
+- potatoes-dug-up-in-field.webp | https://commons.wikimedia.org/wiki/File:Potatoes_dug_up_in_garden_(15175435687).jpg | No known restrictions (Provincial Archives of Alberta, via Flickr Commons) | Provincial Archives of Alberta (William Copeland McCalla family fonds)
+- prime-meridian-greenwich.webp | https://commons.wikimedia.org/wiki/File:The_Prime_Meridian_line_at_the_Greenwich_Royal_Observatory_-_geograph.org.uk_-_8156662.jpg | CC BY-SA 2.0 | Chris Gorringe
+- proxima-centauri.webp | https://commons.wikimedia.org/wiki/File:New_shot_of_Proxima_Centauri,_our_nearest_neighbour.jpg | CC BY 4.0 | ESA/Hubble & NASA
+- quarter-heads-side.webp | https://commons.wikimedia.org/wiki/File:1994-P_Washington_quarter_obverse.jpg | Public domain (US coin design, US Mint) | United States Mint (design John Flanagan); photo Numismatic Guaranty Corporation
+- rainbow-over-prairie.webp | https://www.loc.gov/item/2011633304/ | No known restrictions on publication (Library of Congress, Carol M. Highsmith Archive) | Carol M. Highsmith
+- raindrops-on-branch.webp | https://commons.wikimedia.org/wiki/File:Rain_Drops.JPG | CC BY 3.0 | Bodhitukun
+- rainfall-map-with-key.webp | https://commons.wikimedia.org/wiki/File:EB9_United_States_-_rainfall_chart.jpg | Public domain | Charles A. Schott; engraved by W. & A. K. Johnston (Encyclopaedia Britannica, 9th ed.)
+- ram-and-hard-drive.webp | https://commons.wikimedia.org/wiki/File:Kingston_DDR_Memory_Module.jpg ; https://commons.wikimedia.org/wiki/File:Laptop-hard-drive-exposed.jpg | CC BY-SA 2.0 ; CC BY-SA 3.0 | Matt Kieffer ; Evan-Amos
+- rashi-handwritten-chumash.webp | https://commons.wikimedia.org/wiki/File:Rashi_Pentateuch.jpg | Public domain | Unknown scribe, France, early 1200s (Bodleian Library MS. Opp. Add. Fol. 69)
+- rashi-on-berachos-2a.webp | https://commons.wikimedia.org/wiki/File:Berakhot2a.jpg | Public domain | Widow and Brothers Romm, Vilna (Vilna Shas)
+- roman-numeral-clock.webp | https://commons.wikimedia.org/wiki/File:Roman_numerals_on_alarm_clock_(Unsplash).jpg | CC0 | Ales Krivec (Unsplash)
+- rooster-crowing.webp | https://commons.wikimedia.org/wiki/File:Rooster_crowing_nsw.jpg | CC BY-SA 2.0 | Steev Selby
+- runner-on-track.webp | https://commons.wikimedia.org/wiki/File:Moi;_Winter_WO.jpg | CC BY-SA 4.0 | LaneTitans
+- school-rulers.webp | https://commons.wikimedia.org/wiki/File:School_Rulers.jpg | CC0 | Estabiano
+- scratch-green-flag-blocks.webp | https://commons.wikimedia.org/wiki/File:Scratch_3.0_Screenshot_Green_Flag_Clicked_Example.png | CC BY-SA 4.0 | Blink456
+- simple-sandwich-lunch.webp | https://commons.wikimedia.org/wiki/File:Peanut-Butter-Jelly-Sandwich.jpg | Public domain | Evan-Amos
+- slices-of-sponge-cake.webp | https://commons.wikimedia.org/wiki/File:Victoria_Sponge_Cake.jpg | CC BY-SA 4.0 | Victoria Spongebob
+- small-laptop-parts.webp | https://commons.wikimedia.org/wiki/File:Netbook_-_7ma._Generaci%C3%B3n.jpg | CC BY-SA 4.0 | Gnztt
+- soccer-ball-on-grass.webp | https://commons.wikimedia.org/wiki/File:Adidas_soccer_ball_on_a_grass_pitch_(Unsplash).jpg | CC0 | Peter Glaser (Unsplash)
+- sputnik-1.webp | https://commons.wikimedia.org/wiki/File:Sputnik_asm.jpg | Public domain | NASA / NSSDC
+- steam-engine-flywheel.webp | https://commons.wikimedia.org/wiki/File:Boulton_%26_Watt_steam_engine,_Sydney_Powerhouse_Museum,_2014_(15240699214).jpg | CC BY 2.0 | David Maciulaitis
+- sunlight-on-leaves.webp | https://commons.wikimedia.org/wiki/File:Blacklick_Woods_-_Sunlight_through_American_beech_1.jpg | CC BY-SA 4.0 | Sixflashphoto
+- sunrise-over-fields.webp | https://commons.wikimedia.org/wiki/File:Sunrise_over_frosted_fields_-_geograph.org.uk_-_3300254.jpg | CC BY-SA 2.0 | chris whitehouse
+- sunset-over-the-sea-carmel.webp | https://www.loc.gov/item/2019695219/ | No known restrictions on publication (LOC, Matson Collection) | American Colony (Jerusalem), Photo Department
+- tallis-black-stripes.webp | https://commons.wikimedia.org/wiki/File:02022_0566_Tallit,_Silesia.jpg | CC BY-SA 4.0 | Silar
+- talmud-printed-venice-1522.webp | https://commons.wikimedia.org/wiki/File:Babylonian_Talmud,_Tractate_Bava_Batra.jpg | Public domain | Daniel Bomberg (printer), 1522
+- tenement-97-orchard-street.webp | https://commons.wikimedia.org/wiki/File:97_Orchard_Street_Front.jpg | CC BY-SA 3.0 | Fletcher6
+- thomas-jefferson-portrait.webp | https://commons.wikimedia.org/wiki/File:Official_Presidential_portrait_of_Thomas_Jefferson_(by_Rembrandt_Peale,_1800)(cropped).jpg | Public domain | Rembrandt Peale
+- trumpet.webp | https://commons.wikimedia.org/wiki/File:Yamaha_Trumpet_YTR-8335LA.tif | CC BY-SA 4.0 | Yamaha Corporation
+- tzfas-on-the-mountain.webp | https://commons.wikimedia.org/wiki/File:Gezicht_op_de_stad_Safad_(Safed)_vanaf_een_heuvel,_Bestanddeelnr_255-3972.jpg | CC0 | Willem van de Poll (Nationaal Archief)
+- united-nations-headquarters.webp | https://commons.wikimedia.org/wiki/File:Shore_of_the_East_River_with_Headquarters_of_the_United_Nations,_New_York_City,_20231005_1131_2224.jpg | CC BY 4.0 | Jakub Hałun
+- volozhin-yeshiva.webp | https://commons.wikimedia.org/wiki/File:Volozhyn_yeshiva_1a.jpg | CC0 | Avner
+- wave-hitting-stone-wall.webp | https://commons.wikimedia.org/wiki/File:Wave-0473,_Dingle_Peninsula,_Co._Kerry,_Ireland.jpg | CC0 | Maoileann (Wikimedia Commons user)
+- wheat-heads.webp | https://commons.wikimedia.org/wiki/File:Wheat_ear.jpg | CC BY-SA 3.0 | Optograph
+- wheelchair-ramp.webp | https://commons.wikimedia.org/wiki/File:SSF_Main_Library_wheelchair_ramp_1.JPG | CC BY-SA 3.0 | BrokenSphere
+- wifi-router.webp | https://commons.wikimedia.org/wiki/File:ASUS_Wi-Fi_Router_(48767215803).jpg | CC BY-SA 2.0 | Daniel Aleksandersen from Norway
+- winding-river.webp | https://commons.wikimedia.org/wiki/File:Albert_River_Queensland.jpg | Public domain | Shiftchange at English Wikipedia
+- wooden-ballot-box.webp | https://commons.wikimedia.org/wiki/File:Wooden_ballot_box_-_Smithsonian.jpg | Public domain | National Museum of American History (Smithsonian)
+- world-map-equator.webp | https://commons.wikimedia.org/wiki/File:Robinson_projection_with_major_circles_of_latitude_and_prime_meridian_labeled.png | CC BY-SA 4.0 | PJsg1011
+- world-map-from-space.webp | https://commons.wikimedia.org/wiki/File:Whole_world_-_land_and_oceans.jpg | Public domain | NASA Goddard Space Flight Center (Reto Stöckli, Blue Marble)
+- yahrzeit-candles.webp | https://commons.wikimedia.org/wiki/File:Jewish_grave_candle.JPG | CC BY-SA 4.0 | Djampa
+- yellowstone-poster.webp | https://www.loc.gov/item/2007676133/ | Public domain (WPA poster; LOC: no known restrictions on publication) | C. Don Powell, designer, Federal Art Project (WPA), 1938
