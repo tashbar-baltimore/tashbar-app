@@ -114,7 +114,7 @@ M.html=function(){ const D=M.data; if(!D) return '<p>Loading the course map…</
  const fams=D.fam.filter(f=>D.tracks.some(t=>t.fam===f[0]));
  const tab=(k,l)=>`<button type="button" class="${M.view===k?'on':''}" data-dmap="view" data-v="${k}">${l}</button>`;
  const ftab=(k,l)=>`<button type="button" class="${M.fam===k?'on':''}" data-dmap="fam" data-f="${k}">${l}</button>`;
- let h=`<div class="dm">${M.msg?`<p style="font-weight:700;color:#166534">${E(M.msg)}</p>`:''}${stats(D)}<div class="dm-tabs">${tab('grid','🗺️ Big picture')}${tab('list','📋 Every lesson, in order')}${tab('gaps','🧩 Gaps and what to work on')}</div>`;
+ let h=`<div class="dm">${M.msg?`<p style="font-weight:700;color:#166534">${E(M.msg)}</p>`:''}${stats(D)}<div class="dm-tabs">${tab('grid','🗺️ Big picture')}${tab('list','📋 Every lesson, in order')}${tab('gaps','🧩 Gaps and what to work on')}${tab('flow','🧭 Skill flow chart')}</div>`;
  if(fams.length>1) h+=`<div class="dm-tabs">${ftab('','All subjects')}${fams.map(f=>ftab(f[0],f[1]+' '+f[2])).join('')}</div>`;
  if(M.view==='grid') h+=grid(D)+levelPanel(D);
  else if(M.view==='list') h+=`<div class="dm-tools"><input class="dm-q" type="search" placeholder="Find a skill or lesson (try: fractions, nekudos, Rashi)" value="${E(M.q)}" aria-label="Find a skill"><button type="button" data-dmap="csv">⬇️ Download as a spreadsheet</button></div>`+trackList(D);
@@ -126,7 +126,7 @@ function rerender(){ const b=document.querySelector('#dp-ov .dp-body'); if(!b||!
  if(keep){ const q=b.querySelector('.dm-q'); if(q){ q.focus(); try{ q.setSelectionRange(pos,pos); }catch(e){} } } }
 M.rerender=rerender;
 function openSchool(){ DP.open=true; DP.view='school'; DP.tab='map'; load('ALL'); if(typeof window.dpDraw==='function') window.dpDraw(); setTimeout(rerender,0); }
-M.openSchool=openSchool;
+M.openSchool=openSchool; M.picker=function(t,go){ return picker(t,go); };
 function findSkill(id){ const D=M.data; if(!D) return null; for(const t of D.tracks){ const s=t.skills.find(x=>x.id===id); if(s) return [t,s]; } return null; }
 /* assign / place through the Library (libApply) */
 function picker(title,go){ const close=()=>{ const p=document.getElementById('dm-pick'); if(p) p.remove(); };
@@ -147,7 +147,7 @@ function csv(){ const D=M.data; if(!D) return; const rows=[['Subject','Track','L
  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob(['﻿'+text],{type:'text/csv'})); a.download='Tashbar course map - '+(D.dept.name||'')+'.csv'; document.body.appendChild(a); a.click(); setTimeout(()=>a.remove(),0); }
 document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-dmap]'); if(!b) return; const a=b.dataset.dmap; e.preventDefault(); e.stopPropagation();
  if(a==='school') return openSchool();
- if(a==='view'){ M.view=b.dataset.v; return rerender(); } if(a==='fam'){ M.fam=b.dataset.f; return rerender(); }
+ if(a==='view'){ if(b.dataset.v==='flow'){ if(window.SF) window.SF.open('ENGLISH'); return; } M.view=b.dataset.v; return rerender(); } if(a==='fam'){ M.fam=b.dataset.f; return rerender(); }
  if(a==='cell'){ M.sel=[b.dataset.t,Number(b.dataset.l)]; rerender(); setTimeout(()=>{ const p=document.querySelector('#dp-ov .dm-lvl'); if(p) p.scrollIntoView({behavior:'smooth',block:'start'}); },30); return; }
  if(a==='go'){ M.view='grid'; M.sel=[b.dataset.t,b.dataset.l===''?null:Number(b.dataset.l)]; rerender(); setTimeout(()=>{ const x=document.getElementById('dm-'+b.dataset.id); if(x){ x.scrollIntoView({behavior:'smooth',block:'center'}); x.style.background='#FFFBEB'; } },40); return; }
  if(a==='csv') return csv();
