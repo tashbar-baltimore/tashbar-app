@@ -1,0 +1,46 @@
+name: auto-publish
+# Head of School decision (2026-11-18): anything a builder sends goes live by itself — no review, no clicks.
+# When the `test` check passes on a pull request from this repository: merge it, then publish (server + site, from
+# this repository). If the tests fail, nothing is merged or published and the failure stays on the pull request.
+# To pause auto-publishing: add the label "hold" to a pull request (that one waits), or set repository variable AUTO_PUBLISH = off.
+on:
+  workflow_run:
+    workflows: [test]
+    types: [completed]
+concurrency: { group: auto-publish, cancel-in-progress: false }
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+jobs:
+  merge-and-publish:
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      vars.AUTO_PUBLISH != 'off'
+    runs-on: ubuntu-24.04
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      BRANCH: ${{ github.event.workflow_run.head_branch }}
+      SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Find the pull request
+        id: pr
+        run: |
+          n=$(gh api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$BRANCH" --jq '.[0].number // empty')
+          [ -n "$n" ] || { echo "No open pull request for $BRANCH (already merged or closed)."; exit 0; }
+          head=$(gh api "repos/$REPO/pulls/$n" --jq .head.sha)
+          [ "$head" = "$SHA" ] || { echo "PR #$n has newer commits than the tested one; its own test run will publish it."; exit 0; }
+          gh api "repos/$REPO/pulls/$n" --jq '.labels[].name' | grep -qx hold && { echo "PR #$n is on hold."; exit 0; }
+          echo "n=$n" >> "$GITHUB_OUTPUT"
+      - name: Merge it
+        if: steps.pr.outputs.n
+        run: gh api -X PUT "repos/$REPO/pulls/${{ steps.pr.outputs.n }}/merge" -f merge_method=squash -f sha="$SHA" --jq .message
+      - name: Publish (server + site from GitHub)
+        if: steps.pr.outputs.n
+        run: |
+          gh api -X POST "repos/$REPO/actions/workflows/firebase-deploy.yml/dispatches" -f ref=main \
+            -f 'inputs[what]=publish-from-github' -f "inputs[note]=auto-publish PR #${{ steps.pr.outputs.n }}"
+          echo "Merged PR #${{ steps.pr.outputs.n }} and started publishing."
