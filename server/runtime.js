@@ -46,7 +46,8 @@ function makeBook(store, id) {
       clearContent() { return this.setValue(''); }, clear() { return this.setValue(''); }
     });
     const self = chain({
-      getName: () => name, getSheetName: () => name, getLastRow: lastRow, getLastColumn: width, getMaxRows: () => Math.max(1000, tab.rows.length), getMaxColumns: () => Math.max(26, width()),
+      getName: () => name, getSheetName: () => name, getParent: () => makeBook(store, id),   /* the canteen sale asks for its spreadsheet (time zone): without this every sale failed */
+      getLastRow: lastRow, getLastColumn: width, getMaxRows: () => Math.max(1000, tab.rows.length), getMaxColumns: () => Math.max(26, width()),
       getRange: (r, c, nr, nc) => range(r, c, nr === undefined ? 1 : nr, nc === undefined ? 1 : nc),
       getDataRange: () => range(1, 1, Math.max(1, lastRow()), Math.max(1, width())),
       appendRow(arr) { const n = lastRow() + 1; arr.forEach((v, j) => put(n, j + 1, v)); if (!arr.length) put(n, 1, ''); return self; },
@@ -57,7 +58,8 @@ function makeBook(store, id) {
     return self;
   };
   return chain({
-    getId: () => id, getName: () => 'book ' + id, getUrl: () => 'https://example.invalid/sheet/' + id,
+    getId: () => id, getName: () => 'book ' + id, getSpreadsheetTimeZone: () => 'GMT',   /* the rewards sheets had no time zone set, so Sheets used GMT (Canteen.js cnBookTz_) */
+    getUrl: () => 'https://example.invalid/sheet/' + id,
     getSheetByName: n => (book.tabs[n] ? sheet(n) : null),
     insertSheet(n) { if (book.tabs[n]) throw new Error('A sheet with the name "' + n + '" already exists.'); book.tabs[n] = { rows: [], isNew: true }; book.order.push(n); store.dirty[id + '|' + n] = 1; (store.dirtyBooks || (store.dirtyBooks = {}))[id] = 1; return sheet(n); },
     getSheets: () => book.order.map(sheet),
