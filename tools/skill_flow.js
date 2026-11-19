@@ -142,7 +142,7 @@ function buildFlow(ela, k3, C) {
       if (K.real) steps.push({ st: 'Real life', t: (K.realIntro ? '“' + K.realIntro + '” ' : '') + 'One task using the skill in everyday life (' + human(K.real) + ').' });
       steps.push({ st: 'Check', t: K.check.length + ' items with no help: ' + tally(K.check).join(', ') + '.' }); steps.push({ st: 'Celebrate', t: 'Stars for the lesson, then the skill’s practice games.' }); }
     if (s.tt) quest.push({ st: 'Teacher Time', t: [s.tt.hook, s.tt.big].filter(Boolean).join(' ') + (s.tt.intro && s.tt.intro.length ? ' Steps: ' + s.tt.intro.join(' → ') : '') });
-    if (s.teach.length) quest.push({ st: 'Learn it', t: s.teach.length + ' examples, each with a tip: ' + s.teach.map(t => '“' + (t.how || t.q) + '”').join(' ') });
+    if (s.teach.length) quest.push({ st: 'Learn it', t: s.teach.length + ' examples, each with a tip: ' + [...new Set(s.teach.map(t => '“' + (t.how || t.q) + '”'))].join(' ') });
     if (s.we.length) quest.push({ st: 'Together', t: s.we.length + ' worked examples step by step.' });
     quest.push({ st: 'Practice games', t: s.practice.length + ' items: ' + tally(pk).join(', ') + '. Examples: ' + s.practice.slice(0, 3).map(p => '“' + p.q + '”').join(' ') });
     quest.push({ st: 'Mastery check', t: s.check.length + ' questions, no help: ' + s.check.map(c => '“' + c.q + '”').join(' ') });
