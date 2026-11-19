@@ -14,7 +14,9 @@
    100vw grid). So this file's styles never loaded (css() saw that id and stopped) and the home showed as plain boxes since v148.
    Now: our style id is hpl-css, and .hp.hp2 undoes the sign-in .hp rule. Do not reuse ids or class names from HomePage.html.
    v198 (takeover4, HoS 2026-11-15): SKY VAULT money show on every right answer: money falls from a vault at the top into the bank, bigger with the streak.
-   v158: + takeover4 money show v2 and sweep fixes (HQ HANDOFF 1535Z, sha 991396c3) with the v157 fix merged in. */
+   v158: + takeover4 money show v2 and sweep fixes (HQ HANDOFF 1535Z, sha 991396c3) with the v157 fix merged in.
+   2026-11-19 SWIPE TRAIL (moshe@ session): the same tap splash now also follows the finger (or a held mouse button) as it moves,
+   like a sword trail: small splashes every ~22 px along the path, at most 60 trail pieces on screen. Off with HP_FX, and with RM (reduced motion). */
 (function(){
 if(typeof render!=='function'||typeof A==='undefined'||typeof vHub!=='function') return;
 window.HOME_PLUS_LIVE = true;
@@ -311,13 +313,29 @@ function honeycomb(ns){ const svg=`<svg xmlns='${ns}' width='84' height='48' vie
  return 'url("data:image/svg+xml;utf8,'+svg.replace(/"/g,"'").replace(/#/g,'%23').replace(/</g,'%3C').replace(/>/g,'%3E')+'")'; }
 const COLS=['#6D3CE8','#EC4899','#F59E0B','#10B981','#3B82F6','#EF4444'];
 let ci=0;
-function splash(x,y){ if(typeof RM!=='undefined'&&RM) return; const c=COLS[ci++%COLS.length];
- const r=document.createElement('i'); r.className='hpsplash'; r.style.left=x+'px'; r.style.top=y+'px'; r.style.setProperty('--c',c); document.body.appendChild(r);
- r.animate([{transform:'scale(1)',opacity:1},{transform:'scale(6)',opacity:0}],{duration:520,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>r.remove();
- for(let k=0;k<8;k++){ const d=document.createElement('i'); d.className='hpdot'; d.style.left=x+'px'; d.style.top=y+'px'; d.style.setProperty('--c',COLS[(ci+k)%COLS.length]); document.body.appendChild(d);
-  const a=k/8*Math.PI*2+Math.random()*.4, dist=26+Math.random()*28;
-  d.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${Math.cos(a)*dist}px,${Math.sin(a)*dist}px) scale(.3)`,opacity:0}],{duration:480+Math.random()*200,easing:'ease-out'}).onfinish=()=>d.remove(); } }
-document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ splash(e.clientX,e.clientY); }catch(x){} },true);
+/* trail=true: a lighter copy of the same splash (smaller ring, 3 dots) for the swipe trail; LIVE counts trail pieces on screen */
+let LIVE=0;
+function splash(x,y,trail){ if(typeof RM!=='undefined'&&RM) return; const c=COLS[ci++%COLS.length], n=trail?3:8;
+ const done=el=>()=>{ el.remove(); if(trail) LIVE--; };
+ const r=document.createElement('i'); r.className='hpsplash'; r.style.left=x+'px'; r.style.top=y+'px'; r.style.setProperty('--c',c); document.body.appendChild(r); if(trail) LIVE++;
+ r.animate([{transform:'scale(1)',opacity:1},{transform:'scale('+(trail?3.5:6)+')',opacity:0}],{duration:trail?420:520,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=done(r);
+ for(let k=0;k<n;k++){ const d=document.createElement('i'); d.className='hpdot'; d.style.left=x+'px'; d.style.top=y+'px'; d.style.setProperty('--c',COLS[(ci+k)%COLS.length]); document.body.appendChild(d); if(trail) LIVE++;
+  const a=k/n*Math.PI*2+Math.random()*.4, dist=(trail?14:26)+Math.random()*(trail?16:28);
+  d.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${Math.cos(a)*dist}px,${Math.sin(a)*dist}px) scale(.3)`,opacity:0}],{duration:(trail?380:480)+Math.random()*200,easing:'ease-out'}).onfinish=done(d); } }
+/* SWIPE TRAIL: while a finger (or a held mouse button) moves, drop splashes along the path, evenly spaced, so it follows the finger */
+/* Mouse and pen use pointer events. A finger uses touch events: the browser stops pointer events (pointercancel) as soon as a
+   swipe starts scrolling the page, but touchmove keeps coming, so the trail keeps following the finger while the page scrolls. */
+const SW={}, STEP=22, CAP=60;
+function trailTo(p,x,y){ const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
+ while(dd>=STEP){ p.x+=ux*STEP; p.y+=uy*STEP; dd-=STEP; if(LIVE<CAP) splash(p.x,p.y,true); } }
+document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ splash(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
+document.addEventListener('pointermove',e=>{ const p=SW['p'+e.pointerId]; if(!p||!window.HP_FX) return;
+ if(!e.buttons){ delete SW['p'+e.pointerId]; return; }
+ try{ const pts=e.getCoalescedEvents?e.getCoalescedEvents():[]; (pts.length?pts:[e]).forEach(q=>trailTo(p,q.clientX,q.clientY)); }catch(x){} },{capture:true,passive:true});
+['pointerup','pointercancel'].forEach(t=>document.addEventListener(t,e=>{ delete SW['p'+e.pointerId]; },true));
+document.addEventListener('touchstart',e=>{ if(!window.HP_FX) return; for(const t of e.changedTouches) SW['t'+t.identifier]={x:t.clientX,y:t.clientY}; },{capture:true,passive:true});
+document.addEventListener('touchmove',e=>{ if(!window.HP_FX) return; try{ for(const t of e.changedTouches){ const p=SW['t'+t.identifier]; if(p) trailTo(p,t.clientX,t.clientY); } }catch(x){} },{capture:true,passive:true});
+['touchend','touchcancel'].forEach(t=>document.addEventListener(t,e=>{ for(const u of e.changedTouches) delete SW['t'+u.identifier]; },{capture:true,passive:true}));
 /* sounds */
 function ac(){ try{ if(!SND.on) return null; SND.ctx=SND.ctx||new (window.AudioContext||window.webkitAudioContext)(); return SND.ctx; }catch(e){ return null; } }
 function chaSound(){ const c=ac(); if(!c) return; const t=c.currentTime;
