@@ -2,6 +2,7 @@
 Every file here must be public domain or freely licensed. One line per file: file | source | licence | author.
 
 - gemara-vilna-berachos-2a.jpg | https://commons.wikimedia.org/wiki/File:Berakhot2a.jpg (960 px copy) | Public domain | Widow and Brothers Romm, Vilna
+- gemara-vilna-berachos-2a.webp | same source as gemara-vilna-berachos-2a.jpg, re-encoded as WebP (4-tone gray to keep the letters sharp under 200 KB) | same licence | same author
 - mishkan-model-schick.jpg | https://www.loc.gov/pictures/item/ (Matson collection, LC-DIG-matpc-11787) "Tabernacle, B.C. 1487", Dr. Schick's model, cropped | No known restrictions on publication (Library of Congress) | American Colony Photo Dept. / Matson Photo Service
 - tefillin-shel-rosh-shel-yad.jpg | Library of Congress, Matson collection, LC-DIG-matpc-03893 "Phylacteries for head & arm", cropped | No known restrictions on publication | American Colony Photo Dept. / Matson Photo Service
 - shofar-blowing-closeup.jpg | Library of Congress, Matson collection, LC-DIG-matpc-19320 "Jew blowing a shofar", cropped | No known restrictions on publication | American Colony Photo Dept. / Matson Photo Service
@@ -17,20 +18,25 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - sukkah-canvas.jpg | https://commons.wikimedia.org/wiki/File:Canvas_sukkah_in_the_street.JPG (960px copy) | CC BY-SA 3.0 | Bachrach44
 - tzitzis-tallis-katan.jpg | https://commons.wikimedia.org/wiki/File:Arba_Kanfot.jpg (960px copy) | CC BY-SA 4.0 | LGLou
 - matzah-shmurah.jpg | https://commons.wikimedia.org/wiki/File:Shmurah_Matzah_03.jpg (960px copy) | CC BY-SA 4.0 | Jacek Proszyk
+- matzah-shmurah.webp | same source as matzah-shmurah.jpg, re-encoded as WebP | same licence | same author
 - mezuzah-case.jpg | https://commons.wikimedia.org/wiki/File:Macedonian_Mezuzah.jpg (960px copy) | CC BY-SA 3.0 | PretoriaTravel
 - sefer-torah-yad.jpg | https://commons.wikimedia.org/wiki/File:Torah_at_the_state_library_of_Victoria.jpg (960px copy) | CC BY-SA 4.0 | Azoma
 - lloyd-street-synagogue-baltimore.jpg | HABS MD-174, https://www.loc.gov/item/md0174/ | No known restrictions (U.S. Government photo) | Historic American Buildings Survey
 - touro-synagogue-newport.jpg | HABS RI-83, https://www.loc.gov/item/ri0083/ | No known restrictions (U.S. Government photo) | Historic American Buildings Survey
 - roman-aqueduct.jpg | https://www.loc.gov/item/2025712623/ | No known restrictions on publication | Library of Congress, Photochrom print
+- roman-aqueduct.webp | same source as roman-aqueduct.jpg, re-encoded as WebP | same licence | same author
 - white-house.jpg | https://www.loc.gov/item/2017645173/ | No known restrictions on publication | George Stacy, stereograph (left half)
 - supreme-court-building.jpg | https://www.loc.gov/item/2017761241/ | No known restrictions (FSA/OWI) | U.S. Farm Security Administration / Office of War Information
 - george-washington.jpg | https://www.loc.gov/item/2009633819/ | No known restrictions on publication | after Gilbert Stuart
 - us-capitol.jpg | https://www.loc.gov/item/2003677127/ | No known restrictions on publication | Library of Congress print
 - abraham-lincoln.jpg | https://www.loc.gov/item/scsm000764/ | Public domain (1860s photograph) | Mathew Brady studio
+- abraham-lincoln.webp | same source as abraham-lincoln.jpg, re-encoded as WebP | same licence | same author
 - sun-nasa.jpg | https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA's_Solar_Dynamics_Observatory_-_20100819.jpg (960px copy) | Public domain | NASA / SDO (AIA)
+- sun-nasa.webp | same source as sun-nasa.jpg, re-encoded as WebP | same licence | same author
 - full-moon.jpg | https://commons.wikimedia.org/wiki/File:Full_Moon_Luc_Viatour.jpg (960px copy) | CC BY-SA 3.0 | Luc Viatour
 - planets-montage.jpg | https://commons.wikimedia.org/wiki/File:Released_to_Public_Solar_System_Montage_(NASA)_(420390416).jpg (960px copy) | Public domain | NASA
 - leaf-veins.jpg | https://commons.wikimedia.org/wiki/File:Background_green_leave_macro.jpg (960px copy) | Public domain | unknown (public domain)
+- leaf-veins.webp | same source as leaf-veins.jpg, re-encoded as WebP | same licence | same author
 - albert-einstein.webp | https://www.loc.gov/item/2004671908/ | Public domain (LOC: no known restrictions on publication; no copyright renewal) | Orren Jack Turner
 - amazon-rainforest-river.webp | https://commons.wikimedia.org/wiki/File:Aerial_view_of_the_Amazon_Rainforest.jpg | CC BY-SA 2.0 | lubasi
 - american-robin.webp | https://commons.wikimedia.org/wiki/File:American_robin_-_DPLA_-_12968208831622228287e31828dc2248.jpg | Public domain | Department of the Interior. U.S. Fish and Wildlife Service. National Conservation Training Center. 10/1997-8888
