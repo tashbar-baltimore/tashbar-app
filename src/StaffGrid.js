@@ -61,7 +61,8 @@ function sgPage_() {
   try { add += HtmlService.createHtmlOutputFromFile('SkillFlowUI').getContent(); } catch (e) {}   /* HoS 2026-11-19: the Skill flow chart (SkillFlow.js), opened from the Course map tab */   /* HoS 2026-11-18: the Course map (every subject, level and lesson in teaching order, gaps) + curriculum/placement band at the top (DeptMap.js) */
   try { add += HtmlService.createHtmlOutputFromFile('StudentLookupUI').getContent(); } catch (e) {}   /* STUDENT LOOKUP (HoS 2026-11-18): Find a student, one page, everything changeable (StudentLookup.js) */
   try { add += HtmlService.createHtmlOutputFromFile('GradeIntakeUI').getContent(); } catch (e) {}   /* LEARN BY LEVEL section 3: Class lists, Grades to confirm, Move up, Learn by level on the student page (GradeIntake.js) */
-  try { add += HtmlService.createHtmlOutputFromFile('StaffLibrary').getContent(); } catch (e) {}   /* Library & One-Tap Command Center (Library.js); floating button, own overlay, LAST */
+  try { add += HtmlService.createHtmlOutputFromFile('StaffLibrary').getContent(); } catch (e) {}
+  try { add += HtmlService.createHtmlOutputFromFile('StaffHome').getContent(); } catch (e) {}   /* HoS 2026-11-19: the new staff home (5 areas: Students, Today, Curriculum, Reports, School). LAST: it organizes all the others */   /* Library & One-Tap Command Center (Library.js); floating button, own overlay, LAST */
   var i = page.lastIndexOf('</body>'); if (add) page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
   return HtmlService.createHtmlOutput(tlTheme_(page, 'staff'))
     .setTitle('Tashbar Learning · Staff')

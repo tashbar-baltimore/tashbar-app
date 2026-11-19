@@ -1,0 +1,165 @@
+<style id="sh-css">
+/* StaffHome.html — THE NEW STAFF HOME (Head of School 2026-11-19: "overhaul of the staff page ... simplify things tremendously ... easy to
+   add kids and switch levels and see what's going on and access all the features ... things are all happening all over the place").
+   Claude Code builder. Joined LAST by sgPage_ (StaffGrid.js), so every other staff add-on is already on the page.
+   One top bar with 5 areas (Students, Today, Curriculum, Reports, School) and a Home with a big card for each. Every button here OPENS AN
+   EXISTING FEATURE by pressing that feature's own button (same rules, same screens), so nothing is lost and nothing changes on the server.
+   The old banners, the second search bar, the floating buttons and the "More" menu are hidden; their features are all reachable from here.
+   Everyone sees everything for now (HoS: "let's leave out who sees what"). Off switch: window.TL_STAFF_HOME = false.
+   No double slash in this file. */
+body.sh-on #acPill,body.sh-on #slBar,body.sh-on #dm-band,body.sh-on #sbBan,body.sh-on #lbx-btn,body.sh-on #ss-btn,body.sh-on #dp-btn,body.sh-on #acCur,body.sh-on #acOpen{display:none!important}
+body.sh-on #app header.top{display:none!important}
+body.sh-on.sh-page #app{display:none!important}
+#sh-top{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px max(16px,env(safe-area-inset-left,0px));background:#16202C;color:#fff;font-family:system-ui,"Segoe UI",Roboto,sans-serif}
+#sh-top .brand{font:900 18px/1 system-ui,sans-serif;margin-right:6px;white-space:nowrap}
+#sh-top nav{display:flex;flex-wrap:wrap;gap:4px;flex:1}
+#sh-top nav button,#sh-top .out{border:0;border-radius:10px;padding:9px 13px;background:transparent;color:#CBD5E1;font:800 14.5px system-ui,sans-serif;cursor:pointer;min-height:42px;white-space:nowrap}
+#sh-top nav button:hover{background:rgba(255,255,255,.08);color:#fff}
+#sh-top nav button.on{background:#fff;color:#16202C}
+#sh-top .out{background:rgba(255,255,255,.1);color:#fff}
+#sh-back{display:none;position:sticky;top:62px;z-index:29;padding:8px max(16px,env(safe-area-inset-left,0px));background:#EEF2FF;border-bottom:1px solid #D9DFF0;font:700 14px system-ui,sans-serif}
+#sh-back button{border:0;background:#16202C;color:#fff;border-radius:999px;padding:7px 14px;font:800 13.5px system-ui,sans-serif;cursor:pointer}
+body.sh-on.sh-feat #sh-back{display:block}
+body.sh-on.sh-page{background:#F4F6FB}
+#sh-page{display:none;max-width:1180px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-left,0px)) 60px;font-family:system-ui,"Segoe UI",Roboto,sans-serif;color:#16202C}
+body.sh-on.sh-page #sh-page{display:block}
+#sh-page h1{margin:0 0 4px;font:900 30px/1.15 system-ui,sans-serif;letter-spacing:-.01em}
+#sh-page .hello{color:#5B6676;font:700 14px system-ui,sans-serif;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+#sh-next{background:#fff;border:2px solid #2F5BD3;border-radius:20px;padding:16px 18px;margin:0 0 18px;box-shadow:0 8px 24px rgba(47,91,211,.10)}
+#sh-next h2{margin:0 0 10px;font:900 19px system-ui,sans-serif;display:flex;align-items:center;gap:8px}
+#sh-next .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #EEF1F6}
+#sh-next .row:first-of-type{border-top:0}
+#sh-next .n{flex:none;min-width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font:900 19px system-ui,sans-serif;color:#fff}
+#sh-next .row b{display:block;font:800 16px/1.25 system-ui,sans-serif} #sh-next .row small{color:#5B6676;font-size:13.5px}
+#sh-next .row .go{margin-left:auto;flex:none;border:0;border-radius:12px;padding:10px 16px;background:#16202C;color:#fff;font:800 14.5px system-ui,sans-serif;cursor:pointer;min-height:44px}
+#sh-next .ok{display:flex;align-items:center;gap:10px;font:800 16px system-ui,sans-serif;color:#178A5E}
+@media (max-width:600px){ #sh-next .row{flex-wrap:wrap} #sh-next .row .go{margin-left:56px} } #sh-page .lead{margin:0 0 16px;color:#5B6676;font-size:15px}
+#sh-find{margin:0 0 18px} body.sh-on #sh-find #slBar{display:flex!important;margin:0!important;max-width:none!important;position:static!important;z-index:auto!important;box-shadow:0 2px 10px rgba(30,27,75,.08)!important}
+#sh-page .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+#sh-page .card{background:#fff;border:1px solid #E6EAF2;border-radius:20px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.05)}
+#sh-page .card h2{margin:0;font:900 20px/1.2 system-ui,sans-serif;display:flex;align-items:center;gap:10px;cursor:pointer}
+#sh-page .card h2 span{font-size:22px;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:#EEF2FF;flex:none} #sh-page .card.cur h2 span{background:rgba(255,255,255,.18)} #sh-page .card p{margin:4px 0 12px;color:#5B6676;font-size:14px}
+#sh-page .card.cur{grid-column:1/-1;background:linear-gradient(110deg,#312E81,#6D28D9 55%,#DB2777);color:#fff;border:0} #sh-page .card.cur p{color:#E9E3FF}
+#sh-page .btns{display:flex;flex-wrap:wrap;gap:8px}
+#sh-page .btns button,#sh-page .btns a{border:1px solid #D9DFF0;background:#F8FAFF;color:#16202C;border-radius:12px;padding:10px 14px;font:800 14.5px system-ui,sans-serif;cursor:pointer;min-height:44px;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+#sh-page .btns button:hover,#sh-page .btns a:hover{border-color:#2F5BD3}
+#sh-page .card.cur .btns button{background:#fff;border:0;font-size:16px;padding:12px 18px}
+#sh-page .card.cur .btns .sub{background:rgba(255,255,255,.16);color:#fff}
+#sh-page .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+#sh-page .tile{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:1px solid #E6EAF2;border-radius:18px;box-shadow:0 4px 14px rgba(15,23,42,.04);padding:16px;display:flex;gap:12px;align-items:flex-start;min-height:92px}
+#sh-page .tile:hover,#sh-page .tile:focus-visible{border-color:#2F5BD3;box-shadow:0 0 0 3px rgba(47,91,211,.15)}
+#sh-page .tile i{font-style:normal;font-size:24px;line-height:1;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#EEF2FF;flex:none} #sh-page .tile b{display:block;font:900 16.5px/1.2 system-ui,sans-serif} #sh-page .tile small{display:block;margin-top:4px;color:#5B6676;font-size:13.5px;line-height:1.35}
+#sh-page h3{margin:22px 0 10px;font:900 15px system-ui,sans-serif;color:#5B6676;text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:700px){ #sh-top{padding:8px 12px;gap:6px} #sh-top .brand{flex:1;font-size:16px} #sh-top .out{order:2;min-height:36px;padding:6px 12px} #sh-top nav{order:3;flex:0 0 100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none} #sh-top nav::-webkit-scrollbar{display:none} #sh-top nav button{padding:8px 11px;font-size:14px;flex:none}
+ #sh-back{top:98px} #sh-page{padding-top:14px} #sh-page h1{font-size:23px} body.sh-on #sh-find #slBar{flex-wrap:wrap} #sh-find #slBar input{flex:1 1 100%!important;min-width:0!important;width:100%!important} #sh-find #slBar button{flex:1 1 auto} }
+</style>
+<script>
+(function(){
+if(window.TL_STAFF_HOME===false||window.__sh) return; window.__sh=true;
+function E(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function q(sel){ try{ return document.querySelector(sel); }catch(e){ return null; } }
+/* every action = [icon, name, what it does, how to open it]. "how": a selector of the feature's own button; "tab:x" = a view in the Today screen;
+   "sf:X" = the curriculum tree for subject X. Overlay features open on top of this page; "app" features show in the main staff screen. */
+var A={
+ find:['🔎','Find a student','One page with everything about a boy: name, grade, level, parents, code.','[data-dmband=find]'],
+ add:['➕','Add a student','Add a new boy and give him his sign-in code.','[data-act=add]','app'],
+ levels:['🎯','Placement & levels','Where every boy is; set or change his level. Boys with no level are listed first.','tab:lv'],
+ classes:['🏫','Class lists and grades','Who is in which class and grade; move boys up a grade.','#giBtn'],
+ groups:['👥','Groups','Make groups of boys to teach or assign together.','[data-act=grp]','app'],
+ mycls:['🧑‍🏫','My classes','The classes you teach.','[data-sx=cls]','app'],
+ now:['📱','Walk-around','Big, simple view of who needs you, for walking the room.','tab:now'],
+ today:['📊','Today','What every boy did today.','tab:today'],
+ tm:['🔒','Teacher mode','Lock the boys’ screens to what you are teaching.','[data-act=tm]','app'],
+ msg:['✉️','Messages','Messages with boys and staff.','[data-sx=msg]','app'],
+ points:['⭐','Tashbar Points (daily sign-off)','Attendance, on time, work and middos for your class.','a.tb[href*="so=1"]'],
+ tree:['🌳','Curriculum tree','Every skill from Kindergarten to 8th grade, step by step.','sf:ENGLISH'],
+ see:['👀','See what the kids see','Play any lesson exactly the way a boy sees it.','[data-sb=see]'],
+ lib:['📚','Library & Assign','Find any lesson and assign it to boys or groups.','#lbx-btn'],
+ dept:['🏫','Departments','Each department: its lessons, to-do list and boys.','#dp-btn'],
+ cmap:['🗺️','Whole-school course map','Every subject, level and lesson, and the gaps.','[data-dmap=school]'],
+ myles:['📝','My lessons','Lessons you wrote.','[data-sx=les]','app'],
+ lk:['📜','Kodesh ladder','Which Limudei Kodesh lessons are built.','[data-act=lk]','app'],
+ map:['📚','Curriculum map','The curriculum map by subject.','[data-act=map]','app'],
+ wk:['📅','This week','Each boy’s week at a glance.','tab:wk'],
+ gs:['📚','General Studies','Every boy across the General Studies subjects.','tab:gs'],
+ lkt:['📜','Limudei Kodesh','Every boy across the Limudei Kodesh subjects.','tab:lk'],
+ stuck:['🧩','Where kids get stuck','The questions and lessons boys get stuck on most.','#ss-btn'],
+ rep:['🚩','Reports','Reports from boys and staff about lessons.','[data-act=rep]','app'],
+ month:['🏆','This month','The month’s stars and progress.','[data-act=month]','app'],
+ staff:['👤','Staff accounts','Add staff and set their codes.','[data-sx=stf]','app'],
+ access:['🔐','Access & Parents','Who can see what, and parent sign-ins.','#acOpen'],
+ fam:['📨','Families','Messages and updates for families.','[data-act=fam]','app'],
+ schools:['🏫','Schools & Families','Schools, families, homeschool pods and groups.','[data-sb=open]'],
+ store:['🏪','Store orders','Prizes the boys bought: hand out or refund.','[data-sy=open]','app'],
+ canteen:['🍎','Canteen & menu','The canteen kiosk and its menu.','a.tb[href*="canteen=1"]'],
+ music:['🎵','Music for everyone','Turn the boys’ music on or off for the whole school.','[data-act=music]','app']
+};
+var AREAS=[['home','🏠','Home'],['students','🧑‍🎓','Students'],['today','📅','Today'],['curriculum','🌳','Curriculum'],['reports','📊','Reports'],['school','🏫','School']];
+var PAGE={
+ students:{t:'Students',lead:'Find a boy, add a boy, set his level, and organize classes and groups.',groups:[['The boys',['find','add','levels']],['Classes and groups',['classes','groups','mycls']]]},
+ curriculum:{t:'Curriculum',lead:'What we teach, in order, and every lesson in it.',groups:[['See it',['tree','see','cmap']],['Use it',['lib','dept','myles']],['Check it',['lk','map']]]},
+ reports:{t:'Reports',lead:'How the boys are doing.',groups:[['Progress',['today','wk','gs','lkt','month']],['Problems',['stuck','rep']]]},
+ school:{t:'School',lead:'Staff, families, the store, the canteen and school settings.',groups:[['People',['staff','access','fam','schools']],['School life',['points','store','canteen','music']]]}
+};
+var HOME=[['students','Students','Find, add and place boys.',['find','add','levels','classes']],['today','Today','What is happening right now.',['now','today','tm','msg','points']],
+ ['reports','Reports','How the boys are doing.',['wk','stuck','month','rep']],['school','School','Staff, families, store and canteen.',['staff','access','store','canteen']]];
+var S={area:'home', from:'home'};
+function body(){ return document.body; }
+function setMode(page,feat){ body().classList.toggle('sh-page',!!page); body().classList.toggle('sh-feat',!!feat); }
+function slot(){ var bar=q('#slBar'), f=q('#sh-find'); if(bar&&f&&bar.parentNode!==f) f.appendChild(bar); }
+function top(){ var t=q('#sh-top'); if(!t){ t=document.createElement('div'); t.id='sh-top'; body().insertBefore(t,body().firstChild); var b=document.createElement('div'); b.id='sh-back'; t.parentNode.insertBefore(b,t.nextSibling); var p=document.createElement('div'); p.id='sh-page'; b.parentNode.insertBefore(p,b.nextSibling); }
+  t.innerHTML='<div class="brand">Tashbar · Staff</div><nav aria-label="Staff areas">'+AREAS.map(function(a){ return '<button type="button" data-sh="area" data-v="'+a[0]+'"'+(S.area===a[0]?' class="on" aria-current="page"':'')+'>'+a[1]+' '+a[2]+'</button>'; }).join('')+'</nav><button type="button" class="out" data-sh="out">Sign out</button>'; }
+function tile(k){ var a=A[k]; return '<button type="button" class="tile" data-sh="do" data-k="'+k+'"><i>'+a[0]+'</i><span><b>'+E(a[1])+'</b><small>'+E(a[2])+'</small></span></button>'; }
+function btn(k){ var a=A[k]; return '<button type="button" data-sh="do" data-k="'+k+'">'+a[0]+' '+E(a[1])+'</button>'; }
+function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar'); if(bar&&p.contains(bar)) body().appendChild(bar);   /* keep the search bar: a redraw must not throw it away */
+  if(S.area==='today'){ setMode(false,false); p.innerHTML=''; return; }
+  setMode(true,false); var h='';
+  if(S.area==='home'){
+    h+='<div class="hello">'+E(hello())+'</div><h1>What would you like to do?</h1><p class="lead">Find a boy, see what needs you, or open any part of the school below.</p><div id="sh-find"></div>'+nextHTML()+'<div class="cards">';
+    h+='<div class="card cur"><h2 data-sh="area" data-v="curriculum"><span>🌳</span>Curriculum</h2><p>Every skill from Kindergarten to 8th grade, step by step: what comes first, what comes next, and how well it is taught. Tap a subject.</p><div class="btns">'
+      +[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')
+      +'<button type="button" class="sub" data-sh="do" data-k="see">👀 See what the kids see</button><button type="button" class="sub" data-sh="do" data-k="lib">📚 Library & Assign</button></div></div>';
+    HOME.forEach(function(c){ var ic=AREAS.filter(function(a){ return a[0]===c[0]; })[0][1]; h+='<div class="card"><h2 data-sh="area" data-v="'+c[0]+'"><span>'+ic+'</span>'+E(c[1])+' ›</h2><p>'+E(c[2])+'</p><div class="btns">'+c[3].map(btn).join('')+'</div></div>'; });
+    h+='</div>';
+  } else { var P=PAGE[S.area]; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>'+(S.area==='students'?'<div id="sh-find"></div>':'');
+    if(S.area==='curriculum') h+='<div class="cards" style="margin-bottom:6px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill, step by step. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>';
+    P.groups.forEach(function(g){ var ks=g[1].filter(function(k){ return k!=='tree'||S.area!=='curriculum'; }); h+='<h3>'+E(g[0])+'</h3><div class="tiles">'+ks.map(tile).join('')+'</div>'; }); }
+  p.innerHTML=h; slot(); window.scrollTo(0,0); }
+/* NEXT STEPS: read the counts the staff screen already shows, and turn each one that needs someone into one clear row with one button */
+function num(sel){ var e=q(sel); if(!e) return 0; var m=String(e.textContent||'').match(/(\d+)/g); return m?Number(m[m.length-1]):0; }
+function steps(){ var r=[];
+  var C=null; try{ C=window.SPX&&window.SPX.counts&&window.SPX.counts(); }catch(e){}   /* the staff screen's own numbers (StaffPlus.html), the same on every screen size */
+  var help=C?C.help:num('#app [data-sp=gsf][data-f=help]'), nolv=C?C.nolevel:num('#app [data-sp=gsf][data-f=nolevel]'), store=num('#app [data-sy=open] .n'), msgs=num('#app [data-sx=msg] .n'), gr=num('#giBtn b'), idle=C?(C.idle||0):num('#app [data-sp=gsf][data-f=idle]');
+  var d0=S0(); r.known=!!(C&&(C.boys>0||(Array.isArray(d0.boys)&&d0.boys.filter(function(b){ return !b.test; }).length===0)))||!!q('#app [data-sp=gsf][data-f=help]');
+  if(help) r.push(['#C8402F',help,help===1?'1 boy needs help right now':help+' boys need help right now','Stuck, or failing the same check.','now','Open walk-around']);
+  if(nolv) r.push(['#B87D06',nolv,nolv===1?'1 boy has no level yet':nolv+' boys have no level yet','Until he has a level, the app cannot pick his lessons.','levels','Set levels']);
+  if(gr) r.push(['#7C5CC4',gr,gr===1?'1 grade to confirm':gr+' grades to confirm','New boys or a new school year.','classes','Confirm grades']);
+  if(store) r.push(['#178A5E',store,store===1?'1 prize to hand out':store+' prizes to hand out','Boys bought them in the Tashbar Store.','store','Store orders']);
+  if(msgs) r.push(['#2F5BD3',msgs,msgs===1?'1 new message':msgs+' new messages','From boys or staff.','msg','Read']);
+  if(idle&&r.length<5) r.push(['#6E7A8A',idle,idle===1?'1 boy has not worked today':idle+' boys have not worked today','A nudge may help.','today','See today']);
+  return r; }
+function nextHTML(){ var r=steps(); return '<div id="sh-next"><h2>👉 Next steps</h2>'+(r.length?r.map(function(x){ return '<div class="row"><span class="n" style="background:'+x[0]+'">'+x[1]+'</span><span><b>'+E(x[2])+'</b><small>'+E(x[3])+'</small></span><button type="button" class="go" data-sh="do" data-k="'+x[4]+'">'+E(x[5])+' →</button></div>'; }).join(''):(r.known?'<div class="ok">✅ All caught up. Nothing needs you right now.</div>':'<div class="row"><span><b>Still loading the boys…</b><small>Or open Today to see who needs you.</small></span><button type="button" class="go" data-sh="area" data-v="today">Open Today →</button></div>'))+'</div>'; }
+setInterval(function(){ if(S.area==='home'&&body().classList.contains('sh-page')){ var n=q('#sh-next'); if(n){ var t=document.createElement('div'); t.innerHTML=nextHTML(); if(t.firstChild.innerHTML!==n.innerHTML) n.replaceWith(t.firstChild); } } },20000);
+function hello(){ var h=new Date().getHours(), nm=''; try{ nm=String(S0().staffName||'').split(' ')[0]; }catch(e){} return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(nm?', '+nm:''); }
+function S0(){ try{ return (typeof window.S==='object'&&window.S&&window.S.d)||(new Function('try{ return S&&S.d; }catch(e){ return null; }'))()||{}; }catch(e){ return {}; } }
+function area(v){ S.area=v; S.from=v; draw(); }
+/* open a feature by pressing its own button */
+function run(k){ var a=A[k]; if(!a) return; var how=a[3];
+  if(/^sf:/.test(how)){ if(window.SF) window.SF.open(how.slice(3)); return; }
+  if(/^tab:/.test(how)){ var tb=q('#app [data-sp=tab][data-t="'+how.slice(4)+'"]'); S.area='today'; draw(); if(tb) tb.click(); window.scrollTo(0,0); return; }
+  if(k==='find'){ var inp=q('#slBar input'); if(inp){ inp.focus(); inp.scrollIntoView({block:'center'}); return; } }
+  var el=q(how); if(!el){ toast('That tool is not on this page yet.'); return; }
+  if(a[4]==='app'){ S.from=S.area==='today'?'home':S.area; setMode(false,true); var bk=q('#sh-back'); if(bk){ var nm=(AREAS.filter(function(x){ return x[0]===S.from; })[0]||AREAS[0])[2]; bk.innerHTML='<button type="button" data-sh="back">← Back to '+E(nm)+'</button> <span style="margin-left:8px">'+a[0]+' '+E(a[1])+'</span>'; } window.scrollTo(0,0); }
+  el.click(); }
+function toast(m){ var t=document.createElement('div'); t.textContent=m; t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#16202C;color:#fff;padding:10px 16px;border-radius:12px;font:700 14px system-ui,sans-serif;z-index:2147483600'; body().appendChild(t); setTimeout(function(){ t.remove(); },2600); }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sh]'); if(!b) return; var a=b.dataset.sh; e.preventDefault();
+  if(a==='area') return area(b.dataset.v); if(a==='do') return run(b.dataset.k); if(a==='back') return area(S.from||'home');
+  if(a==='out'){ var o=q('#app [data-act=out]'); if(o) o.click(); } });
+/* start once the staff screen has signed in and drawn */
+function on(){ var app=q('#app'); if(!app||!q('#app header.top')) return false; body().classList.add('sh-on'); draw(); return true; }
+var n=0; (function wait(){ if(on()) return; if(++n<200) setTimeout(wait,300); })();
+/* the search bar is re-made by its add-on: keep it in the slot */
+setInterval(slot,1500);
+window.SH={ area:area, run:run };
+})();
+</script>
