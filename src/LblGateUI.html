@@ -7,7 +7,7 @@
  function plan(){ try{ var p=window.TL_PLAN; return p&&typeof A!=='undefined'&&A&&A.st&&String(A.st.id)===String(p.sid)&&p.open?p:null; }catch(e){ return null; } }
  /* subject and level of a lesson id, e.g. MATH.OPS.L01.01 -> MATH, 1; LK.KRI.L01.06.a -> KRI, 1 */
  function subjOf(id){ id=String(id||''); var m=/^LK\.([A-Z]+)\./.exec(id); if(m) return m[1];
-  if(/^LANG\./.test(id)) return 'WRIT'; if(/^HEB\./.test(id)) return 'LSH'; if(/^ELEC\.NUC\./.test(id)) return 'NUC'; if(/^ELEC\.F[A-Z]+\./.test(id)) return 'FF';
+  if(/^LANG\./.test(id)) return 'WRIT'; if(/^HEB\./.test(id)) return 'LSH'; if(/^ELEC\.NUC\./.test(id)) return 'NUC'; if(/^ELEC\.F(WORLD|NATURE|USA|PAST|TECH|NUM)\./.test(id)) return 'FF';
   m=/^(MATH|READ|WRIT|SCI|SS|LIFE|COMP|VOC|SIM)\./.exec(id); return m?m[1]:null; }
  function lvlOf(id){ var m=/\.L(\d{1,2})(\.|$)/.exec(String(id||'')); return m?Number(m[1]):null; }
  function assigned(id){ try{ var d=window.TLBL&&TLBL.d; return !!d&&JSON.stringify(d).indexOf('"'+id+'"')>=0; }catch(e){ return false; } }

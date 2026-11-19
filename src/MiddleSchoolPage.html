@@ -572,7 +572,7 @@ const WRIT = {
 'LANG.SENT.L03.01': {name:'Complete sentences: fix fragments and run-ons',
  teach:[
   {how:'A complete sentence has a subject (who) and a predicate (what he does), and it is a complete thought.', q:'Which is a complete sentence?', o:['The boys built a birdhouse.','Built a birdhouse.','The boys with the hammer.']},
-  {how:'A fragment is missing a part. Ask: Who? Did what?', q:'"Running down the hall." What is missing?', o:['who is running','an ending mark','a verb']},
+  {how:'A fragment is missing a part. Ask: Who? Did what?', q:'"Running down the hall." What is missing?', o:['who is running','an ending mark','a capital letter']},
   {how:'A run-on joins two sentences with no break. Fix it with a period, or with a comma and "and," "but" or "so."', q:'Which fixes the run-on "I finished my work I went outside"?', o:['I finished my work. I went outside.','I finished my work I, went outside.','I finished. my work I went outside.']},
  ],
  practice:[
@@ -1015,12 +1015,12 @@ const TRADE = {
   {p:'stool', how:'Each saw cut turns a little wood to dust. That is the kerf.', t:'num', q:'How many inches of kerf do 4 cuts make, at 1/8 inch each?', a:0.5, kind:'frac'},
  ],
  practice:[
-  {p:'stool', q:'How wide is the brace?', o:['3 in','10 in','14 in'], h:'Look at the brace line.'},
+  {p:'stool', q:'How wide is the brace?', o:['3 in','9 1/4 in','14 in'], h:'Look at the brace line.'},
   {p:'stool', t:'num', q:'Total length of all four pieces (top, 2 legs, brace), in inches?', a:46, h:'16 + 8 + 8 + 14.'},
   {p:'stool', q:'Is the 48-inch board long enough for all the pieces plus 4 cuts (1/2 inch of kerf)?', o:['Yes: 46 1/2 inches fits in 48','No: it needs 50 inches','No: it needs 60 inches'], h:'46 + 1/2 = 46 1/2.'},
   {p:'stool', t:'num', q:'How many inches of board are left after all pieces and kerf?', a:1.5, kind:'frac', h:'48 − 46 1/2.'},
   {p:'stool', q:'Which piece is the longest?', o:['Top (16 in)','Brace (14 in)','Leg (8 in)'], h:'Compare the lengths.'},
-  {p:'stool', q:'The plan says "1 × 10 pine." What does the 10 describe?', o:['the board’s width','the board’s length in feet','the number of boards'], h:'Lumber is named thickness × width.'},
+  {p:'stool', q:'The plan says "1 × 10 pine." What does the 10 describe?', o:['the board’s width','the board’s length in feet','the number of boards'], h:'Lumber is named thickness × width. The real board is a little smaller.'},
  ],
  check:[
   {p:'shelfplan', t:'num', q:'What is the total length of all the pieces, in inches?', a:90},
@@ -1111,7 +1111,8 @@ function checkAnswer(it, ans){
  if(it.t==='order') return ans===it.correct;
  if(it.t==='num'){
   if(it.kind==='rem'){ const n=String(ans).toUpperCase().replace(/\s+/g,'').replace(/R0$/,''); return n===String(it.a); }
-  const v=parseNum(ans); return isFinite(v) && Math.abs(v-it.a)<1e-6; }
+  if(it.lowest){ const lm=String(ans).trim().match(/(\d+)\s*\/\s*(\d+)$/); if(lm&&gcd(+lm[1],+lm[2])>1) return false; }
+const v=parseNum(ans); return isFinite(v) && Math.abs(v-it.a)<1e-6; }
  if(it.t==='write') return true;
  return false;
 }
@@ -1402,7 +1403,10 @@ const App = {
  onInput(e){ const p=this.play; if(!p) return; if(e.target.id==='wr'){ p.text=e.target.value; const w=document.getElementById('wcount'); if(w) w.textContent=(p.text.trim().match(/\S+/g)||[]).length; }
   if(e.target.dataset&&e.target.dataset.act==='tick'){ p.ticks[e.target.dataset.k]=e.target.checked; } },
 };
-function fracOrNum(it){ if(it.kind==='rem') return String(it.a).replace('R',' R'); if(it.kind==='frac') return fracStr(Math.round(it.a*16000),16000); return (Math.round(it.a*100)/100).toString(); }
+function fracOrNum(it){ if(it.kind==='rem') return String(it.a).replace('R',' R'); const a=Number(it.a); if(!isFinite(a)) return String(it.a);
+/* Exact answer (C1 fix): find the generator's own fraction n/d (smallest bottom number up to 10000), then show a fraction for fraction items or a bottom number that is not made of 2s and 5s, and the exact decimal otherwise. */
+let d=1; while(d<10000&&Math.abs(Math.round(a*d)/d-a)>1e-9) d++; const n=Math.round(a*d); if(Math.abs(n/d-a)>1e-9) return String(Math.round(a*1e6)/1e6);
+let t=d; while(t%2===0) t/=2; while(t%5===0) t/=5; if(d>1&&(it.kind==='frac'||t>1||/fraction|mixed number/i.test(String(it.q||'')))) return fracStr(n,d); return String(n/d); }
 document.addEventListener('submit',e=>{ if(e.target.dataset.act==='numform'){ e.preventDefault(); const v=document.getElementById('numin').value; if(v.trim()) App.answer(v); } });
 
 /* ---------- tape measure drawing ---------- */

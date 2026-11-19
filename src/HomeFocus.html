@@ -24,8 +24,6 @@ body.hf-on:not(.hf-home) .hf-doors,body.hf-on:not(.hf-home) .hf-kl{display:none}
 .hf-kl{display:flex;align-items:center;gap:18px;margin:18px 0 0;padding:20px 24px;border-radius:28px;background:linear-gradient(120deg,#FEF08A,#FDBA74 55%,#F9A8D4);box-shadow:0 10px 0 rgba(234,88,12,.25),0 18px 34px rgba(234,88,12,.2);animation:hfin .6s cubic-bezier(.2,1.4,.4,1) both}
 .hf-kl.kr{background:linear-gradient(120deg,#BAE6FD,#C4B5FD 55%,#F9A8D4);box-shadow:0 10px 0 rgba(99,102,241,.22),0 18px 34px rgba(99,102,241,.18)}
 .hf-kl.kr .tx{color:#312E81}
-.hf-kl.kk{background:linear-gradient(120deg,#FDE68A,#A7F3D0 55%,#93C5FD);box-shadow:0 10px 0 rgba(16,185,129,.22),0 18px 34px rgba(16,185,129,.18)}
-.hf-kl.kk .tx{color:#064E3B}
 .hf-kl .ic{font-size:72px;line-height:1;animation:hfbob 3s ease-in-out infinite}
 .hf-kl .tx{flex:1;display:flex;flex-direction:column;gap:4px;color:#7C2D12}.hf-kl b{font:900 36px/1 var(--display,'Barlow'),sans-serif}.hf-kl small{font:700 18px var(--body,'Nunito'),sans-serif}
 .hf-kl button{border:0;border-radius:999px;padding:16px 34px;background:linear-gradient(180deg,#4ADE80,#16A34A);color:#fff;font:900 26px var(--display,'Barlow'),sans-serif;cursor:pointer;box-shadow:0 6px 0 #15803D}
@@ -71,7 +69,7 @@ function decorate(){
  const who=String(A.st.id||''); if(who!==HF.who){ HF.who=who; HF.door='home'; }
  ['home','lib','games','mine'].forEach(k=>document.body.classList.toggle('hf-'+k,HF.door===k));
  if(!document.querySelector('.hf-doors')){ const w=document.createElement('div'); w.className='hf-doors'; w.innerHTML=doorsHtml(); top.insertAdjacentElement('afterend',w); }
- try{ [['KL','kl','🍎','Kindergarten Math','16 lessons that talk to you: count, add, shapes and more.','kl'],['KR','kr','📖','Kindergarten Reading','13 lessons that talk to you: rhymes, letters, sounds and stories.','kr'],['KK','kk','✡️','Kindergarten Kriyah','11 lessons that talk to you: the whole Aleph-Beis and the dot letters.','kk']].forEach(x=>{
+ try{ [['KL','kl','🍎','Kindergarten Math','16 lessons that talk to you: count, add, shapes and more.','kl'],['KR','kr','📖','Kindergarten Reading','13 lessons that talk to you: rhymes, letters, sounds and stories.','kr']].forEach(x=>{
    const o=window[x[0]], kOn=!!(o&&o.on&&o.on()); let kb=document.querySelector('.hf-kl.'+x[1]);
    if(kOn&&!kb){ kb=document.createElement('div'); kb.className='hf-kl '+x[1]; kb.innerHTML='<span class="ic" aria-hidden="true">'+x[2]+'</span><span class="tx"><b>'+x[3]+'</b><small>'+x[4]+'</small></span><button type="button" data-'+x[5]+'="open">Play ▶</button>'; const dd=document.querySelector('.hf-doors'); if(dd) dd.insertAdjacentElement('beforebegin',kb); }
    else if(!kOn&&kb) kb.remove(); }); }catch(e){}

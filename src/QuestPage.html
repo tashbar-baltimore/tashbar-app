@@ -1007,7 +1007,7 @@ const WRIT = {
 'LANG.SENT.L03.01': {name:'Complete sentences: fix fragments and run-ons',
 teach:[
 {how:'A complete sentence has a subject (who) and a predicate (what he does), and it is a complete thought.', q:'Which is a complete sentence?', o:['The boys built a birdhouse.','Built a birdhouse.','The boys with the hammer.']},
-{how:'A fragment is missing a part. Ask: Who? Did what?', q:'"Running down the hall." What is missing?', o:['who is running','an ending mark','a verb']},
+{how:'A fragment is missing a part. Ask: Who? Did what?', q:'"Running down the hall." What is missing?', o:['who is running','an ending mark','a capital letter']},
 {how:'A run-on joins two sentences with no break. Fix it with a period, or with a comma and "and," "but" or "so."', q:'Which fixes the run-on "I finished my work I went outside"?', o:['I finished my work. I went outside.','I finished my work I, went outside.','I finished. my work I went outside.']},
 ],
 practice:[
@@ -1427,12 +1427,12 @@ teach:[
 {p:'stool', how:'Each saw cut turns a little wood to dust. That is the kerf.', t:'num', q:'How many inches of kerf do 4 cuts make, at 1/8 inch each?', a:0.5, kind:'frac'},
 ],
 practice:[
-{p:'stool', q:'How wide is the brace?', o:['3 in','10 in','14 in'], h:'Look at the brace line.'},
+{p:'stool', q:'How wide is the brace?', o:['3 in','9 1/4 in','14 in'], h:'Look at the brace line.'},
 {p:'stool', t:'num', q:'Total length of all four pieces (top, 2 legs, brace), in inches?', a:46, h:'16 + 8 + 8 + 14.'},
 {p:'stool', q:'Is the 48-inch board long enough for all the pieces plus 4 cuts (1/2 inch of kerf)?', o:['Yes: 46 1/2 inches fits in 48','No: it needs 50 inches','No: it needs 60 inches'], h:'46 + 1/2 = 46 1/2.'},
 {p:'stool', t:'num', q:'How many inches of board are left after all pieces and kerf?', a:1.5, kind:'frac', h:'48 − 46 1/2.'},
 {p:'stool', q:'Which piece is the longest?', o:['Top (16 in)','Brace (14 in)','Leg (8 in)'], h:'Compare the lengths.'},
-{p:'stool', q:'The plan says "1 × 10 pine." What does the 10 describe?', o:['the board’s width','the board’s length in feet','the number of boards'], h:'Lumber is named thickness × width.'},
+{p:'stool', q:'The plan says "1 × 10 pine." What does the 10 describe?', o:['the board’s width','the board’s length in feet','the number of boards'], h:'Lumber is named thickness × width. The real board is a little smaller.'},
 ],
 check:[
 {p:'shelfplan', t:'num', q:'What is the total length of all the pieces, in inches?', a:90},
@@ -1441,9 +1441,10 @@ check:[
 ]},
 };
 PASS.stool={title:'Plan: Step Stool', text:`Stock: one 1 × 10 pine board, 48 inches long
+(A “1 × 10” is really 3/4 in thick and 9 1/4 in wide.)
 Cut list:
-• Top: 1 piece, 16 in long × 10 in wide
-• Legs: 2 pieces, 8 in long × 10 in wide
+• Top: 1 piece, 16 in long × 9 1/4 in wide
+• Legs: 2 pieces, 8 in long × 9 1/4 in wide
 • Brace: 1 piece, 14 in long × 3 in wide
 Allow 1/8 inch for each saw cut.`};
 PASS.shelfplan={title:'Plan: Sefarim Shelf', text:`Stock: one 1 × 8 pine board, 96 inches long
@@ -1512,6 +1513,7 @@ if(it.t==='mc') return ans===it.correct;
 if(it.t==='order') return ans===it.correct;
 if(it.t==='num'){
 if(it.kind==='rem'){ const n=String(ans).toUpperCase().replace(/\s+/g,'').replace(/R0$/,''); return n===String(it.a); }
+if(it.lowest){ const lm=String(ans).trim().match(/(\d+)\s*\/\s*(\d+)$/); if(lm&&gcd(+lm[1],+lm[2])>1) return false; }
 const v=parseNum(ans); return isFinite(v) && Math.abs(v-it.a)<1e-6; }
 if(it.t==='write') return true;
 return false;
@@ -1532,7 +1534,10 @@ if(mastered(st,id)) return 'done';
 return nextFor(st,c)===id ? 'now' : 'locked';
 }
 function masteredCount(st){ return Object.values(st.skills).filter(s=>s.m).length; }
-function fracOrNum(it){ if(it.kind==='rem') return String(it.a).replace('R',' R'); if(it.kind==='frac') return fracStr(Math.round(it.a*16000),16000); return (Math.round(it.a*100)/100).toString(); }
+function fracOrNum(it){ if(it.kind==='rem') return String(it.a).replace('R',' R'); const a=Number(it.a); if(!isFinite(a)) return String(it.a);
+/* Exact answer (C1 fix): find the generator's own fraction n/d (smallest bottom number up to 10000), then show a fraction for fraction items or a bottom number that is not made of 2s and 5s, and the exact decimal otherwise. */
+let d=1; while(d<10000&&Math.abs(Math.round(a*d)/d-a)>1e-9) d++; const n=Math.round(a*d); if(Math.abs(n/d-a)>1e-9) return String(Math.round(a*1e6)/1e6);
+let t=d; while(t%2===0) t/=2; while(t%5===0) t/=5; if(d>1&&(it.kind==='frac'||t>1||/fraction|mixed number/i.test(String(it.q||'')))) return fracStr(n,d); return String(n/d); }
 function tapeSVG(pos){
 const W=640, x0=20, inch=200; let t='';
 for(let k=0;k<=48;k++){ const x=x0+k*inch/16; const h= k%16===0?46: k%8===0?34: k%4===0?26: k%2===0?19:12; t+=`<line x1="${x}" y1="10" x2="${x}" y2="${10+h}" class="tk"/>`; if(k%16===0) t+=`<text x="${x+4}" y="74" class="tn">${k/16}</text>`; }
@@ -1734,7 +1739,7 @@ const E=[['Shacharis at 8:00 in the morning','a.m.'],['Supper at 6:00 in the eve
 how:['Each square in the bar stands for one.','Read each bar by counting its squares.','Compare bars by subtracting.'],
 gen(){ const D=['Sun','Mon','Tue','Wed','Thu'], v=D.map(()=>RI(1,8)), pic=D.map((d,i)=>`${d} ${'\u{1F7E6}'.repeat(v[i])}`).join('\n'); let i=RI(0,4), j=RI(0,4); while(j===i) j=RI(0,4); if(v[i]<v[j]) [i,j]=[j,i];
 const k=RI(0,2); if(k===0) return N(`Pages learned each day. How many more pages on ${D[i]} than on ${D[j]}?`, v[i]-v[j], 'Count both bars, then subtract.', {pic}); if(k===1) return N(`Pages learned each day. How many pages on ${D[i]} and ${D[j]} together?`, v[i]+v[j], 'Count both bars, then add.', {pic});
-const mx=Math.max(...v), days=D.filter((d,x)=>v[x]===mx); return MX('Pages learned each day. Which day had the most?', three(days[0], D.filter(d=>!days.includes(d))), 'Find the longest bar.', {pic}); }},
+const mx=Math.max(...v), days=D.filter((d,x)=>v[x]===mx); if(days.length>3) return this.gen(); return MX('Pages learned each day. Which day had the most?', three(days[0], D.filter(d=>!days.includes(d))), 'Find the longest bar.', {pic}); }},
 'MATH.GEO.L03.01':{name:'Sides, corners, rows and columns',
 how:['Triangle 3 sides, square and rectangle 4, pentagon 5, hexagon 6.','A square has 4 equal sides and 4 square corners.','A rectangle cut into 3 rows of 4 squares has 12 squares.'],
 gen(){ const k=RI(0,2); if(k===0){ const S=[['pentagon',5],['hexagon',6],['triangle',3],['quadrilateral',4]], [s,n]=PICK(S); return N(`How many sides does a ${s} have?`, n, 'tri = 3, quad = 4, penta = 5, hexa = 6.'); }
