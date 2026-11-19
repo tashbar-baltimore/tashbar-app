@@ -38,13 +38,14 @@
 #sf-ov .sf-lh small{display:block;font:500 11px/1.3 system-ui,sans-serif;color:var(--mute);margin-top:3px}
 #sf-ov .sf-lr{position:absolute;left:150px;border-top:1px solid var(--line)}
 #sf-ov svg.sf-e{position:absolute;inset:0;pointer-events:none;overflow:visible}
-#sf-ov svg.sf-e path{fill:none;stroke:var(--line);stroke-width:1.4}
+#sf-ov svg.sf-e path{fill:none;stroke:var(--line);stroke-width:1.4;display:none} #sf-ov svg.sf-e path.on{display:inline}
+#sf-ov .sf-how{background:#EEF3FF;border:1px solid #CFDBFA;border-radius:12px;padding:10px 14px;margin-bottom:10px;font-size:14px} #sf-ov .sf-how b{font-weight:800}
 #sf-ov svg.sf-e path.up{stroke:var(--hi);stroke-width:2.4;opacity:1!important} #sf-ov svg.sf-e path.down{stroke:var(--hi2);stroke-width:2.4;opacity:1!important} #sf-ov svg.sf-e path.fade{opacity:.1!important}
-#sf-ov .sf-n{position:absolute;width:172px;height:30px;border:1px solid var(--line);border-left:5px solid;border-radius:7px;background:var(--paper);color:#16202C;font:600 12.5px/1 system-ui,sans-serif;text-align:left;padding:0 8px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;z-index:2}
-#sf-ov .sf-n.taught{border-left-color:var(--taught)} #sf-ov .sf-n.guided{border-left-color:var(--guided)} #sf-ov .sf-n.quiz{border-left-color:var(--quiz);background:#FCF0EE}
+#sf-ov .sf-n{position:absolute;width:172px;height:42px;border:1px solid var(--line);border-left:6px solid;border-radius:8px;background:var(--paper);color:#16202C;font:650 12.5px/1.2 system-ui,sans-serif;text-align:left;padding:3px 8px;cursor:pointer;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal}
+#sf-ov .sf-n.taught{border-left-color:var(--taught);background:#E8F6EF} #sf-ov .sf-n.guided{border-left-color:var(--guided);background:#FDF5E2} #sf-ov .sf-n.quiz{border-left-color:var(--quiz);background:#FCE9E6}
 #sf-ov .sf-n.planned{border-style:dashed;border-left-color:var(--plan);color:var(--mute);background:transparent}
 #sf-ov .sf-n.fade{opacity:.15} #sf-ov .sf-n.up{box-shadow:0 0 0 2px var(--hi)} #sf-ov .sf-n.down{box-shadow:0 0 0 2px var(--hi2)} #sf-ov .sf-n.sel{background:var(--sel);box-shadow:0 0 0 3px #16202C} #sf-ov .sf-n.hide{display:none}
-#sf-ov .sf-n b{float:right;font:800 11px system-ui,sans-serif;color:#fff;background:var(--hi);border-radius:999px;padding:2px 6px;margin-top:6px;margin-left:4px}
+#sf-ov .sf-n b{float:right;font:800 11px system-ui,sans-serif;color:#fff;background:var(--hi);border-radius:999px;padding:2px 6px;margin-left:4px}
 #sf-ov .sf-d{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--paper);border-left:1px solid var(--line);box-shadow:-10px 0 30px rgba(0,0,0,.12);z-index:9;overflow:auto;padding:16px 20px 40px;transform:translateX(105%);transition:transform .2s}
 #sf-ov .sf-d.open{transform:none}
 @media (max-width:700px){ #sf-ov .sf-d{top:auto;height:84vh;width:100%;border-radius:16px 16px 0 0;transform:translateY(105%)} }
@@ -72,8 +73,8 @@
 </style>
 <script>
 (function(){
-var NAME={taught:'Taught: full lesson',guided:'Guided practice',quiz:'Mostly quiz',planned:'Not built yet'};
-var COLW=196, LABW=150, TOP=40, CARD=34, PADV=10, ZONES=['Kindergarten','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8','High school'];
+var NAME={taught:'Well taught: full lesson',guided:'Partly taught: short lesson',quiz:'Needs a real lesson: mostly quiz',planned:'Missing: not built yet'};
+var COLW=196, LABW=150, TOP=40, CARD=48, PADV=10, ZONES=['Kindergarten','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8','High school'];
 var LANECOL=['#7C5CC4','#3E7BD9','#1C9FB0','#4BA36E','#9C8A1E','#D06A2C','#C2416F','#6E7A8A','#3F5AA8','#2E8C8C','#8A5A2B','#B0476A','#5C7A2E','#9A3FBF','#466B9E'];
 var X={ subj:'ENGLISH', R:null, by:{}, side:'all', show:{taught:1,guided:1,quiz:1,planned:1}, sel:null, zoom:1, pos:{}, W:0 };
 function E(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
@@ -91,12 +92,13 @@ function shell(){ var F=X.R.flow, ov=$('sf-ov'), sum={taught:0,guided:0,quiz:0,p
   var subs=(X.R.subjects||[]).map(function(x){ return typeof x==='string'?{key:x,title:x.charAt(0)+x.slice(1).toLowerCase()}:x; });   /* HoS 2026-11-19: English, Math, Science, Limudei Kodesh */
   var tabs=subs.length>1?'<div class="sf-seg sf-subj" role="tablist" aria-label="Subject">'+subs.map(function(x){ return '<button type="button" role="tab" aria-selected="'+(x.key===X.subj)+'" data-sf="subj" data-v="'+E(x.key)+'"'+(x.key===X.subj?' class="on"':'')+'>'+E(x.title)+'</button>'; }).join('')+'</div>':'';
   var h='<div class="sf-top"><div><h2>'+E(F.title)+' skill flow</h2><div class="sf-sub">'+E(F.from)+' to '+E(F.to)+': every skill in order. Tap a stop to see its goal, how it is taught, how mastery is proven'+(F.keys&&!Object.keys(F.keys).length?'':', and to place a boy there')+'.</div>'+tabs+'</div><button type="button" class="sf-x" data-sf="close">Close</button></div><div class="sf-body">';
+  h+='<div class="sf-how"><b>How to read this chart:</b> each row is one topic. Left to right goes from Kindergarten to 8th grade. Each box is one skill, and its colour shows how well the app teaches it today. <b>Tap any box</b> to see what it teaches, how, and which skills come before and after it.</div>';
   h+='<div class="sf-sum"><div class="sf-card"><div class="sf-eye">How each skill is taught today</div><div class="sf-bar">'+['taught','guided','quiz','planned'].map(function(k){ return '<span title="'+NAME[k]+'" style="width:'+(100*sum[k]/tot)+'%;background:var(--'+(k==='planned'?'plan':k)+')"></span>'; }).join('')+'</div><div class="sf-nums">'+['taught','guided','quiz','planned'].map(function(k){ return '<span><b>'+sum[k]+'</b>'+NAME[k].toLowerCase()+'</span>'; }).join('')+'</div>'+(working?'<div class="sf-hint" style="margin-top:6px">Blue numbers on a stop = boys working on it right now.</div>':'')+'</div>';
-  h+='<div class="sf-card"><div class="sf-eye">Weakest stretches: mostly quiz or not built</div><div class="sf-weak">'+Object.values(groups).filter(function(g){ return g.bad; }).sort(function(a,b){ return b.bad/b.all-a.bad/a.all||b.bad-a.bad; }).slice(0,10).map(function(g){ return '<button type="button" data-sf="go" data-id="'+g.first+'"><span>'+E(LN[g.lane])+', grades '+g.band+'</span><em>'+g.bad+' of '+g.all+'</em></button>'; }).join('')+'</div></div></div>';
+  h+='<div class="sf-card"><div class="sf-eye">Where to work first: skills that need a real lesson or are missing</div><div class="sf-weak">'+Object.values(groups).filter(function(g){ return g.bad; }).sort(function(a,b){ return b.bad/b.all-a.bad/a.all||b.bad-a.bad; }).slice(0,10).map(function(g){ return '<button type="button" data-sf="go" data-id="'+g.first+'"><span>'+E(LN[g.lane])+', grades '+g.band+'</span><em>'+g.bad+' of '+g.all+'</em></button>'; }).join('')+'</div></div></div>';
   var sides=F.sides||[['read','Reading'],['write','Writing & Language']], ph={ENGLISH:'inference, vowel teams, thesis…',MATH:'fractions, place value, equations…',SCIENCE:'friction, habitats, the moon…',KODESH:'nekudos, Rashi, brachos…'}[X.subj]||'a skill…';
   h+='<div class="sf-tools"><div class="sf-seg"><button type="button" data-sf="side" data-v="all"'+(X.side==='all'?' class="on"':'')+'>All</button>'+sides.map(function(x){ return '<button type="button" data-sf="side" data-v="'+E(x[0])+'"'+(X.side===x[0]?' class="on"':'')+'>'+E(x[1])+'</button>'; }).join('')+'</div><input id="sf-q" type="search" placeholder="Find a skill: '+E(ph)+'" aria-label="Find a skill">'
    +['taught','guided','quiz','planned'].map(function(k){ return '<button type="button" class="sf-chip" data-sf="show" data-k="'+k+'"><i style="background:var(--'+(k==='planned'?'plan':k)+')"></i>'+NAME[k]+'</button>'; }).join('')
-   +'<div class="sf-seg"><button type="button" data-sf="zoom" data-v="-1" aria-label="Zoom out">−</button><button type="button" data-sf="zoom" data-v="1" aria-label="Zoom in">+</button></div><span class="sf-hint">Blue = 3 steps before · Purple = 3 steps after</span></div>';
+   +'<div class="sf-seg"><button type="button" data-sf="zoom" data-v="-1" aria-label="Zoom out">−</button><button type="button" data-sf="zoom" data-v="1" aria-label="Zoom in">+</button></div><span class="sf-hint">After you tap a box: blue = skills that come before it, purple = skills that come after it.</span></div>';
   h+='<div class="sf-wrap" id="sf-wrap"><div id="sf-map"><svg class="sf-e" id="sf-e"></svg></div></div><p class="sf-hint">'+E(F.mastery)+' Built '+E(X.R.built)+' from the live lessons. “Not built yet” stops are what a full day-school program needs and the app does not have.</p></div><div class="sf-d" id="sf-d" aria-hidden="true"></div>';
   ov.innerHTML=h; $('sf-q').oninput=draw; }
 function col(L){ return Math.min(L,10)-1; }
@@ -117,11 +119,13 @@ function draw(){ var F=X.R.flow, map=$('sf-map'); if(!map) return; var q=($('sf-
   map.style.width=(X.W*X.zoom)+'px'; map.style.height=H+'px'; map.style.transform='scale('+X.zoom+')'; map.appendChild(frag);
   var svg=$('sf-e'), out=''; svg.setAttribute('width',X.W); svg.setAttribute('height',H);
   F.edges.forEach(function(e){ var a=X.pos[e[0]], b=X.pos[e[1]]; if(!a||!b||!a.v||!b.v) return; var st=e[2]==='lane'?' style="stroke:'+a.c+';opacity:.55;stroke-width:3"':'', da=e[2]==='plan'?' stroke-dasharray="4 4"':'';
-    if(b.x<=a.x+172){ var x1=a.x+86, y1=a.y+30, x2=b.x+86, y2=b.y, my=(y1+y2)/2; out+='<path data-a="'+e[0]+'" data-b="'+e[1]+'"'+st+da+' d="M'+x1+' '+y1+' C'+x1+' '+my+' '+x2+' '+my+' '+x2+' '+y2+'"/>'; }
-    else { var x1=a.x+172, y1=a.y+15, x2=b.x, y2=b.y+15, mx=(x1+x2)/2; out+='<path data-a="'+e[0]+'" data-b="'+e[1]+'"'+st+da+' d="M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2+'"/>'; } });
+    if(b.x<=a.x+172){ var x1=a.x+86, y1=a.y+42, x2=b.x+86, y2=b.y, my=(y1+y2)/2; out+='<path data-a="'+e[0]+'" data-b="'+e[1]+'"'+st+da+' d="M'+x1+' '+y1+' C'+x1+' '+my+' '+x2+' '+my+' '+x2+' '+y2+'"/>'; }
+    else { var x1=a.x+172, y1=a.y+21, x2=b.x, y2=b.y+21, mx=(x1+x2)/2; out+='<path data-a="'+e[0]+'" data-b="'+e[1]+'"'+st+da+' d="M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2+'"/>'; } });
   svg.innerHTML=out; mark(); }
 function chain(id,dir){ var seen={}, fr=[id]; for(var d=0;d<3&&fr.length;d++){ var nx=[]; fr.forEach(function(k){ (dir==='up'?X.by[k].from:X.by[k].to).forEach(function(x){ if(!seen[x]){ seen[x]=1; nx.push(x); } }); }); fr=nx; } return seen; }
 function mark(){ var map=$('sf-map'); if(!map) return; var S0=X.sel, up=S0?chain(S0,'up'):{}, dn=S0?chain(S0,'down'):{};
+  var keep={}; if(S0){ keep[S0]=1; Object.keys(up).forEach(function(k){ keep[k]=1; }); Object.keys(dn).forEach(function(k){ keep[k]=1; }); }
+  map.querySelectorAll('svg.sf-e path').forEach(function(p){ p.classList.toggle('on',!!(S0&&keep[p.dataset.a]&&keep[p.dataset.b])); });
   map.querySelectorAll('.sf-n').forEach(function(b){ var id=b.dataset.id; b.classList.toggle('sel',id===S0); b.classList.toggle('up',!!up[id]); b.classList.toggle('down',!!dn[id]); b.classList.toggle('fade',!!(S0&&id!==S0&&!up[id]&&!dn[id])); });
   $('sf-e').querySelectorAll('path').forEach(function(p){ var a=p.dataset.a, b=p.dataset.b; p.classList.remove('up','down','fade'); if(!S0) return; if(up[a]&&(up[b]||b===S0)) p.classList.add('up'); else if((a===S0||dn[a])&&dn[b]) p.classList.add('down'); else p.classList.add('fade'); }); }
 function chip(id){ var n=X.by[id]; return '<button type="button" class="'+n.depth+'" data-sf="go" data-id="'+id+'">'+E(n.name)+' <span class="sf-id">· '+(n.g==='K'?'K':n.g==='HS'?'HS':'Gr '+n.g)+'</span></button>'; }
@@ -144,6 +148,7 @@ function place(id){ var n=X.by[id]; if(!n||n.planned||!n.key) return; var M=wind
   var go=function(ids){ return call('libApply',tok(),{action:'place',boys:ids,key:n.key,level:n.L,start:n.id}).then(function(r){ var m=$('sf-pmsg'); if(m) m.innerHTML='<b style="color:#178A5E">✓ '+E((r&&r.msg)||('Placed '+ids.length+' boy'+(ids.length===1?'':'s')+' here.'))+'</b>'; return r; }); };
   if(M&&typeof M.picker==='function'){ M.picker('🎯 Start boys at “'+E(n.name)+'” ('+keyName(n.key)+' Level '+n.L+')…',go); return; }
   if(msg) msg.textContent='Open this from the Course map to pick boys.'; }
+document.addEventListener('click',function(e){ var o=e.target.closest&&e.target.closest('[data-sfopen]'); if(o){ e.preventDefault(); open(o.dataset.sfopen||'ENGLISH'); return; } });
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sf]'); if(!b||!$('sf-ov')||!$('sf-ov').contains(b)) return; var a=b.dataset.sf; e.preventDefault(); e.stopPropagation();
   if(a==='close') return close(); if(a==='dclose'){ X.sel=null; mark(); var d=$('sf-d'); d.classList.remove('open'); d.setAttribute('aria-hidden','true'); return; }
   if(a==='node'||a==='go') return detail(b.dataset.id,a==='go');
