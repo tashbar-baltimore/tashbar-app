@@ -31,3 +31,84 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - full-moon.jpg | https://commons.wikimedia.org/wiki/File:Full_Moon_Luc_Viatour.jpg (960px copy) | CC BY-SA 3.0 | Luc Viatour
 - planets-montage.jpg | https://commons.wikimedia.org/wiki/File:Released_to_Public_Solar_System_Montage_(NASA)_(420390416).jpg (960px copy) | Public domain | NASA
 - leaf-veins.jpg | https://commons.wikimedia.org/wiki/File:Background_green_leave_macro.jpg (960px copy) | Public domain | unknown (public domain)
+- albert-einstein.webp | https://www.loc.gov/item/2004671908/ | Public domain (LOC: no known restrictions on publication; no copyright renewal) | Orren Jack Turner
+- amazon-rainforest-river.webp | https://commons.wikimedia.org/wiki/File:Aerial_view_of_the_Amazon_Rainforest.jpg | CC BY-SA 2.0 | lubasi
+- american-robin.webp | https://commons.wikimedia.org/wiki/File:American_robin_-_DPLA_-_12968208831622228287e31828dc2248.jpg | Public domain | Department of the Interior. U.S. Fish and Wildlife Service. National Conservation Training Center. 10/1997-8888
+- andes-mountains.webp | https://commons.wikimedia.org/wiki/File:Andes_mountains_from_35,000_feet_(24495877342).jpg | CC BY-SA 2.0 | sgbirch from Peterborough, United Kingdom
+- anglerfish-drawing.webp | https://commons.wikimedia.org/wiki/File:MelanocetusJohnsoniiFord.jpg | Public domain | G. H. Ford
+- aquarium-with-plants.webp | https://commons.wikimedia.org/wiki/File:A_freshwater_aquarium_containing_plants_and_small_fish.jpg | CC0 | Netha Hussain
+- astronaut-on-the-moon.webp | https://commons.wikimedia.org/wiki/File:Aldrin_Apollo_11_original.jpg | Public domain | Neil Armstrong
+- axe-splitting-wood.webp | https://commons.wikimedia.org/wiki/File:Axe_cutting_wood.jpg | CC BY-SA 3.0 | Fir0002 (Wikimedia Commons uploader)
+- bar-magnet-iron-filings.webp | https://commons.wikimedia.org/wiki/File:Visualiza%C3%A7%C3%A3o_do_campo_magn%C3%A9tico_de_um_%C3%ADman_em_barra.jpg | CC BY-SA 4.0 | CAFIPT
+- barn-owl.webp | https://commons.wikimedia.org/wiki/File:2286_barn_owl_munsel_odfw_(15034193405).jpg | CC BY-SA 2.0 | Oregon Department of Fish & Wildlife
+- bee-waggle-dance.webp | https://commons.wikimedia.org/wiki/File:Bee_waggle_dance.png | CC BY 2.5 | (Figure design: J. Tautz and M. Kleinhenz, Beegroup Würzburg.)
+- bees-on-flower-pollen.webp | https://commons.wikimedia.org/wiki/File:Two_bees_absorbing_pollen_from_an_Iceland_poppy_in_the_flower_garden_of_Gyeongju_South_Korea.jpg | CC BY-SA 4.0 | Basile Morin
+- big-dipper-and-north-star.webp | https://commons.wikimedia.org/wiki/File:Big_Dipper_in_Autumn_(ann22042c-autumn).jpg | CC BY 4.0 | Giorgia Hofer/IAU OAE
+- brain-drawing.webp | https://commons.wikimedia.org/wiki/File:Lobes_of_the_brain_NL.svg | Public domain | Henry Vandyke Carter (Gray's Anatomy)
+- brown-bear-catching-fish.webp | https://commons.wikimedia.org/wiki/File:Brown_Bear_catching_Salmon.jpg | CC BY-SA 2.0 | Christoph Strässler
+- bullfrog.webp | https://commons.wikimedia.org/wiki/File:20260806_bullfrog_pleasant_valley_PD03312.jpg | CC BY-SA 4.0 | Paul Danese
+- chesapeake-bay-from-space.webp | https://commons.wikimedia.org/wiki/File:Chesapeake_Bay_(MODIS_2022-07-04).jpg | Public domain | MODIS Land Rapid Response Team, NASA GSFC
+- circulatory-system.webp | https://commons.wikimedia.org/wiki/File:Circulatory_System_no_tags.svg | Public domain | LadyofHats (Mariana Ruiz Villarreal)
+- coal-lumps.webp | https://commons.wikimedia.org/wiki/File:Coal_lumps.jpg | CC BY-SA 3.0 | Nostrifikator
+- coast-redwoods.webp | https://commons.wikimedia.org/wiki/File:Redwood_national_park,_California_(37466086246).jpg | Public domain | Carol M. Highsmith
+- common-raven.webp | https://commons.wikimedia.org/wiki/File:Corvus_corax_(Common_Raven),_Yosemite_NP,_CA,_US_-_Diliff.jpg | CC BY-SA 3.0 | Diliff
+- dandelion-seed-head.webp | https://commons.wikimedia.org/wiki/File:Dandelion_(Taraxacum)_Clock_-_Tennessee,_USA_-_May_31,_2014.jpg | CC BY 4.0 | David Ratledge
+- earth-day-and-night-line.webp | https://commons.wikimedia.org/wiki/File:Earthterminator_iss002_full.jpg | Public domain | ISS Crew, Earth Sciences and Image Analysis Lab, JSC, NASA
+- earth-from-space.webp | https://commons.wikimedia.org/wiki/File:Blue_Marble_Western_Hemisphere.jpg | Public domain | NASA images by Reto Stöckli, based on data from NASA and NOAA. Instrument: Terra - MODIS
+- eclipse-1919.webp | https://commons.wikimedia.org/wiki/File:1919_eclipse_positive.jpg | Public domain | Frank Watson Dyson / Arthur Eddington / Charles Rundle Davidson
+- flag-on-pole.webp | https://commons.wikimedia.org/wiki/File:American_Flag_on_Home_Flagpole_at_Sunrise.jpg | CC BY-SA 4.0 | Noah Wulf
+- fort-mchenry-flag.webp | https://www.loc.gov/item/2011630165/ | No known restrictions on publication (Library of Congress, Carol M. Highsmith Archive) | Carol M. Highsmith
+- frozen-lake.webp | https://commons.wikimedia.org/wiki/File:Frozen_Sevan_lake_with_ice_broken,_February_2017.jpg | CC BY-SA 4.0 | Aleksey Chalabyan a.k.a Xelgen
+- fruit-pile.webp | https://commons.wikimedia.org/wiki/File:Culinary_fruits_front_view.jpg | CC BY 3.0 | Ionutzmovie
+- galileo-portrait.webp | https://commons.wikimedia.org/wiki/File:Justus_Sustermans_-_Portrait_of_Galileo_Galilei,_1636.jpg | Public domain | Justus Sustermans
+- garden-spider.webp | https://commons.wikimedia.org/wiki/File:Garden_Spider_Araneus_Diadematus_(139998911).jpeg | CC BY 3.0 | Lauren
+- geese-flying-v.webp | https://commons.wikimedia.org/wiki/File:CanadianGeeseFlyingInVFormation.jpg | CC BY 2.0 | John Benson
+- grand-canyon-river.webp | https://commons.wikimedia.org/wiki/File:Grand_Canyon_(Arizona,_USA),_Luftaufnahme_--_2012_--_5942.jpg | CC BY-SA 4.0 | Dietmar Rabich
+- half-moon.webp | https://commons.wikimedia.org/wiki/File:First_Quarter_Moon_on_12-15-18_-_Flickr_-_StephenGA.png | CC0 | Stephen Rahn from Macon, GA, USA
+- hammer-and-nails.webp | https://commons.wikimedia.org/wiki/File:Hammer_and_nails.jpg | CC BY-SA 4.0 | Santeri Viinamäki
+- hand-bell.webp | https://commons.wikimedia.org/wiki/File:CAMPA1965.JPG | Public domain | Sancampa
+- hand-saw.webp | https://commons.wikimedia.org/wiki/File:Swedish_hand_saw_No_315_by_AB_Stridsberg_and_Bioerck_second_half_of_20th_century.jpg | CC BY 4.0 | R. Henrik Nilsson
+- hawaiian-islands-from-space.webp | https://commons.wikimedia.org/wiki/File:ISS-38_Hawaiian_Island_chain.jpg | Public domain | NASA
+- heart-model.webp | https://commons.wikimedia.org/wiki/File:Dresden,_Deutsches_Hygiene-Museum,_anatomisches_Modell,_Herz.jpg | CC BY 4.0 | Dguendel
+- honey-bee-pollen-flower.webp | https://commons.wikimedia.org/wiki/File:European_honey_bee_extracts_nectar.jpg | Public domain | John Severns (Severnjc)
+- honey-bee-side-view.webp | https://commons.wikimedia.org/wiki/File:Apis_mellifera,_light_body,_side,_beltsville,_md_2017-05-26-15.27_(34717464480).jpg | Public domain | USGS Bee Inventory and Monitoring Lab from Beltsville, Maryland, USA
+- hummingbird-feeding-chicks.webp | https://commons.wikimedia.org/wiki/File:Calliope-nest_edit.jpg | CC BY-SA 3.0 | Wolfgang Wander, Papa Lima Whiskey (edit)
+- ice-fishing-hole.webp | https://www.loc.gov/item/2014690025/ | Public domain (LOC Bain Collection, no known restrictions on publication) | Bain News Service
+- isaac-newton-portrait.webp | https://commons.wikimedia.org/wiki/File:GodfreyKneller-IsaacNewton-1689.jpg | Public domain | Godfrey Kneller
+- jupiter.webp | https://commons.wikimedia.org/wiki/File:Jupiter,_image_taken_by_NASA%27s_Hubble_Space_Telescope,_June_2019_-_Edited.jpg | Public domain | NASA, ESA, and A. Simon (NASA Goddard), edited by PlanetUser
+- leaf-floating.webp | https://commons.wikimedia.org/wiki/File:Alder_leaf_floating_on_the_water.jpg | CC BY-SA 4.0 | Tulumnes
+- lungs-and-diaphragm.webp | https://commons.wikimedia.org/wiki/File:3D_Medical_Animation_Diaphragm_Structure.jpg | CC BY-SA 4.0 | Scientific Animations (www.scientificanimations.com)
+- magnets-pull-and-push.webp | https://commons.wikimedia.org/wiki/File:Magnetic_field_of_bar_magnets_attracting.png ; https://commons.wikimedia.org/wiki/File:Magnetic_field_of_bar_magnets_repelling.png | Public domain | Alexander Wilmer Duff (both photos; combined top/bottom)
+- milky-way-night-sky.webp | https://commons.wikimedia.org/wiki/File:Milky_Way_rises_over_Cascade-Siskiyou_National_Monument_(53302419572).jpg | Public domain | BLM Oregon & Washington
+- monarch-butterfly.webp | https://commons.wikimedia.org/wiki/File:Male_monarch_butterfly_on_green_plant_danaus_plexippus.jpg | Public domain | U.S. Fish and Wildlife Service
+- moon-phases.webp | https://commons.wikimedia.org/wiki/File:Lunar_Phases_(10410930423).jpg | CC BY 2.0 | David Warrington from England
+- mountain-valley-yosemite.webp | https://commons.wikimedia.org/wiki/File:Yosemite_National_Park_(5675818725).jpg | CC BY 2.0 | Koshy Koshy from Faridabad, Haryana, India
+- nile-delta-from-space.webp | https://commons.wikimedia.org/wiki/File:Nile_River_and_delta_from_orbit.jpg | Public domain | Jacques Descloitres, MODIS Rapid Response Team, NASA/sh
+- orion-kesil.webp | https://commons.wikimedia.org/wiki/File:The_constellation_Orion_against_the_backdrop_of_a_birch_tree_in_winter.jpg | CC BY-SA 4.0 | Astrobond
+- pale-plant-grown-in-dark.webp | https://commons.wikimedia.org/wiki/File:Etiolated_Spanish_Bluebells_Hyacinthoides_hispanica.JPG | CC BY-SA 3.0 | Chiswick Chap
+- ph-test-strips.webp | https://commons.wikimedia.org/wiki/File:PH_strips-different_range.jpg | CC BY-SA 3.0 | Lilly_M
+- pine-cone.webp | https://commons.wikimedia.org/wiki/File:A_pine_cone.jpg | CC BY-SA 4.0 | Petar Milošević
+- plant-leaning-to-window.webp | https://commons.wikimedia.org/wiki/File:Phototropism.jpg | CC BY-SA 3.0 | Tangopaso
+- plant-with-roots.webp | https://commons.wikimedia.org/wiki/File:Ambrosia_trifida_with_roots.jpg | CC BY-SA 3.0 | GTBacchus
+- polar-bear.webp | https://commons.wikimedia.org/wiki/File:Polar_Bear_with_its_tongue_sticking_out.jpg | CC BY 2.0 | Christopher Michel
+- pulley-wheels.webp | https://commons.wikimedia.org/wiki/File:Silbertal-Innertal-Restaurant_Fellimaennle-wooden_and_steel_sheave-11ASD.jpg | CC BY-SA 4.0 | Asurnipal
+- quartz-crystals.webp | https://commons.wikimedia.org/wiki/File:Quartz_-_SiO2_(25505570244).jpg | CC BY-SA 2.0 | Jan Helebrant
+- rabbit-eating-grass.webp | https://commons.wikimedia.org/wiki/File:European_Rabbit,_Lake_District,_UK_-_August_2011.jpg | CC BY-SA 3.0 | Diliff
+- rain-from-cloud.webp | https://commons.wikimedia.org/wiki/File:Heavy_precipitation_falling_on_the_Gregadoo_hills_from_a_Cumulonimbus_calvus_cloud_viewed_from_Rocky_Hill.jpg | CC BY-SA 3.0 | Bidgee
+- river-stones.webp | https://commons.wikimedia.org/wiki/File:Resiatal_01.JPG | CC BY-SA 3.0 at | Joadl
+- robin-eggs-in-nest.webp | https://commons.wikimedia.org/wiki/File:American_Robin_Eggs_in_Nest.jpg | CC BY-SA 3.0 | Laslovarga
+- salt-crystals.webp | https://commons.wikimedia.org/wiki/File:Halite_crystals_(four).jpg | CC BY 2.0 | James St. John
+- seesaw.webp | https://commons.wikimedia.org/wiki/File:Up_and_down.jpg | CC BY 2.0 | Roberto Picco from Sacile (PN), Italy
+- snare-drum.webp | https://commons.wikimedia.org/wiki/File:Snare_drum_-_Vladimir_Morozov.jpg | CC BY 2.0 | Vladimir Morozov from Russia
+- solar-panels-roof.webp | https://commons.wikimedia.org/wiki/File:Solar_panels_on_a_roof.jpg | Public domain | Pujanak
+- star-trails-north-star.webp | https://commons.wikimedia.org/wiki/File:Circumpolar_Star_Trails_With_High_Flyer.jpg | CC BY-SA 3.0 | TedQuackenbush
+- stoma-microscope.webp | https://commons.wikimedia.org/wiki/File:Tomato_leaf_stomate_1-color.jpg | Public domain | Photohound
+- stopwatch.webp | https://commons.wikimedia.org/wiki/File:Ca_1970_mechanical_stopwatch_by_Herwins_Switzerland.jpg | CC BY 4.0 | R. Henrik Nilsson
+- tadpoles.webp | https://commons.wikimedia.org/wiki/File:Tadpole_at_Capitol_Reef_Waterpocket.jpg | CC BY-SA 3.0 | Wing-Chi Poon
+- thermometer.webp | https://commons.wikimedia.org/wiki/File:R%C3%A9aumur_-_Celsius_thermometer.jpg | CC BY-SA 4.0 | Jeancz
+- truss-bridge.webp | https://commons.wikimedia.org/wiki/File:Chesterville_iron_truss_bridge.jpg | CC BY-SA 3.0 | Daniel Schwen
+- wheat-grains-close-up.webp | https://commons.wikimedia.org/wiki/File:Wheat_Ear_milk_full.jpg | CC BY-SA 3.0 | Original uploader was Gabi bart at pl.wikipedia
+- white-stork-flying.webp | https://commons.wikimedia.org/wiki/File:Ciconia_ciconia_-_01.jpg | CC BY-SA 3.0 | Carlos Delgado
+- wilted-plant.webp | https://commons.wikimedia.org/wiki/File:Gurken_K%C3%A4lteschaden_bei_9%C2%B0C,_Josef_Schlaghecken.jpg | CC BY-SA 4.0 | Schlaghecken Josef
+- wind-turbines.webp | https://www.loc.gov/item/2010630507/ | Public domain (LOC Carol M. Highsmith Archive, no known restrictions) | Carol M. Highsmith
+- yuri-gagarin.webp | https://commons.wikimedia.org/wiki/File:Yuri_Gagarin_(1961)_-_Restoration.jpg | Public domain | Arto Jousi / /Suomen valokuvataiteen museo / Alma Media / Uuden Suomen kokoelma; Restored by Adam Cuerden
