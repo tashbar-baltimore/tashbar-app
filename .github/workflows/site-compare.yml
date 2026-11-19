@@ -1,0 +1,32 @@
+name: site-compare
+# Builds the site twice — from the live Apps Script app and from this repository — and reports every difference.
+# Nothing is published. Used to prove the repository can replace the Apps Script editor as the source.
+on: { workflow_dispatch: {} }
+permissions: { contents: read }
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Build from the live app
+        run: TL_OUT=/tmp/live node web/build.js
+      - name: Build from this repository
+        run: TL_FROM_REPO=1 TL_OUT=/tmp/repo node web/build.js
+      - name: Compare
+        run: |
+          cd /tmp; for f in $(cd live && find . -type f | sort) $(cd repo && find . -type f | sort); do echo "$f"; done | sort -u > files.txt
+          same=0; diff=0
+          while read f; do
+            if [ ! -f "live/$f" ]; then echo "ONLY IN REPO  $f"; diff=$((diff+1))
+            elif [ ! -f "repo/$f" ]; then echo "ONLY IN LIVE  $f"; diff=$((diff+1))
+            elif cmp -s "live/$f" "repo/$f"; then same=$((same+1))
+            else echo "DIFFERENT     $f ($(wc -c < live/$f) vs $(wc -c < repo/$f) bytes)"; diff=$((diff+1)); fi
+          done < files.txt
+          echo "SUMMARY: $same files identical, $diff differ"
+          for f in index.html staff/index.html; do
+            echo "=== first differences in $f (TL_PAGE_BUILT timestamps ignored)"
+            diff <(sed 's/TL_PAGE_BUILT=[0-9]*//; s/TL_PAGE_HASH="[^"]*"//' live/$f | fold -w 200) <(sed 's/TL_PAGE_BUILT=[0-9]*//; s/TL_PAGE_HASH="[^"]*"//' repo/$f | fold -w 200) | head -40 || true
+          done

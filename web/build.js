@@ -2,10 +2,15 @@
    Output: web/dist/  index.html, boot.js, sw.js, page-hash.json, tools.json, parts/ (each add-on and lesson pack as a cached file).
    Run: NODE_USE_ENV_PROXY=1 node web/build.js [API_URL]   (default: the first live /exec link). Needs no local src/ or packs/. */
 const fs = require('fs'), path = require('path'), zlib = require('zlib');
-const OUT = path.join(__dirname, 'dist');
+const OUT = process.env.TL_OUT || path.join(__dirname, 'dist');
 const API = process.argv[2] || 'https://script.google.com/macros/s/AKfycbwcTw8upBIAN3n1D36TON-3u6_VQdo-6zLYJT_bMa11yeFwN9IhL_saGDciQP5QK70pEw/exec';   /* where this build reads the live page from */
 const CALLS = process.env.TL_CALLS_URL || 'https://api-q26c275eaa-uk.a.run.app';   /* where the pages send their server calls: the Firebase server function */
+/* TL_FROM_REPO=1: build from the code in this repository (src/ + packs/) through the Firebase engine, not from the live
+   Apps Script app. This is what lets the Apps Script editor stop being the source. OUT can be changed with TL_OUT. */
+const FROM_REPO = process.env.TL_FROM_REPO === '1'; let RT = null;
 async function call(fn, args) {
+  if (FROM_REPO) { if (!RT) RT = require('../server/runtime.js').createRuntime({ store: { books: {}, props: {} } });
+    const r = RT.call(fn, args); if (r && r.error) throw new Error(fn + ': ' + r.error); return r && r.result !== undefined ? r.result : r; }
   for (let i = 0; i < 4; i++) { try {
     const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ api: 1, fn, args }), redirect: 'follow' });
     const j = await r.json(); if (!j.ok) throw new Error(fn + ': ' + j.error); return j.result;
@@ -35,5 +40,5 @@ async function call(fn, args) {
   sp = sp.slice(0, sa + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Tashbar Learning · Staff</title><script>window.TL_PAGE_KIND="staff";window.TL_PAGE_HASH="' + st.h + '";window.TL_PAGE_BUILT=' + Date.now() + ';</script><script src="/boot.js"></script>' + sp.slice(sa + 6);
   if (!/^\s*<!doctype/i.test(sp)) sp = '<!doctype html>\n' + sp;
   fs.mkdirSync(path.join(OUT, 'staff'), { recursive: true }); fs.writeFileSync(path.join(OUT, 'staff', 'index.html'), sp); fs.writeFileSync(path.join(OUT, 'staff', 'page-hash.json'), JSON.stringify({ h: st.h }));
-  console.log('built web/dist from the live server: page ' + Math.round(Buffer.byteLength(page) / 1024) + ' KB (hash ' + pageR.h.slice(0, 8) + '), ' + parts.order.length + ' parts, ' + (bytes / 1048576).toFixed(1) + ' MB (' + (gz / 1048576).toFixed(1) + ' MB compressed); staff page ' + Math.round(st.html.length / 1024) + ' KB (hash ' + st.h.slice(0, 8) + ')');
+  console.log('built ' + OUT + ' from ' + (FROM_REPO ? 'THIS REPOSITORY' : 'the live server') + ': page ' + Math.round(Buffer.byteLength(page) / 1024) + ' KB (hash ' + pageR.h.slice(0, 8) + '), ' + parts.order.length + ' parts, ' + (bytes / 1048576).toFixed(1) + ' MB (' + (gz / 1048576).toFixed(1) + ' MB compressed); staff page ' + Math.round(st.html.length / 1024) + ' KB (hash ' + st.h.slice(0, 8) + ')');
 })().catch(e => { console.error('BUILD FAILED: ' + e.message); process.exit(1); });
