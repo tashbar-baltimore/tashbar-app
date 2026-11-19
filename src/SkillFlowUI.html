@@ -70,13 +70,59 @@
 #sf-ov .sf-place p{margin:8px 0 0;font-size:13px;color:var(--mute)}
 #sf-ov .sf-live{display:flex;gap:16px;font-size:14px;margin-top:6px} #sf-ov .sf-live b{font-size:18px}
 #sf-ov button:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+
+
+/* ===== TREE VIEW (HoS 2026-11-19: "a giant tree, full screen ... like a family tree ... what skill goes into the next skill ... clickable ... different colour leaves ... simple and clear") ===== */
+#sf-ov .sft-wrap{overflow:auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;max-height:calc(100vh - 230px);min-height:420px}
+#sf-ov .sft{position:relative}
+#sf-ov .sft svg{position:absolute;inset:0;pointer-events:none;overflow:visible}
+#sf-ov .sft-row{position:absolute;left:0}
+#sf-ov .sft-row.alt{background:#F7F9FC}
+#sf-ov .sft-gl{left:0;width:112px;padding:10px 10px;hyphens:manual;font:800 11.5px/1.2 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);position:sticky}
+#sf-ov .sft-root{position:absolute;transform:translateX(-50%);background:#16202C;color:#fff;border-radius:999px;padding:10px 22px;font:900 18px system-ui,sans-serif;white-space:nowrap}
+#sf-ov .sft-h{position:absolute;width:176px;border-radius:12px;padding:8px 10px;color:#fff;font:800 13.5px/1.2 system-ui,sans-serif;text-align:center;cursor:pointer;border:0}
+#sf-ov .sft-h small{display:block;font:700 11px system-ui,sans-serif;opacity:.9;margin-top:2px}
+#sf-ov .sft-n{position:absolute;width:176px;height:44px;border:2px solid;border-radius:18px 6px 18px 6px;padding:4px 10px;font:700 12.5px/1.2 system-ui,sans-serif;text-align:left;cursor:pointer;color:#16202C;overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+#sf-ov .sft-n.taught{border-color:var(--taught);background:#E8F6EF} #sf-ov .sft-n.guided{border-color:var(--guided);background:#FDF5E2} #sf-ov .sft-n.quiz{border-color:var(--quiz);background:#FCE9E6}
+#sf-ov .sft-n.planned,#sf-ov .sft-n.gap{border-style:dashed;border-color:#8A94A4;background:#fff;color:#4B5565}
+#sf-ov .sft-n.gap{cursor:default}
+#sf-ov .sft-n:hover{box-shadow:0 0 0 3px rgba(47,91,211,.25)} #sf-ov .sft-n.sel{box-shadow:0 0 0 3px #16202C}
+/* ===== FLOW CHART VIEW (HoS 2026-11-19: "a real flow chart ... this skill to this skill to this skill ... this skill is missing ... so simple, so clear") ===== */
+#sf-ov .sfv-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:4px 0 12px}
+#sf-ov .sfv-key{display:flex;flex-wrap:wrap;gap:6px 14px;font:600 13.5px system-ui,sans-serif;color:#16202C}
+#sf-ov .sfv-key span{display:inline-flex;align-items:center;gap:6px} #sf-ov .sfv-key i{width:22px;height:14px;border-radius:4px;display:inline-block;border:2px solid}
+#sf-ov .sfv-topics{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+#sf-ov .sfv-topics button{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:7px 14px;font:700 13.5px system-ui,sans-serif;color:#16202C;cursor:pointer;min-height:38px}
+#sf-ov .sfv-topics button.on{background:#16202C;color:#fff;border-color:#16202C}
+#sf-ov .sfv-topics button em{font-style:normal;font-weight:800;color:var(--quiz);margin-left:6px} #sf-ov .sfv-topics button.on em{color:#FFB4A8}
+#sf-ov .sfv-t{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 16px 16px;margin-bottom:14px}
+#sf-ov .sfv-t h3{margin:0 0 2px;font:900 20px/1.2 system-ui,sans-serif} #sf-ov .sfv-t .sfv-sub{color:var(--mute);font-size:13.5px;margin-bottom:10px}
+#sf-ov .sfv-chain{display:flex;flex-wrap:wrap;align-items:center;gap:10px 0}
+#sf-ov .sfv-g{flex-basis:100%;display:flex;align-items:center;gap:10px;margin:8px 0 2px;font:800 12px system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+#sf-ov .sfv-g:first-child{margin-top:0} #sf-ov .sfv-g::after{content:"";flex:1;border-top:1px solid var(--line)}
+#sf-ov .sfv-n{border:2px solid;border-radius:10px;padding:9px 12px;min-height:46px;max-width:220px;font:700 14px/1.25 system-ui,sans-serif;text-align:left;cursor:pointer;color:#16202C}
+#sf-ov .sfv-n.taught{border-color:var(--taught);background:#E8F6EF} #sf-ov .sfv-n.guided{border-color:var(--guided);background:#FDF5E2} #sf-ov .sfv-n.quiz{border-color:var(--quiz);background:#FCE9E6}
+#sf-ov .sfv-n.planned,#sf-ov .sfv-n.gap{border-style:dashed;border-color:#8A94A4;background:#F6F7F9;color:#4B5565;font-weight:700}
+#sf-ov .sfv-n.gap{cursor:default}
+#sf-ov .sfv-n:hover{box-shadow:0 0 0 3px rgba(47,91,211,.25)} #sf-ov .sfv-n.sel{box-shadow:0 0 0 3px #16202C}
+#sf-ov .sfv-s{display:inline-flex;align-items:center}
+#sf-ov .sfv-a{font:900 20px/1 system-ui,sans-serif;color:#8A94A4;padding:0 8px;user-select:none}
+#sf-ov .sfv-end{font:700 13px system-ui,sans-serif;color:var(--mute);padding:0 6px}
+#sf-ov .sf-strip{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:12px 0;padding:10px 12px;background:#F3F5F8;border-radius:12px;font-size:14px}
+#sf-ov .sf-strip b{background:#16202C;color:#fff;border-radius:8px;padding:6px 10px}
+#sf-ov .sf-strip .sfv-a{font-size:18px;padding:0 2px}
+#sf-ov .sf-std{font-size:14px;margin:8px 0} #sf-ov .sf-std b{font-family:ui-monospace,Menlo,monospace;background:#EEF3FF;border-radius:6px;padding:2px 6px} #sf-ov .sf-std span{color:var(--mute)}
+#sf-ov .sf-play{display:block;width:100%;margin:10px 0 0;border:0;border-radius:12px;padding:12px 14px;background:#2F5BD3;color:#fff;font:800 15px system-ui,sans-serif;cursor:pointer}
+#sf-ov .sft-gl small{display:block;font:600 11px system-ui,sans-serif;letter-spacing:0;text-transform:none;margin-top:2px}
+#sf-ov .sf-say{font:600 15px/1.45 system-ui,sans-serif;margin:8px 0 4px}
+#sf-ov details.sf-more{margin-top:12px;border-top:1px solid var(--line);padding-top:8px} #sf-ov details.sf-more summary{cursor:pointer;font:800 14px system-ui,sans-serif;padding:6px 0}
 </style>
 <script>
 (function(){
 var NAME={taught:'Well taught: full lesson',guided:'Partly taught: short lesson',quiz:'Needs a real lesson: mostly quiz',planned:'Missing: not built yet'};
 var COLW=196, LABW=150, TOP=40, CARD=48, PADV=10, ZONES=['Kindergarten','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5','Grade 6','Grade 7','Grade 8','High school'];
 var LANECOL=['#7C5CC4','#3E7BD9','#1C9FB0','#4BA36E','#9C8A1E','#D06A2C','#C2416F','#6E7A8A','#3F5AA8','#2E8C8C','#8A5A2B','#B0476A','#5C7A2E','#9A3FBF','#466B9E'];
-var X={ subj:'ENGLISH', R:null, by:{}, side:'all', show:{taught:1,guided:1,quiz:1,planned:1}, sel:null, zoom:1, pos:{}, W:0 };
+var X={ view:'tree', topic:'all', subj:'ENGLISH', R:null, by:{}, side:'all', show:{taught:1,guided:1,quiz:1,planned:1}, sel:null, zoom:1, pos:{}, W:0 };
 function E(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
 function call(fn){ var a=[].slice.call(arguments,1); if(typeof run==='function') return run.apply(null,[fn].concat(a)); return new Promise(function(ok,no){ var r=google.script.run.withSuccessHandler(ok).withFailureHandler(no); r[fn].apply(r,a); }); }
 function tok(){ try{ return S.token; }catch(e){ return null; } }
@@ -86,12 +132,13 @@ function open(subj){ X.subj=String(subj||'ENGLISH').toUpperCase(); var ov=$('sf-
   call('sfFlow',tok(),X.subj).then(function(r){ X.R=r; X.by={}; r.flow.nodes.forEach(function(n){ n.from=[]; n.to=[]; X.by[n.id]=n; }); r.flow.edges.forEach(function(e){ if(X.by[e[0]]&&X.by[e[1]]){ X.by[e[1]].from.push(e[0]); X.by[e[0]].to.push(e[1]); } }); shell(); draw(); })
    .catch(function(err){ ov.querySelector('.sf-sub').textContent='Could not load: '+String(err&&err.message||err); }); }
 function close(){ var ov=$('sf-ov'); if(ov) ov.remove(); X.sel=null; }
-function shell(){ var F=X.R.flow, ov=$('sf-ov'), sum={taught:0,guided:0,quiz:0,planned:0}; F.nodes.forEach(function(n){ sum[n.depth]++; }); var tot=F.nodes.length;
+function shell(){ if(X.view!=='map') return shellFlow(); var F=X.R.flow, ov=$('sf-ov'), sum={taught:0,guided:0,quiz:0,planned:0}; F.nodes.forEach(function(n){ sum[n.depth]++; }); var tot=F.nodes.length;
   var groups={}, LN={}; F.lanes.forEach(function(l){ LN[l.id]=l.name; }); F.nodes.forEach(function(n){ if(n.L>9) return; var band=n.L<=4?'K–3':'4–8', k=n.lane+'|'+band, g=groups[k]=groups[k]||{lane:n.lane,band:band,bad:0,all:0,first:null}; g.all++; if(n.depth==='quiz'||n.planned){ g.bad++; if(!g.first) g.first=n.id; } });
   var working=0; Object.keys(X.R.live||{}).forEach(function(k){ working+=X.R.live[k][0]; });
   var subs=(X.R.subjects||[]).map(function(x){ return typeof x==='string'?{key:x,title:x.charAt(0)+x.slice(1).toLowerCase()}:x; });   /* HoS 2026-11-19: English, Math, Science, Limudei Kodesh */
   var tabs=subs.length>1?'<div class="sf-seg sf-subj" role="tablist" aria-label="Subject">'+subs.map(function(x){ return '<button type="button" role="tab" aria-selected="'+(x.key===X.subj)+'" data-sf="subj" data-v="'+E(x.key)+'"'+(x.key===X.subj?' class="on"':'')+'>'+E(x.title)+'</button>'; }).join('')+'</div>':'';
   var h='<div class="sf-top"><div><h2>'+E(F.title)+' skill flow</h2><div class="sf-sub">'+E(F.from)+' to '+E(F.to)+': every skill in order. Tap a stop to see its goal, how it is taught, how mastery is proven'+(F.keys&&!Object.keys(F.keys).length?'':', and to place a boy there')+'.</div>'+tabs+'</div><button type="button" class="sf-x" data-sf="close">Close</button></div><div class="sf-body">';
+  h+='<div class="sfv-bar">'+viewSeg()+'</div>';
   h+='<div class="sf-how"><b>How to read this chart:</b> each row is one topic. Left to right goes from Kindergarten to 8th grade. Each box is one skill, and its colour shows how well the app teaches it today. <b>Tap any box</b> to see what it teaches, how, and which skills come before and after it.</div>';
   h+='<div class="sf-sum"><div class="sf-card"><div class="sf-eye">How each skill is taught today</div><div class="sf-bar">'+['taught','guided','quiz','planned'].map(function(k){ return '<span title="'+NAME[k]+'" style="width:'+(100*sum[k]/tot)+'%;background:var(--'+(k==='planned'?'plan':k)+')"></span>'; }).join('')+'</div><div class="sf-nums">'+['taught','guided','quiz','planned'].map(function(k){ return '<span><b>'+sum[k]+'</b>'+NAME[k].toLowerCase()+'</span>'; }).join('')+'</div>'+(working?'<div class="sf-hint" style="margin-top:6px">Blue numbers on a stop = boys working on it right now.</div>':'')+'</div>';
   h+='<div class="sf-card"><div class="sf-eye">Where to work first: skills that need a real lesson or are missing</div><div class="sf-weak">'+Object.values(groups).filter(function(g){ return g.bad; }).sort(function(a,b){ return b.bad/b.all-a.bad/a.all||b.bad-a.bad; }).slice(0,10).map(function(g){ return '<button type="button" data-sf="go" data-id="'+g.first+'"><span>'+E(LN[g.lane])+', grades '+g.band+'</span><em>'+g.bad+' of '+g.all+'</em></button>'; }).join('')+'</div></div></div>';
@@ -101,8 +148,57 @@ function shell(){ var F=X.R.flow, ov=$('sf-ov'), sum={taught:0,guided:0,quiz:0,p
    +'<div class="sf-seg"><button type="button" data-sf="zoom" data-v="-1" aria-label="Zoom out">−</button><button type="button" data-sf="zoom" data-v="1" aria-label="Zoom in">+</button></div><span class="sf-hint">After you tap a box: blue = skills that come before it, purple = skills that come after it.</span></div>';
   h+='<div class="sf-wrap" id="sf-wrap"><div id="sf-map"><svg class="sf-e" id="sf-e"></svg></div></div><p class="sf-hint">'+E(F.mastery)+' Built '+E(X.R.built)+' from the live lessons. “Not built yet” stops are what a full day-school program needs and the app does not have.</p></div><div class="sf-d" id="sf-d" aria-hidden="true"></div>';
   ov.innerHTML=h; $('sf-q').oninput=draw; }
+var SAY={taught:'Well taught: the boy gets a full lesson before he practices.',guided:'Partly taught: a short lesson, then practice.',quiz:'Needs a real lesson: today the boy gets a few tips and goes straight to questions.',planned:'Missing: there is no lesson for this yet.'};
+var GN=function(g){ return g==='K'?'Kindergarten':g==='HS'?'High school':'Grade '+g; };
+/* ages for each grade (US school year: a boy in Grade n is about n+5 to n+6) */
+var AGE=function(g){ var n=g==='K'?0:g==='HS'?9:Number(g); return isNaN(n)?'':'ages '+(n+5)+'–'+(n+6)+(g==='HS'?'+':''); };
+function stdLine(n){ var F=X.R.flow; if(n.planned) return ''; if(n.std) return '<div class="sf-std">Standard: <b>'+E(n.std)+'</b> <span>('+E(F.std||'Common Core')+')</span></div>';
+  return '<div class="sf-std">Standard: <span>'+E(F.std==='Common Core'?'not mapped yet':(F.std||'not mapped yet'))+'</span></div>'; }
+function viewSeg(){ var V=[['tree','🌳 Tree'],['flow','Lines'],['map','Full map']]; return '<div class="sf-seg" role="tablist" aria-label="View">'+V.map(function(v){ return '<button type="button" data-sf="view" data-v="'+v[0]+'"'+(X.view===v[0]?' class="on"':'')+'>'+v[1]+'</button>'; }).join('')+'</div>'; }
+/* the skills of one topic, in teaching order (grade, then ladder order) */
+function chainOf(lane){ var F=X.R.flow, a=[]; F.nodes.forEach(function(n,i){ if(n.lane===lane) a.push([n,i]); }); a.sort(function(x,y){ return x[0].L-y[0].L||x[1]-y[1]; }); return a.map(function(x){ return x[0]; }); }
+function laneSum(lane){ var c=chainOf(lane), o={n:c.length,bad:0,miss:0}; c.forEach(function(n){ if(n.depth==='quiz') o.bad++; if(n.planned) o.miss++; });
+  for(var i=1;i<c.length;i++) if(Math.min(c[i].L,10)-Math.min(c[i-1].L,10)>1) o.miss+=Math.min(c[i].L,10)-Math.min(c[i-1].L,10)-1; return o; }
+function shellFlow(){ var F=X.R.flow, ov=$('sf-ov'), sum={taught:0,guided:0,quiz:0,planned:0}; F.nodes.forEach(function(n){ sum[n.depth]++; });
+  var subs=(X.R.subjects||[]).map(function(x){ return typeof x==='string'?{key:x,title:x.charAt(0)+x.slice(1).toLowerCase()}:x; });
+  var tabs=subs.length>1?'<div class="sf-seg sf-subj" role="tablist" aria-label="Subject">'+subs.map(function(x){ return '<button type="button" role="tab" aria-selected="'+(x.key===X.subj)+'" data-sf="subj" data-v="'+E(x.key)+'"'+(x.key===X.subj?' class="on"':'')+'>'+E(x.title)+'</button>'; }).join('')+'</div>':'';
+  var h='<div class="sf-top"><div><h2>'+E(F.title)+': skill flow chart</h2><div class="sf-sub">'+E(F.from)+' to '+E(F.to)+'. Each line is one topic: the skills in the order a boy learns them.</div>'+tabs+'</div><button type="button" class="sf-x" data-sf="close">Close</button></div><div class="sf-body">';
+  h+='<div class="sfv-bar">'+viewSeg()+'<div class="sfv-key"><span><i style="border-color:var(--taught);background:#E8F6EF"></i>Well taught</span><span><i style="border-color:var(--guided);background:#FDF5E2"></i>Partly taught</span><span><i style="border-color:var(--quiz);background:#FCE9E6"></i>Needs a real lesson</span><span><i style="border-color:#8A94A4;border-style:dashed;background:#F6F7F9"></i>Missing</span></div></div>';
+  h+='<div class="sfv-topics" role="tablist" aria-label="Topic"><button type="button" data-sf="topic" data-v="all"'+(X.topic==='all'?' class="on"':'')+'>All topics</button>'+F.lanes.map(function(l){ var o=laneSum(l.id), w=o.bad+o.miss; return '<button type="button" data-sf="topic" data-v="'+E(l.id)+'"'+(X.topic===l.id?' class="on"':'')+'>'+E(l.name)+(w?'<em>'+w+'</em>':'')+'</button>'; }).join('')+'</div>';
+  h+='<div id="sfv"'+(X.view==='tree'?' class="sft-wrap"':'')+'></div><p class="sf-hint">Read it top to bottom: the subject, its topics, then each topic’s skills from Kindergarten down to 8th grade. Red numbers on a topic = skills that need a real lesson or are missing. Tap any box to see what it teaches and what comes before and after it. Built '+E(X.R.built)+' from the live lessons.</p></div><div class="sf-d" id="sf-d" aria-hidden="true"></div>';
+  ov.innerHTML=h; }
+function drawFlow(){ if(X.view==='tree') return drawTree(); var F=X.R.flow, box=$('sfv'); if(!box) return; var h='';
+  F.lanes.filter(function(l){ return X.topic==='all'||X.topic===l.id; }).forEach(function(l){ var c=chainOf(l.id), o=laneSum(l.id); if(!c.length) return;
+    h+='<section class="sfv-t"><h3>'+E(l.name)+'</h3><div class="sfv-sub">'+E(l.about)+' · '+o.n+' skills'+(o.bad?' · <b style="color:var(--quiz)">'+o.bad+' need a real lesson</b>':'')+(o.miss?' · <b>'+o.miss+' missing</b>':'')+'</div><div class="sfv-chain">';
+    var lastG=null, prevL=null;
+    c.forEach(function(n,i){ var L=Math.min(n.L,10);
+      if(prevL!==null&&L-prevL>1){ for(var g=prevL+1;g<L;g++){ var gn=GN(g===1?'K':g<=9?String(g-1):'HS'); h+='<div class="sfv-g">'+E(gn)+'</div><span class="sfv-s"><span class="sfv-n gap" title="No skill in this grade">Missing: nothing in '+E(gn)+'</span><span class="sfv-a" aria-hidden="true">→</span></span>'; } }
+      if(n.g!==lastG){ h+='<div class="sfv-g">'+E(GN(n.g))+' · '+E(AGE(n.g))+'</div>'; lastG=n.g; }
+      h+='<span class="sfv-s"><button type="button" class="sfv-n '+n.depth+(X.sel===n.id?' sel':'')+'" data-sf="node" data-id="'+E(n.id)+'" title="'+E(n.obj||n.name)+'">'+(n.planned?'Missing: ':'')+E(n.name)+'</button>';
+      h+=(i<c.length-1?'<span class="sfv-a" aria-hidden="true">→</span>':'<span class="sfv-end">end of line</span>')+'</span>'; prevL=L; });
+    h+='</div></section>'; });
+  box.innerHTML=h; }
+function drawTree(){ var F=X.R.flow, box=$('sfv'); if(!box) return;
+  var lanes=F.lanes.filter(function(l){ return (X.topic==='all'||X.topic===l.id)&&chainOf(l.id).length; });
+  var GW=118, CW=196, NW=176, NH=44, VG=14, TOP=86, HH=50, G0=TOP+HH+40, cells={}, rowN={};
+  lanes.forEach(function(l){ var c=chainOf(l.id), prev=null, out=[];
+    c.forEach(function(n){ var g=Math.min(n.L,10)-1; if(prev!==null) for(var k=prev+1;k<g;k++) out.push({gap:1,g:k}); out.push({n:n,g:g}); prev=g; });
+    cells[l.id]=out; out.forEach(function(x){ rowN[x.g]=rowN[x.g]||{}; rowN[x.g][l.id]=(rowN[x.g][l.id]||0)+1; }); });
+  var rowY={}, y=G0, rows=[]; for(var g=0;g<10;g++){ if(!rowN[g]) continue; var m=Math.max.apply(null,Object.values(rowN[g])), hgt=m*(NH+VG)+VG+6; rows.push({g:g,y:y,h:hgt}); rowY[g]=y; y+=hgt; }
+  var W=GW+lanes.length*CW+20, H=y+20, h='', svg='', cx=function(i){ return GW+i*CW+(CW-NW)/2; };
+  var rh=''; rows.forEach(function(r,i){ var gk=r.g===0?'K':r.g<=8?String(r.g):'HS', gn=r.g===0?'Kinder\u00ADgarten':GN(gk); rh+='<div class="sft-row'+(i%2?' alt':'')+'" style="top:'+r.y+'px;height:'+r.h+'px;width:'+W+'px"><div class="sft-gl">'+E(gn)+'<small>'+E(AGE(gk))+'</small></div></div>'; });
+  var rootX=Math.min(GW+lanes.length*CW/2, GW+Math.max(NW,(box.clientWidth||1200)-GW)/2);   /* the subject stays in view on wide trees */ h+='<div class="sft-root" style="left:'+rootX+'px;top:14px">'+E(F.title)+'</div>';
+  if(lanes.length>1) svg+='<path d="M'+rootX+' 58 V'+(TOP-14)+' M'+(cx(0)+NW/2)+' '+(TOP-14)+' H'+(cx(lanes.length-1)+NW/2)+'" stroke="#16202C" stroke-width="3" fill="none"/>';
+  lanes.forEach(function(l,i){ var col=LANECOL[F.lanes.indexOf(l)%LANECOL.length], x=cx(i), mid=x+NW/2, o=laneSum(l.id), w=o.bad+o.miss;
+    svg+='<path d="M'+mid+' '+(lanes.length>1?TOP-14:58)+' V'+TOP+'" stroke="#16202C" stroke-width="3" fill="none"/>';
+    h+='<button type="button" class="sft-h" data-sf="topic" data-v="'+E(l.id)+'" title="Show only this topic" style="left:'+x+'px;top:'+TOP+'px;background:'+col+'">'+E(l.name)+'<small>'+o.n+' skills'+(w?' · '+w+' to fix':'')+'</small></button>';
+    var used={}, last=null; cells[l.id].forEach(function(cl){ var k=used[cl.g]||0; used[cl.g]=k+1; var yy=rowY[cl.g]+VG+k*(NH+VG);
+      var py=last===null?TOP+HH:last+NH; svg+='<path d="M'+mid+' '+py+' V'+yy+'" stroke="'+col+'" stroke-width="4" stroke-linecap="round" fill="none"'+(cl.gap||(cl.n&&cl.n.planned)?' stroke-dasharray="6 6"':'')+'/>'; last=yy;
+      if(cl.gap) h+='<span class="sft-n gap" style="left:'+x+'px;top:'+yy+'px" title="No skill in this grade">Missing here</span>';
+      else { var n=cl.n; h+='<button type="button" class="sft-n '+n.depth+(X.sel===n.id?' sel':'')+'" data-sf="node" data-id="'+E(n.id)+'" style="left:'+x+'px;top:'+yy+'px" title="'+E(n.name+(n.obj?' — '+n.obj:'')+(n.std?' ['+n.std+']':''))+'">'+(n.planned?'Missing: ':'')+E(n.name)+'</button>'; } }); });
+  box.innerHTML='<div class="sft" style="width:'+W+'px;height:'+H+'px">'+rh+'<svg width="'+W+'" height="'+H+'">'+svg+'</svg>'+h+'</div>'; }
 function col(L){ return Math.min(L,10)-1; }
-function draw(){ var F=X.R.flow, map=$('sf-map'); if(!map) return; var q=($('sf-q').value||'').trim().toLowerCase();
+function draw(){ if(X.view!=='map') return drawFlow(); var F=X.R.flow, map=$('sf-map'); if(!map) return; var q=($('sf-q').value||'').trim().toLowerCase();
   map.querySelectorAll('.sf-n,.sf-zh,.sf-zb,.sf-lh,.sf-lr').forEach(function(e){ e.remove(); });
   var vis=function(n){ return X.show[n.depth]&&(!q||(n.name+' '+n.obj+' '+n.id).toLowerCase().indexOf(q)>=0); };
   var lanes=F.lanes.filter(function(l){ return X.side==='all'||l.side===X.side; }); X.W=LABW+ZONES.length*COLW+20; var y=TOP, frag=document.createDocumentFragment(); X.pos={};
@@ -129,16 +225,20 @@ function mark(){ var map=$('sf-map'); if(!map) return; var S0=X.sel, up=S0?chain
   map.querySelectorAll('.sf-n').forEach(function(b){ var id=b.dataset.id; b.classList.toggle('sel',id===S0); b.classList.toggle('up',!!up[id]); b.classList.toggle('down',!!dn[id]); b.classList.toggle('fade',!!(S0&&id!==S0&&!up[id]&&!dn[id])); });
   $('sf-e').querySelectorAll('path').forEach(function(p){ var a=p.dataset.a, b=p.dataset.b; p.classList.remove('up','down','fade'); if(!S0) return; if(up[a]&&(up[b]||b===S0)) p.classList.add('up'); else if((a===S0||dn[a])&&dn[b]) p.classList.add('down'); else p.classList.add('fade'); }); }
 function chip(id){ var n=X.by[id]; return '<button type="button" class="'+n.depth+'" data-sf="go" data-id="'+id+'">'+E(n.name)+' <span class="sf-id">· '+(n.g==='K'?'K':n.g==='HS'?'HS':'Gr '+n.g)+'</span></button>'; }
-function detail(id,scroll){ var n=X.by[id]; if(!n) return; X.sel=id; mark(); var F=X.R.flow, LN={}; F.lanes.forEach(function(l){ LN[l.id]=l.name; }); var lv=(X.R.live||{})[id];
-  var h='<button type="button" class="sf-x" data-sf="dclose" style="float:right">Close</button><div class="sf-eye">'+E(LN[n.lane])+' · '+(n.g==='K'?'Kindergarten':n.g==='HS'?'High school':'Grade '+n.g)+'</div><h3>'+E(n.name)+'</h3><div class="sf-id">'+(n.planned?'not built yet':E(n.id))+'</div> <span class="sf-pill '+n.depth+'">'+NAME[n.depth]+'</span>';
+function detail(id,scroll){ var n=X.by[id]; if(!n) return; X.sel=id; mark(); if(X.view!=='map'){ drawFlow(); if(scroll){ var el=document.querySelector('#sfv [data-id="'+String(id).replace(/"/g,'')+'"]'); if(el) el.scrollIntoView({block:'center',behavior:'smooth'}); } } var F=X.R.flow, LN={}; F.lanes.forEach(function(l){ LN[l.id]=l.name; }); var lv=(X.R.live||{})[id];
+  var h='<button type="button" class="sf-x" data-sf="dclose" style="float:right">Close</button><div class="sf-eye">'+E(LN[n.lane])+' · '+(n.g==='K'?'Kindergarten':n.g==='HS'?'High school':'Grade '+n.g)+' · '+E(AGE(n.g))+'</div><h3>'+E(n.name)+'</h3><div class="sf-id">'+(n.planned?'not built yet':E(n.id))+'</div> <span class="sf-pill '+n.depth+'">'+NAME[n.depth]+'</span>';
+  var ch=chainOf(n.lane), ix=ch.indexOf(n), pv=ch[ix-1], nx=ch[ix+1];
+  h+='<p class="sf-say">'+E(SAY[n.depth])+'</p><div class="sf-strip">'+(pv?chip(pv.id):'<span class="sf-hint">start of the line</span>')+'<span class="sfv-a">→</span><b>'+E(n.name)+'</b><span class="sfv-a">→</span>'+(nx?chip(nx.id):'<span class="sf-hint">end of the line</span>')+'</div>';
   if(!n.planned) h+='<div class="sf-live"><span><b>'+(lv?lv[0]:0)+'</b> working on it now</span><span><b>'+(lv?lv[1]:0)+'</b> mastered it</span></div>';
-  h+='<div class="sf-goal"><div class="sf-eye">Goal: by the end, he can</div><b>'+E(n.obj)+'</b>'+(n.big?'<div style="margin-top:6px;font-size:14px">Big idea: '+E(n.big)+'</div>':'')+'</div>';
+  h+='<div class="sf-goal"><div class="sf-eye">Goal: by the end, he can</div><b>'+E(n.obj)+'</b>'+(n.big?'<div style="margin-top:6px;font-size:14px">Big idea: '+E(n.big)+'</div>':'')+'</div>'+stdLine(n)+(n.planned?'':'<button type="button" class="sf-play" data-sf="play" data-id="'+E(n.id)+'">▶ Play this lesson the way a boy sees it</button>');
+  h+='<details class="sf-more" open><summary>📖 What is in this lesson, and what is strong and thin</summary>';
   if(n.steps.length) h+='<h4>How he is taught: the teaching lesson'+(n.k3t&&n.k3t!==n.name?' “'+E(n.k3t)+'”':'')+'</h4><ol class="sf-st">'+n.steps.map(function(s){ return '<li><b>'+E(s.st)+'</b>'+E(s.t)+'</li>'; }).join('')+'</ol>';
   if(n.quest.length) h+='<h4>'+(n.steps.length?'Then, in his practice quest':'How he is taught: the practice quest')+'</h4><ol class="sf-st">'+n.quest.map(function(s){ return '<li><b>'+E(s.st)+'</b>'+E(s.t)+'</li>'; }).join('')+'</ol>';
   if(!n.planned) h+='<h4>How he proves mastery</h4><p style="margin:0;font-size:14px">All '+(n.nc||3)+' check questions right, with no help. Then the skill is marked mastered and the next stop opens.</p>';
   if(n.has.length) h+='<h4>What is strong here</h4><ul class="sf-f">'+n.has.map(function(f){ return '<li>'+E(f)+'</li>'; }).join('')+'</ul>';
   if(n.flags.length) h+='<h4 style="color:var(--quiz)">What is thin here</h4><ul class="sf-f">'+n.flags.map(function(f){ return '<li>'+E(f)+'</li>'; }).join('')+'</ul>';
   h+='<h4>Builds on</h4><div class="sf-l">'+(n.from.length?n.from.map(chip).join(''):'<span class="sf-hint">A starting point.</span>')+'</div><h4>Leads to</h4><div class="sf-l">'+(n.to.length?n.to.map(chip).join(''):'<span class="sf-hint">The end of this line for now.</span>')+'</div>';
+  h+='</details>';
   if(!n.planned&&!n.key) h+='<div class="sf-place"><p>Boys cannot be placed on this line yet: placement covers Math, Reading, Language Arts, Science and Lashon Hakodesh.</p></div>';
   if(!n.planned&&n.key) h+='<div class="sf-place"><button type="button" data-sf="place" data-id="'+id+'">🎯 Place a boy at this stop</button><p>He starts his '+E(keyName(n.key))+' path here, at Level '+n.L+', beginning with this skill. This uses the same placement as the Course map, so it shows in the Library history and can be undone there.</p><p id="sf-pmsg"></p></div>';
   var d=$('sf-d'); d.innerHTML=h; d.classList.add('open'); d.setAttribute('aria-hidden','false'); d.scrollTop=0;
@@ -150,9 +250,12 @@ function place(id){ var n=X.by[id]; if(!n||n.planned||!n.key) return; var M=wind
   if(msg) msg.textContent='Open this from the Course map to pick boys.'; }
 document.addEventListener('click',function(e){ var o=e.target.closest&&e.target.closest('[data-sfopen]'); if(o){ e.preventDefault(); open(o.dataset.sfopen||'ENGLISH'); return; } });
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sf]'); if(!b||!$('sf-ov')||!$('sf-ov').contains(b)) return; var a=b.dataset.sf; e.preventDefault(); e.stopPropagation();
-  if(a==='close') return close(); if(a==='dclose'){ X.sel=null; mark(); var d=$('sf-d'); d.classList.remove('open'); d.setAttribute('aria-hidden','true'); return; }
+  if(a==='close') return close(); if(a==='dclose'){ X.sel=null; mark(); if(X.view!=='map') drawFlow(); var d=$('sf-d'); d.classList.remove('open'); d.setAttribute('aria-hidden','true'); return; }
   if(a==='node'||a==='go') return detail(b.dataset.id,a==='go');
-  if(a==='subj'){ var v=b.dataset.v; if(v&&v!==X.subj){ X.side='all'; X.sel=null; open(v); } return; }
+  if(a==='play'){ var pid=b.dataset.id; try{ window.open(location.origin+'/?cp=1&skill='+encodeURIComponent(pid),'_blank'); }catch(x){} return; }
+  if(a==='view'){ var vv=b.dataset.v; if(vv&&vv!==X.view){ X.view=vv; X.sel=null; shell(); draw(); } return; }
+  if(a==='topic'){ X.topic=b.dataset.v||'all'; X.sel=null; shell(); draw(); return; }
+  if(a==='subj'){ var v=b.dataset.v; if(v&&v!==X.subj){ X.side='all'; X.topic='all'; X.sel=null; open(v); } return; }
   if(a==='side'){ X.side=b.dataset.v; b.parentNode.querySelectorAll('button').forEach(function(x){ x.classList.toggle('on',x===b); }); return draw(); }
   if(a==='show'){ var k=b.dataset.k; X.show[k]=X.show[k]?0:1; b.classList.toggle('off',!X.show[k]); return draw(); }
   if(a==='zoom'){ X.zoom=Math.max(.55,Math.min(1.4,X.zoom+(+b.dataset.v)*.15)); var m=$('sf-map'); m.style.transform='scale('+X.zoom+')'; m.style.width=(X.W*X.zoom)+'px'; return; }

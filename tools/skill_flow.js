@@ -8,6 +8,9 @@
 const fs = require('fs'), path = require('path');
 const ROOT = path.join(__dirname, '..'); const B = require(path.join(ROOT, 'tests/lib/build.js'));
 let chromium; try { ({ chromium } = require('playwright')); } catch (e) { ({ chromium } = require('/opt/npm-tools/node_modules/playwright')); }
+/* standards (Common Core) recorded with the Pathfinder bank: Math and Reading skills, Language Arts skills */
+const STD = (() => { try { const vm = require('vm'), rt = require(path.join(ROOT, 'server/runtime.js')).createRuntime({ store: { books: {}, props: {} } });
+  return JSON.parse(vm.runInContext('(function(){ var o={}, a=(typeof PF_BANK!=="undefined"&&PF_BANK.skills)||{}, b=(typeof pf5Ix_==="function"&&pf5Ix_().laSkills)||{}; [a,b].forEach(function(m){ Object.keys(m).forEach(function(k){ if(m[k]&&m[k].ccss) o[k]=String(m[k].ccss); }); }); return JSON.stringify(o); })()', rt.ctx)); } catch (e) { console.warn('standards not read: ' + e.message); return {}; } })();
 const CI = new Function(fs.readFileSync(path.join(ROOT, 'src/CurriculumIndex.js'), 'utf8') + '; return CI_INDEX;')();
 
 /* ---------- 1. live lesson contents from the test page ---------- */
@@ -91,18 +94,18 @@ const CROSS = [['PA', 'PHON', 0], ['PHON', 'FLU', 0], ['FLU', 'LV', 0], ['PHON',
 /* ---------- subjects (HoS 2026-11-19: "build the same chart for math, science, Kodesh") ----------
    lanes: [id, id prefixes (|), name, side, about]. cross: [from lane, to lane, levels back]. plan: stops a full program needs that are not built.
    keyOf: the placement subject (Placement.js PL.SUBJECTS) or null when this lane cannot be placed on. */
-const ENGLISH_CFG = { lanes: LANES, laneOf, plan: PLAN, cross: CROSS, sides: [['read', 'Reading'], ['write', 'Writing & Language']], keys: { READ: 'Reading', LANG: 'Writing & Language' }, keyOf: id => (/^READ\./.test(id) ? 'READ' : 'LANG') };
+const ENGLISH_CFG = { std: 'Common Core', lanes: LANES, laneOf, plan: PLAN, cross: CROSS, sides: [['read', 'Reading'], ['write', 'Writing & Language']], keys: { READ: 'Reading', LANG: 'Writing & Language' }, keyOf: id => (/^READ\./.test(id) ? 'READ' : 'LANG') };
 const prefLane = lanes => id => { const p = id.split('.').slice(0, 2).join('.'); const l = lanes.find(x => x[1].split('|').indexOf(p) >= 0); return l ? l[0] : null; };
 const MATH_LANES = [['NUM', 'MATH.NUM', 'Counting & Numbers', 'num', 'Counting, comparing and naming numbers.'], ['PV', 'MATH.PV', 'Place Value', 'num', 'Ones, tens, hundreds and beyond: what each digit is worth.'],
   ['OPS', 'MATH.OPS', 'Operations', 'num', 'Adding, subtracting, multiplying and dividing, with understanding.'], ['FRAC', 'MATH.FRAC', 'Fractions & Decimals', 'num', 'Parts of a whole, decimals and how to work with them.'],
   ['ALG', 'MATH.ALG', 'Algebra & Patterns', 'num', 'Patterns, expressions and equations.'], ['FUNC', 'MATH.FUNC', 'Functions', 'num', 'One input, one output: rules that connect numbers.'],
   ['MEAS', 'MATH.MEAS', 'Measurement', 'space', 'Length, weight, time, money, area and volume.'], ['GEO', 'MATH.GEO', 'Geometry', 'space', 'Shapes, angles and space.'], ['STAT', 'MATH.STAT', 'Data & Statistics', 'space', 'Collecting, showing and reading data.']];
-const MATH_CFG = { lanes: MATH_LANES, laneOf: prefLane(MATH_LANES), plan: [], sides: [['num', 'Number & Operations'], ['space', 'Shape, Measure & Data']], keys: { MATH: 'Math' }, keyOf: () => 'MATH',
+const MATH_CFG = { std: 'Common Core', lanes: MATH_LANES, laneOf: prefLane(MATH_LANES), plan: [], sides: [['num', 'Number & Operations'], ['space', 'Shape, Measure & Data']], keys: { MATH: 'Math' }, keyOf: () => 'MATH',
   cross: [['NUM', 'PV', 0], ['NUM', 'OPS', 0], ['PV', 'OPS', 0], ['OPS', 'FRAC', 1], ['FRAC', 'ALG', 1], ['OPS', 'ALG', 1], ['ALG', 'FUNC', 1], ['NUM', 'MEAS', 0], ['MEAS', 'GEO', 1], ['NUM', 'STAT', 0], ['OPS', 'STAT', 1], ['FRAC', 'MEAS', 1]] };
 const SCI_LANES = [['INQ', 'SCI.INQ', 'Scientist Skills', 'inq', 'Observe, test fairly, measure and explain.'], ['MATT', 'SCI.MATT|SCI.PHYS', 'Matter, Forces & Energy', 'phys', 'What things are made of, how they move, light, sound and heat.'],
   ['SKY', 'SCI.SKY', 'Space & Sky', 'phys', 'Sun, moon, stars and the patterns in the sky.'], ['LAND', 'SCI.LAND|SCI.EARTH', 'Earth & Weather', 'phys', 'Land, water, rocks and weather.'],
   ['PLANT', 'SCI.PLANT|SCI.LIFE', 'Plants & Living Things', 'life', 'What living things need, how plants grow and change.'], ['ANIM', 'SCI.ANIM', 'Animals', 'life', 'How animals live, grow and fit where they live.'], ['BODY', 'SCI.BODY', 'The Human Body', 'life', 'How the body works and how to keep it healthy.']];
-const SCI_CFG = { lanes: SCI_LANES, laneOf: prefLane(SCI_LANES), sides: [['phys', 'Earth & Physical'], ['life', 'Life Science'], ['inq', 'Scientist Skills']], keys: { SCI: 'Science' }, keyOf: () => 'SCI',
+const SCI_CFG = { std: 'not mapped yet', lanes: SCI_LANES, laneOf: prefLane(SCI_LANES), sides: [['phys', 'Earth & Physical'], ['life', 'Life Science'], ['inq', 'Scientist Skills']], keys: { SCI: 'Science' }, keyOf: () => 'SCI',
   cross: [['INQ', 'MATT', 0], ['MATT', 'SKY', 1], ['MATT', 'LAND', 1], ['SKY', 'LAND', 0], ['LAND', 'PLANT', 1], ['PLANT', 'ANIM', 0], ['ANIM', 'BODY', 0]],
   plan: [['INQ', 5, 'Plan a Fair Test', 'Plan an experiment that changes one thing and keeps everything else the same.'], ['INQ', 7, 'Measure, Record, Graph', 'Collect measurements, record them in a table and make a graph.'],
     ['INQ', 9, 'Explain with Evidence', 'Write a conclusion that uses the data as evidence.']] };
@@ -113,7 +116,7 @@ const KOD_LANES = [['KRI', 'LK.KRI', 'Kriyah', 'text', 'Reading Hebrew: letters,
   ['MID', 'LK.MID', 'Middos', 'life', 'Good middos and Pirkei Avos.'], ['CHEM', 'LK.CHEM', 'Chemdas', 'life', 'Core Jewish knowledge, step by step.'], ['TRY', 'LK.TRY', 'Taryag Mitzvos', 'life', 'The 613 mitzvos.']];
 const KOD_PLAN = []; ['HAL', 'TEF', 'YT', 'PAR', 'MID', 'NAV'].forEach(l => { const nm = KOD_LANES.find(x => x[0] === l)[2];
   KOD_PLAN.push([l, 5, nm + ', grades 3–5', 'Continue ' + nm + ' past grade 2. What is taught here is set by the Menahel and the rebbeim.'], [l, 8, nm + ', grades 6–8', 'Continue ' + nm + ' in the upper grades. What is taught here is set by the Menahel and the rebbeim.']); });
-const KOD_CFG = { lanes: KOD_LANES, laneOf: prefLane(KOD_LANES), plan: KOD_PLAN, sides: [['text', 'Text skills'], ['life', 'Living Torah']], keys: { HEB: 'Lashon Hakodesh' }, keyOf: id => (/^HEB\./.test(id) ? 'HEB' : null),
+const KOD_CFG = { std: 'Tashbar’s own Limudei Kodesh sequence', lanes: KOD_LANES, laneOf: prefLane(KOD_LANES), plan: KOD_PLAN, sides: [['text', 'Text skills'], ['life', 'Living Torah']], keys: { HEB: 'Lashon Hakodesh' }, keyOf: id => (/^HEB\./.test(id) ? 'HEB' : null),
   levelOf: id => lv(id) || 6, cross: [['KRI', 'LSH', 0], ['KRI', 'CHU', 0], ['LSH', 'CHU', 0], ['CHU', 'RAS', 0], ['LSH', 'MSH', 1], ['RAS', 'MSH', 1], ['MSH', 'GEM', 1], ['CHU', 'NAV', 1], ['KRI', 'TEF', 0]] };
 
 function buildFlow(ela, k3, C) {
@@ -147,7 +150,7 @@ function buildFlow(ela, k3, C) {
     quest.push({ st: 'Practice games', t: s.practice.length + ' items: ' + tally(pk).join(', ') + '. Examples: ' + s.practice.slice(0, 3).map(p => '“' + p.q + '”').join(' ') });
     quest.push({ st: 'Mastery check', t: s.check.length + ' questions, no help: ' + s.check.map(c => '“' + c.q + '”').join(' ') });
     if (s.re.length) quest.push({ st: 'If he misses', t: s.re.length + ' simpler re-teach items on the skill underneath, then he tries again.' });
-    nodes.push({ id: s.id, lane, L, g: GRADE(L), name: s.name, obj: s.desc || (s.tt && s.tt.big) || '', big: s.tt && s.tt.big || '', k3t: K ? K.t : '', depth: K ? 'taught' : score >= 4 ? 'guided' : 'quiz', flags, has, steps, quest, nc: s.check.length, key: C.keyOf(s.id) }); }
+    nodes.push({ id: s.id, std: STD[s.id] || '', lane, L, g: GRADE(L), name: s.name, obj: s.desc || (s.tt && s.tt.big) || '', big: s.tt && s.tt.big || '', k3t: K ? K.t : '', depth: K ? 'taught' : score >= 4 ? 'guided' : 'quiz', flags, has, steps, quest, nc: s.check.length, key: C.keyOf(s.id) }); }
   const byLane = {}; nodes.forEach(n => (byLane[n.lane] = byLane[n.lane] || []).push(n));
   PLAN.forEach(([lane, L, name, obj], i) => nodes.push({ id: 'PLAN.' + lane + '.L' + String(L).padStart(2, '0') + '.' + (i + 1), lane, L, g: GRADE(L), name, obj, planned: 1, depth: 'planned', flags: ['Not built yet. No lesson, no questions.'], has: [], steps: [], quest: [] }));
   const edges = [], add = (a, b, k) => { if (a && b && a.id !== b.id && !edges.some(e => e[0] === a.id && e[1] === b.id)) edges.push([a.id, b.id, k]); };
@@ -155,7 +158,7 @@ function buildFlow(ela, k3, C) {
   Object.values(byLane).forEach(a => a.forEach((n, i) => { if (i) add(a[i - 1], n, 'lane'); }));
   CROSS.forEach(([from, to, back]) => (byLane[to] || []).forEach((n, i, a) => { if (i && a[i - 1].L === n.L) return; const src = lastUpTo(from, n.L - back); if (src && src.L >= Math.max(1, n.L - 2)) add(src, n, 'cross'); }));
   nodes.filter(n => n.planned).forEach(n => { const a = (byLane[n.lane] || []).filter(m => m.L <= n.L); if (a.length) add(a[a.length - 1], n, 'plan'); });
-  return { lanes: LANES.map(l => ({ id: l[0], name: l[2], side: l[3], about: l[4] })), sides: C.sides, keys: C.keys, nodes, edges };
+  return { lanes: LANES.map(l => ({ id: l[0], name: l[2], side: l[3], about: l[4] })), sides: C.sides, keys: C.keys, std: C.std, nodes, edges };
 }
 
 (async () => {
