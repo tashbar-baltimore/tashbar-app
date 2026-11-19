@@ -24,12 +24,16 @@ window.TL_CASHPILL=true;
 
 /* ---------- styles ---------- */
 try{ if(!document.getElementById('st-css')){ const s=document.createElement('style'); s.id='st-css'; s.textContent=`
-#tlcash{position:fixed;bottom:16px;left:16px;z-index:10003;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 10px;border-radius:999px;background:linear-gradient(135deg,#065F46,#047857 60%,#10B981);color:#fff;font:800 20px/1 var(--display,system-ui),system-ui,sans-serif;box-shadow:0 8px 24px rgba(4,120,87,.45),inset 0 1px 0 rgba(255,255,255,.35);cursor:pointer;border:2px solid #FDE68A;transition:transform .15s}
-#tlcash:hover{transform:scale(1.05)}#tlcash .ci{font-size:26px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.25))}#tlcash b{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+#tlcash{position:fixed;bottom:16px;left:16px;z-index:2147483300;display:flex;align-items:center;gap:10px;padding:7px 16px 7px 7px;border-radius:999px;background:#047857;color:#fff;font:800 22px/1 var(--display,system-ui),system-ui,sans-serif;box-shadow:0 6px 0 #065F46,0 10px 22px rgba(4,120,87,.35);cursor:pointer;border:3px solid #fff;transition:transform .15s}
+#tlcash:hover{transform:scale(1.04)}#tlcash:focus-visible{outline:4px solid #FDE047;outline-offset:2px}
+#tlcash .ci{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#ECFDF5;font-size:24px}
+#tlcash .cw{display:flex;flex-direction:column;gap:3px}#tlcash small{font:800 11px/1 var(--body,system-ui),system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#A7F3D0}
+#tlcash b{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.hpbar .wallet,.hp2 .hpbar .wallet{display:none!important}
 #tlcash i{font-style:normal;font-size:14px;background:#FDE68A;color:#78350F;border-radius:999px;padding:3px 9px;display:none}#tlcash i.on{display:inline-block}
 #tlcash.bump{animation:stbump .5s}@keyframes stbump{0%{transform:scale(1)}40%{transform:scale(1.22) rotate(-3deg)}100%{transform:scale(1)}}
 body.st-hide-pill #tlcash{display:none}body.tl-cashpill:not(.st-hide-pill) #app{padding-bottom:84px}html:has(body.tl-cashpill:not(.st-hide-pill)){scroll-padding-bottom:96px}body:has(#mupill) #tlcash{bottom:82px}.hp2 .hpbar .wallet::before{content:'💵'!important}
-@media (max-width:600px){#tlcash{bottom:10px;left:10px;font-size:16px;padding:6px 12px 6px 8px}#tlcash .ci{font-size:20px}}
+@media (max-width:600px){#tlcash{bottom:10px;left:10px;font-size:19px;padding:5px 14px 5px 5px}#tlcash .ci{width:34px;height:34px;font-size:20px}}
 body.tl-cashpill #hpjar{display:none!important}
 .stov{position:fixed;inset:0;z-index:10004;background:rgba(209,250,229,.7);display:flex;align-items:center;justify-content:center;padding:12px}
 .stbox{position:relative;width:min(1100px,100%);height:min(94vh,900px);background:#F8FAF5;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.4);color:#14213D;font-family:var(--body,system-ui),system-ui,sans-serif}
@@ -121,11 +125,12 @@ let shownBal=null;
 function pill(){ try{
   let p=document.getElementById('tlcash');
   if(!A.st||A.view==='login'||(!A.view)){ if(p) p.remove(); return; }
-  if(!p){ p=document.createElement('div'); p.id='tlcash'; p.setAttribute('role','button'); p.tabIndex=0; p.setAttribute('aria-label','Your cash. Open the Tashbar Store'); p.innerHTML='<span class="ci" aria-hidden="true">💵</span><b id="tlcashv"></b><i id="tlcashp"></i>'; document.body.appendChild(p);
+  if(!p){ p=document.createElement('div'); p.id='tlcash'; p.setAttribute('role','button'); p.tabIndex=0; p.setAttribute('aria-label','Your cash. Open the Tashbar Store'); p.innerHTML='<span class="ci" aria-hidden="true">💵</span><span class="cw"><small>My money</small><b id="tlcashv"></b></span><i id="tlcashp"></i>'; document.body.appendChild(p);
     p.addEventListener('click',()=>openStore()); p.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openStore(); } }); }
   document.body.classList.add('tl-cashpill');
-  const hideOnHub=A.view==='hub'&&!modalOpen()&&document.getElementById('wallet');
-  document.body.classList.toggle('st-hide-pill',!!hideOnHub);
+  /* MONEY BADGE (HoS 2026-11-19: "the money should be on all the pages, including tests"): the same badge on every boy page,
+     home included (it replaces the big orange home bar). Hidden only while the Store itself is open (its header shows the cash). */
+  document.body.classList.toggle('st-hide-pill',!!(T.open&&document.getElementById('tlstore')));
   const bal=Number(A.st.balance)||0, v=document.getElementById('tlcashv');
   if(shownBal===null||bal<shownBal) shownBal=bal;
   else if(bal>shownBal+.004){ const from=shownBal; shownBal=bal; roll(v,from,bal); p.classList.remove('bump'); void p.offsetWidth; p.classList.add('bump'); }

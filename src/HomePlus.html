@@ -338,11 +338,12 @@ function rmo(){ return typeof RM!=='undefined'&&RM; }
 function tone(f,w,d,vol,type){ const c=ac(); if(!c) return; const t=c.currentTime+w, o=c.createOscillator(), g=c.createGain(); o.type=type||'triangle'; o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol||.12,t+.01); g.gain.exponentialRampToValueAtTime(.0008,t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+.05); }
 function cascade(n){ for(let k=0;k<n;k++){ tone(1400+k*60,k*.055,.18,.07,'square'); tone(2100+k*80,k*.055+.02,.14,.05,'sine'); } }
 function fanfare(){ [[523,0],[659,.12],[784,.24],[1047,.36],[1319,.52]].forEach(([f,w])=>{ tone(f,w,.5,.13,'triangle'); tone(f/2,w,.5,.07,'sawtooth'); }); tone(1568,.7,1.2,.12,'triangle'); tone(2093,.72,1.3,.09,'sine'); }
-function rain(n,emoji){ if(rmo()) return; const w=document.getElementById('wallet'); const r=w?w.getBoundingClientRect():{left:innerWidth-120,top:20,width:80,height:40};
+function hpBankEl(){ const p=document.getElementById('tlcash'); if(p&&getComputedStyle(p).display!=='none') return p; return document.getElementById('wallet'); }   /* money badge (StoreKid) replaces the home bar: coins fly to it */
+function rain(n,emoji){ if(rmo()) return; const w=hpBankEl(); const r=w?w.getBoundingClientRect():{left:innerWidth-120,top:20,width:80,height:40};
  for(let k=0;k<n;k++){ const e=document.createElement('i'); e.className='hpcoin'; e.textContent=emoji&&k%3===0?emoji:(window.TL_CASH_EMOJI?TL_CASH_EMOJI():'🪙'); const x=Math.random()*innerWidth; e.style.left=x+'px'; e.style.top='-50px'; e.style.fontSize=(26+Math.random()*18)+'px'; document.body.appendChild(e);
   const fall=innerHeight*(.45+Math.random()*.35), tx=r.left+r.width/2-x, ty=r.top+r.height/2+50;
   e.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:`translate(${(Math.random()-.5)*80}px,${fall}px) rotate(${Math.random()*540}deg)`,opacity:1,offset:.6},{transform:`translate(${tx}px,${ty}px) scale(.4) rotate(720deg)`,opacity:.9}],{duration:1500+Math.random()*700,delay:k*40,easing:'cubic-bezier(.25,.6,.35,1)',fill:'forwards'}).onfinish=()=>e.remove(); } }
-function fountain(n){ if(rmo()) return; const w=document.getElementById('wallet'); const r=w?w.getBoundingClientRect():{left:innerWidth-120,top:20,width:80,height:40}; const fx=innerWidth/2, fy=innerHeight*.55;
+function fountain(n){ if(rmo()) return; const w=hpBankEl(); const r=w?w.getBoundingClientRect():{left:innerWidth-120,top:20,width:80,height:40}; const fx=innerWidth/2, fy=innerHeight*.55;
  for(let k=0;k<n;k++){ const e=document.createElement('i'); e.className='hpcoin'; e.textContent=(window.TL_CASH_EMOJI?TL_CASH_EMOJI():'🪙'); e.style.left=fx+'px'; e.style.top=fy+'px'; document.body.appendChild(e);
   const a=-Math.PI/2+(Math.random()-.5)*1.6, v=160+Math.random()*160, px=Math.cos(a)*v, py=Math.sin(a)*v;
   e.animate([{transform:'translate(0,0) scale(.5)',opacity:0},{transform:`translate(${px}px,${py}px) scale(1.25) rotate(200deg)`,opacity:1,offset:.4},{transform:`translate(${r.left+r.width/2-fx}px,${r.top+r.height/2-fy}px) scale(.45) rotate(540deg)`,opacity:.9}],{duration:1100+Math.random()*400,delay:k*35,easing:'cubic-bezier(.3,.6,.4,1)',fill:'forwards'}).onfinish=()=>e.remove(); } }
@@ -354,7 +355,7 @@ function bankTo(from,to,dur,slot){ const b=document.getElementById('bal'); if(!b
  const step=now=>{ if(my!==HP.cc) return; const k=Math.min(1,(now-t0)/dur); let v=from+(to-from)*(1-Math.pow(1-k,3));
   if(slot&&k<.75) v=v+(Math.random()-.5)*Math.max(1,(to-from))*.6*(1-k);
   b.textContent=money(Math.max(0,Math.round(v*100)/100)); if(k<1) requestAnimationFrame(step); else { const nb=document.getElementById('bal'); if(nb) nb.textContent=money(Number(A.st.balance)||to); } }; requestAnimationFrame(step); }
-function chaChing(from,to){ const w=document.getElementById('wallet'), d=Math.round((to-from)*100)/100, tier=d>=15?3:d>=3?2:1;
+function chaChing(from,to){ const w=hpBankEl(), d=Math.round((to-from)*100)/100, tier=d>=15?3:d>=3?2:1;
  chaSound(); if(tier>=2) setTimeout(()=>cascade(tier===3?14:8),250); if(tier===3) setTimeout(fanfare,450);
  const big=document.createElement('div'); big.className='hpcash t'+tier; big.textContent='+'+money(d); document.body.appendChild(big);
  big.animate([{transform:'translate(-50%,-50%) scale(.3)',opacity:0},{transform:`translate(-50%,-50%) scale(${tier===3?1.35:1.15})`,opacity:1,offset:.22},{transform:'translate(-50%,-50%) scale(1)',opacity:1,offset:.72},{transform:'translate(-50%,-150%) scale(.8)',opacity:0}],{duration:rmo()?300:(tier===3?2600:1900),easing:'ease-out'}).onfinish=()=>big.remove();
