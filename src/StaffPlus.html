@@ -342,7 +342,8 @@ document.addEventListener('input',e=>{ if(e.target&&e.target.id==='sp-lkq'){ SP.
 document.addEventListener('keydown',e=>{ const tag=(e.target.tagName||'').toLowerCase();
  if(e.key==='/'&&tag!=='input'&&tag!=='textarea'&&tag!=='select'){ const q=document.getElementById(SP.tab==='lk'?'sp-lkq':'q'); if(q){ e.preventDefault(); q.focus(); } }
  if(e.key==='Escape'){ if(SP.lkOpen){ SP.lkOpen=null; render(); } if(SP.menu){ SP.menu=false; const p=document.getElementById('sp-pop'); if(p) p.hidden=true; } } });
-window.SPX={SP,inGrp:id=>inGrp(id),grpName:()=>grpName(),lkName:id=>lkName(id)};
+window.SPX={SP,inGrp:id=>inGrp(id),grpName:()=>grpName(),lkName:id=>lkName(id),
+ counts:()=>{ try{ const list=kidsGS().filter(b=>!b.test), T=SP.today; return { boys:list.length, help:list.filter(needsHelp).length, nolevel:list.filter(noLevel).length, idle:T?list.filter(b=>{ const t=todayOf(b.id); return !t||!(t.answers+t.kAnswers); }).length:null }; }catch(e){ return null; } } }   /* counts: the staff home's Next steps (StaffHome.html) */;
 if(S.d&&S.d.boys) render();
 })();
 </script>
