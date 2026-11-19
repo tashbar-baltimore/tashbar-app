@@ -1,5 +1,11 @@
 # Publishing: how it is wired
 
+## NEW (2026-11-18): publish to Firebase from GitHub
+- GitHub -> Actions -> **firebase-deploy** -> Run workflow (branch `main`) -> choose `site`, `server` or `both`.
+- No clasp, no daily sign-in, no stored keys: GitHub signs in to Google through a keyless link (workload identity pool `github`, provider `tashbar-app`, account `github-deploy`) that only the `main` branch of this repository may use. The Head of School set it up on 2026-11-18.
+- `site` rebuilds the pages from the live server and ADDS them to Hosting (keeps /pics and /curriculum). `server` runs the server self-test, then deploys the function `api` from `src/` + `server/` in main. Both end with a check that the app and the server answer.
+- This replaces `./tools/deploy-function.sh` and `./web/refresh.sh` run by hand. Lesson packs and the Apps Script editor are unchanged for now.
+
 ## We use the LIGHT VERSION (Head of School, 2026-11-16)
 - Creators open pull requests. The `test` check runs by itself. The Head of School or a lead approves and merges.
 - **Going live:** the Head of School tells ONE builder chat "publish". That chat, signed in to clasp as the school owner, runs `tools/publish-from-chat.sh publish`. It runs the tests, stops if anyone changed the editor by hand, pushes main, makes ONE version, moves BOTH live links, checks them, and records the live version in `live.json`.
