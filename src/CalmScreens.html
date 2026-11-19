@@ -1,0 +1,40 @@
+<script>
+/* CalmScreens.html — calm, clear opening screens (HoS 2026-11-19: "fix the flashing opening screens and make the presentation
+   for the students much clearer"). Claude Code builder. Joined to the boy page by sgQuest_ (StaffGrid.js), LAST.
+   1. No flashing while the page opens. The page is built from layers (QuestPage, then HomePage, then SignInEnergy), and each one
+      painted its own sign-in look for a moment: four different screens in two seconds. sgQuest_ now puts a small cover in <head>
+      (html.tl-boot: dark night-sky colour, nothing drawn); this file, the last layer, lifts it once, so the boy sees ONE screen.
+      Safety: the cover lifts by itself after 4 seconds even if something fails (sgQuest_), so nobody is ever stuck on a blank page.
+   2. Pop-ups and home cards no longer blink. Every redraw re-made them and replayed their fade-in, so "Today's Vort" flashed
+      on, off, on, and on a slow Chromebook the home subject cards stayed invisible for 3+ seconds while lessons loaded (their
+      slide-in kept restarting). Now a pop-up fades in only when it first appears, and the home cards simply appear.
+   3. The sign-in chalkboard logo still writes itself in once, but its shine and honey drips no longer repeat every 6-7 seconds.
+   4. A calmer, clearer home screen: the chizuk strip shows ONE still line instead of scrolling words; the subject pictures stop
+      bobbing; the Olam Haba cloud sits still in the bottom corner instead of floating over the Play buttons; on phones the floating
+      clock stays off the home screen (as HomePage.html already meant: "the floating clock covered Let's go! on phones").
+   It changes no lesson, no money and no server call. Off switch: window.TL_CALM = false.
+   No slash-slash in this file (HtmlService rule). */
+(function(){
+if(window.__tlCalm) return; window.__tlCalm=true;
+function lift(){ try{ document.documentElement.classList.remove('tl-boot'); }catch(e){} }
+if(window.TL_CALM===false){ lift(); return; }
+(function(){ if(document.getElementById('tl-calm-css')) return; var s=document.createElement('style'); s.id='tl-calm-css'; s.textContent=''
++'.overlay.tl-still,.overlay.tl-still *{animation:none!important}'
++'.sg5logo .sg5shine,.sg5logo .sg5drip,.sg5logo .sg5drop{animation:none!important}'
++'.hf-kl,.hf-door,.hlg{animation:none!important}'
++'body:is(.hl-hub,.hf-home) .hlmq .in{animation:none!important;width:auto!important;justify-content:center;text-align:center;padding:0 12px}'
++'body:is(.hl-hub,.hf-home) .hlmq .in span:not(:first-child){display:none!important}'
++'body:is(.hl-hub,.hf-home) .hf-kl .ic,body:is(.hl-hub,.hf-home) .hf-door .ico{animation:none!important}'
++'html body.ohmini #ohb .ohc{animation:none!important}'
++'html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky,html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky.slim,html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky:not(.slim){top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;right:10px!important}'
++'@media (max-width:760px){html body:is(.hl-hub,.hf-home) #tlclock{display:none!important}body:is(.hl-hub,.hf-home){padding-bottom:72px}}';
+document.head.appendChild(s); })();
+/* pop-ups: fade in once, then stay still through redraws */
+if(typeof render==='function'){ var lastOv=null, _rc=render;
+ render=function(){ var r=_rc.apply(this,arguments); try{ var h=A&&A.overlay&&A.overlay.html||null;
+  if(h&&h===lastOv){ var o=document.querySelectorAll('.overlay'); for(var i=0;i<o.length;i++) o[i].classList.add('tl-still'); }
+  lastOv=h; }catch(e){} return r; }; }
+/* show the finished page in one go */
+if(window.requestAnimationFrame) requestAnimationFrame(function(){ requestAnimationFrame(lift); }); else setTimeout(lift,0);
+})();
+</script>

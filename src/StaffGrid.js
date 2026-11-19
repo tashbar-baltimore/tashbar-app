@@ -30,8 +30,12 @@ function sgQuest_() {
   try { bar += HtmlService.createHtmlOutputFromFile('HomePage').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('SignInEnergy').getContent(); } catch (e) {}   /* 2026-11-18 HoS: the first page, super-upgraded energy look (off switch TL_SIGNIN_V6=false) */
   try { bar += HtmlService.createHtmlOutputFromFile('KidReminders').getContent(); } catch (e) {}   /* Access.js: reminders from home pop up at their time */   /* the front home page: logo, code pad, flying subjects, encouraging messages */   /* PATHFINDER: "Start your Pathfinder" card on his home screen */
+  try { bar += HtmlService.createHtmlOutputFromFile('CalmScreens').getContent(); } catch (e) {}   /* HoS 2026-11-19: no flashing opening screens, pop-ups that do not blink, a calmer home. LAST: it lifts the cover below */
   var i = page.lastIndexOf('</body>');
   if (bar) page = i < 0 ? page + bar : page.slice(0, i) + bar + page.slice(i);
+  if (bar.indexOf('__tlCalm') >= 0) { var hd = page.indexOf('</head>');   /* the cover: nothing is drawn until the last layer is ready (CalmScreens lifts it; it lifts itself after 4 s) */
+    var cover = '<style id="tl-boot-css">html.tl-boot,html.tl-boot body{background:#0B0630!important}html.tl-boot body>*{visibility:hidden!important}html.tl-boot::after{content:"";position:fixed;inset:0;z-index:2147483647;background:#0B0630}</style><script>document.documentElement.classList.add("tl-boot");setTimeout(function(){document.documentElement.classList.remove("tl-boot");},4000);</script>';
+    if (hd >= 0) page = page.slice(0, hd) + cover + page.slice(hd); }
   return HtmlService.createHtmlOutput(tlSound_(tlTheme_(page, 'boy')))
     .setTitle('Tashbar Learning · Middle School')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
