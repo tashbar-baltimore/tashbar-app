@@ -72,6 +72,9 @@
   function idle() { try { if (KIND === 'staff') return !(typeof S !== 'undefined' && S && S.token); return typeof A !== 'undefined' && A && A.view === 'signin' && !A.pin; } catch (e) { return false; } }
   function swapIfIdle() { if (!NEWER || !idle()) return; var k = 'tl-swapped-' + KIND; try { if (sessionStorage.getItem(k) === NEWER) return; sessionStorage.setItem(k, NEWER); } catch (e) { return; } location.reload(); }   /* once per new page: never a reload loop */
   setInterval(function () { if (NEWER) return swapIfIdle(); if (idle() || document.hidden) check(); }, 120000);
+  /* lesson pieces changed (a new add-on such as the new voice) without a new page: also reload on the sign-in screen, once per change */
+  var PARTS0 = null; getJSON('/parts/manifest.json').then(function (m) { PARTS0 = (m.order || []).join(','); }, function () {});
+  setInterval(function () { if (NEWER || PARTS0 == null) return; getJSON('/parts/manifest.json').then(function (m) { var now = (m.order || []).join(','); if (now && now !== PARTS0) { NEWER = 'parts:' + now.length + ':' + now.slice(-24); swapIfIdle(); } }, function () {}); }, 120000);
   setInterval(swapIfIdle, 15000);
   try { if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js'); } catch (e) {}
   if (API && window.caches) { if (document.readyState === 'complete') setTimeout(check, 4000); else window.addEventListener('load', function () { setTimeout(check, 4000); }); }

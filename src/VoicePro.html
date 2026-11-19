@@ -2,7 +2,7 @@
 /* VoicePro.html (Head of School 2026-11-18: "get a different voice for everything ... better audio with expression and passion").
    Everything the app says with the device voice (speechSynthesis) is played instead in a natural Google voice (Chirp 3 HD), made by the
    Firebase server (GET ?tts=1) and saved there, so each phrase is made once. Hebrew uses Google's Israeli-Hebrew voice FOR NOW; Litvish
-   recordings replace it item by item. If a phrase does not arrive within 4 seconds, or anything fails, the device voice says it as before.
+   recordings replace it item by item. If a phrase does not arrive within 7 seconds, or anything fails, the device voice says it as before.
    Also inside sealed lesson frames (e.g. Kindergarten Math): this same code is put at the top of every srcdoc frame.
    Changes no data, money or mastery. No double slash in this file (HtmlService rule). */
 (function(){
@@ -29,10 +29,10 @@ function fire(u,n){ try{ const f=u['on'+n]; if(typeof f==='function') f.call(u,{
 function next(){ if(cur||!q.length) return; const it=q.shift(), u=it.u; let done=false, started=false;
  const a=new Audio(it.url); cur=a; a.preload='auto'; try{ a.volume=Math.max(0,Math.min(1,u.volume==null?1:u.volume)); }catch(e){}
  const finish=ok=>{ if(done) return; done=true; clearTimeout(tm); if(cur===a) cur=null; if(!ok){ try{ realSpeak(u); }catch(e){} } else fire(u,'end'); next(); };
- const tm=setTimeout(()=>{ if(!started){ try{ a.pause(); }catch(e){} finish(false); } },4000);
+ const tm=setTimeout(()=>{ if(!started&&!waitTap){ try{ a.pause(); }catch(e){} finish(false); } },7000); let waitTap=false;
  a.onplaying=()=>{ if(!started){ started=true; clearTimeout(tm); fire(u,'start'); } };
  a.onended=()=>finish(true); a.onerror=()=>finish(false);
- const p=a.play(); if(p&&p.catch) p.catch(()=>finish(false)); }
+ const p=a.play(); if(p&&p.catch) p.catch(err=>{ if(err&&err.name==='NotAllowedError'&&!done){ waitTap=true; const go=()=>{ document.removeEventListener('pointerdown',go,true); document.removeEventListener('keydown',go,true); if(done) return; const p2=a.play(); if(p2&&p2.catch) p2.catch(()=>finish(false)); }; document.addEventListener('pointerdown',go,true); document.addEventListener('keydown',go,true); } else finish(false); }); }   /* Chrome blocks sound before the first tap: wait for the tap, keep the new voice (HoS 2026-11-19) */
 ss.speak=function(u){ try{ if(off||!u||!u.text) return realSpeak(u); const l=langOf(u.text), t=clean(u.text,l); if(!t||t.length>600) return realSpeak(u);
   const r=Math.max(.75,Math.min(1.25,(Number(u.rate)||1)*(l==='he'?0.85:1))).toFixed(2);
   q.push({u,url:API+'?tts=1&l='+l+'&r='+r+'&t='+encodeURIComponent(t)}); next(); }catch(e){ return realSpeak(u); } };
