@@ -1,5 +1,7 @@
 # Current state
 
+**2026-11-19 SWITCH-OVER:** GitHub is the only source. The live app (site + server) is built from `main`; pull requests that pass the tests are merged and published automatically (auto-publish). The Apps Script editor is no longer edited. The notes below are history.
+
 Imported from the Drive note "02 CURRENT_STATE v269" (2026-11-15 23:58Z, written by builder takeover4). The Drive notes stay the record until the switch to GitHub is approved.
 
 ## Live
