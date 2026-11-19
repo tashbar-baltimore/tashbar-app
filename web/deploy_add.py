@@ -30,5 +30,13 @@ res = call('POST', f'{API}/{ver}:populateFiles', {'files': files})
 need = res.get('uploadRequiredHashes', []); up = res.get('uploadUrl')
 for h in need: call('POST', f'{up}/{h}', raw=blobs[h], ctype='application/octet-stream')
 call('PATCH', f'{API}/{ver}?update_mask=status', {'status': 'FINALIZED'})
-call('POST', f'{API}/sites/{proj}/releases?versionName={ver}', {'message': note})
-print(f'kept {kept} live files, added or changed {changed}, uploaded {len(need)}; now {len(files)} files on https://{proj}.web.app')
+CH = os.environ.get('TL_CHANNEL', '').strip()   # set = publish to a private preview link instead of the live site
+if CH:
+    try: call('POST', f'{API}/sites/{proj}/channels?channelId={CH}', {'ttl': '1209600s'})
+    except Exception: pass   # channel already exists
+    call('POST', f'{API}/sites/{proj}/channels/{CH}/releases?versionName={ver}', {'message': note})
+    ch = call('GET', f'{API}/sites/{proj}/channels/{CH}')
+    print(f'PREVIEW (live site NOT changed): kept {kept} live files, added or changed {changed}; open {ch.get("url")}')
+else:
+    call('POST', f'{API}/sites/{proj}/releases?versionName={ver}', {'message': note})
+    print(f'kept {kept} live files, added or changed {changed}, uploaded {len(need)}; now {len(files)} files on https://{proj}.web.app')

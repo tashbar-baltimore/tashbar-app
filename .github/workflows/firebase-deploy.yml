@@ -6,13 +6,14 @@ name: firebase-deploy
 #   site   = rebuild the student + staff pages from the live server and add them to Firebase Hosting (keeps /pics, /curriculum)
 #   server = deploy the Firebase server function "api" from src/ + server/ in main
 #   both   = server first, then site
+#   preview-from-github = build the pages from THIS REPOSITORY and put them on a private preview link (live site untouched)
 on:
   workflow_dispatch:
     inputs:
       what:
         description: 'What to publish'
         type: choice
-        options: [site, server, both]
+        options: [site, server, both, preview-from-github]
         default: site
       note:
         description: 'Short release note'
@@ -64,12 +65,15 @@ jobs:
             --set-secrets=TL_EXPORT_KEY=tl-export-key:latest --quiet
 
       - name: Build the site from the live server
-        if: inputs.what != 'server'
+        if: inputs.what == 'site' || inputs.what == 'both'
         run: node web/build.js
+      - name: Build the site from THIS REPOSITORY (preview only, live site not changed)
+        if: inputs.what == 'preview-from-github'
+        run: TL_FROM_REPO=1 node web/build.js
 
       - name: Add the site to Firebase Hosting (keeps every file already live)
         if: inputs.what != 'server'
-        env: { TOKEN: '${{ steps.auth.outputs.access_token }}' }
+        env: { TOKEN: '${{ steps.auth.outputs.access_token }}', TL_CHANNEL: "${{ inputs.what == 'preview-from-github' && 'github' || '' }}" }
         run: |
           umask 077; printf '%s' "$TOKEN" > "$RUNNER_TEMP/fbtok"
           python3 web/deploy_add.py "$PROJECT" "$RUNNER_TEMP/fbtok" "${{ inputs.note }} (${GITHUB_SHA::7})"
