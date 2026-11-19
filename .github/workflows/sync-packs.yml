@@ -1,0 +1,45 @@
+name: sync-packs
+# Copies every lesson pack listed in src/ContentPacks.js from Google Drive into packs/, checks each byte-for-byte
+# against its sha256, and opens a pull request if anything changed. Runs by hand and every night.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 7 * * *'   # 02:17 / 03:17 Baltimore time
+concurrency: { group: sync-packs, cancel-in-progress: false }
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+env:
+  PROJECT: tashbar-learning-live
+  WIF_PROVIDER: projects/594290752127/locations/global/workloadIdentityPools/github/providers/tashbar-app
+  DEPLOY_SA: github-deploy@tashbar-learning-live.iam.gserviceaccount.com
+jobs:
+  sync:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOY_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Copy the packs (key read from Secret Manager, never printed)
+        run: |
+          TL_EXPORT_KEY="$(gcloud secrets versions access latest --secret=tl-export-key --project="$PROJECT")"
+          echo "::add-mask::$TL_EXPORT_KEY"
+          TL_EXPORT_KEY="$TL_EXPORT_KEY" node tools/sync-packs.js
+      - name: Open a pull request if packs changed
+        if: always()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: |
+          git add packs/
+          git diff --cached --quiet -- packs/*.html && { echo "Packs already match."; exit 0; }
+          b="packs-sync-$(date -u +%Y%m%d-%H%M)"
+          git config user.name "tashbar-packs-bot"; git config user.email "actions@users.noreply.github.com"
+          git checkout -b "$b" && git commit -q -m "Packs: copy from Drive ($(grep -c '^copied' packs/SYNC-REPORT.txt) changed)" && git push -q origin "$b"
+          gh pr create --base main --head "$b" --title "Lesson packs synced from Drive" --body "$(cat packs/SYNC-REPORT.txt)"
