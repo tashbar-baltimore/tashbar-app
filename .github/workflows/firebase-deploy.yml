@@ -1,0 +1,81 @@
+name: firebase-deploy
+# Publishes to Firebase straight from GitHub. No clasp, no daily Google sign-in, no stored keys.
+# GitHub proves who it is to Google (keyless "workload identity"); only the main branch of this repository is allowed.
+# Run it by hand: Actions -> firebase-deploy -> Run workflow -> choose what to publish.
+#   site   = rebuild the student + staff pages from the live server and add them to Firebase Hosting (keeps /pics, /curriculum)
+#   server = deploy the Firebase server function "api" from src/ + server/ in main
+#   both   = server first, then site
+on:
+  workflow_dispatch:
+    inputs:
+      what:
+        description: 'What to publish'
+        type: choice
+        options: [site, server, both]
+        default: site
+      note:
+        description: 'Short release note'
+        required: false
+        default: 'published from GitHub'
+concurrency: { group: firebase-deploy, cancel-in-progress: false }
+permissions:
+  contents: read
+  id-token: write   # lets GitHub ask Google for a short-lived pass
+env:
+  PROJECT: tashbar-learning-live
+  WIF_PROVIDER: projects/594290752127/locations/global/workloadIdentityPools/github/providers/tashbar-app
+  DEPLOY_SA: github-deploy@tashbar-learning-live.iam.gserviceaccount.com
+  API_URL: https://api-q26c275eaa-uk.a.run.app
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+
+      - name: Sign in to Google (keyless, short-lived)
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOY_SA }}
+          token_format: access_token
+          access_token_lifetime: 3600s
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Server tests (made-up students only)
+        if: inputs.what != 'site'
+        run: node server/selftest.js
+
+      - name: Deploy the server function "api"
+        if: inputs.what != 'site'
+        run: |
+          rm -rf functions/app && mkdir -p functions/app && cp -r server src functions/app/
+          node --check functions/index.js
+          printf 'node_modules\n' > functions/.gcloudignore
+          gcloud functions deploy api --project="$PROJECT" --gen2 --region=us-east4 --runtime=nodejs22 \
+            --source=functions --entry-point=api --trigger-http --allow-unauthenticated \
+            --memory=4Gi --cpu=2 --timeout=1800s --max-instances=50 --min-instances=4 --concurrency=6 \
+            --set-secrets=TL_EXPORT_KEY=tl-export-key:latest --quiet
+
+      - name: Build the site from the live server
+        if: inputs.what != 'server'
+        run: node web/build.js
+
+      - name: Add the site to Firebase Hosting (keeps every file already live)
+        if: inputs.what != 'server'
+        env: { TOKEN: '${{ steps.auth.outputs.access_token }}' }
+        run: |
+          umask 077; printf '%s' "$TOKEN" > "$RUNNER_TEMP/fbtok"
+          python3 web/deploy_add.py "$PROJECT" "$RUNNER_TEMP/fbtok" "${{ inputs.note }} (${GITHUB_SHA::7})"
+          rm -f "$RUNNER_TEMP/fbtok"
+
+      - name: Check the live app answers
+        run: |
+          for u in https://$PROJECT.web.app/ https://$PROJECT.web.app/staff/; do
+            c=$(curl -s -o /dev/null -w '%{http_code}' "$u"); echo "$c $u"; [ "$c" = 200 ] || exit 1
+          done
+          curl -sf -X POST -H 'Content-Type: text/plain' -d '{"fn":"ping","args":[]}' "$API_URL" | grep -q '"pong":true' && echo "200 server ping"
