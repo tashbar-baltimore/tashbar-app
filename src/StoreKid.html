@@ -9,6 +9,11 @@
    5. THE STORE: Fun (screen upgrades), Real prizes (staff hand them out), Canteen Cards (Tashbar $ -> Canteen Cash), Give (Tashbar or a friend).
    6. SAVINGS GOAL: pick any item as your goal; a bar on the home page shows how close you are.
    7. Your fun upgrades show: name frame, crown, title, home theme, a buddy, a star trail, silly sounds, gold coins.
+   8. FUN SHOP 2 (2026-11-19, moshe@ session): shelves in the Fun tab: Holiday shop, Tap blasts, Trails, App colors, Bonuses, Home upgrades.
+      Tap blasts restyle the HomePlus tap and swipe splash (window.tlTapStyle). Trails follow the mouse, and the finger (touch events, so it
+      keeps going while the page scrolls). App colors tint EVERY page (body.st-color-*: background and accent colors only; text colors stay).
+      Holiday editions can be bought only in their window (the server checks, Store.js STORE.SEASONS); once bought they are yours forever.
+      Bonuses: a confetti cannon button on the home, rainbow name lights, fireworks on every 3 right answers in a row.
    No "double slash" anywhere in this file (HtmlService cuts it). */
 (function(){
 if(typeof render!=='function'||typeof A==='undefined') return;
@@ -95,7 +100,14 @@ body.st-theme-gold{background:linear-gradient(160deg,#FEF3C7,#E9C46A 50%,#B08968
 .sttrail{position:fixed;z-index:10007;pointer-events:none;font-size:16px}
 .stpop{position:fixed;z-index:10006;pointer-events:none;font-size:46px}
 @media (max-width:600px){.sthead h2{font-size:22px}.sthead .stbal{position:static;text-align:left;margin-top:6px}.stbal b{font-size:26px}.stbody{padding:14px}.stgoalbar{flex-wrap:wrap}.stgoalbar .t{flex:1 1 180px}.stgoalbar button{flex:1 1 100%}.stweek{gap:4px}}
-@media (prefers-reduced-motion:reduce){.stpet,.st-frame-fire{animation:none}}`; document.head.appendChild(s); } }catch(e){}
+.st-frame-rainbow{padding:2px 12px;border-radius:12px;animation:strbw 2.4s linear infinite}@keyframes strbw{0%{box-shadow:0 0 0 3px #EF4444,0 0 16px rgba(239,68,68,.6)}20%{box-shadow:0 0 0 3px #F59E0B,0 0 16px rgba(245,158,11,.6)}40%{box-shadow:0 0 0 3px #22C55E,0 0 16px rgba(34,197,94,.6)}60%{box-shadow:0 0 0 3px #3B82F6,0 0 16px rgba(59,130,246,.6)}80%{box-shadow:0 0 0 3px #A855F7,0 0 16px rgba(168,85,247,.6)}100%{box-shadow:0 0 0 3px #EF4444,0 0 16px rgba(239,68,68,.6)}}
+.stshelf{margin:18px 0 8px;font:900 20px var(--display,system-ui),system-ui,sans-serif;color:#1F2937}.stshelf:first-child{margin-top:4px}.stshelf small{display:block;font:700 14px var(--body,system-ui),system-ui,sans-serif;color:#6B7280}
+.stcard .soon{display:block;margin-top:6px;font-weight:800;font-size:14px;color:#7C3AED}
+.stcard.hol{background:linear-gradient(160deg,#FFFBEB,#EEF2FF)}
+.sttr{position:fixed;z-index:10007;pointer-events:none;border-radius:50%}
+.stem{position:fixed;z-index:10007;pointer-events:none;line-height:1}
+.hpbar .tools .stcannon{border:0;border-radius:14px;padding:8px 12px;font-size:22px;background:linear-gradient(135deg,#F472B6,#A855F7);color:#fff;cursor:pointer;min-height:44px;box-shadow:0 3px 0 #6B21A8}
+@media (prefers-reduced-motion:reduce){.stpet,.st-frame-fire,.st-frame-rainbow{animation:none}}`; document.head.appendChild(s); } }catch(e){}
 
 /* ---------- sounds (small, made here; no files) ---------- */
 let AC=null; function ac(){ try{ if(typeof SND!=='undefined'&&SND&&SND.on===false) return null; AC=AC||new (window.AudioContext||window.webkitAudioContext)(); return AC; }catch(e){ return null; } }
@@ -186,6 +198,7 @@ function rainDown(n){ if(rmo()) return; const [tx,ty]=pillAt(); for(let k=0;k<n;
 function paydayShow(){ bannerX('PAYDAY!','💵'); hooray(); setTimeout(register,500); rainDown(30); setTimeout(confettiBurst,600); }
 
 /* ---------- 5. the store ---------- */
+const SHELVES=[['holiday','🕎 Holiday shop',''],['tap','💥 Tap blasts','Change what happens every time you tap or swipe.'],['trail','🌈 Trails','Something fun follows your mouse or finger.'],['color','🎨 App colors','Color the whole app: home, lessons, everything.'],['bonus','🎁 Bonuses','Extra fun buttons and celebrations.'],['','🏠 Home upgrades','Make your home page your own.']];
 const TABS=[['fun','🎮 Fun'],['real','🎁 Real prizes'],['canteen','💳 Canteen Cards'],['give','💝 Give'],['mine','🧺 My stuff'],['week','📊 My week']];
 function openStore(keepTab){ if(!A.st) return; T.open=true; T.err=''; if(!keepTab&&!T.tab) T.tab='fun'; draw(); load(true).then(draw); }
 function closeStore(){ T.open=false; T.confirm=null; const o=document.getElementById('tlstore'); if(o) o.remove(); try{ render(); }catch(e){} }
@@ -202,12 +215,17 @@ function draw(){ if(!T.open) return; let o=document.getElementById('tlstore'); c
   const f=o.querySelector('.stconf .stgo'); if(f) f.focus(); }
 function card(x,bal){ const own=owned(x.id), goal=ST().goal===x.id, worn=ST().wear[x.slot]===x.id, price=x.cents/100, need=Math.max(0,price-bal);
   const wear=x.kind==='wear'&&own?`<button class="wr ${worn?'on':''}" data-st="wear" data-id="${x.id}">${worn?'✓ Using it':'Use it'}</button>`:'';
+  if(x.season&&x.open===false&&!own){ const z=((T.info&&T.info.seasons)||[]).find(q=>q.id===x.season)||{name:'the holiday'};
+    return `<div class="stcard hol"><span class="em" aria-hidden="true">${x.emoji}</span><h4>${E(x.name)}</h4><p>${E(x.desc)}</p><span class="pr">${$(price)}</span><span class="soon">🗓️ Back in the weeks before ${E(z.name)}</span></div>`; }
   const canBuy=!(own&&(x.kind==='wear'||x.kind==='keep'));
-  return `<div class="stcard ${own?'own':''} ${goal?'isgoal':''}">${own?'<span class="tag">YOURS</span>':''}<span class="em" aria-hidden="true">${x.emoji}</span><h4>${E(x.name)}</h4><p>${E(x.desc)}</p>
+  return `<div class="stcard ${own?'own':''} ${goal?'isgoal':''} ${x.season?'hol':''}">${own?'<span class="tag">YOURS</span>':''}<span class="em" aria-hidden="true">${x.emoji}</span><h4>${E(x.name)}</h4><p>${E(x.desc)}</p>
    <span class="pr">${$(price)}</span>${canBuy&&need>0?`<span class="need">Need ${$(need)} more</span><span class="nb"><i style="width:${Math.min(100,Math.round(bal/price*100))}%"></i></span>`:''}
    <div class="row">${canBuy?`<button class="buy" data-st="buy" data-id="${x.id}" ${need>0||T.busy?'disabled':''}>Buy it</button>`:''}${wear}${canBuy&&!own&&x.kind!=='donate'?`<button class="gl ${goal?'on':''}" data-st="goal" data-id="${x.id}">${goal?'🎯 My goal':'🎯 Make it my goal'}</button>`:''}</div></div>`; }
 function body(I,bal){ const items=I.items.filter(x=>x.cat===T.tab);
-  if(T.tab==='fun') return `<p class="stintro">Fun upgrades for your screen. They are yours forever, right away.</p><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`;
+  if(T.tab==='fun'){ const shelf=x=>x.grp||(x.slot==='trail'?'trail':''), seas=(I.seasons||[]).filter(z=>z.open);
+    return `<p class="stintro">Fun upgrades for your screen. They are yours forever, right away.</p>`+SHELVES.map(([g,t,sub])=>{ let list=items.filter(x=>shelf(x)===g); if(!list.length) return '';
+      if(g==='holiday'){ list=list.slice().sort((a,b)=>(b.open?1:0)-(a.open?1:0)); sub=seas.length?'Now open: '+seas.map(z=>z.emoji+' '+z.name).join(' and ')+'. Holiday editions are sold only in the weeks before each Yom Tov, and they are yours forever.':'Holiday editions are sold only in the weeks before each Yom Tov. Once you buy one, it is yours forever.'; }
+      return `<h3 class="stshelf">${t}<small>${E(sub)}</small></h3><div class="stgrid">${list.map(x=>card(x,bal)).join('')}</div>`; }).join(''); }
   if(T.tab==='real') return `<div class="note">🎁 Real prizes: after you buy one, a rebbe or teacher hands it to you. If it can’t happen, you get all your money back. Up to ${I.openPrizes} prizes can wait at a time.</div><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`;
   if(T.tab==='canteen'){ const c=I.canteen, left=Math.max(0,(c.weekMax-c.weekUsed)/100);
     return `<div class="note">🍕 Canteen Cash is the money you spend on food at the canteen. You buy in the app (tap <b>🍕 Buy food</b> on your home page) and the money comes off right away.</div><div class="note">💳 A Canteen Card turns Tashbar cash into Canteen Cash: <b>${$(c.rate)} Tashbar = $1.00 Canteen Cash</b>. Use Canteen Cash at the canteen for food. This week you can still get <b>${$(left)}</b> of Canteen Cash.${c.cash!==null&&c.cash!==undefined?` Your Canteen Cash now: <b>${$(c.cash)}</b>.`:' (You need a Canteen Cash account. Ask the office.)'}</div><div class="stgrid">${items.map(x=>card(x,bal)).join('')}</div>`; }
@@ -241,7 +259,7 @@ function buy(id){ const x=item(id); if(!x||T.busy) return; T.busy=true; T.err=''
     const from=Number(A.st.balance)||0; A.st.balance=r.balance; if(Array.isArray(r.ledger)){ A.st.ledger=r.ledger; try{ SRV.states[A.st.id]=Object.assign(SRV.states[A.st.id]||{},{balance:r.balance,ledger:r.ledger}); }catch(e){} }
     shownBal=r.balance;
     if(T.info){ if(x.kind==='wear'||x.kind==='keep') T.info.owned.push(x.id); T.info.orders.unshift(r.order); if(x.kind==='card'){ T.info.canteen.weekUsed+=x.card; if(r.cash!==null&&r.cash!==undefined) T.info.canteen.cash=r.cash; } if(x.kind==='donate') { T.info.given.mine+=x.cents; T.info.given.school+=x.cents; if(x.id==='brick') T.info.wall.unshift(A.st.name); } if(x.id==='star-named') T.info.stars.push(A.st.name); if(x.kind==='gift') T.info.gift.today+=Math.round(T.gift.amt*100); }
-    if(x.kind==='wear'){ ST().wear[x.slot]=x.id; }
+    if(x.kind==='wear'){ ST().wear[x.slot]=x.id; setTimeout(colors,50); }
     if(ST().goal===x.id) delete ST().goal;
     syncOwned(); save();
     const done={wear:['It’s yours!','Your new '+x.name.toLowerCase()+' is on. Look at your home page!'],keep:['It’s yours!','Look up! Your star is in the Tashbar sky (My stuff tab).'],
@@ -262,7 +280,8 @@ document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closes
   if(a==='yes'){ buy(T.confirm.id); return; }
   if(a==='no'||a==='ok'){ T.confirm=null; draw(); return; }
   if(a==='goal'){ const s=ST(); s.goal=s.goal===b.dataset.id?null:b.dataset.id; if(!s.goal) delete s.goal; save(); draw(); return; }
-  if(a==='wear'){ const x=item(b.dataset.id), s=ST(); if(!x) return; if(s.wear[x.slot]===x.id) delete s.wear[x.slot]; else s.wear[x.slot]=x.id; save(); draw(); dress(); return; }
+  if(a==='wear'){ const x=item(b.dataset.id), s=ST(); if(!x) return; if(s.wear[x.slot]===x.id) delete s.wear[x.slot]; else s.wear[x.slot]=x.id; save(); draw(); dress(); colors(); return; }
+  if(a==='cannon'){ e.preventDefault(); cannon(b); return; }
   if(a==='amt'){ T.gift.amt=Number(b.dataset.a)||5; draw(); return; }
   if(a==='sendgift'){ if(!T.gift.to) return; T.confirm={id:'gift'}; draw(); return; }
 });
@@ -280,7 +299,7 @@ function dress(){ try{
   ['space','ocean','gold'].forEach(t=>document.body.classList.toggle('st-theme-'+t,w.theme==='theme-'+t&&A.view==='hub'));
   const h=document.querySelector('.hp2 .hpbar .hello b'); if(h&&!h.dataset.st){ h.dataset.st='1';
     if(w.hat==='crown') h.insertAdjacentHTML('afterbegin','<span class="stcrown" aria-hidden="true">👑</span>');
-    if(w.frame==='frame-gold') h.classList.add('st-frame-gold'); if(w.frame==='frame-fire') h.classList.add('st-frame-fire');
+    if(w.frame==='frame-gold') h.classList.add('st-frame-gold'); if(w.frame==='frame-fire') h.classList.add('st-frame-fire'); if(w.frame==='frame-rainbow') h.classList.add('st-frame-rainbow');
     const pet=w.pet&&item(w.pet); if(pet) h.insertAdjacentHTML('afterbegin',`<span class="stpet" aria-hidden="true">${pet.emoji}</span>`);
     const tt=w.title&&item(w.title); if(tt) h.insertAdjacentHTML('beforeend',`<span class="sttitle">${E(tt.name.replace(/^Title:\s*/,''))}</span>`); }
 }catch(e){} }
@@ -289,21 +308,74 @@ render=function(){ const out=_r.apply(this,arguments); try{
   if(A.st&&A.view==='hub'){ const hp=document.querySelector('.hp2');
     if(hp&&!hp.querySelector('.stgoalbar')){ const bar=hp.querySelector('.hpbar'); if(bar) bar.insertAdjacentHTML('afterend',goalBar()); }
     const tools=document.querySelector('.hp2 .hpbar .tools'); if(tools&&!tools.querySelector('.stbtn')) tools.insertAdjacentHTML('afterbegin','<button type="button" class="stbtn" data-st="open" data-t="fun" aria-label="Open the Tashbar Store">🏪 Store</button>');
+    if(tools&&!tools.querySelector('.stcannon')&&hasIt('bonus-cannon')) tools.insertAdjacentHTML('afterbegin','<button type="button" class="stcannon" data-st="cannon" aria-label="Fire the confetti cannon">🎉</button>');
     dress(); if(!T.info||Date.now()-T.at>60000) load().then(()=>{ if(A.view==='hub'&&!T.open){ const g=document.querySelector('.stgoalbar'); if(g) g.outerHTML=goalBar(); dress(); } }); else weekly();
     document.querySelectorAll('.bank td.amt, .bank .amt').forEach(td=>{ if(/\+\s*-|\+\$-|\+-\$/.test(td.textContent)){ td.textContent=td.textContent.replace(/\+\s*-\s*\$?|\+\$-/,'−$'); td.style.color='#B91C1C'; } });
   } else document.body.classList.remove('st-theme-space','st-theme-ocean','st-theme-gold');
   if(T.open) draw();
+  colors();
 }catch(e){ console.error('Store',e); } return out; };
 
 /* upgrades in play: buddy cheers, silly sounds, star trail */
 const _p3=window.p3Ans;
 window.p3Ans=function(p,it,ok){ try{ if(ok){ const w=ST().wear||{};
+  if(w.combo==='bonus-combo'&&p&&p.combo>0&&p.combo%3===0) setTimeout(fireworks,250);
   if(w.sound==='sound-duck') setTimeout(quack,140); if(w.sound==='sound-drum') setTimeout(drum,140);
   const pet=w.pet&&item(w.pet); if(pet&&!rmo()){ const q=document.querySelector('.qcard'); const [x,y]=q?[q.getBoundingClientRect().right-40,q.getBoundingClientRect().top+10]:[innerWidth-90,120]; const e=document.createElement('i'); e.className='stpop'; e.textContent=pet.emoji; e.style.left=x+'px'; e.style.top=y+'px'; document.body.appendChild(e); e.animate([{transform:'translateY(30px) scale(.4)',opacity:0},{transform:'translateY(-20px) scale(1.2) rotate(-10deg)',opacity:1,offset:.4},{transform:'translateY(0) scale(1)',opacity:0}],{duration:1100}).onfinish=()=>e.remove(); }
 } }catch(e){} return _p3?_p3.apply(this,arguments):undefined; };
-let lastTrail=0;
-document.addEventListener('pointermove',e=>{ try{ if(rmo()||!A.st||(ST().wear||{}).trail!=='trail') return; const now=performance.now(); if(now-lastTrail<45) return; lastTrail=now;
-  const s=document.createElement('i'); s.className='sttrail'; s.textContent=['⭐','✨','🌟'][Math.floor(Math.random()*3)]; s.style.left=e.clientX+'px'; s.style.top=e.clientY+'px'; document.body.appendChild(s);
-  s.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(-50%,${10+Math.random()*20}px) scale(.3)`,opacity:0}],{duration:700}).onfinish=()=>s.remove(); }catch(x){} },{passive:true});
+/* ---------- 8. FUN SHOP 2 ---------- */
+const hasIt=id=>owned(id)||((ST().owned||[]).indexOf(id)>=0);
+/* tap blasts: HomePlus splash() asks window.tlTapStyle() for colors (cols) or little pictures (em) */
+const RAINBOW=['#EF4444','#F97316','#FACC15','#22C55E','#3B82F6','#6366F1','#A855F7'];
+const TAPS={'tap-rainbow':{cols:RAINBOW},'tap-stars':{cols:['#FACC15','#F59E0B','#FDE047'],em:['⭐','✨','🌟']},'tap-confetti':{cols:['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'],sq:true},
+ 'tap-fireworks':{cols:['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'],big:true},'tap-gold':{cols:['#FACC15','#EAB308','#CA8A04'],em:['🪙','✨']},
+ 'hol-sukkah':{cols:['#16A34A','#FACC15'],em:['🍋','🌿','🍇','⭐']},'hol-menorah':{cols:['#2563EB','#CBD5E1','#FACC15'],em:['🕎','✨','🔥']},'hol-fruit':{cols:['#7C3AED','#65A30D','#CA8A04'],em:['🍇','🫒','🌾','🌳']},
+ 'hol-masks':{cols:['#A855F7','#F43F5E','#FACC15'],em:['🎭','🎉','🥁','👑']},'hol-arrows':{cols:['#EA580C','#FACC15'],em:['🏹','✨']},'hol-flowers':{cols:['#EC4899','#FACC15','#22C55E'],em:['🌸','🌼','🌿','🌷']}};
+window.tlTapStyle=()=>{ try{ if(!A.st) return null; return TAPS[(ST().wear||{}).tap]||null; }catch(e){ return null; } };
+/* trails: follow the mouse (pointer events) and the finger (touch events, which keep coming while the page scrolls) */
+const TRAILS={'trail':{em:['⭐','✨','🌟'],gap:30},'trail-rainbow':{rb:true,gap:7},'trail-comet':{comet:true,gap:7},'trail-sparkle':{em:['✨'],gap:22,small:true},'trail-bubbles':{em:['🫧'],gap:34,up:true},
+ 'hol-honey':{em:['🍎','🍯'],gap:34},'hol-flames':{em:['🔥','✨','🕯️'],gap:28,up:true},'hol-sea':{em:['🌊','💧'],gap:30},'hol-bonfire':{em:['🔥','✨'],gap:26,up:true}};
+let TL=null, TLIVE=0, thue=0, tk=0; const TCAP=90;
+function tdot(x,y,t){ if(TLIVE>=TCAP) return; const e=document.createElement('i'); TLIVE++;
+  if(t.em){ e.className='stem'; e.textContent=t.em[tk++%t.em.length]; e.style.fontSize=(t.small?13:18)+'px'; e.style.left=x+'px'; e.style.top=y+'px'; document.body.appendChild(e);
+    e.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(-50%,${t.up?-(18+Math.random()*16):(10+Math.random()*20)}px) scale(.3)`,opacity:0}],{duration:t.up?900:700,easing:'ease-out'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
+  const sz=t.rb?14:12; e.className='sttr'; e.style.width=e.style.height=sz+'px'; e.style.left=(x-sz/2)+'px'; e.style.top=(y-sz/2)+'px';
+  if(t.rb){ thue=(thue+9)%360; e.style.background=`hsl(${thue},95%,58%)`; } else { e.style.background='radial-gradient(circle,#FFF7ED,#FDBA74 45%,#F97316 70%,rgba(249,115,22,0))'; }
+  document.body.appendChild(e); e.animate([{transform:'scale(1)',opacity:.95},{transform:'scale(.15)',opacity:0}],{duration:t.rb?650:450,easing:'ease-in'}).onfinish=()=>{ e.remove(); TLIVE--; }; }
+function trailMove(x,y){ try{ if(rmo()||!A.st) return; const t=TRAILS[(ST().wear||{}).trail]; if(!t){ TL=null; return; }
+  if(!TL||Math.hypot(x-TL.x,y-TL.y)>200){ TL={x:x,y:y}; return; }
+  const dx=x-TL.x, dy=y-TL.y, len=Math.hypot(dx,dy); if(len<t.gap) return; const ux=dx/len, uy=dy/len; let dd=len;
+  while(dd>=t.gap){ TL.x+=ux*t.gap; TL.y+=uy*t.gap; dd-=t.gap; tdot(TL.x,TL.y,t); } }catch(e){} }
+document.addEventListener('pointermove',e=>{ if(e.pointerType==='touch') return; trailMove(e.clientX,e.clientY); },{passive:true});
+document.addEventListener('touchstart',e=>{ const t=e.touches[0]; if(t) TL={x:t.clientX,y:t.clientY}; },{passive:true,capture:true});
+document.addEventListener('touchmove',e=>{ const t=e.touches[0]; if(t) trailMove(t.clientX,t.clientY); },{passive:true,capture:true});
+/* app colors: background and accent colors on every page; text colors stay as they are, so everything stays easy to read */
+const COLORS={
+ 'color-ocean':['#F0F9FF','#BAE6FD','#CCFBF1','#0369A1','#0C4A6E','#0EA5E9'],
+ 'color-forest':['#F0FDF4','#BBF7D0','#ECFCCB','#15803D','#14532D','#4ADE80'],
+ 'color-sunset':['#FFF7ED','#FED7AA','#FCE7F3','#EA580C','#9A3412','#F472B6'],
+ 'color-candy':['#FDF2F8','#FBCFE8','#E0F2FE','#DB2777','#9D174D','#38BDF8'],
+ 'color-royal':['#FAF5FF','#E9D5FF','#FEF3C7','#7E22CE','#3B0764','#EAB308'],
+ 'hol-newyear':['#FFFDF5','#FDE68A','#FFFFFF','#B45309','#78350F','#FACC15'],
+ 'hol-schach':['#F7FEE7','#BEF264','#FEF9C3','#4D7C0F','#365314','#FACC15'],
+ 'hol-chanukah':['#EFF6FF','#BFDBFE','#F1F5F9','#1D4ED8','#1E3A8A','#FACC15'],
+ 'hol-purim':['#FDF4FF','#F5D0FE','#FEF3C7','#A21CAF','#581C87','#F59E0B'],
+ 'hol-spring':['#F0FDF4','#A7F3D0','#E0F2FE','#059669','#064E3B','#38BDF8'],
+ 'hol-shavuos':['#F7FEE7','#D9F99D','#FCE7F3','#65A30D','#365314','#F472B6']};
+let colorCss=false;
+function colors(){ try{ if(!colorCss){ colorCss=true; const s=document.createElement('style'); s.id='st-colors';
+    s.textContent=Object.keys(COLORS).map(id=>{ const c=COLORS[id], k='body.st-color-'+id;
+      return `${k}{--boss:${c[3]};--line:${c[1]};--card2:${c[0]};--hpline:${c[1]};--g-hero:linear-gradient(120deg,${c[4]} 0%,${c[3]} 55%,${c[5]} 100%)}
+${k}:not(.st-theme-space):not(.st-theme-ocean):not(.st-theme-gold){background:radial-gradient(1100px 650px at 0% 0%,${c[5]}55,transparent 65%),radial-gradient(1100px 750px at 100% 100%,${c[3]}40,transparent 65%),linear-gradient(160deg,${c[0]} 0%,${c[1]} 55%,${c[2]} 100%)!important;background-attachment:fixed!important}
+${k} .overlay.tl-still{background-color:${c[0]}C0!important;background-image:radial-gradient(1100px 650px at 0% 0%,${c[5]}45,transparent 65%),linear-gradient(160deg,${c[0]}B0 0%,${c[1]}B0 60%,${c[2]}B0 100%)!important}
+${k} .lf-card{background-image:radial-gradient(900px 500px at 50% 112%,${c[5]}55,transparent 70%)!important}`; }).join('\n');
+    document.head.appendChild(s); }
+  const want=A.st?(ST().wear||{}).color:null;
+  Object.keys(COLORS).forEach(id=>document.body.classList.toggle('st-color-'+id,want===id&&!!A.st)); }catch(e){} }
+/* bonuses: the confetti cannon and combo fireworks */
+function cannon(b){ confettiBurst(); try{ hooray(); }catch(e){} if(rmo()||typeof window.tlSplash!=='function') return; const r=b.getBoundingClientRect();
+  for(let k=0;k<6;k++) setTimeout(()=>window.tlSplash(r.left+r.width/2+(Math.random()-.5)*160,r.top+r.height/2+40+Math.random()*120,false,TAPS['tap-fireworks']),k*90); }
+function fireworks(){ if(rmo()) return; confettiBurst(); if(typeof window.tlSplash!=='function') return;
+  for(let k=0;k<7;k++) setTimeout(()=>window.tlSplash(innerWidth*(.15+Math.random()*.7),innerHeight*(.15+Math.random()*.45),false,TAPS['tap-fireworks']),k*110); }
 })();
 </script>
