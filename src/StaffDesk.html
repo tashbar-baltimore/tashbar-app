@@ -302,7 +302,7 @@ render=function(){ _render.apply(this,arguments);
   if(D.pop&&!document.querySelector('.sd-pop')) document.getElementById('app').insertAdjacentHTML('beforeend',popHTML());
   const f=D.focus&&document.getElementById(D.focus); if(f){ f.focus(); try{ f.setSelectionRange(f.value.length,f.value.length); }catch(e){} D.focus=null; }
  }catch(e){ console.error('StaffDesk',e); } };
-window.SPD={pickBtn,week:weekView};
+window.SPD={pickBtn,week:weekView,D};   /* D: the staff home reads picks waiting and ready-for-bechina from here (StaffHome.html, Needs me today) */
 
 /* ---------- clicks, typing ---------- */
 document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-sd]'); if(!b) return; const a=b.dataset.sd, sid=b.dataset.id;

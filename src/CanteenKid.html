@@ -90,7 +90,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
   /* ---- v378 CANTEEN, simple enough for a 6-year-old (Head of School 2026-11-17 "total overhaul"):
      1 See your money (big, in dollars AND coins)  2 Tap food (too expensive = locked 🔒)  3 Buy: the money comes off right away
      4 The canteen taps Done when it hands you the food (or Still waiting). Money coach tips teach as you shop.
-     The Pathfinder quarter rule is shown with a picture of a dollar cut into 4 quarters. ---- */
+     The Level Pass quarter rule is shown with a picture of a dollar cut into 4 quarters. ---- */
   const O={open:false,menu:null,cash:null,pf:1,story:[],tray:{},busy:false,err:'',order:null,recent:[],cid:null,poll:null,lastStatus:null,step:'shop',last:null,tip:0,showStory:false};
   const ocss=document.createElement('style');
   ocss.textContent=`.cn-ord{margin-left:auto;border:0;border-radius:16px;padding:12px 18px;font-weight:900;font-size:18px;font-family:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,#F97316,#DB2777);box-shadow:0 8px 18px #DB277755;min-height:52px;white-space:nowrap}
@@ -152,12 +152,13 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
     return h||'<span class="sm" style="color:#fff">no coins yet</span>'; }
   function coinWords(c){ c=Math.max(0,Math.round(c)); const d=Math.floor(c/100), q=Math.floor((c%100)/25), r=c%25, w=[];
     if(d) w.push(d+(d===1?' dollar':' dollars')); if(q) w.push(q+(q===1?' quarter':' quarters')); if(r) w.push(r+(r===1?' cent':' cents')); return w.join(' and ')||'nothing yet'; }
-  /* the Pathfinder quarter rule, as a picture (also used by the Tashbar Store and the home card) */
+  /* the 🎫 LEVEL PASS rule (HoS DECISION 2026-11-20; server: PathfinderLevel.js), as a picture of a dollar cut into 4 quarters
+     (also used by the Tashbar Store and the home card). rate < 1 = a level he is on still waits for its quick level check. */
   window.tlQuarterHTML=function(rate,mini){ if(!(rate<1)) return ''; const on=Math.max(1,Math.min(3,Math.round(rate*4))), get=on*25;
-    return `<div class="tlq ${mini?'mini':''}" role="note"><div class="h">🧭 Lesson money: finish your Pathfinder to get ALL of it!</div>
-      <div class="row"><span class="bill">$1.00</span><span>you earn</span><span>➜</span><span class="split">${[0,1,2,3].map(k=>`<i class="${k<on?'on':''}">25¢</i>`).join('')}</span><span>➜</span><span>you get only <span style="font-size:22px">${get}¢</span></span></div>
+    return `<div class="tlq ${mini?'mini':''}" role="note"><div class="h">🎫 Take the quick level check to unlock full pay at this level — and skip what you already know.</div>
+      <div class="row"><span class="bill">$1.00</span><span>you earn</span><span>➜</span><span class="split">${[0,1,2,3].map(k=>`<i class="${k<on?'on':''}">25¢</i>`).join('')}</span><span>➜</span><span>before the check: <span style="font-size:22px">${get}¢</span></span></div>
       <div class="qs">A <b>quarter</b> = 25¢. <b>4 quarters = $1.00.</b>${mini?' Your canteen money is not cut.':''}</div>
-      <p>A <b>quarter</b> is a coin worth <b>25 cents</b>. <b>4 quarters make 1 dollar.</b> Until you finish your Pathfinder, you get only ${on===1?'1 quarter':on+' quarters'} (${get}¢) for every dollar you earn in lessons. Finish it, and you get all 4 quarters: the whole dollar! Canteen money from your teachers is never cut.</p></div>`; };
+      <p>A <b>quarter</b> is a coin worth <b>25 cents</b>. <b>4 quarters make 1 dollar.</b> In a level where you have not taken the level check yet, lessons give you ${on===1?'1 quarter':on+' quarters'} (${get}¢) for every dollar. The check comes by itself before your first lesson in a new level: a few questions, about 3 minutes. Take it (any score) and you get your 🎫 Level Pass: all 4 quarters, the whole dollar! Skills you get right are skipped. Canteen money from your teachers is never cut.</p></div>`; };
   const TIPS=[
     ['Need or want?','Water is a need. A treat is a want. Both are OK. Just think before you buy.'],
     ['Save some!','Money you do not spend today is still yours tomorrow. You can save up for something bigger.'],
@@ -216,7 +217,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
   }
   document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&O.open) oClose(); });
   function sayNow(){ const o=O.order; let t='You have '+coinWords(cents(O.cash))+' of canteen money. ';
-    if(O.pf<1) t+='Until you finish your Pathfinder, you get only one quarter, 25 cents, for every dollar you earn. ';
+    if(O.pf<1) t+='Take the quick level check to unlock full pay at your level, and skip what you already know. Until then, lessons there give one quarter, 25 cents, for every dollar. ';
     if(o) t+=o.status==='picked'?'You got your food.':o.seen?'The canteen saw your order. It is still being made.':'You paid. Go to the canteen and say your name.';
     else if(O.step==='check') t+='Do you want to pay '+coinWords(trayCents())+'? Tap yes, buy it. Or tap no, go back.';
     else t+='Tap the food you want. Food with a lock costs more than you have.';

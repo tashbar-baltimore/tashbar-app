@@ -6,14 +6,24 @@
    EXISTING FEATURE by pressing that feature's own button (same rules, same screens), so nothing is lost and nothing changes on the server.
    The old banners, the second search bar, the floating buttons and the "More" menu are hidden; their features are all reachable from here.
    Everyone sees everything for now (HoS: "let's leave out who sees what"). Off switch: window.TL_STAFF_HOME = false.
+   CALMER PORTAL (HoS 2026-11-20: "still seems very busy ... you have to go a lot of places to do stuff"):
+   - ONE BOY CARD: his map on top, then one row of actions (Pick a lesson, Set level, Shout-out, Torah moment, Note, Parent report, Written work,
+     Pathfinder report, Sign-in code, Full details & parents, His day). Every boy name, Open button, search result and grid name opens it. Each
+     action opens the tool that already does it (same screens, same server calls); when that tool closes, his card comes back.
+   - Home = greeting, search, and ONE "Needs me today" list (also on Today). One "Start a class lesson". A tool you cannot use is not shown.
+   - Pages that used to leave the portal (sign-off, canteen, Pathfinder report, written work, lesson preview) open inside it in a full-screen
+     frame with a "Back to the staff portal" bar. One "Show: my class" choice for Students, Today and Reports (the staff screen's own groups).
    No double slash in this file. */
+/* NO FLASH (HoS 2026-11-20): html.sh-boot is set in the page head (StaffGrid.js sgPage_) and again at the top of this file, so the old pills,
+   banners and header never paint while the boys load. */
+html.sh-boot #acPill,html.sh-boot #slBar,html.sh-boot #dm-band,html.sh-boot #sbBan,html.sh-boot #lbx-btn,html.sh-boot #ss-btn,html.sh-boot #dp-btn,html.sh-boot #acCur,html.sh-boot #acOpen,html.sh-boot #app header.top,
 body.sh-on #acPill,body.sh-on #slBar,body.sh-on #dm-band,body.sh-on #sbBan,body.sh-on #lbx-btn,body.sh-on #ss-btn,body.sh-on #dp-btn,body.sh-on #acCur,body.sh-on #acOpen{display:none!important}
-body.sh-on #app header.top{display:none!important}
+body.sh-on #app header.top,body.sh-on #sh-find #giBtn{display:none!important}
 /* OLD SCREENS RETIRED (HoS 2026-11-20 "remove old staff screens"): the old tab row, its Needs-you strips, action bar and hint are gone;
    a tool that still lives in the old screen (Parsha of the week, the grids' export and print ...) opens alone, with a Back bar */
 body.sh-on #app > nav.sp-tabs,body.sh-on #app > .sp-now,body.sh-on #app > .bar,body.sh-on #app > .hint,body.sh-on #app > .now{display:none!important}
 body.sh-on.sh-page #app{display:block!important;padding:0!important;margin:0!important;min-height:0!important;background:none!important}
-body.sh-on.sh-page #app > *:not(.shade):not(aside.drawer){display:none!important}   /* the old tools' drawers slide over the new page; nothing old behind them */
+body.sh-on.sh-page #app > *:not(.shade):not(aside.drawer):not(.sd-shade):not(.sd-pop):not(.sd-rep-wrap):not(.sl-shade):not(.sl-pop){display:none!important}   /* the old tools' drawers and pop-ups (shout-out, Torah moment, parent report) slide over the new page; nothing old behind them */
 #sh-top{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px max(16px,env(safe-area-inset-left,0px));background:#16202C;color:#fff;font-family:system-ui,"Segoe UI",Roboto,sans-serif}
 #sh-top .brand{font:900 18px/1 system-ui,sans-serif;margin-right:6px;white-space:nowrap}
 #sh-top nav{display:flex;flex-wrap:wrap;gap:4px;flex:1}
@@ -84,7 +94,7 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-page .mp span b{color:#2F5BD3} #sh-page .mp .none{background:#FCE9E6;color:#A12E21} #sh-page .mp .done{background:#E8F6EF;color:#14633F}
 #sh-dlg .msub{border:1px solid #E6EAF2;border-radius:16px;padding:12px 14px;margin:10px 0}
 #sh-dlg .msub h4{margin:0 0 4px;font:900 17px system-ui,sans-serif} #sh-dlg .msub .meta{color:#5B6676;font-size:13.5px;margin-bottom:8px}
-#sh-dlg .bar{height:10px;border-radius:999px;background:#EEF1F6;overflow:hidden;margin:6px 0 10px} #sh-dlg .bar i{display:block;height:100%;background:#178A5E;border-radius:999px}
+#sh-dlg .mbar{height:10px;border-radius:999px;background:#EEF1F6;overflow:hidden;margin:6px 0 10px} #sh-dlg .mbar i{display:block;height:100%;background:#178A5E;border-radius:999px}
 #sh-dlg .path{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px}
 #sh-dlg .path span{display:inline-flex;align-items:center;gap:5px;border:2px solid #E2E8F0;border-radius:10px;padding:5px 9px;font:700 13px/1.2 system-ui,sans-serif;background:#fff}
 #sh-dlg .path .ok{border-color:#9FD8BC;background:#E8F6EF;color:#14633F} #sh-dlg .path .goal{border-color:#2F5BD3;background:#2F5BD3;color:#fff} #sh-dlg .path .end{border-style:dashed}
@@ -160,6 +170,44 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-dlg .foot button{border:0;border-radius:14px;padding:13px 20px;font:900 15.5px system-ui,sans-serif;cursor:pointer;min-height:50px}
 #sh-dlg .foot .go{background:#16202C;color:#fff} #sh-dlg .foot .go[disabled]{opacity:.4;cursor:default} #sh-dlg .foot .no{background:#F1F5F9;color:#16202C}
 #sh-dlg .err{color:#B42318;font-weight:800;margin-top:10px}
+/* ===== NEEDS ME TODAY (HoS 2026-11-20: "very busy ... you have to go a lot of places"): ONE list, every row one clear action ===== */
+#sh-needs{background:#fff;border:2px solid #2F5BD3;border-radius:20px;padding:14px 18px;margin:0 0 18px;box-shadow:0 8px 24px rgba(47,91,211,.10)}
+#sh-needs h2{margin:0 0 6px;font:900 19px system-ui,sans-serif;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#sh-needs h2 small{font:700 13px system-ui,sans-serif;color:#5B6676}
+#sh-needs .nd{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #EEF1F6}
+#sh-needs .nd:first-of-type{border-top:0}
+#sh-needs .nd i{font-style:normal;flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:21px;background:#EEF2FF}
+#sh-needs .nd.hot i{background:#FCE9E6} #sh-needs .nd.ok i{background:#E8F6EF}
+#sh-needs .nd b{display:block;font:800 16px/1.25 system-ui,sans-serif} #sh-needs .nd small{display:block;color:#5B6676;font-size:13.5px;line-height:1.4}
+#sh-needs .nd .go{margin-left:auto;flex:none;border:0;border-radius:12px;padding:10px 16px;background:#16202C;color:#fff;font:800 14.5px system-ui,sans-serif;cursor:pointer;min-height:44px;white-space:nowrap}
+#sh-needs .nm{all:unset;cursor:pointer;color:#2F5BD3;font-weight:800;text-decoration:underline;text-underline-offset:2px}
+#sh-needs .more{margin:8px 0 0;color:#5B6676;font:700 13.5px system-ui,sans-serif}
+#sh-needs .okk{display:flex;align-items:center;gap:10px;font:800 16px system-ui,sans-serif;color:#178A5E;padding:6px 0}
+@media (max-width:600px){ #sh-needs{padding:12px 14px} #sh-needs .nd{flex-wrap:wrap} #sh-needs .nd .go{margin-left:56px} }
+#sh-page [data-sh][hidden],#sh-dlg [hidden]{display:none!important}
+#sh-page .grp{border:1px solid #CBD3E3;border-radius:12px;padding:11px 12px;font:700 15px system-ui,sans-serif;background:#fff;min-height:46px;max-width:100%}
+#sh-page button.nmb.nmb{all:unset;display:block;cursor:pointer;font:800 16px/1.25 system-ui,sans-serif;min-height:0;margin:0;padding:0;border:0;background:none}
+#sh-page button.nmb.nmb:hover,#sh-page button.nmb.nmb:focus-visible{color:#2F5BD3;text-decoration:underline}
+/* ===== THE BOY CARD: his map on top, then one row of actions (every action opens the tool that already does it) ===== */
+#sh-dlg.boy .box{width:min(860px,100%)}
+#sh-dlg .bhd{display:flex;align-items:flex-start;gap:12px} #sh-dlg .bhd .x{margin-left:auto;flex:none;border:0;background:#F1F5F9;border-radius:12px;width:44px;height:44px;font-size:20px;cursor:pointer}
+#sh-dlg .bnow{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px} #sh-dlg .bnow span{font:700 13px system-ui,sans-serif;background:#F1F5F9;border-radius:999px;padding:5px 10px} #sh-dlg .bnow .hot{background:#FCE9E6;color:#A12E21} #sh-dlg .bnow .ok{background:#E8F6EF;color:#14633F}
+#sh-dlg .acts{position:sticky;bottom:-22px;background:#fff;margin:14px -22px -22px;padding:12px 22px 16px;border-top:1px solid #E6EAF2;border-radius:0 0 22px 22px;display:flex;flex-wrap:wrap;gap:8px;box-shadow:0 -8px 18px rgba(15,23,42,.06)}
+#sh-dlg .acts button{border:1px solid #D9DFF0;background:#F8FAFF;color:#16202C;border-radius:999px;padding:9px 14px;font:800 14px/1.2 system-ui,sans-serif;cursor:pointer;min-height:44px;white-space:nowrap}
+#sh-dlg .acts button:hover,#sh-dlg .acts button:focus-visible{border-color:#2F5BD3;background:#EEF3FF}
+#sh-dlg .acts button.pri{background:#16202C;color:#fff;border-color:#16202C}
+#sh-dlg .acts h3{grid-column:1/-1;margin:0}
+#sh-dlg .opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:2px solid #E2E8F0;background:#fff;border-radius:16px;padding:14px;margin:0 0 10px;cursor:pointer;font:inherit;min-height:64px}
+#sh-dlg .opt:hover,#sh-dlg .opt:focus-visible{border-color:#2F5BD3;background:#F5F8FF}
+#sh-dlg .opt i{font-style:normal;font-size:24px;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#EEF2FF;flex:none}
+#sh-dlg .opt b{display:block;font:900 16.5px system-ui,sans-serif} #sh-dlg .opt small{display:block;color:#5B6676;font-size:13.5px;margin-top:2px}
+@media (max-width:760px){ #sh-dlg .acts{margin:14px -16px -16px;padding:10px 16px 14px;bottom:-16px;gap:6px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin} #sh-dlg .acts button{font-size:13.5px;padding:8px 12px;flex:none} }   /* phone: one row that scrolls sideways */
+/* ===== PAGES THAT USED TO LEAVE THE PORTAL (sign-off, canteen, Pathfinder report, written work, lesson preview) open in here, full screen ===== */
+#sh-fr{position:fixed;inset:0;z-index:2147483400;background:#fff;display:flex;flex-direction:column}
+#sh-fr .frb{display:flex;align-items:center;gap:12px;padding:8px max(12px,env(safe-area-inset-left,0px));background:#16202C;color:#fff;font:800 15px system-ui,sans-serif;flex:none}
+#sh-fr .frb button{border:0;border-radius:999px;padding:10px 16px;background:#FDE047;color:#16202C;font:900 14.5px system-ui,sans-serif;cursor:pointer;min-height:44px;white-space:nowrap}
+#sh-fr .frb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#sh-fr iframe{flex:1;width:100%;border:0;background:#fff}
 @media (max-width:760px){ #sh-page .st-row{grid-template-columns:28px minmax(0,1fr) auto;grid-template-areas:"c n g" "c l l" "c b b"} #sh-page .st-row input{grid-area:c;align-self:start;margin-top:4px} #sh-page .st-nm{grid-area:n} #sh-page .st-gr{grid-area:g} #sh-page .st-lv{grid-area:l} #sh-page .st-b{grid-area:b} #sh-page .st-b button{flex:1} #sh-dlg .box{padding:16px} #sh-dlg h2{font-size:20px} }
 </style>
 <script>
@@ -173,18 +221,17 @@ var A={
  find:['🔎','Find a student','One page with everything about a boy: name, grade, level, parents, code.','[data-dmband=find]'],
  add:['➕','Add a student','Add a new boy and give him his sign-in code.','[data-act=add]','app'],
  nolevel:['🎯','Boys with no level','Set a starting level for each boy.','st:nolevel'],
- setlv:['🎯','Set levels','Pick a boy, tap Set level, choose the subject and level.','st:all'],
  levels:['🧭','Levels overview','Where every boy is; set or change his level. Boys with no level are listed first.','tab:lv'],
  classes:['🏫','Class lists and grades','Who is in which class and grade; move boys up a grade.','#giBtn'],
- groups:['👥','Groups','Make groups of boys to teach or assign together.','[data-act=grp]','app'],
- mycls:['🧑‍🏫','My classes','The classes you teach.','[data-sx=cls]','app'],
+ groups:['👥','Groups','Boys working on the same step right now: teach them together.','[data-act=grp]','app'],
+ mycls:['🧑‍🏫','My classes','The classes you teach: who is in each one.','[data-sx=cls]','app'],
  now:['📱','Walk-around','Big, simple view of who needs you, for walking the room.','tab:now'],
  today:['📊','Today in detail','The full grid: every boy, every subject, today.','tab:today'],
- tdnow:['📅','Today','Who needs you, who is working, who has not started.','area:today'],
- rpnow:['🌳','Steps report','Steps climbed this week, who is moving and who is stuck.','area:reports'],
- tm:['🔒','Teacher mode','Lock the boys’ screens to what you are teaching.','[data-act=tm]','app'],
+ picks:['📌','Picked lessons','The lessons you picked for boys, and which are done.','tab:today'],
+ tm:['🔒','Teacher mode','Pick the boys and one lesson; their screens show only that lesson.','[data-act=tm]','app'],
+ start:['🧑‍🏫','Start a class lesson','Teach one lesson to the class: their screens show only that lesson until class ends.','dlg:start'],
  msg:['✉️','Messages','Messages with boys and staff.','[data-sx=msg]','app'],
- points:['⭐','Tashbar Points (daily sign-off)','Attendance, on time, work and middos for your class.','a.tb[href*="so=1"]'],
+ points:['⭐','Tashbar Points','Daily sign-off: attendance, on time, work and middos for your class.','a.tb[href*="so=1"]'],
  tree:['🌳','Curriculum tree','Every skill from Kindergarten to 8th grade, step by step.','sf:ENGLISH'],
  see:['👀','See what the kids see','Play any lesson exactly the way a boy sees it.','[data-sb=see]'],
  lib:['📚','Library & Assign','Find any lesson and assign it to boys or groups.','#lbx-btn'],
@@ -193,15 +240,17 @@ var A={
  myles:['📝','My lessons','Lessons you wrote.','[data-sx=les]','app'],
  lk:['📜','Kodesh ladder','Which Limudei Kodesh lessons are built.','[data-act=lk]','app'],
  map:['📚','Curriculum map','The curriculum map by subject.','[data-act=map]','app'],
- wk:['📜','Parsha of the week & Arena','Set the Parsha of the week and the Chumash page; open or close the Chavrusa Arena; each boy’s week.','tab:wk'],
+ wk:['📅','This week','The Parsha of the week and the Chumash page, the Chavrusa Arena, and each boy’s week.','tab:wk'],
  gs:['📚','General Studies grid','Every boy across the General Studies subjects. Export or print it.','tab:gs'],
- lkt:['📜','Limudei Kodesh grid','Every boy across the Limudei Kodesh subjects. Export or print it.','tab:lk'],
+ lkt:['📜','Limudei Kodesh grid','Every boy across the Limudei Kodesh subjects, and who is ready for a bechina.','tab:lk'],
+ ready:['🎓','Ready for a level bechina','Boys who finished a whole Kodesh level in the app.','ready'],
+ slip:['📉','Automatic and slipping','Skills a boy mastered and then missed in review.','rv:all'],
  stuck:['🧩','Where kids get stuck','The questions and lessons boys get stuck on most.','#ss-btn'],
- rep:['🚩','Reports','Reports from boys and staff about lessons.','[data-act=rep]','app'],
- month:['🏆','This month','The month’s stars and progress.','[data-act=month]','app'],
+ rep:['🚩','Problem reports','Reports from boys and staff about lessons, and the questions most boys miss.','[data-act=rep]','app'],
+ month:['🏆','This month','The month’s stars, most improved, and certificates.','[data-act=month]','app'],
  staff:['👤','Staff accounts','Add staff and set their codes.','[data-sx=stf]','app'],
  access:['🔐','Access & Parents','Who can see what, and parent sign-ins.','#acOpen'],
- fam:['📨','Families','Messages and updates for families.','[data-act=fam]','app'],
+ fam:['📨','Families','The Friday message for each family, and parents’ contacts.','[data-act=fam]','app'],
  schools:['🏫','Schools & Families','Schools, families, homeschool pods and groups.','[data-sb=open]'],
  store:['🏪','Store orders','Prizes the boys bought: hand out or refund.','[data-sy=open]','app'],
  canteen:['🍎','Canteen & menu','The canteen kiosk and its menu.','a.tb[href*="canteen=1"]'],
@@ -209,51 +258,94 @@ var A={
 };
 var AREAS=[['home','🏠','Home'],['students','🧑‍🎓','Students'],['today','📅','Today'],['curriculum','🌳','Curriculum'],['reports','📊','Reports'],['school','🏫','School']];
 var PAGE={
- students:{t:'Students',lead:'Find a boy, add a boy, set his level, and organize classes and groups.',groups:[['The boys',['find','add','levels']],['Classes and groups',['classes','groups','mycls']]]},
- curriculum:{t:'Curriculum',lead:'What we teach, in order, and every lesson in it.',groups:[['See it',['tree','see','cmap']],['Use it',['lib','dept','myles']],['Check it',['lk','map']]]},
- reports:{t:'Reports',lead:'How the boys are doing.',groups:[['Progress',['today','wk','gs','lkt','month']],['Problems',['stuck','rep']]]},
- school:{t:'School',lead:'Staff, families, the store, the canteen and school settings.',groups:[['People',['staff','access','fam','schools']],['School life',['points','store','canteen','music']]]}
+ curriculum:{t:'Curriculum',lead:'What we teach, in order, and every lesson in it.',groups:[['See it',['see','cmap']],['Use it',['lib','dept','myles']],['Check it',['lk','map']]]}
 };
-var HOME=[['students','Students','Find a boy, add a boy, set his level.',['find','add','setlv','classes']],['today','Today','What is happening right now.',['tdnow','tm','msg','points']],
- ['reports','Reports','Steps climbed, who is moving, who is stuck.',['rpnow','stuck','gs','month']],['school','School','Staff, families, store and canteen.',['staff','access','store','canteen']]];
 var S={area:'home', from:'home'};
 function body(){ return document.body; }
 function setMode(page,feat){ body().classList.toggle('sh-page',!!page); body().classList.toggle('sh-feat',!!feat); }
 function slot(){ var bar=q('#slBar'), f=q('#sh-find'); if(bar&&f&&bar.parentNode!==f) f.appendChild(bar); }
 function top(){ var t=q('#sh-top'); if(!t){ t=document.createElement('div'); t.id='sh-top'; body().insertBefore(t,body().firstChild); var b=document.createElement('div'); b.id='sh-back'; t.parentNode.insertBefore(b,t.nextSibling); var p=document.createElement('div'); p.id='sh-page'; b.parentNode.insertBefore(p,b.nextSibling); }
-  t.innerHTML='<div class="brand">Tashbar · Staff</div><nav aria-label="Staff areas">'+AREAS.map(function(a){ return '<button type="button" data-sh="area" data-v="'+a[0]+'"'+(S.area===a[0]?' class="on" aria-current="page"':'')+'>'+a[1]+' '+a[2]+'</button>'; }).join('')+'</nav><button type="button" class="out" data-sh="out">Sign out</button>'; }
-function tile(k){ var a=A[k]; return '<button type="button" class="tile" data-sh="do" data-k="'+k+'"><i>'+a[0]+'</i><span><b>'+E(a[1])+'</b><small>'+E(a[2])+'</small></span></button>'; }
-function btn(k){ var a=A[k]; return '<button type="button" data-sh="do" data-k="'+k+'">'+a[0]+' '+E(a[1])+'</button>'; }
+  t.style.display=''; t.innerHTML='<div class="brand">Tashbar · Staff</div><nav aria-label="Staff areas">'+AREAS.map(function(a){ return '<button type="button" data-sh="area" data-v="'+a[0]+'"'+(S.area===a[0]?' class="on" aria-current="page"':'')+'>'+a[1]+' '+a[2]+'</button>'; }).join('')+'</nav><button type="button" class="out" data-sh="out">Sign out</button>'; }
+/* a tool this staff member cannot use (head only, admins only ...) is not shown at all; it appears by itself once its own button exists */
+function avail(k){ var a=A[k]; if(!a) return false; var how=a[3]; if(/^(sf|area|st|dlg|rv):/.test(how)||how==='ready') return true;
+  if(/^tab:/.test(how)) return !!q('#app [data-sp=tab][data-t="'+how.slice(4)+'"]'); return !!q(how); }
+function hid(k){ return avail(k)?'':' hidden'; }
+function tile(k){ var a=A[k]; return '<button type="button" class="tile" data-sh="do" data-k="'+k+'"'+hid(k)+'><i>'+a[0]+'</i><span><b>'+E(a[1])+'</b><small>'+E(a[2])+'</small></span></button>'; }
+function btn(k,cls){ var a=A[k]; return '<button type="button"'+(cls?' class="'+cls+'"':'')+' data-sh="do" data-k="'+k+'"'+hid(k)+'>'+a[0]+' '+E(a[1])+'</button>'; }
+function tilesHTML(ks){ return '<div class="tiles">'+ks.map(tile).join('')+'</div>'; }
+setInterval(function(){ document.querySelectorAll('#sh-page [data-sh=do][data-k]').forEach(function(b){ var on=avail(b.dataset.k); if(b.hidden===on) b.hidden=!on; });
+  document.querySelectorAll('#sh-page .grp-slot').forEach(function(s){ if(!s.firstChild&&groups().length) s.innerHTML=grpSel(); }); },1200);
 function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar'); if(bar&&p.contains(bar)) body().appendChild(bar);   /* keep the search bar: a redraw must not throw it away */
   setMode(true,false); var h='';
   if(S.area==='home'){
-    h+='<div class="hello">'+E(hello())+'</div><h1>What would you like to do?</h1><p class="lead">Find a boy, see what needs you, or open any part of the school below.</p><div id="sh-find"></div>'+nextHTML()+schoolMapHTML()+'<div class="cards">';
-    h+='<div class="card cur"><h2 data-sh="area" data-v="curriculum"><span>🌳</span>Curriculum</h2><p>Every skill from Kindergarten to 8th grade, step by step: what comes first, what comes next, and how well it is taught. Tap a subject.</p><div class="btns">'
-      +[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')
-      +'<button type="button" class="sub" data-sh="do" data-k="see">👀 See what the kids see</button><button type="button" class="sub" data-sh="do" data-k="lib">📚 Library & Assign</button></div></div>';
-    HOME.forEach(function(c){ var ic=AREAS.filter(function(a){ return a[0]===c[0]; })[0][1]; h+='<div class="card"><h2 data-sh="area" data-v="'+c[0]+'"><span>'+ic+'</span>'+E(c[1])+' ›</h2><p>'+E(c[2])+'</p><div class="btns">'+c[3].map(btn).join('')+'</div></div>'; });
-    h+='</div>';
+    h+='<div class="hello">'+E(hello())+'</div><h1>What needs you today</h1><p class="lead">Find a boy, or start with the first thing on the list.</p><div id="sh-find"></div>'+needsHTML();
   } else if(S.area==='students'){ h=studentsHTML();
   } else if(S.area==='today'){ h=todayHTML();
   } else if(S.area==='reports'){ h=reportHTML();
   } else if(S.area==='school'){ h=schoolHTML();
-  } else { var P=PAGE[S.area]; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>'+(S.area==='students'?'<div id="sh-find"></div>':'');
-    if(S.area==='curriculum') h+='<div class="cards" style="margin-bottom:16px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill, step by step. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>'+schoolMapHTML();
-    P.groups.forEach(function(g){ var ks=g[1].filter(function(k){ return k!=='tree'||S.area!=='curriculum'; }); h+='<h3>'+E(g[0])+'</h3><div class="tiles">'+ks.map(tile).join('')+'</div>'; }); }
-  p.innerHTML=h; slot(); window.scrollTo(0,0); if(S.area==='home'||S.area==='students'||S.area==='today'||S.area==='curriculum'||S.area==='reports') loadKM(false); if(S.area==='today') loadToday(); if(S.area==='reports') loadReport(); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
-/* NEXT STEPS: read the counts the staff screen already shows, and turn each one that needs someone into one clear row with one button */
+  } else { var P=PAGE[S.area]; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>';
+    h+='<div class="cards" style="margin-bottom:16px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill from Kindergarten to 8th grade, step by step: what comes first, what comes next. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>'+schoolMapHTML();
+    P.groups.forEach(function(g){ h+='<h3>'+E(g[0])+'</h3>'+tilesHTML(g[1]); }); }
+  p.innerHTML=h; slot(); window.scrollTo(0,0); if(S0().boys&&(S.area==='home'||S.area==='students'||S.area==='today'||S.area==='curriculum'||S.area==='reports')) loadKM(false);   /* the Kodesh map only once the boys are loaded */ if(S.area==='home'||S.area==='today') loadNeeds(false); if(S.area==='today') loadToday(); if(S.area==='reports') loadReport(); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
 function num(sel){ var e=q(sel); if(!e) return 0; var m=String(e.textContent||'').match(/(\d+)/g); return m?Number(m[m.length-1]):0; }
-function steps(){ var r=[];
-  var C=null; try{ C=window.SPX&&window.SPX.counts&&window.SPX.counts(); }catch(e){}   /* the staff screen's own numbers (StaffPlus.html), the same on every screen size */
-  var help=C?C.help:num('#app [data-sp=gsf][data-f=help]'), nolv=C?C.nolevel:num('#app [data-sp=gsf][data-f=nolevel]'), store=num('#app [data-sy=open] .n'), msgs=num('#app [data-sx=msg] .n'), gr=num('#giBtn b'), idle=C?(C.idle||0):num('#app [data-sp=gsf][data-f=idle]');
-  var d0=S0(); r.known=!!(C&&(C.boys>0||(Array.isArray(d0.boys)&&d0.boys.filter(function(b){ return !b.test; }).length===0)))||!!q('#app [data-sp=gsf][data-f=help]');
-  if(help) r.push(['#C8402F',help,help===1?'1 boy needs help right now':help+' boys need help right now','Stuck, or failing the same check.','tdnow','See who →'.replace(' →','')]);
-  if(nolv) r.push(['#B87D06',nolv,nolv===1?'1 boy has no level yet':nolv+' boys have no level yet','Until he has a level, the app cannot pick his lessons.','nolevel','Set levels']);
-  if(gr) r.push(['#7C5CC4',gr,gr===1?'1 grade to confirm':gr+' grades to confirm','New boys or a new school year.','classes','Confirm grades']);
-  if(store) r.push(['#178A5E',store,store===1?'1 prize to hand out':store+' prizes to hand out','Boys bought them in the Tashbar Store.','store','Store orders']);
-  if(msgs) r.push(['#2F5BD3',msgs,msgs===1?'1 new message':msgs+' new messages','From boys or staff.','msg','Read']);
-  if(idle&&r.length<5) r.push(['#6E7A8A',idle,idle===1?'1 boy has not worked today':idle+' boys have not worked today','A nudge may help.','tdnow','See who']);
+
+/* ================= MY CLASS: one "Show" choice for Students, Today and Reports. It is the staff screen's own class/group choice
+   (StaffPlus.html "Show: My classes / Groups", sgGroups, already loaded), so the old tools follow it too. ================= */
+function groups(){ try{ return (window.SPX&&window.SPX.SP&&window.SPX.SP.groups)||[]; }catch(e){ return []; } }
+function grpCur(){ try{ return (window.SPX&&window.SPX.SP&&window.SPX.SP.grp)||''; }catch(e){ return ''; } }
+function grpOne(){ var id=grpCur(); return id?groups().filter(function(g){ return g.id===id; })[0]||null:null; }
+function grpSet(){ var g=grpOne(); if(!g) return null; var o={}; (g.sids||[]).forEach(function(s){ o[s]=1; }); return o; }
+function inG(id){ var G=grpSet(); return !G||!!G[id]; }
+function grpLabel(){ var g=grpOne(); return g?g.name:''; }
+function grpSel(){ var G=groups(); if(!G.length) return ''; var cur=grpCur();
+  var opt=function(k,lab){ var L=G.filter(function(g){ return g.kind===k; }); return L.length?'<optgroup label="'+lab+'">'+L.map(function(g){ return '<option value="'+E(g.id)+'"'+(g.id===cur?' selected':'')+'>'+E(g.name)+' ('+(g.sids||[]).length+')</option>'; }).join('')+'</optgroup>':''; };
+  return '<select class="grp" data-shgrp="1" aria-label="Show which boys"><option value="">Show: all my boys</option>'+opt('mine','My classes')+opt('class','Other classes')+opt('group','Groups')+'</select>'; }
+function grpSlot(){ return '<span class="grp-slot">'+grpSel()+'</span>'; }
+document.addEventListener('change',function(e){ var t=e.target; if(!t||!t.matches||!t.matches('select[data-shgrp]')) return; try{ window.SPX.SP.grp=t.value; localStorage.setItem('sp-grp',t.value); }catch(x){} try{ if(typeof window.render==='function') window.render(); }catch(x){} draw(); });
+
+/* ================= NEEDS ME TODAY: one list from everything the staff screen already knows. Every row: what it is, who, and ONE button
+   that opens the tool that already does it. Slipping skills, problem reports and store prizes are read a few seconds after the page
+   opens (sgReviewAll, sgReports, stStaffOrders: the same calls their own screens make), so the first screen stays fast. ================= */
+var ND={rv:null,rep:null,store:null,at:0,busy:false};
+function loadNeeds(force){ var t=tok(); if(!t||ND.busy||(!force&&ND.at&&Date.now()-ND.at<300000)) return; if(!ND.at&&!force&&!ND.ready) return; ND.busy=true;
+  Promise.all([srv('sgReviewAll',[t]).catch(function(){ return null; }),srv('sgReports',[t]).catch(function(){ return null; }),srv('stStaffOrders',[t]).catch(function(){ return null; })])
+   .then(function(r){ ND.rv=r[0]; ND.rep=r[1]; ND.store=r[2]; ND.at=Date.now(); ND.busy=false; redrawNeeds(); }); }
+setTimeout(function(){ ND.ready=true; if(S.area==='home'||S.area==='today') loadNeeds(true); },6000);
+function SS(){ try{ return (new Function('try{ return S; }catch(e){ return null; }'))()||{}; }catch(e){ return {}; } }
+function nowData(){ var s=SS(); return s&&s.now||null; }
+function todayData(){ try{ return window.SPX&&window.SPX.SP&&window.SPX.SP.today||null; }catch(e){ return null; } }
+function spd(k){ try{ return window.SPD&&window.SPD.D&&window.SPD.D[k]||null; }catch(e){ return null; } }
+function realBoys(){ return (S0().boys||[]).filter(function(b){ return !b.test; }); }
+function bName(id){ var b=(S0().boys||[]).filter(function(x){ return x.id===id; })[0]||byId(id); return b?b.name:id; }
+function nmBtn(id,nm){ return '<button type="button" class="nm" data-shb="'+E(id)+'">'+E(nm||bName(id))+'</button>'; }
+function names(L){ return L.slice(0,4).map(function(x){ return nmBtn(x.id,x.name); }).join(', ')+(L.length>4?' and '+(L.length-4)+' more':''); }
+function needRows(){ var r=[], boys=realBoys().filter(function(b){ return inG(b.id); });
+  var N=nowData(), urg=((N&&N.list)||[]).filter(function(x){ return x.kind!=='idle'&&inG(x.sid); });
+  urg.slice(0,6).forEach(function(x){ var w=NOWW[x.kind]||['❗',x.kind,function(){ return ''; }];
+    r.push({hot:1,ic:w[0],t:nmBtn(x.sid,x.name)+' · '+E(w[1]),s:E(w[2](x.n))+(x.skill?' on “'+E(skName(x.skill))+'”':'')+(x.at?' · '+E(ago(x.at)):''),go:'Open his card',act:'data-shb="'+E(x.sid)+'"'}); });
+  if(urg.length>6) r.push({hot:1,ic:'🆘',t:(urg.length-6)+' more boys need help right now',s:'Every one of them is in Today.',go:'Open Today',act:'data-sh="area" data-v="today"'});
+  var RD=spd('ready'); if(RD&&RD.ready){ var by={}; RD.ready.filter(function(x){ return inG(x.sid); }).forEach(function(x){ by[x.sid]=by[x.sid]||{id:x.sid,name:x.name}; }); var L=Object.keys(by).map(function(k){ return by[k]; });
+    if(L.length) r.push({ic:'🎓',t:L.length+(L.length===1?' boy is':' boys are')+' ready for a level bechina',s:names(L)+' finished a whole Kodesh level in the app.',go:'Give the bechina',act:'data-sh="do" data-k="ready"'}); }
+  var DK=spd('desk'); if(DK&&DK.picks){ var P=DK.picks.filter(function(p){ return !p.done&&inG(p.sid); });
+    if(P.length){ var old=P.filter(function(p){ return Date.now()-p.at>3*864e5; }).length, bs={}; P.forEach(function(p){ bs[p.sid]={id:p.sid,name:bName(p.sid)}; });
+      r.push({ic:'📌',t:P.length+' picked lesson'+(P.length===1?' is':'s are')+' not done yet',s:names(Object.keys(bs).map(function(k){ return bs[k]; }))+(old?' · '+old+' picked more than 3 days ago':''),go:'See the picks',act:'data-sh="do" data-k="picks"'}); } }
+  if(Array.isArray(ND.rv)){ var sl=ND.rv.filter(function(x){ return x.slip>0&&inG(x.id); });
+    if(sl.length) r.push({ic:'📉',t:sl.length+(sl.length===1?' boy has':' boys have')+' skills slipping',s:names(sl)+' · mastered, then missed in review. A short reteach helps.',go:'See who',act:'data-sh="do" data-k="slip"'}); }
+  var msgs=num('#app [data-sx=msg] .n'); if(msgs) r.push({ic:'✉️',t:msgs+' new message'+(msgs===1?'':'s'),s:'From boys or staff.',go:'Read',act:'data-sh="do" data-k="msg"'});
+  var store=num('#app [data-sy=open] .n')||(ND.store&&ND.store.waiting?ND.store.waiting.length:0);
+  if(store) r.push({ic:'🏪',t:store+' prize'+(store===1?'':'s')+' to hand out',s:'Boys bought them in the Tashbar Store.',go:'Hand them out',act:'data-sh="do" data-k="store"'});
+  var gr=num('#giBtn b'); if(gr&&avail('classes')) r.push({ic:'🏫',t:gr+' grade'+(gr===1?'':'s')+' to confirm',s:'New boys or a new school year.',go:'Confirm grades',act:'data-sh="do" data-k="classes"'});
+  var rp=ND.rep&&ND.rep.reports?ND.rep.reports.length:0; if(rp) r.push({ic:'🚩',t:rp+' problem report'+(rp===1?'':'s')+' about a lesson',s:'A boy or a teacher said a question looks wrong. Check it, then mark it fixed.',go:'See the reports',act:'data-sh="do" data-k="rep"'});
+  var nl=boys.filter(function(b){ var C=cellsOf(b.id); return !(C.MATH&&C.MATH.level)&&!(C.READ&&C.READ.level); });
+  if(nl.length) r.push({ic:'🎯',t:nl.length+(nl.length===1?' boy has':' boys have')+' no level yet',s:names(nl)+' · until he has a Math or Reading level, the app cannot pick his lessons.',go:'Set levels',act:'data-sh="do" data-k="nolevel"'});
+  var T=todayData(); if(T&&T.boys){ var tI={}; T.boys.forEach(function(x){ tI[x.id]=x; }); var idle=boys.filter(function(b){ var t=tI[b.id]; return !t||!((t.answers||0)+(t.kAnswers||0)); });
+    if(idle.length) r.push({ic:'💤',t:idle.length+(idle.length===1?' boy has':' boys have')+' not worked today',s:names(idle)+' · a nudge may help.',go:'See who',act:'data-sh="idle"'}); }
   return r; }
+function needsHTML(){ var r=needRows(), known=!!S0().boys, g=grpLabel();
+  return '<div id="sh-needs"><h2>👉 Needs me today'+(g?' <small>· '+E(g)+'</small>':'')+'</h2>'+(r.length?r.map(function(x){ return '<div class="nd'+(x.hot?' hot':'')+'"><i>'+x.ic+'</i><span><b>'+x.t+'</b><small>'+x.s+'</small></span><button type="button" class="go" '+x.act+'>'+E(x.go)+' →</button></div>'; }).join('')
+    :(known?'<div class="okk">✅ All caught up. Nothing needs you right now.</div>':'<div class="nd"><i>⏳</i><span><b>Loading the boys…</b><small>This takes a few seconds.</small></span></div>'))+'</div>'; }
+function redrawNeeds(){ var n=q('#sh-needs'); if(!n) return; var t=document.createElement('div'); t.innerHTML=needsHTML(); if(t.firstChild.innerHTML!==n.innerHTML) n.replaceWith(t.firstChild); }
+setInterval(function(){ if((S.area==='home'||S.area==='today')&&body().classList.contains('sh-page')) redrawNeeds(); },3000);
 function schoolMapHTML(){ var boys=(S0().boys||[]).filter(function(b){ return !b.test; }); if(!boys.length) return '<div id="sh-smap"></div>';
   var rows=[], stuck={};
   SUBJ.forEach(function(x){ var placed=0, units={}; boys.forEach(function(b){ var c=cellsOf(b.id)[x[0]]; if(!c||!c.level) return; placed++; var u=unitNow(c), key='Level '+c.level+(u.name?' · '+u.name:''); units[key]=(units[key]||0)+1;
@@ -264,8 +356,6 @@ function schoolMapHTML(){ var boys=(S0().boys||[]).filter(function(b){ return !b
   var h='<div id="sh-smap"><div id="sh-next" style="border-color:#16202C"><h2>🗺️ Where the boys are</h2>'+(rows.length?rows.join(''):'<div class="row"><span><b>No boy has a level yet.</b><small>Set levels so the app knows where each boy is on the map.</small></span><button type="button" class="go" data-sh="do" data-k="nolevel">Set levels →</button></div>');
   if(st.length) h+='<h2 style="margin-top:14px">🧱 Steps where boys are stuck</h2>'+st.map(function(id){ var x=stuck[id]; return '<div class="row"><span class="n" style="background:#C8402F">'+x.n+'</span><span><b>'+E(skName(id))+'</b><small>'+x.subj[1]+' '+E(x.subj[2])+' · '+x.n+' boy'+(x.n===1?'':'s')+' stuck here</small></span>'+(x.subj[3]?'<button type="button" class="go" data-sh="tree" data-s="'+x.subj[3]+'" data-id="'+E(id)+'">See it on the tree →</button>':'')+'</div>'; }).join('');
   return h+'</div></div>'; }
-function nextHTML(){ var r=steps(); return '<div id="sh-next"><h2>👉 Next steps</h2>'+(r.length?r.map(function(x){ return '<div class="row"><span class="n" style="background:'+x[0]+'">'+x[1]+'</span><span><b>'+E(x[2])+'</b><small>'+E(x[3])+'</small></span><button type="button" class="go" data-sh="do" data-k="'+x[4]+'">'+E(x[5])+' →</button></div>'; }).join(''):(r.known?'<div class="ok">✅ All caught up. Nothing needs you right now.</div>':'<div class="row"><span><b>Still loading the boys…</b><small>Or open Today to see who needs you.</small></span><button type="button" class="go" data-sh="area" data-v="today">Open Today →</button></div>'))+'</div>'; }
-setInterval(function(){ if(S.area==='home'&&body().classList.contains('sh-page')){ var n=q('#sh-next'); if(n){ var t=document.createElement('div'); t.innerHTML=nextHTML(); if(t.firstChild.innerHTML!==n.innerHTML) n.replaceWith(t.firstChild); } } },20000);
 function hello(){ var h=new Date().getHours(), nm=''; try{ nm=String(S0().staffName||'').split(' ')[0]; }catch(e){} return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(nm?', '+nm:''); }
 function S0(){ try{ return (typeof window.S==='object'&&window.S&&window.S.d)||(new Function('try{ return S&&S.d; }catch(e){ return null; }'))()||{}; }catch(e){ return {}; } }
 
@@ -281,19 +371,19 @@ function hint(key,n){ var x=LVN[key]; if(!x||!x[5]) return ''; return n===1?'Kin
 function hasLv(b,k){ var p=b.place&&b.place[k]; return p&&p.lv>0; }
 function noLevel(b){ return !hasLv(b,'MATH')&&!hasLv(b,'READ'); }
 function loadRoster(force){ if(ST.list&&!force) return drawStudents(); ST.err=''; srv('libRoster',[tok()]).then(function(r){ ST.list=(r&&r.boys||[]).filter(function(b){ return !b.test; }); drawStudents(); }).catch(function(e){ ST.err=String(e); drawStudents(); }); }
-function shown(){ var q=ST.q.trim().toLowerCase(); return (ST.list||[]).filter(function(b){ if(q&&String(b.name).toLowerCase().indexOf(q)<0) return false; if(ST.f==='nolevel'&&!noLevel(b)) return false; if(ST.g!=='all'&&String(b.grade)!==ST.g) return false; return true; }); }
+function shown(){ var q=ST.q.trim().toLowerCase(); return (ST.list||[]).filter(function(b){ if(q&&String(b.name).toLowerCase().indexOf(q)<0) return false; if(ST.f==='nolevel'&&!noLevel(b)) return false; if(ST.g!=='all'&&String(b.grade)!==ST.g) return false; if(!inG(b.id)) return false; return true; }); }
 function lvChips(b){ var out=[]; LV.forEach(function(x){ var p=b.place&&b.place[x[0]]; if(p&&p.lv>0) out.push('<span title="'+E(x[2])+'">'+x[1]+' '+E(x[2].split(' ')[0].replace(',',''))+' '+p.lv+'</span>'); });
   return noLevel(b)?'<span class="none">No Math or Reading level yet</span>'+out.join(''):out.join(''); }
-function studentsHTML(){ return '<div class="st-head"><div><h1>Students</h1><p class="lead" style="margin:0" id="st-count">Loading the boys…</p></div><div class="st-acts"><button type="button" class="shb" data-sh="do" data-k="add">➕ Add a student</button><button type="button" class="shb alt" data-sh="do" data-k="classes">🏫 Class lists & grades</button><button type="button" class="shb alt" data-sh="do" data-k="groups">👥 Groups</button></div></div>'
-  +'<div class="st-tools"><input id="st-q" type="search" placeholder="Search by name…" aria-label="Search students" value="'+E(ST.q)+'"><button type="button" class="chip'+(ST.f==='all'?' on':'')+'" data-st="f" data-v="all">Everyone</button><button type="button" class="chip'+(ST.f==='nolevel'?' on':'')+'" data-st="f" data-v="nolevel">No level yet<em id="st-nl"></em></button><select id="st-g" aria-label="Grade"><option value="all">All grades</option>'+['0','1','2','3','4','5','6','7','8'].map(function(g){ return '<option value="'+g+'"'+(ST.g===g?' selected':'')+'>'+(g==='0'?'Kindergarten':'Grade '+g)+'</option>'; }).join('')+'</select></div>'
+function studentsHTML(){ return '<div class="st-head"><div><h1>Students</h1><p class="lead" style="margin:0" id="st-count">Loading the boys…</p></div><div class="st-acts">'+btn('add','shb')+btn('classes','shb alt')+btn('groups','shb alt')+'</div></div>'
+  +'<div class="st-tools"><input id="st-q" type="search" placeholder="Search by name…" aria-label="Search students" value="'+E(ST.q)+'">'+grpSlot()+'<button type="button" class="chip'+(ST.f==='all'?' on':'')+'" data-st="f" data-v="all">Everyone</button><button type="button" class="chip'+(ST.f==='nolevel'?' on':'')+'" data-st="f" data-v="nolevel">No level yet<em id="st-nl"></em></button><select id="st-g" aria-label="Grade"><option value="all">All grades</option>'+['0','1','2','3','4','5','6','7','8'].map(function(g){ return '<option value="'+g+'"'+(ST.g===g?' selected':'')+'>'+(g==='0'?'Kindergarten':'Grade '+g)+'</option>'; }).join('')+'</select></div>'
   +'<div class="st-list" id="st-list"><div class="st-empty">Loading…</div></div>'
-  +'<h3>More tools</h3><div class="tiles">'+['mycls'].map(tile).join('')+'</div>'; }
+  +'<h3>More for students</h3>'+tilesHTML(['mycls','levels']); }
 function drawStudents(){ var L=q('#st-list'); if(!L) return; var c=q('#st-count'), nl=q('#st-nl');
   if(ST.err){ L.innerHTML='<div class="st-empty">Could not load the boys: '+E(ST.err)+'</div>'; return; }
   if(!ST.list){ L.innerHTML='<div class="st-empty">Loading…</div>'; return; }
   var all=ST.list, n=all.filter(noLevel).length; if(c) c.textContent=all.length+' boys'+(n?' · '+n+' still need a level':''); if(nl) nl.textContent=n?String(n):'';
   var a=shown(); if(!a.length){ L.innerHTML='<div class="st-empty">'+(all.length?'No boy matches.':'No students yet. Tap “Add a student”.')+'</div>'; selbar(); return; }
-  L.innerHTML=a.map(function(b){ var on=!!ST.sel[b.id]; return '<div class="st-row'+(on?' sel':'')+'"><input type="checkbox" data-st="pick" data-id="'+E(b.id)+'"'+(on?' checked':'')+' aria-label="Pick '+E(b.name)+'"><div class="st-nm"><b>'+E(b.name)+'</b></div><span class="st-gr">'+E(gName(b.grade)||'No grade')+'</span><div class="st-lv mp">'+((S0().boys||[]).some(function(x){ return x.id===b.id; })?mapChips(b.id):lvChips(b))+'</div><div class="st-b"><button type="button" class="lvb" data-mp="map" data-id="'+E(b.id)+'">🗺️ Map</button><button type="button" data-st="lv" data-id="'+E(b.id)+'">🎯 Set level</button><button type="button" data-st="open" data-id="'+E(b.id)+'">Open ›</button></div></div>'; }).join('');
+  L.innerHTML=a.map(function(b){ var on=!!ST.sel[b.id]; return '<div class="st-row'+(on?' sel':'')+'"><input type="checkbox" data-st="pick" data-id="'+E(b.id)+'"'+(on?' checked':'')+' aria-label="Pick '+E(b.name)+'"><div class="st-nm"><button type="button" class="nmb" data-shb="'+E(b.id)+'">'+E(b.name)+'</button></div><span class="st-gr">'+E(gName(b.grade)||'No grade')+'</span><div class="st-lv mp">'+((S0().boys||[]).some(function(x){ return x.id===b.id; })?mapChips(b.id):lvChips(b))+'</div><div class="st-b"><button type="button" data-st="lv" data-id="'+E(b.id)+'">🎯 Set level</button><button type="button" class="lvb" data-shb="'+E(b.id)+'">Open ›</button></div></div>'; }).join('');
   selbar(); }
 function selbar(){ var ids=Object.keys(ST.sel).filter(function(k){ return ST.sel[k]; }), bar=q('#sh-selbar');
   if(!ids.length||S.area!=='students'){ if(bar) bar.remove(); return; }
@@ -302,8 +392,8 @@ function selbar(){ var ids=Object.keys(ST.sel).filter(function(k){ return ST.sel
 function byId(id){ return (ST.list||[]).filter(function(b){ return b.id===id; })[0]; }
 function dlgOpen(ids){ ST.dlg={ids:ids,key:null,lv:0,err:'',busy:false}; dlgDraw(); }
 function refreshMap(){ loadKM(true); srv('sgLoad',[tok()]).then(function(d){ try{ (new Function('d','try{ S.d=d; }catch(e){}'))(d); }catch(e){} if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(ST.dlg&&ST.dlg.map) mapDraw(); }).catch(function(){}); }   /* the map lives in the staff screen's data (sgLoad cells) */
-function dlgClose(){ if(ST.dlg&&ST.dlg.ids&&ST.dlg.saved) refreshMap(); ST.dlg=null; var d=q('#sh-dlg'); if(d) d.remove(); }
-function dlgDraw(){ var D=ST.dlg; if(!D) return dlgClose(); var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); }
+function dlgClose(){ var back=ST.dlg&&ST.dlg.back; if(ST.dlg&&ST.dlg.ids&&ST.dlg.saved) refreshMap(); ST.dlg=null; var d=q('#sh-dlg'); if(d) d.remove(); if(back) boyOpen(back); }   /* Set level opened from a boy card goes back to his card */
+function dlgDraw(){ var D=ST.dlg; if(!D) return dlgClose(); var d=dlgEl(); d.className='';
   var one=D.ids.length===1?byId(D.ids[0]):null, who=one?one.name:D.ids.length+' boys';
   var h='<div class="box"><h2>🎯 Set level for '+E(who)+'</h2><p class="sub">'+(one?(gName(one.grade)?gName(one.grade).replace('Gr','Grade')+' · ':'')+'He starts the subject at the level you pick.':'Each boy starts the subject at the level you pick.')+'</p>';
   h+='<h3>1. Subject</h3><div class="grid">'+LV.map(function(x){ var cur=one&&one.place&&one.place[x[0]]&&one.place[x[0]].lv; return '<button type="button" data-st="key" data-v="'+x[0]+'"'+(D.key===x[0]?' class="on"':'')+'>'+x[1]+' '+E(x[2])+'<small>'+(cur?'Now: Level '+cur:'No level yet')+'</small></button>'; }).join('')+'</div>';
@@ -325,7 +415,7 @@ document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.
   if(a==='f'){ ST.f=b.dataset.v; document.querySelectorAll('#sh-page [data-st=f]').forEach(function(x){ x.classList.toggle('on',x===b); }); return drawStudents(); }
   if(a==='lv') return dlgOpen([b.dataset.id]); if(a==='lvmany') return dlgOpen(Object.keys(ST.sel).filter(function(k){ return ST.sel[k]; }));
   if(a==='clear'){ ST.sel={}; return drawStudents(); }
-  if(a==='open'){ if(window.SL&&window.SL.open) window.SL.open(b.dataset.id); return; }
+  if(a==='open') return boyOpen(b.dataset.id);
   if(a==='key'){ ST.dlg.key=b.dataset.v; var bb=byId(ST.dlg.ids[0]); ST.dlg.lv=(ST.dlg.ids.length===1&&bb&&bb.place&&bb.place[ST.dlg.key]&&bb.place[ST.dlg.key].lv)||0; ST.dlg.err=''; return dlgDraw(); }
   if(a==='lvl'){ ST.dlg.lv=Number(b.dataset.v); return dlgDraw(); }
   if(a==='close') return dlgClose(); if(a==='save') return dlgSave(); });
@@ -339,28 +429,29 @@ var TD={today:null,now:null,f:'all',q:'',at:0,timer:0};
 var NOWW={stuck:['🆘','Stuck',function(n){ return n+' misses in a row'; }],checkin:['🧱','Failed the check again',function(n){ return n+' check misses today'; }],guess:['⚡','Guessing',function(n){ return n+' of his last 6 answers in under 2 seconds'; }],idle:['💤','Stopped working',function(n){ return 'no answer for '+n+' minutes'; }]};
 function skName(id){ var d=S0(); var x=d&&d.names&&d.names[id]; return x?x[0]:(KM.names&&KM.names[id])||(id||''); }
 function ago(t){ if(!t) return ''; var m=Math.round((Date.now()-t)/60000); return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' h ago'; }
-function loadToday(){ var t=tok(); if(!t) return; Promise.all([srv('sgToday',[t]).catch(function(){ return null; }),srv('sgNow',[t]).catch(function(){ return null; })]).then(function(r){ TD.today=r[0]; TD.now=r[1]; TD.at=Date.now(); drawToday(); }); }
+function loadToday(){ var t=tok(); if(!t) return;
+  var X=todayData(), N=nowData(); if(X&&N&&X.at&&Date.now()-X.at<120000&&N.at&&Date.now()-N.at<120000){ TD.today=X; TD.now=N; TD.at=Math.min(X.at,N.at); drawToday(); return; }   /* the staff screen already has today (sgToday) and who needs you (sgNow), refreshed every minute: no second call */
+  Promise.all([srv('sgToday',[t]).catch(function(){ return null; }),srv('sgNow',[t]).catch(function(){ return null; })]).then(function(r){ TD.today=r[0]; TD.now=r[1]; TD.at=Date.now(); drawToday(); }); }
 function todayHTML(){ var d=new Date(), day=d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
-  return '<div class="st-head"><div><h1>Today</h1><p class="lead" style="margin:0">'+E(day)+' · <span id="td-at">loading…</span></p></div><div class="st-acts"><button type="button" class="shb" data-sh="do" data-k="tm">🔒 Teacher mode</button><button type="button" class="shb alt" data-sh="do" data-k="msg">✉️ Messages</button><button type="button" class="shb alt" data-sh="do" data-k="points">⭐ Tashbar Points</button></div></div>'
+  return '<div class="st-head"><div><h1>Today</h1><p class="lead" style="margin:0">'+E(day)+' · <span id="td-at">loading…</span></p></div><div class="st-acts">'+btn('start','shb')+btn('msg','shb alt')+btn('points','shb alt')+grpSlot()+'</div></div>'
    +'<div id="td-body"><div class="st-empty">Loading today…</div></div>'
-   +'<h3>More for today</h3><div class="tiles">'+['wk','month'].map(tile).join('')+'</div>'; }
+   +'<h3>More for today</h3>'+tilesHTML(['wk','now','picks']); }
 function drawToday(){ var B=q('#td-body'); if(!B) return; var at=q('#td-at'); if(at) at.textContent=TD.at?'updated '+new Date(TD.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'loading…';
-  var d=S0(), boys=(d.boys||[]).filter(function(b){ return !b.test; }), T={}; ((TD.today&&TD.today.boys)||[]).forEach(function(x){ T[x.id]=x; });
+  var d=S0(), boys=(d.boys||[]).filter(function(b){ return !b.test&&inG(b.id); }), T={}; ((TD.today&&TD.today.boys)||[]).forEach(function(x){ T[x.id]=x; });
   var need=((TD.now&&TD.now.list)||[]).filter(function(x){ return x.kind!=='idle'; }), idle=((TD.now&&TD.now.list)||[]).filter(function(x){ return x.kind==='idle'; }), needIx={}; need.forEach(function(x){ needIx[x.sid]=x; });
   var now=Date.now(), working=0, worked=0, ms=0, ans=0, ok=0; boys.forEach(function(b){ var t=T[b.id]; if(!t) return; var a=(t.answers||0)+(t.kAnswers||0); if(a) worked++; if(t.last&&now-t.last<10*60000) working++; ms+=(t.mastered||0)+(t.kMastered||0); ans+=a; ok+=(t.right||0)+(t.kRight||0); });
   var h='<div class="td-nums"><div class="td-num"><b>'+working+'</b><span>working right now</span></div><div class="td-num"><b>'+worked+' <small style="font-size:16px;color:#5B6676">of '+boys.length+'</small></b><span>worked today</span></div><div class="td-num"><b>'+(boys.length-worked)+'</b><span>not started yet</span></div><div class="td-num"><b>'+ms+'</b><span>skills mastered today</span></div><div class="td-num"><b>'+(ans?Math.round(100*ok/ans)+'%':'–')+'</b><span>answers right</span></div></div>';
-  h+='<div class="td-card'+(need.length?' need':'')+'"><h2>'+(need.length?'🆘 Needs you now ('+need.length+')':'✅ Needs you now')+'</h2>'+(need.length?need.map(function(x){ var w=NOWW[x.kind]||['❗',x.kind,function(){ return ''; }]; return '<div class="td-need"><i>'+w[0]+'</i><span><b>'+E(x.name)+' · '+E(w[1])+'</b><small>'+E(w[2](x.n))+(x.skill?' on “'+E(skName(x.skill))+'”':'')+' · '+E(ago(x.at))+(function(){ var C=cellsOf(x.sid), pv=''; Object.keys(C).forEach(function(k){ if(C[k]&&C[k].now===x.skill&&C[k].prev) pv=C[k].prev; }); return pv?'<br>↩ Review first: the step before, “'+E(skName(pv))+'”':''; })()+'</small></span><button type="button" data-mp="map" data-id="'+E(x.sid)+'">🗺️ Map</button></div>'; }).join(''):'<div class="td-ok">Nobody right now.</div>')
-    +(idle.length?'<p style="margin:8px 0 0;color:#5B6676;font-size:13.5px">💤 Stopped working: '+idle.map(function(x){ return E(x.name)+' ('+x.n+' min)'; }).join(', ')+'</p>':'')+'</div>';
+  h+=needsHTML();
   var rows=boys.map(function(b){ var t=T[b.id]||{}, a=(t.answers||0)+(t.kAnswers||0), r=(t.right||0)+(t.kRight||0), live=t.last&&now-t.last<10*60000, st=needIx[b.id]?0:live?1:a?2:3;
       return {b:b,t:t,a:a,r:r,st:st}; })
     .filter(function(x){ var qq=TD.q.trim().toLowerCase(); if(qq&&String(x.b.name).toLowerCase().indexOf(qq)<0) return false; return TD.f==='all'||(TD.f==='live'&&x.st<=1)||(TD.f==='none'&&x.st===3); })
     .sort(function(x,y){ return x.st-y.st||String(x.b.name).localeCompare(y.b.name); });
   var COL=['#C8402F','#178A5E','#2F5BD3','#A7B0BF'], LBL=['needs you','working now','worked today','not started'];
-  h+='<div class="td-card"><h2>👦 The class today</h2><div class="st-tools"><input id="td-q" type="search" placeholder="Search by name…" value="'+E(TD.q)+'"><button type="button" class="chip'+(TD.f==='all'?' on':'')+'" data-td="f" data-v="all">Everyone</button><button type="button" class="chip'+(TD.f==='live'?' on':'')+'" data-td="f" data-v="live">Working now</button><button type="button" class="chip'+(TD.f==='none'?' on':'')+'" data-td="f" data-v="none">Not started</button></div>'
-    +(rows.length?rows.map(function(x){ return '<div class="td-row"><span class="td-dot" style="background:'+COL[x.st]+'" title="'+LBL[x.st]+'"></span><span><b>'+E(x.b.name)+'</b><small>'+LBL[x.st]+(x.t.last?' · '+E(ago(x.t.last)):'')+'</small></span><span class="td-stat">'+(x.a?x.a+' answers · '+Math.round(100*x.r/x.a)+'% right':'No answers yet')+'</span><span class="td-stat">'+(((x.t.mastered||0)+(x.t.kMastered||0))?'⭐ '+((x.t.mastered||0)+(x.t.kMastered||0))+' mastered today':'')+'</span><button type="button" data-mp="map" data-id="'+E(x.b.id)+'">🗺️ Map</button></div>'; }).join(''):'<div class="st-empty">'+(boys.length?'No boy matches.':'No students yet.')+'</div>')+'</div>';
+  h+='<div class="td-card" id="td-class"><h2>👦 The class today</h2><div class="st-tools"><input id="td-q" type="search" placeholder="Search by name…" value="'+E(TD.q)+'"><button type="button" class="chip'+(TD.f==='all'?' on':'')+'" data-td="f" data-v="all">Everyone</button><button type="button" class="chip'+(TD.f==='live'?' on':'')+'" data-td="f" data-v="live">Working now</button><button type="button" class="chip'+(TD.f==='none'?' on':'')+'" data-td="f" data-v="none">Not started</button></div>'
+    +(rows.length?rows.map(function(x){ return '<div class="td-row"><span class="td-dot" style="background:'+COL[x.st]+'" title="'+LBL[x.st]+'"></span><span><button type="button" class="nmb" data-shb="'+E(x.b.id)+'">'+E(x.b.name)+'</button><small>'+LBL[x.st]+(x.t.last?' · '+E(ago(x.t.last)):'')+'</small></span><span class="td-stat">'+(x.a?x.a+' answers · '+Math.round(100*x.r/x.a)+'% right':'No answers yet')+'</span><span class="td-stat">'+(((x.t.mastered||0)+(x.t.kMastered||0))?'⭐ '+((x.t.mastered||0)+(x.t.kMastered||0))+' mastered today':'')+'</span><button type="button" data-shb="'+E(x.b.id)+'">Open ›</button></div>'; }).join(''):'<div class="st-empty">'+(boys.length?'No boy matches.':'No students yet.')+'</div>')+'</div>';
   B.innerHTML=h; }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-td]'); if(!b) return; e.preventDefault(); var a=b.dataset.td;
-  if(a==='open'){ if(window.SL&&window.SL.open) window.SL.open(b.dataset.id); return; }
+  if(a==='open') return boyOpen(b.dataset.id);
   if(a==='f'){ TD.f=b.dataset.v; return drawToday(); } });
 document.addEventListener('input',function(e){ if(e.target&&e.target.id==='td-q'){ TD.q=e.target.value; var pos=e.target.selectionStart; drawToday(); var i=q('#td-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(x){} } } });
 setInterval(function(){ if(S.area==='today'&&body().classList.contains('sh-page')&&!document.hidden) loadToday(); },60000);
@@ -384,25 +475,33 @@ function mapChips(id){ var C=cellsOf(id), out=[];
   SUBJ.forEach(function(x){ var c=C[x[0]]; if(!c||!c.level) return; var u=unit(c);
     var un=unitNow(c); out.push(c.now?'<span title="'+E(x[2])+' Level '+c.level+', unit '+E(un.name)+': goal now '+E(skName(c.now))+'">'+x[1]+' '+E(x[2])+' L'+c.level+' · '+E(un.name)+' '+un.done+'/'+un.total+' · <b>🎯 '+E(skName(c.now))+'</b></span>':'<span class="done">'+x[1]+' '+E(x[2])+' L'+c.level+' ✓ unit done</span>'); });
   var noMR=!(C.MATH&&C.MATH.level)&&!(C.READ&&C.READ.level); return (noMR?'<span class="none">No Math or Reading level yet</span>':'')+out.join(''); }
-function mapOpen(id){ ST.dlg={map:id}; mapDraw(); }
-function mapDraw(){ var D=ST.dlg; if(!D||!D.map) return; var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); }
-  var id=D.map, b=byId(id)||(S0().boys||[]).filter(function(x){ return x.id===id; })[0]||{name:id}, C=cellsOf(id), h='<div class="box"><h2>🗺️ '+E(b.name)+'’s map</h2><p class="sub">'+(gName(b.grade)?E(gName(b.grade).replace('Gr','Grade'))+' · ':'')+'In each subject: the unit he is in, its steps, and his goal now: the next skill to master. The unit ends at 🏁.</p>';
+function mapOpen(id){ boyOpen(id); }
+function boyNow(id){ var out=[], N=nowData(), T=todayData(), x=((N&&N.list)||[]).filter(function(y){ return y.sid===id; })[0];
+  if(x){ var w=NOWW[x.kind]||['❗',x.kind]; out.push('<span class="'+(x.kind==='idle'?'':'hot')+'">'+w[0]+' '+E(w[1])+(x.skill?' · '+E(skName(x.skill)):'')+'</span>'); }
+  var t=T&&T.boys&&T.boys.filter(function(y){ return y.id===id; })[0]; if(t){ var a=(t.answers||0)+(t.kAnswers||0), r=(t.right||0)+(t.kRight||0), m=(t.mastered||0)+(t.kMastered||0);
+    out.push(a?'<span class="ok">Today: '+a+' answers · '+Math.round(100*r/a)+'% right'+(m?' · ⭐ '+m+' mastered':'')+'</span>':'<span>Today: no answers yet</span>'); }
+  var DK=spd('desk'); if(DK&&DK.picks){ var p=DK.picks.filter(function(y){ return y.sid===id&&!y.done; }).length; if(p) out.push('<span>📌 '+p+' picked lesson'+(p===1?'':'s')+' waiting</span>'); }
+  var g=groups().filter(function(y){ return (y.kind==='mine'||y.kind==='class')&&(y.sids||[]).indexOf(id)>=0; }).map(function(y){ return y.name; }); if(g.length) out.push('<span>🏫 '+E(g.slice(0,2).join(', '))+'</span>');
+  return out.length?'<div class="bnow">'+out.join('')+'</div>':''; }
+function mapDraw(){ var D=ST.dlg; if(!D||!D.map) return; var d=dlgEl(); d.className='boy'; d.setAttribute('aria-label','Boy card');
+  var id=D.map, b=byId(id)||(S0().boys||[]).filter(function(x){ return x.id===id; })[0]||{name:bName(id)}, C=cellsOf(id);
+  var h='<div class="box"><div class="bhd"><div><h2>'+E(b.name)+'</h2><p class="sub">'+(gName(b.grade)?E(gName(b.grade).replace('Gr','Grade'))+' · ':'')+'His map: in each subject, the unit he is in, its steps, and his goal now (the next skill to master). The unit ends at 🏁.</p></div><button type="button" class="x" data-st="close" aria-label="Close">✕</button></div>'+boyNow(id);
   var any=false;
   SUBJ.forEach(function(x){ var c=C[x[0]]; if(!c||!c.level) return; any=true; var u=unitNow(c), pct=u.total?Math.round(100*u.done/u.total):0, left=u.total-u.done, L=u.level;
-    h+='<div class="msub"><h4>'+x[1]+' '+E(x[2])+' · Level '+c.level+(hint(x[0],c.level)?' <small style="color:#5B6676;font-weight:700">('+E(hint(x[0],c.level))+')</small>':'')+'</h4><div class="meta">'+(u.name?'<b style="color:#16202C">Unit: '+E(u.name)+'</b> · ':'')+u.done+' of '+u.total+' steps mastered'+(left?' · <b style="color:#16202C">'+left+' to the end of the unit 🏁</b>':' · unit finished')+'</div><div class="bar"><i style="width:'+pct+'%"></i></div>';
+    h+='<div class="msub"><h4>'+x[1]+' '+E(x[2])+' · Level '+c.level+(hint(x[0],c.level)?' <small style="color:#5B6676;font-weight:700">('+E(hint(x[0],c.level))+')</small>':'')+(c.status==='red'?' <small style="color:#C8402F;font-weight:800">· stuck</small>':'')+'</h4><div class="meta">'+(u.name?'<b style="color:#16202C">Unit: '+E(u.name)+'</b> · ':'')+u.done+' of '+u.total+' steps mastered'+(left?' · <b style="color:#16202C">'+left+' to the end of the unit 🏁</b>':' · unit finished')+'</div><div class="mbar"><i style="width:'+pct+'%"></i></div>';
     h+='<div class="path">'+u.sk.map(function(s,i){ var cls=s[2]?'ok':s[0]===c.now?'goal':''; return '<span class="'+cls+(i===u.sk.length-1?' end':'')+'">'+(s[2]?'✓ ':s[0]===c.now?'🎯 ':'')+E(skName(s[0]))+(i===u.sk.length-1?' 🏁':'')+'</span>'+(i<u.sk.length-1?'<em>→</em>':''); }).join('')+'</div>';
     if(c.now) h+='<div class="goalbox">🎯 Goal now: '+E(skName(c.now))+(c.next?' <span style="color:#5B6676">→ then '+E(skName(c.next))+'</span>':'')+'<button type="button" class="pri" data-mp="play" data-id="'+E(c.now)+'">▶ Play it</button>'+(x[3]?'<button type="button" data-mp="tree" data-s="'+x[3]+'" data-id="'+E(c.now)+'">🌳 See on the map</button>':'')+'</div>';
-    else h+='<div class="goalbox">✅ This level is done. Move him up to Level '+(c.level+1)+'? <button type="button" class="pri" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button></div>';
+    else h+='<div class="goalbox">✅ This level is done. Move him up to Level '+(c.level+1)+'? <button type="button" class="pri" data-bc="lv" data-id="'+E(id)+'">🎯 Set level</button></div>';
     if(u.name&&L.total) h+='<div class="meta" style="margin:10px 0 0">The whole Level '+c.level+': '+L.done+' of '+L.total+' skills mastered.</div>';
     h+='</div>'; });
-  if(!any) h+='<div class="msub"><h4>No level yet</h4><div class="meta">Until he has a level in a subject, the app cannot pick his steps. Set his Math and Reading levels first.</div><div class="goalbox"><button type="button" class="pri" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button></div></div>';
-  h+='<div class="foot"><button type="button" class="no" data-st="close">Close</button><button type="button" class="no" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button><button type="button" class="go" data-mp="open" data-id="'+E(id)+'">Open his full page ›</button></div></div>';
+  if(!any) h+='<div class="msub"><h4>No level yet</h4><div class="meta">Until he has a level in a subject, the app cannot pick his steps. Set his Math and Reading levels first.</div><div class="goalbox"><button type="button" class="pri" data-bc="lv" data-id="'+E(id)+'">🎯 Set level</button></div></div>';
+  h+='<div class="acts" role="toolbar" aria-label="What to do for '+E(b.name)+'">'+BACT.map(function(a,i){ return '<button type="button"'+(i<2?' class="pri"':'')+' data-bc="'+a[0]+'" data-id="'+E(id)+'">'+a[1]+' '+E(a[2])+'</button>'; }).join('')+'</div></div>';
   d.innerHTML=h; }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-mp]'); if(!b) return; e.preventDefault(); var a=b.dataset.mp, id=b.dataset.id;
-  if(a==='map') return mapOpen(id);
-  if(a==='lv'){ dlgClose(); return dlgOpen([id]); }
-  if(a==='open'){ dlgClose(); if(window.SL&&window.SL.open) window.SL.open(id); return; }
-  if(a==='play'){ try{ window.open(location.origin+'/?cp=1&skill='+encodeURIComponent(id),'_blank'); }catch(x){} return; }
+  if(a==='map') return boyOpen(id);
+  if(a==='lv') return boyAct('lv',id);
+  if(a==='open') return boyOpen(id);
+  if(a==='play'){ var back=ST.dlg&&ST.dlg.map; try{ window.open(location.origin+'/?cp=1&skill='+encodeURIComponent(id),'_blank'); }catch(x){} if(back&&q('#sh-fr')){ dlgClose(); ret(back); } return; }
   if(a==='tree'){ dlgClose(); if(window.SF) window.SF.open(b.dataset.s,id); return; } });
 
 /* ================= REPORTS ON THE MAP: steps climbed (sgMapReport), who is moving, who is not, hardest and most-climbed steps ================= */
@@ -414,11 +513,11 @@ function subjOfId(id){ var p=String(id||'').split('.'), a=p[0], b=p[1];
 function rpName(id){ return (RP.data&&RP.data.names&&RP.data.names[id])||skName(id); }
 function loadReport(){ RP.err=''; srv('sgMapReport',[tok(),RP.days]).then(function(r){ RP.data=r; drawReport(); }).catch(function(e){ RP.err=String(e); drawReport(); }); }
 function reportHTML(){ return '<div class="st-head"><div><h1>Reports</h1><p class="lead" style="margin:0">Every report here is about steps on the curriculum tree: who climbed, who is stuck, and where.</p></div><div class="st-acts">'
-   +[[7,'This week'],[30,'This month']].map(function(x){ return '<button type="button" class="chip'+(RP.days===x[0]?' on':'')+'" data-rp="days" data-v="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</div></div><div id="rp-body"><div class="st-empty">Loading the report…</div></div>'
-   +'<h3>More reports</h3><div class="tiles">'+['gs','lkt','month','stuck','rep'].map(tile).join('')+'</div>'; }
+   +[[7,'This week'],[30,'This month']].map(function(x){ return '<button type="button" class="chip'+(RP.days===x[0]?' on':'')+'" data-rp="days" data-v="'+x[0]+'">'+x[1]+'</button>'; }).join('')+grpSlot()+'</div></div><div id="rp-body"><div class="st-empty">Loading the report…</div></div>'
+   +'<h3>More reports</h3>'+tilesHTML(['gs','lkt','month','slip','stuck','rep']); }
 function goalOf(id){ var C=cellsOf(id), best=null; SUBJ.forEach(function(x){ var c=C[x[0]]; if(!best&&c&&c.now) best={x:x,c:c}; }); return best; }
 function drawReport(){ var B=q('#rp-body'); if(!B) return; if(RP.err){ B.innerHTML='<div class="st-empty">Could not load the report: '+E(RP.err)+'</div>'; return; } var D=RP.data; if(!D){ B.innerHTML='<div class="st-empty">Loading the report…</div>'; return; }
-  var boys=D.boys||[], n=boys.length, steps=0, prev=0, moved=0, bySub={}, byStep={};
+  var boys=(D.boys||[]).filter(function(b){ return inG(b.id); }), n=boys.length, steps=0, prev=0, moved=0, bySub={}, byStep={};
   boys.forEach(function(b){ steps+=b.steps.length; prev+=b.prev; if(b.steps.length) moved++; b.steps.forEach(function(s){ var sj=subjOfId(s[0]); var k=sj[0]; (bySub[k]=bySub[k]||{sj:sj,n:0}).n++; (byStep[s[0]]=byStep[s[0]]||{n:0,sj:sj}).n++; }); });
   var diff=steps-prev, per=n?(steps/n):0, lbl=RP.days===7?'this week':'this month';
   var h='<div class="td-nums"><div class="td-num"><b>'+steps+(prev||steps?'<span class="rp-trend '+(diff>=0?'up':'dn')+'">'+(diff>=0?'↑ +':'↓ ')+diff+'</span>':'')+'</b><span>steps climbed '+lbl+'</span></div><div class="td-num"><b>'+moved+' <small style="font-size:16px;color:#5B6676">of '+n+'</small></b><span>boys moved up a step</span></div><div class="td-num"><b>'+(n-moved)+'</b><span>boys did not move</span></div><div class="td-num"><b>'+(Math.round(per*10)/10)+'</b><span>steps per boy</span></div></div>';
@@ -426,9 +525,9 @@ function drawReport(){ var B=q('#rp-body'); if(!B) return; if(RP.err){ B.innerHT
   h+='<div class="td-card"><h2>🌳 Steps climbed '+lbl+', by subject</h2>'+(subs.length?'<div class="rp-bars">'+subs.map(function(x){ return '<div class="rp-bar"><b>'+x.sj[1]+' '+E(x.sj[2])+'</b><span class="t"><i style="width:'+Math.max(4,Math.round(100*x.n/mx))+'%"></i></span><span class="v">'+x.n+'</span>'+(x.sj[3]?'<button type="button" data-sfopen="'+x.sj[3]+'">See the tree →</button>':'<span></span>')+'</div>'; }).join('')+'</div>':'<div class="td-ok" style="color:#5B6676">No steps climbed '+lbl+' yet.</div>')+'</div>';
   var movers=boys.filter(function(b){ return b.steps.length; }).sort(function(a,b){ return b.steps.length-a.steps.length||a.name.localeCompare(b.name); }).slice(0,8);
   var still=boys.filter(function(b){ return !b.steps.length; }).sort(function(a,b){ return a.name.localeCompare(b.name); });
-  h+='<div class="rp-grid"><div class="td-card"><h2>🚀 Moving</h2>'+(movers.length?movers.map(function(b){ return '<div class="rp-row"><span class="n">'+b.steps.length+'</span><span><b>'+E(b.name)+'</b><small>'+b.steps.slice(0,3).map(function(s){ return '✓ '+E(rpName(s[0])); }).join(' · ')+(b.steps.length>3?' · +'+(b.steps.length-3)+' more':'')+'</small></span><button type="button" data-mp="map" data-id="'+E(b.id)+'">🗺️ Map</button></div>'; }).join(''):'<div class="td-ok" style="color:#5B6676">Nobody climbed a step '+lbl+' yet.</div>')+'</div>';
-  h+='<div class="td-card'+(still.length?' need':'')+'"><h2>🧍 Not moving yet ('+still.length+')</h2>'+(still.length?still.slice(0,12).map(function(b){ var g=goalOf(b.id); return '<div class="rp-row"><span class="n" style="background:'+(g&&g.c.status==='red'?'#C8402F':'#A7B0BF')+'">0</span><span><b>'+E(b.name)+'</b><small>'+(g?(g.c.status==='red'?'🧱 Stuck on ':'🎯 Goal now: ')+g.x[1]+' '+E(skName(g.c.now)):'No level yet')+'</small></span><button type="button" data-mp="map" data-id="'+E(b.id)+'">🗺️ Map</button></div>'; }).join('')+(still.length>12?'<p class="sf-hint" style="margin:8px 0 0;color:#5B6676">and '+(still.length-12)+' more. See them in Students.</p>':''):'<div class="td-ok">Every boy climbed at least one step. ✅</div>')+'</div></div>';
-  var hard={}; (S0().boys||[]).forEach(function(b){ if(b.test) return; var C=cellsOf(b.id); Object.keys(C).forEach(function(k){ var c=C[k]; if(c&&c.now&&c.status==='red'){ (hard[c.now]=hard[c.now]||{n:0,sj:subjOfId(c.now)}).n++; } }); });
+  h+='<div class="rp-grid"><div class="td-card"><h2>🚀 Moving</h2>'+(movers.length?movers.map(function(b){ return '<div class="rp-row"><span class="n">'+b.steps.length+'</span><span><button type="button" class="nmb" data-shb="'+E(b.id)+'">'+E(b.name)+'</button><small>'+b.steps.slice(0,3).map(function(s){ return '✓ '+E(rpName(s[0])); }).join(' · ')+(b.steps.length>3?' · +'+(b.steps.length-3)+' more':'')+'</small></span><button type="button" data-shb="'+E(b.id)+'">Open ›</button></div>'; }).join(''):'<div class="td-ok" style="color:#5B6676">Nobody climbed a step '+lbl+' yet.</div>')+'</div>';
+  h+='<div class="td-card'+(still.length?' need':'')+'"><h2>🧍 Not moving yet ('+still.length+')</h2>'+(still.length?still.slice(0,12).map(function(b){ var g=goalOf(b.id); return '<div class="rp-row"><span class="n" style="background:'+(g&&g.c.status==='red'?'#C8402F':'#A7B0BF')+'">0</span><span><button type="button" class="nmb" data-shb="'+E(b.id)+'">'+E(b.name)+'</button><small>'+(g?(g.c.status==='red'?'🧱 Stuck on ':'🎯 Goal now: ')+g.x[1]+' '+E(skName(g.c.now)):'No level yet')+'</small></span><button type="button" data-shb="'+E(b.id)+'">Open ›</button></div>'; }).join('')+(still.length>12?'<p class="sf-hint" style="margin:8px 0 0;color:#5B6676">and '+(still.length-12)+' more. See them in Students.</p>':''):'<div class="td-ok">Every boy climbed at least one step. ✅</div>')+'</div></div>';
+  var hard={}; (S0().boys||[]).forEach(function(b){ if(b.test||!inG(b.id)) return; var C=cellsOf(b.id); Object.keys(C).forEach(function(k){ var c=C[k]; if(c&&c.now&&c.status==='red'){ (hard[c.now]=hard[c.now]||{n:0,sj:subjOfId(c.now)}).n++; } }); });
   var hs=Object.keys(hard).sort(function(a,b){ return hard[b].n-hard[a].n; }).slice(0,6), top=Object.keys(byStep).sort(function(a,b){ return byStep[b].n-byStep[a].n; }).slice(0,6);
   h+='<div class="rp-grid" style="margin-top:16px"><div class="td-card"><h2>🧱 Hardest steps right now</h2>'+(hs.length?hs.map(function(id){ var x=hard[id]; return '<div class="rp-row"><span class="n" style="background:#C8402F">'+x.n+'</span><span><b>'+E(skName(id))+'</b><small>'+x.sj[1]+' '+E(x.sj[2])+' · '+x.n+' boy'+(x.n===1?'':'s')+' stuck</small></span>'+(x.sj[3]?'<button type="button" data-sh="tree" data-s="'+x.sj[3]+'" data-id="'+E(id)+'">On the tree →</button>':'')+'</div>'; }).join(''):'<div class="td-ok">No step has boys stuck right now. ✅</div>')+'</div>';
   h+='<div class="td-card"><h2>⭐ Most-climbed steps '+lbl+'</h2>'+(top.length?top.map(function(id){ var x=byStep[id]; return '<div class="rp-row"><span class="n" style="background:#7C5CC4">'+x.n+'</span><span><b>'+E(rpName(id))+'</b><small>'+x.sj[1]+' '+E(x.sj[2])+' · mastered by '+x.n+' boy'+(x.n===1?'':'s')+'</small></span>'+(x.sj[3]?'<button type="button" data-sh="tree" data-s="'+x.sj[3]+'" data-id="'+E(id)+'">On the tree →</button>':'')+'</div>'; }).join(''):'<div class="td-ok" style="color:#5B6676">None yet.</div>')+'</div></div>';
@@ -436,38 +535,116 @@ function drawReport(){ var B=q('#rp-body'); if(!B) return; if(RP.err){ B.innerHT
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-rp]'); if(!b) return; e.preventDefault(); if(b.dataset.rp==='days'){ RP.days=Number(b.dataset.v)||7; RP.data=null; document.querySelectorAll('#sh-page [data-rp=days]').forEach(function(x){ x.classList.toggle('on',x===b); }); drawReport(); loadReport(); } });
 
 /* ================= SCHOOL: live status cards, then People and School life ================= */
-function schoolHTML(){ var d=S0(), boys=(d.boys||[]).filter(function(b){ return !b.test; }).length, store=num('#app [data-sy=open] .n'), mOff=!!d.musicOff;
+function schoolHTML(){ var d=S0(), boys=(d.boys||[]).filter(function(b){ return !b.test; }).length, store=num('#app [data-sy=open] .n')||(ND.store&&ND.store.waiting?ND.store.waiting.length:0), mOff=!!d.musicOff;
   var stat=function(cls,ic,big,small,attr){ return '<button type="button" class="sc-stat '+cls+'" '+attr+'><i>'+ic+'</i><span><b>'+big+'</b><small>'+small+'</small></span></button>'; };
   var h='<h1>School</h1><p class="lead">Staff, families, the store and the canteen.</p><div class="sc-stats">'
     +stat(store?'warn':'','🏪',store?store+' prize'+(store===1?'':'s')+' to hand out':'Store',store?'Boys bought them in the Tashbar Store. Tap to hand out.':'No prizes waiting. Tap for store orders.','data-sh="do" data-k="store"')
     +stat(mOff?'off':'','🎵','Music '+(mOff?'is off':'is on'),'For every boy in the school. Tap to turn it '+(mOff?'on':'off')+'.','data-sc="music"')
     +stat('','👦',boys+' boy'+(boys===1?'':'s'),'Find, add and set levels in Students.','data-sh="area" data-v="students"')
-    +stat('','⭐','Tashbar Points','Daily sign-off: attendance, on time, work, middos.','data-sh="do" data-k="points"')
-    +stat('','🍎','Canteen','The canteen kiosk and its menu.','data-sh="do" data-k="canteen"')+'</div>';
-  h+='<h3>People</h3><div class="tiles">'+['staff','access','fam','schools'].map(tile).join('')+'</div>';
+    +stat('','🍎','Canteen','The canteen kiosk and its menu.','data-sh="do" data-k="canteen"'+hid('canteen'))+'</div>';
+  h+='<h3>People</h3>'+tilesHTML(['staff','access','fam','schools']);
   return h; }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sc]'); if(!b) return; e.preventDefault();
   if(b.dataset.sc==='music'){ var m=q('#app [data-act=music]'); if(m) m.click(); setTimeout(function(){ if(S.area==='school') draw(); },900); } });
 function area(v){ S.area=v; S.from=v; draw(); }
 /* open a feature by pressing its own button */
+function after(sel,fn,tries){ var n=0; (function w(){ var el=q(sel); if(el) return fn(el); if(++n<(tries||25)) setTimeout(w,120); })(); }
+function press(attr,val,id){ var b=document.createElement('button'); b.type='button'; b.hidden=true; b.setAttribute(attr,val); if(id!=null) b.setAttribute('data-id',id); b.setAttribute('data-shraw','1'); body().appendChild(b); try{ b.click(); }finally{ setTimeout(function(){ b.remove(); },0); } }
 function run(k){ var a=A[k]; if(!a) return; var how=a[3];
   if(/^sf:/.test(how)){ if(window.SF) window.SF.open(how.slice(3)); return; }
   if(/^area:/.test(how)) return area(how.slice(5));
   if(/^st:/.test(how)){ ST.f=how.slice(3); ST.q=''; ST.g='all'; area('students'); return; }
-  if(/^tab:/.test(how)){ var tb=q('#app [data-sp=tab][data-t="'+how.slice(4)+'"]'); a=[a[0],a[1],a[2],how,'app']; if(tb) tb.click(); }
+  if(how==='dlg:start') return startOpen();
+  if(how==='rv:all') return press('data-rv','all');
+  if(how==='ready'){ run('lkt'); after('#app .sd-ready',function(c){ var D=spd('readyOpen'), b=c.querySelector('[data-sd=rdy]'); if(b&&!D) b.click(); var c2=q('#app .sd-ready'); if(c2) c2.scrollIntoView({block:'start'}); }); return; }
+  if(/^tab:/.test(how)){ var tb=q('#app [data-sp=tab][data-t="'+how.slice(4)+'"]'); a=[a[0],a[1],a[2],how,'app']; if(tb) tb.click();
+    if(k==='picks') after('#app .sd-desk',function(c){ c.scrollIntoView({block:'start'}); }); }
   if(k==='find'){ var inp=q('#slBar input'); if(inp){ inp.focus(); inp.scrollIntoView({block:'center'}); return; } }
-  var el=/^tab:/.test(how)?null:q(how); if(!el&&!/^tab:/.test(how)){ toast('That tool is not on this page yet.'); return; }
+  var el=/^tab:/.test(how)?null:q(how); if(!el&&!/^tab:/.test(how)){ toast('This tool is not open to you.'); return; }
   if(a[4]==='app'&&!/^tab:/.test(a[3])){ if(el) el.click(); return; }   /* a drawer: it opens over the page you are on */
   if(a[4]==='app'){ S.from=S.area; setMode(false,true); var bk=q('#sh-back'); if(bk){ var nm=(AREAS.filter(function(x){ return x[0]===S.from; })[0]||AREAS[0])[2]; bk.innerHTML='<button type="button" data-sh="back">← Back to '+E(nm)+'</button> <span style="margin-left:8px">'+a[0]+' '+E(a[1])+'</span>'; } window.scrollTo(0,0); }
   if(el) el.click(); }
 function toast(m){ var t=document.createElement('div'); t.textContent=m; t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#16202C;color:#fff;padding:10px 16px;border-radius:12px;font:700 14px system-ui,sans-serif;z-index:2147483600'; body().appendChild(t); setTimeout(function(){ t.remove(); },2600); }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sh]'); if(!b) return; var a=b.dataset.sh; e.preventDefault();
-  if(a==='area') return area(b.dataset.v); if(a==='do') return run(b.dataset.k); if(a==='back') return area(S.from||'home');
+  if(a==='area'){ if(b.closest('#sh-top')){ ST.f='all'; TD.f='all'; } return area(b.dataset.v); } if(a==='do') return run(b.dataset.k); if(a==='back') return area(S.from||'home');
+  if(a==='idle'){ TD.f='none'; TD.q=''; area('today'); after('#td-class',function(c){ c.scrollIntoView({block:'start'}); }); return; }
   if(a==='tree'){ if(window.SF) window.SF.open(b.dataset.s,b.dataset.id); return; }
   if(a==='out'){ var o=q('#app [data-act=out]'); if(o) o.click(); } });
-/* start once the staff screen has signed in and drawn */
-function on(){ var app=q('#app'); if(!app||!q('#app header.top')) return false; body().classList.add('sh-on'); draw(); return true; }
-var n=0; (function wait(){ if(on()) return; if(++n<200) setTimeout(wait,300); })();
+
+/* ================= ONE WAY TO START A CLASS LESSON (Teacher mode, My classes "Start class", Teach it together: the same three flows) ================= */
+function startOpen(){ var d=dlgEl(); ST.dlg={start:1}; d.className=''; var s=SS(), run0=((s&&s.cls)||[]).filter(function(c){ return c.until>Date.now(); });
+  var h='<div class="box"><div class="bhd"><div><h2>🧑‍🏫 Start a class lesson</h2><p class="sub">While a class lesson runs, the boys in it can open only that lesson. Their screens open again by themselves when time is up.</p></div><button type="button" class="x" data-st="close" aria-label="Close">✕</button></div>';
+  if(run0.length) h+='<h3>Running now</h3>'+run0.map(function(c){ return '<div class="msub" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="flex:1;min-width:180px"><b>'+E(c.name)+'</b><br><small style="color:#5B6676">'+(c.sids||[]).length+' boy'+((c.sids||[]).length===1?'':'s')+' · ends '+E(new Date(c.until).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}))+'</small></span><button type="button" class="opt" style="width:auto;min-height:44px;margin:0;padding:8px 14px" data-act="tmmore" data-id="'+E(c.id)+'" data-st="close">+10 min</button><button type="button" class="opt" style="width:auto;min-height:44px;margin:0;padding:8px 14px" data-act="tmend" data-id="'+E(c.id)+'" data-st="close">End class</button></div>'; }).join('');
+  h+='<h3>How do you want to start?</h3>'
+   +'<button type="button" class="opt" data-shs="tm"><i>🔒</i><span><b>Pick the boys and one lesson</b><small>Any boys, any lesson, 20 to 90 minutes.</small></span></button>'
+   +(avail('mycls')?'<button type="button" class="opt" data-shs="cls"><i>👥</i><span><b>One of my classes</b><small>Your class list: tap Start class next to the class.</small></span></button>':'')
+   +(avail('wk')?'<button type="button" class="opt" data-shs="stuck"><i>🧱</i><span><b>Boys stuck on the same lesson</b><small>Teach it together: five minutes at the board for the boys stuck on one lesson.</small></span></button>':'')
+   +'<div class="foot"><button type="button" class="no" data-st="close">Cancel</button></div></div>';
+  d.innerHTML=h; }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-shs]'); if(!b) return; e.preventDefault(); var a=b.dataset.shs; dlgClose();
+  if(a==='tm') return run('tm'); if(a==='cls') return run('mycls');
+  if(a==='stuck'){ run('wk'); after('#app .sd-stk',function(c){ (c.closest('.sp-card')||c).scrollIntoView({block:'start'}); },30); } });
+
+/* ================= THE BOY CARD: one place for a boy. His map on top, then one row of actions. Each action opens the tool that already does it
+   (the old card's sections, the shout-out and Torah moment pop-ups, the parent report, the student page), so the rules and server calls stay the same.
+   When that tool closes, his card comes back. ================= */
+function dlgEl(){ var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); } return d; }
+function boyOpen(id){ if(!id) return; id=String(id); RET=null; ['#slOv'].forEach(function(s){ var o=q(s); if(o) o.remove(); }); var r=q('#slRes'); if(r) r.hidden=true; ST.dlg={map:id}; mapDraw(); try{ var d=q('#sh-dlg'); if(d) d.scrollTop=0; }catch(x){} }
+function ensureBoy(id){ if(byId(id)) return; var b=(S0().boys||[]).filter(function(x){ return x.id===id; })[0]; var C=cellsOf(id), place={}; Object.keys(C).forEach(function(k){ if(C[k]&&C[k].level) place[k]={lv:C[k].level}; });
+  var o={id:id,name:b?b.name:id,grade:b&&b.grade!=null?b.grade:null,place:place}; if(ST.list) ST.list.push(o); else ST.list=[o]; }
+function appUrl(){ var u=S0().appUrl; return u?String(u):location.origin+location.pathname; }
+var OVL='#app aside.drawer,#app .sd-pop,#app .sl-pop,#app .sd-rep-wrap,#slOv,#sh-fr,#rv-ov .rv-ov,#sh-dlg';
+var RET=null; function ret(id){ RET={id:id,seen:false,at:Date.now()}; }
+setInterval(function(){ if(!RET) return; var on=!!q(OVL); if(on){ RET.seen=true; return; } if(RET.seen){ var id=RET.id; RET=null; boyOpen(id); } else if(Date.now()-RET.at>6000) RET=null; },350);
+function oldCard(id,then){ press('data-act','card',id); after('#app aside.drawer',function(d){ if(then) setTimeout(function(){ then(q('#app aside.drawer')||d); },60); }); ret(id); }
+function boyAct(a,id){ dlgClose();
+  if(a==='lv'){ ensureBoy(id); dlgOpen([id]); ST.dlg.back=id; return; }
+  if(a==='info'){ if(window.SL&&window.SL.open){ window.SL.open(id); ret(id); } return; }
+  if(a==='shout'){ press('data-sd','jshout',id); ret(id); return; }
+  if(a==='torah'){ press('data-sl','torah',id); ret(id); return; }
+  if(a==='rep'){ press('data-sd','rep',id); ret(id); return; }
+  if(a==='pf'){ var s=SS(); if(s&&s.d&&s.d.appUrl) press('data-act','pf',id); else frame(appUrl()+'?pf=1&report='+encodeURIComponent(id)); ret(id); return; }
+  if(a==='work'){ frame(appUrl()+'?ms=1&staff=1&old=1'); ret(id); return; }
+  if(a==='pick') return oldCard(id,function(d){ var j=d.querySelector('[data-sd=jump][data-to=sd-picks]'); if(j) j.click(); });
+  if(a==='note') return oldCard(id,function(d){ var j=d.querySelector('[data-sd=jump][data-to=sd-notes]'); if(j) j.click(); var D=window.SPD&&window.SPD.D; if(D){ D.focus='sd-nt-'+id; try{ window.render(); }catch(x){} } [80,500,1200].forEach(function(ms){ setTimeout(function(){ var t=document.getElementById('sd-nt-'+id); if(t&&document.activeElement!==t){ t.scrollIntoView({block:'center'}); try{ t.focus({preventScroll:true}); }catch(x){ t.focus(); } } },ms); }); });
+  if(a==='code') return oldCard(id,function(d){ var h=[].slice.call(d.querySelectorAll('.sec h3')).filter(function(x){ return /Sign-in code/.test(x.textContent); })[0]; if(h) h.scrollIntoView({block:'start'}); var c=document.getElementById('cd-code'); if(c){ try{ c.focus({preventScroll:true}); }catch(x){} } });
+  if(a==='all') return oldCard(id,null); }
+var BACT=[['pick','📌','Pick a lesson'],['lv','🎯','Set level'],['shout','🎉','Shout-out'],['torah','📜','Torah moment'],['note','📝','Note'],['rep','🖨','Parent report'],['work','✍️','Written work'],['pf','🧭','Pathfinder report'],['code','🔑','Sign-in code'],['info','👪','Full details & parents'],['all','📋','His day & everything else']];
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-bc]'); if(!b) return; e.preventDefault(); boyAct(b.dataset.bc,b.dataset.id); });
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-shb]'); if(!b) return; e.preventDefault(); boyOpen(b.dataset.shb); });
+
+/* every boy's name anywhere on the page (the grids, Needs you now, the search results, the slipping list) opens his ONE card */
+window.addEventListener('click',function(e){ if(!body().classList.contains('sh-on')) return; var t=e.target; if(!t||!t.closest) return;
+  var a=t.closest('a[href]'); if(a&&leaves(a.href)){ e.preventDefault(); e.stopPropagation(); frame(a.href); return; }
+  var s=t.closest('[data-slid]'); if(s){ e.preventDefault(); e.stopPropagation(); boyOpen(s.getAttribute('data-slid')); return; }
+  var c=t.closest('[data-act=card]'); if(c&&c.dataset.id&&!c.hidden&&!c.hasAttribute('data-shraw')){ e.preventDefault(); e.stopPropagation(); boyOpen(c.dataset.id); return; }
+  var r=t.closest('[data-rv=boy]'); if(r&&r.dataset.id){ e.preventDefault(); e.stopPropagation(); var x=q('#rv-ov [data-rv=close]'); if(x) x.click(); boyOpen(r.dataset.id); return; }
+},true);
+
+/* ================= PAGES THAT USED TO LEAVE THE PORTAL open inside it: a full-screen frame of the same link (through the same link
+   rewriting FireLinks.html does: window.open with this frame as the target), with a clear Back bar ================= */
+function leaves(u){ try{ var x=new URL(String(u),location.href); if(x.protocol!=='http:'&&x.protocol!=='https:') return false;
+  return /[?&](so|canteen|pf|cp|pp|check)=1(&|$)/.test(x.search)||(/[?&]ms=1(&|$)/.test(x.search)&&/[?&]old=1(&|$)/.test(x.search)); }catch(e){ return false; } }
+function frTitle(u){ var s=String(u); return /[?&]so=1/.test(s)?'⭐ Tashbar Points (daily sign-off)':/[?&]canteen=1/.test(s)?'🍎 Canteen & menu':/[?&]pf=1/.test(s)?'🧭 Pathfinder report':/[?&]old=1/.test(s)?'✍️ Written work':/[?&]cp=1/.test(s)?'👀 See what the kids see':/[?&]pp=1/.test(s)?'👪 Parent page':'Page'; }
+var prevOpen=window.open;
+function frame(u,title){ var w=q('#sh-fr'); if(!w){ w=document.createElement('div'); w.id='sh-fr'; w.setAttribute('role','dialog'); w.setAttribute('aria-modal','true'); body().appendChild(w); }
+  title=title||frTitle(u); w.innerHTML='<div class="frb"><button type="button" data-shfr="x">← Back to the staff portal</button><span>'+E(title)+'</span></div><iframe name="sh-frame" title="'+E(title)+'"></iframe>';
+  var f=w.querySelector('iframe'); f.addEventListener('load',function(){ try{ var L=f.contentWindow.location; if(L.origin===location.origin&&(/\/staff\/?$/.test(L.pathname)||/[?&]sg=1/.test(L.search)||(L.pathname==='/'&&!L.search))) frClose(); }catch(x){} });   /* the page's own "back" link lands on a sign-in page: close the frame instead */
+  document.documentElement.style.overflow='hidden'; w.dataset.u=String(u); try{ prevOpen.call(window,String(u),'sh-frame'); }catch(x){ f.src=String(u); } }
+function frClose(){ var w=q('#sh-fr'); if(w) w.remove(); document.documentElement.style.overflow=''; }
+window.open=function(u,target){ if(u&&target!=='sh-frame'&&body().classList.contains('sh-on')&&leaves(u)){ frame(String(u)); return null; } return prevOpen.apply(window,arguments); };
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-shfr]'); if(!b) return; e.preventDefault(); frClose(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&q('#sh-fr')) frClose(); });
+
+/* ================= START: draw at once (no flash of the old screen while the boys load); fill in when the staff screen has its data ================= */
+function validTok(){ try{ var t=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return !!(t&&t.role==='staff'&&t.token&&Date.now()-(t.at||0)<6*3600e3); }catch(e){ return false; } }
+function isOut(){ var s=SS(); return !!(s&&s.out); }
+function goOut(){ document.documentElement.classList.remove('sh-boot'); body().classList.remove('sh-on','sh-page','sh-feat'); var t=q('#sh-top'); if(t) t.style.display='none'; }
+var withData=false;
+function on(){ if(isOut()){ goOut(); return false; } if(!q('#app header.top')) return false; if(!body().classList.contains('sh-on')) body().classList.add('sh-on'); if(!withData){ withData=true; draw(); } return true; }
+if(validTok()){ document.documentElement.classList.add('sh-boot'); body().classList.add('sh-on'); draw(); } else document.documentElement.classList.remove('sh-boot');
+var n=0; (function wait(){ if(on()) return; if(++n<400) setTimeout(wait,250); })();
+setInterval(function(){ if(isOut()&&body().classList.contains('sh-on')) goOut(); },1000);
 /* the search bar is re-made by its add-on: keep it in the slot */
 setInterval(slot,1500);
 /* which boys are on a step right now (their goal now = this skill), for the curriculum tree */
@@ -479,6 +656,6 @@ document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.
   if(ST.list&&!byId(id)) ST.list.push({id:id,name:nm,grade:null,place:{}}); else if(!ST.list) ST.list=[{id:id,name:nm,grade:null,place:{}}];
   setTimeout(function(){ dlgOpen([id]); },150); },true);
 var drawerOpen=false; setInterval(function(){ var d=!!q('#app > aside.drawer'); if(drawerOpen&&!d){ refreshMap(); if(S.area==='students') loadRoster(true); if(S.area==='today') loadToday(); if(S.area==='school'||S.area==='home') draw(); } drawerOpen=d; },700);
-window.SH={ area:area, run:run, boysOn:boysOn, boysOnAll:boysOnAll, map:function(id){ mapOpen(id); } };
+window.SH={ area:area, run:run, boysOn:boysOn, boysOnAll:boysOnAll, map:function(id){ boyOpen(id); }, boy:function(id){ boyOpen(id); }, frame:function(u,t){ frame(u,t); } };
 })();
 </script>
