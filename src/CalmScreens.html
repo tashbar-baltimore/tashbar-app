@@ -51,6 +51,8 @@ if(typeof render==='function'){ var lastOv=null, ovAt=0, _rc=render;
    more natural shadow, not that boxy shadow underneath ... don't ruin the childish appeal"). Many buttons and tiles sit on a solid
    "ledge" (a shadow with no blur, e.g. 0 8px 0 dark-orange). This rewrites every such shadow, in every style on the page (and in
    styles that add-ons add later), into a soft, natural one in the same colour family: lifted a little, blurred, see-through.
+   2026-11-20 (moshe@ session: "a faint hovering shadow look"): fainter still (18% strength), and big blurred shadows that were
+   strong or deep are toned down to a faint hover (at most 14% strength, at most 10 px down).
    Colours, shapes and the press-down feel stay. Inset shadows and blurred shadows are left alone. Off switch: window.TL_SOFT3D = false. */
 (function(){ if(window.TL_SOFT3D===false||window.__tlSoft3d) return; window.__tlSoft3d=true;
  var done=typeof WeakSet==='function'?new WeakSet():null, cv=null;
@@ -63,9 +65,12 @@ if(typeof render==='function'){ var lastOv=null, ovAt=0, _rc=render;
     var col=(l.match(/(rgba?\([^)]*\)|hsla?\([^)]*\)|#[0-9a-fA-F]{3,8}\b|\b[a-z]+\b)/)||[])[0]; if(!col||/^(none|inset)$/.test(col)) return l;
     var nums=l.replace(col,' ').trim().split(/\s+/).map(function(x){ return /^-?[\d.]+(px)?$/.test(x)?parseFloat(x):NaN; });
     if(nums.length<2||nums.some(isNaN)) return l; var x=nums[0], y=nums[1], b=nums.length>2?nums[2]:0, sp=nums.length>3?nums[3]:0;
+    if(b>2&&y>=4&&sp<=0){ var a2=(l.match(/rgba?\(([^)]*)\)/)||[])[1], al=a2?parseFloat((a2.split(',')[3]||'1')):1;
+      if(al>.14||y>12){ var c2=rgba(col,Math.min(1,.14/Math.max(al,.01))); if(!c2) return l; changed=true;
+        return (x?Math.round(x*.6):0)+'px '+Math.min(10,Math.round(y*.6))+'px '+Math.round(Math.min(b,40)*1.1)+'px '+c2; } return l; }
     if(b!==0||sp!==0||x!==0||y<2) return l;
-    var c=rgba(col,.34); if(!c) return l; changed=true;
-    return '0 '+Math.max(2,Math.round(y*.7))+'px '+Math.round(y*2+6)+'px '+c; });
+    var c=rgba(col,.18); if(!c) return l; changed=true;
+    return '0 '+Math.max(2,Math.round(y*.5))+'px '+Math.round(y*2.5+8)+'px '+c; });
   return changed?R.join(', '):null; }
  function walk(rules){ for(var i=0;i<rules.length;i++){ var r=rules[i];
    if(r.cssRules&&r.cssRules.length) walk(r.cssRules);
