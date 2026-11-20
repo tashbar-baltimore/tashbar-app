@@ -346,3 +346,26 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - brown-paper-bag.webp | https://pixabay.com/photos/paper-bag-kraft-kraft-paper-bag-5425694/ | Pixabay Content License | BRRT
 - aluminium-cans.webp | https://pixabay.com/photos/tin-beverage-soda-5002706/ | Pixabay Content License | DesignDrawArtes
 - thermometer-scale.webp | https://commons.wikimedia.org/wiki/File:R%C3%A9aumur_-_Celsius_thermometer.jpg (cropped) | CC BY-SA 4.0 | Jeancz
+- boat-on-tidal-flat.webp | https://pixabay.com/photos/africa-zanzibar-beach-tanzania-5135407/ | Pixabay Content License | klimentgrozdanoski
+- magnifying-glass-wooden-handle.webp | https://pixabay.com/photos/magnifying-glass-3180075/ | Pixabay Content License | Bru-nO
+- eyeglasses-wooden-frame.webp | https://pixabay.com/photos/glasses-eye-glasses-frame-wooden-5486967/ | Pixabay Content License | topeasokere
+- old-binoculars-on-books.webp | https://pixabay.com/photos/binoculars-books-window-old-retro-7723093/ | Pixabay Content License | Ylanite
+- space-station-over-earth.webp | https://pixabay.com/photos/international-space-station-eat-67647/ | Pixabay Content License | WikiImages
+- hurricane-seen-from-space.webp | https://pixabay.com/photos/hurricane-earth-satellite-tracking-92968/ | Pixabay Content License | 12019
+- earth-and-moon-in-space.webp | https://pixabay.com/photos/earth-moon-space-planet-world-1365995/ | Pixabay Content License | qimono
+- mars-globe.webp | https://pixabay.com/photos/mars-red-planet-planet-space-11012/ | Pixabay Content License | WikiImages
+- sun-and-planets-in-a-row.webp | https://pixabay.com/photos/solar-system-sun-mercury-venus-439046/ | Pixabay Content License | 51581
+- trees-long-shadows-grass.webp | https://pixabay.com/photos/path-slope-trees-sunlight-4894293/ | Pixabay Content License | fietzfotos
+- autumn-forest-path-red-leaves.webp | https://pixabay.com/photos/road-forest-fall-path-trail-trees-1072821/ | Pixabay Content License | Valiphotos
+- blossoming-tree-on-hill.webp | https://pixabay.com/photos/a-tree-nature-heart-cherry-flowers-5255288/ | Pixabay Content License | miroslavkaclik
+- sun-in-blue-sky-clouds.webp | https://pixabay.com/photos/clouds-sun-sky-blue-nature-summer-429228/ | Pixabay Content License | Studio_Iris
+- tall-storm-cloud.webp | https://pixabay.com/photos/thunderstorm-storm-clouds-threat-7349206/ | Pixabay Content License | dexmac
+- snowy-mountain-peaks.webp | https://pixabay.com/photos/mountain-landscape-snow-nature-9364160/ | Pixabay Content License | Herlensproductions
+- sandy-beach-and-sea.webp | https://pixabay.com/photos/beach-sand-sea-ocean-seascape-1845945/ | Pixabay Content License | Pexels
+- soft-white-feather.webp | https://pixabay.com/photos/feather-ice-snow-plume-6184325/ | Pixabay Content License | Wolfgang_Hasselmann
+- bootprint-on-the-moon.webp | https://images.nasa.gov/details/as11-40-5877 | Public domain (NASA) | JSC
+- thin-crescent-moon-blue-sky.webp | https://pixabay.com/photos/moon-crescent-moon-universe-crater-7362632/ | Pixabay Content License | Kanenori
+- crescent-moon-twilight-trees.webp | https://pixabay.com/photos/heaven-stars-moon-venus-universe-5114501/ | Pixabay Content License | Bru-nO
+- satellites-around-earth-drawing.webp | https://pixabay.com/photos/earth-space-satellites-tracking-79533/ | Pixabay Content License | 12019
+- satellite-dish-on-roof.webp | https://pixabay.com/photos/satellite-dish-tv-watch-tv-870328/ | Pixabay Content License | EME
+- storm-clouds-over-america-from-space.webp | https://www.flickr.com/photos/24662369@N07/5124467559 | CC BY 2.0 | NASA Goddard Photo and Video
