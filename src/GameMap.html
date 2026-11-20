@@ -130,6 +130,7 @@ body.gm-k2 #gm-nav button{font-size:13px}
 #gm .gm-chest{margin-top:10px;border-radius:14px;padding:9px 12px;background:rgba(255,216,77,.12);border:2px solid rgba(255,216,77,.4);font-weight:800;font-size:13px;color:#FFE9A8}
 #gm .gm-cta{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:31}
 #gm .gm-cta .gm-play{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#gm .gm-play2 small{display:block;margin-top:3px;font-size:13px;font-style:normal;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis}
 #gm .gm-lock{margin-top:16px;border-radius:24px;padding:20px 16px;text-align:center;background:rgba(0,0,0,.35);border:3px dashed rgba(255,255,255,.25)}
 #gm .gm-lock .ic{font-size:64px;line-height:1}
 #gm .gm-lock h1{margin:8px 0 4px;font-size:28px;font-weight:900;font-style:italic;text-transform:uppercase}
@@ -150,6 +151,7 @@ body.gm-k2 #gm-nav button{font-size:13px}
 #gm-cel .loot{margin:14px 0 0;background:rgba(0,0,0,.35);border:3px solid rgba(255,255,255,.3);border-radius:22px;padding:10px 14px;text-align:left}
 #gm-cel .loot div{display:flex;justify-content:space-between;gap:10px;font-weight:900;font-size:15px;padding:5px 0}
 #gm-cel .loot b{color:#FFE259;text-align:right}
+#gm-cel .loot .paid b{color:#39FF88}
 #gm-cel .row{display:flex;gap:8px;margin-top:16px}
 #gm-cel button{flex:1;border:0;border-radius:18px;padding:15px 10px;font-family:inherit;font-weight:900;font-size:22px;font-style:italic;text-transform:uppercase;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 6px 0 #B36B00;cursor:pointer}
 #gm-cel button.alt{flex:0 0 auto;font-size:16px;color:#fff;background:rgba(0,0,0,.3);box-shadow:0 6px 0 rgba(0,0,0,.35)}
@@ -391,6 +393,9 @@ function growthHTML(ws){ const n=steps(), R=rankOf(n), wk=weekCounts(), s=(A.st&
 /* ===== WIN MOMENTS: right after he masters a level and comes back to the map (his success only, once each).
    LEVEL CLEAR! (what he learned, what it unlocked, how far the boss is) or BOSS BEATEN! (unit finished), plus RANK UP when it happens.
    NEXT LEVEL starts his next level at once. The daily CHALLENGE COMPLETE party takes the place of these when it happens. */
+/* the money the SERVER paid for this step (ledger rows that name it, last 15 minutes); shown as it is, never computed here */
+function earnedFor(id){ const since=Date.now()-15*60e3; return ((A.st&&A.st.ledger)||[]).filter(x=>x&&x.at>=since&&x.amt>0&&String(x.why||'').indexOf(id)>=0).reduce((a,x)=>a+Number(x.amt),0); }
+function watchPay(id){ let n=0; const t=setInterval(()=>{ n++; const c=document.getElementById('gm-cel'), v=earnedFor(id); if(!c||n>12){ clearInterval(t); return; } if(v>0){ clearInterval(t); const L=c.querySelector('.loot'); if(L&&!L.querySelector('.paid')){ const d=document.createElement('div'); d.className='paid'; d.innerHTML='<span>💵 You earned</span><b>+'+usd(v)+'</b>'; L.insertBefore(d,L.children[1]||null); try{ (SND.coin||SND.win||SND.tap)(); }catch(e){} } } },400); }
 function winMoment(newIds,ws,rankBefore){ const id=newIds[newIds.length-1], w=ws.find(x=>x.ids.indexOf(id)>=0)||ws.find(x=>(x.c.skills||[]).some(y=>y[0]===id)); if(!w) return false;
  const n=nm(id), isBoss=w.ids.indexOf(id)===w.ids.length-1&&w.ids.every(mast), R=rankOf(steps()), up=R.r!==rankBefore.r, loot=[];
  if(n[1]) loot.push([/ Level \d+$/.test(n[1])?'🧠 Real skill':'🧠 You learned',/ Level \d+$/.test(n[1])?n[0]:n[1]]);
@@ -399,6 +404,7 @@ function winMoment(newIds,ws,rankBefore){ const id=newIds[newIds.length-1], w=ws
  if(isBoss){ loot.push(['🏁 Unit finished',w.unitName]); loot.push(['🗺️ Next','Your next unit is on the map']); }
  else if(w.now){ const left=w.ids.length-w.ids.indexOf(w.now)-1; loot.push(['🔓 Unlocked',nm(w.now)[0]]); loot.push(['🏰 Boss',left?left+' level'+(left===1?'':'s')+' away!':'NEXT! Get ready!']); }
  const nx=w.now||(pick(ws)||{}).now;
+ const paid=earnedFor(id); if(paid>0) loot.splice(1,0,['💵 You earned','+'+usd(paid)]); else watchPay(id);
  celebrate({kicker:n[0],title:isBoss?'Boss<br>beaten!':up?'Rank<br>up!':'Level<br>clear!',icon:isBoss?'🏰':up?R.r[1]:'🏆',stars:true,loot,
   go:nx?['▶ Next level',()=>play(nx)]:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }],alt:nx?['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); }]:null});
  return true; }
@@ -428,12 +434,15 @@ function celebrate(o){ try{ const old=document.getElementById('gm-cel'); if(old)
   d.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-cel]'); if(!b) return; d.remove(); const f=b.dataset.cel==='go'?(o.go&&o.go[1]):(o.alt&&o.alt[1]); try{ f&&f(); }catch(x){} });
   setTimeout(()=>{ const b=d.querySelector('[data-cel=go]'); try{ b&&b.focus({preventScroll:true}); }catch(e){} },50); }catch(e){ console.error('GameMap',e); } }
 GM.celebrate=celebrate;
+function dailyLoot(ws,wk){ const L=[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]];
+ try{ const d=todayDone(), last=d[d.length-1]; if(last){ const w=ws.find(x=>x.ids.indexOf(last)>=0); if(w&&w.ids.indexOf(last)===w.ids.length-1&&w.ids.every(mast)) L.splice(1,0,['🏰 Boss beaten',w.unitName]); const n=nm(last); L.splice(1,0,['🧠 Last level',n[0]]); } }catch(e){}
+ return L; }
 function dayKey(){ return 'gm-day-'+(A.st&&A.st.id)+'-'+today(); }
 function seen(k){ try{ return localStorage.getItem(k)==='1'; }catch(e){ return !!GM['_'+k]; } }
 function mark(k){ try{ localStorage.setItem(k,'1'); }catch(e){} GM['_'+k]=1; }
 function checkDaily(ws){ const P=plan(ws); if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=P.done; GM.prevSid=A.st.id; return false; }
  if(P.rounds.length&&GM.prevDone<ROUNDS&&P.done>=ROUNDS&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=P.done; const wk=weekCounts();
-  setTimeout(()=>celebrate({kicker:'THE TASHBAR CHALLENGE',title:'Challenge<br>complete!',icon:'🏆',stars:true,loot:[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]],go:['🎮 Arcade',()=>{ GM.tab='games'; sync(); door('games'); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
+  setTimeout(()=>celebrate({kicker:'THE TASHBAR CHALLENGE',title:'Challenge<br>complete!',icon:'🏆',stars:true,loot:dailyLoot(ws,wk),go:['🎮 Arcade',()=>{ GM.tab='games'; sync(); door('games'); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
  GM.prevDone=P.done; return false; }
 function mastSet(){ const sk=(A.st&&A.st.skills)||{}, o={}; Object.keys(sk).forEach(id=>{ if(sk[id]&&sk[id].m) o[id]=Number(sk[id].at)||0; }); return o; }
 function checkWin(ws,daily){ const now=mastSet(); if(!GM.snap||GM.snapSid!==A.st.id){ GM.snap=now; GM.snapSid=A.st.id; GM.snapRank=rankOf(steps()); return; }
@@ -457,7 +466,7 @@ function sync(){
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}${worldTabs(ws,cur)}</div>
  <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div><button type="button" class="gm-tbtn" data-gm="tree">${GM.view==='tree'?'🗺️ PATH':'🌳 SKILL TREE'}</button></div>
- ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(cur.now)}">▶ Play ${esc(nm(cur.now)[0])}</button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
+ ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play gm-play2" data-gm="play" data-id="${esc(cur.now)}">▶ Play<small>${esc(nm(cur.now)[0])}</small></button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
  show(true,true);
@@ -502,6 +511,7 @@ render=function(){ const r=oldRender.apply(this,arguments);
  return r; };
 GM.lastSteps=-1;
 GM.sync=sync;
+GM.nextLevel=function(){ try{ const m=M(); if(!m) return ''; const w=pick(worldsOf(m)); if(!w||!w.now) return ''; const n=nm(w.now); return n[0]+(n[1]&&!/ Level \d+$/.test(n[1])?' · '+n[1]:''); }catch(e){ return ''; } };
 let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.pf-card'); if(!c){ setTimeout(hook,1500); return; } pfWatch=new MutationObserver(()=>{ if(document.body.classList.contains('gm-on')) sync(); }); pfWatch.observe(c,{attributes:true,attributeFilter:['style']}); },1500);
 try{ sync(); }catch(e){ console.error('GameMap',e); }
 })();
