@@ -39,7 +39,7 @@ ss.speak=function(u){ try{ if(off||!u||!u.text) return realSpeak(u); const l=lan
 ss.cancel=function(){ q=[]; if(cur){ try{ cur.pause(); }catch(e){} cur=null; } realCancel(); };
 try{ Object.defineProperty(ss,'speaking',{configurable:true,get:()=>!!cur||q.length>0}); }catch(e){}
 try{ Object.defineProperty(ss,'pending',{configurable:true,get:()=>q.length>0}); }catch(e){}
-window.TL_VOICE={ off:v=>{ off=!!v; }, on:()=>!off };
+window.TL_VOICE={ off:v=>{ off=!!v; }, on:()=>!off, now:()=>cur&&isFinite(cur.duration)&&cur.duration>0?{t:cur.currentTime,d:cur.duration}:null };   /* now: how far the playing phrase is (the home's Read-it-to-me ring) */
 /* sealed lesson frames: put this same code at the top of every srcdoc */
 try{ const d=Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype,'srcdoc');
  if(d&&d.set){ Object.defineProperty(HTMLIFrameElement.prototype,'srcdoc',{configurable:true,get:d.get,set:function(v){ v=String(v); const tag='<scr'+'ipt>('+SRC+')();<'+'/script>'; if(v.indexOf('__VP')<0){ v=/<head[^>]*>/i.test(v)?v.replace(/<head[^>]*>/i,m=>m+tag):tag+v; } return d.set.call(this,v); }}); } }catch(e){}

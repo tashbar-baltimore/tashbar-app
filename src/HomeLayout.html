@@ -34,6 +34,11 @@ function css(){ if(document.getElementById('hlx-css')) return; const s=document.
 #hlx .hlx-start{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 #hlx .hlx-go{flex:1 1 380px;min-height:86px;border:0;border-radius:24px;cursor:pointer;color:#1E1B4B;font:900 34px/1.05 system-ui,sans-serif;background:linear-gradient(135deg,#FDE047,#F59E0B);box-shadow:0 8px 0 #B45309,0 16px 30px rgba(180,83,9,.25);display:flex;align-items:center;justify-content:center;gap:14px;transition:transform .18s}
 #hlx .hlx-go small{display:block;font:700 16px system-ui,sans-serif;color:#7C2D12;margin-top:4px}
+/* 2026-11-20 (moshe@ session): a slimmer, centered Start button: the play circle sits right next to "Start here", the line under it is centered */
+#hlx .hlx-go{flex-direction:column;gap:4px;min-height:70px;padding:10px 22px;font-size:28px;text-align:center}
+#hlx .hlx-go .hlx-gt{display:inline-flex;align-items:center;justify-content:center;gap:12px}
+#hlx .hlx-go .hlx-play{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#1E1B4B;color:#FDE047;font-size:16px;padding-left:3px;box-sizing:border-box;box-shadow:0 3px 0 rgba(30,27,75,.25)}
+#hlx .hlx-go small{margin-top:0;font-size:15px;max-width:52ch}
 #hlx .hlx-go:hover{transform:translateY(-2px)}#hlx .hlx-go:active{transform:translateY(3px);box-shadow:0 4px 0 #B45309}
 #hlx .hlx-steps{flex:0 0 auto;min-height:56px;border:3px solid #FCD34D;background:#fff;border-radius:18px;padding:0 20px;font:800 18px system-ui,sans-serif;color:#92400E;cursor:pointer}
 #hlx .hlx-stepbox{margin-top:12px}#hlx .hlx-stepbox[hidden]{display:none}
@@ -68,7 +73,7 @@ function css(){ if(document.getElementById('hlx-css')) return; const s=document.
 #hlx .hlx-hold{display:none!important}
 #hlx details.calmmore{margin:0!important}
 #hlx .hlx-stepbox .mlevel{display:none!important}
-@media (max-width:700px){#hlx .hlx-h h2{font-size:24px}#hlx .hlx-lib .hlx-h h2{font-size:28px}#hlx .hlx-go{font-size:26px}#hlx .hlx-flow{grid-template-columns:1fr}#hlx .hlx-flow .hlx-grp{grid-column:auto!important}#hlx .hlx-cards{grid-template-columns:1fr 1fr!important}#hlx .hlx-card{min-height:130px}#hlx .hlx-card b{font-size:18px}}
+@media (max-width:700px){#hlx .hlx-h h2{font-size:24px}#hlx .hlx-lib .hlx-h h2{font-size:28px}#hlx .hlx-go{font-size:23px;min-height:62px}#hlx .hlx-go .hlx-play{width:32px;height:32px;font-size:13px}#hlx .hlx-go small{font-size:13px}#hlx .hlx-flow{grid-template-columns:1fr}#hlx .hlx-flow .hlx-grp{grid-column:auto!important}#hlx .hlx-cards{grid-template-columns:1fr 1fr!important}#hlx .hlx-card{min-height:130px}#hlx .hlx-card b{font-size:18px}}
 @media (prefers-reduced-motion:reduce){#hlx .hlx-card,#hlx .hlx-go,#hlx .hlx-btn{transition:none}}
 
 #hlx .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -274,7 +279,7 @@ function arrange(){ try{ if(!on()) return; const hp=document.querySelector('.hp2
   const mis=$('section.hpmission'); const big=mis&&(mis.querySelector('button.big')||mis.querySelector('.hpgo button'));
   const sd=big?' data-hlx="go"':' data-hlx="steps"';
   const nTxt=mis?((mis.querySelector('.hpmeter small,.hpgo small')||{}).textContent||''):'';
-  top.insertAdjacentHTML('beforeend','<div class="hlx-start"><button type="button" class="hlx-go"'+sd+'><span aria-hidden="true">▶</span><span>Start here<small>'+E(noLvl(nTxt)||'Today’s learning, one step at a time')+'</small></span></button><button type="button" class="hlx-steps" data-hlx="steps" aria-expanded="'+(HX.steps?'true':'false')+'">📋 Today’s steps</button></div><div class="hlx-stepbox" id="hlx-stepbox"'+(HX.steps?'':' hidden')+'></div>');
+  top.insertAdjacentHTML('beforeend','<div class="hlx-start"><button type="button" class="hlx-go"'+sd+'><span class="hlx-gt"><span class="hlx-play" aria-hidden="true">▶</span>Start here</span><small>'+E(noLvl(nTxt)||'Today’s learning, one step at a time')+'</small></button><button type="button" class="hlx-steps" data-hlx="steps" aria-expanded="'+(HX.steps?'true':'false')+'">📋 Today’s steps</button></div><div class="hlx-stepbox" id="hlx-stepbox"'+(HX.steps?'':' hidden')+'></div>');
   const box=top.querySelector('#hlx-stepbox'); if(mis) box.appendChild(mis); const band=$('.hlband'); if(band) box.appendChild(band);
   /* ---- 2. library (v2: search, filters, pick up where you left off, a shelf for every subject) ---- */
   const lib=X.querySelector('#hlx-lib'); buildLib(lib,hp,hold);
@@ -335,5 +340,162 @@ document.addEventListener('focusout',e=>{ if(e.target&&e.target.id==='hlx-q') se
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&document.getElementById('hlx-shelf')){ closeShelf(); return; }
  if(e.key==='Enter'&&e.target&&e.target.id==='hlx-q'){ const b=document.querySelector('#hlx-res .hlx-rrow'); if(b){ e.preventDefault(); b.click(); } } });
 try{ if(on()) render(); }catch(e){}
+})();
+
+/* ===== HOME ORDER 2 (2026-11-20, moshe@ session: "reconfigure the page to make a little more sense"). Display only.
+   Top to bottom: the Tashbar logo, centered across the top (out of the banner) -> the banner: greeting and tools, then "Start here"
+   front and center with the money badge right under it (and Today's steps beside the money) -> the subject cards and doors ->
+   the Canteen money card at the BOTTOM, the same width as the banner above.
+   The tool buttons (music, messages, sound) are one uniform set: the same round dark-violet button with a clear white picture
+   (music note, envelope, speaker; a crossed speaker when the sound is off). The money badge stays in the corner on every other page.
+   SWITCH: window.HOME_ORDER2 = false -> the page as it was. No money, no mastery, no server call. No double slash in this file. */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined') return;
+if(window.HOME_ORDER2===undefined) window.HOME_ORDER2=true;
+const NS='http:'+'/'+'/'+'www.w3.org/2000/svg';
+const svg=b=>'url("data:image/svg+xml;utf8,'+("<svg xmlns='"+NS+"' viewBox='0 0 24 24'>"+b+'</svg>').replace(/#/g,'%23').replace(/</g,'%3C').replace(/>/g,'%3E')+'")';
+const W="stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'";
+const IC={ note:svg("<path d='M9 18V5l12-2v13' "+W+"/><circle cx='6' cy='18' r='3' fill='white'/><circle cx='18' cy='16' r='3' fill='white'/>"),
+  mail:svg("<rect x='3' y='5' width='18' height='14' rx='2.5' "+W+"/><path d='M3.5 7l8.5 6 8.5-6' "+W+"/>"),
+  spk:svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='white'/><path d='M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13' "+W+"/>"),
+  mute:svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='white'/><path d='M16 9l6 6M22 9l-6 6' "+W+"/>") };
+/* the same pictures in violet, for a tool that is OFF (white button with an outline) */
+const V="stroke='#4F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'";
+IC.noteV=svg("<path d='M9 18V5l12-2v13' "+V+"/><circle cx='6' cy='18' r='3' fill='#4F46E5'/><circle cx='18' cy='16' r='3' fill='#4F46E5'/>");
+IC.chev=svg("<path d='M10 6.5l5.5 5.5-5.5 5.5' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' fill='none'/>");
+IC.muteV=svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='#4F46E5'/><path d='M16 9l6 6M22 9l-6 6' "+V+"/>");
+const BG='linear-gradient(135deg,#4F46E5,#6D28D9)';
+try{ if(!document.getElementById('hl2-css')){ const s=document.createElement('style'); s.id='hl2-css'; s.textContent=`
+body.hl2 #hlx>.hl2-logo{display:flex;justify-content:center;margin:4px 0 -8px;order:-1}
+body.hl2 #hlx-top header.hpbar>.tl-logo{display:none!important}
+body.hl2 .hl2-logo .tl-logo{display:inline-flex;align-items:center;height:auto!important;padding:6px 14px!important;background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.08)!important}
+body.hl2 .hl2-logo .tl-logo img{height:52px!important;width:auto}
+body.hl2 #hlx .hlx-start{flex-direction:column;align-items:center;gap:12px}
+body.hl2 #hlx .hlx-start .hlx-go{flex:0 0 auto;width:min(560px,100%);min-height:58px;padding:6px 26px;font-size:24px;border-radius:999px}
+body.hl2 #hlx .hlx-go .hlx-play{width:34px;height:34px;font-size:14px}
+body.hl2 #hlx .hlx-go small{font-size:13px}
+body.hl2 .hl2-under{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;width:100%}
+body.hl2 .hl2-under .hlx-steps{min-height:44px}
+body.hl2 #tlcash.docked{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;top:auto!important;z-index:2!important;background:transparent!important;border:0!important;padding:2px 12px!important}
+/* BUTTON SYSTEM (2026-11-20, moshe@ session; the 6 kinds): 1 main action = the gold Start pill; 2 action = solid pill (green learn,
+   orange money); 3 place to open = picture card with a › circle; 4 quick tool = small circle (filled on, outlined off), now folded
+   into the ⋮ menu; 5 quiet = white pill with an outline; 6 information = flat, never pressable. */
+body.hl2 #hlx .hlx-steps,body.hl2 .hpbar .tools .signout{background:#fff!important;border:2px solid #FCD34D!important;border-radius:999px!important;box-shadow:none!important;color:#92400E!important;min-height:44px!important;padding:0 18px!important;font-weight:800!important;cursor:pointer}
+body.hl2 #hlx .hlx-steps:hover,body.hl2 .hpbar .tools .signout:hover{background:#FFFBEB!important;transform:translateY(-1px)}
+body.hl2 .hpbar .hello .streak{border-radius:10px!important;box-shadow:none!important}
+body.hl2 .hf-door::before{content:'';position:absolute;right:18px;bottom:18px;width:44px;height:44px;box-sizing:border-box;border-radius:50%;background:${IC.chev} center/26px no-repeat,rgba(255,255,255,.28);border:2px solid rgba(255,255,255,.8);z-index:2;transition:transform .2s}
+body.hl2 .hf-door:hover::before{transform:translateX(3px)}
+body.hl2 .hf-door .cnt{margin-right:60px}
+body.hl2 .cn-card .cn-ord{background:linear-gradient(135deg,#F59E0B,#EA580C)!important;border-radius:999px!important}
+body.hl2 #hlx>.cn-card{margin:0!important;width:auto!important;max-width:none!important;box-sizing:border-box}
+body.hl2 .hpbar .tools .icon-btn{width:48px!important;height:48px!important;min-width:48px!important;padding:0!important;border:0!important;border-radius:50%!important;font-size:0!important;color:transparent!important;
+  background:${IC.spk} center/24px no-repeat,${BG}!important;box-shadow:0 3px 0 #3730A3,0 6px 14px rgba(79,70,229,.25)!important}
+body.hl2 .hpbar .tools #mubtn{background:${IC.note} center/22px no-repeat,${BG}!important}
+body.hl2 .hpbar .tools [data-tr="open"]{background:${IC.mail} center/24px no-repeat,${BG}!important}
+body.hl2 .hpbar .tools [data-act="sound"][aria-label="Sound off"]{background:${IC.muteV} center/24px no-repeat,#fff!important;box-shadow:inset 0 0 0 2px #C7D2FE!important}
+body.hl2 .hpbar .tools #mubtn[aria-label$=": off"]{background:${IC.noteV} center/22px no-repeat,#fff!important;box-shadow:inset 0 0 0 2px #C7D2FE!important}
+/* QUICK TOOLS MENU: ⋮ (three dots, one per tool). Tap: the bottom dot slides out to the left first, then the next, and each grows
+   into its tool. Tap ⋮ (now ✕), anywhere else, or Escape: they slide back into dots. */
+body.hl2 .hl2-qt{position:relative;z-index:5;flex:0 0 auto;width:48px;height:48px;transition:width .38s cubic-bezier(.2,.9,.3,1)}
+body.hl2 .hl2-qt.open{width:var(--qtw,48px)}
+body.hl2 .hl2-qt .hl2-qtt{position:absolute;top:0;right:0;width:48px;height:48px;z-index:3;border:0;border-radius:50%;background:transparent;cursor:pointer;color:#4F46E5;font:900 20px/1 system-ui,sans-serif;display:grid;place-items:center;transition:background .2s}
+body.hl2 .hl2-qt .hl2-qtt:hover{background:rgba(79,70,229,.08)}
+body.hl2 .hl2-qt .hl2-qtt span{opacity:0;transform:scale(.4) rotate(-90deg);transition:opacity .2s,transform .3s}
+body.hl2 .hl2-qt.open .hl2-qtt{background:#EEF2FF}
+body.hl2 .hl2-qt.open .hl2-qtt span{opacity:1;transform:none}
+body.hl2 .hl2-qt .hl2-qtbg{position:absolute;right:-5px;top:50%;height:58px;width:calc(100% + 10px);transform:translateY(-50%);border-radius:999px;background:#fff;box-shadow:0 6px 22px rgba(30,27,75,.14);opacity:0;transition:width .38s cubic-bezier(.2,.9,.3,1),opacity .25s;z-index:1}
+body.hl2 .hl2-qt.open .hl2-qtbg{opacity:1}
+body.hl2 .hl2-qt .hl2-qti{position:absolute!important;left:auto!important;right:0;top:0;z-index:2;pointer-events:none;transform:translate(var(--dx0),var(--dy)) scale(.19);transition:transform .38s cubic-bezier(.2,.9,.3,1.15);transition-delay:var(--dc)}
+body.hl2 #hlx-top .hpbar .tools .hl2-qt:not(.open) .hl2-qti.hl2-qti{background:#6D28D9!important;box-shadow:none!important}
+body.hl2 .hl2-qt.open .hl2-qti{pointer-events:auto;transform:translate(var(--dx),0) scale(1);transition-delay:var(--do)}
+body.hl2 .hl2-qt.still,body.hl2 .hl2-qt.still .hl2-qti,body.hl2 .hl2-qt.still .hl2-qtbg{transition:none!important}
+/* FEWER WORDS (2026-11-20, moshe@ session, agreed with the drafter): cards show a picture, a name and one button; the details live
+   on the page they open. Start here shows a progress bar instead of "0 of 6", and only once he has made progress (none at 0).
+   The Learn / Play / My Stuff doors are centered: the picture, then the word, the › circle in the corner. */
+body.hl2 .hf-kwrap .hf-kl .tx small{display:none!important}
+body.hl2 .hf-kwrap .hf-kl .hl2-kbar{display:block;height:8px;border-radius:999px;background:rgba(255,255,255,.7);overflow:hidden;margin-top:8px;max-width:180px}
+body.hl2 .hf-kwrap .hf-kl .hl2-kbar i{display:block;height:100%;border-radius:999px;background:#16A34A}
+body.hl2 .hf-door small,body.hl2 .hf-door .cnt{display:none!important}
+body.hl2 .hf-door{align-items:center!important;justify-content:center!important;text-align:center!important;gap:10px!important;min-height:210px!important;padding:22px 24px 26px!important}
+body.hl2 .hf-door .ico{position:static!important;font-size:88px!important;line-height:1!important}
+body.hl2 .hf-door b{font-size:40px!important}
+@media (max-width:700px){body.hl2 .hf-door{min-height:170px!important}body.hl2 .hf-door .ico{font-size:72px!important}body.hl2 .hf-door b{font-size:34px!important}}
+body.hl2 #hlx>.cn-card>div>small{display:none!important}
+body.hl2 #hlx>.cn-card .tlq .row,body.hl2 #hlx>.cn-card .tlq .qs,body.hl2 #hlx>.cn-card .tlq p{display:none!important}
+body.hl2 #hlx>.cn-card .tlq .h{margin:0!important}
+body.hl2 #hlx .hlx-go small{display:none!important}
+body.hl2 #hlx .hlx-go .hl2-pbar{display:block;width:min(320px,80%);height:10px;margin:4px auto 0;border-radius:999px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(146,64,14,.18);overflow:hidden}
+body.hl2 #hlx .hlx-go .hl2-pbar i{display:block;height:100%;min-width:6%;border-radius:999px;background:linear-gradient(90deg,#1E1B4B,#4F46E5);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+body.hl2 #hlx .hlx-go.hl2-done .hl2-pbar i{background:linear-gradient(90deg,#16A34A,#22C55E)}
+body.hl2 #hlx .hlx-go .hl2-ok{display:none;margin-left:6px;color:#16A34A}body.hl2 #hlx .hlx-go.hl2-done .hl2-ok{display:inline}
+/* GREETING + STREAK (2026-11-20, moshe@ session): "Good morning, <name>!" is centered right above Start here; the corner keeps the
+   streak alone, on one line: a small flame badge with the number, then "day streak" (a grey flame and "Start a streak today!" at 0).
+   A week-of-dots streak may come later, once the school's app schedule is known. */
+body.hl2 #hlx .hl2-greet{text-align:center;margin:4px 0 6px}
+body.hl2 #hlx .hl2-greet>b{display:inline-block;font:900 30px/1.15 var(--display,system-ui),system-ui,sans-serif;color:#1E1B4B}
+body.hl2 .hpbar .hello{display:flex!important;flex-direction:row!important;align-items:center!important;gap:0}
+body.hl2 .hpbar .hello>.streak{display:none!important}
+body.hl2 .hl2-sk{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;font:800 16px var(--display,system-ui),system-ui,sans-serif;color:#9A3412}
+body.hl2 .hl2-sk .hl2-skf{position:relative;display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 50% 70%,#FDBA74,#F97316);font-size:24px;line-height:1;box-shadow:0 3px 10px rgba(249,115,22,.3)}
+body.hl2 .hl2-sk .hl2-skf em{position:absolute;right:-7px;bottom:-5px;font-style:normal;background:#fff;color:#C2410C;border:2px solid #F97316;border-radius:999px;font:900 13px/1.2 system-ui,sans-serif;padding:1px 6px}
+body.hl2 .hl2-sk.off{color:#6B7280}body.hl2 .hl2-sk.off .hl2-skf{background:#F3F4F6;box-shadow:none;filter:grayscale(1);opacity:.7}
+@media (max-width:700px){body.hl2 #hlx .hl2-greet>b{font-size:24px}body.hl2 .hl2-sk{font-size:14px}body.hl2 .hl2-sk .hl2-skf{width:36px;height:36px;font-size:20px}}
+@media (max-width:700px){body.hl2 .hl2-qt.open{width:48px}body.hl2 .hl2-qt .hl2-qtbg{width:58px}body.hl2 .hl2-qt.open .hl2-qtbg{width:calc(var(--qtw,48px) + 10px)}}
+@media (prefers-reduced-motion:reduce){body.hl2 .hl2-qt .hl2-qti,body.hl2 .hl2-qt .hl2-qtbg{transition-duration:.01s!important}}
+body.hl2 .hpbar .tools .icon-btn:focus-visible{outline:3px solid #FDE047;outline-offset:2px}
+@media (max-width:700px){body.hl2 .hl2-logo .tl-logo img{height:40px!important}body.hl2 .hpbar .tools .icon-btn{width:44px!important;height:44px!important;min-width:44px!important}}`; document.head.appendChild(s); } }catch(e){}
+const onHub=()=>{ try{ return window.HOME_ORDER2!==false&&A.view==='hub'&&!!A.st&&!!document.getElementById('hlx'); }catch(e){ return false; } };
+function undock(){ const c=document.getElementById('tlcash'); if(c&&c.classList.contains('docked')){ c.classList.remove('docked'); document.body.appendChild(c); } }
+function arrange(){ try{
+  const on=onHub(); document.body.classList.toggle('hl2',on); if(!on){ undock(); return; }
+  const hp=document.querySelector('.hp'), hlx=document.getElementById('hlx'), bar=document.querySelector('#hlx-top header.hpbar');
+  /* 1. the logo, centered across the top */
+  document.querySelectorAll('.hl2-logo').forEach(x=>{ if(x.parentNode!==hlx) x.remove(); });
+  const lg=bar&&bar.querySelector('.tl-logo'); if(lg&&!hlx.querySelector(':scope > .hl2-logo')){ const w=document.createElement('div'); w.className='hl2-logo'; w.appendChild(lg.cloneNode(true)); hlx.insertBefore(w,hlx.firstChild); }
+  /* 2. Start here front and center; the money and Today's steps under it */
+  const st=hlx.querySelector('.hlx-start'); if(st){ let u=st.querySelector('.hl2-under'); if(!u){ u=document.createElement('div'); u.className='hl2-under'; st.appendChild(u); }
+    const steps=st.querySelector(':scope > .hlx-steps'); if(steps) u.appendChild(steps);
+    const c=document.getElementById('tlcash'); if(c&&c.parentNode!==u){ c.classList.add('docked'); u.insertBefore(c,u.firstChild); } }
+  /* 2a. the greeting, centered above Start here; the streak alone in the corner, on one line */
+  try{ const top=hlx.querySelector('#hlx-top'), stt=hlx.querySelector('.hlx-start'), hello=bar&&bar.querySelector('.hello');
+    if(top&&stt&&hello){ let g=top.querySelector('.hl2-greet'); if(!g){ g=document.createElement('div'); g.className='hl2-greet'; stt.parentNode.insertBefore(g,stt); }
+      const gb=hello.querySelector(':scope > b'); if(gb){ g.innerHTML=''; g.appendChild(gb); }
+      const sk=hello.querySelector(':scope > .streak'), m=sk&&String(sk.textContent).match(/(\d+)/), n=m?+m[1]:0;
+      const want=n>=2?'<span class="hl2-skf" aria-hidden="true">🔥<em>'+n+'</em></span><span>day streak</span>':'<span class="hl2-skf" aria-hidden="true">🔥</span><span>Start a streak today!</span>';
+      let c=hello.querySelector(':scope > .hl2-sk'); if(!c){ c=document.createElement('span'); hello.appendChild(c); }
+      if(c.dataset.n!==String(n)){ c.dataset.n=String(n); c.className='hl2-sk'+(n>=2?'':' off'); c.innerHTML=want; c.setAttribute('aria-label',n>=2?n+' day streak':'Start a streak today'); } } }catch(e){}
+  /* 2b. fewer words: Start here gets a progress bar; started lesson cards get a thin bar; the Pathfinder note is one line */
+  try{ const go=hlx.querySelector('.hlx-go'), sm=go&&go.querySelector('small');
+    if(go&&sm){ const m=String(sm.textContent).match(/(\d+)\s*of\s*(\d+)/); const d=m?+m[1]:0, n=m?Math.max(1,+m[2]):0;
+      let b=go.querySelector('.hl2-pbar'); if(n&&d===0){ if(b) b.remove(); go.classList.remove('hl2-done'); go.setAttribute('aria-label','Start here'); } else if(n){ if(!b){ b=document.createElement('span'); b.className='hl2-pbar'; b.innerHTML='<i></i>'; go.appendChild(b); const t=go.querySelector('.hlx-gt'); if(t&&!t.querySelector('.hl2-ok')) t.insertAdjacentHTML('beforeend','<span class="hl2-ok" aria-hidden="true">✓</span>'); }
+        const pc=Math.round(Math.min(1,d/n)*100); b.firstChild.style.width=pc+'%'; go.classList.toggle('hl2-done',d>=n); go.setAttribute('aria-label','Start here: '+d+' of '+n+' steps done today'); } } }catch(e){}
+  hlx.querySelectorAll('.hf-kwrap .hf-kl').forEach(k=>{ if(k.querySelector('.hl2-kbar')) return; const sm=k.querySelector('.tx small'); const m=sm&&String(sm.textContent).match(/finished\s+(\d+)\s+of\s+(\d+)/i);
+    if(m&&+m[1]>0){ const tx=k.querySelector('.tx'); if(tx) tx.insertAdjacentHTML('beforeend','<span class="hl2-kbar" role="img" aria-label="'+m[1]+' of '+m[2]+' done"><i style="width:'+Math.round(+m[1]/Math.max(1,+m[2])*100)+'%"></i></span>'); } });
+  hlx.querySelectorAll(':scope > .cn-card .tlq .h').forEach(h=>{ if(!h.dataset.hl2){ h.dataset.hl2='1'; h.textContent='🧭 Finish your Pathfinder to get all your lesson money'; } });
+  /* 3. the quick tools fold into the ⋮ menu */
+  qtMenu(bar);
+  /* 4. the Canteen money card(s) at the bottom, as wide as the banner */
+  const app=document.getElementById('app'); if(app) app.querySelectorAll(':scope > .cn-card').forEach(c=>hlx.appendChild(c));
+}catch(e){ console.error('Home order 2',e); } }
+const QT=window.HL2QT=window.HL2QT||{open:false};
+function qtMenu(bar){ const tools=bar&&bar.querySelector('.tools'); if(!tools) return;
+  const list=[tools.querySelector('#mubtn'),tools.querySelector('[data-tr="open"]'),tools.querySelector('[data-act="sound"]'),tools.querySelector('.stcannon')].filter(Boolean);
+  let m=tools.querySelector(':scope > .hl2-qt'); const fresh=!m;
+  if(!m){ m=document.createElement('div'); m.className='hl2-qt still'; m.innerHTML='<span class="hl2-qtbg" aria-hidden="true"></span><button type="button" class="hl2-qtt" aria-label="Tools: music, messages, sound" aria-expanded="false"><span aria-hidden="true">✕</span></button>'; tools.appendChild(m); }
+  const n=list.length, GAP=54; let changed=fresh;
+  list.forEach((b,i)=>{ if(b.parentNode!==m){ m.appendChild(b); changed=true; } b.classList.add('hl2-qti');
+    b.style.setProperty('--dy',((i-(n-1)/2)*11)+'px'); b.style.setProperty('--dx0','0px'); b.style.setProperty('--dx',(-(n-i)*GAP)+'px');
+    b.style.setProperty('--do',((n-1-i)*70)+'ms'); b.style.setProperty('--dc',(i*50)+'ms'); b.tabIndex=QT.open?0:-1; });
+  m.style.setProperty('--qtw',(n*GAP+48)+'px');
+  m.classList.toggle('open',QT.open); m.querySelector('.hl2-qtt').setAttribute('aria-expanded',String(QT.open));
+  if(changed) requestAnimationFrame(()=>requestAnimationFrame(()=>m.classList.remove('still'))); }
+function qtSet(open){ QT.open=open; const m=document.querySelector('.hpbar .tools .hl2-qt'); if(m) qtMenu(m.closest('.hpbar')); }
+document.addEventListener('click',e=>{ const t=e.target; if(!t||!t.closest) return; if(t.closest('.hl2-qtt')){ e.preventDefault(); qtSet(!QT.open); return; }
+  if(QT.open&&!t.closest('.hl2-qt')) qtSet(false); },true);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&QT.open) qtSet(false); });
+const _r=render;
+render=function(){ try{ const c=document.getElementById('tlcash'); if(c&&c.closest('#app')){ c.classList.remove('docked'); document.body.appendChild(c); } }catch(e){}
+  const out=_r.apply(this,arguments); arrange(); return out; };
+setInterval(arrange,500);   /* the money badge is made a moment after the home is drawn, and leaves it on other pages */
 })();
 </script>

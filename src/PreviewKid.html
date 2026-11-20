@@ -14,6 +14,10 @@ body.cpk #tlclock{display:none!important}
 body.cpk #pkBar{display:flex}
 #pkBar b{flex:1}#pkBar button{border:0;border-radius:10px;padding:7px 12px;font:800 14px system-ui;cursor:pointer;background:#fff;color:#3B0764}
 body.cpk #app{margin-top:44px}
+body.cpk #gm{left:min(560px,44vw)!important;top:44px!important}
+body.cpk #gm .gm-goal,body.cpk #gm .gm-cta,body.cpk #gm .gm-sheet{top:auto!important;right:auto!important;bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;transform:translateX(-50%)!important;left:calc(min(560px,44vw) + (100vw - min(560px,44vw))/2)!important;width:min(560px,calc(100vw - min(560px,44vw) - 24px))!important}
+body.cpk #gm-nav{left:calc(min(560px,44vw) + (100vw - min(560px,44vw))/2)!important;transform:translateX(-50%)!important;width:min(560px,calc(100vw - min(560px,44vw) - 24px))!important}
+body.cpk #gm-cel{left:min(560px,44vw)!important}
 #cp .cp-sk{cursor:pointer;transition:background .15s}#cp .cp-sk:hover{background:#F5F3FF}
 #cp .cp-sk.pkon{background:#EDE9FE;box-shadow:inset 5px 0 0 #7C3AED}
 #pkHint{margin:0 0 10px;padding:12px 14px;border-radius:14px;background:linear-gradient(110deg,#EEF2FF,#FDF2F8);border:2px solid #C7D2FE;font:700 15px system-ui;color:#3730A3}
@@ -26,7 +30,7 @@ if(!document.getElementById('cp')) return;
 try{ var GS=window.google&&google.script, D0=GS&&Object.getOwnPropertyDescriptor(GS,'run'); if(D0&&D0.get){ var G0=D0.get; Object.defineProperty(GS,'run',{configurable:true,get:function(){ var base=G0.call(GS), s=null, p=new Proxy({},{get:function(t,k){ if(k==='withSuccessHandler') return function(fn){ s=fn; base=base.withSuccessHandler(fn); return p; }; if(k==='withFailureHandler') return function(fn){ base=base.withFailureHandler(fn); return p; }; if(k==='withUserObject') return function(o){ base=base.withUserObject(o); return p; }; if(k==='tmMine'||k==='sbMySchool') return function(){ setTimeout(function(){ if(s) s(null); },0); }; return function(){ return base[k].apply(base,arguments); }; }}); return p; }}); } }catch(e){}
 var WIDE=function(){ return window.innerWidth>=900; }, ON=false, CUR='';
 function el(i){ return document.getElementById(i); }
-function prepKid(){ try{ if(typeof SRV!=='undefined') SRV.token='preview'; if(typeof loadStudent==='function'&&(!A.st||A.st.id!=='PREVIEW')) A.st=loadStudent({id:'PREVIEW',name:'Preview Student'}); }catch(e){} }
+function prepKid(){ try{ if(typeof SRV!=='undefined') SRV.token='preview'; if(typeof loadStudent==='function'&&(!A.st||A.st.id!=='PREVIEW')) A.st=loadStudent({id:'PREVIEW',name:'Preview Student'}); if(window.TL_PREVIEW_MAP&&!window.TL_MAP) window.TL_MAP=window.TL_PREVIEW_MAP; }catch(e){} }   /* the new map home for the made-up preview boy (KidMap.js kmDemoMap_) */
 function split(on){ ON=!!on&&WIDE(); document.body.classList.toggle('cpk',ON); if(ON){ el('cp').style.display='flex'; } }
 function hub(){ try{ prepKid(); if(window.TL_TB&&TL_TB.el){ var x=[].filter.call(document.querySelectorAll('#tchb button'),function(b){ return /Start the questions/.test(b.textContent); })[0]; if(x) x.click(); } A.overlay=null; A.play=null; A.view='hub'; render(); }catch(e){} CUR=''; mark(); el('pkWhat').textContent='👀 The kid\'s home screen, exactly as a child sees it · nothing is saved'; }
 function mark(){ document.querySelectorAll('#cp .cp-sk').forEach(function(r){ r.classList.toggle('pkon',r.getAttribute('data-id')===CUR); }); }

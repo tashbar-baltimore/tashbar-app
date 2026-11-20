@@ -39,6 +39,17 @@ try{ if(!document.getElementById('st-css')){ const s=document.createElement('sty
 #tlcash.bump{animation:stbump .5s}@keyframes stbump{0%{transform:scale(1)}40%{transform:scale(1.22) rotate(-3deg)}100%{transform:scale(1)}}
 body.st-hide-pill #tlcash{display:none}body.tl-cashpill:not(.st-hide-pill) #app{padding-bottom:84px}html:has(body.tl-cashpill:not(.st-hide-pill)){scroll-padding-bottom:96px}body:has(#mupill) #tlcash{bottom:82px}.hp2 .hpbar .wallet::before{content:'💵'!important}
 @media (max-width:600px){#tlcash{bottom:10px;left:10px;font-size:19px;padding:5px 14px 5px 5px}#tlcash .ci{width:34px;height:34px;font-size:20px}}
+/* 2026-11-20 (moshe@ session, BUTTON SYSTEM kind 6 "just information"): the money is information, not a button. A small "MY MONEY"
+   label, the amount in green, and "+$x.xx today" always under it. Nothing to tap (the orange Store button opens the Store).
+   On the home it sits under Start here with no box at all; on every other page it sits in its corner on a plain white card. */
+#tlcash{justify-content:center;min-width:132px;height:auto;padding:6px 16px!important;overflow:visible;background:rgba(255,255,255,.94)!important;color:#065F46!important;border:1px solid #D1FAE5;border-radius:14px!important;box-shadow:none!important;cursor:default!important}
+#tlcash:hover{transform:none!important}#tlcash.bump{animation:none}
+#tlcash .tw .tl{display:block;font:800 10px/1.2 var(--body,system-ui),system-ui,sans-serif;letter-spacing:.09em;text-transform:uppercase;color:#6B7280;margin-bottom:2px}
+#tlcash .tw{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;line-height:1}
+#tlcash .tw b{font-size:22px;color:#065F46}
+#tlcash .tw .td{display:block;font:800 12px/1.2 var(--body,system-ui),system-ui,sans-serif;letter-spacing:.02em;text-transform:none;color:#059669;margin-top:2px}
+#tlcash i{position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap}
+@media (max-width:600px){#tlcash{min-width:112px;padding:5px 12px!important}#tlcash .tw b{font-size:19px}#tlcash .tw .td{font-size:11px}}
 body.tl-cashpill #hpjar{display:none!important}
 .stov{position:fixed;inset:0;z-index:10004;background:rgba(209,250,229,.7);display:flex;align-items:center;justify-content:center;padding:12px}
 .stbox{position:relative;width:min(1100px,100%);height:min(94vh,900px);background:#F8FAF5;border-radius:26px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.4);color:#14213D;font-family:var(--body,system-ui),system-ui,sans-serif}
@@ -137,8 +148,9 @@ let shownBal=null;
 function pill(){ try{
   let p=document.getElementById('tlcash');
   if(!A.st||A.view==='login'||(!A.view)){ if(p) p.remove(); return; }
-  if(!p){ p=document.createElement('div'); p.id='tlcash'; p.setAttribute('role','button'); p.tabIndex=0; p.setAttribute('aria-label','Your cash. Open the Tashbar Store'); p.innerHTML='<span class="ci" aria-hidden="true">💵</span><span class="cw"><small>My money</small><b id="tlcashv"></b></span><i id="tlcashp"></i>'; document.body.appendChild(p);
-    p.addEventListener('click',()=>openStore()); p.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openStore(); } }); }
+  if(!p){ p=document.createElement('div'); p.id='tlcash'; p.setAttribute('role','status'); p.setAttribute('aria-label','My money');
+    p.innerHTML='<span class="tw"><small class="tl">My money</small><b id="tlcashv"></b><small class="td" id="tlcasht"></small></span><i id="tlcashp"></i>'; document.body.appendChild(p); }
+  { const t=document.getElementById('tlcasht'), tx=todayTxt(); if(t&&t.textContent!==tx) t.textContent=tx; }
   document.body.classList.add('tl-cashpill');
   /* MONEY BADGE (HoS 2026-11-19: "the money should be on all the pages, including tests"): the same badge on every boy page,
      home included (it replaces the big orange home bar). Hidden only while the Store itself is open (its header shows the cash). */
@@ -149,6 +161,8 @@ function pill(){ try{
   if(v&&!v.dataset.rolling) v.textContent=$(shownBal);
   const est=lessonEst(), pe=document.getElementById('tlcashp'); if(pe){ pe.classList.toggle('on',est>0); if(est>0) pe.textContent='+'+$(est)+' on the way'; }
 }catch(e){} }
+/* what he earned today, from his ledger (display only; the server sets every amount) */
+function todayTxt(){ try{ const d=new Date().toDateString(); const t=(A.st.ledger||[]).filter(x=>x&&x.at&&new Date(x.at).toDateString()===d).reduce((a,x)=>a+Math.max(0,Number(x.amt)||0),0); return t>0?'+'+$(t)+' today':'+$0.00 today'; }catch(e){ return ''; } }
 function roll(v,from,to){ if(!v) return; v.dataset.rolling='1'; const t0=performance.now(), d=1300; const step=now=>{ const k=Math.min(1,(now-t0)/d); v.textContent=$(from+(to-from)*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(step); else { delete v.dataset.rolling; v.textContent=$(to); } }; requestAnimationFrame(step); }
 setInterval(pill,350);
 

@@ -6,7 +6,9 @@ name: firebase-deploy
 #   site   = rebuild the student + staff pages from the live server and add them to Firebase Hosting (keeps /pics, /curriculum)
 #   server = deploy the Firebase server function "api" from src/ + server/ in main
 #   both   = server first, then site
-#   publish-from-github = THE NORMAL WAY: server + site, both from THIS REPOSITORY, live (auto-publish uses this)
+#   publish-from-github = THE NORMAL WAY: server + site, both from THIS REPOSITORY, live (auto-publish uses this).
+#                         The server is told TL_SELFBUILD=1, so the page and add-ons it hands out are built from this same code
+#                         (otherwise Chromebooks are told the new page is out of date and swap back to the old one).
 #   preview-from-github = build the pages from THIS REPOSITORY and put them on a private preview link (live site untouched)
 on:
   workflow_dispatch:
@@ -63,7 +65,8 @@ jobs:
           gcloud functions deploy api --project="$PROJECT" --gen2 --region=us-east4 --runtime=nodejs22 \
             --source=functions --entry-point=api --trigger-http \
             --memory=4Gi --cpu=2 --timeout=1800s --max-instances=50 --min-instances=4 --concurrency=6 \
-            --set-secrets=TL_EXPORT_KEY=tl-export-key:latest --quiet
+            --set-secrets=TL_EXPORT_KEY=tl-export-key:latest \
+            --update-env-vars=TL_SELFBUILD=${{ inputs.what == 'publish-from-github' && '1' || '0' }} --quiet
 
       - name: Build the site from the live server
         if: inputs.what == 'site' || inputs.what == 'both'

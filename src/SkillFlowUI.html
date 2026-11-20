@@ -126,6 +126,8 @@
 #sf-ov ol.sf-path li i{width:10px;height:10px;border-radius:3px;flex:none}
 #sf-ov ol.sf-path li button{all:unset;cursor:pointer;flex:1} #sf-ov ol.sf-path li button:hover{text-decoration:underline}
 #sf-ov ol.sf-path li small{color:var(--mute);white-space:nowrap}
+#sf-ov .sfn-k{float:right;margin-left:6px;background:#2F5BD3;color:#fff;border-radius:999px;padding:1px 7px;font:800 11.5px system-ui,sans-serif} #sf-ov .sfn-k.st{background:#C8402F}
+#sf-ov .sf-boys{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 2px} #sf-ov .sf-boys button{border:1px solid #D9DFF0;background:#fff;border-radius:999px;padding:6px 12px;font:700 13.5px system-ui,sans-serif;cursor:pointer} #sf-ov .sf-boys button.st{border-color:#C8402F;color:#A12E21}
 #sf-ov .sf-say{font:600 15px/1.45 system-ui,sans-serif;margin:8px 0 4px}
 #sf-ov details.sf-more{margin-top:12px;border-top:1px solid var(--line);padding-top:8px} #sf-ov details.sf-more summary{cursor:pointer;font:800 14px system-ui,sans-serif;padding:6px 0}
 </style>
@@ -139,9 +141,9 @@ function E(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return
 function call(fn){ var a=[].slice.call(arguments,1); if(typeof run==='function') return run.apply(null,[fn].concat(a)); return new Promise(function(ok,no){ var r=google.script.run.withSuccessHandler(ok).withFailureHandler(no); r[fn].apply(r,a); }); }
 function tok(){ try{ return S.token; }catch(e){ return null; } }
 function $(id){ return document.getElementById(id); }
-function open(subj){ X.subj=String(subj||'ENGLISH').toUpperCase(); var ov=$('sf-ov'); if(!ov){ ov=document.createElement('div'); ov.id='sf-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Skill flow chart'); document.body.appendChild(ov); }
+function open(subj,focus){ X.subj=String(subj||'ENGLISH').toUpperCase(); X.focus=focus||null; var ov=$('sf-ov'); if(!ov){ ov=document.createElement('div'); ov.id='sf-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Skill flow chart'); document.body.appendChild(ov); }
   ov.innerHTML='<div class="sf-top"><div><h2>Skill flow chart</h2><div class="sf-sub">Loading the '+E(X.subj.toLowerCase())+' flow…</div></div><button type="button" class="sf-x" data-sf="close">Close</button></div>';
-  call('sfFlow',tok(),X.subj).then(function(r){ X.R=r; X.by={}; r.flow.nodes.forEach(function(n){ n.from=[]; n.to=[]; X.by[n.id]=n; }); r.flow.edges.forEach(function(e){ if(X.by[e[0]]&&X.by[e[1]]){ X.by[e[1]].from.push(e[0]); X.by[e[0]].to.push(e[1]); } }); shell(); draw(); })
+  call('sfFlow',tok(),X.subj).then(function(r){ X.R=r; X.by={}; r.flow.nodes.forEach(function(n){ n.from=[]; n.to=[]; X.by[n.id]=n; }); r.flow.edges.forEach(function(e){ if(X.by[e[0]]&&X.by[e[1]]){ X.by[e[1]].from.push(e[0]); X.by[e[0]].to.push(e[1]); } }); shell(); draw(); if(X.focus&&X.by[X.focus]){ var fid=X.focus; X.focus=null; detail(fid,true); } })
    .catch(function(err){ ov.querySelector('.sf-sub').textContent='Could not load: '+String(err&&err.message||err); }); }
 function close(){ var ov=$('sf-ov'); if(ov) ov.remove(); X.sel=null; }
 function shell(){ if(X.view!=='map') return shellFlow(); var F=X.R.flow, ov=$('sf-ov'), sum={taught:0,guided:0,quiz:0,planned:0}; F.nodes.forEach(function(n){ sum[n.depth]++; }); var tot=F.nodes.length;
@@ -181,7 +183,7 @@ function shellFlow(){ var F=X.R.flow, ov=$('sf-ov'), sum={taught:0,guided:0,quiz
   h+='<div class="sfv-topics" role="tablist" aria-label="Topic"><button type="button" data-sf="topic" data-v="all"'+(X.topic==='all'?' class="on"':'')+'>All topics</button>'+F.lanes.map(function(l){ var o=laneSum(l.id), w=o.bad+o.miss; return '<button type="button" data-sf="topic" data-v="'+E(l.id)+'"'+(X.topic===l.id?' class="on"':'')+'>'+E(l.name)+(w?'<em>'+w+'</em>':'')+'</button>'; }).join('')+'</div>';
   h+='<div id="sfv"'+(X.view==='tree'?' class="sft-wrap"':'')+'></div><p class="sf-hint">Read it top to bottom: the subject, its topics, then each topic’s skills from Kindergarten down to 8th grade. Red numbers on a topic = skills that need a real lesson or are missing. Tap any box to see what it teaches and what comes before and after it. Built '+E(X.R.built)+' from the live lessons.</p></div><div class="sf-d" id="sf-d" aria-hidden="true"></div>';
   ov.innerHTML=h; }
-function drawFlow(){ if(X.view==='tree') return drawTree(); var F=X.R.flow, box=$('sfv'); if(!box) return; var h='';
+function drawFlow(){ if(X.view==='tree') return drawTree(); var F=X.R.flow, box=$('sfv'); if(!box) return; var h='', OB=onStep();
   F.lanes.filter(function(l){ return X.topic==='all'||X.topic===l.id; }).forEach(function(l){ var c=chainOf(l.id), o=laneSum(l.id); if(!c.length) return;
     h+='<section class="sfv-t"><h3>'+E(l.name)+'</h3><div class="sfv-sub">'+E(l.about)+' · '+o.n+' skills'+(o.bad?' · <b style="color:var(--quiz)">'+o.bad+' need a real lesson</b>':'')+(o.miss?' · <b>'+o.miss+' missing</b>':'')+'</div><div class="sfv-chain">';
     var lastG=null, prevL=null;
@@ -189,11 +191,13 @@ function drawFlow(){ if(X.view==='tree') return drawTree(); var F=X.R.flow, box=
       if(prevL!==null&&L-prevL>1){ for(var g=prevL+1;g<L;g++){ var gn=GN(g===1?'K':g<=9?String(g-1):'HS'); h+='<div class="sfv-g">'+E(gn)+'</div><span class="sfv-s"><span class="sfv-n gap" title="No skill in this grade">Missing: nothing in '+E(gn)+'</span><span class="sfv-a" aria-hidden="true">→</span></span>'; } }
       if(n.g!==lastG){ h+='<div class="sfv-g">'+E(GN(n.g))+' · '+E(AGE(n.g))+'</div>'; lastG=n.g; }
       var sIx=X.sel&&X.by[X.sel]&&X.by[X.sel].lane===l.id?c.indexOf(X.by[X.sel]):-1;
-      h+='<span class="sfv-s"><button type="button" class="sfv-n '+n.depth+(X.sel===n.id?' sel':(sIx>=0&&i<sIx?' path':''))+'" data-sf="node" data-id="'+E(n.id)+'" title="Step '+(i+1)+': '+E(n.obj||n.name)+'"><span class="sfn-num">'+(i+1)+'</span>'+(n.planned?'Missing: ':'')+E(n.name)+'</button>';
+      h+='<span class="sfv-s"><button type="button" class="sfv-n '+n.depth+(X.sel===n.id?' sel':(sIx>=0&&i<sIx?' path':''))+'" data-sf="node" data-id="'+E(n.id)+'" title="Step '+(i+1)+': '+E(n.obj||n.name)+'"><span class="sfn-num">'+(i+1)+'</span>'+kb(OB,n.id)+(n.planned?'Missing: ':'')+E(n.name)+'</button>';
       h+=(i<c.length-1?'<span class="sfv-a" aria-hidden="true">→</span>':'<span class="sfv-end">end of line</span>')+'</span>'; prevL=L; });
     h+='</div></section>'; });
   box.innerHTML=h; }
-function drawTree(){ var F=X.R.flow, box=$('sfv'); if(!box) return;
+function onStep(){ try{ return (window.SH&&window.SH.boysOnAll)?window.SH.boysOnAll():{}; }catch(e){ return {}; } }   /* boys whose goal now is each step (StaffHome.html) */
+function kb(O,id){ var x=O[id]; return x&&x.n?'<b class="sfn-k'+(x.stuck?' st':'')+'" title="'+x.n+' boy'+(x.n===1?'':'s')+' on this step now'+(x.stuck?', '+x.stuck+' stuck':'')+'">👦 '+x.n+'</b>':''; }
+function drawTree(){ var F=X.R.flow, box=$('sfv'); if(!box) return; var OB=onStep();
   var lanes=F.lanes.filter(function(l){ return (X.topic==='all'||X.topic===l.id)&&chainOf(l.id).length; });
   var GW=118, CW=196, NW=176, NH=44, VG=14, TOP=86, HH=50, G0=TOP+HH+40, cells={}, rowN={};
   lanes.forEach(function(l){ var c=chainOf(l.id), prev=null, out=[];
@@ -211,7 +215,7 @@ function drawTree(){ var F=X.R.flow, box=$('sfv'); if(!box) return;
     var used={}, last=null; cells[l.id].forEach(function(cl){ var k=used[cl.g]||0; used[cl.g]=k+1; var yy=rowY[cl.g]+VG+k*(NH+VG);
       var py=last===null?TOP+HH:last+NH; svg+='<path d="M'+mid+' '+py+' V'+yy+'" stroke="'+col+'" stroke-width="4" stroke-linecap="round" fill="none"'+(cl.gap||(cl.n&&cl.n.planned)?' stroke-dasharray="6 6"':'')+'/>'; last=yy;
       if(cl.gap) h+='<span class="sft-n gap" style="left:'+x+'px;top:'+yy+'px" title="No skill in this grade">Missing here</span>';
-      else { var n=cl.n, sn=++ci; h+='<button type="button" class="sft-n '+n.depth+(X.sel===n.id?' sel':(selIx>=0&&sn-1<selIx?' path':''))+'" data-sf="node" data-id="'+E(n.id)+'" style="left:'+x+'px;top:'+yy+'px" title="Step '+sn+': '+E(n.name+(n.obj?' — '+n.obj:'')+(n.std?' ['+n.std+']':''))+'"><span class="sfn-num">'+sn+'</span>'+(n.planned?'Missing: ':'')+E(n.name)+'</button>'; } }); });
+      else { var n=cl.n, sn=++ci; h+='<button type="button" class="sft-n '+n.depth+(X.sel===n.id?' sel':(selIx>=0&&sn-1<selIx?' path':''))+'" data-sf="node" data-id="'+E(n.id)+'" style="left:'+x+'px;top:'+yy+'px" title="Step '+sn+': '+E(n.name+(n.obj?' — '+n.obj:'')+(n.std?' ['+n.std+']':''))+'"><span class="sfn-num">'+sn+'</span>'+kb(OB,n.id)+(n.planned?'Missing: ':'')+E(n.name)+'</button>'; } }); });
   box.innerHTML='<div class="sft" style="width:'+W+'px;height:'+H+'px">'+rh+'<svg width="'+W+'" height="'+H+'">'+svg+'</svg>'+h+'</div>'; }
 function col(L){ return Math.min(L,10)-1; }
 function draw(){ if(X.view!=='map') return drawFlow(); var F=X.R.flow, map=$('sf-map'); if(!map) return; var q=($('sf-q').value||'').trim().toLowerCase();
@@ -251,6 +255,8 @@ function detail(id,scroll){ var n=X.by[id]; if(!n) return; X.sel=id; mark(); if(
     +'<span>Then next</span><div>'+(nx?chip(nx.id).replace('">','"><span class="sfn-num">'+(st.i+1)+'</span>'):'This is the last step for now.')+'</div></div>';
   if(st.i>1) h+='<details'+(st.i<=12?' open':'')+'><summary style="cursor:pointer;font:800 13.5px system-ui,sans-serif;margin-top:8px">The path to this skill: step 1 to step '+st.i+'</summary><ol class="sf-path">'+st.chain.slice(0,st.i).map(function(m,k){ return '<li><span class="sfn-num">'+(k+1)+'</span><i style="background:'+DOT[m.depth]+'"></i><button type="button" data-sf="go" data-id="'+E(m.id)+'">'+E(m.name)+'</button><small>'+E(m.g==='K'?'K':'Gr '+m.g)+'</small></li>'; }).join('')+'</ol></details>';
   h+='</div>';
+  var on=[]; try{ on=(window.SH&&window.SH.boysOn)?window.SH.boysOn(n.id):[]; }catch(e){}
+  if(!n.planned) h+='<h4 style="margin:12px 0 2px">👦 On this step now'+(on.length?' ('+on.length+')':'')+'</h4>'+(on.length?'<div class="sf-boys">'+on.map(function(b){ return '<button type="button" class="'+(b.stuck?'st':'')+'" data-sf="boy" data-id="'+E(b.id)+'">'+(b.stuck?'🧱 ':'')+E(b.name)+'</button>'; }).join('')+'</div>':'<p class="sf-hint" style="margin:2px 0">No boy has this as his goal right now.</p>');
   if(!n.planned) h+='<div class="sf-live"><span><b>'+(lv?lv[0]:0)+'</b> working on it now</span><span><b>'+(lv?lv[1]:0)+'</b> mastered it</span></div>';
   h+='<div class="sf-goal"><div class="sf-eye">Goal: by the end, he can</div><b>'+E(n.obj)+'</b>'+(n.big?'<div style="margin-top:6px;font-size:14px">Big idea: '+E(n.big)+'</div>':'')+'</div>'+stdLine(n)+(n.planned?'':'<button type="button" class="sf-play" data-sf="play" data-id="'+E(n.id)+'">▶ Play this lesson the way a boy sees it</button>');
   h+='<details class="sf-more" open><summary>📖 What is in this lesson, and what is strong and thin</summary>';
@@ -274,6 +280,7 @@ document.addEventListener('click',function(e){ var o=e.target.closest&&e.target.
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sf]'); if(!b||!$('sf-ov')||!$('sf-ov').contains(b)) return; var a=b.dataset.sf; e.preventDefault(); e.stopPropagation();
   if(a==='close') return close(); if(a==='dclose'){ X.sel=null; mark(); if(X.view!=='map') drawFlow(); var d=$('sf-d'); d.classList.remove('open'); d.setAttribute('aria-hidden','true'); return; }
   if(a==='node'||a==='go') return detail(b.dataset.id,a==='go');
+  if(a==='boy'){ if(window.SH&&window.SH.map) window.SH.map(b.dataset.id); return; }   /* the boy's map (StaffHome.html) opens over the tree */
   if(a==='play'){ var pid=b.dataset.id; try{ window.open(location.origin+'/?cp=1&skill='+encodeURIComponent(pid),'_blank'); }catch(x){} return; }
   if(a==='view'){ var vv=b.dataset.v; if(vv&&vv!==X.view){ X.view=vv; X.sel=null; shell(); draw(); } return; }
   if(a==='topic'){ X.topic=b.dataset.v||'all'; X.sel=null; shell(); draw(); return; }
@@ -283,6 +290,6 @@ document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.
   if(a==='zoom'){ X.zoom=Math.max(.55,Math.min(1.4,X.zoom+(+b.dataset.v)*.15)); var m=$('sf-map'); m.style.transform='scale('+X.zoom+')'; m.style.width=(X.W*X.zoom)+'px'; return; }
   if(a==='place') return place(b.dataset.id); },true);
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&$('sf-ov')){ var d=$('sf-d'); if(d&&d.classList.contains('open')){ d.classList.remove('open'); X.sel=null; mark(); } else close(); } });
-window.SF={ open:open, close:close };
+window.SF={ open:open, close:close };   /* open(subject, skillId): the staff home's boy map opens the tree right on his step */
 })();
 </script>

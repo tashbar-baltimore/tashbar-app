@@ -9,7 +9,11 @@
    No double slash in this file. */
 body.sh-on #acPill,body.sh-on #slBar,body.sh-on #dm-band,body.sh-on #sbBan,body.sh-on #lbx-btn,body.sh-on #ss-btn,body.sh-on #dp-btn,body.sh-on #acCur,body.sh-on #acOpen{display:none!important}
 body.sh-on #app header.top{display:none!important}
-body.sh-on.sh-page #app{display:none!important}
+/* OLD SCREENS RETIRED (HoS 2026-11-20 "remove old staff screens"): the old tab row, its Needs-you strips, action bar and hint are gone;
+   a tool that still lives in the old screen (Parsha of the week, the grids' export and print ...) opens alone, with a Back bar */
+body.sh-on #app > nav.sp-tabs,body.sh-on #app > .sp-now,body.sh-on #app > .bar,body.sh-on #app > .hint,body.sh-on #app > .now{display:none!important}
+body.sh-on.sh-page #app{display:block!important;padding:0!important;margin:0!important;min-height:0!important;background:none!important}
+body.sh-on.sh-page #app > *:not(.shade):not(aside.drawer){display:none!important}   /* the old tools' drawers slide over the new page; nothing old behind them */
 #sh-top{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px max(16px,env(safe-area-inset-left,0px));background:#16202C;color:#fff;font-family:system-ui,"Segoe UI",Roboto,sans-serif}
 #sh-top .brand{font:900 18px/1 system-ui,sans-serif;margin-right:6px;white-space:nowrap}
 #sh-top nav{display:flex;flex-wrap:wrap;gap:4px;flex:1}
@@ -50,8 +54,113 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-page .tile:hover,#sh-page .tile:focus-visible{border-color:#2F5BD3;box-shadow:0 0 0 3px rgba(47,91,211,.15)}
 #sh-page .tile i{font-style:normal;font-size:24px;line-height:1;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#EEF2FF;flex:none} #sh-page .tile b{display:block;font:900 16.5px/1.2 system-ui,sans-serif} #sh-page .tile small{display:block;margin-top:4px;color:#5B6676;font-size:13.5px;line-height:1.35}
 #sh-page h3{margin:22px 0 10px;font:900 15px system-ui,sans-serif;color:#5B6676;text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:700px){ body.sh-on #app select,body.sh-on #app input,body.sh-on #app textarea{max-width:100%;box-sizing:border-box} }
 @media (max-width:700px){ #sh-top{padding:8px 12px;gap:6px} #sh-top .brand{flex:1;font-size:16px} #sh-top .out{order:2;min-height:36px;padding:6px 12px} #sh-top nav{order:3;flex:0 0 100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none} #sh-top nav::-webkit-scrollbar{display:none} #sh-top nav button{padding:8px 11px;font-size:14px;flex:none}
  #sh-back{top:98px} #sh-page{padding-top:14px} #sh-page h1{font-size:23px} body.sh-on #sh-find #slBar{flex-wrap:wrap} #sh-find #slBar input{flex:1 1 100%!important;min-width:0!important;width:100%!important} #sh-find #slBar button{flex:1 1 auto} }
+
+
+/* ===== TODAY (HoS 2026-11-20: "keep going with the staff portal ... clarity and ease") ===== */
+#sh-page .td-nums{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:0 0 16px}
+#sh-page .td-num{background:#fff;border:1px solid #E6EAF2;border-radius:16px;padding:12px 14px} #sh-page .td-num b{display:block;font:900 30px/1.1 system-ui,sans-serif} #sh-page .td-num span{color:#5B6676;font:700 13px system-ui,sans-serif}
+#sh-page .td-card{background:#fff;border:1px solid #E6EAF2;border-radius:18px;padding:14px 16px;margin:0 0 16px}
+#sh-page .td-card.need{border:2px solid #C8402F}
+#sh-page .td-card h2{margin:0 0 8px;font:900 18px system-ui,sans-serif;display:flex;align-items:center;gap:8px}
+#sh-page .td-need{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid #EEF1F6} #sh-page .td-need:first-of-type{border-top:0}
+#sh-page .td-need i{font-style:normal;font-size:24px;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#FCE9E6;flex:none}
+#sh-page .td-need b{display:block;font:800 16px system-ui,sans-serif} #sh-page .td-need small{color:#5B6676;font-size:13.5px}
+#sh-page .td-need button,#sh-page .td-row button{margin-left:auto;flex:none;border:1px solid #D9DFF0;background:#fff;border-radius:11px;padding:9px 13px;font:800 14px system-ui,sans-serif;cursor:pointer;min-height:42px}
+#sh-page .td-ok{color:#178A5E;font:800 16px system-ui,sans-serif}
+#sh-page .td-row{display:grid;grid-template-columns:14px minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 4px;border-top:1px solid #EEF1F6}
+#sh-page .td-row:first-child{border-top:0}
+#sh-page .td-dot{width:12px;height:12px;border-radius:50%}
+#sh-page .td-row b{font:800 15.5px system-ui,sans-serif} #sh-page .td-row small{display:block;color:#5B6676;font-size:13px}
+#sh-page .td-stat{font:700 13.5px system-ui,sans-serif;color:#334155}
+@media (max-width:700px){ #sh-page .td-row{grid-template-columns:14px minmax(0,1fr) auto} #sh-page .td-row .td-stat{grid-column:2/4} #sh-page .td-need{flex-wrap:wrap} #sh-page .td-need button{margin-left:52px} }
+
+/* ===== THE BOY'S MAP (HoS 2026-11-20: "the skills ... the goals and the map and the steps needed at the heart of it all";
+   "the goal should always be the next mini skill"; the unit = his level, its end is the next stopping point) ===== */
+#sh-page .mp{display:flex;flex-wrap:wrap;gap:5px}
+#sh-page .mp span{font:700 12.5px system-ui,sans-serif;background:#F1F5F9;border-radius:8px;padding:4px 8px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#sh-page .mp span b{color:#2F5BD3} #sh-page .mp .none{background:#FCE9E6;color:#A12E21} #sh-page .mp .done{background:#E8F6EF;color:#14633F}
+#sh-dlg .msub{border:1px solid #E6EAF2;border-radius:16px;padding:12px 14px;margin:10px 0}
+#sh-dlg .msub h4{margin:0 0 4px;font:900 17px system-ui,sans-serif} #sh-dlg .msub .meta{color:#5B6676;font-size:13.5px;margin-bottom:8px}
+#sh-dlg .bar{height:10px;border-radius:999px;background:#EEF1F6;overflow:hidden;margin:6px 0 10px} #sh-dlg .bar i{display:block;height:100%;background:#178A5E;border-radius:999px}
+#sh-dlg .path{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px}
+#sh-dlg .path span{display:inline-flex;align-items:center;gap:5px;border:2px solid #E2E8F0;border-radius:10px;padding:5px 9px;font:700 13px/1.2 system-ui,sans-serif;background:#fff}
+#sh-dlg .path .ok{border-color:#9FD8BC;background:#E8F6EF;color:#14633F} #sh-dlg .path .goal{border-color:#2F5BD3;background:#2F5BD3;color:#fff} #sh-dlg .path .end{border-style:dashed}
+#sh-dlg .path em{font-style:normal;color:#8A94A4;font-weight:900}
+#sh-dlg .goalbox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font:700 14.5px system-ui,sans-serif}
+#sh-dlg .goalbox button{border:1px solid #D9DFF0;background:#fff;border-radius:11px;padding:8px 12px;font:800 13.5px system-ui,sans-serif;cursor:pointer;min-height:40px}
+#sh-dlg .goalbox .pri{background:#16202C;color:#fff;border-color:#16202C}
+
+/* ===== REPORTS ON THE MAP (HoS 2026-11-20: "reports rebuilt around the map ... all based around this tree") ===== */
+#sh-page .rp-trend{font:800 13px system-ui,sans-serif;margin-left:6px} #sh-page .rp-trend.up{color:#178A5E} #sh-page .rp-trend.dn{color:#C8402F}
+#sh-page .rp-bars{display:grid;gap:8px}
+#sh-page .rp-bar{display:grid;grid-template-columns:minmax(120px,190px) 1fr 48px auto;gap:10px;align-items:center}
+#sh-page .rp-bar b{font:800 14.5px system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sh-page .rp-bar .t{height:14px;border-radius:999px;background:#EEF1F6;overflow:hidden} #sh-page .rp-bar .t i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#2F5BD3,#7C5CC4)}
+#sh-page .rp-bar .v{font:900 16px system-ui,sans-serif;text-align:right}
+#sh-page .rp-bar button,#sh-page .rp-row button{border:1px solid #D9DFF0;background:#fff;border-radius:11px;padding:7px 11px;font:800 13px system-ui,sans-serif;cursor:pointer;min-height:38px;white-space:nowrap}
+#sh-page .rp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+#sh-page .rp-grid .td-card{margin:0}
+#sh-page .rp-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #EEF1F6} #sh-page .rp-row:first-of-type{border-top:0}
+#sh-page .rp-row .n{flex:none;min-width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font:900 16px system-ui,sans-serif;color:#fff;background:#178A5E}
+#sh-page .rp-row b{display:block;font:800 15px system-ui,sans-serif} #sh-page .rp-row small{display:block;color:#5B6676;font-size:13px;line-height:1.35}
+#sh-page .rp-row button{margin-left:auto;flex:none}
+@media (max-width:700px){ #sh-page .rp-bar{grid-template-columns:1fr 44px auto} #sh-page .rp-bar .t{grid-column:1/-1;grid-row:2} #sh-page .rp-grid{grid-template-columns:1fr} }
+
+/* ===== SCHOOL (HoS 2026-11-20: "go for it all the way") ===== */
+#sh-page .sc-stat{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:1px solid #E6EAF2;border-radius:18px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 4px 14px rgba(15,23,42,.04);min-height:84px}
+#sh-page .sc-stat:hover,#sh-page .sc-stat:focus-visible{border-color:#2F5BD3;box-shadow:0 0 0 3px rgba(47,91,211,.15)}
+#sh-page .sc-stat i{font-style:normal;font-size:26px;width:50px;height:50px;border-radius:15px;display:grid;place-items:center;background:#EEF2FF;flex:none}
+#sh-page .sc-stat b{display:block;font:900 20px/1.15 system-ui,sans-serif} #sh-page .sc-stat small{display:block;color:#5B6676;font-size:13px;margin-top:2px}
+#sh-page .sc-stat.warn{border:2px solid #178A5E} #sh-page .sc-stat.warn i{background:#E8F6EF}
+#sh-page .sc-stat.off i{background:#F1F5F9}
+#sh-page .sc-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:0 0 6px}
+/* ===== STUDENTS (HoS 2026-11-19: "easy to add kids and switch levels") ===== */
+#sh-page .st-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;justify-content:space-between;margin-bottom:12px}
+#sh-page .st-acts{display:flex;flex-wrap:wrap;gap:8px} #sh-page .st-acts .shb{width:auto;display:inline-flex;align-items:center}
+#sh-page .shb{border:0;border-radius:14px;padding:12px 18px;font:900 15.5px system-ui,sans-serif;cursor:pointer;min-height:48px;background:#16202C;color:#fff}
+#sh-page .shb.alt{background:#fff;color:#16202C;border:1px solid #D9DFF0}
+#sh-page .st-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}
+#sh-page .st-tools input{flex:1 1 260px;min-width:0;border:1px solid #CBD3E3;border-radius:12px;padding:12px 14px;font:600 16px system-ui,sans-serif;background:#fff}
+#sh-page .st-tools select{border:1px solid #CBD3E3;border-radius:12px;padding:11px 12px;font:700 15px system-ui,sans-serif;background:#fff;min-height:46px}
+#sh-page .chip{border:1px solid #CBD3E3;background:#fff;border-radius:999px;padding:9px 14px;font:800 14px system-ui,sans-serif;cursor:pointer;min-height:44px}
+#sh-page .chip.on{background:#16202C;color:#fff;border-color:#16202C}
+#sh-page .chip em{font-style:normal;color:#C8402F;margin-left:4px} #sh-page .chip.on em{color:#FFB4A8}
+#sh-page .st-list{background:#fff;border:1px solid #E6EAF2;border-radius:18px;overflow:hidden}
+#sh-page .st-row{display:grid;grid-template-columns:34px minmax(0,1.4fr) 86px minmax(0,2fr) auto;gap:10px;align-items:center;padding:12px 14px;border-top:1px solid #EEF1F6}
+#sh-page .st-row:first-child{border-top:0}
+#sh-page .st-row.sel{background:#F2F6FF}
+#sh-page .st-row input[type=checkbox]{width:22px;height:22px;accent-color:#2F5BD3}
+#sh-page .st-nm b{display:block;font:800 16px/1.25 system-ui,sans-serif} #sh-page .st-nm small{color:#5B6676;font-size:13px}
+#sh-page .st-gr{font:800 13px system-ui,sans-serif;background:#EEF2FF;color:#3B3F8F;border-radius:999px;padding:5px 10px;text-align:center;white-space:nowrap}
+#sh-page .st-lv{display:flex;flex-wrap:wrap;gap:5px}
+#sh-page .st-lv span{font:700 12.5px system-ui,sans-serif;background:#F1F5F9;border-radius:8px;padding:4px 8px;white-space:nowrap}
+#sh-page .st-lv .none{background:#FCE9E6;color:#A12E21}
+#sh-page .st-b{display:flex;gap:6px}
+#sh-page .st-b button{border:1px solid #D9DFF0;background:#fff;border-radius:11px;padding:9px 12px;font:800 14px system-ui,sans-serif;cursor:pointer;min-height:42px;white-space:nowrap}
+#sh-page .st-b .lvb{background:#16202C;color:#fff;border-color:#16202C}
+#sh-page .st-empty{padding:28px;text-align:center;color:#5B6676;font-weight:600}
+#sh-selbar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:40;display:flex;gap:10px;align-items:center;background:#16202C;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;box-shadow:0 10px 30px rgba(0,0,0,.3);font:800 15px system-ui,sans-serif;max-width:calc(100vw - 24px)}
+#sh-selbar button{border:0;border-radius:999px;padding:10px 16px;font:900 14.5px system-ui,sans-serif;cursor:pointer;background:#FDE047;color:#16202C} #sh-selbar .x{background:rgba(255,255,255,.14);color:#fff}
+#sh-dlg{position:fixed;inset:0;z-index:2147483200;background:rgba(15,18,40,.5);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px;font-family:system-ui,"Segoe UI",Roboto,sans-serif}
+#sh-dlg .box{background:#fff;color:#16202C;width:min(720px,100%);border-radius:22px;padding:20px 22px 22px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+#sh-dlg h2{margin:0 0 4px;font:900 23px/1.2 system-ui,sans-serif} #sh-dlg .sub{color:#5B6676;margin:0 0 14px;font-size:14.5px}
+#sh-dlg h3{margin:16px 0 8px;font:900 13px system-ui,sans-serif;color:#5B6676;text-transform:uppercase;letter-spacing:.06em}
+#sh-dlg .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+#sh-dlg .grid button{border:2px solid #E2E8F0;background:#fff;border-radius:14px;padding:10px 12px;font:800 14.5px/1.25 system-ui,sans-serif;cursor:pointer;text-align:left;min-height:52px}
+#sh-dlg .grid button small{display:block;font:600 12px system-ui,sans-serif;color:#5B6676;margin-top:2px}
+#sh-dlg .grid button.on{border-color:#2F5BD3;background:#EEF3FF}
+#sh-dlg .lvs{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+#sh-dlg .lvs button{border:2px solid #E2E8F0;background:#fff;border-radius:14px;padding:10px 6px;font:900 18px system-ui,sans-serif;cursor:pointer;min-height:62px}
+#sh-dlg .lvs button small{display:block;font:700 11.5px system-ui,sans-serif;color:#5B6676}
+#sh-dlg .lvs button.cur{border-color:#178A5E;background:#E8F6EF} #sh-dlg .lvs button.on{border-color:#2F5BD3;background:#2F5BD3;color:#fff} #sh-dlg .lvs button.on small{color:#DDE6FF}
+#sh-dlg .foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;margin-top:18px}
+#sh-dlg .foot button{border:0;border-radius:14px;padding:13px 20px;font:900 15.5px system-ui,sans-serif;cursor:pointer;min-height:50px}
+#sh-dlg .foot .go{background:#16202C;color:#fff} #sh-dlg .foot .go[disabled]{opacity:.4;cursor:default} #sh-dlg .foot .no{background:#F1F5F9;color:#16202C}
+#sh-dlg .err{color:#B42318;font-weight:800;margin-top:10px}
+@media (max-width:760px){ #sh-page .st-row{grid-template-columns:28px minmax(0,1fr) auto;grid-template-areas:"c n g" "c l l" "c b b"} #sh-page .st-row input{grid-area:c;align-self:start;margin-top:4px} #sh-page .st-nm{grid-area:n} #sh-page .st-gr{grid-area:g} #sh-page .st-lv{grid-area:l} #sh-page .st-b{grid-area:b} #sh-page .st-b button{flex:1} #sh-dlg .box{padding:16px} #sh-dlg h2{font-size:20px} }
 </style>
 <script>
 (function(){
@@ -63,12 +172,16 @@ function q(sel){ try{ return document.querySelector(sel); }catch(e){ return null
 var A={
  find:['🔎','Find a student','One page with everything about a boy: name, grade, level, parents, code.','[data-dmband=find]'],
  add:['➕','Add a student','Add a new boy and give him his sign-in code.','[data-act=add]','app'],
- levels:['🎯','Placement & levels','Where every boy is; set or change his level. Boys with no level are listed first.','tab:lv'],
+ nolevel:['🎯','Boys with no level','Set a starting level for each boy.','st:nolevel'],
+ setlv:['🎯','Set levels','Pick a boy, tap Set level, choose the subject and level.','st:all'],
+ levels:['🧭','Levels overview','Where every boy is; set or change his level. Boys with no level are listed first.','tab:lv'],
  classes:['🏫','Class lists and grades','Who is in which class and grade; move boys up a grade.','#giBtn'],
  groups:['👥','Groups','Make groups of boys to teach or assign together.','[data-act=grp]','app'],
  mycls:['🧑‍🏫','My classes','The classes you teach.','[data-sx=cls]','app'],
  now:['📱','Walk-around','Big, simple view of who needs you, for walking the room.','tab:now'],
- today:['📊','Today','What every boy did today.','tab:today'],
+ today:['📊','Today in detail','The full grid: every boy, every subject, today.','tab:today'],
+ tdnow:['📅','Today','Who needs you, who is working, who has not started.','area:today'],
+ rpnow:['🌳','Steps report','Steps climbed this week, who is moving and who is stuck.','area:reports'],
  tm:['🔒','Teacher mode','Lock the boys’ screens to what you are teaching.','[data-act=tm]','app'],
  msg:['✉️','Messages','Messages with boys and staff.','[data-sx=msg]','app'],
  points:['⭐','Tashbar Points (daily sign-off)','Attendance, on time, work and middos for your class.','a.tb[href*="so=1"]'],
@@ -80,9 +193,9 @@ var A={
  myles:['📝','My lessons','Lessons you wrote.','[data-sx=les]','app'],
  lk:['📜','Kodesh ladder','Which Limudei Kodesh lessons are built.','[data-act=lk]','app'],
  map:['📚','Curriculum map','The curriculum map by subject.','[data-act=map]','app'],
- wk:['📅','This week','Each boy’s week at a glance.','tab:wk'],
- gs:['📚','General Studies','Every boy across the General Studies subjects.','tab:gs'],
- lkt:['📜','Limudei Kodesh','Every boy across the Limudei Kodesh subjects.','tab:lk'],
+ wk:['📜','Parsha of the week & Arena','Set the Parsha of the week and the Chumash page; open or close the Chavrusa Arena; each boy’s week.','tab:wk'],
+ gs:['📚','General Studies grid','Every boy across the General Studies subjects. Export or print it.','tab:gs'],
+ lkt:['📜','Limudei Kodesh grid','Every boy across the Limudei Kodesh subjects. Export or print it.','tab:lk'],
  stuck:['🧩','Where kids get stuck','The questions and lessons boys get stuck on most.','#ss-btn'],
  rep:['🚩','Reports','Reports from boys and staff about lessons.','[data-act=rep]','app'],
  month:['🏆','This month','The month’s stars and progress.','[data-act=month]','app'],
@@ -101,8 +214,8 @@ var PAGE={
  reports:{t:'Reports',lead:'How the boys are doing.',groups:[['Progress',['today','wk','gs','lkt','month']],['Problems',['stuck','rep']]]},
  school:{t:'School',lead:'Staff, families, the store, the canteen and school settings.',groups:[['People',['staff','access','fam','schools']],['School life',['points','store','canteen','music']]]}
 };
-var HOME=[['students','Students','Find, add and place boys.',['find','add','levels','classes']],['today','Today','What is happening right now.',['now','today','tm','msg','points']],
- ['reports','Reports','How the boys are doing.',['wk','stuck','month','rep']],['school','School','Staff, families, store and canteen.',['staff','access','store','canteen']]];
+var HOME=[['students','Students','Find a boy, add a boy, set his level.',['find','add','setlv','classes']],['today','Today','What is happening right now.',['tdnow','tm','msg','points']],
+ ['reports','Reports','Steps climbed, who is moving, who is stuck.',['rpnow','stuck','gs','month']],['school','School','Staff, families, store and canteen.',['staff','access','store','canteen']]];
 var S={area:'home', from:'home'};
 function body(){ return document.body; }
 function setMode(page,feat){ body().classList.toggle('sh-page',!!page); body().classList.toggle('sh-feat',!!feat); }
@@ -112,54 +225,260 @@ function top(){ var t=q('#sh-top'); if(!t){ t=document.createElement('div'); t.i
 function tile(k){ var a=A[k]; return '<button type="button" class="tile" data-sh="do" data-k="'+k+'"><i>'+a[0]+'</i><span><b>'+E(a[1])+'</b><small>'+E(a[2])+'</small></span></button>'; }
 function btn(k){ var a=A[k]; return '<button type="button" data-sh="do" data-k="'+k+'">'+a[0]+' '+E(a[1])+'</button>'; }
 function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar'); if(bar&&p.contains(bar)) body().appendChild(bar);   /* keep the search bar: a redraw must not throw it away */
-  if(S.area==='today'){ setMode(false,false); p.innerHTML=''; return; }
   setMode(true,false); var h='';
   if(S.area==='home'){
-    h+='<div class="hello">'+E(hello())+'</div><h1>What would you like to do?</h1><p class="lead">Find a boy, see what needs you, or open any part of the school below.</p><div id="sh-find"></div>'+nextHTML()+'<div class="cards">';
+    h+='<div class="hello">'+E(hello())+'</div><h1>What would you like to do?</h1><p class="lead">Find a boy, see what needs you, or open any part of the school below.</p><div id="sh-find"></div>'+nextHTML()+schoolMapHTML()+'<div class="cards">';
     h+='<div class="card cur"><h2 data-sh="area" data-v="curriculum"><span>🌳</span>Curriculum</h2><p>Every skill from Kindergarten to 8th grade, step by step: what comes first, what comes next, and how well it is taught. Tap a subject.</p><div class="btns">'
       +[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')
       +'<button type="button" class="sub" data-sh="do" data-k="see">👀 See what the kids see</button><button type="button" class="sub" data-sh="do" data-k="lib">📚 Library & Assign</button></div></div>';
     HOME.forEach(function(c){ var ic=AREAS.filter(function(a){ return a[0]===c[0]; })[0][1]; h+='<div class="card"><h2 data-sh="area" data-v="'+c[0]+'"><span>'+ic+'</span>'+E(c[1])+' ›</h2><p>'+E(c[2])+'</p><div class="btns">'+c[3].map(btn).join('')+'</div></div>'; });
     h+='</div>';
+  } else if(S.area==='students'){ h=studentsHTML();
+  } else if(S.area==='today'){ h=todayHTML();
+  } else if(S.area==='reports'){ h=reportHTML();
+  } else if(S.area==='school'){ h=schoolHTML();
   } else { var P=PAGE[S.area]; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>'+(S.area==='students'?'<div id="sh-find"></div>':'');
-    if(S.area==='curriculum') h+='<div class="cards" style="margin-bottom:6px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill, step by step. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>';
+    if(S.area==='curriculum') h+='<div class="cards" style="margin-bottom:16px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill, step by step. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>'+schoolMapHTML();
     P.groups.forEach(function(g){ var ks=g[1].filter(function(k){ return k!=='tree'||S.area!=='curriculum'; }); h+='<h3>'+E(g[0])+'</h3><div class="tiles">'+ks.map(tile).join('')+'</div>'; }); }
-  p.innerHTML=h; slot(); window.scrollTo(0,0); }
+  p.innerHTML=h; slot(); window.scrollTo(0,0); if(S.area==='home'||S.area==='students'||S.area==='today'||S.area==='curriculum'||S.area==='reports') loadKM(false); if(S.area==='today') loadToday(); if(S.area==='reports') loadReport(); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
 /* NEXT STEPS: read the counts the staff screen already shows, and turn each one that needs someone into one clear row with one button */
 function num(sel){ var e=q(sel); if(!e) return 0; var m=String(e.textContent||'').match(/(\d+)/g); return m?Number(m[m.length-1]):0; }
 function steps(){ var r=[];
   var C=null; try{ C=window.SPX&&window.SPX.counts&&window.SPX.counts(); }catch(e){}   /* the staff screen's own numbers (StaffPlus.html), the same on every screen size */
   var help=C?C.help:num('#app [data-sp=gsf][data-f=help]'), nolv=C?C.nolevel:num('#app [data-sp=gsf][data-f=nolevel]'), store=num('#app [data-sy=open] .n'), msgs=num('#app [data-sx=msg] .n'), gr=num('#giBtn b'), idle=C?(C.idle||0):num('#app [data-sp=gsf][data-f=idle]');
   var d0=S0(); r.known=!!(C&&(C.boys>0||(Array.isArray(d0.boys)&&d0.boys.filter(function(b){ return !b.test; }).length===0)))||!!q('#app [data-sp=gsf][data-f=help]');
-  if(help) r.push(['#C8402F',help,help===1?'1 boy needs help right now':help+' boys need help right now','Stuck, or failing the same check.','now','Open walk-around']);
-  if(nolv) r.push(['#B87D06',nolv,nolv===1?'1 boy has no level yet':nolv+' boys have no level yet','Until he has a level, the app cannot pick his lessons.','levels','Set levels']);
+  if(help) r.push(['#C8402F',help,help===1?'1 boy needs help right now':help+' boys need help right now','Stuck, or failing the same check.','tdnow','See who →'.replace(' →','')]);
+  if(nolv) r.push(['#B87D06',nolv,nolv===1?'1 boy has no level yet':nolv+' boys have no level yet','Until he has a level, the app cannot pick his lessons.','nolevel','Set levels']);
   if(gr) r.push(['#7C5CC4',gr,gr===1?'1 grade to confirm':gr+' grades to confirm','New boys or a new school year.','classes','Confirm grades']);
   if(store) r.push(['#178A5E',store,store===1?'1 prize to hand out':store+' prizes to hand out','Boys bought them in the Tashbar Store.','store','Store orders']);
   if(msgs) r.push(['#2F5BD3',msgs,msgs===1?'1 new message':msgs+' new messages','From boys or staff.','msg','Read']);
-  if(idle&&r.length<5) r.push(['#6E7A8A',idle,idle===1?'1 boy has not worked today':idle+' boys have not worked today','A nudge may help.','today','See today']);
+  if(idle&&r.length<5) r.push(['#6E7A8A',idle,idle===1?'1 boy has not worked today':idle+' boys have not worked today','A nudge may help.','tdnow','See who']);
   return r; }
+function schoolMapHTML(){ var boys=(S0().boys||[]).filter(function(b){ return !b.test; }); if(!boys.length) return '<div id="sh-smap"></div>';
+  var rows=[], stuck={};
+  SUBJ.forEach(function(x){ var placed=0, units={}; boys.forEach(function(b){ var c=cellsOf(b.id)[x[0]]; if(!c||!c.level) return; placed++; var u=unitNow(c), key='Level '+c.level+(u.name?' · '+u.name:''); units[key]=(units[key]||0)+1;
+      if(c.now&&c.status==='red'){ var s0=stuck[c.now]||(stuck[c.now]={n:0,subj:x}); s0.n++; } });
+    if(!placed) return; var top=Object.keys(units).sort(function(a,b){ return units[b]-units[a]; })[0];
+    rows.push('<div class="row"><span class="n" style="background:#2F5BD3">'+placed+'</span><span><b>'+x[1]+' '+E(x[2])+'</b><small>'+placed+' boy'+(placed===1?'':'s')+' placed · most are on '+E(top)+' ('+units[top]+')</small></span>'+(x[3]?'<button type="button" class="go" data-sfopen="'+x[3]+'">🌳 See the tree →</button>':'')+'</div>'); });
+  var st=Object.keys(stuck).sort(function(a,b){ return stuck[b].n-stuck[a].n; }).slice(0,5);
+  var h='<div id="sh-smap"><div id="sh-next" style="border-color:#16202C"><h2>🗺️ Where the boys are</h2>'+(rows.length?rows.join(''):'<div class="row"><span><b>No boy has a level yet.</b><small>Set levels so the app knows where each boy is on the map.</small></span><button type="button" class="go" data-sh="do" data-k="nolevel">Set levels →</button></div>');
+  if(st.length) h+='<h2 style="margin-top:14px">🧱 Steps where boys are stuck</h2>'+st.map(function(id){ var x=stuck[id]; return '<div class="row"><span class="n" style="background:#C8402F">'+x.n+'</span><span><b>'+E(skName(id))+'</b><small>'+x.subj[1]+' '+E(x.subj[2])+' · '+x.n+' boy'+(x.n===1?'':'s')+' stuck here</small></span>'+(x.subj[3]?'<button type="button" class="go" data-sh="tree" data-s="'+x.subj[3]+'" data-id="'+E(id)+'">See it on the tree →</button>':'')+'</div>'; }).join('');
+  return h+'</div></div>'; }
 function nextHTML(){ var r=steps(); return '<div id="sh-next"><h2>👉 Next steps</h2>'+(r.length?r.map(function(x){ return '<div class="row"><span class="n" style="background:'+x[0]+'">'+x[1]+'</span><span><b>'+E(x[2])+'</b><small>'+E(x[3])+'</small></span><button type="button" class="go" data-sh="do" data-k="'+x[4]+'">'+E(x[5])+' →</button></div>'; }).join(''):(r.known?'<div class="ok">✅ All caught up. Nothing needs you right now.</div>':'<div class="row"><span><b>Still loading the boys…</b><small>Or open Today to see who needs you.</small></span><button type="button" class="go" data-sh="area" data-v="today">Open Today →</button></div>'))+'</div>'; }
 setInterval(function(){ if(S.area==='home'&&body().classList.contains('sh-page')){ var n=q('#sh-next'); if(n){ var t=document.createElement('div'); t.innerHTML=nextHTML(); if(t.firstChild.innerHTML!==n.innerHTML) n.replaceWith(t.firstChild); } } },20000);
 function hello(){ var h=new Date().getHours(), nm=''; try{ nm=String(S0().staffName||'').split(' ')[0]; }catch(e){} return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(nm?', '+nm:''); }
 function S0(){ try{ return (typeof window.S==='object'&&window.S&&window.S.d)||(new Function('try{ return S&&S.d; }catch(e){ return null; }'))()||{}; }catch(e){ return {}; } }
+
+/* ================= STUDENTS: one list, search, filters, set level for one or many boys (libRoster / libApply place, with Undo) ================= */
+var LV=[['MATH','🔢','Math',1,16,1],['READ','📖','Reading',1,15,1],['LANG','✍️','Language Arts & Writing',1,9,1],['SCI','🔬','Science',1,15,1],['SOC','🌍','Social Studies',1,14,1],['COMP','💻','Computing, Life & Money',1,16,0],['HEB','🔤','Lashon Hakodesh',1,13,0],['ELEC','🛠️','Electives',3,16,0],
+  ['K:KRI','📜','Kriyah',1,13,0],['K:CHU','📜','Chumash',1,13,0],['K:RAS','📜','Rashi',1,13,0],['K:MSH','📜','Mishnayos',1,13,0],['K:GEM','📜','Gemara',1,13,0]];   /* key, icon, name, lowest, highest (Placement.js PL.SUBJECTS, Library.js LIB.TRACKS), 1 = Level n is about Grade n-1 */
+var LVN={}; LV.forEach(function(x){ LVN[x[0]]=x; });
+var ST={list:null,q:'',f:'all',g:'all',sel:{},busy:false,err:'',dlg:null};
+function tok(){ try{ var s=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return s&&s.token; }catch(e){ return null; } }
+function srv(fn,args){ return new Promise(function(ok,no){ try{ var r=google.script.run.withSuccessHandler(ok).withFailureHandler(function(e){ no(e&&e.message?e.message:String(e)); }); r[fn].apply(r,args||[]); }catch(e){ no(String(e)); } }); }
+function gName(g){ return g==null||g===''?'':g===0?'K':'Gr '+g; }
+function hint(key,n){ var x=LVN[key]; if(!x||!x[5]) return ''; return n===1?'Kindergarten':n<=9?'Grade '+(n-1):''; }
+function hasLv(b,k){ var p=b.place&&b.place[k]; return p&&p.lv>0; }
+function noLevel(b){ return !hasLv(b,'MATH')&&!hasLv(b,'READ'); }
+function loadRoster(force){ if(ST.list&&!force) return drawStudents(); ST.err=''; srv('libRoster',[tok()]).then(function(r){ ST.list=(r&&r.boys||[]).filter(function(b){ return !b.test; }); drawStudents(); }).catch(function(e){ ST.err=String(e); drawStudents(); }); }
+function shown(){ var q=ST.q.trim().toLowerCase(); return (ST.list||[]).filter(function(b){ if(q&&String(b.name).toLowerCase().indexOf(q)<0) return false; if(ST.f==='nolevel'&&!noLevel(b)) return false; if(ST.g!=='all'&&String(b.grade)!==ST.g) return false; return true; }); }
+function lvChips(b){ var out=[]; LV.forEach(function(x){ var p=b.place&&b.place[x[0]]; if(p&&p.lv>0) out.push('<span title="'+E(x[2])+'">'+x[1]+' '+E(x[2].split(' ')[0].replace(',',''))+' '+p.lv+'</span>'); });
+  return noLevel(b)?'<span class="none">No Math or Reading level yet</span>'+out.join(''):out.join(''); }
+function studentsHTML(){ return '<div class="st-head"><div><h1>Students</h1><p class="lead" style="margin:0" id="st-count">Loading the boys…</p></div><div class="st-acts"><button type="button" class="shb" data-sh="do" data-k="add">➕ Add a student</button><button type="button" class="shb alt" data-sh="do" data-k="classes">🏫 Class lists & grades</button><button type="button" class="shb alt" data-sh="do" data-k="groups">👥 Groups</button></div></div>'
+  +'<div class="st-tools"><input id="st-q" type="search" placeholder="Search by name…" aria-label="Search students" value="'+E(ST.q)+'"><button type="button" class="chip'+(ST.f==='all'?' on':'')+'" data-st="f" data-v="all">Everyone</button><button type="button" class="chip'+(ST.f==='nolevel'?' on':'')+'" data-st="f" data-v="nolevel">No level yet<em id="st-nl"></em></button><select id="st-g" aria-label="Grade"><option value="all">All grades</option>'+['0','1','2','3','4','5','6','7','8'].map(function(g){ return '<option value="'+g+'"'+(ST.g===g?' selected':'')+'>'+(g==='0'?'Kindergarten':'Grade '+g)+'</option>'; }).join('')+'</select></div>'
+  +'<div class="st-list" id="st-list"><div class="st-empty">Loading…</div></div>'
+  +'<h3>More tools</h3><div class="tiles">'+['mycls'].map(tile).join('')+'</div>'; }
+function drawStudents(){ var L=q('#st-list'); if(!L) return; var c=q('#st-count'), nl=q('#st-nl');
+  if(ST.err){ L.innerHTML='<div class="st-empty">Could not load the boys: '+E(ST.err)+'</div>'; return; }
+  if(!ST.list){ L.innerHTML='<div class="st-empty">Loading…</div>'; return; }
+  var all=ST.list, n=all.filter(noLevel).length; if(c) c.textContent=all.length+' boys'+(n?' · '+n+' still need a level':''); if(nl) nl.textContent=n?String(n):'';
+  var a=shown(); if(!a.length){ L.innerHTML='<div class="st-empty">'+(all.length?'No boy matches.':'No students yet. Tap “Add a student”.')+'</div>'; selbar(); return; }
+  L.innerHTML=a.map(function(b){ var on=!!ST.sel[b.id]; return '<div class="st-row'+(on?' sel':'')+'"><input type="checkbox" data-st="pick" data-id="'+E(b.id)+'"'+(on?' checked':'')+' aria-label="Pick '+E(b.name)+'"><div class="st-nm"><b>'+E(b.name)+'</b></div><span class="st-gr">'+E(gName(b.grade)||'No grade')+'</span><div class="st-lv mp">'+((S0().boys||[]).some(function(x){ return x.id===b.id; })?mapChips(b.id):lvChips(b))+'</div><div class="st-b"><button type="button" class="lvb" data-mp="map" data-id="'+E(b.id)+'">🗺️ Map</button><button type="button" data-st="lv" data-id="'+E(b.id)+'">🎯 Set level</button><button type="button" data-st="open" data-id="'+E(b.id)+'">Open ›</button></div></div>'; }).join('');
+  selbar(); }
+function selbar(){ var ids=Object.keys(ST.sel).filter(function(k){ return ST.sel[k]; }), bar=q('#sh-selbar');
+  if(!ids.length||S.area!=='students'){ if(bar) bar.remove(); return; }
+  if(!bar){ bar=document.createElement('div'); bar.id='sh-selbar'; body().appendChild(bar); }
+  bar.innerHTML='<span>'+ids.length+' picked</span><button type="button" data-st="lvmany">🎯 Set level for them</button><button type="button" class="x" data-st="clear">Clear</button>'; }
+function byId(id){ return (ST.list||[]).filter(function(b){ return b.id===id; })[0]; }
+function dlgOpen(ids){ ST.dlg={ids:ids,key:null,lv:0,err:'',busy:false}; dlgDraw(); }
+function refreshMap(){ loadKM(true); srv('sgLoad',[tok()]).then(function(d){ try{ (new Function('d','try{ S.d=d; }catch(e){}'))(d); }catch(e){} if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(ST.dlg&&ST.dlg.map) mapDraw(); }).catch(function(){}); }   /* the map lives in the staff screen's data (sgLoad cells) */
+function dlgClose(){ if(ST.dlg&&ST.dlg.ids&&ST.dlg.saved) refreshMap(); ST.dlg=null; var d=q('#sh-dlg'); if(d) d.remove(); }
+function dlgDraw(){ var D=ST.dlg; if(!D) return dlgClose(); var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); }
+  var one=D.ids.length===1?byId(D.ids[0]):null, who=one?one.name:D.ids.length+' boys';
+  var h='<div class="box"><h2>🎯 Set level for '+E(who)+'</h2><p class="sub">'+(one?(gName(one.grade)?gName(one.grade).replace('Gr','Grade')+' · ':'')+'He starts the subject at the level you pick.':'Each boy starts the subject at the level you pick.')+'</p>';
+  h+='<h3>1. Subject</h3><div class="grid">'+LV.map(function(x){ var cur=one&&one.place&&one.place[x[0]]&&one.place[x[0]].lv; return '<button type="button" data-st="key" data-v="'+x[0]+'"'+(D.key===x[0]?' class="on"':'')+'>'+x[1]+' '+E(x[2])+'<small>'+(cur?'Now: Level '+cur:'No level yet')+'</small></button>'; }).join('')+'</div>';
+  if(D.key){ var x=LVN[D.key], cur=one&&one.place&&one.place[D.key]&&one.place[D.key].lv; h+='<h3>2. Level</h3><div class="lvs">'; for(var n=x[3];n<=x[4];n++) h+='<button type="button" data-st="lvl" data-v="'+n+'" class="'+(D.lv===n?'on':cur===n?'cur':'')+'">'+n+'<small>'+E(hint(D.key,n)||(cur===n?'now':''))+'</small></button>'; h+='</div>'; }
+  if(D.err) h+='<div class="err">'+E(D.err)+'</div>';
+  h+='<div class="foot"><button type="button" class="no" data-st="close">Cancel</button><button type="button" class="go" data-st="save"'+(D.key&&D.lv&&!D.busy?'':' disabled')+'>'+(D.busy?'Saving…':D.key&&D.lv?'Save: '+E(LVN[D.key][2])+' Level '+D.lv:'Pick a subject and a level')+'</button></div></div>';
+  d.innerHTML=h; }
+function dlgSave(){ var D=ST.dlg; if(!D||!D.key||!D.lv||D.busy) return; D.busy=true; D.err=''; dlgDraw();
+  srv('libApply',[tok(),{action:'place',boys:D.ids,key:D.key,level:D.lv}]).then(function(r){ applyChanged(r&&r.changed); D.saved=1; dlgClose(); ST.sel={}; drawStudents();
+    toast2((r&&r.msg)||'Saved.',r&&r.undo?function(){ srv('libApply',[tok(),r.undo]).then(function(u){ applyChanged(u&&u.changed); drawStudents(); toast2((u&&u.msg)||'Put back.'); }).catch(function(e){ toast2('Could not undo: '+e); }); }:null); })
+   .catch(function(e){ D.busy=false; D.err=String(e); dlgDraw(); }); }
+function applyChanged(ch){ if(!ch) return; Object.keys(ch).forEach(function(id){ var b=byId(id), c=ch[id]; if(!b||!c) return; b.place=b.place||{}; if(c.place) b.place[c.key]={lv:c.place.lv||c.place.level||0}; else delete b.place[c.key]; }); }
+function toast2(m,undo){ var o=q('#sh-toast'); if(o) o.remove(); var t=document.createElement('div'); t.id='sh-toast'; t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483300;display:flex;gap:12px;align-items:center;background:#16202C;color:#fff;padding:10px 12px 10px 18px;border-radius:999px;font:800 15px system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:calc(100vw - 24px)';
+  t.innerHTML='<span>✓ '+E(m)+'</span>'+(undo?'<button type="button" style="border:0;border-radius:999px;padding:8px 14px;background:#FDE047;color:#16202C;font:900 14px system-ui,sans-serif;cursor:pointer">↩ Undo</button>':''); body().appendChild(t);
+  if(undo) t.querySelector('button').onclick=function(){ t.remove(); undo(); }; setTimeout(function(){ if(t.parentNode) t.remove(); },10000); }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-st]'); if(!b) return; var a=b.dataset.st;
+  if(a==='pick'){ ST.sel[b.dataset.id]=b.checked; var row=b.closest('.st-row'); if(row) row.classList.toggle('sel',b.checked); selbar(); return; }
+  e.preventDefault();
+  if(a==='f'){ ST.f=b.dataset.v; document.querySelectorAll('#sh-page [data-st=f]').forEach(function(x){ x.classList.toggle('on',x===b); }); return drawStudents(); }
+  if(a==='lv') return dlgOpen([b.dataset.id]); if(a==='lvmany') return dlgOpen(Object.keys(ST.sel).filter(function(k){ return ST.sel[k]; }));
+  if(a==='clear'){ ST.sel={}; return drawStudents(); }
+  if(a==='open'){ if(window.SL&&window.SL.open) window.SL.open(b.dataset.id); return; }
+  if(a==='key'){ ST.dlg.key=b.dataset.v; var bb=byId(ST.dlg.ids[0]); ST.dlg.lv=(ST.dlg.ids.length===1&&bb&&bb.place&&bb.place[ST.dlg.key]&&bb.place[ST.dlg.key].lv)||0; ST.dlg.err=''; return dlgDraw(); }
+  if(a==='lvl'){ ST.dlg.lv=Number(b.dataset.v); return dlgDraw(); }
+  if(a==='close') return dlgClose(); if(a==='save') return dlgSave(); });
+document.addEventListener('click',function(e){ if(e.target&&e.target.id==='sh-dlg') dlgClose(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&ST.dlg) dlgClose(); });
+document.addEventListener('input',function(e){ if(e.target&&e.target.id==='st-q'){ ST.q=e.target.value; drawStudents(); } });
+document.addEventListener('change',function(e){ if(e.target&&e.target.id==='st-g'){ ST.g=e.target.value; drawStudents(); } });
+
+/* ================= TODAY: what is happening right now (sgToday + sgNow, refreshed every minute while open) ================= */
+var TD={today:null,now:null,f:'all',q:'',at:0,timer:0};
+var NOWW={stuck:['🆘','Stuck',function(n){ return n+' misses in a row'; }],checkin:['🧱','Failed the check again',function(n){ return n+' check misses today'; }],guess:['⚡','Guessing',function(n){ return n+' of his last 6 answers in under 2 seconds'; }],idle:['💤','Stopped working',function(n){ return 'no answer for '+n+' minutes'; }]};
+function skName(id){ var d=S0(); var x=d&&d.names&&d.names[id]; return x?x[0]:(KM.names&&KM.names[id])||(id||''); }
+function ago(t){ if(!t) return ''; var m=Math.round((Date.now()-t)/60000); return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' h ago'; }
+function loadToday(){ var t=tok(); if(!t) return; Promise.all([srv('sgToday',[t]).catch(function(){ return null; }),srv('sgNow',[t]).catch(function(){ return null; })]).then(function(r){ TD.today=r[0]; TD.now=r[1]; TD.at=Date.now(); drawToday(); }); }
+function todayHTML(){ var d=new Date(), day=d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+  return '<div class="st-head"><div><h1>Today</h1><p class="lead" style="margin:0">'+E(day)+' · <span id="td-at">loading…</span></p></div><div class="st-acts"><button type="button" class="shb" data-sh="do" data-k="tm">🔒 Teacher mode</button><button type="button" class="shb alt" data-sh="do" data-k="msg">✉️ Messages</button><button type="button" class="shb alt" data-sh="do" data-k="points">⭐ Tashbar Points</button></div></div>'
+   +'<div id="td-body"><div class="st-empty">Loading today…</div></div>'
+   +'<h3>More for today</h3><div class="tiles">'+['wk','month'].map(tile).join('')+'</div>'; }
+function drawToday(){ var B=q('#td-body'); if(!B) return; var at=q('#td-at'); if(at) at.textContent=TD.at?'updated '+new Date(TD.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'loading…';
+  var d=S0(), boys=(d.boys||[]).filter(function(b){ return !b.test; }), T={}; ((TD.today&&TD.today.boys)||[]).forEach(function(x){ T[x.id]=x; });
+  var need=((TD.now&&TD.now.list)||[]).filter(function(x){ return x.kind!=='idle'; }), idle=((TD.now&&TD.now.list)||[]).filter(function(x){ return x.kind==='idle'; }), needIx={}; need.forEach(function(x){ needIx[x.sid]=x; });
+  var now=Date.now(), working=0, worked=0, ms=0, ans=0, ok=0; boys.forEach(function(b){ var t=T[b.id]; if(!t) return; var a=(t.answers||0)+(t.kAnswers||0); if(a) worked++; if(t.last&&now-t.last<10*60000) working++; ms+=(t.mastered||0)+(t.kMastered||0); ans+=a; ok+=(t.right||0)+(t.kRight||0); });
+  var h='<div class="td-nums"><div class="td-num"><b>'+working+'</b><span>working right now</span></div><div class="td-num"><b>'+worked+' <small style="font-size:16px;color:#5B6676">of '+boys.length+'</small></b><span>worked today</span></div><div class="td-num"><b>'+(boys.length-worked)+'</b><span>not started yet</span></div><div class="td-num"><b>'+ms+'</b><span>skills mastered today</span></div><div class="td-num"><b>'+(ans?Math.round(100*ok/ans)+'%':'–')+'</b><span>answers right</span></div></div>';
+  h+='<div class="td-card'+(need.length?' need':'')+'"><h2>'+(need.length?'🆘 Needs you now ('+need.length+')':'✅ Needs you now')+'</h2>'+(need.length?need.map(function(x){ var w=NOWW[x.kind]||['❗',x.kind,function(){ return ''; }]; return '<div class="td-need"><i>'+w[0]+'</i><span><b>'+E(x.name)+' · '+E(w[1])+'</b><small>'+E(w[2](x.n))+(x.skill?' on “'+E(skName(x.skill))+'”':'')+' · '+E(ago(x.at))+(function(){ var C=cellsOf(x.sid), pv=''; Object.keys(C).forEach(function(k){ if(C[k]&&C[k].now===x.skill&&C[k].prev) pv=C[k].prev; }); return pv?'<br>↩ Review first: the step before, “'+E(skName(pv))+'”':''; })()+'</small></span><button type="button" data-mp="map" data-id="'+E(x.sid)+'">🗺️ Map</button></div>'; }).join(''):'<div class="td-ok">Nobody right now.</div>')
+    +(idle.length?'<p style="margin:8px 0 0;color:#5B6676;font-size:13.5px">💤 Stopped working: '+idle.map(function(x){ return E(x.name)+' ('+x.n+' min)'; }).join(', ')+'</p>':'')+'</div>';
+  var rows=boys.map(function(b){ var t=T[b.id]||{}, a=(t.answers||0)+(t.kAnswers||0), r=(t.right||0)+(t.kRight||0), live=t.last&&now-t.last<10*60000, st=needIx[b.id]?0:live?1:a?2:3;
+      return {b:b,t:t,a:a,r:r,st:st}; })
+    .filter(function(x){ var qq=TD.q.trim().toLowerCase(); if(qq&&String(x.b.name).toLowerCase().indexOf(qq)<0) return false; return TD.f==='all'||(TD.f==='live'&&x.st<=1)||(TD.f==='none'&&x.st===3); })
+    .sort(function(x,y){ return x.st-y.st||String(x.b.name).localeCompare(y.b.name); });
+  var COL=['#C8402F','#178A5E','#2F5BD3','#A7B0BF'], LBL=['needs you','working now','worked today','not started'];
+  h+='<div class="td-card"><h2>👦 The class today</h2><div class="st-tools"><input id="td-q" type="search" placeholder="Search by name…" value="'+E(TD.q)+'"><button type="button" class="chip'+(TD.f==='all'?' on':'')+'" data-td="f" data-v="all">Everyone</button><button type="button" class="chip'+(TD.f==='live'?' on':'')+'" data-td="f" data-v="live">Working now</button><button type="button" class="chip'+(TD.f==='none'?' on':'')+'" data-td="f" data-v="none">Not started</button></div>'
+    +(rows.length?rows.map(function(x){ return '<div class="td-row"><span class="td-dot" style="background:'+COL[x.st]+'" title="'+LBL[x.st]+'"></span><span><b>'+E(x.b.name)+'</b><small>'+LBL[x.st]+(x.t.last?' · '+E(ago(x.t.last)):'')+'</small></span><span class="td-stat">'+(x.a?x.a+' answers · '+Math.round(100*x.r/x.a)+'% right':'No answers yet')+'</span><span class="td-stat">'+(((x.t.mastered||0)+(x.t.kMastered||0))?'⭐ '+((x.t.mastered||0)+(x.t.kMastered||0))+' mastered today':'')+'</span><button type="button" data-mp="map" data-id="'+E(x.b.id)+'">🗺️ Map</button></div>'; }).join(''):'<div class="st-empty">'+(boys.length?'No boy matches.':'No students yet.')+'</div>')+'</div>';
+  B.innerHTML=h; }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-td]'); if(!b) return; e.preventDefault(); var a=b.dataset.td;
+  if(a==='open'){ if(window.SL&&window.SL.open) window.SL.open(b.dataset.id); return; }
+  if(a==='f'){ TD.f=b.dataset.v; return drawToday(); } });
+document.addEventListener('input',function(e){ if(e.target&&e.target.id==='td-q'){ TD.q=e.target.value; var pos=e.target.selectionStart; drawToday(); var i=q('#td-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(x){} } } });
+setInterval(function(){ if(S.area==='today'&&body().classList.contains('sh-page')&&!document.hidden) loadToday(); },60000);
+
+/* ================= THE BOY'S MAP: per subject, his unit (level), the steps in it, his goal now (the next mini-skill), the end of the unit ================= */
+var SUBJ=[['MATH','🔢','Math','MATH'],['READ','📖','Reading','ENGLISH'],['LANG','✍️','Writing','ENGLISH'],['SCI','🔬','Science','SCIENCE'],['SOC','🌍','Social Studies',''],['COMP','💻','Computing',''],['HEB','🔤','Lashon Hakodesh','KODESH'],['ELEC','🛠️','Electives',''],['VOC','🧰','Trades',''],['LIFE','💰','Life & Money',''],
+  ['K:KRI','🔤','Kriyah','KODESH'],['K:CHU','📜','Chumash','KODESH'],['K:RAS','✒️','Rashi','KODESH'],['K:MSH','📚','Mishnayos','KODESH'],['K:GEM','🏛️','Gemara','KODESH']];
+var KM={boys:{},names:{},at:0,busy:false};   /* Kodesh tracks, per boy (sgKodeshMap) */
+function loadKM(force){ if(KM.busy||(!force&&KM.at&&Date.now()-KM.at<300000)) return; KM.busy=true; srv('sgKodeshMap',[tok()]).then(function(r){ KM.boys=(r&&r.boys)||{}; KM.names=(r&&r.names)||{}; KM.at=Date.now(); KM.busy=false; redrawAll(); }).catch(function(){ KM.busy=false; }); }
+function redrawAll(){ if(S.area==='reports') drawReport(); if(S.area==='curriculum'){ var cm=q('#sh-smap'); if(cm){ var t2=document.createElement('div'); t2.innerHTML=schoolMapHTML(); cm.replaceWith(t2.firstChild); } } if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(S.area==='home'){ var m=q('#sh-smap'); if(m){ var t=document.createElement('div'); t.innerHTML=schoolMapHTML(); m.replaceWith(t.firstChild); } } if(ST.dlg&&ST.dlg.map) mapDraw(); }
+function cellsOf(id){ var b=(S0().boys||[]).filter(function(x){ return x.id===id; })[0]; return Object.assign({}, b&&b.cells||{}, KM.boys[id]||{}); }
+var STRAND={NUM:'Counting & Numbers',PV:'Place Value',OPS:'Operations',FRAC:'Fractions & Decimals',ALG:'Algebra & Patterns',FUNC:'Functions',MEAS:'Measurement',GEO:'Geometry',STAT:'Data & Statistics',
+  PA:'Print & Sounds',PHON:'Phonics & Word Study',FLU:'Fluency',LV:'Leveled Reading',VOC:'Vocabulary',COMP:'Comprehension',LIT:'Literature',HAND:'Handwriting',GRAM:'Grammar',MECH:'Capitals & Punctuation',SENT:'Sentences',PARA:'Paragraphs',USE:'Word Choice',ESSAY:'Essays',RES:'Research',
+  SKY:'Space & Sky',LAND:'Earth & Weather',ANIM:'Animals',PLANT:'Plants',BODY:'The Human Body',MATT:'Matter & Forces',PHYS:'Matter & Forces',EARTH:'Earth & Weather',LIFE:'Living Things',INQ:'Scientist Skills',READ:'Reading Hebrew',KRI:'Kriyah',CHU:'Chumash',RAS:'Rashi',MSH:'Mishnayos',GEM:'Gemara'};
+function strandOf(id){ var p=String(id||'').split('.'); return p[1]||''; }
+/* the unit = the run of skills of the same kind (strand) inside his level, the one his goal is in; its last step is the finish line */
+function unitNow(c){ var all=unit(c); if(!c.now) return {name:'',sk:all.sk,done:all.done,total:all.total,level:all}; var st=strandOf(c.now), sk=all.sk.filter(function(x){ return strandOf(x[0])===st; });
+  return {name:STRAND[st]||st,sk:sk,done:sk.filter(function(x){ return x[2]; }).length,total:sk.length,level:all}; }
+function unit(c){ var sk=(c&&c.skills||[]).filter(function(x){ return x[1]; }), done=sk.filter(function(x){ return x[2]; }).length; return {sk:sk,done:done,total:sk.length}; }
+function mapChips(id){ var C=cellsOf(id), out=[];
+  SUBJ.forEach(function(x){ var c=C[x[0]]; if(!c||!c.level) return; var u=unit(c);
+    var un=unitNow(c); out.push(c.now?'<span title="'+E(x[2])+' Level '+c.level+', unit '+E(un.name)+': goal now '+E(skName(c.now))+'">'+x[1]+' '+E(x[2])+' L'+c.level+' · '+E(un.name)+' '+un.done+'/'+un.total+' · <b>🎯 '+E(skName(c.now))+'</b></span>':'<span class="done">'+x[1]+' '+E(x[2])+' L'+c.level+' ✓ unit done</span>'); });
+  var noMR=!(C.MATH&&C.MATH.level)&&!(C.READ&&C.READ.level); return (noMR?'<span class="none">No Math or Reading level yet</span>':'')+out.join(''); }
+function mapOpen(id){ ST.dlg={map:id}; mapDraw(); }
+function mapDraw(){ var D=ST.dlg; if(!D||!D.map) return; var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); }
+  var id=D.map, b=byId(id)||(S0().boys||[]).filter(function(x){ return x.id===id; })[0]||{name:id}, C=cellsOf(id), h='<div class="box"><h2>🗺️ '+E(b.name)+'’s map</h2><p class="sub">'+(gName(b.grade)?E(gName(b.grade).replace('Gr','Grade'))+' · ':'')+'In each subject: the unit he is in, its steps, and his goal now: the next skill to master. The unit ends at 🏁.</p>';
+  var any=false;
+  SUBJ.forEach(function(x){ var c=C[x[0]]; if(!c||!c.level) return; any=true; var u=unitNow(c), pct=u.total?Math.round(100*u.done/u.total):0, left=u.total-u.done, L=u.level;
+    h+='<div class="msub"><h4>'+x[1]+' '+E(x[2])+' · Level '+c.level+(hint(x[0],c.level)?' <small style="color:#5B6676;font-weight:700">('+E(hint(x[0],c.level))+')</small>':'')+'</h4><div class="meta">'+(u.name?'<b style="color:#16202C">Unit: '+E(u.name)+'</b> · ':'')+u.done+' of '+u.total+' steps mastered'+(left?' · <b style="color:#16202C">'+left+' to the end of the unit 🏁</b>':' · unit finished')+'</div><div class="bar"><i style="width:'+pct+'%"></i></div>';
+    h+='<div class="path">'+u.sk.map(function(s,i){ var cls=s[2]?'ok':s[0]===c.now?'goal':''; return '<span class="'+cls+(i===u.sk.length-1?' end':'')+'">'+(s[2]?'✓ ':s[0]===c.now?'🎯 ':'')+E(skName(s[0]))+(i===u.sk.length-1?' 🏁':'')+'</span>'+(i<u.sk.length-1?'<em>→</em>':''); }).join('')+'</div>';
+    if(c.now) h+='<div class="goalbox">🎯 Goal now: '+E(skName(c.now))+(c.next?' <span style="color:#5B6676">→ then '+E(skName(c.next))+'</span>':'')+'<button type="button" class="pri" data-mp="play" data-id="'+E(c.now)+'">▶ Play it</button>'+(x[3]?'<button type="button" data-mp="tree" data-s="'+x[3]+'" data-id="'+E(c.now)+'">🌳 See on the map</button>':'')+'</div>';
+    else h+='<div class="goalbox">✅ This level is done. Move him up to Level '+(c.level+1)+'? <button type="button" class="pri" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button></div>';
+    if(u.name&&L.total) h+='<div class="meta" style="margin:10px 0 0">The whole Level '+c.level+': '+L.done+' of '+L.total+' skills mastered.</div>';
+    h+='</div>'; });
+  if(!any) h+='<div class="msub"><h4>No level yet</h4><div class="meta">Until he has a level in a subject, the app cannot pick his steps. Set his Math and Reading levels first.</div><div class="goalbox"><button type="button" class="pri" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button></div></div>';
+  h+='<div class="foot"><button type="button" class="no" data-st="close">Close</button><button type="button" class="no" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button><button type="button" class="go" data-mp="open" data-id="'+E(id)+'">Open his full page ›</button></div></div>';
+  d.innerHTML=h; }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-mp]'); if(!b) return; e.preventDefault(); var a=b.dataset.mp, id=b.dataset.id;
+  if(a==='map') return mapOpen(id);
+  if(a==='lv'){ dlgClose(); return dlgOpen([id]); }
+  if(a==='open'){ dlgClose(); if(window.SL&&window.SL.open) window.SL.open(id); return; }
+  if(a==='play'){ try{ window.open(location.origin+'/?cp=1&skill='+encodeURIComponent(id),'_blank'); }catch(x){} return; }
+  if(a==='tree'){ dlgClose(); if(window.SF) window.SF.open(b.dataset.s,id); return; } });
+
+/* ================= REPORTS ON THE MAP: steps climbed (sgMapReport), who is moving, who is not, hardest and most-climbed steps ================= */
+var RP={days:7,data:null,err:''};
+function subjOfId(id){ var p=String(id||'').split('.'), a=p[0], b=p[1];
+  if(a==='LK'){ var T={KRI:['🔤','Kriyah'],CHU:['📜','Chumash'],RAS:['✒️','Rashi'],MSH:['📚','Mishnayos'],GEM:['🏛️','Gemara']}; var t=T[b]; return t?['K:'+b,t[0],t[1],'KODESH']:['LK','📜','Limudei Kodesh','KODESH']; }
+  var M={MATH:['MATH','🔢','Math','MATH'],READ:['READ','📖','Reading','ENGLISH'],WRIT:['LANG','✍️','Writing','ENGLISH'],LANG:['LANG','✍️','Writing','ENGLISH'],SCI:['SCI','🔬','Science','SCIENCE'],SS:['SOC','🌍','Social Studies',''],SOC:['SOC','🌍','Social Studies',''],COMP:['COMP','💻','Computing',''],HEB:['HEB','🔤','Lashon Hakodesh','KODESH'],ELEC:['ELEC','🛠️','Electives',''],VOC:['VOC','🧰','Trades',''],LIFE:['LIFE','💰','Life & Money',''],SIM:['SIM','😊','B’Simcha','']};
+  return M[a]||[a,'📘',a,'']; }
+function rpName(id){ return (RP.data&&RP.data.names&&RP.data.names[id])||skName(id); }
+function loadReport(){ RP.err=''; srv('sgMapReport',[tok(),RP.days]).then(function(r){ RP.data=r; drawReport(); }).catch(function(e){ RP.err=String(e); drawReport(); }); }
+function reportHTML(){ return '<div class="st-head"><div><h1>Reports</h1><p class="lead" style="margin:0">Every report here is about steps on the curriculum tree: who climbed, who is stuck, and where.</p></div><div class="st-acts">'
+   +[[7,'This week'],[30,'This month']].map(function(x){ return '<button type="button" class="chip'+(RP.days===x[0]?' on':'')+'" data-rp="days" data-v="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</div></div><div id="rp-body"><div class="st-empty">Loading the report…</div></div>'
+   +'<h3>More reports</h3><div class="tiles">'+['gs','lkt','month','stuck','rep'].map(tile).join('')+'</div>'; }
+function goalOf(id){ var C=cellsOf(id), best=null; SUBJ.forEach(function(x){ var c=C[x[0]]; if(!best&&c&&c.now) best={x:x,c:c}; }); return best; }
+function drawReport(){ var B=q('#rp-body'); if(!B) return; if(RP.err){ B.innerHTML='<div class="st-empty">Could not load the report: '+E(RP.err)+'</div>'; return; } var D=RP.data; if(!D){ B.innerHTML='<div class="st-empty">Loading the report…</div>'; return; }
+  var boys=D.boys||[], n=boys.length, steps=0, prev=0, moved=0, bySub={}, byStep={};
+  boys.forEach(function(b){ steps+=b.steps.length; prev+=b.prev; if(b.steps.length) moved++; b.steps.forEach(function(s){ var sj=subjOfId(s[0]); var k=sj[0]; (bySub[k]=bySub[k]||{sj:sj,n:0}).n++; (byStep[s[0]]=byStep[s[0]]||{n:0,sj:sj}).n++; }); });
+  var diff=steps-prev, per=n?(steps/n):0, lbl=RP.days===7?'this week':'this month';
+  var h='<div class="td-nums"><div class="td-num"><b>'+steps+(prev||steps?'<span class="rp-trend '+(diff>=0?'up':'dn')+'">'+(diff>=0?'↑ +':'↓ ')+diff+'</span>':'')+'</b><span>steps climbed '+lbl+'</span></div><div class="td-num"><b>'+moved+' <small style="font-size:16px;color:#5B6676">of '+n+'</small></b><span>boys moved up a step</span></div><div class="td-num"><b>'+(n-moved)+'</b><span>boys did not move</span></div><div class="td-num"><b>'+(Math.round(per*10)/10)+'</b><span>steps per boy</span></div></div>';
+  var subs=Object.keys(bySub).map(function(k){ return bySub[k]; }).sort(function(a,b){ return b.n-a.n; }), mx=subs.length?subs[0].n:1;
+  h+='<div class="td-card"><h2>🌳 Steps climbed '+lbl+', by subject</h2>'+(subs.length?'<div class="rp-bars">'+subs.map(function(x){ return '<div class="rp-bar"><b>'+x.sj[1]+' '+E(x.sj[2])+'</b><span class="t"><i style="width:'+Math.max(4,Math.round(100*x.n/mx))+'%"></i></span><span class="v">'+x.n+'</span>'+(x.sj[3]?'<button type="button" data-sfopen="'+x.sj[3]+'">See the tree →</button>':'<span></span>')+'</div>'; }).join('')+'</div>':'<div class="td-ok" style="color:#5B6676">No steps climbed '+lbl+' yet.</div>')+'</div>';
+  var movers=boys.filter(function(b){ return b.steps.length; }).sort(function(a,b){ return b.steps.length-a.steps.length||a.name.localeCompare(b.name); }).slice(0,8);
+  var still=boys.filter(function(b){ return !b.steps.length; }).sort(function(a,b){ return a.name.localeCompare(b.name); });
+  h+='<div class="rp-grid"><div class="td-card"><h2>🚀 Moving</h2>'+(movers.length?movers.map(function(b){ return '<div class="rp-row"><span class="n">'+b.steps.length+'</span><span><b>'+E(b.name)+'</b><small>'+b.steps.slice(0,3).map(function(s){ return '✓ '+E(rpName(s[0])); }).join(' · ')+(b.steps.length>3?' · +'+(b.steps.length-3)+' more':'')+'</small></span><button type="button" data-mp="map" data-id="'+E(b.id)+'">🗺️ Map</button></div>'; }).join(''):'<div class="td-ok" style="color:#5B6676">Nobody climbed a step '+lbl+' yet.</div>')+'</div>';
+  h+='<div class="td-card'+(still.length?' need':'')+'"><h2>🧍 Not moving yet ('+still.length+')</h2>'+(still.length?still.slice(0,12).map(function(b){ var g=goalOf(b.id); return '<div class="rp-row"><span class="n" style="background:'+(g&&g.c.status==='red'?'#C8402F':'#A7B0BF')+'">0</span><span><b>'+E(b.name)+'</b><small>'+(g?(g.c.status==='red'?'🧱 Stuck on ':'🎯 Goal now: ')+g.x[1]+' '+E(skName(g.c.now)):'No level yet')+'</small></span><button type="button" data-mp="map" data-id="'+E(b.id)+'">🗺️ Map</button></div>'; }).join('')+(still.length>12?'<p class="sf-hint" style="margin:8px 0 0;color:#5B6676">and '+(still.length-12)+' more. See them in Students.</p>':''):'<div class="td-ok">Every boy climbed at least one step. ✅</div>')+'</div></div>';
+  var hard={}; (S0().boys||[]).forEach(function(b){ if(b.test) return; var C=cellsOf(b.id); Object.keys(C).forEach(function(k){ var c=C[k]; if(c&&c.now&&c.status==='red'){ (hard[c.now]=hard[c.now]||{n:0,sj:subjOfId(c.now)}).n++; } }); });
+  var hs=Object.keys(hard).sort(function(a,b){ return hard[b].n-hard[a].n; }).slice(0,6), top=Object.keys(byStep).sort(function(a,b){ return byStep[b].n-byStep[a].n; }).slice(0,6);
+  h+='<div class="rp-grid" style="margin-top:16px"><div class="td-card"><h2>🧱 Hardest steps right now</h2>'+(hs.length?hs.map(function(id){ var x=hard[id]; return '<div class="rp-row"><span class="n" style="background:#C8402F">'+x.n+'</span><span><b>'+E(skName(id))+'</b><small>'+x.sj[1]+' '+E(x.sj[2])+' · '+x.n+' boy'+(x.n===1?'':'s')+' stuck</small></span>'+(x.sj[3]?'<button type="button" data-sh="tree" data-s="'+x.sj[3]+'" data-id="'+E(id)+'">On the tree →</button>':'')+'</div>'; }).join(''):'<div class="td-ok">No step has boys stuck right now. ✅</div>')+'</div>';
+  h+='<div class="td-card"><h2>⭐ Most-climbed steps '+lbl+'</h2>'+(top.length?top.map(function(id){ var x=byStep[id]; return '<div class="rp-row"><span class="n" style="background:#7C5CC4">'+x.n+'</span><span><b>'+E(rpName(id))+'</b><small>'+x.sj[1]+' '+E(x.sj[2])+' · mastered by '+x.n+' boy'+(x.n===1?'':'s')+'</small></span>'+(x.sj[3]?'<button type="button" data-sh="tree" data-s="'+x.sj[3]+'" data-id="'+E(id)+'">On the tree →</button>':'')+'</div>'; }).join(''):'<div class="td-ok" style="color:#5B6676">None yet.</div>')+'</div></div>';
+  B.innerHTML=h; }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-rp]'); if(!b) return; e.preventDefault(); if(b.dataset.rp==='days'){ RP.days=Number(b.dataset.v)||7; RP.data=null; document.querySelectorAll('#sh-page [data-rp=days]').forEach(function(x){ x.classList.toggle('on',x===b); }); drawReport(); loadReport(); } });
+
+/* ================= SCHOOL: live status cards, then People and School life ================= */
+function schoolHTML(){ var d=S0(), boys=(d.boys||[]).filter(function(b){ return !b.test; }).length, store=num('#app [data-sy=open] .n'), mOff=!!d.musicOff;
+  var stat=function(cls,ic,big,small,attr){ return '<button type="button" class="sc-stat '+cls+'" '+attr+'><i>'+ic+'</i><span><b>'+big+'</b><small>'+small+'</small></span></button>'; };
+  var h='<h1>School</h1><p class="lead">Staff, families, the store and the canteen.</p><div class="sc-stats">'
+    +stat(store?'warn':'','🏪',store?store+' prize'+(store===1?'':'s')+' to hand out':'Store',store?'Boys bought them in the Tashbar Store. Tap to hand out.':'No prizes waiting. Tap for store orders.','data-sh="do" data-k="store"')
+    +stat(mOff?'off':'','🎵','Music '+(mOff?'is off':'is on'),'For every boy in the school. Tap to turn it '+(mOff?'on':'off')+'.','data-sc="music"')
+    +stat('','👦',boys+' boy'+(boys===1?'':'s'),'Find, add and set levels in Students.','data-sh="area" data-v="students"')
+    +stat('','⭐','Tashbar Points','Daily sign-off: attendance, on time, work, middos.','data-sh="do" data-k="points"')
+    +stat('','🍎','Canteen','The canteen kiosk and its menu.','data-sh="do" data-k="canteen"')+'</div>';
+  h+='<h3>People</h3><div class="tiles">'+['staff','access','fam','schools'].map(tile).join('')+'</div>';
+  return h; }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sc]'); if(!b) return; e.preventDefault();
+  if(b.dataset.sc==='music'){ var m=q('#app [data-act=music]'); if(m) m.click(); setTimeout(function(){ if(S.area==='school') draw(); },900); } });
 function area(v){ S.area=v; S.from=v; draw(); }
 /* open a feature by pressing its own button */
 function run(k){ var a=A[k]; if(!a) return; var how=a[3];
   if(/^sf:/.test(how)){ if(window.SF) window.SF.open(how.slice(3)); return; }
-  if(/^tab:/.test(how)){ var tb=q('#app [data-sp=tab][data-t="'+how.slice(4)+'"]'); S.area='today'; draw(); if(tb) tb.click(); window.scrollTo(0,0); return; }
+  if(/^area:/.test(how)) return area(how.slice(5));
+  if(/^st:/.test(how)){ ST.f=how.slice(3); ST.q=''; ST.g='all'; area('students'); return; }
+  if(/^tab:/.test(how)){ var tb=q('#app [data-sp=tab][data-t="'+how.slice(4)+'"]'); a=[a[0],a[1],a[2],how,'app']; if(tb) tb.click(); }
   if(k==='find'){ var inp=q('#slBar input'); if(inp){ inp.focus(); inp.scrollIntoView({block:'center'}); return; } }
-  var el=q(how); if(!el){ toast('That tool is not on this page yet.'); return; }
-  if(a[4]==='app'){ S.from=S.area==='today'?'home':S.area; setMode(false,true); var bk=q('#sh-back'); if(bk){ var nm=(AREAS.filter(function(x){ return x[0]===S.from; })[0]||AREAS[0])[2]; bk.innerHTML='<button type="button" data-sh="back">← Back to '+E(nm)+'</button> <span style="margin-left:8px">'+a[0]+' '+E(a[1])+'</span>'; } window.scrollTo(0,0); }
-  el.click(); }
+  var el=/^tab:/.test(how)?null:q(how); if(!el&&!/^tab:/.test(how)){ toast('That tool is not on this page yet.'); return; }
+  if(a[4]==='app'&&!/^tab:/.test(a[3])){ if(el) el.click(); return; }   /* a drawer: it opens over the page you are on */
+  if(a[4]==='app'){ S.from=S.area; setMode(false,true); var bk=q('#sh-back'); if(bk){ var nm=(AREAS.filter(function(x){ return x[0]===S.from; })[0]||AREAS[0])[2]; bk.innerHTML='<button type="button" data-sh="back">← Back to '+E(nm)+'</button> <span style="margin-left:8px">'+a[0]+' '+E(a[1])+'</span>'; } window.scrollTo(0,0); }
+  if(el) el.click(); }
 function toast(m){ var t=document.createElement('div'); t.textContent=m; t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#16202C;color:#fff;padding:10px 16px;border-radius:12px;font:700 14px system-ui,sans-serif;z-index:2147483600'; body().appendChild(t); setTimeout(function(){ t.remove(); },2600); }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sh]'); if(!b) return; var a=b.dataset.sh; e.preventDefault();
   if(a==='area') return area(b.dataset.v); if(a==='do') return run(b.dataset.k); if(a==='back') return area(S.from||'home');
+  if(a==='tree'){ if(window.SF) window.SF.open(b.dataset.s,b.dataset.id); return; }
   if(a==='out'){ var o=q('#app [data-act=out]'); if(o) o.click(); } });
 /* start once the staff screen has signed in and drawn */
 function on(){ var app=q('#app'); if(!app||!q('#app header.top')) return false; body().classList.add('sh-on'); draw(); return true; }
 var n=0; (function wait(){ if(on()) return; if(++n<200) setTimeout(wait,300); })();
 /* the search bar is re-made by its add-on: keep it in the slot */
 setInterval(slot,1500);
-window.SH={ area:area, run:run };
+/* which boys are on a step right now (their goal now = this skill), for the curriculum tree */
+function boysOn(id){ var out=[]; (S0().boys||[]).forEach(function(b){ if(b.test) return; var C=cellsOf(b.id), st=''; Object.keys(C).forEach(function(k){ if(C[k]&&C[k].now===id) st=C[k].status||'now'; }); if(st) out.push({id:b.id,name:b.name,stuck:st==='red'}); }); return out; }
+function boysOnAll(){ var o={}; (S0().boys||[]).forEach(function(b){ if(b.test) return; var C=cellsOf(b.id); Object.keys(C).forEach(function(k){ var c=C[k]; if(c&&c.now){ var x=o[c.now]||(o[c.now]={n:0,stuck:0}); x.n++; if(c.status==='red') x.stuck++; } }); }); return o; }
+/* when an old tool's drawer closes (a boy added, a group made ...), refresh the page you are on so the change shows at once */
+/* "Student added" → 🎯 Set his level now: the Set level pop-up for the new boy (StaffScreen.html addPanel) */
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-shlv]'); if(!b) return; var id=b.dataset.shlv, nm=b.dataset.shname||'';
+  if(ST.list&&!byId(id)) ST.list.push({id:id,name:nm,grade:null,place:{}}); else if(!ST.list) ST.list=[{id:id,name:nm,grade:null,place:{}}];
+  setTimeout(function(){ dlgOpen([id]); },150); },true);
+var drawerOpen=false; setInterval(function(){ var d=!!q('#app > aside.drawer'); if(drawerOpen&&!d){ refreshMap(); if(S.area==='students') loadRoster(true); if(S.area==='today') loadToday(); if(S.area==='school'||S.area==='home') draw(); } drawerOpen=d; },700);
+window.SH={ area:area, run:run, boysOn:boysOn, boysOnAll:boysOnAll, map:function(id){ mapOpen(id); } };
 })();
 </script>

@@ -71,6 +71,7 @@
   var i=P.info, h='<div id="slPg" data-sid="'+esc(P.id)+'" role="dialog" aria-modal="true" aria-label="Student page"><button class="x" data-sl="close" aria-label="Close">✕</button>';
   if(!i){ h+=P.err?'<p class="err">'+esc(P.err)+'</p>':'<p>Loading…</p>'; o.innerHTML=h+'</div>'; return; }
   h+='<h2>'+esc(i.name)+'</h2><div class="sub">'+(i.grade?'Grade '+esc(i.grade)+' · ':'')+esc(i.schoolName)+'</div>';
+  if(window.SH&&window.SH.map) h+='<button type="button" class="b" data-shmap="'+esc(P.id)+'" style="margin:8px 0 4px">🗺️ His map: his goal now and the steps left in his unit</button>';   /* the staff home's boy map (StaffHome.html) */
   if(P.err) h+='<p class="err">'+esc(P.err)+'</p>'; if(P.msg) h+='<p class="ok">'+esc(P.msg)+'</p>';
   h+='<section><h3>🔑 Sign-in code</h3>';
   if(P.code) h+='<div>'+esc(i.name)+'’s new code:</div><div class="code">'+esc(P.code)+'</div><div class="muted">Write it down or give it to the student now. For safety it is shown only this once; you can always give another.</div>';
@@ -106,6 +107,8 @@
   if(a==='card'){ var id=i.id; close(); var b=document.createElement('button'); b.type='button'; b.hidden=true; b.setAttribute('data-act','card'); b.setAttribute('data-id',id); document.body.appendChild(b); b.click(); setTimeout(function(){ b.remove(); },0); try{ window.scrollTo(0,0); }catch(x){} }
  }
  (function wait(){ if(tok()) bar(); if(!document.getElementById('slBar')) setTimeout(wait,1000); })();
+ window.SL={ open:function(id){ open(String(id)); } };
+ document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-shmap]'); if(!b) return; e.preventDefault(); var ov=document.getElementById('slOv'); if(ov) ov.remove(); if(window.SH&&window.SH.map) window.SH.map(b.dataset.shmap); });   /* the staff home's Students list opens a boy's page here (StaffHome.html) */
  window.addEventListener('storage',function(){ if(tok()) bar(); });
 })();
 </script>
