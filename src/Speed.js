@@ -17,6 +17,7 @@ function msSignInFast(code) {
   if (!r || !r.ok || r.role !== 'kid') return r;
   try { r.load = msLoad(r.token); } catch (e) { r.load = null; }
   try { r.tm = typeof tmMine === 'function' ? tmMine(r.token) : null; r.tmOk = true; } catch (e) { r.tmOk = false; }
+  try { r.map = typeof kmMyMap === 'function' ? kmMyMap(r.token) : null; } catch (e) { r.map = null; }   /* v1 boy's map (KidMap.js): rides along, no extra trip */
   return r;
 }
 
