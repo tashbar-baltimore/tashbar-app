@@ -502,6 +502,7 @@ render=function(){ const r=oldRender.apply(this,arguments);
  return r; };
 GM.lastSteps=-1;
 GM.sync=sync;
+GM.nextLevel=function(){ try{ const m=M(); if(!m) return ''; const w=pick(worldsOf(m)); if(!w||!w.now) return ''; const n=nm(w.now); return n[0]+(n[1]&&!/ Level \d+$/.test(n[1])?' · '+n[1]:''); }catch(e){ return ''; } };
 let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.pf-card'); if(!c){ setTimeout(hook,1500); return; } pfWatch=new MutationObserver(()=>{ if(document.body.classList.contains('gm-on')) sync(); }); pfWatch.observe(c,{attributes:true,attributeFilter:['style']}); },1500);
 try{ sync(); }catch(e){ console.error('GameMap',e); }
 })();
