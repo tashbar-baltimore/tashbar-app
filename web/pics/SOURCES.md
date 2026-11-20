@@ -452,3 +452,26 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - bicycle-at-rack.webp | https://pixabay.com/photos/bicycle-bicycle-wheels-bike-wheels-609652/ | Pixabay Content License | 27707
 - share-price-chart-screen.webp | https://pixabay.com/photos/blur-chart-computer-data-finance-1853262/ | Pixabay Content License | Pexels
 - notebook-and-pen.webp | https://pixabay.com/photos/fountain-pen-note-notebook-page-1851096/ | Pixabay Content License | Pexels
+- white-rope-knot-dark.webp | https://www.flickr.com/photos/97428372@N00/3425129173 | CC BY 2.0 | poetrosakranse
+- rope-loop-knot-museum.webp | https://commons.wikimedia.org/wiki/File:Bowline_Knot.jpg | CC BY-SA 4.0 | Anup Sadi
+- two-rope-knot-red-tan.webp | https://commons.wikimedia.org/wiki/File:Knoten_Kreuzknoten.jpg | Public domain | Jiver
+- rope-hitch-on-pole.webp | https://commons.wikimedia.org/wiki/File:Clove_Hitch_-_ABoK_11_-_USCG.jpg | CC0 | USCG PTC Developer
+- tarp-shade-in-woods.webp | https://pixabay.com/photos/outdoor-hammock-bushcraft-survival-3681924/ | Pixabay Content License | TheMetalMann
+- piano-keyboard-front.webp | https://pixabay.com/photos/piano-keyboard-music-10046998/ | Pixabay Content License | Ralf1403
+- tape-measure-hook.webp | https://pixabay.com/photos/centimeter-equipment-inch-inches-2262/ | Pixabay Content License | PublicDomainPictures
+- try-square-on-wood.webp | https://pixabay.com/photos/laminate-tool-embarrassed-work-4898892/ | Pixabay Content License | jirikraus
+- wood-screws-pile.webp | https://pixabay.com/photos/tools-work-tools-steel-screw-metal-4565915/ | Pixabay Content License | sweetlouise
+- sandpaper-sheet.webp | https://pixabay.com/photos/emery-cloth-sandpaper-a-carpenter-1827149/ | Pixabay Content License | LeoNeoBoy
+- screwdriver-two-tips.webp | https://pixabay.com/photos/screwdriver-hand-tool-steel-metal-4957665/ | Pixabay Content License | Alexei_other
+- old-door-hinge.webp | https://pixabay.com/photos/rusty-butt-hinge-hinge-articulation-104731/ | Pixabay Content License | ArtTower
+- needle-eye-thread.webp | https://pixabay.com/photos/thread-needle-sewing-sewing-needle-7544859/ | Pixabay Content License | IstvánKopeczny
+- two-buttons-four-holes.webp | https://pixabay.com/photos/button-fasten-button-hole-3491976/ | Pixabay Content License | MabelAmber
+- whisk-egg-whites.webp | https://pixabay.com/photos/egg-white-snow-egg-whites-232655/ | Pixabay Content License | stux
+- ice-cubes-white.webp | https://pixabay.com/photos/ice-cubes-ice-frozen-cold-3506782/ | Pixabay Content License | Bru-nO
+- red-cabbage-cut.webp | https://pixabay.com/photos/purple-cabbage-vegetable-food-875260/ | Pixabay Content License | lauryann
+- muffins-in-tin.webp | https://pixabay.com/photos/muffins-muffin-pan-baking-7582097/ | Pixabay Content License | u_ys074yedl6
+- measuring-cups-metal.webp | https://pixabay.com/photos/measuring-cup-to-bake-cook-meal-2510243/ | Pixabay Content License | Monfocus
+- risen-dough-in-pot.webp | https://pixabay.com/photos/dough-bread-dough-bread-making-5571077/ | Pixabay Content License | webandi
+- acoustic-guitar-white.webp | https://pixabay.com/photos/guitar-acoustic-instrument-2119/ | Pixabay Content License | PublicDomainPictures
+- cello-and-bow.webp | https://pixabay.com/photos/cello-cello-bow-strings-7660691/ | Pixabay Content License | Ri_Ya
+- saxophone-gold.webp | https://pixabay.com/photos/saxophone-music-still-life-1412218/ | Pixabay Content License | lehni
