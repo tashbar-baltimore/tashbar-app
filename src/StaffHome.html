@@ -47,7 +47,7 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-next .row b{display:block;font:800 16px/1.25 system-ui,sans-serif} #sh-next .row small{color:#5B6676;font-size:13.5px}
 #sh-next .row .go{margin-left:auto;flex:none;border:0;border-radius:12px;padding:10px 16px;background:#16202C;color:#fff;font:800 14.5px system-ui,sans-serif;cursor:pointer;min-height:44px}
 #sh-next .ok{display:flex;align-items:center;gap:10px;font:800 16px system-ui,sans-serif;color:#178A5E}
-@media (max-width:600px){ #sh-next .row{flex-wrap:wrap} #sh-next .row .go{margin-left:56px} } #sh-page .lead{margin:0 0 16px;color:#5B6676;font-size:15px}
+@media (max-width:600px){ #sh-next .row{flex-wrap:wrap} #sh-next .row .go{margin-left:56px} } #sh-page .lead{margin:0 0 16px;color:#5B6676;font-size:15px} #sh-page .sh-how{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px} #sh-page .sh-how span{background:#FFF8E1;border:2px solid #FFD54F;border-radius:12px;padding:7px 12px;font-weight:700;font-size:14px;color:#3E2C00} #sh-page .sh-how b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#FF9800;color:#fff;margin-right:6px;font-size:13px} #sh-page .sh-wh{margin:22px 0 8px} #sh-page .sh-where{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px} #sh-page .sh-where button{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:2px solid #E3E8F0;border-radius:16px;padding:12px 14px;cursor:pointer;font:inherit;color:inherit} #sh-page .sh-where button:hover{border-color:#5B6CFF} #sh-page .sh-where .i{font-size:28px} #sh-page .sh-where .t{flex:1;min-width:0} #sh-page .sh-where small{display:block;color:#5B6676;font-size:13px;margin-top:2px} #sh-page .sh-where .go{font-weight:800;color:#3F51B5;white-space:nowrap}
 #sh-find{margin:0 0 18px} body.sh-on #sh-find #slBar{display:flex!important;margin:0!important;max-width:none!important;position:static!important;z-index:auto!important;box-shadow:0 2px 10px rgba(30,27,75,.08)!important}
 #sh-page .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
 #sh-page .card{background:#fff;border:1px solid #E6EAF2;border-radius:20px;padding:18px;box-shadow:0 6px 18px rgba(15,23,42,.05)}
@@ -183,7 +183,7 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-needs .nm{all:unset;cursor:pointer;color:#2F5BD3;font-weight:800;text-decoration:underline;text-underline-offset:2px}
 #sh-needs .more{margin:8px 0 0;color:#5B6676;font:700 13.5px system-ui,sans-serif}
 #sh-needs .okk{display:flex;align-items:center;gap:10px;font:800 16px system-ui,sans-serif;color:#178A5E;padding:6px 0}
-@media (max-width:600px){ #sh-needs{padding:12px 14px} #sh-needs .nd{flex-wrap:wrap} #sh-needs .nd .go{margin-left:56px} }
+@media (max-width:600px){ #sh-needs{padding:12px 14px} #sh-needs .nd{flex-wrap:wrap} #sh-needs .nd>span{flex:1 1 calc(100% - 60px);min-width:0} #sh-needs .nd .go{margin-left:56px} }
 #sh-page [data-sh][hidden],#sh-dlg [hidden]{display:none!important}
 #sh-page .grp{border:1px solid #CBD3E3;border-radius:12px;padding:11px 12px;font:700 15px system-ui,sans-serif;background:#fff;min-height:46px;max-width:100%}
 #sh-page button.nmb.nmb{all:unset;display:block;cursor:pointer;font:800 16px/1.25 system-ui,sans-serif;min-height:0;margin:0;padding:0;border:0;background:none}
@@ -275,10 +275,15 @@ function btn(k,cls){ var a=A[k]; return '<button type="button"'+(cls?' class="'+
 function tilesHTML(ks){ return '<div class="tiles">'+ks.map(tile).join('')+'</div>'; }
 setInterval(function(){ document.querySelectorAll('#sh-page [data-sh=do][data-k]').forEach(function(b){ var on=avail(b.dataset.k); if(b.hidden===on) b.hidden=!on; });
   document.querySelectorAll('#sh-page .grp-slot').forEach(function(s){ if(!s.firstChild&&groups().length) s.innerHTML=grpSel(); }); },1200);
+
+/* HoS 2026-11-20: "simple where everything is ... simple what everything means, next steps". Home: 3 steps, then where each area is and what it is for. */
+function howHTML(){ return '<div class="sh-how"><span><b>1</b> Find a boy: his card has every action</span><span><b>2</b> Work down “Needs me today”</span><span><b>3</b> Teaching a class? 📅 Today → Start a class lesson</span></div>'; }
+var WHERE=[['students','🧑‍🎓','Students','Every boy: his level, his map, set levels, codes, parents.'],['today','📅','Today','Who is working now, who is stuck, start a class lesson.'],['curriculum','🌳','Curriculum','Every skill K–8 in order, and what the boys see.'],['reports','📊','Reports','This week and this month: who is growing, who is slipping.'],['school','🏫','School','Store, canteen and school tools.']];
+function whereHTML(){ return '<h3 class="sh-wh">Where everything is</h3><div class="sh-where">'+WHERE.map(function(w){ return '<button type="button" data-sh="area" data-v="'+w[0]+'"><span class="i">'+w[1]+'</span><span class="t"><b>'+w[2]+'</b><small>'+w[3]+'</small></span><span class="go">Open ›</span></button>'; }).join('')+'</div>'; }
 function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar'); if(bar&&p.contains(bar)) body().appendChild(bar);   /* keep the search bar: a redraw must not throw it away */
   setMode(true,false); var h='';
   if(S.area==='home'){
-    h+='<div class="hello">'+E(hello())+'</div><h1>What needs you today</h1><p class="lead">Find a boy, or start with the first thing on the list.</p><div id="sh-find"></div>'+needsHTML();
+    h+='<div class="hello">'+E(hello())+'</div><h1>What needs you today</h1><p class="lead">Find a boy, or start with the first thing on the list.</p>'+howHTML()+'<div id="sh-find"></div>'+needsHTML()+whereHTML();
   } else if(S.area==='students'){ h=studentsHTML();
   } else if(S.area==='today'){ h=todayHTML();
   } else if(S.area==='reports'){ h=reportHTML();
