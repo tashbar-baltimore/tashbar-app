@@ -104,6 +104,15 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-page .rp-row b{display:block;font:800 15px system-ui,sans-serif} #sh-page .rp-row small{display:block;color:#5B6676;font-size:13px;line-height:1.35}
 #sh-page .rp-row button{margin-left:auto;flex:none}
 @media (max-width:700px){ #sh-page .rp-bar{grid-template-columns:1fr 44px auto} #sh-page .rp-bar .t{grid-column:1/-1;grid-row:2} #sh-page .rp-grid{grid-template-columns:1fr} }
+
+/* ===== SCHOOL (HoS 2026-11-20: "go for it all the way") ===== */
+#sh-page .sc-stat{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:1px solid #E6EAF2;border-radius:18px;padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 4px 14px rgba(15,23,42,.04);min-height:84px}
+#sh-page .sc-stat:hover,#sh-page .sc-stat:focus-visible{border-color:#2F5BD3;box-shadow:0 0 0 3px rgba(47,91,211,.15)}
+#sh-page .sc-stat i{font-style:normal;font-size:26px;width:50px;height:50px;border-radius:15px;display:grid;place-items:center;background:#EEF2FF;flex:none}
+#sh-page .sc-stat b{display:block;font:900 20px/1.15 system-ui,sans-serif} #sh-page .sc-stat small{display:block;color:#5B6676;font-size:13px;margin-top:2px}
+#sh-page .sc-stat.warn{border:2px solid #178A5E} #sh-page .sc-stat.warn i{background:#E8F6EF}
+#sh-page .sc-stat.off i{background:#F1F5F9}
+#sh-page .sc-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:0 0 6px}
 /* ===== STUDENTS (HoS 2026-11-19: "easy to add kids and switch levels") ===== */
 #sh-page .st-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;justify-content:space-between;margin-bottom:12px}
 #sh-page .st-acts{display:flex;flex-wrap:wrap;gap:8px} #sh-page .st-acts .shb{width:auto;display:inline-flex;align-items:center}
@@ -223,10 +232,11 @@ function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar');
   } else if(S.area==='students'){ h=studentsHTML();
   } else if(S.area==='today'){ h=todayHTML();
   } else if(S.area==='reports'){ h=reportHTML();
+  } else if(S.area==='school'){ h=schoolHTML();
   } else { var P=PAGE[S.area]; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>'+(S.area==='students'?'<div id="sh-find"></div>':'');
-    if(S.area==='curriculum') h+='<div class="cards" style="margin-bottom:6px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill, step by step. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>';
+    if(S.area==='curriculum') h+='<div class="cards" style="margin-bottom:16px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill, step by step. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>'+schoolMapHTML();
     P.groups.forEach(function(g){ var ks=g[1].filter(function(k){ return k!=='tree'||S.area!=='curriculum'; }); h+='<h3>'+E(g[0])+'</h3><div class="tiles">'+ks.map(tile).join('')+'</div>'; }); }
-  p.innerHTML=h; slot(); window.scrollTo(0,0); if(S.area==='home'||S.area==='students'||S.area==='today') loadKM(false); if(S.area==='today') loadToday(); if(S.area==='reports') loadReport(); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
+  p.innerHTML=h; slot(); window.scrollTo(0,0); if(S.area==='home'||S.area==='students'||S.area==='today'||S.area==='curriculum'||S.area==='reports') loadKM(false); if(S.area==='today') loadToday(); if(S.area==='reports') loadReport(); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
 /* NEXT STEPS: read the counts the staff screen already shows, and turn each one that needs someone into one clear row with one button */
 function num(sel){ var e=q(sel); if(!e) return 0; var m=String(e.textContent||'').match(/(\d+)/g); return m?Number(m[m.length-1]):0; }
 function steps(){ var r=[];
@@ -356,7 +366,7 @@ var SUBJ=[['MATH','🔢','Math','MATH'],['READ','📖','Reading','ENGLISH'],['LA
   ['K:KRI','🔤','Kriyah','KODESH'],['K:CHU','📜','Chumash','KODESH'],['K:RAS','✒️','Rashi','KODESH'],['K:MSH','📚','Mishnayos','KODESH'],['K:GEM','🏛️','Gemara','KODESH']];
 var KM={boys:{},names:{},at:0,busy:false};   /* Kodesh tracks, per boy (sgKodeshMap) */
 function loadKM(force){ if(KM.busy||(!force&&KM.at&&Date.now()-KM.at<300000)) return; KM.busy=true; srv('sgKodeshMap',[tok()]).then(function(r){ KM.boys=(r&&r.boys)||{}; KM.names=(r&&r.names)||{}; KM.at=Date.now(); KM.busy=false; redrawAll(); }).catch(function(){ KM.busy=false; }); }
-function redrawAll(){ if(S.area==='reports') drawReport(); if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(S.area==='home'){ var m=q('#sh-smap'); if(m){ var t=document.createElement('div'); t.innerHTML=schoolMapHTML(); m.replaceWith(t.firstChild); } } if(ST.dlg&&ST.dlg.map) mapDraw(); }
+function redrawAll(){ if(S.area==='reports') drawReport(); if(S.area==='curriculum'){ var cm=q('#sh-smap'); if(cm){ var t2=document.createElement('div'); t2.innerHTML=schoolMapHTML(); cm.replaceWith(t2.firstChild); } } if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(S.area==='home'){ var m=q('#sh-smap'); if(m){ var t=document.createElement('div'); t.innerHTML=schoolMapHTML(); m.replaceWith(t.firstChild); } } if(ST.dlg&&ST.dlg.map) mapDraw(); }
 function cellsOf(id){ var b=(S0().boys||[]).filter(function(x){ return x.id===id; })[0]; return Object.assign({}, b&&b.cells||{}, KM.boys[id]||{}); }
 var STRAND={NUM:'Counting & Numbers',PV:'Place Value',OPS:'Operations',FRAC:'Fractions & Decimals',ALG:'Algebra & Patterns',FUNC:'Functions',MEAS:'Measurement',GEO:'Geometry',STAT:'Data & Statistics',
   PA:'Print & Sounds',PHON:'Phonics & Word Study',FLU:'Fluency',LV:'Leveled Reading',VOC:'Vocabulary',COMP:'Comprehension',LIT:'Literature',HAND:'Handwriting',GRAM:'Grammar',MECH:'Capitals & Punctuation',SENT:'Sentences',PARA:'Paragraphs',USE:'Word Choice',ESSAY:'Essays',RES:'Research',
@@ -420,6 +430,20 @@ function drawReport(){ var B=q('#rp-body'); if(!B) return; if(RP.err){ B.innerHT
   h+='<div class="td-card"><h2>⭐ Most-climbed steps '+lbl+'</h2>'+(top.length?top.map(function(id){ var x=byStep[id]; return '<div class="rp-row"><span class="n" style="background:#7C5CC4">'+x.n+'</span><span><b>'+E(rpName(id))+'</b><small>'+x.sj[1]+' '+E(x.sj[2])+' · mastered by '+x.n+' boy'+(x.n===1?'':'s')+'</small></span>'+(x.sj[3]?'<button type="button" data-sh="tree" data-s="'+x.sj[3]+'" data-id="'+E(id)+'">On the tree →</button>':'')+'</div>'; }).join(''):'<div class="td-ok" style="color:#5B6676">None yet.</div>')+'</div></div>';
   B.innerHTML=h; }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-rp]'); if(!b) return; e.preventDefault(); if(b.dataset.rp==='days'){ RP.days=Number(b.dataset.v)||7; RP.data=null; document.querySelectorAll('#sh-page [data-rp=days]').forEach(function(x){ x.classList.toggle('on',x===b); }); drawReport(); loadReport(); } });
+
+/* ================= SCHOOL: live status cards, then People and School life ================= */
+function schoolHTML(){ var d=S0(), boys=(d.boys||[]).filter(function(b){ return !b.test; }).length, store=num('#app [data-sy=open] .n'), mOff=!!d.musicOff;
+  var stat=function(cls,ic,big,small,attr){ return '<button type="button" class="sc-stat '+cls+'" '+attr+'><i>'+ic+'</i><span><b>'+big+'</b><small>'+small+'</small></span></button>'; };
+  var h='<h1>School</h1><p class="lead">Staff, families, the store and the canteen.</p><div class="sc-stats">'
+    +stat(store?'warn':'','🏪',store?store+' prize'+(store===1?'':'s')+' to hand out':'Store',store?'Boys bought them in the Tashbar Store. Tap to hand out.':'No prizes waiting. Tap for store orders.','data-sh="do" data-k="store"')
+    +stat(mOff?'off':'','🎵','Music '+(mOff?'is off':'is on'),'For every boy in the school. Tap to turn it '+(mOff?'on':'off')+'.','data-sc="music"')
+    +stat('','👦',boys+' boy'+(boys===1?'':'s'),'Find, add and set levels in Students.','data-sh="area" data-v="students"')
+    +stat('','⭐','Tashbar Points','Daily sign-off: attendance, on time, work, middos.','data-sh="do" data-k="points"')
+    +stat('','🍎','Canteen','The canteen kiosk and its menu.','data-sh="do" data-k="canteen"')+'</div>';
+  h+='<h3>People</h3><div class="tiles">'+['staff','access','fam','schools'].map(tile).join('')+'</div>';
+  return h; }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sc]'); if(!b) return; e.preventDefault();
+  if(b.dataset.sc==='music'){ var m=q('#app [data-act=music]'); if(m) m.click(); setTimeout(function(){ if(S.area==='school') draw(); },900); } });
 function area(v){ S.area=v; S.from=v; draw(); }
 /* open a feature by pressing its own button */
 function run(k){ var a=A[k]; if(!a) return; var how=a[3];
