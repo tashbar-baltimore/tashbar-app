@@ -408,6 +408,25 @@ body.hl2 .hl2-qt .hl2-qti{position:absolute!important;left:auto!important;right:
 body.hl2 #hlx-top .hpbar .tools .hl2-qt:not(.open) .hl2-qti.hl2-qti{background:#6D28D9!important;box-shadow:none!important}
 body.hl2 .hl2-qt.open .hl2-qti{pointer-events:auto;transform:translate(var(--dx),0) scale(1);transition-delay:var(--do)}
 body.hl2 .hl2-qt.still,body.hl2 .hl2-qt.still .hl2-qti,body.hl2 .hl2-qt.still .hl2-qtbg{transition:none!important}
+/* FEWER WORDS (2026-11-20, moshe@ session, agreed with the drafter): cards show a picture, a name and one button; the details live
+   on the page they open. Start here shows a progress bar instead of "0 of 6", and only once he has made progress (none at 0).
+   The Learn / Play / My Stuff doors are centered: the picture, then the word, the › circle in the corner. */
+body.hl2 .hf-kwrap .hf-kl .tx small{display:none!important}
+body.hl2 .hf-kwrap .hf-kl .hl2-kbar{display:block;height:8px;border-radius:999px;background:rgba(255,255,255,.7);overflow:hidden;margin-top:8px;max-width:180px}
+body.hl2 .hf-kwrap .hf-kl .hl2-kbar i{display:block;height:100%;border-radius:999px;background:#16A34A}
+body.hl2 .hf-door small,body.hl2 .hf-door .cnt{display:none!important}
+body.hl2 .hf-door{align-items:center!important;justify-content:center!important;text-align:center!important;gap:10px!important;min-height:210px!important;padding:22px 24px 26px!important}
+body.hl2 .hf-door .ico{position:static!important;font-size:88px!important;line-height:1!important}
+body.hl2 .hf-door b{font-size:40px!important}
+@media (max-width:700px){body.hl2 .hf-door{min-height:170px!important}body.hl2 .hf-door .ico{font-size:72px!important}body.hl2 .hf-door b{font-size:34px!important}}
+body.hl2 #hlx>.cn-card>div>small{display:none!important}
+body.hl2 #hlx>.cn-card .tlq .row,body.hl2 #hlx>.cn-card .tlq .qs,body.hl2 #hlx>.cn-card .tlq p{display:none!important}
+body.hl2 #hlx>.cn-card .tlq .h{margin:0!important}
+body.hl2 #hlx .hlx-go small{display:none!important}
+body.hl2 #hlx .hlx-go .hl2-pbar{display:block;width:min(320px,80%);height:10px;margin:4px auto 0;border-radius:999px;background:rgba(255,255,255,.55);box-shadow:inset 0 0 0 1px rgba(146,64,14,.18);overflow:hidden}
+body.hl2 #hlx .hlx-go .hl2-pbar i{display:block;height:100%;min-width:6%;border-radius:999px;background:linear-gradient(90deg,#1E1B4B,#4F46E5);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+body.hl2 #hlx .hlx-go.hl2-done .hl2-pbar i{background:linear-gradient(90deg,#16A34A,#22C55E)}
+body.hl2 #hlx .hlx-go .hl2-ok{display:none;margin-left:6px;color:#16A34A}body.hl2 #hlx .hlx-go.hl2-done .hl2-ok{display:inline}
 @media (max-width:700px){body.hl2 .hl2-qt.open{width:48px}body.hl2 .hl2-qt .hl2-qtbg{width:58px}body.hl2 .hl2-qt.open .hl2-qtbg{width:calc(var(--qtw,48px) + 10px)}}
 @media (prefers-reduced-motion:reduce){body.hl2 .hl2-qt .hl2-qti,body.hl2 .hl2-qt .hl2-qtbg{transition-duration:.01s!important}}
 body.hl2 .hpbar .tools .icon-btn:focus-visible{outline:3px solid #FDE047;outline-offset:2px}
@@ -424,6 +443,14 @@ function arrange(){ try{
   const st=hlx.querySelector('.hlx-start'); if(st){ let u=st.querySelector('.hl2-under'); if(!u){ u=document.createElement('div'); u.className='hl2-under'; st.appendChild(u); }
     const steps=st.querySelector(':scope > .hlx-steps'); if(steps) u.appendChild(steps);
     const c=document.getElementById('tlcash'); if(c&&c.parentNode!==u){ c.classList.add('docked'); u.insertBefore(c,u.firstChild); } }
+  /* 2b. fewer words: Start here gets a progress bar; started lesson cards get a thin bar; the Pathfinder note is one line */
+  try{ const go=hlx.querySelector('.hlx-go'), sm=go&&go.querySelector('small');
+    if(go&&sm){ const m=String(sm.textContent).match(/(\d+)\s*of\s*(\d+)/); const d=m?+m[1]:0, n=m?Math.max(1,+m[2]):0;
+      let b=go.querySelector('.hl2-pbar'); if(n&&d===0){ if(b) b.remove(); go.classList.remove('hl2-done'); go.setAttribute('aria-label','Start here'); } else if(n){ if(!b){ b=document.createElement('span'); b.className='hl2-pbar'; b.innerHTML='<i></i>'; go.appendChild(b); const t=go.querySelector('.hlx-gt'); if(t&&!t.querySelector('.hl2-ok')) t.insertAdjacentHTML('beforeend','<span class="hl2-ok" aria-hidden="true">✓</span>'); }
+        const pc=Math.round(Math.min(1,d/n)*100); b.firstChild.style.width=pc+'%'; go.classList.toggle('hl2-done',d>=n); go.setAttribute('aria-label','Start here: '+d+' of '+n+' steps done today'); } } }catch(e){}
+  hlx.querySelectorAll('.hf-kwrap .hf-kl').forEach(k=>{ if(k.querySelector('.hl2-kbar')) return; const sm=k.querySelector('.tx small'); const m=sm&&String(sm.textContent).match(/finished\s+(\d+)\s+of\s+(\d+)/i);
+    if(m&&+m[1]>0){ const tx=k.querySelector('.tx'); if(tx) tx.insertAdjacentHTML('beforeend','<span class="hl2-kbar" role="img" aria-label="'+m[1]+' of '+m[2]+' done"><i style="width:'+Math.round(+m[1]/Math.max(1,+m[2])*100)+'%"></i></span>'); } });
+  hlx.querySelectorAll(':scope > .cn-card .tlq .h').forEach(h=>{ if(!h.dataset.hl2){ h.dataset.hl2='1'; h.textContent='🧭 Finish your Pathfinder to get all your lesson money'; } });
   /* 3. the quick tools fold into the ⋮ menu */
   qtMenu(bar);
   /* 4. the Canteen money card(s) at the bottom, as wide as the banner */
