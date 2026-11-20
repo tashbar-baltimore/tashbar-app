@@ -55,8 +55,8 @@ function k3Lessons() { const out = {};
       out[id] = { t: g(/\bt:'((?:[^'\\]|\\.)*)'/), sub: g(/sub:'((?:[^'\\]|\\.)*)'/), warm: arr('warm'), story: saysIn(g(/story:async\(\)=>\{([\s\S]*?)\},\s*\n\s*movie/)),
         movie: saysIn(g(/movie:async\(\)=>\{([\s\S]*?)\},\s*\n\s*together/)), readAlong: /movie:async[\s\S]{0,80}readAlong/.test(seg),
         together: arr('together'), practice: arr('practice'), real: real && real[1], realIntro: real && real[2], check: kindsIn((seg.match(/check:\[([\s\S]*?)\]\s*\}/) || [])[1]) }; });
-    const re2 = /mk\d\('((?:READ|LANG|WRIT|MATH)\.[A-Z]+\.L\d\d\.\d\d)'/g;
-    while ((m = re2.exec(t))) { const id = m[1]; if (out[id]) continue; const a = splitArgs(t.slice(m.index + 4), 11); if (a.length < 11) continue;
+    const re2 = /\bmk\d*\('((?:READ|LANG|WRIT|MATH)\.[A-Z]+\.L\d\d\.\d\d)'/g;   /* mk1('…')/mk3('…') and the 2nd/3rd grade Math packs' mk('…') */
+    while ((m = re2.exec(t))) { const id = m[1]; if (out[id]) continue; const a = splitArgs(t.slice(m.index + m[0].indexOf('(') + 1), 11); if (a.length < 11) continue;
       const st = x => x.replace(/^'|'$/g, ''); const story = (a[5].match(/'((?:[^'\\]|\\.)*)'\s*\]?\s*$/) || [])[1];
       out[id] = { t: st(a[1]), sub: st(a[3]), warm: kindsIn(a[4]), story: story ? [story.replace(/\s+/g, ' ')] : [], movie: saysIn(a[6]), readAlong: /readAlong/.test(a[6]),
         together: kindsIn(a[7]), practice: kindsIn(a[8]), real: kindsIn(a[9])[0], realIntro: (a[9].match(/intro:'((?:[^'\\]|\\.)*)'/) || [])[1], check: kindsIn(a[10]) }; }
