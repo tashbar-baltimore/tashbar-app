@@ -89,3 +89,34 @@ document.head.appendChild(s); })();
 try{ render(); }catch(e){}
 })();
 </script>
+<script>
+/* SignInEnergy v7 SHARP (Head of School 2026-11-20: "re do the tashbar logo, inspirational, sign in page and all. Make it even more
+   exciting, inspirational and pop even more. like super sharp and exciting"). Looks only; the code pad, typing, the 4th-number sign-in,
+   A.busy / A.err and sign-in protection are untouched (same buttons, same data-act).
+   - THE NEW LOGO: a glowing honeycomb emblem (the Tashbar honey heritage) with a golden Aleph (Kodesh) and a green A badge (Chol), rays
+     and sparkles, and a bold italic TASHBAR wordmark with the Hebrew name and the tagline pill. Crisp vector at every size. On Chanukah
+     and Pesach the holiday logo is still shown (sg5Holiday in HomePage.html).
+   - The hype line in solid white with a gold edge (no rainbow); chunky game-style number keys; a dark glass quote card.
+   - Nothing moves on its own (HoS 2026-11-19). Off switch: window.TL_SIGNIN_V7 = false.
+   No slash-slash in this file (HtmlService rule). */
+(function(){
+if(window.__sg7||typeof render!=='function') return; window.__sg7=true;
+var SVG='<svg class="sg5logo sg7logo" viewBox="0 0 560 220" role="img" aria-label="Tashbar Baltimore: learning that tastes sweet"> <defs> <linearGradient id="sg7tgold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF6B0"/><stop offset=".45" stop-color="#FFD43B"/><stop offset=".75" stop-color="#FFA41B"/><stop offset="1" stop-color="#E8590C"/></linearGradient> <linearGradient id="sg7tring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE259"/><stop offset=".5" stop-color="#FF9F1C"/><stop offset="1" stop-color="#FF2E63"/></linearGradient> <linearGradient id="sg7tcore" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B1E8F"/><stop offset="1" stop-color="#10083A"/></linearGradient> <linearGradient id="sg7tword" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#FFF3C4"/><stop offset="1" stop-color="#FFD43B"/></linearGradient> <radialGradient id="sg7tglow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFD43B" stop-opacity=".55"/><stop offset="1" stop-color="#FFD43B" stop-opacity="0"/></radialGradient> <filter id="sg7tsh" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="5" stdDeviation="0" flood-color="#7A0B3A" flood-opacity="1"/></filter> </defs> <circle cx="110" cy="110" r="104" fill="url(#sg7tglow)"/> <g transform="translate(110 110)"> <g fill="#FFD43B" opacity=".9"> <path d="M0-100 L7-80 L-7-80Z"/><path d="M0-100 L7-80 L-7-80Z" transform="rotate(45)"/><path d="M0-100 L7-80 L-7-80Z" transform="rotate(90)"/><path d="M0-100 L7-80 L-7-80Z" transform="rotate(135)"/> <path d="M0-100 L7-80 L-7-80Z" transform="rotate(180)"/><path d="M0-100 L7-80 L-7-80Z" transform="rotate(225)"/><path d="M0-100 L7-80 L-7-80Z" transform="rotate(270)"/><path d="M0-100 L7-80 L-7-80Z" transform="rotate(315)"/> </g> <polygon points="0,-76 66,-38 66,38 0,76 -66,38 -66,-38" fill="url(#sg7tring)"/> <polygon points="0,-64 55,-32 55,32 0,64 -55,32 -55,-32" fill="url(#sg7tcore)"/> <polygon points="0,-64 55,-32 55,-26 0,-58 -55,-26 -55,-32" fill="#fff" opacity=".18"/> <text x="0" y="30" text-anchor="middle" font-family="\'Frank Ruhl Libre\',\'Noto Serif Hebrew\',\'David\',serif" font-weight="900" font-size="92" fill="url(#sg7tgold)" stroke="#7A3A00" stroke-width="1.5">א</text> <path d="M38-50 l5 11 11 5 -11 5 -5 11 -5-11 -11-5 11-5z" fill="#FFF6B0"/> <circle cx="50" cy="52" r="20" fill="#00C46A" stroke="#fff" stroke-width="4"/><text x="50" y="61" text-anchor="middle" font-family="\'Rubik\',\'Inter\',system-ui,sans-serif" font-weight="900" font-size="25" fill="#fff">A</text> </g> <text x="232" y="66" font-family="\'Frank Ruhl Libre\',\'Noto Serif Hebrew\',\'David\',serif" font-weight="900" font-size="36" fill="#FFD43B" letter-spacing="1">תשב״ר</text> <rect x="342" y="48" width="196" height="4" rx="2" fill="url(#sg7tring)"/> <g filter="url(#sg7tsh)"><text x="228" y="140" font-family="\'Rubik\',\'Inter\',\'Segoe UI\',system-ui,sans-serif" font-weight="900" font-style="italic" font-size="74" textLength="306" lengthAdjust="spacingAndGlyphs" fill="url(#sg7tword)" stroke="#2A0E5C" stroke-width="2.5" paint-order="stroke">TASHBAR</text></g> <text x="232" y="172" font-family="\'Rubik\',\'Inter\',\'Segoe UI\',system-ui,sans-serif" font-weight="900" font-size="17" letter-spacing="9" fill="#C9B8FF">BALTIMORE</text> <rect x="232" y="186" width="306" height="26" rx="13" fill="url(#sg7tring)"/> <text x="385" y="204" text-anchor="middle" font-family="\'Rubik\',\'Inter\',\'Segoe UI\',system-ui,sans-serif" font-weight="900" font-size="13.5" letter-spacing="2.5" fill="#2B0A3D">LEARNING THAT TASTES SWEET</text> </svg>';
+function put(){ if(window.TL_SIGNIN_V7===false) return; var w=document.querySelector('.sg5logo-w'); if(!w||w.querySelector('.sg7logo')||w.querySelector('.sg5hol')) return; if(w.querySelector('svg.sg5logo')) w.innerHTML=SVG; }
+var r7=render; render=function(){ var r=r7.apply(this,arguments); try{ if(typeof A!=='undefined'&&A.view==='signin') put(); }catch(e){} return r; };
+window.TL_LOGO_SVG=SVG;
+var s=document.createElement('style'); s.id='sg7-css'; s.textContent=''
++'body.sg6-on .sg5logo-w{width:min(600px,100%);filter:drop-shadow(0 0 30px rgba(255,212,59,.35)) drop-shadow(0 16px 26px rgba(0,0,0,.45));animation:none!important}'
++'body.sg6-on .sg6hype span{background:none!important;-webkit-text-fill-color:#fff!important;color:#fff!important;font-style:italic;text-transform:uppercase;letter-spacing:-.01em;text-shadow:0 3px 0 #B5179E,0 0 24px rgba(255,212,59,.55);animation:none!important}'
++'body.sg6-on .sg5hi{font-weight:900}'
++'body.sg6-on .sg5keys button{background:linear-gradient(180deg,#FFFFFF,#EEE9FF);color:#1E1B4B;box-shadow:0 6px 0 #7C4DFF,0 10px 18px rgba(30,11,82,.25);font-weight:900}'
++'body.sg6-on .sg5keys button:hover{background:linear-gradient(180deg,#FFFDF0,#FFF0B3)}'
++'body.sg6-on .sg5keys button:active{transform:translateY(5px);box-shadow:0 1px 0 #7C4DFF}'
++'body.sg6-on .sg5keys .sg5del{background:linear-gradient(180deg,#FFF1F4,#FFD6E0);color:#BE123C;box-shadow:0 6px 0 #FB7185}'
++'body.sg6-on .sg5card h1{font-style:italic;letter-spacing:-.01em}'
++'body.sg6-on .sg5q{background:rgba(20,10,68,.82)!important;border-color:#FFD43B!important;color:#fff}body.sg6-on .sg5q b{color:#fff}body.sg6-on .sg5q small{color:#FFD43B}'
++'@media (prefers-reduced-motion: reduce){body.sg6-on .sg5keys button:active{transform:none}}';
+document.head.appendChild(s);
+try{ put(); }catch(e){}
+})();
+</script>
