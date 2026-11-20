@@ -475,3 +475,15 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - acoustic-guitar-white.webp | https://pixabay.com/photos/guitar-acoustic-instrument-2119/ | Pixabay Content License | PublicDomainPictures
 - cello-and-bow.webp | https://pixabay.com/photos/cello-cello-bow-strings-7660691/ | Pixabay Content License | Ri_Ya
 - saxophone-gold.webp | https://pixabay.com/photos/saxophone-music-still-life-1412218/ | Pixabay Content License | lehni
+- chanukah-menorah-candles-lit.webp | https://pixabay.com/photos/hanukkah-judaism-chandelier-candles-2197684/ | Pixabay Content License | EvgeniT
+- donkey-with-saddle-rocky-path.webp | https://pixabay.com/photos/donkey-animal-transportation-desert-4365359/ | Pixabay Content License | dimitrisvetsikas1969
+- threshing-floor-animals-grain.webp | https://pixabay.com/photos/herder-horse-agriculture-tradition-8576685/ | Pixabay Content License | Baddah_rachid
+- sky-sea-green-land.webp | https://pixabay.com/photos/landscape-tropical-sour-golden-coast-4501060/ | Pixabay Content License | Kanenori
+- seder-plate-simanim.webp | https://www.flickr.com/photos/27119975@N00/5638974836 | CC BY-SA 2.0 | Edsel L
+- yerushalayim-old-city-wall-gate.webp | https://pixabay.com/photos/israel-jerusalem-old-city-3146450/ | Pixabay Content License | 2427999
+- wooden-dreidels.webp | https://pixabay.com/photos/dreidels-hanukkah-spinning-tops-20347/ | Pixabay Content License | PublicDomainPictures
+- olive-oil-jug-olives.webp | https://pixabay.com/photos/olive-oil-oil-olives-carafe-fruits-1596639/ | Pixabay Content License | Couleur
+- rainbow-over-field.webp | https://pixabay.com/photos/nature-landscape-plains-farm-grass-2609018/ | Pixabay Content License | StockSnap
+- date-palm-with-dates.webp | https://pixabay.com/photos/date-palm-palm-tree-dates-223251/ | Pixabay Content License | Simon
+- banana-plant-with-bunch.webp | https://pixabay.com/photos/bananas-banana-trees-404536/ | Pixabay Content License | Kulischreiber
+- flock-of-sheep-desert.webp | https://pixabay.com/photos/sheep-animal-lamb-love-wool-eyes-2587335/ | Pixabay Content License | StockSnap
