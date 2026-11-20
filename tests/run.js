@@ -122,6 +122,9 @@ async function kidTests(browser) {
       const ch = gm.querySelector('[data-gm=world][data-k="K:CHU"]'); if (ch) { ch.click(); await sleep(30); const lk = gm.querySelector('.gm-n.u'); o.chu = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; if (lk) { lk.click(); o.toast = (gm.querySelector('.gm-toast') || {}).textContent || ''; } const mt = gm.querySelector('[data-gm=world][data-k="MATH"]'); if (mt) { mt.click(); await sleep(30); } }
       document.querySelector('#gm-nav [data-gmnav=lib]').click(); await sleep(30); o.lib = !document.body.classList.contains('gm-on') && document.body.classList.contains('gm-nav');
       document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30); o.back = document.body.classList.contains('gm-on');
+      document.querySelector('#gm-nav [data-gmnav=missions]').click(); await sleep(30); o.rounds = gm.querySelectorAll('.gm-rd:not(.final):not(.rebbe)').length; o.live = gm.querySelectorAll('.gm-rd.live').length;
+      document.querySelector('#gm-nav [data-gmnav=games]').click(); await sleep(30); o.locked = !!gm.querySelector('.gm-lock') && document.body.classList.contains('gm-on');
+      document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30);
       gm.querySelector('[data-gm=play]').click(); await sleep(30); o.play = A.view === 'play' && A.play && A.play.id; o.offHome = !document.body.classList.contains('gm-on') && !document.body.classList.contains('gm-nav');
       A.play = null; A.view = 'hub'; window.TL_MAP = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); render(); o.noMap = !document.body.classList.contains('gm-on'); return o; }, km.map);
     const want = km.map.names[km.map.subjects.MATH.now] || [];
@@ -133,7 +136,9 @@ async function kidTests(browser) {
       if (!g.lib || !g.back) fail('map home: Learn must open the old Learn door and Map must come back');
       if (g.play !== km.map.subjects.MATH.now || !g.offHome) fail('map home: PLAY must start his goal now (got ' + g.play + ')');
       if (!g.noMap) fail('map home: a boy with no map must see the home as before');
-      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back) ok('map home: next level + real skill, path with BOSS, PLAY starts it, locked says so, doors still open'); } }
+      if (g.rounds !== 3 || g.live !== 1) fail('missions: 3 rounds with one live round expected (got ' + g.rounds + ' rounds, ' + g.live + ' live)');
+      if (!g.locked) fail('missions: the Arcade must be locked before the 3 rounds are cleared');
+      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked) ok('map home: next level + real skill, path with BOSS, PLAY starts it, locked says so, doors still open; missions: 3 rounds, Arcade locked until cleared'); } }
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   report.counts.lessonsPlayed = ids.length; report.counts.lessonsMastered = done; report.counts.screensWithNoHowToBox = notes.length; if (done === ids.length) ok(done + ' of ' + ids.length + ' sampled lessons played to mastered');
   (await pg.evaluate(() => window.__srvErr)).forEach(e => fail('server call failed: ' + e)); errs.forEach(e => fail('kid page: ' + e)); await ctx.close();
