@@ -71,3 +71,66 @@
  setInterval(tick,300); tick();
 })();
 </script>
+<script>
+/* THE MENU (HoS 2026-11-20, button system 1: "← top-left on every screen, three dots top-right; every pop-up closes with one round ✕").
+   Three stacked dots in the top-right corner of every boy screen. Tap: the bottom dot slides out to the left, the others follow it like a
+   little train, each growing into a round navy button inside a white pill that stretches out with a soft spring; the ✕ lands last.
+   Options: Sign out (saves his work first, as before), Message my rebbe (TalkRebbe), Sound on/off (SND; mutes the music too), Music (always opens the music panel to pick songs; shows a line only when music is turned off there).
+   New options: add one entry to ITEMS. It replaces the old "Sign out" button in this corner. No data, money or mastery changes. */
+(function(){
+ if(window.__TLMENU) return; window.__TLMENU=1;
+ function act(a,attr){ var b=document.createElement('button'); b.type='button'; b.setAttribute(attr||'data-act',a); b.style.display='none'; document.body.appendChild(b); b.click(); b.remove(); }
+ function signedIn(){ try{ return typeof A!=='undefined'&&A&&A.view!=='signin'&&!!A.st; }catch(e){ return false; } }
+ function musOn(){ try{ return !!(A.st&&A.st.music&&A.st.music.mood&&A.st.music.mood!=='off'); }catch(e){ return false; } }
+ function sndOn(){ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } }
+ var S='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+ var ITEMS=[
+  {k:'out',label:'Sign out',svg:'<svg viewBox="0 0 24 24" '+S+'><path d="M14 4h-7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7"/><path d="M11 12h10M17 8l4 4-4 4"/></svg>',go:function(){ close(); act('signout'); }},
+  {k:'msg',label:'Message my rebbe',svg:'<svg viewBox="0 0 24 24" '+S+'><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>',go:function(){ close(); act('open','data-tr'); }},
+  {k:'snd',label:'Sound and music',svg:'<svg viewBox="0 0 24 24" '+S+'><path d="M4 10v4h4l5 4V6L8 10H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/><path class="sl" d="M3 3l18 18" stroke="#FF6B8A"/></svg>',go:function(){ act('sound'); paint(); },off:function(){ return !sndOn(); }},
+  {k:'mus',label:'Music',svg:'<svg viewBox="0 0 24 24" '+S+'><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/><path class="sl" d="M3 3l18 18" stroke="#FF6B8A"/></svg>',go:function(){ close(); act('mubtn'); },off:function(){ return !musOn(); }}
+ ];
+ var N=ITEMS.length, css=document.createElement('style');
+ css.textContent='.tl-out{display:none!important}'
+ +'#tlmenu{--ink:#1E1B4B;position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));width:48px;height:48px;z-index:2147483001}'
+ +'body.gm-on #tlmenu,body.gm-nav #tlmenu,body.hp-dark #tlmenu{--ink:#fff}'
+ +'#tlmenu .pl{position:absolute;right:0;top:-2px;height:52px;width:48px;border-radius:26px;background:rgba(255,255,255,0);border:1px solid transparent;transition:width .5s cubic-bezier(.4,0,.2,1) .05s,background .3s,box-shadow .3s,border-color .3s}'
+ +'#tlmenu.open .pl{width:'+(N*48+52)+'px;background:rgba(255,255,255,.97);border-color:rgba(255,255,255,.9);box-shadow:0 10px 26px rgba(10,6,40,.35),inset 0 -2px 0 rgba(30,27,75,.06);transition:width .72s cubic-bezier(.34,1.32,.5,1) .02s,background .25s .02s,box-shadow .25s .02s,border-color .25s .02s}'
+ +'#tlmenu .op{will-change:transform;position:absolute;top:3px;right:3px;width:42px;height:42px;border-radius:50%;border:0;padding:0;display:grid;place-items:center;cursor:pointer;color:#fff;background:var(--ink);'
+ +'transform:translate(0,var(--sy)) scale(.15);animation:tlmC .42s cubic-bezier(.4,0,.2,1) both;animation-delay:calc(('+(N-1)+' - var(--i)) * 50ms);-webkit-tap-highlight-color:transparent}'
+ +'#tlmenu.init .op{animation:none}'
+ +'#tlmenu .op svg{width:22px;height:22px;opacity:0;transition:opacity .15s,transform .15s}'
+ +'#tlmenu.open .op{animation:tlmO .82s cubic-bezier(.45,.05,.35,1) both;animation-delay:calc(var(--i) * 85ms)}'
+ +'#tlmenu.open .op svg{opacity:1;transition:opacity .25s calc(var(--i) * 85ms + 380ms),transform .15s}'
+ +'@media (hover:hover){#tlmenu.open .op:hover svg{transform:scale(1.12)}}'
+ +'#tlmenu .op.out{color:#FF9AB5}#tlmenu .op .sl{opacity:0}#tlmenu .op.off{color:#9C97D0}#tlmenu .op.off .sl{opacity:1}'
+ +'@keyframes tlmO{0%{transform:translate(0,var(--sy)) scale(.15);background:var(--ink)}14%{transform:translate(0,10px) scale(.2);background:#3A3290}52%{transform:translate(calc(var(--tx) - 7px),0) scale(.98);background:#1E1B4B}68%{transform:translate(calc(var(--tx) + 4px),0) scale(1)}82%{transform:translate(calc(var(--tx) - 1.5px),0) scale(1)}100%{transform:translate(var(--tx),0) scale(1);background:#1E1B4B}}'
+ +'@keyframes tlmC{0%{transform:translate(var(--tx),0) scale(1);background:#1E1B4B}55%{transform:translate(calc(var(--tx) * .4),10px) scale(.4);background:#4B3FA8}100%{transform:translate(0,var(--sy)) scale(.15);background:var(--ink)}}'
+ +'#tlmenu .x{position:absolute;top:3px;right:3px;width:42px;height:42px;border-radius:50%;border:0;padding:0;background:#1E1B4B;color:#fff;display:grid;place-items:center;cursor:pointer;transform:scale(0) rotate(-90deg);transition:transform .25s cubic-bezier(.4,0,.2,1)}'
+ +'#tlmenu .x svg{width:16px;height:16px}'
+ +'#tlmenu.open .x{transform:scale(1) rotate(0);transition:transform .38s cubic-bezier(.3,1.45,.5,1) '+(N*85+330)+'ms}'
+ +'#tlmenu .tp{position:absolute;inset:0;border:0;background:none;cursor:pointer;z-index:2;border-radius:50%}'
+ +'#tlmenu .tp:focus-visible{outline:3px solid #FDE047;outline-offset:2px}'
+ +'#tlmenu.open .tp{display:none}'
+ +'#tlmenu .op:focus-visible,#tlmenu .x:focus-visible{outline:3px solid #FDE047;outline-offset:2px}'
+ +'@media (prefers-reduced-motion:reduce){#tlmenu .op,#tlmenu.open .op{animation-duration:.01s}#tlmenu .pl,#tlmenu.open .pl{transition-duration:.01s}}';
+ document.head.appendChild(css);
+ var m=document.createElement('nav'); m.id='tlmenu'; m.className='init'; m.setAttribute('aria-label','Menu'); m.style.display='none';
+ var sy=[10,0,-10], h='<span class="pl"></span>';
+ ITEMS.forEach(function(it,i){ var y=i<3?sy[i]:-10; h+='<button type="button" class="op '+it.k+'" data-tlm="'+it.k+'" tabindex="-1" aria-label="'+it.label+'" title="'+it.label+'" style="--i:'+i+';--sy:'+y+'px;--tx:-'+((N-i)*48)+'px">'+it.svg+'</button>'; });
+ h+='<button type="button" class="x" tabindex="-1" aria-label="Close the menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+ h+='<button type="button" class="tp" aria-label="Menu" aria-expanded="false"></button>';
+ m.innerHTML=h; document.body.appendChild(m);
+ function paint(){ ITEMS.forEach(function(it){ var b=m.querySelector('[data-tlm="'+it.k+'"]'); if(b&&it.off){ var o=it.off(); b.classList.toggle('off',o); b.setAttribute('aria-label',it.label+(o?' (off)':' (on)')); } }); }
+ function setTab(on){ m.querySelectorAll('.op,.x').forEach(function(b){ b.tabIndex=on?0:-1; }); }
+ function open(){ paint(); m.classList.remove('init'); m.classList.add('open'); m.querySelector('.tp').setAttribute('aria-expanded','true'); setTab(true); }
+ function close(){ if(!m.classList.contains('open')) return; m.classList.remove('open'); m.querySelector('.tp').setAttribute('aria-expanded','false'); setTab(false); }
+ m.addEventListener('click',function(e){ e.stopPropagation(); var t=e.target;
+  if(t.closest('.tp')){ open(); return; } if(t.closest('.x')){ close(); m.querySelector('.tp').focus(); return; }
+  var b=t.closest('[data-tlm]'); if(!b||!m.classList.contains('open')) return; var it=ITEMS.filter(function(x){ return x.k===b.dataset.tlm; })[0]; if(it) it.go(); });
+ document.addEventListener('pointerdown',function(e){ if(m.classList.contains('open')&&!m.contains(e.target)) close(); },true);
+ document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&m.classList.contains('open')){ close(); m.querySelector('.tp').focus(); } });
+ setInterval(function(){ var on=signedIn(); m.style.display=on?'':'none'; if(!on) close(); },400);
+ window.TL_MENU={open:open,close:close,items:ITEMS};
+})();
+</script>
