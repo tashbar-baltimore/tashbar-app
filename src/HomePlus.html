@@ -335,13 +335,14 @@ window.tlSplash=splash;
       colors from the tap style (the Store's tap blast if he bought one). It draws only while something moves, then stops.
    2. SPLASHES: while pressed, a light splash every 38 px along the path (the same tap splash), at most 60 pieces on screen.
    If he wears a Store trail (StoreKid.html, window.tlStoreTrailOn), that trail shows instead of the blade.
+   The ribbon also shows on devices set to reduce motion (it moves only with the boy's own finger); the splashes do not.
    Mouse and pen use pointer events. A finger uses touch events: the browser stops pointer events (pointercancel) as soon as a
    swipe starts scrolling the page, but touchmove keeps coming, so the trail keeps following the finger while the page scrolls. */
 const SW={}, STEP=38, CAP=60;
 function trailTo(p,x,y){ const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
  while(dd>=STEP){ p.x+=ux*STEP; p.y+=uy*STEP; dd-=STEP; if(LIVE<CAP) splash(p.x,p.y,true); } }
 const BL={cv:null,cx:null,pts:[],raf:0,down:false,dpr:1};
-function bladeOn(){ try{ if(!window.HP_FX||(typeof RM!=='undefined'&&RM)) return false; if(typeof window.tlStoreTrailOn==='function'&&window.tlStoreTrailOn()) return false; return true; }catch(e){ return false; } }
+function bladeOn(){ try{ if(!window.HP_FX) return false;   /* 2026-11-19: the ribbon shows even with reduced motion: it only follows the boy's own finger (the bursts stay off then) */ if(typeof window.tlStoreTrailOn==='function'&&window.tlStoreTrailOn()) return false; return true; }catch(e){ return false; } }
 function bladeCanvas(){ if(BL.cv&&BL.cv.isConnected) return BL.cx; const c=document.createElement('canvas'); c.id='hpblade'; c.setAttribute('aria-hidden','true');
  c.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;z-index:2147483199;pointer-events:none'; document.body.appendChild(c); BL.cv=c; BL.cx=c.getContext('2d'); bladeSize(); return BL.cx; }
 function bladeSize(){ if(!BL.cv) return; BL.dpr=Math.min(2,window.devicePixelRatio||1); BL.cv.width=Math.round(innerWidth*BL.dpr); BL.cv.height=Math.round(innerHeight*BL.dpr); }
