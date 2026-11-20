@@ -131,6 +131,8 @@ async function staffTests(browser) {
   try { await kidTests(browser); await staffTests(browser); } catch (e) { fail('test run crashed: ' + String(e && e.stack || e).slice(0, 400)); }
   try { const c = await require('./lib/canteen.js')(); c.fails.forEach(fail); if (!c.fails.length) ok('canteen on the Firebase engine: sell, same sale charged once, crew cashier, two kiosks at once, last sale, undo'); report.timings.canteenSaleMs = c.ms.sale; }
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  try { const k = require('./lib/kidmap.js')(); k.fails.forEach(fail); if (!k.fails.length) ok("boy's own map (kmMyMap): rides with sign-in, only his own data, goal now, unit, Kodesh, growth; staff and bad tokens refused"); report.timings.kidMapMs = k.ms.map; report.timings.kidSignInWithMapMs = k.ms.signIn; }
+  catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   await browser.close();
   const bp = path.join(__dirname, 'baseline.json'); const base = fs.existsSync(bp) ? JSON.parse(fs.readFileSync(bp, 'utf8')) : null;
   if (process.env.UPDATE || !base) { fs.writeFileSync(bp, JSON.stringify({ checkAnswersNeverTaught: report.counts.checkAnswersNeverTaught, lessons: report.counts.lessons }, null, 1) + '\n'); console.log('baseline written'); }

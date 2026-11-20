@@ -679,6 +679,7 @@ pinGo=function(){
   if(r.role==='staff') return toStaff(r.token);
   if(window.TashbarSound) TashbarSound.signIn('ms',r.token);
   window.TL_PRE_TM={sid:r.sid,at:Date.now(),ok:!!r.tmOk,r:r.tm||null};
+  window.TL_MAP=(r.map&&r.map.sid===r.sid)?r.map:null;   /* the boy's own map (kmMyMap, KidMap.js), for the map home */
   return (r.load?Promise.resolve(r.load):run('msLoad',r.token)).then(function(d){
    SRV.states=d.states||{}; var me=(d.roster||[]).find(function(x){ return x.id===r.sid; })||{id:r.sid,name:r.name};
    if(!ROSTER.some(function(x){ return x.id===me.id; })) ROSTER.push({id:me.id,name:me.name});
