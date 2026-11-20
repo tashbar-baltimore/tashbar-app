@@ -487,7 +487,7 @@ function pathHTML(w){
   h+=`<button type="button" class="gm-n ${cls}" style="left:${p[0]}%;top:${p[1]}px" data-gm="node" data-id="${esc(id)}" aria-label="Step ${num}: ${esc(n[0])}${n[1]?': '+esc(n[1]):''} (${lab.toLowerCase()})">${ico}</button>`;
   if(!isNow) return;
   /* HoS 2026-11-20: when the second line is only "Chumash Level 3", that is the title and the (i) tells the step's own name */
-  const flip=n[1]&&/ Level \d+$/.test(n[1]), tt=lc?'🎫 Level check first':flip?n[1]:n[0], dd=lc?'About '+lc.min+' minutes. Questions you get right are skills you skip.':flip?n[0]:n[1];
+  const flip=n[1]&&/ Level \d+$/.test(n[1]), tt=lc?'🎫 LEVEL CHECK FIRST':flip?n[1]:n[0], dd=lc?'About '+lc.min+' minutes. Questions you get right are skills you skip.':flip?n[0]:n[1];
   const right=p[0]<50, off=58;
   h+=`<div class="gm-l now${isBoss?' boss':''}${dd?' has-i':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="t">${esc(tt)}</span>${dd?`<button type="button" class="gm-i" data-gm="info" data-d="${esc(dd)}" aria-expanded="false" aria-label="What is ${esc(tt)}?">i</button><small class="d" aria-live="polite"></small>`:''}</div>`; });
  return h+'</div>'; }
