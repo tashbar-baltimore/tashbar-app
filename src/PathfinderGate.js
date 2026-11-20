@@ -1,31 +1,12 @@
-/* PathfinderGate.js — EVERY BOY STARTS WITH PATHFINDER (Head of School 2026-11-16 evening: "I want everyone to have to start with
-   the Pathfinder"). Claude Code builder (4cc@). Read only: it writes nothing, pays nothing, places nothing.
-   pfGateInfo(token) tells the boy's home screen (PathfinderCard.html) what he still owes, in order:
-     1. the general Pathfinder (Reading, Math, Writing...) while it is open for him (pfEnabled_) and not finished (pfHello.show);
-     2. then the Kodesh Pathfinder (pfkAllowed_) until he has one finished Kodesh test.
-   While he is on a Pathfinder rest stop (PF.SIT.breakMin after a sitting), the gate does not block him: rest = the time it ends.
-   A boy with no grade on the roster gets no general gate (his start level needs his grade); staff fix the roster note. */
+/* PathfinderGate.js — once "every boy starts with the Pathfinder" (Head of School 2026-11-16), then the optional Pathfinder with
+   quarter rewards. HEAD OF SCHOOL DECISION 2026-11-20 ("split the Pathfinder"): the big test is no longer pushed (pfGateInfo below
+   always says show: false) and the 25¢ rule now means the 🎫 LEVEL PASS (PathfinderLevel.js). The web.app hand-off stays for
+   staff and for an old Pathfinder a boy still wants to finish from the Pathfinder page itself. Writes nothing, pays nothing. */
+/* RETIRED (Head of School DECISION 2026-11-20, "split the Pathfinder"): the big Pathfinder is no longer pushed on a boy. No gate, no
+   invitation, no corner card. Level checks (PathfinderLevel.js) take its place. Kept as a call so an old page still gets an answer. */
 function pfGateInfo(token) {
   var s = msSession_(token); if (!s || s.role !== 'kid' || !s.sid) return { show: false };
-  var sid = String(s.sid), now = Date.now(), out = { general: null, kodesh: null, rest: 0 };
-  try {
-    if (pfEnabled_(sid)) {
-      out.general = pfHello(token);
-      var last = pfSessionsOf_(sid).pop(), sit = last && last.state && last.state.sit;
-      if (out.general && out.general.show && sit && sit.paused && now - sit.paused < PF.SIT.breakMin * 60000) out.rest = sit.paused + PF.SIT.breakMin * 60000;
-    }
-  } catch (e) { out.general = null; }
-  try {
-    if (typeof pfkAllowed_ === 'function' && pfkAllowed_(sid)) {
-      var K = pfkSessionsOf_(sid), done = K.some(function (x) { return x.status === 'complete'; }), going = K.some(function (x) { return x.status === 'active'; });
-      out.kodesh = { show: !done, started: going };
-    }
-  } catch (e) { out.kodesh = null; }
-  var g = out.general && out.general.show, k = out.kodesh && out.kodesh.show;
-  out.next = g ? (out.rest ? 'rest' : 'general') : k ? 'kodesh' : '';
-  out.show = !!out.next;
-  out.rate = typeof pfRewardRate_ === 'function' ? pfRewardRate_(sid) : 1;   /* quarter rewards until done (optional Pathfinder) */
-  return out;
+  return { show: false, next: '', general: null, kodesh: null, rest: 0, retired: true, rate: pfRewardRate_(String(s.sid)) };
 }
 
 /* WEB.APP HAND-OFF (Head of School: "update the firebase"). A boy signed in on tashbar-learning-live.web.app who taps Start
@@ -46,21 +27,14 @@ function pfHandoffRedeem(code) {
   return { token: o.token };
 }
 
-/* OPTIONAL PATHFINDER, QUARTER REWARDS (Head of School 2026-11-16, replaces "everyone must start with the Pathfinder"):
-   the Pathfinder is NOT required. A boy who has not finished it (the general Pathfinder while it is open for him, then the Kodesh
-   Pathfinder) earns PF_REWARD.rate (one quarter) of every automatic T$ earning, rounded, at least 1 cent. Once he finishes, every
-   earning is full again. Not cut: the Pathfinder's own pay (lessonId PATHFINDER), staff bonuses and corrections (other types),
-   interest, store, gifts and refunds. The ledger reason says so. A boy who cannot take a part (no grade on the roster, or Pathfinder
-   paused for new boys) is not cut for that part. */
+/* THE 25¢ RULE, NEW MEANING (Head of School DECISION 2026-11-20): the 🎫 LEVEL PASS. The old rule ("a quarter of every automatic
+   earning until the whole Pathfinder, general and Kodesh, is finished") is gone. Now Money.js moneyPost_ cuts a lesson earning to
+   PF_REWARD.rate ONLY for a lesson in a Math / Reading level that has a level check and where he has no Level Pass yet
+   (pfLevelRate_ in PathfinderLevel.js). Not cut, as before: the Pathfinder's own pay (lessonId PATHFINDER), staff rows (e.by),
+   interest, store, gifts, refunds; and now also every earning that is not a lesson in such a level (Kodesh, other subjects,
+   streaks, daily goal, treasure chest). PF_REWARD.ON = false turns every cut off. */
 var PF_REWARD = { ON: true, rate: 0.25 };
-var PF_OWES_MEMO_ = {};
-function pfOwes_(sid) {
-  sid = String(sid || ''); if (PF_OWES_MEMO_[sid]) return PF_OWES_MEMO_[sid];
-  var c = null, out = { general: false, kodesh: false };
-  try { c = CacheService.getScriptCache(); var hit = c.get('pf_owes_' + sid); if (hit) return (PF_OWES_MEMO_[sid] = JSON.parse(hit)); } catch (e) {}
-  try { if (typeof pfEnabled_ === 'function' && pfEnabled_(sid)) out.general = !pfSessionsOf_(sid).some(function (S) { return S.status === 'core' || S.status === 'complete'; }); } catch (e) {}
-  try { if (typeof pfkAllowed_ === 'function' && pfkAllowed_(sid)) out.kodesh = !pfkSessionsOf_(sid).some(function (S) { return S.status === 'complete'; }); } catch (e) {}
-  try { if (c) c.put('pf_owes_' + sid, JSON.stringify(out), out.general || out.kodesh ? 120 : 21600); } catch (e) {}
-  return (PF_OWES_MEMO_[sid] = out);
-}
-function pfRewardRate_(sid) { if (!PF_REWARD.ON) return 1; var o = pfOwes_(sid); return o.general || o.kodesh ? PF_REWARD.rate : 1; }
+/* the share for one earning (Money.js) */
+function pfLessonRate_(sid, lessonId) { try { return typeof pfLevelRate_ === 'function' ? pfLevelRate_(String(sid || ''), lessonId) : 1; } catch (e) { return 1; } }
+/* for the Store and Canteen note (Canteen.js cnPfRate_): a quarter while a level he is on now still waits for its check */
+function pfRewardRate_(sid) { if (!PF_REWARD.ON) return 1; try { return typeof pfLcNoteRate_ === 'function' ? pfLcNoteRate_(String(sid || '')) : 1; } catch (e) { return 1; } }

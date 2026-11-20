@@ -580,6 +580,7 @@ function plPlanFor_(sid, ranges) {
   }
   Object.keys(p).forEach(function (k) { if (!out[k]) out[k] = { level: p[k].level }; });
   try { if (typeof pfPlanPatch_ === 'function') pfPlanPatch_(String(sid), p, out); } catch (e) {}   /* PATHFINDER: gap fillers first */
+  try { if (typeof pfLcPlanPatch_ === 'function') pfLcPlanPatch_(String(sid), out); } catch (e) {}   /* LEVEL CHECK (PathfinderLevel.js): skills he already knows are skipped */
   return { ranges: r, place: out };
 }
 
