@@ -21,7 +21,7 @@ async function liveLessons(ids) {
   const FAKE = eval('(' + RS.slice(i0 + 13, i1 + 2) + ')'); await ctx.addInitScript(FAKE, { tools: K.tools, parts: K.parts });
   const pg = await ctx.newPage(); await pg.route('**/*', r => r.request().url() === 'http://app.test/' ? r.fulfill({ contentType: 'text/html', body: K.page }) : r.abort());
   await pg.goto('http://app.test/'); await pg.waitForFunction(() => window.TLT && typeof BANK_ALL !== 'undefined' && Object.keys(BANK_ALL).length > 500, null, { timeout: 240000 }); await pg.waitForTimeout(8000);
-  const out = await pg.evaluate(ids => { const K3 = ['KR', 'G1R', 'G2R', 'G3R', 'KWR', 'G1W', 'G2W', 'G3W', 'KL', 'G1M', 'G2M', 'G3M', 'G4M', 'KSC', 'G1S', 'G2S', 'G3S', 'KK'];
+  const out = await pg.evaluate(ids => { const K3 = ['KR', 'G1R', 'G2R', 'G3R', 'KWR', 'G1W', 'G2W', 'G3W', 'KL', 'G1M', 'G2M', 'G3M', 'G4M', 'G5M', 'KSC', 'G1S', 'G2S', 'G3S', 'KK'];
     return ids.map(([id, name, desc]) => { let b = BANK_ALL[id]; const t = (window.TL_TEACH || {})[id];
       if (!b) { let it = []; try { it = buildMission(id) || []; } catch (e) {} const how = ((window.TL_DO || {})[id] || {}).s || '';   /* Math: no BANK_ALL entry; read the lesson the boy really gets */
         if (it.length) b = { teach: it.filter(x => x.phase === 'teach').map(x => ({ how: how || x.h || '', q: x.q })), practice: it.filter(x => x.phase === 'practice').map(x => ({ t: x.t, q: x.q })),
@@ -44,7 +44,7 @@ function splitArgs(s, n) { const out = []; let depth = 0, cur = '', q = null;
     else if (')]}'.includes(c)) { if (!depth) { out.push(cur.trim()); break; } depth--; cur += c; } else if (c === ',' && !depth) { out.push(cur.trim()); cur = ''; } else cur += c; }
   return out; }
 function k3Lessons() { const out = {};
-  for (const f of ['KReading', 'G1Reading', 'G2Reading', 'G3Reading', 'KWriting', 'G1Writing', 'G2Writing', 'G3Writing', 'KLessons', 'G1Math', 'G2Math', 'G3Math', 'G4Math']) {
+  for (const f of ['KReading', 'G1Reading', 'G2Reading', 'G3Reading', 'KWriting', 'G1Writing', 'G2Writing', 'G3Writing', 'KLessons', 'G1Math', 'G2Math', 'G3Math', 'G4Math', 'G5Math']) {
     const t = unesc(fs.readFileSync(path.join(ROOT, 'packs', f + '.html'), 'utf8'));
     const re1 = /\{id:'((?:READ|LANG|WRIT|MATH)\.[A-Z]+\.L\d\d\.\d\d)'/g; let m; const starts = [];
     while ((m = re1.exec(t))) starts.push([m.index, m[1]]);
