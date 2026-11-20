@@ -50,8 +50,54 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-page .tile:hover,#sh-page .tile:focus-visible{border-color:#2F5BD3;box-shadow:0 0 0 3px rgba(47,91,211,.15)}
 #sh-page .tile i{font-style:normal;font-size:24px;line-height:1;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#EEF2FF;flex:none} #sh-page .tile b{display:block;font:900 16.5px/1.2 system-ui,sans-serif} #sh-page .tile small{display:block;margin-top:4px;color:#5B6676;font-size:13.5px;line-height:1.35}
 #sh-page h3{margin:22px 0 10px;font:900 15px system-ui,sans-serif;color:#5B6676;text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:700px){ body.sh-on #app select,body.sh-on #app input,body.sh-on #app textarea{max-width:100%;box-sizing:border-box} }
 @media (max-width:700px){ #sh-top{padding:8px 12px;gap:6px} #sh-top .brand{flex:1;font-size:16px} #sh-top .out{order:2;min-height:36px;padding:6px 12px} #sh-top nav{order:3;flex:0 0 100%;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none} #sh-top nav::-webkit-scrollbar{display:none} #sh-top nav button{padding:8px 11px;font-size:14px;flex:none}
  #sh-back{top:98px} #sh-page{padding-top:14px} #sh-page h1{font-size:23px} body.sh-on #sh-find #slBar{flex-wrap:wrap} #sh-find #slBar input{flex:1 1 100%!important;min-width:0!important;width:100%!important} #sh-find #slBar button{flex:1 1 auto} }
+
+/* ===== STUDENTS (HoS 2026-11-19: "easy to add kids and switch levels") ===== */
+#sh-page .st-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;justify-content:space-between;margin-bottom:12px}
+#sh-page .st-acts{display:flex;flex-wrap:wrap;gap:8px} #sh-page .st-acts .shb{width:auto;display:inline-flex;align-items:center}
+#sh-page .shb{border:0;border-radius:14px;padding:12px 18px;font:900 15.5px system-ui,sans-serif;cursor:pointer;min-height:48px;background:#16202C;color:#fff}
+#sh-page .shb.alt{background:#fff;color:#16202C;border:1px solid #D9DFF0}
+#sh-page .st-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}
+#sh-page .st-tools input{flex:1 1 260px;min-width:0;border:1px solid #CBD3E3;border-radius:12px;padding:12px 14px;font:600 16px system-ui,sans-serif;background:#fff}
+#sh-page .st-tools select{border:1px solid #CBD3E3;border-radius:12px;padding:11px 12px;font:700 15px system-ui,sans-serif;background:#fff;min-height:46px}
+#sh-page .chip{border:1px solid #CBD3E3;background:#fff;border-radius:999px;padding:9px 14px;font:800 14px system-ui,sans-serif;cursor:pointer;min-height:44px}
+#sh-page .chip.on{background:#16202C;color:#fff;border-color:#16202C}
+#sh-page .chip em{font-style:normal;color:#C8402F;margin-left:4px} #sh-page .chip.on em{color:#FFB4A8}
+#sh-page .st-list{background:#fff;border:1px solid #E6EAF2;border-radius:18px;overflow:hidden}
+#sh-page .st-row{display:grid;grid-template-columns:34px minmax(0,1.4fr) 86px minmax(0,2fr) auto;gap:10px;align-items:center;padding:12px 14px;border-top:1px solid #EEF1F6}
+#sh-page .st-row:first-child{border-top:0}
+#sh-page .st-row.sel{background:#F2F6FF}
+#sh-page .st-row input[type=checkbox]{width:22px;height:22px;accent-color:#2F5BD3}
+#sh-page .st-nm b{display:block;font:800 16px/1.25 system-ui,sans-serif} #sh-page .st-nm small{color:#5B6676;font-size:13px}
+#sh-page .st-gr{font:800 13px system-ui,sans-serif;background:#EEF2FF;color:#3B3F8F;border-radius:999px;padding:5px 10px;text-align:center;white-space:nowrap}
+#sh-page .st-lv{display:flex;flex-wrap:wrap;gap:5px}
+#sh-page .st-lv span{font:700 12.5px system-ui,sans-serif;background:#F1F5F9;border-radius:8px;padding:4px 8px;white-space:nowrap}
+#sh-page .st-lv .none{background:#FCE9E6;color:#A12E21}
+#sh-page .st-b{display:flex;gap:6px}
+#sh-page .st-b button{border:1px solid #D9DFF0;background:#fff;border-radius:11px;padding:9px 12px;font:800 14px system-ui,sans-serif;cursor:pointer;min-height:42px;white-space:nowrap}
+#sh-page .st-b .lvb{background:#16202C;color:#fff;border-color:#16202C}
+#sh-page .st-empty{padding:28px;text-align:center;color:#5B6676;font-weight:600}
+#sh-selbar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:40;display:flex;gap:10px;align-items:center;background:#16202C;color:#fff;border-radius:999px;padding:8px 8px 8px 18px;box-shadow:0 10px 30px rgba(0,0,0,.3);font:800 15px system-ui,sans-serif;max-width:calc(100vw - 24px)}
+#sh-selbar button{border:0;border-radius:999px;padding:10px 16px;font:900 14.5px system-ui,sans-serif;cursor:pointer;background:#FDE047;color:#16202C} #sh-selbar .x{background:rgba(255,255,255,.14);color:#fff}
+#sh-dlg{position:fixed;inset:0;z-index:2147483200;background:rgba(15,18,40,.5);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 12px;font-family:system-ui,"Segoe UI",Roboto,sans-serif}
+#sh-dlg .box{background:#fff;color:#16202C;width:min(720px,100%);border-radius:22px;padding:20px 22px 22px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+#sh-dlg h2{margin:0 0 4px;font:900 23px/1.2 system-ui,sans-serif} #sh-dlg .sub{color:#5B6676;margin:0 0 14px;font-size:14.5px}
+#sh-dlg h3{margin:16px 0 8px;font:900 13px system-ui,sans-serif;color:#5B6676;text-transform:uppercase;letter-spacing:.06em}
+#sh-dlg .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+#sh-dlg .grid button{border:2px solid #E2E8F0;background:#fff;border-radius:14px;padding:10px 12px;font:800 14.5px/1.25 system-ui,sans-serif;cursor:pointer;text-align:left;min-height:52px}
+#sh-dlg .grid button small{display:block;font:600 12px system-ui,sans-serif;color:#5B6676;margin-top:2px}
+#sh-dlg .grid button.on{border-color:#2F5BD3;background:#EEF3FF}
+#sh-dlg .lvs{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px}
+#sh-dlg .lvs button{border:2px solid #E2E8F0;background:#fff;border-radius:14px;padding:10px 6px;font:900 18px system-ui,sans-serif;cursor:pointer;min-height:62px}
+#sh-dlg .lvs button small{display:block;font:700 11.5px system-ui,sans-serif;color:#5B6676}
+#sh-dlg .lvs button.cur{border-color:#178A5E;background:#E8F6EF} #sh-dlg .lvs button.on{border-color:#2F5BD3;background:#2F5BD3;color:#fff} #sh-dlg .lvs button.on small{color:#DDE6FF}
+#sh-dlg .foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;margin-top:18px}
+#sh-dlg .foot button{border:0;border-radius:14px;padding:13px 20px;font:900 15.5px system-ui,sans-serif;cursor:pointer;min-height:50px}
+#sh-dlg .foot .go{background:#16202C;color:#fff} #sh-dlg .foot .go[disabled]{opacity:.4;cursor:default} #sh-dlg .foot .no{background:#F1F5F9;color:#16202C}
+#sh-dlg .err{color:#B42318;font-weight:800;margin-top:10px}
+@media (max-width:760px){ #sh-page .st-row{grid-template-columns:28px minmax(0,1fr) auto;grid-template-areas:"c n g" "c l l" "c b b"} #sh-page .st-row input{grid-area:c;align-self:start;margin-top:4px} #sh-page .st-nm{grid-area:n} #sh-page .st-gr{grid-area:g} #sh-page .st-lv{grid-area:l} #sh-page .st-b{grid-area:b} #sh-page .st-b button{flex:1} #sh-dlg .box{padding:16px} #sh-dlg h2{font-size:20px} }
 </style>
 <script>
 (function(){
@@ -63,7 +109,9 @@ function q(sel){ try{ return document.querySelector(sel); }catch(e){ return null
 var A={
  find:['🔎','Find a student','One page with everything about a boy: name, grade, level, parents, code.','[data-dmband=find]'],
  add:['➕','Add a student','Add a new boy and give him his sign-in code.','[data-act=add]','app'],
- levels:['🎯','Placement & levels','Where every boy is; set or change his level. Boys with no level are listed first.','tab:lv'],
+ nolevel:['🎯','Boys with no level','Set a starting level for each boy.','st:nolevel'],
+ setlv:['🎯','Set levels','Pick a boy, tap Set level, choose the subject and level.','st:all'],
+ levels:['🧭','Levels overview','Where every boy is; set or change his level. Boys with no level are listed first.','tab:lv'],
  classes:['🏫','Class lists and grades','Who is in which class and grade; move boys up a grade.','#giBtn'],
  groups:['👥','Groups','Make groups of boys to teach or assign together.','[data-act=grp]','app'],
  mycls:['🧑‍🏫','My classes','The classes you teach.','[data-sx=cls]','app'],
@@ -101,7 +149,7 @@ var PAGE={
  reports:{t:'Reports',lead:'How the boys are doing.',groups:[['Progress',['today','wk','gs','lkt','month']],['Problems',['stuck','rep']]]},
  school:{t:'School',lead:'Staff, families, the store, the canteen and school settings.',groups:[['People',['staff','access','fam','schools']],['School life',['points','store','canteen','music']]]}
 };
-var HOME=[['students','Students','Find, add and place boys.',['find','add','levels','classes']],['today','Today','What is happening right now.',['now','today','tm','msg','points']],
+var HOME=[['students','Students','Find a boy, add a boy, set his level.',['find','add','setlv','classes']],['today','Today','What is happening right now.',['now','today','tm','msg','points']],
  ['reports','Reports','How the boys are doing.',['wk','stuck','month','rep']],['school','School','Staff, families, store and canteen.',['staff','access','store','canteen']]];
 var S={area:'home', from:'home'};
 function body(){ return document.body; }
@@ -121,10 +169,11 @@ function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar');
       +'<button type="button" class="sub" data-sh="do" data-k="see">👀 See what the kids see</button><button type="button" class="sub" data-sh="do" data-k="lib">📚 Library & Assign</button></div></div>';
     HOME.forEach(function(c){ var ic=AREAS.filter(function(a){ return a[0]===c[0]; })[0][1]; h+='<div class="card"><h2 data-sh="area" data-v="'+c[0]+'"><span>'+ic+'</span>'+E(c[1])+' ›</h2><p>'+E(c[2])+'</p><div class="btns">'+c[3].map(btn).join('')+'</div></div>'; });
     h+='</div>';
+  } else if(S.area==='students'){ h=studentsHTML();
   } else { var P=PAGE[S.area]; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>'+(S.area==='students'?'<div id="sh-find"></div>':'');
     if(S.area==='curriculum') h+='<div class="cards" style="margin-bottom:6px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill, step by step. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>';
     P.groups.forEach(function(g){ var ks=g[1].filter(function(k){ return k!=='tree'||S.area!=='curriculum'; }); h+='<h3>'+E(g[0])+'</h3><div class="tiles">'+ks.map(tile).join('')+'</div>'; }); }
-  p.innerHTML=h; slot(); window.scrollTo(0,0); }
+  p.innerHTML=h; slot(); window.scrollTo(0,0); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
 /* NEXT STEPS: read the counts the staff screen already shows, and turn each one that needs someone into one clear row with one button */
 function num(sel){ var e=q(sel); if(!e) return 0; var m=String(e.textContent||'').match(/(\d+)/g); return m?Number(m[m.length-1]):0; }
 function steps(){ var r=[];
@@ -132,7 +181,7 @@ function steps(){ var r=[];
   var help=C?C.help:num('#app [data-sp=gsf][data-f=help]'), nolv=C?C.nolevel:num('#app [data-sp=gsf][data-f=nolevel]'), store=num('#app [data-sy=open] .n'), msgs=num('#app [data-sx=msg] .n'), gr=num('#giBtn b'), idle=C?(C.idle||0):num('#app [data-sp=gsf][data-f=idle]');
   var d0=S0(); r.known=!!(C&&(C.boys>0||(Array.isArray(d0.boys)&&d0.boys.filter(function(b){ return !b.test; }).length===0)))||!!q('#app [data-sp=gsf][data-f=help]');
   if(help) r.push(['#C8402F',help,help===1?'1 boy needs help right now':help+' boys need help right now','Stuck, or failing the same check.','now','Open walk-around']);
-  if(nolv) r.push(['#B87D06',nolv,nolv===1?'1 boy has no level yet':nolv+' boys have no level yet','Until he has a level, the app cannot pick his lessons.','levels','Set levels']);
+  if(nolv) r.push(['#B87D06',nolv,nolv===1?'1 boy has no level yet':nolv+' boys have no level yet','Until he has a level, the app cannot pick his lessons.','nolevel','Set levels']);
   if(gr) r.push(['#7C5CC4',gr,gr===1?'1 grade to confirm':gr+' grades to confirm','New boys or a new school year.','classes','Confirm grades']);
   if(store) r.push(['#178A5E',store,store===1?'1 prize to hand out':store+' prizes to hand out','Boys bought them in the Tashbar Store.','store','Store orders']);
   if(msgs) r.push(['#2F5BD3',msgs,msgs===1?'1 new message':msgs+' new messages','From boys or staff.','msg','Read']);
@@ -142,10 +191,75 @@ function nextHTML(){ var r=steps(); return '<div id="sh-next"><h2>👉 Next step
 setInterval(function(){ if(S.area==='home'&&body().classList.contains('sh-page')){ var n=q('#sh-next'); if(n){ var t=document.createElement('div'); t.innerHTML=nextHTML(); if(t.firstChild.innerHTML!==n.innerHTML) n.replaceWith(t.firstChild); } } },20000);
 function hello(){ var h=new Date().getHours(), nm=''; try{ nm=String(S0().staffName||'').split(' ')[0]; }catch(e){} return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(nm?', '+nm:''); }
 function S0(){ try{ return (typeof window.S==='object'&&window.S&&window.S.d)||(new Function('try{ return S&&S.d; }catch(e){ return null; }'))()||{}; }catch(e){ return {}; } }
+
+/* ================= STUDENTS: one list, search, filters, set level for one or many boys (libRoster / libApply place, with Undo) ================= */
+var LV=[['MATH','🔢','Math',1,16,1],['READ','📖','Reading',1,15,1],['LANG','✍️','Language Arts & Writing',1,9,1],['SCI','🔬','Science',1,15,1],['SOC','🌍','Social Studies',1,14,1],['COMP','💻','Computing, Life & Money',1,16,0],['HEB','🔤','Lashon Hakodesh',1,13,0],['ELEC','🛠️','Electives',3,16,0],
+  ['K:KRI','📜','Kriyah',1,13,0],['K:CHU','📜','Chumash',1,13,0],['K:RAS','📜','Rashi',1,13,0],['K:MSH','📜','Mishnayos',1,13,0],['K:GEM','📜','Gemara',1,13,0]];   /* key, icon, name, lowest, highest (Placement.js PL.SUBJECTS, Library.js LIB.TRACKS), 1 = Level n is about Grade n-1 */
+var LVN={}; LV.forEach(function(x){ LVN[x[0]]=x; });
+var ST={list:null,q:'',f:'all',g:'all',sel:{},busy:false,err:'',dlg:null};
+function tok(){ try{ var s=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return s&&s.token; }catch(e){ return null; } }
+function srv(fn,args){ return new Promise(function(ok,no){ try{ var r=google.script.run.withSuccessHandler(ok).withFailureHandler(function(e){ no(e&&e.message?e.message:String(e)); }); r[fn].apply(r,args||[]); }catch(e){ no(String(e)); } }); }
+function gName(g){ return g==null||g===''?'':g===0?'K':'Gr '+g; }
+function hint(key,n){ var x=LVN[key]; if(!x||!x[5]) return ''; return n===1?'Kindergarten':n<=9?'Grade '+(n-1):''; }
+function hasLv(b,k){ var p=b.place&&b.place[k]; return p&&p.lv>0; }
+function noLevel(b){ return !hasLv(b,'MATH')&&!hasLv(b,'READ'); }
+function loadRoster(force){ if(ST.list&&!force) return drawStudents(); ST.err=''; srv('libRoster',[tok()]).then(function(r){ ST.list=(r&&r.boys||[]).filter(function(b){ return !b.test; }); drawStudents(); }).catch(function(e){ ST.err=String(e); drawStudents(); }); }
+function shown(){ var q=ST.q.trim().toLowerCase(); return (ST.list||[]).filter(function(b){ if(q&&String(b.name).toLowerCase().indexOf(q)<0) return false; if(ST.f==='nolevel'&&!noLevel(b)) return false; if(ST.g!=='all'&&String(b.grade)!==ST.g) return false; return true; }); }
+function lvChips(b){ var out=[]; LV.forEach(function(x){ var p=b.place&&b.place[x[0]]; if(p&&p.lv>0) out.push('<span title="'+E(x[2])+'">'+x[1]+' '+E(x[2].split(' ')[0].replace(',',''))+' '+p.lv+'</span>'); });
+  return noLevel(b)?'<span class="none">No Math or Reading level yet</span>'+out.join(''):out.join(''); }
+function studentsHTML(){ return '<div class="st-head"><div><h1>Students</h1><p class="lead" style="margin:0" id="st-count">Loading the boys…</p></div><div class="st-acts"><button type="button" class="shb" data-sh="do" data-k="add">➕ Add a student</button><button type="button" class="shb alt" data-sh="do" data-k="classes">🏫 Class lists & grades</button><button type="button" class="shb alt" data-sh="do" data-k="groups">👥 Groups</button></div></div>'
+  +'<div class="st-tools"><input id="st-q" type="search" placeholder="Search by name…" aria-label="Search students" value="'+E(ST.q)+'"><button type="button" class="chip'+(ST.f==='all'?' on':'')+'" data-st="f" data-v="all">Everyone</button><button type="button" class="chip'+(ST.f==='nolevel'?' on':'')+'" data-st="f" data-v="nolevel">No level yet<em id="st-nl"></em></button><select id="st-g" aria-label="Grade"><option value="all">All grades</option>'+['0','1','2','3','4','5','6','7','8'].map(function(g){ return '<option value="'+g+'"'+(ST.g===g?' selected':'')+'>'+(g==='0'?'Kindergarten':'Grade '+g)+'</option>'; }).join('')+'</select></div>'
+  +'<div class="st-list" id="st-list"><div class="st-empty">Loading…</div></div>'
+  +'<h3>More tools</h3><div class="tiles">'+['levels','mycls'].map(tile).join('')+'</div>'; }
+function drawStudents(){ var L=q('#st-list'); if(!L) return; var c=q('#st-count'), nl=q('#st-nl');
+  if(ST.err){ L.innerHTML='<div class="st-empty">Could not load the boys: '+E(ST.err)+'</div>'; return; }
+  if(!ST.list){ L.innerHTML='<div class="st-empty">Loading…</div>'; return; }
+  var all=ST.list, n=all.filter(noLevel).length; if(c) c.textContent=all.length+' boys'+(n?' · '+n+' still need a level':''); if(nl) nl.textContent=n?String(n):'';
+  var a=shown(); if(!a.length){ L.innerHTML='<div class="st-empty">'+(all.length?'No boy matches.':'No students yet. Tap “Add a student”.')+'</div>'; selbar(); return; }
+  L.innerHTML=a.map(function(b){ var on=!!ST.sel[b.id]; return '<div class="st-row'+(on?' sel':'')+'"><input type="checkbox" data-st="pick" data-id="'+E(b.id)+'"'+(on?' checked':'')+' aria-label="Pick '+E(b.name)+'"><div class="st-nm"><b>'+E(b.name)+'</b></div><span class="st-gr">'+E(gName(b.grade)||'No grade')+'</span><div class="st-lv">'+lvChips(b)+'</div><div class="st-b"><button type="button" class="lvb" data-st="lv" data-id="'+E(b.id)+'">🎯 Set level</button><button type="button" data-st="open" data-id="'+E(b.id)+'">Open ›</button></div></div>'; }).join('');
+  selbar(); }
+function selbar(){ var ids=Object.keys(ST.sel).filter(function(k){ return ST.sel[k]; }), bar=q('#sh-selbar');
+  if(!ids.length||S.area!=='students'){ if(bar) bar.remove(); return; }
+  if(!bar){ bar=document.createElement('div'); bar.id='sh-selbar'; body().appendChild(bar); }
+  bar.innerHTML='<span>'+ids.length+' picked</span><button type="button" data-st="lvmany">🎯 Set level for them</button><button type="button" class="x" data-st="clear">Clear</button>'; }
+function byId(id){ return (ST.list||[]).filter(function(b){ return b.id===id; })[0]; }
+function dlgOpen(ids){ ST.dlg={ids:ids,key:null,lv:0,err:'',busy:false}; dlgDraw(); }
+function dlgClose(){ ST.dlg=null; var d=q('#sh-dlg'); if(d) d.remove(); }
+function dlgDraw(){ var D=ST.dlg; if(!D) return dlgClose(); var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); }
+  var one=D.ids.length===1?byId(D.ids[0]):null, who=one?one.name:D.ids.length+' boys';
+  var h='<div class="box"><h2>🎯 Set level for '+E(who)+'</h2><p class="sub">'+(one?(gName(one.grade)?gName(one.grade).replace('Gr','Grade')+' · ':'')+'He starts the subject at the level you pick.':'Each boy starts the subject at the level you pick.')+'</p>';
+  h+='<h3>1. Subject</h3><div class="grid">'+LV.map(function(x){ var cur=one&&one.place&&one.place[x[0]]&&one.place[x[0]].lv; return '<button type="button" data-st="key" data-v="'+x[0]+'"'+(D.key===x[0]?' class="on"':'')+'>'+x[1]+' '+E(x[2])+'<small>'+(cur?'Now: Level '+cur:'No level yet')+'</small></button>'; }).join('')+'</div>';
+  if(D.key){ var x=LVN[D.key], cur=one&&one.place&&one.place[D.key]&&one.place[D.key].lv; h+='<h3>2. Level</h3><div class="lvs">'; for(var n=x[3];n<=x[4];n++) h+='<button type="button" data-st="lvl" data-v="'+n+'" class="'+(D.lv===n?'on':cur===n?'cur':'')+'">'+n+'<small>'+E(hint(D.key,n)||(cur===n?'now':''))+'</small></button>'; h+='</div>'; }
+  if(D.err) h+='<div class="err">'+E(D.err)+'</div>';
+  h+='<div class="foot"><button type="button" class="no" data-st="close">Cancel</button><button type="button" class="go" data-st="save"'+(D.key&&D.lv&&!D.busy?'':' disabled')+'>'+(D.busy?'Saving…':D.key&&D.lv?'Save: '+E(LVN[D.key][2])+' Level '+D.lv:'Pick a subject and a level')+'</button></div></div>';
+  d.innerHTML=h; }
+function dlgSave(){ var D=ST.dlg; if(!D||!D.key||!D.lv||D.busy) return; D.busy=true; D.err=''; dlgDraw();
+  srv('libApply',[tok(),{action:'place',boys:D.ids,key:D.key,level:D.lv}]).then(function(r){ applyChanged(r&&r.changed); dlgClose(); ST.sel={}; drawStudents();
+    toast2((r&&r.msg)||'Saved.',r&&r.undo?function(){ srv('libApply',[tok(),r.undo]).then(function(u){ applyChanged(u&&u.changed); drawStudents(); toast2((u&&u.msg)||'Put back.'); }).catch(function(e){ toast2('Could not undo: '+e); }); }:null); })
+   .catch(function(e){ D.busy=false; D.err=String(e); dlgDraw(); }); }
+function applyChanged(ch){ if(!ch) return; Object.keys(ch).forEach(function(id){ var b=byId(id), c=ch[id]; if(!b||!c) return; b.place=b.place||{}; if(c.place) b.place[c.key]={lv:c.place.lv||c.place.level||0}; else delete b.place[c.key]; }); }
+function toast2(m,undo){ var o=q('#sh-toast'); if(o) o.remove(); var t=document.createElement('div'); t.id='sh-toast'; t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2147483300;display:flex;gap:12px;align-items:center;background:#16202C;color:#fff;padding:10px 12px 10px 18px;border-radius:999px;font:800 15px system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);max-width:calc(100vw - 24px)';
+  t.innerHTML='<span>✓ '+E(m)+'</span>'+(undo?'<button type="button" style="border:0;border-radius:999px;padding:8px 14px;background:#FDE047;color:#16202C;font:900 14px system-ui,sans-serif;cursor:pointer">↩ Undo</button>':''); body().appendChild(t);
+  if(undo) t.querySelector('button').onclick=function(){ t.remove(); undo(); }; setTimeout(function(){ if(t.parentNode) t.remove(); },10000); }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-st]'); if(!b) return; var a=b.dataset.st;
+  if(a==='pick'){ ST.sel[b.dataset.id]=b.checked; var row=b.closest('.st-row'); if(row) row.classList.toggle('sel',b.checked); selbar(); return; }
+  e.preventDefault();
+  if(a==='f'){ ST.f=b.dataset.v; document.querySelectorAll('#sh-page [data-st=f]').forEach(function(x){ x.classList.toggle('on',x===b); }); return drawStudents(); }
+  if(a==='lv') return dlgOpen([b.dataset.id]); if(a==='lvmany') return dlgOpen(Object.keys(ST.sel).filter(function(k){ return ST.sel[k]; }));
+  if(a==='clear'){ ST.sel={}; return drawStudents(); }
+  if(a==='open'){ if(window.SL&&window.SL.open) window.SL.open(b.dataset.id); return; }
+  if(a==='key'){ ST.dlg.key=b.dataset.v; var bb=byId(ST.dlg.ids[0]); ST.dlg.lv=(ST.dlg.ids.length===1&&bb&&bb.place&&bb.place[ST.dlg.key]&&bb.place[ST.dlg.key].lv)||0; ST.dlg.err=''; return dlgDraw(); }
+  if(a==='lvl'){ ST.dlg.lv=Number(b.dataset.v); return dlgDraw(); }
+  if(a==='close') return dlgClose(); if(a==='save') return dlgSave(); });
+document.addEventListener('click',function(e){ if(e.target&&e.target.id==='sh-dlg') dlgClose(); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&ST.dlg) dlgClose(); });
+document.addEventListener('input',function(e){ if(e.target&&e.target.id==='st-q'){ ST.q=e.target.value; drawStudents(); } });
+document.addEventListener('change',function(e){ if(e.target&&e.target.id==='st-g'){ ST.g=e.target.value; drawStudents(); } });
 function area(v){ S.area=v; S.from=v; draw(); }
 /* open a feature by pressing its own button */
 function run(k){ var a=A[k]; if(!a) return; var how=a[3];
   if(/^sf:/.test(how)){ if(window.SF) window.SF.open(how.slice(3)); return; }
+  if(/^st:/.test(how)){ ST.f=how.slice(3); ST.q=''; ST.g='all'; area('students'); return; }
   if(/^tab:/.test(how)){ var tb=q('#app [data-sp=tab][data-t="'+how.slice(4)+'"]'); S.area='today'; draw(); if(tb) tb.click(); window.scrollTo(0,0); return; }
   if(k==='find'){ var inp=q('#slBar input'); if(inp){ inp.focus(); inp.scrollIntoView({block:'center'}); return; } }
   var el=q(how); if(!el){ toast('That tool is not on this page yet.'); return; }
