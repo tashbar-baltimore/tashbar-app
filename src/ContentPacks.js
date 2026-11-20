@@ -22,7 +22,7 @@ var TL_PACKS = {
   KKriyah:    ['1jL5af8T_XlmYxeH2umXNgNx95jVgSQI2', '249442b9d82d7636c53f5f8e20fa3a442bf483650c8623daa959fe6feaf7ee4c', 398966],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
   G1Math:     ['11MMTI8ENyJveUKojya0K6cxlmWy7TbIW', '4475cb33a9531e22a521a20275f0d86623422e1c4468c03f29e43378fed230a0', 146864],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
   G1Reading:  ['1DzMWeol6HusGO9OqjYoiA1el4lmR7QBJ', '79318231e841b165159c2d531b8dc11c70e478f6e66f468892ea53a0565df025', 162520],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
-  G2Math:     ['11nweR5NhB_lKpCAnotPK5dM5_WCXON4s', 'e80a51f7d92cc42981117247644f228a4f09a062602983eae4f268d22e0d7650', 183070],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
+  G2Math:     ['github-only', '3c38135ab9ad6bb1a5efc60a5ddd16780929b04aae5d1d07e302de9feb2f0367', 203115],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */ /* + trade ten PV.L03.02, OPS.L03.01-02 (2026-11-20) */
   G2Reading:  ['github-only', '3c302a7445c944c447b60fc7d31276736ac00989f656d008c3c1b069068070d3', 228193],   /* K3 lessons v19 + deep comprehension READ.COMP.L03.01-03 (Claude cloud builder, 2026-11-20) */
   G3Math:     ['github-only', '92c269db660952760ec0f5ad8a3a3ec878e4186ff6b090730c4192154b90df0f', 246993],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */ /* + equal groups OPS.L04.04, .07, .02 (2026-11-20) */
   G4Math:     ['github-only', '123d302e490ab62bd1ee95a0298ad9a647983d1cabd9fd27bcf17e1f36417b8f', 306915],   /* 2026-11-20 4th Grade Math, 18 lessons on the K-3 lesson engine (Claude Code, yosef@ session); lives only in GitHub packs/; deep fractions FRAC.L05.01-03 (Claude cloud builder) */
