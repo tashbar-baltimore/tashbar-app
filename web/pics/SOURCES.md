@@ -369,3 +369,20 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - satellites-around-earth-drawing.webp | https://pixabay.com/photos/earth-space-satellites-tracking-79533/ | Pixabay Content License | 12019
 - satellite-dish-on-roof.webp | https://pixabay.com/photos/satellite-dish-tv-watch-tv-870328/ | Pixabay Content License | EME
 - storm-clouds-over-america-from-space.webp | https://www.flickr.com/photos/24662369@N07/5124467559 | CC BY 2.0 | NASA Goddard Photo and Video
+- teeth-model-open-jaw.webp | https://pixabay.com/photos/teeth-dental-dental-model-mouth-5522652/ | Pixabay Content License | Veronicatxoxo
+- skeleton-drawing.webp | https://pixabay.com/vectors/skeleton-bones-human-person-9663605/ | Pixabay Content License | BlenderTimer
+- digestive-system-diagram.webp | https://commons.wikimedia.org/wiki/File:Digestive_system_without_labels.svg | Public domain | Mariana Ruiz, Jmarchn
+- germs-cartoon-colourful.webp | https://pixabay.com/illustrations/coronavirus-viruses-germs-bacterial-4981176/ | Pixabay Content License | Prawny
+- sink-tap-and-soap.webp | https://pixabay.com/photos/soap-soap-piece-piece-of-soap-5176672/ | Pixabay Content License | congerdesign
+- head-inside-nose-mouth-drawing.webp | https://pixabay.com/illustrations/the-larynx-the-pharynx-anatomy-2381980/ | Pixabay Content License | ikkilacerda
+- lemons-and-oranges.webp | https://pixabay.com/photos/fruit-food-citrus-pomelo-15408/ | Pixabay Content License | PublicDomainPictures
+- bread-loaf-and-wheat.webp | https://pixabay.com/photos/bread-loaf-artisan-artisan-bread-1510155/ | Pixabay Content License | Couleur
+- nervous-system-diagram.webp | https://commons.wikimedia.org/wiki/File:Nervous_system_diagram_unlabeled.svg | CC BY-SA 4.0 | Medium69, Jmarchn
+- ice-cubes.webp | https://pixabay.com/photos/ice-cubes-ice-frozen-cold-3506782/ | Pixabay Content License | Bru-nO
+- toothbrush-toothpaste-and-water.webp | https://pixabay.com/photos/toothpaste-toothbrush-brush-teeth-3067570/ | Pixabay Content License | Bru-nO
+- white-pillows-on-bed.webp | https://pixabay.com/photos/bed-pillows-bedroom-room-hotel-8352408/ | Pixabay Content License | InteriorLens
+- blood-cells-in-vessel.webp | https://pixabay.com/illustrations/wbc-leukocytes-antibodies-rbc-8791149/ | Pixabay Content License | eneskoc360
+- soft-pretzels-basket.webp | https://pixabay.com/photos/pretzels-bread-food-yummy-biscuits-7164363/ | Pixabay Content License | RitaE
+- hot-cocoa-glass-mug.webp | https://pixabay.com/photos/hot-chocolate-drink-dairy-winter-1058197/ | Pixabay Content License | stevepb
+- laptop-by-big-window.webp | https://pixabay.com/photos/apartment-hotel-luxury-view-sea-1899964/ | Pixabay Content License | AS_Photography
+- ear-inside-drawing.webp | https://commons.wikimedia.org/wiki/File:Anatomy_of_the_Human_Ear_blank.svg | CC BY 2.5 | Chittka L, Brockmann; derivative work: M. Komorniczak
