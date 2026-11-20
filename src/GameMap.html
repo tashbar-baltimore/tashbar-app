@@ -19,7 +19,7 @@
 if(typeof render!=='function'||typeof A==='undefined') return;
 const GM=window.GM=window.GM||{};
 if(GM.on) return; GM.on=true;
-GM.tab='map'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
+GM.tab='map'; GM.view='path'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
 const WORLDS={MATH:['🧮','Math'],READ:['📖','Reading'],LANG:['✍️','Writing'],SCI:['🔬','Science'],SOC:['🌍','Social Studies'],COMP:['💻','Computing'],HEB:['🔤','Lashon Hakodesh'],ELEC:['🛠️','Electives'],VOC:['🧰','Trades'],LIFE:['💰','Life & Money'],
  'K:KRI':['🔤','Kriyah'],'K:CHU':['📜','Chumash'],'K:RAS':['✒️','Rashi'],'K:MSH':['📚','Mishnayos'],'K:GEM':['🏛️','Gemara']};
 const ORDER=['MATH','K:CHU','READ','K:GEM','K:MSH','K:RAS','K:KRI','LANG','HEB','SCI','SOC','LIFE','COMP','ELEC','VOC'];
@@ -129,7 +129,7 @@ body.gm-k2 #gm-nav button{font-size:13px}
 #gm .gm-score small{font-size:10px;color:#A9A6E8;font-weight:900;letter-spacing:.06em}
 #gm .gm-chest{margin-top:10px;border-radius:14px;padding:9px 12px;background:rgba(255,216,77,.12);border:2px solid rgba(255,216,77,.4);font-weight:800;font-size:13px;color:#FFE9A8}
 #gm .gm-cta{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:31}
-#gm .gm-cta .gm-play{width:100%}
+#gm .gm-cta .gm-play{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #gm .gm-lock{margin-top:16px;border-radius:24px;padding:20px 16px;text-align:center;background:rgba(0,0,0,.35);border:3px dashed rgba(255,255,255,.25)}
 #gm .gm-lock .ic{font-size:64px;line-height:1}
 #gm .gm-lock h1{margin:8px 0 4px;font-size:28px;font-weight:900;font-style:italic;text-transform:uppercase}
@@ -159,6 +159,35 @@ body.gm-k2 #gm-nav button{font-size:13px}
 @keyframes gmpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes gmfall{from{transform:translateY(0) rotate(0)}to{transform:translateY(110vh) rotate(540deg)}}
 @media (prefers-reduced-motion:reduce){#gm-cel .rays,#gm-cel h1,#gm-cel .ic{animation:none}#gm-cel .cf{display:none}}
+#gm .gm-tbtn{flex:none;border:2px solid #7CFFB2;background:rgba(0,196,106,.18);color:#CFFFE3;border-radius:12px;padding:7px 10px;font-family:inherit;font-weight:900;font-size:12px;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
+#gm .gm-tree{margin-top:12px;display:flex;flex-direction:column;gap:12px}
+#gm .gm-thead{border-radius:18px;padding:12px 14px;background:linear-gradient(135deg,#00C46A,#047857);border:3px solid #6EE7B7}
+#gm .gm-thead .k{font-size:12px;font-weight:900;letter-spacing:.16em;color:#D1FAE5}
+#gm .gm-thead h2{margin:2px 0 6px;font-size:24px;font-weight:900;font-style:italic;text-transform:uppercase;color:#fff}
+#gm .gm-thead .bar{height:12px;border-radius:8px;background:rgba(0,0,0,.3);overflow:hidden}#gm .gm-thead .bar i{display:block;height:100%;background:linear-gradient(90deg,#FFE259,#FFA751);border-radius:8px}
+#gm .gm-thead small{display:block;margin-top:5px;font-size:13px;font-weight:800;color:#ECFDF5}
+#gm .gm-br{border-radius:18px;padding:10px 12px 12px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12)}
+#gm .gm-br.here{border-color:#FFE259;background:rgba(255,226,89,.09)}
+#gm .gm-br.full{border-color:#2EE59D;background:rgba(0,200,110,.10)}
+#gm .gm-br .h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:900;font-size:15px}
+#gm .gm-br .h small{font-size:12px;color:#FFE259;font-weight:900;white-space:nowrap}
+#gm .gm-br.full .h small{color:#7CFFB2}
+#gm .gm-nodes{display:flex;flex-wrap:wrap;gap:10px 8px;margin-top:10px}
+#gm .gm-tn{width:72px;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;color:#fff;font-family:inherit;cursor:pointer}
+#gm .gm-tn .hx{width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%)}
+#gm .gm-tn.d .hx{background:linear-gradient(160deg,#FFE259,#FF9F1C);color:#5A2D00}
+#gm .gm-tn.now .hx{background:linear-gradient(160deg,#FFF06A,#FF6A00);box-shadow:0 0 0 4px rgba(255,200,0,.3);font-size:28px}
+#gm .gm-tn.u .hx{background:#2C2C55;color:#8E8EC9}
+#gm .gm-tn.s .hx{background:transparent;outline:2px dashed #4B4B80;color:#6E6EA8;font-size:12px}
+#gm .gm-tn span{font-size:10.5px;font-weight:800;line-height:1.15;text-align:center;color:#D9D5FF;max-height:3.5em;overflow:hidden}
+#gm .gm-tn.now span{color:#FFE259}
+#gm .gm-sheet{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 16px));bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:33;border-radius:24px;padding:16px;background:#fff;color:#1E1B4B;box-shadow:0 -6px 40px rgba(0,0,0,.5)}
+#gm .gm-sheet .k{font-size:12px;font-weight:900;letter-spacing:.14em;color:#7C3AED}
+#gm .gm-sheet h2{margin:4px 0;font-size:26px;font-weight:900;font-style:italic;text-transform:uppercase}
+#gm .gm-sheet p{margin:4px 0 0;font-size:15px;font-weight:700;color:#4B4870}
+#gm .gm-sheet p b{color:#1E1B4B}
+#gm .gm-sheet .gm-row{margin-top:12px}
+#gm .gm-sheet .x{flex:0 0 auto;border:0;border-radius:18px;padding:0 18px;font-family:inherit;font-weight:900;font-size:16px;background:#EEE9FF;color:#4C1D95;cursor:pointer}
 @media (prefers-reduced-motion:reduce){#gm .gm-n:active,#gm .gm-play:active,#gm .gm-say:active{transform:none}#gm .gm-n:active{transform:translate(-50%,-50%)}}
 `; document.head.appendChild(s); }
 function root(){ let g=document.getElementById('gm'); if(!g){ g=document.createElement('div'); g.id='gm'; g.setAttribute('role','main'); g.setAttribute('aria-label','My Map'); document.body.appendChild(g); } return g; }
@@ -176,7 +205,7 @@ function worldsOf(m){
   let now=ids.find(id=>!mast(id))||'';
   const cleared=!now&&ids.length>0;
   const unitName=isK?(W[1]+' Level '+c.level):((c.unit&&c.unit.name)||W[1]);
-  out.push({k,icon:W[0],name:W[1],level:c.level,ids,now,cleared,next:c.next,unitName,isK}); };
+  out.push({k,icon:W[0],name:W[1],level:c.level,ids,now,cleared,next:c.next,unitName,isK,c}); };
  Object.keys(m.subjects||{}).forEach(k=>add(k,m.subjects[k],false));
  Object.keys(m.kodesh||{}).forEach(k=>add(k,m.kodesh[k],true));
  out.sort((a,b)=>(ORDER.indexOf(a.k)<0?99:ORDER.indexOf(a.k))-(ORDER.indexOf(b.k)<0?99:ORDER.indexOf(b.k)));
@@ -209,6 +238,28 @@ function pathHTML(w){
   h+=`<div class="gm-l${isNow?' now':''}${isBoss?' boss':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="k">${lab}</span>${esc(n[0])}${n[1]?`<small>${esc(n[1])}</small>`:''}</div>`; });
  if(hidden) h+=`<div class="gm-more" style="top:${H-12}px">✓ ${hidden} more cleared below</div>`;
  return h+'</div>'; }
+/* ===== SKILL TREE (HoS 2026-11-20: "MY TREE ... his leaves light up as he masters them ... tap a leaf to replay it ... never overwhelm";
+   then "more video game" -> an RPG-style skill tree). One world at a time, only his level: one branch per kind of skill (the server's
+   strand names), each skill a node: mastered = gold, his goal now = glowing, later = locked, not built yet = "soon". Tap a node: its game
+   name, the REAL skill in plain words, and Play / Replay. Kodesh: the level's lessons are one branch. */
+function treeHTML(w){
+ const c=w.c||{}, sk=w.isK?(c.skills||[]):(c.skills||[]), S=c.strands||{}, br=[], idx={};
+ sk.forEach(x=>{ const s=w.isK?'K':(String(x[0]).split('.')[1]||''); if(!(s in idx)){ idx[s]=br.length; br.push({s,name:w.isK?(w.name+' Level '+w.level):(S[s]||s),items:[]}); } br[idx[s]].items.push(x); });
+ const built=sk.filter(x=>x[1]), done=built.filter(x=>mast(x[0])).length, pct=built.length?Math.round(100*done/built.length):0;
+ let h=`<div class="gm-tree"><div class="gm-thead"><div class="k">🌳 SKILL TREE</div><h2>${esc(w.name)} · Level ${w.level}</h2><div class="bar"><i style="width:${pct}%"></i></div><small>${done} of ${built.length} skills mastered${done===built.length&&built.length?' · LEVEL COMPLETE! 👑':''}</small></div>`;
+ br.forEach(b=>{ const bb=b.items.filter(x=>x[1]), bd=bb.filter(x=>mast(x[0])).length, here=b.items.some(x=>x[0]===w.now), full=bb.length&&bd===bb.length;
+  h+=`<div class="gm-br${here?' here':''}${full?' full':''}"><div class="h"><span>${esc(b.name)}${here?' · ▶ YOU ARE HERE':''}</span><small>${full?'✓ COMPLETE':bd+' / '+bb.length}</small></div><div class="gm-nodes">`;
+  b.items.forEach(x=>{ const id=x[0], n=nm(id), st=!x[1]?'s':mast(id)?'d':id===w.now?'now':'u', ic=st==='d'?'✓':st==='now'?w.icon:st==='s'?'SOON':'🔒';
+   h+=`<button type="button" class="gm-tn ${st}" data-gm="tn" data-id="${esc(id)}" data-st="${st}" aria-label="${esc(n[0])}${n[1]?': '+esc(n[1]):''}"><span class="hx">${ic}</span><span>${esc(n[0])}</span></button>`; });
+  h+='</div></div>'; });
+ return h+'</div>'; }
+function sheet(id,st){ const g=root(), old=g.querySelector('.gm-sheet'); if(old) old.remove(); const n=nm(id), w=(worldsOf(M())||[]).find(x=>x.k===GM.world), real=/ Level \d+$/.test(n[1]||'');
+ const status=st==='d'?'✓ MASTERED':st==='now'?'⚡ YOUR GOAL NOW':st==='s'?'🛠️ COMING SOON':'🔒 LOCKED';
+ const line=n[1]?(real?`Real skill: <b>${esc(n[0])}</b> · ${esc(n[1])}`:`You learn: <b>${esc(n[1])}</b>`):'';
+ const more=st==='u'&&w&&w.now?`<p>Clear <b>${esc(nm(w.now)[0])}</b> first. Every level you clear brings this one closer!</p>`:st==='s'?'<p>This skill is being built. It opens soon!</p>':'';
+ const btn=st==='d'?`<button type="button" class="gm-play" data-gm="play" data-id="${esc(id)}">↻ Replay</button>`:st==='now'?`<button type="button" class="gm-play" data-gm="play" data-id="${esc(id)}">▶ Play</button>`:'';
+ const d=document.createElement('div'); d.className='gm-sheet'; d.setAttribute('role','dialog'); d.setAttribute('aria-label',n[0]);
+ d.innerHTML=`<div class="k">${status}</div><h2>${esc(n[0])}</h2>${line?`<p>${line}</p>`:''}${more}<div class="gm-row">${btn}<button type="button" class="x" data-gm="sheetx">${btn?'Close':'OK'}</button></div>`; g.appendChild(d); }
 function learnLine(n){ if(!n[1]) return ''; if(/ Level \d+$/.test(n[1])) return `<div class="learn">🧠 Real skill: <b>${esc(n[0])}</b> · ${esc(n[1])}</div>`; return `<div class="learn">🧠 You'll learn: <b>${esc(n[1])}</b></div>`; }
 function goalHTML(w,isPick){
  if(!w.now) return `<div class="gm-goal"><div class="gm-done">🏆 ${esc(w.name)} unit cleared!<small>Your rebbe or teacher opens your next unit. Pick another world above, or tap 📚 Learn.</small></div></div>`;
@@ -284,8 +335,8 @@ function sync(){
  if(GM.tab!=='map'){ show(false,true); return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}${worldTabs(ws,cur)}</div>
- <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div></div>
- ${pathHTML(cur)}</div>${goalHTML(cur,p&&cur.k===p.k)}`;
+ <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div><button type="button" class="gm-tbtn" data-gm="tree">${GM.view==='tree'?'🗺️ PATH':'🌳 SKILL TREE'}</button></div>
+ ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(cur.now)}">▶ Play ${esc(nm(cur.now)[0])}</button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
  show(true,true);
@@ -311,6 +362,9 @@ document.addEventListener('click',e=>{
   GM.tab=t; GM.sig=''; GM.rescroll=true; sync(); if(!document.body.classList.contains('gm-on')) door(t); return; }
  if(a==='world'){ GM.world=b.dataset.k; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
  if(a==='play') return play(b.dataset.id);
+ if(a==='tree'){ try{ SND.tap(); }catch(x){} GM.view=GM.view==='tree'?'path':'tree'; root().scrollTop=0; GM.rescroll=GM.view!=='tree'; sync(); return; }
+ if(a==='tn'){ try{ SND.tap(); }catch(x){} sheet(b.dataset.id,b.dataset.st); return; }
+ if(a==='sheetx'){ const s=root().querySelector('.gm-sheet'); if(s) s.remove(); return; }
  if(a==='lib'){ try{ SND.tap(); }catch(x){} GM.tab='lib'; sync(); door('lib'); return; }
  if(a==='pf'){ const c=document.querySelector('.pf-card button'); if(c) c.click(); return; }
  if(a==='say'){ try{ speak(b.dataset.text); }catch(x){} return; }
