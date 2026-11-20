@@ -285,3 +285,27 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - dolphin-jumping.webp | https://pixabay.com/photos/dolphin-aquarium-jumping-fish-906183/ | Pixabay Content License | Michelle-Maria
 - grass-snake-on-boards.webp | https://pixabay.com/photos/line-nature-reptile-wildlife-3274693/ | Pixabay Content License | susannp4
 - red-deer-stag.webp | https://pixabay.com/photos/deer-fall-meadow-forest-antler-9903608/ | Pixabay Content License | jggrz
+- classic-microscope.webp | https://commons.wikimedia.org/wiki/File:Compound_Microscope_(cropped).JPG | CC0 | Acagastya
+- plant-parts-drawing.webp | https://pixabay.com/illustrations/flower-roots-growth-science-nature-5692191/ | Pixabay Content License | ArtsyBeeKids
+- tree-rings-log.webp | https://pixabay.com/photos/tree-ring-age-growth-concentric-3299387/ | Pixabay Content License | Kasman
+- redwood-trees-tall.webp | https://pixabay.com/photos/sequoia-california-redwoodtree-usa-4926466/ | Pixabay Content License | C1ri
+- onion-skin-cells.webp | https://pixabay.com/photos/the-drug-biology-microscope-5197172/ | Pixabay Content License | PiotrZakrzewski
+- seedling-from-seed-glass.webp | https://pixabay.com/photos/germ-cotyledons-hazelnut-bio-820208/ | Pixabay Content License | stux
+- pea-pod-open.webp | https://pixabay.com/photos/pea-pod-peas-pod-green-fresh-382284/ | Pixabay Content License | Efraimstochter
+- pea-plant-flowers.webp | https://pixabay.com/photos/pea-flowers-garden-green-flowering-4668818/ | Pixabay Content License | JennyandtheSummerDay
+- apple-blossom-branch.webp | https://pixabay.com/photos/blossom-apple-tree-spring-nature-4139034/ | Pixabay Content License | NickyPe
+- apple-cut-in-half.webp | https://pixabay.com/photos/apple-halved-fruit-healthy-food-5026917/ | Pixabay Content License | HOerwin56
+- venus-flytrap-open.webp | https://pixabay.com/photos/carnivore-plant-nature-7163915/ | Pixabay Content License | cometenono
+- mimosa-plant-leaves.webp | https://pixabay.com/photos/mimosa-real-mimosa-blossom-bloom-2492087/ | Pixabay Content License | ulleo
+- burdock-burrs.webp | https://pixabay.com/photos/burdock-arctium-spherical-plant-8360061/ | Pixabay Content License | Nennieinszweidrei
+- maple-seeds-winged.webp | https://pixabay.com/photos/samara-helicopter-maple-fall-tree-9971456/ | Pixabay Content License | christels
+- coconut-sprouting-beach.webp | https://pixabay.com/photos/beach-ocean-plant-sand-sea-1868021/ | Pixabay Content License | Pexels
+- fern-leaf-underside.webp | https://pixabay.com/photos/fern-fern-leaf-sporangia-bottom-3566471/ | Pixabay Content License | manfredrichter
+- mushrooms-on-fallen-log.webp | https://pixabay.com/photos/mushroom-forest-floor-nature-moss-9883036/ | Pixabay Content License | adege
+- bread-dough-risen-pot.webp | https://pixabay.com/photos/dough-bread-dough-bread-making-5571077/ | Pixabay Content License | webandi
+- mold-on-bread-closeup.webp | https://www.flickr.com/photos/36519414@N00/35065875813 | CC BY 2.0 | ComputerHotline
+- strawberry-runner-plantlet.webp | https://pixabay.com/photos/strawberry-seedling-green-2696658/ | Pixabay Content License | Junzer
+- cutting-rooting-in-water.webp | https://pixabay.com/photos/composition-apple-bottle-crystal-1667873/ | Pixabay Content License | PactoVisual
+- potato-with-sprouts.webp | https://pixabay.com/photos/potato-seed-potato-vegetable-food-1927136/ | Pixabay Content License | terimakasih0
+- hooke-cork-drawing.webp | https://commons.wikimedia.org/wiki/File:Micrographia_Schem_11.jpg | Public domain | Robert Hooke (1635-1703)
+- bare-tree-in-snow.webp | https://pixabay.com/photos/winter-tree-benches-old-tree-5914653/ | Pixabay Content License | suju-foto
