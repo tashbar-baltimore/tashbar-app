@@ -186,3 +186,24 @@ function sgKodeshMap(token) {
     if (Object.keys(o).length) out[b.id] = o; });
   return { names: (K && K.names) || {}, boys: out };
 }
+
+/* ===== REPORTS ON THE MAP (Head of School 2026-11-20: "the reports, rebuilt around the map ... all based around this tree").
+   Steps mastered per boy in the last `days` days (default 7) and in the same length of time before that (the trend), with when, plus
+   each step's name. A "step" = a skill on the curriculum tree; mastered = state.skills[id].m with its time (at). Read only. Call: sgMapReport. */
+function sgMapReport(token, days) {
+  sgStaff_(token);
+  days = Math.max(1, Math.min(90, Math.round(Number(days) || 7)));
+  var now = Date.now(), since = now - days * 864e5, before = since - days * 864e5;
+  var states = {}; msRows_('state').forEach(function (r) { try { states[String(r[0])] = JSON.parse(r[1]); } catch (e) {} });
+  var boys = [], used = {};
+  msRoster_().forEach(function (b) { if (/^TEST-/.test(b.id)) return;
+    var sk = (states[b.id] && states[b.id].skills) || {}, cur = [], prev = 0, total = 0;
+    Object.keys(sk).forEach(function (id) { var x = sk[id]; if (!x || !x.m) return; total++; var at = Number(x.at) || 0;
+      if (at >= since) { cur.push([id, at]); used[id] = 1; } else if (at >= before) prev++; });
+    cur.sort(function (a, c) { return c[1] - a[1]; });
+    boys.push({ id: b.id, name: b.name, steps: cur, prev: prev, total: total }); });
+  var names = {}, N = {}; try { N = sgNames_(); } catch (e) {}
+  var K = {}; try { K = (sgpKodeshLessons_() || {}).names || {}; } catch (e) {}
+  Object.keys(used).forEach(function (id) { names[id] = (N[id] && N[id][0]) || K[id] || (typeof CI_INDEX !== 'undefined' && CI_INDEX.sk && CI_INDEX.sk[id] && CI_INDEX.sk[id][0]) || id; });
+  return { days: days, at: now, boys: boys, names: names };
+}
