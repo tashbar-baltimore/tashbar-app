@@ -309,3 +309,40 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - potato-with-sprouts.webp | https://pixabay.com/photos/potato-seed-potato-vegetable-food-1927136/ | Pixabay Content License | terimakasih0
 - hooke-cork-drawing.webp | https://commons.wikimedia.org/wiki/File:Micrographia_Schem_11.jpg | Public domain | Robert Hooke (1635-1703)
 - bare-tree-in-snow.webp | https://pixabay.com/photos/winter-tree-benches-old-tree-5914653/ | Pixabay Content License | suju-foto
+- earth-layers-cutaway.webp | https://pixabay.com/illustrations/earth-globe-layer-soil-rocks-5660940/ | Pixabay Content License | ArtsyBeeKids
+- lava-flow-glowing.webp | https://pixabay.com/photos/mountains-scenery-nature-wallpaper-9580848/ | Pixabay Content License | dukeejoeXRT
+- volcano-lava-fountain.webp | https://pixabay.com/photos/volcano-eruption-explosion-volcanic-6536876/ | Pixabay Content License | AllegroSympatico
+- tectonic-plates-world-map.webp | https://commons.wikimedia.org/wiki/File:Tectonic_plates(Empty).png | Public domain | United States Geological Survey
+- rock-layers-cliff.webp | https://pixabay.com/photos/quarry-abandoned-limestone-3330185/ | Pixabay Content License | anaterate
+- water-meter-dial.webp | https://pixabay.com/photos/water-reader-water-reading-278901/ | Pixabay Content License | RegioTV
+- dripping-tap.webp | https://pixabay.com/photos/water-drops-sink-tap-kitchen-21070/ | Pixabay Content License | PublicDomainPictures
+- rain-gauge-garden.webp | https://www.flickr.com/photos/67975030@N00/7589753250 | CC BY 2.0 | Bernt Rostad
+- obsidian-black-glassy.webp | https://pixabay.com/photos/obsidian-stone-volcanic-rock-glass-505333/ | Pixabay Content License | Hans
+- basalt-columns.webp | https://pixabay.com/photos/giants-causeway-northern-ireland-1182945/ | Pixabay Content License | falco
+- pumice-stone.webp | https://www.flickr.com/photos/49749999@N00/345353816 | CC BY 2.0 | Ambuj Saxena
+- marble-quarry-white.webp | https://pixabay.com/photos/tuscany-quarry-marble-apuan-4240688/ | Pixabay Content License | dexmac
+- slate-tiles-stack.webp | https://www.flickr.com/photos/64097751@N00/4626430508 | CC BY 2.0 | Dominic's pics
+- shale-thin-layers.webp | https://pixabay.com/photos/stone-layers-structure-monochrome-7136043/ | Pixabay Content License | gosiak1980
+- ammonite-fossil-stone.webp | https://pixabay.com/photos/ammonite-petrification-snail-shell-5852/ | Pixabay Content License | Hans
+- brown-rushing-river.webp | https://pixabay.com/photos/flood-waves-splash-swirl-dangerous-123208/ | Pixabay Content License | Hans
+- split-boulder-snow.webp | https://www.geograph.org.uk/photo/1659079 | CC BY-SA 2.0 | Karl and Ali
+- sand-dune-ripples.webp | https://pixabay.com/photos/desert-sand-dune-sand-nature-10058281/ | Pixabay Content License | dominickvietor
+- white-clouds-blue-sky.webp | https://pixabay.com/photos/sky-clouds-forms-air-atmosphere-5534319/ | Pixabay Content License | ELG21
+- gray-cloudy-sky.webp | https://pixabay.com/photos/darling-clouds-shapes-weather-7838296/ | Pixabay Content License | ELG21
+- cold-glass-drops.webp | https://pixabay.com/photos/drink-refreshing-lime-lemon-soda-5298126/ | Pixabay Content License | Aviavlad
+- pencil-tip-green.webp | https://pixabay.com/photos/pencil-write-sharpened-green-1692530/ | Pixabay Content License | Arcaion
+- empty-glass-jar.webp | https://pixabay.com/photos/glass-containers-glass-empty-clean-1205611/ | Pixabay Content License | ha11ok
+- copper-wires.webp | https://pixabay.com/photos/wire-copper-electric-stop-closeup-2681887/ | Pixabay Content License | disign
+- open-pit-mine.webp | https://pixabay.com/photos/sweden-copper-mine-debtors-boliden-1689163/ | Pixabay Content License | Neta623
+- beaver-at-dam.webp | https://pixabay.com/photos/beaver-dam-beaver-gnawing-log-10493425/ | Pixabay Content License | BuchArena
+- wooden-windmill-six-sails.webp | https://pixabay.com/photos/old-windmill-hill-rural-windmill-5713337/ | Pixabay Content License | krystianwin
+- open-sea-waves.webp | https://pixabay.com/photos/sea-waves-ocean-sunny-water-7409361/ | Pixabay Content License | janchrhorn
+- white-desk-fan.webp | https://pixabay.com/photos/white-fan-hardwood-floor-wall-926202/ | Pixabay Content License | StockSnap
+- glowing-light-bulb.webp | https://pixabay.com/photos/light-bulb-incandescent-bulb-376926/ | Pixabay Content License | Josch13
+- round-stone-well.webp | https://pixabay.com/photos/fountain-old-stone-wall-wall-round-788430/ | Pixabay Content License | Efraimstochter
+- volcano-inside-drawing.webp | https://pixabay.com/vectors/volcano-lava-hot-fire-eruption-156872/ | Pixabay Content License | OpenClipart-Vectors
+- iceland-rift-crack.webp | https://www.flickr.com/photos/76074333@N00/427615075 | CC BY 2.0 | WorldIslandInfo.com
+- cotton-boll-plant.webp | https://pixabay.com/photos/cotton-fruit-wilderness-flower-1721144/ | Pixabay Content License | pianweizhuannong
+- brown-paper-bag.webp | https://pixabay.com/photos/paper-bag-kraft-kraft-paper-bag-5425694/ | Pixabay Content License | BRRT
+- aluminium-cans.webp | https://pixabay.com/photos/tin-beverage-soda-5002706/ | Pixabay Content License | DesignDrawArtes
+- thermometer-scale.webp | https://commons.wikimedia.org/wiki/File:R%C3%A9aumur_-_Celsius_thermometer.jpg (cropped) | CC BY-SA 4.0 | Jeancz
