@@ -23,7 +23,7 @@ var TL_PACKS = {
   G1Math:     ['11MMTI8ENyJveUKojya0K6cxlmWy7TbIW', '4475cb33a9531e22a521a20275f0d86623422e1c4468c03f29e43378fed230a0', 146864],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
   G1Reading:  ['1DzMWeol6HusGO9OqjYoiA1el4lmR7QBJ', '79318231e841b165159c2d531b8dc11c70e478f6e66f468892ea53a0565df025', 162520],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
   G2Math:     ['11nweR5NhB_lKpCAnotPK5dM5_WCXON4s', 'e80a51f7d92cc42981117247644f228a4f09a062602983eae4f268d22e0d7650', 183070],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
-  G2Reading:  ['10mCE5zAh09myHlbW-xqn31v9ctIiaWEo', 'f32a1a32b3caa8d22a73944b158c69f27626dbd301bd87a9d31ad98e8b4c1e5c', 193119],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
+  G2Reading:  ['github-only', '3c302a7445c944c447b60fc7d31276736ac00989f656d008c3c1b069068070d3', 228193],   /* K3 lessons v19 + deep comprehension READ.COMP.L03.01-03 (Claude cloud builder, 2026-11-20) */
   G3Math:     ['1ZmptgNPgwjUQ_rm29x6ksFIptnnN5Xyi', '71f888961a73d289b55ce47915ac21ef9079f27cc2d4e1dbd5a4137d0d13ac39', 225558],   /* K3 lessons v19 (Claude Code builder, HoS session 2026-11-18) */
   G4Math:     ['github-only', 'd5dadd8c47966c2dd670b2351476c01427c31c5c650da8e8e354155ba71c9487', 279091],   /* 2026-11-20 4th Grade Math, 18 lessons on the K-3 lesson engine (Claude Code, yosef@ session); lives only in GitHub packs/ */
   G5Math:     ['github-only', 'c689f7f97e7ea1c332c59a104814e279981192df307e96511dc6b2c86cf2aa37', 324924],   /* 2026-11-20 5th Grade Math, full 8-station lessons on the K-3 lesson engine (Claude Code, yosef@ session); lives only in GitHub packs/ */
