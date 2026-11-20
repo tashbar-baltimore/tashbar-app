@@ -59,11 +59,16 @@ body.gm-on #gm{display:block}
 #gm .gm-path{position:relative;margin-top:6px}
 #gm .gm-path svg{position:absolute;left:0;top:0;pointer-events:none}
 #gm .gm-path svg.gm-land{left:-30%;width:160%;height:100%;z-index:0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(180deg,transparent 0,#000 90px,#000 calc(100% - 60px),transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(180deg,transparent 0,#000 90px,#000 calc(100% - 60px),transparent 100%);mask-composite:intersect}
-#gm .gm-num{position:absolute;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
-#gm .gm-num b{display:grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:13px;font:900 14px/1 inherit;color:#fff;background:rgba(20,16,70,.85);border:1.5px solid rgba(255,255,255,.28);box-shadow:0 3px 8px rgba(0,0,0,.3);animation:gmbob 3.2s ease-in-out infinite}
-#gm .gm-num.now b{background:#FFE259;color:#3A1C00;border-color:#FFF6B0;box-shadow:0 3px 10px rgba(255,200,0,.45)}
-#gm .gm-num.d b{background:#00B36B;border-color:#CFFFE3}
-#gm .gm-num.u b{color:#C9C4FF}
+/* step numbers (HoS 2026-11-20): a bare floating number, no circle, modern 3-D: a bright face, a deeper extruded edge, a soft glow */
+#gm .gm-num{position:absolute;transform:translate(-50%,-50%);z-index:2;pointer-events:none;text-align:center;line-height:1}
+#gm .gm-num b{display:block;font-weight:900;font-size:24px;letter-spacing:-.02em;font-style:italic;animation:gmbob 3.2s ease-in-out infinite;
+ color:#E4DEFF;background:linear-gradient(180deg,#FFFFFF 10%,#C9C4FF 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 1px 0 #6E62C9) drop-shadow(0 1px 0 #5A4EB5) drop-shadow(0 1px 0 #463BA0) drop-shadow(0 4px 6px rgba(8,4,30,.55))}
+#gm .gm-num.now b{font-size:32px;background-image:linear-gradient(180deg,#FFF9C4 5%,#FFE259 45%,#FFB800 95%);
+ filter:drop-shadow(0 1px 0 #E08A00) drop-shadow(0 1px 0 #C27100) drop-shadow(0 1px 0 #A35A00) drop-shadow(0 0 10px rgba(255,200,0,.55)) drop-shadow(0 5px 7px rgba(8,4,30,.5))}
+#gm .gm-num.d b{background-image:linear-gradient(180deg,#E9FFF3 5%,#7CFFB2 50%,#2ED88A 95%);
+ filter:drop-shadow(0 1px 0 #13A866) drop-shadow(0 1px 0 #0D8A53) drop-shadow(0 1px 0 #086D41) drop-shadow(0 4px 6px rgba(8,4,30,.55))}
+#gm .gm-num.u b{opacity:.92}
 @keyframes gmbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 /* statues beside the road (HoS 2026-11-20: "like statues along the side of the road ... bobbing gently and spinning in 3-D") */
 #gm .gm-dec{position:absolute;transform:translate(-50%,-100%);pointer-events:none;z-index:1;font:900 var(--s)/1 system-ui,sans-serif;white-space:nowrap;perspective:420px}
