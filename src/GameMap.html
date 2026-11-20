@@ -444,6 +444,7 @@ function done(id){ return mast(id)||known(id); }
 function lcOf(w){ return w&&!w.isK&&w.now&&typeof window.tlLevelCheckFor==='function'?window.tlLevelCheckFor(w.now):null; }
 function nm(id){ const m=M(), n=m&&m.names&&m.names[id]; return n?n:[id,'']; }
 function worldsOf(m){
+ if(!m) return []; /* no map for this boy (or a different boy signed in since): nothing to list, not a page error */
  const out=[]; const add=(k,c,isK)=>{ if(!c||!c.level) return; const W=WORLDS[k]||['⭐',k];
   let ids=isK?(c.skills||[]).map(x=>x[0]):((c.unit&&c.unit.ids)||[]);
   if(!ids.length&&c.now) ids=[c.now];
