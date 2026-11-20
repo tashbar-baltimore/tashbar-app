@@ -347,3 +347,60 @@ window.SPX={SP,inGrp:id=>inGrp(id),grpName:()=>grpName(),lkName:id=>lkName(id),
 if(S.d&&S.d.boys) render();
 })();
 </script>
+<script>
+/* STAFF SORT DROP-DOWN (HoS 2026-11-20: "the arrow is way off to the side ... the drop-down covers the whole button"). The sort boxes
+   (General Studies "Sort: A to Z", This week "A to Z", Students "All grades") get a clean button: label and arrow centered, and a menu that slides out UNDER the
+   button like a drawer and slides back up when closed. The real <select> stays (hidden) and still drives the sort, so nothing else changes.
+   Keyboard: Enter, Space or Down opens; Up/Down move; Enter picks; Escape or a click outside closes. */
+(function(){
+if(window.__SPDD) return; window.__SPDD=1;
+const SEL='select[data-sp="gss"],select[data-sd-sort],#sh-page select#st-g';
+const css=document.createElement('style'); css.textContent=`
+span.spdd{position:relative;display:inline-flex;vertical-align:middle;flex:0 0 auto!important;width:auto!important;min-width:0!important;max-width:100%;padding:0!important;margin:0!important;min-height:0!important;height:auto!important;border:0!important;background:none!important;box-shadow:none!important;align-self:center}
+.spdd select{position:absolute!important;inset:0;width:100%!important;height:100%!important;opacity:0!important;pointer-events:none!important}
+.spdd-b{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line,#e2e6ee);background:#fff;border-radius:999px;padding:7px 12px 7px 14px;font-weight:700;font-size:14px;line-height:20px;color:var(--ink,#1b2333);cursor:pointer;white-space:nowrap;transition:border-color .15s ease,box-shadow .15s ease}
+.spdd-b:hover{border-color:#c5ccda}
+.spdd.open .spdd-b{border-color:#c5ccda;box-shadow:0 0 0 3px rgba(20,40,75,.06)}
+.spdd.big .spdd-b{border-color:#CBD3E3;border-radius:12px;padding:11px 14px 11px 16px;min-height:46px;font:700 15px system-ui,sans-serif;gap:10px}
+.spdd-b svg{flex:none;width:12px;height:12px;display:block;transition:transform .18s cubic-bezier(.2,.8,.2,1)}
+.spdd.open .spdd-b svg{transform:rotate(180deg)}
+.spdd-m{position:absolute;top:calc(100% + 6px);right:0;min-width:100%;z-index:60;margin:0;padding:5px;list-style:none;background:#fff;border:1px solid var(--line,#e2e6ee);border-radius:12px;box-shadow:0 10px 28px rgba(20,40,75,.14),0 2px 6px rgba(20,40,75,.06);
+ transform-origin:top;clip-path:inset(0 0 100% 0 round 12px);opacity:0;transform:translateY(-4px);visibility:hidden;
+ transition:clip-path .16s cubic-bezier(.4,0,.2,1),opacity .12s ease,transform .16s cubic-bezier(.4,0,.2,1),visibility 0s linear .16s}
+.spdd.open .spdd-m{clip-path:inset(0 0 0 0 round 12px);opacity:1;transform:none;visibility:visible;transition:clip-path .2s cubic-bezier(.2,.8,.2,1),opacity .12s ease,transform .2s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.spdd-m li{display:flex;align-items:center;gap:8px;padding:8px 12px 8px 10px;border-radius:8px;font-weight:600;font-size:14px;color:var(--ink,#1b2333);white-space:nowrap;cursor:pointer}
+.spdd-m li .ck{width:14px;flex:none;color:var(--navy,#14284b);visibility:hidden}
+.spdd-m li[aria-selected="true"]{font-weight:800}.spdd-m li[aria-selected="true"] .ck{visibility:visible}
+.spdd-m li.hi{background:#f1f4f9}
+@media (prefers-reduced-motion:reduce){.spdd-m,.spdd.open .spdd-m{transition:opacity .1s ease,visibility 0s;transform:none}}
+@media print{.spdd-m{display:none}}`;
+document.head.appendChild(css);
+const ARROW='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+let openW=null, n=0;
+function label(s){ const o=s.options[s.selectedIndex]; return o?o.text:''; }
+function close(w,focus){ if(!w) return; w.classList.remove('open'); const b=w.querySelector('.spdd-b'); if(b){ b.setAttribute('aria-expanded','false'); if(focus) b.focus(); } if(openW===w) openW=null; }
+function hi(w,i){ const li=[...w.querySelectorAll('.spdd-m li')]; if(!li.length) return; i=(i+li.length)%li.length; li.forEach((x,j)=>x.classList.toggle('hi',j===i)); w._hi=i; }
+function open(w){ if(openW&&openW!==w) close(openW); const s=w.querySelector('select'), m=w.querySelector('.spdd-m');
+ m.innerHTML=[...s.options].map((o,i)=>`<li role="option" data-i="${i}" aria-selected="${i===s.selectedIndex}"><span class="ck">✓</span>${o.text.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c])}</li>`).join('');
+ w.classList.add('open'); w.querySelector('.spdd-b').setAttribute('aria-expanded','true'); openW=w; hi(w,s.selectedIndex); }
+function pick(w,i){ const s=w.querySelector('select'); close(w,true); if(i==null||i===s.selectedIndex) return; s.selectedIndex=i; w.querySelector('.spdd-b span').textContent=label(s); s.dispatchEvent(new Event('change',{bubbles:true})); }
+function wrap(s){ if(s.closest('.spdd')) return; const w=document.createElement('span'); w.className='spdd'+(s.id==='st-g'?' big':'')+(s.classList.contains('sd-noprint')?' sd-noprint':''); const id='spdd'+(++n);
+ s.parentNode.insertBefore(w,s); w.appendChild(s); s.tabIndex=-1; s.setAttribute('aria-hidden','true');
+ w.insertAdjacentHTML('beforeend',`<button type="button" class="spdd-b" aria-haspopup="listbox" aria-expanded="false" aria-controls="${id}" aria-label="${(s.getAttribute('aria-label')||'Sort')}"><span></span>${ARROW}</button><ul class="spdd-m" id="${id}" role="listbox"></ul>`);
+ w.querySelector('.spdd-b span').textContent=label(s); }
+function scan(){ document.querySelectorAll(SEL).forEach(wrap); }
+new MutationObserver(()=>scan()).observe(document.documentElement,{childList:true,subtree:true}); scan();
+document.addEventListener('click',e=>{ const t=e.target; const b=t.closest&&t.closest('.spdd-b');
+ if(b){ e.preventDefault(); e.stopPropagation(); const w=b.parentNode; w.classList.contains('open')?close(w):open(w); return; }
+ const li=t.closest&&t.closest('.spdd-m li'); if(li){ e.preventDefault(); e.stopPropagation(); pick(li.closest('.spdd'),Number(li.dataset.i)); return; }
+ if(openW&&!openW.contains(t)) close(openW); },true);
+document.addEventListener('keydown',e=>{ const b=e.target.closest&&e.target.closest('.spdd-b'); const w=b?b.parentNode:openW; if(!w||(!b&&!openW)) return;
+ const isOpen=w.classList.contains('open');
+ if(!isOpen){ if(b&&(e.key==='ArrowDown'||e.key==='ArrowUp')){ e.preventDefault(); open(w); } return; }
+ if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); close(w,true); }
+ else if(e.key==='ArrowDown'){ e.preventDefault(); hi(w,(w._hi||0)+1); }
+ else if(e.key==='ArrowUp'){ e.preventDefault(); hi(w,(w._hi||0)-1); }
+ else if(e.key==='Enter'||e.key===' '){ e.preventDefault(); pick(w,w._hi); }
+ else if(e.key==='Tab') close(w); },true);
+})();
+</script>
