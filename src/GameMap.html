@@ -58,6 +58,8 @@ body.gm-on #gm{display:block}
 #gm .gm-unit .left{font-size:13px;font-weight:900;color:#FFE259;text-align:right;white-space:nowrap}
 #gm .gm-path{position:relative;margin-top:6px}
 #gm .gm-path svg{position:absolute;left:0;top:0;pointer-events:none}
+#gm .gm-hw{position:absolute;transform:translate(-50%,-50%);aspect-ratio:2/1;z-index:0;pointer-events:none}
+#gm .gm-path .gm-hw svg.gm-hill{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
 #gm .gm-num{position:absolute;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
 #gm .gm-num b{display:grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:13px;font:900 14px/1 inherit;color:#fff;background:rgba(20,16,70,.85);border:1.5px solid rgba(255,255,255,.28);box-shadow:0 3px 8px rgba(0,0,0,.3);animation:gmbob 3.2s ease-in-out infinite}
 #gm .gm-num.now b{background:#FFE259;color:#3A1C00;border-color:#FFF6B0;box-shadow:0 3px 10px rgba(255,200,0,.45)}
@@ -156,7 +158,7 @@ body.gm-k2 #gm .gm-say{height:58px;font-size:19px}
 body.gm-k2 #gm-nav{height:84px}
 body.gm-k2 #gm-nav b{font-size:34px;line-height:40px}
 body.gm-k2 #gm-nav button{font-size:13px}
-@media (min-width:1000px){#gm .gm-in{max-width:1120px;padding-bottom:120px}#gm .gm-unit,#gm .gm-path{width:620px}
+@media (min-width:1000px){#gm{background:radial-gradient(640px 120% at calc(50% - 234px) 18%,#4C2AA8 0%,#2A1678 30%,#1C0F5A 52%,#0A0726 100%)}#gm .gm-in{max-width:1120px;padding-bottom:120px}#gm .gm-unit,#gm .gm-path{width:620px}
  #gm .gm-goal{left:auto;right:max(16px,calc(50% - 560px));transform:none;width:440px;top:190px;bottom:auto;padding:20px}
  #gm .gm-goal h1{font-size:40px}#gm .gm-goal .learn{font-size:18px}#gm .gm-goal .m{font-size:15px}#gm .gm-play{font-size:30px;padding:18px}
  #gm .gm-l{font-size:15px}#gm .gm-l small{font-size:13px}#gm .gm-chip{font-size:16px;padding:7px 12px}#gm .gm-w{font-size:15px;padding:8px 16px}#gm-nav{height:78px}}
@@ -434,9 +436,30 @@ function pathHTML(w){
  const svg=`<svg width="100%" height="${H}" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="#FFE259" stroke-width="1.6" stroke-dasharray="0.6 4" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:5px;stroke-dasharray:2 14"/></svg>`;
  const ds=decoSet(w.k), dc=DECOC[ds[0]]||'#C9C4FF'; let seed=0; String(w.k).split('').forEach(c=>{ seed=(seed*31+c.charCodeAt(0))%9973; });
  const rnd=()=>{ seed=(seed*9301+49297)%233280; return seed/233280; };
- let deco=''; for(let i=0;i<N;i++){ const y=pts[i][1]+gap/2; if(i===N-1&&N>1) break;
-  [[5,15],[85,95]].forEach((band,bi)=>{ if(rnd()<.1) return; const x=band[0]+rnd()*(band[1]-band[0]), yy=y+(rnd()-.5)*gap*.5, g=ds[1][Math.floor(rnd()*ds[1].length)];
-   deco+=`<span class="gm-dec${ds[0]==='HEB'?' he':''}" style="left:${x.toFixed(1)}%;top:${Math.round(yy)}px;--r:${Math.round((rnd()-.5)*16)}deg;--s:${Math.round(30+rnd()*14)}px;--c:${dc}" aria-hidden="true"><i style="animation-delay:-${(rnd()*4).toFixed(1)}s"><b style="animation-delay:-${(rnd()*10).toFixed(1)}s">${esc(g)}</b></i></span>`; }); }
+ /* HILLS (HoS 2026-11-20: "the path going through them, twisting and winding around them in the valleys ... a nice 3-D effect").
+    At every bend a soft round hill sits on the open side, so the road winds between hills; a statue stands on each hilltop.
+    Not beside his current step's card. Small hills at the far edges fill the rest. */
+ const statue=(xp,yp,sz,u)=>{ const g=ds[1][Math.floor(rnd()*ds[1].length)];
+  return `<span class="gm-dec${ds[0]==='HEB'?' he':''}" style="left:${xp.toFixed(1)}%;top:${u?yp.toFixed(1)+'%':Math.round(yp)+'px'};--r:${Math.round((rnd()-.5)*12)}deg;--s:${Math.round((sz||1)*(34+rnd()*10))}px;--c:${dc}" aria-hidden="true"><i style="animation-delay:-${(rnd()*4).toFixed(1)}s"><b style="animation-delay:-${(rnd()*10).toFixed(1)}s">${esc(g)}</b></i></span>`; };
+ const hill=(xp,yp,w,two,st)=>{ const id='gh'+(GM.hid=(GM.hid||0)+1);
+  /* a soft rolling hill: a darker hill behind, a lit hill in front (light from the upper left), melting into the ground (no hard base) */
+  const back=two?'M0 100 C22 66 44 30 74 26 C98 24 112 44 128 40 C150 22 178 40 200 100 Z':'M8 100 C34 70 62 34 98 30 C134 30 168 66 196 100 Z';
+  const front=two?'M14 100 C38 80 58 54 86 52 C114 52 140 74 168 100 Z':'M30 100 C52 82 76 60 104 58 C132 58 156 80 178 100 Z';
+  return `<div class="gm-hw" style="left:${xp.toFixed(1)}%;top:${Math.round(yp)}px;width:min(${w}px,40%)" aria-hidden="true"><svg class="gm-hill" viewBox="0 0 200 100" preserveAspectRatio="none"><defs>
+   <radialGradient id="${id}a" cx="38%" cy="18%" r="90%"><stop offset="0" stop-color="#6A4BD0"/><stop offset=".5" stop-color="#3A2296"/><stop offset="1" stop-color="#1A0C52"/></radialGradient>
+   <radialGradient id="${id}b" cx="34%" cy="20%" r="85%"><stop offset="0" stop-color="#9C7CFF"/><stop offset=".42" stop-color="#5A3AC4"/><stop offset="1" stop-color="#261266"/></radialGradient>
+   <linearGradient id="${id}f" x1="0" y1="0" x2="0" y2="1"><stop offset=".55" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>
+   <mask id="${id}m"><rect width="200" height="100" fill="url(#${id}f)"/></mask></defs>
+   <g mask="url(#${id}m)"><path d="${back}" fill="url(#${id}a)"/><path d="${front}" fill="url(#${id}b)"/>
+   <path d="${front.split(' Z')[0]}" fill="none" stroke="rgba(225,212,255,.45)" stroke-width="1.4" vector-effect="non-scaling-stroke"/>
+   <ellipse cx="${two?70:88}" cy="${two?60:66}" rx="18" ry="5" fill="rgba(255,255,255,.16)" transform="rotate(-14 ${two?70:88} ${two?60:66})"/></g></svg>${st||''}</div>`; };
+ let deco='';
+ for(let i=0;i<N;i++){ const p=pts[i], isNow=ids[i]===w.now; if(isNow) continue; const side=p[0]<45?1:p[0]>55?-1:0; const two=rnd()<.4, wpx=Math.round(150+rnd()*60);
+  if(side){ const hx=p[0]+side*(30+rnd()*8), hy=p[1]+gap*.18+(rnd()-.5)*20; let on=statue(two?72+rnd()*6:46+rnd()*8,-4);
+   if(rnd()<.7) on+=statue(rnd()<.5?20+rnd()*8:80-rnd()*8,58+rnd()*12,.72,1);
+   deco+=hill(hx,hy,wpx,two,on);
+   if(i<N-1&&rnd()<.75){ const vx=side>0?6+rnd()*8:94-rnd()*8; deco+=statue(vx,p[1]+gap*.62+(rnd()-.5)*20,.85); } }
+  else { [[9,1],[91,-1]].forEach(([ex])=>{ if(rnd()<.35) return; const hy=p[1]+(rnd()-.5)*30, w2=Math.round(110+rnd()*40); deco+=hill(ex+(rnd()-.5)*4,hy,w2,false,rnd()<.85?statue(46+rnd()*8,-4,.85):''); }); } }
  let h=`<div class="gm-path" style="height:${H}px">${deco}${svg}`;
  if(hidden) h+=`<div class="gm-more" style="top:22px">✓ ${hidden} more cleared</div>`;
  ids.forEach((id,i)=>{ const p=pts[i], isBoss=(hidden+i)===w.ids.length-1, isNow=id===w.now, isDone=mast(id), n=nm(id);
