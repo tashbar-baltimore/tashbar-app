@@ -14,8 +14,8 @@ module.exports = function kidMap() {
   TABLES.forEach(n => { bk.tabs['TL ' + n] = { rows: [['Record ID', 'Record JSON', 'Updated at (UTC)', 'Updated by']] }; bk.order.push('TL ' + n); });
   call('msBootstrap');
   const H = (s, c) => vm.runInContext('msHash_(' + JSON.stringify(s) + ',' + JSON.stringify(c) + ')', rt.ctx);
-  const boys = [['TESTKM01', 'Made-up Boy A', '6123'], ['TESTKM02', 'Made-up Boy B', '6124']];
-  const roster = bk.tabs.MS_Roster.rows; boys.forEach((b, i) => { const row = roster[0].map(() => ''); row[0] = b[0]; row[1] = b[1]; row[5] = 'kmsalt' + i; row[6] = H('kmsalt' + i, b[2]); row[7] = true; roster.push(row); });
+  const boys = [['TESTKM01', 'Made-up Boy A', '6123'], ['TESTKM02', 'Made-up Boy B', '6124'], ['TESTKM03', 'Made-up Boy C', '6125', 'grade 3']];
+  const roster = bk.tabs.MS_Roster.rows; boys.forEach((b, i) => { const row = roster[0].map(() => ''); row[0] = b[0]; row[1] = b[1]; row[5] = 'kmsalt' + i; row[6] = H('kmsalt' + i, b[2]); row[7] = true; if (b[3]) row[8] = b[3]; roster.push(row); });
   vm.runInContext("CacheService.getScriptCache().put('ms_tok_km-staff', JSON.stringify({role:'staff',sid:null,pid:null,staff:null,who:{id:'KMT',name:'Made-up Rebbe',role:'head'}}), 600)", rt.ctx);
   const place = (sid, key, level) => { try { call('libApply', 'km-staff', { action: 'place', boys: [sid], key, level }); } catch (e) { fails.push('kid map: placing ' + key + ' ' + level + ' failed: ' + e.message); } };
   place('TESTKM01', 'MATH', 5); place('TESTKM01', 'READ', 5); place('TESTKM01', 'K:CHU', 3); place('TESTKM02', 'MATH', 3);
@@ -46,6 +46,13 @@ module.exports = function kidMap() {
   chk(M.growth && M.growth.week.length === 3 && M.growth.prev === 2 && M.growth.total === 6, 'growth: 3 steps this week, 2 last week, 6 ever (got ' + JSON.stringify(M.growth && { w: M.growth.week.length, p: M.growth.prev, t: M.growth.total }) + ')');
   const sb = call('msSignInFast', '6124'); chk(sb && sb.map && sb.map.sid === 'TESTKM02' && JSON.stringify(sb.map).indexOf('TESTKM01') < 0, "boy B gets only his own map");
   chk(sb && sb.map && sb.map.subjects.MATH && sb.map.subjects.MATH.level === 3 && !sb.map.subjects.READ && !Object.keys(sb.map.kodesh).length, 'boy B: only Math level 3');
+  /* a boy nobody placed yet: his grade's level (grade 3 -> Level 4), marked byGrade; Kodesh not guessed */
+  const sc = call('msSignInFast', '6125'); const mc = sc && sc.map;
+  chk(mc && mc.subjects.MATH && mc.subjects.MATH.level === 4 && mc.subjects.MATH.byGrade && mc.subjects.MATH.now, 'unplaced grade-3 boy: Math Level 4 by grade (got ' + JSON.stringify(mc && mc.subjects.MATH && { l: mc.subjects.MATH.level, g: mc.subjects.MATH.byGrade }) + ')');
+  chk(mc && mc.subjects.READ && mc.subjects.READ.level === 4 && !Object.keys(mc.kodesh).length, 'unplaced grade-3 boy: Reading Level 4, no Kodesh guessed');
+  chk(M.subjects.MATH && !M.subjects.MATH.byGrade, 'a rebbe placement is never marked byGrade');
+  /* the staff preview's made-up boy */
+  try { const D = call('kmDemoMap_'); chk(D && D.preview && D.sid === 'PREVIEW' && D.subjects.MATH && D.subjects.MATH.now && JSON.stringify(D).indexOf('TESTKM') < 0, 'preview map: made-up boy with a Math goal, no real data'); } catch (e) { fails.push('kid map: kmDemoMap_ failed: ' + e.message); }
   const refused = tok => { try { call('kmMyMap', tok); return false; } catch (e) { return true; } };
   chk(refused('km-staff'), 'a staff token must be refused (kmMyMap is for students only)');
   chk(refused('not-a-token'), 'a bad token must be refused'); chk(refused(''), 'no token must be refused');
