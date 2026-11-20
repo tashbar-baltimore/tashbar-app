@@ -359,6 +359,10 @@ const IC={ note:svg("<path d='M9 18V5l12-2v13' "+W+"/><circle cx='6' cy='18' r='
   mail:svg("<rect x='3' y='5' width='18' height='14' rx='2.5' "+W+"/><path d='M3.5 7l8.5 6 8.5-6' "+W+"/>"),
   spk:svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='white'/><path d='M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13' "+W+"/>"),
   mute:svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='white'/><path d='M16 9l6 6M22 9l-6 6' "+W+"/>") };
+/* the same pictures in violet, for a tool that is OFF (white button with an outline) */
+const V="stroke='#4F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'";
+IC.noteV=svg("<path d='M9 18V5l12-2v13' "+V+"/><circle cx='6' cy='18' r='3' fill='#4F46E5'/><circle cx='18' cy='16' r='3' fill='#4F46E5'/>");
+IC.muteV=svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='#4F46E5'/><path d='M16 9l6 6M22 9l-6 6' "+V+"/>");
 const BG='linear-gradient(135deg,#4F46E5,#6D28D9)';
 try{ if(!document.getElementById('hl2-css')){ const s=document.createElement('style'); s.id='hl2-css'; s.textContent=`
 body.hl2 #hlx>.hl2-logo{display:flex;justify-content:center;margin:4px 0 -8px;order:-1}
@@ -366,16 +370,46 @@ body.hl2 #hlx-top header.hpbar>.tl-logo{display:none!important}
 body.hl2 .hl2-logo .tl-logo{display:inline-flex;align-items:center;height:auto!important;padding:6px 14px!important;background:#fff;border-radius:16px;box-shadow:0 2px 10px rgba(0,0,0,.08)!important}
 body.hl2 .hl2-logo .tl-logo img{height:52px!important;width:auto}
 body.hl2 #hlx .hlx-start{flex-direction:column;align-items:center;gap:12px}
-body.hl2 #hlx .hlx-start .hlx-go{flex:0 0 auto;width:min(720px,100%)}
+body.hl2 #hlx .hlx-start .hlx-go{flex:0 0 auto;width:min(560px,100%);min-height:58px;padding:6px 26px;font-size:24px;border-radius:999px}
+body.hl2 #hlx .hlx-go .hlx-play{width:34px;height:34px;font-size:14px}
+body.hl2 #hlx .hlx-go small{font-size:13px}
 body.hl2 .hl2-under{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;width:100%}
-body.hl2 .hl2-under .hlx-steps{min-height:52px}
-body.hl2 #tlcash.docked{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;top:auto!important;z-index:2!important}
+body.hl2 .hl2-under .hlx-steps{min-height:44px}
+body.hl2 #tlcash.docked{position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;top:auto!important;z-index:2!important;background:transparent!important;border:0!important;padding:2px 12px!important}
+/* BUTTON SYSTEM (2026-11-20, moshe@ session; the 6 kinds): 1 main action = the gold Start pill; 2 action = solid pill (green learn,
+   orange money); 3 place to open = picture card with a › circle; 4 quick tool = small circle (filled on, outlined off), now folded
+   into the ⋮ menu; 5 quiet = white pill with an outline; 6 information = flat, never pressable. */
+body.hl2 #hlx .hlx-steps,body.hl2 .hpbar .tools .signout{background:#fff!important;border:2px solid #FCD34D!important;border-radius:999px!important;box-shadow:none!important;color:#92400E!important;min-height:44px!important;padding:0 18px!important;font-weight:800!important;cursor:pointer}
+body.hl2 #hlx .hlx-steps:hover,body.hl2 .hpbar .tools .signout:hover{background:#FFFBEB!important;transform:translateY(-1px)}
+body.hl2 .hpbar .hello .streak{border-radius:10px!important;box-shadow:none!important}
+body.hl2 .hf-door::before{content:'›';position:absolute;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.28);border:2px solid rgba(255,255,255,.8);display:grid;place-items:center;font:900 28px/1 system-ui,sans-serif;color:#fff;z-index:2;transition:transform .2s}
+body.hl2 .hf-door:hover::before{transform:translateX(3px)}
+body.hl2 .hf-door .cnt{margin-right:60px}
+body.hl2 .cn-card .cn-ord{background:linear-gradient(135deg,#F59E0B,#EA580C)!important;border-radius:999px!important}
 body.hl2 #hlx>.cn-card{margin:0!important;width:auto!important;max-width:none!important;box-sizing:border-box}
 body.hl2 .hpbar .tools .icon-btn{width:48px!important;height:48px!important;min-width:48px!important;padding:0!important;border:0!important;border-radius:50%!important;font-size:0!important;color:transparent!important;
   background:${IC.spk} center/24px no-repeat,${BG}!important;box-shadow:0 3px 0 #3730A3,0 6px 14px rgba(79,70,229,.25)!important}
 body.hl2 .hpbar .tools #mubtn{background:${IC.note} center/22px no-repeat,${BG}!important}
 body.hl2 .hpbar .tools [data-tr="open"]{background:${IC.mail} center/24px no-repeat,${BG}!important}
-body.hl2 .hpbar .tools [data-act="sound"][aria-label="Sound off"]{background:${IC.mute} center/24px no-repeat,${BG}!important}
+body.hl2 .hpbar .tools [data-act="sound"][aria-label="Sound off"]{background:${IC.muteV} center/24px no-repeat,#fff!important;box-shadow:inset 0 0 0 2px #C7D2FE!important}
+body.hl2 .hpbar .tools #mubtn[aria-label$=": off"]{background:${IC.noteV} center/22px no-repeat,#fff!important;box-shadow:inset 0 0 0 2px #C7D2FE!important}
+/* QUICK TOOLS MENU: ⋮ (three dots, one per tool). Tap: the bottom dot slides out to the left first, then the next, and each grows
+   into its tool. Tap ⋮ (now ✕), anywhere else, or Escape: they slide back into dots. */
+body.hl2 .hl2-qt{position:relative;z-index:5;flex:0 0 auto;width:48px;height:48px;transition:width .38s cubic-bezier(.2,.9,.3,1)}
+body.hl2 .hl2-qt.open{width:var(--qtw,48px)}
+body.hl2 .hl2-qt .hl2-qtt{position:absolute;top:0;right:0;width:48px;height:48px;z-index:3;border:0;border-radius:50%;background:transparent;cursor:pointer;color:#4F46E5;font:900 20px/1 system-ui,sans-serif;display:grid;place-items:center;transition:background .2s}
+body.hl2 .hl2-qt .hl2-qtt:hover{background:rgba(79,70,229,.08)}
+body.hl2 .hl2-qt .hl2-qtt span{opacity:0;transform:scale(.4) rotate(-90deg);transition:opacity .2s,transform .3s}
+body.hl2 .hl2-qt.open .hl2-qtt{background:#EEF2FF}
+body.hl2 .hl2-qt.open .hl2-qtt span{opacity:1;transform:none}
+body.hl2 .hl2-qt .hl2-qtbg{position:absolute;right:-5px;top:50%;height:58px;width:calc(100% + 10px);transform:translateY(-50%);border-radius:999px;background:#fff;box-shadow:0 6px 22px rgba(30,27,75,.14);opacity:0;transition:width .38s cubic-bezier(.2,.9,.3,1),opacity .25s;z-index:1}
+body.hl2 .hl2-qt.open .hl2-qtbg{opacity:1}
+body.hl2 .hl2-qt .hl2-qti{position:absolute!important;left:auto!important;right:0;top:0;z-index:2;pointer-events:none;transform:translate(var(--dx0),var(--dy)) scale(.19);transition:transform .38s cubic-bezier(.2,.9,.3,1.15);transition-delay:var(--dc)}
+body.hl2 #hlx-top .hpbar .tools .hl2-qt:not(.open) .hl2-qti.hl2-qti{background:#6D28D9!important;box-shadow:none!important}
+body.hl2 .hl2-qt.open .hl2-qti{pointer-events:auto;transform:translate(var(--dx),0) scale(1);transition-delay:var(--do)}
+body.hl2 .hl2-qt.still,body.hl2 .hl2-qt.still .hl2-qti,body.hl2 .hl2-qt.still .hl2-qtbg{transition:none!important}
+@media (max-width:700px){body.hl2 .hl2-qt.open{width:48px}body.hl2 .hl2-qt .hl2-qtbg{width:58px}body.hl2 .hl2-qt.open .hl2-qtbg{width:calc(var(--qtw,48px) + 10px)}}
+@media (prefers-reduced-motion:reduce){body.hl2 .hl2-qt .hl2-qti,body.hl2 .hl2-qt .hl2-qtbg{transition-duration:.01s!important}}
 body.hl2 .hpbar .tools .icon-btn:focus-visible{outline:3px solid #FDE047;outline-offset:2px}
 @media (max-width:700px){body.hl2 .hl2-logo .tl-logo img{height:40px!important}body.hl2 .hpbar .tools .icon-btn{width:44px!important;height:44px!important;min-width:44px!important}}`; document.head.appendChild(s); } }catch(e){}
 const onHub=()=>{ try{ return window.HOME_ORDER2!==false&&A.view==='hub'&&!!A.st&&!!document.getElementById('hlx'); }catch(e){ return false; } };
@@ -390,9 +424,27 @@ function arrange(){ try{
   const st=hlx.querySelector('.hlx-start'); if(st){ let u=st.querySelector('.hl2-under'); if(!u){ u=document.createElement('div'); u.className='hl2-under'; st.appendChild(u); }
     const steps=st.querySelector(':scope > .hlx-steps'); if(steps) u.appendChild(steps);
     const c=document.getElementById('tlcash'); if(c&&c.parentNode!==u){ c.classList.add('docked'); u.insertBefore(c,u.firstChild); } }
-  /* 3. the Canteen money card(s) at the bottom, as wide as the banner */
+  /* 3. the quick tools fold into the ⋮ menu */
+  qtMenu(bar);
+  /* 4. the Canteen money card(s) at the bottom, as wide as the banner */
   const app=document.getElementById('app'); if(app) app.querySelectorAll(':scope > .cn-card').forEach(c=>hlx.appendChild(c));
 }catch(e){ console.error('Home order 2',e); } }
+const QT=window.HL2QT=window.HL2QT||{open:false};
+function qtMenu(bar){ const tools=bar&&bar.querySelector('.tools'); if(!tools) return;
+  const list=[tools.querySelector('#mubtn'),tools.querySelector('[data-tr="open"]'),tools.querySelector('[data-act="sound"]'),tools.querySelector('.stcannon')].filter(Boolean);
+  let m=tools.querySelector(':scope > .hl2-qt'); const fresh=!m;
+  if(!m){ m=document.createElement('div'); m.className='hl2-qt still'; m.innerHTML='<span class="hl2-qtbg" aria-hidden="true"></span><button type="button" class="hl2-qtt" aria-label="Tools: music, messages, sound" aria-expanded="false"><span aria-hidden="true">✕</span></button>'; tools.appendChild(m); }
+  const n=list.length, GAP=54; let changed=fresh;
+  list.forEach((b,i)=>{ if(b.parentNode!==m){ m.appendChild(b); changed=true; } b.classList.add('hl2-qti');
+    b.style.setProperty('--dy',((i-(n-1)/2)*11)+'px'); b.style.setProperty('--dx0','0px'); b.style.setProperty('--dx',(-(n-i)*GAP)+'px');
+    b.style.setProperty('--do',((n-1-i)*70)+'ms'); b.style.setProperty('--dc',(i*50)+'ms'); b.tabIndex=QT.open?0:-1; });
+  m.style.setProperty('--qtw',(n*GAP+48)+'px');
+  m.classList.toggle('open',QT.open); m.querySelector('.hl2-qtt').setAttribute('aria-expanded',String(QT.open));
+  if(changed) requestAnimationFrame(()=>requestAnimationFrame(()=>m.classList.remove('still'))); }
+function qtSet(open){ QT.open=open; const m=document.querySelector('.hpbar .tools .hl2-qt'); if(m) qtMenu(m.closest('.hpbar')); }
+document.addEventListener('click',e=>{ const t=e.target; if(!t||!t.closest) return; if(t.closest('.hl2-qtt')){ e.preventDefault(); qtSet(!QT.open); return; }
+  if(QT.open&&!t.closest('.hl2-qt')) qtSet(false); },true);
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&QT.open) qtSet(false); });
 const _r=render;
 render=function(){ try{ const c=document.getElementById('tlcash'); if(c&&c.closest('#app')){ c.classList.remove('docked'); document.body.appendChild(c); } }catch(e){}
   const out=_r.apply(this,arguments); arrange(); return out; };

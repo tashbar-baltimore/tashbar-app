@@ -12,6 +12,9 @@
    4. A calmer, clearer home screen: the chizuk strip shows ONE still line instead of scrolling words; the subject pictures stop
       bobbing; the Olam Haba cloud sits still in the bottom corner instead of floating over the Play buttons; on phones the floating
       clock stays off the home screen (as HomePage.html already meant: "the floating clock covered Let's go! on phones").
+   5. BUTTON SYSTEM basics (2026-11-20, moshe@ session; approved by the drafter): every button shows the hand pointer and a yellow ring
+      when picked with the keyboard; the Store's Close and "Not now" are quiet buttons (white pill, gold outline). The home's own
+      parts of the system (Start, quiet buttons, › on cards, the ⋮ tools menu, money as information) are in HomeLayout.html.
    It changes no lesson, no money and no server call. Off switch: window.TL_CALM = false.
    No slash-slash in this file (HtmlService rule). */
 (function(){
@@ -27,6 +30,10 @@ if(window.TL_CALM===false){ lift(); return; }
 +'body:is(.hl-hub,.hf-home) .hf-kl .ic,body:is(.hl-hub,.hf-home) .hf-door .ico{animation:none!important}'
 +'html body.ohmini #ohb .ohc{animation:none!important}'
 +'html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky,html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky.slim,html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky:not(.slim){top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;right:10px!important}'
++'button,[role=button],[data-act],[data-st],[data-hp],[data-alga],[data-g3m]{cursor:pointer}'
++'button:focus-visible,[role=button]:focus-visible{outline:3px solid #FDE047!important;outline-offset:2px}'
++'button:disabled{cursor:default}'
++'.stx,.stgo.alt{background:#fff!important;color:#92400E!important;border:2px solid #FCD34D!important;box-shadow:none!important;border-radius:999px!important}'
 +'@media (max-width:760px){html body:is(.hl-hub,.hf-home) #tlclock{display:none!important}body:is(.hl-hub,.hf-home){padding-bottom:72px}}';
 document.head.appendChild(s); })();
 /* pop-ups: fade in once, then stay calm through redraws.
