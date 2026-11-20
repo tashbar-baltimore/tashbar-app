@@ -63,6 +63,13 @@ body.tl-cashpill #hpjar{display:none!important}
 .sthead .stbal{right:120px}
 .stintro{margin:0 0 14px;color:#4B5563;font-size:16px}
 .stgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.stpv{position:relative;height:74px;margin:0 0 4px;border-radius:14px;background:radial-gradient(120% 140% at 20% 0%,#3B1E8F,#1C0F5A 60%,#120A3D);overflow:hidden;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.stpv .pvs{position:absolute;transform:translate(-50%,-50%);font-style:normal;line-height:1;pointer-events:none;display:block}
+.stpv .pvs svg{display:block}
+.stpv .pvtip{width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.2)}
+.stset{align-self:flex-start;font:800 12px system-ui,sans-serif;color:#7C3AED;background:#F3E8FF;border-radius:999px;padding:4px 10px}
+.stpv small{position:absolute;right:10px;bottom:6px;font:700 11px/1 system-ui,sans-serif;color:rgba(255,255,255,.55);letter-spacing:.02em}
+.stpv .f{position:absolute;left:0;top:0;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:rgba(255,255,255,.9);box-shadow:0 0 0 5px rgba(255,255,255,.18);opacity:0;transition:opacity .2s ease;pointer-events:none}
 .stcard{position:relative;background:#fff;border-radius:20px;padding:16px;border:2px solid #E5E7EB;display:flex;flex-direction:column;gap:6px;box-shadow:0 4px 14px rgba(20,33,61,.06)}
 .stcard .em{font-size:46px;line-height:1}.stcard h4{margin:0;font-size:18px}.stcard p{margin:0;color:#6B7280;font-size:14px;flex:1}
 .stcard .pr{align-self:flex-start;background:linear-gradient(135deg,#065F46,#10B981);color:#fff;font:800 17px var(--display,system-ui),system-ui,sans-serif;padding:5px 12px;border-radius:10px;box-shadow:inset 0 0 0 2px rgba(253,230,138,.6)}
@@ -230,9 +237,9 @@ function draw(){ if(!T.open) return; let o=document.getElementById('tlstore'); c
 function card(x,bal){ const own=owned(x.id), goal=ST().goal===x.id, worn=ST().wear[x.slot]===x.id, price=x.cents/100, need=Math.max(0,price-bal);
   const wear=x.kind==='wear'&&own?`<button class="wr ${worn?'on':''}" data-st="wear" data-id="${x.id}">${worn?'✓ Using it':'Use it'}</button>`:'';
   if(x.season&&x.open===false&&!own){ const z=((T.info&&T.info.seasons)||[]).find(q=>q.id===x.season)||{name:'the holiday'};
-    return `<div class="stcard hol"><span class="em" aria-hidden="true">${x.emoji}</span><h4>${E(x.name)}</h4><p>${E(x.desc)}</p><span class="pr">${$(price)}</span><span class="soon">🗓️ Back in the weeks before ${E(z.name)}</span></div>`; }
+    return `<div class="stcard hol">${(x.slot==='trail'||x.slot==='tap')?`<div class="stpv" data-pv="${x.id}" role="img" aria-label="Preview: what ${E(x.name)} looks like">${pvStatic(x.id,x.emoji)}<span class="f"></span><small>\u25b6 Tap to see it</small></div>`:`<span class="em" aria-hidden="true">${x.emoji}</span>`}<h4>${E(x.name)}</h4><p>${E(x.desc)}</p>${x.slot==='trail'?'<span class="stset">✨ Includes its tap blast</span>':x.slot==='tap'?'<span class="stset">✨ Includes its trail</span>':''}<span class="pr">${$(price)}</span><span class="soon">🗓️ Back in the weeks before ${E(z.name)}</span></div>`; }
   const canBuy=!(own&&(x.kind==='wear'||x.kind==='keep'));
-  return `<div class="stcard ${own?'own':''} ${goal?'isgoal':''} ${x.season?'hol':''}">${own?'<span class="tag">YOURS</span>':''}<span class="em" aria-hidden="true">${x.emoji}</span><h4>${E(x.name)}</h4><p>${E(x.desc)}</p>
+  return `<div class="stcard ${own?'own':''} ${goal?'isgoal':''} ${x.season?'hol':''}">${own?'<span class="tag">YOURS</span>':''}${(x.slot==='trail'||x.slot==='tap')?`<div class="stpv" data-pv="${x.id}" role="img" aria-label="Preview: what ${E(x.name)} looks like">${pvStatic(x.id,x.emoji)}<span class="f"></span><small>\u25b6 Tap to see it</small></div>`:`<span class="em" aria-hidden="true">${x.emoji}</span>`}<h4>${E(x.name)}</h4><p>${E(x.desc)}</p>${x.slot==='trail'?'<span class="stset">✨ Includes its tap blast</span>':x.slot==='tap'?'<span class="stset">✨ Includes its trail</span>':''}
    <span class="pr">${$(price)}</span>${canBuy&&need>0?`<span class="need">Need ${$(need)} more</span><span class="nb"><i style="width:${Math.min(100,Math.round(bal/price*100))}%"></i></span>`:''}
    <div class="row">${canBuy?`<button class="buy" data-st="buy" data-id="${x.id}" ${need>0||T.busy?'disabled':''}>Buy it</button>`:''}${wear}${canBuy&&!own&&x.kind!=='donate'?`<button class="gl ${goal?'on':''}" data-st="goal" data-id="${x.id}">${goal?'🎯 My goal':'🎯 Make it my goal'}</button>`:''}</div></div>`; }
 function body(I,bal){ const items=I.items.filter(x=>x.cat===T.tab);
@@ -341,12 +348,23 @@ window.p3Ans=function(p,it,ok){ try{ if(ok){ const w=ST().wear||{};
 const hasIt=id=>owned(id)||((ST().owned||[]).indexOf(id)>=0);
 /* tap blasts: HomePlus splash() asks window.tlTapStyle() for colors (cols) or little pictures (em) */
 const RAINBOW=['#EF4444','#F97316','#FACC15','#22C55E','#3B82F6','#6366F1','#A855F7'];
-const TAPS={'tap-rainbow':{cols:RAINBOW},'tap-stars':{cols:['#FACC15','#F59E0B','#FDE047'],em:['⭐','✨','🌟']},'tap-confetti':{cols:['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'],sq:true},
- 'tap-fireworks':{cols:['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'],big:true},'tap-gold':{cols:['#FACC15','#EAB308','#CA8A04'],em:['🪙','✨']},
- 'hol-sukkah':{cols:['#16A34A','#FACC15'],em:['🍋','🌿','🍇','⭐']},'hol-menorah':{cols:['#2563EB','#CBD5E1','#FACC15'],em:['🕎','✨','🔥']},'hol-fruit':{cols:['#7C3AED','#65A30D','#CA8A04'],em:['🍇','🫒','🌾','🌳']},
+const TAPS={'tap-rainbow':{cols:RAINBOW,kind:'rainbow'},'tap-stars':{cols:['#FACC15','#F59E0B','#FDE047'],em:['⭐','✨','🌟'],kind:'stars'},'tap-confetti':{cols:['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'],sq:true,kind:'confetti'},
+ 'tap-fireworks':{cols:['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'],big:true,kind:'fireworks'},'tap-gold':{cols:['#FACC15','#EAB308','#CA8A04'],em:['🪙','✨'],kind:'coins'},
+ 'hol-sukkah':{cols:['#16A34A','#FACC15'],em:['🍋','🌿','🍇','⭐']},'hol-menorah':{cols:['#2563EB','#CBD5E1','#FACC15'],em:['🔥','✨'],kind:'flames'},'hol-fruit':{cols:['#7C3AED','#65A30D','#CA8A04'],em:['🍇','🫒','🌾','🌳']},
  'hol-masks':{cols:['#A855F7','#F43F5E','#FACC15'],em:['🎭','🎉','🥁','👑']},'hol-arrows':{cols:['#EA580C','#FACC15'],em:['🏹','✨']},'hol-flowers':{cols:['#EC4899','#FACC15','#22C55E'],em:['🌸','🌼','🌿','🌷']}};
-window.tlStoreTrailOn=()=>{ try{ return !!(A.st&&TRAILS[(ST().wear||{}).trail]); }catch(e){ return false; } };
-window.tlTapStyle=()=>{ try{ if(!A.st) return null; return TAPS[(ST().wear||{}).tap]||null; }catch(e){ return null; } };
+/* MATCHING SETS (HoS 2026-11-20: "when you buy a swipe it should come with a built-in blast ... uniform together"): every trail comes
+   with its matching tap blast, and every tap blast with its matching trail. If he also wears a separate one, that one wins for its slot. */
+const TAP_OF={'trail':TAPS['tap-stars'],'trail-rainbow':TAPS['tap-rainbow'],'trail-comet':{cols:['#FDBA74','#F97316','#FDE047'],kind:'comet'},'trail-sparkle':{cols:['#FDE68A','#FFFFFF','#C4B5FD'],em:['✨'],kind:'sparkle'},
+ 'trail-bubbles':{cols:['#7DD3FC','#E0F2FE'],kind:'bubbles'},'hol-honey':{cols:['#F59E0B','#EF4444'],em:['🍎','🍯']},'hol-flames':{cols:['#F97316','#FACC15'],em:['🔥','✨'],kind:'flames'},
+ 'hol-sea':{cols:['#38BDF8','#0EA5E9'],em:['🌊','💧'],kind:'bubbles'},'hol-bonfire':{cols:['#F97316','#FACC15'],em:['🔥','✨'],kind:'flames'},'hol-donuts':{cols:['#F9A8D4','#FDE68A'],em:['🍩']}};
+const TRAIL_OF={'tap-rainbow':null,'tap-stars':null,'tap-confetti':{conf:true,gap:12},'tap-fireworks':{fw:true,gap:9},'tap-gold':{em:['🪙'],gap:32},'hol-sukkah':{em:['🍋','🌿'],gap:32},'hol-menorah':{em:['✨','🔥'],gap:26,up:true},
+ 'hol-fruit':{em:['🍇','🫒','🌾'],gap:32},'hol-masks':{em:['🎉','🎭'],gap:32},'hol-arrows':{em:['🏹'],gap:34},'hol-flowers':{em:['🌸','🌼'],gap:30}};
+function trailOf(id){ return TRAILS[id]||TRAIL_OF[id]||(id==='tap-rainbow'?TRAILS['trail-rainbow']:id==='tap-stars'?TRAILS['trail']:null); }
+function tapOf(id){ return TAPS[id]||TAP_OF[id]||null; }
+function wornTrail(){ const w=ST().wear||{}; return TRAILS[w.trail]||trailOf(w.tap); }
+function wornTap(){ const w=ST().wear||{}; return TAPS[w.tap]||tapOf(w.trail); }
+window.tlStoreTrailOn=()=>{ try{ return !!(A.st&&wornTrail()); }catch(e){ return false; } };
+window.tlTapStyle=()=>{ try{ if(!A.st) return null; return wornTap()||null; }catch(e){ return null; } };
 /* trails: follow the mouse (pointer events) and the finger (touch events, which keep coming while the page scrolls) */
 const TRAILS={'trail':{em:['⭐','✨','🌟'],gap:30},'trail-rainbow':{rb:true,gap:7},'trail-comet':{comet:true,gap:7},'trail-sparkle':{em:['✨'],gap:22,small:true},'trail-bubbles':{em:['🫧'],gap:34,up:true},
  'hol-honey':{em:['🍎','🍯'],gap:34},'hol-flames':{em:['🔥','✨','🕯️'],gap:28,up:true},'hol-sea':{em:['🌊','💧'],gap:30},'hol-bonfire':{em:['🔥','✨'],gap:26,up:true},'hol-donuts':{donut:true,gap:30}};
@@ -360,13 +378,60 @@ function donut(x,y){ if(TLIVE>=TCAP) return; TLIVE++; const e=document.createEle
   const a=Math.random()*Math.PI*2, dist=45+Math.random()*75, dx=Math.cos(a)*dist, dy=Math.sin(a)*dist, turn=(dist/(Math.PI*sz))*360*(dx<0?-1:1), ms=900+Math.random()*450;
   e.animate([{transform:'translate(0,0) rotate(0deg) scale(.4)',opacity:0},{transform:`translate(${dx*.12}px,${dy*.12}px) rotate(${turn*.12}deg) scale(1)`,opacity:1,offset:.1},{transform:`translate(${dx}px,${dy}px) rotate(${turn}deg) scale(1)`,opacity:1,offset:.8},{transform:`translate(${dx*1.04}px,${dy*1.04}px) rotate(${turn*1.04}deg) scale(.9)`,opacity:0}],{duration:ms,easing:'cubic-bezier(.12,.75,.3,1)'}).onfinish=()=>{ e.remove(); TLIVE--; }; }
 let TL=null, TLIVE=0, thue=0, tk=0; const TCAP=90;
+/* STORE PREVIEWS (HoS 2026-11-20: "the picture should match what you're going to get ... so there's no disappointment").
+   Each Trail and Tap blast card plays the REAL effect in a small dark window: a fingertip slides across leaving that trail (or that
+   tap blast's swipe splashes) and ends with a tap "poof". The very same drawing code the boy gets after he buys it. One card plays at a
+   time (the cards in view take turns); tap a window to replay it. Reduced motion: no autoplay. */
+function pvRun(el){ try{ if(!el||el._run) return; const r=el.getBoundingClientRect(); if(r.width<40||r.bottom<10||r.top>innerHeight-10) return; el._run=1;
+  const id=el.dataset.pv, tr=trailOf(id), tp=tapOf(id), f=el.querySelector('.f'), x0=r.left+22, x1=r.right-34, yc=r.top+r.height/2-4, amp=r.height*.2, dur=1150, t0=performance.now();
+  let lp=null, ls=null; f.style.opacity='1';
+  const step=now=>{ const k=Math.min(1,(now-t0)/dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2, x=x0+(x1-x0)*e, y=yc+Math.sin(e*Math.PI*2)*amp;
+    f.style.transform=`translate(${(x-r.left).toFixed(1)}px,${(y-r.top).toFixed(1)}px)`;
+    if(tr){ if(!lp) lp={x,y}; else { const dx=x-lp.x, dy=y-lp.y, len=Math.hypot(dx,dy); if(len>=tr.gap){ const ux=dx/len, uy=dy/len; let dd=len; while(dd>=tr.gap){ lp.x+=ux*tr.gap; lp.y+=uy*tr.gap; dd-=tr.gap; tdot(lp.x,lp.y,tr); } } } }
+    if(!tr&&tp&&window.tlSplash){ if(!ls){ ls={x,y}; } else if(Math.hypot(x-ls.x,y-ls.y)>=34){ ls={x,y}; window.tlSplash(x,y,true,tp); } }
+    if(k<1) requestAnimationFrame(step);
+    else { try{ if(window.tlSplash) window.tlSplash(x,y,false,tp||TAPS[(ST().wear||{}).tap]||null); }catch(e){} f.style.opacity='0'; setTimeout(()=>{ el._run=0; },700); } };
+  requestAnimationFrame(step); }catch(e){ if(el) el._run=0; } }
+/* the still picture in each preview window: the same trail or blast, drawn once along a swipe, with the tap "poof" at the end */
+function pvStatic(id,emo){ try{ const tr=trailOf(id), tp=tapOf(id), P=t=>[8+t*72,50+Math.sin(t*Math.PI*2)*20]; let h='';
+  const at=(p,dx,dy,st,inner)=>`<i class="pvs" style="left:calc(${p[0].toFixed(1)}% + ${Math.round(dx)}px);top:calc(${p[1].toFixed(1)}% + ${Math.round(dy)}px);${st||''}">${inner||''}</i>`;
+  if(tr){ const n=tr.donut?7:tr.em?(tr.small?11:8):(tr.conf?16:tr.fw?18:22);
+   for(let k=0;k<n;k++){ const t=k/(n-1)*.92, p=P(t), o=(.3+.7*t/.92).toFixed(2);
+    if(tr.donut) h+=at(p,0,0,`width:16px;height:16px;opacity:${o}`,donutSvg(k));
+    else if(tr.em) h+=at(p,0,tr.up?-6*(1-t):0,`font-size:${Math.round((tr.small?10:13)+5*t)}px;opacity:${o}`,tr.em[k%tr.em.length]);
+    else if(tr.rb) h+=at(p,0,0,`width:${Math.round(6+8*t)}px;height:${Math.round(6+8*t)}px;border-radius:50%;background:hsl(${Math.round(t*320)},95%,58%);opacity:${o}`);
+    else if(tr.conf) h+=at(p,(k%3-1)*4,(k%2?6:-2)+t*4,`width:5px;height:8px;border-radius:1px;background:${['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'][k%5]};transform:translate(-50%,-50%) rotate(${k*47}deg);opacity:${o}`);
+    else if(tr.fw) h+=at(p,(k%3-1)*5,(k%4-1.5)*4,`width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 5px 2px ${['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'][k%5]};opacity:${o}`);
+    else h+=at(p,0,0,`width:${Math.round(4+10*t)}px;height:${Math.round(4+10*t)}px;border-radius:50%;background:radial-gradient(circle,#FFF7ED,#FDBA74 45%,#F97316 70%,rgba(249,115,22,0));opacity:${o}`); } }
+  const e=P(1), K=tp&&tp.kind, cols=(tp&&tp.cols)||RAINBOW, em=tp&&tp.em;
+  if(!tp){ h+=`<i class="pvs pvtip" style="left:${e[0]}%;top:${e[1]}%"></i>`; return h; }
+  if(K==='rainbow'){ cols.forEach((c,k)=>{ const r=6+k*3.2; h+=at(e,0,0,`width:${r*2}px;height:${r*2}px;border-radius:50%;border:2px solid ${c}`); }); }
+  else if(K==='fireworks'){ for(let k=0;k<14;k++){ const a=k/14*Math.PI*2, d=18; h+=at(e,Math.cos(a)*d,Math.sin(a)*d,`width:2.5px;height:11px;border-radius:2px;background:${cols[k%cols.length]};box-shadow:0 0 5px ${cols[k%cols.length]};transform:translate(-50%,-50%) rotate(${Math.round(a*57.3+90)}deg)`); } h+=at(e,0,0,'width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff'); }
+  else if(K==='confetti'){ for(let k=0;k<14;k++){ const a=k/14*Math.PI*2+.3, d=10+(k%3)*7; h+=at(e,Math.cos(a)*d,Math.sin(a)*d+4,`width:6px;height:9px;border-radius:1.5px;background:${cols[k%cols.length]};transform:translate(-50%,-50%) rotate(${k*53}deg)`); } }
+  else if(K==='coins'){ [[0,-14],[-16,-2],[15,-4],[-8,12],[10,12]].forEach(([dx,dy],k)=>{ h+=at(e,dx,dy,`font-size:${15-k%2*2}px;transform:translate(-50%,-50%) rotate(${k*25-30}deg)`,'🪙'); }); }
+  else if(K==='stars'){ for(let k=0;k<7;k++){ const a=k/7*Math.PI*2, d=17; h+=at(e,Math.cos(a)*d,Math.sin(a)*d,`font-size:${k%2?11:14}px`,(em||['⭐'])[k%(em||['⭐']).length]); } h+=at(e,0,0,'width:12px;height:12px;border-radius:50%;background:radial-gradient(circle,#fff,#FDE047 55%,rgba(253,224,71,0))'); }
+  else if(K==='sparkle'){ [[0,0,15],[-14,-10,10],[13,-12,12],[-12,10,9],[14,9,11],[2,-20,8],[0,18,8]].forEach(([dx,dy,f])=>{ h+=at(e,dx,dy,`font-size:${f}px`,'✨'); }); }
+  else if(K==='bubbles'){ [[0,-6,14],[-13,-16,9],[12,-20,11],[-6,-28,7],[8,4,8]].forEach(([dx,dy,r])=>{ h+=at(e,dx,dy,`width:${r}px;height:${r}px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.9),rgba(186,230,253,.35) 40%,rgba(125,211,252,.15));border:1.5px solid rgba(186,230,253,.9)`); }); }
+  else if(K==='comet'){ h+=at(e,0,0,'width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#FFF7ED,#FDBA74 40%,#F97316 65%,rgba(249,115,22,0))'); for(let k=0;k<8;k++){ const a=k/8*Math.PI*2, d=18; h+=at(e,Math.cos(a)*d,Math.sin(a)*d+3,`width:4px;height:4px;border-radius:50%;background:${cols[k%cols.length]};box-shadow:0 0 5px #F97316`); } }
+  else if(K==='flames'){ [[0,-4,16],[-12,-12,11],[12,-14,12],[-4,-24,9],[8,-28,8]].forEach(([dx,dy,f],k)=>{ h+=at(e,dx,dy,`font-size:${f}px`,(em||['🔥'])[k%(em||['🔥']).length]); }); }
+  else { h+=at(e,0,0,`width:20px;height:20px;border-radius:50%;border:3px solid ${cols[0]}`); for(let k=0;k<8;k++){ const a=k/8*Math.PI*2, d=20; h+=em?at(e,Math.cos(a)*d,Math.sin(a)*d,'font-size:12px',em[k%em.length]):at(e,Math.cos(a)*d,Math.sin(a)*d,`width:6px;height:6px;border-radius:50%;background:${cols[k%cols.length]}`); } }
+  return h; }catch(e){ return `<span class="em" aria-hidden="true">${emo||''}</span>`; } }
+let PVI=0;
+setInterval(()=>{ try{ if(!T.open||T.tab==='canteen'||rmo()) return; const box=document.querySelector('#tlstore .stbody'); if(!box) return; const br=box.getBoundingClientRect();
+  const vis=[...box.querySelectorAll('.stpv')].filter(el=>{ const r=el.getBoundingClientRect(); return r.top>=br.top-10&&r.bottom<=br.bottom+10; }); if(!vis.length) return;
+  pvRun(vis[PVI++%vis.length]); }catch(e){} },1500);
+document.addEventListener('click',e=>{ const el=e.target&&e.target.closest&&e.target.closest('.stpv'); if(el){ e.stopPropagation(); el._run=0; pvRun(el); } },true);
 function tdot(x,y,t){ if(t.donut){ donut(x,y); return; } if(TLIVE>=TCAP) return; const e=document.createElement('i'); TLIVE++;
   if(t.em){ e.className='stem'; e.textContent=t.em[tk++%t.em.length]; e.style.fontSize=(t.small?13:18)+'px'; e.style.left=x+'px'; e.style.top=y+'px'; document.body.appendChild(e);
     e.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(-50%,${t.up?-(18+Math.random()*16):(10+Math.random()*20)}px) scale(.3)`,opacity:0}],{duration:t.up?900:700,easing:'ease-out'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
+  if(t.conf){ const c=['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'][tk++%5]; e.className='sttr'; e.style.cssText+=`;width:6px;height:9px;border-radius:1.5px;left:${x-3}px;top:${y-4}px;background:${c}`; document.body.appendChild(e);
+    const dx=(Math.random()-.5)*24, sp=(Math.random()<.5?-1:1)*(200+Math.random()*300); e.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:`translate(${dx}px,${26+Math.random()*20}px) rotate(${sp}deg)`,opacity:0}],{duration:800,easing:'ease-in'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
+  if(t.fw){ const c=['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'][tk++%5]; e.className='sttr'; e.style.cssText+=`;width:4px;height:4px;left:${x-2}px;top:${y-2}px;background:#fff;box-shadow:0 0 6px 2px ${c}`; document.body.appendChild(e);
+    const a=Math.random()*Math.PI*2, d=6+Math.random()*12; e.animate([{transform:'translate(0,0) scale(1.2)',opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+8}px) scale(.2)`,opacity:0}],{duration:550,easing:'ease-out'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
   const sz=t.rb?14:12; e.className='sttr'; e.style.width=e.style.height=sz+'px'; e.style.left=(x-sz/2)+'px'; e.style.top=(y-sz/2)+'px';
   if(t.rb){ thue=(thue+9)%360; e.style.background=`hsl(${thue},95%,58%)`; } else { e.style.background='radial-gradient(circle,#FFF7ED,#FDBA74 45%,#F97316 70%,rgba(249,115,22,0))'; }
   document.body.appendChild(e); e.animate([{transform:'scale(1)',opacity:.95},{transform:'scale(.15)',opacity:0}],{duration:t.rb?650:450,easing:'ease-in'}).onfinish=()=>{ e.remove(); TLIVE--; }; }
-function trailMove(x,y){ try{ if(rmo()||!A.st) return; const t=TRAILS[(ST().wear||{}).trail]; if(!t){ TL=null; return; }
+function trailMove(x,y){ try{ if(rmo()||!A.st) return; const t=wornTrail(); if(!t){ TL=null; return; }
   if(!TL||Math.hypot(x-TL.x,y-TL.y)>200){ TL={x:x,y:y}; return; }
   const dx=x-TL.x, dy=y-TL.y, len=Math.hypot(dx,dy); if(len<t.gap) return; const ux=dx/len, uy=dy/len; let dd=len;
   while(dd>=t.gap){ TL.x+=ux*t.gap; TL.y+=uy*t.gap; dd-=t.gap; tdot(TL.x,TL.y,t); } }catch(e){} }

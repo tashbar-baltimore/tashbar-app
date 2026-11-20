@@ -32,12 +32,12 @@ body.gm-nav .pf-card{bottom:calc(96px + env(safe-area-inset-bottom,0px))!importa
 body.gm-nav #mupill{bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
 body.gm-nav:not(.gm-on) #app{padding-bottom:96px}
 #gm{position:fixed;inset:0;z-index:30;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif;
- background:radial-gradient(ellipse at 50% 0%,#4C2AA8 0%,#1C0F5A 42%,#0A0726 100%);display:none}
+ background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%);display:none}
 body.gm-on #gm{display:block}
 #gm *{box-sizing:border-box}
-#gm .gm-sky{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(2px 2px at 8% 14%,rgba(255,255,255,.55),transparent),radial-gradient(2px 2px at 82% 9%,rgba(255,255,255,.6),transparent),radial-gradient(1.5px 1.5px at 52% 24%,rgba(255,255,255,.45),transparent),radial-gradient(2px 2px at 16% 46%,rgba(255,255,255,.4),transparent),radial-gradient(1.5px 1.5px at 90% 40%,rgba(255,255,255,.5),transparent),radial-gradient(2px 2px at 40% 64%,rgba(255,255,255,.35),transparent),radial-gradient(1.5px 1.5px at 70% 78%,rgba(255,255,255,.4),transparent)}
+#gm .gm-sky{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle at 88% 6%,rgba(255,240,150,.95) 0 34px,rgba(255,220,90,.35) 35px 70px,transparent 71px),radial-gradient(60px 26px at 14% 18%,rgba(255,255,255,.75),transparent),radial-gradient(80px 30px at 22% 20%,rgba(255,255,255,.6),transparent),radial-gradient(70px 26px at 70% 38%,rgba(255,255,255,.55),transparent),radial-gradient(90px 30px at 30% 62%,rgba(255,255,255,.45),transparent),radial-gradient(80px 28px at 80% 78%,rgba(255,255,255,.45),transparent)}
 #gm .gm-in{position:relative;max-width:640px;margin:0 auto;padding:12px 16px calc(330px + env(safe-area-inset-bottom,0px))}
-#gm .gm-top{position:sticky;top:0;z-index:3;margin:-12px -16px 0;padding:12px 16px 4px;background:#1C0F5A;box-shadow:0 0 0 100vmax #1C0F5A;clip-path:inset(0 -100vmax 0 -100vmax);border-bottom:2px solid rgba(255,255,255,.08)}
+#gm .gm-top{position:sticky;top:0;z-index:3;margin:-12px -16px 0;padding:12px 16px 4px;background:#7B61FF;box-shadow:0 0 0 100vmax #7B61FF;clip-path:inset(0 -100vmax 0 -100vmax);border-bottom:2px solid rgba(255,255,255,.08)}
 #gm .gm-hud{display:flex;gap:6px;align-items:center;padding-right:96px;min-height:40px}
 #gm .gm-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(0,0,0,.42);border:2px solid rgba(255,255,255,.18);border-radius:12px;padding:5px 9px;font-weight:900;font-size:14px;color:#fff;white-space:nowrap;font-family:inherit}
 #gm .gm-rank{background:linear-gradient(135deg,#FFE259,#FFA751);color:#3A1C00;border:0}
@@ -58,6 +58,30 @@ body.gm-on #gm{display:block}
 #gm .gm-unit .left{font-size:13px;font-weight:900;color:#FFE259;text-align:right;white-space:nowrap}
 #gm .gm-path{position:relative;margin-top:6px}
 #gm .gm-path svg{position:absolute;left:0;top:0;pointer-events:none}
+#gm .gm-path svg.gm-land{left:-30%;width:160%;height:100%;z-index:0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(180deg,transparent 0,#000 90px,#000 calc(100% - 60px),transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(180deg,transparent 0,#000 90px,#000 calc(100% - 60px),transparent 100%);mask-composite:intersect}
+/* step numbers (HoS 2026-11-20): a bare floating number, no circle, modern 3-D: a bright face, a deeper extruded edge, a soft glow */
+#gm .gm-num{position:absolute;transform:translate(-50%,-50%);z-index:2;pointer-events:none;text-align:center;line-height:1}
+#gm .gm-num b{display:block;font-weight:900;font-size:24px;letter-spacing:-.02em;font-style:italic;animation:gmbob 3.2s ease-in-out infinite;
+ color:#E4DEFF;background:linear-gradient(180deg,#FFFFFF 10%,#C9C4FF 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 1px 0 #6E62C9) drop-shadow(0 1px 0 #5A4EB5) drop-shadow(0 1px 0 #463BA0) drop-shadow(0 4px 6px rgba(8,4,30,.55))}
+#gm .gm-num.now b{font-size:32px;background-image:linear-gradient(180deg,#FFF9C4 5%,#FFE259 45%,#FFB800 95%);
+ filter:drop-shadow(0 1px 0 #E08A00) drop-shadow(0 1px 0 #C27100) drop-shadow(0 1px 0 #A35A00) drop-shadow(0 0 10px rgba(255,200,0,.55)) drop-shadow(0 5px 7px rgba(8,4,30,.5))}
+#gm .gm-num.d b{background-image:linear-gradient(180deg,#E9FFF3 5%,#7CFFB2 50%,#2ED88A 95%);
+ filter:drop-shadow(0 1px 0 #13A866) drop-shadow(0 1px 0 #0D8A53) drop-shadow(0 1px 0 #086D41) drop-shadow(0 4px 6px rgba(8,4,30,.55))}
+#gm .gm-num.u b{opacity:.92}
+@keyframes gmbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+/* statues beside the road (HoS 2026-11-20: "like statues along the side of the road ... bobbing gently and spinning in 3-D") */
+#gm .gm-dec{position:absolute;transform:translate(-50%,-100%);pointer-events:none;z-index:1;font:900 var(--s)/1 system-ui,sans-serif;white-space:nowrap;perspective:420px}
+#gm .gm-dec.he{font-family:'Frank Ruhl Libre','SBL Hebrew','Times New Roman',serif}
+#gm .gm-dec i{display:block;font-style:normal;animation:gmbounce .62s cubic-bezier(.3,0,.5,1) infinite alternate;transform-style:preserve-3d}
+#gm .gm-dec b{position:relative;display:block;font-weight:900;color:var(--c);transform-style:preserve-3d;animation:gmtop 2.4s linear infinite;
+ text-shadow:0 0 12px rgba(255,255,255,.18)}
+#gm .gm-dec b u{position:absolute;left:0;top:0;text-decoration:none;color:var(--c);filter:brightness(.42) saturate(1.2);text-shadow:none}
+#gm .gm-dec::after{content:'';position:absolute;left:50%;bottom:-8px;width:80%;height:9px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),rgba(0,0,0,0));animation:gmshadow2 .62s cubic-bezier(.3,0,.5,1) infinite alternate}
+@keyframes gmbounce{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+@keyframes gmtop{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+@keyframes gmshadow2{from{transform:translateX(-50%) scale(1);opacity:1}to{transform:translateX(-50%) scale(.7);opacity:.55}}
+@media (prefers-reduced-motion:reduce){#gm .gm-num b,#gm .gm-dec i,#gm .gm-dec b,#gm .gm-dec::after{animation:none}}
 #gm .gm-n{position:absolute;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;cursor:pointer;border:3px solid;padding:0;font-family:inherit;color:#fff}
 #gm .gm-n:active{transform:translate(-50%,-46%)}
 #gm .gm-n.d{width:58px;height:58px;font-size:26px;background:radial-gradient(circle at 35% 30%,#7CFFB2,#00B36B);box-shadow:0 7px 0 #006B40;border-color:#CFFFE3}
@@ -71,6 +95,29 @@ body.gm-on #gm{display:block}
 #gm .gm-l .k{display:block;font-size:10px;letter-spacing:.1em;color:#FFE259;margin-bottom:2px}
 #gm .gm-l.boss .k{color:#FF8AB0}
 #gm .gm-l.now{background:rgba(5,4,25,.86);border:2px solid #FFE259}
+/* map cards (HoS 2026-11-20): only the step he is up to has a card, title only; the (i) types the description in under it. A locked
+   step shows only its lock; a tap pops a small card out to the side for a moment. Cleared steps have no card. */
+#gm .gm-l.now{pointer-events:auto;padding:9px 12px;font-size:15px;max-width:min(46%,300px);transition:padding .2s ease}
+#gm .gm-l.now.has-i{padding-right:42px}
+#gm .gm-l .t{display:block;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+#gm .gm-l.open .t{transform:translateY(-1px)}
+#gm .gm-l .d{display:block;font-size:12.5px;font-weight:700;line-height:1.35;color:#D9D5FF;margin-top:0;max-height:0;overflow:hidden;transition:margin .2s ease}
+#gm .gm-l.open .d{max-height:none;margin-top:5px}
+#gm .gm-l .d .cur{display:inline-block;width:1px;height:1em;background:#FFE259;margin-left:1px;vertical-align:-2px;animation:gmblink .8s steps(1) infinite}
+@keyframes gmblink{50%{opacity:0}}
+#gm .gm-i{position:absolute;top:7px;right:8px;width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,226,89,.75);background:rgba(255,226,89,.08);color:#FFE259;font:italic 900 14px/1 Georgia,'Times New Roman',serif;display:grid;place-items:center;padding:0;cursor:pointer;transition:background .15s ease,transform .15s ease,color .15s ease}
+@media (hover:hover){#gm .gm-i:hover{background:rgba(255,226,89,.22);transform:scale(1.08)}}
+#gm .gm-i:active{transform:scale(.92)}
+#gm .gm-l.open .gm-i{background:#FFE259;color:#3A1C00}
+#gm .gm-i:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#gm .gm-pop{position:absolute;transform:translateY(-50%);max-width:min(46%,260px);z-index:3;background:rgba(5,4,25,.9);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:7px 11px;font-size:13px;font-weight:900;line-height:1.2;color:#fff;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.35);animation:gmpopL .24s cubic-bezier(.2,1.1,.4,1) both}
+#gm .gm-pop.r{animation-name:gmpopR}
+#gm .gm-pop .k{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#AFAFE0;margin-bottom:2px}
+#gm .gm-pop.out{animation:gmpopOut .2s ease both}
+@keyframes gmpopL{from{opacity:0;transform:translate(-10px,-50%) scale(.94)}to{opacity:1;transform:translate(0,-50%)}}
+@keyframes gmpopR{from{opacity:0;transform:translate(10px,-50%) scale(.94)}to{opacity:1;transform:translate(0,-50%)}}
+@keyframes gmpopOut{to{opacity:0;transform:translate(0,-50%) scale(.97)}}
+@media (prefers-reduced-motion:reduce){#gm .gm-pop,#gm .gm-pop.r,#gm .gm-pop.out{animation-duration:.01s}#gm .gm-l .t{transition:none}}
 #gm .gm-more{position:absolute;left:50%;transform:translateX(-50%);font-size:12px;font-weight:900;color:#7CFFB2;background:rgba(0,0,0,.4);border-radius:10px;padding:4px 10px;white-space:nowrap}
 #gm .gm-goal{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:31;border-radius:24px;padding:13px 14px 14px;
  background:linear-gradient(135deg,rgba(124,77,255,.97),rgba(214,51,160,.97));border:3px solid rgba(255,255,255,.35);box-shadow:0 12px 30px rgba(20,0,60,.55)}
@@ -105,12 +152,12 @@ body.gm-on #gm{display:block}
 #gm .gm-done small{display:block;font-size:14px;font-weight:700;color:#C9C4FF;margin-top:6px}
 #gm .gm-toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:32;background:#fff;color:#1E1B4B;font-weight:900;font-size:15px;border-radius:14px;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:calc(100% - 32px);text-align:center}
 #gm-nav{position:fixed;left:50%;transform:translateX(-50%);width:min(620px,calc(100% - 20px));bottom:calc(10px + env(safe-area-inset-bottom,0px));height:72px;z-index:35;display:none;justify-content:space-around;align-items:center;
- background:rgba(12,9,44,.96);border:2px solid rgba(255,255,255,.14);border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+ background:#fff;border:3px solid #FFD84D;border-radius:22px;box-shadow:0 8px 24px rgba(30,20,90,.3)}
 body.gm-nav #gm-nav{display:flex}
-#gm-nav button{flex:1;height:100%;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:900 10px/1 var(--display,'Rubik'),'Inter',system-ui,sans-serif;color:#9D9BD6;text-transform:uppercase;letter-spacing:0;white-space:nowrap;cursor:pointer}
+#gm-nav button{flex:1;height:100%;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;font:900 10px/1 var(--display,'Rubik'),'Inter',system-ui,sans-serif;color:#5B5FA8;text-transform:uppercase;letter-spacing:0;white-space:nowrap;cursor:pointer}
 #gm-nav b{font-size:25px;line-height:30px}
-#gm-nav .on{color:#FFE259}
-#gm-nav .on b{filter:drop-shadow(0 0 7px rgba(255,226,89,.75))}
+#gm-nav .on{color:#FF5A00}
+#gm-nav .on b{filter:drop-shadow(0 0 6px rgba(255,140,0,.6))}
 @media (max-width:700px){#gm .gm-row{flex-direction:column;align-items:stretch}#gm .gm-say{align-self:flex-start;order:-1}#gm .gm-goal{padding:10px 12px 12px}#gm .gm-goal h1{font-size:25px}#gm .gm-goal .learn{font-size:14px}#gm .gm-play{font-size:23px;padding:12px}#gm .gm-row{margin-top:8px}#gm-nav{left:8px;transform:none;width:calc(100% - 92px)}#gm .gm-goal{left:8px;transform:none;width:calc(100% - 16px)}}
 body.gm-k2 #gm .gm-goal h1{font-size:32px}
 body.gm-k2 #gm .gm-play{font-size:32px;padding:18px}
@@ -118,7 +165,7 @@ body.gm-k2 #gm .gm-say{height:58px;font-size:19px}
 body.gm-k2 #gm-nav{height:84px}
 body.gm-k2 #gm-nav b{font-size:34px;line-height:40px}
 body.gm-k2 #gm-nav button{font-size:13px}
-@media (min-width:1000px){#gm .gm-in{max-width:1120px;padding-bottom:120px}#gm .gm-unit,#gm .gm-path{width:620px}
+@media (min-width:1000px){#gm{background:radial-gradient(640px 120% at calc(50% - 234px) 18%,#4C2AA8 0%,#2A1678 30%,#1C0F5A 52%,#0A0726 100%)}#gm .gm-in{max-width:1120px;padding-bottom:120px}#gm .gm-unit,#gm .gm-path{width:620px}
  #gm .gm-goal{left:auto;right:max(16px,calc(50% - 560px));transform:none;width:440px;top:190px;bottom:auto;padding:20px}
  #gm .gm-goal h1{font-size:40px}#gm .gm-goal .learn{font-size:18px}#gm .gm-goal .m{font-size:15px}#gm .gm-play{font-size:30px;padding:18px}
  #gm .gm-l{font-size:15px}#gm .gm-l small{font-size:13px}#gm .gm-chip{font-size:16px;padding:7px 12px}#gm .gm-w{font-size:15px;padding:8px 16px}#gm-nav{height:78px}}
@@ -368,8 +415,8 @@ body.gm-nav .stkpis b{color:#39FF88!important}body.gm-nav .stkpis small,body.gm-
 #gm .gm-quest .bar{display:block;height:8px;border-radius:6px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:6px;padding:0}#gm .gm-quest .bar i{display:block;height:100%;background:linear-gradient(90deg,#FFE259,#FF9F1C)}
 #gm .gm-none{margin-top:14px;border-radius:22px;padding:22px 16px;text-align:center;background:rgba(0,0,0,.35);border:3px dashed rgba(255,255,255,.25)}
 #gm .gm-none .i{font-size:60px}#gm .gm-none h1{margin:6px 0;font-size:26px;font-weight:900;font-style:italic;text-transform:uppercase}#gm .gm-none p{margin:0 0 12px;font-size:15px;font-weight:700;color:#D9D5FF}
-#gm-room{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:radial-gradient(ellipse at 50% 0%,#4C2AA8 0%,#1C0F5A 45%,#0A0726 100%);color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
-#gm-room .hd{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#1C0F5A;border-bottom:2px solid rgba(255,255,255,.1)}
+#gm-room{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%);color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
+#gm-room .hd{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#7B61FF;border-bottom:2px solid rgba(255,255,255,.1)}
 #gm-room .hd b{flex:1;font-size:20px;font-weight:900;font-style:italic;text-transform:uppercase}
 #gm-room .hd button{border:0;border-radius:14px;padding:10px 14px;font-family:inherit;font-weight:900;font-size:15px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 4px 0 #B36B00;cursor:pointer}
 #gm-room .bd{flex:1;overflow:auto;padding:14px}
@@ -377,7 +424,7 @@ body.gm-nav .stkpis b{color:#39FF88!important}body.gm-nav .stkpis small,body.gm-
 #gm-room .bd .panel,#gm-room .bd section{border-radius:22px!important}
 #gm-room [id^=p3w]{color:#5B3FD9!important;-webkit-text-fill-color:#5B3FD9!important}
 body.gm-nav .hpdraw{background:rgba(10,7,38,.8)!important}
-body.gm-nav .hpsheet{border-left:4px solid #FFD84D!important;box-shadow:-10px 0 40px rgba(0,0,0,.5)!important;background:radial-gradient(ellipse at 50% 0%,#4C2AA8 0%,#1C0F5A 45%,#0A0726 100%)!important;color:#fff}
+body.gm-nav .hpsheet{border-left:4px solid #FFD84D!important;box-shadow:-10px 0 40px rgba(0,0,0,.5)!important;background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%)!important;color:#fff}
 body.gm-nav .hpsheet .hpx{background:linear-gradient(180deg,#FFF06A,#FFB800)!important;color:#2B1400!important;font-weight:900!important;box-shadow:0 4px 0 #B36B00!important;border:0!important}
 body.gm-nav #hlx-shelf{background:rgba(10,7,38,.82)!important}
 body.gm-nav #hlx-shelf .sh-in{border:4px solid #FFD84D;box-shadow:0 0 0 4px #3B1E8F,0 30px 70px rgba(0,0,0,.55)}
@@ -400,7 +447,8 @@ function worldsOf(m){
  const out=[]; const add=(k,c,isK)=>{ if(!c||!c.level) return; const W=WORLDS[k]||['⭐',k];
   let ids=isK?(c.skills||[]).map(x=>x[0]):((c.unit&&c.unit.ids)||[]);
   if(!ids.length&&c.now) ids=[c.now];
-  let now=ids.find(id=>!done(id))||'';
+  if(!ids.length) return; /* HoS 2026-11-20: a subject with no lessons at his level yet is not shown (it used to say ✓ CLEARED with nothing done) */
+ let now=ids.find(id=>!done(id))||'';
   const cleared=!now&&ids.length>0;
   const unitName=isK?(W[1]+' Level '+c.level):((c.unit&&c.unit.name)||W[1]);
   out.push({k,icon:W[0],name:W[1],level:c.level,ids,now,cleared,next:c.next,unitName,isK,c}); };
@@ -419,23 +467,63 @@ function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
 function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':lcOf(w)?'🎫 CHECK':'LEVEL '+w.level}</small></button>`).join('')}<button type="button" class="gm-w gm-all" data-gm="lib" aria-label="All my lessons">📚 ALL<small>LESSONS</small></button></div>`; }
+/* PATH (HoS 2026-11-20): the page starts where he is and runs DOWN to the BOSS at the end; a longer path with wide, gentle curves;
+   a small floating number over every step (1, 2, 3 ...); quiet subject symbols in the empty space beside the path (Math + - x / ...). */
+const DECO={MATH:['+','−','×','÷','=','%','½','<','>'],READ:['A','b','?','!','“','”','a','Z'],LANG:['✎','A','?','!','a','.'],
+ SCI:['⚛','✦','°','◎'],SOC:['✦','◎','N','⌂'],COMP:['</>','{ }','01','#'],HEB:'אבגדלמשתצק'.split('')};
+const DECOC={MATH:'#FFE259',READ:'#8FD3FF',LANG:'#8FD3FF',SCI:'#7CFFB2',SOC:'#7CFFB2',COMP:'#C9C4FF',HEB:'#FFD27A'};
+function decoSet(k){ return /^(HEB|K:)/.test(k)?['HEB',DECO.HEB]:DECO[k]?[k,DECO[k]]:['',['✦','★','●']]; }
 function pathHTML(w){
- let ids=w.ids.slice(), hidden=0; const ni=w.now?ids.indexOf(w.now):ids.length;
- if(ids.length>7){ const from=Math.max(0,Math.min(ni-2,ids.length-7)); hidden=from; ids=ids.slice(from); }
- const N=ids.length, gap=88, H=N*gap+30, X=[30,70,40,72,28,66,36], pts=[];
- ids.forEach((id,i)=>{ const y=H-52-i*gap, x=X[i%X.length]; pts.push([x,y]); });
+ const all=w.ids.slice(), ni=w.now?all.indexOf(w.now):-1, from=ni>12?ni-12:0, hidden=from, ids=all.slice(from);
+ const N=ids.length, gap=150, top0=hidden?118:84, H=top0+Math.max(0,N-1)*gap+100, pts=[];
+ ids.forEach((id,i)=>{ pts.push([Math.round(50-24*Math.cos(i*Math.PI/2)),top0+i*gap]); });
  let d=''; pts.forEach((p,i)=>{ if(!i){ d='M'+p[0]+' '+p[1]; return; } const q=pts[i-1], my=(q[1]+p[1])/2; d+=' C'+q[0]+' '+my+' '+p[0]+' '+my+' '+p[0]+' '+p[1]; });
  const svg=`<svg width="100%" height="${H}" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="#FFE259" stroke-width="1.6" stroke-dasharray="0.6 4" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:5px;stroke-dasharray:2 14"/></svg>`;
- let h=`<div class="gm-path" style="height:${H}px">${svg}`;
+ const ds=decoSet(w.k), dc=DECOC[ds[0]]||'#C9C4FF'; let seed=0; String(w.k).split('').forEach(c=>{ seed=(seed*31+c.charCodeAt(0))%9973; });
+ const rnd=()=>{ seed=(seed*9301+49297)%233280; return seed/233280; };
+ /* LANDSCAPE (HoS 2026-11-20: "a really nice landscape that blends in ... the path going through them, winding around them in the
+    valleys"). One continuous land of rolling hills, ridge behind ridge down the page. Each ridge dips into a valley exactly where the road
+    crosses it and rises into soft hills away from it, so the road winds through the valleys. Colors melt into the sky; statues stand on
+    the hilltops. */
+ const statue=(xp,yp,sz,off)=>{ const g=ds[1][Math.floor(rnd()*ds[1].length)];
+  return `<span class="gm-dec${ds[0]==='HEB'?' he':''}" style="left:calc(${xp.toFixed(1)}% + ${Math.round(off||0)}px);top:${Math.round(yp)}px;--s:${Math.round((sz||1)*(44+rnd()*12))}px;--c:${dc}" aria-hidden="true"><i style="animation-delay:-${(rnd()*1.2).toFixed(2)}s"><b style="animation-delay:-${(rnd()*2.6).toFixed(2)}s">${[8,7,6,5,4,3,2,1].map(z=>`<u style="transform:translateZ(-${(z*1.1).toFixed(1)}px)">${esc(g)}</u>`).join('')}${esc(g)}</b></i></span>`; };
+ const roadX=y=>{ if(!pts.length) return 50; if(y<=pts[0][1]) return pts[0][0]; for(let q=1;q<pts.length;q++){ const a=pts[q-1], b=pts[q]; if(y<=b[1]){ const t=(y-a[1])/(b[1]-a[1]), e=t*t*(3-2*t); return a[0]+(b[0]-a[0])*e; } } return pts[pts.length-1][0]; };
+ const sm=(a,b,x)=>{ const t=Math.max(0,Math.min(1,(x-a)/(b-a))); return t*t*(3-2*t); };
+ const nowY=ni>=from?pts[ni-from][1]:-999;
+ const PW=Math.min(620,Math.max(280,(window.innerWidth||400)-32));   /* the road's width in px, to keep statues off the steps */
+ let land='', deco=''; const step=Math.round(gap*.62), bands=[];
+ for(let y=top0-gap*.55;y<H+40;y+=step) bands.push(y);
+ bands.forEach((yb,b)=>{ const rx=roadX(yb+18), ph=[rnd()*6,rnd()*6,rnd()*6], A=84+rnd()*50; let d='', peaks=[];
+  for(let k=0;k<=48;k++){ const xp=-30+k*(160/48), dist=Math.abs(xp-rx), hillv=sm(6,20,dist)*(.55+.45*(Math.sin(xp*.13+ph[0])*.5+.5))*(.75+.25*Math.sin(xp*.06+ph[1]));
+   const yy=yb-A*hillv; d+=(k?' L':'M')+((xp+30)*10).toFixed(0)+' '+yy.toFixed(1); peaks.push([xp,yy,hillv]); }
+  d+=' L1600 '+(yb+step*2.2).toFixed(0)+' L0 '+(yb+step*2.2).toFixed(0)+' Z';
+  const id='gl'+(GM.hid=(GM.hid||0)+1), lite=b%2?'#4529A6':'#3E259C';
+  land+=`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lite}" stop-opacity=".78"/><stop offset=".22" stop-color="#2E1A82" stop-opacity=".62"/><stop offset=".6" stop-color="#22106A" stop-opacity=".3"/><stop offset="1" stop-color="#1C0F5A" stop-opacity="0"/></linearGradient>`
+   +`<path d="${d}" fill="url(#${id})"/><path d="${d.split(' L1600 ')[0]}" fill="none" stroke="rgba(200,182,255,.08)" stroke-width="1.2" vector-effect="non-scaling-stroke"/>`;
+  });
+ /* STATUES right at the edge of the road (HoS 2026-11-20): big 3-D letters/symbols standing on both sides of the road, bouncing and
+    spinning like tops. Not on a step, not under his current step's card. */
+ for(let y0=top0+34;y0<H-50;y0+=gap/3){ const y=y0+22, rx=roadX(y), dStep=Math.min(...pts.map(p=>Math.abs(p[1]-y))), nearStep=dStep<70; if(dStep<30) continue;
+  [-1,1].forEach(sd=>{ if(rnd()<.2) return; if(Math.abs(y-nowY)<90&&sd===(pts[ni-from]&&pts[ni-from][0]<50?1:-1)) return;
+   const off=sd*((nearStep?82:60)+rnd()*12), sx=rx/100*PW+off;
+   if(pts.some((p,k)=>Math.hypot(p[0]/100*PW-sx,p[1]-(y-24))<((hidden+k)===w.ids.length-1||ids[k]===w.now?88:66))) return;
+   deco+=statue(rx,y,1,off); }); }
+ deco=`<svg class="gm-land" viewBox="0 0 1600 ${H}" preserveAspectRatio="none" aria-hidden="true"><defs></defs>${land}</svg>`+deco;
+ let h=`<div class="gm-path" style="height:${H}px">${deco}${svg}`;
+ if(hidden) h+=`<div class="gm-more" style="top:22px">✓ ${hidden} more cleared</div>`;
  const lc=lcOf(w);
  ids.forEach((id,i)=>{ const p=pts[i], isBoss=(hidden+i)===w.ids.length-1, isNow=id===w.now, isDone=mast(id), isKnown=known(id), n=nm(id);
   const cls=(isBoss?'boss ':'')+(isNow?'now':isDone||isKnown?'d':'u')+(isKnown?' kn':'')+(isNow&&lc?' lc':'');
   const ico=isNow?(lc?'🎫':isBoss?'🏰':w.icon):isDone?'✓':isKnown?'⏭':(isBoss?'🏰':'🔒');
   const lab=isNow?(lc?'🎫 LEVEL CHECK FIRST · '+lc.min+' MIN':isBoss?'BOSS LEVEL · YOU ARE HERE':'▶ YOU ARE HERE'):isKnown?'⏭ YOU KNOW IT · SKIPPED':isBoss?'BOSS · UNIT FINISH 🏁':isDone?'CLEARED':'LOCKED';
-  h+=`<button type="button" class="gm-n ${cls}" style="left:${p[0]}%;top:${p[1]}px" data-gm="node" data-id="${esc(id)}" aria-label="${esc(n[0])}${n[1]?': '+esc(n[1]):''} (${lab.toLowerCase()})">${ico}</button>`;
-  const right=p[0]<50, off=isNow||isBoss?58:40;
-  h+=`<div class="gm-l${isNow?' now':''}${isBoss?' boss':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="k">${lab}</span>${esc(n[0])}${n[1]?`<small>${esc(n[1])}</small>`:''}</div>`; });
- if(hidden) h+=`<div class="gm-more" style="top:${H-12}px">✓ ${hidden} more cleared below</div>`;
+  const big=isNow||isBoss, num=hidden+i+1;
+  h+=`<span class="gm-num ${isNow?'now':isDone||isKnown?'d':'u'}" style="left:${p[0]}%;top:${p[1]-(big?58:44)}px" aria-hidden="true"><b style="animation-delay:-${(i*0.7).toFixed(1)}s">${num}</b></span>`;
+  h+=`<button type="button" class="gm-n ${cls}" style="left:${p[0]}%;top:${p[1]}px" data-gm="node" data-id="${esc(id)}" aria-label="Step ${num}: ${esc(n[0])}${n[1]?': '+esc(n[1]):''} (${lab.toLowerCase()})">${ico}</button>`;
+  if(!isNow) return;
+  /* HoS 2026-11-20: when the second line is only "Chumash Level 3", that is the title and the (i) tells the step's own name */
+  const flip=n[1]&&/ Level \d+$/.test(n[1]), tt=lc?'🎫 LEVEL CHECK FIRST':flip?n[1]:n[0], dd=lc?'About '+lc.min+' minutes. Questions you get right are skills you skip.':flip?n[0]:n[1];
+  const right=p[0]<50, off=58;
+  h+=`<div class="gm-l now${isBoss?' boss':''}${dd?' has-i':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="t">${esc(tt)}</span>${dd?`<button type="button" class="gm-i" data-gm="info" data-d="${esc(dd)}" aria-expanded="false" aria-label="What is ${esc(tt)}?">i</button><small class="d" aria-live="polite"></small>`:''}</div>`; });
  return h+'</div>'; }
 /* ===== SKILL TREE (HoS 2026-11-20: "MY TREE ... his leaves light up as he masters them ... tap a leaf to replay it ... never overwhelm";
    then "more video game" -> an RPG-style skill tree). One world at a time, only his level: one branch per kind of skill (the server's
@@ -694,8 +782,25 @@ function sync(){
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
  show(true,true);
- if(first) scrollToNow(g);
+ if(first){ if(GM.view==='tree') scrollToNow(g); else scrollToHim(g); }
 }
+/* HoS 2026-11-20: the map always opens at the step he is up to (near the top), even when he is far down the road */
+function scrollToHim(g){ try{ g.scrollTop=0; const n=g.querySelector('.gm-n.now'); if(!n) return; const tp=g.querySelector('.gm-unit')||g.querySelector('.gm-top'), top=tp?tp.getBoundingClientRect().bottom:0;
+ const want=n.getBoundingClientRect().top-(top+70); if(want>0) g.scrollTop=Math.round(want); zoomIntro(g); }catch(e){} }
+/* HoS 2026-11-20: the first time he opens the map each day it starts zoomed out (the whole road, bird's-eye), then glides in to his step.
+   Once a day per boy (kept on this device); any tap skips it; reduced motion skips it. */
+function zoomIntro(g){ try{ const sid=A.st&&A.st.id; if(!sid) return; const key='gm-zoom:'+sid+':'+new Date().toDateString(); if(GM.zoomDay===key) return; GM.zoomDay=key;
+ try{ if(localStorage.getItem(key)) return; localStorage.setItem(key,'1'); }catch(e){}
+ try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
+ const path=g.querySelector('.gm-path'); if(!path) return; const pr=path.getBoundingClientRect(), tp=g.querySelector('.gm-top'), hb=(tp?tp.getBoundingClientRect().bottom:0)+14;
+ const nav=document.getElementById('gm-nav'), goal=g.querySelector('.gm-goal'); let bottom=nav&&nav.offsetParent!==null?nav.getBoundingClientRect().top-10:window.innerHeight-10;
+ if(goal){ const gr=goal.getBoundingClientRect(); if(gr.left<pr.right&&gr.right>pr.left&&gr.top>hb) bottom=Math.min(bottom,gr.top-10); }
+ const s=Math.min(1,.86*(bottom-hb)/pr.height); if(s>.8||s<=0) return; const dy=hb-pr.top;
+ path.style.transformOrigin='50% 0'; path.style.transition='none'; path.style.transform='translateY('+dy+'px) scale('+s.toFixed(3)+')'; void path.offsetHeight;
+ const done=()=>{ clearTimeout(GM.zoomT); path.style.transition=''; path.style.transform=''; path.style.transformOrigin=''; g.removeEventListener('pointerdown',skip,true); };
+ const skip=()=>{ path.style.transition='transform .25s ease'; path.style.transform=''; GM.zoomT=setTimeout(done,260); };
+ g.addEventListener('pointerdown',skip,true);
+ GM.zoomT=setTimeout(()=>{ path.style.transition='transform 1.4s cubic-bezier(.65,0,.35,1)'; path.style.transform=''; GM.zoomT=setTimeout(done,1450); },1000); }catch(e){} }
 function scrollToNow(g){ try{ const n=g.querySelector('.gm-n.now')||g.querySelector('.gm-n.boss'); if(!n) return; const goal=g.querySelector('.gm-goal'), tp=g.querySelector('.gm-top'), top=tp?tp.getBoundingClientRect().bottom:0, bottom=goal?goal.getBoundingClientRect().top:window.innerHeight-300, r=n.getBoundingClientRect();
  if(r.bottom>bottom-16||r.top<top+8){ g.scrollTop+=Math.round((r.top+r.height/2)-(top+bottom)/2); } }catch(e){} }
 function refreshLater(){ if(GM.fetching||typeof SRV==='undefined'||!SRV.token) return; GM.fetching=true; const tok=SRV.token, sid=A.st&&A.st.id;
@@ -725,6 +830,21 @@ function readAloud(text){ const s=window.speechSynthesis;
  u.onstart=()=>{ if(RD.u===u&&!RD.t0) RD.t0=Date.now(); }; u.onend=end; u.onerror=end;
  RD.stopAt=setTimeout(()=>{ if(RD.u===u) rdStop(); },RD.est+15000);
  try{ s.speak(u); }catch(e){ rdStop(); return; } rdTick(); }
+/* a locked step: its name pops out beside it for a moment (no page opens) */
+function lockPop(b,id){ const path=b.closest('.gm-path'); if(!path) return; path.querySelectorAll('.gm-pop').forEach(x=>x.remove());
+ const x=parseFloat(b.style.left)||50, y=parseFloat(b.style.top)||0, right=x<50, off=b.classList.contains('boss')?58:40, n=nm(id);
+ const el=document.createElement('div'); el.className='gm-pop'+(right?'':' r'); el.setAttribute('role','status');
+ el.style.top=y+'px'; if(right) el.style.left='calc('+x+'% + '+off+'px)'; else el.style.right='calc('+(100-x)+'% + '+off+'px)';
+ el.innerHTML='<span class="k">🔒 Locked</span>'+esc(n[0]); path.appendChild(el);
+ clearTimeout(GM.popT); GM.popT=setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),220); },2600); }
+/* the (i) on his current step: the description writes itself in under the title; tap again to fold it away */
+function infoToggle(b){ const card=b.closest('.gm-l'), d=card&&card.querySelector('.d'); if(!d) return; clearInterval(GM.typeT);
+ if(card.classList.contains('open')){ card.classList.remove('open'); d.textContent=''; b.setAttribute('aria-expanded','false'); return; }
+ card.classList.add('open'); b.setAttribute('aria-expanded','true'); const txt=b.dataset.d||'';
+ let reduce=false; try{ reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+ if(reduce){ d.textContent=txt; return; }
+ let i=0; d.innerHTML='<span class="cur"></span>'; const cur=d.firstChild;
+ GM.typeT=setInterval(()=>{ i=Math.min(txt.length,i+2); d.textContent=txt.slice(0,i); if(i<txt.length) d.appendChild(cur); else clearInterval(GM.typeT); },22); }
 function door(k){ const b=document.createElement('button'); b.type='button'; b.dataset.hf=k; b.style.display='none'; document.body.appendChild(b); try{ b.click(); }catch(e){} b.remove(); }
 /* a press on the bottom bar: keep the halo for a moment even though the bar is redrawn by the tap */
 document.addEventListener('pointerdown',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#gm-nav button[data-gmnav]'); if(!b) return;
@@ -754,17 +874,112 @@ document.addEventListener('click',e=>{
  if(a==='node'){ const id=b.dataset.id, m=M(); if(!m) return; const ws=worldsOf(m), w=ws.find(x=>x.k===GM.world);
   if(mast(id)||known(id)) return play(id);
   if(w&&id===w.now) return play(id);
-  const n=w&&w.now?nm(w.now)[0]:''; toast('🔒 Locked! Clear '+(n||'the level before it')+' first.'); }
+  lockPop(b,id); }
+ if(a==='info'){ infoToggle(b); return; }
 });
 document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-hf="home"]'); if(b&&b.classList.contains('hf-back')&&GM.tab!=='map'&&document.body.classList.contains('gm-nav')){ setTimeout(()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); },0); } },true);
 const oldRender=render;
 render=function(){ const r=oldRender.apply(this,arguments);
+ try{ GM.lessonLook&&GM.lessonLook(); }catch(e){}
  try{ if(A.view==='hub'&&A.st){ const n=steps(); if(GM.lastSteps>=0&&n>GM.lastSteps&&GM.lastSid===A.st.id){ GM.world=''; GM.rescroll=true; refreshLater(); } GM.lastSteps=n; GM.lastSid=A.st.id; } sync(); }catch(e){ console.error('GameMap',e); }
  return r; };
 GM.lastSteps=-1;
 GM.sync=sync;
+/* HoS 2026-11-20 ("screens don't go where they're supposed to"): "Next mission" on the end screen and "Up next" on the welcome came from the
+   old weekly band, so a Level 4 boy could finish Reading and be sent to a Level 3 Math lesson his map never shows. When he has a map, the
+   next mission is the same lesson the map's own Play button would start. No map, or nothing left to play on it: the old suggestion. */
+try{ if(typeof suggestion==='function'&&!window.__gmSug){ window.__gmSug=1; const sug0=suggestion;
+ window.suggestion=function(st){ try{ const m=M(); if(m&&st===A.st){ const w=pick(worldsOf(m)); const id=w&&w.now, c=id&&worldFor(id);
+   if(c&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))) return {c,id,kind:'skill',done:0}; } }catch(e){}
+  return sug0.apply(this,arguments); }; } }catch(e){}
 GM.nextLevel=function(){ try{ const m=M(); if(!m) return ''; const w=pick(worldsOf(m)); if(!w||!w.now) return ''; const n=nm(w.now); return n[0]+(n[1]&&!/ Level \d+$/.test(n[1])?' · '+n[1]:''); }catch(e){ return ''; } };
 let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.pf-card'); if(!c){ setTimeout(hook,1500); return; } pfWatch=new MutationObserver(()=>{ if(document.body.classList.contains('gm-on')) sync(); }); pfWatch.observe(c,{attributes:true,attributeFilter:['style']}); },1500);
+/* ===== CALM START (HoS 2026-11-20: "it still seems very confusing ... frames still stuck in previous editions ... simplify even more").
+   1. ONE welcome in the game look, instead of two old-style pop-ups (the sunny welcome, then Today's Vort + "What would help you today?").
+      It says hello, shows his streak and money, his next level (game name + the real skill) with one big PLAY, and today's vort in one line.
+      Chizuk is one tap away. The B'Simcha morning pop-up is marked as shown for today so it does not follow.
+   2. Every other pop-up on the map (chizuk, vort, joke book, stories) gets the game look, not the old white card.
+   3. The music player is a small button in the top corner of the map; the "Now playing" banner no longer covers the map.
+   Display only: no data, money or mastery changes. */
+(function(){
+ const st2=document.createElement('style'); st2.id='gmw-css'; st2.textContent=`
+.overlay:has(.gmw){background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%)!important;backdrop-filter:none!important}
+.ocard:has(.gmw){background:transparent!important;box-shadow:none!important;border:0!important;max-width:560px!important;width:100%!important;padding:0!important}
+.ocard:has(.gmw) .oband{display:none}
+.gmw{color:#fff;text-align:center;padding:8px 14px 14px;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
+.gmw .k{font-size:13px;font-weight:900;letter-spacing:.16em;color:#FFE259}
+.gmw h2{margin:6px 0 12px;font-size:clamp(30px,8vw,46px);line-height:1;font-weight:900;font-style:italic;text-transform:uppercase;color:#fff;text-shadow:0 4px 0 #7A0B3A}
+.gmw .chips{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.gmw .chips span{background:rgba(255,255,255,.1);border:2px solid rgba(255,226,89,.45);border-radius:999px;padding:6px 12px;font-weight:900;font-size:15px}
+.gmw .nx{background:linear-gradient(180deg,#2A1B6E,#170D4A);border:3px solid #FFD43B;border-radius:22px;padding:14px;margin:0 0 12px;box-shadow:0 0 30px rgba(255,212,59,.25)}
+.gmw .nx small{display:block;font-size:12px;font-weight:900;letter-spacing:.14em;color:#FFE259}
+.gmw .nx b{display:block;font-size:26px;line-height:1.05;font-style:italic;text-transform:uppercase;margin:4px 0}
+.gmw .nx em{display:block;font-style:normal;font-weight:800;font-size:15px;color:#C9F7DA}
+.gmw .go{display:block;width:100%;min-height:68px;border:0;border-radius:20px;background:linear-gradient(180deg,#FFF06A,#FFC21A 55%,#FF9F1C);color:#2B0A3D;font:900 30px/1 var(--display,'Rubik'),sans-serif;font-style:italic;cursor:pointer;box-shadow:0 7px 0 #B45309;margin:4px 0 12px}
+.gmw .go:active{transform:translateY(4px);box-shadow:0 3px 0 #B45309}
+.gmw .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.gmw .row button{min-height:46px;border-radius:14px;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font:900 15px var(--display,'Rubik'),sans-serif;padding:0 16px;cursor:pointer}
+.gmw .vort{margin:14px 0 0;font:600 15px/1.45 var(--body,'Inter'),sans-serif;color:#E9E4FF}
+.gmw .vort b{color:#FFE259}.gmw .vort small{display:block;opacity:.7;margin-top:2px}
+.gmw button:focus-visible{outline:4px solid #fff;outline-offset:3px}
+body.gm-on .overlay:not(:has(.gmw)){background:rgba(10,7,38,.82)!important}
+body.gm-on .ocard:not(:has(.gmw)){background:linear-gradient(180deg,#2A1B6E,#160D45)!important;color:#fff!important;border:3px solid #FFD43B!important;border-radius:24px!important}
+body.gm-on .ocard:not(:has(.gmw)) :is(h1,h2,h3,p,li,label,.sm-line){color:#fff!important}
+body.gm-on .ocard:not(:has(.gmw)) .sm-h{color:#FFE259!important}
+body.gm-on .ocard:not(:has(.gmw)) .oband{background:transparent!important}
+body.gm-nav #mutoast{display:none!important}
+body #gm .gm-l{background:#fff;color:#1E1B4B;box-shadow:0 4px 12px rgba(30,20,90,.18)}
+body #gm .gm-l small{color:#5B5FA8}body #gm .gm-l .k{color:#C2410C}body #gm .gm-l.boss .k{color:#BE123C}
+body #gm .gm-l.now{background:#FFFBEA;border:3px solid #FFB800}
+body #gm .gm-unit{background:#fff;color:#1E1B4B;border-color:#FFD84D}body #gm .gm-unit small{color:#5B5FA8}body #gm .gm-unit .left{color:#C2410C}
+body #gm .gm-more{background:#fff;color:#047857}
+.gmw .nx{background:#fff;color:#1E1B4B;box-shadow:0 8px 24px rgba(30,20,90,.25)}.gmw .nx small{color:#C2410C}.gmw .nx em{color:#047857}
+.gmw .gmhow{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:0 0 14px}
+.gmw .gmhow span{background:rgba(255,255,255,.18);border-radius:12px;padding:6px 10px;font-weight:800;font-size:13px}
+html:has(body.gm-lesson){background:#4F8CFF}
+body.gm-lesson{background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%) fixed!important}
+body.gm-lesson .wrap:has(>#app){background:#F7F6FF;padding-top:10px;padding-bottom:10px;border-radius:26px;border:3px solid #FFD43B;box-shadow:0 0 34px rgba(255,212,59,.25);margin-top:8px;margin-bottom:8px}
+body.gm-lesson.hp-modal #tlcash{display:none!important}
+body.gm-lesson .overlay{background:rgba(10,7,38,.78)!important;backdrop-filter:blur(2px)}
+body.gm-nav #pf-cf{background:linear-gradient(180deg,rgba(123,97,255,.97),rgba(79,140,255,.97) 50%,rgba(34,184,240,.97))}
+body.gm-nav #pf-cf .bx{box-shadow:0 0 40px rgba(255,212,59,.35),0 10px 0 #B45309}
+body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 55%,#FF9F1C);color:#2B0A3D;font-weight:900;box-shadow:0 5px 0 #B45309}
+body.gm-nav.gm-on #mupill{top:calc(10px + env(safe-area-inset-top,0px));right:10px;left:auto!important;bottom:auto!important;padding:4px 4px 4px 8px;z-index:33}
+body.gm-nav.gm-on #mupill .mpt{display:none}
+`; document.head.appendChild(st2);
+ const today=()=>{ const d=new Date(); return d.getFullYear()*1000+Math.floor((d-new Date(d.getFullYear(),0,0))/864e5); };
+ const S=()=>window.TL_SIMCHA||{};
+ const pickDay=(L,k)=>L&&L.length?L[(today()+(k||0))%L.length]:null;
+ function music(){ try{ const Mu=window.TashbarMusic; if(!Mu||!A.st) return; if(Mu.state&&Mu.state.info&&Mu.state.info.off) return; const m=Mu.prefs();
+  if(!m.joy){ m.joy=1; if(m.mood==='off') m.mood='mix'; try{ if(typeof saveStudent==='function') saveStudent(A.st); }catch(e){} }
+  if(m.mood!=='off') Mu.play(false); }catch(e){} }
+ if(typeof welcome!=='function') return;
+ const prevW=welcome;
+ welcome=function(){ try{
+  if(!M()) return prevW.apply(this,arguments);
+  const sid=String(A.st.id||''), now=Date.now();
+  if((A.overlay&&A.overlay.html&&A.overlay.html.indexOf('class="gmw"')>=0)||(GM.wShown&&GM.wShown.sid===sid&&now-GM.wShown.at<90000)) return;
+  GM.wShown={sid:sid,at:now};
+  try{ localStorage.setItem('tlSimMorning:'+sid,String(today())); }catch(e){}
+  const st=A.st, n=(st.streak||{}).n||1, first=String(st.name||'').trim().split(/\s+/)[0]||'friend';
+  const hr=new Date().getHours(), hi=hr<12?'GOOD MORNING':hr<17?'GOOD AFTERNOON':'GOOD EVENING';
+  let bank=''; try{ bank=typeof fmt==='function'?fmt(st.balance||0):'$'+Number(st.balance||0).toFixed(2); }catch(e){}
+  const g=document.querySelector('#gm .gm-goal'); let t='', l='';
+  if(g&&g.querySelector('h1')){ t=g.querySelector('h1').textContent.trim(); const le=g.querySelector('.learn'); l=le?le.textContent.trim():''; }
+  else { const x=GM.nextLevel(); t=x.split(' · ')[0]; l=x.split(' · ')[1]||''; }
+  const v=pickDay(S().vort);
+  const needs=(S().need||[]).filter(x=>!/rebbe/i.test(x.label)), ci=needs.findIndex(x=>/chizuk/i.test(x.label));
+  overlay(`<div class="gmw"><div class="k">⚡ ${hi}</div><h2>Welcome back, ${esc(first)}!</h2>`+
+   `<div class="chips"><span>🔥 ${n} day${n===1?'':'s'} in a row</span>${bank?`<span>💵 ${esc(bank)}</span>`:''}</div>`+
+   (t?`<div class="nx"><small>🎯 YOUR NEXT LEVEL</small><b>${esc(t)}</b>${l?`<em>${esc(l)}</em>`:''}</div><button type="button" class="go" data-gmw="play">▶ PLAY</button>`:'')+
+   `<div class="gmhow" aria-label="How it works"><span>1 ▶ Play your next level</span><span>2 🎯 3 missions a day</span><span>3 💵 Earn for the Store</span></div>`+
+   `<div class="row"><button type="button" data-act="closeov">🗺️ My map</button>${ci>=0?`<button type="button" data-act="sm-need" data-i="${ci}">🌟 Some chizuk</button>`:''}</div>`+
+   (v?`<p class="vort"><b>📜 Today's vort:</b> ${esc(typeof v==='string'?v:v.text)}${v.src?`<small>${esc(v.src)}</small>`:''}</p>`:'')+`</div>`);
+ }catch(e){ console.error('GameMap welcome',e); return prevW.apply(this,arguments); } };
+ GM.lessonLook=function(){ try{ document.body.classList.toggle('gm-lesson',A.view==='play'&&!!M()); }catch(e){} };
+ document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('.gmw button'); if(!b) return; music();
+  if(b.dataset.gmw==='play'){ A.overlay=null; render(); setTimeout(()=>{ const p=document.querySelector('#gm .gm-goal .gm-play'); if(p) p.click(); },60); } },true);
+})();
 try{ sync(); }catch(e){ console.error('GameMap',e); }
 })();
 </script>
