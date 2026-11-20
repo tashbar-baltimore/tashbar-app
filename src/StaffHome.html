@@ -9,7 +9,11 @@
    No double slash in this file. */
 body.sh-on #acPill,body.sh-on #slBar,body.sh-on #dm-band,body.sh-on #sbBan,body.sh-on #lbx-btn,body.sh-on #ss-btn,body.sh-on #dp-btn,body.sh-on #acCur,body.sh-on #acOpen{display:none!important}
 body.sh-on #app header.top{display:none!important}
-body.sh-on.sh-page #app{display:none!important}
+/* OLD SCREENS RETIRED (HoS 2026-11-20 "remove old staff screens"): the old tab row, its Needs-you strips, action bar and hint are gone;
+   a tool that still lives in the old screen (Parsha of the week, the grids' export and print ...) opens alone, with a Back bar */
+body.sh-on #app > nav.sp-tabs,body.sh-on #app > .sp-now,body.sh-on #app > .bar,body.sh-on #app > .hint,body.sh-on #app > .now{display:none!important}
+body.sh-on.sh-page #app{display:block!important;padding:0!important;margin:0!important;min-height:0!important;background:none!important}
+body.sh-on.sh-page #app > *:not(.shade):not(aside.drawer){display:none!important}   /* the old tools' drawers slide over the new page; nothing old behind them */
 #sh-top{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;padding:10px max(16px,env(safe-area-inset-left,0px));background:#16202C;color:#fff;font-family:system-ui,"Segoe UI",Roboto,sans-serif}
 #sh-top .brand{font:900 18px/1 system-ui,sans-serif;margin-right:6px;white-space:nowrap}
 #sh-top nav{display:flex;flex-wrap:wrap;gap:4px;flex:1}
@@ -189,9 +193,9 @@ var A={
  myles:['📝','My lessons','Lessons you wrote.','[data-sx=les]','app'],
  lk:['📜','Kodesh ladder','Which Limudei Kodesh lessons are built.','[data-act=lk]','app'],
  map:['📚','Curriculum map','The curriculum map by subject.','[data-act=map]','app'],
- wk:['📅','This week','Each boy’s week at a glance.','tab:wk'],
- gs:['📚','General Studies','Every boy across the General Studies subjects.','tab:gs'],
- lkt:['📜','Limudei Kodesh','Every boy across the Limudei Kodesh subjects.','tab:lk'],
+ wk:['📜','Parsha of the week & Arena','Set the Parsha of the week and the Chumash page; open or close the Chavrusa Arena; each boy’s week.','tab:wk'],
+ gs:['📚','General Studies grid','Every boy across the General Studies subjects. Export or print it.','tab:gs'],
+ lkt:['📜','Limudei Kodesh grid','Every boy across the Limudei Kodesh subjects. Export or print it.','tab:lk'],
  stuck:['🧩','Where kids get stuck','The questions and lessons boys get stuck on most.','#ss-btn'],
  rep:['🚩','Reports','Reports from boys and staff about lessons.','[data-act=rep]','app'],
  month:['🏆','This month','The month’s stars and progress.','[data-act=month]','app'],
@@ -210,8 +214,8 @@ var PAGE={
  reports:{t:'Reports',lead:'How the boys are doing.',groups:[['Progress',['today','wk','gs','lkt','month']],['Problems',['stuck','rep']]]},
  school:{t:'School',lead:'Staff, families, the store, the canteen and school settings.',groups:[['People',['staff','access','fam','schools']],['School life',['points','store','canteen','music']]]}
 };
-var HOME=[['students','Students','Find a boy, add a boy, set his level.',['find','add','setlv','classes']],['today','Today','What is happening right now.',['tdnow','tm','msg','points','now']],
- ['reports','Reports','Steps climbed, who is moving, who is stuck.',['rpnow','stuck','wk','month']],['school','School','Staff, families, store and canteen.',['staff','access','store','canteen']]];
+var HOME=[['students','Students','Find a boy, add a boy, set his level.',['find','add','setlv','classes']],['today','Today','What is happening right now.',['tdnow','tm','msg','points']],
+ ['reports','Reports','Steps climbed, who is moving, who is stuck.',['rpnow','stuck','gs','month']],['school','School','Staff, families, store and canteen.',['staff','access','store','canteen']]];
 var S={area:'home', from:'home'};
 function body(){ return document.body; }
 function setMode(page,feat){ body().classList.toggle('sh-page',!!page); body().classList.toggle('sh-feat',!!feat); }
@@ -283,7 +287,7 @@ function lvChips(b){ var out=[]; LV.forEach(function(x){ var p=b.place&&b.place[
 function studentsHTML(){ return '<div class="st-head"><div><h1>Students</h1><p class="lead" style="margin:0" id="st-count">Loading the boys…</p></div><div class="st-acts"><button type="button" class="shb" data-sh="do" data-k="add">➕ Add a student</button><button type="button" class="shb alt" data-sh="do" data-k="classes">🏫 Class lists & grades</button><button type="button" class="shb alt" data-sh="do" data-k="groups">👥 Groups</button></div></div>'
   +'<div class="st-tools"><input id="st-q" type="search" placeholder="Search by name…" aria-label="Search students" value="'+E(ST.q)+'"><button type="button" class="chip'+(ST.f==='all'?' on':'')+'" data-st="f" data-v="all">Everyone</button><button type="button" class="chip'+(ST.f==='nolevel'?' on':'')+'" data-st="f" data-v="nolevel">No level yet<em id="st-nl"></em></button><select id="st-g" aria-label="Grade"><option value="all">All grades</option>'+['0','1','2','3','4','5','6','7','8'].map(function(g){ return '<option value="'+g+'"'+(ST.g===g?' selected':'')+'>'+(g==='0'?'Kindergarten':'Grade '+g)+'</option>'; }).join('')+'</select></div>'
   +'<div class="st-list" id="st-list"><div class="st-empty">Loading…</div></div>'
-  +'<h3>More tools</h3><div class="tiles">'+['levels','mycls'].map(tile).join('')+'</div>'; }
+  +'<h3>More tools</h3><div class="tiles">'+['mycls'].map(tile).join('')+'</div>'; }
 function drawStudents(){ var L=q('#st-list'); if(!L) return; var c=q('#st-count'), nl=q('#st-nl');
   if(ST.err){ L.innerHTML='<div class="st-empty">Could not load the boys: '+E(ST.err)+'</div>'; return; }
   if(!ST.list){ L.innerHTML='<div class="st-empty">Loading…</div>'; return; }
@@ -339,7 +343,7 @@ function loadToday(){ var t=tok(); if(!t) return; Promise.all([srv('sgToday',[t]
 function todayHTML(){ var d=new Date(), day=d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
   return '<div class="st-head"><div><h1>Today</h1><p class="lead" style="margin:0">'+E(day)+' · <span id="td-at">loading…</span></p></div><div class="st-acts"><button type="button" class="shb" data-sh="do" data-k="tm">🔒 Teacher mode</button><button type="button" class="shb alt" data-sh="do" data-k="msg">✉️ Messages</button><button type="button" class="shb alt" data-sh="do" data-k="points">⭐ Tashbar Points</button></div></div>'
    +'<div id="td-body"><div class="st-empty">Loading today…</div></div>'
-   +'<h3>More views</h3><div class="tiles">'+['now','today','wk'].map(tile).join('')+'</div>'; }
+   +'<h3>More for today</h3><div class="tiles">'+['wk','month'].map(tile).join('')+'</div>'; }
 function drawToday(){ var B=q('#td-body'); if(!B) return; var at=q('#td-at'); if(at) at.textContent=TD.at?'updated '+new Date(TD.at).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'loading…';
   var d=S0(), boys=(d.boys||[]).filter(function(b){ return !b.test; }), T={}; ((TD.today&&TD.today.boys)||[]).forEach(function(x){ T[x.id]=x; });
   var need=((TD.now&&TD.now.list)||[]).filter(function(x){ return x.kind!=='idle'; }), idle=((TD.now&&TD.now.list)||[]).filter(function(x){ return x.kind==='idle'; }), needIx={}; need.forEach(function(x){ needIx[x.sid]=x; });
@@ -411,7 +415,7 @@ function rpName(id){ return (RP.data&&RP.data.names&&RP.data.names[id])||skName(
 function loadReport(){ RP.err=''; srv('sgMapReport',[tok(),RP.days]).then(function(r){ RP.data=r; drawReport(); }).catch(function(e){ RP.err=String(e); drawReport(); }); }
 function reportHTML(){ return '<div class="st-head"><div><h1>Reports</h1><p class="lead" style="margin:0">Every report here is about steps on the curriculum tree: who climbed, who is stuck, and where.</p></div><div class="st-acts">'
    +[[7,'This week'],[30,'This month']].map(function(x){ return '<button type="button" class="chip'+(RP.days===x[0]?' on':'')+'" data-rp="days" data-v="'+x[0]+'">'+x[1]+'</button>'; }).join('')+'</div></div><div id="rp-body"><div class="st-empty">Loading the report…</div></div>'
-   +'<h3>More reports</h3><div class="tiles">'+['wk','gs','lkt','today','month','stuck','rep'].map(tile).join('')+'</div>'; }
+   +'<h3>More reports</h3><div class="tiles">'+['gs','lkt','month','stuck','rep'].map(tile).join('')+'</div>'; }
 function goalOf(id){ var C=cellsOf(id), best=null; SUBJ.forEach(function(x){ var c=C[x[0]]; if(!best&&c&&c.now) best={x:x,c:c}; }); return best; }
 function drawReport(){ var B=q('#rp-body'); if(!B) return; if(RP.err){ B.innerHTML='<div class="st-empty">Could not load the report: '+E(RP.err)+'</div>'; return; } var D=RP.data; if(!D){ B.innerHTML='<div class="st-empty">Loading the report…</div>'; return; }
   var boys=D.boys||[], n=boys.length, steps=0, prev=0, moved=0, bySub={}, byStep={};
@@ -453,6 +457,7 @@ function run(k){ var a=A[k]; if(!a) return; var how=a[3];
   if(/^tab:/.test(how)){ var tb=q('#app [data-sp=tab][data-t="'+how.slice(4)+'"]'); a=[a[0],a[1],a[2],how,'app']; if(tb) tb.click(); }
   if(k==='find'){ var inp=q('#slBar input'); if(inp){ inp.focus(); inp.scrollIntoView({block:'center'}); return; } }
   var el=/^tab:/.test(how)?null:q(how); if(!el&&!/^tab:/.test(how)){ toast('That tool is not on this page yet.'); return; }
+  if(a[4]==='app'&&!/^tab:/.test(a[3])){ if(el) el.click(); return; }   /* a drawer: it opens over the page you are on */
   if(a[4]==='app'){ S.from=S.area; setMode(false,true); var bk=q('#sh-back'); if(bk){ var nm=(AREAS.filter(function(x){ return x[0]===S.from; })[0]||AREAS[0])[2]; bk.innerHTML='<button type="button" data-sh="back">← Back to '+E(nm)+'</button> <span style="margin-left:8px">'+a[0]+' '+E(a[1])+'</span>'; } window.scrollTo(0,0); }
   if(el) el.click(); }
 function toast(m){ var t=document.createElement('div'); t.textContent=m; t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#16202C;color:#fff;padding:10px 16px;border-radius:12px;font:700 14px system-ui,sans-serif;z-index:2147483600'; body().appendChild(t); setTimeout(function(){ t.remove(); },2600); }
@@ -468,6 +473,12 @@ setInterval(slot,1500);
 /* which boys are on a step right now (their goal now = this skill), for the curriculum tree */
 function boysOn(id){ var out=[]; (S0().boys||[]).forEach(function(b){ if(b.test) return; var C=cellsOf(b.id), st=''; Object.keys(C).forEach(function(k){ if(C[k]&&C[k].now===id) st=C[k].status||'now'; }); if(st) out.push({id:b.id,name:b.name,stuck:st==='red'}); }); return out; }
 function boysOnAll(){ var o={}; (S0().boys||[]).forEach(function(b){ if(b.test) return; var C=cellsOf(b.id); Object.keys(C).forEach(function(k){ var c=C[k]; if(c&&c.now){ var x=o[c.now]||(o[c.now]={n:0,stuck:0}); x.n++; if(c.status==='red') x.stuck++; } }); }); return o; }
+/* when an old tool's drawer closes (a boy added, a group made ...), refresh the page you are on so the change shows at once */
+/* "Student added" → 🎯 Set his level now: the Set level pop-up for the new boy (StaffScreen.html addPanel) */
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-shlv]'); if(!b) return; var id=b.dataset.shlv, nm=b.dataset.shname||'';
+  if(ST.list&&!byId(id)) ST.list.push({id:id,name:nm,grade:null,place:{}}); else if(!ST.list) ST.list=[{id:id,name:nm,grade:null,place:{}}];
+  setTimeout(function(){ dlgOpen([id]); },150); },true);
+var drawerOpen=false; setInterval(function(){ var d=!!q('#app > aside.drawer'); if(drawerOpen&&!d){ refreshMap(); if(S.area==='students') loadRoster(true); if(S.area==='today') loadToday(); if(S.area==='school'||S.area==='home') draw(); } drawerOpen=d; },700);
 window.SH={ area:area, run:run, boysOn:boysOn, boysOnAll:boysOnAll, map:function(id){ mapOpen(id); } };
 })();
 </script>

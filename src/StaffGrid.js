@@ -218,12 +218,14 @@ function sgAddStudent(token, name, grade, code, onRoster) {
   var s = sgStaff_(token), who = sgWho_(s);
   name = String(name || '').replace(/\s+/g, ' ').trim().slice(0, 60); code = String(code || '').replace(/\D/g, '');
   var g = String(grade || '').toUpperCase(), gn = g === 'K' ? 0 : Number(g);
-  if (onRoster !== true) throw new Error('Tick the box to confirm this is a real Tashbar student.');
+  /* HoS 2026-11-20: "make add a student very easy. no need to tick if he's a real Tashbar student": the tick box is gone (onRoster is ignored).
+     No code typed: the server makes a free one and sends it back. */
   if (name.length < 3 || name.indexOf(' ') < 0) throw new Error('Type the student’s first and last name.');
   if (!(gn >= 0 && gn <= 8 && Math.round(gn) === gn)) throw new Error('Pick the grade, K to 8.');
-  if (!/^\d{4}$/.test(code)) throw new Error('The sign-in code must be 4 digits.');
-  if (!sgCodeOk_(code)) throw new Error('That code is too easy to guess. Pick a different one, or tap \u201cMake one for me\u201d.');
+  if (code && !/^\d{4}$/.test(code)) throw new Error('The sign-in code must be 4 digits, or leave it empty and the app makes one.');
+  if (code && !sgCodeOk_(code)) throw new Error('That code is too easy to guess. Pick a different one, or leave it empty and the app makes one.');
   return sgLock_(function () {
+    if (!code) { for (var k = 0; k < 400 && !code; k++) { var c0 = ('000' + Math.floor(Math.random() * 10000)).slice(-4); if (sgCodeOk_(c0) && !sgCodeTaken_(c0)) code = c0; } if (!code) throw new Error('Could not find a free code. Try again.'); }
     var rows = msRows_('roster');
     if (rows.some(function (r) { return r[7] !== false && String(r[1]).toLowerCase() === name.toLowerCase(); })) throw new Error(name + ' is already on the list.');
     if (sgCodeTaken_(code)) throw new Error('That code is already used. Pick a different 4-digit code.');
@@ -231,7 +233,7 @@ function sgAddStudent(token, name, grade, code, onRoster) {
     var id = 'T' + ('00' + (max + 1)).slice(-3), band = plBand_(gn + 1), salt = Utilities.getUuid();
     msTab_('roster').appendRow([id, name, band, band, band, salt, msHash_(salt, code), true, 'grade ' + (gn === 0 ? 'K' : gn) + ' \u00b7 added ' + sgToday_() + ' by ' + who.name]);
     if (typeof tlAssignNewStudent_ === 'function') tlAssignNewStudent_(id);   /* Access.js: he joins the adding staff member's school */
-    return { id: id, name: name };
+    return { id: id, name: name, code: code };
   });
 }
 /* ---- sign-in codes: make a free one; change a boy's code (v47). Codes are stored only as salt + hash, so an old code cannot be shown, only replaced. ---- */
