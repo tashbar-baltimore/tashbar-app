@@ -347,6 +347,7 @@ function cpPage_() {
   try { add += HtmlService.createHtmlOutputFromFile('CurriculumGuide').getContent(); } catch (e) {}   /* v243 takeover2: Curriculum Guide overview, coverage, What's new, review status (server: CurriculumReview.js) */
   try { add += HtmlService.createHtmlOutputFromFile('CgIntent').getContent(); } catch (e) {}   /* v349 cloud builder 1: esti1@ TL_CG_INTENT1+2, staff-only TL_INTENT + TL_METHOD data for the Curriculum Guide */
   try { add += HtmlService.createHtmlOutputFromFile('PreviewKid').getContent(); } catch (e) {}   /* v266 takeover3: split screen, click a lesson and see the real kid screen */
+  try { add += '<script>window.TL_PREVIEW_MAP=' + JSON.stringify(kmDemoMap_()).replace(/</g, '\\u003c') + ';</script>'; } catch (e) {}   /* the made-up preview boy's map (KidMap.js), so the preview shows the new map home */
   var h = page.indexOf('<head>'); page = h < 0 ? cpPrelude_() + page : page.slice(0, h + 6) + cpPrelude_() + page.slice(h + 6);
   var i = page.lastIndexOf('</body>'); page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
   return HtmlService.createHtmlOutput(tlSound_(tlTheme_(page, 'boy'))).setTitle('Tashbar Learning · Curriculum Preview')

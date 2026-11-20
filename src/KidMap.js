@@ -17,11 +17,22 @@ function kmMyMap(token) {
   if (!s || s.role !== 'kid' || !s.sid) throw new Error('This is for students only.');
   return kmMapFor_(String(s.sid));
 }
-function kmMapFor_(sid) {
+/* HoS 2026-11-20 ("why is it showing the old screen still?"): a boy his rebbe has not placed yet had no map, so he saw the old home.
+   Now, the same rule the Library and Learn by Level already use: not placed in a core subject -> his grade's level (Level 1 = kindergarten).
+   A rebbe's placement always wins. The subject is marked byGrade so nothing pretends a rebbe chose it. */
+var KM_GRADE_SUBJ = ['MATH', 'READ', 'LANG'];
+function kmGradeOf_(sid) { try { var row = msRows_('roster').filter(function (r) { return String(r[0]) === sid; })[0]; return row ? libGradeOf_(row[8]) : null; } catch (e) { return null; } }
+function kmMapFor_(sid, opt) {
+  opt = opt || {};
   var B = {}; plBuilt_().forEach(function (x) { B[x] = 1; });
-  var st = {}; msStateRowOf_(sid).forEach(function (r) { if (String(r[0]) === sid) { try { st = JSON.parse(r[1]) || {}; } catch (e) { st = {}; } } });
+  var st = opt.st || {}; if (!opt.st) msStateRowOf_(sid).forEach(function (r) { if (String(r[0]) === sid) { try { st = JSON.parse(r[1]) || {}; } catch (e) { st = {}; } } });
   var states = {}; states[sid] = st;
-  var ctx = { built: B, place: plPlacements_(), states: states, ev: {}, pf: {} }, mast = sgMastered_(st), sk = st.skills || {};
+  var all = plPlacements_(), place = {}, mine = {}, byGrade = {}; Object.keys(all).forEach(function (k) { place[k] = all[k]; });
+  Object.keys(all[sid] || {}).forEach(function (k) { mine[k] = all[sid][k]; });
+  var grade = opt.grade != null ? opt.grade : kmGradeOf_(sid);
+  if (grade != null && grade >= 0) KM_GRADE_SUBJ.forEach(function (k) { if (!(mine[k] && mine[k].level)) { mine[k] = { level: Math.min(9, grade + 1), start: '', at: 0, by: 'grade' }; byGrade[k] = 1; } });
+  place[sid] = mine;
+  var ctx = { built: B, place: place, states: states, ev: {}, pf: {} }, mast = sgMastered_(st), sk = st.skills || {};
   var names = {}, want = {}, subjects = {};
   SG_SUBJ.forEach(function (x) {
     var k = x[0], c = sgCell_(sid, k, ctx, mast, {});
@@ -30,14 +41,14 @@ function kmMapFor_(sid) {
     list.forEach(function (y) { names[y[0]] = [y[1], y[2] || '']; });
     var built = (c.skills || []).filter(function (y) { return y[1]; }), strand = c.now ? kmStrand_(c.now) : '';
     var u = strand ? built.filter(function (y) { return kmStrand_(y[0]) === strand; }) : built;
-    subjects[k] = { name: x[1], level: c.level, now: c.now, next: c.next, prev: c.prev, skills: c.skills,
+    subjects[k] = { name: x[1], level: c.level, byGrade: !!byGrade[k], now: c.now, next: c.next, prev: c.prev, skills: c.skills,
       unit: { name: strand ? kmStrandName_(k, strand) : '', ids: u.map(function (y) { return y[0]; }), done: u.filter(function (y) { return y[2]; }).length, total: u.length },
       strands: (c.skills || []).reduce(function (o, y) { var s = kmStrand_(y[0]); if (s && !o[s]) o[s] = kmStrandName_(k, s); return o; }, {}) };
     [c.now, c.next, c.prev].concat((c.skills || []).map(function (y) { return y[0]; })).forEach(function (id) { if (id) want[id] = 1; });
   });
   var kodesh = {}, K = { order: {}, names: {} }, kp = {};
   try { K = sgpKodeshLessons_() || K; } catch (e) {}
-  try { kp = libKpAll_(); } catch (e) { kp = {}; }
+  try { kp = opt.kp || libKpAll_(); } catch (e) { kp = {}; }
   try { kodesh = sgKodeshFor_(sid, sk, K, kp); } catch (e) { kodesh = {}; }
   Object.keys(kodesh).forEach(function (k) { var c = kodesh[k]; [c.now, c.next, c.prev].concat(c.skills.map(function (y) { return y[0]; })).forEach(function (id) { if (id) want[id] = 1; }); });
   var now = Date.now(), since = now - KM_DAYS * 864e5, g = sgStepsFor_(sk, since, since - KM_DAYS * 864e5);
@@ -58,3 +69,14 @@ function kmKodeshName_(n) { return String(n || '').replace(/^[^:]{2,40}:\s*/, ''
 /* Kodesh lesson names already say the skill ("Translate a Pasuk Myself"); the second line names the track and level. */
 var KM_TRACK = { KRI: 'Kriyah', CHU: 'Chumash', RAS: 'Rashi', MSH: 'Mishnayos', GEM: 'Gemara' };
 function kmKodeshWhat_(id) { var p = String(id).split('.'); return (KM_TRACK[p[1]] || p[1]) + ' Level ' + Number(String(p[2] || '').slice(1)); }
+
+/* The staff "See what the kids see" preview (CurriculumPreview, PreviewKid.html) shows a MADE-UP boy (id PREVIEW, grade 4 = Level 5 by default)
+   on the real map home, so staff see exactly the new home a boy sees. No real student data: no state row is read. */
+function kmDemoMap_(grade) {
+  grade = grade == null ? 4 : grade;
+  var lv = Math.min(9, grade + 1), now = Date.now(), sk = {};
+  ['MATH', 'READ'].forEach(function (k) { var list = (plList_(k) || []).filter(function (x) { return plMathLevel_(x[0]) === lv; }), B = {}; plBuilt_().forEach(function (x) { B[x] = 1; });
+    list.filter(function (x) { return B[x[0]]; }).slice(0, 2).forEach(function (x, i) { sk[x[0]] = { m: true, at: now - (i + 1) * 864e5, first: true, stars: 3 }; }); });
+  var m = kmMapFor_('PREVIEW', { st: { id: 'PREVIEW', skills: sk }, grade: grade, kp: {} });
+  m.preview = true; return m;
+}
