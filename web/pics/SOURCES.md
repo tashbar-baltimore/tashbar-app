@@ -242,3 +242,46 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - world-map-from-space.webp | https://commons.wikimedia.org/wiki/File:Whole_world_-_land_and_oceans.jpg | Public domain | NASA Goddard Space Flight Center (Reto Stöckli, Blue Marble)
 - yahrzeit-candles.webp | https://commons.wikimedia.org/wiki/File:Jewish_grave_candle.JPG | CC BY-SA 4.0 | Djampa
 - yellowstone-poster.webp | https://www.loc.gov/item/2007676133/ | Public domain (WPA poster; LOC: no known restrictions on publication) | C. Don Powell, designer, Federal Art Project (WPA), 1938
+- dromedary-camel-standing.webp | https://pixabay.com/photos/camel-sahara-desert-nature-sand-10073734/ | Pixabay Content License | Wolfgang_Hasselmann
+- camel-head-closeup.webp | https://pixabay.com/photos/morocco-camel-desert-sand-sahara-5271734/ | Pixabay Content License | Manuela_Burkhalter
+- small-bat-flying.webp | https://www.flickr.com/photos/69439747@N00/3206118849 | CC BY-SA 2.0 | Jessicajil
+- brown-white-cow-field.webp | https://pixabay.com/photos/cow-cattle-horn-livestock-farm-6749229/ | Pixabay Content License | AnitaBozic
+- cow-with-calf.webp | https://pixabay.com/photos/cow-cattle-animal-pasture-farm-9561161/ | Pixabay Content License | Veronika_Andrews
+- split-hoof-front.webp | https://pixabay.com/photos/cow-foot-cattle-dairy-cows-huf-1037470/ | Pixabay Content License | 1239652
+- brown-goat-grass.webp | https://pixabay.com/photos/goat-horns-fur-animal-portrait-7749402/ | Pixabay Content License | fotoblend
+- emperor-penguins-group.webp | https://pixabay.com/photos/emperor-penguins-baby-penguin-birds-429128/ | Pixabay Content License | MemoryCatcher
+- mallard-duck-standing.webp | https://pixabay.com/photos/duck-animal-waterfowl-nature-10357045/ | Pixabay Content License | Alexas_Fotos
+- lubber-grasshopper-side.webp | https://pixabay.com/photos/grasshopper-animals-nature-insect-249115/ | Pixabay Content License | Huskyherz
+- ladybug-on-leaf.webp | https://pixabay.com/photos/ladybug-insect-leaf-entomology-8015502/ | Pixabay Content License | IstvánKopeczny
+- tortoise-walking.webp | https://pixabay.com/photos/tortoise-turtle-jaboti-animal-9830621/ | Pixabay Content License | Sergio-sq
+- chick-hatching-egg.webp | https://pixabay.com/photos/chick-hatch-egg-eggshell-poultry-706493/ | Pixabay Content License | congerdesign
+- yellow-chicks-eggshells.webp | https://pixabay.com/photos/chicken-emergence-home-view-3139543/ | Pixabay Content License | MSphotos
+- garden-snail-twig.webp | https://pixabay.com/photos/snail-shell-invertebrate-sensor-6290772/ | Pixabay Content License | Nennieinszweidrei
+- earthworm-in-soil.webp | https://pixabay.com/photos/earthworm-soil-dirt-macro-686593/ | Pixabay Content License | Natfot
+- trout-underwater.webp | https://pixabay.com/photos/fish-underwater-stream-native-387160/ | Pixabay Content License | PublicDomainImages
+- squirrel-carrying-nut.webp | https://pixabay.com/photos/fox-squirrel-squirrel-rodent-mammal-8353796/ | Pixabay Content License | Ray_Shrewsberry
+- monarch-chrysalis-green.webp | https://www.flickr.com/photos/22357152@N02/5612179133 | CC BY 2.0 | SidPix
+- harris-hawk-on-post.webp | https://pixabay.com/photos/harris-hawk-bird-animal-beak-1617934/ | Pixabay Content License | Kevinsphotos
+- snowshoe-hare-winter.webp | https://www.flickr.com/photos/125029725@N07/23110137811 | Public domain 1.0 | NPS Climate Change Response
+- gecko-toes-on-glass.webp | https://pixabay.com/photos/lizard-macro-nature-animal-species-7594202/ | Pixabay Content License | joangasconcomas
+- zebra-herd.webp | https://pixabay.com/photos/zebras-animals-africa-south-africa-8054175/ | Pixabay Content License | Daniele_K
+- sea-otter-floating.webp | https://pixabay.com/photos/sea-otter-aquatic-animal-blue-water-3194446/ | Pixabay Content License | christels
+- tabby-cat-resting.webp | https://pixabay.com/photos/european-shorthair-cat-kitten-8267220/ | Pixabay Content License | guvo59
+- three-husky-puppies.webp | https://pixabay.com/photos/dogs-sled-dogs-greenland-animals-1646185/ | Pixabay Content License | MrBonde
+- mushrooms-on-old-stump.webp | https://pixabay.com/photos/mushroom-wild-nature-forest-food-411732/ | Pixabay Content License | Mhy
+- frog-eggs-in-pond.webp | https://pixabay.com/photos/frog-spawn-eggs-young-common-frog-288938/ | Pixabay Content License | PollyDot
+- humpback-whale-breaching.webp | https://pixabay.com/photos/whale-mammal-animal-marine-mammal-1850235/ | Pixabay Content License | Pexels
+- hedgehog-in-garden.webp | https://pixabay.com/photos/hedgehog-animal-hoglet-spur-nature-1759027/ | Pixabay Content License | Alexas_Fotos
+- dry-burdock-burrs.webp | https://pixabay.com/photos/burdock-arctium-spherical-plant-8360061/ | Pixabay Content License | Nennieinszweidrei
+- hoverfly-on-leaf.webp | https://pixabay.com/photos/hoverfly-insect-leaf-animal-fly-1672677/ | Pixabay Content License | Myriams-Fotos
+- woodpecker-on-branch.webp | https://pixabay.com/photos/woodpecker-bird-nature-forest-bird-9637900/ | Pixabay Content License | Juergen57BS
+- arctic-tern-resting.webp | https://pixabay.com/photos/arctic-tern-bird-arctic-snow-8703910/ | Pixabay Content License | MonicaMaxWest
+- evening-grosbeak-feeder.webp | https://pixabay.com/photos/vespertinus-coccothraustes-bird-386752/ | Pixabay Content License | PublicDomainImages
+- groundhog-eating.webp | https://pixabay.com/photos/groundhog-eating-hands-fur-face-10530949/ | Pixabay Content License | Trek_Jason
+- chipmunk-on-rock.webp | https://pixabay.com/photos/chipmunk-rodent-foraging-eating-3959206/ | Pixabay Content License | 11417994
+- cranes-in-field.webp | https://pixabay.com/photos/birds-common-cranes-flock-migration-7590276/ | Pixabay Content License | sharkolot
+- stork-sitting-on-nest.webp | https://pixabay.com/photos/stork-nest-nature-bird-wildlife-9614143/ | Pixabay Content License | Gruendercoach
+- octopus-on-sea-floor.webp | https://pixabay.com/photos/octopus-kraken-octopus-vulgaris-428745/ | Pixabay Content License | Taken
+- dolphin-jumping.webp | https://pixabay.com/photos/dolphin-aquarium-jumping-fish-906183/ | Pixabay Content License | Michelle-Maria
+- grass-snake-on-boards.webp | https://pixabay.com/photos/line-nature-reptile-wildlife-3274693/ | Pixabay Content License | susannp4
+- red-deer-stag.webp | https://pixabay.com/photos/deer-fall-meadow-forest-antler-9903608/ | Pixabay Content License | jggrz
