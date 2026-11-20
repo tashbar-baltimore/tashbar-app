@@ -37,7 +37,7 @@ body.gm-on #gm{display:block}
 #gm *{box-sizing:border-box}
 #gm .gm-sky{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(2px 2px at 8% 14%,rgba(255,255,255,.55),transparent),radial-gradient(2px 2px at 82% 9%,rgba(255,255,255,.6),transparent),radial-gradient(1.5px 1.5px at 52% 24%,rgba(255,255,255,.45),transparent),radial-gradient(2px 2px at 16% 46%,rgba(255,255,255,.4),transparent),radial-gradient(1.5px 1.5px at 90% 40%,rgba(255,255,255,.5),transparent),radial-gradient(2px 2px at 40% 64%,rgba(255,255,255,.35),transparent),radial-gradient(1.5px 1.5px at 70% 78%,rgba(255,255,255,.4),transparent)}
 #gm .gm-in{position:relative;max-width:640px;margin:0 auto;padding:12px 16px calc(330px + env(safe-area-inset-bottom,0px))}
-#gm .gm-top{position:sticky;top:0;z-index:3;margin:-12px -16px 0;padding:12px 16px 4px;background:#1C0F5A;box-shadow:0 0 0 100vmax #1C0F5A,0 10px 14px -6px rgba(10,7,38,.9);clip-path:inset(0 -100vmax -24px -100vmax)}
+#gm .gm-top{position:sticky;top:0;z-index:3;margin:-12px -16px 0;padding:12px 16px 4px;background:#1C0F5A;box-shadow:0 0 0 100vmax #1C0F5A;clip-path:inset(0 -100vmax 0 -100vmax);border-bottom:2px solid rgba(255,255,255,.08)}
 #gm .gm-hud{display:flex;gap:6px;align-items:center;padding-right:96px;min-height:40px}
 #gm .gm-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(0,0,0,.42);border:2px solid rgba(255,255,255,.18);border-radius:12px;padding:5px 9px;font-weight:900;font-size:14px;color:#fff;white-space:nowrap;font-family:inherit}
 #gm .gm-rank{background:linear-gradient(135deg,#FFE259,#FFA751);color:#3A1C00;border:0}
@@ -106,6 +106,59 @@ body.gm-k2 #gm-nav button{font-size:13px}
  #gm .gm-goal{left:auto;right:max(16px,calc(50% - 560px));transform:none;width:440px;top:190px;bottom:auto;padding:20px}
  #gm .gm-goal h1{font-size:40px}#gm .gm-goal .learn{font-size:18px}#gm .gm-goal .m{font-size:15px}#gm .gm-play{font-size:30px;padding:18px}
  #gm .gm-l{font-size:15px}#gm .gm-l small{font-size:13px}#gm .gm-chip{font-size:16px;padding:7px 12px}#gm .gm-w{font-size:15px;padding:8px 16px}#gm-nav{height:78px}}
+#gm .gm-all{background:rgba(255,255,255,.04);border-style:dashed}
+#gm .gm-marq{position:relative;margin:14px 0 0;border-radius:22px;padding:14px 10px;text-align:center;background:linear-gradient(180deg,#FF2E63,#B5179E);border:4px solid #FFD84D;box-shadow:0 0 0 4px #7A0B3A,0 10px 30px rgba(255,46,99,.45)}
+#gm .gm-marq:before{content:'';position:absolute;inset:4px;border-radius:15px;border:3px dotted #FFF3A6;opacity:.85;pointer-events:none}
+#gm .gm-marq .s{font-size:12px;font-weight:900;letter-spacing:.2em;color:#FFE259}
+#gm .gm-marq h1{margin:4px 0 0;font-size:30px;line-height:1;font-weight:900;font-style:italic;text-transform:uppercase;text-shadow:0 3px 0 #7A0B3A;color:#fff}
+#gm .gm-marq small{display:block;margin-top:6px;font-size:13px;font-weight:800;color:#FFE3F1}
+#gm .gm-rounds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+#gm .gm-rd{display:flex;align-items:center;gap:12px;border-radius:18px;padding:10px 12px;border:3px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);text-align:left;width:100%;font-family:inherit;color:#fff;cursor:pointer}
+#gm .gm-rd .n{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;flex:none;background:#3A2A6A}
+#gm .gm-rd .t{flex:1;min-width:0;font-weight:900;font-size:15px;line-height:1.2}
+#gm .gm-rd .t small{display:block;font-size:12px;opacity:.85;font-weight:700;margin-top:2px}
+#gm .gm-rd .p{font-weight:900;font-size:12px;color:#FFE259;text-align:right;white-space:nowrap}
+#gm .gm-rd.won{background:rgba(0,200,110,.16);border-color:#2EE59D}#gm .gm-rd.won .n{background:#00C46A}
+#gm .gm-rd.live{background:linear-gradient(135deg,#FFB800,#FF6A00);border-color:#FFF06A;box-shadow:0 0 26px rgba(255,170,0,.45);color:#2B1400}#gm .gm-rd.live .n{background:#fff;color:#FF6A00}#gm .gm-rd.live .p{color:#2B1400}
+#gm .gm-rd.rebbe{border-color:#7DD3FC;background:rgba(56,189,248,.14)}#gm .gm-rd.rebbe .n{background:#0284C7}
+#gm .gm-rd.final{background:linear-gradient(135deg,#4A0A3A,#2A0A5A);border-color:#FF4FA3;cursor:default}#gm .gm-rd.final .n{background:linear-gradient(135deg,#FF2E63,#B5179E)}
+#gm .gm-rd.final.open{background:linear-gradient(135deg,#00C46A,#047857);border-color:#6EE7B7;cursor:pointer}
+#gm .gm-score{display:flex;gap:8px;margin-top:14px}
+#gm .gm-score div{flex:1;background:#000;border:3px solid #3D2A7A;border-radius:14px;text-align:center;padding:6px 4px}
+#gm .gm-score b{display:block;font-size:24px;color:#39FF88;font-family:'JetBrains Mono',ui-monospace,monospace}
+#gm .gm-score small{font-size:10px;color:#A9A6E8;font-weight:900;letter-spacing:.06em}
+#gm .gm-chest{margin-top:10px;border-radius:14px;padding:9px 12px;background:rgba(255,216,77,.12);border:2px solid rgba(255,216,77,.4);font-weight:800;font-size:13px;color:#FFE9A8}
+#gm .gm-cta{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:31}
+#gm .gm-cta .gm-play{width:100%}
+#gm .gm-lock{margin-top:16px;border-radius:24px;padding:20px 16px;text-align:center;background:rgba(0,0,0,.35);border:3px dashed rgba(255,255,255,.25)}
+#gm .gm-lock .ic{font-size:64px;line-height:1}
+#gm .gm-lock h1{margin:8px 0 4px;font-size:28px;font-weight:900;font-style:italic;text-transform:uppercase}
+#gm .gm-lock p{margin:0;font-size:15px;font-weight:700;color:#D9D5FF}
+#gm .gm-games{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+#gm .gm-games div{border-radius:16px;padding:12px 6px;text-align:center;font-weight:900;font-size:12px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);filter:grayscale(.6);opacity:.8}
+#gm .gm-games b{display:block;font-size:30px;margin-bottom:4px}
+#gm-nav button{position:relative}
+#gm-nav .cnt{position:absolute;top:6px;left:calc(50% + 8px);min-width:20px;height:20px;border-radius:10px;background:#FF2E63;color:#fff;font-size:12px;line-height:20px;text-align:center;padding:0 5px;letter-spacing:0}
+#gm-cel{position:fixed;inset:0;z-index:10010;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif;
+ background:radial-gradient(circle at 50% 38%,#FFB800 0%,#FF3C7A 38%,#4A0A6A 75%,#14042A 100%)}
+#gm-cel .rays{position:absolute;left:50%;top:38%;width:1400px;height:1400px;margin:-700px 0 0 -700px;background:repeating-conic-gradient(rgba(255,255,255,.14) 0 10deg,transparent 10deg 20deg);border-radius:50%;animation:gmspin 1.6s cubic-bezier(.2,.8,.3,1) both}
+#gm-cel .bx{position:relative;width:min(440px,calc(100% - 32px));text-align:center}
+#gm-cel .s{font-size:14px;font-weight:900;letter-spacing:.24em;color:#FFF3A6}
+#gm-cel h1{margin:6px 0 0;font-size:58px;line-height:.92;font-weight:900;font-style:italic;text-transform:uppercase;text-shadow:0 6px 0 #7A0B3A,0 0 30px rgba(255,255,255,.4);animation:gmpop .55s cubic-bezier(.2,1.6,.4,1) both}
+#gm-cel .ic{font-size:110px;line-height:1.1;margin:14px 0 4px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35));animation:gmpop .6s .12s cubic-bezier(.2,1.6,.4,1) both}
+#gm-cel .stars{font-size:44px;letter-spacing:6px}
+#gm-cel .loot{margin:14px 0 0;background:rgba(0,0,0,.35);border:3px solid rgba(255,255,255,.3);border-radius:22px;padding:10px 14px;text-align:left}
+#gm-cel .loot div{display:flex;justify-content:space-between;gap:10px;font-weight:900;font-size:15px;padding:5px 0}
+#gm-cel .loot b{color:#FFE259;text-align:right}
+#gm-cel .row{display:flex;gap:8px;margin-top:16px}
+#gm-cel button{flex:1;border:0;border-radius:18px;padding:15px 10px;font-family:inherit;font-weight:900;font-size:22px;font-style:italic;text-transform:uppercase;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 6px 0 #B36B00;cursor:pointer}
+#gm-cel button.alt{flex:0 0 auto;font-size:16px;color:#fff;background:rgba(0,0,0,.3);box-shadow:0 6px 0 rgba(0,0,0,.35)}
+#gm-cel button:active{transform:translateY(5px);box-shadow:0 1px 0 #B36B00}
+#gm-cel .cf{position:absolute;top:-20px;width:10px;height:6px;border-radius:2px;animation:gmfall 1.8s cubic-bezier(.3,.6,.5,1) both}
+@keyframes gmspin{from{transform:rotate(-30deg) scale(.6);opacity:0}to{transform:rotate(0) scale(1);opacity:1}}
+@keyframes gmpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes gmfall{from{transform:translateY(0) rotate(0)}to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){#gm-cel .rays,#gm-cel h1,#gm-cel .ic{animation:none}#gm-cel .cf{display:none}}
 @media (prefers-reduced-motion:reduce){#gm .gm-n:active,#gm .gm-play:active,#gm .gm-say:active{transform:none}#gm .gm-n:active{transform:translate(-50%,-50%)}}
 `; document.head.appendChild(s); }
 function root(){ let g=document.getElementById('gm'); if(!g){ g=document.createElement('div'); g.id='gm'; g.setAttribute('role','main'); g.setAttribute('aria-label','My Map'); document.body.appendChild(g); } return g; }
@@ -138,7 +191,7 @@ function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-st="open" aria-label="My money ${money()}: open the Store">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
-function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':'LEVEL '+w.level}</small></button>`).join('')}</div>`; }
+function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':'LEVEL '+w.level}</small></button>`).join('')}<button type="button" class="gm-w gm-all" data-gm="lib" aria-label="All my lessons">📚 ALL<small>LESSONS</small></button></div>`; }
 function pathHTML(w){
  let ids=w.ids.slice(), hidden=0; const ni=w.now?ids.indexOf(w.now):ids.length;
  if(ids.length>7){ const from=Math.max(0,Math.min(ni-2,ids.length-7)); hidden=from; ids=ids.slice(from); }
@@ -164,8 +217,57 @@ function goalHTML(w,isPick){
  const say=`Your next level: ${n[0]}.${n[1]?(/ Level \d+$/.test(n[1])?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Play to start!`;
  return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">🔊</button></div></div>`; }
-function navHTML(k2){ const items=k2?[['map','🗺️','Map'],['lib','📚','Learn'],['games','🎮','Play']]:[['map','🗺️','Map'],['lib','📚','Learn'],['games','🎮','Play'],['mine','🎒','My Stuff'],['store','💵','Store']];
- return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${GM.tab===x[0]?'on':''}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}</button>`).join(''); }
+function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['mine','🎒','My Stuff'],['store','💵','Store']];
+ return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${GM.tab===x[0]?'on':''}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
+/* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
+   3 rounds a day = the school's daily goal (3 lessons mastered in one day; the server pays its bonus, Money.js moneyDailyGoal_; nothing here
+   pays). Each round is his next level in one world (today's pick first), so a day touches several subjects. A round is CLEARED by any step
+   he masters today, in order. His rebbe's picks (sgMyDesk, RebbePick.html) are extra rounds. Clearing all 3 opens the BONUS ROUND: the
+   Arcade (the Play door) and a once-a-day CHALLENGE COMPLETE party. If he has no next level anywhere, the Arcade is simply open. */
+const ROUNDS=3;
+function todayDone(){ const t=today(), sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&dayOf(sk[id].at)===t).sort((a,b)=>sk[a].at-sk[b].at); }
+function weekCounts(){ const sk=(A.st&&A.st.skills)||{}, now=Date.now(), d=864e5; let w=0,p=0; Object.keys(sk).forEach(id=>{ const x=sk[id]; if(!x||!x.m) return; const at=Number(x.at)||0; if(at>=now-7*d) w++; else if(at>=now-14*d) p++; }); return {w,p}; }
+function plan(ws){ const live=ws.filter(w=>w.now), done=todayDone(), n=Math.min(ROUNDS,done.length), out=[];
+ if(!live.length) return {rounds:[],done:n,open:true,left:0};
+ const fresh=live.filter(w=>!doneToday(w)), order=fresh.concat(live.filter(w=>fresh.indexOf(w)<0));
+ for(let i=0;i<ROUNDS;i++){ if(i<n){ out.push({won:true,id:done[i]}); continue; } out.push({w:order[(i-n)%order.length]}); }
+ return {rounds:out,done:n,open:n>=ROUNDS,left:ROUNDS-n}; }
+function rebbePicks(){ const d=window.TL_DESK; if(!d||!A.st||d.sid!==A.st.id) return []; return (d.picks||[]).filter(p=>!(p.done||mast(p.id))).slice(0,2); }
+function subjOfId(id){ const p=String(id).split('.'); if(p[0]==='LK') return 'K:'+p[1]; return p[0]==='WRIT'?'LANG':p[0]; }
+function missionsHTML(ws){ const P=plan(ws), wk=weekCounts(), pk=pick(ws), picks=rebbePicks();
+ const toBoss=pk&&pk.now?pk.ids.length-pk.ids.indexOf(pk.now)-1:0;
+ let rows='', live=null;
+ P.rounds.forEach((r,i)=>{ const num=i+1;
+  if(r.won){ const n=nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐','']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">ROUND ${num} · ${esc((W[1]||'').toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">CLEARED<br>⭐⭐⭐</div></div>`; return; }
+  const w=r.w, n=nm(w.now), isLive=!live; if(isLive) live=w;
+  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="Round ${num}: ${esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">ROUND ${num} · ${esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?'YOUR<br>TURN!':'NEXT'}</div></button>`; });
+ picks.forEach(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); rows+=`<button type="button" class="gm-rd rebbe" data-gm="play" data-id="${esc(p.id)}"><div class="n">📌</div><div class="t">FROM ${esc(String(p.by||'YOUR REBBE').toUpperCase())}<small>${esc(n)}</small></div><div class="p">PICKED<br>FOR YOU</div></button>`; });
+ rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
+ const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
+ const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ Play round ${P.done+1}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
+ const head=P.open?`<div class="s">★ CHALLENGE COMPLETE ★</div><h1>You did it!</h1><small>All ${ROUNDS} rounds cleared today. Every extra level still counts!</small>`:`<div class="s">★ TODAY ON ★</div><h1>The Tashbar<br>Challenge!</h1><small>${P.rounds.length?'Clear '+ROUNDS+' rounds today. Round '+(P.done+1)+' is up!':'No rounds today: every world is cleared!'}</small>`;
+ return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>
+ <div class="gm-score"><div><small>THIS WEEK</small><b>${String(wk.w).padStart(2,'0')}</b></div><div><small>LAST WEEK</small><b style="color:#A9A6E8">${String(wk.p).padStart(2,'0')}</b></div><div><small>TO BOSS</small><b style="color:#FF5C8A">${String(toBoss).padStart(2,'0')}</b></div></div>${chest}${cta}`; }
+function arcadeHTML(ws){ const P=plan(ws);
+ return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>Clear ${P.left} more round${P.left===1?'':'s'} of today's challenge to open the Arcade!</p></div>
+ <div class="gm-games"><div><b>⚔️</b>SHOWDOWN</div><div><b>🕵️</b>DETECTIVE</div><div><b>📒</b>JOKE BOOK</div></div>
+ <div class="gm-cta"><button type="button" class="gm-play" data-gmnav="missions">🎯 Go to my rounds</button></div>`; }
+/* ===== CELEBRATIONS: one short burst, only when he wins (never on its own). Reduced motion: no movement, same words. */
+function celebrate(o){ try{ const old=document.getElementById('gm-cel'); if(old) old.remove(); const d=document.createElement('div'); d.id='gm-cel'; d.setAttribute('role','dialog'); d.setAttribute('aria-label',o.title);
+  const col=['#39FF88','#00E5FF','#FFE259','#FF9AB5','#fff','#B388FF']; let cf=''; for(let i=0;i<26;i++) cf+=`<i class="cf" style="left:${(i*37)%100}%;background:${col[i%col.length]};animation-delay:${(i%9)*0.06}s"></i>`;
+  d.innerHTML=`<div class="rays"></div>${cf}<div class="bx"><div class="s">${esc(o.kicker||'')}</div><h1>${o.title}</h1><div class="ic" aria-hidden="true">${o.icon||'🏆'}</div>${o.stars?'<div class="stars" aria-hidden="true">⭐⭐⭐</div>':''}
+  ${o.loot&&o.loot.length?`<div class="loot">${o.loot.map(l=>`<div><span>${esc(l[0])}</span><b>${esc(l[1])}</b></div>`).join('')}</div>`:''}<div class="row">${o.alt?`<button type="button" class="alt" data-cel="alt">${esc(o.alt[0])}</button>`:''}<button type="button" data-cel="go">${esc(o.go?o.go[0]:'▶ Let\'s go')}</button></div></div>`;
+  document.body.appendChild(d); try{ (SND.win||SND.tap)(); }catch(e){}
+  d.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-cel]'); if(!b) return; d.remove(); const f=b.dataset.cel==='go'?(o.go&&o.go[1]):(o.alt&&o.alt[1]); try{ f&&f(); }catch(x){} });
+  setTimeout(()=>{ const b=d.querySelector('[data-cel=go]'); try{ b&&b.focus({preventScroll:true}); }catch(e){} },50); }catch(e){ console.error('GameMap',e); } }
+GM.celebrate=celebrate;
+function dayKey(){ return 'gm-day-'+(A.st&&A.st.id)+'-'+today(); }
+function seen(k){ try{ return localStorage.getItem(k)==='1'; }catch(e){ return !!GM['_'+k]; } }
+function mark(k){ try{ localStorage.setItem(k,'1'); }catch(e){} GM['_'+k]=1; }
+function checkDaily(ws){ const P=plan(ws); if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=P.done; GM.prevSid=A.st.id; return; }
+ if(P.rounds.length&&GM.prevDone<ROUNDS&&P.done>=ROUNDS&&!seen(dayKey())){ mark(dayKey()); const wk=weekCounts();
+  setTimeout(()=>celebrate({kicker:'THE TASHBAR CHALLENGE',title:'Challenge<br>complete!',icon:'🏆',stars:true,loot:[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]],go:['🎮 Arcade',()=>{ GM.tab='games'; sync(); door('games'); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); }
+ GM.prevDone=P.done; }
 function show(on,navOn){ document.body.classList.toggle('gm-on',!!on); document.body.classList.toggle('gm-nav',!!navOn); }
 function sync(){
  css(); const g=root(), nv=nav();
@@ -175,7 +277,10 @@ function sync(){
  if(!hub||!ws.length){ show(false,false); return; }
  const k2=ws.every(w=>w.level<=2); document.body.classList.toggle('gm-k2',k2);
  if(k2&&(GM.tab==='mine'||GM.tab==='store')) GM.tab='map';
- const nh=navHTML(k2); if(nv.innerHTML!==nh) nv.innerHTML=nh;
+ const P=plan(ws); checkDaily(ws);
+ const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh;
+ if(GM.tab==='missions'||(GM.tab==='games'&&!P.open)){ const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${GM.tab==='missions'?missionsHTML(ws):arcadeHTML(ws)}</div>`;
+  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  if(GM.tab!=='map'){ show(false,true); return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}${worldTabs(ws,cur)}</div>
@@ -203,9 +308,10 @@ document.addEventListener('click',e=>{
  const a=b.dataset.gm, t=b.dataset.gmnav;
  if(t){ e.preventDefault(); try{ SND.tap(); }catch(x){}
   if(t==='store'){ const s=document.createElement('button'); s.dataset.st='open'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); return; }
-  GM.tab=t; if(t==='map'){ GM.sig=''; GM.rescroll=true; sync(); return; } sync(); door(t); return; }
+  GM.tab=t; GM.sig=''; GM.rescroll=true; sync(); if(!document.body.classList.contains('gm-on')) door(t); return; }
  if(a==='world'){ GM.world=b.dataset.k; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
  if(a==='play') return play(b.dataset.id);
+ if(a==='lib'){ try{ SND.tap(); }catch(x){} GM.tab='lib'; sync(); door('lib'); return; }
  if(a==='pf'){ const c=document.querySelector('.pf-card button'); if(c) c.click(); return; }
  if(a==='say'){ try{ speak(b.dataset.text); }catch(x){} return; }
  if(a==='node'){ const id=b.dataset.id, m=M(); if(!m) return; const ws=worldsOf(m), w=ws.find(x=>x.k===GM.world);
