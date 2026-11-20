@@ -120,7 +120,7 @@ async function kidTests(browser) {
       const gm = document.getElementById('gm'); o.on = document.body.classList.contains('gm-on') && !!gm; if (!o.on) return o;
       o.goal = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.learn = (gm.querySelector('.gm-goal .learn') || {}).textContent || ''; o.nodes = gm.querySelectorAll('.gm-n').length; o.boss = gm.querySelectorAll('.gm-n.boss').length;
       const ch = gm.querySelector('[data-gm=world][data-k="K:CHU"]'); if (ch) { ch.click(); await sleep(30); const lk = gm.querySelector('.gm-n.u'); o.chu = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; if (lk) { lk.click(); o.toast = (gm.querySelector('.gm-toast') || {}).textContent || ''; } const mt = gm.querySelector('[data-gm=world][data-k="MATH"]'); if (mt) { mt.click(); await sleep(30); } }
-      document.querySelector('#gm-nav [data-gmnav=lib]').click(); await sleep(30); o.lib = !document.body.classList.contains('gm-on') && document.body.classList.contains('gm-nav');
+      gm.querySelector('[data-gm=lib]').click(); await sleep(30); o.lib = !document.body.classList.contains('gm-on') && document.body.classList.contains('gm-nav');
       document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30); o.back = document.body.classList.contains('gm-on');
       document.querySelector('#gm-nav [data-gmnav=missions]').click(); await sleep(30); o.rounds = gm.querySelectorAll('.gm-rd:not(.final):not(.rebbe)').length; o.live = gm.querySelectorAll('.gm-rd.live').length;
       document.querySelector('#gm-nav [data-gmnav=games]').click(); await sleep(30); o.locked = !!gm.querySelector('.gm-lock') && document.body.classList.contains('gm-on');
