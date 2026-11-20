@@ -728,6 +728,7 @@ function pfFinish_(S, r, k, extra) {
   var eDetail = res.engine === 'E' ? { kind: 'core', engine: 'E', placedLevel: res.placedLevel, z: res.z, seRaw: res.seRaw, lz: res.lz, cusum: res.cusum } : null;
   if (v72) pf72LzResearch_(res, eDetail);   /* v7.2 Stage 1 (F8.1), TEST only: lz kept in detail.research only, never output */
   pfTab_('results').appendRow([new Date(), S.id, r.id, k, res.status, res.level, res.start, res.theta, res.se, JSON.stringify(res.range), res.confidence, JSON.stringify(res.strands), JSON.stringify(res.skills).slice(0, 45000), JSON.stringify(res.gaps), JSON.stringify(res.errors), JSON.stringify(res.flags), res.used, applied ? 'yes' : 'no', 'pathfinder'].concat(core ? (eDetail ? [JSON.stringify(eDetail)] : []) : [JSON.stringify({ kind: 'lang', startLevel: sec.startLevel, top2: Object.keys(res.errors).sort(function (a, b) { return res.errors[b] - res.errors[a]; }).slice(0, 2) })]));
+  try { CacheService.getScriptCache().remove('pf_lp_' + r.id); if (typeof PF_LP_MEMO_ !== 'undefined') delete PF_LP_MEMO_[r.id]; } catch (e) {}   /* an applied result counts as a Level Pass (PathfinderLevel.js) */
   sec.result = { status: res.status, level: res.level, start: res.start, applied: applied, confidence: res.confidence, gaps: res.gaps };
   var road = pfRoad_(S), coreDone = core && PF.CORE.every(function (c) { return road[c].status !== 'todo' && road[c].status !== 'going'; });
   if (coreDone) { S.status = 'core'; S.flags.push({ at: new Date().toISOString(), by: 'pathfinder', action: 'core sections done' }); }
@@ -880,6 +881,7 @@ function pfReport(token, sid) { tlGuard_(token, sid);
   var out = { name: r.name, sid: sid, staff: pfWho_(s), live: !pfIsTest_(sid), liveGrades: PF_LIVE_GRADES.slice(), strandNames: PF.STRANDS, names: names, codes: codes, stops: PF.STOPS,
     notes: typeof pf5Notes_ === 'function' ? pf5Notes_(sid) : [], aboutFamilyAsk: typeof PF_X !== 'undefined' ? (PF_X.about_me || []).filter(function (x) { return x.id === 'family'; }).map(function (x) { return x.screen; })[0] || '' : '',
     sessions: all.map(function (o) { return { id: o.id, status: o.status, kind: o.kind, grade: o.grade, created: new Date(o.created).getTime(), by: o.by, flags: o.flags, practice: o.state.practice, young: o.state.young, road: pfRoad_(o), effort: pfEffort_(o), confirm: o.state.confirm || null }; }), results: res, place: plPlacements_()[sid] || {}, kodesh: typeof pfkReport_ === 'function' ? pfkReport_(sid) : null };
+  try { if (typeof pfLcReport_ === 'function') out.levelChecks = pfLcReport_(sid); } catch (e) {}   /* level checks (PathfinderLevel.js, HoS 2026-11-20) */
   try { var pd = typeof pfdReport_ === 'function' ? pfdReport_(sid) : null; if (pd) out.daily = pd; } catch (e) {}
   if (typeof pf72On_ === 'function' && pf72On_(sid)) { pf72StripLz_(out); try { var hd = pf72HdReport_(sid); if (hd) out.hd = hd; } catch (e) {} }   /* v7.2 Stages 1 and 4 (TEST only): no lz; rule HD levels */   /* PF stage D: his daily path, climbs and booster (TEST boys only) */
   return out;

@@ -387,6 +387,7 @@ function repHTML(){ const R=P.rep; if(!R) return `<div class="wrap"><div class="
   h+=`</div>`; });
  if(window.PF5UI) h+=PF5UI.repNotes(R);
  if(window.PFKUI&&R.kodesh) h+=PFKUI.rep(R);
+ if(R.levelChecks&&R.levelChecks.length) h+=`<div class="card"><h3>🎫 Level checks (Level Pass)</h3><p style="color:var(--soft)">A short check before the first lesson in a new Math or Reading level. Taking it (any score) gives the Level Pass: full lesson pay at that level. Skills with every question right are skipped in the boy's lineup (not counted as mastered, not paid). It never changes a level.</p><table><tr><th>When</th><th>Subject</th><th>Level</th><th>Right</th><th>Already knows (skipped)</th></tr>${R.levelChecks.map(c=>`<tr><td>${esc(new Date(c.at).toLocaleString())}</td><td>${c.subject==='READ'?'Reading':'Math'}</td><td>${c.level}</td><td>${c.right} of ${c.of}</td><td>${c.known.length?c.known.map(k=>esc(k[1])).join(', '):'none'}</td></tr>`).join('')}</table></div>`;
  if(R.daily&&R.daily.on) h+=dailyRep(R.daily);   /* PF stage D (PathfinderDaily.js): his daily path, climbs and booster; TEST boys only */
  h+=`<div class="card"><h3>Staff actions</h3><p style="color:var(--soft)">Any staff member may do these. Each one is saved with your name and the time.</p>
  <label style="display:block;margin-bottom:10px">Reason (optional)<br><input id="why" maxlength="200" style="width:100%;font:inherit;padding:10px;border-radius:12px;border:2px solid var(--line)" placeholder="e.g. Was sick that morning"></label>

@@ -80,6 +80,9 @@ body.gm-on #gm{display:block}
 #gm .gm-goal .learn{font-size:15px;font-weight:800;margin:4px 0 2px}
 #gm .gm-goal .learn b{color:#FFE259}
 #gm .gm-goal .m{font-size:13px;font-weight:700;opacity:.95}
+#gm .gm-goal.gm-lcg{background:linear-gradient(135deg,rgba(255,138,0,.97),rgba(255,46,99,.97));border:3px solid #FFE259}
+#gm .gm-n.kn{opacity:.85;filter:saturate(.6)}
+#gm .gm-n.lc{outline:4px solid #FFE259;outline-offset:3px}
 #gm .gm-row{display:flex;gap:8px;margin-top:10px}
 #gm .gm-play{flex:1;border:0;border-radius:18px;padding:13px;font-weight:900;font-size:26px;line-height:1;font-family:inherit;font-style:italic;text-transform:uppercase;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 6px 0 #B36B00;cursor:pointer}
 #gm .gm-play:active{transform:translateY(5px);box-shadow:0 1px 0 #B36B00}
@@ -388,12 +391,16 @@ function dayOf(at){ const d=new Date(Number(at)||0); return d.getFullYear()+'-'+
 function M(){ const m=window.TL_MAP; return m&&A.st&&m.sid===A.st.id?m:null; }
 function srvMast(){ const m=M(); if(!m) return {}; if(m.__mast) return m.__mast; const o={}; [m.subjects||{},m.kodesh||{}].forEach(G=>Object.keys(G).forEach(k=>(G[k].skills||[]).forEach(x=>{ if(x[2]) o[x[0]]=1; }))); Object.defineProperty(m,'__mast',{value:o,enumerable:false}); return o; }
 function mast(id){ const s=A.st&&A.st.skills&&A.st.skills[id]; return !!(s&&s.m)||!!srvMast()[id]; }
+/* 🎫 LEVEL CHECK (HoS 2026-11-20, PathfinderLevel.js): skills he showed he already knows are skipped (never mastered, never paid) */
+function known(id){ const m=M(); return !!(m&&m.lc&&m.lc.known&&m.lc.known.indexOf(id)>=0)&&!mast(id); }
+function done(id){ return mast(id)||known(id); }
+function lcOf(w){ return w&&!w.isK&&w.now&&typeof window.tlLevelCheckFor==='function'?window.tlLevelCheckFor(w.now):null; }
 function nm(id){ const m=M(), n=m&&m.names&&m.names[id]; return n?n:[id,'']; }
 function worldsOf(m){
  const out=[]; const add=(k,c,isK)=>{ if(!c||!c.level) return; const W=WORLDS[k]||['⭐',k];
   let ids=isK?(c.skills||[]).map(x=>x[0]):((c.unit&&c.unit.ids)||[]);
   if(!ids.length&&c.now) ids=[c.now];
-  let now=ids.find(id=>!mast(id))||'';
+  let now=ids.find(id=>!done(id))||'';
   const cleared=!now&&ids.length>0;
   const unitName=isK?(W[1]+' Level '+c.level):((c.unit&&c.unit.name)||W[1]);
   out.push({k,icon:W[0],name:W[1],level:c.level,ids,now,cleared,next:c.next,unitName,isK,c}); };
@@ -411,7 +418,7 @@ function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
-function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':'LEVEL '+w.level}</small></button>`).join('')}<button type="button" class="gm-w gm-all" data-gm="lib" aria-label="All my lessons">📚 ALL<small>LESSONS</small></button></div>`; }
+function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':lcOf(w)?'🎫 CHECK':'LEVEL '+w.level}</small></button>`).join('')}<button type="button" class="gm-w gm-all" data-gm="lib" aria-label="All my lessons">📚 ALL<small>LESSONS</small></button></div>`; }
 function pathHTML(w){
  let ids=w.ids.slice(), hidden=0; const ni=w.now?ids.indexOf(w.now):ids.length;
  if(ids.length>7){ const from=Math.max(0,Math.min(ni-2,ids.length-7)); hidden=from; ids=ids.slice(from); }
@@ -420,10 +427,11 @@ function pathHTML(w){
  let d=''; pts.forEach((p,i)=>{ if(!i){ d='M'+p[0]+' '+p[1]; return; } const q=pts[i-1], my=(q[1]+p[1])/2; d+=' C'+q[0]+' '+my+' '+p[0]+' '+my+' '+p[0]+' '+p[1]; });
  const svg=`<svg width="100%" height="${H}" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="#FFE259" stroke-width="1.6" stroke-dasharray="0.6 4" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:5px;stroke-dasharray:2 14"/></svg>`;
  let h=`<div class="gm-path" style="height:${H}px">${svg}`;
- ids.forEach((id,i)=>{ const p=pts[i], isBoss=(hidden+i)===w.ids.length-1, isNow=id===w.now, isDone=mast(id), n=nm(id);
-  const cls=(isBoss?'boss ':'')+(isNow?'now':isDone?'d':'u');
-  const ico=isNow?(isBoss?'🏰':w.icon):isDone?'✓':(isBoss?'🏰':'🔒');
-  const lab=isNow?(isBoss?'BOSS LEVEL · YOU ARE HERE':'▶ YOU ARE HERE'):isBoss?'BOSS · UNIT FINISH 🏁':isDone?'CLEARED':'LOCKED';
+ const lc=lcOf(w);
+ ids.forEach((id,i)=>{ const p=pts[i], isBoss=(hidden+i)===w.ids.length-1, isNow=id===w.now, isDone=mast(id), isKnown=known(id), n=nm(id);
+  const cls=(isBoss?'boss ':'')+(isNow?'now':isDone||isKnown?'d':'u')+(isKnown?' kn':'')+(isNow&&lc?' lc':'');
+  const ico=isNow?(lc?'🎫':isBoss?'🏰':w.icon):isDone?'✓':isKnown?'⏭':(isBoss?'🏰':'🔒');
+  const lab=isNow?(lc?'🎫 LEVEL CHECK FIRST · '+lc.min+' MIN':isBoss?'BOSS LEVEL · YOU ARE HERE':'▶ YOU ARE HERE'):isKnown?'⏭ YOU KNOW IT · SKIPPED':isBoss?'BOSS · UNIT FINISH 🏁':isDone?'CLEARED':'LOCKED';
   h+=`<button type="button" class="gm-n ${cls}" style="left:${p[0]}%;top:${p[1]}px" data-gm="node" data-id="${esc(id)}" aria-label="${esc(n[0])}${n[1]?': '+esc(n[1]):''} (${lab.toLowerCase()})">${ico}</button>`;
   const right=p[0]<50, off=isNow||isBoss?58:40;
   h+=`<div class="gm-l${isNow?' now':''}${isBoss?' boss':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="k">${lab}</span>${esc(n[0])}${n[1]?`<small>${esc(n[1])}</small>`:''}</div>`; });
@@ -436,23 +444,28 @@ function pathHTML(w){
 function treeHTML(w){
  const c=w.c||{}, sk=w.isK?(c.skills||[]):(c.skills||[]), S=c.strands||{}, br=[], idx={};
  sk.forEach(x=>{ const s=w.isK?'K':(String(x[0]).split('.')[1]||''); if(!(s in idx)){ idx[s]=br.length; br.push({s,name:w.isK?(w.name+' Level '+w.level):(S[s]||s),items:[]}); } br[idx[s]].items.push(x); });
- const built=sk.filter(x=>x[1]), done=built.filter(x=>mast(x[0])).length, pct=built.length?Math.round(100*done/built.length):0;
- let h=`<div class="gm-tree"><div class="gm-thead"><div class="k">🌳 SKILL TREE</div><h2>${esc(w.name)} · Level ${w.level}</h2><div class="bar"><i style="width:${pct}%"></i></div><small>${done} of ${built.length} skills mastered${done===built.length&&built.length?' · LEVEL COMPLETE! 👑':''}</small></div>`;
- br.forEach(b=>{ const bb=b.items.filter(x=>x[1]), bd=bb.filter(x=>mast(x[0])).length, here=b.items.some(x=>x[0]===w.now), full=bb.length&&bd===bb.length;
+ const built=sk.filter(x=>x[1]), nDone=built.filter(x=>done(x[0])).length, pct=built.length?Math.round(100*nDone/built.length):0;
+ let h=`<div class="gm-tree"><div class="gm-thead"><div class="k">🌳 SKILL TREE</div><h2>${esc(w.name)} · Level ${w.level}</h2><div class="bar"><i style="width:${pct}%"></i></div><small>${nDone} of ${built.length} skills done${built.some(x=>known(x[0]))?' (⏭ = you know it, skipped)':''}${nDone===built.length&&built.length?' · LEVEL COMPLETE! 👑':''}</small></div>`;
+ br.forEach(b=>{ const bb=b.items.filter(x=>x[1]), bd=bb.filter(x=>done(x[0])).length, here=b.items.some(x=>x[0]===w.now), full=bb.length&&bd===bb.length;
   h+=`<div class="gm-br${here?' here':''}${full?' full':''}"><div class="h"><span>${esc(b.name)}${here?' · ▶ YOU ARE HERE':''}</span><small>${full?'✓ COMPLETE':bd+' / '+bb.length}</small></div><div class="gm-nodes">`;
-  b.items.forEach(x=>{ const id=x[0], n=nm(id), st=!x[1]?'s':mast(id)?'d':id===w.now?'now':'u', ic=st==='d'?'✓':st==='now'?w.icon:st==='s'?'SOON':'🔒';
-   h+=`<button type="button" class="gm-tn ${st}" data-gm="tn" data-id="${esc(id)}" data-st="${st}" aria-label="${esc(n[0])}${n[1]?': '+esc(n[1]):''}"><span class="hx">${ic}</span><span>${esc(n[0])}</span></button>`; });
+  b.items.forEach(x=>{ const id=x[0], n=nm(id), st=!x[1]?'s':mast(id)?'d':known(id)?'k':id===w.now?'now':'u', ic=st==='d'?'✓':st==='k'?'⏭':st==='now'?w.icon:st==='s'?'SOON':'🔒';
+   h+=`<button type="button" class="gm-tn ${st==='k'?'d kn':st}" data-gm="tn" data-id="${esc(id)}" data-st="${st}" aria-label="${esc(n[0])}${n[1]?': '+esc(n[1]):''}"><span class="hx">${ic}</span><span>${esc(n[0])}</span></button>`; });
   h+='</div></div>'; });
  return h+'</div>'; }
 function sheet(id,st){ const g=root(), old=g.querySelector('.gm-sheet'); if(old) old.remove(); const n=nm(id), w=(worldsOf(M())||[]).find(x=>x.k===GM.world), real=/ Level \d+$/.test(n[1]||'');
- const status=st==='d'?'✓ MASTERED':st==='now'?'⚡ YOUR GOAL NOW':st==='s'?'🛠️ COMING SOON':'🔒 LOCKED';
+ const status=st==='d'?'✓ MASTERED':st==='k'?'⏭ YOU KNOW IT · SKIPPED':st==='now'?'⚡ YOUR GOAL NOW':st==='s'?'🛠️ COMING SOON':'🔒 LOCKED';
  const line=n[1]?(real?`Real skill: <b>${esc(n[0])}</b> · ${esc(n[1])}`:`You learn: <b>${esc(n[1])}</b>`):'';
- const more=st==='u'&&w&&w.now?`<p>Clear <b>${esc(nm(w.now)[0])}</b> first. Every level you clear brings this one closer!</p>`:st==='s'?'<p>This skill is being built. It opens soon!</p>':'';
- const btn=st==='d'?`<button type="button" class="gm-play" data-gm="play" data-id="${esc(id)}">↻ Replay</button>`:st==='now'?`<button type="button" class="gm-play" data-gm="play" data-id="${esc(id)}">▶ Play</button>`:'';
+ const more=st==='k'?'<p>You showed you know this in your level check, so it is skipped. You can still play it for practice.</p>':st==='u'&&w&&w.now?`<p>Clear <b>${esc(nm(w.now)[0])}</b> first. Every level you clear brings this one closer!</p>`:st==='s'?'<p>This skill is being built. It opens soon!</p>':'';
+ const btn=st==='d'||st==='k'?`<button type="button" class="gm-play" data-gm="play" data-id="${esc(id)}">↻ Replay</button>`:st==='now'?`<button type="button" class="gm-play" data-gm="play" data-id="${esc(id)}">▶ Play</button>`:'';
  const d=document.createElement('div'); d.className='gm-sheet'; d.setAttribute('role','dialog'); d.setAttribute('aria-label',n[0]);
  d.innerHTML=`<div class="k">${status}</div><h2>${esc(n[0])}</h2>${line?`<p>${line}</p>`:''}${more}<div class="gm-row">${btn}<button type="button" class="x" data-gm="sheetx">${btn?'Close':'OK'}</button></div>`; g.appendChild(d); }
 function learnLine(n){ if(!n[1]) return ''; if(/ Level \d+$/.test(n[1])) return `<div class="learn">🧠 Real skill: <b>${esc(n[0])}</b> · ${esc(n[1])}</div>`; return `<div class="learn">🧠 You'll learn: <b>${esc(n[1])}</b></div>`; }
+function lcGoalHTML(w,isPick,lc){ const n=nm(w.now), L=lc.L, sub=w.name;
+ const say=`Level check first. ${sub} Level ${L}. About ${lc.min} minutes. Questions you get right are skills you skip, and taking it unlocks full pay at this level. Tap Play to start!`;
+ return `<div class="gm-goal gm-lcg" aria-label="Level check first"><div class="k"><span>🎫 LEVEL CHECK · ${esc(sub).toUpperCase()} LEVEL ${L}</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>🎫 Level Check</h1><div class="learn">⏭ <b>Skip what you know</b> · 💵 <b>unlock full pay</b> at Level ${L}</div><div class="m">About ${lc.min} minutes · then: ${esc(n[0])}</div>
+ <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">Read it to me<span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="18.5"/><circle class="bar" cx="20" cy="20" r="18.5" stroke-dasharray="116.24" stroke-dashoffset="116.24"/></svg><span class="dot"><span class="tri"></span><span class="sq"></span></span></span></button></div></div>`; }
 function goalHTML(w,isPick){
+ const lc=lcOf(w); if(lc) return lcGoalHTML(w,isPick,lc);
  if(!w.now) return `<div class="gm-goal"><div class="gm-done">🏆 ${esc(w.name)} unit cleared!<small>Your rebbe or teacher opens your next unit. Pick another world above, or tap 📚 Learn.</small></div></div>`;
  const n=nm(w.now), left=w.ids.length-w.ids.indexOf(w.now)-1, isBoss=left===0;
  const meta=isBoss?`🏰 BOSS LEVEL! Beat it to finish ${esc(w.unitName)}`:`${esc(w.name)} · Level ${w.level} · ${left} level${left===1?'':'s'} to the BOSS 🏰`;
@@ -739,7 +752,7 @@ document.addEventListener('click',e=>{
  if(a==='pf'){ const c=document.querySelector('.pf-card button'); if(c) c.click(); return; }
  if(a==='say'){ readAloud(b.dataset.text); return; }
  if(a==='node'){ const id=b.dataset.id, m=M(); if(!m) return; const ws=worldsOf(m), w=ws.find(x=>x.k===GM.world);
-  if(mast(id)) return play(id);
+  if(mast(id)||known(id)) return play(id);
   if(w&&id===w.now) return play(id);
   const n=w&&w.now?nm(w.now)[0]:''; toast('🔒 Locked! Clear '+(n||'the level before it')+' first.'); }
 });

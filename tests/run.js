@@ -115,7 +115,20 @@ async function kidTests(browser) {
     if (r.noBox) notes.push(id + ': ' + r.noBox + ' teach or practice screen(s) with no "How to do it" box'); }
   /* the boy's map home (GameMap.html), drawn from a real kmMyMap answer (tests/lib/kidmap.js, made-up boys): shows on the home with his
      goal now and the real skill, PLAY starts that lesson, a locked level says so, the doors still open, nothing shows off the home */
-  try { const km = require('./lib/kidmap.js')(); const g = await pg.evaluate(async M => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {};
+  try { const km = require('./lib/kidmap.js')();
+    /* the 🎫 level check card (HoS 2026-11-20): with his level's check waiting, the goal card says so honestly and PLAY still leads on */
+    const lcg = await pg.evaluate(async M => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {};
+      A.overlay = null; A.play = null; SRV.token = 't'; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.view = 'hub'; GM.world = 'MATH'; GM.sig = ''; render(); await sleep(50);
+      const gm = document.getElementById('gm'); if (!gm) return o; o.h1 = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.m = (gm.querySelector('.gm-goal .m') || {}).textContent || ''; o.node = (gm.querySelector('.gm-l.now') || {}).textContent || '';
+      gm.querySelector('.gm-goal [data-gm=play]').click(); await sleep(400); o.play = A.view === 'play' && A.play && A.play.id; const cf = document.getElementById('pf-cf'); if (cf) cf.remove();
+      A.play = null; A.view = 'hub'; window.TL_MAP = null; GM.world = ''; render(); await sleep(30); return o; }, km.map);
+    const wantLc = km.map.names[km.map.subjects.MATH.now] || [];
+    if (!km.map.lc || km.map.lc.MATH[km.map.subjects.MATH.level - 1] !== 1) fail('map home: the made-up boy\'s Math level should have a level check waiting');
+    else if (!/Level Check/.test(lcg.h1) || lcg.m.indexOf('then: ' + wantLc[0]) < 0 || !/LEVEL CHECK/.test(lcg.node)) fail('map home: a level with its check waiting must show "🎫 Level Check · then: ' + wantLc[0] + '" (got "' + lcg.h1 + '" / "' + lcg.m + '" / "' + lcg.node + '")');
+    else if (lcg.play !== km.map.subjects.MATH.now) fail('map home: PLAY on the level check card must lead on (got ' + lcg.play + ')');
+    else ok('map home: a level whose check is waiting shows the 🎫 Level Check card and the lesson after it; PLAY leads into it');
+    const passMap = JSON.parse(JSON.stringify(km.map)); if (passMap.lc) ['MATH', 'READ'].forEach(k => { passMap.lc[k] = passMap.lc[k].map(v => (v ? 2 : 0)); });
+    const g = await pg.evaluate(async M => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {};
       A.overlay = null; A.play = null; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.view = 'hub'; render(); await sleep(50);
       const gm = document.getElementById('gm'); o.on = document.body.classList.contains('gm-on') && !!gm; if (!o.on) return o;
       o.goal = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.learn = (gm.querySelector('.gm-goal .learn') || {}).textContent || ''; o.nodes = gm.querySelectorAll('.gm-n').length; o.boss = gm.querySelectorAll('.gm-n.boss').length;
@@ -127,7 +140,7 @@ async function kidTests(browser) {
       document.querySelector('#gm-nav [data-gmnav=games]').click(); await sleep(30); o.locked = !!gm.querySelector('.gm-lock') && document.body.classList.contains('gm-on');
       document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30);
       gm.querySelector('[data-gm=play]').click(); await sleep(30); o.play = A.view === 'play' && A.play && A.play.id; o.offHome = !document.body.classList.contains('gm-on') && !document.body.classList.contains('gm-nav');
-      A.play = null; A.view = 'hub'; window.TL_MAP = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); render(); await sleep(30); o.noMap = document.body.classList.contains('gm-on') && !!document.querySelector('#gm .gm-none'); return o; }, km.map);
+      A.play = null; A.view = 'hub'; window.TL_MAP = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); render(); await sleep(30); o.noMap = document.body.classList.contains('gm-on') && !!document.querySelector('#gm .gm-none'); return o; }, passMap);
     const want = km.map.names[km.map.subjects.MATH.now] || [];
     if (!g.on) fail('map home did not show for a boy with a map'); else {
       if (g.goal !== want[0] || g.learn.indexOf(want[1]) < 0) fail('map home: next level should be "' + want[0] + '" with "' + want[1] + '" (got "' + g.goal + '" / "' + g.learn + '")');
@@ -162,6 +175,8 @@ async function staffTests(browser) {
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const k = require('./lib/kidmap.js')(); k.fails.forEach(fail); if (!k.fails.length) ok("boy's own map (kmMyMap): rides with sign-in, only his own data, goal now, unit, Kodesh, growth; staff and bad tokens refused"); report.timings.kidMapMs = k.ms.map; report.timings.kidSignInWithMapMs = k.ms.signIn; }
   catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  try { const l = require('./lib/levelpass.js')(); l.fails.forEach(fail); if (!l.fails.length) ok('level checks and the 🎫 Level Pass: 25% before the check, full pay after, known skills skipped and not paid, one check per level, staff placement wins, no check = never cut'); report.timings.levelCheckStartMs = l.ms.start; report.timings.levelCheckSaveMs = l.ms.save; }
+  catch (e) { fail('level pass test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   await browser.close();
   const bp = path.join(__dirname, 'baseline.json'); const base = fs.existsSync(bp) ? JSON.parse(fs.readFileSync(bp, 'utf8')) : null;
   if (process.env.UPDATE || !base) { fs.writeFileSync(bp, JSON.stringify({ checkAnswersNeverTaught: report.counts.checkAnswersNeverTaught, lessons: report.counts.lessons }, null, 1) + '\n'); console.log('baseline written'); }
