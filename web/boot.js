@@ -23,10 +23,15 @@
       .then(function (r) { return r.json(); }).then(function (j) { if (!j || !j.ok) throw new Error((j && j.error) || 'Server error'); return j.result; });
   }
   function getJSON(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status + ' ' + u); return r.json(); }); }
-  var manifest = null; function staticList() { return manifest || (manifest = getJSON('/parts/manifest.json').then(function (m) { return m.order || []; }, function () { return []; })); }
+  var manifest = null; function hostManifest() { return manifest || (manifest = getJSON('/parts/manifest.json').then(function (m) { return m || {}; }, function () { return {}; })); }
+  function staticList() { return hostManifest().then(function (m) { return m.order || []; }); }
   function cacheGet(k) { return window.caches ? caches.open('tl-page').then(function (c) { return c.match(k); }).then(function (r) { return r ? r.json() : null; }).catch(function () { return null; }) : Promise.resolve(null); }
   function cachePut(k, o) { return caches.open('tl-page').then(function (c) { return o ? c.put(k, new Response(JSON.stringify(o), { headers: { 'Content-Type': 'application/json' } })) : c.delete(k); }); }
-  function keptParts() { return cacheGet('/__parts'); }
+  /* SELF-HEAL (2026-11-20, moshe@ session: a device kept showing an OLD home and no new effects after several publishes): a list of
+     pieces kept on this device is used only if it is NEWER than the host's publish (manifest.built). An older one, or one from before
+     time stamps, is dropped, so the device takes the host's current pieces. */
+  function keptParts() { return Promise.all([cacheGet('/__parts'), hostManifest()]).then(function (a) { var k = a[0], m = a[1];
+    if (k && m && m.built && !(k.at > m.built)) { cachePut('/__parts', null).catch(function () {}); window.TL_PARTS_HEAL = 'dropped an older kept list'; return null; } return k; }); }
   /* in the background: ask the server for its current list of pieces. If it differs, keep the new list and the new
      pieces on the device for the next open. If the fast host has caught up, drop what was kept. */
   function verifyParts(order, onHost, kept) { var known = {}; onHost.forEach(function (h) { known[h] = 1; }); if (kept && kept.parts) Object.keys(kept.parts).forEach(function (h) { known[h] = 1; });
@@ -34,7 +39,7 @@
       if (same) { window.TL_PARTS_CHECK = 'current'; if (kept) cachePut('/__parts', null); return; }
       var parts = {}; r.order.forEach(function (h) { if (r.parts && typeof r.parts[h] === 'string') parts[h] = r.parts[h]; else if (kept && kept.parts && typeof kept.parts[h] === 'string') parts[h] = kept.parts[h]; });
       var changed = r.order.length !== order.length || r.order.some(function (h, i) { return h !== order[i]; });
-      cachePut('/__parts', { order: r.order, parts: parts }).then(function () { window.TL_PARTS_CHECK = changed ? 'newer kept for next open' : 'current (kept on device)'; }, function () { window.TL_PARTS_CHECK = 'newer, but the device could not keep it'; });
+      cachePut('/__parts', { order: r.order, parts: parts, at: Date.now() }).then(function () { window.TL_PARTS_CHECK = changed ? 'newer kept for next open' : 'current (kept on device)'; }, function () { window.TL_PARTS_CHECK = 'newer, but the device could not keep it'; });
     }, function (e) { window.TL_PARTS_CHECK = 'check failed: ' + e.message; }); }
   var local = {
     msQuestTools: function () { return window.TL_PAGE_FROM === 'device' ? remote('msQuestTools', []) : getJSON('/tools.json').catch(function () { return remote('msQuestTools', []); }); },
@@ -80,12 +85,27 @@
     b.setAttribute('role', 'status'); b.style.cssText = 'position:fixed;left:50%;top:10px;transform:translateX(-50%);z-index:2147483646;display:flex;gap:12px;align-items:center;background:#16202C;color:#fff;padding:10px 12px 10px 18px;border-radius:999px;box-shadow:0 8px 24px rgba(0,0,0,.3);font:700 15px system-ui,sans-serif;max-width:calc(100vw - 24px)';
     b.innerHTML = '<span>✨ A new version of the staff portal is ready.</span><button type="button" style="border:0;border-radius:999px;padding:8px 16px;background:#FDE047;color:#16202C;font:800 14px system-ui,sans-serif;cursor:pointer">Update now</button>';
     b.querySelector('button').onclick = function () { location.reload(); }; (document.body || document.documentElement).appendChild(b); }
-  function swapIfIdle() { staffBar(); if (!NEWER || !idle()) return; var k = 'tl-swapped-' + KIND; try { if (sessionStorage.getItem(k) === NEWER) return; sessionStorage.setItem(k, NEWER); } catch (e) { return; } location.reload(); }   /* once per new page: never a reload loop */
+  /* SMOOTH SWAP (2026-11-19, moshe@ session: "the startup glitches out and shows the same screen a bunch of times"): the boy no longer
+     sees the sign-in screen jump. The screen fades to the night-sky cover (the same colour as the page's own boot cover), then reloads.
+     At most ONE automatic reload in 2 minutes, so a new page and new pieces together never reload twice in a row. */
+  function smoothReload() { try { var c = document.createElement('div'); c.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#0B0630;opacity:0;transition:opacity .25s ease;pointer-events:none';
+      (document.body || document.documentElement).appendChild(c); requestAnimationFrame(function () { c.style.opacity = '1'; }); setTimeout(function () { try { document.documentElement.classList.add('tl-boot'); } catch (e) {} location.reload(); }, 280); }
+    catch (e) { location.reload(); } }
+  function swapIfIdle() { staffBar(); if (!NEWER || !idle()) return; var k = 'tl-swapped-' + KIND; try { if (sessionStorage.getItem(k) === NEWER) return; var last = +sessionStorage.getItem('tl-reload-at') || 0; if (Date.now() - last < 120000) return;
+      sessionStorage.setItem(k, NEWER); sessionStorage.setItem('tl-reload-at', String(Date.now())); } catch (e) { return; } smoothReload(); }   /* once per new page: never a reload loop */
   setInterval(function () { if (NEWER) return swapIfIdle(); if (idle() || document.hidden || KIND === 'staff') check(); }, 120000);   /* staff: check every 2 minutes even while signed in (the bar asks before reloading) */
   /* lesson pieces changed (a new add-on such as the new voice) without a new page: also reload on the sign-in screen, once per change */
   var PARTS0 = null; getJSON('/parts/manifest.json').then(function (m) { PARTS0 = (m.order || []).join(','); }, function () {});
   setInterval(function () { if (NEWER || PARTS0 == null) return; getJSON('/parts/manifest.json').then(function (m) { var now = (m.order || []).join(','); if (now && now !== PARTS0) { NEWER = 'parts:' + now.length + ':' + now.slice(-24); swapIfIdle(); } }, function () {}); }, 120000);
   setInterval(swapIfIdle, 15000);
+  /* SELF-HEAL for the page: this page came from the device (a kept copy) but the host has a newer publish -> drop the copy and reload
+     once, straight away (the boot cover is still up, so the boy sees one screen). Once per host publish (never a loop). */
+  if (window.TL_PAGE_FROM === 'device' && window.caches) getJSON(HASH_URL).then(function (j) {
+    if (!j || !j.h || j.h === H || !j.built || !(j.built > (Number(window.TL_PAGE_BUILT) || 0))) return;
+    var k = 'tl-heal-' + KIND; try { if (sessionStorage.getItem(k) === j.h) return; sessionStorage.setItem(k, j.h); sessionStorage.setItem('tl-reload-at', String(Date.now())); } catch (e) { return; }
+    window.TL_PAGE_CHECK = 'kept copy older than the host: dropped';
+    keep(null).then(function () { if (KIND === 'staff') { NEWER = j.h; staffBar(); } else location.reload(); }, function () {}); }, function () {});
   try { if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js'); } catch (e) {}
-  if (API && window.caches) { if (document.readyState === 'complete') setTimeout(check, 4000); else window.addEventListener('load', function () { setTimeout(check, 4000); }); }
+  /* check soon after the page is up (was 4 s), so a needed swap happens before the boy starts typing his code */
+  if (API && window.caches) { if (document.readyState === 'complete') setTimeout(check, 600); else window.addEventListener('load', function () { setTimeout(check, 600); }); }
 })();

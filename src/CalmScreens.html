@@ -29,10 +29,16 @@ if(window.TL_CALM===false){ lift(); return; }
 +'html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky,html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky.slim,html body.oh-sky:is(.hl-hub,.hf-home).ohmini #ohsky:not(.slim){top:auto!important;bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;right:10px!important}'
 +'@media (max-width:760px){html body:is(.hl-hub,.hf-home) #tlclock{display:none!important}body:is(.hl-hub,.hf-home){padding-bottom:72px}}';
 document.head.appendChild(s); })();
-/* pop-ups: fade in once, then stay still through redraws */
-if(typeof render==='function'){ var lastOv=null, _rc=render;
+/* pop-ups: fade in once, then stay calm through redraws.
+   2026-11-19 (moshe@ session: "the startup ... shows the same screen popping up a bunch of times"): the old way froze a redrawn pop-up
+   (tl-still), which cut its opening a fifth of a second in and looked like a jump. Now, when a redraw makes the SAME pop-up again (same
+   html), every animation in the new copy is moved to the time it had reached on screen, so the opening plays once, all the way through,
+   and moving parts (the sun, floating balloons) keep going without restarting. Without getAnimations, the old tl-still way is used. */
+if(typeof render==='function'){ var lastOv=null, ovAt=0, _rc=render;
  render=function(){ var r=_rc.apply(this,arguments); try{ var h=A&&A.overlay&&A.overlay.html||null;
-  if(h&&h===lastOv){ var o=document.querySelectorAll('.overlay'); for(var i=0;i<o.length;i++) o[i].classList.add('tl-still'); }
+  if(h&&h===lastOv){ var o=document.querySelectorAll('.overlay'), t=performance.now()-ovAt;
+   for(var i=0;i<o.length;i++){ if(typeof o[i].getAnimations==='function'){ var an=o[i].getAnimations({subtree:true}); for(var j=0;j<an.length;j++){ try{ an[j].currentTime=t; }catch(x){} } } else o[i].classList.add('tl-still'); } }
+  else if(h) ovAt=performance.now();
   lastOv=h; }catch(e){} return r; }; }
 /* show the finished page in one go */
 if(window.requestAnimationFrame) requestAnimationFrame(function(){ requestAnimationFrame(lift); }); else setTimeout(lift,0);

@@ -34,6 +34,11 @@ function css(){ if(document.getElementById('hlx-css')) return; const s=document.
 #hlx .hlx-start{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 #hlx .hlx-go{flex:1 1 380px;min-height:86px;border:0;border-radius:24px;cursor:pointer;color:#1E1B4B;font:900 34px/1.05 system-ui,sans-serif;background:linear-gradient(135deg,#FDE047,#F59E0B);box-shadow:0 8px 0 #B45309,0 16px 30px rgba(180,83,9,.25);display:flex;align-items:center;justify-content:center;gap:14px;transition:transform .18s}
 #hlx .hlx-go small{display:block;font:700 16px system-ui,sans-serif;color:#7C2D12;margin-top:4px}
+/* 2026-11-20 (moshe@ session): a slimmer, centered Start button: the play circle sits right next to "Start here", the line under it is centered */
+#hlx .hlx-go{flex-direction:column;gap:4px;min-height:70px;padding:10px 22px;font-size:28px;text-align:center}
+#hlx .hlx-go .hlx-gt{display:inline-flex;align-items:center;justify-content:center;gap:12px}
+#hlx .hlx-go .hlx-play{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#1E1B4B;color:#FDE047;font-size:16px;padding-left:3px;box-sizing:border-box;box-shadow:0 3px 0 rgba(30,27,75,.25)}
+#hlx .hlx-go small{margin-top:0;font-size:15px;max-width:52ch}
 #hlx .hlx-go:hover{transform:translateY(-2px)}#hlx .hlx-go:active{transform:translateY(3px);box-shadow:0 4px 0 #B45309}
 #hlx .hlx-steps{flex:0 0 auto;min-height:56px;border:3px solid #FCD34D;background:#fff;border-radius:18px;padding:0 20px;font:800 18px system-ui,sans-serif;color:#92400E;cursor:pointer}
 #hlx .hlx-stepbox{margin-top:12px}#hlx .hlx-stepbox[hidden]{display:none}
@@ -68,7 +73,7 @@ function css(){ if(document.getElementById('hlx-css')) return; const s=document.
 #hlx .hlx-hold{display:none!important}
 #hlx details.calmmore{margin:0!important}
 #hlx .hlx-stepbox .mlevel{display:none!important}
-@media (max-width:700px){#hlx .hlx-h h2{font-size:24px}#hlx .hlx-lib .hlx-h h2{font-size:28px}#hlx .hlx-go{font-size:26px}#hlx .hlx-flow{grid-template-columns:1fr}#hlx .hlx-flow .hlx-grp{grid-column:auto!important}#hlx .hlx-cards{grid-template-columns:1fr 1fr!important}#hlx .hlx-card{min-height:130px}#hlx .hlx-card b{font-size:18px}}
+@media (max-width:700px){#hlx .hlx-h h2{font-size:24px}#hlx .hlx-lib .hlx-h h2{font-size:28px}#hlx .hlx-go{font-size:23px;min-height:62px}#hlx .hlx-go .hlx-play{width:32px;height:32px;font-size:13px}#hlx .hlx-go small{font-size:13px}#hlx .hlx-flow{grid-template-columns:1fr}#hlx .hlx-flow .hlx-grp{grid-column:auto!important}#hlx .hlx-cards{grid-template-columns:1fr 1fr!important}#hlx .hlx-card{min-height:130px}#hlx .hlx-card b{font-size:18px}}
 @media (prefers-reduced-motion:reduce){#hlx .hlx-card,#hlx .hlx-go,#hlx .hlx-btn{transition:none}}
 
 #hlx .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -274,7 +279,7 @@ function arrange(){ try{ if(!on()) return; const hp=document.querySelector('.hp2
   const mis=$('section.hpmission'); const big=mis&&(mis.querySelector('button.big')||mis.querySelector('.hpgo button'));
   const sd=big?' data-hlx="go"':' data-hlx="steps"';
   const nTxt=mis?((mis.querySelector('.hpmeter small,.hpgo small')||{}).textContent||''):'';
-  top.insertAdjacentHTML('beforeend','<div class="hlx-start"><button type="button" class="hlx-go"'+sd+'><span aria-hidden="true">▶</span><span>Start here<small>'+E(noLvl(nTxt)||'Today’s learning, one step at a time')+'</small></span></button><button type="button" class="hlx-steps" data-hlx="steps" aria-expanded="'+(HX.steps?'true':'false')+'">📋 Today’s steps</button></div><div class="hlx-stepbox" id="hlx-stepbox"'+(HX.steps?'':' hidden')+'></div>');
+  top.insertAdjacentHTML('beforeend','<div class="hlx-start"><button type="button" class="hlx-go"'+sd+'><span class="hlx-gt"><span class="hlx-play" aria-hidden="true">▶</span>Start here</span><small>'+E(noLvl(nTxt)||'Today’s learning, one step at a time')+'</small></button><button type="button" class="hlx-steps" data-hlx="steps" aria-expanded="'+(HX.steps?'true':'false')+'">📋 Today’s steps</button></div><div class="hlx-stepbox" id="hlx-stepbox"'+(HX.steps?'':' hidden')+'></div>');
   const box=top.querySelector('#hlx-stepbox'); if(mis) box.appendChild(mis); const band=$('.hlband'); if(band) box.appendChild(band);
   /* ---- 2. library (v2: search, filters, pick up where you left off, a shelf for every subject) ---- */
   const lib=X.querySelector('#hlx-lib'); buildLib(lib,hp,hold);
