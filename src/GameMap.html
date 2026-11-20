@@ -367,7 +367,8 @@ function worldsOf(m){
  const out=[]; const add=(k,c,isK)=>{ if(!c||!c.level) return; const W=WORLDS[k]||['⭐',k];
   let ids=isK?(c.skills||[]).map(x=>x[0]):((c.unit&&c.unit.ids)||[]);
   if(!ids.length&&c.now) ids=[c.now];
-  let now=ids.find(id=>!done(id))||'';
+  if(!ids.length) return; /* HoS 2026-11-20: a subject with no lessons at his level yet is not shown (it used to say ✓ CLEARED with nothing done) */
+ let now=ids.find(id=>!done(id))||'';
   const cleared=!now&&ids.length>0;
   const unitName=isK?(W[1]+' Level '+c.level):((c.unit&&c.unit.name)||W[1]);
   out.push({k,icon:W[0],name:W[1],level:c.level,ids,now,cleared,next:c.next,unitName,isK,c}); };
