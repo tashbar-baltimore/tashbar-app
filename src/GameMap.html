@@ -71,6 +71,29 @@ body.gm-on #gm{display:block}
 #gm .gm-l .k{display:block;font-size:10px;letter-spacing:.1em;color:#FFE259;margin-bottom:2px}
 #gm .gm-l.boss .k{color:#FF8AB0}
 #gm .gm-l.now{background:rgba(5,4,25,.86);border:2px solid #FFE259}
+/* map cards (HoS 2026-11-20): only the step he is up to has a card, title only; the (i) types the description in under it. A locked
+   step shows only its lock; a tap pops a small card out to the side for a moment. Cleared steps have no card. */
+#gm .gm-l.now{pointer-events:auto;padding:9px 12px;font-size:15px;max-width:min(46%,300px);transition:padding .2s ease}
+#gm .gm-l.now.has-i{padding-right:42px}
+#gm .gm-l .t{display:block;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+#gm .gm-l.open .t{transform:translateY(-1px)}
+#gm .gm-l .d{display:block;font-size:12.5px;font-weight:700;line-height:1.35;color:#D9D5FF;margin-top:0;max-height:0;overflow:hidden;transition:margin .2s ease}
+#gm .gm-l.open .d{max-height:none;margin-top:5px}
+#gm .gm-l .d .cur{display:inline-block;width:1px;height:1em;background:#FFE259;margin-left:1px;vertical-align:-2px;animation:gmblink .8s steps(1) infinite}
+@keyframes gmblink{50%{opacity:0}}
+#gm .gm-i{position:absolute;top:7px;right:8px;width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(255,226,89,.75);background:rgba(255,226,89,.08);color:#FFE259;font:italic 900 14px/1 Georgia,'Times New Roman',serif;display:grid;place-items:center;padding:0;cursor:pointer;transition:background .15s ease,transform .15s ease,color .15s ease}
+@media (hover:hover){#gm .gm-i:hover{background:rgba(255,226,89,.22);transform:scale(1.08)}}
+#gm .gm-i:active{transform:scale(.92)}
+#gm .gm-l.open .gm-i{background:#FFE259;color:#3A1C00}
+#gm .gm-i:focus-visible{outline:2px solid #fff;outline-offset:2px}
+#gm .gm-pop{position:absolute;transform:translateY(-50%);max-width:min(46%,260px);z-index:3;background:rgba(5,4,25,.9);border:1.5px solid rgba(255,255,255,.2);border-radius:12px;padding:7px 11px;font-size:13px;font-weight:900;line-height:1.2;color:#fff;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.35);animation:gmpopL .24s cubic-bezier(.2,1.1,.4,1) both}
+#gm .gm-pop.r{animation-name:gmpopR}
+#gm .gm-pop .k{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#AFAFE0;margin-bottom:2px}
+#gm .gm-pop.out{animation:gmpopOut .2s ease both}
+@keyframes gmpopL{from{opacity:0;transform:translate(-10px,-50%) scale(.94)}to{opacity:1;transform:translate(0,-50%)}}
+@keyframes gmpopR{from{opacity:0;transform:translate(10px,-50%) scale(.94)}to{opacity:1;transform:translate(0,-50%)}}
+@keyframes gmpopOut{to{opacity:0;transform:translate(0,-50%) scale(.97)}}
+@media (prefers-reduced-motion:reduce){#gm .gm-pop,#gm .gm-pop.r,#gm .gm-pop.out{animation-duration:.01s}#gm .gm-l .t{transition:none}}
 #gm .gm-more{position:absolute;left:50%;transform:translateX(-50%);font-size:12px;font-weight:900;color:#7CFFB2;background:rgba(0,0,0,.4);border-radius:10px;padding:4px 10px;white-space:nowrap}
 #gm .gm-goal{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:31;border-radius:24px;padding:13px 14px 14px;
  background:linear-gradient(135deg,rgba(124,77,255,.97),rgba(214,51,160,.97));border:3px solid rgba(255,255,255,.35);box-shadow:0 12px 30px rgba(20,0,60,.55)}
@@ -392,8 +415,11 @@ function pathHTML(w){
   const ico=isNow?(isBoss?'🏰':w.icon):isDone?'✓':(isBoss?'🏰':'🔒');
   const lab=isNow?(isBoss?'BOSS LEVEL · YOU ARE HERE':'▶ YOU ARE HERE'):isBoss?'BOSS · UNIT FINISH 🏁':isDone?'CLEARED':'LOCKED';
   h+=`<button type="button" class="gm-n ${cls}" style="left:${p[0]}%;top:${p[1]}px" data-gm="node" data-id="${esc(id)}" aria-label="${esc(n[0])}${n[1]?': '+esc(n[1]):''} (${lab.toLowerCase()})">${ico}</button>`;
-  const right=p[0]<50, off=isNow||isBoss?58:40;
-  h+=`<div class="gm-l${isNow?' now':''}${isBoss?' boss':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="k">${lab}</span>${esc(n[0])}${n[1]?`<small>${esc(n[1])}</small>`:''}</div>`; });
+  if(!isNow) return;
+  /* HoS 2026-11-20: when the second line is only "Chumash Level 3", that is the title and the (i) tells the step's own name */
+  const flip=n[1]&&/ Level \d+$/.test(n[1]), tt=flip?n[1]:n[0], dd=flip?n[0]:n[1];
+  const right=p[0]<50, off=58;
+  h+=`<div class="gm-l now${isBoss?' boss':''}${dd?' has-i':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="t">${esc(tt)}</span>${dd?`<button type="button" class="gm-i" data-gm="info" data-d="${esc(dd)}" aria-expanded="false" aria-label="What is ${esc(tt)}?">i</button><small class="d" aria-live="polite"></small>`:''}</div>`; });
  if(hidden) h+=`<div class="gm-more" style="top:${H-12}px">✓ ${hidden} more cleared below</div>`;
  return h+'</div>'; }
 /* ===== SKILL TREE (HoS 2026-11-20: "MY TREE ... his leaves light up as he masters them ... tap a leaf to replay it ... never overwhelm";
@@ -654,6 +680,21 @@ function readAloud(text){ const s=window.speechSynthesis;
  u.onstart=()=>{ if(RD.u===u&&!RD.t0) RD.t0=Date.now(); }; u.onend=end; u.onerror=end;
  RD.stopAt=setTimeout(()=>{ if(RD.u===u) rdStop(); },RD.est+15000);
  try{ s.speak(u); }catch(e){ rdStop(); return; } rdTick(); }
+/* a locked step: its name pops out beside it for a moment (no page opens) */
+function lockPop(b,id){ const path=b.closest('.gm-path'); if(!path) return; path.querySelectorAll('.gm-pop').forEach(x=>x.remove());
+ const x=parseFloat(b.style.left)||50, y=parseFloat(b.style.top)||0, right=x<50, off=b.classList.contains('boss')?58:40, n=nm(id);
+ const el=document.createElement('div'); el.className='gm-pop'+(right?'':' r'); el.setAttribute('role','status');
+ el.style.top=y+'px'; if(right) el.style.left='calc('+x+'% + '+off+'px)'; else el.style.right='calc('+(100-x)+'% + '+off+'px)';
+ el.innerHTML='<span class="k">🔒 Locked</span>'+esc(n[0]); path.appendChild(el);
+ clearTimeout(GM.popT); GM.popT=setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),220); },2600); }
+/* the (i) on his current step: the description writes itself in under the title; tap again to fold it away */
+function infoToggle(b){ const card=b.closest('.gm-l'), d=card&&card.querySelector('.d'); if(!d) return; clearInterval(GM.typeT);
+ if(card.classList.contains('open')){ card.classList.remove('open'); d.textContent=''; b.setAttribute('aria-expanded','false'); return; }
+ card.classList.add('open'); b.setAttribute('aria-expanded','true'); const txt=b.dataset.d||'';
+ let reduce=false; try{ reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+ if(reduce){ d.textContent=txt; return; }
+ let i=0; d.innerHTML='<span class="cur"></span>'; const cur=d.firstChild;
+ GM.typeT=setInterval(()=>{ i=Math.min(txt.length,i+2); d.textContent=txt.slice(0,i); if(i<txt.length) d.appendChild(cur); else clearInterval(GM.typeT); },22); }
 function door(k){ const b=document.createElement('button'); b.type='button'; b.dataset.hf=k; b.style.display='none'; document.body.appendChild(b); try{ b.click(); }catch(e){} b.remove(); }
 /* a press on the bottom bar: keep the halo for a moment even though the bar is redrawn by the tap */
 document.addEventListener('pointerdown',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#gm-nav button[data-gmnav]'); if(!b) return;
@@ -682,7 +723,8 @@ document.addEventListener('click',e=>{
  if(a==='node'){ const id=b.dataset.id, m=M(); if(!m) return; const ws=worldsOf(m), w=ws.find(x=>x.k===GM.world);
   if(mast(id)) return play(id);
   if(w&&id===w.now) return play(id);
-  const n=w&&w.now?nm(w.now)[0]:''; toast('🔒 Locked! Clear '+(n||'the level before it')+' first.'); }
+  lockPop(b,id); }
+ if(a==='info'){ infoToggle(b); return; }
 });
 document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-hf="home"]'); if(b&&b.classList.contains('hf-back')&&GM.tab!=='map'&&document.body.classList.contains('gm-nav')){ setTimeout(()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); },0); } },true);
 const oldRender=render;
