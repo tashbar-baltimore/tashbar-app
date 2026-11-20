@@ -424,3 +424,13 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - breadline-statues-men.webp | https://www.flickr.com/photos/82538566@N00/45708252984 | CC BY 2.0 | jimbowen0306
 - shabbos-candles-glass.webp | https://www.flickr.com/photos/14771153@N04/4712371537 | CC BY 2.0 | slgckgc
 - blue-ridge-mountains.webp | https://pixabay.com/photos/mountains-trees-forest-7357186/ | Pixabay Content License | terski
+- tablet-touch-screen-front.webp | https://pixabay.com/photos/tablet-digital-technology-coffee-791051/ | Pixabay Content License | kaboompics
+- desktop-computer-desk.webp | https://www.flickr.com/photos/83542829@N00/2418322769 | CC BY-SA 2.0 | William Hook
+- router-three-antennas.webp | https://pixabay.com/photos/modem-antenna-router-technology-5436146/ | Pixabay Content License | USA-Reiseblogger
+- number-pad-keys.webp | https://pixabay.com/photos/technology-number-keyboard-computer-3323684/ | Pixabay Content License | padrinan
+- usb-stick-silver.webp | https://pixabay.com/photos/usb-technology-white-flash-data-5029285/ | Pixabay Content License | ds_30
+- hanging-file-folders-drawer.webp | https://pixabay.com/photos/collector-documents-office-folder-3930337/ | Pixabay Content License | Angelo_Giordano
+- padlock-open-with-key.webp | https://pixabay.com/photos/tools-padlocks-unlock-lock-access-2836960/ | Pixabay Content License | ComMkt
+- black-video-projector.webp | https://pixabay.com/photos/business-computer-conference-20031/ | Pixabay Content License | PublicDomainPictures
+- webcam-closeup.webp | https://www.flickr.com/photos/23054755@N00/2404442122 | CC BY 2.0 | MShades
+- bicycle-chain-back-wheel.webp | https://pixabay.com/photos/bicycle-gear-golden-hipster-chain-557046/ | Pixabay Content License | denzel
