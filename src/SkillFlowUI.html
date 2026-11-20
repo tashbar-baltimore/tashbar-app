@@ -139,9 +139,9 @@ function E(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){ return
 function call(fn){ var a=[].slice.call(arguments,1); if(typeof run==='function') return run.apply(null,[fn].concat(a)); return new Promise(function(ok,no){ var r=google.script.run.withSuccessHandler(ok).withFailureHandler(no); r[fn].apply(r,a); }); }
 function tok(){ try{ return S.token; }catch(e){ return null; } }
 function $(id){ return document.getElementById(id); }
-function open(subj){ X.subj=String(subj||'ENGLISH').toUpperCase(); var ov=$('sf-ov'); if(!ov){ ov=document.createElement('div'); ov.id='sf-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Skill flow chart'); document.body.appendChild(ov); }
+function open(subj,focus){ X.subj=String(subj||'ENGLISH').toUpperCase(); X.focus=focus||null; var ov=$('sf-ov'); if(!ov){ ov=document.createElement('div'); ov.id='sf-ov'; ov.setAttribute('role','dialog'); ov.setAttribute('aria-modal','true'); ov.setAttribute('aria-label','Skill flow chart'); document.body.appendChild(ov); }
   ov.innerHTML='<div class="sf-top"><div><h2>Skill flow chart</h2><div class="sf-sub">Loading the '+E(X.subj.toLowerCase())+' flow…</div></div><button type="button" class="sf-x" data-sf="close">Close</button></div>';
-  call('sfFlow',tok(),X.subj).then(function(r){ X.R=r; X.by={}; r.flow.nodes.forEach(function(n){ n.from=[]; n.to=[]; X.by[n.id]=n; }); r.flow.edges.forEach(function(e){ if(X.by[e[0]]&&X.by[e[1]]){ X.by[e[1]].from.push(e[0]); X.by[e[0]].to.push(e[1]); } }); shell(); draw(); })
+  call('sfFlow',tok(),X.subj).then(function(r){ X.R=r; X.by={}; r.flow.nodes.forEach(function(n){ n.from=[]; n.to=[]; X.by[n.id]=n; }); r.flow.edges.forEach(function(e){ if(X.by[e[0]]&&X.by[e[1]]){ X.by[e[1]].from.push(e[0]); X.by[e[0]].to.push(e[1]); } }); shell(); draw(); if(X.focus&&X.by[X.focus]){ var fid=X.focus; X.focus=null; detail(fid,true); } })
    .catch(function(err){ ov.querySelector('.sf-sub').textContent='Could not load: '+String(err&&err.message||err); }); }
 function close(){ var ov=$('sf-ov'); if(ov) ov.remove(); X.sel=null; }
 function shell(){ if(X.view!=='map') return shellFlow(); var F=X.R.flow, ov=$('sf-ov'), sum={taught:0,guided:0,quiz:0,planned:0}; F.nodes.forEach(function(n){ sum[n.depth]++; }); var tot=F.nodes.length;
@@ -283,6 +283,6 @@ document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.
   if(a==='zoom'){ X.zoom=Math.max(.55,Math.min(1.4,X.zoom+(+b.dataset.v)*.15)); var m=$('sf-map'); m.style.transform='scale('+X.zoom+')'; m.style.width=(X.W*X.zoom)+'px'; return; }
   if(a==='place') return place(b.dataset.id); },true);
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&$('sf-ov')){ var d=$('sf-d'); if(d&&d.classList.contains('open')){ d.classList.remove('open'); X.sel=null; mark(); } else close(); } });
-window.SF={ open:open, close:close };
+window.SF={ open:open, close:close };   /* open(subject, skillId): the staff home's boy map opens the tree right on his step */
 })();
 </script>

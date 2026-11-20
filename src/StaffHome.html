@@ -72,6 +72,22 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-page .td-row b{font:800 15.5px system-ui,sans-serif} #sh-page .td-row small{display:block;color:#5B6676;font-size:13px}
 #sh-page .td-stat{font:700 13.5px system-ui,sans-serif;color:#334155}
 @media (max-width:700px){ #sh-page .td-row{grid-template-columns:14px minmax(0,1fr) auto} #sh-page .td-row .td-stat{grid-column:2/4} #sh-page .td-need{flex-wrap:wrap} #sh-page .td-need button{margin-left:52px} }
+
+/* ===== THE BOY'S MAP (HoS 2026-11-20: "the skills ... the goals and the map and the steps needed at the heart of it all";
+   "the goal should always be the next mini skill"; the unit = his level, its end is the next stopping point) ===== */
+#sh-page .mp{display:flex;flex-wrap:wrap;gap:5px}
+#sh-page .mp span{font:700 12.5px system-ui,sans-serif;background:#F1F5F9;border-radius:8px;padding:4px 8px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#sh-page .mp span b{color:#2F5BD3} #sh-page .mp .none{background:#FCE9E6;color:#A12E21} #sh-page .mp .done{background:#E8F6EF;color:#14633F}
+#sh-dlg .msub{border:1px solid #E6EAF2;border-radius:16px;padding:12px 14px;margin:10px 0}
+#sh-dlg .msub h4{margin:0 0 4px;font:900 17px system-ui,sans-serif} #sh-dlg .msub .meta{color:#5B6676;font-size:13.5px;margin-bottom:8px}
+#sh-dlg .bar{height:10px;border-radius:999px;background:#EEF1F6;overflow:hidden;margin:6px 0 10px} #sh-dlg .bar i{display:block;height:100%;background:#178A5E;border-radius:999px}
+#sh-dlg .path{display:flex;flex-wrap:wrap;align-items:center;gap:6px 4px}
+#sh-dlg .path span{display:inline-flex;align-items:center;gap:5px;border:2px solid #E2E8F0;border-radius:10px;padding:5px 9px;font:700 13px/1.2 system-ui,sans-serif;background:#fff}
+#sh-dlg .path .ok{border-color:#9FD8BC;background:#E8F6EF;color:#14633F} #sh-dlg .path .goal{border-color:#2F5BD3;background:#2F5BD3;color:#fff} #sh-dlg .path .end{border-style:dashed}
+#sh-dlg .path em{font-style:normal;color:#8A94A4;font-weight:900}
+#sh-dlg .goalbox{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;font:700 14.5px system-ui,sans-serif}
+#sh-dlg .goalbox button{border:1px solid #D9DFF0;background:#fff;border-radius:11px;padding:8px 12px;font:800 13.5px system-ui,sans-serif;cursor:pointer;min-height:40px}
+#sh-dlg .goalbox .pri{background:#16202C;color:#fff;border-color:#16202C}
 /* ===== STUDENTS (HoS 2026-11-19: "easy to add kids and switch levels") ===== */
 #sh-page .st-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;justify-content:space-between;margin-bottom:12px}
 #sh-page .st-acts{display:flex;flex-wrap:wrap;gap:8px} #sh-page .st-acts .shb{width:auto;display:inline-flex;align-items:center}
@@ -235,7 +251,7 @@ function drawStudents(){ var L=q('#st-list'); if(!L) return; var c=q('#st-count'
   if(!ST.list){ L.innerHTML='<div class="st-empty">Loading…</div>'; return; }
   var all=ST.list, n=all.filter(noLevel).length; if(c) c.textContent=all.length+' boys'+(n?' · '+n+' still need a level':''); if(nl) nl.textContent=n?String(n):'';
   var a=shown(); if(!a.length){ L.innerHTML='<div class="st-empty">'+(all.length?'No boy matches.':'No students yet. Tap “Add a student”.')+'</div>'; selbar(); return; }
-  L.innerHTML=a.map(function(b){ var on=!!ST.sel[b.id]; return '<div class="st-row'+(on?' sel':'')+'"><input type="checkbox" data-st="pick" data-id="'+E(b.id)+'"'+(on?' checked':'')+' aria-label="Pick '+E(b.name)+'"><div class="st-nm"><b>'+E(b.name)+'</b></div><span class="st-gr">'+E(gName(b.grade)||'No grade')+'</span><div class="st-lv">'+lvChips(b)+'</div><div class="st-b"><button type="button" class="lvb" data-st="lv" data-id="'+E(b.id)+'">🎯 Set level</button><button type="button" data-st="open" data-id="'+E(b.id)+'">Open ›</button></div></div>'; }).join('');
+  L.innerHTML=a.map(function(b){ var on=!!ST.sel[b.id]; return '<div class="st-row'+(on?' sel':'')+'"><input type="checkbox" data-st="pick" data-id="'+E(b.id)+'"'+(on?' checked':'')+' aria-label="Pick '+E(b.name)+'"><div class="st-nm"><b>'+E(b.name)+'</b></div><span class="st-gr">'+E(gName(b.grade)||'No grade')+'</span><div class="st-lv mp">'+((S0().boys||[]).some(function(x){ return x.id===b.id; })?mapChips(b.id):lvChips(b))+'</div><div class="st-b"><button type="button" class="lvb" data-mp="map" data-id="'+E(b.id)+'">🗺️ Map</button><button type="button" data-st="lv" data-id="'+E(b.id)+'">🎯 Set level</button><button type="button" data-st="open" data-id="'+E(b.id)+'">Open ›</button></div></div>'; }).join('');
   selbar(); }
 function selbar(){ var ids=Object.keys(ST.sel).filter(function(k){ return ST.sel[k]; }), bar=q('#sh-selbar');
   if(!ids.length||S.area!=='students'){ if(bar) bar.remove(); return; }
@@ -243,7 +259,8 @@ function selbar(){ var ids=Object.keys(ST.sel).filter(function(k){ return ST.sel
   bar.innerHTML='<span>'+ids.length+' picked</span><button type="button" data-st="lvmany">🎯 Set level for them</button><button type="button" class="x" data-st="clear">Clear</button>'; }
 function byId(id){ return (ST.list||[]).filter(function(b){ return b.id===id; })[0]; }
 function dlgOpen(ids){ ST.dlg={ids:ids,key:null,lv:0,err:'',busy:false}; dlgDraw(); }
-function dlgClose(){ ST.dlg=null; var d=q('#sh-dlg'); if(d) d.remove(); }
+function refreshMap(){ srv('sgLoad',[tok()]).then(function(d){ try{ (new Function('d','try{ S.d=d; }catch(e){}'))(d); }catch(e){} if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(ST.dlg&&ST.dlg.map) mapDraw(); }).catch(function(){}); }   /* the map lives in the staff screen's data (sgLoad cells) */
+function dlgClose(){ if(ST.dlg&&ST.dlg.ids&&ST.dlg.saved) refreshMap(); ST.dlg=null; var d=q('#sh-dlg'); if(d) d.remove(); }
 function dlgDraw(){ var D=ST.dlg; if(!D) return dlgClose(); var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); }
   var one=D.ids.length===1?byId(D.ids[0]):null, who=one?one.name:D.ids.length+' boys';
   var h='<div class="box"><h2>🎯 Set level for '+E(who)+'</h2><p class="sub">'+(one?(gName(one.grade)?gName(one.grade).replace('Gr','Grade')+' · ':'')+'He starts the subject at the level you pick.':'Each boy starts the subject at the level you pick.')+'</p>';
@@ -253,7 +270,7 @@ function dlgDraw(){ var D=ST.dlg; if(!D) return dlgClose(); var d=q('#sh-dlg'); 
   h+='<div class="foot"><button type="button" class="no" data-st="close">Cancel</button><button type="button" class="go" data-st="save"'+(D.key&&D.lv&&!D.busy?'':' disabled')+'>'+(D.busy?'Saving…':D.key&&D.lv?'Save: '+E(LVN[D.key][2])+' Level '+D.lv:'Pick a subject and a level')+'</button></div></div>';
   d.innerHTML=h; }
 function dlgSave(){ var D=ST.dlg; if(!D||!D.key||!D.lv||D.busy) return; D.busy=true; D.err=''; dlgDraw();
-  srv('libApply',[tok(),{action:'place',boys:D.ids,key:D.key,level:D.lv}]).then(function(r){ applyChanged(r&&r.changed); dlgClose(); ST.sel={}; drawStudents();
+  srv('libApply',[tok(),{action:'place',boys:D.ids,key:D.key,level:D.lv}]).then(function(r){ applyChanged(r&&r.changed); D.saved=1; dlgClose(); ST.sel={}; drawStudents();
     toast2((r&&r.msg)||'Saved.',r&&r.undo?function(){ srv('libApply',[tok(),r.undo]).then(function(u){ applyChanged(u&&u.changed); drawStudents(); toast2((u&&u.msg)||'Put back.'); }).catch(function(e){ toast2('Could not undo: '+e); }); }:null); })
    .catch(function(e){ D.busy=false; D.err=String(e); dlgDraw(); }); }
 function applyChanged(ch){ if(!ch) return; Object.keys(ch).forEach(function(id){ var b=byId(id), c=ch[id]; if(!b||!c) return; b.place=b.place||{}; if(c.place) b.place[c.key]={lv:c.place.lv||c.place.level||0}; else delete b.place[c.key]; }); }
@@ -290,7 +307,7 @@ function drawToday(){ var B=q('#td-body'); if(!B) return; var at=q('#td-at'); if
   var need=((TD.now&&TD.now.list)||[]).filter(function(x){ return x.kind!=='idle'; }), idle=((TD.now&&TD.now.list)||[]).filter(function(x){ return x.kind==='idle'; }), needIx={}; need.forEach(function(x){ needIx[x.sid]=x; });
   var now=Date.now(), working=0, worked=0, ms=0, ans=0, ok=0; boys.forEach(function(b){ var t=T[b.id]; if(!t) return; var a=(t.answers||0)+(t.kAnswers||0); if(a) worked++; if(t.last&&now-t.last<10*60000) working++; ms+=(t.mastered||0)+(t.kMastered||0); ans+=a; ok+=(t.right||0)+(t.kRight||0); });
   var h='<div class="td-nums"><div class="td-num"><b>'+working+'</b><span>working right now</span></div><div class="td-num"><b>'+worked+' <small style="font-size:16px;color:#5B6676">of '+boys.length+'</small></b><span>worked today</span></div><div class="td-num"><b>'+(boys.length-worked)+'</b><span>not started yet</span></div><div class="td-num"><b>'+ms+'</b><span>skills mastered today</span></div><div class="td-num"><b>'+(ans?Math.round(100*ok/ans)+'%':'–')+'</b><span>answers right</span></div></div>';
-  h+='<div class="td-card'+(need.length?' need':'')+'"><h2>'+(need.length?'🆘 Needs you now ('+need.length+')':'✅ Needs you now')+'</h2>'+(need.length?need.map(function(x){ var w=NOWW[x.kind]||['❗',x.kind,function(){ return ''; }]; return '<div class="td-need"><i>'+w[0]+'</i><span><b>'+E(x.name)+' · '+E(w[1])+'</b><small>'+E(w[2](x.n))+(x.skill?' on “'+E(skName(x.skill))+'”':'')+' · '+E(ago(x.at))+'</small></span><button type="button" data-td="open" data-id="'+E(x.sid)+'">Open ›</button></div>'; }).join(''):'<div class="td-ok">Nobody right now.</div>')
+  h+='<div class="td-card'+(need.length?' need':'')+'"><h2>'+(need.length?'🆘 Needs you now ('+need.length+')':'✅ Needs you now')+'</h2>'+(need.length?need.map(function(x){ var w=NOWW[x.kind]||['❗',x.kind,function(){ return ''; }]; return '<div class="td-need"><i>'+w[0]+'</i><span><b>'+E(x.name)+' · '+E(w[1])+'</b><small>'+E(w[2](x.n))+(x.skill?' on “'+E(skName(x.skill))+'”':'')+' · '+E(ago(x.at))+(function(){ var C=cellsOf(x.sid), pv=''; Object.keys(C).forEach(function(k){ if(C[k]&&C[k].now===x.skill&&C[k].prev) pv=C[k].prev; }); return pv?'<br>↩ Review first: the step before, “'+E(skName(pv))+'”':''; })()+'</small></span><button type="button" data-mp="map" data-id="'+E(x.sid)+'">🗺️ Map</button></div>'; }).join(''):'<div class="td-ok">Nobody right now.</div>')
     +(idle.length?'<p style="margin:8px 0 0;color:#5B6676;font-size:13.5px">💤 Stopped working: '+idle.map(function(x){ return E(x.name)+' ('+x.n+' min)'; }).join(', ')+'</p>':'')+'</div>';
   var rows=boys.map(function(b){ var t=T[b.id]||{}, a=(t.answers||0)+(t.kAnswers||0), r=(t.right||0)+(t.kRight||0), live=t.last&&now-t.last<10*60000, st=needIx[b.id]?0:live?1:a?2:3;
       return {b:b,t:t,a:a,r:r,st:st}; })
@@ -298,13 +315,49 @@ function drawToday(){ var B=q('#td-body'); if(!B) return; var at=q('#td-at'); if
     .sort(function(x,y){ return x.st-y.st||String(x.b.name).localeCompare(y.b.name); });
   var COL=['#C8402F','#178A5E','#2F5BD3','#A7B0BF'], LBL=['needs you','working now','worked today','not started'];
   h+='<div class="td-card"><h2>👦 The class today</h2><div class="st-tools"><input id="td-q" type="search" placeholder="Search by name…" value="'+E(TD.q)+'"><button type="button" class="chip'+(TD.f==='all'?' on':'')+'" data-td="f" data-v="all">Everyone</button><button type="button" class="chip'+(TD.f==='live'?' on':'')+'" data-td="f" data-v="live">Working now</button><button type="button" class="chip'+(TD.f==='none'?' on':'')+'" data-td="f" data-v="none">Not started</button></div>'
-    +(rows.length?rows.map(function(x){ return '<div class="td-row"><span class="td-dot" style="background:'+COL[x.st]+'" title="'+LBL[x.st]+'"></span><span><b>'+E(x.b.name)+'</b><small>'+LBL[x.st]+(x.t.last?' · '+E(ago(x.t.last)):'')+'</small></span><span class="td-stat">'+(x.a?x.a+' answers · '+Math.round(100*x.r/x.a)+'% right':'No answers yet')+'</span><span class="td-stat">'+(((x.t.mastered||0)+(x.t.kMastered||0))?'⭐ '+((x.t.mastered||0)+(x.t.kMastered||0))+' mastered today':'')+'</span><button type="button" data-td="open" data-id="'+E(x.b.id)+'">Open ›</button></div>'; }).join(''):'<div class="st-empty">'+(boys.length?'No boy matches.':'No students yet.')+'</div>')+'</div>';
+    +(rows.length?rows.map(function(x){ return '<div class="td-row"><span class="td-dot" style="background:'+COL[x.st]+'" title="'+LBL[x.st]+'"></span><span><b>'+E(x.b.name)+'</b><small>'+LBL[x.st]+(x.t.last?' · '+E(ago(x.t.last)):'')+'</small></span><span class="td-stat">'+(x.a?x.a+' answers · '+Math.round(100*x.r/x.a)+'% right':'No answers yet')+'</span><span class="td-stat">'+(((x.t.mastered||0)+(x.t.kMastered||0))?'⭐ '+((x.t.mastered||0)+(x.t.kMastered||0))+' mastered today':'')+'</span><button type="button" data-mp="map" data-id="'+E(x.b.id)+'">🗺️ Map</button></div>'; }).join(''):'<div class="st-empty">'+(boys.length?'No boy matches.':'No students yet.')+'</div>')+'</div>';
   B.innerHTML=h; }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-td]'); if(!b) return; e.preventDefault(); var a=b.dataset.td;
   if(a==='open'){ if(window.SL&&window.SL.open) window.SL.open(b.dataset.id); return; }
   if(a==='f'){ TD.f=b.dataset.v; return drawToday(); } });
 document.addEventListener('input',function(e){ if(e.target&&e.target.id==='td-q'){ TD.q=e.target.value; var pos=e.target.selectionStart; drawToday(); var i=q('#td-q'); if(i){ i.focus(); try{ i.setSelectionRange(pos,pos); }catch(x){} } } });
 setInterval(function(){ if(S.area==='today'&&body().classList.contains('sh-page')&&!document.hidden) loadToday(); },60000);
+
+/* ================= THE BOY'S MAP: per subject, his unit (level), the steps in it, his goal now (the next mini-skill), the end of the unit ================= */
+var SUBJ=[['MATH','🔢','Math','MATH'],['READ','📖','Reading','ENGLISH'],['LANG','✍️','Writing','ENGLISH'],['SCI','🔬','Science','SCIENCE'],['SOC','🌍','Social Studies',''],['COMP','💻','Computing',''],['HEB','🔤','Lashon Hakodesh','KODESH'],['ELEC','🛠️','Electives',''],['VOC','🧰','Trades',''],['LIFE','💰','Life & Money','']];
+function cellsOf(id){ var b=(S0().boys||[]).filter(function(x){ return x.id===id; })[0]; return b&&b.cells||{}; }
+var STRAND={NUM:'Counting & Numbers',PV:'Place Value',OPS:'Operations',FRAC:'Fractions & Decimals',ALG:'Algebra & Patterns',FUNC:'Functions',MEAS:'Measurement',GEO:'Geometry',STAT:'Data & Statistics',
+  PA:'Print & Sounds',PHON:'Phonics & Word Study',FLU:'Fluency',LV:'Leveled Reading',VOC:'Vocabulary',COMP:'Comprehension',LIT:'Literature',HAND:'Handwriting',GRAM:'Grammar',MECH:'Capitals & Punctuation',SENT:'Sentences',PARA:'Paragraphs',USE:'Word Choice',ESSAY:'Essays',RES:'Research',
+  SKY:'Space & Sky',LAND:'Earth & Weather',ANIM:'Animals',PLANT:'Plants',BODY:'The Human Body',MATT:'Matter & Forces',PHYS:'Matter & Forces',EARTH:'Earth & Weather',LIFE:'Living Things',INQ:'Scientist Skills',READ:'Reading Hebrew'};
+function strandOf(id){ var p=String(id||'').split('.'); return p[1]||''; }
+/* the unit = the run of skills of the same kind (strand) inside his level, the one his goal is in; its last step is the finish line */
+function unitNow(c){ var all=unit(c); if(!c.now) return {name:'',sk:all.sk,done:all.done,total:all.total,level:all}; var st=strandOf(c.now), sk=all.sk.filter(function(x){ return strandOf(x[0])===st; });
+  return {name:STRAND[st]||st,sk:sk,done:sk.filter(function(x){ return x[2]; }).length,total:sk.length,level:all}; }
+function unit(c){ var sk=(c&&c.skills||[]).filter(function(x){ return x[1]; }), done=sk.filter(function(x){ return x[2]; }).length; return {sk:sk,done:done,total:sk.length}; }
+function mapChips(id){ var C=cellsOf(id), out=[];
+  SUBJ.forEach(function(x){ var c=C[x[0]]; if(!c||!c.level) return; var u=unit(c);
+    var un=unitNow(c); out.push(c.now?'<span title="'+E(x[2])+' Level '+c.level+', unit '+E(un.name)+': goal now '+E(skName(c.now))+'">'+x[1]+' '+E(x[2])+' L'+c.level+' · '+E(un.name)+' '+un.done+'/'+un.total+' · <b>🎯 '+E(skName(c.now))+'</b></span>':'<span class="done">'+x[1]+' '+E(x[2])+' L'+c.level+' ✓ unit done</span>'); });
+  var noMR=!(C.MATH&&C.MATH.level)&&!(C.READ&&C.READ.level); return (noMR?'<span class="none">No Math or Reading level yet</span>':'')+out.join(''); }
+function mapOpen(id){ ST.dlg={map:id}; mapDraw(); }
+function mapDraw(){ var D=ST.dlg; if(!D||!D.map) return; var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); }
+  var id=D.map, b=byId(id)||(S0().boys||[]).filter(function(x){ return x.id===id; })[0]||{name:id}, C=cellsOf(id), h='<div class="box"><h2>🗺️ '+E(b.name)+'’s map</h2><p class="sub">'+(gName(b.grade)?E(gName(b.grade).replace('Gr','Grade'))+' · ':'')+'In each subject: the unit he is in, its steps, and his goal now: the next skill to master. The unit ends at 🏁.</p>';
+  var any=false;
+  SUBJ.forEach(function(x){ var c=C[x[0]]; if(!c||!c.level) return; any=true; var u=unitNow(c), pct=u.total?Math.round(100*u.done/u.total):0, left=u.total-u.done, L=u.level;
+    h+='<div class="msub"><h4>'+x[1]+' '+E(x[2])+' · Level '+c.level+(hint(x[0],c.level)?' <small style="color:#5B6676;font-weight:700">('+E(hint(x[0],c.level))+')</small>':'')+'</h4><div class="meta">'+(u.name?'<b style="color:#16202C">Unit: '+E(u.name)+'</b> · ':'')+u.done+' of '+u.total+' steps mastered'+(left?' · <b style="color:#16202C">'+left+' to the end of the unit 🏁</b>':' · unit finished')+'</div><div class="bar"><i style="width:'+pct+'%"></i></div>';
+    h+='<div class="path">'+u.sk.map(function(s,i){ var cls=s[2]?'ok':s[0]===c.now?'goal':''; return '<span class="'+cls+(i===u.sk.length-1?' end':'')+'">'+(s[2]?'✓ ':s[0]===c.now?'🎯 ':'')+E(skName(s[0]))+(i===u.sk.length-1?' 🏁':'')+'</span>'+(i<u.sk.length-1?'<em>→</em>':''); }).join('')+'</div>';
+    if(c.now) h+='<div class="goalbox">🎯 Goal now: '+E(skName(c.now))+(c.next?' <span style="color:#5B6676">→ then '+E(skName(c.next))+'</span>':'')+'<button type="button" class="pri" data-mp="play" data-id="'+E(c.now)+'">▶ Play it</button>'+(x[3]?'<button type="button" data-mp="tree" data-s="'+x[3]+'" data-id="'+E(c.now)+'">🌳 See on the map</button>':'')+'</div>';
+    else h+='<div class="goalbox">✅ This level is done. Move him up to Level '+(c.level+1)+'? <button type="button" class="pri" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button></div>';
+    if(u.name&&L.total) h+='<div class="meta" style="margin:10px 0 0">The whole Level '+c.level+': '+L.done+' of '+L.total+' skills mastered.</div>';
+    h+='</div>'; });
+  if(!any) h+='<div class="msub"><h4>No level yet</h4><div class="meta">Until he has a level in a subject, the app cannot pick his steps. Set his Math and Reading levels first.</div><div class="goalbox"><button type="button" class="pri" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button></div></div>';
+  h+='<div class="foot"><button type="button" class="no" data-st="close">Close</button><button type="button" class="no" data-mp="lv" data-id="'+E(id)+'">🎯 Set level</button><button type="button" class="go" data-mp="open" data-id="'+E(id)+'">Open his full page ›</button></div></div>';
+  d.innerHTML=h; }
+document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-mp]'); if(!b) return; e.preventDefault(); var a=b.dataset.mp, id=b.dataset.id;
+  if(a==='map') return mapOpen(id);
+  if(a==='lv'){ dlgClose(); return dlgOpen([id]); }
+  if(a==='open'){ dlgClose(); if(window.SL&&window.SL.open) window.SL.open(id); return; }
+  if(a==='play'){ try{ window.open(location.origin+'/?cp=1&skill='+encodeURIComponent(id),'_blank'); }catch(x){} return; }
+  if(a==='tree'){ dlgClose(); if(window.SF) window.SF.open(b.dataset.s,id); return; } });
 function area(v){ S.area=v; S.from=v; draw(); }
 /* open a feature by pressing its own button */
 function run(k){ var a=A[k]; if(!a) return; var how=a[3];
