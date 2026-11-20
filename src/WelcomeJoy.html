@@ -77,6 +77,7 @@ welcome=function(){ try{
  css(); const st=A.st||{}, n=(st.streak||{}).n||1, first=String(st.name||'').trim().split(/\s+/)[0]||'friend';
  const hr=new Date().getHours(), hi=hr<12?'Good morning!':hr<17?'Good afternoon!':'Good evening!', d=Math.floor(Date.now()/864e5);
  let up=''; try{ const sug=typeof suggestion==='function'?suggestion(st):null; up=sug?(sug.kind==='boss'?'Boss challenge':(typeof skillName==='function'?skillName(sug.id):'')):''; }catch(e){}
+ try{ const gm=window.GM&&typeof GM.nextLevel==='function'?GM.nextLevel():''; if(gm) up=gm; }catch(e){}   /* the map home (GameMap.html): the same next level as his map */
  let bank=''; try{ bank=typeof fmt==='function'?fmt(st.balance||0):'$'+Number(st.balance||0).toFixed(2); }catch(e){}
  const letters=Array.from(first).map((ch,i)=>`<span style="color:${COLORS[i%COLORS.length]};animation-delay:${(.15+i*.07).toFixed(2)}s,${(1+i*.12).toFixed(2)}s">${E(ch)}</span>`).join('');
  const chips=[`<div class="wjchip fire" style="animation-delay:.6s"><b>🔥</b><div><small>Streak</small>${n} day${n===1?'':'s'} in a row</div></div>`,

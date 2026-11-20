@@ -4,6 +4,7 @@
      - subjects: per subject he is placed in, the same cell the staff grid shows (sgCell_ in StaffGrid.js: level, now, next, prev, the
        level's skills [id, built, mastered]) plus his UNIT the way the staff map draws it (StaffHome.html unitNow): the run of built
        skills of the same kind (strand) inside his level, the one his goal is in. Its last step is the finish line (the "boss").
+     - strands: the name of every kind of skill in his level (for his SKILL TREE: one branch per kind).
      - kodesh: Kriyah, Chumash, Rashi, Mishnayos, Gemara, the same as sgKodeshMap (sgKodeshFor_ in StaffViews.js).
      - growth: his mastered steps in the last 7 days and the 7 before (sgStepsFor_, the logic of sgMapReport), and the total ever.
      - names: for every step in the answer, [game name, the real skill in plain words] (HoS 2026-11-20: "it should be clear what they're
@@ -30,7 +31,8 @@ function kmMapFor_(sid) {
     var built = (c.skills || []).filter(function (y) { return y[1]; }), strand = c.now ? kmStrand_(c.now) : '';
     var u = strand ? built.filter(function (y) { return kmStrand_(y[0]) === strand; }) : built;
     subjects[k] = { name: x[1], level: c.level, now: c.now, next: c.next, prev: c.prev, skills: c.skills,
-      unit: { name: strand ? kmStrandName_(k, strand) : '', ids: u.map(function (y) { return y[0]; }), done: u.filter(function (y) { return y[2]; }).length, total: u.length } };
+      unit: { name: strand ? kmStrandName_(k, strand) : '', ids: u.map(function (y) { return y[0]; }), done: u.filter(function (y) { return y[2]; }).length, total: u.length },
+      strands: (c.skills || []).reduce(function (o, y) { var s = kmStrand_(y[0]); if (s && !o[s]) o[s] = kmStrandName_(k, s); return o; }, {}) };
     [c.now, c.next, c.prev].concat((c.skills || []).map(function (y) { return y[0]; })).forEach(function (id) { if (id) want[id] = 1; });
   });
   var kodesh = {}, K = { order: {}, names: {} }, kp = {};

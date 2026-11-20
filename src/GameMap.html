@@ -19,7 +19,7 @@
 if(typeof render!=='function'||typeof A==='undefined') return;
 const GM=window.GM=window.GM||{};
 if(GM.on) return; GM.on=true;
-GM.tab='map'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
+GM.tab='map'; GM.view='path'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
 const WORLDS={MATH:['🧮','Math'],READ:['📖','Reading'],LANG:['✍️','Writing'],SCI:['🔬','Science'],SOC:['🌍','Social Studies'],COMP:['💻','Computing'],HEB:['🔤','Lashon Hakodesh'],ELEC:['🛠️','Electives'],VOC:['🧰','Trades'],LIFE:['💰','Life & Money'],
  'K:KRI':['🔤','Kriyah'],'K:CHU':['📜','Chumash'],'K:RAS':['✒️','Rashi'],'K:MSH':['📚','Mishnayos'],'K:GEM':['🏛️','Gemara']};
 const ORDER=['MATH','K:CHU','READ','K:GEM','K:MSH','K:RAS','K:KRI','LANG','HEB','SCI','SOC','LIFE','COMP','ELEC','VOC'];
@@ -37,7 +37,7 @@ body.gm-on #gm{display:block}
 #gm *{box-sizing:border-box}
 #gm .gm-sky{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(2px 2px at 8% 14%,rgba(255,255,255,.55),transparent),radial-gradient(2px 2px at 82% 9%,rgba(255,255,255,.6),transparent),radial-gradient(1.5px 1.5px at 52% 24%,rgba(255,255,255,.45),transparent),radial-gradient(2px 2px at 16% 46%,rgba(255,255,255,.4),transparent),radial-gradient(1.5px 1.5px at 90% 40%,rgba(255,255,255,.5),transparent),radial-gradient(2px 2px at 40% 64%,rgba(255,255,255,.35),transparent),radial-gradient(1.5px 1.5px at 70% 78%,rgba(255,255,255,.4),transparent)}
 #gm .gm-in{position:relative;max-width:640px;margin:0 auto;padding:12px 16px calc(330px + env(safe-area-inset-bottom,0px))}
-#gm .gm-top{position:sticky;top:0;z-index:3;margin:-12px -16px 0;padding:12px 16px 4px;background:#1C0F5A;box-shadow:0 0 0 100vmax #1C0F5A,0 10px 14px -6px rgba(10,7,38,.9);clip-path:inset(0 -100vmax -24px -100vmax)}
+#gm .gm-top{position:sticky;top:0;z-index:3;margin:-12px -16px 0;padding:12px 16px 4px;background:#1C0F5A;box-shadow:0 0 0 100vmax #1C0F5A;clip-path:inset(0 -100vmax 0 -100vmax);border-bottom:2px solid rgba(255,255,255,.08)}
 #gm .gm-hud{display:flex;gap:6px;align-items:center;padding-right:96px;min-height:40px}
 #gm .gm-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(0,0,0,.42);border:2px solid rgba(255,255,255,.18);border-radius:12px;padding:5px 9px;font-weight:900;font-size:14px;color:#fff;white-space:nowrap;font-family:inherit}
 #gm .gm-rank{background:linear-gradient(135deg,#FFE259,#FFA751);color:#3A1C00;border:0}
@@ -106,6 +106,158 @@ body.gm-k2 #gm-nav button{font-size:13px}
  #gm .gm-goal{left:auto;right:max(16px,calc(50% - 560px));transform:none;width:440px;top:190px;bottom:auto;padding:20px}
  #gm .gm-goal h1{font-size:40px}#gm .gm-goal .learn{font-size:18px}#gm .gm-goal .m{font-size:15px}#gm .gm-play{font-size:30px;padding:18px}
  #gm .gm-l{font-size:15px}#gm .gm-l small{font-size:13px}#gm .gm-chip{font-size:16px;padding:7px 12px}#gm .gm-w{font-size:15px;padding:8px 16px}#gm-nav{height:78px}}
+#gm .gm-all{background:rgba(255,255,255,.04);border-style:dashed}
+#gm .gm-marq{position:relative;margin:14px 0 0;border-radius:22px;padding:14px 10px;text-align:center;background:linear-gradient(180deg,#FF2E63,#B5179E);border:4px solid #FFD84D;box-shadow:0 0 0 4px #7A0B3A,0 10px 30px rgba(255,46,99,.45)}
+#gm .gm-marq:before{content:'';position:absolute;inset:4px;border-radius:15px;border:3px dotted #FFF3A6;opacity:.85;pointer-events:none}
+#gm .gm-marq .s{font-size:12px;font-weight:900;letter-spacing:.2em;color:#FFE259}
+#gm .gm-marq h1{margin:4px 0 0;font-size:30px;line-height:1;font-weight:900;font-style:italic;text-transform:uppercase;text-shadow:0 3px 0 #7A0B3A;color:#fff}
+#gm .gm-marq small{display:block;margin-top:6px;font-size:13px;font-weight:800;color:#FFE3F1}
+#gm .gm-rounds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+#gm .gm-rd{display:flex;align-items:center;gap:12px;border-radius:18px;padding:10px 12px;border:3px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);text-align:left;width:100%;font-family:inherit;color:#fff;cursor:pointer}
+#gm .gm-rd .n{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;flex:none;background:#3A2A6A}
+#gm .gm-rd .t{flex:1;min-width:0;font-weight:900;font-size:15px;line-height:1.2}
+#gm .gm-rd .t small{display:block;font-size:12px;opacity:.85;font-weight:700;margin-top:2px}
+#gm .gm-rd .p{font-weight:900;font-size:12px;color:#FFE259;text-align:right;white-space:nowrap}
+#gm .gm-rd.won{background:rgba(0,200,110,.16);border-color:#2EE59D}#gm .gm-rd.won .n{background:#00C46A}
+#gm .gm-rd.live{background:linear-gradient(135deg,#FFB800,#FF6A00);border-color:#FFF06A;box-shadow:0 0 26px rgba(255,170,0,.45);color:#2B1400}#gm .gm-rd.live .n{background:#fff;color:#FF6A00}#gm .gm-rd.live .p{color:#2B1400}
+#gm .gm-rd.rebbe{border-color:#7DD3FC;background:rgba(56,189,248,.14)}#gm .gm-rd.rebbe .n{background:#0284C7}
+#gm .gm-rd.final{background:linear-gradient(135deg,#4A0A3A,#2A0A5A);border-color:#FF4FA3;cursor:default}#gm .gm-rd.final .n{background:linear-gradient(135deg,#FF2E63,#B5179E)}
+#gm .gm-rd.final.open{background:linear-gradient(135deg,#00C46A,#047857);border-color:#6EE7B7;cursor:pointer}
+#gm .gm-score{display:flex;gap:8px;margin-top:14px}
+#gm .gm-score div{flex:1;background:#000;border:3px solid #3D2A7A;border-radius:14px;text-align:center;padding:6px 4px}
+#gm .gm-score b{display:block;font-size:24px;color:#39FF88;font-family:'JetBrains Mono',ui-monospace,monospace}
+#gm .gm-score small{font-size:10px;color:#A9A6E8;font-weight:900;letter-spacing:.06em}
+#gm .gm-chest{margin-top:10px;border-radius:14px;padding:9px 12px;background:rgba(255,216,77,.12);border:2px solid rgba(255,216,77,.4);font-weight:800;font-size:13px;color:#FFE9A8}
+#gm .gm-cta{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 24px));bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:31}
+#gm .gm-cta .gm-play{width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#gm .gm-play2 small{display:block;margin-top:3px;font-size:13px;font-style:normal;text-transform:none;letter-spacing:0;overflow:hidden;text-overflow:ellipsis}
+#gm .gm-lock{margin-top:16px;border-radius:24px;padding:20px 16px;text-align:center;background:rgba(0,0,0,.35);border:3px dashed rgba(255,255,255,.25)}
+#gm .gm-lock .ic{font-size:64px;line-height:1}
+#gm .gm-lock h1{margin:8px 0 4px;font-size:28px;font-weight:900;font-style:italic;text-transform:uppercase}
+#gm .gm-lock p{margin:0;font-size:15px;font-weight:700;color:#D9D5FF}
+#gm .gm-games{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+#gm .gm-games div{border-radius:16px;padding:12px 6px;text-align:center;font-weight:900;font-size:12px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);filter:grayscale(.6);opacity:.8}
+#gm .gm-games b{display:block;font-size:30px;margin-bottom:4px}
+#gm-nav button{position:relative}
+#gm-nav .cnt{position:absolute;top:6px;left:calc(50% + 8px);min-width:20px;height:20px;border-radius:10px;background:#FF2E63;color:#fff;font-size:12px;line-height:20px;text-align:center;padding:0 5px;letter-spacing:0}
+#gm-cel{position:fixed;inset:0;z-index:10010;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif;
+ background:radial-gradient(circle at 50% 38%,#FFB800 0%,#FF3C7A 38%,#4A0A6A 75%,#14042A 100%)}
+#gm-cel .rays{position:absolute;left:50%;top:38%;width:1400px;height:1400px;margin:-700px 0 0 -700px;background:repeating-conic-gradient(rgba(255,255,255,.14) 0 10deg,transparent 10deg 20deg);border-radius:50%;animation:gmspin 1.6s cubic-bezier(.2,.8,.3,1) both}
+#gm-cel .bx{position:relative;width:min(440px,calc(100% - 32px));text-align:center}
+#gm-cel .s{font-size:14px;font-weight:900;letter-spacing:.24em;color:#FFF3A6}
+#gm-cel h1{margin:6px 0 0;font-size:58px;line-height:.92;font-weight:900;font-style:italic;text-transform:uppercase;text-shadow:0 6px 0 #7A0B3A,0 0 30px rgba(255,255,255,.4);animation:gmpop .55s cubic-bezier(.2,1.6,.4,1) both}
+#gm-cel .ic{font-size:110px;line-height:1.1;margin:14px 0 4px;filter:drop-shadow(0 10px 20px rgba(0,0,0,.35));animation:gmpop .6s .12s cubic-bezier(.2,1.6,.4,1) both}
+#gm-cel .stars{font-size:44px;letter-spacing:6px}
+#gm-cel .loot{margin:14px 0 0;background:rgba(0,0,0,.35);border:3px solid rgba(255,255,255,.3);border-radius:22px;padding:10px 14px;text-align:left}
+#gm-cel .loot div{display:flex;justify-content:space-between;gap:10px;font-weight:900;font-size:15px;padding:5px 0}
+#gm-cel .loot b{color:#FFE259;text-align:right}
+#gm-cel .loot .paid b{color:#39FF88}
+#gm-cel .row{display:flex;gap:8px;margin-top:16px}
+#gm-cel button{flex:1;border:0;border-radius:18px;padding:15px 10px;font-family:inherit;font-weight:900;font-size:22px;font-style:italic;text-transform:uppercase;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 6px 0 #B36B00;cursor:pointer}
+#gm-cel button.alt{flex:0 0 auto;font-size:16px;color:#fff;background:rgba(0,0,0,.3);box-shadow:0 6px 0 rgba(0,0,0,.35)}
+#gm-cel button:active{transform:translateY(5px);box-shadow:0 1px 0 #B36B00}
+#gm-cel .cf{position:absolute;top:-20px;width:10px;height:6px;border-radius:2px;animation:gmfall 1.8s cubic-bezier(.3,.6,.5,1) both}
+@keyframes gmspin{from{transform:rotate(-30deg) scale(.6);opacity:0}to{transform:rotate(0) scale(1);opacity:1}}
+@keyframes gmpop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes gmfall{from{transform:translateY(0) rotate(0)}to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){#gm-cel .rays,#gm-cel h1,#gm-cel .ic{animation:none}#gm-cel .cf{display:none}}
+#gm .gm-tbtn{flex:none;border:2px solid #7CFFB2;background:rgba(0,196,106,.18);color:#CFFFE3;border-radius:12px;padding:7px 10px;font-family:inherit;font-weight:900;font-size:12px;letter-spacing:.04em;cursor:pointer;white-space:nowrap}
+#gm .gm-tree{margin-top:12px;display:flex;flex-direction:column;gap:12px}
+#gm .gm-thead{border-radius:18px;padding:12px 14px;background:linear-gradient(135deg,#00C46A,#047857);border:3px solid #6EE7B7}
+#gm .gm-thead .k{font-size:12px;font-weight:900;letter-spacing:.16em;color:#D1FAE5}
+#gm .gm-thead h2{margin:2px 0 6px;font-size:24px;font-weight:900;font-style:italic;text-transform:uppercase;color:#fff}
+#gm .gm-thead .bar{height:12px;border-radius:8px;background:rgba(0,0,0,.3);overflow:hidden}#gm .gm-thead .bar i{display:block;height:100%;background:linear-gradient(90deg,#FFE259,#FFA751);border-radius:8px}
+#gm .gm-thead small{display:block;margin-top:5px;font-size:13px;font-weight:800;color:#ECFDF5}
+#gm .gm-br{border-radius:18px;padding:10px 12px 12px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12)}
+#gm .gm-br.here{border-color:#FFE259;background:rgba(255,226,89,.09)}
+#gm .gm-br.full{border-color:#2EE59D;background:rgba(0,200,110,.10)}
+#gm .gm-br .h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:900;font-size:15px}
+#gm .gm-br .h small{font-size:12px;color:#FFE259;font-weight:900;white-space:nowrap}
+#gm .gm-br.full .h small{color:#7CFFB2}
+#gm .gm-nodes{display:flex;flex-wrap:wrap;gap:10px 8px;margin-top:10px}
+#gm .gm-tn{width:72px;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;color:#fff;font-family:inherit;cursor:pointer}
+#gm .gm-tn .hx{width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;clip-path:polygon(25% 4%,75% 4%,100% 50%,75% 96%,25% 96%,0 50%)}
+#gm .gm-tn.d .hx{background:linear-gradient(160deg,#FFE259,#FF9F1C);color:#5A2D00}
+#gm .gm-tn.now .hx{background:linear-gradient(160deg,#FFF06A,#FF6A00);box-shadow:0 0 0 4px rgba(255,200,0,.3);font-size:28px}
+#gm .gm-tn.u .hx{background:#2C2C55;color:#8E8EC9}
+#gm .gm-tn.s .hx{background:transparent;outline:2px dashed #4B4B80;color:#6E6EA8;font-size:12px}
+#gm .gm-tn span{font-size:10.5px;font-weight:800;line-height:1.15;text-align:center;color:#D9D5FF;max-height:3.5em;overflow:hidden}
+#gm .gm-tn.now span{color:#FFE259}
+#gm .gm-sheet{position:fixed;left:50%;transform:translateX(-50%);width:min(608px,calc(100% - 16px));bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:33;border-radius:24px;padding:16px;background:#fff;color:#1E1B4B;box-shadow:0 -6px 40px rgba(0,0,0,.5)}
+#gm .gm-sheet .k{font-size:12px;font-weight:900;letter-spacing:.14em;color:#7C3AED}
+#gm .gm-sheet h2{margin:4px 0;font-size:26px;font-weight:900;font-style:italic;text-transform:uppercase}
+#gm .gm-sheet p{margin:4px 0 0;font-size:15px;font-weight:700;color:#4B4870}
+#gm .gm-sheet p b{color:#1E1B4B}
+#gm .gm-sheet .gm-row{margin-top:12px}
+#gm .gm-sheet .x{flex:0 0 auto;border:0;border-radius:18px;padding:0 18px;font-family:inherit;font-weight:900;font-size:16px;background:#EEE9FF;color:#4C1D95;cursor:pointer}
+#gm .gm-rk{margin-top:14px;border-radius:22px;padding:16px;text-align:center;background:linear-gradient(160deg,#3B1E8F,#1C0F5A);border:3px solid #FFD84D;box-shadow:0 0 30px rgba(255,216,77,.25)}
+#gm .gm-rk .md{font-size:76px;line-height:1}
+#gm .gm-rk h1{margin:4px 0 0;font-size:34px;font-weight:900;font-style:italic;text-transform:uppercase;color:#FFE259}
+#gm .gm-rk small{display:block;font-size:14px;font-weight:800;color:#D9D5FF;margin-top:2px}
+#gm .gm-ladder{display:flex;justify-content:space-between;margin-top:12px;gap:4px}
+#gm .gm-ladder span{flex:1;border-radius:10px;padding:5px 0;font-size:20px;background:rgba(255,255,255,.06);filter:grayscale(1);opacity:.45}
+#gm .gm-ladder span.got{filter:none;opacity:1;background:rgba(255,226,89,.16)}
+#gm .gm-ladder span.cur{outline:3px solid #FFE259}
+#gm .gm-stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#gm .gm-stat div{border-radius:18px;padding:12px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12)}
+#gm .gm-stat b{display:block;font-size:32px;font-weight:900;line-height:1.05}
+#gm .gm-stat small{display:block;font-size:12px;font-weight:800;color:#C9C4FF;letter-spacing:.04em}
+#gm .gm-cheer{margin-top:12px;border-radius:18px;padding:12px 14px;font-weight:900;font-size:16px;background:linear-gradient(135deg,#00C46A,#047857);border:2px solid #6EE7B7}
+#gm .gm-sec{margin:18px 0 8px;font-size:13px;font-weight:900;letter-spacing:.14em;color:#C9C4FF}
+#gm .gm-learned{display:flex;flex-direction:column;gap:8px}
+#gm .gm-learned div{border-radius:14px;padding:9px 12px;background:rgba(255,255,255,.06);font-weight:900;font-size:14px;display:flex;gap:10px;align-items:center}
+#gm .gm-learned small{display:block;font-weight:700;font-size:12px;color:#C9C4FF}
+#gm .gm-learned i{font-style:normal;font-size:22px}
+#gm .gm-bdg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#gm .gm-bdg div{border-radius:14px;padding:8px 4px;text-align:center;font-size:10.5px;font-weight:800;line-height:1.15;background:rgba(255,255,255,.06)}
+#gm .gm-bdg div b{display:block;font-size:28px;margin-bottom:3px}
+#gm .gm-bdg div.no{filter:grayscale(1);opacity:.45}
+#gm .gm-stuff{display:block;width:100%;margin-top:16px;border:0;border-radius:18px;padding:14px;font-family:inherit;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,#10B981,#0EA5E9);box-shadow:0 6px 0 #047857;cursor:pointer}
+#gm .gm-vault{margin-top:14px;border-radius:24px;padding:18px 16px;text-align:center;background:linear-gradient(160deg,#00C46A,#035E3B);border:4px solid #FFD84D;box-shadow:0 0 0 4px #034D30,0 12px 30px rgba(0,196,106,.35)}
+#gm .gm-vault .k{font-size:12px;font-weight:900;letter-spacing:.2em;color:#FFF3A6}
+#gm .gm-vault .bal{margin:4px 0 0;font-size:54px;font-weight:900;line-height:1;text-shadow:0 4px 0 #034D30;font-family:inherit}
+#gm .gm-vault small{display:block;margin-top:6px;font-size:14px;font-weight:800;color:#D1FAE5}
+#gm .gm-mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+#gm .gm-mgrid button{border:0;border-radius:16px;padding:12px 4px;font-family:inherit;font-weight:900;font-size:12px;color:#fff;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.14);cursor:pointer}
+#gm .gm-mgrid button b{display:block;font-size:30px;margin-bottom:4px}
+#gm .gm-mgrid button.big{grid-column:span 3;font-size:18px;padding:14px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);border:0;box-shadow:0 6px 0 #B36B00;font-style:italic;text-transform:uppercase}
+#gm .gm-mgrid button.big:active{transform:translateY(5px);box-shadow:0 1px 0 #B36B00}
+#gm .gm-earn{display:flex;flex-direction:column;gap:8px}
+#gm .gm-earn div{display:flex;align-items:center;gap:10px;border-radius:14px;padding:9px 12px;background:rgba(255,255,255,.06);font-weight:800;font-size:14px}
+#gm .gm-earn b{flex:none;color:#39FF88;font-size:15px;font-family:'JetBrains Mono',ui-monospace,monospace}
+#gm .gm-earn b.neg{color:#FF8AB0}
+#gm .gm-earn span{flex:1;min-width:0}
+#gm .gm-earn small{display:block;font-size:11px;color:#A9A6E8;font-weight:700}
+#gm .gm-pay{margin-top:12px;border-radius:16px;padding:11px 14px;font-weight:800;font-size:14px;background:rgba(255,216,77,.12);border:2px solid rgba(255,216,77,.4);color:#FFE9A8}
+body.gm-nav .stov{background:rgba(10,7,38,.8)}
+body.gm-nav .stbox{background:#140A44;color:#F4F2FF;border:3px solid #FFD84D;box-shadow:0 0 0 4px #3B1E8F,0 30px 80px rgba(0,0,0,.6)}
+body.gm-nav .sthead{background:linear-gradient(120deg,#FF2E63,#B5179E 50%,#7C4DFF)}
+body.gm-nav .sthead h2{font-style:italic;text-transform:uppercase;letter-spacing:-.01em}
+body.gm-nav .stbal b{color:#FFE259;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+body.gm-nav .sttabs button{background:rgba(0,0,0,.28);color:#fff}
+body.gm-nav .sttabs button.on{background:#140A44;color:#FFE259}
+body.gm-nav .stintro{color:#C9C4FF}
+body.gm-nav .stcard{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.16);color:#F4F2FF;box-shadow:none}
+body.gm-nav .stcard h4{color:#fff}
+body.gm-nav .stcard p{color:#C9C4FF}
+body.gm-nav .stcard .pr{background:linear-gradient(135deg,#FFE259,#FFA751);color:#3A1C00}
+body.gm-nav .stcard .need{color:#FFB86B}
+body.gm-nav .stcard .nb{background:rgba(255,255,255,.12)}
+body.gm-nav .stcard.own{background:rgba(0,196,106,.16);border-color:#2EE59D}
+body.gm-nav .stcard.isgoal{border-color:#B388FF;box-shadow:0 0 0 4px rgba(179,136,255,.25)}
+body.gm-nav .stcard .gl{background:rgba(124,77,255,.25);color:#E9E3FF}body.gm-nav .stcard .gl.on{background:#7C4DFF;color:#fff}
+body.gm-nav .stcard .wr{background:rgba(0,196,106,.2);color:#CFFFE3}body.gm-nav .stcard .wr.on{background:#00C46A;color:#fff}
+body.gm-nav .stbox .note{background:rgba(255,216,77,.12);border-color:#FFD84D;color:#FFE9A8}
+body.gm-nav .stbox .err{color:#FF8AB0}
+body.gm-nav .stlist .li{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);color:#F4F2FF}
+body.gm-nav .stlist .li .st{background:rgba(255,255,255,.12);color:#fff}
+body.gm-nav .stkpis div{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);color:#F4F2FF}
+body.gm-nav .stgift{background:rgba(255,255,255,.07);border-color:#FF8AD8;color:#F4F2FF}
+body.gm-nav .stgift .amts button{background:rgba(255,255,255,.1);color:#fff}
+body.gm-nav .stweek{border-bottom-color:rgba(255,255,255,.2)}
+body.gm-nav .stweek div{color:#E9E3FF}
+body.gm-nav .stbody h3,body.gm-nav .stbody h4,body.gm-nav .stbody h5{color:#fff!important}
+body.gm-nav .stkpis b{color:#39FF88!important}body.gm-nav .stkpis small,body.gm-nav .stkpis span{color:#C9C4FF!important}
 @media (prefers-reduced-motion:reduce){#gm .gm-n:active,#gm .gm-play:active,#gm .gm-say:active{transform:none}#gm .gm-n:active{transform:translate(-50%,-50%)}}
 `; document.head.appendChild(s); }
 function root(){ let g=document.getElementById('gm'); if(!g){ g=document.createElement('div'); g.id='gm'; g.setAttribute('role','main'); g.setAttribute('aria-label','My Map'); document.body.appendChild(g); } return g; }
@@ -123,7 +275,7 @@ function worldsOf(m){
   let now=ids.find(id=>!mast(id))||'';
   const cleared=!now&&ids.length>0;
   const unitName=isK?(W[1]+' Level '+c.level):((c.unit&&c.unit.name)||W[1]);
-  out.push({k,icon:W[0],name:W[1],level:c.level,ids,now,cleared,next:c.next,unitName,isK}); };
+  out.push({k,icon:W[0],name:W[1],level:c.level,ids,now,cleared,next:c.next,unitName,isK,c}); };
  Object.keys(m.subjects||{}).forEach(k=>add(k,m.subjects[k],false));
  Object.keys(m.kodesh||{}).forEach(k=>add(k,m.kodesh[k],true));
  out.sort((a,b)=>(ORDER.indexOf(a.k)<0?99:ORDER.indexOf(a.k))-(ORDER.indexOf(b.k)<0?99:ORDER.indexOf(b.k)));
@@ -136,9 +288,9 @@ function money(){ const b=Number(A.st&&A.st.balance)||0; return '$'+b.toFixed(2)
 function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.style.display!=='none'&&c.querySelector('button')); }
 function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
- return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-st="open" aria-label="My money ${money()}: open the Store">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
+ return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
-function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':'LEVEL '+w.level}</small></button>`).join('')}</div>`; }
+function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':'LEVEL '+w.level}</small></button>`).join('')}<button type="button" class="gm-w gm-all" data-gm="lib" aria-label="All my lessons">📚 ALL<small>LESSONS</small></button></div>`; }
 function pathHTML(w){
  let ids=w.ids.slice(), hidden=0; const ni=w.now?ids.indexOf(w.now):ids.length;
  if(ids.length>7){ const from=Math.max(0,Math.min(ni-2,ids.length-7)); hidden=from; ids=ids.slice(from); }
@@ -156,6 +308,28 @@ function pathHTML(w){
   h+=`<div class="gm-l${isNow?' now':''}${isBoss?' boss':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="k">${lab}</span>${esc(n[0])}${n[1]?`<small>${esc(n[1])}</small>`:''}</div>`; });
  if(hidden) h+=`<div class="gm-more" style="top:${H-12}px">✓ ${hidden} more cleared below</div>`;
  return h+'</div>'; }
+/* ===== SKILL TREE (HoS 2026-11-20: "MY TREE ... his leaves light up as he masters them ... tap a leaf to replay it ... never overwhelm";
+   then "more video game" -> an RPG-style skill tree). One world at a time, only his level: one branch per kind of skill (the server's
+   strand names), each skill a node: mastered = gold, his goal now = glowing, later = locked, not built yet = "soon". Tap a node: its game
+   name, the REAL skill in plain words, and Play / Replay. Kodesh: the level's lessons are one branch. */
+function treeHTML(w){
+ const c=w.c||{}, sk=w.isK?(c.skills||[]):(c.skills||[]), S=c.strands||{}, br=[], idx={};
+ sk.forEach(x=>{ const s=w.isK?'K':(String(x[0]).split('.')[1]||''); if(!(s in idx)){ idx[s]=br.length; br.push({s,name:w.isK?(w.name+' Level '+w.level):(S[s]||s),items:[]}); } br[idx[s]].items.push(x); });
+ const built=sk.filter(x=>x[1]), done=built.filter(x=>mast(x[0])).length, pct=built.length?Math.round(100*done/built.length):0;
+ let h=`<div class="gm-tree"><div class="gm-thead"><div class="k">🌳 SKILL TREE</div><h2>${esc(w.name)} · Level ${w.level}</h2><div class="bar"><i style="width:${pct}%"></i></div><small>${done} of ${built.length} skills mastered${done===built.length&&built.length?' · LEVEL COMPLETE! 👑':''}</small></div>`;
+ br.forEach(b=>{ const bb=b.items.filter(x=>x[1]), bd=bb.filter(x=>mast(x[0])).length, here=b.items.some(x=>x[0]===w.now), full=bb.length&&bd===bb.length;
+  h+=`<div class="gm-br${here?' here':''}${full?' full':''}"><div class="h"><span>${esc(b.name)}${here?' · ▶ YOU ARE HERE':''}</span><small>${full?'✓ COMPLETE':bd+' / '+bb.length}</small></div><div class="gm-nodes">`;
+  b.items.forEach(x=>{ const id=x[0], n=nm(id), st=!x[1]?'s':mast(id)?'d':id===w.now?'now':'u', ic=st==='d'?'✓':st==='now'?w.icon:st==='s'?'SOON':'🔒';
+   h+=`<button type="button" class="gm-tn ${st}" data-gm="tn" data-id="${esc(id)}" data-st="${st}" aria-label="${esc(n[0])}${n[1]?': '+esc(n[1]):''}"><span class="hx">${ic}</span><span>${esc(n[0])}</span></button>`; });
+  h+='</div></div>'; });
+ return h+'</div>'; }
+function sheet(id,st){ const g=root(), old=g.querySelector('.gm-sheet'); if(old) old.remove(); const n=nm(id), w=(worldsOf(M())||[]).find(x=>x.k===GM.world), real=/ Level \d+$/.test(n[1]||'');
+ const status=st==='d'?'✓ MASTERED':st==='now'?'⚡ YOUR GOAL NOW':st==='s'?'🛠️ COMING SOON':'🔒 LOCKED';
+ const line=n[1]?(real?`Real skill: <b>${esc(n[0])}</b> · ${esc(n[1])}`:`You learn: <b>${esc(n[1])}</b>`):'';
+ const more=st==='u'&&w&&w.now?`<p>Clear <b>${esc(nm(w.now)[0])}</b> first. Every level you clear brings this one closer!</p>`:st==='s'?'<p>This skill is being built. It opens soon!</p>':'';
+ const btn=st==='d'?`<button type="button" class="gm-play" data-gm="play" data-id="${esc(id)}">↻ Replay</button>`:st==='now'?`<button type="button" class="gm-play" data-gm="play" data-id="${esc(id)}">▶ Play</button>`:'';
+ const d=document.createElement('div'); d.className='gm-sheet'; d.setAttribute('role','dialog'); d.setAttribute('aria-label',n[0]);
+ d.innerHTML=`<div class="k">${status}</div><h2>${esc(n[0])}</h2>${line?`<p>${line}</p>`:''}${more}<div class="gm-row">${btn}<button type="button" class="x" data-gm="sheetx">${btn?'Close':'OK'}</button></div>`; g.appendChild(d); }
 function learnLine(n){ if(!n[1]) return ''; if(/ Level \d+$/.test(n[1])) return `<div class="learn">🧠 Real skill: <b>${esc(n[0])}</b> · ${esc(n[1])}</div>`; return `<div class="learn">🧠 You'll learn: <b>${esc(n[1])}</b></div>`; }
 function goalHTML(w,isPick){
  if(!w.now) return `<div class="gm-goal"><div class="gm-done">🏆 ${esc(w.name)} unit cleared!<small>Your rebbe or teacher opens your next unit. Pick another world above, or tap 📚 Learn.</small></div></div>`;
@@ -164,8 +338,117 @@ function goalHTML(w,isPick){
  const say=`Your next level: ${n[0]}.${n[1]?(/ Level \d+$/.test(n[1])?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Play to start!`;
  return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">🔊</button></div></div>`; }
-function navHTML(k2){ const items=k2?[['map','🗺️','Map'],['lib','📚','Learn'],['games','🎮','Play']]:[['map','🗺️','Map'],['lib','📚','Learn'],['games','🎮','Play'],['mine','🎒','My Stuff'],['store','💵','Store']];
- return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${GM.tab===x[0]?'on':''}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}</button>`).join(''); }
+function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['me','🏆','Trophies'],['money','💵','Money']];
+ return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${GM.tab===x[0]?'on':''}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
+/* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
+   3 rounds a day = the school's daily goal (3 lessons mastered in one day; the server pays its bonus, Money.js moneyDailyGoal_; nothing here
+   pays). Each round is his next level in one world (today's pick first), so a day touches several subjects. A round is CLEARED by any step
+   he masters today, in order. His rebbe's picks (sgMyDesk, RebbePick.html) are extra rounds. Clearing all 3 opens the BONUS ROUND: the
+   Arcade (the Play door) and a once-a-day CHALLENGE COMPLETE party. If he has no next level anywhere, the Arcade is simply open. */
+const ROUNDS=3;
+function todayDone(){ const t=today(), sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&dayOf(sk[id].at)===t).sort((a,b)=>sk[a].at-sk[b].at); }
+function weekCounts(){ const sk=(A.st&&A.st.skills)||{}, now=Date.now(), d=864e5; let w=0,p=0; Object.keys(sk).forEach(id=>{ const x=sk[id]; if(!x||!x.m) return; const at=Number(x.at)||0; if(at>=now-7*d) w++; else if(at>=now-14*d) p++; }); return {w,p}; }
+function plan(ws){ const live=ws.filter(w=>w.now), done=todayDone(), n=Math.min(ROUNDS,done.length), out=[];
+ if(!live.length) return {rounds:[],done:n,open:true,left:0};
+ const fresh=live.filter(w=>!doneToday(w)), order=fresh.concat(live.filter(w=>fresh.indexOf(w)<0));
+ for(let i=0;i<ROUNDS;i++){ if(i<n){ out.push({won:true,id:done[i]}); continue; } out.push({w:order[(i-n)%order.length]}); }
+ return {rounds:out,done:n,open:n>=ROUNDS,left:ROUNDS-n}; }
+function rebbePicks(){ const d=window.TL_DESK; if(!d||!A.st||d.sid!==A.st.id) return []; return (d.picks||[]).filter(p=>!(p.done||mast(p.id))).slice(0,2); }
+function subjOfId(id){ const p=String(id).split('.'); if(p[0]==='LK') return 'K:'+p[1]; return p[0]==='WRIT'?'LANG':p[0]; }
+function missionsHTML(ws){ const P=plan(ws), wk=weekCounts(), pk=pick(ws), picks=rebbePicks();
+ const toBoss=pk&&pk.now?pk.ids.length-pk.ids.indexOf(pk.now)-1:0;
+ let rows='', live=null;
+ P.rounds.forEach((r,i)=>{ const num=i+1;
+  if(r.won){ const n=nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐','']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">ROUND ${num} · ${esc((W[1]||'').toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">CLEARED<br>⭐⭐⭐</div></div>`; return; }
+  const w=r.w, n=nm(w.now), isLive=!live; if(isLive) live=w;
+  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="Round ${num}: ${esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">ROUND ${num} · ${esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?'YOUR<br>TURN!':'NEXT'}</div></button>`; });
+ picks.forEach(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); rows+=`<button type="button" class="gm-rd rebbe" data-gm="play" data-id="${esc(p.id)}"><div class="n">📌</div><div class="t">FROM ${esc(String(p.by||'YOUR REBBE').toUpperCase())}<small>${esc(n)}</small></div><div class="p">PICKED<br>FOR YOU</div></button>`; });
+ rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
+ const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
+ const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ Play round ${P.done+1}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
+ const head=P.open?`<div class="s">★ CHALLENGE COMPLETE ★</div><h1>You did it!</h1><small>All ${ROUNDS} rounds cleared today. Every extra level still counts!</small>`:`<div class="s">★ TODAY ON ★</div><h1>The Tashbar<br>Challenge!</h1><small>${P.rounds.length?'Clear '+ROUNDS+' rounds today. Round '+(P.done+1)+' is up!':'No rounds today: every world is cleared!'}</small>`;
+ return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>
+ <div class="gm-score"><div><small>THIS WEEK</small><b>${String(wk.w).padStart(2,'0')}</b></div><div><small>LAST WEEK</small><b style="color:#A9A6E8">${String(wk.p).padStart(2,'0')}</b></div><div><small>TO BOSS</small><b style="color:#FF5C8A">${String(toBoss).padStart(2,'0')}</b></div></div>${chest}${cta}`; }
+function arcadeHTML(ws){ const P=plan(ws);
+ return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>Clear ${P.left} more round${P.left===1?'':'s'} of today's challenge to open the Arcade!</p></div>
+ <div class="gm-games"><div><b>⚔️</b>SHOWDOWN</div><div><b>🕵️</b>DETECTIVE</div><div><b>📒</b>JOKE BOOK</div></div>
+ <div class="gm-cta"><button type="button" class="gm-play" data-gmnav="missions">🎯 Go to my rounds</button></div>`; }
+/* ===== MY GROWTH / TROPHIES (HoS 2026-11-20: "steps climbed this week (vs last week), streaks, units finished, badges, you're stronger
+   than last week, all from his own mastery data"). Rank ladder, this week vs last, streak, bosses beaten in his level, WHAT I LEARNED
+   (game name + real skill: "I learned how to multiply"), badges he has (no amounts here: the server pays), and the old My Stuff door. */
+function bossesBeaten(ws){ let n=0; ws.forEach(w=>{ if(w.isK){ const b=(w.c.skills||[]).filter(x=>x[1]); if(b.length&&b.every(x=>mast(x[0]))) n++; return; }
+  const by={}; (w.c.skills||[]).filter(x=>x[1]).forEach(x=>{ const s=String(x[0]).split('.')[1]; (by[s]=by[s]||[]).push(x[0]); }); Object.keys(by).forEach(s=>{ if(by[s].every(mast)) n++; }); }); return n; }
+function learnedList(){ const sk=(A.st&&A.st.skills)||{}, since=Date.now()-7*864e5; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&Number(sk[id].at)>=since).sort((a,b)=>sk[b].at-sk[a].at).slice(0,8); }
+function growthHTML(ws){ const n=steps(), R=rankOf(n), wk=weekCounts(), s=(A.st&&A.st.streak&&A.st.streak.n)||0, bb=bossesBeaten(ws);
+ const cheer=wk.w>wk.p?`💪 You're stronger than last week! ${wk.w} steps vs ${wk.p}.`:wk.w&&wk.w===wk.p?`⚖️ Same as last week (${wk.w}). One more step beats it!`:wk.p?`🚀 Last week: ${wk.p} steps. Let's beat it. You're ${wk.p-wk.w+1} away!`:`🚀 Every step you clear shows up here. Let's climb!`;
+ const ladder=RANKS.map(r=>`<span class="${n>=r[0]?'got':''}${r===R.r?' cur':''}" title="${r[2]}: ${r[0]} steps">${r[1]}</span>`).join('');
+ const L=learnedList(), learned=L.length?L.map(id=>{ const x=nm(id), W=WORLDS[subjOfId(id)]||['⭐','']; return `<div><i>${W[0]}</i><span>${esc(x[0])}${x[1]?`<small>${/ Level \d+$/.test(x[1])?esc(x[1]):'I learned: '+esc(x[1])}</small>`:''}</span></div>`; }).join(''):'<div><i>🌱</i><span>Nothing yet this week<small>Clear a level and it shows up here!</small></span></div>';
+ let bdg=''; try{ if(typeof BADGES!=='undefined'&&A.st&&A.st.badges) bdg=BADGES.map(b=>`<div class="${A.st.badges.includes(b[0])?'':'no'}" title="${esc(b[3])}"><b>${b[1]}</b>${esc(b[2])}</div>`).join(''); }catch(e){ bdg=''; }
+ return `<div class="gm-rk"><div class="md">${R.r[1]}</div><h1>${R.r[2]}</h1><small>⚡ ${(n*100).toLocaleString()} XP · ${n} step${n===1?'':'s'} mastered${R.nx?` · ${R.nx[0]-n} to ${R.nx[2]}`:' · TOP RANK!'}</small><div class="gm-ladder">${ladder}</div></div>
+ <div class="gm-cheer">${cheer}</div>
+ <div class="gm-stat"><div><small>📈 THIS WEEK</small><b>${wk.w}</b></div><div><small>⏪ LAST WEEK</small><b style="color:#A9A6E8">${wk.p}</b></div><div><small>🔥 DAYS IN A ROW</small><b style="color:#FFB86B">${s}</b></div><div><small>🏰 BOSSES BEATEN</small><b style="color:#FF8AB0">${bb}</b></div></div>
+ <div class="gm-sec">🧠 WHAT I LEARNED THIS WEEK</div><div class="gm-learned">${learned}</div>
+ ${bdg?`<div class="gm-sec">🏅 MY BADGES</div><div class="gm-bdg">${bdg}</div>`:''}
+ <button type="button" class="gm-stuff" data-gm="stuff">🎒 All my stuff: bank, passport, Shabbos page and more</button>`; }
+/* ===== WIN MOMENTS: right after he masters a level and comes back to the map (his success only, once each).
+   LEVEL CLEAR! (what he learned, what it unlocked, how far the boss is) or BOSS BEATEN! (unit finished), plus RANK UP when it happens.
+   NEXT LEVEL starts his next level at once. The daily CHALLENGE COMPLETE party takes the place of these when it happens. */
+/* the money the SERVER paid for this step (ledger rows that name it, last 15 minutes); shown as it is, never computed here */
+function earnedFor(id){ const since=Date.now()-15*60e3; return ((A.st&&A.st.ledger)||[]).filter(x=>x&&x.at>=since&&x.amt>0&&String(x.why||'').indexOf(id)>=0).reduce((a,x)=>a+Number(x.amt),0); }
+function watchPay(id){ let n=0; const t=setInterval(()=>{ n++; const c=document.getElementById('gm-cel'), v=earnedFor(id); if(!c||n>12){ clearInterval(t); return; } if(v>0){ clearInterval(t); const L=c.querySelector('.loot'); if(L&&!L.querySelector('.paid')){ const d=document.createElement('div'); d.className='paid'; d.innerHTML='<span>💵 You earned</span><b>+'+usd(v)+'</b>'; L.insertBefore(d,L.children[1]||null); try{ (SND.coin||SND.win||SND.tap)(); }catch(e){} } } },400); }
+function winMoment(newIds,ws,rankBefore){ const id=newIds[newIds.length-1], w=ws.find(x=>x.ids.indexOf(id)>=0)||ws.find(x=>(x.c.skills||[]).some(y=>y[0]===id)); if(!w) return false;
+ const n=nm(id), isBoss=w.ids.indexOf(id)===w.ids.length-1&&w.ids.every(mast), R=rankOf(steps()), up=R.r!==rankBefore.r, loot=[];
+ if(n[1]) loot.push([/ Level \d+$/.test(n[1])?'🧠 Real skill':'🧠 You learned',/ Level \d+$/.test(n[1])?n[0]:n[1]]);
+ if(up) loot.push(['🎖️ NEW RANK',R.r[1]+' '+R.r[2].toUpperCase()]);
+ loot.push(['⚡ XP','+100']);
+ if(isBoss){ loot.push(['🏁 Unit finished',w.unitName]); loot.push(['🗺️ Next','Your next unit is on the map']); }
+ else if(w.now){ const left=w.ids.length-w.ids.indexOf(w.now)-1; loot.push(['🔓 Unlocked',nm(w.now)[0]]); loot.push(['🏰 Boss',left?left+' level'+(left===1?'':'s')+' away!':'NEXT! Get ready!']); }
+ const nx=w.now||(pick(ws)||{}).now;
+ const paid=earnedFor(id); if(paid>0) loot.splice(1,0,['💵 You earned','+'+usd(paid)]); else watchPay(id);
+ celebrate({kicker:n[0],title:isBoss?'Boss<br>beaten!':up?'Rank<br>up!':'Level<br>clear!',icon:isBoss?'🏰':up?R.r[1]:'🏆',stars:true,loot,
+  go:nx?['▶ Next level',()=>play(nx)]:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }],alt:nx?['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); }]:null});
+ return true; }
+/* ===== MY MONEY (HoS 2026-11-20: "the money is very important ... buy things in the store ... in the canteen. That should be a big deal";
+   "show money tied to steps"). Display only: every amount here is the SERVER's (his balance and ledger from msLoad/msSave). Nothing here
+   pays, prices or changes money. The wallet, how he earned it (each line names the step: "Mastered: Multiply Mountain"), this week,
+   payday, the treasure chest, and big doors into the Store tabs (StoreKid.html: fun, real prizes, Canteen Cards, give, my week). */
+const IDRE=/\b([A-Z]{2,5}\.[A-Z]{2,6}\.L\d\d\.\d\d(?:\.[a-z])?)\b/g;
+function whyText(w){ let s=String(w||''); s=s.replace(/^Mastered\s+/,'Mastered: ').replace(/^Correct answer · /,'Right answer: ').replace(/^Right on the first try · /,'First try: ');
+ return s.replace(IDRE,(m,id)=>{ const n=nm(id); return n[0]!==id?n[0]:(typeof skillName==='function'?skillName(id):id); }); }
+function usd(x){ const v=Math.abs(Number(x)||0); return '$'+v.toFixed(2); }
+function moneyHTML(){ const L=((A.st&&A.st.ledger)||[]).filter(x=>x&&x.at), d0=new Date(), td=d0.toDateString(), wk0=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()-d0.getDay()).getTime();
+ const today=L.filter(x=>new Date(x.at).toDateString()===td&&x.amt>0).reduce((a,x)=>a+Number(x.amt),0), week=L.filter(x=>x.at>=wk0&&x.amt>0).reduce((a,x)=>a+Number(x.amt),0);
+ const rows=L.slice(0,10).map(x=>`<div><b class="${x.amt<0?'neg':''}">${x.amt<0?'−':'+'}${usd(x.amt)}</b><span>${esc(whyText(x.why))}<small>${new Date(x.at).toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'})}</small></span></div>`).join('')||'<div><b>💵</b><span>Clear a level to earn your first money!<small>Every mastered step pays. The school sets the amounts.</small></span></div>';
+ const dow=d0.getDay(), pay=dow===4||dow===5?'🎉 It\'s PAYDAY! Open the Store and see your week.':'📅 Payday is Thursday and Friday. Your week shows up in the Store.';
+ const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
+ return `<div class="gm-vault"><div class="k">💰 MY MONEY</div><div class="bal">${money()}</div><small>${today>0?'+'+usd(today)+' today · ':''}${week>0?'+'+usd(week)+' this week':'Earned by mastering skills'}</small></div>
+ <div class="gm-mgrid"><button type="button" class="big" data-st="open" data-t="fun">🏪 Open the Store</button><button type="button" data-st="open" data-t="real"><b>🎁</b>REAL PRIZES</button><button type="button" data-st="open" data-t="canteen"><b>🥪</b>CANTEEN CARDS</button><button type="button" data-st="open" data-t="give"><b>💝</b>GIVE</button><button type="button" data-st="open" data-t="week"><b>📜</b>MY WEEK</button><button type="button" data-st="open" data-t="mine"><b>🎒</b>MY THINGS</button><button type="button" data-gm="stuff"><b>🏦</b>MY BANK</button></div>
+ <div class="gm-pay">${pay}</div>${chest}
+ <div class="gm-sec">💵 HOW I EARNED IT</div><div class="gm-earn">${rows}</div>`; }
+/* ===== CELEBRATIONS: one short burst, only when he wins (never on its own). Reduced motion: no movement, same words. */
+function celebrate(o){ try{ const old=document.getElementById('gm-cel'); if(old) old.remove(); const d=document.createElement('div'); d.id='gm-cel'; d.setAttribute('role','dialog'); d.setAttribute('aria-label',o.title);
+  const col=['#39FF88','#00E5FF','#FFE259','#FF9AB5','#fff','#B388FF']; let cf=''; for(let i=0;i<26;i++) cf+=`<i class="cf" style="left:${(i*37)%100}%;background:${col[i%col.length]};animation-delay:${(i%9)*0.06}s"></i>`;
+  d.innerHTML=`<div class="rays"></div>${cf}<div class="bx"><div class="s">${esc(o.kicker||'')}</div><h1>${o.title}</h1><div class="ic" aria-hidden="true">${o.icon||'🏆'}</div>${o.stars?'<div class="stars" aria-hidden="true">⭐⭐⭐</div>':''}
+  ${o.loot&&o.loot.length?`<div class="loot">${o.loot.map(l=>`<div><span>${esc(l[0])}</span><b>${esc(l[1])}</b></div>`).join('')}</div>`:''}<div class="row">${o.alt?`<button type="button" class="alt" data-cel="alt">${esc(o.alt[0])}</button>`:''}<button type="button" data-cel="go">${esc(o.go?o.go[0]:'▶ Let\'s go')}</button></div></div>`;
+  document.body.appendChild(d); try{ (SND.win||SND.tap)(); }catch(e){}
+  d.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-cel]'); if(!b) return; d.remove(); const f=b.dataset.cel==='go'?(o.go&&o.go[1]):(o.alt&&o.alt[1]); try{ f&&f(); }catch(x){} });
+  setTimeout(()=>{ const b=d.querySelector('[data-cel=go]'); try{ b&&b.focus({preventScroll:true}); }catch(e){} },50); }catch(e){ console.error('GameMap',e); } }
+GM.celebrate=celebrate;
+function dailyLoot(ws,wk){ const L=[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]];
+ try{ const d=todayDone(), last=d[d.length-1]; if(last){ const w=ws.find(x=>x.ids.indexOf(last)>=0); if(w&&w.ids.indexOf(last)===w.ids.length-1&&w.ids.every(mast)) L.splice(1,0,['🏰 Boss beaten',w.unitName]); const n=nm(last); L.splice(1,0,['🧠 Last level',n[0]]); } }catch(e){}
+ return L; }
+function dayKey(){ return 'gm-day-'+(A.st&&A.st.id)+'-'+today(); }
+function seen(k){ try{ return localStorage.getItem(k)==='1'; }catch(e){ return !!GM['_'+k]; } }
+function mark(k){ try{ localStorage.setItem(k,'1'); }catch(e){} GM['_'+k]=1; }
+function checkDaily(ws){ const P=plan(ws); if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=P.done; GM.prevSid=A.st.id; return false; }
+ if(P.rounds.length&&GM.prevDone<ROUNDS&&P.done>=ROUNDS&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=P.done; const wk=weekCounts();
+  setTimeout(()=>celebrate({kicker:'THE TASHBAR CHALLENGE',title:'Challenge<br>complete!',icon:'🏆',stars:true,loot:dailyLoot(ws,wk),go:['🎮 Arcade',()=>{ GM.tab='games'; sync(); door('games'); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
+ GM.prevDone=P.done; return false; }
+function mastSet(){ const sk=(A.st&&A.st.skills)||{}, o={}; Object.keys(sk).forEach(id=>{ if(sk[id]&&sk[id].m) o[id]=Number(sk[id].at)||0; }); return o; }
+function checkWin(ws,daily){ const now=mastSet(); if(!GM.snap||GM.snapSid!==A.st.id){ GM.snap=now; GM.snapSid=A.st.id; GM.snapRank=rankOf(steps()); return; }
+ const fresh=Object.keys(now).filter(id=>!(id in GM.snap)&&Date.now()-now[id]<15*60e3).sort((a,b)=>now[a]-now[b]), rk=GM.snapRank;
+ GM.snap=now; GM.snapRank=rankOf(steps());
+ if(fresh.length&&!daily) setTimeout(()=>winMoment(fresh,worldsOf(M()),rk),200); }
 function show(on,navOn){ document.body.classList.toggle('gm-on',!!on); document.body.classList.toggle('gm-nav',!!navOn); }
 function sync(){
  css(); const g=root(), nv=nav();
@@ -174,13 +457,16 @@ function sync(){
  const ws=m?worldsOf(m):[];
  if(!hub||!ws.length){ show(false,false); return; }
  const k2=ws.every(w=>w.level<=2); document.body.classList.toggle('gm-k2',k2);
- if(k2&&(GM.tab==='mine'||GM.tab==='store')) GM.tab='map';
- const nh=navHTML(k2); if(nv.innerHTML!==nh) nv.innerHTML=nh;
+ if(k2&&GM.tab==='me') GM.tab='map';
+ const P=plan(ws), daily=checkDaily(ws); checkWin(ws,daily);
+ const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh;
+ if(GM.tab==='missions'||GM.tab==='me'||GM.tab==='money'||(GM.tab==='games'&&!P.open)){ const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${GM.tab==='missions'?missionsHTML(ws):GM.tab==='me'?growthHTML(ws):GM.tab==='money'?moneyHTML():arcadeHTML(ws)}</div>`;
+  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  if(GM.tab!=='map'){ show(false,true); return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}${worldTabs(ws,cur)}</div>
- <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div></div>
- ${pathHTML(cur)}</div>${goalHTML(cur,p&&cur.k===p.k)}`;
+ <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div><button type="button" class="gm-tbtn" data-gm="tree">${GM.view==='tree'?'🗺️ PATH':'🌳 SKILL TREE'}</button></div>
+ ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play gm-play2" data-gm="play" data-id="${esc(cur.now)}">▶ Play<small>${esc(nm(cur.now)[0])}</small></button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
  show(true,true);
@@ -203,9 +489,14 @@ document.addEventListener('click',e=>{
  const a=b.dataset.gm, t=b.dataset.gmnav;
  if(t){ e.preventDefault(); try{ SND.tap(); }catch(x){}
   if(t==='store'){ const s=document.createElement('button'); s.dataset.st='open'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); return; }
-  GM.tab=t; if(t==='map'){ GM.sig=''; GM.rescroll=true; sync(); return; } sync(); door(t); return; }
+  GM.tab=t; GM.sig=''; GM.rescroll=true; sync(); if(!document.body.classList.contains('gm-on')) door(t); return; }
  if(a==='world'){ GM.world=b.dataset.k; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
  if(a==='play') return play(b.dataset.id);
+ if(a==='stuff'){ try{ SND.tap(); }catch(x){} GM.tab='mine'; sync(); door('mine'); return; }
+ if(a==='tree'){ try{ SND.tap(); }catch(x){} GM.view=GM.view==='tree'?'path':'tree'; root().scrollTop=0; GM.rescroll=GM.view!=='tree'; sync(); return; }
+ if(a==='tn'){ try{ SND.tap(); }catch(x){} sheet(b.dataset.id,b.dataset.st); return; }
+ if(a==='sheetx'){ const s=root().querySelector('.gm-sheet'); if(s) s.remove(); return; }
+ if(a==='lib'){ try{ SND.tap(); }catch(x){} GM.tab='lib'; sync(); door('lib'); return; }
  if(a==='pf'){ const c=document.querySelector('.pf-card button'); if(c) c.click(); return; }
  if(a==='say'){ try{ speak(b.dataset.text); }catch(x){} return; }
  if(a==='node'){ const id=b.dataset.id, m=M(); if(!m) return; const ws=worldsOf(m), w=ws.find(x=>x.k===GM.world);
@@ -220,6 +511,7 @@ render=function(){ const r=oldRender.apply(this,arguments);
  return r; };
 GM.lastSteps=-1;
 GM.sync=sync;
+GM.nextLevel=function(){ try{ const m=M(); if(!m) return ''; const w=pick(worldsOf(m)); if(!w||!w.now) return ''; const n=nm(w.now); return n[0]+(n[1]&&!/ Level \d+$/.test(n[1])?' · '+n[1]:''); }catch(e){ return ''; } };
 let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.pf-card'); if(!c){ setTimeout(hook,1500); return; } pfWatch=new MutationObserver(()=>{ if(document.body.classList.contains('gm-on')) sync(); }); pfWatch.observe(c,{attributes:true,attributeFilter:['style']}); },1500);
 try{ sync(); }catch(e){ console.error('GameMap',e); }
 })();
