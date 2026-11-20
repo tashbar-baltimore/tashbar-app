@@ -437,6 +437,7 @@ function cnStockAdj_(items, sign) {
   var msh = cnMenuSheet_(), menu = {}; cnMenu_(false).forEach(function (m) { menu[m.id] = m; });
   (items || []).forEach(function (i) { var m = menu[i.id]; if (m && m.stock !== '') msh.getRange(m.row, 6).setValue(Math.max(0, m.stock + sign * i.qty)); });
 }
+/* the boy-facing 🎫 Level Pass note: < 1 while a Math / Reading level he is on still waits for its level check (PathfinderGate.js pfRewardRate_) */
 function cnPfRate_(sid) { try { return typeof pfRewardRate_ === 'function' ? pfRewardRate_(sid) : 1; } catch (e) { return 1; } }
 
 function cnStates_() { var o = {}; msRows_('state').forEach(function (r) { try { o[String(r[0])] = JSON.parse(r[1]); } catch (e) {} }); return o; }
