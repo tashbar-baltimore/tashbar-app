@@ -29,19 +29,19 @@
 /* THE MENU (HoS 2026-11-20, button system 1: "← top-left on every screen, three dots top-right; every pop-up closes with one round ✕").
    Three stacked dots in the top-right corner of every boy screen. Tap: the bottom dot slides out to the left, the others follow it like a
    little train, each growing into a round navy button inside a white pill that stretches out with a soft spring; the ✕ lands last.
-   Options: Sign out (saves his work first, as before), Message my rebbe (TalkRebbe), Sound on/off (SND), Music (the music panel).
+   Options: Sign out (saves his work first, as before), Message my rebbe (TalkRebbe), Sound on/off (SND; mutes the music too), Music (always opens the music panel to pick songs; shows a line only when music is turned off there).
    New options: add one entry to ITEMS. It replaces the old "Sign out" button in this corner. No data, money or mastery changes. */
 (function(){
  if(window.__TLMENU) return; window.__TLMENU=1;
  function act(a,attr){ var b=document.createElement('button'); b.type='button'; b.setAttribute(attr||'data-act',a); b.style.display='none'; document.body.appendChild(b); b.click(); b.remove(); }
  function signedIn(){ try{ return typeof A!=='undefined'&&A&&A.view!=='signin'&&!!A.st; }catch(e){ return false; } }
- function sndOn(){ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } }
  function musOn(){ try{ return !!(A.st&&A.st.music&&A.st.music.mood&&A.st.music.mood!=='off'); }catch(e){ return false; } }
+ function sndOn(){ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } }
  var S='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
  var ITEMS=[
   {k:'out',label:'Sign out',svg:'<svg viewBox="0 0 24 24" '+S+'><path d="M14 4h-7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h7"/><path d="M11 12h10M17 8l4 4-4 4"/></svg>',go:function(){ close(); act('signout'); }},
   {k:'msg',label:'Message my rebbe',svg:'<svg viewBox="0 0 24 24" '+S+'><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>',go:function(){ close(); act('open','data-tr'); }},
-  {k:'snd',label:'Sound',svg:'<svg viewBox="0 0 24 24" '+S+'><path d="M4 10v4h4l5 4V6L8 10H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/><path class="sl" d="M3 3l18 18" stroke="#FF6B8A"/></svg>',go:function(){ act('sound'); paint(); },off:function(){ return !sndOn(); }},
+  {k:'snd',label:'Sound and music',svg:'<svg viewBox="0 0 24 24" '+S+'><path d="M4 10v4h4l5 4V6L8 10H4z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/><path class="sl" d="M3 3l18 18" stroke="#FF6B8A"/></svg>',go:function(){ act('sound'); paint(); },off:function(){ return !sndOn(); }},
   {k:'mus',label:'Music',svg:'<svg viewBox="0 0 24 24" '+S+'><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/><path class="sl" d="M3 3l18 18" stroke="#FF6B8A"/></svg>',go:function(){ close(); act('mubtn'); },off:function(){ return !musOn(); }}
  ];
  var N=ITEMS.length, css=document.createElement('style');
