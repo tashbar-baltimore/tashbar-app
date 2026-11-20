@@ -40,6 +40,32 @@ if(typeof render==='function'){ var lastOv=null, ovAt=0, _rc=render;
    for(var i=0;i<o.length;i++){ if(typeof o[i].getAnimations==='function'){ var an=o[i].getAnimations({subtree:true}); for(var j=0;j<an.length;j++){ try{ an[j].currentTime=t; }catch(x){} } } else o[i].classList.add('tl-still'); } }
   else if(h) ovAt=performance.now();
   lastOv=h; }catch(e){} return r; }; }
+/* SOFT 3D (2026-11-20, moshe@ session: "I don't love the 3-D effect of a lot of the buttons ... more modern sleek 3-D effect, a tiny bit
+   more natural shadow, not that boxy shadow underneath ... don't ruin the childish appeal"). Many buttons and tiles sit on a solid
+   "ledge" (a shadow with no blur, e.g. 0 8px 0 dark-orange). This rewrites every such shadow, in every style on the page (and in
+   styles that add-ons add later), into a soft, natural one in the same colour family: lifted a little, blurred, see-through.
+   Colours, shapes and the press-down feel stay. Inset shadows and blurred shadows are left alone. Off switch: window.TL_SOFT3D = false. */
+(function(){ if(window.TL_SOFT3D===false||window.__tlSoft3d) return; window.__tlSoft3d=true;
+ var done=typeof WeakSet==='function'?new WeakSet():null, cv=null;
+ function rgba(c,a){ try{ if(!cv) cv=document.createElement('canvas').getContext('2d'); cv.fillStyle='#000'; cv.fillStyle=c; var v=cv.fillStyle;
+   if(v.charAt(0)==='#'){ var n=parseInt(v.slice(1),16); return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a.toFixed(3)+')'; }
+   var m=v.match(/rgba?\(([^)]+)\)/); if(!m) return null; var p=m[1].split(',').map(function(x){ return parseFloat(x); }); var al=p.length>3?p[3]:1; return 'rgba('+p[0]+','+p[1]+','+p[2]+','+(a*al).toFixed(3)+')'; }catch(e){ return null; } }
+ function layers(v){ var out=[], d=0, cur=''; for(var i=0;i<v.length;i++){ var ch=v.charAt(i); if(ch==='(') d++; if(ch===')') d--; if(ch===','&&d===0){ out.push(cur.trim()); cur=''; } else cur+=ch; } if(cur.trim()) out.push(cur.trim()); return out; }
+ function soften(v){ if(!v||v.indexOf('px')<0) return null; var L=layers(v), changed=false;
+  var R=L.map(function(l){ if(/\binset\b/.test(l)||/var\(/.test(l)) return l;
+    var col=(l.match(/(rgba?\([^)]*\)|hsla?\([^)]*\)|#[0-9a-fA-F]{3,8}\b|\b[a-z]+\b)/)||[])[0]; if(!col||/^(none|inset)$/.test(col)) return l;
+    var nums=l.replace(col,' ').trim().split(/\s+/).map(function(x){ return /^-?[\d.]+(px)?$/.test(x)?parseFloat(x):NaN; });
+    if(nums.length<2||nums.some(isNaN)) return l; var x=nums[0], y=nums[1], b=nums.length>2?nums[2]:0, sp=nums.length>3?nums[3]:0;
+    if(b!==0||sp!==0||x!==0||y<2) return l;
+    var c=rgba(col,.34); if(!c) return l; changed=true;
+    return '0 '+Math.max(2,Math.round(y*.7))+'px '+Math.round(y*2+6)+'px '+c; });
+  return changed?R.join(', '):null; }
+ function walk(rules){ for(var i=0;i<rules.length;i++){ var r=rules[i];
+   if(r.cssRules&&r.cssRules.length) walk(r.cssRules);
+   var st=r.style; if(!st) continue; var v=st.getPropertyValue('box-shadow'); if(!v) continue; var n=soften(v); if(n) st.setProperty('box-shadow',n,st.getPropertyPriority('box-shadow')); } }
+ function scan(){ try{ var ss=document.styleSheets; for(var i=0;i<ss.length;i++){ var sh=ss[i]; if(done&&done.has(sh)) continue; var rules=null; try{ rules=sh.cssRules; }catch(e){ continue; } if(!rules) continue; walk(rules); if(done) done.add(sh); } }catch(e){} }
+ scan(); var t=null; try{ new MutationObserver(function(){ clearTimeout(t); t=setTimeout(scan,60); }).observe(document.documentElement,{childList:true,subtree:true}); }catch(e){ setInterval(scan,2000); }
+ window.tlSoft3dScan=scan; })();
 /* show the finished page in one go */
 if(window.requestAnimationFrame) requestAnimationFrame(function(){ requestAnimationFrame(lift); }); else setTimeout(lift,0);
 })();
