@@ -706,6 +706,13 @@ render=function(){ const r=oldRender.apply(this,arguments);
  return r; };
 GM.lastSteps=-1;
 GM.sync=sync;
+/* HoS 2026-11-20 ("screens don't go where they're supposed to"): "Next mission" on the end screen and "Up next" on the welcome came from the
+   old weekly band, so a Level 4 boy could finish Reading and be sent to a Level 3 Math lesson his map never shows. When he has a map, the
+   next mission is the same lesson the map's own Play button would start. No map, or nothing left to play on it: the old suggestion. */
+try{ if(typeof suggestion==='function'&&!window.__gmSug){ window.__gmSug=1; const sug0=suggestion;
+ window.suggestion=function(st){ try{ const m=M(); if(m&&st===A.st){ const w=pick(worldsOf(m)); const id=w&&w.now, c=id&&worldFor(id);
+   if(c&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))) return {c,id,kind:'skill',done:0}; } }catch(e){}
+  return sug0.apply(this,arguments); }; } }catch(e){}
 GM.nextLevel=function(){ try{ const m=M(); if(!m) return ''; const w=pick(worldsOf(m)); if(!w||!w.now) return ''; const n=nm(w.now); return n[0]+(n[1]&&!/ Level \d+$/.test(n[1])?' · '+n[1]:''); }catch(e){ return ''; } };
 let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.pf-card'); if(!c){ setTimeout(hook,1500); return; } pfWatch=new MutationObserver(()=>{ if(document.body.classList.contains('gm-on')) sync(); }); pfWatch.observe(c,{attributes:true,attributeFilter:['style']}); },1500);
 /* ===== CALM START (HoS 2026-11-20: "it still seems very confusing ... frames still stuck in previous editions ... simplify even more").
