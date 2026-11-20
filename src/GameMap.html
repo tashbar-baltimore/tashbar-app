@@ -83,8 +83,21 @@ body.gm-on #gm{display:block}
 #gm .gm-row{display:flex;gap:8px;margin-top:10px}
 #gm .gm-play{flex:1;border:0;border-radius:18px;padding:13px;font-weight:900;font-size:26px;line-height:1;font-family:inherit;font-style:italic;text-transform:uppercase;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 6px 0 #B36B00;cursor:pointer}
 #gm .gm-play:active{transform:translateY(5px);box-shadow:0 1px 0 #B36B00}
-#gm .gm-say{flex:none;width:58px;border:0;border-radius:18px;font-size:24px;background:rgba(0,0,0,.3);color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.35)}
-#gm .gm-say:active{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
+/* "Read it to me" (HoS 2026-11-20): a pill with a round play button at its end. While reading, the triangle becomes a square (stop) and a ring
+   around the circle fills with the reading. Beside PLAY on a Chromebook; above PLAY on a phone so PLAY keeps its full width. */
+#gm .gm-say{flex:none;display:inline-flex;align-items:center;gap:12px;height:50px;align-self:center;padding:0 5px 0 20px;border:1.5px solid rgba(255,255,255,.28);border-radius:999px;background:rgba(20,8,60,.38);color:#fff;font:800 16px/1 'Inter',system-ui,sans-serif;letter-spacing:.01em;white-space:nowrap;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.12);-webkit-tap-highlight-color:transparent;transition:background .2s ease,border-color .2s ease}
+@media (hover:hover){#gm .gm-say:hover{background:rgba(20,8,60,.5);border-color:rgba(255,255,255,.4)}}
+#gm .gm-say:focus-visible{outline:2px solid #FFE259;outline-offset:2px}
+#gm .gm-say .ring{position:relative;width:40px;height:40px;flex:none}
+#gm .gm-say svg{position:absolute;inset:0;transform:rotate(-90deg)}
+#gm .gm-say .trk{fill:none;stroke:rgba(255,255,255,.22);stroke-width:3}
+#gm .gm-say .bar{fill:none;stroke:#FFE259;stroke-width:3;stroke-linecap:round;opacity:0;transition:opacity .2s ease}
+#gm .gm-say.on .bar{opacity:1}
+#gm .gm-say .dot{position:absolute;inset:5px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;transition:transform .12s ease}
+#gm .gm-say:active .dot{transform:scale(.9)}
+#gm .gm-say .tri{width:0;height:0;border-left:11px solid #5B21B6;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px}
+#gm .gm-say .sq{display:none;width:11px;height:11px;border-radius:2.5px;background:#5B21B6}
+#gm .gm-say.on .tri{display:none}#gm .gm-say.on .sq{display:block}
 #gm .gm-done{text-align:center;padding:30px 10px;font-weight:900;font-size:20px}
 #gm .gm-done small{display:block;font-size:14px;font-weight:700;color:#C9C4FF;margin-top:6px}
 #gm .gm-toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:32;background:#fff;color:#1E1B4B;font-weight:900;font-size:15px;border-radius:14px;padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.35);max-width:calc(100% - 32px);text-align:center}
@@ -95,10 +108,10 @@ body.gm-nav #gm-nav{display:flex}
 #gm-nav b{font-size:25px;line-height:30px}
 #gm-nav .on{color:#FFE259}
 #gm-nav .on b{filter:drop-shadow(0 0 7px rgba(255,226,89,.75))}
-@media (max-width:700px){#gm .gm-goal{padding:10px 12px 12px}#gm .gm-goal h1{font-size:25px}#gm .gm-goal .learn{font-size:14px}#gm .gm-play{font-size:23px;padding:12px}#gm .gm-row{margin-top:8px}#gm-nav{left:8px;transform:none;width:calc(100% - 92px)}#gm .gm-goal{left:8px;transform:none;width:calc(100% - 16px)}}
+@media (max-width:700px){#gm .gm-row{flex-direction:column;align-items:stretch}#gm .gm-say{align-self:flex-start;order:-1}#gm .gm-goal{padding:10px 12px 12px}#gm .gm-goal h1{font-size:25px}#gm .gm-goal .learn{font-size:14px}#gm .gm-play{font-size:23px;padding:12px}#gm .gm-row{margin-top:8px}#gm-nav{left:8px;transform:none;width:calc(100% - 92px)}#gm .gm-goal{left:8px;transform:none;width:calc(100% - 16px)}}
 body.gm-k2 #gm .gm-goal h1{font-size:32px}
 body.gm-k2 #gm .gm-play{font-size:32px;padding:18px}
-body.gm-k2 #gm .gm-say{width:72px;font-size:30px}
+body.gm-k2 #gm .gm-say{height:58px;font-size:19px}
 body.gm-k2 #gm-nav{height:84px}
 body.gm-k2 #gm-nav b{font-size:34px;line-height:40px}
 body.gm-k2 #gm-nav button{font-size:13px}
@@ -351,7 +364,7 @@ function goalHTML(w,isPick){
  const meta=isBoss?`🏰 BOSS LEVEL! Beat it to finish ${esc(w.unitName)}`:`${esc(w.name)} · Level ${w.level} · ${left} level${left===1?'':'s'} to the BOSS 🏰`;
  const say=`Your next level: ${n[0]}.${n[1]?(/ Level \d+$/.test(n[1])?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Play to start!`;
  return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
- <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">🔊</button></div></div>`; }
+ <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">Read it to me<span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="18.5"/><circle class="bar" cx="20" cy="20" r="18.5" stroke-dasharray="116.24" stroke-dashoffset="116.24"/></svg><span class="dot"><span class="tri"></span><span class="sq"></span></span></span></button></div></div>`; }
 function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['me','🏆','Trophies'],['money','💵','Money']];
  return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${[GM.tab===x[0]?'on':'',GM.tap===x[0]&&Date.now()-(GM.tapAt||0)<450?'tap':''].filter(Boolean).join(' ')}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
@@ -494,9 +507,27 @@ let toastT=0;
 function toast(t){ const g=root(); let el=g.querySelector('.gm-toast'); if(!el){ el=document.createElement('div'); el.className='gm-toast'; el.setAttribute('role','status'); g.appendChild(el); } el.textContent=t; clearTimeout(toastT); toastT=setTimeout(()=>{ try{ el.remove(); }catch(e){} },2600); }
 function worldFor(id){ const pre=String(id).split('.')[0], map=/^(LK|HEB)$/.test(pre)?'LK':/^(READ|WRIT|LANG)$/.test(pre)?'READ':/^(SS|SOC|FACT)$/.test(pre)?'SS':/^(COMP|VOC)$/.test(pre)?'COMP':pre;
  return typeof WORLD!=='undefined'?(WORLD[pre]?pre:WORLD[map]?map:''):''; }
-function play(id){ const c=worldFor(id);
+function play(id){ if(RD.on){ rdStop(); try{ speechSynthesis.cancel(); }catch(e){} } const c=worldFor(id);
  if(c&&typeof startMission==='function'&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))){ GM.sig=''; startMission(c,id,'skill'); return; }
  GM.tab='lib'; sync(); door('lib'); }
+/* "Read it to me": tap to read, tap the square to stop. The ring follows the real audio (TL_VOICE.now from VoicePro); with the device
+   voice it follows an estimate of the reading time and finishes when the voice ends. The button is found again each frame, since the home redraws. */
+const RD={on:false,t0:0,est:0,u:null,raf:0,stopAt:0};
+function rdPaint(p){ const b=document.querySelector('#gm .gm-say'); if(!b) return; b.classList.toggle('on',RD.on); b.setAttribute('aria-label',RD.on?'Stop reading':'Read it to me');
+ const c=b.querySelector('.bar'); if(c) c.setAttribute('stroke-dashoffset',String(116.24*(1-Math.max(0,Math.min(1,p))))); }
+function rdStop(){ RD.on=false; RD.u=null; cancelAnimationFrame(RD.raf); clearTimeout(RD.stopAt); rdPaint(0); }
+function rdTick(){ if(!RD.on) return; let p=0; const v=window.TL_VOICE&&TL_VOICE.now&&TL_VOICE.now();
+ if(v) p=v.t/v.d; else if(RD.t0) p=Math.min(.97,(Date.now()-RD.t0)/RD.est);
+ rdPaint(p); RD.raf=requestAnimationFrame(rdTick); }
+function readAloud(text){ const s=window.speechSynthesis;
+ if(RD.on){ rdStop(); try{ s.cancel(); }catch(e){} return; }
+ if(!s||!text){ try{ speak(text); }catch(e){} return; }
+ try{ s.cancel(); }catch(e){}
+ const u=new SpeechSynthesisUtterance(text); u.rate=.95; RD.u=u; RD.on=true; RD.t0=0; RD.est=Math.max(2000,String(text).split(/\s+/).length*400);
+ const end=()=>{ if(RD.u===u){ rdPaint(1); setTimeout(()=>{ if(RD.u===u) rdStop(); },350); } };
+ u.onstart=()=>{ if(RD.u===u&&!RD.t0) RD.t0=Date.now(); }; u.onend=end; u.onerror=end;
+ RD.stopAt=setTimeout(()=>{ if(RD.u===u) rdStop(); },RD.est+15000);
+ try{ s.speak(u); }catch(e){ rdStop(); return; } rdTick(); }
 function door(k){ const b=document.createElement('button'); b.type='button'; b.dataset.hf=k; b.style.display='none'; document.body.appendChild(b); try{ b.click(); }catch(e){} b.remove(); }
 /* a press on the bottom bar: keep the halo for a moment even though the bar is redrawn by the tap */
 document.addEventListener('pointerdown',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#gm-nav button[data-gmnav]'); if(!b) return;
@@ -516,7 +547,7 @@ document.addEventListener('click',e=>{
  if(a==='sheetx'){ const s=root().querySelector('.gm-sheet'); if(s) s.remove(); return; }
  if(a==='lib'){ try{ SND.tap(); }catch(x){} GM.tab='lib'; sync(); door('lib'); return; }
  if(a==='pf'){ const c=document.querySelector('.pf-card button'); if(c) c.click(); return; }
- if(a==='say'){ try{ speak(b.dataset.text); }catch(x){} return; }
+ if(a==='say'){ readAloud(b.dataset.text); return; }
  if(a==='node'){ const id=b.dataset.id, m=M(); if(!m) return; const ws=worldsOf(m), w=ws.find(x=>x.k===GM.world);
   if(mast(id)) return play(id);
   if(w&&id===w.now) return play(id);
