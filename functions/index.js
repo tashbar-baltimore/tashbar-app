@@ -80,7 +80,12 @@ function shared(name, load) {
    When sys/selfbuild {on:true}, the pages and lesson pieces are built HERE from this server's own copy of the editor code (app/src,
    copied at each deploy) instead of from the Apps Script deployment's version. Any error -> the Apps Script answer, as before. */
 let SELF = { on: false, at: 0 };
-async function selfOn() { if (Date.now() - SELF.at < 15000) return SELF.on; SELF.at = Date.now(); try { DB = DB || new Firestore(); const d = await DB.collection('sys').doc('selfbuild').get(); SELF.on = !!(d.exists && d.data().on); } catch (e) {} return SELF.on; }
+/* FROM GITHUB = BUILT HERE (HoS 2026-11-20: "it switches back to the old one ... a crazy amount of flashing of the old pages"). The site is
+   built from THIS REPOSITORY (publish-from-github), but the page and add-ons the server handed out still came from the old Apps Script app,
+   so each Chromebook opened the new page, was told it was out of date, took the OLD pieces and reloaded, over and over. When this function
+   was deployed from GitHub (TL_SELFBUILD=1, set by firebase-deploy), it always builds them from its own copy of the same code. */
+const SELF_FROM_DEPLOY = process.env.TL_SELFBUILD === '1';
+async function selfOn() { if (SELF_FROM_DEPLOY) return true; if (Date.now() - SELF.at < 15000) return SELF.on; SELF.at = Date.now(); try { DB = DB || new Firestore(); const d = await DB.collection('sys').doc('selfbuild').get(); SELF.on = !!(d.exists && d.data().on); } catch (e) {} return SELF.on; }
 async function selfRun(fn, args) { await liveState(); if (!LIVE || !LIVE.srv) throw new Error('not live'); const r = await LIVE.srv.run(fn, args); if (r.error) throw new Error(fn + ': ' + r.error); return r.result; }
 async function srcOf(fn, args) { if (await selfOn()) { try { return await selfRun(fn, args); } catch (e) { console.warn('self-build failed, using Apps Script:', String(e.message || e).slice(0, 160)); } } return appsScriptResult(fn, args); }
 const pageAnswer = (name) => async (have) => { const p = await shared(name, () => srcOf(name, [''])); return String(have || '') === p.h ? { h: p.h, same: true } : { h: p.h, html: p.html }; };
