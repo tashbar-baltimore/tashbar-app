@@ -31,7 +31,12 @@ This kit builds `packs/G4Math.html` … `packs/G8Math.html`. Each pack is a full
 | Grade | Status |
 |---|---|
 | 4 | Live (tashbar-baltimore/tashbar-app#64) |
-| 5 | Pull request tashbar-baltimore/tashbar-app#73 |
-| 6 | Built and tested (robot 54/54, 1,224 answers 0 wrong); not yet registered |
-| 7 | Snapshot of work in progress. Rebuild, robot, check and screenshot before shipping. |
+| 5 | Live (tashbar-baltimore/tashbar-app#73) |
+| 6 | Pull request tashbar-baltimore/tashbar-app#76 |
+| 7 | Built and tested (robot 42/42, 796 answers 0 wrong, screenshots checked); not yet registered |
 | 8 | Built and tested (robot 48/48, 980 answers 0 wrong, screenshots checked); not yet registered |
+
+## Known follow-ups
+- Some lessons repeat the same few problem kinds many times. Give each lesson more variety: different kinds, rising difficulty, and a why or error-analysis step.
+- Grade 4 warm-up kinds can show odd fraction choices: `fracAddLike` can give a whole (4/4) with a 0/4 choice, and `fracShade` can offer 2/2 or 2/1.
+- The footer line "every instruction is spoken, so no reading is needed" comes from K-3 and should change for grades 4-8.
