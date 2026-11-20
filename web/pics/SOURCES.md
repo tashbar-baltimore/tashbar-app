@@ -412,3 +412,15 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - chocolate-bars-and-melted-chocolate.webp | https://pixabay.com/photos/chocolate-cocoa-beans-10181616/ | Pixabay Content License | alyerika
 - wooden-swing-on-grass.webp | https://pixabay.com/photos/swing-lawn-playground-meadow-1365713/ | Pixabay Content License | Counselling
 - metal-slide-in-park.webp | https://pixabay.com/photos/old-playground-slide-old-slide-3886137/ | Pixabay Content License | MikeGoad
+- stone-castle-towers.webp | https://pixabay.com/photos/noble-castle-hofburg-imperial-palace-789501/ | Pixabay Content License | ColdSmiling
+- ellis-island-main-building.webp | https://www.flickr.com/photos/77742560@N06/7782082916 | CC BY 2.0 | shankar s.
+- camel-caravan-desert.webp | https://pixabay.com/photos/caravan-desert-sahara-sand-camel-4483792/ | Pixabay Content License | Hoeneisen
+- spices-in-bowls.webp | https://pixabay.com/photos/spices-cinnamon-anise-chili-curry-10353173/ | Pixabay Content License | shan_graphics
+- compass-blue-dial.webp | https://pixabay.com/vectors/compass-navigation-direction-151722/ | Pixabay Content License | OpenClipart-Vectors
+- old-light-bulb-glowing.webp | https://pixabay.com/photos/lighting-lightbulb-ideas-background-3489394/ | Pixabay Content License | Bru-nO
+- old-telephone-wooden.webp | https://pixabay.com/photos/telephone-vintage-ancient-phone-6497853/ | Pixabay Content License | 21177668
+- saturn-v-rocket-liftoff.webp | https://images.nasa.gov/details/6901000 | Public domain (NASA) | MSFC
+- stock-exchange-columns.webp | https://pixabay.com/photos/architecture-building-city-nyc-3033561/ | Pixabay Content License | USA-Reiseblogger
+- breadline-statues-men.webp | https://www.flickr.com/photos/82538566@N00/45708252984 | CC BY 2.0 | jimbowen0306
+- shabbos-candles-glass.webp | https://www.flickr.com/photos/14771153@N04/4712371537 | CC BY 2.0 | slgckgc
+- blue-ridge-mountains.webp | https://pixabay.com/photos/mountains-trees-forest-7357186/ | Pixabay Content License | terski
