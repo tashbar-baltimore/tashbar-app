@@ -26,6 +26,52 @@
 })();
 </script>
 <script>
+/* BACK ARROW (HoS 2026-11-20: "there's no way to go back ... a circle arrow button backwards, very clean and clear").
+   A round back arrow in the top-left corner (Sign out stays top-right) on every boy screen that is not his home: a lesson
+   (including its "Learn it" card) and the end-of-lesson screen. Tap it: back to his map/home. If he already answered in
+   this lesson, a small card asks first (the same rule as the lesson's own Leave button: those answers are not saved).
+   Uses the app's own actions (quit-yes, tohub), so no data, money or mastery rule changes. */
+(function(){
+ if(window.__TLBACK) return; window.__TLBACK=1;
+ function act(a){ var b=document.createElement('button'); b.type='button'; b.setAttribute('data-act',a); b.style.display='none'; document.body.appendChild(b); b.click(); b.remove(); }
+ function view(){ try{ return typeof A!=='undefined'&&A&&A.st?A.view:''; }catch(e){ return ''; } }
+ function where(){ return window.TL_MAP?'Map':'Home'; }
+ var css=document.createElement('style');
+ css.textContent='.tl-back{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:calc(12px + env(safe-area-inset-left,0px));z-index:2147483001;display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;font:800 12px/1 system-ui,"Segoe UI",sans-serif;color:#3F3D6B;letter-spacing:.02em}'
+ +'.tl-back .c{width:52px;height:52px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 4px 0 #D4D0EC,0 8px 20px rgba(30,27,75,.14);transition:transform .14s cubic-bezier(.2,.8,.2,1),box-shadow .14s ease}'
+ +'.tl-back svg{width:24px;height:24px;display:block;transition:transform .18s cubic-bezier(.2,.8,.2,1)}'
+ +'.tl-back .l{padding:2px 6px;border-radius:6px;background:rgba(255,255,255,.75)}'
+ +'@media (hover:hover){.tl-back:hover .c{transform:translateY(-2px);box-shadow:0 6px 0 #D4D0EC,0 12px 24px rgba(30,27,75,.18)}.tl-back:hover svg{transform:translateX(-2px)}}'
+ +'.tl-back:active .c{transform:translateY(3px);box-shadow:0 1px 0 #D4D0EC,0 4px 10px rgba(30,27,75,.12);transition-duration:.06s}'
+ +'.tl-back:focus-visible{outline:none}.tl-back:focus-visible .c{box-shadow:0 0 0 3px #1E1B4B,0 0 0 6px #FDE047}'
+ +'body.tl-back-on .phero [data-act="quit"]{visibility:hidden}'
+ +'.tl-bq{position:fixed;inset:0;z-index:2147483002;display:grid;place-items:center;padding:20px;background:rgba(10,14,40,.45);animation:tlbf .18s ease both}'
+ +'.tl-bq .bx{width:min(380px,100%);background:#fff;border-radius:22px;padding:22px 22px 18px;text-align:center;box-shadow:0 24px 60px rgba(10,14,40,.35);font-family:system-ui,"Segoe UI",sans-serif;color:#1E1B4B;animation:tlbp .22s cubic-bezier(.2,1.2,.4,1) both}'
+ +'.tl-bq h2{margin:0 0 6px;font-size:22px;font-weight:900}.tl-bq p{margin:0 0 16px;font-size:16px;color:#4C4A7A;line-height:1.4}'
+ +'.tl-bq .r{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.tl-bq button{border:0;border-radius:999px;padding:12px 20px;font:800 16px system-ui,"Segoe UI",sans-serif;cursor:pointer;min-height:46px}'
+ +'.tl-bq .stay{background:#22C55E;color:#fff;box-shadow:0 4px 0 #15803D}.tl-bq .go{background:#EEF0FF;color:#1E1B4B}'
+ +'@keyframes tlbf{from{opacity:0}to{opacity:1}}@keyframes tlbp{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}'
+ +'@media (prefers-reduced-motion:reduce){.tl-back .c,.tl-back svg{transition:none}.tl-bq,.tl-bq .bx{animation:none}}';
+ document.head.appendChild(css);
+ var bk=document.createElement('button'); bk.type='button'; bk.className='tl-back'; bk.style.display='none';
+ bk.innerHTML='<span class="c"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="#1E1B4B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="l"></span>';
+ document.body.appendChild(bk);
+ function leave(){ var v=view(); if(v==='result') act('tohub'); else act('quit-yes'); }
+ function ask(){ if(document.querySelector('.tl-bq')) return; var q=document.createElement('div'); q.className='tl-bq'; q.setAttribute('role','dialog'); q.setAttribute('aria-modal','true');
+  q.innerHTML='<div class="bx"><h2>Go back to the '+where().toLowerCase()+'?</h2><p>Your answers in this lesson won’t be saved. You can start it again any time.</p><div class="r"><button type="button" class="stay">Keep going</button><button type="button" class="go">Go back</button></div></div>';
+  document.body.appendChild(q); var st=q.querySelector('.stay'); st.focus();
+  q.addEventListener('click',function(e){ if(e.target===q||e.target.closest('.stay')){ q.remove(); return; } if(e.target.closest('.go')){ q.remove(); leave(); } });
+  q.addEventListener('keydown',function(e){ if(e.key==='Escape'){ q.remove(); bk.focus(); } }); }
+ bk.addEventListener('click',function(e){ e.stopPropagation(); var v=view(), p=null; try{ p=A.play; }catch(err){}
+  if(v==='play'&&p&&(p.i>0||p.fb)) ask(); else leave(); });
+ function tick(){ var v=view(), on=v==='play'||v==='result';
+  bk.style.display=on?'':'none'; document.body.classList.toggle('tl-back-on',on);
+  if(on){ var w=where(); if(bk.lastW!==w){ bk.lastW=w; bk.querySelector('.l').textContent=w; bk.setAttribute('aria-label','Back to the '+w.toLowerCase()); } }
+  else { var q=document.querySelector('.tl-bq'); if(q) q.remove(); } }
+ setInterval(tick,300); tick();
+})();
+</script>
+<script>
 /* THE MENU (HoS 2026-11-20, button system 1: "← top-left on every screen, three dots top-right; every pop-up closes with one round ✕").
    Three stacked dots in the top-right corner of every boy screen. Tap: the bottom dot slides out to the left, the others follow it like a
    little train, each growing into a round navy button inside a white pill that stretches out with a soft spring; the ✕ lands last.
