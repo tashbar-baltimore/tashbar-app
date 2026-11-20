@@ -820,12 +820,90 @@ document.addEventListener('click',e=>{
 document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-hf="home"]'); if(b&&b.classList.contains('hf-back')&&GM.tab!=='map'&&document.body.classList.contains('gm-nav')){ setTimeout(()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); },0); } },true);
 const oldRender=render;
 render=function(){ const r=oldRender.apply(this,arguments);
+ try{ GM.lessonLook&&GM.lessonLook(); }catch(e){}
  try{ if(A.view==='hub'&&A.st){ const n=steps(); if(GM.lastSteps>=0&&n>GM.lastSteps&&GM.lastSid===A.st.id){ GM.world=''; GM.rescroll=true; refreshLater(); } GM.lastSteps=n; GM.lastSid=A.st.id; } sync(); }catch(e){ console.error('GameMap',e); }
  return r; };
 GM.lastSteps=-1;
 GM.sync=sync;
 GM.nextLevel=function(){ try{ const m=M(); if(!m) return ''; const w=pick(worldsOf(m)); if(!w||!w.now) return ''; const n=nm(w.now); return n[0]+(n[1]&&!/ Level \d+$/.test(n[1])?' · '+n[1]:''); }catch(e){ return ''; } };
 let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.pf-card'); if(!c){ setTimeout(hook,1500); return; } pfWatch=new MutationObserver(()=>{ if(document.body.classList.contains('gm-on')) sync(); }); pfWatch.observe(c,{attributes:true,attributeFilter:['style']}); },1500);
+/* ===== CALM START (HoS 2026-11-20: "it still seems very confusing ... frames still stuck in previous editions ... simplify even more").
+   1. ONE welcome in the game look, instead of two old-style pop-ups (the sunny welcome, then Today's Vort + "What would help you today?").
+      It says hello, shows his streak and money, his next level (game name + the real skill) with one big PLAY, and today's vort in one line.
+      Chizuk is one tap away. The B'Simcha morning pop-up is marked as shown for today so it does not follow.
+   2. Every other pop-up on the map (chizuk, vort, joke book, stories) gets the game look, not the old white card.
+   3. The music player is a small button in the top corner of the map; the "Now playing" banner no longer covers the map.
+   Display only: no data, money or mastery changes. */
+(function(){
+ const st2=document.createElement('style'); st2.id='gmw-css'; st2.textContent=`
+.overlay:has(.gmw){background:radial-gradient(ellipse at 50% 0%,#4C2AA8 0%,#1C0F5A 45%,#0A0726 100%)!important;backdrop-filter:none!important}
+.ocard:has(.gmw){background:transparent!important;box-shadow:none!important;border:0!important;max-width:560px!important;width:100%!important;padding:0!important}
+.ocard:has(.gmw) .oband{display:none}
+.gmw{color:#fff;text-align:center;padding:8px 14px 14px;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
+.gmw .k{font-size:13px;font-weight:900;letter-spacing:.16em;color:#FFE259}
+.gmw h2{margin:6px 0 12px;font-size:clamp(30px,8vw,46px);line-height:1;font-weight:900;font-style:italic;text-transform:uppercase;color:#fff;text-shadow:0 4px 0 #7A0B3A}
+.gmw .chips{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.gmw .chips span{background:rgba(255,255,255,.1);border:2px solid rgba(255,226,89,.45);border-radius:999px;padding:6px 12px;font-weight:900;font-size:15px}
+.gmw .nx{background:linear-gradient(180deg,#2A1B6E,#170D4A);border:3px solid #FFD43B;border-radius:22px;padding:14px;margin:0 0 12px;box-shadow:0 0 30px rgba(255,212,59,.25)}
+.gmw .nx small{display:block;font-size:12px;font-weight:900;letter-spacing:.14em;color:#FFE259}
+.gmw .nx b{display:block;font-size:26px;line-height:1.05;font-style:italic;text-transform:uppercase;margin:4px 0}
+.gmw .nx em{display:block;font-style:normal;font-weight:800;font-size:15px;color:#C9F7DA}
+.gmw .go{display:block;width:100%;min-height:68px;border:0;border-radius:20px;background:linear-gradient(180deg,#FFF06A,#FFC21A 55%,#FF9F1C);color:#2B0A3D;font:900 30px/1 var(--display,'Rubik'),sans-serif;font-style:italic;cursor:pointer;box-shadow:0 7px 0 #B45309;margin:4px 0 12px}
+.gmw .go:active{transform:translateY(4px);box-shadow:0 3px 0 #B45309}
+.gmw .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.gmw .row button{min-height:46px;border-radius:14px;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;font:900 15px var(--display,'Rubik'),sans-serif;padding:0 16px;cursor:pointer}
+.gmw .vort{margin:14px 0 0;font:600 15px/1.45 var(--body,'Inter'),sans-serif;color:#E9E4FF}
+.gmw .vort b{color:#FFE259}.gmw .vort small{display:block;opacity:.7;margin-top:2px}
+.gmw button:focus-visible{outline:4px solid #fff;outline-offset:3px}
+body.gm-on .overlay:not(:has(.gmw)){background:rgba(10,7,38,.82)!important}
+body.gm-on .ocard:not(:has(.gmw)){background:linear-gradient(180deg,#2A1B6E,#160D45)!important;color:#fff!important;border:3px solid #FFD43B!important;border-radius:24px!important}
+body.gm-on .ocard:not(:has(.gmw)) :is(h1,h2,h3,p,li,label,.sm-line){color:#fff!important}
+body.gm-on .ocard:not(:has(.gmw)) .sm-h{color:#FFE259!important}
+body.gm-on .ocard:not(:has(.gmw)) .oband{background:transparent!important}
+body.gm-nav #mutoast{display:none!important}
+html:has(body.gm-lesson){background:#0A0726}
+body.gm-lesson{background:radial-gradient(ellipse at 50% 0%,#4C2AA8 0%,#1C0F5A 45%,#0A0726 100%) fixed!important}
+body.gm-lesson .wrap:has(>#app){background:#F7F6FF;padding-top:10px;padding-bottom:10px;border-radius:26px;border:3px solid #FFD43B;box-shadow:0 0 34px rgba(255,212,59,.25);margin-top:8px;margin-bottom:8px}
+body.gm-lesson.hp-modal #tlcash{display:none!important}
+body.gm-lesson .overlay{background:rgba(10,7,38,.78)!important;backdrop-filter:blur(2px)}
+body.gm-nav #pf-cf{background:radial-gradient(ellipse at 50% 0%,rgba(76,42,168,.96) 0%,rgba(28,15,90,.97) 50%,rgba(10,7,38,.98) 100%)}
+body.gm-nav #pf-cf .bx{box-shadow:0 0 40px rgba(255,212,59,.35),0 10px 0 #B45309}
+body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 55%,#FF9F1C);color:#2B0A3D;font-weight:900;box-shadow:0 5px 0 #B45309}
+body.gm-nav.gm-on #mupill{top:calc(10px + env(safe-area-inset-top,0px));right:10px;left:auto!important;bottom:auto!important;padding:4px 4px 4px 8px;z-index:33}
+body.gm-nav.gm-on #mupill .mpt{display:none}
+`; document.head.appendChild(st2);
+ const today=()=>{ const d=new Date(); return d.getFullYear()*1000+Math.floor((d-new Date(d.getFullYear(),0,0))/864e5); };
+ const S=()=>window.TL_SIMCHA||{};
+ const pickDay=(L,k)=>L&&L.length?L[(today()+(k||0))%L.length]:null;
+ function music(){ try{ const Mu=window.TashbarMusic; if(!Mu||!A.st) return; if(Mu.state&&Mu.state.info&&Mu.state.info.off) return; const m=Mu.prefs();
+  if(!m.joy){ m.joy=1; if(m.mood==='off') m.mood='mix'; try{ if(typeof saveStudent==='function') saveStudent(A.st); }catch(e){} }
+  if(m.mood!=='off') Mu.play(false); }catch(e){} }
+ if(typeof welcome!=='function') return;
+ const prevW=welcome;
+ welcome=function(){ try{
+  if(!M()) return prevW.apply(this,arguments);
+  const sid=String(A.st.id||''), now=Date.now();
+  if((A.overlay&&A.overlay.html&&A.overlay.html.indexOf('class="gmw"')>=0)||(GM.wShown&&GM.wShown.sid===sid&&now-GM.wShown.at<90000)) return;
+  GM.wShown={sid:sid,at:now};
+  try{ localStorage.setItem('tlSimMorning:'+sid,String(today())); }catch(e){}
+  const st=A.st, n=(st.streak||{}).n||1, first=String(st.name||'').trim().split(/\s+/)[0]||'friend';
+  const hr=new Date().getHours(), hi=hr<12?'GOOD MORNING':hr<17?'GOOD AFTERNOON':'GOOD EVENING';
+  let bank=''; try{ bank=typeof fmt==='function'?fmt(st.balance||0):'$'+Number(st.balance||0).toFixed(2); }catch(e){}
+  const g=document.querySelector('#gm .gm-goal'); let t='', l='';
+  if(g&&g.querySelector('h1')){ t=g.querySelector('h1').textContent.trim(); const le=g.querySelector('.learn'); l=le?le.textContent.trim():''; }
+  else { const x=GM.nextLevel(); t=x.split(' · ')[0]; l=x.split(' · ')[1]||''; }
+  const v=pickDay(S().vort);
+  const needs=(S().need||[]).filter(x=>!/rebbe/i.test(x.label)), ci=needs.findIndex(x=>/chizuk/i.test(x.label));
+  overlay(`<div class="gmw"><div class="k">⚡ ${hi}</div><h2>Welcome back, ${esc(first)}!</h2>`+
+   `<div class="chips"><span>🔥 ${n} day${n===1?'':'s'} in a row</span>${bank?`<span>💵 ${esc(bank)}</span>`:''}</div>`+
+   (t?`<div class="nx"><small>🎯 YOUR NEXT LEVEL</small><b>${esc(t)}</b>${l?`<em>${esc(l)}</em>`:''}</div><button type="button" class="go" data-gmw="play">▶ PLAY</button>`:'')+
+   `<div class="row"><button type="button" data-act="closeov">🗺️ My map</button>${ci>=0?`<button type="button" data-act="sm-need" data-i="${ci}">🌟 Some chizuk</button>`:''}</div>`+
+   (v?`<p class="vort"><b>📜 Today's vort:</b> ${esc(typeof v==='string'?v:v.text)}${v.src?`<small>${esc(v.src)}</small>`:''}</p>`:'')+`</div>`);
+ }catch(e){ console.error('GameMap welcome',e); return prevW.apply(this,arguments); } };
+ GM.lessonLook=function(){ try{ document.body.classList.toggle('gm-lesson',A.view==='play'&&!!M()); }catch(e){} };
+ document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('.gmw button'); if(!b) return; music();
+  if(b.dataset.gmw==='play'){ A.overlay=null; render(); setTimeout(()=>{ const p=document.querySelector('#gm .gm-goal .gm-play'); if(p) p.click(); },60); } },true);
+})();
 try{ sync(); }catch(e){ console.error('GameMap',e); }
 })();
 </script>
