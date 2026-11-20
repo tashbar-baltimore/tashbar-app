@@ -113,6 +113,28 @@ async function kidTests(browser) {
         o.m = !!(A.st && A.st.skills[id] && A.st.skills[id].m); } catch (e) { o.err = String(e && e.stack || e).slice(0, 240); } return o; }, id);
     if (!r.m || r.err) fail('lesson ' + id + ' did not play to mastered: ' + (r.err || 'not mastered after ' + r.steps + ' questions')); else done++;
     if (r.noBox) notes.push(id + ': ' + r.noBox + ' teach or practice screen(s) with no "How to do it" box'); }
+  /* the boy's map home (GameMap.html), drawn from a real kmMyMap answer (tests/lib/kidmap.js, made-up boys): shows on the home with his
+     goal now and the real skill, PLAY starts that lesson, a locked level says so, the doors still open, nothing shows off the home */
+  try { const km = require('./lib/kidmap.js')(); const g = await pg.evaluate(async M => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {};
+      A.overlay = null; A.play = null; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.view = 'hub'; render(); await sleep(50);
+      const gm = document.getElementById('gm'); o.on = document.body.classList.contains('gm-on') && !!gm; if (!o.on) return o;
+      o.goal = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.learn = (gm.querySelector('.gm-goal .learn') || {}).textContent || ''; o.nodes = gm.querySelectorAll('.gm-n').length; o.boss = gm.querySelectorAll('.gm-n.boss').length;
+      const ch = gm.querySelector('[data-gm=world][data-k="K:CHU"]'); if (ch) { ch.click(); await sleep(30); const lk = gm.querySelector('.gm-n.u'); o.chu = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; if (lk) { lk.click(); o.toast = (gm.querySelector('.gm-toast') || {}).textContent || ''; } const mt = gm.querySelector('[data-gm=world][data-k="MATH"]'); if (mt) { mt.click(); await sleep(30); } }
+      document.querySelector('#gm-nav [data-gmnav=lib]').click(); await sleep(30); o.lib = !document.body.classList.contains('gm-on') && document.body.classList.contains('gm-nav');
+      document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30); o.back = document.body.classList.contains('gm-on');
+      gm.querySelector('[data-gm=play]').click(); await sleep(30); o.play = A.view === 'play' && A.play && A.play.id; o.offHome = !document.body.classList.contains('gm-on') && !document.body.classList.contains('gm-nav');
+      A.play = null; A.view = 'hub'; window.TL_MAP = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); render(); o.noMap = !document.body.classList.contains('gm-on'); return o; }, km.map);
+    const want = km.map.names[km.map.subjects.MATH.now] || [];
+    if (!g.on) fail('map home did not show for a boy with a map'); else {
+      if (g.goal !== want[0] || g.learn.indexOf(want[1]) < 0) fail('map home: next level should be "' + want[0] + '" with "' + want[1] + '" (got "' + g.goal + '" / "' + g.learn + '")');
+      if (!g.nodes || g.boss !== 1) fail('map home: the path needs its levels and one BOSS (got ' + g.nodes + ' levels, ' + g.boss + ' boss)');
+      if (!/Locked/.test(g.toast || '')) fail('map home: a locked Chumash level must say so (got "' + g.toast + '")');
+      if (g.chu !== (km.map.names[km.map.kodesh['K:CHU'].now] || [])[0]) fail('map home: the Chumash world must show his Chumash goal (got "' + g.chu + '")');
+      if (!g.lib || !g.back) fail('map home: Learn must open the old Learn door and Map must come back');
+      if (g.play !== km.map.subjects.MATH.now || !g.offHome) fail('map home: PLAY must start his goal now (got ' + g.play + ')');
+      if (!g.noMap) fail('map home: a boy with no map must see the home as before');
+      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back) ok('map home: next level + real skill, path with BOSS, PLAY starts it, locked says so, doors still open'); } }
+  catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   report.counts.lessonsPlayed = ids.length; report.counts.lessonsMastered = done; report.counts.screensWithNoHowToBox = notes.length; if (done === ids.length) ok(done + ' of ' + ids.length + ' sampled lessons played to mastered');
   (await pg.evaluate(() => window.__srvErr)).forEach(e => fail('server call failed: ' + e)); errs.forEach(e => fail('kid page: ' + e)); await ctx.close();
 }
