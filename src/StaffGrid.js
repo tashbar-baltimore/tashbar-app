@@ -174,6 +174,7 @@ var SG_STRAND = {
   LANG: { HAND: 'Handwriting', SENT: 'Sentences', PARA: 'Paragraphs', ESSAY: 'Essays', RES: 'Research', GRAM: 'Grammar', MECH: 'Capitals and punctuation', USE: 'Using words' },
   SCI: { SKY: 'The Heavens', PHYS: 'Physics', EARTH: 'The Earth', LAND: 'The Earth', ANIM: 'Animals', LIFE: 'Living things', PLANT: 'Plants', BODY: 'The Human Body', INQ: 'Science skills', MATT: 'Matter and Energy' },
   COMP: { DIG: 'Using the computer', PROG: 'Coding', TYPE: 'Typing' },
+  HEB: { GRAM: 'Dikduk', READ: 'Reading Lashon Hakodesh', VOC: 'Word meaning' },
   LIFE: { FIN: 'Money', BUD: 'Budgeting', STUDY: 'Study habits' },
   SOC: { COMM: 'Community', GEO: 'Maps and places', HIST: 'History', JHIST: 'Jewish history', CIV: 'Citizenship', ECON: 'Economics' },
   ELEC: { NUC: 'Nuclear Science', LOGIC: 'Logic', SPEAK: 'Speaking', ART: 'Art', MUS: 'Music', PHOTO: 'Photography', PIANO: 'Piano', SEW: 'Sewing', FIX: 'Fix-It', KNOT: 'Knots', BEAT: 'Music Maker', WOOD: 'Woodshop', KITCH: 'Kitchen' }

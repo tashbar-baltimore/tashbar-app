@@ -521,7 +521,18 @@ var SS_K12 = [["SS.COMM.L01.01", "My Family", ""],
 ["SS.ECON.L13.02", "Government and the Economy", ""],
 ["SS.CIV.L13.04", "The Jewish Community and Public Life", ""]];
 /* TL-041: one list per subject that has a skill-by-skill path (Math, Reading; Science added SCI-PAGE 2026-11-10). */
-function plList_(k) { return k === 'READ' ? READ_K8 : k === 'MATH' ? MATH_K8 : k === 'SCI' ? SCI_K8 : k === 'LANG' ? LANG_K8 : k === 'SOC' ? SS_K12 : null; }
+function plList_(k) { return k === 'READ' ? READ_K8 : k === 'MATH' ? MATH_K8 : k === 'SCI' ? SCI_K8 : k === 'LANG' ? LANG_K8 : k === 'SOC' ? SS_K12 : (k === 'COMP' || k === 'HEB') ? plIdxList_(k) : null; }
+/* HoS 2026-11-20 ("a lot of screens don't go where they're supposed to"): Computing and Lashon Hakodesh have real lessons at every level
+   (CurriculumIndex.js), and staff can place a boy in them, but they had no list here, so his map showed the subject with nothing to play
+   (it even said CLEARED). Their list is now read from the curriculum index: every lesson of that subject, level by level, in id order. */
+var PL_IDX_ = {};
+function plIdxList_(k) {
+  if (PL_IDX_[k]) return PL_IDX_[k];
+  var sk = (typeof CI_INDEX !== 'undefined' && CI_INDEX && CI_INDEX.sk) || {}, out = [];
+  Object.keys(sk).forEach(function (id) { if (id.indexOf(k + '.') === 0 && /\.L\d\d\.\d\d$/.test(id)) out.push([id, String((sk[id] || [])[0] || id), '']); });
+  out.sort(function (a, b) { return plMathLevel_(a[0]) - plMathLevel_(b[0]) || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0); });
+  return (PL_IDX_[k] = out);
+}
 function plFirst_(k, level) { var r = (plList_(k) || []).filter(function (x) { return plMathLevel_(x[0]) === level; })[0]; return r ? r[0] : ''; }
 function plPathOf_(k, start) { var ids = (plList_(k) || []).map(function (x) { return x[0]; }), i = ids.indexOf(start); if (i < 0 && start && /\.L\d\d\./.test(start)) i = ids.indexOf(plFirst_(k, plMathLevel_(start))); /* new science map 2026-11-11: a start on a retired rung falls back to the first rung of the same level */ return i < 0 ? [] : ids.slice(i); }
 function plFileText_(n) { try { return tlFileText_(n); } catch (e) { return ''; } }   /* v100: packs in Drive (ContentPacks.js) */
@@ -556,11 +567,12 @@ function plMathPath_(start) { var ids = MATH_K8.map(function (x) { return x[0]; 
 function plBand_(level) { return level <= 4 ? 'A' : level <= 6 ? 'B' : level <= 8 ? 'C' : 'D'; }
 /* Skills that already have playable lessons, read from the student page itself so this list never drifts. */
 function plBuilt_() {
-  var c = CacheService.getScriptCache(), hit = c.get('pl_built_v11');
+  var c = CacheService.getScriptCache(), hit = c.get('pl_built_v12');
   if (hit) return JSON.parse(hit);
   var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ScienceMore2') + plFileText_('ElectivesMore') + plFileText_('ComputingMore') + plFileText_('LifeMore') + plFileText_('SocialMore'), re = /['"]((?:MATH|READ|WRIT|LANG|VOC|SCI|ELEC|COMP|LIFE|SS)\.[A-Z]+\.L\d\d\.\d\d)['"]\s*\]?\s*[:=]\s*\{\s*["']?name["']?\s*:/g, m, out = [];
   while ((m = re.exec(html))) if (out.indexOf(m[1]) < 0) out.push(m[1]);
-  c.put('pl_built_v11', JSON.stringify(out), 300);
+  ['COMP', 'HEB'].forEach(function (k) { plIdxList_(k).forEach(function (x) { if (out.indexOf(x[0]) < 0) out.push(x[0]); }); });   /* lessons in other packs (KodeshMore for HEB), listed in the curriculum index */
+  c.put('pl_built_v12', JSON.stringify(out), 300);
   return out;
 }
 /* Called by msLoad (MiddleSchool.gs): what this boy's own page follows. */
