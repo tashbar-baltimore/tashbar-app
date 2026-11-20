@@ -188,6 +188,29 @@ body.gm-k2 #gm-nav button{font-size:13px}
 #gm .gm-sheet p b{color:#1E1B4B}
 #gm .gm-sheet .gm-row{margin-top:12px}
 #gm .gm-sheet .x{flex:0 0 auto;border:0;border-radius:18px;padding:0 18px;font-family:inherit;font-weight:900;font-size:16px;background:#EEE9FF;color:#4C1D95;cursor:pointer}
+#gm .gm-rk{margin-top:14px;border-radius:22px;padding:16px;text-align:center;background:linear-gradient(160deg,#3B1E8F,#1C0F5A);border:3px solid #FFD84D;box-shadow:0 0 30px rgba(255,216,77,.25)}
+#gm .gm-rk .md{font-size:76px;line-height:1}
+#gm .gm-rk h1{margin:4px 0 0;font-size:34px;font-weight:900;font-style:italic;text-transform:uppercase;color:#FFE259}
+#gm .gm-rk small{display:block;font-size:14px;font-weight:800;color:#D9D5FF;margin-top:2px}
+#gm .gm-ladder{display:flex;justify-content:space-between;margin-top:12px;gap:4px}
+#gm .gm-ladder span{flex:1;border-radius:10px;padding:5px 0;font-size:20px;background:rgba(255,255,255,.06);filter:grayscale(1);opacity:.45}
+#gm .gm-ladder span.got{filter:none;opacity:1;background:rgba(255,226,89,.16)}
+#gm .gm-ladder span.cur{outline:3px solid #FFE259}
+#gm .gm-stat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#gm .gm-stat div{border-radius:18px;padding:12px;background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.12)}
+#gm .gm-stat b{display:block;font-size:32px;font-weight:900;line-height:1.05}
+#gm .gm-stat small{display:block;font-size:12px;font-weight:800;color:#C9C4FF;letter-spacing:.04em}
+#gm .gm-cheer{margin-top:12px;border-radius:18px;padding:12px 14px;font-weight:900;font-size:16px;background:linear-gradient(135deg,#00C46A,#047857);border:2px solid #6EE7B7}
+#gm .gm-sec{margin:18px 0 8px;font-size:13px;font-weight:900;letter-spacing:.14em;color:#C9C4FF}
+#gm .gm-learned{display:flex;flex-direction:column;gap:8px}
+#gm .gm-learned div{border-radius:14px;padding:9px 12px;background:rgba(255,255,255,.06);font-weight:900;font-size:14px;display:flex;gap:10px;align-items:center}
+#gm .gm-learned small{display:block;font-weight:700;font-size:12px;color:#C9C4FF}
+#gm .gm-learned i{font-style:normal;font-size:22px}
+#gm .gm-bdg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+#gm .gm-bdg div{border-radius:14px;padding:8px 4px;text-align:center;font-size:10.5px;font-weight:800;line-height:1.15;background:rgba(255,255,255,.06)}
+#gm .gm-bdg div b{display:block;font-size:28px;margin-bottom:3px}
+#gm .gm-bdg div.no{filter:grayscale(1);opacity:.45}
+#gm .gm-stuff{display:block;width:100%;margin-top:16px;border:0;border-radius:18px;padding:14px;font-family:inherit;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,#10B981,#0EA5E9);box-shadow:0 6px 0 #047857;cursor:pointer}
 @media (prefers-reduced-motion:reduce){#gm .gm-n:active,#gm .gm-play:active,#gm .gm-say:active{transform:none}#gm .gm-n:active{transform:translate(-50%,-50%)}}
 `; document.head.appendChild(s); }
 function root(){ let g=document.getElementById('gm'); if(!g){ g=document.createElement('div'); g.id='gm'; g.setAttribute('role','main'); g.setAttribute('aria-label','My Map'); document.body.appendChild(g); } return g; }
@@ -268,7 +291,7 @@ function goalHTML(w,isPick){
  const say=`Your next level: ${n[0]}.${n[1]?(/ Level \d+$/.test(n[1])?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Play to start!`;
  return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">🔊</button></div></div>`; }
-function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['mine','🎒','My Stuff'],['store','💵','Store']];
+function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['me','🏆','Trophies'],['store','💵','Store']];
  return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${GM.tab===x[0]?'on':''}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
    3 rounds a day = the school's daily goal (3 lessons mastered in one day; the server pays its bonus, Money.js moneyDailyGoal_; nothing here
@@ -303,6 +326,37 @@ function arcadeHTML(ws){ const P=plan(ws);
  return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>Clear ${P.left} more round${P.left===1?'':'s'} of today's challenge to open the Arcade!</p></div>
  <div class="gm-games"><div><b>⚔️</b>SHOWDOWN</div><div><b>🕵️</b>DETECTIVE</div><div><b>📒</b>JOKE BOOK</div></div>
  <div class="gm-cta"><button type="button" class="gm-play" data-gmnav="missions">🎯 Go to my rounds</button></div>`; }
+/* ===== MY GROWTH / TROPHIES (HoS 2026-11-20: "steps climbed this week (vs last week), streaks, units finished, badges, you're stronger
+   than last week, all from his own mastery data"). Rank ladder, this week vs last, streak, bosses beaten in his level, WHAT I LEARNED
+   (game name + real skill: "I learned how to multiply"), badges he has (no amounts here: the server pays), and the old My Stuff door. */
+function bossesBeaten(ws){ let n=0; ws.forEach(w=>{ if(w.isK){ const b=(w.c.skills||[]).filter(x=>x[1]); if(b.length&&b.every(x=>mast(x[0]))) n++; return; }
+  const by={}; (w.c.skills||[]).filter(x=>x[1]).forEach(x=>{ const s=String(x[0]).split('.')[1]; (by[s]=by[s]||[]).push(x[0]); }); Object.keys(by).forEach(s=>{ if(by[s].every(mast)) n++; }); }); return n; }
+function learnedList(){ const sk=(A.st&&A.st.skills)||{}, since=Date.now()-7*864e5; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&Number(sk[id].at)>=since).sort((a,b)=>sk[b].at-sk[a].at).slice(0,8); }
+function growthHTML(ws){ const n=steps(), R=rankOf(n), wk=weekCounts(), s=(A.st&&A.st.streak&&A.st.streak.n)||0, bb=bossesBeaten(ws);
+ const cheer=wk.w>wk.p?`💪 You're stronger than last week! ${wk.w} steps vs ${wk.p}.`:wk.w&&wk.w===wk.p?`⚖️ Same as last week (${wk.w}). One more step beats it!`:wk.p?`🚀 Last week: ${wk.p} steps. Let's beat it. You're ${wk.p-wk.w+1} away!`:`🚀 Every step you clear shows up here. Let's climb!`;
+ const ladder=RANKS.map(r=>`<span class="${n>=r[0]?'got':''}${r===R.r?' cur':''}" title="${r[2]}: ${r[0]} steps">${r[1]}</span>`).join('');
+ const L=learnedList(), learned=L.length?L.map(id=>{ const x=nm(id), W=WORLDS[subjOfId(id)]||['⭐','']; return `<div><i>${W[0]}</i><span>${esc(x[0])}${x[1]?`<small>${/ Level \d+$/.test(x[1])?esc(x[1]):'I learned: '+esc(x[1])}</small>`:''}</span></div>`; }).join(''):'<div><i>🌱</i><span>Nothing yet this week<small>Clear a level and it shows up here!</small></span></div>';
+ let bdg=''; try{ if(typeof BADGES!=='undefined'&&A.st&&A.st.badges) bdg=BADGES.map(b=>`<div class="${A.st.badges.includes(b[0])?'':'no'}" title="${esc(b[3])}"><b>${b[1]}</b>${esc(b[2])}</div>`).join(''); }catch(e){ bdg=''; }
+ return `<div class="gm-rk"><div class="md">${R.r[1]}</div><h1>${R.r[2]}</h1><small>⚡ ${(n*100).toLocaleString()} XP · ${n} step${n===1?'':'s'} mastered${R.nx?` · ${R.nx[0]-n} to ${R.nx[2]}`:' · TOP RANK!'}</small><div class="gm-ladder">${ladder}</div></div>
+ <div class="gm-cheer">${cheer}</div>
+ <div class="gm-stat"><div><small>📈 THIS WEEK</small><b>${wk.w}</b></div><div><small>⏪ LAST WEEK</small><b style="color:#A9A6E8">${wk.p}</b></div><div><small>🔥 DAYS IN A ROW</small><b style="color:#FFB86B">${s}</b></div><div><small>🏰 BOSSES BEATEN</small><b style="color:#FF8AB0">${bb}</b></div></div>
+ <div class="gm-sec">🧠 WHAT I LEARNED THIS WEEK</div><div class="gm-learned">${learned}</div>
+ ${bdg?`<div class="gm-sec">🏅 MY BADGES</div><div class="gm-bdg">${bdg}</div>`:''}
+ <button type="button" class="gm-stuff" data-gm="stuff">🎒 All my stuff: bank, passport, Shabbos page and more</button>`; }
+/* ===== WIN MOMENTS: right after he masters a level and comes back to the map (his success only, once each).
+   LEVEL CLEAR! (what he learned, what it unlocked, how far the boss is) or BOSS BEATEN! (unit finished), plus RANK UP when it happens.
+   NEXT LEVEL starts his next level at once. The daily CHALLENGE COMPLETE party takes the place of these when it happens. */
+function winMoment(newIds,ws,rankBefore){ const id=newIds[newIds.length-1], w=ws.find(x=>x.ids.indexOf(id)>=0)||ws.find(x=>(x.c.skills||[]).some(y=>y[0]===id)); if(!w) return false;
+ const n=nm(id), isBoss=w.ids.indexOf(id)===w.ids.length-1&&w.ids.every(mast), R=rankOf(steps()), up=R.r!==rankBefore.r, loot=[];
+ if(n[1]) loot.push([/ Level \d+$/.test(n[1])?'🧠 Real skill':'🧠 You learned',/ Level \d+$/.test(n[1])?n[0]:n[1]]);
+ if(up) loot.push(['🎖️ NEW RANK',R.r[1]+' '+R.r[2].toUpperCase()]);
+ loot.push(['⚡ XP','+100']);
+ if(isBoss){ loot.push(['🏁 Unit finished',w.unitName]); loot.push(['🗺️ Next','Your next unit is on the map']); }
+ else if(w.now){ const left=w.ids.length-w.ids.indexOf(w.now)-1; loot.push(['🔓 Unlocked',nm(w.now)[0]]); loot.push(['🏰 Boss',left?left+' level'+(left===1?'':'s')+' away!':'NEXT! Get ready!']); }
+ const nx=w.now||(pick(ws)||{}).now;
+ celebrate({kicker:n[0],title:isBoss?'Boss<br>beaten!':up?'Rank<br>up!':'Level<br>clear!',icon:isBoss?'🏰':up?R.r[1]:'🏆',stars:true,loot,
+  go:nx?['▶ Next level',()=>play(nx)]:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }],alt:nx?['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); }]:null});
+ return true; }
 /* ===== CELEBRATIONS: one short burst, only when he wins (never on its own). Reduced motion: no movement, same words. */
 function celebrate(o){ try{ const old=document.getElementById('gm-cel'); if(old) old.remove(); const d=document.createElement('div'); d.id='gm-cel'; d.setAttribute('role','dialog'); d.setAttribute('aria-label',o.title);
   const col=['#39FF88','#00E5FF','#FFE259','#FF9AB5','#fff','#B388FF']; let cf=''; for(let i=0;i<26;i++) cf+=`<i class="cf" style="left:${(i*37)%100}%;background:${col[i%col.length]};animation-delay:${(i%9)*0.06}s"></i>`;
@@ -315,10 +369,15 @@ GM.celebrate=celebrate;
 function dayKey(){ return 'gm-day-'+(A.st&&A.st.id)+'-'+today(); }
 function seen(k){ try{ return localStorage.getItem(k)==='1'; }catch(e){ return !!GM['_'+k]; } }
 function mark(k){ try{ localStorage.setItem(k,'1'); }catch(e){} GM['_'+k]=1; }
-function checkDaily(ws){ const P=plan(ws); if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=P.done; GM.prevSid=A.st.id; return; }
- if(P.rounds.length&&GM.prevDone<ROUNDS&&P.done>=ROUNDS&&!seen(dayKey())){ mark(dayKey()); const wk=weekCounts();
-  setTimeout(()=>celebrate({kicker:'THE TASHBAR CHALLENGE',title:'Challenge<br>complete!',icon:'🏆',stars:true,loot:[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]],go:['🎮 Arcade',()=>{ GM.tab='games'; sync(); door('games'); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); }
- GM.prevDone=P.done; }
+function checkDaily(ws){ const P=plan(ws); if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=P.done; GM.prevSid=A.st.id; return false; }
+ if(P.rounds.length&&GM.prevDone<ROUNDS&&P.done>=ROUNDS&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=P.done; const wk=weekCounts();
+  setTimeout(()=>celebrate({kicker:'THE TASHBAR CHALLENGE',title:'Challenge<br>complete!',icon:'🏆',stars:true,loot:[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]],go:['🎮 Arcade',()=>{ GM.tab='games'; sync(); door('games'); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
+ GM.prevDone=P.done; return false; }
+function mastSet(){ const sk=(A.st&&A.st.skills)||{}, o={}; Object.keys(sk).forEach(id=>{ if(sk[id]&&sk[id].m) o[id]=Number(sk[id].at)||0; }); return o; }
+function checkWin(ws,daily){ const now=mastSet(); if(!GM.snap||GM.snapSid!==A.st.id){ GM.snap=now; GM.snapSid=A.st.id; GM.snapRank=rankOf(steps()); return; }
+ const fresh=Object.keys(now).filter(id=>!(id in GM.snap)&&Date.now()-now[id]<15*60e3).sort((a,b)=>now[a]-now[b]), rk=GM.snapRank;
+ GM.snap=now; GM.snapRank=rankOf(steps());
+ if(fresh.length&&!daily) setTimeout(()=>winMoment(fresh,worldsOf(M()),rk),200); }
 function show(on,navOn){ document.body.classList.toggle('gm-on',!!on); document.body.classList.toggle('gm-nav',!!navOn); }
 function sync(){
  css(); const g=root(), nv=nav();
@@ -327,10 +386,10 @@ function sync(){
  const ws=m?worldsOf(m):[];
  if(!hub||!ws.length){ show(false,false); return; }
  const k2=ws.every(w=>w.level<=2); document.body.classList.toggle('gm-k2',k2);
- if(k2&&(GM.tab==='mine'||GM.tab==='store')) GM.tab='map';
- const P=plan(ws); checkDaily(ws);
+ if(k2&&(GM.tab==='me'||GM.tab==='store')) GM.tab='map';
+ const P=plan(ws), daily=checkDaily(ws); checkWin(ws,daily);
  const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh;
- if(GM.tab==='missions'||(GM.tab==='games'&&!P.open)){ const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${GM.tab==='missions'?missionsHTML(ws):arcadeHTML(ws)}</div>`;
+ if(GM.tab==='missions'||GM.tab==='me'||(GM.tab==='games'&&!P.open)){ const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${GM.tab==='missions'?missionsHTML(ws):GM.tab==='me'?growthHTML(ws):arcadeHTML(ws)}</div>`;
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  if(GM.tab!=='map'){ show(false,true); return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
@@ -362,6 +421,7 @@ document.addEventListener('click',e=>{
   GM.tab=t; GM.sig=''; GM.rescroll=true; sync(); if(!document.body.classList.contains('gm-on')) door(t); return; }
  if(a==='world'){ GM.world=b.dataset.k; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
  if(a==='play') return play(b.dataset.id);
+ if(a==='stuff'){ try{ SND.tap(); }catch(x){} GM.tab='mine'; sync(); door('mine'); return; }
  if(a==='tree'){ try{ SND.tap(); }catch(x){} GM.view=GM.view==='tree'?'path':'tree'; root().scrollTop=0; GM.rescroll=GM.view!=='tree'; sync(); return; }
  if(a==='tn'){ try{ SND.tap(); }catch(x){} sheet(b.dataset.id,b.dataset.st); return; }
  if(a==='sheetx'){ const s=root().querySelector('.gm-sheet'); if(s) s.remove(); return; }
