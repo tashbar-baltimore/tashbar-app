@@ -58,6 +58,17 @@ body.gm-on #gm{display:block}
 #gm .gm-unit .left{font-size:13px;font-weight:900;color:#FFE259;text-align:right;white-space:nowrap}
 #gm .gm-path{position:relative;margin-top:6px}
 #gm .gm-path svg{position:absolute;left:0;top:0;pointer-events:none}
+#gm .gm-num{position:absolute;transform:translate(-50%,-50%);z-index:2;pointer-events:none}
+#gm .gm-num b{display:grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:13px;font:900 14px/1 inherit;color:#fff;background:rgba(20,16,70,.85);border:1.5px solid rgba(255,255,255,.28);box-shadow:0 3px 8px rgba(0,0,0,.3);animation:gmbob 3.2s ease-in-out infinite}
+#gm .gm-num.now b{background:#FFE259;color:#3A1C00;border-color:#FFF6B0;box-shadow:0 3px 10px rgba(255,200,0,.45)}
+#gm .gm-num.d b{background:#00B36B;border-color:#CFFFE3}
+#gm .gm-num.u b{color:#C9C4FF}
+@keyframes gmbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+#gm .gm-dec{position:absolute;transform:translate(-50%,-50%) rotate(var(--r));pointer-events:none;z-index:0;font:900 var(--s)/1 system-ui,sans-serif;color:var(--c);opacity:.2;white-space:nowrap}
+#gm .gm-dec.he{font-family:'Frank Ruhl Libre','SBL Hebrew','Times New Roman',serif}
+#gm .gm-dec i{display:block;font-style:normal;animation:gmdrift 7s ease-in-out infinite alternate}
+@keyframes gmdrift{from{transform:translateY(-6px)}to{transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){#gm .gm-num b,#gm .gm-dec i{animation:none}}
 #gm .gm-n{position:absolute;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;cursor:pointer;border:3px solid;padding:0;font-family:inherit;color:#fff}
 #gm .gm-n:active{transform:translate(-50%,-46%)}
 #gm .gm-n.d{width:58px;height:58px;font-size:26px;background:radial-gradient(circle at 35% 30%,#7CFFB2,#00B36B);box-shadow:0 7px 0 #006B40;border-color:#CFFFE3}
@@ -402,25 +413,37 @@ function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
 function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':'LEVEL '+w.level}</small></button>`).join('')}<button type="button" class="gm-w gm-all" data-gm="lib" aria-label="All my lessons">📚 ALL<small>LESSONS</small></button></div>`; }
+/* PATH (HoS 2026-11-20): the page starts where he is and runs DOWN to the BOSS at the end; a longer path with wide, gentle curves;
+   a small floating number over every step (1, 2, 3 ...); quiet subject symbols in the empty space beside the path (Math + - x / ...). */
+const DECO={MATH:['+','−','×','÷','=','%','½','<','>'],READ:['A','b','?','!','“','”','a','Z'],LANG:['✎','A','?','!','a','.'],
+ SCI:['⚛','✦','°','◎'],SOC:['✦','◎','N','⌂'],COMP:['</>','{ }','01','#'],HEB:'אבגדלמשתצק'.split('')};
+const DECOC={MATH:'#FFE259',READ:'#8FD3FF',LANG:'#8FD3FF',SCI:'#7CFFB2',SOC:'#7CFFB2',COMP:'#C9C4FF',HEB:'#FFD27A'};
+function decoSet(k){ return /^(HEB|K:)/.test(k)?['HEB',DECO.HEB]:DECO[k]?[k,DECO[k]]:['',['✦','★','●']]; }
 function pathHTML(w){
- let ids=w.ids.slice(), hidden=0; const ni=w.now?ids.indexOf(w.now):ids.length;
- if(ids.length>7){ const from=Math.max(0,Math.min(ni-2,ids.length-7)); hidden=from; ids=ids.slice(from); }
- const N=ids.length, gap=88, H=N*gap+30, X=[30,70,40,72,28,66,36], pts=[];
- ids.forEach((id,i)=>{ const y=H-52-i*gap, x=X[i%X.length]; pts.push([x,y]); });
+ const all=w.ids.slice(), ni=w.now?all.indexOf(w.now):-1, from=ni>12?ni-12:0, hidden=from, ids=all.slice(from);
+ const N=ids.length, gap=150, top0=hidden?118:84, H=top0+Math.max(0,N-1)*gap+100, pts=[];
+ ids.forEach((id,i)=>{ pts.push([Math.round(50-24*Math.cos(i*Math.PI/2)),top0+i*gap]); });
  let d=''; pts.forEach((p,i)=>{ if(!i){ d='M'+p[0]+' '+p[1]; return; } const q=pts[i-1], my=(q[1]+p[1])/2; d+=' C'+q[0]+' '+my+' '+p[0]+' '+my+' '+p[0]+' '+p[1]; });
  const svg=`<svg width="100%" height="${H}" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="#FFE259" stroke-width="1.6" stroke-dasharray="0.6 4" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:5px;stroke-dasharray:2 14"/></svg>`;
- let h=`<div class="gm-path" style="height:${H}px">${svg}`;
+ const ds=decoSet(w.k), dc=DECOC[ds[0]]||'#C9C4FF'; let seed=0; String(w.k).split('').forEach(c=>{ seed=(seed*31+c.charCodeAt(0))%9973; });
+ const rnd=()=>{ seed=(seed*9301+49297)%233280; return seed/233280; };
+ let deco=''; for(let i=0;i<N;i++){ const y=pts[i][1]+gap/2; if(i===N-1&&N>1) break;
+  [[5,15],[85,95]].forEach((band,bi)=>{ if(rnd()<.1) return; const x=band[0]+rnd()*(band[1]-band[0]), yy=y+(rnd()-.5)*gap*.5, g=ds[1][Math.floor(rnd()*ds[1].length)];
+   deco+=`<span class="gm-dec${ds[0]==='HEB'?' he':''}" style="left:${x.toFixed(1)}%;top:${Math.round(yy)}px;--r:${Math.round((rnd()-.5)*40)}deg;--s:${Math.round(24+rnd()*16)}px;--c:${dc}" aria-hidden="true"><i style="animation-delay:-${(rnd()*6).toFixed(1)}s">${esc(g)}</i></span>`; }); }
+ let h=`<div class="gm-path" style="height:${H}px">${deco}${svg}`;
+ if(hidden) h+=`<div class="gm-more" style="top:22px">✓ ${hidden} more cleared</div>`;
  ids.forEach((id,i)=>{ const p=pts[i], isBoss=(hidden+i)===w.ids.length-1, isNow=id===w.now, isDone=mast(id), n=nm(id);
   const cls=(isBoss?'boss ':'')+(isNow?'now':isDone?'d':'u');
   const ico=isNow?(isBoss?'🏰':w.icon):isDone?'✓':(isBoss?'🏰':'🔒');
   const lab=isNow?(isBoss?'BOSS LEVEL · YOU ARE HERE':'▶ YOU ARE HERE'):isBoss?'BOSS · UNIT FINISH 🏁':isDone?'CLEARED':'LOCKED';
-  h+=`<button type="button" class="gm-n ${cls}" style="left:${p[0]}%;top:${p[1]}px" data-gm="node" data-id="${esc(id)}" aria-label="${esc(n[0])}${n[1]?': '+esc(n[1]):''} (${lab.toLowerCase()})">${ico}</button>`;
+  const big=isNow||isBoss, num=hidden+i+1;
+  h+=`<span class="gm-num ${isNow?'now':isDone?'d':'u'}" style="left:${p[0]}%;top:${p[1]-(big?58:44)}px" aria-hidden="true"><b style="animation-delay:-${(i*0.7).toFixed(1)}s">${num}</b></span>`;
+  h+=`<button type="button" class="gm-n ${cls}" style="left:${p[0]}%;top:${p[1]}px" data-gm="node" data-id="${esc(id)}" aria-label="Step ${num}: ${esc(n[0])}${n[1]?': '+esc(n[1]):''} (${lab.toLowerCase()})">${ico}</button>`;
   if(!isNow) return;
   /* HoS 2026-11-20: when the second line is only "Chumash Level 3", that is the title and the (i) tells the step's own name */
   const flip=n[1]&&/ Level \d+$/.test(n[1]), tt=flip?n[1]:n[0], dd=flip?n[0]:n[1];
   const right=p[0]<50, off=58;
   h+=`<div class="gm-l now${isBoss?' boss':''}${dd?' has-i':''}" style="top:${p[1]}px;${right?'left:calc('+p[0]+'% + '+off+'px)':'right:calc('+(100-p[0])+'% + '+off+'px)'}"><span class="t">${esc(tt)}</span>${dd?`<button type="button" class="gm-i" data-gm="info" data-d="${esc(dd)}" aria-expanded="false" aria-label="What is ${esc(tt)}?">i</button><small class="d" aria-live="polite"></small>`:''}</div>`; });
- if(hidden) h+=`<div class="gm-more" style="top:${H-12}px">✓ ${hidden} more cleared below</div>`;
  return h+'</div>'; }
 /* ===== SKILL TREE (HoS 2026-11-20: "MY TREE ... his leaves light up as he masters them ... tap a leaf to replay it ... never overwhelm";
    then "more video game" -> an RPG-style skill tree). One world at a time, only his level: one branch per kind of skill (the server's
@@ -649,8 +672,11 @@ function sync(){
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
  show(true,true);
- if(first) scrollToNow(g);
+ if(first){ if(GM.view==='tree') scrollToNow(g); else scrollToHim(g); }
 }
+/* HoS 2026-11-20: the map always opens at the step he is up to (near the top), even when he is far down the road */
+function scrollToHim(g){ try{ g.scrollTop=0; const n=g.querySelector('.gm-n.now'); if(!n) return; const tp=g.querySelector('.gm-unit')||g.querySelector('.gm-top'), top=tp?tp.getBoundingClientRect().bottom:0;
+ const want=n.getBoundingClientRect().top-(top+70); if(want>0) g.scrollTop=Math.round(want); }catch(e){} }
 function scrollToNow(g){ try{ const n=g.querySelector('.gm-n.now')||g.querySelector('.gm-n.boss'); if(!n) return; const goal=g.querySelector('.gm-goal'), tp=g.querySelector('.gm-top'), top=tp?tp.getBoundingClientRect().bottom:0, bottom=goal?goal.getBoundingClientRect().top:window.innerHeight-300, r=n.getBoundingClientRect();
  if(r.bottom>bottom-16||r.top<top+8){ g.scrollTop+=Math.round((r.top+r.height/2)-(top+bottom)/2); } }catch(e){} }
 function refreshLater(){ if(GM.fetching||typeof SRV==='undefined'||!SRV.token) return; GM.fetching=true; const tok=SRV.token, sid=A.st&&A.st.id;
