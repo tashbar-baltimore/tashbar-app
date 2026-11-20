@@ -360,11 +360,11 @@ const IC={ note:svg("<path d='M9 18V5l12-2v13' "+W+"/><circle cx='6' cy='18' r='
   spk:svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='white'/><path d='M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13' "+W+"/>"),
   mute:svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='white'/><path d='M16 9l6 6M22 9l-6 6' "+W+"/>") };
 /* the same pictures in violet, for a tool that is OFF (white button with an outline) */
-const V="stroke='#4F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'";
-IC.noteV=svg("<path d='M9 18V5l12-2v13' "+V+"/><circle cx='6' cy='18' r='3' fill='#4F46E5'/><circle cx='18' cy='16' r='3' fill='#4F46E5'/>");
+const V="stroke='#1E3A8A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'";
+IC.noteV=svg("<path d='M9 18V5l12-2v13' "+V+"/><circle cx='6' cy='18' r='3' fill='#1E3A8A'/><circle cx='18' cy='16' r='3' fill='#1E3A8A'/>");
 IC.chev=svg("<path d='M10 6.5l5.5 5.5-5.5 5.5' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' fill='none'/>");
-IC.muteV=svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='#4F46E5'/><path d='M16 9l6 6M22 9l-6 6' "+V+"/>");
-const BG='linear-gradient(135deg,#4F46E5,#6D28D9)';
+IC.muteV=svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='#1E3A8A'/><path d='M16 9l6 6M22 9l-6 6' "+V+"/>");
+const BG='linear-gradient(135deg,#1E3A8A,#172554)';   /* NAVY & GOLD (2026-11-20): navy tools, matching the Tashbar logo */
 try{ if(!document.getElementById('hl2-css')){ const s=document.createElement('style'); s.id='hl2-css'; s.textContent=`
 body.hl2 #hlx>.hl2-logo{display:flex;justify-content:center;margin:4px 0 -8px;order:-1}
 body.hl2 #hlx-top header.hpbar>.tl-logo{display:none!important}
@@ -389,16 +389,16 @@ body.hl2 .hf-door .cnt{margin-right:60px}
 body.hl2 .cn-card .cn-ord{background:linear-gradient(135deg,#F59E0B,#EA580C)!important;border-radius:999px!important}
 body.hl2 #hlx>.cn-card{margin:0!important;width:auto!important;max-width:none!important;box-sizing:border-box}
 body.hl2 .hpbar .tools .icon-btn{width:48px!important;height:48px!important;min-width:48px!important;padding:0!important;border:0!important;border-radius:50%!important;font-size:0!important;color:transparent!important;
-  background:${IC.spk} center/24px no-repeat,${BG}!important;box-shadow:0 3px 0 #3730A3,0 6px 14px rgba(79,70,229,.25)!important}
+  background:${IC.spk} center/24px no-repeat,${BG}!important;box-shadow:0 4px 12px rgba(30,58,138,.18)!important}
 body.hl2 .hpbar .tools #mubtn{background:${IC.note} center/22px no-repeat,${BG}!important}
 body.hl2 .hpbar .tools [data-tr="open"]{background:${IC.mail} center/24px no-repeat,${BG}!important}
-body.hl2 .hpbar .tools [data-act="sound"][aria-label="Sound off"]{background:${IC.muteV} center/24px no-repeat,#fff!important;box-shadow:inset 0 0 0 2px #C7D2FE!important}
-body.hl2 .hpbar .tools #mubtn[aria-label$=": off"]{background:${IC.noteV} center/22px no-repeat,#fff!important;box-shadow:inset 0 0 0 2px #C7D2FE!important}
+body.hl2 .hpbar .tools [data-act="sound"][aria-label="Sound off"]{background:${IC.muteV} center/24px no-repeat,#fff!important;box-shadow:inset 0 0 0 2px #BFDBFE!important}
+body.hl2 .hpbar .tools #mubtn[aria-label$=": off"]{background:${IC.noteV} center/22px no-repeat,#fff!important;box-shadow:inset 0 0 0 2px #BFDBFE!important}
 /* QUICK TOOLS MENU: ⋮ (three dots, one per tool). Tap: the bottom dot slides out to the left first, then the next, and each grows
    into its tool. Tap ⋮ (now ✕), anywhere else, or Escape: they slide back into dots. */
 body.hl2 .hl2-qt{position:relative;z-index:5;flex:0 0 auto;width:48px;height:48px;transition:width .38s cubic-bezier(.2,.9,.3,1)}
 body.hl2 .hl2-qt.open{width:var(--qtw,48px)}
-body.hl2 .hl2-qt .hl2-qtt{position:absolute;top:0;right:0;width:48px;height:48px;z-index:3;border:0;border-radius:50%;background:transparent;cursor:pointer;color:#4F46E5;font:900 20px/1 system-ui,sans-serif;display:grid;place-items:center;transition:background .2s}
+body.hl2 .hl2-qt .hl2-qtt{position:absolute;top:0;right:0;width:48px;height:48px;z-index:3;border:0;border-radius:50%;background:transparent;cursor:pointer;color:#1E3A8A;font:900 20px/1 system-ui,sans-serif;display:grid;place-items:center;transition:background .2s}
 body.hl2 .hl2-qt .hl2-qtt:hover{background:rgba(79,70,229,.08)}
 body.hl2 .hl2-qt .hl2-qtt span{opacity:0;transform:scale(.4) rotate(-90deg);transition:opacity .2s,transform .3s}
 body.hl2 .hl2-qt.open .hl2-qtt{background:#EEF2FF}
@@ -406,7 +406,7 @@ body.hl2 .hl2-qt.open .hl2-qtt span{opacity:1;transform:none}
 body.hl2 .hl2-qt .hl2-qtbg{position:absolute;right:-5px;top:50%;height:58px;width:calc(100% + 10px);transform:translateY(-50%);border-radius:999px;background:#fff;box-shadow:0 6px 22px rgba(30,27,75,.14);opacity:0;transition:width .38s cubic-bezier(.2,.9,.3,1),opacity .25s;z-index:1}
 body.hl2 .hl2-qt.open .hl2-qtbg{opacity:1}
 body.hl2 .hl2-qt .hl2-qti{position:absolute!important;left:auto!important;right:0;top:0;z-index:2;pointer-events:none;transform:translate(var(--dx0),var(--dy)) scale(.19);transition:transform .38s cubic-bezier(.2,.9,.3,1.15);transition-delay:var(--dc)}
-body.hl2 #hlx-top .hpbar .tools .hl2-qt:not(.open) .hl2-qti.hl2-qti{background:#6D28D9!important;box-shadow:none!important}
+body.hl2 #hlx-top .hpbar .tools .hl2-qt:not(.open) .hl2-qti.hl2-qti{background:#1E3A8A!important;box-shadow:none!important}
 body.hl2 .hl2-qt.open .hl2-qti{pointer-events:auto;transform:translate(var(--dx),0) scale(1);transition-delay:var(--do)}
 body.hl2 .hl2-qt.still,body.hl2 .hl2-qt.still .hl2-qti,body.hl2 .hl2-qt.still .hl2-qtbg{transition:none!important}
 /* FEWER WORDS (2026-11-20, moshe@ session, agreed with the drafter): cards show a picture, a name and one button; the details live
@@ -440,6 +440,23 @@ body.hl2 .hl2-sk .hl2-skf{position:relative;display:inline-grid;place-items:cent
 body.hl2 .hl2-sk .hl2-skf em{position:absolute;right:-7px;bottom:-5px;font-style:normal;background:#fff;color:#C2410C;border:2px solid #F97316;border-radius:999px;font:900 13px/1.2 system-ui,sans-serif;padding:1px 6px}
 body.hl2 .hl2-sk.off{color:#6B7280}body.hl2 .hl2-sk.off .hl2-skf{background:#F3F4F6;box-shadow:none;filter:grayscale(1);opacity:.7}
 @media (max-width:700px){body.hl2 #hlx .hl2-greet>b{font-size:24px}body.hl2 .hl2-sk{font-size:14px}body.hl2 .hl2-sk .hl2-skf{width:36px;height:36px;font-size:20px}}
+/* NAVY & GOLD THEME with a warm gold glow (2026-11-20, moshe@ session: option 3, matches the Tashbar logo). Home only. Navy for the
+   doors, Play buttons, tools and the money; gold for Start here, Store and Buy food; white cards on a soft gold glow that comes down
+   from the logo and fades to white. A boy who bought an App colors or home theme in the Store keeps his own colors. */
+body.hl2:not([class*="st-color-"]):not([class*="st-theme-"]){background:radial-gradient(1300px 560px at 50% -140px,#FDEFC4 0%,rgba(253,239,196,.55) 45%,rgba(255,255,255,0) 75%),#FFFFFF!important;background-attachment:fixed!important}
+body.hl2:not([class*="st-color-"]) #hlx .hlx-top{background:#FFFFFF!important;border-color:#E2E8F0!important}
+body.hl2:not([class*="st-color-"]) #hlx .hlx-top>header.hpbar{background:#FFFFFF!important}
+body.hl2:not([class*="st-color-"]) .hlmq,body.hl2:not([class*="st-color-"]) #hlx .hlx-top>.hlmq{background:#F8FAFC!important;color:#1E293B!important}
+body.hl2:not([class*="st-color-"]) #hlx .hl2-greet>b{color:#1E3A8A}
+body.hl2:not([class*="st-color-"]) .hf-kwrap .hf-kl{background:#FFFFFF!important;border:1px solid #E2E8F0!important}
+body.hl2:not([class*="st-color-"]) .hf-kwrap .hf-kl .tx,body.hl2:not([class*="st-color-"]) .hf-kwrap .hf-kl .tx b{color:#1E293B!important}
+body.hl2:not([class*="st-color-"]) .hf-kwrap .hf-kl .hl2-kbar{background:#E2E8F0}body.hl2:not([class*="st-color-"]) .hf-kwrap .hf-kl .hl2-kbar i{background:#1E3A8A}
+body.hl2:not([class*="st-color-"]) .hf-kl button{background:linear-gradient(135deg,#1E3A8A,#172554)!important;color:#fff!important}
+body.hl2:not([class*="st-color-"]) .hf-doors .hf-door{background:linear-gradient(135deg,#1E3A8A,#172554)!important}
+body.hl2:not([class*="st-color-"]) .hpbar .tools .stbtn,body.hl2:not([class*="st-color-"]) .cn-card .cn-ord{background:linear-gradient(135deg,#FBBF24,#F59E0B)!important;color:#1E293B!important}
+body.hl2:not([class*="st-color-"]) #tlcash.docked .tw b{color:#1E3A8A!important}
+body.hl2:not([class*="st-color-"]) #hlx>.cn-card{background:#FFFFFF!important;border-color:#E2E8F0!important}
+body.hl2:not([class*="st-color-"]) #hlx>.cn-card .tlq{background:#FFFBEB!important;border-color:#FDE68A!important}
 @media (max-width:700px){body.hl2 .hl2-qt.open{width:48px}body.hl2 .hl2-qt .hl2-qtbg{width:58px}body.hl2 .hl2-qt.open .hl2-qtbg{width:calc(var(--qtw,48px) + 10px)}}
 @media (prefers-reduced-motion:reduce){body.hl2 .hl2-qt .hl2-qti,body.hl2 .hl2-qt .hl2-qtbg{transition-duration:.01s!important}}
 body.hl2 .hpbar .tools .icon-btn:focus-visible{outline:3px solid #FDE047;outline-offset:2px}
