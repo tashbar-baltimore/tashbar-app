@@ -211,6 +211,22 @@ body.gm-k2 #gm-nav button{font-size:13px}
 #gm .gm-bdg div b{display:block;font-size:28px;margin-bottom:3px}
 #gm .gm-bdg div.no{filter:grayscale(1);opacity:.45}
 #gm .gm-stuff{display:block;width:100%;margin-top:16px;border:0;border-radius:18px;padding:14px;font-family:inherit;font-weight:900;font-size:18px;color:#fff;background:linear-gradient(135deg,#10B981,#0EA5E9);box-shadow:0 6px 0 #047857;cursor:pointer}
+#gm .gm-vault{margin-top:14px;border-radius:24px;padding:18px 16px;text-align:center;background:linear-gradient(160deg,#00C46A,#035E3B);border:4px solid #FFD84D;box-shadow:0 0 0 4px #034D30,0 12px 30px rgba(0,196,106,.35)}
+#gm .gm-vault .k{font-size:12px;font-weight:900;letter-spacing:.2em;color:#FFF3A6}
+#gm .gm-vault .bal{margin:4px 0 0;font-size:54px;font-weight:900;line-height:1;text-shadow:0 4px 0 #034D30;font-family:inherit}
+#gm .gm-vault small{display:block;margin-top:6px;font-size:14px;font-weight:800;color:#D1FAE5}
+#gm .gm-mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+#gm .gm-mgrid button{border:0;border-radius:16px;padding:12px 4px;font-family:inherit;font-weight:900;font-size:12px;color:#fff;background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.14);cursor:pointer}
+#gm .gm-mgrid button b{display:block;font-size:30px;margin-bottom:4px}
+#gm .gm-mgrid button.big{grid-column:span 3;font-size:18px;padding:14px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);border:0;box-shadow:0 6px 0 #B36B00;font-style:italic;text-transform:uppercase}
+#gm .gm-mgrid button.big:active{transform:translateY(5px);box-shadow:0 1px 0 #B36B00}
+#gm .gm-earn{display:flex;flex-direction:column;gap:8px}
+#gm .gm-earn div{display:flex;align-items:center;gap:10px;border-radius:14px;padding:9px 12px;background:rgba(255,255,255,.06);font-weight:800;font-size:14px}
+#gm .gm-earn b{flex:none;color:#39FF88;font-size:15px;font-family:'JetBrains Mono',ui-monospace,monospace}
+#gm .gm-earn b.neg{color:#FF8AB0}
+#gm .gm-earn span{flex:1;min-width:0}
+#gm .gm-earn small{display:block;font-size:11px;color:#A9A6E8;font-weight:700}
+#gm .gm-pay{margin-top:12px;border-radius:16px;padding:11px 14px;font-weight:800;font-size:14px;background:rgba(255,216,77,.12);border:2px solid rgba(255,216,77,.4);color:#FFE9A8}
 @media (prefers-reduced-motion:reduce){#gm .gm-n:active,#gm .gm-play:active,#gm .gm-say:active{transform:none}#gm .gm-n:active{transform:translate(-50%,-50%)}}
 `; document.head.appendChild(s); }
 function root(){ let g=document.getElementById('gm'); if(!g){ g=document.createElement('div'); g.id='gm'; g.setAttribute('role','main'); g.setAttribute('aria-label','My Map'); document.body.appendChild(g); } return g; }
@@ -241,7 +257,7 @@ function money(){ const b=Number(A.st&&A.st.balance)||0; return '$'+b.toFixed(2)
 function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.style.display!=='none'&&c.querySelector('button')); }
 function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
- return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-st="open" aria-label="My money ${money()}: open the Store">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
+ return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
 function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':'LEVEL '+w.level}</small></button>`).join('')}<button type="button" class="gm-w gm-all" data-gm="lib" aria-label="All my lessons">📚 ALL<small>LESSONS</small></button></div>`; }
 function pathHTML(w){
@@ -291,7 +307,7 @@ function goalHTML(w,isPick){
  const say=`Your next level: ${n[0]}.${n[1]?(/ Level \d+$/.test(n[1])?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Play to start!`;
  return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">🔊</button></div></div>`; }
-function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['me','🏆','Trophies'],['store','💵','Store']];
+function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['me','🏆','Trophies'],['money','💵','Money']];
  return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${GM.tab===x[0]?'on':''}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
    3 rounds a day = the school's daily goal (3 lessons mastered in one day; the server pays its bonus, Money.js moneyDailyGoal_; nothing here
@@ -357,6 +373,23 @@ function winMoment(newIds,ws,rankBefore){ const id=newIds[newIds.length-1], w=ws
  celebrate({kicker:n[0],title:isBoss?'Boss<br>beaten!':up?'Rank<br>up!':'Level<br>clear!',icon:isBoss?'🏰':up?R.r[1]:'🏆',stars:true,loot,
   go:nx?['▶ Next level',()=>play(nx)]:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }],alt:nx?['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); }]:null});
  return true; }
+/* ===== MY MONEY (HoS 2026-11-20: "the money is very important ... buy things in the store ... in the canteen. That should be a big deal";
+   "show money tied to steps"). Display only: every amount here is the SERVER's (his balance and ledger from msLoad/msSave). Nothing here
+   pays, prices or changes money. The wallet, how he earned it (each line names the step: "Mastered: Multiply Mountain"), this week,
+   payday, the treasure chest, and big doors into the Store tabs (StoreKid.html: fun, real prizes, Canteen Cards, give, my week). */
+const IDRE=/\b([A-Z]{2,5}\.[A-Z]{2,6}\.L\d\d\.\d\d(?:\.[a-z])?)\b/g;
+function whyText(w){ let s=String(w||''); s=s.replace(/^Mastered\s+/,'Mastered: ').replace(/^Correct answer · /,'Right answer: ').replace(/^Right on the first try · /,'First try: ');
+ return s.replace(IDRE,(m,id)=>{ const n=nm(id); return n[0]!==id?n[0]:(typeof skillName==='function'?skillName(id):id); }); }
+function usd(x){ const v=Math.abs(Number(x)||0); return '$'+v.toFixed(2); }
+function moneyHTML(){ const L=((A.st&&A.st.ledger)||[]).filter(x=>x&&x.at), d0=new Date(), td=d0.toDateString(), wk0=new Date(d0.getFullYear(),d0.getMonth(),d0.getDate()-d0.getDay()).getTime();
+ const today=L.filter(x=>new Date(x.at).toDateString()===td&&x.amt>0).reduce((a,x)=>a+Number(x.amt),0), week=L.filter(x=>x.at>=wk0&&x.amt>0).reduce((a,x)=>a+Number(x.amt),0);
+ const rows=L.slice(0,10).map(x=>`<div><b class="${x.amt<0?'neg':''}">${x.amt<0?'−':'+'}${usd(x.amt)}</b><span>${esc(whyText(x.why))}<small>${new Date(x.at).toLocaleDateString([], {weekday:'short',month:'short',day:'numeric'})}</small></span></div>`).join('')||'<div><b>💵</b><span>Clear a level to earn your first money!<small>Every mastered step pays. The school sets the amounts.</small></span></div>';
+ const dow=d0.getDay(), pay=dow===4||dow===5?'🎉 It\'s PAYDAY! Open the Store and see your week.':'📅 Payday is Thursday and Friday. Your week shows up in the Store.';
+ const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
+ return `<div class="gm-vault"><div class="k">💰 MY MONEY</div><div class="bal">${money()}</div><small>${today>0?'+'+usd(today)+' today · ':''}${week>0?'+'+usd(week)+' this week':'Earned by mastering skills'}</small></div>
+ <div class="gm-mgrid"><button type="button" class="big" data-st="open" data-t="fun">🏪 Open the Store</button><button type="button" data-st="open" data-t="real"><b>🎁</b>REAL PRIZES</button><button type="button" data-st="open" data-t="canteen"><b>🥪</b>CANTEEN CARDS</button><button type="button" data-st="open" data-t="give"><b>💝</b>GIVE</button><button type="button" data-st="open" data-t="week"><b>📜</b>MY WEEK</button><button type="button" data-st="open" data-t="mine"><b>🎒</b>MY THINGS</button><button type="button" data-gm="stuff"><b>🏦</b>MY BANK</button></div>
+ <div class="gm-pay">${pay}</div>${chest}
+ <div class="gm-sec">💵 HOW I EARNED IT</div><div class="gm-earn">${rows}</div>`; }
 /* ===== CELEBRATIONS: one short burst, only when he wins (never on its own). Reduced motion: no movement, same words. */
 function celebrate(o){ try{ const old=document.getElementById('gm-cel'); if(old) old.remove(); const d=document.createElement('div'); d.id='gm-cel'; d.setAttribute('role','dialog'); d.setAttribute('aria-label',o.title);
   const col=['#39FF88','#00E5FF','#FFE259','#FF9AB5','#fff','#B388FF']; let cf=''; for(let i=0;i<26;i++) cf+=`<i class="cf" style="left:${(i*37)%100}%;background:${col[i%col.length]};animation-delay:${(i%9)*0.06}s"></i>`;
@@ -386,10 +419,10 @@ function sync(){
  const ws=m?worldsOf(m):[];
  if(!hub||!ws.length){ show(false,false); return; }
  const k2=ws.every(w=>w.level<=2); document.body.classList.toggle('gm-k2',k2);
- if(k2&&(GM.tab==='me'||GM.tab==='store')) GM.tab='map';
+ if(k2&&GM.tab==='me') GM.tab='map';
  const P=plan(ws), daily=checkDaily(ws); checkWin(ws,daily);
  const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh;
- if(GM.tab==='missions'||GM.tab==='me'||(GM.tab==='games'&&!P.open)){ const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${GM.tab==='missions'?missionsHTML(ws):GM.tab==='me'?growthHTML(ws):arcadeHTML(ws)}</div>`;
+ if(GM.tab==='missions'||GM.tab==='me'||GM.tab==='money'||(GM.tab==='games'&&!P.open)){ const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${GM.tab==='missions'?missionsHTML(ws):GM.tab==='me'?growthHTML(ws):GM.tab==='money'?moneyHTML():arcadeHTML(ws)}</div>`;
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  if(GM.tab!=='map'){ show(false,true); return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
