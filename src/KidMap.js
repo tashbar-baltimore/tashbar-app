@@ -33,16 +33,21 @@ function kmMapFor_(sid, opt) {
   if (grade != null && grade >= 0) KM_GRADE_SUBJ.forEach(function (k) { if (!(mine[k] && mine[k].level)) { mine[k] = { level: Math.min(9, grade + 1), start: '', at: 0, by: 'grade' }; byGrade[k] = 1; } });
   place[sid] = mine;
   var ctx = { built: B, place: place, states: states, ev: {}, pf: {} }, mast = sgMastered_(st), sk = st.skills || {};
+  /* LEVEL CHECKS (PathfinderLevel.js, HoS 2026-11-20): which Math / Reading levels have a check / a Level Pass, and the skills he
+     already showed he knows. Known skills are skipped like mastered ones for his goal (never written to his skills, never paid). */
+  var lc = null, kn = {}; if (!opt.noLc && typeof pfLcMap_ === 'function') { try { lc = pfLcMap_(sid); lc.known.forEach(function (id) { kn[id] = 1; }); } catch (e) { lc = null; } }
+  var mastK = {}; Object.keys(mast).forEach(function (id) { mastK[id] = 1; }); Object.keys(kn).forEach(function (id) { mastK[id] = 1; });
   var names = {}, want = {}, subjects = {};
   SG_SUBJ.forEach(function (x) {
-    var k = x[0], c = sgCell_(sid, k, ctx, mast, {});
+    var k = x[0], c = sgCell_(sid, k, ctx, mastK, {});
     if (!c.level) return;
+    c.skills = (c.skills || []).map(function (y) { return kn[y[0]] && !mast[y[0]] ? [y[0], y[1], 0, 1] : [y[0], y[1], mast[y[0]] ? 1 : 0]; });
     var list = plList_(k) || [];
     list.forEach(function (y) { names[y[0]] = [y[1], y[2] || '']; });
     var built = (c.skills || []).filter(function (y) { return y[1]; }), strand = c.now ? kmStrand_(c.now) : '';
     var u = strand ? built.filter(function (y) { return kmStrand_(y[0]) === strand; }) : built;
     subjects[k] = { name: x[1], level: c.level, byGrade: !!byGrade[k], now: c.now, next: c.next, prev: c.prev, skills: c.skills,
-      unit: { name: strand ? kmStrandName_(k, strand) : '', ids: u.map(function (y) { return y[0]; }), done: u.filter(function (y) { return y[2]; }).length, total: u.length },
+      unit: { name: strand ? kmStrandName_(k, strand) : '', ids: u.map(function (y) { return y[0]; }), done: u.filter(function (y) { return y[2] || y[3]; }).length, total: u.length },
       strands: (c.skills || []).reduce(function (o, y) { var s = kmStrand_(y[0]); if (s && !o[s]) o[s] = kmStrandName_(k, s); return o; }, {}) };
     [c.now, c.next, c.prev].concat((c.skills || []).map(function (y) { return y[0]; })).forEach(function (id) { if (id) want[id] = 1; });
   });
@@ -60,7 +65,9 @@ function kmMapFor_(sid, opt) {
     out[id] = names[id] || (N[id] ? [N[id][0], ''] : null) || (K.names && K.names[id] ? [kmKodeshName_(K.names[id]), ''] : null) ||
       (typeof CI_INDEX !== 'undefined' && CI_INDEX.sk && CI_INDEX.sk[id] ? [CI_INDEX.sk[id][0], ''] : [id, '']);
   });
-  return { v: 1, sid: sid, at: now, subjects: subjects, kodesh: kodesh, growth: { days: KM_DAYS, week: g.steps, prev: g.prev, total: g.total }, names: out };
+  var res = { v: 1, sid: sid, at: now, subjects: subjects, kodesh: kodesh, growth: { days: KM_DAYS, week: g.steps, prev: g.prev, total: g.total }, names: out };
+  if (lc) res.lc = lc;
+  return res;
 }
 function kmStrand_(id) { return String(id || '').split('.')[1] || ''; }
 function kmStrandName_(k, strand) { return (SG_STRAND[k] && SG_STRAND[k][strand]) || strand; }
@@ -77,6 +84,6 @@ function kmDemoMap_(grade) {
   var lv = Math.min(9, grade + 1), now = Date.now(), sk = {};
   ['MATH', 'READ'].forEach(function (k) { var list = (plList_(k) || []).filter(function (x) { return plMathLevel_(x[0]) === lv; }), B = {}; plBuilt_().forEach(function (x) { B[x] = 1; });
     list.filter(function (x) { return B[x[0]]; }).slice(0, 2).forEach(function (x, i) { sk[x[0]] = { m: true, at: now - (i + 1) * 864e5, first: true, stars: 3 }; }); });
-  var m = kmMapFor_('PREVIEW', { st: { id: 'PREVIEW', skills: sk }, grade: grade, kp: {} });
+  var m = kmMapFor_('PREVIEW', { st: { id: 'PREVIEW', skills: sk }, grade: grade, kp: {}, noLc: true });
   m.preview = true; return m;
 }

@@ -464,14 +464,14 @@ function arrange(){ try{
       const want=n>=2?'<span class="hl2-skf" aria-hidden="true">🔥<em>'+n+'</em></span><span>day streak</span>':'<span class="hl2-skf" aria-hidden="true">🔥</span><span>Start a streak today!</span>';
       let c=hello.querySelector(':scope > .hl2-sk'); if(!c){ c=document.createElement('span'); hello.appendChild(c); }
       if(c.dataset.n!==String(n)){ c.dataset.n=String(n); c.className='hl2-sk'+(n>=2?'':' off'); c.innerHTML=want; c.setAttribute('aria-label',n>=2?n+' day streak':'Start a streak today'); } } }catch(e){}
-  /* 2b. fewer words: Start here gets a progress bar; started lesson cards get a thin bar; the Pathfinder note is one line */
+  /* 2b. fewer words: Start here gets a progress bar; started lesson cards get a thin bar; the Level Pass note is one line */
   try{ const go=hlx.querySelector('.hlx-go'), sm=go&&go.querySelector('small');
     if(go&&sm){ const m=String(sm.textContent).match(/(\d+)\s*of\s*(\d+)/); const d=m?+m[1]:0, n=m?Math.max(1,+m[2]):0;
       let b=go.querySelector('.hl2-pbar'); if(n&&d===0){ if(b) b.remove(); go.classList.remove('hl2-done'); go.setAttribute('aria-label','Start here'); } else if(n){ if(!b){ b=document.createElement('span'); b.className='hl2-pbar'; b.innerHTML='<i></i>'; go.appendChild(b); const t=go.querySelector('.hlx-gt'); if(t&&!t.querySelector('.hl2-ok')) t.insertAdjacentHTML('beforeend','<span class="hl2-ok" aria-hidden="true">✓</span>'); }
         const pc=Math.round(Math.min(1,d/n)*100); b.firstChild.style.width=pc+'%'; go.classList.toggle('hl2-done',d>=n); go.setAttribute('aria-label','Start here: '+d+' of '+n+' steps done today'); } } }catch(e){}
   hlx.querySelectorAll('.hf-kwrap .hf-kl').forEach(k=>{ if(k.querySelector('.hl2-kbar')) return; const sm=k.querySelector('.tx small'); const m=sm&&String(sm.textContent).match(/finished\s+(\d+)\s+of\s+(\d+)/i);
     if(m&&+m[1]>0){ const tx=k.querySelector('.tx'); if(tx) tx.insertAdjacentHTML('beforeend','<span class="hl2-kbar" role="img" aria-label="'+m[1]+' of '+m[2]+' done"><i style="width:'+Math.round(+m[1]/Math.max(1,+m[2])*100)+'%"></i></span>'); } });
-  hlx.querySelectorAll(':scope > .cn-card .tlq .h').forEach(h=>{ if(!h.dataset.hl2){ h.dataset.hl2='1'; h.textContent='🧭 Finish your Pathfinder to get all your lesson money'; } });
+  hlx.querySelectorAll(':scope > .cn-card .tlq .h').forEach(h=>{ if(!h.dataset.hl2){ h.dataset.hl2='1'; h.textContent='🎫 Take the quick level check to unlock full pay at this level'; } });
   /* 3. the quick tools fold into the ⋮ menu */
   qtMenu(bar);
   /* 4. the Canteen money card(s) at the bottom, as wide as the banner */
