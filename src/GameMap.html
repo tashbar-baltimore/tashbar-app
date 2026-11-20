@@ -64,11 +64,18 @@ body.gm-on #gm{display:block}
 #gm .gm-num.d b{background:#00B36B;border-color:#CFFFE3}
 #gm .gm-num.u b{color:#C9C4FF}
 @keyframes gmbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-#gm .gm-dec{position:absolute;transform:translate(-50%,-50%) rotate(var(--r));pointer-events:none;z-index:0;font:900 var(--s)/1 system-ui,sans-serif;color:var(--c);opacity:.2;white-space:nowrap}
+/* statues beside the road (HoS 2026-11-20: "like statues along the side of the road ... bobbing gently and spinning in 3-D") */
+#gm .gm-dec{position:absolute;transform:translate(-50%,-50%) rotate(var(--r));pointer-events:none;z-index:0;font:900 var(--s)/1 system-ui,sans-serif;white-space:nowrap;perspective:260px}
 #gm .gm-dec.he{font-family:'Frank Ruhl Libre','SBL Hebrew','Times New Roman',serif}
-#gm .gm-dec i{display:block;font-style:normal;animation:gmdrift 7s ease-in-out infinite alternate}
-@keyframes gmdrift{from{transform:translateY(-6px)}to{transform:translateY(6px)}}
-@media (prefers-reduced-motion:reduce){#gm .gm-num b,#gm .gm-dec i{animation:none}}
+#gm .gm-dec i{display:block;font-style:normal;animation:gmdrift 3.6s ease-in-out infinite alternate}
+#gm .gm-dec b{display:block;font-weight:900;color:var(--c);opacity:.9;transform-style:preserve-3d;backface-visibility:visible;
+ text-shadow:1px 1px 0 rgba(0,0,0,.28),2px 2px 0 rgba(0,0,0,.28),3px 3px 0 rgba(0,0,0,.3),0 10px 16px rgba(0,0,0,.45);
+ text-shadow:1px 1px 0 rgba(0,0,0,.28),2px 2px 0 rgba(0,0,0,.28),3px 3px 0 rgba(0,0,0,.3),0 0 14px color-mix(in srgb,var(--c) 45%,transparent),0 10px 16px rgba(0,0,0,.45);animation:gmspin 10s linear infinite}
+#gm .gm-dec::after{content:'';position:absolute;left:50%;bottom:-14px;width:70%;height:7px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.45),rgba(0,0,0,0));animation:gmshadow 3.6s ease-in-out infinite alternate}
+@keyframes gmdrift{from{transform:translateY(-5px)}to{transform:translateY(5px)}}
+@keyframes gmspin{from{transform:rotateY(0deg)}to{transform:rotateY(360deg)}}
+@keyframes gmshadow{from{transform:translateX(-50%) scale(.8);opacity:.6}to{transform:translateX(-50%) scale(1.05);opacity:1}}
+@media (prefers-reduced-motion:reduce){#gm .gm-num b,#gm .gm-dec i,#gm .gm-dec b,#gm .gm-dec::after{animation:none}}
 #gm .gm-n{position:absolute;transform:translate(-50%,-50%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;cursor:pointer;border:3px solid;padding:0;font-family:inherit;color:#fff}
 #gm .gm-n:active{transform:translate(-50%,-46%)}
 #gm .gm-n.d{width:58px;height:58px;font-size:26px;background:radial-gradient(circle at 35% 30%,#7CFFB2,#00B36B);box-shadow:0 7px 0 #006B40;border-color:#CFFFE3}
@@ -429,7 +436,7 @@ function pathHTML(w){
  const rnd=()=>{ seed=(seed*9301+49297)%233280; return seed/233280; };
  let deco=''; for(let i=0;i<N;i++){ const y=pts[i][1]+gap/2; if(i===N-1&&N>1) break;
   [[5,15],[85,95]].forEach((band,bi)=>{ if(rnd()<.1) return; const x=band[0]+rnd()*(band[1]-band[0]), yy=y+(rnd()-.5)*gap*.5, g=ds[1][Math.floor(rnd()*ds[1].length)];
-   deco+=`<span class="gm-dec${ds[0]==='HEB'?' he':''}" style="left:${x.toFixed(1)}%;top:${Math.round(yy)}px;--r:${Math.round((rnd()-.5)*40)}deg;--s:${Math.round(24+rnd()*16)}px;--c:${dc}" aria-hidden="true"><i style="animation-delay:-${(rnd()*6).toFixed(1)}s">${esc(g)}</i></span>`; }); }
+   deco+=`<span class="gm-dec${ds[0]==='HEB'?' he':''}" style="left:${x.toFixed(1)}%;top:${Math.round(yy)}px;--r:${Math.round((rnd()-.5)*16)}deg;--s:${Math.round(30+rnd()*14)}px;--c:${dc}" aria-hidden="true"><i style="animation-delay:-${(rnd()*4).toFixed(1)}s"><b style="animation-delay:-${(rnd()*10).toFixed(1)}s">${esc(g)}</b></i></span>`; }); }
  let h=`<div class="gm-path" style="height:${H}px">${deco}${svg}`;
  if(hidden) h+=`<div class="gm-more" style="top:22px">✓ ${hidden} more cleared</div>`;
  ids.forEach((id,i)=>{ const p=pts[i], isBoss=(hidden+i)===w.ids.length-1, isNow=id===w.now, isDone=mast(id), n=nm(id);
@@ -676,7 +683,21 @@ function sync(){
 }
 /* HoS 2026-11-20: the map always opens at the step he is up to (near the top), even when he is far down the road */
 function scrollToHim(g){ try{ g.scrollTop=0; const n=g.querySelector('.gm-n.now'); if(!n) return; const tp=g.querySelector('.gm-unit')||g.querySelector('.gm-top'), top=tp?tp.getBoundingClientRect().bottom:0;
- const want=n.getBoundingClientRect().top-(top+70); if(want>0) g.scrollTop=Math.round(want); }catch(e){} }
+ const want=n.getBoundingClientRect().top-(top+70); if(want>0) g.scrollTop=Math.round(want); zoomIntro(g); }catch(e){} }
+/* HoS 2026-11-20: the first time he opens the map each day it starts zoomed out (the whole road, bird's-eye), then glides in to his step.
+   Once a day per boy (kept on this device); any tap skips it; reduced motion skips it. */
+function zoomIntro(g){ try{ const sid=A.st&&A.st.id; if(!sid) return; const key='gm-zoom:'+sid+':'+new Date().toDateString(); if(GM.zoomDay===key) return; GM.zoomDay=key;
+ try{ if(localStorage.getItem(key)) return; localStorage.setItem(key,'1'); }catch(e){}
+ try{ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return; }catch(e){}
+ const path=g.querySelector('.gm-path'); if(!path) return; const pr=path.getBoundingClientRect(), tp=g.querySelector('.gm-top'), hb=(tp?tp.getBoundingClientRect().bottom:0)+14;
+ const nav=document.getElementById('gm-nav'), goal=g.querySelector('.gm-goal'); let bottom=nav&&nav.offsetParent!==null?nav.getBoundingClientRect().top-10:window.innerHeight-10;
+ if(goal){ const gr=goal.getBoundingClientRect(); if(gr.left<pr.right&&gr.right>pr.left&&gr.top>hb) bottom=Math.min(bottom,gr.top-10); }
+ const s=Math.min(1,.86*(bottom-hb)/pr.height); if(s>.8||s<=0) return; const dy=hb-pr.top;
+ path.style.transformOrigin='50% 0'; path.style.transition='none'; path.style.transform='translateY('+dy+'px) scale('+s.toFixed(3)+')'; void path.offsetHeight;
+ const done=()=>{ clearTimeout(GM.zoomT); path.style.transition=''; path.style.transform=''; path.style.transformOrigin=''; g.removeEventListener('pointerdown',skip,true); };
+ const skip=()=>{ path.style.transition='transform .25s ease'; path.style.transform=''; GM.zoomT=setTimeout(done,260); };
+ g.addEventListener('pointerdown',skip,true);
+ GM.zoomT=setTimeout(()=>{ path.style.transition='transform 1.4s cubic-bezier(.65,0,.35,1)'; path.style.transform=''; GM.zoomT=setTimeout(done,1450); },1000); }catch(e){} }
 function scrollToNow(g){ try{ const n=g.querySelector('.gm-n.now')||g.querySelector('.gm-n.boss'); if(!n) return; const goal=g.querySelector('.gm-goal'), tp=g.querySelector('.gm-top'), top=tp?tp.getBoundingClientRect().bottom:0, bottom=goal?goal.getBoundingClientRect().top:window.innerHeight-300, r=n.getBoundingClientRect();
  if(r.bottom>bottom-16||r.top<top+8){ g.scrollTop+=Math.round((r.top+r.height/2)-(top+bottom)/2); } }catch(e){} }
 function refreshLater(){ if(GM.fetching||typeof SRV==='undefined'||!SRV.token) return; GM.fetching=true; const tok=SRV.token, sid=A.st&&A.st.id;
