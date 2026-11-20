@@ -120,25 +120,27 @@ async function kidTests(browser) {
       const gm = document.getElementById('gm'); o.on = document.body.classList.contains('gm-on') && !!gm; if (!o.on) return o;
       o.goal = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.learn = (gm.querySelector('.gm-goal .learn') || {}).textContent || ''; o.nodes = gm.querySelectorAll('.gm-n').length; o.boss = gm.querySelectorAll('.gm-n.boss').length;
       const ch = gm.querySelector('[data-gm=world][data-k="K:CHU"]'); if (ch) { ch.click(); await sleep(30); const lk = gm.querySelector('.gm-n.u'); o.chu = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; if (lk) { lk.click(); o.toast = (gm.querySelector('.gm-toast') || {}).textContent || ''; } const mt = gm.querySelector('[data-gm=world][data-k="MATH"]'); if (mt) { mt.click(); await sleep(30); } }
-      gm.querySelector('[data-gm=lib]').click(); await sleep(30); o.lib = !document.body.classList.contains('gm-on') && document.body.classList.contains('gm-nav');
+      gm.querySelector('[data-gm=lib]').click(); await sleep(30); o.lib = GM.tab === 'lib' && document.body.classList.contains('gm-on');
+      document.querySelector('#gm-nav [data-gmnav=games]').click(); await sleep(30); o.oldDoor = document.body.classList.contains('hf-games') || document.body.classList.contains('hf-lib') || document.body.classList.contains('hf-mine');
       document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30); o.back = document.body.classList.contains('gm-on');
       document.querySelector('#gm-nav [data-gmnav=missions]').click(); await sleep(30); o.rounds = gm.querySelectorAll('.gm-rd:not(.final):not(.rebbe)').length; o.live = gm.querySelectorAll('.gm-rd.live').length;
       document.querySelector('#gm-nav [data-gmnav=games]').click(); await sleep(30); o.locked = !!gm.querySelector('.gm-lock') && document.body.classList.contains('gm-on');
       document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30);
       gm.querySelector('[data-gm=play]').click(); await sleep(30); o.play = A.view === 'play' && A.play && A.play.id; o.offHome = !document.body.classList.contains('gm-on') && !document.body.classList.contains('gm-nav');
-      A.play = null; A.view = 'hub'; window.TL_MAP = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); render(); o.noMap = !document.body.classList.contains('gm-on'); return o; }, km.map);
+      A.play = null; A.view = 'hub'; window.TL_MAP = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); render(); await sleep(30); o.noMap = document.body.classList.contains('gm-on') && !!document.querySelector('#gm .gm-none'); return o; }, km.map);
     const want = km.map.names[km.map.subjects.MATH.now] || [];
     if (!g.on) fail('map home did not show for a boy with a map'); else {
       if (g.goal !== want[0] || g.learn.indexOf(want[1]) < 0) fail('map home: next level should be "' + want[0] + '" with "' + want[1] + '" (got "' + g.goal + '" / "' + g.learn + '")');
       if (!g.nodes || g.boss !== 1) fail('map home: the path needs its levels and one BOSS (got ' + g.nodes + ' levels, ' + g.boss + ' boss)');
       if (!/Locked/.test(g.toast || '')) fail('map home: a locked Chumash level must say so (got "' + g.toast + '")');
       if (g.chu !== (km.map.names[km.map.kodesh['K:CHU'].now] || [])[0]) fail('map home: the Chumash world must show his Chumash goal (got "' + g.chu + '")');
-      if (!g.lib || !g.back) fail('map home: Learn must open the old Learn door and Map must come back');
+      if (!g.lib || !g.back) fail('map home: All lessons must open the game Library and Map must come back');
+      if (g.oldDoor) fail('map home: no old-style door page may open (HoS 2026-11-20: no old style pages left)');
       if (g.play !== km.map.subjects.MATH.now || !g.offHome) fail('map home: PLAY must start his goal now (got ' + g.play + ')');
-      if (!g.noMap) fail('map home: a boy with no map must see the home as before');
+      if (!g.noMap) fail('map home: a boy with no map must get the game screen ("Your map is almost ready"), never the old home');
       if (g.rounds !== 3 || g.live !== 1) fail('missions: 3 rounds with one live round expected (got ' + g.rounds + ' rounds, ' + g.live + ' live)');
       if (!g.locked) fail('missions: the Arcade must be locked before the 3 rounds are cleared');
-      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked) ok('map home: next level + real skill, path with BOSS, PLAY starts it, locked says so, doors still open; missions: 3 rounds, Arcade locked until cleared'); } }
+      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked) ok('map home: next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); } }
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   report.counts.lessonsPlayed = ids.length; report.counts.lessonsMastered = done; report.counts.screensWithNoHowToBox = notes.length; if (done === ids.length) ok(done + ' of ' + ids.length + ' sampled lessons played to mastered');
   (await pg.evaluate(() => window.__srvErr)).forEach(e => fail('server call failed: ' + e)); errs.forEach(e => fail('kid page: ' + e)); await ctx.close();
