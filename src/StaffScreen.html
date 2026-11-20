@@ -273,13 +273,11 @@ function cardPanel(){ const b=boy(S.card); if(!b) return '';
  return `<div class="shade" data-act="close"></div><aside class="drawer" role="dialog" aria-label="${esc(b.name)}"><div class="dh"><h2>${esc(b.name)}</h2><button class="x" data-act="close" aria-label="Close">×</button></div>${h}<div class="err" role="alert">${esc(S.err)}</div></aside>`; }
 function codeBox(name,code){ return `<div class="sec" style="text-align:center"><p style="margin:0 0 6px">${esc(name)}’s sign-in code:</p><div style="font:700 44px/1.1 monospace;letter-spacing:.3em;padding-left:.3em">${esc(code)}</div><p style="color:var(--soft);margin:6px 0 0">Write it down and give it to the student. It works now.</p></div>`; }
 function addPanel(){
- if(S.added) return `<div class="shade" data-act="close"></div><aside class="drawer" role="dialog" aria-label="Student added"><div class="dh"><h2>Student added</h2><button class="x" data-act="close" aria-label="Close">×</button></div>${codeBox(S.added.name,S.added.code)}<button class="big a" data-act="close">Done</button><button class="big c" data-act="addmore">Add another student</button></aside>`;
+ if(S.added) return `<div class="shade" data-act="close"></div><aside class="drawer" role="dialog" aria-label="Student added"><div class="dh"><h2>Student added</h2><button class="x" data-act="close" aria-label="Close">×</button></div>${codeBox(S.added.name,S.added.code)}${window.SH&&S.added.id?`<button class="big a" data-act="close" data-shlv="${esc(S.added.id)}" data-shname="${esc(S.added.name)}">🎯 Set his level now</button>`:''}<button class="big ${window.SH&&S.added.id?'c':'a'}" data-act="close">Done</button><button class="big c" data-act="addmore">Add another student</button></aside>`;
  return `<div class="shade" data-act="close"></div><aside class="drawer" role="dialog" aria-label="Add student"><div class="dh"><h2>Add student</h2><button class="x" data-act="close" aria-label="Close">×</button></div>
  <div class="f"><label>First and last name<input id="ad-name" maxlength="60" autocomplete="off"></label>
  <label>Grade<select id="ad-grade"><option value="">Pick</option>${['K','1','2','3','4','5','6','7','8'].map(g=>`<option>${g}</option>`).join('')}</select></label>
- <label>Sign-in code (4 digits, their own)<input id="ad-code" inputmode="numeric" maxlength="4" autocomplete="off"></label>
- <button class="big c" data-act="gencode" data-f="ad-code" ${S.busy?'disabled':''}>Make one for me</button>
- <label class="ck"><input type="checkbox" id="ad-ok"> This is a real Tashbar student (not a test name)</label>
+ <label>Sign-in code <small style="font-weight:500;opacity:.75">(optional: leave empty and the app makes one)</small><input id="ad-code" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="4 digits, or leave empty"></label>
  <button class="big a" data-act="addgo" ${S.busy?'disabled':''}>Add student</button></div><div class="err" role="alert">${esc(S.err)}</div></aside>`; }
 /* ---------- Teacher mode (v51): a teacher-led class lesson. Picked boys can open ONLY this lesson until class ends. ---------- */
 function clock(t){ try{ return new Date(t).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}); }catch(e){ return ''; } }
@@ -357,8 +355,8 @@ document.addEventListener('click',e=>{ const t=e.target.closest('[data-act]'); i
  if(a==='fix'){ const amt=Math.round(parseFloat(String(($('fx-amt')||{}).value||'').replace(/[$,\s]/g,''))*100), why=(($('fx-why')||{}).value||'').trim();
    if(!amt){ S.err='Type an amount, like 5.00 or -5.00.'; return render(); } return act('sgFixPoints',[S.card,amt,why],m=>{ S.money=m; toast('Fix saved.'); }); }
  if(a==='undo') return act('sgUndoFix',[S.card,t.dataset.t],m=>{ S.money=m; toast('Fix undone.'); });
- if(a==='addgo'){ const name=($('ad-name')||{}).value||'', grade=($('ad-grade')||{}).value||'', code=($('ad-code')||{}).value||'', ok=!!($('ad-ok')||{}).checked;
-   return act('sgAddStudent',[name,grade,code,ok],r=>{ S.added={name:r.name,code:code.replace(/\D/g,'')}; toast(`${r.name} added. They can sign in with their code now.`); load(); }); }
+ if(a==='addgo'){ const name=($('ad-name')||{}).value||'', grade=($('ad-grade')||{}).value||'', code=($('ad-code')||{}).value||'', ok=true;   /* HoS 2026-11-20: no tick box */
+   return act('sgAddStudent',[name,grade,code,ok],r=>{ S.added={name:r.name,code:(r.code||code).replace(/\D/g,''),id:r.id}; toast(`${r.name} added. They can sign in with their code now.`); load(); }); }
 });
 document.addEventListener('input',e=>{ if(e.target.id==='q'){ S.q=e.target.value; render(); } });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&(S.open||S.card||S.add||S.tm)){ S.open=null; S.card=null; S.add=false; S.tm=false; render(); } });
