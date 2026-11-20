@@ -197,7 +197,7 @@ function btn(k){ var a=A[k]; return '<button type="button" data-sh="do" data-k="
 function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar'); if(bar&&p.contains(bar)) body().appendChild(bar);   /* keep the search bar: a redraw must not throw it away */
   setMode(true,false); var h='';
   if(S.area==='home'){
-    h+='<div class="hello">'+E(hello())+'</div><h1>What would you like to do?</h1><p class="lead">Find a boy, see what needs you, or open any part of the school below.</p><div id="sh-find"></div>'+nextHTML()+'<div class="cards">';
+    h+='<div class="hello">'+E(hello())+'</div><h1>What would you like to do?</h1><p class="lead">Find a boy, see what needs you, or open any part of the school below.</p><div id="sh-find"></div>'+nextHTML()+schoolMapHTML()+'<div class="cards">';
     h+='<div class="card cur"><h2 data-sh="area" data-v="curriculum"><span>🌳</span>Curriculum</h2><p>Every skill from Kindergarten to 8th grade, step by step: what comes first, what comes next, and how well it is taught. Tap a subject.</p><div class="btns">'
       +[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')
       +'<button type="button" class="sub" data-sh="do" data-k="see">👀 See what the kids see</button><button type="button" class="sub" data-sh="do" data-k="lib">📚 Library & Assign</button></div></div>';
@@ -208,7 +208,7 @@ function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar');
   } else { var P=PAGE[S.area]; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>'+(S.area==='students'?'<div id="sh-find"></div>':'');
     if(S.area==='curriculum') h+='<div class="cards" style="margin-bottom:6px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill, step by step. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>';
     P.groups.forEach(function(g){ var ks=g[1].filter(function(k){ return k!=='tree'||S.area!=='curriculum'; }); h+='<h3>'+E(g[0])+'</h3><div class="tiles">'+ks.map(tile).join('')+'</div>'; }); }
-  p.innerHTML=h; slot(); window.scrollTo(0,0); if(S.area==='today') loadToday(); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
+  p.innerHTML=h; slot(); window.scrollTo(0,0); if(S.area==='home'||S.area==='students'||S.area==='today') loadKM(false); if(S.area==='today') loadToday(); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
 /* NEXT STEPS: read the counts the staff screen already shows, and turn each one that needs someone into one clear row with one button */
 function num(sel){ var e=q(sel); if(!e) return 0; var m=String(e.textContent||'').match(/(\d+)/g); return m?Number(m[m.length-1]):0; }
 function steps(){ var r=[];
@@ -222,6 +222,16 @@ function steps(){ var r=[];
   if(msgs) r.push(['#2F5BD3',msgs,msgs===1?'1 new message':msgs+' new messages','From boys or staff.','msg','Read']);
   if(idle&&r.length<5) r.push(['#6E7A8A',idle,idle===1?'1 boy has not worked today':idle+' boys have not worked today','A nudge may help.','tdnow','See who']);
   return r; }
+function schoolMapHTML(){ var boys=(S0().boys||[]).filter(function(b){ return !b.test; }); if(!boys.length) return '<div id="sh-smap"></div>';
+  var rows=[], stuck={};
+  SUBJ.forEach(function(x){ var placed=0, units={}; boys.forEach(function(b){ var c=cellsOf(b.id)[x[0]]; if(!c||!c.level) return; placed++; var u=unitNow(c), key='Level '+c.level+(u.name?' · '+u.name:''); units[key]=(units[key]||0)+1;
+      if(c.now&&c.status==='red'){ var s0=stuck[c.now]||(stuck[c.now]={n:0,subj:x}); s0.n++; } });
+    if(!placed) return; var top=Object.keys(units).sort(function(a,b){ return units[b]-units[a]; })[0];
+    rows.push('<div class="row"><span class="n" style="background:#2F5BD3">'+placed+'</span><span><b>'+x[1]+' '+E(x[2])+'</b><small>'+placed+' boy'+(placed===1?'':'s')+' placed · most are on '+E(top)+' ('+units[top]+')</small></span>'+(x[3]?'<button type="button" class="go" data-sfopen="'+x[3]+'">🌳 See the tree →</button>':'')+'</div>'); });
+  var st=Object.keys(stuck).sort(function(a,b){ return stuck[b].n-stuck[a].n; }).slice(0,5);
+  var h='<div id="sh-smap"><div id="sh-next" style="border-color:#16202C"><h2>🗺️ Where the boys are</h2>'+(rows.length?rows.join(''):'<div class="row"><span><b>No boy has a level yet.</b><small>Set levels so the app knows where each boy is on the map.</small></span><button type="button" class="go" data-sh="do" data-k="nolevel">Set levels →</button></div>');
+  if(st.length) h+='<h2 style="margin-top:14px">🧱 Steps where boys are stuck</h2>'+st.map(function(id){ var x=stuck[id]; return '<div class="row"><span class="n" style="background:#C8402F">'+x.n+'</span><span><b>'+E(skName(id))+'</b><small>'+x.subj[1]+' '+E(x.subj[2])+' · '+x.n+' boy'+(x.n===1?'':'s')+' stuck here</small></span>'+(x.subj[3]?'<button type="button" class="go" data-sh="tree" data-s="'+x.subj[3]+'" data-id="'+E(id)+'">See it on the tree →</button>':'')+'</div>'; }).join('');
+  return h+'</div></div>'; }
 function nextHTML(){ var r=steps(); return '<div id="sh-next"><h2>👉 Next steps</h2>'+(r.length?r.map(function(x){ return '<div class="row"><span class="n" style="background:'+x[0]+'">'+x[1]+'</span><span><b>'+E(x[2])+'</b><small>'+E(x[3])+'</small></span><button type="button" class="go" data-sh="do" data-k="'+x[4]+'">'+E(x[5])+' →</button></div>'; }).join(''):(r.known?'<div class="ok">✅ All caught up. Nothing needs you right now.</div>':'<div class="row"><span><b>Still loading the boys…</b><small>Or open Today to see who needs you.</small></span><button type="button" class="go" data-sh="area" data-v="today">Open Today →</button></div>'))+'</div>'; }
 setInterval(function(){ if(S.area==='home'&&body().classList.contains('sh-page')){ var n=q('#sh-next'); if(n){ var t=document.createElement('div'); t.innerHTML=nextHTML(); if(t.firstChild.innerHTML!==n.innerHTML) n.replaceWith(t.firstChild); } } },20000);
 function hello(){ var h=new Date().getHours(), nm=''; try{ nm=String(S0().staffName||'').split(' ')[0]; }catch(e){} return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(nm?', '+nm:''); }
@@ -259,7 +269,7 @@ function selbar(){ var ids=Object.keys(ST.sel).filter(function(k){ return ST.sel
   bar.innerHTML='<span>'+ids.length+' picked</span><button type="button" data-st="lvmany">🎯 Set level for them</button><button type="button" class="x" data-st="clear">Clear</button>'; }
 function byId(id){ return (ST.list||[]).filter(function(b){ return b.id===id; })[0]; }
 function dlgOpen(ids){ ST.dlg={ids:ids,key:null,lv:0,err:'',busy:false}; dlgDraw(); }
-function refreshMap(){ srv('sgLoad',[tok()]).then(function(d){ try{ (new Function('d','try{ S.d=d; }catch(e){}'))(d); }catch(e){} if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(ST.dlg&&ST.dlg.map) mapDraw(); }).catch(function(){}); }   /* the map lives in the staff screen's data (sgLoad cells) */
+function refreshMap(){ loadKM(true); srv('sgLoad',[tok()]).then(function(d){ try{ (new Function('d','try{ S.d=d; }catch(e){}'))(d); }catch(e){} if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(ST.dlg&&ST.dlg.map) mapDraw(); }).catch(function(){}); }   /* the map lives in the staff screen's data (sgLoad cells) */
 function dlgClose(){ if(ST.dlg&&ST.dlg.ids&&ST.dlg.saved) refreshMap(); ST.dlg=null; var d=q('#sh-dlg'); if(d) d.remove(); }
 function dlgDraw(){ var D=ST.dlg; if(!D) return dlgClose(); var d=q('#sh-dlg'); if(!d){ d=document.createElement('div'); d.id='sh-dlg'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); body().appendChild(d); }
   var one=D.ids.length===1?byId(D.ids[0]):null, who=one?one.name:D.ids.length+' boys';
@@ -295,7 +305,7 @@ document.addEventListener('change',function(e){ if(e.target&&e.target.id==='st-g
 /* ================= TODAY: what is happening right now (sgToday + sgNow, refreshed every minute while open) ================= */
 var TD={today:null,now:null,f:'all',q:'',at:0,timer:0};
 var NOWW={stuck:['🆘','Stuck',function(n){ return n+' misses in a row'; }],checkin:['🧱','Failed the check again',function(n){ return n+' check misses today'; }],guess:['⚡','Guessing',function(n){ return n+' of his last 6 answers in under 2 seconds'; }],idle:['💤','Stopped working',function(n){ return 'no answer for '+n+' minutes'; }]};
-function skName(id){ var d=S0(); var x=d&&d.names&&d.names[id]; return x?x[0]:(id||''); }
+function skName(id){ var d=S0(); var x=d&&d.names&&d.names[id]; return x?x[0]:(KM.names&&KM.names[id])||(id||''); }
 function ago(t){ if(!t) return ''; var m=Math.round((Date.now()-t)/60000); return m<1?'just now':m<60?m+' min ago':Math.round(m/60)+' h ago'; }
 function loadToday(){ var t=tok(); if(!t) return; Promise.all([srv('sgToday',[t]).catch(function(){ return null; }),srv('sgNow',[t]).catch(function(){ return null; })]).then(function(r){ TD.today=r[0]; TD.now=r[1]; TD.at=Date.now(); drawToday(); }); }
 function todayHTML(){ var d=new Date(), day=d.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
@@ -324,11 +334,15 @@ document.addEventListener('input',function(e){ if(e.target&&e.target.id==='td-q'
 setInterval(function(){ if(S.area==='today'&&body().classList.contains('sh-page')&&!document.hidden) loadToday(); },60000);
 
 /* ================= THE BOY'S MAP: per subject, his unit (level), the steps in it, his goal now (the next mini-skill), the end of the unit ================= */
-var SUBJ=[['MATH','🔢','Math','MATH'],['READ','📖','Reading','ENGLISH'],['LANG','✍️','Writing','ENGLISH'],['SCI','🔬','Science','SCIENCE'],['SOC','🌍','Social Studies',''],['COMP','💻','Computing',''],['HEB','🔤','Lashon Hakodesh','KODESH'],['ELEC','🛠️','Electives',''],['VOC','🧰','Trades',''],['LIFE','💰','Life & Money','']];
-function cellsOf(id){ var b=(S0().boys||[]).filter(function(x){ return x.id===id; })[0]; return b&&b.cells||{}; }
+var SUBJ=[['MATH','🔢','Math','MATH'],['READ','📖','Reading','ENGLISH'],['LANG','✍️','Writing','ENGLISH'],['SCI','🔬','Science','SCIENCE'],['SOC','🌍','Social Studies',''],['COMP','💻','Computing',''],['HEB','🔤','Lashon Hakodesh','KODESH'],['ELEC','🛠️','Electives',''],['VOC','🧰','Trades',''],['LIFE','💰','Life & Money',''],
+  ['K:KRI','🔤','Kriyah','KODESH'],['K:CHU','📜','Chumash','KODESH'],['K:RAS','✒️','Rashi','KODESH'],['K:MSH','📚','Mishnayos','KODESH'],['K:GEM','🏛️','Gemara','KODESH']];
+var KM={boys:{},names:{},at:0,busy:false};   /* Kodesh tracks, per boy (sgKodeshMap) */
+function loadKM(force){ if(KM.busy||(!force&&KM.at&&Date.now()-KM.at<300000)) return; KM.busy=true; srv('sgKodeshMap',[tok()]).then(function(r){ KM.boys=(r&&r.boys)||{}; KM.names=(r&&r.names)||{}; KM.at=Date.now(); KM.busy=false; redrawAll(); }).catch(function(){ KM.busy=false; }); }
+function redrawAll(){ if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(S.area==='home'){ var m=q('#sh-smap'); if(m){ var t=document.createElement('div'); t.innerHTML=schoolMapHTML(); m.replaceWith(t.firstChild); } } if(ST.dlg&&ST.dlg.map) mapDraw(); }
+function cellsOf(id){ var b=(S0().boys||[]).filter(function(x){ return x.id===id; })[0]; return Object.assign({}, b&&b.cells||{}, KM.boys[id]||{}); }
 var STRAND={NUM:'Counting & Numbers',PV:'Place Value',OPS:'Operations',FRAC:'Fractions & Decimals',ALG:'Algebra & Patterns',FUNC:'Functions',MEAS:'Measurement',GEO:'Geometry',STAT:'Data & Statistics',
   PA:'Print & Sounds',PHON:'Phonics & Word Study',FLU:'Fluency',LV:'Leveled Reading',VOC:'Vocabulary',COMP:'Comprehension',LIT:'Literature',HAND:'Handwriting',GRAM:'Grammar',MECH:'Capitals & Punctuation',SENT:'Sentences',PARA:'Paragraphs',USE:'Word Choice',ESSAY:'Essays',RES:'Research',
-  SKY:'Space & Sky',LAND:'Earth & Weather',ANIM:'Animals',PLANT:'Plants',BODY:'The Human Body',MATT:'Matter & Forces',PHYS:'Matter & Forces',EARTH:'Earth & Weather',LIFE:'Living Things',INQ:'Scientist Skills',READ:'Reading Hebrew'};
+  SKY:'Space & Sky',LAND:'Earth & Weather',ANIM:'Animals',PLANT:'Plants',BODY:'The Human Body',MATT:'Matter & Forces',PHYS:'Matter & Forces',EARTH:'Earth & Weather',LIFE:'Living Things',INQ:'Scientist Skills',READ:'Reading Hebrew',KRI:'Kriyah',CHU:'Chumash',RAS:'Rashi',MSH:'Mishnayos',GEM:'Gemara'};
 function strandOf(id){ var p=String(id||'').split('.'); return p[1]||''; }
 /* the unit = the run of skills of the same kind (strand) inside his level, the one his goal is in; its last step is the finish line */
 function unitNow(c){ var all=unit(c); if(!c.now) return {name:'',sk:all.sk,done:all.done,total:all.total,level:all}; var st=strandOf(c.now), sk=all.sk.filter(function(x){ return strandOf(x[0])===st; });
@@ -372,12 +386,16 @@ function run(k){ var a=A[k]; if(!a) return; var how=a[3];
 function toast(m){ var t=document.createElement('div'); t.textContent=m; t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#16202C;color:#fff;padding:10px 16px;border-radius:12px;font:700 14px system-ui,sans-serif;z-index:2147483600'; body().appendChild(t); setTimeout(function(){ t.remove(); },2600); }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-sh]'); if(!b) return; var a=b.dataset.sh; e.preventDefault();
   if(a==='area') return area(b.dataset.v); if(a==='do') return run(b.dataset.k); if(a==='back') return area(S.from||'home');
+  if(a==='tree'){ if(window.SF) window.SF.open(b.dataset.s,b.dataset.id); return; }
   if(a==='out'){ var o=q('#app [data-act=out]'); if(o) o.click(); } });
 /* start once the staff screen has signed in and drawn */
 function on(){ var app=q('#app'); if(!app||!q('#app header.top')) return false; body().classList.add('sh-on'); draw(); return true; }
 var n=0; (function wait(){ if(on()) return; if(++n<200) setTimeout(wait,300); })();
 /* the search bar is re-made by its add-on: keep it in the slot */
 setInterval(slot,1500);
-window.SH={ area:area, run:run };
+/* which boys are on a step right now (their goal now = this skill), for the curriculum tree */
+function boysOn(id){ var out=[]; (S0().boys||[]).forEach(function(b){ if(b.test) return; var C=cellsOf(b.id), st=''; Object.keys(C).forEach(function(k){ if(C[k]&&C[k].now===id) st=C[k].status||'now'; }); if(st) out.push({id:b.id,name:b.name,stuck:st==='red'}); }); return out; }
+function boysOnAll(){ var o={}; (S0().boys||[]).forEach(function(b){ if(b.test) return; var C=cellsOf(b.id); Object.keys(C).forEach(function(k){ var c=C[k]; if(c&&c.now){ var x=o[c.now]||(o[c.now]={n:0,stuck:0}); x.n++; if(c.status==='red') x.stuck++; } }); }); return o; }
+window.SH={ area:area, run:run, boysOn:boysOn, boysOnAll:boysOnAll, map:function(id){ mapOpen(id); } };
 })();
 </script>

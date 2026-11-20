@@ -162,3 +162,27 @@ function sgKodeshBoy(token, sid, k) { tlGuard_(token, sid);
   var sk = st.skills || {}, MK = {}; try { MK = sgpMarks_(); } catch (e) {}
   return { sid: sid, k: k, lessons: ids.map(function (id) { var mk = MK[sid + '|' + id]; return [id, L.names[id] || id, plMathLevel_(id), (sk[id] && sk[id].m) ? 1 : 0, mk ? mk.by : '', mk ? mk.at : 0]; }) };
 }
+
+/* ===== KODESH ON THE MAP (Head of School 2026-11-20: "skills ... the goals and the map and the steps needed at the heart of it all").
+   For every boy and Kodesh track (Kriyah, Chumash, Rashi, Mishnayos, Gemara): his unit = that track's lessons at his level (the Library's
+   placement, libKpAll_; if not placed but he has mastered lessons there, the level of the next lesson), his goal now = the first lesson in it
+   he has not mastered, then next / the step before. Same shape as the staff screen's cells (sgCell_), so the staff home's map shows it.
+   Read only. Call: sgKodeshMap (API_ALLOW). */
+function sgKodeshMap(token) {
+  sgStaff_(token);
+  var K = sgpKodeshLessons_(), kp = {}; try { kp = libKpAll_(); } catch (e) {}
+  var states = {}; msRows_('state').forEach(function (r) { try { states[String(r[0])] = JSON.parse(r[1]); } catch (e) {} });
+  var out = {};
+  msRoster_().forEach(function (b) { if (/^TEST-/.test(b.id)) return;
+    var sk = (states[b.id] && states[b.id].skills) || {}, m = function (id) { return !!(sk[id] && sk[id].m); }, o = {};
+    ['KRI', 'CHU', 'RAS', 'MSH', 'GEM'].forEach(function (k) { var ids = (K.order && K.order[k]) || []; if (!ids.length) return;
+      var placed = kp[b.id] && kp[b.id][k] && kp[b.id][k].level, lv = placed || 0;
+      if (!lv) { var last = -1; ids.forEach(function (id, i) { if (m(id)) last = i; }); if (last < 0) return; lv = libLevelOf_(ids[last + 1] || ids[last]); }
+      var unit = ids.filter(function (id) { return libLevelOf_(id) === lv; }); if (!unit.length) return;
+      var cur = ''; for (var i = 0; i < unit.length; i++) if (!m(unit[i])) { cur = unit[i]; break; }
+      var ix = cur ? ids.indexOf(cur) : -1;
+      o['K:' + k] = { level: lv, placed: !!placed, now: cur, next: ix >= 0 ? (ids[ix + 1] || '') : '', prev: ix > 0 ? ids[ix - 1] : '', skills: unit.map(function (id) { return [id, 1, m(id) ? 1 : 0]; }) };
+    });
+    if (Object.keys(o).length) out[b.id] = o; });
+  return { names: (K && K.names) || {}, boys: out };
+}
