@@ -362,6 +362,7 @@ const IC={ note:svg("<path d='M9 18V5l12-2v13' "+W+"/><circle cx='6' cy='18' r='
 /* the same pictures in violet, for a tool that is OFF (white button with an outline) */
 const V="stroke='#4F46E5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'";
 IC.noteV=svg("<path d='M9 18V5l12-2v13' "+V+"/><circle cx='6' cy='18' r='3' fill='#4F46E5'/><circle cx='18' cy='16' r='3' fill='#4F46E5'/>");
+IC.chev=svg("<path d='M10 6.5l5.5 5.5-5.5 5.5' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round' fill='none'/>");
 IC.muteV=svg("<path d='M11 5L6 9H3v6h3l5 4z' fill='#4F46E5'/><path d='M16 9l6 6M22 9l-6 6' "+V+"/>");
 const BG='linear-gradient(135deg,#4F46E5,#6D28D9)';
 try{ if(!document.getElementById('hl2-css')){ const s=document.createElement('style'); s.id='hl2-css'; s.textContent=`
@@ -382,7 +383,7 @@ body.hl2 #tlcash.docked{position:relative!important;left:auto!important;right:au
 body.hl2 #hlx .hlx-steps,body.hl2 .hpbar .tools .signout{background:#fff!important;border:2px solid #FCD34D!important;border-radius:999px!important;box-shadow:none!important;color:#92400E!important;min-height:44px!important;padding:0 18px!important;font-weight:800!important;cursor:pointer}
 body.hl2 #hlx .hlx-steps:hover,body.hl2 .hpbar .tools .signout:hover{background:#FFFBEB!important;transform:translateY(-1px)}
 body.hl2 .hpbar .hello .streak{border-radius:10px!important;box-shadow:none!important}
-body.hl2 .hf-door::before{content:'›';position:absolute;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.28);border:2px solid rgba(255,255,255,.8);display:grid;place-items:center;font:900 28px/1 system-ui,sans-serif;color:#fff;z-index:2;transition:transform .2s}
+body.hl2 .hf-door::before{content:'';position:absolute;right:18px;bottom:18px;width:44px;height:44px;box-sizing:border-box;border-radius:50%;background:${IC.chev} center/26px no-repeat,rgba(255,255,255,.28);border:2px solid rgba(255,255,255,.8);z-index:2;transition:transform .2s}
 body.hl2 .hf-door:hover::before{transform:translateX(3px)}
 body.hl2 .hf-door .cnt{margin-right:60px}
 body.hl2 .cn-card .cn-ord{background:linear-gradient(135deg,#F59E0B,#EA580C)!important;border-radius:999px!important}
@@ -427,6 +428,18 @@ body.hl2 #hlx .hlx-go .hl2-pbar{display:block;width:min(320px,80%);height:10px;m
 body.hl2 #hlx .hlx-go .hl2-pbar i{display:block;height:100%;min-width:6%;border-radius:999px;background:linear-gradient(90deg,#1E1B4B,#4F46E5);transition:width .8s cubic-bezier(.2,.8,.2,1)}
 body.hl2 #hlx .hlx-go.hl2-done .hl2-pbar i{background:linear-gradient(90deg,#16A34A,#22C55E)}
 body.hl2 #hlx .hlx-go .hl2-ok{display:none;margin-left:6px;color:#16A34A}body.hl2 #hlx .hlx-go.hl2-done .hl2-ok{display:inline}
+/* GREETING + STREAK (2026-11-20, moshe@ session): "Good morning, <name>!" is centered right above Start here; the corner keeps the
+   streak alone, on one line: a small flame badge with the number, then "day streak" (a grey flame and "Start a streak today!" at 0).
+   A week-of-dots streak may come later, once the school's app schedule is known. */
+body.hl2 #hlx .hl2-greet{text-align:center;margin:4px 0 6px}
+body.hl2 #hlx .hl2-greet>b{display:inline-block;font:900 30px/1.15 var(--display,system-ui),system-ui,sans-serif;color:#1E1B4B}
+body.hl2 .hpbar .hello{display:flex!important;flex-direction:row!important;align-items:center!important;gap:0}
+body.hl2 .hpbar .hello>.streak{display:none!important}
+body.hl2 .hl2-sk{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;font:800 16px var(--display,system-ui),system-ui,sans-serif;color:#9A3412}
+body.hl2 .hl2-sk .hl2-skf{position:relative;display:inline-grid;place-items:center;width:42px;height:42px;border-radius:50%;background:radial-gradient(circle at 50% 70%,#FDBA74,#F97316);font-size:24px;line-height:1;box-shadow:0 3px 10px rgba(249,115,22,.3)}
+body.hl2 .hl2-sk .hl2-skf em{position:absolute;right:-7px;bottom:-5px;font-style:normal;background:#fff;color:#C2410C;border:2px solid #F97316;border-radius:999px;font:900 13px/1.2 system-ui,sans-serif;padding:1px 6px}
+body.hl2 .hl2-sk.off{color:#6B7280}body.hl2 .hl2-sk.off .hl2-skf{background:#F3F4F6;box-shadow:none;filter:grayscale(1);opacity:.7}
+@media (max-width:700px){body.hl2 #hlx .hl2-greet>b{font-size:24px}body.hl2 .hl2-sk{font-size:14px}body.hl2 .hl2-sk .hl2-skf{width:36px;height:36px;font-size:20px}}
 @media (max-width:700px){body.hl2 .hl2-qt.open{width:48px}body.hl2 .hl2-qt .hl2-qtbg{width:58px}body.hl2 .hl2-qt.open .hl2-qtbg{width:calc(var(--qtw,48px) + 10px)}}
 @media (prefers-reduced-motion:reduce){body.hl2 .hl2-qt .hl2-qti,body.hl2 .hl2-qt .hl2-qtbg{transition-duration:.01s!important}}
 body.hl2 .hpbar .tools .icon-btn:focus-visible{outline:3px solid #FDE047;outline-offset:2px}
@@ -443,6 +456,14 @@ function arrange(){ try{
   const st=hlx.querySelector('.hlx-start'); if(st){ let u=st.querySelector('.hl2-under'); if(!u){ u=document.createElement('div'); u.className='hl2-under'; st.appendChild(u); }
     const steps=st.querySelector(':scope > .hlx-steps'); if(steps) u.appendChild(steps);
     const c=document.getElementById('tlcash'); if(c&&c.parentNode!==u){ c.classList.add('docked'); u.insertBefore(c,u.firstChild); } }
+  /* 2a. the greeting, centered above Start here; the streak alone in the corner, on one line */
+  try{ const top=hlx.querySelector('#hlx-top'), stt=hlx.querySelector('.hlx-start'), hello=bar&&bar.querySelector('.hello');
+    if(top&&stt&&hello){ let g=top.querySelector('.hl2-greet'); if(!g){ g=document.createElement('div'); g.className='hl2-greet'; stt.parentNode.insertBefore(g,stt); }
+      const gb=hello.querySelector(':scope > b'); if(gb){ g.innerHTML=''; g.appendChild(gb); }
+      const sk=hello.querySelector(':scope > .streak'), m=sk&&String(sk.textContent).match(/(\d+)/), n=m?+m[1]:0;
+      const want=n>=2?'<span class="hl2-skf" aria-hidden="true">🔥<em>'+n+'</em></span><span>day streak</span>':'<span class="hl2-skf" aria-hidden="true">🔥</span><span>Start a streak today!</span>';
+      let c=hello.querySelector(':scope > .hl2-sk'); if(!c){ c=document.createElement('span'); hello.appendChild(c); }
+      if(c.dataset.n!==String(n)){ c.dataset.n=String(n); c.className='hl2-sk'+(n>=2?'':' off'); c.innerHTML=want; c.setAttribute('aria-label',n>=2?n+' day streak':'Start a streak today'); } } }catch(e){}
   /* 2b. fewer words: Start here gets a progress bar; started lesson cards get a thin bar; the Pathfinder note is one line */
   try{ const go=hlx.querySelector('.hlx-go'), sm=go&&go.querySelector('small');
     if(go&&sm){ const m=String(sm.textContent).match(/(\d+)\s*of\s*(\d+)/); const d=m?+m[1]:0, n=m?Math.max(1,+m[2]):0;
