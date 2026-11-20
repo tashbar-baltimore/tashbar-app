@@ -139,6 +139,20 @@ body.gm-k2 #gm-nav button{font-size:13px}
 #gm .gm-games div{border-radius:16px;padding:12px 6px;text-align:center;font-weight:900;font-size:12px;background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.12);filter:grayscale(.6);opacity:.8}
 #gm .gm-games b{display:block;font-size:30px;margin-bottom:4px}
 #gm-nav button{position:relative}
+/* bottom bar halo (HoS 2026-11-20): a soft round glow behind an icon when the mouse is over it or a finger presses it, so the boy sees it can be tapped. Stays inside the bar. */
+#gm-nav{--gmhalo:58px}
+body.gm-k2 #gm-nav{--gmhalo:70px}
+@media (max-width:700px){#gm-nav{--gmhalo:52px}body.gm-k2 #gm-nav{--gmhalo:66px}}
+#gm-nav button{isolation:isolate;-webkit-tap-highlight-color:transparent;outline:none}
+#gm-nav button::before{content:'';position:absolute;left:50%;top:50%;width:min(calc(100% - 4px),var(--gmhalo));aspect-ratio:1/1;border-radius:50%;z-index:-1;pointer-events:none;opacity:0;
+ transform:translate(-50%,-50%) scale(.8);background:radial-gradient(circle closest-side,rgba(255,255,255,.2),rgba(255,255,255,.13) 60%,rgba(255,255,255,.06) 90%,rgba(255,255,255,.02));
+ box-shadow:inset 0 0 0 1px rgba(255,255,255,.11);transition:opacity .22s ease,transform .3s cubic-bezier(.2,.8,.2,1)}
+@media (hover:hover){#gm-nav button:hover::before{opacity:1;transform:translate(-50%,-50%) scale(1)}#gm-nav button:not(.on):hover{color:#CFCCF7}}
+#gm-nav button:focus-visible::before{opacity:1;transform:translate(-50%,-50%) scale(1);box-shadow:inset 0 0 0 2px rgba(255,226,89,.55)}
+#gm-nav button:active::before{opacity:1;transform:translate(-50%,-50%) scale(.94);transition-duration:.08s}
+#gm-nav button.tap::before{animation:gmhalo .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes gmhalo{0%{opacity:1;transform:translate(-50%,-50%) scale(.94)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.02)}}
+@media (prefers-reduced-motion:reduce){#gm-nav button::before{transition:opacity .15s ease;transform:translate(-50%,-50%)!important}}
 #gm-nav .cnt{position:absolute;top:6px;left:calc(50% + 8px);min-width:20px;height:20px;border-radius:10px;background:#FF2E63;color:#fff;font-size:12px;line-height:20px;text-align:center;padding:0 5px;letter-spacing:0}
 #gm-cel{position:fixed;inset:0;z-index:10010;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif;
  background:radial-gradient(circle at 50% 38%,#FFB800 0%,#FF3C7A 38%,#4A0A6A 75%,#14042A 100%)}
@@ -400,7 +414,7 @@ function goalHTML(w,isPick){
  return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">🔊</button></div></div>`; }
 function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['me','🏆','Trophies'],['money','💵','Money']];
- return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${GM.tab===x[0]?'on':''}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
+ return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${[GM.tab===x[0]?'on':'',GM.tap===x[0]&&Date.now()-(GM.tapAt||0)<450?'tap':''].filter(Boolean).join(' ')}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
    3 rounds a day = the school's daily goal (3 lessons mastered in one day; the server pays its bonus, Money.js moneyDailyGoal_; nothing here
    pays). Each round is his next level in one world (today's pick first), so a day touches several subjects. A round is CLEARED by any step
@@ -610,6 +624,10 @@ function play(id){ const c=worldFor(id);
  if(c&&typeof startMission==='function'&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))){ GM.sig=''; startMission(c,id,'skill'); return; }
  GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); }
 function door(k){ const b=document.createElement('button'); b.type='button'; b.dataset.hf=k; b.style.display='none'; document.body.appendChild(b); try{ b.click(); }catch(e){} b.remove(); }
+/* a press on the bottom bar: keep the halo for a moment even though the bar is redrawn by the tap */
+document.addEventListener('pointerdown',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#gm-nav button[data-gmnav]'); if(!b) return;
+ GM.tap=b.dataset.gmnav; GM.tapAt=Date.now(); clearTimeout(GM.tapT); GM.tapT=setTimeout(()=>{ GM.tap=''; const n=document.querySelector('#gm-nav button.tap'); if(n) n.classList.remove('tap'); },460); },true);
+document.addEventListener('pointerup',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#gm-nav button[data-gmnav]'); if(b&&GM.tap===b.dataset.gmnav) b.classList.add('tap'); },true);
 document.addEventListener('click',e=>{ const p=e.target&&e.target.closest&&e.target.closest('#gm [data-gmpx]'); if(!p) return; e.preventDefault(); e.stopPropagation(); try{ SND.tap(); }catch(x){} firePx(Number(p.dataset.gmpx)); },true);
 document.addEventListener('input',e=>{ if(e.target&&e.target.id==='gm-q'){ GM.q=e.target.value; clearTimeout(GM.qt); GM.qt=setTimeout(()=>{ const pos=e.target.selectionStart; GM.sig=''; sync(); const q=document.getElementById('gm-q'); if(q){ q.focus(); try{ q.setSelectionRange(pos,pos); }catch(x){} } },250); } });
 document.addEventListener('click',e=>{

@@ -309,3 +309,118 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - potato-with-sprouts.webp | https://pixabay.com/photos/potato-seed-potato-vegetable-food-1927136/ | Pixabay Content License | terimakasih0
 - hooke-cork-drawing.webp | https://commons.wikimedia.org/wiki/File:Micrographia_Schem_11.jpg | Public domain | Robert Hooke (1635-1703)
 - bare-tree-in-snow.webp | https://pixabay.com/photos/winter-tree-benches-old-tree-5914653/ | Pixabay Content License | suju-foto
+- earth-layers-cutaway.webp | https://pixabay.com/illustrations/earth-globe-layer-soil-rocks-5660940/ | Pixabay Content License | ArtsyBeeKids
+- lava-flow-glowing.webp | https://pixabay.com/photos/mountains-scenery-nature-wallpaper-9580848/ | Pixabay Content License | dukeejoeXRT
+- volcano-lava-fountain.webp | https://pixabay.com/photos/volcano-eruption-explosion-volcanic-6536876/ | Pixabay Content License | AllegroSympatico
+- tectonic-plates-world-map.webp | https://commons.wikimedia.org/wiki/File:Tectonic_plates(Empty).png | Public domain | United States Geological Survey
+- rock-layers-cliff.webp | https://pixabay.com/photos/quarry-abandoned-limestone-3330185/ | Pixabay Content License | anaterate
+- water-meter-dial.webp | https://pixabay.com/photos/water-reader-water-reading-278901/ | Pixabay Content License | RegioTV
+- dripping-tap.webp | https://pixabay.com/photos/water-drops-sink-tap-kitchen-21070/ | Pixabay Content License | PublicDomainPictures
+- rain-gauge-garden.webp | https://www.flickr.com/photos/67975030@N00/7589753250 | CC BY 2.0 | Bernt Rostad
+- obsidian-black-glassy.webp | https://pixabay.com/photos/obsidian-stone-volcanic-rock-glass-505333/ | Pixabay Content License | Hans
+- basalt-columns.webp | https://pixabay.com/photos/giants-causeway-northern-ireland-1182945/ | Pixabay Content License | falco
+- pumice-stone.webp | https://www.flickr.com/photos/49749999@N00/345353816 | CC BY 2.0 | Ambuj Saxena
+- marble-quarry-white.webp | https://pixabay.com/photos/tuscany-quarry-marble-apuan-4240688/ | Pixabay Content License | dexmac
+- slate-tiles-stack.webp | https://www.flickr.com/photos/64097751@N00/4626430508 | CC BY 2.0 | Dominic's pics
+- shale-thin-layers.webp | https://pixabay.com/photos/stone-layers-structure-monochrome-7136043/ | Pixabay Content License | gosiak1980
+- ammonite-fossil-stone.webp | https://pixabay.com/photos/ammonite-petrification-snail-shell-5852/ | Pixabay Content License | Hans
+- brown-rushing-river.webp | https://pixabay.com/photos/flood-waves-splash-swirl-dangerous-123208/ | Pixabay Content License | Hans
+- split-boulder-snow.webp | https://www.geograph.org.uk/photo/1659079 | CC BY-SA 2.0 | Karl and Ali
+- sand-dune-ripples.webp | https://pixabay.com/photos/desert-sand-dune-sand-nature-10058281/ | Pixabay Content License | dominickvietor
+- white-clouds-blue-sky.webp | https://pixabay.com/photos/sky-clouds-forms-air-atmosphere-5534319/ | Pixabay Content License | ELG21
+- gray-cloudy-sky.webp | https://pixabay.com/photos/darling-clouds-shapes-weather-7838296/ | Pixabay Content License | ELG21
+- cold-glass-drops.webp | https://pixabay.com/photos/drink-refreshing-lime-lemon-soda-5298126/ | Pixabay Content License | Aviavlad
+- pencil-tip-green.webp | https://pixabay.com/photos/pencil-write-sharpened-green-1692530/ | Pixabay Content License | Arcaion
+- empty-glass-jar.webp | https://pixabay.com/photos/glass-containers-glass-empty-clean-1205611/ | Pixabay Content License | ha11ok
+- copper-wires.webp | https://pixabay.com/photos/wire-copper-electric-stop-closeup-2681887/ | Pixabay Content License | disign
+- open-pit-mine.webp | https://pixabay.com/photos/sweden-copper-mine-debtors-boliden-1689163/ | Pixabay Content License | Neta623
+- beaver-at-dam.webp | https://pixabay.com/photos/beaver-dam-beaver-gnawing-log-10493425/ | Pixabay Content License | BuchArena
+- wooden-windmill-six-sails.webp | https://pixabay.com/photos/old-windmill-hill-rural-windmill-5713337/ | Pixabay Content License | krystianwin
+- open-sea-waves.webp | https://pixabay.com/photos/sea-waves-ocean-sunny-water-7409361/ | Pixabay Content License | janchrhorn
+- white-desk-fan.webp | https://pixabay.com/photos/white-fan-hardwood-floor-wall-926202/ | Pixabay Content License | StockSnap
+- glowing-light-bulb.webp | https://pixabay.com/photos/light-bulb-incandescent-bulb-376926/ | Pixabay Content License | Josch13
+- round-stone-well.webp | https://pixabay.com/photos/fountain-old-stone-wall-wall-round-788430/ | Pixabay Content License | Efraimstochter
+- volcano-inside-drawing.webp | https://pixabay.com/vectors/volcano-lava-hot-fire-eruption-156872/ | Pixabay Content License | OpenClipart-Vectors
+- iceland-rift-crack.webp | https://www.flickr.com/photos/76074333@N00/427615075 | CC BY 2.0 | WorldIslandInfo.com
+- cotton-boll-plant.webp | https://pixabay.com/photos/cotton-fruit-wilderness-flower-1721144/ | Pixabay Content License | pianweizhuannong
+- brown-paper-bag.webp | https://pixabay.com/photos/paper-bag-kraft-kraft-paper-bag-5425694/ | Pixabay Content License | BRRT
+- aluminium-cans.webp | https://pixabay.com/photos/tin-beverage-soda-5002706/ | Pixabay Content License | DesignDrawArtes
+- thermometer-scale.webp | https://commons.wikimedia.org/wiki/File:R%C3%A9aumur_-_Celsius_thermometer.jpg (cropped) | CC BY-SA 4.0 | Jeancz
+- boat-on-tidal-flat.webp | https://pixabay.com/photos/africa-zanzibar-beach-tanzania-5135407/ | Pixabay Content License | klimentgrozdanoski
+- magnifying-glass-wooden-handle.webp | https://pixabay.com/photos/magnifying-glass-3180075/ | Pixabay Content License | Bru-nO
+- eyeglasses-wooden-frame.webp | https://pixabay.com/photos/glasses-eye-glasses-frame-wooden-5486967/ | Pixabay Content License | topeasokere
+- old-binoculars-on-books.webp | https://pixabay.com/photos/binoculars-books-window-old-retro-7723093/ | Pixabay Content License | Ylanite
+- space-station-over-earth.webp | https://pixabay.com/photos/international-space-station-eat-67647/ | Pixabay Content License | WikiImages
+- hurricane-seen-from-space.webp | https://pixabay.com/photos/hurricane-earth-satellite-tracking-92968/ | Pixabay Content License | 12019
+- earth-and-moon-in-space.webp | https://pixabay.com/photos/earth-moon-space-planet-world-1365995/ | Pixabay Content License | qimono
+- mars-globe.webp | https://pixabay.com/photos/mars-red-planet-planet-space-11012/ | Pixabay Content License | WikiImages
+- sun-and-planets-in-a-row.webp | https://pixabay.com/photos/solar-system-sun-mercury-venus-439046/ | Pixabay Content License | 51581
+- trees-long-shadows-grass.webp | https://pixabay.com/photos/path-slope-trees-sunlight-4894293/ | Pixabay Content License | fietzfotos
+- autumn-forest-path-red-leaves.webp | https://pixabay.com/photos/road-forest-fall-path-trail-trees-1072821/ | Pixabay Content License | Valiphotos
+- blossoming-tree-on-hill.webp | https://pixabay.com/photos/a-tree-nature-heart-cherry-flowers-5255288/ | Pixabay Content License | miroslavkaclik
+- sun-in-blue-sky-clouds.webp | https://pixabay.com/photos/clouds-sun-sky-blue-nature-summer-429228/ | Pixabay Content License | Studio_Iris
+- tall-storm-cloud.webp | https://pixabay.com/photos/thunderstorm-storm-clouds-threat-7349206/ | Pixabay Content License | dexmac
+- snowy-mountain-peaks.webp | https://pixabay.com/photos/mountain-landscape-snow-nature-9364160/ | Pixabay Content License | Herlensproductions
+- sandy-beach-and-sea.webp | https://pixabay.com/photos/beach-sand-sea-ocean-seascape-1845945/ | Pixabay Content License | Pexels
+- soft-white-feather.webp | https://pixabay.com/photos/feather-ice-snow-plume-6184325/ | Pixabay Content License | Wolfgang_Hasselmann
+- bootprint-on-the-moon.webp | https://images.nasa.gov/details/as11-40-5877 | Public domain (NASA) | JSC
+- thin-crescent-moon-blue-sky.webp | https://pixabay.com/photos/moon-crescent-moon-universe-crater-7362632/ | Pixabay Content License | Kanenori
+- crescent-moon-twilight-trees.webp | https://pixabay.com/photos/heaven-stars-moon-venus-universe-5114501/ | Pixabay Content License | Bru-nO
+- satellites-around-earth-drawing.webp | https://pixabay.com/photos/earth-space-satellites-tracking-79533/ | Pixabay Content License | 12019
+- satellite-dish-on-roof.webp | https://pixabay.com/photos/satellite-dish-tv-watch-tv-870328/ | Pixabay Content License | EME
+- storm-clouds-over-america-from-space.webp | https://www.flickr.com/photos/24662369@N07/5124467559 | CC BY 2.0 | NASA Goddard Photo and Video
+- teeth-model-open-jaw.webp | https://pixabay.com/photos/teeth-dental-dental-model-mouth-5522652/ | Pixabay Content License | Veronicatxoxo
+- skeleton-drawing.webp | https://pixabay.com/vectors/skeleton-bones-human-person-9663605/ | Pixabay Content License | BlenderTimer
+- digestive-system-diagram.webp | https://commons.wikimedia.org/wiki/File:Digestive_system_without_labels.svg | Public domain | Mariana Ruiz, Jmarchn
+- germs-cartoon-colourful.webp | https://pixabay.com/illustrations/coronavirus-viruses-germs-bacterial-4981176/ | Pixabay Content License | Prawny
+- sink-tap-and-soap.webp | https://pixabay.com/photos/soap-soap-piece-piece-of-soap-5176672/ | Pixabay Content License | congerdesign
+- head-inside-nose-mouth-drawing.webp | https://pixabay.com/illustrations/the-larynx-the-pharynx-anatomy-2381980/ | Pixabay Content License | ikkilacerda
+- lemons-and-oranges.webp | https://pixabay.com/photos/fruit-food-citrus-pomelo-15408/ | Pixabay Content License | PublicDomainPictures
+- bread-loaf-and-wheat.webp | https://pixabay.com/photos/bread-loaf-artisan-artisan-bread-1510155/ | Pixabay Content License | Couleur
+- nervous-system-diagram.webp | https://commons.wikimedia.org/wiki/File:Nervous_system_diagram_unlabeled.svg | CC BY-SA 4.0 | Medium69, Jmarchn
+- ice-cubes.webp | https://pixabay.com/photos/ice-cubes-ice-frozen-cold-3506782/ | Pixabay Content License | Bru-nO
+- toothbrush-toothpaste-and-water.webp | https://pixabay.com/photos/toothpaste-toothbrush-brush-teeth-3067570/ | Pixabay Content License | Bru-nO
+- white-pillows-on-bed.webp | https://pixabay.com/photos/bed-pillows-bedroom-room-hotel-8352408/ | Pixabay Content License | InteriorLens
+- blood-cells-in-vessel.webp | https://pixabay.com/illustrations/wbc-leukocytes-antibodies-rbc-8791149/ | Pixabay Content License | eneskoc360
+- soft-pretzels-basket.webp | https://pixabay.com/photos/pretzels-bread-food-yummy-biscuits-7164363/ | Pixabay Content License | RitaE
+- hot-cocoa-glass-mug.webp | https://pixabay.com/photos/hot-chocolate-drink-dairy-winter-1058197/ | Pixabay Content License | stevepb
+- laptop-by-big-window.webp | https://pixabay.com/photos/apartment-hotel-luxury-view-sea-1899964/ | Pixabay Content License | AS_Photography
+- ear-inside-drawing.webp | https://commons.wikimedia.org/wiki/File:Anatomy_of_the_Human_Ear_blank.svg | CC BY 2.5 | Chittka L, Brockmann; derivative work: M. Komorniczak
+- two-red-horseshoe-magnets.webp | https://pixabay.com/photos/magnet-horseshoe-pair-alnico-6114651/ | Pixabay Content License | matthewsjackie
+- ice-cubes-on-table.webp | https://pixabay.com/photos/ice-cubes-ice-frozen-cold-3506782/ | Pixabay Content License | Bru-nO
+- icebergs-in-sea.webp | https://pixabay.com/photos/expedition-arctic-iceberg-glacier-5559244/ | Pixabay Content License | mariohagen
+- kettle-with-steam.webp | https://pixabay.com/photos/kettle-copper-steam-boiling-boil-653673/ | Pixabay Content License | kboyd
+- pot-of-boiling-water.webp | https://pixabay.com/photos/pot-boiling-water-hot-water-883036/ | Pixabay Content License | music4life
+- mallard-duck-on-pond.webp | https://pixabay.com/photos/duck-mallard-bird-pond-plumage-8510483/ | Pixabay Content License | apnear40
+- classical-guitar.webp | https://pixabay.com/photos/guitar-acoustic-instrument-2119/ | Pixabay Content License | PublicDomainPictures
+- bulb-wired-to-battery.webp | https://pixabay.com/illustrations/battery-energy-green-technology-1162477/ | Pixabay Content License | kalhh
+- light-bulb-idea.webp | https://pixabay.com/photos/bulb-light-idea-electricity-energy-5258341/ | Pixabay Content License | AJS1
+- red-thermos-by-lake.webp | https://pixabay.com/photos/jug-thermos-hot-cold-drink-coffee-3638398/ | Pixabay Content License | Bru-nO
+- kitchen-scale-with-bowl.webp | https://pixabay.com/photos/kitchen-scale-kitchen-scales-2442599/ | Pixabay Content License | xw7229525
+- seedlings-in-small-pots.webp | https://pixabay.com/photos/seedlings-planting-gardening-green-2708679/ | Pixabay Content License | JillWellington
+- ball-and-stick-molecule-model.webp | https://pixabay.com/photos/molecule-chemistry-beta-himachalen-3286651/ | Pixabay Content License | anandasandra
+- bumpy-sneaker-sole.webp | https://pixabay.com/photos/shoe-sports-shoe-trail-running-629643/ | Pixabay Content License | stux
+- red-cabbage-halves.webp | https://pixabay.com/photos/vegetable-red-cabbage-food-healthy-3472058/ | Pixabay Content License | Buntysmum
+- pile-of-rusty-nails.webp | https://pixabay.com/photos/nails-metal-iron-old-carpentry-4168539/ | Pixabay Content License | terimakasih0
+- pancake-in-frying-pan.webp | https://pixabay.com/photos/pan-pancake-bake-scrambled-eggs-5455249/ | Pixabay Content License | congerdesign
+- old-cut-apple.webp | https://pixabay.com/photos/apple-old-apple-esthetic-manzana-3603140/ | Pixabay Content License | fernandozhiminaicela
+- round-mirror-over-sink.webp | https://pixabay.com/photos/bathroom-toilet-mirror-bathtub-8714867/ | Pixabay Content License | 23555986
+- glasses-of-tea-and-sugar.webp | https://pixabay.com/photos/teapot-tea-sugar-breakfast-yummy-4862751/ | Pixabay Content License | 11082974
+- white-window-with-plants.webp | https://pixabay.com/photos/white-window-glass-shield-frame-2563976/ | Pixabay Content License | StockSnap
+- black-flashlight.webp | https://pixabay.com/photos/tactical-flashlight-flashlight-torch-7662681/ | Pixabay Content License | Ray_Shrewsberry
+- copper-wire-stripped-end.webp | https://pixabay.com/photos/management-cable-speaker-cable-1031985/ | Pixabay Content License | Bru-nO
+- chocolate-bars-and-melted-chocolate.webp | https://pixabay.com/photos/chocolate-cocoa-beans-10181616/ | Pixabay Content License | alyerika
+- wooden-swing-on-grass.webp | https://pixabay.com/photos/swing-lawn-playground-meadow-1365713/ | Pixabay Content License | Counselling
+- metal-slide-in-park.webp | https://pixabay.com/photos/old-playground-slide-old-slide-3886137/ | Pixabay Content License | MikeGoad
+- stone-castle-towers.webp | https://pixabay.com/photos/noble-castle-hofburg-imperial-palace-789501/ | Pixabay Content License | ColdSmiling
+- ellis-island-main-building.webp | https://www.flickr.com/photos/77742560@N06/7782082916 | CC BY 2.0 | shankar s.
+- camel-caravan-desert.webp | https://pixabay.com/photos/caravan-desert-sahara-sand-camel-4483792/ | Pixabay Content License | Hoeneisen
+- spices-in-bowls.webp | https://pixabay.com/photos/spices-cinnamon-anise-chili-curry-10353173/ | Pixabay Content License | shan_graphics
+- compass-blue-dial.webp | https://pixabay.com/vectors/compass-navigation-direction-151722/ | Pixabay Content License | OpenClipart-Vectors
+- old-light-bulb-glowing.webp | https://pixabay.com/photos/lighting-lightbulb-ideas-background-3489394/ | Pixabay Content License | Bru-nO
+- old-telephone-wooden.webp | https://pixabay.com/photos/telephone-vintage-ancient-phone-6497853/ | Pixabay Content License | 21177668
+- saturn-v-rocket-liftoff.webp | https://images.nasa.gov/details/6901000 | Public domain (NASA) | MSFC
+- stock-exchange-columns.webp | https://pixabay.com/photos/architecture-building-city-nyc-3033561/ | Pixabay Content License | USA-Reiseblogger
+- breadline-statues-men.webp | https://www.flickr.com/photos/82538566@N00/45708252984 | CC BY 2.0 | jimbowen0306
+- shabbos-candles-glass.webp | https://www.flickr.com/photos/14771153@N04/4712371537 | CC BY 2.0 | slgckgc
+- blue-ridge-mountains.webp | https://pixabay.com/photos/mountains-trees-forest-7357186/ | Pixabay Content License | terski
