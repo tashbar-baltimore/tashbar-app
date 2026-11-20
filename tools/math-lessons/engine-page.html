@@ -1,0 +1,1020 @@
+<title>Third Grade Math Lessons</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* TL-LESSON-KIT v1 (Little Explorers world). One bright single theme for K-1. Menu of 17 lessons; each lesson = 8 stations shown by the train. */
+:root{
+  --sky:#E8F6FF; --mat:#FFF6D8; --ink:#1F2A44; --sun:#FFC83D; --leaf:#2FBF71; --berry:#FF5D73; --sea:#3D8BFF; --grape:#8E5BFF;
+  --card:#FFFFFF; --soft:#6B7A99;
+  --f-head:"Baloo 2","Comic Sans MS","Trebuchet MS",system-ui,sans-serif; --f-body:"Nunito","Trebuchet MS",system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(circle at 15% 10%,#FFF9C4 0,transparent 35%),linear-gradient(180deg,var(--sky),var(--mat));color:var(--ink);font-family:var(--f-body);font-size:18px}
+.wrap{max-width:980px;margin:0 auto;padding-block:14px 28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px;min-height:100%;box-sizing:border-box}
+.top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.top h1{font-family:var(--f-head);font-weight:800;font-size:26px;margin:0;flex:1;min-width:200px}
+.top h1 small{display:block;font-family:var(--f-body);font-size:13px;color:var(--soft);font-weight:600}
+.pill{border:0;border-radius:999px;padding:8px 14px;font:800 15px var(--f-body);background:var(--card);color:var(--ink);box-shadow:0 3px 0 #d9d2b8;cursor:pointer}
+.mode{display:inline-block;background:#FFE7EB;color:#b4233b;border-radius:10px;padding:2px 10px;font-weight:800;font-size:13px}
+.track{position:relative;height:46px;background:var(--card);border-radius:24px;box-shadow:0 4px 0 #e6dfc2;display:flex;align-items:center;padding:0 16px}
+.track .rail{position:absolute;left:24px;right:24px;top:50%;height:6px;background:repeating-linear-gradient(90deg,#c9b98a 0 14px,transparent 14px 22px);transform:translateY(-50%)}
+.track .st{position:relative;flex:1;display:flex;justify-content:center}
+.track .st i{width:16px;height:16px;border-radius:50%;background:#e8e2cc;border:3px solid #fff;box-shadow:0 0 0 2px #e8e2cc}
+.track .st.done i{background:var(--leaf);box-shadow:0 0 0 2px var(--leaf)}
+.train{position:absolute;top:2px;font-size:30px;transition:left .8s cubic-bezier(.5,1.6,.4,1);transform:translateX(-50%)}
+.stage{flex:1;background:var(--card);border-radius:34px;box-shadow:0 10px 0 #eadfb8,0 20px 40px rgba(31,42,68,.12);padding:20px;display:flex;flex-direction:column;gap:14px;min-height:540px;position:relative;overflow:hidden}
+.say{display:flex;align-items:center;gap:12px}
+.spk{flex:0 0 auto;width:64px;height:64px;border-radius:50%;border:0;background:var(--sea);color:#fff;font-size:30px;cursor:pointer;box-shadow:0 5px 0 #2a63c0}
+.spk.talk{animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.08)}}
+.cap{font:800 22px/1.3 var(--f-head);min-height:58px;display:flex;align-items:center}
+.scene{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.row{display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap}
+.g5{display:flex;flex-direction:column;gap:4px;align-items:flex-start}
+.g5>div{display:flex;gap:4px}
+.basket{position:relative;min-width:140px;min-height:110px;border-radius:0 0 60px 60px;background:linear-gradient(180deg,#F7C77B,#D9963E);border:6px solid #B87528;display:flex;flex-wrap:wrap;align-content:flex-end;justify-content:center;gap:4px;padding:10px 10px 16px;box-sizing:border-box}
+.basket.big{min-width:230px;min-height:140px;background:linear-gradient(180deg,#FFD98A,#E5A64A)}
+.basket .lab{position:absolute;top:-30px;left:50%;transform:translateX(-50%);font:800 22px var(--f-head);background:var(--card);border-radius:12px;padding:0 10px;box-shadow:0 2px 0 #e6dfc2;white-space:nowrap}
+.tapme{cursor:pointer}
+.o{font-size:42px;line-height:1;display:inline-block;transition:transform .25s,filter .25s,opacity .4s;user-select:none}
+.o.sm{font-size:30px}
+.o.hl{transform:scale(1.35) translateY(-6px);filter:drop-shadow(0 0 8px #FFC83D)}
+.o.lone{filter:drop-shadow(0 0 8px #FF5D73)}
+.o.gone{opacity:.15;transform:scale(.7)}
+.o.ghost{opacity:.18}
+.o.pop{animation:pop .45s cubic-bezier(.3,1.8,.5,1)}
+@keyframes pop{0%{transform:scale(0) translateY(-40px)}100%{transform:scale(1)}}
+.o.fly{animation:fly 1.1s ease-out both}
+@keyframes fly{0%{transform:translate(200px,-110px) rotate(-20deg);opacity:0}100%{transform:none;opacity:1}}
+.o.flyaway{animation:flyaway 1.1s ease-in both}
+@keyframes flyaway{100%{transform:translate(-220px,-140px) rotate(20deg);opacity:0}}
+.tray{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:60px;padding:8px 14px;border-radius:20px;background:#F3F7FF}
+.tray .o{cursor:pointer}
+.plus,.eq{font:800 46px var(--f-head);color:var(--grape)}
+.big-num{font:800 72px/1 var(--f-head);color:var(--berry)}
+.card-num{font:800 96px/1 var(--f-head);color:var(--sea);background:#F3F7FF;border-radius:28px;padding:10px 30px}
+.choices{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.ch{min-width:108px;height:108px;padding:0 10px;border-radius:30px;border:0;background:var(--sun);color:var(--ink);font:800 52px var(--f-head);box-shadow:0 7px 0 #D49A12;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ch.wide{font-size:38px;min-width:150px}
+.ch small{font-size:12px;letter-spacing:1px;color:#7a5a00;max-width:100px;word-break:break-all;line-height:1.1}
+.ch:active{transform:translateY(4px);box-shadow:0 3px 0 #D49A12}
+.ch.no,.pic.no{opacity:.3;pointer-events:none}
+.ch.yes{background:var(--leaf);color:#fff;box-shadow:0 7px 0 #1f8a51}
+.pic{border:5px solid #E6E0CC;border-radius:26px;padding:10px 14px;background:#FFFDF5;cursor:pointer;display:flex;gap:10px;align-items:center;justify-content:center;box-shadow:0 5px 0 #e6dfc2;min-width:96px;min-height:96px;font:inherit;color:inherit}
+.pic .o{font-size:30px}
+.pic.yes{border-color:var(--leaf);background:#E9FBF1}
+.pic.huge .o{font-size:56px}
+.pic.barpic{width:290px;max-width:86vw;justify-content:flex-start;padding-right:30px;box-sizing:border-box}
+.frame{display:grid;grid-template-columns:repeat(5,60px);grid-template-rows:repeat(2,60px);gap:6px;background:#3D8BFF;padding:8px;border-radius:18px}
+.frame>div{background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.frame .o{font-size:38px}
+.frame.mini{grid-template-columns:repeat(5,22px);grid-template-rows:repeat(2,22px);gap:3px;padding:4px;border-radius:8px}
+.frame.mini .o{font-size:16px}
+.frame .tapme{cursor:pointer}
+.go{border:0;border-radius:28px;padding:16px 32px;font:800 28px var(--f-head);background:var(--leaf);color:#fff;box-shadow:0 7px 0 #1f8a51;cursor:pointer}
+.go.alt{background:var(--sea);box-shadow:0 7px 0 #2a63c0}
+.tiles{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:620px}
+.tile{width:54px;height:54px;border-radius:14px;background:#FFF1C9;display:flex;align-items:center;justify-content:center;font:800 26px var(--f-head);box-shadow:0 3px 0 #e8d391}
+.tile.q{background:#E7DEFF;color:var(--grape)}
+.tile.hl{background:var(--sun);transform:translateY(-4px)}
+.tile.ten{background:#D6F5E3}
+.car{min-width:70px;height:62px;border-radius:14px 14px 8px 8px;background:var(--berry);color:#fff;display:flex;align-items:center;justify-content:center;font:800 32px var(--f-head);position:relative;box-shadow:0 4px 0 #c43a4f}
+.car.q{background:var(--grape);box-shadow:0 4px 0 #6a3fd0}
+.car.hl{transform:translateY(-6px)}
+.car::after{content:"";position:absolute;bottom:-12px;left:10px;right:10px;height:14px;background:radial-gradient(circle at 10px 7px,#1F2A44 6px,transparent 7px),radial-gradient(circle at calc(100% - 10px) 7px,#1F2A44 6px,transparent 7px)}
+.bar{height:30px;border-radius:15px 4px 4px 15px;position:relative;box-shadow:inset 0 -5px 0 rgba(0,0,0,.12)}
+.bar::after{content:"";position:absolute;right:-18px;top:0;border-left:18px solid currentColor;border-top:15px solid transparent;border-bottom:15px solid transparent}
+.bar.units{background-image:repeating-linear-gradient(90deg,transparent 0 22px,rgba(255,255,255,.9) 22px 24px)!important}
+.bars{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.tower{display:flex;flex-direction:column-reverse;gap:2px;align-items:center;min-height:40px}
+.tower i{width:44px;height:26px;border-radius:6px;display:block}
+.bin{min-width:130px;min-height:120px;border-radius:20px;background:#F3F7FF;border:5px dashed #B9C7E6;display:flex;flex-wrap:wrap;align-content:flex-start;justify-content:center;gap:4px;padding:8px;position:relative;cursor:pointer;font:inherit}
+.bin .tag{position:absolute;top:-26px;left:50%;transform:translateX(-50%);font-size:34px;background:#fff;border-radius:14px;padding:0 6px}
+.bin .o{font-size:28px}
+.cell{position:relative;width:150px;height:150px}
+.cell span{position:absolute;font-size:44px;line-height:1}
+.spot{position:absolute;width:52px;height:52px;border-radius:50%;border:4px dashed var(--grape);background:rgba(142,91,255,.08);cursor:pointer}
+.shelf{display:flex;flex-direction:column;gap:0;background:#C98B4A;padding:8px;border-radius:12px}
+.shelf>div{height:72px;border-bottom:8px solid #8B5A2B;background:#F5E3C8;display:flex;align-items:flex-end;justify-content:center;gap:24px;padding:0 20px}
+.shelf .o{font-size:46px}
+.path{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.path .tile{position:relative}
+.path .bun{position:absolute;top:-38px;font-size:34px;transition:none}
+.night{background:linear-gradient(180deg,#1B2350,#3B3F8F);border-radius:24px;width:min(560px,92%);height:220px;position:relative}
+.scatter{position:relative;width:min(360px,90%);height:230px;background:#F7FBFF;border-radius:24px}
+.scatter .o{position:absolute}
+.zaidy{font-size:76px}
+.note{font-size:13px;color:var(--soft);text-align:center}
+.burst{position:absolute;inset:0;pointer-events:none}
+.start{display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center}
+.start .hero{font-size:84px;letter-spacing:6px}
+.start h2{font:800 40px/1.1 var(--f-head);margin:0;text-wrap:balance}
+.start p{margin:0;color:var(--soft);max-width:52ch}
+.menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;width:100%}
+.lt{border:0;border-radius:26px;background:#FFFDF5;box-shadow:0 6px 0 #e6dfc2;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;font:800 17px/1.15 var(--f-head);color:var(--ink);position:relative}
+.lt .e{font-size:44px}
+.lt small{font:600 12px var(--f-body);color:var(--soft)}
+.lt .done{position:absolute;top:6px;right:10px;font-size:22px}
+.svgsh{display:block}
+button:focus-visible,.bin:focus-visible,.tapme:focus-visible{outline:4px solid var(--grape);outline-offset:3px}
+@media (max-width:560px){.path .tile{width:34px;height:40px;font-size:18px}.o{font-size:34px}.ch{min-width:84px;height:84px;font-size:40px}.ch.wide{font-size:28px;min-width:110px}.frame{grid-template-columns:repeat(5,46px);grid-template-rows:repeat(2,46px)}.frame .o{font-size:28px}.cap{font-size:18px}.basket.big{min-width:170px}.card-num{font-size:72px}.big-num{font-size:56px}.tile{width:44px;height:44px;font-size:21px}.car{min-width:54px;font-size:26px}.bin{min-width:120px}.stage{padding:14px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<div class="wrap">
+  <div class="top">
+    <h1 id="h1">3rd Grade Math <small>Level 4 lessons in the new style</small></h1>
+    <button class="pill" id="home" type="button" hidden>🏠 All lessons</button>
+    <button class="pill" id="mute" type="button" aria-pressed="false">🔊 Voice on</button>
+  </div>
+  <div class="track" id="track" aria-label="Lesson progress" hidden><div class="rail"></div><div id="stations" style="display:contents"></div><div class="train" id="train" aria-hidden="true">🚂</div></div>
+  <div class="stage" id="stage">
+    <div class="say"><button class="spk" id="spk" type="button" aria-label="Say it again">🔊</button><div class="cap" id="cap" aria-live="polite"></div></div>
+    <div class="scene" id="scene"></div>
+    <canvas class="burst" id="burst"></canvas>
+  </div>
+  <p class="note">Every lesson: warm-up · story · mini-movie · we do it together · practice in 5+ kinds of games · real life · check · celebrate. Every instruction is spoken, so no reading is needed.</p>
+</div>
+<script>
+(function(){
+"use strict";
+/* ================= KIT CORE ================= */
+const FAST=(window.KL_FAST||/fast/.test(location.search))?0.04:1;
+let EPOCH=0, CUR=null;
+function post(m){ try{ if(window.parent&&window.parent!==window) window.parent.postMessage(m,'*'); }catch(e){} }
+const STATIONS=['Warm-up','Story','Movie','Together','Practice','Real life','Check','Hooray'];
+const TH=[{e:'🍎',n:'apples'},{e:'🐟',n:'fish'},{e:'🚗',n:'cars'},{e:'⚽',n:'balls'},{e:'⭐',n:'stars'},{e:'🍪',n:'cookies'},{e:'🐥',n:'chicks'},{e:'🎈',n:'balloons'},{e:'🍓',n:'strawberries'},{e:'🧸',n:'teddy bears'},{e:'🐞',n:'ladybugs'},{e:'🌷',n:'flowers'},{e:'🍩',n:'donuts'},{e:'🐸',n:'frogs'},{e:'🦋',n:'butterflies'},{e:'🍋',n:'lemons'}];
+const $=id=>document.getElementById(id), scene=$('scene'), cap=$('cap');
+let muted=false, lastLine='', themeI=Math.floor(Math.random()*TH.length), stars=0, MODE='help', BOT=null, BUSY=false;
+window.__kit={bot:()=>BOT};
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const any=a=>a[Math.floor(Math.random()*a.length)];
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function T(){ themeI=(themeI+1+Math.floor(Math.random()*4))%TH.length; return TH[themeI]; }
+const wait=ms=>{ const ep=EPOCH; return new Promise(r=>setTimeout(()=>{ if(ep===EPOCH) r(); },ms*FAST)); };
+const helpOn=()=>MODE!=='check';
+let voice=null; function pickVoice(){ try{ const vs=speechSynthesis.getVoices(); voice=vs.find(v=>/en-US/i.test(v.lang)&&/female|samantha|google us/i.test(v.name))||vs.find(v=>/^en/i.test(v.lang))||null; }catch(e){} }
+try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){}
+/* TTS-1: Google voices (Firebase "tts" function, cached MP3). Falls back to the device voice at once on any problem; after 3 failures it stops trying. */
+const TTS_URL=window.KL_TTS||('https:'+'/'+'/'+'tts-q26c275eaa-uk.a.run.app'); let TTS_FAILS=window.KL_NO_TTS?9:0, CUR_AUDIO=null; const TCACHE={};
+function devSpeak(t,res,fb,spk){ if(!('speechSynthesis' in window)) return; try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); if(voice) u.voice=voice; u.rate=.92; u.pitch=1.1; spk.classList.add('talk');
+  u.onend=()=>{ clearTimeout(fb); spk.classList.remove('talk'); setTimeout(res,180); }; speechSynthesis.speak(u); }catch(e){} }
+function gUrl(t){ if(TCACHE[t]) return Promise.resolve(TCACHE[t]); return Promise.race([fetch(TTS_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:String(t).slice(0,300),voice:'teacher'})}).then(r=>r.json()).then(j=>{ if(j&&j.ok&&j.url){ TCACHE[t]=j.url; return j.url; } throw new Error('tts'); }),new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),1500))]); }
+function stopAudio(){ try{ speechSynthesis.cancel(); }catch(e){} if(CUR_AUDIO){ try{ CUR_AUDIO.pause(); }catch(e){} CUR_AUDIO=null; } }
+function say(t){ lastLine=t; cap.textContent=t; const spk=$('spk'); const ep=EPOCH;
+  return new Promise(res0=>{ const res=()=>{ if(ep===EPOCH) res0(); }; let fb=setTimeout(()=>{ spk.classList.remove('talk'); res(); },Math.max(900,t.length*62)*FAST);
+    if(muted||FAST<1) return; stopAudio();
+    if(TTS_FAILS<3){ clearTimeout(fb); fb=setTimeout(()=>{ spk.classList.remove('talk'); res(); },t.length*95+3500);
+      const fail=()=>{ TTS_FAILS++; clearTimeout(fb); fb=setTimeout(()=>{ spk.classList.remove('talk'); res(); },Math.max(900,t.length*62)); devSpeak(t,res,fb,spk); };
+      gUrl(t).then(u=>{ if(lastLine!==t) return; const a=new Audio(u); CUR_AUDIO=a; spk.classList.add('talk'); a.onended=()=>{ clearTimeout(fb); spk.classList.remove('talk'); setTimeout(res,150); }; a.onerror=fail; const pr=a.play(); if(pr&&pr.catch) pr.catch(fail); }).catch(fail); return; }
+    devSpeak(t,res,fb,spk); }); }
+$('spk').onclick=()=>{ if(lastLine) say(lastLine); };
+$('mute').onclick=()=>{ muted=!muted; $('mute').textContent=muted?'🔇 Voice off':'🔊 Voice on'; $('mute').setAttribute('aria-pressed',String(muted)); if(muted) stopAudio(); };
+let AC=null; function tone(f,d,type){ if(FAST<1) return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); const o=AC.createOscillator(), g=AC.createGain(); o.type=type||'sine'; o.frequency.value=f; g.gain.setValueAtTime(.18,AC.currentTime); g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+d); o.connect(g); g.connect(AC.destination); o.start(); o.stop(AC.currentTime+d); }catch(e){} }
+const chime=()=>{ tone(784,.18); setTimeout(()=>tone(1047,.3),140); }, soft=()=>tone(220,.25,'triangle'), plink=n=>tone(440+(n%12)*60,.12);
+function station(i){ $('stations').innerHTML=STATIONS.map((s,k)=>'<div class="st'+(k<i?' done':'')+'" title="'+s+'"><i></i></div>').join(''); $('train').style.left='calc(24px + '+(i/(STATIONS.length-1))+' * (100% - 48px))'; }
+function confetti(){ const c=$('burst'), x=c.getContext('2d'); c.width=c.offsetWidth; c.height=c.offsetHeight; const P=Array.from({length:120},()=>({x:c.width/2,y:c.height/2,vx:(Math.random()-.5)*14,vy:Math.random()*-14-4,r:4+Math.random()*6,c:any(['#FFC83D','#2FBF71','#FF5D73','#3D8BFF','#8E5BFF'])}));
+  let t=0; (function f(){ x.clearRect(0,0,c.width,c.height); P.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.45; x.fillStyle=p.c; x.fillRect(p.x,p.y,p.r,p.r); }); if(++t<90) requestAnimationFrame(f); else x.clearRect(0,0,c.width,c.height); })(); }
+/* drawing helpers */
+const O=(e,cls)=>'<span class="o'+(cls?' '+cls:'')+'">'+e+'</span>';
+const objs=(e,n,cls)=>Array.from({length:n},()=>O(e,cls)).join('');
+function g5(e,n,cls){ let h='<div class="g5">'; for(let r=0;r<n;r+=5) h+='<div>'+objs(e,Math.min(5,n-r),cls)+'</div>'; return h+'</div>'; }
+function scatter(e,n,id){ const cells=shuffle(Array.from({length:24},(_,i)=>i)).slice(0,n); return '<div class="scatter" id="'+(id||'sc')+'">'+cells.map(c=>'<span class="o" style="left:calc('+((c%6)*16+2+Math.random()*4)+'%);top:'+(Math.floor(c/6)*24+4+Math.random()*6)+'%">'+e+'</span>').join('')+'</div>'; }
+function frame(n,e,id,o){ o=o||{}; let h='<div class="frame'+(o.mini?' mini':'')+'"'+(id?' id="'+id+'"':'')+'>'; for(let i=0;i<10;i++){ const e2=(o.e2&&i>=o.split)?o.e2:e; h+='<div data-i="'+i+'">'+(i<n?O(e2):(o.ghost?O('⚪','ghost'):''))+'</div>'; } return h+'</div>'; }
+const lockAll=()=>scene.querySelectorAll('button,.pic,.ch,.bin,.spot').forEach(x=>x.onclick=null);
+const view=h=>{ BOT=null; scene.innerHTML=h; };
+async function countAloud(sel,start,step){ start=start||0; step=step||1; const os=[...scene.querySelectorAll(sel)]; for(let i=0;i<os.length;i++){ os[i].classList.add('hl'); plink(i); await say(String(start+step*(i+1))); os[i].classList.remove('hl'); } }
+function numOpts(ans,lo,hi,extra){ const s=new Set([ans]); (extra||[]).forEach(v=>{ if(s.size<3&&v!==ans&&v>=lo&&v<=hi) s.add(v); }); let guard=0; while(s.size<3&&guard++<60){ const d=ans+any([-2,-1,1,2]); if(d>=lo&&d<=hi) s.add(d); } while(s.size<3) s.add(Math.max(...s)+1); return shuffle([...s]); }
+function numRow(ans,lo,hi,dots,extra){ return '<div class="choices">'+numOpts(ans,lo,hi,extra).map(v=>'<button class="ch" type="button" data-v="'+v+'"'+(v===ans?' data-ok="1"':'')+' aria-label="'+v+'">'+v+(dots&&v<=10?'<small>'+'•'.repeat(v)+'</small>':'')+'</button>').join('')+'</div>'; }
+async function wrongHelp(help,again){ BUSY=true; try{ await wrongHelp2(help,again); } finally { BUSY=false; } }
+async function wrongHelp2(help,again){ if(helpOn()&&help){ if(typeof help==='string'){ await say('Let’s count together.'); await countAloud(help); } else await help(); await say(again||'Now try again.'); } else await say('Look again. Try once more.'); }
+function pickNum(ans,help,again){ BOT=null; return new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(+b.dataset.v===ans){ b.classList.add('yes'); chime(); scene.querySelectorAll('.ch').forEach(x=>x.onclick=null); res(first); } else { first=false; b.classList.add('no'); soft(); await wrongHelp(help,again||'Now tap the number.'); } }); }); }
+async function numQ(html,prompt,ans,o){ o=o||{}; view(html+numRow(ans,o.lo==null?0:o.lo,o.hi==null?Math.max(10,ans+2):o.hi,o.dots&&MODE==='help',o.extra)); await say(prompt); return pickNum(ans,o.help,o.again); }
+/* pick one picture: items [{h, ok, cls}] */
+function pickQ(pre,items,prompt,help,o){ o=o||{}; view(pre+'<div class="row">'+items.map(it=>'<button class="pic '+(it.cls||'')+'" type="button"'+(it.ok?' data-ok="1"':'')+(it.label?' aria-label="'+it.label+'"':'')+'>'+it.h+'</button>').join('')+'</div>'+(o.post||''));
+  return say(prompt).then(()=>new Promise(res=>{ let first=true; scene.querySelectorAll('.row:last-of-type .pic, .pic').forEach(p=>p.onclick=async()=>{ if(BUSY) return; if(p.dataset.ok){ p.classList.add('yes'); chime(); scene.querySelectorAll('.pic').forEach(x=>x.onclick=null); res(first); } else { first=false; p.classList.add('no'); soft(); await wrongHelp(help,o.again||'Try again.'); } }); })); }
+function tapGo(sel){ return new Promise(r=>{ const els=[...scene.querySelectorAll(sel)]; els.forEach(e=>{ e.classList.add('tapme'); e.onclick=()=>{ els.forEach(x=>x.onclick=null); r(); }; }); BOT=()=>els[0]&&els[0].click(); }); }
+const PRAISE=['Yes!','Great job!','You got it!','Super!','Wow!','Right!'];
+/* ================= SHAPES ================= */
+const SH={circle:'<circle cx="50" cy="50" r="42"/>',square:'<rect x="12" y="12" width="76" height="76" rx="3"/>',rectangle:'<rect x="4" y="27" width="92" height="46" rx="3"/>',triangle:'<polygon points="50,8 93,88 7,88"/>',hexagon:'<polygon points="27,8 73,8 96,50 73,92 27,92 4,50"/>'};
+const VERT={square:[[12,12],[88,12],[88,88],[12,88]],rectangle:[[4,27],[96,27],[96,73],[4,73]],triangle:[[50,8],[93,88],[7,88]],hexagon:[[27,8],[73,8],[96,50],[73,92],[27,92],[4,50]]};
+const SIDES={triangle:3,square:4,rectangle:4,hexagon:6};
+const COLS=['#FF5D73','#3D8BFF','#2FBF71','#FFC83D','#8E5BFF','#FF8A3D'];
+function shp(name,o){ o=o||{}; const s=o.s||84, c=o.c||any(COLS), r=o.r||0; return '<svg class="svgsh" viewBox="0 0 100 100" width="'+s+'" height="'+s+'" style="transform:rotate('+r+'deg)" aria-hidden="true"><g fill="'+c+'" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+SH[name]+'</g>'+(o.inner||'')+'</svg>'; }
+const SOLIDS=[{n:'sphere',like:'a ball',e:['⚽','🏀','🌍','🔮']},{n:'cube',like:'a block',e:['🎲','🧊','📦']},{n:'cone',like:'an ice cream cone',e:['🍦','🎉','🔺']},{n:'cylinder',like:'a can',e:['🥫','🥁','🧻']}];
+SOLIDS[2].e=['🍦','🎉']; /* cone pictures only */
+function piece(kind,c,r,s){ s=s||60; const P={rtri:'<polygon points="8,8 92,92 8,92"/>',sq:'<rect x="10" y="10" width="80" height="80"/>',halfhex:'<polygon points="27,30 73,30 96,72 4,72"/>',tri:'<polygon points="50,10 92,85 8,85"/>'}; return '<svg viewBox="0 0 100 100" width="'+s+'" height="'+s+'" style="transform:rotate('+(r||0)+'deg)" aria-hidden="true"><g fill="'+c+'" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+P[kind]+'</g></svg>'; }
+const BUILDS={
+  square:{pieces:['rtri','rtri'],rot:[0,180],made:'<polygon points="8,8 92,8 92,92" fill="#3D8BFF"/><polygon points="8,8 92,92 8,92" fill="#FF5D73"/>',name:'square',cnt:2,word:'two triangles'},
+  rectangle:{pieces:['sq','sq'],rot:[0,0],made:'<rect x="4" y="27" width="46" height="46" fill="#2FBF71"/><rect x="50" y="27" width="46" height="46" fill="#FFC83D"/>',name:'rectangle',cnt:2,word:'two squares'},
+  hexagon:{pieces:['halfhex','halfhex'],rot:[0,180],made:'<polygon points="27,8 73,8 96,50 4,50" fill="#8E5BFF"/><polygon points="4,50 96,50 73,92 27,92" fill="#FF8A3D"/>',name:'hexagon',cnt:2,word:'two halves'},
+  bigsquare:{pieces:['sq','sq','sq','sq'],rot:[0,0,0,0],made:'<rect x="8" y="8" width="42" height="42" fill="#FF5D73"/><rect x="50" y="8" width="42" height="42" fill="#3D8BFF"/><rect x="8" y="50" width="42" height="42" fill="#2FBF71"/><rect x="50" y="50" width="42" height="42" fill="#FFC83D"/>',name:'square',cnt:4,word:'four small squares'},
+  hex6:{pieces:['tri','tri','tri','tri','tri','tri'],rot:[0,180,0,180,0,180],made:'<polygon points="27,8 73,8 96,50 73,92 27,92 4,50" fill="#FFC83D"/><g stroke="#1F2A44" stroke-width="3"><line x1="27" y1="8" x2="73" y2="92"/><line x1="73" y1="8" x2="27" y2="92"/><line x1="4" y1="50" x2="96" y2="50"/></g>',name:'hexagon',cnt:6,word:'six triangles'}
+};
+const madeSvg=(b,s)=>'<svg viewBox="0 0 100 100" width="'+(s||110)+'" height="'+(s||110)+'" aria-hidden="true"><g stroke="#1F2A44" stroke-width="3" stroke-linejoin="round">'+b.made+'</g></svg>';
+/* ================= GAME LIBRARY ================= */
+/* each game: (cfg) => Promise<[firstTry:boolean, explainLine]> ; MODE = help | practice | check */
+const PAIRS=[['🐻','bears','🎩','hats'],['🐶','dogs','🦴','bones'],['🐰','bunnies','🥕','carrots'],['👶','babies','🍼','bottles'],['🐝','bees','🌼','flowers'],['🐒','monkeys','🍌','bananas'],['🐦','birds','🪺','nests'],['🍽️','plates','🍴','forks']];
+const G={};
+/* --- counting --- */
+G.count=async c=>{ const t=c.theme||T(), n=c.n||R(c.lo||1,c.hi||8); const f=await numQ('<div class="row" id="ct">'+g5(t.e,n)+'</div>','How many '+t.n+'? Tap the number.',n,{lo:1,hi:Math.max(10,n+2),dots:true,help:'#ct .o'}); return [f,'There are '+n+' '+t.n+'.']; };
+G.countScatter=async c=>{ const t=c.theme||T(), n=c.n||R(c.lo||4,c.hi||10); const f=await numQ(scatter(t.e,n),'Count the '+t.n+'. Touch each one just once. How many?',n,{lo:1,hi:Math.max(10,n+2),help:async()=>{ await say('Let’s count, touching each one once.'); await countAloud('#sc .o'); }}); return [f,n+' '+t.n+'. The last number we say tells how many.']; };
+G.frameCount=async c=>{ const t=c.theme||T(), n=c.n||R(c.lo||3,c.hi||10); const f=await numQ(frame(n,t.e,'fr'),'How many '+t.n+' in the frame?',n,{lo:1,hi:10,help:async()=>{ await say(n>5?'Five on top. Then count on.':'Let’s count.'); await countAloud('#fr .o'); }}); return [f,n+(n>5?': five and '+(n-5)+' more.':'.')]; };
+G.tapcount=async c=>{ const t=c.theme||T(), n=c.n||R(c.lo||3,c.hi||8); view('<div class="row" id="tc">'+objs(t.e,n)+'</div>'); await say('Tap each '+t.n.replace(/s$/,'')+' to count it.');
+  let first=true; await new Promise(r=>{ let k=0; const os=[...scene.querySelectorAll('#tc .o')]; os.forEach(o=>{ o.classList.add('tapme'); o.onclick=async()=>{ if(BUSY) return; if(o.dataset.d){ first=false; soft(); await say('We already counted that one!'); return; } o.dataset.d=1; k++; o.classList.add('hl'); plink(k); if(MODE==='help') say(String(k)); if(k===n){ await wait(500); r(); } }; }); BOT=()=>{ const x=os.find(o=>!o.dataset.d); x&&x.click(); }; });
+  scene.insertAdjacentHTML('beforeend',numRow(n,1,Math.max(10,n+2),false)); await say('How many '+t.n+'?'); const f=await pickNum(n,'#tc .o'); return [first&&f,n+' '+t.n+'.']; };
+G.setForNum=async c=>{ const t=c.theme||T(), n=c.n||R(c.lo||2,c.hi||9); const opts=numOpts(n,1,Math.max(10,n+2)); const f=await pickQ('<div class="card-num">'+n+'</div>',opts.map(v=>({h:g5(t.e,v,'sm'),ok:v===n})),'Tap the picture that shows '+n+'.',async()=>{ await say('Count each picture. Find '+n+'.'); }); return [f,'That picture has '+n+'.']; };
+G.numeral=async c=>{ const lo=c.lo||1, hi=c.hi||10, n=c.n||R(lo,hi); view('<div class="row"><span class="o" style="font-size:70px">👂</span></div>'+numRow(n,lo,hi,MODE==='help',n>10&&n<20?[n-10,Number(String(n).split('').reverse().join(''))]:null)); await say('Tap the number '+n+'.'); const f=await pickNum(n,async()=>{ if(n<=10) await say(n+' looks like this, with '+n+' dots.'); else await say(n+' starts with a 1 for ten, then '+(n-10)+'.'); },'Tap '+n+'.'); return [f,'That is '+n+'.']; };
+G.teenNum=async c=>{ const n=c.n||R(11,19), rev=Number(String(n%10)+'1'); view('<div class="row"><span class="o" style="font-size:70px">👂</span></div>'+numRow(n,1,99,false,[rev,n+any([-1,1])])); await say('Tap '+n+'.'); const f=await pickNum(n,async()=>{ await say(n+' is ten and '+(n-10)+'. The 1 comes first.'); },'Tap '+n+'.'); return [f,n+' is a 1 and a '+(n-10)+'. Ten and '+(n-10)+'.']; };
+/* --- one to one --- */
+function pairRows(p,a,b,id){ return '<div class="g5" id="'+id+'" style="gap:10px"><div style="gap:14px">'+objs(p[0],a)+'</div><div style="gap:14px">'+objs(p[2],b)+'</div></div>'; }
+async function pairUp(id,a,b,p){ const rows=scene.querySelectorAll('#'+id+'>div'); const A=rows[0].children,B=rows[1].children; for(let i=0;i<Math.min(a,b);i++){ A[i].classList.add('hl'); B[i].classList.add('hl'); plink(i); await say('One '+p[1].replace(/s$/,'').replace(/ie$/,'y')+', one '+p[3].replace(/s$/,'')+'.'); }
+  for(let i=Math.min(a,b);i<Math.max(a,b);i++){ (a>b?A[i]:B[i]).classList.add('lone'); } if(a!==b) await say(a>b?'These '+p[1]+' have no '+p[3]+'.':'These '+p[3]+' are extra.'); }
+G.hatgive=async c=>{ const p=c.pair||any(PAIRS), n=c.n||R(3,MODE==='check'?6:5); view('<div class="row" id="hg">'+Array.from({length:n},()=>'<div class="g5 tapme" style="align-items:center;gap:0"><span class="o" style="opacity:0">'+p[2]+'</span>'+O(p[0])+'</div>').join('')+'</div>');
+  await say('Give each of the '+p[1]+' one of the '+p[3]+'. Tap each one.'); let first=true;
+  await new Promise(r=>{ let k=0; const ks=[...scene.querySelectorAll('#hg>div')]; ks.forEach(d=>d.onclick=async()=>{ if(BUSY) return; const h=d.firstChild; if(d.dataset.d){ first=false; soft(); await say('That one already has one! Just one each.'); return; } d.dataset.d=1; k++; h.style.opacity=1; h.classList.add('pop'); plink(k); if(k===n){ await wait(500); r(); } }); BOT=()=>{ const x=ks.find(d=>!d.dataset.d); x&&x.click(); }; });
+  scene.insertAdjacentHTML('beforeend',numRow(n,1,9,false)); await say('How many '+p[3]+' did we use?'); const f=await pickNum(n,'#hg .o:first-child'); return [first&&f,n+' '+p[1]+', '+n+' '+p[3]+'. One for each.']; };
+G.hatenough=async c=>{ const p=c.pair||any(PAIRS), a=R(2,6); let b=Math.random()<.25?a:Math.max(1,a+any([-2,-1,1,2])); const ok=b>=a;
+  const f=await pickQ(pairRows(p,a,b,'pe'),[{h:O('👍'),ok:ok,cls:'huge',label:'yes'},{h:O('👎'),ok:!ok,cls:'huge',label:'no'}],'Is there one of the '+p[3]+' for every one of the '+p[1]+'? Thumbs up for yes, thumbs down for no.',async()=>{ await say('Let’s match them up.'); await pairUp('pe',a,b,p); });
+  return [f,ok?(b===a?'Yes! The same number, one each.':'Yes, there are enough, with extra.'):'No, some '+p[1]+' have none.']; };
+G.hatmore=async c=>{ const p=c.pair||any(PAIRS), a=R(2,6); let b=a+any([-2,-1,1,2]); if(b<1) b=a+1; const more=a>b?0:2;
+  const f=await pickQ(pairRows(p,a,b,'pm'),[{h:O(p[0]),ok:more===0,cls:'huge',label:p[1]},{h:O(p[2]),ok:more===2,cls:'huge',label:p[3]}],'Are there more '+p[1]+' or more '+p[3]+'? Tap one.',async()=>{ await say('Match them up, one and one.'); await pairUp('pm',a,b,p); });
+  return [f,'There are more '+(more===0?p[1]:p[3])+'.']; };
+/* --- compare --- */
+async function compareQ(want){ const t=T(); let a=R(1,8), b=R(1,9); while(b===a) b=R(1,9); const big=Math.max(a,b), ok=want==='more'?big:Math.min(a,b);
+  const f=await pickQ('',[a,b].map(v=>({h:'<div class="row" id="cg'+v+'">'+g5(t.e,v,'sm')+'</div>',ok:v===ok})),'Which has '+want+' '+t.n+'? Tap it.',async()=>{ await say('Count each group.'); await countAloud('#cg'+a+' .o'); await countAloud('#cg'+b+' .o'); await say(want==='more'?big+' is more than '+Math.min(a,b)+'.':Math.min(a,b)+' is fewer than '+big+'.'); });
+  return [f,ok+' is '+(want==='more'?'more':'fewer')+'.']; }
+G.more=()=>compareQ('more'); G.fewer=()=>compareQ('fewer');
+async function compareNum(want){ const lo=1,hi=MODE==='check'?20:10; let a=R(lo,hi),b=R(lo,hi); while(b===a) b=R(lo,hi); const ok=want==='more'?Math.max(a,b):Math.min(a,b);
+  const f=await pickQ('',[a,b].map(v=>({h:'<span class="big-num">'+v+'</span>'+(MODE==='help'&&v<=10?'<small style="display:block;font-size:12px">'+'•'.repeat(v)+'</small>':''),ok:v===ok,label:String(v)})),(want==='more'?'Which number is more?':'Which number is less?')+' Tap it.',async()=>{ await say('When we count, '+Math.min(a,b)+' comes first, then '+Math.max(a,b)+' comes later. Later means more.'); });
+  return [f,ok+' is '+(want==='more'?'more':'less')+'.']; }
+G.moreNum=()=>compareNum('more'); G.fewerNum=()=>compareNum('less');
+G.same=async c=>{ const t=T(), n=R(2,7); const opts=numOpts(n,1,9); const f=await pickQ('<div class="pic" style="cursor:default" id="tg">'+g5(t.e,n,'sm')+'</div>',opts.map(v=>({h:g5(T().e,v,'sm'),ok:v===n})),'Which group has the same number as this one?',async()=>{ await say('This one has'); await countAloud('#tg .o'); await say('Find the group with '+n+'.'); }); return [f,'Both have '+n+'. The same!']; };
+/* --- number sequence --- */
+function seqHtml(a,blank,cls){ return '<div class="row" id="sq">'+a.map((v,i)=>'<div class="'+(cls||'car')+(i===blank?' q':'')+'">'+(i===blank?'?':v)+'</div>').join('')+'</div>'; }
+G.next=async c=>{ const s=c.start||R(c.lo||1,c.hi||16), step=c.step||1, len=4; const a=Array.from({length:len},(_,i)=>s+i*step); const blank=c.blank!=null?c.blank:(Math.random()<.7?len-1:R(1,len-1)); const ans=a[blank];
+  const f=await numQ(seqHtml(a,blank),'What number goes in the purple car?',ans,{lo:Math.max(0,ans-3*step),hi:ans+3*step,extra:[ans+step,ans-step],help:async()=>{ await say('Let’s say them in order.'); const cs=scene.querySelectorAll('#sq .car'); for(let i=0;i<a.length;i++){ cs[i].classList.add('hl'); await say(i===blank?'...':String(a[i])); cs[i].classList.remove('hl'); } }});
+  return [f,a.join(', ')+'.']; };
+G.nextTwo=async c=>{ const s=R(c.lo||3,c.hi||18); const a=[s,s+1]; const ok=(s+2)+', '+(s+3), opts=shuffle([ok,(s+3)+', '+(s+2),(s+2)+', '+(s+4)]);
+  view(seqHtml(a.concat(['?','?']),-1)+'<div class="choices">'+opts.map(o=>'<button class="ch wide" type="button" data-v="'+o+'"'+(o===ok?' data-ok="1"':'')+'>'+o+'</button>').join('')+'</div>');
+  scene.querySelectorAll('#sq .car')[2].classList.add('q'); scene.querySelectorAll('#sq .car')[3].classList.add('q');
+  await say(s+', '+(s+1)+'. What are the next two numbers?'); const f=await new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(b.dataset.v===ok){ b.classList.add('yes'); chime(); lockAll(); res(first); } else { first=false; b.classList.add('no'); soft(); await wrongHelp(async()=>{ await say('Keep counting: '+s+', '+(s+1)+', '+(s+2)+', '+(s+3)+'.'); }); } }); });
+  return [f,s+', '+(s+1)+', '+(s+2)+', '+(s+3)+'.']; };
+G.rowgap=async c=>{ const d=c.d!=null?c.d:R(c.dlo||0,c.dhi||9), gap=R(1,9), a=Array.from({length:10},(_,i)=>d*10+i+1), ans=a[gap];
+  const f=await numQ('<div class="tiles" id="rw">'+a.map((v,i)=>'<div class="tile'+(i===gap?' q':'')+(v%10===0?' ten':'')+'">'+(i===gap?'?':v)+'</div>').join('')+'</div>','Which number is missing?',ans,{lo:Math.max(1,ans-3),hi:ans+3,extra:[ans+10>100?ans-10:ans+10],help:async()=>{ await say('Count along the row.'); const ts=scene.querySelectorAll('#rw .tile'); for(let i=0;i<=gap;i++){ ts[i].classList.add('hl'); await say(i===gap?'...':String(a[i])); ts[i].classList.remove('hl'); } }});
+  return [f,'It is '+ans+'.']; };
+G.tens=async c=>{ const s=R(1,6), a=[s,s+1,s+2,s+3].map(v=>v*10), blank=Math.random()<.6?3:R(1,3), ans=a[blank];
+  const f=await numQ(seqHtml(a,blank),'Count by tens. What number goes in the purple car?',ans,{lo:10,hi:100,extra:[ans+10,ans-10,ans+1],help:async()=>{ await say('Count by tens with me: 10, 20, 30, 40, 50, 60, 70, 80, 90, 100.'); }});
+  return [f,'Counting by tens: '+a.join(', ')+'.']; };
+G.tenNum=async c=>{ const k=R(2,9), n=k*10; view('<div class="row"><span class="o" style="font-size:70px">👂</span></div>'+numRow(n,1,100,false,[10+k,k])); await say('Tap '+n+'.'); const f=await pickNum(n,async()=>{ await say(n+' is '+k+' tens. It ends in a zero.'); },'Tap '+n+'.'); return [f,n+' is '+k+' tens.']; };
+G.tensObjects=async c=>{ const t=c.theme||{e:'📦',n:'boxes'}, k=R(2,c.max||6), n=k*10; const f=await numQ('<div class="row" id="tb">'+objs(t.e,k)+'</div><div class="note" style="font-size:16px">each one holds 10</div>','Each of the '+t.n+' holds 10. Count by tens. How many in all?',n,{lo:10,hi:100,extra:[n+10,n-10,k],help:async()=>{ await countAloud('#tb .o',0,10); }}); return [f,k+' tens make '+n+'.']; };
+G.counton=async c=>{ const t=c.theme||T(), s=c.s||R(4,12), k=c.k||R(1,3); view('<div class="row"><div class="basket" id="cb"><span class="lab">'+s+'</span></div><span class="plus">+</span><div class="tray" id="tr">'+objs(t.e,k)+'</div></div>');
+  await say('There are '+s+' '+t.n+' in the basket. Don’t count them again! Say '+s+', then tap each new one to count on.'); let said=s;
+  await new Promise(r=>{ const os=[...scene.querySelectorAll('#tr .o')]; os.forEach(o=>{ o.classList.add('tapme'); o.onclick=async()=>{ if(BUSY) return; if(o.dataset.d) return; o.dataset.d=1; said++; o.classList.add('hl'); plink(said); if(helpOn()) say(String(said)); if(said===s+k){ await wait(600); r(); } }; }); BOT=()=>{ const x=os.find(o=>!o.dataset.d); x&&x.click(); }; });
+  scene.insertAdjacentHTML('beforeend',numRow(s+k,1,30,false)); await say('How many '+t.n+' now?'); const f=await pickNum(s+k,async()=>{ await say('Start at '+s+'.'); await countAloud('#tr .o',s); }); return [f,s+', then '+Array.from({length:k},(_,i)=>s+i+1).join(', ')+'. '+(s+k)+' in all.']; };
+G.hop=async c=>{ const s=c.s||R(2,12), k=c.k||R(2,4), cells=Array.from({length:9},(_,i)=>s-1+i);
+  const html='<div class="path" id="ph">'+cells.map(v=>'<div class="tile'+(v===s?' hl':'')+'">'+v+(v===s?'<span class="bun">🐰</span>':'')+'</div>').join('')+'</div>';
+  const f=await numQ(html,'Bunny is on '+s+'. She hops forward '+k+' times. Where does she land?',s+k,{lo:s,hi:s+k+3,extra:[s+k+1,s+k-1],help:async()=>{ const ts=[...scene.querySelectorAll('#ph .tile')], b=scene.querySelector('.bun'); for(let i=1;i<=k;i++){ ts[1+i].appendChild(b); plink(i); await say(String(s+i)); } }});
+  return [f,'From '+s+', hop '+k+': she lands on '+(s+k)+'.']; };
+/* --- add / take away --- */
+function lim(c){ return c.max||(MODE==='check'?9:7); }
+function xy(c){ const m=lim(c); let x=c.x||R(1,Math.min(5,m-1)), y=c.y||R(1,Math.max(1,Math.min(4,m-x))); return [x,y]; }
+G.pour=async c=>{ const t=c.theme||T(), [x,y]=xy(c); const f=await numQ('<div class="row"><div class="basket" id="bA">'+objs(t.e,x)+'</div><span class="plus">+</span><div class="basket" id="bB">'+objs(t.e,y)+'</div></div>',x+' '+t.n+' and '+y+' '+t.n+'. How many in all?',x+y,{lo:1,hi:lim(c)+2,help:'.basket .o'}); return [f,x+' and '+y+' make '+(x+y)+'.']; };
+G.addframe=async c=>{ const t=c.theme||T(), [x,y]=xy(c); view(frame(x,t.e,'fr')+'<div class="tray" id="tr2">'+objs(t.e,y)+'</div>'); await say('Tap the '+t.n+' to fill up the frame.');
+  await new Promise(r=>{ let k=x; const cells=[...scene.querySelectorAll('#fr>div')]; const os=[...scene.querySelectorAll('#tr2 .o')]; os.forEach(o=>o.onclick=()=>{ if(o.dataset.d) return; o.dataset.d=1; o.remove(); cells[k].innerHTML=O(t.e,'pop'); k++; plink(k); if(!scene.querySelector('#tr2 .o')) setTimeout(r,300*FAST); }); BOT=()=>{ const z=scene.querySelector('#tr2 .o'); z&&z.click(); }; });
+  scene.insertAdjacentHTML('beforeend',numRow(x+y,1,10,false)); await say('How many '+t.n+' in the frame?'); const f=await pickNum(x+y,'#fr .o'); return [f,x+' and '+y+' make '+(x+y)+'.']; };
+G.addmatch=async c=>{ const t=c.theme||T(), [x,y]=xy(c); const alt=x>1?x-1:x+2; const items=shuffle([[x,y],[x+1,y],[alt,y]]).map(p=>({h:g5(t.e,p[0],'sm')+'<span class="plus" style="font-size:28px">+</span>'+g5(t.e,p[1],'sm'),ok:p[0]===x}));
+  const f=await pickQ('',items,'Which picture shows '+x+' and '+y+'? Tap it.',async()=>{ await say('Look for '+x+', then '+y+'.'); }); return [f,x+' and '+y+' make '+(x+y)+'.']; };
+async function buildN(s,t,prompt){ view('<div class="row"><div class="basket big tapme" id="bk" role="button" tabindex="0" aria-label="basket: tap to add one"><span class="lab">🧺</span></div></div><div class="row"><span class="big-num">'+s+'</span></div><button class="go" id="done" type="button">✓ Done</button>');
+  await say(prompt||('Make '+s+'! Tap the basket to add one. Tap one inside to take it out. Then tap done.'));
+  return new Promise(r=>{ let f=true; const bk=$('bk'); bk.onclick=e=>{ if(e.target.classList.contains('o')){ e.target.remove(); plink(1); return; } if(bk.querySelectorAll('.o').length<20){ bk.insertAdjacentHTML('beforeend',O(t.e,'pop')); plink(bk.querySelectorAll('.o').length); } };
+    $('done').onclick=async()=>{ if(BUSY) return; const n=bk.querySelectorAll('.o').length; if(n===s){ chime(); r(f); } else { f=false; soft(); await say(n<s?'Not yet. You need more.':'That is too many.'); if(helpOn()) await countAloud('#bk .o'); await say('Make '+s+'.'); } };
+    BOT=()=>{ const n=bk.querySelectorAll('.o').length; if(n<s) bk.click(); else if(n>s) bk.querySelector('.o').click(); else $('done').click(); }; }); }
+G.build=async c=>{ const t=c.theme||T(), s=c.n||R(c.lo||3,c.hi||lim(c)); const f=await buildN(s,t); return [f,'You made '+s+'.']; };
+G.flyin=async c=>{ const [x,y]=xy(c), b=c.e||any(['🐦','🦆','🐝','🦋']); view('<div class="row" id="b1">'+objs(b,x)+'</div><div style="width:min(480px,90%);height:12px;background:#8B5A2B;border-radius:8px"></div><div class="row" id="b2" style="min-height:50px"></div>'+numRow(x+y,1,lim(c)+2,false));
+  await say(x+' are on the branch.'); $('b2').innerHTML=objs(b,y,'fly'); await wait(900); await say(y+' more come! How many now?'); const f=await pickNum(x+y,'#b1 .o, #b2 .o'); return [f,x+' and '+y+' more make '+(x+y)+'.']; };
+G.away=async c=>{ const t=c.theme||{e:'🍪',n:'cookies'}, m=lim(c); const n=c.n||R(2,m), k=c.k||R(1,n-1); view('<div class="row" id="aw">'+objs(t.e,n)+'</div>');
+  await say('There are '+n+' '+t.n+'.'); const os=[...scene.querySelectorAll('#aw .o')]; for(let i=0;i<k;i++){ os[n-1-i].classList.add('gone'); tone(300-i*20,.12); await wait(350); }
+  scene.insertAdjacentHTML('beforeend','<div class="row"><span class="big-num">'+n+'</span><span class="plus">−</span><span class="big-num">'+k+'</span></div>'+numRow(n-k,0,m,false));
+  await say(k+(k===1?' is':' are')+' taken away. How many are left?'); const f=await pickNum(n-k,async()=>{ await say('Count only the ones still here.'); const left=os.slice(0,n-k); for(let i=0;i<left.length;i++){ left[i].classList.add('hl'); await say(String(i+1)); left[i].classList.remove('hl'); } }); return [f,n+' take away '+k+' is '+(n-k)+'.']; };
+G.flyaway=async c=>{ const m=lim(c), n=R(3,m), k=R(1,n-1), b=any(['🐦','🦆','🦋','🐝']); view('<div class="row" id="fa">'+objs(b,n)+'</div><div style="width:min(480px,90%);height:12px;background:#8B5A2B;border-radius:8px"></div>');
+  await say(n+' are on the branch.'); const os=[...scene.querySelectorAll('#fa .o')]; for(let i=0;i<k;i++) os[n-1-i].classList.add('flyaway'); await wait(1100); for(let i=0;i<k;i++) os[n-1-i].style.visibility='hidden';
+  scene.insertAdjacentHTML('beforeend',numRow(n-k,0,m,false)); await say(k+' flew away! How many are left?'); const f=await pickNum(n-k,async()=>{ await say(n+' were here. '+k+' flew away.'); await countAloud('#fa .o:not(.flyaway)'); }); return [f,n+' take away '+k+' is '+(n-k)+'.']; };
+/* --- break apart / make 10 --- */
+G.move=async c=>{ const t=c.theme||T(), n=c.n||R(4,MODE==='check'?10:8), k=c.k||R(1,n-1);
+  view('<div class="row"><div class="bin" id="pL" style="cursor:default"><span class="tag">🍽️</span></div><div class="bin" id="pR" style="cursor:default"><span class="tag">🍽️</span></div></div><div class="row"><span class="big-num">'+n+'</span></div><button class="go" id="done" type="button">✓ Done</button>');
+  $('pL').insertAdjacentHTML('beforeend',objs(t.e,n,'tapme')); await say('Here are '+n+' '+t.n+'. Put '+k+' on the other plate. Tap to move them. Then tap done.');
+  let first=true; await new Promise(r=>{ scene.onclick=e=>{ const o=e.target.closest('.o'); if(!o) return; const to=o.parentNode.id==='pL'?$('pR'):$('pL'); to.appendChild(o); plink(to.children.length); };
+    $('done').onclick=async()=>{ if(BUSY) return; const m=$('pR').querySelectorAll('.o').length; if(m===k){ chime(); scene.onclick=null; r(); } else { first=false; soft(); await say('Put exactly '+k+' on the other plate.'); } };
+    BOT=()=>{ const m=$('pR').querySelectorAll('.o').length; if(m<k) $('pL').querySelector('.o').click(); else if(m>k) $('pR').querySelector('.o').click(); else $('done').click(); }; });
+  scene.insertAdjacentHTML('beforeend',numRow(n-k,0,10,false)); await say('How many are on the first plate now?'); const f=await pickNum(n-k,'#pL .o'); return [first&&f,n+' is '+k+' and '+(n-k)+'.']; };
+G.hide=async c=>{ const t=c.theme||T(), n=c.n||R(3,MODE==='check'?10:7), k=R(1,n-1);
+  const f=await numQ('<div class="row"><span class="big-num">'+n+'</span></div><div class="row" id="hd">'+objs(t.e,k)+'<div class="basket" id="hb"><span class="lab">?</span></div></div>','There are '+n+' '+t.n+' in all. Some are hiding in the basket. How many are hiding?',n-k,{lo:0,hi:10,help:async()=>{ await say('We see '+k+'. Count up to '+n+'.'); $('hb').innerHTML='<span class="lab">?</span>'+objs(t.e,n-k,'pop'); await countAloud('#hb .o',k); await say('That is '+(n-k)+' hiding.'); }});
+  return [f,n+' is '+k+' and '+(n-k)+'.']; };
+G.splitPick=async c=>{ const n=c.n||R(4,MODE==='check'?10:8), t=T(); const a=R(1,n-1); const wrong1=[a,n-a+1], wrong2=[Math.max(1,a-1),n-a>1?n-a-1:n-a+2]; const items=shuffle([[a,n-a],wrong1,wrong2]).map(p=>({h:g5(t.e,p[0],'sm')+'<span class="plus" style="font-size:26px">+</span>'+g5(T().e,p[1],'sm'),ok:p[0]+p[1]===n}));
+  const f=await pickQ('<div class="card-num">'+n+'</div>',items,'Which picture shows '+n+' in two groups?',async()=>{ await say('Count both groups together. Find '+n+'.'); }); return [f,a+' and '+(n-a)+' make '+n+'.']; };
+G.missing=async c=>{ const tot=c.total||R(4,MODE==='check'?10:8), x=R(1,tot-1), t=c.theme||T(); const f=await numQ('<div class="row"><span class="big-num">'+x+'</span><span class="plus">+</span><span class="big-num" style="color:var(--grape)">?</span><span class="eq">=</span><span class="big-num">'+tot+'</span></div><div class="row" id="ms">'+objs(t.e,x)+(helpOn()?objs('⚪',tot-x,'ghost'):'')+'</div>',x+' and how many more make '+tot+'?',tot-x,{lo:0,hi:10,help:async()=>{ await say('Count on from '+x+' to '+tot+'.'); await countAloud('#ms .ghost',x); }});
+  return [f,x+' and '+(tot-x)+' make '+tot+'.']; };
+G.tenmore=async c=>{ const t=c.theme||T(), x=c.x||R(1,9); const f=await numQ(frame(x,t.e,'fr',{ghost:true}),(c.prompt||((x===1?'There is 1':'There are '+x)+'. How many more to make 10?')),10-x,{lo:0,hi:10,help:async()=>{ await say('Count the empty spots.'); await countAloud('#fr .ghost'); }}); return [f,x+' and '+(10-x)+' make 10. Ten friends!']; };
+G.tenfill=async c=>{ const t=c.theme||T(), x=R(1,9); view(frame(x,t.e,'fr',{ghost:true})); await say('Tap each empty spot to fill the frame.'); let k=0;
+  await new Promise(r=>{ const cells=[...scene.querySelectorAll('#fr>div')]; cells.forEach((d,i)=>{ if(i<x) return; d.classList.add('tapme'); d.onclick=async()=>{ if(BUSY) return; if(d.dataset.d) return; d.dataset.d=1; k++; d.innerHTML=O(T().e===t.e?'🔵':'🔵','pop'); plink(k); if(helpOn()) say(String(k)); if(k===10-x){ await wait(500); r(); } }; }); BOT=()=>{ const z=cells.find((d,i)=>i>=x&&!d.dataset.d); z&&z.click(); }; });
+  scene.insertAdjacentHTML('beforeend',numRow(10-x,0,10,false)); await say('How many did you add?'); const f=await pickNum(10-x,'#fr .o:not(.ghost)'); return [f,x+' and '+(10-x)+' make 10.']; };
+G.tenpair=async c=>{ const x=R(1,9), t=T(); const f=await numQ('<div class="row"><span class="big-num">'+x+'</span><span class="plus">+</span><span class="big-num" style="color:var(--grape)">?</span><span class="eq">=</span><span class="big-num">10</span></div>'+(helpOn()?frame(x,t.e,'fr',{ghost:true}):''),'What goes with '+x+' to make 10?',10-x,{lo:0,hi:10,help:async()=>{ if($('fr')) await countAloud('#fr .ghost'); else await say('Count on from '+x+' to 10.'); }}); return [f,x+' and '+(10-x)+' make 10.']; };
+G.tenmatch=async c=>{ const x=R(1,9), ok=[x,10-x], w1=[x,Math.max(0,9-x)], w2=[Math.min(9,x+1),10-x]; const items=shuffle([ok,w1,w2]).map(p=>({h:'<span style="font:800 40px var(--f-head)">'+p[0]+' + '+p[1]+'</span>',ok:p[0]+p[1]===10}));
+  const f=await pickQ('<div class="row"><span class="big-num">10</span></div>',items,'Which two numbers make 10?',async()=>{ await say('Fill a ten-frame in your head. Which pair fills all ten spots?'); }); return [f,x+' and '+(10-x)+' make 10.']; };
+/* --- teen numbers --- */
+const teenHtml=(t,k,id)=>'<div class="row" id="'+(id||'tn')+'">'+frame(10,t.e,'',{})+g5(t.e,k)+'</div>';
+G.teen=async c=>{ const t=c.theme||T(), k=c.k||R(1,9); const f=await numQ(teenHtml(t,k),'Ten in the frame and '+k+' more. How many?',10+k,{lo:10,hi:20,extra:[k,10+k+1],help:async()=>{ await say('Start at ten. Count on.'); await countAloud('#tn .g5 .o',10); }}); return [f,'Ten and '+k+' make '+(10+k)+'.']; };
+G.teenSplit=async c=>{ const k=R(1,9), n=10+k, t=T(); const f=await numQ('<div class="row"><span class="card-num">'+n+'</span></div><div class="row"><span class="big-num">10</span><span class="plus">+</span><span class="big-num" style="color:var(--grape)">?</span></div>',n+' is ten and how many more?',k,{lo:0,hi:9,help:async()=>{ await say('Look at the number '+n+'. The 1 is one ten. The '+k+' is '+k+' more.'); }}); return [f,n+' is ten and '+k+'.']; };
+G.teenBuild=async c=>{ const t=c.theme||T(), k=R(1,9), n=10+k; view('<div class="row">'+frame(10,t.e,'')+'<div class="basket big tapme" id="bk"><span class="lab">+</span></div></div><div class="row"><span class="big-num">'+n+'</span></div><button class="go" id="done" type="button">✓ Done</button>');
+  await say('The frame has ten. Make '+n+'. Tap the basket to add ones. Then tap done.');
+  const f=await new Promise(r=>{ let f=true; const bk=$('bk'); bk.onclick=e=>{ if(e.target.classList.contains('o')){ e.target.remove(); return; } if(bk.querySelectorAll('.o').length<10){ bk.insertAdjacentHTML('beforeend',O(t.e,'pop')); plink(bk.querySelectorAll('.o').length); if(helpOn()) say(String(10+bk.querySelectorAll('.o').length)); } };
+    $('done').onclick=async()=>{ if(BUSY) return; const m=bk.querySelectorAll('.o').length; if(m===k){ chime(); r(f); } else { f=false; soft(); await say(n+' is ten and '+k+'. You have ten and '+m+'.'); } };
+    BOT=()=>{ const m=bk.querySelectorAll('.o').length; if(m<k) bk.click(); else if(m>k) bk.querySelector('.o').click(); else $('done').click(); }; });
+  return [f,'Ten and '+k+' make '+n+'.']; };
+G.teenPick=async c=>{ const t=T(), k=R(1,8), n=10+k; const opts=numOpts(k,1,9); const f=await pickQ('<div class="card-num">'+n+'</div>',opts.map(v=>({h:frame(10,t.e,'',{mini:true})+g5(t.e,v,'sm'),ok:v===k})),'Which picture shows '+n+'?',async()=>{ await say(n+' is a full ten and '+k+' more.'); }); return [f,n+' is ten and '+k+'.']; };
+/* --- shapes --- */
+const FLAT=['circle','square','triangle','rectangle','hexagon'];
+G.shape=async c=>{ const want=c.shape||any(FLAT), others=shuffle(FLAT.filter(s=>s!==want)).slice(0,2); const items=shuffle([want].concat(others)).map(s=>({h:shp(s,{r:s==='circle'?0:any([0,0,15,-20,45,90]),s:R(70,96)}),ok:s===want,label:s}));
+  const f=await pickQ('',items,'Tap the '+want+'.',async()=>{ await say(shapeTip(want)); }); return [f,'That is a '+want+'. '+shapeTip(want)]; };
+function shapeTip(s){ return {circle:'A circle is round, with no corners.',square:'A square has 4 sides, all the same.',triangle:'A triangle has 3 sides and 3 corners.',rectangle:'A rectangle has 4 sides: 2 long and 2 short.',hexagon:'A hexagon has 6 sides.'}[s]; }
+G.solid=async c=>{ const sol=shuffle(SOLIDS).slice(0,3), want=sol[0]; const items=shuffle(sol).map(s=>({h:O(any(s.e)),ok:s===want,cls:'huge',label:s.n}));
+  const f=await pickQ('',items,'Tap the '+want.n+'. It is shaped like '+want.like+'.',async()=>{ await say('A sphere is like a ball. A cube is like a block. A cone is like an ice cream cone. A cylinder is like a can.'); }); return [f,'That is shaped like a '+want.n+'.']; };
+G.sides=async c=>{ const s=c.shape||any(['triangle','square','rectangle','hexagon']), n=SIDES[s];
+  const f=await numQ('<div class="row" id="sd">'+shp(s,{s:150})+'</div>','How many sides does this shape have?',n,{lo:2,hi:8,help:async()=>{ const svg=scene.querySelector('#sd svg'); for(let i=0;i<n;i++){ const a=VERT[s][i], b=VERT[s][(i+1)%n]; svg.insertAdjacentHTML('beforeend','<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'" stroke="#FFC83D" stroke-width="8" stroke-linecap="round"/>'); plink(i); await say(String(i+1)); } }});
+  return [f,'A '+s+' has '+n+' sides.']; };
+G.shapeOdd=async c=>{ const s=c.shape||any(FLAT); let o=any(FLAT.filter(x=>x!==s&&!(s==='square'&&x==='rectangle')&&!(s==='rectangle'&&x==='square'))); const list=shuffle([s,s,s,o]);
+  const f=await pickQ('',list.map(x=>({h:shp(x,{s:70,r:x==='circle'?0:any([0,20,-30,90])}),ok:x===o,label:x})),'Three are '+s+'s. Tap the one that is NOT a '+s+'.',async()=>{ await say(shapeTip(s)); }); return [f,'That one is a '+o+', not a '+s+'.']; };
+G.shapeCount=async c=>{ const s=c.shape||any(['triangle','circle','square']); const n=R(2,5), others=Array.from({length:R(2,4)},()=>any(FLAT.filter(x=>x!==s&&!(s==='square'&&x==='rectangle'))));
+  const list=shuffle(Array(n).fill(s).concat(others)); const f=await numQ('<div class="row" id="scn" style="max-width:520px">'+list.map(x=>'<span data-s="'+x+'">'+shp(x,{s:58,r:x==='circle'?0:any([0,25,-25,90])})+'</span>').join('')+'</div>','How many '+s+'s?',n,{lo:1,hi:8,help:async()=>{ const els=[...scene.querySelectorAll('#scn [data-s="'+s+'"]')]; for(let i=0;i<els.length;i++){ els[i].style.filter='drop-shadow(0 0 8px #FFC83D)'; await say(String(i+1)); } }}); return [f,'There are '+n+' '+s+'s.']; };
+/* --- position --- */
+const POS={above:{l:53,t:2,z:2},below:{l:53,t:104,z:2},'next to':{l:104,t:52,z:2},'in front of':{l:60,t:66,z:3},behind:{l:68,t:30,z:1}};
+const MOVERS=[['🐱','cat'],['🐶','dog'],['🐰','bunny'],['🐦','bird'],['🐿️','squirrel']], REFS=[['📦','box'],['🪑','chair'],['🚗','car'],['🧺','basket']];
+function cell(m,r,pos){ const p=POS[pos]; return '<div class="cell"><span style="left:53px;top:52px;z-index:2">'+r[0]+'</span><span style="left:'+p.l+'px;top:'+p.t+'px;z-index:'+p.z+';font-size:'+(pos==='behind'?36:44)+'px">'+m[0]+'</span></div>'; }
+G.where=async c=>{ const m=any(MOVERS), r=any(REFS), keys=c.keys||Object.keys(POS), want=any(keys), opts=shuffle([want].concat(shuffle(Object.keys(POS).filter(k=>k!==want)).slice(0,2)));
+  const f=await pickQ('',opts.map(p=>({h:cell(m,r,p),ok:p===want,label:p})),'Tap the picture where the '+m[1]+' is '+want+' the '+r[1]+'.',async()=>{ await say(posTip(want,r[1])); }); return [f,'The '+m[1]+' is '+want+' the '+r[1]+'.']; };
+function posTip(p,r){ return {above:'Above means higher, over the '+r+'.',below:'Below means lower, under the '+r+'.','next to':'Next to means right beside it.','in front of':'In front of means closer to you.',behind:'Behind means in back, partly hidden.'}[p]; }
+G.wherePlace=async c=>{ const m=any(MOVERS), r=any(REFS), want=any(['above','below','next to']); const sp={above:[49,2],below:[49,100],'next to':[100,49]};
+  view('<div class="cell" id="wp" style="transform:scale(1.4);margin:40px"><span style="left:53px;top:52px">'+r[0]+'</span>'+Object.keys(sp).map(k=>'<button class="spot" type="button" data-k="'+k+'" aria-label="'+k+'" style="left:'+sp[k][0]+'px;top:'+sp[k][1]+'px"></button>').join('')+'</div><div class="row">'+O(m[0])+'</div>');
+  await say('Put the '+m[1]+' '+want+' the '+r[1]+'. Tap the spot.'); const f=await new Promise(res=>{ let first=true; const sps=[...scene.querySelectorAll('.spot')]; sps.forEach(s=>s.onclick=async()=>{ if(BUSY) return; if(s.dataset.k===want){ s.outerHTML='<span style="left:'+sp[want][0]+'px;top:'+sp[want][1]+'px">'+m[0]+'</span>'; chime(); lockAll(); res(first); } else { first=false; soft(); await wrongHelp(async()=>say(posTip(want,r[1]))); } }); BOT=()=>{ const z=scene.querySelector('.spot[data-k="'+want+'"]'); z&&z.click(); }; });
+  return [f,'The '+m[1]+' is '+want+' the '+r[1]+'.']; };
+G.whereTwo=async c=>{ const m=any(MOVERS), r=any(REFS), pair=any([['above','below'],['next to','above'],['below','next to']]), want=any(pair); const ic={above:'⬆️',below:'⬇️','next to':'➡️'};
+  const f=await pickQ('<div style="transform:scale(1.3);margin:30px">'+cell(m,r,want)+'</div>',pair.map(p=>({h:O(ic[p]),ok:p===want,cls:'huge',label:p})),'Is the '+m[1]+' '+pair[0]+' or '+pair[1]+' the '+r[1]+'? Up arrow for above, down for below, side arrow for next to.',async()=>{ await say(posTip(want,r[1])); });
+  return [f,'The '+m[1]+' is '+want+' the '+r[1]+'.']; };
+G.whereFind=async c=>{ const items=shuffle([['⚽','ball'],['🧸','teddy bear'],['🚂','train'],['🪀','yo-yo'],['📕','book'],['🥁','drum']]).slice(0,3); const q=any([['top shelf',0],['bottom shelf',2],['above',1],['below',1],['above2',2],['below2',0]]);
+  let ask,ans; if(q[0]==='top shelf'){ ask='Tap the toy on the top shelf.'; ans=0; } else if(q[0]==='bottom shelf'){ ask='Tap the toy on the bottom shelf.'; ans=2; } else if(q[0]==='above'){ ask='Tap the toy right above the '+items[1][1]+'.'; ans=0; } else if(q[0]==='below'){ ask='Tap the toy right below the '+items[1][1]+'.'; ans=2; } else if(q[0]==='above2'){ ask='Tap the toy right above the '+items[2][1]+'.'; ans=1; } else { ask='Tap the toy right below the '+items[0][1]+'.'; ans=1; }
+  view('<div class="shelf">'+items.map((it,i)=>'<div><button class="pic" type="button" style="min-width:70px;min-height:60px;padding:2px 8px;border-width:3px" data-i="'+i+'"'+(i===ans?' data-ok="1"':'')+'>'+O(it[0])+'</button></div>').join('')+'</div>'); await say(ask);
+  const f=await new Promise(res=>{ let first=true; scene.querySelectorAll('.pic').forEach(p=>p.onclick=async()=>{ if(BUSY) return; if(+p.dataset.i===ans){ p.classList.add('yes'); chime(); lockAll(); res(first); } else { first=false; p.classList.add('no'); soft(); await wrongHelp(async()=>say('Above is higher up. Below is lower down.')); } }); }); return [f,'The '+items[ans][1]+'.']; };
+/* --- measure --- */
+const BARC=['#FF5D73','#3D8BFF','#2FBF71','#FF8A3D','#8E5BFF'];
+function barH(len,col,id){ return '<div class="bar" '+(id?'id="'+id+'" ':'')+'style="width:'+(len*24)+'px;background:'+col+';color:'+col+'"></div>'; }
+G.longer=async c=>{ const want=c.ask||any(['longer','shorter']); let a=R(3,9),b=R(3,9); while(Math.abs(a-b)<(MODE==='check'?1:2)) b=R(3,9); const ok=want==='longer'?Math.max(a,b):Math.min(a,b); const ca=any(BARC); let cb=any(BARC); while(cb===ca) cb=any(BARC);
+  const thing=any(['pencil','snake','ribbon','train']);
+  const f=await pickQ('',[[a,ca],[b,cb]].map(([v,cc],i)=>({h:barH(v,cc,'bb'+i),ok:v===ok,label:want,cls:'barpic'})),'Tap the '+want+' '+thing+'.',async()=>{ await say('The ends line up on the left. Look which one goes farther.'); scene.querySelectorAll('.bar').forEach(b=>b.classList.add('units')); },{post:''});
+  scene.querySelector('.row').style.flexDirection='column'; scene.querySelector('.row').style.alignItems='flex-start'; return [f,'That one is '+want+'.']; };
+G.towers=async c=>{ const want=c.ask||any(['taller','shorter']); let a=R(2,8),b=R(2,8); while(Math.abs(a-b)<2) b=R(2,8); const ok=want==='taller'?Math.max(a,b):Math.min(a,b); const tw=(n,col)=>'<div class="tower">'+Array.from({length:n},()=>'<i style="background:'+col+'"></i>').join('')+'</div>';
+  const f=await pickQ('',[a,b].map((v,i)=>({h:tw(v,BARC[i]),ok:v===ok,label:want})),'Tap the '+want+' tower.',async()=>{ await say('Both start on the floor. Which goes higher?'); }); return [f,'That tower is '+want+'.']; };
+G.order3=async c=>{ const lens=shuffle([3,5,8].map(v=>v+R(-1,1))); const cols=shuffle(BARC).slice(0,3); view('<div class="bars" id="o3">'+lens.map((l,i)=>'<button class="pic barpic" type="button" data-l="'+l+'" style="min-height:50px;padding:6px 26px 6px 8px">'+barH(l,cols[i])+'</button>').join('')+'</div>');
+  await say('Tap them in order: the shortest first, then the next, then the longest.'); const sorted=lens.slice().sort((x,y)=>x-y);
+  const f=await new Promise(res=>{ let k=0, first=true; const bs=[...scene.querySelectorAll('#o3 .pic')]; bs.forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(b.classList.contains('yes')) return; if(+b.dataset.l===sorted[k]){ b.classList.add('yes'); b.insertAdjacentHTML('afterbegin','<b style="font:800 26px var(--f-head);margin-right:6px">'+(k+1)+'</b>'); k++; plink(k); if(k===3){ chime(); lockAll(); res(first); } } else { first=false; soft(); await wrongHelp(async()=>say(k===0?'Find the shortest one first.':'Now find the shortest one that is left.'),'Try again.'); } }); BOT=()=>{ const x=bs.find(b=>+b.dataset.l===sorted[k]&&!b.classList.contains('yes')); x&&x.click(); }; });
+  return [f,'Shortest, middle, longest!']; };
+const WEIGHT=[['🐘','elephant','🐭','mouse'],['🍉','watermelon','🍒','cherry'],['🚚','truck','🚲','bike'],['🎃','pumpkin','🍇','grape'],['🪨','rock','🪶','feather'],['🐻','bear','🐝','bee'],['📚','pile of books','✏️','pencil']];
+function scaleH(L,Rr,tilt){ return '<svg viewBox="0 0 300 190" width="300" height="190" aria-hidden="true"><polygon points="150,90 130,180 170,180" fill="#8B5A2B"/><g transform="rotate('+tilt+' 150 90)"><rect x="30" y="84" width="240" height="12" rx="6" fill="#B87528"/><text x="50" y="74" font-size="52">'+L+'</text><text x="200" y="74" font-size="52">'+Rr+'</text></g></svg>'; }
+G.heavier=async c=>{ const want=c.ask||any(['heavier','lighter']); const w=any(WEIGHT), heavyLeft=Math.random()<.5; const L=heavyLeft?w[0]:w[2], Rr=heavyLeft?w[2]:w[0];
+  const ok=want==='heavier'?w[0]:w[2]; const f=await pickQ('<div class="row">'+scaleH(L,Rr,heavyLeft?-10:10)+'</div>',[[L,heavyLeft?w[1]:w[3]],[Rr,heavyLeft?w[3]:w[1]]].map(x=>({h:O(x[0]),ok:x[0]===ok,cls:'huge',label:x[1]})),'Which is '+want+'? Tap it.',async()=>{ await say('On a scale, the heavier side goes down. The lighter side goes up.'); });
+  return [f,'The '+(want==='heavier'?w[1]:w[3])+' is '+want+'.']; };
+/* --- sort --- */
+const SORTS=[[['🍎','apples'],['🍌','bananas']],[['🐶','dogs'],['🐱','cats']],[['🚗','cars'],['🚌','buses']],[['⚽','balls'],['🧸','teddy bears']],[['🔴','red'],['🔵','blue']],[['🟩','green'],['🟨','yellow']],[['🍴','forks'],['🥄','spoons']],[['🐟','fish'],['🐦','birds']]];
+function binsH(s,a,b){ return '<div class="row"><button class="bin" type="button" id="bin0" aria-label="'+s[0][1]+'"><span class="tag">'+s[0][0]+'</span>'+objs(s[0][0],a)+'</button><button class="bin" type="button" id="bin1" aria-label="'+s[1][1]+'"><span class="tag">'+s[1][0]+'</span>'+objs(s[1][0],b)+'</button></div>'; }
+G.sort=async c=>{ const s=c.set||any(SORTS), n=R(5,7); let list=shuffle([0,1].concat(Array.from({length:n-2},()=>R(0,1)))); view(binsH(s,0,0)+'<div class="row" id="cur" style="min-height:70px"></div>');
+  await say('Sort them! Tap the box where each one goes.'); let first=true;
+  for(const k of list){ $('cur').innerHTML=O(s[k][0],'pop').replace('class="o','style="font-size:64px" class="o'); await new Promise(r=>{ ['bin0','bin1'].forEach((id,i)=>$(id).onclick=async()=>{ if(BUSY) return; if(i===k){ $(id).insertAdjacentHTML('beforeend',O(s[k][0],'pop')); plink(i); r(); } else { first=false; soft(); if(helpOn()) await say('That is not '+s[i][1]+'. Try the other box.'); } }); BOT=()=>$('bin'+k).click(); }); }
+  $('cur').innerHTML=''; const a=list.filter(k=>k===0).length; scene.insertAdjacentHTML('beforeend',numRow(a,0,8,false)); $('bin0').onclick=$('bin1').onclick=null; BOT=null;
+  await say('How many '+s[0][1]+'?'); const f=await pickNum(a,'#bin0 .o:not(.tag)'); return [first&&f,a+' '+s[0][1]+' and '+(n-a)+' '+s[1][1]+'.']; };
+G.sortCount=async c=>{ const s=c.set||any(SORTS), a=R(1,7), b=R(1,7), w=R(0,1); const f=await numQ(binsH(s,a,b),'How many '+s[w][1]+'?',w?b:a,{lo:0,hi:9,help:'#bin'+w+' > .o'}); return [f,'There are '+(w?b:a)+' '+s[w][1]+'.']; };
+G.sortMore=async c=>{ const s=c.set||any(SORTS), a=R(1,7); let b=R(1,7); while(b===a) b=R(1,7); const ok=a>b?0:1;
+  view(binsH(s,a,b)); await say('Which box has more? Tap it.'); const f=await new Promise(res=>{ let first=true; [0,1].forEach(i=>$('bin'+i).onclick=async()=>{ if(BUSY) return; if(i===ok){ $('bin'+i).style.borderColor='#2FBF71'; chime(); lockAll(); res(first); } else { first=false; soft(); await wrongHelp(async()=>{ await say('Count each box.'); await countAloud('#bin0 > .o'); await countAloud('#bin1 > .o'); }); } }); BOT=()=>$('bin'+ok).click(); });
+  return [f,'The '+s[ok][1]+' box has more: '+Math.max(a,b)+'.']; };
+G.oddOut=async c=>{ const s=any(SORTS), k=R(0,1); const list=shuffle([k,k,k,1-k]); const f=await pickQ('',list.map(i=>({h:O(s[i][0]),ok:i!==k,cls:'huge',label:s[i][1]})),'Which one does not belong? Tap it.',async()=>{ await say('Three are '+s[k][1]+'. Find the different one.'); }); return [f,'Three are '+s[k][1]+'. That one is different.']; };
+/* --- build shapes --- */
+G.buildshape=async c=>{ const keys=['square','rectangle','hexagon'], want=c.target||any(keys); const items=shuffle(keys).map(k=>{ const b=BUILDS[k]; return {h:b.pieces.map((p,i)=>piece(p,COLS[i+1],b.rot[i],48)).join(''),ok:k===want,label:b.word}; });
+  const f=await pickQ('<div class="row">'+shp(BUILDS[want].name,{s:110,c:'#F3F7FF'})+'</div>',items,'Which two pieces can make this '+BUILDS[want].name+'?',async()=>{ await say(BUILDS[want].word+' fit together to make a '+BUILDS[want].name+'.'); });
+  view('<div class="row">'+madeSvg(BUILDS[want],150)+'</div>'); await wait(500); return [f,BUILDS[want].word+' make a '+BUILDS[want].name+'.']; };
+G.buildCount=async c=>{ const b=BUILDS[c.build||any(['square','rectangle','bigsquare','hex6'])]; const f=await numQ('<div class="row">'+madeSvg(b,170)+'</div>','How many pieces make this '+b.name+'?',b.cnt,{lo:1,hi:8,help:async()=>{ await say('Count each colored piece.'); }}); return [f,b.word+' make this '+b.name+'.']; };
+G.buildWhich=async c=>{ const k=c.build||any(['square','rectangle','hexagon','bigsquare']), b=BUILDS[k]; const others=shuffle(FLAT.filter(s=>s!==b.name&&!(b.name==='square'&&s==='rectangle')&&!(b.name==='rectangle'&&s==='square'))).slice(0,2);
+  view('<div class="row" id="pcs">'+b.pieces.map((p,i)=>piece(p,COLS[i],b.rot[i],56)).join('')+'</div>'); await say('Watch the pieces come together!'); await wait(900); $('pcs').innerHTML=madeSvg(b,140); tone(523,.15); await wait(500);
+  const pre=scene.innerHTML; const f=await pickQ(pre,shuffle([b.name].concat(others)).map(s=>({h:shp(s,{s:64,c:'#fff'}),ok:s===b.name,label:s})),'What shape did they make? Tap it.',async()=>{ await say(shapeTip(b.name)); }); return [f,b.word+' made a '+b.name+'.']; };
+/* ================= MOVIE HELPERS ================= */
+async function M(html){ view(html); await wait(200); }
+/* ================= 1st GRADE MATH (Level 2), batch (a): new games ================= */
+try{ document.head.insertAdjacentHTML('beforeend','<style>.frame.fr2{grid-template-columns:repeat(5,40px);grid-template-rows:repeat(2,40px);gap:4px;padding:6px}.frame.fr2 .o{font-size:26px}@media (max-width:560px){.frame.fr2{grid-template-columns:repeat(5,30px);grid-template-rows:repeat(2,30px)}.frame.fr2 .o{font-size:20px}}</style>'); }catch(e){}
+const eqH=(a,op,b,ans,q)=>'<div class="row" style="gap:10px"><span class="big-num">'+a+'</span><span class="plus">'+op+'</span><span class="big-num">'+b+'</span><span class="eq">=</span><span class="big-num" style="color:var(--grape)">'+(q?'?':ans)+'</span></div>';
+function twoFrames(x,y,e1,e2,id){ const tot=x+y; let h='<div class="row" id="'+(id||'tf')+'">'; for(let f=0;f<2;f++){ h+='<div class="frame fr2">'; for(let i=0;i<10;i++){ const k=f*10+i; h+='<div>'+(k<x?O(e1):(k<tot?O(e2):''))+'</div>'; } h+='</div>'; } return h+'</div>'; }
+function lineH(lo,hi,at,id){ return '<div class="path" id="'+(id||'nl')+'">'+Array.from({length:hi-lo+1},(_,i)=>lo+i).map(v=>'<div class="tile" data-v="'+v+'">'+v+(v===at?'<span class="bun">🐸</span>':'')+'</div>').join('')+'</div>'; }
+async function hopAnim(id,from,to){ const step=to>from?1:-1, b=scene.querySelector('#'+id+' .bun'); for(let v=from+step;step>0?v<=to:v>=to;v+=step){ const t=scene.querySelector('#'+id+' [data-v="'+v+'"]'); if(t&&b){ t.appendChild(b); } plink(Math.abs(v-from)); await say(String(v)); } }
+G.bigNum=async c=>{ const n=c.n||R(100,120); const sw=Number(String(n).slice(0,1)+String(n).slice(2)+String(n).slice(1,2)); view('<div class="row"><span class="o" style="font-size:70px">👂</span></div>'+numRow(n,90,130,false,[sw!==n?sw:n+10,n+any([-1,1])]));
+  await say('Tap '+n+'.'); const f=await pickNum(n,async()=>{ await say(n+' is one hundred and '+(n-100)+'. It starts with 1, for one hundred.'); },'Tap '+n+'.'); return [f,n+'.']; };
+G.add20=async c=>{ const x=c.x||R(5,10), y=c.y||R(2,9), t=T(); const f=await numQ(eqH(x,'+',y,x+y,true)+(helpOn()?twoFrames(x,y,t.e,'🔵'):''),x+' plus '+y+'. How many?',x+y,{lo:2,hi:20,extra:[x+y+1,x+y-1,x+y+10>20?x+y-10:x+y+10],help:async()=>{ if($('tf')){ await say('Fill the first ten, then count the rest.'); await countAloud('#tf .o'); } else await say('Start at '+x+' and count on '+y+'.'); }}); return [f,x+' + '+y+' = '+(x+y)+'.']; };
+G.sub20=async c=>{ const a=c.a||R(11,19), b=c.b||R(2,9), ans=a-b; const f=await numQ(eqH(a,'−',b,ans,true)+(helpOn()?lineH(Math.max(0,a-b-2),a,a,'nl'):''),a+' take away '+b+'. How many are left?',ans,{lo:0,hi:20,help:async()=>{ if($('nl')){ await say('Start at '+a+'. Hop back '+b+'.'); await hopAnim('nl',a,ans); } else await say('Count back '+b+' from '+a+'.'); }}); return [f,a+' − '+b+' = '+ans+'.']; };
+G.blocks=async c=>{ const a=c.a||R(11,18), b=c.b||R(3,9), t={e:'🟦',n:'blocks'}; view('<div class="row" id="bq">'+objs(t.e,a)+'</div>'); await say(a+' blocks in the tower. Tap '+b+' blocks to take them away.');
+  let first=true; await new Promise(r=>{ let k=0; const os=[...scene.querySelectorAll('#bq .o')]; os.forEach(o=>{ o.classList.add('tapme'); o.onclick=async()=>{ if(o.dataset.d) return; if(k>=b){ return; } o.dataset.d=1; o.classList.add('gone'); k++; plink(k); if(k===b){ await wait(400); r(); } }; }); BOT=()=>{ const x=os.find(o=>!o.dataset.d); x&&x.click(); }; });
+  scene.insertAdjacentHTML('beforeend',eqH(a,'−',b,a-b,true)+numRow(a-b,0,20,false)); await say('How many blocks are left?'); const f=await pickNum(a-b,'#bq .o:not(.gone)'); return [first&&f,a+' − '+b+' = '+(a-b)+'.']; };
+G.hopOn=async c=>{ const s=c.s||R(5,14), k=c.k||R(2,5); const f=await numQ(lineH(s-1,s+k+2,s,'nl')+eqH(s,'+',k,s+k,true),'The frog is on '+s+'. Hop on '+k+'. Where does he land?',s+k,{lo:s,hi:s+k+3,extra:[s+k+1,s+k-1],help:async()=>{ await hopAnim('nl',s,s+k); }}); return [f,s+' + '+k+' = '+(s+k)+'.']; };
+G.hopBack=async c=>{ const s=c.s||R(9,19), k=c.k||R(2,5); const f=await numQ(lineH(s-k-2,s+1,s,'nl')+eqH(s,'−',k,s-k,true),'The frog is on '+s+'. Hop back '+k+'. Where does he land?',s-k,{lo:Math.max(0,s-k-3),hi:s,extra:[s-k+1,s-k-1],help:async()=>{ await hopAnim('nl',s,s-k); }}); return [f,s+' − '+k+' = '+(s-k)+'.']; };
+G.hopWhich=async c=>{ const back=Math.random()<.5, s=R(8,15), k=R(2,4); const ans=back?s-k:s+k;
+  const f=await pickQ(lineH(s-5,s+5,s,'nl'),[{h:O('➡️'),ok:!back,cls:'huge',label:'hop on'},{h:O('⬅️'),ok:back,cls:'huge',label:'hop back'}],'To get from '+s+' to '+ans+', do we hop on or hop back?',async()=>{ await say(ans>s?ans+' is bigger, so we hop on.':ans+' is smaller, so we hop back.'); }); return [f,(back?'Back: ':'On: ')+s+(back?' − ':' + ')+k+' = '+ans+'.']; };
+G.double=async c=>{ const n=c.n||R(2,9), t=T(); const f=await numQ('<div class="row"><div class="pic" style="cursor:default">'+g5(t.e,n,'sm')+'</div><span style="font-size:40px">🪞</span><div class="pic" style="cursor:default">'+g5(t.e,n,'sm')+'</div></div>'+eqH(n,'+',n,2*n,true),'Double '+n+'! '+n+' plus '+n+'?',2*n,{lo:2,hi:20,help:async()=>{ await say('Count both sides.'); await countAloud('.pic .o'); }}); return [f,'Double '+n+' is '+(2*n)+'.']; };
+G.nearDouble=async c=>{ const n=R(3,9); const f=await numQ(eqH(n,'+',n+1,2*n+1,true)+'<div class="note" style="font-size:18px">'+n+' + '+n+' = '+(2*n)+'</div>',n+' plus '+(n+1)+'. Use the double!',2*n+1,{lo:4,hi:20,help:async()=>{ await say(n+' plus '+n+' is '+(2*n)+'. '+(n+1)+' is one more than '+n+', so add one more: '+(2*n+1)+'.'); }}); return [f,'Double '+n+' is '+(2*n)+', plus one is '+(2*n+1)+'.']; };
+G.makeTen=async c=>{ const a=c.a||R(6,9), b=c.b||R(10-a+1,9), need=10-a, t=T(); view(twoFrames(a,0,t.e,'🔵','mt')+'<div class="tray" id="mtr">'+objs('🔵',b)+'</div>'+eqH(a,'+',b,a+b,true));
+  await say(a+' plus '+b+'. Make ten first! Tap the blue ones to fill the first frame.');
+  let first=true; await new Promise(r=>{ let k=0; const cells=[...scene.querySelectorAll('#mt .frame:first-child>div')]; const os=[...scene.querySelectorAll('#mtr .o')];
+    os.forEach(o=>o.onclick=async()=>{ if(BUSY||o.dataset.d) return; if(k>=need){ first=false; soft(); await say('The first frame is full! Ten.'); return; } o.dataset.d=1; o.remove(); cells[a+k].innerHTML=O('🔵','pop'); k++; plink(k); if(k===need){ await say('Ten! And '+(b-need)+' left over.'); r(); } }); BOT=()=>{ const x=os.find(o=>!o.dataset.d); x&&x.click(); }; });
+  scene.insertAdjacentHTML('beforeend',numRow(a+b,10,20,false)); await say('So '+a+' plus '+b+' is ten plus '+(b-need)+'. How many?'); const f=await pickNum(a+b,async()=>{ await say('Ten and '+(b-need)+' make '+(a+b)+'.'); });
+  return [first&&f,a+' + '+b+' = 10 + '+(b-need)+' = '+(a+b)+'.']; };
+G.makeTenPick=async c=>{ const a=R(6,9), b=R(10-a+1,9), need=10-a; const ok='10 + '+(b-need), opts=shuffle([ok,'10 + '+(b-need+1),'10 + '+b]);
+  view(eqH(a,'+',b,a+b,true)+'<div class="choices">'+opts.map(o=>'<button class="ch wide" type="button" data-v="'+o+'"'+(o===ok?' data-ok="1"':'')+'>'+o+'</button>').join('')+'</div>');
+  await say(a+' plus '+b+'. Make ten first. Which is the same?'); const f=await new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(bt=>bt.onclick=async()=>{ if(BUSY) return; if(bt.dataset.v===ok){ bt.classList.add('yes'); chime(); lockAll(); res(first); } else { first=false; bt.classList.add('no'); soft(); await wrongHelp(async()=>say(a+' needs '+need+' more to make ten. Take '+need+' from '+b+'. '+(b-need)+' are left.')); } }); });
+  return [f,a+' + '+b+' = 10 + '+(b-need)+' = '+(a+b)+'.']; };
+G.missing20=async c=>{ const tot=R(11,18), x=R(3,tot-3), mode=Math.random()<.5; const f=await numQ(mode?eqH(x,'+','?',tot,false).replace('<span class="big-num">?</span>','<span class="big-num" style="color:var(--grape)">?</span>'):'<div class="row" style="gap:10px"><span class="big-num">'+tot+'</span><span class="plus">−</span><span class="big-num" style="color:var(--grape)">?</span><span class="eq">=</span><span class="big-num">'+x+'</span></div>',mode?x+' plus what makes '+tot+'?':tot+' minus what leaves '+x+'?',tot-x,{lo:0,hi:20,help:async()=>{ await say('Count up from '+x+' to '+tot+'.'); }}); return [f,x+' + '+(tot-x)+' = '+tot+'.']; };
+G.factFam=async c=>{ const a=R(3,9), b=R(2,9), s=a+b; const good=[a+' + '+b+' = '+s,b+' + '+a+' = '+s,s+' − '+a+' = '+b,s+' − '+b+' = '+a], ok=any(good), bad=[a+' + '+s+' = '+b,s+' + '+b+' = '+a,a+' − '+b+' = '+s].filter(x=>x!==ok).slice(0,2);
+  const opts=shuffle([ok].concat(bad)); view('<div class="row">'+[a,b,s].map(v=>'<span class="tile" style="width:70px;height:70px;font-size:34px">'+v+'</span>').join('')+'</div><div class="choices">'+opts.map(o=>'<button class="ch wide" type="button" data-v="'+o+'"'+(o===ok?' data-ok="1"':'')+'>'+o+'</button>').join('')+'</div>');
+  await say(a+', '+b+' and '+s+' are a fact family. Which fact belongs to the family?'); const f=await new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(bt=>bt.onclick=async()=>{ if(BUSY) return; if(bt.dataset.v===ok){ bt.classList.add('yes'); chime(); lockAll(); res(first); } else { first=false; bt.classList.add('no'); soft(); await wrongHelp(async()=>say('The biggest number, '+s+', is the whole. The two parts are '+a+' and '+b+'.')); } }); });
+  return [f,ok+'.']; };
+G.add3=async c=>{ let a=R(1,9); const b=10-a, d=R(1,9); const nums=shuffle([a,b,d]); const tot=a+b+d;
+  view('<div class="row" id="a3" style="gap:10px">'+nums.map((v,i)=>'<button class="ch" type="button" data-i="'+i+'" style="min-width:90px">'+v+'</button>'+(i<2?'<span class="plus">+</span>':'')).join('')+'</div>');
+  await say(nums.join(' plus ')+'. Find two numbers that make ten. Tap them.'); let first=true;
+  await new Promise(r=>{ let picked=[]; const bs=[...scene.querySelectorAll('#a3 .ch')]; bs.forEach(bt=>bt.onclick=async()=>{ if(BUSY||bt.classList.contains('yes')) return; picked.push(bt); bt.classList.add('yes'); if(picked.length===2){ const s=+picked[0].textContent + +picked[1].textContent; if(s===10){ chime(); r(); } else { first=false; soft(); picked.forEach(x=>x.classList.remove('yes')); picked=[]; await wrongHelp(async()=>say('Which two add up to ten? Try '+a+' and '+b+'.'),'Tap two that make ten.'); } } });
+    BOT=()=>{ const ia=nums.indexOf(a), ib=nums.indexOf(b, ia===nums.indexOf(b)?ia+1:0); const x=bs.find((bt,i)=>(i===ia||i===ib)&&!bt.classList.contains('yes')); x&&x.click(); }; });
+  scene.insertAdjacentHTML('beforeend','<div class="row"><span class="big-num">10</span><span class="plus">+</span><span class="big-num">'+d+'</span></div>'+numRow(tot,5,25,false)); await say('Ten plus '+d+'. How many in all?'); const f=await pickNum(tot,async()=>{ await say('Ten and '+d+' make '+tot+'.'); });
+  return [first&&f,nums.join(' + ')+' = '+tot+'.']; };
+/* ================= 1st GRADE MATH LESSONS (batch a) ================= */
+const L=[
+{id:'MATH.NUM.L02.01',t:'Count to 120',e:'💯➕',sub:'count, read and write to 120',
+ warm:[['tens'],['next',{lo:20,hi:60}]],
+ story:async()=>{ await M('<div class="row">'+O('🚂')+seqHtml([98,99,100,'?'],3)+'</div>'); await say('The number train reached 100! But it doesn’t stop. What comes after 100?'); },
+ movie:async()=>{ await M('<div class="tiles" id="hc">'+Array.from({length:20},(_,i)=>'<div class="tile'+((i+101)%10===0?' ten':'')+'">'+(i+101)+'</div>').join('')+'</div>'); await say('After 100 we say one hundred one, one hundred two... It’s like starting again, with a 1 in front.');
+   const ts=scene.querySelectorAll('#hc .tile'); for(const i of [0,1,2,9,10,19]){ ts[i].classList.add('hl'); await say(String(101+i)); } await say('120! We can count all the way to 120.'); await tapGo('#hc .tile'); },
+ together:[['next',{lo:96,hi:116}],['rowgap',{d:10}],['bigNum']],
+ practice:[['next',{lo:95,hi:117}],['rowgap',{d:10}],['bigNum'],['rowgap',{d:11}],['tens'],['bigNum'],['next',{lo:100,hi:117}],['rowgap',{dlo:7,dhi:11}]],
+ real:['bigNum',{n:113,intro:'Open the siddur to page 113 for Mincha!'}],
+ check:[['bigNum'],['rowgap',{d:11}],['next',{lo:98,hi:117}]]},
+{id:'MATH.OPS.L02.03',t:'Hop On, Hop Back',e:'🐸',sub:'count on and count back',
+ warm:[['next',{lo:5,hi:15}],['counton']],
+ story:async()=>{ await M(lineH(5,15,9,'nl')); await say('Froggy lives on the number line. He can hop on, to bigger numbers, or hop back, to smaller numbers!'); },
+ movie:async()=>{ await M(lineH(6,16,8,'nl')+eqH(8,'+',3,11,true)); await say('8 plus 3. Start at 8 and hop on 3.'); await hopAnim('nl',8,11); await say('11! 8 plus 3 is 11.');
+   await M(lineH(6,16,14,'nl')+eqH(14,'−',4,10,true)); await say('14 take away 4. Start at 14 and hop back 4.'); await hopAnim('nl',14,10); await say('10! Hopping back is taking away.'); },
+ together:[['hopOn',{s:7,k:3}],['hopBack',{s:12,k:3}],['hopWhich']],
+ practice:[['hopOn'],['hopBack'],['hopWhich'],['add20'],['sub20'],['hopOn'],['hopBack'],['hopWhich']],
+ real:['hopOn',{s:12,k:3,intro:'Shmuli has 12 seforim on his shelf. He gets 3 more for his birthday.'}],
+ check:[['hopOn'],['hopBack'],['sub20']]},
+{id:'MATH.OPS.L02.04',t:'Doubles',e:'🦋',sub:'doubles and near doubles',
+ warm:[['pour'],['count',{lo:6,hi:10}]],
+ story:async()=>{ await M('<div class="row" style="font-size:80px">🦋</div>'); await say('A butterfly has the same spots on each wing. That is a double!'); },
+ movie:async()=>{ for(const n of [3,5,7]){ await M('<div class="row"><div class="pic" style="cursor:default">'+g5('🔴',n,'sm')+'</div><span style="font-size:40px">🪞</span><div class="pic" style="cursor:default">'+g5('🔴',n,'sm')+'</div></div>'+eqH(n,'+',n,2*n)); await say('Double '+n+': '+n+' plus '+n+' is '+(2*n)+'.'); }
+   await M(eqH(6,'+',7,13)); await say('6 plus 7? 6 plus 6 is 12. 7 is one more, so it is 13. That’s a near double!'); },
+ together:[['double',{n:4}],['double'],['nearDouble']],
+ practice:[['double'],['nearDouble'],['add20'],['missing20'],['double'],['nearDouble'],['hopOn'],['double']],
+ real:['double',{n:6,intro:'Two challos on each side of the table. Abba puts 6 rolls on each tray!'}],
+ check:[['double'],['nearDouble'],['double']]},
+{id:'MATH.OPS.L02.05',t:'Make Ten',e:'🔟➕',sub:'make ten to add',
+ warm:[['tenmore'],['tenpair']],
+ story:async()=>{ await M(twoFrames(8,0,'🍎','🔵')+'<div class="tray">'+objs('🔵',5)+'</div>'); await say('8 apples in the frame, and 5 more. Is there a quick way to add them? Yes! Make ten first.'); },
+ movie:async()=>{ await M(twoFrames(8,5,'🍎','🔵','mv')+eqH(8,'+',5,13,true)); await say('8 needs 2 more to make ten. Watch: 2 of the 5 jump into the first frame.'); await wait(600); await say('Now we have 10, and 3 left over. 10 plus 3 is 13!'); await M(eqH(8,'+',5,13)+'<div class="row"><span class="big-num">10</span><span class="plus">+</span><span class="big-num">3</span></div>'); await say('8 plus 5 is the same as 10 plus 3. 13!'); },
+ together:[['makeTen',{a:9,b:4}],['makeTen'],['makeTenPick']],
+ practice:[['makeTen'],['makeTenPick'],['add20'],['add3'],['tenpair'],['makeTen'],['makeTenPick'],['add20']],
+ real:['makeTen',{a:9,b:6,intro:'9 boys are in the minyan room and 6 more come in.'}],
+ check:[['makeTenPick'],['add20'],['makeTen']]},
+{id:'MATH.OPS.L02.01',t:'Twenty Trail',e:'🥾',sub:'add within 20',
+ warm:[['pour'],['tenpair']],
+ story:async()=>{ await M(lineH(0,20,0,'nl')); await say('The Twenty Trail goes from 0 to 20. Let’s add our way along it!'); },
+ movie:async()=>{ await M(eqH(7,'+',6,13,true)+twoFrames(7,6,'🍓','🔵')); await say('7 plus 6. Here are three ways. One: count it all.'); await countAloud('#tf .o'); await say('Two: start at 7, count on 6: 8, 9, 10, 11, 12, 13. Three: make ten! 7 and 3 make 10, and 3 more is 13.'); },
+ together:[['add20',{x:9,y:3}],['add20'],['makeTen']],
+ practice:[['add20'],['hopOn'],['makeTen'],['double'],['nearDouble'],['add20'],['add3'],['add20']],
+ real:['add20',{x:8,y:7,intro:'8 boys and 7 girls came to the Chanukah party.'}],
+ check:[['add20'],['add20'],['makeTenPick']]},
+{id:'MATH.OPS.L02.02',t:'Block Quest',e:'🧱',sub:'subtract within 20',
+ warm:[['away'],['hopBack',{s:10,k:2}]],
+ story:async()=>{ await M('<div class="row">'+objs('🟦',15,'pop')+'</div>'); await say('A tall block tower! What happens when we take some blocks away?'); },
+ movie:async()=>{ await M('<div class="row" id="bq">'+objs('🟦',14)+'</div>'+eqH(14,'−',5,9,true)); await say('14 blocks. Take away 5.'); const os=scene.querySelectorAll('#bq .o'); for(let i=0;i<5;i++){ os[13-i].classList.add('gone'); plink(i); await wait(250); } await say('Count what is left.'); await countAloud('#bq .o:not(.gone)'); await say('9! 14 minus 5 is 9. We can also hop back on the number line, or think: 5 plus what makes 14?'); },
+ together:[['blocks',{a:13,b:4}],['sub20'],['hopBack']],
+ practice:[['blocks'],['sub20'],['hopBack'],['missing20'],['factFam'],['blocks'],['sub20'],['hopBack']],
+ real:['blocks',{a:16,b:7,intro:'There were 16 cookies for Shabbos. The family ate 7.'}],
+ check:[['sub20'],['sub20'],['blocks']]},
+{id:'MATH.OPS.L02.06',t:'Missing Piece',e:'🧩',sub:'fact families and missing numbers',
+ warm:[['add20'],['sub20']],
+ story:async()=>{ await M('<div class="row">'+[5,8,13].map(v=>'<span class="tile" style="width:70px;height:70px;font-size:34px">'+v+'</span>').join('')+'</div>'); await say('5, 8 and 13 are a family. They always go together!'); },
+ movie:async()=>{ await M('<div class="row">'+['5 + 8 = 13','8 + 5 = 13','13 − 5 = 8','13 − 8 = 5'].map(x=>'<span class="tile" style="width:auto;padding:0 12px;font-size:26px">'+x+'</span>').join('')+'</div>'); await say('The family makes four facts: 5 plus 8 is 13. 8 plus 5 is 13. 13 minus 5 is 8. 13 minus 8 is 5.');
+   await M(eqH(6,'+','?',14)); await say('6 plus what makes 14? Count up from 6 to 14: that is 8. The missing piece is 8!'); },
+ together:[['factFam'],['missing20'],['missing',{total:10}]],
+ practice:[['factFam'],['missing20'],['missing',{total:12}],['sub20'],['add20'],['factFam'],['missing20'],['nearDouble']],
+ real:['missing20',{intro:'We need 15 cups for the seudah. Some are on the table already.'}],
+ check:[['factFam'],['missing20'],['missing20']]},
+{id:'MATH.OPS.L02.07',t:'Three in a Row',e:'3️⃣',sub:'add three numbers',
+ warm:[['tenpair'],['add20']],
+ story:async()=>{ await M(eqH('4 + 6','+',3,13,true)); await say('Three numbers to add? No problem! Find a ten first.'); },
+ movie:async()=>{ await M('<div class="row"><span class="big-num">4</span><span class="plus">+</span><span class="big-num">5</span><span class="plus">+</span><span class="big-num">6</span></div>'); await say('4 plus 5 plus 6. Look for two that make ten: 4 and 6! Ten. Then plus 5 is 15.'); await M('<div class="row"><span class="big-num">7</span><span class="plus">+</span><span class="big-num">7</span><span class="plus">+</span><span class="big-num">2</span></div>'); await say('7 plus 7 plus 2. No ten? Use a double: 7 plus 7 is 14, and 2 more is 16!'); },
+ together:[['add3'],['add3'],['makeTenPick']],
+ practice:[['add3'],['makeTen'],['double'],['add20'],['add3'],['factFam'],['add3'],['nearDouble']],
+ real:['add3',{intro:'Shabbos guests: 4 at one table, 6 at another and 3 more coming!'}],
+ check:[['add3'],['add3'],['add20']]}
+];
+
+/* ================= 1st GRADE MATH batch (b): new games ================= */
+try{ document.head.insertAdjacentHTML('beforeend','<style>.rod{display:inline-flex;flex-direction:column;gap:1px;margin:0 3px;vertical-align:bottom}.rod i,.one i{display:block;width:16px;height:12px;background:#3D8BFF;border:1px solid #2a63c0;border-radius:2px}.one{display:inline-flex;flex-direction:column-reverse;gap:3px;margin:0 2px;vertical-align:bottom}.one i{background:#FFC83D;border-color:#D49A12;height:16px}.sign{font:800 60px var(--f-head);color:var(--berry)}</style>'); }catch(e){}
+const rodsH=(t,o,id)=>'<div class="row" id="'+(id||'rd')+'" style="align-items:flex-end;gap:8px"><div>'+Array.from({length:t},()=>'<span class="rod">'+'<i></i>'.repeat(10)+'</span>').join('')+'</div><div>'+Array.from({length:o},()=>'<span class="one"><i></i></span>').join('')+'</div></div>';
+function scaleTilt(l,r,tilt){ return '<svg viewBox="0 0 320 170" width="320" height="170" aria-hidden="true"><polygon points="160,80 140,165 180,165" fill="#8B5A2B"/><g transform="rotate('+tilt+' 160 80)"><rect x="20" y="74" width="280" height="12" rx="6" fill="#B87528"/><text x="80" y="60" font-size="30" text-anchor="middle" font-weight="800" fill="#1F2A44">'+l+'</text><text x="240" y="60" font-size="30" text-anchor="middle" font-weight="800" fill="#1F2A44">'+r+'</text></g></svg>'; }
+G.balanceTF=async c=>{ const a=R(2,9),b=R(1,9),s=a+b; const tru=Math.random()<.5; let c1=R(1,Math.min(9,s-1)), c2=s-c1; if(!tru){ c2+=any([-1,1,2]); if(c2<0) c2=1; } const L=a+' + '+b, Rr=c1+' + '+c2, ls=a+b, rs=c1+c2, tilt=ls===rs?0:(ls>rs?-8:8);
+  const f=await pickQ('<div class="row">'+scaleTilt(L,Rr,0)+'</div><div class="row" style="font:800 34px var(--f-head)">'+L+' = '+Rr+'</div>',[{h:O('✅'),ok:ls===rs,cls:'huge',label:'true'},{h:O('❌'),ok:ls!==rs,cls:'huge',label:'false'}],'Is it true or false? Does the scale balance?',async()=>{ await say(L+' is '+ls+'. '+Rr+' is '+rs+'.'+(ls===rs?' The same! It balances.':' Not the same.')); });
+  const svg=scene.querySelector('svg g'); if(svg) svg.setAttribute('transform','rotate('+tilt+' 160 80)'); await wait(500); return [f,L+' is '+ls+', '+Rr+' is '+rs+': '+(ls===rs?'true!':'false.')]; };
+G.balanceFill=async c=>{ const a=R(2,9),b=R(1,9),s=a+b,c1=R(1,Math.min(9,s-1)),ans=s-c1; const f=await numQ('<div class="row">'+scaleTilt(a+' + '+b,c1+' + ?',0)+'</div><div class="row" style="font:800 34px var(--f-head)">'+a+' + '+b+' = '+c1+' + ?</div>','What number makes the scale balance?',ans,{lo:0,hi:18,help:async()=>{ await say(a+' plus '+b+' is '+s+'. '+c1+' plus what is '+s+'?'); }}); return [f,a+' + '+b+' = '+c1+' + '+ans+'.']; };
+const STORIES1=[(a,b)=>['Dovi has '+a+' stickers. Zaidy gives him '+b+' more. How many stickers now?',a+b,'🌟'],(a,b)=>['There are '+(a+b)+' apples in a bowl. The children eat '+b+'. How many are left?',a,'🍎'],(a,b)=>['Moishy read '+(a+b)+' pages. Yossi read '+a+' pages. How many more pages did Moishy read?',b,'📖'],(a,b)=>['Some birds sit on the Sukkah. '+b+' more come. Now there are '+(a+b)+'. How many were there at first?',a,'🐦'],(a,b)=>[a+' boys are learning in the Beis Midrash. '+b+' more come for Mincha. How many boys are there now?',a+b,'📚']];
+G.story1=async c=>{ const a=R(3,10), b=R(2,9); const [txt,ans,e]=any(STORIES1)(a,b); const f=await numQ('<div class="row" style="font-size:54px">'+e+'</div><div style="font:700 22px/1.35 var(--f-body);max-width:560px;text-align:center">'+txt+'</div>',txt,ans,{lo:0,hi:20,help:async()=>{ await say('Think: do we put together or take apart? Draw it in your head with the '+e+'.'); }}); return [f,'The answer is '+ans+'.']; };
+G.tensOnes=async c=>{ const t=R(1,9), o=R(0,9), n=t*10+o; const f=await numQ(rodsH(t,o),'Each blue rod is ten. Each yellow block is one. What number is it?',n,{lo:10,hi:99,extra:[o*10+t,n+10,n-1],help:async()=>{ await say(t+' tens is '+(t*10)+', and '+o+' ones. '+n+'.'); }}); return [f,t+' tens and '+o+' ones is '+n+'.']; };
+G.buildTO=async c=>{ const t=R(1,8), o=R(1,9), n=t*10+o; view('<div class="row"><span class="card-num">'+n+'</span></div><div id="bw" style="min-height:150px"></div><div class="row"><button class="go alt" id="addT" type="button">+ ten</button><button class="go alt" id="addO" type="button">+ one</button><button class="pill" id="clr" type="button">↺</button><button class="go" id="done" type="button">✓</button></div>');
+  let T0=0,O0=0; const draw=()=>{ $('bw').innerHTML=rodsH(T0,O0,'rr'); }; draw(); await say('Build '+n+' with tens and ones. Then tap the check.');
+  const f=await new Promise(r=>{ let first=true; $('addT').onclick=()=>{ if(T0<9){ T0++; plink(T0); draw(); } }; $('addO').onclick=()=>{ if(O0<9){ O0++; plink(O0); draw(); } }; $('clr').onclick=()=>{ T0=0; O0=0; draw(); };
+    $('done').onclick=async()=>{ if(BUSY) return; if(T0===t&&O0===o){ chime(); lockAll(); r(first); } else { first=false; soft(); await wrongHelp(async()=>say(n+' is '+t+' tens and '+o+' ones. You have '+T0+' tens and '+O0+' ones.'),'Fix it and check again.'); } };
+    BOT=()=>{ if(T0<t) $('addT').click(); else if(T0>t){ $('clr').click(); } else if(O0<o) $('addO').click(); else if(O0>o) $('clr').click(); else $('done').click(); }; });
+  return [f,n+' = '+t+' tens and '+o+' ones.']; };
+G.alligator=async c=>{ let a=R(10,99), b=R(10,99); if(Math.random()<.15) b=a; const ok=a>b?'>':(a<b?'<':'=');
+  view('<div class="row" style="gap:18px"><span class="big-num">'+a+'</span><span class="sign">?</span><span class="big-num">'+b+'</span></div><div class="choices">'+['<','=','>'].map(s=>'<button class="ch" type="button" data-v="'+s+'"'+(s===ok?' data-ok="1"':'')+'>'+s+'</button>').join('')+'</div><div class="note" style="font-size:16px">🐊 The alligator’s mouth eats the bigger number.</div>');
+  await say('Which sign goes in the middle? The alligator’s mouth opens to the bigger number.'); const f=await new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(bt=>bt.onclick=async()=>{ if(BUSY) return; if(bt.dataset.v===ok){ bt.classList.add('yes'); scene.querySelector('.sign').textContent=ok; chime(); lockAll(); res(first); } else { first=false; bt.classList.add('no'); soft(); await wrongHelp(async()=>say('Compare the tens first: '+Math.floor(a/10)+' tens and '+Math.floor(b/10)+' tens.'+(Math.floor(a/10)===Math.floor(b/10)?' Same tens, so compare the ones.':''))); } }); });
+  return [f,a+' '+(ok==='>'?'is greater than':ok==='<'?'is less than':'equals')+' '+b+'.']; };
+function chartH(hi,id){ const start=Math.max(1,Math.floor((hi-1)/10)*10-29); let h='<div class="tiles" id="'+(id||'hc')+'" style="max-width:600px">'; for(let v=start;v<start+50&&v<=100;v++) h+='<div class="tile" data-v="'+v+'" style="width:48px;height:40px;font-size:18px">'+v+'</div>'; return h+'</div>'; }
+G.jump10=async c=>{ const up=Math.random()<.5, n=up?R(11,89):R(11,89), ans=up?n+10:n-10; const f=await numQ(chartH(Math.max(n,ans)+10),(up?'10 more than ':'10 less than ')+n+'?',ans,{lo:Math.max(0,ans-12),hi:ans+12,extra:[up?n+1:n-1,ans+(up?10:-10)],help:async()=>{ const t=scene.querySelector('[data-v="'+n+'"]'); if(t) t.classList.add('hl'); await say('On the chart, '+(up?'10 more is one row down':'10 less is one row up')+'. The tens change, the ones stay the same.'); const u=scene.querySelector('[data-v="'+ans+'"]'); if(u) u.classList.add('hl'); }}); return [f,(up?'10 more than ':'10 less than ')+n+' is '+ans+'.']; };
+G.addTens=async c=>{ const kind=Math.random()<.5; const a=R(11,79), b=kind?R(1,2)*10:R(1,9); let A=a,B=b; if(!kind){ A=R(2,8)*10+R(0,3); B=R(1,9-A%10); } const ans=A+B;
+  const f=await numQ(rodsH(Math.floor(A/10),A%10,'r1')+eqH(A,'+',B,ans,true),A+' plus '+B+'?',ans,{lo:10,hi:99,extra:[ans+10,ans-10,ans+1],help:async()=>{ await say(B%10===0?'Add tens to tens: '+Math.floor(A/10)+' tens plus '+(B/10)+' tens. The ones stay '+(A%10)+'.':'Add ones to ones: '+(A%10)+' plus '+B+'. The tens stay '+Math.floor(A/10)+'.'); }}); return [f,A+' + '+B+' = '+ans+'.']; };
+G.takeTens=async c=>{ const a=R(3,9)*10, b=R(1,a/10-1)*10; const f=await numQ(rodsH(a/10,0,'r2')+eqH(a,'−',b,a-b,true),a+' minus '+b+'?',a-b,{lo:0,hi:90,extra:[a-b+10,a-b-10],help:async()=>{ await say(a/10+' tens take away '+b/10+' tens is '+(a-b)/10+' tens: '+(a-b)+'.'); }}); return [f,a+' − '+b+' = '+(a-b)+'.']; };
+L.push(
+{id:'MATH.OPS.L02.08',t:'Balance Scale',e:'⚖️',sub:'true or false equations',
+ warm:[['add20'],['double']],
+ story:async()=>{ await M('<div class="row">'+scaleTilt('4 + 3','5 + 2',0)+'</div>'); await say('The equal sign is like a balance scale. Both sides must weigh the same!'); },
+ movie:async()=>{ await M('<div class="row">'+scaleTilt('4 + 3','5 + 2',0)+'</div><div class="row" style="font:800 34px var(--f-head)">4 + 3 = 5 + 2</div>'); await say('4 plus 3 is 7. 5 plus 2 is 7. Both sides are 7, so it balances. True!');
+   await M('<div class="row">'+scaleTilt('6 + 2','5 + 5',8)+'</div><div class="row" style="font:800 34px var(--f-head)">6 + 2 = 5 + 5</div>'); await say('6 plus 2 is 8. 5 plus 5 is 10. Not the same, so the scale tips. False!'); },
+ together:[['balanceTF'],['balanceFill'],['balanceTF']],
+ practice:[['balanceTF'],['balanceFill'],['missing20'],['factFam'],['balanceTF'],['add20'],['balanceFill'],['balanceTF']],
+ real:['balanceTF',{intro:'Two shalach manos baskets must be fair. Do they balance?'}],
+ check:[['balanceTF'],['balanceFill'],['balanceTF']]},
+{id:'MATH.OPS.L02.09',t:'Story Problems',e:'📜',sub:'word problems within 20',
+ warm:[['add20'],['sub20']],
+ story:async()=>{ await M('<div class="row" style="font-size:60px">🌟</div>'); await say('Math hides in stories! Listen carefully and ask: are we putting together, or taking apart?'); },
+ movie:async()=>{ await M('<div class="row">'+objs('🍎',12)+'</div>'); await say('There are 12 apples. The children eat 5. How many are left? Eat means take away.'); const os=scene.querySelectorAll('.o'); for(let i=0;i<5;i++){ os[11-i].classList.add('gone'); await wait(200); } await say('12 minus 5 is 7. Seven apples left!');
+   await M('<div class="row">'+objs('📖',9)+'<span class="plus">vs</span>'+objs('📖',6)+'</div>'); await say('Moishy read 9 pages, Yossi read 6. How many MORE did Moishy read? Compare: 9 minus 6 is 3.'); },
+ together:[['story1'],['story1'],['story1']],
+ practice:[['story1'],['add20'],['sub20'],['story1'],['missing20'],['story1'],['blocks'],['story1']],
+ real:['story1',{intro:'Real stories from our school day!'}],
+ check:[['story1'],['story1'],['story1']]},
+{id:'MATH.PV.L02.01',t:'Tens and Ones',e:'🟦',sub:'tens and ones',
+ warm:[['teen'],['tens']],
+ story:async()=>{ await M(rodsH(3,4)); await say('A rod is ten blocks stuck together. With rods and ones we can build any number!'); },
+ movie:async()=>{ await M(rodsH(2,0)+'<div class="row"><span class="big-num">20</span></div>'); await say('Two rods: 10, 20.'); await M(rodsH(2,5)+'<div class="row"><span class="big-num">25</span></div>'); await say('Add 5 ones: 21, 22, 23, 24, 25. 2 tens and 5 ones is 25. The 2 means two tens. The 5 means five ones.'); },
+ together:[['tensOnes'],['buildTO'],['tensOnes']],
+ practice:[['tensOnes'],['buildTO'],['tensObjects'],['teenSplit'],['tensOnes'],['buildTO'],['rowgap',{dlo:1,dhi:8}],['tensOnes']],
+ real:['tensOnes',{intro:'Tzedakah coins: rolls of ten and single coins. How many?'}],
+ check:[['tensOnes'],['buildTO'],['tensOnes']]},
+{id:'MATH.PV.L02.02',t:'Alligator Signs',e:'🐊',sub:'compare two-digit numbers',
+ warm:[['moreNum'],['tensOnes']],
+ story:async()=>{ await M('<div class="row" style="font-size:80px">🐊</div>'); await say('Hungry Alligator always eats the BIGGER number!'); },
+ movie:async()=>{ await M('<div class="row" style="gap:18px"><span class="big-num">43</span><span class="sign">&gt;</span><span class="big-num">27</span></div>'); await say('43 and 27. Compare the tens: 4 tens is more than 2 tens. The mouth opens to 43. 43 is greater than 27.');
+   await M('<div class="row" style="gap:18px"><span class="big-num">56</span><span class="sign">&lt;</span><span class="big-num">59</span></div>'); await say('56 and 59. Same tens! Compare the ones: 6 is less than 9. 56 is less than 59.'); },
+ together:[['alligator'],['alligator'],['tensOnes']],
+ practice:[['alligator'],['moreNum'],['tensOnes'],['alligator'],['jump10'],['alligator'],['buildTO'],['alligator']],
+ real:['alligator',{intro:'Which class collected more for tzedakah?'}],
+ check:[['alligator'],['alligator'],['alligator']]},
+{id:'MATH.PV.L02.03',t:'Jump Ten',e:'🦘',sub:'10 more and 10 less',
+ warm:[['tensOnes'],['tens']],
+ story:async()=>{ await M(chartH(60)); await say('Kangaroo jumps by tens on the number chart. One jump down is 10 more!'); },
+ movie:async()=>{ await M(chartH(60,'mv')); const a=scene.querySelector('[data-v="34"]'); if(a) a.classList.add('hl'); await say('Start at 34.'); const b=scene.querySelector('[data-v="44"]'); if(b) b.classList.add('hl'); await say('Jump down one row: 44. That is 10 more. The tens went up, the ones stayed 4.'); const d=scene.querySelector('[data-v="24"]'); if(d) d.classList.add('hl'); await say('Jump up one row from 34: 24. That is 10 less.'); },
+ together:[['jump10'],['jump10'],['tensOnes']],
+ practice:[['jump10'],['tensOnes'],['alligator'],['jump10'],['rowgap',{dlo:2,dhi:9}],['jump10'],['addTens'],['jump10']],
+ real:['jump10',{intro:'Each day we learn 10 more pesukim. Yesterday we were at pasuk 23.'}],
+ check:[['jump10'],['jump10'],['jump10']]},
+{id:'MATH.OPS.L02.10',t:'Add Tens',e:'➕🟦',sub:'add tens or ones to a two-digit number',
+ warm:[['jump10'],['tensOnes']],
+ story:async()=>{ await M(rodsH(3,4)+eqH(34,'+',20,54,true)); await say('Adding big numbers is easy when you add tens to tens and ones to ones!'); },
+ movie:async()=>{ await M(rodsH(3,4)+eqH(34,'+',20,54,true)); await say('34 plus 20. Add 2 more rods: 3 tens and 2 tens is 5 tens. The 4 ones stay. 54!'); await M(rodsH(4,2)+eqH(42,'+',5,47,true)); await say('42 plus 5. Add 5 ones to the 2 ones: 7 ones. The 4 tens stay. 47!'); },
+ together:[['addTens'],['addTens'],['jump10']],
+ practice:[['addTens'],['jump10'],['tensOnes'],['addTens'],['buildTO'],['addTens'],['alligator'],['addTens']],
+ real:['addTens',{intro:'The library has shelves of seforim. Add the new ones!'}],
+ check:[['addTens'],['addTens'],['addTens']]},
+{id:'MATH.OPS.L02.11',t:'Take Tens',e:'➖🟦',sub:'subtract multiples of 10',
+ warm:[['tens'],['jump10']],
+ story:async()=>{ await M(rodsH(7,0)); await say('7 rods is 70. What if we take some rods away?'); },
+ movie:async()=>{ await M(rodsH(7,0,'mv')+eqH(70,'−',30,40,true)); await say('70 minus 30. Take away 3 rods.'); const rs=scene.querySelectorAll('#mv .rod'); for(let i=0;i<3;i++){ rs[6-i].style.opacity='.15'; await wait(300); } await say('7 tens take away 3 tens is 4 tens: 40!'); },
+ together:[['takeTens'],['takeTens'],['jump10']],
+ practice:[['takeTens'],['jump10'],['tensOnes'],['takeTens'],['addTens'],['takeTens'],['tensObjects'],['takeTens']],
+ real:['takeTens',{intro:'We had 80 cups for the siyum. 30 were used.'}],
+ check:[['takeTens'],['takeTens'],['takeTens']]}
+);
+
+/* ================= 1st GRADE MATH batch (c): measure, time, coins, graphs, shapes, fractions ================= */
+function clockSvg(h,m,s){ s=s||150; const ha=((h%12)+m/60)*30, ma=m*6; const hand=(a,l,w,c)=>'<line x1="50" y1="50" x2="'+(50+l*Math.sin(a*Math.PI/180)).toFixed(1)+'" y2="'+(50-l*Math.cos(a*Math.PI/180)).toFixed(1)+'" stroke="'+c+'" stroke-width="'+w+'" stroke-linecap="round"/>';
+  let n=''; for(let i=1;i<=12;i++){ const a=i*30*Math.PI/180; n+='<text x="'+(50+38*Math.sin(a)).toFixed(1)+'" y="'+(54-38*Math.cos(a)).toFixed(1)+'" font-size="10" text-anchor="middle" font-weight="800" fill="#1F2A44">'+i+'</text>'; }
+  return '<svg viewBox="0 0 100 100" width="'+s+'" height="'+s+'" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#fff" stroke="#3D8BFF" stroke-width="4"/>'+n+hand(ma,34,3,'#3D8BFF')+hand(ha,22,5,'#FF5D73')+'<circle cx="50" cy="50" r="3" fill="#1F2A44"/></svg>'; }
+const tstr=(h,m)=>h+':'+(m?'30':'00'), tsay=(h,m)=>m?'half past '+h:h+' o’clock';
+G.clockRead=async c=>{ const h=R(1,12), m=Math.random()<.5?0:30; const opts=shuffle([[h,m],[h,m?0:30],[(h%12)+1,m]]);
+  view('<div class="row">'+clockSvg(h,m,170)+'</div><div class="choices">'+opts.map(o=>'<button class="ch wide" type="button" data-v="'+tstr(o[0],o[1])+'"'+(o[0]===h&&o[1]===m?' data-ok="1"':'')+'>'+tstr(o[0],o[1])+'</button>').join('')+'</div>');
+  await say('What time is it?'); const ok=tstr(h,m); const f=await new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(b.dataset.v===ok){ b.classList.add('yes'); chime(); lockAll(); res(first); } else { first=false; b.classList.add('no'); soft(); await wrongHelp(async()=>say(m?'The long hand points to 6: half past. The short hand is just past the '+h+'.':'The long hand points to 12: o’clock. The short hand points to '+h+'.')); } }); });
+  return [f,'It is '+tsay(h,m)+'.']; };
+G.clockPick=async c=>{ const h=R(1,12), m=Math.random()<.5?0:30; const opts=shuffle([[h,m],[h,m?0:30],[(h%12)+1,m]]);
+  const f=await pickQ('<div class="row"><span class="card-num" style="font-size:64px">'+tstr(h,m)+'</span></div>',opts.map(o=>({h:clockSvg(o[0],o[1],96),ok:o[0]===h&&o[1]===m,label:tstr(o[0],o[1])})),'Which clock shows '+tsay(h,m)+'?',async()=>{ await say('Look at the long hand first: 12 for o’clock, 6 for half past.'); }); return [f,tsay(h,m)+'.']; };
+const COIN={penny:{v:1,c:'#C47A3A',r:34},nickel:{v:5,c:'#B8BCC4',r:40},dime:{v:10,c:'#C9CDD4',r:30},quarter:{v:25,c:'#AEB3BB',r:46}};
+const coinSvg=(k,lab)=>{ const q=COIN[k]; return '<svg viewBox="0 0 100 100" width="'+(q.r*2)+'" height="'+(q.r*2)+'" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="'+q.c+'" stroke="#6B7280" stroke-width="4"/><text x="50" y="'+(lab?44:58)+'" font-size="'+(lab?18:26)+'" text-anchor="middle" font-weight="800" fill="#1F2A44">'+q.v+'¢</text>'+(lab?'<text x="50" y="68" font-size="14" text-anchor="middle" font-weight="700" fill="#1F2A44">'+k+'</text>':'')+'</svg>'; };
+G.coinValue=async c=>{ const k=any(Object.keys(COIN)), v=COIN[k].v; view('<div class="row">'+O('🪙')+'<span class="big-num" style="font-size:48px">'+k+'</span></div><div class="choices">'+shuffle([1,5,10,25]).map(x=>'<button class="ch" type="button" data-v="'+x+'"'+(x===v?' data-ok="1"':'')+'>'+x+'<small>cents</small></button>').join('')+'</div>');
+  await say('How many cents is a '+k+' worth?'); const f=await pickNum(v,async()=>{ await say('A penny is 1 cent. A nickel is 5. A dime is 10. A quarter is 25.'); },'Tap its value.'); return [f,'A '+k+' is '+v+' cents.']; };
+G.coinName=async c=>{ const k=any(Object.keys(COIN)); const f=await pickQ('',shuffle(Object.keys(COIN)).map(x=>({h:coinSvg(x,false),ok:x===k,label:x})),'Tap the '+k+'. It is worth '+COIN[k].v+' cents.',async()=>{ await say('Read the number of cents on each coin. The '+k+' is '+COIN[k].v+' cents.'); }); return [f,'That is the '+k+'.']; };
+G.coinCount=async c=>{ const ks=[]; const n=R(2,4); for(let i=0;i<n;i++) ks.push(any(['penny','nickel','dime','dime','nickel'])); ks.sort((a,b)=>COIN[b].v-COIN[a].v); const tot=ks.reduce((s,k)=>s+COIN[k].v,0);
+  const f=await numQ('<div class="row" id="cc">'+ks.map(k=>'<span>'+coinSvg(k,true)+'</span>').join('')+'</div>','How many cents in all? Start with the biggest coin and count on.',tot,{lo:1,hi:60,extra:[tot+5,tot-5,tot+1],help:async()=>{ let s=0; const cs=scene.querySelectorAll('#cc span'); for(let i=0;i<ks.length;i++){ s+=COIN[ks[i]].v; cs[i].style.filter='drop-shadow(0 0 8px #FFC83D)'; await say(String(s)); } }}); return [f,ks.join(', ')+': '+tot+' cents.']; };
+G.measure=async c=>{ const n=R(3,9), unit=any([['📎','paper clips'],['🟩','cubes']]), col=any(BARC); const f=await numQ('<div style="display:inline-block"><div class="bar" style="width:'+(n*34)+'px;background:'+col+';color:'+col+'"></div><div style="display:flex;gap:0;margin-top:6px" id="mu">'+Array.from({length:n},()=>'<span class="o" style="font-size:30px;width:34px;text-align:center">'+unit[0]+'</span>').join('')+'</div></div>','How many '+unit[1]+' long is the pencil?',n,{lo:1,hi:12,help:async()=>{ await countAloud('#mu .o'); }}); return [f,'It is '+n+' '+unit[1]+' long.']; };
+G.measureFair=async c=>{ const n=R(4,7); const good='<div style="display:flex">'+Array.from({length:n},()=>'<span style="font-size:24px">📎</span>').join('')+'</div>', gap='<div style="display:flex;gap:14px">'+Array.from({length:n-2},()=>'<span style="font-size:24px">📎</span>').join('')+'</div>', over='<div style="display:flex;margin-left:-6px">'+Array.from({length:n+1},()=>'<span style="font-size:24px;margin-right:-10px">📎</span>').join('')+'</div>';
+  const bar='<div class="bar" style="width:'+(n*31)+'px;background:#8E5BFF;color:#8E5BFF;margin-bottom:4px"></div>';
+  const f=await pickQ('',shuffle([[good,1],[gap,0],[over,0]]).map(p=>({h:'<div>'+bar+p[0]+'</div>',ok:!!p[1],cls:'barpic'})),'Which one is measured the RIGHT way? No gaps, no overlaps, end to end.',async()=>{ await say('Units must touch, with no spaces and no piling on top.'); }); return [f,'No gaps and no overlaps!']; };
+G.graph=async c=>{ const cats=shuffle([['🍎','apples'],['🍌','bananas'],['🍇','grapes'],['🍓','strawberries']]).slice(0,3), vals=cats.map(()=>R(1,7)); const q=any(['count','more','most']);
+  const html='<div style="display:flex;flex-direction:column;gap:6px">'+cats.map((ct,i)=>'<div style="display:flex;align-items:center;gap:6px"><span style="width:110px;font:800 16px var(--f-body)">'+ct[1]+'</span>'+'<span style="font-size:28px">'+ct[0].repeat(vals[i])+'</span></div>').join('')+'</div>';
+  if(q==='count'){ const i=R(0,2); const f=await numQ(html,'The class voted for their favorite fruit. How many chose '+cats[i][1]+'?',vals[i],{lo:0,hi:9,help:async()=>{ await say('Count the '+cats[i][1]+' row.'); }}); return [f,vals[i]+' chose '+cats[i][1]+'.']; }
+  if(q==='more'){ let i=0,j=1; if(vals[i]===vals[j]) vals[j]=vals[i]+1; const hi=vals[i]>vals[j]?i:j, lo=hi===i?j:i; const f=await numQ(html.replace(/<span style="font-size:28px">[^<]*<\/span>/g,(m,k)=>m),'How many more chose '+cats[hi][1]+' than '+cats[lo][1]+'?',vals[hi]-vals[lo],{lo:0,hi:9,help:async()=>{ await say(cats[hi][1]+': '+vals[hi]+'. '+cats[lo][1]+': '+vals[lo]+'. '+vals[hi]+' minus '+vals[lo]+'.'); }});
+    return [f,vals[hi]+' − '+vals[lo]+' = '+(vals[hi]-vals[lo])+' more.']; }
+  const mx=Math.max(...vals); if(vals.filter(v=>v===mx).length>1){ vals[0]=mx+1; } const top=vals.indexOf(Math.max(...vals)); const html2='<div style="display:flex;flex-direction:column;gap:6px">'+cats.map((ct,i)=>'<div style="display:flex;align-items:center;gap:6px"><span style="width:110px;font:800 16px var(--f-body)">'+ct[1]+'</span><span style="font-size:28px">'+ct[0].repeat(vals[i])+'</span></div>').join('')+'</div>';
+  const f=await pickQ(html2,cats.map((ct,i)=>({h:O(ct[0]),ok:i===top,cls:'huge',label:ct[1]})),'Which fruit got the MOST votes?',async()=>{ await say('Find the longest row.'); }); return [f,cats[top][1]+' got the most.']; };
+G.shapeRule=async c=>{ const s=any(['triangle','square','rectangle','hexagon']); const ok=any(['It has '+SIDES[s]+' sides'+(s==='square'?', all the same':'')+'.']); const bad=['It is '+any(['red','blue','big','small'])+'.','It is turned '+any(['sideways','upside down'])+'.'];
+  const opts=shuffle([ok].concat(bad)); view('<div class="row">'+shp(s,{s:110,c:any(COLS),r:any([0,30,90])})+'</div><div class="choices" style="flex-direction:column;align-items:center">'+opts.map(o=>'<button class="ch wide" type="button" data-v="'+o+'"'+(o===ok?' data-ok="1"':'')+' style="height:auto;min-height:64px;font-size:22px;padding:8px 18px">'+o+'</button>').join('')+'</div>');
+  await say('What makes this shape a '+s+'?'); const f=await new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(b=>b.onclick=async()=>{ if(BUSY) return; if(b.dataset.v===ok){ b.classList.add('yes'); chime(); lockAll(); res(first); } else { first=false; b.classList.add('no'); soft(); await wrongHelp(async()=>say('Color, size and turning do not change a shape. Only its sides and corners do.')); } }); });
+  return [f,'A '+s+' is a '+s+' because '+ok.toLowerCase().replace(/\.$/,'')+', any color, size or turn.']; };
+G.stillShape=async c=>{ const s=any(['triangle','square','circle','hexagon']); const items=shuffle([s,s,s].map(x=>({x,big:R(50,110),r:x==='circle'?0:any([0,25,60,90,180])})).concat(FLAT.filter(f=>f!==s&&!(s==='square'&&f==='rectangle')).slice(0,2).map(x=>({x,big:R(50,100),r:any([0,30])}))));
+  view('<div class="row" id="ss">'+items.map((it,i)=>'<button class="pic" type="button" data-i="'+i+'"'+(it.x===s?' data-ok="1"':'')+'>'+shp(it.x,{s:it.big,c:any(COLS),r:it.r})+'</button>').join('')+'</div>'); await say('Tap EVERY '+s+'. Big, small, any color, any way it turns!');
+  const need=items.filter(i=>i.x===s).length; const f=await new Promise(res=>{ let first=true, got=0; scene.querySelectorAll('#ss .pic').forEach(b=>b.onclick=async()=>{ if(BUSY||b.classList.contains('yes')) return; if(items[+b.dataset.i].x===s){ b.classList.add('yes'); delete b.dataset.ok; got++; plink(got); if(got===need){ chime(); lockAll(); res(first); } } else { first=false; b.classList.add('no'); soft(); await wrongHelp(async()=>say(shapeTip(s)),'Find the rest.'); } }); });
+  return [f,'All '+need+' are '+s+'s.']; };
+function fracSvg(kind,parts,equal,shade){ const W=110; let g=''; const fills=i=>i<(shade||0)?'#FFC83D':'#fff';
+  if(kind==='rect'){ if(parts===2){ const cut=equal?50:27; g='<rect x="5" y="20" width="'+(cut-5)+'" height="60" fill="'+fills(0)+'" stroke="#1F2A44" stroke-width="3"/><rect x="'+cut+'" y="20" width="'+(95-cut)+'" height="60" fill="'+fills(1)+'" stroke="#1F2A44" stroke-width="3"/>'; }
+    else { const xs=equal?[5,27.5,50,72.5,95]:[5,20,45,75,95]; for(let i=0;i<4;i++) g+='<rect x="'+xs[i]+'" y="20" width="'+(xs[i+1]-xs[i])+'" height="60" fill="'+fills(i)+'" stroke="#1F2A44" stroke-width="3"/>'; } }
+  else { if(parts===2){ g=equal?'<path d="M50 5 A45 45 0 0 1 50 95 Z" fill="'+fills(0)+'" stroke="#1F2A44" stroke-width="3"/><path d="M50 95 A45 45 0 0 1 50 5 Z" fill="'+fills(1)+'" stroke="#1F2A44" stroke-width="3"/>':'<circle cx="50" cy="50" r="45" fill="#fff" stroke="#1F2A44" stroke-width="3"/><path d="M75 13 L75 87" stroke="#1F2A44" stroke-width="3"/>'; }
+    else { g=equal?['M50 50 L50 5 A45 45 0 0 1 95 50 Z','M50 50 L95 50 A45 45 0 0 1 50 95 Z','M50 50 L50 95 A45 45 0 0 1 5 50 Z','M50 50 L5 50 A45 45 0 0 1 50 5 Z'].map((d,i)=>'<path d="'+d+'" fill="'+fills(i)+'" stroke="#1F2A44" stroke-width="3"/>').join(''):'<circle cx="50" cy="50" r="45" fill="#fff" stroke="#1F2A44" stroke-width="3"/><path d="M50 5 L50 95 M20 17 L80 83" stroke="#1F2A44" stroke-width="3"/>'; } }
+  return '<svg viewBox="0 0 100 100" width="'+W+'" height="'+W+'" aria-hidden="true">'+g+'</svg>'; }
+G.fracEqual=async c=>{ const parts=any([2,4]), kind=any(['rect','circle']); const name=parts===2?'halves':'quarters';
+  const f=await pickQ('',shuffle([[true],[false],[false]]).map((p,i)=>({h:fracSvg(i===2?(kind==='rect'?'circle':'rect'):kind,parts,p[0]),ok:p[0],label:p[0]?'equal':'not equal'})),'Which shape is cut into '+name+'? '+name.charAt(0).toUpperCase()+name.slice(1)+' are equal parts.',async()=>{ await say(name+' must all be the SAME size. Look for pieces that match.'); });
+  return [f,'Equal parts: '+name+'!']; };
+G.fracCount=async c=>{ const parts=any([2,4]); const f=await numQ('<div class="row">'+fracSvg(any(['rect','circle']),parts,true,0)+'</div>','How many '+(parts===2?'halves':'quarters')+' make the whole shape?',parts,{lo:1,hi:6,help:async()=>{ await say('Count the equal pieces.'); }}); return [f,parts+' '+(parts===2?'halves':'quarters')+' make a whole.']; };
+G.fracName=async c=>{ const parts=any([2,4]), kind=any(['rect','circle']); const ok=parts===2?'one half':'one quarter';
+  const f=await pickQ('<div class="row">'+fracSvg(kind,parts,true,1)+'</div>',shuffle(['one half','one quarter','one whole']).map(w=>({h:'<span style="font:800 24px var(--f-head)">'+w+'</span>',ok:w===ok,label:w})),'What part is colored yellow?',async()=>{ await say('The shape has '+parts+' equal parts. One is yellow.'); }); return [f,'One of '+parts+' equal parts is '+ok+'.']; };
+L.push(
+{id:'MATH.MEAS.L02.01',t:'Measure with Units',e:'📎',sub:'measure length with same-size units',
+ warm:[['longer'],['count',{lo:4,hi:9}]],
+ story:async()=>{ await M('<div class="row">'+O('✏️')+O('📎')+'</div>'); await say('How long is a pencil? We can measure it with paper clips!'); },
+ movie:async()=>{ await M('<div style="display:inline-block"><div class="bar" style="width:204px;background:#FF5D73;color:#FF5D73"></div><div style="display:flex" id="mu">'+Array.from({length:6},()=>'<span class="o" style="font-size:30px;width:34px;text-align:center">📎</span>').join('')+'</div></div>'); await say('Line up the clips end to end, starting at the very end of the pencil.'); await countAloud('#mu .o'); await say('6 paper clips long! No gaps, no overlaps.'); },
+ together:[['measure'],['measureFair'],['measure']],
+ practice:[['measure'],['measureFair'],['longer'],['order3'],['measure'],['towers'],['measureFair'],['measure']],
+ real:['measure',{intro:'How long is the tablecloth for the Shabbos table? Measure with cubes!'}],
+ check:[['measure'],['measureFair'],['measure']]},
+{id:'MATH.MEAS.L02.02',t:'Clock to the Half Hour',e:'🕐',sub:'hours and half hours',
+ warm:[['next',{lo:1,hi:9}],['numeral',{lo:1,hi:12}]],
+ story:async()=>{ await M('<div class="row">'+clockSvg(7,0,160)+'</div>'); await say('When is it time to daven? Time for Mincha? Clocks tell us!'); },
+ movie:async()=>{ await M('<div class="row">'+clockSvg(3,0,170)+'</div>'); await say('The short red hand shows the hour. The long blue hand shows the minutes. Long hand on 12, short hand on 3: 3 o’clock.'); await M('<div class="row">'+clockSvg(3,30,170)+'</div>'); await say('Now the long hand moved to 6. That is half past 3: 3:30. The short hand is half way between 3 and 4.'); },
+ together:[['clockRead'],['clockPick'],['clockRead']],
+ practice:[['clockRead'],['clockPick'],['next',{lo:1,hi:9}],['clockRead'],['clockPick'],['clockRead'],['clockPick'],['clockRead']],
+ real:['clockPick',{intro:'Shacharis starts at 8 o’clock. Find that clock!'}],
+ check:[['clockRead'],['clockPick'],['clockRead']]},
+{id:'MATH.MEAS.L02.03',t:'Coins',e:'🪙',sub:'penny, nickel, dime, quarter',
+ warm:[['tens'],['countScatter']],
+ story:async()=>{ await M('<div class="row">'+Object.keys(COIN).map(k=>coinSvg(k,true)).join('')+'</div>'); await say('Coins for tzedakah! Each coin is worth a different number of cents.'); },
+ movie:async()=>{ for(const k of Object.keys(COIN)){ await M('<div class="row">'+coinSvg(k,true)+'</div>'); await say('A '+k+' is worth '+COIN[k].v+' cent'+(COIN[k].v>1?'s':'')+'.'); } await M('<div class="row">'+['dime','nickel','penny'].map(k=>coinSvg(k,true)).join('')+'</div>'); await say('To count coins, start with the biggest: 10, then 15, then 16 cents!'); },
+ together:[['coinValue'],['coinName'],['coinCount']],
+ practice:[['coinValue'],['coinName'],['coinCount'],['tens'],['coinCount'],['coinValue'],['coinName'],['coinCount']],
+ real:['coinCount',{intro:'Dovi puts coins in the tzedakah pushka before Shabbos.'}],
+ check:[['coinValue'],['coinCount'],['coinName']]},
+{id:'MATH.STAT.L02.01',t:'Picture Graphs',e:'📊',sub:'read a picture graph',
+ warm:[['sortCount'],['more']],
+ story:async()=>{ await M('<div class="row" style="font-size:44px">🍎🍌🍇</div>'); await say('Our class voted for a favorite fruit for the Tu BiShvat party. A picture graph shows the votes!'); },
+ movie:async()=>{ await M('<div style="display:flex;flex-direction:column;gap:6px">'+[['apples','🍎',5],['bananas','🍌',3],['grapes','🍇',4]].map(r=>'<div style="display:flex;gap:6px;align-items:center"><span style="width:100px;font:800 16px var(--f-body)">'+r[0]+'</span><span style="font-size:28px">'+r[1].repeat(r[2])+'</span></div>').join('')+'</div>'); await say('Each picture is one vote. Apples: 5. Bananas: 3. Grapes: 4. Apples have the longest row, so apples won! How many more apples than bananas? 5 minus 3 is 2.'); },
+ together:[['graph'],['graph'],['graph']],
+ practice:[['graph'],['sortCount'],['sortMore'],['graph'],['sub20'],['graph'],['sort'],['graph']],
+ real:['graph',{intro:'Tu BiShvat fruit vote!'}],
+ check:[['graph'],['graph'],['graph']]},
+{id:'MATH.GEO.L02.01',t:'Shape Rules',e:'🔷',sub:'sides and corners make the shape',
+ warm:[['shape'],['sides']],
+ story:async()=>{ await M('<div class="row">'+shp('triangle',{s:60,c:'#FF5D73'})+shp('triangle',{s:110,c:'#3D8BFF',r:180})+shp('triangle',{s:80,c:'#2FBF71',r:40})+'</div>'); await say('Are these all triangles? Even the big blue upside-down one?'); },
+ movie:async()=>{ await say('Yes! A shape is decided by its sides and corners. Color does not matter. Size does not matter. Turning it does not matter. 3 sides and 3 corners: always a triangle!'); await M('<div class="row">'+shp('square',{s:70,c:'#FFC83D',r:45})+'</div>'); await say('This square is turned like a diamond. Still 4 equal sides and 4 square corners: still a square!'); },
+ together:[['shapeRule'],['stillShape'],['sides']],
+ practice:[['shapeRule'],['stillShape'],['sides'],['shapeOdd'],['shapeRule'],['stillShape'],['shapeCount'],['shapeRule']],
+ real:['stillShape',{intro:'The Magen David has triangles pointing up AND down. Find every triangle!'}],
+ check:[['shapeRule'],['stillShape'],['sides']]},
+{id:'MATH.GEO.L02.02',t:'Halves and Quarters',e:'🍕',sub:'equal shares',
+ warm:[['buildshape'],['same']],
+ story:async()=>{ await M('<div class="row">'+fracSvg('circle',2,true,0)+'</div>'); await say('Two brothers share one round kugel. To be fair, both pieces must be the SAME size!'); },
+ movie:async()=>{ await M('<div class="row">'+fracSvg('circle',2,true,1)+fracSvg('circle',2,false,0)+'</div>'); await say('Cut down the middle: two equal pieces. Each one is one half. The other cut is not fair: the pieces are not equal, so they are not halves.'); await M('<div class="row">'+fracSvg('rect',4,true,1)+'</div>'); await say('Four equal pieces are quarters. One yellow piece is one quarter. 4 quarters make the whole!'); },
+ together:[['fracEqual'],['fracName'],['fracCount']],
+ practice:[['fracEqual'],['fracName'],['fracCount'],['shapeRule'],['fracEqual'],['fracName'],['buildCount'],['fracEqual']],
+ real:['fracName',{intro:'Ima cuts the Shabbos cake for the family.'}],
+ check:[['fracEqual'],['fracName'],['fracCount']]}
+);
+
+/* ================= 2nd GRADE MATH (Level 3): new games (uses the K + 1st grade game library) ================= */
+L.length=0;
+try{ document.head.insertAdjacentHTML('beforeend','<style>.flat{display:inline-grid;grid-template-columns:repeat(10,7px);grid-template-rows:repeat(10,7px);gap:1px;background:#2a63c0;padding:1px;margin:0 3px;vertical-align:bottom}.flat i{background:#8EC5FF;display:block}.col{font:800 40px/1.15 var(--f-head);text-align:right;display:inline-block;padding:6px 16px;background:#F3F7FF;border-radius:16px}.col u{display:block;text-decoration:none;border-top:4px solid #1F2A44;margin-top:4px}</style>'); }catch(e){}
+SH.pentagon='<polygon points="50,6 95,38 78,92 22,92 5,38"/>'; VERT.pentagon=[[50,6],[95,38],[78,92],[22,92],[5,38]]; SIDES.pentagon=5;
+SH.quad='<polygon points="15,20 90,10 80,85 25,75"/>'; VERT.quad=[[15,20],[90,10],[80,85],[25,75]]; SIDES.quad=4;
+const flatH=n=>Array.from({length:n},()=>'<span class="flat">'+'<i></i>'.repeat(100)+'</span>').join('');
+const blocksH=(h,t,o,id)=>'<div class="row" id="'+(id||'hb')+'" style="align-items:flex-end;gap:10px;flex-wrap:wrap"><div>'+flatH(h)+'</div><div>'+Array.from({length:t},()=>'<span class="rod">'+'<i></i>'.repeat(10)+'</span>').join('')+'</div><div>'+Array.from({length:o},()=>'<span class="one"><i></i></span>').join('')+'</div></div>';
+const colH=(nums,op)=>'<div class="col">'+nums.map((n,i)=>(i===nums.length-1?(op||'+')+' ':'')+n).join('<br>')+'<u>?</u></div>';
+async function signQ(a,b,help){ const ok=a>b?'>':(a<b?'<':'='); view('<div class="row" style="gap:18px"><span class="big-num">'+a+'</span><span class="sign">?</span><span class="big-num">'+b+'</span></div><div class="choices">'+['<','=','>'].map(s=>'<button class="ch" type="button" data-v="'+s+'"'+(s===ok?' data-ok="1"':'')+'>'+s+'</button>').join('')+'</div>');
+  await say('Which sign goes in the middle?'); return new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(bt=>bt.onclick=async()=>{ if(BUSY) return; if(bt.dataset.v===ok){ bt.classList.add('yes'); scene.querySelector('.sign').textContent=ok; chime(); lockAll(); res(first); } else { first=false; bt.classList.add('no'); soft(); await wrongHelp(help); } }); }); }
+function choiceText(opts,ok,prompt,help,pre){ view((pre||'')+'<div class="choices">'+opts.map(o=>'<button class="ch wide" type="button" data-v="'+o+'"'+(o===ok?' data-ok="1"':'')+'>'+o+'</button>').join('')+'</div>'); return say(prompt).then(()=>new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(bt=>bt.onclick=async()=>{ if(BUSY) return; if(bt.dataset.v===ok){ bt.classList.add('yes'); chime(); lockAll(); res(first); } else { first=false; bt.classList.add('no'); soft(); await wrongHelp(help); } }); })); }
+G.flash=async c=>{ let f=true; const n=c.n||3; for(let i=0;i<n;i++){ const add=Math.random()<.5, a=add?R(2,9):R(11,18), b=add?R(2,9):R(2,a-9>2?9:a-2), ans=add?a+b:a-b;
+    const ok=await numQ('<div class="row">'+O('⚡')+'<span class="note" style="font-size:18px">'+(i+1)+' of '+n+'</span></div>'+eqH(a,add?'+':'−',b,ans,true),i?'Next!':'Fact Flash! Answer fast.',ans,{lo:0,hi:20,help:async()=>{ await say(add?(a+' plus '+b+'. Make ten or use a double.'):(a+' minus '+b+'. Think: '+b+' plus what makes '+a+'?')); }}); if(!ok) f=false; }
+  return [f,'Fast facts!']; };
+G.oddEven=async c=>{ const n=c.n||R(3,16), pic=MODE!=='check'; const pairs=Math.floor(n/2); const html=pic?'<div class="row" style="gap:12px">'+Array.from({length:pairs},()=>'<span style="display:inline-flex;flex-direction:column;gap:2px">'+O('🧦','sm')+O('🧦','sm')+'</span>').join('')+(n%2?'<span style="display:inline-flex;flex-direction:column">'+O('🧦','sm')+'</span>':'')+'</div>':'';
+  const ok=n%2?'odd':'even'; const f=await choiceText(['odd','even'],ok,'Is '+n+' odd or even?',async()=>say(pic?'Make pairs. If one is left alone, it is odd.':'Look at the ones digit: 0, 2, 4, 6, 8 are even.'),html+'<div class="row"><span class="card-num">'+n+'</span></div>'); return [f,n+' is '+ok+'.']; };
+G.array=async c=>{ const r=c.r||R(2,5), k=c.k||R(2,5), t=c.t||{e:'🪑',n:'chairs'}; const f=await numQ('<div id="ar" style="display:grid;grid-template-columns:repeat('+k+',auto);gap:6px">'+Array.from({length:r*k},()=>O(t.e,'sm')).join('')+'</div><div class="row" style="font:800 28px var(--f-head)">'+Array(r).fill(k).join(' + ')+' = ?</div>',r+' rows of '+k+' '+t.n+'. How many in all?',r*k,{lo:2,hi:30,extra:[r*k+k,r+k],help:async()=>{ await say('Add the rows: '+Array.from({length:r},(_,i)=>k*(i+1)).join(', ')+'.'); }}); return [f,r+' rows of '+k+' is '+(r*k)+'.']; };
+G.arrayPick=async c=>{ const r=R(2,4), k=R(3,5); const opts=shuffle([[r,k],[r+1,k],[r,k-1]]); const f=await pickQ('',opts.map(o=>({h:'<div style="display:grid;grid-template-columns:repeat('+o[1]+',auto);gap:3px">'+Array.from({length:o[0]*o[1]},()=>'<span style="font-size:18px">🔵</span>').join('')+'</div>',ok:o[0]===r&&o[1]===k,label:o[0]+' rows of '+o[1]})),'Which one shows '+r+' rows of '+k+'?',async()=>{ await say('Count the rows going across, then how many in each row.'); }); return [f,r+' rows of '+k+'.']; };
+G.hundreds=async c=>{ const h=R(1,5), t=R(0,9), o=R(0,9), n=h*100+t*10+o; const f=await numQ(blocksH(h,t,o),'Each big flat is one hundred. Each rod is ten. Each little block is one. What number is it?',n,{lo:100,hi:999,extra:[h*100+o*10+t,n+100,n+10],help:async()=>{ await say(h+' hundreds, '+t+' tens and '+o+' ones: '+n+'.'); }}); return [f,h+' hundreds, '+t+' tens, '+o+' ones = '+n+'.']; };
+G.hundredsName=async c=>{ const n=R(101,999), d=String(n).split('').map(Number), place=any([0,1,2]), name=['hundreds','tens','ones'][place];
+  const f=await numQ('<div class="row"><span class="card-num">'+n+'</span></div>','In '+n+', what digit is in the '+name+' place?',d[place],{lo:0,hi:9,extra:d.filter((x,i)=>i!==place),help:async()=>{ await say(n+': '+d[0]+' hundreds, '+d[1]+' tens, '+d[2]+' ones.'); }}); return [f,'The '+name+' digit is '+d[place]+'.']; };
+G.skip=async c=>{ const step=c.step||any([5,10,100]), s=step*R(1,step===100?5:8), a=[s,s+step,s+2*step,s+3*step], blank=Math.random()<.6?3:R(1,3);
+  const f=await numQ(seqHtml(a,blank),'Skip count by '+step+'s. What goes in the purple car?',a[blank],{lo:Math.max(0,a[blank]-3*step),hi:a[blank]+3*step,extra:[a[blank]+step,a[blank]-step,a[blank]+1],help:async()=>{ await say('Count by '+step+'s: '+a.map((v,i)=>i===blank?'...':v).join(', ')+'.'); }}); return [f,'By '+step+'s: '+a.join(', ')+'.']; };
+G.expanded=async c=>{ const n=R(101,999), d=String(n).split('').map(Number); const ok=d[0]*100+' + '+d[1]*10+' + '+d[2]; const w1=d[0]+' + '+d[1]+' + '+d[2], w2=d[0]*100+' + '+d[2]*10+' + '+d[1];
+  const f=await choiceText(shuffle([ok,w1,w2]),ok,'Stretch it out! Which shows '+n+' in expanded form?',async()=>say(n+' is '+d[0]+' hundreds, '+d[1]+' tens and '+d[2]+' ones: '+ok+'.'),'<div class="row"><span class="card-num">'+n+'</span></div>'); return [f,n+' = '+ok+'.']; };
+G.unstretch=async c=>{ const h=R(1,9),t=R(0,9),o=R(0,9), n=h*100+t*10+o; const f=await numQ('<div class="row" style="font:800 40px var(--f-head)">'+(h*100)+' + '+(t*10)+' + '+o+'</div>','What number is it?',n,{lo:100,hi:999,extra:[h*100+o*10+t,n+10],help:async()=>{ await say(h+' hundreds, '+t+' tens, '+o+' ones.'); }}); return [f,'It is '+n+'.']; };
+G.compare3=async c=>{ let a=R(100,999), b=R(100,999); if(Math.random()<.4) b=Math.floor(a/100)*100+R(0,99); if(Math.random()<.1) b=a; const f=await signQ(a,b,async()=>say('Compare the hundreds first. If they are the same, compare the tens, then the ones.')); return [f,a+(a>b?' > ':a<b?' < ':' = ')+b+'.']; };
+G.jump100=async c=>{ const n=R(110,880), k=any([10,100]), up=Math.random()<.5, ans=up?n+k:n-k; const f=await numQ('<div class="row"><span class="card-num">'+n+'</span><span class="plus">'+(up?'+':'−')+'</span><span class="big-num">'+k+'</span></div>',(up?k+' more than ':k+' less than ')+n+'?',ans,{lo:ans-30,hi:ans+30,extra:[up?n+(k===10?100:10):n-(k===10?100:10),ans+1],help:async()=>{ await say(k===100?'Only the hundreds digit changes.':'Only the tens digit changes.'); }}); return [f,(up?k+' more than ':k+' less than ')+n+' is '+ans+'.']; };
+G.addSub100=async c=>{ const add=Math.random()<.5; let a,b; if(add){ a=R(15,70); b=R(11,99-a); } else { a=R(40,99); b=R(11,a-5); } const ans=add?a+b:a-b;
+  const f=await numQ('<div class="row">'+colH([a,b],add?'+':'−')+'</div>',a+(add?' plus ':' minus ')+b+'?',ans,{lo:0,hi:100,extra:[ans+10,ans-10,ans+1],help:async()=>{ await say(add?'Add the ones, then the tens. If the ones make ten or more, carry a ten.':'Subtract the ones, then the tens. If you need more ones, trade a ten for ten ones.'); }}); return [f,a+(add?' + ':' − ')+b+' = '+ans+'.']; };
+G.column4=async c=>{ const n=c.n||R(3,4), nums=Array.from({length:n},()=>R(11,49)), ans=nums.reduce((s,x)=>s+x,0); const f=await numQ('<div class="row">'+colH(nums,'+')+'</div>','Add them up! Ones first, then tens.',ans,{lo:30,hi:200,extra:[ans+10,ans-10,ans+1],help:async()=>{ const ones=nums.reduce((s,x)=>s+x%10,0), tens=nums.reduce((s,x)=>s+Math.floor(x/10),0); await say('The ones make '+ones+'. The tens make '+tens+' tens, which is '+(tens*10)+'. '+(tens*10)+' plus '+ones+' is '+ans+'.'); }}); return [f,nums.join(' + ')+' = '+ans+'.']; };
+G.regroup=async c=>{ const add=Math.random()<.5; let a,b; if(add){ a=R(105,640); b=R(105,980-a); } else { a=R(300,999); b=R(105,a-50); } const ans=add?a+b:a-b;
+  const f=await numQ('<div class="row">'+colH([a,b],add?'+':'−')+'</div>',a+(add?' plus ':' minus ')+b+'?',ans,{lo:0,hi:1000,extra:[ans+10,ans-10,ans+100],help:async()=>{ await say(add?'Ones, then tens, then hundreds. When a place makes ten or more, carry one to the next place.':'Ones, then tens, then hundreds. If the top digit is too small, borrow one from the next place.'); }}); return [f,a+(add?' + ':' − ')+b+' = '+ans+'.']; };
+const TWO=[()=>{ const a=R(10,30),b=R(5,20),c2=R(3,12); return ['The shul had '+a+' siddurim. They bought '+b+' more. Then '+c2+' were given to a new shul. How many siddurim are left?',a+b-c2,'📚']; },
+ ()=>{ const a=R(20,40),b=R(5,15),c2=R(5,15); return ['Dovi had '+a+' baseball cards. He gave '+b+' to his brother and '+c2+' to his friend. How many does he have now?',a-b-c2,'🃏']; },
+ ()=>{ const a=R(10,25),b=R(10,25),c2=R(5,15); return ['For the siyum, '+a+' boys came in the morning and '+b+' came in the afternoon. '+c2+' boys went home early. How many boys stayed?',a+b-c2,'🎉']; },
+ ()=>{ const a=R(5,15),b=R(5,15); return ['Leah picked '+a+' apples. Her sister picked '+b+' more than Leah. How many apples did they pick together?',a+(a+b),'🍎']; }];
+G.twoStep=async c=>{ const [txt,ans,e]=any(TWO)(); const f=await numQ('<div class="row" style="font-size:50px">'+e+'</div><div style="font:700 21px/1.4 var(--f-body);max-width:580px;text-align:center">'+txt+'</div>',txt,ans,{lo:0,hi:100,extra:[ans+5,ans-5,ans+10],help:async()=>{ await say('This story has two steps. Do the first part, then use that answer for the second part.'); }}); return [f,'The answer is '+ans+'.']; };
+function rulerH(len,unit){ const px=unit==='in'?44:18, n=unit==='in'?8:20; let t=''; for(let i=0;i<=n;i++) t+='<span style="position:absolute;left:'+(i*px)+'px;top:0;height:'+(i%5===0||unit==='in'?18:10)+'px;border-left:2px solid #1F2A44"></span><span style="position:absolute;left:'+(i*px-5)+'px;top:20px;font:700 11px var(--f-body)">'+(unit==='in'||i%5===0?i:'')+'</span>';
+  return '<div style="position:relative;width:'+(n*px+20)+'px;max-width:92vw;overflow:hidden"><div class="bar" style="width:'+(len*px)+'px;background:#2FBF71;color:#2FBF71;margin-bottom:6px"></div><div style="position:relative;height:36px;background:#FFF1C9;border-radius:6px">'+t+'</div></div>'; }
+G.ruler=async c=>{ const unit=c.unit||any(['in','cm']), len=unit==='in'?R(2,7):R(4,15); const f=await numQ('<div class="row">'+rulerH(len,unit)+'</div>','How many '+(unit==='in'?'inches':'centimeters')+' long is the crayon? It starts at 0.',len,{lo:1,hi:unit==='in'?9:20,help:async()=>{ await say('Start at 0. Look where the crayon ends on the ruler.'); }}); return [f,len+' '+(unit==='in'?'inches':'centimeters')+'.']; };
+G.unitPick=async c=>{ const it=any([['a pencil','inches'],['a table','feet'],['a paper clip','centimeters'],['a room','feet'],['a crayon','centimeters'],['a book','inches']]); const opts=it[1]==='feet'?['feet',any(['inches','centimeters'])]:[it[1],'feet']; const f=await choiceText(shuffle(opts),it[1],'Which unit is best for measuring '+it[0]+'?',async()=>say('Small things: centimeters or inches. Big things like a room: feet.')); return [f,'Use '+it[1]+' for '+it[0]+'.']; };
+G.howLonger=async c=>{ const a=R(5,15), b=R(2,a-1); const f=await numQ('<div class="bars">'+'<div style="display:flex;align-items:center;gap:8px">'+barH(a,'#FF5D73')+'<b>'+a+' cm</b></div><div style="display:flex;align-items:center;gap:8px">'+barH(b,'#3D8BFF')+'<b>'+b+' cm</b></div></div>','How much longer is the red ribbon than the blue one?',a-b,{lo:0,hi:15,help:async()=>{ await say(a+' minus '+b+'.'); }}); return [f,a+' − '+b+' = '+(a-b)+' cm longer.']; };
+const t5=(h,m)=>h+':'+String(m).padStart(2,'0');
+G.clock5=async c=>{ const h=R(1,12), m=R(0,11)*5; const w1=t5(h,(m+5)%60), w2=t5((h%12)+1,m); const opts=shuffle([t5(h,m),w1,w2].filter((x,i,a)=>a.indexOf(x)===i));
+  const f=await choiceText(opts,t5(h,m),'What time is it? Count by fives for the long hand.',async()=>say('The long hand points to '+(m/5||12)+'. Count by fives: that is '+m+' minutes. The short hand shows '+h+'.'),'<div class="row">'+clockSvg(h,m,170)+'</div>'); return [f,'It is '+t5(h,m)+'.']; };
+G.ampm=async c=>{ const it=any([['eat breakfast','a.m.'],['go to sleep','p.m.'],['daven Shacharis','a.m.'],['daven Maariv','p.m.'],['eat supper','p.m.'],['go to cheder in the morning','a.m.']]); const f=await choiceText(['a.m.','p.m.'],it[1],'You '+it[0]+'. Is that a.m. or p.m.?',async()=>say('a.m. is the morning, before noon. p.m. is after noon, until midnight.')); return [f,'We '+it[0]+' in the '+(it[1]==='a.m.'?'morning: a.m.':'afternoon or night: p.m.')]; };
+const bill=v=>'<span style="display:inline-flex;align-items:center;justify-content:center;width:84px;height:40px;background:#CFE8C8;border:3px solid #4E7D45;border-radius:6px;font:800 18px var(--f-head);color:#2F5A2A;margin:2px">$'+v+'</span>';
+G.money=async c=>{ const useBill=Math.random()<.4; const ks=[]; const n=R(2,5); for(let i=0;i<n;i++) ks.push(any(['quarter','dime','nickel','penny','quarter','dime'])); ks.sort((a,b)=>COIN[b].v-COIN[a].v); const cents=ks.reduce((s,k)=>s+COIN[k].v,0); const b=useBill?any([1,5]):0;
+  const ans=b*100+cents; const txt=b?'How many cents in all? A dollar is 100 cents.':'How many cents in all?'; const f=await numQ('<div class="row" id="mn">'+(b?bill(b):'')+ks.map(k=>'<span>'+coinSvg(k,true)+'</span>').join('')+'</div>',txt,ans,{lo:1,hi:600,extra:[ans+5,ans-5,ans+10],help:async()=>{ let s=b*100; if(b) await say('The bill is '+s+' cents.'); for(const k of ks){ s+=COIN[k].v; await say(String(s)); } }}); return [f,'That is '+ans+' cents'+(ans>=100?', or $'+(ans/100).toFixed(2):'')+'.']; };
+G.barGraph=async c=>{ const cats=shuffle([['Mon',''],['Tue',''],['Wed',''],['Thu','']]).slice(0,3).map(x=>x[0]), v=cats.map(()=>R(1,9)); if(v[0]===v[1]) v[1]=v[0]<9?v[0]+1:v[0]-1; const q=any(['read','diff']);
+  const svg='<svg viewBox="0 0 260 180" width="300" height="208" aria-hidden="true"><line x1="30" y1="10" x2="30" y2="150" stroke="#1F2A44" stroke-width="2"/><line x1="30" y1="150" x2="250" y2="150" stroke="#1F2A44" stroke-width="2"/>'+Array.from({length:10},(_,i)=>'<text x="22" y="'+(154-i*14)+'" font-size="9" text-anchor="end">'+i+'</text><line x1="30" y1="'+(150-i*14)+'" x2="250" y2="'+(150-i*14)+'" stroke="#E6E0CC" stroke-width="1"/>').join('')+cats.map((ct,i)=>'<rect x="'+(50+i*70)+'" y="'+(150-v[i]*14)+'" width="40" height="'+(v[i]*14)+'" fill="'+COLS[i+1]+'"/><text x="'+(70+i*70)+'" y="166" font-size="11" text-anchor="middle" font-weight="800">'+ct+'</text>').join('')+'</svg>';
+  const pre='<div class="note" style="font-size:16px">Pages of Chumash read each day</div><div class="row">'+svg+'</div>';
+  if(q==='read'){ const i=R(0,2); const f=await numQ(pre,'How many pages were read on '+cats[i]+'?',v[i],{lo:0,hi:9,help:async()=>{ await say('Go to the top of the '+cats[i]+' bar, then look across to the numbers.'); }}); return [f,v[i]+' pages on '+cats[i]+'.']; }
+  const hi=v[0]>v[1]?0:1, lo=1-hi; const f=await numQ(pre,'How many more pages on '+cats[hi]+' than on '+cats[lo]+'?',v[hi]-v[lo],{lo:0,hi:9,help:async()=>{ await say(cats[hi]+': '+v[hi]+'. '+cats[lo]+': '+v[lo]+'. Subtract.'); }}); return [f,v[hi]+' − '+v[lo]+' = '+(v[hi]-v[lo])+'.']; };
+G.linePlot=async c=>{ const xs=[3,4,5,6,7], v=xs.map(()=>R(0,4)); const k=R(0,4); const plot='<div style="display:flex;gap:14px;align-items:flex-end">'+xs.map((x,i)=>'<div style="display:flex;flex-direction:column;align-items:center"><div style="font:800 22px var(--f-head);color:#FF5D73;line-height:1">'+'✕<br>'.repeat(v[i])+'</div><div style="border-top:3px solid #1F2A44;width:40px;text-align:center;font:800 18px var(--f-head)">'+x+'</div></div>').join('')+'</div>';
+  const f=await numQ('<div class="note" style="font-size:16px">Length of our pencils, in inches. Each ✕ is one pencil.</div><div class="row">'+plot+'</div>','How many pencils are '+xs[k]+' inches long?',v[k],{lo:0,hi:6,help:async()=>{ await say('Count the X marks above '+xs[k]+'.'); }}); return [f,v[k]+' pencils are '+xs[k]+' inches.']; };
+G.sidesName=async c=>{ const s=any(['triangle','quad','pentagon','hexagon']), name={triangle:'triangle',quad:'quadrilateral',pentagon:'pentagon',hexagon:'hexagon'}[s];
+  const f=await choiceText(shuffle(['triangle','quadrilateral','pentagon','hexagon']),name,'Count the sides. What is this shape called?',async()=>say('Triangle: 3 sides. Quadrilateral: 4. Pentagon: 5. Hexagon: 6.'),'<div class="row">'+shp(s,{s:130})+'</div>'); return [f,'It has '+SIDES[s]+' sides: a '+name+'.']; };
+G.anglesCount=async c=>{ const s=any(['triangle','quad','pentagon','hexagon']); const f=await numQ('<div class="row">'+shp(s,{s:140})+'</div>','How many corners, or angles, does this shape have?',SIDES[s],{lo:2,hi:8,help:async()=>{ await say('Every shape like this has the same number of corners as sides.'); }}); return [f,SIDES[s]+' angles.']; };
+G.partition=async c=>{ const r=R(2,4), k=R(2,5); const g='<div style="display:grid;grid-template-columns:repeat('+k+',44px);grid-template-rows:repeat('+r+',44px);border:4px solid #1F2A44">'+Array.from({length:r*k},()=>'<div style="border:2px solid #3D8BFF;background:#F3F7FF"></div>').join('')+'</div>';
+  const f=await numQ('<div class="row">'+g+'</div>','The rectangle is cut into '+r+' rows and '+k+' columns of squares. How many squares?',r*k,{lo:2,hi:25,help:async()=>{ await say(r+' rows of '+k+': '+Array(r).fill(k).join(' plus ')+'.'); }}); return [f,r*k+' squares.']; };
+/* ================= 2nd GRADE MATH LESSONS ================= */
+const mk=(id,t,e,sub,warm,story,movie,tog,pr,real,chk)=>({id,t,e,sub,warm,story:async()=>{ await M(story[0]); await say(story[1]); },movie,together:tog,practice:pr,real,check:chk});
+L.push(
+mk('MATH.OPS.L03.03','Fact Flash','⚡','add and subtract within 20 from memory',[['add20'],['sub20']],['<div class="row" style="font-size:70px">⚡</div>','Fast facts make you a math champion! Today you’ll answer quick facts from memory.'],
+ async()=>{ await M(eqH(8,'+',7,15)); await say('8 plus 7. If you know 7 plus 7 is 14, then 8 plus 7 is one more: 15!'); await M(eqH(15,'−',8,7)); await say('15 minus 8? Think: 8 plus what makes 15? 7!'); },
+ [['flash',{n:3}],['makeTenPick'],['nearDouble']],[['flash'],['double'],['nearDouble'],['factFam'],['flash'],['missing20'],['makeTenPick'],['flash']],['flash',{n:3,intro:'A Shabbos table quiz with Abba!'}],[['flash'],['flash'],['flash']]),
+mk('MATH.NUM.L03.01','Odd or Even','🧦','odd and even numbers',[['double'],['skip',{step:5}]],['<div class="row">'+objs('🧦',7,'pop')+'</div>','Socks come in pairs. If every sock has a partner, the number is even. If one is left alone, it’s odd!'],
+ async()=>{ await M('<div class="row" style="gap:12px">'+Array.from({length:3},()=>'<span style="display:inline-flex;flex-direction:column">'+O('🧦')+O('🧦')+'</span>').join('')+'</div>'); await say('6 socks: 3 pairs, nobody left over. 6 is even.'); await M('<div class="row" style="gap:12px">'+Array.from({length:3},()=>'<span style="display:inline-flex;flex-direction:column">'+O('🧦')+O('🧦')+'</span>').join('')+O('🧦')+'</div>'); await say('7 socks: 3 pairs and one alone. 7 is odd. Even numbers end in 0, 2, 4, 6 or 8.'); },
+ [['oddEven',{n:8}],['oddEven',{n:5}],['oddEven']],[['oddEven'],['double'],['oddEven'],['skip',{step:5}],['oddEven'],['array'],['oddEven'],['oddEven']],['oddEven',{n:12,intro:'Can 12 boys pair up as chavrusos with nobody left over?'}],[['oddEven'],['oddEven'],['oddEven']]),
+mk('MATH.OPS.L03.04','Rows of Chairs','🪑','arrays and repeated addition',[['skip',{step:5}],['add20']],['<div style="display:grid;grid-template-columns:repeat(4,auto);gap:6px">'+objs('🪑',12)+'</div>','Chairs set up in shul for a simcha, in neat rows. How many chairs?'],
+ async()=>{ await M('<div style="display:grid;grid-template-columns:repeat(4,auto);gap:6px" id="ar">'+objs('🪑',12)+'</div>'); await say('3 rows of 4 chairs. Add the rows: 4, 8, 12. 4 plus 4 plus 4 is 12!'); },
+ [['array',{r:2,k:5}],['arrayPick'],['array']],[['array'],['arrayPick'],['skip',{step:5}],['oddEven'],['array'],['partition'],['arrayPick'],['array']],['array',{t:{e:'🕯️',n:'candles'},r:2,k:4,intro:'The Chanukah table: menorahs in rows.'}],[['array'],['arrayPick'],['array']]),
+mk('MATH.PV.L03.02','Hundreds Blocks','🟦','hundreds, tens and ones',[['tensOnes'],['skip',{step:10}]],[blocksH(1,0,0),'Ten rods put together make a big flat: one hundred!'],
+ async()=>{ await M(blocksH(2,3,5)); await say('2 flats are 200. 3 rods are 30. 5 ones are 5. 200 plus 30 plus 5 is 235.'); },
+ [['hundreds'],['hundredsName'],['hundreds']],[['hundreds'],['hundredsName'],['tensOnes'],['expanded'],['hundreds'],['hundredsName'],['skip',{step:100}],['hundreds']],['hundreds',{intro:'Counting the tzedakah coins collected all year!'}],[['hundreds'],['hundredsName'],['hundreds']]),
+mk('MATH.NUM.L03.02','Skip Count','🦘','by 5s, 10s and 100s',[['tens'],['next',{lo:20,hi:80}]],['<div class="row" style="font-size:70px">🦘</div>','Kangaroo skips numbers! He counts by 5s, 10s and even 100s.'],
+ async()=>{ await M(seqHtml([5,10,15,20,25],-1)); await say('By fives: 5, 10, 15, 20, 25. Like counting nickels!'); await M(seqHtml([100,200,300,400,500],-1)); await say('By hundreds: 100, 200, 300, 400, 500!'); },
+ [['skip',{step:5}],['skip',{step:10}],['skip',{step:100}]],[['skip'],['skip',{step:5}],['jump100'],['coinCount'],['skip'],['oddEven'],['skip',{step:100}],['skip']],['skip',{step:5,intro:'Counting nickels for tzedakah by fives.'}],[['skip'],['skip'],['skip']]),
+mk('MATH.PV.L03.03','Stretch It Out','📏','expanded form',[['hundreds'],['hundredsName']],['<div class="row"><span class="card-num">347</span></div>','347 can stretch out to show what each digit is worth!'],
+ async()=>{ await M('<div class="row" style="font:800 44px var(--f-head)">347 = 300 + 40 + 7</div>'); await say('The 3 is worth 300. The 4 is worth 40. The 7 is worth 7. 300 plus 40 plus 7 is 347.'); },
+ [['expanded'],['unstretch'],['hundredsName']],[['expanded'],['unstretch'],['hundreds'],['hundredsName'],['expanded'],['compare3'],['unstretch'],['expanded']],['unstretch',{intro:'The library has hundreds of seforim.'}],[['expanded'],['unstretch'],['expanded']]),
+mk('MATH.PV.L03.01','Big Number Battle','🐊','compare numbers to 1,000',[['alligator'],['hundreds']],['<div class="row" style="gap:18px"><span class="big-num">482</span><span class="sign">?</span><span class="big-num">428</span></div>','Two big numbers battle! Which is greater?'],
+ async()=>{ await M('<div class="row" style="gap:18px"><span class="big-num">482</span><span class="sign">&gt;</span><span class="big-num">428</span></div>'); await say('Hundreds first: 4 and 4, the same. Then tens: 8 tens is more than 2 tens. So 482 is greater than 428.'); },
+ [['compare3'],['compare3'],['hundredsName']],[['compare3'],['hundreds'],['expanded'],['compare3'],['jump100'],['compare3'],['unstretch'],['compare3']],['compare3',{intro:'Which yeshiva raised more for the Chinese auction?'}],[['compare3'],['compare3'],['compare3']]),
+mk('MATH.PV.L03.04','Jump 100','🚀','add or subtract 10 or 100 in your head',[['jump10'],['hundreds']],[chartH(60),'You can jump by 10 or 100 in your head!'],
+ async()=>{ await M('<div class="row" style="font:800 40px var(--f-head)">352 + 100 = 452</div>'); await say('352 plus 100: only the hundreds digit changes. 3 becomes 4: 452.'); await M('<div class="row" style="font:800 40px var(--f-head)">352 − 10 = 342</div>'); await say('352 minus 10: only the tens digit changes. 5 becomes 4: 342.'); },
+ [['jump100'],['jump100'],['skip',{step:100}]],[['jump100'],['skip',{step:10}],['compare3'],['jump100'],['hundredsName'],['jump100'],['skip',{step:100}],['jump100']],['jump100',{intro:'The siyum fund grows by 100 dollars each week.'}],[['jump100'],['jump100'],['jump100']]),
+mk('MATH.OPS.L03.01','Big Take-Away','➖','add and subtract within 100',[['addTens'],['takeTens']],['<div class="row">'+colH([63,28],'−')+'</div>','Bigger numbers! We line them up: tens over tens, ones over ones.'],
+ async()=>{ await M('<div class="row">'+colH([47,35],'+')+'</div>'); await say('47 plus 35. Ones: 7 plus 5 is 12. Write 2, carry the ten. Tens: 4 plus 3 plus 1 is 8. 82!'); await M('<div class="row">'+colH([63,28],'−')+'</div>'); await say('63 minus 28. 3 minus 8? Not enough ones. Trade one ten for ten ones: 13 minus 8 is 5. 5 tens minus 2 tens is 3. 35!'); },
+ [['addSub100'],['addSub100'],['addTens']],[['addSub100'],['jump100'],['addTens'],['takeTens'],['addSub100'],['twoStep'],['addSub100'],['addSub100']],['addSub100',{intro:'Counting the boys at the Lag BaOmer bonfire.'}],[['addSub100'],['addSub100'],['addSub100']]),
+mk('MATH.OPS.L03.05','Column Climb','🧗','add up to four two-digit numbers',[['addSub100'],['add3']],['<div class="row">'+colH([24,13,31],'+')+'</div>','Climb the column! Add all the ones, then all the tens.'],
+ async()=>{ await M('<div class="row">'+colH([24,13,31,12],'+')+'</div>'); await say('Ones: 4, 3, 1, 2 make 10. Tens: 2, 1, 3, 1 make 7 tens, 70. 70 plus 10 is 80!'); },
+ [['column4',{n:3}],['column4'],['add3']],[['column4'],['addSub100'],['column4'],['add3'],['column4'],['jump100'],['column4',{n:3}],['column4']],['column4',{intro:'Adding up the pesukim each boy learned this week.'}],[['column4'],['column4'],['column4']]),
+mk('MATH.OPS.L03.02','Regroup Ridge','⛰️','add and subtract within 1,000',[['addSub100'],['hundreds']],['<div class="row">'+colH([358,267],'+')+'</div>','Climbing Regroup Ridge! Three places: hundreds, tens and ones.'],
+ async()=>{ await M('<div class="row">'+colH([358,267],'+')+'</div>'); await say('Ones: 8 plus 7 is 15. Write 5, carry 1. Tens: 5 plus 6 plus 1 is 12. Write 2, carry 1. Hundreds: 3 plus 2 plus 1 is 6. 625!'); },
+ [['regroup'],['regroup'],['addSub100']],[['regroup'],['addSub100'],['regroup'],['jump100'],['regroup'],['expanded'],['regroup'],['regroup']],['regroup',{intro:'The shul raised money two weeks in a row.'}],[['regroup'],['regroup'],['regroup']]),
+mk('MATH.OPS.L03.06','Two-Step Stories','📜','one- and two-step word problems',[['story1'],['addSub100']],['<div class="row" style="font-size:60px">📚</div>','Some stories have TWO steps. Solve the first part, then the second!'],
+ async()=>{ await M('<div style="font:700 21px/1.4 var(--f-body);max-width:560px">The shul had 20 siddurim. They bought 15 more. Then 8 were given away. How many are left?</div>'); await say('Step one: 20 plus 15 is 35. Step two: 35 minus 8 is 27. 27 siddurim!'); },
+ [['twoStep'],['story1'],['twoStep']],[['twoStep'],['addSub100'],['twoStep'],['story1'],['twoStep'],['column4'],['twoStep'],['twoStep']],['twoStep',{intro:'Real stories from our school!'}],[['twoStep'],['twoStep'],['twoStep']]),
+mk('MATH.MEAS.L03.01','Inches and Centimeters','📐','measure with a ruler',[['measure'],['longer']],['<div class="row">'+rulerH(4,'in')+'</div>','A ruler measures in inches or centimeters. Always start at zero!'],
+ async()=>{ await M('<div class="row">'+rulerH(5,'in')+'</div>'); await say('The crayon starts at 0 and ends at 5. It is 5 inches long.'); await M('<div class="row">'+rulerH(12,'cm')+'</div>'); await say('Centimeters are smaller. The same kind of crayon is 12 centimeters.'); },
+ [['ruler',{unit:'in'}],['ruler',{unit:'cm'}],['unitPick']],[['ruler'],['unitPick'],['ruler'],['howLonger'],['ruler'],['unitPick'],['measureFair'],['ruler']],['ruler',{intro:'Measure the new pencil for your pencil case.'}],[['ruler'],['ruler'],['unitPick']]),
+mk('MATH.MEAS.L03.02','How Much Longer?','📏','compare lengths',[['ruler'],['sub20']],['<div class="bars">'+barH(9,'#FF5D73')+barH(5,'#3D8BFF')+'</div>','Two ribbons. How much longer is one than the other?'],
+ async()=>{ await M('<div class="bars"><div style="display:flex;gap:8px;align-items:center">'+barH(9,'#FF5D73')+'<b>9 cm</b></div><div style="display:flex;gap:8px;align-items:center">'+barH(5,'#3D8BFF')+'<b>5 cm</b></div></div>'); await say('9 centimeters and 5 centimeters. Subtract: 9 minus 5 is 4. The red one is 4 centimeters longer.'); },
+ [['howLonger'],['howLonger'],['ruler']],[['howLonger'],['ruler'],['howLonger'],['sub20'],['howLonger'],['twoStep'],['howLonger'],['howLonger']],['howLonger',{intro:'Whose tzitzis strings are longer?'}],[['howLonger'],['howLonger'],['howLonger']]),
+mk('MATH.MEAS.L03.03','Time to 5 Minutes','🕐','tell time to 5 minutes; a.m. and p.m.',[['clockRead'],['skip',{step:5}]],['<div class="row">'+clockSvg(4,25,160)+'</div>','The long hand counts by fives as it goes around!'],
+ async()=>{ await M('<div class="row">'+clockSvg(4,25,170)+'</div>'); await say('The long hand points to 5. Count by fives: 5, 10, 15, 20, 25. The short hand is past 4. It is 4:25.'); await say('a.m. means the morning. p.m. means after noon. Shacharis is a.m. Maariv is p.m.'); },
+ [['clock5'],['ampm'],['clock5']],[['clock5'],['ampm'],['skip',{step:5}],['clock5'],['clockPick'],['clock5'],['ampm'],['clock5']],['clock5',{intro:'When does the bus come for cheder?'}],[['clock5'],['clock5'],['ampm']]),
+mk('MATH.MEAS.L03.04','Count the Money','💵','coins, bills and money problems',[['coinCount'],['skip',{step:5}]],['<div class="row">'+bill(1)+coinSvg('quarter',true)+coinSvg('dime',true)+'</div>','Bills and coins! A one-dollar bill is 100 cents.'],
+ async()=>{ await M('<div class="row">'+bill(1)+coinSvg('quarter',true)+coinSvg('dime',true)+coinSvg('penny',true)+'</div>'); await say('Start with the biggest: 100 cents, then 125, 135, 136. That’s 136 cents, or one dollar and 36 cents.'); },
+ [['money'],['coinValue'],['money']],[['money'],['coinCount'],['skip',{step:5}],['money'],['coinName'],['money'],['addSub100'],['money']],['money',{intro:'Buying a new siddur at the seforim store.'}],[['money'],['money'],['money']]),
+mk('MATH.STAT.L03.01','Bar Graphs and Line Plots','📊','draw and read graphs',[['graph'],['sub20']],['<div class="row" style="font-size:60px">📊</div>','Bar graphs and line plots show information in pictures. Let’s read them!'],
+ async()=>{ await say('A bar graph: the taller the bar, the bigger the number. Go to the top of the bar and look across. A line plot: each X is one thing, stacked over its number.'); },
+ [['barGraph'],['linePlot'],['barGraph']],[['barGraph'],['linePlot'],['graph'],['barGraph'],['linePlot'],['sub20'],['barGraph'],['linePlot']],['barGraph',{intro:'How many pages of Chumash did our class read this week?'}],[['barGraph'],['linePlot'],['barGraph']]),
+mk('MATH.GEO.L03.01','Sides and Corners','🔷','shapes by sides and angles; rows and columns',[['sides'],['shapeRule']],['<div class="row">'+shp('pentagon',{s:90,c:'#8E5BFF'})+shp('hexagon',{s:90,c:'#FFC83D'})+'</div>','Shapes have names by how many sides and corners they have!'],
+ async()=>{ for(const s of ['triangle','quad','pentagon','hexagon']){ await M('<div class="row">'+shp(s,{s:130})+'</div>'); await say(SIDES[s]+' sides and '+SIDES[s]+' corners: a '+({quad:'quadrilateral'}[s]||s)+'.'); } },
+ [['sidesName'],['anglesCount'],['partition']],[['sidesName'],['anglesCount'],['partition'],['array'],['sidesName'],['stillShape'],['partition'],['sidesName']],['partition',{intro:'Tiling the floor of the new Beis Midrash.'}],[['sidesName'],['anglesCount'],['partition']])
+);
+
+/* ================= 3rd GRADE MATH (Level 4), batch 1: multiply, divide, round ================= */
+L.length=0;
+try{ document.body.classList.add('g3calm'); document.head.insertAdjacentHTML('beforeend','<style>body.g3calm .o.pop{animation-duration:.25s}body.g3calm .big-num{font-size:60px}.dotgrid{display:inline-grid;gap:4px;padding:8px;background:#F3F7FF;border-radius:12px}.dotgrid i{width:16px;height:16px;border-radius:50%;background:#3D8BFF;display:block}.plate .o{font-size:20px!important}.plate{display:inline-flex;flex-wrap:wrap;gap:3px;justify-content:center;align-content:center;width:86px;min-height:86px;border-radius:50%;background:#FFF;border:4px solid #E6E0CC;margin:4px;padding:6px;box-sizing:border-box}</style>'); }catch(e){}
+const dots=(r,k,id)=>'<div class="dotgrid" id="'+(id||'dg')+'" style="grid-template-columns:repeat('+k+',16px)">'+'<i></i>'.repeat(r*k)+'</div>';
+const mulEq=(a,b,ans,q)=>eqH(a,'×',b,ans,q);
+async function rowsAloud(r,k){ for(let i=1;i<=r;i++){ const ds=[...scene.querySelectorAll('#dg i')].slice((i-1)*k,i*k); ds.forEach(d=>d.style.background='#FFC83D'); await say(String(i*k)); } }
+function pickF(set){ return any(set); }
+G.times=async c=>{ const a=c.a!=null?c.a:pickF(c.set||[2,5,10]), b=c.b!=null?c.b:R(c.lo||1,c.hi||10), ans=a*b;
+  const f=await numQ(mulEq(a,b,ans,true)+(helpOn()&&a*b<=60&&a>0&&b>0?dots(a,b):''),a+' times '+b+'?',ans,{lo:0,hi:100,extra:[ans+a,ans-a,ans+b,a+b],help:async()=>{ if(scene.querySelector('#dg')){ await say(a+' rows of '+b+'. Count by '+b+'s.'); await rowsAloud(a,b); } else await say(a===0||b===0?'Anything times zero is zero.':(a===1||b===1?'Anything times one is itself.':'Skip count by '+b+', '+a+' times.')); }}); return [f,a+' × '+b+' = '+ans+'.']; };
+G.groupsOf=async c=>{ const g=R(2,6), k=R(2,6), t=T(); const f=await numQ('<div class="row">'+Array.from({length:g},()=>'<span class="plate">'+objs(t.e,k,'sm')+'</span>').join('')+'</div>'+mulEq(g,k,g*k,true),g+' groups of '+k+' '+t.n+'. How many in all?',g*k,{lo:2,hi:40,extra:[g+k,g*k+k],help:async()=>{ await say('Count by '+k+'s, '+g+' times: '+Array.from({length:g},(_,i)=>(i+1)*k).join(', ')+'.'); }}); return [f,g+' × '+k+' = '+(g*k)+'.']; };
+G.timesTurn=async c=>{ const a=R(3,9), b=R(2,9); const f=await choiceText(shuffle([b+' × '+a,(a+1)+' × '+b,a+' + '+b]),b+' × '+a,'Which fact has the SAME answer as '+a+' × '+b+'?',async()=>say('You can turn the factors around: '+a+' times '+b+' equals '+b+' times '+a+'.'),mulEq(a,b,a*b)); return [f,a+' × '+b+' = '+b+' × '+a+' = '+(a*b)+'.']; };
+G.share=async c=>{ const k=R(2,5), each=R(2,6), n=k*each, t=T(); view('<div class="row">'+O(t.e)+'<span class="big-num">'+n+'</span></div><div class="row" id="pl">'+Array.from({length:k},()=>'<span class="plate"></span>').join('')+'</div>');
+  await say(n+' '+t.n+' shared fairly on '+k+' plates. Watch!'); const ps=[...scene.querySelectorAll('#pl .plate')]; for(let i=0;i<n;i++){ ps[i%k].insertAdjacentHTML('beforeend',O(t.e,'sm')); if(i%k===k-1) plink(i/k); await wait(110); }
+  scene.insertAdjacentHTML('beforeend',eqH(n,'÷',k,each,true)+numRow(each,1,12,false)); await say('How many on each plate?'); const f=await pickNum(each,async()=>{ await say('Count one plate.'); }); return [f,n+' ÷ '+k+' = '+each+'. Each plate gets '+each+'.']; };
+G.groupDiv=async c=>{ const k=R(2,6), g=R(2,6), n=k*g; const f=await numQ('<div class="row">'+dots(1,n,'gd')+'</div>'+eqH(n,'÷',k,g,true),n+' stickers. Put '+k+' in each bag. How many bags?',g,{lo:1,hi:12,help:async()=>{ await say('Count by '+k+'s until you reach '+n+': '+Array.from({length:g},(_,i)=>(i+1)*k).join(', ')+'. That is '+g+' bags.'); }}); return [f,n+' ÷ '+k+' = '+g+'.']; };
+G.missFactor=async c=>{ const a=R(2,9), b=R(2,9), p=a*b, pos=Math.random()<.5; const f=await numQ('<div class="row" style="gap:10px"><span class="big-num">'+(pos?a:'?')+'</span><span class="plus">×</span><span class="big-num">'+(pos?'?':b)+'</span><span class="eq">=</span><span class="big-num">'+p+'</span></div>',(pos?a+' times what':'What times '+b)+' is '+p+'?',pos?b:a,{lo:1,hi:12,help:async()=>{ const k=pos?a:b; await say('Count by '+k+'s to '+p+': '+Array.from({length:p/k},(_,i)=>(i+1)*k).join(', ')+'.'); }}); return [f,a+' × '+b+' = '+p+', so '+p+' ÷ '+(pos?a:b)+' = '+(pos?b:a)+'.']; };
+G.divFact=async c=>{ const a=R(2,9), b=R(2,9), p=a*b; const f=await numQ(eqH(p,'÷',a,b,true),p+' divided by '+a+'?',b,{lo:1,hi:12,help:async()=>{ await say('Think: '+a+' times what is '+p+'?'); }}); return [f,p+' ÷ '+a+' = '+b+'.']; };
+G.tensTimes=async c=>{ const a=R(2,9), b=R(2,9)*10; const f=await numQ(mulEq(a,b,a*b,true),a+' times '+b+'?',a*b,{lo:20,hi:900,extra:[a*b/10,a*b+10,a*b*10>900?a*b-10:a*b*10],help:async()=>{ await say(a+' times '+(b/10)+' is '+(a*b/10)+'. Times ten: put a zero on the end: '+(a*b)+'.'); }}); return [f,a+' × '+b+' = '+(a*b)+'.']; };
+G.roundTen=async c=>{ const to=c.to||any([10,100]), n=to===10?R(11,98):R(110,980); const lo=Math.floor(n/to)*to, hi=lo+to; if(n===lo) return G.roundTen(c); const ans=(n-lo)>=to/2?hi:lo;
+  const line='<div style="position:relative;width:300px;max-width:86vw;height:60px;margin:10px auto"><div style="position:absolute;left:0;right:0;top:28px;height:4px;background:#1F2A44"></div><span style="position:absolute;left:-10px;top:40px;font:800 18px var(--f-head)">'+lo+'</span><span style="position:absolute;right:-10px;top:40px;font:800 18px var(--f-head)">'+hi+'</span><span style="position:absolute;left:48%;top:36px;font:700 12px var(--f-body)">'+(lo+to/2)+'</span><span style="position:absolute;left:'+((n-lo)/to*100)+'%;top:4px;transform:translateX(-50%);font:800 18px var(--f-head);color:#FF5D73">▼'+n+'</span></div>';
+  const f=await choiceText([String(lo),String(hi)],String(ans),'Round '+n+' to the nearest '+to+'.',async()=>say('Is '+n+' closer to '+lo+' or '+hi+'? The halfway point is '+(lo+to/2)+'. Halfway or more rounds up.'),line); return [f,n+' rounds to '+ans+'.']; };
+G.estimate=async c=>{ const a=R(21,89), b=R(11,89), add=Math.random()<.6; const ra=Math.round(a/10)*10, rb=Math.round(b/10)*10, est=add?ra+rb:ra-rb, real=add?a+b:a-b; if(!add&&a<b) return G.estimate(c);
+  const f=await numQ('<div class="row" style="font:800 36px var(--f-head)">'+a+(add?' + ':' − ')+b+'</div>','Estimate! Round each number to the nearest ten, then '+(add?'add':'subtract')+'.',est,{lo:0,hi:200,extra:[real,est+10,est-10],help:async()=>{ await say(a+' rounds to '+ra+'. '+b+' rounds to '+rb+'. '+ra+(add?' plus ':' minus ')+rb+' is '+est+'.'); }}); return [f,'About '+est+'. The exact answer is '+real+', so '+est+' is a good guess.']; };
+/* ================= LESSONS ================= */
+const mk3=(id,t,e,sub,warm,story,movie,tog,pr,real,chk)=>({id,t,e,sub,warm,story:async()=>{ await M(story[0]); await say(story[1]); },movie,together:tog,practice:pr,real,check:chk});
+L.push(
+mk3('MATH.OPS.L04.04','Easy Times','✖️','multiply by 0, 1, 2, 5 and 10',[['array'],['skip',{step:5}]],['<div class="row">'+dots(3,5)+'</div>','Multiplication is a fast way to add equal groups! 3 rows of 5 is 3 times 5.'],
+ async()=>{ await M(dots(3,5)+mulEq(3,5,15)); await say('3 times 5: count by fives, 3 times: 5, 10, 15.'); await M(mulEq(7,1,7)+mulEq(7,0,0)); await say('Times 1 stays the same: 7 times 1 is 7. Times 0 is always 0: 7 times 0 is 0.'); await M(mulEq(6,10,60)); await say('Times 10: put a zero on the end. 6 times 10 is 60!'); },
+ [['times',{set:[2]}],['times',{set:[5]}],['times',{set:[10,1,0]}]],[['times',{set:[2,5]}],['groupsOf'],['times',{set:[0,1]}],['timesTurn'],['times',{set:[10]}],['array'],['times',{set:[2,5,10]}],['times',{set:[5]}]],['times',{a:5,lo:2,hi:9,intro:'Nickels for the tzedakah box: each one is 5 cents.'}],[['times',{set:[2,5,10]}],['times',{set:[0,1,10]}],['times',{set:[5]}]]),
+mk3('MATH.OPS.L04.05','Times Tower 3-4-6','🗼','multiply by 3, 4 and 6',[['times',{set:[2,5]}],['array']],['<div class="row" style="font-size:60px">🗼</div>','Build the Times Tower! Today: threes, fours and sixes.'],
+ async()=>{ await M(dots(4,6)+mulEq(4,6,24)); await say('4 times 6. Double 2 times 6: 2 times 6 is 12, double it: 24! Times 4 is double, then double again.'); await M(mulEq(6,7,42)); await say('6 times 7: 5 times 7 is 35, plus one more 7 is 42.'); },
+ [['times',{set:[3]}],['times',{set:[4]}],['times',{set:[6]}]],[['times',{set:[3]}],['times',{set:[4]}],['times',{set:[6]}],['groupsOf'],['timesTurn'],['times',{set:[3,4,6]}],['missFactor'],['times',{set:[3,4,6]}]],['times',{a:6,lo:2,hi:9,intro:'Each box holds 6 donuts for the Chanukah party.'}],[['times',{set:[3,4,6]}],['times',{set:[3,4,6]}],['times',{set:[3,4,6]}]]),
+mk3('MATH.OPS.L04.06','Times Tower 7-8-9','🏰','multiply by 7, 8 and 9',[['times',{set:[3,4,6]}],['timesTurn']],['<div class="row" style="font-size:60px">🏰</div>','The top of the Times Tower: sevens, eights and nines!'],
+ async()=>{ await M(mulEq(9,6,54)); await say('A nines trick: 9 times 6. The tens digit is one less than 6: 5. The two digits add to 9: 5 and 4. 54!'); await M(mulEq(8,7,56)); await say('8 times 7 is 56. Remember: 5, 6, 7, 8. 56 is 7 times 8!'); },
+ [['times',{set:[7]}],['times',{set:[8]}],['times',{set:[9]}]],[['times',{set:[7]}],['times',{set:[8]}],['times',{set:[9]}],['timesTurn'],['missFactor'],['times',{set:[7,8,9]}],['groupsOf'],['times',{set:[7,8,9]}]],['times',{a:7,lo:2,hi:9,intro:'There are 7 days in each week. How many days in this many weeks?'}],[['times',{set:[7,8,9]}],['times',{set:[7,8,9]}],['times',{set:[7,8,9]}]]),
+mk3('MATH.OPS.L04.01','Times Table Champion','🏆','facts to 10 × 10',[['times',{set:[2,5,10]}],['times',{set:[3,4]}]],['<div class="row" style="font-size:60px">🏆</div>','Become a Times Table Champion! All the facts, mixed up.'],
+ async()=>{ await say('Use the tricks you know: turn the factors around, double a double, use a times-5 fact and add one more group, and the nines trick. Ready? Let’s go!'); },
+ [['times',{set:[2,3,4,5,6,7,8,9]}],['timesTurn'],['missFactor']],[['times',{set:[6,7,8,9]}],['times',{set:[2,3,4,5]}],['timesTurn'],['missFactor'],['times',{set:[2,3,4,5,6,7,8,9,10]}],['groupsOf'],['divFact'],['times',{set:[6,7,8,9]}]],['times',{set:[2,3,4,5,6,7,8,9],intro:'The Shabbos table times-table quiz with Zaidy!'}],[['times',{set:[3,4,6,7,8,9]}],['times',{set:[3,4,6,7,8,9]}],['times',{set:[3,4,6,7,8,9]}]]),
+mk3('MATH.OPS.L04.07','Fair Shares','🍪','division as sharing and grouping',[['times',{set:[2,3,4,5]}],['groupsOf']],['<div class="row">'+objs('🍪',12,'pop')+'</div>','12 cookies, 3 friends. How can we share them fairly? That is division!'],
+ async()=>{ await M('<div class="row" id="pl">'+Array.from({length:3},()=>'<span class="plate"></span>').join('')+'</div>'); await say('Deal them out one at a time.'); const ps=[...scene.querySelectorAll('#pl .plate')]; for(let i=0;i<12;i++){ ps[i%3].insertAdjacentHTML('beforeend',O('🍪','sm')); await wait(120); } await say('Each friend gets 4. 12 divided by 3 is 4. Division can also mean: how many groups of 3 are in 12? Also 4!'); },
+ [['share'],['groupDiv'],['share']],[['share'],['groupDiv'],['divFact'],['share'],['missFactor'],['groupDiv'],['groupsOf'],['share']],['share',{intro:'Sharing the Purim mishloach manos treats fairly.'}],[['share'],['groupDiv'],['divFact']]),
+mk3('MATH.OPS.L04.02','Missing Factor','🔍','division facts as missing factors',[['times',{set:[2,3,4,5,6]}],['share']],[mulEq(4,'?',28,false),'4 times what is 28? Finding the missing factor IS dividing!'],
+ async()=>{ await M(mulEq(4,'?',28)); await say('4 times 7 is 28, so the missing factor is 7. That means 28 divided by 4 is 7.'); await M(eqH(28,'÷',4,7)); await say('Every division fact has a multiplication friend!'); },
+ [['missFactor'],['divFact'],['missFactor']],[['missFactor'],['divFact'],['factFam'],['times',{set:[6,7,8,9]}],['missFactor'],['share'],['divFact'],['missFactor']],['missFactor',{intro:'Seating 24 guests at tables of the same size.'}],[['missFactor'],['divFact'],['divFact']]),
+mk3('MATH.OPS.L04.08','Tens Times','🔟','multiply by multiples of 10',[['times',{set:[10]}],['times',{set:[3,4,5]}]],[mulEq(3,40,120),'3 times 40? Use a fact you know, then add a zero!'],
+ async()=>{ await M(mulEq(3,4,12)+mulEq(3,40,120)); await say('3 times 4 is 12. 40 is 4 tens, so 3 times 40 is 12 tens: 120!'); },
+ [['tensTimes'],['tensTimes'],['times',{set:[10]}]],[['tensTimes'],['times',{set:[2,3,4,5]}],['tensTimes'],['skip',{step:10}],['tensTimes'],['timesTurn'],['tensTimes'],['tensTimes']],['tensTimes',{intro:'Each bus holds 40 children for the school trip.'}],[['tensTimes'],['tensTimes'],['tensTimes']]),
+mk3('MATH.PV.L04.01','Round Up','🎯','round to the nearest 10 or 100',[['jump10'],['compare3']],['<div class="row" style="font-size:60px">🎯</div>','Rounding makes numbers easy to think about. Is it closer to this ten, or that ten?'],
+ async()=>{ await say('47 is between 40 and 50. The halfway point is 45. 47 is past halfway, so it rounds up to 50. 43 is before halfway, so it rounds down to 40. Exactly halfway, like 45, rounds UP.'); },
+ [['roundTen',{to:10}],['roundTen',{to:10}],['roundTen',{to:100}]],[['roundTen',{to:10}],['roundTen',{to:100}],['estimate'],['jump100'],['roundTen',{to:10}],['roundTen',{to:100}],['compare3'],['estimate']],['estimate',{intro:'About how many seforim are on the two shelves?'}],[['roundTen',{to:10}],['roundTen',{to:100}],['estimate']])
+);
+
+/* ================= 3rd GRADE MATH batch 2: fractions, estimating, four-way stories, patterns ================= */
+const fbar=(a,b,w,col)=>'<div style="display:flex;width:'+(w||280)+'px;max-width:80vw;height:44px;border:3px solid #1F2A44;border-radius:6px;overflow:hidden">'+Array.from({length:b},(_,i)=>'<div style="flex:1;border-right:'+(i<b-1?'2px solid #1F2A44':'0')+';background:'+(i<a?(col||'#FFC83D'):'#fff')+'"></div>').join('')+'</div>';
+const fr=(a,b)=>a+'/'+b;
+function fracOpts(a,b){ const s=new Set([fr(a,b)]); const c=[fr(b-a>0?b-a:a+1,b),fr(a,b+1),fr(b,a),fr(a+1>b?a-1:a+1,b)]; for(const x of shuffle(c)){ if(s.size<3&&x!==fr(a,b)&&x.split('/')[0]!=='0'&&x.split('/')[1]!=='0') s.add(x); } return shuffle([...s]); }
+G.fracShade=async c=>{ const b=c.b||any([2,3,4,6,8]), a=R(1,b-1); const f=await choiceText(fracOpts(a,b),fr(a,b),'What fraction of the bar is shaded?',async()=>say('Count the equal parts: '+b+'. That is the bottom number. Count the shaded parts: '+a+'. That is the top number.'),'<div class="row">'+fbar(a,b)+'</div>'); return [f,a+' out of '+b+' equal parts: '+fr(a,b)+'.']; };
+G.fracLine=async c=>{ const b=any([2,3,4,6,8]), a=R(1,b-1);
+  const line='<div style="position:relative;width:300px;max-width:84vw;height:70px;margin:8px auto"><div style="position:absolute;left:0;right:0;top:30px;height:4px;background:#1F2A44"></div>'+Array.from({length:b+1},(_,i)=>'<span style="position:absolute;left:'+(i/b*100)+'%;top:22px;height:20px;border-left:3px solid #1F2A44"></span>').join('')+'<span style="position:absolute;left:-6px;top:46px;font:800 16px var(--f-head)">0</span><span style="position:absolute;right:-6px;top:46px;font:800 16px var(--f-head)">1</span><span style="position:absolute;left:'+(a/b*100)+'%;top:0;transform:translateX(-50%);font:800 20px var(--f-head);color:#FF5D73">▼</span></div>';
+  const f=await choiceText(fracOpts(a,b),fr(a,b),'The space from 0 to 1 is cut into equal parts. What fraction is at the arrow?',async()=>say('There are '+b+' equal jumps from 0 to 1. The arrow is '+a+' jumps from 0.'),line); return [f,'The arrow is at '+fr(a,b)+'.']; };
+G.fracPick=async c=>{ const b=any([2,3,4,6]), a=1; const opts=shuffle([[1,b,true],[1,b,false],[1,b+1,true]]);
+  const f=await pickQ('',opts.map(o=>({h:o[2]?fbar(o[0],o[1],150):'<div style="display:flex;width:150px;height:44px;border:3px solid #1F2A44;border-radius:6px;overflow:hidden"><div style="width:22%;background:#FFC83D;border-right:2px solid #1F2A44"></div>'+Array.from({length:o[1]-1},(_,i)=>'<div style="flex:1;border-right:'+(i<o[1]-2?'2px solid #1F2A44':'0')+'"></div>').join('')+'</div>',ok:o[2]&&o[1]===b,label:'bar'})),'Which bar shows 1/'+b+'? The parts must be EQUAL.',async()=>{ await say('1/'+b+' means one of '+b+' equal parts.'); }); return [f,'1/'+b+' is one of '+b+' equal parts.']; };
+G.fracEquiv=async c=>{ const base=any([[1,2],[1,3],[2,3],[1,4],[3,4]]), k=any([2,3].filter(m=>base[1]*m<=12)), a=base[0]*k, b=base[1]*k; const wrong=[fr(base[0]+1,b),fr(a,b+1),fr(a+1,b)].filter((x,i,arr)=>x!==fr(a,b)&&arr.indexOf(x)===i).slice(0,2);
+  const f=await choiceText(shuffle([fr(a,b)].concat(wrong)),fr(a,b),'Which fraction is the SAME size as '+fr(base[0],base[1])+'?',async()=>say('Look at the bars. The same amount is shaded: '+fr(base[0],base[1])+' and '+fr(a,b)+'.'),'<div style="display:flex;flex-direction:column;gap:8px;align-items:center">'+fbar(base[0],base[1])+fbar(a,b,280,'#8EC5FF')+'</div>'); return [f,fr(base[0],base[1])+' = '+fr(a,b)+'.']; };
+G.fracWhole=async c=>{ const b=any([2,3,4]), w=R(1,3), a=b*w; const f=await numQ('<div style="display:flex;flex-direction:column;gap:6px;align-items:center">'+Array.from({length:w},()=>fbar(b,b,220)).join('')+'</div><div class="row" style="font:800 40px var(--f-head)">'+a+'/'+b+' = ?</div>','How many whole bars is '+a+' over '+b+'?',w,{lo:1,hi:6,help:async()=>{ await say(b+' parts make one whole. '+a+' parts make '+w+' wholes.'); }}); return [f,fr(a,b)+' = '+w+'.']; };
+G.fracCompare=async c=>{ const same=any(['den','num']); let a1,b1,a2,b2; if(same==='den'){ b1=b2=any([3,4,6,8]); a1=R(1,b1-1); do{ a2=R(1,b1-1); }while(a2===a1); } else { a1=a2=R(1,2); b1=any([2,3,4,6,8].filter(x=>x>a1)); do{ b2=any([2,3,4,6,8].filter(x=>x>a1)); }while(b2===b1); }
+  const v1=a1/b1, v2=a2/b2, ok=v1>v2?'>':(v1<v2?'<':'=');
+  view('<div style="display:flex;flex-direction:column;gap:6px;align-items:center">'+fbar(a1,b1,240)+fbar(a2,b2,240,'#8EC5FF')+'</div><div class="row" style="gap:16px"><span class="big-num">'+fr(a1,b1)+'</span><span class="sign">?</span><span class="big-num">'+fr(a2,b2)+'</span></div><div class="choices">'+['<','=','>'].map(s=>'<button class="ch" type="button" data-v="'+s+'"'+(s===ok?' data-ok="1"':'')+'>'+s+'</button>').join('')+'</div>');
+  await say('Which sign goes in the middle?'); const f=await new Promise(res=>{ let first=true; scene.querySelectorAll('.ch').forEach(bt=>bt.onclick=async()=>{ if(BUSY) return; if(bt.dataset.v===ok){ bt.classList.add('yes'); scene.querySelector('.sign').textContent=ok; chime(); lockAll(); res(first); } else { first=false; bt.classList.add('no'); soft(); await wrongHelp(async()=>say(same==='den'?'Same size pieces: more pieces is more.':'Same number of pieces: smaller bottom number means BIGGER pieces.')); } }); });
+  return [f,fr(a1,b1)+' '+ok+' '+fr(a2,b2)+'.']; };
+const STORY4=[()=>{ const g=R(3,6),k=R(4,8),e=R(2,9); return ['There are '+g+' tables at the Chanukah party with '+k+' latkes on each table. Then '+e+' more latkes come from the kitchen. How many latkes now?',g*k+e,'🥔']; },
+ ()=>{ const k=R(3,6),g=R(3,8),gone=R(1,g-1); return [k*g+' boys go on a trip in vans. Each van holds '+k+' boys. How many vans do they need?',g,'🚐']; },
+ ()=>{ const p=R(3,8),n=R(2,5),c=R(10,40); return ['Dovi buys '+n+' seforim for $'+p+' each. He pays with $'+(n*p+c)+'. How much change does he get?',c,'📚']; },
+ ()=>{ const b=R(4,9)*4,s=R(1,b/4-1); return ['The class has '+b+' pencils to share equally in 4 cups. Then '+s+' pencils are taken from one cup. How many pencils are left in that cup?',b/4-s,'✏️']; }];
+G.story4=async c=>{ const [txt,ans,e]=any(STORY4)(); const f=await numQ('<div class="row" style="font-size:50px">'+e+'</div><div style="font:700 20px/1.4 var(--f-body);max-width:580px;text-align:center">'+txt+'</div>',txt,ans,{lo:0,hi:100,extra:[ans+1,ans+5,ans-2],help:async()=>{ await say('Two steps! First find the part you need, then use it to answer the question. Times and divide go with equal groups.'); }}); return [f,'The answer is '+ans+'.']; };
+G.pattern=async c=>{ const kind=any(['add','times']); let a; if(kind==='add'){ const st=R(1,20), d=R(3,9); a=[st,st+d,st+2*d,st+3*d,st+4*d]; } else { const m=R(2,9); a=[1,2,3,4,5].map(i=>m*i); }
+  const f=await numQ(seqHtml(a.slice(0,4).concat(['?']),4),'What comes next in the pattern?',a[4],{lo:0,hi:100,extra:[a[4]+1,a[4]+(a[1]-a[0]),a[4]-1],help:async()=>{ await say('What do you add each time? '+(a[1]-a[0])+'.'); }}); return [f,'Add '+(a[1]-a[0])+' each time: '+a[4]+'.']; };
+G.oddRule=async c=>{ const it=any([['odd + odd','even'],['even + even','even'],['odd + even','odd'],['even × anything','even'],['odd × odd','odd']]); const f=await choiceText(['odd','even'],it[1],'Is '+it[0]+' always odd or even? Try some numbers!',async()=>say(it[0]+' is always '+it[1]+'. Try: '+({ 'odd + odd':'3 + 5 = 8','even + even':'4 + 6 = 10','odd + even':'3 + 4 = 7','even × anything':'2 × 7 = 14','odd × odd':'3 × 5 = 15'}[it[0]])+'.')); return [f,it[0]+' is always '+it[1]+'.']; };
+L.push(
+mk3('MATH.OPS.L04.03','Good Guess','🤔','estimate to check sums and differences',[['roundTen',{to:10}],['addSub100']],['<div class="row" style="font-size:60px">🤔</div>','Is your answer reasonable? Estimate first and see if it is close!'],
+ async()=>{ await M('<div class="row" style="font:800 36px var(--f-head)">48 + 31 = 79?</div>'); await say('Round: 48 is about 50. 31 is about 30. 50 plus 30 is 80. 79 is close to 80, so the answer makes sense!'); },
+ [['estimate'],['estimate'],['roundTen',{to:10}]],[['estimate'],['roundTen',{to:10}],['addSub100'],['estimate'],['roundTen',{to:100}],['estimate'],['regroup'],['estimate']],['estimate',{intro:'About how much money did we raise at both bake sales?'}],[['estimate'],['estimate'],['estimate']]),
+mk3('MATH.OPS.L04.09','Four-Way Stories','🧭','two-step problems with + − × ÷',[['story1'],['times',{set:[2,3,4,5]}]],['<div class="row" style="font-size:60px">🧭</div>','Four ways to solve: add, subtract, multiply, divide. Which ones does the story need?'],
+ async()=>{ await M('<div style="font:700 20px/1.4 var(--f-body);max-width:560px">There are 4 tables with 6 latkes on each. Then 5 more come. How many latkes now?</div>'); await say('Equal groups: 4 times 6 is 24. Then 5 more: 24 plus 5 is 29!'); },
+ [['story4'],['story4'],['twoStep']],[['story4'],['twoStep'],['story4'],['times',{set:[3,4,6]}],['story4'],['share'],['story4'],['story4']],['story4',{intro:'Real stories from Chanukah and the school trip!'}],[['story4'],['story4'],['story4']]),
+mk3('MATH.FRAC.L04.02','Fair Pieces','🍰','fractions as equal parts',[['fracEqual'],['fracName']],['<div class="row">'+fbar(1,4)+'</div>','A fraction names equal parts of a whole. 1 of 4 equal parts is one fourth: 1/4.'],
+ async()=>{ await M('<div class="row">'+fbar(3,4)+'</div><div class="row" style="font:800 50px var(--f-head)">3/4</div>'); await say('The bottom number, 4, tells how many equal parts. The top number, 3, tells how many are shaded. Three fourths!'); },
+ [['fracShade',{b:4}],['fracPick'],['fracShade']],[['fracShade'],['fracPick'],['fracEqual'],['fracShade'],['fracName'],['fracPick'],['fracShade'],['fracShade']],['fracShade',{b:8,intro:'Ima cut the Shabbos cake into 8 equal pieces.'}],[['fracShade'],['fracPick'],['fracShade']]),
+mk3('MATH.FRAC.L04.01','Fraction Trail','🛤️','fractions on a number line',[['fracShade'],['next',{lo:1,hi:9}]],['<div class="row" style="font-size:60px">🛤️</div>','Fractions live on the number line, between 0 and 1!'],
+ async()=>{ await say('From 0 to 1, cut the line into 4 equal jumps. The first mark is 1/4, then 2/4, then 3/4, and 4/4 is the same as 1!'); },
+ [['fracLine'],['fracLine'],['fracShade']],[['fracLine'],['fracShade'],['fracLine'],['fracPick'],['fracLine'],['fracShade'],['fracLine'],['fracLine']],['fracLine',{intro:'How far did we walk on the trail to the shul?'}],[['fracLine'],['fracLine'],['fracLine']]),
+mk3('MATH.FRAC.L04.03','Same Size Shares','⚖️','equivalent fractions',[['fracShade'],['fracLine']],['<div style="display:flex;flex-direction:column;gap:6px;align-items:center">'+fbar(1,2)+fbar(2,4,280,'#8EC5FF')+'</div>','1/2 and 2/4: different names, the SAME amount!'],
+ async()=>{ await M('<div style="display:flex;flex-direction:column;gap:6px;align-items:center">'+fbar(1,2)+fbar(2,4,280,'#8EC5FF')+fbar(4,8,280,'#2FBF71')+'</div>'); await say('One half, two fourths, four eighths. All the same size. They are equivalent fractions!'); },
+ [['fracEquiv'],['fracEquiv'],['fracShade']],[['fracEquiv'],['fracLine'],['fracEquiv'],['fracShade'],['fracEquiv'],['fracCompare'],['fracEquiv'],['fracEquiv']],['fracEquiv',{intro:'Two pizzas cut differently: who got the same amount?'}],[['fracEquiv'],['fracEquiv'],['fracEquiv']]),
+mk3('MATH.FRAC.L04.04','Whole Numbers in Disguise','🥸','whole numbers as fractions',[['fracShade'],['fracEquiv']],['<div class="row" style="font:800 50px var(--f-head)">4/4 = 1</div>','Some fractions are whole numbers wearing a disguise!'],
+ async()=>{ await M('<div class="row">'+fbar(4,4)+'</div>'); await say('4 out of 4 parts: the whole bar. 4/4 equals 1.'); await M('<div style="display:flex;flex-direction:column;gap:6px;align-items:center">'+fbar(2,2,200)+fbar(2,2,200)+fbar(2,2,200)+'</div>'); await say('6 halves make 3 whole bars. 6/2 equals 3!'); },
+ [['fracWhole'],['fracWhole'],['fracShade']],[['fracWhole'],['fracShade'],['fracWhole'],['fracEquiv'],['fracWhole'],['divFact'],['fracWhole'],['fracWhole']],['fracWhole',{intro:'How many whole challos are 8 half-challos?'}],[['fracWhole'],['fracWhole'],['fracWhole']]),
+mk3('MATH.FRAC.L04.05','Fraction Face-Off','🥊','compare fractions',[['fracEquiv'],['fracShade']],['<div style="display:flex;flex-direction:column;gap:6px;align-items:center">'+fbar(1,3,240)+fbar(1,6,240,'#8EC5FF')+'</div>','Which is bigger: 1/3 or 1/6?'],
+ async()=>{ await say('Same top number? Look at the pieces: thirds are bigger than sixths, so 1/3 is bigger. Same bottom number? The pieces are the same size, so 3/8 is more than 2/8.'); },
+ [['fracCompare'],['fracCompare'],['fracEquiv']],[['fracCompare'],['fracShade'],['fracCompare'],['fracEquiv'],['fracCompare'],['fracLine'],['fracCompare'],['fracCompare']],['fracCompare',{intro:'Who ate more of their pizza?'}],[['fracCompare'],['fracCompare'],['fracCompare']]),
+mk3('MATH.ALG.L04.01','Number Patterns','🔢','patterns in addition and times tables',[['skip'],['times',{set:[2,5]}]],['<div class="row">'+seqHtml([4,8,12,16,'?'],4)+'</div>','Numbers love patterns! Can you find the rule?'],
+ async()=>{ await say('4, 8, 12, 16: add 4 each time. These are the times-4 answers! Another pattern: odd plus odd is always even.'); },
+ [['pattern'],['oddRule'],['pattern']],[['pattern'],['oddRule'],['times',{set:[3,4,6]}],['pattern'],['oddEven'],['pattern'],['oddRule'],['pattern']],['pattern',{intro:'A pattern in the Sefiras HaOmer chart.'}],[['pattern'],['oddRule'],['pattern']])
+);
+
+/* ================= 3rd GRADE MATH batch 3: area, perimeter, time, measure, graphs, quadrilaterals ================= */
+const cellsH=(w,h,cut,id)=>'<div id="'+(id||'ar3')+'" style="display:grid;grid-template-columns:repeat('+w+',30px);grid-template-rows:repeat('+h+',30px);gap:0">'+Array.from({length:w*h},(_,i)=>{ const x=i%w,y=Math.floor(i/w); const off=cut&&x>=w-cut[0]&&y<cut[1]; return '<div style="'+(off?'':'background:#BFE3FF;border:1px solid #3D8BFF')+'"></div>'; }).join('')+'</div>';
+G.areaSq=async c=>{ const w=R(3,7), h=R(2,5), lshape=Math.random()<.4&&w>3&&h>2, cut=lshape?[R(1,w-2),R(1,h-1)]:null, area=w*h-(cut?cut[0]*cut[1]:0);
+  const f=await numQ('<div class="row">'+cellsH(w,h,cut)+'</div>','Each little square is one square unit. What is the area?',area,{lo:1,hi:40,extra:[area+w,area-1,2*(w+h)],help:async()=>{ await say(lshape?'Count all the blue squares. You can count rows and add.':'Count the squares: '+h+' rows of '+w+'.'); }}); return [f,'The area is '+area+' square units.']; };
+G.areaMul=async c=>{ const w=R(3,10), h=R(2,9); const box='<div style="position:relative;width:'+Math.max(150,Math.min(260,w*26))+'px;height:'+Math.max(90,Math.min(180,h*20))+'px;background:#D6F5E3;border:3px solid #2FBF71;margin:24px auto"><span style="position:absolute;top:-24px;left:50%;transform:translateX(-50%);font:800 18px var(--f-head)">'+w+' m</span><span style="position:absolute;left:-44px;top:50%;transform:translateY(-50%);font:800 18px var(--f-head)">'+h+' m</span></div>';
+  const f=await numQ(box,'This rectangle is '+w+' meters long and '+h+' meters wide. What is the area? Multiply!',w*h,{lo:1,hi:100,extra:[2*(w+h),w+h,w*h+w],help:async()=>{ await say('Area is length times width: '+w+' times '+h+'.'); }}); return [f,w+' × '+h+' = '+(w*h)+' square meters.']; };
+G.perim=async c=>{ const w=R(3,12), h=R(2,9); const box='<div style="position:relative;width:'+Math.max(150,Math.min(260,w*22))+'px;height:'+Math.max(90,Math.min(170,h*18))+'px;border:4px solid #FF5D73;margin:26px auto"><span style="position:absolute;top:-26px;left:50%;transform:translateX(-50%);font:800 18px var(--f-head)">'+w+' cm</span><span style="position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);font:800 18px var(--f-head)">'+w+' cm</span><span style="position:absolute;left:-46px;top:50%;transform:translateY(-50%);font:800 18px var(--f-head)">'+h+' cm</span><span style="position:absolute;right:-46px;top:50%;transform:translateY(-50%);font:800 18px var(--f-head)">'+h+' cm</span></div>';
+  const f=await numQ(box,'Perimeter is the distance all the way around. What is the perimeter?',2*(w+h),{lo:4,hi:60,extra:[w*h,w+h,2*(w+h)+2],help:async()=>{ await say('Add all four sides: '+w+' plus '+h+' plus '+w+' plus '+h+'.'); }}); return [f,'The perimeter is '+(2*(w+h))+' cm.']; };
+G.areaOrPerim=async c=>{ const it=any([['the carpet that covers the floor','area'],['the fence around the garden','perimeter'],['the tiles on the kitchen floor','area'],['the ribbon around the edge of a picture','perimeter'],['the paint for a wall','area'],['the border around the bulletin board','perimeter']]);
+  const f=await choiceText(['area','perimeter'],it[1],'Do we need area or perimeter to find '+it[0]+'?',async()=>say('Area covers the inside. Perimeter goes around the edge.')); return [f,it[0]+': '+it[1]+'.']; };
+const tsay2=(h,m)=>h+':'+String(m).padStart(2,'0');
+G.elapsed=async c=>{ const h=R(1,10), m1=R(0,6)*5, d=R(2,9)*5, m2=m1+d; const h2=h+Math.floor(m2/60), mm2=m2%60;
+  const f=await numQ('<div class="row">'+clockSvg(h,m1,120)+'<span class="plus">→</span>'+clockSvg(h2,mm2,120)+'</div><div class="row" style="font:800 26px var(--f-head)">'+tsay2(h,m1)+' → '+tsay2(h2,mm2)+'</div>','The learning seder started at '+tsay2(h,m1)+' and ended at '+tsay2(h2,mm2)+'. How many minutes did it take?',d,{lo:5,hi:60,extra:[d+5,d-5,d+10],help:async()=>{ await say('Count on by fives from '+tsay2(h,m1)+' to '+tsay2(h2,mm2)+'.'); }}); return [f,'It took '+d+' minutes.']; };
+G.endTime=async c=>{ const h=R(1,10), m=R(0,6)*5, d=R(2,8)*5, t=m+d, h2=h+Math.floor(t/60), m2=t%60; const ok=tsay2(h2,m2), opts=shuffle([ok,tsay2(h2,(m2+5)%60),tsay2(h,m)]);
+  const f=await choiceText([...new Set(opts)],ok,'Davening starts at '+tsay2(h,m)+' and takes '+d+' minutes. When does it end?',async()=>say('Start at '+tsay2(h,m)+' and count on '+d+' minutes by fives.'),'<div class="row">'+clockSvg(h,m,130)+'</div>'); return [f,'It ends at '+ok+'.']; };
+const MASS=[['a paper clip','about 1 gram','gram'],['a big book','about 1 kilogram','kilogram'],['a water bottle','about 1 liter','liter'],['a raisin','about 1 gram','gram'],['a bag of sugar','about 1 kilogram','kilogram'],['a pitcher of juice','about 1 liter','liter']];
+G.unitMass=async c=>{ const it=any(MASS); const f=await choiceText(shuffle(['gram','kilogram','liter']),it[2],'Which unit is best for '+it[0]+'? It is '+it[1]+'.',async()=>say('Grams for very light things. Kilograms for heavy things. Liters for liquids.')); return [f,it[0]+' is '+it[1]+'.']; };
+G.massAdd=async c=>{ const a=R(120,480), b=R(50,400); const f=await numQ('<div class="row" style="font-size:50px">⚖️</div>','A bag of apples weighs '+a+' grams. A bag of pears weighs '+b+' grams. How many grams together?',a+b,{lo:100,hi:1000,extra:[a+b+10,a+b-10,Math.abs(a-b)],help:async()=>{ await say('Add: '+a+' plus '+b+'.'); }}); return [f,a+' + '+b+' = '+(a+b)+' grams.']; };
+G.scaled=async c=>{ const k=any([2,5,10]), cats=[['Sunday','🔵'],['Monday','🔵'],['Tuesday','🔵']], n=cats.map(()=>R(1,6)), i=R(0,2);
+  const html='<div class="note" style="font-size:16px">Pesukim learned. Each 📘 = '+k+' pesukim</div><div style="display:flex;flex-direction:column;gap:6px">'+cats.map((ct,j)=>'<div style="display:flex;gap:6px;align-items:center"><span style="width:90px;font:800 15px var(--f-body)">'+ct[0]+'</span><span style="font-size:26px">'+'📘'.repeat(n[j])+'</span></div>').join('')+'</div>';
+  const f=await numQ(html,'Each book stands for '+k+'. How many pesukim on '+cats[i][0]+'?',n[i]*k,{lo:1,hi:70,extra:[n[i],n[i]*k+k,n[i]*k-k],help:async()=>{ await say('Count by '+k+'s for each book: '+Array.from({length:n[i]},(_,j)=>(j+1)*k).join(', ')+'.'); }}); return [f,n[i]+' books × '+k+' = '+(n[i]*k)+'.']; };
+const QSH={square:'<polygon points="20,20 80,20 80,80 20,80"/>',rectangle:'<polygon points="5,28 95,28 95,72 5,72"/>',rhombus:'<polygon points="50,5 90,50 50,95 10,50"/>',trapezoid:'<polygon points="25,25 75,25 95,80 5,80"/>'};
+const qsv=k=>'<svg viewBox="0 0 100 100" width="90" height="90" aria-hidden="true"><g fill="'+any(COLS)+'" stroke="#1F2A44" stroke-width="3">'+QSH[k]+'</g></svg>';
+const QTIP={square:'4 equal sides and 4 square corners',rectangle:'4 square corners, opposite sides equal',rhombus:'4 equal sides, but slanted corners',trapezoid:'only one pair of parallel sides'};
+G.quadName=async c=>{ const k=any(Object.keys(QSH)); const f=await choiceText(shuffle(Object.keys(QSH)),k,'All of these are quadrilaterals. What is this one called?',async()=>say('A '+k+' has '+QTIP[k]+'.'),'<div class="row">'+qsv(k).replace('width="90" height="90"','width="140" height="140"')+'</div>'); return [f,'A '+k+': '+QTIP[k]+'.']; };
+G.quadWhich=async c=>{ const q=any([['has 4 square corners but is NOT a square','rectangle'],['has 4 equal sides but is NOT a square','rhombus'],['is a rectangle AND a rhombus','square']]);
+  const f=await pickQ('',shuffle(['square','rectangle','rhombus']).map(k=>({h:qsv(k),ok:k===q[1],label:k})),'Which shape '+q[0]+'?',async()=>{ await say('A square is a special rectangle and a special rhombus: equal sides AND square corners.'); }); return [f,'The '+q[1]+'.']; };
+L.push(
+mk3('MATH.MEAS.L04.01','Area by Squares','🟦','area as unit squares',[['partition'],['array']],['<div class="row">'+cellsH(4,3)+'</div>','How much space does a shape cover? Count the squares that fill it: that is its area!'],
+ async()=>{ await M('<div class="row">'+cellsH(5,3)+'</div>'); await say('5 squares in each row, 3 rows. 5, 10, 15. The area is 15 square units.'); },
+ [['areaSq'],['areaSq'],['partition']],[['areaSq'],['partition'],['areaSq'],['array'],['areaSq'],['areaMul'],['areaSq'],['areaSq']],['areaSq',{intro:'Tiles for the floor of the new sukkah.'}],[['areaSq'],['areaSq'],['areaSq']]),
+mk3('MATH.MEAS.L04.02','Area by Multiplying','📐','length times width',[['areaSq'],['times',{set:[3,4,6]}]],['<div class="row">'+cellsH(6,4)+'</div>','Counting every square takes long. Multiply instead!'],
+ async()=>{ await say('6 squares long and 4 squares wide. 6 times 4 is 24. Area equals length times width.'); },
+ [['areaMul'],['areaMul'],['areaSq']],[['areaMul'],['areaSq'],['times',{set:[6,7,8,9]}],['areaMul'],['areaOrPerim'],['areaMul'],['missFactor'],['areaMul']],['areaMul',{intro:'How much carpet for the Beis Midrash floor?'}],[['areaMul'],['areaMul'],['areaMul']]),
+mk3('MATH.MEAS.L04.03','Perimeter','🏃','the distance around a shape',[['areaMul'],['addSub100']],['<div class="row" style="font-size:60px">🏃</div>','Run all the way around the yard: that distance is the perimeter!'],
+ async()=>{ await say('A rectangle 8 centimeters long and 3 centimeters wide. Add all four sides: 8 plus 3 plus 8 plus 3 is 22 centimeters.'); },
+ [['perim'],['areaOrPerim'],['perim']],[['perim'],['areaOrPerim'],['areaMul'],['perim'],['column4'],['perim'],['areaOrPerim'],['perim']],['perim',{intro:'A fence around the shul garden.'}],[['perim'],['perim'],['areaOrPerim']]),
+mk3('MATH.MEAS.L04.04','How Long Did It Take?','⏱️','elapsed time',[['clock5'],['skip',{step:5}]],['<div class="row">'+clockSvg(3,10,120)+'<span class="plus">→</span>'+clockSvg(3,45,120)+'</div>','How long did it take? That is elapsed time!'],
+ async()=>{ await say('Started at 3:10, ended at 3:45. Count on by fives: 15, 20, 25, 30, 35, 40, 45. That is 35 minutes.'); },
+ [['elapsed'],['endTime'],['elapsed']],[['elapsed'],['endTime'],['clock5'],['elapsed'],['ampm'],['endTime'],['elapsed'],['elapsed']],['endTime',{intro:'When will the Shabbos meal end?'}],[['elapsed'],['endTime'],['elapsed']]),
+mk3('MATH.MEAS.L04.05','Liters and Grams','⚖️','liquid volume and mass',[['unitPick'],['heavier']],['<div class="row" style="font-size:60px">🧃⚖️</div>','Liters measure liquids. Grams and kilograms measure how heavy things are.'],
+ async()=>{ await say('A paper clip weighs about 1 gram. A big book weighs about 1 kilogram, which is 1,000 grams. A water bottle holds about 1 liter.'); },
+ [['unitMass'],['massAdd'],['unitMass']],[['unitMass'],['massAdd'],['heavier'],['unitMass'],['regroup'],['massAdd'],['unitMass'],['unitMass']],['massAdd',{intro:'Packing food for the tzedakah drive.'}],[['unitMass'],['massAdd'],['unitMass']]),
+mk3('MATH.STAT.L04.01','Scaled Graphs','📊','one picture stands for many',[['graph'],['skip',{step:5}]],['<div class="row" style="font-size:40px">📘📘📘</div>','Sometimes one picture stands for MANY. Read the key!'],
+ async()=>{ await say('If each book stands for 5 pesukim, then 3 books are 5, 10, 15 pesukim. Always read the key first!'); },
+ [['scaled'],['barGraph'],['scaled']],[['scaled'],['barGraph'],['linePlot'],['scaled'],['times',{set:[2,5,10]}],['scaled'],['barGraph'],['scaled']],['scaled',{intro:'Our class Chumash chart for the week.'}],[['scaled'],['scaled'],['barGraph']]),
+mk3('MATH.GEO.L04.01','Four-Sided Shapes','🔷','rhombus, rectangle and square',[['sidesName'],['shapeRule']],['<div class="row">'+qsv('square')+qsv('rectangle')+qsv('rhombus')+'</div>','All of these have 4 sides. They are quadrilaterals. But each one is special!'],
+ async()=>{ for(const k of ['rectangle','rhombus','square']){ await M('<div class="row">'+qsv(k).replace('width="90" height="90"','width="150" height="150"')+'</div>'); await say('A '+k+' has '+QTIP[k]+'.'); } await say('A square is BOTH a rectangle and a rhombus!'); },
+ [['quadName'],['quadWhich'],['quadName']],[['quadName'],['quadWhich'],['sidesName'],['quadName'],['anglesCount'],['quadWhich'],['quadName'],['quadWhich']],['quadName',{intro:'Shapes in the windows of the new shul building.'}],[['quadName'],['quadWhich'],['quadName']])
+);
+
+/* Mixed Review lesson for g3 (K-3 overhaul S7). Added only by this folder's assemble.py. */
+L.push({id:'MATH.MIX.L04.01',t:'Mixed Review',e:'🎒',sub:'a little of everything in 3rd grade math',
+ warm:[['timesTurn'],['divFact']],
+ story:async()=>{ await M('<div class="row">'+O('🎒')+O('📚')+O('✏️')+'</div>'); await say('Ezra packs his knapsack with everything he learned in third grade: times tables, division, fractions, area, perimeter and time!'); },
+ movie:async()=>{ await M('<div class="row">'+O('🤔')+O('💡')+O('✅')+'</div>'); await say('I read the question and ask: is it times, divide, a fraction, area or perimeter, or time? I picture it, solve it, and ask if my answer makes sense.'); },
+ together:[['fracShade'],['areaSq'],['missFactor']],
+ practice:[['tensTimes'],['share'],['fracLine'],['fracCompare'],['areaMul'],['perim'],['elapsed'],['quadName']],
+ real:['story4',{intro:'Help plan the Chanukah party for the whole class!'}],
+ check:[['fracEquiv'],['estimate'],['unitMass']]});
+
+/* ================= RUNNER ================= */
+let done=Object.assign({},window.KL_DONE||{}); try{ Object.assign(done,JSON.parse(localStorage.getItem('g3math-done')||'{}')||{}); }catch(e){}
+async function play(spec,mode){ MODE=mode; const [kind,cfg]=spec; const c=Object.assign({},cfg||{}); if(c.intro) await say(c.intro); const r=await G[kind](c); BOT=null; const first=r[0], line=r[1]||''; if(CUR) post({tlK:1, skill:CUR, phase:mode==='check'?'check':'practice', item:String(kind)+(c.intro?' (real life)':''), first:!!first});
+  if(first){ stars++; await say(any(PRAISE)+' '+line); } else await say(line+' Good trying!'); await wait(250); return first; }
+async function lesson(Ls){ EPOCH++; CUR=Ls.id; stars=0; $('track').hidden=false; $('home').hidden=false; $('h1').innerHTML=Ls.t+' <small>'+Ls.id+' · '+Ls.sub+'</small>';
+  station(0); await say('Warm-up!'); for(const s of Ls.warm) await play(s,'help');
+  station(1); await Ls.story();
+  station(2); await say('Movie time! Watch and listen.'); await Ls.movie();
+  station(3); await say('Now let’s do it together!'); for(const s of Ls.together) await play(s,'help');
+  station(4); await say('Your turn to practice!'); for(const s of shuffle(Ls.practice.slice(0,5)).concat(shuffle(Ls.practice.slice(5)))) await play(s,'practice');
+  station(5); await play(Ls.real,'practice');
+  station(6); await say('Quick check. Do it all by yourself!'); let ok=0; for(const s of Ls.check) ok+=(await play(s,'check'))?1:0;
+  station(7); confetti(); chime(); setTimeout(chime,400*FAST); done[Ls.id]=Math.max(done[Ls.id]||0,ok); try{ localStorage.setItem('g3math-done',JSON.stringify(done)); }catch(e){}
+  view('<div class="start" id="fin"><div class="hero">⭐🎉⭐</div><h2>You did it!</h2><p>'+(ok===3?'You know '+Ls.t+'!':'Great working! We will practice this again soon.')+' You earned '+stars+' stars.</p><div class="row" style="font-size:36px">'+'⭐'.repeat(Math.min(stars,16))+'</div><div class="row"><button class="go alt" id="again" type="button">↻ Play again</button><button class="go" id="menu2" type="button">🏠 More lessons</button></div></div>');
+  window.__kit.last={id:Ls.id,ok:ok,stars:stars}; post({tlKDone:1, skill:Ls.id, ok:ok, stars:stars});
+  await say(ok===3?'You did it! Hop on the train to your next station!':'Great working! You are on the right trail.');
+  $('again').onclick=()=>lesson(Ls); $('menu2').onclick=menu; }
+function menu(){ EPOCH++; CUR=null; stopAudio(); $('track').hidden=true; $('home').hidden=true; $('h1').innerHTML='3rd Grade Math <small>Level 4 lessons in the new style</small>';
+  view('<div class="menu">'+L.map((l,i)=>'<button class="lt" type="button" data-i="'+i+'">'+(done[l.id]!=null?'<span class="done">'+(done[l.id]===3?'⭐':'✓')+'</span>':'')+'<span class="e">'+l.e+'</span>'+l.t+'<small>'+l.sub+'</small></button>').join('')+'</div>');
+  cap.textContent='Pick a lesson. Each one talks to you.'; scene.querySelectorAll('.lt').forEach(b=>b.onclick=()=>{ tone(523,.1); lesson(L[+b.dataset.i]); }); }
+$('home').onclick=()=>{ menu(); };
+window.__kit.lessons=L.map(l=>l.id); window.__kit.start=i=>lesson(L[i]);
+const h=String(window.KL_OPEN||location.hash.slice(1)), hi=L.findIndex(l=>l.id===h); if(hi>=0) lesson(L[hi]); else menu();
+})();
+</script>
