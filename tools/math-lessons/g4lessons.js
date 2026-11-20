@@ -136,6 +136,204 @@ G.ruleFind=async c=>{ const m=Math.random()<.5, st=R(2,6), k=m?R(2,3):R(4,11); c
 
 /* ================= LESSONS ================= */
 const mk4=(id,t,e,sub,warm,story,movie,tog,pr,real,chk)=>({id,t,e,sub,warm,story:async()=>{ await M(story[0]); await say(story[1]); },movie,together:tog,practice:pr,real,check:chk});
+/* --- DEEP FRACTIONS v1 (2026-11-20, Claude cloud builder, HoS chat): MATH.FRAC.L05.01 -> L05.02 -> L05.03 as ONE ladder.
+   Every "build" problem joins three things: the PICTURE (fraction bar), the NUMBER SENTENCE, and the WHY.
+   Wrong answers get feedback on THAT mistake (with a picture of what the wrong answer really means), then a fresh problem checks the same idea.
+   L05.01 twins = cut every piece into k: k times the pieces, so top AND bottom times k.
+   L05.02 same bottom = the bottom names the piece size, the top counts pieces; adding counts pieces, so the bottom stays.
+   L05.03 mixed = one whole is b/b (a twin of 1), so w wholes and a/b is b/b + b/b + ... + a/b (same-bottom adding). --- */
+try{ document.head.insertAdjacentHTML('beforeend','<style>'+
+'.howM{max-width:560px;width:100%;box-sizing:border-box;background:#EEF4FF;border:3px dashed #9DBBF5;border-radius:16px;padding:6px 12px;font:700 15px/1.4 var(--f-body);text-align:left}'+
+'.howM summary{cursor:pointer;font:800 16px var(--f-head);color:#2a63c0}.howM ol{margin:4px 0 2px;padding-left:22px}.howM .hs{border:0;background:#fff;border-radius:999px;padding:2px 10px;font:800 13px var(--f-body);cursor:pointer;margin-left:8px}'+
+'.stepM{display:inline-block;background:#8E5BFF;color:#fff;border-radius:999px;padding:2px 12px;font:800 15px var(--f-head)}'+
+'.cardM{max-width:520px;font:800 20px/1.3 var(--f-head);text-align:left}'+
+'.barsM{display:flex;flex-direction:column;gap:8px;align-items:center}.barsM .lab{font:800 18px var(--f-head);color:#44506B}'+
+'.wrongM{background:#FFF0F2;border:2px solid #FFB3BF;border-radius:14px;padding:6px 10px}'+
+'</style>'); }catch(e){}
+function howM(lines){ if(!helpOn()) return ''; return '<details class="howM"'+(MODE==='help'?' open':'')+'><summary>💡 How to do it<button class="hs" type="button" aria-label="Read How to do it">🔊</button></summary><ol>'+lines.map(l=>'<li>'+l+'</li>').join('')+'</ol></details>'; }
+function wireHowM(lines){ const b=scene.querySelector('.howM .hs'); if(b) b.onclick=async e=>{ e.preventDefault(); e.stopPropagation(); if(BUSY) return; BUSY=true; try{ for(const l of lines) await say(l); } finally { BUSY=false; } }; }
+const PN={2:'halves',3:'thirds',4:'fourths',5:'fifths',6:'sixths',8:'eighths',9:'ninths',10:'tenths',12:'twelfths',15:'fifteenths',16:'sixteenths',18:'eighteenths',20:'twentieths',24:'twenty-fourths'}, pn=b=>PN[b]||(b+'ths');
+const YEL='#FFC83D', BLU='#7FB2FF';
+function fbar2(a1,a2,b,w){ return '<div style="display:flex;width:'+(w||300)+'px;max-width:80vw;height:44px;border:3px solid #1F2A44;border-radius:6px;overflow:hidden">'+Array.from({length:b},(_,i)=>'<div style="flex:1;border-right:'+(i<b-1?'2px solid #1F2A44':'0')+';background:'+(i<a1?YEL:(i<a1+a2?BLU:'#fff'))+'"></div>').join('')+'</div>'; }
+function barsM(rows){ return '<div class="barsM">'+rows.map(r=>(r[0]?'<div class="lab">'+r[0]+'</div>':'')+r[1]).join('')+'</div>'; }
+/* one tap; each wrong option carries its own teaching (why: async). opts [{t, ok, why, card}] */
+async function pickM(pre,opts,prompt,lines){ const card=opts.some(o=>o.card); opts=shuffle(opts);
+  view(howM(lines||[])+pre+(card?'<div class="row" style="flex-direction:column;gap:10px">'+opts.map((o,k)=>'<button class="pic" type="button" data-k="'+k+'"'+(o.ok?' data-ok="1"':'')+' style="min-height:0;padding:8px 14px"><span class="cardM">'+o.t+'</span></button>').join('')+'</div>'
+   :'<div class="choices">'+opts.map((o,k)=>'<button class="ch wide" type="button" data-k="'+k+'"'+(o.ok?' data-ok="1"':'')+' style="height:auto;min-height:84px;padding:8px 14px">'+o.t+'</button>').join('')+'</div>'));
+  wireHowM(lines||[]); await say(prompt);
+  return new Promise(res=>{ let first=true; scene.querySelectorAll('[data-k]').forEach(b=>b.onclick=async()=>{ if(BUSY||b.classList.contains('no')) return; const o=opts[+b.dataset.k];
+    if(o.ok){ b.classList.add('yes'); chime(); scene.querySelectorAll('[data-k]').forEach(x=>x.onclick=null); res(first); }
+    else { first=false; b.classList.add('no'); soft(); BUSY=true; try{ if(helpOn()&&o.why){ await o.why(); await say('Try again.'); } else await say('Look again. Try once more.'); } finally { BUSY=false; } } }); }); }
+async function showWrong(html){ const d=document.createElement('div'); d.className='wrongM'; d.innerHTML=html; scene.appendChild(d); }
+async function sayM(a){ for(const l of a) await say(l); }
+const TW=[[1,2],[1,3],[2,3],[1,4],[3,4],[2,5],[3,5],[1,6],[5,6]];
+function twinPair(){ const base=any(TW), k=any([2,3,4].filter(m=>base[1]*m<=12)); return {a:base[0],b:base[1],k,A:base[0]*k,B:base[1]*k}; }
+
+/* ===== L05.01 FRACTION TWINS ===== */
+G.twinBuildM=async c=>{ const t=twinPair(); let all=true;
+  const L1=['Each shaded piece gets cut into '+t.k+' pieces.','Count the shaded pieces in the new bar.','Sister: 1/2, cut each piece in 3: 3/6.','Your turn: count, do not guess.'];
+  const pre=barsM([['Before: '+fr(t.a,t.b),fbar(t.a,t.b,300)],['After: cut every piece into '+t.k,fbar(t.A,t.B,300)]])+'<div class="row"><span class="stepM">Step 1: the picture</span></div>';
+  all=await pickM(pre,[{t:String(t.A),ok:true},(t.a+t.k!==t.A?{t:String(t.a+t.k),why:async()=>sayM(['You added '+t.k+'.','But each shaded piece became '+t.k+' pieces.','Count them in the bottom bar.'])}:{t:String(t.B),why:async()=>sayM([t.B+' is ALL the pieces.','Count only the shaded ones.'])}),{t:String(t.a),why:async()=>sayM(['That is the old count.','The pieces got smaller. Count the NEW shaded pieces.'])}],
+    'The bar was '+fr(t.a,t.b)+'. We cut every piece into '+t.k+'. How many pieces are shaded now?',L1)&&all;
+  const L2=['Top: shaded pieces. Bottom: all the pieces.','What happened to EACH number?','Sister: 1/2 became 3/6. 1 × 3, 2 × 3.','Your turn: which sentence shows the cut?'];
+  all=await pickM(barsM([['',fbar(t.a,t.b,260)],['',fbar(t.A,t.B,260)]])+'<div class="row"><span class="stepM">Step 2: the number sentence</span></div>',[
+    {t:'('+t.a+' × '+t.k+') / ('+t.b+' × '+t.k+') = '+fr(t.A,t.B),ok:true,card:1},
+    {t:'('+t.a+' + '+t.k+') / ('+t.b+' + '+t.k+') = '+fr(t.a+t.k,t.b+t.k),card:1,why:async()=>{ await showWrong(barsM([[fr(t.a+t.k,t.b+t.k),fbar(t.a+t.k,t.b+t.k,260)]])); await sayM(['Look at that bar. It shades a different amount!','Adding changes the amount. Cutting multiplies.']); }},
+    {t:t.a+' / ('+t.b+' × '+t.k+') = '+fr(t.a,t.B),card:1,why:async()=>{ await showWrong(barsM([[fr(t.a,t.B),fbar(t.a,t.B,260)]])); await sayM(['Look: that shades much less!','The pieces got smaller, but you did not count the new pieces.']); }}],
+    'Which number sentence matches the picture?',L2)&&all;
+  const L3=['Think about ONE shaded piece.','What happened to it when we cut?','Your turn: pick the reason, not a rule.'];
+  all=await pickM('<div class="row"><span class="stepM">Step 3: the why</span></div><div class="row"><span class="g4n">'+fr(t.a,t.b)+' = '+fr(t.A,t.B)+'</span></div>',[
+    {t:'Each shaded piece was cut into '+t.k+', so there are '+t.k+' times as many.',ok:true,card:1},
+    {t:'The top must always get bigger.',card:1,why:async()=>sayM(['That is not a reason.','Think: what happened to each shaded piece?'])},
+    {t:'So the numbers match.',card:1,why:async()=>sayM(['Matching is not the reason.','Look at one shaded piece. What did the cut do to it?'])}],
+    'WHY do we multiply the top by '+t.k+' too?',L3)&&all;
+  return [all,fr(t.a,t.b)+' = '+fr(t.A,t.B)+'. Same amount, cut '+t.k+' times smaller.']; };
+G.twinPickM=async c=>{ const t=twinPair(); const L=['Multiply the top AND bottom by the same number.','Sister: 1/3 = 2/6. Both times 2.','Adding the same number is NOT a twin.','Your turn: which one is a true twin?'];
+  const f=await pickM('<div class="row"><span class="g4n">'+fr(t.a,t.b)+' = ?</span></div>'+(helpOn()?'<div class="row">'+fbar(t.a,t.b,260)+'</div>':''),[
+    {t:fr(t.A,t.B),ok:true},
+    {t:fr(t.a+t.k,t.b+t.k),why:async()=>{ await showWrong(barsM([[fr(t.a,t.b),fbar(t.a,t.b,240)],[fr(t.a+t.k,t.b+t.k),fbar(t.a+t.k,t.b+t.k,240)]])); await sayM(['That adds '+t.k+' to the top and bottom.','See the bars? Different amounts. Not twins!']); }},
+    {t:fr(t.a,t.B),why:async()=>{ await showWrong(barsM([[fr(t.a,t.b),fbar(t.a,t.b,240)],[fr(t.a,t.B),fbar(t.a,t.B,240)]])); await sayM(['Only the bottom changed.','Smaller pieces, same count: less is shaded. Not twins!']); }}],
+    'Which fraction is a twin of '+fr(t.a,t.b)+'?',L);
+  return [f,fr(t.a,t.b)+' = '+fr(t.A,t.B)+': top and bottom times '+t.k+'.']; };
+G.twinMissingM=async c=>{ const t=twinPair(); const L=['Look at the bottoms first.','What number times the old bottom makes the new one?','Do the SAME to the top.','Sister: 2/5 = ?/10. 5 × 2 = 10, so 2 × 2.'];
+  const add=t.a+(t.B-t.b);
+  const f=await pickM('<div class="row"><span class="g4n">'+fr(t.a,t.b)+' = ?/'+t.B+'</span></div>',[
+    {t:String(t.A),ok:true},
+    {t:String(add===t.A?t.A+1:add),why:async()=>sayM(['You added '+(t.B-t.b)+', the jump on the bottom.','But the bottom was MULTIPLIED: '+t.b+' × '+t.k+' = '+t.B+'.','Multiply the top the same way.'])},
+    {t:String(t.a),why:async()=>sayM(['The pieces got '+t.k+' times smaller.','So you need '+t.k+' times as many pieces on top.'])}],
+    'What is the missing top number?',L);
+  return [f,fr(t.a,t.b)+' = '+fr(t.A,t.B)+'.']; };
+G.twinCompareM=async c=>{ const t=twinPair(); let c2=t.A+any([-1,1]); if(c2<=0||c2>=t.B) c2=t.A+(t.A+1<t.B?1:-1); const ok=t.A>c2?'>':'<';
+  const L=['Different bottoms? Make a twin with the SAME bottom.','Then the pieces are the same size.','Compare the tops.','Sister: 1/2 vs 3/8. 1/2 = 4/8. 4 > 3.'];
+  const bigBottomWrong=ok==='>'?'<':'>';
+  const f=await pickM('<div class="row" style="flex-direction:column;gap:6px">'+fbar(t.a,t.b,260)+fbar(c2,t.B,260)+'</div><div class="row"><span class="g4n">'+fr(t.a,t.b)+' □ '+fr(c2,t.B)+'</span></div>',[
+    {t:ok,ok:true},
+    {t:bigBottomWrong,why:async()=>{ await showWrong('<div class="row"><span class="g4n">'+fr(t.a,t.b)+' = '+fr(t.A,t.B)+'</span></div>'); await sayM(['Make a twin first: '+fr(t.a,t.b)+' is '+fr(t.A,t.B)+'.','Now the pieces are the same size.','Compare '+t.A+' pieces and '+c2+' pieces.']); }},
+    {t:'=',why:async()=>sayM(['Twins have the SAME amount.','Make '+fr(t.a,t.b)+' into '+pn(t.B)+'. Is it '+c2+'?'])}],
+    'Compare. Which sign goes in the box?',L);
+  return [f,fr(t.a,t.b)+' = '+fr(t.A,t.B)+', so '+fr(t.a,t.b)+' '+ok+' '+fr(c2,t.B)+'.']; };
+G.twinJudgeM=async c=>{ const t=twinPair(), n=nm(); const L=['Draw it in your head: two bars.','Do they shade the same amount?','Your turn: who is right, and WHY?'];
+  const f=await pickM('<div class="g4card">'+n+' says '+fr(t.a,t.b)+' = '+fr(t.a+1,t.b+1)+', because he added 1 to the top and the bottom.</div>',[
+    {t:'No. Adding changes the amount. Twins multiply top and bottom.',ok:true,card:1},
+    {t:'Yes. Both numbers got 1 more, so it is fair.',card:1,why:async()=>{ await showWrong(barsM([[fr(t.a,t.b),fbar(t.a,t.b,240)],[fr(t.a+1,t.b+1),fbar(t.a+1,t.b+1,240)]])); await say('Fair to the numbers, but look at the bars. Not the same amount!'); }},
+    {t:'No. The bottom can never change.',card:1,why:async()=>sayM(['The bottom CAN change: 1/2 = 2/4.','What matters is how it changes.'])}],
+    'Is '+n+' right?',L);
+  return [f,fr(t.a,t.b)+' is not '+fr(t.a+1,t.b+1)+'. A twin is '+fr(t.A,t.B)+'.']; };
+
+/* ===== L05.02 SAME-BOTTOM SUMS ===== */
+function addPair(sub){ const b=any([4,5,6,8,10,12]); let a1=R(1,b-2), a2=R(1,b-1-a1); if(sub){ const x=R(2,b-1), y=R(1,x-1); return {b,a1:x,a2:y,sub:true}; } return {b,a1,a2,sub:false}; }
+G.addBuildM=async c=>{ const p=addPair(false), s=p.a1+p.a2; let all=true;
+  const L1=['The bottom tells the SIZE of each piece.','Count the yellow pieces, then the blue pieces.','Your turn: how many pieces are shaded in all?'];
+  all=await pickM(barsM([[fr(p.a1,p.b)+' yellow and '+fr(p.a2,p.b)+' blue',fbar2(p.a1,p.a2,p.b,300)]])+'<div class="row"><span class="stepM">Step 1: the picture</span></div>',[
+    {t:String(s),ok:true},{t:String(s+1!==p.b?s+1:s-1),why:async()=>say('Count again, one piece at a time.')},{t:String(p.b),why:async()=>sayM([p.b+' is ALL the pieces in the bar.','Count only the shaded ones.'])}],
+    'How many pieces are shaded in all?',L1)&&all;
+  const L2=['The pieces are '+pn(p.b)+'. Did their size change?','Sister: 1 apple + 2 apples = 3 apples, not 3 big apples.','Your turn: which sentence matches the bar?'];
+  all=await pickM('<div class="row">'+fbar2(p.a1,p.a2,p.b,280)+'</div><div class="row"><span class="stepM">Step 2: the number sentence</span></div>',[
+    {t:fr(p.a1,p.b)+' + '+fr(p.a2,p.b)+' = '+fr(s,p.b),ok:true,card:1},
+    {t:fr(p.a1,p.b)+' + '+fr(p.a2,p.b)+' = '+fr(s,2*p.b),card:1,why:async()=>{ await showWrong(barsM([[fr(s,2*p.b),fbar(s,2*p.b,280)]])); await sayM(['Look at that bar: tiny pieces, much less shaded!','Adding cannot make less. The pieces are still '+pn(p.b)+'.']); }},
+    {t:fr(p.a1,p.b)+' + '+fr(p.a2,p.b)+' = '+fr(p.a1*p.a2===s?s+1:p.a1*p.a2,p.b),card:1,why:async()=>sayM(['That multiplied the tops.','Adding means counting the pieces together.'])}],
+    'Which number sentence matches the bar?',L2)&&all;
+  all=await pickM('<div class="row"><span class="stepM">Step 3: the why</span></div><div class="row"><span class="g4n">'+fr(p.a1,p.b)+' + '+fr(p.a2,p.b)+' = '+fr(s,p.b)+'</span></div>',[
+    {t:'The pieces are still '+pn(p.b)+'. We only counted more of them.',ok:true,card:1},
+    {t:'You are not allowed to add bottoms.',card:1,why:async()=>sayM(['That is a rule, not a reason.','What does the bottom TELL us?'])},
+    {t:'The bottom is always the biggest number.',card:1,why:async()=>sayM(['Not always! 5/4 has a bigger top.','Think: what does the bottom number name?'])}],
+    'WHY does the bottom stay '+p.b+'?',['The bottom names the piece size.','The top counts pieces.','Your turn: pick the reason.'])&&all;
+  return [all,fr(p.a1,p.b)+' + '+fr(p.a2,p.b)+' = '+fr(s,p.b)+'. Same size pieces, more of them.']; };
+G.addPickM=async c=>{ const p=addPair(c.sub!=null?c.sub:Math.random()<.4), top=p.sub?p.a1-p.a2:p.a1+p.a2, op=p.sub?' − ':' + ';
+  const L=['Same bottom means same size pieces.','Count the pieces: '+(p.sub?'take away':'add')+' the tops.','Keep the bottom.','Sister: 5/9 − 2/9 = 3/9.'];
+  const choices=[{t:fr(top,p.b),ok:true},
+    p.sub?{t:fr(p.a1+p.a2,p.b),why:async()=>sayM(['That ADDED the tops.','The sign says take away.'])}:{t:fr(top,p.b*2),why:async()=>{ await showWrong(barsM([[fr(top,2*p.b),fbar(Math.min(top,2*p.b),2*p.b,260)]])); await sayM(['You added the bottoms too.','The pieces are still '+pn(p.b)+', so the bottom stays '+p.b+'.']); }},
+    {t:fr(top+1,p.b),why:async()=>sayM(['Close! Count the pieces again carefully.',fr(p.a1,p.b)+op+fr(p.a2,p.b)+': '+p.a1+(p.sub?' take away ':' and ')+p.a2+'.'])}];
+  const f=await pickM('<div class="row">'+(helpOn()?(p.sub?fbar(p.a1,p.b,280):fbar2(p.a1,p.a2,p.b,280)):'')+'</div><div class="row"><span class="g4n">'+fr(p.a1,p.b)+op+fr(p.a2,p.b)+' = ?</span></div>',choices,(p.sub?'Subtract':'Add')+'. The bottoms are the same.',L);
+  return [f,fr(p.a1,p.b)+op+fr(p.a2,p.b)+' = '+fr(top,p.b)+'. Only the tops change.']; };
+G.addJudgeM=async c=>{ const p=addPair(false), s=p.a1+p.a2, n=nm(); const L=['Check the answer with a picture.','Is the answer MORE than each part?','Your turn: find the mistake, and say why.'];
+  const f=await pickM('<div class="g4card">'+n+' says '+fr(p.a1,p.b)+' + '+fr(p.a2,p.b)+' = '+fr(s,2*p.b)+'.</div>',[
+    {t:'He added the bottoms. The pieces are still '+pn(p.b)+'.',ok:true,card:1},
+    {t:'He added the tops. He should multiply them.',card:1,why:async()=>sayM(['Adding the tops is right!','Look at his bottom number.'])},
+    {t:'Nothing. He is right.',card:1,why:async()=>{ await showWrong(barsM([[fr(p.a2,p.b),fbar(p.a2,p.b,240)],[fr(s,2*p.b),fbar(s,2*p.b,240)]])); await say('His answer is about as much as just one part! Something is wrong.'); }}],
+    'What did '+n+' do wrong?',L);
+  return [f,fr(p.a1,p.b)+' + '+fr(p.a2,p.b)+' = '+fr(s,p.b)+', not '+fr(s,2*p.b)+'.']; };
+G.makeWholeM=async c=>{ const b=any([3,4,5,6,8,10]), a=R(1,b-1); const L=['One whole bar is '+b+'/'+b+'. A twin of 1!','How many pieces are still empty?','Sister: 3/5 + 2/5 = 5/5 = 1.'];
+  const f=await pickM('<div class="row">'+fbar(a,b,280)+'</div><div class="row"><span class="g4n">'+fr(a,b)+' + ?/'+b+' = 1</span></div>',[
+    {t:String(b-a),ok:true},{t:String(b),why:async()=>sayM([b+'/'+b+' is a whole by itself.','We already have '+a+' pieces. How many MORE fill the bar?'])},
+    {t:String(b-a===1?b-a+1:1),why:async()=>sayM(['Count the empty pieces in the bar.'])}],
+    'How many more '+pn(b)+' make one whole?',L);
+  return [f,fr(a,b)+' + '+fr(b-a,b)+' = '+fr(b,b)+' = 1.']; };
+G.addTwinM=async c=>{ const half=any([2,3,4,5]), b=half*2, a1=R(1,half-1), a2=half-a1; const L=['First add: count the pieces.','Then look: is it half the bar?','Sister: 3/6 is a twin of 1/2.'];
+  const f=await pickM('<div class="row">'+fbar2(a1,a2,b,280)+'</div><div class="row"><span class="g4n">'+fr(a1,b)+' + '+fr(a2,b)+' = '+fr(half,b)+' = ?</span></div>',[
+    {t:'1/2',ok:true},{t:fr(half,b*2),why:async()=>sayM(['That doubled the bottom.','Look at the bar. How much is shaded?'])},{t:fr(1,b),why:async()=>sayM(['1/'+b+' is just ONE piece.','Look at how much of the bar is shaded.'])}],
+    'Which simpler twin is the same amount?',L);
+  return [f,fr(half,b)+' = 1/2.']; };
+
+/* ===== L05.03 MIXED UP ===== */
+function mixPair(){ const b=any([3,4,5,6,8]), w=R(1,3), a=R(1,b-1); return {b,w,a,T:w*b+a}; }
+G.mixBuildM=async c=>{ const m=mixPair(); let all=true; const bars='<div class="row" style="flex-wrap:wrap">'+Array.from({length:m.w},()=>fbar(m.b,m.b,110)).join('')+fbar(m.a,m.b,110)+'</div>';
+  const L1=['Each whole bar has '+m.b+' pieces.','Count all the shaded pieces, in every bar.','Your turn: count by '+m.b+'s for the wholes.'];
+  all=await pickM(bars+'<div class="row"><span class="g4n">'+m.w+' '+fr(m.a,m.b)+'</span><span class="stepM">Step 1: the picture</span></div>',[
+    {t:String(m.T),ok:true},{t:String(m.w+m.a),why:async()=>sayM(['You counted each whole as ONE piece.','But each whole bar has '+m.b+' pieces.'])},
+    {t:String(m.w===1?m.T+1:m.w*m.a+m.b),why:async()=>sayM(['Count the pieces in the bars, one bar at a time.'])}],
+    'How many '+pn(m.b)+' are shaded in all?',L1)&&all;
+  const whole=fr(m.b,m.b), sum=Array.from({length:m.w},()=>whole).join(' + ')+' + '+fr(m.a,m.b);
+  all=await pickM(bars+'<div class="row"><span class="stepM">Step 2: the number sentence</span></div>',[
+    {t:sum+' = '+fr(m.T,m.b),ok:true,card:1},
+    (m.w!==m.b?{t:fr(m.w,m.b)+' + '+fr(m.a,m.b)+' = '+fr(m.w+m.a,m.b),card:1,why:async()=>sayM(['That turns each whole into one tiny piece.','A whole is '+whole+', not 1/'+m.b+'.'])}:{t:sum+' = '+fr(m.T,m.w*m.b),card:1,why:async()=>sayM(['The pieces are still '+pn(m.b)+'.','Same bottom: add the tops only.'])}),
+    (m.w>1?{t:whole+' + '+fr(m.a,m.b)+' = '+fr(m.b+m.a,m.b),card:1,why:async()=>sayM(['That counts only ONE whole.','How many whole bars are there?'])}:{t:whole+' + '+fr(m.a,m.b)+' = '+fr(m.T,2*m.b),card:1,why:async()=>sayM(['The pieces are still '+pn(m.b)+'.','Same bottom: add the tops only.'])})],
+    'Which number sentence matches the bars?',['Each whole is '+whole+', a twin of 1.','Add same-bottom fractions: count the pieces.','Your turn: which sentence adds every bar?'])&&all;
+  all=await pickM('<div class="row"><span class="stepM">Step 3: the why</span></div><div class="row"><span class="g4n">'+m.w+' '+fr(m.a,m.b)+' = '+fr(m.T,m.b)+'</span></div>',[
+    {t:'Each whole is '+whole+', so '+m.w+' wholes are '+(m.w*m.b)+' pieces, plus '+m.a+'.',ok:true,card:1},
+    {t:'You always multiply the two numbers you see.',card:1,why:async()=>sayM(['That is a trick, not a reason.','Why does each whole count as '+m.b+'?'])},
+    {t:'Because '+m.w+' + '+m.a+' = '+(m.w+m.a)+'.',card:1,why:async()=>sayM(['That adds wholes and pieces like they are the same size.','They are not!'])}],
+    'WHY is it '+m.T+'?',['Think about the size of a whole.','A whole bar has '+m.b+' pieces.'])&&all;
+  return [all,m.w+' '+fr(m.a,m.b)+' = '+fr(m.T,m.b)+'.']; };
+G.m2iPickM=async c=>{ const m=mixPair(); const L=['Each whole is '+m.b+'/'+m.b+'.','Wholes × '+m.b+', then add the extra pieces.','Sister: 2 1/3 → 2 × 3 + 1 = 7, so 7/3.'];
+  const f=await pickM((helpOn()?'<div class="row" style="flex-wrap:wrap">'+Array.from({length:m.w},()=>fbar(m.b,m.b,100)).join('')+fbar(m.a,m.b,100)+'</div>':'')+'<div class="row"><span class="g4n">'+m.w+' '+fr(m.a,m.b)+' = ?</span></div>',[
+    {t:fr(m.T,m.b),ok:true},{t:fr(m.w+m.a,m.b),why:async()=>sayM(['You added '+m.w+' + '+m.a+'.','But each whole is '+m.b+' pieces, not 1.'])},
+    {t:fr(m.w*m.a+m.b===m.T?m.T+1:m.w*m.a+m.b,m.b),why:async()=>sayM(['Mixed up the numbers!','Multiply the WHOLES by the bottom: '+m.w+' × '+m.b+'.'])}],
+    'Write '+m.w+' and '+fr(m.a,m.b)+' as an improper fraction.',L);
+  return [f,m.w+' × '+m.b+' + '+m.a+' = '+m.T+', so '+fr(m.T,m.b)+'.']; };
+G.i2mPickM=async c=>{ const m=mixPair(); const L=['How many groups of '+m.b+' fit in '+m.T+'?','Each group of '+m.b+' is one whole.','What is left over stays a fraction.','Sister: 7/3 → two 3s make 6, 1 left: 2 1/3.'];
+  const okT=m.w+' '+fr(m.a,m.b); const f=await pickM('<div class="row"><span class="g4n">'+fr(m.T,m.b)+' = ?</span></div>',[
+    {t:okT,ok:true},{t:(m.w+1)+' '+fr(m.a,m.b),why:async()=>sayM(['Check: '+(m.w+1)+' × '+m.b+' = '+((m.w+1)*m.b)+'.','That is MORE than '+m.T+'. Too many wholes!'])},
+    {t:m.w+' '+fr(m.b-m.a===m.a?m.a+1>=m.b?m.a-1:m.a+1:m.b-m.a,m.b),why:async()=>sayM(['The whole number is right.','Now: '+m.T+' take away '+(m.w*m.b)+'. What is left?'])}],
+    'Write '+fr(m.T,m.b)+' as a mixed number.',L);
+  return [f,m.T+' ÷ '+m.b+' = '+m.w+' R '+m.a+', so '+okT+'.']; };
+G.mixAddM=async c=>{ const b=any([3,4,5,6,8]); let a1=R(2,b-1), a2=R(b-a1+1,b-1); if(a1+a2<=b) a2=b-a1+1; const s=a1+a2, w=Math.floor(s/b), r=s%b; if(!r) return G.mixAddM(c);
+  const L=['Step 1: same bottom, add the tops.','Step 2: one whole is '+b+'/'+b+'.','Take out the whole. What is left?','Sister: 4/5 + 3/5 = 7/5 = 1 2/5.'];
+  const okT=w+' '+fr(r,b); const f=await pickM((helpOn()?'<div class="row">'+fbar(a1,b,200)+fbar(a2,b,200)+'</div>':'')+'<div class="row"><span class="g4n">'+fr(a1,b)+' + '+fr(a2,b)+' = ?</span></div>',[
+    {t:okT,ok:true},{t:'1 '+fr(s,b),why:async()=>sayM(['You have '+s+'/'+b+'. One whole is '+b+'/'+b+'.','Take the whole OUT of the '+s+' pieces.'])},
+    {t:fr(s,2*b),why:async()=>sayM(['Same bottom: the pieces are still '+pn(b)+'.','Do not add the bottoms.'])}],
+    'Add. Write the answer as a mixed number.',L);
+  return [f,fr(a1,b)+' + '+fr(a2,b)+' = '+fr(s,b)+' = '+okT+'.']; };
+G.mixJudgeM=async c=>{ const m=mixPair(), n=nm(); const L=['Draw the bars in your head.','How many pieces is ONE whole?','Your turn: find the mistake, and say why.'];
+  const f=await pickM('<div class="g4card">'+n+' says '+m.w+' '+fr(m.a,m.b)+' = '+fr(m.w+m.a,m.b)+'.</div>',[
+    {t:'He counted each whole as 1 piece. A whole is '+m.b+'/'+m.b+'.',ok:true,card:1},
+    {t:'He should have added the bottoms too.',card:1,why:async()=>sayM(['Adding bottoms is never right for same-size pieces.','Think about the wholes.'])},
+    {t:'Nothing. He is right.',card:1,why:async()=>{ await showWrong('<div class="row" style="flex-wrap:wrap">'+Array.from({length:m.w},()=>fbar(m.b,m.b,90)).join('')+fbar(m.a,m.b,90)+'</div>'); await say('Count the shaded pieces. Is it '+(m.w+m.a)+'?'); }}],
+    'What did '+n+' do wrong?',L);
+  return [f,m.w+' '+fr(m.a,m.b)+' = '+fr(m.T,m.b)+'.']; };
+
+/* ===== the three lessons (same ids; replace the old lines) ===== */
+const FRAC3={
+'MATH.FRAC.L05.01':mk4('MATH.FRAC.L05.01','Fraction Twins','👯','equivalent fractions and comparing fractions',[['fracShade'],['fracEquiv']],['<div class="row">'+fbar(1,2,200)+'</div><div class="row">'+fbar(2,4,200)+'</div>','Different names, same amount! Today you will SEE why twins are equal.'],
+ async()=>{ await M(barsM([['2/3',fbar(2,3,300)]])); await say('Here is two thirds. Watch: I cut every piece into 2.');
+  await M(barsM([['2/3',fbar(2,3,300)],['every piece cut in 2',fbar(4,6,300)]])); await say('Now there are 6 pieces in all, and 4 are shaded.'); await say('Same amount shaded. Two thirds equals four sixths.');
+  await say('Number sentence: 2 times 2 over 3 times 2 is 4 sixths.'); await say('Why times 2 on top too? Each shaded piece was cut into 2.');
+  await M(barsM([['2/3',fbar(2,3,300)],['3/4',fbar(3,4,300)]])); await say('Careful! Adding 1 to the top and bottom gives 3 fourths.'); await say('Look at the bars. 3 fourths shades more. Adding does not make a twin.');
+  await M(barsM([['2/3 = 4/6',fbar(4,6,300)],['5/6',fbar(5,6,300)]])); await say('To compare 2 thirds and 5 sixths, make a twin: 2 thirds is 4 sixths.'); await say('Now the pieces are the same size. 4 sixths is less than 5 sixths.'); },
+ [['twinBuildM'],['twinPickM'],['twinJudgeM']],[['twinMissingM'],['twinPickM'],['twinCompareM'],['twinBuildM'],['twinMissingM'],['twinCompareM'],['twinJudgeM'],['twinPickM']],['twinCompareM',{intro:'Who learned more of the masechta? Make twins to find out.'}],[['twinPickM'],['twinMissingM'],['twinCompareM']]),
+'MATH.FRAC.L05.02':mk4('MATH.FRAC.L05.02','Same-Bottom Sums','➕','add and subtract fractions with like denominators',[['twinPickM'],['fracShade']],['<div class="row">'+fbar2(2,3,8,260)+'</div>','The bottom names the piece. The top counts the pieces.'],
+ async()=>{ await M('<div class="row">'+fbar2(2,3,8,300)+'</div>'); await say('2 eighths in yellow, 3 eighths in blue. Count the pieces: 5.'); await say('The pieces are still eighths. So 2 eighths plus 3 eighths is 5 eighths.'); await say('The bottom names the piece. The top counts pieces.');
+  await M(barsM([['5/8',fbar(5,8,300)],['5/16',fbar(5,16,300)]])); await say('A common mistake: 5 sixteenths. Look! It is less than 5 eighths.'); await say('Adding can never make less. Keep the bottom.');
+  await M('<div class="row">'+fbar(7,10,300)+'</div>'); await say('Subtracting works the same way: 7 tenths take away 4 tenths is 3 tenths.');
+  await M('<div class="row">'+fbar(3,8,300)+'</div>'); await say('3 eighths plus how many eighths make one whole?'); await say('One whole is 8 eighths, a twin of 1. So 5 more eighths.'); },
+ [['addBuildM'],['addPickM',{sub:false}],['addJudgeM']],[['addPickM',{sub:true}],['makeWholeM'],['addTwinM'],['addPickM'],['addBuildM'],['addJudgeM'],['makeWholeM'],['addPickM',{sub:true}]],['addPickM',{sub:false,intro:'Pizza at the class party: how much of the pie did two boys eat?'}],[['addPickM',{sub:false}],['addPickM',{sub:true}],['makeWholeM']]),
+'MATH.FRAC.L05.03':mk4('MATH.FRAC.L05.03','Mixed Up','🔀','mixed numbers and improper fractions',[['addPickM',{sub:false}],['makeWholeM']],['<div class="row">'+fbar(4,4,120)+fbar(1,4,120)+'</div>','One whole and one quarter. A whole is 4 quarters, so it is also 5 quarters!'],
+ async()=>{ await M('<div class="row">'+fbar(4,4,110)+fbar(4,4,110)+fbar(3,4,110)+'</div>'); await say('2 and 3 quarters. Each whole bar is 4 quarters.'); await say('So it is 4 quarters plus 4 quarters plus 3 quarters. Same-bottom adding! That is 11 quarters.'); await say('Short way: 2 wholes times 4, plus 3, is 11.');
+  await say('Careful! 2 plus 3 is 5 quarters. That counts each whole as one tiny piece.');
+  await M('<div class="row"><span class="g4n">11/4</span></div>'); await say('Going back: 11 quarters. How many groups of 4 fit? 2 groups, with 3 left. So 2 and 3 quarters.');
+  await M('<div class="row">'+fbar(3,4,150)+fbar(3,4,150)+'</div>'); await say('Adding can make more than a whole: 3 quarters plus 3 quarters is 6 quarters.'); await say('Take out one whole, 4 quarters. 2 quarters are left: 1 and 2 quarters.'); },
+ [['mixBuildM'],['m2iPickM'],['i2mPickM']],[['m2iPickM'],['mixJudgeM'],['i2mPickM'],['mixAddM'],['mixBuildM'],['i2mPickM'],['m2iPickM'],['mixAddM']],['m2iPickM',{intro:'Measuring wood to build a sukkah wall.'}],[['m2iPickM'],['i2mPickM'],['mixAddM']])};
+
 L.push(
 mk4('MATH.PV.L05.01','Six-Digit Climb','🏔️','place value to one million',[['hundreds'],['expanded']],['<div class="row"><span class="g4n">472,315</span></div>','Big numbers have a pattern: ones, tens, hundreds, then the same again for thousands. Let us climb to a million!'],
  async()=>{ await M(digitsHtml(472315,5)); await say('Read big numbers in groups of three. The comma splits them.'); await M(digitsHtml(472315,4)); await say('472 thousand, 315. The 4 is in the hundred thousands place, so it is worth 400,000.'); await say('Each place is worth ten times the place to its right.'); },
@@ -161,15 +359,9 @@ mk4('MATH.OPS.L05.02','Long Division Lab','🧪','long division with remainders'
 mk4('MATH.OPS.L05.05','Leftover Logic','🚐','multi-step word problems and remainders',[['longDiv',{lo:5,hi:20}],['story4']],['<div class="row" style="font-size:60px">🚐</div>','After you divide, ask: what does the leftover mean in this story?'],
  async()=>{ await say('29 boys, 6 in each van. 29 divided by 6 is 4 remainder 5. Five boys are left, so we need one more van: 5 vans.'); await say('29 cookies, 6 on a plate. Only 4 plates are FULL. The leftover cookies do not make a full plate.'); await say('Sometimes the question asks for the leftover itself: 5 cookies are left.'); await say('Two-step problems: do one step, then use that answer for the next step.'); },
  [['leftover',{kind:'up'}],['leftover',{kind:'drop'}],['leftover',{kind:'left'}]],[['leftover'],['story5'],['leftover'],['longDiv'],['leftover'],['story5'],['leftover'],['story5']],['leftover',{kind:'up',intro:'Taking the whole grade to the Siyum in vans.'}],[['leftover'],['story5'],['leftover']]),
-mk4('MATH.FRAC.L05.01','Fraction Twins','👯','equivalent fractions and comparing fractions',[['fracShade'],['fracEquiv']],['<div class="row">'+fbar(1,2,200)+'</div><div class="row">'+fbar(2,4,200)+'</div>','Different names, same amount! Fractions can be twins.'],
- async()=>{ await M('<div class="row" style="flex-direction:column;gap:8px">'+fbar(1,3,300)+fbar(2,6,300)+'</div>'); await say('One third and two sixths cover the same amount. Multiply the top and bottom by the same number to find a twin.'); await say('To compare, use one half as a benchmark, or give both fractions the same bottom number, then compare the tops.'); },
- [['fracEq4'],['fracMissing'],['fracCmp4']],[['fracEq4'],['fracCmp4'],['fracMissing'],['fracEq4'],['fracCmp4'],['fracMissing'],['fracCompare'],['fracCmp4']],['fracCmp4',{intro:'Who learned more of the masechta: two thirds or three fifths?'}],[['fracEq4'],['fracMissing'],['fracCmp4']]),
-mk4('MATH.FRAC.L05.02','Same-Bottom Sums','➕','add and subtract fractions with like denominators',[['fracShade'],['fracEq4']],['<div class="row">'+fbar(3,8,260)+'</div>','When the pieces are the same size, adding fractions is easy!'],
- async()=>{ await M('<div class="row"><span class="g4n">2/8 + 3/8 = 5/8</span></div>'); await say('2 eighths plus 3 eighths is 5 eighths. Add the tops. The bottom stays 8, because the pieces did not change size.'); await say('A common mistake is adding the bottoms too. 2/8 plus 3/8 is NOT 5/16.'); await say('Subtracting works the same way: 7/10 minus 4/10 is 3/10.'); },
- [['fracAddLike',{sub:false}],['fracAddLike',{sub:true}],['fracAddLike']],[['fracAddLike'],['fracShade'],['fracAddLike',{sub:true}],['fracAddLike'],['fracEq4'],['fracAddLike',{sub:false}],['fracAddLike',{sub:true}],['fracAddLike']],['fracAddLike',{sub:false,intro:'Pizza at the class party: how much of the pie did two boys eat?'}],[['fracAddLike',{sub:false}],['fracAddLike',{sub:true}],['fracAddLike']]),
-mk4('MATH.FRAC.L05.03','Mixed Up','🔀','mixed numbers and improper fractions',[['fracWhole'],['divFact']],['<div class="row">'+fbar(4,4,120)+fbar(1,4,120)+'</div>','One whole and one quarter. We can say it two ways!'],
- async()=>{ await M('<div class="row">'+fbar(4,4,120)+fbar(4,4,120)+fbar(3,4,120)+'</div>'); await say('2 and 3 quarters. Each whole has 4 quarters. 2 times 4 is 8, plus 3 is 11. So it is 11 quarters.'); await say('Going back: 11 quarters. How many groups of 4 fit in 11? 2, with 3 left. So 2 and 3 quarters.'); },
- [['mixedToImp'],['impToMixed'],['mixedToImp']],[['mixedToImp'],['impToMixed'],['fracWhole'],['mixedToImp'],['impToMixed'],['fracAddLike'],['impToMixed'],['mixedToImp']],['mixedToImp',{intro:'Measuring wood to build a sukkah wall.'}],[['mixedToImp'],['impToMixed'],['impToMixed']]),
+FRAC3['MATH.FRAC.L05.01'],
+FRAC3['MATH.FRAC.L05.02'],
+FRAC3['MATH.FRAC.L05.03'],
 mk4('MATH.FRAC.L05.04','Tenths to Hundredths','💯','tenths and hundredths as fractions and decimals',[['fracShade'],['money']],['<div class="row" style="font-size:60px">💯</div>','Dimes and pennies! Tenths and hundredths work just like money.'],
  async()=>{ await say('A dollar has 10 dimes. One dime is one tenth of a dollar. It is also 10 pennies: 10 hundredths.'); await say('So 3 tenths equals 30 hundredths. As a decimal, 30 hundredths is 0.30, the same as 0.3.'); await say('To compare 0.5 and 0.45, write both with two places: 0.50 and 0.45. 50 hundredths is more.'); },
  [['tenthsHund'],['decWrite'],['decCompare']],[['tenthsHund'],['decWrite'],['decCompare'],['tenthsHund'],['decCompare'],['decWrite'],['money'],['decCompare']],['decCompare',{intro:'Which pushka has more: the one with 0.75 or the one with 0.8 of a dollar?'}],[['tenthsHund'],['decWrite'],['decCompare']]),
