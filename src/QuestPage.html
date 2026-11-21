@@ -2032,10 +2032,10 @@ const p=A.play, it=p.items[p.i], prev=p.items[p.i-1];
 if(prev&&prev.phase===it.phase) return;
 let big,h,m;
 if(p.kind==='boss'){ big=WORLD[p.c].bf; h='Boss Challenge: '+WORLD[p.c].boss; m='A special, harder round: 8 questions from this part of the road. Get 7 right to win and open the road ahead.'; }
-else if(it.phase==='teach'){ big='💡'; h='Learn it'; m='3 quick examples. Each one shows how to do it.'; }
+else if(it.phase==='teach') return;
 else if(it.phase==='practice'){ big='🛠️'; h='Practice'; m=`${p.items.filter(x=>x.phase==='practice').length} questions. Read carefully: a wrong answer locks the choices for a moment.`; }
 else { big='⭐'; h='On your own'; m='3 questions. One try each, no hints. Get all 3 right to get paid and move one stop on your map.'; }
-overlay(`<div class="oe">${big}</div><h2>${h}</h2><p>${m}</p><button class="btn go big" data-act="closeov">Let’s go</button>`);
+overlay(`<div class="oe">${big}</div><h2>${h}</h2><p>${m}</p><button class="btn go big" data-act="closeov">▶ Start ${p.kind==='boss'?'the boss':h}</button>`);
 }
 function overlay(inner){ if(A.play) A.play.shownAt=Date.now()+600; inner=inner.replace(/^<div class="oe">([\s\S]*?)<\/div>/,'<div class="oband"><div class="oe">$1</div></div>'); const wg=A.view==='play'&&A.play?(A.play.kind==='boss'?WG.BOSS:WG[A.play.c]):''; A.overlay={html:`<div class="overlay" data-act="closeov-bg"><div class="ocard" role="dialog" aria-modal="true" ${wg?`style="--wg:${wg}"`:''}>${inner}</div></div>`}; render(); setTimeout(()=>{ const b=document.querySelector('.ocard .btn'); b&&b.focus(); },50); }
 function vPlay(){
@@ -2123,7 +2123,7 @@ A.view='result'; render(); scrollTo(0,0);
 function vResult(){
 const r=A.res, L=lvlInfo(r.shown?r.after.n:r.before.n), c=r.c; let stamp, cls='', msg, btns='';
 const nx=suggestion(A.st);
-const go= nx?(nx.kind==='boss'?`<button class="btn go big" data-act="boss" data-c="${nx.c}">Next: ${WORLD[nx.c].boss}</button>`:`<button class="btn go big" data-act="start" data-id="${nx.id}" data-c="${nx.c}">Next mission</button>`):'';
+const go= nx?(nx.kind==='boss'?`<button class="btn go big" data-act="boss" data-c="${nx.c}">Next: ${WORLD[nx.c].boss}</button>`:`<button class="btn go big" data-act="start" data-id="${nx.id}" data-c="${nx.c}">▶ Next level</button>`):'';
 switch(r.outcome){
 case 'mastered': stamp='Mastered!'; msg=`${r.right} of 3 on your own. Your marker moves one stop down the ${CURR[c].label} road.`; btns=`<button class="btn big" data-act="tohub">See my map</button>`+go; break;
 case 'bosswin': stamp='Boss beaten!'; cls='boss'; msg=`${r.score} of 8. ${WORLD[c].boss} is beaten. The road ahead is open!`; btns=`<button class="btn big" data-act="tohub">See my map</button>`+go; break;
