@@ -1,133 +1,106 @@
 # Hand-off: PICS-1, real pictures across the whole app
 
 For any Claude Code session that continues this work. The starter prompt is at the bottom.
+CLAUDE.md wins where anything here differs: publish ONLY by pull request (auto-publish), never by hand, never clasp.
 
 ## What PICS-1 is
-- The request came from developer@, and everything is approved: "everything is approved if you deem it good".
-- Every lesson screen that talks about something a boy should see gets a real photo or scan, not an emoji.
-- When the lesson talks about a part of the thing, that part gets a red box, an arrow and a label. Example: a Gemara daf with Rashi boxed.
-- The target is all 2,565 flagged screens first, then every lesson, then tens of thousands of pictures over time.
+- Every lesson screen that talks about something a boy should see gets a real photo, scan, drawing or model, not an emoji.
+- When the screen's "how" line teaches a part of the thing, that part gets a red box, an arrow and a short label.
+- Approved by developer@ and the Head of School.
 
-## Where it stands (2026-11-18 ~10:00 ET)
-- 121 screens and 30 pictures are live (editor v415, Firebase function api-00068).
-- **Done:**
-  - Gemara daf (Rashi, Tosafos, Mishna, גמ׳);
-  - Mishkan (two models), Beis Hamikdash model;
-  - tefillin, shofar, arba minim, sukkah, tzitzis, matzah, mezuzah, sefer Torah;
-  - pyramids, Nile, Dead Sea, Yarden, Sinai desert;
-  - Lloyd Street and Touro synagogues, Capitol, White House, Supreme Court, Washington, Lincoln, Roman aqueduct;
-  - sun, moon (crater boxed), planets, leaf.
-- **Not done:** almost all science (animals, body, plants, earth, matter), most social studies, computing (keyboard and screens), electives, life skills. HQ spreadsheet "PICS-1 audit" (1b9skmwaC5ksqnHekDkLdEYWi-nrzh2QE220o6Z0kJpU) lists the 2,565 screens.
+## Where it stands (2026-11-21)
+- Round 1 is live: 11 pull requests (#70, #89, #92, #93, #94, #95, #96, #99, #104, #106, #108), one per subject.
+  **2,862 screens have pictures, using 480 pictures.** Each subject has a CHANGE+RELEASE note in the HQ LOG.
+- Round 2 (8 groups: Kodesh x3, electives x2, computing, social studies, science and life-skills sweep) was being
+  worked on screens that still had no picture. Check `git log --grep "PICS-1"` on main to see what landed.
+- What is left is mostly screens with nothing to see (reading Hebrew, grammar, number, choice and sort screens).
+  Many were skipped on purpose. Only add a picture where it clearly helps and every rule passes.
 
 ## How it works (all on GitHub `main`)
-- `src/RealPics.html` holds everything:
-  - `TL_PICS` is the library: id -> {file, w, h, alt, source, licence, author}.
-  - `TL_PIC_MAP` says which screen shows which picture. Key: `'LESSON.ID|exact question text'`. Value: `{id, mark:[{box:[x,y,w,h] in %, label, from:'left'|'right'|'top'|'bottom', at:0..1}], cap, keep}`.
-  - It wraps `render()`, puts the picture on the screen, keeps labels inside the picture, and adds tap-to-zoom with the credit line.
-  - The emoji stays as the fallback. Hebrew-text pics (a Rashi to read) always stay. `keep:true` keeps the emoji too.
-  - It is loaded LAST in `TL_PART_FILES` (Speed.js) and in `msQuestToolsBody_` (Photos.js).
-- `web/pics/` holds the picture files (max ~1100 px, JPEG quality ~85). `web/pics/SOURCES.md` has one line per file: source | licence | author.
-- `web/build.js` copies `web/pics` into the site. ALWAYS `git pull` main before `web/refresh.sh`, or a rebuild deletes the pictures.
-- **Tools:**
-  - `python3 tools/pics-screens.py out.json` lists every screen (lesson id, question, teaching line, current pic).
-  - `node tools/pics-check.js src/RealPics.html out.json web/pics` checks that every link names a real screen and every picture exists. It must print "0 problems".
-  - `node tools/pics-sheet.js src/RealPics.html web/pics sheet.png "ID|question" ...` draws the screens through the real add-on. Look at it before publishing.
-  - `python3 web/pics_deploy.py tashbar-learning-live <tokenfile> "note"` clones the LIVE site and adds the pictures. Nothing else on the site changes.
-  - `tools/pics-publish-editor.sh "note"` publishes RealPics.html as the ONLY editor change. It pulls, proves nothing changed meanwhile, pushes, pulls back to compare, then creates the version and updates both deployments.
-  - `NODE_USE_ENV_PROXY=1 SYNC_EDITOR=1 tools/pics-publish-server.sh <folder printed by the editor script>` redeploys the running Firebase function with RealPics.html plus the published editor. It refuses if the running engine is old (no `mergePlan`).
+- `src/RealPics.html` holds everything. `TL_PICS` is the library: id -> {file, w, h, alt, source, licence, author}.
+  `TL_PIC_MAP` maps `'LESSON.ID|exact question'` -> `{id, mark:[{box:[x,y,w,h] %, label, from, at}], cap, keep}`.
+  Each batch is its own `TL_PIC_ADD({...lib}, {...map})` block at the end of the file.
+- `web/pics/` holds the files (WebP, <=1100 px wide, <=200 KB; aim for 150 KB). `web/pics/SOURCES.md` has one line per file.
+- `node tests/run.js` runs `tools/pics-check.js`, so a bad link fails the `test` check and nothing goes live. The checker fails on:
+  - a link to a screen that does not exist;
+  - a picture missing source, licence, author or alt;
+  - a file over 200 KB or wider than 1200 px;
+  - a mark on a screen with an empty "how" line;
+  - a label word that the "how" line does not teach.
+
+## Tools
+- `python3 tools/pics-screens.py out.json`: every screen (id, question, how, emoji). Build the work list from this, not the audit sheet.
+- `python3 -I tools/pics-find.py <dir> "words" --src pixabay,loc,nasa,openverse[,commons] --n 16 [--illus] [--allow word]`
+  searches the free sources, drops anything whose tags break the picture rules, and writes `<dir>/sheet.jpg` (numbered tiles) and `cands.json`.
+  LOOK at the sheet: tags miss things (a mosque arch came through untagged once).
+- `python3 -I tools/pics-save.py save <lane> <dir> <tile#> <pic-id> --alt "..." [--crop x,y,w,h]` crops, resizes and encodes WebP,
+  and records lib.json and sources.md in a lane folder. `pics-save.py grid <file> <out.jpg>` draws a 10% grid for box coordinates.
+- A lane folder = `lib.json`, `map.json`, `pics/`, `sources.md`. Commands:
+  - `node tools/pics-lane.js check <lane> screens.json` runs the real checker on RealPics + the lane (must say 0 problems);
+  - `... sheet <lane> out.png "ID|q" ...` draws screens through the real add-on;
+  - `... merge <lane> "note"` adds the block to RealPics.html, copies the files and adds the source lines.
+- `node tools/pics-sheet.js src/RealPics.html web/pics out.png "ID|q" ...` draws screens from the repo itself.
 
 ## Rules that do not bend
-1. **Picture rules** (Pictures.html PIC_BAN, Head of School):
-   - boys and men only: NO women or girls, even small in the background;
-   - frum settings, kosher food;
-   - no churches, crosses or other religions' symbols;
-   - no alcohol, Halloween or fantasy creatures.
-   - Body pictures are drawings or models only, never photos of people.
-   - When in doubt, leave it out.
-2. **Licences:** public domain, CC0, CC BY, CC BY-SA, Pixabay Content License, Pexels License, Library of Congress "no known restrictions". Record source, licence and author for every file. NO modern publisher pages (ArtScroll, Koren, textbooks) and no Google Images.
-3. **Never give the answer away.**
-   - A question screen gets the picture with NO label naming the answer, and a neutral caption.
-   - Teaching screens (with a "how" line) may label things.
-   - Skip a picture that would itself answer the question (for example "How do you play a shofar?").
-4. **Kodesh pictures** go on the rebbe review list in the LOG note.
-5. **Publishing:**
-   - Use the two scripts. Never push other files to the editor.
-   - Never deploy the function from an old checkout.
-   - Write a CHANGE+RELEASE note in the HQ LOG (Drive folder 1NOL4XyWQgf5wm60gGNbmVG6ujY6RBIGS) after each batch.
-6. **Never put student data anywhere.** Never print keys or tokens.
+1. **Picture rules:**
+   - boys and men only: no women or girls anywhere, even small in the background;
+   - frum, modest settings; kosher food;
+   - no churches, crosses or other religions' symbols (also minarets, menhirs);
+   - no alcohol, Halloween or fantasy creatures;
+   - body topics: drawings or models only;
+   - Kosel: stones only, no crowds;
+   - no Divine Name readable in any picture;
+   - when in doubt, leave it out.
+2. **Licences:** public domain, CC0, CC BY, CC BY-SA, Pixabay, Pexels, LOC "no known restrictions". Source, licence and author are recorded for every file.
+3. **Never give the answer away:**
+   - labels only with words from the screen's "how" line;
+   - pure question screens get the plain picture;
+   - the alt (read aloud) and cap must not name the answer;
+   - skip the screen when the picture itself is the answer.
+4. **Kodesh pictures** go under "REBBE: review after live" in the pull request and in the LOG note.
+5. **Picture ids:** never re-save an id that already exists. Round 1 hit this twice: a different photo under a live id, and a re-crop that would have moved a live box. Pick a new id, or reuse the live file.
 
-## Work environment (cloud session)
-- **Repository:** `tashbar-baltimore/tashbar-app`, branch `main`.
-- **Network:** these must be Allowed domains:
-  - `commons.wikimedia.org`, `upload.wikimedia.org`, `thumb.wikimedia.org`
-  - `www.loc.gov`, `tile.loc.gov`
-  - `pixabay.com`, `cdn.pixabay.com`, `api.pexels.com`, `images.pexels.com`
-  - `api.openverse.org`, `www.sefaria.org`
-- **API keys** (environment Network secrets or variables, never in chat): `PIXABAY_KEY`, `PEXELS_KEY`.
-- **Google sign-in (clasp)** as the school owner (Head of School's account), for the editor and Firebase:
-  1. Run `clasp login --redirect-port 8976` in the background (clasp 3.x: `npm i -g @google/clasp@3.4.1`).
-  2. Give the person the Google link.
-  3. They paste back the `http://localhost:8976/?...` address.
-  4. Send it once with `curl --noproxy '*'`.
-  5. Never ask for a password or code.
-  - `python3 web/token.py /tmp/.fbtok` then gives a short-lived token for gcloud and Hosting.
-- Use `NODE_USE_ENV_PROXY=1` for clasp and node network calls.
-- **Picture sources, best first:**
-  1. **Pixabay API** (`https://pixabay.com/api/?key=$PIXABAY_KEY&q=...&image_type=photo&safesearch=true&per_page=50`): fast, about 100 calls a minute.
-  2. **Pexels API** (header `Authorization: $PEXELS_KEY`).
-  3. **Library of Congress** (`https://www.loc.gov/photos/?q=...&fo=json`; images on tile.loc.gov): best for history, Eretz Yisrael and Judaica (the Matson collection).
-  4. **Wikimedia Commons:** heavily rate-limited from cloud sessions. Use only its standard thumbnail sizes (330px, 960px) and pause about 12 s between calls.
+## What we learned (round 1)
+- Fan out by subject: one WORKER per subject (search -> look -> save -> link, saving after every picture), then a separate CHECKER
+  that opens every picture and link and removes anything doubtful. Each checker removed 10 to 60 links (number screens, choice screens, answer give-aways).
+- Look at the sample sheets yourself before publishing. Every round still found something:
+  - a label on the wrong part (nucleus on a membrane question);
+  - a picture that is too tall for a phone (crop it; e.g. `thermometer-scale.webp`);
+  - colours or a picture that hint at the answer.
+- Publish one subject at a time: branch from the latest main, merge the lane, run `node tests/run.js` (about 8 minutes), push, open the pull request.
+  Wait until it merges AND a new picture URL loads at https://tashbar-learning-live.web.app/pics/<file> before the next one.
+  Other builders merge too, so look for your merge in the last ~25 commits, not just the newest.
+- If the publish job (`firebase-deploy`) fails with a Google Cloud "internal error, try again later", re-run the failed job once. That happened once (Kodesh, #108).
+- Limits:
+  - the Library of Congress JSON often comes without licence details, so pics-find drops it;
+  - Wikimedia Commons answers HTTP 429 from cloud sessions;
+  - Pixabay is the workhorse;
+  - Pexels needs PEXELS_KEY (not set).
+- Usage limits stop workflows mid-run. Resume with the same run id: finished agents come back from cache, and the lane folders keep the work.
 
-## The batch loop
-1. Pick a subject (for example frog life cycle) and list its screens with `pics-screens.py`. Prefer teaching screens.
-2. Search the sources. Throw away anything whose tags or title mention woman, girl, lady, church, cross, christmas, easter, temple of another religion, beer, wine, bikini, and so on.
-3. Make a contact sheet of the candidates and LOOK at every one. Pick the best that passes the rules.
-4. Crop and resize into `web/pics/`, and add a line to SOURCES.md.
-5. Add the TL_PICS entries and the TL_PIC_MAP links: exact question text, boxes only where the lesson talks about a part.
-6. Run `pics-check.js` (0 problems) and `pics-sheet.js`, and look at the sheet.
-7. Publish:
-   1. commit and push to main;
-   2. `pics_deploy.py`;
-   3. `pics-publish-editor.sh`;
-   4. `pics-publish-server.sh`;
-   5. write the LOG note.
+## Work environment
+- Allowed domains: pixabay.com, cdn.pixabay.com, api.pexels.com, images.pexels.com, www.loc.gov, tile.loc.gov,
+  images-api.nasa.gov, images-assets.nasa.gov, api.openverse.org, commons.wikimedia.org, upload.wikimedia.org.
+- Keys as environment variables or network secrets (never in chat): PIXABAY_KEY (set), PEXELS_KEY (optional).
+- Lane folders live in the session's scratchpad: they are lost when the session ends. Publish before you stop.
 
 ## Starter prompt for the next builder
-See the bottom of this file. The same text was given to developer@ in chat.
-
 ```
-use a workflow
+You are continuing PICS-1 for the Tashbar Baltimore learning app: real, high-quality pictures on every lesson screen that
+talks about something a boy should see, with a red box, arrow and short label on the part the lesson talks about.
+developer@ and the Head of School have approved this work. Use a workflow.
 
-You are continuing PICS-1 for the Tashbar Baltimore learning app: real pictures on every lesson screen,
-with a red box, arrow and label on the part the lesson talks about. developer@ has approved this work.
-
-Setup:
-1. The repository tashbar-baltimore/tashbar-app is attached. Work on branch main. Read docs/HANDOFF-PICS.md
-   first and follow every rule in it exactly (picture rules: no women or girls, no other religions'
-   symbols, kosher; licences recorded; never give a question's answer away).
-2. Check the environment: the Allowed domains and the PIXABAY_KEY / PEXELS_KEY variables listed in the
-   hand-off. If any is missing, tell me in one line what to add, then continue with what works.
-3. Get a clasp sign-in from me the way the hand-off describes (I paste back the localhost address).
-   Never ask for a password.
-4. Run: python3 tools/pics-screens.py /tmp/screens.json, then
-   node tools/pics-check.js src/RealPics.html /tmp/screens.json web/pics. It must say 0 problems.
-
-Work:
-5. Run a workflow that fans out by subject. Each worker takes one subject from the HQ "PICS-1 audit" list
-   (science animals, body (drawings or models only), plants, earth, matter, sky; social studies;
-   computing (keyboard and screens); electives; life skills; the remaining Kodesh). For each subject it:
-   lists the screens; searches Pixabay, then Pexels, then the Library of Congress; drops anything whose tags
-   break the picture rules; makes a contact sheet and looks at every candidate; picks the best; crops into
-   web/pics with a SOURCES.md line; and writes TL_PICS and TL_PIC_MAP entries (exact question text, boxes
-   only on teaching screens). It returns its entries and files. It does NOT publish.
-6. A separate checker reviews every chosen picture against the rules and every link against "never give
-   the answer away". It removes anything doubtful.
-7. You merge the results into src/RealPics.html, run pics-check.js (0 problems) and pics-sheet.js, and look
-   at the sheets yourself.
-8. Publish in batches of about 100 to 300 screens, with the scripts in the hand-off: commit and push main,
-   web/pics_deploy.py, tools/pics-publish-editor.sh, tools/pics-publish-server.sh. Then write a
-   CHANGE+RELEASE note in the HQ LOG.
-
-Short, plain updates to me after each batch: how many screens, how many pictures, one sample sheet.
-Stop only when I must sign in to Google or a real decision is needed.
+1. Read CLAUDE.md, CONTRIBUTING.md and docs/HANDOFF-PICS.md. CLAUDE.md wins: publish ONLY by pull request (auto-publish),
+   never push to main, never clasp, never deploy by hand.
+2. Check PIXABAY_KEY and the allowed domains in the hand-off. Tell me in one line if anything is missing, then continue.
+3. python3 tools/pics-screens.py /tmp/screens.json; node tools/pics-check.js src/RealPics.html /tmp/screens.json web/pics (0 problems).
+   List the screens that still have no picture, by subject. Group them by THING; things that cover the most screens go first.
+4. Run a workflow: one worker per subject group using tools/pics-find.py, pics-save.py and pics-lane.js (lane folders), then a
+   separate checker per group that removes anything doubtful. Follow every rule in the hand-off; reuse existing pictures first.
+5. For each group: merge the lane, pics-check (0 problems), node tests/run.js (all pass), draw and LOOK at sample sheets
+   (labelled and pure question screens), open one pull request (template filled, Kodesh under "REBBE: review after live"),
+   wait until it merges and a new picture URL loads at https://tashbar-learning-live.web.app/pics/, then the next group.
+6. After each group is live: a short CHANGE+RELEASE note in the HQ LOG (Drive folder 1NOL4XyWQgf5wm60gGNbmVG6ujY6RBIGS).
+Short plain updates after each group: screens, pictures, one sample sheet. Keep going without waiting for me; stop only for a
+real decision or a missing key.
 ```
