@@ -741,7 +741,7 @@ document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closes
  if(a==='pause'){ TB.paused=!TB.paused; b.textContent=TB.paused?'▶ Play':'Pause'; if(TB.paused) hush(); else if(TB.resume){ const r=TB.resume; TB.resume=null; r(); } } },true);
 document.addEventListener('keydown',e=>{ if(!TB.el) return; if(e.key==='Escape'){ close(); } else if(e.key==='Enter'){ const inp=TB.el.querySelector('.numrow input'); if(inp&&document.activeElement===inp){ e.preventDefault(); TB.check&&TB.check(inp.value); } } },true);
 /* when to show it, and the buttons on the question */
-function due(p){ if(!p||p.kind!=='skill'||p.replay||!p.items||!p.items.length) return false; return true; }
+function due(p){ return false; }   /* HoS 2026-11-21 one path: the show no longer opens by itself at the start of a skill; the Learn it card is the start. "Show me step by step" still opens it. */
 function fresh(p){ const st=A.st; const t=st&&st.tch&&st.tch[p.id]; return !t||Date.now()-t>3*864e5; }
 const _render=render;
 render=function(){ const r=_render.apply(this,arguments);
