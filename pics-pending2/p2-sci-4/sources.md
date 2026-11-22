@@ -1,0 +1,5 @@
+- mercury-surface-edge.webp | https://images.nasa.gov/details/GSFC_20171208_Archive_e001918 | Public domain (NASA) | GSFC
+- neptune-blue-planet-voyager.webp | https://images.nasa.gov/details/PIA00046 | Public domain (NASA) | JPL
+- uranus-pale-blue-planet.webp | https://images.nasa.gov/details/PIA18182 | Public domain (NASA) | JPL
+- space-probe-with-solar-panels.webp | https://pixabay.com/photos/mission-to-mars-mars-probe-2645338/ | Pixabay Content License | PIRO4D
+- sunbeams-through-parting-clouds.webp | https://pixabay.com/photos/sky-cloud-nature-cloudy-blue-sky-2369230/ | Pixabay Content License | krzys16
