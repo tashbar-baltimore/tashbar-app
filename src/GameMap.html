@@ -820,6 +820,10 @@ function toast(t){ const g=root(); let el=g.querySelector('.gm-toast'); if(!el){
 function worldFor(id){ const pre=String(id).split('.')[0], map=/^(LK|HEB)$/.test(pre)?'LK':/^(READ|WRIT|LANG)$/.test(pre)?'READ':/^(SS|SOC|FACT)$/.test(pre)?'SS':/^(COMP|VOC)$/.test(pre)?'COMP':pre;
  return typeof WORLD!=='undefined'?(WORLD[pre]?pre:WORLD[map]?map:''):''; }
 function play(id){ if(RD.on){ rdStop(); try{ speechSynthesis.cancel(); }catch(e){} } const c=worldFor(id);
+ /* HoS 2026-11-22: "if I assign a child to kindergarten, why is it not going straight to these ABC games and matching games and the train games?"
+    K-1 boys: when a K game lesson exists for this skill (KLessons / KReading / KKriyah, the train lessons), PLAY opens it straight away.
+    Those lessons only switch on for K and 1st grade (their own on()), and they save his work the same way as before. */
+ try{ const K=[window.KL,window.KR,window.KK].find(x=>x&&typeof x.has==='function'&&x.has(id)&&(typeof x.on!=='function'||x.on())); if(K){ GM.sig=''; K.open(id); return; } }catch(e){}
  if(c&&typeof startMission==='function'&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))){ GM.sig=''; startMission(c,id,'skill'); return; }
  GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); }
 /* "Read it to me": tap to read, tap the square to stop. The ring follows the real audio (TL_VOICE.now from VoicePro); with the device
@@ -939,6 +943,7 @@ body.gm-on .ocard:not(:has(.gmw)) :is(h1,h2,h3,p,li,label,.sm-line){color:#fff!i
 body.gm-on .ocard:not(:has(.gmw)) .sm-h{color:#FFE259!important}
 body.gm-on .ocard:not(:has(.gmw)) .oband{background:transparent!important}
 body.gm-nav #mutoast{display:none!important}
+body:has(#klov) #tlmenu,body:has(#klov) #ohsky,body:has(#klov) #tlclock{display:none!important}
 body #gm .gm-w:not(.on),body #gm .gm-rd:not(.won):not(.live):not(.rebbe):not(.final),body #gm .gm-games div,body #gm .gm-br,body #gm .gm-stat div,body #gm .gm-learned div,body #gm .gm-bdg div,body #gm .gm-mgrid button,body #gm .gm-earn div,body #gm .gm-chip2,body #gm .gm-subj,body #gm .gm-acts button,body #gm .gm-quest,body #gm .gm-chip:not(.gm-rank):not(.gm-money),body #gm .gm-xp{background:rgba(38,22,120,.42);border-color:rgba(255,255,255,.28)}
 body.gm-lesson #app{padding-bottom:110px}
 body #gm .gm-l{background:#fff;color:#1E1B4B;box-shadow:0 4px 12px rgba(30,20,90,.18)}
