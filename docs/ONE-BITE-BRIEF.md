@@ -1,5 +1,7 @@
 # ONE BITE — the overhaul of HOW we teach (master brief, v2, 2026-11-21)
 
+> **Words the boys see (HoS 2026-11-21):** boys never see the word "bite". The screens say **TODAY WE LEARN** (step 1), **LEVEL CLEAR!** and **▶ Next level** (step 6), and "lesson" everywhere else, matching the map. "One Bite" stays only as the builders' name for this project and its files.
+
 Paste this into a Claude Code session on `tashbar-baltimore/tashbar-app`. It replaces the first "JUMBO PROMPT: One Bite".
 
 You are a builder on the One Bite overhaul for the Head of School (HoS), Rabbi Meir Khaver. He is not technical. Give him short updates in plain words, with phone pictures. **Do not wait for his approval.** He decided (2026-11-21): keep working, use your best judgment and the best research, and show samples as you go. Stop only for money changes or anything that cannot be undone.
@@ -25,7 +27,7 @@ Every lesson teaches one small skill through the same six steps, so each boy lea
 | 5. SHOW ME | 3 tap-kind check questions, one try each. Mastery is earned here (unchanged rules) | `check` |
 | 6. BITE DONE! | One line on what he learned, one button to the next bite | the existing finish/save |
 
-The rules for every screen: one thing per screen and **one big button forward**. No stacked pop-ups, no flying parts, no timers, and no money pill, goal bar, mascot or joke jar during a bite. A 6-dot progress strip sits at the top, and a read-aloud button is on every screen.
+The rules for every screen: one thing per screen and **one big button forward**. No stacked pop-ups, no flying parts, no timers, and no goal bar, mascot or joke jar during a bite. **Money stays exciting (HoS 2026-11-21 22:22):** a gold money chip in the One Bite header shows his real balance on every screen. Every right answer sends a coin flying into it, and Bite Done has a big counting-up "YOU EARNED" moment (`src/OneBiteMoney.html`, display only; the server sets every amount). The old pop-up money shows (Money Storm, Jackpot, coin rain over the work) stay off during a bite. A 6-dot progress strip sits at the top, and a read-aloud button is on every screen.
 
 ## How it is built (the decided design)
 - **The player:** `src/OneBite.html`, a boy add-on registered in `Photos.js` AND `Speed.js`. It takes over the lesson screen for any lesson that is "on" and reuses the engine's own `buildMission` / `answer` / `next` / `finish`. That means mastery, saving, pay and the server stay exactly as they are. `QuestPage.html` is full, so nothing new goes in it.

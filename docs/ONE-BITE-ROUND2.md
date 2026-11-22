@@ -1,5 +1,7 @@
 # ONE BITE, Round 2: short, hands-on, made for each age (HoS direction, 2026-11-21 evening)
 
+> **Words the boys see (HoS 2026-11-21):** boys never see the word "bite". The screens say **TODAY WE LEARN** (step 1), **LEVEL CLEAR!** and **▶ Next level** (step 6), and "lesson" everywhere else, matching the map. "One Bite" stays only as the builders' name for this project and its files.
+
 **This is what we are doing now.** Start with **Kindergarten Math** and **Kindergarten Reading (the ABCs)**, then go up level by level.
 
 ## What the HoS said
@@ -26,7 +28,8 @@
    - **K–1:** voice-first (every instruction is spoken, no reading needed), big pictures, 3 choices at most, big 76 px targets, a song or a movement in every bite, and a celebration.
    - **Gr 2–3:** read-along. **Gr 4–5:** real-world problems, plus "tap the reason". **Gr 6–8:** strategy choice, challenge, teach it back, fewer cartoons.
 4. **Taught, then asked.** Every check question uses only what Watch Me and the activities showed.
-5. **Unchanged:** mastery, pay and saving (the engine's `answer`/`finish`; the server sets all money); the HoS teaching standard; the How-to-do-it help; family-life rules; no real student data (the repository is PUBLIC).
+5. **Money stays exciting (HoS 2026-11-21 22:22):** a gold money chip in the One Bite header shows his real balance on every screen. Every right answer sends a coin flying into it, and Bite Done has a big counting-up "YOU EARNED" moment (`src/OneBiteMoney.html`, display only; the server sets every amount). The old pop-up money shows (Money Storm, Jackpot, coin rain over the work) stay off during a bite.
+6. **Unchanged:** mastery, pay and saving (the engine's `answer`/`finish`; the server sets all money); the HoS teaching standard; the How-to-do-it help; family-life rules; no real student data (the repository is PUBLIC).
 
 ## The work: three lanes, which can run at the same time in three accounts
 

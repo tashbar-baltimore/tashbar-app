@@ -1,0 +1,66 @@
+<script>
+/* OneBiteMoney.html: MONEY IN ONE BITE (HoS 2026-11-21 22:22: "I would want the money on the page to keep the excitement going").
+   Display only. It never sets, guesses or changes an amount: the server sets every amount, as always.
+   1. A money chip in the One Bite header (under the 6 dots) shows the boy's real balance, A.st.balance, on every screen of a bite.
+   2. Every right answer (engine questions and Activity Kit, both play SND.right): a gold coin pops from where he tapped and flies into the chip, and the chip bounces.
+      It is quick (under a second), never covers the work, and lets taps through (pointer-events none). Reduced motion: only the chip bounce.
+   3. When the server's saved balance comes back higher, the chip counts up to the new amount.
+   4. Bite Done: the "earned" line becomes a big counting-up money moment with a short coin shower around it (the end of the bite, so nothing is covered).
+   Loaded after OneBite.html (registered in Photos.js AND Speed.js). If One Bite is not on the screen it does nothing. No double slash in this file. */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined'||!window.OB) return;
+const M=window.OBM=window.OBM||{}; if(M.on) return; M.on=true;
+const RM=(()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } })();
+const money=v=>'$'+(Math.round((Number(v)||0)*100)/100).toFixed(2);
+let shown=null, shownId=null, countT=0;
+function bal(){ return A.st?Number(A.st.balance)||0:0; }
+function onBite(){ return document.body.classList.contains('ob-on'); }
+function css(){ if(document.getElementById('obm-css')) return; const s=document.createElement('style'); s.id='obm-css'; s.textContent=`
+.ob-mid .obm-row{ display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; }
+.obm-chip{ display:inline-flex; align-items:center; gap:5px; background:#FFF6DA; border:2px solid #E8B730; color:#7A5200; border-radius:999px; padding:2px 10px 2px 6px; font-weight:900; font-size:14px; line-height:1.4; font-variant-numeric:tabular-nums; }
+.obm-chip .c{ width:18px; height:18px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#FEF9C3,#FACC15 45%,#CA8A04 80%); border:1.5px solid #A16207; display:inline-grid; place-items:center; font-size:10px; color:#7A4A00; }
+.obm-chip.bump{ animation:obmBump .5s cubic-bezier(.3,1.6,.5,1); }
+@keyframes obmBump{ 0%{transform:scale(1)} 35%{transform:scale(1.28)} 70%{transform:scale(.94)} 100%{transform:scale(1)} }
+.obm-coin{ position:fixed; z-index:99980; left:0; top:0; width:28px; height:28px; border-radius:50%; pointer-events:none; background:radial-gradient(circle at 35% 30%,#FEF9C3,#FACC15 45%,#CA8A04 80%); border:2px solid #A16207; box-shadow:0 3px 8px rgba(0,0,0,.25); display:grid; place-items:center; font:900 14px system-ui,sans-serif; color:#7A4A00; }
+.ob-earn.obm-big{ font-size:30px !important; color:#17834F; background:#FFF6DA; border:3px solid #E8B730; border-radius:20px; padding:10px 22px; position:relative; font-variant-numeric:tabular-nums; }
+.ob-earn.obm-big small{ display:block; font-size:13px; color:#7A5200; font-weight:800; letter-spacing:.06em; }
+`; document.head.appendChild(s); }
+function chip(){ return document.querySelector('#app .obm-chip'); }
+function chipHTML(v){ return '<span class="obm-chip" aria-label="My money '+money(v)+'"><span class="c" aria-hidden="true">$</span><b>'+money(v)+'</b></span>'; }
+function dress(){ if(!onBite()||!A.st) return; css();
+  if(shownId!==A.st.id){ shownId=A.st.id; shown=bal(); }
+  document.querySelectorAll('#app .ob-head').forEach(h=>{ if(h.querySelector('.ob-mid')) return; const dots=h.querySelector(':scope > .ob-dots'); if(!dots) return;
+    const mid=document.createElement('div'); mid.className='ob-mid'; h.insertBefore(mid,dots); mid.appendChild(dots); const nm=h.querySelector(':scope > .ob-stepname'); if(nm) mid.appendChild(nm); });
+  document.querySelectorAll('#app .ob-mid').forEach(mid=>{ if(mid.querySelector('.obm-chip')) return; const name=mid.querySelector('.ob-stepname');
+    const row=document.createElement('div'); row.className='obm-row'; if(name) row.appendChild(name); row.insertAdjacentHTML('beforeend',chipHTML(shown)); mid.appendChild(row); });
+  const earn=document.querySelector('#app .ob-earn'); if(earn&&!earn.classList.contains('obm-big')) bigEarn(earn); }
+function setChip(v){ const c=chip(); if(c){ const b=c.querySelector('b'); if(b) b.textContent=money(v); c.setAttribute('aria-label','My money '+money(v)); } }
+function bump(){ const c=chip(); if(!c) return; c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); }
+function countTo(v){ clearInterval(countT); const from=shown==null?v:shown; if(RM||Math.abs(v-from)<.005){ shown=v; setChip(v); return; }
+  const t0=Date.now(), dur=900; countT=setInterval(()=>{ const k=Math.min(1,(Date.now()-t0)/dur), e=1-Math.pow(1-k,3); shown=from+(v-from)*e; setChip(shown); if(k>=1){ clearInterval(countT); shown=v; setChip(v); bump(); } },40); }
+function sound(){ try{ if(typeof SND!=='undefined'&&SND&&SND.on!==false&&typeof SND.coin==='function') SND.coin(); }catch(e){} }
+function flyCoin(fromEl){ const c=chip(); if(!c) return; bump(); if(RM) return;
+  const to=c.getBoundingClientRect(); const fr=(fromEl&&fromEl.getBoundingClientRect)?fromEl.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
+  const x0=fr.left+fr.width/2-14, y0=fr.top+fr.height/2-14, x1=to.left+10, y1=to.top+to.height/2-14;
+  const d=document.createElement('div'); d.className='obm-coin'; d.textContent='$'; d.setAttribute('aria-hidden','true'); document.body.appendChild(d);
+  const mx=(x0+x1)/2, my=Math.min(y0,y1)-90;
+  const anim=d.animate([{transform:'translate('+x0+'px,'+y0+'px) scale(.6)',opacity:0},{transform:'translate('+x0+'px,'+(y0-20)+'px) scale(1.15)',opacity:1,offset:.15},{transform:'translate('+mx+'px,'+my+'px) scale(1)',opacity:1,offset:.55},{transform:'translate('+x1+'px,'+y1+'px) scale(.5)',opacity:.9}],{duration:750,easing:'cubic-bezier(.4,0,.2,1)'});
+  anim.onfinish=()=>{ d.remove(); bump(); }; setTimeout(()=>{ try{ d.remove(); }catch(e){} },1200); }
+function bigEarn(el){ const m=String(el.textContent).match(/([0-9]+(?:\.[0-9]+)?)/); const v=m?+m[1]:0; el.classList.add('obm-big'); el.innerHTML='<small>YOU EARNED</small>+ <b>'+money(RM?v:0)+'</b>';
+  sound(); if(!RM){ const b=el.querySelector('b'), t0=Date.now(), dur=1100; const t=setInterval(()=>{ const k=Math.min(1,(Date.now()-t0)/dur), e=1-Math.pow(1-k,3); if(!document.body.contains(b)){ clearInterval(t); return; } b.textContent=money(v*e); if(k>=1) clearInterval(t); },40);
+    for(let i=0;i<10;i++) setTimeout(()=>shower(el),i*90); } }
+function shower(el){ if(!document.body.contains(el)) return; const r=el.getBoundingClientRect(); const d=document.createElement('div'); d.className='obm-coin'; d.textContent='$'; d.setAttribute('aria-hidden','true'); document.body.appendChild(d);
+  const x=r.left+Math.random()*r.width-14, y=r.top-10; const dx=(Math.random()-.5)*160, dy=-60-Math.random()*90;
+  const a=d.animate([{transform:'translate('+x+'px,'+y+'px) scale(.4)',opacity:0},{transform:'translate('+(x+dx/2)+'px,'+(y+dy)+'px) scale(1)',opacity:1,offset:.45},{transform:'translate('+(x+dx)+'px,'+(y+40)+'px) scale(.7)',opacity:0}],{duration:900,easing:'ease-out'});
+  a.onfinish=()=>d.remove(); setTimeout(()=>{ try{ d.remove(); }catch(e){} },1300); }
+/* draw: after One Bite has drawn its screen */
+const _r=render; render=function(){ const out=_r.apply(this,arguments); try{ dress(); }catch(e){ console.warn('OneBiteMoney',e); } return out; }; window.render=render;
+/* a right answer during a bite (the engine's questions AND the Activity Kit both play the right-answer sound): a coin flies from where he tapped */
+let lastTap=null; document.addEventListener('pointerdown',e=>{ lastTap=e.target; },true);
+function hookSnd(){ if(typeof SND==='undefined'||!SND||SND.__obm||typeof SND.right!=='function') return; const _rt=SND.right; SND.right=function(){ const out=_rt.apply(this,arguments);
+  try{ if(onBite()&&A.view==='play'){ const el=(lastTap&&document.body.contains(lastTap))?lastTap:(document.querySelector('#app .opt.right')||document.querySelector('#app .qcard')||document.querySelector('#app .ob-main')); setTimeout(()=>flyCoin(el),60); } }catch(e){} return out; }; SND.__obm=true; }
+hookSnd(); setTimeout(hookSnd,1500);
+/* the saved balance came back higher: count up */
+setInterval(()=>{ try{ if(!A.st||!onBite()) return; const v=bal(); if(shownId!==A.st.id){ shownId=A.st.id; shown=v; return; } if(shown!=null&&v>shown+.004) countTo(v); else if(shown!=null&&v<shown-.004){ shown=v; setChip(v); } }catch(e){} },700);
+})();
+</script>
