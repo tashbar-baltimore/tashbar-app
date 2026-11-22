@@ -23,6 +23,7 @@ If a data file grows past about 400 KB, start `OneBiteDataMath2.html` and regist
 
 - 2026-11-22 · Round 2 Lane B (K–1 Math activities) · this session: `do`/`your` hands-on activities for every `MATH.*.L01.*` bite (batch 1), then `L02` (batch 2). Batch 1 (L01, 16 bites) and batch 2 (L02, 21 bites) are written; all K–1 Math bites now have `do`/`your`. The activity data shapes are written at the top of the Round 2 block in `src/OneBiteDataMath.html` for Lane A's kit.
 - 2026-11-22 · Round 2 Lane C (K Reading, ABCs first) · this session: took over PR #153 (an earlier session's ABC split) on branch `claude/ob-read-abc`. Batch 1 = READ.PHON.L01.01 split into 6 ABC bites `.a`–`.f` (A–D, E–H, I–L, M–Q, R–U, V–Z), each a real lesson + a bite with `do`/`your` in the Activity Kit's exact shapes (listen, trace, findall, match, tiles). The old id stays as the ABC Review after `.f`; a boy who mastered it counts `.a`–`.f` as mastered. **Next:** READ.PA.L01.01–.06 (branch `claude/ob-read-k-pa`), then READ.PHON.L01.02–.04, READ.FLU.L01.01, then L02.
+- 2026-11-22 · Round 2 Lane C, second session (`claude/serene-hopper-b1z4d9`, on top of #161): **written and checked, waiting for #161 to merge:** hand-written bites with kit activities for all K Reading after the ABCs (READ.PA.L01.01–.06, PHON.L01.02–.04, FLU.L01.01, COMP.L01.01–.02), all of Level 2, Level 3 (11), Level 4 (9) and Level 5 (8): 52 bites. **Next:** Level 6.
 
 ## Starter prompt for a content lane (paste into a new Claude Code session on `tashbar-baltimore/tashbar-app`)
 
