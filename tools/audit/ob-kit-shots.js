@@ -13,13 +13,14 @@ const OUT = path.join(__dirname, 'out', 'kit-shots'); fs.mkdirSync(OUT, { recurs
   await pg.goto('http://app.test/');
   await pg.waitForFunction(() => window.TLT && typeof BANK_ALL !== 'undefined' && Object.keys(BANK_ALL).length > 500, null, { timeout: 180000 }); await pg.waitForTimeout(12000);
   await pg.evaluate(src => { window.__obkStep = (0, eval)('(' + src + ')'); }, require('../../tests/lib/onebite.js').obkStep.toString());
+  if (process.env.CSS) await pg.addStyleTag({ content: process.env.CSS });   /* e.g. a CI-like font, to check fit-text */
   const acts = JSON.parse(process.env.ACTS), band = process.env.BAND || 'K1', name = process.env.NAME || 'kit', steps = +(process.env.STEPS || 0), files = [];
   for (let i = 0; i < acts.length; i++) {
     await pg.evaluate(({ acts, band, i }) => { window.OB_LIVE = 'test'; const id = ['MATH.OPS.L01.04', 'MATH.CNT.L01.01'].find(x => BANK_ALL[x] || (typeof GEN !== 'undefined' && GEN[x])) || Object.keys(BANK_ALL).find(x => /^MATH\..*\.L01\./.test(x));
       ONE_BITE[id] = { band, pic: '🔢', today: 'Kit picture', why: 'x', watch: { q: 'Watch', steps: ['One.', 'Two.'] }, oops: { wrong: '1', right: '2', why: 'x' }, ways: ['a', 'b'], do: [acts[i]], your: [acts[i], acts[i], acts[i]] };
       A.overlay = null; SRV.token = 't'; SRV.states = {}; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; render(); const pre = id.split('.')[0]; startMission(WORLD[pre] ? pre : Object.keys(WORLD)[0], id, 'skill');
       const p = A.play; p.ob.stage = 'your'; p.ob.kit = { list: 'your', acts: p.ob.kitYour, i: 0, streak: 1, n: 0, s: OBK.init(p.ob.kitYour[0], {}) }; render(); scrollTo(0, 0); }, { acts, band, i });
-    await pg.waitForTimeout(300); let f = name + '-' + (i + 1) + '.png'; await pg.screenshot({ path: path.join(OUT, f) }); files.push(f);
+    await pg.waitForTimeout(300); if (process.env.MEASURE) console.log(await pg.evaluate(() => [...document.querySelectorAll('#app .obk-m')].map(el => { const tops = []; const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { const r = document.createRange(); r.selectNodeContents(n); [...r.getClientRects()].forEach(q => { if (q.width > 1 && !tops.some(t => Math.abs(t - q.top) < 4)) tops.push(q.top); }); } return el.textContent.trim() + ' ' + tops.length + ' lines ' + el.style.fontSize + ' w' + Math.round(el.getBoundingClientRect().width); }).join(' | '))); let f = name + '-' + (i + 1) + '.png'; await pg.screenshot({ path: path.join(OUT, f) }); files.push(f);
     for (let k = 0; k < steps; k++) await pg.evaluate(() => window.__obkStep(false));
     if (steps) { await pg.waitForTimeout(200); f = name + '-' + (i + 1) + 'b.png'; await pg.screenshot({ path: path.join(OUT, f) }); files.push(f); }
   }
