@@ -30,6 +30,120 @@ B['READ.PHON.L03.01']={ band:'B23', pic:'🤖', today:'Split long words into bea
   ways:['part tiles','movement','picture','Mistake Detective'], done:'You can split long words into beats and read them.',
   board:{ one:'Every beat has one vowel sound. Split between beats.', activity:'Stomp-and-split: write words on cards, boys cut them into beats.', mistakes:['Splitting in the middle of a blend','Giving a beat no vowel','Reading every letter separately'] } };
 
+/* ==== QUALITY ROUND q1 (2026-11-22 night, HoS: "boys must genuinely learn the skill"): Grade 1 phonics, 5 lessons ====
+   READ.PA.L02.01 swap a sound, READ.PHON.L02.01 digraphs, READ.PHON.L02.02 blends, READ.LV.L02.01 silent e, READ.LV.L02.02 vowel teams.
+   Each: sound first, then letters; guided easiest case -> harder position or a new form -> a mixed case -> a real sentence;
+   one activity built on the lesson's own Mistake Detective; a little story carried in the spoken lines; a chant and a movement. */
+B['READ.PA.L02.01']={ band:'K1', pic:'🚂', today:'Swap one sound to make a new word', why:'Change one sound and you have a brand new word. That is how readers grow!',
+  ready:[{q:'Chop mop: m … o … p. What is the first sound?', o:['m','o','p'], a:'m'},{q:'Chop lip: l … i … p. What is the last sound?', o:['p','l','i'], a:'p'}],
+  bridge:'READ.PA.L01.06', bridgeName:'Chop It',
+  watch:{ q:'mop → top', pic:'🚂', steps:[
+    {t:'A word is a little train. Each car is one sound: m, o, p.', m:{type:'tiles', w:['m','o','p']}},
+    {t:'Swap the FIRST car. Take off m. Put on t. Top!', m:{type:'tiles', w:['t','o','p'], hi:[0]}},
+    {t:'Swap the LAST car. Lip: take off p, put on d. Lid!', m:{type:'tiles', w:['l','i','d'], hi:[2]}},
+    {t:'Swap the MIDDLE car. Nut: take off u, put on e. Net!', m:{type:'tiles', w:['n','e','t'], hi:[1]}},
+    {t:'Stand up and sing! Hop when the car changes.', m:{type:'chant', lines:['Mop, mop, swap the m: top! (hop)','Lip, lip, swap the p: lid! (hop)','Nut, nut, swap the u: net! (hop)']}}], a:'mop → top · lip → lid · nut → net' },
+  oops:{ q:'Nut. Change the middle sound u to e.', wrong:'ten (the cars got mixed up)', right:'net', why:'Keep n first and t last. Only the middle car changes.' },
+  ways:['song','movement','letter tiles','listen and tap','sort it','Mistake Detective'], done:'Toot toot! Your word train made it all the way. You can swap sounds!',
+  'do':[
+    {type:'tiles', q:'mop → ?op', say:'Toot! Help the word train. Mop: swap m for t.', how:'Keep o and p in their places. Put t in the first car.', w:['t','o','p'], extra:['m']},
+    {type:'listen', hear:'hat. Change huh to kuh.', pic:'🎩', o:['🐱','🎩','🦇'], a:'🐱', say:'Hat. Change the first sound to k. Which picture?', how:'Say hat. Take off h. Put on k: k-at. What is it?'}],
+  your:[
+    {type:'tiles', q:'lip → li?', say:'Next car! Lip: swap the LAST sound p for d.', how:'Keep l and i. Change only the last car to d.', w:['l','i','d'], extra:['p']},
+    {type:'listen', hear:'cat. Change the last sound to puh.', pic:'🐱', o:['🧢','🐱','🦇'], a:'🧢', say:'Cat. Change the LAST sound to p. Which picture?', how:'Say cat. Keep k and a. Put p at the end: ca-p.'},
+    {type:'sort', say:'Did the train keep its cars in place?', how:'A right swap keeps every other sound where it was. Check the first and last.', bins:['Right swap','Mixed up'], cards:[['nut → net',0],['mop → top',0],['nut → ten',1],['mop → pot',1]]},
+    {type:'tiles', q:'nut → n?t', say:'The middle car now! Nut: swap u for e.', how:'Keep n first and t last. Put e in the middle.', w:['n','e','t'], extra:['u']},
+    {type:'listen', hear:'Ima found a bag. Change the middle sound to uh. What crawled out?', q:'bag → b?g', o:['🐛','👜','🐝'], a:'🐛', say:'Bag. Change the middle sound to u. What crawled out?', how:'Keep b and g. Put u in the middle: b-u-g.'}],
+  board:{ one:'Keep the other cars in place; swap one sound.', activity:'Word train: three boys hold sound cards; a fourth swaps in for one car.', mistakes:['Mixing up the order of the sounds (net → ten)','Swapping the wrong car (first instead of last)','Changing two sounds at once'] } };
+
+B['READ.PHON.L02.01']={ band:'K1', pic:'🦆', today:'Read sh, ch, th, wh and ck', why:'Two letters can make one sound. Ship, duck and bath are full of them!',
+  ready:[{q:'Read it: cap 🧢 or cup?', o:['cap','cup'], a:'cap'},{q:'Read it: pin 📌 or pen?', o:['pin','pen'], a:'pin'}],
+  bridge:'READ.PHON.L01.04', bridgeName:'Read CVC',
+  watch:{ q:'sh · ck · th · wh', pic:'🚢', steps:[
+    {t:'Listen: shhh. Two letters hold hands to make it: s and h.', m:{type:'tiles', w:['sh','i','p'], hi:[0]}},
+    {t:'c and k make one sound at the end: k. d, u, ck: duck!', m:{type:'tiles', w:['d','u','ck'], hi:[2]}},
+    {t:'t and h say th. Stick out your tongue! b, a, th: bath.', m:{type:'tiles', w:['b','a','th'], hi:[2]}},
+    {t:'w and h say wh. wh, e, n: when. One tile, one sound.', m:{type:'tiles', w:['wh','e','n'], hi:[0]}},
+    {t:'Sing the buddy song! Do the move for each one.', m:{type:'chant', lines:['S-H says shhh (finger on lips)!','C-H says ch-ch (train arms)!','T-H says th (tongue out)!','C-K says k at the end (clap)!']}}], a:'sh-i-p · d-u-ck · b-a-th · wh-e-n' },
+  oops:{ q:'Shell or sell? 🐚', wrong:'sell (read only the s)', right:'shell', why:'s and h are buddies. Together they say sh.' },
+  ways:['song','movement','letter tiles','listen and tap','sort it','find them all','Mistake Detective'], done:'Sh-sh-super! You can read letter buddies!',
+  'do':[
+    {type:'listen', hear:'shhh, like ship', o:['sh','ch','th'], a:'sh', say:'Sammy the sailor says shhh. Which buddies say it?', how:'Put your finger on your lips: shhh. Which two letters make that?'},
+    {type:'tiles', pic:'🚢', say:'Build ship for Sammy. sh is one tile.', how:'Say ship slowly: sh … i … p. One tile for each sound.', w:['sh','i','p'], extra:['s']}],
+  your:[
+    {type:'tiles', pic:'🦆', say:'A duck swims by! Build duck.', how:'Say duck: d … u … k. The k sound at the end is ck.', w:['d','u','ck'], extra:['k']},
+    {type:'sort', say:'Sammy sorts his boxes. Does it start with sh or ch?', how:'Say the picture. Shhh is sh. Ch-ch like a train is ch.', bins:['sh','ch'], cards:[['🚢 ship',0],['🐚 shell',0],['🧀 cheese',1],['🐥 chick',1]]},
+    {type:'tiles', pic:'🛁', say:'Time for a bath! Build bath.', how:'Say bath: b … a … th. Stick out your tongue for th.', w:['b','a','th'], extra:['t']},
+    {type:'findall', say:'Tap every word that starts with sh. Watch out for s!', how:'Look at the first two letters. Is it s and h together? Then it says sh.', grid:['ship','sip','shop','sock','shed','sad'], find:['ship','shop','shed'], findSay:'word that starts with sh'},
+    {type:'tiles', q:'___ will the ship go?', say:'Sammy asks: ___ will the ship go? Build it.', how:'The word is when: wh … e … n. wh is one tile.', w:['wh','e','n'], extra:['w']}],
+  board:{ one:'Two letters, one sound: sh, ch, th, wh, ck.', activity:'Buddy cards: two boys hold s and h and "hold hands" to say sh.', mistakes:['Reading s alone (sell for shell)','Writing c or k alone at the end of duck','Mixing sh and ch'] } };
+
+B['READ.PHON.L02.02']={ band:'K1', pic:'🚩', today:'Read blends: hear both sounds', why:'Flag, nest and hand have two sounds side by side. Hear both and you read them right!',
+  ready:[{q:'Build duck. Which tile ends it?', o:['ck','c','k'], a:'ck'},{q:'Read it: ship 🚢 or sip?', o:['ship','sip'], a:'ship'}],
+  bridge:'READ.PHON.L02.01', bridgeName:'Digraph Duo',
+  watch:{ q:'flag · nest · hand', pic:'🚩', steps:[
+    {t:'In a blend you hear BOTH sounds. f, l: fl! Not one sound, two.', m:{type:'tiles', w:['f','l','a','g'], hi:[0,1]}},
+    {t:'Slide them together: f-l-a-g. Flag!', m:{type:'tiles', w:['flag'], hi:[0]}},
+    {t:'A blend can be at the end: nest. Hear s AND t.', m:{type:'tiles', w:['n','e','s','t'], hi:[2,3]}},
+    {t:'Ten or tent? Tent has n AND t at the end.', m:{type:'tiles', w:['t','e','n','t'], hi:[2,3]}},
+    {t:'Stomp each sound with me, then jump the word!', m:{type:'move', t:'Stomp: h, a, n, d! Jump: HAND!'}}], a:'f-l-a-g · n-e-s-t · h-a-n-d' },
+  oops:{ q:'Tent or ten? ⛺', wrong:'ten (dropped the t)', right:'tent', why:'Tent ends with n and t. You hear both sounds.' },
+  ways:['movement','letter tiles','listen and tap','sort it','find them all','Mistake Detective'], done:'Flag up! You hear every sound in a blend!',
+  'do':[
+    {type:'listen', hear:'fl, fl, flag', pic:'🚩', o:['fl','fr','sl'], a:'fl', say:'Raise the flag for camp! Which blend starts flag?', how:'Say flag slowly. You hear f, then l. Which tile has f and l?'},
+    {type:'tiles', pic:'🚩', say:'Build flag. One letter for each sound.', how:'Say it slowly: f … l … a … g. Tap a letter for each sound.', w:['f','l','a','g'], extra:[]}],
+  your:[
+    {type:'tiles', pic:'🪺', say:'A bird made a nest by the tent. Build nest.', how:'Say nest: n … e … s … t. Hear s AND t at the end.', w:['n','e','s','t'], extra:[]},
+    {type:'sort', say:'Is the blend at the start or at the end?', how:'Say the word. Do the two sounds come first, or last?', bins:['Start','End'], cards:[['flag',0],['stop',0],['nest',1],['hand',1]]},
+    {type:'findall', say:'Tap every word with a blend at the end, like tent.', how:'Look at the end. Are there two sounds, like n and t? Ten has only n.', grid:['tent','ten','hand','had','nest','net'], find:['tent','hand','nest'], findSay:'word with a blend at the end'},
+    {type:'tiles', hear:'hand', say:'Wave to the campers! Spell hand.', how:'Say hand: h … a … n … d. Hear n AND d at the end.', w:['h','a','n','d'], extra:[]},
+    {type:'listen', q:'The frog sat on a log.', hear:'The frog sat on a log.', o:['frog','sat','log'], a:'frog', say:'Read it. Which word has a blend?', how:'Read each word. Which one starts with two sounds, f and r?'}],
+  board:{ one:'In a blend you hear both sounds.', activity:'Blend train: two boys link arms for the two sounds; one leaving makes a different word (tent → ten).', mistakes:['Dropping one sound (ten for tent)','Adding uh between sounds (fuh-lag)','Mixing the order (fl and lf)'] } };
+
+B['READ.LV.L02.01']={ band:'K1', pic:'🎂', today:'Silent e makes the vowel say its name', why:'One quiet e turns cap into cape and kit into kite!',
+  ready:[{q:'Read it: flag 🚩 or fog?', o:['flag','fog'], a:'flag'},{q:'Read it: nest 🪺 or net?', o:['nest','net'], a:'nest'}],
+  bridge:'READ.PHON.L02.02', bridgeName:'Blend Builders',
+  watch:{ q:'cap → cape', pic:'🎂', steps:[
+    {t:'Read cap: c, a, p. The a is short: a, like apple.', m:{type:'tiles', w:['c','a','p'], hi:[1]}},
+    {t:'Now add an e at the end. The e is silent. Shh!', m:{type:'tiles', w:['c','a','p','e'], hi:[3]}},
+    {t:'The quiet e makes a say its name: ay. Cape!', m:{type:'tiles', w:['c','a','p','e'], hi:[1]}},
+    {t:'Kit, kite. Hop, hope. Cake, five, home all end in silent e.', m:{type:'tiles', w:['kit → kite','hop → hope'], hi:[0,1]}},
+    {t:'Sing it! Whisper the e.', m:{type:'chant', lines:['Silent e, at the end,','makes the vowel say its name, my friend!','Cake, five, home: shh, the e!']}}], a:'cap → cape · kit → kite' },
+  oops:{ q:'Ben flies a ___. 🪁', wrong:'kit (no silent e)', right:'kite', why:'Without the e, i is short: kit. The quiet e makes i say its name: kite.' },
+  ways:['song','letter tiles','match','sort it','listen and tap','Mistake Detective'], done:'Shh! The silent e did its magic. Great reading!',
+  'do':[
+    {type:'match', say:'Zeidy\'s magic e! Match each word to its new word.', how:'Add e to the end. Read the new word: the vowel says its name.', pairs:[['cap','cape'],['kit','kite'],['hop','hope']]},
+    {type:'tiles', pic:'🎂', say:'Bake a Shabbos cake! Build cake.', how:'Say cake: k … ay … k. Put the quiet e at the end.', w:['c','a','k','e'], extra:[]}],
+  your:[
+    {type:'tiles', pic:'5️⃣', say:'Count the candles: five! Build five.', how:'Say five: f … eye … v. Then add the quiet e.', w:['f','i','v','e'], extra:[]},
+    {type:'sort', say:'Short vowel, or long with silent e?', how:'Is there an e at the end? Then the vowel says its name.', bins:['Short','Long (silent e)'], cards:[['kit',0],['hop',0],['cap',0],['kite',1],['hope',1],['cape',1]]},
+    {type:'listen', q:'🪁', hear:'Ben flies his kite.', o:['kite','kit','cut'], a:'kite', say:'Ben flies his ___. Which word?', how:'The toy says eye: kite. Which word has the silent e?'},
+    {type:'tiles', pic:'🏠', say:'Time to go home! Build home.', how:'Say home: h … oh … m. Then add the quiet e.', w:['h','o','m','e'], extra:[]},
+    {type:'listen', q:'Dov ate a big grape.', hear:'Dov ate a big grape.', o:['🍇','🍕','🐸'], a:'🍇', say:'Read it. What did Dov eat?', how:'Read grape: the e is silent, so a says ay. g-r-ay-p.'}],
+  board:{ one:'Silent e at the end makes the vowel say its name.', activity:'Magic e card: a boy walks an e card onto cap, kit, hop; the class reads the new word.', mistakes:['Reading the short vowel anyway (kit for kite)','Saying the e out loud','Putting the e in the middle'] } };
+
+B['READ.LV.L02.02']={ band:'K1', pic:'🐐', today:'Read vowel teams ai, ee and oa', why:'Rain, feet and goat all have vowel teams. Two vowels, one long sound!',
+  ready:[{q:'Read it: cake 🎂 or cap?', o:['cake','cap'], a:'cake'},{q:'Read it: kite 🪁 or kit?', o:['kite','kit'], a:'kite'}],
+  bridge:'READ.LV.L02.01', bridgeName:'Silent E',
+  watch:{ q:'rain · feet · goat', pic:'🌧️', steps:[
+    {t:'Listen: ay, like rain. Two vowels, a and i, make it.', m:{type:'tiles', w:['r','ai','n'], hi:[1]}},
+    {t:'The first one talks and says its name. r, ai, n: rain!', m:{type:'tiles', w:['rain'], hi:[0]}},
+    {t:'ee says ee: f, ee, t. Feet!', m:{type:'tiles', w:['f','ee','t'], hi:[1]}},
+    {t:'oa says oh: g, oa, t. Goat! Not got.', m:{type:'tiles', w:['g','oa','t'], hi:[1]}},
+    {t:'Walk and sing! Two steps for two vowels.', m:{type:'chant', lines:['When two vowels go walking,','the first one does the talking!','Rain, feet, goat!']}}], a:'r-ai-n · f-ee-t · g-oa-t' },
+  oops:{ q:'Goat or got? 🐐', wrong:'got (short o)', right:'goat', why:'oa is a team. The o talks and says its name: oh.' },
+  ways:['song','movement','letter tiles','listen and tap','sort it','Mistake Detective'], done:'Two vowels went walking, and you did the talking! Great job!',
+  'do':[
+    {type:'listen', hear:'ay, like rain', o:['ai','ee','oa'], a:'ai', say:'Rain on the sukkah! Which team says ay?', how:'Say ay. Which team has a first? a talks and says its name.'},
+    {type:'tiles', pic:'🌧️', say:'Build rain. ai is one tile.', how:'Say rain: r … ay … n. The ay sound is the ai tile.', w:['r','ai','n'], extra:['a']}],
+  your:[
+    {type:'tiles', hear:'feet', say:'Wipe your feet at the door! Spell feet.', how:'Say feet: f … ee … t. The ee sound is the ee tile.', w:['f','ee','t'], extra:['e']},
+    {type:'sort', say:'Which team? ai, ee or oa?', how:'Read the word. Which two vowels are together?', bins:['ai','ee','oa'], cards:[['rain',0],['tail',0],['tree',1],['bee',1],['boat',2],['soap',2]]},
+    {type:'tiles', pic:'🐐', say:'A goat on the farm! Build goat.', how:'Say goat: g … oh … t. The oh sound is the oa tile.', w:['g','oa','t'], extra:['o']},
+    {type:'sort', say:'Vowel team, or short vowel?', how:'Two vowels together say a long sound. One vowel alone is short.', bins:['Vowel team','Short vowel'], cards:[['goat',0],['got',1],['feet',0],['fed',1],['rain',0],['ran',1]]},
+    {type:'listen', q:'Zev and Ben sail a boat.', hear:'Zev and Ben sail a boat.', o:['boat','sail','Ben'], a:'boat', say:'Read it. Which word has the oa team?', how:'Look for o and a together. That word says oh.'}],
+  board:{ one:'Two vowels walk; the first one talks.', activity:'Vowel walk: two boys hold a and i; only the first one speaks.', mistakes:['Reading the short sound (got for goat)','Saying both vowels','Splitting the team across two tiles'] } };
+
 /* ==== ROUND 2, Lane C, batch 3 (2026-11-22): first reading, then Level 2 phonics (READ.COMP.L01.01, READ.PA.L02.01, READ.PHON.L02.*, READ.LV.L02.*, READ.FLU.L02.01, READ.VOC.L02.01) ==== */
 B['READ.COMP.L01.01']={ band:'K1', pic:'🦊', today:'Read a tiny sentence and find its picture', why:'Reading is making a movie in your head!',
   ready:[{q:'Read it: have or hvae?', o:['have','hvae'], a:'have'},{q:'Read it: sun', o:['☀️','🌙'], a:'☀️'}],
@@ -52,116 +166,6 @@ B['READ.COMP.L01.01']={ band:'K1', pic:'🦊', today:'Read a tiny sentence and f
     {type:'listen', how:'Read the words on top. Find the part that answers it. Then tap your answer.', q:'Gad sat on a log. Gad got a big cup.', say:'Read the tale. What did Gad get?', hear:'Gad sat on a log. Gad got a big cup.', o:['a cup','a log','a pen'], a:'a cup'},
     {type:'match', how:'Tap one on the left. Find its partner and tap it. Do them all.', say:'Match each sentence to its picture.', pairs:[['The hen is in the mud.','🐔'],['Dad has a red cap.','🧢'],['I see a fox.','🦊']]}],
   board:{ one:'Read every word, then make the movie in your head.', activity:'Act it out: one boy reads a tiny tale, two boys act it.', mistakes:['Guessing from the picture without reading','Choosing a word from the wrong sentence','Skipping small words like in and on'] } };
-
-B['READ.PA.L02.01']={ band:'K1', pic:'🔄', today:'Swap one sound to make a new word', why:'One little sound change makes a whole new word!',
-  ready:[{q:'Chop mop. What is the first sound?', o:['m','o','p'], a:'m'},{q:'Chop lip. What is the last sound?', o:['p','l','i'], a:'p'}],
-  bridge:'READ.PA.L01.06', bridgeName:'Chop It',
-  watch:{ q:'mop → top', pic:'🔄', steps:[
-    {t:'Say mop: m … o … p.', m:{type:'tiles', w:['m','o','p'], hi:[0]}},
-    {t:'Swap the first sound m for t: t … o … p. Top!', m:{type:'tiles', w:['t','o','p'], hi:[0]}},
-    {t:'Nut. Swap the middle u for e: n … e … t. Net!', m:{type:'tiles', w:['n','e','t'], hi:[1]}},
-    {t:'Lip. Swap the last p for d: l … i … d. Lid!', m:{type:'tiles', w:['l','i','d'], hi:[2]}},
-    {t:'Swap song! Clap on the new sound.', m:{type:'chant', lines:['Mop, mop, swap it: top!','Nut, nut, swap it: net!','Lip, lip, swap it: lid!']}}], a:'mop→top · nut→net · lip→lid' },
-  oops:{ q:'Lip. Swap the LAST sound p for d.', wrong:'dip (swapped the first sound)', right:'lid', why:'Last means the end. Keep l … i, change the end: lid.' },
-  ways:['song','letter tiles','picture','build it','Mistake Detective'], done:'You can swap sounds to make new words!',
-  'do':[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Mop. Swap m for t. Build the new word.', w:['t','o','p'], extra:['m']},
-    {type:'listen', how:'Tap 🔊 to hear it again. Say it with me. Then tap the one that fits.', say:'Sun. Swap s for r. Which picture?', hear:'run', o:['🏃','☀️','🐟'], a:'🏃'}],
-  your:[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Nut. Swap u for e. Build it.', w:['n','e','t'], extra:['u']},
-    {type:'listen', how:'Tap 🔊 to hear it again. Say it with me. Then tap the one that fits.', say:'Cat. Swap t for p. Which picture?', hear:'cap', o:['🧢','🐱','🦇'], a:'🧢'},
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Lip. Swap p for d. Build it.', w:['l','i','d'], extra:['p']},
-    {type:'match', how:'Tap one on the left. Find its partner and tap it. Do them all.', say:'Match each word to its swap.', pairs:[['mop','top'],['nut','net'],['pin','pan']]},
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Hat. Swap h for b. Build it.', w:['b','a','t'], extra:['h']}],
-  board:{ one:'Keep the rest, swap one sound.', activity:'Word ladder on the board: mop, top, tip, tin, ten.', mistakes:['Swapping the wrong place (first vs last)','Changing two sounds at once','Saying the letter name, not the sound'] } };
-
-B['READ.PHON.L02.01']={ band:'K1', pic:'🦆', today:'Two letters, one sound: sh, ch, th, ck', why:'Many words use these teams. Spot them and read faster!',
-  ready:[{q:'Read it: cap or cup? 🧢', o:['cap','cup'], a:'cap'},{q:'Read it: pin 📌 or pen 🖊️?', o:['📌','🖊️'], a:'📌'}],
-  bridge:'READ.PHON.L01.04', bridgeName:'Read CVC',
-  watch:{ q:'duck · bath · when', pic:'🦆', steps:[
-    {t:'s and h hold hands and say sh, like ship.', m:{type:'tiles', w:['sh','i','p'], hi:[0]}},
-    {t:'c and k together say one sound: k. d … u … ck: duck!', m:{type:'tiles', w:['d','u','ck'], hi:[2]}},
-    {t:'t and h say th. b … a … th: bath!', m:{type:'tiles', w:['b','a','th'], hi:[2]}},
-    {t:'w and h say wh. wh … e … n: when!', m:{type:'tiles', w:['wh','e','n'], hi:[0]}},
-    {t:'Sing the teams!', m:{type:'chant', lines:['S-H says sh, shhh!','C-H says ch, choo choo!','T-H says th, stick out your tongue!','C-K says k, at the end!']}}], a:'d-u-ck · b-a-th · wh-e-n' },
-  oops:{ q:'Build duck.', wrong:'d … u … c … k (4 sounds)', right:'d … u … ck (3 sounds)', why:'ck is one team. Two letters, one sound.' },
-  ways:['song','letter tiles','picture','build it','sort it','Mistake Detective'], done:'You can read letter teams!',
-  'do':[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build duck. ck is one tile.', pic:'🦆', w:['d','u','ck'], extra:['c']},
-    {type:'listen', how:'Read the words on top. Find the part that answers it. Then tap your answer.', q:'ship', say:'Tap the word for the picture.', hear:'ship', o:['ship','chip','sip'], a:'ship'}],
-  your:[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build bath. th is one tile.', pic:'🛁', w:['b','a','th'], extra:['t']},
-    {type:'sort', how:'Read the card. Is it sh or ch? Tap that box.', say:'Does it start with sh or ch?', bins:['sh','ch'], cards:[['🚢 ship',0],['🐚 shell',0],['🧀 cheese',1],['🪑 chair',1]]},
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build when: wh … e … n.', w:['wh','e','n'], extra:['w']},
-    {type:'findall', how:'Look at each one, row by row. Does it fit what was asked? Tap every one that does.', say:'Tap every word with th.', grid:['bath','that','bat','with','wish','them'], find:['bath','that','with','them']},
-    {type:'match', how:'Tap one on the left. Find its partner and tap it. Do them all.', say:'Match each word to its picture.', pairs:[['duck','🦆'],['ship','🚢'],['chick','🐥']]}],
-  board:{ one:'Two letters, one sound: sh, ch, th, wh, ck.', activity:'Team tiles: boys hold s and h cards and "hold hands" to say sh.', mistakes:['Sounding each letter (s-h)','Writing c or k alone at the end','Mixing sh and ch'] } };
-
-B['READ.PHON.L02.02']={ band:'K1', pic:'🚩', today:'Read blends: two sounds side by side', why:'Blends are everywhere: stop, flag, nest, hand!',
-  ready:[{q:'Build duck: which tile ends it?', o:['ck','c','k'], a:'ck'},{q:'Read it: ship 🚢 or chip?', o:['ship','chip'], a:'ship'}],
-  bridge:'READ.PHON.L02.01', bridgeName:'Digraph Duo',
-  watch:{ q:'flag · nest · hand', pic:'🚩', steps:[
-    {t:'In a blend you hear BOTH sounds: f … l, fl!', m:{type:'tiles', w:['f','l','a','g'], hi:[0,1]}},
-    {t:'Slide them together: f-l-a-g, flag!', m:{type:'tiles', w:['flag'], hi:[0]}},
-    {t:'Blends can come at the end: n … e … s … t, nest.', m:{type:'tiles', w:['n','e','s','t'], hi:[2,3]}},
-    {t:'h … a … n … d: hand. Hear n and d.', m:{type:'tiles', w:['h','a','n','d'], hi:[2,3]}},
-    {t:'Stomp each sound with me!', m:{type:'move', t:'Stomp: f, l, a, g! Jump: FLAG!'}}], a:'f-l-a-g · n-e-s-t · h-a-n-d' },
-  oops:{ q:'Build nest.', wrong:'net (dropped the s)', right:'nest', why:'Say it slowly. You hear s AND t at the end.' },
-  ways:['movement','letter tiles','picture','build it','Mistake Detective'], done:'You can read blends!',
-  'do':[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build flag: f … l … a … g.', pic:'🚩', w:['f','l','a','g'], extra:[]},
-    {type:'listen', how:'Read the words on top. Find the part that answers it. Then tap your answer.', q:'nest', say:'Tap the word for the picture.', hear:'nest', o:['nest','net','next'], a:'nest'}],
-  your:[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build nest: n … e … s … t.', pic:'🪺', w:['n','e','s','t'], extra:[]},
-    {type:'listen', how:'Read the words on top. Find the part that answers it. Then tap your answer.', q:'stop', say:'Tap the word for the picture.', hear:'stop', o:['stop','top','spot'], a:'stop'},
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build hand: h … a … n … d.', w:['h','a','n','d'], extra:[]},
-    {type:'sort', how:'Read the card. Is it start or end? Tap that box.', say:'Is the blend at the start or the end?', bins:['start','end'], cards:[['flag',0],['stop',0],['nest',1],['hand',1]]},
-    {type:'match', how:'Tap one on the left. Find its partner and tap it. Do them all.', say:'Match each word to its picture.', pairs:[['frog','🐸'],['drum','🥁'],['tent','⛺']]}],
-  board:{ one:'In a blend you hear both sounds.', activity:'Blend train: two boys link arms for the two sounds.', mistakes:['Dropping one sound of the blend (net for nest)','Adding uh between sounds (fuh-lag)','Mixing the order (fl vs lf)'] } };
-
-B['READ.LV.L02.01']={ band:'K1', pic:'🎂', today:'Silent e makes the vowel say its name', why:'Magic e turns cap into cape. One letter, a new word!',
-  ready:[{q:'Read it: flag 🚩 or fog?', o:['flag','fog'], a:'flag'},{q:'Read it: hand ✋ or had?', o:['hand','had'], a:'hand'}],
-  bridge:'READ.PHON.L02.02', bridgeName:'Blend Builders',
-  watch:{ q:'cake · five · home', pic:'🎂', steps:[
-    {t:'Read cap: c … a … p. Short a.', m:{type:'tiles', w:['c','a','p'], hi:[1]}},
-    {t:'Add a silent e at the end. The e says nothing!', m:{type:'tiles', w:['c','a','p','e'], hi:[3]}},
-    {t:'But it makes the a say its name: cape!', m:{type:'tiles', w:['c','a','p','e'], hi:[1]}},
-    {t:'c-a-k-e: cake. f-i-v-e: five. h-o-m-e: home.', m:{type:'tiles', w:['cake','five','home']}},
-    {t:'Sing it!', m:{type:'chant', lines:['Silent e, at the end,','makes the vowel say its name, my friend!','Cake, five, home, the e is quiet!']}}], a:'cake · five · home' },
-  oops:{ q:'Read k-i-t-e.', wrong:'kit (short i)', right:'kite', why:'The e at the end is silent, but it makes i say its name.' },
-  ways:['song','letter tiles','picture','build it','sort it','Mistake Detective'], done:'You know the silent e trick!',
-  'do':[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build cake. Silent e goes at the end.', pic:'🎂', w:['c','a','k','e'], extra:[]},
-    {type:'listen', how:'Read the words on top. Find the part that answers it. Then tap your answer.', q:'kite', say:'Tap the word for the picture.', hear:'kite', o:['kite','kit','cut'], a:'kite'}],
-  your:[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build five: f … i … v … e.', pic:'5️⃣', w:['f','i','v','e'], extra:[]},
-    {type:'sort', how:'Read the card. Is it short or silent e? Tap that box.', say:'Short vowel, or silent e?', bins:['short','silent e'], cards:[['cap',0],['kit',0],['cape',1],['kite',1]]},
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build home: h … o … m … e.', pic:'🏠', w:['h','o','m','e'], extra:[]},
-    {type:'listen', how:'Read the words on top. Find the part that answers it. Then tap your answer.', q:'cube', say:'Tap the word for the picture.', hear:'cube', o:['cube','cub','tub'], a:'cube'},
-    {type:'match', how:'Tap one on the left. Find its partner and tap it. Do them all.', say:'Match each word to its picture.', pairs:[['cake','🎂'],['kite','🪁'],['rose','🌹']]}],
-  board:{ one:'Silent e at the end makes the vowel say its name.', activity:'Magic e card: a boy walks an e card onto cap, tap, pin, and the class reads the new word.', mistakes:['Reading the short sound anyway','Saying the e out loud','Putting the e in the middle'] } };
-
-B['READ.LV.L02.02']={ band:'K1', pic:'🐐', today:'Read vowel teams: ai, ee, oa', why:'When two vowels go walking, the first one does the talking!',
-  ready:[{q:'Read it: cake 🎂 or cap?', o:['cake','cap'], a:'cake'},{q:'Read it: kite 🪁 or kit?', o:['kite','kit'], a:'kite'}],
-  bridge:'READ.LV.L02.01', bridgeName:'Silent E',
-  watch:{ q:'rain · feet · goat', pic:'🐐', steps:[
-    {t:'a and i walk together. a talks and says its name: ai.', m:{type:'tiles', w:['r','ai','n'], hi:[1]}},
-    {t:'r … ai … n: rain!', m:{type:'tiles', w:['rain'], hi:[0]}},
-    {t:'e and e say ee: f … ee … t, feet.', m:{type:'tiles', w:['f','ee','t'], hi:[1]}},
-    {t:'o and a: o talks. g … oa … t, goat!', m:{type:'tiles', w:['g','oa','t'], hi:[1]}},
-    {t:'Walk and talk with me!', m:{type:'chant', lines:['When two vowels go walking,','the first one does the talking!','Rain, feet, goat!']}}], a:'r-ai-n · f-ee-t · g-oa-t' },
-  oops:{ q:'Read g-o-a-t.', wrong:'got (short o)', right:'goat', why:'oa is a team. The o says its name: goat.' },
-  ways:['song','letter tiles','picture','build it','sort it','Mistake Detective'], done:'You can read vowel teams!',
-  'do':[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build rain. ai is one tile.', pic:'🌧️', w:['r','ai','n'], extra:['a']},
-    {type:'listen', how:'Read the words on top. Find the part that answers it. Then tap your answer.', q:'tree', say:'Tap the word for the picture.', hear:'tree', o:['tree','trap','trip'], a:'tree'}],
-  your:[
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build feet. ee is one tile.', w:['f','ee','t'], extra:['e']},
-    {type:'sort', how:'Read the card. Is it ai, ee or oa? Tap that box.', say:'Which team? ai, ee or oa?', bins:['ai','ee','oa'], cards:[['rain',0],['tail',0],['tree',1],['bee',1],['boat',2],['soap',2]]},
-    {type:'tiles', how:'Say it slowly, sound by sound. Tap a tile for each sound, in order.', say:'Build goat. oa is one tile.', pic:'🐐', w:['g','oa','t'], extra:['o']},
-    {type:'listen', how:'Read the words on top. Find the part that answers it. Then tap your answer.', q:'boat', say:'Tap the word for the picture.', hear:'boat', o:['boat','bat','beat'], a:'boat'},
-    {type:'match', how:'Tap one on the left. Find its partner and tap it. Do them all.', say:'Match each word to its picture.', pairs:[['rain','🌧️'],['bee','🐝'],['soap','🧼']]}],
-  board:{ one:'Two vowels walk; the first one talks.', activity:'Vowel walk: two boys hold a and i, walk together; only the first one speaks.', mistakes:['Reading the short sound (got for goat)','Saying both vowels','Splitting the team across tiles'] } };
 
 B['READ.PHON.L02.03']={ band:'K1', pic:'🎒', today:'Read long words in two parts', why:'Long words are just short words stuck together!',
   ready:[{q:'How many claps in basket?', o:['2','1','3'], a:'2'},{q:'Read it: goat 🐐 or got?', o:['goat','got'], a:'goat'}],
