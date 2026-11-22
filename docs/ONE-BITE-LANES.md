@@ -23,6 +23,8 @@ If a data file grows past about 400 KB, start `OneBiteDataMath2.html` and regist
 
 - 2026-11-22 · Round 2 Lane B (K–1 Math activities) · this session: `do`/`your` hands-on activities for every `MATH.*.L01.*` bite (batch 1), then `L02` (batch 2). Batch 1 (L01, 16 bites) and batch 2 (L02, 21 bites) are written; all K–1 Math bites now have `do`/`your`. The activity data shapes are written at the top of the Round 2 block in `src/OneBiteDataMath.html` for Lane A's kit.
 
+- 2026-11-22 · Round 2 Lane C2 (Writing and Language) · this session: full lessons with `do`/`your` activities in `src/OneBiteDataWrit.html`. Batch 1 (K–2: every WRIT/LANG L01–L03 lesson, 24) in progress. Next: L04–L05, then L06–L09, then a polish pass.
+
 ## Starter prompt for a content lane (paste into a new Claude Code session on `tashbar-baltimore/tashbar-app`)
 
 ```
