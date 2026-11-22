@@ -81,7 +81,8 @@ T.hop={ check:true,
   view(d,s,c){ const r=T.hop.rng(d), u=T.hop.u(d), W=340, pad=18, n=(r[1]-r[0])/u, sx=v=>pad+(v-r[0])*(W-2*pad)/Math.max(1,r[1]-r[0]);
     const fs=n<=10?13:n<=15?11:9.5; let g='<svg class="obk-nl" viewBox="0 0 '+W+' 112" role="img" aria-label="number line from '+r[0]+' to '+r[1]+', the frog is on '+s.pos+'">';
     g+='<line x1="'+pad+'" y1="86" x2="'+(W-pad)+'" y2="86" stroke="#1F2A44" stroke-width="3"/>';
-    for(let v=r[0];v<=r[1]+1e-9;v+=u){ const x=sx(v); g+='<line x1="'+x+'" y1="79" x2="'+x+'" y2="93" stroke="#1F2A44" stroke-width="2"/><text x="'+x+'" y="109" font-size="'+fs+'" text-anchor="middle" fill="#1F2A44" font-weight="'+(v===d.start?'900':'600')+'">'+v+'</text>'; }
+    const gap=(W-2*pad)/Math.max(1,n), lw=Math.max(String(r[0]).length,String(r[1]).length)*fs*0.62+3, every=lw<=gap?1:lw<=gap*2?2:5;   /* long numbers: label every 2nd or 5th tick (and the start), so labels never run together */
+    for(let v=r[0],k=0;v<=r[1]+1e-9;v+=u,k++){ const x=sx(v), lab=v===d.start||(k%every===0&&(every===1||Math.abs(v-d.start)>=every*u||k===0||v+u>r[1]+1e-9)); g+='<line x1="'+x+'" y1="'+(lab?79:82)+'" x2="'+x+'" y2="'+(lab?93:90)+'" stroke="#1F2A44" stroke-width="2"/>'+(lab?'<text x="'+x+'" y="109" font-size="'+fs+'" text-anchor="middle" fill="#1F2A44" font-weight="'+(v===d.start?'900':'600')+'">'+v+'</text>':''); }
     g+='<circle cx="'+sx(d.start)+'" cy="86" r="5" fill="#3B6FD8"/>'+(d.ask?'<text x="'+(sx(d.start+d.add)+6)+'" y="40" font-size="24" text-anchor="middle">🚩</text>':'');
     for(let k=0;k+1<s.path.length;k++){ const x1=sx(s.path[k]), x2=sx(s.path[k+1]), mx=(x1+x2)/2; g+='<path d="M'+x1+' 80 Q'+mx+' 46 '+x2+' 80" fill="none" stroke="#FF7A3D" stroke-width="3" stroke-dasharray="5 4"/>'; }
     g+='<text x="'+sx(s.pos)+'" y="74" font-size="30" text-anchor="middle">🐸</text></svg>';
