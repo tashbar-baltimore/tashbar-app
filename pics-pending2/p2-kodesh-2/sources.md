@@ -1,0 +1,5 @@
+- white-dove-flying.webp | https://pixabay.com/photos/bird-nature-wildlife-feather-3098446/ | Pixabay Content License | 6689062
+- golden-barley-field-close.webp | https://pixabay.com/photos/field-wheats-grains-agriculture-6374781/ | Pixabay Content License | Ylanite
+- reeds-at-the-river-edge.webp | https://pixabay.com/photos/okavanga-delta-safari-botswana-226646/ | Pixabay Content License | thomaspedrazzoli
+- emek-haelah-valley-view.webp | https://www.flickr.com/photos/38000818@N06/7023845437 | CC BY-SA 2.0 | Ian W Scott
+- thick-old-stone-wall-blocks.webp | https://pixabay.com/photos/wall-masonry-stone-texture-823602/ | Pixabay Content License | GregMontani

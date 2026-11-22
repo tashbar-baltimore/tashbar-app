@@ -1,0 +1,2 @@
+- open-desert-tent-by-dune.webp | https://pixabay.com/photos/desert-camp-morocco-nature-africa-171825/ | Pixabay Content License | wbwolfgang
+- low-desert-hill-acacia.webp | https://pixabay.com/photos/negev-desert-wilderness-wanderings-4765422/ | Pixabay Content License | jdblack

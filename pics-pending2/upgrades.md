@@ -9,3 +9,4 @@
 - router-three-antennas (live): small logo and printed text
 - glass-of-water (live): much taller than wide, printing on rim
 - rain-from-cloud (live): much taller than wide
+- row-of-yellow-buses (live): readable "SCHOOL BUS" text
