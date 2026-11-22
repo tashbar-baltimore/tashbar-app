@@ -1,0 +1,3 @@
+- archery-target-arrows-center.webp | https://pixabay.com/photos/bow-archery-edition-disc-arrows-602127/ | Pixabay Content License | Chrisko1960
+- stack-of-hardcover-books.webp | https://pixabay.com/photos/books-training-school-literature-441866/ | Pixabay Content License | Hermann
+- farmers-market-vegetable-stand.webp | https://pixabay.com/photos/vegetables-veggies-farmers-market-1948264/ | Pixabay Content License | ruthieprasil

@@ -1,0 +1,8 @@
+- big-snowball-on-lawn.webp | https://www.flickr.com/photos/41894148532@N01/5248839 | CC BY-SA 2.0 | Neil T
+- open-bank-vault-doorway.webp | https://pixabay.com/photos/portugal-lisbon-money-museum-safe-4715104/ | Pixabay Content License | 2427999
+- fanned-white-envelopes.webp | https://pixabay.com/photos/envelope-post-office-paper-letter-1803663/ | Pixabay Content License | Monfocus
+- shopping-cart-of-tomatoes.webp | https://pixabay.com/photos/shopping-venture-miniature-tomatoes-5187701/ | Pixabay Content License | HOerwin56
+- coats-on-hangers-rail.webp | https://pixabay.com/photos/hanger-cloths-jacket-coat-outer-4570806/ | Pixabay Content License | yatsusimnetcojp
+- electrician-pliers-and-bulbs.webp | https://pixabay.com/photos/electricity-tool-electric-3962788/ | Pixabay Content License | Romario99
+- grey-sofa-and-armchair.webp | https://pixabay.com/photos/living-room-chair-sofa-couch-home-2155376/ | Pixabay Content License | ErikaWittlieb
+- roof-slates-falling-off.webp | https://pixabay.com/photos/background-template-wood-old-slate-1223802/ | Pixabay Content License | congerdesign
