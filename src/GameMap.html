@@ -29,7 +29,6 @@ function css(){ if(document.getElementById('gm-css')) return; const s=document.c
 body.gm-on{overflow:hidden}
 body.gm-on #tlcash,body.gm-on .pf-card{display:none!important}
 body.gm-nav .pf-card{bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
-body.gm-nav #mupill{bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
 body.gm-nav:not(.gm-on) #app{padding-bottom:96px}
 #gm{position:fixed;inset:0;z-index:30;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif;
  background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%);display:none}
@@ -914,7 +913,7 @@ let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.p
       It says hello, shows his streak and money, his next level (game name + the real skill) with one big PLAY, and today's vort in one line.
       Chizuk is one tap away. The B'Simcha morning pop-up is marked as shown for today so it does not follow.
    2. Every other pop-up on the map (chizuk, vort, joke book, stories) gets the game look, not the old white card.
-   3. The music player is a small button under the three dots, at the end of the XP bar (HoS 2026-11-22: never behind the menu); the "Now playing" banner no longer covers the map.
+   3. Music: play/pause and next are in the corner menu's music pill (HoS 2026-11-22); the "Now playing" banner no longer covers the map.
    Display only: no data, money or mastery changes. */
 (function(){
  const st2=document.createElement('style'); st2.id='gmw-css'; st2.textContent=`
@@ -977,9 +976,6 @@ body.gm-lesson .overlay{background:rgba(10,7,38,.78)!important;backdrop-filter:b
 body.gm-nav #pf-cf{background:linear-gradient(180deg,rgba(123,97,255,.97),rgba(79,140,255,.97) 50%,rgba(34,184,240,.97))}
 body.gm-nav #pf-cf .bx{box-shadow:0 0 40px rgba(255,212,59,.35),0 10px 0 #B45309}
 body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 55%,#FF9F1C);color:#2B0A3D;font-weight:900;box-shadow:0 5px 0 #B45309}
-body.gm-nav.gm-on #mupill{top:calc(60px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));left:auto!important;bottom:auto!important;gap:4px;padding:2px 2px 2px 8px;z-index:33}
-body.gm-nav.gm-on #mupill .mpt{display:none}body.gm-nav.gm-on #mupill .mueq{height:16px;gap:3px}body.gm-nav.gm-on #mupill .mueq i{width:4px}body.gm-nav.gm-on #mupill .mpnext{width:26px;height:26px;font-size:12px}
-body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
 `; document.head.appendChild(st2);
  const today=()=>{ const d=new Date(); return d.getFullYear()*1000+Math.floor((d-new Date(d.getFullYear(),0,0))/864e5); };
  const S=()=>window.TL_SIMCHA||{};
