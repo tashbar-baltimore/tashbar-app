@@ -583,3 +583,24 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - m2-board-on-saw-table.webp | https://pixabay.com/photos/circular-saw-wood-to-cut-saw-blade-4538951/ | Pixabay Content License | annawaldl
 - m2-blue-car-drawing.webp | https://pixabay.com/illustrations/beetle-volkswagen-car-old-vintage-8273345/ | Pixabay Content License | BiancaVanDijk
 - m2-red-satin-ribbon.webp | https://pixabay.com/photos/red-fabric-textile-macro-detail-2644409/ | Pixabay Content License | Engin_Akyurt
+- hebrew-english-keyboard-keys.webp | https://www.flickr.com/photos/194647935@N05/51791985316 | CC BY 2.0 | ozfir
+- jigsaw-puzzle-pieces-pile.webp | https://pixabay.com/photos/puzzle-pieces-puzzle-patience-mesh-1925425/ | Pixabay Content License | congerdesign
+- rows-of-blue-seats.webp | https://pixabay.com/photos/chairs-hall-empty-rows-of-chairs-6651873/ | Pixabay Content License | wal_172619
+- path-through-meadow.webp | https://pixabay.com/photos/path-stones-meadow-wildflowers-4948402/ | Pixabay Content License | silviarita
+- fork-in-road-signpost.webp | https://pixabay.com/photos/two-way-road-direction-junction-6367854/ | Pixabay Content License | fietzfotos
+- kitchen-white-fridge.webp | https://www.flickr.com/photos/71401718@N00/5024682259 | CC BY 2.0 | Wonderlane
+- animal-prints-in-concrete.webp | https://www.flickr.com/photos/10129828@N00/222957945 | CC BY 2.0 | Auntie K
+- orange-on-hand-juicer.webp | https://pixabay.com/photos/orange-orange-juice-juice-drink-2602120/ | Pixabay Content License | gate74
+- row-of-wall-hooks.webp | https://pixabay.com/photos/driftwood-wood-hanger-natural-2368977/ | Pixabay Content License | RivieraWood
+- pasta-in-colander.webp | https://www.flickr.com/photos/10343926@N02/8589654551 | CC BY-SA 2.0 | timlewisnm
+- house-keys-on-keyring.webp | https://www.flickr.com/photos/34673186@N03/4509654631 | CC BY 2.0 | Keith Williamson
+- ripples-on-water.webp | https://www.flickr.com/photos/47912915@N02/4649617096 | CC BY-SA 2.0 | Tim Geers
+- watermelon-cut-open.webp | https://pixabay.com/photos/watermelon-juicy-fruits-sliced-815072/ | Pixabay Content License | congerdesign
+- single-toothbrush.webp | https://www.flickr.com/photos/35283821@N06/8309027313 | CC BY-SA 2.0 | nishantcm
+- string-of-light-bulbs.webp | https://pixabay.com/photos/light-bulbs-wire-many-bulb-light-1875268/ | Pixabay Content License | qimono
+- pencil-with-eraser-notepad.webp | https://pixabay.com/photos/pencil-notebook-crumpled-paper-1891732/ | Pixabay Content License | congerdesign
+- braided-challah-sesame.webp | https://pixabay.com/photos/challah-bread-traditional-shabbat-4922065/ | Pixabay Content License | svetlanabar
+- old-leather-suitcase-open.webp | https://pixabay.com/photos/suitcase-packaging-to-travel-3297015/ | Pixabay Content License | Tama66
+- red-pen-on-paper.webp | https://pixabay.com/photos/write-pencils-desk-pen-colors-man-5170938/ | Pixabay Content License | ClickerHappy
+- empty-classroom-desks.webp | https://pixabay.com/photos/classroom-school-education-learning-2093743/ | Pixabay Content License | WOKANDAPIX
+- library-bookshelves-lamps.webp | https://pixabay.com/photos/books-library-room-school-study-2596809/ | Pixabay Content License | StockSnap
