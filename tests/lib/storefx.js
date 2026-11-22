@@ -31,6 +31,11 @@ async function effects(pg) {
       const tp = tapKey(F.tapOf(it.id)), tr = F.trailOf(it.id) ? JSON.stringify(F.trailOf(it.id)) : '';
       if (!tp && !tr) fails.push('store: "' + it.name + '" has no effect at all');
       if (tp) { if (tapSeen[tp]) fails.push('store: "' + it.name + '" and "' + tapSeen[tp] + '" make the same tap blast'); else tapSeen[tp] = it.name; }
+      /* HoS 2026-11-22: the store picture must look like what he gets. A tap blast with no trail of its own gets the app's glowing streak
+         when the mouse or finger moves, so its picture must show that streak (pvRibbon), in that blast's own colors. */
+      if (F.pvStatic && it.slot === 'tap' && !tr) { const h = F.pvStatic(it.id, it.emoji), c = (F.tapOf(it.id) || {}).cols || [];
+        if (h.indexOf('class="pvrb"') < 0) fails.push('store: "' + it.name + '" picture is missing the streak the boy really gets when he moves');
+        else if (c.length && h.indexOf(c[c.length - 1]) < 0) fails.push('store: "' + it.name + '" picture streak is not in its own colors'); }
       if (tr) { if (trailSeen[tr]) fails.push('store: "' + it.name + '" and "' + trailSeen[tr] + '" make the same trail'); else trailSeen[tr] = it.name; }
     });
     /* app colors: how different two palettes look (CIE Lab color difference, averaged over the tint, the second tint, the main color and
