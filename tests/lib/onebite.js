@@ -46,6 +46,8 @@ function obkStep(wrong) {
       const P = d.to || d.d, g = d.to ? d.n * d.to / d.d : d.n, cnt = Object.keys(s.on).length;
       if (P <= 6) { if (cnt < g) { for (let i = 0; i < P; i++) if (!s.on[i]) return tap('part', i); } if (cnt > g) { const i = +Object.keys(s.on)[0]; return tap('part', i); } return check(); }
       if (cnt < g) return tap('more'); if (cnt > g) return tap('less'); return check(); }
+    case 'clock': { const g = ((d.h % 12) * 60 + d.m + (d.add || 0) + 1440) % 720, st = d.step || (d.add ? 5 : d.m % 30 === 0 ? 30 : d.m % 15 === 0 ? 15 : 5), t = ((s.t % 720) + 720) % 720;
+      if (t === g && s.moved) return check(); if (Math.floor(t / 60) !== Math.floor(g / 60) && (g - t + 720) % 720 >= 60) return tap('hf'); return tap(st >= 60 ? 'hf' : 'mf'); }
     case 'listen': { const j = w ? s.o.findIndex((o, k) => o !== S(d.a) && !s.off[k]) : s.o.indexOf(S(d.a)); return tap('pick', j); }
   }
   return 'unknown type ' + d.type;
@@ -147,6 +149,8 @@ module.exports = async function oneBiteTests(pg) {
         your: [{ type: 'tenframe', n: 0, start: 3 }, { type: 'match', pairs: [['one hundred thirteen', '113'], ['one hundred four', '104'], ['seventeen', '17']] }, { type: 'findall', grid: ['🍎\n🍎', '🍎', '🍎\n🍎', '🍐'], find: '🍎\n🍎', findSay: 'two apples' }] } },
       { name: 'hop "how many hops?" (think addition, missing addend), a wrong pick gently refused', opt: { wrongAt: 0 }, want: { kit: 5, your: 3 }, bite: { band: 'B23', do: [{ type: 'hop', start: 7, add: 6, ask: 'hops', q: '13 - 7 = ?' }, { type: 'tenframe', n: 6, start: 2 }],
         your: [{ type: 'hop', start: 8, add: 5, ask: 'hops', o: ['4', '5', '6'], q: '8 + ? = 13' }, { type: 'blocks', n: 23 }, { type: 'hop', start: 20, add: 50, unit: 10, ask: 'hops', q: 'How many tens from 20 to 70?' }] } },
+      { name: 'clock: hour, half hour, 5 minutes, elapsed time', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'clock', h: 3, m: 0 }, { type: 'clock', h: 7, m: 30 }],
+        your: [{ type: 'clock', h: 10, m: 25 }, { type: 'tenframe', n: 5 }, { type: 'clock', h: 11, m: 40, add: 35 }] } },
       { name: 'fraction bar: shade, equal fraction (tap parts and More/Less) and split', want: { kit: 5, your: 3 }, bite: { band: 'E45', do: [{ type: 'fbar', n: 3, d: 4 }, { type: 'fbar', n: 1, d: 2, to: 6, split: true }],
         your: [{ type: 'fbar', n: 2, d: 3, to: 6 }, { type: 'match', pairs: [['1/2', '0.5'], ['1/4', '25%'], ['3/4', '0.75']] }, { type: 'fbar', n: 5, d: 8, why: { q: 'Why 5 parts?', o: ['The top number says 5', 'There are 8 parts'], a: 'The top number says 5' } }] } } ];
     for (const f of fixtures) {

@@ -20,6 +20,7 @@
    sort      {type:'sort', bins:['Circle','Not a circle'], cards:[['⚪',0],['🔺',1]]}   cards into 2-3 bins
    trace     {type:'trace', glyph:'b', he:false}              finger-trace the dotted letter; passes at about 80% covered
    fbar      {type:'fbar', n:3, d:4}   shade 3/4 · {type:'fbar', n:1, d:2, to:4}   shade the fourths bar to equal 1/2 · {type:'fbar', n:1, d:2, to:6, split:true}   cut 1/2 into 6 parts (= 3/6)
+   clock     {type:'clock', h:3, m:30}   set the hands (step 60/30/15/5 from m, or step:5) · {type:'clock', h:2, m:15, add:45}   show the time 45 minutes later (elapsed)
    listen    {type:'listen', hear:'buh', clip:'letter-sound:b', o:['b','d','p'], a:'b', he:false}   hear it, tap the match
    pic:'art:apple' uses the K-1 games' drawn pictures (KMG.ART). Hebrew (he:true) is never spoken by a computer voice; use clip.
    No double slash in this file (HtmlService rule). */
@@ -304,6 +305,39 @@ T.fbar={ check:true,
     return {ok:false,msg:cnt>g?'Too much is shaded. Tap a part to take it off.':'Not enough yet. Shade more parts.'}; },
   solve(d,s){ if(T.fbar.mode(d)==='split'){ s.parts=d.to; return; } s.on={}; for(let i=0;i<T.fbar.goal(d);i++) s.on[i]=1; } };
 
+/* ---------- clock: set the hands to a time (step 60 / 30 / 15 / 5 minutes); with add, show the time that much later (elapsed time) ---------- */
+function ckFmt(t){ t=((t%720)+720)%720; const h=Math.floor(t/60)||12, m=t%60; return h+':'+(m<10?'0':'')+m; }
+function ckSay(t){ t=((t%720)+720)%720; const h=Math.floor(t/60)||12, m=t%60; return m===0?h+" o'clock":m===30?'half past '+h:ckFmt(t); }
+function ckDur(a){ a=Math.abs(a); const h=Math.floor(a/60), m=a%60; return (h?h+(h===1?' hour':' hours'):'')+(h&&m?' and ':'')+(m?m+' minutes':''); }
+T.clock={ check:true,
+  step(d){ return d.step||(d.add?5:d.m%30===0?30:d.m%15===0?15:5); },
+  goal(d){ return ((d.h%12)*60+d.m+(d.add||0)+720*2)%720; },
+  err(d){ if(!num(d.h)||d.h<1||d.h>12||d.h%1) return 'h must be a whole hour from 1 to 12'; if(!num(d.m)||d.m<0||d.m>59||d.m%1) return 'm must be whole minutes from 0 to 59';
+    const st=T.clock.step(d); if([5,10,15,30,60].indexOf(st)<0) return 'step must be 5, 10, 15, 30 or 60 minutes'; if(d.m%st) return 'm must be a multiple of step ('+st+')';
+    if(d.add!=null&&(!num(d.add)||d.add===0||Math.abs(d.add)>=720||d.add%st)) return 'add (minutes later) must be a multiple of step, not 0, under 12 hours'; return ''; },
+  init(d){ return {t:d.add?((d.h%12)*60+d.m):0}; },
+  say(d){ return d.add?'It is '+ckSay((d.h%12)*60+d.m)+'. Show the time '+ckDur(d.add)+(d.add>0?' later.':' earlier.'):'Set the clock to '+ckSay((d.h%12)*60+d.m)+'.'; },
+  how(d){ const st=T.clock.step(d); if(d.add) return 'Move the long hand one jump at a time and count the minutes. Each number on the clock is 5 minutes; all the way around is 1 hour.';
+    if(st>=30) return "The short hand points to the hour. The long hand on 12 means o'clock. The long hand on 6 means half past.";
+    return 'The short hand points to the hour. The long hand points to the minutes: count by 5s around the clock, 5, 10, 15.'; },
+  label(d){ return d.add?'Clock: '+ckFmt((d.h%12)*60+d.m)+(d.add>0?' + ':' - ')+ckDur(d.add):'Clock: set '+ckFmt((d.h%12)*60+d.m); },
+  view(d,s,c){ const t=((s.t%720)+720)%720, R=100, cx=110, cy=110, st=T.clock.step(d), ha=t/720*360, ma=(t%60)*6; let g='<svg class="obk-ckface" viewBox="0 0 220 220" role="img" aria-label="clock showing '+ckFmt(t)+'">';
+    g+='<circle cx="110" cy="110" r="104" fill="#fff" stroke="#1F2A44" stroke-width="5"/>';
+    for(let k=0;k<60;k++){ const a=k*6*Math.PI/180, r1=k%5?94:88; g+='<line x1="'+(cx+Math.sin(a)*r1).toFixed(1)+'" y1="'+(cy-Math.cos(a)*r1).toFixed(1)+'" x2="'+(cx+Math.sin(a)*98).toFixed(1)+'" y2="'+(cy-Math.cos(a)*98).toFixed(1)+'" stroke="#1F2A44" stroke-width="'+(k%5?1:3)+'"/>'; }
+    for(let k=1;k<=12;k++){ const a=k*30*Math.PI/180; g+='<text x="'+(cx+Math.sin(a)*74).toFixed(1)+'" y="'+(cy-Math.cos(a)*74+8).toFixed(1)+'" font-size="22" font-weight="800" text-anchor="middle" fill="#1F2A44">'+k+'</text>'; }
+    const hand=(a,len,w,col)=>'<line x1="110" y1="110" x2="'+(cx+Math.sin(a*Math.PI/180)*len).toFixed(1)+'" y2="'+(cy-Math.cos(a*Math.PI/180)*len).toFixed(1)+'" stroke="'+col+'" stroke-width="'+w+'" stroke-linecap="round"/>';
+    g+=hand(ha,52,9,'#1F2A44')+hand(ma,84,5,'#3B6FD8')+'<circle cx="110" cy="110" r="7" fill="#FF7A3D"/></svg>';
+    const mins=st>=60?'':'<div class="obk-ckrow"><span class="obk-cklab">Long hand: minutes</span><button class="obk-btn" data-obk="mb" aria-label="minutes back '+st+'">◀ '+st+' min</button><button class="obk-btn obk-pri" data-obk="mf" aria-label="minutes forward '+st+'">'+st+' min ▶</button></div>';
+    return g+(c.guided||s.over?'<p class="obk-count sm" aria-live="polite">'+ckFmt(t)+'</p>':'')+'<div class="obk-ck">'+
+      '<div class="obk-ckrow"><span class="obk-cklab">Short hand: hour</span><button class="obk-btn" data-obk="hb" aria-label="hour back">◀</button><button class="obk-btn obk-pri" data-obk="hf" aria-label="hour forward">▶</button></div>'+mins+'</div>'; },
+  tap(d,s,a){ const st=T.clock.step(d); if(a==='hf') s.t+=60; else if(a==='hb') s.t-=60; else if(a==='mf') s.t+=st; else if(a==='mb') s.t-=st; else return; s.t=((s.t%720)+720)%720; s.moved=true; },
+  ready(d,s){ return !!s.moved; },
+  judge(d,s){ const g=T.clock.goal(d), t=((s.t%720)+720)%720; if(t===g) return {ok:true};
+    if(Math.floor(t/60)===Math.floor(g/60)) return {ok:false,msg:'The hour is right. Look at the long hand: count the minutes by 5s.'};
+    if(t%60===g%60) return {ok:false,msg:'The long hand is right. Now move the short hand to the hour.'};
+    return {ok:false,msg:'Not yet. Short hand to the hour, long hand to the minutes.'}; },
+  solve(d,s){ s.t=T.clock.goal(d); } };
+
 /* ---------- fit-text (after every draw) ---------- */
 const FIT='.obk .obk-card,.obk .obk-fc,.obk .obk-m,.obk .obk-opt,.obk .obk-bin-t,.obk .obk-tile,.obk .obk-slot,.obk-q';
 function txtRects(el){ const out=[], w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT); let n;
@@ -427,6 +461,9 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-fb{ display:flex; width:100%; max-width:420px; height:46px; border:3px solid #1F2A44; border-radius:8px; overflow:hidden; background:#fff; } .obk-fb.big{ height:64px; }
 .obk-fp{ flex:1 1 0; min-width:0; border:0; border-right:2px solid #1F2A44; background:#fff; padding:0; display:block; } .obk-fp:last-child{ border-right:0; } .obk-fp.on{ background:#FFB347; }
 .obk-fb button.obk-fp{ cursor:pointer; }
+.obk-ckface{ width:min(200px,52vw); height:auto; }   /* not .obk-clock: that is the activity box's own class */
+.obk-ck{ display:flex; flex-direction:column; gap:8px; align-items:center; width:100%; } .obk-ckrow{ display:flex; flex-wrap:wrap; gap:4px 10px; justify-content:center; } .obk-ckrow .obk-btn{ flex:none; white-space:nowrap; min-width:calc(var(--tap) * 1.3); }
+.obk-cklab{ flex-basis:100%; font-weight:900; font-size:14px; color:#5B6478; text-align:center; }
 .ob-M68 .obk-obj,.ob-M68 .obk-card{ font-size:calc(var(--tap) * .5); }
 `; document.head.appendChild(s); };
 })();
