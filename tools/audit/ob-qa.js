@@ -15,7 +15,7 @@ const B = require('../../tests/lib/build.js');
 const FAKE = require('./fake.js');
 const OUT = path.join(__dirname, 'out'); fs.mkdirSync(OUT, { recursive: true });
 const LANES = { OneBiteDataMath: 'B (Math Gr K-3)', OneBiteDataMath2: 'B2 (Math Gr 4-8)', OneBiteDataRead: 'C (Reading K-1)', OneBiteDataWrit: 'C2 (Writing and Language)',
-  OneBiteDataRead2: 'C3 (Reading Gr 2-8)', OneBiteDataKodesh: 'D (Kriyah)', OneBiteDataMore: 'E (Science/SS/Computing)' };
+  OneBiteDataRead2: 'C3 (Reading Gr 2-8)', OneBiteDataUpper: 'U (upper grades)', OneBiteDataKodesh: 'D (Kriyah)', OneBiteDataMore: 'E (Science/SS/Computing)' };
 
 /* which data file (lane) writes each id: the last file that mentions 'ID' wins */
 function laneMap() { const m = {};
@@ -89,6 +89,18 @@ function laneMap() { const m = {};
       if (band === 'E45' && !all.some(d => d.why)) add('age', 'Gr 4-5 lesson has no "tap the reason" (why:{q,o,a}) on any activity', 'add why to 1-2 activities');
       if (band === 'M68') { const baby = all.filter(d => d.type === 'count' || d.type === 'trace' || (d.type === 'tenframe' && d.n <= 10)).length; if (baby) add('age', 'Gr 6-8 lesson uses ' + baby + ' little-kid activities (count / trace / small ten-frame)', 'use blocks, tiles, sort, match, hop with real numbers');
         if (all.filter(d => d.pic && !/^art:/.test(S(d.pic))).length > 2) add('age', 'Gr 6-8 lesson has many cartoon pictures', 'fewer pictures for Masters'); }
+      /* QUALITY ROUND (HoS 2026-11-22): proxies a script can see for the 9-point standard (the scores themselves are a person's or reviewer's) */
+      if (D.length < 2 || Y.length < 5) add('quality', 'progression: ' + D.length + ' guided + ' + Y.length + ' practice; the standard is 2 guided + 5 practice that climb easy → hard', 'add activities so do 1-2 are the easiest case and your 5 is a real-world / near-transfer case');
+      all.forEach((d, k) => { const tag = (k < D.length ? 'do ' + (k + 1) : 'your ' + (k - D.length + 1)) + ' (' + d.type + ')';
+        const dg = (d.w || []).map(Number), seq = dg.length > 2 && dg.every((v, i) => i < 2 || v - dg[i - 1] === dg[1] - dg[0]) && dg[1] !== dg[0];   /* 2,4,6,8 is ordering a sequence: fine */
+        if (d.type === 'tiles' && !seq && (d.w || []).every(x => /^\d$/.test(S(x)))) add('quality', tag + ': tiles only type the final number (' + d.w.join('') + ') - no thinking step', 'use blocks to build the regrouping, a hop to show the strategy, or tiles for the ORDER of the method steps');
+        if (d.type === 'blocks' && d.q && /^\s*\d+\s*$/.test(S(d.q))) add('quality', tag + ': blocks only rebuild the answer shown in q', 'ask for the sum or the regrouping, not a copy'); });
+      const ob = b.oops || {}, wrongTxt = low(ob.wrong), allTxt = low(JSON.stringify(all));
+      const misc = all.some(d => /mistake|wrong|oops|fix|right way|true|false|not /i.test(JSON.stringify([d.bins, d.say, d.q, d.findSay]))) || (wrongTxt.length > 0 && allTxt.indexOf(wrongTxt) >= 0);
+      if (b.oops && !misc) add('quality', 'misconception: no activity practises the Mistake Detective error ("' + S(ob.wrong).slice(0, 40) + '")', 'add a sort "right way / mistake", a findall of the mistake, or a match of the error to its fix, using the oops');
+      if (band === 'E45' && all.filter(d => d.why).length < 2) add('quality', 'Gr 4-5: "tap the reason" (why) on ' + all.filter(d => d.why).length + ' activities; the standard is 2 or more', 'add why:{q,o,a} to 2 activities');
+      if (band === 'M68' && !JSON.stringify(b.watch || '').match(/chavrusa|teach it back|explain/i)) add('quality', 'Gr 6-8: no "teach it back" / chavrusa step in Watch Me', "add a watch step: 'Tell your chavrusa the 3 steps…'");
+      if (band === 'K1' && !/"type":"(chant|move)"/.test(JSON.stringify([b.watch, b.ready, b.do, b.your])) && !b.sing) add('quality', 'K1: no song/chant or movement in the lesson (the player adds a generic wiggle break)', 'add a chant or move model to a watch step');
       /* d) variety */
       const kinds = {}; all.forEach(d => kinds[d.type] = 1); if (Object.keys(kinds).length < 3) add('variety', 'only ' + Object.keys(kinds).length + ' kinds of activity (' + Object.keys(kinds).join(', ') + ')', 'mix in a 3rd kind');
       /* e) taught, then asked */
@@ -114,7 +126,7 @@ function laneMap() { const m = {};
             if (s < mn && !seen['tg' + el.className + k]) { seen['tg' + el.className + k] = 1; add('layout', tag + ': a tap target is ' + Math.round(r.width) + 'x' + Math.round(r.height) + ' px (' + el.className.split(' ')[0] + '); want ' + mn, band === 'K1' ? 'fewer items in the grid (K1 targets are 76 px)' : 'fewer items', s < 44 ? 'fail' : 'warn'); } }); };
         meas(); let n = 0, last = '';
         while (n++ < 60) { const s = p.ob.kit && p.ob.kit.s; if (!s || s.over) break; const a = window.__obkStep(false); if (/^no |missing|unknown|nokit/.test(a)) { add('kit', tag + ': cannot be finished by tap (' + a + ')', 'check the data', 'fail'); break; } await sleep(1); meas(); last = a; }
-        const s = p.ob.kit && p.ob.kit.s; if (s && !s.over) add('kit', tag + ': not finished after 60 taps', 'check the data', 'fail'); else if (s && !s.ok) add('kit', tag + ': the right answer (by tap) was not accepted', 'check the answer data', 'fail');
+        const s = p.ob.kit && p.ob.kit.s; if (s && !s.over) add('kit', tag + ': not finished after 60 taps', 'check the data', 'fail'); else if (s && !s.ok) add('kit', tag + ': the right answer (by tap) was not accepted (' + (s.msg || '') + (d.type === 'trace' ? ' cover ' + Math.round(OBK.types.trace.cover(s) * 100) + '%, ' + (s.tgt || []).length + ' dots, stray ' + Object.keys(s.stray || {}).length : '') + ')', 'check the answer data', 'fail');
       }
       out[id] = { band, kinds: all.map(d => d.type), n: all.length, f };
     }
