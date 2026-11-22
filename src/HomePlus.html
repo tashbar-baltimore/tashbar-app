@@ -320,7 +320,8 @@ let LIVE=0;
 /* sty (optional; else the Store's tap blast, window.tlTapStyle): {cols:[colors], em:[little pictures], sq:square dots, big:wider burst} */
 /* NAMED BLASTS (HoS 2026-11-20: "be a little more creative and make them look like their titles"). A Store tap blast with a kind gets
    its own burst on a tap (swipes keep the light splash in the same colors): rainbow rings, firework sparks, falling confetti, flipping gold
-   coins, spinning stars, twinkling sparkles, floating bubbles, a comet flash, rising flames. */
+   coins, spinning stars, twinkling sparkles, floating bubbles, a comet flash, rising flames; and (2026-11-22) one big glowing star, swirling
+   rainbow streamers, a row of menorah lights. */
 function kindBurst(x,y,s){ const K=s.kind, cols=(s.cols&&s.cols.length)?s.cols:COLS, R=Math.random;
  const mk=(cls,css,txt)=>{ const d=document.createElement('i'); d.className=cls; d.style.left=x+'px'; d.style.top=y+'px'; if(css) d.style.cssText+=';'+css; if(txt) d.textContent=txt; document.body.appendChild(d); return d; };
  const go=(d,kf,o)=>{ const a=d.animate(kf,o); a.onfinish=()=>d.remove(); };
@@ -338,6 +339,14 @@ function kindBurst(x,y,s){ const K=s.kind, cols=(s.cols&&s.cols.length)?s.cols:C
  if(K==='stars'){ const em=s.em||['⭐']; for(let k=0;k<8;k++){ const a=k/8*Math.PI*2, dist=38+R()*18, d=mk('hpem','font-size:'+(16+R()*10)+'px',em[k%em.length]);
    go(d,[{transform:'translate(0,0) rotate(0deg) scale(.3)',opacity:1},{transform:'translate('+Math.cos(a)*dist+'px,'+Math.sin(a)*dist+'px) rotate(200deg) scale(1.3)',opacity:1,offset:.6},{transform:'translate('+Math.cos(a)*dist*1.15+'px,'+Math.sin(a)*dist*1.15+'px) rotate(260deg) scale(0)',opacity:0}],{duration:760,easing:'ease-out'}); }
   const f=mk('hpdot','width:18px;height:18px;margin:-9px 0 0 -9px;background:radial-gradient(circle,#fff,#FDE047 50%,rgba(253,224,71,0))'); go(f,[{transform:'scale(.3)',opacity:1},{transform:'scale(2.6)',opacity:0}],{duration:420}); return; }
+ if(K==='starpop'){ const g=mk('hpdot','width:40px;height:40px;margin:-20px 0 0 -20px;background:radial-gradient(circle,rgba(255,247,174,.95),rgba(253,224,71,.4) 50%,rgba(253,224,71,0) 70%)'); go(g,[{transform:'scale(.3)',opacity:1},{transform:'scale(2.4)',opacity:0}],{duration:650});
+  const d=mk('hpem','font-size:34px;width:40px;height:40px;margin:-20px 0 0 -20px','🌟'); go(d,[{transform:'scale(.2) rotate(-30deg)',opacity:0},{transform:'scale(1.35) rotate(10deg)',opacity:1,offset:.3},{transform:'scale(1) rotate(0deg)',opacity:1,offset:.7},{transform:'translateY(-14px) scale(.8)',opacity:0}],{duration:1100,easing:'ease-out'}); return; }
+ if(K==='ribbon'){ for(let k=0;k<14;k++){ const a=k/14*Math.PI*2, dist=45+R()*30, c=cols[k%cols.length], deg=a*180/Math.PI, sp=(k%2?1:-1)*(160+R()*160);
+   const d=mk('hpdot','width:5px;height:22px;margin:-11px 0 0 -2.5px;border-radius:3px;background:'+c);
+   go(d,[{transform:'translate(0,0) rotate('+deg+'deg) scale(.3)',opacity:1},{transform:'translate('+Math.cos(a)*dist*.6+'px,'+Math.sin(a)*dist*.6+'px) rotate('+(deg+sp*.5)+'deg) scale(1)',opacity:1,offset:.45},{transform:'translate('+Math.cos(a)*dist+'px,'+(Math.sin(a)*dist+18)+'px) rotate('+(deg+sp)+'deg) scale(.8)',opacity:0}],{duration:950+R()*200,easing:'cubic-bezier(.2,.7,.35,1)'}); } return; }
+ if(K==='menorah'){ const bar=mk('hpdot','width:96px;height:4px;margin:12px 0 0 -48px;border-radius:2px;background:linear-gradient(90deg,#CBD5E1,#FACC15,#CBD5E1)'); go(bar,[{opacity:0},{opacity:1,offset:.15},{opacity:1,offset:.8},{opacity:0}],{duration:1300});
+  for(let k=0;k<9;k++){ const sh=k===4, d=mk('hpem','font-size:'+(sh?17:14)+'px;margin-left:'+((k-4)*11-7)+'px;margin-top:'+(sh?-22:-12)+'px','🔥');
+   go(d,[{transform:'scale(0)',opacity:0},{transform:'scale(1.2)',opacity:1,offset:.25},{transform:'scale(1)',opacity:1,offset:.75},{transform:'translateY(-10px) scale(.6)',opacity:0}],{duration:1300,delay:(sh?0:60+Math.abs(k-4)*70),fill:'backwards'}); } return; }
  if(K==='sparkle'){ for(let k=0;k<14;k++){ const a=R()*Math.PI*2, dist=R()*40, d=mk('hpem','font-size:'+(10+R()*10)+'px','✨');
    go(d,[{transform:'translate('+Math.cos(a)*dist+'px,'+Math.sin(a)*dist+'px) scale(0) rotate(0deg)',opacity:0},{transform:'translate('+Math.cos(a)*dist+'px,'+Math.sin(a)*dist+'px) scale(1.25) rotate(45deg)',opacity:1,offset:.45},{transform:'translate('+Math.cos(a)*dist+'px,'+(Math.sin(a)*dist+6)+'px) scale(0) rotate(90deg)',opacity:0}],{duration:620,delay:R()*320,fill:'backwards'}); } return; }
  if(K==='bubbles'){ for(let k=0;k<8;k++){ const sz=10+R()*16, dx=(R()-.5)*70, up=50+R()*60;
