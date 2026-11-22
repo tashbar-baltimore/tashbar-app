@@ -6,15 +6,224 @@
 window.ONE_BITE=window.ONE_BITE||{};
 (function(B){
 
-/* ---- PILOT 2026-11-21: Kriyah (K1). Every Hebrew letter below was copied by script from the lesson's own data (LK.KRI.L01.01.a), never typed. REBBE: review after live. ---- */
-B['LK.KRI.L01.01.a']={ band:'K1', pic:"א", today:'Meet the first letter friends', why:'Every letter has a shape and a sound. Letters make the words of the siddur and the Chumash!',
-  watch:{ q:'Which letter says b?', steps:[
-    {t:'Start on the right side. Hebrew reads right to left.', m:{type:'tiles',w:["א","בּ","ג","ד","ה"],he:true}},
-    {t:'Look for a little house with a floor.', m:{type:'tiles',w:["בּ"],he:true,hi:[0]}},
-    {t:'Peek inside. There is a dot! A house with a dot says b.'},
-    {t:'Sing it: Aleph, Beis, Gimmel, Daled, Hei!', m:{type:'chant',lines:['Aleph, Beis,','Gimmel, Daled, Hei!']}}], a:"בּ" },
-  oops:{ q:'Which letter says h?', wrong:"This one, because it has a roof: ד", right:"ה", why:"Both have roofs. The h has a little left leg too." },
-  ways:['letter tiles','song','Mistake Detective'], done:'You know your first letter friends!',
-  board:{ one:'Shape plus sound: a house with a dot says b.', activity:'Trace the letters in a sand tray while saying each sound.', mistakes:['Mixing up the two roof letters','Forgetting the dot in the house letter','Reading left to right'] } };
+
+/* ---- ROUND 2, LANE D (Kodesh): Kriyah bites with hands-on activities. Plan: docs/ONE-BITE-ROUND2.md.
+   Every Hebrew letter, nekuda and word below was copied by script from the lesson data (BANK_ALL) or the K Kriyah code-point table (kkriyah/kriyah-lib.js), never typed. REBBE: review after live.
+   Read-aloud lines (today, why, say, how, watch steps, oops) are English only; Hebrew is shown only in tiles, cards, grids and choices (he:true).
+   No listen: Hebrew is never spoken by a computer voice, and there are no recorded Kriyah clips yet. ---- */
+B['LK.KRI.L01.01.a']={ band:"K1",
+  pic:"א",
+  today:"Meet the first letter friends",
+  why:"Every letter has a shape and a sound. Letters make the words of the siddur and the Chumash!",
+  ready:[{"q":"Where does Hebrew start: the right side or the left side?","o":["Right side","Left side"],"a":"Right side"}],
+  watch:{ q:"Which letter says h?", steps:[
+    {t:"Hebrew starts on the right. Aleph comes first. Aleph is quiet.", m:{"type":"tiles","w":["א","בּ","ג","ד"],"he":true,"hi":[0]}},
+    {t:"Beis is a house with a dot: b. Gimmel kicks a foot: g.", m:{"type":"tiles","w":["א","בּ","ג","ד"],"he":true,"hi":[1,2]}},
+    {t:"Daled has a flat roof and one leg. Daled says d.", m:{"type":"tiles","w":["א","בּ","ג","ד"],"he":true,"hi":[3]}},
+    {t:"Hei has a roof and two legs. The left leg floats. Hei says h.", m:{"type":"tiles","w":["ד","ה"],"he":true,"hi":[1]}},
+    {t:"Sing it: Aleph, Beis, Gimmel, Daled, Hei!", m:{"type":"chant","lines":["Aleph, Beis, Gimmel, Daled, Hei,","Right to left, we read this way!"]}}], a:"ה" },
+  oops:{"q":"Which letter says h?","wrong":"Daled, because it has a roof","right":"Hei, with a roof and two legs","why":"Both have roofs. Hei has a little left leg too."},
+  ways:["letter tiles","song","find it","match","trace","Mistake Detective"],
+  done:"You know your first letter friends: Aleph to Hei!",
+  board:{"one":"Shape plus sound: a house with a dot says b.","activity":"Trace the letters in a sand tray while saying each sound.","mistakes":["Mixing up Daled and Hei (count the legs)","Forgetting the dot in Beis","Reading left to right"]},
+  do:[
+   {type:"tiles", w:["א","בּ","ג","ד"], say:"Build Aleph to Daled. Start on the right side.", how:"Aleph goes first, on the right. Then Beis, Gimmel, Daled.", he:true},
+   {type:"findall", grid:["ד","ה","ד","ג","ה","ד","בּ","ד"], find:"ד", findSay:"Daled", say:"Tap every Daled. A roof and one leg.", how:"Daled has a flat roof and one leg. Hei has two legs.", he:true}],
+  your:[
+   {type:"match", pairs:[["b","בּ"],["d","ד"],["h","ה"]], say:"Match each letter to its sound.", how:"Beis has a dot: b. Daled has one leg: d. Hei has two legs: h.", he:true},
+   {type:"findall", grid:["ה","ד","ה","א","ה","ד","ג","ה"], find:"ה", findSay:"Hei", say:"Tap every Hei. Hei says h.", how:"Look for a roof with two legs. The left leg floats.", he:true},
+   {type:"sort", bins:["Dot inside","No dot"], cards:[["בּ",0],["ב",1],["ג",1],["ד",1],["ה",1]], say:"Dot inside or no dot? Sort them.", how:"Look in the middle of each letter. Only Beis has a dot inside.", he:true},
+   {type:"trace", glyph:"ג", name:"Gimmel", say:"Trace Gimmel. Do not forget his little foot.", how:"Start at the top. Go down, then kick the little foot out.", he:true},
+   {type:"tiles", w:["ג","ד","ה"], extra:["בּ"], say:"Put them in order. Start with Gimmel on the right.", how:"Gimmel, then Daled, then Hei. Right to left.", he:true}] };
+
+B['LK.KRI.L01.01.b']={ band:"K1",
+  pic:"ו",
+  today:"Meet Vav, Zayin, Ches, Tes and Yud",
+  why:"Five more letters, and you can find them on every mezuzah!",
+  ready:[{"q":"Which letter says h?","o":["ה","ד","א"],"a":"ה"}],
+  bridge:"LK.KRI.L01.01.a",
+  bridgeName:"Aleph-Beis 1: Aleph to Hei",
+  watch:{ q:"Which letter says ch?", steps:[
+    {t:"Five new friends: Vav, Zayin, Ches, Tes, Yud. Start on the right.", m:{"type":"tiles","w":["ו","ז","ח","ט"],"he":true}},
+    {t:"Vav is a tall stick: v. Zayin wears a crown: z.", m:{"type":"tiles","w":["ו","ז","ח","ט"],"he":true,"hi":[0,1]}},
+    {t:"Ches: both legs touch the roof. Hei has a gap. Ches says ch.", m:{"type":"tiles","w":["ח","ה"],"he":true,"hi":[0]}},
+    {t:"Tes is round like a basket: t. Yud is tiny and floats: y.", m:{"type":"tiles","w":["ח","ט","י"],"he":true,"hi":[1,2]}},
+    {t:"Sing it: Vav, Zayin, Ches, Tes, Yud!", m:{"type":"chant","lines":["Vav, Zayin, Ches, Tes, Yud,","Five more friends, and I know you!"]}}], a:"ח" },
+  oops:{"q":"Which letter says y?","wrong":"Vav, because it is a line","right":"Yud, tiny and floating high","why":"Yud is tiny and floats. Vav reaches all the way down."},
+  ways:["letter tiles","song","find it","match","trace","Mistake Detective"],
+  done:"You know Vav, Zayin, Ches, Tes and Yud!",
+  board:{"one":"Ches: both legs hold the roof. Hei: the left leg floats.","activity":"Build Ches and Hei with craft sticks; slide the left leg to make the gap.","mistakes":["Mixing up Ches and Hei","Mixing up Vav and Zayin (look at the head)","Calling Yud a Vav"]},
+  do:[
+   {type:"tiles", w:["ו","ז","ח","ט"], say:"Build Vav to Tes. Start on the right side.", how:"Vav goes first, on the right. Then Zayin, Ches, Tes.", he:true},
+   {type:"findall", grid:["ח","ה","ח","ד","ה","ח","ט","ח"], find:"ח", findSay:"Ches", say:"Tap every Ches. Both legs touch the roof.", how:"Look at the left leg. No gap? It is Ches.", he:true}],
+  your:[
+   {type:"match", pairs:[["t","ט"],["ch","ח"],["y","י"]], say:"Match each letter to its sound.", how:"Tes is a basket: t. Ches says ch. Tiny Yud says y.", he:true},
+   {type:"findall", grid:["ט","ח","ט","ז","ט","ו","ח","ט"], find:"ט", findSay:"Tes", say:"Tap every Tes. Tes says t.", how:"Tes is round at the bottom, like a basket.", he:true},
+   {type:"sort", bins:["Before Ches","After Ches"], cards:[["ו",0],["ז",0],["ט",1],["י",1]], say:"Before Ches or after Ches? Sort them.", how:"Sing it: Vav, Zayin, Ches, Tes, Yud. Ches is in the middle.", he:true},
+   {type:"trace", glyph:"ז", name:"Zayin", say:"Trace Zayin. Give him his crown.", how:"Make the crown on top first. Then go straight down.", he:true},
+   {type:"tiles", w:["ח","ט","י"], extra:["ז"], say:"Put them in order. Start with Ches on the right.", how:"Ches, then Tes, then Yud. Right to left.", he:true}] };
+
+B['LK.KRI.L01.02.a']={ band:"K1",
+  pic:"ל",
+  today:"Meet Kaf, Chaf, Lamed and Mem",
+  why:"Lamed is the tallest letter, and Mem starts words like Mommy!",
+  ready:[{"q":"Which letter says t?","o":["ט","ח","ז"],"a":"ט"}],
+  bridge:"LK.KRI.L01.01.b",
+  bridgeName:"Aleph-Beis 2: Vav to Yud",
+  watch:{ q:"Which letter is the tallest?", steps:[
+    {t:"New friends: Kaf, Lamed and Mem. Yud came just before.", m:{"type":"tiles","w":["י","כּ","ל","מ"],"he":true}},
+    {t:"Kaf is round like a cup, with a dot. Kaf says k.", m:{"type":"tiles","w":["כּ","כ"],"he":true,"hi":[0]}},
+    {t:"No dot? It is Chaf. Chaf says ch, like Ches.", m:{"type":"tiles","w":["כּ","כ"],"he":true,"hi":[1]}},
+    {t:"Lamed is the tallest: l. Mem has a gap at the bottom: m.", m:{"type":"tiles","w":["י","כּ","ל","מ"],"he":true,"hi":[2,3]}},
+    {t:"Sing it: Yud, Kaf, Lamed, Mem!", m:{"type":"chant","lines":["Yud, Kaf, Lamed, Mem,","Lamed reaches up again!"]}}], a:"ל" },
+  oops:{"q":"Which letter says k?","wrong":"Beis, because it has a dot","right":"Kaf, round with a dot","why":"Both have dots. Kaf is round. Beis has a corner at the bottom."},
+  ways:["letter tiles","song","find it","match","trace","Mistake Detective"],
+  done:"You know Kaf, Chaf, Lamed and Mem!",
+  board:{"one":"Kaf is a round cup; a dot inside says k, no dot says ch.","activity":"Stand tall like Lamed; curl like a cup for Kaf.","mistakes":["Mixing up Kaf and Beis","Saying k for Chaf (no dot)","Mixing up Mem and Tes"]},
+  do:[
+   {type:"tiles", w:["י","כּ","ל","מ"], say:"Build Yud to Mem. Start on the right side.", how:"Yud goes first, on the right. Then Kaf, Lamed, Mem.", he:true},
+   {type:"findall", grid:["מ","ט","מ","כ","ט","מ","כּ","מ"], find:"מ", findSay:"Mem", say:"Tap every Mem. Look for the gap at the bottom.", how:"Mem has a little gap at the bottom, on the left.", he:true}],
+  your:[
+   {type:"match", pairs:[["k","כּ"],["l","ל"],["m","מ"]], say:"Match each letter to its sound.", how:"Kaf has a dot: k. Tall Lamed: l. Mem: m.", he:true},
+   {type:"findall", grid:["ל","ו","ל","ז","ל","ו","ז","ל"], find:"ל", findSay:"Lamed", say:"Tap every Lamed. It is the tallest.", how:"Lamed reaches up above all the others.", he:true},
+   {type:"sort", bins:["Dot inside","No dot"], cards:[["כּ",0],["בּ",0],["כ",1],["ל",1],["מ",1]], say:"Dot inside or no dot? Sort them.", how:"Look in the middle of each letter for a dot.", he:true},
+   {type:"trace", glyph:"ל", name:"Lamed", say:"Trace Lamed. Reach up high!", how:"Start at the very top. Come down, then curve.", he:true},
+   {type:"tiles", w:["י","כּ","ל"], extra:["ט"], say:"Put them in order. Start with Yud on the right.", how:"Yud, then Kaf, then Lamed. Right to left.", he:true}] };
+
+B['LK.KRI.L01.02.b']={ band:"K1",
+  pic:"ס",
+  today:"Meet Nun, Samech, Ayin, Pei and Fei",
+  why:"Four new shapes, and one shape makes two sounds!",
+  ready:[{"q":"Which letter says m?","o":["מ","ט","כ"],"a":"מ"}],
+  bridge:"LK.KRI.L01.02.a",
+  bridgeName:"Aleph-Beis 3: Kaf to Mem",
+  watch:{ q:"Which letter says n?", steps:[
+    {t:"New friends: Nun, Samech, Ayin and Pei. Start on the right.", m:{"type":"tiles","w":["נ","ס","ע","פּ"],"he":true}},
+    {t:"Nun sits flat, with no foot. Nun says n. Gimmel kicks a foot.", m:{"type":"tiles","w":["נ","ג"],"he":true,"hi":[0]}},
+    {t:"Samech is round and closed: s. Ayin is quiet, like Aleph.", m:{"type":"tiles","w":["נ","ס","ע","פּ"],"he":true,"hi":[1,2]}},
+    {t:"Pei has a dot: p. No dot? It is Fei. Fei says f.", m:{"type":"tiles","w":["פּ","פ"],"he":true,"hi":[0,1]}},
+    {t:"Sing it: Nun, Samech, Ayin, Pei!", m:{"type":"chant","lines":["Nun, Samech, Ayin, Pei,","A dot says p, no dot says f!"]}}], a:"נ" },
+  oops:{"q":"Which letter says n?","wrong":"Gimmel, because they look alike","right":"Nun, sitting flat","why":"Gimmel kicks a foot out. Nun sits flat."},
+  ways:["letter tiles","song","find it","match","trace","Mistake Detective"],
+  done:"You know Nun, Samech, Ayin, Pei and Fei!",
+  board:{"one":"Pei with a dot says p; with no dot (Fei) it says f.","activity":"Hand by the mouth: p pops, fff blows air.","mistakes":["Mixing up Nun and Gimmel","Saying p for Fei (no dot)","Giving Ayin a sound by itself"]},
+  do:[
+   {type:"tiles", w:["נ","ס","ע","פּ"], say:"Build Nun to Pei. Start on the right side.", how:"Nun goes first, on the right. Then Samech, Ayin, Pei.", he:true},
+   {type:"findall", grid:["פ","פּ","פ","כ","פּ","פ","כּ","פ"], find:"פ", findSay:"Fei, with no dot", say:"Tap every Fei. It has no dot inside.", how:"Look inside the mouth. No dot? It is Fei.", he:true}],
+  your:[
+   {type:"match", pairs:[["n","נ"],["s","ס"],["p","פּ"]], say:"Match each letter to its sound.", how:"Flat Nun: n. Round Samech: s. Pei with a dot: p.", he:true},
+   {type:"findall", grid:["נ","ג","נ","ו","ג","נ","ו","נ"], find:"נ", findSay:"Nun", say:"Tap every Nun. Nun sits flat.", how:"Gimmel kicks a foot. Nun has a flat bottom.", he:true},
+   {type:"sort", bins:["Makes a sound","No sound by itself"], cards:[["נ",0],["ס",0],["פּ",0],["ע",1],["א",1]], say:"Does it make a sound by itself? Sort them.", how:"Ayin and Aleph are quiet. They wait for a vowel.", he:true},
+   {type:"trace", glyph:"ס", name:"Samech", say:"Trace Samech. Go all the way around.", how:"Start at the top. Go around and close the circle.", he:true},
+   {type:"tiles", w:["ס","ע","פּ"], extra:["נ"], say:"Put them in order. Start with Samech on the right.", how:"Samech, then Ayin, then Pei. Right to left.", he:true}] };
+
+B['LK.KRI.L01.02.c']={ band:"K1",
+  pic:"ר",
+  today:"Meet Tzadi, Kuf and Reish",
+  why:"Three new letters: one sits, one dips, one bends.",
+  ready:[{"q":"Which letter says p?","o":["פּ","פ","כּ"],"a":"פּ"}],
+  bridge:"LK.KRI.L01.02.b",
+  bridgeName:"Aleph-Beis 4: Nun to Pei",
+  watch:{ q:"Which letter says r?", steps:[
+    {t:"New friends: Tzadi, Kuf and Reish. Pei came just before.", m:{"type":"tiles","w":["פּ","צ","ק","ר"],"he":true}},
+    {t:"Tzadi has arms and sits on a flat floor. Tzadi says tz.", m:{"type":"tiles","w":["פּ","צ","ק","ר"],"he":true,"hi":[1]}},
+    {t:"Kuf has a roof and a leg that dips low. Kuf says k.", m:{"type":"tiles","w":["ק","ה"],"he":true,"hi":[0]}},
+    {t:"Reish is round on top: r. Daled has a sharp corner: d.", m:{"type":"tiles","w":["ר","ד"],"he":true,"hi":[0]}},
+    {t:"Sing it: Pei, Tzadi, Kuf, Reish!", m:{"type":"chant","lines":["Pei, Tzadi, Kuf, Reish,","Round is r, and sharp is d!"]}}], a:"ר" },
+  oops:{"q":"Which letter says r?","wrong":"Daled, the same shape","right":"Reish, with the round corner","why":"Reish is round on top. Daled pokes out sharp."},
+  ways:["letter tiles","song","find it","match","trace","Mistake Detective"],
+  done:"You know Tzadi, Kuf and Reish!",
+  board:{"one":"Reish is round; Daled has a sharp corner.","activity":"Finger-trace the top right corner: round or sharp?","mistakes":["Mixing up Reish and Daled","Mixing up Kuf and Hei (the leg dips low)","Mixing up Tzadi and Ayin"]},
+  do:[
+   {type:"tiles", w:["פּ","צ","ק","ר"], say:"Build Pei to Reish. Start on the right side.", how:"Pei goes first, on the right. Then Tzadi, Kuf, Reish.", he:true},
+   {type:"findall", grid:["ד","ר","ד","ה","ר","ד","ר","ד"], find:"ד", findSay:"Daled", say:"Tap every Daled. Look for the sharp corner.", how:"Daled pokes out sharp. Reish is round.", he:true}],
+  your:[
+   {type:"match", pairs:[["tz","צ"],["k","ק"],["r","ר"]], say:"Match each letter to its sound.", how:"Tzadi says tz. Kuf dips low: k. Round Reish: r.", he:true},
+   {type:"findall", grid:["ק","ה","ק","ח","ה","ק","ח","ק"], find:"ק", findSay:"Kuf", say:"Tap every Kuf. Its leg dips low.", how:"Kuf has a roof, and its left leg goes below the line.", he:true},
+   {type:"sort", bins:["Round","Has a corner"], cards:[["ר",0],["כּ",0],["ד",1],["בּ",1]], say:"Round or with a corner? Sort them.", how:"Run your finger along each letter. Round, or a corner?", he:true},
+   {type:"trace", glyph:"צ", name:"Tzadi", say:"Trace Tzadi. Two arms and a flat floor.", how:"Make the arms on top, then the flat floor.", he:true},
+   {type:"tiles", w:["פּ","צ","ק"], extra:["ר"], say:"Put them in order. Start with Pei on the right.", how:"Pei, then Tzadi, then Kuf. Right to left.", he:true}] };
+
+B['LK.KRI.L01.02.d']={ band:"K1",
+  pic:"שׁ",
+  today:"Meet Shin, Sin, Tav and Sav",
+  why:"The last letters of the Aleph-Beis! A dot tells the sound.",
+  ready:[{"q":"Which letter says r?","o":["ר","ד","ק"],"a":"ר"}],
+  bridge:"LK.KRI.L01.02.c",
+  bridgeName:"Aleph-Beis 5: Tzadi to Reish",
+  watch:{ q:"Which letter says sh?", steps:[
+    {t:"The last letters: Shin and Tav. Reish came just before.", m:{"type":"tiles","w":["ק","ר","שׁ","תּ"],"he":true}},
+    {t:"Shin has three heads. A dot on the right says sh.", m:{"type":"tiles","w":["שׁ","שׂ"],"he":true,"hi":[0]}},
+    {t:"A dot on the left? It is Sin. Sin says s.", m:{"type":"tiles","w":["שׁ","שׂ"],"he":true,"hi":[1]}},
+    {t:"Tav has a little foot. A dot says t. No dot? Sav says s.", m:{"type":"tiles","w":["תּ","ת"],"he":true,"hi":[0,1]}},
+    {t:"Sing it: dot on the right, sh! Dot on the left, sss!", m:{"type":"chant","lines":["Dot on the right? Sh, shine bright!","Dot on the left? Sss, like a snake!"]}}], a:"שׁ" },
+  oops:{"q":"Which three-branch letter says s?","wrong":"Shin, because it has a dot","right":"Sin, with the dot on the left","why":"Both have a dot. The s dot sits on the left."},
+  ways:["letter tiles","song","find it","match","trace","Mistake Detective"],
+  done:"You know the whole Aleph-Beis, all the way to Tav!",
+  board:{"one":"Shin: dot on the right says sh. Sin: dot on the left says s.","activity":"Point right for sh, left for sss, as you read each card.","mistakes":["Mixing up Shin and Sin","Saying t for Sav (no dot)","Mixing up Tav and Ches"]},
+  do:[
+   {type:"tiles", w:["ק","ר","שׁ","תּ"], say:"Build Kuf to Tav. Start on the right side.", how:"Kuf goes first, on the right. Then Reish, Shin, Tav.", he:true},
+   {type:"findall", grid:["שׁ","שׂ","שׁ","ע","שׂ","שׁ","צ","שׁ"], find:"שׁ", findSay:"Shin, dot on the right", say:"Tap every Shin. The dot is on the right.", how:"Find the three heads. Is the dot on the right? Tap it.", he:true}],
+  your:[
+   {type:"match", pairs:[["sh","שׁ"],["s","שׂ"],["t","תּ"]], say:"Match each letter to its sound.", how:"Right dot: sh. Left dot: s. Tav with a dot: t.", he:true},
+   {type:"findall", grid:["שׂ","שׁ","שׂ","ע","שׁ","שׂ","שׁ","שׂ"], find:"שׂ", findSay:"Sin, dot on the left", say:"Tap every Sin. The dot is on the left.", how:"Find the three heads. Is the dot on the left? Tap it.", he:true},
+   {type:"sort", bins:["Three heads","A little foot"], cards:[["שׁ",0],["שׂ",0],["תּ",1],["ת",1]], say:"Three heads or a little foot? Sort them.", how:"Count the heads on top. Look at the bottom of the left leg.", he:true},
+   {type:"trace", glyph:"ת", name:"Sav", say:"Trace Sav. Do not forget the little foot.", how:"Make the roof, then two legs. Give the left leg its foot.", he:true},
+   {type:"tiles", w:["ר","שׁ","תּ"], extra:["ק"], say:"Put them in order. Start with Reish on the right.", how:"Reish, then Shin, then Tav, the very last letter.", he:true}] };
+
+B['LK.KRI.L01.03.a']={ band:"K1",
+  pic:"ם",
+  today:"Five letters change shape at the end",
+  why:"At the end of a word, five letters wear a new shape. Now you can spot them!",
+  ready:[{"q":"Which letter says sh?","o":["שׁ","שׂ","ע"],"a":"שׁ"}],
+  bridge:"LK.KRI.L01.02.d",
+  bridgeName:"Aleph-Beis 6: Shin to Tav",
+  watch:{ q:"Which one is Final Tzadi?", steps:[
+    {t:"Five letters get a new shape at the end of a word.", m:{"type":"tiles","w":["ך","ם","ן","ף"],"he":true}},
+    {t:"Nun becomes Final Nun: one long line that drops down.", m:{"type":"tiles","w":["נ","ן"],"he":true,"hi":[1]}},
+    {t:"Chaf drops down too. Final Mem is a closed box.", m:{"type":"tiles","w":["כ","ך","מ","ם"],"he":true,"hi":[1,3]}},
+    {t:"Final Fei keeps its tongue. Final Tzadi keeps its arms.", m:{"type":"tiles","w":["פ","ף","צ","ץ"],"he":true,"hi":[1,3]}},
+    {t:"Sing it: Chaf, Mem, Nun, Fei, Tzadi!", m:{"type":"chant","lines":["Chaf, Mem, Nun, Fei, Tzadi,","At the end they change their shape!"]}}], a:"ץ" },
+  oops:{"q":"Where can the closed box go in a word?","wrong":"Anywhere in the word.","right":"Only at the end.","why":"End letters come last. A Mem in the middle has a gap."},
+  ways:["match","find it","sort","trace","song","Mistake Detective"],
+  done:"You know the five end letters!",
+  board:{"one":"Five letters change shape at the end of a word; most drop below the line.","activity":"Line up as a train; the last boy holds an end-letter card.","mistakes":["Mixing up Final Nun and Vav","Mixing up Final Mem and Samech","Mixing up Final Fei and Final Tzadi"]},
+  do:[
+   {type:"match", pairs:[["נ","ן"],["צ","ץ"],["מ","ם"]], say:"Match each letter to its end shape.", how:"An end letter keeps the look of its letter.", he:true},
+   {type:"findall", grid:["ן","ו","ך","ר","ם","ס","ף","ץ"], find:["ן","ך","ם","ף","ץ"], findSay:"end letter", say:"Tap every end letter.", how:"Most end letters drop below the line. Final Mem is a box.", he:true}],
+  your:[
+   {type:"sort", bins:["End letter","Regular letter"], cards:[["ן",0],["ך",0],["ם",0],["ץ",0],["נ",1],["כ",1],["מ",1],["צ",1]], say:"End letter or regular letter? Sort them.", how:"Most end letters drop below the line.", he:true},
+   {type:"findall", grid:["ץ","ף","ץ","ן","ף","ץ","ך","ץ"], find:"ץ", findSay:"Final Tzadi", say:"Tap every Final Tzadi. It keeps its arms.", how:"Final Fei has a tongue. Final Tzadi has arms on top.", he:true},
+   {type:"match", pairs:[["כ","ך"],["פ","ף"],["נ","ן"]], say:"Match each letter to its end shape.", how:"Find the end shape that looks like it, with a long leg.", he:true},
+   {type:"trace", glyph:"ם", name:"Final Mem", say:"Trace Final Mem. Close the box.", how:"Go around all four sides. Close the box.", he:true},
+   {type:"findall", grid:["ן","ו","ז","ן","ו","ן","ז","ן"], find:"ן", findSay:"Final Nun", say:"Tap every Final Nun. It drops down low.", how:"Vav stays on the line. Final Nun drops below it.", he:true}] };
+
+B['LK.KRI.L01.04.a']={ band:"K1",
+  pic:"תּ",
+  today:"Be a letter detective with look-alike letters",
+  why:"You know every letter! A detective checks one small part, so twins never trick him.",
+  ready:[{"q":"Which one is Final Mem?","o":["ם","ס","מ"],"a":"ם"}],
+  bridge:"LK.KRI.L01.03.a",
+  bridgeName:"Aleph-Beis 7: The Final Letters",
+  watch:{ q:"How do we tell twin letters apart?", steps:[
+    {t:"Some letters look like twins. Check one small part.", m:{"type":"tiles","w":["בּ","כּ","ד","ר"],"he":true}},
+    {t:"Vav is a stick. Zayin has a crown. Final Nun drops down.", m:{"type":"tiles","w":["ו","ז","ן"],"he":true}},
+    {t:"Samech is round and closed. Final Mem is a box. Tes opens on top.", m:{"type":"tiles","w":["ס","ם","ט"],"he":true}},
+    {t:"Aleph comes first. Lamed is in the middle. Tav comes last.", m:{"type":"tiles","w":["א","ל","תּ"],"he":true,"hi":[0,1,2]}},
+    {t:"Sing it: Aleph, Hei, Tes, Lamed, Samech, Tzadi, Tav!", m:{"type":"chant","lines":["Aleph, Hei, Tes, Lamed,","Samech, Tzadi, Tav, the end!"]}}], a:"Check one small part!" },
+  oops:{"q":"A tall line drops below the floor. Vav or Final Nun?","wrong":"Vav, because it is a tall line.","right":"Final Nun.","why":"Vav stays on the line. Final Nun goes below."},
+  ways:["find it","letter tiles","match","sort","trace","song","Mistake Detective"],
+  done:"You are a letter detective!",
+  board:{"one":"Look-alikes: find the one part that is different (corner, foot, gap, dot).","activity":"Twin cards: boys hold up the twin and name the one different part.","mistakes":["Mixing up Vav, Zayin and Final Nun","Mixing up Samech, Final Mem and Tes","Losing the order after Lamed"]},
+  do:[
+   {type:"findall", grid:["ו","ז","ן","ו","ז","ו","ן","ו"], find:"ו", findSay:"Vav", say:"Tap every Vav. A plain stick on the line.", how:"Zayin has a crown. Final Nun drops down. Vav does not.", he:true},
+   {type:"tiles", w:["ל","ס","צ","תּ"], extra:["ט"], say:"Put them in order. Start with Lamed on the right.", how:"Lamed, then Samech, then Tzadi, then Tav at the end.", he:true}],
+  your:[
+   {type:"match", pairs:[["round and closed","ס"],["a square box","ם"],["open on top","ט"]], say:"Match each clue to its letter.", how:"Samech is round. Final Mem is square. Tes is open on top.", he:true},
+   {type:"findall", grid:["ם","ס","ט","ם","ס","ם","ט","ם"], find:"ם", findSay:"Final Mem", say:"Tap every Final Mem. It is a square box.", how:"Samech is round. Final Mem has square corners.", he:true},
+   {type:"sort", bins:["Round","Has a corner"], cards:[["כּ",0],["ר",0],["בּ",1],["ד",1]], say:"Round or with a corner? Sort them.", how:"Run your finger along each letter. Round, or a corner?", he:true},
+   {type:"trace", glyph:"ז", name:"Zayin", say:"Trace Zayin. Give him his crown.", how:"Make the crown on top first. Then go straight down.", he:true},
+   {type:"tiles", w:["א","ה","ט","ל"], extra:["ס"], say:"Put them in order. Start with Aleph on the right.", how:"Aleph, then Hei, then Tes, then Lamed.", he:true}] };
+/* ---- END ROUND 2, LANE D ---- */
 })(window.ONE_BITE);
 </script>
