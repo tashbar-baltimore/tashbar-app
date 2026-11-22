@@ -5,8 +5,11 @@
     game-like stuff. Nothing else ... No pop-ups, no nothing."
    WHO: a boy whose roster grade is K or 1 (the server's klMe: K = 0, 1st = 1), or a boy whose map has every subject at Level 1-2
    (a non-TEST boy a rebbe placed at K/1). TEST- boys: only by roster grade, or with ?k1=1 on the address (?k1=0 turns it off on that Chromebook).
-   WHAT: (1) the home is one full-screen game shelf: a giant PLAY for his next game, then every K-1 game lesson as a big picture
-         (One Bite lessons with band K1 and hands-on activities: Math, ABC, Kriyah). No map, tabs, store, missions, money bar or menus.
+   WHAT: (1) the home is one full-screen game path for HIS grade only: the real train / matching / balloon games
+         (Kindergarten, Level 1 only: KL Math, KR ABC, KK Kriyah; Grade 1, Level 2 only: G1M Math, G1R Reading, KK Kriyah), in the order the skills build, one game at a time
+         (the next unlocks when the one before is passed), with a giant PLAY for the next game. No One Bite question lessons,
+         no map, tabs, store, missions, money bar or menus. (HoS follow-up, same morning: "these are not games ... stick to kindergarten ...
+         games in sequential order of the skills, one on top of another, build off each other, not 24 random stuff.")
          (2) no pop-ups: welcome, Today's Vort, reminders, store payday, joke jar, "new level" checks and "find your level" never show.
          (3) K-1 game lessons fill the screen with big pictures; the "Why it matters" and "How to do it" reading is hidden.
    Saving, mastery and pay are unchanged (the lessons are the same One Bite lessons). Loads last. No double slash in this file. */
@@ -30,24 +33,33 @@ function on(){ try{ const b=st(); if(!b||!b.id) return false; fetchGrade(); cons
   return !isTest()&&mapLow(); }catch(e){ return false; } }
 K1O.on=on;
 
-/* ---------- the game lessons ---------- */
-const SUBJ=[{k:'MATH',i:'🔢',n:'Numbers',w:'MATH'},{k:'READ',i:'🔤',n:'ABC',w:'READ'},{k:'LK',i:'א',n:'Kriyah',w:'LK'}];
-function real(id){ return (typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]); }
-function lvl(id){ const m=/\.L(\d+)\./.exec(id); return m?+m[1]:9; }
-function games(k){ const B=window.ONE_BITE||{}; const ids=Object.keys(B).filter(id=>id.split('.')[0]===k&&B[id]&&B[id].band==='K1'&&B[id].do&&B[id].your&&real(id));
-  return ids.map((id,i)=>({id,i})).sort((a,b)=>lvl(a.id)-lvl(b.id)||a.i-b.i).map(x=>x.id); }
-function done(id){ const b=st(); return !!(b&&b.skills&&b.skills[id]&&b.skills[id].m); }
-function nextOf(list){ return list.find(id=>!done(id))||list[0]||''; }
-function subjects(){ return SUBJ.filter(s=>games(s.k).length); }
+/* ---------- the real K-1 games (train, matching and balloon games), one grade, in skill order ----------
+   Each game pack keeps its own list in the order the skills build (LIST) and saves the best check score (0-3) in the boy's state.
+   Kindergarten (Level 1 games only): KL Math, KR Reading (ABC), KK Kriyah. Grade 1 (Level 2 games only): G1M Math, G1R Reading, KK Kriyah. A game counts as passed at 2 or more.
+   The next game unlocks when the one before it is passed; a passed game can always be played again. */
+const PACKS={0:[{k:'MATH',g:'KL',st:'klm',lv:1,i:'🔢',n:'Numbers'},{k:'READ',g:'KR',st:'krm',lv:1,i:'🔤',n:'ABC'},{k:'LK',g:'KK',st:'kkm',lv:1,i:'א',n:'Kriyah'}],
+             1:[{k:'MATH',g:'G1M',st:'g1m',lv:2,i:'🔢',n:'Numbers'},{k:'READ',g:'G1R',st:'g1r',lv:2,i:'📖',n:'Reading'},{k:'LK',g:'KK',st:'kkm',lv:2,i:'א',n:'Kriyah'}]};
+const OVS=['klov','krov','kkov','g1mov','g1rov'];
+function gradeNow(){ if(K1O.grade===0||K1O.grade===1) return K1O.grade;
+  try{ const m=window.TL_MAP, L=m&&m.subjects&&m.subjects.MATH&&Number(m.subjects.MATH.level); if(L===2) return 1; }catch(e){} return 0; }
+function subjects(){ return (PACKS[gradeNow()]||PACKS[0]).filter(p=>window[p.g]&&typeof window[p.g].list==='function'&&list(p).length); }
+function list(p){ try{ const re=new RegExp('\\.L0'+p.lv+'\\.'); return window[p.g].list().map(x=>x[0]).filter(id=>re.test(id)); }catch(e){ return []; } }
+function score(p,id){ const b=st(), m=b&&b[p.st]; return m&&typeof m[id]==='number'?m[id]:-1; }
+function passed(p,id){ return score(p,id)>=2; }
+function picOf(p,id){ const B=window.ONE_BITE||{}; return (B[id]&&B[id].pic)||p.i; }
+function nameOf(p,id){ try{ const l=window[p.g].list().find(x=>x[0]===id); const n=l&&l[1]; if(n&&n!==id) return n; }catch(e){} try{ return typeof skillName==='function'?skillName(id):id; }catch(e){ return id; } }
 
 function shelf(){ const S=subjects(); if(!S.find(s=>s.k===K1O.subj)) K1O.subj=S.length?S[0].k:'MATH';
-  const cur=SUBJ.find(s=>s.k===K1O.subj), list=games(K1O.subj), nx=nextOf(list), B=window.ONE_BITE||{}, nb=B[nx]||{};
+  const p=S.find(s=>s.k===K1O.subj), ids=p?list(p):[];
+  let nx=ids.findIndex(id=>!passed(p,id)); if(nx<0) nx=ids.length?0:-1;
   const name=E((st()||{}).name||''), first=name.split(' ')[0];
   let h='<div class="k1-top"><button class="k1-say" data-k1="say" aria-label="Hear it">🔊</button><div class="k1-hi">'+(first?'Hi, '+first+'!':'Let\'s play!')+'</div>'+
     '<button class="k1-out" data-act="signout" aria-label="Sign out">👋 Bye</button></div>';
-  h+='<div class="k1-subj" role="tablist">'+S.map(s=>'<button role="tab" class="k1-s'+(s.k===K1O.subj?' on':'')+'" data-k1="subj" data-s="'+s.k+'" aria-label="'+E(s.n)+'"><span class="i">'+E(s.i)+'</span><span class="n">'+E(s.n)+'</span></button>').join('')+'</div>';
-  if(nx) h+='<button class="k1-play" data-k1="play" data-id="'+E(nx)+'" aria-label="Play: '+E(nb.today||'')+'"><span class="pic">'+E(nb.pic||cur.i)+'</span><span class="go">▶ PLAY</span></button>';
-  h+='<div class="k1-grid">'+list.map((id,n)=>{ const b=B[id]||{}, d=done(id); return '<button class="k1-t'+(d?' done':'')+(id===nx?' now':'')+'" data-k1="play" data-id="'+E(id)+'" aria-label="'+E(b.today||'')+(d?', done':'')+'"><span class="pic">'+E(b.pic||cur.i)+'</span><span class="num">'+(n+1)+'</span>'+(d?'<span class="star">⭐</span>':'')+'</button>'; }).join('')+'</div>';
+  if(S.length>1) h+='<div class="k1-subj" role="tablist">'+S.map(s=>'<button role="tab" class="k1-s'+(s.k===K1O.subj?' on':'')+'" data-k1="subj" data-s="'+s.k+'" aria-label="'+E(s.n)+'"><span class="i">'+E(s.i)+'</span><span class="n">'+E(s.n)+'</span></button>').join('')+'</div>';
+  if(nx>=0){ const id=ids[nx]; h+='<button class="k1-play" data-k1="play" data-id="'+E(id)+'" aria-label="Play: '+E(nameOf(p,id))+'"><span class="pic">'+E(picOf(p,id))+'</span><span class="go">▶ PLAY</span></button>'; }
+  h+='<div class="k1-path">'+ids.map((id,n)=>{ const d=passed(p,id), open=d||n===nx||n===0, lock=!open;
+    return '<button class="k1-t'+(d?' done':'')+(n===nx?' now':'')+(lock?' lock':'')+'" data-k1="'+(lock?'locked':'play')+'" data-id="'+E(id)+'" aria-label="'+E(nameOf(p,id))+(d?', done':lock?', locked':'')+'"'+(lock?' aria-disabled="true"':'')+'>'+
+      '<span class="pic">'+E(lock?'🔒':picOf(p,id))+'</span><span class="num">'+(n+1)+'</span>'+(d?'<span class="star">⭐</span>':'')+'</button>'; }).join('')+'</div>';
   return h; }
 
 function paint(){ const k=on(), body=document.body; if(!body) return; body.classList.toggle('k1-mode',k);
@@ -55,18 +67,21 @@ function paint(){ const k=on(), body=document.body; if(!body) return; body.class
   if(!home){ body.classList.remove('k1-home'); if(el) el.remove(); return; }
   A.overlay=null; body.classList.add('k1-home');
   if(!el){ el=document.createElement('div'); el.id='k1o'; el.setAttribute('role','main'); body.appendChild(el); }
-  el.innerHTML=shelf();
+  el.innerHTML=shelf(); K1O.sig=sig();
   const key=K1O.sid+':'+K1O.subj; if(K1O.said!==key){ K1O.said=key; setTimeout(sayHi,400); } }
-function sayHi(){ try{ if(typeof speak==='function') speak('Tap PLAY, or tap a picture to play!'); }catch(e){} }
+function sig(){ try{ const b=st()||{}; return JSON.stringify([K1O.subj,gradeNow(),b.klm,b.krm,b.kkm,b.g1m,b.g1r]); }catch(e){ return ''; } }
+function sayHi(){ try{ if(typeof speak==='function') speak('Tap PLAY!'); }catch(e){} }
+function gameOpen(){ return OVS.some(id=>document.getElementById(id)); }
 
-function play(id){ const s=SUBJ.find(x=>x.k===id.split('.')[0]); if(!s||typeof startMission!=='function') return;
+function play(id){ const p=subjects().find(x=>x.k===K1O.subj); if(!p||!window[p.g]||typeof window[p.g].open!=='function') return;
   try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(e){}
-  document.body.classList.remove('k1-home'); A.overlay=null; startMission(s.w,id,'skill'); }
+  A.overlay=null; window[p.g].open(id); }
 
 document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#k1o [data-k1]'); if(!b) return; e.preventDefault(); e.stopPropagation();
   const a=b.dataset.k1;
   if(a==='play') return play(b.dataset.id);
   if(a==='subj'){ K1O.subj=b.dataset.s; try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(x){} paint(); return; }
+  if(a==='locked'){ b.classList.remove('k1-no'); void b.offsetWidth; b.classList.add('k1-no'); try{ if(typeof speak==='function') speak('Play the game before it first!'); }catch(x){} return; }
   if(a==='say') sayHi(); },true);
 
 /* ---------- hooks: every home redraw shows the shelf; no pop-ups; no level checks ---------- */
@@ -75,11 +90,14 @@ if(typeof baseRender==='function'){ window.render=function(){ const r=baseRender
 if(typeof window.welcome==='function'){ const w0=window.welcome; window.welcome=function(){ if(on()) return; return w0.apply(this,arguments); }; try{ welcome=window.welcome; }catch(e){} }
 if(typeof window.tlLevelCheckFor==='function'){ const l0=window.tlLevelCheckFor; window.tlLevelCheckFor=function(){ if(on()) return null; return l0.apply(this,arguments); }; }
 if(typeof window.tlFindLevelCard==='function'){ const f0=window.tlFindLevelCard; window.tlFindLevelCard=function(){ if(on()) return ''; return f0.apply(this,arguments); }; }
-setInterval(()=>{ try{ if(document.body&&document.body.classList.contains('k1-mode')&&typeof A!=='undefined'&&A.overlay&&A.view==='hub'){ A.overlay=null; render(); } }catch(e){} },1500);
+setInterval(()=>{ try{ if(!document.body||!document.body.classList.contains('k1-mode')||typeof A==='undefined') return;
+  if(A.overlay&&A.view==='hub'){ A.overlay=null; render(); return; }
+  if(document.body.classList.contains('k1-home')&&!gameOpen()&&K1O.sig!==sig()) paint(); }catch(e){} },1200);
 
 /* ---------- the look ---------- */
 try{ if(!document.getElementById('k1o-css')){ const c=document.createElement('style'); c.id='k1o-css'; c.textContent=`
-body.k1-home > *:not(#k1o){ display:none !important; }
+body.k1-home > *:not(#k1o):not(#klov):not(#krov):not(#kkov):not(#g1mov):not(#g1rov){ display:none !important; }
+#klov,#krov,#kkov,#g1mov,#g1rov{ z-index:2147483600 !important; }
 body.k1-home{ overflow:hidden !important; background:#FFF4D6 !important; }
 #k1o{ position:fixed; inset:0; z-index:2147483000; overflow-y:auto; background:linear-gradient(180deg,#8FD3FF 0%,#C8ECFF 45%,#FFF4D6 100%); font-family:'Fredoka','Nunito',system-ui,sans-serif; color:#2B2350; padding:14px clamp(12px,3vw,40px) 40px; box-sizing:border-box; }
 #k1o button{ font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
@@ -96,7 +114,7 @@ body.k1-home{ overflow:hidden !important; background:#FFF4D6 !important; }
 .k1-play .go{ font-size:clamp(46px,8vh,84px); font-weight:800; letter-spacing:.04em; }
 .k1-play:active{ transform:translateY(6px); box-shadow:0 4px 0 #17834F; }
 @keyframes k1pulse{ 50%{ transform:scale(1.03); } }
-.k1-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(clamp(120px,14vw,170px),1fr)); gap:clamp(12px,2vw,22px); max-width:1200px; margin:0 auto; }
+.k1-path{ display:grid; grid-template-columns:repeat(auto-fill,minmax(clamp(120px,14vw,170px),1fr)); gap:clamp(12px,2vw,22px); max-width:1200px; margin:0 auto; }
 .k1-t{ position:relative; aspect-ratio:1; border-radius:30px; border:5px solid #fff; background:#fff; box-shadow:0 7px 0 rgba(0,0,0,.1); display:flex; align-items:center; justify-content:center; }
 .k1-t .pic{ font-size:clamp(56px,8vw,96px); line-height:1; }
 .k1-t .num{ position:absolute; left:10px; top:8px; min-width:36px; height:36px; border-radius:999px; background:#EEF3FD; color:#3B6FD8; font-size:20px; font-weight:800; line-height:36px; }
@@ -104,9 +122,11 @@ body.k1-home{ overflow:hidden !important; background:#FFF4D6 !important; }
 .k1-t.done{ background:#F0FFF5; border-color:#9BE3B7; }
 .k1-t.now{ border-color:#FFC940; box-shadow:0 0 0 6px rgba(255,201,64,.55),0 7px 0 rgba(0,0,0,.1); }
 .k1-t:active{ transform:scale(.95); }
+.k1-t.lock{ background:rgba(255,255,255,.55); border-color:rgba(255,255,255,.7); box-shadow:none; } .k1-t.lock .pic{ font-size:clamp(40px,5vw,60px); opacity:.6; }
+.k1-no{ animation:k1no .4s; } @keyframes k1no{ 25%{ transform:translateX(-8px); } 75%{ transform:translateX(8px); } }
 @media (max-width:600px){ .k1-s{ flex-direction:column; gap:2px; height:96px; min-width:0; } .k1-s .i{ font-size:40px; } .k1-s .n{ font-size:18px; }
  .k1-play{ height:150px; gap:14px; } .k1-play .pic{ font-size:80px; } .k1-play .go{ font-size:44px; } .k1-hi{ font-size:28px; } .k1-say{ width:64px; height:64px; } .k1-out{ min-width:84px; height:56px; font-size:18px; }
- .k1-grid{ grid-template-columns:repeat(3,1fr); } .k1-t .pic{ font-size:60px; } }
+ .k1-path{ grid-template-columns:repeat(3,1fr); } .k1-t .pic{ font-size:60px; } }
 body.k1-mode #kpr, body.k1-mode #jj-card, body.k1-mode #jj-ctl, body.k1-mode #tlstore, body.k1-mode #gz-root, body.k1-mode .gm-sheet, body.k1-mode #gm-room{ display:none !important; }
 .ob-K1 .ob-why, .ob-K1 .ob-meta, .ob-K1 .obk-how{ display:none !important; }
 body.ob-on.ob-b-K1 .wrap{ max-width:none !important; }
