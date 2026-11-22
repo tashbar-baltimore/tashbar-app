@@ -537,7 +537,7 @@ Q('MATH.MEAS.L03.04',{ today:'Count coins biggest first; count up to make change
     {t:'Biggest first. Quarters: 25, 50. Dime: 60. Nickel: 65. Pennies: 66, 67.', m:{type:'line',from:0,to:70,hops:[0,25,50,60,65,66,67]}},
     'Count the value, not the coins: 6 coins, but 67¢.',
     'More than 100 is fine: 3 quarters and 4 dimes: 75, 85, 95, 105, 115¢.',
-    {t:'Change: pay $1 for a 20¢ eraser. Count up from 20 to 100: 80¢.', m:{type:'line',from:0,to:100,hops:[20,30,40,50,60,70,80,90,100]}},
+    {t:'Change: $1 is 100¢. Pay $1 for a 20¢ eraser. Count up to 100: 80¢.', m:{type:'line',from:0,to:100,hops:[20,30,40,50,60,70,80,90,100]}},
     'Costs 45¢? Count up: 45 to 50 is 5. 50 to 100 is 50. Change: 55¢.',
     {t:'Chant it: Quarter 25, dime is 10, nickel 5, a penny 1!', m:{type:'chant',lines:['Quarter 25, dime is 10,','nickel 5, a penny 1!']}}], a:'67¢' } });
 K('MATH.MEAS.L03.04',[
@@ -576,12 +576,12 @@ Q('MATH.MEAS.L03.01',{ today:'Measure from 0 on a ruler; pick the best unit', wa
     'Not 7! The last number is not the length. 7 − 2 = 5 inches.',
     '1 inch is about 2 and a half centimeters. So 1 inch is longer.',
     'Small things, like a paper clip or a pencil: centimeters or inches. Long trips: miles or km.',
-    {t:'Show 1 cm with two fingers. Now show 1 inch: bigger!', m:{type:'move',t:'Show 1 cm with two fingers. Now show 1 inch: a bit bigger!'}}], a:'6 inches' },
+    {t:'Show 1 cm with two fingers. Now show 1 inch: a bit bigger!', m:{type:'move',t:'Show 1 cm with two fingers. Now show 1 inch: a bit bigger!'}}], a:'6 inches' },
   oops:{ q:'A crayon from 2 to 7 on the ruler', wrong:'7 inches (read the end number)', right:'5 inches', why:'Count the spaces from 2 to 7, or subtract the start: 7 − 2 = 5.' } });
 K('MATH.MEAS.L03.01',[
   {type:'hop', start:0, add:6, unit:1, from:0, to:10, q:'Dovid\'s pencil: the arrow points to 6. How many inches?', say:'Start at 0. Hop to the arrow: 6 hops.', how:'Line up the end with 0. Count the spaces: 6 inches.'},
   {type:'listen', hear:'Which is longer: 1 inch or 1 centimeter?', o:['1 inch','1 cm','the same'], a:'1 inch', say:'Listen. Tap the longer one.', how:'1 inch is about 2 and a half centimeters.'}],[
-  {type:'sort', bins:['cm or inches','Miles or km'], cards:[['📎',0],['✏️',0],['🛣️ road',1],['🐜',0],['🚗 trip',1]], say:'Small thing: cm or inches. Long trip: miles or km. Sort them.', how:'A paper clip and a pencil are small: centimeters. A long road trip: miles.'},
+  {type:'sort', bins:['cm or inches','miles or km'], cards:[['📎',0],['✏️',0],['🛣️ road',1],['🐜',0],['🚗 trip',1]], say:'Small thing: cm or inches. Long trip: miles or km. Sort them.', how:'A paper clip and a pencil are small: centimeters. A long road trip: miles.'},
   {type:'hop', start:3, add:4, unit:1, from:0, to:10, q:'An eraser starts at 3 and ends at 7', say:'Not at 0! Hop from 3 to 7. Count the hops.', how:'Count the spaces, not the last number: 4 hops, 4 inches.'},
   {type:'sort', bins:['Right','Mistake'], cards:[['5 in',0],['7 in',1],['6 in',1]], q:'A crayon starts at 2 and ends at 7.', mis:true, say:'How long is the crayon? Which answers are mistakes?', how:'7: read the end number. 6: counted the marks. Spaces: 7 − 2 = 5.'},
   {type:'tiles', w:['1 centimeter','1 inch','10 inches','1 mile'], q:'Put in order: shortest first.', say:'Put them in order, shortest first.', how:'A centimeter is shorter than an inch. A mile is longest of all.'},
@@ -600,7 +600,7 @@ Q('MATH.MEAS.L03.02',{ why:'Abba cuts a board for the sukkah. How much is left? 
 K('MATH.MEAS.L03.02',[
   {type:'hop', start:9, add:6, unit:1, from:5, to:20, q:'Rope 15, string 9', say:'Count up from 9 to 15. How many hops?', how:'9 to 15 is 6 hops. The rope is 6 inches longer.'},
   {type:'sort', bins:['Right','Mistake'], cards:[['6 in',0],['24 in',1],['15 in',1]], q:'Rope 15 in. String 9 in. How much longer?', mis:true, say:'How much longer? Which answers are mistakes?', how:'24 added them. 15 is the whole rope. 15 − 9 = 6.'}],[
-  {type:'hop', start:61, add:-20, unit:10, from:30, to:70, q:'Avi\'s string is 61 in. He cuts off 24. Hop back the 2 tens first: where do you land?', say:'Cut off 24. Hop back the 2 tens first.', how:'61 − 20 = 41. Then the 4 ones: 41 − 4 = 37 inches.'},
+  {type:'hop', start:61, add:-20, unit:10, from:30, to:70, q:'Avi\'s string is 61 in. He cuts off 24. Hop back the 2 tens first: where do you land?', say:'Cut off 24. Hop back the 2 tens first.', how:'61 − 20 = 41. Then the 4 ones: 41 − 1 = 40, 40 − 3 = 37. Not 43!'},
   {type:'tiles', w:['34 + 6 = 40','40 + 23 = 63','6 + 23 = 29'], extra:['63 + 34 = 97'], q:'One rope is 63 cm. Another is 34 cm. How many cm longer?', say:'Count up from 34 to 63. Put the steps in order.', how:'34 + 6 is 40. 40 + 23 is 63. Add the jumps: 6 + 23 = 29 cm.'},
   {type:'match', pairs:[['74 vs 28 in','46 in'],['81, cut 46','35 in'],['55, cut 24','31 in']], say:'Subtract each one. Match it to its answer.', how:'Both mean subtract. 74 − 28: 74 − 20 = 54, 54 − 8 = 46.'},
   {type:'findall', grid:['81−46','77−42','60−25','53−28','92−57','64−39'], find:['81−46','77−42','60−25','92−57'], findSay:'cut that leaves 35 inches', q:'String − cut off', say:'Tap every cut that leaves 35 inches.', how:'81 − 46: 81 − 40 = 41, 41 − 6 = 35. 53 − 28 is only 25.'},
@@ -619,7 +619,7 @@ K('MATH.MEAS.L03.03',[
   {type:'sort', bins:['Right','Mistake'], cards:[['4:15',0],['4:03',1],['3:15',1]], q:'Shloimy\'s clock: short hand just past 4, long hand on 3.', mis:true, say:'What time is it? Which answers are mistakes?', how:'4:03 read the 3 as 3 minutes. 3:15 read the hour wrong. It is 4:15.'}],[
   {type:'hop', start:0, add:55, unit:5, from:0, to:60, q:'Long hand on 11', say:'Long hand on 11. Count by 5s, 11 hops.', how:'5, 10, 15 … 50, 55. On the 11 is 55 minutes.'},
   {type:'match', pairs:[['past 7, on 9','7:45'],['past 9, on 7','9:35'],['past 3, on 9','3:45']], q:'Which clock is which time?', say:'Short hand, then long hand. Match each clock to its time.', how:'Short hand is the hour. Long hand counts by 5s: on 9 is 45.'},
-  {type:'sort', bins:['a.m.','p.m.'], cards:[['Shacharis',0],['Wake up',0],['Mincha',1],['Supper',1]], q:'Morning or afternoon and evening?', say:'Morning or evening? Sort them.', how:'a.m. is morning. p.m. is afternoon and evening.'},
+  {type:'sort', bins:['a.m.','p.m.'], cards:[['Shacharis',0],['Wake up',0],['Mincha',1],['Supper',1]], q:'Morning or afternoon and evening?', say:'Morning, or afternoon and evening? Sort them.', how:'a.m. is morning. p.m. is afternoon and evening.'},
   {type:'listen', hear:'Short hand just past 12. Long hand on 9.', o:['12:45','9:12','12:09'], a:'12:45', say:'Listen. Tap the time.', how:'Short hand: the hour it just passed, 12. Long hand on 9: 45.'},
   {type:'findall', grid:['2:30','6:00','7:30','3:06','11:30','6:15'], find:['2:30','7:30','11:30'], findSay:'time with the long hand on the 6', say:'Challenge! Tap every time with the long hand on 6.', how:'Long hand on 6: count by 5s, 30 minutes. 3:06 is the mistake.'}]);
 
@@ -758,12 +758,12 @@ K('MATH.PV.L03.04',[
   {type:'sort', bins:['+ 10','− 10','− 100'], cards:[['179 → 189',0],['845 → 835',1],['613 → 513',2],['738 → 638',2],['569 → 559',1]], say:'Which jump was it? Sort them.', how:'Which digit changed, and did it go up or down?'},
   {type:'match', pairs:[['569 + 10','579'],['579 + 100','679'],['602 − 10','592']], say:'Challenge! Which digit moves? Match each answer.', how:'602 − 10: no tens, so hop back 10 from 602: 592.'}]);
 
-Q('MATH.STAT.L03.01',{ why:'Rebbe tracks the pages we learn each day. The graph shows it at a glance.', today:'Read a bar graph: most, together, and how many more', watch:{ q:'Pages learned each day. Sunday bar: 8. Monday bar: 5.', m:{type:'emoji',e:'🟦',n:8}, steps:[
-    'Count the squares in each bar. 1 square = 1 page.',
+Q('MATH.STAT.L03.01',{ why:'Rebbe tracks the pages Yehuda\'s class learns each day. The graph shows it at a glance.', today:'Read a bar graph: most, together, and how many more', watch:{ q:'Pages learned each day. Sunday bar: 8. Monday bar: 5.', m:{type:'emoji',e:'🟦',n:8}, steps:[
+    'Find the day\'s bar. Count its squares. 1 square = 1 page.',
     {t:'Sunday: the bar reaches 8. 8 pages.', m:{type:'emoji',e:'🟦',n:8}},
     {t:'Monday: the bar reaches 5. 5 pages.', m:{type:'emoji',e:'🟩',n:5}},
     'Which day had the most? The tallest bar: Sunday.',
-    {t:'How many more on Sunday? Count up from 5 to 8: 3.', m:{type:'line',from:0,to:10,hops:[5,6,7,8]}},
+    {t:'How many more on Sunday than on Monday? Count up from 5 to 8: 3.', m:{type:'line',from:0,to:10,hops:[5,6,7,8]}},
     'How many more means subtract: 8 − 5 = 3. Not 13!',
     'Together means add both bars: 8 + 5 = 13.',
     'Same height? Then 0 more.',
@@ -771,12 +771,12 @@ Q('MATH.STAT.L03.01',{ why:'Rebbe tracks the pages we learn each day. The graph 
   oops:{ q:'Sunday 8, Monday 5. How many more on Sunday?', wrong:'13 (added the bars)', right:'3', why:'How many more means subtract: 8 − 5 = 3. Together means add.' } });
 K('MATH.STAT.L03.01',[
   {type:'count', n:8, pic:'🟦', q:'The Sunday bar', o:['7','8','9'], say:'Count the squares in the Sunday bar.', how:'Each square stands for one page.'},
-  {type:'sort', bins:['Right','Mistake'], cards:[['3',0],['13',1],['8',1]], q:'Sun 8, Mon 5. How many more on Sunday?', mis:true, say:'How many more? Which answers are mistakes?', how:'13 added the bars. 8 is only Sunday. 8 − 5 = 3.'}],[
-  {type:'hop', start:3, add:4, unit:1, from:0, to:10, q:'Tue 7, Wed 3. How many more on Tue?', say:'How many more on Tuesday? Count up from 3.', how:'3 to 7 is 4 hops. 7 − 3 = 4.'},
-  {type:'match', pairs:[['Tue and Wed together','10'],['Sun more than Wed','5'],['Thu more than Mon','1']], q:'Sun 8 · Mon 5 · Tue 7 · Wed 3 · Thu 6', say:'Together: add. How many more: subtract. Match.', how:'Tue and Wed together: 7 + 3 = 10. Sun more than Wed: 8 − 3 = 5.'},
-  {type:'tiles', w:['Wed 3','Mon 5','Thu 6','Tue 7','Sun 8'], q:'Put the days in order: fewest pages first.', say:'Shortest bar first. Put the days in order.', how:'The shortest bar has the fewest pages. The tallest bar is the most: Sunday.'},
-  {type:'listen', hear:'Monday 5 pages, Thursday 5 pages. How many more on Monday?', o:['0','10','5'], a:'0', say:'Listen. How many more? Tap the answer.', how:'Same height: 5 − 5 = 0. Not 10, that is together.'},
-  {type:'hop', start:8, add:7, unit:1, from:5, to:20, q:'Sun 8, Tue 7. How many pages together?', say:'Challenge! Together: start at 8 and hop on 7.', how:'Together means add. 8 + 2 is 10, then 5 more: 15 pages.'}]);
+  {type:'tiles', w:['Sun 8','Tue 7','Mon 5','Wed 3'], q:'Which day had the most? Put the days in order, most first.', say:'Tallest bar first. Put the days in order.', how:'Find the biggest number first. That day had the most.'}],[
+  {type:'hop', start:5, add:3, unit:1, from:0, to:10, q:'Sunday\'s bar is 8. Monday\'s bar is 5. How many more on Sunday?', say:'Hop from the shorter bar to the taller bar.', how:'Start at 5. Hop until you reach 8. Count your hops.'},
+  {type:'sort', bins:['Right','Mistake'], cards:[['4',0],['10',1],['7',1],['3',1]], q:'Avrumi\'s class: Tue 7, Wed 3. How many more on Tuesday?', mis:true, say:'How many more? Which answers are mistakes?', how:'How many more? Take away the smaller bar. Do not add the bars.'},
+  {type:'tenframe', n:15, start:8, q:'Sunday 8, Tuesday 7. How many pages on Sunday and Tuesday together?', say:'How many together? Use the ten-frames.', how:'Start with 8. Fill to 10, then keep going. Count all the dots.'},
+  {type:'match', pairs:[['Mon + Tue together','12'],['Sun more than Wed','5'],['Mon more than Thu','0']], q:'Sun 8 · Mon 5 · Tue 7 · Wed 3 · Thu 5', say:'Add or take away? Match each to its answer.', how:'Together means add both bars. How many more means take away. Same height: none more.'},
+  {type:'listen', hear:'Shmuel\'s shiur: Sunday 8 pages, Monday 6. How many together?', o:['14','2','8'], a:'14', say:'Challenge! Listen. Add or take away? Tap it.', how:'Together or how many more? Together means add both bars.'}]);
 
 /* ---- ROUND 2, LANE B, batch 4 (2026-11-22): Grade 3 (L04), band B23. Whole bites (round-1 fields) plus do/your activities. ---- */
 B['MATH.OPS.L04.01']={ band:'B23', pic:'🏆', today:'Know your times facts to 10 × 10', why:'Rows of chumashim, packs of pencils: times facts count them fast.',
