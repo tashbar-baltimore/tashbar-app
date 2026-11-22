@@ -604,3 +604,76 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - red-pen-on-paper.webp | https://pixabay.com/photos/write-pencils-desk-pen-colors-man-5170938/ | Pixabay Content License | ClickerHappy
 - empty-classroom-desks.webp | https://pixabay.com/photos/classroom-school-education-learning-2093743/ | Pixabay Content License | WOKANDAPIX
 - library-bookshelves-lamps.webp | https://pixabay.com/photos/books-library-room-school-study-2596809/ | Pixabay Content License | StockSnap
+- wright-flyer-1903-kitty-hawk.webp | https://pixabay.com/photos/plane-wright-brothers-74020/ | Pixabay Content License | WikiImages
+- pony-express-rider-painting.webp | https://postalmuseum.si.edu/object/npm_0.052985.346 | CC0 1.0 | Lloyd Branson, 1853 - 1925
+- library-balconies-of-books.webp | https://pixabay.com/photos/george-peabody-library-1629308/ | Pixabay Content License | Falkenpost
+- oatmeal-bowl-strawberries.webp | https://pixabay.com/photos/oatmeal-cereals-strawberries-1839515/ | Pixabay Content License | Pexels
+- empty-indoor-ice-rink.webp | https://pixabay.com/photos/indoors-empty-hockey-rink-arena-3133818/ | Pixabay Content License | hfromnc
+- maple-sap-buckets-in-snow.webp | https://pixabay.com/photos/maple-maple-syrup-bucket-sweet-sap-1089824/ | Pixabay Content License | Johan1127
+- snow-shovel-cleared-path.webp | https://pixabay.com/photos/snowy-winter-shovel-snowdrifts-5920898/ | Pixabay Content License | pasja1000
+- ant-carrying-food.webp | https://pixabay.com/photos/ants-macro-insects-nature-plants-5061910/ | Pixabay Content License | cp17
+- stacked-wooden-boards.webp | https://pixabay.com/photos/wood-pile-texture-timber-wooden-877368/ | Pixabay Content License | antmoreton
+- rooster-crowing-closeup.webp | https://pixabay.com/photos/rooster-bird-beak-comb-red-10391039/ | Pixabay Content License | christels
+- window-glass-hole-yard.webp | https://pixabay.com/photos/glass-heart-window-shot-hole-423551/ | Pixabay Content License | gere
+- umbrella-raindrops-closeup.webp | https://pixabay.com/photos/rainy-day-umbrella-rainy-weather-3443977/ | Pixabay Content License | 652234
+- baseball-glove-on-grass.webp | https://pixabay.com/photos/baseball-glove-ball-leather-sport-4182179/ | Pixabay Content License | stanbalik
+- raindrops-on-window-glass.webp | https://pixabay.com/photos/drops-rain-wet-water-water-drop-1436231/ | Pixabay Content License | TC-TORRES
+- chanukah-menorah-all-lit.webp | https://pixabay.com/photos/hanukkah-judaism-chandelier-candles-2197684/ | Pixabay Content License | EvgeniT
+- chocolate-chip-cookie-one.webp | https://pixabay.com/photos/cookie-chocolate-chip-cookie-snack-1264231/ | Pixabay Content License | StevenGiacomelli
+- bakery-bread-shelves.webp | https://pixabay.com/photos/bread-loaves-food-bakery-craft-8128550/ | Pixabay Content License | wal_172619
+- car-jack-and-tires.webp | https://www.flickr.com/photos/26344495@N05/49999201361 | CC BY 2.0 | Ivan Radic
+- running-track-curve-lanes.webp | https://pixabay.com/photos/track-field-lanes-competition-19217/ | Pixabay Content License | PublicDomainPictures
+- deer-drinking-at-lake.webp | https://www.flickr.com/photos/8590349@N05/14578164286 | CC BY 2.0 | Citizen 4474
+- model-biplane-red.webp | https://pixabay.com/photos/airplane-blue-red-plane-toy-195062/ | Pixabay Content License | Giuliamar
+- forest-hiking-path-leaves.webp | https://pixabay.com/photos/forest-path-autumn-trees-moss-10399020/ | Pixabay Content License | 1290go
+- hand-plane-on-workbench.webp | https://pixabay.com/photos/brush-wood-tool-wood-carpentry-4536227/ | Pixabay Content License | enokenoc
+- broom-sweeping-leaves.webp | https://www.flickr.com/photos/23094783@N03/4056807009 | CC BY 2.0 | eflon
+- soccer-ball-in-grass.webp | https://pixabay.com/photos/football-ball-field-sport-grass-8266065/ | Pixabay Content License | KEREM_TASER
+- craft-sticks-glued-frame.webp | https://www.flickr.com/photos/82134378@N00/4830798400 | CC BY 2.0 | Amy Bonner
+- lake-cabins-and-dock.webp | https://pixabay.com/photos/manitou-island-fish-camp-3530273/ | Pixabay Content License | MikeGoad
+- red-wooden-birdhouse-on-post.webp | https://pixabay.com/photos/feeder-house-bird-feed-tree-food-2282162/ | Pixabay Content License | monicore
+- shop-tools-and-safety-glasses.webp | https://pixabay.com/photos/tool-table-background-image-3213915/ | Pixabay Content License | MR-PANDA
+- berlin-wall-concrete-pieces.webp | https://pixabay.com/photos/architecture-wall-berlin-wall-3261019/ | Pixabay Content License | emkanicepic
+- new-amsterdam-1660-model.webp | https://commons.wikimedia.org/wiki/File:New_Amsterdam_1660_Scale_Model_Museum_of_NYC_1933.jpg | Public domain | Museum of the City of New York
+- ww1-trench-sandbags.webp | https://pixabay.com/photos/trench-replica-first-world-war-war-1566795/ | Pixabay Content License | MrsBrown
+- carved-stone-three-scripts.webp | https://pixabay.com/photos/rosetta-stone-heiroglyphics-language-1958394/ | Pixabay Content License | djorenstein
+- federal-reserve-building-postcard.webp | https://www.flickr.com/photos/24029425@N06/8164032436 | CC BY 2.0 | Boston Public Library
+- black-dominoes-falling-row.webp | https://pixabay.com/photos/domino-dominoes-game-playing-row-21176/ | Pixabay Content License | PublicDomainPictures
+- barber-scissors-and-combs.webp | https://pixabay.com/photos/hairdresser-scissors-combs-1098831/ | Pixabay Content License | jackmac34
+- orange-and-peel-pieces.webp | https://pixabay.com/photos/orange-mandarin-orange-fruit-7396084/ | Pixabay Content License | Stewardesign
+- small-island-palm-trees.webp | https://pixabay.com/photos/island-tropical-beach-palm-trees-1285147/ | Pixabay Content License | Pexels
+- traffic-light-three-lamps.webp | https://pixabay.com/photos/traffic-light-traffic-signal-514932/ | Pixabay Content License | Didgeman
+- clay-oil-lamp-brown.webp | https://www.rawpixel.com/image/14270903/lamp | CC0 1.0 | thegetty
+- rocky-mountains-snowy-colorado.webp | https://pixabay.com/photos/rocky-mountains-vail-colorado-snow-1710807/ | Pixabay Content License | Michelle-Maria
+- chofetz-chaim-1923-photo.webp | https://commons.wikimedia.org/wiki/File:Chofetz_Chaim,_1923.jpg | CC BY-SA 4.0 | Jgavant
+- old-brick-mill-chimney.webp | https://www.flickr.com/photos/61629383@N08/20191348390 | CC BY-SA 2.0 | Neillwphoto
+- glowing-hot-metal-bar-mill.webp | https://pixabay.com/photos/bloom-rolling-rail-hot-product-1568604/ | Pixabay Content License | Martinelle
+- uss-arizona-memorial-white.webp | https://pixabay.com/photos/pearl-harbor-navy-memorial-war-5861488/ | Pixabay Content License | clarencealford
+- stone-model-old-paris-fortress.webp | https://commons.wikimedia.org/wiki/File:La_Bastille_(oeuvre_ex%C3%A9cut%C3%A9e_dans_un_bloc_de_pierre_provenant_de_la_Bastille),_S503(49).jpg | CC0 | Anonyme, sculpteur
+- model-volcano-pink-foam.webp | https://commons.wikimedia.org/wiki/File:Volcano_complete.jpg | CC BY 4.0 | Silviaelzi
+- saturn-rings-hubble.webp | https://images.nasa.gov/details/PIA05982 | Public domain (NASA) | JPL
+- brass-telescope-on-stand.webp | https://collections.museumsvictoria.com.au/items/373627 | CC BY 4.0 | unknown
+- weeping-willow-on-lawn.webp | https://www.flickr.com/photos/7956264@N04/1414427271 | CC BY 2.0 | pixydust8605
+- sparrow-on-blossom-branch.webp | https://pixabay.com/photos/bird-sparrow-sperling-7088667/ | Pixabay Content License | Myriams-Fotos
+- red-fox-standing-in-snow.webp | https://pixabay.com/photos/fox-nature-animals-roux-fauna-715588/ | Pixabay Content License | AlainAudet
+- sealed-jar-garden-ferns.webp | https://pixabay.com/photos/aquarium-green-glass-2376883/ | Pixabay Content License | oschas0824
+- grey-heron-wading-in-river.webp | https://pixabay.com/photos/birds-blue-heron-nature-wildlife-7956562/ | Pixabay Content License | Veronika_Andrews
+- young-bean-plants-garden-bed.webp | https://pixabay.com/photos/beans-leaf-food-bush-bean-5466103/ | Pixabay Content License | 13467596
+- leaf-cells-green-dots-microscope.webp | https://pixabay.com/photos/waterweed-plant-cell-microscope-1582259/ | Pixabay Content License | Vierschilling
+- paramecium-under-microscope.webp | https://commons.wikimedia.org/wiki/File:Paramecium.jpg | CC BY-SA 3.0 | Barfooz at the English Wikipedia.
+- brown-wallet-in-pocket.webp | https://pixabay.com/photos/wallet-cash-pocket-money-purse-1010601/ | Pixabay Content License | stevepb
+- blue-poison-dart-frog.webp | https://pixabay.com/photos/frog-terrarium-amphibian-close-up-1335022/ | Pixabay Content License | suju-foto
+- gray-moth-on-tree-bark.webp | https://www.flickr.com/photos/33398884@N03/19832413910 | CC BY 2.0 | Bennyboymothman
+- kingfisher-on-branch-side.webp | https://pixabay.com/photos/bird-kingfisher-feathers-plumage-1905255/ | Pixabay Content License | taligar
+- diamond-kite-in-sky.webp | https://pixabay.com/photos/kite-fly-wind-fun-blue-fun-1159538/ | Pixabay Content License | dimitrisvetsikas1969
+- big-snowball-on-lawn.webp | https://www.flickr.com/photos/41894148532@N01/5248839 | CC BY-SA 2.0 | Neil T
+- open-bank-vault-doorway.webp | https://pixabay.com/photos/portugal-lisbon-money-museum-safe-4715104/ | Pixabay Content License | 2427999
+- fanned-white-envelopes.webp | https://pixabay.com/photos/envelope-post-office-paper-letter-1803663/ | Pixabay Content License | Monfocus
+- shopping-cart-of-tomatoes.webp | https://pixabay.com/photos/shopping-venture-miniature-tomatoes-5187701/ | Pixabay Content License | HOerwin56
+- coats-on-hangers-rail.webp | https://pixabay.com/photos/hanger-cloths-jacket-coat-outer-4570806/ | Pixabay Content License | yatsusimnetcojp
+- electrician-pliers-and-bulbs.webp | https://pixabay.com/photos/electricity-tool-electric-3962788/ | Pixabay Content License | Romario99
+- grey-sofa-and-armchair.webp | https://pixabay.com/photos/living-room-chair-sofa-couch-home-2155376/ | Pixabay Content License | ErikaWittlieb
+- roof-slates-falling-off.webp | https://pixabay.com/photos/background-template-wood-old-slate-1223802/ | Pixabay Content License | congerdesign
+- archery-target-arrows-center.webp | https://pixabay.com/photos/bow-archery-edition-disc-arrows-602127/ | Pixabay Content License | Chrisko1960
+- stack-of-hardcover-books.webp | https://pixabay.com/photos/books-training-school-literature-441866/ | Pixabay Content License | Hermann
+- farmers-market-vegetable-stand.webp | https://pixabay.com/photos/vegetables-veggies-farmers-market-1948264/ | Pixabay Content License | ruthieprasil
