@@ -21,6 +21,7 @@
    trace     {type:'trace', glyph:'b', he:false}              finger-trace the dotted letter; passes at about 80% covered
    fbar      {type:'fbar', n:3, d:4}   shade 3/4 · {type:'fbar', n:1, d:2, to:4}   shade the fourths bar to equal 1/2 · {type:'fbar', n:1, d:2, to:6, split:true}   cut 1/2 into 6 parts (= 3/6)
    clock     {type:'clock', h:3, m:30}   set the hands (step 60/30/15/5 from m, or step:5) · {type:'clock', h:2, m:15, add:45}   show the time 45 minutes later (elapsed)
+   coins     {type:'coins', total:37, coins:['q','d','n','p'], fewest:false}   tap (or drag) drawn coins into the purse to make the amount ('D' = a dollar bill)
    listen    {type:'listen', hear:'buh', clip:'letter-sound:b', o:['b','d','p'], a:'b', he:false}   hear it, tap the match
    pic:'art:apple' uses the K-1 games' drawn pictures (KMG.ART). Hebrew (he:true) is never spoken by a computer voice; use clip.
    No double slash in this file (HtmlService rule). */
@@ -338,6 +339,35 @@ T.clock={ check:true,
     return {ok:false,msg:'Not yet. Short hand to the hour, long hand to the minutes.'}; },
   solve(d,s){ s.t=T.clock.goal(d); } };
 
+/* ---------- coins: tap (or drag) coins into the purse to make an amount; drawn coins, not emoji ---------- */
+const COIN={p:{v:1,name:'penny',r:19,fill:'#C8834A',ring:'#9A5B2B',t:'1¢'},n:{v:5,name:'nickel',r:21,fill:'#C9CDD3',ring:'#8D949E',t:'5¢'},d:{v:10,name:'dime',r:17,fill:'#D9DDE2',ring:'#8D949E',t:'10¢'},
+  q:{v:25,name:'quarter',r:24,fill:'#D2D6DB',ring:'#7E858F',t:'25¢'},D:{v:100,name:'dollar',bill:true,t:'$1'}};
+function coinArt(k,sz){ const c=COIN[k]; if(c.bill) return '<svg class="obk-coin" width="'+(sz*1.6).toFixed(0)+'" height="'+sz+'" viewBox="0 0 64 40" aria-hidden="true"><rect x="1.5" y="1.5" width="61" height="37" rx="4" fill="#CFE8C6" stroke="#4E8A3E" stroke-width="3"/><circle cx="32" cy="20" r="10" fill="none" stroke="#4E8A3E" stroke-width="2"/><text x="32" y="25" font-size="13" font-weight="900" text-anchor="middle" fill="#2F5E24">$1</text></svg>';
+  const r=c.r, w=(sz*r/24).toFixed(0); return '<svg class="obk-coin" width="'+w+'" height="'+w+'" viewBox="0 0 '+(2*r+4)+' '+(2*r+4)+'" aria-hidden="true"><circle cx="'+(r+2)+'" cy="'+(r+2)+'" r="'+r+'" fill="'+c.fill+'" stroke="'+c.ring+'" stroke-width="3"/><circle cx="'+(r+2)+'" cy="'+(r+2)+'" r="'+(r-5)+'" fill="none" stroke="'+c.ring+'" stroke-width="1" stroke-dasharray="2 2"/><text x="'+(r+2)+'" y="'+(r+2+r*0.3).toFixed(1)+'" font-size="'+(r*0.78).toFixed(1)+'" font-weight="900" text-anchor="middle" fill="#1F2A44">'+c.t+'</text></svg>'; }
+function money(c){ return c<100?c+'¢':'$'+(c/100).toFixed(2); }
+function moneySay(c){ return c<100?c+' cents':(c%100?'$'+(c/100).toFixed(2):(c/100)+(c===100?' dollar':' dollars')); }
+T.coins={ check:true,
+  kinds(d){ return (isArr(d.coins)?d.coins:(d.total>=100?['D','q','d','n','p']:['q','d','n','p'])).filter(k=>COIN[k]); },
+  fewest(d){ let r=d.total, n=0; T.coins.kinds(d).map(k=>COIN[k].v).sort((a,b)=>b-a).forEach(v=>{ n+=Math.floor(r/v); r%=v; }); return r?Infinity:n; },
+  err(d){ if(!num(d.total)||d.total<1||d.total>500||d.total%1) return 'total must be whole cents from 1 to 500 ($5.00)';
+    if(d.coins!=null&&(!isArr(d.coins)||!d.coins.length||d.coins.some(k=>!COIN[k]))) return "coins must be a list of 'p','n','d','q','D' (penny, nickel, dime, quarter, dollar)";
+    const vs=T.coins.kinds(d).map(k=>COIN[k].v), ok=[true]; for(let c=1;c<=d.total;c++) ok[c]=vs.some(v=>v<=c&&ok[c-v]); if(!ok[d.total]) return 'that amount cannot be made with those coins';
+    if(T.coins.fewest(d)>20) return 'that needs more than 20 coins: add bigger coins'; return ''; },
+  init(){ return {bag:[]}; },
+  sum(s){ return s.bag.reduce((a,k)=>a+COIN[k].v,0); },
+  say(d){ return 'Make '+moneySay(d.total)+'. Tap coins to put them in the purse.'+(d.fewest?' Use the fewest coins.':''); },
+  how(d){ return 'Start with the biggest coin that fits. Then count on with smaller coins: 25, 35, 40, 41. Tap a coin in the purse to take it out.'; },
+  label(d){ return 'Coins: make '+money(d.total)+(d.fewest?' (fewest)':''); },
+  view(d,s,c){ const sz=c.k1?52:44, tot=T.coins.sum(s);
+    let h='<div class="obk-purse" data-obk-drop="purse" aria-label="the purse">'+(s.bag.length?s.bag.map((k,i)=>'<button class="obk-pc" data-obk="rm" data-k="'+i+'" aria-label="'+COIN[k].name+', tap to take it out">'+coinArt(k,36)+'</button>').join(''):'<span class="obk-note">👛 The purse</span>')+'</div>';
+    h+='<p class="obk-count sm" aria-live="polite">'+(c.guided||s.over?'In the purse: '+money(tot):s.bag.length+(s.bag.length===1?' coin':' coins'))+'</p>';
+    return h+'<div class="obk-bank">'+T.coins.kinds(d).map(k=>'<button class="obk-cb" data-obk="add" data-k="'+k+'" data-obk-drag="add" aria-label="add a '+COIN[k].name+'">'+coinArt(k,sz)+'<span>'+COIN[k].name+'</span></button>').join('')+'</div>'; },
+  tap(d,s,a,k,drop){ if(a==='add'){ if(COIN[k]&&s.bag.length<20) s.bag.push(k); return; } if(a==='rm'){ s.bag.splice(+k,1); } },
+  ready(d,s){ return s.bag.length>0; },
+  judge(d,s){ const t=T.coins.sum(s); if(t===d.total){ if(d.fewest&&s.bag.length>T.coins.fewest(d)) return {ok:false,msg:'That makes '+money(t)+'! But you can use fewer coins. Trade small coins for a bigger one.'}; return {ok:true}; }
+    return {ok:false,msg:t>d.total?'That is '+money(t)+', too much. Tap a coin in the purse to take it out.':'That is '+money(t)+'. You need '+money(d.total-t)+' more.'}; },
+  solve(d,s){ let r=d.total; s.bag=[]; T.coins.kinds(d).sort((a,b)=>COIN[b].v-COIN[a].v).forEach(k=>{ while(COIN[k].v<=r){ s.bag.push(k); r-=COIN[k].v; } }); } };
+
 /* ---------- fit-text (after every draw) ---------- */
 const FIT='.obk .obk-card,.obk .obk-fc,.obk .obk-m,.obk .obk-opt,.obk .obk-bin-t,.obk .obk-tile,.obk .obk-slot,.obk-q';
 function txtRects(el){ const out=[], w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT); let n;
@@ -464,6 +494,11 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-ckface{ width:min(200px,52vw); height:auto; }   /* not .obk-clock: that is the activity box's own class */
 .obk-ck{ display:flex; flex-direction:column; gap:8px; align-items:center; width:100%; } .obk-ckrow{ display:flex; flex-wrap:wrap; gap:4px 10px; justify-content:center; } .obk-ckrow .obk-btn{ flex:none; white-space:nowrap; min-width:calc(var(--tap) * 1.3); }
 .obk-cklab{ flex-basis:100%; font-weight:900; font-size:14px; color:#5B6478; text-align:center; }
+.obk-purse{ min-height:96px; width:100%; max-width:440px; display:flex; flex-wrap:wrap; gap:4px; align-items:center; justify-content:center; padding:10px; border:3px dashed #C9A86A; border-radius:22px; background:#FFF9EC; box-sizing:border-box; }
+.obk-pc{ width:48px; height:48px; padding:0; border:0; background:none; display:grid; place-items:center; }
+.obk-bank{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; width:100%; }
+.obk-cb{ min-width:var(--tap); min-height:calc(var(--tap) * 1.25); padding:6px 8px; border-radius:18px; border:3px solid #E4DED2; background:#fff; box-shadow:0 4px 0 #E4DED2; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; }
+.obk-cb span{ font-size:14px; font-weight:800; color:#5B6478; } .obk-coin{ display:block; }
 .ob-M68 .obk-obj,.ob-M68 .obk-card{ font-size:calc(var(--tap) * .5); }
 `; document.head.appendChild(s); };
 })();

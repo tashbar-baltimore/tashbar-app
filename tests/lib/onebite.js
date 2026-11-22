@@ -48,6 +48,8 @@ function obkStep(wrong) {
       if (cnt < g) return tap('more'); if (cnt > g) return tap('less'); return check(); }
     case 'clock': { const g = ((d.h % 12) * 60 + d.m + (d.add || 0) + 1440) % 720, st = d.step || (d.add ? 5 : d.m % 30 === 0 ? 30 : d.m % 15 === 0 ? 15 : 5), t = ((s.t % 720) + 720) % 720;
       if (t === g && s.moved) return check(); if (Math.floor(t / 60) !== Math.floor(g / 60) && (g - t + 720) % 720 >= 60) return tap('hf'); return tap(st >= 60 ? 'hf' : 'mf'); }
+    case 'coins': { const V = { p: 1, n: 5, d: 10, q: 25, D: 100 }, sum = s.bag.reduce((a, k) => a + V[k], 0), K = (d.coins || (d.total >= 100 ? ['D', 'q', 'd', 'n', 'p'] : ['q', 'd', 'n', 'p'])).slice().sort((a, b) => V[b] - V[a]);
+      if (sum > d.total) return tap('rm', s.bag.length - 1); if (sum === d.total) return check(); const k = K.find(x => V[x] <= d.total - sum); return tap('add', k); }
     case 'listen': { const j = w ? s.o.findIndex((o, k) => o !== S(d.a) && !s.off[k]) : s.o.indexOf(S(d.a)); return tap('pick', j); }
   }
   return 'unknown type ' + d.type;
@@ -151,6 +153,8 @@ module.exports = async function oneBiteTests(pg) {
         your: [{ type: 'hop', start: 8, add: 5, ask: 'hops', o: ['4', '5', '6'], q: '8 + ? = 13' }, { type: 'blocks', n: 23 }, { type: 'hop', start: 20, add: 50, unit: 10, ask: 'hops', q: 'How many tens from 20 to 70?' }] } },
       { name: 'clock: hour, half hour, 5 minutes, elapsed time', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'clock', h: 3, m: 0 }, { type: 'clock', h: 7, m: 30 }],
         your: [{ type: 'clock', h: 10, m: 25 }, { type: 'tenframe', n: 5 }, { type: 'clock', h: 11, m: 40, add: 35 }] } },
+      { name: 'coins: cents, fewest coins, dollars (drawn coins)', want: { kit: 5, your: 3 }, bite: { band: 'B23', do: [{ type: 'coins', total: 37 }, { type: 'match', pairs: [['25¢', 'quarter'], ['10¢', 'dime'], ['5¢', 'nickel']] }],
+        your: [{ type: 'coins', total: 41, fewest: true }, { type: 'tenframe', n: 7 }, { type: 'coins', total: 135, coins: ['D', 'q', 'd'] }] } },
       { name: 'fraction bar: shade, equal fraction (tap parts and More/Less) and split', want: { kit: 5, your: 3 }, bite: { band: 'E45', do: [{ type: 'fbar', n: 3, d: 4 }, { type: 'fbar', n: 1, d: 2, to: 6, split: true }],
         your: [{ type: 'fbar', n: 2, d: 3, to: 6 }, { type: 'match', pairs: [['1/2', '0.5'], ['1/4', '25%'], ['3/4', '0.75']] }, { type: 'fbar', n: 5, d: 8, why: { q: 'Why 5 parts?', o: ['The top number says 5', 'There are 8 parts'], a: 'The top number says 5' } }] } } ];
     for (const f of fixtures) {
@@ -175,6 +179,8 @@ module.exports = async function oneBiteTests(pg) {
       /* a wrong fraction bar is gently refused: a help line, not mastered, can try again */
       const fb = { type: 'fbar', n: 3, d: 4 }, fs = OBK.init(fb, {}); OBK.tap(fb, fs, 'part', '0'); const r2 = OBK.judge(fb, fs); if (r2.ok || !r2.msg) o.bad.push('Activity Kit: fbar accepted 1/4 for 3/4 (or gave no help line)');
       const fe = { type: 'fbar', n: 1, d: 2, to: 4 }, fes = OBK.init(fe, {}); OBK.tap(fe, fes, 'part', '0'); OBK.tap(fe, fes, 'part', '3'); if (!OBK.judge(fe, fes).ok) o.bad.push('Activity Kit: fbar equal did not accept 2/4 for 1/2');
+      const cn = { type: 'coins', total: 30, fewest: true }, cs = OBK.init(cn, {}); for (let i = 0; i < 6; i++) OBK.tap(cn, cs, 'add', 'n'); const r3 = OBK.judge(cn, cs); if (r3.ok || !/fewer/.test(r3.msg || '')) o.bad.push('Activity Kit: coins "fewest" accepted 6 nickels for 30¢ (want a gentle "use fewer coins")');
+      if (!OBK.err({ type: 'coins', total: 3, coins: ['n', 'd'] })) o.bad.push('Activity Kit: coins must refuse 3¢ with only nickels and dimes');
       if (!OBK.err({ type: 'fbar', n: 1, d: 3, to: 4 }) || !OBK.err({ type: 'fbar', n: 1, d: 2, to: 10, split: true })) o.bad.push('Activity Kit: fbar must refuse impossible data (1/3 as fourths; split 2 into 10)'); }
     catch (e) { o.bad.push('Activity Kit (fit-text / take-away draw): ' + String(e && e.stack || e).slice(0, 200)); }
     if (keep) ONE_BITE[FIX] = keep; else delete ONE_BITE[FIX];
