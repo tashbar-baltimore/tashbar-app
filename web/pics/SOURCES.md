@@ -677,3 +677,66 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - archery-target-arrows-center.webp | https://pixabay.com/photos/bow-archery-edition-disc-arrows-602127/ | Pixabay Content License | Chrisko1960
 - stack-of-hardcover-books.webp | https://pixabay.com/photos/books-training-school-literature-441866/ | Pixabay Content License | Hermann
 - farmers-market-vegetable-stand.webp | https://pixabay.com/photos/vegetables-veggies-farmers-market-1948264/ | Pixabay Content License | ruthieprasil
+- old-ship-model-sails.webp | https://www.flickr.com/photos/66526627@N00/14203671909 | CC BY 2.0 | ptc24
+- old-telegraph-key-board.webp | https://pixabay.com/photos/telegraph-key-communication-retro-4891039/ | Pixabay Content License | Ray_Shrewsberry
+- alaska-snowy-mountain-forest.webp | https://pixabay.com/photos/denali-park-mountain-glaciers-1980936/ | Pixabay Content License | marcmooney
+- stone-aqueduct-arches.webp | https://pixabay.com/photos/monument-pont-du-gard-aqueduct-2114702/ | Pixabay Content License | gayulo
+- old-fort-brick-walls-path.webp | https://www.flickr.com/photos/75683070@N00/14311656627 | CC BY-SA 2.0 | Ken Lund
+- pink-balloons-blue-sky.webp | https://pixabay.com/photos/balloon-colorful-red-pink-blue-2599410/ | Pixabay Content License | StockSnap
+- pile-of-tan-rubber-bands.webp | https://pixabay.com/photos/rubber-bands-elastic-bands-503028/ | Pixabay Content License | stevepb
+- cream-light-switch-on-wall.webp | https://www.flickr.com/photos/14226960@N00/9296951538 | CC BY 2.0 | lamdogjunkie
+- white-wall-outlet-two-sockets.webp | https://www.flickr.com/photos/37803129@N00/3728450715 | CC BY 2.0 | @yakobusan Jakob Montrasio
+- stork-flying-with-stick.webp | https://pixabay.com/photos/bird-stork-ornithology-species-7171751/ | Pixabay Content License | snibl111
+- beaver-in-clover-meadow.webp | https://pixabay.com/photos/eurasian-beaver-beaver-rodent-8084155/ | Pixabay Content License | sharkolot
+- white-doorknob-old-lock.webp | https://pixabay.com/photos/vintage-door-former-dirty-unsafe-4990755/ | Pixabay Content License | selenee51
+- paper-airplane-on-gravel.webp | https://pixabay.com/photos/plane-landing-flight-the-airport-1544339/ | Pixabay Content License | klimkin
+- tied-laces-on-sneaker.webp | https://www.flickr.com/photos/39908901@N06/8538482488 | CC BY 2.0 | m01229
+- two-wooden-speakers.webp | https://www.flickr.com/photos/73228447@N02/23675580354 | CC BY 2.0 | Phil Gradwell
+- car-brake-disc-on-lift.webp | https://pixabay.com/photos/auto-repair-shop-workshop-brake-disc-1954643/ | Pixabay Content License | pixel2013
+- lemon-and-lemon-slices.webp | https://pixabay.com/photos/yellow-lemon-angry-fruit-juice-763833/ | Pixabay Content License | Horwin
+- baking-soda-jar-and-spoon.webp | https://pixabay.com/photos/powder-baking-soda-white-baking-6075570/ | Pixabay Content License | Azza_Hafizah
+- scattered-steel-pins.webp | https://pixabay.com/photos/pins-colored-pins-scattered-sewing-1358849/ | Pixabay Content License | Brett_Hondow
+- gold-nugget-on-wood.webp | https://pixabay.com/photos/gold-nugget-gold-nugget-2269846/ | Pixabay Content License | PIX1861
+- kinneret-shore-at-sunset.webp | https://pixabay.com/photos/israel-galilee-sea-sunrise-dawn-3155766/ | Pixabay Content License | ArvidO
+- grand-piano-on-stage.webp | https://pixabay.com/photos/piano-music-theatre-keyboard-883563/ | Pixabay Content License | brunostarling
+- thread-spools-in-a-row.webp | https://pixabay.com/photos/line-sewing-failure-hussy-fabric-1195629/ | Pixabay Content License | soramang
+- pants-leg-hem-closeup.webp | https://pixabay.com/photos/jeans-material-trousers-clothing-5015781/ | Pixabay Content License | Ollebolle123
+- painted-wooden-drawers-knobs.webp | https://pixabay.com/photos/closet-antique-chest-of-drawers-3725417/ | Pixabay Content License | AlkeMade
+- white-paper-torn-open.webp | https://pixabay.com/photos/ripped-paper-paper-copy-space-3343947/ | Pixabay Content License | SarahRichterArt
+- water-bottles-blue-caps.webp | https://pixabay.com/photos/bottles-plastic-recycling-4276208/ | Pixabay Content License | fotoblend
+- white-mug-handle-broken-off.webp | https://www.flickr.com/photos/23063164@N00/391347719 | CC BY 2.0 | aaron13251
+- wall-outlet-closeup.webp | https://www.flickr.com/photos/98425334@N00/119929591 | CC BY-SA 2.0 | grendelkhan
+- metal-desk-lamp-with-cord.webp | https://www.brooklynmuseum.org/opencollection/objects/1649 | CC BY 3.0 | Walter Dorwin Teague (designer), Brooklyn Museum
+- wooden-chair-rope-seat-rungs.webp | https://collections.museumsvictoria.com.au/items/1695073 | CC BY 4.0 | Felicity Clemons (maker), Museums Victoria
+- black-drawstring-pouch.webp | https://pixabay.com/photos/pouch-toiletry-bag-case-bellows-935402/ | Pixabay Content License | KakaduArt
+- pencil-between-wood-boards.webp | https://www.flickr.com/photos/92795775@N00/6633981491 | CC BY 2.0 | Gavin Tapp
+- glowing-electric-room-heater.webp | https://pixabay.com/photos/room-heater-yellow-light-worm-1290546/ | Pixabay Content License | suvajit
+- muddy-leather-work-boots.webp | https://pixabay.com/photos/boots-grass-brown-outdoors-summer-3648141/ | Pixabay Content License | angelsharum
+- steel-medical-tools-on-blue-cloth.webp | https://pixabay.com/photos/surgery-tools-scalpel-scissors-1662204/ | Pixabay Content License | domkarch
+- three-mile-island-plant-aerial.webp | https://www.flickr.com/photos/30552029@N00/51142893665 | CC BY-SA 2.0 | formulanone
+- gray-double-socket-white-wall.webp | https://pixabay.com/photos/plug-volt-voltage-electricity-5634887/ | Pixabay Content License | ha11ok
+- remote-control-red-button-closeup.webp | https://pixabay.com/photos/black-button-communication-control-21166/ | Pixabay Content License | PublicDomainPictures
+- red-drum-kit-cymbals.webp | https://pixabay.com/photos/drums-drum-set-background-music-3109364/ | Pixabay Content License | paulbr75
+- tuba-drawing-gold.webp | https://pixabay.com/vectors/wind-instruments-music-orchestra-5803680/ | Pixabay Content License | AlLes
+- silver-flute-drawing.webp | https://pixabay.com/vectors/flute-music-musical-instrument-296417/ | Pixabay Content License | Clker-Free-Vector-Images
+- small-brown-mouse-ground.webp | https://pixabay.com/photos/mouse-rodent-mammal-nager-nature-1708347/ | Pixabay Content License | Alexas_Fotos
+- big-bass-drum-drawing.webp | https://pixabay.com/photos/drums-drum-set-background-music-3109364/ | Pixabay Content License | paulbr75
+- empty-frames-gallery-wall.webp | https://pixabay.com/photos/art-gallery-canvas-arts-gallery-699429/ | Pixabay Content License | StockSnap
+- dip-pen-and-spare-nibs.webp | https://pixabay.com/photos/feather-ink-pen-pen-ink-penholder-4984862/ | Pixabay Content License | Carola68
+- two-wooden-wall-shelves.webp | https://pixabay.com/photos/shelf-bookshelf-wall-interior-8390073/ | Pixabay Content License | InteriorLens
+- small-plane-among-clouds.webp | https://pixabay.com/photos/clouds-aircraft-plane-sky-4944276/ | Pixabay Content License | Sinousxl
+- brown-suede-lace-up-shoe.webp | https://pixabay.com/photos/shoes-brown-leather-fashion-2434210/ | Pixabay Content License | rydv151
+- small-wooden-table-four-legs.webp | https://pixabay.com/photos/furniture-table-interior-design-8275659/ | Pixabay Content License | Mariakray
+- long-white-hallway-wood-floor.webp | https://pixabay.com/photos/hallway-corridor-white-parquet-1284617/ | Pixabay Content License | Pexels
+- rough-tree-bark-closeup.webp | https://www.flickr.com/photos/23501684@N00/240312776 | CC BY 2.0 | Bill Ward's Brickpile
+- microphone-on-stand-warm-light.webp | https://pixabay.com/photos/audio-concert-mic-microphone-music-2941753/ | Pixabay Content License | freestocks-photos
+- golden-puppy-by-food-bowl.webp | https://pixabay.com/photos/puppy-golden-retriever-dog-young-1207816/ | Pixabay Content License | Chiemsee2024
+- wooden-toy-truck-on-table.webp | https://www.flickr.com/photos/47166549@N00/7760364968 | CC BY 2.0 | latteda
+- tomato-plant-red-and-orange.webp | https://pixabay.com/photos/tomatoes-tomato-plant-garden-6614242/ | Pixabay Content License | planet_fox
+- white-dove-flying.webp | https://pixabay.com/photos/bird-nature-wildlife-feather-3098446/ | Pixabay Content License | 6689062
+- golden-barley-field-close.webp | https://pixabay.com/photos/field-wheats-grains-agriculture-6374781/ | Pixabay Content License | Ylanite
+- reeds-at-the-river-edge.webp | https://pixabay.com/photos/okavanga-delta-safari-botswana-226646/ | Pixabay Content License | thomaspedrazzoli
+- emek-haelah-valley-view.webp | https://www.flickr.com/photos/38000818@N06/7023845437 | CC BY-SA 2.0 | Ian W Scott
+- thick-old-stone-wall-blocks.webp | https://pixabay.com/photos/wall-masonry-stone-texture-823602/ | Pixabay Content License | GregMontani
+- open-desert-tent-by-dune.webp | https://pixabay.com/photos/desert-camp-morocco-nature-africa-171825/ | Pixabay Content License | wbwolfgang
+- low-desert-hill-acacia.webp | https://pixabay.com/photos/negev-desert-wilderness-wanderings-4765422/ | Pixabay Content License | jdblack
