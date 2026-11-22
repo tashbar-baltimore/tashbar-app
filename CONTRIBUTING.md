@@ -17,6 +17,7 @@
 - Content follows the Head of School's Family Life decision (2026-11-15): modest, warm, normal frum family life; a wide mix of names; kosher food.
 - Kodesh content is reviewed by a rebbe after it is live. Say so in the pull request.
 - Every question needs a kid-friendly "How to do it" box.
+- Quality guardrails (HoS 2026-11-22): the tests run a quality gate on every lesson and a K–1 games-only check; new lessons must pass every rule, and the to-fix list may only shrink. Look at what a boy sees (pictures in the PR) and get an independent review before you call anything done. Details: CLAUDE.md, "Quality guardrails".
 
 ## Step by step
 1. Pick an issue from the Work Queue and say you are taking it.

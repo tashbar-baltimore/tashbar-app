@@ -164,6 +164,9 @@ async function kidTests(browser) {
   /* ONE BITE player (tests/lib/onebite.js) */
   try { const ob = await require('./lib/onebite.js')(pg); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
   catch (e) { fail('One Bite test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* QUALITY GATE + K-1 GAMES ONLY (HoS 2026-11-22: "we need guardrails"): new lessons must meet the quality rules, listed ones may not get worse */
+  try { const q = await require('./lib/obquality.js')(pg); q.fails.forEach(fail); q.oks.forEach(ok); Object.assign(report.counts, q.counts); } catch (e) { fail('quality gate crashed: ' + String(e).slice(0, 200)); }
+  try { const k = await require('./lib/k1home.js')(pg); k.fails.forEach(fail); k.oks.forEach(ok); } catch (e) { fail('K-1 games-only check crashed: ' + String(e).slice(0, 200)); }
   /* Store Fun tab (tests/lib/storefx.js, HoS 2026-11-22): no two items share a name, a picture, a tap blast, a trail or nearly the same app colors */
   try { const sf = require('./lib/storefx.js'), n = sf.names(), e = await sf.effects(pg); n.fails.concat(e.fails).forEach(fail);
     if (!n.fails.length && !e.fails.length) ok('store Fun tab: ' + n.count + ' items, no two share a name, picture, tap blast, trail or app colors (closest app colors: ' + (e.closest && e.closest.d) + ')'); }
