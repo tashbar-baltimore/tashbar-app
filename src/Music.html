@@ -153,8 +153,12 @@ function muFetch(t){ if(MU.buf[t.id]) return Promise.resolve(MU.buf[t.id]);
  return muCacheGet(t.id).then(hit=>{ if(hit){ MU.buf[t.id]=URL.createObjectURL(hit); return MU.buf[t.id]; }
   const parts=[]; const get=k=>run('msMusicPart',SRV.token,t.id,k).then(r=>{ const bin=atob(r.data||''), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i); parts.push(u); return r.done?null:get(k+1); });
   return get(0).then(()=>{ const blob=new Blob(parts,{type:'audio/ogg'}); muCachePut(t.id,blob); MU.buf[t.id]=URL.createObjectURL(blob); return MU.buf[t.id]; }); }); }
-function muTarget(){ const m=muPrefs(); let off=false; try{ off=typeof SND!=='undefined'&&SND.on===false; }catch(e){} return off?0:(m.vol==null?.6:m.vol)*MU.place*.7; }   /* HoS 2026-11-20: the speaker (Sound off) mutes the music too; the music keeps its place */
+function muTarget(){ const m=muPrefs(); let off=false; try{ off=typeof SND!=='undefined'&&SND.on===false; }catch(e){} return off?0:(m.vol==null?.6:m.vol)*MU.place*.7*(MU.duck?.18:1); }   /* HoS 2026-11-20: the speaker (Sound off) mutes the music too; the music keeps its place */
 setInterval(()=>{ try{ const on=!(typeof SND!=='undefined'&&SND.on===false); if(MU.sndOn!==on){ MU.sndOn=on; if(MU.audio) muFade(muTarget(),300); } }catch(e){} },300);
+/* HoS 2026-11-22: "when Read it to me is saying the question, the music is lower and the voice is heard". The voice (VoicePro.html)
+   sends 'tlvoice' on and off; while it speaks the music drops to a soft background, then comes back up. */
+window.addEventListener('tlvoice',e=>{ const on=!!(e&&e.detail); if(MU.duck===on) return; MU.duck=on; clearTimeout(MU.duckT);
+ if(on) muFade(muTarget(),250); else MU.duckT=setTimeout(()=>{ if(!MU.duck) muFade(muTarget(),900); },400); });
 function muFade(to,ms){ const a=MU.audio; if(!a) return; const from=a.volume, t0=performance.now(); clearInterval(MU.fadeT); MU.fadeT=setInterval(()=>{ const k=Math.min(1,(performance.now()-t0)/ms); a.volume=Math.max(0,Math.min(1,from+(to-from)*k)); if(k>=1) clearInterval(MU.fadeT); },40); }
 function muStop(){ if(MU.audio){ const a=MU.audio; muFade(0,600); setTimeout(()=>{ a.pause(); },650); } MU.audio=null; MU.track=null; }
 function muPlay(next){ const m=muPrefs(); if(!SRV.token||!A.st||m.mood==='off'||(MU.info&&MU.info.off)) return muStop();

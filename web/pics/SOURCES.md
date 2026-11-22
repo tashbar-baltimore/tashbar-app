@@ -525,3 +525,6 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - railroad-tracks-to-horizon.webp | https://pixabay.com/photos/rails-tracks-trackage-239479/ | Pixabay Content License | HaloJim
 - black-clarinet-standing.webp | https://pixabay.com/photos/music-clarinet-musical-instrument-1744419/ | Pixabay Content License | 2204574
 - orange-bumpy-peel.webp | https://pixabay.com/photos/grapefruit-fruit-tropical-fruit-1647507/ | Pixabay Content License | Couleur
+- first-airplane-flight-1903.webp | https://images.nasa.gov/details/9248164 | Public domain (NASA) | MSFC
+- jet-airplane-front-sky.webp | https://pixabay.com/photos/plane-approach-landing-flight-air-3075056/ | Pixabay Content License | fietzfotos
+- river-dam-water-rushing.webp | https://pixabay.com/photos/dam-river-water-landscape-power-929406/ | Pixabay Content License | russmac
