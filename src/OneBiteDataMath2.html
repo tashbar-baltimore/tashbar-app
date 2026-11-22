@@ -349,5 +349,517 @@ B['MATH.STAT.L05.01']={ band:'E45', pic:'🌱', today:'Read a line plot: count X
     {type:'listen', hear:'1 eighth has 3 Xs. 2 eighths has 1 X. 3 eighths has 2 Xs. 4 eighths has 4 Xs. Which happened most often?', q:'1/8: XXX, 2/8: X, 3/8: XX, 4/8: XXXX', o:['4/8','1/8','3/8','2/8'], a:'4/8', say:'Listen. Which measurement happened most often?', how:'Find the value with the MOST Xs: 4/8 has 4.'},
     {type:'count', n:5, pic:'✖️', o:['5','4','6','8'], q:'5/8: XXXXX', say:'How many measurements were 5/8 inch? Count the Xs.', how:'Count only the Xs above 5/8.'}] };
 
+/* ---- L06 (Grade 5, Explorers) ---- */
+B['MATH.ALG.L06.01']={ band:'E45', pic:'🚕', today:'Write expressions with a letter, then plug in numbers', why:'A taxi to the chasunah costs $4 plus $3 a mile: 4 + 3m gives the cost of any ride.',
+  ready:[{q:'4 + 3 × 10 = ?', o:['34','70','37','17'], a:'34'},{q:'8 × 7 = ?', o:['56','54','15','63'], a:'56'}],
+  bridge:'MATH.ALG.L05.01', bridgeName:'Pattern from a Rule',
+  watch:{ q:'Find the value of 9n − 8 when n = 7.', m:{type:'tiles', w:['9','×','7','−','8']}, steps:[
+    {t:'A letter like n stands for a number. 9n means 9 × n.'},
+    {t:'Plug in n = 7: 9 × 7 − 8.'},
+    {t:'Multiply first: 63. Then subtract: 63 − 8 = 55.'},
+    {t:'Words to an expression: "2 more than n" is n + 2. "3 less than 8 times n" is 8n − 3: first 8 times n, then take away 3.'},
+    {t:'Taxi: 4 + 3m. For a 10-mile ride, m = 10: 4 + 30 = 34 dollars.'}], a:'55' },
+  oops:{ q:'"3 less than 8 times n"', wrong:'3 − 8n', right:'8n − 3', why:'"Less than" flips the order: start with 8n, then take away 3.' },
+  ways:['build the expression','number line hops','match and sort phrases','Mistake Detective'], done:'You can turn words into expressions and find their value.',
+  board:{ one:'A letter stands for a number; plug it in, multiply first, then add or subtract.', activity:'Taxi game: boys pick a number of miles and find the cost with 4 + 3m.', mistakes:['Writing "3 less than n" as 3 − n','Reading 9n as 9 + n','Adding before multiplying'] },
+  do:[
+    {type:'match', pairs:[['2 more than n','n + 2'],['3 less than n','n − 3'],['8 times n','8n'],['half of n','n ÷ 2']], say:'Match the words to the expression.', how:'"More than" adds. "Less than" takes away from n. "Times" multiplies.',
+      why:{q:'Why is "3 less than n" written n − 3?', o:['Start with n, then take away 3','3 comes first','Less means divide','n is smaller'], a:'Start with n, then take away 3'}},
+    {type:'tiles', w:['8','n','−','3'], extra:['+','2'], q:'3 less than 8 times n', say:'Build: 3 less than 8 times n.', how:'First 8 times n: 8n. Then take away 3: 8n − 3.'}],
+  your:[
+    {type:'hop', start:4, add:15, unit:3, from:1, to:22, q:'4 + 3m, m = 5', say:'Taxi: start at $4. Hop $3 for each of 5 miles.', how:'Start at 4. 5 hops of 3: 4 + 15 = 19.'},
+    {type:'listen', hear:'Find the value of 9 n minus 12 when n is 8.', q:'9n − 12, n = 8', o:['60','84','5','80'], a:'60', say:'Listen. Plug in n = 8. Tap the value.', how:'9 × 8 = 72 first. Then 72 − 12 = 60.',
+      why:{q:'Why multiply first?', o:['9n means 9 × n, done before the minus','Minus always comes first','12 is small','8 is even'], a:'9n means 9 × n, done before the minus'}},
+    {type:'sort', bins:['n + 2','2n'], cards:[['2 more than n',0],['twice n',1],['n plus 2',0],['2 times n',1],['n increased by 2',0],['double n',1]], say:'Add 2 or times 2? Sort each phrase.', how:'More, plus, increased: add. Twice, double, times: multiply.'},
+    {type:'match', pairs:[['3n, n = 4','12'],['n + 9, n = 6','15'],['5n − 1, n = 2','9'],['4 + 2m, m = 3','10']], say:'Plug in the number. Match each to its value.', how:'Swap the letter for the number. Multiply first, then add or subtract.'},
+    {type:'findall', grid:['4n','n + 15','3n + 5','2n','n − 5','5n','6n − 10','n + 20'], find:['4n','n + 15','3n + 5','6n − 10'], findSay:'expression equal to 20', say:'n = 5. Tap every expression equal to 20.', how:'Put 5 in for n. 4n = 4 × 5 = 20.'}] };
+
+B['MATH.ALG.L06.02']={ band:'E45', pic:'📈', today:'Line up two patterns and compare them step by step', why:'Dovid saves $4 a week for a new sefer and Moshe saves $6. When Dovid has $20, how much has Moshe?',
+  ready:[{q:'80 ÷ 10 = ?', o:['8','70','90','800'], a:'8'},{q:'8 × 6 = ?', o:['48','14','42','86'], a:'48'}],
+  bridge:'MATH.ALG.L05.01', bridgeName:'Pattern from a Rule',
+  watch:{ q:'Both start at 0. A adds 10 each step, B adds 6. When A is 80, what is B?', m:{type:'tiles', w:['A: 0, 10, 20, 30','B: 0, 6, 12, 18']}, steps:[
+    {t:'Make a table. Step 1: A is 10, B is 6. Step 2: A is 20, B is 12. Step 3: A is 30, B is 18.'},
+    {t:'How many steps until A is 80? 80 ÷ 10 = 8 steps.'},
+    {t:'B after 8 steps: 8 × 6 = 48.'},
+    {t:'Savings work the same way: Dovid saves $4 a week, Moshe $6. Dovid has $20 after 20 ÷ 4 = 5 weeks. Moshe: 5 × 6 = $30.'}], a:'48' },
+  oops:{ q:'A adds 10, B adds 6. When A is 80, what is B?', wrong:'76 (80 − 4)', right:'48', why:'The gap grows every step. Count the steps: 8 × 6 = 48.' },
+  ways:['two-row table','number line hops','match the pairs','Mistake Detective'], done:'You can line up two patterns and predict one from the other.',
+  board:{ one:'Find the number of steps, then use it for the other pattern.', activity:'Two boys skip count side by side (by 10s and by 6s); the class says the pairs.', mistakes:['Thinking the gap stays the same','Using A instead of the number of steps','Starting B at the wrong number'] },
+  do:[
+    {type:'tiles', w:['0','6','12','18','24'], extra:['16'], q:'B adds 6', say:'B adds 6 each step. Build B, starting at 0.', how:'0, then add 6 each time: 6, 12, 18, 24.'},
+    {type:'match', pairs:[['A = 20','B = 12'],['A = 50','B = 30'],['A = 80','B = 48'],['A = 30','B = 18']], say:'A adds 10, B adds 6. Match each pair.', how:'Find the steps: A ÷ 10. Then B = steps × 6.',
+      why:{q:'Why divide A by 10?', o:['It tells how many steps','10 is big','B is smaller','To make it even'], a:'It tells how many steps'}}],
+  your:[
+    {type:'hop', start:0, add:20, unit:4, from:0, to:24, q:'Dovid saves $4 a week', say:'Dovid saves $4 a week. Hop to $20. Count the weeks.', how:'Each hop is one week. 5 hops reach $20: 5 weeks.'},
+    {type:'listen', hear:'Moshe saves 6 dollars a week. How much does he have after 5 weeks?', q:'5 weeks × $6', o:['$30','$11','$24','$36'], a:'$30', say:'Listen. How much does Moshe have?', how:'The same number of weeks: 5. Moshe: 5 × 6 = 30.',
+      why:{q:'Why use 5 weeks for Moshe too?', o:['Both boys save for the same weeks','Moshe saves $5','$20 ÷ 6','Weeks are always 5'], a:'Both boys save for the same weeks'}},
+    {type:'sort', bins:['B is double A','B is triple A'], cards:[['(2, 4)',0],['(3, 9)',1],['(5, 10)',0],['(4, 12)',1],['(6, 12)',0],['(5, 15)',1]], say:'Is B double or triple A? Sort each pair.', how:'Look at each pair (A, B). Is B 2 times A, or 3 times A?'},
+    {type:'match', pairs:[['Dovid $14','Moshe $18'],['Dovid $21','Moshe $27'],['Dovid $49','Moshe $63'],['Dovid $35','Moshe $45']], say:'Dovid saves $7, Moshe $9 a week. Match.', how:'Weeks = Dovid ÷ 7. Moshe = weeks × 9. $49 ÷ 7 = 7 weeks.'},
+    {type:'tiles', w:['50 ÷ 10 = 5','5 × 9 = 45'], extra:['50 − 1 = 49','50 + 9 = 59'], q:'A adds 10, B adds 9. A is 50. B?', say:'A is 50. Build the steps to find B.', how:'First find the steps: 50 ÷ 10 = 5. Then 5 × 9 = 45.'}] };
+
+B['MATH.FRAC.L06.01']={ band:'E45', pic:'🥣', today:'Make the bottoms match, then add or subtract', why:'A recipe for a big Shabbos crowd needs 1/2 cup plus 1/3 cup of oil. How much in all?',
+  ready:[{q:'1/4 = ?/8', o:['2','1','4','8'], a:'2'},{q:'Which number do 2 and 3 both go into?', o:['6','5','8','9'], a:'6'}],
+  bridge:'MATH.FRAC.L05.01', bridgeName:'Equivalent fractions and comparing fractions',
+  watch:{ q:'1/2 + 1/3 = ?', steps:[
+    {t:'Halves and thirds are different sizes. Find a number both 2 and 3 go into: 6.'},
+    {t:'1/2 = 3/6. Times 3 on top AND bottom.', m:{type:'fbar', n:3, d:6}},
+    {t:'1/3 = 2/6. Times 2 on top AND bottom.', m:{type:'fbar', n:2, d:6}},
+    {t:'Add the tops, keep the bottom: 3/6 + 2/6 = 5/6.'},
+    {t:'More than 1? 5/6 + 3/8: bottom 24. 20/24 + 9/24 = 29/24 = 1 5/24. Subtract the same way: 3/4 − 1/6 = 9/12 − 2/12 = 7/12.'}], a:'5/6' },
+  oops:{ q:'1/2 + 1/3', wrong:'2/5', right:'5/6', why:'Never add the bottoms. Make them the same, then add only the tops.' },
+  ways:['fraction bars','build the steps','sort and find equal','Mistake Detective'], done:'You can add and subtract fractions with different bottoms.',
+  board:{ one:'Same bottom first, then add or subtract the tops.', activity:'Fraction strips: line up halves and thirds under sixths.', mistakes:['Adding the bottoms (2/5)','Changing only the bottom','Leaving 29/24 without making a mixed number'] },
+  do:[
+    {type:'match', pairs:[['1/2','3/6'],['1/3','2/6'],['3/4','6/8'],['2/5','4/10']], say:'Match each fraction to its twin with a new bottom.', how:'Multiply the top AND the bottom by the same number.',
+      why:{q:'Why times 3 on top and bottom?', o:['It keeps the same amount','It makes it bigger','3 is lucky','Only the bottom changes'], a:'It keeps the same amount'}},
+    {type:'tiles', w:['1/2 = 4/8','4/8 + 2/8','= 6/8'], extra:['= 3/10'], q:'1/2 + 2/8', say:'Add 1/2 + 2/8. Build the steps.', how:'8 is a good bottom. 1/2 = 4/8. Then 4/8 + 2/8 = 6/8.'}],
+  your:[
+    {type:'sort', bins:['Less than 1','More than 1'], cards:[['1/2 + 1/3',0],['3/4 + 1/2',1],['1/4 + 1/8',0],['5/6 + 3/8',1],['2/3 + 1/4',0],['2/3 + 3/4',1]], say:'Is the sum more than 1? Sort each one.', how:'Make the bottoms match. If the top is bigger than the bottom, it is more than 1.'},
+    {type:'listen', hear:'2 thirds plus 3 fourths', q:'2/3 + 3/4 = ?', o:['1 5/12','5/7','5/12','1 1/12'], a:'1 5/12', say:'Listen. Add with a bottom of 12.', how:'2/3 = 8/12. 3/4 = 9/12. 17/12 = 1 5/12.',
+      why:{q:'Why 12?', o:['Both 3 and 4 go into 12','3 + 4 = 7','12 is big','4 × 4 = 16'], a:'Both 3 and 4 go into 12'}},
+    {type:'findall', grid:['6/8','9/12','3/8','12/16','4/3','15/20','7/10','2/4'], find:['6/8','9/12','12/16','15/20'], findSay:'number equal to 3/4', say:'Tap every fraction equal to 3/4.', how:'Divide the top and bottom by the same number. 6/8 ÷ 2 is 3/4.'},
+    {type:'match', pairs:[['1/2 + 1/5','7/10'],['1/3 + 1/6','3/6'],['3/4 − 1/6','7/12'],['1/2 − 1/4','1/4']], say:'Add or subtract. Match each to its answer.', how:'Find a bottom both go into. Change both. Then add or subtract the tops.'},
+    {type:'tiles', w:['1/3','1/2','5/8','3/4'], q:'Smallest first', say:'Put them in order, smallest first.', how:'Give them all a bottom of 24: 8, 12, 15 and 18.'}] };
+
+B['MATH.FRAC.L06.02']={ band:'E45', pic:'💵', today:'Write money as decimals: dollars, dimes, pennies', why:'Counting the tzedakah pushka: 9 dollar bills, 7 dimes and 6 pennies is $9.76.',
+  ready:[{q:'How many pennies make a dime?', o:['10','5','100','25'], a:'10'},{q:'Write 3/10 as a decimal.', o:['0.3','3.0','0.03','30'], a:'0.3'}],
+  bridge:'MATH.FRAC.L05.04', bridgeName:'Tenths to Hundredths',
+  watch:{ q:'9 dollar bills, 7 dimes and 6 pennies. Write the total in dollars.', m:{type:'tiles', w:['9','.','7','6'], hi:[0]}, steps:[
+    {t:'Dollars go before the point: 9.'},
+    {t:'Dimes are tenths: 7 dimes is the first place after the point. Pennies are hundredths: 6 pennies is the second place. Total: 9.76.'},
+    {t:'No dimes? Write a 0: 9 dollars, 0 dimes and 6 pennies is 9.06. No pennies: 8 dollars and 1 dime is 8.10 = 8.1.'},
+    {t:'$5.23 is 5 dollars and 23 hundredths. 0.6 is 6 tenths = 60 hundredths. 37/100 = 0.37.'}], a:'$9.76' },
+  oops:{ q:'9 dollars, 0 dimes, 6 pennies', wrong:'$9.6', right:'$9.06', why:'The dimes place is empty, so it gets a 0. $9.6 would be 6 dimes.' },
+  ways:['money','build the number','sort and find','Mistake Detective'], done:'You can write money and hundredths as decimals.',
+  board:{ one:'Dollars . dimes pennies: tenths, then hundredths.', activity:'Play-money store: boys write each total as a decimal.', mistakes:['Leaving out the 0 for no dimes','Thinking 0.06 = 0.6','Writing 23 cents as 0.023'] },
+  do:[
+    {type:'match', pairs:[['7 dimes','0.70'],['6 pennies','0.06'],['1 dime 1 penny','0.11'],['3 dimes','0.30']], say:'Match the coins to the decimal.', how:'A dime is 0.10. A penny is 0.01.',
+      why:{q:'Why is 6 pennies 0.06?', o:['Pennies are hundredths','Pennies are tenths','6 is small','Add a zero at the end'], a:'Pennies are hundredths'}},
+    {type:'tiles', w:['9','.','0','6'], extra:['6','0'], q:'$9, 0 dimes, 6 pennies', say:'Build 9 dollars, 0 dimes and 6 pennies.', how:'Dollars, then the point, then dimes, then pennies. No dimes: write 0.'}],
+  your:[
+    {type:'listen', hear:'1 dollar, 7 dimes and 8 pennies', q:'$1 + 7 dimes + 8 pennies', o:['$1.78','$1.87','$17.8','$1.15'], a:'$1.78', say:'Listen. Tap the total in dollars.', how:'1 dollar, the point, 7 dimes, 8 pennies: 1.78.'},
+    {type:'sort', bins:['Same as 0.6','Not 0.6'], cards:[['60/100',0],['6/10',0],['0.06',1],['6/100',1],['0.60',0],['0.16',1]], say:'Is it the same as 0.6? Sort each one.', how:'0.6 is 6 dimes: 60 hundredths. 0.06 is 6 pennies.'},
+    {type:'findall', grid:['$5.23','$2.35','$0.23','$23.00','$8.23','$3.20'], find:['$5.23','$0.23','$8.23'], findSay:'amount with 23 cents', say:'Tap every amount with 23 cents.', how:'Cents are the 2 places after the point. $5.23 has 23 cents.',
+      why:{q:'Why does $23.00 not count?', o:['There 23 is dollars, not cents','It is too big','It has zeros','It is not money'], a:'There 23 is dollars, not cents'}},
+    {type:'tiles', w:['$1.09','$1.18','$1.80','$8.11'], q:'Smallest first', say:'Put the amounts in order, smallest first.', how:'Compare dollars first, then dimes, then pennies.'},
+    {type:'listen', hear:'Write 37 hundredths as a decimal.', o:['0.37','3.7','0.037','37.0'], a:'0.37', say:'Listen. Tap the decimal.', how:'Hundredths: two places after the point. 0.37.'}] };
+
+B['MATH.FRAC.L06.03']={ band:'E45', pic:'🎀', today:'Divide a whole number by a unit fraction', why:'A 6-meter roll of ribbon for the Chanukah party, cut into 1/2-meter pieces: how many pieces?',
+  ready:[{q:'How many halves make 1 whole?', o:['2','1','4','3'], a:'2'},{q:'6 × 5 = ?', o:['30','11','35','25'], a:'30'}],
+  bridge:'MATH.FRAC.L05.03', bridgeName:'Mixed Up',
+  watch:{ q:'6 ÷ 1/5 = ? (How many 1/5s fit in 6?)', steps:[
+    {t:'Ask: how many fifths fit in 1 whole? 5.', m:{type:'fbar', n:5, d:5}},
+    {t:'6 wholes: 6 × 5 = 30 fifths. So 6 ÷ 1/5 = 30.'},
+    {t:'Ribbon: 6 m cut into 1/2 m pieces. 2 pieces in each meter: 6 × 2 = 12 pieces.', m:{type:'line', from:0, to:6, hops:[0,1,2,3,4,5,6]}},
+    {t:'The rule: whole ÷ 1/b = whole × b. Dividing by a small piece gives MORE pieces.'}], a:'30' },
+  oops:{ q:'6 ÷ 1/2', wrong:'3', right:'12', why:'3 is 6 ÷ 2. How many HALVES fit in 6? 2 in each whole: 12.' },
+  ways:['fraction bars','ribbon on a number line','count and hop','Mistake Detective'], done:'You can divide a whole number by a unit fraction.',
+  board:{ one:'How many pieces fit? Whole × bottom.', activity:'Cut 3 paper strips into fourths and count all the pieces.', mistakes:['Dividing by the bottom (6 ÷ 2)','Answer smaller than the whole','Multiplying by the top (1)'] },
+  do:[
+    {type:'count', n:8, pic:'🎀', o:['8','2','6','4'], q:'4 ÷ 1/2', say:'4 meters cut into halves. Count the pieces.', how:'2 halves in each meter. 4 × 2 = 8.'},
+    {type:'match', pairs:[['6 ÷ 1/5','30'],['9 ÷ 1/8','72'],['6 ÷ 1/2','12'],['5 ÷ 1/4','20']], say:'How many pieces fit? Match each one.', how:'Multiply the whole by the bottom: 6 ÷ 1/5 = 6 × 5.',
+      why:{q:'Why multiply?', o:['Each whole holds b pieces','Divide means smaller','The top is 1','To make it even'], a:'Each whole holds b pieces'}}],
+  your:[
+    {type:'tiles', w:['9 ÷ 1/5','= 9 × 5','= 45'], extra:['= 9 ÷ 5','= 1 4/5'], say:'Build the steps for 9 ÷ 1/5.', how:'5 fifths in each whole. 9 wholes: 9 × 5 = 45.'},
+    {type:'listen', hear:'A 6 meter ribbon is cut into pieces of 1 half meter. How many pieces?', q:'6 ÷ 1/2', o:['12','3','8','6'], a:'12', say:'Listen. How many pieces?', how:'2 halves in each meter. 6 × 2 = 12.',
+      why:{q:'Why is it more than 6?', o:['Each piece is smaller than 1 meter','Dividing makes bigger numbers','Ribbon stretches','6 is even'], a:'Each piece is smaller than 1 meter'}},
+    {type:'sort', bins:['More than 10','10 or less'], cards:[['3 ÷ 1/4',0],['2 ÷ 1/4',1],['5 ÷ 1/3',0],['4 ÷ 1/2',1],['2 ÷ 1/5',1],['6 ÷ 1/2',0]], say:'More than 10 pieces? Sort each one.', how:'Multiply the whole number by the bottom number.'},
+    {type:'hop', start:0, add:72, unit:8, from:0, to:80, q:'9 ÷ 1/8', say:'8 pieces in each meter. Hop 9 meters of 8.', how:'Each hop is one meter = 8 pieces. 9 hops: 72.'},
+    {type:'findall', grid:['6÷1/2','3÷1/4','2÷1/5','4÷1/2','2÷1/6','3÷1/3','5÷1/2','4÷1/3'], find:['6÷1/2','3÷1/4','2÷1/6','4÷1/3'], findSay:'one that makes 12', say:'Tap every one that makes 12 pieces.', how:'Whole × bottom. 3 ÷ 1/4 = 3 × 4 = 12.'}] };
+
+B['MATH.FRAC.L06.04']={ band:'E45', pic:'🍞', today:'Share wholes equally: the answer is a fraction', why:'3 challahs for 4 boys at the seudah: everyone gets exactly 3/4.',
+  ready:[{q:'1 challah for 4 boys. How much does each get?', o:['1/4','4','1/3','4/1'], a:'1/4'},{q:'7 ÷ 5 = ?', o:['1 R2','2 R1','1 R5','1'], a:'1 R2'}],
+  bridge:'MATH.FRAC.L04.03', bridgeName:'Same Size Shares',
+  watch:{ q:'3 challahs are shared equally by 4 boys. How much does each boy get?', m:{type:'scene', e:'🍞', t:'Shabbos seudah: 3 challahs, 4 boys, and everyone gets the same.'}, steps:[
+    {t:'Cut each challah into 4 pieces. Each piece is 1/4.', m:{type:'fbar', n:1, d:4}},
+    {t:'Each boy takes 1 piece from every challah: 3 pieces, so 3/4.', m:{type:'fbar', n:3, d:4}},
+    {t:'Shortcut: things on top, people on the bottom. 3 ÷ 4 = 3/4. 1 challah shared by 2 boys: 1/2 each.'},
+    {t:'More things than people: 7 challahs, 5 boys: 7/5 = 1 2/5 each. Check: 4 × 3/4 = 3.'}], a:'3/4' },
+  oops:{ q:'3 challahs, 4 boys', wrong:'4/3', right:'3/4', why:'The challahs go on top, the boys on the bottom. Each gets less than 1.' },
+  ways:['frum-family scene','fraction bars','match and sort shares','Mistake Detective'], done:'You can share wholes equally and write each share as a fraction.',
+  board:{ one:'Things ÷ people = things/people.', activity:'Paper challahs: 3 shared by 4 boys, cut and hand out.', mistakes:['Flipping the fraction (4/3)','Answering in pieces (3) instead of 3/4','Not making a mixed number for 7/5'] },
+  do:[
+    {type:'match', pairs:[['1 for 2 boys','1/2'],['3 for 4 boys','3/4'],['2 for 3 boys','2/3'],['7 for 5 boys','1 2/5']], say:'Challahs for boys. Match each share.', how:'Challahs on top, boys on the bottom. 3 for 4 is 3/4.',
+      why:{q:'Why is 3 for 4 boys 3/4?', o:['3 challahs ÷ 4 boys','4 boys ÷ 3 challahs','3 + 4','4 − 3'], a:'3 challahs ÷ 4 boys'}},
+    {type:'sort', bins:['Less than 1 each','1 or more each'], cards:[['3 for 4',0],['7 for 5',1],['2 for 3',0],['5 for 5',1],['1 for 2',0],['9 for 4',1]], say:'Does each boy get less than 1 challah? Sort.', how:'Fewer challahs than boys: less than 1 each.'}],
+  your:[
+    {type:'listen', hear:'1 challah is shared equally by 3 boys. How much does each boy get?', q:'1 ÷ 3', o:['1/3','3','3/1','1/2'], a:'1/3', say:'Listen. How much does each boy get?', how:'1 challah on top, 3 boys on the bottom: 1/3.'},
+    {type:'tiles', w:['7 ÷ 5','= 7/5','= 1 2/5'], extra:['= 5/7','= 1 5/7'], say:'7 challahs, 5 boys. Build each share.', how:'7 ÷ 5 = 7/5. 5 fits once, 2 left: 1 2/5.',
+      why:{q:'Why 1 2/5?', o:['5 fits in 7 once, with 2 left','7 − 5 = 2','5/7 is less','2 boys are left'], a:'5 fits in 7 once, with 2 left'}},
+    {type:'count', n:3, pic:'🍞', o:['3','4','1','12'], q:'3 challahs, 4 boys: pieces of 1/4', say:'Each boy gets 1 piece from each challah. Count his pieces.', how:'3 challahs, 1 piece from each: 3 pieces of 1/4 = 3/4.'},
+    {type:'match', pairs:[['2 for 4 boys','2/4'],['5 for 6 boys','5/6'],['4 for 3 boys','1 1/3'],['6 for 8 boys','6/8']], say:'Match each share.', how:'Things on top, people on the bottom. More than 1? Make a mixed number.'},
+    {type:'listen', hear:'5 challahs shared equally by 2 boys', q:'5 ÷ 2', o:['2 1/2','2/5','5','3 1/2'], a:'2 1/2', say:'Listen. How much does each boy get?', how:'5/2. 2 fits in 5 twice, 1 left: 2 1/2.'}] };
+
+B['MATH.FRAC.L06.05']={ band:'E45', pic:'✖️', today:'Multiply fractions: tops times tops, bottoms times bottoms', why:'Half of a third of a pan of kugel: how much of the whole pan is that?',
+  ready:[{q:'2 × 3 = ?', o:['6','5','23','9'], a:'6'},{q:'Write 1 1/4 as an improper fraction.', o:['5/4','2/4','1/5','4/5'], a:'5/4'}],
+  bridge:'MATH.FRAC.L05.03', bridgeName:'Mixed Up',
+  watch:{ q:'2/3 × 3/4 = ?', steps:[
+    {t:'Tops times tops: 2 × 3 = 6. Bottoms times bottoms: 3 × 4 = 12.'},
+    {t:'6/12 simplifies to 1/2.', m:{type:'fbar', n:6, d:12}},
+    {t:'A mixed number? Change it first: 1 1/4 = 5/4.'},
+    {t:'5/4 × 3/6 = 15/24 = 5/8. The answer is smaller than 1 1/4, because you took part of it.'}], a:'1/2' },
+  oops:{ q:'2/3 × 3/4', wrong:'8/12 (cross-multiplied)', right:'6/12 = 1/2', why:'Multiply straight across: top × top, bottom × bottom.' },
+  ways:['fraction bar','build the steps','match and sort','Mistake Detective'], done:'You can multiply fractions and mixed numbers.',
+  board:{ one:'Top × top over bottom × bottom; change mixed numbers first.', activity:'Fold paper into thirds one way and fourths the other; shade 2/3 of 3/4.', mistakes:['Cross-multiplying','Multiplying the whole number only (1 1/4 × 3/6 = 3/24)','Not simplifying'] },
+  do:[
+    {type:'tiles', w:['2 × 3','3 × 4','6/12','1/2'], extra:['2 + 3','5/7'], q:'2/3 × 3/4', say:'Build 2/3 × 3/4, step by step.', how:'Tops: 2 × 3. Bottoms: 3 × 4. Then simplify 6/12.'},
+    {type:'match', pairs:[['1/2 × 1/3','1/6'],['2/3 × 3/4','1/2'],['3/5 × 1/2','3/10'],['3/4 × 1/4','3/16']], say:'Multiply across. Match each to its answer.', how:'Top × top over bottom × bottom.',
+      why:{q:'Why is 1/2 × 1/3 smaller than both?', o:['You take part of a part','Multiplying always shrinks','1 × 1 = 1','The bottoms add'], a:'You take part of a part'}}],
+  your:[
+    {type:'sort', bins:['Less than 1','1 or more'], cards:[['3 2/3 × 1/3',1],['1 1/4 × 3/6',0],['2 × 3/4',1],['1/2 × 4/5',0],['3 1/2 × 1/2',1],['2/3 × 1 1/2',1]], say:'Is the product less than 1? Sort each one.', how:'Change mixed numbers first. Multiply, then compare the top and bottom.'},
+    {type:'listen', hear:'1 and 1 fourth times 3 sixths', q:'1 1/4 × 3/6 = ?', o:['5/8','3/24','1 3/24','4/10'], a:'5/8', say:'Listen. Tap the product.', how:'1 1/4 = 5/4. 5 × 3 = 15, 4 × 6 = 24. 15/24 = 5/8.',
+      why:{q:'Why change 1 1/4 to 5/4 first?', o:['So the whole number is counted too','4 is the bottom','To make it smaller','1 is too small'], a:'So the whole number is counted too'}},
+    {type:'findall', grid:['6/12','2/4','3/5','5/10','4/6','3/6','7/12','8/16'], find:['6/12','2/4','5/10','3/6','8/16'], findSay:'number equal to 1/2', say:'Tap every fraction equal to 1/2.', how:'The top is half of the bottom: 6 is half of 12.'},
+    {type:'tiles', w:['7/3','× 1/2','= 7/6','= 1 1/6'], extra:['= 2 1/6'], q:'2 1/3 × 1/2', say:'Build 2 1/3 × 1/2, step by step.', how:'2 1/3 = 7/3. 7 × 1 over 3 × 2 = 7/6 = 1 1/6.'},
+    {type:'match', pairs:[['3 2/3 × 1/3','1 2/9'],['1 1/2 × 2/3','1'],['2 × 2/5','4/5'],['1/4 × 2/3','1/6']], say:'Multiply and match each one.', how:'Change mixed numbers first. Then top × top, bottom × bottom.'}] };
+
+B['MATH.FRAC.L06.06']={ band:'E45', pic:'🥧', today:'Share a piece: divide a fraction by a whole number', why:'Only 1/2 of the kugel is left and 4 brothers want some. How much of the pan does each get?',
+  ready:[{q:'2 × 5 = ?', o:['10','7','25','3'], a:'10'},{q:'Which is the smallest piece?', o:['1/10','1/5','1/2','1/3'], a:'1/10'}],
+  bridge:'MATH.FRAC.L05.01', bridgeName:'Equivalent fractions and comparing fractions',
+  watch:{ q:'1/2 ÷ 4 = ?', steps:[
+    {t:'Half a kugel, 4 brothers. Cut the half into 4 parts.', m:{type:'fbar', n:1, d:2}},
+    {t:'Cut the whole pan the same way: 2 × 4 = 8 parts. Each brother gets 1 part: 1/8.', m:{type:'fbar', n:1, d:8}},
+    {t:'Shortcut: keep the top, and multiply the bottom by the number of people. 1/2 ÷ 4 = 1/8.'},
+    {t:'1/5 of a pizza shared by 6 boys: 5 × 6 = 30, so 1/30 each. Check: 6 × 1/30 = 6/30 = 1/5.'}], a:'1/8' },
+  oops:{ q:'1/2 ÷ 4', wrong:'2 (4 ÷ 2)', right:'1/8', why:'Sharing a half makes smaller pieces. Each gets less than the half.' },
+  ways:['fraction bars','count the parts','sort and find','Mistake Detective'], done:'You can divide a unit fraction by a whole number.',
+  board:{ one:'Keep the top; bottom × the number of people.', activity:'Fold a paper half into 4 and unfold the whole sheet: count the parts.', mistakes:['Dividing the bottom (1/2 ÷ 4 = 2)','Answer bigger than the piece','Forgetting to name the part of the WHOLE'] },
+  do:[
+    {type:'count', n:8, pic:'🟨', o:['8','4','6','2'], q:'1/2 ÷ 4: cut the whole pan', say:'Cut each half into 4. Count all the parts.', how:'2 halves × 4 parts = 8 parts. Each part is 1/8.'},
+    {type:'match', pairs:[['1/2 ÷ 4','1/8'],['1/3 ÷ 2','1/6'],['1/5 ÷ 6','1/30'],['1/6 ÷ 4','1/24']], say:'Split each piece. Match it to its answer.', how:'Keep the top 1. Bottom × the number of people.',
+      why:{q:'Why does the bottom get bigger?', o:['The pieces get smaller','The pieces get bigger','There is more pizza','The top shrinks'], a:'The pieces get smaller'}}],
+  your:[
+    {type:'listen', hear:'1 fourth divided by 2', q:'1/4 ÷ 2 = ?', o:['1/8','1/2','2/4','8'], a:'1/8', say:'Listen. Tap the answer.', how:'Keep the top. 4 × 2 = 8: 1/8.'},
+    {type:'sort', bins:['Smaller than 1/10','1/10 or bigger'], cards:[['1/2 ÷ 4',1],['1/5 ÷ 3',0],['1/3 ÷ 2',1],['1/4 ÷ 5',0],['1/2 ÷ 5',1],['1/6 ÷ 2',0]], say:'Smaller than 1/10? Sort each share.', how:'Find the new bottom. A bottom bigger than 10 means smaller than 1/10.',
+      why:{q:'Why is 1/12 smaller than 1/10?', o:['12 pieces are smaller than 10 pieces','12 is bigger','The tops are the same','It is even'], a:'12 pieces are smaller than 10 pieces'}},
+    {type:'tiles', w:['1/6 ÷ 4','6 × 4 = 24','= 1/24'], extra:['= 4/6','= 6/4'], q:'1/6 of a pizza, 4 boys', say:'1/6 of a pizza, 4 boys. Build each share.', how:'Keep the top. Multiply the bottom by 4.'},
+    {type:'findall', grid:['1/2÷6','1/3÷4','1/4÷3','1/6÷2','1/2÷5','1/3÷3','1/4÷2','1/6÷3'], find:['1/2÷6','1/3÷4','1/4÷3','1/6÷2'], findSay:'share equal to 1/12', say:'Tap every share equal to 1/12.', how:'Multiply the bottom by the number: 2 × 6 = 12.'},
+    {type:'listen', hear:'1 fifth of a pizza is left. 6 boys share it equally. What part of the whole pizza does each boy get?', q:'1/5 ÷ 6', o:['1/30','1/11','6/5','5/6'], a:'1/30', say:'Listen. What part of the whole pizza?', how:'5 × 6 = 30. Each boy gets 1/30.'}] };
+
+B['MATH.FRAC.L06.07']={ band:'E45', pic:'🫙', today:'Read the story, pick the operation, then solve', why:'Cooking for Yom Tov: add the oil, cut the ribbon, take half of a half. The story tells you which.',
+  ready:[{q:'1/2 + 1/4 = ?', o:['3/4','2/6','1/6','2/4'], a:'3/4'},{q:'1/2 × 1/3 = ?', o:['1/6','2/5','1/5','2/6'], a:'1/6'}],
+  bridge:'MATH.FRAC.L06.01', bridgeName:'Common Ground',
+  watch:{ q:'A jug has 4/5 L and a bottle has 8/10 L. How much water altogether?', m:{type:'scene', e:'🫙', t:'Erev Yom Tov: Eli pours water from a jug and a bottle.'}, steps:[
+    {t:'Altogether means ADD. Make the bottoms match: 4/5 = 8/10.'},
+    {t:'8/10 + 8/10 = 16/10 = 1 6/10 L.', m:{type:'fbar', n:6, d:10}},
+    {t:'Cuts off and left mean SUBTRACT: a 3/5 m rope, cut off 1/10 m: 6/10 − 1/10 = 5/10 = 1/2 m.'},
+    {t:'"1/4 of 1/2 of a book" means MULTIPLY: 1/4 × 1/2 = 1/8 of the whole book.'}], a:'1 6/10 L' },
+  oops:{ q:'1/4 of 1/2 of a book', wrong:'3/4 (added)', right:'1/8', why:'"Of" means multiply. A part of a part is smaller.' },
+  ways:['frum-family scene','sort the clue words','build the steps','Mistake Detective'], done:'You can solve fraction stories by choosing add, subtract or multiply.',
+  board:{ one:'Altogether: add. Left: subtract. Of: multiply.', activity:'Measuring cups at a pretend Yom Tov kitchen: pour and record.', mistakes:['Adding when the story says "of"','Subtracting without matching the bottoms','Forgetting the unit (L, m)'] },
+  do:[
+    {type:'sort', bins:['Add','Subtract','Multiply'], cards:[['Altogether',0],['Is left',1],['1/4 of 1/2',2],['In all',0],['Cuts off',1],['Half of 2/3',2]], say:'Which operation? Sort each clue.', how:'Altogether, in all: add. Left, cuts off: subtract. Of: multiply.',
+      why:{q:'Why does "of" mean multiply?', o:['It takes a part of a part','It puts things together','It takes away','It shares equally'], a:'It takes a part of a part'}},
+    {type:'tiles', w:['3/5 = 6/10','6/10 − 1/10','= 5/10'], extra:['= 2/5'], q:'3/5 m rope, cut off 1/10 m', say:'Build the steps to find what is left.', how:'Make the bottoms match: 3/5 = 6/10. Then subtract the tops.'}],
+  your:[
+    {type:'listen', hear:'Mendy reads 1 fourth of 1 half of a book. What part of the whole book is that?', q:'1/4 of 1/2', o:['1/8','3/4','2/6','1/6'], a:'1/8', say:'Listen. What part of the whole book?', how:'"Of" means times: 1/4 × 1/2 = 1/8.'},
+    {type:'match', pairs:[['1/3 L + 3/6 L','5/6 L'],['4/5 − 6/10','2/10'],['1/3 of 1/3','1/9'],['4/5 + 8/10','1 6/10']], say:'Solve each story. Match it to its answer.', how:'Pick the operation first. Then make the bottoms match to add or subtract.',
+      why:{q:'Why change 4/5 to 8/10?', o:['To add, the bottoms must match','8 is bigger','Tenths are easier','To multiply'], a:'To add, the bottoms must match'}},
+    {type:'sort', bins:['Less than 1','1 or more'], cards:[['2/3 + 1/2',1],['3/4 − 1/8',0],['1/2 of 3/4',0],['5/6 + 1/3',1],['7/8 − 1/4',0],['3/4 + 1/4',1]], say:'Is the answer less than 1? Sort each one.', how:'Solve it first. Top smaller than the bottom: less than 1.'},
+    {type:'listen', hear:'A rope is 4 fifths of a meter long. Mendy cuts off 6 tenths. How much is left?', q:'4/5 − 6/10', o:['2/10','10/15','2/5','1 4/10'], a:'2/10', say:'Listen. How much rope is left?', how:'4/5 = 8/10. 8/10 − 6/10 = 2/10.'},
+    {type:'tiles', w:['1/3 = 2/6','2/6 + 3/6','= 5/6'], extra:['= 4/9'], q:'1/3 L + 3/6 L', say:'Build the steps: how much water altogether?', how:'Make the bottoms match: sixths. Then add the tops.'}] };
+
+B['MATH.GEO.L06.01']={ band:'E45', pic:'🗺️', today:'Find points on a grid: across first, then up', why:'The Lag BaOmer treasure map uses (right, up) to hide the prize.',
+  ready:[{q:'On a number line, which is farthest right?', o:['7','3','0','5'], a:'7'},{q:'9 − 6 = ?', o:['3','15','2','4'], a:'3'}],
+  bridge:'MATH.GEO.L03.01', bridgeName:'Sides, corners, rows and columns',
+  watch:{ q:'Start at (0, 0). Go right 9 and up 4. Which point is it?', m:{type:'scene', e:'🗺️', t:'Lag BaOmer treasure hunt: the map says (9, 4).'}, steps:[
+    {t:'The first number says how far RIGHT. The second says how far UP. Walk before you climb.'},
+    {t:'Right 9: count along the bottom.', m:{type:'line', from:0, to:10, hops:[0,9]}},
+    {t:'Then up 4. The point is (9, 4), not (4, 9).'},
+    {t:'For (4, 7): 4 units right from 0, 7 units up from 0. Which is farther right? Compare the FIRST numbers: (3, 7) is farther right than (2, 5).'},
+    {t:'Same first number, from (7, 6) to (7, 3): walk straight down 6 − 3 = 3 steps.'}], a:'(9, 4)' },
+  oops:{ q:'Right 9, up 4', wrong:'(4, 9)', right:'(9, 4)', why:'Right comes first, then up. Walk before you climb.' },
+  ways:['treasure-map scene','number line hops','match and sort points','Mistake Detective'], done:'You can find and name points on a coordinate grid.',
+  board:{ one:'(right, up): walk before you climb.', activity:'Tape a grid on the floor; boys walk to points the class calls out.', mistakes:['Switching the numbers','Counting the starting line as 1','Comparing the second number to find "farther right"'] },
+  do:[
+    {type:'hop', start:0, add:9, from:0, to:10, q:'(9, 4): go right first', say:'Point (9, 4). Hop right first. How far?', how:'The first number is how far right: 9.',
+      why:{q:'Why go right first?', o:['The first number is right','The bigger number is first','Up is always first','4 is smaller'], a:'The first number is right'}},
+    {type:'match', pairs:[['Right 9, up 4','(9, 4)'],['Right 4, up 9','(4, 9)'],['Right 1, up 8','(1, 8)'],['Right 8, up 1','(8, 1)']], say:'Match each walk to its point.', how:'Write (right, up). The right number goes first.'}],
+  your:[
+    {type:'hop', start:6, add:-3, from:0, to:10, q:'(7, 6) down to (7, 3)', say:'From (7, 6) walk straight down to (7, 3).', how:'The first number stays 7. Count down from 6 to 3: 3 steps.'},
+    {type:'sort', bins:['Right of (5, 3)','Left of (5, 3)'], cards:[['(7, 3)',0],['(2, 9)',1],['(6, 1)',0],['(4, 8)',1],['(9, 0)',0],['(1, 5)',1]], say:'Right or left of (5, 3)? Sort each point.', how:'Look only at the FIRST number. More than 5: right.',
+      why:{q:'Why does (2, 9) go left?', o:['Its first number, 2, is less than 5','9 is big','It is up high','2 is even'], a:'Its first number, 2, is less than 5'}},
+    {type:'listen', hear:'For the point 4 comma 7, how many units up from 0?', q:'(4, 7)', o:['7','4','11','3'], a:'7', say:'Listen. How many units up?', how:'The second number tells how far up: 7.'},
+    {type:'tiles', w:['(','2',',','5',')'], say:'Build the point: right 2, up 5.', how:'The right number first, then up: (2, 5).'},
+    {type:'findall', grid:['(3, 1)','(1, 3)','(3, 5)','(5, 3)','(3, 0)','(0, 3)'], find:['(3, 1)','(3, 5)','(3, 0)'], findSay:'point 3 units right', say:'Tap every point 3 units right of 0.', how:'Look at the first number. It must be 3.'}] };
+
+B['MATH.GEO.L06.02']={ band:'E45', pic:'🔷', today:'Sort shapes into families by sides and angles', why:'Tiles for the sukkah floor: squares, rhombuses, rectangles. Knowing the families helps you choose.',
+  ready:[{q:'How many sides does a quadrilateral have?', o:['4','3','5','6'], a:'4'},{q:'Parallel lines…', o:['never meet','meet at 90°','cross at a slant','are curved'], a:'never meet'}],
+  bridge:'MATH.GEO.L04.01', bridgeName:'Four-Sided Shapes',
+  watch:{ q:'True or false: every square is a rectangle.', m:{type:'tiles', w:['Quadrilateral','Parallelogram','Rectangle, Rhombus','Square']}, steps:[
+    {t:'Quadrilateral: any shape with 4 sides. Parallelogram: 2 pairs of parallel sides.'},
+    {t:'Rectangle: a parallelogram with 4 right angles. Rhombus: a parallelogram with 4 equal sides.'},
+    {t:'Square: 4 equal sides AND 4 right angles. So every square is a rectangle AND a rhombus: True. Its most exact name is Square.'},
+    {t:'Going down the family does not always work. Every rectangle is a square: False. Every rhombus is a square: False. Every parallelogram is a rectangle: False.'},
+    {t:'Going up always works. Every rhombus is a parallelogram: True. Every rectangle is a quadrilateral: True. 4 equal sides with no right angles: Rhombus.'}], a:'True' },
+  oops:{ q:'True or false: every rectangle is a square.', wrong:'True', right:'False', why:'A rectangle can have 2 long and 2 short sides. A square needs 4 equal sides.' },
+  ways:['family tree tiles','sort always or not','match the rules','Mistake Detective'], done:'You can name quadrilaterals and say which families they belong to.',
+  board:{ one:'Every square is a rectangle and a rhombus, but not the other way.', activity:'Cut out quadrilaterals; boys sort them into nested hoops.', mistakes:['Saying every rectangle is a square','Not calling a square a rhombus','Giving "rectangle" when "square" is the most exact name'] },
+  do:[
+    {type:'sort', q:'Is every one a rectangle?', bins:['Yes, always','Not always'], cards:[['Square',0],['Rhombus',1],['Parallelogram',1],['Quadrilateral',1]], say:'Is every one of these a rectangle? Sort them.', how:'A rectangle needs 4 right angles. Only a square always has them.',
+      why:{q:'Why is a square always a rectangle?', o:['It has 4 right angles','It has 4 equal sides','It is small','It has 2 pairs'], a:'It has 4 right angles'}},
+    {type:'tiles', w:['Quadrilateral','Parallelogram','Rhombus','Square'], extra:['Triangle'], say:'Build the family, from the biggest group to the smallest.', how:'Every square is a rhombus. Every rhombus is a parallelogram. Every parallelogram is a quadrilateral.'}],
+  your:[
+    {type:'sort', q:'Which is the most exact name?', bins:['Square','Rhombus'], cards:[['Equal sides, 90°',0],['Equal sides, 60°',1],['Chessboard box',0],['A ◇ diamond',1]], say:'Square or rhombus? Sort each one.', how:'Both have 4 equal sides. Square corners (90°)? Square. Slanted corners? Rhombus.'},
+    {type:'match', pairs:[['Rhombus','4 equal sides'],['Rectangle','4 right angles'],['Parallelogram','2 parallel pairs'],['Square','Both!']], say:'Match each shape to what makes it special.', how:'Rhombus: equal sides. Rectangle: right angles. Square: both.'},
+    {type:'sort', q:'Is every one a parallelogram?', bins:['Yes, always','Not always'], cards:[['Rhombus',0],['Square',0],['Rectangle',0],['Quadrilateral',1],['Trapezoid',1]], say:'Is every one of these a parallelogram? Sort them.', how:'A parallelogram has 2 pairs of parallel sides. Rhombus, rectangle and square all do.',
+      why:{q:'Why is a quadrilateral not always one?', o:['It may not have parallel sides','It has 4 sides','It is a square','It has right angles'], a:'It may not have parallel sides'}},
+    {type:'listen', hear:'How many pairs of parallel sides does a parallelogram have?', o:['2','1','4','0'], a:'2', say:'Listen. How many pairs of parallel sides?', how:'A parallelogram has 2 pairs of parallel sides. Opposite sides never meet.'},
+    {type:'tiles', w:['Square','Rectangle','Parallelogram','Quadrilateral'], say:'Build the chain from the smallest family to the biggest.', how:'A square is a rectangle, a rectangle is a parallelogram, and so on.'}] };
+B['MATH.MEAS.L06.01']={ band:'E45', pic:'📦', today:'Find volume: length × width × height', why:'Packing a box of seforim for the move: how many cubes fill it?',
+  ready:[{q:'2 × 3 × 4 = ?', o:['24','9','14','20'], a:'24'},{q:'What is the area of a 5 by 3 rectangle?', o:['15','8','16','53'], a:'15'}],
+  bridge:'MATH.MEAS.L05.02', bridgeName:'Area and Perimeter Formulas',
+  watch:{ q:'A box is 4 long, 3 wide and 2 high. What is its volume?', steps:[
+    {t:'Volume counts the cubes that fill a box. We measure it in cubic units.'},
+    {t:'The bottom layer: 4 × 3 = 12 cubes.', m:{type:'emoji', e:'🧊', n:12, group:4}},
+    {t:'2 layers high: 12 × 2 = 24 cubic units.', m:{type:'emoji', e:'🧊', n:24, group:4}},
+    {t:'The formula: V = length × width × height. A fish tank 60 cm by 30 cm by 40 cm: 60 × 30 = 1,800, then × 40 = 72,000 cubic cm.'}], a:'24 cubic units' },
+  oops:{ q:'A box 4 by 3 by 2', wrong:'9 (4 + 3 + 2)', right:'24', why:'Volume multiplies all three: 4 × 3 × 2.' },
+  ways:['cube layers','count and hop','sort volume or area','Mistake Detective'], done:'You can find the volume of any box.',
+  board:{ one:'Volume = length × width × height, in cubic units.', activity:'Fill a small box with centimeter cubes, layer by layer.', mistakes:['Adding the three numbers','Multiplying only two of them','Writing square units instead of cubic units'] },
+  do:[
+    {type:'count', n:12, pic:'🧊', o:['12','7','24','9'], q:'Bottom layer: 4 by 3', say:'Count the cubes in the bottom layer.', how:'4 in a row, 3 rows: 4 × 3 = 12.'},
+    {type:'hop', start:0, add:36, unit:12, from:0, to:48, q:'3 layers of 12', say:'Each layer has 12 cubes. Hop 3 layers.', how:'Each hop adds a layer of 12. 3 hops: 36.',
+      why:{q:'Why add 12 each hop?', o:['Each layer has 12 cubes','12 is the height','Boxes have 12 sides','Volume adds 12'], a:'Each layer has 12 cubes'}}],
+  your:[
+    {type:'match', pairs:[['2 × 2 × 6','24'],['2 × 8 × 3','48'],['5 × 2 × 3','30'],['4 × 4 × 4','64']], say:'Multiply all three. Match each box to its volume.', how:'Length × width first, then × height.'},
+    {type:'sort', bins:['Volume','Area'], cards:[['Water in a tank',0],['Rug on a floor',1],['Sand in a box',0],['Paint on a wall',1],['Cubes in a crate',0],['Cloth on a table',1]], say:'Filling or covering? Sort each job.', how:'Fills a space: volume (3 numbers). Covers a flat part: area (2 numbers).',
+      why:{q:'Why is a fish tank volume?', o:['Water fills the space inside','It is flat','It has 2 sides','It is wet'], a:'Water fills the space inside'}},
+    {type:'tiles', w:['60 × 30','= 1,800','1,800 × 40','= 72,000'], extra:['= 130'], q:'Tank: 60 × 30 × 40 cm', say:'Build the steps for the fish tank volume.', how:'60 × 30 = 1,800. Then 1,800 × 40 = 72,000 cubic cm.'},
+    {type:'listen', hear:'A box is 2 long, 8 wide and 3 high. What is its volume?', q:'2 × 8 × 3', o:['48','13','16','24'], a:'48', say:'Listen. What is the volume?', how:'2 × 8 = 16. 16 × 3 = 48.'},
+    {type:'findall', grid:['2×3×4','2×5×3','2×2×6','4×4×2','3×8×1','3×3×3','1×4×6','2×2×5'], find:['2×3×4','2×2×6','3×8×1','1×4×6'], findSay:'box with volume 24', say:'Tap every box with volume 24.', how:'Multiply the 3 numbers. 2 × 3 × 4 = 24.',
+      why:{q:'Why is 3 × 8 × 1 = 24?', o:['3 × 8 = 24, and × 1 keeps it','1 adds nothing','3 + 8 + 1','It looks like 24'], a:'3 × 8 = 24, and × 1 keeps it'}}] };
+
+B['MATH.MEAS.L06.02']={ band:'E45', pic:'🧃', today:'Move the decimal point to change metric units', why:'A 1.5 L bottle of grape juice for Kiddush: how many 500 mL cups can you pour?',
+  ready:[{q:'How many mL are in 1 L?', o:['1,000','100','10','60'], a:'1,000'},{q:'3.6 × 10 = ?', o:['36','3.60','360','0.36'], a:'36'}],
+  bridge:'MATH.MEAS.L05.01', bridgeName:'Convert Units',
+  watch:{ q:'3.6 kg = ? g', steps:[
+    {t:'Big unit to small unit: multiply. kg to g, km to m, L to mL: × 1,000. m to cm: × 100.'},
+    {t:'× 1,000 moves the point 3 places right: 3.6 kg = 3,600 g. 7.8 L = 7,800 mL.', m:{type:'tiles', w:['3','6','0','0'], hi:[0]}},
+    {t:'Small unit to big unit: divide. 2,800 g ÷ 1,000 = 2.8 kg. 940 cm ÷ 100 = 9.4 m. 5,000 mL = 5 L.'},
+    {t:'1.5 L = 1,500 mL. How many 500 mL cups? 1,500 ÷ 500 = 3 cups.'}], a:'3,600 g' },
+  oops:{ q:'940 cm = ? m', wrong:'94,000 m', right:'9.4 m', why:'Meters are bigger, so there are fewer: divide by 100.' },
+  ways:['slide the point','sort multiply or divide','hop by cups','Mistake Detective'], done:'You can change metric units by moving the decimal point.',
+  board:{ one:'To smaller units: multiply (point right). To bigger units: divide (point left).', activity:'Measure water in mL and L with a measuring jug.', mistakes:['Multiplying when going to a bigger unit','Moving the point the wrong number of places','Using 100 for grams'] },
+  do:[
+    {type:'match', pairs:[['3.6 kg','3,600 g'],['7.8 L','7,800 mL'],['3.1 km','3,100 m'],['6 m','600 cm']], say:'Big to small: multiply. Match each one.', how:'kg, L and km: × 1,000. m to cm: × 100.',
+      why:{q:'Why multiply for kg to g?', o:['Grams are smaller, so you need more','Grams are bigger','Kilo means 10','Always divide'], a:'Grams are smaller, so you need more'}},
+    {type:'sort', bins:['Multiply','Divide'], cards:[['kg → g',0],['cm → m',1],['L → mL',0],['g → kg',1],['mL → L',1],['km → m',0]], say:'Multiply or divide? Sort each change.', how:'To smaller units: multiply. To bigger units: divide.',
+      why:{q:'Why divide for cm to m?', o:['Meters are bigger, so fewer of them','cm are bigger','100 is big','Always divide'], a:'Meters are bigger, so fewer of them'}}],
+  your:[
+    {type:'listen', hear:'2,800 grams is how many kilograms?', q:'2,800 g = ? kg', o:['2.8','28','280','0.28'], a:'2.8', say:'Listen. How many kilograms?', how:'Divide by 1,000: move the point 3 places left: 2.8.'},
+    {type:'tiles', w:['1.5 L','= 1,500 mL','1,500 ÷ 500','= 3'], extra:['1.5 ÷ 500'], q:'1.5 L bottle, 500 mL cups', say:'Build the steps: how many cups?', how:'Change liters to mL first. Then divide by the cup size.'},
+    {type:'match', pairs:[['940 cm','9.4 m'],['5,000 mL','5 L'],['200 cm','2 m'],['500 mL','0.5 L']], say:'Small to big: divide. Match each one.', how:'cm to m: ÷ 100. mL to L: ÷ 1,000.'},
+    {type:'hop', start:0, add:1500, unit:500, from:0, to:2000, q:'1.5 L = 1,500 mL', say:'Pour 500 mL cups. Hop until 1,500 mL.', how:'Each hop is one cup of 500 mL. 3 hops: 1,500.'},
+    {type:'listen', hear:'0.2 meters is how many centimeters?', q:'0.2 m = ? cm', o:['20','2','200','0.02'], a:'20', say:'Listen. How many centimeters?', how:'× 100: move the point 2 places right: 20.'}] };
+
+B['MATH.OPS.L06.01']={ band:'E45', pic:'✏️', today:'Multiply big numbers with partial products', why:'The yeshiva orders 26 boxes with 48 pencils each for the new zman. How many pencils?',
+  ready:[{q:'239 × 8 = ?', o:['1,912','1,812','247','2,392'], a:'1,912'},{q:'239 × 20 = ?', o:['4,780','478','2,390','4,790'], a:'4,780'}],
+  bridge:'MATH.OPS.L05.01', bridgeName:'Multiply multi-digit numbers',
+  watch:{ q:'239 × 28', m:{type:'tiles', w:['239 × 8','+','239 × 20']}, steps:[
+    {t:'Split 28 into 20 + 8.'},
+    {t:'239 × 8 = 1,912.'},
+    {t:'239 × 20 = 4,780. (239 × 2 = 478, then add a 0.)'},
+    {t:'Add the parts: 1,912 + 4,780 = 6,692.'},
+    {t:'Estimate to check: 240 × 30 = 7,200. Close!'}], a:'6,692' },
+  oops:{ q:'239 × 28', wrong:'2,390', right:'6,692', why:'In the tens row, 239 × 2 is really 239 × 20 = 4,780. Do not forget the 0.' },
+  ways:['partial products','estimate first','sort by estimate','Mistake Detective'], done:'You can multiply a 3-digit number by a 2-digit number.',
+  board:{ one:'Split the 2-digit number, multiply each part, add.', activity:'Area model on grid paper: a 239 by 28 rectangle split into 2 parts.', mistakes:['Forgetting the 0 in the tens row','Adding the parts wrongly','No estimate to catch a big mistake'] },
+  do:[
+    {type:'tiles', w:['Split 28','239 × 8','239 × 20','Add them'], extra:['239 + 28'], say:'Order the steps for 239 × 28.', how:'Split the small number into tens and ones. Multiply each part. Add.'},
+    {type:'match', pairs:[['239 × 8','1,912'],['239 × 20','4,780'],['1,912 + 4,780','6,692'],['240 × 30','7,200']], say:'Match each step to its answer.', how:'× 20 is × 2 with a 0 at the end.',
+      why:{q:'Why is 240 × 30 there?', o:['It is an estimate to check','It is the real answer','28 rounds to 20','To add a step'], a:'It is an estimate to check'}}],
+  your:[
+    {type:'listen', hear:'26 boxes with 48 pencils in each box', q:'26 × 48', o:['1,248','1,148','312','1,284'], a:'1,248', say:'Listen. How many pencils?', how:'48 × 6 = 288. 48 × 20 = 960. 288 + 960 = 1,248.'},
+    {type:'sort', bins:['About 7,000','About 20,000'], cards:[['239 × 28',0],['392 × 57',1],['350 × 20',0],['410 × 49',1],['180 × 41',0],['505 × 41',1]], say:'Estimate first. Sort each product.', how:'Round both numbers: 239 × 28 is about 240 × 30 = 7,200.',
+      why:{q:'Why estimate?', o:['To check the answer is close','To skip the work','It is exact','It is faster to write'], a:'To check the answer is close'}},
+    {type:'tiles', w:['392 × 7','= 2,744','392 × 50','= 19,600'], extra:['= 1,960'], q:'392 × 57: two parts', say:'Build the two parts of 392 × 57.', how:'392 × 7 = 2,744. 392 × 50 = 19,600. Then add: 22,344.'},
+    {type:'listen', hear:'28 boxes with 24 pencils in each box', q:'28 × 24', o:['672','572','652','6,720'], a:'672', say:'Listen. How many pencils?', how:'24 × 8 = 192. 24 × 20 = 480. 192 + 480 = 672.'},
+    {type:'match', pairs:[['26 × 48','1,248'],['28 × 24','672'],['239 × 28','6,692'],['392 × 57','22,344']], say:'Solve and match each one.', how:'Split, multiply each part, add.'}] };
+
+B['MATH.OPS.L06.02']={ band:'E45', pic:'➗', today:'Divide by a two-digit number: estimate, then check', why:'1,908 pencils packed 36 to a box for the school store: how many boxes?',
+  ready:[{q:'36 × 5 = ?', o:['180','150','185','216'], a:'180'},{q:'36 × 4 = ?', o:['144','124','164','108'], a:'144'}],
+  bridge:'MATH.OPS.L05.02', bridgeName:'Long division',
+  watch:{ q:'1,944 ÷ 36', m:{type:'chant', lines:['Divide, Multiply,','Subtract, Bring down,','and around we go!']}, steps:[
+    {t:'36 does not fit in 1 or 19. Use 194. Estimate: 36 is about 40, and 194 ÷ 40 is about 5. Try 5: 36 × 5 = 180.'},
+    {t:'194 − 180 = 14. Bring down the 4: 144.'},
+    {t:'144 ÷ 36: try 4. 36 × 4 = 144. Nothing is left.'},
+    {t:'Answer: 54. Check: 54 × 36 = 1,944.'}], a:'54' },
+  oops:{ q:'194 ÷ 36', wrong:'6 (36 × 6 = 216)', right:'5', why:'216 is more than 194. The guess was too big: try one less.' },
+  ways:['chant','hop by 36s','sort the guesses','Mistake Detective'], done:'You can divide by a two-digit number and check your answer.',
+  board:{ one:'Estimate each digit, multiply, subtract, bring down; check by multiplying.', activity:'Pencil boxes: pack 444 counters into groups of 37 using tens and ones.', mistakes:['A guess that is too big','Forgetting to bring down','Skipping the check'] },
+  do:[
+    {type:'tiles', w:['Divide','Multiply','Subtract','Bring down'], extra:['Add'], say:'Order the steps of long division.', how:'Divide, Multiply, Subtract, Bring down. Then go around again.'},
+    {type:'hop', start:0, add:180, unit:36, from:0, to:216, q:'How many 36s fit in 194?', say:'Hop by 36s. Stop before you pass 194.', how:'36, 72, 108, 144, 180. One more is 216: too big. So 5.',
+      why:{q:'Why stop at 180?', o:['The next hop, 216, is more than 194','180 ends in 0','5 is a nice number','36 is even'], a:'The next hop, 216, is more than 194'}}],
+  your:[
+    {type:'match', pairs:[['1,944 ÷ 36','54'],['444 ÷ 37','12'],['492 ÷ 12','41'],['1,908 ÷ 36','53']], say:'Divide and match each one.', how:'Estimate each digit, multiply, subtract, bring down.'},
+    {type:'listen', hear:'1,908 pencils are packed 36 to a box. How many boxes?', q:'1,908 ÷ 36', o:['53','54','52','63'], a:'53', say:'Listen. How many boxes?', how:'190 ÷ 36 is 5 (180). Bring down: 108 ÷ 36 = 3. So 53.',
+      why:{q:'How do you check 53?', o:['53 × 36 = 1,908','53 + 36','1,908 − 53','53 ÷ 36'], a:'53 × 36 = 1,908'}},
+    {type:'sort', bins:['Guess too big','Guess fits'], cards:[['36 × 6 for 194',0],['36 × 5 for 194',1],['37 × 2 for 44',0],['37 × 1 for 44',1],['12 × 4 for 49',1],['12 × 5 for 49',0]], say:'Is the guess too big? Sort each one.', how:'Multiply the guess. Bigger than the number? Too big.'},
+    {type:'findall', grid:['444÷37','144÷12','360÷36','252÷21','480÷32','132÷11','325÷25','168÷12'], find:['444÷37','144÷12','252÷21','132÷11'], findSay:'division equal to 12', say:'Tap every division that equals 12.', how:'Check with times: 37 × 12 = 444.'},
+    {type:'listen', hear:'1,944 divided by 36', q:'1,944 ÷ 36', o:['54','64','44','56'], a:'54', say:'Listen. Tap the quotient.', how:'194 ÷ 36 is 5. Then 144 ÷ 36 is 4. So 54.'}] };
+
+B['MATH.OPS.L06.03']={ band:'E45', pic:'🛒', today:'Line up the decimal points, then add or subtract', why:'A sefer for $6.32 and a pen for $3.33, paid with a $50 bill: how much change?',
+  ready:[{q:'632 + 333 = ?', o:['965','955','865','966'], a:'965'},{q:'Which digit is in the tenths place of 8.12?', o:['1','8','2','12'], a:'1'}],
+  bridge:'MATH.OPS.L05.03', bridgeName:'Column Master',
+  watch:{ q:'8.12 + 60.2', m:{type:'tiles', w:['8.12','+ 60.20','= 68.32']}, steps:[
+    {t:'Line up the decimal points, not the right edges.'},
+    {t:'Fill empty places with 0: 60.2 = 60.20.'},
+    {t:'Add like whole numbers: 8.12 + 60.20 = 68.32. Bring the point straight down.'},
+    {t:'Change: $6.32 + $3.33 = $9.65. Then $50.00 − $9.65 = $40.35.'}], a:'68.32' },
+  oops:{ q:'8.12 + 60.2', wrong:'8.74 (lined up the right edges)', right:'68.32', why:'Line up the points. The 6 in 60.2 is tens, not tenths.' },
+  ways:['money','build the steps','sort and match','Mistake Detective'], done:'You can add and subtract decimals and make change.',
+  board:{ one:'Points in a line, fill with zeros, then work like whole numbers.', activity:'Pretend store: boys buy two items and count the change from $20.', mistakes:['Lining up the right edges','Forgetting to bring the point down','Subtracting from $50 before adding the prices'] },
+  do:[
+    {type:'tiles', w:['Line up points','Fill with 0s','Add or subtract','Point goes down'], extra:['Line up right'], say:'Order the steps for adding decimals.', how:'Points in a line. Fill empty places with 0. Work like whole numbers.'},
+    {type:'match', pairs:[['8.12 + 60.2','68.32'],['97.6 + 9.1','106.7'],['$50 − $9.65','$40.35'],['$20 − $13.20','$6.80']], say:'Line up the points. Match each answer.', how:'60.2 = 60.20. Then add like whole numbers.',
+      why:{q:'Why write 60.2 as 60.20?', o:['So both have 2 places after the point','It is bigger','To change the value','Zeros are lucky'], a:'So both have 2 places after the point'}}],
+  your:[
+    {type:'listen', hear:'A sefer costs 6 dollars 32. A pen costs 3 dollars 33. How much together?', q:'$6.32 + $3.33', o:['$9.65','$9.55','$3.65','$96.5'], a:'$9.65', say:'Listen. What is the total?', how:'Line up the points: 6.32 + 3.33 = 9.65.'},
+    {type:'tiles', w:['$8.94 + $4.26','= $13.20','$20 − $13.20','= $6.80'], extra:['= $12.20'], q:'Sefer $8.94, pen $4.26, pay $20', say:'Build the steps to find the change.', how:'Add the prices first. Then take that away from $20.',
+      why:{q:'Why add first?', o:['You pay for both items together','$20 is big','Change is added','Pens are cheap'], a:'You pay for both items together'}},
+    {type:'sort', bins:['More than 10','Less than 10'], cards:[['4.5 + 5.6',0],['3.25 + 6.7',1],['12.5 − 2.6',1],['7.08 + 3.1',0],['20 − 9.95',0],['5.5 + 4.45',1]], say:'More or less than 10? Sort each one.', how:'Line up the points and solve. Then compare with 10.00.'},
+    {type:'listen', hear:'97.6 plus 9.1', q:'97.6 + 9.1', o:['106.7','105.7','188.6','97.7'], a:'106.7', say:'Listen. Tap the sum.', how:'Tenths: 6 + 1 = 7. Ones: 7 + 9 = 16, carry 1. 106.7.'},
+    {type:'match', pairs:[['$5 − $1.25','$3.75'],['2.4 + 0.75','3.15'],['10 − 0.6','9.4'],['3.05 + 2.5','5.55']], say:'Solve and match each one.', how:'Fill empty places with 0 first: 10 = 10.0, 2.4 = 2.40.'}] };
+
+B['MATH.OPS.L06.04']={ band:'E45', pic:'🍎', today:'Multiply decimals by whole numbers, then place the point', why:'4 bags of apples for the Sukkos party, 3.1 kg each: how heavy is the pile?',
+  ready:[{q:'31 × 4 = ?', o:['124','35','134','314'], a:'124'},{q:'0.1 is how many tenths?', o:['1','10','0','100'], a:'1'}],
+  bridge:'MATH.FRAC.L06.02', bridgeName:'Decimal Dollars',
+  watch:{ q:'3.1 × 4', steps:[
+    {t:'Multiply like whole numbers: 31 × 4 = 124.'},
+    {t:'Count the places after the point in 3.1: one place.'},
+    {t:'Put one place back in the answer: 12.4. Check: about 3 × 4 = 12.', m:{type:'emoji', e:'🍎', n:4}},
+    {t:'0.1 × 9 is 9 tenths: 0.9. 0.2 × 9 is 18 tenths: 1.8. 2 kg × 6 bags = 12 kg.', m:{type:'fbar', n:9, d:10}}], a:'12.4' },
+  oops:{ q:'0.2 × 9', wrong:'18', right:'1.8', why:'0.2 is 2 tenths. 9 groups of 2 tenths is 18 tenths = 1.8.' },
+  ways:['dimes','build the steps','sort and find','Mistake Detective'], done:'You can multiply a decimal by a whole number.',
+  board:{ one:'Multiply like whole numbers, then put back the decimal places.', activity:'Dimes: make 9 groups of 2 dimes and count the dollars.', mistakes:['Leaving out the point (18 for 0.2 × 9)','Too many places after the point','No estimate check'] },
+  do:[
+    {type:'count', n:9, pic:'🪙', o:['9','10','8','90'], q:'0.1 × 9: 9 dimes', say:'9 dimes. Count them. Each dime is 0.1.', how:'9 dimes is 9 tenths: 0.9 of a dollar.'},
+    {type:'tiles', w:['31 × 4 = 124','1 place','12.4'], extra:['124','1.24'], q:'3.1 × 4', say:'Build the steps for 3.1 × 4.', how:'Multiply without the point. Count the places. Put the point back.',
+      why:{q:'Why 12.4 and not 124?', o:['3.1 has 1 place after the point','124 is too small','4 is even','Always 1 place'], a:'3.1 has 1 place after the point'}}],
+  your:[
+    {type:'match', pairs:[['0.1 × 9','0.9'],['0.2 × 9','1.8'],['3.1 × 4','12.4'],['2.5 × 3','7.5']], say:'Multiply and match each one.', how:'Multiply like whole numbers. Then count the places after the point.'},
+    {type:'listen', hear:'Each bag weighs 2 kilograms. How much do 6 bags weigh?', q:'2 kg × 6', o:['12 kg','8 kg','1.2 kg','26 kg'], a:'12 kg', say:'Listen. How much do the bags weigh?', how:'The same weight each time: multiply. 6 × 2 = 12.',
+      why:{q:'Why multiply?', o:['Equal bags are equal groups','The bags are heavy','6 is more than 2','Always add'], a:'Equal bags are equal groups'}},
+    {type:'sort', bins:['Less than 1','1 or more'], cards:[['0.1 × 9',0],['0.2 × 9',1],['0.3 × 3',0],['0.5 × 2',1],['0.4 × 2',0],['0.25 × 8',1]], say:'Less than 1, or 1 or more? Sort each one.', how:'0.1 × 9 is 9 tenths: less than 1. 10 tenths make 1.'},
+    {type:'findall', grid:['0.4×3','0.2×6','0.6×2','0.3×3','1.1×2','0.1×12','0.5×2','0.3×4'], find:['0.4×3','0.2×6','0.6×2','0.1×12','0.3×4'], findSay:'product equal to 1.2', say:'Tap every product equal to 1.2.', how:'1.2 is 12 tenths. 0.4 × 3 is 12 tenths.'},
+    {type:'listen', hear:'Each bag of apples weighs 3.1 kilograms. How much do 4 bags weigh?', q:'3.1 × 4', o:['12.4','124','7.1','1.24'], a:'12.4', say:'Listen. How much do 4 bags weigh?', how:'31 × 4 = 124. One place after the point: 12.4.'}] };
+
+B['MATH.OPS.L06.05']={ band:'E45', pic:'🧾', today:'Use the right order: times first, then plus', why:'3 notebooks at $6 and a $1 pen for the new zman: 3 × 6 + 1. The right order gives the right price.',
+  ready:[{q:'2 × 7 = ?', o:['14','9','27','12'], a:'14'},{q:'5 + 14 = ?', o:['19','20','9','70'], a:'19'}],
+  bridge:'MATH.OPS.L04.09', bridgeName:'Four-Way Stories',
+  watch:{ q:'5 + 2 × 7', m:{type:'chant', lines:['Parentheses first,','then times and divide,','then plus and minus,','left to right!']}, steps:[
+    {t:'Find the × first: 2 × 7 = 14.'},
+    {t:'Then add: 5 + 14 = 19.'},
+    {t:'Parentheses go before everything: (5 + 2) × 7 = 7 × 7 = 49.'},
+    {t:'Stories: 3 notebooks at $6 and a $1 pen is 3 × 6 + 1 = 18 + 1 = $19.'}], a:'19' },
+  oops:{ q:'5 + 2 × 7', wrong:'49', right:'19', why:'Multiply before you add. 49 would need parentheses: (5 + 2) × 7.' },
+  ways:['chant','build the number sentence','hop','Mistake Detective'], done:'You can use the order of operations to get the right answer.',
+  board:{ one:'Parentheses, then × and ÷, then + and −.', activity:'Price cards: boys write and solve the number sentence for a shopping list.', mistakes:['Working left to right only','Ignoring parentheses','Adding the pen before multiplying'] },
+  do:[
+    {type:'tiles', w:['( )','× ÷','+ −'], extra:['Left only'], say:'What comes first? Put them in order.', how:'Parentheses first. Then times and divide. Then plus and minus.',
+      why:{q:'Why is 5 + 2 × 7 = 19?', o:['Times comes before plus','Always go left to right','5 is first','7 is biggest'], a:'Times comes before plus'}},
+    {type:'match', pairs:[['5 + 2 × 7','19'],['(5 + 2) × 7','49'],['18 + 4 × 9','54'],['20 − 3 × 4','8']], say:'Times first! Match each to its answer.', how:'Do the × part first, then the + or −.'}],
+  your:[
+    {type:'sort', bins:['Multiply first','Add first'], cards:[['4 + 3 × 2',0],['(4 + 3) × 2',1],['10 − 2 × 3',0],['(1 + 9) × 5',1],['6 × 2 + 1',0],['2 × (3 + 3)',1]], say:'What do you do first? Sort each one.', how:'Parentheses? Do them first. No parentheses? Multiply first.'},
+    {type:'listen', hear:'Mendy buys 5 notebooks at 6 dollars each and one pen for 2 dollars. What does he spend?', q:'5 × 6 + 2', o:['$32','$40','$13','$56'], a:'$32', say:'Listen. How much does Mendy spend?', how:'5 × 6 = 30 first. Then add the pen: 32.',
+      why:{q:'Why 5 × 6 first?', o:['5 notebooks at $6 is a times','The pen comes first','Add is first','2 is small'], a:'5 notebooks at $6 is a times'}},
+    {type:'tiles', w:['3','×','6','+','1'], extra:['−'], q:'3 notebooks at $6, a $1 pen', say:'Build the number sentence for the story.', how:'Notebooks: 3 × 6. Then add the pen: + 1.'},
+    {type:'listen', hear:'18 plus 4 times 9', q:'18 + 4 × 9', o:['54','198','31','36'], a:'54', say:'Listen. Times first, then plus.', how:'4 × 9 = 36. Then 18 + 36 = 54.'},
+    {type:'hop', start:5, add:14, unit:2, from:5, to:25, q:'5 + 2 × 7', say:'Start at 5. Hop 7 jumps of 2.', how:'2 × 7 is 7 hops of 2. Start at 5 and land on 19.'}] };
+
+B['MATH.PV.L06.01']={ band:'E45', pic:'🔟', today:'Multiply by 10, 100 or 1,000: slide the point', why:'A box of 100 pencils at $0.05 each for the class: what does the box cost?',
+  ready:[{q:'45 × 10 = ?', o:['450','4.5','4,500','55'], a:'450'},{q:'How many zeros are in 1,000?', o:['3','2','4','1'], a:'3'}],
+  bridge:'MATH.PV.L05.01', bridgeName:'Six-Digit Climb',
+  watch:{ q:'3.14 × 1,000', m:{type:'tiles', w:['3','1','4','0'], hi:[3]}, steps:[
+    {t:'Count the zeros: 1,000 has 3.'},
+    {t:'Slide the point 3 places to the right: 3.14 → 31.4 → 314 → 3,140.'},
+    {t:'Fill the empty place with 0: 3.14 × 1,000 = 3,140. And 33.9 × 1,000 = 33,900.'},
+    {t:'Money: 100 pencils at $0.05 = 0.05 × 100 = $5. 10 pencils at $0.55 = $5.50.'}], a:'3,140' },
+  oops:{ q:'3.14 × 1,000', wrong:'3.14000', right:'3,140', why:'Zeros at the end after the point change nothing. Slide the point 3 places right.' },
+  ways:['slide the point','sort by power of ten','money','Mistake Detective'], done:'You can multiply decimals by 10, 100 and 1,000.',
+  board:{ one:'Count the zeros; slide the point that many places right.', activity:'A place-value slider: move a paper decimal point under fixed digits.', mistakes:['Adding zeros after the point','Sliding the wrong way','Sliding the wrong number of places'] },
+  do:[
+    {type:'match', pairs:[['3.14 × 10','31.4'],['3.14 × 100','314'],['3.14 × 1,000','3,140'],['0.05 × 100','5']], say:'Slide the point. Match each product.', how:'× 10: 1 place right. × 100: 2 places. × 1,000: 3 places.',
+      why:{q:'Why 3 places for × 1,000?', o:['1,000 has 3 zeros','3.14 has 3 digits','1,000 is big','Always 3'], a:'1,000 has 3 zeros'}},
+    {type:'tiles', w:['3','3',',','9','0','0'], extra:['.'], q:'33.9 × 1,000 = ?', say:'Build 33.9 × 1,000. Slide the point 3 places.', how:'33.9 → 339 → 3,390 → 33,900. Fill with zeros.'}],
+  your:[
+    {type:'sort', bins:['× 10','× 100','× 1,000'], cards:[['4.5 → 45',0],['4.5 → 450',1],['4.5 → 4,500',2],['0.7 → 70',1],['0.07 → 70',2],['2.3 → 23',0]], say:'How did the number grow? Sort each one.', how:'Count how many places the point moved: 1, 2 or 3.'},
+    {type:'listen', hear:'A box holds 100 pencils. Each pencil costs 5 cents. What does the whole box cost?', q:'$0.05 × 100', o:['$5','$0.50','$50','$500'], a:'$5', say:'Listen. What does the whole box cost?', how:'× 100: slide the point 2 places: 0.05 → 5.',
+      why:{q:'Why slide 2 places?', o:['100 has 2 zeros','5 cents is small','A box has 2 sides','Money has 2 places'], a:'100 has 2 zeros'}},
+    {type:'tiles', w:['0.314','3.14','31.4','314'], q:'Smallest first', say:'Smallest first: each one is 10 times bigger.', how:'Each step slides the point 1 place right.'},
+    {type:'listen', hear:'3.14 times 1,000', q:'3.14 × 1,000', o:['3,140','314','31.4','0.314'], a:'3,140', say:'Listen. Tap the product.', how:'3 zeros: slide the point 3 places. 3.14 → 3,140.'},
+    {type:'match', pairs:[['10 × $0.55','$5.50'],['100 × $0.05','$5'],['10 × $1.20','$12'],['1,000 × $0.01','$10']], say:'How much do they cost? Match each one.', how:'Slide the point right: 1 place for 10, 2 for 100, 3 for 1,000.'}] };
+
+B['MATH.PV.L06.02']={ band:'E45', pic:'⚖️', today:'Compare decimals: line up the points, fill with zeros', why:'2.8 kg or 2.76 kg of chicken for Shabbos: which is more? Decimals tell you.',
+  ready:[{q:'Which is bigger: 80 or 77?', o:['80','77','The same','Cannot tell'], a:'80'},{q:'0.8 is the same as…', o:['0.80','0.08','8.0','0.880'], a:'0.80'}],
+  bridge:'MATH.FRAC.L05.04', bridgeName:'Tenths to Hundredths',
+  watch:{ q:'Put in order from least to greatest: 0.77, 0.8, 0.802', m:{type:'tiles', w:['0.770','0.800','0.802']}, steps:[
+    {t:'Line up the points. Give every number the same number of places: 0.770, 0.800, 0.802.'},
+    {t:'Now compare like whole numbers: 770, 800, 802.'},
+    {t:'Least to greatest: 0.77, 0.8, 0.802.'},
+    {t:'Which is bigger: 0.52 or 0.6? 0.52 or 0.60: 0.6 is bigger. More digits does NOT mean bigger.'}], a:'0.77, 0.8, 0.802' },
+  oops:{ q:'Which is bigger: 0.52 or 0.6?', wrong:'0.52, because 52 > 6', right:'0.6', why:'0.6 = 0.60. 60 hundredths beat 52 hundredths.' },
+  ways:['fill with zeros','order tiles','sort and find','Mistake Detective'], done:'You can compare and order decimals.',
+  board:{ one:'Same number of places, then compare like whole numbers.', activity:'Decimal cards: boys line up from least to greatest.', mistakes:['Longer means bigger','Comparing from the right','Forgetting that 0.8 = 0.80'] },
+  do:[
+    {type:'match', pairs:[['0.8','0.800'],['0.77','0.770'],['0.6','0.60'],['2.8','2.80']], say:'Fill with zeros. Match each pair.', how:'Zeros at the end after the point do not change the value.',
+      why:{q:'Why is 0.8 = 0.800?', o:['End zeros after the point add nothing','0.800 is bigger','It is 800','It has more digits'], a:'End zeros after the point add nothing'}},
+    {type:'tiles', w:['0.77','0.8','0.802'], q:'Least to greatest', say:'Put them in order from least to greatest.', how:'Fill with zeros: 0.770, 0.800, 0.802. Then compare.'}],
+  your:[
+    {type:'sort', bins:['Bigger than 0.6','Smaller than 0.6'], cards:[['0.52',1],['0.65',0],['0.599',1],['0.7',0],['0.61',0],['0.06',1]], say:'Bigger or smaller than 0.6? Sort each one.', how:'Write 0.6 as 0.600. Then compare digit by digit.'},
+    {type:'listen', hear:'Which is bigger: 2.8 or 2.76?', o:['2.8','2.76','Equal','2.08'], a:'2.8', say:'Listen. Which is bigger?', how:'2.8 = 2.80. 80 hundredths beat 76.',
+      why:{q:'Why is 2.8 bigger?', o:['2.80 beats 2.76','2.76 has more digits','8 is less than 76','Equal'], a:'2.80 beats 2.76'}},
+    {type:'tiles', w:['0.065','0.65','0.7','0.704'], q:'Least to greatest', say:'Put them in order from least to greatest.', how:'Fill with zeros: 0.065, 0.650, 0.700, 0.704.'},
+    {type:'findall', grid:['0.52','0.6','0.599','0.61','0.06','0.7','0.59','0.66'], find:['0.61','0.7','0.66'], findSay:'number bigger than 0.6', say:'Tap every number bigger than 0.6.', how:'0.6 = 0.60. Bigger means more than 60 hundredths.'},
+    {type:'listen', hear:'Which is greatest: 3.09, 3.9 or 3.19?', o:['3.9','3.19','3.09','Equal'], a:'3.9', say:'Listen. Which is the greatest?', how:'3.90, 3.19, 3.09. Compare the tenths: 9 wins.'}] };
+
+B['MATH.PV.L06.03']={ band:'E45', pic:'⛽', today:'Round decimals: look one place to the right', why:'Gas costs $4.835 a gallon on the way to Bubby. To the nearest cent, that is $4.84.',
+  ready:[{q:'Round 47 to the nearest ten.', o:['50','40','47','45'], a:'50'},{q:'In 3.866, which digit is in the hundredths place?', o:['6','8','3','66'], a:'6'}],
+  bridge:'MATH.PV.L05.02', bridgeName:'Round Anything',
+  watch:{ q:'Round 3.866 to the nearest hundredth.', m:{type:'tiles', w:['3','.','8','6','6'], hi:[3,4]}, steps:[
+    {t:'Places after the point: tenths, hundredths, thousandths. The hundredths digit is 6.'},
+    {t:'Look one place to the right: 6. 5 or more, so round up: 3.87.'},
+    {t:'Nearest tenth: 89.826, look at the 2: stay, 89.8. Nearest whole number: 80.885, look at the 8: up, 81.'},
+    {t:'Nearest cent means two places: $4.835, look at the 5: up, $4.84.'}], a:'3.87' },
+  oops:{ q:'Round 17.619 to the nearest tenth.', wrong:'17.62', right:'17.6', why:'A tenth is ONE place after the point. Look at the 1: stay.' },
+  ways:['digit tiles','sort up or stay','match each place','Mistake Detective'], done:'You can round decimals to the nearest whole, tenth, hundredth or cent.',
+  board:{ one:'Find the place, look one to the right, 5 or more rounds up.', activity:'Price tags with 3 decimal places: boys round them to the cent.', mistakes:['Rounding to the wrong place','Keeping the digits after the place','Not carrying when a 9 rounds up'] },
+  do:[
+    {type:'match', q:'Nearest hundredth', pairs:[['3.866','3.87'],['17.128','17.13'],['2.065','2.07'],['4.832','4.83']], say:'Round each to the nearest hundredth. Match.', how:'Look at the third place after the point. 5 or more: round up.',
+      why:{q:'Why does 2.065 round up?', o:['The next digit is 5','It ends in 5 cents','2 is even','6 is big'], a:'The next digit is 5'}},
+    {type:'sort', q:'Nearest tenth', bins:['Round up','Stay'], cards:[['17.619',1],['89.826',1],['5.36',0],['2.74',1],['6.451',0],['3.08',0]], say:'Nearest tenth: round up or stay? Sort each one.', how:'Look at the hundredths digit. 5 or more: up.'}],
+  your:[
+    {type:'listen', hear:'Round 80.885 to the nearest whole number.', q:'80.885', o:['81','80','80.9','80.89'], a:'81', say:'Listen. Round to the nearest whole number.', how:'Look at the tenths: 8. Round up: 81.'},
+    {type:'tiles', w:['Find the place','Look right one','5+? Round up','Drop the rest'], extra:['Look left one'], say:'Order the steps for rounding decimals.', how:'Find the place, look one to the right, decide, then drop the digits after it.',
+      why:{q:'Why can you drop the digits after it?', o:['Zeros at the end after the point add nothing','They are always 0','They are too big','Rounding deletes the point'], a:'Zeros at the end after the point add nothing'}},
+    {type:'match', q:'Round 21.835 to the nearest…', pairs:[['whole number','22'],['tenth','21.8'],['hundredth','21.84']], say:'Round 21.835 to each place. Match.', how:'Each time, look one place to the right of the place you round.'},
+    {type:'findall', grid:['4.75','4.84','4.85','4.79','4.71','4.849','4.8','4.9'], find:['4.75','4.84','4.79','4.849','4.8'], findSay:'number that rounds to 4.8', say:'Nearest tenth: tap every number that rounds to 4.8.', how:'From 4.75 up to 4.849… all round to 4.8.'},
+    {type:'listen', hear:'Gas costs 2.065 dollars a gallon. Round it to the nearest cent.', q:'$2.065', o:['$2.07','$2.06','$2.10','$2.00'], a:'$2.07', say:'Listen. Round to the nearest cent.', how:'A cent is the 2nd place. Look at the 5: round up to $2.07.'}] };
+
+B['MATH.STAT.L06.01']={ band:'E45', pic:'🪙', today:'Find the fair share: add them all, then divide', why:'5 boys collected tzedakah: $9, $10, $5, $6 and $5. Shared fairly, each has the mean.',
+  ready:[{q:'9 + 10 + 5 + 6 + 5 = ?', o:['35','30','25','40'], a:'35'},{q:'35 ÷ 5 = ?', o:['7','6','8','5'], a:'7'}],
+  bridge:'MATH.OPS.L04.07', bridgeName:'Fair Shares',
+  watch:{ q:'Find the mean (fair share): 10, 11, 15', m:{type:'scene', e:'🪙', t:'3 brothers have 10, 11 and 15 coins. They want to share fairly.'}, steps:[
+    {t:'Put it all together: 10 + 11 + 15 = 36.'},
+    {t:'Share equally: 3 numbers, so 36 ÷ 3 = 12.', m:{type:'emoji', e:'🪙', n:36, group:12}},
+    {t:'The mean (fair share) is 12. Check: 3 × 12 = 36.'},
+    {t:'Tzedakah: $9, $10, $5, $6, $5. The total is 35. 5 boys: 35 ÷ 5 = $7 each.'}], a:'12' },
+  oops:{ q:'The mean of 10, 11, 15', wrong:'36', right:'12', why:'36 is the total. Divide by how many numbers there are: 36 ÷ 3.' },
+  ways:['frum-family scene','coin pictures','sort and find','Mistake Detective'], done:'You can find the mean, the fair share of a set of numbers.',
+  board:{ one:'Mean = total ÷ how many numbers.', activity:'Cube towers of 3, 5, 6 and 10: level them out until all are equal.', mistakes:['Stopping at the total','Dividing by the wrong count','Picking the middle number instead'] },
+  do:[
+    {type:'tiles', w:['Add them all','Count them','Divide'], extra:['Multiply'], say:'Order the steps for the fair share.', how:'Total first. Then divide by how many numbers there are.'},
+    {type:'count', n:12, pic:'🪙', o:['12','36','3','11'], q:'36 coins ÷ 3 brothers', say:'36 coins, 3 brothers. Count one fair share.', how:'36 ÷ 3 = 12. Each brother gets 12.',
+      why:{q:'Why divide by 3?', o:['There are 3 brothers','3 is small','36 has a 3','The mean is always 3'], a:'There are 3 brothers'}}],
+  your:[
+    {type:'match', pairs:[['2, 4, 6','4'],['8, 10, 12, 10','10'],['14, 9, 13','12'],['3, 5, 6, 10','6']], say:'Find each fair share. Match.', how:'Add, then divide by how many numbers.'},
+    {type:'listen', hear:'5 boys collected 2, 10, 5, 7 and 1 dollars. If they shared equally, how much would each have?', q:'$2, $10, $5, $7, $1', o:['$5','$25','$7','$4'], a:'$5', say:'Listen. What is the fair share?', how:'The total is 25. 5 boys: 25 ÷ 5 = 5.',
+      why:{q:'Why divide by 5?', o:['There are 5 boys','The middle is 5','5 is the smallest','The mean is always 5'], a:'There are 5 boys'}},
+    {type:'sort', bins:['Mean is 5','Mean is 6'], cards:[['4, 5, 6',0],['5, 6, 7',1],['2, 8',0],['3, 9',1],['1, 9, 5',0],['6, 6, 6',1]], say:'Is the mean 5 or 6? Sort each set.', how:'Add the numbers. Divide by how many there are.'},
+    {type:'findall', grid:['2, 6','4, 4','1, 7','3, 6','5, 3','8, 2'], find:['2, 6','4, 4','1, 7','5, 3'], findSay:'pair with a mean of 4', say:'Tap every pair with a mean of 4.', how:'The two numbers must add up to 8.'},
+    {type:'listen', hear:'Find the mean of 14, 9 and 13.', q:'14, 9, 13', o:['12','36','13','11'], a:'12', say:'Listen. Find the mean.', how:'14 + 9 + 13 = 36. 36 ÷ 3 = 12.'}] };
+
 })(window.ONE_BITE);
 </script>
