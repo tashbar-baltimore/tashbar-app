@@ -309,5 +309,91 @@ B['READ.PA.L01.06']={ band:'K1', pic:'✂️', today:'Chop a word into its sound
     {type:'count', n:3, pic:'☝️', q:'☀️ sun', o:['2','3','4'], say:'Chop the word sun. How many sounds?', how:'Say sun slowly: sss, uh, nnn. Hold up a finger for each sound.'},
     {type:'sort', bins:['2 sounds','3 sounds'], cards:[['🐝',0],['🔑',0],['🐱',1],['☀️',1]], say:'Chop each picture. How many sounds? Sort it.', how:'Say it slowly. Hold up a finger for each sound. Two or three?'},
     {type:'listen', hear:'map', q:'🗺️ map', o:['p','m','a'], a:'p', say:'Chop the word map. What is the last sound?', how:'Say map slowly. Stop at the very end. Which sound is last?'}] };
+
+/* ==== ROUND 2, Lane C, batch 2b (2026-11-22): K phonics READ.PHON.L01.02 to .04 and snap words READ.FLU.L01.01 ====
+   Read CVC and Snap Words ask him to READ, so listen plays the spoken instruction, never the answer word. */
+B['READ.PHON.L01.02']={ band:'K1', pic:'🌙', today:'Match each sound to its letter', why:'When you know the letter sounds, you can start to read words!',
+  ready:[{q:'Which one starts with the same sound as sun?', o:['🧦','🎩','🛏️'], a:'🧦'}], bridge:'READ.PA.L01.04', bridgeName:'First Sound Detective',
+  watch:{ q:'moon 🌙', pic:'🌙', steps:[
+    {t:'Say moon. The first sound is mmm.', m:{type:'tiles',w:['m','oon'],hi:[0]}},
+    {t:'The letter m says mmm. Moon starts with m!', m:{type:'tiles',w:['m','🌙']}},
+    {t:'Pen starts with puh. The letter p says puh.', m:{type:'tiles',w:['p','🖊️']}},
+    {t:'Nest starts with nnn. Duck starts with duh.', m:{type:'tiles',w:['n','🪺','d','🦆']}},
+    {t:'Sing it with me!', m:{type:'chant',lines:['M says mmm, mmm, moon!','P says puh, puh, pen!','N says nnn, nnn, nest!','D says duh, duh, duck!']}}], a:'moon starts with m' },
+  oops:{ q:'This is a duck. Which letter makes its first sound?', wrong:'b (it looks like d)', right:'d', why:'d says duh. b says buh. Duck starts with duh.' },
+  ways:['song','pictures','listen and tap','sort','Mistake Detective'], done:'You can match a sound to its letter!',
+  board:{ one:'Say the picture. Hear the first sound. Find its letter.', activity:'Letter cards on the wall: say a picture, boys point to its letter.', mistakes:['Mixing up b and d','Saying the letter name instead of its sound','Using the last sound instead of the first'] },
+  'do':[
+    {type:'listen', hear:'moon', q:'🌙 moon', o:['m','s','t'], a:'m', say:'This is a moon. Which letter makes its first sound?', how:'Say moon slowly. Hear mmm. Which letter says mmm?'},
+    {type:'match', pairs:[['m','🌙'],['s','☀️'],['b','🚌']], say:'Match each letter to a picture that starts with it.', how:'Say the picture word slowly. Hear the first sound. Find that letter.'}],
+  your:[
+    {type:'listen', hear:'pen', q:'🖊️ pen', o:['p','d','b'], a:'p', say:'This is a pen. Which letter makes its first sound?', how:'Say pen slowly. Hear puh. Which letter says puh?'},
+    {type:'sort', bins:['m 🌙','s ☀️','t 🐢'], cards:[['🐭',0],['🐵',0],['🧦',1],['🐍',1],['🐯',2],['🍅',2]], say:'Sort each picture by the letter it starts with.', how:'Say the picture slowly. Hear the first sound. Which letter says it?'},
+    {type:'listen', hear:'nest', q:'🪺 nest', o:['m','r','n'], a:'n', say:'This is a nest. Which letter makes its first sound?', how:'Say nest slowly. Hear nnn. Which letter says nnn?'},
+    {type:'match', pairs:[['d','🦆'],['g','🐐'],['t','🐢']], say:'Match each letter to a picture that starts with it.', how:'Say the picture word slowly. Hear the first sound. Find that letter.'},
+    {type:'listen', hear:'duck', q:'🦆 duck', o:['b','d','t'], a:'d', say:'This is a duck. Which letter makes its first sound?', how:'Say duck slowly. Hear duh. Which letter says duh?'}] };
+
+B['READ.PHON.L01.03']={ band:'K1', pic:'🍎', today:'Hear the short vowel in the middle', why:'Every word has a vowel. Find it, and you can read the word!',
+  ready:[{q:'This is a moon. Which letter makes its first sound?', o:['m','s','t'], a:'m'}], bridge:'READ.PHON.L01.02', bridgeName:'Sound Match',
+  watch:{ q:'cat 🐱', pic:'🐱', steps:[
+    {t:'These five letters are vowels. They sit in the middle.', m:{type:'tiles',w:['a','e','i','o','u']}},
+    {t:'Cat: kuh, a, tuh. The middle sound is a, like apple.', m:{type:'tiles',w:['c','a','t'],hi:[1]}},
+    {t:'Cup: kuh, uh, puh. The middle sound is u, like up.', m:{type:'tiles',w:['c','u','p'],hi:[1]}},
+    {t:'Log: lll, o, guh. The middle sound is o, like octopus.', m:{type:'tiles',w:['l','o','g'],hi:[1]}},
+    {t:'Sing the vowel song with me!', m:{type:'chant',lines:['A is for apple, apple, apple!','E is for egg, egg, egg!','I is for itch, itch, itch!','O is for octopus, octopus!','U is for up, up, up!']}}], a:'cat: a in the middle' },
+  oops:{ q:'This is a cup. Which letter makes the middle sound?', wrong:'o', right:'u', why:'Cup says kuh, uh, puh. Uh is u, like up.' },
+  ways:['song','letter tiles','listen and tap','sort','Mistake Detective'], done:'You can hear the short vowel in the middle!',
+  board:{ one:'Stretch the word. The middle sound is the vowel.', activity:'Vowel hands: a word is called, boys show the vowel card.', mistakes:['Mixing up short e and short i','Saying the vowel name instead of its short sound','Picking the first letter instead of the middle'] },
+  'do':[
+    {type:'listen', hear:'cat', q:'🐱 cat', o:['a','i','o'], a:'a', say:'This is a cat. Which letter makes the middle sound?', how:'Say cat slowly: kuh, a, tuh. Which sound is in the middle?'},
+    {type:'sort', bins:['a like 🍎','o like 🐙'], cards:[['🎩',0],['🗺️',0],['🐶',1],['🐸',1]], say:'Stretch each word. Sort it by its middle sound.', how:'Say it slowly. Listen to the middle. Is it a, or o?'}],
+  your:[
+    {type:'listen', hear:'cup', q:'☕ cup', o:['a','o','u'], a:'u', say:'This is a cup. Which letter makes the middle sound?', how:'Say cup slowly: kuh, uh, puh. Which sound is in the middle?'},
+    {type:'match', pairs:[['🛏️','e'],['📌','i'],['☀️','u']], say:'Match each picture to its middle sound.', how:'Say bed, pin, sun slowly. Listen to the middle sound.'},
+    {type:'listen', hear:'hat', q:'🎩 hat', o:['e','i','a'], a:'a', say:'This is a hat. Which letter makes the middle sound?', how:'Say hat slowly: huh, a, tuh. Which sound is in the middle?'},
+    {type:'tiles', w:['l','o','g'], hear:'log', q:'🪵 log', say:'Build the word log.', how:'Say log slowly: lll, o, guh. Tap the first sound, then the next.'},
+    {type:'listen', hear:'log', q:'🪵 log', o:['o','u','i'], a:'o', say:'This is a log. Which letter makes the middle sound?', how:'Say log slowly: lll, o, guh. Which sound is in the middle?'}] };
+
+B['READ.PHON.L01.04']={ band:'K1', pic:'🐱', today:'Read short words, sound by sound', why:'Now you can read real words all by yourself!',
+  ready:[{q:'This is a cup. Which letter makes the middle sound?', o:['u','a','o'], a:'u'}], bridge:'READ.PHON.L01.03', bridgeName:'Short Vowel Sounds',
+  watch:{ q:'cat', pic:'🐱', steps:[
+    {t:'Point to each letter. Say its sound: kuh, a, tuh.', m:{type:'tiles',w:['c','a','t'],hi:[0]}},
+    {t:'Now push the sounds together, faster and faster.', m:{type:'tiles',w:['c','a','t'],hi:[0,1,2]}},
+    {t:'Cat! Check the picture. Yes, it is a cat.', m:{type:'tiles',w:['cat','🐱']}},
+    {t:'Change the middle, and the word changes: cap, cup.', m:{type:'tiles',w:['cap','🧢','cup','☕']}},
+    {t:'Tap your arm for each sound and sing!', m:{type:'chant',lines:['Kuh, a, tuh: cat, cat, cat!','Sss, uh, nnn: sun, sun, sun!','Puh, i, nnn: pin, pin, pin!']}}], a:'c-a-t = cat 🐱' },
+  oops:{ q:'Which word is 🧢?', wrong:'cup (it has u)', right:'cap (it has a)', why:'Read the middle letter too. a says a, like apple.' },
+  ways:['letter tiles','song','pictures','find them all','Mistake Detective'], done:'You can read short words by yourself!',
+  board:{ one:'Point, say each sound, push them together, check the picture.', activity:'Word ladder: change one letter at a time, cat, cap, cup, pup.', mistakes:['Guessing from the first letter','Skipping the middle vowel','Saying the sounds but not blending them'] },
+  'do':[
+    {type:'listen', hear:'Read the words. Tap the one that matches the picture.', q:'🐱', o:['cot','cat','cut'], a:'cat', say:'Read the words. Tap the word that matches the picture.', how:'Point to each letter and say its sound. Push them together.'},
+    {type:'tiles', w:['b','e','d'], q:'🛏️', say:'Build the word for the picture.', how:'Say bed slowly: buh, e, duh. Tap the letter for each sound.'}],
+  your:[
+    {type:'listen', hear:'Read the words. Tap the one that matches the picture.', q:'🧢', o:['cap','cop','cup'], a:'cap', say:'Read the words. Tap the word that matches the picture.', how:'Read each word, sound by sound. Look at the middle letter.'},
+    {type:'match', pairs:[['hat','🎩'],['dog','🐶'],['bug','🐛']], say:'Read each word. Match it to its picture.', how:'Point to each letter and say its sound. Push them together.'},
+    {type:'tiles', w:['p','i','n'], q:'📌', say:'Build the word for the picture.', how:'Say pin slowly: puh, i, nnn. Tap the letter for each sound.'},
+    {type:'findall', grid:['cat','map','pig','hat','dog','bag','sun','fan'], find:['cat','map','hat','bag','fan'], findSay:'word with a in the middle', say:'Tap every word with a in the middle, like cat.', how:'Look at the middle letter of each word. Is it a? Tap it.'},
+    {type:'listen', hear:'Read the words. Tap the one that matches the picture.', q:'☀️', o:['sun','sat','sin'], a:'sun', say:'Read the words. Tap the word that matches the picture.', how:'Read each word, sound by sound. Look at the middle letter.'}] };
+
+B['READ.FLU.L01.01']={ band:'K1', pic:'⚡', today:'Read snap words fast', why:'Snap words are in every book. Know them fast, and reading is easy!',
+  ready:[{q:'Read the words. Which one is ☀️?', o:['sun','sat','sin'], a:'sun'}], bridge:'READ.PHON.L01.04', bridgeName:'Read CVC',
+  watch:{ q:'I, the, see, can, have, come', pic:'⚡', steps:[
+    {t:'Some words we just know, fast as a snap!', m:{type:'tiles',w:['I','the','see','can']}},
+    {t:'Look, say, snap: have. Snap your fingers!', m:{type:'tiles',w:['h','a','v','e'],hi:[0,1,2,3]}},
+    {t:'Look at the letters in order: c, o, m, e. Come!', m:{type:'tiles',w:['c','o','m','e']}},
+    {t:'Now read: He can see the fox. What can he see?', m:{type:'tiles',w:['He','can','see','the','fox. 🦊']}},
+    {t:'Snap and sing with me!', m:{type:'chant',lines:['I, the, a, see: snap, snap, snap!','Can, have, come: snap, snap, snap!','Read them fast, as fast as that!']}}], a:'He can see the fox. 🦊' },
+  oops:{ q:'Which word is spelled right?', wrong:'hvae', right:'have', why:'Look at the letters in order: h, a, v, e.' },
+  ways:['snap and say','song','letter tiles','find them all','Mistake Detective'], done:'You can read snap words fast!',
+  board:{ one:'Look, say, snap. Check the letters in order.', activity:'Snap cards: flash a word, boys snap and read it together.', mistakes:['Sounding out a snap word slowly','Mixing up the order of the letters','Reading the and a the same'] },
+  'do':[
+    {type:'listen', hear:'Tap the word that is spelled right.', o:['have','haev','hvae'], a:'have', say:'Tap the word that is spelled right.', how:'Look at the letters in order: h, a, v, e.'},
+    {type:'tiles', w:['h','a','v','e'], hear:'have', say:'Spell the snap word have.', how:'Look, say, snap: have. Tap h, then a, then v, then e.'}],
+  your:[
+    {type:'listen', hear:'Tap the word that is spelled right.', o:['come','coem','cmoe'], a:'come', say:'Tap the word that is spelled right.', how:'Look at the letters in order: c, o, m, e.'},
+    {type:'match', pairs:[['a dog','🐶'],['a fish','🐟'],['a cat','🐱']], say:'Read each one. Match it to its picture.', how:'Read the words. Which picture is it? Tap both.'},
+    {type:'listen', hear:'Read the sentence. What can he see?', q:'He can see the fox.', o:['🐟','🐶','🦊'], a:'🦊', say:'Read the sentence. What can he see?', how:'Read each word. The last word tells what he can see.'},
+    {type:'findall', grid:['the','cat','see','sun','can','map','I','bed'], find:['the','see','can','I'], findSay:'snap word', say:'Tap every snap word.', how:'Look for the snap words: I, the, see, can.'},
+    {type:'tiles', w:['We','can','see','a','dog.'], say:'Tap the words in order to make the sentence.', how:'Start with the big letter. End with the dot.'}] };
 })(window.ONE_BITE);
 </script>
