@@ -30,7 +30,7 @@
 
 ## The work: three lanes, which can run at the same time in three accounts
 
-### Lane A: the Activity Kit (player). Files: `src/OneBite.html` and a new `src/OneBiteKit.html` (register it in Photos.js AND Speed.js, before OneBite)
+### Lane A: the Activity Kit (player). **DONE 2026-11-22: the data schema for `do`/`your` is in `docs/ONE-BITE-PLAYBOOK.md` section 10.** Files: `src/OneBite.html` and a new `src/OneBiteKit.html` (register it in Photos.js AND Speed.js, before OneBite)
 - **Build reusable, touch-friendly activities that read their data from `ONE_BITE[id].do` (guided) and `ONE_BITE[id].your` (practice):**
   - `tenframe` (drag or tap dots to make N);
   - `hop` (number line: start, hop by k, land on the answer);
