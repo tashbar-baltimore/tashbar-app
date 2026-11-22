@@ -1,0 +1,236 @@
+<script>
+/* OneBiteDataRead2.html: hand-written ONE BITE lessons for Reading, Grades 2-8 (READ.*.L03 to L09). Lane C3.
+   K-1 Reading lives in OneBiteDataRead.html (Lane C). Content lanes edit only their own data file.
+   Schema and rules: docs/ONE-BITE-PLAYBOOK.md (sections 2, 6-7, 10). The player is OneBite.html; the activities are OneBiteKit.html.
+   window.ONE_BITE['SKILL.ID'] = { band, today, why, pic, ready:[{q,o,a}], bridge, watch:{q,m,steps,a}, oops:{q,wrong,right,why}, ways:[...], done, board:{...},
+     do:[2 guided activities], your:[3-5 practice activities] };
+   Lane C3 rules: boys never see the word for this project; say "lesson". Every activity has say (12 words or fewer) and how.
+   B23: read-along, one new word at a time, 3-4 choices. E45: real-world texts and "tap the reason" (why). M68: strategy, challenge, teach it back.
+   Short passages (about 30 words) in q or a watch step. Sort cards 4 words or fewer; findall one word per cell; match sides about 3 words.
+   No double slash in this file. */
+window.ONE_BITE=window.ONE_BITE||{};
+(function(B){
+
+/* ---- GRADE 2 (L03, band B23). Quality round (HoS 2026-11-22): think-aloud Watch Me on a short original passage,
+   then do 1-2 guided (easiest case), your 1-2 a little harder on a NEW passage, your 3 the Mistake Detective mistake,
+   your 4 a new representation, your 5 a challenge or real-world case. ---- */
+B['READ.COMP.L03.01']={ band:'B23', pic:'🐝', today:'Find the main topic of a page and its parts', why:'When you know what a page is about, every fact on it makes sense, and you can find what you need.',
+  ready:[{q:'Chaim has a cat named Puff. Who has a cat?', o:['Chaim','Puff','Mommy'], a:'Chaim'},{q:'Puff ran to the yard. Where did Puff run?', o:['to the yard','to school','home'], a:'to the yard'}],
+  bridge:'READ.COMP.L02.01',
+  watch:{ q:'Ants', m:{type:'scene',e:'🐜',t:'Ants. Part 1: Ants live in a nest under the ground. Part 2: Ants carry food home in a long line.'}, steps:[
+    {t:'I read the title first: Ants. So I think this page is about ants.'},
+    {t:'I notice the word ants in every part. A word that keeps coming back is a big clue.', m:{type:'tiles',w:['Ants','nest','Ants','food'],hi:[0,2]}},
+    {t:'I read Part 2 only. I notice carry, food, home, line. Most words tell about carrying food. So Part 2 is mostly about how ants carry food.'},
+    {t:'Every part is about ants. So the main topic of the whole page is ants.'},
+    {t:'A title must fit the WHOLE page: All About Ants. On a page about bees, the title All About Bees fits. Food or Eggs fits only one part.'}], a:'Main topic of the page: ants. Part 2: how ants carry food.' },
+  oops:{ q:'A page about snow says sleds one time. Topic?', wrong:'sleds', right:'snow', why:'The topic is what the whole page is about. Sleds came up only once, in one part.' },
+  ways:['think-aloud','find the word that comes back','sort topic and detail','match details to topics','Mistake Detective'], done:'You can find the main topic of a page and of each part!',
+  board:{ one:'Read the title, find the word that keeps coming back, check that it fits every part.', activity:'Read a short two-part page aloud; boys hold up a finger each time the topic word comes back, then name what each part is mostly about.', mistakes:['Picking a detail that comes up in one part only','Picking a title that fits only one part','Not reading the title first'] },
+  do:[
+    {type:'findall', q:'A toad can hop. The toad eats bugs.', grid:['A','toad','can','hop','The','toad','eats','bugs'], find:'toad', findSay:'word that comes back', say:'Which word is in every sentence? Tap it each time.', how:'Read both sentences. One word is in both of them. That word is the topic.'},
+    {type:'sort', q:'Dogs bark. Dogs wag. Dogs dig.', bins:['Main topic','Small detail'], cards:[['dogs',0],['barking',1],['wagging',1],['digging',1]], say:'Is it the main topic, or a small detail?', how:'The topic is in every sentence: dogs. Each thing a dog does is a detail.'}],
+  your:[
+    {type:'match', q:'Owls: which part is it from?', pairs:[['catch mice','how owls hunt'],['nest in a tree','owl homes'],['hoot: whoo!','owl sounds']], say:'Match each sentence to what its part is about.', how:'Read the sentence. Is it about hunting, homes, or sounds?'},
+    {type:'sort', bins:['All About Bees','Sukkos Things','Chanukah Things'], cards:[['hive',0],['lulav',1],['candles',2],['honey',0],['esrog',1],['dreidel',2]], say:'Which page title does this detail belong under?', how:'Each title must fit every detail under it. Honey fits All About Bees.'},
+    {type:'listen', hear:'Turtles. Part 1: A turtle has a hard shell. It hides inside when it is scared. Part 2: A mother turtle digs a hole in the sand and lays eggs. What is the main topic of the whole page?', o:['turtle','shell','eggs'], a:'turtle', say:'Mistake Detective: which word is in every part?', how:'Shells come up in Part 1 only. Eggs come up in Part 2 only. That is the mistake. Turtles are in every part.'},
+    {type:'sort', q:'Turtles. Part 1: shell. Part 2: eggs.', bins:['Fits whole page','Only one part'], cards:[['All About Turtles',0],['Turtle Facts',0],['Hard Shells',1],['Laying Eggs',1],['Mother Turtles',1]], say:'Does this title fit the whole page?', how:'A title for the whole page must fit Part 1 AND Part 2. Hard Shells fits only Part 1.'},
+    {type:'listen', q:'Challenge: the shul newsletter', hear:'Part 1: Our shul got new books. Part 2: Yehuda and his friends built a new stand for the rav. What is Part 2 mostly about?', o:['stand','books','sukkah'], a:'stand', say:'Challenge! What is Part 2 mostly about?', how:'Listen to Part 2 only. It tells about the new stand, a shtender for the rav.'}] };
+
+B['READ.COMP.L03.02']={ band:'B23', pic:'🐪', today:'Use headings, captions and bold words to find facts', why:'Text tools are like road signs. They take you straight to the fact you need.',
+  ready:[{q:'Which one names the whole page?', o:['the title','the last word','a dot'], a:'the title'},{q:'A page about bees is mostly about...', o:['bees','trees','cars'], a:'bees'}],
+  bridge:'READ.COMP.L03.01', bridgeName:'Main Topic',
+  watch:{ q:'Beavers', m:{type:'scene',e:'🦫',t:'Beavers. ▶ Building a Dam: A beaver packs sticks and mud to make a DAM. ▶ A Safe Home: The door is under the water. 🦫 A beaver lodge. Word box: dam: a wall that holds back water.'}, steps:[
+    {t:'My question: what is a dam? I notice DAM is dark and thick. A bold word is explained nearby.'},
+    {t:'So I look in the word box: dam: a wall that holds back water. I found it fast!'},
+    {t:'New question: where is the door? I read the headings like road signs. A Safe Home sounds right. It says: The door is under the water. Found it!'},
+    {t:'I notice a sentence next to the picture: A beaver lodge. That is the caption. A caption tells about the picture.'},
+    {t:'A Safe Home is NOT the caption. It is a heading, a name for a part. On a camel page, the caption is the sentence by the picture: Wide feet help a camel walk on sand.'}], a:'Bold word: look in the word box. Question: pick the heading. Picture: read the caption.' },
+  oops:{ q:'Which is the caption?', wrong:'A heading, like Made for Sand', right:'The sentence next to the picture', why:'A heading names a part. A caption is the sentence next to or under a picture and tells about it.' },
+  ways:['think-aloud','match tool and job','sort facts under headings','bold words in a word box','Mistake Detective'], done:'You can use text tools to find facts fast!',
+  board:{ one:'Headings name a part, captions tell about a picture, bold words are explained in the word box.', activity:'Give each pair a page and three questions; they point to the heading, caption or bold word that answers each one.', mistakes:['Calling a heading the caption','Not looking in the word box for a bold word','Reading every part instead of jumping to the heading'] },
+  do:[
+    {type:'match', pairs:[['heading','names a part'],['caption','about a picture'],['bold word','a key word']], say:'Match each text tool to its job.', how:'A heading is a road sign for a part. A caption sits by a picture. A bold word is dark and thick.'},
+    {type:'sort', q:'Beavers: two headings', bins:['Building a Dam','A Safe Home'], cards:[['sticks and mud',0],['where they sleep',1],['how they build',0],['door under water',1]], say:'Which heading would you read for this?', how:'Building a Dam tells how they build. A Safe Home tells where they live.'}],
+  your:[
+    {type:'listen', q:'Word box: talons', hear:'Owls. An owl has sharp talons. Word box: talons: sharp claws on a bird\'s feet. What are talons?', o:['claws','eyes','wings'], a:'claws', say:'Talons is a bold word. Use the word box.', how:'A bold word is explained in the word box: talons: sharp claws on a bird\'s feet. On a camel page: hump: a big bump on a camel\'s back.'},
+    {type:'sort', q:'Penguins: three headings', bins:['Staying Warm','Finding Food','Penguin Chicks'], cards:[['thick feathers',0],['huddle close',0],['catch fish',1],['dive deep',1],['egg on feet',2]], say:'Which heading would you read for this fact?', how:'Read the headings like road signs. Which part would tell this? On a camel page, why a camel does not sink is under Made for Sand.'},
+    {type:'match', q:'Which tool answers it?', pairs:[['meaning of warn','word box'],['where they sleep','a heading'],['what is pictured','the caption']], say:'Which text tool would answer each question?', how:'A word meaning: the word box. Which part to read: a heading. What the picture shows: the caption.'},
+    {type:'sort', q:'Caption, or heading?', bins:['A caption','Heading or title'], cards:[['🐧 Chicks stay warm.',0],['🦫 Beavers eat bark.',0],['Made for Sand',1],['A Safe Home',1],['Penguins',1]], say:'Mistake Detective: caption, or heading?', how:'The mistake is calling a heading the caption. A caption is a sentence next to a picture. A heading is a short name for a part.'},
+    {type:'listen', q:'Challenge: Dovid\'s Pesach book', hear:'Dovid reads a book about Pesach. Heading: Getting Ready. He sees a dark, thick word: chametz. Where can he look to learn what it means?', o:['word box','title','cover'], a:'word box', say:'Challenge! Where should Dovid look?', how:'A bold word is explained nearby, in the word box.'}] };
+
+B['READ.COMP.L03.03']={ band:'B23', pic:'🐦', today:'Answer how and why questions from a page', why:'How asks the steps or the way. Why asks the reason. Knowing which to look for helps you find the answer.',
+  ready:[{q:'Which one is a heading?', o:['Why Plants Need Sun','A plant needs sun.','sun'], a:'Why Plants Need Sun'},{q:'A caption tells about...', o:['a picture','the last page','a word'], a:'a picture'}],
+  bridge:'READ.COMP.L03.02', bridgeName:'Text Tools',
+  watch:{ q:'How Beavers Build', m:{type:'scene',e:'🦫',t:'How Beavers Build. First a beaver cuts sticks. Then it packs them with mud. It swims with its flat tail. Beavers need deep water, so they build a dam. Deep water is good because it keeps them safe.'}, steps:[
+    {t:'My question: how does a beaver build? How wants steps. I look for first and then: first it cuts sticks, then it packs them with mud.'},
+    {t:'How can also ask the way: how does it swim? With its flat tail. Birds fly in a big group shaped like a V: that is HOW they fly.'},
+    {t:'Next question: why build a dam? Why wants a reason. I look for so or because.'},
+    {t:'I notice so: Beavers need deep water, so they build a dam. The reason comes BEFORE so. With because, it comes AFTER: because it keeps them safe.'},
+    {t:'Sometimes the reason is in the part before. A part called Cold Is Coming tells why. The next part starts with So.'}], a:'How: first, then, or the way. Why: the reason before so, after because.' },
+  oops:{ q:'Why do birds fly south?', wrong:'They fly in a V.', right:'It is warm there.', why:'Flying in a V tells HOW they fly. A why question wants a reason.' },
+  ways:['think-aloud','how hand and why hand','sort questions','order steps from a text','Mistake Detective'], done:'You can answer how and why questions from a page!',
+  board:{ one:'How wants steps or the way (first, then). Why wants a reason: before so, after because.', activity:'Call out questions; boys raise the how hand or the why hand, then hunt for the signal word in a short page.', mistakes:['Answering a why question with how','Looking after so for the reason (it comes before)','Not reading the heading that matches the question'] },
+  do:[
+    {type:'sort', bins:['How? Steps, way','Why? A reason'], cards:[['How do seeds grow?',0],['Why fly south?',1],['How do they fly?',0],['Why come back?',1]], say:'Does this question want how, or a reason?', how:'Look at the first word. How wants steps or the way. Why wants a reason.'},
+    {type:'match', q:'It was cold, so Yossi ran in fast.', pairs:[['Why go in?','it was cold'],['What did he do?','ran in'],['How did he go?','fast']], say:'Match each question to its answer.', how:'With so, the reason comes before it: it was cold.'}],
+  your:[
+    {type:'tiles', w:['mix','let rise','braid','bake'], hear:'To bake challah, Shira and Mommy mix the dough. Then they let it rise. Then they braid it. Last, they bake it.', q:'Challah: the steps', say:'Listen. A how question! Put the steps in order.', how:'Listen for first, then, last. The dough rises before they braid it.'},
+    {type:'findall', q:'It got cold, so we went in. Then we ate.', grid:['It','got','cold','so','we','went','in','Then','we','ate'], find:['so','Then'], findSay:'signal word', say:'Tap the reason word and the step word.', how:'So: the reason is just before it. Then: the next step.'},
+    {type:'match', q:'Bears sleep in winter because food is gone.', pairs:[['Why sleep?','food is gone'],['When?','in winter'],['What do they do?','sleep']], say:'Match each question to its answer.', how:'With because, the reason comes after it: food is gone.'},
+    {type:'sort', q:'Why do bears sleep all winter?', bins:['Answers WHY','Answers HOW'], cards:[['food is gone',0],['it is very cold',0],['curl up in dens',1],['breathe slowly',1]], say:'Mistake Detective: does it answer why, or how?', how:'The mistake is answering a why question with how. Why wants a reason. Curling up in a den is how they sleep.'},
+    {type:'listen', q:'Challenge: ducks in the fall', hear:'Cold Is Coming. In the fall, ducks cannot find bugs. The Long Trip. So the ducks fly to a warm pond. Why do the ducks fly away?', o:['no bugs','ponds','spring'], a:'no bugs', say:'Challenge! Find the reason in two parts.', how:'The reason comes before So, in the part before. Birds fly south because it is warm there, and food is hard to find up north. In the spring they come back because there is lots of food again.'}] };
+
+B['READ.FLU.L03.01']={ band:'B23', pic:'🎙️', today:'Read smoothly, follow the marks, then tell what happened', why:'When you read smoothly, the story makes sense, and people love to listen to you.',
+  ready:[{q:'Which mark ends an asking sentence?', o:['?','.',','], a:'?'},{q:'Ben has a red hat. What color is the hat?', o:['red','blue','green'], a:'red'}],
+  bridge:'READ.FLU.L02.02',
+  watch:{ q:'In the Garden', m:{type:'scene',e:'🎃',t:'In the spring, Zev put in corn seeds. Ben put in pumpkin seeds. "Look!" said Ben. "Are they growing?" asked Zev.'}, steps:[
+    {t:'I read in scoops, not word by word: Zev put in / corn seeds. That sounds like talking.'},
+    {t:'I notice a comma after spring. So I rest a tiny bit, then keep going.'},
+    {t:'I notice a period. So I stop and drop my voice a little. I notice an exclamation mark after Look! So I say it excited.'},
+    {t:'I notice a question mark. So my voice goes up: Are they growing? That line sounds asking.'},
+    {t:'Then I ask myself: what happened? Zev planted corn seeds. Ben planted pumpkin seeds.'}], a:'Scoop, follow the marks, then ask: what happened?' },
+  oops:{ q:'Ben put in corn seeds.', wrong:'Ben. Put. In. Corn. Seeds.', right:'Ben put in / corn seeds.', why:'Robot reading stops after every word. Read words that go together in one scoop.' },
+  ways:['think-aloud','match marks to voices','good and broken scoops','order what happened','Mistake Detective'], done:'You can read smoothly, with feeling, and tell what happened!',
+  board:{ one:'Read in scoops, follow the marks, then ask what happened.', activity:'Echo reading: the teacher reads a line in scoops, the boys read it back the same way, then retell it.', mistakes:['Reading word by word like a robot','Not stopping at a period or resting at a comma','Reading fast but not knowing what happened'] },
+  do:[
+    {type:'match', pairs:[['?','asking'],['!','excited'],['.','stop'],[',','short rest']], say:'Match each mark to how your voice sounds.', how:'Question mark: voice goes up. Exclamation: excited. Period: stop. Comma: short rest.'},
+    {type:'sort', bins:['Good scoop','Broken scoop'], cards:[['by the fence',0],['in the spring',0],['sat by the',1],['spring, they dug',1]], say:'Is it a good scoop, or a broken one?', how:'A good scoop is words that go together. Do not stop in the middle of an idea.'}],
+  your:[
+    {type:'listen', q:'"Is it ripe yet?" asked Ben.', hear:'Is it ripe yet?', o:['asking','happy','calm'], a:'asking', say:'Listen. How should this line sound?', how:'It ends with a question mark. Your voice goes up: asking. "What will we do with it?" sounds asking too.'},
+    {type:'sort', bins:['Smooth scoop','Broken scoop'], cards:[['a big pumpkin /',0],['a big / pumpkin',1],['by the fence /',0],['by the / fence',1]], say:'Mistake Detective: where did the reader stop?', how:'A broken scoop stops in the middle of an idea. Stop after the words that go together.'},
+    {type:'tiles', w:['dug rows','planted','shoots came','corn grew'], hear:'In the spring, Ben and Zev dug rows in the dirt. They put in seeds. Soon, little green shoots came up. By the end of the summer, the corn stood tall.', q:'What happened?', say:'Listen and follow along. Put what happened in order.', how:'Listen in scoops. First they dug, then planted, then shoots came, then the corn grew tall.'},
+    {type:'sort', bins:['Voice up','Excited','Stop'], cards:[['Is it ripe?',0],['Can I help?',0],['Look at it!',1],['Wow, so tall!',1],['It is big.',2]], say:'How does your voice sound on this line?', how:'Look at the mark at the end. ? voice up. ! excited. Period: stop.'},
+    {type:'listen', q:'Challenge: read the whole story', hear:'Ben and Zev had a garden. Zev put in corn seeds. Ben put in pumpkin seeds. Each day they gave the seeds a drink from the hose. By the end of the summer, a big pumpkin sat by the fence. What will we do with it? asked Zev. We will bring it to the shul for Sukkos! said Ben. Where did the big pumpkin sit?', o:['the fence','the shul','the hose'], a:'the fence', say:'Challenge! Read along, then answer.', how:'Read it again, smoother each time. A big pumpkin sat by the fence. They will bring it to the shul for Sukkos.'}] };
+
+B['READ.VOC.L03.01']={ band:'B23', pic:'🔁', today:'Snap on un or re to change a word', why:'Learn two tiny parts and you can read hundreds of new words.',
+  ready:[{q:'Clap it: how many beats in "unpack"?', o:['2','1','3'], a:'2'},{q:'Which word means the same as glad?', o:['happy','sad','mad'], a:'happy'}],
+  bridge:'READ.VOC.L02.01',
+  watch:{ q:'unhappy, untie, refill', m:{type:'tiles',w:['un','happy']}, steps:[
+    {t:'I see a new word: unhappy. I cover un with my finger. I read: happy. A prefix is a word part at the start.', m:{type:'tiles',w:['un','happy'],hi:[1]}},
+    {t:'I snap un back on. Un means not. So unhappy means not happy. Unkind means not kind.', m:{type:'tiles',w:['un','happy'],hi:[0]}},
+    {t:'With an action word, un means undo: untie means undo the tie. Unpack means take things out.', m:{type:'tiles',w:['un','tie'],hi:[0]}},
+    {t:'Re means again. Refill means fill again. In a sentence: Mordy had to retie his shoe. Retie means tie again.', m:{type:'tiles',w:['re','fill'],hi:[0]}},
+    {t:'I check: is a real word left? Uncle: cover un, and cle is not a word. So uncle has no prefix.'}], a:'un = not, or undo. re = again.' },
+  oops:{ q:'What does redo mean?', wrong:'not do', right:'do again', why:'Re means again. Un means not or undo. Do not mix them up!' },
+  ways:['think-aloud','build words with tiles','match word and meaning','sort by prefix','Mistake Detective'], done:'You can use un and re to read new words!',
+  board:{ one:'Cover the prefix, read the word, snap it back: un means not or undo, re means again.', activity:'Prefix cards: boys hold un or re in front of base-word cards and say the new meaning.', mistakes:['Mixing up un and re','Thinking every word that starts with un has a prefix (uncle)','Reading the prefix but not the base word'] },
+  do:[
+    {type:'match', pairs:[['unhappy','not happy'],['untie','undo the tie'],['redo','do again']], say:'Match each word to what it means.', how:'Cover the prefix and read the word. Un means not or undo. Re means again.'},
+    {type:'tiles', w:['un','safe'], extra:['re'], q:'Build the word that means not safe.', say:'Build the word that means not safe.', how:'Not is un. Put un first, then safe: unsafe.'}],
+  your:[
+    {type:'listen', hear:'reread', o:['read again','not read','read fast'], a:'read again', say:'Listen to the word. Tap what it means.', how:'Cover re: read. Re means again. Reread means read again.'},
+    {type:'tiles', w:['re','paint'], extra:['un','ing'], q:'Build the word that means paint again.', say:'Build the word that means paint again.', how:'Again is re. Re goes first, then paint: repaint.'},
+    {type:'sort', bins:['un: not, undo','re: again'], cards:[['unkind',0],['redo',1],['unfair',0],['reread',1],['untie',0],['retie',1]], say:'Mistake Detective: un, or re?', how:'The mistake is mixing them up. Redo means do again. Unfair means not fair.'},
+    {type:'findall', grid:['redo','red','undo','unit','real','up'], find:['redo','undo'], findSay:'word with a prefix', say:'Tap every word that has a prefix.', how:'Cover un or re. Is a real word left? Unit and real have no prefix.'},
+    {type:'match', q:'Challenge: Mordy\'s trip home', pairs:[['relocked door','locked again'],['unlocked door','not locked'],['repacked bag','packed again'],['unpacked bag','took it all out']], say:'Challenge! The prefix decides. Match them.', how:'The base word is the same. Look at the prefix: re means again, un means not or undo.'}] };
+
+
+B['READ.LIT.L03.01']={ band:'B23', pic:'⛰️', today:'Retell a story: beginning, middle, end and lesson', why:'When you can retell a story in order, you really understand it, and you can share it at the Shabbos table.',
+  ready:[{q:'"Chaim flew his kite." Who is in the story?', o:['Chaim','the kite','the sky'], a:'Chaim'},{q:'"Then the kite got stuck." What happened?', o:['the kite got stuck','Chaim ate','it rained'], a:'the kite got stuck'}],
+  bridge:'READ.LIT.L02.01',
+  watch:{ q:'Chaim\'s Kite', m:{type:'scene',e:'🪁',t:'Chaim flew his kite. It got stuck in a tree. Zaidy brought a long stick. The kite came down, and Chaim said thank you.'}, steps:[
+    {t:'I crouch low for the beginning. I ask: how does it start? Chaim flew his kite.', m:{type:'move',t:'Crouch: beginning! Stand: middle! Reach up: end!'}},
+    {t:'I stand tall for the middle. I ask: what is the problem? The kite got stuck in a tree.'},
+    {t:'I reach up high for the end. I ask: how is it solved? Zaidy brought a stick, and the kite came down.'},
+    {t:'I ask: what can we learn? A lesson tells us what to DO. Kites are fun is a fact, not a lesson. Ask for help tells us what to do. That is the lesson.'},
+    {t:'Now I say it with First, Then, At the end: First Chaim flew his kite. Then it got stuck. At the end Zaidy got it down. Ask for help. A retell of The Lost Coin sounds the same: First Ezriel found a coin. Then he asked who lost it. At the end he gave it back and felt good. Give back what is lost.'}], a:'Beginning, middle, end, lesson.' },
+  oops:{ q:'Which retell is best?', wrong:'The kite came down.', right:'First Chaim flew his kite. Then it got stuck. At the end Zaidy got it down.', why:'One part is not a retell. A retell tells the beginning, the middle and the end, in order.' },
+  ways:['think-aloud','story mountain movement','order the story','find the lesson','Mistake Detective'], done:'You can retell a story in order, with its lesson!',
+  board:{ one:'Retell = beginning, middle, end, and the lesson, in order.', activity:'Story mountain: boys crouch, stand and reach as they retell a story the teacher reads.', mistakes:['Telling only one part, like the end','Telling small details instead of the big parts','Mixing up the order'] },
+  do:[
+    {type:'sort', q:'Chaim\'s Kite', bins:['Beginning','Middle','End'], cards:[['flies his kite',0],['kite gets stuck',1],['Zaidy gets it down',2],['kite comes down',2]], say:'Is this the beginning, the middle, or the end?', how:'Beginning: how it starts. Middle: the problem. End: how the problem is solved.'},
+    {type:'tiles', w:['spills','gets towel','wipes up'], hear:'At supper, Avi spilled his juice. He ran to get a towel. Then he wiped it all up, and Mommy smiled.', q:'Avi\'s Spill', say:'Listen. Put Avi\'s story in order.', how:'Beginning: he spilled the juice. Middle: he got a towel. End: he wiped it up.'}],
+  your:[
+    {type:'listen', hear:'Yossi fell off his bike. He got up and tried again. Now he can ride! What is the lesson?', o:['Try again','Bikes roll','Stay home'], a:'Try again', say:'Listen to the story. Tap the lesson.', how:'A lesson is what the story teaches us to do. Bikes roll is a fact. Yossi did not give up: try again.'},
+    {type:'tiles', w:['lost hat','checks shul','asks Ima','found it'], hear:'Dovid lost his Shabbos hat. First he looked in shul. Then he asked Ima. At last he found it under his bed.', q:'Dovid and the Hat', say:'Listen. Put Dovid\'s story in order.', how:'Listen for First, Then, At last. The problem starts, he tries two ways, then it is solved.'},
+    {type:'listen', hear:'Retell one: Mendy found his mitten. Retell two: Mendy found his mitten. Then he lost it. Then he looked in his room. Retell three: First Mendy lost his mitten. Then he looked in his room. At the end he found it in his coat. Which retell is best?', o:['one','two','three'], a:'three', say:'Mistake Detective: which retell is best?', how:'Retell one tells only the end. Retell two is mixed up. Retell three tells the beginning, middle and end, in order.'},
+    {type:'match', pairs:[['Beginning','how it starts'],['Middle','the problem'],['End','how it is solved'],['Lesson','what to do']], say:'Match each part of a retell to what it tells.', how:'Crouch for beginning, stand for middle, reach up for end. The lesson tells us what to do.'},
+    {type:'tiles', w:['rain','tent leaks','move bags','laugh'], extra:['green tent'], hear:'At camp, rain came in the night. Their tent was green. The tent leaked. Shimon and Tzvi moved everyone\'s bags to a dry corner. In the morning, they laughed about it.', q:'Challenge: camp', say:'Challenge! Retell the big parts in order.', how:'A retell tells the big parts. The green tent is a small detail: leave it out. Beginning: the rain. Middle: the leak. End: they fixed it and laughed.'}] };
+
+B['READ.LV.L03.01']={ band:'B23', pic:'🦉', today:'Read the vowel teams oo, ow and ou', why:'Moon, snow, mouth: these teams are in hundreds of words you read every day.',
+  ready:[{q:'Which word has the ai team?', o:['rain','ran','run'], a:'rain'},{q:'Oa says long o. Which word has oa?', o:['goat','got','gate'], a:'goat'}],
+  bridge:'READ.LV.L02.02',
+  watch:{ q:'moon, snow, mouth', m:{type:'tiles',w:['m','oo','n'],hi:[1]}, steps:[
+    {t:'Listen: oo. I make a round mouth: oo. Now I look: o and o together spell that one sound. Moon!', m:{type:'tiles',w:['m','oo','n'],hi:[1]}},
+    {t:'I see o and w at the end: snow. Ow can say o, like snow.', m:{type:'tiles',w:['s','n','ow'],hi:[2]}},
+    {t:'C, ow. Does it say co? Not a word. Try ow: cow! I try both sounds and keep the real word.', m:{type:'tiles',w:['c','ow'],hi:[1]}},
+    {t:'I see o and u: ou says ow, like mouth. I blend: m, ou, th. Mouth!', m:{type:'tiles',w:['m','ou','th'],hi:[1]}}], a:'oo = moon, ow = snow or cow, ou = mouth' },
+  oops:{ q:'Snow or snap?', wrong:'snap', right:'snow', why:'Read all the way to the end. Snow ends with the ow team. Here ow says oh.' },
+  ways:['think-aloud','hear and tap','build words with tiles','sort by sound','Mistake Detective'], done:'You can read oo, ow and ou!',
+  board:{ one:'Two letters, one sound: oo (moon), ow (snow, cow), ou (mouth).', activity:'Team hunt: boys circle oo, ow and ou in a short story and sort the words on the board.', mistakes:['Guessing from the first letters (snap for snow)','Reading the two letters as two sounds','Forgetting that ow has two sounds'] },
+  do:[
+    {type:'listen', hear:'cow', o:['cow','cot','cub'], a:'cow', pic:'🐄', say:'Listen. Tap the word you hear.', how:'C, ow. Try co: not a word. Try ow: cow! Ow says ow here.'},
+    {type:'tiles', w:['b','r','oo','m'], extra:['o'], hear:'broom', pic:'🧹', say:'Help Ima sweep! Build the word broom.', how:'Say it slowly: b, r, oo, m. The oo team is one tile.'}],
+  your:[
+    {type:'sort', bins:['ow says oh','ow says ow'], cards:[['grow',0],['cow',1],['show',0],['town',1],['blow',0],['down',1]], say:'Try both sounds. Which one makes a real word?', how:'Grow, show, blow: ow says oh. Cow, town, down: ow says ow.'},
+    {type:'tiles', w:['c','l','ou','d'], extra:['oo'], hear:'cloud', pic:'☁️', say:'Listen. Build the word cloud.', how:'C, l, then the ou team, then d. Ou says ow.'},
+    {type:'listen', q:'Zaidy saw a brown cow in town.', hear:'What did Zaidy see?', o:['a cow','a crow','a cloud'], a:'a cow', say:'Mistake Detective: read it, then tap.', how:'Read to the end. C, ow: cow. Crow has an r.'},
+    {type:'match', pairs:[['the moon is out','🌙'],['a cow in town','🐄'],['Zaidy\'s house','🏠'],['snow on a roof','❄️']], say:'Read each one. Match it to its picture.', how:'Find the team in each word: oo, ou or ow. Blend, then read it all.'},
+    {type:'findall', q:'Challenge: ow says ow, like cow!', grid:['how','snow','now','show','wow','grow','town','low'], find:['how','now','wow','town'], findSay:'ow that says ow', say:'Challenge! Tap every word where ow says ow.', how:'Try both sounds. How, now, wow, town: ow says ow. Snow, show, grow, low: ow says oh.'}] };
+
+B['READ.LV.L03.02']={ band:'B23', pic:'💡', today:'Read igh, and y at the end of a word', why:'Night, light, fly, happy: you will find these in every storybook.',
+  ready:[{q:'Ou says ow. Which word has ou?', o:['out','oat','at'], a:'out'},{q:'Which word has oo?', o:['moon','man','men'], a:'moon'}],
+  bridge:'READ.LV.L03.01', bridgeName:'Vowel Teams 2',
+  watch:{ q:'light, cry, bunny', m:{type:'tiles',w:['l','igh','t'],hi:[1]}, steps:[
+    {t:'Listen: i, like night. Three letters spell that one sound: i, g, h. The g and h are quiet. Light!', m:{type:'tiles',w:['l','igh','t'],hi:[1]}},
+    {t:'I see y at the end of cry. I clap it: one beat. A short word, so y says eye. Cry!', m:{type:'tiles',w:['c','r','y'],hi:[2]}},
+    {t:'I see y at the end of bunny. I clap it: bun, ny. Two beats, a long word, so y says ee. Bunny!', m:{type:'tiles',w:['b','u','n','n','y'],hi:[4]}},
+    {t:'Y at the start says yuh, like yes. Y at the end is a vowel. My rule: clap first. One beat: y says eye. Two beats: y says ee.'}], a:'igh = eye; end y says eye (one beat) or ee (two beats)' },
+  oops:{ q:'Cry: what does y say?', wrong:'e', right:'i', why:'Cry is a short word, one beat. Short word: y says eye.' },
+  ways:['think-aloud','clap the beats','build words with tiles','sort by sound','Mistake Detective'], done:'You can read igh and the end y!',
+  board:{ one:'Igh says eye. End y: one beat says eye, two beats says ee.', activity:'Clap and sort: boys clap each y word and stand on the i side or the e side.', mistakes:['Using e for short words like fly','Saying the g and h in igh','Reading end y as y-uh'] },
+  do:[
+    {type:'listen', hear:'spy', o:['spy','spin','sip'], a:'spy', say:'Listen. Tap the word you hear.', how:'Clap spy: one beat. Short word, so y says eye. Spy!'},
+    {type:'tiles', w:['b','r','igh','t'], extra:['i'], hear:'bright', say:'Listen. Build the word bright.', how:'B, r, then igh, then t. Igh is one tile. It says eye.'}],
+  your:[
+    {type:'sort', bins:['y says eye','y says ee'], cards:[['cry',0],['dry',0],['my',0],['funny',1],['happy',1],['puppy',1]], say:'Help Ima sort! Clap it. Does y say i, or e?', how:'One beat: y says eye. Two beats: y says ee.'},
+    {type:'tiles', w:['p','u','p','p','y'], extra:['i'], hear:'puppy', pic:'🐶', say:'Listen. Build the word puppy.', how:'Clap it: pup, py. Two p letters in the middle. The y at the end says ee.'},
+    {type:'findall', grid:['my','yes','by','cry','copy','shy','body','try'], find:['my','by','cry','shy','try'], findSay:'y that says eye', say:'Mistake Detective: tap every word where y says eye.', how:'The mistake is saying e in short words. Clap: my, by, cry, shy, try have one beat, so y says eye. In yes, y is at the start: it says yuh.'},
+    {type:'match', pairs:[['night','time to sleep'],['candy','a Purim treat'],['baby','a little one'],['sky','up above us']], say:'Read each word. Match it to what it means.', how:'Read the word first: igh says eye, end y says eye or e. Then think what it means.'},
+    {type:'listen', q:'Challenge: Baby Shira may cry at night.', hear:'Which word has a y that says e?', o:['baby','cry','night'], a:'baby', say:'Challenge! Read it. Which word has y saying e?', how:'Clap baby: ba, by. Two beats, so y says ee. Cry has one beat.'}] };
+
+B['READ.PHON.L03.02']={ band:'B23', pic:'🌽', today:'Read words with Bossy R', why:'Car, corn, bird, shirt: Bossy R is in so many words you use every day.',
+  ready:[{q:'Which word has a short a?', o:['cat','cake','car'], a:'cat'},{q:'Which word has a short o?', o:['fox','for','foe'], a:'fox'}],
+  bridge:'READ.PHON.L02.04',
+  watch:{ q:'car, corn, bird', m:{type:'tiles',w:['c','ar'],hi:[1]}, steps:[
+    {t:'I see a vowel with r right after it. That r is Bossy R. He tells the vowel what to say.'},
+    {t:'C, a, r: the a does not say a like cat. Ar says ar. Car!', m:{type:'tiles',w:['c','ar'],hi:[1]}},
+    {t:'C, o, r, n: or says or. Corn!', m:{type:'tiles',w:['c','or','n'],hi:[1]}},
+    {t:'B, i, r, d: ir says er. Bird! I read the vowel and the r together, as one sound.', m:{type:'tiles',w:['b','ir','d'],hi:[1]}},
+    {t:'F, ur: fur. H, er: her. Er, ir, ur look different, but they say the same sound.', m:{type:'tiles',w:['f','ur'],hi:[1]}}], a:'ar, or, er/ir/ur' },
+  oops:{ q:'Fork or fox?', wrong:'fox', right:'fork', why:'Fork has or. Bossy R makes the o say or, not the short o in fox.' },
+  ways:['think-aloud','hear and tap','build words with tiles','sort by sound','Mistake Detective'], done:'You can read Bossy R words!',
+  board:{ one:'The r bosses the vowel: ar, or, er, ir, ur.', activity:'Bossy R game: one boy is the r and stands next to a vowel boy, who must change his sound.', mistakes:['Reading the vowel short (fox for fork)','Reading the r as a separate sound','Thinking er, ir and ur sound different'] },
+  do:[
+    {type:'listen', hear:'car', o:['car','cat','cab'], a:'car', pic:'🚗', say:'Listen. Tap the word you hear.', how:'Car has ar. Bossy R makes the a say ar.'},
+    {type:'tiles', w:['f','or','k'], extra:['o'], hear:'fork', pic:'🍴', say:'Listen. Build the word fork.', how:'F, then or, then k. Or is one tile.'}],
+  your:[
+    {type:'sort', bins:['ar','or','er, ir, ur'], cards:[['star',0],['corn',1],['bird',2],['farm',0],['fork',1],['turn',2]], say:'Which Bossy R sound is in this word?', how:'Find the vowel with the r after it. Ar, or, or the er sound?'},
+    {type:'tiles', w:['b','ar','n'], extra:['a'], hear:'barn', say:'Listen. Build the word barn.', how:'B, then ar, then n. Ar is one tile.'},
+    {type:'listen', q:'Mordy got a shirt for Shabbos.', hear:'What did Mordy get?', o:['shirt','shut','shot'], a:'shirt', say:'Mistake Detective: read it, then tap.', how:'Look for r after the vowel: sh-ir-t. Not shut, not shot.'},
+    {type:'sort', bins:['Bossy R','Short vowel'], cards:[['fork',0],['fox',1],['park',0],['pack',1],['hurt',0],['hut',1]], say:'Mistake Detective: is there a Bossy R?', how:'The mistake is reading the short vowel. Look for r after the vowel: fork, not fox.'},
+    {type:'findall', q:'Challenge: after Shabbos, find the stars!', grid:['dark','ran','star','frog','corn','trip','bird','drum'], find:['dark','star','corn','bird'], findSay:'Bossy R word', say:'Challenge! Tap every Bossy R word.', how:'Bossy R comes right AFTER the vowel: d-ar-k. In ran, frog, trip and drum, the r comes before the vowel. No boss!'}] };
+
+B['READ.PHON.L03.03']={ band:'B23', pic:'🔪', today:'Read silent letters and soft c', why:'Knee, knife, rice, face: tricky spellings stop tricking you once you know the spy letters.',
+  ready:[{q:'What sound does c make in cat?', o:['k','s','ch'], a:'k'},{q:'Which word has a long i?', o:['ride','rid','red'], a:'ride'}],
+  bridge:'READ.PHON.L02.04',
+  watch:{ q:'knot, rice', m:{type:'tiles',w:['kn','o','t'],hi:[0]}, steps:[
+    {t:'I see k and n at the start. Kn says nnn. The k is a spy: it hides and says nothing. Knot!', m:{type:'tiles',w:['kn','o','t'],hi:[0]}},
+    {t:'I see c. I look at the letter after it. In rice and ice, e comes after c. C before e, i or y says sss. Rice! Ice!', m:{type:'tiles',w:['r','i','c','e'],hi:[2]}},
+    {t:'In cat, a comes after c. So c says kuh. That is hard c.'},
+    {t:'My rule: check the letter after c. E, i, y: s. Any other letter: k.'}], a:'kn = nnn; c before e, i, y = sss' },
+  oops:{ q:'Knot: how does it start?', wrong:'k sound', right:'n sound', why:'The k is the spy. It hides and says nothing.' },
+  ways:['think-aloud','hear and tap','build words with tiles','sort soft and hard c','Mistake Detective'], done:'You can read silent letters and soft c!',
+  board:{ one:'Kn says nnn. C before e, i or y says sss.', activity:'Spy hunt: boys find silent letters in a short story and cross them out lightly.', mistakes:['Saying the k in kn','Reading soft c as k (kity for city)','Forgetting to check the letter after c'] },
+  do:[
+    {type:'listen', hear:'race', o:['race','rack','rake'], a:'race', say:'Listen. Tap the word you hear.', how:'R, a, c, e. E comes right after c, so c says sss. Race!'},
+    {type:'tiles', w:['kn','i','t'], extra:['k'], hear:'knit', say:'Listen. Build the word knit.', how:'Kn, then i, then t. Kn is one tile. It says nnn.'}],
+  your:[
+    {type:'sort', bins:['soft c: sss','hard c: kuh'], cards:[['rice',0],['cat',1],['face',0],['cup',1],['city',0],['cake',1]], say:'Look at the letter after c. Does it say s, or k?', how:'Look at the letter RIGHT after c. Rice, face, city: e or i after c, so s. Cake has an e, but a comes after c, so k.'},
+    {type:'tiles', w:['m','i','c','e'], extra:['k'], hear:'mice', pic:'🐭', say:'Listen. Build the word mice.', how:'M, i, c, e. The c has e after it, so it says sss.'},
+    {type:'listen', q:'Dov can turn the knob.', hear:'What can Dov turn?', o:['knob','knit','kid'], a:'knob', say:'Mistake Detective: read it, then tap.', how:'Do not say the k. Kn says nnn: nob. Knob.'},
+    {type:'findall', grid:['knee','kite','knew','kid','know','king','knit','kit'], find:['knee','knew','know','knit'], findSay:'word with a silent k', say:'Mistake Detective: tap every word with a silent k.', how:'The mistake is saying the k. Look for k then n at the start: the k is a spy.'},
+    {type:'listen', q:'Challenge: Bubby knelt to tie Eli\'s lace.', hear:'Read it. What did Bubby tie?', o:['lace','face','cake'], a:'lace', say:'Challenge! Read it, then tap what Bubby tied.', how:'Knelt: the k is a spy. Lace: e comes after c, so c says sss. Read each choice to the end.'}] };
+
+})(window.ONE_BITE);
+</script>

@@ -45,7 +45,7 @@ var MATH_K8 = [
 /* Reading K-8 skills in Blueprint teaching order (Blueprint tab "Reading K–8 Skill Ladder", 78 rungs, Levels 1-9; TL-041). Same shape as MATH_K8: [id, rung name, skill]. */
 var READ_K8 = [
 ["READ.PA.L01.01","Book Explorer","Print concepts: front cover, left to right, spaces between words"],["READ.PA.L01.02","Rhyme Time","Hear and make rhymes"],["READ.COMP.L01.02","Story Listener","Retell a read-aloud story: who, and what happened"],["READ.PA.L01.03","Clap the Beats","Count syllables in spoken words"],
-["READ.PA.L01.04","First Sound Detective","Say the first sound in a spoken word"],["READ.PHON.L01.01","Letter Lineup","Name every capital and small letter"],["READ.PHON.L01.02","Sound Match","Say the main sound for each consonant"],["READ.PHON.L01.03","Short Vowel Sounds","Say the short sound of a, e, i, o, u"],
+["READ.PA.L01.04","First Sound Detective","Say the first sound in a spoken word"],["READ.PHON.L01.01.a","ABC 1: A to D","Name, sound and shape of A, B, C, D"],["READ.PHON.L01.01.b","ABC 2: E to H","Name, sound and shape of E, F, G, H"],["READ.PHON.L01.01.c","ABC 3: I to L","Name, sound and shape of I, J, K, L"],["READ.PHON.L01.01.d","ABC 4: M to Q","Name, sound and shape of M, N, O, P, Q"],["READ.PHON.L01.01.e","ABC 5: R to U","Name, sound and shape of R, S, T, U"],["READ.PHON.L01.01.f","ABC 6: V to Z","Name, sound and shape of V, W, X, Y, Z"],["READ.PHON.L01.01","Letter Lineup","ABC review: name every capital and small letter"],["READ.PHON.L01.02","Sound Match","Say the main sound for each consonant"],["READ.PHON.L01.03","Short Vowel Sounds","Say the short sound of a, e, i, o, u"],
 ["READ.PA.L01.05","Blend It","Blend three spoken sounds into a word"],["READ.PA.L01.06","Chop It","Break a spoken three-sound word into its sounds"],["READ.PHON.L01.04","Read CVC","Read short-vowel words like cat, sit, hop"],["READ.FLU.L01.01","Snap Words","Read 25 common sight words on sight"],
 ["READ.COMP.L01.01","Tiny Tales","Read a decodable sentence and match it to a picture"],["READ.PA.L02.01","Swap a Sound","Change one sound to make a new word"],["READ.PHON.L02.01","Digraph Duo","Read sh, ch, th, wh, ck"],["READ.PHON.L02.02","Blend Builders","Read words with blends like st, fl, mp"],
 ["READ.LV.L02.01","Magic E","Read long-vowel words with silent e"],["READ.LV.L02.02","Vowel Teams 1","Read ai, ay, ee, ea, oa"],["READ.PHON.L02.03","Two-Part Words","Read compound and two-syllable words"],["READ.PHON.L02.04","Ending Smart","Read endings -s, -ed, -ing"],
@@ -567,12 +567,12 @@ function plMathPath_(start) { var ids = MATH_K8.map(function (x) { return x[0]; 
 function plBand_(level) { return level <= 4 ? 'A' : level <= 6 ? 'B' : level <= 8 ? 'C' : 'D'; }
 /* Skills that already have playable lessons, read from the student page itself so this list never drifts. */
 function plBuilt_() {
-  var c = CacheService.getScriptCache(), hit = c.get('pl_built_v12');
+  var c = CacheService.getScriptCache(), hit = c.get('pl_built_v13');
   if (hit) return JSON.parse(hit);
-  var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ScienceMore2') + plFileText_('ElectivesMore') + plFileText_('ComputingMore') + plFileText_('LifeMore') + plFileText_('SocialMore'), re = /['"]((?:MATH|READ|WRIT|LANG|VOC|SCI|ELEC|COMP|LIFE|SS)\.[A-Z]+\.L\d\d\.\d\d)['"]\s*\]?\s*[:=]\s*\{\s*["']?name["']?\s*:/g, m, out = [];
+  var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ScienceMore2') + plFileText_('ElectivesMore') + plFileText_('ComputingMore') + plFileText_('LifeMore') + plFileText_('SocialMore') + plFileText_('OneBiteDataRead'), re = /['"]((?:MATH|READ|WRIT|LANG|VOC|SCI|ELEC|COMP|LIFE|SS)\.[A-Z]+\.L\d\d\.\d\d(?:\.[a-z])?)['"]\s*\]?\s*[:=]\s*\{\s*["']?name["']?\s*:/g, m, out = [];
   while ((m = re.exec(html))) if (out.indexOf(m[1]) < 0) out.push(m[1]);
   ['COMP', 'HEB'].forEach(function (k) { plIdxList_(k).forEach(function (x) { if (out.indexOf(x[0]) < 0) out.push(x[0]); }); });   /* lessons in other packs (KodeshMore for HEB), listed in the curriculum index */
-  c.put('pl_built_v12', JSON.stringify(out), 300);
+  c.put('pl_built_v13', JSON.stringify(out), 300);
   return out;
 }
 /* Called by msLoad (MiddleSchool.gs): what this boy's own page follows. */
