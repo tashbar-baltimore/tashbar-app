@@ -1,0 +1,16 @@
+- model-volcano-pink-foam.webp | https://commons.wikimedia.org/wiki/File:Volcano_complete.jpg | CC BY 4.0 | Silviaelzi
+- saturn-rings-hubble.webp | https://images.nasa.gov/details/PIA05982 | Public domain (NASA) | JPL
+- brass-telescope-on-stand.webp | https://collections.museumsvictoria.com.au/items/373627 | CC BY 4.0 | unknown
+- weeping-willow-on-lawn.webp | https://www.flickr.com/photos/7956264@N04/1414427271 | CC BY 2.0 | pixydust8605
+- sparrow-on-blossom-branch.webp | https://pixabay.com/photos/bird-sparrow-sperling-7088667/ | Pixabay Content License | Myriams-Fotos
+- red-fox-standing-in-snow.webp | https://pixabay.com/photos/fox-nature-animals-roux-fauna-715588/ | Pixabay Content License | AlainAudet
+- sealed-jar-garden-ferns.webp | https://pixabay.com/photos/aquarium-green-glass-2376883/ | Pixabay Content License | oschas0824
+- grey-heron-wading-in-river.webp | https://pixabay.com/photos/birds-blue-heron-nature-wildlife-7956562/ | Pixabay Content License | Veronika_Andrews
+- young-bean-plants-garden-bed.webp | https://pixabay.com/photos/beans-leaf-food-bush-bean-5466103/ | Pixabay Content License | 13467596
+- leaf-cells-green-dots-microscope.webp | https://pixabay.com/photos/waterweed-plant-cell-microscope-1582259/ | Pixabay Content License | Vierschilling
+- paramecium-under-microscope.webp | https://commons.wikimedia.org/wiki/File:Paramecium.jpg | CC BY-SA 3.0 | Barfooz at the English Wikipedia.
+- brown-wallet-in-pocket.webp | https://pixabay.com/photos/wallet-cash-pocket-money-purse-1010601/ | Pixabay Content License | stevepb
+- blue-poison-dart-frog.webp | https://pixabay.com/photos/frog-terrarium-amphibian-close-up-1335022/ | Pixabay Content License | suju-foto
+- gray-moth-on-tree-bark.webp | https://www.flickr.com/photos/33398884@N03/19832413910 | CC BY 2.0 | Bennyboymothman
+- kingfisher-on-branch-side.webp | https://pixabay.com/photos/bird-kingfisher-feathers-plumage-1905255/ | Pixabay Content License | taligar
+- diamond-kite-in-sky.webp | https://pixabay.com/photos/kite-fly-wind-fun-blue-fun-1159538/ | Pixabay Content License | dimitrisvetsikas1969

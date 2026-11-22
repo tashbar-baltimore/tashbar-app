@@ -1,0 +1,1 @@
+- bicycle-at-rack.webp (live): readable PARK text + stickers on the rack; replace with a new id and re-point all links

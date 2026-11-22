@@ -1,1 +1,0 @@
-- shop-tools-and-safety-glasses.webp | https://pixabay.com/photos/tool-table-background-image-3213915/ | Pixabay Content License | MR-PANDA
