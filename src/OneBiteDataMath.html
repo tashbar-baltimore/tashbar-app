@@ -476,15 +476,22 @@ K('MATH.GEO.L02.02',[
 /* ---- ROUND 2, LANE B, batch 3 (2026-11-22): Grade 2 (L03), band B23. Same rules as above; 3 or 4 choices.
    W(id, steps) adds Watch Me steps: a chant or move where the bite had none, and a short step where a check asks something Watch Me did not show. */
 function W(id){ var b=B[id]; if(!b||!b.watch||!b.watch.steps){ return; } for(var i=1;i<arguments.length;i++){ b.watch.steps.push(arguments[i]); } }
-W('MATH.OPS.L03.01',{t:'Chant it: Tens with tens, ones with ones!', m:{type:'chant',lines:['Tens with tens,','ones with ones!']}});
+function Q(id,f){ var b=B[id]; if(!b){ return; } for(var k in f){ b[k]=f[k]; } }
+Q('MATH.OPS.L03.01',{ today:'Add and subtract 2-digit numbers: tens, then ones',
+  oops:{ q:'52 − 17', wrong:'45, because 7 − 2 = 5', right:'35', why:'You cannot flip the ones. Take 17 away: 52 − 10 = 42, then 42 − 7 = 35.' } });
+W('MATH.OPS.L03.01',
+  'To subtract, split only the number you take away: 25 is 20 and 5.',
+  {t:'83 − 25. Tens first: 83 − 20 = 63.', m:{type:'line',from:60,to:85,hops:[63]}},
+  'Then the ones: 63 − 5 = 58. Check by adding back: 58 + 25 = 83.',
+  {t:'Chant it: Tens with tens, ones with ones!', m:{type:'chant',lines:['Tens with tens,','ones with ones!']}});
 K('MATH.OPS.L03.01',[
-  {type:'blocks', n:83, q:'38 + 45', say:'38 + 45 is 83. Build 83 with tens and ones.', how:'Tens: 30 + 40 = 70. Ones: 8 + 5 = 13. 70 + 13 = 83.'},
-  {type:'hop', start:83, add:-20, unit:10, from:0, to:100, q:'83 − 25: first − 20', say:'83 − 25. First hop back 2 tens.', how:'Take away the tens first: 83 − 20 = 63. Then the ones.'}],[
-  {type:'tiles', w:['5','8'], extra:['6','3'], q:'63 − 5 = ?', say:'Now take away the 5 ones. Build the answer.', how:'63 − 3 = 60. 2 more back is 58. So 83 − 25 = 58.'},
-  {type:'hop', start:66, add:-20, unit:10, from:0, to:100, q:'66 − 28: first − 20', say:'66 − 28. Hop back 2 tens first.', how:'66 − 20 = 46. Then take away 8 more: 38.'},
-  {type:'match', pairs:[['47 + 28','75'],['56 + 36','92'],['48 − 35','13']], say:'Tens first, then ones. Match each answer.', how:'47 + 28: 40 + 20 = 60. 7 + 8 = 15. 60 + 15 = 75.'},
-  {type:'blocks', n:92, q:'56 + 36', say:'56 + 36. Build the answer.', how:'50 + 30 = 80. 6 + 6 = 12. 80 + 12 = 92.'},
-  {type:'tiles', w:['1','3'], extra:['2','7'], q:'48 − 35 = ?', say:'48 − 35. Tens, then ones. Build it.', how:'48 − 30 = 18. 18 − 5 = 13. Check: 13 + 35 = 48.'}]);
+  {type:'blocks', n:13, q:'38 + 45: the ones are 8 + 5', say:'Add the ones: 8 + 5. Trade 10 ones for a ten.', how:'8 + 5 = 13 ones. That is 1 ten and 3 ones. Add that ten to 70: 83.'},
+  {type:'hop', start:72, add:-30, unit:10, from:30, to:80, q:'72 − 36: tens first', say:'72 − 36. Hop back the 3 tens first.', how:'72 − 30 = 42. Then the 6 ones: 42 − 6 = 36.'}],[
+  {type:'match', pairs:[['66 − 20','46'],['46 − 8','38'],['38 + 28','66']], q:'66 − 28', say:'66 − 28. Tens, then ones, then add back to check.', how:'66 − 20 = 46. 46 − 8 = 38. Check: 38 + 28 = 66.'},
+  {type:'sort', bins:['Right','Flipped the ones'], cards:[['52−17=35',0],['52−17=45',1],['74−38=36',0],['74−38=44',1]], say:'Right, or did they flip the ones? Sort them.', how:'2 − 7 is too small, so you cannot do 7 − 2. Take the tens, then the ones.'},
+  {type:'listen', hear:'Shmuli has 46 stickers. Dovi gives him 27 more. How many now?', o:['73','63','613'], a:'73', say:'Listen to the story. Tap the answer.', how:'40 + 20 = 60. 6 + 7 = 13. 60 + 13 = 73, not 613.'},
+  {type:'hop', start:82, add:-40, unit:10, from:30, to:90, q:'82 − 47: tens first', say:'82 − 47. Hop back 4 tens first.', how:'82 − 40 = 42. Then the 7 ones: 42 − 7 = 35.'},
+  {type:'match', pairs:[['56 + 36','92'],['62 − 29','33'],['73 − 64','9']], say:'Add or subtract? Tens, then ones. Match them.', how:'62 − 29: 62 − 20 = 42. 42 − 9 = 33.'}]);
 
 W('MATH.PV.L03.01',{t:'Chant it: Hundreds first, then tens, then ones!', m:{type:'chant',lines:['Hundreds first,','then the tens,','then the ones!']}});
 K('MATH.PV.L03.01',[
@@ -496,18 +503,28 @@ K('MATH.PV.L03.01',[
   {type:'sort', bins:['>','<'], cards:[['706 ☐ 760',1],['851 ☐ 815',0],['299 ☐ 300',1],['540 ☐ 504',0]], say:'Which sign? Sort them.', how:'Hundreds tie? Compare the tens. The open side faces the bigger number.'},
   {type:'tiles', w:['298','389','398'], extra:['900'], say:'Line them up from smallest to biggest.', how:'Hundreds first: 2, then 3. Tie? Look at the tens.'}]);
 
-W('MATH.OPS.L03.02',
-  {t:'Subtract: 417 − 180. 1 ten take away 8 tens? Too small!', m:{type:'blocks',tens:1,ones:7}},
-  'Borrow 1 hundred: 11 tens − 8 tens = 3 tens. 417 − 180 = 237.',
-  {t:'Chant it: Ten ones? Trade for a ten! Too few? Borrow!', m:{type:'chant',lines:['Ten ones? Trade for a ten!','Too few on top? Borrow, my friend!']}});
+Q('MATH.OPS.L03.02',{ today:'Add and subtract 3-digit numbers with regrouping',
+  why:'The shul library has 524 seforim and lends out 163. How many stay on the shelf? Regrouping finds it.',
+  watch:{ q:'368 + 254 and 580 − 347', m:{type:'blocks',tens:1,ones:2}, steps:[
+    'Line up ones under ones, tens under tens, hundreds under hundreds.',
+    {t:'Add 368 + 254. Ones: 8 + 4 = 12. Write 2, carry 1 ten.', m:{type:'blocks',tens:1,ones:2}},
+    'Tens: 6 + 5 + 1 = 12. Write 2, carry 1.',
+    'Hundreds: 3 + 2 + 1 = 6. So 368 + 254 = 622.',
+    {t:'Subtract 580 − 347. Ones: 0 − 7 is too small. Borrow a ten: 10 − 7 = 3.', m:{type:'blocks',tens:7,ones:10}},
+    'Tens: the 8 is now 7. 7 − 4 = 3. Hundreds: 5 − 3 = 2. 233.',
+    {t:'Tens too small? 524 − 163. Ones 4 − 3 = 1. Tens 2 − 6: borrow a hundred.', m:{type:'blocks',tens:2,ones:4}},
+    'The borrowed hundred turns 2 tens into 12 tens. 12 − 6 = 6 tens.',
+    'Hundreds: 5 became 4. 4 − 1 = 3. So 524 − 163 = 361.',
+    {t:'Chant it: Too few on top? Borrow, my friend!', m:{type:'chant',lines:['Ten ones? Carry the ten!','Too few on top? Borrow, my friend!']}}], a:'622 and 233' },
+  oops:{ q:'580 − 347', wrong:'247 (did 7 − 0 in the ones)', right:'233', why:'0 − 7 is too small. You cannot flip it. Borrow a ten: 10 − 7 = 3.' } });
 K('MATH.OPS.L03.02',[
-  {type:'blocks', n:12, q:'8 + 4 ones', say:'8 + 4 ones. Build 12: trade 10 ones for a ten.', how:'10 ones make 1 ten. 2 ones are left: 1 ten, 2 ones.'},
-  {type:'tiles', w:['6','2','2'], extra:['1','3'], q:'368 + 254 = ?', say:'Ones, then tens, then hundreds. Build the answer.', how:'8 + 4 = 12: write 2, carry 1. 6 + 5 + 1 = 12: write 2, carry 1. 3 + 2 + 1 = 6.'}],[
-  {type:'match', pairs:[['926 − 304','622'],['615 − 111','504'],['417 − 180','237']], say:'Subtract column by column. Match each answer.', how:'Ones first, then tens, then hundreds. Too small on top? Borrow.'},
-  {type:'hop', start:417, add:-100, unit:100, from:0, to:1000, q:'417 − 180: first − 100', say:'417 − 180. Hop back 100 first.', how:'417 − 100 = 317. Then take away 80 more.'},
-  {type:'tiles', w:['2','3','7'], extra:['1','4'], q:'317 − 80 = ?', say:'317 − 80. Borrow a hundred for the tens.', how:'1 ten − 8 tens? Borrow: 11 tens − 8 tens = 3 tens. 237.'},
-  {type:'blocks', n:45, q:'27 + 18', say:'27 + 18. Trade 10 ones for a ten.', how:'7 + 8 = 15 ones. Trade 10 for a ten: 4 tens, 5 ones.'},
-  {type:'sort', bins:['Trade','No trade'], cards:[['8 + 5',0],['1 + 3',1],['6 + 7',0],['2 + 5',1]], q:'Add the ones', say:'Do the ones make 10 or more? Sort them.', how:'10 or more ones? Trade 10 ones for a ten.'}]);
+  {type:'blocks', n:15, q:'257 + 168: the ones are 7 + 8', say:'Ones first: 7 + 8. Trade 10 ones for a ten.', how:'15 ones = 1 ten and 5 ones. Write 5. Carry the ten.'},
+  {type:'sort', bins:['Borrow','No borrow'], cards:[['580 − 347',0],['836 − 433',1],['562 − 347',0],['759 − 214',1],['604 − 258',0]], q:'Ones: is the top digit big enough?', say:'Look at the ones. Is the top digit too small?', how:'580 − 347: 0 − 7 is too small, so borrow. 836 − 433: 6 − 3 is fine.'}],[
+  {type:'tiles', w:['Ones: borrow, 12 − 6 = 6','Tens: 3 − 8, borrow, 13 − 8 = 5','Hundreds: 4 − 2 = 2','256'], extra:['Tens: 4 − 8 = 4'], q:'542 − 286', say:'542 − 286 borrows twice. Put the steps in order.', how:'Ones 2 − 6: borrow, 12 − 6 = 6. Tens are now 3: borrow, 13 − 8 = 5. Hundreds 4 − 2 = 2.'},
+  {type:'sort', bins:['Right','Mistake'], cards:[['363',0],['443',1],['463',1]], q:'635 − 272 = ?', say:'One answer is right. Find the two mistakes.', how:'443 flipped 7 − 3 in the tens. 463 borrowed but kept 6 hundreds. 363 is right.'},
+  {type:'tiles', w:['Ones: 7 + 6 = 13, carry 1','Tens: 5 + 7 + 1 = 13, carry 1','Hundreds: 4 + 3 + 1 = 8','833'], extra:['Tens: 5 + 7 = 12'], q:'Yanky\'s class: 457 cans. Ari\'s class: 376.', say:'How many cans for tzedakah? Put the steps in order.', how:'Add the ones, carry. Add the tens with the carry, carry again. Then the hundreds.'},
+  {type:'hop', start:317, add:-80, unit:10, from:230, to:330, q:'417 − 180: after − 100 you are at 317', say:'Another way: 417 − 100 is 317. Now hop back 80.', how:'317 − 80: 8 hops back of 10 land on 237. So 417 − 180 = 237.'},
+  {type:'match', pairs:[['483 + 361','844'],['912 − 478','434'],['736 − 292','444']], say:'Challenge! Add or subtract. Match each answer.', how:'912 − 478: 12 − 8 = 4. The tens are 0: borrow a hundred, 10 − 7 = 3. 8 − 4 = 4. 434.'}]);
 
 W('MATH.MEAS.L03.04',
   'Quarter 25¢, dime 10¢, nickel 5¢, penny 1¢.',
@@ -610,15 +627,25 @@ K('MATH.OPS.L03.04',[
   {type:'count', n:20, pic:'🧁', q:'4 rows of 5 cupcakes', o:['15','20','25'], say:'4 rows of 5 cupcakes. How many?', how:'Count row by row: 5, 10, 15, 20.'},
   {type:'sort', bins:['Equal rows','Not equal'], cards:[['3 · 3 · 3',0],['3 · 2 · 3',1],['4 · 4',0],['5 · 4',1]], say:'Chairs in each row. Equal rows? Sort them.', how:'An array has the same number in every row.'}]);
 
-W('MATH.OPS.L03.05',{t:'Chant it: Ones go first, then carry the ten!', m:{type:'chant',lines:['Ones go first, then carry the ten,','tens go next, then add again!']}});
+Q('MATH.OPS.L03.05',{ why:'Add up all the pages the boys learned this week: four numbers, one tower.',
+  watch:{ q:'27 + 18 + 36 = ?', m:{type:'blocks',tens:2,ones:1}, steps:[
+    'Stack them: ones under ones, tens under tens.',
+    {t:'Ones: 7 + 8 + 6 = 21. That is 2 tens and 1 one.', m:{type:'blocks',tens:2,ones:1}},
+    'Write the 1. Carry the 2 tens to the top of the tens column.',
+    {t:'Tens: 2 + 1 + 3 + 2 carried = 8. So 27 + 18 + 36 = 81.', m:{type:'blocks',tens:8,ones:1}},
+    {t:'Four numbers: 38 + 29 + 25 + 29. Ones 8 + 9 + 5 + 9 = 31.', m:{type:'blocks',tens:3,ones:1}},
+    'Write 1, carry 3. Tens 3 + 2 + 2 + 2 + 3 = 12 tens. So 121.',
+    'Another way: look for friendly pairs that make tens, like 26 + 34 = 60.',
+    {t:'Chant it: Ones go first, then carry the ten!', m:{type:'chant',lines:['Ones go first, then carry the ten,','tens go next, then add again!']}}], a:'81' },
+  oops:{ q:'27 + 18 + 10', wrong:'45 (dropped the carried ten)', right:'55', why:'Ones: 7 + 8 + 0 = 15. Write 5, carry 1 ten. Tens: 2 + 1 + 1 + 1 = 5.' } });
 K('MATH.OPS.L03.05',[
-  {type:'blocks', n:68, q:'23 + 14 + 31', say:'23 + 14 + 31. Build the answer.', how:'Ones: 3 + 4 + 1 = 8. Tens: 2 + 1 + 3 = 6. 68.'},
-  {type:'tiles', w:['7','4'], extra:['6','1'], q:'17 + 33 + 24', say:'17 + 33 + 24. Ones first, carry the ten.', how:'Ones: 7 + 3 + 4 = 14. Write 4, carry 1. Tens: 1 + 1 + 3 + 2 = 7.'}],[
-  {type:'match', pairs:[['21 + 13 + 16 + 36','86'],['17 + 33 + 24','74'],['26 + 38 + 34 + 16','114']], say:'Add each column. Match the totals.', how:'Ones column first. Carry the tens. Then the tens column.'},
-  {type:'blocks', n:86, q:'21 + 13 + 16 + 36', say:'Build the total: ones first, then tens.', how:'Ones: 1 + 3 + 6 + 6 = 16. Carry 1. Tens: 1 + 2 + 1 + 1 + 3 = 8.'},
-  {type:'tiles', w:['1','1','4'], extra:['2','0'], q:'26 + 38 + 34 + 16', say:'Add all 4. The ones make 24: carry 2.', how:'Ones: 6 + 8 + 4 + 6 = 24. Tens: 2 + 2 + 3 + 3 + 1 = 11. 114.'},
-  {type:'sort', bins:['Carry a ten','No carry'], cards:[['7 + 8 + 4',0],['2 + 3 + 1',1],['6 + 6',0],['4 + 5',1]], q:'Add the ones', say:'Add the ones. 10 or more? Carry a ten.', how:'7 + 8 + 4 = 19. That is 10 or more, so carry.'},
-  {type:'hop', start:44, add:30, unit:10, from:0, to:100, q:'44 + 30', say:'Add the tens column: hop 3 tens from 44.', how:'44, 54, 64, 74.'}]);
+  {type:'blocks', n:14, q:'17 + 33 + 24: the ones are 7 + 3 + 4', say:'Ones first: 7 + 3 + 4. Trade 10 for a ten.', how:'7 + 3 = 10, plus 4 is 14. That is 1 ten and 4 ones.'},
+  {type:'sort', bins:['Carry 1','Carry 2','Carry 3'], cards:[['7+8+4',0],['9+8+7',1],['6+6',0],['8+9+5+9',2]], q:'The ones column', say:'Add the ones. How many tens do you carry?', how:'Add the ones. 7 + 8 + 4 = 19: 1 ten and 9 ones. Carry 1.'}],[
+  {type:'match', pairs:[['23+19+36','78'],['27+38+16','81'],['14+25+29','68']], say:'Add each tower: ones, carry, then tens. Match.', how:'Add the ones. Write the ones digit, carry the tens. Then add the tens and the carry.'},
+  {type:'sort', bins:['Right','Dropped the ten','Extra ten'], cards:[['77',0],['67',1],['87',2]], q:'36 + 17 + 24 = ?', say:'One is right. Which ten went wrong?', how:'Ones 6 + 7 + 4 = 17: carry 1. Tens 3 + 1 + 2 + 1 = 7. 77.'},
+  {type:'tiles', w:['Ones: 6+7+9+8=30','Write 0, carry 3','Tens: 1+2+1+3+3=10','100'], extra:['Write 0, carry 0'], q:'16 + 27 + 19 + 38', say:'Four numbers! Put the steps in order.', how:'Ones 30: write 0, carry 3 tens. Tens 1 + 2 + 1 + 3 + 3 = 10 tens. 100.'},
+  {type:'match', pairs:[['26+17+34','pair = 60'],['18+25+12','pair = 30'],['33+19+21','pair = 40']], q:'Find the friendly pair', say:'Which two numbers make a tens number? Match.', how:'26 + 34 = 60, so 26 + 17 + 34 is 60 + 17. Look for ones that make 10.'},
+  {type:'tiles', w:['Ones: 8+5+9+6=28','Write 8, carry 2','Tens: 2+3+1+1+2=9','98'], extra:['Write 8, carry 1'], q:'Pages: Nissim 28, Yosef Chaim 35, Avi 19, Shmuel Tzvi 16', say:'Challenge! How many pages in all? Put the steps in order.', how:'Ones 28: write 8, carry 2 tens. Tens 2 + 3 + 1 + 1 + 2 = 9. 98.'}]);
 
 W('MATH.OPS.L03.06',{t:'Chant it: Scene one, then scene two!', m:{type:'chant',lines:['Scene one, then scene two,','the first answer helps you through!']}});
 K('MATH.OPS.L03.06',[
@@ -630,36 +657,54 @@ K('MATH.OPS.L03.06',[
   {type:'tiles', w:['3','9'], extra:['2','4'], q:'Baruch 17. Moshe 5 more. Together?', say:'Moshe read 17 + 5 = 22. Together with Baruch?', how:'Step 1: 17 + 5 = 22. Step 2: 17 + 22 = 39.'},
   {type:'listen', hear:'Eli had 42 stickers. He gave 18 to Ari. Then he got 10 more.', o:['34','24','70'], a:'34', say:'Listen to the whole story. Tap the answer.', how:'42 − 18 = 24. Then 24 + 10 = 34.'}]);
 
-W('MATH.PV.L03.02',
-  '10 tens make 1 hundred.',
-  {t:'Point left to right: hundreds, tens, ones!', m:{type:'move',t:'Point left to right and say: hundreds, tens, ones!'}});
+Q('MATH.PV.L03.02',{ today:'Read and build 3-digit numbers by place',
+  why:'Tzvi\'s shelf has 2 boxes of 100 seforim, 4 stacks of 10 and 3 more. Place tells you how many!',
+  watch:{ q:'What is 627 made of?', m:{type:'line',from:600,to:700,hops:[620,627]}, steps:[
+    'Build 627: 6 flats (hundreds), 2 rods (tens), 7 cubes (ones).',
+    'From the left: hundreds, tens, ones. The hundreds digit is 6.',
+    {t:'6 hundreds gets you to 600, then 2 tens to 620, then 7 ones: 627.', m:{type:'line',from:600,to:700,hops:[620,627]}},
+    'The tens digit is the middle one: 2 tens.',
+    'Build it back: 7 hundreds, 7 tens and 1 one make 771.',
+    'No tens or no ones? Write a 0: 4 hundreds and 7 ones is 407.',
+    {t:'Point left to right: hundreds, tens, ones!', m:{type:'move',t:'Point left to right and say: hundreds, tens, ones!'}}], a:'6 hundreds, 2 tens, 7 ones' } });
 K('MATH.PV.L03.02',[
-  {type:'tiles', w:['6','2','7'], extra:['0'], q:'6 flats, 2 rods, 7 cubes', say:'6 hundreds, 2 tens, 7 ones. Build it.', how:'Hundreds, tens, ones, from left to right: 627.'},
-  {type:'blocks', n:24, q:'124 = 1 hundred and ?', say:'124 has 1 hundred. Build the 24.', how:'2 tens and 4 ones. The tens digit of 124 is 2.'}],[
-  {type:'match', pairs:[['106','0 tens'],['966','6 tens'],['124','2 tens']], say:'How many tens? Look at the middle digit.', how:'In a 3-digit number, the tens are in the middle.'},
-  {type:'tiles', w:['4','0','7'], extra:['1','5'], q:'4 hundreds, 0 tens, 7 ones', say:'No tens? Use a 0 to hold the place.', how:'4 hundreds, 0 tens, 7 ones: 407.'},
-  {type:'findall', grid:['305','350','503','530','315','513'], find:['305','503'], findSay:'number with 0 tens', say:'Tap every number with 0 tens.', how:'Look at the middle digit. Is it 0?'},
-  {type:'hop', start:0, add:100, unit:10, from:0, to:100, q:'10 tens make ?', say:'Hop by 10s, 10 times. Where do you land?', how:'10 tens make 1 hundred.'},
-  {type:'match', pairs:[['3 hundreds','300'],['3 tens','30'],['3 ones','3']], say:'What is each 3 worth? Match.', how:'A 3 in the hundreds is 300. In the tens it is 30.'}]);
+  {type:'hop', start:0, add:600, unit:100, from:0, to:1000, q:'627: hop the hundreds', say:'627 has 6 hundreds. Hop by 100s, 6 times.', how:'6 hops of 100 land on 600. 6 is the hundreds digit.'},
+  {type:'match', pairs:[['3 in 384','hundreds'],['8 in 384','tens'],['4 in 384','ones']], say:'384. Which place is each digit in?', how:'From the left: hundreds, tens, ones.'}],[
+  {type:'findall', grid:['305','350','503','530','315','513'], find:['305','503'], findSay:'number with 0 tens', say:'Tap every number with 0 tens.', how:'The tens are the middle digit. Is it 0?'},
+  {type:'sort', bins:['Right','Mistake'], cards:[['407',0],['47',1],['470',1]], q:'4 hundreds and 7 ones', say:'4 hundreds and 7 ones. Which one is right?', how:'47 lost the 0 in the tens. 470 put the 7 in the tens. 407 is right.'},
+  {type:'tiles', w:['3 hundreds','0 tens','5 ones'], extra:['5 tens'], q:'305: 3 boxes of 100, 5 loose', say:'Mendy has 305 pencils. Build it place by place.', how:'Biggest place first: 3 hundreds, 0 tens, 5 ones. The 0 holds the tens.'},
+  {type:'listen', hear:'2 hundreds, 0 tens, 9 ones', o:['209','29','290'], a:'209', say:'Listen. Which number is it? Careful with the 0.', how:'2 hundreds, no tens, 9 ones: 209. The 0 holds the tens place.'},
+  {type:'hop', start:500, add:50, unit:10, from:500, to:600, q:'Tzvi: 5 boxes of 100, 5 stacks of 10', say:'Tzvi has 5 hundreds. Hop on 5 tens.', how:'500, then 510, 520, 530, 540, 550. 5 hundreds and 5 tens is 550.'}]);
 
+Q('MATH.PV.L03.03',{ today:'Stretch a number into parts, and squeeze it back',
+  watch:{ q:'Stretch 256, then squeeze it back', m:{type:'blocks',tens:5,ones:6}, steps:[
+    {t:'Arms out wide! Stretch 256.', m:{type:'move',t:'Arms out wide! Stretch it like a big number.'}},
+    '2 hundreds is 200.',
+    {t:'5 tens is 50. 6 ones is 6.', m:{type:'blocks',tens:5,ones:6}},
+    '256 = 200 + 50 + 6.',
+    'Missing part? 264 = 200 + ? + 4. The 6 is in the tens, so it is 60.',
+    'Squeeze it back: 300 + 90 + 8 = 398.'], a:'256 = 200 + 50 + 6' } });
 K('MATH.PV.L03.03',[
-  {type:'match', pairs:[['2 hundreds','200'],['5 tens','50'],['6 ones','6']], say:'Stretch 256. Match each digit to its worth.', how:'2 hundreds is 200. 5 tens is 50. 6 ones is 6.'},
-  {type:'tiles', w:['400','40','5'], extra:['4','50'], say:'Stretch 445. Put the parts in order.', how:'445 = 400 + 40 + 5.'}],[
-  {type:'match', pairs:[['445 = 400 + ? + 5','40'],['988 = 900 + ? + 8','80'],['463 = ? + 60 + 3','400']], say:'Find the missing part. Match.', how:'Look at the digit in that place: 4 tens is 40.'},
-  {type:'tiles', w:['5','1','4'], extra:['0'], q:'500 + 10 + 4', say:'Squeeze it back together. Build the number.', how:'5 hundreds, 1 ten, 4 ones: 514.'},
-  {type:'sort', bins:['Hundreds','Tens','Ones'], cards:[['700',0],['20',1],['8',2],['300',0],['60',1]], say:'Which place is each part? Sort them.', how:'Two zeros: hundreds. One zero: tens. No zero: ones.'},
-  {type:'tiles', w:['700','20','8'], extra:['72','80'], say:'Stretch 728. Put the parts in order.', how:'728 = 700 + 20 + 8.'},
-  {type:'listen', hear:'nine hundred, eighty, eight', o:['988','908','980'], a:'988', say:'Listen. Tap the number.', how:'900 + 80 + 8 = 988.'}]);
+  {type:'match', pairs:[['2 hundreds','200'],['5 tens','50'],['6 ones','6']], q:'Stretch 256', say:'Stretch 256. Match each digit to its worth.', how:'2 hundreds is 200. 5 tens is 50. 6 ones is 6.'},
+  {type:'tiles', w:['400','40','5'], extra:['4','50'], say:'Stretch 445. Biggest part first.', how:'Biggest part first: 445 = 400 + 40 + 5.'}],[
+  {type:'match', pairs:[['864 = 800 + ? + 4','60'],['522 = 500 + ? + 2','20'],['463 = ? + 60 + 3','400']], say:'Find the missing part. Match.', how:'Look at the digit in that place: 6 tens is 60.'},
+  {type:'sort', bins:['Right','Mistake'], cards:[['300+10+2',0],['3+1+2',1],['30+10+2',1]], q:'Stretch 312', say:'Which one stretches 312 the right way?', how:'The 3 is in the hundreds, so it is worth 300, not 3 or 30.'},
+  {type:'match', pairs:[['600 + 40 + 7','647'],['300 + 90 + 8','398'],['100 + 60 + 5','165']], say:'Squeeze each one back together. Match the number.', how:'6 hundreds, 4 tens, 7 ones: 647.'},
+  {type:'listen', hear:'Tatty buys 7 boxes of 100 napkins for the sukkah, 2 packs of 10, and 8 more. How many?', o:['728','7208','782'], a:'728', say:'Listen. Squeeze the parts into one number.', how:'700 + 20 + 8 = 728.'},
+  {type:'findall', grid:['500','50','5','60','600','3'], find:['500','60','3'], findSay:'part of 563', say:'Challenge! Tap every part of 563.', how:'5 hundreds is 500. 6 tens is 60. 3 ones is 3.'}]);
 
-W('MATH.PV.L03.04',{t:'Chant it: Plus 10? The tens go up!', m:{type:'chant',lines:['Plus 10? The tens go up.','Plus 100? The hundreds go up!']}});
+W('MATH.PV.L03.04',
+  {t:'10 less than 845? The tens go down: 835.', m:{type:'line',from:820,to:850,hops:[835]}},
+  {t:'100 less than 613? The hundreds go down: 513.', m:{type:'line',from:500,to:700,hops:[513]}},
+  {t:'Chant it: Plus 10? The tens go up!', m:{type:'chant',lines:['Plus 10? The tens go up.','Minus 10? The tens go down!']}});
 K('MATH.PV.L03.04',[
-  {type:'hop', start:456, add:100, unit:100, from:0, to:1000, q:'456 + 100', say:'456 + 100. Hop 100 once.', how:'Only the hundreds change: 4 becomes 5. 556.'},
-  {type:'tiles', w:['1','8','9'], extra:['7','2'], q:'10 more than 179', say:'10 more than 179. Which digit changes?', how:'The tens go up 1: 7 becomes 8. 189.'}],[
-  {type:'hop', start:649, add:10, unit:10, from:600, to:700, q:'10 more than 649', say:'10 more than 649. Hop by 10.', how:'The tens go up: 4 becomes 5. 659.'},
-  {type:'match', pairs:[['569 + 10','579'],['345 + 100','445'],['602 − 10','592']], say:'Which digit moves? Match each answer.', how:'10 changes the tens. 100 changes the hundreds.'},
-  {type:'hop', start:295, add:10, unit:10, from:250, to:350, q:'295 + 10', say:'295 + 10. Careful at 9!', how:'9 tens + 1 ten = 10 tens: a new hundred. 305.'},
-  {type:'sort', bins:['+ 10','+ 100'], cards:[['345 → 445',1],['179 → 189',0],['620 → 630',0],['208 → 308',1]], say:'Did it jump 10 or 100? Sort them.', how:'The tens changed: + 10. The hundreds changed: + 100.'},
-  {type:'tiles', w:['5','7','9'], extra:['6','8'], q:'10 more than 569', say:'10 more than 569. Build it.', how:'The 6 tens become 7 tens: 579.'}]);
+  {type:'hop', start:456, add:100, unit:100, from:0, to:1000, q:'100 more than 456', say:'100 more than 456. Hop 100 once.', how:'Only the hundreds change: 4 becomes 5. 556.'},
+  {type:'match', pairs:[['179 + 10','189'],['179 + 100','279'],['179 + 1','180']], say:'Which digit changes? Match each answer.', how:'+ 10: the tens go up. + 100: the hundreds go up. + 1: the ones.'}],[
+  {type:'hop', start:228, add:-10, unit:10, from:150, to:250, q:'10 less than 228', say:'Bubby baked 228 rugelach. 10 went to neighbors. Hop back.', how:'The tens go down: 2 becomes 1. 218.'},
+  {type:'sort', bins:['Right','Mistake'], cards:[['305',0],['2105',1],['395',1]], q:'295 + 10 = ?', say:'295 + 10. Find the right answer.', how:'9 tens + 1 ten = 10 tens = a new hundred: 305. 2105 wrote 10 tens.'},
+  {type:'listen', hear:'Avi learned 196 pages of Chumash. This week he learns 10 more. How many now?', o:['206','296','1106'], a:'206', say:'Listen. Careful at 9! Tap the answer.', how:'9 tens + 1 ten = 10 tens: a new hundred. 196 + 10 = 206.'},
+  {type:'sort', bins:['+ 10','− 10','− 100'], cards:[['179 → 189',0],['845 → 835',1],['613 → 513',2],['738 → 638',2],['569 → 559',1]], say:'Which jump was it? Sort them.', how:'Which digit changed, and did it go up or down?'},
+  {type:'match', pairs:[['569 + 10','579'],['579 + 100','679'],['602 − 10','592']], say:'Challenge! Which digit moves? Match each answer.', how:'602 − 10: no tens, so hop back 10 from 602: 592.'}]);
 
 W('MATH.STAT.L03.01',
   'Together means add the two bars: 8 + 5 = 13.',
