@@ -512,3 +512,6 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - grain-spilling-from-sack.webp | https://pixabay.com/photos/cereal-grains-sack-harvest-produce-6106821/ | Pixabay Content License | congerdesign
 - sesame-seeds-on-table.webp | https://pixabay.com/photos/sesame-seeds-prescription-3311532/ | Pixabay Content License | SEMSEMS
 - ox-cart-dirt-road.webp | https://pixabay.com/photos/bullock-cart-ox-waggon-waggon-331254/ | Pixabay Content License | Vijayanarasimha
+- first-airplane-flight-1903.webp | https://images.nasa.gov/details/9248164 | Public domain (NASA) | MSFC
+- jet-airplane-front-sky.webp | https://pixabay.com/photos/plane-approach-landing-flight-air-3075056/ | Pixabay Content License | fietzfotos
+- river-dam-water-rushing.webp | https://pixabay.com/photos/dam-river-water-landscape-power-929406/ | Pixabay Content License | russmac
