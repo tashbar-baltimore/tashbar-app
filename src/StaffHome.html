@@ -7,8 +7,9 @@
    The old banners, the second search bar, the floating buttons and the "More" menu are hidden; their features are all reachable from here.
    Everyone sees everything for now (HoS: "let's leave out who sees what"). Off switch: window.TL_STAFF_HOME = false.
    CALMER PORTAL (HoS 2026-11-20: "still seems very busy ... you have to go a lot of places to do stuff"):
-   - ONE BOY CARD: his map on top, then one row of actions (Pick a lesson, Set level, Shout-out, Torah moment, Note, Parent report, Written work,
-     Pathfinder report, Sign-in code, Full details & parents, His day). Every boy name, Open button, search result and grid name opens it. Each
+   - ONE BOY CARD: his map on top, then FIVE plain buttons (Pick his next lesson, Set his level, Send a shout-out, Write a note, Parent report)
+     and one quiet "More about him" link to a list page with everything else, one row per job (HoS 2026-11-21 simplify step 4). The old
+     card is no longer a place anyone lands: each row opens only its own part of it. Every boy name, Open button, search result and grid name opens it. Each
      action opens the tool that already does it (same screens, same server calls); when that tool closes, his card comes back.
    - Home = greeting, search, and ONE "Needs me today" list (also on Today). One "Start a class lesson". A tool you cannot use is not shown.
    - Pages that used to leave the portal (sign-off, canteen, Pathfinder report, written work, lesson preview) open inside it in a full-screen
@@ -196,12 +197,26 @@ body.sh-on.sh-page #sh-page{display:block}
 #sh-dlg .acts button{border:1px solid #D9DFF0;background:#F8FAFF;color:#16202C;border-radius:999px;padding:9px 14px;font:800 14px/1.2 system-ui,sans-serif;cursor:pointer;min-height:44px;white-space:nowrap}
 #sh-dlg .acts button:hover,#sh-dlg .acts button:focus-visible{border-color:#2F5BD3;background:#EEF3FF}
 #sh-dlg .acts button.pri{background:#16202C;color:#fff;border-color:#16202C}
+#sh-dlg .acts button.more{border:0;background:none;color:#2F5BD3;text-decoration:underline;text-underline-offset:3px;padding:9px 6px}
+#sh-dlg .mh{margin:18px 0 8px;font:800 13px/1.2 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#5B6676}
+#sh-dlg .mlist{border:1px solid #E6EAF2;border-radius:16px;overflow:hidden;background:#fff}
+#sh-dlg .mrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-top:1px solid #EEF1F7;background:#fff;padding:12px 16px;min-height:60px;font:inherit;color:#16202C;cursor:pointer}
+#sh-dlg .mlist .mrow:first-child{border-top:0}
+#sh-dlg .mrow:hover,#sh-dlg .mrow:focus-visible{background:#F4F7FF}
+#sh-dlg .mrow i{font-style:normal;font-size:22px;width:28px;text-align:center;flex:none}
+#sh-dlg .mrow span{flex:1}#sh-dlg .mrow b{display:block;font-size:16px}#sh-dlg .mrow small{display:block;color:#5B6676;font-size:13.5px;margin-top:2px}
+#sh-dlg .mrow em{font-style:normal;color:#9AA4B5;font-size:22px}
+#sh-dlg .qlink{display:block;margin:16px 0 0;border:0;background:none;color:#2F5BD3;font:800 15px system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;min-height:44px;cursor:pointer;padding:0}
+#sh-dlg .goalbox button:not(.pri){border:0;background:none;color:#2F5BD3;text-decoration:underline;text-underline-offset:3px;box-shadow:none}
+body.sh-on #app aside.drawer.sh-focus > *:not(.dh):not(.sh-keep){display:none!important}
+.sh-alt{margin:0 0 12px;color:#5B6676;font:600 14px/1.5 system-ui,sans-serif}
+.sh-alt button{border:0;background:none;padding:6px 2px;min-height:36px;color:#2F5BD3;font:800 14px system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 #sh-dlg .acts h3{grid-column:1/-1;margin:0}
 #sh-dlg .opt{display:flex;gap:12px;align-items:center;width:100%;text-align:left;border:2px solid #E2E8F0;background:#fff;border-radius:16px;padding:14px;margin:0 0 10px;cursor:pointer;font:inherit;min-height:64px}
 #sh-dlg .opt:hover,#sh-dlg .opt:focus-visible{border-color:#2F5BD3;background:#F5F8FF}
 #sh-dlg .opt i{font-style:normal;font-size:24px;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#EEF2FF;flex:none}
 #sh-dlg .opt b{display:block;font:900 16.5px system-ui,sans-serif} #sh-dlg .opt small{display:block;color:#5B6676;font-size:13.5px;margin-top:2px}
-@media (max-width:760px){ #sh-dlg .acts{margin:14px -16px -16px;padding:10px 16px 14px;bottom:-16px;gap:6px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin} #sh-dlg .acts button{font-size:13.5px;padding:8px 12px;flex:none} }   /* phone: one row that scrolls sideways */
+@media (max-width:760px){ #sh-dlg .acts{margin:14px -16px -16px;padding:10px 16px 14px;bottom:-16px;gap:6px} #sh-dlg .acts button{font-size:13.5px;padding:8px 12px;flex:1 1 auto} #sh-dlg .acts button.more{flex:0 0 100%;text-align:left;min-height:36px;padding:4px 2px} }   /* phone: the 5 buttons wrap (no sideways scrolling), More about him on its own line */
 /* ===== PAGES THAT USED TO LEAVE THE PORTAL (sign-off, canteen, Pathfinder report, written work, lesson preview) open in here, full screen ===== */
 #sh-fr{position:fixed;inset:0;z-index:2147483400;background:#fff;display:flex;flex-direction:column}
 #sh-fr .frb{display:flex;align-items:center;gap:12px;padding:8px max(12px,env(safe-area-inset-left,0px));background:#16202C;color:#fff;font:800 15px system-ui,sans-serif;flex:none}
@@ -500,8 +515,13 @@ function mapDraw(){ var D=ST.dlg; if(!D||!D.map) return; var d=dlgEl(); d.classN
     if(u.name&&L.total) h+='<div class="meta" style="margin:10px 0 0">The whole Level '+c.level+': '+L.done+' of '+L.total+' skills mastered.</div>';
     h+='</div>'; });
   if(!any) h+='<div class="msub"><h4>No level yet</h4><div class="meta">Until he has a level in a subject, the app cannot pick his steps. Set his Math and Reading levels first.</div><div class="goalbox"><button type="button" class="pri" data-bc="lv" data-id="'+E(id)+'">🎯 Set level</button></div></div>';
-  h+='<div class="acts" role="toolbar" aria-label="What to do for '+E(b.name)+'">'+BACT.map(function(a,i){ return '<button type="button"'+(i<2?' class="pri"':'')+' data-bc="'+a[0]+'" data-id="'+E(id)+'">'+a[1]+' '+E(a[2])+'</button>'; }).join('')+'</div></div>';
+  h+='<div class="acts" role="toolbar" aria-label="What to do for '+E(b.name)+'">'+BACT.map(function(a,i){ return '<button type="button"'+(i<2?' class="pri"':'')+' data-bc="'+a[0]+'" data-id="'+E(id)+'">'+a[1]+' '+E(a[2])+'</button>'; }).join('')+'<button type="button" class="more" data-bc="more" data-id="'+E(id)+'">More about him ›</button></div></div>';
   d.innerHTML=h; }
+/* MORE ABOUT HIM: a plain list, one row per job, grouped; each row opens only that tool (or only its part of the old card) */
+function moreDraw(id){ var d=dlgEl(); ST.dlg={more:id}; d.className='boy'; d.setAttribute('aria-label','More about him'); var b=byId(id)||(S0().boys||[]).filter(function(x){ return x.id===id; })[0]||{name:bName(id)};
+  var h='<div class="box"><div class="bhd"><div><h2>More about '+E(b.name)+'</h2><p class="sub">Everything else for this boy. Tap a row to open just that.</p></div><button type="button" class="x" data-st="close" aria-label="Close">✕</button></div>';
+  BMORE.forEach(function(g){ h+='<h3 class="mh">'+E(g[0])+'</h3><div class="mlist">'+g[1].map(function(a){ return '<button type="button" class="mrow" data-bc="'+a[0]+'" data-id="'+E(id)+'"><i>'+a[1]+'</i><span><b>'+E(a[2])+'</b><small>'+E(a[3])+'</small></span><em>›</em></button>'; }).join('')+'</div>'; });
+  h+='<button type="button" class="qlink" data-shb="'+E(id)+'">← Back to his card</button></div>'; d.innerHTML=h; d.scrollTop=0; }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-mp]'); if(!b) return; e.preventDefault(); var a=b.dataset.mp, id=b.dataset.id;
   if(a==='map') return boyOpen(id);
   if(a==='lv') return boyAct('lv',id);
@@ -577,17 +597,25 @@ document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.
   if(a==='out'){ var o=q('#app [data-act=out]'); if(o) o.click(); } });
 
 /* ================= ONE WAY TO START A CLASS LESSON (Teacher mode, My classes "Start class", Teach it together: the same three flows) ================= */
-function startOpen(){ var d=dlgEl(); ST.dlg={start:1}; d.className=''; var s=SS(), run0=((s&&s.cls)||[]).filter(function(c){ return c.until>Date.now(); });
+/* HoS 2026-11-21 simplify step 4: ONE button -> ONE screen. "Start a class lesson" opens the pick-the-boys / pick-the-lesson / Start screen
+   straight away; the other two ways (one of my classes, boys stuck on one lesson) are quiet links at its top. Only while a class is running
+   does a small page come first, to show it (+10 min / End class) with one big "Start another class lesson". */
+var TMX=0;
+function altLinks(){ return (avail('mycls')?'<button type="button" data-shs="cls">start one of my classes</button>':'')+(avail('mycls')&&avail('wk')?' · ':'')+(avail('wk')?'<button type="button" data-shs="stuck">teach the boys stuck on one lesson</button>':''); }
+function tmDress(){ if(!TMX) return; var d=q('#app aside.drawer'); if(!d){ if(Date.now()-TMX>8000) TMX=0; return; } var h=d.querySelector('.dh h2')||d.querySelector('h2'); if(!h||!/Teacher mode|Start a class lesson/.test(h.textContent)){ if(Date.now()-TMX>8000) TMX=0; return; } TMX=Date.now();
+  if(!/Start a class lesson/.test(h.textContent)) h.textContent='🧑‍🏫 Start a class lesson';
+  var l=altLinks(); if(l&&!d.querySelector('.sh-alt')){ var p=document.createElement('p'); p.className='sh-alt'; p.innerHTML='Or: '+l; var dh=d.querySelector('.dh'); if(dh&&dh.nextSibling) d.insertBefore(p,dh.nextSibling); else d.appendChild(p); } }
+setInterval(tmDress,250);
+function startTm(){ TMX=Date.now(); run('tm'); }
+function startOpen(){ var s0=SS(), r0=((s0&&s0.cls)||[]).filter(function(c){ return c.until>Date.now(); }); if(!r0.length) return startTm();
+  var d=dlgEl(); ST.dlg={start:1}; d.className=''; var s=SS(), run0=((s&&s.cls)||[]).filter(function(c){ return c.until>Date.now(); });
   var h='<div class="box"><div class="bhd"><div><h2>🧑‍🏫 Start a class lesson</h2><p class="sub">While a class lesson runs, the boys in it can open only that lesson. Their screens open again by themselves when time is up.</p></div><button type="button" class="x" data-st="close" aria-label="Close">✕</button></div>';
   if(run0.length) h+='<h3>Running now</h3>'+run0.map(function(c){ return '<div class="msub" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><span style="flex:1;min-width:180px"><b>'+E(c.name)+'</b><br><small style="color:#5B6676">'+(c.sids||[]).length+' boy'+((c.sids||[]).length===1?'':'s')+' · ends '+E(new Date(c.until).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}))+'</small></span><button type="button" class="opt" style="width:auto;min-height:44px;margin:0;padding:8px 14px" data-act="tmmore" data-id="'+E(c.id)+'" data-st="close">+10 min</button><button type="button" class="opt" style="width:auto;min-height:44px;margin:0;padding:8px 14px" data-act="tmend" data-id="'+E(c.id)+'" data-st="close">End class</button></div>'; }).join('');
-  h+='<h3>How do you want to start?</h3>'
-   +'<button type="button" class="opt" data-shs="tm"><i>🔒</i><span><b>Pick the boys and one lesson</b><small>Any boys, any lesson, 20 to 90 minutes.</small></span></button>'
-   +(avail('mycls')?'<button type="button" class="opt" data-shs="cls"><i>👥</i><span><b>One of my classes</b><small>Your class list: tap Start class next to the class.</small></span></button>':'')
-   +(avail('wk')?'<button type="button" class="opt" data-shs="stuck"><i>🧱</i><span><b>Boys stuck on the same lesson</b><small>Teach it together: five minutes at the board for the boys stuck on one lesson.</small></span></button>':'')
-   +'<div class="foot"><button type="button" class="no" data-st="close">Cancel</button></div></div>';
+  h+='<div class="foot" style="justify-content:flex-start;flex-wrap:wrap;gap:12px"><button type="button" class="go" data-shs="tm">🧑‍🏫 Start another class lesson</button></div>'
+   +(altLinks()?'<p class="sh-alt" style="margin:12px 0 0">Or: '+altLinks()+'</p>':'')+'</div>';
   d.innerHTML=h; }
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-shs]'); if(!b) return; e.preventDefault(); var a=b.dataset.shs; dlgClose();
-  if(a==='tm') return run('tm'); if(a==='cls') return run('mycls');
+  if(a==='tm') return startTm(); if(a==='cls') return run('mycls');
   if(a==='stuck'){ run('wk'); after('#app .sd-stk',function(c){ (c.closest('.sp-card')||c).scrollIntoView({block:'start'}); },30); } });
 
 /* ================= THE BOY CARD: one place for a boy. His map on top, then one row of actions. Each action opens the tool that already does it
@@ -610,11 +638,29 @@ function boyAct(a,id){ dlgClose();
   if(a==='rep'){ press('data-sd','rep',id); ret(id); return; }
   if(a==='pf'){ var s=SS(); if(s&&s.d&&s.d.appUrl) press('data-act','pf',id); else frame(appUrl()+'?pf=1&report='+encodeURIComponent(id)); ret(id); return; }
   if(a==='work'){ frame(appUrl()+'?ms=1&staff=1&old=1'); ret(id); return; }
+  if(a==='pick'){ FOC={w:'.sd-picks',at:Date.now()}; } else if(a==='note'){ FOC={w:'.sd-notes',at:Date.now()}; } else if(a==='code'){ FOC={w:/^Sign-in code/,at:Date.now()}; } else if(a!=='lv'&&a!=='more') FOC=null;
   if(a==='pick') return oldCard(id,function(d){ var j=d.querySelector('[data-sd=jump][data-to=sd-picks]'); if(j) j.click(); });
   if(a==='note') return oldCard(id,function(d){ var j=d.querySelector('[data-sd=jump][data-to=sd-notes]'); if(j) j.click(); var D=window.SPD&&window.SPD.D; if(D){ D.focus='sd-nt-'+id; try{ window.render(); }catch(x){} } [80,500,1200].forEach(function(ms){ setTimeout(function(){ var t=document.getElementById('sd-nt-'+id); if(t&&document.activeElement!==t){ t.scrollIntoView({block:'center'}); try{ t.focus({preventScroll:true}); }catch(x){ t.focus(); } } },ms); }); });
   if(a==='code') return oldCard(id,function(d){ var h=[].slice.call(d.querySelectorAll('.sec h3')).filter(function(x){ return /Sign-in code/.test(x.textContent); })[0]; if(h) h.scrollIntoView({block:'start'}); var c=document.getElementById('cd-code'); if(c){ try{ c.focus({preventScroll:true}); }catch(x){} } });
+  if(a==='more') return moreDraw(id);
+  if(a==='day') return focusOld(id,'.sp-day');
+  if(a==='kodesh') return focusOld(id,'.sp-cardk');
+  if(a==='slip') return focusOld(id,/Automatic and slipping/);
+  if(a==='points') return focusOld(id,/^Fix points/);
+  if(a==='remove') return focusOld(id,/^Remove student/);
   if(a==='all') return oldCard(id,null); }
-var BACT=[['pick','📌','Pick a lesson'],['lv','🎯','Set level'],['shout','🎉','Shout-out'],['torah','📜','Torah moment'],['note','📝','Note'],['rep','🖨','Parent report'],['work','✍️','Written work'],['pf','🧭','Pathfinder report'],['code','🔑','Sign-in code'],['info','👪','Full details & parents'],['all','📋','His day & everything else']];
+/* show ONLY one part of the old card (his day, Kodesh, sign-in code ...): the rest of it is hidden while it is open */
+var FOC=null;
+function focusFind(d,w){ var el=null; if(typeof w==='string') el=d.querySelector(w); else [].some.call(d.querySelectorAll('h3'),function(h){ if(w.test(h.textContent.trim())){ el=h; return true; } return false; });
+  if(!el) return null; while(el.parentElement&&el.parentElement!==d) el=el.parentElement; return el.parentElement===d?el:null; }
+function focusApply(){ var d=q('#app aside.drawer'); if(!FOC){ if(d&&d.classList.contains('sh-focus')) d.classList.remove('sh-focus'); return; } if(!d){ if(Date.now()-FOC.at>8000) FOC=null; return; } FOC.at=Date.now();
+  var el=focusFind(d,FOC.w); if(!el) return; if(!d.classList.contains('sh-focus')){ d.classList.add('sh-focus'); d.scrollTop=0; } if(!el.classList.contains('sh-keep')){ [].forEach.call(d.querySelectorAll('.sh-keep'),function(x){ x.classList.remove('sh-keep'); }); el.classList.add('sh-keep'); } }
+setInterval(focusApply,250);
+function focusOld(id,w){ FOC={w:w,at:Date.now()}; oldCard(id,function(){ focusApply(); }); }
+var BACT=[['pick','📌','Pick his next lesson'],['lv','🎯','Set his level'],['shout','🎉','Send a shout-out'],['note','📝','Write a note'],['rep','🖨','Parent report']];
+var BMORE=[['His work',[['day','🕒','His day','Today, minute by minute: what he answered and when.'],['work','✍️','Written work','Check the work he wrote or photographed.'],['pf','🧭','Pathfinder report','His level checks: what he knew and what was skipped.'],['kodesh','📜','Limudei Kodesh','Where he is in each Kodesh track.'],['slip','⚡','Automatic and slipping','Skills he has down cold, and skills slipping away.']]],
+  ['Share',[['torah','📜','Torah moment','Share a Torah moment he said, with the school.']]],
+  ['His account',[['info','👪','Details and parents','His name, grade and his parents’ contacts.'],['code','🔑','Sign-in code','See or change the code he signs in with.'],['points','⭐','Fix points','Correct his points if something went wrong.'],['remove','🗑','Remove student','Take him off the roster.']]]];
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-bc]'); if(!b) return; e.preventDefault(); boyAct(b.dataset.bc,b.dataset.id); });
 document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-shb]'); if(!b) return; e.preventDefault(); boyOpen(b.dataset.shb); });
 
