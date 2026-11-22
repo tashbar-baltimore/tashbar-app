@@ -59,15 +59,13 @@ body.gm-on #gm{display:block}
 #gm .gm-path{position:relative;margin-top:6px}
 #gm .gm-path svg{position:absolute;left:0;top:0;pointer-events:none}
 #gm .gm-path svg.gm-land{left:-30%;width:160%;height:100%;z-index:0;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(180deg,transparent 0,#000 90px,#000 calc(100% - 60px),transparent 100%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%),linear-gradient(180deg,transparent 0,#000 90px,#000 calc(100% - 60px),transparent 100%);mask-composite:intersect}
-/* step numbers (HoS 2026-11-20): a bare floating number, no circle, modern 3-D: a bright face, a deeper extruded edge, a soft glow */
-#gm .gm-num{position:absolute;transform:translate(-50%,-50%);z-index:2;pointer-events:none;text-align:center;line-height:1}
-#gm .gm-num b{display:block;font-weight:900;font-size:24px;letter-spacing:-.02em;font-style:italic;animation:gmbob 3.2s ease-in-out infinite;
- color:#E4DEFF;background:linear-gradient(180deg,#FFFFFF 10%,#C9C4FF 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
- filter:drop-shadow(0 1px 0 #6E62C9) drop-shadow(0 1px 0 #5A4EB5) drop-shadow(0 1px 0 #463BA0) drop-shadow(0 4px 6px rgba(8,4,30,.55))}
-#gm .gm-num.now b{font-size:32px;background-image:linear-gradient(180deg,#FFF9C4 5%,#FFE259 45%,#FFB800 95%);
- filter:drop-shadow(0 1px 0 #E08A00) drop-shadow(0 1px 0 #C27100) drop-shadow(0 1px 0 #A35A00) drop-shadow(0 0 10px rgba(255,200,0,.55)) drop-shadow(0 5px 7px rgba(8,4,30,.5))}
-#gm .gm-num.d b{background-image:linear-gradient(180deg,#E9FFF3 5%,#7CFFB2 50%,#2ED88A 95%);
- filter:drop-shadow(0 1px 0 #13A866) drop-shadow(0 1px 0 #0D8A53) drop-shadow(0 1px 0 #086D41) drop-shadow(0 4px 6px rgba(8,4,30,.55))}
+/* step numbers (HoS 2026-11-20): a bare floating number, no circle, modern 3-D: a bright face, a deeper extruded edge, a soft glow.
+   HoS 2026-11-22: upright (no slant), a solid face drawn with text shadows so nothing gets cut off, and it floats clear above the step. */
+#gm .gm-num{position:absolute;transform:translate(-50%,-100%);z-index:2;pointer-events:none;text-align:center;line-height:1;white-space:nowrap}
+#gm .gm-num b{display:block;padding:2px 6px 6px;font-weight:900;font-size:24px;letter-spacing:0;font-style:normal;font-variant-numeric:tabular-nums;animation:gmbob 3.2s ease-in-out infinite;
+ color:#F1EEFF;text-shadow:0 1px 0 #6E62C9,0 2px 0 #5A4EB5,0 3px 0 #463BA0,0 5px 8px rgba(8,4,30,.55)}
+#gm .gm-num.now b{font-size:32px;color:#FFE259;text-shadow:0 1px 0 #E08A00,0 2px 0 #C27100,0 3px 0 #A35A00,0 0 12px rgba(255,200,0,.55),0 6px 9px rgba(8,4,30,.5)}
+#gm .gm-num.d b{color:#9DFFC6;text-shadow:0 1px 0 #13A866,0 2px 0 #0D8A53,0 3px 0 #086D41,0 5px 8px rgba(8,4,30,.55)}
 #gm .gm-num.u b{opacity:.92}
 @keyframes gmbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 /* statues beside the road (HoS 2026-11-20: "like statues along the side of the road ... bobbing gently and spinning in 3-D") */
@@ -476,7 +474,7 @@ const DECOC={MATH:'#FFE259',READ:'#8FD3FF',LANG:'#8FD3FF',SCI:'#7CFFB2',SOC:'#7C
 function decoSet(k){ return /^(HEB|K:)/.test(k)?['HEB',DECO.HEB]:DECO[k]?[k,DECO[k]]:['',['✦','★','●']]; }
 function pathHTML(w){
  const all=w.ids.slice(), ni=w.now?all.indexOf(w.now):-1, from=ni>12?ni-12:0, hidden=from, ids=all.slice(from);
- const N=ids.length, gap=150, top0=hidden?118:84, H=top0+Math.max(0,N-1)*gap+100, pts=[];
+ const N=ids.length, gap=150, big0=ids[0]===w.now||hidden===w.ids.length-1, top0=(hidden?118:84)+(big0?26:0), H=top0+Math.max(0,N-1)*gap+100, pts=[];
  ids.forEach((id,i)=>{ pts.push([Math.round(50-24*Math.cos(i*Math.PI/2)),top0+i*gap]); });
  let d=''; pts.forEach((p,i)=>{ if(!i){ d='M'+p[0]+' '+p[1]; return; } const q=pts[i-1], my=(q[1]+p[1])/2; d+=' C'+q[0]+' '+my+' '+p[0]+' '+my+' '+p[0]+' '+p[1]; });
  const svg=`<svg width="100%" height="${H}" viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}" fill="none" stroke="#FFE259" stroke-width="1.6" stroke-dasharray="0.6 4" stroke-linecap="round" vector-effect="non-scaling-stroke" style="stroke-width:5px;stroke-dasharray:2 14"/></svg>`;
@@ -518,7 +516,7 @@ function pathHTML(w){
   const ico=isNow?(lc?'🎫':isBoss?'🏰':w.icon):isDone?'✓':isKnown?'⏭':(isBoss?'🏰':'🔒');
   const lab=isNow?(lc?'🎫 LEVEL CHECK FIRST · '+lc.min+' MIN':isBoss?'BOSS LEVEL · YOU ARE HERE':'▶ YOU ARE HERE'):isKnown?'⏭ YOU KNOW IT · SKIPPED':isBoss?'BOSS · UNIT FINISH 🏁':isDone?'CLEARED':'LOCKED';
   const big=isNow||isBoss, num=hidden+i+1;
-  h+=`<span class="gm-num ${isNow?'now':isDone||isKnown?'d':'u'}" style="left:${p[0]}%;top:${p[1]-(big?58:44)}px" aria-hidden="true"><b style="animation-delay:-${(i*0.7).toFixed(1)}s">${num}</b></span>`;
+  h+=`<span class="gm-num ${isNow?'now':isDone||isKnown?'d':'u'}" style="left:${p[0]}%;top:${p[1]-(big?(isNow?54:46):33)}px" aria-hidden="true"><b style="animation-delay:-${(i*0.7).toFixed(1)}s">${num}</b></span>`;
   h+=`<button type="button" class="gm-n ${cls}" style="left:${p[0]}%;top:${p[1]}px" data-gm="node" data-id="${esc(id)}" aria-label="Step ${num}: ${esc(n[0])}${n[1]?': '+esc(n[1]):''} (${lab.toLowerCase()})">${ico}</button>`;
   if(!isNow) return;
   /* HoS 2026-11-20: when the second line is only "Chumash Level 3", that is the title and the (i) tells the step's own name */
