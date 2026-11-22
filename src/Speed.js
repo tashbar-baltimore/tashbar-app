@@ -62,14 +62,44 @@ function msQuestToolsParts(have) {
 /* The page's loader (runs in the browser). OLD = the previous loader, used if anything here fails. */
 function tlLoader2Src_(OLD) {
   var DBN = 'tashbar-parts', ST = 'p', db = null, done = false;
-  function go(js) { try { (0, eval)(js); } catch (e) { console.error('QuestTools', e); } try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
-  function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } }
+  /* FAST START (HoS 2026-11-22: "kindergarten and first grade ... opens up just to a white screen for the first 20 seconds"): the
+     add-ons (about 40 MB) used to run as ONE block, so a Chromebook could not draw anything until all of them had run. Now the pieces
+     run in order, a few at a time, with a short break between, so the screen draws and taps work while they load. The pieces and
+     their order are the same as before. A K-1 boy (his K-1 switch or his grade is kept on this Chromebook) sees a friendly
+     "getting your games ready" screen, not the big-boy home, until his game path (K1Only, the last piece) has loaded. */
+  function k1Wait() { try { if (window.K1O || typeof A === 'undefined' || !A || A.view !== 'hub' || !A.st || !A.st.id) return false;
+      var f = localStorage.getItem('tl-k1only'); if (f === '0') return false; if (f === '1') return true;
+      var g = localStorage.getItem('tl-k1g:' + A.st.id); return g === '0' || g === '1'; } catch (e) { return false; } }
+  function cover(on) { var c = document.getElementById('tl-k1wait'); if (!on) { if (c) c.remove(); return; } if (c || !document.body) return;
+    c = document.createElement('div'); c.id = 'tl-k1wait'; c.setAttribute('role', 'status');
+    c.style.cssText = 'position:fixed;inset:0;z-index:2147483600;background:#FFF4D6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font:800 clamp(28px,5vw,48px) system-ui,sans-serif;color:#16202C';
+    c.innerHTML = '<div style="font-size:clamp(70px,14vw,140px);animation:tlk1b 1s ease-in-out infinite alternate">🎮</div><div>Getting your games ready…</div><style>@keyframes tlk1b{from{transform:translateY(0)}to{transform:translateY(-18px)}}</style>';
+    document.body.appendChild(c); }
+  var waitIv = setInterval(function () { if (window.K1O) { clearInterval(waitIv); cover(false); return; } cover(k1Wait()); }, 150);
+  function stopWait() { clearInterval(waitIv); cover(false); }
+  /* While the pieces run, a timer one piece starts is HELD until every piece has run, then started. That is what happened when all
+     the pieces ran as one block (a timer could not fire in the middle), so the pieces behave exactly as before. */
+  var W = window, nST = W.setTimeout, nSI = W.setInterval, nCT = W.clearTimeout, nCI = W.clearInterval, held = null;
+  function holdOn() { held = [];
+    function mk(k) { return function (f, ms) { if (!held) return (k === 'i' ? nSI : nST).apply(W, arguments);
+      var r = { tl: k, f: f, ms: ms, a: Array.prototype.slice.call(arguments, 2), x: 0, id: null }; held.push(r); return r; }; }
+    W.setTimeout = mk('t'); W.setInterval = mk('i');
+    W.clearTimeout = W.clearInterval = function (r) { if (r && typeof r === 'object' && r.tl) { r.x = 1; if (r.id != null) { nCT.call(W, r.id); nCI.call(W, r.id); } return; } nCT.call(W, r); nCI.call(W, r); }; }
+  function holdOff() { var list = held || []; held = null; W.setTimeout = nST; W.setInterval = nSI;
+    list.forEach(function (r) { if (!r.x) r.id = (r.tl === 'i' ? nSI : nST).apply(W, [r.f, r.ms].concat(r.a)); }); }
+  function go(list) { var i = 0;
+    function slice() { var t0 = Date.now();
+      while (i < list.length) { try { (0, eval)(list[i]); } catch (e) { console.error('QuestTools', e); } i++; if (Date.now() - t0 > 60) break; }
+      if (i < list.length) { cover(k1Wait()); return nST.call(W, slice, 0); }
+      holdOff(); stopWait(); try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
+    nST.call(W, function () { holdOn(); slice(); }, 30); }
+  function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} stopWait(); try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } }
   function store(mode) { return db.transaction(ST, mode).objectStore(ST); }
   function getMany(ks, cb) { var out = {}, n = ks.length; if (!n || !db) return cb(out); try { var s = store('readonly'); ks.forEach(function (k) { var q = s.get(k); q.onsuccess = function () { out[k] = q.result; if (--n === 0) cb(out); }; q.onerror = function () { if (--n === 0) cb(out); }; }); } catch (e) { cb(out); } }
   function save(parts, order) { if (!db) return; try { var s = store('readwrite'); Object.keys(parts).forEach(function (h) { s.put(parts[h], h); }); s.put(order, '__order');
     var q = s.getAllKeys(); q.onsuccess = function () { (q.result || []).forEach(function (k) { if (k !== '__order' && order.indexOf(k) < 0) s.delete(k); }); }; } catch (e) {}
     try { indexedDB.deleteDatabase('tashbar-tools'); } catch (e) {} }   /* the old one-piece copy (about 10 MB) is no longer needed */
-  function join(order, fresh, cached) { var a = []; for (var i = 0; i < order.length; i++) { var h = order[i], v = fresh[h] != null ? fresh[h] : cached[h]; if (typeof v !== 'string') return null; a.push(v); } return a.join(''); }
+  function join(order, fresh, cached) { var a = []; for (var i = 0; i < order.length; i++) { var h = order[i], v = fresh[h] != null ? fresh[h] : cached[h]; if (typeof v !== 'string') return null; a.push(v); } return a; }
   function offline(e) { if (done) return; getMany(['__order'], function (o) { var order = o.__order; if (!order || !order.length) return fallback(e);
     getMany(order, function (c) { var js = join(order, {}, c); if (js === null) return fallback(e); done = true; go(js); }); }); }
   function ask(have) { google.script.run.withSuccessHandler(function (r) { if (done) return; if (!r || !r.order || !r.parts) return fallback('bad reply');
