@@ -4,6 +4,14 @@
 
 Imported from the Drive note "02 CURRENT_STATE v269" (2026-11-15 23:58Z, written by builder takeover4). The Drive notes stay the record until the switch to GitHub is approved.
 
+## Block Builders workbook (2026-11-22)
+- The Khaver family's "My Block Math Builders Workbook" (carrying and borrowing) in the app: a 📘 Workbook button on the boy's Math map (Math levels 2-4 and TEST- boys; switch `window.BB_LIVE`: 'on' / 'all' / 'test' / 'off').
+- Every job: Watch me (Dot or Tenzi reads the words aloud; the example plays step by step with moving blocks), then the workbook page itself with the boy's name and date: live answer boxes checked at once with a hint, a second miss offers "Watch me" with those numbers, and a pen layer for the stylus. Sheet B for more practice; scores and pen work saved per page (tab MS_BlockBuilders; also on the Chromebook).
+- Teacher board: staff portal → Reports → 📘 Block Builders workbook (each boy's first-try scores; tap a page to see it with his pen work).
+- Files: `src/BlockBuilders.js`, `src/BlockBuildersData.html` (pages), `src/BlockBuildersUI.html` (player), `src/BlockBuildersStaff.html`; test `tests/lib/blockbuilders.js`.
+- Transcribed: Getting Ready to Add 1-10, Carrying 1-23 (A and B), Getting Ready to Subtract 1-12, Borrowing 1-5 (A and B) and 6A. The rest of Borrowing and "Putting It All Together" show "page on the way" (the PDF is too large for the Drive connector; send the pages to finish). Items marked `pic2:1` have picture numbers that were not in the text copy: check them against the printed page.
+- No money, mastery or evidence rows are written by the workbook (needs a Head of School decision).
+
 ## One Bite (2026-11-21)
 - New lesson player `src/OneBite.html` (six calm steps), switch `OB_LIVE` (`'test'` = TEST- boys only at first). Hand-written bites in `src/OneBiteData*.html`. Read `docs/ONE-BITE-BRIEF.md`, `docs/ONE-BITE-PLAYBOOK.md`, `docs/ONE-BITE-LANES.md`, `docs/TEACHING-AUDIT.md`.
 
