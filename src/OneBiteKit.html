@@ -261,7 +261,7 @@ function fitBad(el,want){ const R=txtRects(el); if(!R.length) return false; cons
   for(let i=0;i<R.length;i++){ const q=R[i]; if(q.left<lo-1||q.right>hi+1) return true; if(!tops.some(t=>Math.abs(t-q.top)<4)) tops.push(q.top); } return tops.length>want; }
 function fitOne(el){ if(!el.textContent.trim()) return; el.style.fontSize=''; el.style.overflowWrap=''; const want=Math.max(2,(el.textContent.match(/\n/g)||[]).length+1);
   if(!fitBad(el,want)) return; const f0=parseFloat(getComputedStyle(el).fontSize)||20; let f=f0;
-  for(let k=0;k<8&&f>f0*0.55&&fitBad(el,want);k++){ f=Math.max(f0*0.55,f*0.88); el.style.fontSize=f.toFixed(1)+'px'; }
+  for(let k=0;k<10&&f>f0*0.45&&fitBad(el,want);k++){ f=Math.max(f0*0.45,f*0.88); el.style.fontSize=f.toFixed(1)+'px'; }
   if(fitBad(el,want)) el.style.overflowWrap='anywhere'; }   /* still too long at the smallest size: break the word rather than stick out */
 
 /* ---------- the kit API the player uses ---------- */
@@ -284,7 +284,7 @@ const OBK=window.OBK={
   judge(d,s){ return ty(d).judge(d,s); },
   solve(d,s){ ty(d).solve(d,s); s.solved=true; },
   mount(root,d,s,c){ OBK.fit(root); const t=ty(d); if(t&&t.mount) try{ t.mount(root,d,s,c||{}); }catch(e){ console.warn('OneBiteKit mount',e); } },
-  /* fit-text: long card, cell, match, choice, bin and prompt text shrinks (down to 55%) until it fits in 2 lines (or as many lines as its \n asks)
+  /* fit-text: long card, cell, match, choice, bin and prompt text shrinks (down to 45%) until it fits in 2 lines (or as many lines as its \n asks)
      and never sticks out. Runs after every draw; short text is never touched. */
   fit(root){ try{ (root||document).querySelectorAll(FIT).forEach(fitOne); }catch(e){} },
   hear(d){ try{ const clips=window.TL_CLIPS||{}; if(d.clip&&clips[d.clip]&&window.TLWorld&&TLWorld.say){ TLWorld.say(d.clip,'',{force:true}); return; }
