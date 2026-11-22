@@ -472,5 +472,716 @@ K('MATH.GEO.L02.02',[
   {type:'listen', hear:'quarters', o:['▮|▮|▮|▮','▮▮|▮▮','▮▮▮|▮'], a:'▮|▮|▮|▮', say:'Listen. Tap the bar cut into the parts you hear.', how:'Quarters are 4 equal parts.'},
   {type:'count', n:4, pic:'🥧', o:['2','3','4'], say:'How many quarters make a whole pie?', how:'Count the 4 equal parts.'},
   {type:'sort', bins:['Halves','Not halves'], cards:[['▮▮|▮▮',0],['▮▮▮|▮',1],['▮|▮',0],['▮|▮▮▮',1]], say:'Fair halves or not? Sort them.', how:'Two pieces are not halves unless they are equal.'}]);
+
+/* ---- ROUND 2, LANE B, batch 3 (2026-11-22): Grade 2 (L03), band B23. Same rules as above; 3 or 4 choices.
+   W(id, steps) adds Watch Me steps: a chant or move where the bite had none, and a short step where a check asks something Watch Me did not show. */
+function W(id){ var b=B[id]; if(!b||!b.watch||!b.watch.steps){ return; } for(var i=1;i<arguments.length;i++){ b.watch.steps.push(arguments[i]); } }
+W('MATH.OPS.L03.01',{t:'Chant it: Tens with tens, ones with ones!', m:{type:'chant',lines:['Tens with tens,','ones with ones!']}});
+K('MATH.OPS.L03.01',[
+  {type:'blocks', n:83, q:'38 + 45', say:'38 + 45 is 83. Build 83 with tens and ones.', how:'Tens: 30 + 40 = 70. Ones: 8 + 5 = 13. 70 + 13 = 83.'},
+  {type:'hop', start:83, add:-20, unit:10, from:0, to:100, q:'83 − 25: first − 20', say:'83 − 25. First hop back 2 tens.', how:'Take away the tens first: 83 − 20 = 63. Then the ones.'}],[
+  {type:'tiles', w:['5','8'], extra:['6','3'], q:'63 − 5 = ?', say:'Now take away the 5 ones. Build the answer.', how:'63 − 3 = 60. 2 more back is 58. So 83 − 25 = 58.'},
+  {type:'hop', start:66, add:-20, unit:10, from:0, to:100, q:'66 − 28: first − 20', say:'66 − 28. Hop back 2 tens first.', how:'66 − 20 = 46. Then take away 8 more: 38.'},
+  {type:'match', pairs:[['47 + 28','75'],['56 + 36','92'],['48 − 35','13']], say:'Tens first, then ones. Match each answer.', how:'47 + 28: 40 + 20 = 60. 7 + 8 = 15. 60 + 15 = 75.'},
+  {type:'blocks', n:92, q:'56 + 36', say:'56 + 36. Build the answer.', how:'50 + 30 = 80. 6 + 6 = 12. 80 + 12 = 92.'},
+  {type:'tiles', w:['1','3'], extra:['2','7'], q:'48 − 35 = ?', say:'48 − 35. Tens, then ones. Build it.', how:'48 − 30 = 18. 18 − 5 = 13. Check: 13 + 35 = 48.'}]);
+
+W('MATH.PV.L03.01',{t:'Chant it: Hundreds first, then tens, then ones!', m:{type:'chant',lines:['Hundreds first,','then the tens,','then the ones!']}});
+K('MATH.PV.L03.01',[
+  {type:'tiles', w:['4','8','2'], extra:['0'], q:'4 hundreds, 8 tens, 2 ones', say:'4 hundreds, 8 tens, 2 ones. Build the number.', how:'Hundreds first, then tens, then ones: 482.'},
+  {type:'sort', bins:['>','<','='], cards:[['482 ☐ 428',0],['319 ☐ 391',1],['650 ☐ 650',2]], say:'Which sign goes in the box? Sort them.', how:'Hundreds first. If they tie, look at the tens. The open side faces the bigger number.'}],[
+  {type:'listen', hear:'1 hundred, 1 ten, 2 ones', o:['112','121','211'], a:'112', say:'Listen. Tap the number you hear.', how:'Write one digit for each place: hundreds, tens, ones.'},
+  {type:'findall', grid:['442','424','244','402','427','412'], find:['442','402','412'], findSay:'number with 2 ones', say:'Tap every number with 2 in the ones place.', how:'The ones place is the last digit, on the right.'},
+  {type:'tiles', w:['3','1','3'], extra:['0','4'], q:'3 hundreds, 1 ten, 3 ones', say:'3 hundreds, 1 ten, 3 ones. Build it.', how:'One digit for each place: 3, 1, 3. That is 313.'},
+  {type:'sort', bins:['>','<'], cards:[['706 ☐ 760',1],['851 ☐ 815',0],['299 ☐ 300',1],['540 ☐ 504',0]], say:'Which sign? Sort them.', how:'Hundreds tie? Compare the tens. The open side faces the bigger number.'},
+  {type:'tiles', w:['298','389','398'], extra:['900'], say:'Line them up from smallest to biggest.', how:'Hundreds first: 2, then 3. Tie? Look at the tens.'}]);
+
+W('MATH.OPS.L03.02',
+  {t:'Subtract: 417 − 180. 1 ten take away 8 tens? Too small!', m:{type:'blocks',tens:1,ones:7}},
+  'Borrow 1 hundred: 11 tens − 8 tens = 3 tens. 417 − 180 = 237.',
+  {t:'Chant it: Ten ones? Trade for a ten! Too few? Borrow!', m:{type:'chant',lines:['Ten ones? Trade for a ten!','Too few on top? Borrow, my friend!']}});
+K('MATH.OPS.L03.02',[
+  {type:'blocks', n:12, q:'8 + 4 ones', say:'8 + 4 ones. Build 12: trade 10 ones for a ten.', how:'10 ones make 1 ten. 2 ones are left: 1 ten, 2 ones.'},
+  {type:'tiles', w:['6','2','2'], extra:['1','3'], q:'368 + 254 = ?', say:'Ones, then tens, then hundreds. Build the answer.', how:'8 + 4 = 12: write 2, carry 1. 6 + 5 + 1 = 12: write 2, carry 1. 3 + 2 + 1 = 6.'}],[
+  {type:'match', pairs:[['926 − 304','622'],['615 − 111','504'],['417 − 180','237']], say:'Subtract column by column. Match each answer.', how:'Ones first, then tens, then hundreds. Too small on top? Borrow.'},
+  {type:'hop', start:417, add:-100, unit:100, from:0, to:1000, q:'417 − 180: first − 100', say:'417 − 180. Hop back 100 first.', how:'417 − 100 = 317. Then take away 80 more.'},
+  {type:'tiles', w:['2','3','7'], extra:['1','4'], q:'317 − 80 = ?', say:'317 − 80. Borrow a hundred for the tens.', how:'1 ten − 8 tens? Borrow: 11 tens − 8 tens = 3 tens. 237.'},
+  {type:'blocks', n:45, q:'27 + 18', say:'27 + 18. Trade 10 ones for a ten.', how:'7 + 8 = 15 ones. Trade 10 for a ten: 4 tens, 5 ones.'},
+  {type:'sort', bins:['Trade','No trade'], cards:[['8 + 5',0],['1 + 3',1],['6 + 7',0],['2 + 5',1]], q:'Add the ones', say:'Do the ones make 10 or more? Sort them.', how:'10 or more ones? Trade 10 ones for a ten.'}]);
+
+W('MATH.MEAS.L03.04',
+  'Quarter 25¢, dime 10¢, nickel 5¢, penny 1¢.',
+  {t:'Change: pay $1 for a 20¢ eraser. Count up from 20 to 100: 80¢.', m:{type:'line',from:0,to:100,hops:[20,30,40,50,60,70,80,90,100]}},
+  {t:'Chant it: Quarter 25, dime is 10, nickel 5, a penny 1!', m:{type:'chant',lines:['Quarter 25, dime is 10,','nickel 5, a penny 1!']}});
+K('MATH.MEAS.L03.04',[
+  {type:'match', pairs:[['quarter','25¢'],['dime','10¢'],['nickel','5¢'],['penny','1¢']], say:'Match each coin to what it is worth.', how:'Quarter 25¢, dime 10¢, nickel 5¢, penny 1¢.'},
+  {type:'hop', start:0, add:75, unit:25, from:0, to:100, q:'3 quarters', say:'Count 3 quarters. Hop by 25s.', how:'25, 50, 75. 3 quarters is 75¢.'}],[
+  {type:'tiles', w:['1','0','5'], extra:['2','9'], q:'3 quarters, 2 dimes, 2 nickels', say:'75, then 2 dimes, then 2 nickels. How many cents?', how:'75 + 10 + 10 = 95. 95 + 5 + 5 = 105¢.'},
+  {type:'hop', start:20, add:80, unit:10, from:0, to:100, q:'Costs 20¢. You pay $1.', say:'Count up from 20¢ to 100¢. That is the change.', how:'Hop by 10s from 20 to 100: 8 hops is 80¢.'},
+  {type:'count', n:4, pic:'🪙', q:'How many quarters make $1?', o:['3','4','5'], say:'Tap each quarter. How many make $1?', how:'25, 50, 75, 100. 4 quarters make $1.'},
+  {type:'match', pairs:[['2 quarters','50¢'],['4 dimes','40¢'],['3 nickels','15¢']], say:'Match each group of coins to its total.', how:'Count by the coin: dimes by 10s, nickels by 5s.'},
+  {type:'hop', start:60, add:40, unit:10, from:0, to:100, q:'Costs 60¢. You pay $1.', say:'Count up from 60¢ to 100¢ for the change.', how:'60, 70, 80, 90, 100: 4 hops is 40¢.'}]);
+
+W('MATH.GEO.L03.01',
+  {t:'A square has 4 equal sides and 4 square corners.', m:{type:'emoji',e:'🟦',n:1}},
+  {t:'Draw a square in the air: 1, 2, 3, 4 sides!', m:{type:'move',t:'Draw a square in the air: 1, 2, 3, 4 sides!'}});
+K('MATH.GEO.L03.01',[
+  {type:'sort', bins:['3 sides','4 sides','5 or 6'], cards:[['🔺',0],['🟦',1],['⬠',2],['▬',1],['⬡',2],['◢',0]], say:'Count the sides. Sort each shape.', how:'Count each straight side. Triangle 3, square 4, pentagon 5, hexagon 6.'},
+  {type:'match', pairs:[['3 sides','triangle'],['5 sides','pentagon'],['6 sides','hexagon']], say:'Match the number of sides to the shape name.', how:'Tri means 3. Penta means 5. Hexa means 6.'}],[
+  {type:'listen', hear:'a square: 4 equal sides and 4 square corners', o:['🟦','▬','🔺'], a:'🟦', say:'Listen. Tap the shape you hear.', how:'A square has 4 equal sides. A long rectangle does not.'},
+  {type:'count', n:10, pic:'🟨', q:'2 rows of 5 squares', o:['8','10','12'], say:'Tap each square. How many in 2 rows of 5?', how:'Count row by row: 5, 10.'},
+  {type:'findall', grid:['🔺','🟦','⬠','🔺','⬡','◢','🟦','⬠'], find:['🔺','◢'], findSay:'triangle', say:'Tap every triangle.', how:'A triangle has 3 sides. Count them.'},
+  {type:'sort', bins:['Square','Not a square'], cards:[['🟦',0],['▬',1],['🟩',0],['🔺',1]], say:'Square or not? Sort them.', how:'4 equal sides and 4 square corners: a square.'},
+  {type:'hop', start:0, add:6, unit:2, from:0, to:10, q:'3 rows, 2 columns', say:'3 rows of 2 squares. Hop by 2s.', how:'Rows go across. Each row has 2 squares: 2, 4, 6.'}]);
+
+W('MATH.MEAS.L03.01',
+  '1 inch is about 2 and a half centimeters. So 1 inch is longer.',
+  'Small things, like a paper clip: measure in centimeters.',
+  {t:'Show 1 cm with two fingers. Now show 1 inch: bigger!', m:{type:'move',t:'Show 1 cm with two fingers. Now show 1 inch: a bit bigger!'}});
+K('MATH.MEAS.L03.01',[
+  {type:'hop', start:0, add:6, unit:1, from:0, to:10, q:'A pencil from 0 to ?', say:'Start at 0. Hop along the pencil: 6 hops.', how:'Line up the end with 0. Count the spaces: 6 inches.'},
+  {type:'listen', hear:'Which is longer: 1 inch or 1 centimeter?', o:['1 inch','1 centimeter'], a:'1 inch', say:'Listen. Tap the longer one.', how:'1 inch is about 2 and a half centimeters.'}],[
+  {type:'sort', bins:['cm','miles'], cards:[['📎',0],['🖍️',0],['🛣️',1],['🐜',0],['✈️',1]], say:'Small thing: cm. Long trip: miles. Sort them.', how:'Short things are measured in centimeters. Long roads in miles.'},
+  {type:'hop', start:2, add:5, unit:1, from:0, to:10, q:'Starts at 2, ends at 7', say:'Not at 0? Count the hops from 2 to 7.', how:'Count the spaces, not the last number: 5.'},
+  {type:'match', pairs:[['📎','3 cm'],['📏','12 inches'],['🚗 to Bubby','90 miles']], say:'Match each thing to a good length.', how:'Small: cm. Medium: inches. Very far: miles.'},
+  {type:'count', n:5, pic:'📎', q:'How many clips long is the sefer?', o:['4','5','6'], say:'The sefer is this many clips long. Count them.', how:'Touch each clip once. No gaps, no overlaps.'},
+  {type:'hop', start:0, add:1, unit:1, from:0, to:5, q:'The arrow is at ?', say:'The arrow is 1 space from 0. Hop there.', how:'From 0 to the arrow is 1 space: 1 inch.'}]);
+
+W('MATH.MEAS.L03.02',
+  'Cut off 20 inches from 70 inches? Subtract: 70 − 20 = 50.',
+  {t:'Stretch your arms long, then short. How much longer?', m:{type:'move',t:'Stretch your arms long, then short. How much longer?'}});
+K('MATH.MEAS.L03.02',[
+  {type:'hop', start:9, add:6, unit:1, from:5, to:20, q:'Rope 15, string 9', say:'Count up from 9 to 15. How many hops?', how:'9 to 15 is 6 hops. The rope is 6 inches longer.'},
+  {type:'sort', bins:['Subtract','Add'], cards:[['longer?',0],['join',1],['cut off',0],['tie on',1]], say:'Subtract or add? Sort the words.', how:'How much longer, or cut off: subtract. Join: add.'}],[
+  {type:'hop', start:70, add:-20, unit:10, from:0, to:100, q:'70 inches. Cut off 20.', say:'70 inches. Cut off 20. Hop back 2 tens.', how:'70 − 20 = 50 inches.'},
+  {type:'match', pairs:[['63 cm − 34 cm','29 cm'],['71 in − 53 in','18 in'],['45 cm − 28 cm','17 cm']], say:'How much longer? Match each answer.', how:'Subtract the shorter from the longer. Keep the unit.'},
+  {type:'tiles', w:['2','9'], extra:['3','1'], q:'63 cm − 34 cm', say:'One rope is 63 cm, one is 34. Difference?', how:'Count up: 34 + 6 = 40. 40 + 23 = 63. 6 + 23 = 29.'},
+  {type:'blocks', n:18, q:'71 in − 53 in', say:'Build the difference: 71 − 53.', how:'53 + 7 = 60. 60 + 11 = 71. 7 + 11 = 18.'},
+  {type:'listen', hear:'A string is 12 inches. Another is 8 inches. How much longer?', o:['4 in','20 in','8 in'], a:'4 in', say:'Listen to the story. Tap the answer.', how:'How much longer means subtract: 12 − 8 = 4.'}]);
+
+W('MATH.MEAS.L03.03',
+  'Long hand on 9? 5, 10, 15 … 45. It is 45 minutes past.',
+  {t:'Chant it: 5, 10, 15, 20, the long hand counts by 5s!', m:{type:'chant',lines:['5, 10, 15, 20,','the long hand counts by 5s!']}});
+K('MATH.MEAS.L03.03',[
+  {type:'hop', start:0, add:15, unit:5, from:0, to:60, q:'Long hand on 3', say:'Count by 5s to the 3. Hop 3 times.', how:'Each number is 5 minutes: 5, 10, 15.'},
+  {type:'match', pairs:[['on the 1','5 min'],['on the 3','15 min'],['on the 6','30 min']], say:'Where is the long hand? Match the minutes.', how:'Count by 5s up to the number.'}],[
+  {type:'hop', start:0, add:45, unit:5, from:0, to:60, q:'Long hand on 9', say:'Long hand on 9. Count by 5s.', how:'5, 10, 15 … 45. On the 9 is 45 minutes.'},
+  {type:'listen', hear:'Short hand just past 12. Long hand on 9.', o:['12:45','9:00','1:45'], a:'12:45', say:'Listen. Tap the time.', how:'Short hand: the hour it just passed, 12. Long hand on 9: 45.'},
+  {type:'tiles', w:['2','5'], extra:['3','0'], q:'Long hand on 5', say:'Long hand on 5. How many minutes?', how:'5, 10, 15, 20, 25.'},
+  {type:'sort', bins:['a.m.','p.m.'], cards:[['🌅',0],['🍳',0],['🌙',1],['🕯️',1]], say:'Morning or evening? Sort them.', how:'a.m. is morning. p.m. is afternoon and evening.'},
+  {type:'match', pairs:[['on the 4','20 min'],['on the 9','45 min'],['on the 11','55 min']], say:'Long hand on each number. Match the minutes.', how:'Count by 5s up to the number.'}]);
+
+W('MATH.NUM.L03.01',{t:'Chant it: 2, 4, 6, 8, even numbers pair up great!', m:{type:'chant',lines:['2, 4, 6, 8,','even numbers pair up great!']}});
+K('MATH.NUM.L03.01',[
+  {type:'tenframe', n:9, say:'Make 9. Look: is one dot alone?', how:'Each column is a pair. 9 has one dot left alone: odd.'},
+  {type:'sort', bins:['Even','Odd'], cards:[['8',0],['7',1],['12',0],['13',1]], say:'Even or odd? Sort the numbers.', how:'Pairs with none left over: even. One left over: odd.'}],[
+  {type:'findall', grid:['14','23','36','45','58','61','70','89'], find:['14','36','58','70'], findSay:'even number', say:'Tap every even number.', how:'Look at the last digit: 0, 2, 4, 6, 8 are even.'},
+  {type:'tenframe', n:12, say:'Make 12. Does every dot have a partner?', how:'12 makes 6 pairs, none left over: even.'},
+  {type:'sort', bins:['Even','Odd'], cards:[['46',0],['21',1],['30',0],['57',1],['64',0]], say:'Look at the ones digit. Even or odd?', how:'Ones digit 0, 2, 4, 6, 8: even. 1, 3, 5, 7, 9: odd.'},
+  {type:'hop', start:0, add:12, unit:2, from:0, to:20, q:'Even numbers', say:'Hop by 2s. Every landing is even.', how:'2, 4, 6, 8, 10, 12. Count by 2s.'},
+  {type:'listen', hear:'Is 13 odd or even?', o:['Odd','Even'], a:'Odd', say:'Listen. Tap odd or even.', how:'13 ends in 3. 3 is odd.'}]);
+
+K('MATH.NUM.L03.02',[
+  {type:'hop', start:30, add:15, unit:5, from:0, to:50, q:'30, 35, 40, ?', say:'Start at 30. Hop by 5s 3 times.', how:'30, 35, 40, 45. The ones go 0, 5, 0, 5.'},
+  {type:'tiles', w:['5','10','15','20'], extra:['25'], say:'Count by 5s. Put the tiles in order.', how:'Add 5 each time: 5, 10, 15, 20.'}],[
+  {type:'hop', start:40, add:15, unit:5, from:0, to:60, q:'40, 45, 50, ?', say:'40, 45, 50, then what? Hop by 5s.', how:'Start at 40. Hop 3 times: 45, 50, 55.'},
+  {type:'findall', grid:['15','22','30','35','41','50','53','60'], find:['15','30','35','50','60'], findSay:'number you say by 5s', say:'Tap every number you say counting by 5s.', how:'By 5s, the ones digit is 5 or 0.'},
+  {type:'tiles', w:['300','400','500','600'], extra:['350'], say:'Count by 100s. Put them in order.', how:'Only the hundreds go up: 3, 4, 5, 6.'},
+  {type:'hop', start:30, add:40, unit:10, from:0, to:100, q:'Count by 10s from 30', say:'Start at 30. Hop by 10s 4 times.', how:'30, 40, 50, 60, 70. The tens go up.'},
+  {type:'match', pairs:[['5, 10, 15','20'],['70, 80, 90','100'],['200, 300, 400','500']], say:'What comes next? Match them.', how:'Find the jump: 5, 10 or 100. Add it once more.'}]);
+
+W('MATH.OPS.L03.03',{t:'Chant it: Make a ten, or use a double!', m:{type:'chant',lines:['Make a ten, or use a double,','facts come fast without trouble!']}});
+K('MATH.OPS.L03.03',[
+  {type:'tenframe', n:14, start:8, say:'8 + 6. Fill the ten, then the rest.', how:'8 needs 2 to make 10. 4 are left: 14.'},
+  {type:'match', pairs:[['12 − 4','8'],['15 − 6','9'],['13 − 6','7']], say:'Think addition to subtract. Match them.', how:'12 − 4: what plus 4 makes 12? 8 + 4 = 12, so 8.'}],[
+  {type:'hop', start:12, add:-4, unit:1, from:5, to:15, q:'12 − 4', say:'12 − 4. Hop back 4.', how:'12, 11, 10, 9, 8. Or think 4 + 8 = 12.'},
+  {type:'match', pairs:[['2 + 2','4'],['6 + 6','12'],['7 + 7','14'],['4 + 2','6']], say:'Say each fact fast. Match the answers.', how:'Doubles are easy: 6 + 6 = 12. 4 + 2 is 2 + 2, plus 2.'},
+  {type:'tenframe', n:15, start:9, say:'9 + 6. Fill the ten first.', how:'9 needs 1. 5 are left: 15.'},
+  {type:'sort', bins:['Makes 10','Not 10'], cards:[['7 + 3',0],['6 + 5',1],['8 + 2',0],['4 + 4',1]], say:'Does it make 10? Sort them.', how:'Ten friends: 1 and 9, 2 and 8, 3 and 7, 4 and 6.'},
+  {type:'tiles', w:['1','3'], extra:['2','4'], q:'7 + 6 = ?', say:'7 + 6. Use a double: 6 + 6, plus 1.', how:'6 + 6 = 12. One more is 13.'}]);
+
+W('MATH.OPS.L03.04',{t:'Clap the rows with me: 5, 10, 15!', m:{type:'move',t:'Clap once for each row of 5: 5, 10, 15!'}});
+K('MATH.OPS.L03.04',[
+  {type:'count', n:10, pic:'🪑', q:'2 rows of 5 chairs', o:['8','10','12'], say:'2 rows of 5 chairs. Tap each chair.', how:'Each row has 5. 5 + 5 = 10.'},
+  {type:'hop', start:0, add:15, unit:5, from:0, to:20, q:'3 rows of 5', say:'3 rows of 5. Hop by 5s.', how:'5 + 5 + 5 = 15.'}],[
+  {type:'match', pairs:[['3 + 3 + 3','9'],['4 + 4','8'],['2 + 2 + 2 + 2 + 2','10']], say:'Add the equal rows. Match each total.', how:'3 + 3 = 6. 6 + 3 = 9.'},
+  {type:'tenframe', n:10, say:'Make 2 rows of 5. Fill the frame.', how:'A ten-frame is an array: 2 rows of 5 is 10.'},
+  {type:'hop', start:0, add:9, unit:3, from:0, to:15, q:'3 + 3 + 3', say:'3 rows of 3. Hop by 3s.', how:'3, 6, 9.'},
+  {type:'count', n:20, pic:'🧁', q:'4 rows of 5 cupcakes', o:['15','20','25'], say:'4 rows of 5 cupcakes. How many?', how:'Count row by row: 5, 10, 15, 20.'},
+  {type:'sort', bins:['Equal rows','Not equal'], cards:[['3 · 3 · 3',0],['3 · 2 · 3',1],['4 · 4',0],['5 · 4',1]], say:'Chairs in each row. Equal rows? Sort them.', how:'An array has the same number in every row.'}]);
+
+W('MATH.OPS.L03.05',{t:'Chant it: Ones go first, then carry the ten!', m:{type:'chant',lines:['Ones go first, then carry the ten,','tens go next, then add again!']}});
+K('MATH.OPS.L03.05',[
+  {type:'blocks', n:68, q:'23 + 14 + 31', say:'23 + 14 + 31. Build the answer.', how:'Ones: 3 + 4 + 1 = 8. Tens: 2 + 1 + 3 = 6. 68.'},
+  {type:'tiles', w:['7','4'], extra:['6','1'], q:'17 + 33 + 24', say:'17 + 33 + 24. Ones first, carry the ten.', how:'Ones: 7 + 3 + 4 = 14. Write 4, carry 1. Tens: 1 + 1 + 3 + 2 = 7.'}],[
+  {type:'match', pairs:[['21 + 13 + 16 + 36','86'],['17 + 33 + 24','74'],['26 + 38 + 34 + 16','114']], say:'Add each column. Match the totals.', how:'Ones column first. Carry the tens. Then the tens column.'},
+  {type:'blocks', n:86, q:'21 + 13 + 16 + 36', say:'Build the total: ones first, then tens.', how:'Ones: 1 + 3 + 6 + 6 = 16. Carry 1. Tens: 1 + 2 + 1 + 1 + 3 = 8.'},
+  {type:'tiles', w:['1','1','4'], extra:['2','0'], q:'26 + 38 + 34 + 16', say:'Add all 4. The ones make 24: carry 2.', how:'Ones: 6 + 8 + 4 + 6 = 24. Tens: 2 + 2 + 3 + 3 + 1 = 11. 114.'},
+  {type:'sort', bins:['Carry a ten','No carry'], cards:[['7 + 8 + 4',0],['2 + 3 + 1',1],['6 + 6',0],['4 + 5',1]], q:'Add the ones', say:'Add the ones. 10 or more? Carry a ten.', how:'7 + 8 + 4 = 19. That is 10 or more, so carry.'},
+  {type:'hop', start:44, add:30, unit:10, from:0, to:100, q:'44 + 30', say:'Add the tens column: hop 3 tens from 44.', how:'44, 54, 64, 74.'}]);
+
+W('MATH.OPS.L03.06',{t:'Chant it: Scene one, then scene two!', m:{type:'chant',lines:['Scene one, then scene two,','the first answer helps you through!']}});
+K('MATH.OPS.L03.06',[
+  {type:'hop', start:20, add:15, unit:5, from:0, to:50, q:'Scene 1: 20 cards, got 15', say:'Scene 1: Dovid had 20 and got 15. Hop.', how:'20 + 15 = 35. Keep 35 for scene 2.'},
+  {type:'tiles', w:['2','7'], extra:['3','5'], q:'Scene 2: 35 − 8', say:'Scene 2: he gave away 8. Build the answer.', how:'35 − 5 = 30. 3 more back: 27.'}],[
+  {type:'hop', start:61, add:-20, unit:10, from:0, to:100, q:'31 + 30 = 61. Then 20 go.', say:'61 seforim. 20 went to the beis medrash. Hop back.', how:'Step 1: 31 + 30 = 61. Step 2: 61 − 20 = 41.'},
+  {type:'match', pairs:[['31 + 30 − 20','41'],['42 − 18 + 10','34'],['20 + 15 − 8','27']], say:'Do step 1, then step 2. Match each answer.', how:'Left to right: 42 − 18 = 24. 24 + 10 = 34.'},
+  {type:'sort', bins:['Add','Subtract'], cards:[['got more',0],['gave away',1],['came',0],['went',1]], say:'Story words: add or subtract? Sort them.', how:'Got more or came: add. Gave away or went: subtract.'},
+  {type:'tiles', w:['3','9'], extra:['2','4'], q:'Baruch 17. Moshe 5 more. Together?', say:'Moshe read 17 + 5 = 22. Together with Baruch?', how:'Step 1: 17 + 5 = 22. Step 2: 17 + 22 = 39.'},
+  {type:'listen', hear:'Eli had 42 stickers. He gave 18 to Ari. Then he got 10 more.', o:['34','24','70'], a:'34', say:'Listen to the whole story. Tap the answer.', how:'42 − 18 = 24. Then 24 + 10 = 34.'}]);
+
+W('MATH.PV.L03.02',
+  '10 tens make 1 hundred.',
+  {t:'Point left to right: hundreds, tens, ones!', m:{type:'move',t:'Point left to right and say: hundreds, tens, ones!'}});
+K('MATH.PV.L03.02',[
+  {type:'tiles', w:['6','2','7'], extra:['0'], q:'6 flats, 2 rods, 7 cubes', say:'6 hundreds, 2 tens, 7 ones. Build it.', how:'Hundreds, tens, ones, from left to right: 627.'},
+  {type:'blocks', n:24, q:'124 = 1 hundred and ?', say:'124 has 1 hundred. Build the 24.', how:'2 tens and 4 ones. The tens digit of 124 is 2.'}],[
+  {type:'match', pairs:[['106','0 tens'],['966','6 tens'],['124','2 tens']], say:'How many tens? Look at the middle digit.', how:'In a 3-digit number, the tens are in the middle.'},
+  {type:'tiles', w:['4','0','7'], extra:['1','5'], q:'4 hundreds, 0 tens, 7 ones', say:'No tens? Use a 0 to hold the place.', how:'4 hundreds, 0 tens, 7 ones: 407.'},
+  {type:'findall', grid:['305','350','503','530','315','513'], find:['305','503'], findSay:'number with 0 tens', say:'Tap every number with 0 tens.', how:'Look at the middle digit. Is it 0?'},
+  {type:'hop', start:0, add:100, unit:10, from:0, to:100, q:'10 tens make ?', say:'Hop by 10s, 10 times. Where do you land?', how:'10 tens make 1 hundred.'},
+  {type:'match', pairs:[['3 hundreds','300'],['3 tens','30'],['3 ones','3']], say:'What is each 3 worth? Match.', how:'A 3 in the hundreds is 300. In the tens it is 30.'}]);
+
+K('MATH.PV.L03.03',[
+  {type:'match', pairs:[['2 hundreds','200'],['5 tens','50'],['6 ones','6']], say:'Stretch 256. Match each digit to its worth.', how:'2 hundreds is 200. 5 tens is 50. 6 ones is 6.'},
+  {type:'tiles', w:['400','40','5'], extra:['4','50'], say:'Stretch 445. Put the parts in order.', how:'445 = 400 + 40 + 5.'}],[
+  {type:'match', pairs:[['445 = 400 + ? + 5','40'],['988 = 900 + ? + 8','80'],['463 = ? + 60 + 3','400']], say:'Find the missing part. Match.', how:'Look at the digit in that place: 4 tens is 40.'},
+  {type:'tiles', w:['5','1','4'], extra:['0'], q:'500 + 10 + 4', say:'Squeeze it back together. Build the number.', how:'5 hundreds, 1 ten, 4 ones: 514.'},
+  {type:'sort', bins:['Hundreds','Tens','Ones'], cards:[['700',0],['20',1],['8',2],['300',0],['60',1]], say:'Which place is each part? Sort them.', how:'Two zeros: hundreds. One zero: tens. No zero: ones.'},
+  {type:'tiles', w:['700','20','8'], extra:['72','80'], say:'Stretch 728. Put the parts in order.', how:'728 = 700 + 20 + 8.'},
+  {type:'listen', hear:'nine hundred, eighty, eight', o:['988','908','980'], a:'988', say:'Listen. Tap the number.', how:'900 + 80 + 8 = 988.'}]);
+
+W('MATH.PV.L03.04',{t:'Chant it: Plus 10? The tens go up!', m:{type:'chant',lines:['Plus 10? The tens go up.','Plus 100? The hundreds go up!']}});
+K('MATH.PV.L03.04',[
+  {type:'hop', start:456, add:100, unit:100, from:0, to:1000, q:'456 + 100', say:'456 + 100. Hop 100 once.', how:'Only the hundreds change: 4 becomes 5. 556.'},
+  {type:'tiles', w:['1','8','9'], extra:['7','2'], q:'10 more than 179', say:'10 more than 179. Which digit changes?', how:'The tens go up 1: 7 becomes 8. 189.'}],[
+  {type:'hop', start:649, add:10, unit:10, from:600, to:700, q:'10 more than 649', say:'10 more than 649. Hop by 10.', how:'The tens go up: 4 becomes 5. 659.'},
+  {type:'match', pairs:[['569 + 10','579'],['345 + 100','445'],['602 − 10','592']], say:'Which digit moves? Match each answer.', how:'10 changes the tens. 100 changes the hundreds.'},
+  {type:'hop', start:295, add:10, unit:10, from:250, to:350, q:'295 + 10', say:'295 + 10. Careful at 9!', how:'9 tens + 1 ten = 10 tens: a new hundred. 305.'},
+  {type:'sort', bins:['+ 10','+ 100'], cards:[['345 → 445',1],['179 → 189',0],['620 → 630',0],['208 → 308',1]], say:'Did it jump 10 or 100? Sort them.', how:'The tens changed: + 10. The hundreds changed: + 100.'},
+  {type:'tiles', w:['5','7','9'], extra:['6','8'], q:'10 more than 569', say:'10 more than 569. Build it.', how:'The 6 tens become 7 tens: 579.'}]);
+
+W('MATH.STAT.L03.01',
+  'Together means add the two bars: 8 + 5 = 13.',
+  {t:'Chant it: Together? Add! How many more? Subtract!', m:{type:'chant',lines:['Together? Add!','How many more? Subtract!']}});
+K('MATH.STAT.L03.01',[
+  {type:'count', n:8, pic:'🟦', q:'The Sunday bar', o:['6','7','8','9'], say:'Count the squares in the Sunday bar.', how:'Each square stands for one page.'},
+  {type:'hop', start:5, add:3, unit:1, from:0, to:10, q:'Sunday 8, Monday 5', say:'How many more on Sunday? Count up from 5.', how:'5 to 8 is 3 hops. 8 − 5 = 3.'}],[
+  {type:'match', pairs:[['Sun 8 + Mon 5','13'],['Tue 7 + Wed 8','15'],['Mon 5 + Thu 2','7']], say:'Together means add. Match each total.', how:'Read each bar, then add: 7 + 8 = 15.'},
+  {type:'count', n:7, pic:'🟩', q:'The Tuesday bar', o:['6','7','8'], say:'Each square is one page. How many on Tuesday?', how:'Touch each square once.'},
+  {type:'hop', start:7, add:8, unit:1, from:5, to:20, q:'Tue 7 + Wed 8', say:'Together: start at 7, hop 8 more.', how:'7 + 8 = 15 pages together.'},
+  {type:'tiles', w:['2','5','7','8'], q:'Mon 5, Thu 2, Tue 7, Sun 8', say:'Order the bars from shortest to tallest.', how:'The shortest bar has the fewest squares.'},
+  {type:'listen', hear:'Sunday has 8 pages. Thursday has 2. How many more on Sunday?', o:['6','10','8'], a:'6', say:'Listen. How many more? Tap the answer.', how:'How many more means subtract: 8 − 2 = 6.'}]);
+
+/* ---- ROUND 2, LANE B, batch 4 (2026-11-22): Grade 3 (L04), band B23. Whole bites (round-1 fields) plus do/your activities. ---- */
+B['MATH.OPS.L04.01']={ band:'B23', pic:'🏆', today:'Know your times facts to 10 × 10', why:'Rows of chumashim, packs of pencils: times facts count them fast.',
+  ready:[{q:'5 + 5 + 5 = ?', o:['15','10','555'], a:'15'},{q:'3 rows of 2 chairs. How many?', o:['6','5','32'], a:'6', m:{type:'emoji',e:'🪑',n:6,group:2}}],
+  bridge:'MATH.OPS.L03.04', bridgeName:'Arrays',
+  watch:{ q:'4 rows of 6 chumashim. How many?', m:{type:'emoji',e:'📘',n:24,group:6}, steps:[
+    {t:'4 rows of 6 is 4 × 6. The × sign means groups of.'},
+    {t:'Skip count by 6: 6, 12, 18, 24.', m:{type:'line',from:0,to:30,hops:[6,12,18,24]}},
+    'Order does not matter: 6 × 4 = 4 × 6 = 24.',
+    'Stuck? Use a fact you know: 7 × 8 is 7 × 4 doubled: 28 + 28 = 56.',
+    {t:'Chant it: 6, 12, 18, 24!', m:{type:'chant',lines:['6, 12, 18, 24,','times facts open every door!']}}], a:'4 × 6 = 24' },
+  oops:{ q:'5 × 9', wrong:'14, because 5 + 9 = 14', right:'45', why:'× means groups of. 5 groups of 9 is 45, not 5 plus 9.' },
+  ways:['array picture','skip counting','chant','Mistake Detective'], done:'You can use times facts up to 10 × 10.',
+  board:{ one:'× means groups of.', activity:'Build arrays with counters, then say the fact.', mistakes:['Adding instead of multiplying','Losing count when skip counting','Thinking 6 × 4 and 4 × 6 are different'] },
+  do:[
+    {type:'hop', start:0, add:24, unit:6, from:0, to:30, q:'4 × 6', say:'4 rows of 6. Hop by 6s, 4 times.', how:'6, 12, 18, 24. So 4 × 6 = 24.'},
+    {type:'count', n:15, pic:'📘', q:'3 rows of 5 chumashim', o:['10','15','20'], say:'3 rows of 5. Tap each chumash. How many?', how:'5, 10, 15. So 3 × 5 = 15.'}],
+  your:[
+    {type:'match', pairs:[['5 × 9','45'],['3 × 6','18'],['2 × 7','14'],['4 × 6','24']], say:'Match each times fact to its answer.', how:'Skip count: 9, 18, 27, 36, 45.'},
+    {type:'hop', start:0, add:45, unit:5, from:0, to:50, q:'5 × 9', say:'5 × 9. Hop by 5s, 9 times.', how:'5, 10, 15 … 45. 5 × 9 = 9 × 5 = 45.'},
+    {type:'tiles', w:['2','4'], extra:['1','6'], q:'4 rows of 6 = ?', say:'Eli has 4 rows of 6 chumashim. How many?', how:'4 × 6: 6, 12, 18, 24.'},
+    {type:'sort', bins:['= 12','= 18'], cards:[['3 × 4',0],['6 × 3',1],['2 × 6',0],['9 × 2',1]], say:'Which answer? Sort the facts.', how:'Skip count to check: 4, 8, 12.'},
+    {type:'listen', hear:'7 times 8', o:['56','54','15'], a:'56', say:'Listen to the fact. Tap the answer.', how:'7 × 4 = 28. Double it: 28 + 28 = 56.'}] };
+
+B['MATH.OPS.L04.02']={ band:'B23', pic:'🔍', today:'Divide by finding the missing factor', why:'Sharing 24 cookies by 6? A times fact tells you fast.',
+  ready:[{q:'6 × 4 = ?', o:['24','10','20'], a:'24'},{q:'5 × ? = 10', o:['2','5','15'], a:'2'}],
+  bridge:'MATH.OPS.L04.01', bridgeName:'Times facts',
+  watch:{ q:'24 ÷ 6 = ?', m:{type:'emoji',e:'🍪',n:24,group:6}, steps:[
+    '÷ means divide. It asks a times question backwards.',
+    '24 ÷ 6 = ? means 6 × ? = 24.',
+    {t:'Skip count by 6 to 24: 6, 12, 18, 24. That is 4 hops.', m:{type:'line',from:0,to:30,hops:[6,12,18,24]}},
+    '6 × 4 = 24, so 24 ÷ 6 = 4.',
+    {t:'Chant it: Divide? Think times!', m:{type:'chant',lines:['Divide? Think times!','What times 6 makes 24?']}}], a:'24 ÷ 6 = 4' },
+  oops:{ q:'60 ÷ 6', wrong:'60 − 6 = 54', right:'6 × 10 = 60, so 10', why:'Divide is a times question backwards, not take-away.' },
+  ways:['skip counting','times fact family','chant','Mistake Detective'], done:'You can divide by finding the missing factor.',
+  board:{ one:'Divide? Think times.', activity:'Fact-family triangles: cover one corner, say the missing number.', mistakes:['Subtracting instead of dividing','Using an adding fact','Counting the wrong number of hops'] },
+  do:[
+    {type:'hop', start:0, add:24, unit:6, from:0, to:30, q:'24 ÷ 6 = ?', say:'Hop by 6s to 24. Count the hops.', how:'6, 12, 18, 24: 4 hops. 24 ÷ 6 = 4.'},
+    {type:'match', pairs:[['60 ÷ 6','6 × 10 = 60'],['18 ÷ 2','2 × 9 = 18'],['45 ÷ 5','5 × 9 = 45']], say:'Which times fact helps? Match them.', how:'60 ÷ 6 asks: 6 times what is 60?'}],
+  your:[
+    {type:'hop', start:0, add:45, unit:5, from:0, to:50, q:'45 ÷ 5 = ?', say:'Hop by 5s to 45. How many hops?', how:'5, 10, 15 … 45: 9 hops. 45 ÷ 5 = 9.'},
+    {type:'tiles', w:['3','×','9','=','27'], extra:['8'], q:'27 ÷ 3 = ?', say:'27 ÷ 3. Build the times fact that helps.', how:'3 × 9 = 27, so 27 ÷ 3 = 9.'},
+    {type:'sort', bins:['Helps','Does not help'], cards:[['8 × 10',0],['80 − 8',1],['8 + 10',1],['10 × 8',0]], q:'80 ÷ 8 = ?', say:'Which facts help solve 80 ÷ 8? Sort them.', how:'A times fact with 8 and 80 helps: 8 × 10 = 80.'},
+    {type:'findall', grid:['2 × 5','2 + 5','5 × 2','8 + 2','2 × 8','1 × 2'], find:['2 × 5','5 × 2'], findSay:'times fact that makes 10', say:'10 ÷ 2. Tap every times fact that helps.', how:'Which fact has 2 and makes 10? 2 × 5 = 10, so 10 ÷ 2 = 5.'},
+    {type:'listen', hear:'50 divided by 10', o:['5','40','60'], a:'5', say:'Listen. Tap the answer.', how:'10 × 5 = 50, so 50 ÷ 10 = 5.'}] };
+
+B['MATH.OPS.L04.04']={ band:'B23', pic:'✨', today:'Easy times: 0, 1, 2, 5 and 10', why:'Some facts are almost free. Learn the tricks and they are yours.',
+  ready:[{q:'7 + 7 = ?', o:['14','77','15'], a:'14'},{q:'Count by 10s: 10, 20, 30, ?', o:['40','31','50'], a:'40'}],
+  bridge:'MATH.OPS.L03.04', bridgeName:'Arrays',
+  watch:{ q:'10 packs of 4 pencils', m:{type:'emoji',e:'✏️',n:12,group:4}, steps:[
+    'Times 0 is 0: 0 groups of anything is nothing. 0 × 6 = 0.',
+    'Times 1 stays the same: 1 × 5 = 5.',
+    'Times 2 is a double: 2 × 7 = 7 + 7 = 14.',
+    {t:'Times 10 puts a 0 on the end: 10 × 4 = 40.', m:{type:'blocks',tens:4,ones:0}},
+    'Times 5 is half of times 10: 5 × 6 = 30.',
+    {t:'Chant it: Zero is zero, one stays the same!', m:{type:'chant',lines:['Zero is zero, one stays the same,','two is a double, ten adds a 0 to the name!']}}], a:'10 × 4 = 40' },
+  oops:{ q:'0 × 6', wrong:'6', right:'0', why:'0 groups of 6 is nothing at all. Times 1 keeps the 6, times 0 does not.' },
+  ways:['tricks list','base-ten blocks','chant','Mistake Detective'], done:'You know the easy times facts: 0, 1, 2, 5 and 10.',
+  board:{ one:'Learn the trick, own the fact.', activity:'Call out a number; boys say times 0, 1, 2 and 10 fast.', mistakes:['0 × n = n','Times 10 adds 10 instead of a 0','Times 2 confused with plus 2'] },
+  do:[
+    {type:'blocks', n:40, q:'10 packs of 4 pencils', say:'10 × 4. Build it: 4 tens.', how:'Times 10 puts a 0 on the end: 40.'},
+    {type:'sort', bins:['0','Same number'], cards:[['0 × 6',0],['1 × 5',1],['8 × 0',0],['1 × 9',1]], say:'Times 0 or times 1? Sort them.', how:'Times 0 is 0. Times 1 stays the same.'}],
+  your:[
+    {type:'match', pairs:[['2 × 7','14'],['2 × 9','18'],['2 × 6','12']], say:'Times 2 is a double. Match them.', how:'2 × 7 = 7 + 7 = 14.'},
+    {type:'blocks', n:50, q:'10 packs of 5 pencils', say:'Mendy has 10 packs of 5 pencils. Build it.', how:'10 × 5: put a 0 on 5. 50.'},
+    {type:'hop', start:0, add:30, unit:5, from:0, to:50, q:'5 × 6', say:'5 × 6. Hop by 5s, 6 times.', how:'5, 10, 15, 20, 25, 30.'},
+    {type:'tiles', w:['1','0'], extra:['2','5'], q:'2 × ? = 20', say:'2 times what makes 20? Build it.', how:'Double 10 is 20. So 2 × 10 = 20.'},
+    {type:'listen', hear:'0 times 2', o:['0','2','20'], a:'0', say:'Listen. Tap the answer.', how:'0 groups of 2 is nothing: 0.'}] };
+
+B['MATH.OPS.L04.05']={ band:'B23', pic:'🗼', today:'Times 3, 4 and 6 from facts you know', why:'Build new facts from easy ones, like stacking blocks into a tower.',
+  ready:[{q:'2 × 7 = ?', o:['14','9','27'], a:'14'},{q:'Double 12 = ?', o:['24','14','122'], a:'24'}],
+  bridge:'MATH.OPS.L04.04', bridgeName:'Easy times',
+  watch:{ q:'6 × 7 = ?', m:{type:'emoji',e:'🍎',n:21,group:7}, steps:[
+    'Times 3: double it, then one more group. 3 × 7 = 14 + 7 = 21.',
+    'Times 4: double, then double again. 4 × 6: 12, then 24.',
+    'Times 6: times 3, then double. 6 × 7 = 21 + 21 = 42.',
+    'Times 1 stays the same: 1 × 6 = 6. Times 10 adds a 0: 4 × 10 = 40.',
+    {t:'Chant it: Double, double, that is 4!', m:{type:'chant',lines:['Double, double, that is 4,','times 3 and double makes 6 more!']}}], a:'6 × 7 = 42' },
+  oops:{ q:'6 × 6', wrong:'12, because 6 + 6', right:'36', why:'6 + 6 is only 2 groups. 6 × 6 is 6 groups: 18 + 18 = 36.' },
+  ways:['array picture','doubling','chant','Mistake Detective'], done:'You can find times 3, 4 and 6 from facts you know.',
+  board:{ one:'Build a hard fact from an easy one.', activity:'Fold an array in half to show doubling.', mistakes:['Doubling only once for times 4','Adding instead of multiplying','Forgetting the extra group for times 3'] },
+  do:[
+    {type:'hop', start:0, add:21, unit:7, from:0, to:28, q:'3 × 7', say:'3 × 7. Hop by 7s, 3 times.', how:'7, 14, 21. Or double 7 is 14, plus 7 is 21.'},
+    {type:'tiles', w:['4','2'], extra:['1','3'], q:'6 × 7 = 21 + 21', say:'6 × 7 is 3 × 7 doubled. Build it.', how:'21 + 21 = 42.'}],
+  your:[
+    {type:'match', pairs:[['4 × 6','24'],['6 × 6','36'],['3 × 4','12'],['6 × 7','42']], say:'Match each fact to its answer.', how:'Times 4: double, double. 4 × 6: 12, 24.'},
+    {type:'hop', start:0, add:36, unit:6, from:0, to:42, q:'6 × 6', say:'6 × 6. Hop by 6s, 6 times.', how:'6, 12, 18, 24, 30, 36.'},
+    {type:'sort', bins:['= 24','= 36'], cards:[['4 × 6',0],['6 × 6',1],['3 × 8',0],['4 × 9',1]], say:'Which answer? Sort the facts.', how:'4 × 6: double 6 is 12, double again is 24.'},
+    {type:'tiles', w:['4','0'], extra:['1','4'], q:'4 × 10 = ?', say:'4 × 10. Put a 0 on the end.', how:'4 × 10 = 40.'},
+    {type:'listen', hear:'1 times 6', o:['6','7','16'], a:'6', say:'Listen. Tap the answer.', how:'Times 1 stays the same: 6.'}] };
+
+B['MATH.OPS.L04.06']={ band:'B23', pic:'🏙️', today:'Times 7, 8 and 9 with tricks', why:'Rows of shtenders in the beis medrash: count them without counting one by one.',
+  ready:[{q:'10 × 6 = ?', o:['60','16','106'], a:'60'},{q:'5 × 6 = ?', o:['30','11','35'], a:'30'}],
+  bridge:'MATH.OPS.L04.05', bridgeName:'Times 3, 4, 6',
+  watch:{ q:'9 rows of 8 shtenders', m:{type:'emoji',e:'🪑',n:16,group:8}, steps:[
+    'Times 9: times 10, then take away one group. 9 × 8 = 80 − 8 = 72.',
+    'Times 8: double three times. 8 × 4: 8, 16, 32.',
+    'Times 7: times 5 plus times 2. 7 × 8 = 40 + 16 = 56.',
+    '8 rows of 10 shtenders? Times 10: 80.',
+    {t:'Chant it: Times 9? Times 10, take one away!', m:{type:'chant',lines:['Times 9? Times 10,','then take one group away!']}}], a:'9 × 8 = 72' },
+  oops:{ q:'9 × 6', wrong:'60 − 9 = 51', right:'60 − 6 = 54', why:'Take away one group of 6, not 9. 10 sixes minus 1 six.' },
+  ways:['tricks list','number line','chant','Mistake Detective'], done:'You can find times 7, 8 and 9 with tricks.',
+  board:{ one:'Hard facts hide inside easy ones.', activity:'Finger trick for 9s: fold down one finger.', mistakes:['Taking away the wrong group in times 9','Doubling only twice for times 8','Mixing 7 × 8 and 6 × 8'] },
+  do:[
+    {type:'hop', start:80, add:-8, unit:8, from:40, to:80, q:'9 × 8 = 80 − 8', say:'10 × 8 is 80. Hop back one 8.', how:'80 − 8 = 72. So 9 × 8 = 72.'},
+    {type:'match', pairs:[['9 × 6','60 − 6'],['7 × 8','40 + 16'],['8 × 4','double 3 times']], say:'Match each fact to its trick.', how:'Times 9: times 10, take one group away.'}],
+  your:[
+    {type:'tiles', w:['5','6'], extra:['4','7'], q:'7 × 8 = 40 + 16', say:'7 × 8. Add 40 and 16.', how:'5 eights is 40, 2 eights is 16. 40 + 16 = 56.'},
+    {type:'hop', start:0, add:32, unit:8, from:0, to:40, q:'8 × 4', say:'8 × 4. Hop by 8s, 4 times.', how:'8, 16, 24, 32.'},
+    {type:'match', pairs:[['9 × 8','72'],['8 × 10','80'],['4 × 7','28'],['9 × 6','54']], say:'Match each fact to its answer.', how:'9 × 8: 80 − 8 = 72.'},
+    {type:'sort', bins:['= 72','= 56'], cards:[['9 × 8',0],['7 × 8',1],['8 × 9',0],['8 × 7',1]], say:'Which answer? Sort them.', how:'Order does not matter: 8 × 9 = 9 × 8.'},
+    {type:'listen', hear:'8 rows with 9 shtenders in each row', o:['72','17','81'], a:'72', say:'Listen. How many shtenders? Tap it.', how:'8 × 9 = 9 × 8 = 80 − 8 = 72.'}] };
+
+B['MATH.OPS.L04.07']={ band:'B23', pic:'🍪', today:'Divide: share fairly or make equal groups', why:'Sharing cookies with friends? Division makes it fair.',
+  ready:[{q:'4 × 3 = ?', o:['12','7','43'], a:'12'},{q:'5 + 5 = ?', o:['10','55','25'], a:'10'}],
+  bridge:'MATH.OPS.L03.04', bridgeName:'Arrays',
+  watch:{ q:'12 cookies, 3 boys', m:{type:'emoji',e:'🍪',n:12,group:4}, steps:[
+    'Sharing: deal 12 cookies to 3 boys, one at a time. Each gets 4.',
+    'Grouping: 12 cookies, 3 in each bag. How many bags? 4 bags.',
+    'Both are 12 ÷ 3 = 4.',
+    '16 seforim, 4 on each shelf: 16 ÷ 4 = 4 shelves.',
+    {t:'Deal it out with your hands: one for you, one for you!', m:{type:'move',t:'Deal pretend cookies: one for you, one for you, one for you!'}}], a:'12 ÷ 3 = 4' },
+  oops:{ q:'8 cookies, 4 boys', wrong:'4 each', right:'2 each', why:'Deal them out: 4 boys get 1, then 1 more. Each boy has 2.' },
+  ways:['dealing out','equal groups','move','Mistake Detective'], done:'You can share fairly and make equal groups.',
+  board:{ one:'Share it or group it: both are division.', activity:'Deal real counters into cups.', mistakes:['Giving the number of boys as the answer','Unequal shares','Mixing up shares and groups'] },
+  do:[
+    {type:'count', n:10, pic:'🍪', q:'10 cookies for 2 boys', o:['8','10','12'], say:'Count the cookies. Each row will be one boy.', how:'10 cookies in 2 rows of 5: each boy gets 5. 10 ÷ 2 = 5.'},
+    {type:'tenframe', n:8, say:'Deal 8 cookies to 4 boys. Fill the frame.', how:'4 boys, 8 cookies: each boy gets 2. 8 ÷ 4 = 2.'}],
+  your:[
+    {type:'hop', start:0, add:20, unit:4, from:0, to:20, q:'20 seforim, 4 on a shelf', say:'4 seforim on each shelf. Hop by 4s to 20.', how:'4, 8, 12, 16, 20: 5 hops, so 5 shelves.'},
+    {type:'match', pairs:[['25 ÷ 5','5'],['8 ÷ 2','4'],['8 ÷ 4','2'],['30 ÷ 10','3']], say:'Match each one to its answer.', how:'Think times: 5 × 5 = 25.'},
+    {type:'tiles', w:['20','÷','4','=','5'], extra:['16'], q:'20 seforim on 4 shelves', say:'20 seforim on 4 shelves. Build the number sentence.', how:'4 × 5 = 20, so 20 ÷ 4 = 5 on each shelf.'},
+    {type:'sort', bins:['Share','Groups'], cards:[['3 boys',0],['3 in a bag',1],['2 friends',0],['4 on a shelf',1]], say:'Sharing or making groups? Sort them.', how:'Share: you know how many people. Groups: you know how many in each.'},
+    {type:'listen', hear:'25 cookies shared by 5 boys', o:['5','20','30'], a:'5', say:'Listen. How many cookies does each boy get?', how:'5 × 5 = 25, so each boy gets 5.'}] };
+
+B['MATH.OPS.L04.08']={ band:'B23', pic:'🔟', today:'Times tens: small fact, then a 0', why:'Boxes of 30 pencils for the whole class? This trick finds it fast.',
+  ready:[{q:'3 × 4 = ?', o:['12','7','34'], a:'12'},{q:'10 × 6 = ?', o:['60','16','6'], a:'60'}],
+  bridge:'MATH.OPS.L04.04', bridgeName:'Easy times',
+  watch:{ q:'3 × 40 = ?', m:{type:'blocks',tens:12,ones:0}, steps:[
+    '3 × 40 means 3 groups of 4 tens.',
+    {t:'3 × 4 tens = 12 tens.', m:{type:'blocks',tens:12,ones:0}},
+    '12 tens = 120.',
+    'Do the small fact, then put a 0 on the end.',
+    '7 × 70? 7 × 7 = 49, so 7 × 70 = 490.',
+    {t:'Chant it: Small fact first, then add the 0!', m:{type:'chant',lines:['Small fact first,','then add the 0!']}}], a:'3 × 40 = 120' },
+  oops:{ q:'5 × 90', wrong:'45', right:'450', why:'5 × 9 tens is 45 tens. Do not forget the 0: 450.' },
+  ways:['base-ten blocks','small fact','chant','Mistake Detective'], done:'You can multiply by tens: small fact, then a 0.',
+  board:{ one:'Small fact, then a 0.', activity:'Ten-rods: build 3 groups of 4 tens and trade.', mistakes:['Dropping the 0','Adding two 0s','Using the wrong small fact'] },
+  do:[
+    {type:'hop', start:0, add:120, unit:40, from:0, to:160, q:'3 × 40', say:'3 × 40. Hop by 40s, 3 times.', how:'40, 80, 120. 3 × 4 = 12, then a 0: 120.'},
+    {type:'match', pairs:[['2 × 70','140'],['5 × 90','450'],['2 × 30','60']], say:'Small fact, then a 0. Match them.', how:'2 × 7 = 14. Put a 0 on the end: 140.'}],
+  your:[
+    {type:'blocks', n:60, q:'2 boxes of 30 pencils', say:'2 boxes of 30 pencils. Build the total.', how:'2 × 3 = 6. Add a 0: 60. That is 6 tens.'},
+    {type:'tiles', w:['4','9','0'], extra:['7','4'], q:'7 × 70 = ?', say:'7 boxes of 70 pencils. Build the answer.', how:'7 × 7 = 49. Add a 0: 490.'},
+    {type:'hop', start:0, add:40, unit:20, from:0, to:100, q:'2 × 20', say:'2 boxes of 20. Hop by 20s.', how:'20, 40. 2 × 2 = 4, then a 0: 40.'},
+    {type:'sort', bins:['= 120','= 240'], cards:[['3 × 40',0],['6 × 40',1],['2 × 60',0],['4 × 60',1]], say:'Which answer? Sort them.', how:'3 × 4 = 12, so 3 × 40 = 120.'},
+    {type:'listen', hear:'90 times 8', o:['720','72','98'], a:'720', say:'Listen. Tap the answer.', how:'9 × 8 = 72. Add a 0: 720.'}] };
+
+B['MATH.OPS.L04.03']={ band:'B23', pic:'🎯', today:'Estimate first: is my answer about right?', why:'A quick guess catches big mistakes before anyone else sees them.',
+  ready:[{q:'Round 47 to the nearest 10.', o:['50','40','47'], a:'50'},{q:'300 + 500 = ?', o:['800','8','80'], a:'800'}],
+  bridge:'MATH.PV.L04.01', bridgeName:'Rounding',
+  watch:{ q:'Dovid: 276 + 133 = 409. Right?', m:{type:'line',from:200,to:500,hops:[300,400]}, steps:[
+    'Round each number first. 276 is about 300. 133 is about 100.',
+    'Estimate: 300 + 100 = 400.',
+    '409 is close to 400, so it is reasonable.',
+    'Mendy got 201 + 371 = 972. Estimate: 200 + 400 = 600. Much too big!',
+    {t:'Chant it: Round it, add it, check it!', m:{type:'chant',lines:['Round it, add it,','check it, glad it!']}}], a:'Yes, 409 is close to 400' },
+  oops:{ q:'85 + 42, to the nearest 10', wrong:'80 + 40 = 120', right:'90 + 40 = 130', why:'85 has 5 ones, so it rounds up to 90.' },
+  ways:['number line','rounding','chant','Mistake Detective'], done:'You can estimate to check if an answer makes sense.',
+  board:{ one:'Round, then add: is it close?', activity:'Boys estimate, then a partner works it out exactly.', mistakes:['Rounding 5 down','Rounding only one number','Calling any answer reasonable'] },
+  do:[
+    {type:'hop', start:276, add:24, unit:2, from:276, to:300, q:'276: closer to 200 or 300?', say:'Hop by 2s from 276 up to 300.', how:'Only 24 to 300, but 76 back to 200. 276 is closer to 300 than 200. Round to 300.'},
+    {type:'match', pairs:[['276 + 133','about 400'],['201 + 371','about 600'],['189 + 145','about 300']], say:'Round to hundreds, then add. Match each estimate.', how:'276 is about 300. 133 is about 100. 300 + 100 = 400.'}],
+  your:[
+    {type:'tiles', w:['1','3','0'], extra:['2','5'], q:'Estimate 85 + 42', say:'Round to tens, then add. Build the estimate.', how:'85 is about 90. 42 is about 40. 90 + 40 = 130.'},
+    {type:'listen', hear:'Ari added 189 and 145 and got 334. Is it reasonable?', o:['Yes, close','No, too big','No, too small'], a:'Yes, close', say:'Listen. Is the answer reasonable?', how:'200 + 100 = 300. 334 is close.'},
+    {type:'hop', start:500, add:-200, unit:100, from:0, to:1000, q:'455 − 197 ≈ 500 − 200', say:'Estimate 455 − 197. Hop back 200 from 500.', how:'455 is about 500. 197 is about 200. 500 − 200 = 300.'},
+    {type:'sort', bins:['Round up','Round down'], cards:[['85',0],['42',1],['79',0],['52',1]], q:'Nearest 10', say:'Round to the nearest 10. Up or down?', how:'5 or more ones: round up. 4 or less: round down.'},
+    {type:'listen', hear:'Mendy added 201 and 371 and got 972. Is it reasonable?', o:['Yes, close','No, too big','No, too small'], a:'No, too big', say:'Listen. Is the answer reasonable?', how:'200 + 400 = 600. 972 is much too big.'}] };
+
+B['MATH.OPS.L04.09']={ band:'B23', pic:'🧩', today:'Two-step stories with times and divide', why:'Real life has steps: buy packs, then share. Solve them one at a time.',
+  ready:[{q:'3 × 4 = ?', o:['12','7','34'], a:'12'},{q:'12 − 5 = ?', o:['7','17','8'], a:'7'}],
+  bridge:'MATH.OPS.L03.06', bridgeName:'Two-step stories',
+  watch:{ q:'Moshe buys 3 packs of 4 pens. He gives 5 away.', m:{type:'emoji',e:'🖊️',n:12,group:4}, steps:[
+    'Step 1: 3 packs of 4. 3 × 4 = 12 pens.',
+    'Step 2: he gives 5 away. 12 − 5 = 7 pens.',
+    'Check: 7 pens left makes sense. He had 12.',
+    'Pages left? 31 pages, 9 a day for 2 days: 2 × 9 = 18. 31 − 18 = 13.',
+    {t:'Chant it: Step one, step two, check it through!', m:{type:'chant',lines:['Step one, step two,','check it through!']}}], a:'7 pens' },
+  oops:{ q:'3 packs of 4, gives 5 away', wrong:'3 + 4 − 5 = 2', right:'3 × 4 − 5 = 7', why:'3 packs of 4 is times, not plus.' },
+  ways:['family story','two steps','chant','Mistake Detective'], done:'You can solve two-step stories with times and divide.',
+  board:{ one:'One step at a time.', activity:'Act out the story with real pens.', mistakes:['Adding the pack numbers','Stopping after step 1','Using the wrong operation for step 2'] },
+  do:[
+    {type:'hop', start:0, add:12, unit:4, from:0, to:20, q:'Step 1: 3 packs of 4', say:'Step 1: 3 packs of 4 pens. Hop by 4s.', how:'4, 8, 12. 3 × 4 = 12 pens.'},
+    {type:'tiles', w:['12','−','5','=','7'], extra:['3'], q:'Step 2: he gives 5 away', say:'Step 2: he gives away 5. Build the number sentence.', how:'12 − 5 = 7 pens left.'}],
+  your:[
+    {type:'match', pairs:[['2 × 7 − 3','11'],['6 × 3 − 4','14'],['4 × 5 + 9','29']], say:'Times first, then the second step. Match each answer.', how:'2 × 7 = 14. 14 − 3 = 11.'},
+    {type:'hop', start:31, add:-18, unit:9, from:4, to:31, q:'31 pages, 9 a day, 2 days', say:'Hop back 9 pages for each day. 2 days.', how:'31 − 9 = 22. 22 − 9 = 13 pages left.'},
+    {type:'sort', bins:['Times','Divide'], cards:[['packs of 4',0],['shared by 4',1],['4 rows of 5',0],['split equally',1]], say:'Times or divide? Sort the story words.', how:'Packs or rows of: times. Shared or split: divide.'},
+    {type:'tiles', w:['2','9'], extra:['4','5'], q:'4 rows of 5 chairs, then 9 more', say:'4 rows of 5 chairs. Then 9 more. How many?', how:'4 × 5 = 20. 20 + 9 = 29.'},
+    {type:'listen', hear:'Mendy has 3 raisins. Ari gives him 25 more. 4 boys share them equally.', o:['7','28','4'], a:'7', say:'Listen. How many raisins does each boy get?', how:'3 + 25 = 28. 28 ÷ 4 = 7.'}] };
+
+B['MATH.PV.L04.01']={ band:'B23', pic:'🎈', today:'Round to the nearest 10 or 100', why:'93 seforim is about 90. Rounding makes big numbers easy to talk about.',
+  ready:[{q:'Is 47 closer to 40 or 50?', o:['50','40'], a:'50'},{q:'Count by 10s: 60, 70, ?', o:['80','71','700'], a:'80'}],
+  bridge:'MATH.PV.L03.04', bridgeName:'Jump 10 or 100',
+  watch:{ q:'Round 47 to the nearest 10.', m:{type:'line',from:40,to:50,hops:[47]}, steps:[
+    'Find the two tens around it: 40 and 50.',
+    'Look at the ones digit: 7.',
+    '0 to 4 rounds down. 5 to 9 rounds up. 7 rounds up: 50.',
+    'Nearest 100? Look at the tens: 238 rounds to 200, 262 rounds to 300.',
+    {t:'Chant it: 5 or more, raise the score! 4 or less, let it rest!', m:{type:'chant',lines:['5 or more, raise the score!','4 or less, let it rest!']}}], a:'50' },
+  oops:{ q:'Round 25 to the nearest 10', wrong:'20', right:'30', why:'A 5 in the ones rounds up.' },
+  ways:['number line','chant','Mistake Detective'], done:'You can round to the nearest 10 and 100.',
+  board:{ one:'5 or more, round up.', activity:'A number-line rope: boys stand on a number and walk to the nearest ten.', mistakes:['Rounding 5 down','Looking at the wrong digit','Changing the digit in the rounding place the wrong way'] },
+  do:[
+    {type:'hop', start:47, add:3, unit:1, from:40, to:50, q:'47: nearest 10?', say:'47 is between 40 and 50. Hop to the nearer ten.', how:'47 is 3 from 50 and 7 from 40. Round to 50.'},
+    {type:'sort', bins:['Round to 40','Round to 50'], cards:[['43',0],['47',1],['45',1],['41',0]], say:'Look at the ones digit. Sort each number.', how:'0 to 4 rounds down to 40. 5 to 9 rounds up to 50.'}],
+  your:[
+    {type:'match', pairs:[['93','90'],['79','80'],['25','30'],['44','40']], say:'Round to the nearest 10. Match them.', how:'Look at the ones: 5 or more, round up.'},
+    {type:'hop', start:71, add:-1, unit:1, from:70, to:80, q:'71: nearest 10?', say:'71 seforim. Hop to the nearer ten.', how:'71 is just 1 from 70. Round to 70.'},
+    {type:'sort', bins:['Round to 200','Round to 300'], cards:[['238',0],['262',1],['250',1],['211',0]], say:'Nearest 100. Look at the tens digit.', how:'Tens 0 to 4: round down. Tens 5 to 9: round up.'},
+    {type:'tiles', w:['6','0','0'], extra:['1','7'], q:'Round 611 to the nearest 100', say:'611 to the nearest 100. Build it.', how:'611 has 1 ten. 1 rounds down: 600.'},
+    {type:'listen', hear:'Round 85 to the nearest 10', o:['90','80','85'], a:'90', say:'Listen. Tap the rounded number.', how:'85 has 5 ones. 5 rounds up: 90.'}] };
+
+B['MATH.ALG.L04.01']={ band:'B23', pic:'🔁', today:'Find the rule in a number pattern', why:'Patterns are hiding in the times tables. Find the rule and you can see what comes next.',
+  ready:[{q:'5, 10, 15, ?', o:['20','16','25'], a:'20'},{q:'Is 8 odd or even?', o:['Even','Odd'], a:'Even'}],
+  bridge:'MATH.NUM.L03.02', bridgeName:'Skip counting',
+  watch:{ q:'12, 15, 18, 21, ?', m:{type:'line',from:12,to:24,hops:[15,18,21,24]}, steps:[
+    'Find the rule: what changes each time? It adds 3.',
+    '21 + 3 = 24.',
+    'Times tables have patterns. 10s always end in 0. 5s end in 0 or 5.',
+    '9s: the digits add to 9. 18: 1 + 8 = 9. 27: 2 + 7 = 9.',
+    'Odd + odd is even. Any number times 2 is even.',
+    {t:'Clap the pattern: 12, 15, 18, 21, 24!', m:{type:'move',t:'Clap on each number: 12, 15, 18, 21, 24!'}}], a:'24' },
+  oops:{ q:'1, 10, 19, 28, ?', wrong:'29', right:'37', why:'The rule is add 9, not add 1. 28 + 9 = 37.' },
+  ways:['number line','times-table patterns','move','Mistake Detective'], done:'You can find the rule and say what comes next.',
+  board:{ one:'What changes each time? That is the rule.', activity:'Color a hundred chart by 5s and 9s; look for the stripes.', mistakes:['Adding 1 instead of the rule','Checking only two numbers','Mixing up the 5s and 10s endings'] },
+  do:[
+    {type:'hop', start:21, add:3, unit:3, from:12, to:30, q:'12, 15, 18, 21, ?', say:'The rule is add 3. Hop once from 21.', how:'21 + 3 = 24.'},
+    {type:'findall', grid:['10','15','20','25','12','30','34','40'], find:['10','20','30','40'], findSay:'number in the 10s table', say:'Tap every number in the 10 times table.', how:'10s always end in 0.'}],
+  your:[
+    {type:'tiles', w:['28','37'], extra:['29','30'], q:'1, 10, 19, ?, ?', say:'Add 9 each time. Put the next two in order.', how:'19 + 9 = 28. 28 + 9 = 37.'},
+    {type:'sort', bins:['Ends in 0 or 5','Not'], cards:[['35',0],['42',1],['50',0],['27',1]], say:'Could it be in the 5 times table? Sort them.', how:'5s always end in 0 or 5.'},
+    {type:'match', pairs:[['18','1 + 8 = 9'],['27','2 + 7 = 9'],['36','3 + 6 = 9']], say:'9s table: add the digits. Match them.', how:'In the 9s, the digits add up to 9.'},
+    {type:'hop', start:12, add:12, unit:3, from:0, to:30, q:'12, 15, 18, 21, ?', say:'Start at 12. Hop by 3s, 4 times.', how:'15, 18, 21, 24.'},
+    {type:'listen', hear:'In the 10 times table, the answers always end in', o:['0','1','5'], a:'0', say:'Listen. Tap the digit.', how:'10, 20, 30, 40: they all end in 0.'}] };
+
+B['MATH.FRAC.L04.02']={ band:'B23', pic:'🍰', today:'A fraction names equal parts of a whole', why:'Cutting a cake for Shabbos? Fractions say how big each fair piece is.',
+  ready:[{q:'A pie cut into 4 equal parts. What is each part called?', o:['a quarter','a half','a whole'], a:'a quarter', m:{type:'fbar',n:1,d:4}},{q:'Are these 2 parts equal?  ▮▮▮|▮', o:['No','Yes'], a:'No'}],
+  bridge:'MATH.PV.L02.03', bridgeName:'Halves and quarters',
+  watch:{ q:'What fraction is blue?', m:{type:'fbar',n:3,d:4}, steps:[
+    'A fraction names equal parts of one whole.',
+    {t:'The bottom number: how many equal parts. This bar has 4.', m:{type:'fbar',n:0,d:4}},
+    {t:'The top number: how many parts we mean. 3 are blue.', m:{type:'fbar',n:3,d:4}},
+    'So 3/4 of the bar is blue. Say it: three fourths.',
+    {t:'Chant it: Bottom counts all the parts, top counts the ones we mean!', m:{type:'chant',lines:['Bottom counts all the parts,','top counts the ones we mean!']}}], a:'3/4' },
+  oops:{ q:'▮▮▯▯▯▯ (2 blue of 6)', wrong:'6/2', right:'2/6', why:'The bottom is all the parts: 6. The top is the blue ones: 2.' },
+  ways:['fraction bar','chant','Mistake Detective'], done:'You can name a fraction: top over bottom.',
+  board:{ one:'Bottom: all the equal parts. Top: the parts we mean.', activity:'Fold paper strips into equal parts and color some.', mistakes:['Top and bottom swapped','Counting unequal parts','Counting only the white parts for the bottom'] },
+  do:[
+    {type:'count', n:8, pic:'🟦', q:'How many equal parts?', o:['6','8','10'], say:'The bar is cut into equal parts. Count them all.', how:'Count every part. That is the bottom number: 8.'},
+    {type:'match', pairs:[['▮▯▯','1/3'],['▮▮▮▯','3/4'],['▮▮▯▯▯▯▯▯','2/8']], say:'Dark parts on top, all parts on the bottom. Match.', how:'Count all the parts for the bottom. Count the dark ones for the top.'}],
+  your:[
+    {type:'listen', hear:'three sixths', o:['3/6','6/3','3/3'], a:'3/6', say:'Listen. Tap the fraction you hear.', how:'Sixths means 6 parts on the bottom. Three is on top.'},
+    {type:'sort', bins:['Equal parts','Not equal'], cards:[['▮|▮|▮',0],['▮▮|▮',1],['▮▮|▮▮',0],['▮|▮▮▮',1]], say:'Fair pieces? Sort them.', how:'A fraction needs equal parts, all the same size.'},
+    {type:'tiles', w:['2','/','8'], extra:['6','3'], q:'▮▮▯▯▯▯▯▯', say:'Build the fraction for the dark parts.', how:'2 dark parts on top. 8 parts in all on the bottom.'},
+    {type:'match', pairs:[['▮▯','1/2'],['▮▯▯','1/3'],['▮▮▮▯▯▯','3/6']], say:'Match each bar to its fraction.', how:'Bottom: all the parts. Top: the dark ones.'},
+    {type:'count', n:3, pic:'🟨', q:'How many equal parts?', o:['2','3','4'], say:'Count the equal parts. That is the bottom number.', how:'3 equal parts: thirds.'}] };
+
+B['MATH.FRAC.L04.01']={ band:'B23', pic:'🛤️', today:'Find fractions on a number line', why:'A fraction is a spot on the line, like a stop on the bus route.',
+  ready:[{q:'What fraction is 1 part of 4?', o:['1/4','4/1','1/2'], a:'1/4', m:{type:'fbar',n:1,d:4}},{q:'Is 1/2 more or less than 1 whole?', o:['less','more'], a:'less'}],
+  bridge:'MATH.FRAC.L04.02', bridgeName:'Fair pieces',
+  watch:{ q:'Where is the dot? 0 to 1, cut in 4.', m:{type:'fbar',n:3,d:4}, steps:[
+    'Cut the line from 0 to 1 into equal jumps.',
+    'Count the jumps from 0 to 1: 4 jumps. Each jump is 1/4.',
+    'The dot is 3 jumps from 0. It is at 3/4.',
+    'Cut in 2? 1 jump is 1/2: halfway. Cut in 8? 1 jump is 1/8.',
+    {t:'Jump with me: one fourth, two fourths, three fourths, one whole!', m:{type:'move',t:'Jump 4 times: one fourth, two fourths, three fourths, one whole!'}}], a:'3/4' },
+  oops:{ q:'0 to 1 in 3 jumps; the dot is 2 jumps in', wrong:'2/4 (counted the marks)', right:'2/3', why:'Count the jumps, not the marks. 3 jumps, so thirds.' },
+  ways:['number line','move','Mistake Detective'], done:'You can find fractions on a number line.',
+  board:{ one:'Count the jumps, not the marks.', activity:'Tape a 0-to-1 line on the floor; boys hop the fractions.', mistakes:['Counting tick marks instead of jumps','Forgetting 0 is the start','Top and bottom swapped'] },
+  do:[
+    {type:'count', n:4, pic:'🐸', q:'0 to 1: how many jumps?', o:['3','4','5'], say:'Each frog is one jump from 0 to 1. Count them.', how:'4 equal jumps, so each jump is 1/4.'},
+    {type:'tiles', w:['1/4','2/4','3/4','4/4'], extra:['1/3'], say:'Put the jumps in order from 0 to 1.', how:'Count the jumps: one fourth, two fourths, three fourths, four fourths.'}],
+  your:[
+    {type:'listen', hear:'The line is cut into 2 jumps. The dot is 1 jump from 0.', o:['1/2','1/3','1/1'], a:'1/2', say:'Listen. Where is the dot?', how:'2 jumps: halves. 1 jump is 1/2.'},
+    {type:'match', pairs:[['3 jumps, dot at 2','2/3'],['8 jumps, dot at 1','1/8'],['4 jumps, dot at 2','2/4']], say:'Match each dot to its fraction.', how:'The number of jumps goes on the bottom.'},
+    {type:'tiles', w:['1/3','2/3','3/3'], extra:['2/4'], say:'Thirds: put them in order from 0 to 1.', how:'3 jumps: 1/3, 2/3, then 3/3 is 1 whole.'},
+    {type:'sort', bins:['Halfway','Not halfway'], cards:[['1/2',0],['1/4',1],['2/4',0],['1/3',1]], say:'Is the dot halfway from 0 to 1? Sort them.', how:'1/2 is halfway. 2/4 is also halfway.'},
+    {type:'count', n:3, pic:'🐸', q:'0 to 1: how many jumps?', o:['2','3','4'], say:'Count the jumps from 0 to 1.', how:'3 jumps, so each jump is 1/3.'}] };
+
+B['MATH.FRAC.L04.03']={ band:'B23', pic:'⚖️', today:'Equal fractions cover the same amount', why:'Half a pizza or two quarters? Same amount to eat!',
+  ready:[{q:'What fraction is dark?  ▮▯', o:['1/2','2/1','1/1'], a:'1/2', m:{type:'fbar',n:1,d:2}},{q:'What fraction is dark?  ▮▮▯▯', o:['2/4','4/2','2/2'], a:'2/4', m:{type:'fbar',n:2,d:4}}],
+  bridge:'MATH.FRAC.L04.02', bridgeName:'Fair pieces',
+  watch:{ q:'1/2 = ?/4', m:{type:'fbar',n:1,d:2}, steps:[
+    {t:'Here is 1/2 of a bar.', m:{type:'fbar',n:1,d:2}},
+    {t:'Cut every piece into 2. Now 2/4 is dark: the same amount!', m:{type:'fbar',n:2,d:4}},
+    'Twice as many parts, twice as many dark: 1/2 = 2/4 = 4/8.',
+    '1/3 = 2/6. 2/3 = 4/6. Is 1/2 = 4/6? No: 4/6 covers more.',
+    {t:'Chant it: Cut them small, same amount after all!', m:{type:'chant',lines:['Cut them small,','same amount after all!']}}], a:'1/2 = 2/4' },
+  oops:{ q:'1/2 = ?/4', wrong:'1/4', right:'2/4', why:'Cut each half in 2: there are now 2 dark pieces, not 1.' },
+  ways:['fraction bar','chant','Mistake Detective'], done:'You can find equal fractions.',
+  board:{ one:'Same amount, different cuts.', activity:'Fold a strip in half, then in half again; count the dark parts.', mistakes:['Doubling only the bottom','Thinking bigger numbers mean more','Unequal cuts'] },
+  do:[
+    {type:'match', pairs:[['▮▯','▮▮▯▯'],['▮▯▯','▮▮▯▯▯▯'],['▮▮▯','▮▮▮▮▯▯']], say:'Same amount dark? Match the bars.', how:'Cut each piece in 2: twice as many parts, twice as many dark.'},
+    {type:'tiles', w:['2','/','6'], extra:['1','3'], q:'1/3 = ?/6', say:'1/3 = ?/6. Build the equal fraction.', how:'Cut each third in 2. 1 dark becomes 2: 2/6.'}],
+  your:[
+    {type:'sort', bins:['= 1/2','Not 1/2'], cards:[['2/4',0],['4/6',1],['4/8',0],['5/8',1]], say:'Equal to 1/2? Sort them.', how:'Half: the top is half of the bottom. 4 is half of 8.'},
+    {type:'match', pairs:[['1/2','4/8'],['1/3','2/6'],['2/3','4/6']], say:'Match the equal fractions.', how:'Double the top and the bottom: 1/3 = 2/6.'},
+    {type:'listen', hear:'Which fraction is equal to 1 third?', o:['2/6','2/3','3/5'], a:'2/6', say:'Listen. Tap the equal fraction.', how:'1/3: double top and bottom. 2/6.'},
+    {type:'tiles', w:['4','/','6'], extra:['3','8'], q:'2/3 = ?/6', say:'2/3 = ?/6. Build it.', how:'Double the top and the bottom: 4/6.'},
+    {type:'sort', bins:['Equal','Not equal'], cards:[['1/2 · 2/4',0],['1/2 · 4/6',1],['1/3 · 2/6',0],['1/2 · 5/8',1]], say:'Are the two fractions equal? Sort them.', how:'Double the first fraction. Do you get the second one?'}] };
+
+B['MATH.FRAC.L04.04']={ band:'B23', pic:'🎭', today:'Spot whole numbers dressed as fractions', why:'4/4 of a challah is the whole challah. Some fractions are whole numbers in disguise!',
+  ready:[{q:'What fraction is dark?  ▮▮▮▮', o:['4/4','1/4','4/1'], a:'4/4', m:{type:'fbar',n:4,d:4}},{q:'How many fourths make 1 whole?', o:['4','1','2'], a:'4'}],
+  bridge:'MATH.FRAC.L04.02', bridgeName:'Fair pieces',
+  watch:{ q:'8/4 = how many wholes?', m:{type:'fbar',n:4,d:4}, steps:[
+    {t:'Top and bottom the same? It is 1 whole: 4/4 = 1.', m:{type:'fbar',n:4,d:4}},
+    'A number over 1 is just that number: 3/1 = 3 wholes.',
+    '8/4 means 8 fourths. 4 fourths make 1 whole.',
+    '8 fourths make 2 wholes: 8/4 = 2. And 9/3 = 3.',
+    {t:'Chant it: Same on top and bottom? That is one!', m:{type:'chant',lines:['Same on top and bottom?','That is one whole, well done!']}}], a:'8/4 = 2' },
+  oops:{ q:'3/1', wrong:'1/3', right:'3', why:'3/1 means 3 wholes, each cut into 1 piece. That is 3.' },
+  ways:['fraction bar','chant','Mistake Detective'], done:'You can spot whole numbers dressed as fractions.',
+  board:{ one:'Same top and bottom is 1. Over 1 is the number.', activity:'Build wholes from fraction strips: how many fourths make 2?', mistakes:['Thinking 3/1 is small','Thinking 4/4 is 4','Counting one whole as the answer for 8/4'] },
+  do:[
+    {type:'sort', bins:['= 1 whole','Not 1 whole'], cards:[['6/6',0],['1/6',1],['3/3',0],['3/1',1]], say:'Is it 1 whole? Sort them.', how:'Top and bottom the same: 1 whole.'},
+    {type:'hop', start:0, add:2, unit:1, from:0, to:4, q:'8/4: 4 fourths make 1', say:'Every 4 fourths is 1 whole. 8 fourths: hop 2 wholes.', how:'4 fourths is 1. 8 fourths is 2. 8/4 = 2.'}],
+  your:[
+    {type:'match', pairs:[['8/1','8'],['3/1','3'],['8/4','2'],['12/3','4']], say:'Match each fraction to its whole number.', how:'Over 1 is the number. 8/4: 4 fourths make 1, so 2.'},
+    {type:'listen', hear:'Which fraction is 1 whole?', o:['3/3','3/1','1/3'], a:'3/3', say:'Listen. Tap the fraction.', how:'Top and bottom the same: 1 whole.'},
+    {type:'findall', grid:['4/4','3/1','6/6','1/6','2/2','1/2'], find:['4/4','6/6','2/2'], findSay:'fraction equal to 1 whole', say:'Tap every fraction that is 1 whole.', how:'Top and bottom the same: 1 whole.'},
+    {type:'hop', start:0, add:9, unit:3, from:0, to:12, q:'9/3: count by 3s', say:'Hop by 3s to 9. Each hop is 1 whole.', how:'3, 6, 9: 3 hops. 9/3 = 3.'},
+    {type:'sort', bins:['1','2','3'], cards:[['4/4',0],['8/4',1],['3/1',2],['6/3',1],['5/5',0]], say:'How many wholes? Sort them.', how:'Over 1: the number. Same top and bottom: 1.'}] };
+
+B['MATH.FRAC.L04.05']={ band:'B23', pic:'🥔', today:'Compare fractions: who ate more kugel?', why:'Moshe ate 1/3 of the kugel, Eli ate 1/4. Who ate more? Now you can say.',
+  ready:[{q:'Which is bigger?', o:['5','3'], a:'5'},{q:'What does the bottom number tell?', o:['how many equal parts','how many we ate'], a:'how many equal parts'}],
+  bridge:'MATH.FRAC.L04.02', bridgeName:'Fair pieces',
+  watch:{ q:'1/3 ☐ 1/4', m:{type:'fbar',n:1,d:3}, steps:[
+    {t:'Same top, different bottom. 1/3 of a kugel:', m:{type:'fbar',n:1,d:3}},
+    {t:'1/4 of the same kugel: the pieces are smaller.', m:{type:'fbar',n:1,d:4}},
+    'More pieces means smaller pieces. So 1/3 > 1/4. Moshe ate more.',
+    'Same bottom? The bigger top is more: 3/5 > 2/5. The same? Use =.',
+    {t:'Chant it: More pieces, smaller slice!', m:{type:'chant',lines:['More pieces,','smaller slice!']}}], a:'1/3 > 1/4' },
+  oops:{ q:'1/2 ☐ 1/4', wrong:'1/2 < 1/4, because 4 is bigger', right:'1/2 > 1/4', why:'Cut in 4, each piece is smaller. A half is bigger than a quarter.' },
+  ways:['fraction bar','family story','chant','Mistake Detective'], done:'You can compare fractions with the same top or the same bottom.',
+  board:{ one:'Same top: fewer pieces means bigger pieces.', activity:'Two equal paper kugels, one cut in 3, one in 4. Compare a piece.', mistakes:['Bigger bottom means bigger fraction','Comparing different-size wholes','Mixing up > and <'] },
+  do:[
+    {type:'match', pairs:[['▮▯','1/2'],['▮▯▯','1/3'],['▮▯▯▯','1/4']], say:'Match each piece to its fraction. Which piece is biggest?', how:'Fewer pieces, bigger pieces. 1/2 is the biggest.'},
+    {type:'sort', bins:['>','<','='], cards:[['1/3 ☐ 1/4',0],['2/8 ☐ 2/4',1],['1/3 ☐ 1/3',2]], say:'Which sign goes in the box? Sort them.', how:'Same top: the smaller bottom is bigger. Same fraction: =.'}],
+  your:[
+    {type:'listen', hear:'Mendy ate 1 half of a kugel. Eli ate 1 third of the same kugel. Who ate more?', o:['Mendy','Eli','The same'], a:'Mendy', say:'Listen. Who ate more? Tap him.', how:'A half is bigger than a third: 2 pieces are bigger than 3.'},
+    {type:'tiles', w:['1/8','1/4','1/2'], extra:['2/2'], say:'Put them from smallest to biggest.', how:'More pieces, smaller slice. 1/8 is the smallest.'},
+    {type:'sort', bins:['>','<'], cards:[['3/5 ☐ 2/5',0],['1/6 ☐ 1/2',1],['1/2 ☐ 1/4',0],['2/6 ☐ 5/6',1]], say:'Which sign? Sort them.', how:'Same bottom: bigger top wins. Same top: smaller bottom wins.'},
+    {type:'match', pairs:[['1/2 or 1/4','1/2'],['3/5 or 2/5','3/5'],['1/3 or 1/8','1/3']], say:'Which is more? Match the bigger one.', how:'Same top: fewer pieces is more. Same bottom: more pieces is more.'},
+    {type:'listen', hear:'Moshe ate 1 half of a kugel. Chaim ate 1 fourth of the same kugel. Who ate more?', o:['Moshe','Chaim','The same'], a:'Moshe', say:'Listen to the story. Who ate more?', how:'1/2 is bigger than 1/4.'}] };
+
+B['MATH.GEO.L04.01']={ band:'B23', pic:'🔷', today:'Name four-sided shapes by sides and corners', why:'Doors, windows, sefer covers: four-sided shapes are everywhere.',
+  ready:[{q:'How many sides does a square have?', o:['4','3','5'], a:'4'},{q:'Which shape has 3 sides?', o:['triangle','square','pentagon'], a:'triangle'}],
+  bridge:'MATH.GEO.L03.01', bridgeName:'Sides and corners',
+  watch:{ q:'Which four-sided shape is it?', m:{type:'emoji',e:'🔷',n:1}, steps:[
+    'A quadrilateral is any closed shape with 4 straight sides.',
+    'A rhombus has 4 equal sides. Its corners do not need to be square. 🔷',
+    'A rectangle has 4 square corners.',
+    'A square is both: 4 equal sides and 4 square corners. So every square is a rectangle!',
+    'A rhombus side is 4 cm? All 4 sides: 4 + 4 + 4 + 4 = 16 cm.',
+    {t:'Make a square corner with your hands: an L!', m:{type:'move',t:'Make a square corner with your thumb and finger: an L!'}}], a:'rhombus' },
+  oops:{ q:'Is every square a rectangle?', wrong:'No: a rectangle must be long', right:'Yes: a square has 4 square corners', why:'A rectangle only needs 4 square corners. A square has them.' },
+  ways:['shape pictures','move','Mistake Detective'], done:'You can name four-sided shapes by sides and corners.',
+  board:{ one:'Count the sides, check the corners.', activity:'Sort paper shapes; test corners with a folded square corner.', mistakes:['A square is not a rectangle','A tilted square is a different shape','Any 4 equal sides makes a square'] },
+  do:[
+    {type:'sort', bins:['4 sides','Not 4 sides'], cards:[['🟦',0],['🔺',1],['🔷',0],['▬',0],['⬠',1]], say:'Count the sides. Is it a quadrilateral?', how:'A quadrilateral has 4 straight sides.'},
+    {type:'match', pairs:[['🟦','square'],['🔷','rhombus'],['▬','rectangle']], say:'Match each shape to its name.', how:'Rhombus: 4 equal sides, slanted. Rectangle: 4 square corners. Square: both.'}],
+  your:[
+    {type:'listen', hear:'4 equal sides, but the corners are not square', o:['🔷','🟦','▬'], a:'🔷', say:'Listen. Tap the shape.', how:'4 equal sides, slanted corners: a rhombus.'},
+    {type:'findall', grid:['🔷','🔺','🟦','⬠','▬','🔷','⬡','🟩'], find:['🔷','🟦','▬','🟩'], findSay:'four-sided shape', say:'Tap every four-sided shape.', how:'Count the sides. 4 sides? Tap it.'},
+    {type:'hop', start:0, add:16, unit:4, from:0, to:20, q:'Rhombus side 4 cm. All around?', say:'A rhombus side is 4 cm. Hop 4 sides.', how:'4 + 4 + 4 + 4 = 16 cm.'},
+    {type:'sort', bins:['Square corners','Not square'], cards:[['🟦',0],['🔷',1],['▬',0],['🟩',0]], say:'Does it have 4 square corners? Sort them.', how:'Square corners look like the letter L.'},
+    {type:'listen', hear:'Is every square a rectangle?', o:['Yes, 4 square corners','No, it is not long'], a:'Yes, 4 square corners', say:'Listen. Tap the answer.', how:'A rectangle needs 4 square corners. Every square has them.'}] };
+
+B['MATH.MEAS.L04.01']={ band:'B23', pic:'🟩', today:'Area: count the squares that cover it', why:'How many mats cover the sukkah floor? That is the area.',
+  ready:[{q:'2 rows of 5. How many?', o:['10','7','25'], a:'10', m:{type:'emoji',e:'🟩',n:10,group:5}},{q:'5 + 5 + 5 = ?', o:['15','10','20'], a:'15'}],
+  bridge:'MATH.OPS.L03.04', bridgeName:'Arrays',
+  watch:{ q:'The sukkah floor: how many mats?', m:{type:'emoji',e:'🟫',n:12,group:4}, steps:[
+    'Area is how many unit squares cover a shape.',
+    'No gaps and no overlaps, like mats on the sukkah floor.',
+    'Count the squares inside: 3 rows of 4 is 12 squares.',
+    'The area is 12 square feet. Each 🟫 is 1 square foot.',
+    {t:'Tile the floor with me: tap, tap, tap, no gaps!', m:{type:'move',t:'Tap the table like laying mats: tap, tap, tap, no gaps!'}}], a:'12 square feet' },
+  oops:{ q:'Area of a 3 by 4 rug', wrong:'7 (3 + 4)', right:'12 squares', why:'Area counts every square inside, not the sides.' },
+  ways:['square tiles','family scene','move','Mistake Detective'], done:'You can find area by counting squares.',
+  board:{ one:'Area: squares inside, no gaps, no overlaps.', activity:'Cover a book with sticky notes and count them.', mistakes:['Counting the edge only','Gaps or overlaps','Adding the side lengths'] },
+  do:[
+    {type:'count', n:10, pic:'🟫', q:'Each 🟫 is 1 square foot', o:['8','10','12'], say:'Count every mat on the sukkah floor.', how:'Touch each square once. 2 rows of 5 is 10 square feet.'},
+    {type:'tenframe', n:10, say:'Cover the whole frame with squares. No gaps!', how:'Fill every box. 10 boxes is an area of 10 squares.'}],
+  your:[
+    {type:'count', n:20, pic:'🟩', q:'Each 🟩 is 1 square unit', o:['16','20','24'], say:'What is the area of this rug? Count the squares.', how:'Count row by row: 5, 10, 15, 20.'},
+    {type:'sort', bins:['Area','Not area'], cards:[['🟩🟩🟩🟩',0],['🟩⬜🟩⬜',1],['🟨🟨🟨🟨',0]], say:'No gaps allowed. Which ones show area well?', how:'Area squares touch, with no gaps and no overlaps.'},
+    {type:'count', n:15, pic:'🟨', q:'Each 🟨 is 1 square unit', o:['12','15','16'], say:'Count the squares. What is the area?', how:'3 rows of 5: 15 square units.'},
+    {type:'hop', start:0, add:16, unit:4, from:0, to:20, q:'4 rows of 4 mats', say:'4 rows of 4 mats. Hop by 4s.', how:'4, 8, 12, 16. The area is 16 square feet.'},
+    {type:'listen', hear:'A floor has 3 rows of 3 mats. What is the area?', o:['9','6','12'], a:'9', say:'Listen. Tap the area.', how:'3 + 3 + 3 = 9 square feet.'}] };
+
+B['MATH.MEAS.L04.02']={ band:'B23', pic:'📐', today:'Area by multiplying: length × width', why:'A big beis medrash table? Multiply instead of counting every square.',
+  ready:[{q:'3 rows of 4 squares. Area?', o:['12','7','34'], a:'12', m:{type:'emoji',e:'🟩',n:12,group:4}},{q:'4 × 6 = ?', o:['24','10','20'], a:'24'}],
+  bridge:'MATH.MEAS.L04.01', bridgeName:'Area by squares',
+  watch:{ q:'6 squares long, 4 rows wide', m:{type:'emoji',e:'🟩',n:24,group:6}, steps:[
+    'Count the squares in one row: 6. That is the length.',
+    'Count the rows: 4. That is the width.',
+    'Area = length × width: 6 × 4 = 24 square units.',
+    'A table 5 feet long and 2 feet wide: 5 × 2 = 10 square feet.',
+    {t:'Arms wide for length, arms up for width: multiply!', m:{type:'move',t:'Arms out wide for length, arms up high for width: multiply!'}}], a:'24 square units' },
+  oops:{ q:'9 long, 5 wide', wrong:'9 + 5 = 14', right:'9 × 5 = 45', why:'Area is rows of squares: 5 rows of 9. Multiply, do not add.' },
+  ways:['array picture','move','Mistake Detective'], done:'You can find area by multiplying length × width.',
+  board:{ one:'Area = length × width.', activity:'Grid paper: draw rectangles, multiply, then count to check.', mistakes:['Adding length and width','Counting the edge squares only','Leaving out the units'] },
+  do:[
+    {type:'count', n:15, pic:'🟩', q:'5 long, 3 rows', o:['8','15','20'], say:'5 squares in a row, 3 rows. Count to check.', how:'5 × 3 = 15. Counting gives 15 too.'},
+    {type:'hop', start:0, add:28, unit:7, from:0, to:35, q:'7 long, 4 rows', say:'7 long, 4 rows. Hop by 7s, 4 times.', how:'7, 14, 21, 28. Area = 7 × 4 = 28.'}],
+  your:[
+    {type:'match', pairs:[['9 long, 5 wide','45'],['6 long, 5 wide','30'],['3 long, 2 wide','6'],['6 long, 2 wide','12']], say:'Length × width. Match each area.', how:'9 × 5 = 45 square units.'},
+    {type:'tiles', w:['1','0'], extra:['7','2'], q:'Table: 5 ft long, 2 ft wide', say:'A beis medrash table. What is its area?', how:'5 × 2 = 10 square feet.'},
+    {type:'hop', start:0, add:30, unit:6, from:0, to:36, q:'6 long, 5 rows', say:'6 long, 5 rows. Hop by 6s, 5 times.', how:'6, 12, 18, 24, 30.'},
+    {type:'sort', bins:['× (area)','+ (not area)'], cards:[['9 × 5',0],['9 + 5',1],['6 × 2',0],['6 + 2',1]], say:'Which way finds the area? Sort them.', how:'Area = length × width. Adding gives the wrong answer.'},
+    {type:'count', n:20, pic:'🟨', q:'5 long, 4 rows', o:['9','20','25'], say:'5 long and 4 rows. What is the area?', how:'5 × 4 = 20 square units.'}] };
+
+B['MATH.MEAS.L04.03']={ band:'B23', pic:'🧵', today:'Perimeter: the distance all the way around', why:'A fence for the garden? Perimeter tells how much you need.',
+  ready:[{q:'5 + 3 + 5 + 3 = ?', o:['16','8','15'], a:'16'},{q:'4 × 7 = ?', o:['28','11','24'], a:'28'}],
+  bridge:'MATH.OPS.L03.05', bridgeName:'Add many numbers',
+  watch:{ q:'A garden 7 m long, 3 m wide', m:{type:'emoji',e:'🌱',n:1}, steps:[
+    'Perimeter is the distance all the way around a shape.',
+    'Add every side: 7 + 3 + 7 + 3 = 20 meters.',
+    'A square has 4 same sides: 7 inches × 4 = 28 inches.',
+    'Missing side? Perimeter 26, length 7. 26 − 7 − 7 = 12. Half of 12 is 6.',
+    {t:'Walk around the table with your finger, side by side!', m:{type:'move',t:'Trace around your desk with a finger: side, side, side, side!'}}], a:'20 meters' },
+  oops:{ q:'Perimeter of 7 by 3', wrong:'7 + 3 = 10', right:'7 + 3 + 7 + 3 = 20', why:'A rectangle has 4 sides. Add all 4, not just 2.' },
+  ways:['walk around','move','Mistake Detective'], done:'You can find the perimeter and a missing side.',
+  board:{ one:'Perimeter: add every side.', activity:'Measure around a desk with string.', mistakes:['Adding only 2 sides','Mixing up area and perimeter','Forgetting to halve when finding a missing side'] },
+  do:[
+    {type:'tiles', w:['7','3','7','3'], extra:['10'], q:'Garden: 7 m by 3 m', say:'Walk around the garden. Put the 4 sides in order.', how:'Long side, short side, long side, short side: 7, 3, 7, 3.'},
+    {type:'hop', start:0, add:28, unit:7, from:0, to:35, q:'Square challah board: 7 in', say:'4 equal sides of 7. Hop by 7s, 4 times.', how:'7, 14, 21, 28 inches.'}],
+  your:[
+    {type:'match', pairs:[['7 by 3','20'],['5 by 3','16'],['square side 7','28']], say:'Add every side. Match each perimeter.', how:'5 + 3 + 5 + 3 = 16.'},
+    {type:'sort', bins:['Perimeter','Area'], cards:[['🧵 around',0],['🟩 inside',1],['fence',0],['carpet',1]], say:'Around the edge or covering inside? Sort them.', how:'Perimeter goes around. Area covers inside.'},
+    {type:'blocks', n:6, q:'Perimeter 26, length 7', say:'Perimeter 26 feet, length 7. Build the width.', how:'26 − 7 − 7 = 12. Half of 12 is 6.'},
+    {type:'hop', start:30, add:-16, unit:2, from:10, to:30, q:'Perimeter 30, length 8', say:'Perimeter 30. Hop back 16: two lengths of 8.', how:'30 − 16 = 14. Half of 14 is 7. The width is 7.'},
+    {type:'listen', hear:'Eli walks around a garden 7 meters long and 3 meters wide. How far?', o:['20','10','21'], a:'20', say:'Listen. How many meters does he walk?', how:'7 + 3 + 7 + 3 = 20 meters.'}] };
+
+B['MATH.MEAS.L04.04']={ band:'B23', pic:'⏱️', today:'How long did it take? Count the minutes', why:'Baking challah from 8:00 to 8:46? Now you can say how long it took.',
+  ready:[{q:'How many minutes in 1 hour?', o:['60','100','30'], a:'60'},{q:'Long hand on 9. How many minutes?', o:['45','9','90'], a:'45'}],
+  bridge:'MATH.MEAS.L03.03', bridgeName:'Time to 5 minutes',
+  watch:{ q:'3:40 to 4:15. How long?', m:{type:'line',from:40,to:80,hops:[60,75]}, steps:[
+    'Count from the start time to the end time.',
+    'Jump to the next hour first: 3:40 to 4:00 is 20 minutes.',
+    'Then add the rest: 4:00 to 4:15 is 15 more. 20 + 15 = 35 minutes.',
+    'Ends when? Mincha 3:51, 72 minutes: 60 minutes makes 4:51, 12 more is 5:03.',
+    {t:'Chant it: Jump to the hour, then add the rest!', m:{type:'chant',lines:['Jump to the hour,','then add the rest!']}}], a:'35 minutes' },
+  oops:{ q:'10:25 + 65 minutes', wrong:'10:90', right:'11:30', why:'60 minutes make 1 hour. 10:25 + 60 is 11:25, then 5 more: 11:30.' },
+  ways:['number line','chant','Mistake Detective'], done:'You can find how long something took and when it ends.',
+  board:{ one:'Jump to the hour, then add the rest.', activity:'A paper clock: move the long hand and count jumps.', mistakes:['Writing more than 59 minutes','Subtracting the hour digits only','Forgetting to cross the hour'] },
+  do:[
+    {type:'hop', start:40, add:20, unit:5, from:30, to:80, q:'3:40 to 4:00', say:'From 3:40, hop by 5s to the hour.', how:'40, 45, 50, 55, 60: 20 minutes to 4:00.'},
+    {type:'tiles', w:['3','5'], extra:['2','4'], q:'3:40 to 4:15', say:'20 minutes, then 15 more. How long in all?', how:'20 + 15 = 35 minutes.'}],
+  your:[
+    {type:'hop', start:0, add:45, unit:5, from:0, to:60, q:'8:00 to 8:45', say:'Challah from 8:00 to 8:45. Hop by 5s.', how:'Count by 5s from 0 to 45: 45 minutes.'},
+    {type:'match', pairs:[['10:24 to 10:56','32 min'],['8:00 to 8:46','46 min'],['3:40 to 4:15','35 min']], say:'How long did it take? Match each one.', how:'Same hour: subtract the minutes. 56 − 24 = 32.'},
+    {type:'listen', hear:'The bus ride starts at 10:25 and takes 65 minutes. When does it end?', o:['11:30','11:40','12:30'], a:'11:30', say:'Listen. When does it end?', how:'60 minutes: 11:25. 5 more: 11:30.'},
+    {type:'sort', bins:['Less than 1 hour','More than 1 hour'], cards:[['35 min',0],['72 min',1],['46 min',0],['85 min',1]], say:'More or less than 1 hour? Sort them.', how:'1 hour is 60 minutes.'},
+    {type:'tiles', w:['5',':','0','3'], extra:['1','6'], q:'3:51 + 72 minutes', say:'Mincha at 3:51, 72 minutes. When does it end?', how:'60 minutes: 4:51. 12 more: 5:03.'}] };
+
+B['MATH.MEAS.L04.05']={ band:'B23', pic:'🧪', today:'Measure with liters, grams and kilograms', why:'Filling the Shabbos urn, weighing pretzels: liters and grams tell how much.',
+  ready:[{q:'Which holds more water?', o:['a bucket','a cup'], a:'a bucket'},{q:'200 + 200 + 200 = ?', o:['600','400','222'], a:'600'}],
+  bridge:'MATH.MEAS.L03.01', bridgeName:'Inches and centimeters',
+  watch:{ q:'Which unit? Water in the urn, a raisin, a Gemara.', m:{type:'emoji',e:'🫖',n:1}, steps:[
+    'Liters (L) measure liquid. A big water bottle holds about 1 liter.',
+    'Grams (g) measure light things. A raisin or a paper clip is about 1 gram.',
+    'Kilograms (kg) measure heavy things. A big Gemara is about 1 kilogram.',
+    'Add them like numbers: 2 L + 10 L = 12 L. 3 bags of 200 g = 600 g.',
+    {t:'Lift it! Light? Grams. Heavy? Kilograms!', m:{type:'move',t:'Lift a pencil: grams! Lift your schoolbag: kilograms!'}}], a:'liters, grams, kilograms' },
+  oops:{ q:'A raisin weighs about…', wrong:'1 kilogram', right:'1 gram', why:'A raisin is very light. Grams are for light things.' },
+  ways:['real things','move','Mistake Detective'], done:'You can measure with liters, grams and kilograms.',
+  board:{ one:'Liters for liquid, grams light, kilograms heavy.', activity:'A kitchen scale and a 1 L bottle: guess, then measure.', mistakes:['Liters for weight','Grams for heavy things','Not keeping the same unit when adding'] },
+  do:[
+    {type:'sort', bins:['liters','grams','kilograms'], cards:[['🫖',0],['🍇',1],['📚',2],['🥛',0],['📎',1],['🍉',2]], say:'Liquid, light or heavy? Sort them.', how:'Liquid: liters. Light: grams. Heavy: kilograms.'},
+    {type:'hop', start:0, add:600, unit:200, from:0, to:1000, q:'3 bags of 200 g', say:'Each bag is 200 grams. Hop 3 bags.', how:'200, 400, 600 grams.'}],
+  your:[
+    {type:'tiles', w:['1','5'], extra:['2','7'], q:'10 L, then 5 L more', say:'Zev pours 10 liters, then 5 more. How many?', how:'10 + 5 = 15 liters.'},
+    {type:'hop', start:0, add:2700, unit:900, from:0, to:3600, q:'3 bags of 900 g', say:'Each bag is 900 grams. Hop 3 bags.', how:'900, 1800, 2700 grams.'},
+    {type:'listen', hear:'Which unit is best for measuring a raisin?', o:['grams','liters','kilograms'], a:'grams', say:'Listen. Tap the best unit.', how:'A raisin is light: grams.'},
+    {type:'match', pairs:[['2 L + 10 L','12 L'],['8 L + 7 L','15 L'],['200 g × 3','600 g']], say:'Add like regular numbers. Match them.', how:'Keep the unit: 8 L + 7 L = 15 L.'},
+    {type:'sort', bins:['liters','kilograms'], cards:[['🪣',0],['🎒',1],['🧃',0],['🍉',1]], say:'Liquid or heavy thing? Sort them.', how:'Liquid: liters. Heavy: kilograms.'}] };
+
+B['MATH.STAT.L04.01']={ band:'B23', pic:'⭐', today:'Read graphs where a picture stands for more', why:'Our class learned 60 mishnayos! A picture graph with a key shows it fast.',
+  ready:[{q:'Count by 10s: 10, 20, 30, ?', o:['40','31','50'], a:'40'},{q:'Count by 5s: 5, 10, 15, ?', o:['20','16','25'], a:'20'}],
+  bridge:'MATH.STAT.L03.01', bridgeName:'Bar graphs',
+  watch:{ q:'Key: each ⭐ = 5 mishnayos. Mon: ⭐⭐⭐', m:{type:'emoji',e:'⭐',n:3}, steps:[
+    'Read the key first: each picture can stand for more than 1.',
+    {t:'Each ⭐ = 5. Skip count: 5, 10, 15. Monday is 15.', m:{type:'line',from:0,to:20,hops:[5,10,15]}},
+    'How many more? Tue 20, Wed 15: 20 − 15 = 5 more.',
+    'On a line plot, each ✖️ is one thing, above its measurement.',
+    {t:'Chant it: Read the key, then count by its number!', m:{type:'chant',lines:['Read the key,','then count by its number!']}}], a:'15 mishnayos' },
+  oops:{ q:'⭐⭐⭐, each ⭐ = 5', wrong:'3', right:'15', why:'Each star is 5, not 1. Count by 5s.' },
+  ways:['picture graph','number line','chant','Mistake Detective'], done:'You can read scaled picture graphs and line plots.',
+  board:{ one:'Read the key first.', activity:'Make a class picture graph where each sticker is 2 boys.', mistakes:['Counting pictures as 1 each','Skipping the key','Counting half pictures as whole'] },
+  do:[
+    {type:'hop', start:0, add:15, unit:5, from:0, to:30, q:'⭐⭐⭐ (each ⭐ = 5)', say:'Each star is 5. Hop by 5s for 3 stars.', how:'5, 10, 15. Monday is 15 mishnayos.'},
+    {type:'match', pairs:[['⭐⭐ (10)','20'],['⭐⭐⭐ (5)','15'],['⭐⭐⭐ (10)','30']], say:'Each star is worth the number in brackets. Match the totals.', how:'Count by the key: 10, 20, 30.'}],
+  your:[
+    {type:'hop', start:0, add:60, unit:10, from:0, to:100, q:'⭐⭐⭐⭐⭐⭐ (each ⭐ = 10)', say:'Each star is 10. Hop for 6 stars.', how:'10, 20, 30, 40, 50, 60.'},
+    {type:'blocks', n:5, q:'Tue 20, Wed 15', say:'How many more on Tuesday? Build the answer.', how:'20 − 15 = 5.'},
+    {type:'count', n:3, pic:'✖️', q:'Pencils longer than 3 inches', o:['2','3','4'], say:'Each ✖️ is one pencil longer than 3 inches. Count.', how:'Each ✖️ on a line plot is 1 thing.'},
+    {type:'sort', bins:['= 10','= 20'], cards:[['⭐⭐ (5)',0],['⭐⭐ (10)',1],['⭐ (10)',0],['⭐⭐⭐⭐ (5)',1]], say:'Read each key. Sort by the total.', how:'Multiply the stars by the key: 2 × 5 = 10.'},
+    {type:'listen', hear:'Sunday 20, Monday 60, Tuesday 20. How many in all?', o:['100','80','60'], a:'100', say:'Listen. Add them up. Tap the total.', how:'20 + 60 + 20 = 100.'}] };
 })(window.ONE_BITE);
 </script>
