@@ -16,3 +16,4 @@
 - louisiana-purchase-map (live): readable labels and "1803"
 - talmud-printed-venice-1522 (live): readable Hebrew text; alt names Venice and Bomberg (answers)
 - mishnah-kaufmann-manuscript (live): readable handwritten Mishnah text - may contain the Divine Name; check first
+- house-keys-on-keyring (live): readable maker stamp on a key

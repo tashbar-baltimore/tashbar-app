@@ -1,0 +1,3 @@
+- two-black-drawers-brass-handles.webp | https://pixabay.com/photos/back-to-school-registerbox-1538863/ | Pixabay Content License | PIRO4D
+- white-plate-fork-and-knife.webp | https://www.flickr.com/photos/151691693@N02/42585288225 | CC BY 2.0 | stockcatalog
+- white-keyboard-letter-keys-close.webp | https://pixabay.com/photos/keyboard-hardware-computer-70506/ | Pixabay Content License | geralt

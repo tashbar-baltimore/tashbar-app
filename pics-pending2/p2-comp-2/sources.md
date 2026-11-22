@@ -1,0 +1,4 @@
+- smoke-alarm-on-hallway-ceiling.webp | https://www.flickr.com/photos/97283472@N00/111672966 | CC BY 2.0 | leighblackall
+- stacks-of-white-plates.webp | https://pixabay.com/photos/plate-stack-dishes-stack-of-plates-629970/ | Pixabay Content License | congerdesign
+- wooden-clipboard-with-blank-paper.webp | https://pixabay.com/photos/desk-white-background-plant-coffee-1209778/ | Pixabay Content License | 1681551
+- row-of-jam-jars-on-shelf.webp | https://pixabay.com/photos/jam-fruit-jars-fruit-jams-428094/ | Pixabay Content License | jarmoluk
