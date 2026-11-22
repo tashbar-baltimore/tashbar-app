@@ -109,7 +109,7 @@ Every activity may have: `say` (spoken instruction; a good default is made), `ho
 | Type | Data | He does |
 |---|---|---|
 | `tenframe` | `{type:'tenframe', n:7, start:0}` (n up to 20; `start` dots are already in, blue). **Take away:** `{type:'tenframe', n:4, start:9}` (start bigger than n; n can be 0) | taps boxes (or drags the dot) until the frame shows n, then Check. Take away: taps dots OFF (they show ✕) until n are left |
-| `hop` | `{type:'hop', start:3, add:4, unit:1, from, to}` (add < 0 hops back; unit 2, 5, 10 for skip counting; at most 20 hops wide) | taps Hop ▶ / ◀ Hop, counting hops, then Check |
+| `hop` | `{type:'hop', start:3, add:4, unit:1, from, to}` (add < 0 hops back; unit 2, 5, 10 for skip counting; at most 20 hops wide). **How many hops?** `{type:'hop', start:7, add:6, ask:'hops', o:['5','6','7'], q:'13 − 7 = ?'}` (`o` optional) for think-addition subtraction, missing addends (`8 + ? = 13`) and "how many more" | taps Hop ▶ / ◀ Hop, counting hops, then Check. With `ask:'hops'`: a 🚩 marks start + add; he hops to it, then taps how many hops |
 | `count` | `{type:'count', n:6, pic:'🍎', name:'apple', o:['5','6','7']}` (`o` optional) | taps each picture (it gets a number), then picks how many |
 | `blocks` | `{type:'blocks', n:14}` | adds tens and ones (tap a block to take it away), then Check; 14 ones is "trade 10 ones for a ten" |
 | `tiles` | `{type:'tiles', w:['c','a','t'], extra:['b'], hear:'cat', he:false}` | taps tiles into the slots in order, then Check (numbers work too: `w:['2','4','6']`) |

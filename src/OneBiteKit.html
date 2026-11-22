@@ -11,6 +11,7 @@
    tenframe  {type:'tenframe', n:7, start:0}                  tap (or drag the dot) to fill the frame until it shows n
              {type:'tenframe', n:4, start:9}                  take away: start > n, he taps dots OFF until n are left (n can be 0)
    hop       {type:'hop', start:3, add:4, unit:1, from, to}   hop the frog on a number line; lands on start + add
+             {type:'hop', start:7, add:6, ask:'hops', o:['5','6','7']}   how many hops? hop to the flag (start + add), then pick the number of hops
    count     {type:'count', n:6, pic:'🍎', o:['5','6','7']}   tap each picture to count, then pick the number
    blocks    {type:'blocks', n:14}                            build n with tens and ones
    tiles     {type:'tiles', w:['c','a','t'], extra:['b'], he:false, hear:'cat'}   put tiles in order
@@ -69,22 +70,29 @@ T.hop={ check:true,
     const hi=d.to!=null?d.to:lo+Math.max(w,Math.ceil((Math.max(a,b)-lo)/w)*w); return [lo,hi]; },
   err(d){ if(!num(d.start)||!num(d.add)||d.add===0) return 'needs start and add (add is not 0)'; const u=T.hop.u(d); if(!num(u)||d.add%u) return 'add must be a whole number of hops (a multiple of unit)';
     const r=T.hop.rng(d), b=d.start+d.add; if(d.start<r[0]||d.start>r[1]||b<r[0]||b>r[1]) return 'start and the landing number must be on the line (from..to)';
-    if((r[1]-r[0])/u>20) return 'the line is too long: at most 20 hops from one end to the other'; return ''; },
-  init(d){ return {pos:d.start, path:[d.start]}; },
-  say(d){ const n=Math.abs(d.add)/T.hop.u(d), u=T.hop.u(d); return 'Start at '+d.start+'. Hop '+(d.add>0?'':'back ')+n+' '+(u>1?(n===1?'jump':'jumps')+' of '+u:(n===1?'time':'times'))+'. Where do you land?'; },
-  how(d){ return 'Put the frog on '+d.start+'. Tap Hop and count each hop out loud: 1, 2, 3. Stop when you have done them all.'; },
-  label(d){ return 'Number line: '+d.start+(d.add>0?' + ':' - ')+Math.abs(d.add); },
+    if((r[1]-r[0])/u>20) return 'the line is too long: at most 20 hops from one end to the other';
+    if(d.ask!=null&&d.ask!=='hops') return "ask can only be 'hops'"; if(d.ask&&d.o&&(!isArr(d.o)||d.o.map(S).indexOf(S(T.hop.n(d)))<0)) return 'o must include the number of hops ('+T.hop.n(d)+')'; return ''; },
+  n(d){ return Math.round(Math.abs(d.add)/T.hop.u(d)); },
+  opts(d){ return d.ask&&d.o?d.o.map(S):null; },
+  init(d){ const s={pos:d.start, path:[d.start]}; if(d.ask) Object.assign(s,{o:d.o?shufNot(d.o.map(S)):numChoices(T.hop.n(d)), off:{}}); return s; },
+  say(d){ if(d.ask) return 'Start at '+d.start+'. Hop to '+(d.start+d.add)+'. How many hops?'; const n=Math.abs(d.add)/T.hop.u(d), u=T.hop.u(d); return 'Start at '+d.start+'. Hop '+(d.add>0?'':'back ')+n+' '+(u>1?(n===1?'jump':'jumps')+' of '+u:(n===1?'time':'times'))+'. Where do you land?'; },
+  how(d){ if(d.ask) return 'Hop one at a time to the flag and count each hop out loud. The number of hops is the answer.'; return 'Put the frog on '+d.start+'. Tap Hop and count each hop out loud: 1, 2, 3. Stop when you have done them all.'; },
+  label(d){ return d.ask?'Number line: hops from '+d.start+' to '+(d.start+d.add):'Number line: '+d.start+(d.add>0?' + ':' - ')+Math.abs(d.add); },
   view(d,s,c){ const r=T.hop.rng(d), u=T.hop.u(d), W=340, pad=18, n=(r[1]-r[0])/u, sx=v=>pad+(v-r[0])*(W-2*pad)/Math.max(1,r[1]-r[0]);
     const fs=n<=10?13:n<=15?11:9.5; let g='<svg class="obk-nl" viewBox="0 0 '+W+' 112" role="img" aria-label="number line from '+r[0]+' to '+r[1]+', the frog is on '+s.pos+'">';
     g+='<line x1="'+pad+'" y1="86" x2="'+(W-pad)+'" y2="86" stroke="#1F2A44" stroke-width="3"/>';
     for(let v=r[0];v<=r[1]+1e-9;v+=u){ const x=sx(v); g+='<line x1="'+x+'" y1="79" x2="'+x+'" y2="93" stroke="#1F2A44" stroke-width="2"/><text x="'+x+'" y="109" font-size="'+fs+'" text-anchor="middle" fill="#1F2A44" font-weight="'+(v===d.start?'900':'600')+'">'+v+'</text>'; }
-    g+='<circle cx="'+sx(d.start)+'" cy="86" r="5" fill="#3B6FD8"/>';
+    g+='<circle cx="'+sx(d.start)+'" cy="86" r="5" fill="#3B6FD8"/>'+(d.ask?'<text x="'+(sx(d.start+d.add)+6)+'" y="40" font-size="24" text-anchor="middle">🚩</text>':'');
     for(let k=0;k+1<s.path.length;k++){ const x1=sx(s.path[k]), x2=sx(s.path[k+1]), mx=(x1+x2)/2; g+='<path d="M'+x1+' 80 Q'+mx+' 46 '+x2+' 80" fill="none" stroke="#FF7A3D" stroke-width="3" stroke-dasharray="5 4"/>'; }
     g+='<text x="'+sx(s.pos)+'" y="74" font-size="30" text-anchor="middle">🐸</text></svg>';
-    const hops=Math.round(Math.abs(s.pos-d.start)/u);
+    const hops=Math.round(Math.abs(s.pos-d.start)/u), at=s.pos===d.start+d.add;
+    if(d.ask) return g+'<p class="obk-count sm" aria-live="polite">'+(c.guided?'Hops: '+hops:at?'You are at the flag!':'Hop to the flag 🚩')+'</p>'+
+      (at||s.over?'<div class="obk-opts">'+s.o.map((o,j)=>'<button class="obk-opt'+(s.off[j]?' off':'')+(s.over&&o===S(T.hop.n(d))?' right':'')+(c.hint&&o===S(T.hop.n(d))&&!s.over?' obk-pulse':'')+'" data-obk="pick" data-k="'+j+'"'+(s.off[j]||s.over?' disabled':'')+'>'+E(o)+'</button>').join('')+'</div>':'')+
+      '<div class="obk-row"><button class="obk-btn" data-obk="back" aria-label="Hop back"'+(s.pos-u<r[0]-1e-9||s.over?' disabled':'')+'>◀ Hop</button><button class="obk-btn obk-pri'+(c.guided&&!at?' obk-pulse':'')+'" data-obk="fwd" aria-label="Hop forward"'+(s.pos+u>r[1]+1e-9||s.over?' disabled':'')+'>Hop ▶</button></div>';
     return g+'<p class="obk-count sm" aria-live="polite">Hops: '+hops+(c.guided?' of '+Math.round(Math.abs(d.add)/u):'')+'</p>'+
       '<div class="obk-row"><button class="obk-btn" data-obk="back" aria-label="Hop back"'+(s.pos-u<r[0]-1e-9?' disabled':'')+'>◀ Hop</button><button class="obk-btn obk-pri'+(c.guided&&hops<Math.abs(d.add)/u&&d.add>0?' obk-pulse':'')+'" data-obk="fwd" aria-label="Hop forward"'+(s.pos+u>r[1]+1e-9?' disabled':'')+'>Hop ▶</button></div>'; },
-  tap(d,s,a){ const r=T.hop.rng(d), u=T.hop.u(d); let np=s.pos; if(a==='fwd') np=s.pos+u; else if(a==='back') np=s.pos-u; else return;
+  tap(d,s,a,k){ if(a==='pick'){ if(!d.ask) return; const j=+k; if(s.off[j]) return; if(s.o[j]===S(T.hop.n(d))) return 'ok'; s.off[j]=1; s.msg='Not '+s.o[j]+'. Count the orange hops again.'; return 'miss'; }
+    const r=T.hop.rng(d), u=T.hop.u(d); let np=s.pos; if(a==='fwd') np=s.pos+u; else if(a==='back') np=s.pos-u; else return;
     if(np<r[0]-1e-9||np>r[1]+1e-9) return; if(s.path.length>1&&s.path[s.path.length-2]===np) s.path.pop(); else s.path.push(np); s.pos=np; },
   ready(d,s){ return s.pos!==d.start; },
   judge(d,s){ const b=d.start+d.add; if(s.pos===b) return {ok:true}; const past=d.add>0?s.pos>b:s.pos<b;
@@ -274,7 +282,7 @@ const OBK=window.OBK={
     if(d.why&&(!d.why.q||!isArr(d.why.o)||d.why.o.map(S).indexOf(S(d.why.a))<0)) return d.type+': why needs q, o and a (a is one of o)';
     return ''; },
   init(d,c){ const s=ty(d).init(d,c||{}); return Object.assign(s,{misses:0,msg:'',over:false,ok:false,solved:false}); },
-  isCheck(d){ return !!ty(d).check; },
+  isCheck(d){ const t=ty(d); return d.type==='hop'&&d.ask?false:!!t.check; },   /* hop with ask:'hops' ends on a choice, not on Check */
   say(d){ return d.say||ty(d).say(d); },
   how(d){ return d.how||ty(d).how(d); },
   label(d){ return d.label||ty(d).label(d); },

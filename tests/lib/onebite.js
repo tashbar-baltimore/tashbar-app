@@ -24,7 +24,9 @@ function obkStep(wrong) {
   const w = wrong && !s.misses;
   switch (d.type) {
     case 'tenframe': { const f = s.cells.filter(v => v === 1 || v === 2).length; if (f < d.n) { const g = s.cells.indexOf(3); return tap('cell', g >= 0 ? g : s.cells.indexOf(0)); } if (f > d.n) return tap('cell', s.cells.lastIndexOf(1)); return check(); }
-    case 'hop': { const b = d.start + d.add; if (s.pos < b) return tap('fwd'); if (s.pos > b) return tap('back'); return check(); }
+    case 'hop': { const b = d.start + d.add; if (s.pos < b) return tap('fwd'); if (s.pos > b) return tap('back');
+      if (d.ask) { const n = S(Math.round(Math.abs(d.add) / Math.abs(d.unit || 1))), j = w ? s.o.findIndex((o, k) => o !== n && !s.off[k]) : s.o.indexOf(n); return tap('pick', j); }
+      return check(); }
     case 'count': { if (s.tap.length < d.n) { for (let i = 0; i < d.n; i++) if (s.tap.indexOf(i) < 0) return tap('obj', i); }
       const j = w ? s.o.findIndex((o, k) => o !== S(d.n) && !s.off[k]) : s.o.indexOf(S(d.n)); return tap('pick', j); }
     case 'blocks': { const T = Math.floor(d.n / 10), O = d.n % 10; if (s.t < T) return tap('ten'); if (s.t > T) return tap('rmt', 0); if (s.o < O) return tap('one'); if (s.o > O) return tap('rmo', 0); return check(); }
@@ -138,7 +140,9 @@ module.exports = async function oneBiteTests(pg) {
       { name: 'Explorers: real-world hop, blocks, tiles and count', want: { kit: 5, your: 3 }, bite: { band: 'E45', do: [{ type: 'hop', start: 20, add: 30, unit: 10, q: '20 + 30' }, { type: 'blocks', n: 47 }],
         your: [{ type: 'tiles', w: ['2', '4', '6', '8'] }, { type: 'count', n: 12, pic: 'art:apple', o: ['11', '12', '13', '14'] }, { type: 'tenframe', n: 13, start: 9 }] } },
       { name: 'ten-frame take-away (start > n, n = 0) and \\n line breaks in cards', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'tenframe', n: 4, start: 9 }, { type: 'sort', bins: ['Ball on top', 'Box on top'], cards: [['⚽\n📦', 0], ['📦\n⚽', 1]] }],
-        your: [{ type: 'tenframe', n: 0, start: 3 }, { type: 'match', pairs: [['one hundred thirteen', '113'], ['one hundred four', '104'], ['seventeen', '17']] }, { type: 'findall', grid: ['🍎\n🍎', '🍎', '🍎\n🍎', '🍐'], find: '🍎\n🍎', findSay: 'two apples' }] } } ];
+        your: [{ type: 'tenframe', n: 0, start: 3 }, { type: 'match', pairs: [['one hundred thirteen', '113'], ['one hundred four', '104'], ['seventeen', '17']] }, { type: 'findall', grid: ['🍎\n🍎', '🍎', '🍎\n🍎', '🍐'], find: '🍎\n🍎', findSay: 'two apples' }] } },
+      { name: 'hop "how many hops?" (think addition, missing addend), a wrong pick gently refused', opt: { wrongAt: 0 }, want: { kit: 5, your: 3 }, bite: { band: 'B23', do: [{ type: 'hop', start: 7, add: 6, ask: 'hops', q: '13 - 7 = ?' }, { type: 'tenframe', n: 6, start: 2 }],
+        your: [{ type: 'hop', start: 8, add: 5, ask: 'hops', o: ['4', '5', '6'], q: '8 + ? = 13' }, { type: 'blocks', n: 23 }, { type: 'hop', start: 20, add: 50, unit: 10, ask: 'hops', q: 'How many tens from 20 to 70?' }] } } ];
     for (const f of fixtures) {
       ONE_BITE[FIX] = Object.assign({}, base, f.bite);
       try { const s = await play(FIX, f.opt); if (s.err) o.bad.push('Activity Kit (' + f.name + '): ' + s.err);
