@@ -528,5 +528,335 @@ K2('WRIT.SENT.L03.01',[
     {type:'match', pairs:[['What kind?','warm'],['How?','happily'],['When?','on Shabbos'],['Where?','in the sukkah']], say:'Match each question to its spice.', how:'Each detail answers a question.'},
     {type:'tiles', w:['Moishe','happily','ate','warm','challah.'], hear:'Moishe happily ate warm challah.', say:'Build the spiced-up sentence.', how:'Happily tells how. Warm tells what kind.'},
     {type:'sort', bins:['Adjective','Adverb'], cards:[['brave',0],['carefully',1],['soft',0],['quickly',1],['tall',0]], say:'Adjective or adverb? Sort them.', how:'Adjectives tell what kind. Adverbs tell how.'}]);
+/* ===== Batch 2: L04 (band B23) and L05 (band E45: real-world writing, tap the reason) ===== */
+W('LANG.GRAM.L04.01',{ band:'B23', pic:'🔁', today:'Use pronouns so you never repeat', why:'Writing to Bubby, say "Avi came. He helped," not "Avi came. Avi helped."',
+  ready:[{q:'Which word names a person?', o:['Avi','ran','fast'], a:'Avi'}], bridge:'LANG.GRAM.L01.01', bridgeName:'Naming Words',
+  watch:{ q:'A pronoun stands in for a naming word.', steps:[
+    {t:'One boy: he. Avi ran home. He was fast.', m:{type:'tiles',w:['Avi','→','He'],hi:[2]}},
+    {t:'One thing: it. My bike is new. It is red.', m:{type:'tiles',w:['bike','→','It'],hi:[2]}},
+    {t:'Many: they. The boys sang. They sang loudly.', m:{type:'tiles',w:['The boys','→','They'],hi:[2]}},
+    {t:'After a word like to or for, use us or him. Rebbi gave a prize to Zevulun and me: to us.', m:{type:'tiles',w:['Zevulun and me','→','us'],hi:[2]}},
+    {t:'Chant it with me!', m:{type:'chant',lines:['He for one boy, it for one thing,','they for many, and we when I sing!']}}], a:'He, It, They, us' },
+  oops:{ q:'Moshe and Ari came. ___ said hello.', wrong:'He', right:'They', why:'Moshe and Ari are two people. Two or more is they.' },
+  ways:['word tiles','chant','match it','Mistake Detective'], done:'You can use pronouns so you never repeat!',
+  board:{ one:'Pronouns stand in for naming words: he, it, they, we, us, him.', activity:'Pronoun swap: read a story with repeated names; boys shout the pronoun.', mistakes:['He for two people','He for a thing (it)','We after to or for (to we instead of to us)'] },
+  do:[
+    {type:'match', pairs:[['Avi','he'],['the bike','it'],['the boys','they'],['Dovi and I','we']], say:'Match each naming word to its pronoun.', how:'One boy: he. One thing: it. Many: they. Me and a friend: we.'},
+    {type:'sort', bins:['he','it','they'], cards:[['Avi',0],['the sefer',1],['the boys',2],['Zaidy',0],['my bike',1],['the twins',2]], say:'Which pronoun stands in? Sort them.', how:'A boy or man: he. A thing: it. Two or more: they.'}],
+  your:[
+    {type:'listen', q:'The boys sang. ___ sang loudly.', hear:'The boys sang. They sang loudly.', o:['They','He','It'], a:'They', say:'Listen. Which pronoun fits?', how:'The boys are many. Many is they.'},
+    {type:'tiles', w:['My','bike','is','new.','It','is','red.'], extra:['He'], hear:'My bike is new. It is red.', say:'Build it. Use a pronoun for the bike.', how:'A bike is a thing. A thing is it.'},
+    {type:'listen', q:'Rebbi gave a prize to Zevulun and me. He gave it to ___.', hear:'He gave it to us.', o:['us','we','they'], a:'us', say:'Listen. Which word fits after to?', how:'After to, say us. Gave it to us.'},
+    {type:'findall', grid:['Avi','he','ran','it','they','bike','we','sang'], find:['he','it','they','we'], findSay:'pronoun', say:'Tap every pronoun.', how:'Pronouns are short words that stand in: he, it, they, we.'},
+    {type:'match', pairs:[['Chaim','him'],['the boys','them'],['Abba and I','us']], say:'After to or for, which word? Match.', how:'Give it to him. Give it to them. Give it to us.'}] });
+
+W('LANG.GRAM.L04.02',{ band:'B23', pic:'🤝', today:'Make the doer and action agree', why:'"The boys open their siddurim" sounds right when you read your Shabbos story aloud.',
+  ready:[{q:'Which one means many?', o:['dogs','dog','a dog'], a:'dogs'}], bridge:'LANG.GRAM.L01.02', bridgeName:'Action Words',
+  watch:{ q:'One does it. Many do it.', steps:[
+    {t:'One doer: the action gets an s. The clock rings every hour.', m:{type:'tiles',w:['The clock','rings'],hi:[1]}},
+    {t:'Many doers: no s. The talmidim open their siddurim.', m:{type:'tiles',w:['The talmidim','open'],hi:[1]}},
+    {t:'Is and are: the boy is ready, the boys are ready.', m:{type:'tiles',w:['boy is','boys are'],hi:[1]}},
+    {t:'Was and were: yesterday the boys were at the park.', m:{type:'tiles',w:['boy was','boys were'],hi:[1]}},
+    {t:'Show it on your hand!', m:{type:'move',t:'1 finger for one doer: rings. 5 fingers for a crowd: open!'}}], a:'rings, open, are, were' },
+  oops:{ q:'They ___ (run)', wrong:'runs', right:'run', why:'They means many. A crowd gets no s: they run.' },
+  ways:['word tiles','movement','sort it','Mistake Detective'], done:'You can make the doer and the action agree!',
+  board:{ one:'One doer: action with s (rings), is, was. Many: no s (ring), are, were.', activity:'Finger signal: 1 or 5 fingers for the doer, then say the action.', mistakes:['An s on the action with many doers (they runs)','is with many (the boys is)','was with many (the boys was)'] },
+  do:[
+    {type:'sort', bins:['One doer','Many doers'], cards:[['rings',0],['ring',1],['opens',0],['open',1]], say:'Does it go with one doer or many?', how:'An s on the action goes with one doer.'},
+    {type:'tiles', w:['The','talmidim','open','their','siddurim.'], extra:['opens'], hear:'The talmidim open their siddurim.', say:'Build the sentence.', how:'Talmidim are many. Many doers: open, no s.'}],
+  your:[
+    {type:'listen', q:'The clock ___ every hour.', hear:'The clock rings every hour.', o:['rings','ring','to ring'], a:'rings', say:'Listen. Which word fits?', how:'One clock is one doer. Add s: rings.'},
+    {type:'match', pairs:[['The boy','is'],['The boys','are'],['The dog','barks'],['The dogs','bark']], say:'Match each doer to its action.', how:'One gets is or s. Many get are or no s.'},
+    {type:'listen', q:'Yesterday the boys ___ at the park.', hear:'Yesterday the boys were at the park.', o:['were','was','is'], a:'were', say:'Listen. Which word fits?', how:'Boys are many. Many in the past: were.'},
+    {type:'sort', bins:['is','are'], cards:[['the boy',0],['the boys',1],['Shimon',0],['we',1],['they',1]], say:'Is or are? Sort the doers.', how:'One: is. Many, we or they: are.'},
+    {type:'tiles', w:['The','birds','sing','in','the','tree.'], extra:['sings'], hear:'The birds sing in the tree.', say:'Build the sentence.', how:'Birds are many. Many doers: sing, no s.'}] });
+
+W('LANG.GRAM.L04.03',{ band:'B23', pic:'📏', today:'Compare with er, est, more and most', why:'Telling Zaidy which cousin is youngest or which hill is biggest needs comparing words.',
+  ready:[{q:'Which word describes?', o:['big','run','box'], a:'big'}], bridge:'LANG.GRAM.L02.02', bridgeName:'Describing Words',
+  watch:{ q:'Compare two? Add er. Three or more? Add est.', steps:[
+    {t:'Two things: add er. A truck is bigger than a bike.', m:{type:'tiles',w:['big','bigger'],hi:[1]}},
+    {t:'Three or more: add est. Of the three cousins, Esther is the youngest.', m:{type:'tiles',w:['young','younger','youngest'],hi:[2]}},
+    {t:'Long words use more and most: this story is more exciting than that one.', m:{type:'tiles',w:['more exciting','most exciting']}},
+    {t:'Rule-breakers: good, better, best.', m:{type:'chant',lines:['Tall, taller, tallest!','Good, better, best!']}}], a:'bigger, youngest, more exciting' },
+  oops:{ q:'This is the ___ (good) day.', wrong:'goodest', right:'best', why:'Good is a rule-breaker: good, better, best.' },
+  ways:['word tiles','chant','build it','Mistake Detective'], done:'You can compare with er, est, more and most!',
+  board:{ one:'Two: er or more. Three or more: est or most. Good, better, best.', activity:'Line up three boys by height; class says tall, taller, tallest.', mistakes:['est for two things','excitinger instead of more exciting','goodest, baddest'] },
+  do:[
+    {type:'tiles', w:['tall','taller','tallest'], say:'Put the comparing words in order.', how:'Plain, then er for two, then est for the most.'},
+    {type:'sort', bins:['Two things','Three or more'], cards:[['bigger',0],['biggest',1],['younger',0],['youngest',1]], say:'Comparing two, or three or more?', how:'er compares two. est compares three or more.'}],
+  your:[
+    {type:'tiles', w:['A','truck','is','bigger','than','a','bike.'], extra:['biggest'], hear:'A truck is bigger than a bike.', say:'Build it. Compare two things.', how:'Two things: a truck and a bike. Add er.'},
+    {type:'match', pairs:[['good','best'],['big','biggest'],['exciting','most exciting'],['young','youngest']], say:'Match each word to its most word.', how:'Most words add est, use most, or break the rule.'},
+    {type:'tiles', w:['Esther','is','the','youngest.'], extra:['younger'], hear:'Esther is the youngest.', say:'Of three cousins, Esther is the youngest. Build it.', how:'Three cousins is more than two. Use est.'},
+    {type:'match', pairs:[['a truck, a bike','bigger'],['3 cousins','youngest'],['2 stories','more exciting']], say:'Match each comparison to its word.', how:'Two things: er or more. Three or more: est.'},
+    {type:'sort', bins:['Real word','Not a word'], cards:[['better',0],['gooder',1],['more careful',0],['carefullest',1],['best',0]], say:'Real word or not? Sort them.', how:'Long words use more and most. Good breaks the rule.'}] });
+
+W('LANG.MECH.L04.01',{ band:'B23', pic:'🔍', today:'Proofread capitals, end marks and list commas', why:'A shopping list note for Mommy needs commas so nothing gets mixed up.',
+  ready:[{q:'Which mark ends an asking sentence?', o:['?','.','!'], a:'?'},{q:'Which word needs a capital?', o:['friday','bread','table'], a:'friday'}], bridge:'LANG.MECH.L02.02', bridgeName:'Proper Names',
+  watch:{ q:'Three proofreading checks.', steps:[
+    {t:'Capitals: the first word, names and days. On Friday, we baked challah.', m:{type:'tiles',w:['On','Friday,','we','baked','challah.'],hi:[0,1]}},
+    {t:'End marks: an asking sentence ends with ?. Do you have a pencil?', m:{type:'tiles',w:['Do','you','have','a','pencil?'],hi:[4]}},
+    {t:'List commas: a comma after each item except the last.', m:{type:'tiles',w:['a hammer,','a saw,','and a ruler.'],hi:[0,1]}},
+    {t:'All together: Bring a hammer, a saw, and a ruler.'}], a:'On Friday, we baked challah. Bring a hammer, a saw, and a ruler.' },
+  oops:{ q:'A list of three: red blue and green', wrong:'red blue and green', right:'red, blue, and green', why:'Each item gets a comma, except the last one.' },
+  ways:['word tiles','find it','build it','Mistake Detective'], done:'You can proofread capitals, end marks and list commas!',
+  board:{ one:'Capitals start sentences and names; ? ends asking; commas split list items.', activity:'Proofread race: pairs fix a sentence strip with three mistakes.', mistakes:['Small letters on days (friday)','A period after an asking sentence','No commas in a list, or a comma before the first item'] },
+  do:[
+    {type:'sort', bins:['Needs a capital','No capital'], cards:[['friday',0],['eli',0],['bread',1],['table',1],['baltimore',0]], say:'Does the word need a capital?', how:'Days, names and places need capitals.'},
+    {type:'tiles', w:['Bring','a hammer,','a saw,','and a ruler.'], extra:['a saw'], hear:'Bring a hammer, a saw, and a ruler.', say:'Build the list with its commas.', how:'A comma after each item, except the last.'}],
+  your:[
+    {type:'listen', q:'Do you have a pencil_', hear:'Do you have a pencil?', o:['?','.','!'], a:'?', say:'Listen. Which mark ends it?', how:'Do starts an asking sentence. End with a question mark.'},
+    {type:'sort', bins:['Correct','Needs fixing'], cards:[['On Friday,',0],['on friday',1],['eggs, milk,',0],['eggs milk',1]], say:'Correct or needs fixing? Sort them.', how:'Look for capitals and commas.'},
+    {type:'tiles', w:['On','Friday,','we','baked','challah.'], extra:['friday'], hear:'On Friday, we baked challah.', say:'Build the sentence with every capital.', how:'Capital On, capital Friday, period at the end.'},
+    {type:'listen', q:'Where is the tape measure_', hear:'Where is the tape measure?', o:['?','.','!'], a:'?', say:'Listen. Which mark ends it?', how:'Where asks. Asking ends with a question mark.'},
+    {type:'tiles', w:['We','need','nails,','screws,','and','glue.'], extra:['nails'], hear:'We need nails, screws, and glue.', say:'Build the list sentence.', how:'Comma after nails and screws. Glue is last.'}] });
+
+W('LANG.MECH.L04.02',{ band:'B23', pic:'💬', today:'Put talking marks around spoken words', why:'In your Shabbos story, talking marks show the exact words Zaidy said.',
+  ready:[{q:'Which mark ends an asking sentence?', o:['?','.',','], a:'?'}], bridge:'LANG.MECH.L02.01', bridgeName:'Asking or Telling',
+  watch:{ q:'Talking marks hug the exact words someone said.', steps:[
+    {t:'Talking marks show the exact words someone said.', m:{type:'scene',e:'🧤',t:'Yosef said, "I found my glove."'}},
+    {t:'Yosef said is not spoken. The spoken words are: I found my glove.', m:{type:'tiles',w:['Yosef said,','"I found my glove."'],hi:[1]}},
+    {t:'A comma comes before the talking marks.', m:{type:'tiles',w:['Rebbi asked,','"Who is ready?"'],hi:[0]}},
+    {t:'The end mark goes inside the talking marks: Rebbi asked, "Who is ready?"'}], a:'Rebbi asked, "Who is ready?"' },
+  oops:{ q:'"Avi said" let\'s go.', wrong:'Marks around the wrong words', right:'Avi said, "Let\'s go."', why:'Avi said is not spoken. Only let\'s go goes inside.' },
+  ways:['family scene','word tiles','sort it','Mistake Detective'], done:'You can put talking marks around the exact words someone said!',
+  board:{ one:'Talking marks hug the exact spoken words; comma before, end mark inside.', activity:'Speech bubbles: boys turn a comic bubble into a sentence with talking marks.', mistakes:['Marks around the speaker tag (Avi said)','The end mark outside the marks','No comma before the marks'] },
+  do:[
+    {type:'sort', bins:['Spoken words','Not spoken'], cards:[['I found my glove',0],['Yosef said',1],['Who is ready',0],['Rebbi asked',1]], say:'Were these words spoken out loud?', how:'Spoken words are what the person says. Said and asked are not.'},
+    {type:'tiles', w:['Rebbi','asked,','"Who','is','ready?"'], hear:'Rebbi asked, "Who is ready?"', say:'Build it with the talking marks.', how:'Comma after asked. The question mark goes inside.'}],
+  your:[
+    {type:'match', pairs:[['Avi said,','"I am hungry."'],['Rebbi said,','"Open your books."'],['Abba asked,','"Who is ready?"']], say:'Match each speaker to the words.', how:'The words in talking marks are what was said.'},
+    {type:'tiles', w:['Yosef said,','"I found','my glove."'], extra:['"Yosef'], hear:'Yosef said, "I found my glove."', say:'Build it. Hug only the words Yosef said.', how:'Yosef said tells who. I found my glove is what he said.'},
+    {type:'listen', hear:'What do talking marks show?', o:['speech','a title','a list'], a:'speech', say:'Listen. What do talking marks show?', how:'They hug the exact words someone said: speech.'},
+    {type:'tiles', w:['Avi','said,','"Let\'s','go."'], extra:['"Avi'], hear:'Avi said, "Let\'s go."', say:'Build it with the talking marks.', how:'Only let\'s go is spoken. The period goes inside.'},
+    {type:'sort', bins:['Right','Wrong'], cards:[['said, "Hi."',0],['said "Hi".',1],['asked, "Why?"',0],['"asked, Why?"',1]], say:'Right way or wrong way? Sort them.', how:'Comma before. Marks around the spoken words. End mark inside.'}] });
+
+W('WRIT.HAND.L04.01',{ band:'B23', pic:'〰️', today:'Start writing in cursive', why:'Cursive lets you write a long letter to Bubby smooth and fast.',
+  ready:[{q:'Which letter is tall?', o:['d','a','o'], a:'d'}], bridge:'WRIT.HAND.L02.01', bridgeName:'Neat Lines',
+  watch:{ q:'Cursive joins letters so your pencil flows.', steps:[
+    {t:'Cursive is different from print: the letters are joined together.', m:{type:'tiles',w:['print: a b c','cursive: joined'],hi:[1]}},
+    {t:'Most small letters start on the bottom line with an upstroke.'},
+    {t:'Tail letters g, j, y hang below the bottom line.', m:{type:'tiles',w:['g','j','y']}},
+    {t:'All your letters lean the same way, a little to the right.', m:{type:'move',t:'Lean your whole body a little to the right, like a cursive letter!'}},
+    {t:'Tall loops: b and d go up to the top line. Keep the pencil down through the word.'}], a:'Joined, start on the bottom line, lean the same way.' },
+  oops:{ q:'Lifting after every letter', wrong:'That is cursive', right:'Keep the pencil down through the word', why:'Lifting after each letter is print. Cursive flows.' },
+  ways:['movement','letter tiles','trace it','Mistake Detective'], done:'You can start writing in cursive!',
+  board:{ one:'Cursive letters join, start on the bottom line and all lean a little right.', activity:'Air cursive: boys write a word in the air without lifting their finger.', mistakes:['Lifting after every letter','Letters leaning different ways','Tails sitting on the line'] },
+  do:[
+    {type:'sort', bins:['Hangs below','Stays on line'], cards:[['g',0],['a',1],['j',0],['c',1],['y',0],['e',1]], say:'Does the letter hang below the line?', how:'g, j and y have tails that hang below.'},
+    {type:'trace', glyph:'l', name:'tall loop', say:'Trace a tall stroke. Start at the bottom, go up.', how:'Begin on the bottom line. Swoop up to the top line.'}],
+  your:[
+    {type:'listen', hear:'Which way should all your cursive letters lean?', o:['right','left','any'], a:'right', say:'Listen. Which way do your letters lean?', how:'Every letter leans the same way, a little to the right.'},
+    {type:'findall', grid:['b','a','g','e','j','o','y','c'], find:['g','j','y'], findSay:'tail letter', say:'Tap every letter that hangs below.', how:'Look for tails: g, j, y.'},
+    {type:'match', pairs:[['joined letters','cursive'],['start','bottom line'],['lean','a little right']], say:'Match each cursive rule.', how:'Joined, start at the bottom, lean right.'},
+    {type:'trace', glyph:'d', name:'letter d', say:'Trace d. Round first, then up tall.', how:'Go around, then up to the top line and back down.'},
+    {type:'sort', bins:['Cursive rule','Not a rule'], cards:[['join letters',0],['lift each time',1],['lean right',0],['lean any way',1]], say:'Cursive rule or not? Sort them.', how:'Cursive joins and leans the same way.'}] });
+
+W('WRIT.PARA.L04.01',{ band:'B23', pic:'🍔', today:'Build a paragraph: topic, three details, closing', why:'A paragraph for your rebbe about Shabbos is clear when every sentence fits.',
+  ready:[{q:'Which sentence teaches a fact about bees?', o:['Bees make honey.','I like bees.','Bees are the best.'], a:'Bees make honey.'}], bridge:'WRIT.PARA.L03.02', bridgeName:'Teach Me Something',
+  watch:{ q:'Topic sentence, three details, closing.', steps:[
+    {t:'Topic sentence: what the whole paragraph is about. Taking care of your tools makes them last longer.'},
+    {t:'Three details that support it: wipe them, dry them, hang them up.', m:{type:'emoji',e:'🔧',n:3}},
+    {t:'Odd one out? Topic: Our class trip was exciting. Not about the trip: My cousin lives in Ohio.', m:{type:'scene',e:'⛴️',t:'We rode a ferry and saw a real submarine.'}},
+    {t:'Closing: say the main idea again in new words. For all these reasons, the workshop is the best part of my week.'}], a:'Topic, detail, detail, detail, closing.' },
+  oops:{ q:'A detail about baseball in a Shabbos paragraph', wrong:'Keep it', right:'Take it out', why:'It does not support the topic. It is the odd one out.' },
+  ways:['family scene','sentence order','sort it','Mistake Detective'], done:'You can build a paragraph with a topic sentence, three details and a closing!',
+  board:{ one:'Topic sentence, three supporting details, a closing in new words.', activity:'Hamburger paragraph: groups order sentence strips and pull out the odd one.', mistakes:['A detail that does not support the topic','A topic sentence that is just one detail','No closing, or a closing that adds a new idea'] },
+  do:[
+    {type:'match', pairs:[['Topic','Tools need care.'],['Detail','Wipe off dust.'],['Closing','Care makes tools last.']], say:'Match each part to its sentence.', how:'The topic names it. A detail supports it. The closing wraps up.'},
+    {type:'sort', bins:['Belongs','Odd one out'], cards:[['rode a ferry',0],['cousin in Ohio',1],['saw a submarine',0],['my flat tire',1]], say:'Topic: our class trip. Does it belong?', how:'Keep only details about the class trip.'}],
+  your:[
+    {type:'tiles', w:['Topic','Detail 1','Detail 2','Detail 3','Closing'], say:'Put the paragraph parts in order.', how:'Topic first, three details, closing last.'},
+    {type:'listen', hear:'Taking care of your tools makes them last longer.', cap:'Which part of the paragraph is it?', o:['topic','fact','end','extra'], a:'topic', say:'Listen. Which part of the paragraph is it?', how:'It tells what the whole paragraph is about.'},
+    {type:'sort', bins:['Belongs','Odd one out'], cards:[['sing zemiros',0],['eat slowly',0],['bike tire',1],['nobody rushes',0]], say:'Topic: Shabbos is peaceful. Does it belong?', how:'Does it show Shabbos is peaceful? Keep it.'},
+    {type:'listen', hear:'For all these reasons, the workshop is the best part of my week.', cap:'Which part of the paragraph is it?', o:['topic','fact','end','extra'], a:'end', say:'Listen. Which part of the paragraph is it?', how:'For all these reasons wraps it up. That is the closing.'},
+    {type:'match', pairs:[['Topic','Our trip was fun.'],['Detail','We saw a sub.'],['Odd one out','My cousin is in Ohio.']], say:'Match each label to its sentence.', how:'The odd one out does not tell about the trip.'}] });
+
+W('WRIT.SENT.L04.01',{ band:'B23', pic:'🔗', today:'Join sentences with and, but, so', why:'Joined sentences make your Shabbos story smooth, not choppy.',
+  ready:[{q:'Which one is a complete sentence?', o:['Avi cut it.','cut it','Avi'], a:'Avi cut it.'}], bridge:'LANG.SENT.L03.01', bridgeName:'Complete sentences',
+  watch:{ q:'and adds, but surprises, so shows a result.', steps:[
+    {t:'so: a result. The board was too long, so Avi cut it.', m:{type:'tiles',w:['The board was too long,','so','Avi cut it.'],hi:[1]}},
+    {t:'but: a surprise. It was late, but the boys kept learning.', m:{type:'tiles',w:['It was late,','but','the boys kept learning.'],hi:[1]}},
+    {t:'and: one more matching idea. Menachem sanded the shelf and painted it.', m:{type:'tiles',w:['Menachem sanded the shelf','and','painted it.'],hi:[1]}},
+    {t:'Two whole sentences? Put a comma before the joining word.'},
+    {t:'Chant it with me!', m:{type:'chant',lines:['And adds more,','but is a surprise,','so tells what happened next!']}}], a:'so = result, but = surprise, and = more' },
+  oops:{ q:'I was hungry. I ate.', wrong:'I was hungry, but I ate.', right:'I was hungry, so I ate.', why:'Eating is the result of being hungry, not a surprise. Use so.' },
+  ways:['sentence tiles','chant','sort it','Mistake Detective'], done:'You can join sentences with and, but and so!',
+  board:{ one:'and = more, but = surprise, so = result; comma before the joining word.', activity:'Glue cards: pairs pick and, but or so to join two sentence strips.', mistakes:['but for a result (hungry, but I ate)','No comma before the joining word','Repeating the name (Eli measured the board and Eli cut the board)'] },
+  do:[
+    {type:'sort', bins:['so','but'], cards:[['hungry, ate',0],['late, learned',1],['rain, stayed in',0],['old, still cuts',1]], say:'Result or surprise? Pick so or but.', how:'A result uses so. A surprise uses but.'},
+    {type:'tiles', w:['The board was too long,','so','Avi cut it.'], extra:['but'], hear:'The board was too long, so Avi cut it.', say:'Join the two sentences.', how:'Cutting it is the result. Use so.'}],
+  your:[
+    {type:'listen', q:'It was late, ___ the boys kept learning.', hear:'It was late, but the boys kept learning.', o:['but','so','and'], a:'but', say:'Listen. Which joining word fits?', how:'Late, yet they kept going. A surprise uses but.'},
+    {type:'tiles', w:['Menachem sanded the shelf','and','painted it.'], extra:['but'], hear:'Menachem sanded the shelf and painted it.', say:'Join without saying the name twice.', how:'One more thing he did: use and.'},
+    {type:'match', pairs:[['and','adds more'],['but','a surprise'],['so','a result']], say:'Match each joining word to its job.', how:'And adds. But surprises. So shows what happened.'},
+    {type:'listen', q:'It was raining, ___ we played inside.', hear:'It was raining, so we played inside.', o:['so','but','and'], a:'so', say:'Listen. Which joining word fits?', how:'Playing inside is the result of rain. Use so.'},
+    {type:'tiles', w:['The saw is old,','but','it still cuts well.'], extra:['so'], hear:'The saw is old, but it still cuts well.', say:'Join the two sentences.', how:'Old but still good is a surprise. Use but.'}] });
+
+W('LANG.GRAM.L05.01',{ band:'E45', pic:'🕰️', today:'Keep verb tense consistent', why:'A thank-you letter about last Shabbos stays in the past from start to end.',
+  ready:[{q:'Yesterday I ___ (walk).', o:['walked','walk','will walk','walking'], a:'walked'},{q:'Last night we ___ (eat).', o:['ate','eated','eat','eats'], a:'ate'}], bridge:'LANG.GRAM.L03.02', bridgeName:'Irregular Past',
+  watch:{ q:'Keep the same time all through the sentence.', m:{type:'scene',e:'🍲',t:'Friday night at the Katz family table.'}, steps:[
+    {t:'Find the time clue. Last night is the past.'},
+    {t:'Hunt for every action word. They must all match: Last night we ate dinner and sang zemiros.', m:{type:'tiles',w:['Last night','ate','sang'],hi:[1,2]}},
+    {t:'Later uses will: Next Sunday, Yanky will visit his grandfather.', m:{type:'tiles',w:['Next Sunday','will visit'],hi:[1]}},
+    {t:'Tricky past words: Two days ago, Eli went to Lakewood. Not goed!', m:{type:'tiles',w:['go','went'],hi:[1]}}], a:'ate and sang, will visit, went' },
+  oops:{ q:'He runs fast and won.', wrong:'Leave it', right:'He ran fast and won.', why:'Won is past, so runs must become ran.' },
+  ways:['family scene','word tiles','tap the reason','Mistake Detective'], done:'You can keep verb tense consistent!',
+  board:{ one:'Find the time clue; every action word must match it.', activity:'Tense detectives: pairs circle every verb in a paragraph and fix the one that switches.', mistakes:['Switching to now in the middle (ate and sing)','Missing the time clue','Regular ed on a rule-breaker (goed)'] },
+  do:[
+    {type:'sort', bins:['Past','Present','Future'], cards:[['ate',0],['eats',1],['will eat',2],['sang',0],['sings',1],['will sing',2]], say:'Past, present or future? Sort the verbs.', how:'Past already happened. Present is now. Future uses will.'},
+    {type:'tiles', w:['Last','night','we','ate','and','sang','zemiros.'], extra:['sing'], hear:'Last night we ate dinner and sang zemiros.', say:'Build it. Keep every verb in the past.', how:'Last night is past. Ate and sang are both past.',
+      why:{q:'Why sang and not sing?', o:['Last night is the past','Sing is too short','Zemiros are songs','It sounds louder'], a:'Last night is the past'}}],
+  your:[
+    {type:'listen', q:'Next Sunday, Yanky ___ his grandfather.', hear:'Next Sunday, Yanky will visit his grandfather.', o:['will visit','visits','did visit','visit'], a:'will visit', say:'Listen. Which verb fits the time clue?', how:'Next Sunday is later. Later uses will.',
+      why:{q:'Which clue told you?', o:['Next Sunday','Yanky','grandfather','his'], a:'Next Sunday'}},
+    {type:'findall', q:'Yesterday I went to the park and play ball.', grid:['I','went','to','the','park','and','play','ball'], find:'play', findSay:'verb that switched time', say:'Tap the verb that switched to now.', how:'Yesterday is past. Went is past. Play is not.'},
+    {type:'listen', q:'Two days ago, Eli ___ to Lakewood.', hear:'Two days ago, Eli went to Lakewood.', o:['went','goes','goed','will go'], a:'went', say:'Listen. Which verb fits?', how:'Two days ago is past. Go changes to went.'},
+    {type:'match', pairs:[['runs, won','ran, won'],['opens, walked','opened, walked'],['ate, sing','ate, sang'],['go, saw','went, saw']], say:'Match each mixed pair to its fix.', how:'Make both verbs match the past.'},
+    {type:'sort', bins:['Same time','Switches'], cards:[['walked, davened',0],['walked, daven',1],['ate, sang',0],['eat, sang',1]], say:'Do both verbs keep the same time?', how:'Both past is good. One past, one now switches.'}] });
+
+W('LANG.MECH.L05.01',{ band:'E45', pic:'⏸️', today:'Use commas after openers and before joins', why:'A letter to your rebbe reads smoothly when the commas show where to pause.',
+  ready:[{q:'Which list has commas in the right places?', o:['eggs, milk, and bread','eggs milk and bread','eggs, milk and, bread','eggs milk, and, bread'], a:'eggs, milk, and bread'}], bridge:'LANG.MECH.L04.01', bridgeName:'Capitals, end marks and commas',
+  watch:{ q:'Two comma rules.', steps:[
+    {t:'Rule 1: a comma after an opening word. Yes, I finished my homework.', m:{type:'tiles',w:['Yes,','I','finished','my','homework.'],hi:[0]}},
+    {t:'A comma after an opening phrase. After lunch, we learned Mishnayos. Every morning, we daven.', m:{type:'tiles',w:['After lunch,','we','learned','Mishnayos.'],hi:[0]}},
+    {t:'Does Every morning we daven need a comma? yes, after Every morning.'},
+    {t:'Rule 2: a comma before and, but, so when they join two whole sentences.', m:{type:'tiles',w:['We cleaned the house,','and','Abba burned the chametz.'],hi:[1]}},
+    {t:'No second sentence? No comma: I ate and ran.'}], a:'Opener, comma. Two sentences: comma before and, but, so.' },
+  oops:{ q:'I ate, and ran.', wrong:'Comma before and', right:'I ate and ran.', why:'Ran is not a whole sentence. No comma needed.' },
+  ways:['word tiles','tap the reason','sort it','Mistake Detective'], done:'You can use commas after openers and before joining words!',
+  board:{ one:'Comma after an opener; comma before and, but, so when they join two sentences.', activity:'Pause test: read aloud and clap where you pause; that is where the comma goes.', mistakes:['No comma after Yes or an opening phrase','A comma after the joining word (and, Abba)','A comma before and when there is no second sentence'] },
+  do:[
+    {type:'tiles', w:['After lunch,','we','learned','Mishnayos.'], extra:['After'], hear:'After lunch, we learned Mishnayos.', say:'Build it with the comma after the opener.', how:'After lunch is the opener. The comma comes right after it.'},
+    {type:'sort', bins:['Needs a comma','No comma'], cards:[['Yes I can',0],['I ate and ran',1],['No I cannot',0],['We sat and ate',1]], say:'Does it need a comma?', how:'An opener or two whole sentences needs a comma.',
+      why:{q:'Why does Yes I can need a comma?', o:['Yes is an opening word','It is a list','It is a question','I is a name'], a:'Yes is an opening word'}}],
+  your:[
+    {type:'tiles', w:['Every morning,','we','daven.'], extra:['Every morning'], hear:'Every morning, we daven.', say:'Build it. Where does the comma go?', how:'Every morning is an opener: yes, after Every morning.'},
+    {type:'match', pairs:[['Yes,','I finished.'],['After lunch,','we learned.'],['It rained,','so we stayed in.'],['First,','we made a plan.']], say:'Match each opener to its sentence.', how:'Each opener gets a comma, then the rest.'},
+    {type:'tiles', w:['We cleaned the house,','and','Abba burned the chametz.'], extra:['and,'], hear:'We cleaned the house, and Abba burned the chametz.', say:'Join the two sentences with a comma.', how:'The comma goes before and, not after it.',
+      why:{q:'Why a comma here?', o:['and joins two whole sentences','house is a name','it is a list','it is a question'], a:'and joins two whole sentences'}},
+    {type:'findall', q:'Yes, I ran, and I sat.', grid:['Yes,','I','ran,','and','I','sat.'], find:['Yes,','ran,'], findSay:'word with a correct comma', say:'Tap each word with a correct comma.', how:'After the opener Yes. Before and joining two sentences.'},
+    {type:'sort', bins:['Right','Wrong'], cards:[['rained, so we',0],['rained so, we',1],['Yes, I can',0],['Yes I, can',1]], say:'Is the comma in the right place?', how:'Comma before so. Comma after Yes.'}] });
+
+W('LANG.USE.L05.01',{ band:'E45', pic:'🔀', today:'Pick the right sound-alike word', why:'A note to Bubby saying "their coming" instead of "they\'re coming" changes the meaning.',
+  ready:[{q:'Which word means 2?', o:['two','too','to','tow'], a:'two'}], bridge:'LANG.MECH.L03.01', bridgeName:'Apostrophe Basics',
+  watch:{ q:'Sound-alike words: same sound, different meaning.', steps:[
+    {t:'two = 2. too = also. to = toward. I want to come too!', m:{type:'tiles',w:['two','too','to'],hi:[1]}},
+    {t:'their = belongs to them. The twins forgot their lunches.', m:{type:'tiles',w:['their','there','they\'re'],hi:[0]}},
+    {t:'there = in that place. they\'re = they are.'},
+    {t:'your = belongs to you. Is this your pencil? you\'re = you are.', m:{type:'tiles',w:['your','you\'re'],hi:[0]}},
+    {t:'Test it: open the apostrophe. You are pencil? No! So it is your.'}], a:'too = also, their = theirs, your = yours' },
+  oops:{ q:'Their is the shul.', wrong:'Their', right:'There', why:'It means in that place. There has here inside it.' },
+  ways:['word tiles','tap the reason','match it','Mistake Detective'], done:'You can pick the right sound-alike word!',
+  board:{ one:'Check the meaning: two/too/to, their/there/they\'re, your/you\'re.', activity:'Open it up: boys read you\'re and they\'re as you are and they are to test.', mistakes:['their for they\'re','your for you\'re','to for too (me to)'] },
+  do:[
+    {type:'match', pairs:[['two','2'],['too','also'],['their','belongs to them'],['they\'re','they are']], say:'Match each word to its meaning.', how:'Think of what it means, not how it sounds.'},
+    {type:'sort', bins:['your','you\'re'], cards:[['___ pencil',0],['___ right',1],['___ coat',0],['___ late',1]], say:'Your or you\'re? Sort them.', how:'Try you are. If it works, write you\'re.',
+      why:{q:'How do you know?', o:['Try saying you are','Count the letters','Pick the shorter one','Look for a capital'], a:'Try saying you are'}}],
+  your:[
+    {type:'listen', q:'I want to come ___!', hear:'I want to come too!', o:['too','two','to','tow'], a:'too', say:'Listen. Which word means also?', how:'Too with two o\'s means also.'},
+    {type:'tiles', w:['The','twins','forgot','their','lunches.'], extra:['there','they\'re'], hear:'The twins forgot their lunches.', say:'Build the sentence with the right word.', how:'The lunches belong to them: their.'},
+    {type:'listen', q:'Is this ___ pencil?', hear:'Is this your pencil?', o:['your','you\'re','yore','you'], a:'your', say:'Listen. Which word fits?', how:'You are pencil makes no sense. It is your.',
+      why:{q:'Why your?', o:['The pencil belongs to you','It means you are','It is a place','It means also'], a:'The pencil belongs to you'}},
+    {type:'sort', bins:['there','their','they\'re'], cards:[['over ___',0],['___ coats',1],['___ coming',2],['___ house',1],['sit ___',0]], say:'There, their or they\'re? Sort them.', how:'Place: there. Belongs: their. They are: they\'re.'},
+    {type:'match', pairs:[['I have ___ cats.','two'],['Walk ___ shul.','to'],['Me ___!','too'],['___ going home.','They\'re']], say:'Match each sentence to its missing word.', how:'Read it with each word. Which one makes sense?'}] });
+
+K2('WRIT.PARA.L05.01',[
+    {type:'sort', bins:['Order','Change','Result'], cards:[['First',0],['However',1],['As a result',2],['Next',0],['Instead',1],['So',2]], say:'What job does each sign do? Sort them.', how:'Order signs count steps. Change signs turn. Result signs show what happened.'},
+    {type:'tiles', w:['The shelf wobbled.','As a result,','we added a brace.'], extra:['However,'], hear:'The shelf wobbled. As a result, we added a brace.', say:'Build it with the right road sign.', how:'Adding a brace happened because it wobbled. That is a result.',
+      why:{q:'Why As a result?', o:['The brace came because of the wobble','It is the first step','It shows a change','It gives an example'], a:'The brace came because of the wobble'}}],[
+    {type:'match', pairs:[['First','order'],['However','change'],['As a result','result'],['For example','example']], say:'Match each road sign to its job.', how:'Ask: what does the next idea do?'},
+    {type:'tiles', w:['Some boys walk.','On the other hand,','others take the bus.'], extra:['As a result,'], hear:'Some boys walk to school. On the other hand, others take the bus.', say:'Build it with a change sign.', how:'Walking and the bus are different. A change sign: on the other hand.',
+      why:{q:'Why On the other hand?', o:['It shows two different things','It shows a result','It is the last step','It adds an example'], a:'It shows two different things'}},
+    {type:'sort', bins:['Order','Change','Result'], cards:[['Then',0],['But',1],['So',2],['Finally',0],['However',1]], say:'Sort each sign by its job.', how:'Then and Finally count. But and However turn. So shows a result.'},
+    {type:'tiles', w:['First,','Next,','Then,','Finally,'], say:'Put the order signs in order.', how:'First starts. Finally ends.'},
+    {type:'listen', q:'The plan looked easy. ___, the cuts were tricky.', hear:'The plan looked easy. But the cuts were tricky.', o:['But','So','Then','First'], a:'But', say:'Listen. Which sign fits?', how:'Easy, then tricky: a change. But or however.'}]);
+
+W('WRIT.PARA.L05.02',{ band:'E45', pic:'🛠️', today:'Write a step-by-step how-to paragraph', why:'Write how to set the Shabbos table so your little brother can do it alone.',
+  ready:[{q:'Which word starts a list of steps?', o:['First','Finally','However','Last'], a:'First'}], bridge:'WRIT.SENT.L02.01', bridgeName:'Tell What Happened',
+  watch:{ q:'A how-to teaches steps in order.', m:{type:'scene',e:'💡',t:'Dovid writes how to change a light bulb.'}, steps:[
+    {t:'Start with what you will teach: Here is how to change a light bulb.'},
+    {t:'Give each step in order: Turn off the light. Unscrew the old bulb. Screw in the new bulb. Turn the light on.', m:{type:'tiles',w:['1 Off','2 Unscrew','3 Screw in','4 On']}},
+    {t:'Make each step clear: Sand the edges until they feel smooth. Not: do the sanding thing.'},
+    {t:'End with what happens: Now your room has light again!'}], a:'Name it, clear steps in order, the finish.' },
+  oops:{ q:'Skipping a step', wrong:'The reader will guess', right:'Write every step', why:'A reader cannot read your mind. Every step goes in.' },
+  ways:['family scene','step tiles','tap the reason','Mistake Detective'], done:'You can write a clear step-by-step how-to paragraph!',
+  board:{ one:'Name the job, give clear steps in order with transitions, end with the result.', activity:'Robot teacher: a boy follows another boy\'s written steps exactly as written.', mistakes:['Skipping a step','Vague steps (do the thing)','Steps out of order'] },
+  do:[
+    {type:'tiles', w:['Turn off the light.','Unscrew the old bulb.','Screw in the new bulb.','Turn the light on.'], say:'Put the light bulb steps in order.', how:'Safety first: turn it off. The light goes on last.'},
+    {type:'sort', bins:['Clear step','Not clear'], cards:[['Sand the edges',0],['Do the thing',1],['Cut 2 inches',0],['Sanding happens',1]], say:'Clear step or not clear? Sort them.', how:'A clear step says exactly what to do.',
+      why:{q:'Why is Do the thing not clear?', o:['It does not say what to do','It is too long','It has no capital','It is a question'], a:'It does not say what to do'}}],
+  your:[
+    {type:'listen', hear:'Sand the edges until they feel smooth.', cap:'Is this step clear?', o:['clear','vague','fact','ending'], a:'clear', say:'Listen. Is this step clear?', how:'It says what to do and when to stop. Clear!'},
+    {type:'tiles', w:['Take two slices of bread.','Spread on the filling.','Put the slices together.'], say:'Put the sandwich steps in order.', how:'Bread first. Filling next. Close it last.'},
+    {type:'match', pairs:[['Start','what you make'],['Middle','steps in order'],['End','the result'],['Linkers','first, next']], say:'Match each part of a how-to.', how:'Name it, give the steps, tell the finish.'},
+    {type:'sort', bins:['Clear step','Not clear'], cards:[['Fold it in half',0],['Fix it up',1],['Add 1 cup flour',0],['Use some stuff',1]], say:'Clear step or not clear?', how:'A clear step names the exact action and amount.'},
+    {type:'listen', hear:'Here is how to set the Shabbos table.', cap:'Where does this sentence go?', o:['start','middle','end','none'], a:'start', say:'Listen. Where does this sentence go?', how:'It names what you will teach. That goes first.',
+      why:{q:'Why at the start?', o:['It tells what the how-to teaches','It is the last step','It is a detail','It is a joke'], a:'It tells what the how-to teaches'}}] });
+
+W('WRIT.PARA.L05.03',{ band:'E45', pic:'🗨️', today:'Bring a story to life with dialogue', why:'Dialogue lets your family hear Savta and Zaidy talking in your Shabbos story.',
+  ready:[{q:'Which shows the exact words someone said?', o:['Avi said, "Let\'s go."','Avi said let\'s go.','"Avi said," let\'s go.','Avi, said let\'s go.'], a:'Avi said, "Let\'s go."'}], bridge:'LANG.MECH.L04.02', bridgeName:'Talking Marks',
+  watch:{ q:'Dialogue is the exact words a character says.', m:{type:'scene',e:'🚲',t:'Yechezkel pedaled toward the yeshiva, his backpack bouncing.'}, steps:[
+    {t:'The problem: Suddenly his chain slipped off with a loud clank.'},
+    {t:'Dialogue: "Not today!" he groaned. They let us hear how Yechezkel feels.', m:{type:'tiles',w:['"Not today!"','he groaned.'],hi:[0]}},
+    {t:'Talking marks hug the spoken words. The comma goes inside: "Please pass the salt," said Savta.', m:{type:'tiles',w:['"Please pass the salt,"','said Savta.'],hi:[0]}},
+    {t:'A new speaker gets a new line. Pick strong said words: asked, shouted, whispered.'}], a:'Dialogue = the exact words a character says, in talking marks.' },
+  oops:{ q:'Two speakers in one paragraph', wrong:'Keep them together', right:'New line for each speaker', why:'A new line shows a new speaker, like a new actor on stage.' },
+  ways:['story scene','word tiles','tap the reason','Mistake Detective'], done:'You can bring a story to life with dialogue!',
+  board:{ one:'Dialogue: exact words in talking marks, comma inside, new line for a new speaker.', activity:'Act it out: pairs read a scene, then write two lines of their dialogue.', mistakes:['Missing the closing talking mark','The comma outside the marks','Two speakers in one paragraph'] },
+  do:[
+    {type:'sort', bins:['Dialogue','Description'], cards:[['"Not today!"',0],['wind snapped',1],['"I\'ve got it,"',0],['green tent',1]], say:'Spoken words or description? Sort them.', how:'Dialogue is in talking marks. Description tells what we see.'},
+    {type:'tiles', w:['"Please','pass','the','salt,"','said','Savta.'], extra:['salt",'], hear:'"Please pass the salt," said Savta.', say:'Build the dialogue the right way.', how:'Open marks, the words, comma, close marks, then who said it.'}],
+  your:[
+    {type:'listen', hear:'"Not today!" he groaned.', cap:'How does Yechezkel feel?', o:['upset','happy','calm','proud'], a:'upset', say:'Listen. How does Yechezkel feel?', how:'Groaned and Not today let us hear how Yechezkel feels.'},
+    {type:'match', pairs:[['quiet voice','whispered'],['loud voice','shouted'],['a question','asked'],['upset','groaned']], say:'Match each voice to its said word.', how:'Pick the word that sounds like the voice.'},
+    {type:'listen', q:'Which part of the story is it?', hear:'Suddenly his chain slipped off with a loud clank.', o:['uh-oh','start','fixed','talk'], a:'uh-oh', say:'Listen. Which part of the story is it?', how:'Suddenly something goes wrong. That is the problem.',
+      why:{q:'Which word warns you?', o:['Suddenly','his','loud','off'], a:'Suddenly'}},
+    {type:'tiles', w:['"Hold','the','pole','steady!"','called','Yamin.'], hear:'"Hold the pole steady!" called Yamin.', say:'Build the dialogue.', how:'The exclamation mark goes inside the talking marks.'},
+    {type:'sort', bins:['Right','Wrong'], cards:[['"Hi," said Eli.',0],['"Hi, said Eli.',1],['Eli said, "Hi."',0],['Eli said "Hi".',1]], say:'Right way or wrong way? Sort them.', how:'Both talking marks, comma or end mark inside.'}] });
+
+W('WRIT.PARA.L05.04',{ band:'E45', pic:'🗳️', today:'Write an opinion with reasons and examples', why:'Convince your class to plant a garden with strong reasons and real examples.',
+  ready:[{q:'Which sentence is an opinion?', o:['I think gardens are great.','Seeds grow.','Water is wet.','Tomatoes are red.'], a:'I think gardens are great.'}], bridge:'WRIT.PARA.L03.01', bridgeName:'My Opinion',
+  watch:{ q:'Opinion, reasons, examples, closing.', steps:[
+    {t:'Opinion: I think our yeshiva should plant a vegetable garden.'},
+    {t:'Reason 1: First, a garden would teach us how food grows.'},
+    {t:'Back it up with an example: For example, we could watch a tiny seed turn into a tomato plant.', m:{type:'emoji',e:'🍅',n:1}},
+    {t:'Reason 2: Second, working outside together builds friendship. Example: boys help each other dig.'},
+    {t:'Closing: For these reasons, every family should make a fire escape plan today. The closing says the opinion again.'}], a:'Opinion, reason + example, reason + example, closing' },
+  oops:{ q:'A reason with no example', wrong:'Enough', right:'Add an example', why:'A reason with no example is a cookie with no cream.' },
+  ways:['worked example','sort it','tap the reason','Mistake Detective'], done:'You can write an opinion paragraph with reasons and examples!',
+  board:{ one:'Opinion; each reason backed by an example; closing restates the opinion.', activity:'Reason or example? Boys hold up R or E cards as you read sentences.', mistakes:['A reason with no example','Mixing up reasons and examples','A closing that changes the topic'] },
+  do:[
+    {type:'sort', bins:['Reason','Example'], cards:[['Second, it helps',0],['Seeds sprout',1],['First, learning',0],['dig side by side',1]], say:'Reason or example? Sort them.', how:'A reason says why. An example shows it really happens.'},
+    {type:'match', pairs:[['Opinion','We need a garden.'],['Reason','It teaches.'],['Example','A seed sprouts.'],['Closing','So, plant it!']], say:'Match each part to its sentence.', how:'Opinion, then why, then show it, then wrap up.'}],
+  your:[
+    {type:'listen', hear:'Second, working outside together builds friendship.', cap:'Reason or example?', o:['reason','proof','I think','ending'], a:'reason', say:'Listen. Is it a reason or an example?', how:'Second, then why it is good. That is a reason.',
+      why:{q:'How can you tell?', o:['It says why, with Second','It starts with For example','It says I think','It wraps up'], a:'It says why, with Second'}},
+    {type:'tiles', w:['Opinion','Reason 1','Example','Reason 2','Example','Closing'], say:'Put the parts of the paragraph in order.', how:'Opinion first. Each reason, then its example. Closing last.'},
+    {type:'listen', hear:'For these reasons, every family should make a fire escape plan today.', cap:'Opinion: every family should have a fire escape plan.', o:['ending','reason','proof','I think'], a:'ending', say:'Listen. Which part is it?', how:'For these reasons wraps it up. That is the closing.'},
+    {type:'sort', bins:['Fits the plan','Off topic'], cards:[['meet outside',0],['fires are hot',1],['practice it',0],['I like my family',1]], say:'Fire escape plan paragraph: does it fit?', how:'Keep reasons and examples that support the opinion.'},
+    {type:'findall', grid:['I','think','First','Also','sky','blue'], find:['think','First','Also'], findSay:'opinion signal word', say:'Tap every signal word.', how:'Signals: I think, First, For example, Second.'}] });
+
+W('WRIT.PARA.L05.05',{ band:'E45', pic:'🧰', today:'Revise to improve, edit to fix', why:'Before you send Zaidy your story, revise the ideas and edit the mistakes.',
+  ready:[{q:'Which word needs a capital?', o:['sunday','table','bread','cup'], a:'sunday'}], bridge:'WRIT.PARA.L04.01', bridgeName:'Paragraph',
+  watch:{ q:'Two hats: builder and inspector.', steps:[
+    {t:'Builder hat: revising makes it better; editing fixes mistakes.', m:{type:'tiles',w:['Revise: better','Edit: fix'],hi:[0]}},
+    {t:'Revising: join choppy sentences. Joining two short sentences into one smooth sentence.', m:{type:'tiles',w:['We sat on the dock','and','waited.'],hi:[1]}},
+    {t:'Revising: add a transition. After that, he sweeps the floor.'},
+    {t:'Inspector hat: capitals, punctuation, spelling. Its my favorite day becomes It\'s my favorite day.', m:{type:'tiles',w:['Its','→','It\'s'],hi:[2]}}], a:'Revise ideas, then edit mistakes.' },
+  oops:{ q:'Only fixing spelling', wrong:'The piece is done', right:'Revise ideas too', why:'Inspector work is only half. The builder makes the ideas strong.' },
+  ways:['two hats','word tiles','tap the reason','Mistake Detective'], done:'You can revise to improve and edit to fix!',
+  board:{ one:'Revise (builder) = better ideas and flow; edit (inspector) = capitals, punctuation, spelling.', activity:'Two-hat pass: partners revise one paragraph, then swap and edit.', mistakes:['Only editing, never revising','Its for It\'s','Choppy short sentences left alone'] },
+  do:[
+    {type:'sort', bins:['Revising','Editing'], cards:[['join sentences',0],['fix spelling',1],['add a detail',0],['add a period',1],['better word',0],['add a capital',1]], say:'Builder or inspector? Sort the changes.', how:'Revising improves ideas. Editing fixes mistakes.'},
+    {type:'findall', q:'Its my favorite day of the week.', grid:['Its','my','best','day','of','the','week'], find:'Its', findSay:'word that needs fixing', say:'Tap the word that needs fixing.', how:'It is my favorite day. So it needs an apostrophe: It\'s.',
+      why:{q:'Why is Its wrong?', o:['It means it is, so it needs an apostrophe','It needs a capital','It is spelled with two t\'s','It should be plural'], a:'It means it is, so it needs an apostrophe'}}],
+  your:[
+    {type:'tiles', w:['After that,','he','sweeps','the','floor.'], extra:['After that'], hear:'After that, he sweeps the floor.', say:'Revise it with a transition.', how:'Start with After that and a comma.'},
+    {type:'listen', hear:'Joining two short sentences into one smooth sentence.', cap:'Revising or editing?', o:['revise','edit','none','both'], a:'revise', say:'Listen. Is this revising or editing?', how:'It makes the writing smoother. That is revising.',
+      why:{q:'Why revising?', o:['It makes the writing better','It fixes a spelling mistake','It adds a period','It fixes a capital'], a:'It makes the writing better'}},
+    {type:'sort', bins:['Capital','Small'], cards:[['sunday',0],['lake',1],['week',1],['baltimore',0]], say:'Does it need a capital letter?', how:'Days and places need a capital.'},
+    {type:'match', pairs:[['We sat. We waited.','We sat and waited.'],['i','I'],['Its late.','It\'s late.'],['good','delicious']], say:'Match each mistake to its fix.', how:'Join, capitalize, add the apostrophe, pick a stronger word.'},
+    {type:'sort', bins:['Revising','Editing'], cards:[['cut off-topic',0],['fix a comma',1],['move a sentence',0],['spell it right',1]], say:'Revising or editing? Sort them.', how:'Ideas and order: revising. Marks and spelling: editing.'}] });
 })(window.ONE_BITE);
 </script>
