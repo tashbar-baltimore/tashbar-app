@@ -823,7 +823,8 @@ function play(id){ if(RD.on){ rdStop(); try{ speechSynthesis.cancel(); }catch(e)
  /* HoS 2026-11-22: "if I assign a child to kindergarten, why is it not going straight to these ABC games and matching games and the train games?"
     K-1 boys: when a K game lesson exists for this skill (KLessons / KReading / KKriyah, the train lessons), PLAY opens it straight away.
     Those lessons only switch on for K and 1st grade (their own on()), and they save his work the same way as before. */
- try{ const K=[window.KL,window.KR,window.KK].find(x=>x&&typeof x.has==='function'&&x.has(id)&&(typeof x.on!=='function'||x.on())); if(K){ GM.sig=''; K.open(id); return; } }catch(e){}
+ try{ const ob=window.ONE_BITE&&window.ONE_BITE[id]&&(window.OB_LIVE==='on'||(window.OB_LIVE==='test'&&/^TEST-/i.test(String((A.st&&A.st.id)||''))));   /* a One Bite lesson that is switched on for him wins (One Bite round 2 has K-1 hands-on bites) */
+  const K=ob?null:[window.KL,window.KR,window.KK].find(x=>x&&typeof x.has==='function'&&x.has(id)&&(typeof x.on!=='function'||x.on())); if(K){ GM.sig=''; K.open(id); return; } }catch(e){}
  if(c&&typeof startMission==='function'&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))){ GM.sig=''; startMission(c,id,'skill'); return; }
  GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); }
 /* "Read it to me": tap to read, tap the square to stop. The ring follows the real audio (TL_VOICE.now from VoicePro); with the device
