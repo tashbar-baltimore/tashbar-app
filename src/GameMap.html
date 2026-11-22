@@ -814,7 +814,8 @@ function play(id){ if(RD.on){ rdStop(); try{ speechSynthesis.cancel(); }catch(e)
  /* HoS 2026-11-22: "if I assign a child to kindergarten, why is it not going straight to these ABC games and matching games and the train games?"
     K-1 boys: when a K game lesson exists for this skill (KLessons / KReading / KKriyah, the train lessons), PLAY opens it straight away.
     Those lessons only switch on for K and 1st grade (their own on()), and they save his work the same way as before. */
- try{ const K=[window.KL,window.KR,window.KK].find(x=>x&&typeof x.has==='function'&&x.has(id)&&(typeof x.on!=='function'||x.on())); if(K){ GM.sig=''; K.open(id); return; } }catch(e){}
+ try{ const ob=window.ONE_BITE&&window.ONE_BITE[id]&&(window.OB_LIVE==='on'||(window.OB_LIVE==='test'&&/^TEST-/i.test(String((A.st&&A.st.id)||''))));   /* a One Bite lesson that is switched on for him wins (One Bite round 2 has K-1 hands-on bites) */
+  const K=ob?null:[window.KL,window.KR,window.KK].find(x=>x&&typeof x.has==='function'&&x.has(id)&&(typeof x.on!=='function'||x.on())); if(K){ GM.sig=''; K.open(id); return; } }catch(e){}
  if(c&&typeof startMission==='function'&&((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]))){ GM.sig=''; startMission(c,id,'skill'); return; }
  GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); }
 /* "Read it to me": tap to read, tap the square to stop. The ring follows the real audio (TL_VOICE.now from VoicePro); with the device
@@ -978,6 +979,69 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
  function music(){ try{ const Mu=window.TashbarMusic; if(!Mu||!A.st) return; if(Mu.state&&Mu.state.info&&Mu.state.info.off) return; const m=Mu.prefs();
   if(!m.joy){ m.joy=1; if(m.mood==='off') m.mood='mix'; try{ if(typeof saveStudent==='function') saveStudent(A.st); }catch(e){} }
   if(m.mood!=='off') Mu.play(false); }catch(e){} }
+ /* THEME TUNE (HoS 2026-11-22: "a theme tune that turns on when the app opens every time ... super pumping ... a few seconds").
+    An original Tashbar entrance theme made in the browser (no file). It plays
+    once each time a boy signs in (the welcome), unless his sound is off. To use a recording instead, set window.TL_THEME_URL. */
+ function themeTune(){ try{ if(typeof SND!=='undefined'&&SND.on===false) return;
+  if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.85; a.play().catch(()=>{}); return; }
+  const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; const c=GM.ac||(GM.ac=new AC()); if(c.state==='suspended') c.resume();
+  /* v2 (HoS: "much more rocking ... like the big star of the show is coming out onto the stage"): a drum roll and a rising whoosh
+     build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. v4 ("bigger, more exciting, more rocky, longer, more drum rolls"): v7 ("more Ma'oz Tzur ... a crazy beat ... techno, club rock ... ending on a very high note, like introducing"): build-up, club drop with Ma'oz Tzur on a supersaw lead, twice, then the highest chord. About 17 s. */
+  const comp=c.createDynamicsCompressor(); comp.threshold.value=-22; comp.ratio.value=10; comp.attack.value=.003; comp.release.value=.12; const clip=c.createWaveShaper(); { const k=new Float32Array(2048); for(let i=0;i<2048;i++){ const x=i/1024-1; k[i]=Math.tanh(x*1.6)/Math.tanh(1.6); } clip.curve=k; } comp.connect(clip); clip.connect(c.destination);
+  const out=c.createGain(); out.gain.value=.34; out.connect(comp); const lim=c.createGain(); lim.gain.value=2.3; comp.disconnect(); comp.connect(lim); const mst=c.createGain(); lim.connect(mst); mst.connect(clip);
+  const T=c.currentTime+.05, B=60/152, HIT=T+2.6;
+  mst.gain.setValueAtTime(.2,T); mst.gain.exponentialRampToValueAtTime(.62,HIT);   /* the build-up grows from soft to full */
+  const noiseBuf=(sec)=>{ const b=c.createBuffer(1,Math.ceil(c.sampleRate*sec),c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return b; };
+  const env=(g,t,a,d,v)=>{ g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(v,t+a); g.gain.exponentialRampToValueAtTime(.0008,t+a+d); };
+  const tone=(f,t,d,type,v,slide,dest)=>{ const o=c.createOscillator(), g=c.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(slide) o.frequency.exponentialRampToValueAtTime(slide,t+d); env(g,t,.008,d,v); o.connect(g); g.connect(dest||out); o.start(t); o.stop(t+d+.05); };
+  const noise=(t,d,type,freq,v,a,q)=>{ const n=c.createBufferSource(); n.buffer=noiseBuf(d+.05); const f=c.createBiquadFilter(); f.type=type; f.frequency.value=freq; if(q) f.Q.value=q; const g=c.createGain(); env(g,t,a||.003,d,v); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+d+.05); return f; };
+  const kick=(t,v)=>{ tone(160,t,.28,'sine',v||1.4,38); tone(90,t,.06,'square',.25); };
+  const snare=(t,v)=>{ noise(t,.18,'highpass',1600,v||.7); tone(200,t,.09,'triangle',.35,140); };
+  const clap=(t,v)=>{ [0,.012,.024].forEach(o=>noise(t+o,.1,'bandpass',1400,(v||.35),.002,1.5)); };
+  const tom=(t,f,v)=>{ tone(f,t,.32,'sine',v||.9,f*.55); noise(t,.05,'bandpass',f*4,.2); };
+  const crash=(t,v)=>{ noise(t,2,'highpass',5000,v||.5,.002); noise(t,1.3,'bandpass',9000,(v||.5)*.6,.002,.7); };
+  const hat=t=>noise(t,.05,'highpass',8000,.22);
+  const roll=(a,b,v0,v1)=>{ let t=a, gap=.14; while(t<b-.025){ const k=(t-a)/(b-a); snare(t,v0+(v1-v0)*k); t+=gap; gap=Math.max(.04,gap*.9); } };
+  const tomFill=(t)=>{ [196,174.61,146.83,123.47,110,98,87.31,73.42].forEach((f,k)=>tom(t+k*B/4,f,.85)); };
+  const curve=new Float32Array(1024); for(let i=0;i<1024;i++){ const x=i/512-1; curve[i]=Math.tanh(x*10); }
+  const gtr=(fs,t,d,v)=>{ const sh=c.createWaveShaper(); sh.curve=curve; sh.oversample='4x'; const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=3400; const g=c.createGain(); env(g,t,.006,d,v); sh.connect(lp); lp.connect(g); g.connect(out);
+   fs.forEach(f=>{ [0,-8,8].forEach(dt=>{ const o=c.createOscillator(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=dt; const og=c.createGain(); og.gain.value=.33; o.connect(og); og.connect(sh); o.start(t); o.stop(t+d+.05); }); }); };
+  const pc=r=>[r/2,r,r*1.5,r*2];   /* big power chord: low octave, root, fifth, octave */
+  const brass=(f,t,d,v)=>{ [0,-9,9].forEach(dt=>{ const o=c.createOscillator(), g=c.createGain(), lp=c.createBiquadFilter(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=dt; lp.type='lowpass'; lp.frequency.setValueAtTime(900,t); lp.frequency.linearRampToValueAtTime(4200,t+.08); env(g,t,.03,d,v/3); o.connect(lp); lp.connect(g); g.connect(out); o.start(t); o.stop(t+d+.05); }); };
+  const crowd=(t,d,v)=>{ const f=noise(t,d,'bandpass',1100,v,d*.4,.6); f.frequency.linearRampToValueAtTime(1800,t+d); };
+  /* 1. THE BUILD: a long drum roll with toms underneath, a rising whoosh and the crowd getting louder */
+  roll(T,HIT,.08,.75); [0,1,2,3].forEach(k=>tom(T+k*.55,82.41,.5+.1*k));
+  const w=noise(T,HIT-T,'bandpass',250,.22,HIT-T-.05,1.2); w.frequency.exponentialRampToValueAtTime(8000,HIT);
+  tone(98,T,HIT-T,'sawtooth',.06,987.77); crowd(T+.4,HIT-T+1.2,.12);
+  /* 2. THE HIT */
+  kick(HIT,1.8); crash(HIT,.7); gtr(pc(82.41),HIT,.6,.55); [329.63,415.3,493.88].forEach(f=>brass(f,HIT,.55,.45));
+  /* 3. THE DROP (club style): four-on-the-floor kick, pumping synth bass, open hats, claps, and MA'OZ TZUR (traditional Chanukah melody)
+     on a big supersaw lead with bells. Twice: the second time a step higher, an octave up, with a crazier beat (16th hats, snare rushes). */
+  const G=HIT+B, M=[[261.63,1],[349.23,1],[523.25,1],[466.16,.5],[440,.5],[392,1],[349.23,2],[440,1],[466.16,1],[523.25,1],[392,.5],[349.23,.5],[329.63,1],[349.23,2]];   /* Ma-oz tzur ye-shu-a-ti, le-cha na-eh le-sha-bei-ach */
+  const bell=(f,t,d,v)=>{ tone(f,t,d*1.4,'sine',v); tone(f*2,t,d*.8,'sine',v*.4); tone(f*3.01,t,d*.4,'triangle',v*.15); };
+  const saw=(f,t,d,v,open)=>{ const g=c.createGain(), lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(open?1200:2500,t); lp.frequency.linearRampToValueAtTime(open?7000:5200,t+Math.min(d,.25)); lp.Q.value=2; env(g,t,.012,d,v); lp.connect(g); g.connect(out);
+   [-22,-12,-5,0,5,12,22].forEach(dt=>{ const o=c.createOscillator(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=dt; const og=c.createGain(); og.gain.value=.16; o.connect(og); og.connect(lp); o.start(t); o.stop(t+d+.05); }); };
+  const openHat=t=>noise(t,.14,'highpass',7000,.26);
+  const roots=[87.31,87.31,87.31,87.31,116.54,116.54,130.81,130.81];   /* F F F F Bb Bb C C */
+  const bassNote=(f,t,d)=>{ const o=c.createOscillator(), o2=c.createOscillator(), g=c.createGain(), lp=c.createBiquadFilter(); o.type='sawtooth'; o2.type='square'; o.frequency.value=f; o2.frequency.value=f/2; lp.type='lowpass'; lp.frequency.setValueAtTime(1600,t); lp.frequency.exponentialRampToValueAtTime(300,t+d); env(g,t,.01,d,.32); o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(out); o.start(t); o2.start(t); o.stop(t+d+.05); o2.stop(t+d+.05); };
+  for(let k=0;k<32;k++){ const tb=G+k*B, bar=k%8, up=k<16?1:Math.pow(2,2/12), crazy=k>=16;
+   kick(tb,1.5); if(bar%2===1) { clap(tb,.4); snare(tb,.5); } openHat(tb+B/2); hat(tb); if(crazy){ hat(tb+B/4); hat(tb+3*B/4); }
+   bassNote(roots[bar]*up,tb+B/2,B*.45); if(crazy) bassNote(roots[bar]*up*2,tb+3*B/4,B*.2);
+   if(bar===0&&k) crash(tb,.5); if(crazy&&bar===7){ [0,1,2,3].forEach(q=>snare(tb+q*B/4,.45+q*.12)); }
+   if(bar===0||bar===4) saw(roots[bar]*up*4,tb,B*.3,.2); }   /* club stabs */
+  { const r=noise(G+14*B,2*B,'bandpass',400,.3,2*B-.05,1.4); r.frequency.exponentialRampToValueAtTime(9000,G+16*B); roll(G+15*B,G+16*B,.4,.9); }   /* riser into round two */
+  [[0,1],[16,2]].forEach(([start,oct])=>{ let b=start; const up=start?Math.pow(2,2/12):1; M.forEach(([f,d])=>{ const t=G+b*B, x=f*up*oct; saw(x,t,d*B*.95,.5,true); bell(x*2,t,d*B,.15); if(oct>1) saw(x/2,t,d*B*.95,.3); b+=d; }); });
+  crowd(G+16*B,16*B+3,.16);
+  /* 4. "INTRODUCING ...": a drum rush and a rising whoosh, then the highest moment: a giant chord across three octaves and the melody's
+     last note held way up high, with a double crash and the crowd. */
+  const END=G+32*B, TOP=349.23*Math.pow(2,2/12)*2;   /* G5 */
+  roll(END-B,END+B*1.2,.5,1); { const r=noise(END-B,B*2.2,'bandpass',500,.35,B*2.2-.05,1.4); r.frequency.exponentialRampToValueAtTime(11000,END+B*1.2); }
+  const LAST=END+B*1.25; kick(LAST,1.9); crash(LAST,.85); crash(LAST+.02,.5);
+  [.5,1,1.25,1.5,2,2.5,3].forEach(m=>saw(TOP*m,LAST,2.6,.26,true)); saw(TOP*4,LAST,2.6,.32,true); bell(TOP*4,LAST,2.4,.18);
+  bassNote(TOP/8,LAST,1.6); gtr(pc(TOP/4),LAST,2.2,.35); crowd(LAST-.2,2.8,.3); kick(LAST+B*2,1.3); crash(LAST+B*2,.4);
+  mst.gain.setValueAtTime(.62,G); mst.gain.linearRampToValueAtTime(1.15,LAST);   /* it keeps getting bigger all the way to the top */
+ }catch(e){} }
+ GM.themeTune=themeTune;
  if(typeof welcome!=='function') return;
  const prevW=welcome;
  welcome=function(){ try{
@@ -1000,6 +1064,7 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
    `<div class="gmhow" aria-label="How it works"><span>1 ▶ Play your next level</span><span>2 🎯 3 missions a day</span><span>3 💵 Earn for the Store</span></div>`+
    `<div class="row"><button type="button" data-act="closeov">🗺️ My map</button>${ci>=0?`<button type="button" data-act="sm-need" data-i="${ci}">🌟 Some chizuk</button>`:''}</div>`+
    (v?`<p class="vort"><b>📜 Today's vort:</b> ${esc(typeof v==='string'?v:v.text)}${v.src?`<small>${esc(v.src)}</small>`:''}</p>`:'')+`</div>`);
+  setTimeout(themeTune,120);
  }catch(e){ console.error('GameMap welcome',e); return prevW.apply(this,arguments); } };
  /* HoS 2026-11-22: "the golden cloud should never cover the clock". When the clock and the Olam Haba cloud would overlap,
    the clock moves up so it sits just above the cloud, with a gap. Checked every 1.5 seconds and on resize; no change when they are apart. */
