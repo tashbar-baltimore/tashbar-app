@@ -137,8 +137,8 @@ module.exports = async function oneBiteTests(pg) {
         your: [{ type: 'sort', bins: ['Circle', 'Not a circle'], cards: [['⚪', 0], ['🔺', 1], ['🟠', 0], ['🟦', 1]] }, { type: 'trace', glyph: 'b' }, { type: 'listen', hear: 'ball', o: ['b', 'd', 'p'], a: 'b', why: { q: 'Why b?', o: ['Ball starts with b', 'It is round'], a: 'Ball starts with b' } }] } },
       { name: 'Explorers: real-world hop, blocks, tiles and count', want: { kit: 5, your: 3 }, bite: { band: 'E45', do: [{ type: 'hop', start: 20, add: 30, unit: 10, q: '20 + 30' }, { type: 'blocks', n: 47 }],
         your: [{ type: 'tiles', w: ['2', '4', '6', '8'] }, { type: 'count', n: 12, pic: 'art:apple', o: ['11', '12', '13', '14'] }, { type: 'tenframe', n: 13, start: 9 }] } },
-      { name: 'ten-frame take-away (start > n, n = 0) and \\n line breaks in cards', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'tenframe', n: 4, start: 9 }, { type: 'sort', bins: ['Ball on top', 'Box on top'], cards: [['⚽\n📦', 0], ['📦\n⚽', 1]] }],
-        your: [{ type: 'tenframe', n: 0, start: 3 }, { type: 'match', pairs: [['one hundred thirteen', '113'], ['one hundred four', '104'], ['seventeen', '17']] }, { type: 'findall', grid: ['🍎\n🍎', '🍎', '🍎\n🍎', '🍐'], find: '🍎\n🍎', findSay: 'two apples' }] } } ];
+      { name: 'ten-frame take-away (start > n, n = 0), \\n line breaks in cards, a thin Hebrew letter traced', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'tenframe', n: 4, start: 9 }, { type: 'sort', bins: ['Ball on top', 'Box on top'], cards: [['⚽\n📦', 0], ['📦\n⚽', 1]] }],
+        your: [{ type: 'tenframe', n: 0, start: 3 }, { type: 'match', pairs: [['one hundred thirteen', '113'], ['one hundred four', '104'], ['seventeen', '17']] }, { type: 'trace', glyph: 'ז', name: 'Zayin', he: true }] } } ];
     for (const f of fixtures) {
       ONE_BITE[FIX] = Object.assign({}, base, f.bite);
       try { const s = await play(FIX, f.opt); if (s.err) o.bad.push('Activity Kit (' + f.name + '): ' + s.err);

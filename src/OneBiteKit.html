@@ -235,7 +235,7 @@ T.trace={ check:true, needsMount:true,
   cover(s){ const tot=(s.tgt||[]).length; return tot?Object.keys(s.hit).length/tot:0; },
   ready(){ return true; },
   judge(d,s){ if(!s.strokes.length) return {ok:false,soft:true,msg:'Put your finger on the dots and trace.'}; const tot=(s.tgt||[]).length; if(!tot) return {ok:true}; const cov=T.trace.cover(s), stray=Object.keys(s.stray).length;
-    if(cov>=0.8&&stray<=tot*1.6) return {ok:true}; if(cov>=0.8) return {ok:false,msg:'Stay on the dots. Tap Start over and go slowly.'};
+    if(cov>=0.8&&stray<=tot*2.5+30) return {ok:true};   /* a finger is wider than a thin letter (Zayin, Vav): allow its width, still refuse a scribble over the whole box */ if(cov>=0.8) return {ok:false,msg:'Stay on the dots. Tap Start over and go slowly.'};
     return {ok:false,msg:'Keep going! Cover all the dots.'}; },
   solve(d,s){ s.solved=true; (s.tgt||[]).forEach(i=>s.hit[i]=1); } };
 
