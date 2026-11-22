@@ -979,6 +979,13 @@ body.gm-nav.gm-on #mupill .mpt{display:none}
    `<div class="row"><button type="button" data-act="closeov">🗺️ My map</button>${ci>=0?`<button type="button" data-act="sm-need" data-i="${ci}">🌟 Some chizuk</button>`:''}</div>`+
    (v?`<p class="vort"><b>📜 Today's vort:</b> ${esc(typeof v==='string'?v:v.text)}${v.src?`<small>${esc(v.src)}</small>`:''}</p>`:'')+`</div>`);
  }catch(e){ console.error('GameMap welcome',e); return prevW.apply(this,arguments); } };
+ /* HoS 2026-11-22: "the golden cloud should never cover the clock". When the clock and the Olam Haba cloud would overlap,
+   the clock moves up so it sits just above the cloud, with a gap. Checked every 1.5 seconds and on resize; no change when they are apart. */
+ function clockClear(){ try{ const c=document.getElementById('tlclock'), k=document.getElementById('ohsky'); if(!c||!k) return;
+  c.style.removeProperty('bottom'); const cb=c.getBoundingClientRect(), kb=k.getBoundingClientRect(); if(!cb.width||!kb.width) return;
+  const kt=kb.height<innerHeight*.6?kb.top:innerHeight; const over=cb.right>kb.left&&cb.left<kb.right&&cb.bottom>kt-12;
+  if(over) c.style.setProperty('bottom',Math.round(innerHeight-kt+16)+'px','important'); }catch(e){} }
+ setInterval(clockClear,1500); addEventListener('resize',clockClear);
  GM.lessonLook=function(){ try{ document.body.classList.toggle('gm-lesson',A.view==='play'&&!!M()); }catch(e){} };
  document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('.gmw button'); if(!b) return; music();
   if(b.dataset.gmw==='play'){ A.overlay=null; render(); setTimeout(()=>{ const p=document.querySelector('#gm .gm-goal .gm-play'); if(p) p.click(); },60); } },true);
