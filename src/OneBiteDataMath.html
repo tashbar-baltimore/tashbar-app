@@ -1183,5 +1183,169 @@ B['MATH.STAT.L04.01']={ band:'B23', pic:'⭐', today:'Read graphs where a pictur
     {type:'count', n:3, pic:'✖️', q:'Pencils longer than 3 inches', o:['2','3','4'], say:'Each ✖️ is one pencil longer than 3 inches. Count.', how:'Each ✖️ on a line plot is 1 thing.'},
     {type:'sort', bins:['= 10','= 20'], cards:[['⭐⭐ (5)',0],['⭐⭐ (10)',1],['⭐ (10)',0],['⭐⭐⭐⭐ (5)',1]], say:'Read each key. Sort by the total.', how:'Multiply the stars by the key: 2 × 5 = 10.'},
     {type:'listen', hear:'Sunday 20, Monday 60, Tuesday 20. How many in all?', o:['100','80','60'], a:'100', say:'Listen. Add them up. Tap the total.', how:'20 + 60 + 20 = 100.'}] };
+
+/* ---- ROUND 2, LANE B, batch 5 (2026-11-22): the round-1 leftovers. L05 (E45), L07 and L09 (M68). Whole bites plus do/your activities. ---- */
+B['MATH.OPS.L05.01']={ band:'E45', pic:'✖️', today:'Multiply big numbers by breaking them apart', why:'The yeshiva orders 195 chairs for each of 4 halls. How many in all? Break it apart and you can find it.',
+  ready:[{q:'30 × 6 = ?', o:['180','36','1,800','18'], a:'180'},{q:'4 × 6 = ?', o:['24','10','46','20'], a:'24'}],
+  bridge:'MATH.OPS.L04.08', bridgeName:'Times tens',
+  watch:{ q:'34 × 6 = ?', m:{type:'blocks',tens:3,ones:4}, steps:[
+    'Break the bigger number into parts: 34 = 30 + 4.',
+    'Multiply each part: 30 × 6 = 180. 4 × 6 = 24.',
+    'Add the parts: 180 + 24 = 204.',
+    'Bigger? 195 × 4 = 100 × 4 + 90 × 4 + 5 × 4.',
+    'That is 400 + 360 + 20 = 780.',
+    '2-digit × 2-digit: 23 × 29 = 23 × 20 + 23 × 9 = 460 + 207 = 667.',
+    {t:'Chant it: Break it, times it, add it up!', m:{type:'chant',lines:['Break it, times it,','add it up!']}}], a:'34 × 6 = 204' },
+  oops:{ q:'34 × 6', wrong:'30 × 6 + 4 = 184', right:'30 × 6 + 4 × 6 = 204', why:'Every part gets multiplied, the 4 too.' },
+  ways:['base-ten blocks','area parts','estimate check','chant','Mistake Detective'], done:'You can multiply big numbers by breaking them apart.',
+  board:{ one:'Break it, times every part, add.', activity:'Area model on the board: split a rectangle into parts and fill each box.', mistakes:['Forgetting to multiply the ones part','Lining up the parts wrong when adding','Dropping a 0 on the tens part'] },
+  do:[
+    {type:'tiles', w:['180','+','24','=','204'], extra:['34'], q:'34 × 6 = 30 × 6 + 4 × 6', say:'Times each part. Then add the parts.', how:'30 × 6 = 180. 4 × 6 = 24. 180 + 24 = 204.'},
+    {type:'match', pairs:[['100 × 4','400'],['90 × 4','360'],['5 × 4','20']], say:'195 × 4. Times each part. Match them.', how:'9 × 4 = 36, so 90 × 4 = 360.', why:{q:'Why add 400 + 360 + 20?', o:['They are the parts of 195 × 4','To make the number bigger'], a:'They are the parts of 195 × 4'}}],
+  your:[
+    {type:'tiles', w:['7','8','0'], extra:['5','4'], q:'195 × 4 = 400 + 360 + 20', say:'Add the parts. Build the answer.', how:'400 + 360 = 760. 760 + 20 = 780.'},
+    {type:'match', pairs:[['155 × 3','465'],['875 × 5','4,375'],['863 × 4','3,452'],['494 × 9','4,446']], say:'Break each one apart. Match the answers.', how:'155 × 3 = 300 + 150 + 15 = 465.'},
+    {type:'sort', bins:['About right','Way off'], cards:[['1,008',0],['108',1],['992',0],['10,080',1]], q:'48 × 21 = ?', say:'48 × 21 is about 1,000. Sort each answer.', how:'48 × 21 is about 50 × 20 = 1,000.', why:{q:'How do you know 108 is way off?', o:['50 × 20 is 1,000, and 108 is far from it','108 has three digits'], a:'50 × 20 is 1,000, and 108 is far from it'}},
+    {type:'tiles', w:['460','+','207','=','667'], extra:['69'], q:'23 × 29 = 23 × 20 + 23 × 9', say:'Times by the tens, then the ones. Add.', how:'23 × 20 = 460. 23 × 9 = 207. 460 + 207 = 667.'},
+    {type:'listen', hear:'494 times 9. Think 500 times 9, take away 6 times 9.', o:['4,446','4,500','4,554','446'], a:'4,446', say:'Listen to the shortcut. Tap the answer.', how:'500 × 9 = 4,500. 6 × 9 = 54. 4,500 − 54 = 4,446.'}] };
+
+B['MATH.FRAC.L05.02']={ band:'E45', pic:'🥧', today:'Add and subtract fractions with the same bottom', why:'3/8 of the pie went on Friday night and 2/8 at lunch. How much is gone? Same-size pieces add easily.',
+  ready:[{q:'What does the 8 in 3/8 tell you?', o:['8 equal parts','8 pieces eaten','3 parts','8 pies'], a:'8 equal parts', m:{type:'fbar',n:3,d:8}},{q:'3 + 2 = ?', o:['5','6','1','32'], a:'5'}],
+  bridge:'MATH.FRAC.L04.02', bridgeName:'Fair pieces',
+  watch:{ q:'3/8 + 2/8 = ?', m:{type:'fbar',n:3,d:8}, steps:[
+    {t:'3/8 of the pie: 3 pieces out of 8.', m:{type:'fbar',n:3,d:8}},
+    {t:'Add 2/8 more: 5 pieces out of 8.', m:{type:'fbar',n:5,d:8}},
+    'Same bottom? Add only the tops. The bottom stays: 5/8.',
+    'Subtract the same way: 5/9 − 2/9 = 3/9. Simplify: 3/9 = 1/3.',
+    'Over 1 whole? 11/12 + 9/12 = 20/12 = 1 and 8/12.',
+    {t:'Chant it: Tops add up, the bottom stays!', m:{type:'chant',lines:['Tops add up,','the bottom stays!']}}], a:'5/8' },
+  oops:{ q:'3/8 + 2/8', wrong:'5/16', right:'5/8', why:'The pieces are still eighths. Add the pieces, not the piece size.' },
+  ways:['fraction bar','family story','chant','Mistake Detective'], done:'You can add and subtract fractions with the same bottom.',
+  board:{ one:'Same bottom: add or subtract the tops only.', activity:'Paper pie cut in 8: add pieces, say the fraction.', mistakes:['Adding the bottoms too','Forgetting to simplify','Calling 12/12 more than 1'] },
+  do:[
+    {type:'tiles', w:['5','/','8'], extra:['16','6'], q:'3/8 + 2/8 = ?', say:'Add the tops. Keep the bottom.', how:'3 + 2 = 5. Still eighths: 5/8.'},
+    {type:'match', pairs:[['3/10 + 3/10','6/10'],['4/7 − 3/7','1/7'],['2/9 − 1/9','1/9'],['5/9 − 2/9','3/9']], say:'Same bottom. Match each answer.', how:'Only the tops change: 4 − 3 = 1, so 1/7.'}],
+  your:[
+    {type:'sort', bins:['= 5/8','Not 5/8'], cards:[['3/8 + 2/8',0],['1/8 + 4/8',0],['3/16 + 2/16',1],['2/8 + 2/8',1]], say:'Which sums make 5/8? Sort them.', how:'The bottom stays the same. Only the tops add or subtract.', why:{q:'Why is 5/16 wrong?', o:['The pieces are still eighths','16 is too small'], a:'The pieces are still eighths'}},
+    {type:'tiles', w:['5','/','10'], extra:['0','20'], q:'10/10 − 5/10 = ?', say:'Take 5 tenths from a whole. Build it.', how:'10 − 5 = 5. Still tenths: 5/10, which is 1/2.'},
+    {type:'match', pairs:[['4/8','1/2'],['3/9','1/3'],['6/10','3/5']], say:'Simplify. Match the equal fractions.', how:'Divide the top and bottom by the same number: 4/8 = 1/2.'},
+    {type:'listen', hear:'Eleven twelfths plus nine twelfths', o:['20/12','20/24','2/12','11/9'], a:'20/12', say:'Listen. Tap the sum.', how:'11 + 9 = 20 twelfths. That is more than 1 whole.'},
+    {type:'tiles', w:['3','/','8'], extra:['5','2'], q:'Pie: 8/8. Ate 3/8, then 2/8. Left?', say:'How much pie is left?', how:'3/8 + 2/8 = 5/8 eaten. 8/8 − 5/8 = 3/8 left.'}] };
+
+B['MATH.ALG.L07.04']={ band:'M68', pic:'🔤', today:'Write and evaluate expressions', why:'A letter is a box for any number. Plug in the number and the expression tells you the answer, every time.',
+  ready:[{q:'3 × 5 + 4 = ?', o:['19','27','12','35'], a:'19'},{q:'5 × (4 + 3) = ?', o:['35','23','12','60'], a:'35'}],
+  bridge:'MATH.OPS.L04.01', bridgeName:'Times facts',
+  watch:{ q:'Evaluate 5(x + 3) when x = 4', m:{type:'tiles',w:['5','(','x','+','3',')'],hi:[2]}, steps:[
+    'Evaluate means: put the number in for the letter.',
+    '5(x + 3) becomes 5(4 + 3).',
+    'Order of operations: brackets first. 4 + 3 = 7. Then 5 × 7 = 35.',
+    '3x means 3 times x. 4x + 20 when x = 3: 12 + 20 = 32.',
+    'Writing one: "5 more than twice n" is 2n + 5.',
+    {t:'Tell a chavrusa the 2 steps: plug in, then brackets first.', m:{type:'move',t:'Turn to a chavrusa: plug in, then brackets first. Say it back.'}}], a:'35' },
+  oops:{ q:'5(x + 3) when x = 4', wrong:'5 × 4 + 3 = 23', right:'5 × (4 + 3) = 35', why:'The 5 multiplies the whole bracket. Brackets first.' },
+  ways:['tiles','order of operations','teach it back','Mistake Detective'], done:'You can write and evaluate expressions.',
+  board:{ one:'Plug in, then brackets first.', activity:'Expression relay: each boy does one step on the board.', mistakes:['Multiplying only the first term in a bracket','Reading 3x as 3 + x or 34','Doing addition before multiplication'] },
+  do:[
+    {type:'tiles', w:['5','×','7','=','35'], extra:['23','4'], q:'5(x + 3), x = 4', say:'Plug in 4. Brackets first, then multiply.', how:'4 + 3 = 7. 5 × 7 = 35.'},
+    {type:'match', pairs:[['3x, x = 5','15'],['7x + 1, x = 9','64'],['4x + 20, x = 3','32']], say:'Plug in each number. Match the value.', how:'7 × 9 = 63, plus 1 is 64.'}],
+  your:[
+    {type:'tiles', w:['2','(','2','+','7',')','=','18'], extra:['11'], q:'2(x + 7), x = 2', say:'Evaluate 2(x + 7) when x = 2.', how:'2 + 7 = 9. 2 × 9 = 18.'},
+    {type:'match', pairs:[['5 more than twice n','2n + 5'],['2 more than 5 times n','5n + 2'],['twice the sum of n and 5','2(n + 5)']], say:'Match each phrase to its expression.', how:'Twice n is 2n. 5 more means + 5.'},
+    {type:'listen', hear:'5 times the quantity x plus 5, when x is 1', o:['30','10','26','11'], a:'30', say:'Listen. Evaluate it.', how:'1 + 5 = 6. 5 × 6 = 30.'},
+    {type:'match', pairs:[['3x + 4, x = 5','19'],['5(x + 4), x = 2','30'],['2(x + 7), x = 2','18']], say:'Evaluate each. Match the value.', how:'3 × 5 = 15. 15 + 4 = 19.'},
+    {type:'sort', bins:['Right','Wrong'], cards:[['5(4 + 3) = 35',0],['5(4 + 3) = 23',1],['3x, x=5: 15',0],['3x, x=5: 35',1]], say:'Brackets first? Sort each answer.', how:'The number outside multiplies the whole bracket.'}] };
+
+B['MATH.ALG.L09.01']={ band:'M68', pic:'📈', today:'Find the slope: rise over run', why:'Slope tells how fast something changes: how steep a ramp is, or how many pages a day you learn.',
+  ready:[{q:'6 − 2 = ?', o:['4','8','−4','3'], a:'4'},{q:'8 ÷ 4 = ?', o:['2','4','32','12'], a:'2'}],
+  bridge:'MATH.ALG.L07.04', bridgeName:'Expressions',
+  watch:{ q:'Slope from (2, 3) to (6, 11)?', m:{type:'line',from:0,to:12,hops:[3,11]}, steps:[
+    'Slope = rise ÷ run = change in y ÷ change in x.',
+    'Rise: 11 − 3 = 8. Run: 6 − 2 = 4.',
+    'Slope = 8 ÷ 4 = 2. For each step right, the line goes up 2.',
+    'Going down? (4, 6) to (7, 0): rise −6, run 3. Slope −2: down from left to right.',
+    {t:'Arm it: up 2, over 1. Now down 2, over 1!', m:{type:'move',t:'Trace a slope in the air: up 2, over 1. Then down 2, over 1.'}}], a:'slope 2' },
+  oops:{ q:'(2, 3) to (6, 11)', wrong:'4 ÷ 8 = 1/2 (run over rise)', right:'8 ÷ 4 = 2', why:'Rise goes on top: the change in y first.' },
+  ways:['number line','rise over run','move','Mistake Detective'], done:'You can find the slope from two points.',
+  board:{ one:'Rise over run: y change on top.', activity:'Two boys stand on a floor grid; the class finds the rise and run between them.', mistakes:['Run over rise','Subtracting in different orders for y and x','Losing the minus sign'] },
+  do:[
+    {type:'hop', start:3, add:8, unit:1, from:0, to:12, q:'Rise: y goes 3 → 11', say:'Find the rise. Hop from y = 3 to y = 11.', how:'8 hops up. The rise is 8.'},
+    {type:'tiles', w:['8','÷','4','=','2'], extra:['4','12'], q:'Rise 8, run 4', say:'Slope is rise over run. Build it.', how:'Run: 6 − 2 = 4. Slope = 8 ÷ 4 = 2.'}],
+  your:[
+    {type:'match', pairs:[['(5, 1), (7, 3)','1'],['(2, 6), (3, 9)','3'],['(4, 6), (7, 0)','−2']], say:'Find each slope. Match it.', how:'(2, 6) to (3, 9): rise 3, run 1. Slope 3.'},
+    {type:'hop', start:6, add:-6, unit:1, from:0, to:10, q:'(4, 6) to (7, 0): rise?', say:'y goes from 6 down to 0. Hop it.', how:'6 hops down: rise is −6. Run is 3. Slope −2.'},
+    {type:'sort', bins:['Up (positive)','Down (negative)'], cards:[['📈',0],['📉',1],['slope 3',0],['slope −2',1]], say:'Which way does the line go? Sort them.', how:'Negative slope: down from left to right.'},
+    {type:'tiles', w:['−2','÷','1','=','−2'], extra:['2'], q:'(3, −3) to (4, −5)', say:'Rise −2, run 1. Build the slope.', how:'−5 − (−3) = −2. 4 − 3 = 1. Slope −2.'},
+    {type:'listen', hear:'From 1 comma minus 6, to 3 comma minus 4. What is the slope?', o:['1','−1','2','5'], a:'1', say:'Listen. Find the slope.', how:'Rise: −4 − (−6) = 2. Run: 3 − 1 = 2. Slope 1.'}] };
+
+B['MATH.ALG.L09.02']={ band:'M68', pic:'🚀', today:'Exponents and scientific notation', why:'Scientists write huge numbers, like the distance to the sun, the short way. So can you.',
+  ready:[{q:'2 × 2 × 2 = ?', o:['8','6','222','4'], a:'8'},{q:'10 × 10 × 10 = ?', o:['1,000','30','100','10,000'], a:'1,000'}],
+  bridge:'MATH.ALG.L07.04', bridgeName:'Expressions',
+  watch:{ q:'Write 4,500,000 the short way.', m:{type:'tiles',w:['4.5','×','10⁶']}, steps:[
+    '2⁵ means 2 × 2 × 2 × 2 × 2 = 32. The small number counts the 2s.',
+    '10² = 100. 10³ = 1,000. The exponent counts the zeros.',
+    'Same base, multiplying? Add the exponents: 3² × 3³ = 3⁵.',
+    'Scientific notation: one digit before the point, times a power of 10.',
+    '4,500,000: move the point 6 places to get 4.5. So 4.5 × 10⁶.',
+    {t:'Count the jumps with a finger: 1, 2, 3, 4, 5, 6!', m:{type:'move',t:'Tap 6 jumps for the point with your finger: 1, 2, 3, 4, 5, 6.'}}], a:'4.5 × 10⁶' },
+  oops:{ q:'380,000,000', wrong:'38 × 10⁷', right:'3.8 × 10⁸', why:'Only one digit may go before the point.' },
+  ways:['tiles','count the jumps','move','Mistake Detective'], done:'You can use exponents and scientific notation.',
+  board:{ one:'One digit before the point; the exponent counts the jumps.', activity:'Write a big number on the board; boys hop the decimal point and count.', mistakes:['Two digits before the point','Exponent off by one','2⁵ read as 2 × 5'] },
+  do:[
+    {type:'tiles', w:['2','2','2','2','2'], extra:['5'], q:'2⁵ = 2 × 2 × 2 × 2 × 2', say:'2⁵ means five 2s multiplied. Build them.', how:'The small 5 counts how many 2s. 2⁵ = 32.'},
+    {type:'match', pairs:[['10²','100'],['10³','1,000'],['2⁷','128']], say:'Match each power to its value.', how:'The exponent on 10 counts the zeros.'}],
+  your:[
+    {type:'tiles', w:['8.9','×','10⁵'], extra:['89','10⁶'], q:'890,000', say:'Write 890,000 in scientific notation.', how:'One digit before the point: 8.9. The point moved 5 places.'},
+    {type:'sort', bins:['Scientific','Not scientific'], cards:[['5 × 10⁶',0],['50 × 10⁵',1],['3.8 × 10⁸',0],['38 × 10⁷',1]], say:'One digit before the point? Sort them.', how:'Scientific notation has 1 to 9 before the point.'},
+    {type:'match', pairs:[['3² × 3³','3⁵'],['2⁴ × 2²','2⁶'],['10² × 10³','10⁵']], say:'Same base: add the exponents. Match.', how:'3² × 3³: 2 + 3 = 5, so 3⁵.'},
+    {type:'listen', hear:'Write 5 million in scientific notation', o:['5 × 10⁶','5 × 10⁷','50 × 10⁵','5 × 10⁵'], a:'5 × 10⁶', say:'Listen. Tap the scientific notation.', how:'5,000,000 has 6 zeros: 5 × 10⁶.'},
+    {type:'tiles', w:['3.8','×','10⁸'], extra:['38','10⁷'], q:'380,000,000', say:'Write 380,000,000 the short way.', how:'3.8: the point moved 8 places. 3.8 × 10⁸.'}] };
+
+B['MATH.ALG.L09.04']={ band:'M68', pic:'⚖️', today:'Solve two equations together', why:'Two clues, two unknowns: like a detective, you need both clues to find the answer.',
+  ready:[{q:'x + 4 = 10. x = ?', o:['6','14','4','40'], a:'6'},{q:'2x = 12. x = ?', o:['6','24','10','14'], a:'6'}],
+  bridge:'MATH.ALG.L07.04', bridgeName:'Expressions',
+  watch:{ q:'x + y = 7 and x − y = 5', m:{type:'tiles',w:['x','+','y','=','7']}, steps:[
+    'A system has two equations. The answer makes BOTH true.',
+    'Add the equations: (x + y) + (x − y) = 7 + 5. The y cancels: 2x = 12.',
+    'So x = 6. Put it back: 6 + y = 7, so y = 1.',
+    'Same y in both? Subtract: (3x + y) − (x + y) = 24 − 6.',
+    '2x = 18, so x = 9. Then 9 + y = 6, so y = −3.',
+    'Check both: 6 + 1 = 7 ✓ and 6 − 1 = 5 ✓.',
+    {t:'Teach it back: add or subtract to cancel, solve, check both.', m:{type:'move',t:'Tell a chavrusa the 3 steps: cancel, solve, check both.'}}], a:'x = 6, y = 1' },
+  oops:{ q:'x + y = 7, x − y = 5', wrong:'x = 6, y = 2 (checked one equation)', right:'x = 6, y = 1', why:'6 + 2 is 8, not 7. Check BOTH equations.' },
+  ways:['tiles','cancel a variable','teach it back','Mistake Detective'], done:'You can solve a system of two equations.',
+  board:{ one:'Cancel one letter, solve, check both.', activity:'Pairs: one boy writes a secret x and y, the other solves from two clues.', mistakes:['Adding when subtracting would cancel','Sign slips with minus','Checking only one equation'] },
+  do:[
+    {type:'tiles', w:['2x','=','12'], extra:['2y','7'], q:'(x + y) + (x − y) = 7 + 5', say:'Add the two equations. The y cancels.', how:'x + x = 2x. y − y = 0. 7 + 5 = 12.'},
+    {type:'match', pairs:[['2x = 12','x = 6'],['6 + y = 7','y = 1'],['2x = 18','x = 9']], say:'Solve each step. Match the answer.', how:'2x = 12: divide by 2. x = 6.'}],
+  your:[
+    {type:'sort', bins:['Add them','Subtract them'], cards:[['+y and −y',0],['+y and +y',1],['x−y, x+y',0],['3x+y, x+y',1]], say:'Which way cancels the y? Sort them.', how:'Opposite signs: add. Same signs: subtract.'},
+    {type:'tiles', w:['y','=','−3'], extra:['3','9'], q:'3x + y = 24, x + y = 6, x = 9', say:'x = 9. Put it into x + y = 6.', how:'9 + y = 6, so y = 6 − 9 = −3.'},
+    {type:'match', pairs:[['x + y = 7, x − y = 5','x = 6'],['x + y = 10, x − y = −12','x = −1'],['4x + y = 16, x + y = 13','y = 12']], say:'Solve each system. Match the answer.', how:'Add or subtract to cancel one letter. Then solve.'},
+    {type:'listen', hear:'x plus y is 9. 4x plus y is 0. What is x?', o:['−3','3','9','12'], a:'−3', say:'Listen. Subtract the equations. Find x.', how:'(4x + y) − (x + y) = 0 − 9. 3x = −9. x = −3.'},
+    {type:'sort', bins:['Works in both','Not'], cards:[['x=6, y=1',0],['x=6, y=2',1],['x=5, y=2',1]], q:'x + y = 7 and x − y = 5', say:'Check both equations. Sort each answer.', how:'Put the numbers into both equations. Both must be true.'}] };
+
+B['MATH.FUNC.L09.02']={ band:'M68', pic:'📉', today:'Write a line as y = mx + b', why:'One short equation draws a whole line and predicts any point on it.',
+  ready:[{q:'Slope from (0, 2) to (1, 5)?', o:['3','2','5','7'], a:'3'},{q:'3 × 4 + 2 = ?', o:['14','18','9','24'], a:'14'}],
+  bridge:'MATH.ALG.L09.01', bridgeName:'Slope',
+  watch:{ q:'Slope 3, crosses the y-axis at 2', m:{type:'tiles',w:['y','=','3','x','+','2'],hi:[2,5]}, steps:[
+    'Slope-intercept form: y = mx + b.',
+    'm is the slope. b is where the line crosses the y-axis (the y-intercept).',
+    'Slope 3, crossing at 2: y = 3x + 2.',
+    'Find y for x = 4: y = 3(4) + 2 = 14.',
+    'With negatives: y = −4x − 5 at x = −2 is 8 − 5 = 3.',
+    'Read it back: y = 3x − 7 crosses at −7.',
+    {t:'Teach it back: m is the slope, b is the start.', m:{type:'move',t:'Point to a chavrusa: m is the slope, b is where it crosses. Say it back.'}}], a:'y = 3x + 2' },
+  oops:{ q:'Slope −3, crosses at −6', wrong:'y = −6x − 3', right:'y = −3x − 6', why:'The slope goes with x. The crossing number stands alone.' },
+  ways:['tiles','plug in','teach it back','Mistake Detective'], done:'You can write and use y = mx + b.',
+  board:{ one:'m with x is the slope; b alone is the crossing.', activity:'Graph paper: boys start at b, then step the slope, and name the line.', mistakes:['Swapping m and b','Dropping the sign of b','Plugging in x without brackets for negatives'] },
+  do:[
+    {type:'tiles', w:['y','=','3x','+','2'], extra:['2x','3'], q:'Slope 3, crosses at 2', say:'Build the line: slope with x, crossing alone.', how:'y = mx + b. m = 3, b = 2. y = 3x + 2.'},
+    {type:'match', pairs:[['y = −3x + 5','b = 5'],['y = 3x − 7','b = −7'],['y = 2x − 1','b = −1']], say:'Find where each line crosses the y-axis.', how:'b is the number standing alone.'}],
+  your:[
+    {type:'tiles', w:['y','=','−4x','−','9'], extra:['−9x','4'], q:'Slope −4, crosses at −9', say:'Write the line with slope −4, crossing at −9.', how:'m = −4 goes with x. b = −9: y = −4x − 9.'},
+    {type:'sort', bins:['Slope −3, b = −6','Not'], cards:[['y = −3x − 6',0],['y = −6x − 3',1],['y = 3x − 6',1]], say:'Which line has slope −3 and crosses at −6?', how:'The slope is the number with x.'},
+    {type:'listen', hear:'y equals minus 4x minus 5. What is y when x is minus 2?', o:['3','−13','13','−3'], a:'3', say:'Listen. Plug in x. Tap y.', how:'−4 × −2 = 8. 8 − 5 = 3.'},
+    {type:'match', pairs:[['y = 3x + 2, x = 4','14'],['y = 2x − 1, x = 3','5'],['y = −x + 5, x = 2','3']], say:'Plug in x. Match each y.', how:'3 × 4 = 12. 12 + 2 = 14.'},
+    {type:'tiles', w:['y','=','2x','−','1'], extra:['−2x','+'], q:'Slope 2, crosses at −1', say:'Write the line with slope 2, crossing at −1.', how:'y = 2x − 1.'}] };
 })(window.ONE_BITE);
 </script>
