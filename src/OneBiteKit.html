@@ -9,6 +9,7 @@
      say:'spoken instruction'   how:'kid-friendly How to do it line'   q:'big prompt, e.g. 3 + 4 = ?'   pic:'emoji'
      why:{q:'Why?', o:['reason','reason'], a:'reason'}   (Gr 4-5 "tap the reason", asked after a right answer)
    tenframe  {type:'tenframe', n:7, start:0}                  tap (or drag the dot) to fill the frame until it shows n
+             {type:'tenframe', n:4, start:9}                  take away: start > n, he taps dots OFF until n are left (n can be 0)
    hop       {type:'hop', start:3, add:4, unit:1, from, to}   hop the frog on a number line; lands on start + add
    count     {type:'count', n:6, pic:'🍎', o:['5','6','7']}   tap each picture to count, then pick the number
    blocks    {type:'blocks', n:14}                            build n with tens and ones
@@ -35,24 +36,31 @@ function heCls(d){ return d.he?' obk-he':''; }
 
 const T={};
 
-/* ---------- ten-frame: make n ---------- */
+/* ---------- ten-frame: make n (start < n: fill up; start > n: take away, tap dots OFF down to n; n can be 0) ---------- */
+const tfOn=v=>v===1||v===2;
 T.tenframe={ check:true,
-  err(d){ if(!num(d.n)||d.n<1||d.n>20) return 'n must be a number from 1 to 20'; if(d.start!=null&&(!num(d.start)||d.start<0||d.start>=d.n)) return 'start must be smaller than n'; return ''; },
-  init(d){ const size=(d.n>10)?20:10, pre=d.start||0; return {cells:idx(size).map(i=>i<pre?2:0)}; },
-  say(d){ return d.start?('Here are '+d.start+'. Fill it up to '+d.n+'.'):('Make '+d.n+'. Put '+d.n+' dots in the boxes.'); },
-  how(){ return 'Tap a box to put a dot in it. Count as you go: 1, 2, 3. Tap a dot again to take it out.'; },
-  label(d){ return 'Ten-frame: make '+d.n; },
-  view(d,s,c){ const f=s.cells.filter(Boolean).length; let h='<div class="obk-tf">';
+  take(d){ return num(d.start)&&d.start>d.n; },
+  err(d){ if(!num(d.n)||d.n<0||d.n>20) return 'n must be a number from 0 to 20';
+    if(d.start!=null&&(!num(d.start)||d.start<0||d.start>20||d.start===d.n)) return 'start must be a number from 0 to 20, not the same as n (smaller: fill up; bigger: take away)';
+    if(d.n===0&&!d.start) return 'n is 0: give a start to take away from'; return ''; },
+  init(d){ const take=T.tenframe.take(d), pre=d.start||0, size=(Math.max(d.n,pre)>10)?20:10; return {take, cells:idx(size).map(i=>i<pre?(take?1:2):0)}; },
+  say(d){ if(T.tenframe.take(d)) return 'Here are '+d.start+'. Take away '+(d.start-d.n)+'. Tap dots to take them off.';
+    return d.start?('Here are '+d.start+'. Fill it up to '+d.n+'.'):('Make '+d.n+'. Put '+d.n+' dots in the boxes.'); },
+  how(d){ if(T.tenframe.take(d)) return 'Tap a dot to take it away. Count as you go: 1, 2, 3. Then count the dots that are left.';
+    return 'Tap a box to put a dot in it. Count as you go: 1, 2, 3. Tap a dot again to take it out.'; },
+  label(d){ return T.tenframe.take(d)?'Ten-frame: '+d.start+' take away '+(d.start-d.n):'Ten-frame: make '+d.n; },
+  view(d,s,c){ const f=s.cells.filter(tfOn).length; let h='<div class="obk-tf">';
     for(let fr=0;fr<s.cells.length/10;fr++){ h+='<div class="obk-tf-f">'; for(let j=0;j<10;j++){ const i=fr*10+j, v=s.cells[i];
-      h+='<button class="obk-cell'+(v===2?' pre':v?' on':'')+'" data-obk="cell" data-k="'+i+'" data-obk-drop="cell" aria-label="box '+(i+1)+(v?', has a dot':', empty')+'"'+(v===2?' disabled':'')+'></button>'; } h+='</div>'; }
-    h+='</div><div class="obk-row"><button class="obk-tray" data-obk="tray" data-obk-drag="tray" aria-label="A dot. Tap it, or drag it into a box."><i></i></button>'+(c.guided?'<span class="obk-count" aria-live="polite">'+f+'</span>':'')+'</div>';
+      h+='<button class="obk-cell'+(v===2?' pre':v===3?' gone':v?' on':'')+'" data-obk="cell" data-k="'+i+'" data-obk-drop="cell" aria-label="box '+(i+1)+(v===3?', taken away':v?', has a dot':', empty')+'"'+(v===2?' disabled':'')+'></button>'; } h+='</div>'; }
+    h+='</div><div class="obk-row">'+(s.take?'':'<button class="obk-tray" data-obk="tray" data-obk-drag="tray" aria-label="A dot. Tap it, or drag it into a box."><i></i></button>')+(c.guided?'<span class="obk-count" aria-live="polite">'+f+'</span>':'')+'</div>';
     return h; },
-  tap(d,s,a,k,drop){ if(a==='cell'){ const i=+k; if(s.cells[i]===2) return; s.cells[i]=s.cells[i]?0:1; return; }
+  tap(d,s,a,k,drop){ if(a==='cell'){ const i=+k, v=s.cells[i]; if(v===2) return; s.cells[i]=s.take?(v===1?3:v===3?1:v):(v?0:1); return; }
     if(a==='tray'){ let i=drop&&drop.a==='cell'?+drop.k:-1; if(i<0||s.cells[i]) i=s.cells.indexOf(0); if(i>=0) s.cells[i]=1; } },
-  ready(d,s){ return s.cells.some(v=>v===1); },
-  judge(d,s){ const f=s.cells.filter(Boolean).length; if(f===d.n) return {ok:true};
+  ready(d,s){ return s.take?s.cells.some(v=>v===3):s.cells.some(v=>v===1); },
+  judge(d,s){ const f=s.cells.filter(tfOn).length; if(f===d.n) return {ok:true};
+    if(s.take) return {ok:false,msg:f>d.n?'Take away more. Count the dots that are left.':'Too many taken away. Tap one to put it back.'};
     return {ok:false,msg:f>d.n?'Too many. Tap a dot to take it out, and count again.':'Not yet. Count the dots. Do you need more?'}; },
-  solve(d,s){ s.cells=s.cells.map((v,i)=>v===2?2:i<d.n?1:0); } };
+  solve(d,s){ s.cells=s.take?s.cells.map((v,i)=>i<d.n?1:i<d.start?3:0):s.cells.map((v,i)=>v===2?2:i<d.n?1:0); } };
 
 /* ---------- hop: a frog on a number line ---------- */
 T.hop={ check:true,
@@ -227,7 +235,7 @@ T.trace={ check:true, needsMount:true,
   cover(s){ const tot=(s.tgt||[]).length; return tot?Object.keys(s.hit).length/tot:0; },
   ready(){ return true; },
   judge(d,s){ if(!s.strokes.length) return {ok:false,soft:true,msg:'Put your finger on the dots and trace.'}; const tot=(s.tgt||[]).length; if(!tot) return {ok:true}; const cov=T.trace.cover(s), stray=Object.keys(s.stray).length;
-    if(cov>=0.8&&stray<=tot*1.6) return {ok:true}; if(cov>=0.8) return {ok:false,msg:'Stay on the dots. Tap Start over and go slowly.'};
+    if(cov>=0.8&&stray<=tot*2.5+30) return {ok:true};   /* a finger is wider than a thin letter (Zayin, Vav): allow its width, still refuse a scribble over the whole box */ if(cov>=0.8) return {ok:false,msg:'Stay on the dots. Tap Start over and go slowly.'};
     return {ok:false,msg:'Keep going! Cover all the dots.'}; },
   solve(d,s){ s.solved=true; (s.tgt||[]).forEach(i=>s.hit[i]=1); } };
 
@@ -243,6 +251,18 @@ T.listen={
     '<div class="obk-opts'+heCls(d)+'">'+s.o.map((o,j)=>'<button class="obk-opt'+(s.off[j]?' off':'')+(s.over&&o===S(d.a)?' right':'')+(c.hint&&o===S(d.a)&&!s.over?' obk-pulse':'')+'" data-obk="pick" data-k="'+j+'"'+(s.off[j]||s.over?' disabled':'')+'>'+pic(o)+'</button>').join('')+'</div>'; },
   tap(d,s,a,k){ if(a!=='pick') return; const j=+k; if(s.off[j]) return; if(s.o[j]===S(d.a)) return 'ok'; s.off[j]=1; s.msg='Not that one. Listen again.'; return 'miss'; },
   solve(){} };
+
+/* ---------- fit-text (after every draw) ---------- */
+const FIT='.obk .obk-card,.obk .obk-fc,.obk .obk-m,.obk .obk-opt,.obk .obk-bin-t,.obk .obk-tile,.obk .obk-slot,.obk-q';
+function txtRects(el){ const out=[], w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT); let n;
+  while((n=w.nextNode())){ if(!n.textContent.trim()||(n.parentElement&&n.parentElement.closest('b,.ghost'))) continue; const r=document.createRange(); r.selectNodeContents(n); const L=r.getClientRects(); for(let i=0;i<L.length;i++) if(L[i].width>1) out.push(L[i]); }
+  return out; }
+function fitBad(el,want){ const R=txtRects(el); if(!R.length) return false; const b=el.getBoundingClientRect(), cs=getComputedStyle(el), lo=b.left+parseFloat(cs.borderLeftWidth||0)+1, hi=b.right-parseFloat(cs.borderRightWidth||0)-1, tops=[];
+  for(let i=0;i<R.length;i++){ const q=R[i]; if(q.left<lo-1||q.right>hi+1) return true; if(!tops.some(t=>Math.abs(t-q.top)<4)) tops.push(q.top); } return tops.length>want; }
+function fitOne(el){ if(!el.textContent.trim()) return; el.style.fontSize=''; el.style.overflowWrap=''; const want=Math.max(2,(el.textContent.match(/\n/g)||[]).length+1);
+  if(!fitBad(el,want)) return; const f0=parseFloat(getComputedStyle(el).fontSize)||20; let f=f0;
+  for(let k=0;k<10&&f>f0*0.45&&fitBad(el,want);k++){ f=Math.max(f0*0.45,f*0.88); el.style.fontSize=f.toFixed(1)+'px'; }
+  if(fitBad(el,want)) el.style.overflowWrap='anywhere'; }   /* still too long at the smallest size: break the word rather than stick out */
 
 /* ---------- the kit API the player uses ---------- */
 function ty(d){ return d&&T[d.type]; }
@@ -263,7 +283,10 @@ const OBK=window.OBK={
   ready(d,s){ const t=ty(d); return t.ready?!!t.ready(d,s):true; },
   judge(d,s){ return ty(d).judge(d,s); },
   solve(d,s){ ty(d).solve(d,s); s.solved=true; },
-  mount(root,d,s,c){ const t=ty(d); if(t&&t.mount) try{ t.mount(root,d,s,c||{}); }catch(e){ console.warn('OneBiteKit mount',e); } },
+  mount(root,d,s,c){ OBK.fit(root); const t=ty(d); if(t&&t.mount) try{ t.mount(root,d,s,c||{}); }catch(e){ console.warn('OneBiteKit mount',e); } },
+  /* fit-text: long card, cell, match, choice, bin and prompt text shrinks (down to 45%) until it fits in 2 lines (or as many lines as its \n asks)
+     and never sticks out. Runs after every draw; short text is never touched. */
+  fit(root){ try{ (root||document).querySelectorAll(FIT).forEach(fitOne); }catch(e){} },
   hear(d){ try{ const clips=window.TL_CLIPS||{}; if(d.clip&&clips[d.clip]&&window.TLWorld&&TLWorld.say){ TLWorld.say(d.clip,'',{force:true}); return; }
     if(d.he||!d.hear) return; if(typeof speak==='function') speak(S(d.hear)); }catch(e){} },
   pic, E
@@ -305,6 +328,7 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-tf{ display:flex; flex-direction:column; gap:10px; align-items:center; }
 .obk-tf-f{ display:grid; grid-template-columns:repeat(5,minmax(0,var(--cell))); gap:5px; padding:6px; background:#fff; border:3px solid #1F2A44; border-radius:10px; --cell:min(64px,calc((100vw - 84px) / 5)); }
 .obk-cell{ width:var(--cell); height:var(--cell); border:2px solid #D8D1C2; border-radius:8px; background:#FBF9F4; position:relative; padding:0; }
+.obk-cell.gone::after{ content:'✕'; position:absolute; inset:0; display:grid; place-items:center; color:#C2453D; opacity:.45; font-size:calc(var(--cell) * .5); font-weight:900; }
 .obk-cell.on::after,.obk-cell.pre::after{ content:''; position:absolute; inset:16%; border-radius:50%; background:#C2453D; } .obk-cell.pre::after{ background:#3B6FD8; } .obk-cell.pre{ opacity:1; }
 .obk-tray{ width:var(--tap); height:var(--tap); border-radius:50%; border:3px dashed #C2453D; background:#fff; display:grid; place-items:center; padding:0; } .obk-tray i{ width:60%; height:60%; border-radius:50%; background:#C2453D; display:block; }
 .obk-nl{ width:100%; max-width:420px; }
@@ -327,16 +351,17 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-fc{ position:relative; min-height:var(--tap); border-radius:16px; border:3px solid #E4DED2; background:#fff; font-size:calc(var(--fs) * 1.5); font-weight:900; padding:4px; }
 .obk-find.many .obk-fc{ min-height:60px; font-size:calc(var(--fs) * 1.2); }
 .obk-fc.on{ border-color:#1E9E62; background:#E6F6EE; } .obk-fc b{ position:absolute; top:-8px; right:-6px; width:24px; height:24px; border-radius:50%; background:#1E9E62; color:#fff; font-size:14px; display:grid; place-items:center; }
-.obk-match{ display:flex; gap:10px; align-items:stretch; justify-content:center; width:100%; } .obk-col{ display:flex; flex-direction:column; gap:10px; flex:1; max-width:170px; }
+.obk-match{ display:flex; gap:10px; align-items:stretch; justify-content:center; width:100%; } .obk-col{ display:flex; flex-direction:column; gap:10px; flex:1 1 0; min-width:0; max-width:170px; }
 .obk-mid{ align-self:center; font-size:26px; color:#B9B1A2; }
-.obk-m{ min-height:var(--tap); border-radius:18px; border:3px solid #E4DED2; background:#fff; font-size:calc(var(--fs) * 1.3); font-weight:900; padding:6px; box-shadow:0 4px 0 #E4DED2; }
+.obk-m{ min-width:0; min-height:var(--tap); border-radius:18px; border:3px solid #E4DED2; background:#fff; font-size:calc(var(--fs) * 1.3); font-weight:900; padding:6px; box-shadow:0 4px 0 #E4DED2; }
 .obk-m.sel{ border-color:#3B6FD8; background:#EEF3FD; box-shadow:0 0 0 4px rgba(59,111,216,.25); }
 .obk-m.m0{ background:#E6F6EE; border-color:#1E9E62; } .obk-m.m1{ background:#FFF1E8; border-color:#FF7A3D; } .obk-m.m2{ background:#EEF3FD; border-color:#3B6FD8; } .obk-m.m3{ background:#F6ECFB; border-color:#9B5DE5; }
 .obk-m:disabled{ box-shadow:none; opacity:1; }
 .obk-card-wrap{ min-height:calc(var(--tap) * 1.5); display:grid; place-items:center; }
 .obk-card{ min-width:calc(var(--tap) * 1.5); min-height:calc(var(--tap) * 1.5); border-radius:20px; border:3px solid #3B6FD8; background:#fff; font-size:calc(var(--tap) * .7); font-weight:900; padding:6px 14px; box-shadow:0 6px 0 #C9D7F5; }
-.obk-bins{ display:grid; gap:10px; width:100%; max-width:460px; } .obk-bins.n2{ grid-template-columns:1fr 1fr; } .obk-bins.n3{ grid-template-columns:1fr 1fr 1fr; }
-.obk-bin{ min-height:calc(var(--tap) * 1.6); border-radius:18px; border:3px solid #B9B1A2; border-top-width:10px; background:#FBF9F4; display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 4px; font-size:var(--fs); font-weight:900; }
+.obk-bins{ display:grid; gap:10px; width:100%; max-width:460px; } .obk-bins.n2{ grid-template-columns:repeat(2,minmax(0,1fr)); } .obk-bins.n3{ grid-template-columns:repeat(3,minmax(0,1fr)); }   /* minmax(0,..): a long bin name shrinks to fit instead of pushing the last bin off the screen */
+.obk-bin{ min-width:0; min-height:calc(var(--tap) * 1.6); border-radius:18px; border:3px solid #B9B1A2; border-top-width:10px; background:#FBF9F4; display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 4px; font-size:var(--fs); font-weight:900; }
+.obk-bin-t{ display:block; width:100%; text-align:center; }   /* a block, so fit-text can see a long name sticking out */
 .obk-bin-in{ display:flex; flex-wrap:wrap; gap:2px; justify-content:center; font-size:22px; } .obk-bin-in i{ font-style:normal; }
 .obk-trace{ width:100%; max-width:300px; aspect-ratio:1; background:#fff; border:3px solid #E4DED2; border-radius:20px; overflow:hidden; } .obk-trace canvas{ width:100%; height:100%; display:block; touch-action:none; }
 .obk-hot{ box-shadow:0 0 0 5px rgba(30,158,98,.45) !important; border-color:#1E9E62 !important; }
@@ -346,6 +371,8 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-pulse{ animation:obkPulse 1.2s ease-in-out infinite; } @keyframes obkPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,122,61,.55); } 50%{ box-shadow:0 0 0 9px rgba(255,122,61,0); } }
 .obk-shake{ animation:obkShake .4s ease; } @keyframes obkShake{ 20%{ transform:translateX(-6px); } 40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(3px); } }
 @media (prefers-reduced-motion: reduce){ .obk-pulse,.obk-shake{ animation:none; } }
+.obk-card,.obk-fc,.obk-m,.obk-opt,.obk-bin-t,.obk-bin-in i{ white-space:pre-line; }   /* a \n in a card stacks rows ("⚽\n📦" = ball above box) */
+.obk-m,.obk-opt,.obk-bin-t,.obk-card,.obk-fc{ line-height:1.15; text-wrap:balance; }
 .ob-M68 .obk-obj,.ob-M68 .obk-card{ font-size:calc(var(--tap) * .5); }
 `; document.head.appendChild(s); };
 })();
