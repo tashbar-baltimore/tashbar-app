@@ -1,0 +1,58 @@
+<script>
+/* BLOCK BUILDERS WORKBOOK, the teacher board (HoS 2026-11-22). Staff portal → Reports → "📘 Block Builders workbook"
+   (StaffHome.html presses the hidden #bbs-btn). Shows every boy the staff member may see who has started the workbook:
+   one row per boy, one cell per job (Sheet A, Sheet B), with his first-try score. Tap a cell: his page, exactly as he
+   left it, with his own pen writing on it (BBX.paper in BlockBuildersUI.html). Calls bbClass / bbBoyPage (BlockBuilders.js).
+   Read only. No money on this screen. No double slash in this file. */
+(function(){
+ if(window.BBS) return;
+ const Z=window.BBS={data:null,err:'',open:false,sec:'C'};
+ const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ function call(fn){ const a=[].slice.call(arguments,1); return new Promise((ok,no)=>{ try{ google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn].apply(null,a); }catch(e){ no(e); } }); }
+ function tok(){ try{ if(typeof S!=='undefined'&&S&&S.token) return S.token; }catch(e){} try{ const t=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return t&&t.token||''; }catch(e){ return ''; } }
+ function css(){ if(document.getElementById('bbs-css')) return; const s=document.createElement('style'); s.id='bbs-css'; s.textContent=`
+#bbs{position:fixed;inset:0;z-index:99980;background:#f3f5f9;color:#1d2433;font:15px/1.4 'Nunito','Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column}
+#bbs *{box-sizing:border-box} #bbs button{font:inherit;cursor:pointer;color:inherit}
+.bbs-top{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1d2433;color:#fff}
+.bbs-top b{flex:1;font-size:18px}
+.bbs-x{border:0;background:rgba(255,255,255,.15);color:#fff!important;border-radius:10px;padding:8px 14px;font-weight:800}
+.bbs-body{flex:1;overflow:auto;padding:14px}
+.bbs-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.bbs-tabs button{border:1.5px solid #cfd5e0;background:#fff;border-radius:999px;padding:6px 12px;font-weight:800}
+.bbs-tabs button.on{background:#1d2433;color:#fff!important;border-color:#1d2433}
+.bbs-t{border-collapse:separate;border-spacing:3px;background:#fff;border-radius:12px;padding:6px}
+.bbs-t th{font-size:11px;color:#5b6475;font-weight:800;padding:2px 4px;white-space:nowrap}
+.bbs-t td.n{font-weight:800;white-space:nowrap;padding-right:10px;position:sticky;left:0;background:#fff}
+.bbs-c{min-width:44px;height:34px;border:0;border-radius:8px;font-weight:800;font-size:12px}
+.bbs-c.g{background:#cdeed9}.bbs-c.y{background:#ffe7a8}.bbs-c.r{background:#ffd0c7}.bbs-c.p{background:#e6efff}.bbs-c.e{background:#f1f3f7;color:#b3bac7!important;cursor:default}
+.bbs-lead{color:#5b6475;margin:0 0 10px}
+.bbs-key{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#5b6475;margin:8px 0}.bbs-key span{display:inline-flex;align-items:center;gap:4px}.bbs-key i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.bbs-page{max-width:900px;margin:0 auto}
+`; document.head.appendChild(s); }
+ function root(){ let r=document.getElementById('bbs'); if(!r){ r=document.createElement('div'); r.id='bbs'; document.body.appendChild(r); } return r; }
+ function cell(b,id){ const p=b.pages[id]; if(!p) return `<button type="button" class="bbs-c e" disabled>·</button>`; const pct=p.total?p.score/p.total:0; const cls=!p.done?'p':pct>=.9?'g':pct>=.7?'y':'r';
+  return `<button type="button" class="bbs-c ${cls}" data-bbs="pg" data-s="${E(b.id)}" data-j="${id}" title="${E(b.name)} · ${id}">${p.done?p.score+'/'+p.total:'…'}${p.ink?' ✏️':''}</button>`; }
+ function board(){ const BK=window.BB_BOOK; if(!BK) return '<p>The workbook did not load.</p>'; const D=Z.data;
+  let h=`<p class="bbs-lead">Each boy’s Block Builders workbook: his first-try score on every page he has worked on. Tap a page to see it the way he left it, with his own pen work.</p>`;
+  h+=`<div class="bbs-tabs">${BK.sections.filter(s=>s.of).map(s=>`<button type="button" class="${Z.sec===s.k?'on':''}" data-bbs="sec" data-k="${s.k}">${s.ico} ${E(s.name)}</button>`).join('')}</div>`;
+  if(Z.err) return h+`<p>Could not load: ${E(Z.err)}</p>`; if(!D) return h+'<p>Loading…</p>';
+  if(!D.boys.length) return h+`<p>No boy has started the workbook yet. It opens from the 📘 button on a boy’s Math map (Math levels 2 to 4).</p>`;
+  const js=BK.jobs.filter(j=>j.sec===Z.sec), ids=js.map(j=>j.id);
+  h+=`<div class="bbs-key"><span><i style="background:#cdeed9"></i>90%+ first try</span><span><i style="background:#ffe7a8"></i>70–89%</span><span><i style="background:#ffd0c7"></i>under 70%</span><span><i style="background:#e6efff"></i>started</span><span>✏️ has pen work</span></div>`;
+  h+=`<div style="overflow:auto"><table class="bbs-t"><tr><th></th>${js.map(j=>`<th title="${E(j.title)}">${j.n}${j.sheet||''}</th>`).join('')}</tr>${D.boys.map(b=>`<tr><td class="n">${E(b.name)}</td>${ids.map(id=>`<td>${cell(b,id)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+  return h; }
+ function draw(){ css(); const r=root(); const top=Z.view?`<button type="button" class="bbs-x" data-bbs="back">◀ All boys</button><b>${E(Z.view.name)} · ${E(Z.view.title)}</b>`:`<b>📘 Block Builders workbook</b>`;
+  r.innerHTML=`<div class="bbs-top">${top}<button type="button" class="bbs-x" data-bbs="close">✕ Close</button></div><div class="bbs-body">${Z.view?'<div class="bbs-page" id="bbs-pg"><p>Loading his page…</p></div>':board()}</div>`; }
+ Z.show=function(){ Z.open=true; Z.view=null; draw(); call('bbClass',tok()).then(r=>{ Z.data=r&&r.ok?r:{boys:[]}; Z.err=''; if(Z.open&&!Z.view) draw(); }).catch(e=>{ Z.err=String(e&&e.message||e); if(Z.open) draw(); }); };
+ document.addEventListener('click',e=>{ const t=e.target.closest&&e.target.closest('[data-bbs],#bbs-btn'); if(!t) return;
+  if(t.id==='bbs-btn'){ Z.show(); return; } const a=t.dataset.bbs;
+  if(a==='close'){ Z.open=false; const r=document.getElementById('bbs'); if(r) r.remove(); return; }
+  if(a==='sec'){ Z.sec=t.dataset.k; draw(); return; }
+  if(a==='back'){ Z.view=null; draw(); return; }
+  if(a==='pg'){ const sid=t.dataset.s, id=t.dataset.j, b=(Z.data.boys||[]).find(x=>x.id===sid), j=window.BB_BOOK.byId[id]; Z.view={sid,id,name:b?b.name:'',title:'Job '+j.n+(j.sheet?j.sheet:'')+' · '+j.title}; draw();
+   call('bbBoyPage',tok(),sid,id).then(r=>{ const m=document.getElementById('bbs-pg'); if(!m||!Z.view||Z.view.id!==id) return; if(!r||!r.page){ m.innerHTML='<p>Nothing saved on this page yet.</p>'; return; } try{ window.BBX.paper(id,r.page,r.page.strokes,Z.view.name,m); }catch(err){ m.innerHTML='<p>Could not show the page.</p>'; } }).catch(err=>{ const m=document.getElementById('bbs-pg'); if(m) m.innerHTML='<p>Could not load: '+E(err&&err.message||err)+'</p>'; }); return; }
+ });
+ function addBtn(){ if(document.getElementById('bbs-btn')||!document.body) return; const b=document.createElement('button'); b.type='button'; b.id='bbs-btn'; b.hidden=true; b.textContent='Block Builders workbook'; document.body.appendChild(b); }
+ if(document.body) addBtn(); else document.addEventListener('DOMContentLoaded',addBtn);
+})();
+</script>
