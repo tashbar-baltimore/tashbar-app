@@ -92,12 +92,12 @@ async function kidTests(browser) {
       if (!items || !items.length) { out.broken.push(id + ': no questions'); continue; }
       items.forEach((it, i) => { if (it._bad) out.broken.push(id + ' #' + i + ': ' + it._bad); if (it.t === 'mc' && (!it.shown || it.shown.indexOf(it.correct) < 0)) out.broken.push(id + ' #' + i + ': right answer is not among the choices'); });
       if (typeof GEN !== 'undefined' && GEN[id]) continue;
-      const taught = low(JSON.stringify(items.filter(x => x.phase !== 'check')) + JSON.stringify((window.TL_TEACH || {})[id] || ''));
+      const taught = low(JSON.stringify(items.filter(x => x.phase !== 'check')) + JSON.stringify((window.TL_TEACH || {})[id] || '') + JSON.stringify((window.ONE_BITE || {})[id] || ''));   /* a hand-written One Bite is teaching the boy sees */
       items.filter(x => x.phase === 'check' && (x.t === 'mc' || x.t === 'type') && typeof x.correct === 'string' && x.correct.length > 2).forEach(x => { const a = low(JSON.stringify(x.correct).slice(1, -1)); if (a && taught.indexOf(a) < 0) out.untaught.push(id + ' | ' + String(x.q).slice(0, 70) + ' | ' + x.correct.slice(0, 40)); }); }
     return out; });
   report.counts.lessons = audit.skills; report.counts.checkAnswersNeverTaught = audit.untaught.length; report.untaught = audit.untaught;
   audit.broken.forEach(b => fail('broken lesson: ' + b)); if (!audit.broken.length) ok(audit.skills + ' lessons build with well-formed questions');
-  const all = await pg.evaluate(() => Object.keys(BANK_ALL)); let ids = [];
+  const all = await pg.evaluate(() => { window.OB_LIVE = 'off'; return Object.keys(BANK_ALL); }); let ids = [];   /* the engine's own flow; One Bite has its own test below */
   if (process.env.ALL) ids = all; else { const n = Math.max(1, Number(process.env.SAMPLE || 40)); const step = Math.max(1, Math.floor(all.length / n)); for (let i = 0; i < all.length && ids.length < n; i += step) ids.push(all[i]);
     (process.env.PLAY || '').split(',').filter(Boolean).forEach(p => all.filter(id => id.indexOf(p) === 0).forEach(id => { if (ids.indexOf(id) < 0) ids.push(id); })); }
   let done = 0;
@@ -155,6 +155,9 @@ async function kidTests(browser) {
       if (!g.locked) fail('missions: the Arcade must be locked before the 3 rounds are cleared');
       if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked) ok('map home: next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); } }
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* ONE BITE player (tests/lib/onebite.js) */
+  try { const ob = await require('./lib/onebite.js')(pg); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
+  catch (e) { fail('One Bite test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   report.counts.lessonsPlayed = ids.length; report.counts.lessonsMastered = done; report.counts.screensWithNoHowToBox = notes.length; if (done === ids.length) ok(done + ' of ' + ids.length + ' sampled lessons played to mastered');
   (await pg.evaluate(() => window.__srvErr)).forEach(e => fail('server call failed: ' + e)); errs.forEach(e => fail('kid page: ' + e)); await ctx.close();
 }

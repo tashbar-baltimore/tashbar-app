@@ -1,0 +1,33 @@
+<script>
+/* OneBiteDataRead.html: hand-written ONE BITE lessons for Reading and phonics.
+   Schema and rules: docs/ONE-BITE-PLAYBOOK.md. The player is OneBite.html. One entry per skill id:
+   window.ONE_BITE['SKILL.ID'] = { band, today, why, pic, ready:[{q,o,a}], bridge, watch:{q,m,steps,a}, oops:{q,wrong,right,why}, ways:[...], done, board:{...} };
+   Content lanes edit only their own data file. No double slash in this file. */
+window.ONE_BITE=window.ONE_BITE||{};
+(function(B){
+
+/* ---- PILOT 2026-11-21: 2 Reading bites (K1, B23) ---- */
+B['READ.PA.L01.05']={ band:'K1', pic:'🐢', today:'Push sounds together to make a word', why:'When you can push sounds together, you can read any word!',
+  ready:[{q:'What is the first sound in sun? ☀️', o:['sss','mmm','t'], a:'sss'},{q:'What is the first sound in map? 🗺️', o:['mmm','p','sss'], a:'mmm'}],
+  bridge:'READ.PA.L01.04', bridgeName:'First Sound Detective',
+  watch:{ q:'sss … uh … nnn', pic:'☀️', steps:[
+    {t:'Say it like a sleepy turtle: sss … uh … nnn.', m:{type:'tiles',w:['s','u','n']}},
+    {t:'A little faster: ss-uh-nn.', m:{type:'tiles',w:['s','u','n'],hi:[0,1]}},
+    {t:'Race car! Push them together: sun!', m:{type:'tiles',w:['sun'],hi:[0]}},
+    {t:'Stand up. Crouch low for each sound, then jump up and say the word!', m:{type:'move',t:'Crouch: sss, uh, nnn. Jump: SUN!'}}], a:'sun ☀️' },
+  oops:{ q:'Push together: c, a, t.', wrong:'c … a … t (still apart)', right:'cat 🐱', why:'Slide the sounds into each other, like going down a slide.' },
+  ways:['letter tiles','movement','picture','Mistake Detective'], done:'You can push sounds together to read a word!',
+  board:{ one:'Turtle, then race car: push the sounds together.', activity:'Three boys each hold one sound card and walk closer until they say the word.', mistakes:['Leaving a gap between sounds','Adding uh after a sound (buh-a-tuh)','Saying the first sound only'] } };
+B['READ.PHON.L03.01']={ band:'B23', pic:'🤖', today:'Split long words into beats', why:'Long words are just short beats stuck together. Split them and you can read them.',
+  ready:[{q:'Clap it: how many beats in "basket"?', o:['2','1','3'], a:'2'},{q:'Which is a vowel?', o:['a','b','t'], a:'a'}],
+  bridge:'READ.PA.L01.03', bridgeName:'Clap the Beats',
+  watch:{ q:'robot', pic:'🤖', steps:[
+    {t:'Find the vowels: r-O-b-O-t. Two vowels, two beats.', m:{type:'tiles',w:['r','o','b','o','t'],hi:[1,3]}},
+    {t:'Stand up! Stomp each beat: ro … bot.', m:{type:'move',t:'Stomp: ro! bot!'}},
+    {t:'Split between the beats.', m:{type:'tiles',w:['ro','bot']}},
+    {t:'Read each beat, then blend: robot!'}], a:'ro | bot = robot' },
+  oops:{ q:'bottle or button?', wrong:'button', right:'bottle', why:'Stomp it: bot … tle. The second beat is tle, not ton.' },
+  ways:['part tiles','movement','picture','Mistake Detective'], done:'You can split long words into beats and read them.',
+  board:{ one:'Every beat has one vowel sound. Split between beats.', activity:'Stomp-and-split: write words on cards, boys cut them into beats.', mistakes:['Splitting in the middle of a blend','Giving a beat no vowel','Reading every letter separately'] } };
+})(window.ONE_BITE);
+</script>
