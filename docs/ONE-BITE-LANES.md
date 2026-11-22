@@ -22,6 +22,7 @@ If a data file grows past about 400 KB, start `OneBiteDataMath2.html` and regist
 - 2026-11-21 · Lane B (started by the Lane A session): Math K–2 done. All L01–L03 skills have hand-written bites (65 bites in all, counting the pilots). **Next for Lane B:** L05 (MATH.OPS.L05.01, MATH.FRAC.L05.02), L07 (MATH.ALG.L07.04), L09 (MATH.ALG.L09.01/.02/.04, MATH.FUNC.L09.02), then any Math skill the map plays that has no bite (`Object.keys(GEN).filter(id => !ONE_BITE[id])`).
 
 - 2026-11-22 · Round 2 Lane B (K–1 Math activities) · this session: `do`/`your` hands-on activities for every `MATH.*.L01.*` bite (batch 1), then `L02` (batch 2). Batch 1 (L01, 16 bites) and batch 2 (L02, 21 bites) are written; all K–1 Math bites now have `do`/`your`. The activity data shapes are written at the top of the Round 2 block in `src/OneBiteDataMath.html` for Lane A's kit.
+- 2026-11-22 · Lane C (round 2, K Reading) · this session: ABCs first. Batch 1 = READ.PHON.L01.01 split into 6 ABC bites `.a`–`.f` (A–D, E–H, I–L, M–Q, R–U, V–Z), each a real lesson + a bite with `do`/`your` activity data (schema at the top of the ABC block in `src/OneBiteDataRead.html`). The old id stays as the ABC Review after `.f`. **Next:** READ.PA.L01.01–.06, then READ.PHON.L01.02–.04, READ.FLU.L01.01, then L02.
 
 ## Starter prompt for a content lane (paste into a new Claude Code session on `tashbar-baltimore/tashbar-app`)
 

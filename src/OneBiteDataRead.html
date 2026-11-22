@@ -29,5 +29,166 @@ B['READ.PHON.L03.01']={ band:'B23', pic:'🤖', today:'Split long words into bea
   oops:{ q:'bottle or button?', wrong:'button', right:'bottle', why:'Stomp it: bot … tle. The second beat is tle, not ton.' },
   ways:['part tiles','movement','picture','Mistake Detective'], done:'You can split long words into beats and read them.',
   board:{ one:'Every beat has one vowel sound. Split between beats.', activity:'Stomp-and-split: write words on cards, boys cut them into beats.', mistakes:['Splitting in the middle of a blend','Giving a beat no vowel','Reading every letter separately'] } };
+
+/* ==== ROUND 2, Lane C, batch 1 (2026-11-22): THE ABCs in 6 bites (HoS: "start with the ABCs") ====
+   READ.PHON.L01.01 "Letter Lineup" held all 26 letters in one lesson. It is split into 6 small bites, the way Kriyah uses LK.KRI.L01.01.a:
+     .a A-D   .b E-H   .c I-L   .d M-Q   .e R-U   .f V-Z
+   The old id READ.PHON.L01.01 stays as the ABC Review after .f, so every boy keeps what he mastered (Placement.js READ_K8).
+   Each new id gets: its lesson (teach 3, hands-on practice 6, tap check 3) in READ and BANK_ALL, Teacher Time (TL_TEACH),
+   How-to-do-it boxes (TL_DO), and its ONE BITE with do:[2 guided activities] and your:[5 activities] for the Activity Kit (Lane A).
+   ACTIVITY DATA (read by OneBiteKit; the player ignores do/your until the kit is live). Every activity has say: the spoken
+   instruction, 12 words or fewer, never Hebrew. A boy never needs to read it.
+     listen  {type:'listen', say, sound:'what the voice says', o:[3 choices], a}          hear it, tap the matching letter or picture
+     findall {type:'findall', say, grid:[letters], a:'b'}                                  tap every a in the grid (case must match)
+     match   {type:'match', say, pairs:[[left,right],...]}                                  pair each left with its right (tap-tap or drag)
+     trace   {type:'trace', say, hint:'how to write it (spoken after say)', ch:'B'}        finger-trace the dotted letter (pass about 80 percent)
+     sort    {type:'sort', say, bins:[ids], items:[[label,bin],...]}                        cards into 2-3 bins
+   Pictures: one picture, one word (the keyword). Kosher food only. No people pictures. */
+(function(){
+  var R=(typeof READ!=='undefined')?READ:null, BA=(typeof BANK_ALL!=='undefined')?BANK_ALL:null;
+  var TT=window.TL_TEACH=window.TL_TEACH||{}, DO=window.TL_DO=window.TL_DO||{};
+  /* letter: [big, small, keyword, picture, the sound in a kid line, how to write big, how to write small] */
+  var L={
+    a:['A','a','apple','🍎','a, like apple','Big A: two slants and a bridge.','Small a: a circle and a stick.'],
+    b:['B','b','bus','🚌','b, like bus','Big B: a line and two bumps.','Small b: a tall line, then a ball.'],
+    c:['C','c','cat','🐱','k, like cat','Big C: a circle with a bite out.','Small c: a small open circle.'],
+    d:['D','d','duck','🦆','d, like duck','Big D: a line and one big bump.','Small d: a ball, then a tall line.'],
+    e:['E','e','egg','🥚','e, like egg','Big E: a line and three arms.','Small e: a line across, then curl around.'],
+    f:['F','f','fish','🐟','f, like fish','Big F: a line and two arms.','Small f: a cane with a belt.'],
+    g:['G','g','goat','🐐','g, like goat','Big G: a C with a little shelf.','Small g: a ball with a hook tail.'],
+    h:['H','h','hat','🎩','h, like hat','Big H: two lines and a bridge.','Small h: a tall line and one hump.'],
+    i:['I','i','iguana','🦎','i, like iguana','Big I: a line, a hat, and shoes.','Small i: a short line and a dot.'],
+    j:['J','j','juice','🧃','j, like juice','Big J: a line down, then hook left.','Small j: a hook down low and a dot.'],
+    k:['K','k','kite','🪁','k, like kite','Big K: a line and two kicks.','Small k: a tall line and a small kick.'],
+    l:['L','l','lion','🦁','l, like lion','Big L: a line down, then across.','Small l: one tall line.'],
+    m:['M','m','moon','🌙','m, like moon','Big M: up, slant down, slant up, down.','Small m: a line and two humps.'],
+    n:['N','n','nest','🪺','n, like nest','Big N: up, slant down, up.','Small n: a line and one hump.'],
+    o:['O','o','octopus','🐙','o, like octopus','Big O: a big round circle.','Small o: a small round circle.'],
+    p:['P','p','pizza','🍕','p, like pizza','Big P: a line, a bump on top.','Small p: a line down low and a bump.'],
+    q:['Q','q','question','❓','kw, like question','Big Q: a circle with a little tail.','Small q: a ball, then a line down low.'],
+    r:['R','r','rocket','🚀','r, like rocket','Big R: a P with a kick leg.','Small r: a short line and a little arm.'],
+    s:['S','s','sun','☀️','s, like sun','Big S: a big snake curve.','Small s: a small snake curve.'],
+    t:['T','t','tent','⛺','t, like tent','Big T: a line and a roof.','Small t: a line down and a short cross.'],
+    u:['U','u','umbrella','☂️','u, like umbrella','Big U: down, around, up.','Small u: a cup and a little stick.'],
+    v:['V','v','van','🚐','v, like van','Big V: slant down, slant up.','Small v: a small slant down, slant up.'],
+    w:['W','w','watermelon','🍉','w, like watermelon','Big W: down, up, down, up.','Small w: a small down, up, down, up.'],
+    x:['X','x','box','📦','ks, like box','Big X: two lines that cross.','Small x: two small lines that cross.'],
+    y:['Y','y','yo-yo','🪀','y, like yo-yo','Big Y: a V on a stick.','Small y: a short slant and a long slant.'],
+    z:['Z','z','zebra','🦓','z, like zebra','Big Z: across, slant back, across.','Small z: a small across, slant, across.']
+  };
+  function says(x){ return x.toUpperCase()+' says '+L[x][4]+'.'; }
+  function pk(x){ return L[x][3]+' '+L[x][2]; }
+  function aWord(x){ return ('aeiou'.indexOf(L[x][2].charAt(0))>=0?'an ':'a ')+L[x][2]; }
+
+  /* one ABC group: letters, the look-alikes for wrong choices, the chant, the Mistake Detective, and its bridge */
+  var GS={
+    'READ.PHON.L01.01.a':{name:'ABC 1: A to D', k:'a', ls:'abcd', pic:'🍎', near:{a:['o','e'],b:['d','p'],c:['o','e'],d:['b','p']},
+      chant:['A, apple, a, a, a!','B, bus, b, b, b!','C, cat, k, k, k!','D, duck, d, d, d!'],
+      oops:{q:'Which letter starts duck 🦆?', wrong:'b', right:'d', why:'Make a fist: ball first is d, line first is b.'},
+      bridge:'READ.PA.L01.04', bridgeName:'First Sound Detective',
+      ready:[{q:'What is the first sound in sun? ☀️', o:['sss','mmm','t'], a:'sss'},{q:'What is the first sound in map? 🗺️', o:['mmm','p','sss'], a:'mmm'}],
+      odd:'b', mix:'bdpbdbqb', bins:['b','d']},
+    'READ.PHON.L01.01.b':{name:'ABC 2: E to H', k:'b', ls:'efgh', pic:'🥚', near:{e:['a','c'],f:['t','l'],g:['q','p'],h:['n','k']},
+      chant:['E, egg, e, e, e!','F, fish, f, f, f!','G, goat, g, g, g!','H, hat, h, h, h!'],
+      oops:{q:'Which big letter is F?', wrong:'E (three arms)', right:'F (two arms)', why:'E has three arms. F has only two, on top.'},
+      odd:'f', mix:'fEfFtfEf', bins:['e','f']},
+    'READ.PHON.L01.01.c':{name:'ABC 3: I to L', k:'c', ls:'ijkl', pic:'🪁', near:{i:['j','l'],j:['i','g'],k:['h','x'],l:['i','t']},
+      chant:['I, iguana, i, i, i!','J, juice, j, j, j!','K, kite, k, k, k!','L, lion, l, l, l!'],
+      oops:{q:'Which small letter is j?', wrong:'i (it stops at the line)', right:'j (it hooks down low)', why:'Both have a dot. Only j hooks down below the line.'},
+      odd:'j', mix:'jijlijgj', bins:['k','l']},
+    'READ.PHON.L01.01.d':{name:'ABC 4: M to Q', k:'d', ls:'mnopq', pic:'🌙', near:{m:['n','w'],n:['m','h'],o:['c','a'],p:['q','b'],q:['p','g']},
+      chant:['M, moon, m, m, m!','N, nest, n, n, n!','O, octopus, o, o, o!','P, pizza, p, p, p!','Q, question, kw, kw, kw!'],
+      oops:{q:'Which small letter is p?', wrong:'q (bump on the left)', right:'p (bump on the right)', why:'p has its bump on the right, like a pizza paddle.'},
+      odd:'p', mix:'pqpbpqdp', bins:['m','n']},
+    'READ.PHON.L01.01.e':{name:'ABC 5: R to U', k:'e', ls:'rstu', pic:'☀️', near:{r:['n','v'],s:['z','c'],t:['f','l'],u:['n','v']},
+      chant:['R, rocket, r, r, r!','S, sun, s, s, s!','T, tent, t, t, t!','U, umbrella, u, u, u!'],
+      oops:{q:'Which small letter is u?', wrong:'n (a hump, like a hill)', right:'u (a cup)', why:'u is a cup that holds water. n is a hill.'},
+      odd:'u', mix:'unuvunmu', bins:['s','t']},
+    'READ.PHON.L01.01.f':{name:'ABC 6: V to Z', k:'f', ls:'vwxyz', pic:'🦓', near:{v:['w','y'],w:['v','m'],x:['k','y'],y:['v','x'],z:['s','x']},
+      chant:['V, van, v, v, v!','W, watermelon, w, w, w!','X, box, ks, ks, ks!','Y, yo-yo, y, y, y!','Z, zebra, z, z, z!'],
+      oops:{q:'Which letter starts watermelon 🍉?', wrong:'v (one point down)', right:'w (two points down)', why:'v is one valley. w is two valleys: double you.'},
+      odd:'w', mix:'wvwmwvnw', bins:['v','z']}
+  };
+  var G=Object.keys(GS).map(function(id){ var g=GS[id]; g.id=id; g.title=g.name; return g; });
+  /* bridges and ready checks for .b to .f: the bite before it (spaced review of its letters) */
+  for(var gi=1;gi<G.length;gi++){ var pg=G[gi-1], p0=pg.ls.charAt(1), p1=pg.ls.charAt(pg.ls.length-1);
+    G[gi].bridge=pg.id; G[gi].bridgeName=pg.title;
+    G[gi].ready=[{q:'Which letter starts '+L[p0][2]+'? '+L[p0][3], o:[p0].concat(pg.near[p0]), a:p0},
+                 {q:'Which small letter matches big '+L[p1][0]+'?', o:[p1].concat(pg.near[p1]), a:p1}]; }
+
+  G.forEach(function(g,gi){
+    var id=g.id, ls=g.ls.split(''), last=ls[ls.length-1], first=ls[0];
+    var nameLine=ls.map(function(x){ return L[x][0]; }).join(', ');
+    /* ---- the lesson (normal lesson page; Show me uses its check) ---- */
+    var picPairs=ls.slice(0,4).map(function(x){ return [x, pk(x)]; });
+    var caseP=ls.slice(-4).map(function(x){ return [L[x][0], x]; });
+    var spot=g.mix.split('').map(function(c){ return {label:c, ok:c===g.odd}; });
+    var bigSpot=[L[ls[1]][0], L[ls[2]][0], ls[1], L[ls[1]][0], L[g.near[ls[1]][0]]?L[g.near[ls[1]][0]][0]:'X', ls[2]].map(function(c){ return {label:c, ok:c===L[ls[1]][0]}; });
+    var sortItems=[]; g.bins.forEach(function(b){ sortItems.push({label:pk(b), bin:b}); });
+    var extra={a:[['🎈 balloon','b'],['🦕 dinosaur','d']], b:[['🐘 elephant','e'],['🦊 fox','f']], c:[['🔑 key','k'],['🍋 lemon','l']], d:[['🐭 mouse','m'],['🍜 noodles','n']], e:[['🧦 sock','s'],['🐯 tiger','t']], f:[['🎻 violin','v'],['0️⃣ zero','z']]}[g.k]||[];
+    extra.forEach(function(e){ sortItems.push({label:e[0], bin:e[1]}); });
+    var lesson={name:g.title,
+      teach:[
+        {how:'Every letter has a name, a sound and a shape. '+says(first), q:'This is '+aWord(first)+'. Which letter makes its first sound?', pic:L[first][3], o:[first].concat(g.near[first])},
+        {how:'Big '+L[ls[1]][0]+' and small '+ls[1]+' are the same letter. '+L[ls[1]][5]+' '+L[ls[1]][6], q:'Which small letter matches this big letter?', pic:L[ls[1]][0], o:[ls[1]].concat(g.near[ls[1]])},
+        {how:says(ls[2])+' Say '+L[ls[2]][2]+' slowly. Hear '+L[ls[2]][4].split(',')[0]+' at the start.', q:'This is '+aWord(ls[2])+'. Which letter makes its first sound?', pic:L[ls[2]][3], o:[ls[2]].concat(g.near[ls[2]])}
+      ],
+      practice:[
+        {t:'pairs', q:'Match each letter to the picture that starts with it.', pairs:picPairs, h:'Say the picture word slowly. Listen to the first sound. Find that letter.'},
+        {t:'spotall', q:'Tap every small '+g.odd+'.', cells:spot, h:says(g.odd)+' '+L[g.odd][6]+' Tap each one, then Check.'},
+        {t:'pairs', q:'Match each big letter to its small letter.', pairs:caseP, h:'Big and small letters share one name. Say the name, then find its partner.'},
+        {t:'sort', q:'Which letter does it start with? Sort each picture.', bins:g.bins.map(function(b){ return {id:b, label:b+' ('+L[b][2]+')'}; }), items:sortItems, h:'Say the picture word. Hear the first sound. Put it in that letter box.'},
+        {t:'order', q:'Put the letters in ABC order.', tiles:ls.slice(), h:'Sing the ABC song slowly: '+ls.join(', ')+'.'},
+        {t:'spotall', q:'Tap every big '+L[ls[1]][0]+'.', cells:bigSpot, h:L[ls[1]][5]+' Big letters are tall. Tap each big '+L[ls[1]][0]+', then Check.'}
+      ],
+      check:[
+        {q:'Which small letter matches this big letter?', pic:L[last][0], o:[last].concat(g.near[last])},
+        {q:'This is '+aWord(ls[ls.length-2])+'. Which letter makes its first sound?', pic:L[ls[ls.length-2]][3], o:[ls[ls.length-2]].concat(g.near[ls[ls.length-2]])},
+        {t:'order', q:'Put the letters in ABC order.', tiles:ls.slice(-3)}
+      ]};
+    if(R&&!R[id]) R[id]=lesson; if(BA&&!BA[id]) BA[id]=lesson;
+    /* ---- Teacher Time for the normal lesson page ---- */
+    TT[id]=TT[id]||{ hook:'Meet '+ls.length+' new letter friends today!', big:'Every letter has a name, a sound and a shape: '+nameLine+'.',
+      intro:ls.map(function(x){ return says(x); }),
+      ex:[{q:'Which letter makes the first sound in '+L[first][2]+'?', pic:L[first][3], steps:['Say it slowly: '+L[first][2]+'.','Hear the first sound: '+L[first][4].split(',')[0]+'.','That sound is the letter '+first+'.'], a:first},
+          {q:'Which small letter matches big '+L[last][0]+'?', steps:[L[last][5], L[last][6], 'Same name, '+L[last][0]+' and '+last+'.'], a:last}],
+      oops:g.oops, idea:g.chant.slice(0,2),
+      'try':{q:'Which small letter matches big '+L[ls[1]][0]+'?', o:[ls[1]].concat(g.near[ls[1]]), a:ls[1], steps:[L[ls[1]][5], L[ls[1]][6]]} };
+    /* ---- How to do it, for every question ---- */
+    var dq={}; lesson.practice.forEach(function(it){ dq[it.q]=it.h.replace(/\. /g,'.\n'); });
+    dq['Which small letter matches this big letter? || '+L[last][0]]='Say the name of the big letter: '+L[last][0]+'.\n'+L[last][6]+'\nFind the small letter with that shape. Tap it.';
+    var nx=ls[ls.length-2];
+    dq['This is '+aWord(nx)+'. Which letter makes its first sound? || '+L[nx][3]]='Say it slowly: '+L[nx][2]+'.\nListen to the very first sound.\nWhich letter makes that sound? Tap it.';
+    dq['Put the letters in ABC order.']='Sing the ABC song slowly.\nWhich letter comes first? Tap it.\nKeep going until all are in a row.';
+    DO[id]=DO[id]||{ s:'Say the letter name.\nSay its sound: '+L[first][4]+'.\nLook at its shape, then tap.', q:dq };
+
+    /* ---- the ONE BITE ---- */
+    var steps=ls.map(function(x){ return {t:L[x][0]+' says '+L[x][4]+' '+L[x][3]+'. '+L[x][5], m:{type:'tiles', w:[L[x][0]+x, L[x][3]], hi:[0]}}; });
+    steps.push({t:'Sing it with me! Clap on each letter.', m:{type:'chant', lines:g.chant}});
+    var o3=function(x){ return [x].concat(g.near[x]); };
+    var traceAt=ls[1];
+    B[id]={ band:'K1', pic:g.pic, today:'Meet the letters '+nameLine.replace(/, ([A-Z])$/,' and $1'),
+      why:'Letters build every word. Soon you will read them all!',
+      ready:g.ready, bridge:g.bridge, bridgeName:g.bridgeName,
+      watch:{ q:'Letters '+nameLine, pic:g.pic, steps:steps, a:ls.map(function(x){ return L[x][0]+x+' '+L[x][3]; }).join('  ') },
+      oops:g.oops,
+      ways:['song','picture','listen and tap','find them all','match','finger trace','Mistake Detective'],
+      done:'You know '+nameLine.replace(/, ([A-Z])$/,' and $1')+'! Sing them at home tonight!',
+      'do':[
+        {type:'listen', say:'Listen. Which letter says '+L[first][4].split(',')[0]+'?', sound:L[first][4], o:o3(first), a:first},
+        {type:'trace', say:'Trace big '+L[traceAt][0]+' with your finger.', hint:L[traceAt][5], ch:L[traceAt][0]}
+      ],
+      your:[
+        {type:'findall', say:'Tap every small '+g.odd+'. Find them all!', grid:g.mix.split(''), a:g.odd},
+        {type:'match', say:'Match each letter to its picture.', pairs:ls.slice(0,3).map(function(x){ return [x, L[x][3]]; })},
+        {type:'listen', say:'Listen. Tap the letter you hear.', sound:L[ls[2]][4], o:o3(ls[2]), a:ls[2]},
+        {type:'trace', say:'Trace small '+last+' with your finger.', hint:L[last][6], ch:last},
+        {type:'match', say:'Match each big letter to its small letter.', pairs:ls.slice(-3).map(function(x){ return [L[x][0], x]; })}
+      ],
+      board:{ one:'Name, sound, shape: '+ls.map(function(x){ return x.toUpperCase()+' says '+L[x][4].split(',')[0]; }).join('; ')+'.',
+        activity:'Letter cards on the floor. Call a sound; boys hop to its letter and say a word.',
+        mistakes:[g.oops.wrong+' for '+g.oops.right, 'Saying the letter name when asked for its sound', 'Mixing up the big and small letter'] } };
+  });
+})();
 })(window.ONE_BITE);
 </script>
