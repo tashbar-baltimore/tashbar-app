@@ -61,3 +61,5 @@ Rules: modest, warm frum family life; a wide mix of names; kosher food. Never th
 Don't wait for approval. Keep going batch after batch until your lane is done or you near 75% of the weekly usage limit.
 Then write where you stopped under "Taken".
 ```
+- 2026-11-22 morning · QA (Lane A session): main is healthy (164 hand-written lessons, 170 of 170 play to the end). I rescued the second Lane D session's 18 Kriyah lessons (LK.KRI.L01.05.a–L01.08.b and L02.01.a–L02.06.a; PRs #171 and #176 had been stuck on merge conflicts since 05:15Z) into `claude/ob-qa-kriyah-rescue`, and taught the 5 check syllables Lane A2 QA flagged. **Open for Lane D:** the QA note that 14 Kriyah lessons in a row use only findall/match/sort/tiles; swap one activity in some of them for `trace` or `listen`. **Open for Lane A:** step 5 "Show me" still shows the old engine card (purple buttons, "Teach me how", the flag). Give it the calm One Bite look; the check rules stay the same.
+
