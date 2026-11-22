@@ -10,53 +10,55 @@ window.ONE_BITE=window.ONE_BITE||{};
 (function(B){
 
 /* ---- L05 (Grade 4, Explorers) ---- */
-B['MATH.NUM.L05.01']={ band:'E45', pic:'🧩', today:'Find every factor, then spot the primes', why:'Setting up chairs for a simcha? Factors tell you every way to make equal rows.',
+B['MATH.NUM.L05.01']={ band:'E45', pic:'🧩', today:'Find factors and multiples, then spot the primes', why:'Setting up chairs for a simcha? Factors tell you every way to make equal rows.',
   ready:[{q:'6 × 7 = ?', o:['42','36','48','13'], a:'42'},{q:'Does 5 go into 35 evenly?', o:['Yes, 7 times','No','Yes, 6 times','Yes, 5 times'], a:'Yes, 7 times'}],
   bridge:'MATH.OPS.L04.02', bridgeName:'Missing Factor',
   watch:{ q:'Find the factors of 18. Is 18 prime?', m:{type:'emoji', e:'🪑', n:18, group:6}, steps:[
     {t:'Build rows of 18 chairs: 1 × 18, 2 × 9, 3 × 6.'},
-    {t:'Try 4 and 5: they do not fit. Next is 6, already found: stop.'},
-    {t:'Factors of 18: 1, 2, 3, 6, 9, 18. Count them: 18 has 6 factors.'},
+    {t:'Try 4 and 5: they do not fit. Next is 6, already found: stop. Factors of 18: 1, 2, 3, 6, 9, 18. Count them: 18 has 6 factors.'},
     {t:'More than 2 factors, so 18 is composite. A prime, like 13, has only 2 factors: 1 and itself.'},
-    {t:'Smallest factor after 1? Try 2, 3, 5, 7, 11, 13 in order. 247 ÷ 13 = 19, so it is 13. A multiple of 6 is in the 6 times table: 6, 12, 18, 24.'}], a:'1, 2, 3, 6, 9, 18. 18 is composite.' },
+    {t:'Smallest factor after 1? Try 2, 3, 5, 7, 11, 13 in order. 247 ÷ 13 = 19, so it is 13.'},
+    {t:'A multiple is the skip count, the times table: multiples of 6 are 6, 12, 18, 24.', m:{type:'line', from:0, to:30, hops:[0,6,12,18,24]}}], a:'1, 2, 3, 6, 9, 18. 18 is composite.' },
   oops:{ q:'Is 1 prime?', wrong:'Yes', right:'No', why:'A prime has exactly TWO factors. 1 has only one.' },
   ways:['rows of chairs (arrays)','factor pairs in order','sort and find','Mistake Detective'], done:'You can list factors, find multiples, and tell prime from composite.',
   board:{ one:'Factors multiply to make the number. A prime has exactly 2 factors.', activity:'Build every rectangle you can with 12, 13 and 18 square tiles.', mistakes:['Calling 1 prime','Missing a factor pair (like 6 × 8 for 48)','Mixing up factor and multiple'] },
   do:[
-    {type:'sort', bins:['Prime','Composite'], cards:[['7',0],['9',1],['13',0],['15',1],['2',0],['21',1]], say:'Prime or composite? Sort each number.', how:'Look for a factor other than 1 and itself. Found one? Composite. None? Prime.',
-      why:{q:'Why is 9 composite?', o:['3 × 3 = 9','9 is odd','9 is big','9 ends in 9'], a:'3 × 3 = 9'}},
-    {type:'tiles', w:['1','2','3','4','6','12'], extra:['5','8'], q:'Factors of 12', say:'Build the factors of 12, smallest first.', how:'Find the pairs: 1 × 12, 2 × 6, 3 × 4. Put them in order.'}],
+    {type:'tiles', w:['1','2','3','4','6','12'], extra:['5','8'], q:'12 chairs in equal rows', say:'Build every factor of 12, smallest first.', how:'Each way to make rows gives 2 factors: 1 × 12, 2 × 6, 3 × 4. 5 and 8 do not fit.'},
+    {type:'sort', bins:['Factor of 18','Not a factor'], cards:[['2',0],['4',1],['3',0],['5',1],['6',0],['9',0]], say:'Can 18 chairs make equal rows of this many? Sort.', how:'Divide 18 by it. No remainder? It is a factor. 18 ÷ 4 leaves 2, so 4 is not.',
+      why:{q:'Why is 4 not a factor of 18?', o:['18 ÷ 4 has a remainder','4 is even','4 is small','18 is odd'], a:'18 ÷ 4 has a remainder'}}],
   your:[
-    {type:'findall', grid:['12','18','20','24','30','34','36','40','42','45','48','50'], find:['12','18','24','30','36','42','48'], findSay:'multiple of 6', say:'Tap every multiple of 6.', how:'Skip count by 6: 6, 12, 18, 24, 30, 36, 42, 48.'},
-    {type:'match', pairs:[['25','5'],['21','3'],['49','7'],['22','2']], say:'Match each number to its smallest factor after 1.', how:'Try 2, then 3, then 5, then 7. The first one that divides evenly wins.',
-      why:{q:'How do you find the smallest factor?', o:['Try 2, 3, 5, 7 in order','Take half the number','Use the last digit','Guess a big one'], a:'Try 2, 3, 5, 7 in order'}},
-    {type:'sort', bins:['Factor of 56','Not a factor'], cards:[['8',0],['7',0],['14',0],['6',1],['12',1],['28',0]], say:'Is it a factor of 56? Sort each number.', how:'Divide 56 by it. No remainder? It is a factor.'},
-    {type:'findall', grid:['1','2','3','4','5','6','7','8','9','12','16','18','24','36','48'], find:['1','2','3','4','6','8','12','16','24','48'], findSay:'factor of 48', say:'Tap every factor of 48. Then count them.', how:'Pairs: 1 × 48, 2 × 24, 3 × 16, 4 × 12, 6 × 8. That is 10 factors.'},
-    {type:'tiles', w:['1','2','4','5','10','20'], extra:['3','8'], q:'Factors of 20', say:'Build all the factors of 20, smallest first.', how:'Pairs: 1 × 20, 2 × 10, 4 × 5. 3 and 8 do not fit.',
-      why:{q:'Why is 3 not a factor of 20?', o:['20 ÷ 3 has a remainder','3 is odd','3 is prime','3 is small'], a:'20 ÷ 3 has a remainder'}}] };
+    {type:'tiles', w:['1','2','4','5','10','20'], extra:['3','8'], q:'Factors of 20', say:'Shimon has 20 chairs. Build every factor, smallest first.', how:'Pairs: 1 × 20, 2 × 10, 4 × 5. 3 and 8 leave a remainder.'},
+    {type:'findall', grid:['1','2','3','4','5','6','7','8','9','12','16','18','24','36','48'], find:['1','2','3','4','6','8','12','16','24','48'], findSay:'factor of 48', say:'Tap every factor of 48. Then count them.', how:'Pairs: 1 × 48, 2 × 24, 3 × 16, 4 × 12, 6 × 8. That is 10 factors.',
+      why:{q:'How many factors does 48 have?', o:['10','8','6','12'], a:'10'}},
+    {type:'sort', bins:['Prime','Composite','Neither'], cards:[['7',0],['9',1],['1',2],['13',0],['15',1],['21',1]], say:'Prime, composite, or neither? Sort. Watch out for 1!', how:'Exactly 2 factors: prime. More than 2: composite. 1 has only 1 factor: neither.',
+      why:{q:'Why is 1 not prime?', o:['It has only one factor','It is odd','It is too small to divide','It is the first number'], a:'It has only one factor'}},
+    {type:'findall', grid:['1','2','3','6','12','18','24','30','9','15','36','4'], find:['6','12','18','24','30','36'], findSay:'multiple of 6', say:'Careful: tap every MULTIPLE of 6, not the factors.', how:'Multiples are the 6 times table: 6, 12, 18, 24, 30, 36. 1, 2 and 3 are factors.'},
+    {type:'match', pairs:[['25','5'],['21','3'],['49','7'],['247','13']], q:'Chairs for a simcha: smallest row size after 1', say:'Match each number to its smallest factor after 1.', how:'Try 2, then 3, 5, 7, 11, 13 in order. 247 ÷ 13 = 19.',
+      why:{q:'How do you find the smallest factor?', o:['Try 2, 3, 5, 7… in order','Take half the number','Use the last digit','Guess a big one'], a:'Try 2, 3, 5, 7… in order'}}] };
 
 B['MATH.FRAC.L05.04']={ band:'E45', pic:'🪙', today:'Turn tenths into hundredths, like dimes into cents', why:'Chanukah shopping: 7 dimes is 70 cents. Tenths and hundredths work the same way.',
   ready:[{q:'How many cents are in 1 dime?', o:['10','100','1','5'], a:'10'},{q:'How many cents make $1?', o:['100','10','1,000','50'], a:'100'}],
   bridge:'MATH.MEAS.L03.04', bridgeName:'Count money and make change',
   watch:{ q:'0.4 = ?/100', steps:[
     {t:'0.4 is 4 tenths, like 4 dimes.', m:{type:'fbar', n:4, d:10}},
-    {t:'4 dimes = 40 cents. So 0.4 = 4/10 = 40/100.'},
+    {t:'4 dimes = 40 cents. So 0.4 = 4/10 = 40/100.', m:{type:'emoji', e:'🪙', n:40, group:10}},
     {t:'Two places after the point are hundredths: 73/100 = 0.73, and 9/100 = 0.09 (9 cents).'},
     {t:'Adding? Make the tenths into hundredths first: 3/10 = 30/100. Then 30/100 + 39/100 = 69/100 = 0.69.'}], a:'0.4 = 40/100' },
   oops:{ q:'Write 9/100 as a decimal.', wrong:'0.9', right:'0.09', why:'0.9 is 9 tenths (90 cents). 9 hundredths is 9 cents: 0.09.' },
   ways:['money: dimes and cents','fraction bar','match, sort and order','Mistake Detective'], done:'You can change tenths to hundredths and write them as decimals.',
   board:{ one:'1 tenth = 10 hundredths, like 1 dime = 10 cents.', activity:'Shade tenths and hundredths on 10 by 10 grids; trade dimes for pennies.', mistakes:['Writing 9/100 as 0.9','Thinking 0.35 is more than 0.6 because 35 > 6','Adding 3/10 + 39/100 as 42/110'] },
   do:[
-    {type:'match', pairs:[['0.4','40/100'],['0.7','70/100'],['0.2','20/100'],['0.9','90/100']], say:'Match each tenth to its hundredths. Think dimes and cents.', how:'4 dimes = 40 cents. So 0.4 = 40/100.'},
-    {type:'listen', hear:'seventy-three hundredths', o:['0.73','7.3','0.073','73'], a:'0.73', say:'Listen. Tap the decimal you hear.', how:'Hundredths use two places after the point: 0.73.',
-      why:{q:'Why 0.73?', o:['Hundredths use 2 places after the point','Tenths use 2 places','73 is more than 10','You add a zero'], a:'Hundredths use 2 places after the point'}}],
+    {type:'count', n:4, pic:'🪙', o:['4','40','10','14'], q:'0.4 of a dollar: how many dimes?', say:'0.4 is 4 tenths. Tap each dime and count.', how:'Each dime is 1 tenth of a dollar. 4 dimes = 0.4 = 40 cents = 40/100.',
+      why:{q:'4 dimes is how many cents?', o:['40','4','14','400'], a:'40'}},
+    {type:'match', pairs:[['0.4','40/100'],['0.04','4/100'],['0.7','70/100'],['0.07','7/100']], say:'Dimes or pennies? Match each decimal to its hundredths.', how:'4 dimes = 40 cents. So 0.4 = 40/100. Tenths times 10 makes hundredths.'}],
   your:[
-    {type:'sort', bins:['Same as 0.5','Not 0.5'], cards:[['5/10',0],['50/100',0],['0.50',0],['5/100',1],['0.05',1],['0.15',1]], say:'Is it the same as 0.5? Sort each card.', how:'0.5 is 5 dimes, 50 cents. 0.05 is only 5 cents.'},
-    {type:'match', pairs:[['9/100','0.09'],['73/100','0.73'],['6/100','0.06'],['40/100','0.4']], say:'Match each fraction to its decimal.', how:'Hundredths: two places after the point. 9 cents is 0.09.',
-      why:{q:'Why is 9/100 = 0.09?', o:['9 cents is $0.09','9 dimes is $0.09','You drop the 100','0.9 is smaller'], a:'9 cents is $0.09'}},
-    {type:'tiles', w:['0.06','0.3','0.45','0.7'], q:'Smallest first', say:'Put the decimals in order, smallest first.', how:'Think cents: 6, 30, 45 and 70 cents.'},
+    {type:'listen', hear:'seventy-three hundredths', o:['0.73','7.3','0.073','73'], a:'0.73', say:'Moishe hears seventy-three hundredths. Tap it.', how:'Hundredths use two places after the point: 0.73.',
+      why:{q:'Why 0.73?', o:['Hundredths use 2 places after the point','Tenths use 2 places','73 is more than 10','You add a zero'], a:'Hundredths use 2 places after the point'}},
+    {type:'match', pairs:[['9/100','0.09'],['73/100','0.73'],['6/100','0.06'],['30/100','0.3']], say:'Match each fraction to its decimal.', how:'Hundredths: two places after the point. 9 cents is 0.09, not 0.9.'},
+    {type:'sort', bins:['Right','Mistake'], cards:[['9/100 = 0.09',0],['9/100 = 0.9',1],['0.6 > 0.35',0],['0.35 > 0.6',1],['3/10 = 30/100',0],['3/10 = 3/100',1]], say:'Mistake Detective: right or mistake? Sort each one.', how:'Think money. 0.9 is 90 cents, not 9. 0.6 is 60 cents: more than 35 cents.',
+      why:{q:'Why is 0.6 more than 0.35?', o:['60 cents beats 35 cents','35 is more than 6','Shorter is smaller','They are equal'], a:'60 cents beats 35 cents'}},
     {type:'findall', grid:['3/10','30/100','0.3','0.03','3/100','0.30','33/100','0.33'], find:['3/10','30/100','0.3','0.30'], findSay:'number equal to 0.3', say:'Tap every number equal to 0.3.', how:'0.3 is 3 dimes, 30 cents. 0.03 is just 3 cents.'},
-    {type:'listen', hear:'3 tenths plus 39 hundredths', q:'3/10 + 39/100 = ?', o:['0.69','0.42','0.339','6.9'], a:'0.69', say:'3 tenths plus 39 hundredths. Tap the total.', how:'3/10 = 30/100. 30 + 39 = 69 hundredths: 0.69.'}] };
+    {type:'tiles', w:['3/10 = 30/100','30/100 + 39/100','= 69/100','= 0.69'], extra:['= 42/110'], q:'Dovid has 3 dimes and 39 cents: 3/10 + 39/100', say:'Build the steps to add 3/10 + 39/100.', how:'Make the tenths into hundredths first. Then add the tops. 69 hundredths is 0.69.'}] };
 
 B['MATH.OPS.L05.05']={ band:'E45', pic:'🚐', today:'Decide what the leftover means: round up, drop, use', why:'Class trip: every boy needs a seat in a van, even the last 2.',
   ready:[{q:'29 ÷ 6 = ?', o:['4 R5','5 R1','4 R3','3 R11'], a:'4 R5'},{q:'50 ÷ 8 = ?', o:['6 R2','6 R4','7 R2','5 R10'], a:'6 R2'}],
@@ -71,42 +73,42 @@ B['MATH.OPS.L05.05']={ band:'E45', pic:'🚐', today:'Decide what the leftover m
   ways:['frum-family scene','hop by groups','sort it','Mistake Detective'], done:'You can divide and decide: round up, drop the leftover, or use it.',
   board:{ one:'Ask: does the leftover need its own group?', activity:'Seat 27 counters at tables of 4, then pack 27 into boxes of 4.', mistakes:['Writing 6 R3 vans','Rounding up for FULL boxes','Giving the quotient when the question asks what is left over'] },
   do:[
-    {type:'sort', bins:['Round up','Drop it','Use it'], cards:[['Vans for boys',0],['Full boxes',1],['Cookies left',2],['Guest tables',0],['Books to buy',1],['Pencils left',2]], say:'What do we do with the leftover? Sort each question.', how:'Everyone needs a place: round up. Only full ones count: drop it. Asks what is left: use it.',
-      why:{q:'Why round up for vans?', o:['Every boy needs a seat','Vans are big','The remainder is small','Always round up'], a:'Every boy needs a seat'}},
-    {type:'hop', start:0, add:56, unit:8, from:0, to:64, q:'50 boys, 8 in each van', say:'Hop 8 boys per van until all 50 have seats.', how:'Each hop is one van of 8. 6 hops is 48: not enough. Hop once more: 56.'}],
+    {type:'hop', start:0, add:56, unit:8, from:0, to:64, q:'50 boys, 8 in each van', say:'Hop 8 boys per van until all 50 have seats.', how:'Each hop is one van of 8. 6 hops is 48: 2 boys left. Hop once more: 7 vans.'},
+    {type:'sort', bins:['Round up','Drop it','Use it'], cards:[['Vans for boys',0],['Full boxes',1],['Cookies left',2],['Guest tables',0],['Shelves filled',1],['Pencils left',2]], say:'What do we do with the leftover? Sort each question.', how:'Everyone needs a place: round up. Only full ones count: drop it. Asks what is left: use it.',
+      why:{q:'Why round up for vans?', o:['Every boy needs a seat','Vans are big','The remainder is small','Always round up'], a:'Every boy needs a seat'}}],
   your:[
-    {type:'listen', hear:'55 cookies, 9 in each box. How many full boxes?', q:'55 ÷ 9 = 6 R1', o:['6','7','1','5'], a:'6', say:'Listen. How many FULL boxes?', how:'55 ÷ 9 = 6 R1. Only full boxes count: drop the 1.',
-      why:{q:'Why not 7?', o:['The 7th box is not full','7 is too big','Always round down','9 is odd'], a:'The 7th box is not full'}},
+    {type:'listen', hear:'Shmuli has 78 rugelach, 7 in each box. How many FULL boxes?', o:['11','12','1','10'], a:'11', say:'Listen. How many FULL boxes?', how:'78 ÷ 7 = 11 R1. Only full boxes count: drop the 1.',
+      why:{q:'Why not 12?', o:['The 12th box is not full','12 is odd','Always round up','Boxes hold 12'], a:'The 12th box is not full'}},
     {type:'match', q:'43 ÷ 8 = 5 R3', pairs:[['Vans needed','6'],['Full boxes','5'],['Cookies left','3']], say:'43 ÷ 8 = 5 R3. Match each question to its answer.', how:'Vans: round up to 6. Full boxes: drop it, 5. Left over: use it, 3.'},
-    {type:'tiles', w:['6 × 10 = 60','60 − 36 = 24'], extra:['60 + 36 = 96','6 + 10 = 16'], q:'6 packs of 10, give away 36', say:'Build the two steps in order.', how:'First find how many in all: 6 × 10. Then take away the 36.'},
-    {type:'listen', hear:'74 boys. Each van holds 6. How many vans?', q:'74 ÷ 6 = 12 R2', o:['13','12','14','2'], a:'13', say:'Listen. How many vans are needed?', how:'74 ÷ 6 = 12 R2. 2 boys still need a seat: 13 vans.'},
-    {type:'hop', start:0, add:66, unit:6, from:0, to:72, q:'61 boys, 6 in each van', say:'61 boys, 6 per van. Hop until everyone has a seat.', how:'Each hop is a van of 6. 60 is not enough: 1 boy is left. Hop once more.',
-      why:{q:'Why 11 vans, not 10?', o:['1 boy still needs a seat','66 is even','10 vans is too many','Vans hold 11'], a:'1 boy still needs a seat'}}] };
+    {type:'sort', q:'50 boys, 8 a van. 55 cookies, 9 a box.', bins:['Makes sense','Mistake'], cards:[['7 vans',0],['6 R2 vans',1],['6 vans',1],['6 full boxes',0],['7 full boxes',1],['1 cookie left',0]], say:'Mistake Detective: does each answer make sense? Sort.', how:'You cannot have 6 R2 vans, and 6 vans leave 2 boys home. A box that is not full is not a full box.'},
+    {type:'tiles', w:['6 × 10 = 60','60 − 36 = 24'], extra:['60 + 36 = 96','6 + 10 = 16'], q:'6 packs of 10, give away 36', say:'Two steps: build them in order.', how:'First find how many in all: 6 × 10. Then take away the 36 he gave.'},
+    {type:'hop', start:0, add:40, unit:8, from:0, to:48, q:'41 seforim, 8 on each shelf', say:'Hop 8 seforim per shelf. How many shelves are filled completely?', how:'5 hops is 40. 1 sefer is left: it cannot fill a shelf. So 5.',
+      why:{q:'Why stop at 5?', o:['The 6th shelf is not full','41 is odd','Always round down','8 is even'], a:'The 6th shelf is not full'}}] };
 
-B['MATH.GEO.L05.01']={ band:'E45', pic:'📐', today:'Measure angles: read the protractor, then subtract', why:'Building a sukkah? Square corners of 90° keep the walls straight and strong.',
+B['MATH.GEO.L05.01']={ band:'E45', pic:'📐', today:'Measure, name and find missing angles', why:'Building a sukkah? Square corners of 90° keep the walls straight and strong.',
   ready:[{q:'Which one is a square corner?', o:['A page corner','A pizza slice tip','A wide open door','A straight ruler'], a:'A page corner'},{q:'135 − 70 = ?', o:['65','75','55','205'], a:'65'}],
   bridge:'MATH.GEO.L03.01', bridgeName:'Sides, corners, rows and columns',
   watch:{ q:'One side lines up with 10°, the other with 55°. How big is the angle?', m:{type:'scene', e:'📐', t:'A protractor is a ruler for angles. It goes from 0° to 180°.'}, steps:[
-    {t:'Angles are measured in degrees (°). A full turn is 360°. A straight line is 180°. A square corner is 90°.'},
-    {t:'Read the number under each side: 10° and 55°.', m:{type:'line', from:0, to:100, hops:[10,55]}},
+    {t:'Angles are measured in degrees (°). Read the number under each side: 10° and 55°.', m:{type:'line', from:0, to:100, hops:[10,55]}},
     {t:'Subtract: 55 − 10 = 45. The angle is 45°.'},
     {t:'Under 90° is acute. Exactly 90° is right. Between 90° and 180° is obtuse. 180° is straight.'},
-    {t:'Parts: in a right angle, 90 − 54 = 36. On a straight line, 180 − 84 = 96. Half a turn: 360 ÷ 2 = 180°. A twelfth of a turn: 360 ÷ 12 = 30°.'}], a:'45°' },
+    {t:'Missing parts: a square corner split in two: 90 − 54 = 36°. A straight line split in two: 180 − 84 = 96°.', m:{type:'line', from:0, to:180, hops:[0,84,180]}},
+    {t:'Turns: a full turn is 360°. Half a turn: 360 ÷ 2 = 180°, a straight angle. A twelfth of a turn: 360 ÷ 12 = 30°.'}], a:'45°' },
   oops:{ q:'One side lines up with 70°, the other with 135°.', wrong:'205°', right:'65°', why:'Subtract, do not add: 135 − 70 = 65.' },
   ways:['number line protractor','sort and match','build the equation','Mistake Detective'], done:'You can measure an angle and name it: acute, right, obtuse or straight.',
   board:{ one:'Read both sides of the protractor, then subtract.', activity:'Boys make angles with their arms; a partner measures with a big protractor.', mistakes:['Adding the two readings','Reading the wrong scale (140° for a sharp angle)','Mixing up acute and obtuse'] },
   do:[
-    {type:'hop', start:10, add:45, unit:5, from:0, to:60, q:'From 10° to 55°', say:'From 10° to 55°. Hop by 5s.', how:'Start at 10. Each hop is 5°. 9 hops is 45°, the same as 55 − 10.'},
-    {type:'sort', bins:['Acute','Right','Obtuse'], cards:[['40°',0],['90°',1],['134°',2],['75°',0],['120°',2],['15°',0]], say:'Acute, right or obtuse? Sort each angle.', how:'Under 90° is acute. Exactly 90° is right. Over 90° is obtuse.',
+    {type:'hop', start:10, add:45, unit:5, from:0, to:60, q:'From 10° to 55°', say:'One side on 10°, the other on 55°. Hop by 5s.', how:'Start at 10. Each hop is 5°. 9 hops is 45°, the same as 55 − 10.'},
+    {type:'sort', bins:['Acute','Right','Obtuse'], cards:[['40°',0],['90°',1],['134°',2],['75°',0],['120°',2],['89°',0]], say:'Acute, right or obtuse? Sort each angle.', how:'Under 90° is acute. Exactly 90° is right. Over 90° is obtuse. 89° is still acute.',
       why:{q:'Why is 134° obtuse?', o:['It is more than 90°','It is less than 90°','It is exactly 180°','It is even'], a:'It is more than 90°'}}],
   your:[
     {type:'listen', hear:'One side is on 50 degrees, the other on 120. How big is the angle?', q:'50° and 120°', o:['70°','170°','60°','80°'], a:'70°', say:'Listen. How big is the angle?', how:'Subtract the smaller from the bigger: 120 − 50 = 70.'},
-    {type:'match', pairs:[['Square corner','90°'],['Straight line','180°'],['Full turn','360°'],['1/12 turn','30°']], say:'Match each one to its degrees.', how:'A full turn is 360°. 1/12 of it: 360 ÷ 12 = 30.',
-      why:{q:'Why is 1/12 turn 30°?', o:['360 ÷ 12 = 30','12 + 18 = 30','A turn is 100°','It looks small'], a:'360 ÷ 12 = 30'}},
+    {type:'sort', q:'Protractor: one side on 70°, one on 135°', bins:['Right way','Mistake'], cards:[['135 − 70 = 65°',0],['135 + 70 = 205°',1],['Acute: 40°',0],['Acute: 140°',1]], say:'Mistake Detective: right way or mistake? Sort.', how:'Subtract, do not add. An acute (sharp) angle is under 90°, so 140° was read on the wrong scale.',
+      why:{q:'Why is 205° wrong?', o:['You must subtract the readings','205 is odd','Angles are under 100','You must multiply'], a:'You must subtract the readings'}},
+    {type:'match', pairs:[['Half turn','180°'],['Square corner','90°'],['Full turn','360°'],['1/12 turn','30°']], say:'Match each one to its degrees.', how:'A full turn is 360°. Half a turn is a straight line, 180°. 1/12 of a turn: 360 ÷ 12 = 30.',
+      why:{q:'What kind of angle is 180°?', o:['Straight','Obtuse','Right','Acute'], a:'Straight'}},
     {type:'tiles', w:['180','−','84','=','96'], extra:['+','264'], q:'Straight line: 84° and ?', say:'One angle on a straight line is 84°. Build the other.', how:'A straight line is 180°. Take away the angle you know.'},
-    {type:'findall', grid:['30°','89°','95°','45°','150°','90°','12°','179°'], find:['30°','89°','45°','12°'], findSay:'acute angle', say:'Tap every acute angle.', how:'Acute means less than 90°. 89° counts; 90° does not.'},
-    {type:'listen', hear:'Two angles make a right angle. One is 54 degrees. What is the other?', q:'54° + ? = 90°', o:['36°','46°','126°','144°'], a:'36°', say:'Right angle: one part is 54°. Tap the other.', how:'A right angle is 90°. 90 − 54 = 36.',
-      why:{q:'Why subtract from 90?', o:['A right angle is 90°','A line is 90°','A full turn is 90°','54 is small'], a:'A right angle is 90°'}}] };
+    {type:'listen', hear:'Yossi’s sukkah corner is split by a board. One part is 54 degrees. What is the other?', q:'54° + ? = 90°', o:['36°','46°','126°','144°'], a:'36°', say:'A square corner is split. One part is 54°. The other?', how:'A right angle is 90°. 90 − 54 = 36.'}] };
 
 B['MATH.ALG.L05.01']={ band:'E45', pic:'🔢', today:'Follow a rule to build a number pattern', why:'Saving for a bar mitzvah gift: start with $5 and add $3 each week. A rule tells you when you reach $35.',
   ready:[{q:'15 + 4 = ?', o:['19','20','11','54'], a:'19'},{q:'Is 7 odd or even?', o:['Odd','Even','Both','Neither'], a:'Odd'}],
