@@ -24,7 +24,7 @@ async function kidPage(opt) {
   await pg.waitForFunction(() => window.TLT && typeof BANK_ALL !== 'undefined' && Object.keys(BANK_ALL).length > 500, null, { timeout: 180000 });
   await pg.waitForTimeout(4000);
   const map = require('./kidmap.js')().map;
-  await pg.evaluate(M => { window.TL_SIM_MORNING_LIVE = false; SRV.token = 't'; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.session = 0; A.view = 'hub'; A.overlay = null; render(); }, map);
+  await pg.evaluate(M => { SRV.token = 't'; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.session = 0; A.view = 'hub'; A.overlay = null; render(); }, map);
   await pg.waitForTimeout(800);
   return { browser, ctx, pg, errs, map };
 }
