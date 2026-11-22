@@ -23,7 +23,7 @@ function obkStep(wrong) {
   const tap = (a, k) => click(q('[data-obk="' + a + '"]' + (k == null ? '' : '[data-k="' + k + '"]'))) ? a : 'no ' + a + ' to tap';
   const w = wrong && !s.misses;
   switch (d.type) {
-    case 'tenframe': { const f = s.cells.filter(Boolean).length; if (f < d.n) return tap('cell', s.cells.indexOf(0)); if (f > d.n) return tap('cell', s.cells.indexOf(1)); return check(); }
+    case 'tenframe': { const f = s.cells.filter(v => v === 1 || v === 2).length; if (f < d.n) { const g = s.cells.indexOf(3); return tap('cell', g >= 0 ? g : s.cells.indexOf(0)); } if (f > d.n) return tap('cell', s.cells.lastIndexOf(1)); return check(); }
     case 'hop': { const b = d.start + d.add; if (s.pos < b) return tap('fwd'); if (s.pos > b) return tap('back'); return check(); }
     case 'count': { if (s.tap.length < d.n) { for (let i = 0; i < d.n; i++) if (s.tap.indexOf(i) < 0) return tap('obj', i); }
       const j = w ? s.o.findIndex((o, k) => o !== S(d.n) && !s.off[k]) : s.o.indexOf(S(d.n)); return tap('pick', j); }
@@ -136,13 +136,29 @@ module.exports = async function oneBiteTests(pg) {
       { name: 'a miss resets the run; the list ends; tap the reason', opt: { wrongAt: 0 }, want: { kit: 5, your: 3 }, bite: { do: [{ type: 'findall', grid: ['⚪', '🔺', '⚪', '🟦'], find: '⚪', findSay: 'circle' }, { type: 'match', pairs: [['1', '🍎'], ['2', '🍎🍎']] }],
         your: [{ type: 'sort', bins: ['Circle', 'Not a circle'], cards: [['⚪', 0], ['🔺', 1], ['🟠', 0], ['🟦', 1]] }, { type: 'trace', glyph: 'b' }, { type: 'listen', hear: 'ball', o: ['b', 'd', 'p'], a: 'b', why: { q: 'Why b?', o: ['Ball starts with b', 'It is round'], a: 'Ball starts with b' } }] } },
       { name: 'Explorers: real-world hop, blocks, tiles and count', want: { kit: 5, your: 3 }, bite: { band: 'E45', do: [{ type: 'hop', start: 20, add: 30, unit: 10, q: '20 + 30' }, { type: 'blocks', n: 47 }],
-        your: [{ type: 'tiles', w: ['2', '4', '6', '8'] }, { type: 'count', n: 12, pic: 'art:apple', o: ['11', '12', '13', '14'] }, { type: 'tenframe', n: 13, start: 9 }] } } ];
+        your: [{ type: 'tiles', w: ['2', '4', '6', '8'] }, { type: 'count', n: 12, pic: 'art:apple', o: ['11', '12', '13', '14'] }, { type: 'tenframe', n: 13, start: 9 }] } },
+      { name: 'ten-frame take-away (start > n, n = 0) and \\n line breaks in cards', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'tenframe', n: 4, start: 9 }, { type: 'sort', bins: ['Ball on top', 'Box on top'], cards: [['⚽\n📦', 0], ['📦\n⚽', 1]] }],
+        your: [{ type: 'tenframe', n: 0, start: 3 }, { type: 'match', pairs: [['one hundred thirteen', '113'], ['one hundred four', '104'], ['seventeen', '17']] }, { type: 'findall', grid: ['🍎\n🍎', '🍎', '🍎\n🍎', '🍐'], find: '🍎\n🍎', findSay: 'two apples' }] } } ];
     for (const f of fixtures) {
       ONE_BITE[FIX] = Object.assign({}, base, f.bite);
       try { const s = await play(FIX, f.opt); if (s.err) o.bad.push('Activity Kit (' + f.name + '): ' + s.err);
         else if (s.first !== s.kit - (f.opt && f.opt.wrongAt != null ? 1 : 0)) o.bad.push('Activity Kit (' + f.name + '): only ' + s.first + ' of ' + s.kit + ' activities were right on the first try by tap (an activity cannot be solved by tap)');
         else if (s.kit !== f.want.kit || s.your !== f.want.your) o.bad.push('Activity Kit (' + f.name + '): played ' + s.kit + ' activities (' + s.your + ' in Your turn), want ' + f.want.kit + ' (' + f.want.your + ')'); }
       catch (e) { o.bad.push('Activity Kit (' + f.name + '): ' + String(e && e.stack || e).slice(0, 200)); } }
+    /* fit-text and line breaks (Lane A2): long match words shrink to 2 lines and stay inside; a \n card stacks its rows */
+    try { ONE_BITE[FIX] = Object.assign({}, base, fixtures[3].bite); fresh(); await sleep(10); startMission(worldOf(FIX), FIX, 'skill'); await sleep(10);
+      const p = A.play, show = (list, i) => { p.ob.stage = list; const acts = list === 'do' ? p.ob.kitDo : p.ob.kitYour; p.ob.kit = { list, acts, i, streak: 0, n: 0, s: OBK.init(acts[i], {}) }; render(); };
+      const lines = el => { const tops = []; const w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) { if (!n.textContent.trim() || n.parentElement.closest('b')) continue; const r = document.createRange(); r.selectNodeContents(n); [...r.getClientRects()].forEach(q => { if (q.width > 1 && !tops.some(t => Math.abs(t - q.top) < 4)) tops.push(q.top); }); } return tops.length; };
+      const mi = p.ob.kitYour.findIndex(d => d.type === 'match'); show('your', mi); await sleep(5);
+      [...document.querySelectorAll('#app .obk-m')].forEach(el => { const r = el.getBoundingClientRect(), t = el.textContent.trim(); if (lines(el) > 2) o.bad.push('Activity Kit fit-text: match item "' + t + '" wraps to ' + lines(el) + ' lines at 390 px (want 2 at most)');
+        const rg = document.createRange(); rg.selectNodeContents(el); const tr = rg.getBoundingClientRect(); if (tr.right > r.right + 1 || tr.left < r.left - 1) o.bad.push('Activity Kit fit-text: match item "' + t + '" sticks out of its box'); });
+      const si = p.ob.kitDo.findIndex(d => d.type === 'sort'); show('do', si); await sleep(5);
+      const card = document.querySelector('#app .obk-card'); if (!card || lines(card) !== 2) o.bad.push('Activity Kit: a sort card with "\\n" must show 2 stacked rows (got ' + (card ? lines(card) : 'no card') + ')');
+      const ti = p.ob.kitDo.findIndex(d => d.type === 'tenframe'); show('do', ti); await sleep(5);
+      if (document.querySelectorAll('#app .obk-cell.on').length !== 9 || document.querySelector('#app .obk-tray')) o.bad.push('Activity Kit: take-away ten-frame must start with 9 dots he can tap off (and no dot tray)');
+      const s = p.ob.kit.s, d = p.ob.kit.acts[ti]; document.querySelector('#app .obk-cell.on').click(); await sleep(2); if (!document.querySelector('#app .obk-cell.gone')) o.bad.push('Activity Kit: tapping a dot in a take-away ten-frame must take it away');
+      const r1 = OBK.judge(d, p.ob.kit.s); if (r1.ok) o.bad.push('Activity Kit: take-away ten-frame accepted 8 dots for 9 take away 5'); }
+    catch (e) { o.bad.push('Activity Kit (fit-text / take-away draw): ' + String(e && e.stack || e).slice(0, 200)); }
     if (keep) ONE_BITE[FIX] = keep; else delete ONE_BITE[FIX];
     OBK.list.forEach(t => { if (!o.kitTypes[t]) o.bad.push('Activity Kit: the ' + t + ' activity was never shown and played by tap'); });
 
