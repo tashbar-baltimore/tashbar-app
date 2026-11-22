@@ -604,3 +604,32 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - red-pen-on-paper.webp | https://pixabay.com/photos/write-pencils-desk-pen-colors-man-5170938/ | Pixabay Content License | ClickerHappy
 - empty-classroom-desks.webp | https://pixabay.com/photos/classroom-school-education-learning-2093743/ | Pixabay Content License | WOKANDAPIX
 - library-bookshelves-lamps.webp | https://pixabay.com/photos/books-library-room-school-study-2596809/ | Pixabay Content License | StockSnap
+- wright-flyer-1903-kitty-hawk.webp | https://pixabay.com/photos/plane-wright-brothers-74020/ | Pixabay Content License | WikiImages
+- pony-express-rider-painting.webp | https://postalmuseum.si.edu/object/npm_0.052985.346 | CC0 1.0 | Lloyd Branson, 1853 - 1925
+- library-balconies-of-books.webp | https://pixabay.com/photos/george-peabody-library-1629308/ | Pixabay Content License | Falkenpost
+- oatmeal-bowl-strawberries.webp | https://pixabay.com/photos/oatmeal-cereals-strawberries-1839515/ | Pixabay Content License | Pexels
+- empty-indoor-ice-rink.webp | https://pixabay.com/photos/indoors-empty-hockey-rink-arena-3133818/ | Pixabay Content License | hfromnc
+- maple-sap-buckets-in-snow.webp | https://pixabay.com/photos/maple-maple-syrup-bucket-sweet-sap-1089824/ | Pixabay Content License | Johan1127
+- snow-shovel-cleared-path.webp | https://pixabay.com/photos/snowy-winter-shovel-snowdrifts-5920898/ | Pixabay Content License | pasja1000
+- ant-carrying-food.webp | https://pixabay.com/photos/ants-macro-insects-nature-plants-5061910/ | Pixabay Content License | cp17
+- stacked-wooden-boards.webp | https://pixabay.com/photos/wood-pile-texture-timber-wooden-877368/ | Pixabay Content License | antmoreton
+- rooster-crowing-closeup.webp | https://pixabay.com/photos/rooster-bird-beak-comb-red-10391039/ | Pixabay Content License | christels
+- window-glass-hole-yard.webp | https://pixabay.com/photos/glass-heart-window-shot-hole-423551/ | Pixabay Content License | gere
+- umbrella-raindrops-closeup.webp | https://pixabay.com/photos/rainy-day-umbrella-rainy-weather-3443977/ | Pixabay Content License | 652234
+- baseball-glove-on-grass.webp | https://pixabay.com/photos/baseball-glove-ball-leather-sport-4182179/ | Pixabay Content License | stanbalik
+- raindrops-on-window-glass.webp | https://pixabay.com/photos/drops-rain-wet-water-water-drop-1436231/ | Pixabay Content License | TC-TORRES
+- chanukah-menorah-all-lit.webp | https://pixabay.com/photos/hanukkah-judaism-chandelier-candles-2197684/ | Pixabay Content License | EvgeniT
+- chocolate-chip-cookie-one.webp | https://pixabay.com/photos/cookie-chocolate-chip-cookie-snack-1264231/ | Pixabay Content License | StevenGiacomelli
+- bakery-bread-shelves.webp | https://pixabay.com/photos/bread-loaves-food-bakery-craft-8128550/ | Pixabay Content License | wal_172619
+- car-jack-and-tires.webp | https://www.flickr.com/photos/26344495@N05/49999201361 | CC BY 2.0 | Ivan Radic
+- running-track-curve-lanes.webp | https://pixabay.com/photos/track-field-lanes-competition-19217/ | Pixabay Content License | PublicDomainPictures
+- deer-drinking-at-lake.webp | https://www.flickr.com/photos/8590349@N05/14578164286 | CC BY 2.0 | Citizen 4474
+- model-biplane-red.webp | https://pixabay.com/photos/airplane-blue-red-plane-toy-195062/ | Pixabay Content License | Giuliamar
+- forest-hiking-path-leaves.webp | https://pixabay.com/photos/forest-path-autumn-trees-moss-10399020/ | Pixabay Content License | 1290go
+- hand-plane-on-workbench.webp | https://pixabay.com/photos/brush-wood-tool-wood-carpentry-4536227/ | Pixabay Content License | enokenoc
+- broom-sweeping-leaves.webp | https://www.flickr.com/photos/23094783@N03/4056807009 | CC BY 2.0 | eflon
+- soccer-ball-in-grass.webp | https://pixabay.com/photos/football-ball-field-sport-grass-8266065/ | Pixabay Content License | KEREM_TASER
+- craft-sticks-glued-frame.webp | https://www.flickr.com/photos/82134378@N00/4830798400 | CC BY 2.0 | Amy Bonner
+- lake-cabins-and-dock.webp | https://pixabay.com/photos/manitou-island-fish-camp-3530273/ | Pixabay Content License | MikeGoad
+- red-wooden-birdhouse-on-post.webp | https://pixabay.com/photos/feeder-house-bird-feed-tree-food-2282162/ | Pixabay Content License | monicore
+- shop-tools-and-safety-glasses.webp | https://pixabay.com/photos/tool-table-background-image-3213915/ | Pixabay Content License | MR-PANDA
