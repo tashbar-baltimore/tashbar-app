@@ -22,7 +22,7 @@ if(typeof render!=='function'||typeof A==='undefined'||typeof startMission!=='fu
 const OB=window.OB=window.OB||{}; if(OB.on) return; OB.on=true;
 if(!window.OB_LIVE) window.OB_LIVE='test';
 window.ONE_BITE=window.ONE_BITE||{};
-const STEPS=['Bite','Watch','With me','Your turn','Show me','Done'];
+const STEPS=['Today','Watch','With me','Your turn','Show me','Done'];   /* HoS 2026-11-21: boys never see the word "bite"; they see lesson and level, like the map */
 const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const strip=s=>String(s==null?'':s).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
 const LS={get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }};
@@ -100,7 +100,7 @@ function shell(d,inner,btn,sayTxt,extra){ const p=A.play, b=p.ob.bite;
 
 /* ---------- screens before the questions ---------- */
 function vToday(p){ const b=p.ob.bite;
-  const inner='<div class="ob-tag">TODAY\'S BITE</div><div class="ob-bigpic" aria-hidden="true">'+E(b.pic||(WORLD[p.c]&&WORLD[p.c].icon)||'💡')+'</div>'+
+  const inner='<div class="ob-tag">TODAY WE LEARN</div><div class="ob-bigpic" aria-hidden="true">'+E(b.pic||(WORLD[p.c]&&WORLD[p.c].icon)||'💡')+'</div>'+
     '<h1 class="ob-today">'+E(b.today)+'</h1>'+(b.why?'<p class="ob-why"><b>Why it matters:</b> '+E(b.why)+'</p>':'')+
     '<p class="ob-meta">'+E(b.title)+' · about '+BANDS[b.band].min+' minutes</p>';
   return shell(0,inner,'<button class="ob-go" data-ob="go">Let\'s learn it ▶</button>',b.today+'. '+(b.why||'')); }
@@ -110,8 +110,8 @@ function vReady(p){ const ob=p.ob, R=ob.bite.ready||[], q=R[ob.ri]||{}, picked=o
   const inner='<div class="ob-tag">READY CHECK · '+(ob.ri+1)+' of '+R.length+'</div>'+(q.pic?'<div class="ob-bigpic sm" aria-hidden="true">'+E(q.pic)+'</div>':'')+model(q.m)+'<h2 class="ob-q">'+E(q.q)+'</h2><div class="ob-opts">'+opts+'</div>'+fb;
   return shell(0,inner,picked!=null?'<button class="ob-go" data-ob="rnext">Next ▶</button>':'',q.q); }
 function vBridge(p){ const b=p.ob.bite, bn=b.bridgeName||nameOf(b.bridge);
-  const inner='<div class="ob-tag">A SMALLER BITE FIRST</div><div class="ob-bigpic" aria-hidden="true">🌉</div><h1 class="ob-today">Let\'s fill one gap first</h1><p class="ob-why">This bite stands on <b>'+E(bn)+'</b>. A quick bite on that, then we come right back here.</p>';
-  return shell(0,inner,'<button class="ob-go" data-ob="bridge">Do the smaller bite ▶</button>','Let\'s fill one gap first. '+bn,'<button class="ob-link" data-ob="skipbridge">Keep going here</button>'); }
+  const inner='<div class="ob-tag">A QUICK STEP FIRST</div><div class="ob-bigpic" aria-hidden="true">🌉</div><h1 class="ob-today">Let\'s fill one gap first</h1><p class="ob-why">This lesson builds on <b>'+E(bn)+'</b>. A quick lesson on that, then we come right back here.</p>';
+  return shell(0,inner,'<button class="ob-go" data-ob="bridge">Do the quick lesson ▶</button>','Let\'s fill one gap first. '+bn,'<button class="ob-link" data-ob="skipbridge">Keep going here</button>'); }
 function vWatch(p){ const ob=p.ob, w=ob.bite.watch||{}, steps=w.steps||[], k=ob.ws, oopsTurn=k>=steps.length&&ob.bite.oops&&!ob.oopsDone;
   if(oopsTurn){ const o=ob.bite.oops; const inner='<div class="ob-tag">🔍 MISTAKE DETECTIVE</div>'+(o.q?'<h2 class="ob-q">'+E(strip(o.q))+'</h2>':'')+
       '<div class="ob-oops"><div class="ob-wrong"><span>✗</span>'+E(strip(o.wrong))+'</div><div class="ob-right"><span>✓</span>'+E(strip(o.right))+'</div></div><p class="ob-why">'+E(strip(o.why))+'</p>';
@@ -129,9 +129,9 @@ function vDone(){ const r=A.res, ob=OB.res||{}, b=ob.bite||{}, ok=r.outcome==='m
   let nx=null; try{ nx=suggestion(A.st); }catch(e){}
   const ret=OB.ret&&OB.ret.from===r.id?OB.ret:null;
   let btn='', title='', line='', icon='';
-  if(ok){ icon='🌟'; title='BITE DONE!'; line=b.done?E(b.done):'You learned: <b>'+E(b.today||b.title||nameOf(r.id))+'</b>';
+  if(ok){ icon='🌟'; title='LEVEL CLEAR!'; line=b.done?E(b.done):'You learned: <b>'+E(b.today||b.title||nameOf(r.id))+'</b>';
     if(ret) btn='<button class="ob-go" data-ob="back" data-id="'+E(ret.id)+'" data-c="'+E(ret.c)+'">Back to: '+E(nameOf(ret.id))+' ▶</button>';
-    else if(nx&&nx.kind!=='boss'&&nx.id) btn='<button class="ob-go" data-act="start" data-id="'+E(nx.id)+'" data-c="'+E(nx.c)+'">Next bite ▶</button>';
+    else if(nx&&nx.kind!=='boss'&&nx.id) btn='<button class="ob-go" data-act="start" data-id="'+E(nx.id)+'" data-c="'+E(nx.c)+'">▶ Next level</button>';
     else btn='<button class="ob-go" data-act="tohub">Back to my map ▶</button>'; }
   else if(r.outcome==='retry'){ icon='💪'; title='Almost there!'; line=r.right+' of 3 on your own. A short practice round, then try the last 3 again.'; btn='<button class="ob-go" data-act="retry">Practice round ▶</button>'; }
   else if(r.outcome==='checkin'){ icon='🤝'; title='Let\'s team up'; line='This one is tricky. Your rebbe or teacher will sit with you on it. Pick another bite for now.'; btn='<button class="ob-go" data-act="tohub">Back to my map ▶</button>'; }
@@ -217,7 +217,7 @@ document.addEventListener('click',e=>{ const b=e.target.closest('[data-ob],[data
   try{ if(typeof SND!=='undefined') SND.tap(); }catch(x){}
   if(a==='say') return say(b.dataset.text);
   if(a==='font'){ dysOn=!dysOn; LS.set('ob-dys',dysOn?'1':'0'); document.body.classList.toggle('ob-dys',dysOn); return; }
-  if(a==='quit'){ return _ov(`<div class="oe">🚪</div><h2>Leave this bite?</h2><p>You can come back to it any time.</p><button class="btn go big" data-act="closeov">Keep learning</button> <button class="btn big" data-act="quit-yes">Leave</button>`); }
+  if(a==='quit'){ return _ov(`<div class="oe">🚪</div><h2>Leave this lesson?</h2><p>You can come back to it any time.</p><button class="btn go big" data-act="closeov">Keep learning</button> <button class="btn big" data-act="quit-yes">Leave</button>`); }
   if(a==='peek'){ const c=b.closest('.qcard'); if(c){ c.classList.remove('ob-fold'); c.classList.add('ob-open'); b.remove(); } return; }
   if(a==='back'){ OB.ret=null; return startMission(b.dataset.c,b.dataset.id,'skill'); }
   if(!p) return;
