@@ -248,6 +248,123 @@ B['READ.VOC.L02.01']={ band:'K1', pic:'🧺', today:'Sort words into groups and 
     {type:'sort', say:'Eli and Yanky\'s last job: three shelves!', how:'Read the word. Animal, food, or something you wear?', bins:['Animals','Food','Things you wear'], cards:[['duck',0],['goat',0],['plum',1],['peach',1],['vest',2],['sock',2]]}],
   board:{ one:'Read every word, ask what they all are, name the group.', activity:'Shelf game: the teacher calls a word; boys point to its shelf.', mistakes:['A word that only looks like the others (tent / ten)','Naming one word instead of the group','Mixing two groups'] } };
 
+/* ==== QUALITY ROUND q3 (2026-11-22 night): K and Grade 1 stories, 5 lessons ====
+   READ.COMP.L01.01 tiny tales, READ.COMP.L01.02 story listener, READ.FLU.L02.02 smooth reader, READ.LIT.L02.01 story parts,
+   READ.COMP.L02.01 ask and answer. One comprehension strategy per lesson, modelled as a think-aloud on a short NEW passage
+   (never the Show me passage), then fresh passages for guided practice and practice. "Prove it with the words." The mistake
+   (guessing, using the wrong part of the story) is the first Your turn activity. Listening lessons (K) may read the story
+   aloud; reading lessons never read aloud the words he must find. */
+B['READ.COMP.L01.01']={ band:'K1', pic:'🦊', today:'Read a tiny sentence and find its picture', why:'Reading is making a movie in your head from the words!',
+  ready:[{q:'Read it: cap 🧢 or cup?', o:['cap','cup'], a:'cap'},{q:'Snap it: which one is see?', o:['see','sae'], a:'see'}],
+  bridge:'READ.FLU.L01.01', bridgeName:'Snap Words',
+  watch:{ q:'The dog is on a mat.', pic:'🐶', steps:[
+    {t:'I read every word, left to right: The dog is on a mat.', m:{type:'tiles', w:['The','dog','is','on','a','mat.']}},
+    {t:'Who is it about? The dog. Where? On a mat.', m:{type:'tiles', w:['The','dog','is','on','a','mat.'], hi:[1,5]}},
+    {t:'I make a movie in my head: a dog sitting on a mat.', m:{type:'scene', e:'🐶', t:'The dog is on a mat.'}},
+    {t:'Dad has a hat. The hat is red. What is red? The hat!', m:{type:'scene', e:'🎩', t:'Dad has a hat. The hat is red.'}},
+    {t:'Eli got a siddur. What did he get? Find got, read on: a siddur!', m:{type:'tiles', w:['Eli','got','a','siddur.'], hi:[1,3]}},
+    {t:'Say it with me!', m:{type:'chant', lines:['Point to the words, left to right! (point)','Who is it about? (thumbs up)','Where is it? (point down)','Make the movie, shut eyes tight! (close eyes)']}}], a:'The dog is on a mat → 🐶 · What is red? The hat.' },
+  oops:{ q:'The hen is in a box. Who is it about?', wrong:'📦 the box (the last word)', right:'🐔 the hen', why:'Ask: who is it about? The hen. The box is just where she is.' },
+  ways:['song','picture','family scene','letter tiles','listen and tap','match','Mistake Detective'], done:'Gad\'s tiny tale book is all read. You make movies from words!',
+  'do':[
+    {type:'listen', q:'The cat is on a mat.', hear:'Read it. Tap the picture.', o:['🐱','🐶','🐟'], a:'🐱', say:'Gad opens his tiny tale book. Read it. Tap the picture.', how:'Read every word. Who is it about? Find that picture.'},
+    {type:'tiles', pic:'🚐', say:'Build the sentence for the picture.', how:'Start with the capital letter. End with the dot. Read it back.', w:['Dad','has','a','van.'], extra:[]}],
+  your:[
+    {type:'listen', q:'The dog is in a box.', hear:'Read it. Who is it about?', o:['🐶','📦','🐱'], a:'🐶', say:'Read it. Who is it about?', how:'The box is where. Who is IN the box? Find that picture.'},
+    {type:'tiles', pic:'🐔📦', say:'Build the sentence for the picture.', how:'Start with the capital. Who is it about? Where? End with the dot.', w:['The','hen','is','in','a','box.'], extra:[]},
+    {type:'listen', q:'Avi sat on a bed. Avi got a hat.', hear:'Read it. What did Avi get?', o:['hat','bed','pen'], a:'hat', say:'Read the tiny tale. What did Avi get?', how:'He SAT on the bed. Find got. What did he get? Read on: a hat.'},
+    {type:'match', say:'Read each sentence. Match it to its picture.', how:'Read every word. Who is it about? Find that picture.', pairs:[['The bus is big.','🚌'],['The sun is hot.','☀️'],['A cat sat.','🐱']]},
+    {type:'listen', q:'Ben had a cap. The cap fell. Dad got it.', hear:'Read it. Who got the cap?', o:['Dad','Ben','Gad'], a:'Dad', say:'Read the tiny tale. Who got the cap?', how:'Find the words got it. Who is right before them? Read it again.'}],
+  board:{ one:'Read every word, ask who and where, make the movie.', activity:'Act it out: one boy reads a tiny tale, two boys act it.', mistakes:['Choosing the last word, not who it is about','Choosing the first thing in the tale, not what he got','Guessing from the picture without reading'] } };
+
+B['READ.COMP.L01.02']={ band:'K1', pic:'👂', today:'Listen to a story: who, and what happened', why:'Good listeners can tell the story back, like Zeidy does at the Shabbos table.',
+  ready:[{q:'Which one is a book?', o:['📖','🍎','⚽'], a:'📖'},{q:'Which comes first in a story?', o:['the start','the end'], a:'the start'}],
+  bridge:'READ.PA.L01.01', bridgeName:'Book Explorer',
+  watch:{ q:'Gavi Makes Soup', pic:'🍲', steps:[
+    {t:'I listen for WHO: Gavi and his Mommy. Two people!', m:{type:'scene', e:'🍲', t:'Gavi and his Mommy made soup for Shabbos.'}},
+    {t:'I make a movie: First, Gavi washed the carrots.', m:{type:'tiles', w:['🥕','🍲','🥄'], hi:[0]}},
+    {t:'Next, the soup cooked in the pot. Then they ate it!', m:{type:'tiles', w:['🥕','🍲','🥄'], hi:[1,2]}},
+    {t:'I listen to the very END: Mommy said, what a good helper!', m:{type:'scene', e:'🕯️', t:'At the end, Mommy said: what a good helper!'}},
+    {t:'Tell it back on your fingers!', m:{type:'chant', lines:['Who? (one finger)','First! (two fingers)','Next! (three fingers)','At the end! (four fingers)']}}], a:'Who: Gavi and Mommy · first wash, next cook, then eat · end: what a good helper!' },
+  oops:{ q:'What happened at the END?', wrong:'Gavi washed the carrots (that was first)', right:'Mommy said: what a good helper!', why:'The end is the last thing you hear. Keep listening to the very end.' },
+  ways:['song','movement','family scene','listen and tap','sort it','build it','Mistake Detective'], done:'Story time at Bubby\'s is over. You listened all the way to the end!',
+  'do':[
+    {type:'listen', hear:'Gavi and his Mommy made soup for Shabbos. Who made soup with Mommy?', o:['Gavi','Zeidy','Saba'], a:'Gavi', say:'Story time at Bubby\'s! Listen. Who made soup with Mommy?', how:'Listen for the names. Who was with Mommy?'},
+    {type:'tiles', hear:'First, Gavi set the table. Next, Mommy brought the soup. Last, Zeidy took a big spoonful!', say:'Listen. Put the story pictures in order.', how:'What happened first? Tap it. Then next, then last.', w:['🍽️','🍲','🥄'], extra:[]}],
+  your:[
+    {type:'sort', say:'Gavi fed the fish, then read a book. Start or end?', how:'Listen to the whole story. The end is the last thing you hear. Not in the story? It goes in Not in it.', bins:['Start','End','Not in it'], cards:[['🐟 fed fish',0],['📖 read',1],['⚽ ball',2],['🍪 baked',2]]},
+    {type:'listen', hear:'Yehuda and Dovi played ball in the yard. At the end, Mommy came out with ice pops.', o:['Mommy','Dovi','Abba'], a:'Mommy', say:'Listen to the end. Who came out at the end?', how:'Listen to the last part. Who came out?'},
+    {type:'tiles', hear:'First, Eli found his siddur. Next, he put on his coat. Last, he walked to shul.', say:'Listen. Put Eli\'s story in order.', how:'What did Eli do first? Then next? Then last?', w:['📖','🧥','🕍'], extra:[]},
+    {type:'listen', hear:'Dovi carried Bubby\'s heavy bags. At the end, Bubby said: Dovi, you are so strong!', o:['💪','😴','🐢'], a:'💪', say:'Listen to the end. What did Bubby say Dovi is?', how:'Listen to the last part. What did Bubby say?'},
+    {type:'tiles', hear:'First, Moishe put on his boots. Next, he jumped in a puddle. Last, he drank hot cocoa.', say:'Listen. Put Moishe\'s story in order.', how:'What happened first? Then next? Then last?', w:['👢','💦','☕'], extra:[]}],
+  board:{ one:'Listen for WHO, then first, next, last, all the way to the end.', activity:'Retell circle: each boy adds the next part of the story.', mistakes:['Telling the start when asked about the end','Using people from a different story','Mixing up the order'] } };
+
+B['READ.FLU.L02.02']={ band:'K1', pic:'🪁', today:'Find the answer in the story and prove it', why:'Smooth reading sounds like talking. Then you understand the story and can prove your answer!',
+  ready:[{q:'Snap it: after or afetr?', o:['after','afetr'], a:'after'},{q:'Read: The cat is on a mat. Where is the cat?', o:['on a mat','in a box'], a:'on a mat'}],
+  bridge:'READ.FLU.L02.01', bridgeName:'Snap Words 2',
+  watch:{ q:'Moshe\'s Shabbos Hat', pic:'🎩', steps:[
+    {t:'I read in scoops, not word by word: Moshe lost / his Shabbos hat.', m:{type:'tiles', w:['Moshe lost','his Shabbos hat.']}},
+    {t:'More scoops: He looked in the shul. Then Ari saw the hat!', m:{type:'tiles', w:['He looked','in the shul.','Then Ari saw','the hat','on a hook!']}},
+    {t:'Question: who saw the hat? I find the word saw.', m:{type:'tiles', w:['Then Ari saw','the hat'], hi:[0]}},
+    {t:'Right before saw: Ari! I prove it with the words.', m:{type:'tiles', w:['Ari','saw'], hi:[0]}},
+    {t:'Sing it, swoop it!', m:{type:'chant', lines:['Scoop, scoop, smooth as can be! (swoop your finger)','Find the word that proves it to me! (point)','Read it again, smooth and free! (wave)']}}], a:'Who saw the hat? Ari. The words say: Then Ari saw the hat.' },
+  oops:{ q:'Who saw the hat?', wrong:'Moshe (his name is first)', right:'Ari', why:'Find the word saw. The name right before it is Ari.' },
+  ways:['song','movement','letter tiles','listen and tap','sort it','match','Mistake Detective'], done:'Zev and Ben say: you read smooth, and you prove it with the words!',
+  'do':[
+    {type:'tiles', say:'Read in scoops. Put the scoops in order.', how:'Start with the capital. Each scoop is a small group of words.', w:['Zev and Ben','went up','the hill.'], extra:[]},
+    {type:'listen', q:'Ben has a red kite.', hear:'Read it. What color is the kite?', o:['red','green','black'], a:'red', say:'Up on the hill! Read it. What color is the kite?', how:'Find the word kite. Read the word right before it.'}],
+  your:[
+    {type:'sort', q:'Ben has a red kite. It got stuck in a tree.', say:'Is it in the story, or a guess?', how:'Look for the words in the story. If you cannot find them, it is a guess.', bins:['In the story','A guess'], cards:[['a red kite',0],['in a tree',0],['a blue kite',1],['on the shed',1]]},
+    {type:'match', q:'Dov saw a frog on a log.', say:'Read it. Match each question to its answer.', how:'Find the answer in the sentence. Who? Where? What?', pairs:[['Who?','Dov'],['Where?','on a log'],['What did he see?','a frog']]},
+    {type:'listen', q:'Zev got a stick. He set the kite free.', hear:'Read it. Who set the kite free?', o:['Zev','Ben','Dad'], a:'Zev', say:'Read it. Who set the kite free?', how:'He set it free. Who is he? Look back: Zev got a stick.'},
+    {type:'tiles', say:'Read in scoops. Put the scoops in order.', how:'Start with the capital. End with the dot. Read it smoothly.', w:['The dog','ran to','the gate.'], extra:[]},
+    {type:'listen', q:'Gavi lost his ball. Then Avi saw it.', hear:'Read it. Who saw the ball?', o:['Avi','Gavi','Dad'], a:'Avi', say:'Read it. Who saw the ball?', how:'Find the word saw. The name right before it is the answer.'}],
+  board:{ one:'Read in scoops, read it twice, find the words that prove it.', activity:'Echo reading: the teacher reads a scoop, boys echo it smoothly.', mistakes:['Reading word by word like a robot','Guessing instead of finding the words','Answering with the first name in the story'] } };
+
+B['READ.LIT.L02.01']={ band:'K1', pic:'🎣', today:'Find who, where and what happened in a story', why:'Every story has the same three parts. Find them, and you know the story.',
+  ready:[{q:'Read it: Zev saw a duck. Who saw it?', o:['Zev','duck'], a:'Zev'},{q:'Read it: The duck is by the pond. Where?', o:['by the pond','on a hill'], a:'by the pond'}],
+  bridge:'READ.FLU.L02.02', bridgeName:'Smooth Reader',
+  watch:{ q:'The Lost Ball', pic:'⚽', steps:[
+    {t:'I read: Yaakov and Zeidy went to the park.', m:{type:'scene', e:'⚽', t:'Yaakov and Zeidy went to the park. The ball rolled away. Zeidy got it back.'}},
+    {t:'WHO is in it? I find the names: Yaakov and Zeidy.', m:{type:'tiles', w:['WHO','Yaakov and Zeidy'], hi:[1]}},
+    {t:'WHERE does it happen? I find the place: the park.', m:{type:'tiles', w:['WHERE','at the park'], hi:[1]}},
+    {t:'WHAT happened, in order: the ball rolled away, then Zeidy got it back.', m:{type:'tiles', w:['1 rolled away','2 got it back'], hi:[0,1]}},
+    {t:'Sing the story parts!', m:{type:'chant', lines:['Who? The people! (point to a friend)','Where? The place! (point outside)','What? First, next, last! (count on fingers)']}}], a:'Who: Yaakov and Zeidy · Where: at the park · What: rolled away, got it back' },
+  oops:{ q:'Who is in the ball story?', wrong:'Yaakov and a dog (no dog in the story)', right:'Yaakov and Zeidy', why:'Find the names in the words. Only use people the story says.' },
+  ways:['song','family scene','letter tiles','sort it','listen and tap','match','Mistake Detective'], done:'Who, where, what: you found every part. Zeidy is proud!',
+  'do':[
+    {type:'sort', q:'Chaim, Bubby and Zeidy ate in the sukkah.', say:'Is it a WHO or a WHERE?', how:'A who is a person. A where is a place.', bins:['Who','Where'], cards:[['Chaim',0],['Bubby',0],['Zeidy',0],['in the sukkah',1]]},
+    {type:'tiles', say:'Put the ball story in order.', how:'What happened first? Next? Last? Read each one.', w:['They went to the park.','The ball rolled away.','Zeidy got it back.'], extra:[]}],
+  your:[
+    {type:'sort', q:'Noam and Saba went to the pond.', say:'Is it in the story? Careful!', how:'Find the names in the words. Is that name there?', bins:['In the story','Not in it'], cards:[['Noam',0],['Saba',0],['a dog',1],['Ben',1]]},
+    {type:'listen', q:'Shua and Abba walked to the shul.', hear:'Read it. Where did they go?', o:['shul','shop','park'], a:'shul', say:'Read it. Where did they go?', how:'Find the place words: to the …'},
+    {type:'tiles', say:'Put the hat story in order.', how:'What happened first? Next? Last? Read each one.', w:['Noam put on his hat.','The wind lifted the hat.','Saba got the hat back.'], extra:[]},
+    {type:'listen', q:'Eli and Abba fed the ducks.', hear:'Read it. Who fed the ducks with Eli?', o:['Abba','Saba','Ben'], a:'Abba', say:'Read it. Who fed the ducks with Eli?', how:'Find the names in the words. Who is with Eli?'},
+    {type:'match', q:'Eli and Abba fed the ducks at the pond.', say:'Read it. Match each story part.', how:'Who? The people. Where? The place. What? What they did.', pairs:[['Who?','Eli and Abba'],['Where?','at the pond'],['What?','fed the ducks']]}],
+  board:{ one:'Who = people. Where = place. What = first, next, last.', activity:'Story hand: thumb = who, finger 2 = where, fingers 3 to 5 = first, next, last.', mistakes:['Naming someone who is not in the story','Giving a thing instead of a place','Telling events out of order'] } };
+
+B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer right in the words', why:'The answer is hiding on the page. Good readers point to it and prove it!',
+  ready:[{q:'Who is in "Noam and Saba went to the pond"?', o:['Noam and Saba','a dog'], a:'Noam and Saba'},{q:'Where did they go?', o:['to the pond','to the shop'], a:'to the pond'}],
+  bridge:'READ.LIT.L02.01', bridgeName:'Story Parts',
+  watch:{ q:'The frog page', pic:'🐸', steps:[
+    {t:'I read the question first: Where does a frog sleep?', m:{type:'tiles', w:['Where','does a frog','sleep?'], hi:[0,2]}},
+    {t:'I find the key word sleep on the page.', m:{type:'scene', e:'🐸', t:'A frog can jump far. It eats bugs. A frog sleeps in the mud.'}},
+    {t:'I read that sentence: A frog sleeps in the mud.', m:{type:'tiles', w:['A frog','sleeps','in the mud.'], hi:[1]}},
+    {t:'I build the answer with the page\'s own words, in order: in the mud.', m:{type:'tiles', w:['in','the','mud'], hi:[0,1,2]}},
+    {t:'Sing the answer song!', m:{type:'chant', lines:['Read the question first! (tap your head)','Find the key word! (point)','Use the page\'s words! (clap, clap, clap)']}}], a:'Where does a frog sleep? in the mud' },
+  oops:{ q:'What does a frog eat?', wrong:'jump far (the wrong sentence)', right:'bugs', why:'Find eat on the page: It eats bugs. Jump far tells what it can DO.' },
+  ways:['song','family scene','letter tiles','sort it','listen and tap','match','Mistake Detective'], done:'Eli\'s animal book is done. You found every answer in the words!',
+  'do':[
+    {type:'listen', q:'A frog can jump far.', hear:'Read it. What can a frog do?', o:['jump','eat','sit'], a:'jump', say:'Eli\'s animal book! What can a frog do?', how:'Find can. The doing word right after it is the answer.'},
+    {type:'tiles', q:'A frog sits on a log.', say:'Where does a frog sit? Build it from the page.', how:'Find the word sits. Use the words right after it.', w:['on','a','log'], extra:['in']}],
+  your:[
+    {type:'sort', q:'A duck has wide feet. Its feet help it swim.', say:'From the page, or a guess?', how:'Look for the words on the page. If they are not there, it is a guess.', bins:['From the page','A guess'], cards:[['wide feet',0],['help it swim',0],['a long neck',1],['red wings',1]]},
+    {type:'tiles', q:'A duck can sleep on the pond.', say:'Where can a duck sleep? Build it from the page.', how:'Find the word sleep. Use the words right after it.', w:['on','the','pond'], extra:['in']},
+    {type:'listen', q:'A train runs on a track.', hear:'Read it. What does a train run on?', o:['track','road','pond'], a:'track', say:'Read it. What does a train run on?', how:'Find the word runs. Read the words after it.'},
+    {type:'tiles', q:'A duck eats plants and bugs.', say:'What does a duck eat? Build it from the page.', how:'Find the word eats. Use the words right after it. Keep the page\'s order.', w:['plants','and','bugs'], extra:['fish']},
+    {type:'match', q:'A hen lays eggs. It sleeps in a coop.', say:'Read the hen page. Match each question.', how:'Find each key word on the page: lays, sleeps.', pairs:[['Lays what?','eggs'],['Sleeps where?','in a coop']]}],
+  board:{ one:'Read the question, find the key word, use the page\'s words.', activity:'Highlighter hunt: boys underline the sentence that answers each question.', mistakes:['Answering from the wrong sentence','Guessing from what they already know','Changing the order of the page\'s words'] } };
+
 /* ==== ROUND 2, Lane C, batch 1 (2026-11-22): THE ABCs in 6 bites (HoS: "start with the ABCs") ====
    READ.PHON.L01.01 "Letter Lineup" held all 26 letters in one lesson. It is split into 6 small bites, the way Kriyah uses LK.KRI.L01.01.a:
      .a A-D   .b E-H   .c I-L   .d M-Q   .e R-U   .f V-Z
