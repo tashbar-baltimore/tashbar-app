@@ -169,8 +169,6 @@ window.TL_CHEERS = window.TL_CHEERS || [
 window.TL_JOKE_LIVE = true;   /* HoS DECISION 2230: live for every boy */
 const J = window.TL_JOKES || [], CH = window.TL_CHEERS || [];
 const KCH = ['Yasher koach!', 'Beautiful learning!', 'Keep it up!', 'Wonderful!', 'Chazak!'];
-const GAP = 5 * 60 * 1000;
-let last = 0;
 function on(){ const st = A && A.st; return !!(st && (window.TL_JOKE_LIVE || /^TEST-/.test(String(st.id || '')))); }
 function kodesh(p, it){ const id = String((it && it.skill) || (p && p.id) || ''); return (p && (p.c === 'LK' || p.c === 'SIM')) || /^(LK|HEB|SIM)\./.test(id); }
 function band(p){ const m = String((p && p.id) || '').match(/\.L(\d+)/); const L = m ? +m[1] : 4; return L <= 3 ? 'K2' : L <= 6 ? '35' : '68'; }
@@ -283,7 +281,7 @@ function paint(){ keep(); const c = document.getElementById('jj-ctl'); if (c) c.
 function show(p){
   if (!J.length || typeof overlay !== 'function') return;
   const j = pick(p); if (!j) return;
-  last = Date.now(); jcss();
+  jcss();
   const b = book(); b.seen = (b.seen || []).filter(x => x !== j.id).concat(j.id); b.got = b.got || []; if (b.got.indexOf(j.id) < 0) b.got.push(j.id); save(b);
   const same = J.filter(x => x && x.id !== j.id && x.a !== j.a && x.band === j.band), other = shuffle((same.length >= 2 ? same : J.filter(x => x && x.id !== j.id && x.a !== j.a)).slice()).slice(0, 2).map(x => x.a);
   JS = { id: j.id, q: j.q, a: j.a, opts: shuffle([j.a].concat(other)), pick: null, stage: 1 };
@@ -339,8 +337,6 @@ window.p3Ans = function(p, it, ok){
   try {
     if (!ok || !on() || !p || !p.fb) return;
     const first = p.tries === 1;
-    if (p._jjm !== p.misses) { p._jj = 0; p._jjm = p.misses; }
-    p._jj = first ? (p._jj || 0) + 1 : 0;
     if (first && p.combo < 3 && Math.random() < 0.25) {
       const L = kodesh(p, it) ? KCH : (CH.length ? CH : null);
       if (L) p.fb.cheer = L[Math.floor(Math.random() * L.length)];
