@@ -988,25 +988,46 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   if(!m.joy){ m.joy=1; if(m.mood==='off') m.mood='mix'; try{ if(typeof saveStudent==='function') saveStudent(A.st); }catch(e){} }
   if(m.mood!=='off') Mu.play(false); }catch(e){} }
  /* THEME TUNE (HoS 2026-11-22: "a theme tune that turns on when the app opens every time ... super pumping ... a few seconds").
-    An original 4-second Tashbar jingle made in the browser (no file): drum beat, bass, a rising tune and a big final chord. It plays
+    An original Tashbar entrance theme made in the browser (no file). It plays
     once each time a boy signs in (the welcome), unless his sound is off. To use a recording instead, set window.TL_THEME_URL. */
  function themeTune(){ try{ if(typeof SND!=='undefined'&&SND.on===false) return;
-  if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.8; a.play().catch(()=>{}); return; }
+  if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.85; a.play().catch(()=>{}); return; }
   const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; const c=GM.ac||(GM.ac=new AC()); if(c.state==='suspended') c.resume();
-  const out=c.createGain(); out.gain.value=.32; const comp=c.createDynamicsCompressor(); out.connect(comp); comp.connect(c.destination);
-  const t0=c.currentTime+.05, B=60/150;   /* 150 beats a minute */
-  const env=(g,t,a,d,v)=>{ g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(v,t+a); g.gain.exponentialRampToValueAtTime(.0008,t+a+d); };
-  const tone=(f,t,d,type,v,slide)=>{ const o=c.createOscillator(), g=c.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(slide) o.frequency.exponentialRampToValueAtTime(slide,t+d); env(g,t,.01,d,v); o.connect(g); g.connect(out); o.start(t); o.stop(t+d+.05); };
-  const kick=t=>tone(150,t,.22,'sine',1.1,42);
-  const snare=t=>{ const n=c.createBufferSource(), b=c.createBuffer(1,c.sampleRate*.2,c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; n.buffer=b; const f=c.createBiquadFilter(); f.type='highpass'; f.frequency.value=1800; const g=c.createGain(); env(g,t,.005,.16,.55); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+.2); tone(220,t,.08,'triangle',.25); };
-  const hat=t=>{ const n=c.createBufferSource(), b=c.createBuffer(1,c.sampleRate*.05,c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; n.buffer=b; const f=c.createBiquadFilter(); f.type='highpass'; f.frequency.value=7000; const g=c.createGain(); env(g,t,.002,.04,.18); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+.06); };
-  for(let i=0;i<8;i++){ const t=t0+i*B; kick(t); if(i%2) snare(t); hat(t+B/2); hat(t); }
-  [t0+7*B+B/4,t0+7*B+B/2,t0+7*B+3*B/4].forEach(snare);   /* drum fill into the last chord */
-  const bass=[110,110,130.81,130.81,146.83,146.83,164.81,196]; bass.forEach((f,i)=>{ tone(f,t0+i*B,B*.9,'sawtooth',.28); tone(f/2,t0+i*B,B*.9,'square',.12); });
-  const mel=[[0,659.25],[.5,783.99],[1,880],[1.5,783.99],[2,880],[2.5,987.77],[3,1046.5],[4,987.77],[4.5,1046.5],[5,1174.66],[5.5,1318.51],[6,1567.98]];
-  mel.forEach(([b,f])=>{ tone(f,t0+b*B,B*.45,'square',.16); tone(f*2,t0+b*B,B*.3,'triangle',.07); });
-  const end=t0+8*B; kick(end); [523.25,659.25,783.99,1046.5,1318.51].forEach(f=>{ tone(f,end,1.6,'sawtooth',.13); tone(f,end,1.6,'triangle',.18); });
-  tone(2093,end+.05,.9,'sine',.12);
+  /* v2 (HoS: "much more rocking ... like the big star of the show is coming out onto the stage"): a drum roll and a rising whoosh
+     build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. About 6 s. */
+  const comp=c.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=6; comp.connect(c.destination);
+  const out=c.createGain(); out.gain.value=.26; out.connect(comp); const lim=c.createGain(); lim.gain.value=1.2; comp.disconnect(); comp.connect(lim); lim.connect(c.destination);
+  const T=c.currentTime+.05, B=60/152, HIT=T+1.7;
+  const noiseBuf=(sec)=>{ const b=c.createBuffer(1,Math.ceil(c.sampleRate*sec),c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return b; };
+  const env=(g,t,a,d,v)=>{ g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(v,t+a); g.gain.exponentialRampToValueAtTime(.0008,t+a+d); };
+  const tone=(f,t,d,type,v,slide,dest)=>{ const o=c.createOscillator(), g=c.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(slide) o.frequency.exponentialRampToValueAtTime(slide,t+d); env(g,t,.008,d,v); o.connect(g); g.connect(dest||out); o.start(t); o.stop(t+d+.05); };
+  const noise=(t,d,type,freq,v,a,q)=>{ const n=c.createBufferSource(); n.buffer=noiseBuf(d+.05); const f=c.createBiquadFilter(); f.type=type; f.frequency.value=freq; if(q) f.Q.value=q; const g=c.createGain(); env(g,t,a||.003,d,v); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+d+.05); return f; };
+  const kick=(t,v)=>{ tone(160,t,.28,'sine',v||1.4,38); tone(90,t,.06,'square',.25); };
+  const snare=(t,v)=>{ noise(t,.18,'highpass',1600,v||.7); tone(200,t,.09,'triangle',.35,140); };
+  const crash=(t,v)=>{ noise(t,1.8,'highpass',5000,v||.5,.002); noise(t,1.2,'bandpass',9000,(v||.5)*.6,.002,.7); };
+  const hat=t=>noise(t,.05,'highpass',8000,.22);
+  /* distorted guitar: two detuned saws through a waveshaper, a low-pass to tame it */
+  const curve=new Float32Array(1024); for(let i=0;i<1024;i++){ const x=i/512-1; curve[i]=Math.tanh(x*9); }
+  const gtr=(fs,t,d,v)=>{ const sh=c.createWaveShaper(); sh.curve=curve; sh.oversample='4x'; const lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=3200; const g=c.createGain(); env(g,t,.006,d,v); sh.connect(lp); lp.connect(g); g.connect(out);
+   fs.forEach(f=>{ [0,-7,7].forEach(dt=>{ const o=c.createOscillator(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=dt; const og=c.createGain(); og.gain.value=.35; o.connect(og); og.connect(sh); o.start(t); o.stop(t+d+.05); }); }); };
+  const pc=r=>[r,r*1.5,r*2];   /* power chord: root, fifth, octave */
+  const brass=(f,t,d,v)=>{ [0,-9,9].forEach(dt=>{ const o=c.createOscillator(), g=c.createGain(), lp=c.createBiquadFilter(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=dt; lp.type='lowpass'; lp.frequency.setValueAtTime(900,t); lp.frequency.linearRampToValueAtTime(4200,t+.08); env(g,t,.03,d,v/3); o.connect(lp); lp.connect(g); g.connect(out); o.start(t); o.stop(t+d+.05); }); };
+  /* 1. the build-up: drum roll getting faster and louder + a rising whoosh + a rising tone */
+  let t=T, gap=.16; while(t<HIT-.03){ snare(t,.18+.55*((t-T)/(HIT-T))); t+=gap; gap=Math.max(.045,gap*.9); }
+  const w=noise(T,HIT-T,'bandpass',300,.45,HIT-T-.05,1.2); w.frequency.exponentialRampToValueAtTime(7000,HIT);
+  tone(110,T,HIT-T,'sawtooth',.12,880);
+  /* 2. THE HIT */
+  kick(HIT,1.6); crash(HIT,.65); gtr(pc(82.41),HIT,.55,.5); brass(329.63,HIT,.5,.5); brass(415.3,HIT,.5,.4); brass(493.88,HIT,.5,.4);
+  /* 3. the rock groove: 8 beats */
+  const G=HIT+B*1;
+  const riff=[82.41,82.41,98,110,82.41,82.41,123.47,110];
+  for(let k=0;k<8;k++){ const tb=G+k*B; kick(tb); if(k%2===1) snare(tb,.8); hat(tb); hat(tb+B/2); if(k===3||k===7) kick(tb+B/2,1.1);
+   gtr(pc(riff[k]),tb,B*.42,.42); gtr(pc(riff[k]),tb+B/2,B*.35,.32); }
+  const fan=[[0,659.25,.5],[.5,659.25,.25],[.75,659.25,.25],[1,830.61,.75],[2,987.77,.5],[2.5,880,.5],[3,987.77,1],[4,1108.73,.5],[4.5,987.77,.5],[5,1108.73,.5],[5.5,1244.51,.5],[6,1318.51,1.6]];
+  fan.forEach(([b,f,d])=>brass(f,G+b*B,d*B*.95,.42));
+  [G+7*B,G+7*B+B/4,G+7*B+B/2,G+7*B+3*B/4].forEach(x=>snare(x,.75));   /* fill */
+  /* 4. the giant last chord */
+  const END=G+8*B; kick(END,1.7); crash(END,.7); gtr(pc(82.41),END,1.8,.5); [329.63,415.3,493.88,659.25,830.61].forEach(f=>brass(f,END,1.7,.36)); tone(1318.51,END,1.4,'triangle',.12);
  }catch(e){} }
  GM.themeTune=themeTune;
  if(typeof welcome!=='function') return;
