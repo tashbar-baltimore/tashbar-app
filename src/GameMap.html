@@ -29,7 +29,6 @@ function css(){ if(document.getElementById('gm-css')) return; const s=document.c
 body.gm-on{overflow:hidden}
 body.gm-on #tlcash,body.gm-on .pf-card{display:none!important}
 body.gm-nav .pf-card{bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
-body.gm-nav #mupill{bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
 body.gm-nav:not(.gm-on) #app{padding-bottom:96px}
 #gm{position:fixed;inset:0;z-index:30;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif;
  background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%);display:none}
@@ -906,7 +905,7 @@ let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.p
       It says hello, shows his streak and money, his next level (game name + the real skill) with one big PLAY, and today's vort in one line.
       Chizuk is one tap away. The B'Simcha morning pop-up is marked as shown for today so it does not follow.
    2. Every other pop-up on the map (chizuk, vort, joke book, stories) gets the game look, not the old white card.
-   3. The music player is a small button under the three dots, at the end of the XP bar (HoS 2026-11-22: never behind the menu); the "Now playing" banner no longer covers the map.
+   3. Music: play/pause and next are in the corner menu's music pill (HoS 2026-11-22); the "Now playing" banner no longer covers the map.
    Display only: no data, money or mastery changes. */
 (function(){
  const st2=document.createElement('style'); st2.id='gmw-css'; st2.textContent=`
@@ -969,14 +968,11 @@ body.gm-lesson .overlay{background:rgba(10,7,38,.78)!important;backdrop-filter:b
 body.gm-nav #pf-cf{background:linear-gradient(180deg,rgba(123,97,255,.97),rgba(79,140,255,.97) 50%,rgba(34,184,240,.97))}
 body.gm-nav #pf-cf .bx{box-shadow:0 0 40px rgba(255,212,59,.35),0 10px 0 #B45309}
 body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 55%,#FF9F1C);color:#2B0A3D;font-weight:900;box-shadow:0 5px 0 #B45309}
-body.gm-nav.gm-on #mupill{top:calc(60px + env(safe-area-inset-top,0px));right:calc(12px + env(safe-area-inset-right,0px));left:auto!important;bottom:auto!important;gap:4px;padding:2px 2px 2px 8px;z-index:33}
-body.gm-nav.gm-on #mupill .mpt{display:none}body.gm-nav.gm-on #mupill .mueq{height:16px;gap:3px}body.gm-nav.gm-on #mupill .mueq i{width:4px}body.gm-nav.gm-on #mupill .mpnext{width:26px;height:26px;font-size:12px}
-body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
 `; document.head.appendChild(st2);
  const today=()=>{ const d=new Date(); return d.getFullYear()*1000+Math.floor((d-new Date(d.getFullYear(),0,0))/864e5); };
  const S=()=>window.TL_SIMCHA||{};
  const pickDay=(L,k)=>L&&L.length?L[(today()+(k||0))%L.length]:null;
- function music(){ try{ const Mu=window.TashbarMusic; if(!Mu||!A.st) return; if(Mu.state&&Mu.state.info&&Mu.state.info.off) return; const m=Mu.prefs();
+ function music(){ const wait=(GM.themeEnd||0)-Date.now(); if(wait>0){ clearTimeout(GM.musicT); GM.musicT=setTimeout(music,wait); return; } try{ const Mu=window.TashbarMusic; if(!Mu||!A.st) return; if(Mu.state&&Mu.state.info&&Mu.state.info.off) return; const m=Mu.prefs();
   if(!m.joy){ m.joy=1; if(m.mood==='off') m.mood='mix'; try{ if(typeof saveStudent==='function') saveStudent(A.st); }catch(e){} }
   if(m.mood!=='off') Mu.play(false); }catch(e){} }
  /* THEME TUNE (HoS 2026-11-22: "a theme tune that turns on when the app opens every time ... super pumping ... a few seconds").
@@ -1017,31 +1013,39 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   kick(HIT,1.8); crash(HIT,.7); gtr(pc(82.41),HIT,.6,.55); [329.63,415.3,493.88].forEach(f=>brass(f,HIT,.55,.45));
   /* 3. THE DROP (club style): four-on-the-floor kick, pumping synth bass, open hats, claps, and MA'OZ TZUR (traditional Chanukah melody)
      on a big supersaw lead with bells. Twice: the second time a step higher, an octave up, with a crazier beat (16th hats, snare rushes). */
-  const G=HIT+B, M=[[261.63,1],[349.23,1],[523.25,1],[466.16,.5],[440,.5],[392,1],[349.23,2],[440,1],[466.16,1],[523.25,1],[392,.5],[349.23,.5],[329.63,1],[349.23,2]];   /* Ma-oz tzur ye-shu-a-ti, le-cha na-eh le-sha-bei-ach */
+  const G=HIT+B, F4=349.23,G4=392,A4=440,Bb4=466.16,C4=261.63,C5=523.25,D5=587.33,E5=659.25,F5=698.46,E4=329.63,R0=0;
+  /* the real notes (abcnotation.com, hymn transcription 'Maoz Tsur', moved from E to F): the opening line the first time, the closing line an octave up the second time */
+  const M1=[[F4,1],[C4,1],[F4,1],[Bb4,1],[A4,1],[G4,1],[F4,1],[R0,1],[C5,1],[D5,1],[G4,1],[Bb4,1],[A4,1],[G4,1],[F4,1],[R0,1]];   /* Ma-oz tzur ye-shu-a-ti, le-cha na-eh le-sha-bei-ach */
+  const M2=[[C5,1.5],[C5,.5],[D5,1],[E5,1],[F5,2],[C5,1],[R0,1],[F5,1],[E5,1],[D5,1],[C5,1],[C5,.5],[Bb4,.5],[A4,.5],[Bb4,.5],[G4,1],[R0,1],[A4,1.5],[Bb4,.5],[C5,2],[G4,1.5],[A4,.5],[Bb4,1.5],[Bb4,.5],[A4,1],[E4,1],[F4,1],[Bb4,1],[A4,1],[G4,1],[F4,2]];   /* le-et ta-chin mat-be-ach ... cha-nu-kat ha-miz-be-ach */
   const bell=(f,t,d,v)=>{ tone(f,t,d*1.4,'sine',v); tone(f*2,t,d*.8,'sine',v*.4); tone(f*3.01,t,d*.4,'triangle',v*.15); };
   const saw=(f,t,d,v,open)=>{ const g=c.createGain(), lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(open?1200:2500,t); lp.frequency.linearRampToValueAtTime(open?7000:5200,t+Math.min(d,.25)); lp.Q.value=2; env(g,t,.012,d,v); lp.connect(g); g.connect(out);
    [-22,-12,-5,0,5,12,22].forEach(dt=>{ const o=c.createOscillator(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=dt; const og=c.createGain(); og.gain.value=.16; o.connect(og); og.connect(lp); o.start(t); o.stop(t+d+.05); }); };
   const openHat=t=>noise(t,.14,'highpass',7000,.26);
   const roots=[87.31,87.31,87.31,87.31,116.54,116.54,130.81,130.81];   /* F F F F Bb Bb C C */
   const bassNote=(f,t,d)=>{ const o=c.createOscillator(), o2=c.createOscillator(), g=c.createGain(), lp=c.createBiquadFilter(); o.type='sawtooth'; o2.type='square'; o.frequency.value=f; o2.frequency.value=f/2; lp.type='lowpass'; lp.frequency.setValueAtTime(1600,t); lp.frequency.exponentialRampToValueAtTime(300,t+d); env(g,t,.01,d,.32); o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(out); o.start(t); o2.start(t); o.stop(t+d+.05); o2.stop(t+d+.05); };
-  for(let k=0;k<32;k++){ const tb=G+k*B, bar=k%8, up=k<16?1:Math.pow(2,2/12), crazy=k>=16;
+  for(let k=0;k<32;k++){ const tb=G+k*B, bar=k%8, up=1, crazy=k>=16;
    kick(tb,1.5); if(bar%2===1) { clap(tb,.4); snare(tb,.5); } openHat(tb+B/2); hat(tb); if(crazy){ hat(tb+B/4); hat(tb+3*B/4); }
    bassNote(roots[bar]*up,tb+B/2,B*.45); if(crazy) bassNote(roots[bar]*up*2,tb+3*B/4,B*.2);
    if(bar===0&&k) crash(tb,.5); if(crazy&&bar===7){ [0,1,2,3].forEach(q=>snare(tb+q*B/4,.45+q*.12)); }
-   if(bar===0||bar===4) saw(roots[bar]*up*4,tb,B*.3,.2); }   /* club stabs */
+   if(crazy&&(bar===0||bar===4)) saw(roots[bar]*up*2,tb,B*.25,.12); }   /* club stabs, low, in round two only, so the melody stays clear */
   { const r=noise(G+14*B,2*B,'bandpass',400,.3,2*B-.05,1.4); r.frequency.exponentialRampToValueAtTime(9000,G+16*B); roll(G+15*B,G+16*B,.4,.9); }   /* riser into round two */
-  [[0,1],[16,2]].forEach(([start,oct])=>{ let b=start; const up=start?Math.pow(2,2/12):1; M.forEach(([f,d])=>{ const t=G+b*B, x=f*up*oct; saw(x,t,d*B*.95,.5,true); bell(x*2,t,d*B,.15); if(oct>1) saw(x/2,t,d*B*.95,.3); b+=d; }); });
+  const M4=M2.slice(M2.findIndex((x,i)=>i>8&&x[0]===A4&&x[1]===1.5));   /* line 4: az eg-mor be-shir miz-mor, cha-nu-kat ha-miz-be-ach (ends home on F) */
+  [[0,M1,1],[16,M4,2]].forEach(([start,mel,oct])=>{ let b=start; mel.forEach(([f,d])=>{ if(f){ const t=G+b*B, x=f*oct; saw(x,t,d*B*.95,.62,true); bell(x*2,t,d*B,.2); if(start) saw(x/2,t,d*B*.95,.28); } b+=d; }); });
   crowd(G+16*B,16*B+3,.16);
   /* 4. "INTRODUCING ...": a drum rush and a rising whoosh, then the highest moment: a giant chord across three octaves and the melody's
      last note held way up high, with a double crash and the crowd. */
-  const END=G+32*B, TOP=349.23*Math.pow(2,2/12)*2;   /* G5 */
+  const END=G+32*B, TOP=698.46;   /* F5: the melody's home note, up high */
   roll(END-B,END+B*1.2,.5,1); { const r=noise(END-B,B*2.2,'bandpass',500,.35,B*2.2-.05,1.4); r.frequency.exponentialRampToValueAtTime(11000,END+B*1.2); }
   const LAST=END+B*1.25; kick(LAST,1.9); crash(LAST,.85); crash(LAST+.02,.5);
   [.5,1,1.25,1.5,2,2.5,3].forEach(m=>saw(TOP*m,LAST,2.6,.26,true)); saw(TOP*4,LAST,2.6,.32,true); bell(TOP*4,LAST,2.4,.18);
   bassNote(TOP/8,LAST,1.6); gtr(pc(TOP/4),LAST,2.2,.35); crowd(LAST-.2,2.8,.3); kick(LAST+B*2,1.3); crash(LAST+B*2,.4);
   mst.gain.setValueAtTime(.62,G); mst.gain.linearRampToValueAtTime(1.15,LAST);   /* it keeps getting bigger all the way to the top */
+  GM.themeEnd=Date.now()+(LAST-c.currentTime+2.8)*1000;
  }catch(e){} }
  GM.themeTune=themeTune;
+ /* HoS 2026-11-22: "put it as the default opening sound track as soon as someone punches in his code": it starts the moment a boy's code
+    is accepted (once per sign-in), for every boy. */
+ GM.tuneSid=''; setInterval(()=>{ try{ const id=A&&A.st&&A.st.id?String(A.st.id):''; if(!id||id==='PREVIEW'){ GM.tuneSid=''; return; } if(id!==GM.tuneSid){ GM.tuneSid=id; themeTune(); } }catch(e){} },250);
  if(typeof welcome!=='function') return;
  const prevW=welcome;
  welcome=function(){ try{
@@ -1064,7 +1068,6 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
    `<div class="gmhow" aria-label="How it works"><span>1 ▶ Play your next level</span><span>2 🎯 3 missions a day</span><span>3 💵 Earn for the Store</span></div>`+
    `<div class="row"><button type="button" data-act="closeov">🗺️ My map</button>${ci>=0?`<button type="button" data-act="sm-need" data-i="${ci}">🌟 Some chizuk</button>`:''}</div>`+
    (v?`<p class="vort"><b>📜 Today's vort:</b> ${esc(typeof v==='string'?v:v.text)}${v.src?`<small>${esc(v.src)}</small>`:''}</p>`:'')+`</div>`);
-  setTimeout(themeTune,120);
  }catch(e){ console.error('GameMap welcome',e); return prevW.apply(this,arguments); } };
  /* HoS 2026-11-22: "the golden cloud should never cover the clock". When the clock and the Olam Haba cloud would overlap,
    the clock moves up so it sits just above the cloud, with a gap. Checked every 1.5 seconds and on resize; no change when they are apart. */
