@@ -576,3 +576,10 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - one-chocolate-chip-cookie.webp | https://pixabay.com/photos/cake-pastry-sweet-sugar-unhealthy-2201870/ | Pixabay Content License | WikimediaImages
 - green-esrog-on-padding.webp | https://pixabay.com/photos/food-fruit-citrus-citron-judaism-1151540/ | Pixabay Content License | natan10
 - empty-playground-slides.webp | https://pixabay.com/photos/playground-empty-lonely-quiet-2263827/ | Pixabay Content License | apriljlamb
+- m2-open-country-road.webp | https://pixabay.com/photos/road-pavement-landscape-roadway-220058/ | Pixabay Content License | Larisa-K
+- m2-pink-eraser.webp | https://pixabay.com/photos/eraser-abrasion-stationery-office-3822402/ | Pixabay Content License | MasterTux
+- m2-orange-juice-pitcher.webp | https://pixabay.com/photos/juice-orange-juice-drink-glass-6171041/ | Pixabay Content License | flutie8211
+- m2-metal-bucket.webp | https://pixabay.com/photos/pump-water-pump-hand-pump-tube-3315162/ | Pixabay Content License | analogicus
+- m2-board-on-saw-table.webp | https://pixabay.com/photos/circular-saw-wood-to-cut-saw-blade-4538951/ | Pixabay Content License | annawaldl
+- m2-blue-car-drawing.webp | https://pixabay.com/illustrations/beetle-volkswagen-car-old-vintage-8273345/ | Pixabay Content License | BiancaVanDijk
+- m2-red-satin-ribbon.webp | https://pixabay.com/photos/red-fabric-textile-macro-detail-2644409/ | Pixabay Content License | Engin_Akyurt
