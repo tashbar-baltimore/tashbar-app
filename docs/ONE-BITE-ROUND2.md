@@ -1,5 +1,7 @@
 # ONE BITE, Round 2: short, hands-on, made for each age (HoS direction, 2026-11-21 evening)
 
+> **Words the boys see (HoS 2026-11-21):** boys never see the word "bite". The screens say **TODAY WE LEARN** (step 1), **LEVEL CLEAR!** and **▶ Next level** (step 6), and "lesson" everywhere else, matching the map. "One Bite" stays only as the builders' name for this project and its files.
+
 **This is what we are doing now.** Start with **Kindergarten Math** and **Kindergarten Reading (the ABCs)**, then go up level by level.
 
 ## What the HoS said
