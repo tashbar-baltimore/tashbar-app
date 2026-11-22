@@ -36,13 +36,7 @@ B['READ.PHON.L03.01']={ band:'B23', pic:'🤖', today:'Split long words into bea
    The old id READ.PHON.L01.01 stays as the ABC Review after .f, so every boy keeps what he mastered (Placement.js READ_K8).
    Each new id gets: its lesson (teach 3, hands-on practice 6, tap check 3) in READ and BANK_ALL, Teacher Time (TL_TEACH),
    How-to-do-it boxes (TL_DO), and its ONE BITE with do:[2 guided activities] and your:[5 activities] for the Activity Kit (Lane A).
-   ACTIVITY DATA (read by OneBiteKit; the player ignores do/your until the kit is live). Every activity has say: the spoken
-   instruction, 12 words or fewer, never Hebrew. A boy never needs to read it.
-     listen  {type:'listen', say, sound:'what the voice says', o:[3 choices], a}          hear it, tap the matching letter or picture
-     findall {type:'findall', say, grid:[letters], a:'b'}                                  tap every a in the grid (case must match)
-     match   {type:'match', say, pairs:[[left,right],...]}                                  pair each left with its right (tap-tap or drag)
-     trace   {type:'trace', say, hint:'how to write it (spoken after say)', ch:'B'}        finger-trace the dotted letter (pass about 80 percent)
-     sort    {type:'sort', say, bins:[ids], items:[[label,bin],...]}                        cards into 2-3 bins
+   ACTIVITY DATA: the Activity Kit's shapes (src/OneBiteKit.html, docs/ONE-BITE-PLAYBOOK.md section 10).
    Pictures: one picture, one word (the keyword). Kosher food only. No people pictures. */
 (function(){
   var R=(typeof READ!=='undefined')?READ:null, BA=(typeof BANK_ALL!=='undefined')?BANK_ALL:null;
@@ -175,14 +169,14 @@ B['READ.PHON.L03.01']={ band:'B23', pic:'🤖', today:'Split long words into bea
       ways:['song','picture','listen and tap','find them all','match','finger trace','Mistake Detective'],
       done:'You know '+nameLine.replace(/, ([A-Z])$/,' and $1')+'! Sing them at home tonight!',
       'do':[
-        {type:'listen', say:'Listen. Which letter says '+L[first][4].split(',')[0]+'?', sound:L[first][4], o:o3(first), a:first},
-        {type:'trace', say:'Trace big '+L[traceAt][0]+' with your finger.', hint:L[traceAt][5], ch:L[traceAt][0]}
+        {type:'listen', say:'Listen: '+L[first][2]+'. Which letter starts it?', hear:L[first][2], pic:L[first][3], o:o3(first), a:first},
+        {type:'trace', say:'Trace big '+L[traceAt][0]+' with your finger.', how:L[traceAt][5], glyph:L[traceAt][0], name:'big '+L[traceAt][0]}
       ],
       your:[
-        {type:'findall', say:'Tap every small '+g.odd+'. Find them all!', grid:g.mix.split(''), a:g.odd},
+        {type:'findall', say:'Tap every small '+g.odd+'. Find them all!', grid:g.mix.split(''), find:g.odd, findSay:'small '+g.odd},
         {type:'match', say:'Match each letter to its picture.', pairs:ls.slice(0,3).map(function(x){ return [x, L[x][3]]; })},
-        {type:'listen', say:'Listen. Tap the letter you hear.', sound:L[ls[2]][4], o:o3(ls[2]), a:ls[2]},
-        {type:'trace', say:'Trace small '+last+' with your finger.', hint:L[last][6], ch:last},
+        {type:'listen', say:'Listen. Which letter starts the word?', hear:L[ls[2]][2], pic:L[ls[2]][3], o:o3(ls[2]), a:ls[2]},
+        {type:'trace', say:'Trace small '+last+' with your finger.', how:L[last][6], glyph:last, name:'small '+last},
         {type:'match', say:'Match each big letter to its small letter.', pairs:ls.slice(-3).map(function(x){ return [L[x][0], x]; })}
       ],
       board:{ one:'Name, sound, shape: '+ls.map(function(x){ return x.toUpperCase()+' says '+L[x][4].split(',')[0]; }).join('; ')+'.',
