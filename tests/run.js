@@ -178,6 +178,8 @@ async function staffTests(browser) {
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const k = require('./lib/kidmap.js')(); k.fails.forEach(fail); if (!k.fails.length) ok("boy's own map (kmMyMap): rides with sign-in, only his own data, goal now, unit, Kodesh, growth; staff and bad tokens refused"); report.timings.kidMapMs = k.ms.map; report.timings.kidSignInWithMapMs = k.ms.signIn; }
   catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  try { const sc = await require('./lib/staffcard.js')(browser); sc.fails.forEach(fail); sc.oks.forEach(ok); }
+  catch (e) { fail('staff card test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const l = require('./lib/levelpass.js')(); l.fails.forEach(fail); if (!l.fails.length) ok('level checks and the 🎫 Level Pass: 25% before the check, full pay after, known skills skipped and not paid, one check per level, staff placement wins, no check = never cut'); report.timings.levelCheckStartMs = l.ms.start; report.timings.levelCheckSaveMs = l.ms.save; }
   catch (e) { fail('level pass test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   await browser.close();
