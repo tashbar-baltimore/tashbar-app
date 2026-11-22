@@ -4,6 +4,9 @@
 
 Imported from the Drive note "02 CURRENT_STATE v269" (2026-11-15 23:58Z, written by builder takeover4). The Drive notes stay the record until the switch to GitHub is approved.
 
+## One Bite (2026-11-21)
+- New lesson player `src/OneBite.html` (six calm steps), switch `OB_LIVE` (`'test'` = TEST- boys only at first). Hand-written bites in `src/OneBiteData*.html`. Read `docs/ONE-BITE-BRIEF.md`, `docs/ONE-BITE-PLAYBOOK.md`, `docs/ONE-BITE-LANES.md`, `docs/TEACHING-AUDIT.md`.
+
 ## Live
 - Both live links are on **v272**. Access: `ANYONE_ANONYMOUS`.
 - `main` was re-imported from the editor at v272 on 2026-11-16.
