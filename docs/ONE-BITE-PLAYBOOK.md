@@ -15,7 +15,8 @@
 **The screen rules:**
 - One thing per screen and one big green button forward.
 - A 6-dot strip at the top, with ✕, 🔊 and **Aa** (easy-read letters).
-- No pop-ups, confetti, money pill, banners, mascot or joke jar during a bite. Pay still happens, and is shown once on Bite Done.
+- No pop-ups, confetti, banners, mascot or joke jar during a bite.
+- **Money stays exciting (HoS 2026-11-21 22:22):** a gold money chip in the One Bite header shows his real balance on every screen. Every right answer sends a coin flying into it, and Bite Done has a big counting-up "YOU EARNED" moment (`src/OneBiteMoney.html`, display only; the server sets every amount). The old pop-up money shows (Money Storm, Jackpot, coin rain over the work) stay off during a bite.
 - No timers.
 
 ## 2. Age bands (each bite has one; the default comes from its level)
