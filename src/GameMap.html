@@ -463,9 +463,18 @@ function money(){ const b=Number(A.st&&A.st.balance)||0; return '$'+b.toFixed(2)
 function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.style.display!=='none'&&c.querySelector('button')); }
 function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
- return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button>${pfOn()?'<button type="button" class="gm-chip" data-gm="pf" aria-label="Pathfinder">🧭</button>':''}</div>
+ return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
-function worldTabs(ws,cur){ return `<div class="gm-worlds" role="tablist">${ws.map(w=>`<button type="button" class="gm-w${w.k===cur.k?' on':''}" role="tab" aria-selected="${w.k===cur.k}" data-gm="world" data-k="${esc(w.k)}">${w.icon} ${esc(w.name).toUpperCase()}<small>${w.cleared||!w.now?'<span class="dn">✓ CLEARED</span>':lcOf(w)?'🎫 CHECK':'LEVEL '+w.level}</small></button>`).join('')}<button type="button" class="gm-w gm-all" data-gm="lib" aria-label="All my lessons">📚 ALL<small>LESSONS</small></button></div>`; }
+function subjectsHTML(ws){ const cur=GM.world;
+ return `<div class="gm-pg"><h1>Change subject</h1><p class="gm-why">Pick the subject you want on your map.</p></div><div class="gm-shelves">${ws.map(w=>`<button type="button" class="gm-shelf${w.k===cur?' on':''}" data-gm="world" data-k="${esc(w.k)}"><i>${w.icon}</i><span>${esc(w.name)}<small>${w.cleared||!w.now?'✓ All cleared':lcOf(w)?'🎫 Level check first':'Level '+w.level+(w.k===cur?' · on your map now':'')}</small></span><em>›</em></button>`).join('')}</div>
+ <button type="button" class="gm-quiet" data-gmnav="map">← Back to my map</button>`; }
+function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2');
+ const rows=[['🎮','The Arcade',P.open?'Open! Go play.':'Opens when you finish today’s 3 rounds.','data-gmnav="games"'],
+  ['📚','All my lessons','Every subject. Pick any lesson.','data-gm="lib"']];
+ if(!k2&&ws.length) rows.push(['🌳','Skill tree','Every skill on your map, in order.','data-gm="treeview"']);
+ rows.push(['🎒','My stuff','Bank, passport, Shabbos page and more.','data-gm="stuff"']);
+ if(pfOn()) rows.push(['🧭','Pathfinder','Your level checks.','data-gm="pf"']);
+ return `<div class="gm-pg"><h1>More</h1><p class="gm-why">Everything else lives here. Pick a shelf.</p></div><div class="gm-shelves">${rows.map(r=>`<button type="button" class="gm-shelf" ${r[3]}><i>${r[0]}</i><span>${r[1]}<small>${r[2]}</small></span><em>›</em></button>`).join('')}</div>`; }
 /* PATH (HoS 2026-11-20): the page starts where he is and runs DOWN to the BOSS at the end; a longer path with wide, gentle curves;
    a small floating number over every step (1, 2, 3 ...); quiet subject symbols in the empty space beside the path (Math + - x / ...). */
 const DECO={MATH:['+','−','×','÷','=','%','½','<','>'],READ:['A','b','?','!','“','”','a','Z'],LANG:['✎','A','?','!','a','.'],
@@ -559,8 +568,11 @@ function goalHTML(w,isPick){
  const say=`Your next level: ${n[0]}.${n[1]?(/ Level \d+$/.test(n[1])?' A real '+n[1]+' skill.':' You will learn: '+n[1]+'.'):''} Tap Play to start!`;
  return `<div class="gm-goal" aria-label="Your next level"><div class="k"><span>⚡ YOUR NEXT LEVEL</span>${isPick?'<span class="pick">⭐ TODAY\'S PICK</span>':''}</div><h1>${esc(n[0])}</h1>${learnLine(n)}<div class="m">${meta}</div>
  <div class="gm-row"><button type="button" class="gm-play" data-gm="play" data-id="${esc(w.now)}">▶ Play</button><button type="button" class="gm-say" data-gm="say" data-text="${esc(say)}" aria-label="Read it to me">Read it to me<span class="ring" aria-hidden="true"><svg viewBox="0 0 40 40"><circle class="trk" cx="20" cy="20" r="18.5"/><circle class="bar" cx="20" cy="20" r="18.5" stroke-dasharray="116.24" stroke-dashoffset="116.24"/></svg><span class="dot"><span class="tri"></span><span class="sq"></span></span></span></button></div></div>`; }
-function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['games','🎮','Play'],['me','🏆','Trophies'],['money','💵','Money']];
- return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${[GM.tab===x[0]?'on':'',GM.tap===x[0]&&Date.now()-(GM.tapAt||0)<450?'tap':''].filter(Boolean).join(' ')}"${GM.tab===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
+/* ONE BUTTON, ONE JOB (HoS 2026-11-21, simplify step 3): 4 tabs (K-2: 3). Arcade, all lessons, skill tree, My Stuff and Pathfinder sit on
+   ONE "More" page; Money opens from the money chip at the top (one door, not two). */
+function navOn(){ const t=GM.tab; return /^(games|lib|mine|more)$/.test(t)?'more':t==='subjects'?'map':t; }
+function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['more','🧺','More']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['me','🏆','Trophies'],['more','🧺','More']]; const on=navOn();
+ return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${[on===x[0]?'on':'',GM.tap===x[0]&&Date.now()-(GM.tapAt||0)<450?'tap':''].filter(Boolean).join(' ')}"${on===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
    3 rounds a day = the school's daily goal (3 lessons mastered in one day; the server pays its bonus, Money.js moneyDailyGoal_; nothing here
    pays). Each round is his next level in one world (today's pick first), so a day touches several subjects. A round is CLEARED by any step
@@ -609,8 +621,7 @@ function growthHTML(ws){ const n=steps(), R=rankOf(n), wk=weekCounts(), s=(A.st&
  <div class="gm-cheer">${cheer}</div>
  <div class="gm-stat"><div><small>📈 THIS WEEK</small><b>${wk.w}</b></div><div><small>⏪ LAST WEEK</small><b style="color:#A9A6E8">${wk.p}</b></div><div><small>🔥 DAYS IN A ROW</small><b style="color:#FFB86B">${s}</b></div><div><small>🏰 BOSSES BEATEN</small><b style="color:#FF8AB0">${bb}</b></div></div>
  <div class="gm-sec">🧠 WHAT I LEARNED THIS WEEK</div><div class="gm-learned">${learned}</div>
- ${bdg?`<div class="gm-sec">🏅 MY BADGES</div><div class="gm-bdg">${bdg}</div>`:''}
- <button type="button" class="gm-stuff" data-gm="stuff">🎒 All my stuff: bank, passport, Shabbos page and more</button>`; }
+ ${bdg?`<div class="gm-sec">🏅 MY BADGES</div><div class="gm-bdg">${bdg}</div>`:''}`; }
 /* ===== WIN MOMENTS: right after he masters a level and comes back to the map (his success only, once each).
    LEVEL CLEAR! (what he learned, what it unlocked, how far the boss is) or BOSS BEATEN! (unit finished), plus RANK UP when it happens.
    NEXT LEVEL starts his next level at once. The daily CHALLENGE COMPLETE party takes the place of these when it happens. */
@@ -771,12 +782,12 @@ function sync(){
  if(k2&&GM.tab==='me') GM.tab='map';
  const P=plan(ws), daily=checkDaily(ws); checkWin(ws,daily);
  const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh;
- if(GM.tab!=='map'||!ws.length){ const T=ws.length?GM.tab:(GM.tab==='map'?'nomap':GM.tab); const body=T==='missions'?missionsHTML(ws):T==='me'?growthHTML(ws):T==='money'?moneyHTML():T==='games'?(P.open?arcadeOpenHTML():arcadeHTML(ws)):T==='lib'?libHTML():T==='mine'?stuffHTML():noMapHTML();
+ if(GM.tab!=='map'||!ws.length){ const T=ws.length?GM.tab:(GM.tab==='map'?'nomap':GM.tab); const body=T==='subjects'?subjectsHTML(ws):T==='more'?moreHTML(ws,P):T==='missions'?missionsHTML(ws):T==='me'?growthHTML(ws):T==='money'?moneyHTML():T==='games'?(P.open?arcadeOpenHTML():arcadeHTML(ws)):T==='lib'?libHTML():T==='mine'?stuffHTML():noMapHTML();
   const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${body}</div>`;
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
- const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}${worldTabs(ws,cur)}</div>
- <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div><button type="button" class="gm-tbtn" data-gm="tree">${GM.view==='tree'?'🗺️ PATH':'🌳 SKILL TREE'}</button></div>
+ const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>
+ <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${esc(cur.name)} · Level ${cur.level}${cur.isK?'':' unit'}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?l+' TO 🏰':'🏰 BOSS NOW!'; })():'✓ CLEARED'}</div>${GM.view==='tree'?'<button type="button" class="gm-chg" data-gm="tree">🗺️ Back to my path</button>':ws.length>1?'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>':''}</div>
  ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play gm-play2" data-gm="play" data-id="${esc(cur.now)}">▶ Play<small>${esc(nm(cur.now)[0])}</small></button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
@@ -857,7 +868,8 @@ document.addEventListener('click',e=>{
  if(t){ e.preventDefault(); try{ SND.tap(); }catch(x){}
   if(t==='store'){ const s=document.createElement('button'); s.dataset.st='open'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); return; }
   GM.tab=t; GM.sig=''; GM.rescroll=true; sync(); return; }
- if(a==='world'){ GM.world=b.dataset.k; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
+ if(a==='world'){ GM.world=b.dataset.k; GM.tab='map'; GM.sig=''; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
+ if(a==='treeview'){ try{ SND.tap(); }catch(x){} GM.tab='map'; GM.view='tree'; GM.sig=''; root().scrollTop=0; sync(); return; }
  if(a==='play') return play(b.dataset.id);
  if(a==='stuff'){ try{ SND.tap(); }catch(x){} GM.tab='mine'; GM.sig=''; root().scrollTop=0; sync(); return; }
  if(a==='room'){ room(b.dataset.t); return; }
@@ -932,6 +944,21 @@ body #gm .gm-l small{color:#5B5FA8}body #gm .gm-l .k{color:#C2410C}body #gm .gm-
 body #gm .gm-l.now{background:#FFFBEA;border:3px solid #FFB800}
 body #gm .gm-unit{background:#fff;color:#1E1B4B;border-color:#FFD84D}body #gm .gm-unit small{color:#5B5FA8}body #gm .gm-unit .left{color:#C2410C}
 body #gm .gm-more{background:#fff;color:#047857}
+#gm .gm-chg{flex:none;border:0;background:none;color:#4338CA;font:800 14px/1.2 inherit;font-family:inherit;text-decoration:underline;text-underline-offset:3px;padding:10px 4px;min-height:44px;cursor:pointer;white-space:nowrap}
+#gm .gm-pg{margin-top:14px;text-align:center;color:#fff}
+#gm .gm-pg h1{margin:0;font:900 italic 34px/1.05 var(--display,'Rubik'),'Inter',sans-serif;text-transform:uppercase;text-shadow:0 3px 0 rgba(43,20,120,.35)}
+#gm .gm-why{margin:6px 0 0;font-weight:800;font-size:16px;color:#F4F2FF}
+#gm .gm-shelves{display:flex;flex-direction:column;gap:10px;margin:16px auto 0;max-width:620px}
+#gm .gm-shelf{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;text-align:left;border:3px solid #FFD84D;border-radius:20px;background:#fff;color:#1E1B4B;padding:12px 16px;font:900 20px/1.15 var(--display,'Rubik'),'Inter',sans-serif;box-shadow:0 6px 0 rgba(43,20,120,.25);cursor:pointer}
+#gm .gm-shelf.on{background:#FFFBEA;border-color:#FFB800}
+#gm .gm-shelf i{font-style:normal;font-size:34px;line-height:1;flex:none}
+#gm .gm-shelf span{flex:1}
+#gm .gm-shelf small{display:block;margin-top:3px;font:700 14px/1.3 'Inter',system-ui,sans-serif;color:#5B5FA8}
+#gm .gm-shelf em{font-style:normal;font-size:30px;color:#C2410C;flex:none}
+#gm .gm-shelf:active{transform:translateY(3px);box-shadow:0 3px 0 rgba(43,20,120,.25)}
+#gm .gm-shelf:focus-visible,#gm .gm-chg:focus-visible,#gm .gm-quiet:focus-visible{outline:3px solid #FFE259;outline-offset:3px}
+#gm .gm-quiet{display:block;margin:14px auto 0;border:0;background:none;color:#fff;font:800 17px var(--display,'Rubik'),sans-serif;text-decoration:underline;text-underline-offset:4px;min-height:44px;cursor:pointer}
+body.gm-k2 #gm .gm-shelf{min-height:92px;font-size:24px}body.gm-k2 #gm .gm-shelf i{font-size:42px}
 .gmw .nx{background:#fff;color:#1E1B4B;box-shadow:0 8px 24px rgba(30,20,90,.25)}.gmw .nx small{color:#C2410C}.gmw .nx em{color:#047857}
 .gmw .gmhow{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:0 0 14px}
 .gmw .gmhow span{background:rgba(255,255,255,.18);border-radius:12px;padding:6px 10px;font-weight:800;font-size:13px}
