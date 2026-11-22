@@ -1,0 +1,221 @@
+<script>
+/* OneBiteDataMath2.html: hand-written ONE BITE lessons for Math, Grades 4-8 (levels L05-L09). Round 2, Lane B2.
+   Schema and rules: docs/ONE-BITE-PLAYBOOK.md. The player is OneBite.html; the activities are OneBiteKit.html. One entry per skill id:
+   window.ONE_BITE['SKILL.ID'] = { band, today, why, pic, ready:[{q,o,a}], bridge, watch:{q,m,steps,a}, oops:{q,wrong,right,why}, ways:[...], done, board:{...},
+     do:[2 guided activities], your:[5 practice activities] };
+   Lane B2 rules: E45 (L05-L06) and M68 (L07-L09); every activity has say (12 words or fewer) and how; 4 choices; 3+ kinds per lesson,
+   never the same kind twice in a row; E45 has "tap the reason" (why) on 2+ activities. Boys never see the builders' word for these lessons.
+   Content lanes edit only their own data file. No double slash in this file. */
+window.ONE_BITE=window.ONE_BITE||{};
+(function(B){
+
+/* ---- L05 (Grade 4, Explorers) ---- */
+B['MATH.NUM.L05.01']={ band:'E45', pic:'🧩', today:'Find factors and multiples, then spot the primes', why:'Setting up chairs for a simcha? Factors tell you every way to make equal rows.',
+  ready:[{q:'6 × 7 = ?', o:['42','36','48','13'], a:'42'},{q:'Does 5 go into 35 evenly?', o:['Yes, 7 times','No','Yes, 6 times','Yes, 5 times'], a:'Yes, 7 times'}],
+  bridge:'MATH.OPS.L04.02', bridgeName:'Missing Factor',
+  watch:{ q:'Find the factors of 18. Is 18 prime?', m:{type:'emoji', e:'🪑', n:18, group:6}, steps:[
+    {t:'Build rows of 18 chairs: 1 × 18, 2 × 9, 3 × 6.'},
+    {t:'Try 4 and 5: they do not fit. Next is 6, already found: stop. Factors of 18: 1, 2, 3, 6, 9, 18. Count them: 18 has 6 factors.'},
+    {t:'More than 2 factors, so 18 is composite. A prime, like 13, has only 2 factors: 1 and itself.'},
+    {t:'Smallest factor after 1? Try 2, 3, 5, 7, 11, 13 in order. 247 ÷ 13 = 19, so it is 13.'},
+    {t:'A multiple is the skip count, the times table: multiples of 6 are 6, 12, 18, 24.', m:{type:'line', from:0, to:30, hops:[0,6,12,18,24]}}], a:'1, 2, 3, 6, 9, 18. 18 is composite.' },
+  oops:{ q:'Is 1 prime?', wrong:'Yes', right:'No', why:'A prime has exactly TWO factors. 1 has only one.' },
+  ways:['rows of chairs (arrays)','factor pairs in order','sort and find','Mistake Detective'], done:'You can list factors, find multiples, and tell prime from composite.',
+  board:{ one:'Factors multiply to make the number. A prime has exactly 2 factors.', activity:'Build every rectangle you can with 12, 13 and 18 square tiles.', mistakes:['Calling 1 prime','Missing a factor pair (like 6 × 8 for 48)','Mixing up factor and multiple'] },
+  do:[
+    {type:'tiles', w:['1','2','3','4','6','12'], extra:['5','8'], q:'12 chairs in equal rows', say:'Build every factor of 12, smallest first.', how:'Each way to make rows gives 2 factors: 1 × 12, 2 × 6, 3 × 4. 5 and 8 do not fit.'},
+    {type:'sort', bins:['Factor of 18','Not a factor'], cards:[['2',0],['4',1],['3',0],['5',1],['6',0],['9',0]], say:'Can 18 chairs make equal rows of this many? Sort.', how:'Divide 18 by it. No remainder? It is a factor. 18 ÷ 4 leaves 2, so 4 is not.',
+      why:{q:'Why is 4 not a factor of 18?', o:['18 ÷ 4 has a remainder','4 is even','4 is small','18 is odd'], a:'18 ÷ 4 has a remainder'}}],
+  your:[
+    {type:'tiles', w:['1','2','4','5','10','20'], extra:['3','8'], q:'Factors of 20', say:'Shimon has 20 chairs. Build every factor, smallest first.', how:'Pairs: 1 × 20, 2 × 10, 4 × 5. 3 and 8 leave a remainder.'},
+    {type:'findall', grid:['1','2','3','4','5','6','7','8','9','12','16','18','24','36','48'], find:['1','2','3','4','6','8','12','16','24','48'], findSay:'factor of 48', say:'Tap every factor of 48. Then count them.', how:'Pairs: 1 × 48, 2 × 24, 3 × 16, 4 × 12, 6 × 8. That is 10 factors.',
+      why:{q:'How many factors does 48 have?', o:['10','8','6','12'], a:'10'}},
+    {type:'sort', bins:['Prime','Composite','Neither'], cards:[['7',0],['9',1],['1',2],['13',0],['15',1],['21',1]], say:'Prime, composite, or neither? Sort. Watch out for 1!', how:'Exactly 2 factors: prime. More than 2: composite. 1 has only 1 factor: neither.',
+      why:{q:'Why is 1 not prime?', o:['It has only one factor','It is odd','It is too small to divide','It is the first number'], a:'It has only one factor'}},
+    {type:'findall', grid:['1','2','3','6','12','18','24','30','9','15','36','4'], find:['6','12','18','24','30','36'], findSay:'multiple of 6', say:'Careful: tap every MULTIPLE of 6, not the factors.', how:'Multiples are the 6 times table: 6, 12, 18, 24, 30, 36. 1, 2 and 3 are factors.'},
+    {type:'match', pairs:[['25','5'],['21','3'],['49','7'],['247','13']], q:'Chairs for a simcha: smallest row size after 1', say:'Match each number to its smallest factor after 1.', how:'Try 2, then 3, 5, 7, 11, 13 in order. 247 ÷ 13 = 19.',
+      why:{q:'How do you find the smallest factor?', o:['Try 2, 3, 5, 7… in order','Take half the number','Use the last digit','Guess a big one'], a:'Try 2, 3, 5, 7… in order'}}] };
+
+B['MATH.FRAC.L05.04']={ band:'E45', pic:'🪙', today:'Turn tenths into hundredths, like dimes into cents', why:'Chanukah shopping: 7 dimes is 70 cents. Tenths and hundredths work the same way.',
+  ready:[{q:'How many cents are in 1 dime?', o:['10','100','1','5'], a:'10'},{q:'How many cents make $1?', o:['100','10','1,000','50'], a:'100'}],
+  bridge:'MATH.MEAS.L03.04', bridgeName:'Count money and make change',
+  watch:{ q:'0.4 = ?/100', steps:[
+    {t:'0.4 is 4 tenths, like 4 dimes.', m:{type:'fbar', n:4, d:10}},
+    {t:'4 dimes = 40 cents. So 0.4 = 4/10 = 40/100.', m:{type:'emoji', e:'🪙', n:40, group:10}},
+    {t:'Two places after the point are hundredths: 73/100 = 0.73, and 9/100 = 0.09 (9 cents).'},
+    {t:'Adding? Make the tenths into hundredths first: 3/10 = 30/100. Then 30/100 + 39/100 = 69/100 = 0.69.'}], a:'0.4 = 40/100' },
+  oops:{ q:'Write 9/100 as a decimal.', wrong:'0.9', right:'0.09', why:'0.9 is 9 tenths (90 cents). 9 hundredths is 9 cents: 0.09.' },
+  ways:['money: dimes and cents','fraction bar','match, sort and order','Mistake Detective'], done:'You can change tenths to hundredths and write them as decimals.',
+  board:{ one:'1 tenth = 10 hundredths, like 1 dime = 10 cents.', activity:'Shade tenths and hundredths on 10 by 10 grids; trade dimes for pennies.', mistakes:['Writing 9/100 as 0.9','Thinking 0.35 is more than 0.6 because 35 > 6','Adding 3/10 + 39/100 as 42/110'] },
+  do:[
+    {type:'count', n:4, pic:'🪙', o:['4','40','10','14'], q:'0.4 of a dollar: how many dimes?', say:'0.4 is 4 tenths. Tap each dime and count.', how:'Each dime is 1 tenth of a dollar. 4 dimes = 0.4 = 40 cents = 40/100.',
+      why:{q:'4 dimes is how many cents?', o:['40','4','14','400'], a:'40'}},
+    {type:'match', pairs:[['0.4','40/100'],['0.04','4/100'],['0.7','70/100'],['0.07','7/100']], say:'Dimes or pennies? Match each decimal to its hundredths.', how:'4 dimes = 40 cents. So 0.4 = 40/100. Tenths times 10 makes hundredths.'}],
+  your:[
+    {type:'listen', hear:'seventy-three hundredths', o:['0.73','7.3','0.073','73'], a:'0.73', say:'Moishe hears seventy-three hundredths. Tap it.', how:'Hundredths use two places after the point: 0.73.',
+      why:{q:'Why 0.73?', o:['Hundredths use 2 places after the point','Tenths use 2 places','73 is more than 10','You add a zero'], a:'Hundredths use 2 places after the point'}},
+    {type:'match', pairs:[['9/100','0.09'],['73/100','0.73'],['6/100','0.06'],['30/100','0.3']], say:'Match each fraction to its decimal.', how:'Hundredths: two places after the point. 9 cents is 0.09, not 0.9.'},
+    {type:'sort', bins:['Right','Mistake'], cards:[['9/100 = 0.09',0],['9/100 = 0.9',1],['0.6 > 0.35',0],['0.35 > 0.6',1],['3/10 = 30/100',0],['3/10 = 3/100',1]], say:'Mistake Detective: right or mistake? Sort each one.', how:'Think money. 0.9 is 90 cents, not 9. 0.6 is 60 cents: more than 35 cents.',
+      why:{q:'Why is 0.6 more than 0.35?', o:['60 cents beats 35 cents','35 is more than 6','Shorter is smaller','They are equal'], a:'60 cents beats 35 cents'}},
+    {type:'findall', grid:['3/10','30/100','0.3','0.03','3/100','0.30','33/100','0.33'], find:['3/10','30/100','0.3','0.30'], findSay:'number equal to 0.3', say:'Tap every number equal to 0.3.', how:'0.3 is 3 dimes, 30 cents. 0.03 is just 3 cents.'},
+    {type:'tiles', w:['3/10 = 30/100','30/100 + 39/100','= 69/100','= 0.69'], extra:['= 42/110'], q:'Dovid has 3 dimes and 39 cents: 3/10 + 39/100', say:'Build the steps to add 3/10 + 39/100.', how:'Make the tenths into hundredths first. Then add the tops. 69 hundredths is 0.69.'}] };
+
+B['MATH.OPS.L05.05']={ band:'E45', pic:'🚐', today:'Decide what the leftover means: round up, drop, use', why:'Class trip: every boy needs a seat in a van, even the last 2.',
+  ready:[{q:'29 ÷ 6 = ?', o:['4 R5','5 R1','4 R3','3 R11'], a:'4 R5'},{q:'50 ÷ 8 = ?', o:['6 R2','6 R4','7 R2','5 R10'], a:'6 R2'}],
+  bridge:'MATH.OPS.L05.02', bridgeName:'Long division',
+  watch:{ q:'50 boys, 8 in each van. How many vans?', m:{type:'scene', e:'🚐', t:'Class trip! 50 boys are going, and each van holds 8.'}, steps:[
+    {t:'Divide: 50 ÷ 8 = 6 R2. 6 vans hold 48 boys.'},
+    {t:'ROUND UP: 2 boys still need a seat, so 7 vans are needed.', m:{type:'emoji', e:'🚐', n:7}},
+    {t:'DROP IT: 55 cookies, 9 in each box. 55 ÷ 9 = 6 R1, so 6 FULL boxes.'},
+    {t:'USE IT: how many cookies are left over? The remainder: 1.'},
+    {t:'Two steps: 6 packs of 10 pencils is 60. Give away 36: 60 − 36 = 24 left.'}], a:'7 vans' },
+  oops:{ q:'27 boys, 4 at each table. How many tables?', wrong:'6 R3 tables', right:'7 tables', why:'3 boys still need a seat, so round up.' },
+  ways:['frum-family scene','hop by groups','sort it','Mistake Detective'], done:'You can divide and decide: round up, drop the leftover, or use it.',
+  board:{ one:'Ask: does the leftover need its own group?', activity:'Seat 27 counters at tables of 4, then pack 27 into boxes of 4.', mistakes:['Writing 6 R3 vans','Rounding up for FULL boxes','Giving the quotient when the question asks what is left over'] },
+  do:[
+    {type:'hop', start:0, add:56, unit:8, from:0, to:64, q:'50 boys, 8 in each van', say:'Hop 8 boys per van until all 50 have seats.', how:'Each hop is one van of 8. 6 hops is 48: 2 boys left. Hop once more: 7 vans.'},
+    {type:'sort', bins:['Round up','Drop it','Use it'], cards:[['Vans for boys',0],['Full boxes',1],['Cookies left',2],['Guest tables',0],['Shelves filled',1],['Pencils left',2]], say:'What do we do with the leftover? Sort each question.', how:'Everyone needs a place: round up. Only full ones count: drop it. Asks what is left: use it.',
+      why:{q:'Why round up for vans?', o:['Every boy needs a seat','Vans are big','The remainder is small','Always round up'], a:'Every boy needs a seat'}}],
+  your:[
+    {type:'listen', hear:'Shmuli has 78 rugelach, 7 in each box. How many FULL boxes?', o:['11','12','1','10'], a:'11', say:'Listen. How many FULL boxes?', how:'78 ÷ 7 = 11 R1. Only full boxes count: drop the 1.',
+      why:{q:'Why not 12?', o:['The 12th box is not full','12 is odd','Always round up','Boxes hold 12'], a:'The 12th box is not full'}},
+    {type:'match', q:'43 ÷ 8 = 5 R3', pairs:[['Vans needed','6'],['Full boxes','5'],['Cookies left','3']], say:'43 ÷ 8 = 5 R3. Match each question to its answer.', how:'Vans: round up to 6. Full boxes: drop it, 5. Left over: use it, 3.'},
+    {type:'sort', q:'50 boys, 8 a van. 55 cookies, 9 a box.', bins:['Makes sense','Mistake'], cards:[['7 vans',0],['6 R2 vans',1],['6 vans',1],['6 full boxes',0],['7 full boxes',1],['1 cookie left',0]], say:'Mistake Detective: does each answer make sense? Sort.', how:'You cannot have 6 R2 vans, and 6 vans leave 2 boys home. A box that is not full is not a full box.'},
+    {type:'tiles', w:['6 × 10 = 60','60 − 36 = 24'], extra:['60 + 36 = 96','6 + 10 = 16'], q:'6 packs of 10, give away 36', say:'Two steps: build them in order.', how:'First find how many in all: 6 × 10. Then take away the 36 he gave.'},
+    {type:'hop', start:0, add:40, unit:8, from:0, to:48, q:'41 seforim, 8 on each shelf', say:'Hop 8 seforim per shelf. How many shelves are filled completely?', how:'5 hops is 40. 1 sefer is left: it cannot fill a shelf. So 5.',
+      why:{q:'Why stop at 5?', o:['The 6th shelf is not full','41 is odd','Always round down','8 is even'], a:'The 6th shelf is not full'}}] };
+
+B['MATH.GEO.L05.01']={ band:'E45', pic:'📐', today:'Measure, name and find missing angles', why:'Building a sukkah? Square corners of 90° keep the walls straight and strong.',
+  ready:[{q:'Which one is a square corner?', o:['A page corner','A pizza slice tip','A wide open door','A straight ruler'], a:'A page corner'},{q:'135 − 70 = ?', o:['65','75','55','205'], a:'65'}],
+  bridge:'MATH.GEO.L03.01', bridgeName:'Sides, corners, rows and columns',
+  watch:{ q:'One side lines up with 10°, the other with 55°. How big is the angle?', m:{type:'scene', e:'📐', t:'A protractor is a ruler for angles. It goes from 0° to 180°.'}, steps:[
+    {t:'Angles are measured in degrees (°). Read the number under each side: 10° and 55°.', m:{type:'line', from:0, to:100, hops:[10,55]}},
+    {t:'Subtract: 55 − 10 = 45. The angle is 45°.'},
+    {t:'Under 90° is acute. Exactly 90° is right. Between 90° and 180° is obtuse. 180° is straight.'},
+    {t:'Missing parts: a square corner split in two: 90 − 54 = 36°. A straight line split in two: 180 − 84 = 96°.', m:{type:'line', from:0, to:180, hops:[0,84,180]}},
+    {t:'Turns: a full turn is 360°. Half a turn: 360 ÷ 2 = 180°, a straight angle. A twelfth of a turn: 360 ÷ 12 = 30°.'}], a:'45°' },
+  oops:{ q:'One side lines up with 70°, the other with 135°.', wrong:'205°', right:'65°', why:'Subtract, do not add: 135 − 70 = 65.' },
+  ways:['number line protractor','sort and match','build the equation','Mistake Detective'], done:'You can measure an angle and name it: acute, right, obtuse or straight.',
+  board:{ one:'Read both sides of the protractor, then subtract.', activity:'Boys make angles with their arms; a partner measures with a big protractor.', mistakes:['Adding the two readings','Reading the wrong scale (140° for a sharp angle)','Mixing up acute and obtuse'] },
+  do:[
+    {type:'hop', start:10, add:45, unit:5, from:0, to:60, q:'From 10° to 55°', say:'One side on 10°, the other on 55°. Hop by 5s.', how:'Start at 10. Each hop is 5°. 9 hops is 45°, the same as 55 − 10.'},
+    {type:'sort', bins:['Acute','Right','Obtuse'], cards:[['40°',0],['90°',1],['134°',2],['75°',0],['120°',2],['89°',0]], say:'Acute, right or obtuse? Sort each angle.', how:'Under 90° is acute. Exactly 90° is right. Over 90° is obtuse. 89° is still acute.',
+      why:{q:'Why is 134° obtuse?', o:['It is more than 90°','It is less than 90°','It is exactly 180°','It is even'], a:'It is more than 90°'}}],
+  your:[
+    {type:'listen', hear:'One side is on 50 degrees, the other on 120. How big is the angle?', q:'50° and 120°', o:['70°','170°','60°','80°'], a:'70°', say:'Listen. How big is the angle?', how:'Subtract the smaller from the bigger: 120 − 50 = 70.'},
+    {type:'sort', q:'Protractor: one side on 70°, one on 135°', bins:['Right way','Mistake'], cards:[['135 − 70 = 65°',0],['135 + 70 = 205°',1],['Acute: 40°',0],['Acute: 140°',1]], say:'Mistake Detective: right way or mistake? Sort.', how:'Subtract, do not add. An acute (sharp) angle is under 90°, so 140° was read on the wrong scale.',
+      why:{q:'Why is 205° wrong?', o:['You must subtract the readings','205 is odd','Angles are under 100','You must multiply'], a:'You must subtract the readings'}},
+    {type:'match', pairs:[['Half turn','180°'],['Square corner','90°'],['Full turn','360°'],['1/12 turn','30°']], say:'Match each one to its degrees.', how:'A full turn is 360°. Half a turn is a straight line, 180°. 1/12 of a turn: 360 ÷ 12 = 30.',
+      why:{q:'What kind of angle is 180°?', o:['Straight','Obtuse','Right','Acute'], a:'Straight'}},
+    {type:'tiles', w:['180','−','84','=','96'], extra:['+','264'], q:'Straight line: 84° and ?', say:'One angle on a straight line is 84°. Build the other.', how:'A straight line is 180°. Take away the angle you know.'},
+    {type:'listen', hear:'Yossi’s sukkah corner is split by a board. One part is 54 degrees. What is the other?', q:'54° + ? = 90°', o:['36°','46°','126°','144°'], a:'36°', say:'A square corner is split. One part is 54°. The other?', how:'A right angle is 90°. 90 − 54 = 36.'}] };
+
+B['MATH.ALG.L05.01']={ band:'E45', pic:'🔢', today:'Follow a rule, find a rule, spot odd or even', why:'Saving for a bar mitzvah gift: start with $5 and add $3 each week. A rule tells you when you reach $35.',
+  ready:[{q:'15 + 4 = ?', o:['19','20','11','54'], a:'19'},{q:'Is 7 odd or even?', o:['Odd','Even','Both','Neither'], a:'Odd'}],
+  bridge:'MATH.ALG.L04.01', bridgeName:'Number Patterns',
+  watch:{ q:'Rule: start at 3, add 4 each time. What is the 5th number?', steps:[
+    {t:'Write the 1st number: 3. Then add 4 each time: 3, 7, 11, 15, 19.', m:{type:'line', from:0, to:20, hops:[3,7,11,15,19]}},
+    {t:'Count the places: the 5th number is 19. Shortcut: from the 1st to the 5th is 4 jumps, so 3 + 4 × 4 = 19.'},
+    {t:'Odd + even stays odd: they are all odd. Even + even: they are all even. Add an odd number: they switch between odd and even.'},
+    {t:'Find the rule: 14, 22, 30, 38. Every jump is 8, so the rule is Add 8.'},
+    {t:'A times rule grows fast: start at 2, multiply by 3: 2, 6, 18, 54.'}], a:'19' },
+  oops:{ q:'Start at 6, add 2. What is the 6th number?', wrong:'18 (6 + 6 × 2)', right:'16', why:'The start is the 1st number. The 6th is 5 jumps later: 6 + 5 × 2 = 16.' },
+  ways:['number line hops','build the pattern','sort the rules','Mistake Detective'], done:'You can follow a rule, find any number in the pattern, and spot odd and even patterns.',
+  board:{ one:'Follow the rule one step at a time, then look for what else is true.', activity:'Number machine: one boy says a rule, the class calls out the next 5 numbers.', mistakes:['Counting the start as a jump (off by one)','Guessing from the last digit instead of using the rule','Mixing up add 3 and multiply by 3'] },
+  do:[
+    {type:'hop', start:3, add:16, unit:4, from:3, to:23, q:'Start at 3, add 4: the 5th number?', say:'Start at 3, add 4. Hop to the 5th number.', how:'3 is the 1st number. Each hop adds 4: 7, 11, 15, 19. 4 hops reach the 5th: 19.',
+      why:{q:'Why only 4 hops for the 5th number?', o:['The 1st number is the start','Hops are always 4','The 5th is the last','The rule says 5'], a:'The 1st number is the start'}},
+    {type:'match', pairs:[['14, 22, 30','Add 8'],['2, 8, 14','Add 6'],['5, 10, 20','Multiply by 2'],['40, 34, 28','Subtract 6']], say:'Match each pattern to its rule.', how:'Find the jump from one number to the next. The same jump each time? Add it. Doubling? Multiply.'}],
+  your:[
+    {type:'findall', grid:['1','6','10','11','15','16','20','21','25','26'], find:['1','6','11','16','21','26'], findSay:'number in the pattern', q:'Yossi: start at 1, add 5. Is 20 in it?', say:'Start at 1, add 5. Tap only numbers really in the pattern.', how:'Follow the rule: 1, 6, 11, 16, 21, 26. 20 and 25 end in 0 or 5, but they are not in it.'},
+    {type:'sort', q:'6, 8, 10… the 6th? 50, 44, 38… the 4th?', bins:['Right','Mistake'], cards:[['6th: 16',0],['6th: 18',1],['4th: 32',0],['4th: 26',1]], say:'Mistake Detective: right or mistake? Sort each one.', how:'The start is the 1st number. The 6th is 5 jumps later: 6 + 10 = 16. The 4th is 3 jumps back: 50 − 18 = 32.',
+      why:{q:'Why is the 6th not 18?', o:['The start is the 1st number','2 is even','6 × 3 = 18','You must subtract'], a:'The start is the 1st number'}},
+    {type:'match', q:'Find the rule', pairs:[['12, 20, 28','Add 8'],['3, 10, 17','Add 7'],['4, 12, 36','Multiply by 3'],['30, 26, 22','Subtract 4']], say:'Find the jump. Match each pattern to its rule.', how:'Subtract next to first: 20 − 12 = 8, the same each time. 4 to 12 to 36 is × 3 each time.'},
+    {type:'sort', bins:['All odd','All even','Switch'], cards:[['Start 3, add 4',0],['Start 4, add 8',1],['Start 2, add 5',2],['Start 15, add 2',0],['Start 6, add 3',2],['Start 10, add 6',1]], say:'All odd, all even, or switching? Sort each rule.', how:'Odd + even stays odd. Even + even stays even. Adding an odd number makes it switch.',
+      why:{q:'Start at 2, add 5: why does it switch?', o:['Adding an odd number flips odd and even','5 is big','2 is even','It goes up'], a:'Adding an odd number flips odd and even'}},
+    {type:'listen', hear:'Chaim learns 15 mishnayos the first week, and each week 2 more than the week before. How many in the 8th week?', o:['29','31','23','30'], a:'29', say:'Listen. How many mishnayos in the 8th week?', how:'Start at 15, add 2. The 8th number is 7 jumps after the 1st: 15 + 14 = 29.'}] };
+
+
+
+
+B['MATH.MEAS.L05.02']={ band:'E45', pic:'🟩', today:'Use area and perimeter formulas for any rectangle', why:'Abba buys a rug and a fence for the yard: the rug needs area, the fence needs perimeter.',
+  ready:[{q:'8 × 5 = ?', o:['40','13','26','45'], a:'40'},{q:'Area counts the squares that…', o:['cover the inside','go around the edge','are on one side','are in the corners'], a:'cover the inside'}],
+  bridge:'MATH.MEAS.L04.03', bridgeName:'Perimeter',
+  watch:{ q:'A rectangle is 8 feet long and 5 feet wide.', m:{type:'emoji', e:'🟩', n:40, group:8}, steps:[
+    {t:'AREA covers the inside: length × width = 8 × 5 = 40 square feet.'},
+    {t:'PERIMETER: walk the edge: 8 + 5 + 8 + 5 = 26 feet. Or 2 × (8 + 5) = 26.'},
+    {t:'Know the area and the length? Divide: area 40, length 8, so width = 40 ÷ 8 = 5.'},
+    {t:'Know the perimeter and the length? Half the perimeter is length + width. Perimeter 14, length 4: 14 ÷ 2 = 7, so width = 7 − 4 = 3.'},
+    {t:'A square has 4 equal sides. A square room 5 feet on each side: area = 5 × 5 = 25 square feet.'}], a:'Area 40 square feet; perimeter 26 feet' },
+  oops:{ q:'How much carpet for a room 9 by 4?', wrong:'26 (that is the perimeter)', right:'36 square units', why:'Carpet covers the inside: area. 9 × 4 = 36.' },
+  ways:['picture of squares','sort the jobs','build the steps','Mistake Detective'], done:'You can find area, perimeter, and a missing side of any rectangle.',
+  board:{ one:'Area = length × width. Perimeter = 2 × (length + width).', activity:'Tape rectangles on the floor; one team fences them with string, one covers them with paper squares.', mistakes:['Mixing up area and perimeter','Adding only 2 sides for the perimeter','Multiplying area × length to find the width'] },
+  do:[
+    {type:'count', n:15, pic:'🟩', o:['15','8','16','10'], q:'A rug 5 feet by 3 feet', say:'Tap each square foot the rug covers. How many?', how:'3 rows of 5 squares: 5, 10, 15. That is the area: 15 square feet.'},
+    {type:'tiles', w:['2 × (13 + 5)','= 2 × 18','= 36'], extra:['13 × 5','= 65'], q:'A fence around a 13 by 5 yard', say:'Build the perimeter steps for 13 by 5.', how:'Add the length and the width. Then double it, for the other 2 sides.'}],
+  your:[
+    {type:'sort', bins:['Area','Perimeter'], cards:[['Rug',0],['Fence',1],['Paint a wall',0],['Frame’s edge',1],['Floor tiles',0],['Ribbon edge',1]], say:'Covering or going around? Sort each job.', how:'Covers the inside: area. Goes around the edge: perimeter.',
+      why:{q:'Why does a fence need perimeter?', o:['It goes around the edge','It covers the yard','It is tall','It has squares'], a:'It goes around the edge'}},
+    {type:'match', q:'Around = perimeter. A = area, L = length.', pairs:[['Area, 10 by 2','20'],['Around, 10 by 2','24'],['Width? A 32, L 8','4'],['Around, 18 by 11','58']], say:'Area, perimeter or width? Solve and match each one.', how:'A: length × width. P: 2 × (length + width). Width: area ÷ length.'},
+    {type:'sort', q:'Yehuda’s sukkah floor, 9 by 4', bins:['Right','Mistake'], cards:[['Mat: 36',0],['Mat: 26',1],['Walls: 26',0],['Walls: 36',1]], say:'Mistake Detective: right or mistake? Sort each one.', how:'A floor mat covers the inside: area, 9 × 4. The walls go around: perimeter, 9 + 4 + 9 + 4.',
+      why:{q:'Why is "Mat: 26" a mistake?', o:['26 is the distance around, not the inside','26 is too small','Mats use feet','9 + 4 = 26'], a:'26 is the distance around, not the inside'}},
+    {type:'listen', hear:'Abba’s new rug covers 32 square feet. It is 8 feet long. How wide is it?', o:['4','24','40','256'], a:'4', say:'Listen. How wide is the rug?', how:'Covers means area: 8 × ? = 32. Divide: 32 ÷ 8 = 4 feet.',
+      why:{q:'Why divide?', o:['Length × width makes the area','Divide always comes first','32 is even','The width is smaller'], a:'Length × width makes the area'}},
+    {type:'tiles', w:['12 + 7 = 19','2 × 19','= 38 feet'], extra:['12 × 7 = 84','12 + 7 + 7'], q:'Yehuda’s garden: 12 ft by 7 ft. How much fence?', say:'How much fence goes around the garden? Build the steps.', how:'Fence goes around: add the length and the width, then double it for the other 2 sides.',
+      why:{q:'Why add, then double?', o:['There are 2 lengths and 2 widths','Fences are long','12 is even','Double is faster'], a:'There are 2 lengths and 2 widths'}}] };
+
+
+B['MATH.OPS.L05.04']={ band:'E45', pic:'📊', today:'Compare with times as many: multiply, not add', why:'Bubby bakes 3 times as many kugels for Pesach as for Shabbos. Times as many tells you how many.',
+  ready:[{q:'4 × 6 = ?', o:['24','10','46','20'], a:'24'},{q:'24 ÷ 4 = ?', o:['6','20','8','28'], a:'6'}],
+  bridge:'MATH.OPS.L04.09', bridgeName:'Four-Way Stories',
+  watch:{ q:'Moshe has 6 stickers. Dovid has 4 times as many. How many does Dovid have?', m:{type:'emoji', e:'⭐', n:30, group:6}, steps:[
+    {t:'Top row: Moshe’s 6 stars. Below it: Dovid’s 4 rows of 6.'},
+    {t:'Times as many means multiply: 4 × 6 = 24. The equation: 24 = 4 × 6.'},
+    {t:'How many MORE does Dovid have? 24 − 6 = 18.'},
+    {t:'Backwards: Moshe read 21 pages. That is 3 times as many as Chaim read. Divide: 21 ÷ 3 = 7 pages.'},
+    {t:'20 is how many times as many as 5? Divide: 20 ÷ 5 = 4 times.'}], a:'24 stickers' },
+  oops:{ q:'3 times as many as 6', wrong:'9 (6 + 3)', right:'18', why:'Times as many multiplies: 3 × 6.' },
+  ways:['bar pictures','build the equation','sort multiply or divide','Mistake Detective'], done:'You can solve times-as-many problems by multiplying or dividing.',
+  board:{ one:'Times as many: multiply. Find the small amount or how many times: divide.', activity:'Cube trains: build Moshe’s train, then a train 3 times as long.', mistakes:['Adding instead of multiplying','Multiplying when the big amount is given','Giving the total when asked how many MORE'] },
+  do:[
+    {type:'count', n:15, pic:'⭐', o:['15','8','53','10'], q:'Mendy: 5 stickers. Dovid: 3 times as many', say:'Dovid has 3 groups of 5. Tap and count them all.', how:'3 times as many means 3 groups of Mendy’s 5: 5, 10, 15.',
+      why:{q:'Why not 8?', o:['3 times means 3 groups of 5','3 + 5 = 8','8 is close','Dovid has more'], a:'3 times means 3 groups of 5'}},
+    {type:'hop', start:0, add:50, unit:10, from:0, to:60, q:'Ari: 10 marbles. Baruch: 5 times as many', say:'Hop 5 jumps of 10. How many does Baruch have?', how:'5 times as many as 10: 5 jumps of 10 = 50.'}],
+  your:[
+    {type:'sort', q:'Eli has 6. Dovid has 3 times as many.', bins:['Right','Mistake'], cards:[['3 × 6 = 18',0],['6 + 3 = 9',1],['12 more',0],['18 more',1]], say:'Mistake Detective: right or mistake? Sort each one.', how:'Times as many: multiply, 18. How many MORE: then take away Eli’s 6, so 12 more.',
+      why:{q:'Why is 6 + 3 a mistake?', o:['Times as many means multiply','6 + 3 is 10','You must subtract','3 is too small'], a:'Times as many means multiply'}},
+    {type:'tiles', w:['96','=','8','×','12'], extra:['+','20'], say:'Build the equation: 96 is 8 times as many as 12.', how:'Start with the big number, 96. Times as many means ×, not +. 96 = 8 × 12.'},
+    {type:'listen', hear:'Shimon read 32 pages. That is 4 times as many pages as Avi read. How many pages did Avi read?', o:['8','128','28','36'], a:'8', say:'Listen. How many pages did Avi read?', how:'Shimon has the big amount. Divide: 32 ÷ 4 = 8. Check: 4 × 8 = 32.'},
+    {type:'sort', bins:['Multiply','Divide'], cards:[['5 times as many',0],['How many times?',1],['Twice as tall',0],['21 is 3 times ?',1],['4 times the cost',0],['? times 5 is 20',1]], say:'Multiply or divide? Sort each question.', how:'Know the small amount? Multiply. Know the big amount? Divide.',
+      why:{q:'Why divide for "21 is 3 times ?"', o:['The big amount 21 is known','21 is odd','Divide is always second','3 is small'], a:'The big amount 21 is known'}},
+    {type:'listen', hear:'Bubby baked 27 kugels for Pesach and 9 for Shabbos. 27 is how many times as many as 9?', o:['3','18','36','243'], a:'3', say:'Listen. How many times as many?', how:'How many 9s make 27? Divide: 27 ÷ 9 = 3.'}] };
+
+
+B['MATH.PV.L05.02']={ band:'E45', pic:'🎯', today:'Round any number: look one place to the right', why:'Rabbi Katz said about 350,000 people came to the siyum. Rounding makes big numbers easy.',
+  ready:[{q:'Round 47 to the nearest ten.', o:['50','40','47','45'], a:'50'},{q:'Round 362 to the nearest hundred.', o:['400','300','360','370'], a:'400'}],
+  bridge:'MATH.PV.L04.01', bridgeName:'Round Up',
+  watch:{ q:'Round 46,827 to the nearest thousand.', m:{type:'tiles', w:['4','6',',','8','2','7'], hi:[1,3]}, steps:[
+    {t:'Find the rounding place: the thousands digit is 6. The neighbors are 46,000 and 47,000.'},
+    {t:'Look ONE place to the right: 8. 5 or more rounds up; 4 or less stays.'},
+    {t:'8 rounds up: the 6 becomes 7, and every digit after it becomes 0. Answer: 47,000.'},
+    {t:'Nearest hundred-thousand: 252,537. Look at the 5 (ten thousands): up to 300,000.'},
+    {t:'A 9 that rounds up carries: 2,299 to the nearest ten. 9 tens + 1 = 10 tens, so 2,300.'}], a:'47,000' },
+  oops:{ q:'Round 7,349 to the nearest hundred.', wrong:'7,400 (looked at the 9)', right:'7,300', why:'For hundreds, look at the tens digit, 4: stay.' },
+  ways:['digit tiles','sort up or stay','order the steps','Mistake Detective'], done:'You can round any number to any place.',
+  board:{ one:'Look one place to the right: 5 or more rounds up, then zeros.', activity:'Number-line hallway: boys stand on 46,827 and walk to the closer thousand.', mistakes:['Looking at the wrong digit','Changing digits to the left of the place','Not carrying when a 9 rounds up'] },
+  do:[
+    {type:'tiles', w:['Find the place','Look right one','5 or more? Up','Zeros after'], extra:['Look left one'], say:'Order the steps for rounding.', how:'Find the place, look one to the right, decide, then fill with zeros.'},
+    {type:'sort', q:'Nearest thousand: look at the hundreds digit', bins:['Round up','Stay'], cards:[['282,248',1],['350,916',0],['442,741',0],['193,162',1],['476,758',0],['50,746',0]], say:'Nearest thousand: round up or stay? Sort each one.', how:'Look at the hundreds digit. 5 or more: up. 4 or less: stay.',
+      why:{q:'Why does 282,248 stay?', o:['The hundreds digit is 2','It ends in 8','282 is even','It is big'], a:'The hundreds digit is 2'}}],
+  your:[
+    {type:'listen', hear:'Round 2,299 to the nearest ten.', q:'2,299', o:['2,300','2,290','2,200','2,310'], a:'2,300', say:'Listen. Round to the nearest ten.', how:'The tens digit is 9. Look right: 9. Round up: 9 tens + 1 = 10 tens, so 2,300.',
+      why:{q:'Why 2,300?', o:['9 tens + 1 makes 10 tens','You always round up','It ends in 9','2,299 is odd'], a:'9 tens + 1 makes 10 tens'}},
+    {type:'sort', q:'Round to the nearest hundred', bins:['Right','Mistake'], cards:[['7,349 → 7,300',0],['7,349 → 7,400',1],['5,556 → 5,600',0],['5,556 → 5,500',1],['2,960 → 3,000',0],['2,960 → 2,1000',1]], say:'Mistake Detective: right or mistake? Sort each one.', how:'For hundreds, look at the tens digit only. 7,349: the tens digit is 4, so stay.',
+      why:{q:'Why is 7,349 → 7,400 a mistake?', o:['It looked at the 9, not the tens digit','4 is even','7,400 is too big','You never round up'], a:'It looked at the 9, not the tens digit'}},
+    {type:'findall', grid:['252,537','349,999','350,000','310,412','281,000','198,500','305,600','245,000'], find:['252,537','349,999','310,412','281,000','305,600'], findSay:'number that rounds to 300,000', say:'Nearest hundred thousand: tap every one that becomes 300,000.', how:'Look at the ten thousands. 250,000 up to 349,999 round to 300,000.'},
+    {type:'sort', q:'635,819 to the nearest thousand', bins:['Right','Mistake'], cards:[['636,000',0],['635,000',1],['636,819',1],['635,800',1]], say:'Which answer is right? Sort each one.', how:'Thousands digit 5, look right: 8. Round up to 636,000. Every digit after it becomes 0.'},
+    {type:'match', q:'Visitors to Shmuel’s town museums: nearest ten thousand', pairs:[['467,528','470,000'],['252,537','250,000'],['691,698','690,000'],['355,502','360,000']], say:'Round each to the nearest ten thousand. Match.', how:'Find the ten thousands digit. Look at the thousands digit to its right.'}] };
+
+
+})(window.ONE_BITE);
+</script>
