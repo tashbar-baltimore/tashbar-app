@@ -359,8 +359,9 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-m:disabled{ box-shadow:none; opacity:1; }
 .obk-card-wrap{ min-height:calc(var(--tap) * 1.5); display:grid; place-items:center; }
 .obk-card{ min-width:calc(var(--tap) * 1.5); min-height:calc(var(--tap) * 1.5); border-radius:20px; border:3px solid #3B6FD8; background:#fff; font-size:calc(var(--tap) * .7); font-weight:900; padding:6px 14px; box-shadow:0 6px 0 #C9D7F5; }
-.obk-bins{ display:grid; gap:10px; width:100%; max-width:460px; } .obk-bins.n2{ grid-template-columns:1fr 1fr; } .obk-bins.n3{ grid-template-columns:1fr 1fr 1fr; }
-.obk-bin{ min-height:calc(var(--tap) * 1.6); border-radius:18px; border:3px solid #B9B1A2; border-top-width:10px; background:#FBF9F4; display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 4px; font-size:var(--fs); font-weight:900; }
+.obk-bins{ display:grid; gap:10px; width:100%; max-width:460px; } .obk-bins.n2{ grid-template-columns:repeat(2,minmax(0,1fr)); } .obk-bins.n3{ grid-template-columns:repeat(3,minmax(0,1fr)); }   /* minmax(0,..): a long bin name shrinks to fit instead of pushing the last bin off the screen */
+.obk-bin{ min-width:0; min-height:calc(var(--tap) * 1.6); border-radius:18px; border:3px solid #B9B1A2; border-top-width:10px; background:#FBF9F4; display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 4px; font-size:var(--fs); font-weight:900; }
+.obk-bin-t{ display:block; width:100%; text-align:center; }   /* a block, so fit-text can see a long name sticking out */
 .obk-bin-in{ display:flex; flex-wrap:wrap; gap:2px; justify-content:center; font-size:22px; } .obk-bin-in i{ font-style:normal; }
 .obk-trace{ width:100%; max-width:300px; aspect-ratio:1; background:#fff; border:3px solid #E4DED2; border-radius:20px; overflow:hidden; } .obk-trace canvas{ width:100%; height:100%; display:block; touch-action:none; }
 .obk-hot{ box-shadow:0 0 0 5px rgba(30,158,98,.45) !important; border-color:#1E9E62 !important; }

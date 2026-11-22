@@ -154,6 +154,10 @@ module.exports = async function oneBiteTests(pg) {
         const rg = document.createRange(); rg.selectNodeContents(el); const tr = rg.getBoundingClientRect(); if (tr.right > r.right + 1 || tr.left < r.left - 1) o.bad.push('Activity Kit fit-text: match item "' + t + '" sticks out of its box'); });
       const si = p.ob.kitDo.findIndex(d => d.type === 'sort'); show('do', si); await sleep(5);
       const card = document.querySelector('#app .obk-card'); if (!card || lines(card) !== 2) o.bad.push('Activity Kit: a sort card with "\\n" must show 2 stacked rows (got ' + (card ? lines(card) : 'no card') + ')');
+      /* 3 bins with long names at K1 size stay on the screen */
+      p.ob.kitDo[si] = { type: 'sort', bins: ['Beginning', 'Middle', 'End'], cards: [['First', 0], ['Next', 1], ['Last', 2]] }; show('do', si); await sleep(5);
+      [...document.querySelectorAll('#app .obk-bin')].forEach(el => { const r = el.getBoundingClientRect(); if (r.right > innerWidth + 1 || r.left < -1) o.bad.push('Activity Kit: sort bin "' + el.textContent.trim() + '" is cut off at the edge at 390 px');
+        const t = el.querySelector('.obk-bin-t'), rg = document.createRange(); rg.selectNodeContents(t); const tr = rg.getBoundingClientRect(); if (tr.right > r.right + 1 || tr.left < r.left - 1) o.bad.push('Activity Kit: sort bin name "' + t.textContent + '" sticks out of its box'); });
       const ti = p.ob.kitDo.findIndex(d => d.type === 'tenframe'); show('do', ti); await sleep(5);
       if (document.querySelectorAll('#app .obk-cell.on').length !== 9 || document.querySelector('#app .obk-tray')) o.bad.push('Activity Kit: take-away ten-frame must start with 9 dots he can tap off (and no dot tray)');
       const s = p.ob.kit.s, d = p.ob.kit.acts[ti]; document.querySelector('#app .obk-cell.on').click(); await sleep(2); if (!document.querySelector('#app .obk-cell.gone')) o.bad.push('Activity Kit: tapping a dot in a take-away ten-frame must take it away');
