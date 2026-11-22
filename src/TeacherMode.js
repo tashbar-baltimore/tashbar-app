@@ -28,8 +28,8 @@ function tmPublic_(s) { return { id: s.id, skill: s.skill, skills: s.skills || [
 /* all built lessons with their names, for the teacher's picker */
 function tmCatalog_() {
   var c = CacheService.getScriptCache(), hit = c.get(TM.CAT); if (hit) return JSON.parse(hit);
-  var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ScienceMore2') + plFileText_('ElectivesMore');
-  var re = /'((?:MATH|READ|WRIT|LANG|SCI|ELEC)\.[A-Z]+\.L\d\d\.\d\d)'\s*\]?\s*[:=]\s*\{\s*name\s*:\s*(['"`])((?:\\.|(?!\2)[^\\])*)\2/g, m, seen = {}, out = [];
+  var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ScienceMore2') + plFileText_('ElectivesMore') + plFileText_('OneBiteDataRead');
+  var re = /'((?:MATH|READ|WRIT|LANG|SCI|ELEC)\.[A-Z]+\.L\d\d\.\d\d(?:\.[a-z])?)'\s*\]?\s*[:=]\s*\{\s*name\s*:\s*(['"`])((?:\\.|(?!\2)[^\\])*)\2/g, m, seen = {}, out = [];
   var known = {}; [].concat(MATH_K8, READ_K8, typeof SCI_K8 !== 'undefined' ? SCI_K8 : []).forEach(function (x) { known[x[0]] = x[1]; });
   while ((m = re.exec(html))) {
     var id = m[1]; if (seen[id]) continue; seen[id] = 1;
