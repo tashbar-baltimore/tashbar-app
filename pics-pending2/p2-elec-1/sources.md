@@ -1,0 +1,5 @@
+- old-ship-model-sails.webp | https://www.flickr.com/photos/66526627@N00/14203671909 | CC BY 2.0 | ptc24
+- old-telegraph-key-board.webp | https://pixabay.com/photos/telegraph-key-communication-retro-4891039/ | Pixabay Content License | Ray_Shrewsberry
+- alaska-snowy-mountain-forest.webp | https://pixabay.com/photos/denali-park-mountain-glaciers-1980936/ | Pixabay Content License | marcmooney
+- stone-aqueduct-arches.webp | https://pixabay.com/photos/monument-pont-du-gard-aqueduct-2114702/ | Pixabay Content License | gayulo
+- old-fort-brick-walls-path.webp | https://www.flickr.com/photos/75683070@N00/14311656627 | CC BY-SA 2.0 | Ken Lund

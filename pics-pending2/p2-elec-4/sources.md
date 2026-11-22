@@ -1,0 +1,6 @@
+- glowing-electric-room-heater.webp | https://pixabay.com/photos/room-heater-yellow-light-worm-1290546/ | Pixabay Content License | suvajit
+- muddy-leather-work-boots.webp | https://pixabay.com/photos/boots-grass-brown-outdoors-summer-3648141/ | Pixabay Content License | angelsharum
+- steel-medical-tools-on-blue-cloth.webp | https://pixabay.com/photos/surgery-tools-scalpel-scissors-1662204/ | Pixabay Content License | domkarch
+- three-mile-island-plant-aerial.webp | https://www.flickr.com/photos/30552029@N00/51142893665 | CC BY-SA 2.0 | formulanone
+- gray-double-socket-white-wall.webp | https://pixabay.com/photos/plug-volt-voltage-electricity-5634887/ | Pixabay Content License | ha11ok
+- remote-control-red-button-closeup.webp | https://pixabay.com/photos/black-button-communication-control-21166/ | Pixabay Content License | PublicDomainPictures

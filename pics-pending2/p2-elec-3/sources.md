@@ -1,0 +1,12 @@
+- grand-piano-on-stage.webp | https://pixabay.com/photos/piano-music-theatre-keyboard-883563/ | Pixabay Content License | brunostarling
+- thread-spools-in-a-row.webp | https://pixabay.com/photos/line-sewing-failure-hussy-fabric-1195629/ | Pixabay Content License | soramang
+- pants-leg-hem-closeup.webp | https://pixabay.com/photos/jeans-material-trousers-clothing-5015781/ | Pixabay Content License | Ollebolle123
+- painted-wooden-drawers-knobs.webp | https://pixabay.com/photos/closet-antique-chest-of-drawers-3725417/ | Pixabay Content License | AlkeMade
+- white-paper-torn-open.webp | https://pixabay.com/photos/ripped-paper-paper-copy-space-3343947/ | Pixabay Content License | SarahRichterArt
+- water-bottles-blue-caps.webp | https://pixabay.com/photos/bottles-plastic-recycling-4276208/ | Pixabay Content License | fotoblend
+- white-mug-handle-broken-off.webp | https://www.flickr.com/photos/23063164@N00/391347719 | CC BY 2.0 | aaron13251
+- wall-outlet-closeup.webp | https://www.flickr.com/photos/98425334@N00/119929591 | CC BY-SA 2.0 | grendelkhan
+- metal-desk-lamp-with-cord.webp | https://www.brooklynmuseum.org/opencollection/objects/1649 | CC BY 3.0 | Walter Dorwin Teague (designer), Brooklyn Museum
+- wooden-chair-rope-seat-rungs.webp | https://collections.museumsvictoria.com.au/items/1695073 | CC BY 4.0 | Felicity Clemons (maker), Museums Victoria
+- black-drawstring-pouch.webp | https://pixabay.com/photos/pouch-toiletry-bag-case-bellows-935402/ | Pixabay Content License | KakaduArt
+- pencil-between-wood-boards.webp | https://www.flickr.com/photos/92795775@N00/6633981491 | CC BY 2.0 | Gavin Tapp

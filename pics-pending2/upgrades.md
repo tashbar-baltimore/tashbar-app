@@ -1,1 +1,11 @@
 - bicycle-at-rack.webp (live): readable PARK text + stickers on the rack; replace with a new id and re-point all links
+- steam-engine-flywheel (live): readable photographer watermark
+- first-transistor-replica (live): brand label + date on stand
+- courtroom-jury-box (live): clock with numbers, brand on speaker, posted notice
+- supreme-court-building (live): readable "EQUAL JUSTICE UNDER LAW" + statue of a woman by the steps
+- us-capitol (live): statue of a woman on top of the dome (tiny)
+- white-house (live): small shapes that may be people
+- snare-drum (live): drum brand names + printing on sticks
+- router-three-antennas (live): small logo and printed text
+- glass-of-water (live): much taller than wide, printing on rim
+- rain-from-cloud (live): much taller than wide
