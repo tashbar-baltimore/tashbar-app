@@ -217,5 +217,104 @@ B['MATH.PV.L05.02']={ band:'E45', pic:'🎯', today:'Round any number: look one 
     {type:'match', q:'Visitors to Shmuel’s town museums: nearest ten thousand', pairs:[['467,528','470,000'],['252,537','250,000'],['691,698','690,000'],['355,502','360,000']], say:'Round each to the nearest ten thousand. Match.', how:'Find the ten thousands digit. Look at the thousands digit to its right.'}] };
 
 
+B['MATH.FRAC.L05.03']={ band:'E45', pic:'🍕', today:'Switch between mixed numbers and improper fractions', why:'Baking challah for a big Shabbos crowd: 2 1/4 cups of flour is 9 quarter cups.',
+  ready:[{q:'3 × 4 = ?', o:['12','7','34','1'], a:'12'},{q:'How many fourths make 1 whole?', o:['4','1','2','8'], a:'4'}],
+  bridge:'MATH.FRAC.L04.04', bridgeName:'Whole Numbers in Disguise',
+  watch:{ q:'Write 2 1/4 as an improper fraction.', steps:[
+    {t:'Each whole is 4 fourths. 2 wholes = 2 × 4 = 8 fourths.', m:{type:'fbar', n:4, d:4}},
+    {t:'Add the extra 1 fourth: 8 + 1 = 9. Keep the bottom: 9/4.', m:{type:'fbar', n:1, d:4}},
+    {t:'Going back: 11/4. How many 4s fit in 11? 2 (that is 8). 11 − 8 = 3 left. So 11/4 = 2 3/4.', m:{type:'fbar', n:3, d:4}},
+    {t:'Adding: 1 1/5 + 3 2/5. Add the wholes: 4. Add the fifths: 3/5. Answer: 4 3/5, which is 23/5.'}], a:'9/4' },
+  oops:{ q:'Write 3 1/2 as an improper fraction.', wrong:'4/2, because 3 + 1 = 4', right:'7/2', why:'Multiply the wholes by the bottom first: 3 × 2 = 6, then add 1.' },
+  ways:['fraction bars','pizza slices','match, sort and order','Mistake Detective'], done:'You can write mixed numbers as improper fractions and back, and add them.',
+  board:{ one:'Wholes × bottom + top, over the same bottom.', activity:'Paper pizzas cut in fourths: count every slice in 2 3/4 pizzas.', mistakes:['Adding the whole to the top (3 1/2 = 4/2)','Changing the bottom number','Forgetting the remainder is the new top'] },
+  do:[
+    {type:'count', n:9, pic:'🍕', o:['9','3','8','6'], q:'2 1/4 pizzas, every pizza cut in 4', say:'Tap and count every slice. How many fourths?', how:'Each whole pizza is 4 slices: 4 + 4 = 8. Plus the extra 1 slice: 9 fourths, 9/4.'},
+    {type:'tiles', w:['2 × 4 = 8','8 + 1 = 9','9/4'], extra:['2 + 1 = 3','3/4'], q:'2 1/4 = ?/4', say:'Build the steps to write 2 1/4 as fourths.', how:'Wholes times the bottom: 2 × 4. Add the top: 8 + 1. Keep the bottom: 9/4.'}],
+  your:[
+    {type:'match', pairs:[['1 3/4','7/4'],['2 1/4','9/4'],['2 3/4','11/4'],['3 1/4','13/4']], say:'Match each mixed number to its improper fraction.', how:'Wholes times the bottom, plus the top. 3 × 4 + 1 = 13: 13/4.',
+      why:{q:'Why is 3 1/4 = 13/4?', o:['3 × 4 + 1 = 13','3 + 1 + 4 = 8','3 × 1 = 3','4 + 4 = 8'], a:'3 × 4 + 1 = 13'}},
+    {type:'sort', q:'Mixed ↔ improper', bins:['Right','Mistake'], cards:[['3 1/2 = 7/2',0],['3 1/2 = 4/2',1],['11/4 = 2 3/4',0],['11/4 = 3 1/4',1],['4 1/3 = 13/3',0],['4 1/3 = 5/3',1]], say:'Mistake Detective: right or mistake? Sort each one.', how:'Multiply the wholes by the bottom first. Going back, divide: 11 ÷ 4 = 2 R3.',
+      why:{q:'Why is 3 1/2 = 4/2 wrong?', o:['The wholes must be times the bottom first','4/2 is too big','Halves cannot add','3 + 1 = 4 is right'], a:'The wholes must be times the bottom first'}},
+    {type:'listen', hear:'Dovid uses 1 and 1 fifth cups of flour, then 3 and 2 fifths cups more. How much flour in all?', q:'1 1/5 + 3 2/5', o:['4 3/5','4/10','3 3/5','23/10'], a:'4 3/5', say:'Listen. How much flour does Dovid use?', how:'Wholes with wholes, fifths with fifths. 2 1/5 + 1 1/5 = 3 2/5.',
+      why:{q:'Why keep fifths on the bottom?', o:['Adding fifths makes fifths','5 + 5 = 10','You add the bottoms','Wholes go on the bottom'], a:'Adding fifths makes fifths'}},
+    {type:'tiles', w:['28 ÷ 5','= 5 R3','5 3/5'], extra:['3 5/5','5 5/28'], q:'28/5 = ?', say:'Turn 28/5 into a mixed number. Build the steps.', how:'Divide the top by the bottom. The answer is the wholes; the remainder is the new top.'},
+    {type:'sort', bins:['Less than 4','4 or more'], cards:[['13/4',0],['17/4',1],['9/2',1],['7/2',0],['16/4',1],['11/3',0]], say:'Less than 4, or 4 or more? Sort each fraction.', how:'Change it to a mixed number first. 13/4 = 3 1/4: less than 4. 16/4 = 4 exactly.'}] };
+
+B['MATH.PV.L05.01']={ band:'E45', pic:'🏛️', today:'Read and write numbers up to 999,999', why:'The shul building fund raised $268,042. Can you read it and write it?',
+  ready:[{q:'In 365, what is the value of the 6?', o:['60','6','600','65'], a:'60'},{q:'Which place comes right after hundreds?', o:['Thousands','Tens','Ones','Millions'], a:'Thousands'}],
+  bridge:'MATH.PV.L03.02', bridgeName:'Hundreds, tens and ones',
+  watch:{ q:'What is the value of the 6 in 362,415?', m:{type:'tiles', w:['3','6','2',',','4','1','5'], hi:[1]}, steps:[
+    {t:'Places from the right: ones, tens, hundreds, thousands, ten thousands, hundred thousands.'},
+    {t:'The 6 is in the ten thousands place. The digit is 6; its value is 6 × 10,000 = 60,000.'},
+    {t:'Words to digits: two hundred sixty-eight thousand, forty-two. Before the comma: 268. After it: 042 (an empty place gets a 0). So 268,042.'},
+    {t:'Expanded form: 900,000 + 7,000 + 100 + 50 + 1 = 907,151. The empty ten thousands get a 0.'},
+    {t:'Compare from the left: 192,291 or 192,219? Same until the tens: 9 beats 1, so 192,291 is greater.'}], a:'60,000' },
+  oops:{ q:'Write forty thousand, six.', wrong:'406', right:'40,006', why:'Thousands need their own group of three, and empty places get zeros.' },
+  ways:['place-value tiles','build the number','sort by value','Mistake Detective'], done:'You can read, write, and compare numbers up to 999,999.',
+  board:{ one:'Each place is worth 10 times the place to its right; commas split groups of three.', activity:'A 6-box place-value chart on the floor: boys stand as digits and read the number.', mistakes:['Leaving out zeros (406 for 40,006)','Giving the digit when asked for its value','Comparing from the right'] },
+  do:[
+    {type:'tiles', w:['2','6','8',',','0','4','2'], extra:['7','3'], q:'Two hundred sixty-eight thousand, forty-two', say:'Build two hundred sixty-eight thousand, forty-two.', how:'268 goes before the comma. 42 is 042 after it: the empty hundreds get a 0.',
+      why:{q:'Why the 0 after the comma?', o:['The hundreds place is empty','Zeros look nice','42 needs 4 digits','Thousands end in 0'], a:'The hundreds place is empty'}},
+    {type:'match', pairs:[['5 in 352,100','50,000'],['5 in 125,000','5,000'],['5 in 210,593','500'],['5 in 714,365','5']], say:'Match each 5 to its value.', how:'Find the 5. Name its place. Then multiply: 5 ten thousands = 50,000.'}],
+  your:[
+    {type:'listen', hear:'What digit is in the hundreds place of 142,494?', q:'142,494', o:['4','400','9','2'], a:'4', say:'Listen. Tap the DIGIT in the hundreds place.', how:'Count from the right: ones, tens, hundreds. Tap the digit, not its value.'},
+    {type:'sort', q:'Forty thousand, six', bins:['Right','Mistake'], cards:[['40,006',0],['406',1],['4,006',1],['400,006',1]], say:'Mistake Detective: which one is written right? Sort.', how:'Forty thousand is 40 before the comma. Six is 006 after it: the empty places get zeros.',
+      why:{q:'Why 40,006?', o:['Empty places get zeros','Shorter is better','6 goes first','Zeros are extra'], a:'Empty places get zeros'}},
+    {type:'tiles', w:['188,940','189,048','189,840','198,840'], q:'Shul building fund pledges, smallest first', say:'Put the Katz, Levi, Shapiro and Ades pledges in order, smallest first.', how:'Compare from the left. The first place that is different decides.',
+      why:{q:'Why is 189,840 more than 188,940?', o:['9 thousands beat 8 thousands','It ends in 0','It has more digits','840 beats 940'], a:'9 thousands beat 8 thousands'}},
+    {type:'match', q:'Expanded form → number', pairs:[['300,000 + 4,000','304,000'],['30,000 + 4,000','34,000'],['300,000 + 40','300,040'],['3,000 + 400','3,400']], say:'Match each sum to its number. Empty places get zeros.', how:'Put each part in its place. Every empty place gets a 0.'},
+    {type:'sort', bins:['Worth 5,000','Worth 50,000'], cards:[['5 in 735,100',0],['5 in 450,048',1],['5 in 205,931',0],['5 in 650,412',1],['5 in 715,264',0],['5 in 958,012',1]], say:'Is this 5 worth 5,000 or 50,000? Sort each one.', how:'Count places from the right. The 4th is thousands; the 5th is ten thousands.'}] };
+
+B['MATH.MEAS.L05.01']={ band:'E45', pic:'📏', today:'Convert big units to small: multiply, then add', why:'Buying wood for the sukkah? The plan says yards, but the store measures in feet.',
+  ready:[{q:'5 × 12 = ?', o:['60','17','50','72'], a:'60'},{q:'How many minutes are in 1 hour?', o:['60','100','24','30'], a:'60'}],
+  bridge:'MATH.MEAS.L04.05', bridgeName:'Liters and Grams',
+  watch:{ q:'6 yards 2 feet = ? feet', m:{type:'scene', e:'📏', t:'Abba measures the sukkah wall with a yardstick: 6 yards and 2 feet.'}, steps:[
+    {t:'Know the facts: 1 yard = 3 feet = 36 inches. 1 foot = 12 inches. 1 hour = 60 minutes.'},
+    {t:'Yards to inches: 2 yards 7 inches = 2 × 36 + 7 = 79 inches.'},
+    {t:'Big unit to small unit: MULTIPLY. 6 yards = 6 × 3 = 18 feet.', m:{type:'line', from:0, to:20, hops:[0,3,6,9,12,15,18]}},
+    {t:'Then ADD the extra: 18 + 2 = 20 feet.'},
+    {t:'Time works the same way: 2 hours 15 minutes = 2 × 60 + 15 = 135 minutes.'}], a:'20 feet' },
+  oops:{ q:'2 hours 15 minutes = ? minutes', wrong:'215', right:'135', why:'An hour is 60 minutes, not 100: 2 × 60 = 120, then add 15.' },
+  ways:['number line hops','unit facts to match','build the steps','Mistake Detective'], done:'You can change a big unit to a small one: multiply, then add the extra.',
+  board:{ one:'Big to small: multiply by the fact, then add the extra.', activity:'Measure the classroom in yards and feet, then convert to feet and inches.', mistakes:['Dividing instead of multiplying','Forgetting to add the extra (6 yards 2 feet = 18)','Using 100 for minutes'] },
+  do:[
+    {type:'hop', start:0, add:18, unit:3, from:0, to:21, q:'6 yards = ? feet', say:'6 yards. Hop 3 feet for each yard.', how:'Each hop is 1 yard = 3 feet. 6 hops: 18 feet. Big unit to small: multiply.'},
+    {type:'tiles', w:['6 × 3 = 18','18 + 2 = 20'], extra:['6 + 2 = 8','6 × 2 = 12'], q:'Abba’s sukkah wall: 6 yards 2 feet = ? feet', say:'Build the two steps: multiply, then add the extra.', how:'Change the yards to feet: 6 × 3 = 18. Then add the extra 2 feet: 20.'}],
+  your:[
+    {type:'match', pairs:[['yards → feet','× 3'],['yards → inches','× 36'],['feet → inches','× 12'],['pounds → ounces','× 16']], say:'Match each change to what you multiply by.', how:'1 yard = 3 feet = 36 inches. 1 foot = 12 inches. 1 pound = 16 ounces.',
+      why:{q:'Why multiply to go from yards to feet?', o:['Feet are smaller, so you need more','Feet are bigger','Yards are smaller','You always divide'], a:'Feet are smaller, so you need more'}},
+    {type:'sort', q:'Big unit to small unit', bins:['Right','Mistake'], cards:[['7 km 36 m = 7036',0],['7 km 36 m = 736',1],['2 h 15 min = 135',0],['2 h 15 min = 215',1],['6 yd 2 ft = 20',0],['6 yd 2 ft = 18',1]], say:'Mistake Detective: right or mistake? Sort each one.', how:'Multiply by the right fact, then add the extra. An hour is 60 minutes, not 100. A kilometer is 1,000 meters: 7,000 + 36 = 7,036.',
+      why:{q:'Why is 2 h 15 min = 215 wrong?', o:['An hour is 60 minutes, not 100','Hours are small','Add the 2 and 15','You divide for time'], a:'An hour is 60 minutes, not 100'}},
+    {type:'tiles', w:['6 × 60 = 360','360 + 43 = 403'], extra:['6 + 43 = 49','6 × 43'], q:'6 minutes 43 seconds = ? seconds', say:'Build the two steps for 6 minutes 43 seconds.', how:'Minutes to seconds: × 60. Then add the extra 43 seconds.',
+      why:{q:'Why × 60?', o:['1 minute = 60 seconds','1 minute = 100 seconds','6 + 60','Seconds are bigger'], a:'1 minute = 60 seconds'}},
+    {type:'sort', bins:['× 12','× 100','× 1,000'], cards:[['feet → inches',0],['m → cm',1],['kg → g',2],['km → m',2],['L → mL',2]], say:'What do you multiply by? Sort each change.', how:'Feet to inches: 12. Meters to cm: 100. Kilo or liters to milli: 1,000.'},
+    {type:'listen', hear:'Yaakov’s shiur lasted 1 hour and 45 minutes. How many minutes is that?', o:['105','145','60','46'], a:'105', say:'Listen. How many minutes long was the shiur?', how:'Hours × 60, then add the extra minutes.'}] };
+
+B['MATH.STAT.L05.01']={ band:'E45', pic:'🌱', today:'Read a line plot: count Xs, then add values', why:'Measuring sprouts in the class garden? A line plot shows every result at a glance.',
+  ready:[{q:'3/8 + 3/8 = ?', o:['6/8','6/16','3/8','9/8'], a:'6/8'},{q:'5/8 − 2/8 = ?', o:['3/8','7/8','3/16','3'], a:'3/8'}],
+  bridge:'MATH.STAT.L04.01', bridgeName:'Scaled Graphs',
+  watch:{ q:'Sprout heights in inches. 1/8: XX, 2/8: XXXX, 3/8: X', m:{type:'tiles', w:['1/8: XX','2/8: XXXX','3/8: X']}, steps:[
+    {t:'Each X is one sprout. How many measurements were 2/8 inch? Count the Xs over 2/8: 4.'},
+    {t:'Which happened MOST often? The value with the most Xs: 2/8.'},
+    {t:'The difference between the largest and the smallest: 3/8 − 1/8 = 2/8 inch.'},
+    {t:'The total of all the 2/8 sprouts together: 4 Xs × 2/8 = 8/8 = 1 inch.', m:{type:'fbar', n:8, d:8}},
+    {t:'5 Xs at 3/8? 5 × 3/8 = 15/8 = 1 7/8 inches.'}], a:'4 sprouts; together 1 inch' },
+  oops:{ q:'The total of 2 Xs at 1/2', wrong:'1/2', right:'1', why:'Each X is its own 1/2. Two halves make 1.' },
+  ways:['line plot','count the Xs','match and sort totals','Mistake Detective'], done:'You can read a line plot and add up its fraction measurements.',
+  board:{ one:'Count the Xs; to total them, multiply Xs × the value.', activity:'Measure pencils to the nearest 1/8 inch and build a class line plot.', mistakes:['Counting Xs instead of using the values for the difference','Writing one X value as the total','Adding the bottoms (3/8 + 3/8 = 6/16)'] },
+  do:[
+    {type:'count', n:4, pic:'✖️', o:['4','3','5','8'], q:'Sprouts: 1/8: XX · 2/8: XXXX · 3/8: X', say:'How many sprouts were 2/8 inch? Count the Xs.', how:'Each X is one sprout. Count only the Xs above 2/8.'},
+    {type:'listen', hear:'1 eighth has 3 Xs. 2 eighths has 1 X. 3 eighths has 2 Xs. 4 eighths has 4 Xs. Which happened most often?', q:'1/8: XXX · 2/8: X · 3/8: XX · 4/8: XXXX', o:['4/8','1/8','3/8','2/8'], a:'4/8', say:'Listen. Which measurement happened most often?', how:'Find the value with the MOST Xs: 4/8 has 4.'}],
+  your:[
+    {type:'match', pairs:[['2 Xs at 1/2','1'],['3 Xs at 1/8','3/8'],['5 Xs at 3/8','15/8'],['3 Xs at 2/8','6/8']], say:'Match each group of Xs to its total.', how:'Multiply: the number of Xs × the value. 3 × 2/8 = 6/8.',
+      why:{q:'Why is 2 Xs at 1/2 equal to 1?', o:['Two halves make 1 whole','2 + 1/2','The Xs are big','1/2 + 1/2 = 2/4'], a:'Two halves make 1 whole'}},
+    {type:'sort', q:'Total of all the 2/8 Xs (there are 4)', bins:['Right','Mistake'], cards:[['8/8 = 1 inch',0],['2/8 inch',1],['8/32 inch',1],['4 inches',1]], say:'Mistake Detective: which total is right? Sort each one.', how:'Each X is its own 2/8. 4 × 2/8 = 8/8 = 1 inch. One X is not the total.',
+      why:{q:'Why 8/8?', o:['Each X is its own 2/8: 4 × 2/8','There are 8 Xs','2 + 8 = 10','Add the bottoms'], a:'Each X is its own 2/8: 4 × 2/8'}},
+    {type:'listen', hear:'3 eighths has 2 Xs. 4 eighths has 5 Xs. 6 eighths has 1 X. Largest minus smallest?', q:'3/8: XX · 4/8: XXXXX · 6/8: X', o:['3/8','4','9/8','1/8'], a:'3/8', say:'Listen. The largest minus the smallest?', how:'Use the values, not the Xs: largest minus smallest.',
+      why:{q:'Why not 5 − 1 = 4?', o:['Subtract the values, not the Xs','4 is too big','Add them all','Count the Xs'], a:'Subtract the values, not the Xs'}},
+    {type:'tiles', w:['5 × 3/8','= 15/8','= 1 7/8'], extra:['5 + 3/8','= 8/8'], q:'Shmuel’s 5 sprouts at 3/8: total?', say:'Build the total of 5 Xs at 3/8.', how:'Multiply the Xs by the value. 15/8 is 1 whole and 7/8.'},
+    {type:'sort', bins:['Less than 1','1 or more'], cards:[['5 Xs at 3/8',1],['3 Xs at 2/8',0],['4 Xs at 2/8',1],['2 Xs at 3/8',0],['8 Xs at 1/8',1],['6 Xs at 1/8',0]], say:'Is the total less than 1 inch? Sort each group.', how:'Multiply Xs × eighths. 8 eighths make 1 whole.'}] };
+
 })(window.ONE_BITE);
 </script>

@@ -1,0 +1,140 @@
+<script>
+/* K1Only.html: Kindergarten and Grade 1 boys get games only (HoS 2026-11-22, morning):
+   "Kindergarten and first grade to fill the screen ... a game only. There should be none of that stuff anymore ...
+    The kids should open it up, and instantly, the only curriculum that's available for kindergarten and first grade are those
+    game-like stuff. Nothing else ... No pop-ups, no nothing."
+   WHO: a boy whose roster grade is K or 1 (the server's klMe: K = 0, 1st = 1), or a boy whose map has every subject at Level 1-2
+   (a non-TEST boy a rebbe placed at K/1). TEST- boys: only by roster grade, or with ?k1=1 on the address (?k1=0 turns it off on that Chromebook).
+   WHAT: (1) the home is one full-screen game path for HIS grade only: the real train / matching / balloon games
+         (Kindergarten, Level 1 only: KL Math, KR ABC, KK Kriyah; Grade 1, Level 2 only: G1M Math, G1R Reading, KK Kriyah), in the order the skills build, one game at a time
+         (the next unlocks when the one before is passed), with a giant PLAY for the next game. No One Bite question lessons,
+         no map, tabs, store, missions, money bar or menus. (HoS follow-up, same morning: "these are not games ... stick to kindergarten ...
+         games in sequential order of the skills, one on top of another, build off each other, not 24 random stuff.")
+         (2) no pop-ups: welcome, Today's Vort, reminders, store payday, joke jar, "new level" checks and "find your level" never show.
+         (3) K-1 game lessons fill the screen with big pictures; the "Why it matters" and "How to do it" reading is hidden.
+   Saving, mastery and pay are unchanged (the lessons are the same One Bite lessons). Loads last. No double slash in this file. */
+(function(){
+if(window.K1O) return;
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const K1O=window.K1O={sid:null,grade:null,subj:'MATH',said:''};
+function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} return null; }
+try{ const q=String(location.search||''); if(/[?&]k1=1\b/.test(q)) ls('tl-k1only','1'); if(/[?&]k1=0\b/.test(q)) ls('tl-k1only','0'); }catch(e){}
+function st(){ return (typeof A!=='undefined'&&A&&A.st)||null; }
+function isTest(){ return /^TEST/i.test(String((st()||{}).id||'')); }
+function mapLow(){ try{ const m=window.TL_MAP, s=m&&m.subjects; if(!s) return false; const L=Object.keys(s).map(k=>Number(s[k]&&s[k].level)).filter(n=>n>0); return L.length>0&&L.every(n=>n<=2); }catch(e){ return false; } }
+function fetchGrade(){ const b=st(); if(!b||!b.id||K1O.sid===b.id) return; const sid=b.id; K1O.sid=sid; K1O.grade=null;
+  const c=ls('tl-k1g:'+sid); if(c!=null&&c!=='') K1O.grade=Number(c);
+  try{ if(typeof run==='function'&&typeof SRV!=='undefined'&&SRV.token) run('klMe',SRV.token).then(r=>{ if(K1O.sid!==sid) return;
+    const g=(r&&typeof r.grade==='number')?r.grade:null, was=K1O.grade; K1O.grade=g; ls('tl-k1g:'+sid,g==null?'':String(g));
+    if(was!==g&&typeof A!=='undefined'&&A.view==='hub') try{ render(); }catch(e){} }).catch(()=>{}); }catch(e){} }
+function on(){ try{ const b=st(); if(!b||!b.id) return false; fetchGrade(); const f=ls('tl-k1only');
+  if(f==='0') return false; if(f==='1') return true;
+  if(K1O.grade===0||K1O.grade===1) return true;
+  return !isTest()&&mapLow(); }catch(e){ return false; } }
+K1O.on=on;
+
+/* ---------- the real K-1 games (train, matching and balloon games), one grade, in skill order ----------
+   Each game pack keeps its own list in the order the skills build (LIST) and saves the best check score (0-3) in the boy's state.
+   Kindergarten (Level 1 games only): KL Math, KR Reading (ABC), KK Kriyah. Grade 1 (Level 2 games only): G1M Math, G1R Reading, KK Kriyah. A game counts as passed at 2 or more.
+   The next game unlocks when the one before it is passed; a passed game can always be played again. */
+const PACKS={0:[{k:'MATH',g:'KL',st:'klm',lv:1,i:'🔢',n:'Numbers'},{k:'READ',g:'KR',st:'krm',lv:1,i:'🔤',n:'ABC'},{k:'LK',g:'KK',st:'kkm',lv:1,i:'א',n:'Kriyah'}],
+             1:[{k:'MATH',g:'G1M',st:'g1m',lv:2,i:'🔢',n:'Numbers'},{k:'READ',g:'G1R',st:'g1r',lv:2,i:'📖',n:'Reading'},{k:'LK',g:'KK',st:'kkm',lv:2,i:'א',n:'Kriyah'}]};
+const OVS=['klov','krov','kkov','g1mov','g1rov'];
+function gradeNow(){ if(K1O.grade===0||K1O.grade===1) return K1O.grade;
+  try{ const m=window.TL_MAP, L=m&&m.subjects&&m.subjects.MATH&&Number(m.subjects.MATH.level); if(L===2) return 1; }catch(e){} return 0; }
+function subjects(){ return (PACKS[gradeNow()]||PACKS[0]).filter(p=>window[p.g]&&typeof window[p.g].list==='function'&&list(p).length); }
+function list(p){ try{ const re=new RegExp('\\.L0'+p.lv+'\\.'); return window[p.g].list().map(x=>x[0]).filter(id=>re.test(id)); }catch(e){ return []; } }
+function score(p,id){ const b=st(), m=b&&b[p.st]; return m&&typeof m[id]==='number'?m[id]:-1; }
+function passed(p,id){ return score(p,id)>=2; }
+function picOf(p,id){ const B=window.ONE_BITE||{}; return (B[id]&&B[id].pic)||p.i; }
+function nameOf(p,id){ try{ const l=window[p.g].list().find(x=>x[0]===id); const n=l&&l[1]; if(n&&n!==id) return n; }catch(e){} try{ return typeof skillName==='function'?skillName(id):id; }catch(e){ return id; } }
+
+function shelf(){ const S=subjects(); if(!S.find(s=>s.k===K1O.subj)) K1O.subj=S.length?S[0].k:'MATH';
+  const p=S.find(s=>s.k===K1O.subj), ids=p?list(p):[];
+  let nx=ids.findIndex(id=>!passed(p,id)); if(nx<0) nx=ids.length?0:-1;
+  const name=E((st()||{}).name||''), first=name.split(' ')[0];
+  let h='<div class="k1-top"><button class="k1-say" data-k1="say" aria-label="Hear it">🔊</button><div class="k1-hi">'+(first?'Hi, '+first+'!':'Let\'s play!')+'</div>'+
+    '<button class="k1-out" data-act="signout" aria-label="Sign out">👋 Bye</button></div>';
+  if(S.length>1) h+='<div class="k1-subj" role="tablist">'+S.map(s=>'<button role="tab" class="k1-s'+(s.k===K1O.subj?' on':'')+'" data-k1="subj" data-s="'+s.k+'" aria-label="'+E(s.n)+'"><span class="i">'+E(s.i)+'</span><span class="n">'+E(s.n)+'</span></button>').join('')+'</div>';
+  if(nx>=0){ const id=ids[nx]; h+='<button class="k1-play" data-k1="play" data-id="'+E(id)+'" aria-label="Play: '+E(nameOf(p,id))+'"><span class="pic">'+E(picOf(p,id))+'</span><span class="go">▶ PLAY</span></button>'; }
+  h+='<div class="k1-path">'+ids.map((id,n)=>{ const d=passed(p,id), open=d||n===nx||n===0, lock=!open;
+    return '<button class="k1-t'+(d?' done':'')+(n===nx?' now':'')+(lock?' lock':'')+'" data-k1="'+(lock?'locked':'play')+'" data-id="'+E(id)+'" aria-label="'+E(nameOf(p,id))+(d?', done':lock?', locked':'')+'"'+(lock?' aria-disabled="true"':'')+'>'+
+      '<span class="pic">'+E(lock?'🔒':picOf(p,id))+'</span><span class="num">'+(n+1)+'</span>'+(d?'<span class="star">⭐</span>':'')+'</button>'; }).join('')+'</div>';
+  return h; }
+
+function paint(){ const k=on(), body=document.body; if(!body) return; body.classList.toggle('k1-mode',k);
+  let el=document.getElementById('k1o'); const home=k&&typeof A!=='undefined'&&A.view==='hub';
+  if(!home){ body.classList.remove('k1-home'); if(el) el.remove(); return; }
+  A.overlay=null; body.classList.add('k1-home');
+  if(!el){ el=document.createElement('div'); el.id='k1o'; el.setAttribute('role','main'); body.appendChild(el); }
+  el.innerHTML=shelf(); K1O.sig=sig();
+  const key=K1O.sid+':'+K1O.subj; if(K1O.said!==key){ K1O.said=key; setTimeout(sayHi,400); } }
+function sig(){ try{ const b=st()||{}; return JSON.stringify([K1O.subj,gradeNow(),b.klm,b.krm,b.kkm,b.g1m,b.g1r]); }catch(e){ return ''; } }
+function sayHi(){ try{ if(typeof speak==='function') speak('Tap PLAY!'); }catch(e){} }
+function gameOpen(){ return OVS.some(id=>document.getElementById(id)); }
+
+function play(id){ const p=subjects().find(x=>x.k===K1O.subj); if(!p||!window[p.g]||typeof window[p.g].open!=='function') return;
+  try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(e){}
+  A.overlay=null; window[p.g].open(id); }
+
+document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#k1o [data-k1]'); if(!b) return; e.preventDefault(); e.stopPropagation();
+  const a=b.dataset.k1;
+  if(a==='play') return play(b.dataset.id);
+  if(a==='subj'){ K1O.subj=b.dataset.s; try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(x){} paint(); return; }
+  if(a==='locked'){ b.classList.remove('k1-no'); void b.offsetWidth; b.classList.add('k1-no'); try{ if(typeof speak==='function') speak('Play the game before it first!'); }catch(x){} return; }
+  if(a==='say') sayHi(); },true);
+
+/* ---------- hooks: every home redraw shows the shelf; no pop-ups; no level checks ---------- */
+const baseRender=window.render;
+if(typeof baseRender==='function'){ window.render=function(){ const r=baseRender.apply(this,arguments); try{ paint(); }catch(e){} return r; }; try{ render=window.render; }catch(e){} }
+if(typeof window.welcome==='function'){ const w0=window.welcome; window.welcome=function(){ if(on()) return; return w0.apply(this,arguments); }; try{ welcome=window.welcome; }catch(e){} }
+if(typeof window.tlLevelCheckFor==='function'){ const l0=window.tlLevelCheckFor; window.tlLevelCheckFor=function(){ if(on()) return null; return l0.apply(this,arguments); }; }
+if(typeof window.tlFindLevelCard==='function'){ const f0=window.tlFindLevelCard; window.tlFindLevelCard=function(){ if(on()) return ''; return f0.apply(this,arguments); }; }
+setInterval(()=>{ try{ if(!document.body||!document.body.classList.contains('k1-mode')||typeof A==='undefined') return;
+  if(A.overlay&&A.view==='hub'){ A.overlay=null; render(); return; }
+  if(document.body.classList.contains('k1-home')&&!gameOpen()&&K1O.sig!==sig()) paint(); }catch(e){} },1200);
+
+/* ---------- the look ---------- */
+try{ if(!document.getElementById('k1o-css')){ const c=document.createElement('style'); c.id='k1o-css'; c.textContent=`
+body.k1-home > *:not(#k1o):not(#klov):not(#krov):not(#kkov):not(#g1mov):not(#g1rov){ display:none !important; }
+#klov,#krov,#kkov,#g1mov,#g1rov{ z-index:2147483600 !important; }
+body.k1-home{ overflow:hidden !important; background:#FFF4D6 !important; }
+#k1o{ position:fixed; inset:0; z-index:2147483000; overflow-y:auto; background:linear-gradient(180deg,#8FD3FF 0%,#C8ECFF 45%,#FFF4D6 100%); font-family:'Fredoka','Nunito',system-ui,sans-serif; color:#2B2350; padding:14px clamp(12px,3vw,40px) 40px; box-sizing:border-box; }
+#k1o button{ font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.k1-top{ display:flex; align-items:center; gap:14px; max-width:1200px; margin:0 auto 12px; }
+.k1-say{ width:76px; height:76px; border-radius:50%; border:0; background:#2FB5E8; color:#fff; font-size:34px; box-shadow:0 6px 0 #1E8DB8; flex:none; }
+.k1-hi{ flex:1; text-align:center; font-size:clamp(30px,4.6vw,56px); font-weight:700; color:#2B2350; text-shadow:0 3px 0 rgba(255,255,255,.7); }
+.k1-out{ min-width:110px; height:64px; border-radius:999px; border:4px solid #fff; background:rgba(255,255,255,.6); color:#2B2350; font-size:22px; font-weight:700; flex:none; }
+.k1-subj{ display:flex; gap:clamp(10px,2vw,24px); justify-content:center; margin:0 auto 16px; max-width:1200px; }
+.k1-s{ flex:1; max-width:260px; height:clamp(84px,12vh,120px); border-radius:28px; border:5px solid #fff; background:rgba(255,255,255,.55); display:flex; align-items:center; justify-content:center; gap:12px; box-shadow:0 6px 0 rgba(0,0,0,.08); }
+.k1-s .i{ font-size:clamp(40px,6vh,64px); line-height:1; } .k1-s .n{ font-size:clamp(22px,3vh,32px); font-weight:700; }
+.k1-s.on{ background:#FFC940; border-color:#FF9E1F; box-shadow:0 6px 0 #E08A00; transform:translateY(-2px); }
+.k1-play{ display:flex; align-items:center; justify-content:center; gap:clamp(16px,3vw,40px); width:100%; max-width:900px; margin:0 auto 22px; height:clamp(150px,26vh,240px); border-radius:40px; border:6px solid #fff; background:#22A85A; color:#fff; box-shadow:0 10px 0 #17834F; animation:k1pulse 1.6s ease-in-out infinite; }
+.k1-play .pic{ font-size:clamp(84px,15vh,150px); line-height:1; filter:drop-shadow(0 4px 0 rgba(0,0,0,.15)); }
+.k1-play .go{ font-size:clamp(46px,8vh,84px); font-weight:800; letter-spacing:.04em; }
+.k1-play:active{ transform:translateY(6px); box-shadow:0 4px 0 #17834F; }
+@keyframes k1pulse{ 50%{ transform:scale(1.03); } }
+.k1-path{ display:grid; grid-template-columns:repeat(auto-fill,minmax(clamp(120px,14vw,170px),1fr)); gap:clamp(12px,2vw,22px); max-width:1200px; margin:0 auto; }
+.k1-t{ position:relative; aspect-ratio:1; border-radius:30px; border:5px solid #fff; background:#fff; box-shadow:0 7px 0 rgba(0,0,0,.1); display:flex; align-items:center; justify-content:center; }
+.k1-t .pic{ font-size:clamp(56px,8vw,96px); line-height:1; }
+.k1-t .num{ position:absolute; left:10px; top:8px; min-width:36px; height:36px; border-radius:999px; background:#EEF3FD; color:#3B6FD8; font-size:20px; font-weight:800; line-height:36px; }
+.k1-t .star{ position:absolute; right:6px; top:4px; font-size:34px; }
+.k1-t.done{ background:#F0FFF5; border-color:#9BE3B7; }
+.k1-t.now{ border-color:#FFC940; box-shadow:0 0 0 6px rgba(255,201,64,.55),0 7px 0 rgba(0,0,0,.1); }
+.k1-t:active{ transform:scale(.95); }
+.k1-t.lock{ background:rgba(255,255,255,.55); border-color:rgba(255,255,255,.7); box-shadow:none; } .k1-t.lock .pic{ font-size:clamp(40px,5vw,60px); opacity:.6; }
+.k1-no{ animation:k1no .4s; } @keyframes k1no{ 25%{ transform:translateX(-8px); } 75%{ transform:translateX(8px); } }
+@media (max-width:600px){ .k1-s{ flex-direction:column; gap:2px; height:96px; min-width:0; } .k1-s .i{ font-size:40px; } .k1-s .n{ font-size:18px; }
+ .k1-play{ height:150px; gap:14px; } .k1-play .pic{ font-size:80px; } .k1-play .go{ font-size:44px; } .k1-hi{ font-size:28px; } .k1-say{ width:64px; height:64px; } .k1-out{ min-width:84px; height:56px; font-size:18px; }
+ .k1-path{ grid-template-columns:repeat(3,1fr); } .k1-t .pic{ font-size:60px; } }
+body.k1-mode #kpr, body.k1-mode #jj-card, body.k1-mode #jj-ctl, body.k1-mode #tlstore, body.k1-mode #gz-root, body.k1-mode .gm-sheet, body.k1-mode #gm-room{ display:none !important; }
+.ob-K1 .ob-why, .ob-K1 .ob-meta, .ob-K1 .obk-how{ display:none !important; }
+body.ob-on.ob-b-K1 .wrap{ max-width:none !important; }
+.ob-K1 .ob-bigpic{ font-size:150px; }
+.ob-K1 .ob-head{ justify-content:space-between; }
+@media (min-width:900px){ .ob-K1 .ob-main{ max-width:820px; zoom:1.3; padding-bottom:110px; } .ob-K1 .ob-foot{ zoom:1.25; } }
+@media (min-width:900px) and (min-height:900px){ .ob-K1 .ob-main{ zoom:1.5; } }
+`; document.head.appendChild(c); } }catch(e){}
+try{ if(typeof A!=='undefined'&&A.view==='hub') paint(); }catch(e){}
+})();
+</script>
