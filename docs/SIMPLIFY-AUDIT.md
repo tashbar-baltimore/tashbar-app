@@ -1,39 +1,60 @@
-# Simplify audit ("One button, one job")
+# Simplify audit ("One button, one job"), with before → after numbers
 
-A short working list, not paperwork. Made-up boys only (tests/lib/screens.js opens the real boy page with the made-up boys from tests/lib/kidmap.js).
-Each row: the screen, what is wrong, and the fix. ✔ means fixed and live.
+Made-up boys only. Boy screens come from `tests/lib/screens.js` (the real boy page with the made-up boys from `tests/lib/kidmap.js`). Staff screens come from `tests/lib/staffscreens.js` (the real staff page on the real server code, `server/runtime.js`, with made-up boys such as "Made-up Fifth"). "Tappable" means everything a finger can hit on the screen at phone size (390 px), counting the top and bottom bars.
 
-## Boys
+## The numbers
 
-| Screen | What is wrong today | Fix | |
+### Boys
+| Screen | Before | After | PR |
 |---|---|---|---|
-| Lesson start | 4 screens stacked before the first question: Learn it card → "Learn it · 3 quick examples" pop-up → 10-second Quick Hit challenge (with "Full lesson" and "Start the questions ✕") → "Too easy / Show me the trick / Go to my questions". The teaching shows twice, in 3 different looks. | Learn it card is the start. The pop-up and the automatic Quick Hit are gone; step by step stays as a quiet link. | ✔ step 2 |
-| Learn it card | 2 big buttons ("Show me step by step", "I'm ready!"); picture lesson unreachable (hidden inside the card). | 1 big button "I'm ready!". Step by step, fun lesson and picture lesson are quiet links. Game colours. | ✔ step 2 |
-| Practice questions | The Learn it card popped up again before almost every practice question (each has its own "How to do it"). | Card opens by itself only in the Learn step; later it is behind Help me (glows after a miss). | ✔ step 2 |
-| Question card | Money pill covers the answer box and "Go to my questions". After 2 misses a second big "teacher" button appears beside Help me. | Pill hidden while a question is up; second teacher button hidden. | ✔ step 2 |
-| Mid-lesson | Joke Jar opens in the middle of practice: a dozen buttons over the questions. | Only after passing (as before). | ✔ step 2 |
-| Practice / On your own intro | Button says "Let's go". | Says what it does: "▶ Start Practice", "▶ Start On your own". | ✔ step 2 |
-| End screen | 2 big buttons: "See my map", "Next mission". | One big "▶ Next level" (his map's next level); "See my map" is a quiet link. | ✔ step 2 |
-| Still to do in the lesson | Olam Haba "JACKPOT" and payday effects land over the last question; "Help me" shows in On your own although the intro says "no hints". | Next lesson pass. | |
-| Home – sign-in welcome | If the game welcome does not run (e.g. page opened straight to the map), the old night-sky "Today's Vort" pop-up with 3 buttons still appears. | Step 3. | |
-| Home – map | World tabs (Math, Chumash, Reading, …) across the top plus the goal card: two ways to change what he plays. | Step 3: one PLAY, "Change subject" quiet link. | |
-| Home – bottom bar | 5 tabs (Map, Missions, Play, Trophies, Money); Play is locked most of the day. Library and My Stuff are extra places. | Step 3: 4 tabs, one "More" shelf. | |
+| Lesson: screens before the first question | 4 (Learn it card → "3 quick examples" pop-up → 10-second Quick Hit → "Too easy / Show me the trick / Go to my questions") | **1** (Learn it card) | #130 |
+| Lesson: big buttons on the first screen | 2 | **1** ("I'm ready!") | #130 |
+| Lesson: teaching card popping up during practice (10 questions) | up to 10 | **0** (it waits behind Help me) | #130 |
+| Lesson: Joke Jar opening mid-practice | yes (a dozen buttons over the questions) | **no** (after passing only) | #130 |
+| Lesson: big buttons on the end screen | 2 | **1** ("▶ Next level") | #130 |
+| Map: tappable | 16 | **11** | #140 |
+| Map: ways to choose what to play | 2 (subject tabs + the goal card) | **1** PLAY + a quiet "Change subject" link | #140 |
+| Bottom bar tabs | 5 (K–2: 3) | **4** (K–2: 3) | #140 |
+| Separate "more" places (Arcade, Library, My Stuff, Skill tree, Pathfinder) | 5 places, reached from 3 screens | **1** More page, 4–5 named shelves | #140 |
+| Trophies: tappable | 7 | **6** | #140 |
+| Welcome pop-ups that can open on the map | 2 (game welcome + old night-sky vort card) | **1** | #140 |
 
-## Staff
-
-| Screen | What is wrong today | Fix | |
+### Staff
+| Screen | Before | After | PR |
 |---|---|---|---|
-| Boy card | 11 action buttons. | Step 4: 5 buttons + "More about him" list. | |
-| Old staff screen | Still reachable through "His day & everything else". | Step 4: give each tool one home, then retire it. | |
-| Start a class lesson | One entry offering 3 choices. | Step 4: one screen (boys, lesson, Start). | |
-| Curriculum | Tile wall. | Step 5: "What we teach". | |
-| School | Grab-bag. | Step 6. | |
+| Boy card: action buttons | 11 | **5** + one quiet "More about him" link | #142 |
+| Places where the old staff card opens in full | 1 ("His day & everything else") + 3 actions that opened all of it | **0** (each row opens only its own part) | #142 |
+| Start a class lesson: screens before picking boys | 2 (a 3-choice page, then the screen) | **1** (other ways are quiet links) | #142 |
+| Curriculum: tiles | 7 tiles + a 4-button tree card + 2 "See the tree" buttons | **0 tiles**: one "What we teach" view + one list | #144 |
+| Coverage per grade, at a glance | none | **"Grade 4: 18 of 18 built"** per subject | #144 |
+| Areas with a one-sentence purpose | 3 of 5 | **5 of 5** | #146 |
+| Big buttons per area header | up to 3 | **1** (others are quiet links) | #146 |
 
-## Numbers (boy lesson, one Math skill, all answers right)
-
-| | Before | After |
+### Places per tool (each tool should live in one place)
+| Tool | Before | After |
 |---|---|---|
-| Screens before the first question | 4 | 1 |
-| Big buttons on the first screen | 2 | 1 |
-| Learn it pop-ups during practice (10 questions) | up to 10 | 0 (Help me instead) |
-| Big buttons on the end screen | 2 | 1 |
+| Money (boys) | 2: money chip + Money tab | **1**: the chip |
+| Pathfinder (boys) | chip in the top bar, beside the money | **More** |
+| My Stuff (boys) | a button at the bottom of Trophies | **More** |
+| All lessons / Library (boys) | the last tab in the subject-tab row | **More** |
+| Needs me today (staff) | 2: Home + Today | **1**: Home |
+| "13 boys" / Students (staff) | 2: School tile + Students | **1**: Students |
+| Teacher mode / class lesson (staff) | 2 steps: chooser page, then Teacher mode | **1**: one screen |
+
+### Old-look screens
+| Screen | Before | After |
+|---|---|---|
+| Night-sky "Today's Vort" card over the game map | could appear | **gone** for every boy with a map (#140) |
+| Pale Learn it card inside the game | pale sky | **game colours** (#130) |
+| Old staff card as a landing page | yes | **gone** (#142) |
+| Curriculum tile wall | yes | **gone** (#144) |
+| School/Today tile walls | yes | **plain lists** (#146) |
+| **Still old:** the lesson engine's question screen (streak pill over the title, "Quest" toasts, "Money storm" and Jackpot effects, the dark Practice / On your own intro card) | | **Not changed here, on purpose.** The One Bite lane (#136, `src/OneBite.html`) is rebuilding the whole lesson as 6 calm steps, with no pop-ups, banners or money effects. It is live for TEST- boys and will replace this screen for everyone. Changing the same screen twice would collide. |
+
+## What was removed in the cleanup (step 7)
+- `src/GameMap.html`: the styles for the old subject tabs, the "All lessons" tab, the skill-tree button and the My Stuff button (their only users are gone).
+- `src/JokeJar.html`: the mid-lesson streak counter and its 5-minute timer (the mid-lesson jar is gone).
+- `src/StaffHome.html`: the "His day & everything else" action, the old "Where the boys are" block and the old curriculum tile page. The curriculum fallback, used only if `StaffTeach.html` fails to load, is now a plain list.
+- **Kept on purpose:** the Quick Hit challenge code in `src/Activities.html`. It no longer opens at the start of a lesson, but the Daily Mix (`src/Review.html`) still uses it.
+
+Every removal is covered by `node tests/run.js` (ALL TESTS PASSED). Server calls are unchanged: 37 on the way to the boy's home, 5 on the staff first screen.
