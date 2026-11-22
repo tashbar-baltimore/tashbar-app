@@ -387,14 +387,40 @@ let TL=null, TLIVE=0, thue=0, tk=0; const TCAP=90;
    time (the cards in view take turns); tap a window to replay it. Reduced motion: no autoplay. */
 function pvRun(el){ try{ if(!el||el._run) return; const r=el.getBoundingClientRect(); if(r.width<40||r.bottom<10||r.top>innerHeight-10) return; el._run=1;
   const id=el.dataset.pv, tr=trailOf(id), tp=tapOf(id), f=el.querySelector('.f'), x0=r.left+22, x1=r.right-34, yc=r.top+r.height/2-4, amp=r.height*.2, dur=1150, t0=performance.now();
-  let lp=null, ls=null; f.style.opacity='1';
+  let lp=null, ls=null; f.style.opacity='1'; const bl=(!tr&&tp)?pvBlade(el,tp.cols||RAINBOW):null, still=el.querySelector('.pvrb'); if(still) still.style.opacity='0';
   const step=now=>{ const k=Math.min(1,(now-t0)/dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2, x=x0+(x1-x0)*e, y=yc+Math.sin(e*Math.PI*2)*amp;
     f.style.transform=`translate(${(x-r.left).toFixed(1)}px,${(y-r.top).toFixed(1)}px)`;
     if(tr){ if(!lp) lp={x,y}; else { const dx=x-lp.x, dy=y-lp.y, len=Math.hypot(dx,dy); if(len>=tr.gap){ const ux=dx/len, uy=dy/len; let dd=len; while(dd>=tr.gap){ lp.x+=ux*tr.gap; lp.y+=uy*tr.gap; dd-=tr.gap; tdot(lp.x,lp.y,tr); } } } }
+    if(bl) bl.add(x,y);
     if(!tr&&tp&&window.tlSplash){ if(!ls){ ls={x,y}; } else if(Math.hypot(x-ls.x,y-ls.y)>=34){ ls={x,y}; window.tlSplash(x,y,true,tp); } }
     if(k<1) requestAnimationFrame(step);
-    else { try{ if(window.tlSplash) window.tlSplash(x,y,false,tp||TAPS[(ST().wear||{}).tap]||null); }catch(e){} f.style.opacity='0'; setTimeout(()=>{ el._run=0; },700); } };
+    else { try{ if(window.tlSplash) window.tlSplash(x,y,false,tp||TAPS[(ST().wear||{}).tap]||null); }catch(e){} f.style.opacity='0'; if(bl) bl.end(); setTimeout(()=>{ el._run=0; if(still) still.style.opacity=''; },700); } };
   requestAnimationFrame(step); }catch(e){ if(el) el._run=0; } }
+/* THE STREAK (HoS 2026-11-22: "the actual streak does not look anything like the description in the store"). A tap blast with no trail
+   of its own gets the app's glowing streak (HomePlus.html, SWIPE TRAIL "blade") in the blast's colors whenever the mouse or finger moves;
+   the blast itself shows on a tap. So its preview draws that same streak: thin, fading tail, thick bright head, the same colors in the
+   same order, with a white core and a glow. pvRibbon = the still picture; pvBlade = the moving preview (same drawing as the app). */
+function pvRibbon(cols,P){ const t0=.4, t1=.97, n=40, pts=[]; for(let i=0;i<=n;i++){ const q=P(t0+(t1-t0)*i/n); pts.push(q[0].toFixed(2)+' '+q[1].toFixed(2)); }
+  const x0=P(t0)[0], x1=P(t1)[0], gid='pvg'+(tk++), stops=cols.map((c,i)=>{ const o=cols.length>1?i/(cols.length-1):1; return `<stop offset="${(o*100).toFixed(0)}%" stop-color="${c}" stop-opacity="${Math.min(1,.15+o*1.2).toFixed(2)}"/>`; }).join('');
+  let g=`<defs><linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="${x0}" y1="0" x2="${x1}" y2="0">${stops}</linearGradient><linearGradient id="${gid}w" gradientUnits="userSpaceOnUse" x1="${x0}" y1="0" x2="${x1}" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".9"/></linearGradient></defs>`;
+  /* the taper: the same line drawn in steps, each step starting nearer the head and a little wider */
+  for(let j=0;j<6;j++){ const from=Math.round(j/6*n*.85), d='M'+pts.slice(from).join(' L'), w=(1+j*1.6).toFixed(1);
+   g+=`<path d="${d}" fill="none" stroke="url(#${gid})" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`;
+  }
+  g+=`<path d="M${pts.slice(Math.round(n*.3)).join(' L')}" fill="none" stroke="url(#${gid}w)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`;
+  return `<svg class="pvrb" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;filter:drop-shadow(0 0 4px ${cols[cols.length-1]})">${g}</svg>`; }
+function pvBlade(el,cols){ const r=el.getBoundingClientRect(), d=Math.min(2,window.devicePixelRatio||1), cv=document.createElement('canvas');
+  cv.className='pvbl'; cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d); cv.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none'; el.insertBefore(cv,el.querySelector('.f'));
+  const cx=cv.getContext('2d'), pts=[], LIFE=260; let raf=0, done=false;
+  const draw=()=>{ raf=0; const now=performance.now(); while(pts.length&&now-pts[0].t>=LIFE) pts.shift(); cx.setTransform(1,0,0,1,0,0); cx.clearRect(0,0,cv.width,cv.height);
+   if(pts.length<2){ if(done&&!pts.length){ cv.remove(); return; } raf=requestAnimationFrame(draw); return; }
+   cx.setTransform(d,0,0,d,0,0); cx.lineCap='round'; cx.lineJoin='round';
+   for(let i=1;i<pts.length;i++){ const a=pts[i-1], b=pts[i], k=i/(pts.length-1), age=1-(now-b.t)/LIFE, m0=i>1?{x:(pts[i-2].x+a.x)/2,y:(pts[i-2].y+a.y)/2}:a, m1={x:(a.x+b.x)/2,y:(a.y+b.y)/2}, w=(3+11*.6)*k*Math.max(0,age);
+    if(w<.3) continue; cx.beginPath(); cx.moveTo(m0.x,m0.y); cx.quadraticCurveTo(a.x,a.y,m1.x,m1.y); if(i===pts.length-1) cx.lineTo(b.x,b.y);
+    const c=cols[Math.floor(k*(cols.length-1)+.5)%cols.length]; cx.globalAlpha=Math.min(1,.25+age); cx.strokeStyle=c; cx.shadowColor=c; cx.shadowBlur=12; cx.lineWidth=w; cx.stroke();
+    cx.shadowBlur=0; cx.globalAlpha=Math.min(1,.2+age)*.9; cx.strokeStyle='#FFFFFF'; cx.lineWidth=w*.35; cx.stroke(); }
+   cx.globalAlpha=1; raf=requestAnimationFrame(draw); };
+  return { add:(x,y)=>{ pts.push({x:x-r.left,y:y-r.top,t:performance.now()}); if(!raf) raf=requestAnimationFrame(draw); }, end:()=>{ done=true; if(!raf) raf=requestAnimationFrame(draw); } }; }
 /* the still picture in each preview window: the same trail or blast, drawn once along a swipe, with the tap "poof" at the end */
 function pvStatic(id,emo){ try{ const tr=trailOf(id), tp=tapOf(id), P=t=>[8+t*72,50+Math.sin(t*Math.PI*2)*20]; let h='';
   const at=(p,dx,dy,st,inner)=>`<i class="pvs" style="left:calc(${p[0].toFixed(1)}% + ${Math.round(dx)}px);top:calc(${p[1].toFixed(1)}% + ${Math.round(dy)}px);${st||''}">${inner||''}</i>`;
@@ -407,6 +433,7 @@ function pvStatic(id,emo){ try{ const tr=trailOf(id), tp=tapOf(id), P=t=>[8+t*72
     else if(tr.spark) h+=at(p,(k%3-1)*4,-(k%4)*3,`width:4px;height:4px;border-radius:50%;background:#FFF7ED;box-shadow:0 0 5px 2px ${['#F97316','#FACC15','#FB923C','#EF4444'][k%4]};opacity:${o}`);
     else if(tr.fw) h+=at(p,(k%3-1)*5,(k%4-1.5)*4,`width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 5px 2px ${['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'][k%5]};opacity:${o}`);
     else h+=at(p,0,0,`width:${Math.round(4+10*t)}px;height:${Math.round(4+10*t)}px;border-radius:50%;background:radial-gradient(circle,#FFF7ED,#FDBA74 45%,#F97316 70%,rgba(249,115,22,0));opacity:${o}`); } }
+  if(!tr&&tp) h+=pvRibbon(tp.cols||RAINBOW,P);
   if(!tr&&tp){ const sc=tp.cols||RAINBOW; for(let k=0;k<6;k++){ const t=.08+k*.15, p=P(t), o=(.35+.6*t).toFixed(2); h+=tp.em?at(p,0,0,`font-size:${10+k}px;opacity:${o}`,tp.em[k%tp.em.length]):at(p,0,0,`width:${7+k}px;height:${7+k}px;border-radius:50%;border:2px solid ${sc[k%sc.length]};opacity:${o}`); } }
   const e=P(1), K=tp&&tp.kind, cols=(tp&&tp.cols)||RAINBOW, em=tp&&tp.em;
   if(!tp){ h+=`<i class="pvs pvtip" style="left:${e[0]}%;top:${e[1]}%"></i>`; return h; }
@@ -462,7 +489,7 @@ const COLORS={
  'hol-spring':['#F7FEE7','#BFDBFE','#D9F99D','#4D7C0F','#1E3A8A','#60A5FA'],
  'hol-shavuos':['#F0FDF4','#BBF7D0','#FBCFE8','#15803D','#14532D','#F472B6']};
 let colorCss=false;
-try{ window.TL_STORE_FX={TAPS,TAP_OF,TRAIL_OF,TRAILS,COLORS,tapOf,trailOf}; }catch(e){}
+try{ window.TL_STORE_FX={TAPS,TAP_OF,TRAIL_OF,TRAILS,COLORS,tapOf,trailOf,pvStatic}; }catch(e){}
 function colors(){ try{ if(!colorCss){ colorCss=true; const s=document.createElement('style'); s.id='st-colors';
     s.textContent=Object.keys(COLORS).map(id=>{ const c=COLORS[id], k='body.st-color-'+id;
       return `${k}{--boss:${c[3]};--line:${c[1]};--card2:${c[0]};--hpline:${c[1]};--g-hero:linear-gradient(120deg,${c[4]} 0%,${c[3]} 55%,${c[5]} 100%)}
