@@ -24,6 +24,8 @@ If a data file grows past about 400 KB, start `OneBiteDataMath2.html` and regist
 - 2026-11-22 · Round 2 Lane B (K–1 Math activities) · this session: `do`/`your` hands-on activities for every `MATH.*.L01.*` bite (batch 1), then `L02` (batch 2). Batch 1 (L01, 16 bites) and batch 2 (L02, 21 bites) are written; all K–1 Math bites now have `do`/`your`. The activity data shapes are written at the top of the Round 2 block in `src/OneBiteDataMath.html` for Lane A's kit.
 - 2026-11-22 · Round 2 Lane B (K–1 Math), follow-up · this session: checked all 37 L01 + L02 bites against the kit and the round-2 rules (activities, 2+ kinds, no repeats, 3 choices at most, a song or movement, spoken lines). All pass. Fixed the last 4 checks the bites did not show: in front of / behind (MATH.GEO.L01.02), which row has more (MATH.NUM.L01.04), writing 107 (MATH.NUM.L02.01), and "some, then 7 more, makes 16" (MATH.OPS.L02.09). **Stopped here: K–1 Math (L01 and L02) is done.** Next for Lane B: Grade 2–3 (L03) `do`/`your`, read-along band.
 
+- 2026-11-22 · Round 2 Lane C3 · Reading Grades 2–8, `src/OneBiteDataRead2.html` · this session: full lessons plus `do`/`your` activities for `READ.*.L03`–`L09`, in batches (L03, L04, L05–L06, L07–L09). Setup PR: the new file, registered in Photos.js and Speed.js, with 5 Grade 2 lessons. **Display limits learned from the pictures:** an activity's `q` shows very big (keep it 46 characters or fewer); findall cells fit 4 letters; listen choices fit about 14 characters; match sides about 16 characters.
+
 ## Starter prompt for a content lane (paste into a new Claude Code session on `tashbar-baltimore/tashbar-app`)
 
 ```
