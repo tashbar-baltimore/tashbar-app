@@ -740,3 +740,66 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - thick-old-stone-wall-blocks.webp | https://pixabay.com/photos/wall-masonry-stone-texture-823602/ | Pixabay Content License | GregMontani
 - open-desert-tent-by-dune.webp | https://pixabay.com/photos/desert-camp-morocco-nature-africa-171825/ | Pixabay Content License | wbwolfgang
 - low-desert-hill-acacia.webp | https://pixabay.com/photos/negev-desert-wilderness-wanderings-4765422/ | Pixabay Content License | jdblack
+- cheetah-standing-on-dirt-road.webp | https://pixabay.com/photos/cheetah-animal-safari-cat-wild-cat-5689870/ | Pixabay Content License | Callmebaz
+- kelp-forest-underwater.webp | https://pixabay.com/photos/kelp-seaweed-aquatic-plant-algae-6967209/ | Pixabay Content License | Jackdrafahl
+- two-barn-swallows-on-branch.webp | https://pixabay.com/photos/barn-swallow-swallow-birds-animal-8068880/ | Pixabay Content License | sharkolot
+- tall-termite-mound-africa.webp | https://pixabay.com/photos/termite-hill-termites-termite-mound-266587/ | Pixabay Content License | sarangib
+- compost-bin-food-scraps.webp | https://pixabay.com/photos/garden-compost-nature-bio-floor-4725522/ | Pixabay Content License | herb007
+- calm-pond-green-trees.webp | https://pixabay.com/photos/summer-background-trees-walk-3529799/ | Pixabay Content License | Larisa-K
+- open-ocean-blue-water.webp | https://pixabay.com/photos/sea-waves-ocean-sunny-water-7409361/ | Pixabay Content License | janchrhorn
+- cactus-sharp-spines-closeup.webp | https://pixabay.com/photos/cactus-nature-plant-green-juicy-9902128/ | Pixabay Content License | Alexas_Fotos
+- bald-eagle-head-side.webp | https://pixabay.com/photos/bald-eagle-bird-raptor-bird-of-prey-6481346/ | Pixabay Content License | Anrita1705
+- pink-lily-flower-middle.webp | https://pixabay.com/photos/pink-flower-stamens-lily-bloom-7294155/ | Pixabay Content License | YAKY_X
+- finch-on-berry-branch.webp | https://pixabay.com/photos/finch-eating-berry-bird-tree-9916482/ | Pixabay Content License | Trek_Jason
+- tulip-field-many-colors.webp | https://pixabay.com/photos/tulips-tulip-field-tulip-blossom-3359902/ | Pixabay Content License | Ralphs_Fotos
+- grass-in-bloom-meadow.webp | https://pixabay.com/photos/grass-bloom-bromegrass-spring-7207803/ | Pixabay Content License | It_was_a_pleasure
+- green-leaf-light-shining-through.webp | https://pixabay.com/photos/leaves-leaf-walnut-leaf-spring-3420078/ | Pixabay Content License | Schwoaze
+- mint-plant-in-pot.webp | https://pixabay.com/photos/mint-plant-herb-organic-menthol-1126282/ | Pixabay Content License | ABZ98
+- tiny-green-apples-on-branch.webp | https://pixabay.com/photos/apple-tree-apples-fruit-tree-fruits-7266064/ | Pixabay Content License | mariya_m
+- bean-sprout-pushing-up-from-soil.webp | https://pixabay.com/photos/nature-bud-spring-green-growth-5208016/ | Pixabay Content License | 김경복
+- peanuts-in-shells-pile.webp | https://pixabay.com/photos/peanuts-nuts-shells-peanut-shells-618547/ | Pixabay Content License | Pezibear
+- pumpkins-growing-on-vine.webp | https://pixabay.com/photos/pumpkin-vegetable-garden-harvest-1637320/ | Pixabay Content License | Alexey_Hulsov
+- moldy-orange-between-fresh-ones.webp | https://pixabay.com/photos/mould-mold-fruit-mould-rotten-6887246/ | Pixabay Content License | mostlymarvelling
+- pear-trees-white-blossoms.webp | https://www.flickr.com/photos/75612671@N03/25895155453 | CC BY 2.0 | enneafive
+- hen-in-nest-box-with-eggs.webp | https://pixabay.com/photos/chicken-hen-eggs-poultry-animal-1867521/ | Pixabay Content License | Pexels
+- blue-swim-fins-on-pebbles.webp | https://pixabay.com/photos/beach-blue-diving-fins-flipper-2644/ | Pixabay Content License | PublicDomainPictures
+- boiled-egg-cut-in-half-shell.webp | https://pixabay.com/photos/egg-salted-duck-background-white-2922965/ | Pixabay Content License | veerasantinithi
+- tree-root-cracked-sidewalk.webp | https://www.flickr.com/photos/47445767@N05/53648812638 | CC BY 2.0 | James St. John
+- sand-grains-close-up.webp | https://www.flickr.com/photos/142702835@N06/49958599383 | CC BY 2.0 | Max_G6
+- towels-drying-on-line.webp | https://pixabay.com/photos/stayhome-clean-to-wash-laundry-5005791/ | Pixabay Content License | webentwicklerin
+- puddles-on-dirt-road.webp | https://pixabay.com/photos/dirt-road-puddles-rural-5975935/ | Pixabay Content License | MemoryCatcher
+- sugar-grains-macro.webp | https://www.flickr.com/photos/35521221@N05/5181647504 | CC BY 2.0 | Martyn Wright
+- dripping-tap-on-wall.webp | https://pixabay.com/photos/water-tap-tap-faucet-water-nature-9799256/ | Pixabay Content License | balouriarajesh
+- volcano-ash-plume-above-clouds.webp | https://pixabay.com/photos/volcano-mountain-sunrise-nature-8488486/ | Pixabay Content License | dominickvietor
+- mercury-surface-edge.webp | https://images.nasa.gov/details/GSFC_20171208_Archive_e001918 | Public domain (NASA) | GSFC
+- neptune-blue-planet-voyager.webp | https://images.nasa.gov/details/PIA00046 | Public domain (NASA) | JPL
+- uranus-pale-blue-planet.webp | https://images.nasa.gov/details/PIA18182 | Public domain (NASA) | JPL
+- space-probe-with-solar-panels.webp | https://pixabay.com/photos/mission-to-mars-mars-probe-2645338/ | Pixabay Content License | PIRO4D
+- sunbeams-through-parting-clouds.webp | https://pixabay.com/photos/sky-cloud-nature-cloudy-blue-sky-2369230/ | Pixabay Content License | krzys16
+- frying-pan-black-handle.webp | https://pixabay.com/photos/pan-cook-fry-frying-pan-554072/ | Pixabay Content License | Silberfuchs
+- small-bird-puffed-on-snow.webp | https://pixabay.com/photos/great-tit-bird-winter-snow-9521571/ | Pixabay Content License | jggrz
+- hard-boiled-eggs-cut-open.webp | https://www.flickr.com/photos/18295242@N00/4342932320 | CC BY-SA 2.0 | Laurel Fan
+- frozen-outdoor-tap-icicles.webp | https://pixabay.com/photos/icicles-frozen-pipe-frozen-freeze-3529002/ | Pixabay Content License | GWizUK
+- butter-melting-in-pan.webp | https://pixabay.com/photos/cooking-butter-pan-frying-pan-cook-5979722/ | Pixabay Content License | scratsmacker
+- knitted-striped-scarf.webp | https://www.flickr.com/photos/81876892@N00/535699542 | CC BY 2.0 | Breibeest
+- glass-of-fizzy-water.webp | https://pixabay.com/photos/water-glass-drink-liquid-wet-3708190/ | Pixabay Content License | ulleo
+- one-red-glass-marble.webp | https://www.flickr.com/photos/61446950@N06/28563955008 | CC BY 2.0 | COLORED PENCIL magazine
+- one-cork-on-wood.webp | https://pixabay.com/photos/cork-bottle-closure-natural-product-86329/ | Pixabay Content License | andiroth
+- brass-doorbell-on-brick.webp | https://pixabay.com/photos/door-bell-doorbell-bell-clamp-326561/ | Pixabay Content License | cocoparisienne
+- cracker-with-crumbs.webp | https://pixabay.com/photos/biscuit-crumbs-shortbread-meal-344899/ | Pixabay Content License | EME
+- mountain-stream-down-hill.webp | https://pixabay.com/photos/waterfall-snow-landscape-nature-4972945/ | Pixabay Content License | cerimorgs
+- one-pink-rose-bloom.webp | https://pixabay.com/photos/rose-flower-petals-nature-bloom-10125454/ | Pixabay Content License | WJ_Y2017fufu
+- roman-stone-paved-street.webp | https://www.flickr.com/photos/34561917@N04/5833711673 | CC BY 2.0 | isawnyu
+- euphrates-farmland-from-space.webp | https://images.nasa.gov/details/PIA13436 | Public domain (NASA) | JPL
+- green-islet-in-turquoise-sea.webp | https://pixabay.com/photos/tropical-island-blue-ocean-beach-5074304/ | Pixabay Content License | d_alexander33
+- snowy-peak-in-clouds-blue-sky.webp | https://pixabay.com/photos/mountain-peak-snow-mountain-cloud-8079469/ | Pixabay Content License | sfkjrgk
+- round-water-in-pine-forest-above.webp | https://pixabay.com/photos/lake-trees-forest-waldsee-water-4335571/ | Pixabay Content License | OrcaTec
+- curving-water-through-green-plain.webp | https://pixabay.com/photos/okavango-delta-river-landscape-5158380/ | Pixabay Content License | LionMountain
+- old-shul-interior-wooden-benches.webp | https://www.flickr.com/photos/44034762@N04/32473282164 | CC0 1.0 | Baltimore Heritage
+- florida-from-space-shuttle.webp | https://images.nasa.gov/details/51C-44-026 | Public domain (NASA) | JSC
+- baseball-home-plate-chalk-lines.webp | https://pixabay.com/photos/home-plate-baseball-sport-home-1592627/ | Pixabay Content License | paulbr75
+- gray-glove-on-fallen-leaves.webp | https://pixabay.com/photos/glove-forest-floor-leaves-nature-4777791/ | Pixabay Content License | un-perfekt
+- clay-bowls-nested-inside-each-other.webp | https://pixabay.com/photos/clay-plates-hand-craft-clay-pod-6528556/ | Pixabay Content License | mipavelk
+- three-moving-boxes-stacked.webp | https://www.flickr.com/photos/158517012@N07/47303024801 | CC BY 2.0 | hireahelper
+- wooden-toy-car-on-rock.webp | https://pixabay.com/photos/wooden-car-toy-wood-childrens-toys-1039298/ | Pixabay Content License | LeFox
+- rough-diamond-crystal.webp | https://www.flickr.com/photos/47445767@N05/17872081458 | CC BY 2.0 | James St. John
