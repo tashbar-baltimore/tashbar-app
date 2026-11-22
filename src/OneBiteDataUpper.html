@@ -1,0 +1,85 @@
+<script>
+/* OneBiteDataUpper.html: hand-written ONE BITE lessons for the upper grades, top-down (Grade 8, 7, 6 = L09, L08, L07; then L06):
+   Reading, Writing, Language and Math. Round 2, Lane U (docs/ONE-BITE-ROUND2.md, docs/ONE-BITE-LANES.md).
+   Schema and rules: docs/ONE-BITE-PLAYBOOK.md. The player is OneBite.html; the activities are OneBiteKit.html. One entry per skill id:
+   window.ONE_BITE['SKILL.ID'] = { band, today, why, pic, ready:[{q,o,a}], bridge, watch:{q,m,steps,a}, oops:{q,wrong,right,why}, ways:[...], done, board:{...},
+     do:[2 guided activities], your:[5 practice activities] };
+   Lane U rules: M68 band (E45 for L06); every activity has say (12 words or fewer) and how; 4 choices; 3+ kinds per lesson, never the same kind
+   twice in a row; 2+ "tap the reason" (why) per lesson; short sort cards and match sides; one word per findall cell.
+   Boys never see the word for this project: they see "lesson". Content lanes edit only their own data file. No double slash in this file. */
+window.ONE_BITE=window.ONE_BITE||{};
+(function(B){
+
+/* ---- LANGUAGE, GRADE 8 (L09) ---- */
+B['LANG.GRAM.L09.01']={ band:'M68', pic:'📰', today:'Put the doer first: write in active voice', why:'A letter to your congressman about a broken crosswalk is strongest when it names exactly who must fix it.',
+  ready:[{q:'In "Ari kicked the ball," who did the action?', o:['Ari','the ball','kicked','nobody'], a:'Ari'}],
+  bridge:'LANG.GRAM.L08.01', bridgeName:'Clauses and complex sentences',
+  watch:{ q:'Passive: The test was graded by Rabbi Weiss.', m:{type:'tiles', w:['The test','was graded','by Rabbi Weiss.'], hi:[2]}, steps:[
+    {t:'Ask the reporter question: who did it? Rabbi Weiss. He is hiding at the end.'},
+    {t:'Spot the passive sign: was ___ by. "Was graded by" means the action is done TO the test.', m:{type:'tiles', w:['The test','was graded','by Rabbi Weiss.'], hi:[1]}},
+    {t:'Move the doer to the front and drop "was" and "by": Rabbi Weiss graded the test.', m:{type:'tiles', w:['Rabbi Weiss','graded','the test.'], hi:[0]}},
+    {t:'Teach it back: tell your chavrusa the 3 steps. Find the doer, spot was ___ by, put the doer first.'}], a:'Rabbi Weiss graded the test.' },
+  oops:{ q:'Mistakes were made.', wrong:'Fine, it sounds polite', right:'We made mistakes.', why:'Passive voice can hide who did it. A good writer names the doer.' },
+  ways:['word tiles','reporter question','sort','teach it back','Mistake Detective'], done:'You can spot passive voice and turn it active.',
+  board:{ one:'Active: the doer comes first. Passive: was ___ by.', activity:'Pairs rewrite 5 newspaper headlines from passive to active, then read them aloud.', mistakes:['Thinking every past-tense verb is passive','Moving the doer but keeping "was"','Dropping the thing that the action was done to'] },
+  do:[
+    {type:'tiles', q:'The bags were carried by the older boys.', w:['The older boys','carried','the bags.'], extra:['were'], say:'Make it active. Put the doer first.', how:'Find the doer after "by". Put him first, then the action, then the thing.'},
+    {type:'sort', bins:['Active','Passive'], cards:[['Dovid fixed the bike',0],['The bike was fixed',1],['The sukkah was built',1],['Mommy baked challah',0]], say:'Active or passive? Sort each sentence.', how:'Doer first? Active. Was or were plus a done-word? Passive.',
+      why:{q:'Why is "The bike was fixed" passive?', o:['The action is done to the bike','It is a short sentence','It is in the past','It has no adjective'], a:'The action is done to the bike'}}],
+  your:[
+    {type:'findall', q:'The pie was made by Zev.', grid:['The','pie','was','made','by','Zev'], find:['was','made','by'], findSay:'passive sign word', say:'Tap the 3 words that make it passive.', how:'Look for was or were, the done-word, and by.'},
+    {type:'match', pairs:[['was graded by','graded'],['were carried by','carried'],['was built by','built'],['was won by','won']], say:'Match each passive verb to its active verb.', how:'Drop was or were, and drop by. Keep the action word.'},
+    {type:'tiles', q:'The fence was painted by Shaul.', w:['Shaul','painted','the fence.'], extra:['was','by'], say:'Build it active. Leave out the extra words.', how:'Doer first: Shaul. Then the action: painted. Then the thing.',
+      why:{q:'Why did you leave out "was" and "by"?', o:['Active voice does not need them','They are spelled wrong','They make it too long','They are not real words'], a:'Active voice does not need them'}},
+    {type:'sort', bins:['Active','Passive'], cards:[['The rebbe explained it',0],['The bags were carried',1],['The game was won',1],['Our team won',0],['Rabbi Weiss graded it',0],['The test was graded',1]], say:'Sort them. Does the doer come first?', how:'Who did it? If he comes first, it is active.'},
+    {type:'match', pairs:[['Doer first','active voice'],['was ___ by','passive voice'],['Who did it?','the reporter question'],['Mistakes were made','hides the doer']], say:'Match each clue to what it means.', how:'Think back to the 3 steps you learned.'}] };
+
+B['LANG.MECH.L09.01']={ band:'M68', pic:'✒️', today:'Use dashes and ellipses like a pro', why:'In a dvar Torah or a story, a dash builds suspense and an ellipsis shows a speaker stopping to think.',
+  ready:[{q:'Which mark introduces a list?', o:['colon :','dash —','period .','ellipsis ...'], a:'colon :'}],
+  bridge:'LANG.MECH.L07.01', bridgeName:'Extra Info',
+  watch:{ q:'Two marks, two jobs: the dash and the ellipsis', m:{type:'chant', lines:['Dash: wait for it!','Ellipsis: a pause, or words left out.']}, steps:[
+    {t:'DASH —  a sharp break right before a surprise or a reveal: We brought one thing to the party — a big tray of rugelach.'},
+    {t:'ELLIPSIS ...  a speaker stopping to think: "I think... no, I am sure," said Dov.'},
+    {t:'An ellipsis also shows words left out of a quote: "The new shul ... will open in Elul."'},
+    {t:'Wrong: We — brought one thing — to the party. Nothing is revealed after those dashes.'},
+    {t:'Teach it back: tell your chavrusa each job. Dash = wait for it. Ellipsis = a pause or words left out.'}], a:'The dash goes right before the reveal. The ellipsis goes where the speaker stops.' },
+  oops:{ q:'"I... think no I am... sure," said Dov.', wrong:'Dots anywhere sound dramatic', right:'"I think... no, I am sure," said Dov.', why:'Put the ellipsis only where the speaker really stops to think.' },
+  ways:['chant','word tiles','sort','teach it back','Mistake Detective'], done:'You can use a dash for a reveal and an ellipsis for a pause.',
+  board:{ one:'Dash = wait for it. Ellipsis = a pause or words left out.', activity:'Read three sentences aloud with real pauses; the class calls out dash or ellipsis.', mistakes:['Dashes in random places with no reveal','Sprinkling dots everywhere for drama','Using a hyphen - where a dash — belongs'] },
+  do:[
+    {type:'tiles', q:'Build the sentence with a dash.', w:['Only one thing','could stop us','—','the snow.'], say:'Build it. Put the dash before the surprise.', how:'First the build-up, then the dash, then the reveal.'},
+    {type:'match', pairs:[['A sharp break','dash —'],['Stops to think','ellipsis ...'],['Joins two sentences','semicolon ;'],['Here comes a list','colon :']], say:'Match each job to its mark.', how:'Think: what job is each mark hired to do?'}],
+  your:[
+    {type:'sort', bins:['Dash —','Ellipsis ...'], cards:[['Wait for it!',0],['Pause to think',1],['Words left out',1],['Big reveal',0],['Trailing off',1],['Sudden break',0]], say:'Which mark does each job? Sort them.', how:'Dash: a sharp break. Ellipsis: a pause or missing words.',
+      why:{q:'Why does "I think... no" use an ellipsis?', o:['Dov stops to think','It starts a list','It joins two sentences','It ends a question'], a:'Dov stops to think'}},
+    {type:'findall', q:'Only one gift was in the box a sefer.', grid:['Only','one','gift','was','in','the','box','a','sefer'], find:'box', findSay:'word right before the dash', say:'Tap the word right before the dash goes.', how:'Read the build-up. The dash goes just before the reveal.'},
+    {type:'tiles', q:'Build what Dov said, with an ellipsis.', w:['"I think...','no,','I am sure,"','said Dov.'], say:'Build it. The dots go where Dov stops.', how:'Dov starts, stops to think, then changes his mind.'},
+    {type:'match', pairs:[['—','One guest came — Zeidy!'],['...','"Well... maybe," said Avi.'],[';','It rained; we stayed in.'],[':','Bring two: a pen, a book.']], say:'Match each mark to a sentence that uses it.', how:'Find the mark inside each sentence.'},
+    {type:'sort', bins:['Right place','Wrong place'], cards:[['one thing — rugelach',0],['We — brought one',1],['"I think... no"',0],['I... think no',1]], say:'Is the mark in the right place?', how:'Dash right before the reveal. Ellipsis where the speaker stops.',
+      why:{q:'Why is "We — brought one" wrong?', o:['Nothing is revealed after the dash','It needs a comma','It is too long','It needs a question mark'], a:'Nothing is revealed after the dash'}}] };
+
+B['LANG.USE.L09.01']={ band:'M68', pic:'🖍️', today:'Edit like a pro: one slow pass per job', why:'Before your bar mitzvah speech is printed for the whole family, slow editing catches the mistake everyone would see.',
+  ready:[{q:'Which is spelled right?', o:['received','recieved','receeved','resieved'], a:'received'}],
+  bridge:'LANG.USE.L08.01', bridgeName:'Cut the Clutter',
+  watch:{ q:'Edit: My brother and me learned the whole perek.', m:{type:'tiles', w:['My brother and me','learned','the whole perek.'], hi:[0]}, steps:[
+    {t:'Pass 1, word choice: take out "My brother and". Would you say "me learned"? No. So me should be I.'},
+    {t:'Pass 2, punctuation: We need eggs flour and sugar for the cake. It needs commas between eggs, flour and sugar.'},
+    {t:'Pass 3, spelling and twins: their going too the store becomes They\'re going to the store.'},
+    {t:'Teach it back: tell your chavrusa the 3 passes. Words, punctuation, spelling: one job each.'}], a:'My brother and I learned the whole perek.' },
+  oops:{ q:'Editing in one fast read', wrong:'One read is enough', right:'Several slow passes, one job each', why:'One fast read sees what you meant, not what you wrote.' },
+  ways:['three passes','find the mistakes','sort','teach it back','Mistake Detective'], done:'You can edit a piece slowly, one job at a time.',
+  board:{ one:'Edit in passes: words, punctuation, spelling.', activity:'Three colored pencils, one pass each, on a shul-board notice full of mistakes.', mistakes:['Reading once, fast','Using "me" with another person as the doer','Missing commas in a list of three'] },
+  do:[
+    {type:'findall', q:'Eli and me ran too the park in may.', grid:['Eli','and','me','ran','too','the','park','in','may'], find:['me','too','may'], findSay:'word with a mistake', say:'Tap every word with a mistake.', how:'Pass by pass: word choice, spelling twins, capitals.'},
+    {type:'match', pairs:[['me ran','I ran'],['too the park','to the park'],['may','May'],['recieved','received']], say:'Match each mistake to its fix.', how:'Read each one slowly. What would an editor change?'}],
+  your:[
+    {type:'sort', bins:['Capitals','Commas','Spelling'], cards:[['sunday → Sunday',0],['eggs flour and sugar',1],['recieved → received',2],['brooklyn → Brooklyn',0],['pens books and bags',1],['thier → their',2]], say:'Which pass catches each mistake? Sort them.', how:'Capitals pass, punctuation pass, spelling pass: one job each.'},
+    {type:'tiles', q:'Fix it: Bentzion and me went to the library.', w:['Bentzion','and I','went','to the library.'], extra:['and me'], say:'Build the corrected sentence.', how:'Take out the other person. "I went" sounds right, so use I.',
+      why:{q:'How do you know it is "I", not "me"?', o:['Without Bentzion, "I went" sounds right','"Me" is always wrong','"I" is shorter','"I" comes first in ABC order'], a:'Without Bentzion, "I went" sounds right'}},
+    {type:'findall', q:'Last week Dov runs to the shop and got milk.', grid:['Last','week','Dov','runs','to','the','shop','and','got','milk'], find:'runs', findSay:'verb in the wrong tense', say:'Tap the verb in the wrong tense.', how:'Last week means past. Which action is not in the past?'},
+    {type:'match', pairs:[['They are going','They\'re going'],['It belongs to them','their'],['Also, very','too'],['It is late','It\'s late']], say:'Match each meaning to the right twin.', how:'Say the long form out loud: they\'re means they are.'},
+    {type:'sort', bins:['Needs commas','Correct'], cards:[['eggs flour and sugar',0],['eggs, flour and sugar',1],['pens books and bags',0],['Avi, Ari and Eli',1]], say:'Does the list need commas? Sort them.', how:'Three or more things in a list get commas between them.',
+      why:{q:'Why does "eggs flour and sugar" need commas?', o:['It is a list of three things','It is a question','It has a name in it','It is too short'], a:'It is a list of three things'}}] };
+
+})(window.ONE_BITE);
+</script>
