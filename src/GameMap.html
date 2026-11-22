@@ -994,9 +994,9 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.85; a.play().catch(()=>{}); return; }
   const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; const c=GM.ac||(GM.ac=new AC()); if(c.state==='suspended') c.resume();
   /* v2 (HoS: "much more rocking ... like the big star of the show is coming out onto the stage"): a drum roll and a rising whoosh
-     build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. About 6 s. */
-  const comp=c.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=6; comp.connect(c.destination);
-  const out=c.createGain(); out.gain.value=.26; out.connect(comp); const lim=c.createGain(); lim.gain.value=1.2; comp.disconnect(); comp.connect(lim); lim.connect(c.destination);
+     build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. About 10 s, loud (compressed and leveled). */
+  const comp=c.createDynamicsCompressor(); comp.threshold.value=-22; comp.ratio.value=10; comp.attack.value=.003; comp.release.value=.12; const clip=c.createWaveShaper(); { const k=new Float32Array(2048); for(let i=0;i<2048;i++){ const x=i/1024-1; k[i]=Math.tanh(x*1.6)/Math.tanh(1.6); } clip.curve=k; } comp.connect(clip); clip.connect(c.destination);
+  const out=c.createGain(); out.gain.value=.34; out.connect(comp); const lim=c.createGain(); lim.gain.value=1.5; comp.disconnect(); comp.connect(lim); lim.connect(clip);
   const T=c.currentTime+.05, B=60/152, HIT=T+1.7;
   const noiseBuf=(sec)=>{ const b=c.createBuffer(1,Math.ceil(c.sampleRate*sec),c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return b; };
   const env=(g,t,a,d,v)=>{ g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(v,t+a); g.gain.exponentialRampToValueAtTime(.0008,t+a+d); };
@@ -1020,14 +1020,17 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   kick(HIT,1.6); crash(HIT,.65); gtr(pc(82.41),HIT,.55,.5); brass(329.63,HIT,.5,.5); brass(415.3,HIT,.5,.4); brass(493.88,HIT,.5,.4);
   /* 3. the rock groove: 8 beats */
   const G=HIT+B*1;
-  const riff=[82.41,82.41,98,110,82.41,82.41,123.47,110];
-  for(let k=0;k<8;k++){ const tb=G+k*B; kick(tb); if(k%2===1) snare(tb,.8); hat(tb); hat(tb+B/2); if(k===3||k===7) kick(tb+B/2,1.1);
-   gtr(pc(riff[k]),tb,B*.42,.42); gtr(pc(riff[k]),tb+B/2,B*.35,.32); }
+  const riff=[82.41,82.41,98,110,82.41,82.41,123.47,110], up=Math.pow(2,2/12);   /* bars 3-4: the same riff a step higher, bigger */
+  for(let k=0;k<16;k++){ const tb=G+k*B, m=k<8?1:up; kick(tb); if(k%2===1) snare(tb,.8); hat(tb); hat(tb+B/2); if(k%4===3) kick(tb+B/2,1.1); if(k===8) crash(tb,.5);
+   gtr(pc(riff[k%8]*m),tb,B*.42,.42); gtr(pc(riff[k%8]*m),tb+B/2,B*.35,.32); }
   const fan=[[0,659.25,.5],[.5,659.25,.25],[.75,659.25,.25],[1,830.61,.75],[2,987.77,.5],[2.5,880,.5],[3,987.77,1],[4,1108.73,.5],[4.5,987.77,.5],[5,1108.73,.5],[5.5,1244.51,.5],[6,1318.51,1.6]];
   fan.forEach(([b,f,d])=>brass(f,G+b*B,d*B*.95,.42));
+  const fan2=[[8,739.99,.5],[8.5,739.99,.25],[8.75,739.99,.25],[9,932.33,.75],[10,1108.73,.5],[10.5,987.77,.5],[11,1108.73,1],[12,1244.51,.5],[12.5,1108.73,.5],[13,1244.51,.5],[13.5,1396.91,.5],[14,1479.98,1.6]];
+  fan2.forEach(([b,f,d])=>{ brass(f,G+b*B,d*B*.95,.45); brass(f/2,G+b*B,d*B*.95,.25); });
   [G+7*B,G+7*B+B/4,G+7*B+B/2,G+7*B+3*B/4].forEach(x=>snare(x,.75));   /* fill */
+  for(let x=G+15*B; x<G+16*B-.02; x+=B/8) snare(x,.5+.4*((x-G-15*B)/B));   /* big roll into the end */
   /* 4. the giant last chord */
-  const END=G+8*B; kick(END,1.7); crash(END,.7); gtr(pc(82.41),END,1.8,.5); [329.63,415.3,493.88,659.25,830.61].forEach(f=>brass(f,END,1.7,.36)); tone(1318.51,END,1.4,'triangle',.12);
+  const END=G+16*B, R=92.5; kick(END,1.8); crash(END,.75); gtr(pc(R),END,2.6,.5); [369.99,466.16,554.37,739.99,932.33].forEach(f=>brass(f,END,2.5,.38)); tone(1479.98,END,2,'triangle',.12); kick(END+B*1.5,1.2); crash(END+B*1.5,.35);
  }catch(e){} }
  GM.themeTune=themeTune;
  if(typeof welcome!=='function') return;
