@@ -583,5 +583,176 @@ B['READ.VOC.L05.01']={ band:'E45', pic:'↔️', today:'Find words that mean the
     {type:'tiles', w:['Read the word','Swap one in','Same or flipped?'], q:'The swap test', say:'Put the swap test steps in order.', how:'Read it. Swap the new word in. Does the meaning stay or flip?'},
     {type:'sort', q:'Shul flyer: A huge kiddush!', bins:['Same as huge','Opposite'], cards:[['giant',0],['tiny',1],['enormous',0],['small',1]], say:'Same as huge, or the opposite?', how:'Giant and enormous are synonyms. Tiny and small are antonyms.'}] };
 
+/* ---- GRADES 5-6 (L06, band E45) ---- */
+B['READ.COMP.L06.01']={ band:'E45', pic:'🕵️', today:'Make a smart guess from clues', why:'Authors do not tell you everything. Clues plus what you know fill in the rest, like a detective.',
+  ready:[{q:'"Reuven yawned." The clue is...', o:['yawned','Reuven','the','a'], a:'yawned'},{q:'The main idea covers...', o:['every sentence','one detail','the title only','the last word'], a:'every sentence'}],
+  bridge:'READ.COMP.L05.01', bridgeName:'Main idea and supporting details',
+  watch:{ q:'What happened to Pinchas?', m:{type:'scene',e:'🛷',t:'Pinchas came in with bright red cheeks and snow on his hat, still holding the rope of his sled.'}, steps:[
+    {t:'The author does not say it. You figure it out.'},
+    {t:'Clues from the text: red cheeks, snow on his hat, a sled rope.'},
+    {t:'What I know: sleds go on snowy hills; cold makes cheeks red.'},
+    {t:'Clues + what I know = inference: He was sledding in the snow.'},
+    {t:'Try one more. A stuffed mailbox, tall grass, three newspapers: The family has been away for a while.'}], a:'Clues + what I know = inference.' },
+  oops:{ q:'"Reuven yawned." Infer?', wrong:'Reuven is hungry.', right:'Reuven is tired.', why:'Every inference needs a clue. Yawning is a clue for tired, not hungry.' },
+  ways:['detective: clue plus know','sort clue and know','match clue and inference','tap the reason','Mistake Detective'], done:'You can make smart inferences from clues!',
+  board:{ one:'Clue (from the text) + what I know (from life) = inference.', activity:'Mystery bag: show three clue objects; boys say what they infer and which clue proves it.', mistakes:['Guessing with no clue from the text','Using a clue that points somewhere else (yawn = hungry)','Copying a sentence instead of figuring something out'] },
+  do:[
+    {type:'match', pairs:[['yawns','tired'],['red cheeks, sled','went sledding'],['runs to window','eager']], say:'Match each clue to what you can infer.', how:'Ask: what do I know about life? Gedalya runs to the window: he is eager to see his Zeidy.'},
+    {type:'sort', q:'Pinchas and the sled', bins:['In the text','What I know'], cards:[['snow on his hat',0],['snow is cold',1],['holds a sled rope',0],['sleds go on hills',1]], say:'Is it a clue from the text, or what you know?', how:'A clue is written in the story. What I know comes from my own life.'}],
+  your:[
+    {type:'listen', q:'Stuffed mailbox, tall grass, 3 papers', hear:'The mailbox is stuffed, the grass is tall, and three newspapers lie on the steps. What can you infer?', q:'The family has been ___ for a while.', o:['away','home','sick','busy'], a:'away', say:'Listen to the clues. What can you infer?', how:'Nobody took the mail or cut the grass. The family has been away for a while.', why:{q:'Which clue helps most?', o:['Three newspapers on the steps','The house is white','It is a mailbox','Grass is green'], a:'Three newspapers on the steps'}},
+    {type:'tiles', w:['Clue','+ I know','= Inference'], q:'The detective formula', say:'Build the inference formula.', how:'Start with a clue from the text. Add what you know. That makes an inference.'},
+    {type:'listen', q:'Gedalya runs to the window.', hear:'Gedalya stares at the door all afternoon. His Zeidy\'s plane lands today. How does he feel?', o:['eager','tired','angry','bored'], a:'eager', say:'Listen. How does Gedalya feel?', how:'He keeps looking and running to the window. He is eager to see his Zeidy.', why:{q:'Which clue tells you?', o:['He runs to the window at every car','The door is brown','It is the afternoon','Planes are big'], a:'He runs to the window at every car'}},
+    {type:'sort', q:'Reuven yawned and rubbed his eyes.', bins:['Good inference','No clue'], cards:[['Reuven is tired',0],['Reuven is hungry',1],['Reuven is sleepy',0],['Reuven is angry',1]], say:'Does a clue prove this inference?', how:'Yawning and rubbing eyes are clues for tired. Nothing shows hungry or angry.'},
+    {type:'match', pairs:[['wet umbrella','it rained'],['empty plate','he ate it'],['packed suitcase','a trip']], say:'Match each clue to an inference.', how:'Picture it. What do you know usually causes that?'}] };
+
+B['READ.COMP.L06.02']={ band:'E45', pic:'📚', today:'Use text features to find facts fast', why:'A good reader never reads a whole book to find one fact. Features take you straight there.',
+  ready:[{q:'A caption tells about...', o:['a picture','the whole book','the author','the price'], a:'a picture'},{q:'A heading names...', o:['one part','every page','the reader','a word'], a:'one part'}],
+  bridge:'READ.COMP.L03.02', bridgeName:'Text Tools',
+  watch:{ q:'How Tefillin Are Made', m:{type:'scene',e:'📖',t:'Contents: 1. The Batim, 2. The Parshiyos, 3. The Retzuos, Glossary. Caption: The head tefillin hold four small scrolls.'}, steps:[
+    {t:'Contents, at the front, list the sections in order. The straps are the retzuos: 3. The Retzuos.'},
+    {t:'A caption tells about a picture: the head tefillin hold four small scrolls. How many? Four.'},
+    {t:'The glossary, at the back, explains hard words. batim: the boxes of the tefillin.'},
+    {t:'The index, at the back, lists topics A to Z with page numbers.'}], a:'Contents, caption, glossary, index.' },
+  oops:{ q:'Where do you find the meaning of klaf?', wrong:'Read the whole book.', right:'The glossary or the bold word', why:'Features save you time. Hard word meanings live in the glossary, at the back.' },
+  ways:['match feature and job','sort front and back','pick the feature','tap the reason','Mistake Detective'], done:'You can use text features to find facts fast!',
+  board:{ one:'Contents (front) list sections; index (back) lists topics A to Z; glossary (back) explains words.', activity:'Feature race: give pairs a nonfiction book and a question; they race to name the feature they will use.', mistakes:['Reading the whole book instead of using the contents','Looking in the index for a meaning (use the glossary)','Skipping captions'] },
+  do:[
+    {type:'match', pairs:[['Contents','parts in order'],['Index','topics A to Z'],['Glossary','word meanings'],['Caption','about a picture']], say:'Match each text feature to its job.', how:'Contents and index help you find a page. The glossary tells meanings. A caption tells about a picture.'},
+    {type:'sort', bins:['Front of book','Back of book'], cards:[['title page',0],['contents',0],['index',1],['glossary',1],['introduction',0],['sources',1]], say:'Is it at the front of the book, or the back?', how:'Front: title page, contents, introduction. Back: index, glossary, sources.'}],
+  your:[
+    {type:'listen', q:'Contents: 1. Batim 2. Parshiyos 3. Retzuos', hear:'Use the contents. Which section tells about the straps?', o:['3','1','2','end'], a:'3', say:'Listen. Use the contents.', how:'The retzuos are the leather straps. Go to 3. The Retzuos.', why:{q:'How did you know?', o:['Retzuos are the straps','It is the last one','It is the longest','I guessed'], a:'Retzuos are the straps'}},
+    {type:'match', pairs:[['batim','the boxes'],['parshiyos','Torah sections'],['retzuos','the straps']], say:'Use the glossary. Match each word.', how:'The glossary says: batim: the boxes of the tefillin. Parshiyos: sections of the Torah.'},
+    {type:'listen', q:'Caption: four small scrolls', hear:'Read the caption. How many small scrolls are in the head tefillin?', o:['four','one','two','three'], a:'four', say:'Listen. Read the caption.', how:'The caption says the head tefillin hold four small scrolls.', why:{q:'Which feature told you?', o:['the caption','the index','the title','the contents'], a:'the caption'}},
+    {type:'sort', bins:['Contents','Index','Glossary'], cards:[['which section?',0],['page for klaf',1],['what is klaf?',2],['topics A to Z',1],['what are batim?',2]], say:'Which feature would you use?', how:'Which section: contents. Which page: index. What a word means: glossary.'},
+    {type:'tiles', w:['Know your question','Pick a feature','Jump there'], q:'How do you find a fact fast?', say:'Put the steps in order.', how:'Know what you need. Pick the feature that has it. Jump straight there.'}] };
+
+B['READ.COMP.L06.03']={ band:'E45', pic:'🐜', today:'Find two big ideas and their details', why:'Many articles teach two things. Seeing both keeps you from missing half the lesson.',
+  ready:[{q:'The main idea is like...', o:['an umbrella','a raindrop','a title page','a comma'], a:'an umbrella'},{q:'A detail...', o:['supports the main idea','is the title','is always first','has no facts'], a:'supports the main idea'}],
+  bridge:'READ.COMP.L05.01', bridgeName:'Main idea and supporting details',
+  watch:{ q:'Lessons from the Ant', m:{type:'scene',e:'🐜',t:'Shlomo HaMelech wrote: go to the ant and become wise. First, ants are very strong for their size. Second, ants work together.'}, steps:[
+    {t:'Read each part. What is it mostly about? Part 1: strong. Part 2: working together.'},
+    {t:'Two big ideas: ants are very strong, and ants work together.'},
+    {t:'Make two bins. Drop each detail in its bin. One ant can lift an object many times heavier than its body. That is strong.'},
+    {t:'Several ants grab a big crumb and carry it together: work together.'},
+    {t:'Ask why the author added each detail. The car example shows how strong they are.'}], a:'Two bins: strong, and work together.' },
+  oops:{ q:'Two big ideas about bees?', wrong:'bees can sting, and bees fly', right:'they share work, and make honey', why:'Stinging and flying are small details. A big idea covers a whole part.' },
+  ways:['two bins sort','match idea and detail','author\'s why','tap the reason','Mistake Detective'], done:'You can find two big ideas and their details!',
+  board:{ one:'Two parts, two big ideas; drop every detail in its bin.', activity:'Two-bin chart: draw two boxes on the board; boys come up and write each detail in the right box.', mistakes:['Naming a detail as a big idea','Finding only one big idea','Dropping a detail in the wrong bin'] },
+  do:[
+    {type:'sort', q:'Lessons from the Ant', bins:['Ants are strong','Ants work together'], cards:[['lift heavy things',0],['scent trail',1],['carry crumbs together',1],['could lift a car',0],['store food all summer',1]], say:'Which big idea does this detail support?', how:'Strong: lifting heavy things. Together: trails, sharing crumbs, storing food.'},
+    {type:'match', pairs:[['strong','lifts big loads'],['work together','share a crumb']], say:'Match each big idea to a detail.', how:'Several ants grab a big crumb and carry it together. One ant can lift many times its own weight.'}],
+  your:[
+    {type:'sort', q:'Lessons from the Ant', bins:['Big idea','Small detail'], cards:[['ants are strong',0],['ants work together',0],['ants like crumbs',1],['ants rest in winter',1]], say:'Is it a big idea, or a small detail?', how:'Part 1 and Part 2: ants are very strong, and ants work together.', why:{q:'Why not crumbs and sleep?', o:['They are only small details','They are wrong words','They are too long','Ants do not eat'], a:'They are only small details'}},
+    {type:'tiles', w:['Read each part','Make two bins','Drop in details'], q:'How do you find two big ideas?', say:'Put the steps in order.', how:'Read each part and name it. Make a bin for each. Drop every detail in.'},
+    {type:'listen', hear:'Which detail supports: ants work together?', q:'They carry it together.', o:['crumb','car','tiny','black'], a:'crumb', say:'Listen. Tap the detail that fits.', how:'Several ants grab a big crumb and carry it together. That is teamwork.', why:{q:'Why does it fit?', o:['Many ants do one job together','It is about food','It is the last sentence','Crumbs are small'], a:'Many ants do one job together'}},
+    {type:'sort', q:'An article about bees', bins:['Bees share work','Bees make honey'], cards:[['guards at the door',0],['nectar from flowers',1],['nurses for babies',0],['honey in the comb',1]], say:'Which big idea does it support?', how:'Jobs like guards and nurses: sharing work. Nectar and comb: making honey.'},
+    {type:'match', pairs:[['why the car?','shows strength'],['why the trail?','shows teamwork']], say:'Why did the author add each detail?', how:'The car example shows how strong. The scent trail shows how they work together.'}] };
+
+B['READ.COMP.L06.04']={ band:'E45', pic:'🌱', today:'Find the author\'s point and the proof', why:'Letters and ads try to convince you. Find the point and check the proof before you agree.',
+  ready:[{q:'An inference needs...', o:['a clue','a title','a picture','a rhyme'], a:'a clue'},{q:'A detail that supports the main idea is...', o:['proof','the title','a question','a name'], a:'proof'}],
+  bridge:'READ.COMP.L06.03', bridgeName:'Two Big Ideas',
+  watch:{ q:'Our Yeshiva Should Plant a Garden', m:{type:'scene',e:'🌱',t:'I think we should turn the empty dirt into a garden. It teaches about Hashem\'s world, helps families, and is good for our bodies. Some say it costs too much, but seeds are cheap.'}, steps:[
+    {t:'Find the point. Watch for I think, should, must. The point: the yeshiva should plant a garden.'},
+    {t:'Find the pillars, the reasons: learn brachos, food for families, hard work in fresh air.'},
+    {t:'Notice the other side: some say it costs too much. The answer: seeds are cheap and the tools are free.'},
+    {t:'Pillar test: does each reason really hold up the point?'}], a:'Point: the yeshiva should plant a garden.' },
+  oops:{ q:'Main point?', wrong:'lakes are dangerous', right:'every boy should learn to swim', why:'Danger is a reason. The point is what the author wants.' },
+  ways:['point and pillars','sort point, proof, other side','pillar test','tap the reason','Mistake Detective'], done:'You can find an author\'s point and proof!',
+  board:{ one:'Point = what the author wants (should). Pillars = reasons. Answer the other side.', activity:'Build a paper temple: the roof is the point, each column a reason; a weak reason gets pulled out.', mistakes:['Calling a reason the point','Missing how the author answers the other side','Keeping a reason that does not support the point'] },
+  do:[
+    {type:'sort', q:'The garden letter', bins:['Point','Proof','Other side'], cards:[['plant a garden',0],['learn brachos',1],['food for families',1],['costs too much',2],['hard work outside',1]], say:'Is it the point, a proof, or the other side?', how:'The point is what he wants: the yeshiva should plant a garden. Reasons are proof. Costs too much is the other side.'},
+    {type:'tiles', w:['Find the point','Find the pillars','Check other side'], q:'Reading a persuasive letter', say:'Put the steps in order.', how:'First the point (should). Then the reasons. Then how he answers the other side.'}],
+  your:[
+    {type:'listen', q:'Our Yeshiva Should Plant a Garden', hear:'What is the author\'s main point?', q:'We should ___ a garden.', o:['plant','pay','sell','skip'], a:'plant', say:'Listen. Tap the main point.', how:'He writes: I think we should turn it into a garden. The point: the yeshiva should plant a garden.', why:{q:'Which words show the point?', o:['I think we should','Some people say','Finally','Seeds are cheap'], a:'I think we should'}},
+    {type:'match', pairs:[['learn brachos','teaches us'],['food for others','helps others'],['digging, weeding','good for bodies']], say:'Match each proof to its reason.', how:'Each reason is a pillar. Which pillar does this fact hold up?'},
+    {type:'sort', q:'Point: plant a garden', bins:['Supports it','Does not'], cards:[['seeds are cheap',0],['free tools offered',0],['I like green',1],['the grass is tall',1]], say:'Pillar test: does it support the point?', how:'A real pillar gives a reason the garden is a good idea.'},
+    {type:'listen', q:'A shul newsletter', hear:'Every boy should learn to swim. Lakes can be dangerous. What is the point?', o:['swim','lakes','risk','fun'], a:'swim', say:'Listen. Tap the point.', how:'Should shows the point: every boy should learn to swim. Danger is a reason.', why:{q:'Why is danger not the point?', o:['It is a reason for the point','It is not in the text','It is a name','It is a question'], a:'It is a reason for the point'}},
+    {type:'tiles', w:['I think','we should','plant','a garden.'], q:'Build the point sentence.', say:'Put the words in order.', how:'A point sentence says what the author wants: I think we should plant a garden.'}] };
+
+B['READ.COMP.L06.05']={ band:'E45', pic:'🫓', today:'Use two texts on one topic', why:'One text rarely tells it all. Two sources together give the full picture.',
+  ready:[{q:'An author\'s point often uses the word...', o:['should','and','the','was'], a:'should'},{q:'Proof for a point is...', o:['a reason or fact','a title','a picture only','a question'], a:'a reason or fact'}],
+  bridge:'READ.COMP.L06.04', bridgeName:'Point and Proof',
+  watch:{ q:'Matzah: two texts', m:{type:'scene',e:'🫓',t:'Text 1: At the bakery, the dough must be in the oven within 18 minutes, so it never rises. Text 2: We left Mitzrayim so fast that the dough baked on their backs as they walked.'}, steps:[
+    {t:'Read Text 1. It teaches how bakers work: fast, so the dough never rises.'},
+    {t:'Read Text 2. It teaches why we eat matzah: the dough baked on their backs as they walked.'},
+    {t:'Sort each fact: only in 1, only in 2, or in both. No rising is in both.'},
+    {t:'A strong sentence uses both: Bakers keep the dough from rising, to remember how we left Mitzrayim in a hurry.'}], a:'One piece from each text.' },
+  oops:{ q:'Use both texts?', wrong:'The oven is very hot.', right:'Bakers keep it from rising, to remember the hurry.', why:'The oven fact is only from Text 1. Both means one piece from each.' },
+  ways:['sort by source','match text and job','combine with tiles','tap the reason','Mistake Detective'], done:'You can use two texts together!',
+  board:{ one:'Sort facts: Text 1, Text 2, or both; a strong sentence uses both.', activity:'Venn diagram on the board: boys place fact cards from two short texts.', mistakes:['Using facts from only one text','Putting a fact in both when it is in one','Copying a sentence instead of combining'] },
+  do:[
+    {type:'sort', bins:['Only Text 1','Only Text 2','Both'], cards:[['very hot oven',0],['18 minutes',0],['baked on their backs',1],['left Mitzrayim',1],['dough does not rise',2]], say:'Which text has this fact?', how:'Text 1 is the bakery. Text 2 is leaving Mitzrayim. Both say the dough does not rise.'},
+    {type:'match', pairs:[['Text 1','how bakers work'],['Text 2','why we eat it']], say:'Match each text to what it teaches.', how:'Ask: what does each text teach? Text 1 is at the bakery.'}],
+  your:[
+    {type:'sort', q:'Which facts are only in Text 2?', bins:['Only Text 2','Not only 2'], cards:[['baked on backs',0],['hot oven',1],['thin circles',1],['left Mitzrayim',0]], say:'Is this fact only in Text 2?', how:'Only Text 2 says the dough baked on their backs as they walked.', why:{q:'Why not the hot oven?', o:['The oven is in Text 1','Ovens are not hot','It is in both','It is a question'], a:'The oven is in Text 1'}},
+    {type:'tiles', w:['Dough stays flat','to remember','leaving Mitzrayim'], q:'Combine both texts.', say:'Build a sentence that uses both texts.', how:'Text 1 gives the bakers. Text 2 gives the reason: Bakers keep the dough from rising, to remember how we left Mitzrayim in a hurry.'},
+    {type:'sort', bins:['Uses one text','Uses both'], cards:[['matzah has holes',0],['flat to remember',1],['no chametz',0],['fast, like the hurry',1]], say:'Does this sentence use one text, or both?', how:'A both sentence has a bakery fact and a reason from leaving Mitzrayim.'},
+    {type:'listen', hear:'Which text tells what happens at a matzah bakery?', q:'Text 1 or Text 2?', o:['1','2','both','none'], a:'1', say:'Listen. Tap the text.', how:'Text 1 is called At the Matzah Bakery.', why:{q:'How do you know?', o:['Its title is At the Matzah Bakery','It is longer','It is second','It has a name'], a:'Its title is At the Matzah Bakery'}},
+    {type:'match', pairs:[['Read Text 1','what it teaches'],['Read Text 2','what it adds'],['Write','use both']], say:'Match each step to its job.', how:'Read one, read the other, then write a sentence that uses both.'}] };
+
+B['READ.LIT.L06.01']={ band:'E45', pic:'⛺', today:'Compare two characters or places', why:'Seeing how two people are alike and different helps you understand each one better.',
+  ready:[{q:'A trait is...', o:['what someone is like','how he feels now','his name','his age'], a:'what someone is like'},{q:'"Both" means...', o:['true of the two','only one','neither','first'], a:'true of the two'}],
+  bridge:'READ.LIT.L04.02', bridgeName:'Character Clues',
+  watch:{ q:'Ovadia and Binyamin', m:{type:'scene',e:'⛺',t:'Ovadia woke early and made his bed neatly. Binyamin slept late; his bed was a mess. In the storm, both boys jumped up to help.'}, steps:[
+    {t:'List what each one does. Ovadia: early, neat, first at Shacharis. Binyamin: late, messy.'},
+    {t:'Different: true of only one. Ovadia is neat and wakes early; Binyamin is messy and sleeps late.'},
+    {t:'Alike: true of both. Both jumped up to help in the storm.'},
+    {t:'Places too: Zeidy\'s tiny shul and our big shul. Alike: the same Torah is read in both.'}], a:'Different: neat vs messy. Alike: both helped.' },
+  oops:{ q:'How are they different?', wrong:'only Baruch went to the party', right:'list maker vs people person', why:'Compare their traits, not a small detail true of only one.' },
+  ways:['three-bin sort','match character and trait','compare places','tap the reason','Mistake Detective'], done:'You can compare characters and places!',
+  board:{ one:'Different = true of only one. Alike = true of both. Compare traits, not tiny details.', activity:'Venn diagram with two hula hoops on the floor; boys place trait cards.', mistakes:['Listing only differences','Comparing small details instead of traits','Saying both when only one did it'] },
+  do:[
+    {type:'sort', q:'Ovadia and Binyamin', bins:['Only Ovadia','Only Binyamin','Both'], cards:[['wakes early',0],['bed a mess',1],['helped in storm',2],['first at Shacharis',0],['sleeps late',1]], say:'Is it true of Ovadia, Binyamin, or both?', how:'Different things go to one boy. Both jumped up to help in the storm.'},
+    {type:'match', pairs:[['Ovadia','neat, early'],['Binyamin','messy, late'],['Both','helped in storm']], say:'Match each one to what is true of him.', how:'Ovadia is neat and wakes early; Binyamin is messy and sleeps late.'}],
+  your:[
+    {type:'listen', hear:'How are Ovadia and Binyamin alike?', q:'Both boys jumped up to ___.', o:['help','sleep','eat','hide'], a:'help', say:'Listen. Tap how they are alike.', how:'Alike means true of both: both jumped up to help in the storm.', why:{q:'Why not both neat?', o:['Only Ovadia is neat','Both are messy','Neat is a place','It never says'], a:'Only Ovadia is neat'}},
+    {type:'sort', q:'Zeidy\'s Shul and Our Shul', bins:['Zeidy\'s shul','Our shul','Both'], cards:[['wood stove',0],['library',1],['same Torah',2],['twelve men',0],['stone building',1],['answer Amen',2]], say:'Which shul is it, or is it both?', how:'Tiny wooden shul: stove, twelve men. Big stone shul: library. The same Torah is read in both.'},
+    {type:'tiles', w:['List actions','Find alike','Find different'], q:'How do you compare?', say:'Put the steps in order.', how:'List what each one does. Find what is true of both. Then what is true of only one.'},
+    {type:'listen', hear:'How are the two shuls alike?', q:'In both shuls, the same ___ is read.', o:['Torah','sign','list','menu'], a:'Torah', say:'Listen. Tap how the shuls are alike.', how:'In both shuls, the same Torah is read in both, and boys answer Amen.', why:{q:'Why not both stone?', o:['Only the city shul is stone','Both are wood','Stone is a person','It is not said'], a:'Only the city shul is stone'}},
+    {type:'match', pairs:[['tiny, wooden','Zeidy\'s shul'],['big, stone','our shul'],['same Torah','both shuls']], say:'Match each detail to its shul.', how:'Picture each shul. Which one has this?'}] };
+
+B['READ.VOC.L06.01']={ band:'E45', pic:'🌳', today:'Use Greek and Latin roots to read big words', why:'A few roots unlock thousands of words, in science, in the news, everywhere.',
+  ready:[{q:'Re means...', o:['again','not','full of','without'], a:'again'},{q:'-less means...', o:['without','full of','again','before'], a:'without'}],
+  bridge:'READ.PHON.L04.01', bridgeName:'Prefixes and suffixes',
+  watch:{ q:'autograph', m:{type:'tiles',w:['auto','graph']}, steps:[
+    {t:'Find the root. Graph means write. Tele means far. Port means carry. Spect means see.', m:{type:'tiles',w:['auto','graph'],hi:[1]}},
+    {t:'Auto means self. Mix the meanings: self + write.', m:{type:'tiles',w:['auto','graph'],hi:[0]}},
+    {t:'An autograph is a person\'s own signature, written by himself.'},
+    {t:'Transport: trans (across) + port (carry) = carry across. Therm means heat: a thermos keeps things hot.'}], a:'autograph = self + write' },
+  oops:{ q:'Transport?', wrong:'look across', right:'carry across', why:'Port means carry, not look. The root for see is spect.' },
+  ways:['build words from roots','match root and meaning','sort by root','tap the reason','Mistake Detective'], done:'You can use roots to read big words!',
+  board:{ one:'Find the root, then mix the meanings.', activity:'Root tree: write a root on the trunk; boys add word branches (graph: autograph, paragraph).', mistakes:['Mixing up port (carry) and spect (see)','Ignoring the second root','Guessing from how the word sounds'] },
+  do:[
+    {type:'match', pairs:[['port','carry'],['graph','write'],['tele','far'],['spect','see']], say:'Match each root to its meaning.', how:'Think of a word you know: a portable box can be carried. A telescope sees far.'},
+    {type:'tiles', w:['auto','graph'], extra:['tele','port'], q:'self + write', say:'Build the word that means self plus write.', how:'Auto means self. Graph means write. Autograph: a person\'s own signature, written by himself.'}],
+  your:[
+    {type:'sort', bins:['graph: write','tele: far'], cards:[['autograph',0],['telephone',1],['paragraph',0],['telescope',1],['biography',0],['television',1]], say:'Which root is in this word?', how:'Look for graph or tele inside the word.'},
+    {type:'listen', hear:'What is an autograph?', q:'auto (self) + graph (write)', o:['name','photo','talk','phone'], a:'name', say:'Listen. Tap the meaning.', how:'Auto is self, graph is write: a person\'s own signature, written by himself.', why:{q:'Which roots told you?', o:['auto and graph','tele and port','bio and logy','trans and spect'], a:'auto and graph'}},
+    {type:'match', pairs:[['transport','carry across'],['biology','study of life'],['thermos','keeps hot']], say:'Match each word to its meaning.', how:'Split it into roots. Mix the meanings.'},
+    {type:'findall', grid:['port','bio','dog','tele','cat','auto','run','hat'], find:['port','bio','tele','auto'], findSay:'root', say:'Tap every Greek or Latin root.', how:'Roots you know: port, bio, tele, auto.'},
+    {type:'listen', hear:'Which part of thermos tells you it keeps things hot?', o:['therm','mos','the','os'], a:'therm', say:'Listen. Tap the root.', how:'Therm means heat, like a thermometer.', why:{q:'Why therm?', o:['Therm means heat','It is first','It is short','Mos means hot'], a:'Therm means heat'}}] };
+
+B['READ.VOC.L06.02']={ band:'E45', pic:'🌙', today:'Figure out similes and metaphors', why:'Writers paint pictures with words. Knowing the real meaning makes stories come alive.',
+  ready:[{q:'"The test was a breeze" means...', o:['it was easy','it was windy','it was outside','it was long'], a:'it was easy'},{q:'Literal means...', o:['exactly what it says','a hidden meaning','a rhyme','a question'], a:'exactly what it says'}],
+  bridge:'READ.VOC.L04.03', bridgeName:'Literal or Not',
+  watch:{ q:'The Night Before the Siyum', m:{type:'scene',e:'🌙',t:'Eliezer\'s thoughts buzzed like bees in a jar. The kitchen was as quiet as an empty shul. "My memory is a sieve tonight."'}, steps:[
+    {t:'A simile compares two things with like or as: buzzed like bees. The new sefer smelled as fresh as rain.'},
+    {t:'A metaphor says something IS something else: my memory is a sieve.'},
+    {t:'Ask what the two things share. A sieve lets things fall through: he is afraid he will forget.'},
+    {t:'The yard was a white blanket: snow covered the whole yard. The words felt like old friends: the words became familiar and easy for him.'}], a:'Simile: like or as. Metaphor: is.' },
+  oops:{ q:'"Buzzed like bees" means...?', wrong:'there were bees in his head', right:'his mind was busy', why:'That is the literal picture. Like makes a comparison: no real bees, just a busy mind.' },
+  ways:['sort simile and metaphor','find like and as','match picture and meaning','tap the reason','Mistake Detective'], done:'You can figure out similes and metaphors!',
+  board:{ one:'Simile = like or as; metaphor = is. Ask what the two things share.', activity:'Draw it twice: boys draw the silly literal picture, then the real meaning.', mistakes:['Taking the picture literally','Calling every like a simile (I like cake)','Missing a metaphor because there is no like or as'] },
+  do:[
+    {type:'sort', bins:['Simile','Metaphor'], cards:[['buzzed like bees',0],['yard was a blanket',1],['quiet as a shul',0],['memory is a sieve',1],['strong as a drum',0],['voice was a rope',1]], say:'Is it a simile, or a metaphor?', how:'Like or as: simile. Says it IS something: metaphor.'},
+    {type:'findall', q:'quiet as a shul, glowing like a moon', grid:['as','like','bees','jar','moon','drum','rope','lamp'], find:['as','like'], findSay:'simile word', say:'Tap the words that make a simile.', how:'A simile uses like or as to compare.'}],
+  your:[
+    {type:'listen', q:'The yard was a white blanket.', hear:'What does the metaphor mean?', o:['snow','quilt','warm','bed'], a:'snow', say:'Listen. Tap the real meaning.', how:'A blanket covers a bed. Snow covered the whole yard.', why:{q:'What do they share?', o:['Both cover everything','Both are warm','Both are soft beds','Both are wet'], a:'Both cover everything'}},
+    {type:'match', pairs:[['buzzed like bees','busy mind'],['sieve memory','forgets things'],['like old friends','familiar, easy']], say:'Match each picture to its real meaning.', how:'Ask what the two things share. The words became familiar and easy for him.'},
+    {type:'tiles', w:['Two things','What they share','Real meaning'], q:'How do you figure it out?', say:'Put the steps in order.', how:'Find the two things compared. Ask what they share. That is the real meaning.'},
+    {type:'listen', q:'Which is a simile?', hear:'The new sefer smelled as fresh as rain. Or: the new sefer was a treasure chest.', o:['as','new','fresh','rain'], a:'as', say:'Listen. Tap the simile.', how:'As fresh as rain uses as. The new sefer smelled as fresh as rain.', why:{q:'Why is it a simile?', o:['It uses as to compare','It is about rain','It is longer','It is about a sefer'], a:'It uses as to compare'}},
+    {type:'sort', bins:['Literal','Figurative'], cards:[['the sefer is blue',0],['a steady rope voice',1],['he read three times',0],['strong as a drum',1]], say:'Does it mean exactly that, or paint a picture?', how:'Literal: it really happened. Figurative: a comparison picture.'}] };
+
 })(window.ONE_BITE);
 </script>
