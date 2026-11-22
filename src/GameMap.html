@@ -978,19 +978,22 @@ body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 5
  /* THEME TUNE (HoS 2026-11-22: "a theme tune that turns on when the app opens every time ... super pumping ... a few seconds").
     An original Tashbar entrance theme made in the browser (no file). It plays
     once each time a boy signs in (the welcome), unless his sound is off. To use a recording instead, set window.TL_THEME_URL. */
- function themeTune(){ try{ if(typeof SND!=='undefined'&&SND.on===false) return;
-  if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.85; a.play().catch(()=>{}); return; }
-  const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; const c=GM.ac||(GM.ac=new AC()); if(c.state==='suspended') c.resume();
+ /* HoS 2026-11-22 fix ("it delays in starting, and you only hear the last second or two"): building the tune's thousands of notes took
+    seconds, and the notes whose start time had already passed were skipped. Now the tune is recorded ONCE in the background into a
+    ready sound clip (OfflineAudioContext) while the boy types his code, and the speaker is unlocked on his first tap, so at sign-in
+    it simply plays the clip from the very first beat, instantly. */
+ const THEME_SEC=20;
+ function themeBuild(c){
   /* v2 (HoS: "much more rocking ... like the big star of the show is coming out onto the stage"): a drum roll and a rising whoosh
      build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. v4 ("bigger, more exciting, more rocky, longer, more drum rolls"): v7 ("more Ma'oz Tzur ... a crazy beat ... techno, club rock ... ending on a very high note, like introducing"): build-up, club drop with Ma'oz Tzur on a supersaw lead, twice, then the highest chord. About 17 s. */
   const comp=c.createDynamicsCompressor(); comp.threshold.value=-22; comp.ratio.value=10; comp.attack.value=.003; comp.release.value=.12; const clip=c.createWaveShaper(); { const k=new Float32Array(2048); for(let i=0;i<2048;i++){ const x=i/1024-1; k[i]=Math.tanh(x*1.6)/Math.tanh(1.6); } clip.curve=k; } comp.connect(clip); clip.connect(c.destination);
   const out=c.createGain(); out.gain.value=.34; out.connect(comp); const lim=c.createGain(); lim.gain.value=2.3; comp.disconnect(); comp.connect(lim); const mst=c.createGain(); lim.connect(mst); mst.connect(clip);
   const T=c.currentTime+.05, B=60/152, HIT=T+2.6;
   mst.gain.setValueAtTime(.2,T); mst.gain.exponentialRampToValueAtTime(.62,HIT);   /* the build-up grows from soft to full */
-  const noiseBuf=(sec)=>{ const b=c.createBuffer(1,Math.ceil(c.sampleRate*sec),c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return b; };
+  let NB=null; const noiseBuf=()=>{ if(NB) return NB; NB=c.createBuffer(1,Math.ceil(c.sampleRate*2),c.sampleRate); const d=NB.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return NB; };   /* one shared 2 s noise, looped */
   const env=(g,t,a,d,v)=>{ g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(v,t+a); g.gain.exponentialRampToValueAtTime(.0008,t+a+d); };
   const tone=(f,t,d,type,v,slide,dest)=>{ const o=c.createOscillator(), g=c.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(slide) o.frequency.exponentialRampToValueAtTime(slide,t+d); env(g,t,.008,d,v); o.connect(g); g.connect(dest||out); o.start(t); o.stop(t+d+.05); };
-  const noise=(t,d,type,freq,v,a,q)=>{ const n=c.createBufferSource(); n.buffer=noiseBuf(d+.05); const f=c.createBiquadFilter(); f.type=type; f.frequency.value=freq; if(q) f.Q.value=q; const g=c.createGain(); env(g,t,a||.003,d,v); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+d+.05); return f; };
+  const noise=(t,d,type,freq,v,a,q)=>{ const n=c.createBufferSource(); n.buffer=noiseBuf(); n.loop=true; n.loopEnd=n.buffer.duration; const f=c.createBiquadFilter(); f.type=type; f.frequency.value=freq; if(q) f.Q.value=q; const g=c.createGain(); env(g,t,a||.003,d,v); n.connect(f); f.connect(g); g.connect(out); n.start(t); n.stop(t+d+.05); return f; };
   const kick=(t,v)=>{ tone(160,t,.28,'sine',v||1.4,38); tone(90,t,.06,'square',.25); };
   const snare=(t,v)=>{ noise(t,.18,'highpass',1600,v||.7); tone(200,t,.09,'triangle',.35,140); };
   const clap=(t,v)=>{ [0,.012,.024].forEach(o=>noise(t+o,.1,'bandpass',1400,(v||.35),.002,1.5)); };
@@ -1040,7 +1043,43 @@ body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 5
   [.5,1,1.25,1.5,2,2.5,3].forEach(m=>saw(TOP*m,LAST,2.6,.26,true)); saw(TOP*4,LAST,2.6,.32,true); bell(TOP*4,LAST,2.4,.18);
   bassNote(TOP/8,LAST,1.6); gtr(pc(TOP/4),LAST,2.2,.35); crowd(LAST-.2,2.8,.3); kick(LAST+B*2,1.3); crash(LAST+B*2,.4);
   mst.gain.setValueAtTime(.62,G); mst.gain.linearRampToValueAtTime(1.15,LAST);   /* it keeps getting bigger all the way to the top */
-  GM.themeEnd=Date.now()+(LAST-c.currentTime+2.8)*1000;
+ }
+ /* record the tune once into a clip (in the background; no sound, no tap needed) */
+ function themeRender(){ if(GM.themeP) return GM.themeP;
+  GM.themeP=new Promise(ok=>{ try{ const OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext; if(!OAC) return ok(null);
+   const sr=44100, oc=new OAC(1,sr*THEME_SEC,sr); themeBuild(oc);
+   let done=false; const fin=b=>{ if(done) return; done=true; GM.themeBuf=b||null; ok(b||null); };
+   oc.oncomplete=e=>fin(e&&e.renderedBuffer); const r=oc.startRendering(); if(r&&r.then) r.then(fin,()=>fin(null));
+  }catch(e){ ok(null); } });
+  return GM.themeP; }
+ /* the speaker: made and unlocked on the boy's first tap or key (browsers only allow sound to start from a tap) */
+ function themeCtx(){ const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null; try{ return GM.ac||(GM.ac=new AC()); }catch(e){ return null; } }
+ function themeUnlock(){ const c=themeCtx(); if(!c) return; const run=()=>{ const w=GM.themeWait; if(w&&c.state==='running') w(); };
+  try{ if(c.state==='running') return run(); const r=c.resume(); const s=c.createBufferSource(); s.buffer=c.createBuffer(1,1,22050); s.connect(c.destination); s.start(0);
+   if(r&&r.then) r.then(run,()=>{}); else setTimeout(run,50); }catch(e){} }
+ ['pointerdown','touchend','keydown','click'].forEach(ev=>document.addEventListener(ev,themeUnlock,{capture:true,passive:true}));
+ /* first choice: the same tune already saved as a sound file on the site (web/sounds/theme.mp3, made from themeBuild), so the tablet has
+    nothing to record; it downloads while the boy types his code. If that fails, it records the tune itself (themeRender). */
+ function themeLoad(){ if(GM.themeL) return GM.themeL;
+  const url=/\.web\.app$|\.firebaseapp\.com$|^localhost$|^127\./.test(location.hostname)?'/sounds/theme.mp3':'https://tashbar-learning-live.web.app/sounds/theme.mp3';
+  GM.themeL=new Promise(ok=>{ try{ const OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext; if(!window.fetch||!OAC) return ok(null);
+   fetch(url).then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); }).then(ab=>{ const dc=new OAC(1,1,44100);
+    const p=dc.decodeAudioData(ab,b=>ok(b),()=>ok(null)); if(p&&p.catch) p.catch(()=>ok(null)); }).catch(()=>ok(null));
+  }catch(e){ ok(null); } }).then(b=>{ if(b){ GM.themeBuf=b; GM.themeP=Promise.resolve(b); return b; } return themeRender(); });
+  return GM.themeL; }
+ setTimeout(themeLoad,0);
+ function themeTune(){ try{ if(typeof SND!=='undefined'&&SND.on===false) return;
+  if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.85; a.play().catch(()=>{}); return; }
+  const c=themeCtx(); if(!c) return; const asked=Date.now();
+  GM.themeEnd=asked+THEME_SEC*1000;   /* hold the background music until the tune is done */
+  const go=()=>{ try{ if(Date.now()-asked>8000) { GM.themeEnd=0; return; }   /* never start it very late */
+   if(c.state!=='running'){ GM.themeWait=go; return; }   /* the speaker is still locked: it starts on his next tap */
+   GM.themeWait=null; if(!GM.themeBuf) return;
+   if(GM.themeSrc){ try{ GM.themeSrc.stop(); }catch(e){} }
+   const s=c.createBufferSource(); s.buffer=GM.themeBuf; s.connect(c.destination); s.start(c.currentTime+.02); GM.themeSrc=s;
+   GM.themeEnd=Date.now()+GM.themeBuf.duration*1000; }catch(e){} };
+  if(c.state!=='running'){ try{ const r=c.resume(); if(r&&r.then) r.then(()=>{ if(GM.themeWait===go) go(); },()=>{}); }catch(e){} }
+  themeLoad().then(b=>{ if(!b){ GM.themeEnd=0; return; } go(); });
  }catch(e){} }
  GM.themeTune=themeTune;
  /* HoS 2026-11-22: "put it as the default opening sound track as soon as someone punches in his code": it starts the moment a boy's code
