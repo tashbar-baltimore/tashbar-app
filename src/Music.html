@@ -134,11 +134,12 @@ function muClubStep(c,P,N,i,t){ const bar=P.bars[i>>4]; if(!bar) return; const s
 function muClubPlayer(t){ const P=muClubPlan(t), A2={_v:0,onended:null}; let c=null,N=null,timer=null,i=0,t0=0,done=false;
  Object.defineProperty(A2,'volume',{get:()=>A2._v,set:v=>{ A2._v=v; if(N) try{ N.out.gain.setTargetAtTime(v*1.15,c.currentTime,.04); }catch(e){} }});
  function off(){ if(timer) clearInterval(timer); timer=null; if(N){ const n=N; try{ n.out.gain.setTargetAtTime(0,c.currentTime,.05); }catch(e){} setTimeout(()=>{ try{ n.comp.disconnect(); }catch(e){} },400); N=null; } }
- A2.play=function(){ c=muCtx(); if(!c) return Promise.reject(new Error('No Web Audio')); if(N) return Promise.resolve(); N=muClubNodes(c,P); N.out.gain.value=A2._v*1.15; t0=c.currentTime+.15; i=0;
+ A2.play=function(){ c=muCtx(); if(!c) return Promise.reject(new Error('No Web Audio')); if(N) return Promise.resolve(); N=muClubNodes(c,P); N.out.gain.value=A2._v*1.15;
+  if(A2._held!=null){ i=A2._held; A2._held=null; done=false; t0=c.currentTime+.15-i*P.spb/4; } else { t0=c.currentTime+.15; i=0; }
   const tick=()=>{ if(done||!N) return; const ahead=c.currentTime+1.2; while(i<P.steps&&t0+i*P.spb/4<ahead){ try{ muClubStep(c,P,N,i,t0+i*P.spb/4); }catch(e){} i++; }
    if(i>=P.steps&&timer){ clearInterval(timer); timer=null; const end=t0+P.steps*P.spb/4; setTimeout(()=>{ if(!done){ done=true; off(); if(A2.onended) A2.onended(); } },Math.max(0,(end-c.currentTime)*1000)+1500); } };
   timer=setInterval(tick,200); tick(); return c.state==='running'?Promise.resolve():c.resume(); };
- A2.pause=function(){ done=true; off(); };
+ A2.pause=function(){ A2._held=i; done=true; off(); };
  A2.duration=P.steps*P.spb/4; return A2; }
 MU_MOODS.splice(1,0,...MU_CLUB_MOODS); MU_HAPPY.push(...MU_CLUB_GENRES); MU_MOODS[0][3]='Everything, shuffled: happy, EDM, trance, techno';
 function muIcon(mood){ const r=MU_MOODS.find(x=>x[0]===mood); return r?r[1]:'🎵'; }
@@ -160,11 +161,15 @@ setInterval(()=>{ try{ const on=!(typeof SND!=='undefined'&&SND.on===false); if(
 window.addEventListener('tlvoice',e=>{ const on=!!(e&&e.detail); if(MU.duck===on) return; MU.duck=on; clearTimeout(MU.duckT);
  if(on) muFade(muTarget(),250); else MU.duckT=setTimeout(()=>{ if(!MU.duck) muFade(muTarget(),900); },400); });
 function muFade(to,ms){ const a=MU.audio; if(!a) return; const from=a.volume, t0=performance.now(); clearInterval(MU.fadeT); MU.fadeT=setInterval(()=>{ const k=Math.min(1,(performance.now()-t0)/ms); a.volume=Math.max(0,Math.min(1,from+(to-from)*k)); if(k>=1) clearInterval(MU.fadeT); },40); }
-function muStop(){ if(MU.audio){ const a=MU.audio; muFade(0,600); setTimeout(()=>{ a.pause(); },650); } MU.audio=null; MU.track=null; }
+function muStop(){ if(MU.audio){ const a=MU.audio; muFade(0,600); setTimeout(()=>{ a.pause(); },650); } MU.audio=null; MU.track=null; MU.paused=false; }
+/* pause and play again (HoS 2026-11-22, the corner menu): the song keeps its place; a new song or a new kind of music plays again */
+function muPause(){ const a=MU.audio; if(!a||MU.paused) return; MU.paused=true; muFade(0,250); setTimeout(()=>{ if(MU.paused&&MU.audio===a) try{ a.pause(); }catch(e){} },270); muUI(); }
+function muResume(){ const a=MU.audio; if(!a){ MU.paused=false; return muPlay(false); } if(!MU.paused) return; MU.paused=false; clearInterval(MU.fadeT); a.volume=0;
+ let p=null; try{ p=a.play(); }catch(e){} Promise.resolve(p).then(()=>muFade(muTarget(),500)).catch(()=>{}); muUI(); }
 function muPlay(next){ const m=muPrefs(); if(!SRV.token||!A.st||m.mood==='off'||(MU.info&&MU.info.off)) return muStop();
   if(!muTracks(m.mood).length) return;
- if(MU.audio&&MU.track&&!next&&MU.track.pick===m.mood) return muFade(muTarget(),500);
- const t0=muNextTrack(m.mood); if(!t0) return; const t=Object.assign({},t0,{pick:m.mood}); MU.loading=true; muUI();
+ if(MU.audio&&MU.track&&!next&&MU.track.pick===m.mood) return MU.paused?undefined:muFade(muTarget(),500);
+ const t0=muNextTrack(m.mood); if(!t0) return; const t=Object.assign({},t0,{pick:m.mood}); MU.loading=true; MU.paused=false; muUI();
  (t.synth?Promise.resolve(''):muFetch(t)).then(url=>{ MU.loading=false; if(muPrefs().mood!==t.pick) return; if(MU.audio) MU.audio.pause(); const a=t.synth?muClubPlayer(t):new Audio(url); a.volume=0; a.onended=()=>{ if(MU.audio===a) muPlay(true); }; MU.audio=a; MU.track=t; a.play().then(()=>muFade(muTarget(),1200)).catch(()=>{}); muUI(); muToast(t); })
   .catch(e=>{ MU.loading=false; console.error('Music',e); muUI(); toast('The music didn’t load. Check the Wi-Fi.'); }); }
 function muLoadInfo(){ if(MU.info||!SRV.token) return Promise.resolve(MU.info); return run('msMusicInfo',SRV.token).then(i=>{ MU.info=i; return i; }).catch(()=>null); }
@@ -173,10 +178,8 @@ function muUI(){ const b=document.getElementById('mubtn'); if(b){ const m=muPref
  const np=document.getElementById('munow'); if(np){ np.innerHTML=MU.loading?'<span class="mueq"><i></i><i></i><i></i></span><b>Getting the music ready…</b>':MU.track?`<span class="mueq on"><i></i><i></i><i></i><i></i></span><span class="mut"><small>Now playing</small><b>${esc(MU.track.title)}</b><small>${esc(MU.track.by)}</small></span><button class="btn munext" data-act="munext" aria-label="Next song">Next ⏭</button>`:''; np.classList.toggle('show',!!(MU.loading||MU.track)); } muPill(); }
 function muToast(t){ try{ if(A.view!=='hub'||!t) return; const el=document.getElementById('mutoast')||document.body.appendChild(Object.assign(document.createElement('div'),{id:'mutoast'}));
  el.innerHTML=`<span class="mui">${muIcon(t.pick)}</span><span><small>Now playing</small><b>${esc(t.title)}</b></span>`; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show'); clearTimeout(MU.toastT); MU.toastT=setTimeout(()=>el.classList.remove('show'),3500); }catch(e){} }
-function muPill(){ try{ let el=document.getElementById('mupill'); const m=muPrefs(), on=A.view==='hub'&&m.mood!=='off'&&(MU.track||MU.loading);
- if(!on){ if(el) el.remove(); return; }
- if(!el){ el=document.createElement('div'); el.id='mupill'; document.body.appendChild(el); }
- el.innerHTML=`<button type="button" class="mpopen" data-act="mubtn" aria-label="Music settings"><span class="mueq on"><i></i><i></i><i></i><i></i></span><span class="mpt"><small>${muIcon(m.mood)} ${esc((MU_MOODS.find(x=>x[0]===m.mood)||['','','Music'])[2])}</small><b>${MU.loading?'Getting ready…':esc(MU.track.title)}</b></span></button><button type="button" class="mpnext" data-act="munext" aria-label="Next song">⏭</button>`; }catch(e){} }
+/* the little player (bars + next) is gone (HoS 2026-11-22): play/pause and next live in the corner menu's music pill now */
+function muPill(){ try{ const el=document.getElementById('mupill'); if(el) el.remove(); }catch(e){} }
 /* HoS 2026-11-22: the panel opens at once on a tap (it used to wait for the song list from the server, so the first tap looked like nothing happened); the songs fill in when the list arrives. */
 function muPanel(){ const wait=!MU.info&&!!SRV.token; MU.slow=false; muDraw(wait); if(!wait) return;
  const open=()=>A.overlay&&A.overlay.html&&A.overlay.html.indexOf('mupanel')>=0, t=setTimeout(()=>{ if(!MU.info&&open()){ MU.slow=true; muDraw(true); } },12000);
@@ -201,13 +204,11 @@ document.addEventListener('input',e=>{ if(e.target.id==='muvol'){ const m=muPref
    if(!MU.shown){ MU.shown=true; muLoadInfo().then(()=>{ if(muPrefs().mood!=='off') muPlay(false); }); } }
   const p=muPlace(); if(p!==MU.place){ MU.place=p; if(MU.audio) muFade(muTarget(),700); } muPill();
  }catch(e){ console.error('Music',e); } return out; }; window.render.__mu=true; }
- window.TashbarMusic={state:MU,play:muPlay,stop:muStop,fx:muFx,prefs:muPrefs}; /* for checks from the browser console */
+ window.TashbarMusic={state:MU,play:muPlay,stop:muStop,pause:muPause,resume:muResume,fx:muFx,prefs:muPrefs}; /* for checks from the browser console */
  /* the old synth background player is replaced on boy pages */
  try{ if(window.TashbarSound&&TashbarSound.signOut) TashbarSound.signOut(); }catch(e){}
  document.head.insertAdjacentHTML('beforeend',`<style id="music-css">#tashbar-sound{display:none!important}
 .mupanel{max-width:min(760px,calc(100vw - 24px))!important;width:100%;box-sizing:border-box;padding:24px 18px 26px!important;max-height:min(92vh,calc(100dvh - 24px));overflow-x:hidden!important;overflow-y:auto;overscroll-behavior:contain}.mupanel *{max-width:100%;box-sizing:border-box}.mupanel .mumood{min-width:0;overflow-wrap:anywhere}.musub{margin:-4px 0 12px;color:var(--soft)}@media (min-width:640px){.mupanel .mumoods{grid-template-columns:repeat(3,1fr)!important}}
-#mupill{position:fixed;left:16px;bottom:16px;z-index:50;display:flex;align-items:center;gap:6px;padding:6px 6px 6px 10px;border-radius:999px;background:linear-gradient(110deg,#1E1B4B,#6D28D9);color:#fff;box-shadow:0 10px 24px rgba(30,27,75,.35);max-width:min(360px,calc(100vw - 32px))}
-#mupill button{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer}#mupill .mpopen{display:flex;align-items:center;gap:10px;min-width:0;text-align:left}#mupill .mpt{min-width:0}#mupill small{display:block;font-size:11px;font-weight:800;color:#DDD6FE;letter-spacing:.04em}#mupill b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}#mupill .mpnext{width:40px;height:40px;border-radius:50%;background:#FDE68A;color:#1E1B4B;font-size:18px;flex:none}
 #mutoast{position:fixed;left:50%;top:84px;z-index:9500;transform:translate(-50%,-30px);opacity:0;pointer-events:none;display:flex;align-items:center;gap:12px;padding:10px 18px;border-radius:999px;background:#fff;color:#1E1B4B;box-shadow:0 12px 30px rgba(30,27,75,.25);transition:all .35s cubic-bezier(.2,.8,.3,1.2)}#mutoast.show{opacity:1;transform:translate(-50%,0)}#mutoast .mui{font-size:28px}#mutoast small{display:block;font-size:11px;font-weight:800;color:#6D28D9;letter-spacing:.06em;text-transform:uppercase}#mutoast b{font-size:16px}.mupanel h2{margin:4px 0 12px}.mumoods{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.mumood{display:flex;flex-direction:column;align-items:center;gap:2px;padding:14px 10px;border-radius:16px;border:3px solid var(--line);background:var(--card2);cursor:pointer;font:inherit;color:var(--ink)}.mumood .mui{font-size:34px}.mumood b{font:700 19px var(--display)}.mumood small{color:var(--soft)}.mumood.on{border-color:#EAB308;background:#FEF9C3;box-shadow:0 0 0 3px #FDE68A}.mumood:disabled{opacity:.45;cursor:not-allowed}
 .muvol{display:flex;align-items:center;gap:10px;margin:16px 4px 6px;font-size:24px}.muvol input{flex:1;height:28px;accent-color:#4338CA}.muhp{color:var(--soft);margin:6px 0}.munow{min-height:0;margin:10px 0 14px}.munow.show{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:18px;background:linear-gradient(110deg,#1E1B4B,#4338CA);color:#fff;text-align:left}.munow .mut{flex:1;min-width:0}.munow small{display:block;color:#C7D2FE;font:700 12px var(--display);letter-spacing:.06em;text-transform:uppercase}.munow b{display:block;font:700 19px var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.munow .munext{flex:none;background:#FDE68A;color:#1E1B4B;font:800 17px var(--display);border-radius:14px;padding:10px 14px}.mueq{display:flex;align-items:flex-end;gap:4px;height:34px;flex:none}.mueq i{width:6px;height:30%;border-radius:3px;background:#FDE68A;animation:mueq 1s ease-in-out infinite}.mueq i:nth-child(2){animation-delay:-.3s}.mueq i:nth-child(3){animation-delay:-.6s}.mueq i:nth-child(4){animation-delay:-.15s}@keyframes mueq{0%,100%{height:25%}50%{height:100%}}.mumood{transition:transform .12s}.mumood:not(:disabled):hover{transform:translateY(-2px)}.mumood.on .mui{animation:mubob 1.6s ease-in-out infinite}@keyframes mubob{50%{transform:translateY(-4px)}}@media(prefers-reduced-motion:reduce){.mueq i,.mumood.on .mui{animation:none}}.muoff{background:#FEF3C7;border-radius:12px;padding:8px 12px}</style>`);
 })();
