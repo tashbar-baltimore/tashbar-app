@@ -976,7 +976,7 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
  const today=()=>{ const d=new Date(); return d.getFullYear()*1000+Math.floor((d-new Date(d.getFullYear(),0,0))/864e5); };
  const S=()=>window.TL_SIMCHA||{};
  const pickDay=(L,k)=>L&&L.length?L[(today()+(k||0))%L.length]:null;
- function music(){ try{ const Mu=window.TashbarMusic; if(!Mu||!A.st) return; if(Mu.state&&Mu.state.info&&Mu.state.info.off) return; const m=Mu.prefs();
+ function music(){ const wait=(GM.themeEnd||0)-Date.now(); if(wait>0){ clearTimeout(GM.musicT); GM.musicT=setTimeout(music,wait); return; } try{ const Mu=window.TashbarMusic; if(!Mu||!A.st) return; if(Mu.state&&Mu.state.info&&Mu.state.info.off) return; const m=Mu.prefs();
   if(!m.joy){ m.joy=1; if(m.mood==='off') m.mood='mix'; try{ if(typeof saveStudent==='function') saveStudent(A.st); }catch(e){} }
   if(m.mood!=='off') Mu.play(false); }catch(e){} }
  /* THEME TUNE (HoS 2026-11-22: "a theme tune that turns on when the app opens every time ... super pumping ... a few seconds").
@@ -1044,8 +1044,12 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   [.5,1,1.25,1.5,2,2.5,3].forEach(m=>saw(TOP*m,LAST,2.6,.26,true)); saw(TOP*4,LAST,2.6,.32,true); bell(TOP*4,LAST,2.4,.18);
   bassNote(TOP/8,LAST,1.6); gtr(pc(TOP/4),LAST,2.2,.35); crowd(LAST-.2,2.8,.3); kick(LAST+B*2,1.3); crash(LAST+B*2,.4);
   mst.gain.setValueAtTime(.62,G); mst.gain.linearRampToValueAtTime(1.15,LAST);   /* it keeps getting bigger all the way to the top */
+  GM.themeEnd=Date.now()+(LAST-c.currentTime+2.8)*1000;
  }catch(e){} }
  GM.themeTune=themeTune;
+ /* HoS 2026-11-22: "put it as the default opening sound track as soon as someone punches in his code": it starts the moment a boy's code
+    is accepted (once per sign-in), for every boy. */
+ GM.tuneSid=''; setInterval(()=>{ try{ const id=A&&A.st&&A.st.id?String(A.st.id):''; if(!id||id==='PREVIEW'){ GM.tuneSid=''; return; } if(id!==GM.tuneSid){ GM.tuneSid=id; themeTune(); } }catch(e){} },250);
  if(typeof welcome!=='function') return;
  const prevW=welcome;
  welcome=function(){ try{
@@ -1068,7 +1072,6 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
    `<div class="gmhow" aria-label="How it works"><span>1 ▶ Play your next level</span><span>2 🎯 3 missions a day</span><span>3 💵 Earn for the Store</span></div>`+
    `<div class="row"><button type="button" data-act="closeov">🗺️ My map</button>${ci>=0?`<button type="button" data-act="sm-need" data-i="${ci}">🌟 Some chizuk</button>`:''}</div>`+
    (v?`<p class="vort"><b>📜 Today's vort:</b> ${esc(typeof v==='string'?v:v.text)}${v.src?`<small>${esc(v.src)}</small>`:''}</p>`:'')+`</div>`);
-  setTimeout(themeTune,120);
  }catch(e){ console.error('GameMap welcome',e); return prevW.apply(this,arguments); } };
  /* HoS 2026-11-22: "the golden cloud should never cover the clock". When the clock and the Olam Haba cloud would overlap,
    the clock moves up so it sits just above the cloud, with a gap. Checked every 1.5 seconds and on resize; no change when they are apart. */
