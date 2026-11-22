@@ -149,7 +149,6 @@ module.exports = async function oneBiteTests(pg) {
     /* ---- every real bite (and 6 auto-bites) to mastered ---- */
     const auto = Object.keys(BANK_ALL).filter((x, i) => i % 230 === 7).slice(0, 6);
     for (const id of ids.concat(auto)) { let s;
-      document.dispatchEvent(new Event('pointerdown'));   /* the boy page signs out after 5 quiet minutes (SignOutBar.html); playing every bite by code takes longer than that */
       try { s = await play(id); } catch (e) { s = { err: String(e && e.stack || e).slice(0, 200) }; }
       if (s.err) o.bad.push(id + ': ' + s.err); else { o.played++; o.mastered++; o.kitActs += s.kit || 0; }
       o.steps[id] = s.screens; }

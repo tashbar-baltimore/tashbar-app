@@ -306,7 +306,7 @@ function vKit(p){ OBK.css(); const ob=p.ob, kit=ob.kit, d=kit.acts[kit.i], s=kit
   else if(s.over) fb=s.ok?'<p class="ob-good obk-msg" role="status">✓ '+E(s.cheer||'Yes!')+'</p>':'<p class="ob-soft obk-msg" role="status">'+E(s.msg)+'</p>';
   else if(s.msg) fb='<p class="ob-soft obk-msg" role="status">'+E(s.msg)+'</p>';
   const inner='<div class="obk-top"><div class="ob-tag">'+tag+'</div>'+stars+'</div>'+(d.pic&&d.type!=='count'?'<div class="ob-bigpic sm" aria-hidden="true">'+OBK.pic(d.pic)+'</div>':'')+
-    (d.q?'<div class="obk-q'+(String(d.q).length>40?' long':'')+'">'+E(d.q)+'</div>':'')+'<h2 class="ob-q obk-say">'+words+'</h2>'+how+
+    (d.q?'<div class="obk-q">'+E(d.q)+'</div>':'')+'<h2 class="ob-q obk-say">'+words+'</h2>'+how+
     '<div class="obk obk-'+E(d.type)+(s.shake?' obk-shake':'')+(s.phase==='why'?' obk-dim':'')+'">'+OBK.view(d,s,c)+'</div>'+fb;
   let btn='';
   if(s.over){ const lastDo=guided&&kit.i+1>=kit.acts.length, endYour=!guided&&(kit.streak>=3||kit.i+1>=kit.acts.length);
@@ -395,7 +395,6 @@ body.ob-dys .ob-today, body.ob-dys .ob-q, body.ob-dys .play.ob-play .qtext{ font
 @media (min-width:900px){ .ob-main{ padding-top:36px; } }
 .obk-top{ display:flex; justify-content:space-between; align-items:center; gap:8px; } .obk-streak{ font-size:24px; letter-spacing:2px; }
 .obk-q{ font-size:calc(var(--fs) * 1.7); font-weight:900; text-align:center; letter-spacing:.03em; }
-.obk-q.long{ font-size:calc(var(--fs) * 1.05); font-weight:700; text-align:left; letter-spacing:0; line-height:1.45; background:#fff; border-radius:16px; padding:12px 14px; }   /* a passage to read, not a big prompt */
 .obk-say span{ border-radius:6px; transition:background .15s; } .obk-say span.on{ background:#FFE7A8; }
 .ob-K1 .obk-say{ font-size:calc(var(--fs) * 1.05); }
 .ob-go:disabled{ opacity:.45; box-shadow:none; cursor:default; }
