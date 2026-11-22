@@ -11,3 +11,8 @@
 - rain-from-cloud (live): much taller than wide
 - row-of-yellow-buses (live): readable "SCHOOL BUS" text
 - box-of-crayons (live): Apple logo / "iPad" box and "crayola.com" printed on crayons
+- mayflower-ii (live): alt names "Mayflower" and "Pilgrims" (answer give-away on SS.HIST.L05.03)
+- liberty-bell (live): readable lettering on the bell
+- louisiana-purchase-map (live): readable labels and "1803"
+- talmud-printed-venice-1522 (live): readable Hebrew text; alt names Venice and Bomberg (answers)
+- mishnah-kaufmann-manuscript (live): readable handwritten Mishnah text - may contain the Divine Name; check first

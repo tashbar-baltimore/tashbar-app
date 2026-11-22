@@ -1,0 +1,6 @@
+- green-islet-in-turquoise-sea.webp | https://pixabay.com/photos/tropical-island-blue-ocean-beach-5074304/ | Pixabay Content License | d_alexander33
+- snowy-peak-in-clouds-blue-sky.webp | https://pixabay.com/photos/mountain-peak-snow-mountain-cloud-8079469/ | Pixabay Content License | sfkjrgk
+- round-water-in-pine-forest-above.webp | https://pixabay.com/photos/lake-trees-forest-waldsee-water-4335571/ | Pixabay Content License | OrcaTec
+- curving-water-through-green-plain.webp | https://pixabay.com/photos/okavango-delta-river-landscape-5158380/ | Pixabay Content License | LionMountain
+- old-shul-interior-wooden-benches.webp | https://www.flickr.com/photos/44034762@N04/32473282164 | CC0 1.0 | Baltimore Heritage
+- florida-from-space-shuttle.webp | https://images.nasa.gov/details/51C-44-026 | Public domain (NASA) | JSC

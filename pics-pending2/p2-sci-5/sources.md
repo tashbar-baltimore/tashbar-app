@@ -1,0 +1,13 @@
+- frying-pan-black-handle.webp | https://pixabay.com/photos/pan-cook-fry-frying-pan-554072/ | Pixabay Content License | Silberfuchs
+- small-bird-puffed-on-snow.webp | https://pixabay.com/photos/great-tit-bird-winter-snow-9521571/ | Pixabay Content License | jggrz
+- hard-boiled-eggs-cut-open.webp | https://www.flickr.com/photos/18295242@N00/4342932320 | CC BY-SA 2.0 | Laurel Fan
+- frozen-outdoor-tap-icicles.webp | https://pixabay.com/photos/icicles-frozen-pipe-frozen-freeze-3529002/ | Pixabay Content License | GWizUK
+- butter-melting-in-pan.webp | https://pixabay.com/photos/cooking-butter-pan-frying-pan-cook-5979722/ | Pixabay Content License | scratsmacker
+- knitted-striped-scarf.webp | https://www.flickr.com/photos/81876892@N00/535699542 | CC BY 2.0 | Breibeest
+- glass-of-fizzy-water.webp | https://pixabay.com/photos/water-glass-drink-liquid-wet-3708190/ | Pixabay Content License | ulleo
+- one-red-glass-marble.webp | https://www.flickr.com/photos/61446950@N06/28563955008 | CC BY 2.0 | COLORED PENCIL magazine
+- one-cork-on-wood.webp | https://pixabay.com/photos/cork-bottle-closure-natural-product-86329/ | Pixabay Content License | andiroth
+- brass-doorbell-on-brick.webp | https://pixabay.com/photos/door-bell-doorbell-bell-clamp-326561/ | Pixabay Content License | cocoparisienne
+- cracker-with-crumbs.webp | https://pixabay.com/photos/biscuit-crumbs-shortbread-meal-344899/ | Pixabay Content License | EME
+- mountain-stream-down-hill.webp | https://pixabay.com/photos/waterfall-snow-landscape-nature-4972945/ | Pixabay Content License | cerimorgs
+- one-pink-rose-bloom.webp | https://pixabay.com/photos/rose-flower-petals-nature-bloom-10125454/ | Pixabay Content License | WJ_Y2017fufu
