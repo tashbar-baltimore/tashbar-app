@@ -117,6 +117,7 @@ Every activity may have: `say` (spoken instruction; a good default is made), `ho
 | `match` | `{type:'match', pairs:[['🍎','a'],['🐝','b']]}` (2–4 pairs; K1 3 at most) | taps one, then its partner (or drags) |
 | `sort` | `{type:'sort', bins:['Circle','Not a circle'], cards:[['⚪',0],['🔺',1]]}` (2–3 bins, 2–8 cards) | one card at a time: taps (or drags it to) the right box |
 | `trace` | `{type:'trace', glyph:'b', name:'letter b', he:false}` | traces the dotted letter with a finger; passes at about 80% covered |
+| `fbar` | Shade: `{type:'fbar', n:3, d:4}` · Equal: `{type:'fbar', n:1, d:2, to:4}` (a top bar shows 1/2; he shades a bar in 4 parts to match) · Split: `{type:'fbar', n:1, d:2, to:6, split:true}` (he cuts the 1/2 bar in 2s and 3s until it has 6 parts = 3/6). d up to 12, to up to 24 | taps parts to shade them (bars of 7+ parts use ◀ Less / More ▶), then Check. Split: taps ✂ Cut in 2 / Cut in 3, then Check. Gr 3–6 fractions, equivalent fractions |
 | `listen` | `{type:'listen', hear:'buh', clip:'letter-sound:b', o:['b','d','p'], a:'b', cap:'the sound at the start of ball'}` | hears it (auto-played, 🔊 again), taps the match |
 
 **Display (Lane A2, 2026-11-22):** long text in match items, sort cards and bins, findall cells, choices, tiles and the `q` prompt **shrinks to fit** (2 lines at most, never sticking out), so you do not have to cut words to the bone. A `\n` in a sort card, findall cell or match item **stacks rows**: `['⚽\n📦',0]` is a ball above a box. Keep findall cells short (3 characters or one emoji pair): a cell is about 70 px wide.

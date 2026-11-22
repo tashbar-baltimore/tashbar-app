@@ -19,6 +19,7 @@
    match     {type:'match', pairs:[['🍎','a'],['🐝','b']]}    pair each left with its right
    sort      {type:'sort', bins:['Circle','Not a circle'], cards:[['⚪',0],['🔺',1]]}   cards into 2-3 bins
    trace     {type:'trace', glyph:'b', he:false}              finger-trace the dotted letter; passes at about 80% covered
+   fbar      {type:'fbar', n:3, d:4}   shade 3/4 · {type:'fbar', n:1, d:2, to:4}   shade the fourths bar to equal 1/2 · {type:'fbar', n:1, d:2, to:6, split:true}   cut 1/2 into 6 parts (= 3/6)
    listen    {type:'listen', hear:'buh', clip:'letter-sound:b', o:['b','d','p'], a:'b', he:false}   hear it, tap the match
    pic:'art:apple' uses the K-1 games' drawn pictures (KMG.ART). Hebrew (he:true) is never spoken by a computer voice; use clip.
    No double slash in this file (HtmlService rule). */
@@ -260,6 +261,49 @@ T.listen={
   tap(d,s,a,k){ if(a!=='pick') return; const j=+k; if(s.off[j]) return; if(s.o[j]===S(d.a)) return 'ok'; s.off[j]=1; s.msg='Not that one. Listen again.'; return 'miss'; },
   solve(){} };
 
+/* ---------- fbar: a fraction bar. Shade n/d; or shade a bar cut in `to` parts to equal n/d; or split:true, cut the n/d bar until it has `to` parts ---------- */
+const FW=['','whole','half','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth','eleventh','twelfth'];
+function frw(n,d){ if(d===2) return n+(n===1?' half':' halves'); const w=FW[d]||(d+'th'); return n+' '+w+(n===1?'':'s'); }
+function only23(k){ while(k%2===0) k/=2; while(k%3===0) k/=3; return k===1; }
+T.fbar={ check:true,
+  mode(d){ return d.split?'split':d.to?'equal':'shade'; },
+  err(d){ if(!num(d.d)||d.d<1||d.d>12||d.d%1) return 'd (parts) must be a whole number from 1 to 12'; if(!num(d.n)||d.n<0||d.n>d.d||d.n%1) return 'n must be a whole number from 0 to d';
+    if(d.to!=null){ if(!num(d.to)||d.to%1||d.to<2||d.to>24||d.to===d.d) return 'to must be a whole number of parts from 2 to 24 (not d)';
+      if((d.n*d.to)%d.d) return 'n/d cannot be made with '+d.to+' parts (n x to must divide by d)';
+      if(d.split&&(d.to%d.d||!only23(d.to/d.d))) return 'split: to must be d times 2, 3, 4, 6, 8 or 9 (each cut splits every part in 2 or 3)'; }
+    else if(d.split) return 'split needs to (how many parts at the end)'; return ''; },
+  init(d){ const m=T.fbar.mode(d); return m==='split'?{parts:d.d}:{on:{}}; },
+  goal(d){ return d.to?d.n*d.to/d.d:d.n; },
+  say(d){ const m=T.fbar.mode(d); if(m==='split') return 'Cut every part until the bar has '+d.to+' parts. The shaded part stays the same.';
+    if(m==='equal') return 'The top bar shows '+frw(d.n,d.d)+'. Shade the bottom bar to show the same amount.'; return 'Shade '+frw(d.n,d.d)+' of the bar.'; },
+  how(d){ const m=T.fbar.mode(d); if(m==='split') return 'Each cut splits every part into 2 or 3 smaller parts. The shaded amount stays the same; only the names change.';
+    if(m==='equal') return 'Line up the bars. Shade parts of the bottom bar until the orange ends at the same place as the top bar.';
+    return 'The bottom number tells how many equal parts. The top number tells how many to shade. Tap parts to shade them.'; },
+  label(d){ const m=T.fbar.mode(d); return m==='split'?'Fraction bar: split '+d.n+'/'+d.d+' into '+d.to+' parts':m==='equal'?'Fraction bar: '+d.n+'/'+d.d+' = ?/'+d.to:'Fraction bar: shade '+d.n+'/'+d.d; },
+  bar(parts,shaded,act,onFn,big){ let h='<div class="obk-fb'+(big?' big':'')+'" role="group">'; for(let i=0;i<parts;i++){ const on=onFn(i);
+      h+=act&&!(act==='btn')?'<button class="obk-fp'+(on?' on':'')+'" data-obk="part" data-k="'+i+'" aria-label="part '+(i+1)+(on?', shaded':'')+'"></button>':'<i class="obk-fp'+(on?' on':'')+'"></i>'; }
+    return h+'</div>'; },
+  view(d,s,c){ const m=T.fbar.mode(d);
+    if(m==='split'){ const k=s.parts/d.d, sh=d.n*k;
+      return T.fbar.bar(s.parts,sh,null,i=>i<sh,true)+'<p class="obk-count sm" aria-live="polite">'+s.parts+' parts'+(c.guided||s.over?' · '+sh+'/'+s.parts+' shaded':'')+'</p>'+
+        '<div class="obk-row"><button class="obk-btn" data-obk="cut" data-k="2"'+(s.parts*2>24?' disabled':'')+'>✂ Cut in 2</button><button class="obk-btn" data-obk="cut" data-k="3"'+(s.parts*3>24?' disabled':'')+'>✂ Cut in 3</button><button class="ob-link" data-obk="reset">Start over</button></div>'; }
+    const P=m==='equal'?d.to:d.d, tap=P<=6, cnt=Object.keys(s.on).length;
+    let h=(m==='equal'?T.fbar.bar(d.d,d.n,null,i=>i<d.n)+'<p class="obk-note">'+d.n+'/'+d.d+'</p>':'')+T.fbar.bar(P,cnt,tap?'tap':null,i=>!!s.on[i],true);
+    h+='<p class="obk-count sm" aria-live="polite">'+(c.guided||s.over?cnt+'/'+P+' shaded':'Shaded: '+cnt)+'</p>';
+    if(!tap) h+='<div class="obk-row"><button class="obk-btn" data-obk="less" aria-label="Shade one less">◀ Less</button><button class="obk-btn obk-pri" data-obk="more" aria-label="Shade one more">More ▶</button></div>';
+    return h; },
+  tap(d,s,a,k){ const m=T.fbar.mode(d);
+    if(m==='split'){ if(a==='cut'){ const f=+k; if(s.parts*f<=24) s.parts*=f; } else if(a==='reset') s.parts=d.d; return; }
+    const P=m==='equal'?d.to:d.d;
+    if(a==='part'){ const i=+k; if(s.on[i]) delete s.on[i]; else s.on[i]=1; return; }
+    const cnt=Object.keys(s.on).length; if(a==='more'&&cnt<P){ s.on={}; for(let i=0;i<=cnt;i++) s.on[i]=1; } else if(a==='less'&&cnt>0){ s.on={}; for(let i=0;i<cnt-1;i++) s.on[i]=1; } },
+  ready(d,s){ return T.fbar.mode(d)==='split'?s.parts!==d.d:true; },
+  judge(d,s){ const m=T.fbar.mode(d);
+    if(m==='split'){ if(s.parts===d.to) return {ok:true}; if(s.parts>d.to||d.to%s.parts) { return {ok:false,msg:'That is '+s.parts+' parts. We need '+d.to+'. Tap Start over and cut again.'}; } return {ok:false,msg:s.parts+' parts. Cut again to get '+d.to+'.'}; }
+    const cnt=Object.keys(s.on).length, g=T.fbar.goal(d); if(cnt===g) return {ok:true};
+    return {ok:false,msg:cnt>g?'Too much is shaded. Tap a part to take it off.':'Not enough yet. Shade more parts.'}; },
+  solve(d,s){ if(T.fbar.mode(d)==='split'){ s.parts=d.to; return; } s.on={}; for(let i=0;i<T.fbar.goal(d);i++) s.on[i]=1; } };
+
 /* ---------- fit-text (after every draw) ---------- */
 const FIT='.obk .obk-card,.obk .obk-fc,.obk .obk-m,.obk .obk-opt,.obk .obk-bin-t,.obk .obk-tile,.obk .obk-slot,.obk-q';
 function txtRects(el){ const out=[], w=document.createTreeWalker(el,NodeFilter.SHOW_TEXT); let n;
@@ -380,6 +424,9 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 @media (prefers-reduced-motion: reduce){ .obk-pulse,.obk-shake{ animation:none; } }
 .obk-card,.obk-fc,.obk-m,.obk-opt,.obk-bin-t,.obk-bin-in i{ white-space:pre-line; }   /* a \n in a card stacks rows ("⚽\n📦" = ball above box) */
 .obk-m,.obk-opt,.obk-bin-t,.obk-card,.obk-fc{ line-height:1.15; text-wrap:balance; }
+.obk-fb{ display:flex; width:100%; max-width:420px; height:46px; border:3px solid #1F2A44; border-radius:8px; overflow:hidden; background:#fff; } .obk-fb.big{ height:64px; }
+.obk-fp{ flex:1 1 0; min-width:0; border:0; border-right:2px solid #1F2A44; background:#fff; padding:0; display:block; } .obk-fp:last-child{ border-right:0; } .obk-fp.on{ background:#FFB347; }
+.obk-fb button.obk-fp{ cursor:pointer; }
 .ob-M68 .obk-obj,.ob-M68 .obk-card{ font-size:calc(var(--tap) * .5); }
 `; document.head.appendChild(s); };
 })();

@@ -3,7 +3,7 @@
       a Mistake Detective card, ready questions whose answer is among the choices, and a bridge that is a real skill.
       Round 2: every do/your activity is well-formed for the Activity Kit; 1-3 guided, 3-5 practice; 2+ different activity types;
       never the same activity twice in a row; Little Learners get 3 choices at most.
-   2. Activity Kit at 390 px: fixture bites use all 10 activity types; each is played by TAP ONLY (taps, tap-tap, tap-dots for trace).
+   2. Activity Kit at 390 px: fixture bites use every activity type (OBK.list); each is played by TAP ONLY (taps, tap-tap, tap-dots for trace).
       Every kit screen has 6 dots, at most ONE footer button, big targets and no sideways scroll. "Your turn" stops after 3 right in a row,
       a miss resets the run, and the bite still plays to "mastered". Activity results are recorded as engine results (evidence rows).
    3. Every pilot bite, every bite with do/your and 6 auto-bites play as a TEST- boy through all six steps to "mastered": each screen before
@@ -42,6 +42,10 @@ function obkStep(wrong) {
         if (!tg.length) { const r2 = cv.getBoundingClientRect(), o = { clientX: r2.left + 5, clientY: r2.top + 5, bubbles: true, pointerId: 7 }; cv.dispatchEvent(new PointerEvent('pointerdown', o)); cv.dispatchEvent(new PointerEvent('pointerup', o)); }
         return 'trace dots'; }
       return check(); }
+    case 'fbar': { if (d.split) { if (s.parts === d.to) return check(); const k = d.to / s.parts; return tap('cut', k % 2 === 0 ? 2 : 3); }
+      const P = d.to || d.d, g = d.to ? d.n * d.to / d.d : d.n, cnt = Object.keys(s.on).length;
+      if (P <= 6) { if (cnt < g) { for (let i = 0; i < P; i++) if (!s.on[i]) return tap('part', i); } if (cnt > g) { const i = +Object.keys(s.on)[0]; return tap('part', i); } return check(); }
+      if (cnt < g) return tap('more'); if (cnt > g) return tap('less'); return check(); }
     case 'listen': { const j = w ? s.o.findIndex((o, k) => o !== S(d.a) && !s.off[k]) : s.o.indexOf(S(d.a)); return tap('pick', j); }
   }
   return 'unknown type ' + d.type;
@@ -142,7 +146,9 @@ module.exports = async function oneBiteTests(pg) {
       { name: 'ten-frame take-away (start > n, n = 0) and \\n line breaks in cards', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'tenframe', n: 4, start: 9 }, { type: 'sort', bins: ['Ball on top', 'Box on top'], cards: [['⚽\n📦', 0], ['📦\n⚽', 1]] }],
         your: [{ type: 'tenframe', n: 0, start: 3 }, { type: 'match', pairs: [['one hundred thirteen', '113'], ['one hundred four', '104'], ['seventeen', '17']] }, { type: 'findall', grid: ['🍎\n🍎', '🍎', '🍎\n🍎', '🍐'], find: '🍎\n🍎', findSay: 'two apples' }] } },
       { name: 'hop "how many hops?" (think addition, missing addend), a wrong pick gently refused', opt: { wrongAt: 0 }, want: { kit: 5, your: 3 }, bite: { band: 'B23', do: [{ type: 'hop', start: 7, add: 6, ask: 'hops', q: '13 - 7 = ?' }, { type: 'tenframe', n: 6, start: 2 }],
-        your: [{ type: 'hop', start: 8, add: 5, ask: 'hops', o: ['4', '5', '6'], q: '8 + ? = 13' }, { type: 'blocks', n: 23 }, { type: 'hop', start: 20, add: 50, unit: 10, ask: 'hops', q: 'How many tens from 20 to 70?' }] } } ];
+        your: [{ type: 'hop', start: 8, add: 5, ask: 'hops', o: ['4', '5', '6'], q: '8 + ? = 13' }, { type: 'blocks', n: 23 }, { type: 'hop', start: 20, add: 50, unit: 10, ask: 'hops', q: 'How many tens from 20 to 70?' }] } },
+      { name: 'fraction bar: shade, equal fraction (tap parts and More/Less) and split', want: { kit: 5, your: 3 }, bite: { band: 'E45', do: [{ type: 'fbar', n: 3, d: 4 }, { type: 'fbar', n: 1, d: 2, to: 6, split: true }],
+        your: [{ type: 'fbar', n: 2, d: 3, to: 6 }, { type: 'match', pairs: [['1/2', '0.5'], ['1/4', '25%'], ['3/4', '0.75']] }, { type: 'fbar', n: 5, d: 8, why: { q: 'Why 5 parts?', o: ['The top number says 5', 'There are 8 parts'], a: 'The top number says 5' } }] } } ];
     for (const f of fixtures) {
       ONE_BITE[FIX] = Object.assign({}, base, f.bite);
       try { const s = await play(FIX, f.opt); if (s.err) o.bad.push('Activity Kit (' + f.name + '): ' + s.err);
@@ -161,7 +167,11 @@ module.exports = async function oneBiteTests(pg) {
       const ti = p.ob.kitDo.findIndex(d => d.type === 'tenframe'); show('do', ti); await sleep(5);
       if (document.querySelectorAll('#app .obk-cell.on').length !== 9 || document.querySelector('#app .obk-tray')) o.bad.push('Activity Kit: take-away ten-frame must start with 9 dots he can tap off (and no dot tray)');
       const s = p.ob.kit.s, d = p.ob.kit.acts[ti]; document.querySelector('#app .obk-cell.on').click(); await sleep(2); if (!document.querySelector('#app .obk-cell.gone')) o.bad.push('Activity Kit: tapping a dot in a take-away ten-frame must take it away');
-      const r1 = OBK.judge(d, p.ob.kit.s); if (r1.ok) o.bad.push('Activity Kit: take-away ten-frame accepted 8 dots for 9 take away 5'); }
+      const r1 = OBK.judge(d, p.ob.kit.s); if (r1.ok) o.bad.push('Activity Kit: take-away ten-frame accepted 8 dots for 9 take away 5');
+      /* a wrong fraction bar is gently refused: a help line, not mastered, can try again */
+      const fb = { type: 'fbar', n: 3, d: 4 }, fs = OBK.init(fb, {}); OBK.tap(fb, fs, 'part', '0'); const r2 = OBK.judge(fb, fs); if (r2.ok || !r2.msg) o.bad.push('Activity Kit: fbar accepted 1/4 for 3/4 (or gave no help line)');
+      const fe = { type: 'fbar', n: 1, d: 2, to: 4 }, fes = OBK.init(fe, {}); OBK.tap(fe, fes, 'part', '0'); OBK.tap(fe, fes, 'part', '3'); if (!OBK.judge(fe, fes).ok) o.bad.push('Activity Kit: fbar equal did not accept 2/4 for 1/2');
+      if (!OBK.err({ type: 'fbar', n: 1, d: 3, to: 4 }) || !OBK.err({ type: 'fbar', n: 1, d: 2, to: 10, split: true })) o.bad.push('Activity Kit: fbar must refuse impossible data (1/3 as fourths; split 2 into 10)'); }
     catch (e) { o.bad.push('Activity Kit (fit-text / take-away draw): ' + String(e && e.stack || e).slice(0, 200)); }
     if (keep) ONE_BITE[FIX] = keep; else delete ONE_BITE[FIX];
     OBK.list.forEach(t => { if (!o.kitTypes[t]) o.bad.push('Activity Kit: the ' + t + ' activity was never shown and played by tap'); });
