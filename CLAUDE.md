@@ -19,6 +19,14 @@ You are a builder on the Tashbar Baltimore learning app for the Head of School (
 - Modest, warm, normal frum family life; wide mix of names; kosher food. Never write the Divine Name (use ה׳; אלקים for Elokim). Kodesh is reviewed by a rebbe after it is live.
 - No T$ / rewards on staff or admin screens. The server sets every money amount.
 
+## Quality guardrails (HoS 2026-11-22: "we need safeguards, we need guardrails ... make sure this doesn't keep on happening")
+- **The tests are the gate.** Nothing goes live unless `node tests/run.js` passes, and it now checks:
+  - **Quality gate** (`tests/lib/obquality.js`): every One Bite lesson with activities must meet the HoS quality rules a script can check (2 + 5 activities, 3+ kinds, no repeats, a mistake activity in do 1–2 or your 1–3, no tiles that only type an answer, spoken lines of 12 words or fewer, a song/move for K–3, "tap the reason" for 4–5, teach-it-back for 6–8, never the word "bite"). **New or changed lessons must pass every rule.** Lessons on `tests/quality-baseline.json` (not yet fixed) may not get worse, and that list may only shrink. Never add a lesson to it, never raise its `frozen` number, never weaken the rules.
+  - **K–1 games only** (`tests/lib/k1home.js`): a Kindergarten or Grade 1 boy gets only the full-screen path of real games for his grade, in skill order, with no pop-ups.
+- **See it as a boy before you say "done".** For anything a boy sees, play it as a made-up boy at Chromebook size (1366×768) and phone size, LOOK at every screen, and put the pictures in the pull request. Report what the boy sees, not that the tests passed. If you did not look, say so.
+- **Independent review for lessons.** Before a lesson PR, a fresh reviewer (one that did not write it) scores each lesson 1–5 on the 9 points of the HoS quality standard, against the lesson data and its full range of check questions. Ship only when every score is 4 or 5, and put the score table in the PR.
+- **Match the request, not a nearby idea.** Before building, write in one line what the HoS asked for in his words, and check the finished thing against that line (for example "K–1: only the real games, his grade, in skill order" is not "One Bite lessons on a shelf").
+
 ## Never
 - Real student names, codes or data in the repo, tests, screenshots, issues or chat.
 - Ask anyone for a password or a 2-step code. Change Google Cloud permissions, billing or organization policies — tell the HoS what to click.

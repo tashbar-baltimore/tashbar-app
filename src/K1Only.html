@@ -39,7 +39,7 @@ K1O.on=on;
    The next game unlocks when the one before it is passed; a passed game can always be played again. */
 const PACKS={0:[{k:'MATH',g:'KL',st:'klm',lv:1,i:'🔢',n:'Numbers'},{k:'READ',g:'KR',st:'krm',lv:1,i:'🔤',n:'ABC'},{k:'LK',g:'KK',st:'kkm',lv:1,i:'א',n:'Kriyah'}],
              1:[{k:'MATH',g:'G1M',st:'g1m',lv:2,i:'🔢',n:'Numbers'},{k:'READ',g:'G1R',st:'g1r',lv:2,i:'📖',n:'Reading'},{k:'LK',g:'KK',st:'kkm',lv:2,i:'א',n:'Kriyah'}]};
-const OVS=['klov','krov','kkov','g1mov','g1rov'];
+const OVS=['klov','krov','kkov','kkov2','g1mov','g1rov'];
 function gradeNow(){ if(K1O.grade===0||K1O.grade===1) return K1O.grade;
   try{ const m=window.TL_MAP, L=m&&m.subjects&&m.subjects.MATH&&Number(m.subjects.MATH.level); if(L===2) return 1; }catch(e){} return 0; }
 function subjects(){ return (PACKS[gradeNow()]||PACKS[0]).filter(p=>window[p.g]&&typeof window[p.g].list==='function'&&list(p).length); }
@@ -73,9 +73,63 @@ function sig(){ try{ const b=st()||{}; return JSON.stringify([K1O.subj,gradeNow(
 function sayHi(){ try{ if(typeof speak==='function') speak('Tap PLAY!'); }catch(e){} }
 function gameOpen(){ return OVS.some(id=>document.getElementById(id)); }
 
+/* ---------- inside each game: fill the whole screen, and make the voice always work (HoS 2026-11-22: "I absolutely want it to fill
+   the whole screen. And I want you to make sure that the audio also works.")
+   Each game page runs in a sealed frame (srcdoc). Before it loads we put two small things in front of its page:
+   (1) styles: the game spans the full width and its pictures, buttons and words grow with the screen; the skill code and the
+       "All lessons" button are hidden (the path is the menu, one game at a time);
+   (2) a voice bridge for the device voice: each game first plays its own voices (rebbe clips, the Hebrew voice, the teacher voice).
+       When it falls back to the device voice (speechSynthesis), Chrome keeps a brand-new frame silent until a tap inside it, so the
+       first lines could be silent. Those lines now go to this page (which the boy has already tapped), which plays the teacher voice
+       or the device voice and tells the game when the line is finished, so the game keeps its pace. Mute in the game still works.
+       English lines only: Hebrew sounds keep the game's own clips and Hebrew voice (no computer voice for Hebrew is added here). */
+const GAME_CSS='<style id="k1fit">@media (min-width:900px){'+
+ '.wrap{max-width:none!important;padding-left:clamp(16px,3vw,48px)!important;padding-right:clamp(16px,3vw,48px)!important}'+
+ '.stage{min-height:calc(100vh - 160px)!important;justify-content:center}'+
+ '.o{font-size:clamp(42px,15vh,150px)!important} .frame .o{font-size:clamp(38px,7vh,70px)!important}'+
+ '.ch{min-width:clamp(108px,22vh,220px)!important;height:clamp(108px,22vh,220px)!important;font-size:clamp(52px,11vh,110px)!important;border-radius:clamp(30px,4vh,44px)!important}'+
+ '.ch.wide{font-size:clamp(34px,5.5vh,60px)!important;min-width:clamp(150px,24vh,260px)!important}'+
+ '.cap{font-size:clamp(22px,4.4vh,42px)!important;min-height:clamp(58px,8vh,84px)!important}'+
+ '.card-num{font-size:clamp(96px,17vh,170px)!important} .big-num{font-size:clamp(72px,13vh,130px)!important}'+
+ '.frame{grid-template-columns:repeat(5,clamp(60px,10vh,100px))!important;grid-template-rows:repeat(2,clamp(60px,10vh,100px))!important}'+
+ '.tile{width:clamp(54px,8.5vh,84px)!important;height:clamp(54px,8.5vh,84px)!important;font-size:clamp(26px,4vh,40px)!important}'+
+ '.tiles{max-width:min(92vw,1000px)!important}'+
+ '.basket{min-width:clamp(140px,24vh,240px)!important;min-height:clamp(110px,18vh,180px)!important}'+
+ '.bin{min-width:clamp(130px,22vh,230px)!important;min-height:clamp(120px,19vh,190px)!important}'+
+ '.car{min-width:clamp(70px,11vh,110px)!important;height:clamp(62px,9.5vh,96px)!important;font-size:clamp(32px,5vh,50px)!important}'+
+ '.spk{width:clamp(64px,9vh,88px)!important;height:clamp(64px,9vh,88px)!important;font-size:clamp(30px,4.2vh,40px)!important}'+
+ 'h1{font-size:clamp(26px,3.6vh,36px)!important}'+
+ '}#home,h1 small{display:none!important}</style>';
+const GAME_VOICE='<scr'+'ipt>(function(){var P={},n=0;'+
+ 'var S={speak:function(u){var id=++n;P[id]=u;try{if(u.onstart)u.onstart();}catch(e){}try{parent.postMessage({k1say:String(u.text||""),id:id},"*");}catch(e){}},'+
+ 'cancel:function(){P={};try{parent.postMessage({k1hush:1},"*");}catch(e){}},getVoices:function(){return [];},pause:function(){},resume:function(){},'+
+ 'speaking:false,pending:false,paused:false,onvoiceschanged:null,addEventListener:function(){},removeEventListener:function(){}};'+
+ 'try{Object.defineProperty(window,"speechSynthesis",{value:S,configurable:true});}catch(e){}'+
+ 'if(!window.SpeechSynthesisUtterance){window.SpeechSynthesisUtterance=function(t){this.text=t;};}'+
+ 'window.addEventListener("message",function(e){var d=e.data;if(d&&d.k1said&&P[d.k1said]){var u=P[d.k1said];delete P[d.k1said];try{if(u.onend)u.onend();}catch(x){}}});'+
+ '})();<\/scr'+'ipt>';
+function dress(ovId){ try{ const f=document.querySelector('#'+ovId+' iframe'); if(!f||f.dataset.k1) return; const src=f.srcdoc||''; if(!src) return;
+  f.dataset.k1='1'; f.srcdoc=GAME_VOICE+GAME_CSS+src; }catch(e){} }
+const TTS='https:'+'/'+'/'+'tts-q26c275eaa-uk.a.run.app';
+const V={a:null,tok:0,cache:{}};
+function hush(){ V.tok++; try{ if(V.a) V.a.pause(); }catch(e){} V.a=null; try{ window.speechSynthesis.cancel(); }catch(e){} }
+function devVoice(t,done){ try{ const u=new SpeechSynthesisUtterance(t); u.rate=.92; u.pitch=1.1; u.onend=done; u.onerror=done; window.speechSynthesis.speak(u); }catch(e){ done(); } }
+function voice(t,done){ hush(); const my=V.tok; let fin=false; const end=()=>{ if(fin) return; fin=true; done(); };
+  const dev=()=>{ if(my===V.tok) devVoice(t,end); };
+  const viaUrl=u=>{ if(my!==V.tok) return; const a=new Audio(u); V.a=a; a.onended=end; a.onerror=dev; const pr=a.play(); if(pr&&pr.catch) pr.catch(dev); };
+  setTimeout(end,String(t).length*130+6000);
+  if(V.cache[t]) return viaUrl(V.cache[t]);
+  Promise.race([fetch(TTS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:String(t).slice(0,300),voice:'teacher'})}).then(r=>r.json()).then(j=>{ if(j&&j.ok&&j.url){ V.cache[t]=j.url; return j.url; } throw new Error('tts'); }),
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),1500))]).then(viaUrl).catch(dev); }
+window.addEventListener('message',e=>{ const d=e.data; if(!d||typeof d!=='object'||(d.k1say==null&&!d.k1hush)) return;
+  const f=OVS.map(id=>document.querySelector('#'+id+' iframe')).find(x=>x&&e.source===x.contentWindow); if(!f) return;
+  if(d.k1hush){ hush(); return; }
+  const id=d.id; voice(String(d.k1say),()=>{ try{ f.contentWindow.postMessage({k1said:id},'*'); }catch(x){} }); });
+K1O.voice=voice;
+
 function play(id){ const p=subjects().find(x=>x.k===K1O.subj); if(!p||!window[p.g]||typeof window[p.g].open!=='function') return;
   try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(e){}
-  A.overlay=null; window[p.g].open(id); }
+  A.overlay=null; window[p.g].open(id); OVS.forEach(dress); }
 
 document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#k1o [data-k1]'); if(!b) return; e.preventDefault(); e.stopPropagation();
   const a=b.dataset.k1;
@@ -92,12 +146,13 @@ if(typeof window.tlLevelCheckFor==='function'){ const l0=window.tlLevelCheckFor;
 if(typeof window.tlFindLevelCard==='function'){ const f0=window.tlFindLevelCard; window.tlFindLevelCard=function(){ if(on()) return ''; return f0.apply(this,arguments); }; }
 setInterval(()=>{ try{ if(!document.body||!document.body.classList.contains('k1-mode')||typeof A==='undefined') return;
   if(A.overlay&&A.view==='hub'){ A.overlay=null; render(); return; }
-  if(document.body.classList.contains('k1-home')&&!gameOpen()&&K1O.sig!==sig()) paint(); }catch(e){} },1200);
+  const g=gameOpen(); if(K1O.wasGame&&!g){ try{ hush(); }catch(x){} } K1O.wasGame=g;
+  if(document.body.classList.contains('k1-home')&&!g&&K1O.sig!==sig()) paint(); }catch(e){} },1200);
 
 /* ---------- the look ---------- */
 try{ if(!document.getElementById('k1o-css')){ const c=document.createElement('style'); c.id='k1o-css'; c.textContent=`
-body.k1-home > *:not(#k1o):not(#klov):not(#krov):not(#kkov):not(#g1mov):not(#g1rov){ display:none !important; }
-#klov,#krov,#kkov,#g1mov,#g1rov{ z-index:2147483600 !important; }
+body.k1-home > *:not(#k1o):not(#klov):not(#krov):not(#kkov):not(#kkov2):not(#g1mov):not(#g1rov){ display:none !important; }
+#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov{ z-index:2147483600 !important; }
 body.k1-home{ overflow:hidden !important; background:#FFF4D6 !important; }
 #k1o{ position:fixed; inset:0; z-index:2147483000; overflow-y:auto; background:linear-gradient(180deg,#8FD3FF 0%,#C8ECFF 45%,#FFF4D6 100%); font-family:'Fredoka','Nunito',system-ui,sans-serif; color:#2B2350; padding:14px clamp(12px,3vw,40px) 40px; box-sizing:border-box; }
 #k1o button{ font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
