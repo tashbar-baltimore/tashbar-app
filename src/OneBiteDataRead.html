@@ -413,7 +413,7 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer right in t
   var SP={b:'buh',c:'kuh',d:'duh',f:'fff',g:'guh',h:'huh',j:'juh',k:'kuh',l:'lll',m:'mmm',n:'nnn',p:'puh',q:'kwuh',r:'rrr',s:'sss',t:'tuh',v:'vvv',w:'wuh',x:'ks',y:'yuh',z:'zzz'};
   var VS={a:'aa',e:'eh',i:'ih',o:'ah',u:'uh'};
   function chantOf(ls){ return ls.map(function(x){ if(x==='x') return 'X is in box: ks, ks, box!'; if(VS[x]) return L[x][0]+' is for '+L[x][2]+': '+VS[x]+', '+VS[x]+', '+L[x][2]+'!'; return SP[x]?L[x][0]+' is for '+L[x][2]+': '+SP[x]+', '+SP[x]+', '+L[x][2]+'!':L[x][0]+' is for '+L[x][2]+', '+L[x][2]+', '+L[x][2]+'!'; }); }
-  function says(x){ return x.toUpperCase()+' says '+L[x][4]+'.'; }
+  function says(x){ return x==='x'?'X says ks, like the end of box.':x.toUpperCase()+' says '+(VS[x]||SP[x])+', like '+L[x][2]+'.'; }
   function pk(x){ return L[x][3]+' '+L[x][2]; }
   function aWord(x){ return ('aeiou'.indexOf(L[x][2].charAt(0))>=0?'an ':'a ')+L[x][2]; }
 
@@ -463,7 +463,7 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer right in t
       teach:[
         {how:'Every letter has a name, a sound and a shape. '+says(first), q:'This is '+aWord(first)+'. Which letter makes its first sound?', pic:L[first][3], o:[first].concat(g.near[first])},
         {how:'Big '+L[ls[1]][0]+' and small '+ls[1]+' are the same letter. '+L[ls[1]][5]+' '+L[ls[1]][6], q:'Which small letter matches this big letter?', pic:L[ls[1]][0], o:[ls[1]].concat(g.near[ls[1]])},
-        {how:says(t2)+' Say '+L[t2][2]+' slowly. Hear '+L[t2][4].split(',')[0]+' at the start.', q:'This is '+aWord(t2)+'. Which letter makes its first sound?', pic:L[t2][3], o:[t2].concat(g.near[t2])}
+        {how:says(t2)+' Say '+L[t2][2]+' slowly. Hear '+(VS[t2]||SP[t2]||'ks')+' at the start.', q:'This is '+aWord(t2)+'. Which letter makes its first sound?', pic:L[t2][3], o:[t2].concat(g.near[t2])}
       ],
       practice:[
         {t:'pairs', q:'Match each letter to the picture that starts with it.', pairs:picPairs, h:'Say the picture word slowly. Listen to the first sound. Find that letter.'},
@@ -482,7 +482,7 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer right in t
     /* ---- Teacher Time for the normal lesson page ---- */
     TT[id]=TT[id]||{ hook:'Meet '+ls.length+' new letter friends today!', big:'Every letter has a name, a sound and a shape: '+nameLine+'.',
       intro:ls.map(function(x){ return says(x); }),
-      ex:[{q:'Which letter makes the first sound in '+L[first][2]+'?', pic:L[first][3], steps:['Say it slowly: '+L[first][2]+'.','Hear the first sound: '+L[first][4].split(',')[0]+'.','That sound is the letter '+first+'.'], a:first},
+      ex:[{q:'Which letter makes the first sound in '+L[first][2]+'?', pic:L[first][3], steps:['Say it slowly: '+L[first][2]+'.','Hear the first sound: '+(VS[first]||SP[first]||'ks')+'.','That sound is the letter '+first+'.'], a:first},
           {q:'Which small letter matches big '+L[last][0]+'?', steps:[L[last][5], L[last][6], 'Same name, '+L[last][0]+' and '+last+'.'], a:last}],
       oops:g.oops, idea:chantOf(ls).slice(0,2),
       'try':{q:'Which small letter matches big '+L[ls[1]][0]+'?', o:[ls[1]].concat(g.near[ls[1]]), a:ls[1], steps:[L[ls[1]][5], L[ls[1]][6]]} };
@@ -498,11 +498,11 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer right in t
     /* Spoken lines never use a lone letter for its sound (a computer voice reads b as bee).
        Consonants get a sound spelling (buh, mmm); vowels are heard in their keyword. */
     var chant=chantOf(ls);
-    var SMALL={q:'Small q: ball first, then a low line.', z:'Small z: across, slant, across.'};
+    var SMALL={q:'Small q: ball first, then the line.', z:'Small z: across, slant, across.'};
     var steps=ls.map(function(x,i){ var lastOne=i===ls.length-1;
       if(x==='x') return {t:'X is at the end of box 📦. Big X: two lines that cross.', m:{type:'tiles', w:['Xx','📦'], hi:[0]}};
-      return {t:L[x][0]+' is for '+L[x][2]+' '+L[x][3]+'. '+(lastOne?(SMALL[x]||L[x][6]):L[x][5]), m:{type:'tiles', w:[L[x][0]+x, L[x][3]], hi:[0]}}; });
-    if(steps.length>4){ var z=ls[ls.length-1]; steps[steps.length-1]={t:L[z][0]+' is for '+L[z][2]+' '+L[z][3]+'. '+(SMALL[z]||L[z][6])+' Sing!', m:{type:'chant', lines:chant}}; }
+      return {t:L[x][0]+' is for '+L[x][2]+' '+L[x][3]+': '+(VS[x]||SP[x])+'. '+(lastOne?(SMALL[x]||L[x][6]):L[x][5]), m:{type:'tiles', w:[L[x][0]+x, L[x][3]], hi:[0]}}; });
+    if(steps.length>4){ var z=ls[ls.length-1]; steps[steps.length-1]={t:L[z][0]+' is for '+L[z][2]+' '+L[z][3]+': '+(VS[z]||SP[z])+'. '+(SMALL[z]||L[z][6])+' Sing!', m:{type:'chant', lines:chant}}; }
     else steps.push({t:'Stand up! Sing in ABC order: one clap per letter.', m:{type:'chant', lines:chant}});
     var o3=function(x){ return [x].concat(g.near[x]); };
     var big=ls[1], lw=g.lw, mp=g.mp.split(''), fodd=g.fodd||g.odd, oddLow=fodd.toLowerCase(), oddBig=fodd!==oddLow, oddSay=(oddBig?'big ':'small ')+fodd, stop=gi+1;
