@@ -1,0 +1,8 @@
+- empty-frames-gallery-wall.webp | https://pixabay.com/photos/art-gallery-canvas-arts-gallery-699429/ | Pixabay Content License | StockSnap
+- dip-pen-and-spare-nibs.webp | https://pixabay.com/photos/feather-ink-pen-pen-ink-penholder-4984862/ | Pixabay Content License | Carola68
+- two-wooden-wall-shelves.webp | https://pixabay.com/photos/shelf-bookshelf-wall-interior-8390073/ | Pixabay Content License | InteriorLens
+- small-plane-among-clouds.webp | https://pixabay.com/photos/clouds-aircraft-plane-sky-4944276/ | Pixabay Content License | Sinousxl
+- brown-suede-lace-up-shoe.webp | https://pixabay.com/photos/shoes-brown-leather-fashion-2434210/ | Pixabay Content License | rydv151
+- small-wooden-table-four-legs.webp | https://pixabay.com/photos/furniture-table-interior-design-8275659/ | Pixabay Content License | Mariakray
+- long-white-hallway-wood-floor.webp | https://pixabay.com/photos/hallway-corridor-white-parquet-1284617/ | Pixabay Content License | Pexels
+- rough-tree-bark-closeup.webp | https://www.flickr.com/photos/23501684@N00/240312776 | CC BY 2.0 | Bill Ward's Brickpile
