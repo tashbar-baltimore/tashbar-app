@@ -108,7 +108,7 @@ Every activity may have: `say` (spoken instruction; a good default is made), `ho
 
 | Type | Data | He does |
 |---|---|---|
-| `tenframe` | `{type:'tenframe', n:7, start:0}` (n up to 20; `start` dots are already in, blue) | taps boxes (or drags the dot) until the frame shows n, then Check |
+| `tenframe` | `{type:'tenframe', n:7, start:0}` (n up to 20; `start` dots are already in, blue). **Take away:** `{type:'tenframe', n:4, start:9}` (start bigger than n; n can be 0) | taps boxes (or drags the dot) until the frame shows n, then Check. Take away: taps dots OFF (they show ✕) until n are left |
 | `hop` | `{type:'hop', start:3, add:4, unit:1, from, to}` (add < 0 hops back; unit 2, 5, 10 for skip counting; at most 20 hops wide) | taps Hop ▶ / ◀ Hop, counting hops, then Check |
 | `count` | `{type:'count', n:6, pic:'🍎', name:'apple', o:['5','6','7']}` (`o` optional) | taps each picture (it gets a number), then picks how many |
 | `blocks` | `{type:'blocks', n:14}` | adds tens and ones (tap a block to take it away), then Check; 14 ones is "trade 10 ones for a ten" |
@@ -118,6 +118,10 @@ Every activity may have: `say` (spoken instruction; a good default is made), `ho
 | `sort` | `{type:'sort', bins:['Circle','Not a circle'], cards:[['⚪',0],['🔺',1]]}` (2–3 bins, 2–8 cards) | one card at a time: taps (or drags it to) the right box |
 | `trace` | `{type:'trace', glyph:'b', name:'letter b', he:false}` | traces the dotted letter with a finger; passes at about 80% covered |
 | `listen` | `{type:'listen', hear:'buh', clip:'letter-sound:b', o:['b','d','p'], a:'b', cap:'the sound at the start of ball'}` | hears it (auto-played, 🔊 again), taps the match |
+
+**Display (Lane A2, 2026-11-22):** long text in match items, sort cards and bins, findall cells, choices, tiles and the `q` prompt **shrinks to fit** (2 lines at most, never sticking out), so you do not have to cut words to the bone. A `\n` in a sort card, findall cell or match item **stacks rows**: `['⚽\n📦',0]` is a ball above a box. Keep findall cells short (3 characters or one emoji pair): a cell is about 70 px wide.
+
+**Check your lessons like the QA does:** `IDS=<id prefixes> node tools/audit/ob-qa.js` writes `tools/audit/out/ob-qa.md` (layout at 390 px, age fit, variety, taught-then-asked, rules, math). Live QA findings are posted in issue #166.
 
 Hebrew (`he:true`) is never spoken by a computer voice: give `listen` a recorded `clip`. Example bite:
 ```js
