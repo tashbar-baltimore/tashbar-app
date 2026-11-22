@@ -203,7 +203,10 @@ document.addEventListener('click', e => {
   if (a === 'sm-chizuk') return chizuk(+b.dataset.i);
 });
 let q = 0;
-function check(){ q = 0; try { if (A && A.view === 'hub' && A.st && !A.overlay && on() && !shown() && typeof overlay === 'function') setTimeout(() => { if (A.view === 'hub' && !A.overlay && !shown()) morning(); }, 1200); } catch (e) {} }
+/* HoS 2026-11-21 one welcome: for a boy with a game map the game welcome already brings today's vort and chizuk, so this older
+   night-sky card never opens there. */
+function gameHome(){ try { return !!window.TL_MAP; } catch (e) { return false; } }
+function check(){ q = 0; try { if (A && A.view === 'hub' && A.st && !A.overlay && on() && !gameHome() && !shown() && typeof overlay === 'function') setTimeout(() => { if (A.view === 'hub' && !A.overlay && !gameHome() && !shown()) morning(); }, 1200); } catch (e) {} }
 try { new MutationObserver(() => { if (!q) { q = 1; requestAnimationFrame(check); } }).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
 window.tlSimMorning = morning;
 })();

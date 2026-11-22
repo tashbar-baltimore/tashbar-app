@@ -1,5 +1,7 @@
 # One Bite: lanes (who does what)
 
+> **ROUND 2 IS NOW THE PLAN (HoS, 2026-11-21 evening): short, hands-on, made for each age. Start with Kindergarten Math and the ABCs.** Read `docs/ONE-BITE-ROUND2.md` first. Round 2 lanes: **A** = the Activity Kit (`src/OneBite.html` + `src/OneBiteKit.html`), **B** = K–1 Math activities (`src/OneBiteDataMath.html`), **C** = K Reading, ABCs first (`src/OneBiteDataRead.html`).
+
 Each lane edits **only its own files**, so 2–5 Claude accounts can work at the same time with no overlap. Before you start, add a line under "Taken" with the date and your account. When you stop, write where you got to.
 
 | Lane | Files it owns | Work |
