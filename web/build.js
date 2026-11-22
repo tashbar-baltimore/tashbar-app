@@ -32,6 +32,8 @@ async function call(fn, args) {
   fs.copyFileSync(path.join(__dirname, 'sw.js'), path.join(OUT, 'sw.js'));
   /* PICS-1: real pictures for lessons (RealPics.html), served at /pics/. Without this a rebuild REMOVES them from the live site. */
   const PICS = path.join(__dirname, 'pics'); if (fs.existsSync(PICS)) fs.cpSync(PICS, path.join(OUT, 'pics'), { recursive: true });
+  /* the sign-in theme tune as a ready sound file (GameMap.html), served at /sounds/. */
+  const SOUNDS = path.join(__dirname, 'sounds'); if (fs.existsSync(SOUNDS)) fs.cpSync(SOUNDS, path.join(OUT, 'sounds'), { recursive: true });
   fs.writeFileSync(path.join(OUT, 'page-hash.json'), JSON.stringify({ h: pageR.h, built: BUILT }));
   let page = pageR.html; const at = page.indexOf('<head>'); if (at < 0) throw new Error('no <head> in the student page');
   page = page.slice(0, at + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Tashbar Learning</title><script>window.TL_PAGE_HASH="' + pageR.h + '";window.TL_PAGE_BUILT=' + BUILT + ';</script><script src="/boot.js"></script>' + page.slice(at + 6);

@@ -1058,7 +1058,16 @@ body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 5
   try{ if(c.state==='running') return run(); const r=c.resume(); const s=c.createBufferSource(); s.buffer=c.createBuffer(1,1,22050); s.connect(c.destination); s.start(0);
    if(r&&r.then) r.then(run,()=>{}); else setTimeout(run,50); }catch(e){} }
  ['pointerdown','touchend','keydown','click'].forEach(ev=>document.addEventListener(ev,themeUnlock,{capture:true,passive:true}));
- setTimeout(themeRender,800);
+ /* first choice: the same tune already saved as a sound file on the site (web/sounds/theme.mp3, made from themeBuild), so the tablet has
+    nothing to record; it downloads while the boy types his code. If that fails, it records the tune itself (themeRender). */
+ function themeLoad(){ if(GM.themeL) return GM.themeL;
+  const url=/\.web\.app$|\.firebaseapp\.com$|^localhost$|^127\./.test(location.hostname)?'/sounds/theme.mp3':'https://tashbar-learning-live.web.app/sounds/theme.mp3';
+  GM.themeL=new Promise(ok=>{ try{ const OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext; if(!window.fetch||!OAC) return ok(null);
+   fetch(url).then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); }).then(ab=>{ const dc=new OAC(1,1,44100);
+    const p=dc.decodeAudioData(ab,b=>ok(b),()=>ok(null)); if(p&&p.catch) p.catch(()=>ok(null)); }).catch(()=>ok(null));
+  }catch(e){ ok(null); } }).then(b=>{ if(b){ GM.themeBuf=b; GM.themeP=Promise.resolve(b); return b; } return themeRender(); });
+  return GM.themeL; }
+ setTimeout(themeLoad,0);
  function themeTune(){ try{ if(typeof SND!=='undefined'&&SND.on===false) return;
   if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.85; a.play().catch(()=>{}); return; }
   const c=themeCtx(); if(!c) return; const asked=Date.now();
@@ -1070,7 +1079,7 @@ body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 5
    const s=c.createBufferSource(); s.buffer=GM.themeBuf; s.connect(c.destination); s.start(c.currentTime+.02); GM.themeSrc=s;
    GM.themeEnd=Date.now()+GM.themeBuf.duration*1000; }catch(e){} };
   if(c.state!=='running'){ try{ const r=c.resume(); if(r&&r.then) r.then(()=>{ if(GM.themeWait===go) go(); },()=>{}); }catch(e){} }
-  themeRender().then(b=>{ if(!b){ GM.themeEnd=0; return; } go(); });
+  themeLoad().then(b=>{ if(!b){ GM.themeEnd=0; return; } go(); });
  }catch(e){} }
  GM.themeTune=themeTune;
  /* HoS 2026-11-22: "put it as the default opening sound track as soon as someone punches in his code": it starts the moment a boy's code
