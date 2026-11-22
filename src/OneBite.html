@@ -10,6 +10,11 @@
      - Mastery, saving, answers and money are the engine's own: buildMission / answer / next / finish are not changed. Nothing here sets an amount.
    CONTENT: a hand-written bite in window.ONE_BITE[skill id] (OneBiteData*.html) makes a bite great. Without one, the bite is built from the
      lesson's own Teacher Time (TL_TEACH: big, hook, ex, oops) or its How-to lines, so every lesson can play as a bite at once.
+   ROUND 2 (HoS 2026-11-21 evening, docs/ONE-BITE-ROUND2.md): when a bite has do:[...] and your:[...], steps 3 and 4 are hands-on activities
+     from the Activity Kit (OneBiteKit.html). Each activity is recorded as an engine result (p.results, phase teach/practice) so evidence rows save.
+     "Your turn" ends after 3 right in a row (or when the list runs out) and goes straight to the 3 check questions (Show me).
+     A bite with no do/your plays the lesson's own questions, capped at 2 guided + 5 practice, and also skips ahead after 3 right in a row.
+     Little Learners (K1) always get a song or a movement (a wiggle break if the bite has none) and a celebration at the end.
    SWITCH: window.OB_LIVE = 'test' (TEST- boys only), 'on' (every boy), 'off'. window.OB_SUBJECTS (optional list of id prefixes) limits 'on'.
    Docs: docs/ONE-BITE-PLAYBOOK.md. No double slash in this file (HtmlService rule). */
 (function(){
@@ -83,6 +88,7 @@ function stepParts(s){ if(s&&typeof s==='object') return {t:strip(s.t||s.say||''
 /* ---------- state ---------- */
 function P(){ return A.view==='play'&&A.play&&A.play.ob?A.play:null; }
 function curDot(p){ const ob=p.ob; if(ob.stage==='today'||ob.stage==='ready'||ob.stage==='bridge') return 0; if(ob.stage==='watch') return 1;
+  if(ob.stage==='do') return 2; if(ob.stage==='your'||ob.stage==='wiggle') return 3;
   const it=p.items[p.i]||{}; return it.phase==='warm'?0:it.phase==='teach'?2:it.phase==='practice'?3:4; }
 function stripHTML(d,ob){ return '<ol class="ob-dots" aria-label="Step '+(d+1)+' of 6: '+STEPS[d]+'">'+STEPS.map((s,k)=>'<li class="'+(k<d?'done':k===d?'now':'')+'"><i></i></li>').join('')+'</ol><span class="ob-stepname">'+(d+1)+' of 6 · '+STEPS[d]+'</span>'; }
 function sayAttr(t){ return E(strip(t)).slice(0,600); }
@@ -130,8 +136,9 @@ function vDone(){ const r=A.res, ob=OB.res||{}, b=ob.bite||{}, ok=r.outcome==='m
   else if(r.outcome==='retry'){ icon='💪'; title='Almost there!'; line=r.right+' of 3 on your own. A short practice round, then try the last 3 again.'; btn='<button class="ob-go" data-act="retry">Practice round ▶</button>'; }
   else if(r.outcome==='checkin'){ icon='🤝'; title='Let\'s team up'; line='This one is tricky. Your rebbe or teacher will sit with you on it. Pick another bite for now.'; btn='<button class="ob-go" data-act="tohub">Back to my map ▶</button>'; }
   else { icon='👍'; title='Good practice'; line='Practice keeps it strong.'; btn='<button class="ob-go" data-act="tohub">Back to my map ▶</button>'; }
+  const party=ok&&b.band==='K1'?'<div class="ob-party" aria-hidden="true">'+['⭐','🎉','🌟','✨','🎈','⭐','🌟','🎉'].map((x,i)=>'<i style="--i:'+i+'">'+x+'</i>').join('')+'</div>':'';
   const stars=ok&&r.stars?'<div class="ob-stars" aria-label="'+r.stars+' stars">'+'⭐'.repeat(r.stars)+'</div>':'';
-  const inner='<div class="ob-burst" aria-hidden="true">'+icon+'</div><h1 class="ob-done">'+title+'</h1>'+stars+'<p class="ob-why">'+line+'</p>'+
+  const inner=party+'<div class="ob-burst'+(party?' big':'')+'" aria-hidden="true">'+icon+'</div><h1 class="ob-done">'+title+'</h1>'+stars+'<p class="ob-why">'+line+'</p>'+
     (ok&&earned>0?'<p class="ob-earn">+ $'+earned.toFixed(2)+' earned</p>':'')+(ok?'<p class="ob-meta">It will come back for a quick review in a few days.</p>':'');
   return '<div class="ob ob-'+(b.band||'B23')+'" data-dot="5">'+head(5,b.title||'',strip(title+'. '+line))+'<main class="ob-main ob-center">'+inner+'</main><footer class="ob-foot">'+
     (ok&&!ret?'<button class="ob-link" data-act="tohub">My map</button>':'')+btn+'</footer></div>'; }
@@ -144,11 +151,12 @@ startMission=function(c,id,kind){
   try{ const p=A.play;
     if(want&&A.view==='play'&&p&&p.id===id&&!p.ob){
       const bite=biteFor(id,p.items);
-      p.ob={bite, stage:'today', ws:0, ri:0, rmiss:0, rsel:null, oopsDone:!bite.oops, pracOk:0, t0:Date.now()};
+      p.ob={bite, stage:'today', ws:0, ri:0, rmiss:0, rsel:null, oopsDone:!bite.oops, pracOk:0, t0:Date.now()}; kitSetup(p);
       if(OB.pendingRet&&OB.pendingRet.bridge===id){ OB.ret={from:id,id:OB.pendingRet.id,c:OB.pendingRet.c}; OB.pendingRet=null; }
       OB.res={id, bite}; A.overlay=null; render(); scrollTo(0,0); autoSay();
     } else if(p&&kind==='retry'&&OB.res&&OB.res.id===id&&live(id,'skill')){
-      p.ob={bite:OB.res.bite, stage:'q', ws:0, ri:0, rmiss:0, rsel:null, oopsDone:true, pracOk:0, retry:true}; A.overlay=null; render();
+      p.ob={bite:OB.res.bite, stage:'q', ws:0, ri:0, rmiss:0, rsel:null, oopsDone:true, pracOk:0, retry:true, wiggled:true}; kitSetup(p);
+      if(p.ob.kitOn) p.ob.stage=startYour(p); A.overlay=null; render(); autoSay();
     }
   }catch(e){ console.warn('OneBite start',e); }
   return out; };
@@ -169,7 +177,8 @@ const _r=render;
 render=function(){
   const p=P();
   if(p&&p.ob.stage!=='q'){ css(); const el=document.getElementById('app'); bodyCls(true,p);
-    const st=p.ob.stage; el.innerHTML=st==='today'?vToday(p):st==='ready'?vReady(p):st==='bridge'?vBridge(p):vWatch(p);
+    const st=p.ob.stage; el.innerHTML=st==='today'?vToday(p):st==='ready'?vReady(p):st==='bridge'?vBridge(p):st==='wiggle'?vWiggle(p):(st==='do'||st==='your')?vKit(p):vWatch(p);
+    if((st==='do'||st==='your')&&p.ob.kit&&window.OBK){ const k=p.ob.kit; OBK.mount(el,k.acts[k.i],k.s,kctx(p)); }
     if(A.overlay) el.insertAdjacentHTML('beforeend',A.overlay.html); return; }
   if(A.view==='result'&&A.res&&OB.res&&OB.res.id===A.res.id&&A.res.kind!=='boss'&&OB.res.live){ css(); bodyCls(true,{ob:OB.res}); A.res.shown=true; A.overlay=null;
     document.getElementById('app').innerHTML=vDone(); return; }
@@ -194,12 +203,18 @@ function dress(p){ const app=document.getElementById('app'), play=app&&app.query
       card.insertAdjacentHTML('beforeend','<div class="ob-rescue" role="status"><b>One small step at a time</b><ol>'+L.slice(0,k+1).map(s=>'<li>'+E(s)+'</li>').join('')+'</ol>'+(k<L.length-1?'<button class="ob-link" data-ob="rstep">Next small step</button>':'<p class="ob-meta">Now try it.</p>')+'</div>'); } } } }
 
 /* ---------- read-aloud ---------- */
-function say(t){ t=strip(t); if(!t) return; try{ speak(t); }catch(e){} }
-function autoSay(){ try{ const p=P(); if(!p) return; if(BANDS[p.ob.bite.band].read||LS.get('ob-auto')==='1'){ const b=document.querySelector('.ob-say'); if(b) setTimeout(()=>say(b.dataset.text),350); } }catch(e){} }
+function say(t){ t=strip(t); if(!t) return; try{ speak(t); }catch(e){} readAlong(); }
+/* read-along: the instruction's words light up one by one while it is read (Builders and up read along; Little Learners just listen) */
+let raT=null; function readAlong(){ try{ clearInterval(raT); const w=[...document.querySelectorAll('.obk-say span')]; if(!w.length) return; let k=0; w.forEach(x=>x.classList.remove('on'));
+  raT=setInterval(()=>{ if(k>0&&w[k-1]) w[k-1].classList.remove('on'); if(k>=w.length||!w[k].isConnected){ clearInterval(raT); return; } w[k].classList.add('on'); k++; },380); }catch(e){} }
+function autoSay(){ try{ const p=P(); if(!p) return; if(BANDS[p.ob.bite.band].read||LS.get('ob-auto')==='1'){ const b=document.querySelector('.ob-say'); if(b) setTimeout(()=>say(b.dataset.text),350); }
+  const k=p.ob.kit; if(k&&/^(do|your)$/.test(p.ob.stage)&&window.OBK){ const d=k.acts[k.i]; if((d.type==='listen'||d.type==='tiles'&&d.hear)&&!k.s.heard){ k.s.heard=true; const wait=BANDS[p.ob.bite.band].read?1500+OBK.say(d).length*55:400; setTimeout(()=>{ if(P()===p&&p.ob.kit===k) OBK.hear(d); },wait); } } }catch(e){} }
 
 /* ---------- taps ---------- */
-document.addEventListener('click',e=>{ const b=e.target.closest('[data-ob]'); if(!b) return; const a=b.dataset.ob, p=P(); e.preventDefault(); e.stopPropagation();
-  try{ if(window.SND&&SND.tap) SND.tap(); }catch(x){}
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-ob],[data-obk]'); if(!b) return;
+  if(b.dataset.ob==null){ e.preventDefault(); e.stopPropagation(); if(window.OBK&&OBK.suppressed()) return; try{ if(typeof SND!=='undefined') SND.tap(); }catch(x){} return kitTap(b.dataset.obk,b.dataset.k,null); }
+  const a=b.dataset.ob, p=P(); e.preventDefault(); e.stopPropagation();
+  try{ if(typeof SND!=='undefined') SND.tap(); }catch(x){}
   if(a==='say') return say(b.dataset.text);
   if(a==='font'){ dysOn=!dysOn; LS.set('ob-dys',dysOn?'1':'0'); document.body.classList.toggle('ob-dys',dysOn); return; }
   if(a==='quit'){ return _ov(`<div class="oe">🚪</div><h2>Leave this bite?</h2><p>You can come back to it any time.</p><button class="btn go big" data-act="closeov">Keep learning</button> <button class="btn big" data-act="quit-yes">Leave</button>`); }
@@ -207,23 +222,103 @@ document.addEventListener('click',e=>{ const b=e.target.closest('[data-ob]'); if
   if(a==='back'){ OB.ret=null; return startMission(b.dataset.c,b.dataset.id,'skill'); }
   if(!p) return;
   const ob=p.ob;
-  if(a==='go'){ ob.stage=(ob.bite.ready&&ob.bite.ready.length)?'ready':ob.bite.watch?'watch':'q'; }
+  if(a==='go'){ ob.stage=(ob.bite.ready&&ob.bite.ready.length)?'ready':ob.bite.watch?'watch':postWatch(p); }
   else if(a==='rpick'){ const q=ob.bite.ready[ob.ri]; ob.rsel=+b.dataset.k; if(q.o[ob.rsel]!==q.a) ob.rmiss++; render(); return; }
-  else if(a==='rnext'){ ob.rsel=null; ob.ri++; if(ob.ri>=ob.bite.ready.length){ ob.stage=(ob.rmiss>=2||(ob.rmiss>=1&&ob.bite.ready.length===1))&&ob.bite.bridge&&has(ob.bite.bridge)?'bridge':ob.bite.watch?'watch':'q'; } }
+  else if(a==='rnext'){ ob.rsel=null; ob.ri++; if(ob.ri>=ob.bite.ready.length){ ob.stage=(ob.rmiss>=2||(ob.rmiss>=1&&ob.bite.ready.length===1))&&ob.bite.bridge&&has(ob.bite.bridge)?'bridge':ob.bite.watch?'watch':postWatch(p); } }
   else if(a==='bridge'){ const br=ob.bite.bridge; OB.pendingRet={bridge:br,id:p.id,c:p.c}; return startMission(worldFor(br)||p.c,br,'skill'); }
-  else if(a==='skipbridge'){ ob.stage=ob.bite.watch?'watch':'q'; }
+  else if(a==='skipbridge'){ ob.stage=ob.bite.watch?'watch':postWatch(p); }
   else if(a==='wstep'){ ob.ws++; }
-  else if(a==='wnext'){ const steps=(ob.bite.watch&&ob.bite.watch.steps)||[]; if(ob.ws<steps.length-1){ ob.ws++; } else if(!ob.oopsDone&&ob.ws<steps.length){ ob.ws=steps.length; } else { ob.oopsDone=true; ob.stage='q'; } }
+  else if(a==='wnext'){ const steps=(ob.bite.watch&&ob.bite.watch.steps)||[]; if(ob.ws<steps.length-1){ ob.ws++; } else if(!ob.oopsDone&&ob.ws<steps.length){ ob.ws=steps.length; } else { ob.oopsDone=true; ob.stage=postWatch(p); } }
   else if(a==='rstep'){ ob.rk=(ob.rk||0)+1; render(); return; }
+  else if(a==='wiggled'){ ob.wiggled=true; ob.stage=ob.kitOn?startYour(p):'q'; }
+  else if(a==='knext'){ kitNext(p); }
   if(ob.stage==='q'){ A.overlay=null; }
   render(); if(a==='wstep'||(a==='wnext'&&ob.stage==='watch')){ const n=document.querySelector('.ob-steps li.new'); if(n&&n.scrollIntoView) n.scrollIntoView({block:'center',behavior:'auto'}); else scrollTo({top:0,behavior:'auto'}); } else scrollTo({top:0,behavior:'auto'}); autoSay(); },true);
 function has(id){ return !!((typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id])); }
 function worldFor(id){ const pre=String(id).split('.')[0], map=/^(LK|HEB)$/.test(pre)?'LK':/^(READ|WRIT|LANG)$/.test(pre)?'READ':/^(SS|SOC|FACT)$/.test(pre)?'SS':/^(COMP|VOC)$/.test(pre)?'COMP':pre;
   return typeof WORLD!=='undefined'?(WORLD[pre]?pre:WORLD[map]?map:''):''; }
 /* a new question resets the small-step rescue; the result screen is ours only for a bite that was played as a bite */
-const _nx=next; next=function(){ const p=P(); if(p) p.ob.rk=0; return _nx.apply(this,arguments); }; window.next=next;
+const _nx=next; next=function(){ const p=P(); if(p){ p.ob.rk=0; try{ skipAhead(p); }catch(e){} } return _nx.apply(this,arguments); }; window.next=next;
+/* no kit: after 3 right in a row (first try) in practice, the rest of practice is skipped and Show me comes next */
+function skipAhead(p){ if(p.ob.kitOn) return; const it=p.items[p.i]; if(!it||it.phase!=='practice') return; let run=0;
+  for(let k=p.i;k>=0;k--){ const x=p.items[k], r=p.results[k]; if(!x||x.phase!=='practice') break; if(r&&r.ok&&r.first) run++; else break; }
+  if(run>=3) p.items=p.items.filter((x,k)=>k<=p.i||x.phase!=='practice'); }
 const _fin=finish; finish=function(){ const p=P(); if(p&&OB.res&&OB.res.id===p.id) OB.res.live=true; else if(OB.res) OB.res.live=false; return _fin.apply(this,arguments); }; window.finish=finish;
-document.addEventListener('keydown',e=>{ const p=P(); if(!p||p.ob.stage==='q') return; if(e.key==='Enter'||e.key===' '){ const g=document.querySelector('.ob-foot .ob-go'); if(g){ e.preventDefault(); g.click(); } } });
+document.addEventListener('keydown',e=>{ const p=P(); if(!p||p.ob.stage==='q') return; if(e.key==='Enter'||e.key===' '){ const g=document.querySelector('.ob-foot .ob-go'); if(g&&!g.disabled){ e.preventDefault(); g.click(); } } });
+
+
+/* ---------- round 2: the Activity Kit in steps 3 and 4 ---------- */
+function kitSetup(p){ const ob=p.ob, b=ob.bite, K=window.OBK; ob.kitDo=[]; ob.kitYour=[]; ob.krec=[];
+  if(K&&(isA(b.do)||isA(b.your))){ const ok=d=>{ const e=K.err(d,b.band); if(e) console.warn('OneBite: skipped an activity in '+p.id+': '+e); return !e; };
+    ob.kitDo=(b.do||[]).filter(ok).slice(0,3); const last=ob.kitDo.length?ob.kitDo[ob.kitDo.length-1].type:'';
+    ob.kitYour=noTwice((b.your||[]).filter(ok),last).slice(0,Math.max(3,8-ob.kitDo.length)); }
+  ob.kitOn=!!(ob.kitDo.length||ob.kitYour.length);
+  if(!ob.kitOn) capItems(p); }
+function isA(x){ return Array.isArray(x)&&x.length>0; }
+/* the same activity never twice in a row (when the list allows it) */
+function noTwice(list,last){ const rest=list.slice(), out=[]; while(rest.length){ let k=rest.findIndex(d=>d.type!==last); if(k<0) k=0; const d=rest.splice(k,1)[0]; out.push(d); last=d.type; } return out; }
+OB.kitOrder=id=>{ const b=window.ONE_BITE[id]||{}, p={id,ob:{bite:Object.assign({band:band(id)},b)},items:[]}; kitSetup(p); return p.ob.kitDo.concat(p.ob.kitYour); };
+/* no kit: the lesson's own questions, at most 2 guided + 5 practice (warm-ups and checks unchanged) */
+function capItems(p){ let t=0, pr=0; p.items=p.items.filter(x=>x.phase==='teach'?(++t<=2):x.phase==='practice'?(++pr<=5):true); }
+function hasSong(b){ try{ return b.sing||/"type":"(chant|move)"/.test(JSON.stringify([b.watch,b.ready,b.do,b.your])); }catch(e){ return false; } }
+function needWiggle(ob){ return ob.bite.band==='K1'&&!ob.wiggled&&!hasSong(ob.bite); }
+function postWatch(p){ const ob=p.ob; if(ob.kitOn){ if(ob.kitDo.length) return startKit(p,'do'); return needWiggle(ob)?'wiggle':startYour(p); } return needWiggle(ob)?'wiggle':'q'; }
+function startKit(p,list){ const ob=p.ob, acts=list==='do'?ob.kitDo:ob.kitYour; ob.kit={list,acts,i:0,streak:0,n:0,s:null}; ob.kit.s=OBK.init(acts[0],kctx(p)); return list; }
+function startYour(p){ const ob=p.ob; if(!ob.kitYour.length){ toChecks(p); return 'q'; } return startKit(p,'your'); }
+function kctx(p){ const ob=p.ob, k=ob.kit; return {guided:!!k&&k.list==='do', band:ob.bite.band, k1:ob.bite.band==='K1', hint:!!(k&&k.s&&k.s.misses>=2)}; }
+function toChecks(p){ const ob=p.ob; const checks=p.items.filter(x=>x.phase==='check'); p.items=ob.krec.concat(checks); p.i=ob.krec.length;
+  p.fb=null; p.sel=null; p.tried=[]; p.order=[]; p.tries=0; p.cool=0; p.shownAt=Date.now(); ob.stage='q'; ob.kit=null; A.overlay=null; }
+const CHEER={K1:['Yes! You did it!','Great job!','You got it!','Wow, yes!'],B23:['Yes!','You got it!','Nice work!'],E45:['Right!','Exactly.','Solid.'],M68:['Correct.','Exactly.','Well done.']};
+function kitTap(a,k,drop){ const p=P(); if(!p||!p.ob.kit||!/^(do|your)$/.test(p.ob.stage)||!window.OBK) return; const ob=p.ob, kit=ob.kit, d=kit.acts[kit.i], s=kit.s;
+  if(a==='hear') return OBK.hear(d);
+  if(a==='help'){ s.help=true; return render(); }
+  if(a==='why'){ if(s.phase!=='why') return; const j=+k; if(String(d.why.o[j])===String(d.why.a)){ s.phase=''; s.whyOk=true; return actDone(p,true); }
+    s.whyOff=Object.assign({},s.whyOff,{[j]:1}); s.msg='Not that reason. Think about what you did.'; return render(); }
+  if(s.over||s.phase==='why') return;
+  if(a==='check'){ if(!OBK.ready(d,s)) return; const r=OBK.judge(d,s)||{}; if(r.ok) return actOk(p); if(r.soft){ s.msg=r.msg||''; return render(); } return actMiss(p,r.msg,true); }
+  s.msg=''; const r=OBK.tap(d,s,a,k,drop,kctx(p));
+  if(r==='ok') return actOk(p); if(r==='miss'||r==='bump') return actMiss(p,s.msg,false);
+  render(); }
+function actOk(p){ const kit=p.ob.kit, d=kit.acts[kit.i], s=kit.s; s.msg=''; try{ if(typeof SND!=='undefined') SND.right(1); }catch(e){}
+  if(d.why&&!s.whyOk){ s.phase='why'; render(); return; } actDone(p,true); }
+function actMiss(p,msg,checkKind){ const kit=p.ob.kit, d=kit.acts[kit.i], s=kit.s; s.misses++; p.misses++; s.msg=msg||OBK.how(d); s.shake=true;
+  if(checkKind&&s.misses>=2){ OBK.solve(d,s); s.msg='Here is how it looks. You will get the next one!'; return actDone(p,false); }
+  render(); s.shake=false; }
+function actDone(p,ok){ const ob=p.ob, kit=ob.kit, d=kit.acts[kit.i], s=kit.s; s.over=true; s.ok=ok;
+  const it={phase:kit.list==='do'?'teach':'practice', t:'kit', kit:d.type, q:String(OBK.label(d)), how:OBK.how(d), skill:p.id}, at=ob.krec.length; ob.krec.push(it);
+  const first=!!ok&&s.misses===0; p.results[at]={ok:!!ok, first, tries:s.misses+1, phase:it.phase, skill:p.id, q:it.q.slice(0,80)};
+  kit.n++; if(kit.list==='your') kit.streak=first?kit.streak+1:0;
+  const L=CHEER[ob.bite.band]||CHEER.B23; s.cheer=ok?L[(at+kit.n)%L.length]:''; render(); if(ok&&ob.bite.band==='K1') say(s.cheer); }
+function kitNext(p){ const ob=p.ob, kit=ob.kit; if(!kit||!kit.s||!kit.s.over) return;
+  if(kit.list==='do'){ if(kit.i+1<kit.acts.length){ kit.i++; kit.s=OBK.init(kit.acts[kit.i],kctx(p)); return; } ob.stage=needWiggle(ob)?'wiggle':startYour(p); return; }
+  if(kit.streak>=3||kit.i+1>=kit.acts.length){ toChecks(p); return; }
+  kit.i++; kit.s=OBK.init(kit.acts[kit.i],kctx(p)); }
+function kitSay(d){ return String(d.q?d.q+'. ':'')+OBK.say(d); }
+function vKit(p){ OBK.css(); const ob=p.ob, kit=ob.kit, d=kit.acts[kit.i], s=kit.s, c=kctx(p), guided=c.guided, dot=guided?2:3;
+  const tag=guided?'🤝 DO IT WITH ME · '+(kit.i+1)+' of '+kit.acts.length:'✋ YOUR TURN';
+  const stars=guided?'':'<span class="obk-streak" aria-label="'+kit.streak+' right in a row. 3 in a row and you are ready.">'+[0,1,2].map(k=>k<kit.streak?'⭐':'☆').join('')+'</span>';
+  const words=OBK.say(d).split(/\s+/).map(w=>'<span>'+E(w)+'</span>').join(' ');
+  const showHow=guided||s.help||s.misses>0||s.over;
+  const how=showHow?'<div class="obk-how"><b>HOW TO DO IT</b><p>'+E(OBK.how(d))+'</p></div>':'<button class="ob-peek" data-obk="help">👀 Need help?</button>';
+  let fb='';
+  if(s.phase==='why') fb='<div class="obk-why"><p class="ob-good">'+E(s.cheer||'Right!')+'</p><h3 class="ob-q">'+E(d.why.q||'Why?')+'</h3><div class="ob-opts">'+
+    d.why.o.map((o,j)=>'<button class="ob-opt'+(s.whyOff&&s.whyOff[j]?' miss':'')+'" data-obk="why" data-k="'+j+'"'+(s.whyOff&&s.whyOff[j]?' disabled':'')+'>'+E(o)+'</button>').join('')+'</div>'+(s.msg?'<p class="ob-soft">'+E(s.msg)+'</p>':'')+'</div>';
+  else if(s.over) fb=s.ok?'<p class="ob-good obk-msg" role="status">✓ '+E(s.cheer||'Yes!')+'</p>':'<p class="ob-soft obk-msg" role="status">'+E(s.msg)+'</p>';
+  else if(s.msg) fb='<p class="ob-soft obk-msg" role="status">'+E(s.msg)+'</p>';
+  const inner='<div class="obk-top"><div class="ob-tag">'+tag+'</div>'+stars+'</div>'+(d.pic&&d.type!=='count'?'<div class="ob-bigpic sm" aria-hidden="true">'+OBK.pic(d.pic)+'</div>':'')+
+    (d.q?'<div class="obk-q">'+E(d.q)+'</div>':'')+'<h2 class="ob-q obk-say">'+words+'</h2>'+how+
+    '<div class="obk obk-'+E(d.type)+(s.shake?' obk-shake':'')+(s.phase==='why'?' obk-dim':'')+'">'+OBK.view(d,s,c)+'</div>'+fb;
+  let btn='';
+  if(s.over){ const lastDo=guided&&kit.i+1>=kit.acts.length, endYour=!guided&&(kit.streak>=3||kit.i+1>=kit.acts.length);
+    btn='<button class="ob-go" data-ob="knext">'+(lastDo?'Your turn ▶':endYour?(kit.streak>=3?'3 in a row! Show me ▶':'Show me ▶'):'Next ▶')+'</button>'; }
+  else if(OBK.isCheck(d)&&s.phase!=='why') btn='<button class="ob-go" data-obk="check"'+(OBK.ready(d,s)?'':' disabled')+'>Check ✓</button>';
+  return shell(dot,inner,btn,kitSay(d)); }
+function vWiggle(p){ const M=['Stand up! Reach up high. Touch your toes. Sit down.','Clap 5 times: 1, 2, 3, 4, 5!','Wiggle your fingers. Shake your hands. Ready!','Hop 3 times in place. Now sit and get ready.'];
+  let h=0; String(p.id).split('').forEach(ch=>{ h=(h*31+ch.charCodeAt(0))%997; }); const t=M[h%M.length];
+  const inner='<div class="ob-tag">🧍 WIGGLE BREAK</div><div class="ob-bigpic" aria-hidden="true">🤸</div>'+model({type:'move',t})+'<p class="ob-why">Your body is ready. Now your turn!</p>';
+  return shell(3,inner,'<button class="ob-go" data-ob="wiggled">I did it! ▶</button>','Wiggle break! '+t); }
+OB.kitTap=kitTap;
+if(window.OBK) OBK.onDrop((src,dst)=>kitTap(src.a,src.k,dst));
 
 /* ---------- look ---------- */
 function css(){ if(document.getElementById('ob-css')) return; const s=document.createElement('style'); s.id='ob-css'; s.textContent=`
@@ -298,6 +393,16 @@ body.ob-on .play.ob-play .opt, body.ob-on .play.ob-play .tile{ min-height:52px; 
 body.ob-dys .ob, body.ob-dys .play.ob-play{ font-family:Verdana,Tahoma,'Trebuchet MS',sans-serif !important; letter-spacing:.06em; word-spacing:.16em; line-height:1.7; }
 body.ob-dys .ob-today, body.ob-dys .ob-q, body.ob-dys .play.ob-play .qtext{ font-weight:700; }
 @media (min-width:900px){ .ob-main{ padding-top:36px; } }
+.obk-top{ display:flex; justify-content:space-between; align-items:center; gap:8px; } .obk-streak{ font-size:24px; letter-spacing:2px; }
+.obk-q{ font-size:calc(var(--fs) * 1.7); font-weight:900; text-align:center; letter-spacing:.03em; }
+.obk-say span{ border-radius:6px; transition:background .15s; } .obk-say span.on{ background:#FFE7A8; }
+.ob-K1 .obk-say{ font-size:calc(var(--fs) * 1.05); }
+.ob-go:disabled{ opacity:.45; box-shadow:none; cursor:default; }
+.obk-dim{ opacity:.45; pointer-events:none; } .obk-why{ display:flex; flex-direction:column; gap:10px; }
+.ob-party{ position:fixed; inset:0; pointer-events:none; overflow:hidden; z-index:4; } .ob-party i{ position:absolute; bottom:-60px; left:calc(6% + var(--i) * 12%); font-size:42px; font-style:normal; animation:obUp 2.6s ease-out calc(var(--i) * .12s) 1 both; }
+@keyframes obUp{ 0%{ transform:translateY(0) rotate(0); opacity:0; } 15%{ opacity:1; } 100%{ transform:translateY(-105vh) rotate(40deg); opacity:0; } }
+.ob-burst.big{ font-size:140px; animation:obPop .6s ease; } @keyframes obPop{ 0%{ transform:scale(.4); } 70%{ transform:scale(1.15); } 100%{ transform:scale(1); } }
+@media (prefers-reduced-motion: reduce){ .ob-party{ display:none; } .ob-burst.big{ animation:none; } }
 `; document.head.appendChild(s); }
 })();
 </script>

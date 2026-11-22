@@ -25,6 +25,7 @@ var PF_LC = {
   MIN: 3,           /* a level with fewer usable questions has no check (and so is never cut) */
   MIN_SKILLS: 2,
   MINUTES: 3,
+  FROM_LEVEL: 3,     /* HoS DECISION 2026-11-22: no level check for Levels 1-2 (K-1): its reading-only questions are not right for that age. No check = never cut */
   COLS: ['at', 'student_id', 'subject', 'level', 'check_id', 'items_json', 'values_json', 'marks_json', 'right', 'of', 'known_json', 'by']
 };
 function pfLcTab_() { if (!PF.TABS.passes) PF.TABS.passes = PF_LC.COLS; return pfTab_('passes'); }
@@ -71,7 +72,7 @@ function pfLcPick_(subj, lvl, seen, appr, salt) {
 /* Is there a level check at this subject level? (static: the bank and the built lessons; never his own answers) */
 var PF_LC_AV_ = {};
 function pfLcAvail_(subj, lvl, appr) {
-  if (!PF_LC.ON || PF_LC.SUBJ.indexOf(subj) < 0 || !(lvl >= 1 && lvl <= 9)) return false;
+  if (!PF_LC.ON || PF_LC.SUBJ.indexOf(subj) < 0 || !(lvl >= PF_LC.FROM_LEVEL && lvl <= 9)) return false;
   var key = subj + '|' + lvl + '|' + appr; if (key in PF_LC_AV_) return PF_LC_AV_[key];
   var ids = pfLcPick_(subj, lvl, {}, appr, 'avail'), sk = {}, story = ''; ids.forEach(function (id) { var it = pfIx_().byId[id]; sk[it.skill] = 1; if (it.passage) story = it.passage; });
   var words = story && PF_BANK.passages[story] ? String(PF_BANK.passages[story].text || '').split(/\s+/).length : 0;
