@@ -472,5 +472,205 @@ K('MATH.GEO.L02.02',[
   {type:'listen', hear:'quarters', o:['▮|▮|▮|▮','▮▮|▮▮','▮▮▮|▮'], a:'▮|▮|▮|▮', say:'Listen. Tap the bar cut into the parts you hear.', how:'Quarters are 4 equal parts.'},
   {type:'count', n:4, pic:'🥧', o:['2','3','4'], say:'How many quarters make a whole pie?', how:'Count the 4 equal parts.'},
   {type:'sort', bins:['Halves','Not halves'], cards:[['▮▮|▮▮',0],['▮▮▮|▮',1],['▮|▮',0],['▮|▮▮▮',1]], say:'Fair halves or not? Sort them.', how:'Two pieces are not halves unless they are equal.'}]);
+
+/* ---- ROUND 2, LANE B, batch 3 (2026-11-22): Grade 2 (L03), band B23. Same rules as above; 3 or 4 choices.
+   W(id, steps) adds Watch Me steps: a chant or move where the bite had none, and a short step where a check asks something Watch Me did not show. */
+function W(id){ var b=B[id]; if(!b||!b.watch||!b.watch.steps){ return; } for(var i=1;i<arguments.length;i++){ b.watch.steps.push(arguments[i]); } }
+W('MATH.OPS.L03.01',{t:'Chant it: Tens with tens, ones with ones!', m:{type:'chant',lines:['Tens with tens,','ones with ones!']}});
+K('MATH.OPS.L03.01',[
+  {type:'blocks', n:83, q:'38 + 45', say:'38 + 45 is 83. Build 83 with tens and ones.', how:'Tens: 30 + 40 = 70. Ones: 8 + 5 = 13. 70 + 13 = 83.'},
+  {type:'hop', start:83, add:-20, unit:10, from:0, to:100, q:'83 − 25: first − 20', say:'83 − 25. First hop back 2 tens.', how:'Take away the tens first: 83 − 20 = 63. Then the ones.'}],[
+  {type:'tiles', w:['5','8'], extra:['6','3'], q:'63 − 5 = ?', say:'Now take away the 5 ones. Build the answer.', how:'63 − 3 = 60. 2 more back is 58. So 83 − 25 = 58.'},
+  {type:'hop', start:66, add:-20, unit:10, from:0, to:100, q:'66 − 28: first − 20', say:'66 − 28. Hop back 2 tens first.', how:'66 − 20 = 46. Then take away 8 more: 38.'},
+  {type:'match', pairs:[['47 + 28','75'],['56 + 36','92'],['48 − 35','13']], say:'Tens first, then ones. Match each answer.', how:'47 + 28: 40 + 20 = 60. 7 + 8 = 15. 60 + 15 = 75.'},
+  {type:'blocks', n:92, q:'56 + 36', say:'56 + 36. Build the answer.', how:'50 + 30 = 80. 6 + 6 = 12. 80 + 12 = 92.'},
+  {type:'tiles', w:['1','3'], extra:['2','7'], q:'48 − 35 = ?', say:'48 − 35. Tens, then ones. Build it.', how:'48 − 30 = 18. 18 − 5 = 13. Check: 13 + 35 = 48.'}]);
+
+W('MATH.PV.L03.01',{t:'Chant it: Hundreds first, then tens, then ones!', m:{type:'chant',lines:['Hundreds first,','then the tens,','then the ones!']}});
+K('MATH.PV.L03.01',[
+  {type:'tiles', w:['4','8','2'], extra:['0'], q:'4 hundreds, 8 tens, 2 ones', say:'4 hundreds, 8 tens, 2 ones. Build the number.', how:'Hundreds first, then tens, then ones: 482.'},
+  {type:'sort', bins:['>','<','='], cards:[['482 ☐ 428',0],['319 ☐ 391',1],['650 ☐ 650',2]], say:'Which sign goes in the box? Sort them.', how:'Hundreds first. If they tie, look at the tens. The open side faces the bigger number.'}],[
+  {type:'listen', hear:'1 hundred, 1 ten, 2 ones', o:['112','121','211'], a:'112', say:'Listen. Tap the number you hear.', how:'Write one digit for each place: hundreds, tens, ones.'},
+  {type:'findall', grid:['442','424','244','402','427','412'], find:['442','402','412'], findSay:'number with 2 ones', say:'Tap every number with 2 in the ones place.', how:'The ones place is the last digit, on the right.'},
+  {type:'tiles', w:['3','1','3'], extra:['0','4'], q:'3 hundreds, 1 ten, 3 ones', say:'3 hundreds, 1 ten, 3 ones. Build it.', how:'One digit for each place: 3, 1, 3. That is 313.'},
+  {type:'sort', bins:['>','<'], cards:[['706 ☐ 760',1],['851 ☐ 815',0],['299 ☐ 300',1],['540 ☐ 504',0]], say:'Which sign? Sort them.', how:'Hundreds tie? Compare the tens. The open side faces the bigger number.'},
+  {type:'tiles', w:['298','389','398'], extra:['900'], say:'Line them up from smallest to biggest.', how:'Hundreds first: 2, then 3. Tie? Look at the tens.'}]);
+
+W('MATH.OPS.L03.02',
+  {t:'Subtract: 417 − 180. 1 ten take away 8 tens? Too small!', m:{type:'blocks',tens:1,ones:7}},
+  'Borrow 1 hundred: 11 tens − 8 tens = 3 tens. 417 − 180 = 237.',
+  {t:'Chant it: Ten ones? Trade for a ten! Too few? Borrow!', m:{type:'chant',lines:['Ten ones? Trade for a ten!','Too few on top? Borrow, my friend!']}});
+K('MATH.OPS.L03.02',[
+  {type:'blocks', n:12, q:'8 + 4 ones', say:'8 + 4 ones. Build 12: trade 10 ones for a ten.', how:'10 ones make 1 ten. 2 ones are left: 1 ten, 2 ones.'},
+  {type:'tiles', w:['6','2','2'], extra:['1','3'], q:'368 + 254 = ?', say:'Ones, then tens, then hundreds. Build the answer.', how:'8 + 4 = 12: write 2, carry 1. 6 + 5 + 1 = 12: write 2, carry 1. 3 + 2 + 1 = 6.'}],[
+  {type:'match', pairs:[['926 − 304','622'],['615 − 111','504'],['417 − 180','237']], say:'Subtract column by column. Match each answer.', how:'Ones first, then tens, then hundreds. Too small on top? Borrow.'},
+  {type:'hop', start:417, add:-100, unit:100, from:0, to:1000, q:'417 − 180: first − 100', say:'417 − 180. Hop back 100 first.', how:'417 − 100 = 317. Then take away 80 more.'},
+  {type:'tiles', w:['2','3','7'], extra:['1','4'], q:'317 − 80 = ?', say:'317 − 80. Borrow a hundred for the tens.', how:'1 ten − 8 tens? Borrow: 11 tens − 8 tens = 3 tens. 237.'},
+  {type:'blocks', n:45, q:'27 + 18', say:'27 + 18. Trade 10 ones for a ten.', how:'7 + 8 = 15 ones. Trade 10 for a ten: 4 tens, 5 ones.'},
+  {type:'sort', bins:['Trade','No trade'], cards:[['8 + 5',0],['1 + 3',1],['6 + 7',0],['2 + 5',1]], q:'Add the ones', say:'Do the ones make 10 or more? Sort them.', how:'10 or more ones? Trade 10 ones for a ten.'}]);
+
+W('MATH.MEAS.L03.04',
+  'Quarter 25¢, dime 10¢, nickel 5¢, penny 1¢.',
+  {t:'Change: pay $1 for a 20¢ eraser. Count up from 20 to 100: 80¢.', m:{type:'line',from:0,to:100,hops:[20,30,40,50,60,70,80,90,100]}},
+  {t:'Chant it: Quarter 25, dime is 10, nickel 5, a penny 1!', m:{type:'chant',lines:['Quarter 25, dime is 10,','nickel 5, a penny 1!']}});
+K('MATH.MEAS.L03.04',[
+  {type:'match', pairs:[['quarter','25¢'],['dime','10¢'],['nickel','5¢'],['penny','1¢']], say:'Match each coin to what it is worth.', how:'Quarter 25¢, dime 10¢, nickel 5¢, penny 1¢.'},
+  {type:'hop', start:0, add:75, unit:25, from:0, to:100, q:'3 quarters', say:'Count 3 quarters. Hop by 25s.', how:'25, 50, 75. 3 quarters is 75¢.'}],[
+  {type:'tiles', w:['1','0','5'], extra:['2','9'], q:'3 quarters, 2 dimes, 2 nickels', say:'75, then 2 dimes, then 2 nickels. How many cents?', how:'75 + 10 + 10 = 95. 95 + 5 + 5 = 105¢.'},
+  {type:'hop', start:20, add:80, unit:10, from:0, to:100, q:'Costs 20¢. You pay $1.', say:'Count up from 20¢ to 100¢. That is the change.', how:'Hop by 10s from 20 to 100: 8 hops is 80¢.'},
+  {type:'count', n:4, pic:'🪙', q:'How many quarters make $1?', o:['3','4','5'], say:'Tap each quarter. How many make $1?', how:'25, 50, 75, 100. 4 quarters make $1.'},
+  {type:'match', pairs:[['2 quarters','50¢'],['4 dimes','40¢'],['3 nickels','15¢']], say:'Match each group of coins to its total.', how:'Count by the coin: dimes by 10s, nickels by 5s.'},
+  {type:'hop', start:60, add:40, unit:10, from:0, to:100, q:'Costs 60¢. You pay $1.', say:'Count up from 60¢ to 100¢ for the change.', how:'60, 70, 80, 90, 100: 4 hops is 40¢.'}]);
+
+W('MATH.GEO.L03.01',
+  {t:'A square has 4 equal sides and 4 square corners.', m:{type:'emoji',e:'🟦',n:1}},
+  {t:'Draw a square in the air: 1, 2, 3, 4 sides!', m:{type:'move',t:'Draw a square in the air: 1, 2, 3, 4 sides!'}});
+K('MATH.GEO.L03.01',[
+  {type:'sort', bins:['3 sides','4 sides','5 or 6'], cards:[['🔺',0],['🟦',1],['⬠',2],['▬',1],['⬡',2],['◢',0]], say:'Count the sides. Sort each shape.', how:'Count each straight side. Triangle 3, square 4, pentagon 5, hexagon 6.'},
+  {type:'match', pairs:[['3 sides','triangle'],['5 sides','pentagon'],['6 sides','hexagon']], say:'Match the number of sides to the shape name.', how:'Tri means 3. Penta means 5. Hexa means 6.'}],[
+  {type:'listen', hear:'a square: 4 equal sides and 4 square corners', o:['🟦','▬','🔺'], a:'🟦', say:'Listen. Tap the shape you hear.', how:'A square has 4 equal sides. A long rectangle does not.'},
+  {type:'count', n:10, pic:'🟨', q:'2 rows of 5 squares', o:['8','10','12'], say:'Tap each square. How many in 2 rows of 5?', how:'Count row by row: 5, 10.'},
+  {type:'findall', grid:['🔺','🟦','⬠','🔺','⬡','◢','🟦','⬠'], find:['🔺','◢'], findSay:'triangle', say:'Tap every triangle.', how:'A triangle has 3 sides. Count them.'},
+  {type:'sort', bins:['Square','Not a square'], cards:[['🟦',0],['▬',1],['🟩',0],['🔺',1]], say:'Square or not? Sort them.', how:'4 equal sides and 4 square corners: a square.'},
+  {type:'hop', start:0, add:6, unit:2, from:0, to:10, q:'3 rows, 2 columns', say:'3 rows of 2 squares. Hop by 2s.', how:'Rows go across. Each row has 2 squares: 2, 4, 6.'}]);
+
+W('MATH.MEAS.L03.01',
+  '1 inch is about 2 and a half centimeters. So 1 inch is longer.',
+  'Small things, like a paper clip: measure in centimeters.',
+  {t:'Show 1 cm with two fingers. Now show 1 inch: bigger!', m:{type:'move',t:'Show 1 cm with two fingers. Now show 1 inch: a bit bigger!'}});
+K('MATH.MEAS.L03.01',[
+  {type:'hop', start:0, add:6, unit:1, from:0, to:10, q:'A pencil from 0 to ?', say:'Start at 0. Hop along the pencil: 6 hops.', how:'Line up the end with 0. Count the spaces: 6 inches.'},
+  {type:'listen', hear:'Which is longer: 1 inch or 1 centimeter?', o:['1 inch','1 centimeter'], a:'1 inch', say:'Listen. Tap the longer one.', how:'1 inch is about 2 and a half centimeters.'}],[
+  {type:'sort', bins:['cm','miles'], cards:[['📎',0],['🖍️',0],['🛣️',1],['🐜',0],['✈️',1]], say:'Small thing: cm. Long trip: miles. Sort them.', how:'Short things are measured in centimeters. Long roads in miles.'},
+  {type:'hop', start:2, add:5, unit:1, from:0, to:10, q:'Starts at 2, ends at 7', say:'Not at 0? Count the hops from 2 to 7.', how:'Count the spaces, not the last number: 5.'},
+  {type:'match', pairs:[['📎','3 cm'],['📏','12 inches'],['🚗 to Bubby','90 miles']], say:'Match each thing to a good length.', how:'Small: cm. Medium: inches. Very far: miles.'},
+  {type:'count', n:5, pic:'📎', q:'How many clips long is the sefer?', o:['4','5','6'], say:'The sefer is this many clips long. Count them.', how:'Touch each clip once. No gaps, no overlaps.'},
+  {type:'hop', start:0, add:1, unit:1, from:0, to:5, q:'The arrow is at ?', say:'The arrow is 1 space from 0. Hop there.', how:'From 0 to the arrow is 1 space: 1 inch.'}]);
+
+W('MATH.MEAS.L03.02',
+  'Cut off 20 inches from 70 inches? Subtract: 70 − 20 = 50.',
+  {t:'Stretch your arms long, then short. How much longer?', m:{type:'move',t:'Stretch your arms long, then short. How much longer?'}});
+K('MATH.MEAS.L03.02',[
+  {type:'hop', start:9, add:6, unit:1, from:5, to:20, q:'Rope 15, string 9', say:'Count up from 9 to 15. How many hops?', how:'9 to 15 is 6 hops. The rope is 6 inches longer.'},
+  {type:'sort', bins:['Subtract','Add'], cards:[['longer?',0],['join',1],['cut off',0],['tie on',1]], say:'Subtract or add? Sort the words.', how:'How much longer, or cut off: subtract. Join: add.'}],[
+  {type:'hop', start:70, add:-20, unit:10, from:0, to:100, q:'70 inches. Cut off 20.', say:'70 inches. Cut off 20. Hop back 2 tens.', how:'70 − 20 = 50 inches.'},
+  {type:'match', pairs:[['63 cm − 34 cm','29 cm'],['71 in − 53 in','18 in'],['45 cm − 28 cm','17 cm']], say:'How much longer? Match each answer.', how:'Subtract the shorter from the longer. Keep the unit.'},
+  {type:'tiles', w:['2','9'], extra:['3','1'], q:'63 cm − 34 cm', say:'One rope is 63 cm, one is 34. Difference?', how:'Count up: 34 + 6 = 40. 40 + 23 = 63. 6 + 23 = 29.'},
+  {type:'blocks', n:18, q:'71 in − 53 in', say:'Build the difference: 71 − 53.', how:'53 + 7 = 60. 60 + 11 = 71. 7 + 11 = 18.'},
+  {type:'listen', hear:'A string is 12 inches. Another is 8 inches. How much longer?', o:['4 in','20 in','8 in'], a:'4 in', say:'Listen to the story. Tap the answer.', how:'How much longer means subtract: 12 − 8 = 4.'}]);
+
+W('MATH.MEAS.L03.03',
+  'Long hand on 9? 5, 10, 15 … 45. It is 45 minutes past.',
+  {t:'Chant it: 5, 10, 15, 20, the long hand counts by 5s!', m:{type:'chant',lines:['5, 10, 15, 20,','the long hand counts by 5s!']}});
+K('MATH.MEAS.L03.03',[
+  {type:'hop', start:0, add:15, unit:5, from:0, to:60, q:'Long hand on 3', say:'Count by 5s to the 3. Hop 3 times.', how:'Each number is 5 minutes: 5, 10, 15.'},
+  {type:'match', pairs:[['on the 1','5 min'],['on the 3','15 min'],['on the 6','30 min']], say:'Where is the long hand? Match the minutes.', how:'Count by 5s up to the number.'}],[
+  {type:'hop', start:0, add:45, unit:5, from:0, to:60, q:'Long hand on 9', say:'Long hand on 9. Count by 5s.', how:'5, 10, 15 … 45. On the 9 is 45 minutes.'},
+  {type:'listen', hear:'Short hand just past 12. Long hand on 9.', o:['12:45','9:00','1:45'], a:'12:45', say:'Listen. Tap the time.', how:'Short hand: the hour it just passed, 12. Long hand on 9: 45.'},
+  {type:'tiles', w:['2','5'], extra:['3','0'], q:'Long hand on 5', say:'Long hand on 5. How many minutes?', how:'5, 10, 15, 20, 25.'},
+  {type:'sort', bins:['a.m.','p.m.'], cards:[['🌅',0],['🍳',0],['🌙',1],['🕯️',1]], say:'Morning or evening? Sort them.', how:'a.m. is morning. p.m. is afternoon and evening.'},
+  {type:'match', pairs:[['on the 4','20 min'],['on the 9','45 min'],['on the 11','55 min']], say:'Long hand on each number. Match the minutes.', how:'Count by 5s up to the number.'}]);
+
+W('MATH.NUM.L03.01',{t:'Chant it: 2, 4, 6, 8, even numbers pair up great!', m:{type:'chant',lines:['2, 4, 6, 8,','even numbers pair up great!']}});
+K('MATH.NUM.L03.01',[
+  {type:'tenframe', n:9, say:'Make 9. Look: is one dot alone?', how:'Each column is a pair. 9 has one dot left alone: odd.'},
+  {type:'sort', bins:['Even','Odd'], cards:[['8',0],['7',1],['12',0],['13',1]], say:'Even or odd? Sort the numbers.', how:'Pairs with none left over: even. One left over: odd.'}],[
+  {type:'findall', grid:['14','23','36','45','58','61','70','89'], find:['14','36','58','70'], findSay:'even number', say:'Tap every even number.', how:'Look at the last digit: 0, 2, 4, 6, 8 are even.'},
+  {type:'tenframe', n:12, say:'Make 12. Does every dot have a partner?', how:'12 makes 6 pairs, none left over: even.'},
+  {type:'sort', bins:['Even','Odd'], cards:[['46',0],['21',1],['30',0],['57',1],['64',0]], say:'Look at the ones digit. Even or odd?', how:'Ones digit 0, 2, 4, 6, 8: even. 1, 3, 5, 7, 9: odd.'},
+  {type:'hop', start:0, add:12, unit:2, from:0, to:20, q:'Even numbers', say:'Hop by 2s. Every landing is even.', how:'2, 4, 6, 8, 10, 12. Count by 2s.'},
+  {type:'listen', hear:'Is 13 odd or even?', o:['Odd','Even'], a:'Odd', say:'Listen. Tap odd or even.', how:'13 ends in 3. 3 is odd.'}]);
+
+K('MATH.NUM.L03.02',[
+  {type:'hop', start:30, add:15, unit:5, from:0, to:50, q:'30, 35, 40, ?', say:'Start at 30. Hop by 5s 3 times.', how:'30, 35, 40, 45. The ones go 0, 5, 0, 5.'},
+  {type:'tiles', w:['5','10','15','20'], extra:['25'], say:'Count by 5s. Put the tiles in order.', how:'Add 5 each time: 5, 10, 15, 20.'}],[
+  {type:'hop', start:40, add:15, unit:5, from:0, to:60, q:'40, 45, 50, ?', say:'40, 45, 50, then what? Hop by 5s.', how:'Start at 40. Hop 3 times: 45, 50, 55.'},
+  {type:'findall', grid:['15','22','30','35','41','50','53','60'], find:['15','30','35','50','60'], findSay:'number you say by 5s', say:'Tap every number you say counting by 5s.', how:'By 5s, the ones digit is 5 or 0.'},
+  {type:'tiles', w:['300','400','500','600'], extra:['350'], say:'Count by 100s. Put them in order.', how:'Only the hundreds go up: 3, 4, 5, 6.'},
+  {type:'hop', start:30, add:40, unit:10, from:0, to:100, q:'Count by 10s from 30', say:'Start at 30. Hop by 10s 4 times.', how:'30, 40, 50, 60, 70. The tens go up.'},
+  {type:'match', pairs:[['5, 10, 15','20'],['70, 80, 90','100'],['200, 300, 400','500']], say:'What comes next? Match them.', how:'Find the jump: 5, 10 or 100. Add it once more.'}]);
+
+W('MATH.OPS.L03.03',{t:'Chant it: Make a ten, or use a double!', m:{type:'chant',lines:['Make a ten, or use a double,','facts come fast without trouble!']}});
+K('MATH.OPS.L03.03',[
+  {type:'tenframe', n:14, start:8, say:'8 + 6. Fill the ten, then the rest.', how:'8 needs 2 to make 10. 4 are left: 14.'},
+  {type:'match', pairs:[['12 − 4','8'],['15 − 6','9'],['13 − 6','7']], say:'Think addition to subtract. Match them.', how:'12 − 4: what plus 4 makes 12? 8 + 4 = 12, so 8.'}],[
+  {type:'hop', start:12, add:-4, unit:1, from:5, to:15, q:'12 − 4', say:'12 − 4. Hop back 4.', how:'12, 11, 10, 9, 8. Or think 4 + 8 = 12.'},
+  {type:'match', pairs:[['2 + 2','4'],['6 + 6','12'],['7 + 7','14'],['4 + 2','6']], say:'Say each fact fast. Match the answers.', how:'Doubles are easy: 6 + 6 = 12. 4 + 2 is 2 + 2, plus 2.'},
+  {type:'tenframe', n:15, start:9, say:'9 + 6. Fill the ten first.', how:'9 needs 1. 5 are left: 15.'},
+  {type:'sort', bins:['Makes 10','Not 10'], cards:[['7 + 3',0],['6 + 5',1],['8 + 2',0],['4 + 4',1]], say:'Does it make 10? Sort them.', how:'Ten friends: 1 and 9, 2 and 8, 3 and 7, 4 and 6.'},
+  {type:'tiles', w:['1','3'], extra:['2','4'], q:'7 + 6 = ?', say:'7 + 6. Use a double: 6 + 6, plus 1.', how:'6 + 6 = 12. One more is 13.'}]);
+
+W('MATH.OPS.L03.04',{t:'Clap the rows with me: 5, 10, 15!', m:{type:'move',t:'Clap once for each row of 5: 5, 10, 15!'}});
+K('MATH.OPS.L03.04',[
+  {type:'count', n:10, pic:'🪑', q:'2 rows of 5 chairs', o:['8','10','12'], say:'2 rows of 5 chairs. Tap each chair.', how:'Each row has 5. 5 + 5 = 10.'},
+  {type:'hop', start:0, add:15, unit:5, from:0, to:20, q:'3 rows of 5', say:'3 rows of 5. Hop by 5s.', how:'5 + 5 + 5 = 15.'}],[
+  {type:'match', pairs:[['3 + 3 + 3','9'],['4 + 4','8'],['2 + 2 + 2 + 2 + 2','10']], say:'Add the equal rows. Match each total.', how:'3 + 3 = 6. 6 + 3 = 9.'},
+  {type:'tenframe', n:10, say:'Make 2 rows of 5. Fill the frame.', how:'A ten-frame is an array: 2 rows of 5 is 10.'},
+  {type:'hop', start:0, add:9, unit:3, from:0, to:15, q:'3 + 3 + 3', say:'3 rows of 3. Hop by 3s.', how:'3, 6, 9.'},
+  {type:'count', n:20, pic:'🧁', q:'4 rows of 5 cupcakes', o:['15','20','25'], say:'4 rows of 5 cupcakes. How many?', how:'Count row by row: 5, 10, 15, 20.'},
+  {type:'sort', bins:['Equal rows','Not equal'], cards:[['3 · 3 · 3',0],['3 · 2 · 3',1],['4 · 4',0],['5 · 4',1]], say:'Chairs in each row. Equal rows? Sort them.', how:'An array has the same number in every row.'}]);
+
+W('MATH.OPS.L03.05',{t:'Chant it: Ones go first, then carry the ten!', m:{type:'chant',lines:['Ones go first, then carry the ten,','tens go next, then add again!']}});
+K('MATH.OPS.L03.05',[
+  {type:'blocks', n:68, q:'23 + 14 + 31', say:'23 + 14 + 31. Build the answer.', how:'Ones: 3 + 4 + 1 = 8. Tens: 2 + 1 + 3 = 6. 68.'},
+  {type:'tiles', w:['7','4'], extra:['6','1'], q:'17 + 33 + 24', say:'17 + 33 + 24. Ones first, carry the ten.', how:'Ones: 7 + 3 + 4 = 14. Write 4, carry 1. Tens: 1 + 1 + 3 + 2 = 7.'}],[
+  {type:'match', pairs:[['21 + 13 + 16 + 36','86'],['17 + 33 + 24','74'],['26 + 38 + 34 + 16','114']], say:'Add each column. Match the totals.', how:'Ones column first. Carry the tens. Then the tens column.'},
+  {type:'blocks', n:86, q:'21 + 13 + 16 + 36', say:'Build the total: ones first, then tens.', how:'Ones: 1 + 3 + 6 + 6 = 16. Carry 1. Tens: 1 + 2 + 1 + 1 + 3 = 8.'},
+  {type:'tiles', w:['1','1','4'], extra:['2','0'], q:'26 + 38 + 34 + 16', say:'Add all 4. The ones make 24: carry 2.', how:'Ones: 6 + 8 + 4 + 6 = 24. Tens: 2 + 2 + 3 + 3 + 1 = 11. 114.'},
+  {type:'sort', bins:['Carry a ten','No carry'], cards:[['7 + 8 + 4',0],['2 + 3 + 1',1],['6 + 6',0],['4 + 5',1]], q:'Add the ones', say:'Add the ones. 10 or more? Carry a ten.', how:'7 + 8 + 4 = 19. That is 10 or more, so carry.'},
+  {type:'hop', start:44, add:30, unit:10, from:0, to:100, q:'44 + 30', say:'Add the tens column: hop 3 tens from 44.', how:'44, 54, 64, 74.'}]);
+
+W('MATH.OPS.L03.06',{t:'Chant it: Scene one, then scene two!', m:{type:'chant',lines:['Scene one, then scene two,','the first answer helps you through!']}});
+K('MATH.OPS.L03.06',[
+  {type:'hop', start:20, add:15, unit:5, from:0, to:50, q:'Scene 1: 20 cards, got 15', say:'Scene 1: Dovid had 20 and got 15. Hop.', how:'20 + 15 = 35. Keep 35 for scene 2.'},
+  {type:'tiles', w:['2','7'], extra:['3','5'], q:'Scene 2: 35 − 8', say:'Scene 2: he gave away 8. Build the answer.', how:'35 − 5 = 30. 3 more back: 27.'}],[
+  {type:'hop', start:61, add:-20, unit:10, from:0, to:100, q:'31 + 30 = 61. Then 20 go.', say:'61 seforim. 20 went to the beis medrash. Hop back.', how:'Step 1: 31 + 30 = 61. Step 2: 61 − 20 = 41.'},
+  {type:'match', pairs:[['31 + 30 − 20','41'],['42 − 18 + 10','34'],['20 + 15 − 8','27']], say:'Do step 1, then step 2. Match each answer.', how:'Left to right: 42 − 18 = 24. 24 + 10 = 34.'},
+  {type:'sort', bins:['Add','Subtract'], cards:[['got more',0],['gave away',1],['came',0],['went',1]], say:'Story words: add or subtract? Sort them.', how:'Got more or came: add. Gave away or went: subtract.'},
+  {type:'tiles', w:['3','9'], extra:['2','4'], q:'Baruch 17. Moshe 5 more. Together?', say:'Moshe read 17 + 5 = 22. Together with Baruch?', how:'Step 1: 17 + 5 = 22. Step 2: 17 + 22 = 39.'},
+  {type:'listen', hear:'Eli had 42 stickers. He gave 18 to Ari. Then he got 10 more.', o:['34','24','70'], a:'34', say:'Listen to the whole story. Tap the answer.', how:'42 − 18 = 24. Then 24 + 10 = 34.'}]);
+
+W('MATH.PV.L03.02',
+  '10 tens make 1 hundred.',
+  {t:'Point left to right: hundreds, tens, ones!', m:{type:'move',t:'Point left to right and say: hundreds, tens, ones!'}});
+K('MATH.PV.L03.02',[
+  {type:'tiles', w:['6','2','7'], extra:['0'], q:'6 flats, 2 rods, 7 cubes', say:'6 hundreds, 2 tens, 7 ones. Build it.', how:'Hundreds, tens, ones, from left to right: 627.'},
+  {type:'blocks', n:24, q:'124 = 1 hundred and ?', say:'124 has 1 hundred. Build the 24.', how:'2 tens and 4 ones. The tens digit of 124 is 2.'}],[
+  {type:'match', pairs:[['106','0 tens'],['966','6 tens'],['124','2 tens']], say:'How many tens? Look at the middle digit.', how:'In a 3-digit number, the tens are in the middle.'},
+  {type:'tiles', w:['4','0','7'], extra:['1','5'], q:'4 hundreds, 0 tens, 7 ones', say:'No tens? Use a 0 to hold the place.', how:'4 hundreds, 0 tens, 7 ones: 407.'},
+  {type:'findall', grid:['305','350','503','530','315','513'], find:['305','503'], findSay:'number with 0 tens', say:'Tap every number with 0 tens.', how:'Look at the middle digit. Is it 0?'},
+  {type:'hop', start:0, add:100, unit:10, from:0, to:100, q:'10 tens make ?', say:'Hop by 10s, 10 times. Where do you land?', how:'10 tens make 1 hundred.'},
+  {type:'match', pairs:[['3 hundreds','300'],['3 tens','30'],['3 ones','3']], say:'What is each 3 worth? Match.', how:'A 3 in the hundreds is 300. In the tens it is 30.'}]);
+
+K('MATH.PV.L03.03',[
+  {type:'match', pairs:[['2 hundreds','200'],['5 tens','50'],['6 ones','6']], say:'Stretch 256. Match each digit to its worth.', how:'2 hundreds is 200. 5 tens is 50. 6 ones is 6.'},
+  {type:'tiles', w:['400','40','5'], extra:['4','50'], say:'Stretch 445. Put the parts in order.', how:'445 = 400 + 40 + 5.'}],[
+  {type:'match', pairs:[['445 = 400 + ? + 5','40'],['988 = 900 + ? + 8','80'],['463 = ? + 60 + 3','400']], say:'Find the missing part. Match.', how:'Look at the digit in that place: 4 tens is 40.'},
+  {type:'tiles', w:['5','1','4'], extra:['0'], q:'500 + 10 + 4', say:'Squeeze it back together. Build the number.', how:'5 hundreds, 1 ten, 4 ones: 514.'},
+  {type:'sort', bins:['Hundreds','Tens','Ones'], cards:[['700',0],['20',1],['8',2],['300',0],['60',1]], say:'Which place is each part? Sort them.', how:'Two zeros: hundreds. One zero: tens. No zero: ones.'},
+  {type:'tiles', w:['700','20','8'], extra:['72','80'], say:'Stretch 728. Put the parts in order.', how:'728 = 700 + 20 + 8.'},
+  {type:'listen', hear:'nine hundred, eighty, eight', o:['988','908','980'], a:'988', say:'Listen. Tap the number.', how:'900 + 80 + 8 = 988.'}]);
+
+W('MATH.PV.L03.04',{t:'Chant it: Plus 10? The tens go up!', m:{type:'chant',lines:['Plus 10? The tens go up.','Plus 100? The hundreds go up!']}});
+K('MATH.PV.L03.04',[
+  {type:'hop', start:456, add:100, unit:100, from:0, to:1000, q:'456 + 100', say:'456 + 100. Hop 100 once.', how:'Only the hundreds change: 4 becomes 5. 556.'},
+  {type:'tiles', w:['1','8','9'], extra:['7','2'], q:'10 more than 179', say:'10 more than 179. Which digit changes?', how:'The tens go up 1: 7 becomes 8. 189.'}],[
+  {type:'hop', start:649, add:10, unit:10, from:600, to:700, q:'10 more than 649', say:'10 more than 649. Hop by 10.', how:'The tens go up: 4 becomes 5. 659.'},
+  {type:'match', pairs:[['569 + 10','579'],['345 + 100','445'],['602 − 10','592']], say:'Which digit moves? Match each answer.', how:'10 changes the tens. 100 changes the hundreds.'},
+  {type:'hop', start:295, add:10, unit:10, from:250, to:350, q:'295 + 10', say:'295 + 10. Careful at 9!', how:'9 tens + 1 ten = 10 tens: a new hundred. 305.'},
+  {type:'sort', bins:['+ 10','+ 100'], cards:[['345 → 445',1],['179 → 189',0],['620 → 630',0],['208 → 308',1]], say:'Did it jump 10 or 100? Sort them.', how:'The tens changed: + 10. The hundreds changed: + 100.'},
+  {type:'tiles', w:['5','7','9'], extra:['6','8'], q:'10 more than 569', say:'10 more than 569. Build it.', how:'The 6 tens become 7 tens: 579.'}]);
+
+W('MATH.STAT.L03.01',
+  'Together means add the two bars: 8 + 5 = 13.',
+  {t:'Chant it: Together? Add! How many more? Subtract!', m:{type:'chant',lines:['Together? Add!','How many more? Subtract!']}});
+K('MATH.STAT.L03.01',[
+  {type:'count', n:8, pic:'🟦', q:'The Sunday bar', o:['6','7','8','9'], say:'Count the squares in the Sunday bar.', how:'Each square stands for one page.'},
+  {type:'hop', start:5, add:3, unit:1, from:0, to:10, q:'Sunday 8, Monday 5', say:'How many more on Sunday? Count up from 5.', how:'5 to 8 is 3 hops. 8 − 5 = 3.'}],[
+  {type:'match', pairs:[['Sun 8 + Mon 5','13'],['Tue 7 + Wed 8','15'],['Mon 5 + Thu 2','7']], say:'Together means add. Match each total.', how:'Read each bar, then add: 7 + 8 = 15.'},
+  {type:'count', n:7, pic:'🟩', q:'The Tuesday bar', o:['6','7','8'], say:'Each square is one page. How many on Tuesday?', how:'Touch each square once.'},
+  {type:'hop', start:7, add:8, unit:1, from:5, to:20, q:'Tue 7 + Wed 8', say:'Together: start at 7, hop 8 more.', how:'7 + 8 = 15 pages together.'},
+  {type:'tiles', w:['2','5','7','8'], q:'Mon 5, Thu 2, Tue 7, Sun 8', say:'Order the bars from shortest to tallest.', how:'The shortest bar has the fewest squares.'},
+  {type:'listen', hear:'Sunday has 8 pages. Thursday has 2. How many more on Sunday?', o:['6','10','8'], a:'6', say:'Listen. How many more? Tap the answer.', how:'How many more means subtract: 8 − 2 = 6.'}]);
 })(window.ONE_BITE);
 </script>
