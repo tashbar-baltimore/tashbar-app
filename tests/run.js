@@ -84,6 +84,8 @@ async function kidTests(browser) {
     report.counts.serverCallsToKidHome = Object.values(await pg.evaluate(() => window.__calls)).reduce((a, b) => a + b, 0);
     await pg.setViewportSize({ width: 390, height: 800 }); await pg.waitForTimeout(500); fs.mkdirSync(path.join(__dirname, 'out'), { recursive: true }); await pg.screenshot({ path: path.join(__dirname, 'out', 'kid-home-phone.png') });
     errs.forEach(e => fail('kid page (timing run): ' + e)); await ctx.close(); }
+  /* K-1 FIRST (tests/lib/k1fast.js): on a K-1 Chromebook the K boy's PLAY shows fast */
+  try { const kf = await require('./lib/k1fast.js')(browser, openPage, K); kf.fails.forEach(fail); kf.oks.forEach(ok); } catch (e) { fail('K-1 first check crashed: ' + String(e).slice(0, 200)); }
   /* lessons */
   const { ctx, pg, errs } = await openPage(browser, K.page, K, 0); await pg.goto('http://app.test/');
   await pg.waitForFunction(() => window.TLT && typeof BANK_ALL !== 'undefined' && Object.keys(BANK_ALL).length > 500, null, { timeout: 180000 }); await pg.waitForTimeout(20000);

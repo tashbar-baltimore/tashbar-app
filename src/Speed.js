@@ -77,22 +77,39 @@ function tlLoader2Src_(OLD) {
     document.body.appendChild(c); }
   var waitIv = setInterval(function () { if (window.K1O) { clearInterval(waitIv); cover(false); return; } cover(k1Wait()); }, 150);
   function stopWait() { clearInterval(waitIv); cover(false); }
-  /* While the pieces run, a timer one piece starts is HELD until every piece has run, then started. That is what happened when all
-     the pieces ran as one block (a timer could not fire in the middle), so the pieces behave exactly as before. */
-  var W = window, nST = W.setTimeout, nSI = W.setInterval, nCT = W.clearTimeout, nCI = W.clearInterval, held = null;
-  function holdOn() { held = [];
-    function mk(k) { return function (f, ms) { if (!held) return (k === 'i' ? nSI : nST).apply(W, arguments);
-      var r = { tl: k, f: f, ms: ms, a: Array.prototype.slice.call(arguments, 2), x: 0, id: null }; held.push(r); return r; }; }
-    W.setTimeout = mk('t'); W.setInterval = mk('i');
-    W.clearTimeout = W.clearInterval = function (r) { if (r && typeof r === 'object' && r.tl) { r.x = 1; if (r.id != null) { nCT.call(W, r.id); nCI.call(W, r.id); } return; } nCT.call(W, r); nCI.call(W, r); }; }
-  function holdOff() { var list = held || []; held = null; W.setTimeout = nST; W.setInterval = nSI;
+  /* While a piece runs, a timer it starts is HELD until every piece has run, then started. That is what happened when all the
+     pieces ran as one block (a timer could not fire in the middle), so the pieces behave exactly as before. Timers started by taps
+     and screens between the slices are not held. */
+  var W = window, nST = W.setTimeout, nSI = W.setInterval, nCT = W.clearTimeout, nCI = W.clearInterval, held = [], holding = false;
+  function mk(k) { return function (f, ms) { if (!holding) return (k === 'i' ? nSI : nST).apply(W, arguments);
+    var r = { tl: k, f: f, ms: ms, a: Array.prototype.slice.call(arguments, 2), x: 0, id: null }; held.push(r); return r; }; }
+  W.setTimeout = mk('t'); W.setInterval = mk('i');
+  W.clearTimeout = W.clearInterval = function (r) { if (r && typeof r === 'object' && r.tl) { r.x = 1; if (r.id != null) { nCT.call(W, r.id); nCI.call(W, r.id); } return; } nCT.call(W, r); nCI.call(W, r); };
+  function release() { var list = held; held = []; W.setTimeout = nST; W.setInterval = nSI;
     list.forEach(function (r) { if (!r.x) r.id = (r.tl === 'i' ? nSI : nST).apply(W, [r.f, r.ms].concat(r.a)); }); }
-  function go(list) { var i = 0;
+  function run1(js) { holding = true; try { (0, eval)(js); } catch (e) { console.error('QuestTools', e); } holding = false; }
+  /* K-1 FIRST (HoS 2026-11-22: "it has to be fast, quick, smooth"): on a Chromebook whose last boy was K-1 (K1Only.html keeps
+     tl-k1dev), his games (KL, KR, KK, G1M, G1R) and his game path (K1Only) run FIRST, so his PLAY button shows in a moment. The other
+     pieces then run in their own order, and they wait while a game is open, so the games stay smooth. If a boy who is not K-1 signs in
+     on that Chromebook, the page loads again once the usual way (in this tab), so nothing changes for him. */
+  var K1RE = /window\.(KL|KR|KK|G1M|G1R|K1O)\s*=|\/\* OneBiteData[A-Za-z0-9]*\.html: hand-written/, fast = false;   /* the games, the path, and the lesson pictures (One Bite data) */
+  try { fast = localStorage.getItem('tl-k1dev') === '1' && sessionStorage.getItem('tl-load-normal') !== '1'; } catch (e) {}
+  function gameOpen() { return !!document.querySelector('#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov'); }
+  function notK1() { try { return !!(window.K1O && typeof K1O.on === 'function' && typeof A !== 'undefined' && A && A.st && A.st.id && A.view !== 'signin' && !K1O.on()); } catch (e) { return false; } }
+  function go(list) { var order = [], i = 0, firstN = 0;
+    if (fast) { list.forEach(function (t, k) { if (k === 0 || K1RE.test(t)) order.push(k); }); firstN = order.length; list.forEach(function (t, k) { if (!(k === 0 || K1RE.test(t))) order.push(k); }); }
+    else list.forEach(function (t, k) { order.push(k); });
+    var watch = fast ? nSI.call(W, function () { if (notK1()) { nCI.call(W, watch); try { sessionStorage.setItem('tl-load-normal', '1'); } catch (e) {} location.reload(); } }, 400) : null;
     function slice() { var t0 = Date.now();
-      while (i < list.length) { try { (0, eval)(list[i]); } catch (e) { console.error('QuestTools', e); } i++; if (Date.now() - t0 > 60) break; }
-      if (i < list.length) { cover(k1Wait()); return nST.call(W, slice, 0); }
-      holdOff(); stopWait(); try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
-    nST.call(W, function () { holdOn(); slice(); }, 30); }
+      if (fast && i >= firstN && i < order.length && gameOpen()) return nST.call(W, slice, 400);
+      while (i < order.length) { run1(list[order[i]]); i++;
+        if (fast && i === firstN) { try { if (window.K1O && K1O.hook) K1O.hook(); if (typeof A !== 'undefined' && A.view === 'hub') render(); } catch (e) {} cover(k1Wait()); return nST.call(W, slice, 3000); }
+        if (Date.now() - t0 > 50) break; }
+      if (i < order.length) { cover(k1Wait()); return nST.call(W, slice, 0); }
+      release(); stopWait();
+      try { if (window.K1O && K1O.hook) K1O.hook(); } catch (e) {}
+      try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
+    nST.call(W, slice, 30); }
   function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} stopWait(); try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } }
   function store(mode) { return db.transaction(ST, mode).objectStore(ST); }
   function getMany(ks, cb) { var out = {}, n = ks.length; if (!n || !db) return cb(out); try { var s = store('readonly'); ks.forEach(function (k) { var q = s.get(k); q.onsuccess = function () { out[k] = q.result; if (--n === 0) cb(out); }; q.onerror = function () { if (--n === 0) cb(out); }; }); } catch (e) { cb(out); } }
