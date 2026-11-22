@@ -995,7 +995,7 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.85; a.play().catch(()=>{}); return; }
   const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; const c=GM.ac||(GM.ac=new AC()); if(c.state==='suspended') c.resume();
   /* v2 (HoS: "much more rocking ... like the big star of the show is coming out onto the stage"): a drum roll and a rising whoosh
-     build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. v4 ("bigger, more exciting, more rocky, longer, more drum rolls"): v5 ("the ending much higher ... keep it rocking ... a rock star coming out on the stage"): about 20 s, four rising parts, a sky-high ending. */
+     build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. v4 ("bigger, more exciting, more rocky, longer, more drum rolls"): v6 ("tighten it up ... Chanukah music mixed in ... a build up, then a beat drop"): a drum-roll build-up, the drop with Ma'oz Tzur (traditional melody) over a rock beat, twice, then a sky-high ending. About 16 s. */
   const comp=c.createDynamicsCompressor(); comp.threshold.value=-22; comp.ratio.value=10; comp.attack.value=.003; comp.release.value=.12; const clip=c.createWaveShaper(); { const k=new Float32Array(2048); for(let i=0;i<2048;i++){ const x=i/1024-1; k[i]=Math.tanh(x*1.6)/Math.tanh(1.6); } clip.curve=k; } comp.connect(clip); clip.connect(c.destination);
   const out=c.createGain(); out.gain.value=.34; out.connect(comp); const lim=c.createGain(); lim.gain.value=1.5; comp.disconnect(); comp.connect(lim); const mst=c.createGain(); lim.connect(mst); mst.connect(clip);
   const T=c.currentTime+.05, B=60/152, HIT=T+2.6;
@@ -1024,21 +1024,22 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   tone(98,T,HIT-T,'sawtooth',.06,987.77); crowd(T+.4,HIT-T+1.2,.12);
   /* 2. THE HIT */
   kick(HIT,1.8); crash(HIT,.7); gtr(pc(82.41),HIT,.6,.55); [329.63,415.3,493.88].forEach(f=>brass(f,HIT,.55,.45));
-  /* 3. the rock groove: 24 beats in three parts (low, a step up, two steps up), drum rolls and tom fills between parts */
-  const G=HIT+B, riff=[82.41,82.41,98,110,82.41,82.41,123.47,110], st=[1,Math.pow(2,2/12),Math.pow(2,4/12),Math.pow(2,7/12)];
-  for(let k=0;k<32;k++){ const tb=G+k*B, m=st[Math.floor(k/8)], bar=k%8; kick(tb); if(bar%2===1){ snare(tb,.85); clap(tb,.3); } hat(tb); hat(tb+B/2); if(bar%4===3) kick(tb+B/2,1.1); if(bar===0&&k) crash(tb,.55);
-   if(bar<7){ gtr(pc(riff[bar]*m),tb,B*.42,.44); gtr(pc(riff[bar]*m),tb+B/2,B*.35,.34); } }
-  [7,15].forEach(b=>tomFill(G+b*B)); roll(G+23*B,G+24*B,.5,.95); roll(G+31*B,G+32*B,.6,1); for(let k=24;k<32;k++) hat(G+k*B+B/4), hat(G+k*B+3*B/4);
-  const fan=[[0,659.25,.5],[.5,659.25,.25],[.75,659.25,.25],[1,830.61,.75],[2,987.77,.5],[2.5,880,.5],[3,987.77,1],[4,1108.73,.5],[4.5,987.77,.5],[5,1108.73,.5],[5.5,1244.51,.5],[6,1318.51,1]];
-  [0,1,2,3].forEach(p=>fan.forEach(([b,f,d])=>{ brass(f*st[p],G+(p*8+b)*B,d*B*.95,.44); if(p) brass(f*st[p]/2,G+(p*8+b)*B,d*B*.95,.24); }));
-  crowd(G+16*B,16*B+4,.18);
-  /* 4. the giant ending, way up high: three big hits climbing, a roll, a screaming lead guitar sliding up, and the highest chord */
-  const END=G+32*B, R=82.41*st[3]*2; [0,1,2].forEach(k=>{ const r=R*Math.pow(2,(k*2)/12); kick(END+k*B*.75,1.8); gtr(pc(r),END+k*B*.75,B*.5,.55); crash(END+k*B*.75,.45); brass(r*4,END+k*B*.75,B*.5,.4); });
+  /* 3. THE DROP: a hard rock beat, and over it MA'OZ TZUR (the traditional Chanukah melody) on brass and bells, twice, the second time up high */
+  const G=HIT+B, F=349.23, M=[[261.63,1],[349.23,1],[523.25,1],[466.16,.5],[440,.5],[392,1],[349.23,2],[440,1],[466.16,1],[523.25,1],[392,.5],[349.23,.5],[329.63,1],[349.23,2]];   /* Ma-oz tzur ye-shu-a-ti, le-cha na-eh le-sha-bei-ach */
+  const riff=[87.31,87.31,116.54,130.81,87.31,87.31,116.54,130.81];
+  const bell=(f,t,d,v)=>{ tone(f,t,d*1.4,'sine',v); tone(f*2,t,d*.8,'sine',v*.4); tone(f*3.01,t,d*.4,'triangle',v*.15); };
+  for(let k=0;k<32;k++){ const tb=G+k*B, bar=k%8, up=k<16?1:Math.pow(2,2/12); kick(tb); if(bar%2===1){ snare(tb,.85); clap(tb,.3); } hat(tb); hat(tb+B/2); if(k>=16){ hat(tb+B/4); hat(tb+3*B/4); } if(bar%4===3) kick(tb+B/2,1.1); if(bar===0&&k) crash(tb,.5);
+   if(!(k===15||k===31)){ gtr(pc(riff[bar]*up),tb,B*.42,.44); gtr(pc(riff[bar]*up),tb+B/2,B*.35,.34); } }
+  tomFill(G+15*B); roll(G+31*B,G+32*B,.55,1);
+  [[0,1],[16,2]].forEach(([start,oct])=>{ let b=start; const up=start?Math.pow(2,2/12):1; M.forEach(([f,d])=>{ const t=G+b*B, x=f*up*oct; brass(x,t,d*B*.92,.46); bell(x*2,t,d*B,.16); if(oct>1) brass(x/2,t,d*B*.92,.24); b+=d; }); });
+  crowd(G+16*B,16*B+3,.18);
+  /* 4. the ending, sky high: three climbing hits, a roll with a screaming guitar sliding up, the last note of the melody on top of the highest chord */
+  const END=G+32*B, R=F/2*Math.pow(2,2/12)*2; [0,1,2].forEach(k=>{ const r=R*Math.pow(2,(k*2)/12); kick(END+k*B*.75,1.8); gtr(pc(r),END+k*B*.75,B*.5,.55); crash(END+k*B*.75,.45); brass(r*4,END+k*B*.75,B*.5,.4); });
   const LAST=END+B*2.5, TOP=R*Math.pow(2,4/12); roll(END+B*1.6,LAST,.4,1);
-  { const o=c.createOscillator(), g=c.createGain(), sh=c.createWaveShaper(); sh.curve=curve; o.type='sawtooth'; o.frequency.setValueAtTime(TOP*4,END+B*1.6); o.frequency.exponentialRampToValueAtTime(TOP*8,LAST); env(g,END+B*1.6,.05,LAST-END-B*1.6+.6,.16); o.connect(sh); sh.connect(g); g.connect(out); o.start(END+B*1.6); o.stop(LAST+.8); }
-  kick(LAST,1.9); crash(LAST,.85); crash(LAST+.02,.5); gtr(pc(TOP),LAST,3.2,.55);
-  [2,2.5198,2.9966,4,5.0397,5.9932].forEach(m=>brass(TOP*m,LAST,3.1,.38)); tone(TOP*8,LAST,2.6,'triangle',.12); tone(TOP*16,LAST+.05,1.8,'sine',.06);
-  crowd(LAST-.2,3.4,.3); kick(LAST+B*2,1.3); crash(LAST+B*2,.45);
+  { const o=c.createOscillator(), g=c.createGain(), sh=c.createWaveShaper(); sh.curve=curve; o.type='sawtooth'; o.frequency.setValueAtTime(TOP*4,END+B*1.6); o.frequency.exponentialRampToValueAtTime(TOP*8,LAST); env(g,END+B*1.6,.05,LAST-END-B*1.6+.5,.15); o.connect(sh); sh.connect(g); g.connect(out); o.start(END+B*1.6); o.stop(LAST+.7); }
+  kick(LAST,1.9); crash(LAST,.85); crash(LAST+.02,.5); gtr(pc(TOP),LAST,2.6,.55);
+  [2,2.5198,2.9966,4,5.0397,5.9932].forEach(m=>brass(TOP*m,LAST,2.5,.38)); bell(TOP*8,LAST,2.2,.14);
+  crowd(LAST-.2,2.8,.3);
   mst.gain.setValueAtTime(.62,G); mst.gain.linearRampToValueAtTime(1.15,LAST);   /* it keeps getting bigger all the way to the top */
  }catch(e){} }
  GM.themeTune=themeTune;
