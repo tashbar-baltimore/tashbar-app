@@ -63,6 +63,7 @@ function shelf(){ const S=subjects(); if(!S.find(s=>s.k===K1O.subj)) K1O.subj=S.
   return h; }
 
 function paint(){ const k=on(), body=document.body; if(!body) return; body.classList.toggle('k1-mode',k);
+  try{ const b=st(); if(b&&b.id&&A.view!=='signin'&&(k||K1O.grade!=null)) ls('tl-k1dev',k?'1':'0'); }catch(e){}   /* K-1 FIRST: this Chromebook's last boy was K-1 (see Speed.js) */
   let el=document.getElementById('k1o'); const home=k&&typeof A!=='undefined'&&A.view==='hub';
   if(!home){ body.classList.remove('k1-home'); if(el) el.remove(); return; }
   A.overlay=null; body.classList.add('k1-home');
@@ -139,11 +140,15 @@ document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.tar
   if(a==='say') sayHi(); },true);
 
 /* ---------- hooks: every home redraw shows the shelf; no pop-ups; no level checks ---------- */
-const baseRender=window.render;
-if(typeof baseRender==='function'){ window.render=function(){ const r=baseRender.apply(this,arguments); try{ paint(); }catch(e){} return r; }; try{ render=window.render; }catch(e){} }
-if(typeof window.welcome==='function'){ const w0=window.welcome; window.welcome=function(){ if(on()) return; return w0.apply(this,arguments); }; try{ welcome=window.welcome; }catch(e){} }
-if(typeof window.tlLevelCheckFor==='function'){ const l0=window.tlLevelCheckFor; window.tlLevelCheckFor=function(){ if(on()) return null; return l0.apply(this,arguments); }; }
-if(typeof window.tlFindLevelCard==='function'){ const f0=window.tlFindLevelCard; window.tlFindLevelCard=function(){ if(on()) return ''; return f0.apply(this,arguments); }; }
+/* K1O.hook() can run again (K-1 FIRST, 2026-11-22: on a K-1 Chromebook this file loads FIRST, and the page calls K1O.hook() again
+   once every other piece has loaded, so the shelf and the no-pop-up rules sit on top of anything those pieces added). Each hook is
+   added only once per function (marked __k1). */
+function hook(){
+  const r0=window.render; if(typeof r0==='function'&&!r0.__k1){ const w=function(){ const r=r0.apply(this,arguments); try{ paint(); }catch(e){} return r; }; w.__k1=1; window.render=w; try{ render=w; }catch(e){} }
+  const w0=window.welcome; if(typeof w0==='function'&&!w0.__k1){ const w=function(){ if(on()) return; return w0.apply(this,arguments); }; w.__k1=1; window.welcome=w; try{ welcome=w; }catch(e){} }
+  const l0=window.tlLevelCheckFor; if(typeof l0==='function'&&!l0.__k1){ const w=function(){ if(on()) return null; return l0.apply(this,arguments); }; w.__k1=1; window.tlLevelCheckFor=w; }
+  const f0=window.tlFindLevelCard; if(typeof f0==='function'&&!f0.__k1){ const w=function(){ if(on()) return ''; return f0.apply(this,arguments); }; w.__k1=1; window.tlFindLevelCard=w; } }
+hook(); K1O.hook=hook;
 setInterval(()=>{ try{ if(!document.body||!document.body.classList.contains('k1-mode')||typeof A==='undefined') return;
   if(A.overlay&&A.view==='hub'){ A.overlay=null; render(); return; }
   const g=gameOpen(); if(K1O.wasGame&&!g){ try{ hush(); }catch(x){} } K1O.wasGame=g;
