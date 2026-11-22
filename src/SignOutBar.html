@@ -92,7 +92,7 @@
  var css=document.createElement('style');
  css.textContent='.tl-out{display:none!important}'
  +'#tlmenu{--cm-accent:#4a2fc4;--cm-danger:#b4234f;--cm-bubble:#ffffff;--cm-group-sep:#d6cbff;--cm-tip-bg:#2a1a5e;--cm-dot:#1E1B4B;'
- +'position:fixed;top:calc(34px + env(safe-area-inset-top,0px));right:14px;width:0;height:0;z-index:2147483001;font-family:inherit}'
+ +'position:fixed;top:calc(34px + env(safe-area-inset-top,0px));right:18px;width:0;height:0;z-index:2147483001;font-family:inherit}'
  +'body.gm-on #tlmenu,body.gm-nav #tlmenu,body.gm-lesson #tlmenu,body.hp-dark #tlmenu{--cm-dot:#ffffff}'
  +'#tlmenu .cm-bub{position:absolute;top:-22px;height:44px;box-sizing:border-box;border:none;padding:0;border-radius:22px;cursor:pointer;background:var(--cm-dot);color:var(--cm-accent);display:flex;align-items:center;-webkit-tap-highlight-color:transparent;font:inherit}'
  +'#tlmenu.open .cm-bub{background:var(--cm-bubble);box-shadow:0 6px 16px rgba(20,8,60,.32)}'
@@ -166,7 +166,7 @@
  /* very small phones (under 340 px): the music pill keeps play/pause but drops next, so sign out never runs off the left edge */
  function groupWidth(){ return 44+(state.songLoaded?40:0)+(state.songLoaded&&state.showNext?40:0); }
  function layout(instant){
-  root.style.right='calc('+(window.innerWidth>=700?18:14)+'px + env(safe-area-inset-right,0px))';
+  root.style.right='calc('+(window.innerWidth>=700?22:18)+'px + env(safe-area-inset-right,0px))';
   var sn=window.innerWidth>=340; if(sn!==state.showNext){ state.showNext=sn; renderIcons(); }
   var cx=T.closeCenterX, prevW=0;
   ORDER.forEach(function(it,i){
@@ -235,7 +235,31 @@
  /* the app's own state, read every 400 ms (sound from SND, music from TashbarMusic); only redraws when something changed */
  function sync(force){ var m=mus(), so=sndOn();
   if(force||m.loaded!==state.songLoaded||m.playing!==state.playing||so!==state.soundOn){ state.songLoaded=m.loaded; state.playing=m.playing; state.soundOn=so; update(); } }
- setInterval(function(){ var on=signedIn(); root.style.display=on?'':'none'; if(!on){ if(state.open){ state.open=false; layout(true); } return; } sync(false); },400);
+ setInterval(function(){ var on=signedIn(); root.style.display=on?'':'none'; if(!on){ if(state.open){ state.open=false; layout(true); } return; } sync(false); makeRoom(); },400);
+
+ /* make room: a button the closed dots would sit on (a pop-up's Close or ✕ in the top corner) is moved left until it is clear,
+    so every screen's own buttons stay tappable, including screens added later. Looks only under the dots (elementsFromPoint). */
+ var ROOM_SEL='button,a[href],[role="button"],[onclick],input,select,textarea,[data-tj],[data-act]';
+ function clickable(n){ for(var i=0;n&&n!==document.body&&i<6;i++,n=n.parentElement){ if(n.matches&&n.matches(ROOM_SEL)) return n; } return null; }
+ function makeRoom(){
+  if(state.open||root.style.display==='none') return;
+  var t=trigger.getBoundingClientRect(), W=document.documentElement.clientWidth, R=Math.min(t.right,W-1), L=t.left-6, found=[];
+  [.15,.5,.85].forEach(function(fx){ [.15,.5,.85].forEach(function(fy){
+   var st=document.elementsFromPoint(t.left+(R-t.left)*fx,t.top+t.height*fy), top=null;
+   for(var i=0;i<st.length;i++){ if(!root.contains(st[i])){ top=st[i]; break; } }
+   var c=top&&clickable(top); if(c&&found.indexOf(c)<0) found.push(c);
+   /* a button that runs under the dots but is partly covered by its own header: look a little way up for buttons whose box reaches the dots */
+   for(var up=top,k=0;up&&up!==document.body&&k<3;k++,up=up.parentElement){ var bs=up.querySelectorAll(ROOM_SEL); if(bs.length>80) break;
+    for(var j=0;j<bs.length;j++){ var b=bs[j], r=b.getBoundingClientRect(); if(found.indexOf(b)<0&&r.width>0&&r.right>t.left&&r.left<R&&r.bottom>t.top&&r.top<t.bottom) found.push(b); } } }); });
+  found.forEach(function(c){ var r=c.getBoundingClientRect(), need=r.right-L; if(need<=0||r.width>W*0.5) return;
+   var cs=getComputedStyle(c);
+   if(cs.position!=='absolute'&&cs.position!=='fixed'){ var mr=parseFloat(cs.marginRight)||0, was=c.style.getPropertyValue('margin-right');
+    c.style.setProperty('margin-right',(mr+need)+'px','important');
+    if(c.getBoundingClientRect().right<=L+1) return;
+    if(was) c.style.setProperty('margin-right',was); else c.style.removeProperty('margin-right'); }
+   var tx=(parseFloat(c.dataset.cmTx)||0)+need; c.dataset.cmTx=tx; c.style.setProperty('translate',(-tx)+'px 0','important'); });
+ }
+ try{ new MutationObserver(function(){ requestAnimationFrame(makeRoom); setTimeout(makeRoom,250); }).observe(document.body,{childList:true}); }catch(e){}
 
  window.TL_MENU={open:function(){ setOpen(true); },close:function(){ setOpen(false); },actions:actions,state:state};
  renderIcons(); layout(true);
