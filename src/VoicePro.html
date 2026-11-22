@@ -33,16 +33,17 @@ function fire(u,n){ try{ const f=u['on'+n]; if(typeof f==='function') f.call(u,{
    3. Frames and the page share one voice: when any of them starts a phrase, the others stop (a channel between them). */
 let gen=0, devBusy=false; const VID=Math.random().toString(36).slice(2);
 let bc=null; try{ bc=new BroadcastChannel('tl-voice'); bc.onmessage=e=>{ const d=e.data||{}; if(d.v===1&&d.id!==VID) stopAll(); }; }catch(e){}
+let said=false; function sig(on){ if(said===on) return; said=on; const send=w=>{ try{ w.dispatchEvent(new CustomEvent('tlvoice',{detail:on})); }catch(e){} }; send(window); try{ if(window.top&&window.top!==window) send(window.top); }catch(e){} }   /* music goes soft while the voice speaks (Music.html) */
 function claim(){ try{ if(bc) bc.postMessage({v:1,id:VID}); }catch(e){} }
-function stopAll(){ gen++; q=[]; devBusy=false; if(cur){ try{ cur.pause(); }catch(e){} cur=null; } try{ realCancel(); }catch(e){} }
-function device(u,g){ let moved=false; devBusy=true; const go=()=>{ if(moved) return; moved=true; clearTimeout(t2); if(g===gen){ devBusy=false; next(); } };
+function stopAll(){ sig(false); gen++; q=[]; devBusy=false; if(cur){ try{ cur.pause(); }catch(e){} cur=null; } try{ realCancel(); }catch(e){} }
+function device(u,g){ let moved=false; devBusy=true; sig(true); const go=()=>{ if(moved) return; moved=true; clearTimeout(t2); if(g===gen){ devBusy=false; next(); } };
  const t2=setTimeout(go,Math.min(30000,2500+String(u.text||'').length*90));
  try{ u.addEventListener('end',go,{once:true}); u.addEventListener('error',go,{once:true}); realSpeak(u); }catch(e){ go(); } }
-function next(){ if(cur||devBusy||!q.length) return; const it=q.shift(), u=it.u, g=gen; let done=false, started=false;
+function next(){ if(cur||devBusy) return; if(!q.length){ sig(false); return; } const it=q.shift(), u=it.u, g=gen; let done=false, started=false;
  const a=new Audio(it.url); cur=a; a.preload='auto'; try{ a.volume=Math.max(0,Math.min(1,u.volume==null?1:u.volume)); }catch(e){}
  const finish=ok=>{ if(done) return; done=true; clearTimeout(tm); if(cur===a) cur=null; if(g!==gen) return; if(!ok){ device(u,g); return; } fire(u,'end'); next(); };
  const tm=setTimeout(()=>{ if(!started&&!waitTap){ try{ a.pause(); }catch(e){} finish(false); } },7000); let waitTap=false;
- a.onplaying=()=>{ if(g!==gen){ try{ a.pause(); }catch(e){} return; } if(!started){ started=true; clearTimeout(tm); try{ realCancel(); }catch(e){} fire(u,'start'); } };
+ a.onplaying=()=>{ if(g!==gen){ try{ a.pause(); }catch(e){} return; } if(!started){ started=true; clearTimeout(tm); try{ realCancel(); }catch(e){} sig(true); fire(u,'start'); } };
  a.onended=()=>finish(true); a.onerror=()=>finish(false);
  const p=a.play(); if(p&&p.catch) p.catch(err=>{ if(g!==gen||done) return; if(err&&err.name==='NotAllowedError'){ waitTap=true; const go=()=>{ document.removeEventListener('pointerdown',go,true); document.removeEventListener('keydown',go,true); if(done||g!==gen) return; const p2=a.play(); if(p2&&p2.catch) p2.catch(()=>finish(false)); }; document.addEventListener('pointerdown',go,true); document.addEventListener('keydown',go,true); } else finish(false); }); }   /* Chrome blocks sound before the first tap: wait for the tap, keep the new voice (HoS 2026-11-19) */
 ss.speak=function(u){ try{ if(off||!u||!u.text) return realSpeak(u); const l=langOf(u.text), t=clean(u.text,l); if(!t||t.length>600) return realSpeak(u);
