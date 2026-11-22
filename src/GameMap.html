@@ -994,11 +994,11 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   if(window.TL_THEME_URL){ const a=new Audio(window.TL_THEME_URL); a.volume=.85; a.play().catch(()=>{}); return; }
   const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return; const c=GM.ac||(GM.ac=new AC()); if(c.state==='suspended') c.resume();
   /* v2 (HoS: "much more rocking ... like the big star of the show is coming out onto the stage"): a drum roll and a rising whoosh
-     build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. v4 ("bigger, more exciting, more rocky, longer, more drum rolls"): about 16 s, three rising parts, drum rolls and tom fills, crowd swell. */
+     build up, then a huge hit with a crash, then a rock groove with distorted power chords and a brass fanfare, and a giant last chord. v4 ("bigger, more exciting, more rocky, longer, more drum rolls"): v5 ("the ending much higher ... keep it rocking ... a rock star coming out on the stage"): about 20 s, four rising parts, a sky-high ending. */
   const comp=c.createDynamicsCompressor(); comp.threshold.value=-22; comp.ratio.value=10; comp.attack.value=.003; comp.release.value=.12; const clip=c.createWaveShaper(); { const k=new Float32Array(2048); for(let i=0;i<2048;i++){ const x=i/1024-1; k[i]=Math.tanh(x*1.6)/Math.tanh(1.6); } clip.curve=k; } comp.connect(clip); clip.connect(c.destination);
   const out=c.createGain(); out.gain.value=.34; out.connect(comp); const lim=c.createGain(); lim.gain.value=1.5; comp.disconnect(); comp.connect(lim); const mst=c.createGain(); lim.connect(mst); mst.connect(clip);
   const T=c.currentTime+.05, B=60/152, HIT=T+2.6;
-  mst.gain.setValueAtTime(.25,T); mst.gain.exponentialRampToValueAtTime(1,HIT);   /* the build-up grows from soft to full */
+  mst.gain.setValueAtTime(.2,T); mst.gain.exponentialRampToValueAtTime(.62,HIT);   /* the build-up grows from soft to full */
   const noiseBuf=(sec)=>{ const b=c.createBuffer(1,Math.ceil(c.sampleRate*sec),c.sampleRate), d=b.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1; return b; };
   const env=(g,t,a,d,v)=>{ g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(v,t+a); g.gain.exponentialRampToValueAtTime(.0008,t+a+d); };
   const tone=(f,t,d,type,v,slide,dest)=>{ const o=c.createOscillator(), g=c.createGain(); o.type=type; o.frequency.setValueAtTime(f,t); if(slide) o.frequency.exponentialRampToValueAtTime(slide,t+d); env(g,t,.008,d,v); o.connect(g); g.connect(dest||out); o.start(t); o.stop(t+d+.05); };
@@ -1024,17 +1024,21 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   /* 2. THE HIT */
   kick(HIT,1.8); crash(HIT,.7); gtr(pc(82.41),HIT,.6,.55); [329.63,415.3,493.88].forEach(f=>brass(f,HIT,.55,.45));
   /* 3. the rock groove: 24 beats in three parts (low, a step up, two steps up), drum rolls and tom fills between parts */
-  const G=HIT+B, riff=[82.41,82.41,98,110,82.41,82.41,123.47,110], st=[1,Math.pow(2,2/12),Math.pow(2,4/12)];
-  for(let k=0;k<24;k++){ const tb=G+k*B, m=st[Math.floor(k/8)], bar=k%8; kick(tb); if(bar%2===1){ snare(tb,.85); clap(tb,.3); } hat(tb); hat(tb+B/2); if(bar%4===3) kick(tb+B/2,1.1); if(bar===0&&k) crash(tb,.55);
+  const G=HIT+B, riff=[82.41,82.41,98,110,82.41,82.41,123.47,110], st=[1,Math.pow(2,2/12),Math.pow(2,4/12),Math.pow(2,7/12)];
+  for(let k=0;k<32;k++){ const tb=G+k*B, m=st[Math.floor(k/8)], bar=k%8; kick(tb); if(bar%2===1){ snare(tb,.85); clap(tb,.3); } hat(tb); hat(tb+B/2); if(bar%4===3) kick(tb+B/2,1.1); if(bar===0&&k) crash(tb,.55);
    if(bar<7){ gtr(pc(riff[bar]*m),tb,B*.42,.44); gtr(pc(riff[bar]*m),tb+B/2,B*.35,.34); } }
-  [7,15].forEach(b=>tomFill(G+b*B)); roll(G+23*B,G+24*B,.5,.95);
+  [7,15].forEach(b=>tomFill(G+b*B)); roll(G+23*B,G+24*B,.5,.95); roll(G+31*B,G+32*B,.6,1); for(let k=24;k<32;k++) hat(G+k*B+B/4), hat(G+k*B+3*B/4);
   const fan=[[0,659.25,.5],[.5,659.25,.25],[.75,659.25,.25],[1,830.61,.75],[2,987.77,.5],[2.5,880,.5],[3,987.77,1],[4,1108.73,.5],[4.5,987.77,.5],[5,1108.73,.5],[5.5,1244.51,.5],[6,1318.51,1]];
-  [0,1,2].forEach(p=>fan.forEach(([b,f,d])=>{ brass(f*st[p],G+(p*8+b)*B,d*B*.95,.44); if(p) brass(f*st[p]/2,G+(p*8+b)*B,d*B*.95,.24); }));
-  crowd(G+16*B,8*B+2,.16);
-  /* 4. the giant ending: three big hits, a roll, and the last chord with a crash */
-  const END=G+24*B, R=82.41*st[2]; [0,1,2].forEach(k=>{ kick(END+k*B*.75,1.8); gtr(pc(R),END+k*B*.75,B*.5,.55); crash(END+k*B*.75,.45); });
-  const LAST=END+B*2.5; roll(END+B*1.6,LAST,.4,.95); kick(LAST,1.9); crash(LAST,.8); gtr(pc(R),LAST,2.8,.55);
-  [415.3,523.25,622.25,830.61,1046.5].forEach(f=>brass(f,LAST,2.7,.4)); tone(1661.22,LAST,2.2,'triangle',.12); kick(LAST+B*2,1.3); crash(LAST+B*2,.4);
+  [0,1,2,3].forEach(p=>fan.forEach(([b,f,d])=>{ brass(f*st[p],G+(p*8+b)*B,d*B*.95,.44); if(p) brass(f*st[p]/2,G+(p*8+b)*B,d*B*.95,.24); }));
+  crowd(G+16*B,16*B+4,.18);
+  /* 4. the giant ending, way up high: three big hits climbing, a roll, a screaming lead guitar sliding up, and the highest chord */
+  const END=G+32*B, R=82.41*st[3]*2; [0,1,2].forEach(k=>{ const r=R*Math.pow(2,(k*2)/12); kick(END+k*B*.75,1.8); gtr(pc(r),END+k*B*.75,B*.5,.55); crash(END+k*B*.75,.45); brass(r*4,END+k*B*.75,B*.5,.4); });
+  const LAST=END+B*2.5, TOP=R*Math.pow(2,4/12); roll(END+B*1.6,LAST,.4,1);
+  { const o=c.createOscillator(), g=c.createGain(), sh=c.createWaveShaper(); sh.curve=curve; o.type='sawtooth'; o.frequency.setValueAtTime(TOP*4,END+B*1.6); o.frequency.exponentialRampToValueAtTime(TOP*8,LAST); env(g,END+B*1.6,.05,LAST-END-B*1.6+.6,.16); o.connect(sh); sh.connect(g); g.connect(out); o.start(END+B*1.6); o.stop(LAST+.8); }
+  kick(LAST,1.9); crash(LAST,.85); crash(LAST+.02,.5); gtr(pc(TOP),LAST,3.2,.55);
+  [2,2.5198,2.9966,4,5.0397,5.9932].forEach(m=>brass(TOP*m,LAST,3.1,.38)); tone(TOP*8,LAST,2.6,'triangle',.12); tone(TOP*16,LAST+.05,1.8,'sine',.06);
+  crowd(LAST-.2,3.4,.3); kick(LAST+B*2,1.3); crash(LAST+B*2,.45);
+  mst.gain.setValueAtTime(.62,G); mst.gain.linearRampToValueAtTime(1.15,LAST);   /* it keeps getting bigger all the way to the top */
  }catch(e){} }
  GM.themeTune=themeTune;
  if(typeof welcome!=='function') return;
