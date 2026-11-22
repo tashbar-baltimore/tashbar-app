@@ -77,12 +77,22 @@ function tlLoader2Src_(OLD) {
     document.body.appendChild(c); }
   var waitIv = setInterval(function () { if (window.K1O) { clearInterval(waitIv); cover(false); return; } cover(k1Wait()); }, 150);
   function stopWait() { clearInterval(waitIv); cover(false); }
+  /* While the pieces run, a timer one piece starts is HELD until every piece has run, then started. That is what happened when all
+     the pieces ran as one block (a timer could not fire in the middle), so the pieces behave exactly as before. */
+  var W = window, nST = W.setTimeout, nSI = W.setInterval, nCT = W.clearTimeout, nCI = W.clearInterval, held = null;
+  function holdOn() { held = [];
+    function mk(k) { return function (f, ms) { if (!held) return (k === 'i' ? nSI : nST).apply(W, arguments);
+      var r = { tl: k, f: f, ms: ms, a: Array.prototype.slice.call(arguments, 2), x: 0, id: null }; held.push(r); return r; }; }
+    W.setTimeout = mk('t'); W.setInterval = mk('i');
+    W.clearTimeout = W.clearInterval = function (r) { if (r && typeof r === 'object' && r.tl) { r.x = 1; if (r.id != null) { nCT.call(W, r.id); nCI.call(W, r.id); } return; } nCT.call(W, r); nCI.call(W, r); }; }
+  function holdOff() { var list = held || []; held = null; W.setTimeout = nST; W.setInterval = nSI;
+    list.forEach(function (r) { if (!r.x) r.id = (r.tl === 'i' ? nSI : nST).apply(W, [r.f, r.ms].concat(r.a)); }); }
   function go(list) { var i = 0;
     function slice() { var t0 = Date.now();
       while (i < list.length) { try { (0, eval)(list[i]); } catch (e) { console.error('QuestTools', e); } i++; if (Date.now() - t0 > 60) break; }
-      if (i < list.length) { cover(k1Wait()); return setTimeout(slice, 0); }
-      stopWait(); try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
-    setTimeout(slice, 30); }
+      if (i < list.length) { cover(k1Wait()); return nST.call(W, slice, 0); }
+      holdOff(); stopWait(); try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
+    nST.call(W, function () { holdOn(); slice(); }, 30); }
   function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} stopWait(); try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } }
   function store(mode) { return db.transaction(ST, mode).objectStore(ST); }
   function getMany(ks, cb) { var out = {}, n = ks.length; if (!n || !db) return cb(out); try { var s = store('readonly'); ks.forEach(function (k) { var q = s.get(k); q.onsuccess = function () { out[k] = q.result; if (--n === 0) cb(out); }; q.onerror = function () { if (--n === 0) cb(out); }; }); } catch (e) { cb(out); } }
