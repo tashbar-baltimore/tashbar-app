@@ -1017,24 +1017,28 @@ body.gm-nav.gm-on:has(#mupill) #gm .gm-xp{margin-right:86px}
   kick(HIT,1.8); crash(HIT,.7); gtr(pc(82.41),HIT,.6,.55); [329.63,415.3,493.88].forEach(f=>brass(f,HIT,.55,.45));
   /* 3. THE DROP (club style): four-on-the-floor kick, pumping synth bass, open hats, claps, and MA'OZ TZUR (traditional Chanukah melody)
      on a big supersaw lead with bells. Twice: the second time a step higher, an octave up, with a crazier beat (16th hats, snare rushes). */
-  const G=HIT+B, M=[[261.63,1],[349.23,1],[523.25,1],[466.16,.5],[440,.5],[392,1],[349.23,2],[440,1],[466.16,1],[523.25,1],[392,.5],[349.23,.5],[329.63,1],[349.23,2]];   /* Ma-oz tzur ye-shu-a-ti, le-cha na-eh le-sha-bei-ach */
+  const G=HIT+B, F4=349.23,G4=392,A4=440,Bb4=466.16,C4=261.63,C5=523.25,D5=587.33,E5=659.25,F5=698.46,E4=329.63,R0=0;
+  /* the real notes (abcnotation.com, hymn transcription 'Maoz Tsur', moved from E to F): the opening line the first time, the closing line an octave up the second time */
+  const M1=[[F4,1],[C4,1],[F4,1],[Bb4,1],[A4,1],[G4,1],[F4,1],[R0,1],[C5,1],[D5,1],[G4,1],[Bb4,1],[A4,1],[G4,1],[F4,1],[R0,1]];   /* Ma-oz tzur ye-shu-a-ti, le-cha na-eh le-sha-bei-ach */
+  const M2=[[C5,1.5],[C5,.5],[D5,1],[E5,1],[F5,2],[C5,1],[R0,1],[F5,1],[E5,1],[D5,1],[C5,1],[C5,.5],[Bb4,.5],[A4,.5],[Bb4,.5],[G4,1],[R0,1],[A4,1.5],[Bb4,.5],[C5,2],[G4,1.5],[A4,.5],[Bb4,1.5],[Bb4,.5],[A4,1],[E4,1],[F4,1],[Bb4,1],[A4,1],[G4,1],[F4,2]];   /* le-et ta-chin mat-be-ach ... cha-nu-kat ha-miz-be-ach */
   const bell=(f,t,d,v)=>{ tone(f,t,d*1.4,'sine',v); tone(f*2,t,d*.8,'sine',v*.4); tone(f*3.01,t,d*.4,'triangle',v*.15); };
   const saw=(f,t,d,v,open)=>{ const g=c.createGain(), lp=c.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(open?1200:2500,t); lp.frequency.linearRampToValueAtTime(open?7000:5200,t+Math.min(d,.25)); lp.Q.value=2; env(g,t,.012,d,v); lp.connect(g); g.connect(out);
    [-22,-12,-5,0,5,12,22].forEach(dt=>{ const o=c.createOscillator(); o.type='sawtooth'; o.frequency.value=f; o.detune.value=dt; const og=c.createGain(); og.gain.value=.16; o.connect(og); og.connect(lp); o.start(t); o.stop(t+d+.05); }); };
   const openHat=t=>noise(t,.14,'highpass',7000,.26);
   const roots=[87.31,87.31,87.31,87.31,116.54,116.54,130.81,130.81];   /* F F F F Bb Bb C C */
   const bassNote=(f,t,d)=>{ const o=c.createOscillator(), o2=c.createOscillator(), g=c.createGain(), lp=c.createBiquadFilter(); o.type='sawtooth'; o2.type='square'; o.frequency.value=f; o2.frequency.value=f/2; lp.type='lowpass'; lp.frequency.setValueAtTime(1600,t); lp.frequency.exponentialRampToValueAtTime(300,t+d); env(g,t,.01,d,.32); o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(out); o.start(t); o2.start(t); o.stop(t+d+.05); o2.stop(t+d+.05); };
-  for(let k=0;k<32;k++){ const tb=G+k*B, bar=k%8, up=k<16?1:Math.pow(2,2/12), crazy=k>=16;
+  for(let k=0;k<32;k++){ const tb=G+k*B, bar=k%8, up=1, crazy=k>=16;
    kick(tb,1.5); if(bar%2===1) { clap(tb,.4); snare(tb,.5); } openHat(tb+B/2); hat(tb); if(crazy){ hat(tb+B/4); hat(tb+3*B/4); }
    bassNote(roots[bar]*up,tb+B/2,B*.45); if(crazy) bassNote(roots[bar]*up*2,tb+3*B/4,B*.2);
    if(bar===0&&k) crash(tb,.5); if(crazy&&bar===7){ [0,1,2,3].forEach(q=>snare(tb+q*B/4,.45+q*.12)); }
-   if(bar===0||bar===4) saw(roots[bar]*up*4,tb,B*.3,.2); }   /* club stabs */
+   if(crazy&&(bar===0||bar===4)) saw(roots[bar]*up*2,tb,B*.25,.12); }   /* club stabs, low, in round two only, so the melody stays clear */
   { const r=noise(G+14*B,2*B,'bandpass',400,.3,2*B-.05,1.4); r.frequency.exponentialRampToValueAtTime(9000,G+16*B); roll(G+15*B,G+16*B,.4,.9); }   /* riser into round two */
-  [[0,1],[16,2]].forEach(([start,oct])=>{ let b=start; const up=start?Math.pow(2,2/12):1; M.forEach(([f,d])=>{ const t=G+b*B, x=f*up*oct; saw(x,t,d*B*.95,.5,true); bell(x*2,t,d*B,.15); if(oct>1) saw(x/2,t,d*B*.95,.3); b+=d; }); });
+  const M4=M2.slice(M2.findIndex((x,i)=>i>8&&x[0]===A4&&x[1]===1.5));   /* line 4: az eg-mor be-shir miz-mor, cha-nu-kat ha-miz-be-ach (ends home on F) */
+  [[0,M1,1],[16,M4,2]].forEach(([start,mel,oct])=>{ let b=start; mel.forEach(([f,d])=>{ if(f){ const t=G+b*B, x=f*oct; saw(x,t,d*B*.95,.62,true); bell(x*2,t,d*B,.2); if(start) saw(x/2,t,d*B*.95,.28); } b+=d; }); });
   crowd(G+16*B,16*B+3,.16);
   /* 4. "INTRODUCING ...": a drum rush and a rising whoosh, then the highest moment: a giant chord across three octaves and the melody's
      last note held way up high, with a double crash and the crowd. */
-  const END=G+32*B, TOP=349.23*Math.pow(2,2/12)*2;   /* G5 */
+  const END=G+32*B, TOP=698.46;   /* F5: the melody's home note, up high */
   roll(END-B,END+B*1.2,.5,1); { const r=noise(END-B,B*2.2,'bandpass',500,.35,B*2.2-.05,1.4); r.frequency.exponentialRampToValueAtTime(11000,END+B*1.2); }
   const LAST=END+B*1.25; kick(LAST,1.9); crash(LAST,.85); crash(LAST+.02,.5);
   [.5,1,1.25,1.5,2,2.5,3].forEach(m=>saw(TOP*m,LAST,2.6,.26,true)); saw(TOP*4,LAST,2.6,.32,true); bell(TOP*4,LAST,2.4,.18);
