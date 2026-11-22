@@ -25,7 +25,7 @@ Every lesson teaches one small skill through the same six steps, so each boy lea
 | 5. SHOW ME | 3 tap-kind check questions, one try each. Mastery is earned here (unchanged rules) | `check` |
 | 6. BITE DONE! | One line on what he learned, one button to the next bite | the existing finish/save |
 
-The rules for every screen: one thing per screen and **one big button forward**. No stacked pop-ups, no flying parts, no timers, and no money pill, goal bar, mascot or joke jar during a bite. A 6-dot progress strip sits at the top, and a read-aloud button is on every screen.
+The rules for every screen: one thing per screen and **one big button forward**. No stacked pop-ups, no flying parts, no timers, and no goal bar, mascot or joke jar during a bite. **Money stays exciting (HoS 2026-11-21 22:22):** a gold money chip in the One Bite header shows his real balance on every screen. Every right answer sends a coin flying into it, and Bite Done has a big counting-up "YOU EARNED" moment (`src/OneBiteMoney.html`, display only; the server sets every amount). The old pop-up money shows (Money Storm, Jackpot, coin rain over the work) stay off during a bite. A 6-dot progress strip sits at the top, and a read-aloud button is on every screen.
 
 ## How it is built (the decided design)
 - **The player:** `src/OneBite.html`, a boy add-on registered in `Photos.js` AND `Speed.js`. It takes over the lesson screen for any lesson that is "on" and reuses the engine's own `buildMission` / `answer` / `next` / `finish`. That means mastery, saving, pay and the server stay exactly as they are. `QuestPage.html` is full, so nothing new goes in it.
