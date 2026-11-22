@@ -15,7 +15,8 @@
 **The screen rules:**
 - One thing per screen and one big green button forward.
 - A 6-dot strip at the top, with ✕, 🔊 and **Aa** (easy-read letters).
-- No pop-ups, confetti, money pill, banners, mascot or joke jar during a bite. Pay still happens, and is shown once on Bite Done.
+- No pop-ups, confetti, banners, mascot or joke jar during a bite.
+- **Money stays exciting (HoS 2026-11-21 22:22):** a gold money chip in the One Bite header shows his real balance on every screen. Every right answer sends a coin flying into it, and Bite Done has a big counting-up "YOU EARNED" moment (`src/OneBiteMoney.html`, display only; the server sets every amount). The old pop-up money shows (Money Storm, Jackpot, coin rain over the work) stay off during a bite.
 - No timers.
 
 ## 2. Age bands (each bite has one; the default comes from its level)
@@ -89,3 +90,38 @@ Anything left out comes from the lesson's own Teacher Time (an auto-bite).
 ## 9. Switches and rollout
 - `window.OB_LIVE`: `'test'` (TEST- boys only), `'on'` (every boy, limited by `OB_SUBJECTS` if set), or `'off'`.
 - **Rollout:** test boys first, then by subject, with the hand-written bites added in batches of 20–40 per PR.
+
+## 10. The Activity Kit (round 2, `src/OneBiteKit.html`)
+A bite with `do:[…]` and `your:[…]` plays **hands-on activities** in steps 3 and 4 instead of the lesson's question cards.
+- **Do it with me** plays every `do` activity (1–3; 2 is best), with the How-to box open and gentle help (counts shown, ghost tiles, a pulsing first target).
+- **Your turn** plays the `your` activities (3–5). After **3 right on the first try in a row** it goes straight to **Show me**. A miss starts the run again. When the list runs out, Show me comes next anyway. The How-to box hides behind "👀 Need help?" until he asks or misses.
+- A wrong try shows the help line. A Check activity missed twice shows the answer and moves on (it is recorded as not right).
+- The player never puts the same activity twice in a row (it reorders `your` when it can). The test fails if it cannot.
+- Every activity is saved as an engine result (phase `teach` for `do`, `practice` for `your`), so evidence rows still save. Mastery, pay and saving are unchanged: Show me is the lesson's own 3 check questions.
+- **No `do`/`your`:** the lesson's own questions play, capped at 2 guided + 5 practice, and practice also ends after 3 right in a row.
+- **Little Learners (K1):** every instruction is spoken; 3 choices at most (the test checks); big targets; a 🧍 wiggle break before Your turn when the bite has no `chant` or `move` model; a celebration on Bite Done.
+- **Builders and up:** the instruction's words light up as it is read (read-along). **Explorers:** add `why:{q,o,a}` to any activity for "tap the reason" after a right answer.
+
+Every activity may have: `say` (spoken instruction; a good default is made), `how` (the How-to line; a default is made), `q` (a big prompt such as `3 + 4`), `pic` (an emoji; `art:apple` uses the K–1 games' drawings), `why`.
+
+| Type | Data | He does |
+|---|---|---|
+| `tenframe` | `{type:'tenframe', n:7, start:0}` (n up to 20; `start` dots are already in, blue) | taps boxes (or drags the dot) until the frame shows n, then Check |
+| `hop` | `{type:'hop', start:3, add:4, unit:1, from, to}` (add < 0 hops back; unit 2, 5, 10 for skip counting; at most 20 hops wide) | taps Hop ▶ / ◀ Hop, counting hops, then Check |
+| `count` | `{type:'count', n:6, pic:'🍎', name:'apple', o:['5','6','7']}` (`o` optional) | taps each picture (it gets a number), then picks how many |
+| `blocks` | `{type:'blocks', n:14}` | adds tens and ones (tap a block to take it away), then Check; 14 ones is "trade 10 ones for a ten" |
+| `tiles` | `{type:'tiles', w:['c','a','t'], extra:['b'], hear:'cat', he:false}` | taps tiles into the slots in order, then Check (numbers work too: `w:['2','4','6']`) |
+| `findall` | `{type:'findall', grid:['b','d','b','p'], find:'b', findSay:'b'}` (`find` can be a list; up to 20 cells) | taps every target |
+| `match` | `{type:'match', pairs:[['🍎','a'],['🐝','b']]}` (2–4 pairs; K1 3 at most) | taps one, then its partner (or drags) |
+| `sort` | `{type:'sort', bins:['Circle','Not a circle'], cards:[['⚪',0],['🔺',1]]}` (2–3 bins, 2–8 cards) | one card at a time: taps (or drags it to) the right box |
+| `trace` | `{type:'trace', glyph:'b', name:'letter b', he:false}` | traces the dotted letter with a finger; passes at about 80% covered |
+| `listen` | `{type:'listen', hear:'buh', clip:'letter-sound:b', o:['b','d','p'], a:'b', cap:'the sound at the start of ball'}` | hears it (auto-played, 🔊 again), taps the match |
+
+Hebrew (`he:true`) is never spoken by a computer voice: give `listen` a recorded `clip`. Example bite:
+```js
+B['SKILL.ID'] = { band:'K1', …round-1 fields…,
+  do:[ {type:'tenframe', n:5}, {type:'count', n:5, pic:'🍎', name:'apple'} ],
+  your:[ {type:'count', n:7, pic:'⭐', name:'star'}, {type:'tenframe', n:6}, {type:'findall', grid:['5','3','5','2','5','4'], find:'5'},
+         {type:'count', n:4, pic:'🕯️', name:'candle'}, {type:'tenframe', n:8} ] };
+```
+Check it: `node tools/audit/ob-quick.js` (it tells you exactly which activity is wrong), then `OB=test IDS=<ids> node tools/audit/play-shots.js` (one picture per activity, opened and done).

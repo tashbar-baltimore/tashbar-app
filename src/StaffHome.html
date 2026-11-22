@@ -314,9 +314,7 @@ function draw(){ top(); var p=q('#sh-page'); if(!p) return; var bar=q('#slBar');
   } else if(S.area==='school'){ h=schoolHTML();
   } else if(S.area==='curriculum'&&window.TEACH){ var P0=PAGE.curriculum;   /* HoS 2026-11-21 simplify step 5: ONE view (StaffTeach.html) + See what the kids see; the other tools are a plain list under it */
     h+='<div class="st-head"><div><h1>'+E(P0.t)+'</h1><p class="lead" style="margin:0">'+E(P0.lead)+'</p></div><div class="st-acts">'+btn('see','shb')+'</div></div>'+window.TEACH.html()+toolList('Other curriculum tools',P0.more);
-  } else { var P=PAGE[S.area]; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>';
-    h+='<div class="cards" style="margin-bottom:16px"><div class="card cur"><h2><span>🌳</span>Curriculum tree</h2><p>Every skill from Kindergarten to 8th grade, step by step: what comes first, what comes next. Tap a subject.</p><div class="btns">'+[['ENGLISH','📖','English'],['MATH','🔢','Math'],['SCIENCE','🔬','Science'],['KODESH','📜','Limudei Kodesh']].map(function(x){ return '<button type="button" data-sfopen="'+x[0]+'">'+x[1]+' '+x[2]+'</button>'; }).join('')+'</div></div></div>'+schoolMapHTML();
-    P.groups.forEach(function(g){ h+='<h3>'+E(g[0])+'</h3>'+tilesHTML(g[1]); }); }
+  } else { var P=PAGE.curriculum; h+='<h1>'+E(P.t)+'</h1><p class="lead">'+E(P.lead)+'</p>'+toolList('Curriculum tools',['see','tree'].concat(P.more)); }   /* only if StaffTeach.html did not load */
   p.innerHTML=h; if(S.area==='curriculum'&&window.TEACH) try{ window.TEACH.mount(); }catch(x){} slot(); window.scrollTo(0,0); if(S0().boys&&(S.area==='home'||S.area==='students'||S.area==='today'||S.area==='curriculum'||S.area==='reports')) loadKM(false);   /* the Kodesh map only once the boys are loaded */ if(S.area==='home'||S.area==='today') loadNeeds(false); if(S.area==='today') loadToday(); if(S.area==='reports') loadReport(); if(S.area==='students') loadRoster(true); else { var sb=q('#sh-selbar'); if(sb) sb.remove(); } }
 function num(sel){ var e=q(sel); if(!e) return 0; var m=String(e.textContent||'').match(/(\d+)/g); return m?Number(m[m.length-1]):0; }
 
@@ -377,16 +375,6 @@ function needsHTML(){ var r=needRows(), known=!!S0().boys, g=grpLabel();
     :(known?'<div class="okk">✅ All caught up. Nothing needs you right now.</div>':'<div class="nd"><i>⏳</i><span><b>Loading the boys…</b><small>This takes a few seconds.</small></span></div>'))+'</div>'; }
 function redrawNeeds(){ var n=q('#sh-needs'); if(!n) return; var t=document.createElement('div'); t.innerHTML=needsHTML(); if(t.firstChild.innerHTML!==n.innerHTML) n.replaceWith(t.firstChild); }
 setInterval(function(){ if((S.area==='home'||S.area==='today')&&body().classList.contains('sh-page')) redrawNeeds(); },3000);
-function schoolMapHTML(){ var boys=(S0().boys||[]).filter(function(b){ return !b.test; }); if(!boys.length) return '<div id="sh-smap"></div>';
-  var rows=[], stuck={};
-  SUBJ.forEach(function(x){ var placed=0, units={}; boys.forEach(function(b){ var c=cellsOf(b.id)[x[0]]; if(!c||!c.level) return; placed++; var u=unitNow(c), key='Level '+c.level+(u.name?' · '+u.name:''); units[key]=(units[key]||0)+1;
-      if(c.now&&c.status==='red'){ var s0=stuck[c.now]||(stuck[c.now]={n:0,subj:x}); s0.n++; } });
-    if(!placed) return; var top=Object.keys(units).sort(function(a,b){ return units[b]-units[a]; })[0];
-    rows.push('<div class="row"><span class="n" style="background:#2F5BD3">'+placed+'</span><span><b>'+x[1]+' '+E(x[2])+'</b><small>'+placed+' boy'+(placed===1?'':'s')+' placed · most are on '+E(top)+' ('+units[top]+')</small></span>'+(x[3]?'<button type="button" class="go" data-sfopen="'+x[3]+'">🌳 See the tree →</button>':'')+'</div>'); });
-  var st=Object.keys(stuck).sort(function(a,b){ return stuck[b].n-stuck[a].n; }).slice(0,5);
-  var h='<div id="sh-smap"><div id="sh-next" style="border-color:#16202C"><h2>🗺️ Where the boys are</h2>'+(rows.length?rows.join(''):'<div class="row"><span><b>No boy has a level yet.</b><small>Set levels so the app knows where each boy is on the map.</small></span><button type="button" class="go" data-sh="do" data-k="nolevel">Set levels →</button></div>');
-  if(st.length) h+='<h2 style="margin-top:14px">🧱 Steps where boys are stuck</h2>'+st.map(function(id){ var x=stuck[id]; return '<div class="row"><span class="n" style="background:#C8402F">'+x.n+'</span><span><b>'+E(skName(id))+'</b><small>'+x.subj[1]+' '+E(x.subj[2])+' · '+x.n+' boy'+(x.n===1?'':'s')+' stuck here</small></span>'+(x.subj[3]?'<button type="button" class="go" data-sh="tree" data-s="'+x.subj[3]+'" data-id="'+E(id)+'">See it on the tree →</button>':'')+'</div>'; }).join('');
-  return h+'</div></div>'; }
 function hello(){ var h=new Date().getHours(), nm=''; try{ nm=String(S0().staffName||'').split(' ')[0]; }catch(e){} return (h<12?'Good morning':h<17?'Good afternoon':'Good evening')+(nm?', '+nm:''); }
 function S0(){ try{ return (typeof window.S==='object'&&window.S&&window.S.d)||(new Function('try{ return S&&S.d; }catch(e){ return null; }'))()||{}; }catch(e){ return {}; } }
 
@@ -491,7 +479,7 @@ var SUBJ=[['MATH','🔢','Math','MATH'],['READ','📖','Reading','ENGLISH'],['LA
   ['K:KRI','🔤','Kriyah','KODESH'],['K:CHU','📜','Chumash','KODESH'],['K:RAS','✒️','Rashi','KODESH'],['K:MSH','📚','Mishnayos','KODESH'],['K:GEM','🏛️','Gemara','KODESH']];
 var KM={boys:{},names:{},at:0,busy:false};   /* Kodesh tracks, per boy (sgKodeshMap) */
 function loadKM(force){ if(KM.busy||(!force&&KM.at&&Date.now()-KM.at<300000)) return; KM.busy=true; srv('sgKodeshMap',[tok()]).then(function(r){ KM.boys=(r&&r.boys)||{}; KM.names=(r&&r.names)||{}; KM.at=Date.now(); KM.busy=false; redrawAll(); }).catch(function(){ KM.busy=false; }); }
-function redrawAll(){ if(S.area==='reports') drawReport(); if(S.area==='curriculum'){ var cm=q('#sh-smap'); if(cm){ var t2=document.createElement('div'); t2.innerHTML=schoolMapHTML(); cm.replaceWith(t2.firstChild); } } if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(S.area==='home'){ var m=q('#sh-smap'); if(m){ var t=document.createElement('div'); t.innerHTML=schoolMapHTML(); m.replaceWith(t.firstChild); } } if(ST.dlg&&ST.dlg.map) mapDraw(); }
+function redrawAll(){ if(S.area==='reports') drawReport(); if(S.area==='students') drawStudents(); if(S.area==='today') drawToday(); if(S.area==='home'){ var m=q('#sh-smap'); if(m){ var t=document.createElement('div'); t.innerHTML=schoolMapHTML(); m.replaceWith(t.firstChild); } } if(ST.dlg&&ST.dlg.map) mapDraw(); }
 function cellsOf(id){ var b=(S0().boys||[]).filter(function(x){ return x.id===id; })[0]; return Object.assign({}, b&&b.cells||{}, KM.boys[id]||{}); }
 var STRAND={NUM:'Counting & Numbers',PV:'Place Value',OPS:'Operations',FRAC:'Fractions & Decimals',ALG:'Algebra & Patterns',FUNC:'Functions',MEAS:'Measurement',GEO:'Geometry',STAT:'Data & Statistics',
   PA:'Print & Sounds',PHON:'Phonics & Word Study',FLU:'Fluency',LV:'Leveled Reading',VOC:'Vocabulary',COMP:'Comprehension',LIT:'Literature',HAND:'Handwriting',GRAM:'Grammar',MECH:'Capitals & Punctuation',SENT:'Sentences',PARA:'Paragraphs',USE:'Word Choice',ESSAY:'Essays',RES:'Research',
@@ -657,7 +645,7 @@ function boyAct(a,id){ dlgClose();
   if(a==='slip') return focusOld(id,/Automatic and slipping/);
   if(a==='points') return focusOld(id,/^Fix points/);
   if(a==='remove') return focusOld(id,/^Remove student/);
-  if(a==='all') return oldCard(id,null); }
+  }
 /* show ONLY one part of the old card (his day, Kodesh, sign-in code ...): the rest of it is hidden while it is open */
 var FOC=null;
 function focusFind(d,w){ var el=null; if(typeof w==='string') el=d.querySelector(w); else [].some.call(d.querySelectorAll('h3'),function(h){ if(w.test(h.textContent.trim())){ el=h; return true; } return false; });

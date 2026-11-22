@@ -26,11 +26,12 @@
    - **K–1:** voice-first (every instruction is spoken, no reading needed), big pictures, 3 choices at most, big 76 px targets, a song or a movement in every bite, and a celebration.
    - **Gr 2–3:** read-along. **Gr 4–5:** real-world problems, plus "tap the reason". **Gr 6–8:** strategy choice, challenge, teach it back, fewer cartoons.
 4. **Taught, then asked.** Every check question uses only what Watch Me and the activities showed.
-5. **Unchanged:** mastery, pay and saving (the engine's `answer`/`finish`; the server sets all money); the HoS teaching standard; the How-to-do-it help; family-life rules; no real student data (the repository is PUBLIC).
+5. **Money stays exciting (HoS 2026-11-21 22:22):** a gold money chip in the One Bite header shows his real balance on every screen. Every right answer sends a coin flying into it, and Bite Done has a big counting-up "YOU EARNED" moment (`src/OneBiteMoney.html`, display only; the server sets every amount). The old pop-up money shows (Money Storm, Jackpot, coin rain over the work) stay off during a bite.
+6. **Unchanged:** mastery, pay and saving (the engine's `answer`/`finish`; the server sets all money); the HoS teaching standard; the How-to-do-it help; family-life rules; no real student data (the repository is PUBLIC).
 
 ## The work: three lanes, which can run at the same time in three accounts
 
-### Lane A: the Activity Kit (player). Files: `src/OneBite.html` and a new `src/OneBiteKit.html` (register it in Photos.js AND Speed.js, before OneBite)
+### Lane A: the Activity Kit (player). **DONE 2026-11-22: the data schema for `do`/`your` is in `docs/ONE-BITE-PLAYBOOK.md` section 10.** Files: `src/OneBite.html` and a new `src/OneBiteKit.html` (register it in Photos.js AND Speed.js, before OneBite)
 - **Build reusable, touch-friendly activities that read their data from `ONE_BITE[id].do` (guided) and `ONE_BITE[id].your` (practice):**
   - `tenframe` (drag or tap dots to make N);
   - `hop` (number line: start, hop by k, land on the answer);
