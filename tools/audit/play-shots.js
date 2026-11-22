@@ -23,9 +23,16 @@ const FAKE = require('./fake.js');
     await pg.evaluate(id => { A.overlay = null; SRV.token = 't'; SRV.states = {}; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.session = 0; A.view = 'hub'; render();
       const pre = id.split('.')[0], map = /^(LK|HEB)$/.test(pre) ? 'LK' : /^(READ|WRIT|LANG)$/.test(pre) ? 'READ' : /^(SS|SOC|FACT)$/.test(pre) ? 'SS' : /^(COMP|VOC)$/.test(pre) ? 'COMP' : pre;
       const c = WORLD[pre] ? pre : WORLD[map] ? map : Object.keys(WORLD)[0]; startMission(c, id, 'skill'); }, id);
+    await pg.evaluate(src => { window.__obkStep = (0, eval)('(' + src + ')'); }, require('../../tests/lib/onebite.js').obkStep.toString());
     await pg.waitForTimeout(700);
+    let lastKit = '', kitTaps = 0;
     let n = 0, wrongDone = false, ttTaken = !process.env.TT, ttLeft = 0;
-    while (n < 70) {
+    while (n < 70 && kitTaps < 400) {
+      /* Activity Kit screens (round 2): one picture when an activity opens and one when it is done; taps in between are not pictured */
+      const kst = await pg.evaluate(() => { const p = A.play, k = p && p.ob && p.ob.kit; if (A.view !== 'play' || !k || !/^(do|your)$/.test(p.ob.stage)) return null; return p.ob.stage + k.i + (k.s.over ? 'done' : k.s.phase === 'why' ? 'why' : ''); });
+      if (kst) { kitTaps++;
+        if (kst !== lastKit) { lastKit = kst; const file = tag + '_' + String(n).padStart(2, '0') + '.png'; await pg.screenshot({ path: path.join(OUT, file) }); rec[id].push({ kit: kst, file }); n++; }
+        await pg.evaluate(() => window.__obkStep(false)); await pg.waitForTimeout(kst.endsWith('done') ? 350 : 60); continue; }
       const st = await pg.evaluate(() => { const vis = el => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
         const btns = [...document.querySelectorAll('button,[data-act]')].filter(vis);
         return { view: A.view, i: A.play ? A.play.i : -1, of: A.play ? A.play.items.length : 0, phase: A.play && A.play.items[A.play.i] ? A.play.items[A.play.i].phase : '', t: A.play && A.play.items[A.play.i] ? A.play.items[A.play.i].t : '',

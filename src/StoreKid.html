@@ -237,9 +237,9 @@ function draw(){ if(!T.open) return; let o=document.getElementById('tlstore'); c
 function card(x,bal){ const own=owned(x.id), goal=ST().goal===x.id, worn=ST().wear[x.slot]===x.id, price=x.cents/100, need=Math.max(0,price-bal);
   const wear=x.kind==='wear'&&own?`<button class="wr ${worn?'on':''}" data-st="wear" data-id="${x.id}">${worn?'✓ Using it':'Use it'}</button>`:'';
   if(x.season&&x.open===false&&!own){ const z=((T.info&&T.info.seasons)||[]).find(q=>q.id===x.season)||{name:'the holiday'};
-    return `<div class="stcard hol">${(x.slot==='trail'||x.slot==='tap')?`<div class="stpv" data-pv="${x.id}" role="img" aria-label="Preview: what ${E(x.name)} looks like">${pvStatic(x.id,x.emoji)}<span class="f"></span><small>\u25b6 Tap to see it</small></div>`:`<span class="em" aria-hidden="true">${x.emoji}</span>`}<h4>${E(x.name)}</h4><p>${E(x.desc)}</p>${x.slot==='trail'?'<span class="stset">✨ Includes its tap blast</span>':x.slot==='tap'?'<span class="stset">✨ Includes its trail</span>':''}<span class="pr">${$(price)}</span><span class="soon">🗓️ Back in the weeks before ${E(z.name)}</span></div>`; }
+    return `<div class="stcard hol">${(x.slot==='trail'||x.slot==='tap')?`<div class="stpv" data-pv="${x.id}" role="img" aria-label="Preview: what ${E(x.name)} looks like">${pvStatic(x.id,x.emoji)}<span class="f"></span><small>\u25b6 Tap to see it</small></div>`:`<span class="em" aria-hidden="true">${x.emoji}</span>`}<h4>${E(x.name)}</h4><p>${E(x.desc)}</p>${x.slot==='trail'&&tapOf(x.id)?'<span class="stset">✨ Includes its tap blast</span>':x.slot==='tap'&&trailOf(x.id)?'<span class="stset">✨ Includes its trail</span>':''}<span class="pr">${$(price)}</span><span class="soon">🗓️ Back in the weeks before ${E(z.name)}</span></div>`; }
   const canBuy=!(own&&(x.kind==='wear'||x.kind==='keep'));
-  return `<div class="stcard ${own?'own':''} ${goal?'isgoal':''} ${x.season?'hol':''}">${own?'<span class="tag">YOURS</span>':''}${(x.slot==='trail'||x.slot==='tap')?`<div class="stpv" data-pv="${x.id}" role="img" aria-label="Preview: what ${E(x.name)} looks like">${pvStatic(x.id,x.emoji)}<span class="f"></span><small>\u25b6 Tap to see it</small></div>`:`<span class="em" aria-hidden="true">${x.emoji}</span>`}<h4>${E(x.name)}</h4><p>${E(x.desc)}</p>${x.slot==='trail'?'<span class="stset">✨ Includes its tap blast</span>':x.slot==='tap'?'<span class="stset">✨ Includes its trail</span>':''}
+  return `<div class="stcard ${own?'own':''} ${goal?'isgoal':''} ${x.season?'hol':''}">${own?'<span class="tag">YOURS</span>':''}${(x.slot==='trail'||x.slot==='tap')?`<div class="stpv" data-pv="${x.id}" role="img" aria-label="Preview: what ${E(x.name)} looks like">${pvStatic(x.id,x.emoji)}<span class="f"></span><small>\u25b6 Tap to see it</small></div>`:`<span class="em" aria-hidden="true">${x.emoji}</span>`}<h4>${E(x.name)}</h4><p>${E(x.desc)}</p>${x.slot==='trail'&&tapOf(x.id)?'<span class="stset">✨ Includes its tap blast</span>':x.slot==='tap'&&trailOf(x.id)?'<span class="stset">✨ Includes its trail</span>':''}
    <span class="pr">${$(price)}</span>${canBuy&&need>0?`<span class="need">Need ${$(need)} more</span><span class="nb"><i style="width:${Math.min(100,Math.round(bal/price*100))}%"></i></span>`:''}
    <div class="row">${canBuy?`<button class="buy" data-st="buy" data-id="${x.id}" ${need>0||T.busy?'disabled':''}>Buy it</button>`:''}${wear}${canBuy&&!own&&x.kind!=='donate'?`<button class="gl ${goal?'on':''}" data-st="goal" data-id="${x.id}">${goal?'🎯 My goal':'🎯 Make it my goal'}</button>`:''}</div></div>`; }
 function body(I,bal){ const items=I.items.filter(x=>x.cat===T.tab);
@@ -350,16 +350,19 @@ const hasIt=id=>owned(id)||((ST().owned||[]).indexOf(id)>=0);
 const RAINBOW=['#EF4444','#F97316','#FACC15','#22C55E','#3B82F6','#6366F1','#A855F7'];
 const TAPS={'tap-rainbow':{cols:RAINBOW,kind:'rainbow'},'tap-stars':{cols:['#FACC15','#F59E0B','#FDE047'],em:['⭐','✨','🌟'],kind:'stars'},'tap-confetti':{cols:['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'],sq:true,kind:'confetti'},
  'tap-fireworks':{cols:['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'],big:true,kind:'fireworks'},'tap-gold':{cols:['#FACC15','#EAB308','#CA8A04'],em:['🪙','✨'],kind:'coins'},
- 'hol-sukkah':{cols:['#16A34A','#FACC15'],em:['🍋','🌿','🍇','⭐']},'hol-menorah':{cols:['#2563EB','#CBD5E1','#FACC15'],em:['🔥','✨'],kind:'flames'},'hol-fruit':{cols:['#7C3AED','#65A30D','#CA8A04'],em:['🍇','🫒','🌾','🌳']},
+ 'hol-sukkah':{cols:['#16A34A','#FACC15'],em:['🍋','🌿','🍇','⭐']},'hol-menorah':{cols:['#2563EB','#CBD5E1','#FACC15'],em:['✨'],kind:'menorah'},'hol-fruit':{cols:['#7C3AED','#65A30D','#CA8A04'],em:['🍇','🫒','🌾','🌳']},
  'hol-masks':{cols:['#A855F7','#F43F5E','#FACC15'],em:['🎭','🎉','🥁','👑']},'hol-arrows':{cols:['#EA580C','#FACC15'],em:['🏹','✨']},'hol-flowers':{cols:['#EC4899','#FACC15','#22C55E'],em:['🌸','🌼','🌿','🌷']}};
 /* MATCHING SETS (HoS 2026-11-20: "when you buy a swipe it should come with a built-in blast ... uniform together"): every trail comes
-   with its matching tap blast, and every tap blast with its matching trail. If he also wears a separate one, that one wins for its slot. */
-const TAP_OF={'trail':TAPS['tap-stars'],'trail-rainbow':TAPS['tap-rainbow'],'trail-comet':{cols:['#FDBA74','#F97316','#FDE047'],kind:'comet'},'trail-sparkle':{cols:['#FDE68A','#FFFFFF','#C4B5FD'],em:['✨'],kind:'sparkle'},
- 'trail-bubbles':{cols:['#7DD3FC','#E0F2FE'],kind:'bubbles'},'hol-honey':{cols:['#F59E0B','#EF4444'],em:['🍎','🍯']},'hol-flames':{cols:['#F97316','#FACC15'],em:['🔥','✨'],kind:'flames'},
- 'hol-sea':{cols:['#38BDF8','#0EA5E9'],em:['🌊','💧'],kind:'bubbles'},'hol-bonfire':{cols:['#F97316','#FACC15'],em:['🔥','✨'],kind:'flames'},'hol-donuts':{cols:['#F9A8D4','#FDE68A'],em:['🍩']}};
-const TRAIL_OF={'tap-rainbow':null,'tap-stars':null,'tap-confetti':{conf:true,gap:12},'tap-fireworks':{fw:true,gap:9},'tap-gold':{em:['🪙'],gap:32},'hol-sukkah':{em:['🍋','🌿'],gap:32},'hol-menorah':{em:['✨','🔥'],gap:26,up:true},
+   with its matching tap blast, and every tap blast with its matching trail. If he also wears a separate one, that one wins for its slot.
+   NO TWO ALIKE (HoS 2026-11-22): a blast and a trail must never end up as the same effect. Rainbow rings blast and Spinning stars blast keep
+   their light splash on swipes (not the Rainbow ribbon / Falling stars trails); those trails get their own tap (rainbow streamers, one big
+   star). tests/lib/storefx.js fails if two items share a name, a picture, an effect or nearly the same app colors. */
+const TAP_OF={'trail':{cols:['#FFF7AE','#FDE047','#FACC15'],kind:'starpop'},'trail-rainbow':{cols:RAINBOW,kind:'ribbon'},'trail-comet':{cols:['#FDBA74','#F97316','#FDE047'],kind:'comet'},'trail-sparkle':{cols:['#FDE68A','#FFFFFF','#C4B5FD'],em:['✨'],kind:'sparkle'},
+ 'trail-bubbles':{cols:['#7DD3FC','#E0F2FE'],kind:'bubbles'},'hol-honey':{cols:['#F59E0B','#EF4444'],em:['🍎','🍯']},'hol-flames':{cols:['#F97316','#FACC15'],em:['🕯️','✨'],kind:'flames'},
+ 'hol-sea':{cols:['#38BDF8','#0EA5E9'],em:['🌊','💧']},'hol-bonfire':{cols:['#F97316','#FB923C','#FACC15','#EF4444'],kind:'fireworks'},'hol-donuts':{cols:['#F9A8D4','#FDE68A'],em:['🍩']}};
+const TRAIL_OF={'tap-rainbow':null,'tap-stars':null,'tap-confetti':{conf:true,gap:12},'tap-fireworks':{fw:true,gap:9},'tap-gold':{em:['🪙'],gap:32},'hol-sukkah':{em:['🍋','🌿'],gap:32},
  'hol-fruit':{em:['🍇','🫒','🌾'],gap:32},'hol-masks':{em:['🎉','🎭'],gap:32},'hol-arrows':{em:['🏹'],gap:34},'hol-flowers':{em:['🌸','🌼'],gap:30}};
-function trailOf(id){ return TRAILS[id]||TRAIL_OF[id]||(id==='tap-rainbow'?TRAILS['trail-rainbow']:id==='tap-stars'?TRAILS['trail']:null); }
+function trailOf(id){ return TRAILS[id]||TRAIL_OF[id]||null; }
 function tapOf(id){ return TAPS[id]||TAP_OF[id]||null; }
 function wornTrail(){ const w=ST().wear||{}; return TRAILS[w.trail]||trailOf(w.tap); }
 function wornTap(){ const w=ST().wear||{}; return TAPS[w.tap]||tapOf(w.trail); }
@@ -367,7 +370,7 @@ window.tlStoreTrailOn=()=>{ try{ return !!(A.st&&wornTrail()); }catch(e){ return
 window.tlTapStyle=()=>{ try{ if(!A.st) return null; return wornTap()||null; }catch(e){ return null; } };
 /* trails: follow the mouse (pointer events) and the finger (touch events, which keep coming while the page scrolls) */
 const TRAILS={'trail':{em:['⭐','✨','🌟'],gap:30},'trail-rainbow':{rb:true,gap:7},'trail-comet':{comet:true,gap:7},'trail-sparkle':{em:['✨'],gap:22,small:true},'trail-bubbles':{em:['🫧'],gap:34,up:true},
- 'hol-honey':{em:['🍎','🍯'],gap:34},'hol-flames':{em:['🔥','✨','🕯️'],gap:28,up:true},'hol-sea':{em:['🌊','💧'],gap:30},'hol-bonfire':{em:['🔥','✨'],gap:26,up:true},'hol-donuts':{donut:true,gap:30}};
+ 'hol-honey':{em:['🍎','🍯'],gap:34},'hol-flames':{em:['🔥','✨','🕯️'],gap:28,up:true},'hol-sea':{em:['🌊','💧'],gap:30},'hol-bonfire':{spark:true,gap:12},'hol-donuts':{donut:true,gap:30}};
 /* Chanukah rolling donuts: small real donuts (a ring with a hole), five frostings, that roll away from the finger in random directions */
 const DONUTS=[['#F9A8D4','#FFFFFF'],['#7C4A2D','#FDE68A'],['#FFFFFF','#F43F5E'],['#3B82F6','#FFFFFF'],['#E8A33D','#7C2D12']];
 function donutSvg(k){ const f=DONUTS[k%DONUTS.length], ring='M10 1a9 9 0 1 0 .01 0zM10 7a3 3 0 1 1-.01 0z', top='M10 2.6a7.4 7.4 0 1 0 .01 0zM10 6.4a3.6 3.6 0 1 1-.01 0z';
@@ -401,8 +404,10 @@ function pvStatic(id,emo){ try{ const tr=trailOf(id), tp=tapOf(id), P=t=>[8+t*72
     else if(tr.em) h+=at(p,0,tr.up?-6*(1-t):0,`font-size:${Math.round((tr.small?10:13)+5*t)}px;opacity:${o}`,tr.em[k%tr.em.length]);
     else if(tr.rb) h+=at(p,0,0,`width:${Math.round(6+8*t)}px;height:${Math.round(6+8*t)}px;border-radius:50%;background:hsl(${Math.round(t*320)},95%,58%);opacity:${o}`);
     else if(tr.conf) h+=at(p,(k%3-1)*4,(k%2?6:-2)+t*4,`width:5px;height:8px;border-radius:1px;background:${['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'][k%5]};transform:translate(-50%,-50%) rotate(${k*47}deg);opacity:${o}`);
+    else if(tr.spark) h+=at(p,(k%3-1)*4,-(k%4)*3,`width:4px;height:4px;border-radius:50%;background:#FFF7ED;box-shadow:0 0 5px 2px ${['#F97316','#FACC15','#FB923C','#EF4444'][k%4]};opacity:${o}`);
     else if(tr.fw) h+=at(p,(k%3-1)*5,(k%4-1.5)*4,`width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 5px 2px ${['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'][k%5]};opacity:${o}`);
     else h+=at(p,0,0,`width:${Math.round(4+10*t)}px;height:${Math.round(4+10*t)}px;border-radius:50%;background:radial-gradient(circle,#FFF7ED,#FDBA74 45%,#F97316 70%,rgba(249,115,22,0));opacity:${o}`); } }
+  if(!tr&&tp){ const sc=tp.cols||RAINBOW; for(let k=0;k<6;k++){ const t=.08+k*.15, p=P(t), o=(.35+.6*t).toFixed(2); h+=tp.em?at(p,0,0,`font-size:${10+k}px;opacity:${o}`,tp.em[k%tp.em.length]):at(p,0,0,`width:${7+k}px;height:${7+k}px;border-radius:50%;border:2px solid ${sc[k%sc.length]};opacity:${o}`); } }
   const e=P(1), K=tp&&tp.kind, cols=(tp&&tp.cols)||RAINBOW, em=tp&&tp.em;
   if(!tp){ h+=`<i class="pvs pvtip" style="left:${e[0]}%;top:${e[1]}%"></i>`; return h; }
   if(K==='rainbow'){ cols.forEach((c,k)=>{ const r=6+k*3.2; h+=at(e,0,0,`width:${r*2}px;height:${r*2}px;border-radius:50%;border:2px solid ${c}`); }); }
@@ -410,6 +415,9 @@ function pvStatic(id,emo){ try{ const tr=trailOf(id), tp=tapOf(id), P=t=>[8+t*72
   else if(K==='confetti'){ for(let k=0;k<14;k++){ const a=k/14*Math.PI*2+.3, d=10+(k%3)*7; h+=at(e,Math.cos(a)*d,Math.sin(a)*d+4,`width:6px;height:9px;border-radius:1.5px;background:${cols[k%cols.length]};transform:translate(-50%,-50%) rotate(${k*53}deg)`); } }
   else if(K==='coins'){ [[0,-14],[-16,-2],[15,-4],[-8,12],[10,12]].forEach(([dx,dy],k)=>{ h+=at(e,dx,dy,`font-size:${15-k%2*2}px;transform:translate(-50%,-50%) rotate(${k*25-30}deg)`,'🪙'); }); }
   else if(K==='stars'){ for(let k=0;k<7;k++){ const a=k/7*Math.PI*2, d=17; h+=at(e,Math.cos(a)*d,Math.sin(a)*d,`font-size:${k%2?11:14}px`,(em||['⭐'])[k%(em||['⭐']).length]); } h+=at(e,0,0,'width:12px;height:12px;border-radius:50%;background:radial-gradient(circle,#fff,#FDE047 55%,rgba(253,224,71,0))'); }
+  else if(K==='starpop'){ h+=at(e,0,0,'width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,rgba(255,247,174,.9),rgba(253,224,71,.35) 50%,rgba(253,224,71,0) 70%)'); h+=at(e,0,0,'font-size:24px','🌟'); }
+  else if(K==='ribbon'){ cols.forEach((c,k)=>{ const a=k/cols.length*Math.PI*2, d=16; h+=at(e,Math.cos(a)*d,Math.sin(a)*d,`width:4px;height:16px;border-radius:3px;background:${c};transform:translate(-50%,-50%) rotate(${Math.round(a*57.3+60)}deg)`); }); }
+  else if(K==='menorah'){ for(let k=0;k<9;k++){ const dx=(k-4)*7, sh=k===4; h+=at(e,dx,sh?-8:0,'font-size:10px','🔥'); } h+=at(e,0,10,'width:62px;height:3px;border-radius:2px;background:#FACC15'); }
   else if(K==='sparkle'){ [[0,0,15],[-14,-10,10],[13,-12,12],[-12,10,9],[14,9,11],[2,-20,8],[0,18,8]].forEach(([dx,dy,f])=>{ h+=at(e,dx,dy,`font-size:${f}px`,'✨'); }); }
   else if(K==='bubbles'){ [[0,-6,14],[-13,-16,9],[12,-20,11],[-6,-28,7],[8,4,8]].forEach(([dx,dy,r])=>{ h+=at(e,dx,dy,`width:${r}px;height:${r}px;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.9),rgba(186,230,253,.35) 40%,rgba(125,211,252,.15));border:1.5px solid rgba(186,230,253,.9)`); }); }
   else if(K==='comet'){ h+=at(e,0,0,'width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#FFF7ED,#FDBA74 40%,#F97316 65%,rgba(249,115,22,0))'); for(let k=0;k<8;k++){ const a=k/8*Math.PI*2, d=18; h+=at(e,Math.cos(a)*d,Math.sin(a)*d+3,`width:4px;height:4px;border-radius:50%;background:${cols[k%cols.length]};box-shadow:0 0 5px #F97316`); } }
@@ -426,6 +434,8 @@ function tdot(x,y,t){ if(t.donut){ donut(x,y); return; } if(TLIVE>=TCAP) return;
     e.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(-50%,${t.up?-(18+Math.random()*16):(10+Math.random()*20)}px) scale(.3)`,opacity:0}],{duration:t.up?900:700,easing:'ease-out'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
   if(t.conf){ const c=['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'][tk++%5]; e.className='sttr'; e.style.cssText+=`;width:6px;height:9px;border-radius:1.5px;left:${x-3}px;top:${y-4}px;background:${c}`; document.body.appendChild(e);
     const dx=(Math.random()-.5)*24, sp=(Math.random()<.5?-1:1)*(200+Math.random()*300); e.animate([{transform:'translate(0,0) rotate(0deg)',opacity:1},{transform:`translate(${dx}px,${26+Math.random()*20}px) rotate(${sp}deg)`,opacity:0}],{duration:800,easing:'ease-in'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
+  if(t.spark){ const c=['#F97316','#FACC15','#FB923C','#EF4444'][tk++%4]; e.className='sttr'; e.style.cssText+=`;width:5px;height:5px;left:${x-2.5}px;top:${y-2.5}px;background:#FFF7ED;box-shadow:0 0 6px 3px ${c}`; document.body.appendChild(e);
+    const dx=(Math.random()-.5)*22, up=22+Math.random()*30; e.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${dx}px,${-up}px) scale(.2)`,opacity:0}],{duration:700+Math.random()*300,easing:'ease-out'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
   if(t.fw){ const c=['#F43F5E','#FDE047','#38BDF8','#A3E635','#F472B6'][tk++%5]; e.className='sttr'; e.style.cssText+=`;width:4px;height:4px;left:${x-2}px;top:${y-2}px;background:#fff;box-shadow:0 0 6px 2px ${c}`; document.body.appendChild(e);
     const a=Math.random()*Math.PI*2, d=6+Math.random()*12; e.animate([{transform:'translate(0,0) scale(1.2)',opacity:1},{transform:`translate(${Math.cos(a)*d}px,${Math.sin(a)*d+8}px) scale(.2)`,opacity:0}],{duration:550,easing:'ease-out'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
   const sz=t.rb?14:12; e.className='sttr'; e.style.width=e.style.height=sz+'px'; e.style.left=(x-sz/2)+'px'; e.style.top=(y-sz/2)+'px';
@@ -440,18 +450,19 @@ document.addEventListener('touchstart',e=>{ const t=e.touches[0]; if(t) TL={x:t.
 document.addEventListener('touchmove',e=>{ const t=e.touches[0]; if(t) trailMove(t.clientX,t.clientY); },{passive:true,capture:true});
 /* app colors: background and accent colors on every page; text colors stay as they are, so everything stays easy to read */
 const COLORS={
- 'color-ocean':['#F0F9FF','#BAE6FD','#CCFBF1','#0369A1','#0C4A6E','#0EA5E9'],
- 'color-forest':['#F0FDF4','#BBF7D0','#ECFCCB','#15803D','#14532D','#4ADE80'],
+ 'color-ocean':['#ECFEFF','#A5F3FC','#CCFBF1','#0E7490','#164E63','#2DD4BF'],
+ 'color-forest':['#F0FDF4','#86EFAC','#D9F99D','#166534','#052E16','#65A30D'],
  'color-sunset':['#FFF7ED','#FED7AA','#FCE7F3','#EA580C','#9A3412','#F472B6'],
  'color-candy':['#FDF2F8','#FBCFE8','#E0F2FE','#DB2777','#9D174D','#38BDF8'],
  'color-royal':['#FAF5FF','#E9D5FF','#FEF3C7','#7E22CE','#3B0764','#EAB308'],
  'hol-newyear':['#FFFDF5','#FDE68A','#FFFFFF','#B45309','#78350F','#FACC15'],
- 'hol-schach':['#F7FEE7','#BEF264','#FEF9C3','#4D7C0F','#365314','#FACC15'],
- 'hol-chanukah':['#EFF6FF','#BFDBFE','#F1F5F9','#1D4ED8','#1E3A8A','#FACC15'],
- 'hol-purim':['#FDF4FF','#F5D0FE','#FEF3C7','#A21CAF','#581C87','#F59E0B'],
- 'hol-spring':['#F0FDF4','#A7F3D0','#E0F2FE','#059669','#064E3B','#38BDF8'],
- 'hol-shavuos':['#F7FEE7','#D9F99D','#FCE7F3','#65A30D','#365314','#F472B6']};
+ 'hol-schach':['#FEFCE8','#D9F99D','#FDE047','#4D7C0F','#365314','#EAB308'],
+ 'hol-chanukah':['#F8FAFC','#E2E8F0','#CBD5E1','#1E3A8A','#172554','#60A5FA'],
+ 'hol-purim':['#FFF7ED','#FED7AA','#FBCFE8','#C026D3','#701A75','#F97316'],
+ 'hol-spring':['#F7FEE7','#BFDBFE','#D9F99D','#4D7C0F','#1E3A8A','#60A5FA'],
+ 'hol-shavuos':['#F0FDF4','#BBF7D0','#FBCFE8','#15803D','#14532D','#F472B6']};
 let colorCss=false;
+try{ window.TL_STORE_FX={TAPS,TAP_OF,TRAIL_OF,TRAILS,COLORS,tapOf,trailOf}; }catch(e){}
 function colors(){ try{ if(!colorCss){ colorCss=true; const s=document.createElement('style'); s.id='st-colors';
     s.textContent=Object.keys(COLORS).map(id=>{ const c=COLORS[id], k='body.st-color-'+id;
       return `${k}{--boss:${c[3]};--line:${c[1]};--card2:${c[0]};--hpline:${c[1]};--g-hero:linear-gradient(120deg,${c[4]} 0%,${c[3]} 55%,${c[5]} 100%)}
@@ -463,8 +474,8 @@ ${k} .lf-card{background-image:radial-gradient(900px 500px at 50% 112%,${c[5]}55
   Object.keys(COLORS).forEach(id=>document.body.classList.toggle('st-color-'+id,want===id&&!!A.st)); }catch(e){} }
 /* bonuses: the confetti cannon and combo fireworks */
 function cannon(b){ confettiBurst(); try{ hooray(); }catch(e){} if(rmo()||typeof window.tlSplash!=='function') return; const r=b.getBoundingClientRect();
-  for(let k=0;k<6;k++) setTimeout(()=>window.tlSplash(r.left+r.width/2+(Math.random()-.5)*160,r.top+r.height/2+40+Math.random()*120,false,TAPS['tap-fireworks']),k*90); }
-function fireworks(){ if(rmo()) return; confettiBurst(); if(typeof window.tlSplash!=='function') return;
+  for(let k=0;k<8;k++) setTimeout(()=>window.tlSplash(r.left+r.width/2+(Math.random()-.5)*160,r.top+r.height/2+40+Math.random()*120,false,TAPS['tap-confetti']),k*80); }
+function fireworks(){ if(rmo()) return; if(typeof window.tlSplash!=='function') return;
   for(let k=0;k<7;k++) setTimeout(()=>window.tlSplash(innerWidth*(.15+Math.random()*.7),innerHeight*(.15+Math.random()*.45),false,TAPS['tap-fireworks']),k*110); }
 })();
 </script>

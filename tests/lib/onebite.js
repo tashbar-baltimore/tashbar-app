@@ -1,14 +1,59 @@
-/* ONE BITE player tests (OneBite.html, HoS 2026-11-21). Runs on the kid page from tests/run.js with made-up boys only.
+/* ONE BITE player tests (OneBite.html + OneBiteKit.html, HoS 2026-11-21). Runs on the kid page from tests/run.js with made-up boys only.
    1. Every hand-written bite in window.ONE_BITE: real skill, band, today line, why, a worked example (2+ steps), 2+ ways of learning,
       a Mistake Detective card, ready questions whose answer is among the choices, and a bridge that is a real skill.
-   2. Every pilot bite and 6 auto-bites play as a TEST- boy through all six steps to "mastered": each screen before the questions has
-      6 dots, a read-aloud line and exactly ONE forward button; no pop-up during the bite; the Bite Done screen shows.
-   3. A boy who is not a TEST- boy does not get One Bite while the switch is 'test'. */
+      Round 2: every do/your activity is well-formed for the Activity Kit; 1-3 guided, 3-5 practice; 2+ different activity types;
+      never the same activity twice in a row; Little Learners get 3 choices at most.
+   2. Activity Kit at 390 px: fixture bites use all 10 activity types; each is played by TAP ONLY (taps, tap-tap, tap-dots for trace).
+      Every kit screen has 6 dots, at most ONE footer button, big targets and no sideways scroll. "Your turn" stops after 3 right in a row,
+      a miss resets the run, and the bite still plays to "mastered". Activity results are recorded as engine results (evidence rows).
+   3. Every pilot bite, every bite with do/your and 6 auto-bites play as a TEST- boy through all six steps to "mastered": each screen before
+      the questions has 6 dots, a read-aloud line and ONE forward button; no pop-up during the bite; a bite with do/your reaches Show me in
+      8 activities or fewer; a bite without them plays at most 2 guided + 5 practice questions; the Bite Done screen shows.
+   4. A boy who is not a TEST- boy does not get One Bite while the switch is 'test'. */
+
+/* One tap toward solving the current Activity Kit screen. Runs in the page. It only clicks what a boy can tap
+   (and, for trace, taps dots on the canvas). wrong=true makes one wrong tap on pick/sort/find/match screens. */
+function obkStep(wrong) {
+  const p = A.play, ob = p && p.ob, kit = ob && ob.kit; if (!kit) return 'nokit';
+  const d = kit.acts[kit.i], s = kit.s, app = document.getElementById('app'), S = x => String(x);
+  const q = sel => app.querySelector(sel), click = el => { if (!el || el.disabled) return false; el.click(); return true; };
+  if (s.over) return click(q('.ob-foot [data-ob=knext]')) ? 'next' : 'no next button';
+  if (s.phase === 'why') { const j = d.why.o.map(S).indexOf(S(d.why.a)); return click(q('[data-obk=why][data-k="' + j + '"]')) ? 'why' : 'no reason button'; }
+  const check = () => click(q('.ob-foot [data-obk=check]')) ? 'check' : 'check button missing or off';
+  const tap = (a, k) => click(q('[data-obk="' + a + '"]' + (k == null ? '' : '[data-k="' + k + '"]'))) ? a : 'no ' + a + ' to tap';
+  const w = wrong && !s.misses;
+  switch (d.type) {
+    case 'tenframe': { const f = s.cells.filter(Boolean).length; if (f < d.n) return tap('cell', s.cells.indexOf(0)); if (f > d.n) return tap('cell', s.cells.indexOf(1)); return check(); }
+    case 'hop': { const b = d.start + d.add; if (s.pos < b) return tap('fwd'); if (s.pos > b) return tap('back'); return check(); }
+    case 'count': { if (s.tap.length < d.n) { for (let i = 0; i < d.n; i++) if (s.tap.indexOf(i) < 0) return tap('obj', i); }
+      const j = w ? s.o.findIndex((o, k) => o !== S(d.n) && !s.off[k]) : s.o.indexOf(S(d.n)); return tap('pick', j); }
+    case 'blocks': { const T = Math.floor(d.n / 10), O = d.n % 10; if (s.t < T) return tap('ten'); if (s.t > T) return tap('rmt', 0); if (s.o < O) return tap('one'); if (s.o > O) return tap('rmo', 0); return check(); }
+    case 'tiles': { for (let i = 0; i < d.w.length; i++) { const j = s.slots[i]; if (j >= 0 && s.pool[j] !== S(d.w[i])) return tap('slot', i);
+        if (j < 0) { const k = s.pool.findIndex((t, kk) => t === S(d.w[i]) && !s.used[kk]); return tap('tile', k); } } return check(); }
+    case 'findall': { const t = (Array.isArray(d.find) ? d.find : [d.find]).map(S); const i = d.grid.findIndex((x, k) => (w ? t.indexOf(S(x)) < 0 : t.indexOf(S(x)) >= 0 && !s.found[k])); return tap('cell', i); }
+    case 'match': { const i = d.pairs.findIndex((x, k) => !s.done[k]); if (!s.sel) return tap('L', i); if (s.sel.side === 'L') return tap('R', w ? (s.sel.k + 1) % d.pairs.length : s.sel.k); return tap('L', s.sel.k); }
+    case 'sort': { const cur = s.order.find(i => s.place[i] == null); const b = d.cards[cur][1]; return tap('bin', w ? (b + 1) % d.bins.length : b); }
+    case 'trace': { const cv = q('canvas[data-obk-trace]'); if (!cv) return 'no trace canvas'; const tg = s.tgt || []; const left = tg.filter(i => !s.hit[i]);
+      if (!s.strokes.length || left.length > tg.length * 0.1) { const r = cv.getBoundingClientRect(), n = 25;
+        left.slice(0, 12).forEach(i => { const x = r.left + ((i % n) + 0.5) * 12 * r.width / 300, y = r.top + (Math.floor(i / n) + 0.5) * 12 * r.height / 300, o = { clientX: x, clientY: y, bubbles: true, pointerId: 7, isPrimary: true };
+          cv.dispatchEvent(new PointerEvent('pointerdown', o)); cv.dispatchEvent(new PointerEvent('pointerup', o)); });
+        if (!tg.length) { const r2 = cv.getBoundingClientRect(), o = { clientX: r2.left + 5, clientY: r2.top + 5, bubbles: true, pointerId: 7 }; cv.dispatchEvent(new PointerEvent('pointerdown', o)); cv.dispatchEvent(new PointerEvent('pointerup', o)); }
+        return 'trace dots'; }
+      return check(); }
+    case 'listen': { const j = w ? s.o.findIndex((o, k) => o !== S(d.a) && !s.off[k]) : s.o.indexOf(S(d.a)); return tap('pick', j); }
+  }
+  return 'unknown type ' + d.type;
+}
+
 module.exports = async function oneBiteTests(pg) {
   const out = { fails: [], oks: [], counts: {} };
+  await pg.evaluate(src => { window.__obkStep = (0, eval)('(' + src + ')'); }, obkStep.toString());
+  const size = pg.viewportSize();
+  await pg.setViewportSize({ width: 390, height: 844 });
   const r = await pg.evaluate(async () => {
-    const sleep = ms => new Promise(res => setTimeout(res, ms)), o = { bad: [], played: 0, mastered: 0, steps: {}, notTest: null, bites: 0 };
+    const sleep = ms => new Promise(res => setTimeout(res, ms)), o = { bad: [], played: 0, mastered: 0, steps: {}, notTest: null, bites: 0, kitBites: 0, kitTypes: {}, kitActs: 0 };
     if (!window.OB || !window.ONE_BITE) { o.bad.push('OneBite.html did not load (window.OB missing)'); return o; }
+    if (!window.OBK) { o.bad.push('OneBiteKit.html did not load (window.OBK missing)'); return o; }
     const has = id => !!((typeof BANK_ALL !== 'undefined' && BANK_ALL[id]) || (typeof GEN !== 'undefined' && GEN[id]));
     const ids = Object.keys(ONE_BITE); o.bites = ids.length;
     ids.forEach(id => { const b = ONE_BITE[id], m = s => o.bad.push(id + ': ' + s);
@@ -22,43 +67,100 @@ module.exports = async function oneBiteTests(pg) {
       (b.ready || []).forEach((q, k) => { if (!q.q || !q.o || q.o.indexOf(q.a) < 0) m('ready question ' + (k + 1) + ': the answer must be one of the choices'); });
       if (b.bridge && !has(b.bridge)) m('bridge ' + b.bridge + ' is not a real lesson');
       if (b.band === 'K1' && b.watch && b.watch.steps.some(s => String(typeof s === 'object' ? s.t : s).split(/\s+/).length > 14)) m('K1 watch steps must stay short (14 words or fewer)');
+      if (b.do || b.your) { o.kitBites++;
+        const D = b.do || [], Y = b.your || [];
+        if (!Array.isArray(D) || D.length < 1 || D.length > 3) m('do: needs 1 to 3 guided activities (2 is best)');
+        if (!Array.isArray(Y) || Y.length < 3 || Y.length > 5) m('your: needs 3 to 5 practice activities');
+        D.concat(Y).forEach((d, k) => { const e = OBK.err(d, b.band); if (e) m((k < D.length ? 'do ' + (k + 1) : 'your ' + (k - D.length + 1)) + ': ' + e); });
+        const types = {}; D.concat(Y).forEach(d => { if (d && d.type) types[d.type] = 1; }); if (Object.keys(types).length < 2) m('do + your must mix at least 2 different activity types');
+        const ord = OB.kitOrder(id); for (let k = 1; k < ord.length; k++) if (ord[k].type === ord[k - 1].type) { m('the same activity (' + ord[k].type + ') comes twice in a row; mix the list'); break; } }
     });
-    const auto = Object.keys(BANK_ALL).filter((x, i) => i % 230 === 7).slice(0, 6);
+
+    /* ---- the Activity Kit, all 10 types, tap only, at 390 px ---- */
+    const kitScreen = (p, tag) => { const app = document.getElementById('app');
+      if (document.querySelectorAll('#app .ob-dots li').length !== 6) return tag + ': no 6-dot strip';
+      const foot = app.querySelectorAll('.ob-foot .ob-go').length; if (foot > 1) return tag + ': ' + foot + ' footer buttons (want at most 1)';
+      const say = app.querySelector('.ob-say'); if (!say || !say.dataset.text) return tag + ': no read-aloud text';
+      if (document.documentElement.scrollWidth > window.innerWidth + 1) return tag + ': the page scrolls sideways at ' + window.innerWidth + ' px (' + document.documentElement.scrollWidth + ')';
+      const small = [...app.querySelectorAll('.obk [data-obk]')].filter(el => { const r = el.getBoundingClientRect(); return r.width > 0 && Math.min(r.width, r.height) < 44 && !el.classList.contains('ob-link'); });
+      if (small.length) return tag + ': a tap target is smaller than 44 px (' + small[0].className + ' ' + Math.round(small[0].getBoundingClientRect().width) + 'x' + Math.round(small[0].getBoundingClientRect().height) + ')';
+      return ''; };
+    const worldOf = id => { const pre = id.split('.')[0], map = /^(LK|HEB)$/.test(pre) ? 'LK' : /^(READ|WRIT|LANG)$/.test(pre) ? 'READ' : /^(SS|SOC|FACT)$/.test(pre) ? 'SS' : /^(COMP|VOC)$/.test(pre) ? 'COMP' : pre;
+      return WORLD[pre] ? pre : WORLD[map] ? map : Object.keys(WORLD)[0]; };
+    const fresh = () => { A.overlay = null; A.play = null; A.res = null; SRV.token = 't'; SRV.states = {}; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; render(); };
+    /* plays one bite to the end; wrongAt: index of the "your" activity that gets one wrong tap first */
+    async function play(id, opt) { opt = opt || {}; const s = { id, screens: 0, err: '', kit: 0, your: 0, items: null };
+      fresh(); await sleep(15); startMission(worldOf(id), id, 'skill'); await sleep(15);
+      const p = A.play; if (!p || !p.ob) { s.err = 'did not open as a bite'; return s; }
+      if (!p.ob.kitOn) { const t = p.items.filter(x => x.phase === 'teach').length, pr = p.items.filter(x => x.phase === 'practice').length; if (t > 2 || pr > 5) { s.err = 'no-kit bite plays ' + t + ' guided + ' + pr + ' practice (want at most 2 + 5)'; return s; } }
+      const seen = {}; let lastKey = '';
+      while (A.view === 'play' && A.play === p && s.screens < 260) { s.screens++;
+        if (A.overlay) { s.err = 'a pop-up opened during the bite'; break; }
+        const st = p.ob.stage;
+        if (st === 'do' || st === 'your') { seen[st] = 1; const k = p.ob.kit, key = st + k.i;
+          if (key !== lastKey) { lastKey = key; const e = kitScreen(p, id + ' ' + st + ' ' + (k.i + 1) + ' (' + k.acts[k.i].type + ')'); if (e) { s.err = e; break; } o.kitTypes[k.acts[k.i].type] = 1; }
+          const wrong = st === 'your' && opt.wrongAt === k.i; const a = window.__obkStep(wrong);
+          if (/^no |missing|unknown|nokit/.test(a)) { s.err = st + ' ' + (k.i + 1) + ' (' + k.acts[k.i].type + '): ' + a; break; }
+          await sleep(2); continue; }
+        if (st !== 'q') { seen[st] = 1;
+          const dots = document.querySelectorAll('#app .ob-dots li').length, go = document.querySelectorAll('#app .ob-foot .ob-go').length, say = document.querySelector('#app .ob-say');
+          if (dots !== 6) { s.err = st + ' screen has ' + dots + ' dots (want 6)'; break; }
+          if (!say || !say.dataset.text) { s.err = st + ' screen has no read-aloud text'; break; }
+          const opt2 = document.querySelector('#app [data-ob=rpick]:not([disabled])');
+          if (opt2) { const q = p.ob.bite.ready[p.ob.ri]; const k = q.o.indexOf(q.a); document.querySelector('#app [data-ob=rpick][data-k="' + k + '"]').click(); await sleep(3); continue; }
+          if (go !== 1) { s.err = st + ' screen has ' + go + ' forward buttons (want exactly 1)'; break; }
+          document.querySelector('#app .ob-foot .ob-go').click(); await sleep(3); continue; }
+        if (!seen.q) { seen.q = 1; s.kit = p.ob.krec ? p.ob.krec.length : 0; s.first = p.results.slice(0, s.kit).filter(r => r && r.ok && r.first).length; s.your = p.ob.krec ? p.ob.krec.filter(x => x.phase === 'practice').length : 0; }
+        const it = p.items[p.i]; const el = document.querySelector('.play.ob-play'); if (!el) { s.err = 'question ' + p.i + ' has no calm lesson frame'; break; }
+        if (document.querySelectorAll('.play.ob-play .ob-dots li').length !== 6) { s.err = 'question ' + p.i + ' has no 6-dot strip'; break; }
+        p.shownAt = 0; p.cool = 0; if (it.t === 'write') p.text = new Array((it.min || 5) + 2).join('word ');
+        answer(it.t === 'num' ? String(it.a) : it.t === 'write' ? p.text : it.correct); if (!(p.fb && p.fb.ok)) { s.err = 'right answer not accepted at question ' + p.i; break; }
+        await sleep(2); next(); await sleep(2); }
+      if (!s.err) { if (!seen.today || !seen.watch && p.ob.bite.watch) s.err = 'skipped Today or Watch Me';
+        else if (p.ob.kitOn && !seen.your && p.ob.kitYour.length) s.err = 'skipped Your turn';
+        else if (p.ob.kitOn && s.kit > 8) s.err = 'took ' + s.kit + ' activities to reach Show me (want 8 or fewer)';
+        else if (p.ob.kitOn && p.results.slice(0, s.kit).some(r => !r || r.phase === 'check')) s.err = 'an activity was not recorded as a practice result';
+        else if (!(A.st.skills[id] && A.st.skills[id].m)) s.err = 'not mastered after ' + s.screens + ' screens';
+        else if (A.view !== 'result' || !document.querySelector('#app .ob-done')) s.err = 'no Bite Done screen';
+        else if (p.ob.bite.band === 'K1' && !document.querySelector('#app .ob-party')) s.err = 'no Little Learners celebration on Bite Done';
+        else s.ok = true; }
+      return s; }
+
     const prev = window.OB_LIVE; window.OB_LIVE = 'test';
-    for (const id of ids.concat(auto)) { const s = { id, screens: 0, err: '' };
-      try { A.overlay = null; A.play = null; A.res = null; SRV.token = 't'; SRV.states = {}; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; render(); await sleep(20);
-        const pre = id.split('.')[0], map = /^(LK|HEB)$/.test(pre) ? 'LK' : /^(READ|WRIT|LANG)$/.test(pre) ? 'READ' : /^(SS|SOC|FACT)$/.test(pre) ? 'SS' : /^(COMP|VOC)$/.test(pre) ? 'COMP' : pre;
-        const c = WORLD[pre] ? pre : WORLD[map] ? map : Object.keys(WORLD)[0]; startMission(c, id, 'skill'); await sleep(20);
-        const p = A.play; if (!p || !p.ob) { s.err = 'did not open as a bite'; o.bad.push(id + ': ' + s.err); continue; }
-        o.played++; const seen = {};
-        while (A.view === 'play' && A.play === p && s.screens < 120) { s.screens++;
-          if (A.overlay) { s.err = 'a pop-up opened during the bite'; break; }
-          if (p.ob.stage !== 'q') { seen[p.ob.stage] = 1;
-            const dots = document.querySelectorAll('#app .ob-dots li').length, go = document.querySelectorAll('#app .ob-foot .ob-go').length, say = document.querySelector('#app .ob-say');
-            if (dots !== 6) { s.err = p.ob.stage + ' screen has ' + dots + ' dots (want 6)'; break; }
-            if (!say || !say.dataset.text) { s.err = p.ob.stage + ' screen has no read-aloud text'; break; }
-            const opt = document.querySelector('#app [data-ob=rpick]:not([disabled])');
-            if (opt) { const q = p.ob.bite.ready[p.ob.ri]; const k = q.o.indexOf(q.a); document.querySelector('#app [data-ob=rpick][data-k="' + k + '"]').click(); await sleep(5); continue; }
-            if (go !== 1) { s.err = p.ob.stage + ' screen has ' + go + ' forward buttons (want exactly 1)'; break; }
-            document.querySelector('#app .ob-foot .ob-go').click(); await sleep(5); continue; }
-          seen.q = 1; const it = p.items[p.i]; const el = document.querySelector('.play.ob-play'); if (!el) { s.err = 'question ' + p.i + ' has no calm lesson frame'; break; }
-          if (document.querySelectorAll('.play.ob-play .ob-dots li').length !== 6) { s.err = 'question ' + p.i + ' has no 6-dot strip'; break; }
-          p.shownAt = 0; p.cool = 0; if (it.t === 'write') p.text = new Array((it.min || 5) + 2).join('word ');
-          answer(it.t === 'num' ? String(it.a) : it.t === 'write' ? p.text : it.correct); if (!(p.fb && p.fb.ok)) { s.err = 'right answer not accepted at question ' + p.i; break; }
-          await sleep(3); next(); await sleep(3); }
-        if (!s.err) { if (!seen.today || !seen.watch && p.ob.bite.watch) s.err = 'skipped Today or Watch Me';
-          else if (!(A.st.skills[id] && A.st.skills[id].m)) s.err = 'not mastered after ' + s.screens + ' screens';
-          else if (A.view !== 'result' || !document.querySelector('#app .ob-done')) s.err = 'no Bite Done screen';
-          else o.mastered++; }
-        o.steps[id] = s.screens; } catch (e) { s.err = String(e && e.stack || e).slice(0, 200); }
-      if (s.err) o.bad.push(id + ': ' + s.err); }
+    const FIX = ['MATH.OPS.L01.04', 'MATH.CNT.L01.01'].find(has) || Object.keys(BANK_ALL).find(x => /^MATH\..*\.L01\./.test(x)) || Object.keys(BANK_ALL)[0];
+    const keep = ONE_BITE[FIX];
+    const base = { band: 'K1', pic: '🔢', today: 'Kit test bite', why: 'Testing every activity.', watch: { q: 'Watch', steps: ['One.', 'Two.'] }, oops: { wrong: '1', right: '2', why: 'x' }, ways: ['a', 'b'] };
+    const fixtures = [
+      { name: 'stops after 3 right in a row', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'tenframe', n: 4 }, { type: 'hop', start: 2, add: 3 }],
+        your: [{ type: 'count', n: 5, pic: '🍎' }, { type: 'blocks', n: 13 }, { type: 'tiles', w: ['c', 'a', 't'], extra: ['b'], hear: 'cat' }, { type: 'findall', grid: ['b', 'd', 'b', 'p', 'q', 'b'], find: 'b' }, { type: 'match', pairs: [['🍎', 'a'], ['🐝', 'b'], ['🐱', 'c']] }] } },
+      { name: 'a miss resets the run; the list ends; tap the reason', opt: { wrongAt: 0 }, want: { kit: 5, your: 3 }, bite: { do: [{ type: 'findall', grid: ['⚪', '🔺', '⚪', '🟦'], find: '⚪', findSay: 'circle' }, { type: 'match', pairs: [['1', '🍎'], ['2', '🍎🍎']] }],
+        your: [{ type: 'sort', bins: ['Circle', 'Not a circle'], cards: [['⚪', 0], ['🔺', 1], ['🟠', 0], ['🟦', 1]] }, { type: 'trace', glyph: 'b' }, { type: 'listen', hear: 'ball', o: ['b', 'd', 'p'], a: 'b', why: { q: 'Why b?', o: ['Ball starts with b', 'It is round'], a: 'Ball starts with b' } }] } },
+      { name: 'Explorers: real-world hop, blocks, tiles and count', want: { kit: 5, your: 3 }, bite: { band: 'E45', do: [{ type: 'hop', start: 20, add: 30, unit: 10, q: '20 + 30' }, { type: 'blocks', n: 47 }],
+        your: [{ type: 'tiles', w: ['2', '4', '6', '8'] }, { type: 'count', n: 12, pic: 'art:apple', o: ['11', '12', '13', '14'] }, { type: 'tenframe', n: 13, start: 9 }] } } ];
+    for (const f of fixtures) {
+      ONE_BITE[FIX] = Object.assign({}, base, f.bite);
+      try { const s = await play(FIX, f.opt); if (s.err) o.bad.push('Activity Kit (' + f.name + '): ' + s.err);
+        else if (s.first !== s.kit - (f.opt && f.opt.wrongAt != null ? 1 : 0)) o.bad.push('Activity Kit (' + f.name + '): only ' + s.first + ' of ' + s.kit + ' activities were right on the first try by tap (an activity cannot be solved by tap)');
+        else if (s.kit !== f.want.kit || s.your !== f.want.your) o.bad.push('Activity Kit (' + f.name + '): played ' + s.kit + ' activities (' + s.your + ' in Your turn), want ' + f.want.kit + ' (' + f.want.your + ')'); }
+      catch (e) { o.bad.push('Activity Kit (' + f.name + '): ' + String(e && e.stack || e).slice(0, 200)); } }
+    if (keep) ONE_BITE[FIX] = keep; else delete ONE_BITE[FIX];
+    OBK.list.forEach(t => { if (!o.kitTypes[t]) o.bad.push('Activity Kit: the ' + t + ' activity was never shown and played by tap'); });
+
+    /* ---- every real bite (and 6 auto-bites) to mastered ---- */
+    const auto = Object.keys(BANK_ALL).filter((x, i) => i % 230 === 7).slice(0, 6);
+    for (const id of ids.concat(auto)) { let s;
+      try { s = await play(id); } catch (e) { s = { err: String(e && e.stack || e).slice(0, 200) }; }
+      if (s.err) o.bad.push(id + ': ' + s.err); else { o.played++; o.mastered++; o.kitActs += s.kit || 0; }
+      o.steps[id] = s.screens; }
     try { A.overlay = null; A.play = null; A.res = null; A.st = loadStudent({ id: 'BOY-77', name: 'Made-up Boy B' }); A.view = 'hub'; render(); const id = ids[0] || Object.keys(BANK_ALL)[0];
-      const pre = id.split('.')[0]; startMission(WORLD[pre] ? pre : Object.keys(WORLD)[0], id, 'skill'); o.notTest = !!(A.play && A.play.ob); } catch (e) { o.notTest = 'crash ' + e; }
+      startMission(worldOf(id), id, 'skill'); o.notTest = !!(A.play && A.play.ob); } catch (e) { o.notTest = 'crash ' + e; }
     window.OB_LIVE = prev; A.play = null; A.res = null; A.overlay = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; render();
     return o; });
+  if (size) await pg.setViewportSize(size);
   r.bad.forEach(b => out.fails.push('One Bite: ' + b));
   if (r.notTest !== false) out.fails.push('One Bite: a boy who is not a TEST- boy must not get One Bite while OB_LIVE is "test" (got ' + r.notTest + ')');
-  out.counts = { oneBiteHandWritten: r.bites, oneBitePlayed: r.played, oneBiteMastered: r.mastered };
-  if (!out.fails.length) out.oks.push('One Bite: ' + r.bites + ' hand-written bites well-formed; ' + r.mastered + ' of ' + r.played + ' bites played through all 6 steps to Bite Done (one button, 6 dots, read-aloud, no pop-ups); real boys untouched while in test');
+  out.counts = { oneBiteHandWritten: r.bites, oneBiteWithActivities: r.kitBites, oneBitePlayed: r.played, oneBiteMastered: r.mastered };
+  if (!out.fails.length) out.oks.push('One Bite: ' + r.bites + ' hand-written bites well-formed (' + r.kitBites + ' with activities); Activity Kit: all ' + Object.keys(r.kitTypes).length + ' activity types played by tap at 390 px, 3-in-a-row stop works; ' + r.mastered + ' of ' + (r.played) + ' bites played through all 6 steps to Bite Done (one button, 6 dots, read-aloud, no pop-ups); real boys untouched while in test');
   return out;
 };
+module.exports.obkStep = obkStep;

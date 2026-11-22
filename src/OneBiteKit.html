@@ -1,0 +1,352 @@
+<script>
+/* OneBiteKit.html: the ONE BITE Activity Kit (round 2, HoS 2026-11-21: "short, hands-on, many different ways, each age feels different").
+   Hands-on activities for "Do it with me" (ONE_BITE[id].do, guided) and "Your turn" (ONE_BITE[id].your, practice).
+   The player (OneBite.html) runs them; this file only knows how to draw one activity, take a tap, and say if it is right.
+   Every drag also works with tap-tap. All state lives in a plain object the player keeps, so a re-draw never loses work.
+   Mechanics and look follow KMathGamesUI.html / K1LettersUI.html (big targets, voice-first, drag or tap-then-tap).
+
+   THE SCHEMA (one object per activity; docs/ONE-BITE-PLAYBOOK.md section 10). Every activity may also have:
+     say:'spoken instruction'   how:'kid-friendly How to do it line'   q:'big prompt, e.g. 3 + 4 = ?'   pic:'emoji'
+     why:{q:'Why?', o:['reason','reason'], a:'reason'}   (Gr 4-5 "tap the reason", asked after a right answer)
+   tenframe  {type:'tenframe', n:7, start:0}                  tap (or drag the dot) to fill the frame until it shows n
+   hop       {type:'hop', start:3, add:4, unit:1, from, to}   hop the frog on a number line; lands on start + add
+   count     {type:'count', n:6, pic:'🍎', o:['5','6','7']}   tap each picture to count, then pick the number
+   blocks    {type:'blocks', n:14}                            build n with tens and ones
+   tiles     {type:'tiles', w:['c','a','t'], extra:['b'], he:false, hear:'cat'}   put tiles in order
+   findall   {type:'findall', grid:['b','d','b','p'], find:'b'}   tap every target
+   match     {type:'match', pairs:[['🍎','a'],['🐝','b']]}    pair each left with its right
+   sort      {type:'sort', bins:['Circle','Not a circle'], cards:[['⚪',0],['🔺',1]]}   cards into 2-3 bins
+   trace     {type:'trace', glyph:'b', he:false}              finger-trace the dotted letter; passes at about 80% covered
+   listen    {type:'listen', hear:'buh', clip:'letter-sound:b', o:['b','d','p'], a:'b', he:false}   hear it, tap the match
+   pic:'art:apple' uses the K-1 games' drawn pictures (KMG.ART). Hebrew (he:true) is never spoken by a computer voice; use clip.
+   No double slash in this file (HtmlService rule). */
+(function(){
+if(window.OBK) return;
+const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const num=v=>typeof v==='number'&&isFinite(v), isArr=Array.isArray, S=x=>String(x==null?'':x);
+function shuf(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function shufNot(a){ if(a.length<2) return a.slice(); let b, t=0; do{ b=shuf(a); t++; }while(t<10&&b.every((x,i)=>x===a[i])); return b; }
+function idx(n){ return Array.from({length:n},(_,i)=>i); }
+function pic(x){ x=x==null||x===''?'⭐':S(x);
+  if(/^art:/.test(x)&&window.KMG&&KMG.ART){ const f=KMG.ART[x.slice(4)]; if(typeof f==='function') try{ return '<span class="obk-art">'+f()+'</span>'; }catch(e){} return '⭐'; }
+  return E(x); }
+function numChoices(n){ const set=[n]; [n+1,n-1,n+2,n-2].forEach(v=>{ if(set.length<3&&v>=0&&set.indexOf(v)<0) set.push(v); }); return shuf(set).map(String); }
+function heCls(d){ return d.he?' obk-he':''; }
+
+const T={};
+
+/* ---------- ten-frame: make n ---------- */
+T.tenframe={ check:true,
+  err(d){ if(!num(d.n)||d.n<1||d.n>20) return 'n must be a number from 1 to 20'; if(d.start!=null&&(!num(d.start)||d.start<0||d.start>=d.n)) return 'start must be smaller than n'; return ''; },
+  init(d){ const size=(d.n>10)?20:10, pre=d.start||0; return {cells:idx(size).map(i=>i<pre?2:0)}; },
+  say(d){ return d.start?('Here are '+d.start+'. Fill it up to '+d.n+'.'):('Make '+d.n+'. Put '+d.n+' dots in the boxes.'); },
+  how(){ return 'Tap a box to put a dot in it. Count as you go: 1, 2, 3. Tap a dot again to take it out.'; },
+  label(d){ return 'Ten-frame: make '+d.n; },
+  view(d,s,c){ const f=s.cells.filter(Boolean).length; let h='<div class="obk-tf">';
+    for(let fr=0;fr<s.cells.length/10;fr++){ h+='<div class="obk-tf-f">'; for(let j=0;j<10;j++){ const i=fr*10+j, v=s.cells[i];
+      h+='<button class="obk-cell'+(v===2?' pre':v?' on':'')+'" data-obk="cell" data-k="'+i+'" data-obk-drop="cell" aria-label="box '+(i+1)+(v?', has a dot':', empty')+'"'+(v===2?' disabled':'')+'></button>'; } h+='</div>'; }
+    h+='</div><div class="obk-row"><button class="obk-tray" data-obk="tray" data-obk-drag="tray" aria-label="A dot. Tap it, or drag it into a box."><i></i></button>'+(c.guided?'<span class="obk-count" aria-live="polite">'+f+'</span>':'')+'</div>';
+    return h; },
+  tap(d,s,a,k,drop){ if(a==='cell'){ const i=+k; if(s.cells[i]===2) return; s.cells[i]=s.cells[i]?0:1; return; }
+    if(a==='tray'){ let i=drop&&drop.a==='cell'?+drop.k:-1; if(i<0||s.cells[i]) i=s.cells.indexOf(0); if(i>=0) s.cells[i]=1; } },
+  ready(d,s){ return s.cells.some(v=>v===1); },
+  judge(d,s){ const f=s.cells.filter(Boolean).length; if(f===d.n) return {ok:true};
+    return {ok:false,msg:f>d.n?'Too many. Tap a dot to take it out, and count again.':'Not yet. Count the dots. Do you need more?'}; },
+  solve(d,s){ s.cells=s.cells.map((v,i)=>v===2?2:i<d.n?1:0); } };
+
+/* ---------- hop: a frog on a number line ---------- */
+T.hop={ check:true,
+  u(d){ return Math.abs(d.unit||1); },
+  rng(d){ const u=T.hop.u(d), a=d.start, b=d.start+d.add, w=10*u, lo=d.from!=null?d.from:Math.floor(Math.min(a,b)/w)*w;
+    const hi=d.to!=null?d.to:lo+Math.max(w,Math.ceil((Math.max(a,b)-lo)/w)*w); return [lo,hi]; },
+  err(d){ if(!num(d.start)||!num(d.add)||d.add===0) return 'needs start and add (add is not 0)'; const u=T.hop.u(d); if(!num(u)||d.add%u) return 'add must be a whole number of hops (a multiple of unit)';
+    const r=T.hop.rng(d), b=d.start+d.add; if(d.start<r[0]||d.start>r[1]||b<r[0]||b>r[1]) return 'start and the landing number must be on the line (from..to)';
+    if((r[1]-r[0])/u>20) return 'the line is too long: at most 20 hops from one end to the other'; return ''; },
+  init(d){ return {pos:d.start, path:[d.start]}; },
+  say(d){ const n=Math.abs(d.add)/T.hop.u(d), u=T.hop.u(d); return 'Start at '+d.start+'. Hop '+(d.add>0?'':'back ')+n+' '+(u>1?(n===1?'jump':'jumps')+' of '+u:(n===1?'time':'times'))+'. Where do you land?'; },
+  how(d){ return 'Put the frog on '+d.start+'. Tap Hop and count each hop out loud: 1, 2, 3. Stop when you have done them all.'; },
+  label(d){ return 'Number line: '+d.start+(d.add>0?' + ':' - ')+Math.abs(d.add); },
+  view(d,s,c){ const r=T.hop.rng(d), u=T.hop.u(d), W=340, pad=18, n=(r[1]-r[0])/u, sx=v=>pad+(v-r[0])*(W-2*pad)/Math.max(1,r[1]-r[0]);
+    const fs=n<=10?13:n<=15?11:9.5; let g='<svg class="obk-nl" viewBox="0 0 '+W+' 112" role="img" aria-label="number line from '+r[0]+' to '+r[1]+', the frog is on '+s.pos+'">';
+    g+='<line x1="'+pad+'" y1="86" x2="'+(W-pad)+'" y2="86" stroke="#1F2A44" stroke-width="3"/>';
+    for(let v=r[0];v<=r[1]+1e-9;v+=u){ const x=sx(v); g+='<line x1="'+x+'" y1="79" x2="'+x+'" y2="93" stroke="#1F2A44" stroke-width="2"/><text x="'+x+'" y="109" font-size="'+fs+'" text-anchor="middle" fill="#1F2A44" font-weight="'+(v===d.start?'900':'600')+'">'+v+'</text>'; }
+    g+='<circle cx="'+sx(d.start)+'" cy="86" r="5" fill="#3B6FD8"/>';
+    for(let k=0;k+1<s.path.length;k++){ const x1=sx(s.path[k]), x2=sx(s.path[k+1]), mx=(x1+x2)/2; g+='<path d="M'+x1+' 80 Q'+mx+' 46 '+x2+' 80" fill="none" stroke="#FF7A3D" stroke-width="3" stroke-dasharray="5 4"/>'; }
+    g+='<text x="'+sx(s.pos)+'" y="74" font-size="30" text-anchor="middle">🐸</text></svg>';
+    const hops=Math.round(Math.abs(s.pos-d.start)/u);
+    return g+'<p class="obk-count sm" aria-live="polite">Hops: '+hops+(c.guided?' of '+Math.round(Math.abs(d.add)/u):'')+'</p>'+
+      '<div class="obk-row"><button class="obk-btn" data-obk="back" aria-label="Hop back"'+(s.pos-u<r[0]-1e-9?' disabled':'')+'>◀ Hop</button><button class="obk-btn obk-pri'+(c.guided&&hops<Math.abs(d.add)/u&&d.add>0?' obk-pulse':'')+'" data-obk="fwd" aria-label="Hop forward"'+(s.pos+u>r[1]+1e-9?' disabled':'')+'>Hop ▶</button></div>'; },
+  tap(d,s,a){ const r=T.hop.rng(d), u=T.hop.u(d); let np=s.pos; if(a==='fwd') np=s.pos+u; else if(a==='back') np=s.pos-u; else return;
+    if(np<r[0]-1e-9||np>r[1]+1e-9) return; if(s.path.length>1&&s.path[s.path.length-2]===np) s.path.pop(); else s.path.push(np); s.pos=np; },
+  ready(d,s){ return s.pos!==d.start; },
+  judge(d,s){ const b=d.start+d.add; if(s.pos===b) return {ok:true}; const past=d.add>0?s.pos>b:s.pos<b;
+    return {ok:false,msg:past?'Too far! Hop back and count the hops again.':'Keep hopping. Count every hop.'}; },
+  solve(d,s){ const u=T.hop.u(d), st=d.add>0?u:-u; s.path=[d.start]; for(let v=d.start;v!==d.start+d.add;){ v+=st; s.path.push(v); } s.pos=d.start+d.add; } };
+
+/* ---------- count: tap each picture, then pick the number ---------- */
+T.count={
+  err(d){ if(!num(d.n)||d.n<1||d.n>20) return 'n must be a number from 1 to 20'; if(d.o&&(!isArr(d.o)||d.o.map(S).indexOf(S(d.n))<0)) return 'o must include n'; return ''; },
+  opts(d){ return d.o?d.o.map(S):null; },
+  init(d){ return {tap:[], off:{}, o:d.o?shufNot(d.o.map(S)):numChoices(d.n)}; },
+  say(d){ return 'Tap each '+(d.name||'one')+' to count. How many?'; },
+  how(){ return 'Touch each one and say the next number. The last number you say tells how many.'; },
+  label(d){ return 'Count '+d.n; },
+  view(d,s,c){ let h='<div class="obk-objs" role="group" aria-label="pictures to count">';
+    for(let i=0;i<d.n;i++){ const t=s.tap.indexOf(i); h+='<button class="obk-obj'+(t>=0?' on':'')+'" data-obk="obj" data-k="'+i+'" aria-label="'+(t>=0?'counted '+(t+1):'picture '+(i+1))+'">'+pic(d.pic||'🍎')+(t>=0?'<b>'+(t+1)+'</b>':'')+'</button>'+((i+1)%5===0&&i<d.n-1?'<span class="obk-br"></span>':''); }
+    h+='</div>';
+    if(c.guided&&s.tap.length<d.n&&!s.solved) return h+'<p class="obk-note">Count them all first.</p>';
+    return h+'<div class="obk-opts">'+s.o.map((o,j)=>'<button class="obk-opt'+(s.off[j]?' off':'')+(s.over&&o===S(d.n)?' right':'')+(c.hint&&o===S(d.n)&&!s.over?' obk-pulse':'')+'" data-obk="pick" data-k="'+j+'"'+(s.off[j]||s.over?' disabled':'')+'>'+E(o)+'</button>').join('')+'</div>'; },
+  tap(d,s,a,k){ if(a==='obj'){ const i=+k; if(s.tap.indexOf(i)<0) s.tap.push(i); return; }
+    if(a==='pick'){ const j=+k; if(s.off[j]) return; if(s.o[j]===S(d.n)) return 'ok'; s.off[j]=1; s.msg='Not '+s.o[j]+'. Touch each one and count again.'; return 'miss'; } },
+  solve(d,s){ s.tap=idx(d.n); } };
+
+/* ---------- blocks: build a number with tens and ones ---------- */
+T.blocks={ check:true,
+  err(d){ if(!num(d.n)||d.n<1||d.n>99||d.n%1) return 'n must be a whole number from 1 to 99'; return ''; },
+  init(){ return {t:0,o:0}; },
+  say(d){ return 'Build '+d.n+' with tens and ones.'; },
+  how(d){ const t=Math.floor(d.n/10), o=d.n%10; return 'A ten is a tall stick of 10. A one is a little cube. '+d.n+' is '+t+(t===1?' ten':' tens')+' and '+o+(o===1?' one.':' ones.'); },
+  label(d){ return 'Blocks: build '+d.n; },
+  view(d,s,c){ let m='<div class="obk-mat" data-obk-drop="mat" aria-label="your mat">';
+    for(let i=0;i<s.t;i++) m+='<button class="obk-tb" data-obk="rmt" data-k="'+i+'" aria-label="a ten, tap to take it away"><span class="obk-ten"></span></button>';
+    m+='<span class="obk-ones">'; for(let i=0;i<s.o;i++) m+='<button class="obk-ob" data-obk="rmo" data-k="'+i+'" aria-label="a one, tap to take it away"><span class="obk-one"></span></button>'; m+='</span>';
+    if(!s.t&&!s.o) m+='<span class="obk-note">Your mat</span>'; m+='</div>';
+    const lab=s.t+(s.t===1?' ten':' tens')+' and '+s.o+(s.o===1?' one':' ones')+(c.guided?' = '+(s.t*10+s.o):'');
+    return m+'<p class="obk-count sm" aria-live="polite">'+lab+'</p><div class="obk-row"><button class="obk-btn" data-obk="ten" data-obk-drag="ten" aria-label="Add a ten"><span class="obk-ten mini"></span> + 10</button><button class="obk-btn" data-obk="one" data-obk-drag="one" aria-label="Add a one"><span class="obk-one mini"></span> + 1</button></div>'; },
+  tap(d,s,a){ if(a==='ten'&&s.t<9) s.t++; else if(a==='one'&&s.o<19) s.o++; else if(a==='rmt'&&s.t>0) s.t--; else if(a==='rmo'&&s.o>0) s.o--; },
+  ready(d,s){ return s.t+s.o>0; },
+  judge(d,s){ const v=s.t*10+s.o; if(v===d.n&&s.o<10) return {ok:true}; if(v===d.n) return {ok:false,msg:'That is '+d.n+', but trade 10 ones for 1 ten.'};
+    return {ok:false,msg:v<d.n?'Not enough yet. Count your tens and ones.':'Too many. Tap a block to take it away.'}; },
+  solve(d,s){ s.t=Math.floor(d.n/10); s.o=d.n%10; } };
+
+/* ---------- tiles: build a word or number in order ---------- */
+T.tiles={ check:true,
+  err(d){ if(!isArr(d.w)||d.w.length<2||d.w.length>8) return 'w must be a list of 2 to 8 tiles'; if(d.extra&&!isArr(d.extra)) return 'extra must be a list'; if(d.w.concat(d.extra||[]).length>10) return 'at most 10 tiles in all'; return ''; },
+  init(d){ return {pool:shufNot(d.w.concat(d.extra||[]).map(S)), used:{}, slots:d.w.map(()=>-1), wrong:{}}; },
+  say(d){ return d.hear?'Listen. Build the word with the tiles.':'Put the tiles in the right order.'; },
+  how(d){ return d.hear?'Say the word slowly. Find the first sound, then the next. Tap the tiles in order.':'Find the one that comes first. Then the next. Tap them in order.'; },
+  label(d){ return 'Tiles: '+d.w.join(d.he?'':'-'); },
+  view(d,s,c){ let h=(d.hear?'<button class="obk-btn obk-hear" data-obk="hear" aria-label="Hear it">🔊 Hear it</button>':'')+'<div class="obk-slots'+heCls(d)+'">';
+    s.slots.forEach((j,i)=>{ h+='<button class="obk-slot'+(j>=0?' full':'')+(s.wrong[i]?' obk-shake':'')+'" data-obk="slot" data-k="'+i+'" data-obk-drop="slot" aria-label="place '+(i+1)+(j>=0?': '+E(s.pool[j]):', empty')+'">'+(j>=0?E(s.pool[j]):c.guided?'<span class="ghost">'+E(d.w[i])+'</span>':'')+'</button>'; });
+    h+='</div><div class="obk-pool'+heCls(d)+'">'; s.pool.forEach((t,j)=>{ h+=s.used[j]?'<span class="obk-tile gone"></span>':'<button class="obk-tile" data-obk="tile" data-k="'+j+'" data-obk-drag="tile">'+E(t)+'</button>'; });
+    return h+'</div>'; },
+  tap(d,s,a,k,drop){ s.wrong={};
+    if(a==='slot'){ const i=+k, j=s.slots[i]; if(j>=0){ s.slots[i]=-1; delete s.used[j]; } return; }
+    if(a==='tile'){ const j=+k; if(s.used[j]) return; let i=drop&&drop.a==='slot'?+drop.k:s.slots.indexOf(-1); if(i<0) return;
+      const old=s.slots[i]; if(old>=0) delete s.used[old]; s.slots[i]=j; s.used[j]=1; } },
+  ready(d,s){ return s.slots.indexOf(-1)<0; },
+  judge(d,s){ let bad=0; s.slots.forEach((j,i)=>{ if(s.pool[j]!==S(d.w[i])){ bad++; s.wrong[i]=1; } }); if(!bad) return {ok:true};
+    s.slots.forEach((j,i)=>{ if(s.wrong[i]){ delete s.used[j]; s.slots[i]=-1; } }); return {ok:false,msg:'Some tiles were in the wrong place. Try those again.'}; },
+  solve(d,s){ s.used={}; s.slots=d.w.map(t=>{ const j=s.pool.findIndex((x,jj)=>x===S(t)&&!s.used[jj]); s.used[j]=1; return j; }); s.wrong={}; } };
+
+/* ---------- findall: tap every target ---------- */
+T.findall={
+  tg(d){ return (isArr(d.find)?d.find:[d.find]).map(S); },
+  err(d){ if(!isArr(d.grid)||d.grid.length<3||d.grid.length>20) return 'grid must be a list of 3 to 20 things'; if(d.find==null||d.find==='') return 'find is missing';
+    const t=T.findall.tg(d); if(!d.grid.some(x=>t.indexOf(S(x))>=0)) return 'the grid has no '+t[0]; if(d.grid.every(x=>t.indexOf(S(x))>=0)) return 'the grid needs some things that are not '+t[0]; return ''; },
+  init(){ return {found:{}, bad:-1}; },
+  say(d){ return 'Tap every '+(d.findSay||T.findall.tg(d)[0])+'.'; },
+  how(d){ return 'Look at each one, row by row. Is it a '+(d.findSay||T.findall.tg(d)[0])+'? Tap it.'; },
+  label(d){ return 'Find every '+T.findall.tg(d)[0]; },
+  view(d,s,c){ const t=T.findall.tg(d), tot=d.grid.filter(x=>t.indexOf(S(x))>=0).length, got=Object.keys(s.found).length;
+    const firstLeft=d.grid.findIndex((x,i)=>t.indexOf(S(x))>=0&&!s.found[i]);
+    let h='<div class="obk-find'+heCls(d)+(d.grid.length>12?' many':'')+'">'; d.grid.forEach((x,i)=>{ h+='<button class="obk-fc'+(s.found[i]?' on':'')+(s.bad===i?' obk-shake':'')+((c.guided&&!got||c.hint)&&i===firstLeft?' obk-pulse':'')+'" data-obk="cell" data-k="'+i+'"'+(s.found[i]?' disabled':'')+'>'+pic(x)+(s.found[i]?'<b>✓</b>':'')+'</button>'; });
+    return h+'</div><p class="obk-count sm" aria-live="polite">Found '+got+(c.guided?' of '+tot:'')+'</p>'; },
+  tap(d,s,a,k){ if(a!=='cell') return; const i=+k, t=T.findall.tg(d); if(s.found[i]) return; s.bad=-1;
+    if(t.indexOf(S(d.grid[i]))>=0){ s.found[i]=1; const tot=d.grid.filter(x=>t.indexOf(S(x))>=0).length; return Object.keys(s.found).length>=tot?'ok':undefined; }
+    s.bad=i; s.msg='That one is not a '+(d.findSay||t[0])+'. Look again.'; return 'bump'; },
+  solve(d,s){ const t=T.findall.tg(d); d.grid.forEach((x,i)=>{ if(t.indexOf(S(x))>=0) s.found[i]=1; }); } };
+
+/* ---------- match: pair each left with its right ---------- */
+T.match={
+  err(d){ if(!isArr(d.pairs)||d.pairs.length<2||d.pairs.length>4) return 'pairs must be a list of 2 to 4 pairs'; if(d.pairs.some(p=>!isArr(p)||p.length!==2)) return 'each pair is [left, right]'; return ''; },
+  opts(d){ return d.pairs; },
+  init(d){ return {ro:shufNot(idx(d.pairs.length)), sel:null, done:{}, bad:null}; },
+  say(){ return 'Match each one to its partner. Tap one, then tap its match.'; },
+  how(){ return 'Tap a picture. Then tap the one that goes with it. A line of color shows a match.'; },
+  label(d){ return 'Match '+d.pairs.length+' pairs'; },
+  view(d,s,c){ const L='<div class="obk-col">'+d.pairs.map((p,i)=>'<button class="obk-m'+(s.done[i]?' m'+(i%4):'')+(s.sel&&s.sel.side==='L'&&s.sel.k===i?' sel':'')+(s.bad&&s.bad[0]===i?' obk-shake':'')+'" data-obk="L" data-k="'+i+'" data-obk-drag="L"'+(s.done[i]?' disabled':'')+'>'+pic(p[0])+'</button>').join('')+'</div>';
+    const R='<div class="obk-col'+heCls(d)+'">'+s.ro.map(i=>'<button class="obk-m'+(s.done[i]?' m'+(i%4):'')+(s.sel&&s.sel.side==='R'&&s.sel.k===i?' sel':'')+(s.bad&&s.bad[1]===i?' obk-shake':'')+(c.hint&&s.sel&&s.sel.side==='L'&&s.sel.k===i?' obk-pulse':'')+'" data-obk="R" data-k="'+i+'" data-obk-drop="R"'+(s.done[i]?' disabled':'')+'>'+pic(d.pairs[i][1])+'</button>').join('')+'</div>';
+    return '<div class="obk-match">'+L+'<div class="obk-mid" aria-hidden="true">↔</div>'+R+'</div>'; },
+  pair(d,s,i,j){ s.sel=null; if(i===j){ s.done[i]=1; s.bad=null; return Object.keys(s.done).length>=d.pairs.length?'ok':undefined; } s.bad=[i,j]; s.msg='Those two do not go together. Try again.'; return 'bump'; },
+  tap(d,s,a,k,drop){ const i=+k; s.bad=null;
+    if(a==='L'){ if(s.done[i]) return; if(drop&&drop.a==='R') return T.match.pair(d,s,i,+drop.k); if(s.sel&&s.sel.side==='R') return T.match.pair(d,s,i,s.sel.k); s.sel={side:'L',k:i}; return; }
+    if(a==='R'){ if(s.done[i]) return; if(s.sel&&s.sel.side==='L') return T.match.pair(d,s,s.sel.k,i); s.sel={side:'R',k:i}; } },
+  solve(d,s){ d.pairs.forEach((p,i)=>{ s.done[i]=1; }); } };
+
+/* ---------- sort: cards into 2-3 bins, one card at a time ---------- */
+T.sort={
+  err(d){ if(!isArr(d.bins)||d.bins.length<2||d.bins.length>3) return 'bins must be a list of 2 or 3 names'; if(!isArr(d.cards)||d.cards.length<2||d.cards.length>8) return 'cards must be a list of 2 to 8 cards';
+    if(d.cards.some(c=>!isArr(c)||c.length!==2||!num(c[1])||c[1]<0||c[1]>=d.bins.length)) return 'each card is [picture, bin number starting at 0]'; return ''; },
+  init(d){ return {order:shufNot(idx(d.cards.length)), place:{}, bad:false}; },
+  cur(s){ return s.order.find(i=>s.place[i]==null); },
+  say(){ return 'Where does it go? Tap the right box.'; },
+  how(){ return 'Look at the card. Which box is it like? Tap that box, or drag the card into it.'; },
+  label(d){ return 'Sort into '+d.bins.join(' / '); },
+  view(d,s,c){ const cur=T.sort.cur(s); let h='<div class="obk-card-wrap">'+(cur==null?'<span class="obk-note">All sorted!</span>':'<button class="obk-card'+(s.bad?' obk-shake':'')+'" data-obk="card" data-k="'+cur+'" data-obk-drag="card" aria-label="card: '+E(d.cards[cur][0])+'">'+pic(d.cards[cur][0])+'</button>')+'</div>';
+    h+='<div class="obk-bins n'+d.bins.length+'">'+d.bins.map((b,j)=>'<button class="obk-bin'+(c.hint&&cur!=null&&d.cards[cur][1]===j?' obk-pulse':'')+'" data-obk="bin" data-k="'+j+'" data-obk-drop="bin"><span class="obk-bin-t">'+E(b)+'</span><span class="obk-bin-in">'+
+      Object.keys(s.place).filter(i=>s.place[i]===j).map(i=>'<i>'+pic(d.cards[i][0])+'</i>').join('')+'</span></button>').join('')+'</div>';
+    return h; },
+  tap(d,s,a,k,drop){ const cur=T.sort.cur(s); if(cur==null) return; s.bad=false; let b=-1;
+    if(a==='bin') b=+k; else if(a==='card'&&drop&&drop.a==='bin') b=+drop.k; else return;
+    if(d.cards[cur][1]===b){ s.place[cur]=b; return T.sort.cur(s)==null?'ok':undefined; }
+    s.bad=true; s.msg='Not that box. Look at it again.'; return 'bump'; },
+  solve(d,s){ d.cards.forEach((c,i)=>{ s.place[i]=c[1]; }); } };
+
+/* ---------- trace: finger-trace a dotted letter or number ---------- */
+const TR={ W:300, G:12, R:22 };
+T.trace={ check:true, needsMount:true,
+  err(d){ if(d.glyph==null||!S(d.glyph).length||S(d.glyph).length>3) return 'glyph must be 1 to 3 letters or digits'; return ''; },
+  init(){ return {strokes:[], hit:{}, stray:{}, tgt:null}; },
+  say(d){ return 'Trace the '+(d.name||S(d.glyph))+' with your finger. Stay on the dots.'; },
+  how(){ return 'Start at the top. Keep your finger on the dots and go slowly. Cover all the dots.'; },
+  label(d){ return 'Trace '+S(d.glyph); },
+  font(d){ const n=S(d.glyph).length, px=n===1?230:n===2?150:105; return d.he?'bold '+px+'px "Frank Ruhl Libre","Noto Serif Hebrew",serif':'bold '+px+'px "Nunito","Arial Rounded MT Bold",Arial,sans-serif'; },
+  targets(d){ try{ const cv=document.createElement('canvas'); cv.width=TR.W; cv.height=TR.W; const x=cv.getContext('2d'); x.font=T.trace.font(d); x.textAlign='center'; x.textBaseline='middle'; x.fillStyle='#000'; x.fillText(S(d.glyph),TR.W/2,TR.W/2+8);
+      const px=x.getImageData(0,0,TR.W,TR.W).data, n=TR.W/TR.G, out=[];
+      for(let cy=0;cy<n;cy++) for(let cx=0;cx<n;cx++){ let ink=0; [[.5,.5],[.25,.25],[.75,.25],[.25,.75],[.75,.75]].forEach(o=>{ const X=Math.floor((cx+o[0])*TR.G), Y=Math.floor((cy+o[1])*TR.G); if(px[(Y*TR.W+X)*4+3]>110) ink++; }); if(ink>=2) out.push(cy*n+cx); }
+      return out; }catch(e){ return []; } },
+  view(d,s){ return '<div class="obk-trace'+heCls(d)+'"><canvas data-obk-trace width="'+TR.W+'" height="'+TR.W+'" aria-label="Trace '+E(d.name||d.glyph)+' here with your finger"></canvas></div><div class="obk-row"><button class="ob-link" data-obk="clear">Start over</button></div>'; },
+  mark(s,x,y){ const n=TR.W/TR.G, set={}; (s.tgt||[]).forEach(i=>set[i]=1); const r=TR.R;
+    for(let cy=Math.max(0,Math.floor((y-r)/TR.G));cy<=Math.min(n-1,Math.floor((y+r)/TR.G));cy++) for(let cx=Math.max(0,Math.floor((x-r)/TR.G));cx<=Math.min(n-1,Math.floor((x+r)/TR.G));cx++){
+      const mx=(cx+.5)*TR.G, my=(cy+.5)*TR.G; if((mx-x)*(mx-x)+(my-y)*(my-y)<=r*r){ const i=cy*n+cx; if(set[i]) s.hit[i]=1; else s.stray[i]=1; } } },
+  draw(cv,d,s){ const x=cv.getContext('2d'); if(!x) return; x.clearRect(0,0,TR.W,TR.W); x.font=T.trace.font(d); x.textAlign='center'; x.textBaseline='middle';
+    x.fillStyle='#EFE9DD'; x.fillText(S(d.glyph),TR.W/2,TR.W/2+8); x.save(); x.setLineDash([2,11]); x.lineCap='round'; x.lineWidth=6; x.strokeStyle='#8E97AA'; x.strokeText(S(d.glyph),TR.W/2,TR.W/2+8); x.restore();
+    if(s.solved){ x.fillStyle='rgba(30,158,98,.85)'; x.fillText(S(d.glyph),TR.W/2,TR.W/2+8); return; }
+    x.strokeStyle='rgba(30,158,98,.78)'; x.fillStyle='rgba(30,158,98,.78)'; x.lineCap='round'; x.lineJoin='round'; x.lineWidth=TR.R*1.4;
+    s.strokes.forEach(st=>{ if(st.length===1){ x.beginPath(); x.arc(st[0][0],st[0][1],TR.R*.7,0,7); x.fill(); return; } x.beginPath(); x.moveTo(st[0][0],st[0][1]); st.slice(1).forEach(p=>x.lineTo(p[0],p[1])); x.stroke(); }); },
+  mount(root,d,s){ const cv=root.querySelector('canvas[data-obk-trace]'); if(!cv) return; if(!s.tgt) s.tgt=T.trace.targets(d); T.trace.draw(cv,d,s);
+    let down=false; const pt=e=>{ const r=cv.getBoundingClientRect(); return [ (e.clientX-r.left)*TR.W/Math.max(1,r.width), (e.clientY-r.top)*TR.W/Math.max(1,r.height) ]; };
+    const add=(e,start)=>{ if(s.over||s.solved) return; const p=pt(e); if(start) s.strokes.push([p]); else { const st=s.strokes[s.strokes.length-1]; if(st) st.push(p); }
+      const st=s.strokes[s.strokes.length-1], q=st.length>1?st[st.length-2]:p, steps=Math.max(1,Math.ceil(Math.hypot(p[0]-q[0],p[1]-q[1])/6));
+      for(let k=1;k<=steps;k++) T.trace.mark(s,q[0]+(p[0]-q[0])*k/steps,q[1]+(p[1]-q[1])*k/steps); T.trace.draw(cv,d,s); };
+    cv.addEventListener('pointerdown',e=>{ e.preventDefault(); down=true; try{ cv.setPointerCapture(e.pointerId); }catch(x){} add(e,true); });
+    cv.addEventListener('pointermove',e=>{ if(down){ e.preventDefault(); add(e,false); } });
+    const up=()=>{ down=false; }; cv.addEventListener('pointerup',up); cv.addEventListener('pointercancel',up); cv.addEventListener('pointerleave',up); },
+  tap(d,s,a){ if(a==='clear'){ s.strokes=[]; s.hit={}; s.stray={}; } },
+  cover(s){ const tot=(s.tgt||[]).length; return tot?Object.keys(s.hit).length/tot:0; },
+  ready(){ return true; },
+  judge(d,s){ if(!s.strokes.length) return {ok:false,soft:true,msg:'Put your finger on the dots and trace.'}; const tot=(s.tgt||[]).length; if(!tot) return {ok:true}; const cov=T.trace.cover(s), stray=Object.keys(s.stray).length;
+    if(cov>=0.8&&stray<=tot*1.6) return {ok:true}; if(cov>=0.8) return {ok:false,msg:'Stay on the dots. Tap Start over and go slowly.'};
+    return {ok:false,msg:'Keep going! Cover all the dots.'}; },
+  solve(d,s){ s.solved=true; (s.tgt||[]).forEach(i=>s.hit[i]=1); } };
+
+/* ---------- listen: hear it, tap the match ---------- */
+T.listen={
+  err(d){ if(!isArr(d.o)||d.o.length<2||d.o.length>4) return 'o must be a list of 2 to 4 choices'; if(d.o.map(S).indexOf(S(d.a))<0) return 'a must be one of the choices'; if(!d.hear&&!d.clip) return 'needs hear (words to say) or clip'; if(d.he&&!d.clip) return 'Hebrew needs a recorded clip (no computer voice)'; return ''; },
+  opts(d){ return d.o; },
+  init(d){ return {o:shufNot(d.o.map(S)), off:{}}; },
+  say(d){ return 'Listen. Tap the one you hear.'; },
+  how(){ return 'Tap the speaker to hear it again. Say it with me. Then tap the one that matches.'; },
+  label(d){ return 'Listen: '+S(d.a); },
+  view(d,s,c){ return '<button class="obk-btn obk-hear big" data-obk="hear" aria-label="Hear it again">🔊</button>'+(d.cap&&(s.off&&Object.keys(s.off).length||c.guided)?'<p class="obk-note">'+E(d.cap)+'</p>':'')+
+    '<div class="obk-opts'+heCls(d)+'">'+s.o.map((o,j)=>'<button class="obk-opt'+(s.off[j]?' off':'')+(s.over&&o===S(d.a)?' right':'')+(c.hint&&o===S(d.a)&&!s.over?' obk-pulse':'')+'" data-obk="pick" data-k="'+j+'"'+(s.off[j]||s.over?' disabled':'')+'>'+pic(o)+'</button>').join('')+'</div>'; },
+  tap(d,s,a,k){ if(a!=='pick') return; const j=+k; if(s.off[j]) return; if(s.o[j]===S(d.a)) return 'ok'; s.off[j]=1; s.msg='Not that one. Listen again.'; return 'miss'; },
+  solve(){} };
+
+/* ---------- the kit API the player uses ---------- */
+function ty(d){ return d&&T[d.type]; }
+const OBK=window.OBK={
+  types:T, list:Object.keys(T),
+  err(d,band){ const t=ty(d); if(!d||typeof d!=='object') return 'not an activity'; if(!t) return 'unknown activity type "'+(d&&d.type)+'" (use one of '+Object.keys(T).join(', ')+')';
+    const e=t.err(d); if(e) return d.type+': '+e;
+    if(band==='K1'){ const o=t.opts&&t.opts(d); if(o&&o.length>3) return d.type+': Little Learners get 3 choices at most'; }
+    if(d.why&&(!d.why.q||!isArr(d.why.o)||d.why.o.map(S).indexOf(S(d.why.a))<0)) return d.type+': why needs q, o and a (a is one of o)';
+    return ''; },
+  init(d,c){ const s=ty(d).init(d,c||{}); return Object.assign(s,{misses:0,msg:'',over:false,ok:false,solved:false}); },
+  isCheck(d){ return !!ty(d).check; },
+  say(d){ return d.say||ty(d).say(d); },
+  how(d){ return d.how||ty(d).how(d); },
+  label(d){ return d.label||ty(d).label(d); },
+  view(d,s,c){ return ty(d).view(d,s,c||{}); },
+  tap(d,s,a,k,drop,c){ return ty(d).tap(d,s,a,k,drop,c||{}); },
+  ready(d,s){ const t=ty(d); return t.ready?!!t.ready(d,s):true; },
+  judge(d,s){ return ty(d).judge(d,s); },
+  solve(d,s){ ty(d).solve(d,s); s.solved=true; },
+  mount(root,d,s,c){ const t=ty(d); if(t&&t.mount) try{ t.mount(root,d,s,c||{}); }catch(e){ console.warn('OneBiteKit mount',e); } },
+  hear(d){ try{ const clips=window.TL_CLIPS||{}; if(d.clip&&clips[d.clip]&&window.TLWorld&&TLWorld.say){ TLWorld.say(d.clip,'',{force:true}); return; }
+    if(d.he||!d.hear) return; if(typeof speak==='function') speak(S(d.hear)); }catch(e){} },
+  pic, E
+};
+
+/* ---------- drag (every drag is also a tap-tap) ---------- */
+let drag=null, quiet=0, onDrop=null;
+OBK.onDrop=fn=>{ onDrop=fn; };
+OBK.suppressed=()=>Date.now()<quiet;
+function zoneAt(x,y){ const t=document.elementFromPoint(x,y); return t&&t.closest?t.closest('[data-obk-drop]'):null; }
+document.addEventListener('pointerdown',e=>{ const el=e.target&&e.target.closest?e.target.closest('[data-obk-drag]'):null; if(!el||el.disabled) return; drag={el,x:e.clientX,y:e.clientY,g:null,hot:null}; },true);
+document.addEventListener('pointermove',e=>{ if(!drag) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y;
+  if(!drag.g){ if(dx*dx+dy*dy<144) return; const r=drag.el.getBoundingClientRect(), g=drag.el.cloneNode(true); g.removeAttribute('data-obk'); g.removeAttribute('data-obk-drag');
+    g.classList.add('obk-ghost'); g.style.width=r.width+'px'; g.style.height=r.height+'px'; document.body.appendChild(g); drag.g=g; drag.el.classList.add('obk-lift'); }
+  drag.g.style.left=(e.clientX-drag.g.offsetWidth/2)+'px'; drag.g.style.top=(e.clientY-drag.g.offsetHeight/2)+'px';
+  const z=zoneAt(e.clientX,e.clientY); if(drag.hot&&drag.hot!==z) drag.hot.classList.remove('obk-hot'); if(z) z.classList.add('obk-hot'); drag.hot=z; },true);
+function endDrag(e,cancel){ if(!drag) return; const d=drag; drag=null; if(!d.g) return; d.g.remove(); d.el.classList.remove('obk-lift'); if(d.hot) d.hot.classList.remove('obk-hot');
+  quiet=Date.now()+450; if(cancel) return; const z=zoneAt(e.clientX,e.clientY); if(z&&onDrop) onDrop({a:d.el.dataset.obk,k:d.el.dataset.k},{a:z.dataset.obkDrop,k:z.dataset.k}); }
+document.addEventListener('pointerup',e=>endDrag(e,false),true);
+document.addEventListener('pointercancel',e=>endDrag(e,true),true);
+
+/* ---------- look (same family as the K-1 games: big, round, calm) ---------- */
+OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=document.createElement('style'); s.id='obk-css'; s.textContent=`
+.obk{ display:flex; flex-direction:column; align-items:center; gap:14px; width:100%; }
+.obk button{ font-family:inherit; color:#1F2A44; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.obk [data-obk-drag]{ touch-action:none; user-select:none; -webkit-user-select:none; }
+.obk-row{ display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap; width:100%; }
+.obk-note{ color:#5B6478; font-weight:800; font-size:17px; margin:0; text-align:center; }
+.obk-count{ font-size:calc(var(--fs) * 1.6); font-weight:900; color:#3B6FD8; margin:0; min-width:56px; text-align:center; } .obk-count.sm{ font-size:var(--fs); }
+.obk-btn{ min-height:var(--tap); min-width:var(--tap); padding:8px 20px; border-radius:20px; border:3px solid #E4DED2; background:#fff; font-size:var(--fs); font-weight:900; display:inline-flex; align-items:center; gap:8px; justify-content:center; box-shadow:0 4px 0 #E4DED2; }
+.obk-btn:active{ transform:translateY(3px); box-shadow:0 1px 0 #E4DED2; } .obk-btn:disabled{ opacity:.4; }
+.obk-btn.obk-pri{ border-color:#3B6FD8; color:#2A55B0; box-shadow:0 4px 0 #C9D7F5; }
+.obk-hear.big{ font-size:44px; width:96px; height:96px; border-radius:50%; padding:0; }
+.obk-opts{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; width:100%; }
+.obk-opt{ min-width:var(--tap); min-height:var(--tap); flex:1 1 0; max-width:150px; border-radius:20px; border:3px solid #E4DED2; background:#fff; font-size:calc(var(--fs) * 1.3); font-weight:900; padding:6px 10px; box-shadow:0 4px 0 #E4DED2; }
+.obk-opt.off{ opacity:.35; box-shadow:none; } .obk-opt.right{ border-color:#1E9E62; background:#E6F6EE; }
+.obk-he{ direction:rtl; font-family:'Frank Ruhl Libre','SBL Hebrew','Noto Serif Hebrew','David',serif; }
+.obk-art svg{ width:1em; height:1em; display:block; }
+.obk-tf{ display:flex; flex-direction:column; gap:10px; align-items:center; }
+.obk-tf-f{ display:grid; grid-template-columns:repeat(5,minmax(0,var(--cell))); gap:5px; padding:6px; background:#fff; border:3px solid #1F2A44; border-radius:10px; --cell:min(64px,calc((100vw - 84px) / 5)); }
+.obk-cell{ width:var(--cell); height:var(--cell); border:2px solid #D8D1C2; border-radius:8px; background:#FBF9F4; position:relative; padding:0; }
+.obk-cell.on::after,.obk-cell.pre::after{ content:''; position:absolute; inset:16%; border-radius:50%; background:#C2453D; } .obk-cell.pre::after{ background:#3B6FD8; } .obk-cell.pre{ opacity:1; }
+.obk-tray{ width:var(--tap); height:var(--tap); border-radius:50%; border:3px dashed #C2453D; background:#fff; display:grid; place-items:center; padding:0; } .obk-tray i{ width:60%; height:60%; border-radius:50%; background:#C2453D; display:block; }
+.obk-nl{ width:100%; max-width:420px; }
+.obk-objs{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; max-width:440px; }
+.obk-br{ flex-basis:100%; height:0; }
+.obk-obj{ position:relative; --o:min(var(--tap),calc((100vw - 84px) / 5)); width:var(--o); height:var(--o); border-radius:18px; border:3px solid transparent; background:#fff; font-size:calc(var(--o) * .62); line-height:1; padding:0; display:grid; place-items:center; }
+.obk-obj.on{ border-color:#1E9E62; background:#E6F6EE; } .obk-obj b{ position:absolute; top:-8px; right:-8px; min-width:26px; height:26px; border-radius:13px; background:#1E9E62; color:#fff; font-size:15px; display:grid; place-items:center; padding:0 4px; }
+.obk-mat{ min-height:150px; width:100%; max-width:440px; display:flex; align-items:flex-end; justify-content:center; gap:8px; flex-wrap:wrap; padding:12px; border:3px dashed #D8D1C2; border-radius:18px; background:#fff; box-sizing:border-box; }
+.obk-ones{ display:grid; grid-template-columns:repeat(3,44px); gap:0; align-items:end; }
+.obk-tb,.obk-ob{ width:44px; padding:0; border:0; background:none; display:grid; place-items:center; } .obk-tb{ height:136px; } .obk-ob{ height:44px; }
+.obk-ten{ display:block; width:26px; height:130px; padding:0; box-sizing:border-box; border:2px solid #2A55B0; border-radius:4px; background:repeating-linear-gradient(#3B6FD8 0 11px,#fff 11px 13px); }
+.obk-one{ display:block; width:28px; height:28px; padding:0; box-sizing:border-box; border:2px solid #C85A26; border-radius:4px; background:#FF7A3D; }
+.obk-ten.mini{ width:12px; height:36px; display:inline-block; } .obk-one.mini{ width:16px; height:16px; display:inline-block; }
+.obk-slots,.obk-pool{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; width:100%; }
+.obk-slot{ min-width:var(--tap); height:var(--tap); padding:0 8px; border-radius:14px; border:3px dashed #B9B1A2; background:#FBF9F4; font-size:calc(var(--fs) * 1.4); font-weight:900; }
+.obk-slot.full{ border-style:solid; border-color:#3B6FD8; background:#EEF3FD; } .obk-slot .ghost{ opacity:.25; }
+.obk-tile{ min-width:var(--tap); height:var(--tap); padding:0 10px; border-radius:14px; border:3px solid #E4DED2; background:#fff; font-size:calc(var(--fs) * 1.4); font-weight:900; box-shadow:0 4px 0 #E4DED2; }
+.obk-tile.gone{ display:inline-block; visibility:hidden; }
+.obk-find{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; width:100%; max-width:420px; } .obk-find.many{ grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+.obk-fc{ position:relative; min-height:var(--tap); border-radius:16px; border:3px solid #E4DED2; background:#fff; font-size:calc(var(--fs) * 1.5); font-weight:900; padding:4px; }
+.obk-find.many .obk-fc{ min-height:60px; font-size:calc(var(--fs) * 1.2); }
+.obk-fc.on{ border-color:#1E9E62; background:#E6F6EE; } .obk-fc b{ position:absolute; top:-8px; right:-6px; width:24px; height:24px; border-radius:50%; background:#1E9E62; color:#fff; font-size:14px; display:grid; place-items:center; }
+.obk-match{ display:flex; gap:10px; align-items:stretch; justify-content:center; width:100%; } .obk-col{ display:flex; flex-direction:column; gap:10px; flex:1; max-width:170px; }
+.obk-mid{ align-self:center; font-size:26px; color:#B9B1A2; }
+.obk-m{ min-height:var(--tap); border-radius:18px; border:3px solid #E4DED2; background:#fff; font-size:calc(var(--fs) * 1.3); font-weight:900; padding:6px; box-shadow:0 4px 0 #E4DED2; }
+.obk-m.sel{ border-color:#3B6FD8; background:#EEF3FD; box-shadow:0 0 0 4px rgba(59,111,216,.25); }
+.obk-m.m0{ background:#E6F6EE; border-color:#1E9E62; } .obk-m.m1{ background:#FFF1E8; border-color:#FF7A3D; } .obk-m.m2{ background:#EEF3FD; border-color:#3B6FD8; } .obk-m.m3{ background:#F6ECFB; border-color:#9B5DE5; }
+.obk-m:disabled{ box-shadow:none; opacity:1; }
+.obk-card-wrap{ min-height:calc(var(--tap) * 1.5); display:grid; place-items:center; }
+.obk-card{ min-width:calc(var(--tap) * 1.5); min-height:calc(var(--tap) * 1.5); border-radius:20px; border:3px solid #3B6FD8; background:#fff; font-size:calc(var(--tap) * .7); font-weight:900; padding:6px 14px; box-shadow:0 6px 0 #C9D7F5; }
+.obk-bins{ display:grid; gap:10px; width:100%; max-width:460px; } .obk-bins.n2{ grid-template-columns:1fr 1fr; } .obk-bins.n3{ grid-template-columns:1fr 1fr 1fr; }
+.obk-bin{ min-height:calc(var(--tap) * 1.6); border-radius:18px; border:3px solid #B9B1A2; border-top-width:10px; background:#FBF9F4; display:flex; flex-direction:column; align-items:center; gap:6px; padding:8px 4px; font-size:var(--fs); font-weight:900; }
+.obk-bin-in{ display:flex; flex-wrap:wrap; gap:2px; justify-content:center; font-size:22px; } .obk-bin-in i{ font-style:normal; }
+.obk-trace{ width:100%; max-width:300px; aspect-ratio:1; background:#fff; border:3px solid #E4DED2; border-radius:20px; overflow:hidden; } .obk-trace canvas{ width:100%; height:100%; display:block; touch-action:none; }
+.obk-hot{ box-shadow:0 0 0 5px rgba(30,158,98,.45) !important; border-color:#1E9E62 !important; }
+.obk-ghost{ position:fixed; z-index:9999; pointer-events:none; opacity:.92; transform:scale(1.08); margin:0; }
+.obk-lift{ opacity:.35; }
+.obk-how{ background:#FFF8E6; border:2px solid #F2D58A; border-radius:16px; padding:10px 14px; font-size:calc(var(--fs) * .78); line-height:1.45; } .obk-how b{ display:block; font-size:14px; letter-spacing:.06em; color:#8A6A10; } .obk-how p{ margin:2px 0 0; }
+.obk-pulse{ animation:obkPulse 1.2s ease-in-out infinite; } @keyframes obkPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(255,122,61,.55); } 50%{ box-shadow:0 0 0 9px rgba(255,122,61,0); } }
+.obk-shake{ animation:obkShake .4s ease; } @keyframes obkShake{ 20%{ transform:translateX(-6px); } 40%{ transform:translateX(6px); } 60%{ transform:translateX(-4px); } 80%{ transform:translateX(3px); } }
+@media (prefers-reduced-motion: reduce){ .obk-pulse,.obk-shake{ animation:none; } }
+.ob-M68 .obk-obj,.ob-M68 .obk-card{ font-size:calc(var(--tap) * .5); }
+`; document.head.appendChild(s); };
+})();
+</script>
