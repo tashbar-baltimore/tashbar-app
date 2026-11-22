@@ -37,6 +37,8 @@ module.exports = function levelPass() {
   /* 2. a level with no check is never cut: Kodesh, Writing, and any Math/Reading level the bank cannot check */
   const ck = pay(tok, 'TESTLP01', 'LK.CHU.L03.03'); chk(ck === 100, 'a Kodesh lesson is never cut (got ' + ck + ')');
   const cw = pay(tok, 'TESTLP01', 'LANG.GRAM.L05.01'); chk(cw === 100, 'a Writing / Language lesson is never cut (got ' + cw + ')');
+  chk(M.lc.MATH[0] === 0 && M.lc.MATH[1] === 0 && M.lc.READ[0] === 0 && M.lc.READ[1] === 0, 'HoS 2026-11-22: Levels 1-2 (K-1) have no level check (got Math ' + M.lc.MATH.slice(0, 2) + ', Reading ' + M.lc.READ.slice(0, 2) + ')');
+  { const ids = ev("plList_('MATH').map(function(x){return x[0];}).filter(function(id){return plMathLevel_(id)===1;})"); if (ids[0]) { const c0 = pay(tok, 'TESTLP01', ids[0]); chk(c0 === 100, 'a Kindergarten (Level 1) Math lesson is never cut (got ' + c0 + ')'); } }
   const noChk = []; ['MATH', 'READ'].forEach(k => M.lc[k].forEach((v, i) => { if (!v) noChk.push(k + '|' + (i + 1)); }));
   if (noChk.length) { const [k, L] = noChk[0].split('|'), id = ev('(plList_("' + k + '")||[]).filter(function(x){return plMathLevel_(x[0])===' + L + ';})[0][0]');
     const cn = pay(tok, 'TESTLP01', id); chk(cn === 100, k + ' Level ' + L + ' has no level check, so it must never be cut (got ' + cn + ')'); }
