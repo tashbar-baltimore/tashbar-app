@@ -11,111 +11,118 @@
 window.ONE_BITE=window.ONE_BITE||{};
 (function(B){
 
-/* ---- GRADE 2 (L03, band B23) ---- */
-B['READ.COMP.L03.01']={ band:'B23', pic:'🐝', today:'Find what the whole page is about', why:'When you know the topic, every fact on the page makes sense.',
-  ready:[{q:'Sam has a dog named Rex. Who has a dog?', o:['Sam','Rex','Mom'], a:'Sam'},{q:'Rex ran to the park. Where did Rex run?', o:['to the park','to school','home'], a:'to the park'}],
+/* ---- GRADE 2 (L03, band B23). Quality round (HoS 2026-11-22): think-aloud Watch Me on a short original passage,
+   then do 1-2 guided (easiest case), your 1-2 a little harder on a NEW passage, your 3 the Mistake Detective mistake,
+   your 4 a new representation, your 5 a challenge or real-world case. ---- */
+B['READ.COMP.L03.01']={ band:'B23', pic:'🐝', today:'Find the main topic of a page and its parts', why:'When you know what a page is about, every fact on it makes sense, and you can find what you need.',
+  ready:[{q:'Chaim has a cat named Puff. Who has a cat?', o:['Chaim','Puff','Mommy'], a:'Chaim'},{q:'Puff ran to the yard. Where did Puff run?', o:['to the yard','to school','home'], a:'to the yard'}],
   bridge:'READ.COMP.L02.01',
-  watch:{ q:'Ants', m:{type:'scene',e:'🐜',t:'Ants. Ants live in a nest. Ants dig long tunnels. Ants carry food home.'}, steps:[
-    {t:'Read the title first: Ants.'},
-    {t:'Which word keeps coming back? Count it: ants, ants, ants. Three fingers!', m:{type:'tiles',w:['Ants','nest','Ants','tunnels','Ants'],hi:[0,2,4]}},
-    {t:'The word that comes back most is the main topic. The topic is ants.'},
-    {t:'A title that fits the whole page: All About Ants. Bees page? All About Bees.'}], a:'The main topic is ants.' },
-  oops:{ q:'A page about snow says sleds one time. Topic?', wrong:'sleds', right:'snow', why:'The topic is what most sentences are about. Sleds came up only once.' },
-  ways:['find the word that comes back','sort titles','match parts','order the steps','Mistake Detective'], done:'You can find the main topic of a page!',
-  board:{ one:'The word that keeps coming back is the main topic.', activity:'Read a short page aloud; boys hold up a finger each time the topic word comes back.', mistakes:['Picking a detail that comes up once','Picking a title that fits only one part','Not reading the title first'] },
+  watch:{ q:'Ants', m:{type:'scene',e:'🐜',t:'Ants. Part 1: Ants live in a nest under the ground. Part 2: Ants carry food home in a long line.'}, steps:[
+    {t:'I read the title first: Ants. So I think this page is about ants.'},
+    {t:'I notice the word ants in every part. A word that keeps coming back is a big clue.', m:{type:'tiles',w:['Ants','nest','Ants','food'],hi:[0,2]}},
+    {t:'I read Part 2 only. I notice carry, food, home, line. Most words tell about carrying food. So Part 2 is mostly about how ants carry food.'},
+    {t:'Every part is about ants. So the main topic of the whole page is ants.'},
+    {t:'A title must fit the WHOLE page: All About Ants. On a page about bees, the title All About Bees fits. Food or Eggs fits only one part.'}], a:'Main topic of the page: ants. Part 2: how ants carry food.' },
+  oops:{ q:'A page about snow says sleds one time. Topic?', wrong:'sleds', right:'snow', why:'The topic is what the whole page is about. Sleds came up only once, in one part.' },
+  ways:['think-aloud','find the word that comes back','sort topic and detail','match details to topics','Mistake Detective'], done:'You can find the main topic of a page and of each part!',
+  board:{ one:'Read the title, find the word that keeps coming back, check that it fits every part.', activity:'Read a short two-part page aloud; boys hold up a finger each time the topic word comes back, then name what each part is mostly about.', mistakes:['Picking a detail that comes up in one part only','Picking a title that fits only one part','Not reading the title first'] },
   do:[
-    {type:'findall', grid:['Owls','hunt','in','the','dark','Owls','see','well','An','owl','can','hoot'], find:['Owls','owl'], findSay:'owl word', say:'Tap every owl word. It keeps coming back!', how:'Read each word. Is it owl or owls? Tap it. Count them.'},
-    {type:'sort', q:'A page called Bees', bins:['Fits whole page','Fits one part'], cards:[['All About Bees',0],['Bees',0],['The Hive',1],['Making Honey',1],['Eggs',1]], say:'Does this title fit the whole page, or one part?', how:'A title for the whole page names the main topic: bees. Eggs is only one part.'}],
+    {type:'findall', q:'A frog can jump. A frog eats bugs.', grid:['A','frog','can','jump','A','frog','eats','bugs'], find:'frog', findSay:'word that comes back', say:'Which word is in every sentence? Tap it each time.', how:'Read both sentences. One word is in both of them. That word is the topic.'},
+    {type:'sort', q:'Dogs bark. Dogs wag. Dogs dig.', bins:['Main topic','Small detail'], cards:[['dogs',0],['barking',1],['wagging',1],['digging',1]], say:'Is it the main topic, or a small detail?', how:'The topic is in every sentence: dogs. Each thing a dog does is a detail.'}],
   your:[
-    {type:'match', q:'Bees: the hive, then honey', pairs:[['Part 1','the hive'],['Part 2','making honey'],['Whole page','bees']], say:'Match each part to what it is mostly about.', how:'Read one part. What do most of its sentences tell about? Match it.'},
-    {type:'listen', hear:'Frogs jump. Frogs swim in a pond. A frog eats bugs. What is the main topic?', o:['frogs','ponds','bugs'], a:'frogs', say:'Listen to the page. Tap the main topic.', how:'Which word did you hear again and again? That is the topic.'},
-    {type:'tiles', w:['Read the title','Count the word','Name the topic'], q:'How do you find the main topic?', say:'Put the three steps in order.', how:'First read the title. Then count the word that comes back. Last, name the topic.'},
-    {type:'sort', q:'Snow is cold. We ride sleds in snow.', bins:['Main topic','Small detail'], cards:[['snow',0],['sleds',1],['cold',1],['white',1]], say:'Is it the main topic, or a small detail?', how:'The main topic comes back in every sentence. A detail tells a little more about it.'},
-    {type:'findall', q:'Dogs bark. Dogs wag. A dog can run fast.', grid:['Dogs','bark','Dogs','wag','dog','run','fast','can'], find:['Dogs','dog'], findSay:'topic word', say:'Tap every word for the main topic.', how:'Which word is in every sentence? Tap each one.'}] };
+    {type:'match', q:'Owls: which part is it from?', pairs:[['Owls catch mice.','how owls hunt'],['Nest in a tree.','owl homes'],['Owls hoot: whoo!','owl sounds']], say:'Match each sentence to what its part is about.', how:'Read the sentence. Is it about hunting, homes, or sounds?'},
+    {type:'listen', hear:'Turtles. Part 1: A turtle has a hard shell. It hides inside when it is scared. Part 2: A mother turtle digs a hole in the sand and lays eggs. What is the main topic of the whole page?', o:['turtle','shell','eggs'], a:'turtle', say:'Mistake Detective: which word is in every part?', how:'Shells come up in Part 1 only. Eggs come up in Part 2 only. That is the mistake. Turtles are in every part.'},
+    {type:'match', pairs:[['hive, honey','All About Bees'],['hop, swim, bugs','All About Frogs'],['eat, sleep in it','Our Sukkah']], say:'Match the details to the title that fits them all.', how:'Check: does the title fit EVERY detail?'},
+    {type:'sort', q:'Turtles. Part 1: shell. Part 2: eggs.', bins:['Fits whole page','Only one part'], cards:[['All About Turtles',0],['Turtle Facts',0],['Hard Shells',1],['Laying Eggs',1],['In the Sand',1]], say:'Does this title fit the whole page?', how:'A title for the whole page must fit Part 1 AND Part 2. Hard Shells fits only Part 1.'},
+    {type:'listen', q:'Challenge: the shul newsletter', hear:'Part 1: Our shul got new books. Part 2: Yehuda and his friends built a new stand for the rav. What is Part 2 mostly about?', o:['stand','books','sukkah'], a:'stand', say:'Challenge! What is Part 2 mostly about?', how:'Listen to Part 2 only. It tells about the new stand, a shtender for the rav.'}] };
 
-B['READ.COMP.L03.02']={ band:'B23', pic:'🐪', today:'Use headings, captions and bold words', why:'Text tools are like road signs. They take you straight to the fact you need.',
+B['READ.COMP.L03.02']={ band:'B23', pic:'🐪', today:'Use headings, captions and bold words to find facts', why:'Text tools are like road signs. They take you straight to the fact you need.',
   ready:[{q:'Which one names the whole page?', o:['the title','the last word','a dot'], a:'the title'},{q:'A page about bees is mostly about...', o:['bees','trees','cars'], a:'bees'}],
   bridge:'READ.COMP.L03.01', bridgeName:'Main Topic',
-  watch:{ q:'Beavers', m:{type:'scene',e:'🦫',t:'Beavers. ▶ Building a Dam: A beaver packs sticks and mud. This makes a DAM. Caption: A beaver lodge. Word box: dam: a wall that holds water.'}, steps:[
-    {t:'A heading names one part of the page, like a road sign: Building a Dam.'},
-    {t:'A caption sits next to the picture and tells about it: A beaver lodge.'},
-    {t:'A bold word is dark and thick. It is important. Dam is in bold.'},
-    {t:'The word box tells what it means: dam: a wall that holds water.'}], a:'Heading, caption, bold word: text tools help you find facts fast.' },
-  oops:{ q:'Which is the caption?', wrong:'The title at the top', right:'The words next to the picture', why:'A caption always sits next to a picture and tells about it.' },
-  ways:['match a tool to its job','sort facts under headings','listen for a meaning','Mistake Detective'], done:'You can use text tools to find facts fast!',
-  board:{ one:'Headings name a part, captions tell about a picture, bold words are explained nearby.', activity:'Give each pair a page; they point to one heading, one caption and one bold word.', mistakes:['Reading the caption as the title','Not looking in the word box for a bold word','Reading every part instead of jumping to the heading'] },
+  watch:{ q:'Beavers', m:{type:'scene',e:'🦫',t:'Beavers. ▶ Building a Dam: A beaver packs sticks and mud to make a DAM. ▶ A Safe Home: The door is under the water. 🦫 A beaver lodge. Word box: dam: a wall that holds back water.'}, steps:[
+    {t:'My question: what is a dam? I notice DAM is dark and thick. A bold word is explained nearby.'},
+    {t:'So I look in the word box: dam: a wall that holds back water. I found it fast!'},
+    {t:'New question: where is the door? I read the headings like road signs. A Safe Home sounds right. It says: The door is under the water. Found it!'},
+    {t:'I notice a sentence next to the picture: A beaver lodge. That is the caption. A caption tells about the picture.'},
+    {t:'A Safe Home is NOT the caption. It is a heading, a name for a part. On a camel page, the caption is the sentence by the picture: Wide feet help a camel walk on sand.'}], a:'Bold word: look in the word box. Question: pick the heading. Picture: read the caption.' },
+  oops:{ q:'Which is the caption?', wrong:'A heading, like Made for Sand', right:'The sentence next to the picture', why:'A heading names a part. A caption is the sentence next to or under a picture and tells about it.' },
+  ways:['think-aloud','match tool and job','sort facts under headings','bold words in a word box','Mistake Detective'], done:'You can use text tools to find facts fast!',
+  board:{ one:'Headings name a part, captions tell about a picture, bold words are explained in the word box.', activity:'Give each pair a page and three questions; they point to the heading, caption or bold word that answers each one.', mistakes:['Calling a heading the caption','Not looking in the word box for a bold word','Reading every part instead of jumping to the heading'] },
   do:[
-    {type:'match', pairs:[['heading','names a part'],['caption','about a picture'],['bold word','a key word']], say:'Match each text tool to its job.', how:'A heading is a road sign. A caption is by a picture. A bold word is dark and thick.'},
-    {type:'sort', q:'Camels: two headings', bins:['The Hump','Made for Sand'], cards:[['wide feet',1],['stores fat',0],['does not sink',1],['sand out of eyes',1],['no food',0]], say:'Which heading would you read for this fact?', how:'Wide feet, so it does not sink in the sand: that is Made for Sand. Fat is The Hump.'}],
+    {type:'match', pairs:[['heading','names a part'],['caption','about a picture'],['bold word','a key word']], say:'Match each text tool to its job.', how:'A heading is a road sign for a part. A caption sits by a picture. A bold word is dark and thick.'},
+    {type:'sort', q:'Beavers: two headings', bins:['Building a Dam','A Safe Home'], cards:[['sticks and mud',0],['where they sleep',1],['how they build',0],['door under water',1]], say:'Which heading would you read for this?', how:'Building a Dam tells how they build. A Safe Home tells where they live.'}],
   your:[
-    {type:'listen', q:'Word box: hump', hear:'hump', o:['a big bump','a foot','a drink'], a:'a big bump', say:'Hump is in bold. What does it mean?', how:'A bold word is explained nearby. The word box says: hump: a big bump on a camel\'s back.'},
-    {type:'sort', q:'Caption: Wide feet help a camel walk on sand.', bins:['Caption','Heading'], cards:[['A beaver lodge.',0],['Made for Sand',1],['The Hump',1],['A baby frog.',0]], say:'Is it a caption, or a heading?', how:'A caption is a sentence next to a picture. A heading is a short name for a part.'},
-    {type:'tiles', w:['Title','Heading','Sentences','Caption'], q:'A page called Camels', say:'Put the parts of the page in order, top to bottom.', how:'The title is at the very top. Then a heading, then its sentences. The caption is by the picture.'},
-    {type:'match', pairs:[['dam','holds back water'],['lodge','a beaver\'s home'],['hump','a big bump']], say:'Match each bold word to what it means.', how:'Bold words are explained in the word box. Read the box.'},
-    {type:'sort', q:'Camels: three headings', bins:['The Hump','Made for Sand','Going Without Water'], cards:[['does not sink',1],['stores fat',0],['no drink',2],['long lashes',1],['drinks a lot',2]], say:'Which heading would you read for this fact?', how:'Why does a camel not sink? Wide feet. Read Made for Sand.'}] };
+    {type:'listen', q:'Word box: talons', hear:'Owls. An owl has sharp talons. Word box: talons: sharp claws on a bird\'s feet. What are talons?', o:['claws','eyes','wings'], a:'claws', say:'Talons is a bold word. Use the word box.', how:'A bold word is explained in the word box: talons: sharp claws on a bird\'s feet. On a camel page: hump: a big bump on a camel\'s back.'},
+    {type:'sort', q:'Penguins: three headings', bins:['Staying Warm','Finding Food','Penguin Chicks'], cards:[['thick feathers',0],['huddle close',0],['catch fish',1],['dive deep',1],['egg on feet',2]], say:'Which heading would you read for this fact?', how:'Read the headings like road signs. Which part would tell this? On a camel page, why a camel does not sink is under Made for Sand.'},
+    {type:'listen', q:'warn = to tell about ___', hear:'Beavers. A beaver slaps its tail to warn the others. Word box: warn: to tell about danger. What does warn mean?', o:['danger','food','sticks'], a:'danger', say:'Warn is a bold word. What does it mean?', how:'Look in the word box. Warn: to tell about danger.'},
+    {type:'sort', q:'Caption, or heading?', bins:['A caption','A heading'], cards:[['🐧 Chicks stay warm.',0],['🦫 Beavers eat bark.',0],['Made for Sand',1],['A Safe Home',1],['Penguins',1]], say:'Mistake Detective: caption, or heading?', how:'The mistake is calling a heading the caption. A caption is a sentence next to a picture. A heading is a short name for a part.'},
+    {type:'listen', q:'Challenge: Dovid\'s Pesach book', hear:'Dovid reads a book about Pesach. Heading: Getting Ready. He sees a dark, thick word: chametz. Where can he look to learn what it means?', o:['word box','title','cover'], a:'word box', say:'Challenge! Where should Dovid look?', how:'A bold word is explained nearby, in the word box.'}] };
 
-B['READ.COMP.L03.03']={ band:'B23', pic:'🐦', today:'Find the steps for how, the reason for why', why:'How tells you what to do. Why tells you the reason. Now you know which to look for.',
+B['READ.COMP.L03.03']={ band:'B23', pic:'🐦', today:'Answer how and why questions from a page', why:'How asks the steps or the way. Why asks the reason. Knowing which to look for helps you find the answer.',
   ready:[{q:'Which one is a heading?', o:['Why Plants Need Sun','A plant needs sun.','sun'], a:'Why Plants Need Sun'},{q:'A caption tells about...', o:['a picture','the last page','a word'], a:'a picture'}],
   bridge:'READ.COMP.L03.02', bridgeName:'Text Tools',
-  watch:{ q:'Beavers build dams so the water gets deep.', m:{type:'scene',e:'🦫',t:'First a beaver cuts sticks. Then it packs them with mud. Beavers build dams so the water gets deep.'}, steps:[
-    {t:'How questions want steps. Hold up one hand. Look for first and then.'},
-    {t:'How does a beaver build? First it cuts sticks. Then it packs them with mud.'},
-    {t:'Why questions want a reason. Hold up the other hand. Look for because or so.'},
-    {t:'Why build a dam? The word so tells the reason: so the water gets deep.'}], a:'How: first, then. Why: because, so.' },
+  watch:{ q:'How Beavers Build', m:{type:'scene',e:'🦫',t:'How Beavers Build. First a beaver cuts sticks. Then it packs them with mud. It swims with its flat tail. Beavers need deep water, so they build a dam. Deep water is good because it keeps them safe.'}, steps:[
+    {t:'My question: how does a beaver build? How wants steps. I look for first and then: first it cuts sticks, then it packs them with mud.'},
+    {t:'How can also ask the way: how does it swim? With its flat tail. Birds fly in a big group shaped like a V: that is HOW they fly.'},
+    {t:'Next question: why build a dam? Why wants a reason. I look for so or because.'},
+    {t:'I notice so: Beavers need deep water, so they build a dam. The reason comes BEFORE so.'},
+    {t:'I notice because: deep water is good because it keeps them safe. The reason comes AFTER because.'}], a:'How: first, then, or the way. Why: the reason before so, after because.' },
   oops:{ q:'Why do birds fly south?', wrong:'They fly in a V.', right:'It is warm there.', why:'Flying in a V tells HOW they fly. A why question wants a reason.' },
-  ways:['how hand and why hand','find signal words','sort questions','order steps','Mistake Detective'], done:'You can find the steps and the reasons in a page!',
-  board:{ one:'How wants steps (first, then). Why wants a reason (because, so).', activity:'Call out questions; boys raise the how hand or the why hand, then hunt for the signal word.', mistakes:['Answering a why question with steps','Missing the reason after because or so','Not reading the heading that matches the question'] },
+  ways:['think-aloud','how hand and why hand','sort questions','order steps from a text','Mistake Detective'], done:'You can answer how and why questions from a page!',
+  board:{ one:'How wants steps or the way (first, then). Why wants a reason: before so, after because.', activity:'Call out questions; boys raise the how hand or the why hand, then hunt for the signal word in a short page.', mistakes:['Answering a why question with how','Looking after so for the reason (it comes before)','Not reading the heading that matches the question'] },
   do:[
-    {type:'sort', bins:['How? Steps','Why? A reason'], cards:[['How do seeds grow?',0],['Why fly south?',1],['How do they fly?',0],['Why come back?',1]], say:'Does this question want steps, or a reason?', how:'How wants steps. Why wants a reason. Look at the first word.'},
-    {type:'findall', q:'It is cold, so we go in.', grid:['It','is','cold','so','we','go','in','It','is','warm','so','we','play'], find:'so', say:'Tap every so. A reason is close by.', how:'So is a reason word. It is cold, so we go in. It is warm, so we play.'}],
+    {type:'sort', bins:['How? Steps, way','Why? A reason'], cards:[['How do seeds grow?',0],['Why fly south?',1],['How do they fly?',0],['Why come back?',1]], say:'Does this question want how, or a reason?', how:'Look at the first word. How wants steps or the way. Why wants a reason.'},
+    {type:'match', q:'It was cold, so Yossi ran in fast.', pairs:[['Why go in?','it was cold'],['What did he do?','ran in'],['How did he go?','fast']], say:'Match each question to its answer.', how:'With so, the reason comes before it: it was cold.'}],
   your:[
-    {type:'match', q:'Birds fly south', pairs:[['Why go south?','it is warm there'],['How do they fly?','shaped like a V']], say:'Match each question to its answer.', how:'Why: it is warm there, and food is hard to find up north. How: in a big group shaped like a V.'},
-    {type:'tiles', w:['Plant the seed','Give water','Shoot grows'], q:'How does a seed grow?', say:'Put the steps in order.', how:'Look for first and then. They tell the order of the steps.'},
-    {type:'listen', q:'Back north in the spring', hear:'Why do the birds come back in the spring?', o:['lots of food','tired','it is fall'], a:'lots of food', say:'Listen. Find the reason after because.', how:'Find because. The reason comes right after it: there is lots of food again.'},
-    {type:'findall', q:'Mix it. Then add oil. Last, bake it.', grid:['Mix','it','Then','add','oil','Last','bake','it'], find:['Then','Last'], findSay:'order word', say:'Tap every word that tells the order of the steps.', how:'Order words like first, then and last tell the steps. They answer how.'},
-    {type:'sort', q:'Why Do Birds Fly South?', bins:['The Long Trip','Coming Back'], cards:[['fly in a V',0],['save strength',0],['spring',1],['lots of food',1]], say:'Which heading would you read to find this?', how:'The Long Trip tells how they fly. Coming Back tells why they return in spring.'}] };
+    {type:'tiles', w:['mix the dough','let it rise','braid it','bake it'], hear:'To bake challah, Shira and Mommy mix the dough. Then they let it rise. Then they braid it. Last, they bake it.', q:'How do they make challah?', say:'Listen. A how question! Put the steps in order.', how:'Listen for first, then, last. The dough rises before they braid it.'},
+    {type:'match', q:'Bears sleep in winter because food is gone.', pairs:[['Why sleep?','food is gone'],['When?','in winter'],['What do they do?','sleep']], say:'Match each question to its answer.', how:'With because, the reason comes after it: food is gone.'},
+    {type:'sort', q:'Why do bears sleep all winter?', bins:['Answers WHY','Answers HOW'], cards:[['food is gone',0],['it is very cold',0],['curl up in dens',1],['breathe slowly',1]], say:'Mistake Detective: does it answer why, or how?', how:'The mistake is answering a why question with how. Why wants a reason. Curling up in a den is how they sleep.'},
+    {type:'findall', q:'It got cold, so we went in. Then we ate.', grid:['It','got','cold','so','we','went','in','Then','we','ate'], find:['so','Then'], findSay:'signal word', say:'Tap the reason word and the step word.', how:'So: the reason is just before it. Then: the next step.'},
+    {type:'listen', q:'Challenge: ducks in the fall', hear:'Cold Is Coming. In the fall, ducks cannot find bugs. The Long Trip. So the ducks fly to a warm pond. Why do the ducks fly away?', o:['no bugs','likes ponds','spring'], a:'no bugs', say:'Challenge! Find the reason in two parts.', how:'The reason comes before So, in the part before. Birds fly south because it is warm there, and food is hard to find up north. In the spring they come back because there is lots of food again.'}] };
 
-B['READ.FLU.L03.01']={ band:'B23', pic:'🎙️', today:'Read smoothly, like a news reader', why:'When you read smoothly, the story makes sense, and people love to listen.',
+B['READ.FLU.L03.01']={ band:'B23', pic:'🎙️', today:'Read smoothly, follow the marks, then tell what happened', why:'When you read smoothly, the story makes sense, and people love to listen to you.',
   ready:[{q:'Which mark ends an asking sentence?', o:['?','.',','], a:'?'},{q:'Ben has a red hat. What color is the hat?', o:['red','blue','green'], a:'red'}],
   bridge:'READ.FLU.L02.02',
-  watch:{ q:'"Look!" said Ben. "They are growing!"', m:{type:'scene',e:'🎃',t:'Zev put in corn seeds. Ben put in pumpkin seeds. "Look!" said Ben. "They are growing!"'}, steps:[
-    {t:'Read in scoops, not word by word: Zev put in / corn seeds.'},
-    {t:'A period means stop. Drop your voice a little.'},
-    {t:'An exclamation mark means strong feeling: "Look!" Say it excited!'},
-    {t:'Then ask: what happened? Zev planted corn seeds. Ben planted pumpkin seeds.'}], a:'Smooth scoops, then ask: what happened?' },
-  oops:{ q:'"What will we do with it?" asked Zev.', wrong:'Read it flat, like a list.', right:'Make your voice go up at the end.', why:'A question mark means asking. Your voice goes up.' },
-  ways:['match marks to voices','find the marks','listen for the feeling','read in scoops','Mistake Detective'], done:'You can read smoothly, with feeling!',
-  board:{ one:'Read in scoops, follow the marks, then ask what happened.', activity:'Echo reading: the teacher reads a line in scoops, the boys read it back the same way.', mistakes:['Reading word by word like a robot','Not stopping at a period','Reading fast but not knowing what happened'] },
+  watch:{ q:'In the Garden', m:{type:'scene',e:'🎃',t:'In the spring, Zev put in corn seeds. Ben put in pumpkin seeds. "Look!" said Ben. "Are they growing?" asked Zev.'}, steps:[
+    {t:'I read in scoops, not word by word: Zev put in / corn seeds. That sounds like talking.'},
+    {t:'I notice a comma after spring. So I rest a tiny bit, then keep going.'},
+    {t:'I notice a period. So I stop and drop my voice a little. I notice an exclamation mark after Look! So I say it excited.'},
+    {t:'I notice a question mark. So my voice goes up: Are they growing? That line sounds asking.'},
+    {t:'Then I ask myself: what happened? Zev planted corn seeds. Ben planted pumpkin seeds.'}], a:'Scoop, follow the marks, then ask: what happened?' },
+  oops:{ q:'Ben put in corn seeds.', wrong:'Ben. Put. In. Corn. Seeds.', right:'Ben put in / corn seeds.', why:'Robot reading stops after every word. Read words that go together in one scoop.' },
+  ways:['think-aloud','match marks to voices','good and broken scoops','order what happened','Mistake Detective'], done:'You can read smoothly, with feeling, and tell what happened!',
+  board:{ one:'Read in scoops, follow the marks, then ask what happened.', activity:'Echo reading: the teacher reads a line in scoops, the boys read it back the same way, then retell it.', mistakes:['Reading word by word like a robot','Not stopping at a period or resting at a comma','Reading fast but not knowing what happened'] },
   do:[
     {type:'match', pairs:[['?','asking'],['!','excited'],['.','stop'],[',','short rest']], say:'Match each mark to how your voice sounds.', how:'Question mark: voice goes up. Exclamation: excited. Period: stop. Comma: short rest.'},
-    {type:'findall', grid:['Rain','fell',',','so','!','she','said','.','wet','?'], find:[',','!','.','?'], findSay:'punctuation mark', say:'Tap every mark that tells your voice what to do.', how:'Look for the little marks: comma, exclamation, period, question mark.'}],
+    {type:'sort', bins:['Good scoop','Broken scoop'], cards:[['by the fence',0],['in the spring',0],['sat by the',1],['spring, they dug',1]], say:'Is it a good scoop, or a broken one?', how:'A good scoop is words that go together. Do not stop in the middle of an idea.'}],
   your:[
-    {type:'listen', q:'"What will we do with it?" asked Zev.', hear:'What will we do with it?', o:['asking','excited','calm'], a:'asking', say:'Listen. How should this line sound?', how:'It ends with a question mark. Your voice goes up: asking.'},
-    {type:'tiles', w:['We will','bring it','to the shul','for Sukkos!'], q:'Where will the pumpkin go?', say:'Read it in scoops. Put the scoops in order.', how:'Read the line once. Where will they bring the pumpkin? To the shul for Sukkos.'},
-    {type:'sort', bins:['Stop','Short rest','Voice up'], cards:[['.',0],[',',1],['?',2],['. (end)',0],['? (end)',2]], say:'What does your voice do at this mark?', how:'Period: stop. Comma: short rest. Question mark: your voice goes up.'},
-    {type:'listen', q:'Soon, little green shoots came up.', hear:'What came up?', o:['shoots','pumpkins','corn'], a:'shoots', say:'Read it smoothly, then tap what came up.', how:'Read in scoops. Then ask: what happened? Little green shoots came up.'},
-    {type:'match', pairs:[['"Look!"','excited'],['"Is it big?"','asking'],['It sat there.','calm']], say:'Match each line to how it should sound.', how:'Look at the mark at the end. ! is excited, ? is asking, . is calm.'}] };
+    {type:'listen', q:'"What will we do with it?" asked Zev.', hear:'What will we do with it?', o:['asking','happy','calm'], a:'asking', say:'Listen. How should this line sound?', how:'It ends with a question mark. Your voice goes up: asking.'},
+    {type:'sort', bins:['Voice up','Excited','Stop'], cards:[['Is it ripe?',0],['Can I help?',0],['Look at it!',1],['Wow, so tall!',1],['It is big.',2]], say:'How does your voice sound on this line?', how:'Look at the mark at the end. ? voice up. ! excited. Period: stop.'},
+    {type:'tiles', w:['dug rows','put in seeds','shoots came up','corn stood tall'], hear:'In the spring, Ben and Zev dug rows in the dirt. They put in seeds. Soon, little green shoots came up. By the end of the summer, the corn stood tall.', q:'Put what happened in order.', say:'Listen and follow along. Put what happened in order.', how:'Listen in scoops. First they dug, then planted, then shoots came, then the corn grew tall.'},
+    {type:'sort', bins:['Smooth scoops','Robot reading'], cards:[['a big pumpkin',0],['a. big. pumpkin.',1],['gave a big grin',0],['gave. a. big.',1]], say:'Mistake Detective: smooth, or robot reading?', how:'Robot reading stops after every word. Smooth readers read words that go together.'},
+    {type:'listen', q:'Challenge: read the whole story', hear:'Ben and Zev had a garden. Zev put in corn seeds. Ben put in pumpkin seeds. Each day they gave the seeds a drink from the hose. By the end of the summer, a big pumpkin sat by the fence. What will we do with it? asked Zev. We will bring it to the shul for Sukkos! said Ben. Where did the big pumpkin sit?', o:['the fence','the shul','the hose'], a:'the fence', say:'Challenge! Read along, then answer.', how:'Read it again, smoother each time. A big pumpkin sat by the fence. They will bring it to the shul for Sukkos.'}] };
 
 B['READ.VOC.L03.01']={ band:'B23', pic:'🔁', today:'Snap on un or re to change a word', why:'Learn two tiny parts and you can read hundreds of new words.',
   ready:[{q:'Clap it: how many beats in "unpack"?', o:['2','1','3'], a:'2'},{q:'Which word means the same as glad?', o:['happy','sad','mad'], a:'happy'}],
   bridge:'READ.VOC.L02.01',
-  watch:{ q:'unhappy, refill', m:{type:'tiles',w:['un','happy']}, steps:[
-    {t:'A prefix is a word part at the start. It changes the meaning.', m:{type:'tiles',w:['un','happy'],hi:[0]}},
-    {t:'Cover un with your finger. Read: happy. Snap un back on. Un means not: not happy.'},
-    {t:'Re means again. Refill means fill again.', m:{type:'tiles',w:['re','fill'],hi:[0]}},
-    {t:'Retie means tie again. Unkind means not kind.'}], a:'un = not, re = again' },
-  oops:{ q:'What does redo mean?', wrong:'not do', right:'do again', why:'Re means again. Un means not. Do not mix them up!' },
-  ways:['build words with tiles','match word and meaning','sort by prefix','find words with a prefix','Mistake Detective'], done:'You can use un and re to read new words!',
-  board:{ one:'Un means not. Re means again. Cover it, read the word, snap it back.', activity:'Prefix cards: boys hold un or re in front of base-word cards and say the new meaning.', mistakes:['Mixing up un and re','Thinking every word that starts with un has a prefix (uncle)','Reading the prefix but not the base word'] },
+  watch:{ q:'unhappy, untie, refill', m:{type:'tiles',w:['un','happy']}, steps:[
+    {t:'I see a new word: unhappy. I cover un with my finger. I read: happy. A prefix is a word part at the start.', m:{type:'tiles',w:['un','happy'],hi:[1]}},
+    {t:'I snap un back on. Un means not. So unhappy means not happy. Unkind means not kind.', m:{type:'tiles',w:['un','happy'],hi:[0]}},
+    {t:'With an action word, un means undo: untie means undo the tie. Unpack means take things out.', m:{type:'tiles',w:['un','tie'],hi:[0]}},
+    {t:'Re means again. Refill means fill again. In a sentence: Mordy had to retie his shoe. Retie means tie again.', m:{type:'tiles',w:['re','fill'],hi:[0]}},
+    {t:'I check: is a real word left? Uncle: cover un, and cle is not a word. So uncle has no prefix.'}], a:'un = not, or undo. re = again.' },
+  oops:{ q:'What does redo mean?', wrong:'not do', right:'do again', why:'Re means again. Un means not or undo. Do not mix them up!' },
+  ways:['think-aloud','build words with tiles','match word and meaning','sort by prefix','Mistake Detective'], done:'You can use un and re to read new words!',
+  board:{ one:'Cover the prefix, read the word, snap it back: un means not or undo, re means again.', activity:'Prefix cards: boys hold un or re in front of base-word cards and say the new meaning.', mistakes:['Mixing up un and re','Thinking every word that starts with un has a prefix (uncle)','Reading the prefix but not the base word'] },
   do:[
-    {type:'tiles', w:['re','tie'], extra:['un'], hear:'retie', q:'Basya had to retie her lace.', say:'Listen. Build the word that means tie again.', how:'Tie again: again is re. Re, then tie: retie.'},
-    {type:'match', pairs:[['unhappy','not happy'],['refill','fill again'],['retie','tie again']], say:'Match each word to what it means.', how:'Cover the prefix. Read the word. Un means not. Re means again.'}],
+    {type:'match', pairs:[['unhappy','not happy'],['untie','undo the tie'],['redo','do again']], say:'Match each word to what it means.', how:'Cover the prefix and read the word. Un means not or undo. Re means again.'},
+    {type:'tiles', w:['un','safe'], extra:['re'], q:'Build the word that means not safe.', say:'Build the word that means not safe.', how:'Not is un. Put un first, then safe: unsafe.'}],
   your:[
-    {type:'sort', bins:['un = not','re = again'], cards:[['unkind',0],['reread',1],['unlock',0],['redo',1],['unpack',0],['refill',1]], say:'Does the prefix mean not, or again?', how:'Look at the start. Un means not. Re means again.'},
-    {type:'listen', hear:'unkind', o:['not kind','kind again','very kind'], a:'not kind', say:'Listen to the word. Tap what it means.', how:'Un means not. Unkind means not kind.'},
+    {type:'listen', hear:'reread', o:['read again','not read','read fast'], a:'read again', say:'Listen to the word. Tap what it means.', how:'Cover re: read. Re means again. Reread means read again.'},
+    {type:'tiles', w:['re','paint'], extra:['un','ing'], q:'Build the word that means paint again.', say:'Build the word that means paint again.', how:'Again is re. Re goes first, then paint: repaint.'},
+    {type:'sort', bins:['un: not, undo','re: again'], cards:[['unkind',0],['redo',1],['unfair',0],['reread',1],['untie',0],['retie',1]], say:'Mistake Detective: un, or re?', how:'The mistake is mixing them up. Redo means do again. Unfair means not fair.'},
     {type:'findall', grid:['redo','red','undo','unit','real','up'], find:['redo','undo'], findSay:'word with a prefix', say:'Tap every word that has a prefix.', how:'Cover un or re. Is a real word left? Unit and real have no prefix.'},
-    {type:'tiles', w:['re','fill'], extra:['un'], hear:'refill', say:'Listen. Build the word that means fill again.', how:'Again is re. Re, then fill: refill.'},
-    {type:'match', pairs:[['untie','undo the tie'],['reread','read again'],['unkind','not kind']], say:'Match each word to its meaning.', how:'Find the prefix first. Then read the base word.'}] };
+    {type:'match', q:'Challenge: Mordy\'s trip home', pairs:[['relocked door','locked again'],['unlocked door','not locked'],['repacked bag','packed again'],['unpacked bag','took it all out']], say:'Challenge! The prefix decides. Match them.', how:'The base word is the same. Look at the prefix: re means again, un means not or undo.'}] };
 
 })(window.ONE_BITE);
 </script>
