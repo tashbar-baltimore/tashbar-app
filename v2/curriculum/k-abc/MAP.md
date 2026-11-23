@@ -1,4 +1,4 @@
-# Kindergarten ABC — the full-year map (DRAFT, waiting for Esti's approval)
+# Kindergarten ABC — the full-year map (Esti: "the map looks fine", 2026-11-23)
 
 **The goal:** fun, easy, skill-building games that teach every kind of boy real skills, one step on top of the next, all year, until he graduates.
 
@@ -8,6 +8,8 @@
 - Blending starts as soon as he knows s, a, t.
 - Writing each letter happens on the day the letter is taught.
 - **Print basics are things a boy does, never things he reads.** Nothing boring.
+- **The look (later the same day): cute, cartoony, immersive 3D, "nothing simple".** Every game happens in one 3D world (the meadow kit, `v2/app/k-abc/world.js`).
+- **Each letter turns into its picture as it is traced.** For example, the snake grows along the s while the computer traces it, and again under the boy's finger.
 
 ---
 
