@@ -96,21 +96,41 @@ function tlLoader2Src_(OLD) {
   try { fast = localStorage.getItem('tl-k1dev') === '1' && sessionStorage.getItem('tl-load-normal') !== '1'; } catch (e) {}
   function gameOpen() { return !!document.querySelector('#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov'); }
   function notK1() { try { return !!(window.K1O && typeof K1O.on === 'function' && typeof A !== 'undefined' && A && A.st && A.st.id && A.view !== 'signin' && !K1O.on()); } catch (e) { return false; } }
+  /* LAZY LOADING, step 1 (HoS 2026-11-22: "do the lazy loading project too ... fast, quick, smooth"):
+     - never a half-loaded app: a tap on the home (not the sign-in pad, not a K-1 boy's games) before every piece has run is held,
+       a small "One moment..." shows, the rest runs at full speed, and then the tap goes through;
+     - smooth: the pieces wait while the boy scrolls or types. */
+  var rush = false, lastMove = 0, pending = null, finished = false;
+  function wait1(on) { var c = document.getElementById('tl-wait1'); if (!on) { if (c) c.remove(); return; } if (c || !document.body) return;
+    c = document.createElement('div'); c.id = 'tl-wait1'; c.setAttribute('role', 'status');
+    c.style.cssText = 'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2147483646;background:#16202C;color:#fff;padding:18px 28px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.35);font:800 22px system-ui,sans-serif';
+    c.textContent = '⏳ One moment…'; document.body.appendChild(c); }
+  function allowed(t) { try { if (typeof A === 'undefined' || !A || A.view === 'signin') return true;
+      return !!(t && t.closest && t.closest('#k1o,#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov,#tl-wait1')); } catch (e) { return true; } }
+  document.addEventListener('click', function (e) { if (finished || allowed(e.target)) return; e.preventDefault(); e.stopImmediatePropagation();
+    var el = (e.target && e.target.closest && e.target.closest('button,a,[data-act],[role=button],[onclick]')) || e.target;
+    pending = { el: el, tag: el.tagName, id: el.id || '', ds: JSON.stringify(el.dataset || {}), tx: String(el.textContent || '').trim().slice(0, 60) }; rush = true; wait1(true); }, true);
+  function same(p) { if (p.el && p.el.isConnected) return p.el; var all = document.querySelectorAll(p.tag);
+    for (var k = 0; k < all.length; k++) { var x = all[k]; if ((x.id || '') === p.id && JSON.stringify(x.dataset || {}) === p.ds && String(x.textContent || '').trim().slice(0, 60) === p.tx) return x; } return null; }
+  ['wheel', 'touchmove', 'keydown'].forEach(function (n) { document.addEventListener(n, function () { lastMove = Date.now(); }, { capture: true, passive: true }); });
   function go(list) { var order = [], i = 0, firstN = 0;
     if (fast) { list.forEach(function (t, k) { if (k === 0 || K1RE.test(t)) order.push(k); }); firstN = order.length; list.forEach(function (t, k) { if (!(k === 0 || K1RE.test(t))) order.push(k); }); }
     else list.forEach(function (t, k) { order.push(k); });
     var watch = fast ? nSI.call(W, function () { if (notK1()) { nCI.call(W, watch); try { sessionStorage.setItem('tl-load-normal', '1'); } catch (e) {} location.reload(); } }, 400) : null;
     function slice() { var t0 = Date.now();
-      if (fast && i >= firstN && i < order.length && gameOpen()) return nST.call(W, slice, 400);
+      if (!rush && fast && i >= firstN && i < order.length && gameOpen()) return nST.call(W, slice, 400);
+      if (!rush && Date.now() - lastMove < 700) return nST.call(W, slice, 200);
       while (i < order.length) { run1(list[order[i]]); i++;
-        if (fast && i === firstN) { try { if (window.K1O && K1O.hook) K1O.hook(); if (typeof A !== 'undefined' && A.view === 'hub') render(); } catch (e) {} cover(k1Wait()); return nST.call(W, slice, 3000); }
-        if (Date.now() - t0 > 50) break; }
+        if (fast && i === firstN && !rush) { try { if (window.K1O && K1O.hook) K1O.hook(); if (typeof A !== 'undefined' && A.view === 'hub') render(); } catch (e) {} cover(k1Wait()); return nST.call(W, slice, 3000); }
+        if (Date.now() - t0 > (rush ? 400 : 50)) break; }
       if (i < order.length) { cover(k1Wait()); return nST.call(W, slice, 0); }
-      release(); stopWait();
+      finished = true; release(); stopWait();
       try { if (window.K1O && K1O.hook) K1O.hook(); } catch (e) {}
-      try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {} }
+      try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {}
+      wait1(false); var p = pending; pending = null;
+      if (p) nST.call(W, function () { try { var x = same(p); if (x) x.click(); } catch (e) {} }, 0); }
     nST.call(W, slice, 30); }
-  function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} stopWait(); try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } }
+  function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} stopWait(); try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } finished = true; wait1(false); var p = pending; pending = null; if (p) setTimeout(function () { try { var x = same(p); if (x) x.click(); } catch (e) {} }, 0); }
   function store(mode) { return db.transaction(ST, mode).objectStore(ST); }
   function getMany(ks, cb) { var out = {}, n = ks.length; if (!n || !db) return cb(out); try { var s = store('readonly'); ks.forEach(function (k) { var q = s.get(k); q.onsuccess = function () { out[k] = q.result; if (--n === 0) cb(out); }; q.onerror = function () { if (--n === 0) cb(out); }; }); } catch (e) { cb(out); } }
   function save(parts, order) { if (!db) return; try { var s = store('readwrite'); Object.keys(parts).forEach(function (h) { s.put(parts[h], h); }); s.put(order, '__order');
