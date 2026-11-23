@@ -43,6 +43,7 @@ function pic(x){ x=x==null||x===''?'⭐':S(x);
     return '<svg class="obk-pie" viewBox="-50 -50 100 100" role="img" aria-label="a pizza cut into '+d+' equal slices'+(a?', '+a+' colored':'')+'">'+g+'</svg>'; }
   if(/^art:/.test(x)&&window.KMG&&KMG.ART){ const f=KMG.ART[x.slice(4)]; if(typeof f==='function') try{ return '<span class="obk-art">'+f()+'</span>'; }catch(e){} return '⭐'; }
   return E(x); }
+const tp=x=>/^(bar|pie):/.test(S(x))?pic(x):E(x);   /* tiles: text, or a bar/pie picture */
 function numChoices(n){ const set=[n]; [n+1,n-1,n+2,n-2].forEach(v=>{ if(set.length<3&&v>=0&&set.indexOf(v)<0) set.push(v); }); return shuf(set).map(String); }
 function heCls(d){ return d.he?' obk-he':''; }
 
@@ -147,8 +148,8 @@ T.tiles={ check:true,
   how(d){ return d.hear?'Say the word slowly. Find the first sound, then the next. Tap the tiles in order.':'Find the one that comes first. Then the next. Tap them in order.'; },
   label(d){ return 'Tiles: '+d.w.join(d.he?'':'-'); },
   view(d,s,c){ let h=(d.hear?'<button class="obk-btn obk-hear" data-obk="hear" aria-label="Hear it">🔊 Hear it</button>':'')+'<div class="obk-slots'+heCls(d)+'">';
-    s.slots.forEach((j,i)=>{ h+='<button class="obk-slot'+(j>=0?' full':'')+(s.wrong[i]?' obk-shake':'')+'" data-obk="slot" data-k="'+i+'" data-obk-drop="slot" aria-label="place '+(i+1)+(j>=0?': '+E(s.pool[j]):', empty')+'">'+(j>=0?E(s.pool[j]):c.guided?'<span class="ghost">'+E(d.w[i])+'</span>':'')+'</button>'; });
-    h+='</div><div class="obk-pool'+heCls(d)+'">'; s.pool.forEach((t,j)=>{ h+=s.used[j]?'<span class="obk-tile gone"></span>':'<button class="obk-tile" data-obk="tile" data-k="'+j+'" data-obk-drag="tile">'+E(t)+'</button>'; });
+    s.slots.forEach((j,i)=>{ h+='<button class="obk-slot'+(j>=0?' full':'')+(s.wrong[i]?' obk-shake':'')+'" data-obk="slot" data-k="'+i+'" data-obk-drop="slot" aria-label="place '+(i+1)+(j>=0?': '+E(s.pool[j]):', empty')+'">'+(j>=0?tp(s.pool[j]):c.guided?'<span class="ghost">'+tp(d.w[i])+'</span>':'')+'</button>'; });
+    h+='</div><div class="obk-pool'+heCls(d)+'">'; s.pool.forEach((t,j)=>{ h+=s.used[j]?'<span class="obk-tile gone"></span>':'<button class="obk-tile" data-obk="tile" data-k="'+j+'" data-obk-drag="tile">'+tp(t)+'</button>'; });
     return h+'</div>'; },
   tap(d,s,a,k,drop){ s.wrong={};
     if(a==='slot'){ const i=+k, j=s.slots[i]; if(j>=0){ s.slots[i]=-1; delete s.used[j]; } return; }
