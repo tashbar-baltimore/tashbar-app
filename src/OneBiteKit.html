@@ -29,8 +29,21 @@ function shuf(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor
 function shufNot(a){ if(a.length<2) return a.slice(); let b, t=0; do{ b=shuf(a); t++; }while(t<10&&b.every((x,i)=>x===a[i])); return b; }
 function idx(n){ return Array.from({length:n},(_,i)=>i); }
 function pic(x){ x=x==null||x===''?'⭐':S(x);
+  /* bar:3,3 = one whole bar cut into parts of those sizes (always the same width, so it is the same whole); bar:1,1,1,1*1 colors the first part.
+     pie:4 = one pizza cut into 4 equal slices; pie:4*1 colors 1 slice. Drawn like the Watch Me fraction bars. */
+  let m=/^bar:(\d+(?:,\d+){0,11})(?:\*(\d+))?$/.exec(x);
+  if(m){ const parts=m[1].split(',').map(Number), a=+(m[2]||0);
+    return '<span class="obk-bar" role="img" aria-label="'+(parts.length===1?'a whole bar':'a bar cut into '+parts.length+(parts.every(v=>v===parts[0])?' equal':' unequal')+' parts')+'">'+parts.map((v,i)=>'<span class="p'+(i<a?' a':'')+'" style="flex:'+v+'"></span>').join('')+'</span>'; }
+  m=/^pie:(\d{1,2})(?:\*(\d{1,2}))?$/.exec(x);
+  if(m){ const d=Math.max(1,+m[1]), a=Math.min(d,+(m[2]||0)), R=46, pt=t=>{ const r=(t/d*360-90)*Math.PI/180; return (R*Math.cos(r)).toFixed(2)+' '+(R*Math.sin(r)).toFixed(2); };
+    let g='<circle r="'+R+'" fill="#fff"/>';
+    if(a===d) g='<circle r="'+R+'" fill="#FFB347"/>'; else if(a) g+='<path d="M0 0 L'+pt(0)+' A'+R+' '+R+' 0 '+(a/d>0.5?1:0)+' 1 '+pt(a)+' Z" fill="#FFB347"/>';
+    if(d>1) for(let t=0;t<d;t++) g+='<line x1="0" y1="0" x2="'+pt(t).split(' ')[0]+'" y2="'+pt(t).split(' ')[1]+'" stroke="#1F2A44" stroke-width="5" stroke-linecap="round"/>';
+    g+='<circle r="'+R+'" fill="none" stroke="#1F2A44" stroke-width="6"/>';
+    return '<svg class="obk-pie" viewBox="-50 -50 100 100" role="img" aria-label="a pizza cut into '+d+' equal slices'+(a?', '+a+' colored':'')+'">'+g+'</svg>'; }
   if(/^art:/.test(x)&&window.KMG&&KMG.ART){ const f=KMG.ART[x.slice(4)]; if(typeof f==='function') try{ return '<span class="obk-art">'+f()+'</span>'; }catch(e){} return '⭐'; }
   return E(x); }
+const tp=x=>/^(bar|pie):/.test(S(x))?pic(x):E(x);   /* tiles: text, or a bar/pie picture */
 function numChoices(n){ const set=[n]; [n+1,n-1,n+2,n-2].forEach(v=>{ if(set.length<3&&v>=0&&set.indexOf(v)<0) set.push(v); }); return shuf(set).map(String); }
 function heCls(d){ return d.he?' obk-he':''; }
 
@@ -135,8 +148,8 @@ T.tiles={ check:true,
   how(d){ return d.hear?'Say the word slowly. Find the first sound, then the next. Tap the tiles in order.':'Find the one that comes first. Then the next. Tap them in order.'; },
   label(d){ return 'Tiles: '+d.w.join(d.he?'':'-'); },
   view(d,s,c){ let h=(d.hear?'<button class="obk-btn obk-hear" data-obk="hear" aria-label="Hear it">🔊 Hear it</button>':'')+'<div class="obk-slots'+heCls(d)+'">';
-    s.slots.forEach((j,i)=>{ h+='<button class="obk-slot'+(j>=0?' full':'')+(s.wrong[i]?' obk-shake':'')+'" data-obk="slot" data-k="'+i+'" data-obk-drop="slot" aria-label="place '+(i+1)+(j>=0?': '+E(s.pool[j]):', empty')+'">'+(j>=0?E(s.pool[j]):c.guided?'<span class="ghost">'+E(d.w[i])+'</span>':'')+'</button>'; });
-    h+='</div><div class="obk-pool'+heCls(d)+'">'; s.pool.forEach((t,j)=>{ h+=s.used[j]?'<span class="obk-tile gone"></span>':'<button class="obk-tile" data-obk="tile" data-k="'+j+'" data-obk-drag="tile">'+E(t)+'</button>'; });
+    s.slots.forEach((j,i)=>{ h+='<button class="obk-slot'+(j>=0?' full':'')+(s.wrong[i]?' obk-shake':'')+'" data-obk="slot" data-k="'+i+'" data-obk-drop="slot" aria-label="place '+(i+1)+(j>=0?': '+E(s.pool[j]):', empty')+'">'+(j>=0?tp(s.pool[j]):c.guided?'<span class="ghost">'+tp(d.w[i])+'</span>':'')+'</button>'; });
+    h+='</div><div class="obk-pool'+heCls(d)+'">'; s.pool.forEach((t,j)=>{ h+=s.used[j]?'<span class="obk-tile gone"></span>':'<button class="obk-tile" data-obk="tile" data-k="'+j+'" data-obk-drag="tile">'+tp(t)+'</button>'; });
     return h+'</div>'; },
   tap(d,s,a,k,drop){ s.wrong={};
     if(a==='slot'){ const i=+k, j=s.slots[i]; if(j>=0){ s.slots[i]=-1; delete s.used[j]; } return; }
@@ -286,7 +299,11 @@ const OBK=window.OBK={
   mount(root,d,s,c){ OBK.fit(root); const t=ty(d); if(t&&t.mount) try{ t.mount(root,d,s,c||{}); }catch(e){ console.warn('OneBiteKit mount',e); } },
   /* fit-text: long card, cell, match, choice, bin and prompt text shrinks (down to 45%) until it fits in 2 lines (or as many lines as its \n asks)
      and never sticks out. Runs after every draw; short text is never touched. */
-  fit(root){ try{ (root||document).querySelectorAll(FIT).forEach(fitOne); }catch(e){} },
+  fit(root){ try{ const R=root||document; R.querySelectorAll(FIT).forEach(fitOne);
+    /* answers side by side share one size, so a bigger (or smaller) word never hints which one is right */
+    R.querySelectorAll('.obk-opts,.obk-find').forEach(g=>{ const bs=Array.from(g.querySelectorAll('.obk-opt,.obk-fc')).filter(b=>b.textContent.trim()); if(bs.length<2) return;
+      const fs=bs.map(b=>parseFloat(getComputedStyle(b).fontSize)||0), mn=Math.min.apply(null,fs); if(Math.max.apply(null,fs)-mn>0.5) bs.forEach(b=>{ b.style.fontSize=mn.toFixed(1)+'px'; }); });
+  }catch(e){} },
   hear(d){ try{ const clips=window.TL_CLIPS||{}; if(d.clip&&clips[d.clip]&&window.TLWorld&&TLWorld.say){ TLWorld.say(d.clip,'',{force:true}); return; }
     if(d.he||!d.hear) return; if(typeof speak==='function') speak(S(d.hear)); }catch(e){} },
   pic, E
@@ -325,6 +342,9 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-opt.off{ opacity:.35; box-shadow:none; } .obk-opt.right{ border-color:#1E9E62; background:#E6F6EE; }
 .obk-he{ direction:rtl; font-family:'Frank Ruhl Libre','SBL Hebrew','Noto Serif Hebrew','David',serif; }
 .obk-art svg{ width:1em; height:1em; display:block; }
+.obk-bar{ display:flex; width:3.6em; max-width:100%; height:.9em; border:3px solid #1F2A44; border-radius:6px; overflow:hidden; background:#fff; margin:auto; box-sizing:border-box; }
+.obk-bar .p{ display:block; min-width:0; border-right:3px solid #1F2A44; background:#fff; } .obk-bar .p:last-child{ border-right:0; } .obk-bar .p.a{ background:#FFB347; }
+.obk-pie{ display:block; width:1.5em; height:1.5em; margin:auto; }
 .obk-tf{ display:flex; flex-direction:column; gap:10px; align-items:center; }
 .obk-tf-f{ display:grid; grid-template-columns:repeat(5,minmax(0,var(--cell))); gap:5px; padding:6px; background:#fff; border:3px solid #1F2A44; border-radius:10px; --cell:min(64px,calc((100vw - 84px) / 5)); }
 .obk-cell{ width:var(--cell); height:var(--cell); border:2px solid #D8D1C2; border-radius:8px; background:#FBF9F4; position:relative; padding:0; }
