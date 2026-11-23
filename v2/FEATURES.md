@@ -11,8 +11,8 @@ The HoS decides the order. The list grows as pieces are found.
 
 | Piece of 1.0 | Main 1.0 files | Status | Notes |
 |---|---|---|---|
-| Boy sign-in (4-digit code) | QuestPage.html, Kiosk.js, MiddleSchool.js | Moving now | Needed by everything else. Same codes as 1.0. |
-| K–1 games (train, matching, balloon games, Kriyah) in skill order | K1Only.html, packs/KLessons, KReading, KKriyah, G1Math, G1Reading | Moving now | First piece (HoS 2026-11-22). Full screen, voice, one game at a time, his grade only. |
+| Boy sign-in (4-digit code) | QuestPage.html, Kiosk.js, MiddleSchool.js | Moving now (built, waiting for an approver) | `v2/app/core.js`. Same codes, same saved record as 1.0; saving keeps everything 1.0 saved. Staff and parents are told their screens are not in 2.0 yet. |
+| K–1 games (train, matching, balloon games, Kriyah) in skill order | K1Only.html, packs/KLessons, KReading, KKriyah, G1Math, G1Reading | Moving now (built, waiting for an approver) | First piece (HoS 2026-11-22). `v2/app/games/` are exact copies of the 1.0 packs. Kindergarten: Numbers, ABC, Kriyah (Level 1); Grade 1: Numbers, Reading, Kriyah (Level 2); in each pack's skill order, next unlocks at 2 stars; full screen; voice bridge. Left out on purpose: 1.0's guess of K-1 from map levels (2.0 uses the roster grade only). Boys in Grades 2-8 are sent to the regular app. Test: `v2/tests/play-k1.js`. |
 | Grade 2 math lessons (the 18 reworked to the HoS standard) | OneBite.html, OneBiteKit.html, OneBiteDataMath.html | Moving now | Second piece (HoS 2026-11-22). Needs the lesson player and its check questions moved too. |
 | Lessons for other grades and subjects | OneBiteData*.html, QuestPage.html, packs/G2–G6 | Not looked at yet | |
 | Level checks and placement | PathfinderLevel.js, Placement.js | Not looked at yet | |

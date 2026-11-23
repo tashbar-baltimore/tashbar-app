@@ -5,21 +5,71 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tashbar Learning 2.0</title>
 <style>
-:root{ --bg:#F6F1E7; --ink:#1F2A44; --soft:#5B6478; --card:#FFFFFF; --line:#E4DCCB; --green:#1E9E5A; }
+:root{ --ink:#2B2350; --soft:#5B6478; --card:#FFFFFF; --green:#22A85A; --green-d:#17834F; --sky1:#8FD3FF; --sky2:#C8ECFF; --sand:#FFF4D6; }
 *{ box-sizing:border-box; }
-html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
-main{ min-height:100%; display:grid; place-items:center; padding:24px 16px; }
-.card{ width:100%; max-width:520px; background:var(--card); border:2px solid var(--line); border-radius:24px; padding:32px 24px; text-align:center; }
-h1{ margin:0 0 8px; font-size:32px; } p{ margin:8px 0; color:var(--soft); font-size:18px; line-height:1.4; }
-.tag{ display:inline-block; background:var(--green); color:#fff; border-radius:999px; padding:4px 14px; font-weight:700; font-size:14px; margin-bottom:16px; }
+html,body{ margin:0; min-height:100%; color:var(--ink); font-family:'Fredoka','Nunito',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 45%,var(--sand) 100%) fixed; }
+button{ font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+#app{ min-height:100vh; }
+
+/* sign-in */
+.signin{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px 16px; gap:14px; }
+.signin .logo{ font-size:clamp(26px,4vw,40px); font-weight:800; }
+.signin .hello{ font-size:clamp(20px,3vw,28px); color:var(--soft); }
+.dots{ display:flex; gap:16px; margin:6px 0; } .dots i{ width:26px; height:26px; border-radius:50%; background:rgba(255,255,255,.7); border:3px solid #fff; } .dots i.on{ background:#FFC940; border-color:#FF9E1F; }
+.err{ background:#fff; border:3px solid #F28B82; color:#B3261E; border-radius:16px; padding:10px 16px; font-weight:700; font-size:18px; text-align:center; max-width:360px; }
+.pad{ display:grid; grid-template-columns:repeat(3,minmax(76px,96px)); gap:14px; }
+.key{ height:clamp(76px,10vh,96px); border-radius:24px; border:4px solid #fff; background:rgba(255,255,255,.75); color:var(--ink); font-size:36px; font-weight:800; box-shadow:0 6px 0 rgba(0,0,0,.08); }
+.key:active{ transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.08); }
+.key.soft{ background:rgba(255,255,255,.45); font-size:30px; } .key.go{ background:var(--green); color:#fff; box-shadow:0 6px 0 var(--green-d); } .key.go[disabled]{ opacity:.45; }
+
+/* notes (grade not in 2.0 yet, test-boy grade pick) */
+.note{ min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px 16px; gap:10px; }
+.note h1{ margin:0; font-size:clamp(28px,4.4vw,44px); } .note p{ margin:4px 0; font-size:20px; color:var(--soft); }
+.note .row{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin:8px 0; }
+.big{ display:inline-block; min-width:200px; padding:22px 28px; border-radius:28px; border:5px solid #fff; background:#FFC940; color:var(--ink); font-size:26px; font-weight:800; text-decoration:none; box-shadow:0 6px 0 #E08A00; }
+.link{ border:0; background:none; color:var(--ink); font-size:18px; text-decoration:underline; margin-top:10px; }
+
+/* the K-1 game path (from 1.0's K1Only) */
+#k1o{ min-height:100vh; padding:14px clamp(12px,3vw,40px) 40px; }
+.k1-top{ display:flex; align-items:center; gap:14px; max-width:1200px; margin:0 auto 12px; }
+.k1-say{ width:76px; height:76px; border-radius:50%; border:0; background:#2FB5E8; color:#fff; font-size:34px; box-shadow:0 6px 0 #1E8DB8; flex:none; }
+.k1-hi{ flex:1; text-align:center; font-size:clamp(30px,4.6vw,56px); font-weight:700; text-shadow:0 3px 0 rgba(255,255,255,.7); }
+.k1-out{ min-width:110px; height:64px; border-radius:999px; border:4px solid #fff; background:rgba(255,255,255,.6); color:var(--ink); font-size:22px; font-weight:700; flex:none; }
+.k1-subj{ display:flex; gap:clamp(10px,2vw,24px); justify-content:center; margin:0 auto 16px; max-width:1200px; }
+.k1-s{ flex:1; max-width:260px; height:clamp(84px,12vh,120px); border-radius:28px; border:5px solid #fff; background:rgba(255,255,255,.55); display:flex; align-items:center; justify-content:center; gap:12px; box-shadow:0 6px 0 rgba(0,0,0,.08); color:var(--ink); }
+.k1-s .i{ font-size:clamp(40px,6vh,64px); line-height:1; } .k1-s .n{ font-size:clamp(22px,3vh,32px); font-weight:700; }
+.k1-s.on{ background:#FFC940; border-color:#FF9E1F; box-shadow:0 6px 0 #E08A00; transform:translateY(-2px); }
+.k1-play{ display:flex; align-items:center; justify-content:center; gap:clamp(16px,3vw,40px); width:100%; max-width:900px; margin:0 auto 22px; height:clamp(150px,26vh,240px); border-radius:40px; border:6px solid #fff; background:var(--green); color:#fff; box-shadow:0 10px 0 var(--green-d); animation:k1pulse 1.6s ease-in-out infinite; }
+.k1-play .pic{ font-size:clamp(84px,15vh,150px); line-height:1; filter:drop-shadow(0 4px 0 rgba(0,0,0,.15)); }
+.k1-play .go{ font-size:clamp(46px,8vh,84px); font-weight:800; letter-spacing:.04em; }
+.k1-play:active{ transform:translateY(6px); box-shadow:0 4px 0 var(--green-d); }
+@keyframes k1pulse{ 50%{ transform:scale(1.03); } }
+@media (prefers-reduced-motion:reduce){ .k1-play{ animation:none; } }
+.k1-path{ display:grid; grid-template-columns:repeat(auto-fill,minmax(clamp(120px,14vw,170px),1fr)); gap:clamp(12px,2vw,22px); max-width:1200px; margin:0 auto; }
+.k1-t{ position:relative; aspect-ratio:1; border-radius:30px; border:5px solid #fff; background:#fff; box-shadow:0 7px 0 rgba(0,0,0,.1); display:flex; align-items:center; justify-content:center; color:var(--ink); }
+.k1-t .pic{ font-size:clamp(56px,8vw,96px); line-height:1; }
+.k1-t .num{ position:absolute; left:10px; top:8px; min-width:36px; height:36px; border-radius:999px; background:#EEF3FD; color:#3B6FD8; font-size:20px; font-weight:800; line-height:36px; }
+.k1-t .star{ position:absolute; right:6px; top:4px; font-size:34px; }
+.k1-t.done{ background:#F0FFF5; border-color:#9BE3B7; }
+.k1-t.now{ border-color:#FFC940; box-shadow:0 0 0 6px rgba(255,201,64,.55),0 7px 0 rgba(0,0,0,.1); }
+.k1-t:active{ transform:scale(.95); }
+.k1-t.lock{ background:rgba(255,255,255,.55); border-color:rgba(255,255,255,.7); box-shadow:none; } .k1-t.lock .pic{ font-size:clamp(40px,5vw,60px); opacity:.6; }
+.k1-no{ animation:k1no .4s; } @keyframes k1no{ 25%{ transform:translateX(-8px); } 75%{ transform:translateX(8px); } }
+@media (max-width:600px){ .k1-s{ flex-direction:column; gap:2px; height:96px; min-width:0; } .k1-s .i{ font-size:40px; } .k1-s .n{ font-size:18px; }
+ .k1-play{ height:150px; gap:14px; } .k1-play .pic{ font-size:80px; } .k1-play .go{ font-size:44px; } .k1-hi{ font-size:28px; } .k1-say{ width:64px; height:64px; } .k1-out{ min-width:84px; height:56px; font-size:18px; }
+ .k1-path{ grid-template-columns:repeat(3,1fr); } .k1-t .pic{ font-size:60px; } }
+/* a game window is above everything */
+#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov{ z-index:2147483600 !important; }
 </style>
 </head>
 <body>
-<main><div class="card">
-  <span class="tag">2.0</span>
-  <h1>Tashbar Learning</h1>
-  <p>The new, clean app is being built. Pieces appear here only after they are finished and approved.</p>
-  <p>Boys: please use the regular app for now.</p>
-</div></main>
+<div id="app"><div class="signin"><div class="logo">Tashbar Learning</div><div class="hello">Getting ready…</div></div></div>
+<script src="core.js"></script>
+<script src="games/KLessons.js"></script>
+<script src="games/KReading.js"></script>
+<script src="games/KKriyah.js"></script>
+<script src="games/G1Math.js"></script>
+<script src="games/G1Reading.js"></script>
+<script>if (window.V2) V2.paint();</script>
 </body>
 </html>
