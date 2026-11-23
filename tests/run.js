@@ -142,12 +142,12 @@ async function kidTests(browser) {
         canteen: !!gm.querySelector('.gm-hts .gm-ht.food[data-cno=open]'), noBar: !document.querySelector('#gm-nav button') || getComputedStyle(document.getElementById('gm-nav')).display === 'none', others: gm.querySelectorAll('button:not(.gm-ht)').length };
       /* THE 3D CANTEEN (HoS 2026-11-23: "they can't see all the stuff about the canteen ... all its related aspects should all be available ... immersive 3D"):
          the Canteen tile opens the canteen room with its 4 doors (Buy food, Get money, My story, Lessons); the room never catches a tap; Home closes it */
-      { const ft = gm.querySelector('.gm-hts .gm-ht.food'); if (ft) { ft.click(); await sleep(120); } const cs = document.getElementById('cn-shop'), room = cs && cs.querySelector('.cw-room');
+      { const ft = gm.querySelector('.gm-hts .gm-ht.food'); if (ft) { ft.click(); await sleep(120); } const cs = document.getElementById('cn-shop'), room = cs && cs.querySelector('.cw-room'), roomOff = !!room && getComputedStyle(room).pointerEvents === 'none';
         const doors = cs ? [...cs.querySelectorAll('.cw-door')].map(d => d.dataset.p).join(',') : ''; let panels = '';
         if (cs) for (const p of ['cash', 'story', 'learn', 'buy']) { const d = cs.querySelector('.cw-door[data-p=' + p + ']'); if (d) { d.click(); await sleep(40); } panels += (cs.querySelector('.cw-door.on') || {}).dataset ? cs.querySelector('.cw-door.on').dataset.p : '-'; }
         const learn = cs ? (cs.querySelector('.cw-door[data-p=learn]').click(), await sleep(40), cs.querySelectorAll('[data-cno=lesson][data-c=LIFE]').length) : 0;
         const home = cs && cs.querySelector('[data-cno=close]'); if (home) { home.click(); await sleep(60); }
-        o.home.cw = { open: !!(cs && cs.classList.contains('cw3d')), room: !!room && getComputedStyle(room).pointerEvents === 'none', doors, panels, learn, closed: !document.getElementById('cn-shop') && !document.body.classList.contains('cn-open') }; }
+        o.home.cw = { open: !!(cs && cs.classList.contains('cw3d')), room: roomOff, doors, panels, learn, closed: !document.getElementById('cn-shop') && !document.body.classList.contains('cn-open') }; }
       const go = async t => { const h = document.querySelector('#gm-nav [data-gmnav=home]'); if (h) { h.click(); await sleep(30); } const b = gm.querySelector('.gm-hts [data-gmnav=' + t + ']'); if (b) { b.click(); await sleep(30); } };
       await go('map');
       o.bright = document.body.classList.contains('gm-lite') && !document.body.classList.contains('w3d') && getComputedStyle(gm).backgroundImage.indexOf('255, 247, 214') >= 0;
