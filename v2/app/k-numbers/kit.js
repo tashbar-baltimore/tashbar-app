@@ -82,24 +82,11 @@
     '<linearGradient id="nkStem" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B07A4A"/><stop offset="1" stop-color="#6B4226"/></linearGradient>' +
     '<linearGradient id="nkSkin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0DE"/><stop offset="1" stop-color="#F4C08E"/></linearGradient>' +
     '<linearGradient id="nkGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3A6"/><stop offset=".45" stop-color="#FFCC1F"/><stop offset="1" stop-color="#F39200"/></linearGradient>' +
-    /* apple (red, or green with --apple) */
-    '<symbol id="nkApple" viewBox="0 0 100 100">' + SHADOW +
-    '<path d="' + APPLE + '" fill="var(--apple,url(#nkRed))" stroke="var(--appleEdge,#7A0C14)" stroke-width="2.6"/>' +
-    '<path d="' + APPLE + '" fill="url(#nkEdge)"/>' +
-    '<path d="M44 33 C 47 30, 53 30, 56 33" stroke="#5A0A10" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>' +
-    SHINE(31, 47, 8, 15, 18) + STEM('M50 32 C 50 22, 52 14, 57 7') +
-    LEAF('M56 15 C 64 3, 81 5, 86 11 C 79 23, 63 23, 56 15 Z', 'M59 15 C 67 12, 75 11, 82 11') + '</symbol>' +
-    /* orange */
-    '<symbol id="nkOrange" viewBox="0 0 100 100">' + SHADOW +
-    '<circle cx="50" cy="56" r="38" fill="url(#nkOr)" stroke="#A04606" stroke-width="2.6"/><circle cx="50" cy="56" r="38" fill="url(#nkEdge)" opacity=".7"/>' +
-    '<g fill="#C45F06" opacity=".28"><circle cx="63" cy="70" r="1.8"/><circle cx="41" cy="76" r="1.8"/><circle cx="72" cy="53" r="1.8"/><circle cx="53" cy="83" r="1.8"/><circle cx="68" cy="81" r="1.6"/><circle cx="30" cy="66" r="1.6"/><circle cx="58" cy="60" r="1.5"/><circle cx="76" cy="66" r="1.5"/></g>' +
-    SHINE(36, 42, 9, 12, 28) + '<circle cx="50" cy="19.5" r="4" fill="#5E8A1E" stroke="#3B5A10" stroke-width="1.5"/>' +
-    LEAF('M52 19 C 59 7, 74 8, 79 13 C 72 23, 59 24, 52 19 Z', 'M55 18 C 62 15, 69 14, 75 13') + '</symbol>' +
-    /* pear */
-    '<symbol id="nkPear" viewBox="0 0 100 100">' + '<ellipse cx="50" cy="96" rx="28" ry="4" fill="url(#nkShadow)"/>' +
-    '<path d="' + PEAR + '" fill="url(#nkPe)" stroke="#5F7410" stroke-width="2.6"/><path d="' + PEAR + '" fill="url(#nkEdge)" opacity=".6"/>' +
-    '<ellipse cx="64" cy="72" rx="12" ry="14" fill="url(#nkBlush)"/>' + SHINE(37, 68, 7, 13, 12) +
-    STEM('M50 19 C 50 12, 52 7, 56 3') + LEAF('M54 10 C 61 1, 74 3, 78 8 C 71 16, 60 16, 54 10 Z', 'M57 10 C 63 8, 69 7, 74 8') + '</symbol>' +
+    /* fruit: pictures made in ChatGPT for Tashbar (img/), with a soft shadow under each */
+    '<symbol id="nkApple" viewBox="0 0 100 100">' + SHADOW + '<image href="img/red-apple.webp" x="6" y="4" width="88" height="90" preserveAspectRatio="xMidYMid meet"/></symbol>' +
+    '<symbol id="nkAppleG" viewBox="0 0 100 100">' + SHADOW + '<image href="img/green-apple.webp" x="6" y="4" width="88" height="90" preserveAspectRatio="xMidYMid meet"/></symbol>' +
+    '<symbol id="nkOrange" viewBox="0 0 100 100">' + SHADOW + '<image href="img/orange.webp" x="6" y="4" width="88" height="90" preserveAspectRatio="xMidYMid meet"/></symbol>' +
+    '<symbol id="nkPear" viewBox="0 0 100 100">' + SHADOW + '<image href="img/pear.webp" x="6" y="4" width="88" height="90" preserveAspectRatio="xMidYMid meet"/></symbol>' +
     /* open hand for clapping */
     '<symbol id="nkPalm" viewBox="0 0 100 100"><g fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="3.5" stroke-linejoin="round">' +
     '<rect x="30" y="8" width="13" height="44" rx="6.5"/><rect x="45" y="4" width="13" height="48" rx="6.5"/><rect x="60" y="9" width="13" height="43" rx="6.5"/><rect x="75" y="20" width="12" height="34" rx="6"/>' +
@@ -117,8 +104,7 @@
     '<path d="M33 68 H67 L62 74 H38 Z" fill="url(#nkSilver)" stroke="#5F6B80" stroke-width="2" stroke-linejoin="round"/><rect x="45" y="74" width="10" height="12" fill="url(#nkSilver)" stroke="#5F6B80" stroke-width="2"/>' +
     '<path d="M30 94 C 30 86, 70 86, 70 94 Z" fill="url(#nkSilver)" stroke="#5F6B80" stroke-width="2" stroke-linejoin="round"/></symbol>' +
     /* star */
-    '<symbol id="nkStar" viewBox="0 0 100 100"><path d="M50 5 l13.5 28.5 31 3.5 -23 21 6.5 31 -28-16 -28 16 6.5-31 -23-21 31-3.5z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="5" stroke-linejoin="round"/>' +
-    '<path d="M50 20 l9 19 20 2.3 -15 13.7" fill="none" stroke="#FFF8C8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><circle cx="36" cy="40" r="5" fill="#fff" opacity=".9"/></symbol>' +
+    '<symbol id="nkStar" viewBox="0 0 100 100">' + '<image href="img/star.webp" x="2" y="2" width="96" height="96" preserveAspectRatio="xMidYMid meet"/></symbol>' +
     '</defs></svg>';
   NK.apple = function (cls, green) { return '<svg class="' + (cls || '') + '" viewBox="0 0 100 100"' + (green ? ' style="--apple:url(#nkGreen);--appleEdge:#2C5E0E"' : '') + '><use href="#nkApple"/></svg>'; };
 
