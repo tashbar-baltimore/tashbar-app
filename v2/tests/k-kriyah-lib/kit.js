@@ -38,7 +38,7 @@ const info = pg => pg.evaluate(() => window.__info && window.__info());
 async function drag(pg, [fx, fy], [tx, ty]) { await pg.mouse.move(fx, fy); await pg.mouse.down(); await pg.mouse.move(tx, ty, { steps: 8 }); await pg.mouse.up(); }
 async function until(pg, fn, ms = 60000, step = 150) { const t = Date.now(); while (Date.now() - t < ms) { const v = await pg.evaluate(fn).catch(() => null); if (v) return v; await pg.waitForTimeout(step); } return null; }
 const saved = pg => pg.evaluate(() => { try { return JSON.parse(localStorage.getItem('tl2:k-kriyah') || '{}'); } catch (e) { return {}; } });
-const SHOTS = path.join(__dirname, '..', '..', 'screens', 'k-kriyah');
+const SHOTS = process.env.KK_SHOTS_DIR || path.join(__dirname, '..', '..', 'screens', 'k-kriyah');   /* a picture run can write elsewhere first */
 async function shot(pg, name) { if (!process.env.KK_SHOTS) return; fs.mkdirSync(SHOTS, { recursive: true }); await pg.screenshot({ path: path.join(SHOTS, name + '.jpg'), type: 'jpeg', quality: 80 }); }
 /* the games need 3D: if the shared test browser has no WebGL, use our own Chromium with software 3D (SwiftShader) */
 let ownGL = null;
