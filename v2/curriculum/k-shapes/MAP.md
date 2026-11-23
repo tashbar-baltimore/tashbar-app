@@ -24,23 +24,23 @@
 
 ## The year (about 36 weeks)
 
-| Unit | Weeks | What he learns | Standard | Games |
+| Unit | Weeks | What he learns | Standard | Games (each one is built) |
 |---|---|---|---|---|
 | 1. Meet the flat shapes | 1–5 | Circle, triangle, square, rectangle, by their rules | K.G.2, K.G.4 | Find the circles · Find the triangles · Find the squares · Find the rectangles · The shape sorter (all four) |
-| 2. Shape rules | 6–8 | Count sides and corners; turned or big or small is still the same shape | K.G.4 | Corner counter (count, then name it) · Sort by corners (0, 3, 4) · Fix the shape (close the gap, make sides straight) |
-| 3. More shapes and tricky ones | 9–11 | Hexagon; shapes that only look like a triangle or circle | K.G.2 | Find the hexagons · Real or tricky? · Mystery shape (hear the clues, pick it) |
-| **Review 1** | 12 | Units 1–3 mixed | | Shape party (all shapes, mixed) |
-| 4. Patterns, part 1 | 13–15 | Copy and continue AB, then ABB | Math Practice 7 | Bead string (copy it) · What comes next? · Clap the pattern |
-| 5. Solid shapes | 16–19 | Ball (sphere), block (cube), can (cylinder), cone; flat or solid | K.G.2, K.G.3 | Roll or stack? · Find the solid shapes · Flat or solid? · Same shape, flat face (a can stamps a circle) |
-| 6. Building with shapes | 20–23 | Put shapes together to make shapes and pictures | K.G.5, K.G.6 | Two make one (2 triangles make a square) · Fill the picture (a house, a sukkah) · Build your own picture |
-| **Review 2** | 24 | Units 1–6 mixed | | Shape party 2 |
-| 7. Where is it? | 25–26 | On top, under, next to, in front of, behind, using blocks | K.G.1 | Block tower (put it on top, under, next to) · Front or behind? (turn the 3D room) |
-| 8. Patterns, part 2 | 27–28 | ABC patterns, fix a pattern, make your own | Math Practice 7 | Fix the pattern · Make my pattern · Pattern train |
-| 9. Sorting and counting groups | 29–30 | Sort by color, size or shape; count each group; which has more | K.MD.3 | Clean-up bins · Count the bins · What's my rule? |
-| 10. Longer, shorter, taller | 31–32 | Compare length and height by lining up from the same start | K.MD.1, K.MD.2 | Line them up · Tallest to shortest · Is it fair? |
-| 11. Heavier, lighter, holds more | 33–34 | Compare weight on a balance; which cup holds more | K.MD.1, K.MD.2 | Balance scale · Fill the cups · Big is not always heavy |
+| 2. Shape rules | 6–8 | Count sides and corners; turned or big or small is still the same shape; a shape is closed, with straight sides | K.G.4 | Count the corners (sort by 0, 3, 4) · Fix the shape (close the gap, make the sides straight) |
+| 3. More shapes and tricky ones | 9–11 | Hexagon; shapes that only look like a triangle or circle | K.G.2 | Find the hexagons · Mystery shape (hear the clues, find it) |
+| **Review 1** | 12 | Units 1–3 mixed | | Shape party |
+| 4. Patterns, part 1 | 13–15 | Copy and continue AB, then ABB; hear it as a sound | Math Practice 7 | What comes next? · Copy and sing |
+| 5. Solid shapes | 16–19 | Sphere, cube, cylinder, cone; flat or solid | K.G.2, K.G.3 | The solid shapes (roll, stack, spin) · Flat or solid? |
+| 6. Building with shapes | 20–23 | Put shapes together to make pictures (a house, a tree, a rocket) | K.G.5, K.G.6 | Build with shapes |
+| **Review 2** | 24 | Units 1–6 mixed | | Shape party 2 (flat and solid) |
+| 7. Where is it? | 25–26 | On top, under, next to, in front of, behind | K.G.1 | Where is it? (a 3D bridge of blocks) |
+| 8. Patterns, part 2 | 27–28 | ABC and AABB patterns, fix a broken pattern | Math Practice 7 | Fix the pattern · Pattern train |
+| 9. Sorting and counting groups | 29–30 | Sort by color or size; count each group; which has more | K.MD.3 | Clean-up bins · Big and small |
+| 10. Longer, shorter, taller | 31–32 | Compare length and height by lining up from the same start | K.MD.1, K.MD.2 | Line them up (pencils and towers) |
+| 11. Heavier, lighter | 33–34 | Compare weight on a balance; big is not always heavy | K.MD.1, K.MD.2 | Heavy and light (a 3D balance scale) |
 | **Review 3** | 35 | The whole year mixed | | Shape party 3 |
-| 12. Graduation | 36 | A celebration review of every unit | | Graduation day, then his certificate |
+| 12. Graduation | 36 | A celebration review of the year | | Graduation day, then his certificate |
 
 ## What "mastered" means (the check at the end of each unit)
 - **Unit 1:** names all four flat shapes in any turn or size.
@@ -53,7 +53,8 @@
 - **Unit 8:** continues an ABC pattern and fixes a broken one.
 - **Unit 9:** sorts by a rule and says which group has more.
 - **Unit 10:** compares two lengths fairly.
-- **Unit 11:** compares two weights on a balance.
+- **Unit 11:** compares two weights on a balance, and knows big is not always heavy.
+- **Graduation:** finds every flat and solid shape from spoken clues, in any turn or size.
 
 ## Values in every game
 Modest, warm frum family life: Mendy, Dovid, Ari, Shloimy, Eli, Tzvi, Yaakov, Moshe, Chaim; Tatty, Mommy, Bubby, Zeidy; shul, Shabbos, the sukkah, cheder. Kosher food only. Never the Divine Name. Boys never see the word "bite". No money on any screen.
