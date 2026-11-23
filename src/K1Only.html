@@ -108,6 +108,8 @@ const GAME_VOICE='<scr'+'ipt>(function(){var P={},n=0;'+
  'try{Object.defineProperty(window,"speechSynthesis",{value:S,configurable:true});}catch(e){}'+
  'if(!window.SpeechSynthesisUtterance){window.SpeechSynthesisUtterance=function(t){this.text=t;};}'+
  'window.addEventListener("message",function(e){var d=e.data;if(d&&d.k1said&&P[d.k1said]){var u=P[d.k1said];delete P[d.k1said];try{if(u.onend)u.onend();}catch(x){}}});'+
+ 'function rdy(){try{requestAnimationFrame(function(){requestAnimationFrame(function(){try{parent.postMessage({k1ready:1},"*");}catch(e){}});});}catch(e){try{parent.postMessage({k1ready:1},"*");}catch(x){}}}'+
+ 'if(document.readyState==="complete")rdy();else window.addEventListener("load",rdy);'+
  '})();<\/scr'+'ipt>';
 function dress(ovId){ try{ const f=document.querySelector('#'+ovId+' iframe'); if(!f||f.dataset.k1) return; const src=f.srcdoc||''; if(!src) return;
   f.dataset.k1='1'; f.srcdoc=GAME_VOICE+GAME_CSS+src; }catch(e){} }
@@ -122,15 +124,29 @@ function voice(t,done){ hush(); const my=V.tok; let fin=false; const end=()=>{ i
   if(V.cache[t]) return viaUrl(V.cache[t]);
   Promise.race([fetch(TTS,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:String(t).slice(0,300),voice:'teacher'})}).then(r=>r.json()).then(j=>{ if(j&&j.ok&&j.url){ V.cache[t]=j.url; return j.url; } throw new Error('tts'); }),
     new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')),1500))]).then(viaUrl).catch(dev); }
-window.addEventListener('message',e=>{ const d=e.data; if(!d||typeof d!=='object'||(d.k1say==null&&!d.k1hush)) return;
+window.addEventListener('message',e=>{ const d=e.data; if(d&&typeof d==='object'&&d.k1ready){ OVS.forEach(id=>{ const f=document.querySelector('#'+id+' iframe'); if(f&&e.source===f.contentWindow) unshield(id); }); return; }
+  if(!d||typeof d!=='object'||(d.k1say==null&&!d.k1hush)) return;
   const f=OVS.map(id=>document.querySelector('#'+id+' iframe')).find(x=>x&&e.source===x.contentWindow); if(!f) return;
   if(d.k1hush){ hush(); return; }
   const id=d.id; voice(String(d.k1say),()=>{ try{ f.contentWindow.postMessage({k1said:id},'*'); }catch(x){} }); });
 K1O.voice=voice;
 
+/* NEVER A WHITE GAME WINDOW (2026-11-23, HoS: on a real K Chromebook the game window stayed white for 20-30 s after PLAY):
+   until the game page has really drawn (it says so through the voice bridge, k1ready), a bright "here comes your game" cover sits
+   over the game. If the page has not drawn after 10 s it is loaded once more; after 25 s a big "Try again" opens the game afresh. */
+function shield(ovId,id){ const ov=document.getElementById(ovId), f=ov&&ov.querySelector('iframe'); if(!f||ov.querySelector('.k1-wait')) return;
+  const c=document.createElement('div'); c.className='k1-wait'; c.setAttribute('role','status'); c.style.top=(f.offsetTop||0)+'px';
+  c.innerHTML='<div class="k1-wb">🎮</div><div class="k1-wt">Here comes your game!</div>'; ov.appendChild(c);
+  const t1=setTimeout(()=>{ try{ if(c.isConnected&&f.isConnected){ const src=f.srcdoc; f.srcdoc=src; } }catch(e){} },10000);
+  const t2=setTimeout(()=>{ if(!c.isConnected) return; c.insertAdjacentHTML('beforeend','<button class="k1-again" type="button">▶ Try again</button>');
+    c.querySelector('.k1-again').onclick=()=>{ try{ const x=ov.querySelector('button'); if(x) x.click(); }catch(e){} try{ ov.remove(); }catch(e){} setTimeout(()=>play(id),50); }; },25000);
+  c._t=[t1,t2]; }
+function unshield(ovId){ const ov=document.getElementById(ovId), c=ov&&ov.querySelector('.k1-wait'); if(!c) return; (c._t||[]).forEach(clearTimeout);
+  setTimeout(()=>{ c.classList.add('k1-gone'); setTimeout(()=>{ try{ c.remove(); }catch(e){} },300); },600); }
+K1O.shown=ovId=>{ const ov=document.getElementById(ovId); return !!(ov&&!ov.querySelector('.k1-wait')); };
 function play(id){ const p=subjects().find(x=>x.k===K1O.subj); if(!p||!window[p.g]||typeof window[p.g].open!=='function') return;
   try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(e){}
-  A.overlay=null; window[p.g].open(id); OVS.forEach(dress); }
+  A.overlay=null; window[p.g].open(id); OVS.forEach(dress); OVS.forEach(ov=>shield(ov,id)); }
 
 document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('#k1o [data-k1]'); if(!b) return; e.preventDefault(); e.stopPropagation();
   const a=b.dataset.k1;
@@ -149,15 +165,21 @@ function hook(){
   const l0=window.tlLevelCheckFor; if(typeof l0==='function'&&!l0.__k1){ const w=function(){ if(on()) return null; return l0.apply(this,arguments); }; w.__k1=1; window.tlLevelCheckFor=w; }
   const f0=window.tlFindLevelCard; if(typeof f0==='function'&&!f0.__k1){ const w=function(){ if(on()) return ''; return f0.apply(this,arguments); }; w.__k1=1; window.tlFindLevelCard=w; } }
 hook(); K1O.hook=hook;
-setInterval(()=>{ try{ if(!document.body||!document.body.classList.contains('k1-mode')||typeof A==='undefined') return;
+const keepTick=()=>{ try{ if(!document.body||!document.body.classList.contains('k1-mode')||typeof A==='undefined') return;
   if(A.overlay&&A.view==='hub'){ A.overlay=null; render(); return; }
   const g=gameOpen(); if(K1O.wasGame&&!g){ try{ hush(); }catch(x){} } K1O.wasGame=g;
-  if(document.body.classList.contains('k1-home')&&!g&&K1O.sig!==sig()) paint(); }catch(e){} },1200);
+  if(document.body.classList.contains('k1-home')&&!g&&K1O.sig!==sig()) paint(); }catch(e){} };
+keepTick.__k1keep=1;   /* always runs, also while the loader keeps the hidden big-boy home quiet (Speed.js, K-1 QUIET) */
+setInterval(keepTick,1200);
 
 /* ---------- the look ---------- */
 try{ if(!document.getElementById('k1o-css')){ const c=document.createElement('style'); c.id='k1o-css'; c.textContent=`
 body.k1-home > *:not(#k1o):not(#klov):not(#krov):not(#kkov):not(#kkov2):not(#g1mov):not(#g1rov){ display:none !important; }
 #klov,#krov,#kkov,#kkov2,#g1mov,#g1rov{ z-index:2147483600 !important; }
+.k1-wait{ position:absolute; left:0; right:0; bottom:0; z-index:5; background:linear-gradient(180deg,#C8ECFF,#FFF4D6); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; font:800 clamp(28px,5vw,48px) 'Fredoka','Nunito',system-ui,sans-serif; color:#2B2350; transition:opacity .3s; }
+.k1-wait.k1-gone{ opacity:0; pointer-events:none; }
+.k1-wb{ font-size:clamp(80px,16vh,150px); animation:k1wb .9s ease-in-out infinite alternate; } @keyframes k1wb{ from{ transform:translateY(0); } to{ transform:translateY(-20px); } }
+.k1-again{ margin-top:10px; border:6px solid #fff; border-radius:40px; background:#22A85A; color:#fff; font:800 clamp(32px,5vw,52px) 'Fredoka','Nunito',system-ui,sans-serif; padding:18px 44px; box-shadow:0 8px 0 #17834F; cursor:pointer; }
 body.k1-home{ overflow:hidden !important; background:#FFF4D6 !important; }
 #k1o{ position:fixed; inset:0; z-index:2147483000; overflow-y:auto; background:linear-gradient(180deg,#8FD3FF 0%,#C8ECFF 45%,#FFF4D6 100%); font-family:'Fredoka','Nunito',system-ui,sans-serif; color:#2B2350; padding:14px clamp(12px,3vw,40px) 40px; box-sizing:border-box; }
 #k1o button{ font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; }
