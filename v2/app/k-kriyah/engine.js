@@ -24,6 +24,7 @@ export const PASS = 2;                     /* the next game opens at 2 of 3 star
 const Q = new URLSearchParams(location.search);
 export const FAST = Q.has('fast');
 export const F = FAST ? 0.12 : 1;
+export const LITE = Q.has('lite');   /* ?lite=1: simpler shadows and no smoothing, so automatic tests run quicker (the pictures use the full look) */
 export const wait = ms => new Promise(r => setTimeout(r, ms * F));
 export const $ = s => document.querySelector(s);
 
@@ -164,8 +165,9 @@ ${HAND}<div class="yay" id="yay"><div class="stars"></div></div>
   $('#again').onclick = () => { sfx.pop(); again(); };
   if (home) $('#home').onclick = () => goPath();
 }
-export function goPath() { location.href = 'index.html' + (FAST ? '?fast=1' : ''); }
-export function goGame(id) { location.href = 'play.html?g=' + id + (FAST ? '&fast=1' : ''); }
+const keep = () => (FAST ? '&fast=1' : '') + (LITE ? '&lite=1' : '');
+export function goPath() { location.href = 'index.html?' + keep().slice(1); }
+export function goGame(id) { location.href = 'play.html?g=' + id + keep(); }
 export function setProgress(n, on) { const p = $('#prog'); if (p.children.length !== n) p.innerHTML = '<i></i>'.repeat(n); [...p.children].forEach((x, i) => x.classList.toggle('on', i < on)); }
 export function waitStart() { const b = $('#start'); b.style.display = 'grid'; document.body.dataset.startReady = 1; return new Promise(r => { b.onclick = () => { b.style.display = 'none'; delete document.body.dataset.startReady; tone(1, .01); try { speechSynthesis.speak(new SpeechSynthesisUtterance(' ')); } catch (e) {} r(); }; }); }
 
@@ -191,14 +193,14 @@ export function hasWebGL() { try { const c = document.createElement('canvas'); r
 export function initRenderer() {
   canvas = $('#c');
   if (Q.has('noGL') || !hasWebGL()) throw new Error('no-webgl');
-  R = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: FAST });
-  R.setPixelRatio(Math.min(devicePixelRatio, 1.75)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .82;
-  R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap;
+  R = new THREE.WebGLRenderer({ canvas, antialias: !LITE, alpha: true, preserveDrawingBuffer: FAST });
+  R.setPixelRatio(LITE ? 1 : Math.min(devicePixelRatio, 1.75)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .82;
+  R.shadowMap.enabled = true; R.shadowMap.type = LITE ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
   scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(R); scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
   cam = new THREE.PerspectiveCamera(38, 1, .1, 200);
   scene.add(new THREE.HemisphereLight(0xcfeeff, 0x6fbf4a, .9));
-  const sun = new THREE.DirectionalLight(0xfff1d6, 2.4); sun.position.set(6, 10, 7); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+  const sun = new THREE.DirectionalLight(0xfff1d6, 2.4); sun.position.set(6, 10, 7); sun.castShadow = true; sun.shadow.mapSize.set(LITE ? 512 : 1024, LITE ? 512 : 1024);
   Object.assign(sun.shadow.camera, { left: -10, right: 10, top: 10, bottom: -10, near: 1, far: 40 }); sun.shadow.radius = 6; sun.shadow.bias = -.0005; scene.add(sun);
   addEventListener('resize', resize); resize();
   let t0 = performance.now(), frames = 0;

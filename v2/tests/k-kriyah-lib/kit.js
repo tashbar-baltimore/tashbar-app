@@ -17,6 +17,7 @@ async function open(browser, { view = 'chromebook', save = null, url = 'index.ht
     if (!f.startsWith(APP) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) return r.fulfill({ status: 404, body: '' });
     r.fulfill({ contentType: TYPES[path.extname(f).slice(1)] || 'application/octet-stream', body: fs.readFileSync(f) });
   });
+  if (!process.env.KK_SHOTS) url += (url.includes('?') ? '&' : '?') + 'lite=1';   /* quicker 3D for the automatic run; picture runs use the full look */
   await pg.goto('http://kriyah.test/' + url);
   return { ctx, pg, errs };
 }
