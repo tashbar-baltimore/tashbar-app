@@ -142,6 +142,7 @@ async function kidTests(browser) {
         canteen: !!gm.querySelector('.gm-hts .gm-ht.food[data-st=open][data-t=canteen]'), noBar: !document.querySelector('#gm-nav button') || getComputedStyle(document.getElementById('gm-nav')).display === 'none', others: gm.querySelectorAll('button:not(.gm-ht)').length };
       const go = async t => { const h = document.querySelector('#gm-nav [data-gmnav=home]'); if (h) { h.click(); await sleep(30); } const b = gm.querySelector('.gm-hts [data-gmnav=' + t + ']'); if (b) { b.click(); await sleep(30); } };
       await go('map');
+      o.bright = document.body.classList.contains('gm-lite') && !document.body.classList.contains('w3d') && getComputedStyle(gm).backgroundImage.indexOf('255, 247, 214') >= 0;
       o.goal = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.learn = (gm.querySelector('.gm-goal .learn') || {}).textContent || ''; o.nodes = gm.querySelectorAll('.gm-n').length; o.boss = gm.querySelectorAll('.gm-n.boss').length;
       o.tabs = document.querySelectorAll('#gm-nav [data-gmnav]').length; o.homeBtn = !!document.querySelector('#gm-nav [data-gmnav=home]'); o.plays = gm.querySelectorAll('.gm-play').length; o.worldTabsOnMap = gm.querySelectorAll('[data-gm=world]').length;
       const chg = gm.querySelector('[data-gmnav=subjects]'); if (chg) { chg.click(); await sleep(30); }
@@ -168,6 +169,7 @@ async function kidTests(browser) {
       if (g.rounds !== 3 || g.live !== 1) fail('missions: 3 rounds with one live round expected (got ' + g.rounds + ' rounds, ' + g.live + ' live)');
       if (!g.locked) fail('missions: the Arcade must be locked before the 3 rounds are cleared');
       const H = g.home || {};
+      if (!g.bright) fail('one look (HoS 2026-11-23): his map must be the bright page (light background, no 3D galaxy behind it)');
       if (H.n !== 6 || !H.first || !H.equal || !H.half || !H.canteen || !H.noBar || H.others) fail('home (HoS 2026-11-23): 6 equal tiles, icon on the top half, "My work · DO THIS NOW" first, a Canteen tile that opens the canteen, no tab bar and no other buttons (got ' + JSON.stringify(H) + ')');
       if (g.tabs !== 1 || !g.homeBtn) fail('one button, one job: every page but the home has ONE Home button at the bottom (got ' + g.tabs + ')');
       if (g.plays !== 1 || g.worldTabsOnMap) fail('one button, one job: the map has ONE big PLAY and no subject tabs (got ' + g.plays + ' PLAY, ' + g.worldTabsOnMap + ' subject tabs)');
