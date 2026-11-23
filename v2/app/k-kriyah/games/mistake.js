@@ -72,13 +72,14 @@ export default function setup(E, { struggled, unit }) {
     }
   }
   async function fix(k, demo) {
-    fixKey = k; makeTiles(); await E.wait(450);
+    fixKey = k; if (P) yak.visible = false;   /* on a phone, Yaakov steps out of the way of the letters */
+    makeTiles(); await E.wait(450);
     await E.say(['Yaakov wanted ' + an(k) + '. Drag', E.LETTERS[k].name, 'onto the sign!']);
     const done = new Promise(r => resolveFix = r);
     if (demo) { busy = false; const t = tiles.find(x => x.userData.key === k); let [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x, y); await E.wait(350); dragT = t;
       const p0 = t.position.clone(), p1 = E.worldPos(board).add(new THREE.Vector3(0, -.2, 1.5)); await E.tween(1100, q => { t.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(t.position); E.hand.at(a, b); }); dragT = null; E.hand.hide(); placeTile(t, true); }
     else document.body.dataset.fixReady = 1;
-    await done; delete document.body.dataset.fixReady; fixKey = null;
+    await done; delete document.body.dataset.fixReady; fixKey = null; yak.visible = true;
     tiles.forEach(t => t.visible && E.popOut(t));
     await E.say(k === 'alef' ? 'Now Yaakov has his Alef! Thank you!' : ['Now Yaakov has his ' + E.LETTERS[k].name + '!', ...E.nameLine(k)]);
     yak.mood('calm');

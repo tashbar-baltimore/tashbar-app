@@ -15,7 +15,7 @@ export default function setup(E, { unit }) {
     daled: [[[40, 615], [45, 510], [160, 500], [290, 500], [415, 495], [395, 380], [388, 250], [383, 120], [380, 25]]],
     hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
-  const ORDER = unit.letters;
+  const ORDER = unit.n > 1 ? [...unit.letters, 'beis'] : unit.letters;   /* a later unit ends with one earlier letter (Beis, and its dot) */
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
   const boy = unit.n === 2 ? E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }) : E.mendy(); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
   const done = []; let cur = null, beads = [], next = 0, demo = false, active = false, lastHelp = 0, wander = 0, offTries = 0;
@@ -103,10 +103,10 @@ export default function setup(E, { unit }) {
     [...beads, ...roads, ...golds, target].forEach(b => b.parent && b.parent.remove(b)); beads = []; roads = []; golds = []; const l = cur; cur = null; holder.remove(l); E.scene.add(l); l.position.copy(holder.position);
     const i = done.length; done.push(l); const p0 = l.position.clone(); const tmp = new THREE.Object3D(); layoutDone(tmp, i);
     await E.tween(600, k => { l.position.lerpVectors(p0, tmp.position, k); l.scale.setScalar(1 + (tmp.scale.x - 1) * k); }); layoutDone(l, i);
-    glow.material.opacity = 0; E.setProgress(3, done.length);
+    glow.material.opacity = 0; E.setProgress(ORDER.length, done.length);
   }
   return async () => {
-    E.setProgress(3, 0);
+    E.setProgress(ORDER.length, 0);
     for (let i = 0; i < ORDER.length; i++) await oneLetter(ORDER[i], i === 0);
     const names = ORDER.map(k => E.LETTERS[k].name);
     return { stars: offTries <= 4 ? 3 : 2, line: 'You felt ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + '!' };

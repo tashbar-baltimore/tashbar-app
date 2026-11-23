@@ -99,7 +99,7 @@ export default function setup(E, { unit }) {
     if (P) await Promise.all([E.popOut(zeidy), E.popOut(boy)]);   /* on a phone there's no room beside the row */
     else { const b0 = boy.position.clone(), z0 = zeidy.position.clone(); boy.mood('walk'); zeidy.mood('walk');
       await E.tween(900, q => { boy.position.lerpVectors(b0, new THREE.Vector3(-4.35, 0, .6), q); zeidy.position.lerpVectors(z0, new THREE.Vector3(-5.1, 0, -.2), q); }); boy.mood('calm'); zeidy.mood('calm'); }
-    all.forEach((k, i) => { const l = E.letter(k, P ? .8 : 1.0); l.position.set(((all.length - 1) / 2 - i) * (P ? .72 : 1.0), 1.5, .4); l.visible = false; E.scene.add(l); row.push(l); });
+    all.forEach((k, i) => { const l = E.letter(k, P ? .8 : 1.0); l.position.set(((all.length - 1) / 2 - i) * (P ? .64 : 1.0), 1.5, .4); l.visible = false; E.scene.add(l); row.push(l); });
     for (const l of row) { E.popIn(l, 1, 300); await E.wait(90); }
     E.setProgress(4, 4);
     await E.say('Let’s sing the Alef-Beis so far!');

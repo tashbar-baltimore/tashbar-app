@@ -5,20 +5,21 @@
 import { makePictures, WORDS, WORD_NAME } from '../pictures.js';
 export default function setup(E, { struggled, unit }) {
   const { THREE, S } = E;
-  const PIC = makePictures(E), keys = unit.letters;
+  const PIC = makePictures(E), keys = unit.n > 1 ? [...unit.letters, 'beis'] : unit.letters;   /* one earlier letter comes back (Beis, with the bayis) */
   const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter));
   const kid = E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }); E.scene.add(kid);   /* Shloimy */
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4; p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
+  const PS = () => P ? (peds.length > 3 ? .5 : .62) : (peds.length > 3 ? .88 : 1);
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
-  E.onLayout(p => { P = p; gap = p ? 1.45 : 2.3;
-    if (p) { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 4.2, 2.2); kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
-    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.35, 2.2);   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
-    peds.forEach((pd, i) => { pd.position.set((1 - i) * gap, 0, .6); pd.scale.setScalar(p ? .62 : 1); });   /* right to left: Gimmel, Daled, Hei */
+  E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
+    if (p) { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
+    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.0, 2.2);   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
+    const m = peds.length; peds.forEach((pd, i) => { pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* right to left: Gimmel, Daled, Hei, then Beis */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
   E.onFrame(t => {
@@ -37,12 +38,12 @@ export default function setup(E, { struggled, unit }) {
   E.onPointer('down', e => { if (!enabled || busy || !card.visible) return;
     if (E.pickFrom(e, [card])) { dragging = true; const p = E.planePoint(e, card.position.z); if (p) grab.copy(card.position).sub(p); return; }
     const pd = E.pickFrom(e, peds); if (pd) drop(pd); });            /* tapping a letter works too */
-  E.onPointer('move', e => { if (!dragging) return; const p = E.planePoint(e, card.position.z); if (p) card.position.copy(p.add(grab)); const n = nearest(); peds.forEach(pd => pd.scale.setScalar((P ? .62 : 1) * (pd === n ? 1.06 : 1))); });
-  E.onPointer('up', () => { if (!dragging) return; dragging = false; peds.forEach(pd => pd.scale.setScalar(P ? .62 : 1)); drop(nearest()); });
+  E.onPointer('move', e => { if (!dragging) return; const p = E.planePoint(e, card.position.z); if (p) card.position.copy(p.add(grab)); const n = nearest(); peds.forEach(pd => pd.scale.setScalar(PS() * (pd === n ? 1.06 : 1))); });
+  E.onPointer('up', () => { if (!dragging) return; dragging = false; peds.forEach(pd => pd.scale.setScalar(PS())); drop(nearest()); });
 
   async function showCard(w) {
     word = w; if (pic) card.remove(pic); pic = PIC[w](); card.add(pic); card.position.copy(cardHome); card.rotation.set(0, 0, 0); missed = false;
-    await E.popIn(card, P ? .95 : 1.05); busy = false;
+    await E.popIn(card, P ? .9 : .85); busy = false;
     await E.say(WORDS[w].say);
   }
   async function back() { const p0 = card.position.clone(); busy = true; await E.tween(400, k => card.position.lerpVectors(p0, cardHome, k), E.ease.out); busy = false; }
@@ -51,7 +52,7 @@ export default function setup(E, { struggled, unit }) {
     const w = word, k = WORDS[w].letter, name = E.LETTERS[k].name, snd = E.LETTERS[k].snd;
     if (pd.userData.key === k) {
       busy = true; enabled = false; const p0 = card.position.clone(), to = top(pd);
-      await E.tween(450, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar((P ? .95 : 1.05) * (1 - q * .9)); });
+      await E.tween(450, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar((P ? .9 : .85) * (1 - q * .9)); });
       card.visible = false; card.scale.setScalar(1); E.joy(to); E.hop(L[k], .4); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F);
       idx++; E.setProgress(deck.length, idx);
       await E.say(['Yes! ' + WORD_NAME[w] + ' starts with', S(snd), '. ' + name + '!']);

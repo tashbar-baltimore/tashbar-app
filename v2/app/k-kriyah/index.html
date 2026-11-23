@@ -74,7 +74,7 @@ if (ok) {
   });
   /* big buttons to the unit before (right, as Hebrew reads) and the next unit (left), when it is open */
   const unitBtn = (u, side) => { const b = document.createElement('button'); b.className = 'ui btn'; b.id = 'unit' + u.n; b.setAttribute('aria-label', 'Unit ' + u.n);
-    b.style.cssText = `${side}:16px;bottom:30px;width:96px;height:96px;font:800 34px/1 "Noto Serif Hebrew","Times New Roman",serif;color:#1f5fff;direction:rtl`;
+    b.style.cssText = `${side}:16px;bottom:44px;width:96px;height:96px;font:800 34px/1 "Noto Serif Hebrew","Times New Roman",serif;color:#1f5fff;direction:rtl`;
     b.textContent = E.FLAT[u.letters[0]] + '\u2013' + E.FLAT[u.letters[u.letters.length - 1]]; b.onclick = () => { E.sfx.pop(); E.goPath(u.n); }; document.body.appendChild(b); };
   const before = E.UNITS.find(u => u.n === U.n - 1), after = E.UNITS.find(u => u.n === U.n + 1);
   if (before) unitBtn(before, 'right'); if (after && E.unlocked(after.games[0].id)) unitBtn(after, 'left');
