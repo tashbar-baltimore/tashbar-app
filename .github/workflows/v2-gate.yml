@@ -1,8 +1,8 @@
 name: v2-gate
-# THE 2.0 RULE (HoS 2026-11-22): nothing goes into Tashbar Learning 2.0 until an approver says yes. Everyone works through the HoS's
-# GitHub, so the yes is a comment an approver's Claude posts on the pull request:   APPROVED FOR 2.0 — <name>
-# with <name> on the list in v2/APPROVERS.json (read from main), posted AFTER the pull request's newest commit (a yes counts only for
-# the version she looked at). Builders never post it (CLAUDE.md, v2/README.md). This workflow always runs from main, so a pull request
+# THE 2.0 RULE (HoS 2026-11-22): nothing goes into Tashbar Learning 2.0 until a person working on 2.0 says yes. Everyone works through
+# the HoS's GitHub, so the yes is a comment that person's Claude posts on the pull request:   APPROVED FOR 2.0 — <name>
+# Anyone the HoS sends the 2.0 instructions to may approve (HoS: "anyone who I send things to can do whatever they need to do. Don't make
+# restrictions."). The yes must come AFTER the pull request's newest commit (it counts only for the version that person looked at). This workflow always runs from main, so a pull request
 # cannot change how it decides. For a pull request that changes v2/:
 #   - it must change ONLY v2/ (1.0 and 2.0 changes are never mixed);
 #   - its tests must have passed on its newest commit;
@@ -45,10 +45,8 @@ jobs:
           [ "$concl" = success ] || { echo "PR #$n: tests on $sha are '$concl'; waiting for them to pass."; exit 0; }
           # the newest commit's time: a yes must come after it
           since=$(gh api "repos/$REPO/commits/$sha" --jq '.commit.committer.date')
-          names=$(gh api "repos/$REPO/contents/v2/APPROVERS.json?ref=main" --jq .content | base64 -d | jq -r '.approvers[].name | ascii_downcase')
           yes=$(gh api --paginate "repos/$REPO/issues/$n/comments" --jq ".[] | select(.created_at > \"$since\") | select(.user.type != \"Bot\") | .body" \
-                | grep -ioP '^\s*APPROVED FOR 2\.0\s*(?:-|–|—|:)\s*\K[^\r\n]+' | sed 's/[[:space:].!]*$//' | while read -r who; do
-                    w=$(tr '[:upper:]' '[:lower:]' <<<"$who"); grep -Fxq "$w" <<<"$names" && { echo "$who"; break; }; done || true)
+                | grep -ioP '^\s*APPROVED FOR 2\.0\s*(?:-|–|—|:)\s*\K[^\r\n]+' | sed 's/[[:space:].!]*$//' | grep -m1 . || true)
           if [ -z "$yes" ]; then
             echo "PR #$n: no approver has said yes after its newest commit ($sha, $since). Making a look link."
             gh api -X POST "repos/$REPO/actions/workflows/publish-v2.yml/dispatches" -f ref=main -f 'inputs[what]=preview' -f "inputs[pr]=$n"
