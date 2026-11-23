@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finger Flash — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 1, game 3: FINGER FLASH. Skill: see a finger pattern (1-5) at a glance and show it.
+     A hand flashes under a cloth for a moment; he raises the same number of fingers on the big hand (tap a finger: up or down)
+     and on his own hand, then presses the check. First mistake: look again; second: "Three fingers. You have four. Put one down." -->
+<link rel="stylesheet" href="frame.css">
+<style>
+.stage{ grid-template-columns:1fr 1.15fr; align-items:center; }
+.left{ display:flex; align-items:center; justify-content:center; height:100%; }
+.flash.qcard{ width:min(40vw,62vh,420px); }
+.flash .fh{ inset:5%; }
+.right{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; height:100%; }
+.bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:36px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); padding:8px; display:flex; align-items:center; gap:10px; }
+.bighand .fhand{ width:min(34vw,56vh,380px); aspect-ratio:170/230; }
+.hero .qcard{ position:absolute; width:52%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .stage{ grid-template-columns:1fr; grid-template-rows:.8fr 1.2fr; }
+  .flash.qcard{ width:min(62vw,30vh); }
+  .right{ flex-direction:row; } .bighand .fhand{ width:min(56vw,40vh); }
+}
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left"><div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div></div>
+  <div class="right">
+    <div class="bighand" id="bighand"></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var H, shown, R, done, prev = 0, easy = 0, slow = 0;
+  function show(n) { var f = $('flash'); if (shown) shown.el.remove(); shown = FR.fingers(n, false); shown.el.classList.add('fh'); f.insertBefore(shown.el, f.firstChild); }
+  function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
+  function hooks() {
+    GAME.right = function () { return FR.fingerMoves(H, R.n).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+    GAME.wrong = function () { var w = R.n < 5 ? R.n + 1 : R.n - 1; return FR.fingerMoves(H, w).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+  }
+  function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
+
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer') return;
+    var have = H.count(); if (!have) { FR.say('Raise some fingers first.'); return; }
+    GAME.phase = 'busy'; FR.lock(true); H.lock(true);
+    if (have === R.n) {
+      cloth(true); await FR.yes($('bighand'), R.misses ? 'Yes! Now you have ' + FR.word(R.n) + '.' : FR.pick(['Yes! ' + FR.Word(R.n) + ' fingers!', 'Good eyes! ' + FR.Word(R.n) + '!']));
+      if (!R.misses) slow = Math.max(0, slow - 1);
+      var d = done; done = null; d(R.misses === 0); return;
+    }
+    FR.oops($('bighand')); R.misses++; if (R.misses === 1) { slow = Math.min(3, slow + 1); if (slow >= 2) easy = 3; }
+    cloth(true); $('flash').classList.add('glow');
+    if (R.misses === 1) { await FR.say("Let's look again."); await FR.wait(1200); cloth(false); $('flash').classList.remove('glow'); await FR.say('Fix your fingers.'); }
+    else { var d2 = R.n - have; await FR.say(FR.Word(R.n) + ' fingers. You have ' + FR.word(have) + '.'); await FR.say(d2 > 0 ? 'Put ' + FR.word(d2) + ' more up.' : 'Put ' + FR.word(-d2) + ' down.'); $('flash').classList.remove('glow'); }
+    GAME.phase = 'answer'; FR.lock(false); H.lock(false); ready(); hooks();
+  }
+
+  FR.game({
+    id: 'fingers', title: 'Finger Flash', rounds: 6,
+    hero: '<div class="qcard" id="herocard" style="left:24%;top:2%;transform:rotate(-6deg)"></div>',
+    init: function (F) {
+      var hc = F.fingers(3, false); hc.el.classList.add('fh'); document.getElementById('herocard').appendChild(hc.el);
+      H = F.fingers(0, true); $('bighand').appendChild(H.el); H.onChange = ready; H.lock(true);
+      $('check').addEventListener('click', check);
+    },
+    reset: function (F, again) { if (!again) { easy = 0; slow = 0; } },
+    demo: async function (F) {
+      show(2); H.set(0); cloth(false);
+      await F.say('A hand hides under the cloth.');
+      await F.say('Peek fast! How many fingers? Watch me.');
+      cloth(true); await F.wait(1300); cloth(false); await F.wait(400);
+      await F.say('Two fingers. I tap two up.');
+      for (var i = 0; i < 2; i++) { await F.handTo(H.finger(i), .5, .3); await F.handTap(); H.finger(i).classList.remove('down'); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); cloth(true);
+      await F.yes($('bighand'), 'Yes! Two!');
+      await F.say('Show me on your hand too!');
+    },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var pool = easy > 0 ? [1, 2, 3] : i < 3 ? [1, 2, 3] : [3, 4, 5, 4, 5]; if (easy > 0) easy--;
+        var n; do { n = F.pick(pool); } while (n === prev); prev = n;
+        R = { n: n, misses: 0 }; H.set(0); H.lock(true); GAME.phase = 'flash'; F.lock(true); ready();
+        cloth(false); await F.wait(380); show(n);
+        await F.say('Peek!', { repeat: 'How many fingers? Show me.' });
+        cloth(true); await F.wait((n <= 3 ? 1100 : 1300) + slow * 100); cloth(false); await F.wait(380);
+        done = res; GAME.phase = 'answer'; F.lock(false); H.lock(false); ready(); hooks();
+        if (i < 2) await F.say('How many fingers? Show me.');
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

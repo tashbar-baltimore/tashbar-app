@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Find the Mistake — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 1, game 4: FIND THE MISTAKE. Skill: check an amount at a glance (1-5).
+     "Mendy says three!" (his hand shows three). He taps thumbs up (right) or thumbs down (a mistake). After a mistake he shows
+     the right number on the big hand. Wrong judging: look again at the shape (parts first, then the whole shape). -->
+<link rel="stylesheet" href="frame.css">
+<style>
+.stage{ grid-template-columns:1fr 1fr; align-items:center; }
+.col{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; height:100%; }
+#plate.qcard{ width:min(40vw,56vh,400px); border-radius:50%; background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%); }
+#plate.qcard svg.q{ width:24%; height:24%; }
+.says{ position:relative; display:flex; align-items:center; gap:12px; background:#fff; border-radius:30px; border:5px solid #fff; padding:10px 18px 10px 12px; box-shadow:0 8px 0 rgba(40,70,140,.14), 0 14px 22px rgba(40,70,140,.18); }
+.says::after{ content:''; position:absolute; left:-18px; top:44%; border:12px solid transparent; border-right:18px solid #fff; }
+.says .spk{ width:54px; height:54px; border-radius:50%; background:radial-gradient(circle at 50% 30%,#8BE0FF,#2FB5E8); display:flex; align-items:center; justify-content:center; }
+.says .spk svg{ width:30px; height:30px; }
+.says .fhand{ width:clamp(100px,26vh,200px); aspect-ratio:170/230; }
+.thumbs button{ width:clamp(104px,17vh,140px) !important; }
+.fixrow{ display:flex; align-items:center; gap:14px; }
+.fixrow[hidden], .thumbs[hidden]{ display:none; }
+.bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:30px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14); padding:6px; }
+.bighand .fhand{ width:min(22vw,36vh,240px); aspect-ratio:170/230; }
+.hero .qcard{ position:absolute; width:56%; left:22%; border-radius:50%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .stage{ grid-template-columns:1fr; grid-template-rows:1fr 1.1fr; }
+  #plate.qcard{ width:min(70vw,32vh); }
+  .bighand .fhand{ width:min(40vw,24vh); }
+}
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="col"><div class="qcard" id="plate"></div></div>
+  <div class="col">
+    <div class="says" id="says"><div class="spk"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#fff"/><path d="M32 17c3 2 5 4.5 5 7s-2 5-5 7" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg></div><div id="claim"></div></div>
+    <div class="thumbs" id="thumbs">
+      <button class="btn3d b-green" id="up" aria-label="Right"><svg viewBox="0 0 64 64"><path d="M14 30h9v24h-9z" fill="#fff"/><path d="M27 30l9-17c2-4 9-3 8 3l-2 10h11c4 0 6 3 5 7l-4 17c-1 3-3 4-6 4H27z" fill="#fff"/></svg></button>
+      <button class="btn3d b-sun" id="down" aria-label="A mistake"><svg viewBox="0 0 64 64" style="transform:rotate(180deg)"><path d="M14 30h9v24h-9z" fill="#2B2350"/><path d="M27 30l9-17c2-4 9-3 8 3l-2 10h11c4 0 6 3 5 7l-4 17c-1 3-3 4-6 4H27z" fill="#2B2350"/></svg></button>
+    </div>
+    <div class="fixrow" id="fixrow" hidden><div class="bighand" id="bighand"></div>
+      <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+  </div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var FRUIT = [['apple', 'apples'], ['orange', 'oranges'], ['pear', 'pears']];
+  var H, C, R, done;
+  function setPlate(n, kind) { var c = FR.card(n, kind); c.id = 'plate'; $('plate').replaceWith(c); return c; }
+  function setClaim(k) { if (C) C.el.remove(); C = FR.fingers(k, false); $('claim').appendChild(C.el); }
+  function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
+  function hooks() {
+    if (R.stage === 'judge') { var ok = R.claim === R.n; GAME.right = function () { return [{ tap: ok ? '#up' : '#down' }]; }; GAME.wrong = function () { return [{ tap: ok ? '#down' : '#up' }]; }; }
+    else { GAME.right = function () { return FR.fingerMoves(H, R.n).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+      GAME.wrong = function () { var w = R.n === R.claim ? R.n + 1 : R.claim; return FR.fingerMoves(H, w).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); }; }
+  }
+  function finish(first) { var d = done; done = null; d(first); }
+
+  async function judge(sayRight) {
+    NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'judge') return; GAME.phase = 'busy'; FR.lock(true);
+    var isRight = R.claim === R.n, who = R.who;
+    if (sayRight === isRight) {
+      if (isRight) { await FR.yes($('says'), 'Yes! ' + who + ' is right. ' + FR.Word(R.n) + '!'); finish(R.misses === 0); return; }
+      NK.sound.yes(); await FR.say('Yes! ' + who + ' made a mistake.');
+      R.stage = 'fix'; $('thumbs').hidden = true; $('fixrow').hidden = false; H.set(0); H.lock(false);
+      GAME.phase = 'answer'; FR.lock(false); ready(); hooks(); await FR.say('Show the right number.', { repeat: 'Show the right number on the hand.' }); return;
+    }
+    FR.oops($('says')); R.misses++;
+    await FR.say("Let's look again."); await FR.showShape($('plate'), R.misses > 1);
+    await FR.say(R.misses > 1 ? (isRight ? who + ' is right.' : who + ' said ' + FR.word(R.claim) + '. Not right.') : 'Is ' + who + ' right?');
+    if (R.misses > 1 && isRight) { finish(false); return; }
+    GAME.phase = 'answer'; FR.lock(false); hooks();
+  }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'fix') return;
+    var have = H.count(); if (!have && R.n) { FR.say('Raise some fingers first.'); return; }
+    GAME.phase = 'busy'; FR.lock(true); H.lock(true);
+    if (have === R.n) { await FR.yes($('fixrow'), 'Yes! ' + FR.Word(R.n) + '. Thank you for helping ' + R.who + '!'); finish(R.misses === 0); return; }
+    FR.oops($('fixrow')); R.misses++; await FR.showShape($('plate'), R.misses > 1);
+    if (R.misses > 1) { var d = R.n - have; await FR.say(d > 0 ? 'Put ' + FR.word(d) + ' more up.' : 'Put ' + FR.word(-d) + ' down.'); }
+    else await FR.say('Fix your fingers.');
+    GAME.phase = 'answer'; FR.lock(false); H.lock(false); ready(); hooks();
+  }
+
+  FR.game({
+    id: 'mistake', title: 'Find the Mistake', rounds: 6,
+    hero: '<div class="qcard" style="top:6%;background:radial-gradient(ellipse at 50% 42%, #fff 0 60%, #C7D9EE 86%, #A9C1DE 100%)"><svg class="q" viewBox="0 0 100 100" style="left:30%;top:32%"><use href="#nkApple"/></svg><svg class="q" viewBox="0 0 100 100" style="left:70%;top:32%"><use href="#nkApple"/></svg><svg class="q" viewBox="0 0 100 100" style="left:50%;top:70%"><use href="#nkApple"/></svg></div>',
+    init: function (F) {
+      H = F.fingers(0, true); $('bighand').appendChild(H.el); H.onChange = ready;
+      $('up').addEventListener('click', function () { judge(true); }); $('down').addEventListener('click', function () { judge(false); });
+      $('check').addEventListener('click', check);
+    },
+    demo: async function (F) {
+      R = { n: 2, claim: 3, who: 'Mendy', misses: 0, stage: 'demo' };
+      setPlate(2, 'apple'); setClaim(3); $('thumbs').hidden = false; $('fixrow').hidden = true;
+      await F.say('Mendy says: three apples!');
+      await F.say('Is Mendy right? Watch me check.');
+      await F.showShape($('plate'), true);
+      await F.say('Two, not three. A mistake!');
+      await F.handTo($('down')); await F.handTap(); NK.sound.yes();
+      await F.say('Thumbs down means a mistake.');
+    },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var pool = i < 2 ? [1, 2, 3] : [2, 3, 4, 5], n = F.pick(pool), right = [true, false, false, true, false, true][i];
+        var claim = right ? n : (n === 1 ? 2 : (Math.random() < .5 ? n - 1 : Math.min(5, n + 1)));
+        if (claim === n && !right) claim = n - 1;
+        var fr = FRUIT[i % 3], who = F.NAMES[(i * 3 + 1) % F.NAMES.length];
+        R = { n: n, claim: claim, who: who, misses: 0, stage: 'judge' };
+        setPlate(n, fr[0]); setClaim(claim); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
+        done = res; GAME.phase = 'busy'; F.lock(true);
+        await F.say(who + ' says: ' + F.word(claim) + ' ' + (claim === 1 ? fr[0] : fr[1]) + '!', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
+        GAME.phase = 'answer'; F.lock(false); hooks();
+        await F.say('Is ' + who + ' right?', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

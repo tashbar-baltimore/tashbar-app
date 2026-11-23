@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn it: How many? — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 1 OPENER: a short, warm lesson that shows and tells what we learn this unit:
+     seeing small amounts at a glance ("I did not count. I saw it!"), with fruit, dice dots, fingers and Shabbos candles,
+     a stand-up "show me four fingers", and the unit chant. He taps the big arrow to go on. -->
+<link rel="stylesheet" href="frame.css">
+<style>
+.stage{ grid-template-rows:1fr auto; justify-items:center; align-items:center; }
+#flash.qcard{ width:min(52vw,58vh,460px); }
+#go{ width:clamp(100px,15vh,130px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; visibility:hidden; animation:pulse 1.2s infinite; }
+#go.on{ visibility:visible; } #go svg{ width:52%; height:52%; position:relative; }
+.hero{ display:flex; align-items:center; justify-content:center; }
+.hero svg{ width:56%; height:auto; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ #flash.qcard{ width:min(80vw,46vh); } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div>
+  <button id="go" class="btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, card, done;
+  var SLIDES = [
+    { n: 2, k: 'apple', L: 1, peek: true, lines: ['Hi! This unit we learn to see how many.', 'Look fast!'], after: ['Two! I did not count. I saw it!'] },
+    { n: 3, k: 'dots', L: 1, lines: ['Three dots. One on top, two below.', 'You see it fast!'] },
+    { n: 4, k: 'fingers', lines: ['Four fingers. Two and two.', 'Stand up! Hold up four fingers!'] },
+    { n: 5, k: 'dots', L: 0, lines: ['Five! Four corners and one in the middle.'] },
+    { n: 3, k: 'candle', L: 1, lines: ['Shabbos candles. One on top, two below. Three!'] },
+    { n: 4, k: 'orange', L: 0, peek: true, lines: ['Your turn. Peek!'], after: ['Four! Seeing fast is like magic.', "Let's peek and see!"] }
+  ];
+  function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
+  FR.game({
+    id: 'u1-opener', title: 'How many?', rounds: SLIDES.length, stars: function () { return 3; },
+    hero: '<svg viewBox="0 0 100 80"><path d="M50 16 C 38 8, 16 8, 6 12 V 70 C 16 66, 38 66, 50 74 Z" fill="#FFF8E8" stroke="#3B2A7A" stroke-width="4" stroke-linejoin="round"/><path d="M50 16 C 62 8, 84 8, 94 12 V 70 C 84 66, 62 66, 50 74 Z" fill="#fff" stroke="#3B2A7A" stroke-width="4" stroke-linejoin="round"/><circle cx="26" cy="34" r="6" fill="#E5322D"/><circle cx="34" cy="48" r="6" fill="#E5322D"/><circle cx="66" cy="32" r="6" fill="#22B45E"/><circle cx="78" cy="32" r="6" fill="#22B45E"/><circle cx="72" cy="46" r="6" fill="#22B45E"/></svg>',
+    endSay: function () { return 'Great! Now let\'s play Peek!'; },
+    init: function () { $('go').addEventListener('click', function () { if (GAME.phase !== 'answer') return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; var d = done; done = null; d(true); }); },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var s = SLIDES[i]; GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on');
+        cloth(false); await F.wait(380); if (card) card.remove();
+        card = F.card(s.n, s.k, s.L != null ? F.LAYOUTS[s.n][s.L] : null); card.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; $('flash').insertBefore(card, $('flash').firstChild);
+        if (!s.peek) cloth(true);
+        for (var k = 0; k < s.lines.length; k++) await F.say(s.lines[k]);
+        if (s.peek) { cloth(true); await F.wait(1300); cloth(false); await F.wait(500); cloth(true); }
+        if (s.peek && card.L && card.L.p.length > 1) await F.showShape(card, false);
+        for (k = 0; s.after && k < s.after.length; k++) await F.say(s.after[k]);
+        done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false); $('go').classList.add('on');
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

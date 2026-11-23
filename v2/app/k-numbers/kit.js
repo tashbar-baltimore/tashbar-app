@@ -108,6 +108,14 @@
     /* pointing hand for the demo */
     '<symbol id="nkHand" viewBox="0 0 100 100"><path d="M38 8 c6 0 9 4 9 10 v30 l4-2 c5-2 9 0 10 4 l1 2 c5-2 9 0 10 4 l1 2 c5-1 9 2 9 7 v18 c0 12-10 22-24 22 h-8 c-9 0-15-4-20-11 L16 72 c-3-5-1-10 4-11 c4-1 8 2 10 5 l0 0 V18 c0-6 3-10 8-10z" fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="3.5" stroke-linejoin="round"/>' +
     '<rect x="34" y="13" width="4.5" height="22" rx="2.2" fill="#fff" opacity=".65"/></symbol>' +
+    /* Shabbos candle in a silver candlestick */
+    '<linearGradient id="nkSilver" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8C99AE"/><stop offset=".35" stop-color="#F4F7FC"/><stop offset=".6" stop-color="#C3CCDA"/><stop offset="1" stop-color="#7D8AA0"/></linearGradient>' +
+    '<radialGradient id="nkFlame" cx="50%" cy="70%" r="60%"><stop offset="0" stop-color="#FFFBE0"/><stop offset=".45" stop-color="#FFD23D"/><stop offset="1" stop-color="#FF7A1A"/></radialGradient>' +
+    '<symbol id="nkCandle" viewBox="0 0 100 100"><ellipse cx="50" cy="96" rx="24" ry="4" fill="url(#nkShadow)"/>' +
+    '<circle cx="50" cy="14" r="13" fill="#FFE680" opacity=".35"/><path d="M50 3 C 58 13, 57 22, 50 26 C 43 22, 42 13, 50 3 Z" fill="url(#nkFlame)" stroke="#E0700A" stroke-width="1.5"/>' +
+    '<rect x="49" y="24" width="2" height="5" fill="#333"/><rect x="41" y="28" width="18" height="40" rx="4" fill="#FFFDF5" stroke="#C9BFA8" stroke-width="2"/><rect x="44" y="31" width="4" height="30" rx="2" fill="#fff"/>' +
+    '<path d="M33 68 H67 L62 74 H38 Z" fill="url(#nkSilver)" stroke="#5F6B80" stroke-width="2" stroke-linejoin="round"/><rect x="45" y="74" width="10" height="12" fill="url(#nkSilver)" stroke="#5F6B80" stroke-width="2"/>' +
+    '<path d="M30 94 C 30 86, 70 86, 70 94 Z" fill="url(#nkSilver)" stroke="#5F6B80" stroke-width="2" stroke-linejoin="round"/></symbol>' +
     /* star */
     '<symbol id="nkStar" viewBox="0 0 100 100"><path d="M50 5 l13.5 28.5 31 3.5 -23 21 6.5 31 -28-16 -28 16 6.5-31 -23-21 31-3.5z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="5" stroke-linejoin="round"/>' +
     '<path d="M50 20 l9 19 20 2.3 -15 13.7" fill="none" stroke="#FFF8C8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><circle cx="36" cy="40" r="5" fill="#fff" opacity=".9"/></symbol>' +
@@ -115,7 +123,7 @@
   NK.apple = function (cls, green) { return '<svg class="' + (cls || '') + '" viewBox="0 0 100 100"' + (green ? ' style="--apple:url(#nkGreen);--appleEdge:#2C5E0E"' : '') + '><use href="#nkApple"/></svg>'; };
 
   /* ---------- stars and saving ---------- */
-  NK.starsFor = function (firstTry, total) { var r = firstTry / total; return r >= 0.95 ? 3 : r >= 0.85 ? 2 : 1;   /* 2 stars = 7 of 8, the plan's mastery line */ };
+  NK.starsFor = function (firstTry, total) { return firstTry >= total ? 3 : (firstTry >= total - 1 || firstTry / total >= 0.85) ? 2 : 1; };   /* all right = 3; one slip = 2 (7 of 8, the plan's mastery line) */
   var KEY = 'tl2.kNumbers';
   NK.load = function () { try { return JSON.parse(localStorage.getItem(KEY)) || { games: {} }; } catch (e) { return { games: {} }; } };
   NK.save = function (game, stars) {

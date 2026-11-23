@@ -363,7 +363,7 @@ svg{ display:block; }
   /* ---------- talking ---------- */
   function say(t, o) { $('again').classList.add('talk'); return NK.say(t, o).then(function () { $('again').classList.remove('talk'); }); }
   $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.add('talk'); NK.again(); setTimeout(function () { $('again').classList.remove('talk'); }, 1800); });
-  $('home').addEventListener('click', function () { NK.hush(); location.reload(); });   /* back to this game's start until the path of games is in 2.0 */
+  $('home').addEventListener('click', function () { NK.hush(); location.href = './'; });   /* back to the Numbers map */
   function ask() { return 'How many ' + S.fruit.many + '? Put them in the basket.'; }
 
   /* ---------- the chant: "Peek, peek, peek and see!" with claps ---------- */
@@ -506,7 +506,7 @@ svg{ display:block; }
       var w = document.createElement('div'); w.className = 'burst'; w.appendChild(c); document.body.appendChild(w); setTimeout(function (x) { x.remove(); }.bind(null, w), 1700); }
   }
   $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; var slow = S.stars < 2, adj = S.flashAdj; reset(); if (slow) { S.easy = 8; S.flashAdj = Math.max(250, adj); } S.round = 0; drawDots(); round(); });
-  $('next').addEventListener('click', function () { NK.hush(); location.reload(); });   /* the next game opens here when it is built */
+  $('next').addEventListener('click', function () { NK.hush(); location.href = './'; });   /* on to the Numbers map: the next stop shines */
   function reset() { S.firstTry = 0; S.bonusRight = 0; S.results = []; S.flashAdj = 0; S.missStreak = S.hitStreak = S.easy = 0; S.easyJust = false; S.bonus = false; S.prev = 0; }
 
   /* ---------- start ---------- */

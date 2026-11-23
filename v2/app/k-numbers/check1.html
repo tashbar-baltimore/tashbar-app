@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Show Me! — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 1 MASTERY CHECK "Show me!": 8 quick peeks of 1-5 in mixed kinds and shapes (dots, fruit,
+     Shabbos candles, fingers); he shows each on the big hand. No hints during the check; after a miss we look at the shape
+     together and go on. 7 of 8 = Unit 1 is done (the plan's mastery line). -->
+<link rel="stylesheet" href="frame.css">
+<style>
+.stage{ grid-template-columns:1fr 1.1fr; align-items:center; }
+.left, .right{ display:flex; align-items:center; justify-content:center; gap:14px; height:100%; }
+.right{ flex-direction:column; }
+#flash.qcard{ width:min(40vw,60vh,420px); }
+.bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:36px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); padding:8px; }
+.bighand .fhand{ width:min(30vw,50vh,340px); aspect-ratio:170/230; }
+.hero{ display:flex; align-items:center; justify-content:center; }
+.hero svg{ width:60%; height:auto; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.8fr 1.2fr; } #flash.qcard{ width:min(62vw,30vh); } .right{ flex-direction:row; } .bighand .fhand{ width:min(52vw,38vh); } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left"><div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div></div>
+  <div class="right"><div class="bighand" id="bighand"></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var KINDS = ['dots', 'apple', 'fingers', 'candle', 'orange', 'dots', 'pear', 'fingers'], H, R, done, card, plan;
+  function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
+  function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
+  function hooks() {
+    GAME.right = function () { return FR.fingerMoves(H, R.n).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+    GAME.wrong = function () { var w = R.n < 5 ? R.n + 1 : R.n - 1; return FR.fingerMoves(H, w).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+  }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer') return; var have = H.count(); if (!have) { FR.say('Raise some fingers first.'); return; }
+    GAME.phase = 'busy'; FR.lock(true); H.lock(true); cloth(true);
+    var d = done; done = null;
+    if (have === R.n) { await FR.yes($('bighand'), FR.pick(['Yes!', 'Right!', 'Good eyes!'])); d(true); return; }
+    FR.oops($('bighand')); await FR.say("Let's look."); if (card.L) await FR.showShape(card, true); else await FR.say(FR.Word(R.n) + ' fingers.');
+    d(false);
+  }
+  FR.game({
+    id: 'u1-check', title: 'Show Me!', rounds: 8,
+    hero: '<svg viewBox="0 0 100 100"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><circle cx="42" cy="26" r="4" fill="#fff" opacity=".9"/></svg>',
+    init: function (F) { H = F.fingers(0, true); $('bighand').appendChild(H.el); H.onChange = ready; H.lock(true); $('check').addEventListener('click', check); },
+    reset: function (F) { plan = F.shuffle([1, 2, 3, 4, 5, 2, 3, 4]); },
+    demo: async function (F) { await F.say("Let's show what you learned!"); await F.say('Peek, then show me on the hand.'); },
+    endSay: function (s) { return s >= 2 ? 'Unit one is done! You see how many fast!' : 'Good try! Let\'s practice and try again.'; },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var n = plan[i]; R = { n: n }; H.set(0); H.lock(true); GAME.phase = 'flash'; F.lock(true); ready();
+        cloth(false); await F.wait(380);
+        if (card) card.remove(); card = F.card(n, KINDS[i]); card.classList.add('fh'); card.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none';
+        $('flash').insertBefore(card, $('flash').firstChild);
+        await F.say('Peek!', { repeat: 'How many? Show me on the hand.' });
+        cloth(true); await F.wait(n <= 3 ? 1100 : 1300); cloth(false); await F.wait(380);
+        done = res; GAME.phase = 'answer'; F.lock(false); H.lock(false); ready(); hooks();
+        if (i === 0) await F.say('How many? Show me on the hand.');
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
