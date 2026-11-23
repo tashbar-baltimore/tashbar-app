@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Copy and sing</title>
+<!-- Kindergarten Shapes, Unit 4 "Patterns, part 1" (v2/curriculum/k-shapes/MAP.md): copy a bead pattern onto an empty string, and continue drum-and-bell sound patterns.
+     Research: children learn patterns best by finding the part that repeats (the core), then copying and continuing it (Rittle-Johnson and colleagues).
+     Built on the shared 3D kit (kit.js), pattern mode. ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+const BEADS = {
+  red: { color: '#E03A33', word: 'red', note: 523 }, blue: { color: '#1F6FEB', word: 'blue', note: 659 },
+  yellow: { color: '#F2A900', word: 'yellow', note: 784 }, green: { color: '#12A766', word: 'green', note: 587 },
+  triB: { color: '#7C4DFF', word: 'triangle', note: 698, kind: 'tri' }, sqB: { color: '#FF7A1A', word: 'square', note: 523, kind: 'square' },
+  ciB: { color: '#00A3B8', word: 'circle', note: 880, kind: 'circle' },
+  drum: { color: '#C0392B', word: 'drum', note: 196, kind: 'drum' }, bell: { color: '#F5C542', word: 'bell', note: 1046 }
+};
+startGame({
+  id: 'copy', mode: 'pattern', boxes: [], beads: BEADS,
+  patternLesson: { seq: ['red', 'blue', 'red', 'blue', 'red', 'blue'], first: 'Look at these beads.', say: 'Red, blue, red, blue, red, blue.',
+    coreLine: 'Red, blue. That part repeats!', chant: [['Red, blue!', 2], ['Red, blue!', 2], ['A pattern!', 3]] },
+  intro: ['Mendy is making bead strings.', 'They have patterns!', "Let's learn about patterns!"],
+  rounds: [
+    { seq: ['red', 'green', 'red', 'green', 'red', 'green'], blanks: 1, tray: ['red', 'green', 'blue'], watchDone: 'Green comes next!' },
+    { seq: ['blue', 'yellow', 'blue', 'yellow'], copy: true, tray: ['yellow', 'blue', 'red'], say: 'Copy my beads. Make the same pattern.', done: 'The same pattern! You copied it!' },
+    { seq: ['triB', 'triB', 'ciB', 'triB', 'triB', 'ciB'], copy: true, tray: ['ciB', 'triB', 'sqB'], core: 3, say: 'Copy these shapes.', done: 'The same pattern! You copied it!' },
+    { seq: ['drum', 'bell', 'drum', 'bell', 'drum', 'bell'], blanks: 2, tray: ['bell', 'drum'], say: 'Listen to the drum and the bell.', sayAll: 'Drum, bell, drum, bell, drum, bell!' },
+    { seq: ['drum', 'drum', 'bell', 'drum', 'drum', 'bell', 'drum', 'drum'], blanks: 2, tray: ['drum', 'bell'], core: 3, say: 'Two drums, then a bell. Listen.' }
+  ],
+  bonusRounds: [{ seq: ['red', 'blue', 'yellow', 'red', 'blue', 'yellow'], copy: true, tray: ['yellow', 'red', 'green', 'blue'], core: 3, say: 'Copy three colors!', done: 'The same pattern! You copied it!' }],
+  watchLine: 'Watch me. I sing the beads.', watchDone: 'That comes next!', yourTurn: 'Now you. Copy and sing!',
+  hint2: 'This bead comes next.', remember: 'Find the part that repeats.',
+  mistake: { friend: { name: 'Mordechai', shirt: '#8E5A2B', hair: '#3A2A1E' }, icon: 'beads',
+    pattern: { seq: ['red', 'blue', 'red', 'blue', 'red', 'red'], bad: 5, fix: 'blue' },
+    claim: ['Mordechai made a pattern.', 'Red, blue, red, blue, red, red.'], ask: 'Is it a good pattern?', answer: false,
+    explain: ['Listen: red, blue, red, blue, red, red.', 'The last one should be blue.'], right: ['Right! The last bead is wrong.', 'After red comes blue.'] },
+  endLine: 'You copied every pattern!', praise: 'Copy it, sing it, finish it. Pattern expert!'
+});
+</script>
+</body>
+</html>

@@ -52,6 +52,7 @@ function shapeOf(k) {
 const DOTS = { 0: [], 1: [[0, 0]], 2: [[-0.4, 0], [0.4, 0]], 3: [[-0.45, -0.3], [0.45, -0.3], [0, 0.42]], 4: [[-0.4, -0.4], [0.4, -0.4], [0.4, 0.4], [-0.4, 0.4]],
   5: [[-0.45, -0.4], [0.45, -0.4], [0.45, 0.4], [-0.45, 0.4], [0, 0]], 6: [[-0.45, -0.45], [0, -0.45], [0.45, -0.45], [-0.45, 0.45], [0, 0.45], [0.45, 0.45]] };
 export function iconSVG(k, fill, cross) {
+  if (k === 'beads') return '<svg viewBox="0 0 64 64"><path d="M6 32 H58" stroke="' + fill + '" stroke-width="3"/>' + [12, 25, 39, 52].map((x, i) => '<circle cx="' + x + '" cy="32" r="' + (i % 2 ? 6 : 8) + '" fill="' + fill + '"/>').join('') + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
   if (/^dots\d$/.test(k)) {   /* a number of dots ("how many corners"); none = an empty ring */
     const n = +k[4], d = n ? DOTS[n].map(p => '<circle cx="' + (32 + p[0] * 26).toFixed(1) + '" cy="' + (32 - p[1] * 26).toFixed(1) + '" r="7" fill="' + fill + '"/>').join('') : '<circle cx="32" cy="32" r="20" fill="none" stroke="' + fill + '" stroke-width="6"/>';
     return '<svg viewBox="0 0 64 64">' + d + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
@@ -84,7 +85,7 @@ export function startGame(cfg) {
 <button class="btn" id="clapBtn" aria-label="Clap"><svg viewBox="0 0 64 64"><g fill="#F2C9A0" stroke="#B5742A" stroke-width="2.5" stroke-linejoin="round"><path d="M18 52 C10 44 8 34 12 24 L20 12 C22 9 26 10 25 14 L22 22 L30 8 C32 5 36 7 34 11 L28 24 L36 10 C38 7 42 9 40 13 L33 27 L39 18 C41 15 45 17 43 21 L36 36 C34 44 28 52 18 52Z"/></g><path d="M46 8 l4 -4 M52 14 l6 -2 M50 22 l6 2" stroke="#F5B400" stroke-width="3.5" stroke-linecap="round"/></svg></button>
 <div id="nogl">This computer cannot show the 3D game.</div>`);
   const $ = s => document.querySelector(s);
-  const W = window.__shp = { hasBonus: !!(cfg.bonus || cfg.bonusRounds), hasChant: !!(cfg.fixLesson || cfg.lessons.some(l => l.chant)), nb: cfg.boxes.length, game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
+  const W = window.__shp = { hasBonus: !!(cfg.bonus || cfg.bonusRounds), hasChant: !!(cfg.fixLesson || cfg.patternLesson || (cfg.lessons || []).some(l => l.chant)), nb: cfg.boxes.length, game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
   const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
   const NB = cfg.boxes.length;
   const boxOf = k => cfg.boxes.findIndex(b => b.accept.includes(k));   /* the box a piece belongs in, or -1 */
@@ -229,7 +230,7 @@ export function startGame(cfg) {
     const b = boxAt(0); return tall ? new THREE.Vector3(b.x + 2.1, 0, b.z + 0.35) : new THREE.Vector3(b.x + 3.0, 0, b.z + 2.0);
   }
   function placeMendy(mode) {
-    if (mode === 'close') { mendy.visible = !friend.visible; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
+    if (mode === 'close') { mendy.visible = !friend.visible && cfg.mode !== 'pattern'; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
     else { mendy.visible = !(NB > 1 && tall); mendy.position.copy(mendyAt()); mendy.rotation.set(tall ? -0.6 : 0, NB > 1 && !tall ? 0.5 : -0.35, 0); }
   }
   function inBoxSpot(bi, n) { const b = boxAt(bi), sp = NB === 1 ? 0.75 : 0.55; return new THREE.Vector3(b.x - sp + (n % 3) * sp, 0.3 + Math.floor(n / 3) * 0.15, b.z + (n % 2 ? 0.18 : -0.18)); }
@@ -290,10 +291,10 @@ export function startGame(cfg) {
   }
   const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.25), hitP = new THREE.Vector3();
   function onPlane(cx, cy) { ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.ray.intersectPlane(dragPlane, hitP) ? hitP.clone() : null; }
-  function overBox(p) { if (cfg.mode === 'fix') { const g = OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : null; return g && Math.hypot(p.x - g.x, p.z - g.z) < 1.5 ? 0 : -1; } for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
+  function overBox(p) { if (cfg.mode === 'pattern') { if (!PS || PS.next >= PS.n) return -1; const g = slotAt(PS.next, PS.n, PS.z); return Math.hypot(p.x - g.x, p.z - g.z) < 1.3 ? 0 : -1; } if (cfg.mode === 'fix') { const g = OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : null; return g && Math.hypot(p.x - g.x, p.z - g.z) < 1.5 ? 0 : -1; } for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
   /* for the automatic test */
   W.shapePt = id => toScreen(shapes.find(s => s.id === id).g.position);
-  W.boxPt = i => cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
+  W.boxPt = i => cfg.mode === 'pattern' ? toScreen(slotAt(PS.next, PS.n, PS.z).setY(1.25)) : cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
   W.list = () => shapes.filter(o => o.g.visible && !o.inBox && o.slot != null).map(o => ({ id: o.id, k: o.k, box: o.box, busy: o.busy }));
 
   /* ---------- sound ---------- */
@@ -377,7 +378,7 @@ export function startGame(cfg) {
       remind();
     });
   }
-  W.cornerPts = () => { const o = shapes.find(s => s.marks.length && s.marks.some(m => m.material === cornerFaint)); return o ? o.marks.filter(m => m.material === cornerFaint).map(m => toScreen(m.getWorldPosition(new THREE.Vector3()))) : []; };
+  W.cornerPts = () => { if (W.cornerPtsP) return W.cornerPtsP(); const o = shapes.find(s => s.marks.length && s.marks.some(m => m.material === cornerFaint)); return o ? o.marks.filter(m => m.material === cornerFaint).map(m => toScreen(m.getWorldPosition(new THREE.Vector3()))) : []; };
   W.tapTarget = () => W.tapPt ? W.tapPt() : W.tapShape ? toScreen(W.tapShape.g.position) : null;
   const tracer = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 16), new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 1 }));
   tracer.visible = false;
@@ -447,7 +448,7 @@ export function startGame(cfg) {
     if (!down || (e && e.pointerId !== down.id)) return; const d = down; down = null;
     if (!d.moved) {   /* one box: a tap sends the piece there. Several boxes: a tap makes it hop (he must drag it to a box) */
       if (d.o.busy) return;
-      if ((NB === 1 || FIXED) && onDrop && allow) { idle(); const o = d.o; o.busy = true; moveTo(o, (FIXED ? gapWorld().setY(1.25) : boxAt(0).clone().setY(1.25)), 450, 0.8).then(() => { if (onDrop && allow) onDrop(o, 0); else goHome(o); }); }
+      if ((NB === 1 || FIXED || PATTERNED) && onDrop && allow) { idle(); const o = d.o; o.busy = true; moveTo(o, (PATTERNED ? slotAt(PS.next, PS.n, PS.z) : FIXED ? gapWorld().setY(1.25) : boxAt(0).clone().setY(1.25)), 450, 0.8).then(() => { if (onDrop && allow) onDrop(o, 0); else goHome(o); }); }
       else { pop(); const o = d.o; o.busy = true; tween(500, k => { o.g.position.y = o.home.y + Math.sin(Math.PI * k) * 0.6; }).then(() => { o.busy = false; }); }
       return;
     }
@@ -626,11 +627,150 @@ export function startGame(cfg) {
     });
   }
 
+
+  /* =========== "Patterns" mode (cfg.mode === 'pattern'): beads on a 3D string; he drags the bead that comes next =========== */
+  const PATTERNED = cfg.mode === 'pattern';
+  const BEADS = cfg.beads || {};
+  let PS = null;   /* the pattern being built: { g, slots, beads, next, R } */
+  function beadMesh(type) {
+    const B = BEADS[type], mat = new THREE.MeshPhysicalMaterial({ color: B.color, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 0.5 });
+    let geo;
+    if (B.kind === 'cube') geo = new RoundedBoxGeometry(0.5, 0.5, 0.5, 4, 0.1);
+    else if (B.kind === 'drum') { geo = new THREE.CylinderGeometry(0.28, 0.28, 0.42, 32); geo.rotateX(Math.PI / 2); }
+    else if (B.kind && KINDS[B.kind]) { geo = new THREE.ExtrudeGeometry(shapeOf(B.kind).s, { depth: 0.22, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 4, curveSegments: 32 }); geo.translate(0, 0, -0.11); geo.scale(0.42, 0.42, 1); }
+    else geo = new THREE.SphereGeometry(0.3, 32, 24);
+    const m = new THREE.Mesh(geo, mat); m.castShadow = true; return m;
+  }
+  function beadNote(type) { tone([BEADS[type].note || 523], BEADS[type].kind === 'drum' ? 'square' : 'triangle', 0, .28, .12); if (BEADS[type].kind === 'drum') clap(); }
+  function makeBead(id, type, at, slot) {
+    const mesh = beadMesh(type), turn = new THREE.Group(); turn.add(mesh); const g = new THREE.Group(); g.add(turn); scene.add(g); g.position.copy(at);
+    const o = { id, k: type, type, box: -1, g, turn, mesh, mat: mesh.material, marks: [], corners: [], scale: 1, home: at.clone(), phase: (shapes.length * 1.3) % 6.28, inBox: false, busy: false, slot };
+    mesh.userData.shape = o; shapes.push(o); return o;
+  }
+  const STR = () => tall ? { y: 1.55, z: -2.4, sp: 0.6, copyZ: -0.8 } : { y: 1.75, z: -1.9, sp: 0.95, copyZ: -0.2 };
+  function slotAt(i, n, z) { const S = STR(); return new THREE.Vector3((i - (n - 1) / 2) * S.sp, S.y, z == null ? S.z : z); }
+  function trayAt(i, n) { const z = tall ? 1.4 : 2.0, sp = tall ? 1.15 : 1.7; return new THREE.Vector3((i - (n - 1) / 2) * sp, 0.9, z); }
+  function stringAt(n, z) {
+    const S = STR(), len = (n - 1) * S.sp + 1.2, g = new THREE.Group();
+    const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, len, 12), new THREE.MeshStandardMaterial({ color: '#7A4A26', roughness: 0.8 })); cord.rotation.z = Math.PI / 2; g.add(cord);
+    [-1, 1].forEach(sd => { const knot = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), cord.material); knot.position.x = sd * len / 2; g.add(knot); });
+    g.position.set(0, S.y, z == null ? S.z : z); scene.add(g); return g;
+  }
+  const ghost = new THREE.Mesh(new THREE.TorusGeometry(0.34, 0.05, 12, 40), new THREE.MeshBasicMaterial({ color: '#F5B400' })); ghost.visible = false; scene.add(ghost);
+  function setPattern(R) {
+    if (PS) { PS.parts.forEach(p => scene.remove(p)); } shapes.splice(0).forEach(o => scene.remove(o.g));
+    const n = R.seq.length, parts = [], beads = [];
+    const z = R.copy ? STR().copyZ : null;
+    if (R.copy) { parts.push(stringAt(n, STR().z)); R.seq.forEach((t, i) => { const m = beadMesh(t); m.position.copy(slotAt(i, n)); scene.add(m); parts.push(m); }); }
+    parts.push(stringAt(n, z));
+    const blanks = R.copy ? n : R.blanks;
+    R.seq.forEach((t, i) => { if (i < n - blanks) { const m = beadMesh(t); m.position.copy(slotAt(i, n, z)); scene.add(m); parts.push(m); beads.push(m); } });
+    PS = { parts, beads, next: n - blanks, n, z, R };
+    const types = R.tray; types.forEach((t, i) => makeBead('b' + (++beadN), t, trayAt(i, types.length), i));
+    markNext();
+  }
+  let beadN = 0;
+  function markNext() {
+    if (!PS) return; const want = PS.R.seq[PS.next];
+    shapes.forEach(o => { if (!o.inBox) o.box = o.type === want ? 0 : -1; });
+    if (PS.next < PS.n) { ghost.visible = true; ghost.position.copy(slotAt(PS.next, PS.n, PS.z)); } else ghost.visible = false;
+  }
+  function placeBead(o) {   /* the right bead slides onto the string; a fresh one appears in the tray */
+    const at = slotAt(PS.next, PS.n, PS.z), type = o.type, slot = o.slot;
+    o.inBox = true; o.box = -1; PS.next++;
+    return moveTo(o, at, 380, 0.5).then(() => { o.g.rotation.set(0, 0, 0); PS.beads.push(o.mesh); beadNote(type); pop();
+      const fresh = makeBead('b' + (++beadN), type, trayAt(slot, PS.R.tray.length), slot); fresh.g.scale.setScalar(0.01); tween(300, k => fresh.g.scale.setScalar(Math.max(0.01, k)));
+      markNext(); });
+  }
+  function sing(upto, line) {   /* the beads bounce in order with a note each, while the voice says the pattern */
+    const list = PS.beads.slice(0, upto == null ? PS.beads.length : upto);
+    const bounce = list.reduce((p, m, i) => p.then(() => { const y0 = m.parent === scene ? m.position.y : 0, t = PS.R.seq[i]; beadNote(t);
+      return tween(260, k => { if (m.parent === scene) m.position.y = y0 + Math.sin(Math.PI * k) * 0.3; else m.parent.parent.position.y = slotAt(i, PS.n, PS.z).y + Math.sin(Math.PI * k) * 0.3; }); }), Promise.resolve());
+    return Promise.all([say(line || PS.R.seq.slice(0, list.length).map(t => BEADS[t].word).join(', ') + '.'), bounce]);
+  }
+  const wordsOf = (seq, k) => seq.slice(0, k).map(t => BEADS[t].word).join(', ');
+  function coreGlow(on) { const c = PS.R.core || 2; PS.beads.slice(0, c).forEach(m => { m.material.emissive = new THREE.Color(on ? '#FFC400' : '#000000'); m.material.emissiveIntensity = on ? 0.5 : 0; }); }
+  function patternRound(R, bonus, help) {
+    return new Promise(resolve => {
+      setName(bonus ? 'bonus' : 'find'); dots(2); setPattern(R); allow = true;
+      const ask = [R.copy ? 'Make the same pattern below.' : 'What comes next?']; task = ask;
+      idleFn = n => { const t = shapes.find(o => o.box === 0 && !o.inBox); if (!t) return; W.reminders = (W.reminders || 0) + 1;
+        play(n === 1 ? [() => sing(), ...ask, () => pointAt(t)] : [cfg.hint2, () => pointAt(t)]); };
+      idle();
+      onDrop = (o, bi) => {
+        idle();
+        if (bi < 0) { goHome(o); play(['Put it on the string.']); return; }
+        if (o.box === 0) {
+          chime(true); const last = PS.next + 1 >= PS.n;
+          if (last) { allow = false; onDrop = null; stopIdle(); }
+          placeBead(o).then(() => {
+            if (!last) { play([R.copy ? 'Yes! And next?' : 'Yes! And next?']); return; }
+            ghost.visible = false;
+            play([() => sing(null, R.sayAll), R.done || 'You made the pattern!', () => cheer(mendy), { wait: 200 }]).then(ok => resolve(ok));
+          });
+          return;
+        }
+        if (!bonus) W.misses++; chime(false); goHome(o);
+        const steps = ['Not that one.', () => sing(R.copy ? 0 : PS.next, R.copy ? 'Look at the beads above.' : null)];
+        if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false)); }
+        steps.push(...ask);
+        play(steps);
+      };
+      play([R.say, () => sing(R.copy ? 0 : undefined, R.copy ? null : undefined), ...ask].filter(Boolean));
+    });
+  }
+  async function patternLesson() {
+    const L = cfg.patternLesson; setPattern({ seq: L.seq, blanks: 0, tray: [] });
+    camTo('close', 10);
+    PS.parts.forEach(p => { if (p.isGroup || p.isMesh) { p.position.z += 2.6; p.position.y += 0.25; } });
+    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, () => sing(null, L.say), 'The same part repeats!',
+      () => coreGlow(true), L.coreLine, () => wait(500), () => coreGlow(false),
+      'Your turn! Tap each bead to sing.', () => { setName('tap'); task = ['Tap each bead.']; return tapBeads(); }, () => { setName('learn'); task = null; },
+      () => { chant(true); }, 'Clap the pattern with me!'];
+    L.chant.forEach(c => steps.push(c[0], () => claps({ marks: [], g: PS.parts[0] }, c[1])));
+    steps.push(() => { chant(false); return cheer(mendy); });
+    return play(steps);
+  }
+  function tapBeads() {   /* he taps the beads one by one; each sings its note and the voice says its name */
+    return new Promise(done => {
+      const left = PS.beads.slice(); let nag = null;
+      const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (cornerTap) { say('Tap each bead.'); remind(); } }, FAST ? 1e9 : 9000); };
+      W.cornerPtsP = () => left.map(m => toScreen(m.getWorldPosition(new THREE.Vector3())));
+      cornerTap = (cx, cy) => {
+        let best = -1, bd = 1e9; left.forEach((m, i) => { const p = toScreen(m.getWorldPosition(new THREE.Vector3())); const d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
+        if (best < 0 || bd > Math.max(56, innerWidth * 0.05)) return;
+        const m = left.splice(best, 1)[0], i = PS.beads.indexOf(m), t = PS.R.seq[i]; W.cornerTaps = (W.cornerTaps || 0) + 1; beadNote(t); hush(); say(cap(BEADS[t].word) + '!');
+        const y0 = m.position.y; tween(260, k => { m.position.y = y0 + Math.sin(Math.PI * k) * 0.3; }); remind();
+        if (!left.length) { cornerTap = null; W.cornerPtsP = null; clearTimeout(nag); setTimeout(done, FAST ? 0 : 900); }
+      };
+      remind();
+    });
+  }
+  async function patternGame() {
+    setName('watch'); dots(1); PS.parts.forEach(p => scene.remove(p)); PS = null;
+    await camTo('wide', 1200);
+    const R0 = cfg.rounds[0]; setPattern(R0);
+    const right = shapes.find(o => o.box === 0);
+    let ok = await play([cfg.watchLine, () => sing(), 'What comes next?', () => { handOn = right; hand.style.display = 'block'; return wait(500); },
+      () => moveTo(right, slotAt(PS.next, PS.n, PS.z), 1300), () => { hand.style.display = 'none'; handOn = null; return placeBead(right); },
+      ...(PS.next < PS.n ? [] : []), R0.watchDone || cfg.watchDone, cfg.yourTurn]);
+    if (!ok) return;
+    const help = { done: false };
+    for (let r = 1; r < cfg.rounds.length; r++) { ok = await patternRound(cfg.rounds[r], false, help); if (!ok) return; }
+    if (W.misses <= 1 && cfg.bonusRounds) {
+      W.bonus = true; ok = await play(['Bonus round! You are so good at this.', 'This one is tricky.']); if (!ok) return;
+      for (const R of cfg.bonusRounds) { ok = await patternRound(R, true, help); if (!ok) return; }
+    }
+    ghost.visible = false; if (PS) { PS.parts.forEach(p => scene.remove(p)); PS = null; } shapes.splice(0).forEach(o => scene.remove(o.g));
+    mistake();
+  }
+
   function setName(n) { W.name = n; }
   async function learn() {
     setName('learn'); dots(0); W.misses = 0; W.found = 0; allow = false; onDrop = null; task = null; W.bonus = false; chant(false); stopIdle();
     $('#end').classList.remove('show');
     buildSet(); resize(); camTo('close', 10);
+    if (PATTERNED) { const ok = await patternLesson(); if (ok) patternGame(); return; }
     if (FIXED) { if (OL) { scene.remove(OL.g); OL = null; } const ok = await fixLesson(); if (OL) { scene.remove(OL.g); OL = null; } if (ok) fixGame(); return; }
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }];
     const shows = [];
@@ -733,6 +873,10 @@ export function startGame(cfg) {
     const M = cfg.mistake, p = M.piece || ['outline', 0, 1];
     let d;
     if (M.outline) { OL = makeOutline(M.outline.k, M.outline.miss, M.outline.color, 1.5); d = { g: OL.g, marks: [] }; }   /* a shape with a gap */
+    else if (M.pattern) {   /* a friend's bead string with one wrong bead */
+      setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
+      PS.parts.forEach(q => { q.position.z += 2.6; q.position.y += 0.25; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
+    }
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
     d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01);
     friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
@@ -748,8 +892,11 @@ export function startGame(cfg) {
     right.onclick = () => {
       if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d);
       const prove = M.prove && d.marks.length ? ['Show ' + F.name + ' the corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; clearCorners(d); }] : [];
-      play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []), () => cheer(friend), M.after || (() => {}),
-        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
+      const fixBad = () => { const m = PS.beads[M.pattern.bad], want = BEADS[M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t)[M.pattern.bad]];
+        m.material.color.set(want.color); PS.R = { ...PS.R, seq: M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t) }; chime(true); return sing(); };
+      play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []),
+        ...(M.pattern ? [M.fixLine || 'Let us fix it.', fixBad] : []), () => cheer(friend), M.after || (() => {}),
+        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
     };
     play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }]);
     setTimeout(() => { if (!answered) j.classList.add('show'); }, FAST ? 0 : 14000);

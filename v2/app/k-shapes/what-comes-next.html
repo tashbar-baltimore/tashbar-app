@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>What comes next?</title>
+<!-- Kindergarten Shapes, Unit 4 "Patterns, part 1" (v2/curriculum/k-shapes/MAP.md): continue AB and ABB patterns of colors, shapes and sounds; find the part that repeats.
+     Research: children learn patterns best by finding the part that repeats (the core), then copying and continuing it (Rittle-Johnson and colleagues).
+     Built on the shared 3D kit (kit.js), pattern mode. ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+const BEADS = {
+  red: { color: '#E03A33', word: 'red', note: 523 }, blue: { color: '#1F6FEB', word: 'blue', note: 659 },
+  yellow: { color: '#F2A900', word: 'yellow', note: 784 }, green: { color: '#12A766', word: 'green', note: 587 },
+  triB: { color: '#7C4DFF', word: 'triangle', note: 698, kind: 'tri' }, sqB: { color: '#FF7A1A', word: 'square', note: 523, kind: 'square' },
+  ciB: { color: '#00A3B8', word: 'circle', note: 880, kind: 'circle' },
+  drum: { color: '#C0392B', word: 'drum', note: 196, kind: 'drum' }, bell: { color: '#F5C542', word: 'bell', note: 1046 }
+};
+startGame({
+  id: 'next', mode: 'pattern', boxes: [], beads: BEADS,
+  patternLesson: { seq: ['red', 'blue', 'red', 'blue', 'red', 'blue'], first: 'Look at these beads.', say: 'Red, blue, red, blue, red, blue.',
+    coreLine: 'Red, blue. That part repeats!', chant: [['Red, blue!', 2], ['Red, blue!', 2], ['A pattern!', 3]] },
+  intro: ['Mendy is making bead strings.', 'They have patterns!', "Let's learn about patterns!"],
+  rounds: [
+    { seq: ['red', 'blue', 'red', 'blue', 'red', 'blue'], blanks: 1, tray: ['red', 'blue', 'yellow'], watchDone: 'Blue comes next!' },
+    { seq: ['yellow', 'green', 'yellow', 'green', 'yellow', 'green'], blanks: 2, tray: ['green', 'yellow', 'red'], say: 'Look at the beads.' },
+    { seq: ['triB', 'sqB', 'triB', 'sqB', 'triB', 'sqB'], blanks: 2, tray: ['sqB', 'triB', 'ciB'], say: 'Now shapes make a pattern!' },
+    { seq: ['red', 'blue', 'blue', 'red', 'blue', 'blue', 'red', 'blue'], blanks: 2, tray: ['red', 'blue', 'green'], core: 3, say: 'This one is longer. Listen.' },
+    { seq: ['ciB', 'ciB', 'triB', 'ciB', 'ciB', 'triB', 'ciB', 'ciB'], blanks: 2, tray: ['triB', 'ciB', 'sqB'], core: 3, say: 'Circles and triangles. Listen.' }
+  ],
+  bonusRounds: [{ seq: ['red', 'yellow', 'blue', 'red', 'yellow', 'blue', 'red', 'yellow'], blanks: 2, tray: ['blue', 'red', 'yellow', 'green'], core: 3, say: 'Three colors! Listen.' }],
+  watchLine: 'Watch me. I sing the beads.', watchDone: 'That comes next!', yourTurn: 'Now you. What comes next?',
+  hint2: 'This bead comes next.', remember: 'Find the part that repeats.',
+  mistake: { friend: { name: 'Shmuel', shirt: '#2D6A4F', hair: '#3A2A1E' }, icon: 'beads',
+    pattern: { seq: ['red', 'blue', 'red', 'blue', 'red', 'red'], bad: 5, fix: 'blue' },
+    claim: ['Shmuel made a pattern.', 'Red, blue, red, blue, red, red.'], ask: 'Is it a good pattern?', answer: false,
+    explain: ['Listen: red, blue, red, blue, red, red.', 'The last one should be blue.'], right: ['Right! The last bead is wrong.', 'After red comes blue.'] },
+  endLine: 'You finished every pattern!', praise: 'You found the part that repeats. Pattern expert!'
+});
+</script>
+</body>
+</html>
