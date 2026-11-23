@@ -8,9 +8,12 @@
   css.textContent = [
     '.u2path{ position:relative; display:grid; grid-template-columns:repeat(var(--cols,10),1fr); gap:clamp(6px,1vw,14px); width:100%; max-width:1240px; align-items:center; padding:28px 4px 6px; }',
     '.u2stone{ position:relative; aspect-ratio:1; border-radius:42% 46% 44% 48%; background:radial-gradient(circle at 40% 30%,#FFFFFF,#E3ECF8 55%,#B9C9E0); border:4px solid #fff; box-shadow:0 7px 0 #8FA3C2, 0 12px 16px rgba(40,70,140,.25); display:flex; align-items:center; justify-content:center; transition:transform .2s, box-shadow .2s; touch-action:none; }',
-    '.u2stone .dd{ position:absolute; inset:20% 6%; display:grid; grid-template-rows:1fr 1fr; gap:8%; }',
-    '.u2stone .dd b{ display:flex; justify-content:center; align-items:center; gap:3%; }',
-    '.u2stone .dd i{ width:17%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 2px 0 rgba(90,0,10,.35); }',
+    '.u2stone .dd{ position:absolute; inset:24% 4%; display:grid; grid-template-rows:1fr 1fr; gap:6%; }',
+    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:1.5%; padding-left:1%; }',
+    '.u2stone .dd i{ width:18.5%; aspect-ratio:1; border-radius:50%; flex:none; }',
+    '.u2stone .dd i, .u2stone .dice i{ background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 2px 0 rgba(90,0,10,.35); }',
+    '.u2stone .dice{ position:absolute; inset:8%; } .u2stone .dice i{ position:absolute; width:25%; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); }',
+    '.u2stone.gap .dice{ display:none; }',
     '.u2stone.star .dd{ display:flex; align-items:center; justify-content:center; } .u2stone.star svg{ width:56%; height:56%; }',
     '.u2stone.lit{ background:radial-gradient(circle at 40% 30%,#FFFBE0,#FFE27A 60%,#F4B400); box-shadow:0 7px 0 #C98A00, 0 0 0 6px rgba(255,201,61,.5); }',
     '.u2stone.been{ background:radial-gradient(circle at 40% 30%,#F1FFF5,#BDEFCF 60%,#7DD3A0); box-shadow:0 7px 0 #4FA674, 0 12px 16px rgba(40,70,140,.2); }',
@@ -27,7 +30,7 @@
     '.u2drum svg{ width:100%; height:100%; transition:transform .08s; filter:drop-shadow(0 12px 10px rgba(80,20,10,.3)); } .u2drum.hit svg{ transform:scale(.94,.9) translateY(6px); }',
     '.u2drum::after{ content:""; position:absolute; inset:10%; border-radius:50%; border:8px solid var(--sun); opacity:0; pointer-events:none; } .u2drum.hit::after{ animation:ring .35s ease-out; }',
     '.u2car{ width:clamp(120px,22vh,200px); transition:transform 1.4s cubic-bezier(.5,0,.8,.4); } .u2car.go{ transform:translateX(120vw); }',
-    '@media (max-width:760px), (max-aspect-ratio:4/5){ .u2path{ --cols:5 !important; padding-top:34px; row-gap:44px; } }'
+    '@media (max-width:760px), (max-aspect-ratio:4/5){ .u2path{ --cols:5 !important; padding:40px 0 4px; column-gap:3px; row-gap:54px; } .u2stone{ border-width:3px; } .u2loose .u2stone{ width:clamp(80px,24vw,104px); } .u2drum{ width:clamp(170px,48vw,230px); } }'
   ].join('\n');
   document.head.appendChild(css);
 
@@ -38,9 +41,13 @@
   document.addEventListener('DOMContentLoaded', function () { var d = document.createElement('div'); d.innerHTML = DEFS; document.body.appendChild(d); });
   if (document.readyState !== 'loading') { var d0 = document.createElement('div'); d0.innerHTML = DEFS; document.body.appendChild(d0); }
 
-  /* dots for 1..10: up to 5 on top, the rest below */
-  U2.dots = function (n) { if (n === 0) return ''; if (n > 10 || n < 1) return '<svg viewBox="0 0 100 100"><use href="#nkStar"/></svg>'; var a = Math.min(5, n), b = n - a, h = '<span class="dd"><b>';
-    for (var i = 0; i < a; i++) h += '<i></i>'; h += '</b><b>'; for (i = 0; i < b; i++) h += '<i></i>'; return h + '</b></span>'; };
+  /* dots: 1-5 as big dice faces (seen at a glance, Unit 1's shapes); 6-10 as "five and some more": 5 on top, the rest below */
+  var DICE = { 1: [[50, 50]], 2: [[30, 30], [70, 70]], 3: [[26, 26], [50, 50], [74, 74]], 4: [[30, 30], [70, 30], [30, 70], [70, 70]], 5: [[26, 26], [74, 26], [50, 50], [26, 74], [74, 74]] };
+  U2.dots = function (n) {
+    if (n === 0) return ''; if (n > 10 || n < 1) return '<span class="dd"><svg viewBox="0 0 100 100"><use href="#nkStar"/></svg></span>';
+    if (n <= 5) return '<span class="dice">' + DICE[n].map(function (p) { return '<i style="left:' + p[0] + '%;top:' + p[1] + '%"></i>'; }).join('') + '</span>';
+    var h = '<span class="dd"><b>'; for (var i = 0; i < 5; i++) h += '<i></i>'; h += '</b><b>'; for (i = 0; i < n - 5; i++) h += '<i></i>'; return h + '</b></span>';
+  };
   U2.stone = function (n) { var s = document.createElement('div'); s.className = 'u2stone' + (n > 10 ? ' star' : ''); s.dataset.n = n; s.innerHTML = U2.dots(n); return s; };
 
   /* the path: numbers from..to (or to..from when reverse) */
