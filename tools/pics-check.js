@@ -6,7 +6,7 @@
    - a mark (box/label) on a pure question screen (its "how" line is empty): those get the plain picture;
    - a label with a word that is not in that screen's "how" line (labels only name what the screen already teaches).
    A 'LESSON.ID|*' key is checked against every screen of that lesson it would show on.
-   WARNS (does not fail) when a linked screen's own picture text is short words or numbers (under 40 characters, with a letter
+   WARNS (does not fail) when a linked screen's own picture text is short words or numbers (under 40 characters, with a Latin letter
    or digit, no Hebrew) and the link has no "keep": true: the picture would hide text the boy needs. Set "keep": true or un-link. */
 const fs = require('fs'), vm = require('vm'); const [,, html, allq, picsDir] = process.argv;
 const MAX_BYTES = 200 * 1024, MAX_W = 1200;
@@ -16,7 +16,7 @@ const norm = s => String(s).replace(/\\"/g, '"').replace(/\s+/g, ' ').trim();
 const words = s => (norm(s).toLowerCase().replace(/[’']/g, "'").match(/[\p{L}\p{N}'׳״"]+/gu) || []).map(w => w.replace(/^['"]+|['"]+$/g, '')).filter(Boolean);
 const screens = JSON.parse(fs.readFileSync(allq, 'utf8'));
 const PIC = new Map(); for (const x of screens) { const k = x.id + '|' + norm(x.q); if (x.pic && !PIC.has(k)) PIC.set(k, norm(x.pic)); }
-const hides = t => t && t.length < 40 && /[\p{L}\p{N}]/u.test(t) && !/[\u0590-\u05FF]/.test(t);
+const hides = t => t && t.length < 40 && /[A-Za-z0-9]/.test(t) && !/[\u0590-\u05FF]/.test(t);
 let warn = 0; const hid = (k, t) => { warn++; console.log('WARN HIDES THE SCREEN\'S OWN TEXT (add "keep": true):', k, ' <<' + t + '>>'); };
 const Q = new Map(); for (const x of screens) { const k = x.id + '|' + norm(x.q); const p = Q.get(k); Q.set(k, p == null ? norm(x.how) : (p || norm(x.how))); }
 const byLesson = new Map(); for (const x of screens) { if (!byLesson.has(x.id)) byLesson.set(x.id, []); byLesson.get(x.id).push(x); }
