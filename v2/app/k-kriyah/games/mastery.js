@@ -31,7 +31,7 @@ export default function setup(E, { struggled, unit }) {
   const slotPos = i => new THREE.Vector3((1 - i) * gap, 0, .6);   /* right to left */
   E.onLayout(p => {
     gap = p ? 1.5 : 2.3; keys.forEach(k => L[k].scale.setScalar(LS()));
-    basket.position.set(p ? 1.35 : 4.3, p ? 3.7 : 0, p ? -.5 : .4); basket.scale.setScalar(p ? .55 : 1);
+    basket.position.set(p ? .9 : 4.3, 0, p ? 3.3 : .4); basket.scale.setScalar(p ? .5 : 1);   /* on a phone it sits on the grass in front */
     if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
     else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.3, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
     place(false);
