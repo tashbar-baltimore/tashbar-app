@@ -24,9 +24,9 @@
 U2.gapGame({
   id: 'u2-next', title: 'What Comes Next?', rounds: 6,
   hero: '<div class="u2stone">' + U2.dots(2) + '</div><div class="u2stone">' + U2.dots(3) + '</div><div class="u2stone gap" style="animation:none"></div>',
-  plan: function (i, easy) {
-    if (easy || i < 2) { var s = i === 0 ? 1 : 2; return { from: 1, to: 5, startN: s, gapN: i === 0 ? 3 : 5 }; }
-    var P = [[1, 6], [4, 8], [3, 9], [6, 10]][i - 2]; return { from: 1, to: 10, startN: P[0], gapN: P[1], say: i === 3 ? 'Now we start at ' + U2.word(P[0]) + '.' : null };
+  plan: function (i) {
+    if (i < 2) return [{ from: 1, to: 5, startN: 1, gapN: 3 }, { from: 1, to: 5, startN: 2, gapN: 5 }][i];
+    var P = [[1, 6], [4, 8], [3, 9], [6, 10]][i - 2]; return { from: 1, to: 10, startN: P[0], gapN: P[1], say: i >= 3 ? 'Now we start at ' + U2.word(P[0]) + '.' : null };
   },
   bonus: { from: 11, to: 20, startN: 14, gapN: 18, say: 'Past ten! Big numbers!' },
   demo: async function (F, setup) {

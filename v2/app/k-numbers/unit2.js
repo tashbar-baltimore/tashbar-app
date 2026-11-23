@@ -8,9 +8,10 @@
   css.textContent = [
     '.u2path{ position:relative; display:grid; grid-template-columns:repeat(var(--cols,10),1fr); gap:clamp(6px,1vw,14px); width:100%; max-width:1240px; align-items:center; padding:28px 4px 6px; }',
     '.u2stone{ position:relative; aspect-ratio:1; border-radius:42% 46% 44% 48%; background:radial-gradient(circle at 40% 30%,#FFFFFF,#E3ECF8 55%,#B9C9E0); border:4px solid #fff; box-shadow:0 7px 0 #8FA3C2, 0 12px 16px rgba(40,70,140,.25); display:flex; align-items:center; justify-content:center; transition:transform .2s, box-shadow .2s; touch-action:none; }',
-    '.u2stone .dd{ position:absolute; inset:24% 4%; display:grid; grid-template-rows:1fr 1fr; gap:6%; }',
-    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:1.5%; padding-left:1%; }',
-    '.u2stone .dd i{ width:18.5%; aspect-ratio:1; border-radius:50%; flex:none; }',
+    '.u2stone .dd{ position:absolute; inset:22% 2%; display:grid; grid-template-rows:1fr 1fr; gap:6%; }',
+    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:.5%; }',
+    '.u2stone .dd i{ width:19.5%; aspect-ratio:1; border-radius:50%; flex:none; }',
+    '.u2stone svg.hear{ width:52%; height:52%; }',
     '.u2stone .dd i, .u2stone .dice i{ background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 2px 0 rgba(90,0,10,.35); }',
     '.u2stone .dice{ position:absolute; inset:8%; } .u2stone .dice i{ position:absolute; width:25%; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); }',
     '.u2stone.gap .dice{ display:none; }',
@@ -82,7 +83,7 @@
      A path with one empty stone. The voice counts along and stops at the gap: "What comes next?". Three loose stones wait below;
      tapping one says its number; he drags (or taps, then taps the gap) the right one into the gap. */
   U2.gapGame = function (o) {
-    var $ = function (id) { return document.getElementById(id); }, P, R, done, slowNext = 0;
+    var $ = function (id) { return document.getElementById(id); }, P, R, done;
     function looseFor(nums, g) {
       var want = nums[g], c = [want], lo = Math.min.apply(null, nums), hi = Math.max.apply(null, nums);
       var opts = [want + 1, want - 1, want + 2, want - 2].filter(function (k) { return k >= Math.max(lo, 1) && k <= hi && k !== want; });
@@ -106,7 +107,7 @@
         await FR.yes(P.stones[R.g], FR.pick(['Yes! You know what comes next!', 'Right! Good listening!', 'Yes! In order!']));
         var d = done; done = null; d(R.misses === 0); return;
       }
-      FR.oops(P.stones[R.g]); R.misses++; if (!o.check) slowNext = 2;
+      FR.oops(P.stones[R.g]); R.misses++;
       if (o.check || R.misses >= 2) {
         await FR.say('That says ' + U2.word(n) + '. Look: next comes ' + U2.word(R.want) + '.');
         if (o.check) { var w = document.querySelector('#loose .u2stone[data-n="' + R.want + '"]'); if (w) w.remove(); P.fill(R.g); P.place(R.g, true); await FR.say(U2.Word(R.want) + '.', { noRepeat: true }); var d2 = done; done = null; d2(false); return; }
@@ -124,16 +125,29 @@
         document.addEventListener('pointerdown', function (e) { var s = e.target.closest('#loose .u2stone'); if (s && GAME.phase === 'answer') { NK.hush(); NK.say(U2.Word(+s.dataset.n) + '!', { noRepeat: true }); } });
         if (o.init) o.init(F);
       },
-      reset: function () { slowNext = 0; },
       demo: o.demo ? async function (F) { await o.demo(F, function (pl) { return setup(pl); }); } : null,
       bonus: o.bonus ? function (F) { return round(F, 0, o.bonus); } : null,
-      round: function (F, i) { var pl = o.plan(i, slowNext > 0); if (slowNext > 0) slowNext--; return round(F, i, pl); }
+      /* a missed round adds a short, easier round (1-5) right after it; the main rounds stay the same */
+      round: async function (F, i) {
+        var r = await round(F, i, o.plan(i));
+        if (!r && !o.check) { await F.say("Let's try a short one."); await round(F, 99, easyPlan()); }
+        return r;
+      }
     });
+    var lastEasy = '';
+    function easyPlan() {
+      var rev = !!o.reverse, pl, key;
+      do { var s = rev ? 5 - Math.floor(Math.random() * 2) : 1 + Math.floor(Math.random() * 2), g = rev ? s - 2 - Math.floor(Math.random() * 2) : s + 2 + Math.floor(Math.random() * 2);
+        pl = { from: 1, to: 5, startN: s, gapN: g, reverse: rev }; key = s + '-' + g; } while (key === lastEasy);
+      lastEasy = key; return pl;
+    }
+    var HEAR = '<svg class="hear" viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#2FB5E8"/><path d="M32 17c3 2 5 4.5 5 7s-2 5-5 7M36 11c5 3.5 8 8 8 13s-3 9.5-8 13" stroke="#2FB5E8" stroke-width="4" fill="none" stroke-linecap="round"/></svg>';
     function setup(pl) {
-      P = U2.path($('path'), { from: pl.from, to: pl.to, reverse: o.reverse });
+      P = U2.path($('path'), { from: pl.from, to: pl.to, reverse: pl.reverse != null ? pl.reverse : o.reverse });
       var g = P.nums.indexOf(pl.gapN), s = P.nums.indexOf(pl.startN);
       R = { g: g, s: s, want: pl.gapN, misses: 0 }; P.gap(g);
-      $('loose').innerHTML = ''; looseFor(P.nums, g).forEach(function (k, i) { var st = U2.stone(k); st.id = 'lo' + i; $('loose').appendChild(st); });
+      /* loose stones show a "listen" picture, not dots: he taps to hear each one, so the dots never give the answer away */
+      $('loose').innerHTML = ''; looseFor(P.nums, g).forEach(function (k, i) { var st = U2.stone(k); st.id = 'lo' + i; st.innerHTML = HEAR; $('loose').appendChild(st); });
       return { P: P, R: R };
     }
     function round(F, i, pl) {
@@ -141,7 +155,7 @@
         GAME.phase = 'busy'; F.lock(true); setup(pl);
         if (o.beforeRound) await o.beforeRound(F, P, R, i);
         await F.wait(150);
-        if (i === 0 || pl.say) await F.say(pl.say || (o.reverse ? "Let's count down." : "Let's count."));
+        if (i === 0 || pl.say) await F.say(pl.say || (P.nums[0] > P.nums[1] ? "Let's count down." : "Let's count."));
         await U2.countAlong(P, R.s, R.g - 1);
         done = res; GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say('What comes next?', { repeat: 'What comes next? Drag it in.' });
