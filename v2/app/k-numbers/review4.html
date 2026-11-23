@@ -12,7 +12,9 @@
 <link rel="stylesheet" href="unit4.css">
 <style>
 .stage{ grid-template-columns:1fr 1fr; align-items:center; }
-.stage.wide{ grid-template-columns:1fr; }
+.stage.wide{ grid-template-columns:1fr !important; grid-template-rows:1fr !important; }
+.stage.wide .stone{ width:clamp(76px,min(10.5vw,16vh),130px); font-size:clamp(32px,5vh,56px); }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage.wide .stones{ max-width:360px; } .stage.wide .stone{ width:80px; } }
 .col{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; height:100%; }
 .col[hidden]{ display:none; }
 #flash.qcard{ width:min(40vw,58vh,400px); }
