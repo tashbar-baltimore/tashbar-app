@@ -22,8 +22,8 @@
     api.lock = function (on) { el.classList.toggle('locked', on); };
     api.glow = function (on) { el.classList.toggle('glowrows', on); };
     if (interactive) el.addEventListener('pointerdown', function (e) {
-      var c = e.target.closest('.cell'); if (!c || el.classList.contains('locked')) return; e.preventDefault();
-      var i = +c.dataset.i;
+      if (el.classList.contains('locked')) return; e.preventDefault();
+      var c = e.target.closest('.cell'), i = c ? +c.dataset.i : api.n;   /* a tap anywhere on the frame puts the next counter in */
       if (i < api.n) { api.set(api.n - 1); NK.sound.back(); } else if (api.n < 10) { api.set(api.n + 1); NK.sound.pop(); cells[api.n - 1].classList.add('land'); setTimeout(function () { cells[api.n - 1] && cells[api.n - 1].classList.remove('land'); }, 350); }
       if (api.onChange) api.onChange(api.n);
     });
@@ -55,11 +55,25 @@
     api.moves = function (k) { var out = []; if (api.pushed[1] > 0) out.push([1, 0]); if (api.pushed[0] !== k) out.push(k > api.pushed[0] ? [0, k - 1] : [0, k]); return out; };
     if (interactive) {
       var down = null;
-      el.addEventListener('pointerdown', function (e) {   /* a tap anywhere on a rod picks the nearest bead (big target for small fingers) */
-        var b = e.target.closest('.bead'), rod = e.target.closest('.rod');
-        if (!b && rod) { var best = null, bd = 1e9; rod.querySelectorAll('.bead').forEach(function (x) { var r = x.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - e.clientX); if (d < bd) { bd = d; best = x; } }); b = best; }
-        if (!b || el.classList.contains('locked')) return; e.preventDefault(); down = b; });
-      document.addEventListener('pointerup', function () { if (!down) return; var b = down; down = null; if (el.classList.contains('locked')) return; api.tap(+b.dataset.r, +b.dataset.i); });
+      /* Tap: anywhere on a rod picks the nearest bead (a big target for small fingers): it and the beads before it slide over.
+         Slide: put a finger on a rod and slide; the beads follow the finger and snap to the nearest count. */
+      var drag = null;
+      function rodOf(e) { var rod = e.target.closest('.rod'); if (rod) return rod; var best = null, bd = 1e9; el.querySelectorAll('.rod').forEach(function (r) { var b = r.getBoundingClientRect(), d = Math.abs(b.top + b.height / 2 - e.clientY); if (d < bd) { bd = d; best = r; } }); return best; }
+      function snap(rod, x) { var r = rod.getBoundingClientRect(), bw = r.width * .066; return Math.max(0, Math.min(10, Math.round((x - r.left - r.width * .02) / bw))); }
+      el.addEventListener('pointerdown', function (e) {
+        if (el.classList.contains('locked')) return; var rod = rodOf(e); if (!rod) return; e.preventDefault();
+        var b = e.target.closest('.bead');
+        if (!b) { var best = null, bd = 1e9; rod.querySelectorAll('.bead').forEach(function (x) { var r = x.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - e.clientX); if (d < bd) { bd = d; best = x; } }); b = best; }
+        drag = { rod: rod, r: +rod.dataset.r, bead: b, x: e.clientX, moved: false, from: api.pushed[+rod.dataset.r] };
+      });
+      document.addEventListener('pointermove', function (e) {
+        if (!drag) return; if (!drag.moved && Math.abs(e.clientX - drag.x) < 14) return; drag.moved = true;
+        var k = snap(drag.rod, e.clientX); if (k !== api.pushed[drag.r]) { api.pushed[drag.r] = k; place(); NK.sound.pop(); }
+      });
+      document.addEventListener('pointerup', function () {
+        if (!drag) return; var d = drag; drag = null; if (el.classList.contains('locked')) return;
+        if (!d.moved) api.tap(d.r, +d.bead.dataset.i); else if (api.onChange) api.onChange(api.count());
+      });
     }
     api.set(0, 0); return api;
   };
@@ -81,6 +95,25 @@
     };
     api.set(n || 0); return api;
   };
+
+  /* ---------- written numbers 0-10, in the same coloured, outlined style as Unit 4 (unit4.js) ---------- */
+  U5.STROKES04 = { /* 0-5 in a 100 x 140 box (from Unit 4) */
+    0: ['M50 20 C 24 20 18 48 18 70 C 18 96 30 120 50 120 C 70 120 82 96 82 70 C 82 46 76 20 50 20'],
+    1: ['M32 40 L54 20 L54 120'],
+    2: ['M22 44 C 22 16 78 14 78 42 C 78 66 42 92 22 120 L82 120'],
+    3: ['M24 30 C 38 12 78 16 76 42 C 74 62 54 66 44 68 C 62 68 80 76 80 96 C 80 126 36 128 22 110'],
+    4: ['M30 20 L22 86 L84 86', 'M64 44 L64 122'],
+    5: ['M34 22 L30 64 C 44 54 80 56 80 88 C 80 124 34 126 22 108', 'M34 22 L78 22'] };
+  U5.COLOR = { 0: '#2FB5E8', 1: '#FF4D3D', 2: '#FFB31A', 3: '#22B45E', 4: '#A779FF', 5: '#FF6FA8', 6: '#FF8A1F', 7: '#2FB5E8', 8: '#22B45E', 9: '#A779FF', 10: '#FF4D3D' };
+  U5.num = function (n) {
+    var big = n > 5, d = big ? U5.NUMERALS[n].strokes : U5.STROKES04[n], c = U5.COLOR[n], w = big ? 34 : 18;
+    var s = '<svg viewBox="' + (big ? (n === 10 ? '20 30 190 220' : '30 30 150 220') : '0 0 100 140') + '">';
+    d.forEach(function (p) { s += '<path d="' + p + '" fill="none" stroke="#3B2A7A" stroke-width="' + (w + (big ? 16 : 9)) + '" stroke-linecap="round" stroke-linejoin="round"/>'; });
+    d.forEach(function (p) { s += '<path d="' + p + '" fill="none" stroke="' + c + '" stroke-width="' + w + '" stroke-linecap="round" stroke-linejoin="round"/>'; });
+    d.forEach(function (p) { s += '<path d="' + p + '" fill="none" stroke="#fff" stroke-width="' + (big ? 6 : 3.5) + '" stroke-linecap="round" stroke-linejoin="round" opacity=".55" transform="translate(-3 -4)"/>'; });
+    return s + '</svg>';
+  };
+  U5.setNum = function (el, n) { el.innerHTML = U5.num(n); el.dataset.n = n; };
 
   /* ---------- the numeral tracer ---------- */
   U5.NUMERALS = {
@@ -114,7 +147,7 @@
     function move(x, y) {
       var p = toUser(x, y), best = -1, bd = 1e9;
       for (var i = cur; i < Math.min(samples.length, cur + 10); i++) { var d = Math.hypot(samples[i][0] - p[0], samples[i][1] - p[1]); if (d < bd) { bd = d; best = i; } }
-      if (bd < 32 && best > cur) { cur = best; show(); }
+      if (bd < (api.easy ? 46 : 32) && best > cur) { cur = best; show(); }
       else if (bd > 62 && !warned) { warned = true; if (api.onOff) api.onOff(); }
       if (cur >= samples.length - 2) finishStroke();
     }
@@ -124,11 +157,13 @@
       else { api.done = true; startDot.remove(); head.remove(); el.classList.add('traced'); if (api.onDone) api.onDone(); }
     }
     api.lock = function (on) { el.classList.toggle('locked', on); };
+    api.rearm = function () { warned = false; };   /* the "stay on the road" help can come again */
+    api.fade = function (on) { el.classList.toggle('faint', on); };   /* bonus: a faint road */
     api.auto = async function (ms) { /* the demo: the road fills slowly */ while (!api.done) { cur = Math.min(samples.length - 1, cur + 1); show(); await FR.wait((ms || 1600) / 60); if (cur >= samples.length - 1) finishStroke(); } };
     el.addEventListener('pointerdown', function (e) {
       if (el.classList.contains('locked') || api.done) return; e.preventDefault();
       var p = toUser(e.clientX, e.clientY), d = Math.hypot(samples[cur][0] - p[0], samples[cur][1] - p[1]);
-      if (d < 44) { track = true; move(e.clientX, e.clientY); } else if (!warned) { warned = true; if (api.onOff) api.onOff(true); }
+      if (d < (api.easy ? 62 : 44)) { track = true; move(e.clientX, e.clientY); } else if (!warned) { warned = true; if (api.onOff) api.onOff(true); }
     });
     document.addEventListener('pointermove', function (e) { if (track) move(e.clientX, e.clientY); });
     document.addEventListener('pointerup', function () { track = false; });

@@ -20,7 +20,7 @@
 </head>
 <body>
 <div id="game" class="locked"><div class="stage" id="stage">
-  <div class="left"><div class="panel" id="ask"><div class="numeral" id="num">7</div><div id="pic"></div></div></div>
+  <div class="left"><div class="panel" id="ask"><div class="unum" id="num"></div><div id="pic"></div></div></div>
   <div class="right"><div id="tfh"></div>
     <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
 </div></div>
@@ -28,7 +28,7 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var T, P, R, done, plan;
+  var T, P, R, done, plan, easy = 0, streak = 0;
   function ready() { var c = $('check'); c.classList.toggle('dim', T.count() === 0); c.classList.toggle('ready', T.count() > 0 && GAME.phase === 'answer'); }
   function taps(k) { return T.moves(k).map(function (i) { return { tap: '#tfh .cell[data-i="' + i + '"]' }; }).concat([{ tap: '#check' }]); }
   function hooks() { GAME.right = function () { return taps(R.n); }; GAME.wrong = function () { return taps(R.n === 10 ? 9 : R.n + 1); }; }
@@ -36,24 +36,33 @@
   function clearHint() { T.el.querySelectorAll('.cell').forEach(function (x) { x.classList.remove('slot', 'extra'); }); }
   function some(n) { return n === 10 ? 'Ten is two full rows!' : FR.Word(n) + ' is five and ' + FR.word(n - 5) + ' more.'; }
   async function check() {
-    NK.unlock(); if (GAME.phase !== 'answer') return; var have = T.count(); if (!have) { FR.say('Tap a box to put one in.'); return; }
+    NK.unlock(); if (GAME.phase !== 'answer') return; var have = T.count(); if (!have) { FR.say('Tap the frame to put one in.'); return; }
     GAME.phase = 'busy'; FR.lock(true); T.lock(true);
-    if (have === R.n) { clearHint(); T.glow(true); await FR.yes(T.el, R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + some(R.n)); T.glow(false); var d = done; done = null; d(R.misses === 0); return; }
+    if (have === R.n) { clearHint(); T.glow(true); $('pic').classList.remove('hiddenpic'); await FR.yes(T.el, R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + some(R.n)); T.glow(false); var d = done; done = null; d(R.misses === 0); return; }
     FR.oops(T.el); R.misses++;
     if (R.misses === 1) { await FR.say("Let's look again. A full row is five."); await FR.say('Fix your frame.'); }
-    else { T.glow(true); await FR.say(some(R.n)); hint(); var k = R.n - have; await FR.say(k > 0 ? 'Put ' + FR.word(k) + ' more in.' : 'Take ' + FR.word(-k) + ' out.'); T.glow(false); }
+    else { T.glow(true); $('pic').classList.remove('hiddenpic'); await FR.say(some(R.n)); hint(); var k = R.n - have; await FR.say(k > 0 ? 'Put ' + FR.word(k) + ' more in.' : 'Take ' + FR.word(-k) + ' out.'); T.glow(false); }
     GAME.phase = 'answer'; FR.lock(false); T.lock(false); ready(); hooks();
   }
-  function ask(n) { $('num').textContent = n; P.set(n); }
+  function ask(n) { U5.setNum($('num'), n); P.set(n); }
+  async function play(F, n, line, noPic) {
+    return new Promise(async function (res) {
+      R = { n: n, misses: 0 }; ask(n); T.set(0); clearHint(); $('pic').classList.toggle('hiddenpic', !!noPic); GAME.phase = 'busy'; F.lock(true); ready();
+      if (easy > 0) hint();   /* the easier path: the boxes to fill are marked */
+      await F.say(line, { repeat: 'Make ' + F.word(n) + '. Fill the frame.' });
+      done = function (first) { if (R.misses >= 2) { easy = 2; streak = 0; } else if (first) streak++; else streak = 0; res(first); };
+      GAME.phase = 'answer'; F.lock(false); T.lock(false); ready(); hooks();
+    });
+  }
   FR.game({
     id: 'u5-frame', title: 'Fill the Frame', rounds: 6,
     hero: '<div id="herotf"></div>',
     init: function (F) {
       var h = U5.frame(7, false); h.el.style.width = '100%'; h.el.style.marginTop = '14%'; $('herotf').appendChild(h.el);
-      T = U5.frame(0, true); $('tfh').appendChild(T.el); T.onChange = function () { if (GAME.phase === 'answer' && R.misses > 1) hint(); ready(); }; T.lock(true);
+      T = U5.frame(0, true); $('tfh').appendChild(T.el); T.onChange = function () { if (GAME.phase === 'answer' && (R.misses > 1 || easy > 0)) hint(); ready(); }; T.lock(true);
       P = U5.hands(0, false); $('pic').appendChild(P.el); $('check').addEventListener('click', check);
     },
-    reset: function (F) { plan = F.shuffle([6, 7, 8, 9, 10]).concat([F.pick([6, 7, 8, 9])]); },
+    reset: function (F, again) { plan = F.shuffle([6, 7, 8, 9, 10]).concat([F.pick([6, 7, 8, 9])]); if (!again) { easy = 0; streak = 0; } },
     demo: async function (F) {
       R = { n: 7, misses: 0 }; ask(7); T.set(0);
       await F.say('This is a ten-frame. Watch me make seven.');
@@ -64,11 +73,12 @@
       await F.yes(T.el, 'Five and two more. Seven!'); T.glow(false);
     },
     round: function (F, i) {
-      return new Promise(async function (res) {
-        var n = plan[i]; R = { n: n, misses: 0 }; ask(n); T.set(0); clearHint(); GAME.phase = 'busy'; F.lock(true); ready();
-        await F.say(i === 0 ? 'Make ' + F.word(n) + '. Fill the frame.' : 'Make ' + F.word(n) + '.', { repeat: 'Make ' + F.word(n) + '. Fill the frame.' });
-        done = res; GAME.phase = 'answer'; F.lock(false); T.lock(false); ready(); hooks();
-      });
+      var n = easy > 0 ? F.pick([6, 7]) : plan[i], noPic = streak >= 3 && easy === 0; if (easy > 0) easy--;
+      return play(F, n, noPic ? 'No picture now. Make ' + F.word(n) + '!' : i === 0 ? 'Make ' + F.word(n) + '. Fill the frame.' : 'Make ' + F.word(n) + '.', noPic);
+    },
+    bonus: async function (F) {
+      var ns = F.shuffle([8, 9, 10]);
+      for (var b = 0; b < 2; b++) await play(F, ns[b], (b === 0 ? 'Just the number! ' : '') + 'Make ' + F.word(ns[b]) + '!', true);
     }
   });
 })();
