@@ -1231,7 +1231,7 @@ export function startGame(cfg) {
       onDrop = (o, bi) => {
         idle();
         if (bi < 0 || BS.pans[bi].item) {
-          if (!bonus) W.misses++; chime(false); goHome(o).then(() => { o.busy = true; });
+          if (!bonus) W.misses++; chime(false); goHome(o);
           const steps = [bi < 0 ? 'Not yet! Put it on a pan of the scale.' : 'That pan is full. Use the other pan.'];
           if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
           allow = false; play([...steps, ...ask]).then(() => { if (onDrop) allow = true; }); return;
