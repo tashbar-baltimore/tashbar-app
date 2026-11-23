@@ -1,0 +1,12 @@
+name: v2-review-seen
+# Only a doorbell: when someone reviews a pull request, this finishes at once, and v2-gate (which runs from main, so a pull
+# request cannot change how it decides) checks whether an approver said yes to a 2.0 change. No permissions, does nothing else.
+on:
+  pull_request_review:
+    types: [submitted]
+permissions: {}
+jobs:
+  seen:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "review on PR #${{ github.event.pull_request.number }} by ${{ github.event.review.user.login }} (${{ github.event.review.state }})"

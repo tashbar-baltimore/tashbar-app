@@ -1,0 +1,61 @@
+name: publish-v2
+# Puts Tashbar Learning 2.0 on its OWN website (https://tashbar-learning-v2.web.app), separate from 1.0 (v2/README.md).
+#   what=preview pr=N : builds that pull request's v2/ and puts it on a private look link for approvers (2.0 itself unchanged)
+#   what=live         : builds main's v2/ and puts it live on the 2.0 link
+# Started only by v2-gate (a look link after tests pass; live only after an approver's yes). Never run it by hand for live.
+on:
+  workflow_dispatch:
+    inputs:
+      what: { description: 'preview or live', required: true, type: choice, options: [preview, live], default: preview }
+      pr: { description: 'pull request number (preview only)', required: false, default: '' }
+concurrency: { group: publish-v2, cancel-in-progress: false }
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+env:
+  PROJECT: tashbar-learning-live
+  SITE: tashbar-learning-v2
+  WIF_PROVIDER: projects/594290752127/locations/global/workloadIdentityPools/github/providers/tashbar-app
+  DEPLOY_SA: github-deploy@tashbar-learning-live.iam.gserviceaccount.com
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env: { GH_TOKEN: '${{ github.token }}', REPO: '${{ github.repository }}' }
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 1 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: For a look link, take the pull request's 2.0 files (only v2/)
+        if: inputs.what == 'preview'
+        run: |
+          n='${{ inputs.pr }}'; [[ "$n" =~ ^[0-9]+$ ]] || { echo "preview needs a pull request number"; exit 1; }
+          git fetch -q origin "pull/$n/head"
+          rm -rf v2 && git archive FETCH_HEAD v2 | tar -x
+          echo "look link for PR #$n at $(git rev-parse --short FETCH_HEAD)"
+      - name: Build 2.0
+        run: node v2/build.js
+      - name: Sign in to Google (keyless, short-lived)
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.DEPLOY_SA }}
+          token_format: access_token
+      - name: Put it on the 2.0 website
+        env: { TOKEN: '${{ steps.auth.outputs.access_token }}' }
+        run: |
+          umask 077; printf '%s' "$TOKEN" > "$RUNNER_TEMP/fbtok"
+          where=live; [ '${{ inputs.what }}' = preview ] && where="pr-${{ inputs.pr }}"
+          V2_LINK_FILE="$RUNNER_TEMP/link" python3 v2/deploy.py "$PROJECT" "$SITE" "$RUNNER_TEMP/fbtok" "$where" "2.0 ${{ inputs.what }} ${{ inputs.pr }} (${GITHUB_SHA::7})"
+          rm -f "$RUNNER_TEMP/fbtok"
+      - name: Post the look link on the pull request
+        if: inputs.what == 'preview'
+        run: |
+          url=$(cat "$RUNNER_TEMP/link" 2>/dev/null || true); [ -n "$url" ] || exit 0
+          gh pr comment '${{ inputs.pr }}' --repo "$REPO" --body "**2.0 look link:** $url
+
+          Approvers: open it, look as a boy (made-up test code only), then tell your Claude what you see. To let it into 2.0, say in your Claude: \"Approve 2.0 pull request #${{ inputs.pr }}\". (v2/HOW-TO-APPROVE.md)"
