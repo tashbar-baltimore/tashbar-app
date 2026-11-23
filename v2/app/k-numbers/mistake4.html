@@ -17,7 +17,7 @@
 .thumbs[hidden], #check[hidden]{ display:none; }
 .hero{ display:flex; align-items:center; justify-content:center; gap:5%; }
 .hero .numcard{ width:30%; } .hero .ff{ width:62%; }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.8fr 1.2fr; } #num{ width:min(40vw,24vh); } #ffw .ff{ width:92vw; } }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.8fr 1.2fr; } #num{ width:min(40vw,24vh); } #ffw .ff{ width:96vw; } }
 </style>
 </head>
 <body>
@@ -37,7 +37,16 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var FF, R, done, RIGHT = [false, true, false, false, true, false];
+  var FF, R, done, RIGHT = [false, true, false, false, true, false], A = U4.adapt();
+  /* count the counters together, lighting each one */
+  async function countWith() {
+    var boxes = [].slice.call(FF.el.querySelectorAll('.box')).filter(function (b) { return b.querySelector('.ctr'); });
+    if (!boxes.length) { await FR.say('No dots at all. Zero.'); return; }
+    await FR.say("Let's count together.");
+    for (var k = 0; k < boxes.length; k++) { boxes[k].classList.add('need'); NK.sound.pop(); await FR.say(FR.Word(k + 1) + (k === boxes.length - 1 ? '.' : ','), { noRepeat: true }); }
+    await FR.wait(300); boxes.forEach(function (b) { b.classList.remove('need'); });
+  }
+  function end2(first) { if (R.misses >= 2) A.miss(); else if (!R.misses) A.hit(); end(first); }
   function setNum(n) { var c = U4.numCard(n); c.id = 'num'; $('numw').innerHTML = ''; $('numw').appendChild(c); }
   function taps(m) { return FF.moves(m).map(function (i) { return { tap: '#ffw .box[data-b="' + i + '"]' }; }); }
   function hooks() {
@@ -49,21 +58,21 @@
     NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'judge') return; GAME.phase = 'busy'; FR.lock(true);
     var ok = R.put === R.n;
     if (saysRight === ok) {
-      if (ok) { await FR.yes($('ffw'), 'Yes! ' + R.who + ' is right. ' + FR.Word(R.n) + '!'); end(R.misses === 0); return; }
+      if (ok) { await FR.yes($('ffw'), 'Yes! ' + R.who + ' is right. ' + FR.Word(R.n) + '!'); end2(R.misses === 0); return; }
       NK.sound.yes(); await FR.say('Yes! ' + R.who + ' made a mistake.');
       R.stage = 'fix'; $('thumbs').hidden = true; $('check').hidden = false; FF.lock(false);
       GAME.phase = 'answer'; FR.lock(false); hooks(); await FR.say('Fix the frame to show ' + FR.word(R.n) + '.'); return;
     }
     FR.oops($('ffw')); R.misses++;
-    if (R.misses === 1) { await FR.say("Let's look again."); FF.el.classList.add('hi'); await FR.say('This says ' + FR.word(R.n) + '. Is it ' + FR.word(R.n) + '?'); FF.el.classList.remove('hi'); }
-    else { await FR.say(R.who + ' put ' + FR.word(R.put) + '. This says ' + FR.word(R.n) + '.'); if (ok) { end(false); return; } }
+    if (R.misses === 1) { await FR.say("Let's look again."); await countWith(); await FR.say('This says ' + FR.word(R.n) + '. Is ' + R.who + ' right?'); }
+    else { await FR.say(R.who + ' put ' + FR.word(R.put) + '. This says ' + FR.word(R.n) + '.'); if (ok) { end2(false); return; } }
     GAME.phase = 'answer'; FR.lock(false); hooks();
   }
   async function check() {
     NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'fix') return; GAME.phase = 'busy'; FR.lock(true); FF.lock(true);
     var have = FF.count();
-    if (have === R.n) { await FR.yes($('ffw'), 'Yes! ' + FR.Word(R.n) + '. Thank you for helping ' + R.who + '!'); end(R.misses === 0); return; }
-    FR.oops($('ffw')); R.misses++; FF.hint(R.n);
+    if (have === R.n) { await FR.yes($('ffw'), 'Yes! ' + FR.Word(R.n) + '. Thank you for helping ' + R.who + '!'); end2(R.misses === 0); return; }
+    FR.oops($('ffw')); R.misses++; if (R.misses === 1) await countWith(); FF.hint(R.n);
     var k = R.n - have; await FR.say('You have ' + FR.word(have) + '. ' + (k > 0 ? 'Put ' + FR.word(k) + ' more in.' : 'Take ' + FR.word(-k) + ' out.'));
     GAME.phase = 'answer'; FR.lock(false); FF.lock(false); hooks();
   }
@@ -83,18 +92,25 @@
       await F.say('I fix it: take one out.'); await F.handTo(FF.box(3)); await F.handTap(); FF.box(3).innerHTML = ''; NK.sound.back();
       await F.yes($('ffw'), 'Three!');
     },
-    round: function (F, i) {
+    reset: function () { A.reset(); },
+    round: function (F, i) { return play(F, i, false); },
+    /* bonus for a quick boy: big numbers, off by just one */
+    bonus: function (F) { return play(F, 2, true); }
+  });
+  function play(F, i, quick) {
       return new Promise(async function (res) {
-        var n = i < 2 ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]), ok = RIGHT[i], put = ok ? n : (n === 5 ? 4 : Math.random() < .5 ? n + 1 : n - 1);
+        /* easier after two misses: small numbers, and a mistake is off by two (easy to see) */
+        var easy = A.easy() && !quick, n = quick ? F.pick([4, 5]) : easy ? F.pick([1, 2, 3]) : i < 2 ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]), ok = quick ? false : RIGHT[i];
+        var put = ok ? n : easy ? (n <= 2 ? n + 2 : n - 2) : (n === 5 ? 4 : Math.random() < .5 ? n + 1 : n - 1);
         var who = F.NAMES[(i * 3 + 4) % F.NAMES.length];
+        if (quick) await F.say('Bonus! Look closely.');
         R = { n: n, put: put, who: who, misses: 0, stage: 'judge' }; setNum(n); FF.set(put); FF.lock(true); $('thumbs').hidden = false; $('check').hidden = true;
         GAME.phase = 'busy'; F.lock(true);
         await F.say('This says ' + F.word(n) + '. ' + who + ' put dots.', { repeat: 'This says ' + F.word(n) + '. Is ' + who + ' right?' });
         done = res; GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say('Is ' + who + ' right?', { repeat: 'This says ' + F.word(n) + '. Is ' + who + ' right?' });
       });
-    }
-  });
+  }
 })();
 </script>
 </body>

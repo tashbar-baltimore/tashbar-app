@@ -18,9 +18,11 @@
 .qcard.done{ border-color:#7BE0A4; background:radial-gradient(circle at 50% 35%,#FFFFFF,#E3FBEB); }
 .qcard .tag{ position:absolute; right:-14px; top:-18px; width:58px; height:80px; filter:drop-shadow(0 4px 4px rgba(0,0,0,.2)); }
 .mid svg{ width:64px; height:64px; }
+.qcard .mini{ position:absolute; left:-12px; bottom:-14px; width:38%; aspect-ratio:170/230; background:#fff; border-radius:16px; box-shadow:0 4px 10px rgba(40,70,140,.25); padding:2px; animation:ctrin .3s cubic-bezier(.3,1.6,.5,1); }
 .hero{ display:flex; align-items:center; justify-content:center; gap:6%; }
 .hero .numcard{ width:34%; } .hero .qcard{ width:42%; }
-@media (max-width:760px), (max-aspect-ratio:4/5){ #src .numcard{ width:min(24vw,17vh); } #tgt .qcard{ width:min(28vw,22vh); border-radius:20px; } .mid svg{ width:40px; height:40px; } }
+.row3.four .numcard{ width:min(15vw,24vh,160px) !important; } .row3.four .qcard{ width:min(19vw,26vh,200px) !important; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .row3.four{ gap:6px; } .row3.four .numcard{ width:21vw !important; } .row3.four .qcard{ width:22vw !important; } #src .numcard{ width:min(24vw,17vh); } #tgt .qcard{ width:min(28vw,22vh); border-radius:20px; } .mid svg{ width:40px; height:40px; } }
 </style>
 </head>
 <body>
@@ -35,11 +37,11 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var KINDS = ['dots', 'apple', 'fingers', 'candle', 'orange'], R, done;
+  var KINDS = ['dots', 'apple', 'orange', 'candle', 'pear'], NAME = { dots: 'dots', apple: 'apples', orange: 'oranges', candle: 'candles', pear: 'pears' }, R, done, A = U4.adapt();
   function deal(nums, kind) {
-    $('src').innerHTML = ''; $('tgt').innerHTML = '';
+    $('src').innerHTML = ''; $('tgt').innerHTML = ''; $('src').classList.toggle('four', nums.length > 3); $('tgt').classList.toggle('four', nums.length > 3);
     nums.forEach(function (n, i) { var c = U4.numCard(n); c.id = 's' + i; $('src').appendChild(c); });
-    FR.shuffle([0, 1, 2]).forEach(function (k, i) { var c = FR.card(nums[k], kind); c.id = 't' + i; $('tgt').appendChild(c); });
+    FR.shuffle(nums.map(function (x, k) { return k; })).forEach(function (k, i) { var kd = Array.isArray(kind) ? kind[k] : kind, c = FR.card(nums[k], kd); c.id = 't' + i; c.dataset.kd = kd; $('tgt').appendChild(c); });
   }
   function hooks() {
     var open = [].slice.call(document.querySelectorAll('#src .numcard:not(.done)')); if (!open.length) { GAME.right = GAME.wrong = null; return; }
@@ -53,7 +55,9 @@
     var n = +s.dataset.n;
     if (s.dataset.n === t.dataset.n) {
       s.classList.add('done'); t.classList.add('done'); var tag = document.createElement('div'); tag.innerHTML = U4.num(n); tag.firstChild.setAttribute('class', 'tag'); t.appendChild(tag.firstChild);
-      await FR.yes(t, n === 0 ? 'Zero. Nothing there. Yes!' : 'This says ' + FR.word(n) + '. ' + FR.Word(n) + '. Yes!');
+      /* all three together: the things, the fingers, the written number */
+      var mini = FR.fingers(n, false); mini.el.classList.add('mini'); t.appendChild(mini.el);
+      await FR.yes(t, n === 0 ? 'No things, no fingers. Zero!' : FR.Word(n) + ' ' + NAME[t.dataset.kd] + ', ' + FR.word(n) + ' fingers. ' + FR.Word(n) + '!');
       R.left--;
     } else {
       FR.oops(t); R.misses++;
@@ -61,7 +65,7 @@
       else { if (t.L && t.L.p.length) await FR.showShape(t, true); else await FR.say('That has ' + FR.word(+t.dataset.n) + '.'); await FR.say('Find ' + FR.word(n) + '.'); }
     }
     FR.lock(false); GAME.phase = 'answer'; hooks();
-    if (R.left === 0 && done) { var d = done; done = null; d(R.misses === 0); }
+    if (R.left === 0 && done) { if (R.misses >= 2) A.miss(); else if (!R.misses) A.hit(); var d = done; done = null; d(R.misses === 0); }
   }
   FR.game({
     id: 'u4-match', title: 'Match the Number', rounds: 5,
@@ -75,12 +79,27 @@
       await F.handDrag($('s0'), t); $('s0').classList.add('done'); t.classList.add('done');
       await F.yes(t, 'Two apples. Two!');
     },
+    reset: function () { A.reset(); },
     round: function (F, i) {
       return new Promise(function (res) {
-        var pool = i < 2 ? [1, 2, 3] : i === 2 ? [0, 1, 2, 3] : [0, 1, 2, 3, 4, 5];
-        var nums = F.shuffle(pool).slice(0, 3); R = { misses: 0, left: 3 }; deal(nums, KINDS[i % KINDS.length]);
+        var nums;
+        if (A.easy()) nums = F.shuffle([1, 2, 3]).slice(0, 2);   /* easier after two misses: two cards, small numbers */
+        else if (i === 0) nums = F.shuffle([1, 2, 3]);
+        else {   /* 4 or 5 every time; zero once */
+          var big = F.pick([4, 5]), others = F.shuffle([1, 2, 3, 4, 5].filter(function (x) { return x !== big; }));
+          nums = F.shuffle(i === 3 ? [big, 0, others[0]] : [big, others[0], others[1]]);
+        }
+        R = { misses: 0, left: nums.length }; deal(nums, KINDS[i % KINDS.length]);
         done = res; GAME.phase = 'answer'; F.lock(false); hooks();
         F.say(i === 0 ? 'Drag each number to its amount.' : 'Match the numbers.', { repeat: 'Drag each number to its amount.' });
+      });
+    },
+    /* bonus for a quick boy: four cards, four different kinds */
+    bonus: function (F) {
+      return new Promise(function (res) {
+        var nums = F.shuffle([2, 3, 4, 5]); R = { misses: 0, left: 4 }; deal(nums, ['dots', 'apple', 'candle', 'orange']);
+        done = res; GAME.phase = 'answer'; F.lock(false); hooks();
+        F.say('Four cards! Match them all.', { repeat: 'Drag each number to its amount.' });
       });
     }
   });

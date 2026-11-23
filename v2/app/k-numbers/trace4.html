@@ -32,11 +32,13 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var ORDER = [1, 2, 3, 4, 5, 0], KINDS = ['apple', 'orange', 'candle', 'pear', 'dots', 'apple'], T, R, done;
-  function setup(n, kind) {
+  var ORDER = [1, 2, 3, 4, 5, 0], KINDS = ['apple', 'orange', 'candle', 'pear', 'dots', 'apple'], T, R, done, A = U4.adapt(), told = false;
+  function at(p) { return { getBoundingClientRect: function () { return { left: p[0], top: p[1], width: 0, height: 0 }; } }; }
+  function setup(n, kind, opts) {
     $('grp').innerHTML = ''; $('grp').appendChild(FR.card(n, kind));
-    $('tw').innerHTML = ''; T = U4.tracer(n); $('tw').appendChild(T.el); T.locked = true;
+    $('tw').innerHTML = ''; T = U4.tracer(n, opts); $('tw').appendChild(T.el); T.locked = true;
     T.onDone = finish; T.onMiss = miss;
+    T.onPart = function () { if (!told) { told = true; FR.say('Good! Keep going.'); } };   /* he lifted his finger: what he traced stays */
   }
   function hooks() {
     GAME.right = function () { return [{ trace: T.screenPts(T.stroke(), 2) }]; };
@@ -45,12 +47,17 @@
   async function finish() {
     if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); T.locked = true;
     await FR.yes($('tw'), R.n === 0 ? 'Zero! Beautiful writing!' : FR.Word(R.n) + '! Beautiful writing!');
+    if (R.misses >= 2) A.miss(); else if (!R.misses) A.hit();
     var d = done; done = null; d(R.misses === 0);
   }
   async function miss() {
     if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); T.locked = true; FR.oops($('tw')); R.misses++;
     if (R.misses < 2) await FR.say('Look for the green dot. Follow the path.');
-    else { await FR.say('Watch my finger. Then you try.'); var P = T.screenPts(T.stroke(), 6); for (var k = 0; k < P.length; k++) await FR.handTo({ getBoundingClientRect: function () { return { left: P[k][0], top: P[k][1], width: 0, height: 0 }; } }, 0, 0); FR.handHide(); await FR.say('Now you. Start at the green dot.'); }
+    else {   /* after two misses: a slow show of the way, in yellow, then he tries */
+      await FR.say('Watch my finger, slowly. Then you try.');
+      await T.showWay(function (p) { return FR.handTo(at(p), 0, 0); }); FR.handHide();
+      await FR.say('Now you. Start at the green dot.');
+    }
     GAME.phase = 'answer'; FR.lock(false); T.locked = false; hooks();
   }
   FR.game({
@@ -60,16 +67,26 @@
       setup(1, 'apple');
       await F.say('Watch me write one.');
       await F.say(U4.RHYME[1]);
-      await T.demoStroke(function (p) { return F.handTo({ getBoundingClientRect: function () { return { left: p[0], top: p[1], width: 0, height: 0 }; } }, 0, 0); });
+      await T.demoStroke(function (p) { return F.handTo(at(p), 0, 0); });
       await F.yes($('tw'), 'One!');
     },
+    reset: function () { A.reset(); told = false; },
     round: function (F, i) {
       return new Promise(async function (res) {
-        var n = ORDER[i]; R = { n: n, misses: 0 }; setup(n, KINDS[i]); GAME.phase = 'busy'; F.lock(true);
+        var n = ORDER[i]; R = { n: n, misses: 0 }; setup(n, KINDS[i], { easy: A.easy() }); GAME.phase = 'busy'; F.lock(true);
+        if (A.easy()) await F.say('Here is a wider path to help you.');
         await F.say(n === 0 ? 'Zero. None at all.' : F.Word(n) + '. Let\'s write ' + F.word(n) + '.', { repeat: U4.RHYME[n] });
         await F.say(U4.RHYME[n]);
         if (i === 0) await F.say('Look for the green dot. Follow the path.');
         if (U4.STROKES[n].length > 1) await F.say('Two lines. Then the next green dot.');
+        done = res; GAME.phase = 'answer'; F.lock(false); T.locked = false; hooks();
+      });
+    },
+    /* bonus for a quick boy: write a number with only a faint path */
+    bonus: function (F) {
+      return new Promise(async function (res) {
+        var n = F.pick([3, 5, 2]); R = { n: n, misses: 0 }; setup(n, 'dots', { faint: true }); GAME.phase = 'busy'; F.lock(true);
+        await F.say('Super writer! Write ' + F.word(n) + ' with a faint path.', { repeat: U4.RHYME[n] });
         done = res; GAME.phase = 'answer'; F.lock(false); T.locked = false; hooks();
       });
     }

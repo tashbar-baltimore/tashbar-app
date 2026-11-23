@@ -22,6 +22,13 @@
      KNum.card(n) is a big card, KNum.strokes[n] are the writing paths (also used for tracing). Copy unit4.js or load it. */
   window.KNum = { svg: function (n, w) { return U4.num(n, w); }, card: function (n) { return U4.numCard(n); }, strokes: U4.STROKES, colors: U4.COLOR };
 
+  /* the taps a boy makes to show m on a finger hand: tap the palm to raise the next finger, tap an up finger to fold it */
+  U4.fingerTaps = function (H, m, sel) {
+    var out = [], c = H.count(), i;
+    if (m > c) for (i = 0; i < m - c; i++) out.push({ tap: sel + ' .fhand svg > path:first-of-type' });
+    else for (i = 4; i >= 0 && out.length < c - m; i--) if (!H.finger(i).classList.contains('down')) out.push({ tap: sel + ' .fg[data-f="' + i + '"]' });
+    return out;
+  };
   /* easier after two misses: A.miss() / A.hit() each round; A.easy() is true for the next 3 rounds after 2 misses */
   U4.adapt = function () { var A = { run: 0, left: 0 }; A.miss = function () { if (++A.run >= 2) { A.left = 3; A.run = 0; } }; A.hit = function () { A.run = 0; if (A.left > 0) A.left--; }; A.easy = function () { return A.left > 0; }; A.reset = function () { A.run = 0; A.left = 0; }; return A; };
   U4.RHYME = {

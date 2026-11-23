@@ -43,14 +43,14 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var CHECK = '<button id="check" class="btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
-  var TASKS = ['peek', 'next', 'give', 'peek', 'next', 'give'], R, done, H;
-  function end(first) { var d = done; done = null; d(first); }
+  var TASKS = ['peek', 'next', 'give', 'peek', 'next', 'give'], R, done, H, A = U4.adapt();
+  function end(first) { if (R.misses >= 2) A.miss(); else if (!R.misses) A.hit(); var d = done; done = null; d(first); }
   function onPlate() { return $('plate') ? $('plate').querySelectorAll('svg.rl').length : 0; }
   function drawPlate(k) { var L = FR.LAYOUTS[Math.min(k, 5)] ? FR.LAYOUTS[Math.min(k, 5)][0] : null, h = ''; for (var i = 0; i < k; i++) { var p = L && L.p[i] ? L.p[i] : [20 + 15 * i, 50]; h += '<svg class="rl' + (R.hint && i >= R.n ? ' extra' : '') + '" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + (14 + p[0] * .72) + '%;top:' + (14 + p[1] * .72) + '%"><use href="#u4Roll"/></svg>'; } $('plate').innerHTML = h; }
   function drawRolls(k) { var h = ''; for (var i = 0; i < k; i++) h += '<svg data-r="' + i + '" viewBox="0 0 100 100"><use href="#u4Roll"/></svg>'; $('rolls').innerHTML = h; }
   function hooks() {
-    if (R.task === 'peek') { GAME.right = function () { return FR.fingerMoves(H, R.n).map(function (i) { return { tap: '#c2 .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
-      GAME.wrong = function () { return FR.fingerMoves(H, R.n === 5 ? 4 : R.n + 1).map(function (i) { return { tap: '#c2 .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); }; }
+    if (R.task === 'peek') { GAME.right = function () { return U4.fingerTaps(H, R.n, '#c2').concat([{ tap: '#check' }]); };
+      GAME.wrong = function () { return U4.fingerTaps(H, R.n === 5 ? 4 : R.n + 1, '#c2').concat([{ tap: '#check' }]); }; }
     else if (R.task === 'next') { GAME.right = function () { return [{ tap: '.stone[data-s="' + R.n + '"]' }]; }; GAME.wrong = function () { return [{ tap: '.stone[data-s="' + (R.n + 1) + '"]' }]; }; }
     else { var add = function (k) { var out = [], have = onPlate(); if (have > k) for (var i = have - 1; i >= k; i--) out.push({ tap: '#plate svg.rl[data-i="' + i + '"]' }); else for (var j = 0; j < k - have; j++) out.push({ tap: '#rolls svg[data-r="0"]' }); return out; };
       GAME.right = function () { return add(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return add(R.n + 1).concat([{ tap: '#check' }]); }; }
@@ -64,7 +64,7 @@
       H.lock(false);
     } else {
       var have = onPlate();
-      if (have === R.n) { await FR.yes($('plate'), FR.Word(R.n) + ' rolls. Thank you!'); end(R.misses === 0); return; }
+      if (have === R.n) { await FR.yes($('plate'), FR.Word(R.n) + (R.n === 1 ? ' roll.' : ' rolls.') + ' Thank you!'); end(R.misses === 0); return; }
       FR.oops($('plate')); R.misses++; R.hint = R.misses > 1; drawPlate(have);
       await FR.say('Look! You put ' + FR.word(have) + '. Bubby needs ' + FR.word(R.n) + '.');
       if (R.hint) { var k = R.n - have; await FR.say(k > 0 ? 'Put ' + FR.word(k) + ' more.' : 'Take ' + FR.word(-k) + ' off.'); }
@@ -89,32 +89,38 @@
     hero: '<div class="stones"><span class="stone btn3d lit">1</span><span class="stone btn3d lit">2</span><span class="stone btn3d lit">3</span><span class="stone btn3d dark">4</span></div>',
     init: function () { U4.defs(); },
     demo: async function (F) { await F.say('Review time! Things we learned before.'); await F.say('Peek, count, and help Bubby.'); },
-    round: function (F, i) {
+    reset: function () { A.reset(); },
+    round: function (F, i) { return item(F, TASKS[i], false); },
+    bonus: function (F) { return item(F, 'peek', true); }   /* a quick boy: one super quick peek of 4 or 5 */
+  });
+  function item(F, task, quick) {
       return new Promise(async function (res) {
-        var task = TASKS[i]; R = { task: task, misses: 0 }; GAME.phase = 'busy'; F.lock(true);
+        R = { task: task, misses: 0, quick: quick }; GAME.phase = 'busy'; F.lock(true);
         $('stage').classList.toggle('wide', task === 'next'); $('c2').hidden = task === 'next'; $('c1').innerHTML = ''; $('c2').innerHTML = '';
+        var easy = A.easy() && !R.quick;   /* easier after two misses: small numbers, a longer peek */
         if (task === 'peek') {
-          R.n = F.pick([2, 3, 4, 5]);
+          R.n = R.quick ? F.pick([4, 5]) : easy ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]);
           $('c1').innerHTML = '<div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div>';
           R.card = F.card(R.n, F.pick(['apple', 'dots', 'orange'])); R.card.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; $('flash').insertBefore(R.card, $('flash').firstChild);
           var b = document.createElement('div'); b.className = 'bighand'; H = F.fingers(0, true); b.appendChild(H.el); $('c2').appendChild(b); $('c2').insertAdjacentHTML('beforeend', CHECK);
-          await F.say('Peek!', { repeat: 'How many? Show me on the hand.' }); $('flash').classList.add('open'); NK.sound.cloth(); await F.wait(1200); $('flash').classList.remove('open'); await F.wait(380);
+          await F.say(R.quick ? 'Bonus! Super quick peek!' : 'Peek!', { repeat: 'How many? Show me on the hand.' }); $('flash').classList.add('open'); NK.sound.cloth(); await F.wait(R.quick ? 850 : easy ? 1700 : 1200); $('flash').classList.remove('open'); await F.wait(380);
           done = res; GAME.phase = 'answer'; F.lock(false); hooks(); await F.say('How many? Show me.');
         } else if (task === 'next') {
-          var k = F.pick([2, 3, 4, 5, 6]); R.n = k; var h = '<div class="stones">';
-          for (var s = 0; s < 8; s++) h += '<button class="stone btn3d ' + (s < k ? 'lit' : 'dark') + '" data-s="' + s + '" aria-label="stone">' + (s + 1) + '</button>';
+          /* only numbers he has learned (up to 5) are written; the stones after them stay blank */
+          var k = easy ? F.pick([1, 2]) : F.pick([2, 3, 4]); R.n = k; var h = '<div class="stones">';
+          for (var s = 0; s < 6; s++) h += '<button class="stone btn3d ' + (s < k ? 'lit' : 'dark') + '" data-s="' + s + '" aria-label="stone">' + (s < 5 ? s + 1 : '') + '</button>';
           $('c1').innerHTML = h + '</div>'; var words = []; for (s = 1; s <= k; s++) words.push(F.Word(s)); R.count = words.join(', ');
           await F.say(R.count + '...', { repeat: R.count + '... What comes next?' });
           done = res; GAME.phase = 'answer'; F.lock(false); hooks(); await F.say('What comes next? Tap its stone.');
         } else {
-          R.n = F.pick([2, 3, 4, 5]); R.hint = false;
+          R.n = easy ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]); R.hint = false;
           $('c1').innerHTML = '<div class="plate4" id="plate"></div>'; $('c2').innerHTML = '<div class="rolls" id="rolls"></div>' + CHECK; drawPlate(0); drawRolls(6);
           done = res; GAME.phase = 'answer'; F.lock(false); hooks();
-          await F.say('Bubby needs ' + F.word(R.n) + ' rolls. Put them on the plate.', { repeat: 'Bubby needs ' + F.word(R.n) + ' rolls. Then press check.' });
+          var rl = R.n === 1 ? ' roll.' : ' rolls.';
+          await F.say('Bubby needs ' + F.word(R.n) + rl + ' Put them on the plate.', { repeat: 'Bubby needs ' + F.word(R.n) + rl + ' Then press check.' });
         }
       });
-    }
-  });
+  }
 })();
 </script>
 </body>
