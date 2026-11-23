@@ -11,11 +11,11 @@
 ## The games, in order (Unit 3 opens when Unit 2's check is passed)
 | Stone | Game | What he does |
 |---|---|---|
-| 1 | Ari bakes challah (story) | Mommy's hook (a "vov") turns into Vov, the challah into Ches, and the zemiros into Zayin. Then the look-alikes side by side with the difference circled, a chant of all nine letters, and he taps each new one. |
+| 1 | Ari bakes challah (story) | Mommy's hook (a "vov") turns into Vov, the challah into Ches, and the zemiros into Zayin. Then the look-alikes side by side with an orange arrow pointing at the difference, a chant of all nine letters, and he taps each new one. |
 | 2 | Feel the Shape | Feels Vov, Zayin and Ches (Zayin's crown, Ches's leg that touches the roof), then Hei as a review. |
-| 3 | Look-Alike Detective | Two crates, the difference glowing on each label. He sorts Vov and Zayin, then Hei and Ches. |
+| 3 | Look-Alike Detective | Two crates; on each label an orange arrow points at the difference. He sorts Vov and Zayin, then Hei and Ches. |
 | 4 | Letter Hunt | Finds every Zayin (among Vov, Ches and Gimmel), then every Ches (among Hei, Zayin and Daled), in the sukkah. |
-| 5 | Find the Mistake | "Yaakov says this is a Vov. Is he right?" The difference is circled when he's wrong. |
+| 5 | Find the Mistake | "Yaakov says this is a Vov. Is he right?" When he's wrong, an orange arrow points at the difference. |
 | 6 | Show what you know (mastery check) | 9 questions. Look-alikes are always shown side by side, plus older letters. |
 | 7 | Review: Sound Match | Gimmel, Daled and Hei pictures again (gefen, dag, Havdalah candle…), the spaced review of Unit 2. |
 | 8 | Bonus: letter rain | Catch Vov, then Zayin, then Ches. |
@@ -28,10 +28,10 @@
    - Zayin has a crown on top; Vov has no crown.
    - Hei's little leg doesn't touch the roof; Ches's leg touches the roof.
 
-   These are the same words in every game. An orange ring circles the place.
+   These are the same words in every game. An orange arrow points at the place (never a ring, so it can't cover the shape or look like a dot).
 5. **The mastery check never asks "Which letter says v?" with both Vov and Veis on screen,** since both say v.
 6. **The review round is Sound Match for Unit 2's letters,** and Feel the Shape ends with Hei, Ches's look-alike.
-7. **The computer voice says "khh" for Ches.** A computer can't really say ח, so this one needs the rebbe's recording most of all.
+7. **The computer can't say ח,** so until the rebbe's recording is in, it says "Ches says the sound at the start of challah", and the mastery check never asks "Which letter says ch?".
 8. **The Look-Alike Detective for these pairs is a new game.** It has two labelled crates instead of Unit 1's houses, because "someone home" belongs to Beis and Veis only.
 
 ## For the rebbe (every sound and rule used in Unit 3)
