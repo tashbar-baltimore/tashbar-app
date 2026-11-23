@@ -16,8 +16,8 @@ export const PASS = 2;                     /* the next game opens at 2 of 3 star
 /* ---------------- time (?fast=1 makes every wait short, for tests) ---------------- */
 const Q = new URLSearchParams(location.search);
 export const FAST = Q.has('fast');
-export const F = FAST ? 0.12 : 1;
-export const LITE = Q.has('lite');   /* ?lite=1: a third of the pixels, no shadows and no smoothing, so the automatic tests fit the 45-minute check (the pictures use the full look) */
+export const LITE = Q.has('lite');
+export const F = FAST ? (LITE ? 0.05 : 0.12) : 1;   /* the quick automatic run waits even less */   /* ?lite=1: a fifth of the pixels across, plainer letters, no shadows and no smoothing, so the automatic tests fit the 45-minute check (the pictures use the full look) */
 export const wait = ms => new Promise(r => setTimeout(r, ms * F));
 export const $ = s => document.querySelector(s);
 
@@ -191,7 +191,7 @@ export function initRenderer() {
   canvas = $('#c');
   if (Q.has('noGL') || !hasWebGL()) throw new Error('no-webgl');
   R = new THREE.WebGLRenderer({ canvas, antialias: !LITE, alpha: true, preserveDrawingBuffer: FAST });
-  R.setPixelRatio(LITE ? .35 : Math.min(devicePixelRatio, 1.75)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .82;
+  R.setPixelRatio(LITE ? .2 : Math.min(devicePixelRatio, 1.75)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .82;
   R.shadowMap.enabled = !LITE; R.shadowMap.type = LITE ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
   scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(R); scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
@@ -318,7 +318,7 @@ function letterMats(color) { if (!faceMats[color]) { const [f, s] = FACE[color] 
 function letterGeo(ch) {
   if (!geoCache[ch]) { const d = new SVGLoader().parse(`<svg xmlns="http://www.w3.org/2000/svg"><path d="${OUTLINES[ch].d}"/></svg>`);
     const shapes = d.paths.flatMap(p => SVGLoader.createShapes(p));
-    const g = new THREE.ExtrudeGeometry(shapes, { depth: 14, bevelEnabled: true, bevelThickness: 3, bevelSize: 2.2, bevelSegments: 5, curveSegments: 10 }); g.computeBoundingBox();
+    const g = new THREE.ExtrudeGeometry(shapes, { depth: 14, bevelEnabled: true, bevelThickness: 3, bevelSize: 2.2, bevelSegments: LITE ? 1 : 5, curveSegments: LITE ? 3 : 10 });   /* the quick test run uses plainer letters */ g.computeBoundingBox();
     const c = new THREE.Vector3(); g.boundingBox.getCenter(c); g.translate(-c.x, -c.y, -c.z); g.computeBoundingBox(); geoCache[ch] = { g, c }; }
   return geoCache[ch];
 }
