@@ -11,7 +11,7 @@ export default function setup(E) {
   const glow = E.glowSprite('#ffffff', 6, 0); E.scene.add(glow);
   const ticks = {};
   let P = false, floaters = new Set();
-  const X = () => P ? { row: 1.45, s: .62, chederX: 1.1, walkTo: -.35, dadX: -1.1 } : { row: 3.1, s: .9, chederX: 2.6, walkTo: .6, dadX: -.5 };
+  const X = () => P ? { row: 1.5, s: .5, chederX: 1.1, walkTo: -.35, dadX: -1.1 } : { row: 3.1, s: .9, chederX: 2.6, walkTo: .6, dadX: -.5 };
   E.onLayout(p => { P = p;
     if (p) { E.camBase.set(0, 2.4, 11.5); E.camTarget.set(0, 1.9, 0); } else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.4, 0); }
     cheder.position.x = X().chederX; cheder.scale.setScalar(p ? .75 : 1); rebbe.position.set(X().chederX - (p ? .1 : .2), 0, 1.7);
@@ -44,7 +44,7 @@ export default function setup(E) {
     E.tween(700, k => glow.material.opacity = k * .8); await E.popIn(alef, 1, 700); float(alef);
     E.setProgress(4, 1);
     await E.say('This is Alef.');
-    const ds = dad.scale.x; dad.position.set(P ? -1.2 : -2.4, 0, 1.4); dad.mood('wave');
+    const ds = dad.scale.x; dad.position.set(P ? -1.75 : -2.4, 0, 1.4); if (P) dad.scale.setScalar(ds * .8); dad.mood('wave');
     await E.say('Abba starts with Alef.'); dad.mood('calm');
     await E.say('Alef is quiet. It waits for its nekudah.');
     await E.say('Tap Alef!');

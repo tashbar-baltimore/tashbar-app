@@ -10,19 +10,20 @@ export default function setup(E, { struggled }) {
   const pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), pedTop = [E.M(0xff7aa8, { roughness: .25, clearcoat: 1 }), E.M(0x46c3ff, { roughness: .25, clearcoat: 1 }), E.M(0xffcf3a, { roughness: .25, clearcoat: 1 })];
   for (let i = 0; i < 3; i++) { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), pedTop[i], 0, .55, 0)); E.scene.add(p); peds.push(p); }
   keys.forEach(k => { L[k] = E.letter(k, 1.6); E.scene.add(L[k]); });
+  const LS = () => E.portrait ? .66 : 1;   /* letter size: smaller on a phone so the three never overlap */
   const glow = E.glowSprite('#fff7b0', 3, 0); E.scene.add(glow);
   let slot = { alef: 0, beis: 1, veis: 2 }, gap = 2.3, active = false, glowOn = null, resolveQ = null, hidden = null;
   const slotPos = i => new THREE.Vector3((1 - i) * gap, 0, .6);   /* right to left */
   E.onLayout(p => {
-    gap = p ? 1.55 : 2.3;
-    if (p) { E.camBase.set(0, 2.5, 10.8); E.camTarget.set(0, 1.9, 0); rebbe.position.set(-1.2, 0, -1.6); rebbe.scale.setScalar(1.2); peds.forEach(x => x.scale.setScalar(.85)); }
+    gap = p ? 1.5 : 2.3; keys.forEach(k => L[k].scale.setScalar(LS()));
+    if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.position.set(0, 0, -6); rebbe.scale.setScalar(1.6); peds.forEach(x => x.scale.setScalar(.62)); }
     else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.position.set(-4.3, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
     place(false);
   });
   function place(animate = true) {
     peds.forEach((p, i) => p.position.copy(slotPos(i)));
     const ps = [];
-    keys.forEach(k => { const to = slotPos(slot[k]).add(new THREE.Vector3(0, E.portrait ? 1.6 : 1.75, 0)); const l = L[k];
+    keys.forEach(k => { const to = slotPos(slot[k]).add(new THREE.Vector3(0, E.portrait ? 1.05 : 1.75, 0)); const l = L[k];
       if (!animate) { l.position.copy(to); l.userData.base = to.clone(); return; }
       const from = l.position.clone(); l.userData.base = null; ps.push(E.tween(600, q => { l.position.lerpVectors(from, to, q); l.position.y += Math.sin(q * Math.PI) * 1.0; }).then(() => { l.userData.base = to.clone(); })); });
     return Promise.all(ps);
@@ -56,15 +57,16 @@ export default function setup(E, { struggled }) {
     const queue = Qs.map((q, i) => ({ ...q, i, first: true })); let right = 0, done = 0, inRow = 0;
     while (queue.length) {
       const q = queue.shift(); await shuffle();
-      if (inRow >= 2 || (struggled && q.first && done < 3)) { const drop = q.k === 'alef' ? 'veis' : 'alef'; hidden = L[drop]; hidden.visible = false; }
+      let easy = false; if (inRow >= 2 || (struggled && q.first && done < 3 && !q.again)) { const drop = q.k === 'alef' ? 'veis' : 'alef'; hidden = L[drop]; hidden.visible = false; easy = true; }
       const got = await ask(q);
-      if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); rebbe.mood('cheer'); if (q.first) right++; inRow = 0;
+      if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(q.k === 'alef' ? 'Yes! Alef. Alef is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
       else { E.sfx.boop(); inRow++; rebbe.mood('think'); await E.shake(L[got], .15); await E.say(explain[got]);
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(q.k === 'alef' ? 'Here is Alef, the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
         if (q.first) queue.push({ ...q, first: false }); }
       if (hidden) { hidden.visible = true; hidden = null; }
-      if (q.first) { done++; E.setProgress(Qs.length, done); }
+      if (q.first && easy && !q.again) queue.push({ ...q, again: true });   /* with only two letters it was practice: it comes back with all three */
+      else if (q.first) { done++; E.setProgress(Qs.length, done); }
     }
     const stars = right >= 8 ? 3 : right >= 6 ? 2 : 1; window.__right = right;
     return { stars, line: stars === 3 ? 'Three stars! You know Alef, Beis and Veis!' : stars === 2 ? 'Two stars! You passed Unit 1!' : null };

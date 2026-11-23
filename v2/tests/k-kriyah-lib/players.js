@@ -22,14 +22,18 @@ P.detective = async (pg, shot, log) => {
 };
 P.feel = async (pg, shot, log) => {
   let wrong = false, n = 0;
-  await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.active || i.next >= i.total) return false;
+  await loop(pg, async () => { const i = await K.info(pg); if (i && i.dot) { await pg.mouse.click(...i.dot); await pg.waitForTimeout(500); log.dotTapped = true; return true; }
+    if (!i || !i.active || i.next >= i.total) return false;
     if (!wrong) { wrong = true; await shot('1-start'); const vs = await pg.viewportSize(); await pg.mouse.click(30, vs.height - 90); await pg.waitForTimeout(800); log.wrongHandled = (await K.info(pg)).off > 0; await shot('3-wrong'); await pg.waitForTimeout(1200); return true; }
     const bs = i.beads; await pg.mouse.move(...bs[i.next]); await pg.mouse.down(); for (let j = i.next + 1; j < bs.length; j++) await pg.mouse.move(...bs[j], { steps: 3 }); await pg.mouse.up();
     if (++n === 2) await shot('2-middle'); await pg.waitForTimeout(400); return true; });
+  (log.dotTapped ? log.oks : log.fails).push('on Beis he taps Mendy\u2019s dot');
 };
 P.hunt = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-hunt-ready]', { timeout: 180000 }); await shot('1-start');
-  let i = await K.info(pg); await pg.mouse.click(...i.others[0]); await pg.waitForTimeout(500); await shot('3-wrong');
+  let i = await K.info(pg);
+  { let bad = []; i.spots.forEach((a, x) => i.spots.forEach((b, y) => { if (x < y && Math.abs(a[0] - b[0]) < i.sizeW && Math.abs(a[1] - b[1]) < i.size) bad.push(x + '&' + y); }));   /* hiding places never touch */
+    (bad.length ? log.fails : log.oks).push(bad.length ? 'hiding places touch on screen: ' + bad.join(', ') : 'no two hiding places touch on screen (tile ' + Math.round(i.sizeW) + 'x' + Math.round(i.size) + 'px)'); } await pg.mouse.click(...i.others[0]); await pg.waitForTimeout(500); await shot('3-wrong');
   await pg.waitForTimeout(1500); log.wrongHandled = (await pg.evaluate(() => window.__lines.join(' '))).includes('That is'); let r2 = false;
   await loop(pg, async () => { i = await K.info(pg); if (!i || !i.active || !i.targets.length) return false; await pg.mouse.click(...i.targets[0]); await pg.waitForTimeout(350);
     if (i.round === 1 && !r2) { r2 = true; await shot('2-middle'); } return true; });
@@ -38,7 +42,7 @@ P.mistake = async (pg, shot, log) => {
   let n = 0, wrongJ = false, wrongT = false;
   await loop(pg, async () => { const i = await K.info(pg); if (!i) return false;
     if (i.ask && i.yes && i.no) { n++; const right = i.shownKey === i.claim; if (n === 1) await shot('1-start');
-      if (!wrongJ) { wrongJ = true; await pg.mouse.click(...(right ? i.no : i.yes)); await pg.waitForTimeout(700); await shot('3-wrong'); await pg.waitForTimeout(800); log.wrongHandled = (await pg.evaluate(() => window.__lines.join(' '))).includes('Look again'); }
+      if (!wrongJ && !right) {   /* one mistake: says Yaakov is right when he isn't, then (same round) drags a wrong letter first */ wrongJ = true; await pg.mouse.click(...(right ? i.no : i.yes)); await pg.waitForTimeout(700); await shot('3-wrong'); await pg.waitForTimeout(800); log.wrongHandled = (await pg.evaluate(() => window.__lines.join(' '))).includes('Look again'); }
       else await pg.mouse.click(...(right ? i.yes : i.no)); await pg.waitForTimeout(300); return true; }
     if (i.fix && i.tiles.length === 3 && await pg.evaluate(() => !!document.body.dataset.fixReady)) { const t = i.tiles.find(x => x.k === i.fix);
       if (!wrongT) { wrongT = true; const w = i.tiles.find(x => x.k !== i.fix); await K.drag(pg, w.xy, i.board); await pg.waitForTimeout(2500); await shot('2-middle'); return true; }

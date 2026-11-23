@@ -302,7 +302,7 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   return b;
 }
 export const mendy = () => person({ kippah: 0x1f3c88 });
-export const tatty = () => { const p = person({ beard: 0x5a3a22, hat: true, jacket: 0x1d2433, pants: 0x1d2433, hair: 0x5a3a22 }); p.scale.setScalar(1.45); return p; };
+export const tatty = () => { const p = person({ beard: 0x6b4423, hat: true, jacket: 0x2c4a7a, pants: 0x26324a, hair: 0x6b4423 });   /* navy jacket and brown beard: not the rebbe */ p.scale.setScalar(1.45); return p; };
 export const rebbe = () => { const p = person({ beard: 0x8a8a8a, hat: true, jacket: 0x1d2433, pants: 0x1d2433, hair: 0x8a8a8a, skin: 0xf6c9a2 }); p.scale.setScalar(1.5); return p; };
 export const yaakov = () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 });
 
@@ -400,7 +400,7 @@ export async function finish(id, stars, line) {
   const bonusOpen = GAMES[gi + 1] && GAMES[gi + 1].bonus && unlocked(GAMES[gi + 1].id);
   bar.innerHTML = `<button class="btn ${passed ? '' : 'orange big'}" id="again2" aria-label="Play again">${passed ? ICON.replay.replace(/#fff/g, '#2f6fe1') : ICON.replay}</button>` +
     (passed && (nx || bonusOpen) ? `<button class="btn green big" id="nextg" aria-label="Next game">${ICON.next}</button>` : passed ? `<button class="btn green big" id="home2" aria-label="Back to the path">${ICON.home.replace(/#2f6fe1/g, '#fff')}</button>` : '');
-  bar.classList.add('show'); document.body.dataset.done = 1;
+  bar.classList.add('show'); document.body.dataset.done = 1; const note = document.querySelector('.note'); if (note) note.style.display = 'none';
   $('#again2').onclick = () => { location.reload(); };
   if ($('#nextg')) $('#nextg').onclick = () => goGame((nx || GAMES[gi + 1]).id);
   if ($('#home2')) $('#home2').onclick = () => goPath();

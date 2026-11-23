@@ -6,6 +6,7 @@ export default function setup(E, { struggled }) {
   const { THREE } = E;
   const wood = E.M(0xd9a066, { roughness: .6 }), wood2 = E.M(0xc68a52, { roughness: .6 }), cloth = E.M(0xffffff, { roughness: .5 }), leaf = E.M(0x2f9b3e, { roughness: .7, clearcoat: 0 }), leaf2 = E.M(0x46b54d, { roughness: .7, clearcoat: 0 });
   let suk = null, W = 7.4, spots = [];
+  const plaque = E.M(0xfffaf0, { roughness: .4, clearcoat: .5 });   /* a plain backing tile, so nothing behind a letter can look like its dot */
   const boy = E.mendy(); E.scene.add(boy);
   const letters = []; const glow = E.glowSprite('#fff7b0', 1.8, 0); E.scene.add(glow);
   const ring = E.noticeRing(.5); E.scene.add(ring);
@@ -19,44 +20,46 @@ export default function setup(E, { struggled }) {
     for (let i = 0; i < Math.round(w * 2.2); i++) { const b = E.mesh(new THREE.CylinderGeometry(.05, .05, 4.1, 6), i % 2 ? leaf : leaf2, -hw + i / 2.2 + .1, 3.42 + (i % 3) * .04, -.1, false); b.rotation.x = Math.PI / 2; suk.add(b); }   /* schach */
     for (let i = 0; i < Math.round(w * 1.6); i++) suk.add(E.mesh(new THREE.SphereGeometry(.22 + (i % 3) * .05, 10, 8), i % 2 ? leaf : leaf2, -hw + (i * .63) % w, 3.55, -1.6 + (i * 1.37) % 3.4, false));
     /* a paper chain along the back wall */
-    const cc = [0xff5d8f, 0xffc21a, 0x2dbb6a, 0x2f7de1, 0x9b5de5]; for (let i = 0; i < Math.round(w * 3); i++) { const r = E.mesh(new THREE.TorusGeometry(.1, .025, 6, 12), E.M(cc[i % 5], { roughness: .4 }), -hw + .2 + i / 3, 3.15 - Math.sin(i / 3 * 1.4) * .12, -1.55, false); r.rotation.y = i % 2 ? Math.PI / 2 : 0; suk.add(r); }
-    /* hanging fruit */
-    [[-.42, 0xe8322b], [-.15, 0xff9f1a], [.18, 0xffd43b], [.45, 0x8e2b8e]].forEach(([x, c], i) => { const X = x * w; suk.add(E.mesh(new THREE.CylinderGeometry(.008, .008, .5, 4), E.M(0xffffff), X, 3.1, -.9 + i * .2, false)); suk.add(E.mesh(new THREE.SphereGeometry(.16, 16, 12), E.M(c, { roughness: .3, clearcoat: .8 }), X, 2.82, -.9 + i * .2)); });
+    const cc = [0xff5d8f, 0x2dbb6a, 0x2f7de1, 0x9b5de5];   /* no gold or yellow near the letters: it could look like the dagesh */ for (let i = 0; i < Math.round(w * 3); i++) { const r = E.mesh(new THREE.TorusGeometry(.1, .025, 6, 12), E.M(cc[i % 4], { roughness: .4 }), -hw + .2 + i / 3, 3.15 - Math.sin(i / 3 * 1.4) * .12, -1.55, false); r.rotation.y = i % 2 ? Math.PI / 2 : 0; suk.add(r); }
+    /* hanging fruit, only in the far top corners, away from every hiding place */
+    [[-.46, 0xe8322b], [.46, 0x8e2b8e]].forEach(([x, c]) => { const X = x * w; suk.add(E.mesh(new THREE.CylinderGeometry(.008, .008, .4, 4), E.M(0xffffff), X, 3.15, -1.2, false)); suk.add(E.mesh(new THREE.SphereGeometry(.15, 16, 12), E.M(c, { roughness: .3, clearcoat: .8 }), X, 2.92, -1.2)); });
     /* the table with a white cloth, a kiddush cup and a fruit bowl */
     const tw = Math.min(3.2, w * .5); suk.add(E.mesh(E.rbox(tw, .12, 1.3, .05), cloth, 0, 1.0, -.2)); suk.add(E.mesh(E.rbox(tw + .05, .55, .05, .02), cloth, 0, .75, .46));
     [[-1, -1], [1, -1]].forEach(([a]) => suk.add(E.mesh(new THREE.CylinderGeometry(.05, .05, 1, 8), wood2, a * (tw / 2 - .15), .5, -.7)));
     suk.add(E.mesh(new THREE.CylinderGeometry(.09, .05, .22, 16), E.M(0xd8dde6, { metalness: .9, roughness: .15 }), -tw * .3, 1.2, -.35)); suk.add(E.mesh(new THREE.CylinderGeometry(.02, .02, .14, 8), E.M(0xd8dde6, { metalness: .9, roughness: .15 }), -tw * .3, 1.1, -.35));
     suk.add(E.mesh(new THREE.SphereGeometry(.3, 20, 10, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), E.M(0xff8a1e, { side: THREE.DoubleSide }), tw * .28, 1.33, -.35));
-    [0xe8322b, 0x7bc043, 0xffd43b].forEach((c, i) => suk.add(E.mesh(new THREE.SphereGeometry(.12, 14, 10), E.M(c, { roughness: .3, clearcoat: .8 }), tw * .28 - .12 + i * .12, 1.36, -.35)));
+    [0xe8322b, 0x7bc043, 0xc0392b].forEach((c, i) => suk.add(E.mesh(new THREE.SphereGeometry(.12, 14, 10), E.M(c, { roughness: .3, clearcoat: .8 }), tw * .28 - .12 + i * .12, 1.36, -.35)));
     /* two chairs */
     [-1, 1].forEach(s => { const x = s * (tw / 2 + .45); suk.add(E.mesh(E.rbox(.6, .08, .6, .03), wood, x, .62, .1)); suk.add(E.mesh(E.rbox(.6, .8, .08, .03), wood, x, 1.02, -.2)); [[-.25, -.1], [.25, -.1], [-.25, .35], [.25, .35]].forEach(([a, b]) => suk.add(E.mesh(new THREE.BoxGeometry(.06, .6, .06), wood2, x + a, .3, b))); });
     /* a picture on the back wall */
-    suk.add(E.mesh(E.rbox(1.0, .8, .08, .05), E.M(0xffd43b, { metalness: .5, roughness: .3 }), w * .3, 2.2, -1.6)); suk.add(E.mesh(new THREE.BoxGeometry(.84, .64, .04), E.M(0xfff3d6), w * .3, 2.2, -1.55, false));
-    /* where letters can hide (x as a share of the width) */
-    const sp = [[-.36, 2.35, -1.5, 0], [.3, 2.2, -1.48, 0], [0, 2.75, -.7, 0], [-.12 * tw / w * 2, .76, .52, 0], [-(tw / 2 + .45) / w, 1.12, -.12, 0], [.36, 2.85, -.6, 0], [(tw / 2 + .45) / w, 1.12, -.12, 0], [.36, .42, 1.25, 0], [-.4, 1.55, .2, .5], [.1, .42, 1.45, 0], [-.1, 2.35, -1.5, 0]];
-    spots = sp.map(([x, y, z, ry]) => ({ p: new THREE.Vector3(x * w, y, z), ry: x < -.38 ? .5 : x > .38 ? -.5 : ry }));
-    spots[8].p.x = hw - .3; spots[8].ry = -.5;
+    suk.add(E.mesh(E.rbox(1.0, .8, .08, .05), E.M(0x8a5a3c, { roughness: .5 }), w * .42, 1.5, -1.6)); suk.add(E.mesh(new THREE.BoxGeometry(.84, .64, .04), E.M(0xbfe8ff), w * .42, 1.5, -1.55, false));
+    /* where letters can hide: 9 places, well apart (a test checks they never touch on screen) */
+    const ph = w < 5; const sp = [[ph ? -.23 : -.3, 2.25, -1.5, 0], ph ? [0, 3.05, -.7, 0] : [0, 2.6, -1.5, 0], [ph ? .23 : .3, 2.25, -1.5, 0],   /* the back wall (on a phone the middle one hangs higher, from the schach) */
+      [0, .76, .52, 0],                                                              /* the tablecloth */
+      [-.22, .42, 1.5, 0], [.22, .42, 1.5, 0],                                          /* the floor */
+      [-(hw - .3) / w, 2.25, .05, .5], [(hw - .3) / w, 2.25, .05, -.5]];               /* the two side walls */
+    spots = sp.map(([x, y, z, ry]) => ({ p: new THREE.Vector3(x * w, y, z), ry }));
     if (letters.length) letters.forEach((l, i) => { if (l.userData.spot != null) placeAt(l, l.userData.spot); });
   }
   E.onLayout(p => {
     buildSukkah(p ? 4.2 : 7.4);
-    if (p) { E.camBase.set(0, 2.2, 10.6); E.camTarget.set(0, 1.85, 0); boy.position.set(-1.25, .16, 1.75); boy.scale.setScalar(.75); }
+    if (p) { E.camBase.set(0, 2.0, 10.9); E.camTarget.set(0, 1.55, 0); boy.position.set(-1.35, 0, 3.3); boy.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.2, 9.2); E.camTarget.set(0, 1.75, 0); boy.position.set(-2.9, .16, 1.55); boy.scale.setScalar(.85); }
   });
   E.setSway(.5);
-  const SIZE = () => E.portrait ? .8 : .95;
+  const SIZE = () => E.portrait ? .72 : .9;
   function placeAt(l, i) { const s = spots[i]; l.userData.spot = i; l.position.copy(s.p); l.rotation.y = s.ry; l.userData.base = s.p.clone(); }
   E.onFrame(t => {
     letters.forEach((l, i) => { if (l.visible && l.userData.base && !l.userData.busy) { l.position.y = l.userData.base.y + Math.sin(t * 1.6 + i) * .03; l.rotation.z = Math.sin(t * 1.3 + i) * .05; } });
     if (helpOn && helpOn.visible) { glow.position.copy(helpOn.position).add(new THREE.Vector3(0, 0, -.2)); glow.material.opacity = .6 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
-  window.__info = () => ({ want, round, active, targets: letters.filter(l => l.visible && l.userData.key === want && !l.userData.got).map(l => E.toScreen(E.worldPos(l))),
+  window.__info = () => ({ spots: spots.map(x => E.toScreen(x.p)), size: E.toScreen(new THREE.Vector3(0, 0, 0))[1] - E.toScreen(new THREE.Vector3(0, SIZE() * 1.3, 0))[1], sizeW: E.toScreen(new THREE.Vector3(SIZE() * 1.1, 0, 0))[0] - E.toScreen(new THREE.Vector3(0, 0, 0))[0], want, round, active, targets: letters.filter(l => l.visible && l.userData.key === want && !l.userData.got).map(l => E.toScreen(E.worldPos(l))),
     others: letters.filter(l => l.visible && l.userData.key !== want).map(l => E.toScreen(E.worldPos(l))), found, need });
 
   function setRound(k, nTarget, others) {
     letters.forEach(l => E.scene.remove(l)); letters.length = 0;
     const order = [...spots.keys()].sort(() => Math.random() - .5); let j = 0;
-    const add = key => { const l = E.letter(key, SIZE()); E.scene.add(l); placeAt(l, order[j++]); letters.push(l); l.visible = false; return l; };
+    const add = key => { const l = E.letter(key, SIZE()); const ud = l.userData; const pl = E.mesh(E.rbox(ud.width * 1.35, ud.height * 1.3, .08, .07), plaque, 0, 0, -.22, false); l.add(pl); E.scene.add(l); placeAt(l, order[j++]); letters.push(l); l.visible = false; return l; };
     for (let i = 0; i < nTarget; i++) add(k); others.forEach(add);
     want = k; found = 0; need = nTarget; wrongInRound = 0; E.setProgress(need, 0);
   }

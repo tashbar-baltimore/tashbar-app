@@ -35,7 +35,7 @@ async function drag(pg, [fx, fy], [tx, ty]) { await pg.mouse.move(fx, fy); await
 async function until(pg, fn, ms = 60000, step = 150) { const t = Date.now(); while (Date.now() - t < ms) { const v = await pg.evaluate(fn).catch(() => null); if (v) return v; await pg.waitForTimeout(step); } return null; }
 const saved = pg => pg.evaluate(() => { try { return JSON.parse(localStorage.getItem('tl2:k-kriyah') || '{}'); } catch (e) { return {}; } });
 const SHOTS = path.join(__dirname, '..', '..', 'screens', 'k-kriyah');
-async function shot(pg, name) { if (!process.env.KK_SHOTS) return; fs.mkdirSync(SHOTS, { recursive: true }); await pg.screenshot({ path: path.join(SHOTS, name + '.png') }); }
+async function shot(pg, name) { if (!process.env.KK_SHOTS) return; fs.mkdirSync(SHOTS, { recursive: true }); await pg.screenshot({ path: path.join(SHOTS, name + '.jpg'), type: 'jpeg', quality: 80 }); }
 /* the games need 3D: if the shared test browser has no WebGL, use our own Chromium with software 3D (SwiftShader) */
 let ownGL = null;
 async function glBrowser(browser) {
@@ -53,7 +53,7 @@ function gameTest(id, kind, label) {
     const browser = await glBrowser(browser0);
     const fails = [], oks = [], P = require('./players.js'), view = process.env.KK_VIEW || 'chromebook', tag = 'k-kriyah ' + id + ' (' + label + ', ' + view + ')';
     const { ctx, pg, errs } = await open(browser, { view, save: passedBefore(id), url: 'play.html?g=' + id + '&fast=1' });
-    const log = {}; const shotF = n => shot(pg, id + '-' + view + '-' + n);
+    const log = { oks: [], fails: [] }; const shotF = n => shot(pg, id + '-' + view + '-' + n);
     try {
       await startGame(pg); await pg.waitForSelector('body[data-drawn]', { timeout: 60000 }); await pg.waitForTimeout(800);
       const col = await canvasColours(pg); if (col >= 12) oks.push(tag + ': loads and shows real 3D (' + col + ' colours on screen)'); else fails.push(tag + ': the screen looks blank (' + col + ' colours)');
@@ -61,6 +61,7 @@ function gameTest(id, kind, label) {
       await pg.waitForSelector('#endbar.show', { timeout: 60000 }); await pg.waitForTimeout(300); await shotF('4-end');
       const stars = Number(await pg.evaluate(() => document.body.dataset.stars));
       if (stars >= 2) oks.push(tag + ': can be won (' + stars + ' stars, after one mistake)'); else fails.push(tag + ': could not be won (' + stars + ' stars)');
+      log.oks.forEach(m => oks.push(tag + ': ' + m)); log.fails.forEach(m => fails.push(tag + ': ' + m));
       if (log.wrongHandled) oks.push(tag + ': a wrong answer gets a kind correction'); else fails.push(tag + ': a wrong answer was not handled');
       const sv = await saved(pg); if (sv.games && sv.games[id] && sv.games[id].stars === stars) oks.push(tag + ': saves the stars'); else fails.push(tag + ': stars were not saved');
       errs.forEach(e => fails.push(tag + ': ' + e));

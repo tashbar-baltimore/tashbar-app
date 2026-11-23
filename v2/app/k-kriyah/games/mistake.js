@@ -13,11 +13,11 @@ export default function setup(E, { struggled }) {
   const glowT = E.glowSprite('#fff7b0', 2.2, 0); E.scene.add(glowT);
   let P = false, help = struggled, mistakes = 0, missed = false, dragT = null, grab = new THREE.Vector3(), fixKey = null, resolveFix = null, busy = false;
   E.onLayout(p => { P = p;
-    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.2, 0); yak.position.set(-1.5, 0, .9); yak.scale.setScalar(.72); board.position.set(.55, 3.1, .4); board.scale.setScalar(.85); }
+    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.2, 0); yak.position.set(-1.75, 0, .9); yak.scale.setScalar(.62); board.position.set(.55, 3.1, .4); board.scale.setScalar(.85); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); yak.position.set(-3.3, 0, 1.2); yak.scale.setScalar(1.1); board.position.set(.2, 2.35, .4); board.scale.setScalar(1); }
     tiles.forEach((t, i) => { if (t !== dragT) t.position.copy(tileHome(i)); });
   });
-  const tileHome = i => P ? new THREE.Vector3(1.3 - i * 1.15, .55, 2.1) : new THREE.Vector3(1.75 - i * 1.55, .6, 1.9);
+  const tileHome = i => P ? new THREE.Vector3(1.25 - i * 1.0, .55, 2.1) : new THREE.Vector3(1.75 - i * 1.55, .6, 1.9);
   E.onFrame(t => {
     if (shown) shown.rotation.y = Math.sin(t * 1.2) * .15;
     tiles.forEach((tl, i) => { if (tl !== dragT && tl.visible && !tl.userData.busy) { tl.position.y = tileHome(i).y + Math.sin(t * 2 + i) * .05; } });
@@ -34,6 +34,9 @@ export default function setup(E, { struggled }) {
   let curClaim = null;
 
   function showLetter(k) { if (shown) board.remove(shown); shown = E.letter(k, 1.3); shown.position.set(0, 0, .3); board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
+  /* why the letter is not what Yaakov said, in a few words */
+  const why = (k, c) => k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
+    : k === 'beis' ? 'Look again. A dot! This is Beis, not Veis.' : 'Look again. No dot. This is Veis, not Beis.';
   const an = k => k === 'alef' ? 'an Alef' : 'a ' + E.LETTERS[k].name;
   function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; ['alef', 'beis', 'veis'].forEach((k, i) => { const t = E.letter(k, .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
   const onBoard = () => { const [bx, by] = E.toScreen(E.worldPos(board)), [tx, ty] = E.toScreen(dragT.position); return Math.hypot(bx - tx, by - ty) < Math.min(innerWidth, innerHeight) * .16; };
@@ -79,12 +82,16 @@ export default function setup(E, { struggled }) {
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
       if (shown.userData.dotHome) { ring.position.copy(shown.userData.dotHome).setZ(.6); ring.visible = true; }
-      if (right) { await E.say(shownKey === 'beis' ? 'Look again. A dot! It is Beis. Yaakov is right.' : shownKey === 'veis' ? 'Look again. No dot. It is Veis. Yaakov is right.' : 'Look again. It is Alef. Yaakov is right.'); ring.visible = false; yak.mood('cheer'); await E.wait(500); yak.mood('calm'); }
-      else { await E.say('Look again. That is ' + E.LETTERS[shownKey].name + ', not ' + E.LETTERS[claim].name + '.'); ring.visible = false; await fix(claim, false); }
+      if (right) { await E.say(shownKey === 'beis' ? 'Look again. A dot! It is Beis.' : shownKey === 'veis' ? 'Look again. No dot. It is Veis.' : 'Look again. It is Alef, not a house shape.'); ring.visible = false; yak.mood('calm');
+        await E.say('So is Yaakov right? Try again.');               /* he answers again (it doesn't count) */
+        if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
+        else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
+        yak.mood('calm'); }
+      else { await E.say(why(shownKey, claim)); ring.visible = false; await fix(claim, false); }
     }
   }
   return async () => {
-    const R = [['beis', 'beis'], ['alef', 'beis'], ['beis', 'veis'], ['veis', 'veis'], ['beis', 'alef'], ['veis', 'beis']];
+    const R = [['beis', 'beis'], ['alef', 'beis'], ['veis', 'veis'], ['beis', 'veis'], ['alef', 'alef'], ['veis', 'beis']];   /* Yaakov is right 3 times and wrong 3 times */
     E.setProgress(R.length, 0);
     await E.say('This is Yaakov. Sometimes he makes a mistake.');
     await E.say('Watch me find his mistake.');
@@ -92,7 +99,7 @@ export default function setup(E, { struggled }) {
     await E.say('Now you! Is Yaakov right? Tap yes or no.');
     mistakes = 0;
     for (let i = 0; i < R.length; i++) { await roundOf(...R[i]); E.setProgress(R.length, i + 1); }
-    const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
+    const stars = mistakes === 0 ? 3 : mistakes === 1 ? 2 : 1;   /* always tapping one button can't pass */
     return { stars, line: stars >= 2 ? 'You found all of Yaakov’s mistakes!' : null };
   };
 }

@@ -22,19 +22,28 @@
 1. **The bonus round opens only after 3 stars on the mastery check** (2 stars passes the unit; the bonus is for quick boys).
 2. **Feel the Shape has no failing.** It's touch only, so finishing gives 3 stars (2 if he needed more than 4 reminders).
 3. **Feel the Shape uses a glowing road, not dots.** Dots on a Beis could look like the dagesh, the very thing he's learning to notice.
+   - He can start anywhere on the road and go either way, so it stays "feeling the shape" and doesn't turn into learning to write.
+   - On Beis, he also taps Mendy's dot.
 4. **"Done" marks are gold stars above a letter, never dots below it** (a dot below could look like a nekudah).
 5. **The computer voice says "buh" and "vuh"** for Beis's and Veis's sounds until the rebbe's recording arrives (a computer can't say a lone "b"). It is marked on screen as temporary.
 6. **Letter Hunt is in a sukkah** (Unit 1 falls in Tishrei), with two rounds: Beis first, then Veis.
-7. **Stars:** most games give 3 stars for 0–1 mistakes, 2 stars for up to 3, and 1 star for more. The mastery check gives 3 stars for 8 of 9 right the first time and 2 stars for 6 of 9.
+7. **Stars:** 2 stars passes. The cut-offs for each game:
+   - **Detective** (8 letters): 0 mistakes is 3 stars, 1–2 is 2 stars.
+   - **Letter Hunt:** 0–1 wrong taps is 3 stars, 2–3 is 2 stars.
+   - **Find the Mistake:** 0 mistakes is 3 stars, 1 is 2 stars. Yaakov is right exactly half the time, so always tapping one button can't pass.
+   - **Mastery check:** 8 of 9 right the first time is 3 stars, 6 of 9 is 2 stars. A question asked with only two letters on screen (the easier version) is practice: it comes back with all three, and only that one counts.
+   - **Bonus:** catching 80% with at most 2 wrong taps is 3 stars, catching half is 2 stars.
 8. **A missed mastery question comes back at the end,** for practice only (it doesn't count again).
 9. **A boy who didn't pass a game last time** gets an easier start next time: fewer letters, and the hint glow from the beginning.
 10. **Detective also works by tapping a house,** for boys who find dragging hard.
 11. **The opener ends with a short chant,** "Alef, quiet! Beis, b! Veis, v!", twice with a drum beat. It's for boys who learn by rhythm. It isn't a full song; a real nigun for each unit needs your choice of tune.
-12. **The unit path is 3D stepping stones** with Unit 1's three letters floating above. The stone to play next glows, and Mendy stands by it.
-13. **On a computer that can't show 3D,** he gets a clean flat screen with the three letters to tap and hear, plus a note for the teacher. There are no full flat versions of each game.
-14. **Find the Mistake has 6 rounds plus 1 demo.** The rounds mix all three letters; Yaakov is right twice and wrong four times.
-15. **Characters:** Mendy (blue kippah), Tatty and the rebbe (beard, black hat and jacket), and Yaakov (red kippah).
-16. **Unit 1 has no review round,** because there are no earlier units yet. It starts in Unit 2.
+12. **Locked games show their picture in grey.** The unit path is 3D stepping stones with Unit 1's three letters floating above. The stone to play next glows, and Mendy stands by it.
+13. **Letter Hunt:** every hidden letter sits on a plain cream tile, and there is nothing gold or yellow near a hiding place, so nothing can look like the dagesh.
+14. **The bonus round hides the home button while letters fall,** so a boy chasing a letter can't leave by accident.
+15. **On a computer that can't show 3D,** he gets a clean flat screen with the three letters to tap and hear, plus a note for the teacher. There are no full flat versions of each game.
+16. **Find the Mistake has 6 rounds plus 1 demo,** mixing all three letters. If Yaakov was right and the boy said no, he hears why and answers again (that answer doesn't count).
+17. **Characters:** Mendy (blue kippah), Tatty (brown beard, black hat, navy jacket), the rebbe (grey beard, black hat and jacket), and Yaakov (red kippah).
+18. **Unit 1 has no review round,** because there are no earlier units yet. It starts in Unit 2.
 
 ## For the rebbe (every sound and rule used in Unit 1)
 - **Letters:** Alef (א), Beis (בּ, with the dagesh) and Veis (ב, no dagesh).

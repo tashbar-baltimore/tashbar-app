@@ -13,8 +13,8 @@ export default function setup(E, { struggled }) {
   const shelf = { b: [], v: [] };
   const cardHome = new THREE.Vector3(); let HS = 1, CS = 1, dragging = false, busy = true, dragEnabled = false, help = struggled, t0 = 0;
   E.onLayout(p => {
-    HS = p ? .8 : 1; CS = p ? 1.2 : 1;
-    if (p) { E.camBase.set(0, 3.3, 11.6); E.camTarget.set(0, 2.5, 0); HB.position.set(-1.85, 0, 0); HV.position.set(1.85, 0, 0); cardHome.set(0, 4.75, 1.5); }
+    HS = p ? .64 : 1; CS = p ? 1.1 : 1;
+    if (p) { E.camBase.set(0, 3.0, 10.8); E.camTarget.set(0, 2.4, 0); HB.position.set(-1.4, 0, 0); HV.position.set(1.4, 0, 0); cardHome.set(0, 4.6, 1.5); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.4, 0); HB.position.set(-3.6, 0, 0); HV.position.set(3.6, 0, 0); cardHome.set(0, 1.9, 1.4); }
     HB.scale.setScalar(HS); HV.scale.setScalar(HS); if (card.visible && !dragging && !busy) { card.position.copy(cardHome); card.scale.setScalar(CS); }
   });
@@ -35,7 +35,7 @@ export default function setup(E, { struggled }) {
   deck = ['beis', ...deck];
   let idx = 0, mistakes = 0, wrongInRow = 0, missed = false, onDone;
 
-  const nearestHouse = () => { const c = card.position; for (const h of [HB, HV]) { const dx = Math.abs(c.x - h.position.x), lim = E.portrait ? 1.5 : 1.9; if (dx < lim && c.y < (E.portrait ? 3.7 : 3.4)) return h; } return null; };
+  const nearestHouse = () => { const c = card.position; for (const h of [HB, HV]) { const dx = Math.abs(c.x - h.position.x), lim = E.portrait ? 1.3 : 1.9; if (dx < lim && c.y < (E.portrait ? 3.7 : 3.4)) return h; } return null; };
   const plane = () => card.position.z; const grab = new THREE.Vector3();
   E.onPointer('down', e => {
     if (!dragEnabled || busy || !card.visible) return;

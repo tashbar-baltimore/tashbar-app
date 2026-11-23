@@ -17,7 +17,7 @@ if (ok) {
   E.buildWorld({ flowers: true }); E.initPointer(); E.setSway(.6);
   const save = E.loadSave();
   const stops = [], colors = [0xff7aa8, 0x46c3ff, 0xffcf3a, 0x7bd94a, 0xb388ff, 0xff9f1a, 0x00c2d1];
-  const greyM = E.M(0xc9d2dc, { roughness: .4 }), edgeM = E.M(0xffffff, { roughness: .3, clearcoat: .8 });
+  const greyM = E.M(0xc9d2dc, { roughness: .4 }), greyIcon = E.M(0xaab4c0, { roughness: .5, clearcoat: .2 }), edgeM = E.M(0xffffff, { roughness: .3, clearcoat: .8 });
   const pebM = E.M(0xf1dcb0, { roughness: .7, clearcoat: 0 });
   /* little 3D pictures that say what each game is */
   function icon(kind) { const g = new THREE.Group();
@@ -29,12 +29,11 @@ if (ok) {
     else if (kind === 'mastery') { const gold = E.goldDot(); g.add(E.mesh(new THREE.CylinderGeometry(.3, .12, .42, 24), gold, 0, .1, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.08, .08, .2, 12), gold, 0, -.2, 0)); g.add(E.mesh(new THREE.CylinderGeometry(.22, .22, .08, 24), gold, 0, -.32, 0)); [-1, 1].forEach(s => { const h = E.mesh(new THREE.TorusGeometry(.12, .035, 8, 16, Math.PI), gold, s * .3, .14, 0); h.rotation.z = s * -Math.PI / 2; g.add(h); }); }
     else if (kind === 'bonus') { const cm = E.M(0xffffff, { roughness: .9, clearcoat: 0, emissive: 0xffffff, emissiveIntensity: .15 }); [[0, .15, .3], [.28, .1, .22], [-.28, .1, .22]].forEach(([x, y, r]) => g.add(E.mesh(new THREE.SphereGeometry(r, 16, 12), cm, x, y, 0))); const l = E.letter('beis', .4); l.position.set(0, -.35, .1); g.add(l); }
     return g; }
-  function lock() { const g = new THREE.Group(); const m = E.M(0x8d99a8, { metalness: .5, roughness: .3 }); g.add(E.mesh(E.rbox(.44, .36, .2, .06), m, 0, -.12, 0)); g.add(E.mesh(new THREE.TorusGeometry(.14, .055, 10, 20, Math.PI), m, 0, .12, 0)); [-1, 1].forEach(x => g.add(E.mesh(new THREE.CylinderGeometry(.055, .055, .12, 10), m, x * .14, .1, 0))); g.add(E.mesh(new THREE.CylinderGeometry(.05, .05, .05, 12), E.M(0x4a5563), 0, -.12, .11)).rotation.x = Math.PI / 2; return g; }
   E.GAMES.forEach((G, i) => {
     const open = E.unlocked(G.id), stars = E.best(G.id), s = new THREE.Group();
     const disc = E.mesh(new THREE.CylinderGeometry(.78, .86, .28, 40), open ? E.M(colors[i], { roughness: .25, clearcoat: 1 }) : greyM, 0, .14, 0); s.add(disc);
     s.add(E.mesh(new THREE.TorusGeometry(.8, .05, 10, 40), edgeM, 0, .29, 0)).rotation.x = 0; s.children[1].rotation.x = Math.PI / 2;
-    const ic = open ? icon(G.kind) : lock(); if (!open) ic.scale.setScalar(1.7); ic.position.y = 1.05; s.add(ic);
+    const ic = icon(G.kind); if (!open) ic.traverse(o => { if (o.isMesh && o.material && o.material.opacity !== 0) o.material = greyIcon; }); ic.position.y = 1.05; s.add(ic);   /* a locked game shows its picture in grey */
     if (G.bonus && open) { const b = E.star3d(.18); b.position.set(.55, 1.5, 0); s.add(b); }
     const st = []; if (stars || (open && E.loadSave().games[G.id])) for (let k = 0; k < 3; k++) { const m = E.star3d(.14); m.material = k < stars ? E.goldDot() : E.M(0xdde6ee); m.position.set((k - 1) * .36, .55, .55); s.add(m); st.push(m); }
     s.userData = { G, open, stars, ic, disc };
