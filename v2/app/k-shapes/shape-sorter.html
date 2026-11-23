@@ -21,13 +21,15 @@ startGame({
           { paint: 'square', color: '#12A766', accept: ['square'] }, { paint: 'rect', color: '#F0458E', accept: ['rect', 'rectLong', 'rectFat'] }],
   intro: ['Mendy has four toy boxes.', 'A circle box, a triangle box, a square box, a rectangle box.', "Let's remember our shapes!"],
   lessons: [{ k: 'circle', word: 'circle', short: true, color: '#1F6FEB', rule: ['Round, like a plate.'] },
-            { k: 'tri', word: 'triangle', short: true, color: '#E03A33' },
+            { k: 'tri', word: 'triangle', short: true, color: '#E03A33', tapCorners: true },
             { k: 'square', word: 'square', short: true, color: '#12A766', rule: ['Four sides the same.'] },
-            { k: 'rect', word: 'rectangle', short: true, color: '#F0458E', rule: ['Two long sides, two short sides.'] }],
+            { k: 'rect', word: 'rectangle', short: true, color: '#F0458E', rule: ['Two long sides, two short sides.'],
+              chant: [['Circle!', 2], ['Triangle!', 3], ['Square!', 2], ['Rectangle!', 3]] }],
   set: [['a1', 'circle', 0, 1], ['a2', 'tri', PI, 1], ['a3', 'square', PI / 4, 1], ['a4', 'rectLong', PI / 2, 1],
         ['a5', 'triTall', 0.3, 0.8], ['a6', 'rect', 0.2, 1], ['a7', 'circle', 0, 0.72], ['a8', 'square', 0.2, 0.75]],
   watchLine: 'Watch me put a shape in its box.', watchDone: 'A circle goes in the circle box!', yourTurn: 'Now you. Put each shape in its box!',
   ask: 'Drag each shape into its box.', hint: 'Look at the shape on each box.', hint2: 'This one goes in its box.', remember: 'Remember: count the corners.',
+  ruleFor: t => ['Remember: a circle is round.', 'Remember: a triangle has three corners.', 'Remember: a square has four sides the same.', 'Remember: two long sides, two short sides.'][t.box],
   yesDefault: o => 'Yes! A ' + fam(o.k) + '!', allDone: 'Every shape is in its box!',
   wrong: o => { const f = fam(o.k);
     if (f === 'square') { const a = ['That is a square.', 'Four sides the same. It goes in the square box.']; a.count = false; return a; }
