@@ -1679,7 +1679,7 @@ gen(){ const h=RI(1,12), half=Math.random()<.5, t=`${h}:${half?'30':'00'}`, cp=(
 how:['Penny 1¢, nickel 5¢, dime 10¢, quarter 25¢.','A dime is small but worth more than a nickel.','Count the biggest coins first: 10, 20, 25, 26.'],
 gen(){ const k=RI(0,2); if(k===0){ const C=[['penny',1],['nickel',5],['dime',10],['quarter',25]], [c,v]=PICK(C); return N(`How many cents is a ${c} worth?`, v, 'Penny 1, nickel 5, dime 10, quarter 25.', {unit:'¢'}); }
 if(k===1){ const C=[['10 cents','Dime',['Nickel','Penny']],['25 cents','Quarter',['Dime','Nickel']],['5 cents','Nickel',['Dime','Penny']],['1 cent','Penny',['Nickel','Dime']]], [q,r,w]=PICK(C); return MX(`Which coin is worth ${q}?`,[r].concat(w),'Penny 1, nickel 5, dime 10, quarter 25.'); }
-const d=RI(0,3), n=RI(0,3), p=RI(1,4); return N(`${d} dimes, ${n} nickels and ${p} pennies. How many cents?`, d*10+n*5+p, 'Count by tens for dimes, by fives for nickels, then by ones.', {unit:'¢'}); }},
+const d=RI(0,3), n=RI(0,3), p=RI(1,4), pl=(k,a,b)=>k+' '+(k===1?a:b), ps=[d?pl(d,'dime','dimes'):'', n?pl(n,'nickel','nickels'):'', pl(p,'penny','pennies')].filter(Boolean); return N(`${ps.length>1?ps.slice(0,-1).join(', ')+' and '+ps[ps.length-1]:ps[0]}. How many cents?`, d*10+n*5+p, 'Count by tens for dimes, by fives for nickels, then by ones.', {unit:'¢'}); }},
 'MATH.STAT.L02.01':{name:'Picture graphs',
 how:['Each picture stands for one.','Count each row to read the graph.','How many more: subtract the smaller row from the bigger row.'],
 gen(){ const a=RI(3,8), b=RI(1,a-1), c=RI(1,7), pic=`\u{1F34E} | ${'\u{1F34E}'.repeat(a)}\n\u{1F350} | ${'\u{1F350}'.repeat(b)}\n\u{1F34B} | ${'\u{1F34B}'.repeat(c)}`; const k=RI(0,2);
