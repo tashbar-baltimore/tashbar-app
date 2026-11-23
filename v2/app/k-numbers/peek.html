@@ -126,7 +126,7 @@ svg{ display:block; }
   .right{ grid-template-rows:1fr .9fr; gap:12px; }
   .crate{ grid-template-columns:repeat(3,1fr); gap:4px; }
   .hole{ max-width:72px; }
-  .ba,.slot{ width:clamp(56px,8vh,72px); height:clamp(56px,8vh,72px); }
+  .ba,.slot{ width:clamp(64px,8vh,72px); height:clamp(64px,8vh,72px); }
   #check{ width:96px; }
 }
 @media (prefers-reduced-motion:reduce){ #check.ready,.play,#again.talk{ animation:none; } }
@@ -250,7 +250,7 @@ svg{ display:block; }
     $('crate').innerHTML = h;
   }
   function fillCrate() { S.holes = []; for (var i = 0; i < PILE; i++) S.holes.push(true); }
-  function draw() { drawBasket(S.phase === 'fix'); drawCrate(); drawDots(); }
+  function draw() { drawBasket(S.phase === 'fix' && S.showHint); drawCrate(); drawDots(); }
   function towel(open) { $('peek').classList.toggle('open', open); if (open) NK.sound.cloth(); }
   function lock(on) { $('game').classList.toggle('locked', on); }
 
@@ -316,12 +316,11 @@ svg{ display:block; }
   async function chant(first) {
     var c = $('clap'); c.hidden = false;
     await say(first ? 'Clap with me!' : 'Stand up! Clap with me!');
-    var beats = [0, 1, 2, 3, 3.5], start = Date.now(), spoken = say('Peek, peek, peek and see!', { noRepeat: true });
-    for (var b = 0; b < beats.length; b++) {
-      var due = start + beats[b] * (NK.fast ? 20 : 520); await NK.wait(Math.max(0, due - Date.now()));
-      NK.sound.clap(); c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 140);
+    for (var line = 0; line < 2; line++) {
+      await say('Peek, peek, peek and see!', { noRepeat: true });
+      for (var b = 0; b < 3; b++) { NK.sound.clap(); c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 140); await NK.wait(420); }
     }
-    await spoken; await NK.wait(300); c.hidden = true;
+    await NK.wait(200); c.hidden = true;
   }
 
   /* ---------- show: the demo (a tap, then a drag) ---------- */
@@ -353,8 +352,10 @@ svg{ display:block; }
   /* ---------- try: the rounds ---------- */
   async function round() {
     if (!S.bonus) { S.target = nextTarget(); S.fruit = FRUIT[S.round % FRUIT.length]; } else S.fruit = FRUIT[0];
-    if (!S.bonus && S.round === 4) { towel(false); $('peek').classList.remove('look'); S.basket = 0; fillCrate(); draw(); await chant(false); }   /* halfway: stand up, clap, then bigger numbers */
-    S.missed = false; S.misses = 0; S.basket = 0; fillCrate(); S.phase = 'flash'; lock(true); draw();
+    if (!S.bonus && S.round === 4) { towel(false); $('peek').classList.remove('look'); S.basket = 0; fillCrate(); draw(); await chant(false); await bigTeach(); }   /* halfway: stand up, clap, then bigger numbers */
+    S.missed = false; S.misses = 0; S.showHint = false; S.basket = 0; fillCrate(); S.phase = 'flash'; lock(true);
+    if ($('peek').classList.contains('open')) { towel(false); await NK.wait(420); }   /* cover first: new fruit are never seen before the peek */
+    $('peek').classList.remove('look'); draw();
     if (S.bonus) { var b = BONUS[S.bonusAt]; S.parts = b; S.target = b[0] + b[1];
       var A = cluster(b[0], 28), B = cluster(b[1], 72).map(function (p) { return [p[0], p[1], 1]; }), gA = [], gB = [], i;
       for (i = 0; i < A.length; i++) gA.push(i); for (i = 0; i < B.length; i++) gB.push(A.length + i);
@@ -369,12 +370,24 @@ svg{ display:block; }
     else NK.last = ask();
   }
 
+  /* before the bigger numbers: see 4 as two and two, 5 as three and two */
+  async function bigTeach() {
+    var keep = S.fruit; S.fruit = FRUIT[0];
+    var four = LAYOUTS[4][0], five = LAYOUTS[5][1];
+    for (var k = 0; k < 2; k++) {
+      var L = k === 0 ? four : five; S.layout = L; drawPlate(L.p); towel(true); $('peek').classList.add('look');
+      await NK.wait(300); await showShape(true); towel(false); $('peek').classList.remove('look'); await NK.wait(450);
+    }
+    S.fruit = keep;
+  }
+
   /* show the shape: light up the two groups the eye sees, and say it */
-  async function showShape() {
+  function parts(L) { var m = L.say.match(/^(.*\.) (\w+!)$/); return m ? m[1] : L.say; }
+  async function showShape(whole) {
     var ta = $('plate').querySelectorAll('.ta'), L = S.layout;
     (L.g[0] || []).forEach(function (i) { ta[i] && ta[i].classList.add('hi'); });
     (L.g[1] || []).forEach(function (i) { ta[i] && ta[i].classList.add('hi2'); });
-    await Promise.all([NK.wait(1400), say(L.say, { noRepeat: true })]);
+    await Promise.all([NK.wait(1400), say(whole ? L.say : parts(L), { noRepeat: true })]);
     ta.forEach(function (t) { t.classList.remove('hi', 'hi2'); });
   }
 
@@ -396,16 +409,15 @@ svg{ display:block; }
     }
     /* a mistake: look again at the SHAPE, then fix the basket */
     NK.sound.oops(); $('basket').classList.add('shake'); setTimeout(function () { $('basket').classList.remove('shake'); }, 500);
-    if (!S.missed) { S.missed = true; S.missStreak++; S.hitStreak = 0; S.flashAdj = Math.min(200, S.flashAdj + 100);
-      if (S.missStreak >= 2 && !S.bonus) { S.easy = 3; S.easyJust = true; S.missStreak = 0; } }
+    if (!S.missed) { S.missed = true; S.missStreak++; S.hitStreak = 0; S.flashAdj = Math.min(500, S.flashAdj + 250);
+      if (S.missStreak >= 2 && !S.bonus) { S.easy = 4; S.easyJust = true; S.missStreak = 0; } }
     S.misses++;
-    if (!wasFix || S.misses >= 3) {
-      towel(true); $('peek').classList.add('look');
-      await say("Let's look again.", { noRepeat: true });
-      await showShape();
-      towel(false); $('peek').classList.remove('look'); await NK.wait(350);
-    }
-    S.phase = 'fix'; draw(); lock(false);
+    towel(true); $('peek').classList.add('look');
+    await say("Let's look again.", { noRepeat: true });
+    await showShape(S.misses >= 2);
+    towel(false); $('peek').classList.remove('look'); await NK.wait(350);
+    S.phase = 'fix'; S.showHint = S.misses >= 2; draw(); lock(false);
+    if (!S.showHint) { await say('How many? Fix your basket.'); return; }
     var d = S.target - S.basket, hint = d > 0 ? 'Put ' + NK.word(d) + ' more in.' : 'Take ' + NK.word(-d) + ' out.';
     await say('You put ' + NK.word(S.basket) + '. ' + hint);
   }
@@ -428,7 +440,7 @@ svg{ display:block; }
     var h = ''; for (var i = 0; i < 3; i++) h += i < stars ? STAR : STAR_OFF; $('stars').innerHTML = h;
     $('next').hidden = stars < 2; $('end').hidden = false; NK.sound.win(); burst();
     $('stars').querySelectorAll('svg').forEach(function (s, i) { setTimeout(function () { s.classList.add('on'); }, 150 + i * 250); });
-    await say(stars === 3 ? 'Wow! Three stars! Peek and see!' : stars === 2 ? 'You did it! Two stars!' : 'Good looking! Let\'s peek once more.');
+    await say(stars === 3 ? 'Wow! Three stars! Peek and see!' : stars === 2 ? 'You did it! Two stars!' : 'Nice try! Let\'s peek once more.');
     S.phase = 'done';
   }
   function burst() {

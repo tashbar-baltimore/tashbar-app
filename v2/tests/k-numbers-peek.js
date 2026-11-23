@@ -49,6 +49,7 @@ module.exports = async function (browser) {
     if (look.apples < 3) bad('the start screen does not show its apple picture'); if (!/gradient/.test(look.bg)) bad('the page background is plain (blank-looking)');
     if (look.play < 64) bad('the play button is smaller than 64 pixels');
     await pg.screenshot({ path: path.join(shots, 'k-numbers-peek-start-chromebook.png') });
+    await pg.evaluate(() => { window.__peekOpen = []; const o = NK.say; NK.say = function (t, x) { if (/Peek!$/.test(t)) __peekOpen.push(document.getElementById('peek').classList.contains('open')); return o.call(NK, t, x); }; });
     await pg.click('#play', { force: true });
     await until(pg, () => PEEK.phase === 'answer', 30000);
     const demo = await pg.evaluate(() => NK.said.slice());
@@ -62,6 +63,9 @@ module.exports = async function (browser) {
     for (let i = 0; i < t0 + 1; i++) await tapApple(pg);
     await pg.click('#check', { force: true });
     await until(pg, () => PEEK.phase === 'fix');
+    const first = await pg.evaluate(() => ({ said: NK.said.slice(-4).join(' | '), extra: document.querySelectorAll('#inb .ba.extra').length }));
+    if (!/Fix your basket/.test(first.said) || first.extra) bad('after a first mistake he should look again and fix it himself: ' + first.said);
+    await pg.waitForTimeout(80); await pg.click('#check', { force: true }); await until(pg, () => PEEK.phase === 'fix' && PEEK.misses === 2);
     const wrong = await pg.evaluate(() => ({ open: NK.said.some(s => /look again/.test(s)), extra: document.querySelectorAll('#inb .ba.extra').length, said: NK.said.slice(-9).join(' | ') }));
     if (!wrong.open) bad('after a wrong answer we do not look again');
     if (wrong.extra !== 1) bad('after a wrong answer the basket does not show the extra apple');
@@ -78,6 +82,7 @@ module.exports = async function (browser) {
     await until(pg, () => PEEK.bonus === true && PEEK.phase === 'answer').catch(() => bad('7 of 8 right first time should give the bonus round'));
     for (let r = 0; r < 2; r++) await playRound(pg, 'tap');
     await until(pg, () => PEEK.phase === 'done');
+    const opens = await pg.evaluate(() => __peekOpen); if (opens.length < 8 || opens.some(Boolean)) bad('the new fruit were showing before "Peek!" (the towel must be down): ' + JSON.stringify(opens));
     const end = await pg.evaluate(() => ({ stars: PEEK.stars, first: PEEK.firstTry, saved: JSON.parse(localStorage.getItem('tl2.kNumbers') || '{}'), next: !document.getElementById('next').hidden, said: NK.said }));
     if (end.stars !== 2 || end.first !== 7) bad('7 of 8 right first time should give 2 stars (got ' + end.stars + ')');
     const g = end.saved.games && end.saved.games.peek;
