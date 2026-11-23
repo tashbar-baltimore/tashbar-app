@@ -814,3 +814,33 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - crayons-in-round-holder.webp | https://pixabay.com/photos/crayon-colors-colorful-education-215873/ | Pixabay Content License | PublicDomainPictures
 - old-sailing-ship-at-sea.webp | https://pixabay.com/photos/mati-ocean-the-ship-sea-ship-water-3126385/ | Pixabay Content License | mati-foto
 - glass-of-water-on-cloth.webp | https://pixabay.com/photos/cup-water-napkin-sky-reflection-2875091/ | Pixabay Content License | 6653167
+- wooden-crate-of-small-cubbies.webp | https://pixabay.com/photos/shelf-case-isolated-wall-shelf-2444657/ | Pixabay Content License | garten-gg
+- toasted-cheese-sandwich-cut-in-half.webp | https://pixabay.com/photos/grilled-cheese-sandwich-10383250/ | Pixabay Content License | tehzeebkazmii
+- one-red-apple-on-white.webp | https://pixabay.com/photos/apple-red-fruit-ripe-yummy-meal-302287/ | Pixabay Content License | Silberfuchs
+- smoke-alarm-on-hallway-ceiling.webp | https://www.flickr.com/photos/97283472@N00/111672966 | CC BY 2.0 | leighblackall
+- stacks-of-white-plates.webp | https://pixabay.com/photos/plate-stack-dishes-stack-of-plates-629970/ | Pixabay Content License | congerdesign
+- wooden-clipboard-with-blank-paper.webp | https://pixabay.com/photos/desk-white-background-plant-coffee-1209778/ | Pixabay Content License | 1681551
+- row-of-jam-jars-on-shelf.webp | https://pixabay.com/photos/jam-fruit-jars-fruit-jams-428094/ | Pixabay Content License | jarmoluk
+- two-black-drawers-brass-handles.webp | https://pixabay.com/photos/back-to-school-registerbox-1538863/ | Pixabay Content License | PIRO4D
+- white-plate-fork-and-knife.webp | https://www.flickr.com/photos/151691693@N02/42585288225 | CC BY 2.0 | stockcatalog
+- white-keyboard-letter-keys-close.webp | https://pixabay.com/photos/keyboard-hardware-computer-70506/ | Pixabay Content License | geralt
+- blue-front-door-yellow-house.webp | https://pixabay.com/photos/house-door-entrance-stone-stairway-7614753/ | Pixabay Content License | anaterate
+- wooden-bunk-beds-dorm-room.webp | https://pixabay.com/photos/bunk-beds-accommodation-house-beech-946988/ | Pixabay Content License | misska420
+- old-closed-wooden-box-hasp.webp | https://collections.museumsvictoria.com.au/items/404090 | CC BY 4.0 | Photographer: Taryn Ellis
+- old-keys-on-ring-wide.webp | https://pixabay.com/photos/keys-metal-old-black-and-white-96233/ | Pixabay Content License | weinstock
+- wheat-stalks-heads-wide.webp | https://pixabay.com/photos/grain-field-wheat-wheat-field-7272712/ | Pixabay Content License | Alexas_Fotos
+- dog-in-green-grass-wide.webp | https://pixabay.com/photos/shetland-sheepdog-dog-blue-merle-10562821/ | Pixabay Content License | JACLOU-DL
+- redwood-looking-up-wide.webp | https://www.flickr.com/photos/124320023@N06/14122525332 | CC BY-SA 2.0 | liquidcrash
+- sinai-desert-hills-wide.webp | https://www.flickr.com/photos/37707866@N00/6306690252 | CC BY 2.0 | prilfish
+- sinai-rocky-mountain-wide.webp | https://pixabay.com/photos/mount-sinai-mountains-rocks-2624821/ | Pixabay Content License | StockSnap
+- tallis-on-railing-wide.webp | https://pixabay.com/photos/tallit-synagogue-jewish-hebrew-444427/ | Pixabay Content License | barakbro
+- mezuzah-on-stone-doorpost.webp | https://www.flickr.com/photos/21160385@N02/8683269610 | CC BY 2.0 | paularps
+- snow-covered-cars-street.webp | https://pixabay.com/photos/snow-street-cars-covered-deep-1813456/ | Pixabay Content License | qimono
+- steam-engine-wheels-close.webp | https://pixabay.com/photos/railroad-black-and-white-301155/ | Pixabay Content License | ThomasWolter
+- president-lincoln-1863-wide.webp | https://pixabay.com/photos/abraham-lincoln-president-portrait-60558/ | Pixabay Content License | WikiImages
+- microscope-parts-wide.webp | https://pixabay.com/photos/white-chemistry-isolated-microscopy-219983/ | Pixabay Content License | PublicDomainPictures
+- bean-seed-to-seedling-stages.webp | https://commons.wikimedia.org/w/index.php?curid=99476965 | CC BY-SA 4.0 | B. Domangue
+- tomato-plant-parts-drawing.webp | https://pixabay.com/illustrations/tomato-plant-tomatoes-caterpillar-9716295/ | Pixabay Content License | Mollyroselee
+- skeleton-whole-wide.webp | https://pixabay.com/vectors/skeleton-bones-human-person-9663605/ | Pixabay Content License | BlenderTimer
+- duck-swimming-among-koi-fish.webp | https://pixabay.com/photos/mallard-water-bird-aquatic-bird-6725473/ | Pixabay Content License | Lancier
+- dove-sitting-on-its-nest.webp | https://www.flickr.com/photos/14884524@N08/3461696246 | CC BY 2.0 | Kilarin

@@ -6,14 +6,18 @@
 - **2.0:** https://tashbar-learning-v2.web.app. A separate website. It uses the same boys, codes and saved progress (the same school server), so a boy's work counts in both.
 
 ## The one rule
-**Nothing goes into 2.0 without an approver's "yes".** The publishing system enforces this; a builder cannot skip it. One approver is enough.
+**Nothing goes into 2.0 without an approver's "yes".** The publishing system checks for it, and one approver is enough. **The approval line is posted only for an approver who, in that same conversation, has looked at the newest look link and said to approve.** No one else ever posts it.
 
-## How a piece of 1.0 moves into 2.0
-1. **Take stock.** The builder picks one piece of 1.0 and writes down in `v2/FEATURES.md` what it really does, including the small details. Then they decide: keep it, simplify it, or leave it out.
-2. **Build it clean.** The builder copies the piece into `v2/` (a copy, so later 1.0 changes never leak into 2.0), fixes what needs fixing, and tests it as a made-up boy on a Chromebook and a phone.
-3. **Send it.** The builder opens a pull request that changes only `v2/`. When its tests pass, the system puts it on a private **look link** and posts that link on the pull request.
-4. **Look and talk.** An approver opens the look link like any website, on her phone or computer. In her own Claude she says what she sees ("the buttons are too small", "this is good"). Changes come back as a new look link.
-5. **Approve.** When she says "approved" in her Claude, her Claude marks the pull request approved from her GitHub account. The system checks that the approval came from a name in `v2/APPROVERS.json` and is for exactly the version she looked at. Then it goes into 2.0 and live on the 2.0 link (about 5 minutes).
+## How a piece of 1.0 moves into 2.0 (a small workshop, one piece at a time)
+Mrs. Khaver or Esti run it in her own Claude, with the prompt in `v2/START-PROMPT.md`. She is in charge and her Claude is the builder.
+1. **"What are we looking at today?"** She picks one small piece of 1.0 from `v2/FEATURES.md`.
+2. **Look at it in 1.0 together.** Her Claude shows her where it is, explains what it really does, and writes it down in `v2/FEATURES.md`.
+3. **Decide.** Is it good, dumb, or could it be done better or differently? She decides: keep it as is, change it, or leave it out.
+4. **Build it clean.** Her Claude copies only what is needed into `v2/` (a copy, so 1.0 changes never leak into 2.0), makes her changes, tests it as a made-up boy on a Chromebook and a phone, and opens a pull request that changes only `v2/`.
+5. **Look and tweak.** When the tests pass, the system puts it on a private **look link** and posts that link on the pull request. She opens it like any website and says what to change. Her Claude changes it, and a new look link follows. This repeats until she likes it.
+6. **Put it in.** When she says "approve it", her Claude posts one line on the pull request: `APPROVED FOR 2.0 — <her name>`. Everyone works through the HoS's GitHub, so that line is the yes. The gate (`v2-gate`) checks that her name is on `v2/APPROVERS.json` (as it is on main) and that the line came after the newest change. Then it goes into 2.0 and live (about 5 minutes).
+
+Other builders (like the HoS's sessions) may also prepare a 2.0 piece the same way, but it still waits for her yes.
 
 ## The "ready" checklist (every piece, before it is sent)
 - [ ] It does what the HoS asked, in his words (written at the top of the pull request).

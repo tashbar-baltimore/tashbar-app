@@ -1,39 +1,37 @@
 name: v2-gate
-# THE 2.0 RULE (HoS 2026-11-22): nothing goes into Tashbar Learning 2.0 until an approver (v2/APPROVERS.json on main: Mrs. Khaver,
-# Esti, or anyone the HoS adds) says yes. Runs from main only, so a pull request cannot change how it decides.
-# For a pull request that changes v2/:
+# THE 2.0 RULE (HoS 2026-11-22): nothing goes into Tashbar Learning 2.0 until an approver says yes. Everyone works through the HoS's
+# GitHub, so the yes is a comment an approver's Claude posts on the pull request:   APPROVED FOR 2.0 — <name>
+# with <name> on the list in v2/APPROVERS.json (read from main), posted AFTER the pull request's newest commit (a yes counts only for
+# the version she looked at). Builders never post it (CLAUDE.md, v2/README.md). This workflow always runs from main, so a pull request
+# cannot change how it decides. For a pull request that changes v2/:
 #   - it must change ONLY v2/ (1.0 and 2.0 changes are never mixed);
 #   - its tests must have passed on its newest commit;
-#   - no approval yet  -> put it on a look link (publish-v2 preview) and wait;
-#   - an approver approved its newest commit -> merge it and put 2.0 live (publish-v2 live).
+#   - no yes yet -> put it on a private look link (publish-v2 preview) and wait;
+#   - a yes for its newest commit -> merge it and put 2.0 live (publish-v2 live).
 on:
   workflow_dispatch:
     inputs:
       pr: { description: 'pull request number', required: true }
-  workflow_run:
-    workflows: [v2-review-seen]
-    types: [completed]
-concurrency: { group: 'v2-gate-${{ inputs.pr || github.event.workflow_run.head_branch }}', cancel-in-progress: false }
+  issue_comment:
+    types: [created]
+concurrency: { group: 'v2-gate-${{ inputs.pr || github.event.issue.number }}', cancel-in-progress: false }
 permissions:
   contents: write
   pull-requests: write
   actions: write
 jobs:
   gate:
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_run'
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.issue.pull_request && contains(github.event.comment.body, 'APPROVED FOR 2.0'))
     runs-on: ubuntu-24.04
     env: { GH_TOKEN: '${{ github.token }}', REPO: '${{ github.repository }}' }
     steps:
       - name: Decide
         run: |
           set -euo pipefail
-          n='${{ inputs.pr }}'
-          if [ -z "$n" ]; then
-            br='${{ github.event.workflow_run.head_branch }}'
-            [ "${{ github.event.workflow_run.head_repository.full_name }}" = "$REPO" ] || { echo "Not from this repository."; exit 0; }
-            n=$(gh api "repos/$REPO/pulls?state=open&head=${REPO%%/*}:$br" --jq '.[0].number // empty')
-          fi
-          [[ "$n" =~ ^[0-9]+$ ]] || { echo "No open pull request."; exit 0; }
+          n='${{ inputs.pr || github.event.issue.number }}'
+          [[ "$n" =~ ^[0-9]+$ ]] || { echo "No pull request."; exit 0; }
           pr=$(gh api "repos/$REPO/pulls/$n"); [ "$(jq -r .state <<<"$pr")" = open ] || { echo "PR #$n is not open."; exit 0; }
           [ "$(jq -r .head.repo.full_name <<<"$pr")" = "$REPO" ] || { echo "PR #$n is from outside this repository."; exit 0; }
           sha=$(jq -r .head.sha <<<"$pr")
@@ -45,15 +43,17 @@ jobs:
             exit 0; fi
           concl=$(gh api "repos/$REPO/commits/$sha/check-runs?check_name=test" --jq '[.check_runs[] | select(.status=="completed")][0].conclusion // "none"')
           [ "$concl" = success ] || { echo "PR #$n: tests on $sha are '$concl'; waiting for them to pass."; exit 0; }
-          approvers=$(gh api "repos/$REPO/contents/v2/APPROVERS.json?ref=main" --jq .content | base64 -d | jq -r '.approvers[].github | select(. != "") | ascii_downcase')
-          [ -n "$approvers" ] || echo "No approver has a GitHub username in v2/APPROVERS.json yet, so nobody can approve."
-          ok=$(gh api --paginate "repos/$REPO/pulls/$n/reviews" --jq '.[] | [.user.login, .state, .commit_id] | @tsv' | awk -v s="$sha" -F'\t' '
-                 { k=tolower($1); if ($2!="COMMENTED") { st[k]=$2; c[k]=$3 } }
-                 END { for (k in st) if (st[k]=="APPROVED" && c[k]==s) print k }' | grep -Fxf <(printf '%s\n' $approvers) | head -1 || true)
-          if [ -z "$ok" ]; then
-            echo "PR #$n: no approver has approved commit $sha yet. Making a look link."
+          # the newest commit's time: a yes must come after it
+          since=$(gh api "repos/$REPO/commits/$sha" --jq '.commit.committer.date')
+          names=$(gh api "repos/$REPO/contents/v2/APPROVERS.json?ref=main" --jq .content | base64 -d | jq -r '.approvers[].name | ascii_downcase')
+          yes=$(gh api --paginate "repos/$REPO/issues/$n/comments" --jq ".[] | select(.created_at > \"$since\") | select(.user.type != \"Bot\") | .body" \
+                | grep -ioP '^\s*APPROVED FOR 2\.0\s*(?:-|–|—|:)\s*\K[^\r\n]+' | sed 's/[[:space:].!]*$//' | while read -r who; do
+                    w=$(tr '[:upper:]' '[:lower:]' <<<"$who"); grep -Fxq "$w" <<<"$names" && { echo "$who"; break; }; done || true)
+          if [ -z "$yes" ]; then
+            echo "PR #$n: no approver has said yes after its newest commit ($sha, $since). Making a look link."
             gh api -X POST "repos/$REPO/actions/workflows/publish-v2.yml/dispatches" -f ref=main -f 'inputs[what]=preview' -f "inputs[pr]=$n"
             exit 0; fi
-          echo "PR #$n: approved by $ok for $sha. Letting it into 2.0."
-          gh api -X PUT "repos/$REPO/pulls/$n/merge" -f merge_method=squash -f sha="$sha" -f commit_title="$(jq -r .title <<<"$pr") (#$n, approved by $ok)" --jq .message
+          echo "PR #$n: approved by $yes for $sha. Letting it into 2.0."
+          gh api -X PUT "repos/$REPO/pulls/$n/merge" -f merge_method=squash -f sha="$sha" -f commit_title="$(jq -r .title <<<"$pr") (#$n, approved by $yes)" --jq .message
           gh api -X POST "repos/$REPO/actions/workflows/publish-v2.yml/dispatches" -f ref=main -f 'inputs[what]=live'
+          gh pr comment "$n" --repo "$REPO" --body "Approved by $yes. It is going into 2.0 now: https://tashbar-learning-v2.web.app (live in about 5 minutes)."
