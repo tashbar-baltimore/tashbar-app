@@ -103,12 +103,24 @@ module.exports = async function (browser) {
     await ph.screenshot({ path: path.join(shots, 'k-numbers-peek-round-phone.png') });
     for (let r = 0; r < 8; r++) await playRound(ph, 'tap');
     await until(ph, () => PEEK.bonus === true && PEEK.phase === 'answer').catch(() => bad('a perfect game does not give the bonus round'));
-    for (let r = 0; r < 2; r++) await playRound(ph, 'tap');
+    await until(ph, () => PEEK.phase === 'answer');
+    if (await ph.evaluate(() => PEEK.target) !== 5) bad('the first bonus should be five (three and two)');
+    for (let i = 0; i < 5; i++) await tapApple(ph);
+    await ph.waitForTimeout(400);
+    const rows = await ph.evaluate(() => new Set([...document.querySelectorAll('#inb .ba')].map(b => Math.round(b.getBoundingClientRect().top))).size);
+    if (rows !== 1) bad('on a phone five fruit in the basket do not fit in one row');
+    await ph.click('#check', { force: true });
+    await playRound(ph, 'tap');
     await until(ph, () => PEEK.phase === 'done');
     if (await ph.evaluate(() => PEEK.stars) !== 3) bad('a perfect game should give 3 stars');
     const st = await ph.evaluate(() => [...document.querySelectorAll('#stars svg')].map(x => x.getBoundingClientRect()).map(r => [r.left, r.right]));
     if (st.some(r => r[0] < 0 || r[1] > 390)) bad('on a phone the stars at the end are cut off');
     await ph.screenshot({ path: path.join(shots, 'k-numbers-peek-end-phone.png') });
+    /* a boy who struggled keeps his extra help when he plays again */
+    await ph.evaluate(() => { PEEK.stars = 1; PEEK.flashAdj = 300; }); await ph.click('#replay', { force: true });
+    await until(ph, () => PEEK.phase === 'answer');
+    const help = await ph.evaluate(() => ({ easy: PEEK.easy, adj: PEEK.flashAdj, t: PEEK.target }));
+    if (help.easy < 3 || help.adj < 250 || help.t > 2) bad('play again throws away the extra help for a boy who struggled: ' + JSON.stringify(help));
     w.errs.forEach(e => bad('page error (phone): ' + e)); await w.ctx.close(); w = null;
   } catch (e) { bad('crashed: ' + String(e).slice(0, 240)); }
   finally { if (w) await w.ctx.close().catch(() => {}); fs.rmSync(dist, { recursive: true, force: true }); }

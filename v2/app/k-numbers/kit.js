@@ -115,7 +115,7 @@
   NK.apple = function (cls, green) { return '<svg class="' + (cls || '') + '" viewBox="0 0 100 100"' + (green ? ' style="--apple:url(#nkGreen);--appleEdge:#2C5E0E"' : '') + '><use href="#nkApple"/></svg>'; };
 
   /* ---------- stars and saving ---------- */
-  NK.starsFor = function (firstTry, total) { var r = firstTry / total; return r >= 0.95 ? 3 : r >= 0.7 ? 2 : 1; };
+  NK.starsFor = function (firstTry, total) { var r = firstTry / total; return r >= 0.95 ? 3 : r >= 0.85 ? 2 : 1;   /* 2 stars = 7 of 8, the plan's mastery line */ };
   var KEY = 'tl2.kNumbers';
   NK.load = function () { try { return JSON.parse(localStorage.getItem(KEY)) || { games: {} }; } catch (e) { return { games: {} }; } };
   NK.save = function (game, stars) {

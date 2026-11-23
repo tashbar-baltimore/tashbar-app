@@ -62,9 +62,9 @@ svg{ display:block; }
 .plate .ta{ position:absolute; width:22%; transform:translate(-50%,-50%) rotate(var(--r,0deg)); transition:transform .25s; }
 .plate .ta.hi{ transform:translate(-50%,-50%) scale(1.28); filter:drop-shadow(0 0 8px #FFD23D) drop-shadow(0 0 16px #FFB000); }
 .plate .ta.hi2{ transform:translate(-50%,-50%) scale(1.28); filter:drop-shadow(0 0 8px #5FD0FF) drop-shadow(0 0 16px #1E9CE8); }
-#clap{ position:fixed; inset:0; z-index:30; display:flex; align-items:center; justify-content:center; gap:4px; pointer-events:none; background:radial-gradient(circle, rgba(255,255,255,.85), rgba(190,232,255,.75)); }
+#clap{ position:fixed; inset:0; z-index:30; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer; touch-action:none; background:radial-gradient(circle, rgba(255,255,255,.85), rgba(190,232,255,.75)); }
 #clap[hidden]{ display:none; }
-#clap svg{ width:clamp(120px,22vh,190px); height:clamp(120px,22vh,190px); transition:transform .12s; filter:drop-shadow(0 10px 6px rgba(0,0,0,.2)); }
+#clap svg{ pointer-events:none;  width:clamp(120px,22vh,190px); height:clamp(120px,22vh,190px); transition:transform .12s; filter:drop-shadow(0 10px 6px rgba(0,0,0,.2)); }
 #clap svg:first-child{ transform:rotate(30deg) scaleX(-1); } #clap svg:last-child{ transform:rotate(-30deg); }
 #clap.hit svg:first-child{ transform:translateX(28px) rotate(16deg) scaleX(-1) scale(1.08); } #clap.hit svg:last-child{ transform:translateX(-28px) rotate(-16deg) scale(1.08); }
 #clap::after{ content:''; position:absolute; width:70px; height:70px; border-radius:50%; border:8px solid var(--sun); opacity:0; }
@@ -89,16 +89,16 @@ svg{ display:block; }
 .bwrap{ position:relative; width:min(94%, 450px); height:94%; }
 .bwrap .back{ position:absolute; left:0; top:0; width:100%; height:100%; }
 .bwrap .front{ position:absolute; left:0; bottom:0; width:100%; height:46%; z-index:2; filter:drop-shadow(0 10px 8px rgba(90,50,10,.28)); }
-.inb{ position:absolute; left:6%; right:6%; bottom:35%; z-index:3; display:flex; flex-wrap:wrap-reverse; justify-content:center; align-items:flex-end; gap:0 2px; }
-.ba, .slot{ width:clamp(60px,11vh,96px); height:clamp(60px,11vh,96px); margin:0 0 -14px; }
+.inb{ position:absolute; left:3%; right:3%; bottom:35%; z-index:3; display:flex; flex-wrap:wrap-reverse; justify-content:center; align-items:flex-end; gap:0 2px; }
+.ba, .slot{ width:19.5%; max-width:96px; height:auto; aspect-ratio:1; margin:0 0 -14px; }
 .ba{ cursor:grab; touch-action:none; }
 .ba.land{ animation:land .38s cubic-bezier(.3,1.6,.5,1); transform-origin:50% 90%; } @keyframes land{ 0%{ transform:scale(1.2,.75); } 50%{ transform:scale(.9,1.12); } 100%{ transform:none; } }
 .ba.extra{ filter:drop-shadow(0 0 6px #FF5A4E) drop-shadow(0 0 12px #FF8A80); opacity:.6; }
 .slot{ border:5px dashed #1E9E5A; border-radius:50%; background:radial-gradient(circle,#fff,rgba(220,255,233,.8)); transform:scale(.84); animation:slotp 1s infinite; } @keyframes slotp{ 50%{ transform:scale(.92); } }
 .basket.good{ border-color:#7BE0A4; background:radial-gradient(ellipse at 50% 100%, #FFF3D6 0, rgba(255,243,214,0) 60%), linear-gradient(180deg,#E6FFEF,#C8F5D9); }
 .basket.shake{ animation:shake .45s; } @keyframes shake{ 25%{ transform:translateX(-10px); } 75%{ transform:translateX(10px); } }
-.yes{ position:absolute; left:50%; top:30%; width:124px; height:124px; margin:-62px 0 0 -62px; border-radius:50%; z-index:5; display:flex; align-items:center; justify-content:center; transform:scale(0) rotate(-30deg); transition:transform .3s cubic-bezier(.4,1.7,.6,1); }
-.yes.on{ transform:scale(1) rotate(0); } .yes svg{ width:70px; height:70px; position:relative; }
+.yes{ position:absolute; left:14px; top:12px; width:clamp(84px,14vh,120px); height:clamp(84px,14vh,120px); z-index:5; filter:drop-shadow(0 8px 6px rgba(160,90,0,.35)); display:flex; align-items:center; justify-content:center; transform:scale(0) rotate(-30deg); transition:transform .3s cubic-bezier(.4,1.7,.6,1); }
+.yes.on{ transform:scale(1) rotate(0); }
 
 .low{ display:flex; gap:clamp(12px,2vw,22px); min-height:0; }
 .crate{ flex:1; border-color:#FFE3B8; display:grid; grid-template-columns:repeat(6,1fr); align-items:center; justify-items:center; padding:10px clamp(8px,1.2vw,16px);
@@ -163,9 +163,11 @@ svg{ display:block; }
   .right{ grid-template-rows:1fr .9fr; gap:12px; }
   .crate{ grid-template-columns:repeat(3,1fr); gap:4px; }
   .hole{ max-width:72px; }
-  .ba,.slot{ width:clamp(64px,8vh,72px); height:clamp(64px,8vh,72px); }
+  .ba,.slot{ width:19.5%; height:auto; }
+  .bwrap{ width:98%; }
   #check{ width:98px; }
 }
+.fast .towel{ transition:none !important; }
 @media (prefers-reduced-motion:reduce){ #check.ready,.play,#again.talk,.title,.over::before,.towel .eyes i,.slot{ animation:none; } }
 </style>
 </head>
@@ -205,7 +207,7 @@ svg{ display:block; }
             <rect x="0" y="4" width="400" height="30" rx="15" fill="url(#rim)" stroke="#6E3D14" stroke-width="4"/>
             <path d="M22 13 H378" stroke="#FFF0D0" stroke-width="4" stroke-linecap="round" opacity=".8"/></svg>
         </div>
-        <div class="yes btn3d b-green" id="yes"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="yes" id="yes"><svg viewBox="0 0 100 100" style="width:100%;height:100%"><use href="#nkStar"/></svg></div>
       </div>
       <div class="low">
         <div class="card crate" id="crate"></div>
@@ -365,12 +367,14 @@ svg{ display:block; }
   function ask() { return 'How many ' + S.fruit.many + '? Put them in the basket.'; }
 
   /* ---------- the chant: "Peek, peek, peek and see!" with claps ---------- */
+  function hit() { var c = $('clap'); NK.sound.clap(); c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 140); }
+  $('clap').addEventListener('pointerdown', function (e) { e.preventDefault(); NK.unlock(); S.claps = (S.claps || 0) + 1; hit(); });
   async function chant(first) {
     var c = $('clap'); c.hidden = false;
-    await say(first ? 'Clap with me!' : 'Stand up! Clap with me!');
+    await say(first ? 'Tap and clap with me!' : 'Stand up! Tap and clap with me!');
     for (var line = 0; line < 2; line++) {
       await say('Peek, peek, peek and see!', { noRepeat: true });
-      for (var b = 0; b < 3; b++) { NK.sound.clap(); c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 140); await NK.wait(420); }
+      for (var b = 0; b < 3; b++) { hit(); await NK.wait(420); }
     }
     await NK.wait(200); c.hidden = true;
   }
@@ -409,10 +413,10 @@ svg{ display:block; }
     if ($('peek').classList.contains('open')) { towel(false); await NK.wait(420); }   /* cover first: new fruit are never seen before the peek */
     $('peek').classList.remove('look'); draw();
     if (S.bonus) { var b = BONUS[S.bonusAt]; S.parts = b; S.target = b[0] + b[1];
-      var A = cluster(b[0], 28), B = cluster(b[1], 72).map(function (p) { return [p[0], p[1], 1]; }), gA = [], gB = [], i;
+      var A = cluster(b[0], 28), B = cluster(b[1], 72), gA = [], gB = [], i;
       for (i = 0; i < A.length; i++) gA.push(i); for (i = 0; i < B.length; i++) gB.push(A.length + i);
-      S.layout = { p: A.concat(B), g: [gA, gB], say: NK.Word(b[0]) + ' red and ' + NK.word(b[1]) + ' green. ' + NK.Word(S.target) + '!' };
-    } else S.layout = (S.round >= 5 && S.target >= 3 && Math.random() < .5) ? scattered(S.target) : pick(LAYOUTS[S.target]);
+      S.layout = { p: A.concat(B), g: [gA, gB], say: NK.Word(b[0]) + ' here and ' + NK.word(b[1]) + ' there. ' + NK.Word(S.target) + '!' };
+    } else S.layout = (S.round >= 6 && S.target >= 3 && Math.random() < .5) ? scattered(S.target) : pick(LAYOUTS[S.target]);
     drawPlate(S.layout.p);
     await say(S.round === 0 && !S.bonus ? 'Ready? Peek!' : 'Peek!', { repeat: ask() });
     towel(true); await NK.wait(S.bonus ? 900 : flashFor(S.target)); towel(false); await NK.wait(380);
@@ -481,7 +485,7 @@ svg{ display:block; }
     if (S.bonus) { S.bonusAt++; if (S.bonusAt < 2) return round(); return finish(); }
     S.round++; drawDots();
     if (S.round < ROUNDS) return round();
-    if (S.firstTry >= ROUNDS - 1) { S.bonus = true; S.bonusAt = 0; S.hitStreak = 0; BONUS.sort(function () { return Math.random() - .5; }); await say('Bonus! Super quick peek!'); return round(); }
+    if (S.firstTry >= ROUNDS - 1) { S.bonus = true; S.bonusAt = 0; S.hitStreak = 0; var rest = [[2, 2], [2, 3], [1, 3]]; BONUS = [[3, 2], rest[Math.floor(Math.random() * 3)]]; await say('Bonus! Super quick peek!'); return round(); }
     return finish();
   }
 
@@ -500,12 +504,13 @@ svg{ display:block; }
     for (var i = 0; i < 28; i++) { var c = document.createElement('i'); c.style.cssText = 'left:50%;top:40%;background:' + cols[i % 6] + ';--dx:' + Math.round(Math.random() * 700 - 350) + 'px;--dy:' + Math.round(Math.random() * 500 - 150) + 'px';
       var w = document.createElement('div'); w.className = 'burst'; w.appendChild(c); document.body.appendChild(w); setTimeout(function (x) { x.remove(); }.bind(null, w), 1700); }
   }
-  $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; reset(); S.round = 0; drawDots(); round(); });
+  $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; var slow = S.stars < 2, adj = S.flashAdj; reset(); if (slow) { S.easy = 4; S.flashAdj = Math.max(250, adj); } S.round = 0; drawDots(); round(); });
   $('next').addEventListener('click', function () { NK.hush(); location.href = '../'; });
   function reset() { S.firstTry = 0; S.bonusRight = 0; S.results = []; S.flashAdj = 0; S.missStreak = S.hitStreak = S.easy = 0; S.easyJust = false; S.bonus = false; S.prev = 0; }
 
   /* ---------- start ---------- */
   (function hero() { var h = '<div class="dish"></div>'; [[30, 52], [52, 66], [42, 38]].forEach(function (p) { h += '<svg class="ta" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); $('hero').innerHTML = h + '<div class="corner"></div>'; })();
+  if (NK.fast) document.body.classList.add('fast');
   fillCrate(); draw();
   $('play').addEventListener('click', async function () {
     NK.unlock(); $('start').hidden = true; reset(); S.round = 0;
