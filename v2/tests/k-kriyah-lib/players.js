@@ -73,3 +73,19 @@ P.bonus = async (pg, shot, log) => {
     if (i.targets.length) { await pg.mouse.click(...i.targets[0]); if (++n === 5) await shot('2-middle'); await pg.waitForTimeout(80); return true; } return false; });
 };
 module.exports = P;
+P.soundmatch = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-drag-ready]', { timeout: 180000 }); await shot('1-start'); let n = 0;
+  let i = await K.info(pg); const wrongK = Object.keys(i.peds).find(k => k !== i.want);
+  await K.drag(pg, i.card, i.peds[wrongK]); await pg.waitForTimeout(600); await shot('3-wrong');
+  log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('Listen.'), 8000));
+  await loop(pg, async () => { i = await K.info(pg); if (!i || !i.ready) return false; await K.drag(pg, i.card, i.peds[i.want]); if (++n === 2) { await pg.waitForTimeout(400); await shot('2-middle'); } await pg.waitForTimeout(300); return true; });
+};
+P.train = async (pg, shot, log) => {
+  await pg.waitForSelector('body[data-train-ready]', { timeout: 180000 }); await shot('1-start'); let n = 0, wrong = false;
+  await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.ready || i.needSlot == null) return false;
+    const to = i.slots[i.needSlot];
+    if (!wrong) { const w = i.cars.find(c => c.k !== i.need); if (w) { wrong = true; await K.drag(pg, w.xy, to); await pg.waitForTimeout(500); await shot('3-wrong');
+      log.wrongHandled = !!(await K.until(pg, () => window.__lines.join(' ').includes('goes here'), 15000)); return true; } }
+    const c = i.cars.find(x => x.k === i.need); if (!c) return false; await K.drag(pg, c.xy, to); if (++n === 3) { await pg.waitForTimeout(300); await shot('2-middle'); } await pg.waitForTimeout(300); return true; });
+};
+P.story2 = P.story;

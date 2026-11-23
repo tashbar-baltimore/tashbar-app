@@ -2,7 +2,9 @@
    Skill: spots Beis, Veis and Alef fast, mixed together. Letters float down from the clouds; he taps every one that
    matches the letter on Mendy's sign. Three short rounds (Beis, then Veis, then Alef), each a little faster.
    A wrong tap is named kindly ("That is Veis. No dot."), and nothing is lost when a letter lands. */
-export default function setup(E) {
+export default function setup(E, { unit }) {
+  const pool = [...unit.known, ...unit.letters];
+  const R = unit.n === 1 ? ['beis', 'veis', 'alef'] : unit.letters;   /* the letter to catch in each round */
   const { THREE, S } = E;
   const boy = E.mendy(); E.scene.add(boy);
   const sign = new THREE.Group(); sign.add(E.mesh(E.rbox(1.25, 1.35, .14, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); sign.add(E.mesh(E.rbox(1.05, 1.15, .08, .06), E.M(0xfffaf0), 0, 0, .06));
@@ -34,31 +36,32 @@ export default function setup(E) {
     if (u.key === want) { u.busy = true; caught++; E.joy(l.position.clone()); boy.mood('cheer'); setTimeout(() => boy.mood('calm'), 700);
       const p0 = l.position.clone(), to = basket.position.clone().add(new THREE.Vector3(0, .5, 0)); await E.tween(420, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * .6); });
       u.gone = true; E.scene.remove(l); E.sfx.pop(); }
-    else { wrong++; u.t0 += 500; E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : u.key === 'beis' ? 'That is Beis. It has a dot.' : 'That is Veis. No dot.', false); }
+    else { wrong++; u.t0 += 500; E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : u.key === 'beis' ? 'That is Beis. It has a dot.' : u.key === 'veis' ? 'That is Veis. No dot.' : 'That is ' + E.LETTERS[u.key].name + '.', false); }
   });
   async function round(k, n, every, ms) {
     want = k; setSign(k); E.hop(boy, .3);
-    await E.say(k === 'alef' ? 'Catch every Alef, the quiet one!' : k === 'beis' ? ['Catch every Beis!', S('b')] : ['Catch every Veis!', S('v')]);
+    await E.say(k === 'alef' ? 'Catch every Alef, the quiet one!' : ['Catch every ' + E.LETTERS[k].name + '!', S(E.LETTERS[k].snd)]);
     active = true; document.body.dataset.rainReady = k; homeBtn(false);   /* no leaving by accident while letters fall */
-    const mix = Array.from({ length: n }, (_, i) => i % 2 === 0 ? k : keysBut(k)[i % 4 === 1 ? 0 : 1]).sort(() => Math.random() - .5);
+    const others = keysBut(k), near = others.filter(x => unit.letters.includes(x) || x === ({ beis: 'veis', veis: 'beis' })[k]), far = others.filter(x => !near.includes(x));
+    const mix = Array.from({ length: n }, (_, i) => i % 2 === 0 ? k : (i % 6 === 5 && far.length ? far[(i / 6 | 0) % far.length] : near[(i / 2 | 0) % near.length])).sort(() => Math.random() - .5);   /* mostly this unit's letters, a few older ones */
     for (const m of mix) { drop(m, ms); await new Promise(r => setTimeout(r, every)); }   /* real time, even in test runs */
     while (falling.length) await new Promise(r => setTimeout(r, 200));
     active = false; delete document.body.dataset.rainReady; homeBtn(true);
   }
   const homeBtn = on => { const h = E.$('#home'); if (h) h.style.display = on ? '' : 'none'; };
-  const keysBut = k => ['alef', 'beis', 'veis'].filter(x => x !== k);
+  const keysBut = k => pool.filter(x => x !== k);
   return async () => {
     E.setProgress(3, 0);
     await E.say('Bonus round! Letters are falling from the clouds.');
-    setSign('beis'); await E.say('Watch me. I catch a Beis.');
-    drop('beis', 2600); targets--; const demo = falling[falling.length - 1]; await E.wait(900);
+    setSign(R[0]); await E.say('Watch me. I catch ' + (R[0] === 'alef' ? 'an Alef' : 'a ' + E.LETTERS[R[0]].name) + '.');
+    drop(R[0], 2600); targets--; const demo = falling[falling.length - 1]; await E.wait(900);
     const [hx, hy] = E.toScreen(demo.position); E.hand.at(hx, hy); await E.wait(400); E.hand.hide();
     active = true; await new Promise(r => { const iv = setInterval(() => { if (demo.userData.busy || demo.userData.gone) { clearInterval(iv); r(); } }, 50); E.$('#c').dispatchEvent(new PointerEvent('pointerdown', { clientX: E.toScreen(demo.position)[0], clientY: E.toScreen(demo.position)[1], bubbles: true, pointerId: 1 })); });
     active = false; caught = 0; await E.wait(600);
     await E.say('Now you! Be quick!');
-    await round('beis', 8, 1500, 4600); E.setProgress(3, 1);
-    await round('veis', 9, 1300, 4000); E.setProgress(3, 2);
-    await round('alef', 10, 1100, 3500); E.setProgress(3, 3);
+    await round(R[0], 8, 1500, 4600); E.setProgress(3, 1);
+    await round(R[1], 9, 1300, 4000); E.setProgress(3, 2);
+    await round(R[2], 10, 1100, 3500); E.setProgress(3, 3);
     const share = targets ? caught / targets : 0, stars = share >= .8 && wrong <= 2 ? 3 : share >= .5 ? 2 : 1;
     window.__bonus = { caught, targets, wrong };
     return { stars, line: stars === 3 ? 'What a catcher! You caught ' + caught + ' letters!' : stars === 2 ? 'Good catching! You caught ' + caught + ' letters!' : null };

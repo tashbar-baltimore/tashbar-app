@@ -1,8 +1,17 @@
 /* Game 4: Find the Mistake.
-   Skill: checks a letter's name carefully (Alef, Beis, Veis) and fixes a wrong one.
+   Skill: checks a letter's name carefully (the unit's letters) and fixes a wrong one.
    "Yaakov says this is a Beis. Is he right?" He taps yes or no. If Yaakov is wrong, he drags the right letter onto the sign.
    A wrong answer is explained kindly (the dot place is circled) and he still does the fix, so the mistake teaches. */
-export default function setup(E, { struggled }) {
+/* each unit: Yaakov's claims (shown letter, what he says), right 3 times and wrong 3 times, and the demo round */
+const PLAN = {
+  1: { R: [['beis', 'beis'], ['alef', 'beis'], ['veis', 'veis'], ['beis', 'veis'], ['alef', 'alef'], ['veis', 'beis']], demo: ['veis', 'beis', 'Hmm. Watch me. No dot. That is not a Beis!'] },
+  2: { R: [['gimmel', 'gimmel'], ['daled', 'hei'], ['hei', 'hei'], ['gimmel', 'daled'], ['daled', 'daled'], ['hei', 'gimmel']], demo: ['daled', 'gimmel', 'Hmm. Watch me. No foot. That is not a Gimmel!'] },
+};
+/* what to look for, in a few words */
+const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with the long roof', hei: 'with the little leg' };
+const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei has a little leg.' };
+export default function setup(E, { struggled, unit }) {
+  const plan = PLAN[unit.n] || PLAN[1];
   const { THREE, S, ICON } = E;
   const yak = E.yaakov(); E.scene.add(yak);
   const board = new THREE.Group(); E.scene.add(board);
@@ -36,9 +45,10 @@ export default function setup(E, { struggled }) {
   function showLetter(k) { if (shown) board.remove(shown); shown = E.letter(k, 1.3); shown.position.set(0, 0, .3); board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
   /* why the letter is not what Yaakov said, in a few words */
   const why = (k, c) => k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
-    : k === 'beis' ? 'Look again. A dot! This is Beis, not Veis.' : 'Look again. No dot. This is Veis, not Beis.';
+    : k === 'beis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
+    : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : LOOK[k]) + ' This is ' + E.LETTERS[k].name + '.';
   const an = k => k === 'alef' ? 'an Alef' : 'a ' + E.LETTERS[k].name;
-  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; ['alef', 'beis', 'veis'].forEach((k, i) => { const t = E.letter(k, .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
+  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; unit.letters.forEach((k, i) => { const t = E.letter(k, .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
   const onBoard = () => { const [bx, by] = E.toScreen(E.worldPos(board)), [tx, ty] = E.toScreen(dragT.position); return Math.hypot(bx - tx, by - ty) < Math.min(innerWidth, innerHeight) * .16; };
   E.onPointer('down', e => { if (!fixKey || busy) return; const t = E.pickFrom(e, tiles); if (t) { dragT = t; const p = E.planePoint(e, t.position.z); if (p) grab.copy(t.position).sub(p); t.scale.setScalar(1.12); } });
   E.onPointer('move', e => { if (!dragT) return; const p = E.planePoint(e, dragT.position.z); if (p) dragT.position.copy(p.add(grab)); });
@@ -53,7 +63,7 @@ export default function setup(E, { struggled }) {
       const r = resolveFix; resolveFix = null; busy = false; r && r();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; t.userData.busy = true; await E.tween(350, k => t.position.lerpVectors(p0, home, k), E.ease.out); await E.shake(t, .15); t.userData.busy = false;
-      await E.say(t.userData.key === 'alef' ? 'That is Alef. Find ' + (fixKey === 'beis' ? 'Beis, with the dot!' : 'Veis, with no dot!') : t.userData.key === 'beis' ? 'That one has a dot. That is Beis. Find Veis!' : 'That one has no dot. That is Veis. Find Beis!');
+      await E.say('That is ' + E.LETTERS[t.userData.key].name + '. Find ' + E.LETTERS[fixKey].name + (CUE[fixKey] ? ', ' + CUE[fixKey] : '') + '!');
       help = true;
     }
   }
@@ -74,7 +84,7 @@ export default function setup(E, { struggled }) {
     await E.say('Yaakov says this is ' + an(claim) + '. Is he right?'); yak.mood('calm');
     if (help) { ring.position.copy(shown.userData.dotHome || new THREE.Vector3()).setZ(.6); if (shown.userData.dotHome) { ring.visible = true; await E.say('Look at the dot place!'); ring.visible = false; } }
     const right = shownKey === claim; let saysRight;
-    if (demo) { await E.say(shownKey === 'veis' ? 'Hmm. Watch me. No dot. That is not a Beis!' : 'Hmm.'); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
+    if (demo) { await E.say(plan.demo[2]); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
     else saysRight = await ask();
     if (saysRight === right) {
       if (right) { yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say(['Yes! Yaakov is right.', ...E.nameLine(shownKey)]); yak.mood('calm'); }
@@ -82,7 +92,7 @@ export default function setup(E, { struggled }) {
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
       if (shown.userData.dotHome) { ring.position.copy(shown.userData.dotHome).setZ(.6); ring.visible = true; }
-      if (right) { await E.say(shownKey === 'beis' ? 'Look again. A dot! It is Beis.' : shownKey === 'veis' ? 'Look again. No dot. It is Veis.' : 'Look again. It is Alef, not a house shape.'); ring.visible = false; yak.mood('calm');
+      if (right) { await E.say(shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + LOOK[shownKey] + ' It is ' + E.LETTERS[shownKey].name + '.'); ring.visible = false; yak.mood('calm');
         await E.say('So is Yaakov right? Try again.');               /* he answers again (it doesn't count) */
         if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
         else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
@@ -91,11 +101,11 @@ export default function setup(E, { struggled }) {
     }
   }
   return async () => {
-    const R = [['beis', 'beis'], ['alef', 'beis'], ['veis', 'veis'], ['beis', 'veis'], ['alef', 'alef'], ['veis', 'beis']];   /* Yaakov is right 3 times and wrong 3 times */
+    const R = plan.R;   /* Yaakov is right 3 times and wrong 3 times */
     E.setProgress(R.length, 0);
     await E.say('This is Yaakov. Sometimes he makes a mistake.');
     await E.say('Watch me find his mistake.');
-    await roundOf('veis', 'beis', true);
+    await roundOf(plan.demo[0], plan.demo[1], true);
     await E.say('Now you! Is Yaakov right? Tap yes or no.');
     mistakes = 0;
     for (let i = 0; i < R.length; i++) { await roundOf(...R[i]); E.setProgress(R.length, i + 1); }
