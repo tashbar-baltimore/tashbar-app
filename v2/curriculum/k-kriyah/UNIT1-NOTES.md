@@ -18,6 +18,9 @@
 | 6 | Show what you know (mastery check) | "Hear it, tap it": 9 questions by name and by sound, mixed. |
 | 7 | Bonus: letter rain | For quick boys (opens at 3 stars on the check): catch the falling Beis, then Veis, then Alef, faster each round. |
 
+## Esti's decisions (after looking)
+- **2026-11-23: keep "buh" and "vuh"** (the computer voice for Beis's and Veis's sounds) until the rebbe's recording arrives.
+
 ## Decisions I made on my own (each one line, so you can say yes or change it)
 1. **The bonus round opens only after 3 stars on the mastery check** (2 stars passes the unit; the bonus is for quick boys).
 2. **Feel the Shape has no failing.** It's touch only, so finishing gives 3 stars (2 if he needed more than 4 reminders).

@@ -18,7 +18,7 @@
 ## 2. What's broken or not finished (first, honestly)
 - **The letter sounds are the computer voice for now.**
   - It says "buh" for Beis and "vuh" for Veis, because a computer can't say a lone "b". That is close to the letter-with-a-vowel sound you ruled out.
-  - It's marked on screen as temporary, and the rebbe's recording replaces it with no code change. **Please decide:** keep "buh"/"vuh" until then, or say no sound at all until his recording arrives.
+  - It's marked on screen as temporary, and the rebbe's recording replaces it with no code change. **Esti decided (2026-11-23): keep "buh"/"vuh" until then.**
 - **The rebbe's recording did not reach me.** His reply goes to your Gmail. This session can only read 2.0d@tashbarbaltimore.org, where nothing has arrived (not even the onboarding email). When it comes, forward it to 2.0d, or follow `v2/app/k-kriyah/audio/README.md`.
 - **The chant at the end of the story is a simple spoken rhythm with a drum** ("Alef, quiet! Beis, b! Veis, v!"). It isn't a real nigun; that needs you to choose a tune.
 - **A boy who keeps getting 1 star can keep replaying** (each time with an easier start), and no teacher is told. One line to decide: after 3 tries, open the next game anyway, or flag it for the teacher?
