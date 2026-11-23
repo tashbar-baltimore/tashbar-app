@@ -43,6 +43,12 @@ svg{ display:block; }
 .plate .dish{ position:absolute; inset:0; border-radius:50%; background:radial-gradient(ellipse at 50% 45%, #fff 0 56%, #E8F1FA 57% 64%, #fff 65% 70%, #CFE0F2 71% 100%); box-shadow:0 10px 0 rgba(120,80,40,.25); }
 .plate .ta{ position:absolute; width:21%; transform:translate(-50%,-50%) rotate(var(--r,0deg)); filter:drop-shadow(0 4px 0 rgba(0,0,0,.18)); transition:transform .25s; }
 .plate .ta.hi{ transform:translate(-50%,-50%) scale(1.25); filter:drop-shadow(0 0 10px #FFC940) drop-shadow(0 4px 0 rgba(0,0,0,.18)); }
+.plate .ta.hi2{ transform:translate(-50%,-50%) scale(1.25); filter:drop-shadow(0 0 10px #2FB5E8) drop-shadow(0 4px 0 rgba(0,0,0,.18)); }
+#clap{ position:fixed; inset:0; z-index:30; display:flex; align-items:center; justify-content:center; gap:4px; pointer-events:none; background:rgba(200,236,255,.55); }
+#clap[hidden]{ display:none; }
+#clap svg{ width:clamp(110px,20vh,170px); height:clamp(110px,20vh,170px); transition:transform .12s; filter:drop-shadow(0 8px 4px rgba(0,0,0,.2)); }
+#clap svg:first-child{ transform:rotate(30deg) scaleX(-1); } #clap svg:last-child{ transform:rotate(-30deg); }
+#clap.hit svg:first-child{ transform:translateX(26px) rotate(18deg) scaleX(-1); } #clap.hit svg:last-child{ transform:translateX(-26px) rotate(-18deg); }
 .towel{ position:absolute; inset:-4px; z-index:3; border-radius:30px;
   background:repeating-linear-gradient(0deg, rgba(47,120,210,.55) 0 28px, transparent 28px 56px), repeating-linear-gradient(90deg, rgba(47,120,210,.55) 0 28px, transparent 28px 56px), #fff;
   box-shadow:inset 0 -14px 0 rgba(0,0,0,.08); transition:transform .32s cubic-bezier(.4,1.4,.6,1); display:flex; align-items:center; justify-content:center; }
@@ -65,7 +71,7 @@ svg{ display:block; }
 .slot{ border:5px dashed #2B8A55; border-radius:50%; background:rgba(255,255,255,.6); transform:scale(.86); }
 .basket.good{ border-color:#7BE0A4; background:rgba(230,255,239,.85); }
 .basket.shake{ animation:shake .45s; } @keyframes shake{ 25%{ transform:translateX(-10px); } 75%{ transform:translateX(10px); } }
-.yes{ position:absolute; left:50%; top:40%; width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%; background:var(--green); z-index:5; display:flex; align-items:center; justify-content:center;
+.yes{ position:absolute; left:50%; top:30%; width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%; background:var(--green); z-index:5; display:flex; align-items:center; justify-content:center;
   transform:scale(0); transition:transform .25s cubic-bezier(.4,1.6,.6,1); box-shadow:0 6px 0 var(--green-d); }
 .yes.on{ transform:scale(1); } .yes svg{ width:70px; height:70px; }
 
@@ -94,13 +100,13 @@ svg{ display:block; }
 .hero{ position:relative; width:min(78vw,360px); aspect-ratio:1.25; }
 .hero .dish{ position:absolute; inset:0; border-radius:50%; background:radial-gradient(ellipse at 50% 45%, #fff 0 56%, #E8F1FA 57% 64%, #fff 65% 70%, #CFE0F2 71% 100%); box-shadow:0 10px 0 rgba(120,80,40,.2); }
 .hero svg.ta{ position:absolute; width:24%; transform:translate(-50%,-50%); filter:drop-shadow(0 4px 0 rgba(0,0,0,.18)); }
-.hero .corner{ position:absolute; right:-6%; top:-8%; width:62%; height:72%; border-radius:26px; transform:rotate(14deg);
+.hero .corner{ position:absolute; right:-6%; top:6%; width:62%; height:72%; border-radius:26px; transform:rotate(14deg);
   background:repeating-linear-gradient(0deg, rgba(47,120,210,.55) 0 18px, transparent 18px 36px), repeating-linear-gradient(90deg, rgba(47,120,210,.55) 0 18px, transparent 18px 36px), #fff; box-shadow:0 8px 0 rgba(0,0,0,.1); }
 .play{ width:clamp(120px,20vh,160px); aspect-ratio:1; border-radius:50%; background:var(--green); border:7px solid #fff; box-shadow:0 9px 0 var(--green-d); display:flex; align-items:center; justify-content:center; animation:pulse 1.4s infinite; }
 .play svg{ width:52%; height:52%; margin-left:8%; }
 .play:active{ transform:translateY(6px); box-shadow:0 3px 0 var(--green-d); }
 .stars{ display:flex; gap:clamp(10px,2vw,22px); }
-.stars svg{ width:clamp(84px,15vh,130px); height:clamp(84px,15vh,130px); transform:scale(0); transition:transform .35s cubic-bezier(.4,1.7,.6,1); }
+.stars svg{ width:clamp(76px,min(15vh,26vw),130px); height:clamp(76px,min(15vh,26vw),130px); transform:scale(0); transition:transform .35s cubic-bezier(.4,1.7,.6,1); }
 .stars svg.on{ transform:scale(1); }
 .row{ display:flex; gap:28px; }
 .big{ width:clamp(104px,16vh,132px); aspect-ratio:1; border-radius:50%; border:6px solid #fff; display:flex; align-items:center; justify-content:center; }
@@ -157,6 +163,7 @@ svg{ display:block; }
   </div>
 </div>
 
+<div id="clap" hidden><svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg><svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg></div>
 <svg id="hand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg>
 
 <div class="over" id="start">
@@ -183,21 +190,37 @@ svg{ display:block; }
 
   /* ---------- the plan ---------- */
   var ROUNDS = 8, PILE = 6;
+  /* each layout: where the fruit sit, the two groups the eye sees, and how we say the shape */
   var LAYOUTS = {
-    1: [[[50, 50]]],
-    2: [[[35, 50], [65, 50]], [[38, 34], [62, 66]], [[50, 30], [50, 70]]],
-    3: [[[27, 50], [50, 50], [73, 50]], [[50, 30], [32, 66], [68, 66]], [[28, 28], [50, 50], [72, 72]]],
-    4: [[[35, 32], [65, 32], [35, 68], [65, 68]], [[50, 23], [27, 50], [73, 50], [50, 77]]],
-    5: [[[27, 27], [73, 27], [50, 50], [27, 73], [73, 73]], [[27, 34], [50, 34], [73, 34], [38, 68], [62, 68]]]
+    1: [{ p: [[50, 50]], g: [[0]], say: 'Just one, all alone.' }],
+    2: [{ p: [[35, 50], [65, 50]], g: [[0], [1]], say: 'One and one. Two!' }, { p: [[38, 34], [62, 66]], g: [[0], [1]], say: 'One and one. Two!' }, { p: [[50, 30], [50, 70]], g: [[0], [1]], say: 'One on top, one below. Two!' }],
+    3: [{ p: [[27, 50], [50, 50], [73, 50]], g: [[0, 1], [2]], say: 'Two and one. Three!' }, { p: [[50, 30], [32, 66], [68, 66]], g: [[0], [1, 2]], say: 'One on top, two below. Three!' }, { p: [[28, 28], [50, 50], [72, 72]], g: [[0, 1], [2]], say: 'Two and one. Three!' }],
+    4: [{ p: [[35, 32], [65, 32], [35, 68], [65, 68]], g: [[0, 1], [2, 3]], say: 'Two on top, two below. Four!' }, { p: [[50, 23], [27, 50], [73, 50], [50, 77]], g: [[0, 3], [1, 2]], say: 'Two and two. Four!' }],
+    5: [{ p: [[27, 27], [73, 27], [50, 50], [27, 73], [73, 73]], g: [[0, 1, 3, 4], [2]], say: 'Four corners, one in the middle. Five!' }, { p: [[27, 34], [50, 34], [73, 34], [38, 68], [62, 68]], g: [[0, 1, 2], [3, 4]], say: 'Three on top, two below. Five!' }]
   };
+  /* scattered: fruit in a loose bunch, seen as a small group and the rest */
+  function scattered(n) {
+    var pts = [], tries = 0;
+    while (pts.length < n && tries++ < 500) { var x = 22 + Math.random() * 56, y = 24 + Math.random() * 52;
+      if (pts.every(function (q) { return Math.hypot(q[0] - x, (q[1] - y) * 1.25) > 23; })) pts.push([x, y]); }
+    if (pts.length < n) return pick(LAYOUTS[n]);
+    pts.sort(function (a, b) { return a[0] - b[0]; });
+    var k = n <= 3 ? n - 1 : 2, A = [], B = []; for (var i = 0; i < n; i++) (i < k ? A : B).push(i);
+    return { p: pts, g: [A, B], say: NK.Word(k) + ' and ' + NK.word(n - k) + '. ' + NK.Word(n) + '!' };
+  }
   function cluster(n, cx) { return n === 1 ? [[cx, 50]] : n === 2 ? [[cx, 34], [cx, 66]] : [[cx - 10, 34], [cx + 10, 34], [cx, 67]]; }
   var BONUS = [[3, 2], [2, 2], [2, 3], [1, 3]];
+  var FRUIT = [{ id: 'nkApple', one: 'apple', many: 'apples' }, { id: 'nkOrange', one: 'orange', many: 'oranges' }, { id: 'nkPear', one: 'pear', many: 'pears' }];
   function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function flashFor(n) { return (n <= 3 ? 1100 : 1300) + S.flashAdj; }   /* short: he must SEE, not count */
 
-  var S = window.PEEK = { phase: 'start', round: 0, target: 0, basket: 0, firstTry: 0, missed: false, flashMs: 2000, missStreak: 0, hitStreak: 0, easy: 0, bonus: false, prev: 0, results: [] };
+  var S = window.PEEK = { phase: 'start', round: 0, target: 0, basket: 0, holes: [], firstTry: 0, missed: false, flashAdj: 0, missStreak: 0, hitStreak: 0, easy: 0, easyJust: false,
+    bonus: false, bonusRight: 0, prev: 0, results: [], fruit: FRUIT[0], layout: null };
+  function fruitSvg(cls, extra) { return '<svg class="' + cls + '"' + (extra || '') + ' viewBox="0 0 100 100"><use href="#' + S.fruit.id + '"/></svg>'; }
+  function many(n) { return n === 1 ? S.fruit.one : S.fruit.many; }
 
   function nextTarget() {
-    var pool = S.easy > 0 ? [1, 2, 3] : S.round < 4 ? [1, 2, 3] : [3, 4, 5, 4, 5];
+    var pool = S.easy > 0 ? (S.round < 4 ? [1, 2] : [1, 2, 3]) : S.round < 4 ? [1, 2, 3] : [3, 4, 5, 4, 5];
     if (S.round === 0) pool = [1, 2];
     var t; do { t = pick(pool); } while (t === S.prev && pool.length > 1);
     S.prev = t; return t;
@@ -210,49 +233,49 @@ svg{ display:block; }
   }
   function drawPlate(spots) {
     var h = '<div class="dish"></div>';
-    spots.forEach(function (p) { var j = function () { return (Math.random() * 4 - 2).toFixed(1); };
-      h += '<svg class="ta" viewBox="0 0 100 100" style="left:' + (p[0] + +j()) + '%;top:' + (p[1] + +j()) + '%;--r:' + Math.round(Math.random() * 24 - 12) + 'deg' + (p[2] ? ';--apple:url(#nkGreen)' : '') + '"><use href="#nkApple"/></svg>'; });
+    spots.forEach(function (p, i) { var j = function () { return +(Math.random() * 4 - 2).toFixed(1); };
+      h += '<svg class="ta" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + (p[0] + j()) + '%;top:' + (p[1] + j()) + '%;--r:' + Math.round(Math.random() * 24 - 12) + 'deg' + (p[2] ? ';--apple:url(#nkGreen)' : '') + '"><use href="#' + S.fruit.id + '"/></svg>'; });
     $('plate').innerHTML = h;
   }
   function drawBasket(hint) {
     var h = '', i;
-    for (i = 0; i < S.basket; i++) h += '<svg class="ba' + (hint && i >= S.target ? ' extra' : '') + '" data-i="' + i + '" viewBox="0 0 100 100"><use href="#nkApple"/></svg>';
+    for (i = 0; i < S.basket; i++) h += fruitSvg('ba' + (hint && i >= S.target ? ' extra' : ''), ' data-i="' + i + '"');
     if (hint) for (i = S.basket; i < S.target; i++) h += '<div class="slot"></div>';
     $('inb').innerHTML = h;
     var c = $('check'); c.classList.toggle('dim', S.basket === 0);
     c.classList.toggle('ready', S.basket > 0 && (S.phase === 'answer' || S.phase === 'fix'));
   }
   function drawCrate() {
-    var h = ''; for (var i = 0; i < PILE; i++) h += '<div class="hole">' + (i < PILE - S.basket ? '<svg class="pa" data-i="' + i + '" viewBox="0 0 100 100"><use href="#nkApple"/></svg>' : '') + '</div>';
+    var h = ''; for (var i = 0; i < PILE; i++) h += '<div class="hole">' + (S.holes[i] ? fruitSvg('pa', ' data-i="' + i + '"') : '') + '</div>';
     $('crate').innerHTML = h;
   }
+  function fillCrate() { S.holes = []; for (var i = 0; i < PILE; i++) S.holes.push(true); }
   function draw() { drawBasket(S.phase === 'fix'); drawCrate(); drawDots(); }
   function towel(open) { $('peek').classList.toggle('open', open); if (open) NK.sound.cloth(); }
   function lock(on) { $('game').classList.toggle('locked', on); }
 
-  /* an apple flies from one place to another */
-  function fly(fromEl, toEl) {
-    if (!fromEl || !toEl) return NK.wait(1);
-    var a = fromEl.getBoundingClientRect(), b = toEl.getBoundingClientRect(), f = document.createElement('div');
-    f.className = 'fly'; f.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%"><use href="#nkApple"/></svg>';
-    f.style.cssText = 'left:' + a.left + 'px;top:' + a.top + 'px;width:' + a.width + 'px;height:' + a.height + 'px;transition:all ' + (NK.fast ? 20 : 260) + 'ms ease-out';
+  /* a fruit flies from one place to another */
+  function fly(rect, toEl) {
+    if (!rect || !toEl) return NK.wait(1);
+    var b = toEl.getBoundingClientRect(), f = document.createElement('div');
+    f.className = 'fly'; f.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%"><use href="#' + S.fruit.id + '"/></svg>';
+    f.style.cssText = 'left:' + rect.left + 'px;top:' + rect.top + 'px;width:' + rect.width + 'px;height:' + rect.height + 'px;transition:all ' + (NK.fast ? 20 : 260) + 'ms ease-out';
     document.body.appendChild(f); toEl.style.visibility = 'hidden';
     requestAnimationFrame(function () { requestAnimationFrame(function () { f.style.left = b.left + 'px'; f.style.top = b.top + 'px'; f.style.width = b.width + 'px'; f.style.height = b.height + 'px'; }); });
     return NK.wait(280).then(function () { f.remove(); toEl.style.visibility = ''; });
   }
-  function addOne(fromEl) {
-    if (S.basket >= PILE) return; var from = fromEl ? fromEl.getBoundingClientRect() : null;
+  function addOne(fromEl, rectEl) {   /* fromEl: the crate fruit he took; rectEl: where it is now (when dragged) */
+    if (S.basket >= PILE || !fromEl) return; var i = +fromEl.dataset.i; if (!S.holes[i]) return;
+    var from = (rectEl || fromEl).getBoundingClientRect(); S.holes[i] = false;
     S.basket++; NK.sound.pop(); draw();
-    var to = $('inb').querySelectorAll('.ba')[S.basket - 1];
-    if (from) { var tmp = document.createElement('div'); tmp.style.cssText = 'pointer-events:none;position:fixed;left:' + from.left + 'px;top:' + from.top + 'px;width:' + from.width + 'px;height:' + from.height + 'px'; document.body.appendChild(tmp); fly(tmp, to).then(function () { tmp.remove(); }); }
+    fly(from, $('inb').querySelectorAll('.ba')[S.basket - 1]);
   }
   function removeOne(fromEl) {
-    if (S.basket <= 0) return; var from = fromEl ? fromEl.getBoundingClientRect() : null;
-    S.basket--; NK.sound.back(); draw();
-    var to = $('crate').querySelectorAll('.pa')[PILE - S.basket - 1];
-    if (from && to) { var tmp = document.createElement('div'); tmp.style.cssText = 'pointer-events:none;position:fixed;left:' + from.left + 'px;top:' + from.top + 'px;width:' + from.width + 'px;height:' + from.height + 'px'; document.body.appendChild(tmp); fly(tmp, to).then(function () { tmp.remove(); }); }
+    if (S.basket <= 0) return; var from = fromEl ? fromEl.getBoundingClientRect() : null, i = S.holes.indexOf(false);
+    S.holes[i] = true; S.basket--; NK.sound.back(); draw();
+    fly(from, $('crate').querySelector('.pa[data-i="' + i + '"]'));
   }
-  S.add = function () { addOne($('crate').querySelector('.pa:last-of-type') || $('crate').querySelector('.pa')); };
+  S.add = function () { addOne($('crate').querySelector('.pa')); };
   S.remove = function () { var b = $('inb').querySelectorAll('.ba'); removeOne(b[b.length - 1]); };
 
   /* ---------- drag or tap ---------- */
@@ -262,89 +285,125 @@ svg{ display:block; }
     if (!canPlay()) return; var el = e.target.closest('.pa, .ba'); if (!el) return;
     e.preventDefault(); drag = { el: el, from: el.classList.contains('pa') ? 'pile' : 'basket', x: e.clientX, y: e.clientY, ghost: null, id: e.pointerId };
   });
+  function makeGhost(el) {
+    var r = el.getBoundingClientRect(), g = document.createElement('div'); g.className = 'fly';
+    g.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%"><use href="#' + S.fruit.id + '"/></svg>';
+    g.style.cssText = 'width:' + r.width * 1.15 + 'px;height:' + r.width * 1.15 + 'px;left:' + r.left + 'px;top:' + r.top + 'px'; document.body.appendChild(g); el.classList.add('ghosted');
+    return { g: g, w: r.width };
+  }
   document.addEventListener('pointermove', function (e) {
     if (!drag || e.pointerId !== drag.id) return;
-    if (!drag.ghost && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 10) {
-      var r = drag.el.getBoundingClientRect(); drag.w = r.width; drag.ghost = document.createElement('div'); drag.ghost.className = 'fly';
-      drag.ghost.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%"><use href="#nkApple"/></svg>';
-      drag.ghost.style.cssText = 'width:' + r.width * 1.15 + 'px;height:' + r.width * 1.15 + 'px'; document.body.appendChild(drag.ghost); drag.el.classList.add('ghosted');
-    }
+    if (!drag.ghost && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 10) { var m = makeGhost(drag.el); drag.ghost = m.g; drag.w = m.w; }
     if (drag.ghost) { drag.ghost.style.left = (e.clientX - drag.w * .57) + 'px'; drag.ghost.style.top = (e.clientY - drag.w * .57) + 'px'; }
   });
   function inside(el, x, y, pad) { var r = el.getBoundingClientRect(); return x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad; }
   function endDrag(e) {
     if (!drag || e.pointerId !== drag.id) return; var d = drag; drag = null;
     if (!d.ghost) { if (d.from === 'pile') addOne(d.el); else removeOne(d.el); return; }   /* a tap */
-    var overBasket = inside($('basket'), e.clientX, e.clientY, 30), g = d.ghost; g.remove(); d.el.classList.remove('ghosted');
-    if (d.from === 'pile' && overBasket) addOne(g); else if (d.from === 'basket' && !overBasket) removeOne(g);
+    var overBasket = inside($('basket'), e.clientX, e.clientY, 30), g = d.ghost; d.el.classList.remove('ghosted');
+    if (d.from === 'pile' && overBasket) addOne(d.el, g); else if (d.from === 'basket' && !overBasket) removeOne(g);
+    g.remove();
   }
-  document.addEventListener('pointerup', endDrag); document.addEventListener('pointercancel', function (e) { if (drag && drag.ghost) { drag.ghost.remove(); drag.el.classList.remove('ghosted'); } drag = null; });
+  document.addEventListener('pointerup', endDrag); document.addEventListener('pointercancel', function () { if (drag && drag.ghost) { drag.ghost.remove(); drag.el.classList.remove('ghosted'); } drag = null; });
 
   /* ---------- talking ---------- */
   function say(t, o) { $('again').classList.add('talk'); return NK.say(t, o).then(function () { $('again').classList.remove('talk'); }); }
   $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.add('talk'); NK.again(); setTimeout(function () { $('again').classList.remove('talk'); }, 1800); });
   $('home').addEventListener('click', function () { NK.hush(); location.href = '../'; });
+  function ask() { return 'How many ' + S.fruit.many + '? Put them in the basket.'; }
 
-  /* ---------- show: the demo ---------- */
+  /* ---------- the chant: "Peek, peek, peek and see!" with claps ---------- */
+  async function chant(first) {
+    var c = $('clap'); c.hidden = false;
+    await say(first ? 'Clap with me!' : 'Stand up! Clap with me!');
+    var beats = [0, 1, 2, 3, 3.5], start = Date.now(), spoken = say('Peek, peek, peek and see!', { noRepeat: true });
+    for (var b = 0; b < beats.length; b++) {
+      var due = start + beats[b] * (NK.fast ? 20 : 520); await NK.wait(Math.max(0, due - Date.now()));
+      NK.sound.clap(); c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 140);
+    }
+    await spoken; await NK.wait(300); c.hidden = true;
+  }
+
+  /* ---------- show: the demo (a tap, then a drag) ---------- */
   var hand = $('hand');
   function handTo(el, dx, dy) { var r = el.getBoundingClientRect(); hand.style.left = (r.left + r.width * (dx || .5) - 20) + 'px'; hand.style.top = (r.top + r.height * (dy || .5) - 8) + 'px'; return NK.wait(650); }
   function handTap() { hand.classList.add('tap'); return NK.wait(160).then(function () { hand.classList.remove('tap'); return NK.wait(120); }); }
   async function demo() {
-    S.phase = 'demo'; S.target = 2; S.basket = 0; draw(); drawPlate(LAYOUTS[2][0]); lock(true);
-    await say('Bubby put apples under her towel.');
+    S.phase = 'demo'; S.target = 2; S.basket = 0; S.fruit = FRUIT[0]; fillCrate(); draw(); S.layout = LAYOUTS[2][0]; drawPlate(S.layout.p); lock(true);
+    await say('Bubby hid some fruit under her towel.');
     await say('Peek fast! How many apples? Watch me first.');
-    await say('Peek!'); towel(true); await NK.wait(1700); towel(false); await NK.wait(400);
-    await say('I saw two apples.');
-    for (var k = 0; k < 2; k++) { var a = $('crate').querySelector('.pa:last-of-type') || $('crate').querySelector('.pa'); await handTo(a); await handTap(); addOne(a); await NK.wait(350); }
-    await say('Two apples in the basket. Now I press check.');
+    await say('Peek!'); towel(true); await NK.wait(1200); towel(false); await NK.wait(400);
+    await say('I saw two apples. One and one.');
+    var a = $('crate').querySelectorAll('.pa')[2]; await handTo(a); await handTap(); addOne(a); await NK.wait(400);
+    /* now carry one over */
+    a = $('crate').querySelectorAll('.pa')[3]; await handTo(a); hand.classList.add('tap');
+    var m = makeGhost(a), r = a.getBoundingClientRect(), br = $('basket').getBoundingClientRect();
+    m.g.style.transition = 'left .65s ease-in-out, top .65s ease-in-out';
+    var tx = br.left + br.width / 2 - m.w * .57, ty = br.top + br.height * .45 - m.w * .57;
+    requestAnimationFrame(function () { m.g.style.left = tx + 'px'; m.g.style.top = ty + 'px'; hand.style.left = (tx + m.w * .5 - 20) + 'px'; hand.style.top = (ty + m.w * .5) + 'px'; });
+    await NK.wait(700); hand.classList.remove('tap'); a.classList.remove('ghosted'); addOne(a, m.g); m.g.remove(); await NK.wait(350);
+    await say('Two in the basket. Now I press check.');
     await handTo($('check')); await handTap(); towel(true); $('basket').classList.add('good'); $('yes').classList.add('on'); NK.sound.yes();
     await say('Yes! Two apples!');
     hand.style.top = '110%'; $('yes').classList.remove('on'); $('basket').classList.remove('good');
-    S.basket = 0; draw(); towel(false); await NK.wait(450);
+    S.basket = 0; fillCrate(); draw(); towel(false); await NK.wait(450);
     await say('Now you!');
   }
 
   /* ---------- try: the rounds ---------- */
   async function round() {
-    if (!S.bonus) S.target = nextTarget();
-    S.missed = false; S.basket = 0; S.phase = 'flash'; lock(true); draw();
-    var spots;
+    if (!S.bonus) { S.target = nextTarget(); S.fruit = FRUIT[S.round % FRUIT.length]; } else S.fruit = FRUIT[0];
+    if (!S.bonus && S.round === 4) { towel(false); $('peek').classList.remove('look'); S.basket = 0; fillCrate(); draw(); await chant(false); }   /* halfway: stand up, clap, then bigger numbers */
+    S.missed = false; S.misses = 0; S.basket = 0; fillCrate(); S.phase = 'flash'; lock(true); draw();
     if (S.bonus) { var b = BONUS[S.bonusAt]; S.parts = b; S.target = b[0] + b[1];
-      spots = cluster(b[0], 28).concat(cluster(b[1], 72).map(function (p) { return [p[0], p[1], 1]; })); }
-    else spots = pick(LAYOUTS[S.target]);
-    drawPlate(spots);
-    await say(S.round === 0 && !S.bonus ? 'Ready? Peek!' : 'Peek!', { repeat: 'How many apples? Put them in the basket.' });
-    towel(true); await NK.wait(S.bonus ? 900 : S.flashMs); towel(false); await NK.wait(380);
+      var A = cluster(b[0], 28), B = cluster(b[1], 72).map(function (p) { return [p[0], p[1], 1]; }), gA = [], gB = [], i;
+      for (i = 0; i < A.length; i++) gA.push(i); for (i = 0; i < B.length; i++) gB.push(A.length + i);
+      S.layout = { p: A.concat(B), g: [gA, gB], say: NK.Word(b[0]) + ' red and ' + NK.word(b[1]) + ' green. ' + NK.Word(S.target) + '!' };
+    } else S.layout = (S.round >= 5 && S.target >= 3 && Math.random() < .5) ? scattered(S.target) : pick(LAYOUTS[S.target]);
+    drawPlate(S.layout.p);
+    await say(S.round === 0 && !S.bonus ? 'Ready? Peek!' : 'Peek!', { repeat: ask() });
+    towel(true); await NK.wait(S.bonus ? 900 : flashFor(S.target)); towel(false); await NK.wait(380);
     S.phase = 'answer'; lock(false); draw();
-    if (S.round < 2 && !S.bonus) await say('How many apples? Put them in the basket.');
-    else NK.last = 'How many apples? Put them in the basket.';
+    if (S.round < 3 && !S.bonus) await say(ask());
+    else if (!S.bonus) await say('How many ' + S.fruit.many + '?', { repeat: ask() });
+    else NK.last = ask();
+  }
+
+  /* show the shape: light up the two groups the eye sees, and say it */
+  async function showShape() {
+    var ta = $('plate').querySelectorAll('.ta'), L = S.layout;
+    (L.g[0] || []).forEach(function (i) { ta[i] && ta[i].classList.add('hi'); });
+    (L.g[1] || []).forEach(function (i) { ta[i] && ta[i].classList.add('hi2'); });
+    await Promise.all([NK.wait(1400), say(L.say, { noRepeat: true })]);
+    ta.forEach(function (t) { t.classList.remove('hi', 'hi2'); });
   }
 
   async function check() {
     NK.unlock();
     if (!canPlay()) return;
-    if (S.basket === 0) { say('Put apples in the basket first.'); return; }
+    if (S.basket === 0) { say('Put some in the basket first.'); return; }
     var wasFix = S.phase === 'fix'; S.phase = 'checking'; lock(true);
     if (S.basket === S.target) {
       towel(true); $('basket').classList.add('good'); $('yes').classList.add('on'); NK.sound.yes();
-      if (!S.missed) { S.firstTry++; S.hitStreak++; S.missStreak = 0; if (S.hitStreak >= 2) S.flashMs = Math.max(1100, S.flashMs - 250); }
+      if (!S.missed) { S.hitStreak++; S.missStreak = 0; if (S.bonus) S.bonusRight++; else S.firstTry++; if (S.hitStreak >= 2) S.flashAdj = Math.max(-300, S.flashAdj - 100); }
       if (!S.bonus) S.results[S.round] = S.missed ? 'fix' : 'ok';
       drawDots();
-      var n = NK.word(S.target), ap = S.target === 1 ? ' apple' : ' apples';
-      await Promise.all([NK.wait(1000), say(S.bonus ? NK.Word(S.parts[0]) + ' and ' + NK.word(S.parts[1]) + ' make ' + n + '!' : wasFix ? 'Yes! Now you have ' + n + '.' : pick(['Yes! ' + NK.Word(S.target) + ap + '!', 'Right! You saw ' + n + '!', 'Good eyes! ' + NK.Word(S.target) + '!']))]);
+      var n = NK.word(S.target);
+      await Promise.all([NK.wait(1000), say(S.bonus ? NK.Word(S.parts[0]) + ' and ' + NK.word(S.parts[1]) + ' make ' + n + '!' : wasFix ? 'Yes! Now you have ' + n + '.' : pick(['Yes! ' + NK.Word(S.target) + ' ' + many(S.target) + '!', 'Right! You saw ' + n + '!', 'Good eyes! ' + NK.Word(S.target) + '!']))]);
       $('yes').classList.remove('on'); $('basket').classList.remove('good'); $('peek').classList.remove('look');
       await NK.wait(250);
       return advance();
     }
-    /* a mistake: look again, and see why */
+    /* a mistake: look again at the SHAPE, then fix the basket */
     NK.sound.oops(); $('basket').classList.add('shake'); setTimeout(function () { $('basket').classList.remove('shake'); }, 500);
-    if (!S.missed) { S.missed = true; S.missStreak++; S.hitStreak = 0; S.flashMs = Math.min(3000, S.flashMs + 600); if (S.missStreak >= 2) { S.easy = 2; S.missStreak = 0; } }
-    towel(true); $('peek').classList.add('look');
-    if (!wasFix) {
-      await say("Let's look again.");
-      var ta = $('plate').querySelectorAll('.ta');
-      for (var i = 0; ta.length > 1 && i < ta.length; i++) { ta[i].classList.add('hi'); await say(NK.Word(i + 1) + (i === ta.length - 1 ? '.' : ','), { noRepeat: true }); ta[i].classList.remove('hi'); }
-      await say(NK.Word(S.target) + (S.target === 1 ? ' apple.' : ' apples.'), { noRepeat: true });
+    if (!S.missed) { S.missed = true; S.missStreak++; S.hitStreak = 0; S.flashAdj = Math.min(200, S.flashAdj + 100);
+      if (S.missStreak >= 2 && !S.bonus) { S.easy = 3; S.easyJust = true; S.missStreak = 0; } }
+    S.misses++;
+    if (!wasFix || S.misses >= 3) {
+      towel(true); $('peek').classList.add('look');
+      await say("Let's look again.", { noRepeat: true });
+      await showShape();
+      towel(false); $('peek').classList.remove('look'); await NK.wait(350);
     }
     S.phase = 'fix'; draw(); lock(false);
     var d = S.target - S.basket, hint = d > 0 ? 'Put ' + NK.word(d) + ' more in.' : 'Take ' + NK.word(-d) + ' out.';
@@ -354,11 +413,11 @@ svg{ display:block; }
   S.check = check;
 
   async function advance() {
-    if (S.easy > 0 && !S.bonus) S.easy--;
+    if (!S.bonus) { if (S.easy > 0 && !S.easyJust) S.easy--; S.easyJust = false; }
     if (S.bonus) { S.bonusAt++; if (S.bonusAt < 2) return round(); return finish(); }
     S.round++; drawDots();
     if (S.round < ROUNDS) return round();
-    if (S.firstTry === ROUNDS) { S.bonus = true; S.bonusAt = 0; BONUS.sort(function () { return Math.random() - .5; }); await say('Bonus! Super quick peek!'); return round(); }
+    if (S.firstTry >= ROUNDS - 1) { S.bonus = true; S.bonusAt = 0; S.hitStreak = 0; BONUS.sort(function () { return Math.random() - .5; }); await say('Bonus! Super quick peek!'); return round(); }
     return finish();
   }
 
@@ -369,7 +428,7 @@ svg{ display:block; }
     var h = ''; for (var i = 0; i < 3; i++) h += i < stars ? STAR : STAR_OFF; $('stars').innerHTML = h;
     $('next').hidden = stars < 2; $('end').hidden = false; NK.sound.win(); burst();
     $('stars').querySelectorAll('svg').forEach(function (s, i) { setTimeout(function () { s.classList.add('on'); }, 150 + i * 250); });
-    await say(stars === 3 ? 'Wow! Three stars!' : stars === 2 ? 'You did it! Two stars!' : 'Good work! Let\'s play once more.');
+    await say(stars === 3 ? 'Wow! Three stars! Peek and see!' : stars === 2 ? 'You did it! Two stars!' : 'Good looking! Let\'s peek once more.');
     S.phase = 'done';
   }
   function burst() {
@@ -379,14 +438,14 @@ svg{ display:block; }
   }
   $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; reset(); S.round = 0; drawDots(); round(); });
   $('next').addEventListener('click', function () { NK.hush(); location.href = '../'; });
-  function reset() { S.firstTry = 0; S.results = []; S.flashMs = 2000; S.missStreak = S.hitStreak = S.easy = 0; S.bonus = false; S.prev = 0; }
+  function reset() { S.firstTry = 0; S.bonusRight = 0; S.results = []; S.flashAdj = 0; S.missStreak = S.hitStreak = S.easy = 0; S.easyJust = false; S.bonus = false; S.prev = 0; }
 
   /* ---------- start ---------- */
-  (function hero() { var h = '<div class="dish"></div>'; [[30, 48], [52, 62], [42, 34]].forEach(function (p) { h += '<svg class="ta" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); $('hero').innerHTML = h + '<div class="corner"></div>'; })();
-  draw();
+  (function hero() { var h = '<div class="dish"></div>'; [[30, 52], [52, 66], [42, 38]].forEach(function (p) { h += '<svg class="ta" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); $('hero').innerHTML = h + '<div class="corner"></div>'; })();
+  fillCrate(); draw();
   $('play').addEventListener('click', async function () {
     NK.unlock(); $('start').hidden = true; reset(); S.round = 0;
-    await demo(); await round();
+    await chant(true); await demo(); await round();
   });
 })();
 </script>

@@ -62,16 +62,21 @@ module.exports = async function (browser) {
     for (let i = 0; i < t0 + 1; i++) await tapApple(pg);
     await pg.click('#check', { force: true });
     await until(pg, () => PEEK.phase === 'fix');
-    const wrong = await pg.evaluate(() => ({ open: document.getElementById('peek').classList.contains('open'), extra: document.querySelectorAll('#inb .ba.extra').length, said: NK.said.slice(-9).join(' | ') }));
-    if (!wrong.open) bad('after a wrong answer the towel does not lift to look again');
+    const wrong = await pg.evaluate(() => ({ open: NK.said.some(s => /look again/.test(s)), extra: document.querySelectorAll('#inb .ba.extra').length, said: NK.said.slice(-9).join(' | ') }));
+    if (!wrong.open) bad('after a wrong answer we do not look again');
     if (wrong.extra !== 1) bad('after a wrong answer the basket does not show the extra apple');
     if (!/Let's look again/.test(wrong.said) || !/Take one out/.test(wrong.said)) bad('a wrong answer is not explained kindly: ' + wrong.said);
+    if (!/(One and one|and one|on top|alone|corners|and two)/.test(wrong.said)) bad('a wrong answer should show the SHAPE ("two and one"), not count one by one: ' + wrong.said);
+    if (/One, Two|One,/.test(wrong.said)) bad('a wrong answer counts one by one (this game teaches seeing, not counting)');
+    if (!(await pg.evaluate(() => NK.said.some(s => /Peek, peek, peek and see/.test(s))))) bad('the clapping chant is missing');
     await pg.screenshot({ path: path.join(shots, 'k-numbers-peek-wrong-chromebook.png') });
     await pg.click('#inb .ba >> nth=-1', { force: true }); await pg.waitForTimeout(60); await pg.click('#check', { force: true });
     await until(pg, () => PEEK.round >= 1).catch(() => bad('after fixing the basket the game does not go on'));
 
     /* the rest, right; one by dragging */
     for (let r = 1; r < 8; r++) await playRound(pg, r === 1 ? 'drag' : 'tap');
+    await until(pg, () => PEEK.bonus === true && PEEK.phase === 'answer').catch(() => bad('7 of 8 right first time should give the bonus round'));
+    for (let r = 0; r < 2; r++) await playRound(pg, 'tap');
     await until(pg, () => PEEK.phase === 'done');
     const end = await pg.evaluate(() => ({ stars: PEEK.stars, first: PEEK.firstTry, saved: JSON.parse(localStorage.getItem('tl2.kNumbers') || '{}'), next: !document.getElementById('next').hidden, said: NK.said }));
     if (end.stars !== 2 || end.first !== 7) bad('7 of 8 right first time should give 2 stars (got ' + end.stars + ')');
@@ -96,6 +101,8 @@ module.exports = async function (browser) {
     for (let r = 0; r < 2; r++) await playRound(ph, 'tap');
     await until(ph, () => PEEK.phase === 'done');
     if (await ph.evaluate(() => PEEK.stars) !== 3) bad('a perfect game should give 3 stars');
+    const st = await ph.evaluate(() => [...document.querySelectorAll('#stars svg')].map(x => x.getBoundingClientRect()).map(r => [r.left, r.right]));
+    if (st.some(r => r[0] < 0 || r[1] > 390)) bad('on a phone the stars at the end are cut off');
     await ph.screenshot({ path: path.join(shots, 'k-numbers-peek-end-phone.png') });
     w.errs.forEach(e => bad('page error (phone): ' + e)); await w.ctx.close(); w = null;
   } catch (e) { bad('crashed: ' + String(e).slice(0, 240)); }
