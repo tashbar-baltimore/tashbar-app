@@ -129,7 +129,7 @@
     d.L = L;
     var h2 = ''; L.p.forEach(function (p, i) {
       if (kind === 'dots') h2 += '<i class="dot" data-i="' + i + '" style="left:' + p[0] + '%;top:' + p[1] + '%"></i>';
-      else h2 += '<svg class="q" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%' + (kind === 'candle' ? ';width:38%;height:50%' : '') + '"><use href="#' + KIND[kind] + '"/></svg>';
+      else h2 += '<svg class="q" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%' + (kind === 'candle' ? ';width:46%;height:60%' : '') + '"><use href="#' + KIND[kind] + '"/></svg>';
     });
     d.innerHTML = h2; return d;
   };
@@ -161,7 +161,8 @@
         '<rect x="' + (f[0] + 5) + '" y="' + (f[1] + 4) + '" width="' + (f[2] - 10) + '" height="12" rx="5" fill="#FFF6EC" stroke="#E8B48A" stroke-width="1.5"/>' +
         '<rect x="' + (f[0] + 4) + '" y="' + (f[1] + 16) + '" width="4" height="' + Math.max(10, f[3] * .4) + '" rx="2" fill="#fff" opacity=".55"/></g></g>';
     });
-    el.innerHTML = '<svg viewBox="20 0 170 230"><path d="M62 98 C 60 84, 176 80, 176 104 L 178 170 C 178 206, 150 226, 118 226 C 84 226, 62 204, 62 172 Z" fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="4.5"/>' + g +
+    el.innerHTML = '<svg viewBox="20 0 170 230">' + g + '<path d="M62 98 C 60 84, 176 80, 176 104 L 178 170 C 178 206, 150 226, 118 226 C 84 226, 62 204, 62 172 Z" fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="4.5"/>' +
+      '<g fill="none" stroke="#E8B48A" stroke-width="3" stroke-linecap="round" opacity=".8"><path d="M80 100 q 9 -6 18 0"/><path d="M104 96 q 9 -6 18 0"/><path d="M128 99 q 9 -6 18 0"/><path d="M151 104 q 8 -5 16 0"/></g>' +
       '<path d="M72 112 C 70 104, 166 100, 166 112" stroke="#E8B48A" stroke-width="3" fill="none" opacity=".7"/><ellipse cx="96" cy="170" rx="10" ry="22" fill="#fff" opacity=".35"/></svg>';
     var fs = el.querySelectorAll('.fg'), api = { el: el, onChange: null };
     api.set = function (k) { fs.forEach(function (f, i) { f.classList.toggle('down', i >= k); }); };
@@ -176,6 +177,13 @@
     api.set(n || 0); return api;
   };
   /* the fingers he should tap to show n, starting from what is up now */
+  /* the taps that show n: tap the hand to raise the next finger, tap a raised finger to fold it */
+  F.fingerTaps = function (h, n, root) {
+    var out = [], c = h.count();
+    for (var i = 4; i >= 0 && c > n; i--) if (!h.finger(i).classList.contains('down')) { out.push({ tap: root + ' .fg[data-f="' + i + '"]' }); c--; }
+    for (; c < n; c++) out.push({ tap: root + ' .fhand' });
+    return out;
+  };
   F.fingerMoves = function (h, n) { var out = [], c = h.count(); for (var i = 0; i < 5; i++) { var up = !h.finger(i).classList.contains('down'), want = i < n; if (up !== want) out.push(i); } return out; };
 
   /* ---------- the flow ---------- */
@@ -190,7 +198,7 @@
       S.results[S.round] = right ? 'ok' : 'fix'; if (right) S.first++; F.dots();
     }
     S.playing = false;
-    if (cfg.bonus && S.first >= cfg.rounds - 1) { GAME.phase = 'bonus'; await F.say('Bonus! Super quick!'); await cfg.bonus(F); }
+    if (cfg.bonus && S.first >= cfg.rounds - 1) { GAME.phase = 'bonus'; await F.say(cfg.bonusSay || 'Bonus! Super quick!'); await cfg.bonus(F); }
     finish();
   }
   async function finish() {

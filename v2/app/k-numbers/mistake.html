@@ -18,14 +18,14 @@
 .spk{ cursor:pointer; }
 .says{ position:relative; display:flex; align-items:center; gap:12px; background:#fff; border-radius:30px; border:5px solid #fff; padding:10px 18px 10px 12px; box-shadow:0 8px 0 rgba(40,70,140,.14), 0 14px 22px rgba(40,70,140,.18); }
 .says::after{ content:''; position:absolute; left:-18px; top:44%; border:12px solid transparent; border-right:18px solid #fff; }
-.says .spk{ width:54px; height:54px; border-radius:50%; background:radial-gradient(circle at 50% 30%,#8BE0FF,#2FB5E8); display:flex; align-items:center; justify-content:center; }
+.says .spk{ width:64px; height:64px; flex:none; border-radius:50%; background:radial-gradient(circle at 50% 30%,#8BE0FF,#2FB5E8); display:flex; align-items:center; justify-content:center; }
 .says .spk svg{ width:30px; height:30px; }
 .says .fhand{ width:clamp(100px,26vh,200px); aspect-ratio:170/230; }
 .thumbs button{ width:clamp(104px,17vh,140px) !important; }
 .fixrow{ display:flex; align-items:center; gap:14px; }
 .fixrow[hidden], .thumbs[hidden]{ display:none; }
 .bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:30px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14); padding:6px; }
-.bighand .fhand{ width:min(22vw,36vh,240px); aspect-ratio:170/230; }
+.bighand .fhand{ width:min(20vw,30vh,220px); aspect-ratio:170/230; }
 .hero .qcard{ position:absolute; width:56%; left:22%; border-radius:50%; }
 @media (max-width:760px), (max-aspect-ratio:4/5){
   .stage{ grid-template-columns:1fr; grid-template-rows:1fr 1.1fr; }
@@ -62,8 +62,8 @@
   function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
   function hooks() {
     if (R.stage === 'judge') { var ok = R.claim === R.n; GAME.right = function () { return [{ tap: ok ? '#up' : '#down' }]; }; GAME.wrong = function () { return [{ tap: ok ? '#down' : '#up' }]; }; }
-    else { GAME.right = function () { return FR.fingerMoves(H, R.n).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
-      GAME.wrong = function () { var w = R.n === R.claim ? R.n + 1 : R.claim; return FR.fingerMoves(H, w).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); }; }
+    else { GAME.right = function () { return FR.fingerTaps(H, R.n, '#bighand').concat([{ tap: '#check' }]); };
+      GAME.wrong = function () { var w = R.n === R.claim ? R.n + 1 : R.claim; return FR.fingerTaps(H, w, '#bighand').concat([{ tap: '#check' }]); }; }
   }
   function finish(first) { var d = done; done = null; d(first); }
 
@@ -78,7 +78,7 @@
     }
     FR.oops($('says')); R.misses++; if (R.misses >= 2) easy = 2; $('plate').style.opacity = '';
     await FR.say("Let's look again."); await FR.showShape($('plate'), R.misses > 1);
-    await FR.say(R.misses > 1 ? (isRight ? who + ' is right.' : who + ' said ' + FR.word(R.claim) + '. Not right.') : 'Is ' + who + ' right?');
+    await FR.say(R.misses > 1 ? (isRight ? who + ' is right. Tap thumbs up.' : who + ' said ' + FR.word(R.claim) + '. Not right.') : 'Is ' + who + ' right?');
     GAME.phase = 'answer'; FR.lock(false); hooks();
   }
   async function check() {
