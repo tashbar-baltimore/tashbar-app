@@ -85,7 +85,8 @@ export function startGame(cfg) {
   let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: FAST }); }
   catch (e) { $('#nogl').style.display = 'grid'; $('#start').style.display = 'none'; throw e; }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  /* the automatic test (?fast=1) draws at low detail: test machines have no graphics card. A boy always gets full detail. */
+  renderer.setPixelRatio(FAST ? 0.5 : Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -95,7 +96,7 @@ export function startGame(cfg) {
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
   scene.add(new THREE.HemisphereLight('#FFF6E8', '#C9B48E', 0.7));
   const sun = new THREE.DirectionalLight('#FFF1DC', 2.2);
-  sun.position.set(-5, 11, 7); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 6; sun.shadow.bias = -0.0004;
+  sun.position.set(-5, 11, 7); sun.castShadow = true; sun.shadow.mapSize.set(FAST ? 512 : 2048, FAST ? 512 : 2048); sun.shadow.radius = 6; sun.shadow.bias = -0.0004;
   Object.assign(sun.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 30 }); scene.add(sun);
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(120, 120), new THREE.MeshStandardMaterial({ color: '#E9D7B6', roughness: 0.95 }));
   floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
@@ -249,7 +250,7 @@ export function startGame(cfg) {
     }
   }
   let dragging = null, handOn = null;
-  const clock = new THREE.Clock();
+  const clock = new THREE.Clock(); let fastN = 0;
   function frame() {
     const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime, now = performance.now();
     for (let i = tweens.length - 1; i >= 0; i--) { const tw = tweens[i], k = Math.min(1, (now - tw.t0) / tw.ms); tw.fn(k); if (k >= 1) { tweens.splice(i, 1); tw.res(); } }
@@ -262,7 +263,7 @@ export function startGame(cfg) {
     const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25;
     camera.position.set(camPos.x + sway, camPos.y, camPos.z); camera.lookAt(camLook);
     if (handOn) { const p = toScreen(handOn.g.position); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; }
-    renderer.render(scene, camera);
+    if (!FAST || (++fastN % 3) === 0) renderer.render(scene, camera);
     requestAnimationFrame(frame);
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
