@@ -1108,7 +1108,7 @@ export function startGame(cfg) {
           return;
         }
         if (!bonus) W.misses++; chime(false);
-        moveTo(o, new THREE.Vector3(o.g.position.x, ROD_Y, o.home.z), 300).then(() => { o.busy = true; o.home.copy(o.g.position); });
+        moveTo(o, new THREE.Vector3(o.g.position.x, ROD_Y, o.home.z), 300).then(() => { o.home.copy(o.g.position); });
         const steps = ['Not yet! The end must touch the start line.'];
         if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
         steps.push(...ask);
@@ -1231,7 +1231,7 @@ export function startGame(cfg) {
       onDrop = (o, bi) => {
         idle();
         if (bi < 0 || BS.pans[bi].item) {
-          if (!bonus) W.misses++; chime(false); goHome(o).then(() => { o.busy = true; });
+          if (!bonus) W.misses++; chime(false); goHome(o);
           const steps = [bi < 0 ? 'Not yet! Put it on a pan of the scale.' : 'That pan is full. Use the other pan.'];
           if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
           allow = false; play([...steps, ...ask]).then(() => { if (onDrop) allow = true; }); return;
