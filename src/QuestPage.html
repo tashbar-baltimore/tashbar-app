@@ -1594,7 +1594,7 @@ how:['7 can be 5 and 2, or 4 and 3, or 6 and 1.','The two parts together make th
 gen(){ const n=RI(3,10), a=RI(1,n-1), [e]=PICK(TLO); return N(`${n} is ${a} and how many more?`, n-a, `Count up from ${a} to ${n}.`, {pic:e.repeat(a)+'  |  '+'⚪'.repeat(n-a)}); }},
 'MATH.OPS.L01.04':{name:'Ten friends',
 how:['Ten friends are two numbers that make 10: 6 and 4, 7 and 3.','Look at the ten frame: count the empty spaces.','1+9, 2+8, 3+7, 4+6, 5+5.'],
-gen(){ const a=RI(1,9), f=('\u{1F535}'.repeat(a)+'⚪'.repeat(10-a)); return N(`${a} and how many more make 10?`, 10-a, 'Count the empty circles in the ten frame.', {pic:f.slice(0,f.length/2)+'\n'+f.slice(f.length/2)}); }},
+gen(){ const a=RI(1,9), f=Array.from('\u{1F535}'.repeat(a)+'⚪'.repeat(10-a)); return N(`${a} and how many more make 10?`, 10-a, 'Count the empty circles in the ten frame.', {pic:f.slice(0,5).join('')+'\n'+f.slice(5).join('')}); }},
 'MATH.PV.L01.01':{name:'Teen numbers: ten and some ones',
 how:['13 is one ten and 3 ones.','17 is one ten and 7 ones.','Ten and 5 more is 15.'],
 gen(){ const o=RI(1,9); if(Math.random()<.5) return N(`${10+o} is ten and how many ones?`, o, `Look at the ones digit of ${10+o}.`, {pic:'\u{1F51F} '+'\u{1F7E1}'.repeat(o)}); return N(`Ten and ${o} more make what number?`, 10+o, `A 1 for the ten, then ${o} ones.`, {pic:'\u{1F51F} '+'\u{1F7E1}'.repeat(o)}); }},
