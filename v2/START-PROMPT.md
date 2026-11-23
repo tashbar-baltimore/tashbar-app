@@ -26,7 +26,7 @@ Speak to me in short, plain, non-technical sentences. Ask me only for real decis
    - Recommend ONE small piece, small enough to finish today. If a piece is big, suggest a small slice of it.
    - I choose.
 2. Look at it in 1.0 together.
-   - Tell me exactly how to see it in 1.0: the link, sign in with a TEST boy code (never a real boy's code), and where to tap.
+   - Tell me exactly how to see it in 1.0: open the review page https://tashbar-learning-v2.web.app/compare/ (1.0 on the left, 2.0 on the right), sign in with a TEST boy code (never a real boy's code), and tell me where to tap.
    - Explain in plain words what it really does, including the small details nobody remembers. Read the 1.0 code to find out.
    - Write that down in v2/FEATURES.md (status "Looked at").
 3. Decide together.
@@ -42,7 +42,7 @@ Speak to me in short, plain, non-technical sentences. Ask me only for real decis
    - Open a pull request that changes ONLY v2/, starting with one line: what I asked for, in my words.
    - Tell me when its look link is ready. The system posts it on the pull request about 15 minutes after the tests pass.
 5. I look and tweak.
-   - I open the look link on a Chromebook and a phone and tell you what I see.
+   - I open the look link's review page (the look link + /compare/): today's 1.0 on the left, my new 2.0 version on the right, side by side, with a Phone button. I tell you what I see.
    - Make my changes on the same pull request, and tell me when the new look link is ready.
    - Repeat until I'm happy.
 6. Put it into 2.0.
