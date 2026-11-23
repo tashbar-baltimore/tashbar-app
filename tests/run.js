@@ -134,7 +134,7 @@ async function kidTests(browser) {
     else ok('map home: a level whose check is waiting shows the 🎫 Level Check card and the lesson after it; PLAY leads into it');
     const passMap = JSON.parse(JSON.stringify(km.map)); if (passMap.lc) ['MATH', 'READ'].forEach(k => { passMap.lc[k] = passMap.lc[k].map(v => (v ? 2 : 0)); });
     const g = await pg.evaluate(async M => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {};
-      A.overlay = null; A.play = null; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.view = 'hub'; render(); await sleep(50);
+      A.overlay = null; A.play = null; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.view = 'hub'; GM.sid = ''; render();  /* GM.sid = '': a fresh sign-in, which always lands on the home */ await sleep(50);
       const gm = document.getElementById('gm'); o.on = document.body.classList.contains('gm-on') && !!gm; if (!o.on) return o;
       /* HOME (HoS 2026-11-23, docs/HOME-SIMPLE-PROMPT.md): the first screen is six equal tiles, his work first and glowing, the Canteen its own door, no tab bar */
       const tl = [...gm.querySelectorAll('.gm-hts > .gm-ht')], sz = tl.map(x => { const r = x.getBoundingClientRect(), tp = x.querySelector('.top').getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), tp.height / r.height]; });
