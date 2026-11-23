@@ -73,7 +73,7 @@
     var GN = FAST ? 1500 : 9000, grass = new THREE.InstancedMesh(blade, grassMat, GN), dm = new THREE.Object3D(), gc = new THREE.Color();
     for (var gi = 0; gi < GN; gi++) { var a = Math.random() * Math.PI * 2, rr = 1.6 + Math.pow(Math.random(), 0.7) * 17, gx = Math.cos(a) * rr, gz = Math.sin(a) * rr * 0.75 - 2;
       if (gz > 6.5) gz = 6.5 - Math.random() * 2;
-      if (gi > GN * 0.68) { gx = (Math.random() - .5) * 18; gz = 6.5 + Math.random() * 15; }
+      if (gi > GN * 0.6) { gz = 6.5 + Math.random() * 15; gx = (Math.random() - .5) * (6 + (gz - 6.5) * 0.4) * 2; }
       dm.position.set(gx, -2.1, gz); dm.rotation.set(0, Math.random() * Math.PI, (Math.random() - .5) * 0.25); var s = 0.6 + Math.random() * 0.9; dm.scale.set(s, s * (0.8 + Math.random() * 0.6) * (gz > 6.5 ? 0.55 : 1), s); dm.updateMatrix(); grass.setMatrixAt(gi, dm.matrix);
       gc.setHSL(0.27 + Math.random() * 0.06, 0.55 + Math.random() * 0.2, 0.34 + Math.random() * 0.16); grass.setColorAt(gi, gc.convertSRGBToLinear()); }
     grass.instanceColor.needsUpdate = true; scene.add(grass); W.grass = grass;
@@ -128,7 +128,7 @@
 
     /* ---------- size ---------- */
     function size() { var w = host.clientWidth, h = host.clientHeight, a = w / h; renderer.setSize(w, h, false); camera.aspect = a; W.aspect = a;
-      W.camBase.z = a < 1 ? 11 / Math.max(a, 0.45) * 0.72 + 2 : 11; W.camBase.y = a < 1 ? 0.9 : 0.6; W.camFrom.set(-3, 1.4, W.camBase.z + 20);
+      W.camBase.z = a < 1 ? 11 / Math.max(a, 0.45) * 0.72 + 2 : 11; W.camBase.y = a < 1 ? 0.9 : 0.6; W.camLook.y = a < 1 ? 1.25 : 0.35; W.camFrom.set(-3, 1.4, W.camBase.z + 20);
       camera.updateProjectionMatrix(); if (composer) composer.setSize(w, h); if (W.phase === 'start') camera.position.copy(W.camFrom); if (W.onResize) W.onResize(a); }
     window.addEventListener('resize', size); W.size = size; size(); camera.position.copy(W.camFrom);
     W.flyIn = function (sec) { W.flying = true; return W.tween(sec || 2.4, function (k) { camera.position.lerpVectors(W.camFrom, W.camBase, k); }, 'inout').then(function () { W.flying = false; }); };

@@ -233,7 +233,7 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
   var candy = function (c) { return new T3.MeshPhysicalMaterial({ color: KW.col(c), roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, envMap: W.envTex, envMapIntensity: 0.8 }); };
   var LCOL = [0x4FA8FF, 0xFF7FAE, 0xFFB627, 0xB98CFF], findGroup = new T3.Group(), findLetters = [], findLocked = false; scene.add(findGroup);
   function clearFind() { findLetters.forEach(function (L) { L.traverse(function (o) { if (o.geometry) o.geometry.dispose(); if (o.material && o.material !== ghostMat) o.material.dispose(); }); findGroup.remove(L); }); findLetters = []; if (ghost) ghost.group.visible = false; }
-  var ghost = null, ghostMat = null;
+  var ghost = null, ghostMat = null, helpOn = false;   /* while the wrong-answer help plays, only the right letter answers */
   function slots(n) { var a = W.aspect;
     if (n === 2) return a < 1 ? [[0, 2.3, 0.5], [0, -0.4, 0.5]] : [[-2, 0.3, 0.6], [2, 0.3, 0.6]];
     if (a < 1) return [[-1.5, 2.3, 0.42], [1.5, 2.3, 0.42], [-1.5, -0.2, 0.42], [1.5, -0.2, 0.42]];
@@ -246,16 +246,16 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
   }
   function letterOf(e) { var h = W.hits(e, findLetters); if (!h.length) return null; var o = h[0].object; while (o && !o.userData.key) o = o.parent; return o; }
   function findTap(e) {
-    if (findLocked) return; var L = letterOf(e); if (!L) return; R.stop();
+    if (findLocked) return; var L = letterOf(e); if (!L) return; if (helpOn && L.userData.key !== 's') return; R.stop(); helpOn = false;
     if (L.userData.key === 's') {
       findLocked = true; A.chime([660, 880]); if (st.firstTry) st.stars++; W.burst(L.position.clone(), 24, 4);
       var y0 = L.position.y; R.run([function () { return W.tween(0.5, function (k) { L.position.y = y0 + Math.sin(k * Math.PI) * 0.8; L.rotation.y = k * Math.PI * 2; }); }, function () { A.hissStart(); return W.wait(0.9).then(A.hissStop); }, 'Yes!'])
         .then(function (ok) { if (!ok) return; st.round++; if (st.round < 3) buildRound(); else afterRounds(); });
     } else {
-      st.firstTry = false; findLocked = true; A.chime([330, 262]); var x0 = L.position.x;
+      st.firstTry = false; helpOn = true; A.chime([330, 262]); var x0 = L.position.x;
       W.tween(0.45, function (k) { L.position.x = x0 + Math.sin(k * Math.PI * 6) * 0.15 * (1 - k); });
       var right = findLetters.filter(function (x) { return x.userData.key === 's'; })[0];
-      R.run(['Not that one. Look for the curvy snake.', function () { return showGhost(right); }, KW.echo(function () { A.hissStart(); return W.wait(0.8).then(A.hissStop); })]).then(function () { findLocked = false; });
+      R.run(['Not that one. Look for the curvy snake.', function () { return showGhost(right); }, KW.echo(function () { A.hissStart(); return W.wait(0.8).then(A.hissStop); })]).then(function () { helpOn = false; });
     }
   }
   function showGhost(L) {   /* the snake appears inside the right letter for a moment (one snake, reused) */
