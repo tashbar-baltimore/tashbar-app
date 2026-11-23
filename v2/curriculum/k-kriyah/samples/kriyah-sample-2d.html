@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kriyah Sample</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Hebrew:wght@800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d2b3a;--blue:#2f7de1;--green:#2dbb6a;--gold:#ffc21a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;font-family:Nunito,system-ui,sans-serif;color:var(--ink);overflow:hidden;touch-action:none;user-select:none;background:#8fd3ff}
+.heb{font-family:"Noto Serif Hebrew","Frank Ruehl CLM",serif;font-weight:800;direction:rtl}
+#world{position:fixed;inset:0;background:linear-gradient(#5cc2ff 0%,#9adfff 55%,#d8f4ff 100%);overflow:hidden}
+.sun{position:absolute;right:6vw;top:6vh;width:16vh;height:16vh}
+.sun .rays{position:absolute;inset:-60%;background:repeating-conic-gradient(#fff6 0 8deg,#fff0 8deg 22deg);border-radius:50%;animation:spin 40s linear infinite}
+.sun .disc{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff7c2,#ffd43b 60%,#ffb703);box-shadow:0 0 40px #ffe066}
+.cloud{position:absolute;height:60px;width:150px;background:#fff;border-radius:60px;opacity:.95;animation:drift linear infinite}
+.cloud:before,.cloud:after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud:before{width:70px;height:70px;left:22px;top:-34px}.cloud:after{width:90px;height:90px;left:62px;top:-46px}
+@keyframes drift{from{transform:translateX(-30vw)}to{transform:translateX(130vw)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hills{position:absolute;left:0;bottom:0;width:100%;height:30vh}
+.bird{position:absolute;width:34px;animation:fly 18s linear infinite}
+@keyframes fly{from{transform:translate(-10vw,0)}50%{transform:translate(50vw,-4vh)}to{transform:translate(110vw,2vh)}}
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+.top{height:88px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;position:relative;z-index:20}
+.btn{width:70px;height:70px;border-radius:50%;border:none;background:#fff;box-shadow:0 5px 0 #7bb4dd,0 8px 16px #0002;display:grid;place-items:center;cursor:pointer}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 #7bb4dd}
+.btn svg{width:38px;height:38px}
+.path{display:flex;gap:10px;background:#ffffffb0;padding:10px 16px;border-radius:30px}
+.path i{width:22px;height:22px;border-radius:50%;background:#d5e6f3;border:3px solid #fff;box-shadow:0 2px 0 #0001}
+.path i.on{background:radial-gradient(circle at 35% 35%,#ffe680,#ffc21a)}
+.note{position:fixed;left:50%;bottom:6px;transform:translateX(-50%);font-size:12px;color:#2b4a2b;background:#ffffffcc;padding:3px 10px;border-radius:10px;text-align:center;max-width:92vw;z-index:30}
+.stage{flex:1;position:relative;min-height:0}
+.scr{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;padding:0 16px 34px}
+.scr.show{display:flex}
+.go{width:170px;height:170px;border-radius:50%;border:8px solid #fff;background:radial-gradient(circle at 35% 30%,#6ee69b,#22a65a);box-shadow:0 10px 0 #17824a,0 16px 30px #0003;cursor:pointer;display:grid;place-items:center;animation:breathe 1.6s ease-in-out infinite}
+.go svg{width:80px;height:80px;margin-left:10px}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.next{position:absolute;right:22px;bottom:44px;width:104px;height:104px;border-radius:50%;border:7px solid #fff;background:radial-gradient(circle at 35% 30%,#6ee69b,#22a65a);box-shadow:0 8px 0 #17824a,0 12px 24px #0003;display:none;place-items:center;cursor:pointer;z-index:20}
+.next svg{width:52px;height:52px}.next.show{display:grid;animation:pop .45s}
+@keyframes pop{0%{transform:scale(.2)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-14px) rotate(-8deg)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-16px)}40%,80%{transform:translateX(16px)}}
+@keyframes jump{0%,100%{transform:translateY(0)}40%{transform:translateY(-26px)}}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+#story{width:min(78vh,92vw);height:min(66vh,70vw);overflow:visible}
+.letterstage{display:none;position:relative;width:min(62vh,86vw);height:min(62vh,86vw);align-items:center;justify-content:center;cursor:pointer}
+.letterstage .glow{position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,#fff 0 52%,#fff0 70%)}
+.letterstage .burst{position:absolute;inset:-4%;border-radius:50%;background:repeating-conic-gradient(#ffe066aa 0 10deg,#fff0 10deg 24deg);animation:spin 20s linear infinite;-webkit-mask:radial-gradient(circle,#000 40%,#0000 70%);mask:radial-gradient(circle,#000 40%,#0000 70%)}
+.bigL{position:relative;font-size:min(40vh,56vw);line-height:1;background:linear-gradient(160deg,#4aa3ff,#2f5fe1 55%,#6a3fd6);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 0 #fff) drop-shadow(0 12px 16px #1d2b3a44)}
+.tapme{position:absolute;width:90px;right:4%;bottom:6%;animation:bob 1s ease-in-out infinite;display:none;filter:drop-shadow(0 4px 4px #0003)}
+.det{width:100%;max-width:1180px;height:100%;display:grid;grid-template-columns:1fr minmax(200px,.8fr) 1fr;gap:16px;align-items:end}
+.house{position:relative;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.house svg{width:100%;max-height:100%;overflow:visible}
+.house.hot svg{filter:drop-shadow(0 0 18px #fff) drop-shadow(0 0 8px #ffe066)}
+.house.jump{animation:jump .5s}
+.house .got{position:absolute;left:0;right:0;bottom:3%;display:flex;gap:4px;justify-content:center;flex-wrap:wrap;pointer-events:none}
+.house .got span{font-size:min(5.6vh,38px);background:#fff;border-radius:10px;padding:0 8px;box-shadow:0 3px 0 #0002;animation:pop .4s}
+.mid{height:100%;display:flex;align-items:center;justify-content:center;position:relative}
+.card{width:min(36vh,250px);height:min(44vh,300px);border-radius:30px;background:#fff;border:8px solid #ffd43b;box-shadow:0 10px 0 #e0a400,0 18px 30px #0003;display:grid;place-items:center;font-size:min(30vh,210px);line-height:1;cursor:grab;position:relative;touch-action:none;z-index:5}
+.card.drag{cursor:grabbing;box-shadow:0 22px 40px #0004}
+.card .in{animation:float 2.4s ease-in-out infinite;display:block}
+.card.no{animation:shake .45s}
+.card .ring{position:absolute;width:30%;height:26%;border-radius:50%;border:7px solid #ff8a00;box-shadow:0 0 24px #ffb703;left:35%;top:37%;display:none}
+.card.why .ring{display:block}
+.hand{position:fixed;width:90px;height:90px;pointer-events:none;z-index:50;display:none;filter:drop-shadow(0 4px 4px #0003)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:40}
+.yay{position:fixed;inset:0;pointer-events:none;display:none;align-items:center;justify-content:center;z-index:41}
+.yay.show{display:flex}
+.stars{display:flex;gap:18px;background:#ffffffd9;padding:18px 28px;border-radius:40px;box-shadow:0 10px 30px #0002}
+.stars svg{width:120px;height:120px;animation:pop .5s backwards}
+.stars svg:nth-child(2){animation-delay:.2s}.stars svg:nth-child(3){animation-delay:.4s}
+@media (max-width:700px){
+ .det{grid-template-columns:1fr 1fr;grid-template-rows:1fr auto;gap:10px}
+ .mid{grid-column:1/3;grid-row:1;height:auto;padding-top:4px}
+ .card{width:min(28vh,190px);height:min(30vh,220px);font-size:150px}
+ .house{grid-row:2;height:auto}
+ .sun{width:10vh;height:10vh}
+ .next{width:90px;height:90px;bottom:40px}
+ .stars svg{width:84px;height:84px}
+}
+</style></head><body>
+<div id="world">
+  <div class="sun"><div class="rays"></div><div class="disc"></div></div>
+  <div class="cloud" style="top:10vh;animation-duration:70s;animation-delay:-20s"></div>
+  <div class="cloud" style="top:22vh;animation-duration:95s;animation-delay:-60s;opacity:.85"></div>
+  <div class="cloud" style="top:4vh;animation-duration:110s;animation-delay:-5s;opacity:.8"></div>
+  <svg class="bird" style="top:14vh;animation-delay:-4s" viewBox="0 0 40 16"><path d="M2 10q9-9 18 0q9-9 18 0" stroke="#24476b" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+  <svg class="hills" viewBox="0 0 1000 300" preserveAspectRatio="none">
+    <path d="M0 140 Q180 40 380 120 T760 100 T1000 110 V300 H0z" fill="#8ad66a"/>
+    <path d="M0 200 Q250 110 520 190 T1000 170 V300 H0z" fill="#5dbb4a"/>
+    <g fill="#fff"><circle cx="120" cy="230" r="6"/><circle cx="300" cy="250" r="5"/><circle cx="640" cy="235" r="6"/><circle cx="860" cy="255" r="5"/></g>
+    <g fill="#ffd43b"><circle cx="120" cy="230" r="2.5"/><circle cx="300" cy="250" r="2"/><circle cx="640" cy="235" r="2.5"/><circle cx="860" cy="255" r="2"/></g>
+  </svg>
+</div>
+
+<div id="app">
+  <div class="top">
+    <button class="btn" id="again" aria-label="Hear it again"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z" fill="#2f7de1"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="#2f7de1" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></button>
+    <div class="path"><i class="on"></i><i></i></div>
+    <div style="width:70px"></div>
+  </div>
+  <div class="stage">
+    <div class="scr show" id="s0">
+      <button class="go" id="start" aria-label="Start"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg></button>
+    </div>
+
+    <div class="scr" id="s1">
+      <svg id="story" viewBox="0 0 400 340">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4aa3ff"/><stop offset=".55" stop-color="#2f5fe1"/><stop offset="1" stop-color="#6a3fd6"/></linearGradient>
+          <linearGradient id="wallg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd29a"/><stop offset="1" stop-color="#ffad5e"/></linearGradient>
+          <linearGradient id="roofg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b6b"/><stop offset="1" stop-color="#d9443e"/></linearGradient>
+        </defs>
+        <g id="house">
+          <ellipse cx="200" cy="306" rx="170" ry="16" fill="#0002"/>
+          <rect x="246" y="62" width="28" height="50" rx="4" fill="#b84a3c"/>
+          <polygon points="70,152 200,52 330,152" fill="url(#roofg)" stroke="#fff" stroke-width="6" stroke-linejoin="round"/>
+          <g stroke="#c13c35" stroke-width="3" opacity=".5"><path d="M120 128h160M150 106h100M178 84h44"/></g>
+          <rect x="106" y="150" width="188" height="152" rx="6" fill="url(#wallg)" stroke="#fff" stroke-width="6"/>
+          <rect x="118" y="208" width="46" height="94" rx="23" fill="#8a5a3c" stroke="#6d432b" stroke-width="4"/>
+          <circle cx="154" cy="258" r="4.5" fill="#ffd43b"/>
+          <rect x="168" y="222" width="7" height="22" rx="2" fill="#c9a227" transform="rotate(20 171 233)"/>
+          <rect x="164" y="192" width="74" height="78" rx="10" fill="#fff3b0" stroke="#fff" stroke-width="7"/>
+          <rect x="250" y="176" width="32" height="32" rx="6" fill="#bfe6ff" stroke="#fff" stroke-width="5"/>
+          <g fill="#3fae4a"><circle cx="104" cy="302" r="13"/><circle cx="296" cy="302" r="13"/></g>
+          <g fill="#ff7aa8"><circle cx="98" cy="296" r="4"/><circle cx="302" cy="296" r="4"/></g>
+        </g>
+        <g id="boy" style="transform-origin:200px 232px;transform-box:view-box">
+          <circle cx="200" cy="236" r="26" fill="#ffd8b5"/>
+          <path d="M178 224a23 17 0 0 1 44 0z" fill="#1f3c88"/>
+          <path d="M176 236q-4 10 2 16M224 236q4 10-2 16" stroke="#5a3a1a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <circle cx="191" cy="238" r="3.5" fill="#1d2b3a"/><circle cx="209" cy="238" r="3.5" fill="#1d2b3a"/>
+          <circle cx="186" cy="246" r="4" fill="#ff9e9e" opacity=".6"/><circle cx="214" cy="246" r="4" fill="#ff9e9e" opacity=".6"/>
+          <path d="M191 248q9 8 18 0" stroke="#1d2b3a" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </g>
+        <path id="beisW" d="M106 150 H270 Q294 150 294 174 V302 M88 302 H318" stroke="#fff" stroke-width="48" fill="none" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:900;stroke-dashoffset:900"/>
+        <path id="beis" d="M106 150 H270 Q294 150 294 174 V302 M88 302 H318" stroke="url(#lg)" stroke-width="34" fill="none" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:900;stroke-dashoffset:900"/>
+        <circle id="dagesh" cx="200" cy="232" r="0" fill="url(#lg)" stroke="#fff" stroke-width="6"/>
+      </svg>
+      <div class="letterstage" id="plain">
+        <div class="burst"></div><div class="glow"></div>
+        <div class="bigL heb" id="plainL">בּ</div>
+        <svg class="tapme" id="tapme" viewBox="0 0 64 64"><path d="M26 6c3 0 5 2 5 5v19l2-1c2-6 10-5 10 1l1-1c2-4 9-3 9 2v2c2-3 8-2 8 3v12c0 9-7 16-16 16h-6c-6 0-10-3-13-8L10 40c-2-4 2-8 6-5l5 5V11c0-3 2-5 5-5z" fill="#fff" stroke="#1d2b3a" stroke-width="3"/></svg>
+      </div>
+    </div>
+
+    <div class="scr" id="s2">
+      <div class="det">
+        <div class="house" id="hB" data-k="b"><svg viewBox="0 0 220 250"><use href="#hs"/><use href="#lit"/><use href="#kid"/><use href="#signB"/></svg><div class="got heb"></div></div>
+        <div class="mid" id="mid"></div>
+        <div class="house" id="hV" data-k="v"><svg viewBox="0 0 220 250"><use href="#hs"/><use href="#dark"/><use href="#signV"/></svg><div class="got heb"></div></div>
+      </div>
+    </div>
+    <button class="next" id="next" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" stroke="#fff" stroke-width="3.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="w2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd29a"/><stop offset="1" stop-color="#ffad5e"/></linearGradient>
+  <linearGradient id="r2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6b6b"/><stop offset="1" stop-color="#d9443e"/></linearGradient>
+  <g id="hs">
+    <ellipse cx="110" cy="236" rx="100" ry="10" fill="#0002"/>
+    <polygon points="14,112 110,40 206,112" fill="url(#r2)" stroke="#fff" stroke-width="6" stroke-linejoin="round"/>
+    <rect x="34" y="110" width="152" height="124" rx="6" fill="url(#w2)" stroke="#fff" stroke-width="6"/>
+    <rect x="48" y="160" width="40" height="74" rx="20" fill="#8a5a3c" stroke="#6d432b" stroke-width="4"/>
+    <rect x="92" y="170" width="6" height="18" rx="2" fill="#c9a227" transform="rotate(20 95 179)"/>
+    <g fill="#3fae4a"><circle cx="30" cy="232" r="12"/><circle cx="190" cy="232" r="12"/></g>
+  </g>
+  <rect id="lit" x="110" y="138" width="62" height="62" rx="10" fill="#fff3b0" stroke="#fff" stroke-width="6"/>
+  <rect id="dark" x="110" y="138" width="62" height="62" rx="10" fill="#4a6a96" stroke="#fff" stroke-width="6"/>
+  <g id="kid"><circle cx="141" cy="176" r="17" fill="#ffd8b5"/><path d="M126 168a15 11 0 0 1 30 0z" fill="#1f3c88"/>
+    <circle cx="135" cy="177" r="2.6" fill="#1d2b3a"/><circle cx="147" cy="177" r="2.6" fill="#1d2b3a"/><path d="M135 184q6 5 12 0" stroke="#1d2b3a" stroke-width="2.4" fill="none" stroke-linecap="round"/></g>
+  <g id="signB"><circle cx="110" cy="84" r="32" fill="#fff" stroke="#ffd43b" stroke-width="5"/><text x="110" y="104" text-anchor="middle" font-size="52" font-family="Noto Serif Hebrew,serif" font-weight="800" fill="#2f5fe1">בּ</text></g>
+  <g id="signV"><circle cx="110" cy="84" r="32" fill="#fff" stroke="#ffd43b" stroke-width="5"/><text x="110" y="104" text-anchor="middle" font-size="52" font-family="Noto Serif Hebrew,serif" font-weight="800" fill="#2f5fe1">ב</text></g>
+</defs></svg>
+<svg class="hand" id="hand" viewBox="0 0 64 64"><path d="M26 6c3 0 5 2 5 5v19l2-1c2-6 10-5 10 1l1-1c2-4 9-3 9 2v2c2-3 8-2 8 3v12c0 9-7 16-16 16h-6c-6 0-10-3-13-8L10 40c-2-4 2-8 6-5l5 5V11c0-3 2-5 5-5z" fill="#fff" stroke="#1d2b3a" stroke-width="3"/></svg>
+<canvas id="fx"></canvas>
+<div class="yay" id="yay"><div class="stars"></div></div>
+<div class="note">Sample only. Computer voice for now; the real game uses the rebbe's recording.</div>
+
+<script>
+const $=s=>document.querySelector(s);
+let lastLine='',step=0;
+function say(t){lastLine=t;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.85;u.pitch=1.1;speechSynthesis.speak(u);}catch(e){}return new Promise(r=>setTimeout(r,Math.max(1200,t.split(' ').length*420)));}
+$('#again').onclick=()=>say(lastLine);
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+let actx;function tone(f,d=.15,type='sine',v=.15,at=0){try{actx=actx||new AudioContext();const t=actx.currentTime+at,o=actx.createOscillator(),g=actx.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(actx.destination);o.start(t);o.stop(t+d);}catch(e){}}
+const chime=()=>[660,880,1320].forEach((f,i)=>tone(f,.22,'sine',.15,i*.09));
+const sparkleSnd=()=>[1200,1500,1800,2200].forEach((f,i)=>tone(f,.12,'sine',.06,i*.06));
+const boop=()=>tone(200,.3,'triangle',.12);
+const fanfare=()=>[523,659,784,1047].forEach((f,i)=>tone(f,.3,'triangle',.12,i*.12));
+const cv=$('#fx'),cx=cv.getContext('2d');let parts=[];
+function fit(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}fit();addEventListener('resize',fit);
+const COLS=['#ff5d8f','#ffc21a','#2dbb6a','#2f7de1','#9b5de5','#00c2d1'];
+function burst(x,y,n=60,kind='confetti'){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,s=kind==='spark'?2+Math.random()*4:4+Math.random()*8;
+ parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-(kind==='spark'?0:4),life:kind==='spark'?40:90,k:kind,c:COLS[i%COLS.length],r:Math.random()*6.28,w:6+Math.random()*8});}}
+(function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts=parts.filter(p=>p.life-->0);for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.vy+=p.k==='spark'?.05:.25;p.vx*=.98;p.r+=.2;cx.globalAlpha=Math.min(1,p.life/30);
+ if(p.k==='spark'){cx.fillStyle='#fff8c0';cx.strokeStyle='#ffc21a';cx.lineWidth=1.5;cx.beginPath();const s=p.w/2;cx.moveTo(p.x,p.y-s*1.6);cx.lineTo(p.x+s*.4,p.y-s*.4);cx.lineTo(p.x+s*1.6,p.y);cx.lineTo(p.x+s*.4,p.y+s*.4);cx.lineTo(p.x,p.y+s*1.6);cx.lineTo(p.x-s*.4,p.y+s*.4);cx.lineTo(p.x-s*1.6,p.y);cx.lineTo(p.x-s*.4,p.y-s*.4);cx.closePath();cx.fill();cx.stroke();}
+ else{cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.w/4,p.w,p.w/2);cx.restore();}}
+ cx.globalAlpha=1;requestAnimationFrame(loop)})();
+function centerOf(el){const r=el.getBoundingClientRect();return[r.left+r.width/2,r.top+r.height/2]}
+function show(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('show'));$(id).classList.add('show');$('#next').classList.remove('show');}
+
+$('#start').onclick=async()=>{show('#s1');await story();};
+async function story(){
+  const st=$('#story'),house=$('#house'),boy=$('#boy'),beis=$('#beis'),beisW=$('#beisW'),dot=$('#dagesh');
+  await say("This is a bayis. A house.");
+  await say("Mendy is home! Look, he is inside.");
+  await say("Watch! The house turns into a letter.");
+  sparkleSnd();
+  [beisW,beis].forEach(p=>{p.style.transition='stroke-dashoffset 2.2s ease';p.style.strokeDashoffset=0;});
+  const r=st.getBoundingClientRect(),sx=r.width/400,sy=r.height/340;
+  [[106,150],[200,150],[294,160],[294,240],[318,302],[200,302],[88,302]].forEach(([x,y],i)=>setTimeout(()=>burst(r.left+x*sx,r.top+y*sy,14,'spark'),i*300));
+  house.style.transition='opacity 1.8s';await wait(1000);house.style.opacity=.08;
+  boy.style.transition='transform .9s ease, opacity .9s';boy.style.transform='scale(.35)';
+  await wait(800);boy.style.opacity=0;dot.style.transition='r .5s';dot.setAttribute('r',20);
+  burst(r.left+200*sx,r.top+232*sy,24,'spark');sparkleSnd();
+  await wait(900);
+  await say("This is Beis. Mendy is the dot inside.");
+  st.style.transition='opacity .6s, transform .6s';st.style.opacity=0;st.style.transform='scale(.9)';await wait(600);st.style.display='none';
+  const pl=$('#plain');pl.style.display='flex';pl.style.animation='pop .5s';const [px,py]=centerOf(pl);burst(px,py,40,'spark');sparkleSnd();await wait(500);
+  await say("Beis says b.");
+  await say("Tap Beis!");
+  $('#tapme').style.display='block';
+  const tap=async()=>{pl.onclick=null;delete pl.dataset.ready;$('#tapme').style.display='none';pl.style.animation='jump .5s';chime();burst(px,py,30,'spark');
+    await say("Beis says b. Now, nobody home.");
+    const L=$('#plainL');L.style.transition='transform .3s, opacity .3s';L.style.transform='scale(.85)';L.style.opacity=.2;await wait(300);L.textContent='ב';L.style.transform='';L.style.opacity=1;await wait(500);
+    await say("No dot. Veis says v.");$('#next').classList.add('show');};
+  pl.onclick=tap;pl.dataset.ready=1;
+}
+$('#next').onclick=()=>{if(step===0){step=1;document.querySelectorAll('.path i')[1].classList.add('on');show('#s2');detective();}};
+
+const deck=['b','v','b','v','v','b'];let i=0,mistakes=0,demo=false;
+const glyph=k=>k==='b'?'בּ':'ב';
+function newCard(){const m=$('#mid');m.innerHTML='';if(i>=deck.length){finish();return null;}
+  const c=document.createElement('div');c.className='card heb';c.dataset.k=deck[i];c.innerHTML='<span class="in">'+glyph(deck[i])+'</span><div class="ring"></div>';m.appendChild(c);c.style.animation='pop .4s';drag(c);return c;}
+function houseAt(x,y){for(const b of document.querySelectorAll('.house')){const r=b.getBoundingClientRect();if(x>r.left&&x<r.right&&y>r.top&&y<r.bottom)return b;}return null;}
+function drag(c){let sx,sy,on=false;
+  c.onpointerdown=e=>{if(demo)return;on=true;sx=e.clientX;sy=e.clientY;c.setPointerCapture(e.pointerId);c.classList.add('drag');c.style.transition='none';c.style.animation='none';};
+  c.onpointermove=e=>{if(!on)return;c.style.transform=`translate(${e.clientX-sx}px,${e.clientY-sy}px) scale(1.06) rotate(${(e.clientX-sx)/30}deg)`;document.querySelectorAll('.house').forEach(b=>b.classList.toggle('hot',b===houseAt(e.clientX,e.clientY)));};
+  c.onpointerup=e=>{if(!on)return;on=false;c.classList.remove('drag');document.querySelectorAll('.house').forEach(b=>b.classList.remove('hot'));drop(c,houseAt(e.clientX,e.clientY));};}
+async function drop(c,h){
+  const back=()=>{c.style.transition='transform .35s';c.style.transform='';};
+  if(!h){back();return;}
+  if(h.dataset.k===c.dataset.k){
+    const [hx,hy]=centerOf(h),[cx0,cy0]=centerOf(c),cur=c.style.transform||'';
+    c.style.transition='transform .35s ease-in, opacity .35s';c.style.transform=`translate(${hx-cx0}px,${hy-cy0}px) scale(.15)`;c.style.opacity=0;
+    chime();await wait(320);burst(hx,hy,50);h.classList.remove('jump');void h.offsetWidth;h.classList.add('jump');
+    h.querySelector('.got').insertAdjacentHTML('beforeend','<span>'+glyph(c.dataset.k)+'</span>');i++;$('#mid').innerHTML='';
+    await say(c.dataset.k==='b'?'Yes! Someone home. Beis.':'Yes! Nobody home. Veis.');newCard();}
+  else{boop();back();mistakes++;await wait(350);c.classList.add('no','why');setTimeout(()=>c.classList.remove('no'),500);
+    await say(c.dataset.k==='b'?'Look! A dot. Someone is home. That is Beis.':'Look! No dot. Nobody home. That is Veis.');
+    c.classList.remove('why');await say('Try again!');}
+}
+async function detective(){
+  const c=newCard();demo=true;await wait(500);
+  await say("Watch me. Is anyone home?");
+  c.classList.add('why');await say("A dot! Someone is home. Beis!");c.classList.remove('why');
+  const h=$('#hand'),cr=c.getBoundingClientRect(),br=$('#hB').getBoundingClientRect();
+  h.style.display='block';h.style.transition='none';h.style.left=(cr.left+cr.width/2-20)+'px';h.style.top=(cr.top+cr.height/2)+'px';await wait(400);
+  const dx=br.left+br.width/2-(cr.left+cr.width/2),dy=br.top+br.height/2-(cr.top+cr.height/2);
+  c.style.animation='none';h.style.transition='transform 1.2s ease';c.style.transition='transform 1.2s ease';h.style.transform=`translate(${dx*.8}px,${dy*.8}px)`;c.style.transform=`translate(${dx*.8}px,${dy*.8}px)`;
+  await wait(1300);h.style.display='none';h.style.transform='';demo=false;await drop(c,$('#hB'));
+  await say("Now you! Drag each letter to its house.");
+}
+async function finish(){const n=mistakes===0?3:mistakes<3?2:1;const y=$('#yay');
+  y.querySelector('.stars').innerHTML=[0,1,2].map(k=>`<svg viewBox="0 0 24 24"><path d="M12 2l3 7 7 .6-5.3 4.7 1.6 7.2L12 17.8 5.7 21.5l1.6-7.2L2 9.6 9 9z" fill="${k<n?'#ffc21a':'#dde6ee'}" stroke="${k<n?'#e0a400':'#c3cfda'}" stroke-width="1"/></svg>`).join('');
+  y.classList.add('show');fanfare();for(let k=0;k<5;k++)setTimeout(()=>burst(Math.random()*innerWidth,innerHeight*.3,50),k*200);
+  await say("Great job! Beis says b. Veis says v.");await wait(600);y.classList.remove('show');
+  $('#mid').innerHTML='<div style="font-size:24px;font-weight:900;background:#fff;padding:12px 20px;border-radius:20px;text-align:center">End of sample</div>';}
+</script>
+</body></html>

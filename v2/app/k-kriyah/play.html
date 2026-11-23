@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Kriyah</title>
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js"}}</script>
+</head><body>
+<script type="module">
+/* One Kriyah game, full screen: play.html?g=u1g1  (add &fast=1 for quick test runs). */
+import * as E from './engine.js';
+const id = new URLSearchParams(location.search).get('g') || 'u1g0';
+const game = E.GAMES.find(g => g.id === id);
+E.buildPage();
+if (!game || !E.unlocked(id)) E.goPath();          /* a locked game sends him back to the path */
+else {
+  let ok = true;
+  try { E.initRenderer(); } catch (e) { ok = false; E.flatFallback(); }
+  if (ok) {
+    E.buildWorld(game.world || {}); E.initPointer();
+    const mod = await import('./games/' + game.kind + '.js');
+    const run = mod.default(E, { id, struggled: E.struggled(id) });
+    await E.soundsReady;
+    document.body.dataset.ready = 1;
+    await E.waitStart();
+    const r = await run();
+    await E.finish(id, r.stars, r.line);
+  }
+}
+</script>
+</body></html>
