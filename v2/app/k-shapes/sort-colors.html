@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Clean-up bins</title>
+<!-- Kindergarten Shapes, Unit 9 "Sorting and counting groups" (v2/curriculum/k-shapes/MAP.md): sort toys by color into red, blue and yellow boxes; count each box; find the box with the most.
+     Sort by one rule, count each group, say which group has more. K.MD.3. Built on the shared 3D kit (kit.js). ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+const nc = a => { a.count = false; return a; };
+const RED = '#E03A33', BLUE = '#1F6FEB', YELLOW = '#F2A900';
+const BOXES = [{ paint: 'circle', color: RED, acceptColor: RED, word: 'red' }, { paint: 'circle', color: BLUE, acceptColor: BLUE, word: 'blue' }, { paint: 'circle', color: YELLOW, acceptColor: YELLOW, word: 'yellow' }];
+const word = o => (o.box >= 0 ? BOXES[o.box].word : 'a new color');
+startGame({
+  id: 'sortcolor', sortBy: 'color', boxes: BOXES, countAfter: true,
+  intro: ['Mendy is cleaning up.', 'He sorts his toys by color.', "Let's sort together!"],
+  lessons: [{ k: 'circle', kind: 'solid', word: 'red circle', color: RED, like: 'All the red toys go together.', action: 'spin', rule: ['Sorting means same with same.'],
+    tap: 'Tap the red circle.', tapSay: 'Red!', chant: [['Red with red!', 2], ['Blue with blue!', 2], ['Sort it!', 2]] }],
+  set: [['a1', 'circle', 0, 1, RED], ['a2', 'tri', 0, 1, YELLOW], ['a3', 'cube', 0.2, 0.8, RED], ['a4', 'square', 0.3, 1, BLUE],
+        ['a5', 'sphere', 0, 0.8, YELLOW], ['a6', 'rect', 0.2, 1, RED], ['a7', 'cone', 0, 0.9, YELLOW], ['a8', 'hex', 0, 0.9, RED]],
+  watchLine: 'Watch me sort by color.', watchDone: 'Red goes with red!', yourTurn: 'Now you. Sort by color!',
+  ask: 'Put each toy in the box with its color.', hint: 'Look at the color on each box.', hint2: 'This one goes in its box.', remember: 'Remember: same color, same box.',
+  yesDefault: o => 'Yes! ' + word(o)[0].toUpperCase() + word(o).slice(1) + ' goes with ' + word(o) + '!', allDone: 'Everything is sorted!',
+  wrong: o => nc(['That one is ' + word(o) + '.', 'It goes in the ' + word(o) + ' box.']),
+  mostAsk: 'Which box has the most?', mostYes: 'Yes! The red box has the most!',
+  bonus: [['b1', 'kite', 0.3, 0.9, 0], ['b2', 'cyl', 0, 0.8, 2], ['b3', 'oval', 0.4, 0.9, 4]], bonusAsk: 'Sort these too. Some have no box!',
+  mistake: { friend: { name: 'Tzvi', shirt: '#C46A1E', hair: '#3A2A1E' }, icon: 'circle', piece: ['square', 0.2, 1.1, BLUE], box: 1,
+    claim: ['Tzvi put a blue square in the red box.'], ask: 'Does it go in the red box?', answer: false,
+    explain: ['It is blue.', 'Blue goes in the blue box.'], right: ['Right! It is blue.', 'It goes in the blue box.'] },
+  endLine: 'You sorted everything!', praise: 'Same color, same box. You count and sort like a pro!'
+});
+</script>
+</body>
+</html>

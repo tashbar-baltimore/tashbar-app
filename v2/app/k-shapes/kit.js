@@ -100,6 +100,7 @@ export function startGame(cfg) {
   const W = window.__shp = { hasBonus: !!(cfg.bonus || cfg.bonusRounds), hasChant: !!(cfg.fixLesson || cfg.patternLesson || (cfg.lessons || []).some(l => l.chant)), nb: cfg.boxes.length, game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
   const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
   const NB = cfg.boxes.length;
+  const sortBox = (color, scale) => cfg.boxes.findIndex(b => cfg.sortBy === 'color' ? b.acceptColor === color : (scale >= 0.85) === (b.acceptSize === 'big'));
   const boxOf = k => cfg.boxes.findIndex(b => b.accept.includes(k));   /* the box a piece belongs in, or -1 */
 
   /* ---------- the 3D room ---------- */
@@ -161,7 +162,7 @@ export function startGame(cfg) {
       const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.4 })); b3.scale.setScalar(0.28); b3.position.set(0, BX.h * 0.45, BX.d / 2 + 0.18); b3.castShadow = true; g.add(b3);
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
-      lab.scale.setScalar(NB === 1 ? 0.36 : 0.5); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
+      lab.scale.setScalar((NB === 1 ? 0.36 : 0.5) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
     }
     return { g, n: 0 };
   });
@@ -223,7 +224,7 @@ export function startGame(cfg) {
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
     const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], dep / 2 + bev + 0.02); m.scale.setScalar(0); mesh.add(m); return m; });
-    const o = { id, k, solid, box: boxOf(k), g, turn, mesh, mat, marks, corners, scale, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false };
+    const o = { id, k, solid, color, box: cfg.sortBy ? sortBox(color, scale) : boxOf(k), g, turn, mesh, mat, marks, corners, scale, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false };
     mesh.userData.shape = o; shapes.push(o); return o;
   }
 
@@ -1075,6 +1076,7 @@ export function startGame(cfg) {
   const ACT = { sphere: 'roll', cube: 'stack', cyl: 'roll', cone: 'spin' };
   function teachAgain(t) {
     if (!t) return [];
+    if (cfg.sortBy) return [cfg.remember, 'Look at this one.', () => pointAt(t, true)];
     if (t.solid || cfg.thinFlat) return [cfg.remember, 'Look at this one.', () => solidAction(t, t.solid ? ACT[t.solid] : 'stand')];
     if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), cap(WORDS[t.marks.length]) + ' corners! A ' + FAMILY(t.k) + '!', () => wait(300), () => clearCorners(t)];
     return [cfg.remember, 'Look at this one.', () => traceRound(t, 1200)];
@@ -1100,7 +1102,8 @@ export function startGame(cfg) {
           if (left === 0) {
             const quick = !bonus && W.misses <= 1 && cfg.bonus;   /* quick boys get a bonus round */
             if (next) { play([yes, { wait: 300 }]).then(ok => { if (ok) next(); }); return; }
-            play([yes, cfg.allDone, { wait: 300 }]).then(ok => { if (!ok) return; if (quick) bonusRound(); else mistake(); });
+            play([yes, cfg.allDone, { wait: 300 }]).then(ok => { if (!ok) return; const go = () => (quick ? bonusRound() : mistake());
+              if (cfg.countAfter && !bonus) countBoxes().then(ok2 => { if (ok2) go(); }); else go(); });
           } else play([yes]);
         });
         return;
@@ -1119,6 +1122,30 @@ export function startGame(cfg) {
     };
     play(ask);
   }
+  function countBoxes() {   /* count each box together, then he taps the box with the most */
+    setName('counting'); stopIdle();
+    const counts = boxes.map((b, i) => shapes.filter(o => o.inBox && o.inBoxAt === i));
+    const steps = ["Now let's count each box!"];
+    counts.forEach((items, i) => { const word = cfg.boxes[i].word;
+      steps.push('The ' + word + ' box.');
+      items.forEach((o, j) => steps.push(() => { const y0 = o.g.position.y; pop(); return tween(300, k => { o.g.position.y = y0 + Math.sin(Math.PI * k) * 0.5; }); }, NUMS[j]));
+      steps.push(cap(WORDS[items.length]) + ' ' + word + '!'); });
+    const most = counts.reduce((b, c, i) => (c.length > counts[b].length ? i : b), 0);
+    return play(steps).then(ok => { if (!ok) return false; return new Promise(done => {
+      setName('count'); W.countAnswer = most; task = [cfg.mostAsk];
+      let costed = false;
+      shapeTap = (cx, cy) => {
+        let best = -1, bd = 1e9; boxes.forEach((b, i) => { const p = toScreen(boxAt(i).clone().setY(0.6)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
+        if (bd > Math.max(120, innerWidth * 0.1)) return;
+        if (best === most) { shapeTap = null; task = null; chime(true); burst(boxAt(best).clone().setY(1.2), 30);
+          play([cfg.mostYes, () => cheer(mendy)]).then(() => done(true)); return; }
+        if (!costed) { W.misses++; costed = true; } chime(false);
+        play(['That box has ' + WORDS[counts[best].length] + '.', 'Look for the box with the most.', cfg.mostAsk]);
+      };
+      play([cfg.mostAsk, 'Tap that box.']);
+    }); });
+  }
+  W.boxPt2 = i => toScreen(boxAt(i).clone().setY(0.6));
   function bonusRound() {
     W.bonus = true; setName('bonus');
     const bc = ['#E03A33', '#00A3B8', '#F2A900', '#7C4DFF'];
