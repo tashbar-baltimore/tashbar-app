@@ -132,7 +132,7 @@ export function startGame(cfg) {
     plank(BX.t, BX.h, BX.d, -BX.w / 2 + BX.t / 2, BX.h / 2, 0);
     plank(BX.t, BX.h, BX.d, BX.w / 2 - BX.t / 2, BX.h / 2, 0);
     const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 }));
-    lab.scale.setScalar(0.36); lab.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(lab);
+    lab.scale.setScalar(NB === 1 ? 0.36 : 0.5); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
     return { g, n: 0 };
   });
 
