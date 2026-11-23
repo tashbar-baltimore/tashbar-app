@@ -59,26 +59,60 @@
   NK.word = function (n) { return ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'][n] || String(n); };
   NK.Word = function (n) { var w = NK.word(n); return w.charAt(0).toUpperCase() + w.slice(1); };
 
-  /* ---------- art (original drawings) ---------- */
+  /* ---------- art (original drawings, glossy 3D cartoon style) ----------
+     Every fruit: a soft ground shadow, a rich round body with a darker edge and outline, a big soft shine and a sharp sparkle. */
+  var SHADOW = '<ellipse cx="50" cy="94" rx="30" ry="5" fill="url(#nkShadow)"/>';
+  var SHINE = function (x, y, rx, ry, r) { return '<ellipse cx="' + x + '" cy="' + y + '" rx="' + rx + '" ry="' + ry + '" fill="url(#nkShine)" transform="rotate(' + r + ' ' + x + ' ' + y + ')"/>' +
+    '<circle cx="' + (x - 2) + '" cy="' + (y - ry * .55) + '" r="3.4" fill="#fff" opacity=".95"/><circle cx="' + (x + rx * .9) + '" cy="' + (y + ry * .9) + '" r="1.6" fill="#fff" opacity=".7"/>'; };
+  var LEAF = function (d, vein) { return '<path d="' + d + '" fill="url(#nkLeaf)" stroke="#1F7A34" stroke-width="2" stroke-linejoin="round"/><path d="' + vein + '" stroke="#C8F5A8" stroke-width="2" fill="none" stroke-linecap="round" opacity=".8"/>'; };
+  var STEM = function (d) { return '<path d="' + d + '" stroke="#4A2C14" stroke-width="7.5" fill="none" stroke-linecap="round"/><path d="' + d + '" stroke="url(#nkStem)" stroke-width="4.5" fill="none" stroke-linecap="round"/>'; };
+  var APPLE = 'M50 30 C 36 17, 9 22, 11 50 C 13 77, 32 95, 44 93 C 48 92, 52 92, 56 93 C 68 95, 87 77, 89 50 C 91 22, 64 17, 50 30 Z';
+  var PEAR = 'M50 18 C 40 18, 38 31, 36 41 C 33 53, 19 59, 21 76 C 23 93, 40 97, 50 97 C 60 97, 77 93, 79 76 C 81 59, 67 53, 64 41 C 62 31, 60 18, 50 18 Z';
+  function rg(id, stops, cx, cy, r) { return '<radialGradient id="' + id + '" cx="' + (cx || '36%') + '" cy="' + (cy || '30%') + '" r="' + (r || '78%') + '">' + stops.map(function (s) { return '<stop offset="' + s[0] + '" stop-color="' + s[1] + '"' + (s[2] != null ? ' stop-opacity="' + s[2] + '"' : '') + '/>'; }).join('') + '</radialGradient>'; }
   NK.ART = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>' +
-    '<radialGradient id="nkRed" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#FF7A6B"/><stop offset=".55" stop-color="#E5322D"/><stop offset="1" stop-color="#B01E22"/></radialGradient>' +
-    '<radialGradient id="nkGreen" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#C9F07A"/><stop offset=".55" stop-color="#7CC63A"/><stop offset="1" stop-color="#4F9A1F"/></radialGradient>' +
-    '<symbol id="nkApple" viewBox="0 0 100 100"><path d="M50 30 C 36 18, 10 22, 12 50 C 14 76, 32 94, 44 92 C 48 91, 52 91, 56 92 C 68 94, 86 76, 88 50 C 90 22, 64 18, 50 30 Z" fill="var(--apple,url(#nkRed))"/>' +
-    '<ellipse cx="32" cy="44" rx="7" ry="12" fill="#fff" opacity=".45" transform="rotate(20 32 44)"/>' +
-    '<path d="M50 31 C 50 22, 52 14, 57 8" stroke="#6B4226" stroke-width="5" fill="none" stroke-linecap="round"/>' +
-    '<path d="M55 16 C 64 6, 78 8, 82 12 C 76 22, 62 22, 55 16 Z" fill="#3FAE49"/><path d="M57 16 C 65 13, 72 12, 79 12" stroke="#2C8A37" stroke-width="1.6" fill="none"/></symbol>' +
-    '<radialGradient id="nkOr" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#FFD27A"/><stop offset=".55" stop-color="#FF9A1F"/><stop offset="1" stop-color="#E0700A"/></radialGradient>' +
-    '<radialGradient id="nkPe" cx="38%" cy="40%" r="75%"><stop offset="0" stop-color="#F6F7A0"/><stop offset=".55" stop-color="#CFE05A"/><stop offset="1" stop-color="#9DB82E"/></radialGradient>' +
-    '<symbol id="nkOrange" viewBox="0 0 100 100"><circle cx="50" cy="56" r="38" fill="url(#nkOr)"/><g fill="#E07A10" opacity=".35"><circle cx="62" cy="70" r="2"/><circle cx="40" cy="74" r="2"/><circle cx="70" cy="52" r="2"/><circle cx="52" cy="82" r="2"/></g>' +
-    '<ellipse cx="36" cy="44" rx="7" ry="10" fill="#fff" opacity=".45" transform="rotate(25 36 44)"/><circle cx="50" cy="19" r="3" fill="#6B4226"/><path d="M51 19 C 58 8, 72 9, 76 13 C 70 22, 58 23, 51 19 Z" fill="#3FAE49"/></symbol>' +
-    '<symbol id="nkPear" viewBox="0 0 100 100"><path d="M50 16 C 40 16, 38 30, 36 40 C 33 52, 20 58, 22 76 C 24 92, 40 96, 50 96 C 60 96, 76 92, 78 76 C 80 58, 67 52, 64 40 C 62 30, 60 16, 50 16 Z" fill="url(#nkPe)"/>' +
-    '<ellipse cx="36" cy="68" rx="6" ry="11" fill="#fff" opacity=".45" transform="rotate(15 36 68)"/><path d="M50 17 C 50 11, 52 6, 56 3" stroke="#6B4226" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M53 10 C 60 2, 72 4, 75 8 C 69 15, 59 15, 53 10 Z" fill="#3FAE49"/></symbol>' +
-    '<symbol id="nkPalm" viewBox="0 0 100 100"><g fill="#FFE0BD" stroke="#5A3E2B" stroke-width="4" stroke-linejoin="round">' +
+    rg('nkRed', [[0, '#FF9B8A'], [.28, '#FF4D3D'], [.7, '#D91E24'], [1, '#8E0E17']]) +
+    rg('nkGreen', [[0, '#E9FFA8'], [.3, '#A8E04A'], [.72, '#5FAE22'], [1, '#2F6E10']]) +
+    rg('nkOr', [[0, '#FFE6A3'], [.3, '#FFB536'], [.72, '#FF8A0C'], [1, '#B85305']]) +
+    rg('nkPe', [[0, '#FFFFC8'], [.35, '#E7EE72'], [.75, '#B9CF35'], [1, '#6F8A12']], '36%', '58%') +
+    rg('nkBlush', [[0, '#FF8A6A', .55], [1, '#FF8A6A', 0]], '50%', '50%', '50%') +
+    rg('nkShine', [[0, '#fff', .9], [.6, '#fff', .35], [1, '#fff', 0]], '50%', '45%', '50%') +
+    rg('nkShadow', [[0, '#3A2410', .38], [1, '#3A2410', 0]], '50%', '50%', '50%') +
+    '<linearGradient id="nkEdge" x1="0" y1="0" x2="1" y2="1"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#3A0008" stop-opacity=".35"/></linearGradient>' +
+    '<linearGradient id="nkLeaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9BF06A"/><stop offset=".5" stop-color="#3FBF4A"/><stop offset="1" stop-color="#1E8A35"/></linearGradient>' +
+    '<linearGradient id="nkStem" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B07A4A"/><stop offset="1" stop-color="#6B4226"/></linearGradient>' +
+    '<linearGradient id="nkSkin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF0DE"/><stop offset="1" stop-color="#F4C08E"/></linearGradient>' +
+    '<linearGradient id="nkGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3A6"/><stop offset=".45" stop-color="#FFCC1F"/><stop offset="1" stop-color="#F39200"/></linearGradient>' +
+    /* apple (red, or green with --apple) */
+    '<symbol id="nkApple" viewBox="0 0 100 100">' + SHADOW +
+    '<path d="' + APPLE + '" fill="var(--apple,url(#nkRed))" stroke="var(--appleEdge,#7A0C14)" stroke-width="2.6"/>' +
+    '<path d="' + APPLE + '" fill="url(#nkEdge)"/>' +
+    '<path d="M44 33 C 47 30, 53 30, 56 33" stroke="#5A0A10" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>' +
+    SHINE(31, 47, 8, 15, 18) + STEM('M50 32 C 50 22, 52 14, 57 7') +
+    LEAF('M56 15 C 64 3, 81 5, 86 11 C 79 23, 63 23, 56 15 Z', 'M59 15 C 67 12, 75 11, 82 11') + '</symbol>' +
+    /* orange */
+    '<symbol id="nkOrange" viewBox="0 0 100 100">' + SHADOW +
+    '<circle cx="50" cy="56" r="38" fill="url(#nkOr)" stroke="#A04606" stroke-width="2.6"/><circle cx="50" cy="56" r="38" fill="url(#nkEdge)" opacity=".7"/>' +
+    '<g fill="#C45F06" opacity=".28"><circle cx="63" cy="70" r="1.8"/><circle cx="41" cy="76" r="1.8"/><circle cx="72" cy="53" r="1.8"/><circle cx="53" cy="83" r="1.8"/><circle cx="68" cy="81" r="1.6"/><circle cx="30" cy="66" r="1.6"/><circle cx="58" cy="60" r="1.5"/><circle cx="76" cy="66" r="1.5"/></g>' +
+    SHINE(36, 42, 9, 12, 28) + '<circle cx="50" cy="19.5" r="4" fill="#5E8A1E" stroke="#3B5A10" stroke-width="1.5"/>' +
+    LEAF('M52 19 C 59 7, 74 8, 79 13 C 72 23, 59 24, 52 19 Z', 'M55 18 C 62 15, 69 14, 75 13') + '</symbol>' +
+    /* pear */
+    '<symbol id="nkPear" viewBox="0 0 100 100">' + '<ellipse cx="50" cy="96" rx="28" ry="4" fill="url(#nkShadow)"/>' +
+    '<path d="' + PEAR + '" fill="url(#nkPe)" stroke="#5F7410" stroke-width="2.6"/><path d="' + PEAR + '" fill="url(#nkEdge)" opacity=".6"/>' +
+    '<ellipse cx="64" cy="72" rx="12" ry="14" fill="url(#nkBlush)"/>' + SHINE(37, 68, 7, 13, 12) +
+    STEM('M50 19 C 50 12, 52 7, 56 3') + LEAF('M54 10 C 61 1, 74 3, 78 8 C 71 16, 60 16, 54 10 Z', 'M57 10 C 63 8, 69 7, 74 8') + '</symbol>' +
+    /* open hand for clapping */
+    '<symbol id="nkPalm" viewBox="0 0 100 100"><g fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="3.5" stroke-linejoin="round">' +
     '<rect x="30" y="8" width="13" height="44" rx="6.5"/><rect x="45" y="4" width="13" height="48" rx="6.5"/><rect x="60" y="9" width="13" height="43" rx="6.5"/><rect x="75" y="20" width="12" height="34" rx="6"/>' +
-    '<path d="M14 52 c-4-6 2-14 9-9 l9 9 V40 h55 v24 c0 18-12 32-30 32 h-6 c-10 0-17-6-22-14z"/></g></symbol>' +
-    '<symbol id="nkHand" viewBox="0 0 100 100"><path d="M38 8 c6 0 9 4 9 10 v30 l4-2 c5-2 9 0 10 4 l1 2 c5-2 9 0 10 4 l1 2 c5-1 9 2 9 7 v18 c0 12-10 22-24 22 h-8 c-9 0-15-4-20-11 L16 72 c-3-5-1-10 4-11 c4-1 8 2 10 5 l0 0 V18 c0-6 3-10 8-10z" fill="#FFE0BD" stroke="#5A3E2B" stroke-width="4" stroke-linejoin="round"/></symbol>' +
+    '<path d="M14 52 c-4-6 2-14 9-9 l9 9 V40 h55 v24 c0 18-12 32-30 32 h-6 c-10 0-17-6-22-14z"/></g>' +
+    '<g fill="#fff" opacity=".6"><rect x="33" y="12" width="4" height="14" rx="2"/><rect x="48" y="8" width="4" height="14" rx="2"/><rect x="63" y="13" width="4" height="12" rx="2"/></g></symbol>' +
+    /* pointing hand for the demo */
+    '<symbol id="nkHand" viewBox="0 0 100 100"><path d="M38 8 c6 0 9 4 9 10 v30 l4-2 c5-2 9 0 10 4 l1 2 c5-2 9 0 10 4 l1 2 c5-1 9 2 9 7 v18 c0 12-10 22-24 22 h-8 c-9 0-15-4-20-11 L16 72 c-3-5-1-10 4-11 c4-1 8 2 10 5 l0 0 V18 c0-6 3-10 8-10z" fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="3.5" stroke-linejoin="round"/>' +
+    '<rect x="34" y="13" width="4.5" height="22" rx="2.2" fill="#fff" opacity=".65"/></symbol>' +
+    /* star */
+    '<symbol id="nkStar" viewBox="0 0 100 100"><path d="M50 5 l13.5 28.5 31 3.5 -23 21 6.5 31 -28-16 -28 16 6.5-31 -23-21 31-3.5z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="5" stroke-linejoin="round"/>' +
+    '<path d="M50 20 l9 19 20 2.3 -15 13.7" fill="none" stroke="#FFF8C8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><circle cx="36" cy="40" r="5" fill="#fff" opacity=".9"/></symbol>' +
     '</defs></svg>';
-  NK.apple = function (cls, green) { return '<svg class="' + (cls || '') + '" viewBox="0 0 100 100"' + (green ? ' style="--apple:url(#nkGreen)"' : '') + '><use href="#nkApple"/></svg>'; };
+  NK.apple = function (cls, green) { return '<svg class="' + (cls || '') + '" viewBox="0 0 100 100"' + (green ? ' style="--apple:url(#nkGreen);--appleEdge:#2C5E0E"' : '') + '><use href="#nkApple"/></svg>'; };
 
   /* ---------- stars and saving ---------- */
   NK.starsFor = function (firstTry, total) { var r = firstTry / total; return r >= 0.95 ? 3 : r >= 0.7 ? 2 : 1; };
