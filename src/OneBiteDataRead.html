@@ -498,7 +498,7 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer on the pag
     var big=ls[1], lw=g.lw, mp=g.mp.split(''), fodd=g.fodd||g.odd, oddLow=fodd.toLowerCase(), oddBig=fodd!==oddLow, oddSay=(oddBig?'big ':'small ')+fodd, stop=gi+1;
     var last5=g.srt?{type:'sort', bins:['Starts with '+g.srt.x,'Not '+g.srt.x], cards:g.srt.cards, say:'Last stop! Which pictures start with '+g.srt.x+'? Sort them.', how:'Say the picture slowly. Hear the first sound. Is it '+SP[g.srt.x]+'?'}
       :{type:'match', pairs:mp.map(function(x){ return [x, L[x][3]]; }), say:'Last stop! Match each letter to its picture.', how:'Say the picture word slowly. Hear the first sound. Find that letter.'};
-    B[id]={ band:'K1', pic:g.pic, today:'Meet '+nameLine.replace(/, ([A-Z])$/,' and $1')+': big, small, and the sound each makes',
+    B[id]={ band:'K1', pic:g.pic, today:'Meet '+ls[0].toUpperCase()+' to '+ls[ls.length-1].toUpperCase()+': big, small, and their sounds',
       why:'Letters build every word. Soon you will read them all!',
       ready:g.ready, bridge:g.bridge, bridgeName:g.bridgeName,
       watch:{ q:'Moishe and '+['Ezra','Yehuda','Avi','Shmuli','Dovid','Naftali'][gi]+'\u2019s ABC train, stop '+stop+': '+nameLine, pic:g.pic, steps:steps, a:ls.map(function(x){ return L[x][0]+x+' '+(x===ck&&ALT[x]?ALT[x][1]:L[x][3]); }).join('  ') },
