@@ -1,12 +1,12 @@
 # Tashbar Learning 2.0
 
-**What this is (Head of School, 2026-11-22):** 1.0 (today's app) stays as it is and keeps growing. It is the workshop. 2.0 is a separate, clean app at its own link. Something moves from 1.0 into 2.0 only after it has been looked at, judged worth keeping, made right, and **approved by Mrs. Khaver or Esti** (or anyone else the HoS adds).
+**What this is (Head of School, 2026-11-22):** 1.0 (today's app) stays as it is and keeps growing. It is the workshop. 2.0 is a separate, clean app at its own link. Something moves from 1.0 into 2.0 only after it has been looked at, judged worth keeping, made right, and **approved by Mrs. Khaver, Esti, or anyone the HoS sends the 2.0 instructions to**.
 
 - **1.0:** https://tashbar-learning-live.web.app. Unchanged. Builders keep working there, and it still goes live by itself when its tests pass.
 - **2.0:** https://tashbar-learning-v2.web.app. A separate website. It uses the same boys, codes and saved progress (the same school server), so a boy's work counts in both.
 
 ## The one rule
-**Nothing goes into 2.0 without an approver's "yes".** The publishing system checks for it, and one approver is enough. **The approval line is posted only for an approver who, in that same conversation, has looked at the newest look link and said to approve.** No one else ever posts it.
+**Nothing goes into 2.0 without an approver's "yes".** The publishing system checks for it, and one approver is enough. **The approval line is posted only for the person working on 2.0 who, in that same conversation, has looked at the newest look link and said to approve.**
 
 ## How a piece of 1.0 moves into 2.0 (a small workshop, one piece at a time)
 Mrs. Khaver or Esti run it in her own Claude, with the prompt in `v2/START-PROMPT.md`. She is in charge and her Claude is the builder.
@@ -15,7 +15,7 @@ Mrs. Khaver or Esti run it in her own Claude, with the prompt in `v2/START-PROMP
 3. **Decide.** Is it good, dumb, or could it be done better or differently? She decides: keep it as is, change it, or leave it out.
 4. **Build it clean.** Her Claude copies only what is needed into `v2/` (a copy, so 1.0 changes never leak into 2.0), makes her changes, tests it as a made-up boy on a Chromebook and a phone, and opens a pull request that changes only `v2/`.
 5. **Look and tweak.** When the tests pass, the system puts it on a private **look link** and posts that link on the pull request. She opens it like any website and says what to change. Her Claude changes it, and a new look link follows. This repeats until she likes it. The look link has a **review page** (add `/compare/`): today's 1.0 on the left, the new 2.0 version on the right, side by side, with a Phone-size button. On a phone it switches between them with tabs.
-6. **Put it in.** When she says "approve it", her Claude posts one line on the pull request: `APPROVED FOR 2.0 — <her name>`. Everyone works through the HoS's GitHub, so that line is the yes. The gate (`v2-gate`) checks that her name is on `v2/APPROVERS.json` (as it is on main) and that the line came after the newest change. Then it goes into 2.0 and live (about 5 minutes).
+6. **Put it in.** When she says "approve it", her Claude posts one line on the pull request: `APPROVED FOR 2.0 — <her name>`. Everyone works through the HoS's GitHub, so that line is the yes. The gate (`v2-gate`) checks that the line came after the newest change, so a yes counts only for the version she looked at. Then it goes into 2.0 and live (about 5 minutes).
 
 Other builders (like the HoS's sessions) may also prepare a 2.0 piece the same way, but it still waits for her yes.
 

@@ -1,8 +1,8 @@
-# 2.0 workshop: starter prompt for Mrs. Khaver, Esti (and anyone the HoS adds)
+# 2.0 workshop: starter prompt for Mrs. Khaver, Esti, and anyone the HoS sends it to
 Open Claude at **claude.ai/code**, start a session on the **tashbar-baltimore/tashbar-app** project, and paste everything in the box below. Put your own name in the first line. Use the same prompt every time you sit down to work on 2.0.
 
 ```
-My name is [YOUR NAME, exactly as on the list: Mrs. Khaver or Esti]. We're working on 2.0.
+My name is [YOUR NAME]. We're working on 2.0.
 
 WHAT THIS IS
 Tashbar Learning is our school's learning app for the boys of Tashbar Baltimore (K–8).
@@ -73,9 +73,5 @@ Start now: read those three files, then tell me "What are we looking at today?"
 
 ## What happens behind the scenes
 - **When the tests pass:** the system (`v2-gate`) puts the change on a private look link and posts that link on the pull request.
-- **After your yes:** your Claude posts `APPROVED FOR 2.0 — <your name>`. The system checks:
-  - that your name is on `v2/APPROVERS.json`;
-  - that the yes came after the newest change.
-  
-  Then it puts the change into 2.0 and live.
+- **After your yes:** your Claude posts `APPROVED FOR 2.0 — <your name>`. The system checks that the yes came after the newest change, then puts it into 2.0 and live. Anyone the HoS sends this prompt to can approve.
 - **1.0 is never touched,** and boys keep using 1.0 until the HoS decides to move them to 2.0.
