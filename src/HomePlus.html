@@ -560,7 +560,7 @@ function ribbon(txt){ const r=svEl('svrib',txt,0,0); const [cx]=svCenter(r), W=s
  r.animate([{transform:`translate(${x}px,70px) scale(.3)`,opacity:0},{transform:`translate(${x}px,70px) scale(1.1)`,opacity:1,offset:.2},{transform:`translate(${x}px,70px) scale(1)`,opacity:1,offset:.8},{transform:`translate(${x}px,40px)`,opacity:0}],{duration:1600,easing:'ease-out',fill:'forwards'}).onfinish=()=>r.remove(); }
 window.tlSkyVault=skyVault;
 /* Kodesh Quest right answers (the sealed frame posts tlQuest ok) get the small show */
-window.addEventListener('message',e=>{ try{ const d=e.data; if(!d||d.tlQuest!==1||d.ok===false) return; const f=document.querySelector('#kkov iframe'); if(!f||e.source!==f.contentWindow) return; skyVault(null,!!d.first,true); }catch(x){} });
+window.addEventListener('message',e=>{ try{ if(window.TLMS&&TLMS.win) return;   /* 2026-11-23: the Money Show (MoneyShow.html) does Kodesh Quest now */ const d=e.data; if(!d||d.tlQuest!==1||d.ok===false) return; const f=document.querySelector('#kkov iframe'); if(!f||e.source!==f.contentWindow) return; skyVault(null,!!d.first,true); }catch(x){} });
 
 function fxOn(){ try{ jar(); fxcss(); document.body.classList.toggle('hpfx',!!window.HP_FX); document.body.classList.toggle('hp-modal',!!(HP.open||A.overlay||document.getElementById('kkov')||document.getElementById('tr-ov')||document.getElementById('elec-ov')||document.getElementById('sci-ov'))); }catch(e){} }
 fxOn(); setInterval(fxOn,400);
