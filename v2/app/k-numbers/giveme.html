@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Give me! — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 3, game 2: GIVE ME! Skill: count out a set of a given size (Wynn's "give a number": the real test
+     of knowing that the last number tells how many). "Bubby needs four challah rolls." He taps or drags rolls onto Bubby's plate
+     (the voice counts along), taps one on the plate to take it back, and presses the check. A miss: we count the plate together,
+     "You have five. Bubby needs four." A second miss also says "Take one off." Slow: 2-4. Quick: a bonus of 8-9. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit3.css">
+<style>.panel #check{ width:clamp(110px,16vh,140px); }</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="scene" id="scene"></div>
+  <div class="panel"><div id="hands" hidden></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit3.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, U = U3, easy = 0, misses = 0;
+  var PLAN = [2, 3, 4, 5, 6];
+  FR.game({
+    id: 'u3-give', title: 'Give me!', rounds: 5,
+    hero: '<svg viewBox="0 0 100 100"><use href="#u3Roll"/></svg><svg viewBox="0 0 100 100"><use href="#u3Roll"/></svg>',
+    init: function () { U.addArt(); },
+    reset: function () { easy = 0; misses = 0; },
+    demo: async function (F) {
+      U.clear(); var pl = document.createElement('div'); pl.className = 'plate3'; $('scene').appendChild(pl);
+      var rolls = [[12, 64], [24, 64], [36, 64], [48, 64], [60, 64], [72, 64], [84, 64]].map(function (p, i) { return U.put('roll', p, 10.5, i, 'pile'); });
+      await F.say('Bubby needs two challah rolls.');
+      await F.say('Watch me give her two.');
+      var to = [[45, 27], [55, 27]];
+      for (var i = 0; i < 2; i++) { await F.handTo(rolls[i]); await F.handTap(); U.place(rolls[i], to[i]); NK.sound.pop(); await F.say(F.Word(i + 1), { noRepeat: true }); }
+      await F.say('Two. I stop. Now I press check.');
+      await F.handTo($('check')); await F.handTap();
+      await F.yes(pl, 'Two rolls for Bubby!');
+    },
+    round: async function (F, i) {
+      var n = easy > 0 ? F.pick([2, 3, 4]) : PLAN[i]; if (easy > 0) easy--;
+      var first = await U.giveRound(F, { n: n });
+      if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
+      return first;
+    },
+    bonus: async function (F) { await U.giveRound(F, { n: F.pick([8, 9]) }); }
+  });
+})();
+</script>
+</body>
+</html>

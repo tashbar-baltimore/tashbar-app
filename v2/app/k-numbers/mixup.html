@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mix it up — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 3, game 3: MIX IT UP. Skill: the order does not matter; moving things does not change how many
+     (the order-irrelevance and conservation ideas of the counting rules). He taps each fruit to count it (a green tick marks
+     each one counted), shows how many on two hands; then the fruit get mixed up and he shows how many now: still the same.
+     A miss after the mix: "We did not add any. We did not take any. Still five!" -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit3.css">
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="scene" id="scene"></div>
+  <div class="panel"><div id="hands"></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit3.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, U = U3, H, easy = 0, misses = 0;
+  var PLAN = [3, 4, 5, 6, 7], KINDS = ['apple', 'orange', 'pear', 'apple', 'orange'];
+
+  /* he taps each one to count it; resolves when all are counted */
+  function tapCount(F, els) {
+    return new Promise(function (res) {
+      var k = 0, busy = false;
+      function hooks() { var rest = els.filter(function (e) { return !e.classList.contains('counted'); }); GAME.right = rest.length ? function () { return [{ tap: '#scene .it[data-i="' + rest[0].dataset.i + '"]' }]; } : null; GAME.wrong = null; }
+      async function tap(e) {
+        var it = e.target.closest('.it'); if (!it || it.classList.contains('counted') || busy || GAME.phase !== 'answer') return;
+        busy = true; GAME.phase = 'busy'; it.classList.add('counted', 'lit'); k++; NK.sound.pop();
+        await F.say(F.Word(k) + (k === els.length ? '!' : ''), { noRepeat: true }); it.classList.remove('lit'); busy = false;
+        if (k < els.length) { GAME.phase = 'answer'; hooks(); return; }
+        $('scene').removeEventListener('pointerdown', tap); res();
+      }
+      $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
+    });
+  }
+  async function play(F, n, kind, intro) {
+    U.clear(); $('hands').hidden = false; H.set(0); H.lock(true);
+    var w = U.size(n), els = U.line(n, 64).map(function (p, i) { return U.put(kind, p, w, i); });
+    if (intro) await F.say('Tap each one. Count with me!', { repeat: 'Tap each one. Count with me!' });
+    await tapCount(F, els);
+    var a = await U.answer(F, { n: n, H: H, ask: 'How many ' + U.name(kind, 2) + '?',
+      explain: async function (F) { await F.say("Let's count together."); await U.countAlong(els); await F.say('The last number tells how many.'); } });
+    GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
+    await F.say('Now I mix them up!');
+    var mixed = U.bunch(n, [12, 88, 26, 86]); els.forEach(function (e, i) { e.classList.remove('counted'); U.place(e, mixed[i]); }); NK.sound.cloth(); await F.wait(500);
+    var b = await U.answer(F, { n: n, H: H, ask: 'How many now?',
+      explain: async function (F) { await F.say('We did not add any. We did not take any.'); await F.say('Still ' + F.word(n) + '! Look again.'); } });
+    return a && b;
+  }
+  FR.game({
+    id: 'u3-mix', title: 'Mix it up', rounds: 5,
+    hero: '<svg viewBox="0 0 100 100" style="transform:rotate(-12deg)"><use href="#nkApple"/></svg><svg viewBox="0 0 100 100" style="transform:translateY(20%)"><use href="#nkOrange"/></svg><svg viewBox="0 0 100 100" style="transform:rotate(10deg)"><use href="#nkPear"/></svg>',
+    init: function (F) { U.addArt(); H = U.hands($('hands')); H.lock(true); },
+    reset: function () { easy = 0; misses = 0; },
+    demo: async function (F) {
+      U.clear(); var els = U.line(3, 64).map(function (p, i) { return U.put('apple', p, U.size(3), i); });
+      await F.say('Watch me count the apples.');
+      for (var i = 0; i < 3; i++) { await F.handTo(els[i]); await F.handTap(); els[i].classList.add('counted'); NK.sound.pop(); await F.say(F.Word(i + 1), { noRepeat: true }); }
+      await F.say('Three apples. Now I mix them up!');
+      var m = U.bunch(3, [12, 88, 26, 86]); els.forEach(function (e, i) { e.classList.remove('counted'); U.place(e, m[i]); }); NK.sound.cloth(); await F.wait(600);
+      await F.say('Still three! Mixing does not change how many.');
+    },
+    round: async function (F, i) {
+      var n = easy > 0 ? F.pick([3, 4]) : PLAN[i]; if (easy > 0) easy--;
+      var first = await play(F, n, KINDS[i], i < 2);
+      if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
+      return first;
+    }
+  });
+})();
+</script>
+</body>
+</html>

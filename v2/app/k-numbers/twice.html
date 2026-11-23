@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oops! Find It — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 3, game 4 (find the mistake): OOPS! FIND IT. Skill: touch each thing once (one-to-one).
+     A boy counts the apples with his finger; every touch leaves a blue sticker. He touches one apple twice (or skips one) and
+     says the wrong number. Our boy taps the apple with two stickers (or with none), then shows how many there really are.
+     A wrong tap: "That apple has one touch. Find two touches." -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit3.css">
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="scene" id="scene"></div>
+  <div class="panel"><div id="hands"></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit3.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, U = U3, H;
+  var PLAN = [[3, 'twice'], [4, 'skip'], [4, 'twice'], [5, 'skip'], [6, 'twice']], WHO = ['Ari', 'Mendy', 'Dovid', 'Eli', 'Yaakov'];
+  function sticker(it) { var k = it.querySelectorAll('.tch').length, s = document.createElement('i'); s.className = 'tch'; s.style.left = (8 + k * 30) + '%'; it.appendChild(s); }
+
+  /* the other boy counts out loud, touching each apple (one twice, or one skipped) */
+  async function boyCounts(F, els, kind, bad) {
+    var order = els.map(function (e, i) { return i; });
+    if (kind === 'twice') order.splice(order.indexOf(bad) + 1, 0, bad); else order.splice(order.indexOf(bad), 1);
+    for (var k = 0; k < order.length; k++) { var it = els[order[k]]; await F.handTo(it, .5, .45); await F.handTap(); sticker(it); NK.sound.pop(); await F.say(F.Word(k + 1) + (k === order.length - 1 ? '!' : ''), { noRepeat: true }); }
+    F.handHide(); return order.length;
+  }
+  function findIt(F, els, bad, kind) {
+    return new Promise(function (res) {
+      var misses = 0;
+      function hooks() { var other = els.filter(function (e, i) { return i !== bad; })[0]; GAME.right = function () { return [{ tap: '#scene .it[data-i="' + bad + '"]' }]; }; GAME.wrong = function () { return [{ tap: '#scene .it[data-i="' + other.dataset.i + '"]' }]; }; }
+      async function tap(e) {
+        var it = e.target.closest('.it'); if (!it || GAME.phase !== 'answer') return; GAME.phase = 'busy'; F.lock(true);
+        if (+it.dataset.i === bad) { $('scene').removeEventListener('pointerdown', tap); it.classList.add('lit'); await F.yes(null, kind === 'twice' ? 'That one! Touch each one only once.' : 'That one! Every one gets a touch.'); it.classList.remove('lit'); res(misses === 0); return; }
+        F.oops(it); misses++;
+        var t = it.querySelectorAll('.tch').length;
+        await F.say(kind === 'twice' ? 'That apple has ' + (t === 1 ? 'one touch' : F.word(t) + ' touches') + '. Find two touches.' : 'That apple got a touch. Find no touch.');
+        if (misses >= 2) { els[bad].classList.add('lit'); await F.say('Look at this one.'); }
+        GAME.phase = 'answer'; F.lock(false); hooks();
+      }
+      $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
+    });
+  }
+  async function play(F, n, kind, who, show) {
+    U.clear(); H.set(0); H.lock(true); GAME.phase = 'busy'; F.lock(true);
+    var pts = U.bunch(n, [14, 86, 30, 84]), els = pts.map(function (p, i) { return U.put('apple', p, U.size(n) + 2, i); }), bad = Math.floor(Math.random() * n);
+    await F.say(who + ' is counting the apples.');
+    var said = await boyCounts(F, els, kind, bad);
+    await F.say(who + ' says: ' + F.word(said) + ' apples!');
+    await F.say(kind === 'twice' ? who + ' touched one apple two times. Tap it.' : who + ' missed one apple. Tap that apple.', { repeat: kind === 'twice' ? 'Find the apple with two touches. Tap it.' : 'Find the apple with no touch. Tap it.' });
+    var a = await findIt(F, els, bad, kind);
+    els.forEach(function (e) { e.querySelectorAll('.tch').forEach(function (t) { t.remove(); }); });
+    var b = await U.answer(F, { n: n, H: H, ask: 'How many apples really?',
+      explain: async function (F) { await F.say("Let's count right. Touch each once."); await U.countAlong(els); await F.say(F.Word(n) + ' apples!'); } });
+    return a && b;
+  }
+  FR.game({
+    id: 'u3-twice', title: 'Oops! Find It', rounds: 5,
+    hero: '<svg viewBox="0 0 100 100"><use href="#nkApple"/></svg><svg viewBox="0 0 100 100" style="transform:translateY(-14%)"><use href="#nkApple"/></svg><svg viewBox="0 0 100 100"><use href="#nkApple"/></svg>',
+    init: function (F) { U.addArt(); H = U.hands($('hands')); H.lock(true); },
+    demo: async function (F) {
+      U.clear(); var pts = [[30, 50], [50, 70], [70, 50]], els = pts.map(function (p, i) { return U.put('apple', p, 15, i); });
+      await F.say('Watch me count. Each touch gets a sticker.');
+      for (var i = 0; i < 3; i++) { await F.handTo(els[i], .5, .45); await F.handTap(); sticker(els[i]); NK.sound.pop(); await F.say(F.Word(i + 1), { noRepeat: true }); }
+      F.handHide(); await F.say('One sticker on each. Three apples!');
+      await F.say('Two stickers means a mistake. Find it!');
+    },
+    round: function (F, i) { var p = PLAN[i]; return play(F, p[0], p[1], WHO[i], i === 0); }
+  });
+})();
+</script>
+</body>
+</html>
