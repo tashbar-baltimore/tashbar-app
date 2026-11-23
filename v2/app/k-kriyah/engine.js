@@ -8,16 +8,9 @@ import { RoomEnvironment } from './lib/RoomEnvironment.js';
 import { OUTLINES } from './letters.js';
 export { THREE };
 
-/* ---------------- the unit's games, in skill order ---------------- */
-export const GAMES = [
-  { id: 'u1g0', name: 'Mendy’s first day', kind: 'story', icon: 'book' },
-  { id: 'u1g1', name: 'Look-Alike Detective', kind: 'detective', icon: 'house' },
-  { id: 'u1g2', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
-  { id: 'u1g3', name: 'Letter Hunt', kind: 'hunt', icon: 'glass' },
-  { id: 'u1g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
-  { id: 'u1g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy' },
-  { id: 'u1g6', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
-];
+/* ---------------- the units and their games, in skill order (units.js) ---------------- */
+import { UNITS, GAMES, unitOf } from './units.js';
+export { UNITS, GAMES, unitOf };
 export const PASS = 2;                     /* the next game opens at 2 of 3 stars */
 
 /* ---------------- time (?fast=1 makes every wait short, for tests) ---------------- */
@@ -34,9 +27,12 @@ export function loadSave() { try { const s = JSON.parse(localStorage.getItem(KEY
 function writeSave(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
 export function best(id) { const g = loadSave().games[id]; return g ? g.stars || 0 : 0; }
 export function unlocked(id) {
-  const i = GAMES.findIndex(g => g.id === id); if (i <= 0) return i === 0;
-  if (GAMES[i].bonus) return best(GAMES[i - 1].id) >= 3;      /* the bonus round opens for a boy who got 3 stars on the check */
-  return best(GAMES[i - 1].id) >= PASS;
+  const g = GAMES.find(x => x.id === id), u = unitOf(id); if (!g || !u) return false;
+  const i = u.games.findIndex(x => x.id === id), check = v => v.games.find(x => x.mastery).id;
+  if (g.bonus) return best(check(u)) >= 3;      /* the bonus round opens for a boy who got 3 stars on his unit's check */
+  if (i === 0) { const before = UNITS.find(x => x.n === u.n - 1); return !before || best(check(before)) >= PASS; }   /* a new unit opens when the one before it passed its check */
+  let j = i - 1; while (j > 0 && u.games[j].bonus) j--;
+  return best(u.games[j].id) >= PASS;
 }
 export function struggled(id) { const g = loadSave().games[id]; return !!(g && g.last != null && g.last < PASS); }
 export function record(id, stars) {
@@ -45,13 +41,13 @@ export function record(id, stars) {
   try { if (parent && parent !== window) parent.postMessage({ tl2game: 'k-kriyah/' + id, stars }, '*'); } catch (e) {}
   window.__saved = { id, stars };
 }
-export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); return GAMES[i + 1] && !GAMES[i + 1].bonus ? GAMES[i + 1] : null; }
+export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); return GAMES.slice(i + 1).find(g => !g.bonus) || null; }
 
 /* ---------------- voice ----------------
    Every letter sound plays the rebbe's recording when audio/sounds.json lists it; until then the computer voice says it
    (marked on screen as temporary). A line is an array of words and sounds: ['Beis says', S('b')]. */
 export const S = k => ({ snd: k });
-const FALLBACK = { b: 'buh', v: 'vuh' };          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
+const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh' };          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
 let SOUNDS = {}; const audioCache = {};
 export const soundsReady = fetch('audio/sounds.json').then(r => r.ok ? r.json() : {}).then(j => { SOUNDS = j || {}; }).catch(() => {});
 export let lastLine = null; let sayToken = 0;
@@ -166,7 +162,8 @@ ${HAND}<div class="yay" id="yay"><div class="stars"></div></div>
   if (home) $('#home').onclick = () => goPath();
 }
 const keep = () => (FAST ? '&fast=1' : '') + (LITE ? '&lite=1' : '');
-export function goPath() { location.href = 'index.html?' + keep().slice(1); }
+let curUnit = 1; export const setUnit = n => { curUnit = n; };
+export function goPath(u = curUnit) { location.href = 'index.html?u=' + u + keep(); }
 export function goGame(id) { location.href = 'play.html?g=' + id + keep(); }
 export function setProgress(n, on) { const p = $('#prog'); if (p.children.length !== n) p.innerHTML = '<i></i>'.repeat(n); [...p.children].forEach((x, i) => x.classList.toggle('on', i < on)); }
 export function waitStart() { const b = $('#start'); b.style.display = 'grid'; document.body.dataset.startReady = 1; return new Promise(r => { b.onclick = () => { b.style.display = 'none'; delete document.body.dataset.startReady; tone(1, .01); try { speechSynthesis.speak(new SpeechSynthesisUtterance(' ')); } catch (e) {} r(); }; }); }
@@ -328,7 +325,9 @@ function letterGeo(ch) {
 export const goldDot = () => new THREE.MeshPhysicalMaterial({ color: 0xffc21a, roughness: .15, metalness: .35, clearcoat: 1, emissive: 0x6a4200, emissiveIntensity: .25 });
 const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
 /* key: 'alef' | 'beis' | 'veis'.  Beis and Veis share one shape; Beis has the dagesh (Mendy's dot: "someone home"). */
-export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' } };
+export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' },
+  gimmel: { ch: 'ג', name: 'Gimmel', snd: 'g' }, daled: { ch: 'ד', name: 'Daled', snd: 'd' }, hei: { ch: 'ה', name: 'Hei', snd: 'h' } };
+export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4' };
 export function letter(key, height = 2.6, color = 'blue') {
   const L = LETTERS[key], { g: geo, c } = letterGeo(L.ch); const bb = geo.boundingBox, H = bb.max.y - bb.min.y, W = bb.max.x - bb.min.x, s = height / H;
   const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); grp.add(m);
@@ -411,10 +410,10 @@ export async function finish(id, stars, line) {
 }
 
 /* ---------------- no 3D on this computer: a clean flat screen, never a blank one ---------------- */
-export function flatFallback() {
+export function flatFallback(keys = ['alef', 'beis', 'veis']) {
   const f = $('#flat'); f.style.display = 'flex'; document.body.dataset.flat = 1;
-  f.innerHTML = `<div class="row"><button data-k="alef" aria-label="Alef">א</button><button data-k="beis" aria-label="Beis">בּ</button><button data-k="veis" aria-label="Veis">ב</button></div>
+  f.innerHTML = `<div class="row">${keys.map(k => `<button data-k="${k}" aria-label="${LETTERS[k].name}">${FLAT[k]}</button>`).join('')}</div>
   <p>This computer can't show the 3D games. Tap a letter to hear it. (For the teacher: please open the games on a newer Chromebook or browser.)</p>`;
-  f.querySelectorAll('button').forEach(b => b.onclick = () => say(b.dataset.k === 'alef' ? 'Alef. Alef is quiet.' : nameLine(b.dataset.k)));
+  f.querySelectorAll('button').forEach(b => b.onclick = () => say(nameLine(b.dataset.k)));
   say('Tap a letter to hear it.');
 }

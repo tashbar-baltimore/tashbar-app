@@ -23,11 +23,12 @@ P.detective = async (pg, shot, log) => {
 P.feel = async (pg, shot, log) => {
   let wrong = false, n = 0;
   await loop(pg, async () => { const i = await K.info(pg); if (i && i.dot) { await pg.mouse.click(...i.dot); await pg.waitForTimeout(500); log.dotTapped = true; return true; }
+    if (i && i.key === 'beis') log.sawBeis = true;
     if (!i || !i.active || i.next >= i.total) return false;
     if (!wrong) { wrong = true; await shot('1-start'); const vs = await pg.viewportSize(); await pg.mouse.click(30, vs.height - 90); await pg.waitForTimeout(800); log.wrongHandled = (await K.info(pg)).off > 0; await shot('3-wrong'); await pg.waitForTimeout(1200); return true; }
     const bs = i.beads; await pg.mouse.move(...bs[i.next]); await pg.mouse.down(); for (let j = i.next + 1; j < bs.length; j++) await pg.mouse.move(...bs[j], { steps: 3 }); await pg.mouse.up();
     if (++n === 2) await shot('2-middle'); await pg.waitForTimeout(400); return true; });
-  (log.dotTapped ? log.oks : log.fails).push('on Beis he taps Mendy\u2019s dot');
+  if (log.sawBeis) (log.dotTapped ? log.oks : log.fails).push('on Beis he taps Mendy\u2019s dot');
 };
 P.hunt = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-hunt-ready]', { timeout: 180000 }); await shot('1-start');

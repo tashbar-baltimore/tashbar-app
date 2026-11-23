@@ -2,7 +2,7 @@
    Skill: knows the shape of Alef, Beis and Veis by feeling it. He runs his finger along a glowing road on the big 3D letter;
    the road turns gold where he has been, an orange ring shows where to go next, the letter glows, and its name and sound play.
    Tapping along the road works too. If his finger wanders off, a kind voice and the hand show him the ring. */
-export default function setup(E) {
+export default function setup(E, { unit }) {
   const { THREE, S } = E;
   /* the path along each letter, in font units (1000 per em, y up), stroke by stroke */
   const BEIS = [[[78, 612], [84, 515], [200, 500], [320, 500], [425, 478], [446, 380], [446, 275], [446, 170], [430, 91], [320, 91], [205, 91], [90, 91]]];
@@ -11,8 +11,11 @@ export default function setup(E) {
       [[424, 612], [458, 520], [520, 468], [505, 360], [470, 280]],
       [[112, 330], [80, 240], [96, 140], [120, 45]]],
     beis: BEIS, veis: BEIS,
+    gimmel: [[[115, 615], [118, 510], [210, 500], [289, 455], [289, 340], [289, 230], [250, 110], [140, 91], [45, 91]], [[300, 235], [340, 130], [378, 40]]],
+    daled: [[[40, 615], [45, 510], [160, 500], [290, 500], [415, 495], [395, 380], [388, 250], [383, 120], [380, 25]]],
+    hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
-  const ORDER = ['alef', 'beis', 'veis'];
+  const ORDER = unit.letters;
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
   const boy = E.mendy(); E.scene.add(boy);
   const done = []; let cur = null, beads = [], next = 0, demo = false, active = false, lastHelp = 0, wander = 0, offTries = 0;
@@ -71,7 +74,7 @@ export default function setup(E) {
   async function oneLetter(key, first) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
-    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? 'This is Beis, with Mendy’s dot. Feel it!' : 'This is Veis. No dot. Feel it!');
+    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? 'This is Beis, with Mendy’s dot. Feel it!' : key === 'veis' ? 'This is Veis. No dot. Feel it!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
       const st = PATHS[key][0].length; let [x, y] = beadScreen(0); E.hand.at(x, y); await E.wait(300);
@@ -95,7 +98,7 @@ export default function setup(E) {
     /* the whole letter glows, spins, and says its name and sound */
     cur.userData.spin = true; E.joy(E.worldPos(cur).add(new THREE.Vector3(0, 0, .8)), true); boy.mood('cheer');
     const r0 = cur.rotation.y; await E.tween(900, k => { cur.rotation.y = r0 + k * Math.PI * 2; glow.material.opacity = .8; }, E.ease.out); cur.userData.spin = false; cur.rotation.y = 0;
-    await E.say(key === 'alef' ? 'Alef! Alef is quiet.' : key === 'beis' ? ['Beis! Beis says', S('b')] : ['Veis! Veis says', S('v')]); boy.mood('calm');
+    await E.say(key === 'alef' ? 'Alef! Alef is quiet.' : [E.LETTERS[key].name + '! ' + E.LETTERS[key].name + ' says', S(E.LETTERS[key].snd)]); boy.mood('calm');
     /* it moves to the side, so he sees the ones he has done */
     [...beads, ...roads, ...golds, target].forEach(b => b.parent && b.parent.remove(b)); beads = []; roads = []; golds = []; const l = cur; cur = null; holder.remove(l); E.scene.add(l); l.position.copy(holder.position);
     const i = done.length; done.push(l); const p0 = l.position.clone(); const tmp = new THREE.Object3D(); layoutDone(tmp, i);
@@ -105,6 +108,7 @@ export default function setup(E) {
   return async () => {
     E.setProgress(3, 0);
     for (let i = 0; i < ORDER.length; i++) await oneLetter(ORDER[i], i === 0);
-    return { stars: offTries <= 4 ? 3 : 2, line: 'You felt Alef, Beis and Veis!' };
+    const names = ORDER.map(k => E.LETTERS[k].name);
+    return { stars: offTries <= 4 ? 3 : 2, line: 'You felt ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + '!' };
   };
 }
