@@ -814,3 +814,16 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - crayons-in-round-holder.webp | https://pixabay.com/photos/crayon-colors-colorful-education-215873/ | Pixabay Content License | PublicDomainPictures
 - old-sailing-ship-at-sea.webp | https://pixabay.com/photos/mati-ocean-the-ship-sea-ship-water-3126385/ | Pixabay Content License | mati-foto
 - glass-of-water-on-cloth.webp | https://pixabay.com/photos/cup-water-napkin-sky-reflection-2875091/ | Pixabay Content License | 6653167
+- wooden-crate-of-small-cubbies.webp | https://pixabay.com/photos/shelf-case-isolated-wall-shelf-2444657/ | Pixabay Content License | garten-gg
+- toasted-cheese-sandwich-cut-in-half.webp | https://pixabay.com/photos/grilled-cheese-sandwich-10383250/ | Pixabay Content License | tehzeebkazmii
+- one-red-apple-on-white.webp | https://pixabay.com/photos/apple-red-fruit-ripe-yummy-meal-302287/ | Pixabay Content License | Silberfuchs
+- smoke-alarm-on-hallway-ceiling.webp | https://www.flickr.com/photos/97283472@N00/111672966 | CC BY 2.0 | leighblackall
+- stacks-of-white-plates.webp | https://pixabay.com/photos/plate-stack-dishes-stack-of-plates-629970/ | Pixabay Content License | congerdesign
+- wooden-clipboard-with-blank-paper.webp | https://pixabay.com/photos/desk-white-background-plant-coffee-1209778/ | Pixabay Content License | 1681551
+- row-of-jam-jars-on-shelf.webp | https://pixabay.com/photos/jam-fruit-jars-fruit-jams-428094/ | Pixabay Content License | jarmoluk
+- two-black-drawers-brass-handles.webp | https://pixabay.com/photos/back-to-school-registerbox-1538863/ | Pixabay Content License | PIRO4D
+- white-plate-fork-and-knife.webp | https://www.flickr.com/photos/151691693@N02/42585288225 | CC BY 2.0 | stockcatalog
+- white-keyboard-letter-keys-close.webp | https://pixabay.com/photos/keyboard-hardware-computer-70506/ | Pixabay Content License | geralt
+- blue-front-door-yellow-house.webp | https://pixabay.com/photos/house-door-entrance-stone-stairway-7614753/ | Pixabay Content License | anaterate
+- wooden-bunk-beds-dorm-room.webp | https://pixabay.com/photos/bunk-beds-accommodation-house-beech-946988/ | Pixabay Content License | misska420
+- old-closed-wooden-box-hasp.webp | https://collections.museumsvictoria.com.au/items/404090 | CC BY 4.0 | Photographer: Taryn Ellis
