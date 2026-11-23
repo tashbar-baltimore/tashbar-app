@@ -1102,7 +1102,7 @@ B['MATH.FRAC.L04.04']={ band:'B23', pic:'🎭', today:'Spot whole numbers dresse
   bridge:'MATH.FRAC.L04.02', bridgeName:'Fair pieces',
   watch:{ q:'8/4 = how many wholes?', m:{type:'fbar',n:4,d:4}, steps:[
     {t:'Top and bottom the same? It is 1 whole: 4/4 = 1.', m:{type:'fbar',n:4,d:4}},
-    'A number over 1 is just that number: 3/1 = 3 wholes.',
+    {t:'A number over 1 is just that number: 3/1 is 3 wholes, each in 1 piece.', m:{type:'kpic',p:['bar:1*1','bar:1*1','bar:1*1']}},
     '8/4 means 8 fourths. 4 fourths make 1 whole.',
     '8 fourths make 2 wholes: 8/4 = 2. And 9/3 = 3.',
     {t:'Chant it: Same on top and bottom? That is one!', m:{type:'chant',lines:['Same on top and bottom?','That is one whole, well done!']}}], a:'8/4 = 2' },
@@ -1125,6 +1125,7 @@ B['MATH.FRAC.L04.05']={ band:'B23', pic:'🥔', today:'Compare fractions: who at
   watch:{ q:'1/3 ☐ 1/4', m:{type:'fbar',n:1,d:3}, steps:[
     {t:'Same top, different bottom. 1/3 of a kugel:', m:{type:'fbar',n:1,d:3}},
     {t:'1/4 of the same kugel: the pieces are smaller.', m:{type:'fbar',n:1,d:4}},
+    {t:'Always compare the same size whole. 2/6 or 2/3? 2 small pieces or 2 big pieces: 2/3 is more.', m:{type:'kpic',p:['bar:1,1,1,1,1,1*2','bar:1,1,1*2']}},
     'More pieces means smaller pieces. So 1/3 > 1/4. Moshe ate more.',
     'Same bottom? The bigger top is more: 3/5 > 2/5. The same? Use =.',
     {t:'Chant it: More pieces, smaller slice!', m:{type:'chant',lines:['More pieces,','smaller slice!']}}], a:'1/3 > 1/4' },
@@ -1139,30 +1140,30 @@ B['MATH.FRAC.L04.05']={ band:'B23', pic:'🥔', today:'Compare fractions: who at
     {type:'tiles', w:['1/8','1/4','1/2'], extra:['2/2'], say:'Put them from smallest to biggest.', how:'More pieces, smaller slice. 1/8 is the smallest.'},
     {type:'sort', bins:['Right','Oops'], cards:[['1/2 > 1/4',0],['1/2 < 1/4',1],['1/3 > 1/8',0],['1/3 < 1/8',1],['3/5 > 2/5',0],['1/6 > 1/2',1]], q:'Chaim compared fractions. Right or oops?', mis:true, say:'Chaim compared fractions. Right or oops? Sort them.', how:'Same top? More pieces means smaller pieces. 4 is bigger, but 1/4 is smaller than 1/2.'},
     {type:'sort', bins:['First one is more','Second one is more'], cards:[['1/2 or 1/4',0],['2/5 or 3/5',1],['1/8 or 1/3',1],['4/6 or 1/6',0],['2/8 or 2/4',1]], say:'Which fraction is more? Sort them.', how:'Same top: fewer pieces is more. Same bottom: the bigger top is more.'},
-    {type:'listen', hear:'Moshe ate 1 half of a kugel. Chaim ate 1 fourth of the same kugel. Who ate more?', o:['Moshe','Chaim','The same'], a:'Moshe', say:'Listen to the story. Who ate more?', how:'1/2 is bigger than 1/4.'}] };
+    {type:'findall', grid:['3/4 > 3/8','2/6 > 2/3','5/8 > 3/8','1/5 > 1/3','3/6 > 3/8','2/4 > 2/6'], find:['3/4 > 3/8','5/8 > 3/8','3/6 > 3/8','2/4 > 2/6'], findSay:'true comparison', say:'Tap every comparison that is true.', how:'Same top: fewer pieces means bigger pieces. Same bottom: the bigger top is more.'}] };
 
 B['MATH.GEO.L04.01']={ band:'B23', pic:'🔷', today:'Name four-sided shapes by sides and corners', why:'Doors, windows, sefer covers: four-sided shapes are everywhere.',
   ready:[{q:'How many sides does a square have?', o:['4','3','5'], a:'4'},{q:'Which shape has 3 sides?', o:['triangle','square','pentagon'], a:'triangle'}],
   bridge:'MATH.GEO.L03.01', bridgeName:'Sides and corners',
-  watch:{ q:'Which four-sided shape is it?', m:{type:'emoji',e:'🔷',n:1}, steps:[
+  watch:{ q:'Which four-sided shape is it?', m:{type:'emoji',e:'◊',n:1}, steps:[
     'A quadrilateral is any closed shape with 4 straight sides.',
-    'A rhombus has 4 equal sides. Its corners do not need to be square. 🔷',
+    'A rhombus has 4 equal sides. Its corners do not need to be square. ◊',
     'A rectangle has 4 square corners.',
     'A square is both: 4 equal sides and 4 square corners. So every square is a rectangle!',
     'A rhombus side is 4 cm? All 4 sides: 4 + 4 + 4 + 4 = 16 cm.',
     {t:'Make a square corner with your hands: an L!', m:{type:'move',t:'Make a square corner with your thumb and finger: an L!'}}], a:'rhombus' },
-  oops:{ q:'Is every square a rectangle?', wrong:'No: a rectangle must be long', right:'Yes: a square has 4 square corners', why:'A rectangle only needs 4 square corners. A square has them.' },
+  oops:{ q:'Is a square a kind of rectangle?', wrong:'No: rectangles are long and thin', right:'Yes: it has the 4 square corners a rectangle needs', why:'A rectangle only needs 4 square corners. A square has them.' },
   ways:['shape pictures','move','Mistake Detective'], done:'You can name four-sided shapes by sides and corners.',
   board:{ one:'Count the sides, check the corners.', activity:'Sort paper shapes; test corners with a folded square corner.', mistakes:['A square is not a rectangle','A tilted square is a different shape','Any 4 equal sides makes a square'] },
   do:[
-    {type:'sort', bins:['4 sides','Not 4 sides'], cards:[['🟦',0],['🔺',1],['🔷',0],['▬',0],['⬠',1]], say:'Count the sides. Is it a quadrilateral?', how:'A quadrilateral has 4 straight sides.'},
-    {type:'match', pairs:[['🟦','square'],['🔷','rhombus'],['▬','rectangle']], say:'Match each shape to its name.', how:'Rhombus: 4 equal sides, slanted. Rectangle: 4 square corners. Square: both.'}],
+    {type:'sort', bins:['4 sides','Not 4 sides'], cards:[['🟦',0],['🔺',1],['◊',0],['▬',0],['⬠',1]], say:'Count the sides. Is it a quadrilateral?', how:'A quadrilateral has 4 straight sides.'},
+    {type:'match', pairs:[['🟦','square'],['◊','rhombus'],['▬','rectangle']], say:'Match each shape to its name.', how:'Rhombus: 4 equal sides, slanted. Rectangle: 4 square corners. Square: both.'}],
   your:[
-    {type:'sort', bins:['Right','Oops'], cards:[['🟦 is a rectangle',0],['🟦 is not a rectangle',1],['🔷 has 4 equal sides',0],['🔷 has 4 square corners',1],['▬ has 4 square corners',0],['▬ has 3 sides',1]], q:'Avi described the shapes. Right or oops?', mis:true, say:'Avi described the shapes. Right or oops? Sort them.', how:'A rectangle only needs 4 square corners. A square has them, so a square is a rectangle too.'},
-    {type:'findall', grid:['🔷','🔺','🟦','⬠','▬','🔷','⬡','🟩'], find:['🔷','🟦','▬','🟩'], findSay:'four-sided shape', say:'Tap every four-sided shape.', how:'Count the sides. 4 sides? Tap it.'},
+    {type:'sort', bins:['Right','Oops'], cards:[['🟦 is a rectangle',0],['🟦 is not a rectangle',1],['◊ has 4 equal sides',0],['◊ has 4 square corners',1],['▬ has 4 square corners',0],['▬ has 3 sides',1]], q:'Avi described the shapes. Right or oops?', mis:true, say:'Avi described the shapes. Right or oops? Sort them.', how:'A rectangle only needs 4 square corners. A square has them, so a square is a rectangle too.'},
+    {type:'findall', grid:['◊','🔺','🟦','⬠','▬','◊','⬡','🟩'], find:['◊','🟦','▬','🟩'], findSay:'four-sided shape', say:'Tap every four-sided shape.', how:'Count the sides. 4 sides? Tap it.'},
     {type:'hop', start:0, add:16, unit:4, from:0, to:20, q:'Rhombus side 4 cm. All around?', say:'A rhombus side is 4 cm. Hop 4 sides.', how:'4 + 4 + 4 + 4 = 16 cm.'},
-    {type:'sort', bins:['Square corners','Not square'], cards:[['🟦',0],['🔷',1],['▬',0],['🟩',0]], say:'Does it have 4 square corners? Sort them.', how:'Square corners look like the letter L.'},
-    {type:'listen', hear:'Is every square a rectangle?', o:['Yes, 4 square corners','No, it is not long'], a:'Yes, 4 square corners', say:'Listen. Tap the answer.', how:'A rectangle needs 4 square corners. Every square has them.'}] };
+    {type:'sort', bins:['Square corners','Not square'], cards:[['🟦',0],['◊',1],['▬',0],['🟩',0]], say:'Does it have 4 square corners? Sort them.', how:'Square corners look like the letter L.'},
+    {type:'listen', hear:'A shape has 4 equal sides and 4 square corners. Is it also a rhombus?', o:['Yes, it has 4 equal sides','No, its corners are square'], a:'Yes, it has 4 equal sides', say:'Listen. Tap the answer.', how:'A rhombus only needs 4 equal sides. A square has them, so a square is a rhombus too.'}] };
 
 B['MATH.MEAS.L04.01']={ band:'B23', pic:'🟩', today:'Area: count the squares that cover it', why:'How many mats cover the sukkah floor? That is the area.',
   ready:[{q:'2 rows of 5. How many?', o:['10','7','25'], a:'10', m:{type:'emoji',e:'🟩',n:10,group:5}},{q:'5 + 5 + 5 = ?', o:['15','10','20'], a:'15'}],
@@ -1215,6 +1216,7 @@ B['MATH.MEAS.L04.03']={ band:'B23', pic:'🧵', today:'Perimeter: the distance a
   watch:{ q:'A garden 7 m long, 3 m wide', m:{type:'emoji',e:'🌱',n:1}, steps:[
     'Perimeter is the distance all the way around a shape.',
     'Add every side: 7 + 3 + 7 + 3 = 20 meters.',
+    'Add the side lengths, not the squares on the edge. A corner square sits on two sides.',
     'A square has 4 same sides: 7 inches × 4 = 28 inches.',
     'Any shape: add every side. A triangle 4, 5 and 6 cm: 4 + 5 + 6 = 15 cm.',
     'Missing side? Perimeter 26, length 7. 26 − 7 − 7 = 12. Half of 12 is 6.',
@@ -1228,7 +1230,7 @@ B['MATH.MEAS.L04.03']={ band:'B23', pic:'🧵', today:'Perimeter: the distance a
   your:[
     {type:'match', pairs:[['7 by 3','20'],['square side 7','28'],['triangle 4, 5, 6','15'],['5 sides: 2, 3, 4, 5, 7','21']], say:'Add every side. Match each perimeter.', how:'Add all the sides, one at a time: 4 + 5 + 6 = 15.'},
     {type:'sort', bins:['Perimeter','Area'], cards:[['🧵 around',0],['🟩 inside',1],['fence',0],['carpet',1]], say:'Around the edge or covering inside? Sort them.', how:'Perimeter goes around. Area covers inside.'},
-    {type:'blocks', n:6, q:'Perimeter 26, length 7', say:'Perimeter 26 feet, length 7. Build the width.', how:'26 − 7 − 7 = 12. Half of 12 is 6.'},
+    {type:'tiles', q:'Perimeter 26 feet, length 7. Find the width.', w:['26 − 7 − 7 = 12','half of 12','width = 6'], extra:['26 ÷ 7'], say:'Put the steps in order.', how:'Take away both lengths first. Then cut what is left in half.'},
     {type:'hop', start:30, add:-16, unit:8, from:6, to:30, q:'Perimeter 30, length 8', say:'Perimeter 30. Hop back two lengths of 8.', how:'30 − 8 − 8 = 14. Half of 14 is 7. The width is 7.'},
     {type:'listen', hear:'Eli walks around a garden 7 meters long and 3 meters wide. How far?', o:['20','10','21'], a:'20', say:'Listen. How many meters does he walk?', how:'7 + 3 + 7 + 3 = 20 meters.'}] };
 
@@ -1240,7 +1242,7 @@ B['MATH.MEAS.L04.04']={ band:'B23', pic:'⏱️', today:'How long did it take? C
     'Jump to the next hour first: 3:40 to 4:00 is 20 minutes.',
     'Then add the rest: 4:00 to 4:15 is 15 more. 20 + 15 = 35 minutes.',
     'Longer? 6:42 to 8:24: to 7:00 is 18, to 8:00 is 60 more, then 24. 18 + 60 + 24 = 102 minutes.',
-    'Ends when? Mincha 3:51, 72 minutes: 60 minutes makes 4:51, 12 more is 5:03.',
+    'Ends when? The Chumash shiur starts at 3:51 and lasts 72 minutes: 60 minutes makes 4:51, 12 more is 5:03.',
     {t:'Chant it: Jump to the hour, then add the rest!', m:{type:'chant',lines:['Jump to the hour,','then add the rest!']}}], a:'35 minutes' },
   oops:{ q:'10:25 + 65 minutes', wrong:'10:90', right:'11:30', why:'60 minutes make 1 hour. 10:25 + 60 is 11:25, then 5 more: 11:30.' },
   ways:['number line','chant','Mistake Detective'], done:'You can find how long something took and when it ends.',
@@ -1274,9 +1276,9 @@ B['MATH.MEAS.L04.05']={ band:'B23', pic:'🧪', today:'Measure with liters, gram
   your:[
     {type:'sort', bins:['Right','Oops'], cards:[['raisin: 1 gram',0],['raisin: 1 kilogram',1],['Gemara: 1 kilogram',0],['paper clip: 1 kilogram',1],['milk: 1 liter',0],['urn water: 20 grams',1]], q:'Zev picked the units. Right or oops?', mis:true, say:'Zev picked the units. Right or oops? Sort them.', how:'Light things: grams. Heavy things: kilograms. Liquid: liters. A raisin is very light: 1 gram.'},
     {type:'hop', start:0, add:2700, unit:900, from:0, to:3600, q:'3 bags of 900 g', say:'Each bag is 900 grams. Hop 3 bags.', how:'900, 1800, 2700 grams.'},
-    {type:'listen', hear:'Which unit is best for measuring a raisin?', o:['grams','liters','kilograms'], a:'grams', say:'Listen. Tap the best unit.', how:'A raisin is light: grams.'},
+    {type:'listen', hear:'Which unit is best for measuring a jug of grape juice?', o:['liters','grams','kilograms'], a:'liters', say:'Listen. Tap the best unit.', how:'Grape juice is a liquid: liters.'},
     {type:'match', pairs:[['6 L + 7 L','13 L'],['9 kg − 5 kg','4 kg'],['200 g × 3','600 g'],['17 kg − 11 kg','6 kg']], say:'Add or take away like regular numbers. Keep the unit.', how:'Keep the unit: 17 kg − 11 kg = 6 kg.'},
-    {type:'sort', bins:['liters','kilograms'], cards:[['🪣',0],['🎒',1],['🧃',0],['🍉',1]], say:'Liquid or heavy thing? Sort them.', how:'Liquid: liters. Heavy: kilograms.'}] };
+    {type:'sort', bins:['liters','grams','kilograms'], cards:[['🪣 bucket of water',0],['🎒 schoolbag',2],['🍬 one candy',1],['🍲 pot of soup',0],['🥔 sack of potatoes',2],['✏️ pencil',1]], say:'Liquid, light or heavy? Sort them all.', how:'Liquid: liters. Light enough for one finger: grams. Heavy to lift: kilograms.'}] };
 
 B['MATH.STAT.L04.01']={ band:'B23', pic:'⭐', today:'Read a graph\'s key: each picture or ✖️ stands for something', why:'Our class learned 60 mishnayos! A picture graph with a key shows it fast.',
   ready:[{q:'Count by 10s: 10, 20, 30, ?', o:['40','31','50'], a:'40'},{q:'Count by 5s: 5, 10, 15, ?', o:['20','16','25'], a:'20'}],
@@ -1296,9 +1298,9 @@ B['MATH.STAT.L04.01']={ band:'B23', pic:'⭐', today:'Read a graph\'s key: each 
     {type:'match', pairs:[['⭐⭐ (10)','20'],['⭐⭐⭐ (5)','15'],['⭐⭐⭐ (10)','30']], say:'Each star is worth the number in brackets. Match the totals.', how:'Count by the key: 10, 20, 30.'}],
   your:[
     {type:'hop', start:0, add:60, unit:10, from:0, to:100, q:'⭐⭐⭐⭐⭐⭐ (each ⭐ = 10)', say:'Each star is 10. Hop for 6 stars.', how:'10, 20, 30, 40, 50, 60.'},
-    {type:'blocks', n:5, q:'Tue 20, Wed 15', say:'How many more on Tuesday? Build the answer.', how:'20 − 15 = 5.'},
+    {type:'match', q:'Key: each ⭐ = 5. How many more?', pairs:[['⭐⭐⭐⭐⭐ vs ⭐⭐⭐','10 more'],['⭐⭐⭐⭐ vs ⭐','15 more'],['⭐⭐⭐⭐⭐⭐ vs ⭐⭐','20 more']], say:'Each star is 5. How many more in the first row? Match.', how:'Count the extra stars, then count them by 5s: 2 extra stars is 5, 10. That is 10 more.'},
     {type:'sort', bins:['Right','Oops'], cards:[['⭐⭐⭐ = 15',0],['⭐⭐⭐ = 3',1],['⭐⭐ = 10',0],['⭐⭐ = 2',1],['⭐⭐⭐⭐ = 20',0],['⭐⭐⭐⭐ = 4',1]], q:'Key: each ⭐ = 5. Right or oops?', mis:true, say:'Each star is 5. Avi read the graph. Right or oops?', how:'Read the key first. Each star is 5, so count by 5s: 5, 10, 15. Not 1 for each star.'},
-    {type:'sort', bins:['Longer than 3 inches','Not longer'], cards:[['✖️ above 2 in',1],['✖️ above 3 in',1],['✖️ above 4 in',0],['✖️ above 5 in',0],['✖️ above 1 in',1],['✖️ above 6 in',0]], say:'Is this pencil longer than 3 inches? Sort the ✖️ marks.', how:'Only numbers bigger than 3 count. A pencil of exactly 3 inches is not longer.'},
+    {type:'sort', bins:['Longer than 3 inches','Not longer'], cards:[['✖️ above 2 in',1],['✖️ above 3 in',1],['✖️ above 4 in',0],['✖️ above 5 in',0],['✖️ above 1 in',1],['✖️ above 6 in',0],['✖️ above 3½ in',0]], say:'Is this pencil longer than 3 inches? Sort the ✖️ marks.', how:'Only numbers bigger than 3 count. A pencil of exactly 3 inches is not longer.'},
     {type:'listen', hear:'Sunday 20, Monday 60, Tuesday 20. How many in all?', o:['100','80','60'], a:'100', say:'Listen. Add them up. Tap the total.', how:'20 + 60 + 20 = 100.'}] };
 })(window.ONE_BITE);
 </script>

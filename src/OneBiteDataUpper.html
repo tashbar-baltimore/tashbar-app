@@ -57,7 +57,7 @@ B['LANG.MECH.L09.01']={ band:'M68', pic:'✒️', today:'Choose a dash or an ell
     {type:'sort', bins:['Right place','Oops: wrong place'], cards:[['one boy knew — Shmuli',0],['We — brought one',1],['"Maybe we should... no"',0],['Maybe... we should no',1],['It was — Zeidy!',0],['The... prize was a bike',1]], mis:true, say:'Dots anywhere sound dramatic? No! Right place or oops?', how:'Dash right before the reveal. Ellipsis only where the speaker really stops to think.',
       why:{q:'Why is "We — brought one" wrong?', o:['Nothing is revealed after the dash','It needs a comma','It is too long','It needs a question mark'], a:'Nothing is revealed after the dash'}},
     {type:'match', pairs:[['One guest came _ Zeidy!','dash: a reveal'],['"Hmm _ maybe," Bubby said.','ellipsis: stops to think'],['Words cut from a quote','ellipsis: words left out'],['well _ known','hyphen -: joins a word']], say:'Match each gap to its mark and its job.', how:'A reveal? A pause? Missing words? Or one joined word?'},
-    {type:'tiles', q:'Build what Yehuda said, with an ellipsis.', w:['"I think','...','no,','I am sure,"','said Yehuda.'], say:'Build it. The dots go where Yehuda stops.', how:'He starts, stops to think, then changes his mind.'}] };
+    {type:'tiles', q:'Build what Mordechai said, with an ellipsis.', w:['"We could go','to the park','...','actually, let\'s stay home,"','said Mordechai.'], extra:['—'], say:'Build it. The dots go where Mordechai stops.', how:'He starts, stops to think, then changes his mind.'}] };
 B['LANG.USE.L09.01']={ band:'M68', pic:'🖍️', today:'Edit in passes: I or me, capitals, commas, spelling', why:'Before your bar mitzvah speech is printed for the whole family, careful editing catches the mistake everyone would see.',
   ready:[{q:'Which is spelled right?', o:['received','recieved','receeved','resieved'], a:'received'}],
   bridge:'LANG.USE.L08.01', bridgeName:'Cut the Clutter',
@@ -128,17 +128,16 @@ B['MATH.FUNC.L09.01']={ band:'M68', pic:'🎰', today:'Use a function rule and s
     {type:'sort', bins:['Linear','Not linear'], cards:[['y = 4x + 6',0],['y = x² + 6',1],['y = −2x − 6',0],['y = x³ − 6',1],['y = x + 1',0],['y = 3x²',1]], say:'Straight line or not? Sort each rule.', how:'Linear: x has no power. A square or a cube curves.'},
     {type:'findall', q:'Which pairs break the function rule?', grid:['(1,4)','(2,5)','(3,6)','(2,9)','(4,1)','(5,4)','(3,2)','(6,6)'], find:['(2,5)','(2,9)','(3,6)','(3,2)'], findSay:'pair whose input repeats', say:'Tap every pair whose input repeats.', how:'Look at the first number. A repeated output is fine.'},
     {type:'match', pairs:[['y = 2x − 3','x=−1 → y=−5'],['y = −x + 4','x=−2 → y=6'],['y = 3x','x=−4 → y=−12'],['y = x² + 1','x=−2 → y=5']], say:'Match each rule to its input and output.', how:'Put the x in each rule. Multiply first, then add or subtract.'}] };
-B['MATH.GEO.L09.01']={ band:'M68', pic:'🪞', today:'Slide, turn and flip points; the size stays the same', why:'Laying out tiles for a shul floor or a sukkah pattern is all slides, turns and flips.',
+B['MATH.GEO.L09.01']={ band:'M68', pic:'🪞', today:'Move points by slides, turns and flips; spot when size changes', why:'Laying out tiles for a shul floor or a sukkah pattern is all slides, turns and flips.',
   ready:[{q:'Which point is 3 right and 2 up from (0, 0)?', o:['(3, 2)','(2, 3)','(−3, 2)','(3, −2)'], a:'(3, 2)'}],
   bridge:'MATH.NUM.L07.05', bridgeName:'Four Quadrants',
-  watch:{ q:'Move the point (3, 2) four ways', m:{type:'scene', e:'🪞', t:'A translation slides. A rotation turns. A reflection flips. The size never changes.'}, steps:[
-    {t:'Flip over the y-axis: the y-axis is the mirror, so x changes sign. (3, 2) → (−3, 2).'},
-    {t:'Flip over the x-axis: y changes sign. (3, 2) → (3, −2).'},
-    {t:'Turn 180° around (0, 0): both signs change. (3, 2) → (−3, −2). The same way, (5, 3) → (−5, −3).'},
-    {t:'Turn 90° clockwise: swap, then change the second sign. (3, 2) → (2, 3) → (2, −3). And (−2, 5) → (5, 2). Every slide, turn and flip is Congruent (same size and shape).'},
-    {t:'Turn 90° counterclockwise: swap, then change the FIRST sign. (3, 2) → (2, 3) → (−2, 3).'},
-    {t:'Slide 4 right and 5 down: add 4 to x, take 5 from y. (6, 3) → (10, −2).'},
-    {t:'A dilation multiplies every side by the scale factor. Side 8, factor 0.5: 4. Same shape, new size: similar, not congruent.'},
+  watch:{ q:'Move the point (3, 2) four ways', m:{type:'scene', e:'🪞', t:'A translation slides. A rotation turns. A reflection flips. Those keep the size; a dilation changes it.'}, steps:[
+    {t:'Flip over the y-axis: x changes sign. (3, 2) → (−3, 2).', m:{type:'line',from:-5,to:5,hops:[3,-3],label:'x jumps from 3 to −3'}},
+    {t:'Flip over the x-axis: y changes sign. (3, 2) → (3, −2).', m:{type:'line',from:-5,to:5,hops:[2,-2],label:'y jumps from 2 to −2'}},
+    {t:'Turn 180° around (0, 0): both signs change. (3, 2) → (−3, −2).'},
+    {t:'Turn 90°: first swap. Clockwise, change the 2nd sign: (3, 2) → (2, −3). Counterclockwise, change the 1st: (−2, 3).'},
+    {t:'Slide 4 right, 5 down: x + 4, y − 5. (6, 3) → (10, −2). Slides, turns, flips: same size = congruent.'},
+    {t:'A dilation multiplies each side by the scale factor: side 8, factor 0.5 → 4. New size = similar, not congruent.'},
     {t:'Teach it back: tell your chavrusa the rule for each move.'}], a:'(3, 2) → (−3, 2) over the y-axis' },
   oops:{ q:'Reflect (3, 2) over the x-axis', wrong:'(−3, 2)', right:'(3, −2)', why:'Over the x-axis, the y changes sign. That mirror lies flat: flip up or down.' },
   ways:['coordinate rules','number line','sort','error analysis','teach it back','Mistake Detective'], done:'You can slide, turn and flip points and know the shape stays congruent.',
@@ -209,8 +208,7 @@ B['MATH.GEO.L09.04']={ band:'M68', pic:'🥫', today:'Find the volume of cylinde
     {t:'Stack it 5 high: 4π × 5 = 20π, about 62.8 cubic units.'},
     {t:'Given the diameter (all the way across)? Halve it first: across 10 means r = 5.'},
     {t:'Cone r = 3, h = 4: the cylinder is π × 9 × 4 = 36π; the cone is 1/3 of it: 12π, about 37.68. A 66-cup cylinder gives a 22-cup cone.'},
-    {t:'Sphere r = 3: r³ = 27, then 4/3 × 27 = 36, and 36 × 3.14 = 113.04, about 113.'},
-    {t:'Not a whole number? Sphere r = 4: 4/3 × 64 = 256/3, about 85.33. Times 3.14: about 267.95.'},
+    {t:'Sphere r = 8: r³ = 512. 4/3 × 512 = 682.67 (keep the decimals). Times 3.14 = 2143.57, about 2144.'},
     {t:'Teach it back: tell your chavrusa the 3 formulas. πr²h, 1/3 πr²h, 4/3 πr³.'}], a:'20π, about 62.8 cubic units' },
   oops:{ q:'Cone volume', wrong:'πr²h', right:'1/3 πr²h', why:'A cone is one third of the cylinder. Forget the 1/3 and your answer overflows!' },
   ways:['pour test','formula match','step tiles','sort','teach it back','Mistake Detective'], done:'You can find the volume of a cylinder, a cone and a sphere.',
@@ -219,13 +217,13 @@ B['MATH.GEO.L09.04']={ band:'M68', pic:'🥫', today:'Find the volume of cylinde
     {type:'match', pairs:[['Cylinder','πr²h'],['Cone','1/3 πr²h'],['Sphere','4/3 πr³'],['Circle area','πr²']], say:'Match each shape to its formula.', how:'A cylinder is a stack of circles. A cone is a third. A sphere has r cubed.'},
     {type:'tiles', q:'Cylinder: r = 3, h = 4. Use 3.14.', w:['π × 3² = 9π','9π × 4 = 36π','36 × 3.14 = 113.04'], say:'Order the steps to find the volume.', how:'Circle area first, then times the height.'}],
   your:[
-    {type:'hop', q:'Cylinder 66 cups. Cone: same base, height.', start:0, add:22, unit:11, from:0, to:66, say:'The cone holds one third. Hop to it.', how:'Split 66 into 3 equal parts. Each part is one cone.',
+    {type:'hop', q:'Cylinder 66 cups. Cone: same base, height.', start:0, add:22, unit:22, from:0, to:66, say:'The cone holds one third. Hop to it.', how:'Split 66 into 3 equal parts. Each part is one cone.',
       why:{q:'Why is the cone one third?', o:['A cone fills 1/3 of the same cylinder','Cones have 3 sides','66 has a 6 in it','Cones always hold 22'], a:'A cone fills 1/3 of the same cylinder'}},
     {type:'tiles', q:'Cone: r = 7 cm, h = 6 cm. Use 3.14.', w:['π × 7² = 49π','49π × 6 = 294π','1/3 × 294π = 98π','98 × 3.14 = 307.72'], say:'Order the steps for the cone.', how:'Circle, times the height, then one third.',
       why:{q:'Why multiply by 1/3?', o:['A cone is a third of the cylinder','7 is odd','To make it round','The height is 6'], a:'A cone is a third of the cylinder'}},
     {type:'sort', bins:['Right','Oops'], cards:[['Cone r=3, h=4: 12π',0],['Cone r=3, h=4: 36π',1],['Cone r=3, h=6: 18π',0],['Cone r=3, h=6: 54π',1],['Can r=2, h=5: 20π',0],['Can r=2, h=5: 10π',1]], q:'Dovi found each volume. Right or oops?', mis:true, say:'Dovi found each volume. Right or oops? Sort them.', how:'Cone: find the cylinder, then take 1/3. Forget the 1/3 and it is 3 times too big. Square r: 2² = 4, not 2.'},
-    {type:'tiles', q:'Ball: r = 3 in. Use 3.14.', w:['3³ = 27','4/3 × 27 = 36','36 × 3.14 = 113.04','≈ 113 cubic in'], say:'Order the steps for the sphere.', how:'Cube the radius, times 4/3, then times 3.14.'},
-    {type:'match', pairs:[['Pot 20 across, h=12','1200π ≈ 3768'],['Cone cup r=3, h=4','12π ≈ 37.68'],['Ball r=3','36π ≈ 113.04'],['Can r=2, h=5','20π ≈ 62.8']], say:'Kiddush kitchen: match each to its volume.', how:'Across is the diameter: halve it first, r = 10. Then pick the formula.'}] };
+    {type:'tiles', q:'Ball: r = 1.5 in. Use 3.14.', w:['1.5³ = 3.375','4/3 × 3.375 = 4.5','4.5 × 3.14 = 14.13','≈ 14 cubic in'], say:'Order the steps for the sphere.', how:'Cube the radius, times 4/3, then times 3.14.'},
+    {type:'match', pairs:[['Pot 20 across, h=12','1200π ≈ 3768'],['Cone cup r=3, h=4','12π ≈ 37.68'],['Ball r=1.5','4.5π ≈ 14.13'],['Can r=2, h=5','20π ≈ 62.8']], say:'Kiddush kitchen: match each to its volume.', how:'Across is the diameter: halve it first, r = 10. Then pick the formula.'}] };
 B['MATH.NUM.L09.01']={ band:'M68', pic:'🛂', today:'Sort numbers into rational and irrational', why:'Split 1 pizza 3 ways and each share is 0.333…: still a fraction, 1/3.',
   ready:[{q:'Which fraction equals 0.75?', o:['3/4','7/5','1/75','3/5'], a:'3/4'}],
   bridge:'MATH.NUM.L08.04', bridgeName:'Ends or Repeats',
