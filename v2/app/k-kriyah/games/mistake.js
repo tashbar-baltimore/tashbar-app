@@ -93,7 +93,7 @@ export default function setup(E, { struggled, unit }) {
     if (demo) { mark(shownKey); await E.say(plan.demo[2]); unmark(); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
     else saysRight = await ask();
     if (saysRight === right) {
-      if (right) { yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say(['Yes! Yaakov is right.', ...E.nameLine(shownKey)]); yak.mood('calm'); }
+      if (right) { yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say(E.LETTERS[shownKey].snd === 'ch' ? 'Yes! Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.' : ['Yes! Yaakov is right.', ...E.nameLine(shownKey)]);   /* 12 words or fewer */ yak.mood('calm'); }
       else { E.sfx.chime(); await E.say(['Yes! Yaakov made a mistake. That is', E.LETTERS[shownKey].name + '.']); await fix(claim, demo); }
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
