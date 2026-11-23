@@ -161,7 +161,7 @@ export function startGame(cfg) {
       const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.4 })); b3.scale.setScalar(0.28); b3.position.set(0, BX.h * 0.45, BX.d / 2 + 0.18); b3.castShadow = true; g.add(b3);
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
-      lab.scale.setScalar(NB === 1 ? 0.36 : 0.5); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
+      lab.scale.setScalar(NB === 1 ? 0.48 : 0.5); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
     }
     return { g, n: 0 };
   });
@@ -214,11 +214,18 @@ export function startGame(cfg) {
     return new THREE.ConeGeometry(0.62, 1.25, 48);
   }
   function makeShape(id, k, color, rotZ, scale) {
+<<<<<<< HEAD
     const solid = KINDS[k].solid, { s, corners } = solid ? { s: null, corners: [] } : shapeOf(k);
     const dep = cfg.thinFlat ? 0.06 : DEPTH, bev = cfg.thinFlat ? 0.03 : BEV;   /* "flat or solid": flat pieces are thin, like card */
     const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: bev, bevelSize: bev, bevelSegments: 3, curveSegments: 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
     const mat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.15, envMapIntensity: 0.45, emissive: '#FFC400', emissiveIntensity: 0 });
+=======
+    const { s, corners } = shapeOf(k);
+    const geo = new THREE.ExtrudeGeometry(s, { depth: DEPTH, bevelEnabled: true, bevelThickness: BEV, bevelSize: BEV, bevelSegments: 5, curveSegments: 48 });
+    geo.translate(0, 0, -DEPTH / 2);
+    const mat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
+>>>>>>> claude/v2-k-shapes-unit4
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
@@ -296,8 +303,12 @@ export function startGame(cfg) {
     shapes.forEach(o => {
       if (o.inBox || o.busy || o === dragging || !o.g.visible || o.slot == null) return;
       o.g.position.set(o.home.x, o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06, o.home.z);
+<<<<<<< HEAD
       if (o.solid) { o.g.rotation.y = t * 0.5 + o.phase; o.g.rotation.x = 0; return; }
       o.g.rotation.y = Math.sin(t * 0.7 + o.phase) * 0.28;
+=======
+      o.g.rotation.y = 0;
+>>>>>>> claude/v2-k-shapes-unit4
       o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, camera.position.z - o.g.position.z);   /* faces the camera, so a square always looks square */
     });
     for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
@@ -373,7 +384,7 @@ export function startGame(cfg) {
     }), Promise.resolve()).then(() => { if (my === runTok) { busy = false; againBtn.classList.remove('wait'); } return my === runTok; });
   }
   againBtn.onclick = () => {
-    W.again++; if (busy && !task) return; const my = ++echoTok; hush();
+    W.again++; if (busy && !task) { const last = W.said[W.said.length - 1]; if (last) { try { speechSynthesis.cancel(); } catch (e) {} say(last); } return; } const my = ++echoTok; hush();
     (task || cur.filter(s => typeof s === 'string')).reduce((p, s) => p.then(() => my === echoTok ? say(s) : null), Promise.resolve());
   };
 
@@ -440,7 +451,8 @@ export function startGame(cfg) {
   function waitClap(ms) { return new Promise(r => { if (FAST) return r(); const t = setTimeout(() => { clapWaiter = null; r(); }, ms); clapWaiter = () => { clearTimeout(t); clapWaiter = null; r('boy'); }; }); }
   function claps(o, n, what) {
     W.claps = (W.claps || 0) + n;
-    const bars = what === 'sides' && o.bars && o.bars.length ? o.bars : null;
+    const all = o.bars && o.bars.length ? o.bars : null;
+    const bars = !all ? null : what === 'sides' ? all : what === 'long' ? [all[0], all[2]] : what === 'short' ? [all[1], all[3]] : null;
     return Array.from({ length: n }).reduce((p, _, i) => p.then(() => waitClap(1600)).then(by => {
       if (by !== 'boy') clap(); tone([BEAT[i % BEAT.length]], 'triangle', 0, .3, .12); clapBtn.classList.remove('beat'); void clapBtn.offsetWidth; clapBtn.classList.add('beat');
       if (bars) { const b = bars[i % bars.length]; b.scale.set(1.8, 1, 1.8); return tween(320, k => b.scale.set(1.8 - k * 0.8, 1, 1.8 - k * 0.8)); }
@@ -537,6 +549,8 @@ export function startGame(cfg) {
       if (n) o.marks.forEach((m, i) => steps.push(() => lightCorner(o, i), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' corners!'));
       else steps.push(() => traceRound(o, 1200), 'No corners!');
       steps.push(...(L.rule || []), () => { clearCorners(o); return wait(200); });
+      if (L.tapCorners && n) steps.push('Your turn! Tap each corner.', () => { setName('tap'); task = ['Tap each corner.']; return tapCorners(o); }, () => { setName('learn'); task = null; }, cap(WORDS[n]) + ' corners!', () => clearCorners(o));
+      if (L.chant) { steps.push(() => { chant(true); }, 'Clap it with me! Tap the hands.'); L.chant.forEach(c => steps.push(c[0], () => claps(o, c[1], c[2]))); steps.push(() => { chant(false); return cheer(mendy); }); }
       return steps;
     }
     if (L.kind === 'circle') {
@@ -1069,7 +1083,11 @@ export function startGame(cfg) {
   const ACT = { sphere: 'roll', cube: 'stack', cyl: 'roll', cone: 'spin' };
   function teachAgain(t) {
     if (!t) return [];
+<<<<<<< HEAD
     if (t.solid || cfg.thinFlat) return [cfg.remember, 'Look at this one.', () => solidAction(t, t.solid ? ACT[t.solid] : 'stand')];
+=======
+    if (cfg.ruleFor) return [cfg.ruleFor(t), 'Look at this one.', ...(t.marks.length ? t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]) : [() => traceRound(t, 1200)]), () => wait(300), () => clearCorners(t)];
+>>>>>>> claude/v2-k-shapes-unit4
     if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), cap(WORDS[t.marks.length]) + ' corners! A ' + FAMILY(t.k) + '!', () => wait(300), () => clearCorners(t)];
     return [cfg.remember, 'Look at this one.', () => traceRound(t, 1200)];
   }
