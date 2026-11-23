@@ -29,7 +29,7 @@ export default function setup(E, { unit }) {
     home.position.set(p ? 1.2 : 3.0, 0, -1.2); home.scale.setScalar(p ? .6 : .8);
   });
   E.onFrame(t => { floaters.forEach(l => { if (!l.userData.base) return; l.position.y = l.userData.base.y + Math.sin(t * 2 + l.position.x) * .07; l.rotation.y = Math.sin(t * .9 + l.position.x) * .3; });
-    if (candle.visible && candle.userData.flame) candle.userData.flame.scale.y = 1.8 + Math.sin(t * 9) * .15; });
+    if (candle.visible && candle.userData.flame) candle.userData.flame.scale.y = 1 + Math.sin(t * 9) * .08; });
   const float = (l, on = true) => { if (on) { l.userData.base = l.position.clone(); floaters.add(l); } else floaters.delete(l); };
   const showHand = obj => { const [x, y] = E.toScreen(E.worldPos(obj).add(new THREE.Vector3(.5, -.6, .6))); E.hand.at(x, y, true); };
   async function tapIt(l, line) {
@@ -42,10 +42,12 @@ export default function setup(E, { unit }) {
   window.__info = () => Object.assign({ tap: document.body.dataset.tapReady || null }, Object.fromEntries(Object.entries(L).map(([k, l]) => [k, E.toScreen(E.worldPos(l))])),
     Object.fromEntries(row.map(l => ['row-' + l.userData.key, E.toScreen(E.worldPos(l))])));
   /* a picture turns into its letter, in the middle, with sparkles */
-  async function morph(picObj, k) {
+  async function morph(picObj, k, gentle = false) {   /* gentle: the picture fades away and the letter rises from its glow (used for the Havdalah candle) */
     const from = E.worldPos(picObj), s0 = picObj.scale.x, l = L[k]; E.sfx.sparkle(); E.sfx.whoosh(); E.sparkle(from.clone().add(new THREE.Vector3(0, 0, .5)), 36, 1.4);
     l.position.set(0, 1.6, .6); l.visible = true; l.scale.setScalar(.01); glow.position.set(0, 1.6, -.3);
-    await E.tween(1300, q => { picObj.scale.setScalar(Math.max(.001, s0 * (1 - q))); picObj.rotation.y = q * 3; l.scale.setScalar(.01 + q * .99); l.rotation.y = (1 - q) * Math.PI * 2; glow.material.opacity = q * .8; });
+    if (gentle) { l.position.y = .6; await E.tween(900, q => { glow.material.opacity = q * .8; picObj.scale.setScalar(Math.max(.001, s0 * (1 - q))); }); picObj.visible = false;
+      await E.tween(1000, q => { l.scale.setScalar(.01 + q * .99); l.position.y = .6 + q * 1.0; }); }
+    else await E.tween(1300, q => { picObj.scale.setScalar(Math.max(.001, s0 * (1 - q))); picObj.rotation.y = q * 3; l.scale.setScalar(.01 + q * .99); l.rotation.y = (1 - q) * Math.PI * 2; glow.material.opacity = q * .8; });
     picObj.visible = false; float(l);
   }
   async function letterDone(k) {   /* the letter moves aside, small, so the next picture has room */
@@ -85,7 +87,7 @@ export default function setup(E, { unit }) {
     await E.tween(900, q => { night.style.opacity = .55 * q; E.R.toneMappingExposure = .82 - q * .3; });
     candle.position.set(0, 1.5, .5); candle.scale.setScalar(1.3); await E.popIn(candle, 1.3, 500);
     await E.say('Look at the Havdalah candle!'); await E.wait(400);
-    await morph(candle, 'hei'); E.setProgress(4, 3);
+    await morph(candle, 'hei', true); E.setProgress(4, 3);
     await E.tween(700, q => { night.style.opacity = .55 * (1 - q); E.R.toneMappingExposure = .52 + q * .3; });
     await E.say('This is Hei. Havdalah starts with Hei.');
     await E.say(['Hei says', S('h')]); await E.say('Tap Hei!');
@@ -96,7 +98,7 @@ export default function setup(E, { unit }) {
     unit.letters.forEach(k => { L[k].visible = false; floaters.delete(L[k]); });
     if (P) await Promise.all([E.popOut(zeidy), E.popOut(boy)]);   /* on a phone there's no room beside the row */
     else { const b0 = boy.position.clone(), z0 = zeidy.position.clone(); boy.mood('walk'); zeidy.mood('walk');
-      await E.tween(900, q => { boy.position.lerpVectors(b0, new THREE.Vector3(-4.5, 0, .6), q); zeidy.position.lerpVectors(z0, new THREE.Vector3(-5.3, 0, -.2), q); }); boy.mood('calm'); zeidy.mood('calm'); }
+      await E.tween(900, q => { boy.position.lerpVectors(b0, new THREE.Vector3(-3.95, 0, .6), q); zeidy.position.lerpVectors(z0, new THREE.Vector3(-4.75, 0, -.2), q); }); boy.mood('calm'); zeidy.mood('calm'); }
     all.forEach((k, i) => { const l = E.letter(k, P ? .8 : 1.15); l.position.set(((all.length - 1) / 2 - i) * (P ? .72 : 1.15), 1.5, .4); l.visible = false; E.scene.add(l); row.push(l); });
     for (const l of row) { E.popIn(l, 1, 300); await E.wait(90); }
     E.setProgress(4, 4);

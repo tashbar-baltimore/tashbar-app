@@ -25,7 +25,8 @@ Unit 2 opens when Unit 1's mastery check is passed.
 | 8 | Bonus: letter rain | For quick boys (opens at 3 stars on the check): catch Gimmel, then Daled, then Hei. |
 
 ## Decisions I made on my own (each one line, so you can say yes or change it)
-1. **Hei's picture is a Havdalah candle** ("Motzei Shabbos, Zeidy makes Havdalah"). The map named only gefen and dag. Only the candle is shown, never the bracha.
+1. **Hei's picture is a Havdalah candle.** In the story, the candle fades gently and Hei rises from its glow; it doesn't spin into the letter.
+   **The candle:** ("Motzei Shabbos, Zeidy makes Havdalah"). The map named only gefen and dag. Only the candle is shown, never the bracha.
 2. **Sound Match pictures:**
    - Gimmel: gefen (grapes) and gelt (Chanukah coins).
    - Daled: dag (fish) and dreidel.
@@ -33,10 +34,13 @@ Unit 2 opens when Unit 1's mastery check is passed.
 
    He hears "Gefen starts with g," as Part B allows for matching games (Shin goes with the shofar). Each picture is a separate 3D object, never next to a letter.
 3. **The computer voice says "guh", "duh" and "huh"** for the new sounds, like your "keep buh" decision, until the rebbe's recording arrives.
-4. **Train order:** Alef, Beis, Veis, Gimmel, Daled, Hei, the way the boys sing it in cheder (Beis and Veis both, one after the other).
+4. **The waiting train cars are always mixed up,** never in Alef-Beis order, so the order has to come from him.
+   **Train order:** Alef, Beis, Veis, Gimmel, Daled, Hei, the way the boys sing it in cheder (Beis and Veis both, one after the other).
 5. **The Train goes to the left,** the way Hebrew reads. Round 2 has gaps to fill, so he places letters in the middle of the order, not only at the end.
-6. **"What to look for" words in Find the Mistake:** Gimmel has a foot, Daled has a long roof (no little leg), and Hei has a little leg.
-7. **The unit's review round is Beis and Veis sorting** (6 letters), Unit 1's hardest skill. The mastery check already mixes all six letters.
+6. **"What to look for" in Find the Mistake:** Gimmel has a foot, Daled has no little leg, and Hei's little leg doesn't touch the roof (its leg "floats").
+   - That last point matters for Unit 3, where Ches has a leg that does touch.
+   - An orange ring circles the part to notice: the foot, the empty side or the floating leg.
+7. **Earlier letters come back inside the games:** two of Find the Mistake's six rounds are Beis/Veis, and the mastery check mixes all six letters. **The unit's review round is Beis and Veis sorting** (6 letters), Unit 1's hardest skill. The mastery check already mixes all six letters.
 8. **The mastery check shows three letters for each question:** the answer, one other new letter and one older letter. Beis is always shown beside Veis.
 9. **The path shows one unit at a time.** A round button with the unit's letters (א–ב, ג–ה) goes to the other unit. The next unit's button appears only when it's open.
 10. **After Unit 1's mastery check, the green arrow goes on to Unit 2's story.** Unit 1's bonus stays on Unit 1's path.

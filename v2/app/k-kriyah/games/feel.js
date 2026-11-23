@@ -17,7 +17,7 @@ export default function setup(E, { unit }) {
   };
   const ORDER = unit.letters;
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
-  const boy = E.mendy(); E.scene.add(boy);
+  const boy = unit.n === 2 ? E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }) : E.mendy(); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
   const done = []; let cur = null, beads = [], next = 0, demo = false, active = false, lastHelp = 0, wander = 0, offTries = 0;
   /* the path is a soft glowing road along the letter (never dots: a dot on Beis means the dagesh); the part he has felt
      turns gold, and a pulsing ring shows where to go next */
@@ -74,7 +74,7 @@ export default function setup(E, { unit }) {
   async function oneLetter(key, first) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
-    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? 'This is Beis, with Mendy’s dot. Feel it!' : key === 'veis' ? 'This is Veis. No dot. Feel it!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? 'This is Beis, with Mendy’s dot. Feel it!' : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
       const st = PATHS[key][0].length; let [x, y] = beadScreen(0); E.hand.at(x, y); await E.wait(300);

@@ -21,8 +21,8 @@ export function makePictures(E) {
     havdalah() { const g = new THREE.Group(), cols = [0x46c3ff, 0xffffff, 0xff7aa8];   /* a braided Havdalah candle and its flame */
       cols.forEach((col, i) => { const pts = []; for (let k = 0; k <= 40; k++) { const t = k / 40, a = t * Math.PI * 6 + i * 2 * Math.PI / 3; pts.push(new THREE.Vector3(Math.cos(a) * .1, -.55 + t * 1.0, Math.sin(a) * .1)); }
         g.add(mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 80, .075, 10), M(col, { roughness: .4 }))); });
-      [-.06, .06].forEach(x => g.add(mesh(new THREE.CylinderGeometry(.012, .012, .1, 6), M(0x333333), x, .5, 0, false)));
-      const fl = mesh(new THREE.SphereGeometry(.14, 16, 12), new THREE.MeshStandardMaterial({ color: 0xffb020, emissive: 0xff8a00, emissiveIntensity: 1.6 }), 0, .66, 0, false); fl.scale.set(1.3, 1.8, 1.3); g.add(fl);
+      [-.07, 0, .07].forEach(x => g.add(mesh(new THREE.CylinderGeometry(.014, .014, .14, 6), M(0x222222), x, .52, 0, false)));   /* several wicks: one wide, torch-like flame */
+      const fl = mesh(new THREE.ConeGeometry(.13, .42, 20), new THREE.MeshStandardMaterial({ color: 0xffb020, emissive: 0xff8a00, emissiveIntensity: 1.6 }), 0, .78, 0, false); g.add(fl);
       const gl = E.glowSprite('#ffcf70', 1.1, .8); gl.position.set(0, .66, 0); g.add(gl); g.userData.flame = fl; return g; },
     har() { const g = new THREE.Group(); g.add(mesh(new THREE.ConeGeometry(.62, .95, 7), M(0x5b8c3a, { roughness: .7 }), 0, -.1, 0));
       g.add(mesh(new THREE.ConeGeometry(.25, .32, 7), M(0xffffff, { roughness: .5 }), 0, .26, 0)); g.add(mesh(new THREE.ConeGeometry(.4, .6, 7), M(0x7aa64e, { roughness: .7 }), .5, -.3, -.2)); return g; },

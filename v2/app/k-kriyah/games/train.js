@@ -30,7 +30,7 @@ export default function setup(E, { struggled, unit }) {
   E.onLayout(p => { P = p; S = p ? .46 : 1;
     const lx = p ? 1.75 : 4.6, step = p ? .58 : 1.22; loco.position.set(lx, 0, .2); loco.scale.setScalar(S); track.scale.set(1, 1, S); track.position.z = .2;
     slotX = ORDER.map((_, i) => lx - (p ? .64 : 1.35) - i * step);
-    homes = ORDER.map((_, i) => p ? new THREE.Vector3(1.3 - (i % 3) * 1.3, 0, i < 3 ? 2.2 : 3.4) : new THREE.Vector3(4.0 - i * 1.6, 0, 2.7));   /* waiting on the grass in front of the track */
+    homes = ORDER.map((_, i) => p ? new THREE.Vector3(1.35 - (i % 3) * 1.35, 0, i < 3 ? 2.9 : 4.0) : new THREE.Vector3(4.4 - i * 1.75, 0, 3.6));   /* waiting on the grass in front of the track */
     cars.forEach(c => { c.scale.setScalar(c.userData.on ? S : (p ? .78 : .95)); if (c.userData.on) c.position.copy(slotPos(c.userData.slot)); else if (c !== drag) c.position.copy(homes[c.userData.home ?? c.userData.i]); });
     if (p) { E.camBase.set(0, 2.6, 10); E.camTarget.set(0, 2.1, 0); } else { E.camBase.set(0, 2.7, 10.2); E.camTarget.set(0, 1.5, 0); }
   });
@@ -89,7 +89,7 @@ export default function setup(E, { struggled, unit }) {
     await E.say('All aboard the Alef-Beis train!');
     await E.say('Listen to the order.'); await chant();
     await E.say('Watch me. Alef goes first.');
-    const c0 = cars.find(c => c.userData.key === ORDER[0]); let [x, y] = E.toScreen(c0.position); E.hand.at(x, y); await E.wait(350);
+    const c0 = cars.find(c => c.userData.key === ORDER[0]);   /* the demo: Alef goes first */ let [x, y] = E.toScreen(c0.position); E.hand.at(x, y); await E.wait(350);
     const p0 = c0.position.clone(), p1 = slotPos(0).add(new THREE.Vector3(0, .6, .3)); await E.tween(1100, q => { c0.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(c0.position); E.hand.at(a, b); });
     E.hand.hide(); await place(c0, 0);
     await E.say('Now you! Which car comes next?'); wrong = 0;
@@ -100,20 +100,22 @@ export default function setup(E, { struggled, unit }) {
   }
   async function roundTwo() {
     /* the train comes back with some cars on, and gaps to fill */
-    gaps = [1, 3, 5];
+    gaps = [1, 3, 5]; const gapHomes = [0, 2, 4].sort(() => Math.random() - .5);
     const lx = P ? 1.75 : 4.6; loco.position.x = lx + 10;
-    cars.forEach((c, i) => { if (gaps.includes(i)) { c.userData.on = false; c.userData.slot = null; c.userData.home = gaps.indexOf(i) * 2; c.scale.setScalar(P ? .78 : .95); c.position.copy(homes[c.userData.home]); c.visible = true; }
+    cars.forEach((c, i) => { if (gaps.includes(i)) { c.userData.on = false; c.userData.slot = null; c.userData.home = gapHomes[gaps.indexOf(i)]; c.scale.setScalar(P ? .78 : .95); c.position.copy(homes[c.userData.home]); c.visible = true; }
       else { c.userData.on = true; c.userData.slot = i; c.scale.setScalar(S); c.position.copy(slotPos(i)).add(new THREE.Vector3(10, 0, 0)); } });
     const on = cars.filter(c => c.userData.on), sx = on.map(c => c.position.x);
     await E.tween(1600, q => { loco.position.x = lx + 10 * (1 - q); on.forEach((c, i) => c.position.x = sx[i] - 10 * q); }, E.ease.out);
     await E.say('Some cars are missing! Fill the empty places.');
     const done = new Promise(r => resolveRound = r); enabled = true; busy = false;
     await done; enabled = false;
-    E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant(); await chug();
+    E.joy(loco.position.clone().add(new THREE.Vector3(-2, 1.5, 1)), true); await chant();   /* the full train stays on screen for the end */
     E.setProgress(2, 2);
   }
+  /* the waiting cars are mixed up (never in Alef-Beis order, no car in its own place), so the order comes from him */
+  const derange = m => { let a; do { a = [...Array(m).keys()].sort(() => Math.random() - .5); } while (a.some((v, i) => v === i)); return a; };
   return async () => {
-    cars.forEach(c => c.position.copy(homes[c.userData.i]));
+    const perm = derange(n); cars.forEach((c, i) => { c.userData.home = perm[i]; c.position.copy(homes[perm[i]]); });
     await roundOne(); await roundTwo();
     const stars = wrong <= 1 ? 3 : wrong <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Choo choo! You know the Alef-Beis order!' : null };

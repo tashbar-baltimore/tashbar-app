@@ -16,8 +16,8 @@ export default function setup(E, { struggled, unit }) {
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
   E.onLayout(p => { P = p; gap = p ? 1.45 : 2.3;
-    if (p) { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.3, 0); cardHome.set(0, 3.7, 2.2); kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
-    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.0, 2.2); kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
+    if (p) { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 4.2, 2.2); kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
+    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.55, 2.2);   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
     peds.forEach((pd, i) => { pd.position.set((1 - i) * gap, 0, .6); pd.scale.setScalar(p ? .62 : 1); });   /* right to left: Gimmel, Daled, Hei */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
@@ -26,7 +26,7 @@ export default function setup(E, { struggled, unit }) {
     peds.forEach((pd, i) => L[pd.userData.key].rotation.y = Math.sin(t * 1.2 + i) * .25);
     const want = word && WORDS[word].letter, tgt = peds.find(pd => pd.userData.key === want);
     if (help && tgt && card.visible) { hint.position.copy(tgt.position).add(new THREE.Vector3(0, 1.4 * tgt.scale.x, -.5)); hint.material.opacity = .55 + Math.sin(t * 5) * .3; } else hint.material.opacity = 0;
-    if (pic && pic.userData.flame) pic.userData.flame.scale.y = 1.8 + Math.sin(t * 9) * .15;
+    if (pic && pic.userData.flame) pic.userData.flame.scale.y = 1 + Math.sin(t * 9) * .08;
   });
   const top = pd => pd.position.clone().add(new THREE.Vector3(0, 1.4 * pd.scale.x, 0));
   window.__info = () => ({ ready: enabled && !busy && card.visible, want: word && WORDS[word].letter, card: E.toScreen(card.position), peds: Object.fromEntries(peds.map(pd => [pd.userData.key, E.toScreen(top(pd))])) });
@@ -42,7 +42,7 @@ export default function setup(E, { struggled, unit }) {
 
   async function showCard(w) {
     word = w; if (pic) card.remove(pic); pic = PIC[w](); card.add(pic); card.position.copy(cardHome); card.rotation.set(0, 0, 0); missed = false;
-    await E.popIn(card, P ? 1.0 : 1.25); busy = false;
+    await E.popIn(card, P ? .95 : 1.05); busy = false;
     await E.say(WORDS[w].say);
   }
   async function back() { const p0 = card.position.clone(); busy = true; await E.tween(400, k => card.position.lerpVectors(p0, cardHome, k), E.ease.out); busy = false; }
@@ -51,7 +51,7 @@ export default function setup(E, { struggled, unit }) {
     const w = word, k = WORDS[w].letter, name = E.LETTERS[k].name, snd = E.LETTERS[k].snd;
     if (pd.userData.key === k) {
       busy = true; enabled = false; const p0 = card.position.clone(), to = top(pd);
-      await E.tween(450, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar((P ? 1.0 : 1.25) * (1 - q * .9)); });
+      await E.tween(450, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar((P ? .95 : 1.05) * (1 - q * .9)); });
       card.visible = false; card.scale.setScalar(1); E.joy(to); E.hop(L[k], .4); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F);
       idx++; E.setProgress(deck.length, idx);
       await E.say(['Yes! ' + WORD_NAME[w] + ' starts with', S(snd), '. ' + name + '!']);
