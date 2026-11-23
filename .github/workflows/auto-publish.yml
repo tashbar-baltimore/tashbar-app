@@ -34,6 +34,11 @@ jobs:
           head=$(gh api "repos/$REPO/pulls/$n" --jq .head.sha)
           [ "$head" = "$SHA" ] || { echo "PR #$n has newer commits than the tested one; its own test run will publish it."; exit 0; }
           gh api "repos/$REPO/pulls/$n" --jq '.labels[].name' | grep -qx hold && { echo "PR #$n is on hold."; exit 0; }
+          # 2.0 (HoS 2026-11-22): a pull request that changes v2/ is never auto-published. v2-gate takes it (look link, then an approver's yes).
+          if gh api --paginate "repos/$REPO/pulls/$n/files" --jq '.[].filename' | grep -q '^v2/'; then
+            echo "PR #$n changes 2.0: handed to v2-gate (it goes in only with an approver's yes)."
+            gh api -X POST "repos/$REPO/actions/workflows/v2-gate.yml/dispatches" -f ref=main -f "inputs[pr]=$n"
+            exit 0; fi
           echo "n=$n" >> "$GITHUB_OUTPUT"
       - name: Merge it
         if: steps.pr.outputs.n

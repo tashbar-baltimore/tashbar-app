@@ -1,4 +1,4 @@
-/* BLOCK BUILDERS WORKBOOK tests (BlockBuildersData.html + BlockBuildersUI.html, HoS 2026-11-22). Runs on the kid page from
+/* BLOCK BUILDERS WORKBOOK tests (all 137 pages; pencil pages) (BlockBuildersData.html + BlockBuildersUI.html, HoS 2026-11-22). Runs on the kid page from
    tests/run.js with made-up boys only (TEST- ids), against the pretend server.
    1. Every page in window.BB_BOOK compiles; every graded item accepts its right answer and refuses a wrong one
       (so no page has an answer key that cannot be reached, and no page passes a wrong answer).
@@ -20,7 +20,8 @@ module.exports = async function (pg) {
       if (it.t === 'fill') v.d = '9';
       if (it.t === 'build') { const t = it.max ? Math.min(it.max, Math.floor(it.n / 10)) : Math.floor(it.n / 10); v.b = t + ',' + (it.n - t * 10); }
       if (it.t === 'ways') { const t = Math.floor(it.n / 10) - it.r; v.t = String(t); v.o = String(it.n - t * 10); }
-      if (it.t === 'pair') { const got = []; for (let x = 11; x < it.n - 10; x++) { const y = it.n - x; if (x <= y && (x % 10 + y % 10) >= 10) got.push([x, y]); } const p = got[(it.r - 1) * 3]; v.x = String(p[0]); v.y = String(p[1]); }
+      if (it.t === 'pair' && it.op === '-') { const got = []; for (let y = 10; y + it.n <= 99; y++) { const x = y + it.n; if ((x % 10) < (y % 10)) got.push([x, y]); } const p = got[(it.r - 1) * 3]; v.x = String(p[0]); v.y = String(p[1]); }
+      else if (it.t === 'pair') { const got = []; for (let x = 11; x < it.n - 10; x++) { const y = it.n - x; if (x <= y && (x % 10 + y % 10) >= 10) got.push([x, y]); } const p = got[(it.r - 1) * 3]; v.x = String(p[0]); v.y = String(p[1]); }
       return v; };
     const wrongOf = (c, v) => { if (c.it.t === 'det') return Object.assign({}, v, { w: v.w === 'right' ? 'wrong' : 'right', f: v.w === 'right' ? '1' : v.f }); const k = c.keys.find(k => k.ans != null && k.ans !== '' && !k.ch && !k.let && !k.test); if (!k) return null; const w = Object.assign({}, v); w[k.k] = String((Number(k.ans) || 0) + 1); return w; };
     for (const j of BK.jobs) { out.pages++; let cj;
@@ -70,6 +71,15 @@ module.exports = async function (pg) {
   else if (!p.done || p.score !== '7 of 8 right') fails.push('workbook play: finishing every item must show Job done with "7 of 8 right" (got ' + JSON.stringify(p) + ')');
   else oks.push('workbook play (taps only): Watch me in 4 steps, a wrong box goes orange with a hint, right goes green, a stylus stroke stays after reopening, Job done shows 7 of 8 first-try');
   function fail(m) { fails.push(m); }
+  /* the family's pencil pages: the Final Inspection opens with writing spaces, Check my work shows the answers in green */
+  const pc = await pg.evaluate(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {}, X = window.BBX;
+    try { localStorage.clear(); } catch (e) {} X.openBook(); await sleep(30); X.openJob('C23A', true); await sleep(20);
+    o.pencil = X.pencil; o.spaces = document.querySelectorAll('#bbx .bbx-b.pw').length; o.buttons = document.querySelectorAll('#bbx button.bbx-b').length;
+    document.querySelector('#bbx [data-bb=pcheck]').click(); await sleep(20); o.answers = document.querySelectorAll('#bbx .bbx-ans').length; o.done = X.done;
+    document.querySelector('#bbx [data-bb=pencil]').click(); await sleep(20); o.tapAgain = !X.pencil && document.querySelectorAll('#bbx button.bbx-b').length > 0;
+    X.close(); try { localStorage.clear(); } catch (e) {} return o; });
+  if (!pc.pencil || !pc.spaces || pc.buttons || pc.answers < 20 || !pc.done || !pc.tapAgain) fails.push('pencil page: Carrying Check must open as a pencil page (writing spaces only), Check my work must show the answers, and the switch must turn it back into a tap page (got ' + JSON.stringify(pc) + ')');
+  else oks.push('pencil page: the Final Inspection opens with ' + pc.spaces + ' writing spaces, Check my work shows ' + pc.answers + ' answers in green, and any page can switch back to tapping');
   /* the door */
   const d = await pg.evaluate(async () => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {};
     const km = window.__bbKM; if (!km) return { skip: 1 };
