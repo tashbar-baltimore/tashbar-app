@@ -33,11 +33,18 @@ module.exports = async function (browser) {
       if (await pg.evaluate(() => window.__abc.hiss) <= h0) bad(label + ': tapping the snake makes no sound');
       await next(); await step('morph'); await pg.waitForSelector('#next.show', { timeout: 15000 }); await need('the snake becomes the letter');
       await next(); await step('mouth'); await pg.waitForSelector('#next.show', { timeout: 15000 }); await need('the mouth picture');
+      await next(); await step('wiggle'); await pg.waitForSelector('#next.show', { timeout: 15000 }); await need('wiggle like a snake');
       await next(); await step('sky'); await pg.waitForSelector('#did', { state: 'visible', timeout: 15000 }); await need('draw it in the air'); await pg.click('#did', { force: true });
       await step('hold'); await need('hold for a long sound');
       const b = await (await pg.$('#hold')).boundingBox(); await pg.mouse.move(b.x + b.width / 2, b.y + b.height / 2); await pg.mouse.down(); await pg.waitForTimeout(300); await pg.mouse.up();
-      await next(); await step('find'); await pg.waitForSelector('.tile'); await need('find the snake letter');
-      if (await pg.$$eval('.tile', t => t.length) !== 4) bad(label + ': find-it should show 4 letters');
+      await next(); await step('listen'); await pg.waitForSelector('.tile[data-a]'); await need('is this the snake sound');
+      if (!(await pg.evaluate(() => window.__abc.hum > 0))) bad(label + ': the listening round plays no sound');
+      await pg.click('.tile[data-a="yes"]'); await pg.waitForTimeout(100);   // round 1 is a hum: "yes" is wrong
+      if (!(await pg.evaluate(() => window.__abc.said.some(t => /listen again/i.test(t))))) bad(label + ': a wrong answer in the listening round is not explained');
+      await pg.click('.tile[data-a="no"]'); await pg.waitForFunction(() => window.__abc.lround === 1, null, { timeout: 10000 });
+      await pg.waitForSelector('.tile[data-a="yes"]:not(.yes)'); await pg.click('.tile[data-a="yes"]');
+      await step('find'); await pg.waitForSelector('.tile[data-k]'); await need('find the snake letter');
+      if (await pg.$$eval('.tile[data-k]', t => t.length) !== 4) bad(label + ': find-it should show 4 letters');
       await pg.click('.tile:not([data-k="s"])'); await pg.waitForSelector('.tile.hint', { timeout: 10000 }).catch(() => bad(label + ': a wrong tap does not show him the right letter'));
       if (!(await pg.evaluate(() => window.__abc.said.some(t => /not that one/i.test(t))))) bad(label + ': a wrong tap is not explained');
       for (let r = 0; r < 3; r++) { await pg.waitForSelector('.tile[data-k="s"]:not(.yes)', { timeout: 10000 }); await pg.click('.tile[data-k="s"]'); }
@@ -49,13 +56,18 @@ module.exports = async function (browser) {
       if (st.said.some(t => t.split(/\s+/).length > 12)) bad(label + ': a spoken line is longer than 12 words');
       // a boy who struggles: two misses -> he sees the snake inside the letter again and gets an easier round (2 choices)
       await pg.waitForSelector('#replay', { state: 'visible', timeout: 10000 }); await pg.click('#replay', { force: true });
-      await step('intro'); await next(); await step('morph'); await next(); await step('mouth'); await next(); await step('sky');
+      await step('intro'); await next(); await step('morph'); await next(); await step('mouth'); await next(); await step('wiggle'); await next(); await step('sky');
       await pg.waitForSelector('#did', { state: 'visible', timeout: 15000 }); await pg.click('#did', { force: true }); await step('hold');
       const b2 = await (await pg.$('#hold')).boundingBox(); await pg.mouse.move(b2.x + b2.width / 2, b2.y + b2.height / 2); await pg.mouse.down(); await pg.waitForTimeout(300); await pg.mouse.up();
-      await next(); await step('find');
+      await next(); await step('listen');
+      await pg.click('.tile[data-a="no"]'); await pg.waitForFunction(() => window.__abc.lround === 1, null, { timeout: 10000 }); await pg.waitForSelector('.tile[data-a="yes"]:not(.yes)'); await pg.click('.tile[data-a="yes"]');
+      await step('find');
       for (let r = 0; r < 3; r++) { await pg.waitForFunction(k => window.__abc.round === k && !document.querySelector('.tile.yes'), r, { timeout: 10000 });
         if (r < 2) { await pg.click('.tile:not([data-k="s"])'); await pg.waitForSelector('.tile.hint', { timeout: 10000 }); } await pg.click('.tile[data-k="s"]'); }
       await pg.waitForFunction(() => window.__abc.easy && document.querySelectorAll('.tile').length === 2, null, { timeout: 15000 }).catch(() => bad(label + ': a boy with 1 star does not get the easier round'));
+      for (let r = 0; r < 3; r++) { await pg.waitForFunction(k => window.__abc.round === k && !document.querySelector('.tile.yes'), r, { timeout: 10000 }); await pg.click('.tile[data-k="s"]'); }
+      await pg.waitForFunction(() => window.__abc.done, null, { timeout: 15000 });
+      if (await pg.evaluate(() => window.__abc.stars) > 2) bad(label + ': a boy who needed the easier round got 3 stars');
       if (errs.length) bad(label + ': page errors: ' + errs.join(' | '));
     } catch (e) { let at = ''; try { at = await pg.evaluate(() => window.__abc && (window.__abc.name + ' round ' + window.__abc.round)); } catch (x) {} bad(label + ' (at ' + at + '): ' + String(e.message || e).split('\n')[0].slice(0, 200)); }
     await ctx.close();

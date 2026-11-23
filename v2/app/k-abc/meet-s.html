@@ -15,7 +15,7 @@
 *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden; user-select:none; -webkit-user-select:none; touch-action:manipulation; }
 #game{ position:fixed; inset:0; display:flex; flex-direction:column; }
-.top{ display:flex; justify-content:space-between; align-items:center; padding:12px 16px; min-height:96px; }
+.top{ display:grid; grid-template-columns:96px 1fr 96px; justify-items:center; align-items:center; padding:12px 16px; min-height:96px; }
 .btn{ border:0; cursor:pointer; display:grid; place-items:center; border-radius:999px; min-width:72px; min-height:72px; background:var(--card); box-shadow:0 4px 0 var(--line), 0 6px 18px rgba(31,42,68,.08); }
 .btn:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--line); }
 .btn svg{ width:40px; height:40px; }
@@ -29,7 +29,7 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
 #next svg{ width:56px; height:56px; }
 #next.show{ visibility:visible; animation:pulse 1.4s ease-in-out infinite; }
 @keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.07);} }
-.pic{ width:min(62vmin,440px); height:min(62vmin,440px); }
+.pic{ width:min(84vw,56vh,440px); height:min(84vw,56vh,440px); }
 .pic.small{ width:min(44vmin,320px); height:min(44vmin,320px); }
 
 /* start */
@@ -160,8 +160,8 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
     var len = c.sampleRate * 2, b = c.createBuffer(1, len, c.sampleRate), d = b.getChannelData(0);
     for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
     var src = c.createBufferSource(); src.buffer = b; src.loop = true;
-    var hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 3800;
-    var pk = c.createBiquadFilter(); pk.type = 'peaking'; pk.frequency.value = 6500; pk.Q.value = 1.2; pk.gain.value = 9;
+    var hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2600;
+    var pk = c.createBiquadFilter(); pk.type = 'peaking'; pk.frequency.value = 5500; pk.Q.value = 1.2; pk.gain.value = 9;
     var lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 10000;
     var g = c.createGain(); g.gain.value = 0;
     src.connect(hp); hp.connect(pk); pk.connect(lp); lp.connect(g); g.connect(c.destination);
@@ -174,6 +174,14 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
   function hissStop() {
     if (!live || !AC) return; var n = live; live = null;
     n.g.gain.setTargetAtTime(0, AC.currentTime, 0.05); setTimeout(function () { try { n.src.stop(); } catch (e) {} }, 300);
+  }
+  function hum(ms) {
+    var c = ac(); window.__abc.hum++; if (!c) return wait(ms || 1200);
+    var o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(), t0 = c.currentTime, d = (FAST ? 10 : (ms || 1200)) / 1000;
+    o.type = 'sawtooth'; o.frequency.value = 135; f.type = 'lowpass'; f.frequency.value = 650;
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.2, t0 + .06); g.gain.setValueAtTime(.2, t0 + d - .1); g.gain.linearRampToValueAtTime(0, t0 + d);
+    o.connect(f); f.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0 + d + .05);
+    return wait(ms || 1200);
   }
   function hiss(ms) { hissStart(); return wait(ms || 1300).then(hissStop); }
   function chime(ok) {
@@ -207,23 +215,30 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
   function preload(lines) { if (FAST) return; lines.forEach(function (t) { if (typeof t === 'string' && !vcache[t]) fetch(TTS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: t, voice: 'teacher' }) }).then(function (r) { return r.json(); }).then(function (j) { if (j && j.ok && j.url) vcache[t] = j.url; }).catch(function () {}); }); }
 
   /* a script is a list of: "spoken line" | {hiss:ms} | {wait:ms} | function */
-  var cur = [], runTok = 0;
+  var cur = [], runTok = 0, echoTok = 0, busy = false;
   function play(script) {
-    var my = ++runTok; cur = script;
+    var my = ++runTok; echoTok++; cur = script; busy = true;
     return script.reduce(function (p, s) { return p.then(function () {
       if (my !== runTok) return;
       if (typeof s === 'string') return say(s);
       if (typeof s === 'function') return s();
       if (s.hiss) return hiss(s.hiss);
+      if (s.hum) return hum(s.hum);
       if (s.wait) return wait(s.wait);
-    }); }, Promise.resolve()).then(function () { return my === runTok; });
+    }); }, Promise.resolve()).then(function () { if (my === runTok) busy = false; return my === runTok; });
   }
-  againBtn.onclick = function () { hush(); play(cur.filter(function (s) { return typeof s === 'string' || (s && s.hiss); })); };
+  /* "hear it again": only repeats the words and sounds; it never stops the screen from moving on. While the voice is still talking, it waits. */
+  againBtn.onclick = function () {
+    window.__abc.again++; if (busy) return;
+    var my = ++echoTok; hush();
+    cur.filter(function (s) { return typeof s === 'string' || (s && (s.hiss || s.hum)); }).reduce(function (p, s) { return p.then(function () {
+      if (my !== echoTok) return; if (typeof s === 'string') return say(s); if (s.hiss) return hiss(s.hiss); if (s.hum) return hum(s.hum); }); }, Promise.resolve());
+  };
 
   /* ---------- flow ---------- */
-  var STEPS = ['intro', 'morph', 'mouth', 'sky', 'hold', 'find', 'end'];
-  var st = window.__abc = { step: -1, name: 'start', stars: 0, round: 0, firstTry: true, misses: 0, easy: false, done: false, said: [], hiss: 0 };
-  var dots = $('#dots'); dots.innerHTML = STEPS.slice(0, 6).map(function () { return '<i></i>'; }).join('');
+  var STEPS = ['intro', 'morph', 'mouth', 'wiggle', 'sky', 'hold', 'listen', 'find', 'end'];
+  var st = window.__abc = { step: -1, name: 'start', stars: 0, round: 0, firstTry: true, misses: 0, easy: false, done: false, said: [], hiss: 0, hum: 0, again: 0 };
+  var dots = $('#dots'); dots.innerHTML = STEPS.slice(0, -1).map(function () { return '<i></i>'; }).join('');
   function showNext(on) { nextBtn.classList.toggle('show', !!on); }
   nextBtn.onclick = function () { if (!nextBtn.classList.contains('show')) return; showNext(false); go(st.step + 1); };
   function go(i) {
@@ -249,17 +264,24 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
     },
     mouth: function () {
       stage.innerHTML = '<svg class="pic" viewBox="0 0 220 200" aria-label="how to make the sound with your mouth">' +
-        '<circle cx="100" cy="100" r="92" fill="#F6D7B8"/>' +
-        '<path d="M34 98 Q100 52 166 98 Q100 156 34 98Z" fill="#D9636B"/>' +
-        '<path d="M50 99 Q100 76 150 99 Q100 124 50 99Z" fill="#6B2430"/>' +
-        '<path d="M54 98 Q100 78 146 98 L146 100 L54 100Z" fill="#fff"/>' +
-        '<path d="M54 100 L146 100 Q100 120 54 101Z" fill="#fff"/>' +
-        '<path d="M54 100 L146 100" stroke="#E6E1D8" stroke-width="1.5"/>' +
-        '<path d="M70 86 L70 92 M85 82 L85 89 M100 80 L100 88 M115 82 L115 89 M130 86 L130 92" stroke="#E6E1D8" stroke-width="1.5"/>' +
-        '<g class="air" stroke="#5AA9E6" stroke-width="5" fill="none" stroke-linecap="round"><path d="M172 84 L214 76"/><path d="M174 100 L218 100"/><path d="M172 116 L214 124"/></g>' +
+        '<circle cx="100" cy="100" r="90" fill="#F6D7B8"/>' +
+        '<circle cx="68" cy="74" r="8" fill="#1F2A44"/><circle cx="132" cy="74" r="8" fill="#1F2A44"/>' +
+        '<circle cx="52" cy="104" r="11" fill="#F2AFA3" opacity=".7"/><circle cx="148" cy="104" r="11" fill="#F2AFA3" opacity=".7"/>' +
+        '<path d="M50 112 Q100 128 150 112 Q140 156 100 158 Q60 156 50 112Z" fill="#fff" stroke="#D9636B" stroke-width="8" stroke-linejoin="round"/>' +
+        '<path d="M56 124 Q100 142 144 124" stroke="#CFC8BC" stroke-width="2.5" fill="none"/>' +
+        '<path d="M76 121 L76 128 M92 125 L92 133 M108 125 L108 133 M124 121 L124 128 M80 138 L80 146 M100 141 L100 150 M120 138 L120 146" stroke="#E6E1D8" stroke-width="2"/>' +
+        '<g class="air" stroke="#5AA9E6" stroke-width="5" fill="none" stroke-linecap="round"><path d="M160 122 L208 112"/><path d="M162 136 L212 136"/><path d="M160 150 L208 160"/></g>' +
         '</svg>';
-      play(['Teeth together. Smile. Blow the air out.', { hiss: 1500 }, { wait: 300 }, 'Now you say it!', { wait: 2200 }]).then(function (ok) { if (ok) showNext(true); });
+      play(['Teeth together. Smile. Blow the air out.', { hiss: 1500 }, { wait: 300 }, 'Now you say it!', { wait: 2000 }, "Let's say it together!", { hiss: 1500 }]).then(function (ok) { if (ok) showNext(true); });
     },
+    wiggle: function () {
+      stage.innerHTML = '<div id="wg">' + snakeSVG('small') + '</div>';
+      var wg = $('#wg'), beat = function (dir) { return function () { wg.style.transform = 'rotate(' + dir * 10 + 'deg) translateX(' + dir * 14 + 'px)'; return hiss(420).then(function () { return wait(200); }); }; };
+      wg.style.transition = 'transform .2s ease';
+      var three = [beat(-1), beat(1), beat(-1), function () { wg.style.transform = ''; return wait(400); }];
+      play(['Wiggle like a snake with me!', { wait: 300 }].concat(three, ['Again!'], three, ['You wiggled like a snake!'])).then(function (ok) { if (ok) showNext(true); });
+    },
+    listen: function () { st.lround = 0; listenRound(); },
     sky: function () {
       stage.innerHTML = '<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center">' +
         '<svg class="pic" viewBox="0 0 200 200" aria-label="draw the letter in the air">' +
@@ -293,15 +315,37 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
     find: function () { st.round = 0; st.stars = 0; round(); },
     end: function () {
       var n = st.stars;
-      stage.innerHTML = '<div class="endbox"><div class="stars">' + [0, 1, 2].map(function (i) { return '<div class="star" id="star' + i + '">' + (i < n ? STAR : STAR_OFF) + '</div>'; }).join('') + '</div>' +
+      stage.innerHTML = '<div class="endbox"><div class="snake-in" style="width:min(30vh,40vw,200px)">' + snakeSVG('').replace('class="pic ', 'style="width:100%;height:auto" class="') + '</div><div class="stars">' + [0, 1, 2].map(function (i) { return '<div class="star" id="star' + i + '">' + (i < n ? STAR : STAR_OFF) + '</div>'; }).join('') + '</div>' +
         '<button class="btn" id="replay" aria-label="Play again" style="visibility:hidden"><svg viewBox="0 0 48 48"><path d="M36 14a15 15 0 1 0 4 12" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M38 4v12H26" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
       [0, 1, 2].forEach(function (i) { setTimeout(function () { var s = $('#star' + i); if (s) s.classList.add('pop'); }, FAST ? 0 : 200 + i * 250); });
       chime(true); st.done = true;
       try { var k = 'v2.kabc.meet-s'; var prev = Number(localStorage.getItem(k) || 0); if (n > prev) localStorage.setItem(k, String(n)); } catch (e) {}
       play(['You know the snake sound!', { hiss: 900 }, function () { $('#replay').style.visibility = 'visible'; }]);
-      $('#replay').onclick = function () { st.easy = false; go(0); };
+      $('#replay').onclick = function () { st.easy = false; st.done = false; go(0); };
     }
   };
+
+  /* listening (links back to Unit 1): a sound plays; is it the snake sound? tap the snake for yes, the X for no. */
+  var LSN = [{ s: 'hum', snake: false }, { s: 'hiss', snake: true }];
+  function listenRound() {
+    var r = LSN[st.lround], snd = r.s === 'hiss' ? { hiss: 1200 } : { hum: 1200 }, locked = false;
+    stage.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;gap:20px">' +
+      '<button class="btn" id="ear" aria-label="hear the sound" style="width:110px;height:110px"><svg viewBox="0 0 48 48" style="width:60px;height:60px"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#1F2A44"/><path d="M33 16c3 2 5 5 5 8s-2 6-5 8M37 10c5 3 8 8 8 14s-3 11-8 14" stroke="#1F2A44" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></button>' +
+      '<div class="tiles two"><button class="tile" data-a="yes" aria-label="yes, the snake">' + snakeSVG('').replace(/class="pic "/, 'style="width:100%;height:100%"') + '</button>' +
+      '<button class="tile" data-a="no" aria-label="no"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="70" fill="#F1ECE2"/><path d="M68 68 L132 132 M132 68 L68 132" stroke="#9AA1AE" stroke-width="22" stroke-linecap="round"/></svg></button></div></div>';
+    $('#ear').onclick = function () { hush(); play([snd]); };
+    [].forEach.call(stage.querySelectorAll('.tile'), function (b) {
+      b.onclick = function () {
+        if (locked) return; var right = (b.dataset.a === 'yes') === r.snake;
+        hush();
+        if (right) { locked = true; b.classList.add('yes'); chime(true);
+          play([r.snake ? 'Yes! That is the snake sound.' : 'Right! That is not the snake.', r.snake ? { hiss: 700 } : { wait: 100 }]).then(function (ok) { if (!ok) return; st.lround++; if (st.lround < LSN.length) listenRound(); else go(st.step + 1); });
+        } else { chime(false); b.classList.remove('no'); void b.offsetWidth; b.classList.add('no');
+          play(['Listen again.', snd, 'The snake sounds like this.', { hiss: 1000 }]); }
+      };
+    });
+    play([st.lround === 0 ? 'Listen. Is this the snake sound?' : 'Listen again. Is this the snake sound?', snd]);
+  }
 
   /* find the snake letter: 3 rounds; a star for each one found on the first try.
      Fewer than 2 stars -> he sees the snake inside the letter again, then tries with only 2 choices (easier, more help). */
@@ -328,6 +372,7 @@ html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-f
     play([st.round === 0 ? 'Find the snake letter!' : 'Find the snake letter again!']);
   }
   function afterRounds() {
+    if (st.easy) st.stars = Math.min(st.stars, 2);   /* with extra help he can pass, but not with full stars */
     if (st.stars >= 2 || st.easy) return go(STEPS.indexOf('end'));
     st.easy = true;
     stage.innerHTML = '<svg class="pic" viewBox="0 0 200 200">' + snakeInner() + '<path d="' + S + '" stroke="var(--ink)" stroke-width="22" fill="none" stroke-linecap="round"/></svg>';
