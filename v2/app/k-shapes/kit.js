@@ -214,18 +214,11 @@ export function startGame(cfg) {
     return new THREE.ConeGeometry(0.62, 1.25, 48);
   }
   function makeShape(id, k, color, rotZ, scale) {
-<<<<<<< HEAD
     const solid = KINDS[k].solid, { s, corners } = solid ? { s: null, corners: [] } : shapeOf(k);
     const dep = cfg.thinFlat ? 0.06 : DEPTH, bev = cfg.thinFlat ? 0.03 : BEV;   /* "flat or solid": flat pieces are thin, like card */
     const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: bev, bevelSize: bev, bevelSegments: 3, curveSegments: 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
-    const mat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.15, envMapIntensity: 0.45, emissive: '#FFC400', emissiveIntensity: 0 });
-=======
-    const { s, corners } = shapeOf(k);
-    const geo = new THREE.ExtrudeGeometry(s, { depth: DEPTH, bevelEnabled: true, bevelThickness: BEV, bevelSize: BEV, bevelSegments: 5, curveSegments: 48 });
-    geo.translate(0, 0, -DEPTH / 2);
     const mat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
->>>>>>> claude/v2-k-shapes-unit4
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
@@ -303,12 +296,8 @@ export function startGame(cfg) {
     shapes.forEach(o => {
       if (o.inBox || o.busy || o === dragging || !o.g.visible || o.slot == null) return;
       o.g.position.set(o.home.x, o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06, o.home.z);
-<<<<<<< HEAD
       if (o.solid) { o.g.rotation.y = t * 0.5 + o.phase; o.g.rotation.x = 0; return; }
-      o.g.rotation.y = Math.sin(t * 0.7 + o.phase) * 0.28;
-=======
       o.g.rotation.y = 0;
->>>>>>> claude/v2-k-shapes-unit4
       o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, camera.position.z - o.g.position.z);   /* faces the camera, so a square always looks square */
     });
     for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
@@ -1083,11 +1072,8 @@ export function startGame(cfg) {
   const ACT = { sphere: 'roll', cube: 'stack', cyl: 'roll', cone: 'spin' };
   function teachAgain(t) {
     if (!t) return [];
-<<<<<<< HEAD
     if (t.solid || cfg.thinFlat) return [cfg.remember, 'Look at this one.', () => solidAction(t, t.solid ? ACT[t.solid] : 'stand')];
-=======
     if (cfg.ruleFor) return [cfg.ruleFor(t), 'Look at this one.', ...(t.marks.length ? t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]) : [() => traceRound(t, 1200)]), () => wait(300), () => clearCorners(t)];
->>>>>>> claude/v2-k-shapes-unit4
     if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), cap(WORDS[t.marks.length]) + ' corners! A ' + FAMILY(t.k) + '!', () => wait(300), () => clearCorners(t)];
     return [cfg.remember, 'Look at this one.', () => traceRound(t, 1200)];
   }
