@@ -311,7 +311,7 @@ function overBox(p) { const b = boxAt(); return Math.abs(p.x - b.x) < BX.w / 2 +
 /* for the automatic test */
 W.shapePt = id => { const o = shapes.find(s => s.id === id); return toScreen(o.g.position); };
 W.boxPt = () => toScreen(boxAt().clone().setY(1.25));
-W.list = () => shapes.filter(o => o.g.visible && !o.inBox && o.slot != null).map(o => ({ id: o.id, k: o.k, tri: o.isTri }));
+W.list = () => shapes.filter(o => o.g.visible && !o.inBox && o.slot != null).map(o => ({ id: o.id, k: o.k, tri: o.isTri, busy: o.busy }));
 
 /* ---------------- sound ---------------- */
 let AC = null;

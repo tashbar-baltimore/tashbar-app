@@ -33,6 +33,18 @@ module.exports = async function (browser) {
       await pg.mouse.move(a.x, a.y); await pg.mouse.down(); await pg.mouse.move(a.x + 15, a.y + 15, { steps: 3 });
       await pg.mouse.move(b.x, b.y, { steps: 8 }); await pg.mouse.up(); await pg.waitForTimeout(80);
     };
+    /* a triangle must end up in the box; if the drag missed (a slow machine), try again, then say exactly what went wrong */
+    const into = async (id) => {
+      for (let t = 0; t < 3; t++) {
+        await pg.waitForFunction(i => { const s = window.__shp.list().find(x => x.id === i); return !s || !s.busy; }, id, { timeout: 5000 }).catch(() => {});
+        if (!(await pg.evaluate(i => window.__shp.list().some(x => x.id === i), id))) return;
+        await drag(id); await pg.waitForTimeout(150 + t * 300);
+      }
+      if (await pg.evaluate(i => window.__shp.list().some(x => x.id === i), id)) {
+        const d = await pg.evaluate(() => ({ name: window.__shp.name, said: window.__shp.said.slice(-3) }));
+        bad(label + ': triangle ' + id + ' would not go into the box: ' + JSON.stringify(d));
+      }
+    };
     const tapCorners = async (what) => {
       await pg.waitForFunction(() => window.__shp.cornerPts().length === 3, null, { timeout: 15000 }).catch(() => bad(label + ': ' + what + ': the corners to tap did not appear'));
       const n0 = (await S()).cornerTaps || 0;
@@ -68,7 +80,7 @@ module.exports = async function (browser) {
       await drag('cv'); await pg.waitForTimeout(100);
       if (!(await S()).said.some(t => /curvy/i.test(t))) bad(label + ': the curvy shape is not explained');
       if (!(await S()).said.some(t => /remember: a triangle has three corners/i.test(t))) bad(label + ': after 2 misses the rule is not taught again');
-      for (const id of ['t2', 't3']) { await drag(id); await pg.waitForTimeout(100); }
+      for (const id of ['t2', 't3']) await into(id);
       { const p = await pg.evaluate(() => window.__shp.shapePt('t4')); await pg.mouse.click(p.x, p.y); await pg.waitForTimeout(200); }   // a tap also sends it to the box
       st = await S();
       if (st.found < 4) bad(label + ': not every triangle went into the box (found ' + st.found + ')');
@@ -93,12 +105,12 @@ module.exports = async function (browser) {
       await pg.click('#replay', { force: true });
       await pg.waitForFunction(() => window.__shp.name === 'tap', null, { timeout: 20000 }); await tapCorners('the lesson, second game');
       await pg.waitForFunction(() => window.__shp.name === 'find' && window.__shp.misses === 0, null, { timeout: 20000 });
-      for (const id of ['t2', 't3', 't4']) { await drag(id); await pg.waitForTimeout(100); }
+      for (const id of ['t2', 't3', 't4']) await into(id);
       // no mistakes: the quick boy gets the bonus round (a miss there is explained but costs no star)
       await pg.waitForFunction(() => window.__shp.name === 'bonus' && window.__shp.list().some(s => s.id === 'tw'), null, { timeout: 15000 }).catch(() => bad(label + ': a boy with no mistakes gets no bonus round'));
       await drawn('bonus round'); await drag('hx'); await pg.waitForTimeout(100);
       if (!(await S()).said.some(t => /six corners/i.test(t))) bad(label + ': the hexagon in the bonus round is not explained');
-      for (const id of ['tw', 'tk']) { await drag(id); await pg.waitForTimeout(100); }
+      for (const id of ['tw', 'tk']) await into(id);
       await pg.waitForSelector('.judge.show', { timeout: 15000 }); await pg.click('.judge .istri', { force: true });
       await tapCorners('find the mistake, second game');
       await pg.waitForFunction(() => window.__shp.done && window.__shp.misses === 0, null, { timeout: 15000 }).catch(() => bad(label + ': the second game did not finish'));
