@@ -1,8 +1,8 @@
 <link id="ts-font" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Poppins:ital,wght@0,700;0,800;1,800&display=swap">
 <style id="ts-css">
 /* StartScreen.html — THE START SCREEN (HoS 2026-11-23, made in Claude Chat and ported as is): a ~3 s intro (the Hive logo builds, then the
-   authentic TASHBAR wordmark), then the code card; the 4th number signs in by itself; on success the logo zooms INTO the aleph and the map
-   is behind it. Joined to the boy page by sgQuest_ (StaffGrid.js), after SignInEnergy and before CalmScreens.
+   authentic TASHBAR wordmark), then the code card; the 4th number signs in by itself; on success the logo zooms INTO the aleph, the screen
+   fills with purple and fades straight into the map and its welcome card. Joined to the boy page by sgQuest_ (StaffGrid.js), after SignInEnergy and before CalmScreens.
    It draws its own stage ABOVE the old sign-in page and gives the code to the app's own sign-in (pinGo: the one-trip msSignInFast, staff and
    parent codes, the Wi-Fi fallback), so sign-in itself is not changed. Off switch: window.TL_START = false (back to the old page).
    No slash-slash in this file (HtmlService rule). */
@@ -141,10 +141,6 @@ body.ts-on #tsStage{display:block}
 @keyframes tsSpeed{from{opacity:0;transform:scale(1.5)}to{opacity:1;transform:scale(1)}}
 .ts-fill{position:absolute;inset:0;background:var(--ts-aleph);opacity:0}
 .ts-zooming .ts-fill{animation:tsFade .2s ease-in 1.5s both}
-.ts-arrive{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;text-align:center;padding:16px}
-.ts-zooming .ts-arrive{animation:tsFadeUp .5s ease-out 1.75s both}
-.ts-arrive h2{margin:0;font-size:44px;font-weight:700;font-family:'Rubik',system-ui,sans-serif;color:#fff}
-.ts-arrive p{margin:0;font-size:18px;color:#c9bdff}
 
 @media (prefers-reduced-motion: reduce){
   .ts-intro *{animation-duration:.01s !important;animation-delay:0s !important}
@@ -218,7 +214,6 @@ body.ts-on #tsStage{display:block}
   <div class="ts-zoom" id="tsZoom">
     <div class="ts-speed"></div>
     <div class="ts-fill"></div>
-    <div class="ts-arrive"><h2>Welcome back!</h2><p>Opening today’s learning…</p></div>
   </div>
 </div>
 </div>
@@ -382,8 +377,10 @@ body.ts-on #tsStage{display:block}
       { transform: 'scale(1.12)', easing: 'cubic-bezier(.85,0,1,.35)', offset: .58 },
       { transform: 'scale(90)', offset: 1 }
     ], { duration: 1700, fill: 'forwards' });
-    setTimeout(function () { document.body.classList.add('ts-reveal'); try { render(); } catch (e) {} }, 1750);
-    setTimeout(function () { hooks.onSuccess(code); }, 2300);
+    /* HoS 2026-11-23: no second "Welcome back": once the screen is all purple (1.7 s) the map and its own welcome (the sun card) are drawn
+       underneath, and the purple fades straight into them */
+    setTimeout(function () { document.body.classList.add('ts-reveal'); try { render(); } catch (e) {} }, 1700);
+    setTimeout(function () { hooks.onSuccess(code); }, 1850);
   }
 
   /* ---- Show / hide with the app's own state ---- */
