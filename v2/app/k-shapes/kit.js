@@ -638,11 +638,11 @@ export function startGame(cfg) {
   function beadMesh(type) {
     const B = BEADS[type], mat = new THREE.MeshPhysicalMaterial({ color: B.color, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.12, envMapIntensity: 0.5 });
     let geo;
-    if (B.kind === 'cube') geo = new RoundedBoxGeometry(0.5, 0.5, 0.5, 4, 0.1);
-    else if (B.kind === 'drum') { geo = new THREE.CylinderGeometry(0.28, 0.28, 0.42, 32); geo.rotateX(Math.PI / 2); }
-    else if (B.kind && KINDS[B.kind]) { geo = new THREE.ExtrudeGeometry(shapeOf(B.kind).s, { depth: 0.22, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 4, curveSegments: 32 }); geo.translate(0, 0, -0.11); geo.scale(0.42, 0.42, 1); }
-    else geo = new THREE.SphereGeometry(0.3, 32, 24);
-    const m = new THREE.Mesh(geo, mat); m.castShadow = true; return m;
+    if (B.kind === 'cube') geo = new RoundedBoxGeometry(0.6, 0.6, 0.6, 4, 0.12);
+    else if (B.kind === 'drum') { geo = new THREE.CylinderGeometry(0.34, 0.34, 0.5, 32); geo.rotateX(Math.PI / 2); }
+    else if (B.kind && KINDS[B.kind]) { geo = new THREE.ExtrudeGeometry(shapeOf(B.kind).s, { depth: 0.22, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.06, bevelSegments: 4, curveSegments: 32 }); geo.translate(0, 0, -0.11); geo.scale(0.52, 0.52, 1); }
+    else geo = new THREE.SphereGeometry(0.37, 32, 24);
+    const m = new THREE.Mesh(geo, mat); m.castShadow = true; if (tall) m.scale.setScalar(0.72); return m;
   }
   function beadNote(type) { tone([BEADS[type].note || 523], BEADS[type].kind === 'drum' ? 'square' : 'triangle', 0, .28, .12); if (BEADS[type].kind === 'drum') clap(); }
   function makeBead(id, type, at, slot) {
@@ -650,9 +650,9 @@ export function startGame(cfg) {
     const o = { id, k: type, type, box: -1, g, turn, mesh, mat: mesh.material, marks: [], corners: [], scale: 1, home: at.clone(), phase: (shapes.length * 1.3) % 6.28, inBox: false, busy: false, slot };
     mesh.userData.shape = o; shapes.push(o); return o;
   }
-  const STR = () => tall ? { y: 1.55, z: -2.4, sp: 0.6, copyZ: -0.8 } : { y: 1.75, z: -1.9, sp: 0.95, copyZ: -0.2 };
+  const STR = () => tall ? { y: 1.5, z: -0.7, sp: 0.56, copyZ: 0.5 } : { y: 1.7, z: -0.2, sp: 1.08, copyZ: 1.2 };
   function slotAt(i, n, z) { const S = STR(); return new THREE.Vector3((i - (n - 1) / 2) * S.sp, S.y, z == null ? S.z : z); }
-  function trayAt(i, n) { const z = tall ? 1.4 : 2.0, sp = tall ? 1.15 : 1.7; return new THREE.Vector3((i - (n - 1) / 2) * sp, 0.9, z); }
+  function trayAt(i, n) { const z = tall ? 2.0 : 2.9, sp = tall ? 1.1 : 1.6; return new THREE.Vector3((i - (n - 1) / 2) * sp, 0.9, z); }
   function stringAt(n, z) {
     const S = STR(), len = (n - 1) * S.sp + 1.2, g = new THREE.Group();
     const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, len, 12), new THREE.MeshStandardMaterial({ color: '#7A4A26', roughness: 0.8 })); cord.rotation.z = Math.PI / 2; g.add(cord);
@@ -725,7 +725,7 @@ export function startGame(cfg) {
   async function patternLesson() {
     const L = cfg.patternLesson; setPattern({ seq: L.seq, blanks: 0, tray: [] });
     camTo('close', 10);
-    PS.parts.forEach(p => { if (p.isGroup || p.isMesh) { p.position.z += 2.6; p.position.y += 0.25; } });
+    PS.parts.forEach(p => { if (p.isGroup || p.isMesh) { p.position.z += 1.0; p.position.y += 0.3; } });
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, () => sing(null, L.say), 'The same part repeats!',
       () => coreGlow(true), L.coreLine, () => wait(500), () => coreGlow(false),
       'Your turn! Tap each bead to sing.', () => { setName('tap'); task = ['Tap each bead.']; return tapBeads(); }, () => { setName('learn'); task = null; },
@@ -878,7 +878,7 @@ export function startGame(cfg) {
     if (M.outline) { OL = makeOutline(M.outline.k, M.outline.miss, M.outline.color, 1.5); d = { g: OL.g, marks: [] }; }   /* a shape with a gap */
     else if (M.pattern) {   /* a friend's bead string with one wrong bead */
       setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
-      PS.parts.forEach(q => { q.position.z += 2.6; q.position.y += 0.25; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
+      PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
     d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01);
@@ -920,6 +920,7 @@ export function startGame(cfg) {
   /* ---------- start: the room is already moving behind the play button ---------- */
   buildSet(); resize();
   if (FIXED) setRound(cfg.rounds[0]);
+  if (PATTERNED) setPattern(cfg.rounds[0]);
   shapes.forEach(o => { o.g.visible = true; });
   dots(0); frame(); W.ready = true;
   preload([...cfg.intro, cfg.ask, cfg.yourTurn, 'Count the sides with me.', 'Now count the corners.', 'Your turn! Tap each corner and count.', 'One!', 'Two!', 'Three!', 'Four!', 'One.', 'Two.', 'Three.', 'Four.', 'Clap it with me! Tap the hands.']);
