@@ -1,0 +1,2 @@
+- blank-envelope-pen-and-wax.webp | https://pixabay.com/photos/letter-envelope-wax-seal-2742640/ | Pixabay Content License | sik-life
+- coloured-pencils-on-lined-paper.webp | https://pixabay.com/photos/pencil-colorful-school-paint-4609018/ | Pixabay Content License | kieutruongphoto

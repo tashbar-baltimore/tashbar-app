@@ -1,0 +1,2 @@
+- circuit-board-green-traces.webp | https://pixabay.com/photos/circuit-board-computer-chip-564815/ | Pixabay Content License | blickpixel
+- colourful-network-cable-plugs.webp | https://pixabay.com/photos/network-cable-cable-patch-494649/ | Pixabay Content License | blickpixel
