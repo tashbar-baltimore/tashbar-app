@@ -42,14 +42,14 @@
   }
   async function play(F, n, kind, intro) {
     U.clear(); $('hands').hidden = false; H.set(0); H.lock(true);
-    var w = U.size(n), els = U.line(n, 64).map(function (p, i) { return U.put(kind, p, w, i); });
+    var w = U.itemW(n), els = U.table(n, U.narrow() ? 30 : 64).map(function (p, i) { return U.put(kind, p, w, i); });
     if (intro) await F.say('Tap each one. Count with me!', { repeat: 'Tap each one. Count with me!' });
     await tapCount(F, els);
     var a = await U.answer(F, { n: n, H: H, ask: 'How many ' + U.name(kind, 2) + '?',
       explain: async function (F) { await F.say("Let's count together."); await U.countAlong(els); await F.say('The last number tells how many.'); } });
     GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
     await F.say('Now I mix them up!');
-    var mixed = U.bunch(n, [12, 88, 26, 86]); els.forEach(function (e, i) { e.classList.remove('counted'); U.place(e, mixed[i]); }); NK.sound.cloth(); await F.wait(500);
+    var mixed = U.bunch(n, U.narrow() ? [12, 88, 12, 90] : [12, 88, 26, 86]); els.forEach(function (e, i) { e.classList.remove('counted'); U.place(e, mixed[i]); }); NK.sound.cloth(); await F.wait(500);
     var b = await U.answer(F, { n: n, H: H, ask: 'How many now?',
       explain: async function (F) { await F.say('We did not add any. We did not take any.'); await F.say('Still ' + F.word(n) + '! Look again.'); } });
     return a && b;

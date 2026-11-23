@@ -21,7 +21,7 @@
     '<path d="M50 34 L58 48 L50 62 L42 48 Z" fill="url(#u3Gold)" stroke="#B8730A" stroke-width="1.5"/>' +
     '<rect x="72" y="14" width="5" height="70" rx="2" fill="url(#u3Gold)"/><rect x="38" y="12" width="5" height="22" rx="2" fill="#fff" opacity=".35"/></symbol>' +
     /* a braided challah roll */
-    '<symbol id="u3Roll" viewBox="0 0 100 100"><ellipse cx="50" cy="88" rx="38" ry="6" fill="url(#nkShadow)"/>' +
+    '<symbol id="u3Roll" viewBox="6 18 88 88"><ellipse cx="50" cy="88" rx="38" ry="6" fill="url(#nkShadow)"/>' +
     '<path d="M12 62 C 10 40, 30 30, 50 32 C 70 30, 90 40, 88 62 C 88 80, 70 86, 50 86 C 30 86, 12 80, 12 62 Z" fill="url(#u3RollG)" stroke="#7A3D0A" stroke-width="3"/>' +
     '<path d="M24 44 C 32 56, 30 70, 22 78 M42 34 C 50 48, 50 70, 42 84 M60 34 C 68 48, 68 70, 60 84 M78 44 C 84 56, 84 70, 78 78" stroke="#8E4A10" stroke-width="3" fill="none" opacity=".55" stroke-linecap="round"/>' +
     '<path d="M28 46 C 34 50, 36 56, 34 62 M46 40 C 52 46, 54 54, 52 62 M64 40 C 70 46, 72 54, 70 62" stroke="#FFE7B0" stroke-width="3" fill="none" opacity=".8" stroke-linecap="round"/>' +
@@ -34,10 +34,19 @@
 
   /* ---------- where things go: a neat line, or a loose bunch (in % of the box) ---------- */
   U.line = function (n, y) { var out = [], gap = Math.min(20, 86 / Math.max(1, n)), x0 = 50 - gap * (n - 1) / 2; for (var i = 0; i < n; i++) out.push([x0 + gap * i, y == null ? 62 : y]); return out; };
+  /* on a phone the scene is narrow: things he taps must still be at least 64 px, so they get bigger and wrap into rows */
+  U.dims = function () { var s = $('scene'), r = s ? s.getBoundingClientRect() : { width: 800, height: 500 }; return [r.width || 800, r.height || 500]; };
+  U.narrow = function () { return U.dims()[0] < 560; };
+  U.tapPct = function () { return 68 / U.dims()[0] * 100; };          /* 68 px as % of the scene width */
+  U.itemW = function (n) { return U.narrow() ? Math.max(U.size(n), U.tapPct()) : U.size(n); };
+  U.grid = function (n, y0, cols, stepY) { var out = [], gx = 88 / cols; for (var i = 0; i < n; i++) { var r = Math.floor(i / cols), c = i % cols, inRow = Math.min(cols, n - r * cols), x0 = 50 - gx * (inRow - 1) / 2; out.push([x0 + gx * c, y0 + r * stepY]); } return out; };
+  U.table = function (n, y) { if (!U.narrow() || n <= 3) return U.line(n, y); var d = U.dims(), stepY = 72 / d[1] * 100; return U.grid(n, Math.min(y, 92 - stepY * (Math.ceil(n / 4) - 1)), 4, stepY); };
   U.bunch = function (n, box) {
-    box = box || [12, 88, 36, 88]; var pts = [], tries = 0, d = n > 8 ? 13 : 16;
-    while (pts.length < n && tries++ < 3000) { var x = box[0] + Math.random() * (box[1] - box[0]), y = box[2] + Math.random() * (box[3] - box[2]);
-      if (pts.every(function (q) { return Math.hypot(q[0] - x, (q[1] - y) * 1.1) > d; })) pts.push([x, y]); if (tries % 600 === 0) d -= 1.5; }
+    box = box || [12, 88, 36, 88]; var D = U.dims(), w = U.itemW(n) / 100 * D[0], minPx = Math.max(w * 1.08, U.narrow() ? 72 : 0), d = n > 8 ? 13 : 16, pts = [], tries = 0;
+    function far(x, y) { return pts.every(function (q) { return Math.hypot((q[0] - x) * D[0] / 100, (q[1] - y) * D[1] / 100) > Math.max(minPx, d * D[0] / 100); }); }
+    while (pts.length < n && tries++ < 4000) { var x = box[0] + Math.random() * (box[1] - box[0]), y = box[2] + Math.random() * (box[3] - box[2]);
+      if (far(x, y)) pts.push([x, y]); if (tries % 700 === 0) { d -= 1.5; minPx *= .96; } }
+    if (pts.length < n) { var stepY = (box[3] - box[2]) / Math.max(1, Math.ceil(n / 4) - 1 || 1); pts = U.grid(n, box[2], 4, Math.min(stepY, 80 / D[1] * 100)); }
     return pts;
   };
 
@@ -45,6 +54,9 @@
   U.hands = function (box) {
     var a = FR.fingers(0, true), b = FR.fingers(0, true); a.el.classList.add('h0'); b.el.classList.add('h1'); b.el.style.transform = 'scaleX(-1)';
     box.innerHTML = ''; box.appendChild(a.el); box.appendChild(b.el);
+    /* bigger tap zones: each finger answers to its whole column, from the top of the hand down to the palm */
+    [a.el, b.el].forEach(function (h) { h.querySelectorAll('.fg:not([data-f="4"]) > g').forEach(function (g) { var r = g.querySelector('rect.skin'), x = +r.getAttribute('x'), w = +r.getAttribute('width'), y = +r.getAttribute('y'), ht = +r.getAttribute('height');
+      var z = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); z.setAttribute('x', x - 1.5); z.setAttribute('y', y - 16); z.setAttribute('width', w + 3); z.setAttribute('height', ht + 16); z.setAttribute('fill', 'transparent'); g.insertBefore(z, g.firstChild); }); });
     var api = { a: a, b: b, onChange: null };
     api.count = function () { return a.count() + b.count(); };
     api.set = function (n) { a.set(Math.min(5, n)); b.set(Math.max(0, n - 5)); };
@@ -118,12 +130,13 @@
     return new Promise(async function (res) {
       U.clear(); $('hands').hidden = false; o.H.set(0); o.H.lock(true);
       var sh = document.createElement('div'); sh.className = 'shelf'; $('scene').appendChild(sh);
-      var w = U.size(o.n), pts = o.line ? U.line(o.n, 72) : U.bunch(o.n, [10, 90, 58, 90]), slots = U.line(o.n, 25), els = [], moved = 0, busy = false, shelfEls = [];
+      var w = U.itemW(o.n), pts = o.line ? U.table(o.n, 72) : U.bunch(o.n, U.narrow() ? [10, 90, 52, 92] : [10, 90, 58, 90]), slots = U.line(o.n, 25), els = [], moved = 0, busy = false, shelfEls = [];
+      var shelfW = Math.min(w, Math.min(20, 86 / o.n) - 1);
       for (var i = 0; i < o.n; i++) els.push(U.put(o.kind, pts[i], w, i, 'cnt'));
       function hooks() { var rest = els.filter(function (e) { return !e.classList.contains('done'); }); GAME.right = rest.length ? function () { return [{ tap: '#scene .it[data-i="' + rest[0].dataset.i + '"]' }]; } : null; GAME.wrong = null; }
       async function tap(e) {
         var it = e.target.closest('.it.cnt'); if (!it || it.classList.contains('done') || busy || GAME.phase !== 'answer') return;
-        busy = true; GAME.phase = 'busy'; it.classList.add('done'); place(it, slots[moved]); shelfEls.push(it); moved++; NK.sound.pop();
+        busy = true; GAME.phase = 'busy'; it.classList.add('done'); it.style.width = shelfW + '%'; place(it, slots[moved]); shelfEls.push(it); moved++; NK.sound.pop();
         if (!o.quiet) await F.say(F.Word(moved) + (moved === o.n ? '!' : ''), { noRepeat: true }); else await F.wait(150);
         busy = false;
         if (moved < o.n) { GAME.phase = 'answer'; hooks(); return; }
@@ -141,14 +154,19 @@
 
   /* GIVE ME: Bubby needs n challah rolls. He moves rolls from the pile to Bubby's plate (tap or drag), then presses check.
      o: { n, check (mastery: no counting voice, explain once), intro } */
-  var SLOTS = [[30, 20], [40, 20], [50, 20], [60, 20], [70, 20], [30, 35], [40, 35], [50, 35], [60, 35], [70, 35]];
-  var PILE = [[12, 64], [24, 64], [36, 64], [48, 64], [60, 64], [72, 64], [84, 64], [18, 84], [31, 84], [44, 84], [57, 84], [70, 84]];
+  var SLOTS_W = [[25, 20], [37.5, 20], [50, 20], [62.5, 20], [75, 20], [25, 36], [37.5, 36], [50, 36], [62.5, 36], [75, 36]];
+  var PILE_W = [[12, 64], [24, 64], [36, 64], [48, 64], [60, 64], [72, 64], [84, 64], [18, 84], [31, 84], [44, 84], [57, 84], [70, 84]];
+  /* phone: 4 across, so each roll is at least 64 px */
+  var X4 = [14.5, 38.2, 61.8, 85.5], SLOTS_N = [], PILE_N = [];
+  [14, 29, 44].forEach(function (y) { X4.forEach(function (x) { SLOTS_N.push([x, y]); }); });
+  [61, 75, 89].forEach(function (y) { X4.forEach(function (x) { PILE_N.push([x, y]); }); });
   U.giveRound = function (F, o) {
     return new Promise(async function (res) {
       U.clear(); $('hands').hidden = true; var btn = $('check');
+      var nar = U.narrow(), SLOTS = nar ? SLOTS_N : SLOTS_W, PILE = nar ? PILE_N : PILE_W, RW = nar ? U.tapPct() : 12;
       var pl = document.createElement('div'); pl.className = 'plate3'; $('scene').appendChild(pl);
       var total = Math.min(12, Math.max(10, o.n + 2)), rolls = [], onPlate = [], misses = 0;
-      for (var i = 0; i < total; i++) rolls.push(U.put('roll', PILE[i], 10.5, i, 'pile'));
+      for (var i = 0; i < total; i++) rolls.push(U.put('roll', PILE[i], RW, i, 'pile'));
       function ready() { btn.classList.toggle('dim', !onPlate.length); btn.classList.toggle('ready', onPlate.length > 0 && GAME.phase === 'answer'); }
       function layout() { onPlate.forEach(function (r, k) { place(r, SLOTS[k]); }); rolls.filter(function (r) { return onPlate.indexOf(r) < 0; }).forEach(function (r) { place(r, PILE[+r.dataset.i]); }); }
       function hooks() {

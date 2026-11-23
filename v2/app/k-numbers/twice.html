@@ -51,7 +51,7 @@
   }
   async function play(F, n, kind, who, show) {
     U.clear(); H.set(0); H.lock(true); GAME.phase = 'busy'; F.lock(true);
-    var pts = U.bunch(n, [14, 86, 30, 84]), els = pts.map(function (p, i) { return U.put('apple', p, U.size(n) + 2, i); }), bad = Math.floor(Math.random() * n);
+    var pts = U.bunch(n, U.narrow() ? [12, 88, 12, 90] : [14, 86, 30, 84]), els = pts.map(function (p, i) { return U.put('apple', p, U.itemW(n) + 2, i); }), bad = Math.floor(Math.random() * n);
     await F.say(who + ' is counting the apples.');
     var said = await boyCounts(F, els, kind, bad);
     await F.say(who + ' says: ' + F.word(said) + ' apples!');
