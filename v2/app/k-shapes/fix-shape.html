@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Fix the shape</title>
+<!-- Kindergarten Shapes, Unit 2 "Shape rules" (v2/curriculum/k-shapes/MAP.md): a real shape is CLOSED (no gaps) and has STRAIGHT sides.
+     Shapes made of 3D sticks have a gap; he drags the stick that fits it exactly. A wrong stick is laid in the gap so he SEES why
+     (too short: still a gap; too long: it sticks out; curvy: sides are straight). K.G.4 (parts of shapes). Built on the shared 3D kit (kit.js).
+     ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+startGame({
+  id: 'fix', mode: 'fix', boxes: [],
+  intro: ['Mendy built shapes with sticks.', 'Some shapes are broken!', "Let's fix them!"],
+  fixLesson: { k: 'tri', miss: 2, color: '#E03A33', first: 'This triangle has a gap.',
+    rule: ['A shape must be closed. No gaps!', 'And its sides are straight.'], chant: [['Closed!', 2], ['Straight sides!', 3], ['A real shape!', 3]] },
+  rounds: [
+    { k: 'tri', miss: 2, color: '#E03A33', options: ['short', 'right'], say: 'This triangle has a gap.', done: 'Closed! A triangle!' },
+    { k: 'square', miss: 1, color: '#12A766', options: ['right', 'long'], say: 'This square has a gap.', done: 'Closed! A square!' },
+    { k: 'rect', miss: 3, color: '#F0458E', options: ['curvy', 'right'], say: 'This rectangle has a gap.', done: 'Closed! A rectangle!' },
+    { k: 'triRight', miss: 1, color: '#7C4DFF', options: ['right', 'short'], say: 'This triangle has a gap.', done: 'Closed! A triangle!' },
+    { k: 'rect', miss: 0, color: '#00A3B8', options: ['short', 'right'], say: 'This rectangle has a gap.', done: 'Closed! A rectangle!' }
+  ],
+  bonusRounds: [{ k: 'hex', miss: 2, color: '#F2A900', options: ['long', 'right', 'curvy'], say: 'A new shape! It has a gap.', done: 'Closed! Six straight sides!' }],
+  ask: 'Drag the stick that fits the gap.', hint: 'Look at the gap. Which stick fits?', hint2: 'This stick fits.', remember: 'Remember: the stick must fit the gap exactly.',
+  why: { short: ['Too short! There is still a gap.'], long: ['Too long! It sticks out.'], curvy: ['That stick is curvy.', 'Shape sides are straight.'] },
+  watchLine: 'Watch me fix this one.', yourTurn: 'Now you. Fix the shapes!',
+  mistake: { friend: { name: 'Chaim', shirt: '#7A4E9E', hair: '#2A1A12' }, icon: 'square', outline: { k: 'square', miss: 2, color: '#1F6FEB' },
+    claim: ['Chaim made this shape.', 'He says it is a square.'], ask: 'Is it a square?', answer: false,
+    explain: ['Look. It has a gap.', 'A square must be closed.'], right: ['Right! It has a gap.', 'A square must be closed.'], closeLine: 'Let us close it.' },
+  endLine: 'You fixed every shape!', praise: 'Closed, with straight sides. You are a shape fixer!'
+});
+</script>
+</body>
+</html>

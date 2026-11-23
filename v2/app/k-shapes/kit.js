@@ -46,7 +46,13 @@ function shapeOf(k) {
   return { s, corners: pts };
 }
 /* a flat picture of a shape, for buttons */
+const DOTS = { 0: [], 1: [[0, 0]], 2: [[-0.4, 0], [0.4, 0]], 3: [[-0.45, -0.3], [0.45, -0.3], [0, 0.42]], 4: [[-0.4, -0.4], [0.4, -0.4], [0.4, 0.4], [-0.4, 0.4]],
+  5: [[-0.45, -0.4], [0.45, -0.4], [0.45, 0.4], [-0.45, 0.4], [0, 0]], 6: [[-0.45, -0.45], [0, -0.45], [0.45, -0.45], [-0.45, 0.45], [0, 0.45], [0.45, 0.45]] };
 export function iconSVG(k, fill, cross) {
+  if (/^dots\d$/.test(k)) {   /* a number of dots ("how many corners"); none = an empty ring */
+    const n = +k[4], d = n ? DOTS[n].map(p => '<circle cx="' + (32 + p[0] * 26).toFixed(1) + '" cy="' + (32 - p[1] * 26).toFixed(1) + '" r="7" fill="' + fill + '"/>').join('') : '<circle cx="32" cy="32" r="20" fill="none" stroke="' + fill + '" stroke-width="6"/>';
+    return '<svg viewBox="0 0 64 64">' + d + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
+  }
   const K = KINDS[k]; let d = '';
   if (K.circle) d = '<circle cx="32" cy="32" r="22" fill="' + fill + '"/>';
   else if (K.pts) d = '<path d="M' + K.pts.map(p => (32 + p[0] * 26).toFixed(1) + ' ' + (34 - p[1] * 26).toFixed(1)).join(' L') + 'Z" fill="' + fill + '" stroke-linejoin="round"/>';
@@ -75,7 +81,7 @@ export function startGame(cfg) {
 <button class="btn" id="clapBtn" aria-label="Clap"><svg viewBox="0 0 64 64"><g fill="#F2C9A0" stroke="#B5742A" stroke-width="2.5" stroke-linejoin="round"><path d="M18 52 C10 44 8 34 12 24 L20 12 C22 9 26 10 25 14 L22 22 L30 8 C32 5 36 7 34 11 L28 24 L36 10 C38 7 42 9 40 13 L33 27 L39 18 C41 15 45 17 43 21 L36 36 C34 44 28 52 18 52Z"/></g><path d="M46 8 l4 -4 M52 14 l6 -2 M50 22 l6 2" stroke="#F5B400" stroke-width="3.5" stroke-linecap="round"/></svg></button>
 <div id="nogl">This computer cannot show the 3D game.</div>`);
   const $ = s => document.querySelector(s);
-  const W = window.__shp = { game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
+  const W = window.__shp = { nb: cfg.boxes.length, game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
   const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
   const NB = cfg.boxes.length;
   const boxOf = k => cfg.boxes.findIndex(b => b.accept.includes(k));   /* the box a piece belongs in, or -1 */
@@ -131,8 +137,14 @@ export function startGame(cfg) {
     plank(BX.w, BX.h * 0.8, BX.t, 0, BX.h * 0.4, BX.d / 2 - BX.t / 2);
     plank(BX.t, BX.h, BX.d, -BX.w / 2 + BX.t / 2, BX.h / 2, 0);
     plank(BX.t, BX.h, BX.d, BX.w / 2 - BX.t / 2, BX.h / 2, 0);
-    const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 }));
-    lab.scale.setScalar(0.36); lab.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(lab);
+    const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
+    if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none */
+      if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.24, 40), paintM); ring.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(ring); }
+      DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075, 24), paintM); dot.position.set(p[0] * 0.38, BX.h * 0.4 + p[1] * 0.38, BX.d / 2 + 0.005); g.add(dot); });
+    } else {
+      const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
+      lab.scale.setScalar(0.36); lab.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(lab);
+    }
     return { g, n: 0 };
   });
 
@@ -196,8 +208,8 @@ export function startGame(cfg) {
   const SLOTS_TALL = [[-1.8, -4.7], [0, -5.0], [1.8, -4.7], [-1.8, -2.4], [0, -2.5], [1.8, -2.4], [-1.8, -0.1], [0, -0.2], [1.8, -0.1]];
   function boxAt(i) {
     if (NB === 1) return tall ? new THREE.Vector3(0, 0, 2.6) : new THREE.Vector3(0, 0, 2.3);
-    if (tall) return new THREE.Vector3(i % 2 ? 1.3 : -1.3, 0, i < 2 ? 1.9 : 3.95);
-    return new THREE.Vector3(-4.05 + i * 2.7, 0, 2.6);
+    if (tall) return new THREE.Vector3(NB === 3 && i === 2 ? 0 : i % 2 ? 1.3 : -1.3, 0, i < 2 ? 1.9 : 3.95);
+    return new THREE.Vector3((i - (NB - 1) / 2) * (NB === 3 ? 3.2 : 2.7), 0, 2.6);
   }
   const VIEW1 = { wide: [[0, 8.6, 11.6], [0, 0.2, -0.4]], tall: [[0, 15.6, 7.0], [0, 0, -1.4]] };
   const VIEWN = { wide: [[0, 9.4, 12.2], [0, 0.2, -0.2]], tall: [[0, 17.5, 8.4], [0, 0, -0.5]] };
@@ -275,10 +287,10 @@ export function startGame(cfg) {
   }
   const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.25), hitP = new THREE.Vector3();
   function onPlane(cx, cy) { ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.ray.intersectPlane(dragPlane, hitP) ? hitP.clone() : null; }
-  function overBox(p) { for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
+  function overBox(p) { if (cfg.mode === 'fix') { const g = OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : null; return g && Math.hypot(p.x - g.x, p.z - g.z) < 1.5 ? 0 : -1; } for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
   /* for the automatic test */
   W.shapePt = id => toScreen(shapes.find(s => s.id === id).g.position);
-  W.boxPt = i => toScreen(boxAt(i || 0).clone().setY(1.25));
+  W.boxPt = i => cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
   W.list = () => shapes.filter(o => o.g.visible && !o.inBox && o.slot != null).map(o => ({ id: o.id, k: o.k, box: o.box, busy: o.busy }));
 
   /* ---------- sound ---------- */
@@ -363,7 +375,7 @@ export function startGame(cfg) {
     });
   }
   W.cornerPts = () => { const o = shapes.find(s => s.marks.length && s.marks.some(m => m.material === cornerFaint)); return o ? o.marks.filter(m => m.material === cornerFaint).map(m => toScreen(m.getWorldPosition(new THREE.Vector3()))) : []; };
-  W.tapTarget = () => W.tapShape ? toScreen(W.tapShape.g.position) : null;
+  W.tapTarget = () => W.tapPt ? W.tapPt() : W.tapShape ? toScreen(W.tapShape.g.position) : null;
   const tracer = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 16), new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 1 }));
   tracer.visible = false;
   function traceSide(o, i) {
@@ -403,7 +415,7 @@ export function startGame(cfg) {
   let allow = false, down = null, onDrop = null;
   function buildSet() {
     shapes.splice(0).forEach(o => scene.remove(o.g)); friend.visible = false; boxes.forEach(b => { b.n = 0; });
-    cfg.set.forEach((s, i) => { const o = makeShape(s[0], s[1], s[4] || COLORS[i % COLORS.length], s[2], s[3]); o.slot = i; o.home.copy(homeFor(i)); o.g.position.copy(o.home); o.g.visible = false; });
+    (cfg.set || []).forEach((s, i) => { const o = makeShape(s[0], s[1], s[4] || COLORS[i % COLORS.length], s[2], s[3]); o.slot = i; o.home.copy(homeFor(i)); o.g.position.copy(o.home); o.g.visible = false; });
   }
   function dropInBox(o, bi) {
     bi = bi == null ? Math.max(0, o.box) : bi;
@@ -432,7 +444,7 @@ export function startGame(cfg) {
     if (!down || (e && e.pointerId !== down.id)) return; const d = down; down = null;
     if (!d.moved) {   /* one box: a tap sends the piece there. Several boxes: a tap makes it hop (he must drag it to a box) */
       if (d.o.busy) return;
-      if (NB === 1 && onDrop && allow) { idle(); const o = d.o; o.busy = true; moveTo(o, boxAt(0).clone().setY(1.25), 450, 0.8).then(() => { if (onDrop && allow) onDrop(o, 0); else goHome(o); }); }
+      if ((NB === 1 || FIXED) && onDrop && allow) { idle(); const o = d.o; o.busy = true; moveTo(o, (FIXED ? gapWorld().setY(1.25) : boxAt(0).clone().setY(1.25)), 450, 0.8).then(() => { if (onDrop && allow) onDrop(o, 0); else goHome(o); }); }
       else { pop(); const o = d.o; o.busy = true; tween(500, k => { o.g.position.y = o.home.y + Math.sin(Math.PI * k) * 0.6; }).then(() => { o.busy = false; }); }
       return;
     }
@@ -471,7 +483,7 @@ export function startGame(cfg) {
         'Your turn! Tap the circle.', () => { setName('tap'); task = ['Tap the circle.']; return tapShape(o); }, () => { setName('learn'); task = null; },
         ...(L.rule || []));
     } else {
-      steps.push('This is a ' + L.word + '.', 'Count the sides with me.');
+      steps.push(L.first || 'This is a ' + L.word + '.', 'Count the sides with me.');
       for (let i = 0; i < n; i++) steps.push(() => traceSide(o, i), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' sides!');
       steps.push(() => { tracer.visible = false; }, 'Now count the corners.');
       for (let i = 0; i < n; i++) steps.push(() => lightCorner(o, i), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' corners!');
@@ -481,6 +493,7 @@ export function startGame(cfg) {
     steps.push(() => { chant(true); o.marks.forEach(m => { m.material = cornerMat; m.scale.setScalar(1.15); }); }, 'Clap it with me! Tap the hands.');
     L.chant.forEach(c => steps.push(c[0], () => claps(o, c[1])));
     steps.push(() => { chant(false); burst(o.g.position, 30); chime(true); clearCorners(o); return cheer(mendy); });
+    if (L.noTurn) return steps;
     if (L.turn != null) steps.push(L.turnLine || 'Watch. I turn it.', () => tween(1100, k => { o.turn.rotation.z = ease(k) * L.turn; }), 'Still a ' + L.word + '!');
     steps.push('Now I make it small.', () => tween(800, k => o.g.scale.setScalar(1.25 - ease(k) * 0.7)), 'Small, but still a ' + L.word + '!');
     if (L.big) steps.push('Now big!', () => tween(800, k => o.g.scale.setScalar(0.55 + ease(k) * 1.0)), 'Big, and still a ' + L.word + '!');
@@ -488,11 +501,134 @@ export function startGame(cfg) {
   }
 
   /* ---------- the game ---------- */
+
+  /* =========== "Fix the shape" mode (cfg.mode === 'fix'): a shape made of 3D sticks has a gap; he drags the stick that closes it =========== */
+  const FIXED = cfg.mode === 'fix';
+  const stickMat = c => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.2, envMapIntensity: 0.45 });
+  const SR = 0.085;   /* stick thickness */
+  function stickGeo(len, curvy) {
+    if (curvy) { const c = new THREE.QuadraticBezierCurve3(new THREE.Vector3(-len / 2, 0, 0), new THREE.Vector3(0, len * 0.38, 0), new THREE.Vector3(len / 2, 0, 0)); return new THREE.TubeGeometry(c, 32, SR, 12, false); }
+    const g = new THREE.CapsuleGeometry(SR, Math.max(0.01, len - 2 * SR), 6, 12); g.rotateZ(Math.PI / 2); return g;
+  }
+  function sideOf(corners, i, sc) { const a = corners[i], b = corners[(i + 1) % corners.length];
+    return { mid: new THREE.Vector3((a[0] + b[0]) / 2 * sc, (a[1] + b[1]) / 2 * sc, 0), len: Math.hypot(b[0] - a[0], b[1] - a[1]) * sc, ang: Math.atan2(b[1] - a[1], b[0] - a[0]) }; }
+  /* the outline: all sides but the missing one; the missing side is ready (hidden) for when it is closed; a flat fill shows when closed */
+  function makeOutline(k, miss, color, sc) {
+    const { s: shp, corners } = shapeOf(k), g = new THREE.Group(), m = stickMat(color);
+    corners.forEach((c, i) => { if (i === miss) return; const sd = sideOf(corners, i, sc), st = new THREE.Mesh(stickGeo(sd.len), m); st.position.copy(sd.mid); st.rotation.z = sd.ang; st.castShadow = true; g.add(st);
+      const ball = new THREE.Mesh(new THREE.SphereGeometry(SR * 1.5, 16, 12), m); ball.position.set(c[0] * sc, c[1] * sc, 0); g.add(ball); });
+    const last = corners[(miss + 1) % corners.length], j = new THREE.Mesh(new THREE.SphereGeometry(SR * 1.5, 16, 12), m); j.position.set(last[0] * sc, last[1] * sc, 0); g.add(j);
+    const gap = sideOf(corners, miss, sc), fill = new THREE.Mesh(new THREE.ShapeGeometry(shp, 32), new THREE.MeshStandardMaterial({ color, roughness: 0.5, transparent: true, opacity: 0.55, side: THREE.DoubleSide }));
+    fill.scale.setScalar(sc); fill.position.z = -0.02; fill.visible = false; g.add(fill);
+    const close = new THREE.Mesh(stickGeo(gap.len), m); close.position.copy(gap.mid); close.rotation.z = gap.ang; close.visible = false; g.add(close);
+    const mark = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 32), new THREE.MeshBasicMaterial({ color: '#F5B400', transparent: true, opacity: 0.9 })); mark.position.copy(gap.mid); mark.position.z = 0.05; g.add(mark);
+    scene.add(g);
+    return { g, k, corners, sc, gap, fill, close, mark, marks: [], color };
+  }
+  let OL = null, roundN = 0;   /* the outline being fixed; a count of rounds, so each stick has its own name */
+  const OL_AT = () => tall ? new THREE.Vector3(0, 1.4, 1.4) : new THREE.Vector3(0, 1.5, 1.3);
+  function gapWorld() { return OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : new THREE.Vector3(); }
+  function closeIt(o) {   /* the gap closes: the stick snaps in, the shape fills with colour, a dot runs all round it */
+    OL.mark.visible = false; OL.close.visible = true; OL.close.scale.set(0.01, 1, 1); plink();
+    return tween(350, k => OL.close.scale.set(Math.max(0.01, k), 1, 1)).then(() => { OL.fill.visible = true; chime(true); burst(OL.g.position.clone(), 26); return cheer(mendy); });
+  }
+  function tryInGap(o) {   /* a wrong stick is laid in the gap for a moment, so he SEES why it does not fit */
+    const t = new THREE.Mesh(o.mesh.geometry, o.mat); t.position.copy(OL.gap.mid); t.rotation.z = OL.gap.ang; t.position.z = 0.04; OL.g.add(t);
+    return wait(1400).then(() => { OL.g.remove(t); });
+  }
+  function makeStick(id, kind, len, color, slot) {   /* kind: 'right' | 'short' | 'long' | 'curvy' */
+    const L = kind === 'short' ? len * 0.55 : kind === 'long' ? len * 1.5 : len;
+    const mat = stickMat(color), mesh = new THREE.Mesh(stickGeo(L, kind === 'curvy'), mat); mesh.castShadow = true;
+    const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = 0.25 * ((slot % 2) ? 1 : -1);
+    const g = new THREE.Group(); g.add(turn); scene.add(g);
+    const o = { id, k: 'stick-' + kind, kind, box: kind === 'right' ? 0 : -1, g, turn, mesh, mat, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false, slot };
+    o.home.copy(fixSlot(slot)); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
+  }
+  function fixSlot(i) { const S = tall ? [[-1.7, -2.6], [1.7, -2.6], [0, -3.8]] : [[-4.3, 0.4], [4.3, 0.4], [-4.0, -2.4]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
+  const STICK_C = ['#C98B4E', '#2F7FD8', '#E0574F'];
+  function setRound(R) {
+    if (OL) scene.remove(OL.g); shapes.splice(0).forEach(o => scene.remove(o.g));
+    OL = makeOutline(R.k, R.miss, R.color, R.sc || 2.0); OL.g.position.copy(OL_AT()); OL.g.rotation.x = -(tall ? 0.7 : 0.35);
+    roundN++; R.options.forEach((kind, i) => makeStick('r' + roundN + 's' + i, kind, OL.gap.len, STICK_C[(i + (R.k.length % 3)) % 3], i));
+  }
+  async function fixLesson() {
+    const L = cfg.fixLesson;
+    OL = makeOutline(L.k, L.miss, L.color, 1.6); OL.g.position.set(0.55, 2.05, 0.9);
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.16, 24, 16), new THREE.MeshPhysicalMaterial({ color: '#F2A900', clearcoat: 1, roughness: 0.3 })); OL.g.add(ball); ball.position.set(0, -0.2, 0.15);
+    const roll = (out) => { const a = ball.position.clone(), b = out ? OL.gap.mid.clone().multiplyScalar(1.9) : new THREE.Vector3(0.15, -0.1, 0.15);
+      return tween(1300, k => { ball.position.lerpVectors(a, b, ease(k)); ball.rotation.z -= 0.2; }).then(() => { if (out) { ball.visible = false; tone([400, 300], 'sine', .12, .3, .12); } }); };
+    W.tapGap = true;
+    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 },
+      L.first, 'Watch the ball.', () => roll(true), 'Oops! The ball rolled out!', 'There is a gap.',
+      'Where is the gap? Tap it!', () => { setName('tap'); task = ['Tap the gap.']; return tapPoint(gapWorld, 'Tap the gap.'); }, () => { setName('learn'); task = null; },
+      'Yes! That is the gap.', 'Watch. I close it.', () => closeIt(), () => { ball.visible = true; ball.position.set(0, -0.2, 0.15); return roll(false); }, 'Now the ball stays in!',
+      ...L.rule,
+      () => { chant(true); }, 'Clap it with me! Tap the hands.'];
+    L.chant.forEach(c => steps.push(c[0], () => claps(OL, c[1])));
+    steps.push(() => { chant(false); return cheer(mendy); });
+    return play(steps);
+  }
+  function tapPoint(getPos, nagLine) {   /* he taps a place (the gap) */
+    return new Promise(done => {
+      let nag = null;
+      const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (shapeTap) { say(nagLine); remind(); } }, FAST ? 1e9 : 9000); };
+      W.tapPt = () => toScreen(getPos());
+      shapeTap = (cx, cy) => { const p = toScreen(getPos()); if (Math.hypot(p.x - cx, p.y - cy) > Math.max(70, innerWidth * 0.07)) return; shapeTap = null; clearTimeout(nag); W.shapeTaps = (W.shapeTaps || 0) + 1; W.tapPt = null; chime(true); done(); };
+      remind();
+    });
+  }
+  async function fixGame() {
+    setName('watch'); dots(1);
+    await camTo('wide', 1200);
+    const R0 = cfg.rounds[0]; setRound(R0);
+    const right = shapes.find(o => o.box === 0);
+    let ok = await play([cfg.watchLine, () => { handOn = right; hand.style.display = 'block'; return wait(500); },
+      () => moveTo(right, gapWorld().setY(Math.max(1.25, gapWorld().y)), 1400), () => { hand.style.display = 'none'; handOn = null; right.g.visible = false; return closeIt(); },
+      R0.done, cfg.yourTurn]);
+    if (!ok) return;
+    let helped = false;
+    for (let r = 1; r < cfg.rounds.length; r++) { ok = await fixRound(cfg.rounds[r], false, () => helped, v => { helped = v; }); if (!ok) return; }
+    if (W.misses <= 1 && cfg.bonusRounds) {
+      W.bonus = true; ok = await play(['Bonus round! You are so good at this.', 'This one is tricky.']); if (!ok) return;
+      for (const R of cfg.bonusRounds) { ok = await fixRound(R, true, () => true, () => {}); if (!ok) return; }
+    }
+    if (OL) { scene.remove(OL.g); OL = null; } shapes.splice(0).forEach(o => scene.remove(o.g));
+    mistake();
+  }
+  function fixRound(R, bonus, getHelped, setHelped) {
+    return new Promise(resolve => {
+      setName(bonus ? 'bonus' : 'find'); dots(2); setRound(R); allow = true;
+      const ask = [R.ask || cfg.ask]; task = ask;
+      idleFn = n => { const t = shapes.find(o => o.box === 0); if (!t) return; W.reminders = (W.reminders || 0) + 1;
+        play(n === 1 ? [...ask, cfg.hint, () => pointAt(t)] : [cfg.hint2, () => pointAt(t)]); };
+      idle();
+      onDrop = (o, bi) => {
+        idle();
+        if (bi < 0) { goHome(o); play(['Put it in the gap.']); return; }
+        if (o.box === 0) {
+          allow = false; onDrop = null; stopIdle(); o.g.visible = false;
+          closeIt(o).then(() => play([R.done, { wait: 300 }])).then(ok => resolve(ok));
+          return;
+        }
+        if (!bonus) W.misses++; chime(false);
+        o.g.visible = false;
+        const lines = cfg.why[o.kind];
+        tryInGap(o).then(() => { o.g.visible = true; o.g.position.copy(o.home); });
+        const steps = [...lines];
+        if (W.misses >= 2 && !getHelped() && !bonus) { setHelped(true); steps.push(cfg.remember); }
+        steps.push(...ask);
+        play(steps);
+      };
+      play([R.say, ...ask]);
+    });
+  }
+
   function setName(n) { W.name = n; }
   async function learn() {
     setName('learn'); dots(0); W.misses = 0; W.found = 0; allow = false; onDrop = null; task = null; W.bonus = false; chant(false); stopIdle();
     $('#end').classList.remove('show');
     buildSet(); resize(); camTo('close', 10);
+    if (FIXED) { if (OL) { scene.remove(OL.g); OL = null; } const ok = await fixLesson(); if (OL) { scene.remove(OL.g); OL = null; } if (ok) fixGame(); return; }
     const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }];
     const shows = [];
     cfg.lessons.forEach((L, li) => {
@@ -584,8 +720,10 @@ export function startGame(cfg) {
   function mistake() {
     setName('mistake'); dots(3); task = null; stopIdle(); shapes.forEach(clearCorners);
     shapes.forEach(o => { if (!o.inBox) tween(300, k => o.g.scale.setScalar(Math.max(0.001, o.scale * (1 - k)))).then(() => { o.g.visible = false; }); });
-    const M = cfg.mistake, p = M.piece;
-    const d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true;
+    const M = cfg.mistake, p = M.piece || ['outline', 0, 1];
+    let d;
+    if (M.outline) { OL = makeOutline(M.outline.k, M.outline.miss, M.outline.color, 1.5); d = { g: OL.g, marks: [] }; }   /* a shape with a gap */
+    else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
     d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01);
     friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
     camTo('close', 1000).then(() => tween(500, k => d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15)))));
@@ -600,8 +738,8 @@ export function startGame(cfg) {
     right.onclick = () => {
       if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d);
       const prove = M.prove && d.marks.length ? ['Show ' + F.name + ' the corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; clearCorners(d); }] : [];
-      play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), () => cheer(friend), M.after || (() => {}),
-        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.box != null ? dropInBox(d, M.box) : M.answer ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
+      play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []), () => cheer(friend), M.after || (() => {}),
+        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
     };
     play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }]);
     setTimeout(() => { if (!answered) j.classList.add('show'); }, FAST ? 0 : 14000);
