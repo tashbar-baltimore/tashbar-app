@@ -561,7 +561,7 @@ body.bbx-open>:not(#bbx):not(script):not(style):not(#bbx-pad){visibility:hidden!
  /* ---------------- the door on the boy's Math map ---------------- */
  function eligible(){ const live=window.BB_LIVE; if(live==='off') return false; const id=me().id; if(!id) return false; if(live==='all') return true; if(/^TEST/.test(id)) return true; if(live==='test') return false;
   try{ const M=window.TL_MAP||(typeof TL_MAP!=='undefined'?TL_MAP:null); const m=M&&M.subjects&&M.subjects.MATH; const lv=m&&Number(m.level); return lv>=2&&lv<=4; }catch(e){ return false; } }
- function door(){ try{ const on=!X.open&&typeof A!=='undefined'&&A&&A.view==='hub'&&document.body.classList.contains('gm-on')&&typeof GM!=='undefined'&&GM&&GM.tab==='map'&&(!GM.world||GM.world==='MATH')&&eligible();
+ function door(){ try{ const on=!X.open&&typeof A!=='undefined'&&A&&A.view==='hub'&&document.body.classList.contains('gm-on')&&typeof GM!=='undefined'&&GM&&(GM.tab==='map'&&(!GM.world||GM.world==='MATH')||GM.tab==='home')&&eligible();
    let d=document.getElementById('bbx-door');
    if(on&&!d){ css(); d=document.createElement('button'); d.type='button'; d.id='bbx-door'; d.setAttribute('aria-label','Open my Block Builders workbook'); d.innerHTML='<span class="i">📘</span><span>Workbook</span>'; d.addEventListener('click',()=>X.openBook()); document.body.appendChild(d); }
    else if(!on&&d) d.remove(); }catch(e){} }

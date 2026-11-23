@@ -19,7 +19,7 @@
 if(typeof render!=='function'||typeof A==='undefined') return;
 const GM=window.GM=window.GM||{};
 if(GM.on) return; GM.on=true;
-GM.tab='map'; GM.view='path'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
+GM.tab='home'; GM.view='path'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
 const WORLDS={MATH:['🧮','Math'],READ:['📖','Reading'],LANG:['✍️','Writing'],SCI:['🔬','Science'],SOC:['🌍','Social Studies'],COMP:['💻','Computing'],HEB:['🔤','Lashon Hakodesh'],ELEC:['🛠️','Electives'],VOC:['🧰','Trades'],LIFE:['💰','Life & Money'],
  'K:KRI':['🔤','Kriyah'],'K:CHU':['📜','Chumash'],'K:RAS':['✒️','Rashi'],'K:MSH':['📚','Mishnayos'],'K:GEM':['🏛️','Gemara']};
 const ORDER=['MATH','K:CHU','READ','K:GEM','K:MSH','K:RAS','K:KRI','LANG','HEB','SCI','SOC','LIFE','COMP','ELEC','VOC'];
@@ -418,6 +418,70 @@ body.gm-nav #hlx-shelf{background:rgba(10,7,38,.82)!important}
 body.gm-nav #hlx-shelf .sh-in{border:4px solid #FFD84D;box-shadow:0 0 0 4px #3B1E8F,0 30px 70px rgba(0,0,0,.55)}
 body.gm-nav #hlx-shelf .sh-hd h2{font-style:italic;text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){#gm .gm-n:active,#gm .gm-play:active,#gm .gm-say:active{transform:none}#gm .gm-n:active{transform:translate(-50%,-50%)}}
+/* ===== HOME: bright, crisp, calm (HoS 2026-11-23) ===== */
+body.gm-home #gm{background:linear-gradient(180deg,#FFF7D6 0%,#FFFDF5 55%,#EAF7FF 100%);color:#1E1B4B}
+body.gm-home #gm .gm-sun{position:absolute;inset:0 0 auto 0;height:220px;pointer-events:none;background:radial-gradient(circle at 92% -10%,rgba(255,214,64,.55) 0 120px,transparent 260px)}
+#gm .gm-in.gm-wide{max-width:1000px;padding:22px 20px calc(28px + env(safe-area-inset-bottom,0px))}
+#gm .gm-hi{padding:4px 110px 14px 4px}
+#gm .gm-hi h1{margin:0;font-size:34px;line-height:1.1;font-weight:900;color:#1E1B4B;letter-spacing:-.01em}
+#gm .gm-hi p{margin:8px 0 0;font-size:19px;font-weight:800;color:#3F3A7A;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#gm .gm-hi .dots{display:inline-flex;gap:6px}
+#gm .gm-hi .dots i{width:18px;height:18px;border-radius:50%;background:#E3E0F5;border:2px solid #C9C4EA}
+#gm .gm-hi .dots i.on{background:#22C55E;border-color:#15803D}
+#gm .gm-hts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+#gm .gm-ht{position:relative;display:flex;flex-direction:column;height:270px;padding:0;border:3px solid #E6E2F7;border-radius:26px;background:#fff;color:#1E1B4B;overflow:hidden;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 6px 0 #E6E2F7,0 10px 24px rgba(40,30,110,.08);-webkit-tap-highlight-color:transparent}
+#gm .gm-ht:active{transform:translateY(3px);box-shadow:0 3px 0 #E6E2F7}
+#gm .gm-ht:focus-visible{outline:4px solid #2563EB;outline-offset:3px}
+#gm .gm-ht .top{flex:0 0 50%;display:flex;align-items:center;justify-content:center;background:var(--c)}
+#gm .gm-ht .ic{font-size:84px;line-height:1;filter:drop-shadow(0 4px 0 rgba(0,0,0,.12))}
+#gm .gm-ht .bot{flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:12px 18px}
+#gm .gm-ht .bot b{font-size:28px;line-height:1.05;font-weight:900}
+#gm .gm-ht .bot small{font-size:16px;line-height:1.25;font-weight:700;color:#4B4880;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#gm .gm-ht .bot small b{font-size:inherit;color:#047857}
+#gm .gm-ht .bdg{position:absolute;top:12px;left:12px;background:#fff;color:#1E1B4B;font-weight:900;font-size:14px;letter-spacing:.04em;border-radius:12px;padding:6px 10px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+#gm .gm-ht.work{--c:linear-gradient(135deg,#FFD23F,#FF9F1C)}
+#gm .gm-ht.work.now{border-color:#FFB800;box-shadow:0 6px 0 #E09A00,0 0 0 6px rgba(255,200,0,.35),0 12px 28px rgba(255,160,0,.3)}
+#gm .gm-ht.work.now .bdg{background:#1E1B4B;color:#FFE259}
+#gm .gm-ht.map{--c:linear-gradient(135deg,#7DD3FC,#38BDF8)}
+#gm .gm-ht.food{--c:linear-gradient(135deg,#86EFAC,#34D399)}
+#gm .gm-ht.store{--c:linear-gradient(135deg,#F9A8D4,#F472B6)}
+#gm .gm-ht.arcade{--c:linear-gradient(135deg,#C4B5FD,#A78BFA)}
+#gm .gm-ht.arcade.locked .ic{opacity:.55}
+#gm .gm-ht.things{--c:linear-gradient(135deg,#FDBA74,#FB923C)}
+body.gm-home #gm .gm-none{background:#fff;color:#1E1B4B;border-radius:22px;margin-bottom:16px}
+body.gm-home #gm .gm-none p{color:#3F3A7A!important}body.gm-home #gm .gm-none h1{color:#1E1B4B!important;text-shadow:none!important}
+@media (max-width:760px){#gm .gm-hts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#gm .gm-ht{height:210px;border-radius:22px}#gm .gm-ht .ic{font-size:64px}#gm .gm-ht .bot{padding:8px 12px;gap:3px}#gm .gm-ht .bot b{font-size:22px}#gm .gm-ht .bot small{font-size:14px}#gm .gm-hi h1{font-size:27px}#gm .gm-hi p{font-size:16px}#gm .gm-hi{padding-right:60px}#gm .gm-ht .bdg{font-size:12px;top:8px;left:8px;padding:4px 8px}}
+#gm-nav .gm-homebtn{flex:1;flex-direction:row;gap:12px;font-size:22px;color:#1E1B4B;letter-spacing:.02em}
+#gm-nav .gm-homebtn b{font-size:32px}
+body.gm-home #gm-nav{display:none!important}
+
+/* bright pages (HoS 2026-11-23: "brighter and happier ... ADHD friendly"): his work, My things and Change subject match the home */
+body.gm-lite #gm{background:linear-gradient(180deg,#FFF7D6 0%,#FFFDF5 55%,#EAF7FF 100%)!important;color:#1E1B4B}
+body.gm-lite #gm .gm-sky{display:none}
+body.gm-lite #gm .gm-top{background:#FFF7D6!important;box-shadow:0 0 0 100vmax #FFF7D6!important;border-bottom:0!important}
+body.gm-lite #gm .gm-marq{background:#fff!important;border:3px solid #E6E2F7!important;box-shadow:0 6px 0 #E6E2F7!important}
+body.gm-lite #gm .gm-marq:before{display:none}
+body.gm-lite #gm .gm-marq .s{color:#6D28D9!important;font-size:14px!important}
+body.gm-lite #gm .gm-marq h1{color:#1E1B4B!important;text-shadow:none!important;font-style:normal!important;font-size:36px!important}
+body.gm-lite #gm .gm-marq small{color:#3F3A7A!important;font-size:17px!important}
+body.gm-lite #gm .gm-rd{background:#fff!important;border:3px solid #E6E2F7!important;color:#1E1B4B!important;padding:14px 16px!important;min-height:78px;box-shadow:none!important}
+body.gm-lite #gm .gm-rd .t{font-size:18px!important}body.gm-lite #gm .gm-rd .t small{font-size:15px!important;color:#4B4880;opacity:1!important}
+body.gm-lite #gm .gm-rd .n{background:#EEEAFB!important;color:#1E1B4B!important}
+body.gm-lite #gm .gm-rd .p{color:#6D28D9!important;font-size:13px!important}
+body.gm-lite #gm .gm-rd.live{background:linear-gradient(135deg,#FFE27A,#FFC53D)!important;border-color:#FFB800!important;box-shadow:0 0 0 5px rgba(255,200,0,.3)!important}
+body.gm-lite #gm .gm-rd.live .n{background:#1E1B4B!important;color:#FFE259!important}body.gm-lite #gm .gm-rd.live .p{color:#1E1B4B!important}
+body.gm-lite #gm .gm-rd.won{background:#ECFDF5!important;border-color:#34D399!important}body.gm-lite #gm .gm-rd.won .n{background:#22C55E!important;color:#fff!important}body.gm-lite #gm .gm-rd.won .p{color:#047857!important}
+body.gm-lite #gm .gm-rd.rebbe{background:#F0F9FF!important;border-color:#7DD3FC!important}
+body.gm-lite #gm .gm-rd.final{background:#FAF5FF!important;border-color:#E9D5FF!important}body.gm-lite #gm .gm-rd.final .n{background:#E9D5FF!important}
+body.gm-lite #gm .gm-rd.final.open{background:#ECFDF5!important;border-color:#34D399!important}
+body.gm-lite #gm .gm-chest{background:#FFFBEB!important;border-color:#FCD34D!important;color:#78350F!important;font-size:15px!important}
+body.gm-lite #gm .gm-pg,body.gm-lite #gm .gm-pg h1{color:#1E1B4B!important;text-shadow:none!important;font-style:normal!important}
+body.gm-lite #gm .gm-why{color:#3F3A7A!important;font-size:18px!important}
+body.gm-lite #gm .gm-shelf{border-color:#E6E2F7!important;box-shadow:0 6px 0 #E6E2F7!important;min-height:92px!important;font-size:23px!important}
+body.gm-lite #gm .gm-shelf i{font-size:44px!important}
+body.gm-lite #gm .gm-quiet{color:#3F3A7A!important}
+@media (max-width:760px){body:has(#bbx-door).gm-home #gm .gm-hi{padding-top:46px}}
+body.gm-home #tlmenu,body.gm-lite #tlmenu{--cm-dot:#1E1B4B!important}
 `; document.head.appendChild(s); }
 function root(){ let g=document.getElementById('gm'); if(!g){ g=document.createElement('div'); g.id='gm'; g.setAttribute('role','main'); g.setAttribute('aria-label','My Map'); document.body.appendChild(g); } return g; }
 function nav(){ let n=document.getElementById('gm-nav'); if(!n){ n=document.createElement('nav'); n.id='gm-nav'; n.setAttribute('aria-label','My places'); document.body.appendChild(n); } return n; }
@@ -451,20 +515,43 @@ function rankOf(n){ let r=RANKS[0],nx=null; for(let i=0;i<RANKS.length;i++){ if(
 function steps(){ const sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m).length; }
 function money(){ const b=Number(A.st&&A.st.balance)||0; return '$'+b.toFixed(2); }
 function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.style.display!=='none'&&c.querySelector('button')); }
-function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
+/* SIMPLE HOME (HoS 2026-11-23: "much simpler ... clear and clean and helpful and big"): the top shows only his money; rank and XP live in Trophies */
+function hud(){ return `<div class="gm-hud"><button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>`; }
+function hudOld(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
 function subjectsHTML(ws){ const cur=GM.world;
  return `<div class="gm-pg"><h1>Change subject</h1><p class="gm-why">Pick the subject you want on your map.</p></div><div class="gm-shelves">${ws.map(w=>`<button type="button" class="gm-shelf${w.k===cur?' on':''}" data-gm="world" data-k="${esc(w.k)}"><i>${w.icon}</i><span>${esc(w.name)}<small>${w.cleared||!w.now?'✓ All cleared':lcOf(w)?'🎫 Level check first':'Level '+w.level+(w.k===cur?' · on your map now':'')}</small></span><em>›</em></button>`).join('')}</div>
  <button type="button" class="gm-quiet" data-gmnav="map">← Back to my map</button>`; }
+/* ===== HOME (HoS 2026-11-23: "how the student sees his day and his things ... much simpler ... what he needs to be doing should be clear
+   ... the canteen should be clear ... his work should be clear in front of him ... not so many vague options ... big ... equal size ...
+   one icon covering half the thing"; then "brighter and happier, clearer and crispier, simple and ADHD friendly"). The first screen after
+   sign-in: his name, one line on today's work, and SIX equal tiles. The top half of each tile is one big icon. Only his work glows.
+   Every door leads to a page that was already here; nothing new is paid or saved. Plan: docs/HOME-SIMPLE-PROMPT.md */
+function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\s+/)[0]||'', h=new Date().getHours(), hi=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+ const live=P.rounds.findIndex(r=>!r.won), lw=live>=0?P.rounds[live].w:null;
+ const dots=P.rounds.length?`<span class="dots" aria-hidden="true">${P.rounds.map(r=>`<i class="${r.won?'on':''}"></i>`).join('')}</span>`:'';
+ const line=!ws.length?'Your map is almost ready.':P.rounds.length?(P.open?'All your work is done today! ✓':`${P.done} of ${ROUNDS} done today`):'Every world is cleared!';
+ const tile=(cls,ic,name,sub,attr,badge)=>`<button type="button" class="gm-ht ${cls}" ${attr}><span class="top" aria-hidden="true"><span class="ic">${ic}</span></span>${badge?`<span class="bdg">${badge}</span>`:''}<span class="bot"><b>${name}</b><small>${sub}</small></span></button>`;
+ let tiles='';
+ if(ws.length){
+  const wsub=lw?`Round ${live+1}: ${esc(lw.name)} · ${esc(nm(lw.now)[0])}`:P.open?'All done! Play more if you like.':'Every world is cleared!';
+  tiles+=tile('work'+(lw?' now':''),'✏️','My work',wsub,'data-gmnav="missions"',lw?'▶ DO THIS NOW':P.open?'✓ DONE':'');
+  const p=pick(ws); tiles+=tile('map','🗺️','My map',p?`${esc(p.name)} · Level ${p.level}`:'Your levels','data-gmnav="map"');
+ }
+ tiles+=tile('food','🥪','Canteen','Buy food with your money','data-st="open" data-t="canteen"');
+ tiles+=tile('store','🛍️','Store',`You have <b>${money()}</b>`,'data-gmnav="money"');
+ tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':'🔒');
+ tiles+=tile('things','🎒','My things','Trophies, lessons, my stuff','data-gmnav="more"');
+ return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
 function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2');
- const rows=[['🎮','The Arcade',P.open?'Open! Go play.':'Opens when you finish today’s 3 rounds.','data-gmnav="games"'],
-  ['📚','All my lessons','Every subject. Pick any lesson.','data-gm="lib"']];
+ const rows=k2?[]:[['🏆','My trophies','Your rank, your week, what you learned.','data-gmnav="me"']];
+ rows.push(['📚','All my lessons','Every subject. Pick any lesson.','data-gm="lib"']);
  if(!k2&&ws.length) rows.push(['🌳','Skill tree','Every skill on your map, in order.','data-gm="treeview"']);
  rows.push(['🎒','My stuff','Bank, passport, Shabbos page and more.','data-gm="stuff"']);
  if(pfOn()) rows.push(['🧭','Pathfinder','Your level checks.','data-gm="pf"']);
- return `<div class="gm-pg"><h1>More</h1><p class="gm-why">Everything else lives here. Pick a shelf.</p></div><div class="gm-shelves">${rows.map(r=>`<button type="button" class="gm-shelf" ${r[3]}><i>${r[0]}</i><span>${r[1]}<small>${r[2]}</small></span><em>›</em></button>`).join('')}</div>`; }
+ return `<div class="gm-pg"><h1>My things</h1><p class="gm-why">Your trophies, lessons and stuff.</p></div><div class="gm-shelves">${rows.map(r=>`<button type="button" class="gm-shelf" ${r[3]}><i>${r[0]}</i><span>${r[1]}<small>${r[2]}</small></span><em>›</em></button>`).join('')}</div>`; }
 /* PATH (HoS 2026-11-20): the page starts where he is and runs DOWN to the BOSS at the end; a longer path with wide, gentle curves;
    a small floating number over every step (1, 2, 3 ...); quiet subject symbols in the empty space beside the path (Math + - x / ...). */
 const DECO={MATH:['+','−','×','÷','=','%','½','<','>'],READ:['A','b','?','!','“','”','a','Z'],LANG:['✎','A','?','!','a','.'],
@@ -561,7 +648,8 @@ function goalHTML(w,isPick){
 /* ONE BUTTON, ONE JOB (HoS 2026-11-21, simplify step 3): 4 tabs (K-2: 3). Arcade, all lessons, skill tree, My Stuff and Pathfinder sit on
    ONE "More" page; Money opens from the money chip at the top (one door, not two). */
 function navOn(){ const t=GM.tab; return /^(games|lib|mine|more)$/.test(t)?'more':t==='subjects'?'map':t; }
-function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['more','🧺','More']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['me','🏆','Trophies'],['more','🧺','More']]; const on=navOn();
+function navHTML(k2,left){ return GM.tab==='home'?'':`<button type="button" data-gmnav="home" class="gm-homebtn"><b aria-hidden="true">🏠</b>Home</button>`; }
+function navHTMLOld(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['more','🧺','More']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['me','🏆','Trophies'],['more','🧺','More']]; const on=navOn();
  return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${[on===x[0]?'on':'',GM.tap===x[0]&&Date.now()-(GM.tapAt||0)<450?'tap':''].filter(Boolean).join(' ')}"${on===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
    3 rounds a day = the school's daily goal (3 lessons mastered in one day; the server pays its bonus, Money.js moneyDailyGoal_; nothing here
@@ -589,13 +677,12 @@ function missionsHTML(ws){ const P=plan(ws), wk=weekCounts(), pk=pick(ws), picks
  rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
  const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
  const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ Play round ${P.done+1}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
- const head=P.open?`<div class="s">★ CHALLENGE COMPLETE ★</div><h1>You did it!</h1><small>All ${ROUNDS} rounds cleared today. Every extra level still counts!</small>`:`<div class="s">★ TODAY ON ★</div><h1>The Tashbar<br>Challenge!</h1><small>${P.rounds.length?'Clear '+ROUNDS+' rounds today. Round '+(P.done+1)+' is up!':'No rounds today: every world is cleared!'}</small>`;
- return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>
- <div class="gm-score"><div><small>THIS WEEK</small><b>${String(wk.w).padStart(2,'0')}</b></div><div><small>LAST WEEK</small><b style="color:#A9A6E8">${String(wk.p).padStart(2,'0')}</b></div><div><small>TO BOSS</small><b style="color:#FF5C8A">${String(toBoss).padStart(2,'0')}</b></div></div>${chest}${cta}`; }
+ const head=P.open?`<div class="s">MY WORK TODAY</div><h1>All done! ✓</h1><small>All ${ROUNDS} rounds cleared today. Every extra level still counts!</small>`:`<div class="s">MY WORK TODAY</div><h1>${P.rounds.length?P.done+' of '+ROUNDS+' done':'All clear!'}</h1><small>${P.rounds.length?'Round '+(P.done+1)+' is next. Tap Play.':'No rounds today: every world is cleared!'}</small>`;
+ return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>${chest}${cta}`; }
 function arcadeHTML(ws){ const P=plan(ws);
- return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>Clear ${P.left} more round${P.left===1?'':'s'} of today's challenge to open the Arcade!</p></div>
+ return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>Clear ${P.left} more round${P.left===1?'':'s'} of your work to open the Arcade!</p></div>
  <div class="gm-games"><div><b>⚔️</b>SHOWDOWN</div><div><b>🕵️</b>DETECTIVE</div><div><b>📒</b>JOKE BOOK</div></div>
- <div class="gm-cta"><button type="button" class="gm-play" data-gmnav="missions">🎯 Go to my rounds</button></div>`; }
+ <div class="gm-cta"><button type="button" class="gm-play" data-gmnav="missions">▶ Go to my work</button></div>`; }
 /* ===== MY GROWTH / TROPHIES (HoS 2026-11-20: "steps climbed this week (vs last week), streaks, units finished, badges, you're stronger
    than last week, all from his own mastery data"). Rank ladder, this week vs last, streak, bosses beaten in his level, WHAT I LEARNED
    (game name + real skill: "I learned how to multiply"), badges he has (no amounts here: the server pays), and the old My Stuff door. */
@@ -763,7 +850,7 @@ function show(on,navOn){ document.body.classList.toggle('gm-on',!!on); document.
 function sync(){
  css(); const g=root(), nv=nav();
  const m=M(), hub=A.view==='hub'&&!!A.st&&!document.body.classList.contains('tm-on');
- if(A.st&&GM.sid!==A.st.id){ GM.sid=A.st.id; GM.tab='map'; GM.world=''; GM.sig=''; }
+ if(A.st&&GM.sid!==A.st.id){ GM.sid=A.st.id; GM.tab='home'; GM.world=''; GM.sig=''; }
  const ws=m?worldsOf(m):[];
  liftDrawer();
  if(!hub){ show(false,false); return; }
@@ -771,7 +858,9 @@ function sync(){
  const k2=ws.length>0&&ws.every(w=>w.level<=2); document.body.classList.toggle('gm-k2',k2);
  if(k2&&GM.tab==='me') GM.tab='map';
  const P=plan(ws), daily=checkDaily(ws); checkWin(ws,daily);
- const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh;
+ const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh; document.body.classList.toggle('gm-home',GM.tab==='home'); document.body.classList.toggle('gm-lite',ws.length>0&&/^(missions|more|subjects)$/.test(GM.tab));
+ if(GM.tab==='home'){ const html=`<div class="gm-sun"></div><div class="gm-in gm-wide">${homeHTML(ws,P)}</div>`;
+  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  if(GM.tab!=='map'||!ws.length){ const T=ws.length?GM.tab:(GM.tab==='map'?'nomap':GM.tab); const body=T==='subjects'?subjectsHTML(ws):T==='more'?moreHTML(ws,P):T==='missions'?missionsHTML(ws):T==='me'?growthHTML(ws):T==='money'?moneyHTML():T==='games'?(P.open?arcadeOpenHTML():arcadeHTML(ws)):T==='lib'?libHTML():T==='mine'?stuffHTML():noMapHTML();
   const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${body}</div>`;
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
@@ -883,7 +972,7 @@ document.addEventListener('click',e=>{
   lockPop(b,id); }
  if(a==='info'){ infoToggle(b); return; }
 });
-document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-hf="home"]'); if(b&&b.classList.contains('hf-back')&&GM.tab!=='map'&&document.body.classList.contains('gm-nav')){ setTimeout(()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); },0); } },true);
+document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-hf="home"]'); if(b&&b.classList.contains('hf-back')&&GM.tab!=='home'&&document.body.classList.contains('gm-nav')){ setTimeout(()=>{ GM.tab='home'; GM.sig=''; GM.rescroll=true; sync(); },0); } },true);
 const oldRender=render;
 render=function(){ const r=oldRender.apply(this,arguments);
  try{ GM.lessonLook&&GM.lessonLook(); }catch(e){}
