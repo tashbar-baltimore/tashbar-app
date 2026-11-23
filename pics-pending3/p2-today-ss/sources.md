@@ -1,0 +1,6 @@
+- green-esrog-on-foam-net.webp | https://pixabay.com/photos/food-fruit-citrus-citron-judaism-1151540/ | Pixabay Content License | natan10
+- printers-type-drawers.webp | https://pixabay.com/photos/metal-type-lead-vintage-mechanical-110989/ | Pixabay Content License | aischmidt
+- civil-war-cannon-in-field.webp | https://pixabay.com/photos/gettysburg-cannon-cannon-artillery-3788970/ | Pixabay Content License | MikeGoad
+- sinai-and-nile-from-orbit.webp | https://images.nasa.gov/details/sts080-745-004 | Public domain (NASA) | JSC
+- israel-flag-blue-sky.webp | https://pixabay.com/photos/flag-israel-jewish-flag-pole-sky-7527081/ | Pixabay Content License | Pix-Off
+- old-red-black-horse-carriage.webp | https://pixabay.com/photos/carriage-old-horse-vintage-1008903/ | Pixabay Content License | 947051

@@ -1,0 +1,17 @@
+- snowflake-on-dark-cloth.webp | https://www.flickr.com/photos/11020019@N04/39690902301 | CC BY-SA 2.0 | Lorie Shaull
+- glass-prism-light-beam.webp | https://pixabay.com/photos/prism-light-spectrum-optics-6174502/ | Pixabay Content License | BlenderTimer
+- white-roots-around-soil.webp | https://www.flickr.com/photos/50359335@N00/507719383 | CC BY-SA 2.0 | barnoid
+- many-polished-colored-stones.webp | https://pixabay.com/photos/gems-stones-crystal-gemstone-836763/ | Pixabay Content License | Aldk
+- heart-drawing-dark.webp | https://pixabay.com/illustrations/ai-generated-heart-anatomical-8771275/ | Pixabay Content License | Mohamed-Ben-Ammar
+- lungs-glowing-drawing.webp | https://pixabay.com/illustrations/body-human-lungs-medicine-8563573/ | Pixabay Content License | David_SMC
+- belly-intestines-drawing.webp | https://pixabay.com/illustrations/offal-marking-medical-colon-liver-1463369/ | Pixabay Content License | Elionas2
+- hubble-blue-and-red-stars.webp | https://images.nasa.gov/details/GSFC_20171208_Archive_e001677 | Public domain (NASA) | GSFC
+- mountains-reflected-in-lake.webp | https://pixabay.com/photos/banff-national-park-herbert-lake-10378056/ | Pixabay Content License | NUNZG
+- three-elephants-big-to-small.webp | https://pixabay.com/photos/elephants-herd-pachyderms-mammals-8171393/ | Pixabay Content License | Schnapp_schuss
+- earth-over-moon-horizon.webp | https://images.nasa.gov/details/art002e021278 | Public domain (NASA) | NASA
+- moon-in-daytime-blue-sky.webp | https://pixabay.com/photos/moon-heaven-the-atmosphere-clouds-7892567/ | Pixabay Content License | fotoblend
+- teeth-model-pink-gums.webp | https://pixabay.com/photos/dental-prosthesis-artificial-teeth-1514697/ | Pixabay Content License | rgerber
+- duck-and-ducklings-on-rocks.webp | https://pixabay.com/photos/ducks-ducklings-mallards-birds-6480791/ | Pixabay Content License | MolnarSzabolcsErdely
+- woolly-sheep-grazing-hill.webp | https://pixabay.com/photos/sheep-grass-livestock-lamb-farm-4797921/ | Pixabay Content License | Erik_Karits
+- one-tree-four-seasons.webp | https://pixabay.com/photos/seasons-of-the-year-summer-autumn-1127760/ | Pixabay Content License | gastoninaui
+- road-broken-by-earthquake.webp | https://pixabay.com/photos/road-broken-crack-earthquake-3513114/ | Pixabay Content License | Kiwi_Lisa

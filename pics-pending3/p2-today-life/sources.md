@@ -1,0 +1,4 @@
+- rake-in-autumn-leaves.webp | https://pixabay.com/photos/computing-raking-leaves-tool-garden-3795962/ | Pixabay Content License | Peggychoucair
+- honey-dipper-jar-honeycomb.webp | https://pixabay.com/photos/honey-honeycomb-food-healthy-3434774/ | Pixabay Content License | ExplorerBob
+- wood-chisels-on-bench.webp | https://pixabay.com/photos/extension-chisel-equipment-master-996004/ | Pixabay Content License | RUINS
+- hamantaschen-plates.webp | https://pixabay.com/photos/purim-aman-jews-synagogue-religion-3010503/ | Pixabay Content License | xeno4ka

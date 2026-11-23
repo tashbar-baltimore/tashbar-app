@@ -1,0 +1,161 @@
+# PICS-2 checker: Science TODAY (p2-today-sci)
+
+Every picture was opened full size; the 17 new ones also as 2x zoomed quarters; live ones zoomed where text, people or symbols could hide.
+
+## New pictures (lib.json): all 17 OK
+
+- snowflake-on-dark-cloth: OK (SCI.EARTH.L03.03|@today) [CC BY-SA 2.0; Lorie Shaull]
+- glass-prism-light-beam: OK (SCI.MATT.L02|@today, SCI.MATT.L07.02|@today) [Pixabay Content License; BlenderTimer]
+- white-roots-around-soil: OK (SCI.PLANT.L02.01|@today) [CC BY-SA 2.0; barnoid]
+- many-polished-colored-stones: OK (SCI.LAND.L05.03|@today) [Pixabay Content License; Aldk]
+- heart-drawing-dark: OK (SCI.BODY.L05.02|@today, SCI.BODY.L02.02|@today, SCI.BODY.L07.01|@today, SCI.BODY.L04.04|@today) [Pixabay Content License; Mohamed-Ben-Ammar]
+- lungs-glowing-drawing: OK (SCI.BODY.L05.01|@today) [Pixabay Content License; David_SMC]
+- belly-intestines-drawing: OK (SCI.BODY.L06.01|@today) [Pixabay Content License; Elionas2]
+- hubble-blue-and-red-stars: OK (SCI.SKY.L06.02|@today) [Public domain (NASA); GSFC]
+- mountains-reflected-in-lake: OK (SCI.MATT.L07.01|@today) [Pixabay Content License; NUNZG]
+- three-elephants-big-to-small: OK (SCI.ANIM.L01|@today) [Pixabay Content License; Schnapp_schuss]
+- road-broken-by-earthquake: OK (SCI.LAND.L07.03|@today) [Pixabay Content License; Kiwi_Lisa]
+- earth-over-moon-horizon: OK (SCI.SKY.L05.03|@today) [Public domain (NASA); NASA]
+- moon-in-daytime-blue-sky: OK (SCI.EARTH.L02|@today) [Pixabay Content License; fotoblend]
+- teeth-model-pink-gums: OK (SCI.BODY.L04.02|@today) [Pixabay Content License; rgerber]
+- duck-and-ducklings-on-rocks: OK (SCI.LIFE.L02.02|@today) [Pixabay Content License; MolnarSzabolcsErdely]
+- woolly-sheep-grazing-hill: OK (SCI.ANIM.L05.04|@today) [Pixabay Content License; Erik_Karits]
+- one-tree-four-seasons: OK (SCI.SKY.L02.03|@today, SCI.PLANT.L02.04|@today) [Pixabay Content License; gastoninaui]
+  Note road-broken-by-earthquake: edge of an orange cone remains top right; its mark is not readable. Kept.
+
+## Reused live pictures
+
+- acoustic-guitar-white: OK (SCI.PHYS.L02.01|@today)
+- autumn-forest-path-red-leaves: REMOVED (SCI.PLANT.L04.02|@today) - 880 px wide, under 900
+- bakery-bread-shelves: OK (SCI.BODY.L03.03|@today)
+- bald-eagle-head-side: OK (SCI.LIFE.L02.01|@today)
+- ball-and-stick-molecule-model: OK (SCI.MATT.L08|@today)
+- bar-magnet-iron-filings: REMOVED (SCI.MATT.L03|@today) - only 816 px wide
+- barn-owl: OK (SCI.ANIM.L05.01|@today)
+- basalt-columns: OK (SCI.LAND.L08.01|@today)
+- bean-seed-to-seedling-stages: OK (SCI.PLANT.L03.02|@today, SCI.PLANT.L07.02|@today)
+- bean-sprout-pushing-up-from-soil: OK (SCI.LIFE.L01|@today)
+- beaver-at-dam: OK (SCI.EARTH.L01.02|@today)
+- bees-on-flower-pollen: OK (SCI.PLANT.L05.01|@today)
+- black-flashlight: OK (SCI.PHYS.L02.02|@today)
+- blood-cells-in-vessel: REMOVED (SCI.BODY.L09.02|@today) - square 1100x1100, not wide
+- boat-on-tidal-flat: REMOVED (SCI.SKY.L05.04|@today) - painted lettering on the boat hull and tiny far figures on the shore
+- bonfire-by-lake: OK (SCI.MATT.L09.04|@today)
+- brain-drawing: OK (SCI.BODY.L05.04|@today)
+- brass-telescope-on-stand: REMOVED (SCI.SKY.L06.01|@today) - near-square 1100x977, not wide
+- bread-loaf-and-wheat: OK (SCI.PLANT.L06.04|@today)
+- brown-bear-catching-fish: OK (SCI.ANIM.L08|@today)
+- bulb-wired-to-battery: OK (SCI.MATT.L05.02|@today)
+- bumpy-sneaker-sole: REMOVED (SCI.MATT.L04.02|@today) - only 602 px wide
+- butter-melting-in-pan: OK (SCI.PHYS.L03.02|@today)
+- calm-pond-green-trees: OK (SCI.LAND.L02.01|@today)
+- cheetah-standing-on-dirt-road: OK (SCI.ANIM.L06.02|@today)
+- coral-reef-with-fish: OK (SCI.LIFE.L03.02|@today)
+- dandelion-seed-head: OK (SCI.PLANT.L03.01|@today)
+- dolphin-jumping: OK (SCI.ANIM.L02.02|@today)
+- dripping-tap-on-wall: OK (SCI.LAND.L06.04|@today)
+- dromedary-camel-standing: REMOVED (SCI.ANIM.L04.03|@today) - only 742 px wide
+- ear-inside-drawing: OK (SCI.BODY.L03.02|@today)
+- earth-and-moon-in-space: OK (SCI.SKY.L07|@today)
+- earth-from-space: REMOVED (SCI.SKY.L04|@today) - square 960x960, not wide
+- earth-layers-cutaway: REMOVED (SCI.LAND.L07.01|@today) - square 1100x1100, not wide
+- earthworm-in-soil: OK (SCI.LAND.L03.02|@today)
+- eyeglasses-wooden-frame: REMOVED (SCI.BODY.L03.01|@today) - readable numbers "23-142 C20" printed on the temple arm
+- fern-leaf-underside: OK (SCI.PLANT.L07.01|@today)
+- frozen-lake: OK (SCI.MATT.L06.04|@today)
+- fruit-pile: OK (SCI.BODY.L04.01|@today, SCI.PLANT.L03.03|@today)
+- garden-spider: REMOVED (SCI.ANIM.L07.03|@today) - cross spider: white cross pattern on its back
+- geese-flying-v: OK (SCI.ANIM.L05.02|@today)
+- germs-cartoon-colourful: REMOVED (SCI.BODY.L07.03|@today, SCI.BODY.L09.01|@today) - square 1100x1100 clip art, not wide
+- glass-of-fizzy-water: OK (SCI.MATT.L09.01|@today)
+- glass-of-water-on-cloth: OK (SCI.BODY.L06.03|@today, SCI.BODY.L08.02|@today)
+- glowing-electric-room-heater: OK (SCI.LAND.L09.03|@today)
+- grand-canyon-river: OK (SCI.LAND.L05.04|@today)
+- granite-rock: OK (SCI.LAND.L05.01|@today)
+- gray-moth-on-tree-bark: REMOVED (SCI.ANIM.L09.03|@today) - 860x756: under 900 px and near-square
+- green-islet-in-turquoise-sea: OK (SCI.EARTH.L03.01|@today)
+- green-leaf-light-shining-through: OK (SCI.PLANT.L06.01|@today)
+- groundhog-eating: REMOVED (SCI.ANIM.L09.02|@today) - 896x853: under 900 px and near-square
+- honey-bee-pollen-flower: OK (SCI.LIFE.L03.01|@today)
+- honey-bees-on-yellow-comb: OK (SCI.ANIM.L05.03|@today)
+- icebergs-in-sea: OK (SCI.LAND.L06.02|@today)
+- kelp-forest-underwater: OK (SCI.ANIM.L06.04|@today)
+- kettle-with-steam: OK (SCI.MATT.L06.01|@today)
+- kingfisher-on-branch-side: OK (SCI.ANIM.L09.04|@today)
+- laptop-by-big-window: REMOVED (SCI.BODY.L08.04|@today) - key legends on the keyboard (brand-style printing), product shot
+- leaf-floating: OK (SCI.MATT.L01|@today)
+- lemons-and-oranges: OK (SCI.BODY.L06.02|@today)
+- lightning: OK (SCI.LAND.L04.03|@today, SCI.MATT.L07.04|@today)
+- lubber-grasshopper-side: OK (SCI.ANIM.L03.01|@today)
+- magnifying-glass-wooden-handle: OK (SCI.INQ.L01|@today)
+- microscope-parts-wide: REMOVED (SCI.PLANT.L08.02|@today) - printing on the objective lenses is readable (..0X)
+- milky-way-night-sky: OK (SCI.SKY.L04.04|@today, SCI.SKY.L02.02|@today)
+- mimosa-plant-leaves: OK (SCI.PLANT.L05.02|@today)
+- monarch-butterfly: OK (SCI.ANIM.L04.01|@today)
+- moon-phases: REMOVED (SCI.SKY.L04.03|@today, SCI.SKY.L02.01|@today) - 883 px wide, under 900
+- mountain-valley-yosemite: OK (SCI.LAND.L02.03|@today)
+- mushrooms-on-fallen-log: OK (SCI.PLANT.L07.03|@today)
+- mushrooms-on-old-stump: OK (SCI.ANIM.L06.03|@today)
+- oatmeal-bowl-strawberries: OK (SCI.BODY.L02.03|@today)
+- onion-skin-cells: OK (SCI.PLANT.L08|@today)
+- open-ocean-blue-water: OK (SCI.LAND.L06.01|@today)
+- pasta-in-colander: REMOVED (SCI.MATT.L06.02|@today) - square, with a photo-filter frame border, oversaturated
+- pea-plant-flowers: OK (SCI.PLANT.L07.04|@today)
+- pea-pod-open: OK (SCI.PLANT.L09|@today)
+- piano-keys: OK (SCI.MATT.L07.03|@today)
+- polar-bear: OK (SCI.ANIM.L04.04|@today, SCI.ANIM.L09.01|@today)
+- pomegranate-cut-open: REMOVED (SCI.PLANT.L05.04|@today) - 896x850: under 900 px and near-square
+- pulley-wheels: REMOVED (SCI.MATT.L04.03|@today) - the iron pulley wheel has 4 spokes forming a cross in a circle
+- rabbit-eating-grass: OK (SCI.ANIM.L06.01|@today)
+- rain-shafts-dark-cloud: OK (SCI.LAND.L04.02|@today, SCI.LAND.L02.02|@today)
+- raindrops-on-window-glass: OK (SCI.LAND.L09.04|@today)
+- red-cabbage-halves: OK (SCI.MATT.L09.02|@today)
+- red-fox-standing-in-snow: OK (SCI.ANIM.L02.01|@today)
+- red-thermos-by-lake: REMOVED (SCI.MATT.L05.04|@today) - 794x743: under 900 px and near-square
+- redwood-looking-up-wide: OK (SCI.PLANT.L05.03|@today)
+- ripples-on-water: OK (SCI.MATT.L05.03|@today)
+- river-stones: REMOVED (SCI.LAND.L01|@today) - only 816 px wide
+- robin-eggs-in-nest: OK (SCI.ANIM.L03.02|@today)
+- rock-layers-cliff: REMOVED (SCI.LAND.L08|@today) - 880 px wide, under 900
+- rough-tree-bark-closeup: REMOVED (SCI.BODY.L03.04|@today) - only 819 px wide
+- round-stone-well: OK (SCI.LAND.L06.03|@today)
+- salt-crystals: REMOVED (SCI.LAND.L05.02|@today) - near-square 960x882
+- sealed-jar-garden-ferns: OK (SCI.PLANT.L06.03|@today)
+- sink-tap-and-soap: OK (SCI.BODY.L04.03|@today, SCI.BODY.L01|@today)
+- skeleton-whole-wide: OK (SCI.BODY.L05.03|@today, SCI.BODY.L02.01|@today, SCI.BODY.L09.03|@today)
+- small-bird-puffed-on-snow: OK (SCI.ANIM.L03.03|@today)
+- space-station-over-earth: OK (SCI.SKY.L07.04|@today)
+- stacked-lumber-boards: OK (SCI.LAND.L09.01|@today)
+- star-trails-north-star: OK (SCI.SKY.L06.03|@today)
+- stoma-microscope: REMOVED (SCI.PLANT.L06.02|@today) - square 960x958
+- storm-clouds-over-america-from-space: OK (SCI.SKY.L08|@today)
+- strawberry-runner-plantlet: OK (SCI.PLANT.L09.04|@today)
+- striped-kite-with-tail: OK (SCI.LAND.L02.04|@today)
+- sun-and-planets-in-a-row: OK (SCI.SKY.L05.02|@today, SCI.SKY.L09|@today)
+- sun-in-blue-sky-clouds: OK (SCI.EARTH.L01.01|@today, SCI.SKY.L03.04|@today)
+- sun-nasa: REMOVED (SCI.SKY.L05.01|@today, SCI.SKY.L09.03|@today) - near-square 960x916
+- sunlight-on-leaves: OK (SCI.PLANT.L04.01|@today, SCI.PLANT.L02.02|@today)
+- sunrise-over-fields: OK (SCI.SKY.L01|@today, SCI.SKY.L03|@today)
+- tadpoles: OK (SCI.ANIM.L04.02|@today)
+- tectonic-plates-world-map: OK (SCI.LAND.L07.04|@today)
+- thin-crescent-moon-blue-sky: REMOVED (SCI.SKY.L06.04|@today, SCI.SKY.L03.03|@today) - 896x767: under 900 px and near-square
+- tiny-green-apples-on-branch: OK (SCI.PLANT.L02.03|@today)
+- tomato-plant-parts-drawing: OK (SCI.PLANT.L01|@today)
+- tree-rings-log: OK (SCI.PLANT.L04.03|@today)
+- trees-long-shadows-grass: OK (SCI.PHYS.L01.01|@today, SCI.SKY.L03.02|@today)
+- volcano-lava-fountain: OK (SCI.LAND.L07.02|@today)
+- watermelon-cut-open: OK (SCI.BODY.L06.04|@today)
+- wheat-stalks-heads-wide: OK (SCI.PLANT.L04.04|@today)
+- wheelchair-ramp: REMOVED (SCI.MATT.L04.04|@today) - sign with text and parked cars in the background; cluttered, not beautiful
+- white-pillows-on-bed: REMOVED (SCI.BODY.L02.04|@today, SCI.BODY.L07.02|@today) - square 1100x1100 (AI-style product image)
+- wind-turbines: OK (SCI.MATT.L05.01|@today)
+- winding-river: OK (SCI.LAND.L03.01|@today)
+- wooden-toy-truck-on-table: OK (SCI.PHYS.L01.02|@today)
+- world-map-from-space: OK (SCI.LAND.L04.04|@today)
+
+## Counts
+
+- links: 169 before, 134 after (35 links removed)
+- new pictures: 17 checked, 17 kept
+- reused live pictures: 127 checked, 30 unlinked, 97 kept
+- lane check: 5404 screens, 854 pictures, 0 problems
