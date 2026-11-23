@@ -222,16 +222,18 @@ export function startGame(cfg) {
   const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
   function viewFor(m) {
     if (m === 'close') return tall ? { pos: new THREE.Vector3(...CLOSE[0]).multiplyScalar(1.95), look: new THREE.Vector3(...CLOSE[1]) } : { pos: new THREE.Vector3(...CLOSE[0]), look: new THREE.Vector3(...CLOSE[1]) };
+    if (cfg.view) { const v = cfg.view[tall ? 'tall' : 'wide']; return { pos: new THREE.Vector3(...v[0]), look: new THREE.Vector3(...v[1]) }; }
     const v = (NB === 1 ? VIEW1 : VIEWN)[tall ? 'tall' : 'wide']; return { pos: new THREE.Vector3(...v[0]), look: new THREE.Vector3(...v[1]) };
   }
   function homeFor(i) { const s = (tall ? SLOTS_TALL : SLOTS_WIDE)[i]; return new THREE.Vector3(s[0], 0.92, s[1]); }
   function mendyAt() {
+    if (cfg.mendyAt) return new THREE.Vector3(...(cfg.mendyAt[tall ? 'tall' : 'wide'] || [0, -50, 0]));
     if (NB > 1) return tall ? new THREE.Vector3(2.35, 0, 5.4) : new THREE.Vector3(-6.3, 0, 1.2);
     const b = boxAt(0); return tall ? new THREE.Vector3(b.x + 2.1, 0, b.z + 0.35) : new THREE.Vector3(b.x + 3.0, 0, b.z + 2.0);
   }
   function placeMendy(mode) {
     if (mode === 'close') { mendy.visible = !friend.visible && cfg.mode !== 'pattern'; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
-    else { mendy.visible = !(NB > 1 && tall); mendy.position.copy(mendyAt()); mendy.rotation.set(tall ? -0.6 : 0, NB > 1 && !tall ? 0.5 : -0.35, 0); }
+    else { mendy.visible = !(NB > 1 && tall) && !(cfg.mendyAt && !cfg.mendyAt[tall ? 'tall' : 'wide']); mendy.position.copy(mendyAt()); mendy.rotation.set(tall ? -0.6 : 0, (NB > 1 || cfg.mendyAt) && !tall ? 0.5 : -0.35, 0); }
   }
   function inBoxSpot(bi, n) { const b = boxAt(bi), sp = NB === 1 ? 0.75 : 0.55; return new THREE.Vector3(b.x - sp + (n % 3) * sp, 0.3 + Math.floor(n / 3) * 0.15, b.z + (n % 2 ? 0.18 : -0.18)); }
   function resize() {
@@ -273,7 +275,8 @@ export function startGame(cfg) {
     shapes.forEach(o => {
       if (o.inBox || o.busy || o === dragging || !o.g.visible || o.slot == null) return;
       o.g.position.set(o.home.x, o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06, o.home.z);
-      o.g.rotation.y = Math.sin(t * 0.7 + o.phase) * 0.28; o.g.rotation.x = -(tall ? 0.85 : 0.42);
+      o.g.rotation.y = Math.sin(t * 0.7 + o.phase) * 0.28;
+      o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, camera.position.z - o.g.position.z);   /* faces the camera, so a square always looks square */
     });
     for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
     const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25;
@@ -509,7 +512,7 @@ export function startGame(cfg) {
   /* =========== "Fix the shape" mode (cfg.mode === 'fix'): a shape made of 3D sticks has a gap; he drags the stick that closes it =========== */
   const FIXED = cfg.mode === 'fix';
   const stickMat = c => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.35, clearcoat: 1, clearcoatRoughness: 0.2, envMapIntensity: 0.45 });
-  const SR = 0.085;   /* stick thickness */
+  const SR = 0.11;   /* stick thickness */
   function stickGeo(len, curvy) {
     if (curvy) { const c = new THREE.QuadraticBezierCurve3(new THREE.Vector3(-len / 2, 0, 0), new THREE.Vector3(0, len * 0.38, 0), new THREE.Vector3(len / 2, 0, 0)); return new THREE.TubeGeometry(c, 32, SR, 12, false); }
     const g = new THREE.CapsuleGeometry(SR, Math.max(0.01, len - 2 * SR), 6, 12); g.rotateZ(Math.PI / 2); return g;
@@ -530,7 +533,7 @@ export function startGame(cfg) {
     return { g, k, corners, sc, gap, fill, close, mark, marks: [], color };
   }
   let OL = null, roundN = 0;   /* the outline being fixed; a count of rounds, so each stick has its own name */
-  const OL_AT = () => tall ? new THREE.Vector3(0, 1.4, 1.4) : new THREE.Vector3(0, 1.5, 1.3);
+  const OL_AT = () => tall ? new THREE.Vector3(0, 1.7, 0.3) : new THREE.Vector3(0, 1.75, 0.2);
   function gapWorld() { return OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : new THREE.Vector3(); }
   function closeIt(o) {   /* the gap closes: the stick snaps in, the shape fills with colour, a dot runs all round it */
     OL.mark.visible = false; OL.close.visible = true; OL.close.scale.set(0.01, 1, 1); plink();
@@ -543,21 +546,21 @@ export function startGame(cfg) {
   function makeStick(id, kind, len, color, slot) {   /* kind: 'right' | 'short' | 'long' | 'curvy' */
     const L = kind === 'short' ? len * 0.55 : kind === 'long' ? len * 1.5 : len;
     const mat = stickMat(color), mesh = new THREE.Mesh(stickGeo(L, kind === 'curvy'), mat); mesh.castShadow = true;
-    const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = 0.25 * ((slot % 2) ? 1 : -1);
+    const turn = new THREE.Group(); turn.add(mesh); turn.rotation.z = 0.12 * ((slot % 2) ? 1 : -1);
     const g = new THREE.Group(); g.add(turn); scene.add(g);
     const o = { id, k: 'stick-' + kind, kind, box: kind === 'right' ? 0 : -1, g, turn, mesh, mat, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false, slot };
     o.home.copy(fixSlot(slot)); g.position.copy(o.home); mesh.userData.shape = o; shapes.push(o); return o;
   }
-  function fixSlot(i) { const S = tall ? [[-1.7, -2.6], [1.7, -2.6], [0, -3.8]] : [[-4.3, 0.4], [4.3, 0.4], [-4.0, -2.4]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
+  function fixSlot(i) { const S = tall ? [[-1.0, 2.7], [1.0, 3.6], [0, 4.4]] : [[-2.3, 3.0], [2.3, 3.0], [0, 3.9]]; return new THREE.Vector3(S[i][0], 0.92, S[i][1]); }
   const STICK_C = ['#C98B4E', '#2F7FD8', '#E0574F'];
   function setRound(R) {
     if (OL) scene.remove(OL.g); shapes.splice(0).forEach(o => scene.remove(o.g));
-    OL = makeOutline(R.k, R.miss, R.color, R.sc || 2.0); OL.g.position.copy(OL_AT()); OL.g.rotation.x = -(tall ? 0.7 : 0.35);
+    OL = makeOutline(R.k, R.miss, R.color, R.sc || (tall ? 1.6 : 2.1)); OL.g.position.copy(OL_AT()); OL.g.rotation.x = -Math.atan2(viewFor('wide').pos.y - OL.g.position.y, viewFor('wide').pos.z - OL.g.position.z);   /* faces the camera: a square looks square */
     roundN++; R.options.forEach((kind, i) => makeStick('r' + roundN + 's' + i, kind, OL.gap.len, STICK_C[(i + (R.k.length % 3)) % 3], i));
   }
   async function fixLesson() {
     const L = cfg.fixLesson;
-    OL = makeOutline(L.k, L.miss, L.color, 1.6); OL.g.position.set(0.55, 2.05, 0.9);
+    OL = makeOutline(L.k, L.miss, L.color, 1.05); OL.g.position.set(0.8, 2.0, 0.9);
     const ball = new THREE.Mesh(new THREE.SphereGeometry(0.16, 24, 16), new THREE.MeshPhysicalMaterial({ color: '#F2A900', clearcoat: 1, roughness: 0.3 })); OL.g.add(ball); ball.position.set(0, -0.2, 0.15);
     const roll = (out) => { const a = ball.position.clone(), b = out ? OL.gap.mid.clone().multiplyScalar(1.9) : new THREE.Vector3(0.15, -0.1, 0.15);
       return tween(1300, k => { ball.position.lerpVectors(a, b, ease(k)); ball.rotation.z -= 0.2; }).then(() => { if (out) { ball.visible = false; tone([400, 300], 'sine', .12, .3, .12); } }); };
@@ -916,6 +919,7 @@ export function startGame(cfg) {
 
   /* ---------- start: the room is already moving behind the play button ---------- */
   buildSet(); resize();
+  if (FIXED) setRound(cfg.rounds[0]);
   shapes.forEach(o => { o.g.visible = true; });
   dots(0); frame(); W.ready = true;
   preload([...cfg.intro, cfg.ask, cfg.yourTurn, 'Count the sides with me.', 'Now count the corners.', 'Your turn! Tap each corner and count.', 'One!', 'Two!', 'Three!', 'Four!', 'One.', 'Two.', 'Three.', 'Four.', 'Clap it with me! Tap the hands.']);
