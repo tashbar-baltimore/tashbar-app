@@ -1,0 +1,44 @@
+# p2-today-elec1 worker notes (PICS-2, Electives group 1)
+- ELEC.NUC.L03 -> per skill: .01 magnifying-glass-wooden-handle (live), .02 glowing-electric-room-heater (live); .03 SKIPPED: X-ray room photos all had cubby-shelf grids / people / body X-rays
+- ELEC.NUC.L04 -> per skill: .01 two-red-horseshoe-magnets (live), .02 red-drum-kit-cymbals (live), .03 cooling-towers-steam-at-sunrise (new)
+- ELEC.NUC.L05 -> atom-model-nucleus-and-electrons (new, drawing)
+- ELEC.NUC.L06 -> per skill: .02 atom-model-nucleus-and-electrons, .03 glass-prism-splitting-light (new), .04 ripe-bananas-close-up (new); .01 SKIPPED: periodic table = readable text
+- ELEC.NUC.L07 -> SKIPPED: abstract (stability, decay, half-life); every Geiger counter photo had readable numbers/brand text
+- ELEC.NUC.L08 -> .04 smoke-alarm-on-hallway-ceiling (live); .01-.03 SKIPPED: abstract (dose, safety rules)
+- ELEC.NUC.L09 -> cooling-towers-steam-at-sunrise (unit)
+- ELEC.NUC.L10 -> SKIPPED: abstract notation/maths; radon and 1945 bombs not shown
+- ELEC.NUC.L11 -> reactor-core-blue-glow (new, unit); .01 override atom-model-nucleus-and-electrons
+- ELEC.NUC.L12 -> .05 hospital-scanner-room (new; tiny "Detector" labels blurred); .01-.04 SKIPPED: no detector photo without readable numbers/text
+- ELEC.NUC.L13 -> reactor-core-blue-glow (unit); .03 and .04 override cooling-towers-steam-at-sunrise
+- ELEC.NUC.L14 -> SKIPPED: abstract nuclear physics maths
+- ELEC.NUC.L15 -> .01 and .02 reactor-core-blue-glow; .03 SKIPPED: health-physics units, nothing real to show
+- ELEC.NUC.L16 -> .01 and .02 cooling-towers-steam-at-sunrise; .03/.04 SKIPPED: control-room photos had readable labels; research question abstract
+- ELEC.FUSA.L01 -> SKIPPED: national flag (rule)
+- ELEC.FUSA.L02 -> bald-eagle-head-side (live)
+- ELEC.FUSA.L03 -> chesapeake-bay-from-space (live) (State House skipped: flags on top)
+- ELEC.FUSA.L04 -> SKIPPED: every US map had readable state names; no clean satellite view of all 50 states
+- ELEC.FUSA.L05 -> SKIPPED: Capitol/Supreme Court have statues of women; White House shows only one branch
+- ELEC.FUSA.L06 -> mount-rushmore-four-faces (new)
+- ELEC.FUSA.L07 -> SKIPPED: Constitution = readable text
+- ELEC.FUSA.L08 -> SKIPPED: abstract (term lengths)
+- ELEC.FUSA.L09 -> SKIPPED: five different topics; train photos had number plates / flags
+- ELEC.FUSA.L10 -> farmers-market-vegetable-stand (live)
+- ELEC.FUSA.L11 -> SKIPPED: Supreme Court building has readable motto + statue of a woman
+- ELEC.FUSA.L12 -> SKIPPED: abstract (rights and duties)
+- ELEC.FUSA.L13 -> SKIPPED: abstract (test facts)
+- ELEC.FNUM.L01 -> SKIPPED: calendar = readable numbers
+- ELEC.FNUM.L02 -> SKIPPED: months, nothing real without text
+- ELEC.FNUM.L03 -> wooden-hourglass-blue-sand (new)
+- ELEC.FNUM.L04 -> SKIPPED: rulers show readable numbers (would show 12 in = 1 ft)
+- ELEC.FNUM.L05 -> earth-from-space (live)
+- ELEC.FNUM.L06 -> SKIPPED: Roman-numeral clock shows the answers
+- ELEC.FNUM.L07 -> SKIPPED: metre sticks = readable numbers
+- ELEC.FNUM.L08 -> earth-and-moon-in-space (live)
+- ELEC.FNUM.L09 -> SKIPPED: abstract (percent)
+- ELEC.FNUM.L10 -> SKIPPED: abstract (powers of ten)
+- ELEC.FNUM.L11 -> pot-of-boiling-water (live)
+- ELEC.FNUM.L12 -> coin-stacks-with-sprouts (live; coin faces not visible)
+- ELEC.FNUM.L13 -> SKIPPED: abstract (mean/median/mode)
+- ELEC.WOOD.L06 -> woodworking-tools-on-old-boards (new, unit; cropped to remove stamp on plane blade); .03 sandpaper-sheet (live), .04 hammer-and-nails (live). Tape measure/square not used: readable numbers; Phillips screws not used: plus-shaped heads
+NOTE for merger: glass-prism-splitting-light is the same Pixabay source (6174502) as glass-prism-light-beam in another lane; keep one id and repoint if wanted.
+Check: 5303 screens, 846 pictures, 0 problems

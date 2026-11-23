@@ -1,0 +1,8 @@
+- cooling-towers-steam-at-sunrise.webp | https://pixabay.com/photos/nuclear-power-plant-rhine-flow-4535760/ | Pixabay Content License | distelAPPArath
+- reactor-core-blue-glow.webp | https://commons.wikimedia.org/wiki/File:Advanced_Test_Reactor.jpg | CC BY-SA 2.0 | Argonne National Laboratory
+- atom-model-nucleus-and-electrons.webp | https://pixabay.com/illustrations/lithium-atom-isolated-atomic-2784853/ | Pixabay Content License | geralt
+- glass-prism-splitting-light.webp | https://pixabay.com/photos/prism-light-spectrum-optics-6174502/ | Pixabay Content License | BlenderTimer
+- mount-rushmore-four-faces.webp | https://pixabay.com/photos/mt-rushmore-mount-rushmore-dakota-2147740/ | Pixabay Content License | pamdavila
+- wooden-hourglass-blue-sand.webp | https://pixabay.com/photos/hourglass-sand-time-sand-timer-6399440/ | Pixabay Content License | AVAKAphoto
+- woodworking-tools-on-old-boards.webp | https://pixabay.com/photos/planer-hammer-saw-rust-nails-4607203/ | Pixabay Content License | analogicus
+- hospital-scanner-room.webp | https://pixabay.com/photos/mri-magnetic-resonance-imaging-2813904/ | Pixabay Content License | jarmoluk

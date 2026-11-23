@@ -1,0 +1,9 @@
+- pile-of-glass-marbles.webp | https://pixabay.com/photos/marbles-glass-marbles-round-2614142/ | Pixabay Content License | Couleur
+- painted-globe-red-stand.webp | https://www.flickr.com/photos/61132483@N00/9632765264 | CC BY 2.0 | Elsie esq.
+- eretz-yisrael-from-space-wide.webp | https://images.nasa.gov/details/sts077-732-093 | Public domain (NASA) | JSC
+- rocket-liftoff-wide-smoke.webp | https://images.nasa.gov/details/KSC-71PC-0685 | Public domain (NASA) | KSC
+- turquoise-ocean-wave.webp | https://pixabay.com/photos/waves-sea-travel-exploration-7050053/ | Pixabay Content License | dimitrisvetsikas1969
+- river-between-high-mountains.webp | https://pixabay.com/photos/tajikistan-village-pamir-4785498/ | Pixabay Content License | Makalu
+- raspberry-kiwi-ice-pops.webp | https://pixabay.com/photos/ice-cream-raspberries-kiwi-fruit-2219574/ | Pixabay Content License | silviarita
+- wooden-bellows-camera.webp | https://pixabay.com/photos/camera-photography-oldschool-old-1598876/ | Pixabay Content License | JanosVirag
+- machine-gears-steel.webp | https://pixabay.com/photos/gears-cogs-machine-machinery-1236578/ | Pixabay Content License | MustangJoe

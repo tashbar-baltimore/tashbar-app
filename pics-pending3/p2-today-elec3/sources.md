@@ -1,0 +1,5 @@
+- djembe-drums-group.webp | https://pixabay.com/photos/drums-music-percussion-instruments-5935753/ | Pixabay Content License | fietzfotos
+- newtons-cradle-balls.webp | https://pixabay.com/photos/newtons-cradle-balls-ball-share-256213/ | Pixabay Content License | jarmoluk
+- barred-spiral-galaxy.webp | https://images.nasa.gov/details/GSFC_20171208_Archive_e002154 | Public domain (NASA) | GSFC
+- glowing-fiber-optic-strands.webp | https://pixabay.com/photos/fiber-optic-cable-blue-network-2749588/ | Pixabay Content License | chaitawat
+- car-engine-up-close.webp | https://pixabay.com/photos/engine-engine-block-metal-machine-2138981/ | Pixabay Content License | andreas160578
