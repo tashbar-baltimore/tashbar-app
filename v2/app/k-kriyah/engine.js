@@ -17,7 +17,7 @@ export const PASS = 2;                     /* the next game opens at 2 of 3 star
 const Q = new URLSearchParams(location.search);
 export const FAST = Q.has('fast');
 export const F = FAST ? 0.12 : 1;
-export const LITE = Q.has('lite');   /* ?lite=1: simpler shadows and no smoothing, so automatic tests run quicker (the pictures use the full look) */
+export const LITE = Q.has('lite');   /* ?lite=1: a third of the pixels, no shadows and no smoothing, so the automatic tests fit the 45-minute check (the pictures use the full look) */
 export const wait = ms => new Promise(r => setTimeout(r, ms * F));
 export const $ = s => document.querySelector(s);
 
@@ -191,8 +191,8 @@ export function initRenderer() {
   canvas = $('#c');
   if (Q.has('noGL') || !hasWebGL()) throw new Error('no-webgl');
   R = new THREE.WebGLRenderer({ canvas, antialias: !LITE, alpha: true, preserveDrawingBuffer: FAST });
-  R.setPixelRatio(LITE ? 1 : Math.min(devicePixelRatio, 1.75)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .82;
-  R.shadowMap.enabled = true; R.shadowMap.type = LITE ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
+  R.setPixelRatio(LITE ? .35 : Math.min(devicePixelRatio, 1.75)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .82;
+  R.shadowMap.enabled = !LITE; R.shadowMap.type = LITE ? THREE.BasicShadowMap : THREE.PCFSoftShadowMap;
   scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(R); scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
   cam = new THREE.PerspectiveCamera(38, 1, .1, 200);
