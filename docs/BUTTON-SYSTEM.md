@@ -9,12 +9,12 @@ The look lives in ONE file, `src/UiKit.html`, and the test `tests/lib/uikit.js` 
 | Main | The one thing to do now | Solid gold, words only, at most one per screen | `TLK.main('Start', 'data-act="…"')` |
 | Quiet | Every other choice | White, thin outline, words only | `TLK.quiet('Not now', …)` |
 | ✕ | Close a pop-up / leave a lesson | Round 44 px, icon only | `TLK.x(attrs, 'tr')` pop-up · `TLK.x(attrs, 'tl')` lesson |
-| House | Leave a full page (My map, My work, My things) | Round 44 px, icon only, top left | `TLK.home(attrs)` |
+| House | Leave a full page (My map, My work, My things) | Grade 4+: round 44 px, icon only, top left. **K–3: a bigger button with the house and the word "Home"** (the one exception to "icon or words") | `TLK.home(attrs, 'tl', TLK.young(grade))` |
 | Tool | Read it to me, music, hint | Round, one icon, one look per tool everywhere | `TLK.tool(icon, label, attrs)` |
 | Tile | Opens a place | The whole card is the button; no "OPEN ▶" inside | class `tlk tlk-tile` |
 
 - Every button **floats** (soft lift: solid color + soft wide shadow) and **settles** onto the page when tapped. Hand pointer; yellow ring with the keyboard.
-- **Icon or words, never both.** No "✕ Close", no "🏠 Home", no "▶ Start". The ▶ only ever means "play a sound or video".
+- **Icon or words, never both.** No "✕ Close", no "▶ Start". The one exception: the K–3 Home button (house + "Home"). The ▶ only ever means "play a sound or video".
 - Never an underlined web link for an action.
 
 ## Where things sit

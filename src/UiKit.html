@@ -10,6 +10,7 @@
    - Every button floats a little (soft lift: solid color + a soft wide shadow) and settles onto the page when tapped. Hand pointer. Yellow ring with the keyboard.
    - Icon OR words, never both. Big buttons use words; round buttons use one icon. The play triangle only ever means "play a sound or video".
    - Round buttons, all the same size: X closes a pop-up (top right) or leaves a lesson (top left, asks first); the HOUSE leaves a full page (top left).
+     K-3 boys get a bigger Home with the house and the word "Home" (the one exception to "icon or words"); grade 4 and up the round house.
    - Information is never a button: soft tint pills and boxes, no shadow, square-ish corners, one color per meaning on every page.
    - A question pop-up has a MAIN button that says what happens and a QUIET "Not now". No X. */
 :root{
@@ -38,6 +39,9 @@
 .tlk.tlk-x,.tlk.tlk-home{width:var(--tlk-round);height:var(--tlk-round);min-width:var(--tlk-round);padding:0;border-radius:50%;border:1.5px solid var(--tlk-line);background:var(--tlk-white);color:var(--tlk-ink);box-shadow:var(--tlk-lift)}
 .tlk.tlk-x svg{width:16px;height:16px;display:block}
 .tlk.tlk-home svg{width:20px;height:20px;display:block}
+/* K-3 (HoS 2026-11-23): a bigger Home with the house AND the word, the one exception to "icon or words" (young boys need it bigger) */
+.tlk.tlk-home.tlk-home-k3{width:auto;min-width:0;height:52px;padding:0 18px 0 14px;border-radius:16px;font-weight:700;font-size:17px;gap:8px}
+.tlk.tlk-home.tlk-home-k3 svg{width:24px;height:24px}
 .tlk.tlk-tool{width:48px;height:48px;min-width:48px;padding:0;border-radius:50%;border:0;background:var(--tlk-purple);color:#fff;font-size:20px;box-shadow:var(--tlk-lift-purple)}
 .tlk.tlk-tool svg{width:22px;height:22px;display:block}
 .tlk.tlk-tile{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:0;overflow:hidden;border-radius:18px;border:1.5px solid var(--tlk-line);background:var(--tlk-white);color:var(--tlk-ink);text-align:left;box-shadow:var(--tlk-lift)}
@@ -88,8 +92,10 @@ window.TLK={ X_SVG:X_SVG, HOME_SVG:HOME_SVG, WORDS:WORDS, KINDS:KINDS,
   quiet:function(text,attrs,extra){ return '<button type="button" class="tlk tlk-quiet'+(extra?' '+extra:'')+'"'+A(attrs)+'>'+esc(text)+'</button>'; },
   /* X: closes a pop-up (place "tr") or leaves a lesson (place "tl"; the screen asks "Leave this lesson?" first) */
   x:function(attrs,place,label){ return '<button type="button" class="tlk tlk-x'+(place?' tlk-at-'+place:'')+'" aria-label="'+esc(label||WORDS.close)+'"'+A(attrs)+'>'+X_SVG+'</button>'; },
-  /* HOUSE: leaves a full page (My map, My work, My things), top left */
-  home:function(attrs,place){ return '<button type="button" class="tlk tlk-home'+(place===''?'':' tlk-at-'+(place||'tl'))+'" aria-label="'+WORDS.home+'"'+A(attrs)+'>'+HOME_SVG+'</button>'; },
+  /* HOUSE: leaves a full page (My map, My work, My things), top left. young = a K-3 boy: the bigger button with the house and "Home".
+     TLK.young(grade): true for K (0) through grade 3. */
+  home:function(attrs,place,young){ return '<button type="button" class="tlk tlk-home'+(young?' tlk-home-k3':'')+(place===''?'':' tlk-at-'+(place||'tl'))+'" aria-label="'+WORDS.home+'"'+A(attrs)+'>'+HOME_SVG+(young?'<span>'+WORDS.home+'</span>':'')+'</button>'; },
+  young:function(grade){ var g=Number(grade); return grade!=null&&grade!==''&&!isNaN(g)&&g<=3; },
   /* TOOL: a round button with one icon (Read it to me, music, hint); its name shows on hold or hover */
   tool:function(icon,label,attrs){ return '<button type="button" class="tlk tlk-tool" aria-label="'+esc(label)+'" title="'+esc(label)+'"'+A(attrs)+'>'+icon+'</button>'; },
   /* INFORMATION: a soft pill or box; kind = money, prog, now, rank, lock or subj (never a button) */

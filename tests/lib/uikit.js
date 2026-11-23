@@ -10,7 +10,7 @@
    - the kit is loaded before every other part of the page. Returns { fails, oks }. */
 module.exports = async function uikit(pg) {
   return pg.evaluate(() => {
-    const fails = [], oks = [], T = window.TLK;
+    const fails = [], oks = [], T = window.TLK, fail2 = m => fails.push('button system: ' + m);
     if (!T) return { fails: ['button system: window.TLK is missing (src/UiKit.html not loaded by sgQuest_)'], oks };
     const css = document.getElementById('tlk-css'), firstOther = document.getElementById('hp-css');   /* HomePage.html's style: a fixed part that loads after the kit (some parts move themselves to the top of the page later) */
     if (!css) fails.push('button system: the kit style (#tlk-css) is not on the page');
@@ -60,11 +60,17 @@ module.exports = async function uikit(pg) {
         if (e.classList.contains('tlk-pill')) { if (bgs[s.backgroundColor] && bgs[s.backgroundColor] !== k) fails.push('button system: "' + k + '" and "' + bgs[s.backgroundColor] + '" information share a color; one color per meaning'); bgs[s.backgroundColor] = k; }
       });
     });
+    /* K-3 Home (HoS 2026-11-23): bigger, the house AND the word "Home", the house exactly centered top to bottom */
+    const k3 = document.createElement('div'); k3.innerHTML = T.home('', '', true); host.appendChild(k3); const hk = k3.firstChild, hr = hk.getBoundingClientRect(), hp = hk.querySelector('svg path').getBoundingClientRect();
+    if (hr.height < 51.5) fail2('the K-3 Home must be bigger (52 px tall; got ' + hr.height.toFixed(1) + ')');
+    if (hk.textContent.trim() !== 'Home' || !hk.querySelector('svg')) fail2('the K-3 Home shows the house and the word "Home"');
+    if (Math.abs((hp.top + hp.height / 2) - (hr.top + hr.height / 2)) > .5) fail2('the house in the K-3 Home must be centered top to bottom');
+    if (!T.young(0) || !T.young(3) || T.young(4) || T.young(null)) fail2('TLK.young: K to grade 3 are young, grade 4 and up are not');
     const ask = host.querySelector('.tk-ask');
     if (ask.querySelectorAll('.tlk-main').length !== 1 || ask.querySelectorAll('.tlk-quiet').length !== 1 || ask.querySelector('.tlk-x')) fails.push('button system: a question has one MAIN, one QUIET "Not now" and no X');
     else if (ask.querySelector('.tlk-quiet').textContent.trim() !== 'Not now') fails.push('button system: the quiet answer to a question is "Not now"');
     host.remove();
-    if (!fails.length) oks.push('button system (src/UiKit.html): soft-lift MAIN and QUIET, round X and house (44 px, picture exactly centered, no words), information flat in one color per meaning, question = MAIN + "Not now" with no X; the look holds inside a footer of link-style buttons');
+    if (!fails.length) oks.push('button system (src/UiKit.html): soft-lift MAIN and QUIET, round X and house (44 px, picture exactly centered, no words), the bigger K-3 Home (house + "Home"), information flat in one color per meaning, question = MAIN + "Not now" with no X; the look holds inside a footer of link-style buttons');
     return { fails, oks };
   });
 };
