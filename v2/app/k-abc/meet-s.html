@@ -2,386 +2,290 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Meet the snake sound</title>
-<!-- Kindergarten ABC, Unit 2, letter kit game 1: "Meet the letter" for s (v2/curriculum/k-abc/MAP.md).
-     One skill: know the sound of s (pure "sss") and its shape, through a picture inside the letter (a snake curled into s).
-     Show, then try: snake + sound -> snake curls into the letter -> mouth picture -> draw it in the air -> hold for a long sound -> find the snake letter.
-     No reading needed: every instruction is spoken; the "hear it again" button repeats it.
-     The pure sound is made by the device (a soft hiss), never by the voice, so he never hears the letter NAME here.
-     All art is original SVG. Add ?fast=1 for the automatic test (no waiting for the voice). -->
+<!-- Kindergarten ABC, Unit 2, letter kit game 1: "Meet the letter" for s (v2/curriculum/k-abc/MAP.md). Look and feel: Esti 2026-11-23
+     ("cute, cartoony, 3D, immersive... trace the letter, and as you trace it, it turns into an S").
+     One skill: the sound of s (pure "sss") and its shape. The snake IS the letter: it grows along the s as the s is traced.
+     Steps: watch the snake being drawn -> it turns into a golden letter -> mouth picture -> wiggle chant -> HE traces the s (the snake grows under his finger)
+     -> is this the snake sound? -> find the snake letter (3D letters in the meadow) -> stars.
+     No reading needed: every instruction is spoken; "hear it again" repeats it. The pure sound is made by the device, never the voice.
+     All art is drawn in code (original). ?fast=1 is for the automatic test. -->
 <style>
-:root{ --bg:#F6F1E7; --ink:#1F2A44; --soft:#5B6478; --card:#FFFFFF; --line:#E4DCCB; --green:#1E9E5A; --snake:#3DBB6E; --snake2:#2A9656; --belly:#F7D154; --gold:#F5B400; --red:#E0574F; }
+:root{ --sky:#8FD0FF; --sky-low:#E8F6FF; --go:#22B35E; --go-dark:#137A3D; --gold:#FFC83D; --ink:#1B2A47; }
 *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden; user-select:none; -webkit-user-select:none; touch-action:manipulation; }
-#game{ position:fixed; inset:0; display:flex; flex-direction:column; }
-.top{ display:grid; grid-template-columns:96px 1fr 96px; justify-items:center; align-items:center; padding:12px 16px; min-height:96px; }
-.btn{ border:0; cursor:pointer; display:grid; place-items:center; border-radius:999px; min-width:72px; min-height:72px; background:var(--card); box-shadow:0 4px 0 var(--line), 0 6px 18px rgba(31,42,68,.08); }
-.btn:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--line); }
-.btn svg{ width:40px; height:40px; }
-#again{ width:84px; height:84px; transition:opacity .25s; }
-#again.wait{ opacity:.4; }
-.dots{ display:flex; gap:6px; }
-.dots i{ width:12px; height:12px; border-radius:50%; background:var(--line); display:block; transition:background .3s; }
-.dots i.on{ background:var(--green); }
-.stage{ flex:1; display:flex; align-items:center; justify-content:center; padding:0 16px; position:relative; min-height:0; }
-.bottom{ min-height:128px; display:flex; justify-content:center; align-items:center; padding:12px 16px 20px; }
-#next{ width:112px; height:112px; background:var(--green); box-shadow:0 6px 0 #157A45, 0 10px 24px rgba(30,158,90,.35); visibility:hidden; }
-#next svg{ width:56px; height:56px; }
-#next.show{ visibility:visible; animation:pulse 1.4s ease-in-out infinite; }
-@keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.07);} }
-.pic{ width:min(84vw,56vh,440px); height:min(84vw,56vh,440px); }
-.pic.small{ width:min(44vmin,320px); height:min(44vmin,320px); }
-
-/* start */
-#start{ width:160px; height:160px; background:var(--green); box-shadow:0 8px 0 #157A45, 0 12px 30px rgba(30,158,90,.35); animation:pulse 1.4s ease-in-out infinite; }
-#start svg{ width:80px; height:80px; }
-
-/* snake */
-.snake-in{ animation:slither 1.6s cubic-bezier(.3,.7,.3,1) both; }
-@keyframes slither{ 0%{ transform:translateX(-70vw) rotate(-8deg);} 40%{ transform:translateX(-30vw) rotate(6deg);} 70%{ transform:translateX(-6vw) rotate(-4deg);} 100%{ transform:none;} }
-.tap-snake{ cursor:pointer; }
-.hissing .tongue{ animation:flick .25s ease-in-out 4; }
-@keyframes flick{ 0%,100%{ transform:scaleX(1);} 50%{ transform:scaleX(1.6);} }
-.tongue{ transform-box:fill-box; transform-origin:left center; }
-.hissing .body{ animation:wobble .5s ease-in-out 2; transform-box:fill-box; transform-origin:center; }
-@keyframes wobble{ 0%,100%{ transform:none;} 25%{ transform:rotate(-2deg);} 75%{ transform:rotate(2deg);} }
-.fade-snake{ transition:opacity 1.6s ease; }
-.letter-draw{ transition:stroke-dashoffset 2.2s ease-in-out; }
-
-/* mouth */
+html,body{ height:100%; margin:0; overflow:hidden; background:var(--sky-low); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+body{ touch-action:none; user-select:none; -webkit-user-select:none; }
+#world{ position:fixed; inset:0; background:linear-gradient(180deg, var(--sky) 0%, var(--sky-low) 70%); }
+#world canvas{ display:block; width:100%; height:100%; touch-action:none; }
+.btn{ position:fixed; border:0; padding:0; border-radius:50%; cursor:pointer; display:grid; place-items:center; transition:transform .15s ease, opacity .35s ease; z-index:5; }
+.btn:active{ transform:scale(.92); }
+.btn:focus-visible{ outline:5px solid var(--gold); outline-offset:4px; }
+.glass{ background:rgba(255,255,255,.75); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); box-shadow:0 10px 30px rgba(27,42,71,.22), inset 0 1px 0 rgba(255,255,255,.9); }
+.go{ background:radial-gradient(circle at 35% 28%, #8BF5B4 0%, var(--go) 52%, var(--go-dark) 100%); box-shadow:0 14px 34px rgba(19,122,61,.45), inset 0 2px 0 rgba(255,255,255,.5); }
+#again{ top:calc(16px + env(safe-area-inset-top, 0px)); left:calc(16px + env(safe-area-inset-left, 0px)); width:84px; height:84px; opacity:0; pointer-events:none; }
+#again.on{ opacity:1; pointer-events:auto; } #again.on.wait{ opacity:.45; }
+#again svg{ width:44px; height:44px; }
+#dots{ position:fixed; top:calc(48px + env(safe-area-inset-top, 0px)); left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:5; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); opacity:0; transition:opacity .4s; }
+#dots.on{ opacity:1; }
+#dots i{ width:12px; height:12px; border-radius:50%; background:rgba(27,42,71,.18); display:block; transition:background .3s; }
+#dots i.on{ background:var(--go); }
+#start{ left:50%; top:50%; width:170px; height:170px; margin:-85px 0 0 -85px; animation:bob 1.6s ease-in-out infinite; }
+#start svg{ width:84px; height:84px; margin-left:10px; }
+#start[hidden]{ display:none !important; }
+#next{ left:50%; bottom:calc(22px + env(safe-area-inset-bottom, 0px)); width:120px; height:120px; margin-left:-60px; opacity:0; pointer-events:none; }
+#next.show{ opacity:1; pointer-events:auto; animation:bob 1.4s ease-in-out infinite; }
+#next svg{ width:60px; height:60px; }
+@keyframes bob{ 0%,100%{ transform:translateY(0) scale(1);} 50%{ transform:translateY(-8px) scale(1.05);} }
+/* the mouth card */
+#mouth{ position:fixed; left:50%; top:50%; width:min(62vmin,420px); aspect-ratio:1; transform:translate(-50%,-40%) scale(.8); opacity:0; pointer-events:none; transition:transform .5s cubic-bezier(.3,1.4,.5,1), opacity .4s; border-radius:40px; z-index:4; padding:6%; }
+#mouth.on{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+#mouth svg{ width:100%; height:100%; }
 .air path{ stroke-dasharray:8 10; animation:blow .6s linear infinite; }
 @keyframes blow{ to{ stroke-dashoffset:-36; } }
-
-/* sky writing */
-.finger{ offset-rotate:0deg; offset-path:path("M146 58 C130 34 62 34 60 68 C58 100 142 96 142 134 C142 172 70 174 52 146"); offset-distance:0%; }
-.finger.go{ animation:trace 2.6s ease-in-out both; }
-@keyframes trace{ from{ offset-distance:0%;} to{ offset-distance:100%;} }
-.trail.go{ animation:trail 2.6s ease-in-out both; }
-@keyframes trail{ from{ stroke-dashoffset:var(--L);} to{ stroke-dashoffset:0; } }
-#did{ width:112px; height:112px; background:var(--gold); box-shadow:0 6px 0 #C48F00; }
-#did svg{ width:60px; height:60px; }
-
-/* hold */
-.hold{ position:relative; width:min(56vmin,380px); height:min(56vmin,380px); border-radius:50%; background:var(--card); border:0; cursor:pointer; box-shadow:0 8px 0 var(--line), 0 12px 30px rgba(31,42,68,.1); padding:0; touch-action:none; }
-.hold svg{ width:100%; height:100%; }
-.hold.on{ transform:scale(.97); }
-.ring{ transition:stroke-dashoffset .1s linear; }
-.hold.on .glow{ opacity:1; }
-.glow{ opacity:0; transition:opacity .2s; }
-
-/* find it */
-.tiles{ display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:clamp(10px,2.5vmin,24px); width:min(94vw,860px); }
-.tiles.two{ grid-template-columns:repeat(2, minmax(0,1fr)); width:min(70vw,440px); }
-.tile{ aspect-ratio:1; background:var(--card); border:0; border-radius:28px; cursor:pointer; box-shadow:0 6px 0 var(--line), 0 10px 24px rgba(31,42,68,.08); padding:8%; min-width:72px; min-height:72px; }
-.tile svg{ width:100%; height:100%; }
-.tile.no{ animation:shake .45s; }
+/* listen: yes (snake) and no (X) */
+#ask{ position:fixed; left:50%; bottom:calc(26px + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%); display:flex; gap:28px; z-index:5; opacity:0; pointer-events:none; transition:opacity .3s; }
+#ask.on{ opacity:1; pointer-events:auto; }
+#ask .btn{ position:static; width:132px; height:132px; }
+#ask .btn svg{ width:84px; height:84px; }
+.shake{ animation:shake .45s !important; }
 @keyframes shake{ 0%,100%{ transform:none;} 20%,60%{ transform:translateX(-10px);} 40%,80%{ transform:translateX(10px);} }
-.tile.yes{ background:#E3F6EA; box-shadow:0 6px 0 #9ED9B5; }
-.tile.hint{ box-shadow:0 0 0 6px var(--gold), 0 6px 0 var(--line); }
-.tile .ghost{ opacity:0; transition:opacity .4s; }
-.tile.hint .ghost, .tile.yes .ghost{ opacity:.35; }
-@media (max-width:600px){ .tiles{ grid-template-columns:repeat(2, minmax(0,1fr)); width:min(88vw,400px); } }
-
+.right{ box-shadow:0 0 0 8px rgba(34,179,94,.6), 0 10px 30px rgba(27,42,71,.22) !important; }
 /* end */
-.stars{ display:flex; gap:16px; justify-content:center; }
-.stars svg{ width:min(22vmin,130px); height:min(22vmin,130px); }
-.star{ transform:scale(0); }
-.star.pop{ animation:pop .45s cubic-bezier(.3,1.6,.5,1) forwards; }
+#end{ position:fixed; left:50%; bottom:calc(30px + env(safe-area-inset-bottom, 0px)); transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:18px; z-index:5; opacity:0; pointer-events:none; transition:opacity .4s; }
+#end.on{ opacity:1; pointer-events:auto; }
+.stars{ display:flex; gap:14px; padding:12px 20px; border-radius:999px; }
+.stars svg{ width:min(16vmin,96px); height:min(16vmin,96px); }
+.star{ transform:scale(0); } .star.pop{ animation:pop .45s cubic-bezier(.3,1.6,.5,1) forwards; }
 @keyframes pop{ to{ transform:scale(1);} }
-.endbox{ display:flex; flex-direction:column; align-items:center; gap:24px; }
-#replay{ width:96px; height:96px; }
-
-.fast *{ animation-duration:.01s !important; transition-duration:.01s !important; animation-iteration-count:1 !important; }
+#replay{ position:static; width:96px; height:96px; }
+#replay svg{ width:48px; height:48px; }
+#nogl{ position:fixed; inset:0; display:none; place-items:center; z-index:9; background:var(--sky-low); }
+#nogl.on{ display:grid; }
+@media (prefers-reduced-motion: reduce){ #start, #next.show{ animation:none; } }
 </style>
 </head>
 <body>
-<div id="game">
-  <div class="top">
-    <button class="btn" id="again" aria-label="Hear it again" style="visibility:hidden">
-      <svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#1F2A44"/><path d="M33 16c3 2 5 5 5 8s-2 6-5 8M37 10c5 3 8 8 8 14s-3 11-8 14" stroke="#1F2A44" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg>
-    </button>
-    <div class="dots" id="dots" aria-hidden="true"></div>
-    <div style="width:84px"></div>
-  </div>
-  <div class="stage" id="stage"></div>
-  <div class="bottom">
-    <button class="btn" id="next" aria-label="Next">
-      <svg viewBox="0 0 48 48"><path d="M14 24h20M25 13l11 11-11 11" stroke="#fff" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-  </div>
+<div id="world"></div>
+<button class="btn glass" id="again" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#1B2A47"/><path d="M33 16c3 2 5 5 5 8s-2 6-5 8M37 10c5 3 8 8 8 14s-3 11-8 14" stroke="#1B2A47" stroke-width="3.6" fill="none" stroke-linecap="round"/></svg></button>
+<div id="dots" aria-hidden="true"></div>
+<button class="btn go" id="start" aria-label="Start"><svg viewBox="0 0 48 48"><path d="M14 9 L39 24 L14 39Z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg></button>
+<button class="btn go" id="next" aria-label="Next"><svg viewBox="0 0 48 48"><path d="M13 24h22M25 13l11 11-11 11" stroke="#fff" stroke-width="6.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div class="glass" id="mouth" aria-label="how to make the sound with your mouth"><svg viewBox="0 0 220 200">
+  <circle cx="100" cy="100" r="90" fill="#F6D7B8"/>
+  <circle cx="68" cy="74" r="8" fill="#1F2A44"/><circle cx="132" cy="74" r="8" fill="#1F2A44"/>
+  <circle cx="52" cy="104" r="11" fill="#F2AFA3" opacity=".7"/><circle cx="148" cy="104" r="11" fill="#F2AFA3" opacity=".7"/>
+  <path d="M56 116 Q100 128 144 116 Q136 142 100 144 Q64 142 56 116Z" fill="#fff" stroke="#D9636B" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M60 124 Q100 136 140 124" stroke="#B9B2A6" stroke-width="3" fill="none"/>
+  <path d="M78 120 L78 127 M92 122 L92 130 M108 122 L108 130 M122 120 L122 127 M84 130 L84 137 M100 132 L100 140 M116 130 L116 137" stroke="#E2DCD2" stroke-width="2"/>
+  <g class="air" stroke="#5AA9E6" stroke-width="5" fill="none" stroke-linecap="round"><path d="M150 124 L206 112"/><path d="M152 134 L212 134"/><path d="M150 144 L206 156"/></g>
+</svg></div>
+<div id="ask">
+  <button class="btn glass" data-a="yes" aria-label="yes, the snake sound"><svg viewBox="0 0 64 64"><path d="M46 20 C42 12 22 12 20 22 C18 32 44 30 44 42 C44 52 24 54 18 46" stroke="#2FB85C" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="47" cy="19" r="7" fill="#2FB85C"/><circle cx="45" cy="17" r="2.2" fill="#fff"/><circle cx="50" cy="18" r="2.2" fill="#fff"/></svg></button>
+  <button class="btn glass" data-a="no" aria-label="no"><svg viewBox="0 0 64 64"><path d="M18 18 L46 46 M46 18 L18 46" stroke="#8C94A3" stroke-width="9" stroke-linecap="round"/></svg></button>
 </div>
+<div id="end"><div class="stars glass" id="stars"></div>
+  <button class="btn glass" id="replay" aria-label="Play again"><svg viewBox="0 0 48 48"><path d="M36 14a15 15 0 1 0 4 12" stroke="#1B2A47" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M38 4v12H26" stroke="#1B2A47" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+<div id="nogl"><svg viewBox="0 0 200 200" width="240" height="240"><path d="M146 58 C130 34 62 34 60 68 C58 100 142 96 142 134 C142 172 70 174 52 146" stroke="#2FB85C" stroke-width="30" fill="none" stroke-linecap="round"/></svg></div>
+
+<script src="lib/three.min.js"></script>
+<script src="lib/CopyShader.js"></script>
+<script src="lib/LuminosityHighPassShader.js"></script>
+<script src="lib/EffectComposer.js"></script>
+<script src="lib/RenderPass.js"></script>
+<script src="lib/ShaderPass.js"></script>
+<script src="lib/UnrealBloomPass.js"></script>
+<script src="world.js"></script>
 <script>
 (function () {
   'use strict';
-  var FAST = /[?&]fast=1/.test(location.search);
-  if (FAST) document.documentElement.classList.add('fast');
-  var $ = function (s) { return document.querySelector(s); };
-  var stage = $('#stage'), nextBtn = $('#next'), againBtn = $('#again');
-  var wait = function (ms) { return new Promise(function (r) { setTimeout(r, FAST ? 0 : ms); }); };
+  var $ = function (s) { return document.querySelector(s); }, FAST = KW.FAST, A = KW.audio;
+  var st = window.__abc = { step: -1, name: 'start', stars: 0, round: 0, lround: 0, lsn: [], easy: false, done: false, progress: 0, said: A.said, firstTry: true };
+  var W;
+  try { W = KW.init($('#world')); } catch (e) { $('#nogl').classList.add('on'); st.name = 'nogl'; st.err = String(e); return; }
+  var T3 = THREE, scene = W.scene, R = KW.runner($('#again'));
+  Object.defineProperty(st, 'hiss', { get: function () { return A.hissN; } }); Object.defineProperty(st, 'hum', { get: function () { return A.humN; } }); Object.defineProperty(st, 'again', { get: function () { return R.again; } });
 
-  /* ---------- letter shapes (one stroke set, also used later for tracing) ---------- */
-  var S = 'M146 58 C130 34 62 34 60 68 C58 100 142 96 142 134 C142 172 70 174 52 146';
-  var LET = {
-    s: S,
-    a: 'M128 84 C116 62 70 64 68 106 C66 148 118 150 128 120 M130 70 L130 152',
-    t: 'M100 40 L100 136 C100 152 114 156 132 148 M70 78 L132 78',
-    m: 'M50 74 L50 152 M50 100 C54 70 98 70 98 100 L98 152 M98 100 C102 70 148 70 148 100 L148 152'
-  };
-  function snakeSVG(cls) {
-    return '<svg class="pic ' + (cls || '') + '" viewBox="0 0 200 200" aria-label="a snake">' +
-      '<g class="body">' +
-      '<path d="' + S + '" stroke="var(--snake2)" stroke-width="34" fill="none" stroke-linecap="round"/>' +
-      '<path d="' + S + '" stroke="var(--snake)" stroke-width="28" fill="none" stroke-linecap="round"/>' +
-      '<path d="' + S + '" stroke="var(--belly)" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="3 15"/>' +
-      '</g>' +
-      '<path class="tongue" d="M168 70 l12 0 l6 -5 M180 70 l6 5" stroke="#E0574F" stroke-width="3" fill="none" stroke-linecap="round"/>' +
-      '<ellipse cx="152" cy="62" rx="20" ry="17" fill="var(--snake)" stroke="var(--snake2)" stroke-width="3"/>' +
-      '<circle cx="148" cy="55" r="6" fill="#fff"/><circle cx="160" cy="57" r="6" fill="#fff"/>' +
-      '<circle cx="149" cy="56" r="3" fill="#1F2A44"/><circle cx="161" cy="58" r="3" fill="#1F2A44"/>' +
-      '<path d="M146 69 Q156 74 166 68" stroke="var(--snake2)" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
-      '</svg>';
-  }
-  function letterSVG(k, ghost) {
-    return '<svg viewBox="0 0 200 200">' +
-      (ghost ? '<g class="ghost">' + snakeInner() + '</g>' : '') +
-      '<path d="' + LET[k] + '" stroke="var(--ink)" stroke-width="22" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  }
-  function snakeInner() {
-    return '<path d="' + S + '" stroke="var(--snake)" stroke-width="34" fill="none" stroke-linecap="round"/>' +
-      '<ellipse cx="152" cy="62" rx="20" ry="17" fill="var(--snake)"/><circle cx="149" cy="56" r="3" fill="#1F2A44"/><circle cx="161" cy="58" r="3" fill="#1F2A44"/>';
-  }
-  var STAR = '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="var(--gold)" stroke="#C48F00" stroke-width="4" stroke-linejoin="round"/></svg>';
-  var STAR_OFF = '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="#EDE6D6" stroke="#D8CFBC" stroke-width="4" stroke-linejoin="round"/></svg>';
-
-  /* ---------- sound: the pure "sss" is made here (soft filtered hiss), never spoken ---------- */
-  var AC = null, live = null;
-  function ac() { if (!AC) { try { AC = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { AC = null; } } if (AC && AC.state === 'suspended') AC.resume(); return AC; }
-  function noiseNode(c) {
-    var len = c.sampleRate * 2, b = c.createBuffer(1, len, c.sampleRate), d = b.getChannelData(0);
-    for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-    var src = c.createBufferSource(); src.buffer = b; src.loop = true;
-    var hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2600;
-    var pk = c.createBiquadFilter(); pk.type = 'peaking'; pk.frequency.value = 5500; pk.Q.value = 1.2; pk.gain.value = 9;
-    var lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 10000;
-    var g = c.createGain(); g.gain.value = 0;
-    src.connect(hp); hp.connect(pk); pk.connect(lp); lp.connect(g); g.connect(c.destination);
-    return { src: src, g: g };
-  }
-  function hissStart() {
-    var c = ac(); window.__abc.hiss++; if (!c) return; hissStop();
-    var n = noiseNode(c); n.src.start(); n.g.gain.setTargetAtTime(0.22, c.currentTime, 0.04); live = n;
-  }
-  function hissStop() {
-    if (!live || !AC) return; var n = live; live = null;
-    n.g.gain.setTargetAtTime(0, AC.currentTime, 0.05); setTimeout(function () { try { n.src.stop(); } catch (e) {} }, 300);
-  }
-  function hum(ms) {
-    var c = ac(); window.__abc.hum++; if (!c) return wait(ms || 1200);
-    var o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(), t0 = c.currentTime, d = (FAST ? 10 : (ms || 1200)) / 1000;
-    o.type = 'sawtooth'; o.frequency.value = 135; f.type = 'lowpass'; f.frequency.value = 650;
-    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.2, t0 + .06); g.gain.setValueAtTime(.2, t0 + d - .1); g.gain.linearRampToValueAtTime(0, t0 + d);
-    o.connect(f); f.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0 + d + .05);
-    return wait(ms || 1200);
-  }
-  function hiss(ms) { hissStart(); return wait(ms || 1300).then(hissStop); }
-  function chime(ok) {
-    var c = ac(); if (!c || FAST) return;
-    var notes = ok ? [660, 880] : [330, 262], t = c.currentTime;
-    notes.forEach(function (f, i) { var o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = f;
-      g.gain.setValueAtTime(0, t + i * .12); g.gain.linearRampToValueAtTime(.16, t + i * .12 + .02); g.gain.exponentialRampToValueAtTime(.001, t + i * .12 + .3);
-      o.connect(g); g.connect(c.destination); o.start(t + i * .12); o.stop(t + i * .12 + .35); });
-  }
-
-  /* ---------- the voice: the school's teacher voice, else the device voice ---------- */
-  var TTS = 'https:' + '/' + '/' + 'tts-q26c275eaa-uk.a.run.app', vcache = {}, vtok = 0, audio = null;
-  function hush() { vtok++; try { if (audio) audio.pause(); } catch (e) {} audio = null; try { window.speechSynthesis.cancel(); } catch (e) {} hissStop(); }
-  function say(t) {
-    window.__abc.said.push(t);
-    if (FAST) return Promise.resolve();
-    var my = vtok;
-    return new Promise(function (done) {
-      var fin = false, end = function () { if (!fin) { fin = true; done(); } };
-      setTimeout(end, t.length * 85 + 2500);
-      var dev = function () { if (my !== vtok) return end(); try { var u = new SpeechSynthesisUtterance(t); u.rate = 0.9; u.pitch = 1.1; u.onend = end; u.onerror = end; window.speechSynthesis.speak(u); } catch (e) { end(); } };
-      var play = function (url) { if (my !== vtok) return end(); var a = new Audio(url); audio = a; a.onended = end; a.onerror = dev; var p = a.play(); if (p && p.catch) p.catch(dev); };
-      if (vcache[t]) return play(vcache[t]);
-      Promise.race([
-        fetch(TTS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: t, voice: 'teacher' }) })
-          .then(function (r) { return r.json(); }).then(function (j) { if (j && j.ok && j.url) { vcache[t] = j.url; return j.url; } throw new Error('tts'); }),
-        new Promise(function (_, rej) { setTimeout(function () { rej(new Error('slow')); }, 1800); })
-      ]).then(play).catch(dev);
-    });
-  }
-  function preload(lines) { if (FAST) return; lines.forEach(function (t) { if (typeof t === 'string' && !vcache[t]) fetch(TTS, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: t, voice: 'teacher' }) }).then(function (r) { return r.json(); }).then(function (j) { if (j && j.ok && j.url) vcache[t] = j.url; }).catch(function () {}); }); }
-
-  /* a script is a list of: "spoken line" | {hiss:ms} | {wait:ms} | function */
-  var cur = [], runTok = 0, echoTok = 0, busy = false;
-  function play(script) {
-    var my = ++runTok; echoTok++; cur = script; busy = true; againBtn.classList.add('wait');
-    return script.reduce(function (p, s) { return p.then(function () {
-      if (my !== runTok) return;
-      if (typeof s === 'string') return say(s);
-      if (typeof s === 'function') return s();
-      if (s.hiss) return hiss(s.hiss);
-      if (s.hum) return hum(s.hum);
-      if (s.wait) return wait(s.wait);
-    }); }, Promise.resolve()).then(function () { if (my === runTok) { busy = false; againBtn.classList.remove('wait'); } return my === runTok; });
-  }
-  /* "hear it again": only repeats the words and sounds; it never stops the screen from moving on. While the voice is still talking, it waits. */
-  againBtn.onclick = function () {
-    window.__abc.again++; if (busy) return;
-    var my = ++echoTok; hush();
-    cur.filter(function (s) { return typeof s === 'string' || (typeof s === 'function' ? s.echo : (s && (s.hiss || s.hum))); }).reduce(function (p, s) { return p.then(function () {
-      if (my !== echoTok) return; if (typeof s === 'string') return say(s); if (typeof s === 'function') return s(); if (s.hiss) return hiss(s.hiss); if (s.hum) return hum(s.hum); }); }, Promise.resolve());
-  };
+  /* ---------- the s, its glowing path, the snake and the golden letter ---------- */
+  var curve = KW.curveOf(KW.STROKES.s[0], 60);
+  var stage = new T3.Group(); stage.position.set(0, 0.25, 0); scene.add(stage);
+  var N = 320, PTS = []; for (var i = 0; i <= N; i++) PTS.push(curve.getPointAt(i / N));
+  var snake = KW.snake(W, curve); stage.add(snake.group);
+  var guide = new T3.Group(), dots = []; stage.add(guide);
+  for (var di = 0; di <= 40; di++) { var d = new T3.Sprite(new T3.SpriteMaterial({ map: W.DOT, transparent: true, depthWrite: false, toneMapped: false })); d.position.copy(curve.getPointAt(di / 40)); d.position.z += 0.5; d.scale.setScalar(0.3); guide.add(d); dots.push(d); }
+  var startDot = new T3.Sprite(new T3.SpriteMaterial({ map: W.GLOW, color: KW.col(0x6CFFA4).multiplyScalar(2.2), transparent: true, depthWrite: false })); startDot.position.copy(PTS[0]); startDot.position.z += 0.55; guide.add(startDot);
+  var spark = new T3.Sprite(new T3.SpriteMaterial({ map: W.STAR, color: KW.col(0xFFFFFF).multiplyScalar(2), transparent: true, depthWrite: false })); spark.scale.setScalar(0.9); spark.visible = false; stage.add(spark);
+  var sg = new T3.Sprite(new T3.SpriteMaterial({ map: W.GLOW, color: KW.col(0xFFE27A).multiplyScalar(2.5), transparent: true, depthWrite: false })); sg.scale.setScalar(1.8); spark.add(sg);
+  guide.visible = false;
+  function grow(p) { snake.grow(p); st.progress = p; dots.forEach(function (d, i) { d.material.opacity = i / 40 < p ? 0 : 0.95; }); }
+  grow(0);
+  var gold = KW.goldMat(W), letter = KW.letter(W, 's', gold); letter.position.z = 0.4; letter.visible = false; stage.add(letter);
+  var halo = new T3.Sprite(new T3.SpriteMaterial({ map: W.GLOW, color: KW.col(0xFFD96A).multiplyScalar(1.2), transparent: true, opacity: 0, depthWrite: false })); halo.scale.setScalar(8); halo.position.z = -0.8; letter.add(halo);
+  function sparkAt(p) { spark.position.copy(curve.getPointAt(Math.min(1, Math.max(0, p)))); spark.position.z += 0.6; }
 
   /* ---------- flow ---------- */
-  var STEPS = ['intro', 'morph', 'mouth', 'wiggle', 'sky', 'hold', 'listen', 'find', 'end'];
-  var st = window.__abc = { step: -1, name: 'start', stars: 0, round: 0, firstTry: true, misses: 0, easy: false, done: false, said: [], hiss: 0, hum: 0, again: 0 };
-  var dots = $('#dots'); dots.innerHTML = STEPS.slice(0, -1).map(function () { return '<i></i>'; }).join('');
+  var STEPS = ['intro', 'morph', 'mouth', 'wiggle', 'trace', 'listen', 'find', 'end'];
+  var dotsEl = $('#dots'); dotsEl.innerHTML = STEPS.slice(0, -1).map(function () { return '<i></i>'; }).join('');
+  var nextBtn = $('#next');
   function showNext(on) { nextBtn.classList.toggle('show', !!on); }
   nextBtn.onclick = function () { if (!nextBtn.classList.contains('show')) return; showNext(false); go(st.step + 1); };
-  function go(i) {
-    hush(); runTok++; showNext(false); st.step = i; st.name = STEPS[i];
-    [].forEach.call(dots.children, function (d, k) { d.classList.toggle('on', k <= i); });
-    SCENES[STEPS[i]]();
-  }
+  function go(i) { R.stop(); showNext(false); st.step = i; st.name = STEPS[i]; W.phase = STEPS[i];
+    [].forEach.call(dotsEl.children, function (d, k) { d.classList.toggle('on', k <= i); });
+    $('#mouth').classList.remove('on'); $('#ask').classList.remove('on'); SCENES[STEPS[i]](); }
+  function fullSnake() { letter.visible = false; snake.opacity(1); snake.group.position.z = 0; snake.group.visible = true; grow(1); guide.visible = false; spark.visible = false; }
+  var tapSnakeOK = false;
 
   var SCENES = {
     intro: function () {
-      stage.innerHTML = '<div class="tap-snake snake-in" id="snk">' + snakeSVG() + '</div>';
-      var snk = $('#snk');
-      var hissy = function () { snk.classList.remove('hissing'); void snk.offsetWidth; snk.classList.add('hissing'); return hiss(1300); };
-      hissy.echo = true;
-      snk.onclick = function () { if (st.name === 'intro') { hush(); hissy(); } };
-      play([{ wait: 1500 }, 'Look! A snake.', 'Listen to the snake.', hissy, { wait: 300 }, 'Tap the snake to hear it again.']).then(function (ok) { if (ok) showNext(true); });
+      grow(0); guide.visible = false;
+      R.run([
+        function () { return W.flyIn(2.4).then(function () { guide.visible = true; A.chime([523, 659, 784]); return W.tween(0.6, function (k) { guide.scale.setScalar(0.6 + 0.4 * k); }, 'elastic'); }); },
+        'Watch me draw the snake!',
+        function () { spark.visible = true; A.hissStart(); return W.tween(3.4, function (k) { grow(k); sparkAt(k); }, 'inout').then(function () { grow(1); A.hissStop(); spark.visible = false; guide.visible = false; A.chime([659, 784, 988]); var w = new T3.Vector3(); snake.head.getWorldPosition(w); W.burst(w, 24, 5); }); },
+        'A snake! Listen.', KW.echo(function () { return snake.hiss(1.3); }), 'Tap the snake to hear it again.'
+      ]).then(function (ok) { if (ok) { tapSnakeOK = true; showNext(true); } });
     },
     morph: function () {
-      stage.innerHTML = '<svg class="pic" viewBox="0 0 200 200" aria-label="the snake curls into a letter">' +
-        '<g class="fade-snake" id="snkg">' + snakeSVG('').replace(/^<svg[^>]*>|<\/svg>$/g, '') + '</g>' +
-        '<path class="letter-draw" id="let" d="' + S + '" stroke="var(--ink)" stroke-width="22" fill="none" stroke-linecap="round" stroke-dasharray="460" stroke-dashoffset="460"/></svg>';
-      var draw = function () { $('#let').style.strokeDashoffset = '0'; return wait(2300).then(function () { $('#snkg').style.opacity = '.18'; return wait(1600); }); };
-      play(['Watch! The snake curls up into a letter.', draw, 'This letter makes the snake sound.', { hiss: 1400 }, { wait: 300 }, 'Snake shape, snake sound!']).then(function (ok) { if (ok) showNext(true); });
+      tapSnakeOK = false; fullSnake();
+      R.run(['Watch! The snake turns into a letter!',
+        function () { letter.visible = true; letter.scale.setScalar(0.001); A.chime([784, 988, 1175, 1568]); W.burst(new T3.Vector3(0, 0.6, 1), 46, 6);
+          return Promise.all([W.tween(1.4, function (k) { snake.opacity(1 - 0.85 * k); snake.group.position.z = -0.9 * k; }),
+            W.tween(1.5, function (k) { letter.scale.setScalar(Math.max(0.001, k)); letter.rotation.y = (1 - k) * Math.PI * 2; halo.material.opacity = 0.75 * k; }, 'elastic')]); },
+        'This letter makes the snake sound.', KW.echo(function () { A.hissStart(); return W.wait(1.3).then(A.hissStop); }), 'Snake shape, snake sound!'
+      ]).then(function (ok) { if (ok) showNext(true); });
     },
     mouth: function () {
-      stage.innerHTML = '<svg class="pic" viewBox="0 0 220 200" aria-label="how to make the sound with your mouth">' +
-        '<circle cx="100" cy="100" r="90" fill="#F6D7B8"/>' +
-        '<circle cx="68" cy="74" r="8" fill="#1F2A44"/><circle cx="132" cy="74" r="8" fill="#1F2A44"/>' +
-        '<circle cx="52" cy="104" r="11" fill="#F2AFA3" opacity=".7"/><circle cx="148" cy="104" r="11" fill="#F2AFA3" opacity=".7"/>' +
-        '<path d="M56 116 Q100 128 144 116 Q136 142 100 144 Q64 142 56 116Z" fill="#fff" stroke="#D9636B" stroke-width="9" stroke-linejoin="round"/>' +
-        '<path d="M60 124 Q100 136 140 124" stroke="#B9B2A6" stroke-width="3" fill="none"/>' +
-        '<path d="M78 120 L78 127 M92 122 L92 130 M108 122 L108 130 M122 120 L122 127 M84 130 L84 137 M100 132 L100 140 M116 130 L116 137" stroke="#E2DCD2" stroke-width="2"/>' +
-        '<g class="air" stroke="#5AA9E6" stroke-width="5" fill="none" stroke-linecap="round"><path d="M160 122 L208 112"/><path d="M162 136 L212 136"/><path d="M160 150 L208 160"/></g>' +
-        '</svg>';
-      play(['Teeth together. Smile. Blow the air out.', { hiss: 1500 }, { wait: 300 }, 'Now you say it!', { wait: 2000 }, "Let's say it together!", { hiss: 1500 }]).then(function (ok) { if (ok) showNext(true); });
+      $('#mouth').classList.add('on');
+      R.run(['Teeth together. Smile. Blow the air out.', KW.echo(function () { A.hissStart(); return W.wait(1.5).then(A.hissStop); }), 'Now you say it!', function () { return W.wait(2); },
+        "Let's say it together!", KW.echo(function () { A.hissStart(); return W.wait(1.5).then(A.hissStop); })]).then(function (ok) { if (ok) showNext(true); });
     },
     wiggle: function () {
-      stage.innerHTML = '<div id="wg">' + snakeSVG('') + '</div>';
-      var wg = $('#wg'), beat = function (dir) { return function () { wg.style.transform = 'rotate(' + dir * 10 + 'deg) translateX(' + dir * 14 + 'px)'; return hiss(420).then(function () { return wait(200); }); }; };
-      wg.style.transition = 'transform .2s ease';
-      var three = [beat(-1), beat(1), beat(-1), function () { wg.style.transform = ''; return wait(400); }];
-      play(['Wiggle like a snake with me!', { wait: 300 }].concat(three, ['Again!'], three, ['You wiggled like a snake!'])).then(function (ok) { if (ok) showNext(true); });
+      fullSnake(); snake.still = true;
+      var beat = function (dir) { return function () { return W.tween(0.2, function (k) { snake.group.rotation.z = dir * 0.12 * k; snake.group.position.x = dir * 0.25 * k; }).then(function () { A.hissStart(); return W.wait(0.42).then(A.hissStop); }).then(function () { return W.wait(0.15); }); }; };
+      var back = function () { return W.tween(0.25, function (k) { snake.group.rotation.z *= (1 - k); snake.group.position.x *= (1 - k); }); };
+      var three = [beat(-1), beat(1), beat(-1), back];
+      R.run(['Wiggle like a snake with me!'].concat(three, ['Again!'], three, ['You wiggled like a snake!'])).then(function (ok) { snake.still = false; snake.group.rotation.z = 0; snake.group.position.x = 0; if (ok) showNext(true); });
     },
-    listen: function () { st.lround = 0; LSN = (FAST ? ['hum', 'hiss', 'hum'] : shuffle(['hum', 'hiss', 'hiss', 'hum']).slice(0, 3)).map(function (s) { return { s: s, snake: s === 'hiss' }; }); st.lsn = LSN.map(function (x) { return x.snake; }); listenRound(); },
-    sky: function () {
-      stage.innerHTML = '<div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center">' +
-        '<svg class="pic" viewBox="0 0 200 200" aria-label="draw the letter in the air">' +
-        '<path d="' + S + '" stroke="#E4DCCB" stroke-width="22" fill="none" stroke-linecap="round"/>' +
-        '<path class="trail" id="trail" d="' + S + '" stroke="var(--snake)" stroke-width="22" fill="none" stroke-linecap="round"/>' +
-        '<circle cx="146" cy="58" r="9" fill="var(--green)"/>' +
-        '<g class="finger" id="fing"><circle r="17" fill="#FFF3C4" opacity=".9"/><circle r="10" fill="#fff" stroke="var(--gold)" stroke-width="4"/></g>' +
-        '</svg>' +
-        '<button class="btn" id="did" aria-label="I did it" style="visibility:hidden"><svg viewBox="0 0 64 64"><path d="M20 30 L20 54 L10 54 L10 30Z M24 54 L46 54 Q52 54 53 48 L56 34 Q57 28 51 28 L38 28 L40 18 Q41 10 34 10 L26 30Z" fill="#fff"/></svg></button></div>';
-      var tr = $('#trail'), L = Math.ceil(tr.getTotalLength()) + 2; tr.style.strokeDasharray = L; tr.style.strokeDashoffset = L; tr.style.setProperty('--L', L);
-      var trace = function () { $('#fing').classList.add('go'); $('#trail').classList.add('go'); hissStart(); return wait(2600).then(hissStop); };
-      play(['Draw a snake in the air with your finger.', 'Start at the dot. Watch me!', trace, { wait: 400 }, 'Your turn! Draw it and say it.', { wait: 1200 }, function () { $('#did').style.visibility = 'visible'; }, 'Tap the thumb when you did it.']);
-      $('#did').onclick = function () { hush(); chime(true); go(st.step + 1); };
+    trace: function () {
+      tk = 0; tracing = false;
+      R.run([function () { return W.tween(0.8, function (k) { snake.opacity(1 - k); }).then(function () { grow(0); snake.opacity(1); guide.visible = true; }); },
+        'Your turn! Start at the green light.', 'Draw the snake with your finger.']).then(function (ok) { if (ok) { tracing = true; lastProgress = W.time(); } });
     },
-    hold: function () {
-      var C = 2 * Math.PI * 92;
-      stage.innerHTML = '<button class="hold" id="hold" aria-label="press and hold">' +
-        '<svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" fill="none" stroke="#EDE6D6" stroke-width="10"/>' +
-        '<circle class="ring" id="ring" cx="100" cy="100" r="92" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + C + '" transform="rotate(-90 100 100)"/>' +
-        '<g transform="translate(25 25) scale(.75)"><path class="glow" d="' + S + '" stroke="#BDEBCF" stroke-width="44" fill="none" stroke-linecap="round"/>' + snakeInner() +
-        '<path d="' + S + '" stroke="var(--ink)" stroke-width="12" fill="none" stroke-linecap="round" opacity=".85"/></g></svg></button>';
-      var btn = $('#hold'), ring = $('#ring'), held = 0, t0 = 0, timer = null, NEED = FAST ? 50 : 1500, won = false;
-      var down = function (e) { if (won) return; e.preventDefault(); hush(); btn.classList.add('on'); hissStart(); t0 = Date.now();
-        timer = setInterval(function () { var h = held + Date.now() - t0; ring.style.strokeDashoffset = String(C * Math.max(0, 1 - h / NEED)); if (h >= NEED) finish(); }, 40); };
-      var up = function () { if (!timer) return; clearInterval(timer); timer = null; held += Date.now() - t0; btn.classList.remove('on'); hissStop(); };
-      var finish = function () { won = true; up(); chime(true); play(['What a long snake sound!']).then(function (ok) { if (ok) showNext(true); }); };
-      btn.addEventListener('pointerdown', down); btn.addEventListener('pointerup', up); btn.addEventListener('pointerleave', up); btn.addEventListener('pointercancel', up);
-      btn.addEventListener('contextmenu', function (e) { e.preventDefault(); });
-      play(['Press and hold the snake.', 'Make a long snake sound!']);
-    },
-    find: function () { st.round = 0; st.stars = 0; round(); },
+    listen: function () { st.lround = 0; var L = FAST ? ['hum', 'hiss', 'hum'] : shuffle(['hum', 'hiss', 'hiss', 'hum']).slice(0, 3); st.lsn = L.map(function (s) { return s === 'hiss'; }); fullSnake(); listenRound(); },
+    find: function () { snake.group.visible = false; st.round = 0; st.stars = 0; st.easy = false; buildRound(); },
     end: function () {
-      var n = st.stars;
-      stage.innerHTML = '<div class="endbox"><div class="snake-in" style="width:min(30vh,40vw,200px)">' + snakeSVG('').replace('class="pic ', 'style="width:100%;height:auto" class="') + '</div><div class="stars">' + [0, 1, 2].map(function (i) { return '<div class="star" id="star' + i + '">' + (i < n ? STAR : STAR_OFF) + '</div>'; }).join('') + '</div>' +
-        '<button class="btn" id="replay" aria-label="Play again" style="visibility:hidden"><svg viewBox="0 0 48 48"><path d="M36 14a15 15 0 1 0 4 12" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M38 4v12H26" stroke="#1F2A44" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>';
-      [0, 1, 2].forEach(function (i) { setTimeout(function () { var s = $('#star' + i); if (s) s.classList.add('pop'); }, FAST ? 0 : 200 + i * 250); });
-      chime(true); st.done = true;
-      try { var k = 'v2.kabc.meet-s'; var prev = Number(localStorage.getItem(k) || 0); if (n > prev) localStorage.setItem(k, String(n)); } catch (e) {}
-      play(['You know the snake sound!', { hiss: 900 }, function () { $('#replay').style.visibility = 'visible'; }]);
-      $('#replay').onclick = function () { st.easy = false; st.done = false; go(0); };
+      clearFind(); fullSnake(); snake.group.visible = true; var n = st.stars;
+      $('#stars').innerHTML = [0, 1, 2].map(function (i) { return '<div class="star" id="star' + i + '"><svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (i < n ? '#FFC21A' : '#E6E9EF') + '" stroke="' + (i < n ? '#C48F00' : '#C9CED8') + '" stroke-width="4" stroke-linejoin="round"/></svg></div>'; }).join('');
+      $('#end').classList.add('on'); [0, 1, 2].forEach(function (i) { setTimeout(function () { var s = $('#star' + i); if (s) s.classList.add('pop'); }, FAST ? 0 : 250 + i * 250); });
+      A.chime([659, 784, 988, 1319]); st.done = true; var w = new T3.Vector3(); snake.head.getWorldPosition(w); W.burst(w, 30, 6);
+      try { var k = 'v2.kabc.meet-s', prev = Number(localStorage.getItem(k) || 0); if (n > prev) localStorage.setItem(k, String(n)); } catch (e) {}
+      tapSnakeOK = true; R.run(['You know the snake sound!', KW.echo(function () { return snake.hiss(1); })]);
     }
   };
+  $('#replay').onclick = function () { $('#end').classList.remove('on'); st.done = false; st.easy = false; tapSnakeOK = false; go(0); };
 
-  /* listening (links back to Unit 1): a sound plays; is it the snake sound? tap the snake for yes, the X for no. */
-  var LSN = [];
+  /* ---------- his turn to trace: the snake grows under his finger ---------- */
+  var tk = 0, tracing = false, down = false, lastMove = 0, lastProgress = 0, lastNag = -9;
+  function traceStep(w) {
+    var best = -1, bd = 0.75; for (var i = tk; i <= Math.min(N, tk + 28); i++) { var dd = PTS[i].distanceTo(w); if (dd < bd) { bd = dd; best = i; } }
+    if (best > tk) { tk = best; grow(tk / N); spark.visible = true; sparkAt(tk / N); A.hissStart(); lastMove = lastProgress = W.time(); if (tk >= N - 4) traced(); }
+    else if (PTS[tk].distanceTo(w) > 1.3 && W.time() - lastNag > 4) { lastNag = W.time(); A.hissStop(); st.offPath = (st.offPath || 0) + 1; R.run(['Stay on the gold dots.']); }
+  }
+  function traced() { tracing = false; down = false; A.hissStop(); spark.visible = false; guide.visible = false; grow(1); A.chime([659, 784, 988, 1319]); var w = new T3.Vector3(); snake.head.getWorldPosition(w); W.burst(w, 30, 6);
+    R.run(['You made the snake!', KW.echo(function () { return snake.hiss(1.2); })]).then(function (ok) { if (ok) { tapSnakeOK = true; showNext(true); } }); }
+  function hint() {   /* stuck: the sparkle shows him the next part of the path */
+    lastProgress = W.time(); st.hints = (st.hints || 0) + 1; var from = tk / N, to = Math.min(1, from + 0.25); spark.visible = true;
+    R.run(['Follow the sparkle!', function () { return W.tween(1.4, function (k) { sparkAt(from + (to - from) * k); }, 'inout').then(function () { sparkAt(from); }); }]);
+  }
+  function stagePoint(e) { var p = W.planeAt(e, stage.position.z); return p ? p.sub(stage.position) : null; }
+  W.renderer.domElement.addEventListener('pointerdown', function (e) {
+    A.ctx();
+    if (st.name === 'trace' && tracing) { var w = stagePoint(e); if (!w) return; if (tk === 0 && w.distanceTo(PTS[0]) > 1) { if (W.time() - lastNag > 3) { lastNag = W.time(); R.run(['Start at the green light.']); } return; }
+      down = true; try { W.renderer.domElement.setPointerCapture(e.pointerId); } catch (x) {} traceStep(w); return; }
+    if (st.name === 'find') return findTap(e);
+    if (tapSnakeOK && !R.busy && snake.group.visible && W.hits(e, [snake.group]).length) snake.hiss(1.1);
+  });
+  W.renderer.domElement.addEventListener('pointermove', function (e) { if (down && tracing) { var w = stagePoint(e); if (w) traceStep(w); } });
+  window.addEventListener('pointerup', function () { down = false; if (st.name === 'trace') A.hissStop(); });
+
+  /* ---------- is this the snake sound? ---------- */
+  function shuffle(a) { a = a.slice(); if (FAST) return a; for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
+  var askEl = $('#ask');
   function listenRound() {
-    var r = LSN[st.lround], snd = r.s === 'hiss' ? { hiss: 1200 } : { hum: 1200 }, locked = false;
-    stage.innerHTML = '<div class="tiles two"><button class="tile" data-a="yes" aria-label="yes, the snake">' + snakeSVG('').replace(/class="pic "/, 'style="width:100%;height:100%"') + '</button>' +
-      '<button class="tile" data-a="no" aria-label="no"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="70" fill="#F1ECE2"/><path d="M68 68 L132 132 M132 68 L68 132" stroke="#9AA1AE" stroke-width="22" stroke-linecap="round"/></svg></button></div>';
-    [].forEach.call(stage.querySelectorAll('.tile'), function (b) {
-      b.onclick = function () {
-        if (locked) return; var right = (b.dataset.a === 'yes') === r.snake;
-        hush();
-        if (right) { locked = true; b.classList.add('yes'); chime(true);
-          play([r.snake ? 'Yes! That is the snake sound.' : 'Right! That is not the snake.', r.snake ? { hiss: 700 } : { wait: 100 }]).then(function (ok) { if (!ok) return; st.lround++; if (st.lround < LSN.length) listenRound(); else go(st.step + 1); });
-        } else { chime(false); b.classList.remove('no'); void b.offsetWidth; b.classList.add('no');
-          play(['Listen again.', snd, 'The snake sounds like this.', { hiss: 1000 }]); }
-      };
-    });
-    play(st.lround === 0 ? ['Is this the snake sound?', 'Tap the snake for yes. Tap the X for no.', snd] : ['Listen. Is this the snake sound?', snd]);
+    var isSnake = st.lsn[st.lround], snd = KW.echo(isSnake ? function () { A.hissStart(); return W.wait(1.2).then(A.hissStop); } : function () { return A.hum(1200); }), locked = false;
+    askEl.classList.add('on'); [].forEach.call(askEl.querySelectorAll('.btn'), function (b) { b.classList.remove('right', 'shake');
+      b.onclick = function () { if (locked) return; var right = (b.dataset.a === 'yes') === isSnake; R.stop();
+        if (right) { locked = true; b.classList.add('right'); A.chime([660, 880]);
+          R.run([isSnake ? 'Yes! That is the snake sound.' : 'Right! That is not the snake.', isSnake ? function () { return snake.hiss(0.8); } : function () { return W.wait(0.1); }]).then(function (ok) { if (!ok) return; st.lround++; if (st.lround < st.lsn.length) listenRound(); else go(st.step + 1); });
+        } else { b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake'); A.chime([330, 262]);
+          R.run(['Listen again.', snd, 'The snake sounds like this.', KW.echo(function () { return snake.hiss(1); })]); } }; });
+    R.run(st.lround === 0 ? ['Is this the snake sound?', 'Tap the snake for yes. Tap the X for no.', snd] : ['Listen. Is this the snake sound?', snd]);
   }
 
-  /* find the snake letter: 3 rounds; a star for each one found on the first try.
-     Fewer than 2 stars -> he sees the snake inside the letter again, then tries with only 2 choices (easier, more help). */
+  /* ---------- find the snake letter: 3D letters stand in the meadow ---------- */
   var SETS = [['s', 'a', 't', 'm'], ['t', 's', 'm', 'a'], ['m', 'a', 's', 't']], EASY = [['s', 'm'], ['a', 's'], ['s', 't']];
-  function shuffle(a) { a = a.slice(); if (FAST) return a; for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x; } return a; }
-  function round() {
-    var set = shuffle((st.easy ? EASY : SETS)[st.round]); st.firstTry = true; st.misses = 0;
-    stage.innerHTML = '<div class="tiles' + (st.easy ? ' two' : '') + '">' + set.map(function (k) { return '<button class="tile" data-k="' + k + '" aria-label="letter">' + letterSVG(k, k === 's') + '</button>'; }).join('') + '</div>';
-    var locked = false;
-    [].forEach.call(stage.querySelectorAll('.tile'), function (b) {
-      b.onclick = function () {
-        if (locked) return;
-        if (b.dataset.k === 's') {
-          locked = true; hush(); b.classList.add('yes'); chime(true); if (st.firstTry) st.stars++;
-          play([{ hiss: 900 }, 'Yes!']).then(function (ok) { if (!ok) return; st.round++; if (st.round < 3) round(); else afterRounds(); });
-        } else {
-          st.firstTry = false; st.misses++; hush(); chime(false);
-          b.classList.remove('no'); void b.offsetWidth; b.classList.add('no');
-          var right = stage.querySelector('.tile[data-k="s"]');
-          play(['Not that one. Look for the curvy snake.', function () { right.classList.add('hint'); return wait(1500); }, { hiss: 800 }]);
-        }
-      };
-    });
-    play([st.round === 0 ? 'Find the snake letter!' : 'Find the snake letter again!']);
+  var candy = function (c) { return new T3.MeshPhysicalMaterial({ color: KW.col(c), roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, envMap: W.envTex, envMapIntensity: 0.8 }); };
+  var LCOL = [0x4FA8FF, 0xFF7FAE, 0xFFB627, 0xB98CFF], findGroup = new T3.Group(), findLetters = [], findLocked = false; scene.add(findGroup);
+  function clearFind() { while (findGroup.children.length) findGroup.remove(findGroup.children[0]); findLetters = []; }
+  function slots(n) { var a = W.aspect;
+    if (n === 2) return a < 1 ? [[0, 2.3, 0.5], [0, -0.4, 0.5]] : [[-2, 0.3, 0.6], [2, 0.3, 0.6]];
+    if (a < 1) return [[-1.5, 2.3, 0.42], [1.5, 2.3, 0.42], [-1.5, -0.2, 0.42], [1.5, -0.2, 0.42]];
+    return [[-4.4, 0.2, 0.55], [-1.5, 0.2, 0.55], [1.5, 0.2, 0.55], [4.4, 0.2, 0.55]]; }
+  function buildRound() {
+    clearFind(); findLocked = false; st.firstTry = true; var set = shuffle((st.easy ? EASY : SETS)[st.round]), sl = slots(set.length);
+    set.forEach(function (k, i) { var L = KW.letter(W, k, candy(LCOL[(i + st.round) % 4])), s = sl[i][2]; L.position.set(sl[i][0], sl[i][1], 0.3); L.userData.s = s; L.scale.setScalar(0.001); findGroup.add(L); findLetters.push(L);
+      W.tween(0.6 + i * 0.12, function (q) { L.scale.setScalar(Math.max(0.001, q * s)); }, 'back'); });
+    R.run([st.round === 0 ? 'Find the snake letter!' : 'Find the snake letter again!']);
+  }
+  function letterOf(e) { var h = W.hits(e, findLetters); if (!h.length) return null; var o = h[0].object; while (o && !o.userData.key) o = o.parent; return o; }
+  function findTap(e) {
+    if (findLocked) return; var L = letterOf(e); if (!L) return; R.stop();
+    if (L.userData.key === 's') {
+      findLocked = true; A.chime([660, 880]); if (st.firstTry) st.stars++; W.burst(L.position.clone(), 24, 4);
+      var y0 = L.position.y; R.run([function () { return W.tween(0.5, function (k) { L.position.y = y0 + Math.sin(k * Math.PI) * 0.8; L.rotation.y = k * Math.PI * 2; }); }, function () { A.hissStart(); return W.wait(0.9).then(A.hissStop); }, 'Yes!'])
+        .then(function (ok) { if (!ok) return; st.round++; if (st.round < 3) buildRound(); else afterRounds(); });
+    } else {
+      st.firstTry = false; A.chime([330, 262]); var x0 = L.position.x;
+      W.tween(0.45, function (k) { L.position.x = x0 + Math.sin(k * Math.PI * 6) * 0.15 * (1 - k); });
+      var right = findLetters.filter(function (x) { return x.userData.key === 's'; })[0];
+      R.run(['Not that one. Look for the curvy snake.', function () { return showGhost(right); }, KW.echo(function () { A.hissStart(); return W.wait(0.8).then(A.hissStop); })]);
+    }
+  }
+  function showGhost(L) {   /* the snake appears inside the right letter for a moment */
+    var g = KW.snake(W, curve, 0.44); g.grow(1); g.opacity(0.55); g.group.position.copy(L.position); g.group.position.z += 0.25; g.base = L.userData.s; g.group.scale.setScalar(L.userData.s); g.y = L.position.y; findGroup.add(g.group); st.ghost = (st.ghost || 0) + 1;
+    return W.wait(1.6).then(function () { return W.tween(0.4, function (k) { g.opacity(0.55 * (1 - k)); }); }).then(function () { findGroup.remove(g.group); });
   }
   function afterRounds() {
     if (st.easy) st.stars = Math.min(st.stars, 2);   /* with extra help he can pass, but not with full stars */
     if (st.stars >= 2 || st.easy) return go(STEPS.indexOf('end'));
-    st.easy = true;
-    stage.innerHTML = '<svg class="pic" viewBox="0 0 200 200">' + snakeInner() + '<path d="' + S + '" stroke="var(--ink)" stroke-width="22" fill="none" stroke-linecap="round"/></svg>';
-    play(["Let's look one more time.", 'See the snake inside the letter?', { hiss: 1200 }]).then(function (ok) { if (ok) { st.round = 0; st.stars = 0; round(); } });
+    st.easy = true; clearFind(); fullSnake();
+    R.run(["Let's look one more time.", function () { letter.visible = true; letter.scale.setScalar(1); snake.opacity(0.5); return W.wait(0.3); }, 'See the snake inside the letter?', KW.echo(function () { A.hissStart(); return W.wait(1.2).then(A.hissStop); })])
+      .then(function (ok) { if (!ok) return; letter.visible = false; snake.group.visible = false; st.round = 0; st.stars = 0; buildRound(); });
   }
+  W.onResize = function () { if (st.name === 'find' && findLetters.length) { var sl = slots(findLetters.length); findLetters.forEach(function (L, i) { L.position.set(sl[i][0], sl[i][1], 0.3); L.userData.s = sl[i][2]; L.scale.setScalar(sl[i][2]); }); } };
 
-  /* start screen: one big play button (a tap is needed before sound can play) */
-  stage.innerHTML = '<button class="btn" id="start" aria-label="Start"><svg viewBox="0 0 48 48"><path d="M16 10 L38 24 L16 38Z" fill="#fff" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></svg></button>';
-  preload(['Look! A snake.', 'Listen to the snake.', 'Tap the snake to hear it again.', 'Watch! The snake curls up into a letter.', 'This letter makes the snake sound.', 'Snake shape, snake sound!']);
-  $('#start').onclick = function () { ac(); againBtn.style.visibility = 'visible'; go(0); };
+  /* ---------- every frame ---------- */
+  W.onFrame(function (dt, T) {
+    if (st.name === 'trace' && T - lastMove > 0.18) A.hissStop();
+    if (st.name === 'trace' && tracing && !down && !R.busy && T - lastProgress > 7) hint();
+    startDot.visible = guide.visible && tk < 4; startDot.scale.setScalar((st.name === 'trace' && tk === 0 ? 1.1 : 0.7) * (0.85 + Math.sin(T * 5) * 0.2));
+    dots.forEach(function (d, i) { d.scale.setScalar(0.3 + Math.sin(T * 4 - i * 0.35) * 0.05); });
+    if (letter.visible) { letter.position.y = Math.sin(T * 1.6) * 0.07; letter.rotation.y += (Math.sin(T * 0.7) * 0.3 - letter.rotation.y) * 0.03; }
+    if (!findLocked) findLetters.forEach(function (L, i) { L.rotation.y = Math.sin(T * 0.8 + i) * 0.25; });
+  });
+
+  /* for the automatic test: where things are on the screen */
+  function midOf(L) { return KW.curveOf(KW.STROKES[L.userData.key][0]).getPointAt(0.5).multiplyScalar(L.userData.s).add(L.position); }
+  st.screenOfTrace = function (i) { return W.screenOf(PTS[i].clone().add(stage.position)); };
+  st.screenOfLetter = function (k) { var L = findLetters.filter(function (x) { return x.userData.key === k; })[0]; return L ? W.screenOf(midOf(L)) : null; };
+  st.screenOfOther = function () { var L = findLetters.filter(function (x) { return x.userData.key !== 's'; })[0]; return L ? W.screenOf(midOf(L)) : null; };
+  st.screenOfHead = function () { var w = new T3.Vector3(); snake.head.getWorldPosition(w); return W.screenOf(w); };
+  st.letters = function () { return findLetters.map(function (L) { return L.userData.key; }); };
+  st.isReady = function () { return !!W.ready; };
+
+  /* start: one big play button (a tap is needed before sound can play) */
+  A.preload(['Watch me draw the snake!', 'A snake! Listen.', 'Tap the snake to hear it again.', 'Watch! The snake turns into a letter!', 'This letter makes the snake sound.', 'Snake shape, snake sound!']);
+  $('#start').onclick = function () { A.ctx(); $('#start').hidden = true; $('#again').classList.add('on'); dotsEl.classList.add('on'); W.phase = 'intro'; go(0); };
 })();
 </script>
 </body>
