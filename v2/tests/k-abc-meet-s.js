@@ -42,7 +42,8 @@ module.exports = async function (browser) {
       await pg.click('.tile[data-a="yes"]'); await pg.waitForTimeout(100);   // round 1 is a hum: "yes" is wrong
       if (!(await pg.evaluate(() => window.__abc.said.some(t => /listen again/i.test(t))))) bad(label + ': a wrong answer in the listening round is not explained');
       await pg.click('.tile[data-a="no"]'); await pg.waitForFunction(() => window.__abc.lround === 1, null, { timeout: 10000 });
-      await pg.waitForSelector('.tile[data-a="yes"]:not(.yes)'); await pg.click('.tile[data-a="yes"]');
+      await pg.waitForSelector('.tile[data-a="yes"]:not(.yes)'); await pg.click('.tile[data-a="yes"]'); await pg.waitForFunction(() => window.__abc.lround === 2, null, { timeout: 10000 });
+      await pg.waitForSelector('.tile[data-a="no"]:not(.yes)'); await pg.click('.tile[data-a="no"]');
       await step('find'); await pg.waitForSelector('.tile[data-k]'); await need('find the snake letter');
       if (await pg.$$eval('.tile[data-k]', t => t.length) !== 4) bad(label + ': find-it should show 4 letters');
       await pg.click('.tile:not([data-k="s"])'); await pg.waitForSelector('.tile.hint', { timeout: 10000 }).catch(() => bad(label + ': a wrong tap does not show him the right letter'));
@@ -61,6 +62,7 @@ module.exports = async function (browser) {
       const b2 = await (await pg.$('#hold')).boundingBox(); await pg.mouse.move(b2.x + b2.width / 2, b2.y + b2.height / 2); await pg.mouse.down(); await pg.waitForTimeout(300); await pg.mouse.up();
       await next(); await step('listen');
       await pg.click('.tile[data-a="no"]'); await pg.waitForFunction(() => window.__abc.lround === 1, null, { timeout: 10000 }); await pg.waitForSelector('.tile[data-a="yes"]:not(.yes)'); await pg.click('.tile[data-a="yes"]');
+      await pg.waitForFunction(() => window.__abc.lround === 2, null, { timeout: 10000 }); await pg.waitForSelector('.tile[data-a="no"]:not(.yes)'); await pg.click('.tile[data-a="no"]');
       await step('find');
       for (let r = 0; r < 3; r++) { await pg.waitForFunction(k => window.__abc.round === k && !document.querySelector('.tile.yes'), r, { timeout: 10000 });
         if (r < 2) { await pg.click('.tile:not([data-k="s"])'); await pg.waitForSelector('.tile.hint', { timeout: 10000 }); } await pg.click('.tile[data-k="s"]'); }
