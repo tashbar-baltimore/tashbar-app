@@ -137,7 +137,7 @@ function setPile(added,unit){ const m=meter(), p=m.querySelector('.pile'), n=m.q
   while(p.children.length>show) p.lastChild.remove();
   while(p.children.length<show){ const i=document.createElement('i'); i.style.bottom=(p.children.length*3)+'px'; if(added&&!RM&&unit!=='star') i.className='new'; p.appendChild(i); }
   n.textContent='+'+S.coins; sn.textContent='+'+S.stars; m.classList.toggle('has',S.coins>0); m.classList.toggle('hasst',S.stars>0);
-  m.style.scale=RM?'':String(1+Math.min(.18,(S.coins+S.stars)*.012));   /* he can see it grow */
+  const sc=RM?'':String(1+Math.min(.18,(S.coins+S.stars)*.012)); if(m.style.scale!==sc) m.style.scale=sc;   /* he can see it grow */
   if(added) place();
   if(added&&!RM){ const t=unit==='star'?sn:n; t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop'); } }
 function resetPile(){ S.coins=0; S.stars=0; S.streak=0; setPile(false); setHeat(); }
@@ -158,7 +158,7 @@ function colRect(){ const sel=['#app .ob-play','#app .ob','#app .lf-card','#app 
   for(const q of sel){ const e=document.querySelector(q); if(!e) continue; const r=e.getBoundingClientRect(); if(r.width>0&&r.height>0) return r; }
   return {left:0,right:innerWidth,top:0,width:innerWidth}; }
 function place(){ const m=document.getElementById('tlms'); if(!m) return; const now=Date.now(), pl=playing(), show=pl||now<S.peek||now<S.linger||now<S.cashUntil;
-  m.classList.toggle('on',show); if(!show) return;
+  if(m.classList.contains('on')!==show) m.classList.toggle('on',show); if(!show) return;
   const w=m.offsetWidth, h=m.offsetHeight; let x, y, mode;
   const sl=pl?slot():null, sr=sl?sl.getBoundingClientRect():null;
   if(sl&&Math.abs(sl.offsetWidth-w)>1) sl.style.width=w+'px';
@@ -171,7 +171,7 @@ function place(){ const m=document.getElementById('tlms'); if(!m) return; const 
   if(mode==='peek'){ x=midX(w); if(!pl) x=Math.max(8,Math.min(x,innerWidth-w-112)); y=now<S.peek?8:-h-24; }   /* off the top-right Done / menu buttons of a game window */
   m.classList.toggle('peek',mode==='peek'); m.classList.toggle('up',now<S.peek||!pl);
   S.pos={x:Math.round(x),y:Math.round(mode==='peek'?8:y),mode};
-  m.style.transform='translate('+Math.round(x)+'px,'+Math.round(y)+'px)'; }
+  const tf='translate('+Math.round(x)+'px,'+Math.round(y)+'px)'; if(m.dataset.tf!==tf){ m.dataset.tf=tf; m.style.transform=tf; } }   /* write only on a change: the page stays quiet (K-1 rule) */
 function peek(ms){ S.peek=Math.max(S.peek||0,Date.now()+ms); place(); setTimeout(place,ms+30); }
 /* where the money flies to: the meter's coin, where the meter is (or is dropping down to) */
 function target(){ const m=document.getElementById('tlms'); if(!m||!m.classList.contains('on')||!S.pos) return null; const c=m.querySelector('.tc'); return {x:S.pos.x+c.offsetLeft+c.offsetWidth/2,y:S.pos.y+c.offsetTop+c.offsetHeight/2}; }
