@@ -11,7 +11,7 @@
 <style>
 .stage{ grid-template-rows:1fr auto 1fr; align-items:center; justify-items:center; }
 .row3{ display:flex; gap:clamp(14px,4vw,56px); justify-content:center; width:100%; }
-.row3 .qcard{ width:min(28vw,30vh,230px); transition:transform .2s, opacity .3s; }
+.row3 .qcard{ width:min(28vw,34vh,250px); transition:transform .2s, opacity .3s; }
 .row3.src .qcard{ cursor:grab; }
 .mid{ display:flex; align-items:center; gap:10px; opacity:.9; }
 .mid svg{ width:64px; height:64px; }
@@ -19,7 +19,7 @@
 .qcard.done{ border-color:#7BE0A4; background:radial-gradient(circle at 50% 35%,#FFFFFF,#E3FBEB); }
 .qcard .tick{ position:absolute; right:-10px; top:-10px; width:44px; height:44px; }
 .hero .qcard{ position:absolute; width:46%; }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .row3 .qcard{ width:min(28vw,22vh); border-radius:20px; } .mid svg{ width:36px; height:36px; } }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .row3 .qcard{ width:min(30vw,30vh); border-radius:20px; } .row3{ gap:8px; } .mid svg{ width:36px; height:36px; } }
 </style>
 </head>
 <body>
@@ -34,12 +34,14 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var PAIRS = [['dots', 'apple'], ['apple', 'fingers'], ['dots', 'candle'], ['candle', 'fingers'], ['fingers', 'dots'], ['orange', 'dots']];
-  var NAME = { dots: 'dots', apple: 'apples', orange: 'oranges', candle: 'candles', fingers: 'fingers' };
+  var NAME = { dots: ['dot', 'dots'], apple: ['apple', 'apples'], orange: ['orange', 'oranges'], candle: ['candle', 'candles'], fingers: ['finger', 'fingers'] };
+  function nm(k, n) { return NAME[k][n === 1 ? 0 : 1]; }
+  var easy = 0;
   var R;   /* this round: { nums, a, b, misses, left } */
 
   function deal(nums, a, b) {
     var src = $('src'), tgt = $('tgt'); src.innerHTML = ''; tgt.innerHTML = '';
-    var order = FR.shuffle([0, 1, 2]);
+    var order; do { order = FR.shuffle([0, 1, 2]); } while (order[0] === 0 && order[1] === 1);
     nums.forEach(function (n, i) { var c = FR.card(n, a); c.id = 's' + i; c.classList.add('src'); src.appendChild(c); });
     order.forEach(function (k, i) { var c = FR.card(nums[k], b); c.id = 't' + i; tgt.appendChild(c); });
   }
@@ -58,10 +60,11 @@
     var n = +s.dataset.n;
     if (s.dataset.n === t.dataset.n) {
       s.classList.add('done'); t.classList.add('done'); t.insertAdjacentHTML('beforeend', '<svg class="tick" viewBox="0 0 100 100"><use href="#nkStar"/></svg>');
-      await FR.yes(t, FR.Word(n) + ' and ' + FR.word(n) + '. Same!');
+      await FR.yes(t, FR.Word(n) + ' ' + nm(s.dataset.kind, n) + '. ' + FR.Word(n) + ' ' + nm(t.dataset.kind, n) + '. Same!');
       R.left--;
     } else {
-      FR.oops(t); R.misses++;
+      FR.oops(t); R.misses++; if (R.misses === 2) easy = 2;
+      var tn = +t.dataset.n; await FR.say('That one has ' + FR.word(tn) + '.');
       if (R.misses === 1 || R.misses % 2 === 1) { await FR.say("Let's look again."); await FR.showShape(s, false); await FR.say('Find the same.'); }
       else { await FR.showShape(s, true); await FR.say('Now find ' + FR.word(n) + '.'); }
     }
@@ -83,9 +86,16 @@
       $('s0').classList.add('done'); t.classList.add('done');
       await F.yes(t, 'Two dots. Two apples. Same!');
     },
+    reset: function () { easy = 0; },
+    bonus: function (F) {
+      return new Promise(function (res) {
+        R = { nums: [3, 4, 5], misses: 0, left: 3 }; deal(F.shuffle([3, 4, 5]), 'fingers', 'candle');
+        done = res; GAME.phase = 'answer'; F.lock(false); hooks(); F.say('Big numbers! Fingers and candles.');
+      });
+    },
     round: function (F, i) {
       return new Promise(function (res) {
-        var pool = i < 2 ? [1, 2, 3] : FR.shuffle([1, 2, 3, 4, 5]).slice(0, 3);
+        var pool = (i < 2 || easy > 0) ? [1, 2, 3] : FR.shuffle([1, 2, 3, 4, 5]).slice(0, 3); if (easy > 0) easy--;
         var nums = FR.shuffle(pool).slice(0, 3), pr = PAIRS[i % PAIRS.length];
         R = { nums: nums, misses: 0, left: 3 }; deal(nums, pr[0], pr[1]);
         done = res; GAME.phase = 'answer'; F.lock(false); hooks();
