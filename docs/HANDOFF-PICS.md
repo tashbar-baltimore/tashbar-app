@@ -35,6 +35,11 @@ CLAUDE.md wins where anything here differs: publish ONLY by pull request (auto-p
   Kodesh teach screens (REBBE list) -> upgrades of weak live pictures -> round-2 leftovers (thermometer with no numbers,
   rain gauge, the ~30 screens un-linked from Capitol, White House, Liberty Bell, Louisiana map, transistor).
 - One PICS-2 pull request open at a time; title starts "PICS-2".
+- Teaching screens use `src/RealPicsTeach.html` (loads after One Bite) with the same TL_PICS library and TL_PIC_ADD blocks. Keys:
+  - `'SKILL.ID|@today'`: TODAY WE LEARN (the unit opener); replaces the big emoji. A UNIT prefix works too (`'SCI.ANIM.L04|@today'`); the most exact key wins.
+  - `'SKILL.ID|@watch'`: WATCH ME (worked example); a smaller picture under the tag, only while no model is drawn.
+  - `'@passage|KEY'`: a reading passage (`p:'KEY'`); one topic picture under its title.
+  - No marks on these. `pics-check.js` checks that the skill, unit or passage exists. `tests/lib/teachpics.js` tests the screens at 390 px and 1366x768.
 - Round 2's lane folders and its list of bad live pictures are on branch `claude/adoring-ramanujan-bwh0ev` in `pics-pending2/`
   (`upgrades.md`). Never link a picture on that list again; replace it with a new id.
 
