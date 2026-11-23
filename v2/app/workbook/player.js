@@ -1,0 +1,618 @@
+/* BLOCK BUILDERS WORKBOOK player (HoS 2026-11-22: "a mix of A and B, the full shebang").
+   The boy opens his workbook (the 📘 button on his Math map). Every job has two parts:
+     1. WATCH ME (B): Dot or Tenzi says the job's words out loud, then the job's example plays one step per tap,
+        with the numbers on the mat and the blocks moving (ones snap into a new ten, a ten breaks into 10 ones).
+     2. THE WORKBOOK PAGE (A + B): the page itself, as printed, with the boy's name and today's date on it.
+        Every answer box is live: tap it, tap a number, and the page checks it at once (a wrong box turns orange
+        and says which step to look at; a second miss offers "Watch me" with those very numbers). A pen layer covers
+        the whole page: a stylus writes anywhere (scratch work, drawings, circling), a finger taps the boxes.
+   Saved per page on the server (BlockBuilders.js: answers, pen strokes, score) and on the Chromebook, so a closed lid
+   loses nothing. Sheet B opens for more practice. No money, mastery or evidence is written (Head of School decision
+   needed for those). Pages are in BlockBuildersData.html (window.BB_BOOK). Also loaded on the staff page, where
+   BlockBuildersStaff.html uses BBX.paper() to show a boy's page with his writing. No double slash in this file. */
+/* 2.0 (Mrs. Khaver 2026-11-23): "Teacher: the whole job as one worksheet for the class. Boy: only one example at a time;
+   he finishes it, gets a good 'done!' feeling, and moves to the next." window.BB_MODE = 'boy' (default) or 'teacher'.
+   Boy: one example per screen, no numbers, a row of blocks fills up as he goes, Next (or Enter) after each right answer.
+   Pencil pages (Final Inspections, Speed Builds) stay a whole page. Teacher: the whole page, Show answers, Print, nothing saved. */
+(function(){
+ if(window.BBX&&window.BBX.ready) return;
+ const X=window.BBX={ready:true,open:false,view:'home',job:null,mine:null,vals:{},ok:{},first:{},miss:{},strokes:[],tool:'tap',sel:null,undo:[],dirty:0,mute:false,t0:0};
+ window.BB_LIVE=window.BB_LIVE||'on'; X.mode=window.BB_MODE==='teacher'?'teacher':'boy'; const ONE=()=>X.mode==='boy'&&!X.pencil; const TEACH=()=>X.mode==='teacher';
+ const PRAISE=['Great building!','You got it!','Nice work, builder!','Strong as a block!','Way to go!','Super job!','That is right!','You are a real builder!'];   /* 'on' = Math levels 2-4 and TEST- boys, 'all' = every boy, 'test' = TEST- boys only, 'off' */
+ const E=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const B=()=>window.BB_BOOK;
+ const pad2=n=>String(n).padStart(2,'0');
+ function call(fn){ const a=[].slice.call(arguments,1); return new Promise((ok,no)=>{ try{ google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn].apply(null,a); }catch(e){ no(e); } }); }
+ function tok(){ try{ if(typeof SRV!=='undefined'&&SRV&&SRV.token) return SRV.token; }catch(e){} try{ const t=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return t&&t.token||''; }catch(e){ return ''; } }
+ function me(){ try{ if(typeof A!=='undefined'&&A&&A.st) return { id:String(A.st.id||''), name:String(A.st.name||'') }; }catch(e){} return { id:'', name:'' }; }
+ function say(t){ if(X.mute||!t) return; try{ if(typeof window.speak==='function') window.speak(t); else { speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.rate=.92; speechSynthesis.speak(u); } }catch(e){} }
+ function hush(){ try{ speechSynthesis.cancel(); }catch(e){} }
+ const LS={ get(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+ const lsKey=id=>'bbx:'+me().id+':'+id;
+
+ /* ---------------- CSS ---------------- */
+ function css(){ if(document.getElementById('bbx-css')) return; const s=document.createElement('style'); s.id='bbx-css'; s.textContent=`
+.bbx-one{max-width:720px;margin:0 auto;padding-bottom:230px}
+.bbx-prog{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:4px 0 16px}
+.bbx-prog i{width:18px;height:18px;border-radius:4px;background:#e3e8f1;border:2px solid #cfd7e4;transition:transform .3s}
+.bbx-prog i.d{background:#f0b429;border-color:#d89a12}
+.bbx-prog i.c{border-color:#2a6fdb;box-shadow:0 0 0 3px #2a6fdb33}
+.bbx-prog i.d.pop{animation:bbxpop .5s ease}
+.bbx-prog span{margin-left:8px;font-weight:900;color:#5b6478;font-size:15px}
+@keyframes bbxpop{0%{transform:translateY(-22px) scale(1.3)}70%{transform:translateY(2px)}100%{transform:none}}
+.bbx-exd{margin:0 0 12px}.bbx-exd>summary{cursor:pointer;font-weight:800;color:#2a6fdb;padding:8px 2px;font-size:16px}
+.bbx-solo{zoom:1.5}
+@media (max-width:520px){.bbx-solo{zoom:1.15}}
+.bbx-solo>*{margin:0 auto}
+.bbx-yay{margin:18px auto 0;text-align:center;font-size:28px;font-weight:900;color:#1f9d55;animation:bbxyay .45s ease}
+@keyframes bbxyay{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.12)}100%{transform:none;opacity:1}}
+.bbx-nextone{display:block;margin:14px auto 0;min-width:240px;font-size:22px}
+@media print{body>*:not(#bbx){display:none!important}#bbx{position:static!important;display:block!important;background:#fff!important}.bbx-top,.bbx-tools,.bbx-pad,.bbx-hear,.bbx-fin,.bbx-ink{display:none!important}.bbx-scroll{overflow:visible!important}.bbx-paper{box-shadow:none!important;margin:0!important;max-width:none!important}}
+#bbx{position:fixed;inset:0;z-index:2147482000;background:#e9edf4;color:#1d2433;font:16px/1.4 'Nunito','Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
+#bbx *{box-sizing:border-box}
+#bbx button{font:inherit;color:inherit;cursor:pointer}
+.bbx-top{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;background:#1d2433;color:#fff;min-height:56px}
+.bbx-top .t{flex:1;min-width:0;font-weight:800;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bbx-top .t small{display:block;font-weight:600;font-size:12px;opacity:.75}
+.bbx-ib{border:0;background:rgba(255,255,255,.14);color:#fff!important;border-radius:12px;min-width:44px;height:44px;padding:0 12px;font-weight:800;font-size:16px;display:inline-flex;align-items:center;gap:6px}
+.bbx-ib.on{background:#f08a24}
+.bbx-star{background:#ffd34d;color:#1d2433!important}
+.bbx-scroll{flex:1;overflow:auto;-webkit-overflow-scrolling:touch}
+.bbx-wrap{max-width:900px;margin:0 auto;padding:14px 12px 120px}
+.bbx-cover{background:linear-gradient(135deg,#2a6fdb,#7b4fd6);color:#fff;border-radius:22px;padding:22px 20px;box-shadow:0 8px 24px rgba(42,111,219,.25);position:relative;overflow:hidden}
+.bbx-cover h1{margin:0 0 4px;font-size:28px;line-height:1.1;padding-right:70px}
+.bbx-cover p{margin:0;opacity:.9}
+.bbx-cover .who{margin-top:12px;background:rgba(255,255,255,.18);border-radius:12px;padding:8px 12px;display:inline-block;font-weight:700}
+.bbx-cover .bl{position:absolute;right:16px;top:14px;display:flex;gap:4px;align-items:flex-end;opacity:.9}
+.bbx-next{margin-top:14px;border:0;border-radius:16px;background:#ffd34d;color:#1d2433;font-weight:900;font-size:19px;padding:14px 20px;box-shadow:0 5px 0 #d9a91f}
+.bbx-sec{margin-top:18px;background:#fff;border-radius:18px;padding:14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.bbx-sec h2{margin:0;font-size:19px;display:flex;align-items:center;gap:8px}
+.bbx-sec .sub{color:#5b6475;font-size:13px;margin:2px 0 10px}
+.bbx-bar{height:8px;background:#e6eaf2;border-radius:9px;overflow:hidden;margin-bottom:10px}.bbx-bar i{display:block;height:100%;border-radius:9px}
+.bbx-jobs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.bbx-job{border:2px solid #e3e7ef;background:#fafbfd;border-radius:14px;padding:9px 10px;text-align:left;min-height:84px;display:flex;flex-direction:column;gap:3px}
+.bbx-job b{font-size:14px;line-height:1.2}.bbx-job small{color:#5b6475;font-size:12px;font-weight:700}
+.bbx-job.next{border-color:#f08a24;background:#fff4e8;box-shadow:0 0 0 3px #ffd9b0}
+.bbx-job.done{border-color:#8fd3a8;background:#effaf3}
+.bbx-job.soon{opacity:.55;cursor:default}
+.bbx-sh{display:flex;gap:4px;margin-top:auto}.bbx-sh span{font-size:11px;font-weight:800;border-radius:8px;padding:2px 6px;background:#e6eaf2}.bbx-sh span.d{background:#1f9d55;color:#fff}.bbx-sh span.p{background:#ffd9b0}
+.bbx-soon{color:#5b6475;font-size:14px;background:#f6f7fa;border:1px dashed #cfd5e0;border-radius:12px;padding:10px 12px}
+/* watch me */
+.bbx-say{display:flex;gap:12px;align-items:center;background:#e6efff;border-radius:16px;padding:12px 14px;font-size:18px;font-weight:700}
+.bbx-av{flex:none;width:54px;text-align:center;font-size:12px;font-weight:900}
+.bbx-av .ten{width:16px;height:52px;margin:0 auto 3px;border-radius:3px;background:repeating-linear-gradient(#3a7be0 0 4.4px,#2a5fb5 4.4px 5.2px)}
+.bbx-av .one{width:22px;height:22px;margin:16px auto 6px;border-radius:4px;background:#f2b230;box-shadow:inset 0 -3px 0 #d9951c}
+.bbx-hear{flex:none;border:0;background:#2a6fdb;color:#fff!important;border-radius:50%;width:48px;height:48px;font-size:22px}
+.bbx-watch{margin-top:14px;background:#fff;border-radius:18px;padding:16px;display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.bbx-steps{flex:1;min-width:250px}
+.bbx-steps ol{margin:0;padding-left:22px}.bbx-steps li{padding:7px 9px;border-radius:10px;margin:2px 0;color:#9aa3b2;font-size:17px}
+.bbx-steps li.now{background:#fff1e2;color:#1d2433;font-weight:800}.bbx-steps li.was{color:#1d2433}
+.bbx-blocks{display:flex;align-items:flex-end;gap:4px;flex-wrap:wrap;min-height:76px;margin-top:10px}
+.bbx-rod{width:13px;height:70px;border-radius:2px;background:repeating-linear-gradient(#3a7be0 0 6px,#2a5fb5 6px 7px);transition:all .4s}
+.bbx-rod.new{box-shadow:0 0 0 3px #ffd34d}
+.bbx-cube{width:13px;height:13px;border-radius:2px;background:#f2b230;transition:all .4s}
+.bbx-cube.ring{box-shadow:0 0 0 2px #e0533d}.bbx-cube.gone{opacity:.25;background:#bbb;transform:translateY(-6px)}
+.bbx-cube.x{background:#f2b230;position:relative}.bbx-cube.x::after{content:'';position:absolute;left:-2px;right:-2px;top:5px;height:2px;background:#d64545;transform:rotate(-35deg)}
+.bbx-gap{width:12px}
+.bbx-cta{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.bbx-btn{border:0;border-radius:14px;padding:13px 20px;font-weight:900;font-size:18px;background:#fff;box-shadow:0 4px 0 #cfd5e0}
+.bbx-btn.go{background:#2a6fdb;color:#fff!important;box-shadow:0 4px 0 #1d4fa0}
+.bbx-btn.y{background:#ffd34d;box-shadow:0 4px 0 #d9a91f}
+.bbx-btn:active{transform:translateY(3px);box-shadow:none}
+/* the vertical mat */
+.bbx-v{display:inline-grid;gap:0;font-weight:800;line-height:1;background:#fff8ee;border:1.5px solid #f1d2ab;border-radius:10px;padding:6px 8px 8px;position:relative}
+.bbx-v.nomat{background:transparent;border-color:transparent}
+.bbx-v .h{font-size:10px;color:#8a93a6;text-align:center;font-weight:800;padding-bottom:2px}
+.bbx-v .d{text-align:center;font-size:24px;height:34px;display:flex;align-items:center;justify-content:center;position:relative}
+.bbx-v .d.xo{color:#9aa3b2}.bbx-v .d.xo::after{content:'';position:absolute;left:22%;right:22%;top:50%;height:2px;background:#d64545;transform:rotate(-30deg)}
+.bbx-v .op{text-align:center;font-size:22px;height:34px;display:flex;align-items:center;justify-content:center}
+.bbx-v .bar{border-top:2.5px solid #1d2433;margin:2px 0 4px}
+.bbx-v .sm{height:28px;display:flex;align-items:center;justify-content:center}
+.bbx-v .bx{display:flex;justify-content:center}
+.bbx-v.big .d,.bbx-v.big .op{font-size:44px;height:60px}.bbx-v.big{padding:10px 16px 14px}
+.bbx-v.big .cell{width:60px}.bbx-v .cell{width:36px}.bbx-v .cell.o{width:22px}
+.bbx-v .hot{background:#fff1b8;border-radius:8px}
+.bbx-v .pen{color:#6b7280;font-family:'Comic Sans MS','Chalkboard SE',cursive}
+/* answer boxes */
+.bbx-b{min-width:34px;height:34px;border:2.5px solid #9aa6bb;border-radius:8px;background:#fff;font-weight:900;font-size:20px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px;vertical-align:middle;margin:1px 2px;color:#1d2433}
+.bbx-b.c{min-width:26px;height:26px;font-size:15px;border-style:dashed;border-color:#f08a24}
+.bbx-b.w{min-width:58px}
+.bbx-b.sel{border-color:#2a6fdb;box-shadow:0 0 0 4px #c9dcff}
+.bbx-b.bad{border-color:#f08a24;background:#fff1e2;animation:bbxsh .3s}
+.bbx-it.ok .bbx-b{border-color:#1f9d55;background:#e3f6ea}
+.bbx-ch{border:2px solid #9aa6bb;background:#fff;border-radius:999px;padding:3px 11px;font-weight:800;margin:1px 3px;min-height:34px;font-size:15px;color:#1d2433}
+.bbx-ch.on{border-color:#2a6fdb;background:#e6efff;box-shadow:0 0 0 2px #2a6fdb inset}
+.bbx-ch.bad{border-color:#f08a24;background:#fff1e2}
+.bbx-b.pw{border:2px dashed #9aa6bb;background:#fffef6;min-width:46px;height:42px;cursor:crosshair}
+.bbx-b.c.pw{min-width:30px;height:30px;border-color:#f08a24}
+.bbx-pwr{position:relative;display:inline-block;vertical-align:middle}
+.bbx-ans{position:absolute;right:-9px;top:-11px;z-index:4;color:#fff;font-weight:900;font-size:13px;line-height:18px;min-width:18px;text-align:center;border-radius:9px;padding:0 5px;background:#1f9d55;box-shadow:0 1px 3px rgba(0,0,0,.25);pointer-events:none}
+.bbx-ch.pw{cursor:crosshair;border-style:solid;border-color:#cfd5e0;display:inline-flex;align-items:center}
+.bbx-ch.rv{border-color:#1f9d55;box-shadow:0 0 0 3px #bfe9cf}
+.bbx-pnote{background:#fff7e0;border:1.5px solid #ffd34d;border-radius:12px;padding:8px 12px;font-weight:800;font-size:14px;margin:6px 0 10px}
+.bbx-it.ok .bbx-ch.on{border-color:#1f9d55;background:#e3f6ea;box-shadow:0 0 0 2px #1f9d55 inset}
+@keyframes bbxsh{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+/* the workbook page */
+.bbx-tools{flex:none;display:flex;gap:6px;align-items:center;padding:6px 10px;background:#fff;border-bottom:1px solid #d7dce5;overflow-x:auto}
+.bbx-tl{border:1.5px solid #d7dce5;background:#fff;border-radius:10px;height:40px;padding:0 10px;font-weight:800;font-size:14px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.bbx-tl.on{background:#1d2433;color:#fff!important;border-color:#1d2433}
+.bbx-tl i{width:16px;height:16px;border-radius:50%;display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px #9aa6bb}
+.bbx-paper{position:relative;background:#fff;max-width:860px;margin:0 auto;border-radius:6px;box-shadow:0 3px 16px rgba(0,0,0,.13);padding:22px 22px 54px;min-height:70vh}
+.bbx-paper.pen{touch-action:none}
+.bbx-ink{position:absolute;left:0;top:0;pointer-events:none;z-index:3}
+.bbx-band{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:3px solid #f08a24;padding-bottom:8px;margin-bottom:10px}
+.bbx-tag{display:inline-block;background:#f08a24;color:#fff;font-weight:800;border-radius:8px;padding:2px 9px;font-size:13px}
+.bbx-band h2{margin:5px 0 0;font-size:25px;line-height:1.1}
+.bbx-nd{font-size:13px;color:#5b6475;text-align:right;white-space:nowrap}.bbx-nd b{display:inline-block;min-width:110px;border-bottom:1px solid #999;text-align:left;color:#1d2433;font-family:'Comic Sans MS','Chalkboard SE',cursive;font-weight:400;padding:0 4px}
+.bbx-paper .bbx-say{font-size:16px;margin:8px 0 12px}
+.bbx-exb{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#fafbfd;border:1px solid #d7dce5;border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:15px}
+.bbx-part{margin-top:14px}
+.bbx-ph{font-weight:800;font-size:16px;margin-bottom:8px;display:flex;gap:8px;align-items:flex-start}
+.bbx-ph b{flex:none;background:#1d2433;color:#fff;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;font-size:13px}
+.bbx-grid{display:grid;gap:12px 14px}
+.bbx-it{position:relative;padding:8px 8px 8px 28px;border-radius:10px;border:1.5px solid transparent;min-width:0}
+.bbx-it.ok{background:#f3fbf6}
+.bbx-it.bad{border-color:#ffcf9e;background:#fffaf4}
+.bbx-it .no{position:absolute;left:6px;top:8px;font-weight:900;color:#8a93a6;font-size:13px}
+.bbx-it .ck{position:absolute;right:6px;top:4px;color:#1f9d55;font-size:20px;font-weight:900;display:none}.bbx-it.ok .ck{display:block}
+.bbx-it .tx{font-size:16px;line-height:2.1}
+.bbx-hint{margin-top:6px;font-size:14px;font-weight:700;color:#a85a12;background:#fff1e2;border-radius:8px;padding:6px 9px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.bbx-hint button{border:0;background:#2a6fdb;color:#fff!important;border-radius:8px;padding:5px 10px;font-weight:800;font-size:13px}
+.bbx-open{border:1.5px dashed #b7c0cf;border-radius:10px;height:120px;background:repeating-linear-gradient(#fff 0 31px,#dde3ec 31px 32px)}
+.bbx-draw{border:1.5px dashed #b7c0cf;border-radius:10px;height:150px;background:#fffef6;margin:6px 0}
+.bbx-foot{position:absolute;bottom:14px;left:22px;right:22px;border-top:1px solid #d7dce5;padding-top:6px;font-size:12px;color:#5b6475;display:flex;justify-content:space-between}
+.bbx-fin{display:block;margin:22px auto 0}
+.bbx-pics{display:flex;gap:3px;align-items:flex-end;flex-wrap:wrap;margin:2px 0 4px;min-height:40px}
+.bbx-pics .bbx-rod{height:52px;width:11px}.bbx-pics .bbx-cube{width:11px;height:11px}
+.bbx-pics .tap{cursor:pointer}
+.bbx-fr{display:inline-grid;grid-template-columns:repeat(5,22px);gap:2px;border:2px solid #333;padding:2px;margin:2px 4px;vertical-align:middle}
+.bbx-fr i{width:22px;height:22px;border:1px solid #999;border-radius:50%;display:block}.bbx-fr i.f{background:#e0533d;border-color:#e0533d}.bbx-fr i.u{background:#7aa7f0;border-color:#7aa7f0}
+.bbx-dots{display:flex;flex-wrap:wrap;gap:5px;max-width:190px;margin:2px 0}.bbx-dots i{width:18px;height:18px;border-radius:50%;background:#2a6fdb;position:relative;cursor:pointer}.bbx-dots i.x::after{content:'';position:absolute;left:-3px;right:-3px;top:8px;height:2.5px;background:#d64545;transform:rotate(-35deg)}
+.bbx-cmp div{display:flex;align-items:center;gap:4px;margin:2px 0;font-size:13px;font-weight:800}.bbx-cmp span{width:14px;height:14px;border-radius:3px;background:#f2b230;display:inline-block}
+.bbx-house{display:inline-block;background:#e6efff;border-radius:8px 8px 4px 4px;padding:0 8px;font-weight:900;margin-right:6px}
+.bbx-build{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.bbx-build .row{display:flex;gap:4px;flex-wrap:wrap}
+.bbx-build .row button{border:1.5px solid #9aa6bb;background:#fff;border-radius:9px;padding:4px 8px;font-weight:800;font-size:13px}
+.bbx-key{border:1px solid #d7dce5;border-radius:10px;padding:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:4px;font-weight:800;font-size:14px;text-align:center;margin-bottom:8px}
+.bbx-key div{background:#f6f7fa;border-radius:6px;padding:3px}
+.bbx-msg{display:flex;flex-wrap:wrap;gap:14px}.bbx-msg .w{display:flex;gap:3px}
+.bbx-msg .cell{display:flex;flex-direction:column;align-items:center;font-size:11px;color:#8a93a6;font-weight:800}
+/* number pad */
+.bbx-pad{position:fixed;left:0;right:0;bottom:0;z-index:2147482001;background:#1d2433;padding:8px 8px calc(8px + env(safe-area-inset-bottom));display:none;box-shadow:0 -6px 20px rgba(0,0,0,.25)}
+.bbx-pad.on{display:block}
+.bbx-pad .in{max-width:620px;margin:0 auto;display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.bbx-pad button{height:54px;border:0;border-radius:12px;background:#fff;font-weight:900;font-size:24px;color:#1d2433}
+.bbx-pad button.k2{background:#ffd34d;font-size:17px}.bbx-pad button.k3{background:#3b4558;color:#fff!important;font-size:18px}
+.bbx-pad.let .in{grid-template-columns:repeat(7,1fr)}
+/* done */
+.bbx-done{text-align:center;background:#fff;border-radius:22px;padding:30px 18px;margin-top:20px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.bbx-done .stars{font-size:54px;letter-spacing:6px}
+.bbx-done h2{font-size:30px;margin:8px 0}
+.bbx-timer{font-variant-numeric:tabular-nums}
+/* the door on the map */
+#bbx-door{position:fixed;right:52px;top:calc(env(safe-area-inset-top) + 14px);z-index:60;border:2px solid rgba(255,255,255,.7);border-radius:999px;background:linear-gradient(135deg,#2a6fdb,#7b4fd6);color:#fff;font:900 14px/1 'Nunito',system-ui,sans-serif;height:38px;padding:0 12px 0 8px;box-shadow:0 4px 12px rgba(42,111,219,.45);display:flex;align-items:center;gap:6px;cursor:pointer;animation:bbxdoor 2.6s ease-in-out 3}
+#bbx-door .i{font-size:20px;line-height:1}
+@keyframes bbxdoor{0%,100%{transform:none}50%{transform:scale(1.07)}}
+body.bbx-open>:not(#bbx):not(script):not(style):not(#bbx-pad){visibility:hidden!important}
+@media (max-width:560px){ .bbx-cover .bl{display:none} .bbx-cover h1{padding-right:0} .bbx-paper{padding:14px 10px 50px} .bbx-band h2{font-size:21px} .bbx-it .tx{font-size:15px} .bbx-nd b{min-width:80px} .bbx-foot{left:10px;right:10px} }
+@media (prefers-reduced-motion:reduce){ #bbx *{animation:none!important;transition:none!important} }
+`; document.head.appendChild(s); }
+
+ /* ---------------- book helpers ---------------- */
+ const secOf=k=>B().sections.find(s=>s.k===k);
+ const jobsOf=k=>B().jobs.filter(j=>j.sec===k);
+ function pageState(id){ const p=X.mine&&X.mine.pages&&X.mine.pages[id]; return p||null; }
+ function jobDone(j){ const p=pageState(j.id); return !!(p&&p.done); }
+ function nextJob(){ const js=B().jobs.filter(j=>!j.sheet||j.sheet==='A'); return js.find(j=>!jobDone(j))||null; }
+ function stars(score,total){ if(!total) return 3; const r=score/total; return r>=.9?3:r>=.7?2:1; }
+
+ /* ---------------- items: compile ---------------- */
+ const dig=n=>String(n).split('').map(Number);
+ function tdo(n){ return { h:Math.floor(n/100), t:Math.floor(n/10)%10, o:n%10 }; }
+ function lTokens(s){ const out=[]; let i=0; const re=/\{([^}]*)\}/g; let m; while((m=re.exec(s))){ if(m.index>i) out.push({x:s.slice(i,m.index)}); const v=m[1]; if(v.indexOf('|')>=0){ const opts=v.split('|').map(o=>o.replace(/\*$/,'')); const r=v.split('|').findIndex(o=>/\*$/.test(o)); out.push({ch:opts,ans:opts[r]}); } else out.push({ans:v}); i=re.lastIndex; } if(i<s.length) out.push({x:s.slice(i)}); return out; }
+
+ /* a vertical problem's keys: carry (add) or new tens/ones (borrow), then the answer digits */
+ function vSpec(it){
+  const op=it.op||'+', nums=[it.a,it.b].concat(it.c!=null?[it.c]:[]);
+  const res=op==='+'?nums.reduce((x,y)=>x+y,0):it.a-it.b;
+  const cols=Math.max(2,String(res).length,it.hto?3:0);
+  const onesSum=nums.reduce((x,y)=>x+y%10,0), c1=op==='+'?Math.floor(onesSum/10):0;
+  const tensSum=op==='+'?nums.reduce((x,y)=>x+Math.floor(y/10)%10,0)+c1:0, c2=op==='+'&&cols>2?Math.floor(tensSum/10):0;
+  const borrow=op==='-'&&(it.a%10)<(it.b%10);
+  const keys=[];
+  if(op==='+'){ keys.push({k:'r0',ans:String(res%10),one:1}); keys.push({k:'c1',ans:c1?String(c1):'',opt:!c1,carry:1,one:1}); keys.push({k:'r1',ans:String(Math.floor(res/10)%10),opt:res<10,one:1}); if(cols>2){ keys.push({k:'c2',ans:c2?String(c2):'',opt:!c2,carry:1,one:1}); keys.push({k:'r2',ans:String(Math.floor(res/100)),opt:res<100,one:1}); } }
+  else { if(borrow){ keys.push({k:'nt',ans:String(Math.floor(it.a/10)%10-1),one:1}); keys.push({k:'no',ans:String(it.a%10+10),two:1}); } else { keys.push({k:'nt',ans:'',opt:1,carry:1,one:1}); keys.push({k:'no',ans:'',opt:1,carry:1,two:1}); } keys.push({k:'r0',ans:String(res%10),one:1}); keys.push({k:'r1',ans:String(Math.floor(res/10)%10),opt:res<10,one:1}); if(cols>2) keys.push({k:'r2',ans:String(Math.floor(res/100)),opt:res<100,one:1}); }
+  return { op, nums, res, cols, onesSum, c1, c2, tensSum, borrow, keys };
+ }
+ function vHint(it,v,vals){
+  const p=k=>String(vals[k]==null?'':vals[k]);
+  if(v.op==='+'){ const os=v.nums.map(n=>n%10).join(' + ');
+   if(p('r0')!==String(v.res%10)) return 'Ones first: '+os+' = '+v.onesSum+'. Write only the '+(v.onesSum%10)+' in the ones place.';
+   if(p('c1')!==(v.c1?String(v.c1):'')) return v.c1?v.onesSum+' ones is '+v.c1+' ten and '+(v.onesSum%10)+' ones. Put a little '+v.c1+' in the carry box.':'The ones make only '+v.onesSum+'. No carry: leave the carry box empty.';
+   const ts=(v.c1?v.c1+' + ':'')+v.nums.filter(n=>n>=10).map(n=>Math.floor(n/10)%10).join(' + ');
+   if(p('r1')!==String(Math.floor(v.res/10)%10)&&!(v.res<10&&p('r1')==='')) return 'Now the tens: '+ts+' = '+v.tensSum+(v.cols>2&&v.c2?'. 10 tens make 1 hundred!':'.');
+   return 'Hundreds: only the carried '+v.c2+'. Write '+v.c2+'.'; }
+  const at=Math.floor(it.a/10)%10, bt=Math.floor(it.b/10)%10;
+  if(v.borrow&&(p('nt')!==String(at-1)||p('no')!==String(it.a%10+10))) return 'Can you take '+(it.b%10)+' from '+(it.a%10)+'? No! Borrow a ten: '+at+' tens become '+(at-1)+', and '+(it.a%10)+' ones become '+(it.a%10+10)+'.';
+  if(!v.borrow&&(p('nt')||p('no'))) return 'There are enough ones: no borrow. Leave the little boxes empty.';
+  const top=v.borrow?it.a%10+10:it.a%10;
+  if(p('r0')!==String(v.res%10)) return 'Ones: '+top+' − '+(it.b%10)+' = '+(top-it.b%10)+'.';
+  if(p('r1')!==String(Math.floor(v.res/10)%10)&&!(v.res<10&&p('r1')==='')) return 'Tens: '+(v.borrow?at-1:at)+' − '+bt+' = '+((v.borrow?at-1:at)-bt)+'.';
+  return 'Hundreds: '+Math.floor(it.a/100)+' − '+Math.floor(it.b/100)+' = '+Math.floor(v.res/100)+'.';
+ }
+ function compile(it,job,pi,ii){
+  const id=pi+'.'+ii, c={ id, it, keys:[], graded:true };
+  const T=it.t;
+  if(T==='v'||T==='story'){ const v=vSpec(it); c.v=v; c.keys=v.keys.map(k=>Object.assign({},k)); c.hint=vals=>vHint(it,v,vals); c.teach=1;
+   if(it.pick){ c.keys.unshift({k:'sg',ch:['+','−'],ans:it.op==='-'?'−':'+'}); c.hint=vals=>vals.sg!==(it.op==='-'?'−':'+')?(it.op==='-'?'Are some being taken away, or are you finding how many more? Then subtract.':'Are things being put together? Then add.'):vHint(it,v,vals); } }
+  else if(T==='L'){ lTokens(it.s).forEach((t,n)=>{ if(t.ans!=null) c.keys.push({k:'k'+n,ans:t.ans,ch:t.ch}); }); c.toks=lTokens(it.s); }
+  else if(T==='spot'){ if(it.op==='+') c.keys.push({k:'s',ans:String(it.a%10+it.b%10)}); const need=it.op==='+'?(it.a%10+it.b%10>=10):(it.a%10<it.b%10); const o=it.op==='+'?['trade','no trade']:['borrow','no borrow']; c.keys.push({k:'w',ch:o,ans:need?o[0]:o[1]}); c.hint=()=>it.op==='+'?'Add the boxed ones: '+(it.a%10)+' + '+(it.b%10)+' = '+(it.a%10+it.b%10)+'. 10 or more means trade.':'Is '+(it.a%10)+' big enough to take away '+(it.b%10)+'?'; }
+  else if(T==='enough'){ c.keys.push({k:'w',ch:['yes','no'],ans:(it.a%10)>=(it.b%10)?'yes':'no'}); c.hint=()=>'Look at the ones: can you take '+(it.b%10)+' from '+(it.a%10)+'?'; }
+  else if(T==='fill'){ c.keys.push({k:'d',one:1,test:x=>{ const d=Number(x); if(String(x).length!==1||isNaN(d)) return false; return it.op==='+'?d+it.b%10>=10:d>it.a%10; }}); c.hint=()=>it.op==='+'?'Pick a ones digit that makes 10 or more with the '+(it.b%10)+'.':'Pick a ones digit bigger than '+(it.a%10)+'.'; }
+  else if(T==='g4'||T==='help'){ const v=vSpec(it); c.v=v; c.keys=v.keys.map(k=>Object.assign({},k,{k:'v'+k.k})); c.teach=1;
+   const at=Math.floor(it.a/10), ao=it.a%10, bt=Math.floor(it.b/10), bo=it.b%10;
+   if(it.op==='-'&&T==='help'){ c.lines=[['1. New tens: ',{k:'l1',ans:String(at-1)}],['2. New ones: ',{k:'l2',ans:String(ao+10)}],['3. Ones: ',{k:'l3',ans:String(ao+10)},' − ',{k:'l4',ans:String(bo)},' = ',{k:'l5',ans:String(ao+10-bo)}],bt?['4. Tens: ',{k:'l6',ans:String(at-1)},' − ',{k:'l7',ans:String(bt)},' = ',{k:'l8',ans:String(at-1-bt)}]:['4. Tens left: ',{k:'l6',ans:String(at-1)}]]; }
+   else if(it.op==='-'){ c.lines=[['1. Ones: Can I take '+bo+' from '+ao+'? ',{k:'l1',ch:['yes','no'],ans:'no'}],['2. Borrow: '+at+' tens become ',{k:'l2',ans:String(at-1)},' tens. '+ao+(ao===1?' one becomes ':' ones become '),{k:'l3',ans:String(ao+10)},' ones.'],['3. Ones: ',{k:'l4',ans:String(ao+10)},' − '+bo+' = ',{k:'l5',ans:String(ao+10-bo)}],bt?['4. Tens: ',{k:'l6',ans:String(at-1)},' − '+bt+' = ',{k:'l7',ans:String(at-1-bt)}]:['4. Tens left: ',{k:'l6',ans:String(at-1)}]]; }
+   else if(T==='g4'){ c.lines=[['1. Ones: '+ao+' + '+bo+' = ',{k:'l1',ans:String(ao+bo)}],['2. Write ',{k:'l2',ans:String((ao+bo)%10)},' in the ones place.'],['3. Carry to the tens.'],['4. Tens: ',{k:'l3',ans:'1'},' + '+at+(bt?' + '+bt:'')+' = ',{k:'l4',ans:String(1+at+bt)}]]; }
+   else { c.lines=[['Ones: ',{k:'l1',ans:String(ao)},' + ',{k:'l2',ans:String(bo)},' = ',{k:'l3',ans:String(ao+bo)}],['Write ',{k:'l4',ans:String((ao+bo)%10)},' carry ',{k:'l5',ans:'1'}],['Tens: 1 + ',{k:'l6',ans:String(at)}].concat(bt?[' + ',{k:'l7',ans:String(bt)}]:[]).concat([' = ',{k:'l8',ans:String(1+at+bt)}])]; }
+   c.lines.forEach(l=>l.forEach(x=>{ if(typeof x==='object') c.keys.push(x); }));
+   c.hint=vals=>{ const vv={}; Object.keys(vals).forEach(k=>{ if(k[0]==='v') vv[k.slice(1)]=vals[k]; }); return vHint(it,v,vv); }; }
+  else if(T==='blk'){ const s=it.a+it.b, t=Math.floor(s/10), o=s%10; c.keys=[{k:'t',ans:String(t)},{k:'o',ans:String(o)},{k:'n',ans:String(s)}]; c.hint=()=>'All the ones: '+(it.a%10)+' + '+(it.b%10)+' = '+(it.a%10+it.b%10)+'. Circle 10 of them: a new ten! Now count the tens.'; }
+  else if(T==='bblk'){ const at=Math.floor(it.a/10), ao=it.a%10, bt=Math.floor(it.b/10), bo=it.b%10; c.keys=[{k:'t1',ans:String(at-1)},{k:'o1',ans:String(ao+10)},{k:'t2',ans:String(at-1-bt)},{k:'o2',ans:String(ao+10-bo)},{k:'n',ans:String(it.a-it.b)}]; c.hint=()=>'Break a ten: '+at+' tens '+ao+' ones become '+(at-1)+' tens '+(ao+10)+' ones. Then take away '+(bt?bt+(bt===1?' ten and ':' tens and '):'')+bo+' ones.'; }
+  else if(T==='build'){ c.keys=[{k:'b',test:x=>{ const p=String(x||'').split(','); const t=+p[0]||0, o=+p[1]||0; return t*10+o===it.n&&(!it.max||t<=it.max); }}]; c.build=1; c.hint=()=>it.max?'Use at most '+it.max+' tens. The rest are ones.':'Tens first: '+Math.floor(it.n/10)+' tall tens, then '+(it.n%10)+' little ones.'; }
+  else if(T==='ways'){ c.keys=[{k:'t'},{k:'o'}]; c.group=1; c.hint=()=>'Tens are worth 10, ones are worth 1. Make them add up to '+it.n+', a new way each time.'; }
+  else if(T==='pair'){ c.keys=[{k:'x'},{k:'y'}]; c.group=1; c.hint=()=>it.op==='-'?'Two two-digit numbers: the top minus the bottom must be '+it.n+', and the top ones must be too small, so you need a borrow. A new pair each time.':'The two numbers must add to '+it.n+', and their ones must make 10 or more. A new pair each time.'; }
+  else if(T==='miss'){ const A=String(it.a),Bn=String(it.b),Sm=Number(it.sum); let ans=''; for(let d=0;d<=9;d++){ const x=Number(A.replace('_',d)), y=Number(Bn.replace('_',d)); if((it.op==='-'?x-y:x+y)===Sm){ ans=String(d); break; } } c.keys=[{k:'m',ans,one:1}]; c.hint=()=>'Ones first: what digit makes the ones of the answer '+(Sm%10)+'? Was there a carry into the tens?'; }
+  else if(T==='det'){ const sub=it.op==='-', res=sub?it.a-it.b:it.a+it.b; const right=String(it.shown).replace(/\s/g,'')===String(res); c.keys=[{k:'w',ch:['right','wrong'],ans:right?'right':'wrong'},{k:'f',ans:String(res),opt:right,cond:1}]; c.hint=()=>sub?'Do it yourself: can you take '+(it.b%10)+' from '+(it.a%10)+'? If not, borrow, and make the tens 1 less. Did the builder do that?':'Do it yourself on the mat in your head: '+(it.a%10)+' + '+(it.b%10)+' = '+(it.a%10+it.b%10)+' ones. Did the builder carry?'; }
+  else if(T==='stack'){ const at=it.a>=10?String(Math.floor(it.a/10)):'', bt=it.b>=10?String(Math.floor(it.b/10)):''; const v=vSpec(it); c.v=v; c.keys=[{k:'at',ans:at,opt:!at,one:1},{k:'ao',ans:String(it.a%10),one:1},{k:'bt',ans:bt,opt:!bt,one:1},{k:'bo',ans:String(it.b%10),one:1}].concat(v.keys.map(k=>Object.assign({},k,{k:'v'+k.k}))); c.hint=vals=>(vals.at||'')!==at||(vals.bt||'')!==bt||(vals.ao||'')!==String(it.a%10)||(vals.bo||'')!==String(it.b%10)?'Tens under tens, ones under ones. A one-digit number goes in the ones column only.':vHint(it,v,Object.keys(vals).reduce((o,k)=>{ if(k[0]==='v') o[k.slice(1)]=vals[k]; return o; },{})); }
+  else if(T==='which'){ c.keys=[{k:'w',ch:['A','B'],ans:it.right}]; c.hint=()=>'Which builder put the '+it.b+' under the ones?'; }
+  else if(T==='draw'){ const sub=it.op==='-'; c.keys=[{k:'n',ans:String(sub?it.a-it.b:it.a+it.b)}]; c.hint=()=>sub?'Draw '+it.a+', but break one ten: '+(Math.floor(it.a/10)-1)+' tens and '+(it.a%10+10)+' ones. Cross out '+it.b+' and count what is left.':'Draw both numbers. All the ones: '+(it.a%10)+' + '+(it.b%10)+' = '+(it.a%10+it.b%10)+'. Circle 10 for a new ten.'; }
+  else if(T==='code'){ const probs=[]; job.parts.forEach((p,pj)=>{ if(pj<pi) p.items.forEach(x=>{ if(x.t==='v') probs.push(vSpec(x).res); }); }); c.probs=probs; c.keys=probs.map((r,n)=>({k:'m'+n,ans:it.key[r]||'?',let:1})); c.letters=Object.keys(it.key).map(k=>it.key[k]); c.hint=()=>'Solve each problem first. Find its answer in the code key and write that letter.'; }
+  else if(T==='chk'){ const v=vSpec(it); c.v=v; c.keys=v.keys.map(k=>Object.assign({},k,{k:'v'+k.k})); c.teach=1; const r=v.res;
+   if(it.k==='b18') c.lines=[[{k:'x',ans:String(r)},' + '+it.b+' = ',{k:'z',ans:String(it.a)},'  Is it '+it.a+'? ',{k:'w',ch:['yes','no'],ans:'yes'}]];
+   else if(it.op==='+') c.lines=[['Check: subtract'],[{k:'z',ans:String(r)},' − ',{k:'y',ans:String(it.b)},' = ',{k:'x',ans:String(it.a)}],['Is it '+it.a+'? ',{k:'w',ch:['yes','no'],ans:'yes'}]];
+   else c.lines=[[it.k==='p6'?'Check: add':'Check by adding:'],[{k:'x',ans:String(r)},' + ',{k:'y',ans:String(it.b)},' = ',{k:'z',ans:String(it.a)}],['Is it '+it.a+'? ',{k:'w',ch:['yes','no'],ans:'yes'}]];
+   c.lines.forEach(l=>l.forEach(x=>{ if(typeof x==='object') c.keys.push(x); }));
+   c.hint=vals=>{ const vv={}; Object.keys(vals).forEach(k=>{ if(k[0]==='v') vv[k.slice(1)]=vals[k]; }); const bad=v.keys.some(k=>String(vv[k.k]||'')!==String(k.ans)&&!(k.opt&&!vv[k.k])); return bad?vHint(it,v,vv):(it.op==='+'?'Undo it: start with your answer '+r+' and take away '+it.b+'. You should get '+it.a+'.':'Add your answer '+r+' to the number you took away, '+it.b+'. You should get '+it.a+'.'); }; }
+  else if(T==='cbn'){ const ao=it.a%10, bo=it.b%10; const ans=it.op==='+'?(ao+bo>=10?'carry':'neither'):(ao<bo?'borrow':'neither'); c.keys=[{k:'w',ch:['carry','borrow','neither'],ans}]; c.hint=()=>it.op==='+'?'Adding: do the ones, '+ao+' + '+bo+', make 10 or more?':'Taking away: is '+ao+' big enough to take away '+bo+'?'; }
+  else if(T==='open'){ c.graded=false; }
+  return c;
+ }
+ function compileJob(job){ const out=[]; job.parts.forEach((p,pi)=>p.items.forEach((it,ii)=>out.push(compile(it,job,pi,ii)))); return out; }
+ function okKey(c,key,vals,all){
+  const v=vals[key.k]==null?'':String(vals[key.k]);
+  if(c.it.t==='det'&&key.cond){ if(vals.w!=='wrong') return true; }
+  if(key.test) return key.test(v);
+  const ans=String(key.ans==null?'':key.ans);
+  if(v===ans) return true;
+  return !!(key.opt&&!key.carry&&v==='');   /* an optional box (the tens of a one-digit answer) may stay empty */
+ }
+ function filled(c,vals){ return c.keys.every(k=>{ if(c.it.t==='det'&&k.cond&&vals.w!=='wrong') return true; return k.opt||String(vals[k.k]==null?'':vals[k.k])!==''; }); }
+ function sigOf(o){ const v=X.vals[o.id]||{}; return o.it.t==='ways'?v.t+','+v.o:o.it.op==='-'?v.x+','+v.y:[Number(v.x),Number(v.y)].sort((a,b)=>a-b).join(','); }
+ function checkItem(c,vals){
+  if(c.group){ const it=c.it; let good=false;
+   if(it.t==='ways'){ const t=Number(vals.t), o=Number(vals.o); good=vals.t!==''&&vals.o!==''&&vals.t!=null&&vals.o!=null&&!isNaN(t)&&!isNaN(o)&&t*10+o===it.n&&!(t===Math.floor(it.n/10)&&o===it.n%10); }
+   else if(it.op==='-'){ const x=Number(vals.x), y=Number(vals.y); good=x>=10&&x<=99&&y>=10&&x-y===it.n&&(x%10)<(y%10); }
+   else { const x=Number(vals.x), y=Number(vals.y); good=x>0&&y>0&&x+y===it.n&&(x%10+y%10)>=10; }
+   if(good){ const sig=sigOf(c); const dup=X.cj.some(o=>o!==c&&o.it.grp===it.grp&&X.ok[o.id]&&sigOf(o)===sig); if(dup) return { ok:false, bad:c.keys.map(k=>k.k), why:'You already built that one. Find a new way!' }; }
+   return { ok:good, bad:good?[]:c.keys.map(k=>k.k) }; }
+  let bad=c.keys.filter(k=>!okKey(c,k,vals)).map(k=>k.k);
+  if(c.it.t==='chk'&&c.it.k!=='b18'&&(bad.indexOf('x')>=0||bad.indexOf('y')>=0)){ const want=[c.keys.find(k=>k.k==='x').ans,c.keys.find(k=>k.k==='y').ans].sort().join(','), got=[String(vals.x||''),String(vals.y||'')].sort().join(','); if(want===got) bad=bad.filter(k=>k!=='x'&&k!=='y'); }   /* 25 + 28 or 28 + 25: both check the same */
+  return { ok:!bad.length, bad };
+ }
+
+ /* ---------------- items: draw ---------------- */
+ function ansOf(c,k){ const key=c.keys.find(x=>x.k===k); if(!key) return ''; if(key.test||c.group||c.build) return '✓'; return key.ans==null?'':String(key.ans); }
+ /* PENCIL PAGE (the Khaver family, 2026-11-22: "pages that answers need to be done on paper or with a stylus"): the boxes are
+    writing spaces, he writes every answer with the pen, then "Check my work" shows the right answers next to his writing. */
+ function box(c,k,vals,cls){ if(X.pencil){ const a=ansOf(c,k); return `<span class="bbx-pwr"><span class="bbx-b pw ${cls||''}" aria-label="write your answer here"></span>${X.checked&&a!==''?`<span class="bbx-ans">${E(a)}</span>`:''}</span>`; }
+  const v=vals[k]==null?'':vals[k]; const sel=X.sel&&X.sel.id===c.id&&X.sel.k===k; const bad=X.bad&&X.bad[c.id]&&X.bad[c.id].indexOf(k)>=0; return `<button type="button" class="bbx-b ${cls||''}${sel?' sel':''}${bad?' bad':''}" data-bi="${c.id}" data-bk="${k}" aria-label="answer box">${E(v)}</button>`; }
+ function chs(c,key,vals){ if(X.pencil){ const k=c.keys.find(x=>x.k===key.k)||key; return key.ch.map(o=>`<span class="bbx-ch pw${X.checked&&o===k.ans?' rv':''}">${E(o)}</span>`).join(''); }
+  return key.ch.map(o=>{ const on=vals[key.k]===o; const bad=on&&X.bad&&X.bad[c.id]&&X.bad[c.id].indexOf(key.k)>=0; return `<button type="button" class="bbx-ch${on?' on':''}${bad?' bad':''}" data-ci="${c.id}" data-ck="${key.k}" data-cv="${E(o)}">${E(o)}</button>`; }).join(''); }
+ function rods(t,o,opt){ opt=opt||{}; let h=''; for(let i=0;i<t;i++) h+=`<div class="bbx-rod${opt.newT&&i>=t-opt.newT?' new':''}${opt.xt&&i<opt.xt?' x':''}" ${opt.tap?`data-px="t${i}"`:''}></div>`; if(t&&o) h+='<div class="bbx-gap"></div>'; for(let i=0;i<o;i++){ const x=opt.x&&opt.x.indexOf(i)>=0; h+=`<div class="bbx-cube${opt.ring&&i<opt.ring?' ring':''}${opt.gone&&i<opt.gone?' gone':''}${x?' x':''}${opt.tap?' tap':''}" ${opt.tap?`data-px="o${i}"`:''}></div>`; } return h; }
+ /* the vertical mat. vals: answer boxes; live=false draws a static mat (used in Watch me) with given digits */
+ function vMat(c,vals,o){ o=o||{}; const it=o.it||c.it, v=o.v||c.v, pre=o.pre||'', live=!o.static;
+  const cols=v.cols, W=['h','t','o'].slice(3-cols), nums=v.nums, op=v.op;
+  const cell=(html,cls)=>`<div class="cell ${cls||''}">${html}</div>`;
+  let g=`<div class="bbx-v${it.nomat?' nomat':''}${o.big?' big':''}" style="grid-template-columns:${o.big?'44px':'24px'} repeat(${cols},auto)">`;
+  if(!it.nomat){ g+=cell('','o'); W.forEach(w=>{ g+=cell(`<div class="h">${w==='h'?(o.big?'hundreds':'H'):w==='t'?(o.big||cols===2?'tens':'T'):(o.big||cols===2?'ones':'O')}</div>`); }); }
+  /* carry / borrow row */
+  g+=cell('','o');
+  W.forEach(w=>{ let h='';
+   if(op==='+'){ const k=w==='t'?'c1':w==='h'?'c2':null; if(k){ if(live) h=box(c,pre+k,vals,'c'); else if(o.show&&o.show[k]) h=`<span style="color:#f08a24;font-size:${o.big?26:16}px">${o.show[k]}</span>`; } }
+   else { const k=w==='t'?'nt':w==='o'?'no':null; if(k){ if(live) h=box(c,pre+k,vals,'c'); else if(o.show&&o.show[k]) h=`<span style="color:#f08a24;font-size:${o.big?26:16}px">${o.show[k]}</span>`; } }
+   g+=cell(`<div class="sm">${h}</div>`); });
+  /* number rows */
+  const opTxt=o.opShow!=null?o.opShow:(op==='-'?'−':'+');
+  nums.forEach((n,ri)=>{ const last=ri===nums.length-1; g+=cell(last?`<div class="op">${opTxt}</div>`:'','o');
+   W.forEach(w=>{ const d=w==='h'?(n>=100?Math.floor(n/100):''):w==='t'?(n>=10?Math.floor(n/10)%10:''):n%10;
+    let cls=''; if(o.cross&&ri===0&&((w==='t'&&o.cross.t)||(w==='o'&&o.cross.o))) cls=' xo'; if(o.hot&&o.hot===w) cls+=' hot';
+    if(o.stackBoxes&&live){ const k=(ri===0?'a':'b')+(w==='t'?'t':'o'); g+=cell(`<div class="d">${w==='h'?'':box(c,k,vals)}</div>`); }
+    else g+=cell(`<div class="d${cls}">${d}</div>`); }); });
+  g+=`<div class="bar" style="grid-column:1/${cols+2}"></div>`;
+  g+=cell('','o');
+  W.forEach(w=>{ const k=w==='o'?'r0':w==='t'?'r1':'r2'; let h='';
+   if(live) h=box(c,pre+k,vals); else if(o.show&&o.show[k]!=null) h=`<div class="d ${o.pen?'pen':''}">${o.show[k]}</div>`; else h='<div class="d"></div>';
+   g+=cell(`<div class="bx">${h}</div>`); });
+  return g+'</div>'; }
+
+ function picHTML(c,p,vals){ const st=(X.picSt[c.id]=X.picSt[c.id]||{});
+  if(p.k==='blocks') return `<div class="bbx-pics">${rods(p.t,p.o)}</div>`;
+  if(p.k==='teen'){ const f=n=>{ let h=''; for(let i=0;i<10;i++) h+=`<i class="${i<n?'f':''}"></i>`; return `<span class="bbx-fr">${h}</span>`; }; return `<div>${f(10)}<br>${f(p.n)}</div>`; }
+  if(p.k==='frame'){ let h=''; for(let i=0;i<10;i++) h+=`<i class="${i<p.n?'f':(st['f'+i]?'u':'')}" data-pc="${c.id}" data-pk="f${i}"></i>`; return `<span class="bbx-fr">${h}</span>`; }
+  if(p.k==='cubes'||p.k==='dots'){ let h=''; for(let i=0;i<p.n;i++) h+=`<i class="${st['x'+i]?'x':''}" data-pc="${c.id}" data-pk="x${i}" style="${p.k==='cubes'?'border-radius:3px;background:#f2b230':''}"></i>`; return `<div class="bbx-dots">${h}</div>`; }
+  if(p.k==='cmp'){ const row=(nm,n)=>`<div><b style="width:52px">${E(nm)}</b>${'<span></span>'.repeat(n)}</div>`; return `<div class="bbx-cmp">${row(p.a[0],p.a[1])}${row(p.b[0],p.b[1])}</div>`; }
+  if(p.k==='xblocks'){ let h=''; for(let i=0;i<p.t;i++) h+=`<div class="bbx-rod tap" data-pc="${c.id}" data-pk="t${i}" style="${st['t'+i]?'opacity:.3;outline:2px solid #d64545':''}"></div>`; h+='<div class="bbx-gap"></div>'; for(let i=0;i<p.o;i++) h+=`<div class="bbx-cube tap${st['o'+i]?' x':''}" data-pc="${c.id}" data-pk="o${i}"></div>`; return `<div class="bbx-pics">${h}</div>`; }
+  return ''; }
+
+ function itemHTML(c,num){ const it=c.it, vals=X.vals[c.id]||{}, T=it.t; let h='';
+  if(T==='v') h=vMat(c,vals);
+  else if(T==='story') h=`<div class="tx">${E(it.s)}</div>${it.pick?`<div class="tx">Circle one: ${chs(c,c.keys[0],vals)}</div>`:''}<div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">${vMat(c,vals,it.pick?{opShow:vals.sg||'?'}:{})}<b>${E(it.unit)}</b></div>`;
+  else if(T==='chk') h=`<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start">${vMat(c,vals,{pre:'v'})}<div class="tx" style="line-height:2.2;flex:1;min-width:150px">${c.lines.map(l=>'<div>'+l.map(x=>typeof x==='string'?E(x):x.ch?chs(c,x,vals):box(c,x.k,vals)).join('')+'</div>').join('')}</div></div>`;
+  else if(T==='cbn') h=`<div class="tx" style="font-size:20px;font-weight:800">${Math.floor(it.a/10)}<span style="border:2px solid #f08a24;border-radius:5px;padding:0 4px">${it.a%10}</span> ${it.op==='-'?'−':'+'} ${Math.floor(it.b/10)}<span style="border:2px solid #f08a24;border-radius:5px;padding:0 4px">${it.b%10}</span></div><div class="tx">${chs(c,c.keys[0],vals)}</div>`;
+  else if(T==='L'){ if(it.pic) h+=picHTML(c,it.pic,vals); h+=`<div class="tx">${it.house?`<span class="bbx-house">🏠 ${it.house}</span>`:''}`+c.toks.map((t,n)=>t.x!=null?E(t.x):t.ch?chs(c,{k:'k'+n,ch:t.ch},vals):box(c,'k'+n,vals,String(t.ans).length>2?'w':'')).join('')+'</div>'; }
+  else if(T==='spot'){ h=`<div class="tx" style="font-size:20px;font-weight:800">${Math.floor(it.a/10)}<span style="border:2px solid #f08a24;border-radius:5px;padding:0 4px">${it.a%10}</span> ${it.op==='+'?'+':'−'} ${Math.floor(it.b/10)}<span style="border:2px solid #f08a24;border-radius:5px;padding:0 4px">${it.b%10}</span></div><div class="tx">${it.op==='+'?'ones: '+box(c,'s',vals)+' ':''}${chs(c,c.keys.find(k=>k.k==='w'),vals)}</div>`; }
+  else if(T==='enough'){ h=`<div class="tx" style="font-size:20px;font-weight:800">${Math.floor(it.a/10)}<span style="border:2px solid #f08a24;border-radius:5px;padding:0 4px">${it.a%10}</span> − ${Math.floor(it.b/10)}<span style="border:2px solid #f08a24;border-radius:5px;padding:0 4px">${it.b%10}</span></div><div class="tx">${chs(c,c.keys[0],vals)}</div>`; }
+  else if(T==='fill'){ h=`<div class="tx" style="font-size:20px;font-weight:800">${it.op==='+'?it.a+box(c,'d',vals)+' + '+it.b:it.a+' − '+it.b+box(c,'d',vals)}</div>`; }
+  else if(T==='g4'||T==='help'){ h=`<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start">${vMat(c,vals,{pre:'v'})}<div class="tx" style="line-height:2.2;flex:1;min-width:190px">${c.lines.map(l=>'<div>'+l.map(x=>typeof x==='string'?E(x):x.ch?chs(c,x,vals):box(c,x.k,vals)).join('')+'</div>').join('')}</div></div>`; }
+  else if(T==='blk'){ const st=X.picSt[c.id]||{}; const ones=it.a%10+it.b%10; h=`<div class="tx" style="font-weight:800">${it.a} + ${it.b}</div><div class="bbx-pics">${rods(Math.floor(it.a/10),it.a%10)}<span style="font-weight:900;margin:0 6px">+</span>${rods(Math.floor(it.b/10),it.b%10)}</div><div class="bbx-pics" style="${st.ring?'':'display:none'}">${rods(Math.floor(it.a/10)+Math.floor(it.b/10),ones,{ring:10})}</div><button type="button" class="bbx-ch" data-ring="${c.id}">⭕ ${st.ring?'10 ones circled!':'Circle 10 ones'}</button><div class="tx">${box(c,'t',vals)} tens ${box(c,'o',vals)} ones = ${box(c,'n',vals)}</div>`; }
+  else if(T==='bblk'){ const at=Math.floor(it.a/10), ao=it.a%10, bt=Math.floor(it.b/10), bo=it.b%10; const what=(bt?bt+(bt===1?' ten and ':' tens and '):'')+bo+' ones'; h=`<div class="tx" style="font-weight:800">${it.a} − ${it.b}</div><div class="bbx-pics">${rods(at,ao)}</div><div style="font-size:12px;color:#5b6475;font-weight:700">${it.a} after breaking a ten (tap to cross out ${what}):</div><div class="bbx-pics">${(()=>{ const st=X.picSt[c.id]||{}; let hh=''; for(let i=0;i<at-1;i++) hh+=`<div class="bbx-rod tap" data-pc="${c.id}" data-pk="t${i}" style="${st['t'+i]?'opacity:.3;outline:2px solid #d64545':''}"></div>`; hh+='<div class="bbx-gap"></div>'; for(let i=0;i<ao+10;i++) hh+=`<div class="bbx-cube tap${st['o'+i]?' x':''}" data-pc="${c.id}" data-pk="o${i}"></div>`; return hh; })()}</div><div class="tx" style="line-height:2.2"><div>1. Break a ten: ${box(c,'t1',vals)} tens ${box(c,'o1',vals)} ones</div><div>2. Cross out ${what} in the picture.</div><div>3. Left: ${box(c,'t2',vals)} tens ${box(c,'o2',vals)} ones</div><div>4. Answer: ${box(c,'n',vals)}</div></div>`; }
+  else if(T==='build'){ const p=String(vals.b||'0,0').split(','), t=+p[0]||0, o=+p[1]||0; h=`${it.s?`<div class="tx">${E(it.s)}</div>`:`<div class="tx" style="font-weight:900;font-size:20px">${it.n}</div>`}<div class="bbx-build"><div class="bbx-pics" style="min-height:56px">${rods(t,o)||'<span style="color:#9aa3b2;font-size:13px">tap + ten and + one</span>'}</div><div class="row"><button type="button" data-bd="${c.id}" data-bv="t+">+ ten</button><button type="button" data-bd="${c.id}" data-bv="o+">+ one</button><button type="button" data-bd="${c.id}" data-bv="t-">− ten</button><button type="button" data-bd="${c.id}" data-bv="o-">− one</button><button type="button" data-bd="${c.id}" data-bv="ok" style="background:#2a6fdb;color:#fff;border-color:#2a6fdb">✔ Check</button></div><small style="color:#5b6475;font-weight:700">${t} tens ${o} ones = ${t*10+o}</small></div>`; }
+  else if(T==='ways') h=`<div class="tx">${box(c,'t',vals)} tens ${box(c,'o',vals)} ones = ${it.n}</div>`;
+  else if(T==='pair') h=`<div class="tx">${box(c,'x',vals,'w')} ${it.op==='-'?'−':'+'} ${box(c,'y',vals,'w')} = ${it.n}</div>`;
+  else if(T==='miss'){ const row=(s,first)=>String(s).split('').map(ch=>ch==='_'?box(c,'m',vals):`<span>${ch}</span>`).join(''); h=`<div class="bbx-v" style="grid-template-columns:24px auto;font-size:24px"><div></div><div class="d" style="justify-content:flex-end;gap:10px">${row(it.a)}</div><div class="op">${it.op==='-'?'−':'+'}</div><div class="d" style="justify-content:flex-end;gap:10px">${row(it.b)}</div><div class="bar" style="grid-column:1/3"></div><div></div><div class="d" style="justify-content:flex-end;gap:10px">${String(it.sum).split('').map(x=>'<span>'+x+'</span>').join('')}</div></div>`; }
+  else if(T==='det'){ const sh=String(it.shown).split(' '); const show={r0:sh[sh.length-1],r1:sh.length>1?sh[0]:(String(it.shown).length>1?String(it.shown)[0]:'')}; if(sh.length===1&&String(it.shown).length===2){ show.r1=String(it.shown)[0]; show.r0=String(it.shown)[1]; } if(it.carry) show.c1='1'; if(it.marks) Object.assign(show,it.marks);
+   h=`${it.s?`<div class="tx">${E(it.s)}</div>`:''}${vMat(c,vals,{static:1,show,pen:1,v:vSpec({t:'v',a:it.a,b:it.b,op:it.op}),it:{t:'v',a:it.a,b:it.b,op:it.op}})}<div class="tx">${chs(c,c.keys[0],vals)}</div>${vals.w==='wrong'?`<div class="tx">Fix it: ${box(c,'f',vals,'w')}${it.unit?' '+E(it.unit):''}</div>`:''}`; }
+  else if(T==='stack') h=`<div class="tx" style="font-weight:800">${it.a} ${it.op==='-'?'−':'+'} ${it.b}</div>`+vMat(c,vals,{pre:'v',stackBoxes:1});
+  else if(T==='which'){ const sub=it.op==='-', sg=sub?'−':'+'; const dd=n=>[n>=10?Math.floor(n/10):'',n%10]; const one=(right)=>{ let top=dd(it.a), bot=right?['',it.b%10]:[it.b,''];
+    if(sub&&!right){ top=['',it.b]; bot=dd(it.a); }
+    return `<div class="bbx-v" style="grid-template-columns:24px 36px 36px"><div></div><div class="h">tens</div><div class="h">ones</div><div></div><div class="d">${top[0]}</div><div class="d">${top[1]}</div><div class="op">${sg}</div><div class="d">${bot[0]}</div><div class="d">${bot[1]}</div><div class="bar" style="grid-column:1/4"></div></div>`; };
+   h=`<div class="tx">Two builders stacked ${it.a} ${sg} ${it.b}. Circle the one who stacked it the right way.</div><div style="display:flex;gap:24px;align-items:flex-end"><div style="text-align:center">${one(it.right==='A')}<div style="font-weight:900">A</div></div><div style="text-align:center">${one(it.right==='B')}<div style="font-weight:900">B</div></div></div><div class="tx">${chs(c,c.keys[0],vals)}</div>`; }
+  else if(T==='draw') h=`<div class="tx" style="font-weight:800">${it.a} ${it.op==='-'?'−':'+'} ${it.b}</div><div class="bbx-draw" title="Draw here with the pen"></div><div class="tx">Answer: ${box(c,'n',vals,'w')}</div>`;
+  else if(T==='code'){ const ks=Object.keys(c.it.key).map(Number).sort((a,b)=>a-b); let n=0; const words=(c.it.words||[c.keys.length]).map(w=>{ let hh='<div class="w">'; for(let i=0;i<w;i++,n++) hh+=`<div class="cell">${box(c,'m'+n,vals)}<span>${n+1}</span></div>`; return hh+'</div>'; }).join('');
+   h=`<div style="font-weight:800;margin-bottom:4px">B Code key</div><div class="bbx-key">${ks.map(k=>`<div>${k}<br>${E(c.it.key[k])}</div>`).join('')}</div><div class="bbx-msg">${words}</div>`; }
+  else if(T==='open') h=`<div class="tx">${E(it.s)}</div><div class="bbx-open" title="Write here with the pen"></div><small style="color:#5b6475;font-weight:700">✏️ Write with the pen. Your rebbe will read it.</small>`;
+  const ok=!!X.ok[c.id], bad=X.bad&&X.bad[c.id];
+  let hint=''; if(bad&&!ok&&c.hint){ const mm=X.miss[c.id]||0; hint=`<div class="bbx-hint">💡 ${E(X.why&&X.why[c.id]||c.hint(X.vals[c.id]||{}))}${mm>=2&&c.teach?` <button type="button" data-teach="${c.id}">👀 Watch me do one like it</button>`:''}</div>`; }
+  return `<div class="bbx-it${ok?' ok':''}${bad&&!ok?' bad':''}" data-it="${c.id}">${num?`<span class="no">${num}</span>`:''}<span class="ck">✓</span>${h}${hint}</div>`; }
+
+ /* ---------------- Watch me ---------------- */
+ function exLines(ex){
+  if(ex.t==='text') return ex.lines.slice();
+  const a=ex.a,b=ex.b,ao=a%10,bo=b%10,at=Math.floor(a/10),bt=Math.floor(b/10);
+  if(ex.t==='carry'){ const s=ao+bo, r=a+b;
+   if(s<10) return ['Add the ones. '+ao+' + '+bo+' = '+s+'. Write '+s+'.','Add the tens. '+at+(bt?' + '+bt:'')+' = '+(at+bt)+'. Write '+(at+bt)+'. The answer is '+r+'!'];
+   const T=1+at+bt;
+   if(T>=10) return ['Ones: '+ao+' + '+bo+' = '+s+'. Write '+s%10+', carry 1 ten.','Tens: 1 + '+at+' + '+bt+' = '+T+' tens. 10 tens make 1 hundred! Write '+T%10+', carry 1 hundred.','Hundreds: only the carried 1. Write 1. The answer is '+r+'.'];
+   return ['Add the ones. '+ao+' + '+bo+' = '+s,'Write the ones. '+s+' is 1 ten and '+s%10+' ones. Write '+s%10+' in the ones place.','Carry the ten. Write a little 1 in the carry box above the tens.','Add the tens. 1 + '+at+(bt?' + '+bt:'')+' = '+T+'. Write '+T+'. The answer is '+r+'!']; }
+  const r=a-b;
+  if(ao>=bo) return ['Subtract the ones. '+ao+' − '+bo+' = '+(ao-bo)+'. Write '+(ao-bo)+'.','Subtract the tens. '+at+(bt?' − '+bt:'')+' = '+(at-bt)+'. The answer is '+r+'!'];
+  return ['Look at the ones. Can you take '+bo+' from '+ao+'? No, '+ao+' is too small.','Borrow a ten. Cross out the '+at+' and write '+(at-1)+'. That ten becomes 10 ones: cross out the '+ao+' and write '+(ao+10)+'.','Subtract the ones. '+(ao+10)+' − '+bo+' = '+(ao+10-bo)+'. Write '+(ao+10-bo)+'.',bt?'Subtract the tens. '+(at-1)+' − '+bt+' = '+(at-1-bt)+'. Write '+(at-1-bt)+'. The answer is '+r+'!':'Write the tens. There are '+(at-1)+' tens left. Write '+(at-1)+'. The answer is '+r+'!'];
+ }
+ function exVisual(ex,step){
+  if(ex.t==='text'){ if(ex.line){ const L=ex.line; const lo=L[0],hi=L[1]; let h='<div style="display:flex;gap:3px;flex-wrap:wrap;align-items:center">'; for(let n=lo;n<=hi;n++){ const on=step>=1&&n===L[3]||step>=2&&n===L[4]||n===L[2]; h+=`<span style="min-width:28px;text-align:center;border-radius:8px;padding:4px 2px;font-weight:900;${on?'background:#ffd34d':'background:#eef1f6'}">${n}</span>`; } return h+'</div>'; } return ''; }
+  const it={t:'v',a:ex.a,b:ex.b,op:ex.t==='borrow'?'-':'+',hto:ex.a+ex.b>=100&&ex.t==='carry'}; const v=vSpec(it), show={};
+  const a=ex.a,b=ex.b,ao=a%10,bo=b%10,at=Math.floor(a/10),bt=Math.floor(b/10); let blocks='', hot='';
+  if(ex.t==='carry'){ const s=ao+bo; const n=exLines(ex).length;
+   if(n===2){ hot=step===0?'o':'t'; if(step>=0) show.r0=String(s); if(step>=1) show.r1=String(at+bt); }
+   else if(n===3){ hot=['o','t','h'][step]; show.r0=String(s%10); show.c1='1'; if(step>=1){ show.r1=String((1+at+bt)%10); show.c2='1'; } if(step>=2) show.r2='1'; }
+   else { hot=step<=2?'o':'t'; if(step>=1) show.r0=String(s%10); if(step>=2) show.c1='1'; if(step>=3) show.r1=String(1+at+bt); }
+   const merged=step>=2&&s>=10; blocks=merged?rods(at+bt+1,s-10,{newT:1}):rods(at+bt,s,{ring:step>=1&&s>=10?10:0});
+  } else { const borrow=ao<bo, n=exLines(ex).length;
+   if(!borrow){ hot=step===0?'o':'t'; show.r0=String(ao-bo); if(step>=1) show.r1=String(at-bt); blocks=rods(at,ao,{x:Array.from({length:bo},(_,i)=>i)}); }
+   else { hot=step<=2?'o':'t'; if(step>=1){ show.nt=String(at-1); show.no=String(ao+10); } if(step>=2) show.r0=String(ao+10-bo); if(step>=3) show.r1=String(at-1-bt);
+    blocks=step>=1?rods(at-1,ao+10,{x:step>=2?Array.from({length:bo},(_,i)=>ao+10-1-i):[]}):rods(at,ao); }
+  }
+  const cross=ex.t==='borrow'&&ao<bo&&step>=1?{t:1,o:1}:null;
+  return vMat({id:'ex'},{}, {static:1,it,v,show,big:1,hot,cross})+(ex.t!=='text'?`<div class="bbx-blocks" aria-hidden="true">${blocks}</div>`:'');
+ }
+ function avatar(who){ return who==='tenzi'?'<div class="bbx-av"><div class="ten"></div>Tenzi</div>':'<div class="bbx-av"><div class="one"></div>Dot</div>'; }
+ function watchHTML(){ const j=X.job, ex=X.wex||j.ex, step=X.wstep||0; const lines=ex?exLines(ex):[];
+  const words=X.wex?'Watch me do one like yours. Tap Next step.':j.says;
+  let h=`<div class="bbx-wrap"><div class="bbx-say">${avatar(j.who)}<div style="flex:1">${E(words)}</div><button type="button" class="bbx-hear" data-bb="hear" aria-label="Read it to me">🔊</button></div>`;
+  if(ex){ h+=`<div class="bbx-watch"><div>${exVisual(ex,step)}</div><div class="bbx-steps"><div style="font-weight:900;margin-bottom:6px;color:#f08a24">${ex.t==='text'?'EXAMPLE':'WATCH ME · '+(ex.a)+' '+(ex.t==='borrow'?'−':'+')+' '+ex.b}</div><ol>${lines.map((l,i)=>`<li class="${i<step?'was':i===step?'now':''}">${E(l)}</li>`).join('')}</ol></div></div>`;
+   h+=`<div class="bbx-cta">${step>0?'<button type="button" class="bbx-btn" data-bb="wback">◀ Back</button>':''}${step<lines.length-1?'<button type="button" class="bbx-btn go" data-bb="wnext">Next step ▶</button>':''}${step>=lines.length-1?`<button type="button" class="bbx-btn y" data-bb="topage">${X.wex?'◀ Back to my page':'✏️ Open my workbook page'}</button>`:''}</div>`; }
+  else h+=`<div class="bbx-cta"><button type="button" class="bbx-btn y" data-bb="topage">✏️ Open my workbook page</button></div>`;
+  return h+'</div>'; }
+
+ /* ---------------- the page ---------------- */
+ function exBox(j){ const ex=j.ex; if(!ex) return ''; const lines=exLines(ex);
+  if(ex.t==='text') return `<div class="bbx-exb"><div>${lines.map(l=>'<div>'+E(l)+'</div>').join('')}</div></div>`;
+  return `<div class="bbx-exb"><div>${exVisual(ex,lines.length-1).replace(/ big"/,'"').replace(/<div class="bbx-blocks"[\s\S]*$/,'')}</div><div><b>Example</b>${lines.map((l,i)=>'<div>'+(i+1)+' '+E(l)+'</div>').join('')}</div></div>`; }
+ function paperHTML(j,opts){ opts=opts||{}; const sec=secOf(j.sec), who=opts.name!=null?opts.name:TEACH()?'':me().name, date=TEACH()?'':new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  let n=0, h=`<div class="bbx-band"><div><span class="bbx-tag">${E(j.tag)}</span><h2>Job ${j.n} · ${E(j.title)}${j.sheet?` <small style="font-size:15px;color:#f08a24">Sheet ${j.sheet}</small>`:''}</h2></div><div class="bbx-nd">${j.timed?`Time <b class="bbx-timer" data-bb="time">${opts.readonly?'':'0:00'}</b><br><br>`:''}Name <b>${E(who)}</b><br><br>Date <b>${E(opts.date||date)}</b></div></div>`;
+  h+=`<div class="bbx-say">${avatar(j.who)}<div style="flex:1"><b>${j.who==='tenzi'?'Tenzi':'Dot'} says:</b> ${E(j.says)}</div>${opts.readonly?'':'<button type="button" class="bbx-hear" data-bb="hear" aria-label="Read it to me">🔊</button>'}</div>`;
+  { const xb=exBox(j); h+=ONE()&&!opts.readonly&&xb?'<details class="bbx-exd"><summary>📖 See the example again</summary>'+xb+'</details>':xb; }
+  if(ONE()&&!opts.readonly) return h+oneHTML(j);
+  if(X.pencil&&!opts.readonly&&!TEACH()) h+=`<div class="bbx-pnote">✏️ Pencil page: write every answer with your pen, just like on paper. When you finish, tap <b>Check my work</b> and the right answers will show in green next to yours.</div>`;
+  let ci=0;
+  j.parts.forEach((p,pi)=>{ const cols=p.cols||2; h+=`<div class="bbx-part">${p.d?`<div class="bbx-ph">${p.L?`<b>${E(p.L)}</b>`:''}<span>${E(p.d)}</span>${opts.readonly?'':`<button type="button" class="bbx-hear" style="width:34px;height:34px;font-size:15px" data-bb="hearp" data-p="${pi}" aria-label="Read it to me">🔊</button>`}</div>`:''}${p.ex?`<div class="bbx-exb">${E(p.ex)}</div>`:''}<div class="bbx-grid" style="grid-template-columns:repeat(var(--bbc${cols}),minmax(0,1fr))">`;
+   p.items.forEach(()=>{ const c=X.cj[ci++]; n++; h+=itemHTML(c,c.it.t==='code'?'':n); });
+   h+='</div></div>'; });
+  if((j.inspect||j.score)&&!X.pencil&&!TEACH()){ const g=X.cj.filter(c=>c.graded), sc=g.filter(c=>X.ok[c.id]&&X.first[c.id]).length; h+=`<div style="margin-top:16px;font-weight:900;font-size:18px">${j.inspect?'Inspection score':'My score'}: <span style="border-bottom:2px solid #1d2433;padding:0 10px">${opts.readonly||X.done?sc:''}</span> out of ${j.inspect||j.score}</div>`; }
+  if(!opts.readonly&&!TEACH()) h+=X.pencil?(X.checked?`<div class="bbx-pnote" style="margin-top:18px">✅ Checked! Look at each green answer next to yours. Fix any that don’t match with your pen.</div><button type="button" class="bbx-btn go bbx-fin" data-bb="pdone">🏁 I fixed my mistakes</button>`:`<button type="button" class="bbx-btn y bbx-fin" data-bb="pcheck">✅ Check my work</button>`):`<button type="button" class="bbx-btn y bbx-fin" data-bb="finish">✅ I finished this page</button>`;
+  h+=`<div class="bbx-foot"><span>Block Builders: ${E(sec.name)}</span><span>Job ${j.n} of ${sec.of}${j.sheet?', Sheet '+j.sheet:''}</span></div>`;
+  return h; }
+
+ /* 2.0: the boy's page shows ONE example at a time (Mrs. Khaver 2026-11-23) */
+ function partIdx(j){ const m=[]; j.parts.forEach((p,pi)=>p.items.forEach(()=>m.push(pi))); return m; }
+ function oneHTML(j){ const all=X.cj, i=Math.max(0,Math.min(X.cur||0,all.length-1)), c=all[i], p=j.parts[partIdx(j)[i]], right=!!X.ok[c.id], last=i===all.length-1;
+  let h=`<div class="bbx-one"><div class="bbx-prog" aria-label="Example ${i+1} of ${all.length}">${all.map((x,n)=>`<i class="${X.ok[x.id]||(!x.graded&&n<i)?'d':''}${n===i?' c':''}${n===X.popAt?' pop':''}"></i>`).join('')}<span>${i+1} of ${all.length}</span></div>`;
+  h+=`<div class="bbx-part">${p.d?`<div class="bbx-ph">${p.L?`<b>${E(p.L)}</b>`:''}<span>${E(p.d)}</span><button type="button" class="bbx-hear" style="width:34px;height:34px;font-size:15px" data-bb="hearp" data-p="${partIdx(j)[i]}" aria-label="Read it to me">🔊</button></div>`:''}${p.ex?`<div class="bbx-exb">${E(p.ex)}</div>`:''}<div class="bbx-grid bbx-solo" style="grid-template-columns:minmax(0,1fr)">${itemHTML(c,'')}</div></div>`;
+  if(right) h+=`<div class="bbx-yay">✅ ${E(PRAISE[i%PRAISE.length])}</div><button type="button" class="bbx-btn go bbx-nextone" data-bb="onext">${last?'🏁 Finish the job':'Next ➜'}</button>`;
+  else if(!c.graded) h+=`<button type="button" class="bbx-btn go bbx-nextone" data-bb="onext">${last?'🏁 Finish the job':'Next ➜'}</button>`;
+  return h+'</div>'; }
+ function firstBox(){ const c=X.cj[X.cur]; if(!c||X.ok[c.id]||!c.graded){ X.sel=null; return; } const ord=orderOf(c); if(!ord.length){ X.sel=null; return; } const key=c.keys.find(x=>x.k===ord[0])||{}; X.sel={id:c.id,k:ord[0]}; X.selLet=!!key.let; }
+ function inView(){ const sc=document.getElementById('bbx-sc'), el=document.querySelector('#bbx .bbx-one'); if(!sc||!el) return; const pad=document.getElementById('bbx-pad'), ph=pad&&pad.classList.contains('on')?pad.offsetHeight:0; const r=el.getBoundingClientRect(), room=window.innerHeight-ph-12; if(r.bottom>room) sc.scrollTop+=Math.min(r.bottom-room, r.top-sc.getBoundingClientRect().top-8); }
+ function showCur(){ const c=X.cj[X.cur]; X.strokes=((X.vals._ib||{})[c.id]||[]).slice(); X.undo=[]; firstBox(); draw(); const sc=document.getElementById('bbx-sc'); if(sc) sc.scrollTop=0; inView(); }
+ function oneNext(){ save(); const all=X.cj; X.popAt=-1;
+  if(X.cur>=all.length-1){ const left=all.findIndex(c=>c.graded&&!X.ok[c.id]); if(left<0){ X.done=true; save(true); X.view='done'; hush(); say('Job done, builder!'); draw(); } else { X.cur=left; showCur(); } return; }
+  X.cur++; showCur(); }
+ function colVars(){ const w=window.innerWidth; const map={1:1,2:w<520?1:2,3:w<520?2:3,4:w<520?2:w<760?3:4,6:w<520?3:w<760?4:6}; return Object.keys(map).map(k=>`--bbc${k}:${map[k]}`).join(';'); }
+
+ /* ---------------- screens ---------------- */
+ function homeHTML(){ const bk=B(), nx=nextJob(), m=me();
+  let h=`<div class="bbx-wrap"><div class="bbx-cover"><h1>📘 ${E(bk.title)}</h1><p>${E(bk.sub)}</p>${TEACH()?'<div class="who">Teacher copy: open any job to show the whole page to the class. Nothing is saved.</div>':`<div class="who">Hi, builder! Let’s get to work!${m.name?' · This book belongs to: <b>'+E(m.name)+'</b>':''}</div>`}<div class="bl">${rods(3,4)}</div>${nx&&!TEACH()?`<div><button type="button" class="bbx-next" data-bb="job" data-j="${nx.id}">▶ Next: Job ${nx.n} · ${E(nx.title)}</button></div>`:'<div class="who">🏆 Every page here is done. Amazing building!</div>'}</div>`;
+  bk.sections.forEach(s=>{ const js=jobsOf(s.k); const nums=[]; js.forEach(j=>{ if(nums.indexOf(j.n)<0) nums.push(j.n); });
+   const doneN=nums.filter(n=>{ const a=js.find(j=>j.n===n&&(!j.sheet||j.sheet==='A')); return a&&jobDone(a); }).length;
+   h+=`<div class="bbx-sec"><h2><span>${s.ico}</span>${E(s.name)}</h2><div class="sub">${E(s.sub)} · ${E(s.pages)}</div>`;
+   if(s.of) h+=`<div class="bbx-bar"><i style="width:${Math.round(doneN/s.of*100)}%;background:${s.color}"></i></div>`;
+   h+='<div class="bbx-jobs">';
+   for(let n=1;n<=s.of;n++){ const two=js.filter(j=>j.n===n); if(!two.length){ h+=`<div class="bbx-job soon"><small>Job ${n}</small><b>📦 Page on the way</b></div>`; continue; }
+    const a=two.find(j=>!j.sheet||j.sheet==='A')||two[0]; const isNext=nx&&nx.id===a.id; const d=jobDone(a);
+    h+=`<button type="button" class="bbx-job${isNext?' next':''}${d?' done':''}" data-bb="job" data-j="${a.id}"><small>Job ${n}${isNext?' · ▶ next':''}</small><b>${E(a.title)}</b><div class="bbx-sh">${two.map(j=>{ const p=pageState(j.id); return `<span class="${p&&p.done?'d':p?'p':''}">${j.sheet?j.sheet+' ':''}${p&&p.done?'★'.repeat(stars(p.score,p.total)):p?'…':''}</span>`; }).join('')}</div></button>`; }
+   h+='</div>';
+   if(!s.of) h+=`<div class="bbx-soon">📦 These pages are on the way. Keep building!</div>`;
+   h+='</div>'; });
+  return h+'</div>'; }
+ function doneHTML(){ if(X.pencil){ const nx=nextJob(); return `<div class="bbx-wrap"><div class="bbx-done"><div class="stars">✏️</div><h2>Page done, builder!</h2><p style="font-size:18px;font-weight:700">You wrote it, checked it and fixed it, just like a real builder. Your rebbe will look at your page.</p><div class="bbx-cta">${nx?`<button type="button" class="bbx-btn go" data-bb="job" data-j="${nx.id}">▶ Next job</button>`:''}<button type="button" class="bbx-btn" data-bb="home">📘 My workbook</button></div></div></div>`; }
+  const j=X.job, g=X.cj.filter(c=>c.graded), sc=g.filter(c=>X.first[c.id]).length, st=stars(sc,g.length); const sib=j.sheet==='A'?B().byId[j.id.slice(0,3)+'B']:null; const nx=nextJob();
+  return `<div class="bbx-wrap"><div class="bbx-done"><div class="stars">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><h2>Job done, builder!</h2><p style="font-size:18px;font-weight:700">${sc} of ${g.length} right on the first try${X.timeTxt?' · ⏱ '+X.timeTxt:''}</p>
+   ${sib&&sc/g.length<.8?`<p style="color:#a85a12;font-weight:800">Sheet B has the same job with new numbers. One more try makes it strong!</p>`:''}
+   <div class="bbx-cta">${sib?`<button type="button" class="bbx-btn ${sc/g.length<.8?'y':''}" data-bb="job" data-j="${sib.id}" data-direct="1">📄 Sheet B: more practice</button>`:''}${nx?`<button type="button" class="bbx-btn go" data-bb="job" data-j="${nx.id}">▶ Next job</button>`:''}<button type="button" class="bbx-btn" data-bb="home">📘 My workbook</button></div></div></div>`; }
+
+ function topHTML(){ const j=X.job; if(X.view==='home') return `<button type="button" class="bbx-ib" data-bb="close" aria-label="Close">✕</button><div class="t">📘 ${TEACH()?'Teacher Workbook':'My Workbook'}<small>Block Builders</small></div><button type="button" class="bbx-ib" data-bb="mute">${X.mute?'🔇':'🔊'}</button>`;
+  const sec=secOf(j.sec); const g=X.cj?X.cj.filter(c=>c.graded):[], okN=g.filter(c=>X.ok[c.id]).length;
+  return `<button type="button" class="bbx-ib" data-bb="home" aria-label="Back to my workbook">◀ 📘</button><div class="t">Job ${j.n} · ${E(j.title)}<small>${E(sec.name)}${j.sheet?' · Sheet '+j.sheet:''}</small></div>${X.view==='page'&&!X.pencil&&!TEACH()?`<span class="bbx-ib bbx-star">⭐ ${okN}/${g.length}</span>`:''}<button type="button" class="bbx-ib" data-bb="mute">${X.mute?'🔇':'🔊'}</button>`; }
+ function toolsHTML(){ const T=(k,lab)=>`<button type="button" class="bbx-tl${X.tool===k?' on':''}" data-tool="${k}">${lab}</button>`;
+  return `<div class="bbx-tools">${T('tap','👆 Tap')}${T('pen','✏️ Pen')}${['#1d2433','#2a6fdb','#d64545'].map(c=>`<button type="button" class="bbx-tl${X.color===c&&X.tool==='pen'?' on':''}" data-color="${c}" aria-label="pen color"><i style="background:${c}"></i></button>`).join('')}${T('erase','🧽 Eraser')}<button type="button" class="bbx-tl" data-bb="undo">↶ Undo</button><button type="button" class="bbx-tl" data-bb="clear">🗑 Clear pen</button>${X.job.ex?'<button type="button" class="bbx-tl" data-bb="watch">👀 Watch me</button>':''}${TEACH()?`<button type="button" class="bbx-tl${X.checked?' on':''}" data-bb="tans">${X.checked?'🙈 Hide answers':'👁 Show answers'}</button><button type="button" class="bbx-tl" data-bb="print">🖨 Print</button>`:ONE()?'':`<button type="button" class="bbx-tl${X.pencil?' on':''}" data-bb="pencil" title="Write every answer with the pen, like on paper">${X.pencil?'✏️ Pencil page: on':'✏️ Pencil page'}</button>`}</div>`; }
+
+ function draw(){ if(!X.open) return; css(); let r=document.getElementById('bbx'); if(!r){ r=document.createElement('div'); r.id='bbx'; document.body.appendChild(r); }
+  let body='';
+  if(X.view==='home') body=`<div class="bbx-scroll">${homeHTML()}</div>`;
+  else if(X.view==='watch') body=`<div class="bbx-scroll">${watchHTML()}</div>`;
+  else if(X.view==='done') body=`<div class="bbx-scroll">${doneHTML()}</div>`;
+  else body=toolsHTML()+`<div class="bbx-scroll" id="bbx-sc"><div class="bbx-wrap" style="${colVars()}"><div class="bbx-paper${X.tool!=='tap'?' pen':''}" id="bbx-paper">${paperHTML(X.job)}<canvas class="bbx-ink" id="bbx-ink"></canvas></div></div></div>`;
+  const sc=document.getElementById('bbx-sc'), keep=sc?sc.scrollTop:0;
+  r.innerHTML=`<div class="bbx-top">${topHTML()}</div>${body}<div class="bbx-pad${X.sel?' on':''}${X.sel&&X.selLet?' let':''}" id="bbx-pad"></div>`;
+  if(X.view==='page'){ const s2=document.getElementById('bbx-sc'); if(s2) s2.scrollTop=keep; inkSize(); padDraw(); }
+ }
+ /* redraw only one item (fast typing on a slow Chromebook) */
+ function drawItem(c){ const el=document.querySelector(`#bbx [data-it="${c.id}"]`); if(!el){ draw(); return; } const n=el.querySelector('.no'); const tmp=document.createElement('div'); tmp.innerHTML=itemHTML(c,n?n.textContent:''); el.replaceWith(tmp.firstChild); const top=document.querySelector('#bbx .bbx-top'); if(top) top.innerHTML=topHTML(); padDraw(); }
+
+ /* ---------------- number pad ---------------- */
+ function padDraw(){ const p=document.getElementById('bbx-pad'); if(!p) return; p.classList.toggle('on',!!X.sel); p.classList.toggle('let',!!(X.sel&&X.selLet)); if(!X.sel){ p.innerHTML=''; return; }
+  const c=X.cj.find(x=>x.id===X.sel.id); let keys;
+  if(X.selLet) keys=c.letters.slice().sort().map(l=>`<button type="button" data-pad="${l}">${l}</button>`).join('')+'<button type="button" class="k3" data-pad="del">⌫</button><button type="button" class="k2" data-pad="next">Next ➜</button><button type="button" class="k3" data-pad="x">✕</button>';
+  else keys=[1,2,3,4,5,6,7,8,9,0].map(n=>`<button type="button" data-pad="${n}">${n}</button>`).join('')+'<button type="button" class="k3" data-pad="del">⌫</button><button type="button" class="k3" data-pad="x">✕</button><button type="button" class="k2" data-pad="next" style="grid-column:span 6">Next ➜</button>';
+  p.innerHTML=`<div class="in">${keys}</div>`; }
+ function orderOf(c){ return c.keys.filter(k=>!(c.it.t==='det'&&k.cond&&(X.vals[c.id]||{}).w!=='wrong')).filter(k=>!k.ch&&!(c.build)).map(k=>k.k); }
+ function selBox(id,k){ const c=X.cj.find(x=>x.id===id); if(!c||X.ok[id]) return; const prev=X.sel&&X.sel.id!==id&&X.cj.find(x=>x.id===X.sel.id); if(prev&&!X.ok[prev.id]&&filled(prev,X.vals[prev.id]||{})) tryCheck(prev,1); X.sel={id,k}; const key=c.keys.find(x=>x.k===k)||{}; X.selLet=!!key.let; draw(); const el=document.querySelector(`#bbx [data-bi="${id}"][data-bk="${k}"]`); if(el){ const r=el.getBoundingClientRect(); if(r.bottom>window.innerHeight-190){ const sc=document.getElementById('bbx-sc'); if(sc) sc.scrollTop+=r.bottom-(window.innerHeight-210); } } }
+ function padPress(v){ const s=X.sel; if(!s) return; const c=X.cj.find(x=>x.id===s.id); const vals=(X.vals[c.id]=X.vals[c.id]||{});
+  if(v==='x'){ X.sel=null; draw(); return; }
+  if(v==='del'){ vals[s.k]=String(vals[s.k]||'').slice(0,-1); afterEdit(c,false); return; }
+  if(v==='next'){ moveNext(c); return; }
+  const key=c.keys.find(x=>x.k===s.k)||{}; const max=key.let||key.one?1:key.two?2:3;
+  let cur=String(vals[s.k]||''); cur=cur.length>=max?String(v):cur+String(v); vals[s.k]=cur; X.dirty=1;
+  afterEdit(c,(key.let||key.one||key.two)&&cur.length>=max); }
+ function moveNext(c){ const ord=orderOf(c), vals=X.vals[c.id]||{}; const i=ord.indexOf(X.sel.k); const empty=ord.filter(k=>String(vals[k]||'')===''&&!(c.keys.find(x=>x.k===k)||{}).opt);
+  if(filled(c,vals)){ X.sel=null; tryCheck(c); return; }
+  const nx=ord.slice(i+1).concat(ord.slice(0,i)).find(k=>empty.indexOf(k)>=0)||ord[(i+1)%ord.length]; X.sel={id:c.id,k:nx}; drawItem(c); }
+ function afterEdit(c,full){ if(X.bad&&X.bad[c.id]){ X.bad[c.id]=X.bad[c.id].filter(k=>k!==X.sel.k); } if(full){ const ord=orderOf(c); const i=ord.indexOf(X.sel.k); const vals=X.vals[c.id]; if(filled(c,vals)&&ord.slice(i+1).every(k=>String(vals[k]||'')!==''||(c.keys.find(x=>x.k===k)||{}).opt)){ X.sel=null; tryCheck(c); return; } if(i>=0&&i<ord.length-1){ X.sel={id:c.id,k:ord[i+1]}; } } save(); drawItem(c); }
+ function tryCheck(c,quiet){ const vals=X.vals[c.id]||{}; if(!filled(c,vals)){ if(!quiet) drawItem(c); return; }
+  const r=checkItem(c,vals); X.bad=X.bad||{}; X.why=X.why||{};
+  if(r.ok){ X.ok[c.id]=1; if(X.first[c.id]==null) X.first[c.id]=1; delete X.bad[c.id]; delete X.why[c.id]; cheer(); if(ONE()&&!quiet){ X.sel=null; X.popAt=X.cj.indexOf(c); say(PRAISE[X.cur%PRAISE.length]); } }
+  else { X.miss[c.id]=(X.miss[c.id]||0)+1; X.first[c.id]=0; X.bad[c.id]=r.bad; if(r.why) X.why[c.id]=r.why; else delete X.why[c.id]; }
+  X.dirty=1; save(); if(!quiet) draw(); if(r.ok) maybeAllDone(); }
+ function cheer(){ try{ const ac=X.ac||(X.ac=new (window.AudioContext||window.webkitAudioContext)()); const o=ac.createOscillator(), g=ac.createGain(); o.type='triangle'; o.frequency.setValueAtTime(660,ac.currentTime); o.frequency.setValueAtTime(880,ac.currentTime+.08); g.gain.setValueAtTime(.06,ac.currentTime); g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+.25); o.connect(g); g.connect(ac.destination); o.start(); o.stop(ac.currentTime+.26); }catch(e){} }
+ function maybeAllDone(){ const g=X.cj.filter(c=>c.graded); if(ONE()){ if(g.length&&g.every(c=>X.ok[c.id])){ X.done=true; save(true); } return; } if(g.length&&g.every(c=>X.ok[c.id])){ X.done=true; if(X.timer){ clearInterval(X.timer); X.timer=null; } save(true); setTimeout(()=>{ if(X.view==='page'){ X.view='done'; hush(); say('Job done, builder!'); draw(); } },700); } }
+
+ /* ---------------- pen layer ---------------- */
+ function inkSize(){ const cv=document.getElementById('bbx-ink'), pp=document.getElementById('bbx-paper'); if(!cv||!pp) return; const d=window.devicePixelRatio||1; const w=pp.offsetWidth, h=pp.offsetHeight; cv.style.width=w+'px'; cv.style.height=h+'px'; cv.width=Math.round(w*d); cv.height=Math.round(h*d); inkDraw(); }
+ function inkDraw(target,strokes){ const cv=target||document.getElementById('bbx-ink'); if(!cv) return; const g=cv.getContext('2d'), W=cv.width; g.clearRect(0,0,cv.width,cv.height); g.lineCap='round'; g.lineJoin='round';
+  (strokes||X.strokes).forEach(s=>{ const p=s.p; if(!p||p.length<2) return; g.strokeStyle=s.c||'#1d2433'; g.lineWidth=(s.w||2.6)*W/860*1.2; g.beginPath(); g.moveTo(p[0]*W/1000,p[1]*W/1000); for(let i=2;i<p.length;i+=2) g.lineTo(p[i]*W/1000,p[i+1]*W/1000); if(p.length===2) g.lineTo(p[0]*W/1000+.5,p[1]*W/1000); g.stroke(); }); }
+ function ptOf(e){ const pp=document.getElementById('bbx-paper'); const r=pp.getBoundingClientRect(); const w=r.width; return [Math.round((e.clientX-r.left)/w*1000),Math.round((e.clientY-r.top)/w*1000)]; }
+ function penDown(e){ if(X.view!=='page') return; const pp=document.getElementById('bbx-paper'); if(!pp||!pp.contains(e.target)) return;
+  if(e.target.closest('button,[data-pc]')) return;   /* a tap on a box, a choice or a button always works, in any mode */
+  if(e.pointerType==='pen'&&X.tool==='tap'){ X.tool='pen'; X.autoPen=1; const tl=document.querySelector('#bbx .bbx-tools'); if(tl) tl.outerHTML=toolsHTML(); pp.classList.add('pen'); }   /* a stylus writes at once */
+  if(X.tool==='tap') return;
+  e.preventDefault(); try{ pp.setPointerCapture(e.pointerId); }catch(er){}
+  X.drawing={id:e.pointerId}; const p=ptOf(e);
+  if(X.tool==='erase'){ eraseAt(p); return; }
+  const s={c:X.color||'#1d2433',w:e.pointerType==='pen'?2.2+(e.pressure||.5)*1.6:2.8,p:[p[0],p[1]]}; X.strokes.push(s); X.undo.push(s); X.cur=s; inkDraw(); }
+ function penMove(e){ if(!X.drawing||X.drawing.id!==e.pointerId) return; e.preventDefault(); const p=ptOf(e);
+  if(X.tool==='erase'){ eraseAt(p); return; }
+  const s=X.cur; if(!s) return; const n=s.p.length; if(Math.abs(s.p[n-2]-p[0])+Math.abs(s.p[n-1]-p[1])<3) return; s.p.push(p[0],p[1]);
+  const cv=document.getElementById('bbx-ink'); if(!cv) return; const g=cv.getContext('2d'), W=cv.width; g.lineCap='round'; g.strokeStyle=s.c; g.lineWidth=(s.w)*W/860*1.2; g.beginPath(); g.moveTo(s.p[n-2]*W/1000,s.p[n-1]*W/1000); g.lineTo(p[0]*W/1000,p[1]*W/1000); g.stroke(); }
+ function penUp(e){ if(!X.drawing||X.drawing.id!==e.pointerId) return; X.drawing=null; X.cur=null; X.dirty=1; save(); }
+ function eraseAt(p){ const before=X.strokes.length; X.strokes=X.strokes.filter(s=>{ for(let i=0;i<s.p.length;i+=2) if(Math.abs(s.p[i]-p[0])<14&&Math.abs(s.p[i+1]-p[1])<14) return false; return true; }); if(X.strokes.length!==before){ X.dirty=1; inkDraw(); } }
+
+ /* ---------------- save / load ---------------- */
+ function pack(){ if(ONE()&&X.cj&&X.cj[X.cur]) (X.vals._ib=X.vals._ib||{})[X.cj[X.cur].id]=X.strokes; const g=X.cj.filter(c=>c.graded); return { a:{ v:X.vals, ok:X.ok, f:X.first, m:X.miss, ps:X.picSt, pen:X.pencil?1:0, chk:X.checked?1:0 }, strokes:X.strokes, score:X.pencil?0:g.filter(c=>X.ok[c.id]&&X.first[c.id]).length, total:X.pencil?0:g.length, done:!!X.done }; }
+ function save(now){ if(!X.job||X.view==='home'||TEACH()) return; const id=X.job.id, data=pack(); LS.set(lsKey(id),{at:Date.now(),d:data});
+  X.mine=X.mine||{pages:{}}; X.mine.pages[id]={ a:data.a, score:data.score, total:data.total, done:data.done, at:Date.now(), ink:!!data.strokes.length };
+  clearTimeout(X.st); X.st=setTimeout(()=>{ call('bbSave',tok(),id,data).catch(()=>{}); },now?50:2500); }
+ function mergeLocal(){ X.mine=X.mine||{pages:{}}; B().jobs.forEach(j=>{ const loc=LS.get(lsKey(j.id)), srv=X.mine.pages[j.id]; if(loc&&loc.d&&(!srv||!srv.at||loc.at>srv.at+5000)){ X.mine.pages[j.id]={ a:loc.d.a, score:loc.d.score, total:loc.d.total, done:!!loc.d.done, at:loc.at, ink:!!(loc.d.strokes||[]).length }; call('bbSave',tok(),j.id,loc.d).catch(()=>{}); } }); }   /* work done while the server could not be reached comes back from the Chromebook, and is sent on */
+ function loadMine(){ if(TEACH()) return Promise.resolve(); return call('bbMine',tok()).then(r=>{ if(r&&r.ok) X.mine={pages:r.pages||{}}; mergeLocal(); }).catch(()=>{ mergeLocal(); }); }
+ function openJob(id,direct){ const j=B().byId[id]; if(!j) return; X.job=j; X.cj=compileJob(j); X.vals={}; X.ok={}; X.first={}; X.miss={}; X.bad={}; X.why={}; X.picSt={}; X.strokes=[]; X.undo=[]; X.sel=null; X.done=false; X.wstep=0; X.wex=null; X.tool='tap'; X.color=X.color||'#1d2433'; X.timeTxt='';
+  const loc=TEACH()?null:LS.get(lsKey(id)), srv=TEACH()?null:pageState(id); X.pencil=!!(j.inspect||j.timed); X.checked=false;   /* Final Inspections and Speed Builds open as pencil pages (any page can switch) */
+  const use=(a)=>{ if(!a) return; X.vals=a.v||{}; X.ok=a.ok||{}; X.first=a.f||{}; X.miss=a.m||{}; X.picSt=a.ps||{}; if(a.pen!=null) X.pencil=!!a.pen; X.checked=!!a.chk; };
+  if(loc&&loc.d&&(!srv||!srv.at||loc.at>=srv.at-5000)){ use(loc.d.a); X.strokes=loc.d.strokes||[]; X.done=!!loc.d.done; } else if(srv){ use(srv.a); X.done=!!srv.done; if(srv.ink) call('bbPage',tok(),id).then(r=>{ if(r&&r.page&&X.job&&X.job.id===id){ X.strokes=r.page.strokes||[]; inkDraw(); } }).catch(()=>{}); }
+  X.cur=Math.max(0,X.cj.findIndex(c=>c.graded&&!X.ok[c.id])); X.popAt=-1; if(X.cj.every(c=>!c.graded||X.ok[c.id])) X.cur=X.cj.length-1; if(TEACH()){ X.pencil=false; X.checked=false; X.tool='tap'; }
+  if(ONE()&&X.cj[X.cur]) X.strokes=((X.vals._ib||{})[X.cj[X.cur].id]||[]).slice();
+  const started=Object.keys(X.ok).length||Object.keys(X.vals).filter(k=>k!=='_ib').length;
+  if(X.pencil) X.tool='pen';
+  X.view=direct||started||(!j.ex&&!j.says)?'page':'watch'; if(X.view==='page') startTimer(); draw(); if(X.view==='watch') say(j.says); }
+ function startTimer(){ if(!X.job||!X.job.timed||X.done) return; clearInterval(X.timer); X.t0=Date.now()-(X.vals._t||0)*1000; X.timer=setInterval(()=>{ const s=Math.round((Date.now()-X.t0)/1000); X.vals._t=s; X.timeTxt=Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); const el=document.querySelector('#bbx [data-bb="time"]'); if(el) el.textContent=X.timeTxt; if(X.view!=='page'){ clearInterval(X.timer); X.timer=null; } },1000); }
+ X.openBook=function(jobId){ X.open=true; document.body.classList.add('bbx-open'); X.view='home'; X.sel=null; css(); draw(); loadMine().then(()=>{ if(X.view==='home') draw(); if(jobId) openJob(jobId); }); };
+ X.close=function(){ save(true); X.open=false; document.body.classList.remove('bbx-open'); hush(); clearInterval(X.timer); const r=document.getElementById('bbx'); if(r) r.remove(); };
+
+ /* ---------------- events ---------------- */
+ document.addEventListener('click',e=>{ const root=document.getElementById('bbx'); if(!root||!root.contains(e.target)) return;
+  const t=e.target.closest('[data-bb],[data-bi],[data-ci],[data-pad],[data-tool],[data-color],[data-pc],[data-bd],[data-ring],[data-teach]'); if(!t) return;
+  if(t.dataset.pad!=null){ padPress(t.dataset.pad); return; }
+  if(t.dataset.bi){ selBox(t.dataset.bi,t.dataset.bk); return; }
+  if(t.dataset.ci){ const c=X.cj.find(x=>x.id===t.dataset.ci); if(!c||X.ok[c.id]) return; const vals=(X.vals[c.id]=X.vals[c.id]||{}); vals[t.dataset.ck]=t.dataset.cv; if(X.bad&&X.bad[c.id]) X.bad[c.id]=X.bad[c.id].filter(k=>k!==t.dataset.ck); X.dirty=1; X.sel=null;
+   const rest=orderOf(c).filter(k=>String(vals[k]||'')===''); if(c.it.t==='det'&&vals.w==='wrong'&&String(vals.f||'')===''){ X.sel={id:c.id,k:'f'}; draw(); return; }
+   if(filled(c,vals)) tryCheck(c); else { if(rest.length){ X.sel={id:c.id,k:rest[0]}; } save(); draw(); } return; }
+  if(t.dataset.pc){ const c=X.cj.find(x=>x.id===t.dataset.pc); if(!c) return; const st=(X.picSt[c.id]=X.picSt[c.id]||{}); st[t.dataset.pk]=!st[t.dataset.pk]; X.dirty=1; save(); drawItem(c); return; }
+  if(t.dataset.ring){ const c=X.cj.find(x=>x.id===t.dataset.ring); const st=(X.picSt[c.id]=X.picSt[c.id]||{}); st.ring=!st.ring; save(); drawItem(c); return; }
+  if(t.dataset.bd){ const c=X.cj.find(x=>x.id===t.dataset.bd); if(!c||X.ok[c.id]) return; const vals=(X.vals[c.id]=X.vals[c.id]||{}); const p=String(vals.b||'0,0').split(','); let tt=+p[0]||0, oo=+p[1]||0; const v=t.dataset.bv;
+   if(v==='ok'){ tryCheck(c); return; } if(v==='t+') tt=Math.min(12,tt+1); if(v==='o+') oo=Math.min(25,oo+1); if(v==='t-') tt=Math.max(0,tt-1); if(v==='o-') oo=Math.max(0,oo-1); vals.b=tt+','+oo; if(X.bad) delete X.bad[c.id]; save(); drawItem(c); return; }
+  if(t.dataset.teach){ const c=X.cj.find(x=>x.id===t.dataset.teach); const it=c.it; const op=it.op||'+'; X.wex={t:op==='-'?'borrow':'carry',a:it.a,b:it.b}; if(it.c!=null) X.wex={t:'text',lines:['Add the ones of all three numbers: '+[it.a,it.b,it.c].map(n=>n%10).join(' + ')+' = '+[it.a,it.b,it.c].reduce((s,n)=>s+n%10,0)+'.','Write the ones digit. Carry the tens of that number into the carry box.','Add all the tens and the carry.']}; X.wstep=0; X.view='watch'; X.sel=null; draw(); say(exLines(X.wex)[0]); return; }
+  if(t.dataset.tool){ X.tool=t.dataset.tool; X.autoPen=0; X.sel=null; draw(); return; }
+  if(t.dataset.color){ X.color=t.dataset.color; X.tool='pen'; X.autoPen=0; X.sel=null; draw(); return; }
+  const a=t.dataset.bb;
+  if(a==='onext'){ oneNext(); return; }
+  if(a==='tans'){ X.pencil=X.checked=!X.checked; X.tool='tap'; X.sel=null; draw(); return; }
+  if(a==='print'){ window.print(); return; }
+  if(a==='close'){ X.close(); return; }
+  if(a==='home'){ save(true); X.view='home'; X.job=null; X.sel=null; hush(); clearInterval(X.timer); draw(); return; }
+  if(a==='job'){ save(true); openJob(t.dataset.j,!!t.dataset.direct); return; }
+  if(a==='mute'){ X.mute=!X.mute; if(X.mute) hush(); draw(); return; }
+  if(a==='hear'){ const j=X.job; if(X.view==='watch'&&j){ const ex=X.wex||j.ex; say(ex?(X.wex?'':j.says+' ')+exLines(ex)[X.wstep||0]:j.says); } else if(j) say(j.says); return; }
+  if(a==='hearp'){ const p=X.job.parts[+t.dataset.p]; say(p.d); return; }
+  if(a==='wnext'){ X.wstep=(X.wstep||0)+1; draw(); say(exLines(X.wex||X.job.ex)[X.wstep]); return; }
+  if(a==='wback'){ X.wstep=Math.max(0,(X.wstep||0)-1); draw(); return; }
+  if(a==='watch'){ X.wex=null; X.wstep=0; X.view='watch'; X.sel=null; draw(); say(X.job.says); return; }
+  if(a==='topage'){ X.wex=null; X.view='page'; hush(); startTimer(); if(ONE()) firstBox(); draw(); if(ONE()) inView(); return; }
+  if(a==='undo'){ const s=X.undo.pop(); if(s){ X.strokes=X.strokes.filter(x=>x!==s); X.dirty=1; save(); inkDraw(); } return; }
+  if(a==='clear'){ if(X.strokes.length&&confirm('Clear all pen writing on this page?')){ X.strokes=[]; X.undo=[]; X.dirty=1; save(); inkDraw(); } return; }
+  if(a==='pencil'){ X.pencil=!X.pencil; X.checked=false; X.tool=X.pencil?'pen':'tap'; X.sel=null; X.dirty=1; save(); draw(); return; }
+  if(a==='pcheck'){ X.checked=true; X.done=true; if(X.timer){ clearInterval(X.timer); X.timer=null; } save(true); draw(); say('Look at each green answer next to yours. Fix any that do not match.'); const pp=document.getElementById('bbx-sc'); if(pp) pp.scrollTop=0; return; }
+  if(a==='pdone'){ X.view='done'; save(true); draw(); return; }
+  if(a==='finish'){ const g=X.cj.filter(c=>c.graded), left=g.filter(c=>!X.ok[c.id]); if(!left.length){ X.done=true; save(true); X.view='done'; draw(); return; }
+   const el=document.querySelector(`#bbx [data-it="${left[0].id}"]`); if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.classList.add('bad'); } say(left.length===1?'One more to go! Look at the box I showed you.':left.length+' more to go. You can do it!'); const b=t; b.textContent='✏️ '+left.length+' more to go'; setTimeout(()=>{ if(b.isConnected) b.textContent='✅ I finished this page'; },2500); return; }
+ });
+ document.addEventListener('pointerdown',penDown,true); document.addEventListener('pointermove',penMove,{capture:true,passive:false}); document.addEventListener('pointerup',penUp,true); document.addEventListener('pointercancel',penUp,true);
+ document.addEventListener('keydown',e=>{ if(e.key!=='Enter'||e.defaultPrevented||!X.open||X.sel||X.view!=='page'||!ONE()) return; const b=document.querySelector('#bbx [data-bb="onext"]'); if(b){ e.preventDefault(); b.click(); } });
+ document.addEventListener('keydown',e=>{ if(!X.open||!X.sel) return; if(/^[0-9]$/.test(e.key)){ padPress(e.key); e.preventDefault(); } else if(X.selLet&&/^[a-zA-Z]$/.test(e.key)){ padPress(e.key.toUpperCase()); e.preventDefault(); } else if(e.key==='Backspace'){ padPress('del'); e.preventDefault(); } else if(e.key==='Enter'||e.key==='Tab'){ padPress('next'); e.preventDefault(); } else if(e.key==='Escape'){ padPress('x'); } });
+ window.addEventListener('resize',()=>{ if(X.open&&X.view==='page'){ clearTimeout(X.rz); X.rz=setTimeout(draw,150); } });
+ document.addEventListener('visibilitychange',()=>{ if(document.hidden&&X.open) save(true); });
+
+ /* ---------------- the door on the boy's Math map ---------------- */
+ function eligible(){ const live=window.BB_LIVE; if(live==='off') return false; const id=me().id; if(!id) return false; if(live==='all') return true; if(/^TEST/.test(id)) return true; if(live==='test') return false;
+  try{ const M=window.TL_MAP||(typeof TL_MAP!=='undefined'?TL_MAP:null); const m=M&&M.subjects&&M.subjects.MATH; const lv=m&&Number(m.level); return lv>=2&&lv<=4; }catch(e){ return false; } }
+ function door(){ try{ const on=!X.open&&typeof A!=='undefined'&&A&&A.view==='hub'&&document.body.classList.contains('gm-on')&&typeof GM!=='undefined'&&GM&&(GM.tab==='map'&&(!GM.world||GM.world==='MATH')||GM.tab==='home')&&eligible();
+   let d=document.getElementById('bbx-door');
+   if(on&&!d){ css(); d=document.createElement('button'); d.type='button'; d.id='bbx-door'; d.setAttribute('aria-label','Open my Block Builders workbook'); d.innerHTML='<span class="i">📘</span><span>Workbook</span>'; d.addEventListener('click',()=>X.openBook()); document.body.appendChild(d); }
+   else if(!on&&d) d.remove(); }catch(e){} }
+ if(!window.BBX_STAFF){ setInterval(door,800); if(/workbook/.test(location.hash)) setTimeout(()=>{ if(typeof A!=='undefined'&&A&&A.st) X.openBook(); },1500); }
+
+ /* for the teacher board (BlockBuildersStaff.html): one boy's page, read only, with his writing */
+ X.paper=function(jobId,saved,strokes,name,mount){ const j=B().byId[jobId]; if(!j) return; css(); const keep={cj:X.cj,vals:X.vals,ok:X.ok,first:X.first,miss:X.miss,bad:X.bad,picSt:X.picSt,sel:X.sel,done:X.done,pencil:X.pencil,checked:X.checked};
+  X.cj=compileJob(j); const a=(saved&&saved.a)||{}; X.vals=a.v||{}; X.ok=a.ok||{}; X.first=a.f||{}; X.miss=a.m||{}; X.picSt=a.ps||{}; X.bad={}; X.sel=null; X.done=true; X.pencil=!!a.pen; X.checked=!!a.pen;
+  mount.innerHTML=`<div id="bbx-ro" style="${colVars()}"><div class="bbx-paper" style="pointer-events:none">${paperHTML(j,{readonly:1,name})}<canvas class="bbx-ink"></canvas></div></div>`;
+  Object.assign(X,keep); const pp=mount.querySelector('.bbx-paper'), cv=mount.querySelector('canvas'); const d=window.devicePixelRatio||1; cv.style.width=pp.offsetWidth+'px'; cv.style.height=pp.offsetHeight+'px'; cv.width=pp.offsetWidth*d; cv.height=pp.offsetHeight*d; inkDraw(cv,strokes||[]); };
+ X.compileJob=compileJob; X.checkItem=checkItem; X.filled=filled; X.vSpec=vSpec; X.openJob=openJob; X.padPress=padPress; X.draw=draw;
+})();
