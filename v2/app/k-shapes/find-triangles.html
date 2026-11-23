@@ -183,7 +183,7 @@ function placeMendy(mode) {
   if (mode === 'close') { mendy.visible = !dovid.visible; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
   else { mendy.visible = true; mendy.position.copy(mendyAt()); mendy.rotation.set(tall ? -0.6 : 0, -0.35, 0); }
 }
-function mendyAt() { const b = boxAt(); return tall ? new THREE.Vector3(b.x + 1.85, 0, b.z + 0.5) : new THREE.Vector3(b.x + 3.4, 0, b.z + 1.3); }
+function mendyAt() { const b = boxAt(); return tall ? new THREE.Vector3(b.x + 1.85, 0, b.z + 0.5) : new THREE.Vector3(b.x + 3.0, 0, b.z + 2.0); }
 
 /* ---------------- shapes: chunky glossy toy pieces ---------------- */
 const KINDS = {
@@ -234,9 +234,9 @@ function makeShape(id, k, color, rotZ, scale) {
 /* ---------------- layout: wide screen = 2 rows of 4, tall phone = 3 rows of 3 ---------------- */
 let tall = false;
 const SLOTS_WIDE = [[-3.9, -2.6], [-1.3, -2.9], [1.3, -2.9], [3.9, -2.6], [-4.7, -0.2], [-2.3, 0.1], [2.3, 0.1], [4.7, -0.2]];
-const SLOTS_TALL = [[-1.8, -4.2], [0, -4.4], [1.8, -4.2], [-1.8, -2.1], [0, -2.3], [1.8, -2.1], [-1.8, 0], [0, -0.2], [1.8, 0]];
+const SLOTS_TALL = [[-1.8, -4.7], [0, -5.0], [1.8, -4.7], [-1.8, -2.4], [0, -2.5], [1.8, -2.4], [-1.8, -0.1], [0, -0.2], [1.8, -0.1]];
 const BOX_WIDE = new THREE.Vector3(0, 0, 2.3), BOX_TALL = new THREE.Vector3(0, 0, 2.6);
-const VIEW = { wide: { pos: new THREE.Vector3(0, 8.6, 11.6), look: new THREE.Vector3(0, 0.2, -0.4) }, tall: { pos: new THREE.Vector3(0, 15, 7.2), look: new THREE.Vector3(0, 0, -1.1) },
+const VIEW = { wide: { pos: new THREE.Vector3(0, 8.6, 11.6), look: new THREE.Vector3(0, 0.2, -0.4) }, tall: { pos: new THREE.Vector3(0, 15.6, 7.0), look: new THREE.Vector3(0, 0, -1.4) },
   close: { pos: new THREE.Vector3(0, 2.7, 6.4), look: new THREE.Vector3(0, 2.05, 0.9) } };
 let camMode = 'wide';
 const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
@@ -334,10 +334,12 @@ function clap() {   /* a short hand-clap sound for the chant */
 /* the chant: three claps while the three corners bounce */
 const clapBtn = $('#clapBtn');
 const BEAT = [523, 659, 784];   /* do, mi, sol: the chant is sung on three notes */
-function boyClap() { clap(); W.boyClaps = (W.boyClaps || 0) + 1; clapBtn.classList.remove('beat'); void clapBtn.offsetWidth; clapBtn.classList.add('beat'); }
+function boyClap() { clap(); W.boyClaps = (W.boyClaps || 0) + 1; if (clapWaiter) clapWaiter(); clapBtn.classList.remove('beat'); void clapBtn.offsetWidth; clapBtn.classList.add('beat'); }
 clapBtn.onclick = () => { ac(); if (chantOn) boyClap(); };
 function chant(on) { chantOn = on; clapBtn.classList.toggle('show', on); }
-function claps(o) { W.claps = (W.claps || 0) + 3; return [0, 1, 2].reduce((p, i) => p.then(() => { clap(); tone([BEAT[i]], 'triangle', 0, .3, .12); clapBtn.classList.remove('beat'); void clapBtn.offsetWidth; clapBtn.classList.add('beat'); const m = o.marks[i]; m.scale.setScalar(1.6); return Promise.all([tween(320, k => m.scale.setScalar(1.6 - k * 0.45)), wait(520)]); }), Promise.resolve()); }
+let clapWaiter = null;
+function waitClap(ms) { return new Promise(r => { if (FAST) return r(); const t = setTimeout(() => { clapWaiter = null; r(); }, ms); clapWaiter = () => { clearTimeout(t); clapWaiter = null; r('boy'); }; }); }
+function claps(o) { W.claps = (W.claps || 0) + 3; return [0, 1, 2].reduce((p, i) => p.then(() => waitClap(1600)).then(by => { if (by !== 'boy') clap(); tone([BEAT[i]], 'triangle', 0, .3, .12); clapBtn.classList.remove('beat'); void clapBtn.offsetWidth; clapBtn.classList.add('beat'); const m = o.marks[i]; m.scale.setScalar(1.6); return tween(320, k => m.scale.setScalar(1.6 - k * 0.45)); }), Promise.resolve()); }
 
 /* ---------------- the voice: the school's teacher voice, else the device voice ---------------- */
 const TTS = 'https:' + '/' + '/' + 'tts-q26c275eaa-uk.a.run.app', vcache = {}; let vtok = 0, audio = null;
@@ -369,11 +371,11 @@ function play(script) {
     if (typeof s === 'string') return say(s);
     if (typeof s === 'function') return s();
     if (s.wait) return wait(s.wait);
-  }), Promise.resolve()).then(() => { if (my === runTok) { busy = false; againBtn.classList.remove('wait'); } return my === runTok; });
+  }), Promise.resolve()).then(() => { if (my === runTok) { busy = false; againBtn.classList.remove('wait'); if (againLater) setTimeout(() => againBtn.onclick(), 50); } return my === runTok; });
 }
-let task = null;
+let task = null, againLater = false;
 againBtn.onclick = () => {
-  W.again++; if (busy && !task) return; const my = ++echoTok; hush();
+  W.again++; if (busy && !task) { againLater = true; return; } againLater = false; const my = ++echoTok; hush();
   (task || cur.filter(s => typeof s === 'string')).reduce((p, s) => p.then(() => my === echoTok ? say(s) : null), Promise.resolve());
 };
 
@@ -464,10 +466,11 @@ canvas.addEventListener('pointermove', e => {
 });
 function release(e) {
   if (!down || (e && e.pointerId !== down.id)) return; const d = down; down = null;
-  if (!d.moved) {   /* a tap: the piece does a happy spin */
-    if (!d.o.busy) { pop(); const r0 = d.o.turn.rotation.y; d.o.busy = true; tween(600, k => { d.o.turn.rotation.y = r0 + ease(k) * Math.PI * 2; }).then(() => { d.o.turn.rotation.y = r0; d.o.busy = false; }); }
+  if (!d.moved) {   /* a tap sends the piece to the box, the same as dragging it there */
+    if (!d.o.busy && onDrop && allow) { idle(); const o = d.o; o.busy = true; moveTo(o, boxAt().clone().setY(1.25), 450, 0.8).then(() => onDrop(o, true)); }
     return;
   }
+  idle();
   const o = dragging; dragging = null;
   if (!o) return;
   if (onDrop && allow) onDrop(o, overBox(o.g.position)); else goHome(o);
@@ -479,7 +482,7 @@ function goHome(o) { return moveTo(o, o.home, 420, 0.4); }
 /* ---------------- the game ---------------- */
 function setName(n) { W.name = n; }
 async function learn() {
-  setName('learn'); dots(0); W.misses = 0; W.found = 0; allow = false; onDrop = null; task = null; W.bonus = false; chant(false);
+  setName('learn'); dots(0); W.misses = 0; W.found = 0; allow = false; onDrop = null; task = null; W.bonus = false; chant(false); stopIdle();
   $('#end').classList.remove('show');
   buildSet(); resize();
   const t1 = shapes[0]; t1.g.visible = true; t1.busy = true;
@@ -518,15 +521,26 @@ async function watch() {
   ]);
   if (ok) find();
 }
+let idleT = null, idleN = 0, idleFn = null;
+function idle() { clearTimeout(idleT); if (!idleFn) return; idleT = setTimeout(() => { if (!busy && allow) idleFn(++idleN); idle(); }, FAST ? 1e9 : 11000); }
+function stopIdle() { clearTimeout(idleT); idleFn = null; idleN = 0; }
+function pointAt(o) { handOn = o; hand.style.display = 'block'; return wait(1800).then(() => { hand.style.display = 'none'; handOn = null; }); }
+W.idleNow = () => { if (idleFn) idleFn(++idleN); };
 function find(bonus) {
   setName(bonus ? 'bonus' : 'find'); dots(2); allow = true; let left = shapes.filter(o => o.isTri && !o.inBox && o.g.visible).length;
   const ask = [bonus ? 'Find the tricky triangles. Drag them in.' : 'Drag every triangle into the box.']; task = ask;
   let helped = false;
+  idleFn = n => { const t = shapes.find(x => x.isTri && !x.inBox && x.g.visible && !x.busy); if (!t) return;
+    W.reminders = (W.reminders || 0) + 1;
+    if (n === 1) play([...ask, 'Look for three straight sides.', () => pointAt(t)]);
+    else play(['Here is a triangle. Count its corners.', () => pointAt(t), ...[0, 1, 2].flatMap(i => [() => lightCorner(t, i), NUM[i]]), () => clearCorners(t), 'Drag it into the box.']); };
+  idle();
   onDrop = (o, inBox) => {
-    if (!inBox) { goHome(o); return; }
+    idle();
+    if (!inBox) { goHome(o); play(['Put it in the box.']); return; }
     if (o.isTri) {
       chime(true); left--;
-      if (left === 0) { allow = false; onDrop = null; }
+      if (left === 0) { allow = false; onDrop = null; stopIdle(); }
       dropInBox(o).then(() => {
         if (left === 0) {
           const quick = !bonus && W.misses <= 1;
@@ -553,12 +567,13 @@ function find(bonus) {
 /* quick learners: a bonus round of tricky pieces (not counted against the stars) */
 function bonusRound() {
   W.bonus = true; setName('bonus');
-  const news = BONUS.map((b, i) => { const o = makeShape(b[0], b[1], COLORS[(i * 3 + 1) % COLORS.length], b[2], b[3]); o.slot = b[4]; o.home.copy(homeFor(b[4])); o.g.position.copy(o.home); o.g.scale.setScalar(0.01); return o; });
+  const BONUS_COLORS = ['#E03A33', '#00A3B8', '#F2A900'];
+  const news = BONUS.map((b, i) => { const o = makeShape(b[0], b[1], BONUS_COLORS[i], b[2], b[3]); o.slot = b[4]; o.home.copy(homeFor(b[4])); o.g.position.copy(o.home); o.g.scale.setScalar(0.01); return o; });
   news.forEach((o, i) => setTimeout(() => { pop(); tween(420, k => o.g.scale.setScalar(Math.max(0.01, o.scale * ease(k)))); }, FAST ? 0 : 300 + i * 200));
   play(['Bonus round! You are so good at this.', 'Here come some tricky ones.', { wait: 500 }]).then(ok => { if (ok) find(true); });
 }
 function mistake() {
-  setName('mistake'); dots(3); task = null;
+  setName('mistake'); dots(3); task = null; stopIdle();
   shapes.forEach(o => { if (!o.inBox) tween(300, k => o.g.scale.setScalar(Math.max(0.001, o.scale * (1 - k)))).then(() => { o.g.visible = false; }); });
   const d = makeShape('dv', 'tri', '#FF7A1A', Math.PI, 1.5); d.slot = null; d.busy = true;
   d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01);
@@ -572,7 +587,7 @@ function mistake() {
   };
   no.onclick = () => {
     if (answered) return; answered = true; j.classList.remove('show'); chime(true); clearCorners(d);
-    play(['Right! Show Dovid. Tap the three corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; },
+    play(['Right! Show Dovid. Tap the three corners.', () => { task = ['Tap each corner.']; return tapCorners(d); }, () => { task = null; clearCorners(d); },
       'Turned around, it is still a triangle.', () => cheer(dovid),
       () => tween(900, k => { d.turn.rotation.z = Math.PI * (1 - ease(k)); }),
       () => { dovid.visible = false; return camTo('wide', 1000); }, () => dropInBox(d), { wait: 300 }]).then(ok => { if (ok) end(); });

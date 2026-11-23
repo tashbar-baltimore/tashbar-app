@@ -56,6 +56,9 @@ module.exports = async function (browser) {
       await drawn('find the triangles');
       let list = await pg.evaluate(() => window.__shp.list());
       if (list.filter(s => s.tri).length !== 3 || list.filter(s => !s.tri).length !== 4) bad(label + ': should show 3 triangles and 4 other shapes, got ' + JSON.stringify(list));
+      // a boy who does nothing: the task is said again and the hand points at a triangle
+      await pg.evaluate(() => window.__shp.idleNow()); await pg.waitForTimeout(100);
+      if (!(await S()).said.some(t => /look for three straight sides/i.test(t))) bad(label + ': a boy who does nothing gets no reminder');
       // a square into the box: explained, corners counted, it goes back
       await drag('sq'); await pg.waitForTimeout(100);
       let st = await S();
@@ -65,7 +68,8 @@ module.exports = async function (browser) {
       await drag('cv'); await pg.waitForTimeout(100);
       if (!(await S()).said.some(t => /curvy/i.test(t))) bad(label + ': the curvy shape is not explained');
       if (!(await S()).said.some(t => /remember: a triangle has three corners/i.test(t))) bad(label + ': after 2 misses the rule is not taught again');
-      for (const id of ['t2', 't3', 't4']) { await drag(id); await pg.waitForTimeout(100); }
+      for (const id of ['t2', 't3']) { await drag(id); await pg.waitForTimeout(100); }
+      { const p = await pg.evaluate(() => window.__shp.shapePt('t4')); await pg.mouse.click(p.x, p.y); await pg.waitForTimeout(200); }   // a tap also sends it to the box
       st = await S();
       if (st.found < 4) bad(label + ': not every triangle went into the box (found ' + st.found + ')');
       if (!st.said.some(t => /upside down is still a triangle/i.test(t))) bad(label + ': the upside-down triangle is not praised by its rule');
