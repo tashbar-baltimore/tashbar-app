@@ -43,11 +43,21 @@ module.exports = async function teachPicsTests(pg) {
         if (!app().querySelector('.rt-today')) o.bad.push('TODAY: the unit picture (' + unit + '|@today) did not show');
         else { if (big && getComputedStyle(big).display !== 'none') o.bad.push('TODAY: the emoji still shows next to the picture');
           if (figH('.rt-today') > innerHeight * 0.5 + 1) o.bad.push('TODAY: the picture is taller than half the screen (' + Math.round(figH('.rt-today')) + ' px of ' + innerHeight + ')');
+          const below = () => { const h = app().querySelector('.ob-today'), f = app().querySelector('.ob-foot'); if (!h || !f) return 'no TODAY line or footer'; const hb = h.getBoundingClientRect(), fb = f.getBoundingClientRect(); return hb.bottom > Math.min(fb.top, innerHeight) + 1 ? 'the TODAY line is hidden under the button (' + Math.round(hb.bottom) + ' > ' + Math.round(Math.min(fb.top, innerHeight)) + ')' : ''; };
+          { const b1 = below(); if (b1) o.bad.push('TODAY with a picture: ' + b1); }
           if (app().querySelectorAll('.ob-foot button').length !== 1) o.bad.push('TODAY: want ONE forward button'); }
         if (wide()) o.bad.push('TODAY with a picture scrolls sideways at ' + innerWidth + ' px');
         yield ['today', o];
         delete M[unit + '|@today']; M[keys[0]] = { id: pic, mark: [], cap: 'Test picture' }; render(); await sleep(50);
         if (!app().querySelector('.rt-today')) o.bad.push('TODAY: the skill picture (' + keys[0] + ') did not show');
+        /* 2b. the youngest boys (big letters): the TODAY line must still show above the button */
+        { const k1 = Object.keys(ONE_BITE).find(k => ONE_BITE[k].band === 'K1' && has(k) && !/^LK|^HEB|^MATH/.test(k));
+          if (k1) { M[k1 + '|@today'] = { id: pic, mark: [], cap: 'Test picture' }; const keepP = A.play;
+            fresh(); await sleep(10); startMission(worldOf(k1), k1, 'skill'); await sleep(400);
+            if (!app().querySelector('.rt-today')) o.bad.push('TODAY (' + k1 + ', youngest band): the picture did not show');
+            else { const b2 = (() => { const h = app().querySelector('.ob-today'), f = app().querySelector('.ob-foot'); if (!h || !f) return 'no TODAY line or footer'; const hb = h.getBoundingClientRect(), fb = f.getBoundingClientRect(); return hb.bottom > Math.min(fb.top, innerHeight) + 1 ? 'the TODAY line is hidden under the button' : ''; })(); if (b2) o.bad.push('TODAY (' + k1 + ', youngest band): ' + b2); }
+            yield ['today-k1', o];
+            delete M[k1 + '|@today']; fresh(); await sleep(10); startMission(worldOf(id), id, 'skill'); await sleep(20); M[keys[0]] = { id: pic, mark: [], cap: 'Test picture' }; render(); await sleep(50); } }
         /* 3. WATCH ME */
         M[keys[1]] = { id: pic, mark: [], cap: 'Test picture' }; A.play.ob.stage = 'watch'; A.play.ob.ws = 0; render(); await sleep(400);
         if (!app().querySelector('.rt-watch')) o.bad.push('WATCH ME: the picture did not show');

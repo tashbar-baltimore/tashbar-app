@@ -17,7 +17,7 @@
     return null; }
   function rtWire(fig) { if (!fig) return; fig.querySelector('.rpz').onclick = () => rpZoom(fig); fig.querySelector('.rpbox').onclick = () => rpZoom(fig);
     rpFit(fig.querySelector('.rpbox')); requestAnimationFrame(() => rpFit(fig.querySelector('.rpbox'))); }
-  const RT_VH = { 'rt-today': 40, 'rt-watch': 26, 'rt-pass': 30 };
+  const RT_VH = { 'rt-today': 30, 'rt-watch': 24, 'rt-pass': 30 };
   function rtPut(where, before, use, cls) { const h = rpHTML(use), P = window.TL_PICS[use.id]; if (!h || !P) return null;
     where.insertAdjacentHTML(before ? 'beforebegin' : 'afterend', h);
     const fig = before ? where.previousElementSibling : where.nextElementSibling; if (fig) { fig.classList.add('rt', cls); fig.style.maxWidth = 'min(' + (cls === 'rt-today' ? 560 : 420) + 'px, 100%, calc(' + RT_VH[cls] + 'vh * ' + (P.w / P.h).toFixed(3) + '))'; rtWire(fig); } return fig; }
