@@ -310,6 +310,9 @@ export function startGame(cfg) {
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   function toScreen(v) { const p = v.clone().project(camera); return { x: (p.x + 1) / 2 * innerWidth, y: (1 - p.y) / 2 * innerHeight }; }
+  function hitOn(o, cx, cy) {   /* did he tap this piece? (works even when it is lined up or in place) */
+    ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.intersectObject(o.g, true).length > 0;
+  }
   function pick(cx, cy) {
     ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
     const hits = ray.intersectObjects(shapes.filter(o => o.g.visible && !o.inBox).map(o => o.mesh), false);
@@ -428,7 +431,7 @@ export function startGame(cfg) {
     return new Promise(done => {
       W.tapShape = o; let nag = null;
       const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (shapeTap) { say(nagLine || 'Tap the circle.'); remind(); } }, FAST ? 1e9 : 9000); };
-      shapeTap = (cx, cy) => { if (pick(cx, cy) !== o) return; shapeTap = null; clearTimeout(nag); W.shapeTaps = (W.shapeTaps || 0) + 1; hush();
+      shapeTap = (cx, cy) => { if (!hitOn(o, cx, cy)) return; shapeTap = null; clearTimeout(nag); W.shapeTaps = (W.shapeTaps || 0) + 1; hush();
         if (onTap) return onTap().then(done); say('Round and round!'); traceRound(o, 1400).then(done); };
       remind();
     });
