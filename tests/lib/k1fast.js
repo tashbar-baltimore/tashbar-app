@@ -1,4 +1,5 @@
-/* K-1 FIRST guardrail (HoS 2026-11-22: "it has to be fast, quick, smooth"). On a Chromebook whose last boy was K-1 (tl-k1dev), the
+/* (2026-11-23: K-1 first is switched off for the boys until the white game window seen on a real Chromebook is understood; this check switches it on by hand, tl-k1fast, so the fast path keeps working for when it comes back.)
+   K-1 FIRST guardrail (HoS 2026-11-22: "it has to be fast, quick, smooth"). On a Chromebook whose last boy was K-1 (tl-k1dev), the
    page loads his games and game path first (Speed.js). Fails the build if a made-up K boy on such a Chromebook does not see his PLAY
    button within 8 seconds of the page opening, if the page shows errors, or if, once everything has loaded, the K-1 games-only rules
    (tests/lib/k1home.js) or the lesson count change. openPage(browser, html, init, throttle) and K come from tests/run.js. */
@@ -6,7 +7,7 @@ module.exports = async function (browser, openPage, K) {
   const out = { fails: [], oks: [] };
   const { ctx, pg, errs } = await openPage(browser, K.page, K, 0);
   try {
-    await ctx.addInitScript(() => { try { localStorage.setItem('tl-k1dev', '1'); localStorage.setItem('tl-k1only', '1'); } catch (e) {} });
+    await ctx.addInitScript(() => { try { localStorage.setItem('tl-k1fast', '1'); localStorage.setItem('tl-k1dev', '1'); localStorage.setItem('tl-k1only', '1'); } catch (e) {} });
     const t0 = Date.now(); await pg.goto('http://app.test/', { waitUntil: 'commit' });
     await pg.waitForFunction(() => typeof A !== 'undefined' && typeof render === 'function' && typeof loadStudent === 'function', null, { timeout: 60000 });
     await pg.evaluate(() => { SRV.token = 't'; const me = { id: 'KFAST-01', name: 'Fast Boy' }; if (!ROSTER.some(x => x.id === me.id)) ROSTER.push(me); A.st = loadStudent(me); A.session = 0; A.view = 'hub'; render(); });

@@ -93,7 +93,10 @@ function tlLoader2Src_(OLD) {
      pieces then run in their own order, and they wait while a game is open, so the games stay smooth. If a boy who is not K-1 signs in
      on that Chromebook, the page loads again once the usual way (in this tab), so nothing changes for him. */
   var K1RE = /window\.(KL|KR|KK|G1M|G1R|K1O)\s*=|\/\* OneBiteData[A-Za-z0-9]*\.html: hand-written/, fast = false;   /* the games, the path, and the lesson pictures (One Bite data) */
-  try { fast = localStorage.getItem('tl-k1dev') === '1' && sessionStorage.getItem('tl-load-normal') !== '1'; } catch (e) {}
+  /* SWITCHED OFF 2026-11-23: on a real K Chromebook the second open (the first one with K-1 first) showed a white game window for
+     about 20 seconds (HoS test). Until that is understood, K-1 first runs only on a Chromebook where it is switched on by hand
+     (localStorage tl-k1fast = '1', for testing). Everyone else gets the usual order, which worked on the first open. */
+  try { fast = localStorage.getItem('tl-k1fast') === '1' && localStorage.getItem('tl-k1dev') === '1' && sessionStorage.getItem('tl-load-normal') !== '1'; } catch (e) {}
   function gameOpen() { return !!document.querySelector('#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov'); }
   function notK1() { try { return !!(window.K1O && typeof K1O.on === 'function' && typeof A !== 'undefined' && A && A.st && A.st.id && A.view !== 'signin' && !K1O.on()); } catch (e) { return false; } }
   /* LAZY LOADING, step 1 (HoS 2026-11-22: "do the lazy loading project too ... fast, quick, smooth"):
@@ -118,7 +121,7 @@ function tlLoader2Src_(OLD) {
     else list.forEach(function (t, k) { order.push(k); });
     var watch = fast ? nSI.call(W, function () { if (notK1()) { nCI.call(W, watch); try { sessionStorage.setItem('tl-load-normal', '1'); } catch (e) {} location.reload(); } }, 400) : null;
     function slice() { var t0 = Date.now();
-      if (!rush && fast && i >= firstN && i < order.length && gameOpen()) return nST.call(W, slice, 400);
+      if (i >= firstN && i < order.length && gameOpen()) return nST.call(W, slice, 400);   /* never run pieces while a game window is open, not even after a tap */
       if (!rush && Date.now() - lastMove < 700) return nST.call(W, slice, 200);
       while (i < order.length) { run1(list[order[i]]); i++;
         if (fast && i === firstN && !rush) { try { if (window.K1O && K1O.hook) K1O.hook(); if (typeof A !== 'undefined' && A.view === 'hub') render(); } catch (e) {} cover(k1Wait()); return nST.call(W, slice, 3000); }
