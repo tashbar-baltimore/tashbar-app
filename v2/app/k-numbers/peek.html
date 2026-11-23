@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Peek! — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 1 "How many? Look and say", game 1: PEEK!
+     Skill: sees 1-3, then 1-5 at a glance without counting (subitizing; Clements 1999).
+     Apples show for a moment under Bubby's towel; he puts the same number in the basket (drag or tap), then presses the check.
+     Show, then try: a demo hand plays one round first. Mistakes teach: the towel lifts, we look again, and the basket shows
+     the empty spots (or the extra apples). Struggling: the peek gets longer and the numbers smaller. Quick: a bonus round in two colors. -->
+<style>
+:root{ --ink:#2B2350; --soft:#5B6478; --green:#22A85A; --green-d:#17834F; --blue:#2FB5E8; --blue-d:#1E8DB8; --sun:#FFC940; --sun-d:#E08A00;
+  --sky1:#8FD3FF; --sky2:#C8ECFF; --sand:#FFF4D6; --wood1:#E9B77A; --wood2:#C98B4B; --wood3:#9C6430; }
+*{ box-sizing:border-box; }
+html,body{ margin:0; height:100%; overflow:hidden; color:var(--ink); font-family:'Fredoka','Nunito',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 45%,var(--sand) 100%); user-select:none; -webkit-user-select:none; touch-action:manipulation; }
+button{ font-family:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent; border:0; }
+svg{ display:block; }
+#game{ height:100%; }
+
+/* top bar */
+.top{ height:92px; display:flex; align-items:center; gap:16px; padding:8px clamp(12px,3vw,32px); }
+.rb{ width:76px; height:76px; border-radius:50%; flex:none; display:flex; align-items:center; justify-content:center; }
+.rb svg{ width:42px; height:42px; }
+#again{ background:var(--blue); box-shadow:0 6px 0 var(--blue-d); }
+#home{ width:68px; height:68px; background:rgba(255,255,255,.75); border:4px solid #fff; box-shadow:0 5px 0 rgba(0,0,0,.08); }
+.rb:active{ transform:translateY(4px); box-shadow:0 2px 0 rgba(0,0,0,.1); }
+#again.talk{ animation:talk 1s infinite; } @keyframes talk{ 50%{ transform:scale(1.07); } }
+.dots{ flex:1; display:flex; justify-content:center; gap:clamp(6px,1.2vw,14px); }
+.dots i{ width:clamp(18px,2.4vw,26px); height:clamp(18px,2.4vw,26px); border-radius:50%; background:rgba(255,255,255,.7); border:3px solid #fff; transition:all .3s; }
+.dots i.now{ background:var(--sun); border-color:var(--sun-d); transform:scale(1.2); }
+.dots i.ok{ background:var(--green); border-color:#fff; } .dots i.fix{ background:#9FD8B6; border-color:#fff; }
+
+/* the play area */
+.stage{ height:calc(100% - 92px); display:grid; grid-template-columns:1.05fr 1fr; gap:clamp(14px,2.4vw,32px); padding:4px clamp(12px,3vw,32px) clamp(12px,2.4vh,24px); }
+.card{ position:relative; border-radius:36px; border:6px solid #fff; box-shadow:0 8px 0 rgba(0,0,0,.08); overflow:hidden; }
+
+/* Bubby's table, plate, apples, towel */
+.peek{ background:linear-gradient(180deg,#FFF8EA 0 58%, var(--wood1) 58% 100%); display:flex; align-items:center; justify-content:center; }
+.peek::after{ content:''; position:absolute; left:0; right:0; top:58%; height:10px; background:var(--wood2); opacity:.5; }
+.plate{ position:relative; width:min(88%, 62vh); aspect-ratio:1.25; z-index:1; }
+.plate .dish{ position:absolute; inset:0; border-radius:50%; background:radial-gradient(ellipse at 50% 45%, #fff 0 56%, #E8F1FA 57% 64%, #fff 65% 70%, #CFE0F2 71% 100%); box-shadow:0 10px 0 rgba(120,80,40,.25); }
+.plate .ta{ position:absolute; width:21%; transform:translate(-50%,-50%) rotate(var(--r,0deg)); filter:drop-shadow(0 4px 0 rgba(0,0,0,.18)); transition:transform .25s; }
+.plate .ta.hi{ transform:translate(-50%,-50%) scale(1.25); filter:drop-shadow(0 0 10px #FFC940) drop-shadow(0 4px 0 rgba(0,0,0,.18)); }
+.towel{ position:absolute; inset:-4px; z-index:3; border-radius:30px;
+  background:repeating-linear-gradient(0deg, rgba(47,120,210,.55) 0 28px, transparent 28px 56px), repeating-linear-gradient(90deg, rgba(47,120,210,.55) 0 28px, transparent 28px 56px), #fff;
+  box-shadow:inset 0 -14px 0 rgba(0,0,0,.08); transition:transform .32s cubic-bezier(.4,1.4,.6,1); display:flex; align-items:center; justify-content:center; }
+.towel .eyes{ display:flex; gap:22px; background:#fff; padding:18px 26px; border-radius:999px; box-shadow:0 6px 0 rgba(0,0,0,.08); }
+.towel .eyes i{ width:46px; height:46px; border-radius:50%; background:#fff; border:5px solid var(--ink); position:relative; }
+.towel .eyes i::after{ content:''; position:absolute; width:18px; height:18px; border-radius:50%; background:var(--ink); left:12px; top:14px; }
+.peek.open .towel{ transform:translateY(-104%) rotate(-3deg); }
+.peek.look{ border-color:var(--sun); box-shadow:0 0 0 6px rgba(255,201,64,.5),0 8px 0 rgba(0,0,0,.08); }
+
+/* right side: basket, crate, check */
+.right{ display:grid; grid-template-rows:1.15fr .85fr; gap:clamp(12px,2vh,22px); min-height:0; }
+.basket{ background:rgba(255,255,255,.55); display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px; }
+.bwrap{ position:relative; width:min(92%, 430px); height:92%; }
+.bwrap .handle{ position:absolute; left:14%; right:14%; top:4%; height:62%; border:12px solid var(--wood2); border-bottom:0; border-radius:50% 50% 0 0 / 70% 70% 0 0; }
+.bwrap .front{ position:absolute; left:0; bottom:0; width:100%; height:44%; z-index:2; }
+.inb{ position:absolute; left:6%; right:6%; bottom:33%; z-index:3; display:flex; flex-wrap:wrap-reverse; justify-content:center; align-items:flex-end; gap:0 2px; }
+.ba, .slot{ width:clamp(60px,10.5vh,92px); height:clamp(60px,10.5vh,92px); margin:0 1px -12px; }
+.ba{ filter:drop-shadow(0 3px 0 rgba(0,0,0,.18)); cursor:grab; touch-action:none; }
+.ba.extra{ filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 8px #F28B82); opacity:.55; }
+.slot{ border:5px dashed #2B8A55; border-radius:50%; background:rgba(255,255,255,.6); transform:scale(.86); }
+.basket.good{ border-color:#7BE0A4; background:rgba(230,255,239,.85); }
+.basket.shake{ animation:shake .45s; } @keyframes shake{ 25%{ transform:translateX(-10px); } 75%{ transform:translateX(10px); } }
+.yes{ position:absolute; left:50%; top:40%; width:120px; height:120px; margin:-60px 0 0 -60px; border-radius:50%; background:var(--green); z-index:5; display:flex; align-items:center; justify-content:center;
+  transform:scale(0); transition:transform .25s cubic-bezier(.4,1.6,.6,1); box-shadow:0 6px 0 var(--green-d); }
+.yes.on{ transform:scale(1); } .yes svg{ width:70px; height:70px; }
+
+.low{ display:flex; gap:clamp(12px,2vw,22px); min-height:0; }
+.crate{ flex:1; background:linear-gradient(180deg,var(--wood1),var(--wood2)); border-color:#F6DDB8; display:grid; grid-template-columns:repeat(6,1fr); align-items:center; justify-items:center; padding:8px clamp(6px,1vw,14px); }
+.hole{ width:100%; max-width:96px; aspect-ratio:1; border-radius:50%; background:rgba(110,60,20,.28); display:flex; align-items:center; justify-content:center; }
+.pa{ width:100%; height:100%; filter:drop-shadow(0 4px 0 rgba(0,0,0,.2)); cursor:grab; touch-action:none; transition:transform .12s; }
+.pa:active{ transform:scale(.92); }
+#check{ width:clamp(96px,13vh,128px); flex:none; align-self:center; aspect-ratio:1; border-radius:50%; background:var(--green); box-shadow:0 8px 0 var(--green-d); border:6px solid #fff; display:flex; align-items:center; justify-content:center; }
+#check svg{ width:56%; height:56%; } #check:active{ transform:translateY(5px); box-shadow:0 3px 0 var(--green-d); }
+#check.dim{ background:#9DBFAA; box-shadow:0 8px 0 #7C9D89; }
+#check.ready{ animation:pulse 1.2s infinite; } @keyframes pulse{ 50%{ transform:scale(1.07); } }
+.fly{ position:fixed; z-index:50; pointer-events:none; filter:drop-shadow(0 6px 0 rgba(0,0,0,.2)); }
+.ghosted{ opacity:.25; }
+.locked .pa, .locked .ba{ cursor:default; }
+
+/* demo hand */
+#hand{ position:fixed; width:92px; height:92px; z-index:60; pointer-events:none; left:50%; top:110%; transition:left .6s ease-in-out, top .6s ease-in-out, transform .15s; filter:drop-shadow(0 6px 4px rgba(0,0,0,.25)); }
+#hand.tap{ transform:scale(.85); }
+
+/* start and end screens */
+.over{ position:fixed; inset:0; z-index:40; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:clamp(12px,3vh,28px); padding:24px 16px;
+  background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 45%,var(--sand) 100%); text-align:center; }
+.over[hidden]{ display:none; }
+.title{ font-size:clamp(44px,8vh,76px); font-weight:800; letter-spacing:.02em; text-shadow:0 4px 0 rgba(255,255,255,.8); margin:0; }
+.hero{ position:relative; width:min(78vw,360px); aspect-ratio:1.25; }
+.hero .dish{ position:absolute; inset:0; border-radius:50%; background:radial-gradient(ellipse at 50% 45%, #fff 0 56%, #E8F1FA 57% 64%, #fff 65% 70%, #CFE0F2 71% 100%); box-shadow:0 10px 0 rgba(120,80,40,.2); }
+.hero svg.ta{ position:absolute; width:24%; transform:translate(-50%,-50%); filter:drop-shadow(0 4px 0 rgba(0,0,0,.18)); }
+.hero .corner{ position:absolute; right:-6%; top:-8%; width:62%; height:72%; border-radius:26px; transform:rotate(14deg);
+  background:repeating-linear-gradient(0deg, rgba(47,120,210,.55) 0 18px, transparent 18px 36px), repeating-linear-gradient(90deg, rgba(47,120,210,.55) 0 18px, transparent 18px 36px), #fff; box-shadow:0 8px 0 rgba(0,0,0,.1); }
+.play{ width:clamp(120px,20vh,160px); aspect-ratio:1; border-radius:50%; background:var(--green); border:7px solid #fff; box-shadow:0 9px 0 var(--green-d); display:flex; align-items:center; justify-content:center; animation:pulse 1.4s infinite; }
+.play svg{ width:52%; height:52%; margin-left:8%; }
+.play:active{ transform:translateY(6px); box-shadow:0 3px 0 var(--green-d); }
+.stars{ display:flex; gap:clamp(10px,2vw,22px); }
+.stars svg{ width:clamp(84px,15vh,130px); height:clamp(84px,15vh,130px); transform:scale(0); transition:transform .35s cubic-bezier(.4,1.7,.6,1); }
+.stars svg.on{ transform:scale(1); }
+.row{ display:flex; gap:28px; }
+.big{ width:clamp(104px,16vh,132px); aspect-ratio:1; border-radius:50%; border:6px solid #fff; display:flex; align-items:center; justify-content:center; }
+.big svg{ width:52%; height:52%; }
+#replay{ background:var(--sun); box-shadow:0 8px 0 var(--sun-d); } #next{ background:var(--green); box-shadow:0 8px 0 var(--green-d); }
+.big:active{ transform:translateY(5px); }
+.big[hidden]{ display:none; }
+.burst i{ position:fixed; width:18px; height:18px; border-radius:4px; z-index:45; animation:fall 1.6s ease-out forwards; }
+@keyframes fall{ to{ transform:translate(var(--dx),var(--dy)) rotate(540deg); opacity:0; } }
+
+/* phone and tall screens: one column */
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .top{ height:80px; gap:10px; } .rb{ width:64px; height:64px; } #home{ width:64px; height:64px; } .rb svg{ width:34px; height:34px; }
+  .stage{ height:calc(100% - 80px); grid-template-columns:1fr; grid-template-rows:1fr 1.25fr; gap:12px; }
+  .plate{ width:min(84%, 44vh); }
+  .towel .eyes{ padding:12px 18px; gap:14px; } .towel .eyes i{ width:34px; height:34px; } .towel .eyes i::after{ width:13px; height:13px; left:8px; top:10px; }
+  .right{ grid-template-rows:1fr .9fr; gap:12px; }
+  .crate{ grid-template-columns:repeat(3,1fr); gap:4px; }
+  .hole{ max-width:72px; }
+  .ba,.slot{ width:clamp(56px,8vh,72px); height:clamp(56px,8vh,72px); }
+  #check{ width:96px; }
+}
+@media (prefers-reduced-motion:reduce){ #check.ready,.play,#again.talk{ animation:none; } }
+</style>
+</head>
+<body>
+<div id="art"></div>
+
+<div id="game" class="locked">
+  <div class="top">
+    <button id="again" class="rb" aria-label="Hear it again"><svg viewBox="0 0 48 48"><path d="M8 18h8l11-9v30l-11-9H8z" fill="#fff"/><path d="M32 17c3 2 5 4.5 5 7s-2 5-5 7M36 11c5 3.5 8 8 8 13s-3 9.5-8 13" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/></svg></button>
+    <div class="dots" id="dots"></div>
+    <button id="home" class="rb" aria-label="Back"><svg viewBox="0 0 48 48"><path d="M6 24 24 8l18 16" stroke="#2B2350" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22v18h9V30h6v10h9V22" fill="#FFC940" stroke="#2B2350" stroke-width="4" stroke-linejoin="round"/></svg></button>
+  </div>
+  <div class="stage">
+    <div class="card peek" id="peek"><div class="plate" id="plate"><div class="dish"></div></div><div class="towel"><div class="eyes"><i></i><i></i></div></div></div>
+    <div class="right">
+      <div class="card basket" id="basket">
+        <div class="bwrap" id="bwrap">
+          <div class="handle"></div>
+          <div class="inb" id="inb"></div>
+          <svg class="front" viewBox="0 0 400 150" preserveAspectRatio="none"><path d="M8 18 H392 L356 146 H44 Z" fill="#D9A05B"/>
+            <g stroke="#B87A3A" stroke-width="7" fill="none"><path d="M24 50 H376"/><path d="M34 84 H366"/><path d="M42 118 H358"/></g>
+            <g stroke="#C78C4A" stroke-width="6"><path d="M80 20 L92 144"/><path d="M150 20 L156 144"/><path d="M220 20 L220 144"/><path d="M290 20 L284 144"/><path d="M350 20 L330 144"/></g>
+            <rect x="0" y="6" width="400" height="24" rx="12" fill="#B9773A"/></svg>
+        </div>
+        <div class="yes" id="yes"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      </div>
+      <div class="low">
+        <div class="card crate" id="crate"></div>
+        <button id="check" class="dim" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<svg id="hand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg>
+
+<div class="over" id="start">
+  <h1 class="title">Peek!</h1>
+  <div class="hero" id="hero"><div class="dish"></div><div class="corner"></div></div>
+  <button class="play" id="play" aria-label="Play"><svg viewBox="0 0 48 48"><path d="M12 6 42 24 12 42z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg></button>
+</div>
+
+<div class="over" id="end" hidden>
+  <div class="stars" id="stars"></div>
+  <div class="row">
+    <button class="big" id="replay" aria-label="Play again"><svg viewBox="0 0 48 48"><path d="M38 24a14 14 0 1 1-4.1-9.9" stroke="#2B2350" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M36 6v10H26" stroke="#2B2350" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="big" id="next" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div>
+
+<script src="kit.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  $('art').innerHTML = NK.ART;
+  var STAR = '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="#FFC940" stroke="#E08A00" stroke-width="5" stroke-linejoin="round"/></svg>';
+  var STAR_OFF = '<svg class="on" viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="rgba(255,255,255,.6)" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>';
+
+  /* ---------- the plan ---------- */
+  var ROUNDS = 8, PILE = 6;
+  var LAYOUTS = {
+    1: [[[50, 50]]],
+    2: [[[35, 50], [65, 50]], [[38, 34], [62, 66]], [[50, 30], [50, 70]]],
+    3: [[[27, 50], [50, 50], [73, 50]], [[50, 30], [32, 66], [68, 66]], [[28, 28], [50, 50], [72, 72]]],
+    4: [[[35, 32], [65, 32], [35, 68], [65, 68]], [[50, 23], [27, 50], [73, 50], [50, 77]]],
+    5: [[[27, 27], [73, 27], [50, 50], [27, 73], [73, 73]], [[27, 34], [50, 34], [73, 34], [38, 68], [62, 68]]]
+  };
+  function cluster(n, cx) { return n === 1 ? [[cx, 50]] : n === 2 ? [[cx, 34], [cx, 66]] : [[cx - 10, 34], [cx + 10, 34], [cx, 67]]; }
+  var BONUS = [[3, 2], [2, 2], [2, 3], [1, 3]];
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+  var S = window.PEEK = { phase: 'start', round: 0, target: 0, basket: 0, firstTry: 0, missed: false, flashMs: 2000, missStreak: 0, hitStreak: 0, easy: 0, bonus: false, prev: 0, results: [] };
+
+  function nextTarget() {
+    var pool = S.easy > 0 ? [1, 2, 3] : S.round < 4 ? [1, 2, 3] : [3, 4, 5, 4, 5];
+    if (S.round === 0) pool = [1, 2];
+    var t; do { t = pick(pool); } while (t === S.prev && pool.length > 1);
+    S.prev = t; return t;
+  }
+
+  /* ---------- drawing ---------- */
+  function drawDots() {
+    var h = ''; for (var i = 0; i < ROUNDS; i++) h += '<i class="' + (S.results[i] === 'ok' ? 'ok' : S.results[i] === 'fix' ? 'fix' : (i === S.round && S.phase !== 'start' && !S.bonus ? 'now' : '')) + '"></i>';
+    $('dots').innerHTML = h;
+  }
+  function drawPlate(spots) {
+    var h = '<div class="dish"></div>';
+    spots.forEach(function (p) { var j = function () { return (Math.random() * 4 - 2).toFixed(1); };
+      h += '<svg class="ta" viewBox="0 0 100 100" style="left:' + (p[0] + +j()) + '%;top:' + (p[1] + +j()) + '%;--r:' + Math.round(Math.random() * 24 - 12) + 'deg' + (p[2] ? ';--apple:url(#nkGreen)' : '') + '"><use href="#nkApple"/></svg>'; });
+    $('plate').innerHTML = h;
+  }
+  function drawBasket(hint) {
+    var h = '', i;
+    for (i = 0; i < S.basket; i++) h += '<svg class="ba' + (hint && i >= S.target ? ' extra' : '') + '" data-i="' + i + '" viewBox="0 0 100 100"><use href="#nkApple"/></svg>';
+    if (hint) for (i = S.basket; i < S.target; i++) h += '<div class="slot"></div>';
+    $('inb').innerHTML = h;
+    var c = $('check'); c.classList.toggle('dim', S.basket === 0);
+    c.classList.toggle('ready', S.basket > 0 && (S.phase === 'answer' || S.phase === 'fix'));
+  }
+  function drawCrate() {
+    var h = ''; for (var i = 0; i < PILE; i++) h += '<div class="hole">' + (i < PILE - S.basket ? '<svg class="pa" data-i="' + i + '" viewBox="0 0 100 100"><use href="#nkApple"/></svg>' : '') + '</div>';
+    $('crate').innerHTML = h;
+  }
+  function draw() { drawBasket(S.phase === 'fix'); drawCrate(); drawDots(); }
+  function towel(open) { $('peek').classList.toggle('open', open); if (open) NK.sound.cloth(); }
+  function lock(on) { $('game').classList.toggle('locked', on); }
+
+  /* an apple flies from one place to another */
+  function fly(fromEl, toEl) {
+    if (!fromEl || !toEl) return NK.wait(1);
+    var a = fromEl.getBoundingClientRect(), b = toEl.getBoundingClientRect(), f = document.createElement('div');
+    f.className = 'fly'; f.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%"><use href="#nkApple"/></svg>';
+    f.style.cssText = 'left:' + a.left + 'px;top:' + a.top + 'px;width:' + a.width + 'px;height:' + a.height + 'px;transition:all ' + (NK.fast ? 20 : 260) + 'ms ease-out';
+    document.body.appendChild(f); toEl.style.visibility = 'hidden';
+    requestAnimationFrame(function () { requestAnimationFrame(function () { f.style.left = b.left + 'px'; f.style.top = b.top + 'px'; f.style.width = b.width + 'px'; f.style.height = b.height + 'px'; }); });
+    return NK.wait(280).then(function () { f.remove(); toEl.style.visibility = ''; });
+  }
+  function addOne(fromEl) {
+    if (S.basket >= PILE) return; var from = fromEl ? fromEl.getBoundingClientRect() : null;
+    S.basket++; NK.sound.pop(); draw();
+    var to = $('inb').querySelectorAll('.ba')[S.basket - 1];
+    if (from) { var tmp = document.createElement('div'); tmp.style.cssText = 'pointer-events:none;position:fixed;left:' + from.left + 'px;top:' + from.top + 'px;width:' + from.width + 'px;height:' + from.height + 'px'; document.body.appendChild(tmp); fly(tmp, to).then(function () { tmp.remove(); }); }
+  }
+  function removeOne(fromEl) {
+    if (S.basket <= 0) return; var from = fromEl ? fromEl.getBoundingClientRect() : null;
+    S.basket--; NK.sound.back(); draw();
+    var to = $('crate').querySelectorAll('.pa')[PILE - S.basket - 1];
+    if (from && to) { var tmp = document.createElement('div'); tmp.style.cssText = 'pointer-events:none;position:fixed;left:' + from.left + 'px;top:' + from.top + 'px;width:' + from.width + 'px;height:' + from.height + 'px'; document.body.appendChild(tmp); fly(tmp, to).then(function () { tmp.remove(); }); }
+  }
+  S.add = function () { addOne($('crate').querySelector('.pa:last-of-type') || $('crate').querySelector('.pa')); };
+  S.remove = function () { var b = $('inb').querySelectorAll('.ba'); removeOne(b[b.length - 1]); };
+
+  /* ---------- drag or tap ---------- */
+  var drag = null;
+  function canPlay() { return S.phase === 'answer' || S.phase === 'fix'; }
+  document.addEventListener('pointerdown', function (e) {
+    if (!canPlay()) return; var el = e.target.closest('.pa, .ba'); if (!el) return;
+    e.preventDefault(); drag = { el: el, from: el.classList.contains('pa') ? 'pile' : 'basket', x: e.clientX, y: e.clientY, ghost: null, id: e.pointerId };
+  });
+  document.addEventListener('pointermove', function (e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    if (!drag.ghost && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 10) {
+      var r = drag.el.getBoundingClientRect(); drag.w = r.width; drag.ghost = document.createElement('div'); drag.ghost.className = 'fly';
+      drag.ghost.innerHTML = '<svg viewBox="0 0 100 100" width="100%" height="100%"><use href="#nkApple"/></svg>';
+      drag.ghost.style.cssText = 'width:' + r.width * 1.15 + 'px;height:' + r.width * 1.15 + 'px'; document.body.appendChild(drag.ghost); drag.el.classList.add('ghosted');
+    }
+    if (drag.ghost) { drag.ghost.style.left = (e.clientX - drag.w * .57) + 'px'; drag.ghost.style.top = (e.clientY - drag.w * .57) + 'px'; }
+  });
+  function inside(el, x, y, pad) { var r = el.getBoundingClientRect(); return x > r.left - pad && x < r.right + pad && y > r.top - pad && y < r.bottom + pad; }
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return; var d = drag; drag = null;
+    if (!d.ghost) { if (d.from === 'pile') addOne(d.el); else removeOne(d.el); return; }   /* a tap */
+    var overBasket = inside($('basket'), e.clientX, e.clientY, 30), g = d.ghost; g.remove(); d.el.classList.remove('ghosted');
+    if (d.from === 'pile' && overBasket) addOne(g); else if (d.from === 'basket' && !overBasket) removeOne(g);
+  }
+  document.addEventListener('pointerup', endDrag); document.addEventListener('pointercancel', function (e) { if (drag && drag.ghost) { drag.ghost.remove(); drag.el.classList.remove('ghosted'); } drag = null; });
+
+  /* ---------- talking ---------- */
+  function say(t, o) { $('again').classList.add('talk'); return NK.say(t, o).then(function () { $('again').classList.remove('talk'); }); }
+  $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.add('talk'); NK.again(); setTimeout(function () { $('again').classList.remove('talk'); }, 1800); });
+  $('home').addEventListener('click', function () { NK.hush(); location.href = '../'; });
+
+  /* ---------- show: the demo ---------- */
+  var hand = $('hand');
+  function handTo(el, dx, dy) { var r = el.getBoundingClientRect(); hand.style.left = (r.left + r.width * (dx || .5) - 20) + 'px'; hand.style.top = (r.top + r.height * (dy || .5) - 8) + 'px'; return NK.wait(650); }
+  function handTap() { hand.classList.add('tap'); return NK.wait(160).then(function () { hand.classList.remove('tap'); return NK.wait(120); }); }
+  async function demo() {
+    S.phase = 'demo'; S.target = 2; S.basket = 0; draw(); drawPlate(LAYOUTS[2][0]); lock(true);
+    await say('Bubby put apples under her towel.');
+    await say('Peek fast! How many apples? Watch me first.');
+    await say('Peek!'); towel(true); await NK.wait(1700); towel(false); await NK.wait(400);
+    await say('I saw two apples.');
+    for (var k = 0; k < 2; k++) { var a = $('crate').querySelector('.pa:last-of-type') || $('crate').querySelector('.pa'); await handTo(a); await handTap(); addOne(a); await NK.wait(350); }
+    await say('Two apples in the basket. Now I press check.');
+    await handTo($('check')); await handTap(); towel(true); $('basket').classList.add('good'); $('yes').classList.add('on'); NK.sound.yes();
+    await say('Yes! Two apples!');
+    hand.style.top = '110%'; $('yes').classList.remove('on'); $('basket').classList.remove('good');
+    S.basket = 0; draw(); towel(false); await NK.wait(450);
+    await say('Now you!');
+  }
+
+  /* ---------- try: the rounds ---------- */
+  async function round() {
+    if (!S.bonus) S.target = nextTarget();
+    S.missed = false; S.basket = 0; S.phase = 'flash'; lock(true); draw();
+    var spots;
+    if (S.bonus) { var b = BONUS[S.bonusAt]; S.parts = b; S.target = b[0] + b[1];
+      spots = cluster(b[0], 28).concat(cluster(b[1], 72).map(function (p) { return [p[0], p[1], 1]; })); }
+    else spots = pick(LAYOUTS[S.target]);
+    drawPlate(spots);
+    await say(S.round === 0 && !S.bonus ? 'Ready? Peek!' : 'Peek!', { repeat: 'How many apples? Put them in the basket.' });
+    towel(true); await NK.wait(S.bonus ? 900 : S.flashMs); towel(false); await NK.wait(380);
+    S.phase = 'answer'; lock(false); draw();
+    if (S.round < 2 && !S.bonus) await say('How many apples? Put them in the basket.');
+    else NK.last = 'How many apples? Put them in the basket.';
+  }
+
+  async function check() {
+    NK.unlock();
+    if (!canPlay()) return;
+    if (S.basket === 0) { say('Put apples in the basket first.'); return; }
+    var wasFix = S.phase === 'fix'; S.phase = 'checking'; lock(true);
+    if (S.basket === S.target) {
+      towel(true); $('basket').classList.add('good'); $('yes').classList.add('on'); NK.sound.yes();
+      if (!S.missed) { S.firstTry++; S.hitStreak++; S.missStreak = 0; if (S.hitStreak >= 2) S.flashMs = Math.max(1100, S.flashMs - 250); }
+      if (!S.bonus) S.results[S.round] = S.missed ? 'fix' : 'ok';
+      drawDots();
+      var n = NK.word(S.target), ap = S.target === 1 ? ' apple' : ' apples';
+      await Promise.all([NK.wait(1000), say(S.bonus ? NK.Word(S.parts[0]) + ' and ' + NK.word(S.parts[1]) + ' make ' + n + '!' : wasFix ? 'Yes! Now you have ' + n + '.' : pick(['Yes! ' + NK.Word(S.target) + ap + '!', 'Right! You saw ' + n + '!', 'Good eyes! ' + NK.Word(S.target) + '!']))]);
+      $('yes').classList.remove('on'); $('basket').classList.remove('good'); $('peek').classList.remove('look');
+      await NK.wait(250);
+      return advance();
+    }
+    /* a mistake: look again, and see why */
+    NK.sound.oops(); $('basket').classList.add('shake'); setTimeout(function () { $('basket').classList.remove('shake'); }, 500);
+    if (!S.missed) { S.missed = true; S.missStreak++; S.hitStreak = 0; S.flashMs = Math.min(3000, S.flashMs + 600); if (S.missStreak >= 2) { S.easy = 2; S.missStreak = 0; } }
+    towel(true); $('peek').classList.add('look');
+    if (!wasFix) {
+      await say("Let's look again.");
+      var ta = $('plate').querySelectorAll('.ta');
+      for (var i = 0; ta.length > 1 && i < ta.length; i++) { ta[i].classList.add('hi'); await say(NK.Word(i + 1) + (i === ta.length - 1 ? '.' : ','), { noRepeat: true }); ta[i].classList.remove('hi'); }
+      await say(NK.Word(S.target) + (S.target === 1 ? ' apple.' : ' apples.'), { noRepeat: true });
+    }
+    S.phase = 'fix'; draw(); lock(false);
+    var d = S.target - S.basket, hint = d > 0 ? 'Put ' + NK.word(d) + ' more in.' : 'Take ' + NK.word(-d) + ' out.';
+    await say('You put ' + NK.word(S.basket) + '. ' + hint);
+  }
+  $('check').addEventListener('click', check);
+  S.check = check;
+
+  async function advance() {
+    if (S.easy > 0 && !S.bonus) S.easy--;
+    if (S.bonus) { S.bonusAt++; if (S.bonusAt < 2) return round(); return finish(); }
+    S.round++; drawDots();
+    if (S.round < ROUNDS) return round();
+    if (S.firstTry === ROUNDS) { S.bonus = true; S.bonusAt = 0; BONUS.sort(function () { return Math.random() - .5; }); await say('Bonus! Super quick peek!'); return round(); }
+    return finish();
+  }
+
+  /* ---------- the end: 2 seconds of joy, then on ---------- */
+  async function finish() {
+    S.phase = 'end'; lock(true);
+    var stars = S.stars = NK.starsFor(S.firstTry, ROUNDS), g = NK.save('peek', stars); S.saved = g;
+    var h = ''; for (var i = 0; i < 3; i++) h += i < stars ? STAR : STAR_OFF; $('stars').innerHTML = h;
+    $('next').hidden = stars < 2; $('end').hidden = false; NK.sound.win(); burst();
+    $('stars').querySelectorAll('svg').forEach(function (s, i) { setTimeout(function () { s.classList.add('on'); }, 150 + i * 250); });
+    await say(stars === 3 ? 'Wow! Three stars!' : stars === 2 ? 'You did it! Two stars!' : 'Good work! Let\'s play once more.');
+    S.phase = 'done';
+  }
+  function burst() {
+    var cols = ['#FFC940', '#22A85A', '#2FB5E8', '#E5322D', '#FF8FB1'];
+    for (var i = 0; i < 28; i++) { var c = document.createElement('i'); c.style.cssText = 'left:50%;top:40%;background:' + cols[i % 5] + ';--dx:' + Math.round(Math.random() * 700 - 350) + 'px;--dy:' + Math.round(Math.random() * 500 - 150) + 'px';
+      var w = document.createElement('div'); w.className = 'burst'; w.appendChild(c); document.body.appendChild(w); setTimeout(function (x) { x.remove(); }.bind(null, w), 1700); }
+  }
+  $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; reset(); S.round = 0; drawDots(); round(); });
+  $('next').addEventListener('click', function () { NK.hush(); location.href = '../'; });
+  function reset() { S.firstTry = 0; S.results = []; S.flashMs = 2000; S.missStreak = S.hitStreak = S.easy = 0; S.bonus = false; S.prev = 0; }
+
+  /* ---------- start ---------- */
+  (function hero() { var h = '<div class="dish"></div>'; [[30, 48], [52, 62], [42, 34]].forEach(function (p) { h += '<svg class="ta" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); $('hero').innerHTML = h + '<div class="corner"></div>'; })();
+  draw();
+  $('play').addEventListener('click', async function () {
+    NK.unlock(); $('start').hidden = true; reset(); S.round = 0;
+    await demo(); await round();
+  });
+})();
+</script>
+</body>
+</html>
