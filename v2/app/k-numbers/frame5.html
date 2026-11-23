@@ -33,7 +33,7 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var FF, R, done, prev = -1;
+  var FF, R, done, prev = -1, A = U4.adapt();
   function setNum(n) { var c = U4.numCard(n); c.id = 'num'; $('numw').innerHTML = ''; $('numw').appendChild(c); }
   function taps(m) { return FF.moves(m).map(function (i) { return { tap: '#ffw .box[data-b="' + i + '"]' }; }); }
   function hooks() { GAME.right = function () { return taps(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return taps(R.n === 5 ? 4 : R.n + 1).concat([{ tap: '#check' }]); }; }
@@ -41,8 +41,8 @@
   async function check() {
     NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); FF.lock(true);
     var have = FF.count(), d;
-    if (have === R.n) { await FR.yes($('ffw'), shape(R.n)); d = done; done = null; d(R.misses === 0); return; }
-    FR.oops($('ffw')); R.misses++;
+    if (have === R.n) { $('num').style.opacity = ''; await FR.yes($('ffw'), shape(R.n)); if (R.misses) A.miss(); else A.hit(); d = done; done = null; d(R.misses === 0); return; }
+    FR.oops($('ffw')); R.misses++; $('num').style.opacity = '';
     if (R.misses === 1) { await FR.say("Let's look again."); FF.el.classList.add('hi'); await FR.say('Is that ' + FR.word(R.n) + '? Fix the frame.'); FF.el.classList.remove('hi'); }
     else { var k = R.n - have; FF.hint(R.n); await FR.say('You have ' + FR.word(have) + '. ' + (k > 0 ? 'Put ' + FR.word(k) + ' more in.' : 'Take ' + FR.word(-k) + ' out.')); }
     GAME.phase = 'answer'; FR.lock(false); FF.lock(false); hooks();
@@ -58,14 +58,30 @@
       for (var i = 0; i < 2; i++) { await F.handTo(FF.box(i)); await F.handTap(); FF.box(i).innerHTML = '<i class="ctr"></i>'; NK.sound.pop(); }
       await F.handTo($('check')); await F.handTap(); await F.yes($('ffw'), 'Two! Three boxes are empty.');
     },
+    reset: function () { A.reset(); },
     round: function (F, i) {
       return new Promise(async function (res) {
-        var pool = i === 4 ? [0] : i < 3 ? [1, 2, 3] : [3, 4, 5], n; do { n = F.pick(pool); } while (n === prev && pool.length > 1); prev = n;
-        R = { n: n, misses: 0 }; FF.set(0); FF.lock(true); setNum(n); GAME.phase = 'busy'; F.lock(true);
+        /* easier after two misses: small numbers, and the frame starts with one counter to copy from */
+        var pool = A.easy() ? [1, 2, 3] : i === 4 ? [0] : i < 3 ? [1, 2, 3] : [3, 4, 5], n; do { n = F.pick(pool); } while (n === prev && pool.length > 1); prev = n;
+        R = { n: n, misses: 0 }; FF.set(A.easy() && n > 1 ? 1 : 0); FF.lock(true); setNum(n); GAME.phase = 'busy'; F.lock(true);
         await F.say(n === 0 ? 'This says zero. Show zero.' : 'This says ' + F.word(n) + '. Fill the frame.', { repeat: 'This says ' + F.word(n) + '. Fill the frame.' });
         if (n === 0) await F.say('Zero means none. Then press check.');
+        else if (A.easy() && n > 1) await F.say('One is in. Put in the rest.');
         done = res; GAME.phase = 'answer'; F.lock(false); FF.lock(false); hooks();
       });
+    },
+    /* bonus for a quick boy: the number shows for a moment, then hides. Fill it from memory. */
+    bonus: async function (F) {
+      var nums = F.shuffle([4, 5, 3]).slice(0, 2);
+      for (var k = 0; k < nums.length; k++) {
+        await new Promise(async function (res) {
+          var n = nums[k]; R = { n: n, misses: 0 }; FF.set(0); FF.lock(true); setNum(n); GAME.phase = 'busy'; F.lock(true);
+          await F.say('Quick! Look at the number.', { repeat: 'Fill the frame with that number.' });
+          await F.wait(1200); $('num').style.opacity = '.08';
+          done = res; GAME.phase = 'answer'; F.lock(false); FF.lock(false); hooks();
+          await F.say('Now fill the frame!');
+        });
+      }
     }
   });
 })();
