@@ -41,15 +41,11 @@ module.exports = async function (pg) {
             let t = 0; while (ov.querySelector('.k1-wait') && t < 15000) { await sleep(250); t += 250; }
             if (ov.querySelector('.k1-wait')) bad.push('the "Here comes your game" cover did not leave after the game page drew (15 s)');
             /* K-1 quiet: the hidden big-boy home does not keep changing itself behind the game */
-            const WHO = {}, STK = {}; const tl = DOMTokenList.prototype, oA = tl.add, oR = tl.remove, nA = Node.prototype.appendChild, nR = Element.prototype.remove;
-            const note = () => { const k = (new Error().stack || '').split('\n').slice(2, 6).map(x => x.trim().replace(/^at /, '').replace(/\(.*?(:\d+:\d+)\)$/, '$1')).join(' < '); STK[k] = (STK[k] || 0) + 1; };
-            tl.add = function () { try { if (this === (document.getElementById('ohb') || {}).classList) note(); } catch (e) {} return oA.apply(this, arguments); };
-            Node.prototype.appendChild = function (c) { try { if (this.id === 'ohsky') note(); } catch (e) {} return nA.apply(this, arguments); };
-            Element.prototype.remove = function () { try { if (this.parentNode && this.parentNode.id === 'ohsky') note(); } catch (e) {} return nR.apply(this, arguments); };
+            /* sparks an earlier (older) boy set flying finish their flight first; then nothing new may start */
+            let w = 0; while (document.querySelector('#ohsky .rise, .ohp, .hlring') && w < 8000) { await sleep(250); w += 250; }
+            const WHO = {};
             const n = await new Promise(res => { let c = 0; const mo = new MutationObserver(l => l.forEach(m => { const t = m.target.nodeType === 1 ? m.target : m.target.parentElement; if (!(t && t.closest && t.closest('#k1o,#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov'))) { c++; const k = (t && (t.id || String(t.className).slice(0, 30) || t.tagName)) + ':' + m.type + ':' + (m.attributeName || ''); WHO[k] = (WHO[k] || 0) + 1; } }));
               mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true }); setTimeout(() => { mo.disconnect(); res(c); }, 3000); });
-            tl.add = oA; Node.prototype.appendChild = nA; Element.prototype.remove = nR;
-            if (n > 15) bad.push('WHO: ' + Object.entries(STK).sort((a, b) => b[1] - a[1]).slice(0, 4).map(e => e[1] + 'x ' + e[0].slice(0, 300)).join(' || '));
             if (n > 15) bad.push('the hidden big-boy home changed ' + n + ' times in 3 s behind a K game (it should stay quiet): ' + Object.entries(WHO).sort((a, b) => b[1] - a[1]).slice(0, 8).map(e => e[0] + ' x' + e[1]).join(', '));
             const x = ov.querySelector('button'); if (x) x.click(); ov.remove(); } } }
       K1O.grade = 1; render(); await sleep(100);
