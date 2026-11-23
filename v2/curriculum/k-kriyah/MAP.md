@@ -1,4 +1,4 @@
-# Kindergarten Kriyah — the full-year map (DRAFT, waiting for approval)
+# Kindergarten Kriyah — the full-year map (APPROVED by Esti, 2026-11-23)
 
 **The goal:** "Fun, easy, skill-building games that teach every kind of boy real skills, one step on top of the next, all year, until he graduates."
 
