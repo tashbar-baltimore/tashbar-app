@@ -25,7 +25,7 @@ export default function setup(E, { unit }) {
   window.__info = () => ({ want, active, targets: falling.filter(l => !l.userData.busy && l.userData.key === want).map(l => E.toScreen(l.position)),
     others: falling.filter(l => !l.userData.busy && l.userData.key !== want).map(l => E.toScreen(l.position)), caught, targetsSoFar: targets });
   function setSign(k) { if (signL) sign.remove(signL); signL = E.letter(k, .9); signL.position.set(0, 0, .25); sign.add(signL); E.popIn(signL); }
-  const FALL_F = E.FAST ? 2.5 : 1;    /* quick test runs draw very few frames a second, so letters fall slower there to stay tappable */
+  const FALL_F = E.FAST ? (E.LITE ? 1.4 : 2.5) : 1;    /* quick test runs draw very few frames a second, so letters fall slower there to stay tappable */
   function drop(k, ms) {
     const l = E.letter(k, 1.0); let x; do { x = E.portrait ? (Math.random() * 2 - 1) * .95 + .6 : (Math.random() * 2 - 1) * X * .85 + .6;   /* never over the sign */ } while (falling.some(f => !f.userData.busy && f.position.y > 2.5 && Math.abs(f.userData.x - x) < (E.portrait ? 1.1 : 1.6)) && Math.random() > .02);
     l.userData = Object.assign(l.userData, { t0: performance.now(), ms: ms * FALL_F, y0: E.portrait ? 5.7 : 4.0, y1: .5, x }); l.position.set(x, l.userData.y0, .8); E.scene.add(l); falling.push(l); E.popIn(l, 1, 250);   /* appears inside the sky, below the top buttons */
