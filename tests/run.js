@@ -139,7 +139,15 @@ async function kidTests(browser) {
       /* HOME (HoS 2026-11-23, docs/HOME-SIMPLE-PROMPT.md): the first screen is six equal tiles, his work first and glowing, the Canteen its own door, no tab bar */
       const tl = [...gm.querySelectorAll('.gm-hts > .gm-ht')], sz = tl.map(x => { const r = x.getBoundingClientRect(), tp = x.querySelector('.top').getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), tp.height / r.height]; });
       o.home = { n: tl.length, first: tl[0] && tl[0].classList.contains('work') && tl[0].classList.contains('now') && /DO THIS NOW/.test(tl[0].textContent), equal: sz.every(s => s[0] === sz[0][0] && s[1] === sz[0][1]), half: sz.every(s => s[2] > 0.44 && s[2] < 0.56),
-        canteen: !!gm.querySelector('.gm-hts .gm-ht.food[data-st=open][data-t=canteen]'), noBar: !document.querySelector('#gm-nav button') || getComputedStyle(document.getElementById('gm-nav')).display === 'none', others: gm.querySelectorAll('button:not(.gm-ht)').length };
+        canteen: !!gm.querySelector('.gm-hts .gm-ht.food[data-cno=open]'), noBar: !document.querySelector('#gm-nav button') || getComputedStyle(document.getElementById('gm-nav')).display === 'none', others: gm.querySelectorAll('button:not(.gm-ht)').length };
+      /* THE 3D CANTEEN (HoS 2026-11-23: "they can't see all the stuff about the canteen ... all its related aspects should all be available ... immersive 3D"):
+         the Canteen tile opens the canteen room with its 4 doors (Buy food, Get money, My story, Lessons); the room never catches a tap; Home closes it */
+      { const ft = gm.querySelector('.gm-hts .gm-ht.food'); if (ft) { ft.click(); await sleep(120); } const cs = document.getElementById('cn-shop'), room = cs && cs.querySelector('.cw-room'), roomOff = !!room && getComputedStyle(room).pointerEvents === 'none';
+        const doors = cs ? [...cs.querySelectorAll('.cw-door')].map(d => d.dataset.p).join(',') : ''; let panels = '';
+        if (cs) for (const p of ['cash', 'story', 'learn', 'buy']) { const d = cs.querySelector('.cw-door[data-p=' + p + ']'); if (d) { d.click(); await sleep(40); } panels += (cs.querySelector('.cw-door.on') || {}).dataset ? cs.querySelector('.cw-door.on').dataset.p : '-'; }
+        const learn = cs ? (cs.querySelector('.cw-door[data-p=learn]').click(), await sleep(40), cs.querySelectorAll('[data-cno=lesson][data-c=LIFE]').length) : 0;
+        const home = cs && cs.querySelector('[data-cno=close]'); if (home) { home.click(); await sleep(60); }
+        o.home.cw = { open: !!(cs && cs.classList.contains('cw3d')), room: roomOff, doors, panels, learn, closed: !document.getElementById('cn-shop') && !document.body.classList.contains('cn-open') }; }
       const go = async t => { const h = document.querySelector('#gm-nav [data-gmnav=home]'); if (h) { h.click(); await sleep(30); } const b = gm.querySelector('.gm-hts [data-gmnav=' + t + ']'); if (b) { b.click(); await sleep(30); } };
       await go('map');
       o.bright = document.body.classList.contains('gm-lite') && !document.body.classList.contains('w3d') && getComputedStyle(gm).backgroundImage.indexOf('255, 247, 214') >= 0;
@@ -171,6 +179,8 @@ async function kidTests(browser) {
       const H = g.home || {};
       if (!g.bright) fail('one look (HoS 2026-11-23): his map must be the bright page (light background, no 3D galaxy behind it)');
       if (H.n !== 6 || !H.first || !H.equal || !H.half || !H.canteen || !H.noBar || H.others) fail('home (HoS 2026-11-23): 6 equal tiles, icon on the top half, "My work · DO THIS NOW" first, a Canteen tile that opens the canteen, no tab bar and no other buttons (got ' + JSON.stringify(H) + ')');
+      { const c = H.cw || {}; if (!c.open || !c.room || c.doors !== 'buy,cash,story,learn' || c.panels !== 'cashstorylearnbuy' || c.learn < 5 || !c.closed) fail('3D canteen (HoS 2026-11-23): the Canteen tile must open the 3D canteen room (never catching a tap) with 4 doors Buy food / Get money / My story / Lessons that each open, the money lessons listed, and Home closing it (got ' + JSON.stringify(c) + ')');
+        else ok('3D canteen: the Canteen tile opens the 3D room; doors Buy food, Get money, My story, Lessons (' + c.learn + ' money lessons) each open; Home closes it'); }
       if (g.tabs !== 1 || !g.homeBtn) fail('one button, one job: every page but the home has ONE Home button at the bottom (got ' + g.tabs + ')');
       if (g.plays !== 1 || g.worldTabsOnMap) fail('one button, one job: the map has ONE big PLAY and no subject tabs (got ' + g.plays + ' PLAY, ' + g.worldTabsOnMap + ' subject tabs)');
       if (g.shelves < 4 || g.shelves > 5) fail('one button, one job: My things must hold 4-5 shelves (got ' + g.shelves + ')');
