@@ -89,7 +89,7 @@ svg{ display:block; }
 .bwrap{ position:relative; width:min(94%, 450px); height:94%; }
 .bwrap .back{ position:absolute; left:0; top:0; width:100%; height:100%; }
 .bwrap .front{ position:absolute; left:0; bottom:0; width:100%; height:46%; z-index:2; filter:drop-shadow(0 10px 8px rgba(90,50,10,.28)); }
-.inb{ position:absolute; left:3%; right:3%; bottom:35%; z-index:3; display:flex; flex-wrap:wrap-reverse; justify-content:center; align-items:flex-end; gap:0 2px; }
+.inb{ position:absolute; left:3%; right:3%; bottom:30%; z-index:3; display:flex; flex-wrap:wrap-reverse; justify-content:center; align-items:flex-end; gap:0 2px; }
 .ba, .slot{ width:19.5%; max-width:96px; height:auto; aspect-ratio:1; margin:0 0 -14px; }
 .ba{ cursor:grab; touch-action:none; }
 .ba.land{ animation:land .38s cubic-bezier(.3,1.6,.5,1); transform-origin:50% 90%; } @keyframes land{ 0%{ transform:scale(1.2,.75); } 50%{ transform:scale(.9,1.12); } 100%{ transform:none; } }
@@ -363,7 +363,7 @@ svg{ display:block; }
   /* ---------- talking ---------- */
   function say(t, o) { $('again').classList.add('talk'); return NK.say(t, o).then(function () { $('again').classList.remove('talk'); }); }
   $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.add('talk'); NK.again(); setTimeout(function () { $('again').classList.remove('talk'); }, 1800); });
-  $('home').addEventListener('click', function () { NK.hush(); location.href = '../'; });
+  $('home').addEventListener('click', function () { NK.hush(); location.reload(); });   /* back to this game's start until the path of games is in 2.0 */
   function ask() { return 'How many ' + S.fruit.many + '? Put them in the basket.'; }
 
   /* ---------- the chant: "Peek, peek, peek and see!" with claps ---------- */
@@ -413,7 +413,7 @@ svg{ display:block; }
     if ($('peek').classList.contains('open')) { towel(false); await NK.wait(420); }   /* cover first: new fruit are never seen before the peek */
     $('peek').classList.remove('look'); draw();
     if (S.bonus) { var b = BONUS[S.bonusAt]; S.parts = b; S.target = b[0] + b[1];
-      var A = cluster(b[0], 28), B = cluster(b[1], 72), gA = [], gB = [], i;
+      var A = cluster(b[0], 22), B = cluster(b[1], 78), gA = [], gB = [], i;
       for (i = 0; i < A.length; i++) gA.push(i); for (i = 0; i < B.length; i++) gB.push(A.length + i);
       S.layout = { p: A.concat(B), g: [gA, gB], say: NK.Word(b[0]) + ' here and ' + NK.word(b[1]) + ' there. ' + NK.Word(S.target) + '!' };
     } else S.layout = (S.round >= 6 && S.target >= 3 && Math.random() < .5) ? scattered(S.target) : pick(LAYOUTS[S.target]);
@@ -454,6 +454,7 @@ svg{ display:block; }
     var wasFix = S.phase === 'fix'; S.phase = 'checking'; lock(true);
     if (S.basket === S.target) {
       towel(true); $('basket').classList.add('good'); $('yes').classList.add('on'); NK.sound.yes();
+      if (S.bonus) { var ta = $('plate').querySelectorAll('.ta'); S.layout.g[0].forEach(function (i) { ta[i].classList.add('hi'); }); S.layout.g[1].forEach(function (i) { ta[i].classList.add('hi2'); }); }
       if (!S.missed) { S.hitStreak++; S.missStreak = 0; if (S.bonus) S.bonusRight++; else S.firstTry++; if (S.hitStreak >= 2) S.flashAdj = Math.max(-300, S.flashAdj - 100); }
       if (!S.bonus) S.results[S.round] = S.missed ? 'fix' : 'ok';
       drawDots();
@@ -465,7 +466,7 @@ svg{ display:block; }
     }
     /* a mistake: look again at the SHAPE, then fix the basket */
     NK.sound.oops(); $('basket').classList.add('shake'); setTimeout(function () { $('basket').classList.remove('shake'); }, 500);
-    if (!S.missed) { S.missed = true; S.missStreak++; S.hitStreak = 0; S.flashAdj = Math.min(500, S.flashAdj + 250);
+    if (!S.missed) { S.missed = true; S.missStreak++; S.hitStreak = 0; S.flashAdj = Math.min(300, S.flashAdj + 150);
       if (S.missStreak >= 2 && !S.bonus) { S.easy = 4; S.easyJust = true; S.missStreak = 0; } }
     S.misses++;
     towel(true); $('peek').classList.add('look');
@@ -504,8 +505,8 @@ svg{ display:block; }
     for (var i = 0; i < 28; i++) { var c = document.createElement('i'); c.style.cssText = 'left:50%;top:40%;background:' + cols[i % 6] + ';--dx:' + Math.round(Math.random() * 700 - 350) + 'px;--dy:' + Math.round(Math.random() * 500 - 150) + 'px';
       var w = document.createElement('div'); w.className = 'burst'; w.appendChild(c); document.body.appendChild(w); setTimeout(function (x) { x.remove(); }.bind(null, w), 1700); }
   }
-  $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; var slow = S.stars < 2, adj = S.flashAdj; reset(); if (slow) { S.easy = 4; S.flashAdj = Math.max(250, adj); } S.round = 0; drawDots(); round(); });
-  $('next').addEventListener('click', function () { NK.hush(); location.href = '../'; });
+  $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; var slow = S.stars < 2, adj = S.flashAdj; reset(); if (slow) { S.easy = 8; S.flashAdj = Math.max(250, adj); } S.round = 0; drawDots(); round(); });
+  $('next').addEventListener('click', function () { NK.hush(); location.reload(); });   /* the next game opens here when it is built */
   function reset() { S.firstTry = 0; S.bonusRight = 0; S.results = []; S.flashAdj = 0; S.missStreak = S.hitStreak = S.easy = 0; S.easyJust = false; S.bonus = false; S.prev = 0; }
 
   /* ---------- start ---------- */

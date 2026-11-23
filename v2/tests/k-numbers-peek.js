@@ -120,7 +120,7 @@ module.exports = async function (browser) {
     await ph.evaluate(() => { PEEK.stars = 1; PEEK.flashAdj = 300; }); await ph.click('#replay', { force: true });
     await until(ph, () => PEEK.phase === 'answer');
     const help = await ph.evaluate(() => ({ easy: PEEK.easy, adj: PEEK.flashAdj, t: PEEK.target }));
-    if (help.easy < 3 || help.adj < 250 || help.t > 2) bad('play again throws away the extra help for a boy who struggled: ' + JSON.stringify(help));
+    if (help.easy < 7 || help.adj < 250 || help.t > 2) bad('play again throws away the extra help for a boy who struggled: ' + JSON.stringify(help));
     w.errs.forEach(e => bad('page error (phone): ' + e)); await w.ctx.close(); w = null;
   } catch (e) { bad('crashed: ' + String(e).slice(0, 240)); }
   finally { if (w) await w.ctx.close().catch(() => {}); fs.rmSync(dist, { recursive: true, force: true }); }
