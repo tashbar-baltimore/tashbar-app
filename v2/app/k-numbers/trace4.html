@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trace It — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 4, game 3: TRACE IT. Skill: write 0-5 (the path of each written number).
+     Next to the amount, a big number waits with a pulsing green start dot and arrow. He hears its name and rhyme, then traces it
+     with his finger (or the mouse) from the dot along the path. A trace that stays near the path and covers it paints the number.
+     Off the path: "Look for the green dot. Follow the path." After two misses the hand shows the way, then he tries again. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit4.css">
+<style>
+.stage{ grid-template-columns:.7fr 1.3fr; align-items:center; }
+.left, .right{ display:flex; align-items:center; justify-content:center; height:100%; }
+.left{ flex-direction:column; gap:14px; }
+#grp .qcard{ width:min(22vw,34vh,240px); }
+#tw .tracer{ height:min(76vh,600px); aspect-ratio:112/132; }
+.hero{ display:flex; align-items:center; justify-content:center; }
+.hero svg{ width:46%; height:auto; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:auto 1fr; } #grp .qcard{ width:min(30vw,16vh); } #tw .tracer{ height:min(56vh,100vw); } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left"><div id="grp"></div></div>
+  <div class="right"><div id="tw"></div></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit4.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var ORDER = [1, 2, 3, 4, 5, 0], KINDS = ['apple', 'orange', 'candle', 'pear', 'dots', 'apple'], T, R, done;
+  function setup(n, kind) {
+    $('grp').innerHTML = ''; $('grp').appendChild(FR.card(n, kind));
+    $('tw').innerHTML = ''; T = U4.tracer(n); $('tw').appendChild(T.el); T.locked = true;
+    T.onDone = finish; T.onMiss = miss;
+  }
+  function hooks() {
+    GAME.right = function () { return [{ trace: T.screenPts(T.stroke(), 2) }]; };
+    GAME.wrong = function () { var r = T.el.getBoundingClientRect(), x = r.left + r.width * .82, y = r.top + r.height * .12; return [{ trace: [[x, y], [x + 8, y + 4], [x + 16, y + 8], [x + 24, y + 4], [x + 30, y + 10]] }]; };
+  }
+  async function finish() {
+    if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); T.locked = true;
+    await FR.yes($('tw'), R.n === 0 ? 'Zero! Beautiful writing!' : FR.Word(R.n) + '! Beautiful writing!');
+    var d = done; done = null; d(R.misses === 0);
+  }
+  async function miss() {
+    if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); T.locked = true; FR.oops($('tw')); R.misses++;
+    if (R.misses < 2) await FR.say('Look for the green dot. Follow the path.');
+    else { await FR.say('Watch my finger. Then you try.'); var P = T.screenPts(T.stroke(), 6); for (var k = 0; k < P.length; k++) await FR.handTo({ getBoundingClientRect: function () { return { left: P[k][0], top: P[k][1], width: 0, height: 0 }; } }, 0, 0); FR.handHide(); await FR.say('Now you. Start at the green dot.'); }
+    GAME.phase = 'answer'; FR.lock(false); T.locked = false; hooks();
+  }
+  FR.game({
+    id: 'u4-trace', title: 'Trace It', rounds: 6,
+    hero: U4.num(2) + U4.num(5),
+    demo: async function (F) {
+      setup(1, 'apple');
+      await F.say('Watch me write one.');
+      await F.say(U4.RHYME[1]);
+      await T.demoStroke(function (p) { return F.handTo({ getBoundingClientRect: function () { return { left: p[0], top: p[1], width: 0, height: 0 }; } }, 0, 0); });
+      await F.yes($('tw'), 'One!');
+    },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var n = ORDER[i]; R = { n: n, misses: 0 }; setup(n, KINDS[i]); GAME.phase = 'busy'; F.lock(true);
+        await F.say(n === 0 ? 'Zero. None at all.' : F.Word(n) + '. Let\'s write ' + F.word(n) + '.', { repeat: U4.RHYME[n] });
+        await F.say(U4.RHYME[n]);
+        if (i === 0) await F.say('Look for the green dot. Follow the path.');
+        if (U4.STROKES[n].length > 1) await F.say('Two lines. Then the next green dot.');
+        done = res; GAME.phase = 'answer'; F.lock(false); T.locked = false; hooks();
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

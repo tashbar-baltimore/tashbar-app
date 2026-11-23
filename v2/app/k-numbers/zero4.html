@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Empty Plate — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 4, game 4: EMPTY PLATE (zero). Skill: zero means none; see how many are left.
+     Bubby puts cookies on a plate; children each take one and the cookies fly off. "How many are left?" He shows it on the hand
+     (no fingers up for zero) and presses check. Some rounds leave one or two, most leave none. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit4.css">
+<style>
+.stage{ grid-template-columns:1fr 1fr; align-items:center; }
+.col{ display:flex; align-items:center; justify-content:center; gap:14px; height:100%; }
+.col.r{ flex-direction:column; }
+#plate{ width:min(42vw,62vh,460px); }
+.bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:36px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); padding:8px; }
+.bighand .fhand{ width:min(26vw,46vh,300px); aspect-ratio:170/230; }
+.hero{ display:flex; align-items:center; justify-content:center; }
+.hero .plate4{ width:84%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.8fr 1.2fr; } #plate{ width:min(76vw,30vh); } .col.r{ flex-direction:row; } .bighand .fhand{ width:min(48vw,34vh); } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="col"><div class="plate4" id="plate"></div></div>
+  <div class="col r"><div class="bighand" id="bighand"></div>
+    <button id="check" class="btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit4.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var H, R, done;
+  var PLAN = [[2, 2], [3, 2], [3, 3], [4, 2], [4, 4]];   /* [cookies, taken] */
+  function put(k) { var L = FR.LAYOUTS[k][0], h = ''; L.p.forEach(function (p, i) { h += '<svg class="ck" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + (15 + p[0] * .7) + '%;top:' + (15 + p[1] * .7) + '%"><use href="#u4Cookie"/></svg>'; }); $('plate').innerHTML = h; }
+  async function take(names) {
+    var cks = [].slice.call($('plate').querySelectorAll('.ck:not(.gone)'));
+    for (var i = 0; i < names.length; i++) { var c = cks[cks.length - 1 - i]; await FR.say('Bubby gives one to ' + names[i] + '.'); c.style.left = (i % 2 ? 120 : -20) + '%'; c.style.top = '-20%'; c.classList.add('gone'); NK.sound.pop(); await FR.wait(500); }
+  }
+  function hooks() {
+    GAME.right = function () { return FR.fingerMoves(H, R.left).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+    GAME.wrong = function () { return FR.fingerMoves(H, R.left + 1).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+  }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true); H.lock(true);
+    var have = H.count(), d;
+    if (have === R.left) { await FR.yes($('plate'), R.left === 0 ? 'None left. Zero!' : FR.Word(R.left) + ' left. Yes!'); d = done; done = null; d(R.misses === 0); return; }
+    FR.oops($('bighand')); R.misses++; $('plate').classList.add('glow');
+    if (R.misses === 1) await FR.say("Let's look at the plate. Fix your hand.");
+    else await FR.say(R.left === 0 ? 'None left. Zero means no fingers up.' : FR.Word(R.left) + ' left. ' + FR.Word(R.left) + (R.left === 1 ? ' finger up.' : ' fingers up.'));
+    $('plate').classList.remove('glow');
+    GAME.phase = 'answer'; FR.lock(false); H.lock(false); hooks();
+  }
+  FR.game({
+    id: 'u4-zero', title: 'Empty Plate', rounds: 5,
+    hero: '<div class="plate4"><svg class="ck" viewBox="0 0 100 100" style="left:38%;top:48%"><use href="#u4Cookie"/></svg><svg class="ck" viewBox="0 0 100 100" style="left:64%;top:44%;opacity:.35"><use href="#u4Cookie"/></svg></div>',
+    init: function (F) { U4.defs(); H = F.fingers(0, true); $('bighand').appendChild(H.el); H.lock(true); $('check').addEventListener('click', check); },
+    demo: async function (F) {
+      put(2); H.set(0);
+      await F.say('Bubby baked two cookies.');
+      await take(['Ari', 'Eli']);
+      await F.say('How many are left? None. Zero!');
+      await F.say('Zero is no fingers up. Watch me.');
+      await F.handTo($('check')); await F.handTap(); await F.yes($('plate'), 'Zero! The plate is empty.');
+    },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var p = PLAN[i], names = F.shuffle(F.NAMES).slice(0, p[1]); R = { left: p[0] - p[1], misses: 0 };
+        H.set(i % 2 ? 2 : 0); H.lock(true); GAME.phase = 'busy'; F.lock(true); put(p[0]);
+        await F.say('Bubby baked ' + F.word(p[0]) + ' cookies.');
+        await take(names);
+        await F.say('How many are left? Show me.', { repeat: 'How many cookies are left? Show me on the hand.' });
+        done = res; GAME.phase = 'answer'; F.lock(false); H.lock(false); hooks();
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -33,6 +33,8 @@ module.exports = async function (browser) {
       if (a.drag) { const s = await pg.locator(a.drag[0]).boundingBox(), t = await pg.locator(a.drag[1]).boundingBox();
         await pg.mouse.move(s.x + s.width / 2, s.y + s.height / 2); await pg.mouse.down(); await pg.mouse.move(s.x + s.width / 2 + 20, s.y + s.height / 2 + 20, { steps: 3 });
         await pg.mouse.move(t.x + t.width / 2, t.y + t.height / 2, { steps: 5 }); await pg.mouse.up(); await pg.waitForTimeout(40); }
+      if (a.trace) { const p = a.trace; await pg.mouse.move(p[0][0], p[0][1]); await pg.mouse.down();   /* a finger traces through these screen points */
+        for (const q of p.slice(1)) await pg.mouse.move(q[0], q[1], { steps: 2 }); await pg.mouse.up(); await pg.waitForTimeout(40); }
     }
   }
 
