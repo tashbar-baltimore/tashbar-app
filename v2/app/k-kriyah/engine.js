@@ -141,7 +141,7 @@ body{background:linear-gradient(#3fb4ff 0%,#8fd8ff 45%,#dff6ff 75%,#fff6d8 100%)
 .stars{display:flex;gap:20px;padding:20px 30px;border-radius:44px;background:linear-gradient(#ffffffe8,#ffffffb8);box-shadow:0 16px 40px #0b3a6640,inset 0 -4px 0 #0001}
 .stars svg{width:126px;height:126px;animation:pop .5s backwards;filter:drop-shadow(0 6px 4px #b4730066)}
 .stars svg:nth-child(2){animation-delay:.2s}.stars svg:nth-child(3){animation-delay:.4s}
-.note{position:fixed;left:50%;bottom:4px;transform:translateX(-50%);font-size:11px;color:#234;background:#ffffffb0;padding:2px 10px;border-radius:10px;text-align:center;max-width:92vw;z-index:4;pointer-events:none;white-space:nowrap}
+.note{position:fixed;left:50%;bottom:4px;transform:translateX(-50%);font-size:11px;line-height:1.25;color:#234;background:#ffffffb0;padding:2px 10px;border-radius:10px;text-align:center;width:max-content;max-width:92vw;z-index:4;pointer-events:none}
 #flat{position:fixed;inset:0;display:none;z-index:20;background:linear-gradient(#8fd8ff,#fff6d8);align-items:center;justify-content:center;flex-direction:column;gap:22px;padding:20px;text-align:center;color:#1d2b3a}
 #flat .row{display:flex;gap:18px;direction:rtl;flex-wrap:wrap;justify-content:center}
 #flat button{width:130px;height:150px;border-radius:30px;border:none;font-size:96px;line-height:1;font-family:"Noto Serif Hebrew","Times New Roman",serif;font-weight:800;color:#1f5fff;cursor:pointer;
