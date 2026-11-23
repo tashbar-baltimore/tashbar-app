@@ -1460,9 +1460,23 @@ export function startGame(cfg) {
     burst(boxAt(0).clone().setY(1.4), 60); chime(true); task = null; cheer(mendy).then(() => cheer(mendy));
     const STAR = on => '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (on ? '#F5B400' : '#EDE6D6') + '" stroke="' + (on ? '#C48F00' : '#D8CFBC') + '" stroke-width="4" stroke-linejoin="round"/></svg>';
     $('#stars').innerHTML = [0, 1, 2].map(i => '<div class="star">' + STAR(i < stars) + '</div>').join('');
+    if (cfg.certificate) showCertificate();
     $('#end').classList.add('show');
     document.querySelectorAll('.star').forEach((s, i) => setTimeout(() => s.classList.add('pop'), FAST ? 0 : 250 + i * 250));
     play([cfg.endLine, stars === 3 ? cfg.praise : 'Great work! Play again for more stars.']);
+  }
+  function showCertificate() {   /* graduation: a certificate with a gold medal of shapes, and fireworks (no name: nothing about a real boy is shown) */
+    let c = $('#cert'); if (!c) { c = document.createElement('div'); c.id = 'cert'; c.className = 'cert'; $('#end').prepend(c); }
+    c.innerHTML = '<svg viewBox="0 0 520 300" role="img" aria-label="Shape graduate certificate"><rect x="8" y="8" width="504" height="284" rx="22" fill="#FFFBEF" stroke="#C48F00" stroke-width="8"/>'
+      + '<rect x="26" y="26" width="468" height="248" rx="14" fill="none" stroke="#F2D27A" stroke-width="3" stroke-dasharray="10 8"/>'
+      + '<text x="260" y="78" text-anchor="middle" font-family="Baloo 2, Trebuchet MS, sans-serif" font-weight="800" font-size="40" fill="#1F2A44">Shape Graduate</text>'
+      + '<text x="260" y="108" text-anchor="middle" font-family="Nunito, sans-serif" font-weight="700" font-size="18" fill="#5B6478">Kindergarten Shapes, Patterns and Measuring</text>'
+      + '<path d="M232 200 L214 280 L236 266 L248 286 L258 206Z M288 200 L306 280 L284 266 L272 286 L262 206Z" fill="#E03A33"/>'
+      + '<circle cx="260" cy="190" r="52" fill="#F5B400" stroke="#C48F00" stroke-width="6"/><circle cx="260" cy="190" r="38" fill="#FFD84D"/>'
+      + '<path d="M260 160 l9 19 21 2 -16 14 5 21 -19 -11 -19 11 5 -21 -16 -14 21 -2z" fill="#C48F00"/>'
+      + '<circle cx="86" cy="180" r="30" fill="#1F6FEB"/><path d="M150 150 L182 208 L118 208Z" fill="#E03A33"/><rect x="340" y="152" width="54" height="54" rx="4" fill="#12A766"/>'
+      + '<path d="M470 180 L454 208 L422 208 L406 180 L422 152 L454 152Z" fill="#F2A900"/></svg>';
+    [0, 1, 2, 3].forEach(i => setTimeout(() => { burst(new THREE.Vector3((i % 2 ? 1 : -1) * (1 + i * 0.6), 1.6 + i * 0.3, 0), 70); chime(true); }, FAST ? 0 : 400 + i * 650));
   }
   $('#replay').onclick = () => { hush(); learn(); };
 
