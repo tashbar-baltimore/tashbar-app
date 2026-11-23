@@ -32,8 +32,12 @@ P.feel = async (pg, shot, log) => {
 P.hunt = async (pg, shot, log) => {
   await pg.waitForSelector('body[data-hunt-ready]', { timeout: 180000 }); await shot('1-start');
   let i = await K.info(pg);
-  { let bad = []; i.spots.forEach((a, x) => i.spots.forEach((b, y) => { if (x < y && Math.abs(a[0] - b[0]) < i.sizeW && Math.abs(a[1] - b[1]) < i.size) bad.push(x + '&' + y); }));   /* hiding places never touch */
-    (bad.length ? log.fails : log.oks).push(bad.length ? 'hiding places touch on screen: ' + bad.join(', ') : 'no two hiding places touch on screen (tile ' + Math.round(i.sizeW) + 'x' + Math.round(i.size) + 'px)'); } await pg.mouse.click(...i.others[0]); await pg.waitForTimeout(500); await shot('3-wrong');
+  { const vs = await pg.viewportSize(); let bad = [], off = [], small = 1e9;   /* hiding places never touch, never leave the screen, and stay big enough to tap */
+    i.rects.forEach((a, x) => { small = Math.min(small, a[2] - a[0], a[3] - a[1]); if (a[0] < 0 || a[2] > vs.width || a[1] < 0 || a[3] > vs.height) off.push(x);
+      i.rects.forEach((b, y) => { if (x < y && a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3]) bad.push(x + '&' + y); }); });
+    (bad.length ? log.fails : log.oks).push(bad.length ? 'hiding places touch on screen: ' + bad.join(', ') : 'no two hiding places touch on screen');
+    (off.length ? log.fails : log.oks).push(off.length ? 'hiding places off the screen: ' + off.join(', ') : 'every hiding place is fully on screen');
+    (small >= 60 ? log.oks : log.fails).push('the smallest letter tile is ' + Math.round(small) + 'px'); } await pg.mouse.click(...i.others[0]); await pg.waitForTimeout(500); await shot('3-wrong');
   await pg.waitForTimeout(1500); log.wrongHandled = (await pg.evaluate(() => window.__lines.join(' '))).includes('That is'); let r2 = false;
   await loop(pg, async () => { i = await K.info(pg); if (!i || !i.active || !i.targets.length) return false; await pg.mouse.click(...i.targets[0]); await pg.waitForTimeout(350);
     if (i.round === 1 && !r2) { r2 = true; await shot('2-middle'); } return true; });

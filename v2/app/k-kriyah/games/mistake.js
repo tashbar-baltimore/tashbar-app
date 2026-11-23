@@ -99,7 +99,7 @@ export default function setup(E, { struggled }) {
     await E.say('Now you! Is Yaakov right? Tap yes or no.');
     mistakes = 0;
     for (let i = 0; i < R.length; i++) { await roundOf(...R[i]); E.setProgress(R.length, i + 1); }
-    const stars = mistakes === 0 ? 3 : mistakes === 1 ? 2 : 1;   /* always tapping one button can't pass */
+    const stars = mistakes === 0 ? 3 : mistakes <= 2 ? 2 : 1;   /* Yaakov is right half the time: always tapping one button makes 3 mistakes and can't pass */
     return { stars, line: stars >= 2 ? 'You found all of Yaakov’s mistakes!' : null };
   };
 }

@@ -54,7 +54,7 @@ export default function setup(E) {
   const beadScreen = i => E.toScreen(E.worldPos(beads[i]));
   const near = (e, i, tolPx) => { const [x, y] = beadScreen(i); return Math.hypot(e.clientX - x, e.clientY - y) < tolPx; };
   const tol = () => Math.max(46, Math.min(innerWidth, innerHeight) * .075);
-  let resolveLetter = null, down = false, dotTarget = null;
+  let resolveLetter = null, down = false, dotTarget = null, lastUp = 0;
   /* he may start anywhere on the road and go either way: it's for feeling the shape, not for learning to write */
   function light(i) { const b = beads[i]; if (b.userData.lit) return; b.userData.lit = true; E.sfx.tick(); E.sparkle(E.worldPos(b), 4, .5); const n = beads.filter(x => x.userData.lit).length; next = beads.findIndex(x => !x.userData.lit); if (next < 0) next = beads.length; paintGold(); glow.material.opacity = .15 + .6 * n / beads.length;
     if (n >= beads.length && resolveLetter) { const r = resolveLetter; resolveLetter = null; r(); } }
@@ -65,7 +65,7 @@ export default function setup(E) {
   E.onPointer('move', e => { if (!active || demo || !down) return;
     if (touch(e)) { wander = 0; return; }
     const onPath = beads.some((b, i) => near(e, i, tol() * 1.6)); if (!onPath && ++wander > 12) { wander = -40; help(); } });
-  E.onPointer('up', () => { down = false; });
+  E.onPointer('up', () => { down = false; lastUp = performance.now(); });
   window.__info = () => ({ dot: dotTarget ? E.toScreen(E.worldPos(dotTarget)) : null, key: cur && cur.userData.key, active: active && !demo, next, total: beads.length, beads: beads.map((b, i) => beadScreen(i)), off: offTries });
 
   async function oneLetter(key, first) {
@@ -83,10 +83,11 @@ export default function setup(E) {
     let said = 0;
     const fin = new Promise(r => resolveLetter = r);
     /* when part of the road is done but some is left, the ring shows him where (once per stretch) */
-    const iv = setInterval(() => { if (!active || down) return; const n = beads.filter(x => x.userData.lit).length; if (n > said && n < beads.length) { said = n; E.say('More road to feel! Find the orange ring.'); const [x, y] = beadScreen(next); E.hand.at(x, y, true); setTimeout(() => E.hand.hide(), 1400 * E.F); } }, 400);
+    const iv = setInterval(() => { if (!active || down || performance.now() - lastUp < 2500 * E.F) return; const n = beads.filter(x => x.userData.lit).length; if (n > said && n < beads.length) { said = n; E.say('More road to feel! Find the orange ring.'); const [x, y] = beadScreen(next); E.hand.at(x, y, true); setTimeout(() => E.hand.hide(), 1400 * E.F); } }, 400);
     await fin; clearInterval(iv); active = false; delete document.body.dataset.feelReady;
     if (key === 'beis') {   /* Beis: he touches Mendy's dot too, so the dagesh is something he feels */
-      const dot = cur.userData.dot; const ring = E.noticeRing(.35); ring.position.copy(dot.position); ring.visible = true; cur.add(ring);
+      const dot = cur.userData.dot; const pad = new THREE.Mesh(new THREE.SphereGeometry(2.6, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); dot.add(pad);   /* a tap area much bigger than the dot */
+      const ring = E.noticeRing(.35); ring.position.copy(dot.position); ring.visible = true; cur.add(ring);
       await E.say('Now tap Mendy\u2019s dot!'); dotTarget = dot; document.body.dataset.dotReady = 1;
       await E.waitTap([dot]); delete document.body.dataset.dotReady; dotTarget = null; ring.visible = false; cur.remove(ring); E.sfx.chime(); E.sparkle(E.worldPos(dot), 22, 1); E.hop(dot, .25, 400);
       await E.say('Someone is home!');

@@ -11,7 +11,7 @@ export default function setup(E) {
   const basket = new THREE.Group(); basket.add(E.mesh(new THREE.CylinderGeometry(.55, .4, .45, 24, 1, true), E.M(0xc68a52, { side: THREE.DoubleSide, roughness: .6 }), 0, .23, 0)); E.scene.add(basket);
   let X = 4;
   E.onLayout(p => { X = p ? 1.6 : 4;
-    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.6, 0); boy.position.set(-1.35, 0, 1.6); boy.scale.setScalar(.75); sign.position.set(-1.2, 5.6, .4); sign.scale.setScalar(.85); basket.position.set(-.75, 0, 1.9); basket.scale.setScalar(.6); }
+    if (p) { E.camBase.set(0, 2.6, 11); E.camTarget.set(0, 2.6, 0); boy.position.set(-1.35, 0, 1.6); boy.scale.setScalar(.75); sign.position.set(-1.35, 2.55, 1.0); sign.scale.setScalar(.8); basket.position.set(-.75, 0, 1.9); basket.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); boy.position.set(-4.3, 0, 1.2); boy.scale.setScalar(1); sign.position.set(-4.3, 3.35, .6); sign.scale.setScalar(.9); basket.position.set(-3.5, 0, 1.6); basket.scale.setScalar(1); }
   });
   E.onFrame((t) => { if (signL) signL.rotation.y = Math.sin(t * 1.4) * .25;
@@ -23,7 +23,7 @@ export default function setup(E) {
   function setSign(k) { if (signL) sign.remove(signL); signL = E.letter(k, .9); signL.position.set(0, 0, .25); sign.add(signL); E.popIn(signL); }
   const FALL_F = E.FAST ? 2.5 : 1;    /* quick test runs draw very few frames a second, so letters fall slower there to stay tappable */
   function drop(k, ms) {
-    const l = E.letter(k, 1.0); let x; do { x = (Math.random() * 2 - 1) * X * .85 + (E.portrait ? .35 : .6); } while (falling.some(f => !f.userData.busy && f.position.y > 2.5 && Math.abs(f.userData.x - x) < (E.portrait ? 1.1 : 1.6)) && Math.random() > .02);
+    const l = E.letter(k, 1.0); let x; do { x = E.portrait ? (Math.random() * 2 - 1) * 1.05 + .5 : (Math.random() * 2 - 1) * X * .85 + .6;   /* never over the sign */ } while (falling.some(f => !f.userData.busy && f.position.y > 2.5 && Math.abs(f.userData.x - x) < (E.portrait ? 1.1 : 1.6)) && Math.random() > .02);
     l.userData = Object.assign(l.userData, { t0: performance.now(), ms: ms * FALL_F, y0: E.portrait ? 5.7 : 4.0, y1: .5, x }); l.position.set(x, l.userData.y0, .8); E.scene.add(l); falling.push(l); E.popIn(l, 1, 250);   /* appears inside the sky, below the top buttons */
     if (k === want) targets++;
   }

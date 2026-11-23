@@ -30,7 +30,7 @@
 7. **Stars:** 2 stars passes. The cut-offs for each game:
    - **Detective** (8 letters): 0 mistakes is 3 stars, 1–2 is 2 stars.
    - **Letter Hunt:** 0–1 wrong taps is 3 stars, 2–3 is 2 stars.
-   - **Find the Mistake:** 0 mistakes is 3 stars, 1 is 2 stars. Yaakov is right exactly half the time, so always tapping one button can't pass.
+   - **Find the Mistake:** 0 mistakes is 3 stars, 1–2 is 2 stars. Yaakov is right exactly half the time, so always tapping one button makes 3 mistakes and can't pass.
    - **Mastery check:** 8 of 9 right the first time is 3 stars, 6 of 9 is 2 stars. A question asked with only two letters on screen (the easier version) is practice: it comes back with all three, and only that one counts.
    - **Bonus:** catching 80% with at most 2 wrong taps is 3 stars, catching half is 2 stars.
 8. **A missed mastery question comes back at the end,** for practice only (it doesn't count again).
@@ -42,8 +42,9 @@
 14. **The bonus round hides the home button while letters fall,** so a boy chasing a letter can't leave by accident.
 15. **On a computer that can't show 3D,** he gets a clean flat screen with the three letters to tap and hear, plus a note for the teacher. There are no full flat versions of each game.
 16. **Find the Mistake has 6 rounds plus 1 demo,** mixing all three letters. If Yaakov was right and the boy said no, he hears why and answers again (that answer doesn't count).
-17. **Characters:** Mendy (blue kippah), Tatty (brown beard, black hat, navy jacket), the rebbe (grey beard, black hat and jacket), and Yaakov (red kippah).
-18. **Unit 1 has no review round,** because there are no earlier units yet. It starts in Unit 2.
+17. **On a phone, the mastery check doesn't show the rebbe** (there's no room beside the three letters). On a Chromebook he stands beside them.
+18. **Characters:** Mendy (blue kippah), Tatty (brown beard, black hat, navy jacket), the rebbe (grey beard, black hat and jacket), and Yaakov (red kippah).
+19. **Unit 1 has no review round,** because there are no earlier units yet. It starts in Unit 2.
 
 ## For the rebbe (every sound and rule used in Unit 1)
 - **Letters:** Alef (א), Beis (בּ, with the dagesh) and Veis (ב, no dagesh).

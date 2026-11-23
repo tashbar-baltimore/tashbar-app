@@ -34,16 +34,19 @@ export default function setup(E, { struggled }) {
     /* a picture on the back wall */
     suk.add(E.mesh(E.rbox(1.0, .8, .08, .05), E.M(0x8a5a3c, { roughness: .5 }), w * .42, 1.5, -1.6)); suk.add(E.mesh(new THREE.BoxGeometry(.84, .64, .04), E.M(0xbfe8ff), w * .42, 1.5, -1.55, false));
     /* where letters can hide: 9 places, well apart (a test checks they never touch on screen) */
-    const ph = w < 5; const sp = [[ph ? -.23 : -.3, 2.25, -1.5, 0], ph ? [0, 3.05, -.7, 0] : [0, 2.6, -1.5, 0], [ph ? .23 : .3, 2.25, -1.5, 0],   /* the back wall (on a phone the middle one hangs higher, from the schach) */
-      [0, .76, .52, 0],                                                              /* the tablecloth */
-      [-.22, .42, 1.5, 0], [.22, .42, 1.5, 0],                                          /* the floor */
-      [-(hw - .3) / w, 2.25, .05, .5], [(hw - .3) / w, 2.25, .05, -.5]];               /* the two side walls */
-    spots = sp.map(([x, y, z, ry]) => ({ p: new THREE.Vector3(x * w, y, z), ry }));
+    let sp;
+    if (w >= 5) sp = [[-.3, 2.25, -1.5, 0], [0, 2.6, -1.5, 0], [.3, 2.25, -1.5, 0],   /* the back wall */
+      [0, .76, .52, 0], [-.22, .42, 1.5, 0], [.22, .42, 1.5, 0],                       /* the tablecloth and the floor */
+      [-(hw - .3) / w, 2.25, .05, .5], [(hw - .3) / w, 2.25, .05, -.5]].map(([x, y, z, r]) => [x * w, y, z, r]);   /* the side walls */
+    else sp = [[-1.05, 2.75, -1.5, 0], [1.05, 2.75, -1.5, 0], [0, 1.9, -1.5, 0],     /* a phone: the back wall, high and low */
+      [0, .74, .52, 0], [-1.25, .42, 1.6, 0], [1.25, .42, 1.6, 0],                     /* the tablecloth and the floor */
+      [-1.4, 1.65, .4, .45], [1.4, 1.65, .4, -.45]];                           /* the side walls */
+    spots = sp.map(([x, y, z, ry]) => ({ p: new THREE.Vector3(x, y, z), ry }));
     if (letters.length) letters.forEach((l, i) => { if (l.userData.spot != null) placeAt(l, l.userData.spot); });
   }
   E.onLayout(p => {
     buildSukkah(p ? 4.2 : 7.4);
-    if (p) { E.camBase.set(0, 2.0, 10.9); E.camTarget.set(0, 1.55, 0); boy.position.set(-1.35, 0, 3.3); boy.scale.setScalar(.6); }
+    if (p) { E.camBase.set(0, 1.7, 9.4); E.camTarget.set(0, 1.5, 0); boy.position.set(0, 0, 4.2); boy.scale.setScalar(.5); }
     else { E.camBase.set(0, 2.2, 9.2); E.camTarget.set(0, 1.75, 0); boy.position.set(-2.9, .16, 1.55); boy.scale.setScalar(.85); }
   });
   E.setSway(.5);
@@ -53,7 +56,7 @@ export default function setup(E, { struggled }) {
     letters.forEach((l, i) => { if (l.visible && l.userData.base && !l.userData.busy) { l.position.y = l.userData.base.y + Math.sin(t * 1.6 + i) * .03; l.rotation.z = Math.sin(t * 1.3 + i) * .05; } });
     if (helpOn && helpOn.visible) { glow.position.copy(helpOn.position).add(new THREE.Vector3(0, 0, -.2)); glow.material.opacity = .6 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });
-  window.__info = () => ({ spots: spots.map(x => E.toScreen(x.p)), size: E.toScreen(new THREE.Vector3(0, 0, 0))[1] - E.toScreen(new THREE.Vector3(0, SIZE() * 1.3, 0))[1], sizeW: E.toScreen(new THREE.Vector3(SIZE() * 1.1, 0, 0))[0] - E.toScreen(new THREE.Vector3(0, 0, 0))[0], want, round, active, targets: letters.filter(l => l.visible && l.userData.key === want && !l.userData.got).map(l => E.toScreen(E.worldPos(l))),
+  window.__info = () => ({ rects: spots.map(x => { const a = E.toScreen(x.p.clone().add(new THREE.Vector3(-SIZE() * .6, SIZE() * .65, 0))), b = E.toScreen(x.p.clone().add(new THREE.Vector3(SIZE() * .6, -SIZE() * .65, 0))); return [a[0], a[1], b[0], b[1]]; }),   /* each tile's box on screen */ want, round, active, targets: letters.filter(l => l.visible && l.userData.key === want && !l.userData.got).map(l => E.toScreen(E.worldPos(l))),
     others: letters.filter(l => l.visible && l.userData.key !== want).map(l => E.toScreen(E.worldPos(l))), found, need });
 
   function setRound(k, nTarget, others) {

@@ -44,7 +44,7 @@ export default function setup(E) {
     E.tween(700, k => glow.material.opacity = k * .8); await E.popIn(alef, 1, 700); float(alef);
     E.setProgress(4, 1);
     await E.say('This is Alef.');
-    const ds = dad.scale.x; dad.position.set(P ? -1.75 : -2.4, 0, 1.4); if (P) dad.scale.setScalar(ds * .8); dad.mood('wave');
+    const ds = dad.scale.x; dad.position.set(P ? -1.4 : -2.4, 0, 1.4); if (P) dad.scale.setScalar(ds * .68); dad.mood('wave');
     await E.say('Abba starts with Alef.'); dad.mood('calm');
     await E.say('Alef is quiet. It waits for its nekudah.');
     await E.say('Tap Alef!');
