@@ -51,14 +51,14 @@
     var have = H.count(); if (!have) { FR.say('Raise some fingers first.'); return; }
     GAME.phase = 'busy'; FR.lock(true); H.lock(true);
     if (have === R.n) {
-      cloth(true); await FR.yes($('bighand'), R.misses ? 'Yes! Now you have ' + FR.word(R.n) + '.' : FR.pick(['Yes! ' + FR.Word(R.n) + ' fingers!', 'Good eyes! ' + FR.Word(R.n) + '!']));
+      cloth(true); await FR.yes($('bighand'), R.misses ? 'Yes! Now you have ' + FR.word(R.n) + '.' : FR.pick(['Yes! ' + FR.Word(R.n) + (R.n === 1 ? ' finger!' : ' fingers!'), 'Good eyes! ' + FR.Word(R.n) + '!']));
       if (!R.misses) slow = Math.max(0, slow - 1);
       var d = done; done = null; d(R.misses === 0); return;
     }
     FR.oops($('bighand')); R.misses++; if (R.misses === 1) { slow = Math.min(3, slow + 1); if (slow >= 2) easy = 3; }
     cloth(true); $('flash').classList.add('glow');
     if (R.misses === 1) { await FR.say("Let's look again."); await FR.wait(1200); cloth(false); $('flash').classList.remove('glow'); await FR.say('Fix your fingers.'); }
-    else { var d2 = R.n - have; await FR.say(FR.Word(R.n) + ' fingers. You have ' + FR.word(have) + '.'); await FR.say(d2 > 0 ? 'Put ' + FR.word(d2) + ' more up.' : 'Put ' + FR.word(-d2) + ' down.'); $('flash').classList.remove('glow'); }
+    else { var d2 = R.n - have; await FR.say(FR.Word(R.n) + (R.n === 1 ? ' finger' : ' fingers') + '. You have ' + FR.word(have) + '.'); await FR.say(d2 > 0 ? 'Put ' + FR.word(d2) + ' more up.' : 'Put ' + FR.word(-d2) + ' down.'); $('flash').classList.remove('glow'); }
     GAME.phase = 'answer'; FR.lock(false); H.lock(false); ready(); hooks();
   }
 
@@ -81,6 +81,16 @@
       await F.handTo($('check')); await F.handTap(); cloth(true);
       await F.yes($('bighand'), 'Yes! Two!');
       await F.say('Show me on your hand too!');
+    },
+    bonus: async function (F) {   /* quick boys: two super-quick peeks of 4 and 5 */
+      for (var b = 0; b < 2; b++) {
+        await new Promise(async function (res) {
+          var n = b === 0 ? 4 : 5; R = { n: n, misses: 0 }; H.set(0); H.lock(true); GAME.phase = 'flash'; F.lock(true); ready();
+          cloth(false); await F.wait(380); show(n); await F.say('Super quick!');
+          cloth(true); await F.wait(800); cloth(false); await F.wait(380);
+          done = res; GAME.phase = 'answer'; F.lock(false); H.lock(false); ready(); hooks();
+        });
+      }
     },
     round: function (F, i) {
       return new Promise(async function (res) {

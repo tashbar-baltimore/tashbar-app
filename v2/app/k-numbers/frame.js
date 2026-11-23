@@ -32,7 +32,7 @@
       '<div class="dots" id="dots"></div><button id="home" class="rb btn3d b-white" aria-label="Back to the map"><svg viewBox="0 0 48 48"><path d="M6 24 24 8l18 16" stroke="#2B2350" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22v18h9V30h6v10h9V22" fill="#FFC940" stroke="#2B2350" stroke-width="4" stroke-linejoin="round"/></svg></button>';
     var g = $('game'); g.insertBefore(top, g.firstChild);
     var more = document.createElement('div');
-    more.innerHTML = '<div id="clap" hidden><svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg><svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg></div>' +
+    more.innerHTML = '<div id="clap" hidden><img src="img/clapping-hands.webp" alt="" class="claphands"></div>' +
       '<svg id="hand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg>' +
       '<svg class="yesbadge" id="yesbadge" viewBox="0 0 100 100"><use href="#nkStar"/></svg>' +
       '<div class="over" id="start"><h1 class="title">' + cfg.title + '</h1><div class="hero" id="hero">' + (cfg.hero || '') + '</div>' +
@@ -129,17 +129,22 @@
     d.L = L;
     var h2 = ''; L.p.forEach(function (p, i) {
       if (kind === 'dots') h2 += '<i class="dot" data-i="' + i + '" style="left:' + p[0] + '%;top:' + p[1] + '%"></i>';
-      else h2 += '<svg class="q" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%' + (kind === 'candle' ? ';width:30%;height:42%' : '') + '"><use href="#' + KIND[kind] + '"/></svg>';
+      else h2 += '<svg class="q" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + p[0] + '%;top:' + p[1] + '%' + (kind === 'candle' ? ';width:38%;height:50%' : '') + '"><use href="#' + KIND[kind] + '"/></svg>';
     });
     d.innerHTML = h2; return d;
   };
   /* light up the two groups of a card and say the shape (whole = with the total) */
-  F.showShape = async function (card, whole) {
+  F.showShape = async function (card, whole, silent) {
     var L = card.L, items = card.querySelectorAll('[data-i]'), A = [], B = [];
+    if (!L) {   /* a finger card: light the hand and say it */
+      var n = +card.dataset.n; card.classList.add('glow');
+      await Promise.all([F.wait(1400), silent ? null : F.say(whole ? F.Word(n) + (n === 1 ? ' finger.' : ' fingers.') : 'Look at the fingers.', { noRepeat: true })]);
+      card.classList.remove('glow'); return;
+    }
     if (L) { L.g[0].forEach(function (i) { items[i] && A.push(items[i]); }); (L.g[1] || []).forEach(function (i) { items[i] && B.push(items[i]); }); }
     A.forEach(function (x) { x.style.filter = 'drop-shadow(0 0 8px #FFD23D) drop-shadow(0 0 14px #FFB000)'; x.style.transform = 'translate(-50%,-50%) scale(1.2)'; });
     B.forEach(function (x) { x.style.filter = 'drop-shadow(0 0 8px #5FD0FF) drop-shadow(0 0 14px #1E9CE8)'; x.style.transform = 'translate(-50%,-50%) scale(1.2)'; });
-    await Promise.all([F.wait(1400), L ? F.say(whole ? L.say : F.parts(L), { noRepeat: true }) : null]);
+    await Promise.all([F.wait(1400), silent ? null : F.say(whole ? L.say : F.parts(L), { noRepeat: true })]);
     A.concat(B).forEach(function (x) { x.style.filter = ''; x.style.transform = ''; });
   };
 
@@ -164,7 +169,8 @@
     api.lock = function (on) { el.classList.toggle('locked', on); };
     api.finger = function (i) { return fs[i]; };
     if (interactive) el.addEventListener('pointerdown', function (e) {
-      var f = e.target.closest('.fg'); if (!f || el.classList.contains('locked')) return; e.preventDefault();
+      if (el.classList.contains('locked')) return; var f = e.target.closest('.fg'); e.preventDefault();
+      if (!f || f.classList.contains('down')) { f = null; for (var i = 0; i < 5; i++) if (fs[i].classList.contains('down')) { f = fs[i]; break; } if (!f) return; }   /* tap the hand: the next finger goes up */
       f.classList.toggle('down'); NK.sound[f.classList.contains('down') ? 'back' : 'pop'](); if (api.onChange) api.onChange(api.count());
     });
     api.set(n || 0); return api;

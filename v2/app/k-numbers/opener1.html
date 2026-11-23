@@ -6,7 +6,7 @@
 <title>Learn it: How many? — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 1 OPENER: a short, warm lesson that shows and tells what we learn this unit:
      seeing small amounts at a glance ("I did not count. I saw it!"), with fruit, dice dots, fingers and Shabbos candles,
-     a stand-up "show me four fingers", and the unit chant. He taps the big arrow to go on. -->
+     a stand-up "show me four fingers", and a last peek where he shows the number on his own fingers. He taps the big arrow to go on. -->
 <link rel="stylesheet" href="frame.css">
 <style>
 .stage{ grid-template-rows:1fr auto; justify-items:center; align-items:center; }
@@ -34,7 +34,7 @@
     { n: 4, k: 'fingers', lines: ['Four fingers. Two and two.', 'Stand up! Hold up four fingers!'] },
     { n: 5, k: 'dots', L: 0, lines: ['Five! Four corners and one in the middle.'] },
     { n: 3, k: 'candle', L: 1, lines: ['Shabbos candles. One on top, two below. Three!'] },
-    { n: 4, k: 'orange', L: 0, peek: true, lines: ['Your turn. Peek!'], after: ['Four! Seeing fast is like magic.', "Let's peek and see!"] }
+    { n: 4, k: 'orange', L: 0, peek: true, lines: ['Peek with me! Hold up your fingers!'], after: ['Four! Did you show four?', 'Seeing fast is like magic!'] }
   ];
   function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
   FR.game({
@@ -51,6 +51,7 @@
         for (var k = 0; k < s.lines.length; k++) await F.say(s.lines[k]);
         if (s.peek) { cloth(true); await F.wait(1300); cloth(false); await F.wait(500); cloth(true); }
         if (s.peek && card.L && card.L.p.length > 1) await F.showShape(card, false);
+        else if (!s.peek && s.n > 1) await F.showShape(card, false, true);   /* light up the parts while he looks */
         for (k = 0; s.after && k < s.after.length; k++) await F.say(s.after[k]);
         done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false); $('go').classList.add('on');
       });

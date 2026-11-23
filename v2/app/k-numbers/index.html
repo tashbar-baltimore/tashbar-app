@@ -90,7 +90,8 @@
       if (st.classList.contains('lock')) { NK.hush(); NK.say('Do the shining one first.'); st.classList.remove('shake'); void st.offsetWidth; st.classList.add('shake'); return; }
       NK.hush(); NK.sound.pop(); NK.say(s[3] + '!').then(function () { location.href = s[1]; }); }
   });
-  $('again').addEventListener('click', function () { NK.unlock(); NK.again(); });
+  $('again').classList.add('talk');   /* the speaker pulses until he taps it: then he hears where to go */
+  $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.remove('talk'); NK.again(); });
   draw();
   window.MAP = { cur: function () { return cur; }, draw: draw };
 })();
