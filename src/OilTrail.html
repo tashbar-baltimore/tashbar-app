@@ -5,7 +5,7 @@
    2. THE APP RULE (HoS 2026-11-23): from 23 Nov 2026 through 3 Tevet 5787 the oil is every signed-in boy's DEFAULT trail: it replaces
       the free glowing streak and the free tap splash (HomePlus.html asks window.tlOilOn()). A boy who BOUGHT a trail or tap blast keeps
       his own. After Chanukah the default goes back to the streak (and the oil becomes a store item, a separate change).
-      Background: on the home screen a snapshot of the screen (light bending, see LIGHT BENDING below); elsewhere null, a see-through golden film.
+      Background: on every page of the home a snapshot of the screen (light bending, see LIGHT BENDING below); in lessons null, a see-through golden film.
       Anything a boy draws on (every canvas, writing boxes) gets data-no-oil, so the oil never gets in the way of tracing or games.
    Test switch: window.TL_OIL_DAY = a Date to pretend today is that day (tests only). Off switch: window.TL_OIL = false before load.
    No slash-slash in this file (HtmlService rule). */
@@ -721,17 +721,25 @@ window.tlOilTapOn = function () { return window.tlOilOn() && !boughtTap(); };
 const VENDOR = '/vendor/html2canvas.min.js';
 let h2c = null, snapSig = '', snapTimer = 0, snapping = false, hasSnap = false;
 /* the screen changed = the app redrew it: counted cheaply by wrapping render() */
-let redraws = 0; try { if (typeof render === 'function') { const _r = render; render = function () { redraws++; return _r.apply(this, arguments); }; } } catch (e) {}
-function onHome() { try { return A.view === 'hub' && document.body.classList.contains('gm-home') && !A.overlay && !document.querySelector('.tt-ov,#tlstore,.overlay'); } catch (e) { return false; } }
+let redraws = 0; try { if (typeof render === 'function') { const _r = render; render = function () { redraws++; const r = _r.apply(this, arguments); setTimeout(watchHome, 0); return r; }; } } catch (e) {}   /* a new screen drops the old snapshot at once */
+/* HoS 2026-11-23 ("not bending on the homepage or anywhere else"): every page of the boy's home (the home, My map, My work, My things,
+   Arcade, Store, Canteen: all drawn in #gm) gets the bending. Lessons keep the see-through film (a pause there would interrupt learning). */
+function onHome() { try { const gm = document.getElementById('gm'); return A.view === 'hub' && !!gm && document.body.classList.contains('gm-on') && getComputedStyle(gm).display !== 'none' && !A.overlay && !document.querySelector('.tt-ov,#tlstore,.overlay,#pl-ov'); } catch (e) { return false; } }
 function loadH2c() {
   if (window.html2canvas) return Promise.resolve(window.html2canvas);
   if (!h2c) h2c = new Promise((ok, no) => { const s = document.createElement('script'); s.src = VENDOR; s.async = true; s.onload = () => window.html2canvas ? ok(window.html2canvas) : no(new Error('no html2canvas')); s.onerror = no; document.head.appendChild(s); });
   return h2c;
 }
-/* the snapshot is heavy work for a school Chromebook (about 0.7 s at 4x slow), so it waits until the screen has been quiet for 1.5 s
-   (no mouse, finger or key), takes only the home panel (#gm, the whole screen) at half size, and skips scripts and hidden parts */
+/* the snapshot is heavy work for a school Chromebook (about 0.7 s at 4x slow), so it waits until there has been no tap, key or scroll for 1.5 s
+   (moving the mouse does not count), takes only the home panel (#gm, the whole screen) at half size, and skips scripts and hidden parts */
 let lastInput = 0;
-['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart'].forEach(t => addEventListener(t, () => { lastInput = performance.now(); }, { capture: true, passive: true }));
+/* only taps, keys and scrolling count as busy: moving the mouse to pour oil must not keep the snapshot from ever being taken (HoS 2026-11-23) */
+['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(t => addEventListener(t, () => { lastInput = performance.now(); }, { capture: true, passive: true }));
+/* a page inside the home scrolls on its own (not the window): count those scrolls so the snapshot is retaken */
+let scrolls = 0; addEventListener('scroll', () => { scrolls++; }, { capture: true, passive: true });
+/* the home's pages switch inside #gm without a full redraw: watch #gm itself for changes (new page, new tiles) */
+let gmChanges = 0, gmWatched = null; const gmObs = typeof MutationObserver === 'function' ? new MutationObserver(() => { gmChanges++; if (hasSnap && eng) { eng.setBackground(null); hasSnap = false; } }) : null;
+function watchGm() { const gm = document.getElementById('gm'); if (!gmObs || !gm || gm === gmWatched) return; gmObs.disconnect(); gmObs.observe(gm, { childList: true, subtree: true }); gmWatched = gm; }
 function noAnim(d) { const st = d.createElement('style'); st.textContent = '*,*::before,*::after{animation:none!important;transition:none!important}'; d.head.appendChild(st); }
 function snap() {
   if (!eng || snapping || !onHome()) return;
@@ -748,8 +756,8 @@ function snap() {
     .catch(e => { snapping = false; window.TL_OIL_NOBEND = true; console.warn('OilTrail: no light bending (snapshot helper)', e && e.message); });
 }
 function watchHome() {
-  if (!eng || window.TL_OIL_NOBEND) return;
-  const home = onHome(), sig = home ? [innerWidth, innerHeight, scrollX, scrollY, redraws].join(',') : '';
+  if (!eng || window.TL_OIL_NOBEND) return; watchGm();
+  const home = onHome(), sig = home ? [innerWidth, innerHeight, scrollX, scrollY, redraws, scrolls, gmChanges].join(',') : '';
   if (!home) { if (hasSnap) { eng.setBackground(null); hasSnap = false; } snapSig = ''; return; }
   if (sig !== snapSig) { snapSig = sig; if (hasSnap) { eng.setBackground(null); hasSnap = false; } clearTimeout(snapTimer); snapTimer = setTimeout(snap, 1500); }
 }
