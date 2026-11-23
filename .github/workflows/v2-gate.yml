@@ -54,4 +54,4 @@ jobs:
           echo "PR #$n: approved by $yes for $sha. Letting it into 2.0."
           gh api -X PUT "repos/$REPO/pulls/$n/merge" -f merge_method=squash -f sha="$sha" -f commit_title="$(jq -r .title <<<"$pr") (#$n, approved by $yes)" --jq .message
           gh api -X POST "repos/$REPO/actions/workflows/publish-v2.yml/dispatches" -f ref=main -f 'inputs[what]=live'
-          gh pr comment "$n" --repo "$REPO" --body "Approved by $yes. It is going into 2.0 now: https://tashbar-learning-v2.web.app (live in about 5 minutes)."
+          gh pr comment "$n" --repo "$REPO" --body "Approved by $yes. It is going into 2.0 now: https://tashbar-learning-2.web.app (live in about 5 minutes)."
