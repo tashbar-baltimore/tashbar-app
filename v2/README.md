@@ -6,14 +6,14 @@
 - **2.0:** https://tashbar-learning-v2.web.app. A separate website. It uses the same boys, codes and saved progress (the same school server), so a boy's work counts in both.
 
 ## The one rule
-**Nothing goes into 2.0 without an approver's "yes".** The publishing system enforces this; a builder cannot skip it. One approver is enough.
+**Nothing goes into 2.0 without an approver's "yes".** The publishing system checks for it, and one approver is enough. **Builders never post an approval line**: only an approver's Claude does, when she says so.
 
 ## How a piece of 1.0 moves into 2.0
 1. **Take stock.** The builder picks one piece of 1.0 and writes down in `v2/FEATURES.md` what it really does, including the small details. Then they decide: keep it, simplify it, or leave it out.
 2. **Build it clean.** The builder copies the piece into `v2/` (a copy, so later 1.0 changes never leak into 2.0), fixes what needs fixing, and tests it as a made-up boy on a Chromebook and a phone.
 3. **Send it.** The builder opens a pull request that changes only `v2/`. When its tests pass, the system puts it on a private **look link** and posts that link on the pull request.
-4. **Look and talk.** An approver opens the look link like any website, on her phone or computer. In her own Claude she says what she sees ("the buttons are too small", "this is good"). Changes come back as a new look link.
-5. **Approve.** When she says "approved" in her Claude, her Claude marks the pull request approved from her GitHub account. The system checks that the approval came from a name in `v2/APPROVERS.json` and is for exactly the version she looked at. Then it goes into 2.0 and live on the 2.0 link (about 5 minutes).
+4. **Look and talk.** An approver opens the look link like any website, on a Chromebook and a phone, and signs in with a TEST boy code. In her own Claude she says what she sees ("the buttons are too small", "this is good"). Her Claude writes the notes on the pull request, and the builder sends a new look link.
+5. **Approve.** When she says "approve it for 2.0", her Claude posts one line on the pull request: `APPROVED FOR 2.0 — <her name>`. Everyone works through the HoS's GitHub, so that line is the yes. The gate (`v2-gate`) checks that the name is on `v2/APPROVERS.json` (as it is on main) and that the line came after the newest change. Then the change goes into 2.0 and live on the 2.0 link (about 5 minutes).
 
 ## The "ready" checklist (every piece, before it is sent)
 - [ ] It does what the HoS asked, in his words (written at the top of the pull request).

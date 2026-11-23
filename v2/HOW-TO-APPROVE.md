@@ -1,20 +1,21 @@
 # How to look at and approve something for Tashbar Learning 2.0
-For Mrs. Khaver, Esti, and anyone else the Head of School adds.
+For Mrs. Khaver, Esti, and anyone else the Head of School adds. No GitHub account needed: everything goes through the HoS's GitHub, in your own Claude.
 
-## One-time setup (about 10 minutes)
-1. **Make a free GitHub account** at github.com, with your school email. Send the HoS your GitHub username.
-2. **The HoS adds you to the project.** He opens github.com/tashbar-baltimore/tashbar-app → Settings → Collaborators → Add people, and types your username. Accept the email invitation.
-3. **The HoS puts your username in the approvers list** (he asks his Claude to "add [name]'s GitHub username to the 2.0 approvers").
-4. **Connect GitHub to your Claude.** Sign in at claude.ai/code with your own Claude account. When it asks, connect your GitHub account and allow the `tashbar-app` project.
+## One-time setup
+1. Open Claude at **claude.ai/code** in your own Claude account.
+2. Start a session on the **tashbar-baltimore/tashbar-app** project. The HoS connects it to his GitHub for you the first time.
+3. Paste the starter prompt the HoS gave you. It tells your Claude that you are a 2.0 approver and what it may do.
 
-## Each time something is ready for you
-1. You get a **look link** (on the pull request, or the builder sends it). Open it like any website, on your phone or computer. It is the 2.0 app with the new piece in it. Sign in with a made-up test code the builder gives you, never a real boy's code.
-2. Open Claude at claude.ai/code on the `tashbar-app` project and say, for example:
-   *"I'm looking at 2.0 pull request #240. Here is what I see: …"*
-   Say anything: what is good, what is wrong, what is too small or confusing. Claude can pass changes back to the builder. You will get a new look link.
-3. When you are happy, say: **"Approve 2.0 pull request #240."** Claude marks it approved from your account. That is all. About 5 minutes later it is live on the 2.0 link, https://tashbar-learning-v2.web.app.
+## Each time something is ready
+1. **Find what is waiting.** Ask your Claude: *"What is waiting for my 2.0 approval?"* It lists the open 2.0 pull requests and their **look links**.
+2. **Look.** Open the look link like any website, on a Chromebook and on a phone. Sign in with a **TEST boy code** (ask the office for one; never use a real boy's code). Play it the way a boy would, and look at every screen.
+3. **Talk.** Tell your Claude what you see: good, wrong, too small, confusing. Your Claude writes your notes on the pull request so the builder can fix them. You get a new look link.
+4. **Approve.** When you are happy, say: *"Approve it for 2.0."* Your Claude posts one line on the pull request:
+   `APPROVED FOR 2.0 — <your name>`
+   About 5 minutes later it is live on the 2.0 site, **https://tashbar-learning-v2.web.app**.
 
-**Good to know**
-- Your approval counts only for the exact version you looked at. If the builder changes anything after you approve, you will be asked to look again.
-- One approver is enough.
-- If you are not sure, don't approve. Nothing goes into 2.0 without a yes.
+## Good to know
+- **One approver is enough.**
+- **A yes counts only for the version you looked at.** If the builder changes anything after your yes, you will be asked to look again.
+- **If you are not sure, don't approve.** Nothing goes into 2.0 without a yes.
+- **Builders never post an approval.** Only an approver's Claude does, and only when she says so.
