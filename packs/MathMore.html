@@ -30,8 +30,8 @@ how:['Round each number first, then add or subtract.','312 + 489 is about 300 + 
 gen(){ const k=RI(0,3);
 if(k===0){ const a=RI(12,89), b=RI(12,89); return N(`Estimate ${a} + ${b} by rounding each number to the nearest 10.`, r10(a)+r10(b), `${a} is about ${r10(a)}. Now round ${b} and add the two round numbers.`); }
 if(k===1){ const a=RI(320,899), b=RI(110,a-120); return N(`Estimate ${a} ${S} ${b} by rounding each number to the nearest 100.`, r100(a)-r100(b), `${a} is about ${r100(a)}. Round ${b} the same way, then subtract.`); }
-if(k===2){ const a=RI(120,480), b=RI(120,480), s=a+b, kind=RI(0,2), x=nm(); const said=kind===0?s:kind===1?s+PICK([200,300,400]):s-PICK([200,100]);
- const est=r100(a)+r100(b); const right=kind===0?'Yes, it is close to the estimate':kind===1?'No, it is much too big':'No, it is much too small';
+if(k===2){ const a=RI(120,480), b=RI(120,480), s=a+b, kind=RI(0,2), x=nm(); const said=kind===0?s:kind===1||s<420?s+PICK([300,400]):s-PICK([300,400].filter(d=>s-d>=100));
+ const est=r100(a)+r100(b); const right=kind===0?'Yes, it is close to the estimate':said>s?'No, it is much too big':'No, it is much too small';   /* wrong totals are always 200 or more from the hundreds estimate */
  return MX(`${x} added ${a} + ${b} and got ${said}. Is that answer reasonable?`, op(right,['Yes, it is close to the estimate','No, it is much too big','No, it is much too small']), `Round first: ${r100(a)} + ${r100(b)} = ${est}. Is ${said} close to ${est}?`); }
 const a=RI(410,890), b=RI(110,a-150); const e=r100(a)-r100(b);
 return MX(`Which is the best estimate for ${a} ${S} ${b}?`, op(e,[e+200,e-100>0?e-100:e+300,a-b+500]), `Round each number to the nearest hundred, then subtract.`); }},
@@ -40,8 +40,8 @@ how:['Any number times 0 is 0. Any number times 1 stays the same.','Times 2 is a
 gen(){ const f=PICK([0,1,2,5,10]), n=RI(1,10), k=RI(0,2);
 const hint=f===0?'Zero groups of anything is nothing at all.':f===1?'One group of a number is just that number.':f===2?`Double it: ${n} + ${n}.`:f===5?`Times 10 is ${n*10}. Times 5 is half of that.`:`Put a 0 on the end of ${n}.`;
 if(k===0) return N(`${f} ${X} ${n} = ?`, f*n, hint, (f===2||f===5)?{pic:rows('\u{1F7E1}',f,n)}:{});
-if(k===1){ if(f===0) return N(`${nm()} has 0 boxes. Each box would hold ${n} pencils. How many pencils does he have?`, 0, hint);
- return N(`${nm()} has ${f} pack${f>1?'s':''} of pencils. Each pack has ${n} pencils. How many pencils?`, f*n, hint, f*n<=50?{pic:rows('✏️',f,n)}:{}); }
+if(k===1){ if(f===0) return N(`${nm()} has 0 boxes. Each box would hold ${n} pencil${n===1?'':'s'}. How many pencils does he have?`, 0, hint);
+ return N(`${nm()} has ${f} pack${f>1?'s':''} of pencils. Each pack has ${n} pencil${n===1?'':'s'}. How many pencils?`, f*n, hint, f*n<=50?{pic:rows('✏️',f,n)}:{}); }
 const g=PICK([2,5,10]); return N(`${g} ${X} ? = ${g*n}`, n, `Count by ${g}s until you reach ${g*n}. How many jumps did you make?`); }},
 'MATH.OPS.L04.05':{name:'Times Tower 3-4-6',
 how:['Times 3: double it, then add one more group. 3 × 7 = 14 + 7 = 21.','Times 4: double, then double again. 4 × 6: 12, then 24.','Times 6: times 3, then double. 6 × 7 = 21 + 21 = 42.'],
@@ -55,7 +55,7 @@ how:['Times 9: times 10, then take away one group. 9 × 6 = 60 − 6 = 54.','Tim
 gen(){ const f=PICK([7,8,9]), n=RI(1,10), k=RI(0,2);
 const hint=f===9?`10 ${X} ${n} = ${10*n}. Take away one ${n}.`:f===8?`Double ${n} three times: ${2*n}, ${4*n}, then double again.`:`5 ${X} ${n} = ${5*n} and 2 ${X} ${n} = ${2*n}. Add them.`;
 if(k===0) return N(`${f} ${X} ${n} = ?`, f*n, hint, n<=8?{pic:rows('\u{1F7E3}',f,n)}:{});
-if(k===1) return N(`There are ${f} rows in the beis medrash. Each row has ${n} shtenders. How many shtenders?`, f*n, hint);
+if(k===1) return N(`There are ${f} rows in the beis medrash. Each row has ${n} shtender${n===1?'':'s'}. How many shtenders?`, f*n, hint);
 return N(`${n} ${X} ${f} = ?`, f*n, `Turn it around: same as ${f} ${X} ${n}. ${hint}`); }},
 'MATH.OPS.L04.01':{name:'Times Table Champion',
 how:['Know your facts up to 10 × 10.','Use a fact you know: 7 × 8 is 7 × 4 doubled: 28 + 28 = 56.','Order does not matter: 6 × 9 = 9 × 6 = 54.'],
@@ -85,7 +85,7 @@ return N(`${t} ${X} ${a} = ?`, a*t, `Turn it around: ${a} ${X} ${t}. `+hint); }}
 'MATH.OPS.L04.09':{name:'Four-Way Stories',
 how:['Read the story. What happens first? What happens next?','Solve one step at a time: Moshe buys 3 packs of 4 pens (12), then gives 5 away: 12 − 5 = 7.','Check: does your answer make sense in the story?'],
 gen(){ const k=RI(0,3), [x,y]=pr();
-if(k===0){ const a=RI(2,6), b=RI(3,8), c=RI(1,a*b-1); return N(`${x} buys ${a} packs of markers with ${b} in each pack. He gives ${c} markers to ${y}. How many markers does ${x} have left?`, a*b-c, `Step 1: ${a} packs of ${b} is ${a} ${X} ${b}. Step 2: take away the ${c} he gave.`); }
+if(k===0){ const a=RI(2,6), b=RI(3,8), c=RI(1,a*b-1); return N(`${x} buys ${a} packs of markers with ${b} in each pack. He gives ${c} marker${c===1?'':'s'} to ${y}. How many markers does ${x} have left?`, a*b-c, `Step 1: ${a} packs of ${b} is ${a} ${X} ${b}. Step 2: take away the ${c} he gave.`); }
 if(k===1){ const d=RI(2,5), q=RI(3,8), t=d*q, g=RI(2,t-2), h=t-g; return N(`${x} has ${h} raisins and ${y} gives him ${g} more. He shares them all equally with ${d-1} friend${d>2?'s':''}, so ${d} boys in all. How many raisins does each boy get?`, q, `Step 1: ${h} + ${g} = how many raisins in all? Step 2: share that by ${d} boys.`); }
 if(k===2){ const a=RI(3,8), b=RI(4,9), c=RI(2,9); return N(`For the siyum, ${x} sets up ${a} rows with ${b} chairs in each row. Then he adds ${c} more chairs. How many chairs in all?`, a*b+c, `Step 1: ${a} rows of ${b} is ${a} ${X} ${b}. Step 2: add the ${c} extra chairs.`); }
 const p=RI(3,9), d=RI(2,5), T=p*d+RI(5,40); return N(`${x}'s sefer has ${T} pages. He learns ${p} pages a day for ${d} days. How many pages are left?`, T-p*d, `Step 1: ${p} pages for ${d} days is ${p} ${X} ${d}. Step 2: subtract that from ${T}.`); }},
