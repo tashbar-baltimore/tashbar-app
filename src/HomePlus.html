@@ -405,7 +405,16 @@ function bladeDraw(){ BL.raf=0; const cx=bladeCanvas(); if(!cx) return; const d=
   cx.globalAlpha=Math.min(1,.25+age); cx.strokeStyle=c; cx.shadowColor=c; cx.shadowBlur=12; cx.lineWidth=w; cx.stroke();
   cx.shadowBlur=0; cx.globalAlpha=Math.min(1,.2+age)*.9; cx.strokeStyle='#FFFFFF'; cx.lineWidth=w*.35; cx.stroke(); }
  cx.globalAlpha=1; BL.raf=requestAnimationFrame(bladeDraw); }
-document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ if(!(typeof window.tlOilTapOn==='function'&&window.tlOilTapOn())) splash(e.clientX,e.clientY); BL.down=true; BL.pts=[]; bladeAdd(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
+/* TAP OR SWIPE (HoS 2026-11-23, Chromebook touchscreens): the tap splash or a bought tap blast plays only on a real TAP: the finger or mouse
+   lifts within 0.4 s, within 12 px of where it went down. A swipe gets only the streak. (It used to play the moment a finger touched, so
+   every swipe began with a "click".) A finger that starts scrolling the page sends pointercancel: that is a swipe, no tap. */
+const TAPQ={};
+document.addEventListener('pointermove',e=>{ const q=TAPQ[e.pointerId]; if(q) q.m=Math.max(q.m,Math.hypot(e.clientX-q.x,e.clientY-q.y)); },{capture:true,passive:true});
+document.addEventListener('pointerup',e=>{ const q=TAPQ[e.pointerId]; delete TAPQ[e.pointerId]; if(!q||!window.HP_FX) return;
+ if(Math.max(q.m,Math.hypot(e.clientX-q.x,e.clientY-q.y))>12||performance.now()-q.t>400) return;
+ try{ if(!(typeof window.tlOilTapOn==='function'&&window.tlOilTapOn())) splash(e.clientX,e.clientY); }catch(x){} },true);
+document.addEventListener('pointercancel',e=>{ delete TAPQ[e.pointerId]; },true);
+document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ TAPQ[e.pointerId]={x:e.clientX,y:e.clientY,t:performance.now(),m:0}; BL.down=true; BL.pts=[]; bladeAdd(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
 document.addEventListener('pointermove',e=>{ if(!window.HP_FX||e.pointerType==='touch') return;
  try{ const pts=e.getCoalescedEvents?e.getCoalescedEvents():[], list=pts.length?pts:[e]; list.forEach(q=>bladeAdd(q.clientX,q.clientY));
   const p=SW['p'+e.pointerId]; if(!p) return; if(!e.buttons){ delete SW['p'+e.pointerId]; BL.down=false; return; } list.forEach(q=>trailTo(p,q.clientX,q.clientY)); }catch(x){} },{capture:true,passive:true});
