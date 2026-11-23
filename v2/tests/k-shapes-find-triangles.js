@@ -75,9 +75,9 @@ module.exports = async function (browser) {
       if (!st.said.some(t => /upside down is still a triangle/i.test(t))) bad(label + ': the upside-down triangle is not praised by its rule');
       await pg.waitForFunction(() => window.__shp.name === 'mistake', null, { timeout: 15000 });
       await pg.waitForSelector('.judge.show', { timeout: 15000 }); await drawn('find the mistake');
-      await pg.click('.judge .yes', { force: true }); await pg.waitForTimeout(80);
+      await pg.click('.judge .nottri', { force: true }); await pg.waitForTimeout(80);
       if (!(await S()).said.some(t => /count the corners/i.test(t) && /let us/i.test(t))) bad(label + ': a wrong "yes" is not explained');
-      await pg.click('.judge .no', { force: true });
+      await pg.click('.judge .istri', { force: true });
       await tapCorners('find the mistake');
       await pg.waitForFunction(() => window.__shp.done, null, { timeout: 15000 }).catch(() => bad(label + ': the game cannot be finished'));
       st = await S();
@@ -99,7 +99,7 @@ module.exports = async function (browser) {
       await drawn('bonus round'); await drag('hx'); await pg.waitForTimeout(100);
       if (!(await S()).said.some(t => /six corners/i.test(t))) bad(label + ': the hexagon in the bonus round is not explained');
       for (const id of ['tw', 'tk']) { await drag(id); await pg.waitForTimeout(100); }
-      await pg.waitForSelector('.judge.show', { timeout: 15000 }); await pg.click('.judge .no', { force: true });
+      await pg.waitForSelector('.judge.show', { timeout: 15000 }); await pg.click('.judge .istri', { force: true });
       await tapCorners('find the mistake, second game');
       await pg.waitForFunction(() => window.__shp.done && window.__shp.misses === 0, null, { timeout: 15000 }).catch(() => bad(label + ': the second game did not finish'));
       if ((await S()).stars !== 3) bad(label + ': a boy with no mistakes should get 3 stars');
