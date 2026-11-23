@@ -86,7 +86,7 @@ export default function setup(E) {
     const iv = setInterval(() => { if (!active || down || performance.now() - lastUp < 2500 * E.F) return; const n = beads.filter(x => x.userData.lit).length; if (n > said && n < beads.length) { said = n; E.say('More road to feel! Find the orange ring.'); const [x, y] = beadScreen(next); E.hand.at(x, y, true); setTimeout(() => E.hand.hide(), 1400 * E.F); } }, 400);
     await fin; clearInterval(iv); active = false; delete document.body.dataset.feelReady;
     if (key === 'beis') {   /* Beis: he touches Mendy's dot too, so the dagesh is something he feels */
-      const dot = cur.userData.dot; const pad = new THREE.Mesh(new THREE.SphereGeometry(2.6, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); dot.add(pad);   /* a tap area much bigger than the dot */
+      const dot = cur.userData.dot; const pad = new THREE.Mesh(new THREE.SphereGeometry(.55, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); dot.add(pad);   /* a tap area much bigger than the dot */
       const ring = E.noticeRing(.35); ring.position.copy(dot.position); ring.visible = true; cur.add(ring);
       await E.say('Now tap Mendy\u2019s dot!'); dotTarget = dot; document.body.dataset.dotReady = 1;
       await E.waitTap([dot]); delete document.body.dataset.dotReady; dotTarget = null; ring.visible = false; cur.remove(ring); E.sfx.chime(); E.sparkle(E.worldPos(dot), 22, 1); E.hop(dot, .25, 400);
