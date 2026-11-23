@@ -1584,8 +1584,8 @@ how:['You can start counting from any number: 23, 24, 25.','Keep going one at a 
 gen(){ const n=RI(5,95); if(Math.random()<.7) return N(`Keep counting: ${n}, ${n+1}, ${n+2}, ?`, n+3, 'Say the numbers out loud and say one more.'); return N(`What number comes right before ${n}?`, n-1, 'Count back one.'); }},
 'MATH.OPS.L01.02':{name:'Put together, take away',
 how:['Put together: 2 apples and 1 more apple make 3 apples.','Take away: 4 balloons, 1 flies away, 3 are left.','Count what you have at the end.'],
-gen(){ const [e,en]=PICK(TLO); if(Math.random()<.5){ const a=RI(1,4), b=RI(1,5-a); return N(`${a} ${en} and ${b} more. How many in all?`, a+b, 'Count all of them together.', {pic:e.repeat(a)+'  ➕  '+e.repeat(b)}); }
-const a=RI(2,5), b=RI(1,a); return N(`${a} ${en}. ${b} go away. How many are left?`, a-b, `Cover ${b} with your finger and count the rest.`, {pic:e.repeat(a)}); }},
+gen(){ const [e,en]=PICK(TLO); if(Math.random()<.5){ const a=RI(1,4), b=RI(1,5-a); return N(`${a} ${a===1&&!/^(fish|sheep)$/.test(en)?en.slice(0,-1):en} and ${b} more. How many in all?`, a+b, 'Count all of them together.', {pic:e.repeat(a)+'  ➕  '+e.repeat(b)}); }
+const a=RI(2,5), b=RI(1,a); return N(`${a} ${en}. ${b} ${b===1?'goes':'go'} away. How many are left?`, a-b, `Cover ${b} with your finger and count the rest.`, {pic:e.repeat(a)}); }},
 'MATH.OPS.L01.01':{name:'Add and subtract within 10',
 how:['3 + 4: start at 3, count on 4 more: 4, 5, 6, 7.','8 '+'−'+' 3: start at 8, count back 3: 7, 6, 5.','Use your fingers or picture the objects.'],
 gen(){ if(Math.random()<.5){ const a=RI(1,8), b=RI(1,10-a); return N(`${a} + ${b} = ?`, a+b, `Start at ${a} and count on ${b}.`); } const a=RI(3,10), b=RI(1,a); return N(`${a} ${MI} ${b} = ?`, a-b, `Start at ${a} and count back ${b}.`); }},
