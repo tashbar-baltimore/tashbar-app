@@ -92,15 +92,15 @@ export default function setup(E, { unit }) {
     await E.say(['Zayin says', S('z')]);
     await E.say('Tap Zayin!'); await tapIt(L.zayin, ['Zayin says', S('z')]);
     await letterDone('zayin');
-    /* the look-alikes, side by side, with the difference circled */
+    /* the look-alikes, side by side; for each line the arrow points at that letter's place to look */
     unit.letters.forEach(k => { L[k].visible = false; floaters.delete(L[k]); });
     await Promise.all([E.popOut(mom), E.popOut(boy), E.popOut(dad), E.popOut(table), E.popOut(candles)]);
-    const show = async (a, b, line, mark) => { const A = E.letter(a, 1.8), B = E.letter(b, 1.8); A.position.set(P ? .85 : 1.2, 1.6, .5); B.position.set(P ? -.85 : -1.2, 1.6, .5); E.scene.add(A, B); await Promise.all([E.popIn(A), E.popIn(B)]);
-      E.pointAt(arrow, mark[0] === a ? A : B, mark[0], 1.8);
-      await E.say(line[0]); await E.say(line[1]); arrow.visible = false; await Promise.all([E.popOut(A), E.popOut(B)]); E.scene.remove(A, B); };
+    const show = async (a, b, lines) => { const A = E.letter(a, 1.8), B = E.letter(b, 1.8); A.position.set(P ? .85 : 1.2, 1.6, .5); B.position.set(P ? -.85 : -1.2, 1.6, .5); E.scene.add(A, B); await Promise.all([E.popIn(A), E.popIn(B)]);
+      for (const [k, line] of lines) { E.pointAt(arrow, k === a ? A : B, k, 1.8); await E.say(line); await E.wait(250); }
+      arrow.visible = false; await Promise.all([E.popOut(A), E.popOut(B)]); E.scene.remove(A, B); };
     E.setProgress(5, 4);
-    await show('vov', 'zayin', ['Zayin has a crown on top.', 'Vov has no crown.'], ['zayin']);
-    await show('hei', 'ches', ['Hei’s little leg doesn’t touch the roof.', 'Ches’s leg touches the roof.'], ['ches']);
+    await show('vov', 'zayin', [['zayin', 'Zayin has a crown on top.'], ['vov', 'Vov has no crown.']]);
+    await show('hei', 'ches', [['hei', 'Hei’s little leg doesn’t touch the roof.'], ['ches', 'Ches’s leg touches the roof.']]);
     /* all nine letters, right to left, and the chant */
     const all = [...unit.known, ...unit.letters], sz = P ? .5 : .82, gap = P ? .46 : .82;
     const made = all.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (all.length - 1);

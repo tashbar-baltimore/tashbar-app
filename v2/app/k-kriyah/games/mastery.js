@@ -16,6 +16,8 @@ export default function setup(E, { struggled, unit }) {
   const pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), pedTop = [E.M(0xff7aa8, { roughness: .25, clearcoat: 1 }), E.M(0x46c3ff, { roughness: .25, clearcoat: 1 }), E.M(0xffcf3a, { roughness: .25, clearcoat: 1 })];
   for (let i = 0; i < 3; i++) { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), pedTop[i], 0, .55, 0)); E.scene.add(p); peds.push(p); }
   keys.forEach(k => { L[k] = E.letter(k, 1.6); E.scene.add(L[k]); L[k].visible = false; });
+  const arrows = [E.arrow3d(.3), E.arrow3d(.3)];   /* on a look-alike mix-up: point at the place to look on both letters */
+  const feat = (k, other) => E.sameShape(k, other) ? E.DOT_FEATURE[k] : E.FEATURES[k];
   const LS = () => E.portrait ? .66 : 1;   /* letter size: smaller on a phone so the three never overlap */
   const glow = E.glowSprite('#fff7b0', 3, 0); E.scene.add(glow);
   let set = keys.slice(0, 3), slot = {}, gap = 2.3, active = false, glowOn = null, resolveQ = null, hidden = null;
@@ -81,7 +83,8 @@ export default function setup(E, { struggled, unit }) {
       if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(q.k === 'alef' ? 'Yes! Alef. Alef is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
       else { E.sfx.boop(); inRow++; rebbe.mood('think'); await E.shake(L[got], .15); await E.say(explain(got));
-        if (PAIR[got] === q.k && CLUE[q.k]) await E.say(CLUE[q.k]);   /* a look-alike mix-up: say what to look for */
+        if (PAIR[got] === q.k && CLUE[q.k]) {   /* a look-alike mix-up: show and say what to look for */
+          [got, q.k].forEach((k, i) => E.pointAt(arrows[i], L[k], k, 1.6, feat(k, i ? got : q.k))); await E.say(CLUE[q.k]); arrows.forEach(a => a.visible = false); }
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(q.k === 'alef' ? 'Here is Alef, the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
         if (q.first) queue.push({ ...q, first: false }); }
       if (hidden) { hidden.visible = true; hidden = null; }

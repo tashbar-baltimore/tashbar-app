@@ -1,7 +1,7 @@
 /* Game 4: Find the Mistake.
    Skill: checks a letter's name carefully (the unit's letters) and fixes a wrong one.
    "Yaakov says this is a Beis. Is he right?" He taps yes or no. If Yaakov is wrong, he drags the right letter onto the sign.
-   A wrong answer is explained kindly (the dot place is circled) and he still does the fix, so the mistake teaches. */
+   A wrong answer is explained kindly (a ring round the dot place, or an orange arrow at the shape difference) and he still does the fix, so the mistake teaches. */
 /* each unit: Yaakov's claims (shown letter, what he says), right 3 times and wrong 3 times, and the demo round */
 const PLAN = {
   1: { R: [['beis', 'beis'], ['alef', 'beis'], ['veis', 'veis'], ['beis', 'veis'], ['alef', 'alef'], ['veis', 'beis']], demo: ['veis', 'beis', 'Hmm. Watch me. No dot. That is not a Beis!'] },
@@ -11,8 +11,6 @@ const PLAN = {
 /* what to look for, in a few words */
 const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof' };
 const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.' };
-/* where the difference is on each letter (font units), so it can glow: Gimmel's foot, Daled's empty left side, Hei's little leg */
-const FEATURE = { gimmel: [360, 110], daled: [150, 250], hei: [100, 370], vov: [235, 500], zayin: [250, 500], ches: [150, 420] };   /* Hei: the gap above its leg; Ches: where its leg meets the roof */
 export default function setup(E, { struggled, unit }) {
   const plan = PLAN[unit.n] || PLAN[1];
   const { THREE, S, ICON } = E;
@@ -46,9 +44,9 @@ export default function setup(E, { struggled, unit }) {
   let curClaim = null;
 
   function showLetter(k) { if (shown) board.remove(shown); shown = E.letter(k, 1.3); shown.position.set(0, 0, .3); board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
-  /* the orange ring circles the part to notice: the dot place on Beis/Veis, the foot or leg on the others */
+  /* the ring circles the dot place (Beis/Veis, Kaf/Chaf); an orange arrow points at any other shape difference */
   const arrow = E.arrow3d(.4);
-  const mark = k => { const s = shown.userData; if (s.dotHome) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3); };   /* a ring round the dot place; an arrow at a shape difference */
+  const mark = k => { const s = shown.userData; if (s.dotHome && (!curClaim || E.sameShape(k, curClaim) || !E.FEATURES[curClaim])) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3); };   /* a ring round the dot place (same shape, dot or no dot); otherwise an arrow at the shape difference */
   const unmark = () => { ring.visible = false; arrow.visible = false; };
   /* why the letter is not what Yaakov said, in a few words */
   const why = (k, c) => k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
@@ -84,15 +82,15 @@ export default function setup(E, { struggled, unit }) {
     else document.body.dataset.fixReady = 1;
     await done; delete document.body.dataset.fixReady; fixKey = null; yak.visible = true;
     tiles.forEach(t => t.visible && E.popOut(t));
-    await E.say(k === 'alef' ? 'Now Yaakov has his Alef! Thank you!' : ['Now Yaakov has his ' + E.LETTERS[k].name + '!', ...E.nameLine(k)]);
+    await E.say(k === 'alef' ? 'Now Yaakov has his Alef! Thank you!' : E.LETTERS[k].snd === 'ch' ? 'Now Yaakov has his ' + E.LETTERS[k].name + '! Thank you!' : ['Now Yaakov has his ' + E.LETTERS[k].name + '!', ...E.nameLine(k)]);   /* 12 words or fewer */
     yak.mood('calm');
   }
   async function roundOf(shownKey, claim, demo = false) {
     missed = false; curClaim = claim; yak.mood('calm'); await showLetter(shownKey); yak.mood('wave'); E.hop(yak, .25);
     await E.say('Yaakov says this is ' + an(claim) + '. Is he right?'); yak.mood('calm');
-    if (help && mark(shownKey)) { await E.say(shown.userData.dotHome ? 'Look at the dot place!' : 'Look carefully here!'); unmark(); }
+    if (help && mark(shownKey)) { await E.say(ring.visible ? 'Look at the dot place!' : 'Look carefully here!'); unmark(); }
     const right = shownKey === claim; let saysRight;
-    if (demo) { await E.say(plan.demo[2]); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
+    if (demo) { mark(shownKey); await E.say(plan.demo[2]); unmark(); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
     else saysRight = await ask();
     if (saysRight === right) {
       if (right) { yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say(['Yes! Yaakov is right.', ...E.nameLine(shownKey)]); yak.mood('calm'); }

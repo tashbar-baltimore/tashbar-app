@@ -1,7 +1,7 @@
 /* Look-Alike Detective for any pair (Unit 3: Vov and Zayin, then Hei and Ches).
    Skill: tells look-alike letters apart by the one place they differ. Two crates, each labelled with its letter;
    on each label an orange arrow points at the difference (Zayin's crown, Hei's gap). He drags each letter card to its crate (or taps the crate).
-   Show-then-try demo for each pair; a wrong answer circles the difference on the card and says what to look for;
+   Show-then-try demo for each pair; a wrong answer points an arrow at the difference on the card and says what to look for;
    if he struggles, the right crate glows. */
 const PAIRS = { 3: [['vov', 'zayin'], ['hei', 'ches']] };
 /* the place to look on each letter (font units), and what to say about it */
@@ -64,7 +64,7 @@ export default function setup(E, { struggled, unit }) {
   async function playPair(pr, first) {
     setPair(pr); E.sfx.whoosh(); crates.forEach(c => E.hop(c, .2, 300));
     await E.say(CLUE[pr[1]] + ' ' + CLUE[pr[0]]);
-    let d; do { d = Array.from({ length: 8 }, (_, i) => pr[i % 2]).sort(() => Math.random() - .5); } while (new RegExp(`(${pr[0]},){2}${pr[0]}|(${pr[1]},){2}${pr[1]}`).test(d.join(',')));
+    let d; do { d = Array.from({ length: 6 }, (_, i) => pr[i % 2]).sort(() => Math.random() - .5); } while (new RegExp(`(${pr[0]},){2}${pr[0]}|(${pr[1]},){2}${pr[1]}`).test(d.join(',')));
     deck = [pr[1], ...d]; idx = 0; E.setProgress(deck.length, 0);
     await setCard(deck[0]); busy = false;
     await E.say('Watch me. ' + (pr[1] === 'zayin' ? 'A crown on top!' : 'The leg touches the roof!'));

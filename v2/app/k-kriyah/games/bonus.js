@@ -9,6 +9,7 @@ export default function setup(E, { unit }) {
   const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }) : E.mendy(); E.scene.add(boy);   /* each unit's own boy */
   const sign = new THREE.Group(); sign.add(E.mesh(E.rbox(1.25, 1.35, .14, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); sign.add(E.mesh(E.rbox(1.05, 1.15, .08, .06), E.M(0xfffaf0), 0, 0, .06));
   sign.add(E.mesh(new THREE.CylinderGeometry(.05, .05, 1.2, 8), E.M(0x8a5a3c), 0, -1.2, -.05)); E.scene.add(sign);
+  const arrow = E.arrow3d(.25), hint = E.glowSprite('#fff7b0', 1.6, 0); E.scene.add(hint); let missRound = 0;   /* a wrong catch: an arrow shows the place to look; after two, the letters to catch glow */
   let signL = null; const falling = []; let want = 'beis', caught = 0, targets = 0, wrong = 0, active = false;
   const basket = new THREE.Group(); basket.add(E.mesh(new THREE.CylinderGeometry(.55, .4, .45, 24, 1, true), E.M(0xc68a52, { side: THREE.DoubleSide, roughness: .6 }), 0, .23, 0)); E.scene.add(basket);
   let X = 4;
@@ -17,6 +18,7 @@ export default function setup(E, { unit }) {
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); boy.position.set(-4.3, 0, 1.2); boy.scale.setScalar(1); sign.position.set(-4.3, 3.35, .6); sign.scale.setScalar(.9); basket.position.set(-3.5, 0, 1.6); basket.scale.setScalar(1); }
   });
   E.onFrame((t) => { if (signL) signL.rotation.y = Math.sin(t * 1.4) * .25;
+    const tg = missRound >= 2 && active && falling.find(f => f.userData.key === want && !f.userData.busy && !f.userData.gone); hint.material.opacity = tg ? .55 + Math.sin(t * 5) * .3 : 0; if (tg) hint.position.copy(tg.position).add(new THREE.Vector3(0, 0, -.3));
     for (let i = falling.length - 1; i >= 0; i--) { const l = falling[i], u = l.userData; if (u.gone) { falling.splice(i, 1); continue; }
       const k = Math.min(1, (performance.now() - u.t0) / u.ms); l.position.y = u.y0 + (u.y1 - u.y0) * k; l.position.x = u.x + Math.sin(k * 6 + u.x) * .25; l.rotation.z = Math.sin(k * 8 + u.x) * .25;
       if (k >= 1 && !u.busy) { u.gone = true; E.sparkle(l.position, 6, .4); E.scene.remove(l); falling.splice(i, 1); } } });
@@ -36,11 +38,11 @@ export default function setup(E, { unit }) {
     if (u.key === want) { u.busy = true; caught++; E.joy(l.position.clone()); boy.mood('cheer'); setTimeout(() => boy.mood('calm'), 700);
       const p0 = l.position.clone(), to = basket.position.clone().add(new THREE.Vector3(0, .5, 0)); await E.tween(420, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * .6); });
       u.gone = true; E.scene.remove(l); E.sfx.pop(); }
-    else { wrong++; u.t0 += 500; E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its leg doesn\u2019t touch the roof.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.' })[u.key], false); }
+    else { wrong++; missRound++; u.t0 += 1200; E.pointAt(arrow, l, u.key, 1.0, E.sameShape(u.key, want) ? E.DOT_FEATURE[u.key] : E.FEATURES[u.key]); setTimeout(() => { if (arrow.parent === l) arrow.visible = false; }, 1300 * E.F); E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its leg doesn\u2019t touch the roof.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.' })[u.key], false); }
   });
   async function round(k, n, every, ms) {
-    want = k; setSign(k); E.hop(boy, .3);
-    await E.say(k === 'alef' ? 'Catch every Alef, the quiet one!' : ['Catch every ' + E.LETTERS[k].name + '!', S(E.LETTERS[k].snd)]);
+    want = k; missRound = 0; setSign(k); E.hop(boy, .3);
+    await E.say(k === 'alef' ? 'Catch every Alef, the quiet one!' : E.LETTERS[k].snd === 'ch' ? 'Catch every ' + E.LETTERS[k].name + ', like challah!' : ['Catch every ' + E.LETTERS[k].name + '!', S(E.LETTERS[k].snd)]);
     active = true; document.body.dataset.rainReady = k; homeBtn(false);   /* no leaving by accident while letters fall */
     const others = keysBut(k), near = others.filter(x => unit.letters.includes(x) || x === ({ beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', ches: 'hei', hei: 'ches' })[k]), far = others.filter(x => !near.includes(x));
     const mix = Array.from({ length: n }, (_, i) => i % 2 === 0 ? k : (i % 6 === 5 && far.length ? far[(i / 6 | 0) % far.length] : near[(i / 2 | 0) % near.length])).sort(() => Math.random() - .5);   /* mostly this unit's letters, a few older ones */

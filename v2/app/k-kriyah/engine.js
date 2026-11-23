@@ -47,7 +47,7 @@ export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); retu
    Every letter sound plays the rebbe's recording when audio/sounds.json lists it; until then the computer voice says it
    (marked on screen as temporary). A line is an array of words and sounds: ['Beis says', S('b')]. */
 export const S = k => ({ snd: k });
-const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
+const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', t: 'tuh', y: 'yuh', k: 'kuh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
 let SOUNDS = {}; const audioCache = {};
 export const soundsReady = fetch('audio/sounds.json').then(r => r.ok ? r.json() : {}).then(j => { SOUNDS = j || {}; }).catch(() => {});
 export let lastLine = null; let sayToken = 0;
@@ -331,15 +331,20 @@ const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, dept
 /* key: 'alef' | 'beis' | 'veis'.  Beis and Veis share one shape; Beis has the dagesh (Mendy's dot: "someone home"). */
 export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' },
   gimmel: { ch: 'ג', name: 'Gimmel', snd: 'g' }, daled: { ch: 'ד', name: 'Daled', snd: 'd' }, hei: { ch: 'ה', name: 'Hei', snd: 'h' },
-  vov: { ch: 'ו', name: 'Vov', snd: 'v' }, zayin: { ch: 'ז', name: 'Zayin', snd: 'z' }, ches: { ch: 'ח', name: 'Ches', snd: 'ch' } };
-export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7' };
+  vov: { ch: 'ו', name: 'Vov', snd: 'v' }, zayin: { ch: 'ז', name: 'Zayin', snd: 'z' }, ches: { ch: 'ח', name: 'Ches', snd: 'ch' },
+  tes: { ch: 'ט', name: 'Tes', snd: 't' }, yud: { ch: 'י', name: 'Yud', snd: 'y' }, kaf: { ch: 'כ', name: 'Kaf', dagesh: true, snd: 'k' }, chaf: { ch: 'כ', name: 'Chaf', snd: 'ch' } };
+export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7', tes: '\u05D8', yud: '\u05D9', kaf: '\u05DB\u05BC', chaf: '\u05DB' };
+/* letters that can hold a dagesh: where the dot sits (Beis/Veis, Kaf/Chaf share one shape each) */
+const DOT_AT = { 'ב': [24, 29.6], 'כ': [22, 29.6] };
+export const sameShape = (a, b) => LETTERS[a].ch === LETTERS[b].ch;
 export function letter(key, height = 2.6, color = 'blue') {
   const L = LETTERS[key], { g: geo, c } = letterGeo(L.ch); const bb = geo.boundingBox, H = bb.max.y - bb.min.y, W = bb.max.x - bb.min.x, s = height / H;
   const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); grp.add(m);
   const hit = new THREE.Mesh(new THREE.BoxGeometry(W * s * 1.15, height * 1.15, height * .5), hitMat); hit.castShadow = false; grp.add(hit);
   let dot = null;
-  if (L.ch === 'ב') {   /* the dagesh sits in the middle of the Beis's open space (font units: x 240, y 296 of 561 x 647) */
-    dot = mesh(new THREE.SphereGeometry(.2 * height / 2.6, 32, 24), goldDot(), (24 - c.x) * s, (29.6 - c.y) * s, .42 * height / 2.6); grp.add(dot); dot.visible = !!L.dagesh; }
+  const dp = DOT_AT[L.ch];
+  if (dp) {   /* the dagesh sits in the middle of the letter's open space (font units /10: Beis x 24, y 29.6 of 56.1 x 64.7) */
+    dot = mesh(new THREE.SphereGeometry(.2 * height / 2.6, 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - c.y) * s, .42 * height / 2.6); grp.add(dot); dot.visible = !!L.dagesh; }
   grp.userData = { key, body: m, dot, hit, height, width: W * s, color, dotHome: dot ? dot.position.clone() : null };
   grp.setKey = k => { grp.userData.key = k; if (dot) { dot.visible = !!LETTERS[k].dagesh; dot.scale.setScalar(1); dot.position.copy(grp.userData.dotHome); } };
   grp.setColor = col => { m.material = letterMats(col); grp.userData.color = col; };
@@ -358,16 +363,19 @@ export function arrow3d(size = .35, dir = 'down') {
   const g = new THREE.Group(), m = new THREE.MeshStandardMaterial({ color: 0xff5a1f, emissive: 0xff3d00, emissiveIntensity: .9 });
   const shaft = mesh(new THREE.CylinderGeometry(size * .12, size * .12, size * .7, 10), m, 0, size * .55, 0, false), head = mesh(new THREE.ConeGeometry(size * .3, size * .45, 16), m, 0, size * .05, 0, false);
   head.rotation.x = Math.PI; const inner = new THREE.Group(); inner.add(shaft, head); g.add(inner);
-  inner.rotation.z = { down: 0, up: Math.PI, right: Math.PI / 2, left: -Math.PI / 2 }[dir] || 0;
   g.userData.inner = inner; g.visible = false;
-  onFrame(t => { if (g.visible) inner.position.set(...({ down: [0, Math.sin(t * 6) * size * .15, 0], up: [0, -Math.sin(t * 6) * size * .15, 0], right: [-Math.sin(t * 6) * size * .15, 0, 0], left: [Math.sin(t * 6) * size * .15, 0, 0] }[dir] || [0, 0, 0])); });
+  g.setDir = d => { g.userData.dir = d; inner.rotation.z = { down: 0, up: Math.PI, right: Math.PI / 2, left: -Math.PI / 2 }[d] || 0; }; g.setDir(dir);   /* the cone's tip is at the group's origin, so it touches the place it points at */
+  onFrame(t => { if (g.visible) { const w = Math.sin(t * 6) * size * .15; inner.position.set(...({ down: [0, w, 0], up: [0, -w, 0], right: [-w, 0, 0], left: [w, 0, 0] }[g.userData.dir] || [0, 0, 0])); } });
   return g;
 }
 /* where to look on each letter (font units) and which way the arrow points at it */
-export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [100, 370, 'right'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [150, 420, 'right'] };
+export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [200, 415, 'left'],
+  beis: [530, 70, 'left'], kaf: [450, 35, 'left'] };   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+/* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
+export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'] };
 /* put an arrow at a letter's feature (the letter object, its height); returns false if the letter has none */
-export function pointAt(arrow, l, key, height) { const f = FEATURES[key]; if (!f) return false; const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;
-  const d = { down: [0, off], up: [0, -off], right: [-off, 0], left: [off, 0] }[f[2]]; arrow.position.set(p.x + d[0], p.y + d[1], .5); if (arrow.parent !== l) l.add(arrow); arrow.visible = true; return true; }
+export function pointAt(arrow, l, key, height, feat) { const f = feat || FEATURES[key]; if (!f) return false; const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;
+  const d = { down: [0, off], up: [0, -off], right: [-off, 0], left: [off, 0] }[f[2]]; if (arrow.setDir) arrow.setDir(f[2]); arrow.position.set(p.x + d[0], p.y + d[1], .5); if (arrow.parent !== l) l.add(arrow); arrow.visible = true; return true; }
 /* a soft ring that circles the thing to notice */
 export function noticeRing(r = .42) { const ring = mesh(new THREE.TorusGeometry(r, .06, 16, 40), new THREE.MeshStandardMaterial({ color: 0xff8a00, emissive: 0xff8a00, emissiveIntensity: 1.2 }), 0, 0, .7, false); ring.visible = false; onFrame(t => { if (ring.visible) ring.scale.setScalar(1 + Math.sin(t * 10) * .08); }); return ring; }
 

@@ -1,5 +1,6 @@
 /* Game 3: Letter Hunt in the sukkah.
    Skill: picks out a letter among its look-alikes (Unit 1: Beis, then Veis; Unit 3: Zayin, then Ches).
+   A wrong tap: an orange arrow points at the place to look on that letter.
    Two rounds, each with its own letter to find. A kind correction names the letter he tapped and what to look for;
    if he struggles, one Beis glows and the hand points to it. */
 /* each unit: two rounds (the letter to find, how many, and the others mixed in), the boy's name, and short "what to look for" words */
@@ -17,7 +18,8 @@ export default function setup(E, { struggled, unit }) {
   const plaque = E.M(0xfffaf0, { roughness: .4, clearcoat: .5 });   /* a plain backing tile, so nothing behind a letter can look like its dot */
   const boy = unit.n === 3 ? E.ari() : E.mendy(); E.scene.add(boy);
   const letters = []; const glow = E.glowSprite('#fff7b0', 1.8, 0); E.scene.add(glow);
-  const ring = E.noticeRing(.5); E.scene.add(ring);
+  const arrow = E.arrow3d(.3);   /* points at the place to look on the letter he tapped (never a ring over it) */
+  const feat = k => E.DOT_FEATURE[k] || E.FEATURES[k];
   let round = 0, want = plan.rounds[0][0], found = 0, need = 0, wrong = 0, wrongInRound = 0, active = false, help = struggled, helpOn = null, lastAct = 0, resolveRound = null;
 
   function buildSukkah(w) {
@@ -85,10 +87,10 @@ export default function setup(E, { struggled, unit }) {
   }
   async function miss(l) {
     E.sfx.boop(); wrong++; wrongInRound++; l.userData.busy = true; boy.mood('think'); await E.shake(l, .12); l.userData.busy = false;
-    ring.position.copy(E.worldPos(l)).add(new THREE.Vector3(0, 0, .3)); ring.visible = true;
+    E.pointAt(arrow, l, l.userData.key, l.userData.height, feat(l.userData.key));
     const k = l.userData.key, look = 'Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!';
     await E.say('That is ' + NM(k) + '. ' + look);   /* 12 words or fewer */
-    ring.visible = false;
+    arrow.visible = false;
     if (wrongInRound >= 2) showHelp();
   }
   function showHelp() { const t = letters.find(l => l.visible && !l.userData.got && l.userData.key === want); if (!t) return; helpOn = t; const [x, y] = E.toScreen(E.worldPos(t)); E.hand.at(x + 10, y + 10, true); }

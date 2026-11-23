@@ -76,10 +76,13 @@ export default function setup(E, { unit }) {
   E.onPointer('up', () => { down = false; lastUp = performance.now(); });
   window.__info = () => ({ dot: dotTarget ? E.toScreen(E.worldPos(dotTarget)) : null, key: cur && cur.userData.key, active: active && !demo, next, total: beads.length, beads: beads.map((b, i) => beadScreen(i)), off: offTries });
 
+  const arrow = E.arrow3d(.4);
   async function oneLetter(key, first) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
+    const showsPlace = ['vov', 'zayin', 'hei', 'ches'].includes(key) && E.pointAt(arrow, cur, key, H);   /* the place the line talks about */
     await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    if (showsPlace) { await E.wait(500); arrow.visible = false; }
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
       const st = PATHS[key][0].length; let [x, y] = beadScreen(0); E.hand.at(x, y); await E.wait(300);
