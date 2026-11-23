@@ -57,7 +57,9 @@ P.mastery = async (pg, shot, log) => {
   let n = 0;
   await loop(pg, async () => { const i = await K.info(pg); if (!i || !i.active || !i.letters[i.want]) return false; n++;
     if (n === 1) await shot('1-start');
-    if (n === 2) { const w = Object.keys(i.letters).find(k => k !== i.want); await pg.mouse.click(...i.letters[w]); await pg.waitForTimeout(700); await shot('3-wrong'); await pg.waitForTimeout(1000); log.wrongHandled = (await pg.evaluate(() => window.__lines.join(' '))).includes('Here is'); return true; }
+    if (n >= 2 && !log.wrongHandled && (log.tries || 0) < 5) {   /* one deliberate wrong tap; if the tap slips past a moving letter, try again on a later question */
+      log.tries = (log.tries || 0) + 1; const w = Object.keys(i.letters).find(k => k !== i.want); await pg.mouse.click(...i.letters[w]);
+      const got = await K.until(pg, () => window.__lines.join(' ').includes('Here is'), 6000, 150); if (got) { log.wrongHandled = true; await shot('3-wrong'); } return true; }
     if (n === 5) await shot('2-middle');
     await pg.mouse.click(...i.letters[i.want]); await pg.waitForTimeout(300); return true; });
 };
