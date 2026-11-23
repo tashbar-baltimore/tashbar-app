@@ -31,6 +31,7 @@
 `; document.head.appendChild(s); }
  function root(){ let r=document.getElementById('bbs'); if(!r){ r=document.createElement('div'); r.id='bbs'; document.body.appendChild(r); } return r; }
  function cell(b,id){ const p=b.pages[id]; if(!p) return `<button type="button" class="bbs-c e" disabled>·</button>`; const pct=p.total?p.score/p.total:0; const cls=!p.done?'p':pct>=.9?'g':pct>=.7?'y':'r';
+  if(p.done&&!p.total) return `<button type="button" class="bbs-c p" data-bbs="pg" data-s="${E(b.id)}" data-j="${id}" title="${E(b.name)} · ${id} · pencil page: look at his writing">✏️ look</button>`;   /* a pencil page: the rebbe reads his handwriting */
   return `<button type="button" class="bbs-c ${cls}" data-bbs="pg" data-s="${E(b.id)}" data-j="${id}" title="${E(b.name)} · ${id}">${p.done?p.score+'/'+p.total:'…'}${p.ink?' ✏️':''}</button>`; }
  function board(){ const BK=window.BB_BOOK; if(!BK) return '<p>The workbook did not load.</p>'; const D=Z.data;
   let h=`<p class="bbs-lead">Each boy’s Block Builders workbook: his first-try score on every page he has worked on. Tap a page to see it the way he left it, with his own pen work.</p>`;
