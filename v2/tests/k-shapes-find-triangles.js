@@ -33,28 +33,38 @@ module.exports = async function (browser) {
       await pg.mouse.move(a.x, a.y); await pg.mouse.down(); await pg.mouse.move(a.x + 15, a.y + 15, { steps: 3 });
       await pg.mouse.move(b.x, b.y, { steps: 8 }); await pg.mouse.up(); await pg.waitForTimeout(80);
     };
+    const tapCorners = async (what) => {
+      await pg.waitForFunction(() => window.__shp.cornerPts().length === 3, null, { timeout: 15000 }).catch(() => bad(label + ': ' + what + ': the corners to tap did not appear'));
+      const n0 = (await S()).cornerTaps || 0;
+      for (let i = 0; i < 3; i++) { const pts = await pg.evaluate(() => window.__shp.cornerPts()); if (!pts.length) break; await pg.mouse.click(pts[0].x, pts[0].y); await pg.waitForTimeout(60); }
+      if (((await S()).cornerTaps || 0) - n0 !== 3) bad(label + ': ' + what + ': tapping the 3 corners did not count them');
+    };
     try {
       await pg.goto('http://v2.test/k-shapes/find-triangles.html?fast=1');
       const gl = await pg.waitForFunction(() => window.__shp && window.__shp.ready, null, { timeout: 15000 }).then(() => true).catch(() => false);
       if (!gl) { bad(label + ': the 3D game did not start' + (errs.length ? ': ' + errs.join(' | ') : '')); await ctx.close(); return; }
       await pg.waitForTimeout(150); await drawn('start');
       await pg.click('#start', { force: true });
+      await pg.waitForFunction(() => window.__shp.name === 'tap', null, { timeout: 20000 });
+      await drawn('tap the corners'); await tapCorners('the lesson');
+      if (!(await S()).said.includes('One!')) bad(label + ': tapping a corner does not count out loud');
       await pg.waitForFunction(() => window.__shp.name === 'find', null, { timeout: 20000 });
       const said0 = (await S()).said;
       for (const want of [/count the sides/i, /count the corners/i, /upside down/i, /small, but still a triangle/i, /watch me/i])
         if (!said0.some(t => want.test(t))) bad(label + ': the lesson is missing "' + want.source + '"');
-      if (!((await S()).claps >= 6)) bad(label + ': the clap chant did not play');
+      if (!((await S()).claps >= 9)) bad(label + ': the clap chant did not play');
       await drawn('find the triangles');
       let list = await pg.evaluate(() => window.__shp.list());
       if (list.filter(s => s.tri).length !== 3 || list.filter(s => !s.tri).length !== 4) bad(label + ': should show 3 triangles and 4 other shapes, got ' + JSON.stringify(list));
       // a square into the box: explained, corners counted, it goes back
       await drag('sq'); await pg.waitForTimeout(100);
       let st = await S();
-      if (!st.said.some(t => /that is a square/i.test(t)) || !st.said.some(t => /one, two, three, four/i.test(t))) bad(label + ': a square in the box is not explained');
+      if (!st.said.some(t => /that is a square/i.test(t)) || !st.said.includes('Four.')) bad(label + ': a square in the box is not explained');
       if (!(await pg.evaluate(() => window.__shp.list().some(s => s.id === 'sq')))) bad(label + ': the square stayed in the triangle box');
       // the curvy almost-triangle: explained
       await drag('cv'); await pg.waitForTimeout(100);
       if (!(await S()).said.some(t => /curvy/i.test(t))) bad(label + ': the curvy shape is not explained');
+      if (!(await S()).said.some(t => /remember: a triangle has three corners/i.test(t))) bad(label + ': after 2 misses the rule is not taught again');
       for (const id of ['t2', 't3', 't4']) { await drag(id); await pg.waitForTimeout(100); }
       st = await S();
       if (st.found < 4) bad(label + ': not every triangle went into the box (found ' + st.found + ')');
@@ -64,6 +74,7 @@ module.exports = async function (browser) {
       await pg.click('.judge .yes', { force: true }); await pg.waitForTimeout(80);
       if (!(await S()).said.some(t => /count the corners/i.test(t) && /let us/i.test(t))) bad(label + ': a wrong "yes" is not explained');
       await pg.click('.judge .no', { force: true });
+      await tapCorners('find the mistake');
       await pg.waitForFunction(() => window.__shp.done, null, { timeout: 15000 }).catch(() => bad(label + ': the game cannot be finished'));
       st = await S();
       if (st.stars !== 1) bad(label + ': three misses should give 1 star, got ' + st.stars);
@@ -76,9 +87,16 @@ module.exports = async function (browser) {
       if (st.said.some(t => /\bbite\b/i.test(t))) bad(label + ': the word "bite" is spoken');
       // play again with no mistakes: 3 stars
       await pg.click('#replay', { force: true });
+      await pg.waitForFunction(() => window.__shp.name === 'tap', null, { timeout: 20000 }); await tapCorners('the lesson, second game');
       await pg.waitForFunction(() => window.__shp.name === 'find' && window.__shp.misses === 0, null, { timeout: 20000 });
       for (const id of ['t2', 't3', 't4']) { await drag(id); await pg.waitForTimeout(100); }
+      // no mistakes: the quick boy gets the bonus round (a miss there is explained but costs no star)
+      await pg.waitForFunction(() => window.__shp.name === 'bonus' && window.__shp.list().some(s => s.id === 'tw'), null, { timeout: 15000 }).catch(() => bad(label + ': a boy with no mistakes gets no bonus round'));
+      await drawn('bonus round'); await drag('hx'); await pg.waitForTimeout(100);
+      if (!(await S()).said.some(t => /six corners/i.test(t))) bad(label + ': the hexagon in the bonus round is not explained');
+      for (const id of ['tw', 'tk']) { await drag(id); await pg.waitForTimeout(100); }
       await pg.waitForSelector('.judge.show', { timeout: 15000 }); await pg.click('.judge .no', { force: true });
+      await tapCorners('find the mistake, second game');
       await pg.waitForFunction(() => window.__shp.done && window.__shp.misses === 0, null, { timeout: 15000 }).catch(() => bad(label + ': the second game did not finish'));
       if ((await S()).stars !== 3) bad(label + ': a boy with no mistakes should get 3 stars');
       if (errs.length) bad(label + ': page errors: ' + errs.join(' | '));
