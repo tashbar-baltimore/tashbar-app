@@ -406,7 +406,7 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer on the pag
 
   /* one ABC group: letters, the look-alikes for wrong choices, the chant, the Mistake Detective, and its bridge */
   var GS={
-    'READ.PHON.L01.01.a':{name:'ABC 1: A to D', k:'a', lw:['d','dog'], mp:'bcd', ls:'abcd', pic:'🍎', near:{a:['o','e'],b:['d','p'],c:['o','e'],d:['b','p']},
+    'READ.PHON.L01.01.a':{name:'ABC 1: A to D', k:'a', lw:['c','car'], mp:'bcd', ls:'abcd', pic:'🍎', near:{a:['o','e'],b:['d','p'],c:['o','e'],d:['b','p']},
       oops:{q:'Which letter starts duck 🦆?', wrong:'b', right:'d', why:'Make a fist: ball first is d, line first is b.'},
       bridge:'READ.PA.L01.04', bridgeName:'First Sound Detective',
       ready:[{q:'What is the first sound in sun? ☀️', o:['sss','mmm','tuh'], a:'sss'},{q:'What is the first sound in map? 🗺️', o:['mmm','puh','sss'], a:'mmm'}],
@@ -491,6 +491,9 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer on the pag
       return {t:L[x][0]+' is for '+L[x][2]+' '+L[x][3]+': '+(VS[x]||SP[x])+'. '+(lastOne?(SMALL[x]||L[x][6]):L[x][5]), m:{type:'tiles', w:[L[x][0]+x, L[x][3]], hi:[0]}}; });
     if(steps.length>4){ var z=ls[ls.length-1]; steps[steps.length-1]={t:L[z][0]+' is for '+L[z][2]+' '+L[z][3]+': '+(VS[z]||SP[z])+'. '+(SMALL[z]||L[z][6])+' Sing!', m:{type:'chant', lines:chant}}; }
     else steps.push({t:'Stand up! Sing in ABC order: one clap per letter.', m:{type:'chant', lines:chant}});
+    /* Show me asks the keyword of the second-to-last letter, so Watch Me teaches that letter with a different word */
+    var ALT={c:['cup','☕'],g:['gift','🎁'],k:['key','🔑'],p:['pig','🐷'],t:['tiger','🐯'],y:['yarn','🧶']}, ck=ls[ls.length-2], ai=ls.length-2;
+    if(ALT[ck]){ var sw=function(s){ return String(s).split(L[ck][2]).join(ALT[ck][0]).split(L[ck][3]).join(ALT[ck][1]); }; chant[ai]=sw(chant[ai]); steps[ai]={t:sw(steps[ai].t), m:{type:'tiles', w:[L[ck][0]+ck, ALT[ck][1]], hi:[0]}}; }
     var o3=function(x){ return [x].concat(g.near[x]); };
     var big=ls[1], lw=g.lw, mp=g.mp.split(''), fodd=g.fodd||g.odd, oddLow=fodd.toLowerCase(), oddBig=fodd!==oddLow, oddSay=(oddBig?'big ':'small ')+fodd, stop=gi+1;
     var last5=g.srt?{type:'sort', bins:['Starts with '+g.srt.x,'Not '+g.srt.x], cards:g.srt.cards, say:'Last stop! Which pictures start with '+g.srt.x+'? Sort them.', how:'Say the picture slowly. Hear the first sound. Is it '+SP[g.srt.x]+'?'}
@@ -498,7 +501,7 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer on the pag
     B[id]={ band:'K1', pic:g.pic, today:'Meet '+nameLine.replace(/, ([A-Z])$/,' and $1')+': big, small, and the sound each makes',
       why:'Letters build every word. Soon you will read them all!',
       ready:g.ready, bridge:g.bridge, bridgeName:g.bridgeName,
-      watch:{ q:'Moishe and '+['Ezra','Yehuda','Avi','Shmuli','Dovid','Naftali'][gi]+'\u2019s ABC train, stop '+stop+': '+nameLine, pic:g.pic, steps:steps, a:ls.map(function(x){ return L[x][0]+x+' '+L[x][3]; }).join('  ') },
+      watch:{ q:'Moishe and '+['Ezra','Yehuda','Avi','Shmuli','Dovid','Naftali'][gi]+'\u2019s ABC train, stop '+stop+': '+nameLine, pic:g.pic, steps:steps, a:ls.map(function(x){ return L[x][0]+x+' '+(x===ck&&ALT[x]?ALT[x][1]:L[x][3]); }).join('  ') },
       oops:g.oops,
       ways:['song','picture','listen and tap','find them all','match','finger trace','letter tiles','Mistake Detective'],
       done:'Toot toot! You know '+nameLine.replace(/, ([A-Z])$/,' and $1')+'! Sing them for Bubby at the Shabbos table!',
@@ -557,7 +560,7 @@ B['READ.PA.L01.02']={ band:'K1', pic:'🎵', today:'Find words that rhyme', why:
     {t:'Both end in at. Only the first sound changes. They rhyme!', m:{type:'tiles',w:['h','at'],hi:[1]}},
     {t:'Dog and dig start the same, but the ends are different. No rhyme.', m:{type:'tiles',w:['🐶','dig']}},
     {t:'Thumbs up if they rhyme. Thumbs down if not!', m:{type:'move',t:'Hat, cat: thumbs up! Hat, dog: thumbs down!'}},
-    {t:'Sing Shimon’s song with me!', m:{type:'chant',lines:['A cat in a hat sat on a mat!','A frog on a log!','A fish on a dish!']}}], a:'cat, hat, bat, mat: they all rhyme' },
+    {t:'Sing Shimon’s song with me!', m:{type:'chant',lines:['A cat in a hat sat on a mat!','A frog on a log!','A fish on a dish!']}}], a:'cat and hat rhyme: they both end in at' },
   oops:{ q:'Does dog rhyme with dig?', wrong:'Yes (they start the same)', right:'No (the ends are different)', why:'Rhymes match at the end, not at the start.' },
   ways:['song','movement','pictures','sort','Mistake Detective'], done:'Shimon sang his song at the Shabbos table! You hear rhymes!',
   board:{ one:'Rhymes sound the same at the end.', activity:'Say a word; boys stand if the next word rhymes, sit if not.', mistakes:['Matching the first sound instead of the end','Saying any word that sounds nice','Thinking dog and dig rhyme'] },
