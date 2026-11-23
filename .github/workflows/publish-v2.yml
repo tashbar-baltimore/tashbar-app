@@ -50,7 +50,7 @@ jobs:
         run: |
           umask 077; printf '%s' "$TOKEN" > "$RUNNER_TEMP/fbtok"
           where=live; [ '${{ inputs.what }}' = preview ] && where="pr-${{ inputs.pr }}"
-          V2_LINK_FILE="$RUNNER_TEMP/link" python3 v2/deploy.py "$PROJECT" "$SITE" "$RUNNER_TEMP/fbtok" "$where" "2.0 ${{ inputs.what }} ${{ inputs.pr }} (${GITHUB_SHA::7})"
+          V2_LINK_FILE="$RUNNER_TEMP/link" python3 .github/scripts/publish-v2.py "$PROJECT" "$SITE" "$RUNNER_TEMP/fbtok" "$where" "2.0 ${{ inputs.what }} ${{ inputs.pr }} (${GITHUB_SHA::7})"
           rm -f "$RUNNER_TEMP/fbtok"
       - name: Post the look link on the pull request
         if: inputs.what == 'preview'

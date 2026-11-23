@@ -130,6 +130,63 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
 #cn-shop .list{background:#fff;border-radius:18px;padding:12px 16px;border:2px solid #FED7AA}#cn-shop .list div{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-weight:700}
 #cn-shop .sm{color:#64748B;font-size:14px}#cn-shop .lnk{border:2px solid #FECDD3;background:#fff;color:#BE123C;border-radius:14px;padding:10px 16px;font-weight:800;font-size:16px;font-family:inherit;cursor:pointer;min-height:48px}
 #cn-shop .story .p{color:#047857}#cn-shop .story .m{color:#BE123C}
+/* THE 3D CANTEEN (HoS 2026-11-23) */
+#cn-shop.cw3d{z-index:10010;display:block;padding:0;background:#FDE9D2;backdrop-filter:none;overflow:hidden}
+#cn-shop .cw-room{position:absolute;inset:0;perspective:900px;perspective-origin:50% 42%;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 50% 30%,#FFF7ED,#FCD9B6 70%,#F6C79A)}
+#cn-shop .cw-cam{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d;--rx:0deg;--ry:0deg;transform:translateZ(0) rotateX(var(--rx)) rotateY(var(--ry));transition:transform .5s ease-out;animation:cwWalk 1.1s cubic-bezier(.2,.8,.3,1) both}
+@keyframes cwWalk{from{transform:translateZ(520px) rotateX(4deg) rotateY(0)}to{transform:translateZ(0) rotateX(var(--rx)) rotateY(var(--ry))}}
+#cn-shop .cw-w{position:absolute;transform-style:preserve-3d;backface-visibility:hidden}
+#cn-shop .cw-back{width:1700px;height:900px;left:-850px;top:-470px;transform:translateZ(-700px);background:repeating-linear-gradient(0deg,#FFFBF5 0 38px,#F3E3CF 38px 40px),#FFFBF5;box-shadow:inset 0 -140px 0 #E0F2EF}
+#cn-shop .cw-back::after{content:"";position:absolute;left:0;right:0;bottom:140px;height:14px;background:#0F766E}
+#cn-shop .cw-board{position:absolute;left:50%;top:90px;transform:translateX(-50%);width:560px;height:250px;border-radius:18px;background:linear-gradient(160deg,#1F3B2D,#173026);border:14px solid #8B5A2B;box-shadow:0 0 0 4px #6B4220,0 30px 60px #0005,0 0 120px #FDE68A66;color:#FEF3C7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;font-family:inherit}
+#cn-shop .cw-board b{font-size:44px;letter-spacing:.2em;color:#FDE68A;text-shadow:0 0 18px #FDE68A99}#cn-shop .cw-board span{font-size:54px}#cn-shop .cw-board em{font-style:normal;font-size:26px;font-weight:800;opacity:.9}
+#cn-shop .cw-clock{position:absolute;right:220px;top:120px;font-size:90px;filter:drop-shadow(0 10px 10px #0003)}
+#cn-shop .cw-left,#cn-shop .cw-right{width:1400px;height:900px;top:-470px;background:repeating-linear-gradient(0deg,#FFF4E6 0 38px,#EAD3B8 38px 40px),repeating-linear-gradient(90deg,transparent 0 78px,#EAD3B8 78px 80px);box-shadow:inset 0 -140px 0 #D1FAE5;display:flex;flex-direction:column;justify-content:center;gap:40px;padding:0 160px}
+#cn-shop .cw-left{left:-850px;transform-origin:left center;transform:translateZ(700px) rotateY(90deg)}
+#cn-shop .cw-right{left:850px;transform-origin:left center;transform:translateZ(-700px) rotateY(-90deg)}
+#cn-shop .cw-shelf{height:120px;border-bottom:22px solid #A16207;box-shadow:0 30px 30px -20px #0004;display:flex;align-items:flex-end;justify-content:space-around;font-size:86px;line-height:1}#cn-shop .cw-shelf i{font-style:normal}
+#cn-shop .cw-floor{width:1700px;height:1400px;left:-850px;top:430px;transform-origin:top center;transform:translateZ(-700px) rotateX(90deg);background:conic-gradient(#F8FAFC 25%,#94A3B8 0 50%,#F8FAFC 0 75%,#94A3B8 0) 0 0/160px 160px}
+#cn-shop .cw-ceil{width:1700px;height:1400px;left:-850px;top:-1870px;transform-origin:bottom center;transform:translateZ(-700px) rotateX(-90deg);background:#FFF7ED}
+#cn-shop .cw-lamp{position:absolute;left:0;top:-470px;width:0;height:0;transform:translateX(var(--x)) translateZ(-300px)}
+#cn-shop .cw-lamp::before{content:"";position:absolute;left:-2px;top:0;width:4px;height:200px;background:#334155}
+#cn-shop .cw-lamp::after{content:"";position:absolute;left:-70px;top:196px;width:140px;height:70px;border-radius:70px 70px 10px 10px;background:linear-gradient(#F97316,#EA580C);box-shadow:0 60px 90px 30px #FEF08A88}
+#cn-shop.cw-still .cw-cam{animation:none;transition:none}
+#cn-shop .cw-stage{position:absolute;inset:0;overflow:hidden;display:flex;justify-content:center}
+#cn-shop.cw3d .bx{position:relative;background:transparent;box-shadow:none;border-radius:0;width:min(1000px,100%);max-height:none;height:100%;overflow:auto;padding:14px 18px 0;animation:cwIn .7s .25s cubic-bezier(.2,.8,.3,1) both}
+@keyframes cwIn{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:none}}
+#cn-shop.cw-still .bx{animation:none}
+#cn-shop .hd{gap:12px}#cn-shop .cw-sign{flex:1;display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,#B45309,#92400E);color:#FFFBEB;border-radius:20px;padding:8px 18px;box-shadow:0 6px 0 #78350F,0 14px 24px #78350F55;transform:perspective(700px) rotateX(10deg);transform-origin:bottom}
+#cn-shop .cw-sign h2{color:#FFFBEB;font-size:30px;letter-spacing:.02em;text-shadow:0 2px 0 #78350F}#cn-shop .cw-si{font-size:40px}
+#cn-shop .ib{box-shadow:0 4px 0 #FDBA74,0 8px 16px #0002}#cn-shop .cw-home{padding:0 16px;font-size:20px;color:#7C2D12}
+#cn-shop .wal{box-shadow:0 8px 0 #064E3B,0 18px 30px #064E3B55}
+#cn-shop .cw-doors{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:6px 0 14px}
+#cn-shop .cw-door{position:relative;border:0;border-radius:22px;padding:12px 8px 12px;background:#fff;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:120px;color:#1E293B;box-shadow:0 8px 0 #E7CBA9,0 16px 26px #9A341222;transition:transform .15s,box-shadow .15s}
+#cn-shop .cw-door .i{font-size:46px;line-height:1.1}#cn-shop .cw-door b{font-size:18px;font-weight:900}#cn-shop .cw-door small{font-size:13px;font-weight:700;color:#64748B}
+#cn-shop .cw-door:hover{transform:translateY(-3px)}#cn-shop .cw-door:active{transform:translateY(5px);box-shadow:0 3px 0 #E7CBA9}
+#cn-shop .cw-door.on{background:linear-gradient(160deg,#F97316,#DB2777);color:#fff;box-shadow:0 8px 0 #9D174D,0 18px 30px #DB277755}#cn-shop .cw-door.on small{color:#FFE4E6}
+#cn-shop .cw-panel{background:rgba(255,255,255,.94);border-radius:26px;padding:16px 18px 0;box-shadow:0 10px 0 #E7CBA9,0 26px 50px #9A341233}
+#cn-shop .cw-panel.big{padding-bottom:18px;text-align:center}
+#cn-shop .cw-h{font-size:24px;font-weight:900;color:#9A3412;margin:2px 0 10px}
+#cn-shop .cw-wait{font-size:18px;padding:20px 0}
+#cn-shop .grid{perspective:900px;background:linear-gradient(180deg,#FDE68A00 0,#FDE68A00 10%,#D6A266 10%,#B7834A 100%);border-radius:20px;padding:16px 12px 26px;box-shadow:inset 0 -12px 0 #8B5A2B,inset 0 4px 0 #E8BE84}
+#cn-shop .it{transform:rotateX(10deg);transform-origin:bottom;box-shadow:0 10px 0 #E7CBA9,0 18px 18px #5B3A1A55;transition:transform .18s,box-shadow .18s}
+#cn-shop .it:not(.lock):not(.out):hover,#cn-shop .it:not(.lock):not(.out):focus-visible{transform:rotateX(0) translateY(-8px) scale(1.04);box-shadow:0 14px 0 #E7CBA9,0 28px 26px #5B3A1A55}
+#cn-shop .it:not(.lock):not(.out):active{transform:rotateX(0) translateY(4px) scale(.98);box-shadow:0 4px 0 #E7CBA9}
+#cn-shop .it .em{filter:drop-shadow(0 8px 6px #0003);animation:cwBob 3.2s ease-in-out infinite}#cn-shop .it:nth-child(2n) .em{animation-delay:-1.6s}#cn-shop .it.lock .em,#cn-shop .it.out .em{animation:none}
+@keyframes cwBob{50%{transform:translateY(-5px) rotate(-3deg)}}
+#cn-shop.cw-still .it .em{animation:none}
+#cn-shop .tray{border-radius:22px 22px 0 0;background:linear-gradient(180deg,#fff,#FFF7ED);box-shadow:0 -10px 24px #9A341222}
+.cw-fly{position:fixed;z-index:10011;font-size:54px;pointer-events:none;line-height:1}
+#cn-shop .cw-ways{display:grid;grid-template-columns:1fr 1fr;gap:12px}#cn-shop .cw-ways>div{background:#FFF7ED;border:3px solid #FED7AA;border-radius:20px;padding:14px;text-align:center}
+#cn-shop .cw-ways .i{font-size:48px;display:block}#cn-shop .cw-ways b{font-size:19px;font-weight:900}#cn-shop .cw-ways p{margin:6px 0 0;font-weight:700;color:#334155}
+#cn-shop .cw-ls{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-bottom:14px}
+#cn-shop .cw-ls button{display:flex;align-items:center;gap:10px;text-align:left;border:3px solid #E2E8F0;background:#fff;border-radius:18px;padding:10px 14px;font-family:inherit;cursor:pointer;min-height:60px;box-shadow:0 5px 0 #E2E8F0}
+#cn-shop .cw-ls button .i{font-size:26px}#cn-shop .cw-ls button b{flex:1;font-size:17px;font-weight:900;color:#1E293B}#cn-shop .cw-ls button small{font-weight:900;font-size:13px;border-radius:999px;padding:3px 10px;background:#DCFCE7;color:#166534}
+#cn-shop .cw-ls button.next{border-color:#F97316;box-shadow:0 5px 0 #FDBA74}#cn-shop .cw-ls button.next small{background:#F97316;color:#fff}#cn-shop .cw-ls button.done{background:#F0FDF4}
+body.cn-open #tlmenu{display:none!important}
+@media (max-width:760px){#cn-shop .cw-doors{gap:6px;margin:4px 0 10px}#cn-shop .cw-door{min-height:78px;padding:8px 2px;border-radius:16px;gap:0}#cn-shop .cw-door .i{font-size:30px}#cn-shop .cw-door small{display:none}#cn-shop .cw-door b{font-size:13px;line-height:1.15}#cn-shop .cw3d .wal .words{display:none}}
+@media (max-width:560px){#cn-shop.cw3d .bx{padding:10px 10px 0}#cn-shop .cw-sign{padding:6px 12px;gap:8px}#cn-shop .cw-sign h2{font-size:20px}#cn-shop.cw3d .wal .words{display:none}#cn-shop.cw3d .wal{padding:8px 14px;margin-bottom:8px}#cn-shop.cw3d .wal .am{font-size:34px}#cn-shop.cw3d .wal .lb{font-size:13px}#cn-shop .cw-si{font-size:28px}#cn-shop .cw-home{font-size:16px;padding:0 10px}#cn-shop .cw-panel{padding:12px 10px 0;border-radius:20px}#cn-shop .cw-ways{grid-template-columns:1fr}#cn-shop .grid{padding:12px 8px 20px}}
+
 .tlq{background:linear-gradient(135deg,#FEF9C3,#FDE68A);border:3px solid #EAB308;border-radius:20px;padding:12px 16px;margin:10px 0;color:#713F12}
 .tlq .h{font-weight:900;font-size:19px}.tlq .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0;font-weight:900}
 .tlq .bill{background:#BBF7D0;color:#14532D;border-radius:8px;padding:8px 12px;font-size:20px;box-shadow:inset 0 -3px 0 #0002}
@@ -171,7 +228,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
   function trayCents(){ return trayLines().reduce((s,l)=>s+cents(l.m.price)*l.q,0); }
   function oLoad(){ const t=tok(); if(!t) return; call('cnOrderMenu',t).then(r=>{ O.menu=r.menu; O.cash=r.cash; O.pf=r.pf==null?1:r.pf; O.story=r.story||[]; O.order=(r.open||[])[0]||null; O.recent=r.recent||[]; noteStatus(); oDraw(); }).catch(e=>{ O.err=(e&&e.message)||'Could not load the menu.'; oDraw(); }); }
   function noteStatus(){ const o=O.order, s=o?(o.seen?'seen':o.status):null; if(s&&s!==O.lastStatus&&O.lastStatus){ try{ SND.right(3); }catch(e){} } if(!o&&O.lastStatus){ const r=O.recent[0]; if(r&&r.status==='picked') O.err='😋 The canteen gave you your food. Enjoy! Say a bracha!'; else if(r&&r.status==='cancelled') O.err='↩️ The canteen could not make it. All your money is back.'; O.step='shop'; O.last=null; } O.lastStatus=s; }
-  function oOpen(){ if(inClass()) return; O.open=true; document.body.classList.add('cn-open'); O.err=''; O.tray={}; O.cid=null; O.step='shop'; O.tip=Math.floor(Math.random()*TIPS.length); oDraw(); oLoad(); clearInterval(O.poll); O.poll=setInterval(()=>{ if(O.open) oLoad(); },15000); }
+  function oOpen(){ O.cls=inClass(); O.open=true; O.panel='buy'; O.walked=false; document.body.classList.add('cn-open'); O.err=''; O.tray={}; O.cid=null; O.step='shop'; O.tip=Math.floor(Math.random()*TIPS.length); oDraw(); clearInterval(O.poll); if(O.cls) return; oLoad(); K.at=0; fetchInfo(); O.poll=setInterval(()=>{ if(O.open) oLoad(); },15000); }
   function oClose(){ O.open=false; document.body.classList.remove('cn-open'); clearInterval(O.poll); try{ speechSynthesis.cancel(); }catch(e){} const d=document.getElementById('cn-shop'); if(d) d.remove(); K.at=0; try{ if(A.view==='hub') render(); }catch(e){} }
   function wallet(){ const c=cents(O.cash);
     return `<div class="wal"><div><div class="lb">🥨 Your canteen money</div><div class="am">${O.cash==null?'…':money(O.cash)}</div></div><div><div class="coins">${O.cash==null?'':coinsHTML(c)}</div><div class="words">${O.cash==null?'':'That is '+coinWords(c)+'.'}</div></div></div>`; }
@@ -198,35 +255,87 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
       <div class="list">${o.items.map(i=>`<div><span>${$$(i.emoji||'🍪')} ${$$(i.name)}${i.qty>1?' ×'+i.qty:''}</span><span>${money(cents(i.price)*i.qty/100)}</span></div>`).join('')}<div style="border-top:2px dashed #FED7AA;margin-top:6px;padding-top:8px"><span>${o.paid===false?'You pay at the canteen':'Paid ✓'}</span><span>${money(o.est)}</span></div></div>`;
     if(o.status==='pending'&&!o.seen&&Date.now()-o.at<110000) h+=`<p style="text-align:center;margin-top:12px"><button class="lnk" data-cno="cancel">Changed my mind: cancel and get my money back</button></p>`;
     return h+coach(['Good habit','After you buy, check your money. Do you know how much you have left?']); }
-  function vStory(){ if(!O.story.length) return ''; return `<details class="story" ${O.showStory?'open':''} style="margin:12px 0"><summary style="font-weight:900;cursor:pointer;min-height:44px;display:flex;align-items:center">📒 My money story</summary><div class="list">${O.story.map(r=>`<div><span>${$$(r.note||r.kind)}</span><b class="${r.cents>=0?'p':'m'}">${r.cents>=0?'+':'−'}${amt(Math.abs(r.cents))}</b></div>`).join('')}</div><p class="sm">Money comes in when your teachers sign you off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Tashbar Store. It goes out when you buy.</p></details>`; }
+  function vStory(){ if(O.cash==null&&!O.menu) return '<p class="sm cw-wait">Opening your money story… 📒</p>'; return `<h3 class="cw-h">📒 My money story</h3><div class="story">${O.story.length?'':'<p style="font-weight:800">Nothing yet. When money comes in or goes out, it shows here.</p>'}<div class="list" ${O.story.length?'':'hidden'}>${O.story.map(r=>`<div><span>${$$(r.note||r.kind)}</span><b class="${r.cents>=0?'p':'m'}">${r.cents>=0?'+':'−'}${amt(Math.abs(r.cents))}</b></div>`).join('')}</div><p class="sm">Money comes in when your teachers sign you off (on time, did your work, middos: 20¢ each) and from Canteen Cards in the Tashbar Store. It goes out when you buy.</p></div>`; }
   function oDraw(){
-    if(!O.open) return; let d=document.getElementById('cn-shop'); if(!d){ d=document.createElement('div'); d.id='cn-shop'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Canteen'); document.body.appendChild(d); }
-    let h=`<div class="bx"><div class="hd"><span style="font-size:40px">🍕</span><h2>Canteen</h2><button class="ib" data-cno="say" aria-label="Read it to me">🔊</button><button class="ib" data-cno="close" aria-label="Close">✕</button></div>`;
+    if(!O.open) return; let d=document.getElementById('cn-shop');
+    if(!d){ d=document.createElement('div'); d.id='cn-shop'; d.className='cw3d'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label','Tashbar Canteen');
+      d.innerHTML=cwRoom()+'<div class="cw-stage"><div class="bx"></div></div>'; document.body.appendChild(d); cwLook(d); }
+    let h=`<div class="hd"><div class="cw-sign"><span class="cw-si" aria-hidden="true">🥪</span><h2>Tashbar Canteen</h2></div><button class="ib" data-cno="say" aria-label="Read it to me">🔊</button><button class="ib cw-home" data-cno="close" aria-label="Close the canteen and go home">🏠 Home</button></div>`;
     if(O.err) h+=`<div class="err" role="alert">${$$(O.err)}</div>`;
-    h+=wallet()+window.tlQuarterHTML(O.pf,true);
-    if(!O.menu&&!O.order) h+='<p class="sm">Opening the canteen… 🍪</p>';
-    else if(O.cash==null&&!O.order) h+='<p style="font-weight:800">You don’t have canteen money yet. Ask the office.</p>';
-    else if(O.order) h+=vTrack();
-    else if(!O.menu.length) h+='<p style="font-weight:800">The canteen menu is empty right now. Check again soon! 🍪</p>';
-    else if(O.step==='check'&&trayLines().length) h+=vCheck();
-    else { O.step='shop'; h+=vShop(); }
-    h+=vStory();
-    const sc=d.querySelector('.bx')?d.querySelector('.bx').scrollTop:0; if(d.__h===h) return; d.__h=h;
-    d.innerHTML=h+'<div style="height:16px"></div></div>'; const bx=d.querySelector('.bx'); if(bx) bx.scrollTop=sc;
-    const det=d.querySelector('details.story'); if(det) det.addEventListener('toggle',()=>{ O.showStory=det.open; d.__h=null; });
+    if(O.cls){ h+=`<div class="cw-panel big"><div class="e">🔔</div><h3>The canteen opens after class.</h3><p style="font-weight:800">Come back when class is over.</p></div>`; return cwPut(d,h); }
+    h+=wallet()+window.tlQuarterHTML(O.pf,true)+cwDoors();
+    let body='';
+    if(O.panel==='cash') body=vCash();
+    else if(O.panel==='learn') body=vLearn();
+    else if(O.panel==='story') body=vStory();
+    else if(!O.menu&&!O.order) body='<p class="sm cw-wait">Opening the canteen… 🍪</p>';
+    else if(O.cash==null&&!O.order) body='<p style="font-weight:800">You don’t have canteen money yet. Ask the office.</p>';
+    else if(O.order) body=vTrack();
+    else if(!O.menu.length) body='<p style="font-weight:800">The canteen menu is empty right now. Check again soon! 🍪</p>';
+    else if(O.step==='check'&&trayLines().length) body=vCheck();
+    else { O.step='shop'; body=vShop(); }
+    cwPut(d,h+`<div class="cw-panel">${body}</div>`);
   }
+  function cwPut(d,h){ const bx=d.querySelector('.bx'); if(!bx||bx.__h===h) return; bx.__h=h; const sc=bx.scrollTop; bx.innerHTML=h+'<div style="height:18px"></div>'; bx.scrollTop=sc; }
+  /* ---- THE 3D CANTEEN (HoS 2026-11-23: "many people are complaining that they can't see all the stuff about the canteen ... all the canteen and
+     all its related aspects should all be available ... simple enough for anyone to use ... make it immersive 3D experience").
+     The home's 🥪 Canteen tile opens this room. Inside: one canteen with four big doors, the same for every boy (grade 2 and up; K-1 keep only games):
+       🍕 Buy food (the same 3 steps as before)  💳 Get canteen money (where it comes from + Canteen Cards in the Store)
+       📒 My money story (money in and out)  📚 Money lessons (Life & Money lessons, and Canteen Crew lessons if a staff member picked him).
+     Looks only: every server call, price and money amount is exactly as before (cnOrderMenu / cnOrderPlace / cnOrderCancel; the server sets all money).
+     The room is drawn with CSS 3D (no library, nothing downloaded): back wall with a lit menu board, tiled side walls with shelves, a checked floor,
+     hanging lamps, and food standing on a wooden counter. It turns a little toward the finger or mouse; "reduce motion" gets a still room.
+     Nothing in the room catches a tap; only the buttons do. ---- */
+  function cwRoom(){ const jar=(e,n)=>Array.from({length:n},()=>`<i>${e}</i>`).join('');
+    return `<div class="cw-room" aria-hidden="true"><div class="cw-cam">
+      <div class="cw-w cw-back"><div class="cw-board"><b>TODAY</b><span>🥨 🧃 🍕 🍎 🥯</span><em>Say a bracha!</em></div><div class="cw-clock">🕒</div></div>
+      <div class="cw-w cw-left"><div class="cw-shelf">${jar('🫙',4)}</div><div class="cw-shelf">${jar('🍎',5)}</div><div class="cw-shelf">${jar('🧃',4)}</div></div>
+      <div class="cw-w cw-right"><div class="cw-shelf">${jar('🥨',4)}</div><div class="cw-shelf">${jar('💧',5)}</div><div class="cw-shelf">${jar('🍪',4)}</div></div>
+      <div class="cw-w cw-floor"></div><div class="cw-w cw-ceil"></div>
+      <div class="cw-lamp" style="--x:-480px"></div><div class="cw-lamp" style="--x:0px"></div><div class="cw-lamp" style="--x:480px"></div>
+    </div></div>`; }
+  function cwLook(d){ const cam=d.querySelector('.cw-cam'); if(!cam) return; let rm=false; try{ rm=matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){}
+    if(rm){ d.classList.add('cw-still'); return; }
+    d.addEventListener('pointermove',e=>{ const x=e.clientX/innerWidth-.5, y=e.clientY/innerHeight-.5; cam.style.setProperty('--ry',(x*-6).toFixed(2)+'deg'); cam.style.setProperty('--rx',(y*3).toFixed(2)+'deg'); },{passive:true}); }
+  function cwDoors(){ const crew=K.info&&K.info.crew&&K.info.crew.assigned;
+    const D=[['buy','🍕','Buy food','Pick, pay, get it'],['cash','💳','Get money','Where it comes from'],['story','📒','My story','Money in and out'],['learn','📚','Lessons',crew?'Money and Canteen Crew':'Learn to use money']];
+    return `<div class="cw-doors" role="tablist" aria-label="In the canteen">${D.map(x=>`<button type="button" role="tab" class="cw-door ${x[0]}${O.panel===x[0]?' on':''}" aria-selected="${O.panel===x[0]}" data-cno="door" data-p="${x[0]}"><span class="i" aria-hidden="true">${x[1]}</span><b>${x[2]}</b><small>${x[3]}</small></button>`).join('')}</div>`; }
+  function vCash(){
+    return `<h3 class="cw-h">💳 Where canteen money comes from</h3>
+      <div class="cw-ways"><div><span class="i">🧑‍🏫</span><b>From your teachers</b><p>Every class they sign you off: on time, did your work, middos. <b>20¢ each.</b></p></div>
+      <div><span class="i">🏪</span><b>From the Tashbar Store</b><p>Turn Tashbar cash into canteen money with a <b>Canteen Card</b>.</p></div></div>
+      <p style="text-align:center;margin:14px 0 4px"><button class="go" data-cno="tostore" data-st="open" data-t="canteen">💳 Get a Canteen Card</button></p>
+      <p class="sm" style="text-align:center">Canteen money is only for food at the canteen. Tashbar cash is for the Store.</p>`+coach(TIPS[1]); }
+  function vLearn(){ const st=(typeof A!=='undefined'&&A.st)||{skills:{}}, sk=st.skills||{}, has=id=>(typeof BANK_ALL!=='undefined'&&BANK_ALL[id])||(typeof GEN!=='undefined'&&GEN[id]);
+    const nm=id=>(typeof BANK_ALL!=='undefined'&&BANK_ALL[id]&&BANK_ALL[id].name)||(CREW[id]&&CREW[id].name)||id;
+    const row=(ids,c)=>{ let nx=false; return `<div class="cw-ls">${ids.filter(has).map(id=>{ const d=!!(sk[id]&&sk[id].m)||(c==='VOC'&&K.info&&K.info.crew.done.indexOf(id)>=0), n=!d&&!nx; if(n) nx=true;
+      return `<button type="button" class="${d?'done':n?'next':''}" data-cno="lesson" data-id="${$$(id)}" data-c="${c}"><span class="i" aria-hidden="true">${d?'✅':n?'▶':'📘'}</span><b>${$$(nm(id))}</b>${n?'<small>Next</small>':d?'<small>Done</small>':''}</button>`; }).join('')}</div>`; };
+    const fin=(typeof BANK_ALL!=='undefined'?Object.keys(BANK_ALL):[]).filter(id=>/^LIFE\.FIN\./.test(id)).sort();
+    let h=`<h3 class="cw-h">📚 Money lessons</h3><p class="sm" style="font-size:16px;margin-top:0">Earning, saving, spending and giving. Tap a lesson to start it.</p>`+(fin.length?row(fin,'LIFE'):'<p style="font-weight:800">The money lessons are still loading. Try again in a moment.</p>');
+    const cr=K.info&&K.info.crew; if(cr&&cr.assigned) h+=`<h3 class="cw-h" style="margin-top:16px">🧑‍🍳 Canteen Crew</h3><p class="sm" style="font-size:16px;margin-top:0">${cr.isCrew?'You are Canteen Crew! You can be cashier at the canteen.':'Finish all 6 lessons to become Canteen Crew.'}</p>`+row(cr.all,'VOC');
+    return h; }
+  function cwFly(b){ try{ if(document.getElementById('cn-shop').classList.contains('cw-still')) return; const src=b.querySelector('.em,img'), tr=document.querySelector('#cn-shop .tray'); if(!src||!tr) return;
+    const a=src.getBoundingClientRect(), z=tr.getBoundingClientRect(), f=document.createElement('span'); f.className='cw-fly'; f.textContent=src.tagName==='IMG'?'🍽️':src.textContent; f.setAttribute('aria-hidden','true');
+    f.style.left=a.left+'px'; f.style.top=a.top+'px'; document.body.appendChild(f); const dx=z.left+40-a.left, dy=z.top+10-a.top;
+    f.animate([{transform:'translate(0,0) scale(1) rotate(0)'},{transform:`translate(${dx*.5}px,${dy*.5-120}px) scale(1.3) rotate(-20deg)`},{transform:`translate(${dx}px,${dy}px) scale(.4) rotate(10deg)`,opacity:.3}],{duration:650,easing:'cubic-bezier(.3,.7,.4,1)'}).onfinish=()=>f.remove(); }catch(e){} }
   document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&O.open) oClose(); });
-  function sayNow(){ const o=O.order; let t='You have '+coinWords(cents(O.cash))+' of canteen money. ';
+  function sayNow(){ if(O.cls) return say('The canteen opens after class.'); const o=O.panel==='buy'?O.order:null; let t='You have '+coinWords(cents(O.cash))+' of canteen money. ';
     if(O.pf<1) t+='Take the quick level check to unlock full pay at your level, and skip what you already know. Until then, lessons there give one quarter, 25 cents, for every dollar. ';
     if(o) t+=o.status==='picked'?'You got your food.':o.seen?'The canteen saw your order. It is still being made.':'You paid. Go to the canteen and say your name.';
+    else if(O.panel==='cash') t+='Canteen money comes from your teachers, 20 cents for each goal, and from Canteen Cards in the Tashbar Store. ';
+    else if(O.panel==='story') t+='This is your money story: money in, and money out. ';
+    else if(O.panel==='learn') t+='Tap a money lesson to start it. ';
     else if(O.step==='check') t+='Do you want to pay '+coinWords(trayCents())+'? Tap yes, buy it. Or tap no, go back.';
     else t+='Tap the food you want. Food with a lock costs more than you have.';
     say(t); }
   document.addEventListener('click',e=>{ const b=e.target.closest('[data-cno]'); if(!b) return; const a=b.dataset.cno;
     if(a==='open') return oOpen(); if(a==='close') return oClose(); if(a==='say') return sayNow();
+    if(a==='door'){ O.panel=b.dataset.p; O.err=''; try{ SND.tap(); }catch(x){} if(O.panel!=='buy'&&!O.menu) oLoad(); oDraw(); const bx=document.querySelector('#cn-shop .bx'), p=document.querySelector('#cn-shop .cw-doors'); if(bx&&p) bx.scrollTop=Math.max(0,p.offsetTop-8); return; }
+    if(a==='tostore'){ oClose(); return; }   /* the Store opens from the same tap (data-st="open" data-t="canteen", StoreKid.html) */
+    if(a==='lesson'){ const id=b.dataset.id, c=b.dataset.c; oClose(); try{ if(typeof startMission==='function') startMission(c,id,'skill'); }catch(x){ console.error('Canteen lesson',x); } return; }
     if(a==='add'||a==='sub'){ const m=(O.menu||[]).find(x=>x.id===b.dataset.id); if(!m) return;
       if(a==='add'){ if(m.out) return; if(cents(m.price)>cents(O.cash)-trayCents()){ O.err='🔒 '+m.name+' costs '+amt(cents(m.price))+'. You need '+amt(cents(m.price)-(cents(O.cash)-trayCents()))+' more.'; try{ SND.tap(); }catch(x){} return oDraw(); } }
-      let q=(O.tray[m.id]||0)+(a==='add'?1:-1); q=Math.max(0,Math.min(10,q)); if(m.left!=null) q=Math.min(q,m.left); O.tray[m.id]=q; O.cid=null; O.err=''; try{ SND.tap(); }catch(x){} return oDraw(); }
+      let q=(O.tray[m.id]||0)+(a==='add'?1:-1); q=Math.max(0,Math.min(10,q)); if(m.left!=null) q=Math.min(q,m.left); const up=q>(O.tray[m.id]||0); O.tray[m.id]=q; O.cid=null; O.err=''; try{ SND.tap(); }catch(x){} if(up&&a==='add') cwFly(b); return oDraw(); }
     if(a==='check'){ O.step='check'; O.err=''; return oDraw(); } if(a==='back'){ O.step='shop'; return oDraw(); }
     if(a==='buy'){ if(O.busy) return; O.busy=true; O.cid=O.cid||(Date.now().toString(36)+Math.random().toString(36).slice(2,8)); const before=O.cash; oDraw();
       return call('cnOrderPlace',tok(),trayLines().map(l=>({id:l.m.id,qty:l.q})),O.cid).then(r=>{ O.busy=false;

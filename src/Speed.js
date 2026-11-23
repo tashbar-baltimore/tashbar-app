@@ -88,7 +88,14 @@ function tlLoader2Src_(OLD) {
      "getting your games ready" screen, not the big-boy home, until his game path (K1Only, the last piece) has loaded. */
   function k1Wait() { try { if (window.K1O || typeof A === 'undefined' || !A || A.view !== 'hub' || !A.st || !A.st.id) return false;
       var f = localStorage.getItem('tl-k1only'); if (f === '0') return false; if (f === '1') return true;
-      var g = localStorage.getItem('tl-k1g:' + A.st.id); return g === '0' || g === '1'; } catch (e) { return false; } }
+      var sid = String(A.st.id), g = localStorage.getItem('tl-k1g:' + sid);
+      /* FIRST OPEN on a Chromebook (2026-11-23): nothing is kept yet, so a K-1 boy used to see the big-boy home and its pop-ups until
+         every piece had loaded (up to about 40 s). Ask the server for his grade once (klMe, read only) and keep it, as K1Only does. */
+      if (g === null && !k1Asked[sid] && typeof SRV !== 'undefined' && SRV && SRV.token) { k1Asked[sid] = 1;
+        google.script.run.withSuccessHandler(function (r) { try { var v = r && typeof r.grade === 'number' ? r.grade : null; if (localStorage.getItem('tl-k1g:' + sid) === null) localStorage.setItem('tl-k1g:' + sid, v == null ? '' : String(v)); } catch (e) {} })
+          .withFailureHandler(function () {}).klMe(SRV.token); }
+      return g === '0' || g === '1'; } catch (e) { return false; } }
+  var k1Asked = {};
   function cover(on) { var c = document.getElementById('tl-k1wait'); if (!on) { if (c) c.remove(); return; } if (c || !document.body) return;
     c = document.createElement('div'); c.id = 'tl-k1wait'; c.setAttribute('role', 'status');
     c.style.cssText = 'position:fixed;inset:0;z-index:2147483600;background:#FFF4D6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font:800 clamp(28px,5vw,48px) system-ui,sans-serif;color:#16202C';
@@ -104,8 +111,15 @@ function tlLoader2Src_(OLD) {
     var r = { tl: k, f: f, ms: ms, a: Array.prototype.slice.call(arguments, 2), x: 0, id: null }; held.push(r); return r; }; }
   W.setTimeout = mk('t'); W.setInterval = mk('i');
   W.clearTimeout = W.clearInterval = function (r) { if (r && typeof r === 'object' && r.tl) { r.x = 1; if (r.id != null) { nCT.call(W, r.id); nCI.call(W, r.id); } return; } nCT.call(W, r); nCI.call(W, r); };
+  /* K-1 QUIET (2026-11-23, white game window on a real K Chromebook): the big-boy home is hidden while a K-1 boy is on his game path
+     or in a game (body.k1-home), but the pieces' repeating timers kept updating it (money pill, clock, sky, buttons) several times a
+     second, and every update woke the pieces' screen watchers. That took a large share of a slow Chromebook away from the game.
+     Now a repeating timer that a piece started while loading skips its turns while body.k1-home is on (a function marked __k1keep,
+     such as K1Only's own, always runs). Everything starts again as soon as he leaves the game path (sign out). */
+  function k1Quiet() { try { return !!(document.body && document.body.classList.contains('k1-home')); } catch (e) { return false; } }
+  function quietly(f) { if (typeof f !== 'function' || f.__k1keep) return f; return function () { if (k1Quiet()) return; return f.apply(this, arguments); }; }
   function release() { var list = held; held = []; W.setTimeout = nST; W.setInterval = nSI;
-    list.forEach(function (r) { if (!r.x) r.id = (r.tl === 'i' ? nSI : nST).apply(W, [r.f, r.ms].concat(r.a)); }); }
+    list.forEach(function (r) { if (!r.x) r.id = (r.tl === 'i' ? nSI : nST).apply(W, [r.tl === 'i' ? quietly(r.f) : r.f, r.ms].concat(r.a)); }); }
   function run1(js) { holding = true; try { (0, eval)(js); } catch (e) { console.error('QuestTools', e); } holding = false; }
   /* K-1 FIRST (HoS 2026-11-22: "it has to be fast, quick, smooth"): on a Chromebook whose last boy was K-1 (K1Only.html keeps
      tl-k1dev), his games (KL, KR, KK, G1M, G1R) and his game path (K1Only) run FIRST, so his PLAY button shows in a moment. The other
