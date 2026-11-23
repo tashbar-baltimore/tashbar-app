@@ -203,6 +203,9 @@ async function kidTests(browser) {
   /* THE BUTTON SYSTEM (tests/lib/uikit.js, src/UiKit.html, HoS 2026-11-23): every part of the kit, measured inside the real page */
   try { const uk = await require('./lib/uikit.js')(pg); uk.fails.forEach(fail); uk.oks.forEach(ok); }
   catch (e) { fail('button system test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* CHANUKAH OLIVE OIL (tests/lib/oiltrail.js, src/OilTrail.html, HoS 2026-11-23) */
+  try { const ot = await require('./lib/oiltrail.js')(pg); ot.fails.forEach(fail); ot.oks.forEach(ok); }
+  catch (e) { fail('olive oil test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const sf = require('./lib/storefx.js'), n = sf.names(), e = await sf.effects(pg); n.fails.concat(e.fails).forEach(fail);
     if (!n.fails.length && !e.fails.length) ok('store Fun tab: ' + n.count + ' items, no two share a name, picture, tap blast, trail or app colors (closest app colors: ' + (e.closest && e.closest.d) + ')'); }
   catch (e) { fail('store check crashed: ' + String(e && e.stack || e).slice(0, 300)); }

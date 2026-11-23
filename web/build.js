@@ -34,6 +34,8 @@ async function call(fn, args) {
   const PICS = path.join(__dirname, 'pics'); if (fs.existsSync(PICS)) fs.cpSync(PICS, path.join(OUT, 'pics'), { recursive: true });
   /* the sign-in theme tune as a ready sound file (GameMap.html), served at /sounds/. */
   const SOUNDS = path.join(__dirname, 'sounds'); if (fs.existsSync(SOUNDS)) fs.cpSync(SOUNDS, path.join(OUT, 'sounds'), { recursive: true });
+  /* the screen-snapshot helper (html2canvas 1.4.1, MIT) for the Chanukah olive oil on the home screen (OilTrail.html), served at /vendor/ from our own site. */
+  const VENDOR = path.join(__dirname, 'vendor'); if (fs.existsSync(VENDOR)) fs.cpSync(VENDOR, path.join(OUT, 'vendor'), { recursive: true });
   fs.writeFileSync(path.join(OUT, 'page-hash.json'), JSON.stringify({ h: pageR.h, built: BUILT }));
   let page = pageR.html; const at = page.indexOf('<head>'); if (at < 0) throw new Error('no <head> in the student page');
   page = page.slice(0, at + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Tashbar Learning</title><script>window.TL_PAGE_HASH="' + pageR.h + '";window.TL_PAGE_BUILT=' + BUILT + ';</script><script src="/boot.js"></script>' + page.slice(at + 6);

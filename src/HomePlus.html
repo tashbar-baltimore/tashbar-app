@@ -379,10 +379,10 @@ window.tlSplash=splash;
    Mouse and pen use pointer events. A finger uses touch events: the browser stops pointer events (pointercancel) as soon as a
    swipe starts scrolling the page, but touchmove keeps coming, so the trail keeps following the finger while the page scrolls. */
 const SW={}, STEP=38, CAP=60;
-function trailTo(p,x,y){ const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
+function trailTo(p,x,y){ if(typeof window.tlOilOn==='function'&&window.tlOilOn()) return; const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
  while(dd>=STEP){ p.x+=ux*STEP; p.y+=uy*STEP; dd-=STEP; if(LIVE<CAP) splash(p.x,p.y,true); } }
 const BL={cv:null,cx:null,pts:[],raf:0,down:false,dpr:1};
-function bladeOn(){ try{ if(!window.HP_FX) return false;   /* 2026-11-19: the ribbon shows even with reduced motion: it only follows the boy's own finger (the bursts stay off then) */ if(typeof window.tlStoreTrailOn==='function'&&window.tlStoreTrailOn()) return false; return true; }catch(e){ return false; } }
+function bladeOn(){ try{ if(!window.HP_FX) return false;   /* 2026-11-19: the ribbon shows even with reduced motion: it only follows the boy's own finger (the bursts stay off then) */ if(typeof window.tlStoreTrailOn==='function'&&window.tlStoreTrailOn()) return false; if(typeof window.tlOilOn==='function'&&window.tlOilOn()) return false; /* 2026-11-23 HoS: through Chanukah the olive oil (OilTrail.html) is the free trail */ return true; }catch(e){ return false; } }
 function bladeCanvas(){ if(BL.cv&&BL.cv.isConnected) return BL.cx; const c=document.createElement('canvas'); c.id='hpblade'; c.setAttribute('aria-hidden','true');
  c.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;z-index:2147483199;pointer-events:none'; document.body.appendChild(c); BL.cv=c; BL.cx=c.getContext('2d'); bladeSize(); return BL.cx; }
 function bladeSize(){ if(!BL.cv) return; BL.dpr=Math.min(2,window.devicePixelRatio||1); BL.cv.width=Math.round(innerWidth*BL.dpr); BL.cv.height=Math.round(innerHeight*BL.dpr); }
@@ -405,7 +405,7 @@ function bladeDraw(){ BL.raf=0; const cx=bladeCanvas(); if(!cx) return; const d=
   cx.globalAlpha=Math.min(1,.25+age); cx.strokeStyle=c; cx.shadowColor=c; cx.shadowBlur=12; cx.lineWidth=w; cx.stroke();
   cx.shadowBlur=0; cx.globalAlpha=Math.min(1,.2+age)*.9; cx.strokeStyle='#FFFFFF'; cx.lineWidth=w*.35; cx.stroke(); }
  cx.globalAlpha=1; BL.raf=requestAnimationFrame(bladeDraw); }
-document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ splash(e.clientX,e.clientY); BL.down=true; BL.pts=[]; bladeAdd(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
+document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ if(!(typeof window.tlOilTapOn==='function'&&window.tlOilTapOn())) splash(e.clientX,e.clientY); BL.down=true; BL.pts=[]; bladeAdd(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
 document.addEventListener('pointermove',e=>{ if(!window.HP_FX||e.pointerType==='touch') return;
  try{ const pts=e.getCoalescedEvents?e.getCoalescedEvents():[], list=pts.length?pts:[e]; list.forEach(q=>bladeAdd(q.clientX,q.clientY));
   const p=SW['p'+e.pointerId]; if(!p) return; if(!e.buttons){ delete SW['p'+e.pointerId]; BL.down=false; return; } list.forEach(q=>trailTo(p,q.clientX,q.clientY)); }catch(x){} },{capture:true,passive:true});
