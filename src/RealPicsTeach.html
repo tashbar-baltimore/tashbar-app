@@ -1,0 +1,47 @@
+<script>
+/* PICS-2 (2026-11-23, CLAUDE for developer@ and the HoS): real pictures where the TEACHING happens.
+   RealPics.html puts a picture on question cards (.qcard). One Bite draws its TODAY WE LEARN and WATCH ME screens itself
+   and never calls the inner render(), so RealPics cannot see them. This add-on loads AFTER OneBite / OneBiteMoney and
+   adds the same kind of picture (same library TL_PICS, same figure, zoom and credit) to:
+     'SKILL.ID|@today'   the TODAY WE LEARN screen (the unit opener): replaces the big emoji;
+     'SKILL.ID|@watch'   the WATCH ME screens (worked example): a smaller picture under the tag, only while no model is drawn;
+     '@passage|KEY'      a reading passage (aside.passage, PASS[KEY]): one topic picture under its title.
+   A skill key may also be a UNIT prefix ('SCI.ANIM.L04|@today' covers SCI.ANIM.L04.01, .02 ...); the most exact key wins.
+   Lanes add entries with TL_PIC_ADD({...lib}, {...map}) like every PICS lane. tools/pics-check.js checks these keys too.
+   Never on the K-1 hub, the K-1 game overlays, the oops (Mistake Detective) screen, staff screens or results.
+   If this file fails or a picture is missing, the screens look exactly as before. */
+(function () {
+  if (typeof window.TL_PIC_MAP === 'undefined' || typeof window.rpHTML !== 'function') return;
+  function rtFind(id, tag) { const M = window.TL_PIC_MAP; let k = String(id || '');
+    while (k) { if (M[k + '|' + tag]) return M[k + '|' + tag]; const d = k.lastIndexOf('.'); if (d < 0) break; k = k.slice(0, d); }
+    return null; }
+  function rtWire(fig) { if (!fig) return; fig.querySelector('.rpz').onclick = () => rpZoom(fig); fig.querySelector('.rpbox').onclick = () => rpZoom(fig);
+    rpFit(fig.querySelector('.rpbox')); requestAnimationFrame(() => rpFit(fig.querySelector('.rpbox'))); }
+  const RT_VH = { 'rt-today': 40, 'rt-watch': 26, 'rt-pass': 30 };
+  function rtPut(where, before, use, cls) { const h = rpHTML(use), P = window.TL_PICS[use.id]; if (!h || !P) return null;
+    where.insertAdjacentHTML(before ? 'beforebegin' : 'afterend', h);
+    const fig = before ? where.previousElementSibling : where.nextElementSibling; if (fig) { fig.classList.add('rt', cls); fig.style.maxWidth = 'min(' + (cls === 'rt-today' ? 560 : 420) + 'px, 100%, calc(' + RT_VH[cls] + 'vh * ' + (P.w / P.h).toFixed(3) + '))'; rtWire(fig); } return fig; }
+  function rtDecorate() { try {
+    if (typeof A === 'undefined' || A.view !== 'play' || !A.play) return; const p = A.play, app = document.getElementById('app'); if (!app) return;
+    const st = p.ob && p.ob.stage;
+    if (st === 'today') { const big = app.querySelector('.ob-main > .ob-bigpic'); if (!big || app.querySelector('.rt')) return;
+      const use = rtFind(p.id, '@today'); if (!use) return; if (rtPut(big, true, use, 'rt-today')) big.classList.add('rt-gone'); return; }
+    if (st === 'watch') { if (app.querySelector('.rt') || app.querySelector('.ob-oops')) return; const steps = app.querySelector('.ob-steps'); if (!steps) return;
+      if (steps.querySelector('li.new .ob-tf, li.new .ob-tiles, li.new .ob-bl, li.new .ob-fb, li.new .ob-nl, li.new svg, li.new canvas')) return;
+      const use = rtFind(p.id, '@watch'); if (!use) return; const tag = app.querySelector('.ob-main > .ob-tag'); if (!tag) return;
+      const sm = app.querySelector('.ob-main > .ob-bigpic.sm'); if (rtPut(tag, false, use, 'rt-watch') && sm) sm.classList.add('rt-gone'); return; }
+    const it = p.items && p.items[p.i]; if (!it || !it.p) return;
+    const pas = app.querySelector('aside.passage'); if (!pas || pas.querySelector('.rt')) return;
+    const key = typeof PASS !== 'undefined' && PASS[it.p] ? it.p : null; if (!key) return;
+    const use = window.TL_PIC_MAP['@passage|' + key]; if (!use) return; const h3 = pas.querySelector('h3'); if (h3) rtPut(h3, false, use, 'rt-pass');
+  } catch (e) { console.error('RealPicsTeach', e); } }
+  window.rtDecorate = rtDecorate;
+  if (typeof window.render === 'function' && !window.render.__rt) { const _r = window.render;
+    window.render = function () { const out = _r.apply(this, arguments); rtDecorate(); return out; }; window.render.__rt = true; }
+  document.head.insertAdjacentHTML('beforeend', `<style id="realpics-teach-css">
+.rt.rp{margin:2px auto 4px;width:100%}.rt-gone{display:none!important}
+.rt-pass.rp{margin:6px auto 10px}
+.rt figcaption{font-size:14px}
+</style>`);
+})();
+</script>
