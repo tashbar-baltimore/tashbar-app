@@ -29,4 +29,5 @@ See `v2/FEATURES.md`.
 ## For builders
 - A 2.0 pull request changes **only** files under `v2/`. A pull request that mixes 1.0 and 2.0 changes is refused.
 - 1.0 pull requests must not touch `v2/`. If one does, it waits for an approver like any 2.0 change.
+- A 2.0 piece brings its own tests in `v2/tests/` (each file exports `async (browser) => ({ fails, oks })`). `node tests/run.js` runs them all.
 - Never publish 2.0 by hand. `publish-v2` puts it live only after the gate (`v2-gate`) has seen an approval.

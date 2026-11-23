@@ -86,6 +86,9 @@ async function kidTests(browser) {
     errs.forEach(e => fail('kid page (timing run): ' + e)); await ctx.close(); }
   /* K-1 FIRST (tests/lib/k1fast.js): on a K-1 Chromebook the K boy's PLAY shows fast */
   try { const kf = await require('./lib/k1fast.js')(browser, openPage, K); kf.fails.forEach(fail); kf.oks.forEach(ok); } catch (e) { fail('K-1 first check crashed: ' + String(e).slice(0, 200)); }
+  /* 2.0 (v2/README.md): every test a 2.0 piece brings in v2/tests/*.js runs here; each exports async (browser) => { fails, oks } */
+  try { const V2T = path.join(__dirname, '..', 'v2', 'tests'); if (fs.existsSync(V2T)) for (const f of fs.readdirSync(V2T).filter(x => x.endsWith('.js')).sort()) {
+      try { const r = await require(path.join(V2T, f))(browser); (r.fails || []).forEach(fail); (r.oks || []).forEach(ok); } catch (e) { fail('2.0 test ' + f + ' crashed: ' + String(e).slice(0, 200)); } } } catch (e) { fail('2.0 tests could not run: ' + String(e).slice(0, 200)); }
   /* lessons */
   const { ctx, pg, errs } = await openPage(browser, K.page, K, 0); await pg.goto('http://app.test/');
   await pg.waitForFunction(() => window.TLT && typeof BANK_ALL !== 'undefined' && Object.keys(BANK_ALL).length > 500, null, { timeout: 180000 }); await pg.waitForTimeout(20000);
