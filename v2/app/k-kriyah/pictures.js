@@ -40,8 +40,12 @@ export function makePictures(E) {
       g.add(mesh(E.rbox(1.1, .7, .14, .05), wool, 0, 0, 0)); [-.22, .22].forEach(y => g.add(mesh(new THREE.BoxGeometry(1.12, .07, .15), stripe, 0, y, 0)));
       g.add(mesh(new THREE.BoxGeometry(.4, .1, .16), M(0xd9dde3, { metalness: .6, roughness: .3 }), 0, .4, 0));
       [-.48, .48].forEach(x => { for (let i = 0; i < 4; i++) g.add(mesh(new THREE.CylinderGeometry(.012, .012, .42, 6), wool, x + (i - 1.5) * .025, -.55, .03)); }); return g; },
-    tapuach() { const g = new THREE.Group(); const a = mesh(new THREE.SphereGeometry(.45, 28, 20), M(0xe0312b, { roughness: .25, clearcoat: 1 }), 0, -.08, 0); a.scale.set(1.05, .95, 1); g.add(a);   /* an apple */
-      g.add(mesh(new THREE.CylinderGeometry(.03, .04, .22, 8), M(0x6b4423), 0, .43, 0)); const lf = mesh(new THREE.SphereGeometry(.14, 14, 8), M(0x3fae4a, { roughness: .5 }), .15, .45, 0); lf.scale.set(1.3, .45, .7); lf.rotation.z = -.4; g.add(lf); return g; },
+    taleh() { const g = new THREE.Group(), wool = M(0xfbf7ee, { roughness: .9 }), face = M(0x3b2f2a, { roughness: .6 });   /* a lamb (taleh): fluffy wool, dark face and legs */
+      [[0, 0], [-.22, .05], [.22, .05], [-.12, .18], [.12, .18], [-.3, -.1], [.3, -.1], [0, .2]].forEach(([x, y]) => g.add(mesh(new THREE.SphereGeometry(.22, 16, 12), wool, x, y, 0)));
+      const head = mesh(new THREE.SphereGeometry(.16, 16, 12), face, .48, .22, .05); head.scale.set(1.1, .95, .9); g.add(head);
+      [[.42, .36], [.56, .34]].forEach(([x, y]) => { const e = mesh(new THREE.SphereGeometry(.06, 10, 8), face, x, y, -.03); e.scale.set(1.4, .6, .8); g.add(e); });
+      g.add(mesh(new THREE.SphereGeometry(.035, 8, 6), M(0xffffff), .58, .26, .17, false));
+      [[-.25, -.1], [-.08, .1], [.1, -.1], [.25, .1]].forEach(([x, z]) => g.add(mesh(new THREE.CylinderGeometry(.05, .05, .35, 8), face, x, -.4, z))); g.position.y = .08; return g; },
     yad() { const g = new THREE.Group(), skin = M(0xf2c9a0, { roughness: .55 });   /* a hand, waving */
       const palm = mesh(E.rbox(.62, .6, .2, .12), skin, 0, -.2, 0); g.add(palm);
       [[-.22, .26, .44], [-.075, .3, .5], [.075, .29, .48], [.22, .24, .4]].forEach(([x, y, h]) => { const f = mesh(new THREE.CapsuleGeometry(.07, h - .14, 6, 12), skin, x, y, 0); g.add(f); });
@@ -74,10 +78,10 @@ export const WORDS = {
   challah: { letter: 'ches', say: 'Challah for Shabbos!' },
   zemiros: { letter: 'zayin', say: 'Zemiros! Singing at the Shabbos table.' },
   tallis: { letter: 'tes', say: 'A tallis!' },
-  tapuach: { letter: 'tes', say: 'Tapuach. An apple!' },
+  taleh: { letter: 'tes', say: 'Taleh. A lamb!' },
   yad: { letter: 'yud', say: 'Yad. A hand!' },
   yeled: { letter: 'yud', say: 'Yeled. A boy!' },
   kos: { letter: 'kaf', say: 'A kos for Kiddush!' },
   kippah: { letter: 'kaf', say: 'A kippah!' },
 };
-export const WORD_NAME = { gefen: 'Gefen', gelt: 'Gelt', dag: 'Dag', dreidel: 'Dreidel', havdalah: 'Havdalah', har: 'Har', bayis: 'Bayis', vov: 'Vov', challah: 'Challah', zemiros: 'Zemiros', tallis: 'Tallis', tapuach: 'Tapuach', yad: 'Yad', yeled: 'Yeled', kos: 'Kos', kippah: 'Kippah' };
+export const WORD_NAME = { gefen: 'Gefen', gelt: 'Gelt', dag: 'Dag', dreidel: 'Dreidel', havdalah: 'Havdalah', har: 'Har', bayis: 'Bayis', vov: 'Vov', challah: 'Challah', zemiros: 'Zemiros', tallis: 'Tallis', taleh: 'Taleh', yad: 'Yad', yeled: 'Yeled', kos: 'Kos', kippah: 'Kippah' };

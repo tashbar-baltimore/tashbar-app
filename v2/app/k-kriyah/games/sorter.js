@@ -69,7 +69,7 @@ export default function setup(E, { struggled, unit, game }) {
   }
   async function playPair(pr, first) {
     setPair(pr); E.sfx.whoosh(); crates.forEach(c => E.hop(c, .2, 300));
-    await E.say(say(CLUE, pr[1], pr) + ' ' + say(CLUE, pr[0], pr));
+    await E.say(say(CLUE, pr[1], pr)); await E.say(say(CLUE, pr[0], pr));   /* two lines: each 12 words or fewer */
     let d; do { d = Array.from({ length: 6 }, (_, i) => pr[i % 2]).sort(() => Math.random() - .5); } while (new RegExp(`(${pr[0]},){2}${pr[0]}|(${pr[1]},){2}${pr[1]}`).test(d.join(',')));
     deck = [pr[1], ...d]; idx = 0; E.setProgress(deck.length, 0);
     await setCard(deck[0]); busy = false;

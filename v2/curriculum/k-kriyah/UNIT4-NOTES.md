@@ -14,9 +14,9 @@
 | 1 | Dovid's Shabbos (story) | Tatty's tallis turns into Tes, Dovid's waving hand (a yad) into Yud, and the Kiddush cup (a kos) into Kaf. Kaf's dot floats away and it becomes Chaf. Then the look-alikes side by side, a chant of all 13 letters, and he taps each new one. |
 | 2 | Feel the Shape | Feels Tes, Yud, Kaf (and taps its dot) and Chaf. |
 | 3 | Look-Alike Detective | Two crates. He sorts Beis and Kaf (an arrow points at Beis's tail and Kaf's round bottom), then Kaf and Chaf (the dot). |
-| 4 | Sound Match | Tallis and tapuach (apple) go to Tes, yad (hand) and yeled (boy) to Yud, kos and kippah to Kaf, and bayis to Beis. |
+| 4 | Sound Match | Tallis and taleh (a lamb) go to Tes, yad (hand) and yeled (boy) to Yud, kos and kippah to Kaf, and challah to Ches. At the end Chaf joins Ches: "Chaf sounds just like Ches." |
 | 5 | Find the Mistake | "Yaakov says this is a Chaf. Is he right?" A ring marks the dot place; an arrow points at a shape difference. |
-| 6 | Show what you know (mastery check) | 9 questions. Beis always stands beside Kaf, and Kaf beside Chaf. |
+| 6 | Show what you know (mastery check) | 9 questions. Beis always stands beside Kaf, and Kaf beside Chaf. Each right letter jumps into a basket. |
 | 7 | Review: Letter Hunt | Finds Zayin and Ches again, the spaced review of Unit 3. |
 | 8 | Bonus: letter rain | Four short rounds: Tes, Yud, Kaf, Chaf. |
 
@@ -29,14 +29,16 @@
    - Beis has a tail at the bottom; Kaf is round at the bottom (an orange arrow).
    - Kaf has a dot; Chaf has no dot (a ring at the dot place, as with Beis and Veis).
 6. **From Unit 4 on, the mastery check shows Beis beside Kaf** (its new look-alike) instead of beside Veis.
-7. **The review round is Letter Hunt for Zayin and Ches,** still in the sukkah.
+7. **The review round is Letter Hunt for Zayin and Ches,** still in the sukkah. It opens with "Remember Zayin and Ches?"
 8. **Feel the Shape has no review letter this time,** since it already has four letters. Beis comes back in the Look-Alike Detective.
+9. **Tes's second picture is a taleh (a lamb).** Tapuach starts with Tav, not Tes, so it is not used.
+10. **Sound Match has a Ches stand instead of Beis,** so Chaf can join the letter it sounds like. Beis comes back in the Look-Alike Detective and the mastery check.
 
 ## For the rebbe (every sound and rule used in Unit 4)
 - **Letters:** Tes (ט) says "t", Yud (י) says "y", Kaf (כּ) says "k", Chaf (כ) says "ch" (the same sound as Ches). These are lone sounds, never with a vowel.
 - **Dot rule:** Kaf has a dot (dagesh) and says k. Without the dot it is Chaf and says ch, like Beis and Veis.
 - **Look-alikes:** Beis has a tail at the bottom right, and Kaf is round at the bottom.
-- **Words:** tallis, tapuach, yad, yeled, kos, Kiddush, kippah, Friday night.
+- **Words:** tallis, taleh (lamb), yad, yeled, kos, Kiddush, kippah, Friday night.
 - **Shown:** Tatty holds the Kiddush cup on Friday night, with the Shabbos candles lit and the challah covered. There is no bracha, no pasuk and no Divine Name. The sefarim on the shul shelf have plain spines with no writing.
 - **Chant order:** Alef, Beis, Veis, Gimmel, Daled, Hei, Vov, Zayin, Ches, Tes, Yud, Kaf, Chaf.
 - **Temporary:** the letter sounds are the computer voice until the rebbe's recording is in, especially Chaf.

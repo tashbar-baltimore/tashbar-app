@@ -16,6 +16,8 @@ export default function setup(E, { unit }) {
   const spines = [0x8b1e2e, 0x1f3c88, 0x2e6b3f, 0x5a2a6e, 0x8b1e2e, 0x1f3c88, 0x6b4423];   /* sefarim: plain spines, no writing */
   [.35, .95].forEach(y => spines.forEach((c, i) => shelf.add(E.mesh(E.rbox(.17, .46, .3, .02), E.M(c, { roughness: .5, clearcoat: .4 }), -.6 + i * .2, y, .06))));
   shelf.position.set(3.6, 0, -1.25); shul.add(shelf);
+  shul.add(E.mesh(E.rbox(10, .08, 4.2, .03), E.M(0xc99a6b, { roughness: .6 }), 0, .02, .4));   /* a wooden floor and two side walls, so it is a room */
+  [-5, 5].forEach(x => shul.add(E.mesh(E.rbox(.2, 3.6, 2.6, .06), E.M(0xefe0c4, { roughness: .7 }), x, 1.8, -.4)));
   const bench = E.mesh(E.rbox(2.4, .12, .5, .04), E.M(0xa86f3c, { roughness: .6 }), -3.4, .55, -.8); shul.add(bench); [-4.4, -2.4].forEach(x => shul.add(E.mesh(new THREE.BoxGeometry(.1, .5, .45), E.M(0x8a5a3c), x, .27, -.8)));
   /* Friday night at home: the table with a white cloth, the Shabbos candles and the covered challah */
   const table = new THREE.Group(); table.visible = false; E.scene.add(table);
@@ -64,7 +66,7 @@ export default function setup(E, { unit }) {
     boy.mood('wave'); await E.say('This is Dovid. He goes to shul with Tatty.'); boy.mood('calm');
     /* Tes: Tatty's tallis */
     tallis.position.set(dad.position.x + .9, 2.0, dad.position.z + .4); await E.popIn(tallis, 1.1, 500); dad.mood('wave'); setTimeout(() => dad.mood('calm'), 1000 * E.F);
-    await E.say('Tatty wears a tallis in shul.');
+    await E.say('Tatty brings his tallis to shul.');
     await toCentre(tallis); await morph(tallis, 'tes'); E.setProgress(6, 1);
     await E.say('Tallis starts with Tes.');
     await E.say(['Tes says', S('t')]);
@@ -87,7 +89,6 @@ export default function setup(E, { unit }) {
     kos.position.set(dad.position.x + .8, 2.0, dad.position.z + .4); await E.popIn(kos, 1.1, 400); dad.mood('cheer');
     await E.say('Tatty holds the kos, the Kiddush cup.'); dad.mood('calm');
     await toCentre(kos); await morph(kos, 'kaf'); E.setProgress(6, 3);
-    await E.tween(700, q => { night.style.opacity = .5 * (1 - q); E.R.toneMappingExposure = .57 + q * .25; });
     await E.say('Kos starts with Kaf. Kaf has a dot.');
     await E.say(['Kaf says', S('k')]);
     await E.say('Tap Kaf!'); await tapIt(L.kaf, ['Kaf says', S('k')]);
@@ -103,6 +104,7 @@ export default function setup(E, { unit }) {
     await E.say('Chaf sounds just like Ches!');
     await E.say('Tap Chaf!'); await tapIt(ch, ['Chaf says', S('ch')]);
     L.kaf.visible = true; L.kaf.position.copy(kp); float(L.kaf); await letterDone('kaf'); await letterDone('chaf');
+    await E.tween(700, q => { night.style.opacity = .5 * (1 - q); E.R.toneMappingExposure = .57 + q * .25; });   /* Friday night lasts through Kaf and Chaf */
     /* the look-alikes, side by side; for each line the arrow (or the ring at the dot place) shows where to look */
     unit.letters.forEach(k => { L[k].visible = false; floaters.delete(L[k]); });
     await Promise.all([E.popOut(boy), E.popOut(dad), E.popOut(table), E.popOut(candles)]);

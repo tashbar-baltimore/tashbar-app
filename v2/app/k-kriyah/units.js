@@ -39,7 +39,7 @@ export const UNITS = [
       { id: 'u4g0', name: 'Dovid’s Shabbos', kind: 'story4', icon: 'cup' },
       { id: 'u4g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
       { id: 'u4g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['beis', 'kaf'], ['kaf', 'chaf']] },
-      { id: 'u4g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },
+      { id: 'u4g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish', stands: ['ches', 'tes', 'yud', 'kaf'] },   /* Ches (challah) comes back: Chaf sounds just like it */
       { id: 'u4g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
       { id: 'u4g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u4g6', name: 'Review: Letter Hunt', kind: 'hunt', icon: 'glass', review: true, reviewOf: 3 },

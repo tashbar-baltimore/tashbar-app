@@ -105,7 +105,8 @@ export default function setup(E, { struggled, unit, game }) {
     /* round 1 */
     const [r1, r2] = plan.rounds;
     setRound(r1[0], r1[1], help ? r1[3] : r1[2]);
-    boy.mood('think'); await E.say(boyName + ' is in the sukkah. Letters are hiding!');
+    boy.mood('think'); if (game && game.review) await E.say('Remember ' + NM(plan.rounds[0][0]) + ' and ' + NM(plan.rounds[1][0]) + '? Let’s find them again!');
+    await E.say(boyName + ' is in the sukkah. Letters are hiding!');
     await showAll();
     await E.say('Watch me. I find ' + (r1[0] === 'alef' ? 'an Alef' : 'a ' + NM(r1[0])) + '. ' + (NOTE[r1[0]] || ''));
     const first = letters.find(l => l.userData.key === r1[0]); let [x, y] = E.toScreen(E.worldPos(first)); E.hand.at(x + 10, y + 10); await E.wait(700);

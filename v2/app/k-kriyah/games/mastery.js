@@ -7,7 +7,7 @@ const N = k => ({ k, by: 'name' }), SND = k => ({ k, by: 'sound' });
 const QS = {
   1: [N('beis'), N('alef'), N('veis'), SND('beis'), SND('veis'), { k: 'alef', by: 'quiet' }, N('veis'), N('beis'), SND('veis')],
   3: [N('zayin'), N('vov'), SND('zayin'), N('ches'), N('hei'), N('daled'), { k: 'alef', by: 'quiet' }, N('beis'), SND('gimmel')],   /* no 'Which says ch?' until the rebbe's recording */
-  4: [N('kaf'), N('tes'), N('chaf'), SND('kaf'), N('yud'), SND('tes'), N('beis'), SND('yud'), N('zayin')],   /* Beis comes with Kaf; no 'Which says ch?' */
+  4: [N('kaf'), N('tes'), N('chaf'), SND('kaf'), N('yud'), SND('tes'), N('beis'), SND('yud'), N('ches')],   /* Beis comes with Kaf; no 'Which says ch?' */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {
@@ -69,7 +69,7 @@ export default function setup(E, { struggled, unit }) {
   async function showSet(k) { set = pick(k); mix([0, 1, 2]).forEach((s, i) => slot[set[i]] = s); E.sfx.whoosh(); await place(true); }
 
   const line = q => q.by === 'quiet' ? 'Which letter is quiet? Tap it.' : q.by === 'sound' ? ['Which letter says', S(E.LETTERS[q.k].snd), '? Tap it.'] : 'Tap ' + E.LETTERS[q.k].name + '.';
-  const explain = k => k === 'alef' ? 'That is Alef. Alef is quiet.' : k === 'beis' ? ['That is Beis. It has a dot. Beis says', S('b')] : k === 'veis' ? ['That is Veis. No dot. Veis says', S('v')] : k === 'kaf' ? ['That is Kaf. It has a dot. Kaf says', S('k')] : k === 'chaf' ? ['That is Chaf. No dot. Chaf says', S('ch')]
+  const explain = k => k === 'alef' ? 'That is Alef. Alef is quiet.' : k === 'beis' ? ['That is Beis. It has a dot. Beis says', S('b')] : k === 'veis' ? ['That is Veis. No dot. Veis says', S('v')] : k === 'kaf' ? ['That is Kaf. It has a dot. Kaf says', S('k')] : k === 'chaf' ? ['No dot: Chaf. It says', S('ch')]
     : ['That is ' + E.LETTERS[k].name + '. ' + E.LETTERS[k].name + ' says', S(E.LETTERS[k].snd)];
   const Qs = QS[unit.n] || QS[1];
   async function ask(q) {

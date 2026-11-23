@@ -70,7 +70,8 @@ export default function setup(E, { struggled, unit }) {
       const r = resolveFix; resolveFix = null; busy = false; r && r();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; t.userData.busy = true; await E.tween(350, k => t.position.lerpVectors(p0, home, k), E.ease.out); await E.shake(t, .15); t.userData.busy = false;
-      await E.say('That is ' + E.LETTERS[t.userData.key].name + '. Find ' + E.LETTERS[fixKey].name + (CUE[fixKey] ? ', ' + CUE[fixKey] : '') + '!');
+      const cue = fixKey === 'kaf' && tiles.some(x => x.userData.key === 'beis') ? 'round at the bottom' : CUE[fixKey];   /* Beis has a dot too */
+      await E.say('That is ' + E.LETTERS[t.userData.key].name + '. Find ' + E.LETTERS[fixKey].name + (cue ? ', ' + cue : '') + '!');
       help = true;
     }
   }

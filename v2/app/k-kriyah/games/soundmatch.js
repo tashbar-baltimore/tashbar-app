@@ -5,7 +5,7 @@
 import { makePictures, WORDS, WORD_NAME } from '../pictures.js';
 export default function setup(E, { struggled, unit, game = {} }) {
   const { THREE, S } = E;
-  const PIC = makePictures(E), keys = (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters).filter(k => Object.values(WORDS).some(w => w.letter === k));   /* only letters with pictures (Chaf has none: few words start with it) */   /* in Alef-Beis order, right to left; as a review round, an earlier unit's letters */   /* one earlier letter comes back (Beis, with the bayis) */
+  const PIC = makePictures(E), keys = (game.stands || (game.reviewOf ? E.UNITS[game.reviewOf - 1].letters : unit.n > 1 ? ['beis', ...unit.letters] : unit.letters)).filter(k => Object.values(WORDS).some(w => w.letter === k));   /* only letters with pictures (Chaf has none: few words start with it) */   /* in Alef-Beis order, right to left; as a review round, an earlier unit's letters */   /* one earlier letter comes back (Beis, with the bayis) */
   const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter));
   const kid = E.unitBoy(unit.n); E.scene.add(kid);   /* the unit's boy: Shloimy, then Ari */
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
@@ -80,6 +80,9 @@ export default function setup(E, { struggled, unit, game = {} }) {
     await drop(pd0); mistakes = 0;
     if (idx < deck.length) { await E.say('Now you! Drag each picture to its letter.'); document.body.dataset.dragReady = 1; }
     await done;
+    if (keys.includes('ches') && unit.letters.includes('chaf')) {   /* Chaf has no picture: it joins Ches, the letter that sounds just like it */
+      const pd = peds.find(x => x.userData.key === 'ches'), c = E.letter('chaf', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 1.3 * pd.scale.x, .6)); c.scale.setScalar(pd.scale.x); E.scene.add(c); await E.popIn(c, pd.scale.x);
+      await E.say('This is Chaf. Kaf without its dot.'); E.hop(L.ches, .3); await E.say('Chaf sounds just like Ches. Like challah!'); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Great matching! Every picture found its letter.' : null };
   };
