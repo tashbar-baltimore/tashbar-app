@@ -6,6 +6,7 @@ export default function setup(E, { unit }) {
   const { THREE, S } = E;
   /* the path along each letter, in font units (1000 per em, y up), stroke by stroke */
   const BEIS = [[[78, 612], [84, 515], [200, 500], [320, 500], [425, 478], [446, 380], [446, 275], [446, 170], [430, 91], [320, 91], [205, 91], [90, 91]]];
+  const KAF = [[[75, 610], [70, 505], [200, 500], [330, 495], [440, 470], [475, 380], [475, 280], [470, 180], [430, 95], [320, 88], [200, 88], [70, 88]]];
   const PATHS = {
     alef: [[[78, 600], [112, 500], [160, 440], [240, 370], [330, 290], [436, 197], [515, 85]],
       [[424, 612], [458, 520], [520, 468], [505, 360], [470, 280]],
@@ -16,13 +17,16 @@ export default function setup(E, { unit }) {
     vov: [[[48, 610], [95, 510], [175, 500], [212, 450], [212, 340], [212, 200], [215, 30]]],
     zayin: [[[60, 610], [70, 505], [160, 495], [250, 470]], [[150, 390], [145, 260], [158, 130], [180, 25]]],
     ches: [[[90, 615], [95, 510], [230, 500], [400, 500], [545, 495], [545, 380], [540, 250], [535, 120], [530, 25]], [[150, 440], [148, 300], [148, 170], [150, 40]]],
+    tes: [[[100, 560], [130, 400], [130, 280], [140, 170], [200, 90], [320, 85], [450, 100], [540, 200], [545, 320], [530, 450], [440, 520], [325, 400]]],
+    yud: [[[50, 600], [60, 505], [160, 505], [250, 490], [260, 400], [230, 320], [160, 240]]],
+    kaf: KAF, chaf: KAF,
     hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
-  const REVIEW = { 2: 'beis', 3: 'hei' }[unit.n];   /* one earlier letter comes back: Beis in Unit 2, Hei (Ches's look-alike) in Unit 3 */
+  const REVIEW = { 2: 'beis', 3: 'hei' }[unit.n];   /* Unit 4 already has four letters, and Beis comes back in its look-alike game */   /* one earlier letter comes back: Beis in Unit 2, Hei (Ches's look-alike) in Unit 3 */
   const ORDER = REVIEW ? [...unit.letters, REVIEW] : unit.letters;
   const ROW = [...unit.known, ...unit.letters].filter(k => ORDER.includes(k));   /* the finished row is in Alef-Beis order */   /* a later unit ends with one earlier letter (Beis, and its dot) */
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
-  const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }) : E.mendy(); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
+  const boy = E.unitBoy(unit.n); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
   const done = []; let cur = null, beads = [], next = 0, demo = false, active = false, lastHelp = 0, wander = 0, offTries = 0;
   /* the path is a soft glowing road along the letter (never dots: a dot on Beis means the dagesh); the part he has felt
      turns gold, and a pulsing ring shows where to go next */
@@ -81,7 +85,7 @@ export default function setup(E, { unit }) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
     const showsPlace = ['vov', 'zayin', 'hei', 'ches'].includes(key) && E.pointAt(arrow, cur, key, H);   /* the place the line talks about */
-    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : key === 'kaf' ? 'This is Kaf. It has a dot. Feel it!' : key === 'chaf' ? 'This is Chaf. No dot. Feel it!' : key === 'yud' ? 'This is Yud, the little one. Feel it!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
     if (showsPlace) { await E.wait(500); arrow.visible = false; }
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
@@ -96,12 +100,12 @@ export default function setup(E, { unit }) {
     /* when part of the road is done but some is left, the ring shows him where (once per stretch) */
     const iv = setInterval(() => { if (!active || down || performance.now() - lastUp < 2500 * E.F) return; const n = beads.filter(x => x.userData.lit).length; if (n > said && n < beads.length) { said = n; E.say('More road to feel! Find the orange ring.'); const [x, y] = beadScreen(next); E.hand.at(x, y, true); setTimeout(() => E.hand.hide(), 1400 * E.F); } }, 400);
     await fin; clearInterval(iv); active = false; delete document.body.dataset.feelReady;
-    if (key === 'beis') {   /* Beis: he touches Mendy's dot too, so the dagesh is something he feels */
+    if (E.LETTERS[key].dagesh) {   /* Beis (and Kaf): he touches the dot too, so the dagesh is something he feels */
       const dot = cur.userData.dot; const pad = new THREE.Mesh(new THREE.SphereGeometry(.55, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); dot.add(pad);   /* a tap area much bigger than the dot */
       const ring = E.noticeRing(.35); ring.position.copy(dot.position); ring.visible = true; cur.add(ring);
       await E.say(unit.n > 1 ? 'Now tap the dot!' : 'Now tap Mendy\u2019s dot!'); dotTarget = dot; document.body.dataset.dotReady = 1;
       await E.waitTap([dot]); delete document.body.dataset.dotReady; dotTarget = null; ring.visible = false; cur.remove(ring); E.sfx.chime(); E.sparkle(E.worldPos(dot), 22, 1); E.hop(dot, .25, 400);
-      await E.say(unit.n > 1 ? 'Beis has a dot!' : 'Someone is home!');
+      await E.say(unit.n > 1 ? E.LETTERS[key].name + ' has a dot!' : 'Someone is home!');
     }
     /* the whole letter glows, spins, and says its name and sound */
     cur.userData.spin = true; E.joy(E.worldPos(cur).add(new THREE.Vector3(0, 0, .8)), true); boy.mood('cheer');

@@ -10,13 +10,14 @@ const PLAN = {
 };
 const CUE = { beis: 'with the dot', veis: 'with no dot', zayin: 'with the crown', vov: 'with no crown', ches: 'with its leg on the roof', hei: 'with its leg off the roof' };
 const NOTE = { alef: '', beis: 'It has a dot.', veis: 'No dot.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg doesn\u2019t touch the roof.', ches: 'Its leg touches the roof.', gimmel: '', daled: '' };
-export default function setup(E, { struggled, unit }) {
-  const plan = PLAN[unit.n] || PLAN[1], NM = k => E.LETTERS[k].name;
+export default function setup(E, { struggled, unit, game }) {
+  const plan = PLAN[(game && game.reviewOf) || unit.n] || PLAN[1], NM = k => E.LETTERS[k].name;   /* a review round hunts an earlier unit's letters */
+  const boyName = { 1: 'Mendy', 2: 'Shloimy', 3: 'Ari', 4: 'Dovid' }[unit.n] || plan.boy;
   const { THREE } = E;
   const wood = E.M(0xd9a066, { roughness: .6 }), wood2 = E.M(0xc68a52, { roughness: .6 }), cloth = E.M(0xffffff, { roughness: .5 }), leaf = E.M(0x2f9b3e, { roughness: .7, clearcoat: 0 }), leaf2 = E.M(0x46b54d, { roughness: .7, clearcoat: 0 });
   let suk = null, W = 7.4, spots = [];
   const plaque = E.M(0xfffaf0, { roughness: .4, clearcoat: .5 });   /* a plain backing tile, so nothing behind a letter can look like its dot */
-  const boy = unit.n === 3 ? E.ari() : E.mendy(); E.scene.add(boy);
+  const boy = E.unitBoy(unit.n); E.scene.add(boy);
   const letters = []; const glow = E.glowSprite('#fff7b0', 1.8, 0); E.scene.add(glow);
   const arrow = E.arrow3d(.3);   /* points at the place to look on the letter he tapped (never a ring over it) */
   const feat = k => E.DOT_FEATURE[k] || E.FEATURES[k];
@@ -104,7 +105,7 @@ export default function setup(E, { struggled, unit }) {
     /* round 1 */
     const [r1, r2] = plan.rounds;
     setRound(r1[0], r1[1], help ? r1[3] : r1[2]);
-    boy.mood('think'); await E.say(plan.boy + ' is in the sukkah. Letters are hiding!');
+    boy.mood('think'); await E.say(boyName + ' is in the sukkah. Letters are hiding!');
     await showAll();
     await E.say('Watch me. I find ' + (r1[0] === 'alef' ? 'an Alef' : 'a ' + NM(r1[0])) + '. ' + (NOTE[r1[0]] || ''));
     const first = letters.find(l => l.userData.key === r1[0]); let [x, y] = E.toScreen(E.worldPos(first)); E.hand.at(x + 10, y + 10); await E.wait(700);

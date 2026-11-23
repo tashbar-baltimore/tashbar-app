@@ -34,6 +34,17 @@ export const UNITS = [
       { id: 'u3g6', name: 'Review: Sound Match', kind: 'soundmatch', icon: 'fish', review: true, reviewOf: 2 },
       { id: 'u3g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
+  { n: 4, letters: ['tes', 'yud', 'kaf', 'chaf'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches'],
+    games: [
+      { id: 'u4g0', name: 'Dovid’s Shabbos', kind: 'story4', icon: 'cup' },
+      { id: 'u4g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
+      { id: 'u4g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['beis', 'kaf'], ['kaf', 'chaf']] },
+      { id: 'u4g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },
+      { id: 'u4g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u4g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
+      { id: 'u4g6', name: 'Review: Letter Hunt', kind: 'hunt', icon: 'glass', review: true, reviewOf: 3 },
+      { id: 'u4g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+    ] },
 ];
 /* every game in order, each knowing its unit */
 export const GAMES = UNITS.flatMap(u => u.games.map(g => ({ ...g, unit: u.n })));
