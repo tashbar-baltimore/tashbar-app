@@ -65,7 +65,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
     }
   }
   /* the pictures: the demo first, then the rest mixed */
-  const first = words[0], rest = words.slice(1).sort(() => Math.random() - .5), deck = [first, ...rest];
+  const first = (!game.reviewOf && words.find(w => unit.letters.includes(WORDS[w].letter) && E.LETTERS[WORDS[w].letter].snd !== 'ch')) || words[0];   /* the demo shows a new letter */
+  const rest = words.filter(w => w !== first).sort(() => Math.random() - .5), deck = [first, ...rest];
   return async () => {
     E.setProgress(deck.length, 0);
     if (game.review) await E.say('Remember Gimmel, Daled and Hei? Let\u2019s match again!');
