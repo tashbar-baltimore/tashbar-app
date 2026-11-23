@@ -57,7 +57,7 @@ module.exports = async function (browser) {
     /* the lesson: tap what it asks (corners, or the circle) until the game begins */
     const lesson = async () => {
       for (let guard = 0; guard < 20; guard++) {
-        await pg.waitForFunction(() => ['tap', 'find'].includes(window.__shp.name), null, { timeout: 30000 });
+        await pg.waitForFunction(() => window.__shp.name === 'find' || (window.__shp.name === 'tap' && window.__shp.waitingTap()), null, { timeout: 30000 });
         if ((await S()).name === 'find') return;
         if ((await pg.evaluate(() => window.__shp.cornerPts().length)) > 0) await tapCorners('the lesson');
         else { const p = await pg.evaluate(() => window.__shp.tapTarget()); if (p) { await pg.mouse.click(p.x, p.y); await pg.waitForTimeout(150); } }

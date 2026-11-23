@@ -514,7 +514,7 @@ export function startGame(cfg) {
     return wait(1500).then(() => { handOn = null; if (toBox && o.box >= 0 && NB) { const p = toScreen(boxAt(o.box).clone().setY(1.1)); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; return wait(1300); } })
       .then(() => { hand.style.display = 'none'; });
   }
-  W.idleNow = () => { if (idleFn) idleFn(++idleN); };
+  W.idleNow = () => { if (idleFn) idleFn(++idleN); }; W.waitingTap = () => !!(shapeTap || cornerTap);   /* the test waits until the lesson really waits for his tap */
 
   /* ---------- the lesson: one shape up close ---------- */
   function showcase(k, color, rot, scale, at) {
