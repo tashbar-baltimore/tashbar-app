@@ -23,7 +23,8 @@ function sgRoute_(e) {
 /* The boy/staff sign-in page (QuestPage) plus SignOutBar: Sign out top-right on every boy screen, auto sign-out after 5 quiet minutes. */
 function sgQuest_() {
   var page = HtmlService.createHtmlOutputFromFile('QuestPage').getContent(), bar = '';
-  try { bar = HtmlService.createHtmlOutputFromFile('SignOutBar').getContent(); } catch (e) { bar = ''; }
+  try { bar = HtmlService.createHtmlOutputFromFile('UiKit').getContent(); } catch (e) { bar = ''; }   /* 2026-11-23 HoS: THE BUTTON SYSTEM, first, so every part can use it (window.TLK, docs/BUTTON-SYSTEM.md) */
+  try { bar += HtmlService.createHtmlOutputFromFile('SignOutBar').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderCard').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('FireLinks').getContent(); } catch (e) {}   /* EVERYTHING ON FIREBASE: links from web.app carry the sign-in (FireBridge.js) */
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderGo').getContent(); } catch (e) {}   /* v7.2 Stage 5: opens the first lesson after a TEST boy's Pathfinder day-1 screens (inert otherwise) */
