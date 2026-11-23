@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Heavy and light</title>
+<!-- Kindergarten Shapes, Unit 11 "Heavier, lighter" (v2/curriculum/k-shapes/MAP.md): put two things on a balance scale; the heavy side goes down.
+     Say which is heavier or lighter. "Big is not always heavy": a big light ball against a small heavy rock. K.MD.1, K.MD.2.
+     Research: young children often think bigger means heavier; a balance lets them see and feel the difference (Clements & Sarama, Learning and
+     Teaching Early Math, ch. on measurement). Built on the shared 3D kit. ?fast=1 for the test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+const rock = (w, s) => ({ look: 'rock', word: 'rock', w, s });
+const ball = (w, s, color) => ({ look: 'ball', word: 'ball', w, s, color: color || '#F0458E' });
+const block = (w, s, color) => ({ look: 'block', word: 'block', w, s, color: color || '#1F6FEB' });
+const feather = () => ({ look: 'feather', word: 'feather', w: 1, color: '#6FB3E6' });
+startGame({
+  id: 'balance', mode: 'balance', boxes: [],
+  view: { wide: [[0, 6.2, 10.8], [0, 0.9, 0.2]], tall: [[0, 9.0, 12.4], [0, 1.0, 0.7]] }, mendyAt: { wide: [4.2, 0, -2.4] },
+  intro: ['Mendy found a scale!', 'Which is heavier? Which is lighter?', "Let's use the scale to find out!"],
+  balanceLesson: { items: [rock(6, 1.1), ball(2, 1.25, '#12A766')], first: 'Which is heavier, the rock or the big ball?',
+    rule: ['The heavy side goes down.', 'The light side goes up.'], chant: [['Heavy goes down!', 3], ['Light goes up!', 3], ['Big is not always heavy!', 2]] },
+  rounds: [
+    { items: [block(5, 1, '#E03A33'), feather()], watchDone: 'The block side went down. The block is heavier!' },
+    { items: [feather(), block(5, 1, '#F2A900')], ask: 'heavier', say: 'A feather and a block.' },
+    { items: [ball(1, 0.7, '#1F6FEB'), rock(5, 1)], ask: 'lighter', say: 'Now find the lighter one.' },
+    { items: [rock(6, 1.1), ball(2, 1.3, '#F0458E')], ask: 'heavier', say: 'A big ball and a rock.', big: true },
+    { items: [block(4, 1.1, '#7C4DFF'), feather()], ask: 'lighter', say: 'Which is lighter?' },
+    { items: [ball(2, 1.25, '#FF7A1A'), block(6, 0.9, '#12A766')], ask: 'heavier', say: 'Be careful! Which is heavier?', big: true }
+  ],
+  bonusRounds: [{ items: [rock(5, 0.75), ball(2, 1.4, '#00A3B8')], ask: 'heavier', say: 'A tiny rock and a giant ball!', big: true }],
+  watchLine: 'Watch me put them on.', yourTurn: 'Now you. Put them on, then look!', hint2: 'Drag this one to the scale.', remember: 'Remember: the heavy side goes down.',
+  mistake: { friend: { name: 'Avrumi', shirt: '#6B8F3A', hair: '#3B2416' }, icon: 'sphere', balance: [ball(2, 1.3, '#F0458E'), rock(6, 1)],
+    claim: ['Avrumi says the big ball is heavier.', 'It is so big!'], ask: 'Is the big ball heavier?', answer: false,
+    explain: ['Look at the scale.', 'The rock side went down.'], right: ['Right! The rock is heavier.'], after: 'Big is not always heavy!' },
+  endLine: 'You weighed everything!', praise: 'Heavy goes down. Weighing expert!'
+});
+</script>
+</body>
+</html>

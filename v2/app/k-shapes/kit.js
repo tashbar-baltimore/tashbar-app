@@ -301,6 +301,7 @@ export function startGame(cfg) {
       o.g.rotation.y = 0;
       o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, camera.position.z - o.g.position.z);   /* faces the camera, so a square always looks square */
     });
+    if (BS) placePans(dt);
     for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
     const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25;
     camera.position.set(camPos.x + sway, camPos.y, camPos.z); camera.lookAt(camLook);
@@ -322,7 +323,7 @@ export function startGame(cfg) {
       const g = slotAt(PS.next, PS.n, PS.z); return Math.hypot(p.x - g.x, p.z - g.z) < 1.3 ? 0 : -1; } if (cfg.mode === 'fix') { const g = OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : null; return g && Math.hypot(p.x - g.x, p.z - g.z) < 1.5 ? 0 : -1; } for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
   /* for the automatic test */
   W.shapePt = id => toScreen(shapes.find(s => s.id === id).g.position);
-  W.boxPt = i => cfg.mode === 'measure' ? (i === 9 ? toScreen(new THREE.Vector3(LINE_X() + 3.2, 1.25, 0)) : W.boxPtM(i)) : cfg.mode === 'position' ? toScreen(zoneWorld(i === 0 ? posWant : i === 1 ? (posWant === 'behind' ? 'front' : 'behind') : i)) : cfg.mode === 'puzzle' ? toScreen(slotWorld(PZ.slots[i || 0])) : cfg.mode === 'pattern' ? toScreen(slotAt(PS.next, PS.n, PS.z).setY(1.25)) : cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
+  W.boxPt = i => cfg.mode === 'balance' ? (i === 9 || !BS ? toScreen(new THREE.Vector3(0, 0.3, tall ? 3.6 : 3.2)) : toScreen(panWorld(i).add(new THREE.Vector3(0, 0.45, 0)))) : cfg.mode === 'measure' ? (i === 9 ? toScreen(new THREE.Vector3(LINE_X() + 3.2, 1.25, 0)) : W.boxPtM(i)) : cfg.mode === 'position' ? toScreen(zoneWorld(i === 0 ? posWant : i === 1 ? (posWant === 'behind' ? 'front' : 'behind') : i)) : cfg.mode === 'puzzle' ? toScreen(slotWorld(PZ.slots[i || 0])) : cfg.mode === 'pattern' ? toScreen(slotAt(PS.next, PS.n, PS.z).setY(1.25)) : cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
   W.list = () => shapes.filter(o => o.g.visible && !o.inBox && o.slot != null).map(o => ({ id: o.id, k: o.k, box: o.box, busy: o.busy }));
 
   /* ---------- sound ---------- */
@@ -488,6 +489,7 @@ export function startGame(cfg) {
     if (!d.moved) {   /* one box: a tap sends the piece there. Several boxes: a tap makes it hop (he must drag it to a box) */
       if (d.o.busy) return;
       if ((NB === 1 || FIXED || PATTERNED) && onDrop && allow) { idle(); const o = d.o; o.busy = true; moveTo(o, (PATTERNED ? slotAt(PS.next, PS.n, PS.z) : FIXED ? gapWorld().setY(1.25) : boxAt(0).clone().setY(1.25)), 450, 0.8).then(() => { if (onDrop && allow) onDrop(o, 0); else goHome(o); }); }
+      else if (BALANCED && onDrop && allow && d.o.box >= 0) { idle(); onDrop(d.o, d.o.box); }
       else if (PUZZLED && onDrop && allow && d.o.box >= 0) { idle(); const o = d.o; o.busy = true; moveTo(o, slotWorld(PZ.slots[o.box]), 450, 0.6).then(() => { o.busy = false; if (onDrop && allow) onDrop(o, o.box); else goHome(o); }); }
       else { pop(); const o = d.o; o.busy = true; tween(500, k => { o.g.position.y = o.home.y + Math.sin(Math.PI * k) * 0.6; }).then(() => { o.busy = false; }); }
       return;
@@ -495,7 +497,7 @@ export function startGame(cfg) {
     idle();
     const o = dragging; dragging = null;
     if (!o) return;
-    if (onDrop && allow) onDrop(o, cfg.mode === 'measure' ? 0 : cfg.mode === 'position' ? zoneHit(lastPt.x, lastPt.y) : cfg.mode === 'puzzle' ? slotHit(lastPt.x, lastPt.y) : overBox(o.g.position)); else goHome(o);
+    if (onDrop && allow) onDrop(o, cfg.mode === 'balance' ? bsDropPan(lastPt.x, lastPt.y) : cfg.mode === 'measure' ? 0 : cfg.mode === 'position' ? zoneHit(lastPt.x, lastPt.y) : cfg.mode === 'puzzle' ? slotHit(lastPt.x, lastPt.y) : overBox(o.g.position)); else goHome(o);
   }
   canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
 
@@ -1142,11 +1144,138 @@ export function startGame(cfg) {
     mistake();
   }
 
+  /* =========== "Balance" mode (cfg.mode === 'balance'): a 3D balance scale; the heavy side goes down =========== */
+  const BALANCED = cfg.mode === 'balance';
+  let BS = null, bsN = 0;
+  const PAN_X = 1.9, BEAM_Y = 2.35, HANG = 1.15;
+  function makeScale() {
+    const g = new THREE.Group(), wood = new THREE.MeshPhysicalMaterial({ color: '#B87842', roughness: 0.5, clearcoat: 0.4 }), metal = new THREE.MeshStandardMaterial({ color: '#C9CED6', metalness: 0.6, roughness: 0.3 });
+    const base = new THREE.Mesh(new RoundedBoxGeometry(1.6, 0.25, 1.0, 3, 0.08), wood); base.position.y = 0.13; base.castShadow = true; g.add(base);
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.14, BEAM_Y - 0.1, 20), wood); post.position.y = BEAM_Y / 2; post.castShadow = true; g.add(post);
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.16, 20, 14), metal); knob.position.y = BEAM_Y; g.add(knob);
+    const beam = new THREE.Group(); beam.position.y = BEAM_Y; g.add(beam);
+    const bar = new THREE.Mesh(new RoundedBoxGeometry(PAN_X * 2 + 0.3, 0.14, 0.18, 3, 0.05), wood); bar.castShadow = true; beam.add(bar);
+    const pans = [-1, 1].map(sd => {
+      const p = new THREE.Group(); g.add(p);
+      const sl = Math.hypot(0.62, HANG), sa = Math.atan2(0.62, HANG);   /* strings from the rim up to one hook under the beam end */
+      [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dz]) => { const st = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, sl, 6), metal); st.position.set(dx * 0.31, HANG / 2, dz * 0.31); st.rotation.set(-dz * sa, 0, dx * sa); p.add(st); });
+      const hook = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.025, 8, 16), metal); hook.position.y = HANG + 0.04; p.add(hook);
+      const dish = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.65, 0.14, 40), metal); dish.castShadow = dish.receiveShadow = true; p.add(dish);
+      return { g: p, sd, item: null };
+    });
+    g.position.set(0, 0, tall ? -0.8 : -1.2); g.scale.setScalar(tall ? 0.7 : 1); scene.add(g);
+    return { g, beam, pans, angle: 0, target: 0 };
+  }
+  function panWorld(i) { return BS.pans[i].g.localToWorld(new THREE.Vector3(0, 0.15, 0)); }
+  function placePans(dt) {   /* the pans hang straight down from the ends of the beam */
+    if (!BS) return; const now = performance.now(), real = Math.min(1, ((now - (BS.t || now)) / 1000)); BS.t = now;   /* real time, so a slow computer still tips in time */
+    BS.angle += (BS.target - BS.angle) * (FAST ? 1 : 1 - Math.exp(-real * 4)); BS.beam.rotation.z = BS.angle;
+    BS.pans.forEach(P => { const x = P.sd * PAN_X; P.g.position.set(x * Math.cos(BS.angle), BEAM_Y + x * Math.sin(BS.angle) - HANG, 0); });
+  }
+  function objMesh(T) {   /* the things we weigh */
+    const m = c => new THREE.MeshPhysicalMaterial({ color: c, roughness: 0.35, clearcoat: 0.7 });
+    if (T.look === 'rock') { const r = new THREE.Mesh(new THREE.DodecahedronGeometry(0.32 * (T.s || 1), 1), new THREE.MeshStandardMaterial({ color: '#7B7F87', roughness: 0.9, flatShading: true })); r.position.y = 0.3 * (T.s || 1); return r; }
+    if (T.look === 'ball') { const b = new THREE.Mesh(new THREE.SphereGeometry(0.62 * (T.s || 1), 36, 24), m(T.color)); b.position.y = 0.62 * (T.s || 1); return b; }
+    if (T.look === 'block') { const b = new THREE.Mesh(new RoundedBoxGeometry(0.75 * (T.s || 1), 0.75 * (T.s || 1), 0.75 * (T.s || 1), 3, 0.08), m(T.color)); b.position.y = 0.38 * (T.s || 1); return b; }
+    const f = new THREE.Group(), vane = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 12), m(T.color || '#F4F1EA')); vane.scale.set(1.5, 0.08, 0.42); f.add(vane);   /* a feather */
+    const quill = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.02, 1.6, 6), new THREE.MeshStandardMaterial({ color: '#D9CBB0' })); quill.rotation.z = Math.PI / 2; quill.position.x = 0.1; f.add(quill);
+    f.position.y = 0.12; f.rotation.y = 0.5; return f;
+  }
+  function makeThing(id, T, i) {
+    const inner = objMesh(T), turn = new THREE.Group(); turn.add(inner); const g = new THREE.Group(); g.add(turn); scene.add(g); inner.traverse(q => { q.castShadow = true; });
+    const o = { id, k: T.look, word: T.word, w: T.w, box: -1, g, turn, mesh: inner, mat: inner.material || inner.children[0].material, marks: [], corners: [], scale: 1, home: new THREE.Vector3(), still: true, slot: i, inBox: false, busy: false };
+    const xs = tall ? [-1.1, 1.1] : [-1.5, 1.5];
+    o.home.set(xs[i], 0, tall ? 1.6 : 0.3); g.position.copy(o.home); g.scale.setScalar(tall ? 0.7 : 1);
+    const hull = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.4, 1.2), new THREE.MeshBasicMaterial({ visible: false })); hull.position.y = 0.6; g.add(hull); o.mesh = hull; hull.userData.shape = o; shapes.push(o); return o;
+  }
+  function markPans() { const free = BS.pans.findIndex(P => !P.item); shapes.forEach(o => { if (!o.inBox) o.box = free; }); }
+  function putOnPan(o, i) {
+    const P = BS.pans[i]; P.item = o; o.inBox = true; o.box = -1;
+    return moveTo(o, panWorld(i), 450, 0.6).then(() => { P.g.add(o.g); o.g.position.set(0, 0.07, 0); o.g.scale.setScalar(1); o.busy = true; pop(); markPans(); tipScale(); });
+  }
+  function tipScale() { const [L, R] = BS.pans.map(P => (P.item ? P.item.w : 0)); BS.target = Math.max(-0.3, Math.min(0.3, (L - R) * 0.06)); tone([L === R ? 523 : 392], 'sine', 0, 0.4, 0.1); }
+  function setBalance(R) {
+    shapes.splice(0).forEach(o => { if (o.g.parent) o.g.parent.remove(o.g); });
+    if (!BS) BS = makeScale(); BS.pans.forEach(P => { P.item = null; }); BS.target = 0;
+    BS.items = R.items.map((T, i) => makeThing('w' + (++bsN), T, i)); markPans();
+  }
+  function bsDropPan(cx, cy) { if (!BS) return -1; let best = -1, bd = 1e9; BS.pans.forEach((P, i) => { const p = toScreen(panWorld(i)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } }); return bd < Math.max(120, innerWidth * 0.11) ? best : -1; }
+  function weighStep(R, bonus, help) {
+    return new Promise(done => {
+      setName('count'); stopIdle();
+      const ws = BS.items.map(o => o.w), want = /light/.test(R.ask) ? Math.min(...ws) : Math.max(...ws), ans = ws.indexOf(want);
+      W.countAnswer = ans; const q = 'Which is ' + R.ask + '? Tap it.'; task = [q]; let costed = false;
+      const ptOf = o => toScreen(o.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.4, 0)));
+      W.boxPt2 = i => ptOf(BS.items[i]);
+      shapeTap = (cx, cy) => {
+        let best = -1, bd = 1e9; BS.items.forEach((o, i) => { const p = ptOf(o), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = i; } });
+        if (bd > Math.max(130, innerWidth * 0.12)) return;
+        if (best === ans) { shapeTap = null; task = null; chime(true); play(['Yes! The ' + BS.items[ans].word + ' is ' + R.ask + '!', () => cheer(mendy), { wait: 300 }]).then(done); return; }
+        if (!costed && !bonus) { W.misses++; costed = true; } chime(false);
+        const steps = ['Look at the scale.', /light/.test(R.ask) ? 'The light side goes up.' : 'The heavy side goes down.'];
+        if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
+        play([...steps, q]);
+      };
+      play([R.big ? 'Look! Big is not always heavy.' : 'Look at the scale.', q]);
+    });
+  }
+  function balanceRound(R, bonus, help) {
+    return new Promise(resolve => {
+      setName(bonus ? 'bonus' : 'find'); dots(2); setBalance(R); allow = true;
+      const ask = ['Put each one on the scale.']; task = ask;
+      idleFn = n => { const t = shapes.find(o => !o.inBox); if (!t) return; W.reminders = (W.reminders || 0) + 1; play(n === 1 ? [...ask, () => pointAt(t)] : [cfg.hint2, () => pointAt(t)]); };
+      idle();
+      onDrop = (o, bi) => {
+        idle();
+        if (bi < 0 || BS.pans[bi].item) {
+          if (!bonus) W.misses++; chime(false); goHome(o).then(() => { o.busy = true; });
+          const steps = [bi < 0 ? 'Not yet! Put it on a pan of the scale.' : 'That pan is full. Use the other pan.'];
+          if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
+          allow = false; play([...steps, ...ask]).then(() => { if (onDrop) allow = true; }); return;
+        }
+        chime(true); const last = BS.pans.filter(P => !P.item).length === 1;
+        if (last) { allow = false; onDrop = null; }
+        putOnPan(o, bi).then(() => { if (last) wait(900).then(() => weighStep(R, bonus, help)).then(resolve); else play(['Yes! Now the other one.']); });
+      };
+      play([R.say, ...ask].filter(Boolean));
+    });
+  }
+  async function balanceLesson() {
+    const L = cfg.balanceLesson; await camTo('wide', 10);
+    setBalance({ items: L.items });
+    const [a, b] = BS.items;
+    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, L.first, 'Watch. I put the rock on.', () => putOnPan(a, 0), () => wait(900), 'The heavy side goes down!',
+      'Now the big ball.', () => putOnPan(b, 1), () => wait(900), 'The rock side is still down.', 'The rock is heavy. The ball is light.',
+      'Your turn! Tap the heavy one.', () => { setName('tap'); task = ['Tap the heavy one.']; W.tapPt = () => toScreen(a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)));
+        return tapPoint(() => a.g.getWorldPosition(new THREE.Vector3()).add(new THREE.Vector3(0, 0.3, 0)), 'Tap the heavy one.'); }, () => { setName('learn'); task = null; }, 'Yes! The rock is heavy.',
+      ...L.rule, () => { chant(true); }, 'Clap it with me! Tap the hands.'];
+    L.chant.forEach(c => steps.push(c[0], () => claps({ marks: [], g: BS.beam }, c[1])));
+    steps.push(() => { chant(false); return cheer(mendy); });
+    return play(steps);
+  }
+  async function balanceGame() {
+    setName('watch'); dots(1);
+    const R0 = cfg.rounds[0]; setBalance(R0);
+    let ok = await play([cfg.watchLine, ...BS.items.flatMap((o, i) => [() => { handOn = o; hand.style.display = 'block'; return wait(300); }, () => putOnPan(o, i)]),
+      () => { hand.style.display = 'none'; handOn = null; return wait(900); }, R0.watchDone, cfg.yourTurn]);
+    if (!ok) return;
+    const help = { done: false };
+    for (let r = 1; r < cfg.rounds.length; r++) { ok = await balanceRound(cfg.rounds[r], false, help); if (ok === false) return; }
+    if (W.misses <= 1 && cfg.bonusRounds) {
+      W.bonus = true; ok = await play(['Bonus round! You are so good at this.', 'This one is tricky.']); if (!ok) return;
+      for (const R of cfg.bonusRounds) { ok = await balanceRound(R, true, help); if (ok === false) return; }
+    }
+    shapes.splice(0).forEach(o => { if (o.g.parent) o.g.parent.remove(o.g); }); if (BS) { scene.remove(BS.g); BS = null; }
+    mistake();
+  }
+  if (BALANCED) { W.wrongBox = 9; W.nb = 2; W.hasChant = true; }
+
   function setName(n) { W.name = n; }
   async function learn() {
     setName('learn'); dots(0); W.misses = 0; W.found = 0; allow = false; onDrop = null; task = null; W.bonus = false; chant(false); stopIdle();
     $('#end').classList.remove('show');
     buildSet(); resize(); camTo('close', 10);
+    if (BALANCED) { const ok = await balanceLesson(); if (ok) balanceGame(); return; }
     if (MEASURED) { const ok = await measureLesson(); if (ok) measureGame(); return; }
     if (POSITIONED) { const ok = await posLesson(); if (ok) posGame(); return; }
     if (PUZZLED) { const ok = await puzzleLesson(); if (ok) puzzleGame(); return; }
@@ -1285,6 +1414,9 @@ export function startGame(cfg) {
     else if (M.measure) {   /* two pencils that do not start together */
       setMeasure({ kind: 'long', items: M.measure }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
+    else if (M.balance) {   /* a friend says the big one is heavier; the scale shows it is not */
+      setBalance({ items: M.balance }); BS.items.forEach((o, i) => { BS.pans[i].item = o; o.inBox = true; o.busy = true; BS.pans[i].g.add(o.g); o.g.position.set(0, 0.07, 0); o.g.scale.setScalar(1); }); tipScale(); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
+    }
     else if (M.where) {   /* a friend says where the ball is, on the bridge scene */
       BR = makeBridge(); const b = makeShape('mball', 'sphere', '#F2A900', 0, 0.6); b.slot = null; b.busy = true; b.g.position.copy(zoneWorld(M.where)); d = { g: b.g, marks: [] };
     }
@@ -1293,8 +1425,8 @@ export function startGame(cfg) {
       PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
-    if (!M.where && !M.measure) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
-    if (M.where || M.measure) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
+    if (!M.where && !M.measure && !M.balance) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
+    if (M.where || M.measure || M.balance) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
     else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
       camTo('close', 1000).then(() => tween(500, k => d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))))); }
     const j = $('#judge'); let answered = false, costed = false;
@@ -1313,7 +1445,7 @@ export function startGame(cfg) {
       play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []),
         ...(M.measure ? [M.fixLine || 'Let us line them up.', () => Promise.all(MS.items.map(o => alignRod(o))), M.after || 'Now we can see.'] : []),
         ...(M.pattern && M.pattern.bad != null ? [M.fixLine || 'Let us fix it.', fixBad] : M.pattern ? [() => sing()] : []), () => cheer(friend), M.after || (() => {}),
-        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.measure ? (MS.parts.forEach(q => scene.remove(q)), MS.items.forEach(o => scene.remove(o.g)), MS = null, Promise.resolve()) : M.where ? (scene.remove(d.g), scene.remove(BR.g), BR = null, Promise.resolve()) : M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
+        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.balance ? (shapes.splice(0), scene.remove(BS.g), BS = null, Promise.resolve()) : M.measure ? (MS.parts.forEach(q => scene.remove(q)), MS.items.forEach(o => scene.remove(o.g)), MS = null, Promise.resolve()) : M.where ? (scene.remove(d.g), scene.remove(BR.g), BR = null, Promise.resolve()) : M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
     };
     play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }, 'Green means yes. Crossed means no.']);
     setTimeout(() => { if (!answered) j.classList.add('show'); }, FAST ? 0 : 14000);
@@ -1338,6 +1470,7 @@ export function startGame(cfg) {
   if (PUZZLED) setPuzzle(cfg.rounds[0]);
   if (POSITIONED) setPosRound(cfg.rounds[0]);
   if (MEASURED) setMeasure(cfg.rounds[0]);
+  if (BALANCED) setBalance(cfg.rounds[0]);
   shapes.forEach(o => { o.g.visible = true; });
   dots(0); frame(); W.ready = true;
   preload([...cfg.intro, cfg.ask, cfg.yourTurn, 'Count the sides with me.', 'Now count the corners.', 'Your turn! Tap each corner and count.', 'One!', 'Two!', 'Three!', 'Four!', 'One.', 'Two.', 'Three.', 'Four.', 'Clap it with me! Tap the hands.']);
