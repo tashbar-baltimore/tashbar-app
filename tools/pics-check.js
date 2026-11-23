@@ -5,7 +5,9 @@
    - a picture file over 200 KB or wider than 1200 px;
    - a mark (box/label) on a pure question screen (its "how" line is empty): those get the plain picture;
    - a label with a word that is not in that screen's "how" line (labels only name what the screen already teaches).
-   A 'LESSON.ID|*' key is checked against every screen of that lesson it would show on. */
+   A 'LESSON.ID|*' key is checked against every screen of that lesson it would show on.
+   WARNS (does not fail) when a linked screen's own picture text is short words or numbers (under 40 characters, with a Latin letter
+   or digit, no Hebrew) and the link has no "keep": true: the picture would hide text the boy needs. Set "keep": true or un-link. */
 const fs = require('fs'), vm = require('vm'); const [,, html, allq, picsDir] = process.argv;
 const MAX_BYTES = 200 * 1024, MAX_W = 1200;
 const ctx = { window: {}, addEventListener() {}, requestAnimationFrame() {}, document: { head: { insertAdjacentHTML() {} } } }; ctx.window = ctx; vm.createContext(ctx);
@@ -13,6 +15,9 @@ vm.runInContext(fs.readFileSync(html, 'utf8').replace(/^\s*<script>/, '').replac
 const norm = s => String(s).replace(/\\"/g, '"').replace(/\s+/g, ' ').trim();
 const words = s => (norm(s).toLowerCase().replace(/[’']/g, "'").match(/[\p{L}\p{N}'׳״"]+/gu) || []).map(w => w.replace(/^['"]+|['"]+$/g, '')).filter(Boolean);
 const screens = JSON.parse(fs.readFileSync(allq, 'utf8'));
+const PIC = new Map(); for (const x of screens) { const k = x.id + '|' + norm(x.q); if (x.pic && !PIC.has(k)) PIC.set(k, norm(x.pic)); }
+const hides = t => t && t.length < 40 && /[A-Za-z0-9]/.test(t) && !/[\u0590-\u05FF]/.test(t);
+let warn = 0; const hid = (k, t) => { warn++; console.log('WARN HIDES THE SCREEN\'S OWN TEXT (add "keep": true):', k, ' <<' + t + '>>'); };
 const Q = new Map(); for (const x of screens) { const k = x.id + '|' + norm(x.q); const p = Q.get(k); Q.set(k, p == null ? norm(x.how) : (p || norm(x.how))); }
 const byLesson = new Map(); for (const x of screens) { if (!byLesson.has(x.id)) byLesson.set(x.id, []); byLesson.get(x.id).push(x); }
 let bad = 0; const say = (...a) => { bad++; console.log(...a); };
@@ -38,9 +43,9 @@ for (const [k, v] of Object.entries(ctx.TL_PIC_MAP)) {
   if (qq === '*') {
     const list = (byLesson.get(id) || []).filter(x => !ctx.TL_PIC_MAP[id + '|' + norm(x.q)]);
     if (!byLesson.has(id)) say('NO SUCH LESSON:', k);
-    list.forEach(x => checkMarks(k + ' (shows on "' + norm(x.q).slice(0, 60) + '")', marks, norm(x.how)));
+    list.forEach(x => { checkMarks(k + ' (shows on "' + norm(x.q).slice(0, 60) + '")', marks, norm(x.how)); const t = PIC.get(id + '|' + norm(x.q)); if (!v.keep && hides(t)) hid(id + '|' + norm(x.q), t); });
   } else if (!Q.has(id + '|' + norm(qq))) say('NO SUCH SCREEN:', k);
-  else checkMarks(k, marks, Q.get(id + '|' + norm(qq)));
+  else { checkMarks(k, marks, Q.get(id + '|' + norm(qq))); const t = PIC.get(id + '|' + norm(qq)); if (!v.keep && hides(t)) hid(k, t); }
 }
 
 function widthOf(b) {
@@ -64,4 +69,4 @@ for (const [id, p] of Object.entries(ctx.TL_PICS)) {
   if (b.length > MAX_BYTES) say('FILE TOO BIG (' + Math.round(b.length / 1024) + ' KB, max 200):', p.file);
   if (w == null) say('CANNOT READ PICTURE SIZE:', p.file); else if (w > MAX_W) say('PICTURE TOO WIDE (' + w + ' px, max ' + MAX_W + '):', p.file);
 }
-console.log(Object.keys(ctx.TL_PIC_MAP).length, 'screens,', Object.keys(ctx.TL_PICS).length, 'pictures,', bad, 'problems'); process.exit(bad ? 1 : 0);
+console.log(Object.keys(ctx.TL_PIC_MAP).length, 'screens,', Object.keys(ctx.TL_PICS).length, 'pictures,', bad, 'problems' + (warn ? ', ' + warn + ' hidden-text warnings' : '')); process.exit(bad ? 1 : 0);
