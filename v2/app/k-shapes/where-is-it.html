@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Where is it?</title>
+<!-- Kindergarten Shapes, Unit 7 "Where is it?" (v2/curriculum/k-shapes/MAP.md): position words with shapes (on top of, under, next to, in front of, behind),
+     around a 3D toy bridge of blocks. K.G.1. Research: hearing spatial words and acting them out grows spatial thinking (Pruden, Levine & Huttenlocher, 2011).
+     Built on the shared 3D kit (kit.js). ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+startGame({
+  id: 'where', mode: 'position', boxes: [],
+  view: { wide: [[0, 5.0, 7.6], [0, 0.9, 0.0]], tall: [[0, 7.2, 9.4], [0, 0.8, 0.2]] }, mendyAt: { wide: [4.2, 0, 1.4] },
+  intro: ['Mendy built a bridge with blocks.', 'Where is the ball?', "Let's learn where things are!"],
+  posLesson: { rule: ['On top, under, next to.', 'In front, and behind!'], chant: [['On top!', 2], ['Under!', 2], ['Next to!', 2], ['In front! Behind!', 4]] },
+  rounds: [
+    { k: 'sphere', where: 'top', color: '#F2A900' },
+    { k: 'sphere', where: 'under', color: '#F2A900', say: 'Listen carefully.' },
+    { k: 'cone', where: 'left', color: '#12A766' },
+    { k: 'cube', where: 'front', color: '#7C4DFF', s: 0.5 },
+    { k: 'cyl', where: 'behind', color: '#FF7A1A', s: 0.55 },
+    { k: 'cone', where: 'top', color: '#00A3B8' }
+  ],
+  bonusRounds: [{ k: 'cube', where: 'under', color: '#E03A33', s: 0.5 }, { k: 'sphere', where: 'behind', color: '#1F6FEB' }],
+  watchLine: 'Watch me.', yourTurn: 'Now you. Listen and put it there!', hint2: 'Here is the place.', remember: 'Remember: listen to the word, then look.',
+  mistake: { friend: { name: 'Eli', shirt: '#2E7D5B', hair: '#2A1A12' }, icon: 'sphere', where: 'behind',
+    claim: ['Eli says the ball is in front of the bridge.'], ask: 'Is the ball in front?', answer: false,
+    explain: ['Look. The bridge is in front.', 'The ball is behind it.'], right: ['Right! It is not in front.', 'The ball is behind the bridge.'] },
+  endLine: 'You put everything in the right place!', praise: 'On top, under, next to, in front, behind. Wonderful!'
+});
+</script>
+</body>
+</html>

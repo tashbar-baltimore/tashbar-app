@@ -253,7 +253,7 @@ export function startGame(cfg) {
     const b = boxAt(0); return tall ? new THREE.Vector3(b.x + 2.1, 0, b.z + 0.35) : new THREE.Vector3(b.x + 3.0, 0, b.z + 2.0);
   }
   function placeMendy(mode) {
-    if (mode === 'close') { mendy.visible = !friend.visible && cfg.mode !== 'pattern'; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
+    if (mode === 'close') { mendy.visible = !friend.visible && cfg.mode !== 'pattern' && cfg.mode !== 'position'; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
     else { mendy.visible = !(NB > 1 && tall) && !(cfg.mendyAt && !cfg.mendyAt[tall ? 'tall' : 'wide']); mendy.position.copy(mendyAt()); mendy.rotation.set(tall ? -0.6 : 0, (NB > 1 || cfg.mendyAt) && !tall ? 0.5 : -0.35, 0); }
   }
   function inBoxSpot(bi, n) { const b = boxAt(bi), sp = NB === 1 ? 0.75 : 0.55; return new THREE.Vector3(b.x - sp + (n % 3) * sp, 0.3 + Math.floor(n / 3) * 0.15, b.z + (n % 2 ? 0.18 : -0.18)); }
@@ -319,7 +319,7 @@ export function startGame(cfg) {
   function overBox(p) { if (cfg.mode === 'pattern') { if (!PS || PS.next >= PS.n) return -1; const g = slotAt(PS.next, PS.n, PS.z); return Math.hypot(p.x - g.x, p.z - g.z) < 1.3 ? 0 : -1; } if (cfg.mode === 'fix') { const g = OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : null; return g && Math.hypot(p.x - g.x, p.z - g.z) < 1.5 ? 0 : -1; } for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
   /* for the automatic test */
   W.shapePt = id => toScreen(shapes.find(s => s.id === id).g.position);
-  W.boxPt = i => cfg.mode === 'puzzle' ? toScreen(slotWorld(PZ.slots[i || 0])) : cfg.mode === 'pattern' ? toScreen(slotAt(PS.next, PS.n, PS.z).setY(1.25)) : cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
+  W.boxPt = i => cfg.mode === 'position' ? toScreen(zoneWorld(i === 0 ? posWant : i === 1 ? (posWant === 'behind' ? 'front' : 'behind') : i)) : cfg.mode === 'puzzle' ? toScreen(slotWorld(PZ.slots[i || 0])) : cfg.mode === 'pattern' ? toScreen(slotAt(PS.next, PS.n, PS.z).setY(1.25)) : cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
   W.list = () => shapes.filter(o => o.g.visible && !o.inBox && o.slot != null).map(o => ({ id: o.id, k: o.k, box: o.box, busy: o.busy }));
 
   /* ---------- sound ---------- */
@@ -491,7 +491,7 @@ export function startGame(cfg) {
     idle();
     const o = dragging; dragging = null;
     if (!o) return;
-    if (onDrop && allow) onDrop(o, cfg.mode === 'puzzle' ? slotHit(lastPt.x, lastPt.y) : overBox(o.g.position)); else goHome(o);
+    if (onDrop && allow) onDrop(o, cfg.mode === 'position' ? zoneHit(lastPt.x, lastPt.y) : cfg.mode === 'puzzle' ? slotHit(lastPt.x, lastPt.y) : overBox(o.g.position)); else goHome(o);
   }
   canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
 
@@ -932,11 +932,94 @@ export function startGame(cfg) {
     mistake();
   }
 
+
+  /* =========== "Where is it?" mode (cfg.mode === 'position'): a 3D toy bridge of blocks; he puts a piece on top, under, next to, in front, behind =========== */
+  const POSITIONED = cfg.mode === 'position';
+  let BR = null;
+  const PLANK_Y = 1.45;
+  const ZONES = { top: [0, PLANK_Y + 0.55, 0], under: [0, 0.45, 0], left: [-2.3, 0.55, 0], right: [2.3, 0.55, 0], front: [0, 0.55, 2.1], behind: [0, 0.55, -2.3] };
+  const ZWORD = { top: 'on top of', under: 'under', left: 'next to', right: 'next to', front: 'in front of', behind: 'behind' };
+  function makeBridge() {
+    const g = new THREE.Group(), m1 = new THREE.MeshPhysicalMaterial({ color: '#E03A33', roughness: 0.35, clearcoat: 1 }), m2 = new THREE.MeshPhysicalMaterial({ color: '#1F6FEB', roughness: 0.35, clearcoat: 1 });
+    [-1.05, 1.05].forEach(x => { const c = new THREE.Mesh(new RoundedBoxGeometry(0.8, PLANK_Y - 0.1, 0.8, 4, 0.08), m1); c.position.set(x, (PLANK_Y - 0.1) / 2, 0); c.castShadow = c.receiveShadow = true; g.add(c); });
+    const plank = new THREE.Mesh(new RoundedBoxGeometry(3.0, 0.22, 1.1, 4, 0.08), m2); plank.position.set(0, PLANK_Y + 0.02, 0); plank.castShadow = plank.receiveShadow = true; g.add(plank);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.06, 12, 40), new THREE.MeshBasicMaterial({ color: '#F5B400' })); ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);
+    g.position.set(0, 0, POS_Z()); scene.add(g); return { g, ring };
+  }
+  const POS_Z = () => tall ? -0.6 : -0.4;
+  function zoneWorld(z) { const v = ZONES[z]; return new THREE.Vector3(v[0] * (tall ? 0.8 : 1), v[1], v[2] * (tall ? 0.85 : 1) + POS_Z()); }
+  function zoneHit(cx, cy) { let best = null, bd = 1e9; Object.keys(ZONES).forEach(z => { const p = toScreen(zoneWorld(z)), d = Math.hypot(p.x - cx, p.y - cy); if (d < bd) { bd = d; best = z; } }); return bd < Math.max(110, innerWidth * 0.1) ? best : null; }
+  function showRing(z, on) { if (!BR) return; BR.ring.visible = on; if (on) { const p = zoneWorld(z); BR.ring.position.set(p.x, z === 'top' ? PLANK_Y + 0.16 : 0.1, p.z); } }
+  let posPiece = null, posWant = null;
+  function setPosRound(R) {
+    if (posPiece) { scene.remove(posPiece.g); shapes.splice(shapes.indexOf(posPiece), 1); posPiece = null; }
+    if (!BR) BR = makeBridge();
+    posPiece = makeShape('q' + (++pzN), R.k, R.color || '#F2A900', 0, R.s || 0.6); posPiece.slot = 0; posPiece.home.copy(tall ? new THREE.Vector3(0, 0.92, 3.3) : new THREE.Vector3(-3.4, 0.92, 2.9)); posPiece.g.position.copy(posPiece.home);
+    posWant = R.where; posPiece.box = 0;
+  }
+  function placeAt(o, z) { const p = zoneWorld(z); return moveTo(o, new THREE.Vector3(p.x, p.y + 0.05, p.z), 420, 0.5).then(() => { o.busy = true; o.g.rotation.set(0, 0, 0); pop(); }); }
+  function posRound(R, bonus, help) {
+    return new Promise(resolve => {
+      setName(bonus ? 'bonus' : 'find'); dots(2); setPosRound(R); allow = true;
+      const ask = ['Put the ' + FAMILY(R.k) + ' ' + ZWORD[R.where] + ' the bridge.']; task = ask;
+      idleFn = n => { W.reminders = (W.reminders || 0) + 1; play(n === 1 ? [...ask, () => pointAt(posPiece)] : [cfg.hint2, () => { showRing(R.where, true); return wait(1500); }, ...ask]); };
+      idle();
+      onDrop = (o, z) => {
+        idle();
+        if (!z) { goHome(o); play([...ask]); return; }
+        if (z === R.where || (R.where === 'left' && z === 'right') || (R.where === 'right' && z === 'left')) {
+          allow = false; onDrop = null; stopIdle(); chime(true); showRing(null, false);
+          placeAt(o, z).then(() => play(['Yes! ' + cap(ZWORD[z]) + ' the bridge!', () => cheer(mendy), { wait: 300 }])).then(ok => resolve(ok));
+          return;
+        }
+        if (!bonus) W.misses++; chime(false);
+        placeAt(o, z).then(() => {
+          const steps = ['Oops! That is ' + ZWORD[z] + ' the bridge.', () => { showRing(R.where, true); return wait(300); }, cap(ZWORD[R.where]) + ' is here.', () => goHome(o).then(() => { o.busy = false; })];
+          if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember); }
+          steps.push(...ask);
+          allow = false; play(steps).then(() => { if (onDrop) allow = true; });
+        });
+      };
+      play([R.say, ...ask].filter(Boolean));
+    });
+  }
+  W.zonePt = z => toScreen(zoneWorld(z)); if (POSITIONED) W.wrongBox = 1;
+  async function posLesson() {
+    const L = cfg.posLesson; if (!BR) BR = makeBridge();
+    const ball = makeShape('lball', 'sphere', '#F2A900', 0, 0.55); ball.slot = null; ball.busy = true; ball.g.position.copy(zoneWorld('left'));
+    const steps = [() => { cheer(mendy); }, ...cfg.intro, { wait: 200 }, 'Look at the ball. Where is it?'];
+    for (const z of ['top', 'under', 'right', 'front', 'behind']) steps.push(() => placeAt(ball, z).then(() => { ball.busy = true; }), cap(ZWORD[z]) + ' the bridge!');
+    const ball2 = () => { const b2 = makeShape('lball2', 'sphere', '#12A766', 0, 0.55); b2.slot = null; b2.busy = true; b2.g.position.copy(zoneWorld('under')); return b2; };
+    let b2 = null;
+    steps.push(() => placeAt(ball, 'top').then(() => { b2 = ball2(); }), 'Two balls. One is on top. One is under.',
+      'Tap the ball on top!', () => { setName('tap'); task = ['Tap the ball on top.']; return tapShape(ball, 'Tap the ball on top.', () => Promise.all([say('Yes! On top!'), solidAction(ball, 'spin')])); }, () => { setName('learn'); task = null; },
+      ...L.rule, () => { chant(true); }, 'Clap it with me! Tap the hands.');
+    L.chant.forEach(c => steps.push(c[0], () => claps(ball, c[1])));
+    steps.push(() => { chant(false); return cheer(mendy); }, () => { [ball, b2].forEach(o => { if (o) { scene.remove(o.g); shapes.splice(shapes.indexOf(o), 1); } }); });
+    return play(steps);
+  }
+  async function posGame() {
+    setName('watch'); dots(1); await camTo('wide', 1200);
+    const R0 = cfg.rounds[0]; setPosRound(R0);
+    let ok = await play([cfg.watchLine, 'Put the ' + FAMILY(R0.k) + ' ' + ZWORD[R0.where] + ' the bridge.', () => { handOn = posPiece; hand.style.display = 'block'; return wait(400); },
+      () => moveTo(posPiece, zoneWorld(R0.where), 1200), () => { hand.style.display = 'none'; handOn = null; return placeAt(posPiece, R0.where); }, cap(ZWORD[R0.where]) + ' the bridge!', cfg.yourTurn]);
+    if (!ok) return;
+    const help = { done: false };
+    for (let r = 1; r < cfg.rounds.length; r++) { ok = await posRound(cfg.rounds[r], false, help); if (!ok) return; }
+    if (W.misses <= 1 && cfg.bonusRounds) {
+      W.bonus = true; ok = await play(['Bonus round! You are so good at this.', 'Listen carefully.']); if (!ok) return;
+      for (const R of cfg.bonusRounds) { ok = await posRound(R, true, help); if (!ok) return; }
+    }
+    if (posPiece) { scene.remove(posPiece.g); posPiece = null; } shapes.splice(0).forEach(o => scene.remove(o.g)); if (BR) { scene.remove(BR.g); BR.ring.visible = false; BR = null; }
+    mistake();
+  }
+
   function setName(n) { W.name = n; }
   async function learn() {
     setName('learn'); dots(0); W.misses = 0; W.found = 0; allow = false; onDrop = null; task = null; W.bonus = false; chant(false); stopIdle();
     $('#end').classList.remove('show');
     buildSet(); resize(); camTo('close', 10);
+    if (POSITIONED) { const ok = await posLesson(); if (ok) posGame(); return; }
     if (PUZZLED) { const ok = await puzzleLesson(); if (ok) puzzleGame(); return; }
     if (PATTERNED) { const ok = await patternLesson(); if (ok) patternGame(); return; }
     if (FIXED) { if (OL) { scene.remove(OL.g); OL = null; } const ok = await fixLesson(); if (OL) { scene.remove(OL.g); OL = null; } if (ok) fixGame(); return; }
@@ -1043,14 +1126,18 @@ export function startGame(cfg) {
     const M = cfg.mistake, p = M.piece || ['outline', 0, 1];
     let d;
     if (M.outline) { OL = makeOutline(M.outline.k, M.outline.miss, M.outline.color, 1.5); d = { g: OL.g, marks: [] }; }   /* a shape with a gap */
+    else if (M.where) {   /* a friend says where the ball is, on the bridge scene */
+      BR = makeBridge(); const b = makeShape('mball', 'sphere', '#F2A900', 0, 0.6); b.slot = null; b.busy = true; b.g.position.copy(zoneWorld(M.where)); d = { g: b.g, marks: [] };
+    }
     else if (M.pattern) {   /* a friend's bead string with one wrong bead */
       setPattern({ seq: M.pattern.seq, blanks: 0, tray: [] }); ghost.visible = false;
       PS.parts.forEach(q => { q.position.z += 1.0; q.position.y += 0.3; q.position.x += 0.45; }); d = { g: new THREE.Group(), marks: [] }; scene.add(d.g);
     }
     else { d = makeShape('mk', p[0], p[3] || '#FF7A1A', p[1], 1); d.slot = null; d.busy = true; }
-    d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01);
-    friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
-    camTo('close', 1000).then(() => tween(500, k => d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15)))));
+    if (!M.where) { d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01); }
+    if (M.where) { friend.position.set(tall ? -1.6 : -3.4, 0, tall ? 2.6 : 1.4); friend.rotation.y = 0.5; friend.visible = true; mendy.visible = false; }
+    else { friend.position.set(-1.3, 0, 0.6); friend.rotation.y = 0.35; friend.visible = true;
+      camTo('close', 1000).then(() => tween(500, k => d.g.scale.setScalar(Math.max(0.01, ease(k) * (p[2] || 1.15))))); }
     const j = $('#judge'); let answered = false, costed = false;
     const right = M.answer ? j.querySelector('.yesB') : j.querySelector('.noB'), wrong = M.answer ? j.querySelector('.noB') : j.querySelector('.yesB');
     W.answerSel = M.answer ? '.judge .yesB' : '.judge .noB'; W.wrongSel = M.answer ? '.judge .noB' : '.judge .yesB';
@@ -1066,7 +1153,7 @@ export function startGame(cfg) {
         m.material.color.set(want.color); PS.R = { ...PS.R, seq: M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t) }; chime(true); return sing(); };
       play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []),
         ...(M.pattern ? [M.fixLine || 'Let us fix it.', fixBad] : []), () => cheer(friend), M.after || (() => {}),
-        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
+        () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.where ? (scene.remove(d.g), scene.remove(BR.g), BR = null, Promise.resolve()) : M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
     };
     play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }, 'Green means yes. Crossed means no.']);
     setTimeout(() => { if (!answered) j.classList.add('show'); }, FAST ? 0 : 14000);
@@ -1089,6 +1176,7 @@ export function startGame(cfg) {
   if (FIXED) setRound(cfg.rounds[0]);
   if (PATTERNED) setPattern(cfg.rounds[0]);
   if (PUZZLED) setPuzzle(cfg.rounds[0]);
+  if (POSITIONED) setPosRound(cfg.rounds[0]);
   shapes.forEach(o => { o.g.visible = true; });
   dots(0); frame(); W.ready = true;
   preload([...cfg.intro, cfg.ask, cfg.yourTurn, 'Count the sides with me.', 'Now count the corners.', 'Your turn! Tap each corner and count.', 'One!', 'Two!', 'Three!', 'Four!', 'One.', 'Two.', 'Three.', 'Four.', 'Clap it with me! Tap the hands.']);
