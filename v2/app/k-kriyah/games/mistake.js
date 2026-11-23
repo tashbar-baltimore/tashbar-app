@@ -5,13 +5,14 @@
 /* each unit: Yaakov's claims (shown letter, what he says), right 3 times and wrong 3 times, and the demo round */
 const PLAN = {
   1: { R: [['beis', 'beis'], ['alef', 'beis'], ['veis', 'veis'], ['beis', 'veis'], ['alef', 'alef'], ['veis', 'beis']], demo: ['veis', 'beis', 'Hmm. Watch me. No dot. That is not a Beis!'] },
+  3: { R: [['vov', 'vov'], ['zayin', 'vov'], ['ches', 'ches'], ['hei', 'ches'], ['zayin', 'zayin'], ['ches', 'hei']], demo: ['zayin', 'vov', 'Hmm. Watch me. A crown! That is not a Vov.'] },
   2: { R: [['gimmel', 'gimmel'], ['daled', 'hei'], ['hei', 'hei'], ['gimmel', 'daled'], ['beis', 'beis'], ['veis', 'beis']],   /* the last two bring back Unit 1 */ demo: ['daled', 'gimmel', 'Hmm. Watch me. No foot. That is not a Gimmel!'] },
 };
 /* what to look for, in a few words */
-const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with the little floating leg' };
-const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.' };
+const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with the little floating leg', vov: 'with no crown', zayin: 'with the crown', ches: 'with the leg that touches' };
+const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.' };
 /* where the difference is on each letter (font units), so it can glow: Gimmel's foot, Daled's empty left side, Hei's little leg */
-const FEATURE = { gimmel: [360, 110], daled: [150, 250], hei: [100, 200] };
+const FEATURE = { gimmel: [360, 110], daled: [150, 250], hei: [100, 370], vov: [235, 500], zayin: [250, 500], ches: [150, 420] };   /* Hei: the gap above its leg; Ches: where its leg meets the roof */
 export default function setup(E, { struggled, unit }) {
   const plan = PLAN[unit.n] || PLAN[1];
   const { THREE, S, ICON } = E;

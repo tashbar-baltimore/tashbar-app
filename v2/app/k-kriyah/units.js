@@ -23,6 +23,17 @@ export const UNITS = [
       { id: 'u2g6', name: 'Review: Beis and Veis', kind: 'detective', icon: 'house', review: true },
       { id: 'u2g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
+  { n: 3, letters: ['vov', 'zayin', 'ches'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei'],
+    games: [
+      { id: 'u3g0', name: 'Ari bakes challah', kind: 'story3', icon: 'challah' },
+      { id: 'u3g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
+      { id: 'u3g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair' },
+      { id: 'u3g3', name: 'Letter Hunt', kind: 'hunt', icon: 'glass' },
+      { id: 'u3g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u3g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
+      { id: 'u3g6', name: 'Review: Sound Match', kind: 'soundmatch', icon: 'fish', review: true, reviewOf: 2 },
+      { id: 'u3g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+    ] },
 ];
 /* every game in order, each knowing its unit */
 export const GAMES = UNITS.flatMap(u => u.games.map(g => ({ ...g, unit: u.n })));

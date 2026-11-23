@@ -6,6 +6,7 @@
 const N = k => ({ k, by: 'name' }), SND = k => ({ k, by: 'sound' });
 const QS = {
   1: [N('beis'), N('alef'), N('veis'), SND('beis'), SND('veis'), { k: 'alef', by: 'quiet' }, N('veis'), N('beis'), SND('veis')],
+  3: [N('zayin'), N('vov'), SND('ches'), N('ches'), SND('zayin'), N('hei'), N('vov'), SND('gimmel'), N('zayin')],
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {
@@ -41,14 +42,16 @@ export default function setup(E, { struggled, unit }) {
   let cur = null;
   E.onPointer('down', e => { if (!active) return; const l = E.pickFrom(e, keys.map(k => L[k]).filter(l => l.visible)); if (l && resolveQ) { const r = resolveQ; resolveQ = null; r(l.userData.key); } });
   /* the three letters for a question: the answer, its look-alike if it has one, then a new letter and an older one */
-  const PAIR = { beis: 'veis', veis: 'beis' };
+  const PAIR = { beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', hei: 'ches', ches: 'hei' };
+  const SAME = { vov: 'veis', veis: 'vov' };   /* Vov and Veis both say v: never ask one with the other on screen */
   const mix = a => a.slice().sort(() => Math.random() - .5);
   function pick(k) {
     if (keys.length <= 3) return mix(keys);
     const out = [k]; if (PAIR[k]) out.push(PAIR[k]);
-    const newer = mix(unit.letters).find(c => !out.includes(c)); if (out.length < 3 && newer) out.push(newer);   /* one new letter and one older one, so old and new stay mixed */
-    const older = mix(unit.known).find(c => !out.includes(c)); if (out.length < 3 && older) out.push(older);
-    for (const c of mix(keys)) if (out.length < 3 && !out.includes(c)) out.push(c);
+    const ok = c => !out.includes(c) && c !== SAME[k];
+    const newer = mix(unit.letters).find(ok); if (out.length < 3 && newer) out.push(newer);   /* one new letter and one older one, so old and new stay mixed */
+    const older = mix(unit.known).find(ok); if (out.length < 3 && older) out.push(older);
+    for (const c of mix(keys)) if (out.length < 3 && ok(c)) out.push(c);
     return mix(out);
   }
   async function showSet(k) { set = pick(k); mix([0, 1, 2]).forEach((s, i) => slot[set[i]] = s); E.sfx.whoosh(); await place(true); }

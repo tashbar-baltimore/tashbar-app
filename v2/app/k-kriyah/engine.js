@@ -47,7 +47,7 @@ export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); retu
    Every letter sound plays the rebbe's recording when audio/sounds.json lists it; until then the computer voice says it
    (marked on screen as temporary). A line is an array of words and sounds: ['Beis says', S('b')]. */
 export const S = k => ({ snd: k });
-const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh' };          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
+const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', ch: 'khh' };   /* 'khh' is only a stand-in: a computer can't say Ches well */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
 let SOUNDS = {}; const audioCache = {};
 export const soundsReady = fetch('audio/sounds.json').then(r => r.ok ? r.json() : {}).then(j => { SOUNDS = j || {}; }).catch(() => {});
 export let lastLine = null; let sayToken = 0;
@@ -269,11 +269,12 @@ export function house({ lit = true, wall = 0xffa552, roof = 0xe8322b, bushes = t
 }
 
 /* ---------------- people (round, friendly, modest; kippah and tzitzis) ---------------- */
-export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, kippah = 0x1f3c88, hair = 0x6b4423, beard = null, hat = false, jacket = null, tzitzis = true } = {}) {
+export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, kippah = 0x1f3c88, hair = 0x6b4423, beard = null, hat = false, jacket = null, tzitzis = true, woman = false, dress = 0x7b4fa0 } = {}) {
   const b = new THREE.Group();
   const skinM = M(skin, { roughness: .55, clearcoat: .15 }), shirtM = M(shirt, { roughness: .5 }), pantsM = M(pants), dark = M(0x1d2b3a, { roughness: .2, clearcoat: 1 }), hairM = M(hair);
   const legL = mesh(new THREE.CapsuleGeometry(.1, .32, 6, 12), pantsM, -.12, .24, 0), legR = mesh(new THREE.CapsuleGeometry(.1, .32, 6, 12), pantsM, .12, .24, 0); b.add(legL, legR);
-  b.add(mesh(new THREE.CapsuleGeometry(.27, .36, 8, 16), jacket != null ? M(jacket) : shirtM, 0, .72, 0));
+  if (woman) { legL.visible = legR.visible = false; tzitzis = false; shirt = dress; b.add(mesh(new THREE.CylinderGeometry(.24, .42, .95, 24), M(dress, { roughness: .6 }), 0, .48, 0)); }   /* a long, modest dress */
+  b.add(mesh(new THREE.CapsuleGeometry(.27, .36, 8, 16), jacket != null ? M(jacket) : woman ? M(dress, { roughness: .6 }) : shirtM, 0, .72, 0));
   if (jacket != null) b.add(mesh(new THREE.BoxGeometry(.12, .4, .05), shirtM, 0, .8, .25, false));
   if (tzitzis) [-.2, .2].forEach(x => b.add(mesh(new THREE.CylinderGeometry(.012, .012, .32, 5), M(0xffffff), x, .5, .18, false)));
   const armL = new THREE.Group(); armL.position.set(-.32, .9, 0); armL.add(mesh(new THREE.CapsuleGeometry(.075, .32, 6, 10), jacket != null ? M(jacket) : shirtM, 0, -.18, 0)); armL.add(mesh(new THREE.SphereGeometry(.085, 12, 10), skinM, 0, -.4, 0)); armL.rotation.z = -.2; b.add(armL);
@@ -281,12 +282,13 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   const head = new THREE.Group(); head.position.set(0, 1.32, 0); b.add(head);
   head.add(mesh(new THREE.SphereGeometry(.34, 32, 24), skinM));
   if (hat) { head.add(mesh(new THREE.CylinderGeometry(.46, .46, .03, 28), dark, 0, .22, 0)); head.add(mesh(new THREE.CylinderGeometry(.27, .3, .3, 24), dark, 0, .37, 0)); }
+  else if (woman) { const h = mesh(new THREE.SphereGeometry(.37, 28, 18, 0, Math.PI * 2, 0, Math.PI * .62), hairM, 0, .04, -.03); h.scale.set(1.05, 1.05, 1.02); head.add(h); head.add(mesh(new THREE.CapsuleGeometry(.2, .22, 6, 12), hairM, 0, -.2, -.14)); }   /* a neat sheitel */
   else { const k = mesh(new THREE.SphereGeometry(.24, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2.4), M(kippah, { roughness: .4, clearcoat: .5 }), 0, .2, -.03); k.rotation.x = -.25; head.add(k); }
   const eyes = [];
   [-.12, .12].forEach(x => { const e = new THREE.Group(); e.position.set(x, .04, .3); e.add(mesh(new THREE.SphereGeometry(.05, 14, 10), dark, 0, 0, 0, false)); e.add(mesh(new THREE.SphereGeometry(.016, 8, 6), M(0xffffff), .015, .02, .045, false)); head.add(e); eyes.push(e);
     if (!beard) head.add(mesh(new THREE.SphereGeometry(.05, 10, 8), M(0xff9a9a, { transparent: true, opacity: .6 }), x * 1.6, -.07, .26, false)); });
   const sm = mesh(new THREE.TorusGeometry(.09, .017, 8, 20, Math.PI), dark, 0, -.08, .31, false); sm.rotation.z = Math.PI; head.add(sm);
-  [-1, 1].forEach(s => { const p = mesh(new THREE.TorusGeometry(.05, .02, 8, 16, Math.PI * 1.6), hairM, s * .31, -.12, .06, false); p.rotation.y = s * Math.PI / 2; head.add(p); });   /* peyos */
+  if (!woman) [-1, 1].forEach(s => { const p = mesh(new THREE.TorusGeometry(.05, .02, 8, 16, Math.PI * 1.6), hairM, s * .31, -.12, .06, false); p.rotation.y = s * Math.PI / 2; head.add(p); });   /* peyos */
   if (beard) { const bd = mesh(new THREE.SphereGeometry(.3, 24, 16, 0, Math.PI * 2, Math.PI * .6, Math.PI * .4), M(beard, { roughness: .8, clearcoat: 0 }), 0, -.02, .07); bd.scale.set(1.0, 1.5, 1); head.add(bd); sm.position.set(0, -.1, .335); sm.scale.setScalar(.8); }
   b.userData = { armR, armL, head, eyes, legL, legR, mood: 'calm', blinkAt: 2 + Math.random() * 3 };
   onFrame(t => { const u = b.userData; if (!b.visible) return;
@@ -303,6 +305,8 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
 export const mendy = () => person({ kippah: 0x1f3c88 });
 export const tatty = () => { const p = person({ beard: 0x6b4423, hat: true, jacket: 0x2c4a7a, pants: 0x26324a, hair: 0x6b4423 });   /* navy jacket and brown beard: not the rebbe */ p.scale.setScalar(1.45); return p; };
 export const rebbe = () => { const p = person({ beard: 0x8a8a8a, hat: true, jacket: 0x1d2433, pants: 0x1d2433, hair: 0x8a8a8a, skin: 0xf6c9a2 }); p.scale.setScalar(1.5); return p; };
+export const mommy = () => { const p = person({ woman: true, hair: 0x5a3a22, dress: 0x3f5fa8, shirt: 0x3f5fa8 });   /* long sleeves in the dress colour */ p.scale.setScalar(1.35); return p; };
+export const ari = () => person({ kippah: 0xd97706, hair: 0x3b2a1a });
 export const yaakov = () => person({ kippah: 0xc0392b, hair: 0xb5532a, shirt: 0xfff7e0, skin: 0xffdcc2 });
 
 /* a little jump, used for joy */
@@ -326,8 +330,9 @@ export const goldDot = () => new THREE.MeshPhysicalMaterial({ color: 0xffc21a, r
 const hitMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
 /* key: 'alef' | 'beis' | 'veis'.  Beis and Veis share one shape; Beis has the dagesh (Mendy's dot: "someone home"). */
 export const LETTERS = { alef: { ch: 'א', name: 'Alef' }, beis: { ch: 'ב', name: 'Beis', dagesh: true, snd: 'b' }, veis: { ch: 'ב', name: 'Veis', snd: 'v' },
-  gimmel: { ch: 'ג', name: 'Gimmel', snd: 'g' }, daled: { ch: 'ד', name: 'Daled', snd: 'd' }, hei: { ch: 'ה', name: 'Hei', snd: 'h' } };
-export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4' };
+  gimmel: { ch: 'ג', name: 'Gimmel', snd: 'g' }, daled: { ch: 'ד', name: 'Daled', snd: 'd' }, hei: { ch: 'ה', name: 'Hei', snd: 'h' },
+  vov: { ch: 'ו', name: 'Vov', snd: 'v' }, zayin: { ch: 'ז', name: 'Zayin', snd: 'z' }, ches: { ch: 'ח', name: 'Ches', snd: 'ch' } };
+export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimmel: '\u05D2', daled: '\u05D3', hei: '\u05D4', vov: '\u05D5', zayin: '\u05D6', ches: '\u05D7' };
 export function letter(key, height = 2.6, color = 'blue') {
   const L = LETTERS[key], { g: geo, c } = letterGeo(L.ch); const bb = geo.boundingBox, H = bb.max.y - bb.min.y, W = bb.max.x - bb.min.x, s = height / H;
   const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); grp.add(m);

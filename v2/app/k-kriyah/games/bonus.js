@@ -36,13 +36,13 @@ export default function setup(E, { unit }) {
     if (u.key === want) { u.busy = true; caught++; E.joy(l.position.clone()); boy.mood('cheer'); setTimeout(() => boy.mood('calm'), 700);
       const p0 = l.position.clone(), to = basket.position.clone().add(new THREE.Vector3(0, .5, 0)); await E.tween(420, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * .6); });
       u.gone = true; E.scene.remove(l); E.sfx.pop(); }
-    else { wrong++; u.t0 += 500; E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its little leg floats.' })[u.key], false); }
+    else { wrong++; u.t0 += 500; E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its little leg floats.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.' })[u.key], false); }
   });
   async function round(k, n, every, ms) {
     want = k; setSign(k); E.hop(boy, .3);
     await E.say(k === 'alef' ? 'Catch every Alef, the quiet one!' : ['Catch every ' + E.LETTERS[k].name + '!', S(E.LETTERS[k].snd)]);
     active = true; document.body.dataset.rainReady = k; homeBtn(false);   /* no leaving by accident while letters fall */
-    const others = keysBut(k), near = others.filter(x => unit.letters.includes(x) || x === ({ beis: 'veis', veis: 'beis' })[k]), far = others.filter(x => !near.includes(x));
+    const others = keysBut(k), near = others.filter(x => unit.letters.includes(x) || x === ({ beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', ches: 'hei', hei: 'ches' })[k]), far = others.filter(x => !near.includes(x));
     const mix = Array.from({ length: n }, (_, i) => i % 2 === 0 ? k : (i % 6 === 5 && far.length ? far[(i / 6 | 0) % far.length] : near[(i / 2 | 0) % near.length])).sort(() => Math.random() - .5);   /* mostly this unit's letters, a few older ones */
     for (const m of mix) { drop(m, ms); await new Promise(r => setTimeout(r, every)); }   /* real time, even in test runs */
     while (falling.length) await new Promise(r => setTimeout(r, 200));
