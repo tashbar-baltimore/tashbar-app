@@ -28,7 +28,30 @@ CLAUDE.md wins where anything here differs: publish ONLY by pull request (auto-p
   - a mark on a screen with an empty "how" line;
   - a label word that the "how" line does not teach.
 
+## PICS-2 (from 2026-11-23): pictures where the TEACHING happens
+- Round 1 and round 2 put a picture on question screens. PICS-2 goes to unit openers, teach / "how to do it" screens,
+  One Bite lessons (TODAY WE LEARN, worked examples, activities) and reading passages.
+- Order: unit openers -> One Bite -> reading passages -> science / social studies / life skills / electives teach screens ->
+  Kodesh teach screens (REBBE list) -> upgrades of weak live pictures -> round-2 leftovers (thermometer with no numbers,
+  rain gauge, the ~30 screens un-linked from Capitol, White House, Liberty Bell, Louisiana map, transistor).
+- One PICS-2 pull request open at a time; title starts "PICS-2".
+- Round 2's lane folders and its list of bad live pictures are on branch `claude/adoring-ramanujan-bwh0ev` in `pics-pending2/`
+  (`upgrades.md`). Never link a picture on that list again; replace it with a new id.
+
+## What round 2 learned
+- Checkers ALWAYS find something: a cross in window bars, a person in a reflection, a brand stamped on a key, a label on the answer.
+- A stork is not a kosher bird: never for shiluach haken.
+- A Pixabay picture whose uploader is "Pexels" has no known author: skip it.
+- Jar and bottle labels hide text and brands: zoom in, or skip.
+- Check every reused live picture against `upgrades.md` before linking it again.
+- A picture hides the screen's own small text picture (under 40 characters) unless the link has `"keep": true`.
+  `pics-check.js` now WARNS about this; publish with no warnings.
+
 ## Tools
+- `node tools/pics-todo.js screens.json SCI.ANIM [lane ...] [--json todo.json]`: screens with no picture yet for an id prefix
+  (leaves out screens already linked live or in the lanes given). Build each lane's work list from this.
+- `python3 -I tools/pics-lane-rm.py <lane> pic <id> | link "ID|q" | unused`: take a picture (with all its links) or single
+  links out of a lane folder. Checkers use it instead of editing JSON by hand.
 - `python3 tools/pics-screens.py out.json`: every screen (id, question, how, emoji). Build the work list from this, not the audit sheet.
 - `python3 -I tools/pics-find.py <dir> "words" --src pixabay,loc,nasa,openverse[,commons] --n 16 [--illus] [--allow word]`
   searches the free sources, drops anything whose tags break the picture rules, and writes `<dir>/sheet.jpg` (numbered tiles) and `cands.json`.
