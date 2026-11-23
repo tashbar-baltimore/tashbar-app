@@ -372,7 +372,7 @@ B['READ.COMP.L02.01']={ band:'K1', pic:'🐸', today:'Find the answer on the pag
   var L={
     a:['A','a','apple','🍎','a, like apple','Big A: two slants and a bridge.','Small a: a circle and a stick.'],
     b:['B','b','bus','🚌','b, like bus','Big B: a line and two bumps.','Small b: a tall line, then a ball.'],
-    c:['C','c','cat','🐱','k, like cat','Big C: a circle with a bite out.','Small c: a small open circle.'],
+    c:['C','c','cat','🐱','k, like cat','Big C: a big circle, open on the right.','Small c: a small open circle.'],
     d:['D','d','duck','🦆','d, like duck','Big D: a line and one big bump.','Small d: a ball, then a tall line.'],
     e:['E','e','egg','🥚','e, like egg','Big E: a line and three arms.','Small e: a line across, then curl around.'],
     f:['F','f','fish','🐟','f, like fish','Big F: a line and two arms.','Small f: a cane with a belt.'],
@@ -567,7 +567,7 @@ B['READ.PA.L01.02']={ band:'K1', pic:'🎵', today:'Find words that rhyme', why:
   your:[
     {type:'listen', hear:'goat', q:'🐐 goat', o:['⛵','🎂','☀️'], a:'⛵', say:'Which one rhymes with goat? Boat, cake, or sun?', how:'Say each word with goat. Which one ends the same?'},
     {type:'match', pairs:[['🐱 cat','🦇 bat'],['🐝 bee','🌳 tree'],['🐶 dog','🐸 frog']], say:'Match each picture to the one it rhymes with.', how:'Say both words. Do the ends sound the same? Then they match.'},
-    {type:'sort', bins:['👍 rhyme','👎 no rhyme'], cards:[['🎩 🦇',0],['🐟 🐸',1],['🐝 🔑',0],['☀️ 🧦',1]], say:'Careful! Some start the same. Hat, bat? Fish, frog?', how:'Listen to the END of both words. Same end? Thumbs up.'},
+    {type:'sort', mis:true, bins:['👍 rhyme','👎 no rhyme'], cards:[['🎩 🦇',0],['🐟 🐸',1],['🐝 🔑',0],['☀️ 🧦',1]], say:'Avi says fish and frog rhyme. Right or oops? Sort them.', how:'Fish and frog only START the same. That is the oops. Listen to the END: hat, bat. Same end? Thumbs up.'},
     {type:'listen', hear:'star', q:'⭐ star', o:['🚗','🐟','🐝'], a:'🚗', say:'Shimon’s sister Malky asks: which rhymes with star? Car, fish, or bee?', how:'Say each word with star. Which one ends the same?'},
     {type:'findall', grid:['🌳','🐶','🔑','🐟','🧦','🌳','🎩','🔑'], find:['🌳','🔑'], findSay:'picture that rhymes with bee', say:'Last line of the song! Tap every picture that rhymes with bee.', how:'Say each picture: tree, dog, key. Then say bee. Same end? Tap it.'}] };
 
@@ -608,9 +608,9 @@ B['READ.PA.L01.04']={ band:'K1', pic:'🔍', today:'Hear the first sound in a wo
     {type:'sort', bins:['Like bus 🚌','Like sun ☀️'], cards:[['🐻 bear',0],['🐝 bee',0],['🧦 sock',1],['🐍 snake',1]], say:'Clue two! Does it start like bus or like sun?', how:'Say the picture slowly. Hear the first sound. Buh or sss?'}],
   your:[
     {type:'listen', hear:'house', q:'🏠 house', o:['✋','☀️','🛏️'], a:'✋', say:'Which starts with the same sound as house? Hand, sun, or bed?', how:'Say house slowly. Hear huh. Which picture starts with huh?'},
-    {type:'match', pairs:[['🐶 dog','🦆 duck'],['🐭 mouse','🌙 moon'],['🐟 fish','🦊 fox']], say:'Match the pictures that start with the same sound.', how:'Say the first picture. Hear the first sound. Find one that starts the same.'},
+    {type:'sort', mis:true, bins:['Starts like moon','Does not'], cards:[['🐭 mouse',0],['🐵 monkey',0],['🥄 spoon',1],['🎈 balloon',1]], say:'Moshe says spoon starts like moon. Oops! Sort them.', how:'Spoon only ENDS like moon. That is the oops. Say it slowly. Does it START with mmm?'},
     {type:'listen', hear:'dog', q:'🐶 dog', o:['🚪','🐟','🎂'], a:'🚪', say:'Which starts with the same sound as dog? Door, fish, or cake?', how:'Say dog slowly. Hear duh. Which picture starts with duh?'},
-    {type:'sort', bins:['Starts like moon','Does not'], cards:[['🐭 mouse',0],['🐵 monkey',0],['🥄 spoon',1],['🎈 balloon',1]], say:'A tricky clue! Only the start counts. Sort them.', how:'Say it slowly. Does it START with mmm? Spoon only ends like moon.'},
+    {type:'match', pairs:[['🐶 dog','🦆 duck'],['🐭 mouse','🌙 moon'],['🐟 fish','🦊 fox']], say:'Match the pictures that start with the same sound.', how:'Say the first picture. Hear the first sound. Find one that starts the same.'},
     {type:'listen', hear:'rocket', q:'🚀 rocket', o:['🦊','🐰','🐝'], a:'🐰', say:'Last clue! Which starts like rocket? Fox, rabbit, or bee?', how:'Say rocket slowly. Hear rrr. Which picture starts with rrr?'}] };
 
 Object.assign(B['READ.PA.L01.05'],{ pic:'🤖',
@@ -648,9 +648,9 @@ B['READ.PA.L01.06']={ band:'K1', pic:'🥗', today:'Chop a word into its sounds'
     {type:'tiles', w:['d','o','g'], hear:'dog', q:'🐶', say:'Chop the word into its sounds. Tap them in order.', how:'Say dog slowly: duh, ah, guh. Tap the letter for each sound.'}],
   your:[
     {type:'listen', hear:'fish', q:'🐟 fish', o:['2','3','4'], a:'3', say:'Chaim brings fish for Shabbos. Chop fish. How many sounds?', how:'Say fish slowly: fff, ih, sh. Sh is one sound.'},
-    {type:'tiles', w:['b','o','x'], hear:'box', q:'📦', say:'Chaim packs a box. Chop box. Tap the sounds in order.', how:'Say box slowly: buh, ah, ks. X says ks. Tap each letter.'},
+    {type:'sort', mis:true, bins:['2 sounds','3 sounds'], cards:[['🐝 bee',0],['👞 shoe',0],['🐟 fish',1],['🦆 duck',1]], say:'Ari counted letters, not sounds. Oops! Sort them right.', how:'Shoe has 4 letters but 2 sounds: sh, oo. One finger for each sound, not each letter.'},
     {type:'listen', hear:'egg', q:'🥚 egg', o:['g','e','k'], a:'g', say:'An egg for the salad! What is the last sound in egg?', how:'Say egg slowly: eh, guh. Guh is last. Tap its letter.'},
-    {type:'sort', bins:['2 sounds','3 sounds'], cards:[['🐝 bee',0],['👞 shoe',0],['🐟 fish',1],['🦆 duck',1]], say:'Careful! Count sounds, not letters. Sort them.', how:'Say it slowly. One finger for each sound. Sh is one sound.'},
+    {type:'tiles', w:['b','o','x'], hear:'box', q:'📦', say:'Chaim packs a box. Chop box. Tap the sounds in order.', how:'Say box slowly: buh, ah, ks. X says ks. Tap each letter.'},
     {type:'listen', hear:'dish', q:'🍽️ dish', o:['sh','s','h'], a:'sh', say:'Chaim puts the salad in a dish. What is the last sound?', how:'Say dish slowly: duh, ih, sh. Sh is one sound.'}] };
 
 /* ==== QUALITY ROUND, Lane C: K phonics READ.PHON.L01.02 to .04 and snap words READ.FLU.L01.01, reworked ====
@@ -674,7 +674,7 @@ B['READ.PHON.L01.02']={ band:'K1', pic:'📬', today:'Match each sound to its le
     {type:'match', pairs:[['m','🌙'],['s','☀️'],['f','🐟']], say:'Mendel delivers letters. Match each letter to its picture.', how:'Say the picture slowly. Hear the first sound. Find the letter that says it.'}],
   your:[
     {type:'listen', hear:'pig', q:'🐷', o:['b','p','d'], a:'p', say:'This is a pig. Which letter makes its first sound?', how:'Say pig slowly. Hear puh. Which letter says puh?'},
-    {type:'sort', bins:['b 🐻','d 🥁'], cards:[['🐝',0],['🚌',0],['🐶',1],['🚪',1]], say:'b and d look alike! Mendel needs help. Sort them.', how:'Say it slowly. Buh goes to b. Duh goes to d.'},
+    {type:'sort', mis:true, bins:['b 🐻','d 🥁'], cards:[['🐝',0],['🚌',0],['🐶',1],['🚪',1]], say:'Mendel mixed up b and d. Oops! Help him sort.', how:'b and d look alike, so listen. Say it slowly. Buh goes to b. Duh goes to d.'},
     {type:'listen', hear:'nose', q:'👃', o:['m','n','r'], a:'n', say:'This is a nose. Which letter makes its first sound?', how:'Say nose slowly. Hear nnn. Which letter says nnn?'},
     {type:'match', pairs:[['t','🐯'],['g','🐐'],['r','🚀']], say:'More mail! Match each letter to its picture.', how:'Say the picture slowly. Hear the first sound. Find the letter that says it.'},
     {type:'listen', hear:'dog', q:'🐶', o:['b','d','t'], a:'d', say:'Last mail stop: a dog! Which letter makes its first sound?', how:'Say dog slowly. Hear duh. The letter d says duh.'}] };
@@ -696,7 +696,7 @@ B['READ.PHON.L01.03']={ band:'K1', pic:'🚂', today:'Hear the short vowel in th
   your:[
     {type:'listen', hear:'bus', q:'🚌', o:['a','o','u'], a:'u', say:'This is a bus. Which letter makes the middle sound?', how:'Say bus slowly: buh, uh, sss. Which letter says uh?'},
     {type:'match', pairs:[['🛏️','e'],['🐷','i'],['☀️','u']], say:'Match each picture to its middle vowel.', how:'Stretch the word. Eh is e. Ih is i. Uh is u.'},
-    {type:'sort', bins:['uh like ☂️','ah like 🐙'], cards:[['🦆',0],['☀️',0],['🧦',1],['🔒',1]], say:'Careful! Uh and ah sound close. Sort them.', how:'Uh is short, like up. Ah opens wide, like octopus.'},
+    {type:'sort', mis:true, bins:['uh like ☂️','ah like 🐙'], cards:[['🦆',0],['☀️',0],['🧦',1],['🔒',1]], say:'Tzvi mixed up uh and ah. Oops! Help him sort.', how:'Uh and ah sound close. Uh is short, like up: duck, sun. Ah opens wide, like octopus: sock, lock.'},
     {type:'tiles', w:['p','i','g'], extra:['e','a'], hear:'pig', q:'🐷', say:'Put the right vowel in the middle car. Build pig.', how:'Say pig slowly: puh, ih, guh. Ih is the letter i.'},
     {type:'listen', hear:'net', q:'🥅', o:['i','e','a'], a:'e', say:'This is a net. Which letter makes the middle sound?', how:'Say net slowly: nnn, eh, tuh. Eh is e, like egg.'}] };
 
