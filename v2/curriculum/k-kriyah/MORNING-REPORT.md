@@ -1,14 +1,19 @@
 # Morning report: Kindergarten Kriyah, Unit 1 (for Esti, 9:30)
 
 ## 1. Where to look, and where to tap
-- **The pull request:** https://github.com/tashbar-baltimore/tashbar-app/pull/258
-- **The look link** appears there by itself as a comment ("2.0 look link") once the tests pass.
-  1. Open it and go to **`/k-kriyah/`** at the end of the link. That's Unit 1's path: seven stepping stones.
-  2. **Tap the glowing pink stone** (with the little house) to start Mendy's story.
-  3. Each game ends with stars, then a big green arrow to the next game.
-  4. The house button, top right, goes back to the path. The speaker button, top left, says the last line again.
+- **The pull request:** https://github.com/tashbar-baltimore/tashbar-app/pull/258. All tests pass on it.
+- **The look link could not be made.** It isn't this pull request's fault: the 2.0 website (`tashbar-learning-v2`) doesn't exist in Firebase yet, and every 2.0 look link since #248 has failed the same way.
+  - The Head of School can fix it in a minute. Go to console.firebase.google.com, then project **tashbar-learning-live**, then **Hosting**, then **Add another site**, type `tashbar-learning-v2` and tap **Add**.
+  - Then the look link appears on the pull request by itself. The steps are also in a comment there.
+- **So you can look this morning anyway,** there is a private preview of the same games: https://claude.ai/artifact/QzuVDEKRC89ziKCkAP68gj
+  - It opens in Claude for the account this was built in (2.0d@tashbarbaltimore.org). If you use a different account, share it from the page's Share menu.
+  - The approval itself still needs the look link (the 2.0 rules).
+- **Where to tap:**
+  1. Unit 1's path shows seven stepping stones. **Tap the glowing pink stone** (with the little house), then the big green ▶ button, to start Mendy's story.
+  2. Each game ends with stars, then a big green arrow to the next game.
+  3. The house button, top right, goes back to the path. The speaker button, top left, says the last line again.
 - **Turn the sound on.** Everything is spoken; nothing needs reading.
-- On the look link, a new stone opens only after 2 stars on the one before it, just as for a boy.
+- A new stone opens only after 2 stars on the one before it, just as for a boy.
 
 ## 2. What's broken or not finished (first, honestly)
 - **The letter sounds are the computer voice for now.**
