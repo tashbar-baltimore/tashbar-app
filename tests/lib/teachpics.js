@@ -19,6 +19,8 @@ module.exports = async function teachPicsTests(pg) {
       await pg.evaluate(async () => { window.__rtRun = async function* () {
         const sleep = ms => new Promise(res => setTimeout(res, ms)), o = { bad: [], id: '', pass: '', shots: [] };
         if (typeof window.rtDecorate !== 'function') { o.bad.push('RealPicsTeach.html did not load (rtDecorate missing)'); return o; }
+        const prevLive = window.OB_LIVE; window.OB_LIVE = 'test';   /* tests/run.js turns One Bite off for its own lesson play; a TEST- boy gets it here */
+        try {
         const has = id => !!((typeof BANK_ALL !== 'undefined' && BANK_ALL[id]) || (typeof GEN !== 'undefined' && GEN[id]));
         const worldOf = id => { const pre = id.split('.')[0], map = /^(LK|HEB)$/.test(pre) ? 'LK' : /^(READ|WRIT|LANG)$/.test(pre) ? 'READ' : /^(SS|SOC|FACT)$/.test(pre) ? 'SS' : /^(COMP|VOC)$/.test(pre) ? 'COMP' : pre;
           return WORLD[pre] ? pre : WORLD[map] ? map : Object.keys(WORLD)[0]; };
@@ -67,7 +69,8 @@ module.exports = async function teachPicsTests(pg) {
           if (wide()) o.bad.push('passage with a picture scrolls sideways at ' + innerWidth + ' px');
           const pas = app().querySelector('aside.passage'); if (pas) pas.scrollIntoView(); yield ['passage', o]; }
         delete M['@passage|' + pk];
-        return o; }; window.__rtIt = window.__rtRun(); });
+        return o;
+        } finally { window.OB_LIVE = prevLive; } }; window.__rtIt = window.__rtRun(); });
       let r = null;
       for (;;) { const st = await pg.evaluate(async () => { const n = await window.__rtIt.next(); return { done: n.done, v: n.done ? n.value : n.value[1], tag: n.done ? '' : n.value[0] }; });
         if (st.done) { r = st.v; break; }
