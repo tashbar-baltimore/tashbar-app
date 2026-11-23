@@ -97,7 +97,7 @@ module.exports = async function (browser) {
             await drag(id, box); await pg.waitForTimeout(250); wrongs++;
             const st = await S();
             if (st.misses !== m0 + 1) bad(L + ': a wrong try was not counted as a mistake');
-            if (!st.said.slice(said0).some(t => /^(That is|Look closely|This shape|Count again|Look\. It has|Too short|Too long|That stick|Not that one|That (circle|square|triangle|rectangle|sphere|cube|cylinder|cone) is)/.test(t))) bad(L + ': a wrong try is not explained: ' + JSON.stringify(st.said.slice(said0)));
+            if (!st.said.slice(said0).some(t => /^(That is|That shape|Look closely|This shape|Count again|Look\. It has|Too short|Too long|That stick|Not that one|That (circle|square|triangle|rectangle|sphere|cube|cylinder|cone) is)/.test(t))) bad(L + ': a wrong try is not explained: ' + JSON.stringify(st.said.slice(said0)));
             await pg.waitForTimeout(300); continue;
           }
         }
