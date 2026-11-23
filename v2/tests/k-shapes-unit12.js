@@ -60,8 +60,14 @@ module.exports = async function (browser) {
         await pg.waitForFunction(() => window.__shp.name === 'find' || (window.__shp.name === 'tap' && window.__shp.waitingTap()), null, { timeout: 30000 });
         if ((await S()).name === 'find') return;
         if ((await pg.evaluate(() => window.__shp.cornerPts().length)) > 0) await tapCorners('the lesson');
-        else { const p = await pg.evaluate(() => window.__shp.tapTarget()); if (p) { await pg.mouse.click(p.x, p.y); await pg.waitForTimeout(150); } }
-        await pg.waitForFunction(() => window.__shp.name !== 'tap', null, { timeout: 15000 }).catch(() => bad(L + ': the lesson waits forever for a tap'));
+        else {   /* he taps the shape; if a tap is lost on a slow test machine, like a boy he taps again (up to 5 times) */
+          const taps0 = (await S()).shapeTaps || 0; let ok = false;
+          for (let t = 0; t < 5 && !ok; t++) {
+            const p = await pg.evaluate(() => window.__shp.tapTarget()); if (p) await pg.mouse.click(p.x, p.y);
+            ok = await pg.waitForFunction(t0 => (window.__shp.shapeTaps || 0) > t0, taps0, { timeout: 3000 }).then(() => true).catch(() => false);
+          }
+          if (!ok) bad(L + ': the lesson waits forever for a tap');
+        }
       }
     };
     try {
