@@ -55,7 +55,10 @@
     api.moves = function (k) { var out = []; if (api.pushed[1] > 0) out.push([1, 0]); if (api.pushed[0] !== k) out.push(k > api.pushed[0] ? [0, k - 1] : [0, k]); return out; };
     if (interactive) {
       var down = null;
-      el.addEventListener('pointerdown', function (e) { var b = e.target.closest('.bead'); if (!b || el.classList.contains('locked')) return; e.preventDefault(); down = b; });
+      el.addEventListener('pointerdown', function (e) {   /* a tap anywhere on a rod picks the nearest bead (big target for small fingers) */
+        var b = e.target.closest('.bead'), rod = e.target.closest('.rod');
+        if (!b && rod) { var best = null, bd = 1e9; rod.querySelectorAll('.bead').forEach(function (x) { var r = x.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - e.clientX); if (d < bd) { bd = d; best = x; } }); b = best; }
+        if (!b || el.classList.contains('locked')) return; e.preventDefault(); down = b; });
       document.addEventListener('pointerup', function () { if (!down) return; var b = down; down = null; if (el.classList.contains('locked')) return; api.tap(+b.dataset.r, +b.dataset.i); });
     }
     api.set(0, 0); return api;
