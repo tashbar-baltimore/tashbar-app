@@ -47,19 +47,19 @@ module.exports = async function (pg) {
       if (v.length) res[id] = v; });
     return { res, total: Object.keys(ONE_BITE || {}).filter(id => ONE_BITE[id] && (ONE_BITE[id].do || ONE_BITE[id].your)).length };
   });
-  let base = { frozen: 0, lessons: {} };
-  try { base = JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch (e) {}
+  let base = { frozen: 0, lessons: {} }, hasFile = false;
+  try { base = JSON.parse(fs.readFileSync(FILE, 'utf8')); hasFile = true; } catch (e) {}
   const listed = base.lessons || {}, frozen = Number(base.frozen) || 0, listSize = Object.keys(listed).length;
   const now = found.res, bad = [];
   Object.keys(now).forEach(id => { const was = listed[id];
     if (!was) bad.push(id + ' breaks the quality rules: ' + now[id].join(', ') + ' (a new or fixed lesson must pass every rule; see tests/lib/obquality.js)');
     else { const worse = now[id].filter(c => was.indexOf(c) < 0); if (worse.length) bad.push(id + ' got worse: now also breaks ' + worse.join(', ')); } });
-  if (frozen && listSize > frozen) bad.push('tests/quality-baseline.json lists ' + listSize + ' lessons, more than the frozen ' + frozen + ': lessons may only come OFF the list');
+  if (hasFile && listSize > frozen) bad.push('tests/quality-baseline.json lists ' + listSize + ' lessons, more than the frozen ' + frozen + ': lessons may only come OFF the list');
   if (process.env.QUALITY_UPDATE) {
     const keep = {}; Object.keys(now).forEach(id => { if (listed[id]) keep[id] = now[id].filter(c => listed[id].indexOf(c) >= 0); if (keep[id] && !keep[id].length) delete keep[id]; });
-    const firstTime = !Object.keys(listed).length && !frozen;
+    const firstTime = !hasFile;   /* only when there is no list file at all; an EMPTY list (every lesson fixed) stays empty */
     const lessons = firstTime ? now : keep;
-    fs.writeFileSync(FILE, JSON.stringify({ note: 'One Bite lessons that do not yet meet the HoS quality standard (tests/lib/obquality.js). This list may only shrink. Fix a lesson, then take it off.', frozen: firstTime ? Object.keys(now).length : Math.min(frozen || 1e9, Object.keys(keep).length), lessons }, null, 1) + '\n');
+    fs.writeFileSync(FILE, JSON.stringify({ note: 'One Bite lessons that do not yet meet the HoS quality standard (tests/lib/obquality.js). This list may only shrink. Fix a lesson, then take it off.', frozen: firstTime ? Object.keys(now).length : Math.min(frozen, Object.keys(keep).length), lessons }, null, 1) + '\n');
     out.oks.push('quality list rewritten (' + Object.keys(lessons).length + ' lessons still to fix)');
   }
   bad.forEach(x => out.fails.push('QUALITY GATE: ' + x));
