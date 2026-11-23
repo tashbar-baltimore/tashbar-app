@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn it: Five and some more — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 5 OPENER: a short, warm lesson. Six to ten are "five and some more": a full row of the
+     ten-frame, one whole hand, five red beads, and then some more. With the unit chant "Five and one is six!" (stand up and clap)
+     and "show me seven on your hands". He taps the big arrow to go on. -->
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css">
+<style>
+.stage{ grid-template-rows:1fr auto; justify-items:center; align-items:center; }
+.show{ display:flex; align-items:center; justify-content:center; gap:3vw; width:100%; }
+.show .tf{ width:min(46vw,560px); } .show .hands2{ width:min(32vw,40vh,380px); } .show .rack{ width:min(80vw,900px); }
+.show .panel{ display:flex; align-items:center; justify-content:center; }
+#go{ width:clamp(100px,15vh,130px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; visibility:hidden; animation:pulse 1.2s infinite; }
+#go.on{ visibility:visible; } #go svg{ width:52%; height:52%; position:relative; }
+.hero{ display:flex; align-items:center; justify-content:center; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .show{ flex-direction:column; } .show .tf{ width:88vw; } .show .hands2{ width:70vw; } .show .rack{ width:94vw; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="show" id="show"></div>
+  <button id="go" class="btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, done;
+  var SLIDES = [
+    { n: 5, w: ['frame', 'hands'], lines: ['Hi! Today we learn six to ten.', 'Five is one full row. One whole hand!'] },
+    { n: 6, w: ['frame'], lines: ['Five and one more is six!'], chant: 'Five and one is six!' },
+    { n: 7, w: ['frame', 'hands'], lines: ['Five and two more is seven.', 'Show me seven on your hands!'], pause: 2500 },
+    { n: 8, w: ['rack'], lines: ['Beads! Five red and three white. Eight!'] },
+    { n: 9, w: ['frame'], lines: ['Five and four more is nine.'] },
+    { n: 10, w: ['frame', 'hands'], lines: ['Two full rows. Two whole hands. Ten!', "Five and some more. Let's play!"] }
+  ];
+  function build(s) {
+    var box = $('show'); box.innerHTML = ''; var made = {};
+    s.w.forEach(function (k) {
+      var p = document.createElement('div'); p.className = 'panel'; box.appendChild(p);
+      if (k === 'frame') { var t = U5.frame(0, false); p.appendChild(t.el); made.frame = t; }
+      if (k === 'hands') { var h = U5.hands(0, false); p.appendChild(h.el); made.hands = h; }
+      if (k === 'rack') { var r = U5.rack(false); p.appendChild(r.el); made.rack = r; }
+    });
+    return made;
+  }
+  async function grow(m, n) { /* the five comes in at once, then the "more" one by one */
+    if (m.frame) m.frame.set(Math.min(5, n)); if (m.hands) m.hands.set(Math.min(5, n)); if (m.rack) m.rack.set(Math.min(5, n), 0); NK.sound.pop();
+    await FR.wait(700);
+    for (var k = 6; k <= n; k++) { if (m.frame) m.frame.set(k); if (m.hands) m.hands.set(k); if (m.rack) m.rack.set(k, 0); NK.sound.pop(); await FR.wait(380); }
+  }
+  FR.game({
+    id: 'u5-opener', title: 'Five and More', rounds: SLIDES.length, stars: function () { return 3; },
+    hero: '<div id="herotf" style="width:100%;margin-top:14%"></div>',
+    endSay: function () { return "Great! Now let's fill the frame!"; },
+    init: function () {
+      var h = U5.frame(8, false); $('herotf').appendChild(h.el);
+      $('go').addEventListener('click', function () { if (GAME.phase !== 'answer') return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; var d = done; done = null; d(true); });
+    },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var s = SLIDES[i]; GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on');
+        var m = build(s); await grow(m, s.n);
+        for (var k = 0; k < s.lines.length; k++) await F.say(s.lines[k]);
+        if (m.frame && s.n > 5) { m.frame.glow(true); await F.wait(900); m.frame.glow(false); }
+        if (s.pause) await F.wait(s.pause);
+        if (s.chant) await F.chant(s.chant, true);
+        done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#go' }]; }; GAME.wrong = null; F.lock(false); $('go').classList.add('on');
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

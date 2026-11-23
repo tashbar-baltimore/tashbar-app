@@ -7,7 +7,10 @@ window.NK_UNITS = [
   { n: 2, name: 'Counting out loud to 10', say: 'Unit two. Counting out loud.', stops: [] },
   { n: 3, name: 'Counting things', say: 'Unit three. Counting things.', stops: [] },
   { n: 4, name: 'Numbers 0 to 5', say: 'Unit four. Numbers zero to five.', stops: [] },
-  { n: 5, name: 'Numbers 6 to 10', say: 'Unit five. Numbers six to ten.', stops: [] },
+  { n: 5, name: 'Numbers 6 to 10', say: 'Unit five. Five and some more!', stops: [
+    ['u5-opener', 'opener5.html', 'book', 'Learn it'], ['u5-frame', 'tenframe.html', 'cards', 'Fill the frame'], ['u5-beads', 'beads.html', 'cards', 'Bead push'],
+    ['u5-hands', 'hands5.html', 'hand', 'Two hands'], ['u5-trace', 'trace.html', 'book', 'Trace it'], ['u5-mistake', 'mistake5.html', 'glass', 'Find the mistake'],
+    ['u5-review', 'review5.html', 'towel', 'Review time'], ['u5-check', 'check5.html', 'trophy', 'Show me'] ] },
   { n: 6, name: 'The path game', say: 'Unit six. The path game.', stops: [] },
   { n: 7, name: 'More, less, the same', say: 'Unit seven. More and less.', stops: [] },
   { n: 8, name: 'Parts of 5', say: 'Unit eight. Parts of five.', stops: [] },

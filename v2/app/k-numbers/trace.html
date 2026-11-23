@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trace it — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 5, game 4: TRACE IT (6-10). Skill: write the numerals 6-10, tied to their amount.
+     A big rounded numeral is a road; he starts at the green dot and traces it with his finger (Montessori-style tracing),
+     saying it, with a short rhyme for each. The ten-frame beside it shows the amount ("Six is five and one more").
+     Going far off the road: "Stay on the road. Look at the green dot." and he goes on from where he was. -->
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css">
+<style>
+.stage{ grid-template-columns:1.2fr .8fr; align-items:center; }
+.left, .right{ display:flex; align-items:center; justify-content:center; height:100%; }
+.left .panel{ width:min(44vw,62vh,470px); aspect-ratio:220/270; padding:4px; }
+.left .tracer{ width:100%; height:100%; }
+.right .panel{ width:min(34vw,320px); display:flex; flex-direction:column; align-items:center; gap:10px; }
+.right .tf{ width:100%; } #tfh{ width:100%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:1.4fr .6fr; } .left .panel{ width:min(78vw,50vh); } .right .panel{ width:70vw; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left"><div class="panel" id="tp"></div></div>
+  <div class="right"><div class="panel"><div class="numeral" id="num">6</div><div id="tfh"></div></div></div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var TR, F5, R, done;
+  function hooks() {
+    GAME.right = function () { return [{ path: TR.points() }]; };
+    GAME.wrong = R.misses ? null : function () { return [{ path: TR.offPath() }]; };
+  }
+  function some(n) { return n === 10 ? 'Ten is two full rows.' : FR.Word(n) + ' is five and ' + FR.word(n - 5) + ' more.'; }
+  function newTracer(n) {
+    if (TR) TR.el.remove(); TR = U5.tracer(n); $('tp').appendChild(TR.el); $('num').textContent = n; F5.set(n);
+    TR.onOff = async function () { FR.oops($('tp')); R.misses++; GAME.phase = 'busy'; hooks(); await FR.say('Stay on the road. Look at the green dot.'); GAME.phase = 'answer'; hooks(); };
+    TR.onStroke = function () { FR.say('Now the zero. Start at the green dot.'); hooks(); };
+    TR.onDone = async function () { GAME.phase = 'busy'; FR.lock(true); await FR.say(U5.NUMERALS[n].rhyme); F5.glow(true); await FR.yes($('tp'), some(n)); F5.glow(false); var d = done; done = null; if (d) d(R.misses === 0); };
+  }
+  FR.game({
+    id: 'u5-trace', title: 'Trace it', rounds: 5,
+    hero: '<div id="herotr" style="width:60%;margin:4% auto 0;aspect-ratio:220/270"></div>',
+    init: function (F) {
+      var t = U5.tracer(8); t.el.style.cssText = 'width:100%;height:100%;pointer-events:none'; $('herotr').appendChild(t.el); t.auto(1);
+      F5 = U5.frame(0, false); $('tfh').appendChild(F5.el);
+    },
+    demo: async function (F) {
+      R = { n: 7, misses: 0 }; newTracer(7); TR.lock(true); TR.onDone = null;
+      await F.say('Numbers have roads. Watch me trace seven.');
+      var pts = TR.points(); hand.style.transition = 'left .08s linear, top .08s linear';
+      await F.handTo(TR.el.querySelector('.startdot')); var go = TR.auto(1800);
+      for (var k = 0; k < pts.length; k += 3) { hand.style.left = (pts[k][0] - 20) + 'px'; hand.style.top = (pts[k][1] - 8) + 'px'; await F.wait(85); }
+      await go; hand.style.transition = '';
+      await F.say(U5.NUMERALS[7].rhyme); await F.yes($('tp'), 'Seven is five and two more.');
+    },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var n = [6, 7, 8, 9, 10][i]; R = { n: n, misses: 0 }; newTracer(n); TR.lock(true); GAME.phase = 'busy'; F.lock(true);
+        await F.say('Trace ' + F.word(n) + '. Start at the green dot.', { repeat: 'Trace ' + F.word(n) + '. Start at the green dot.' });
+        done = res; GAME.phase = 'answer'; F.lock(false); TR.lock(false); hooks();
+      });
+    }
+  });
+  var hand = document.getElementById('hand');
+})();
+</script>
+</body>
+</html>

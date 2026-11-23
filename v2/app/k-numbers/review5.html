@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Review — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 5 REVIEW ROUND: 6 short mixed items from earlier units, so he never forgets (spaced review).
+     Unit 1: a quick peek at 1-5. Unit 2: what comes next when counting. Unit 3: give me a number; count a scattered group.
+     Unit 4: zero is none; a numeral 0-5. He answers on two hands or the ten-frame. A miss: we look (or count) together, then go on. -->
+<link rel="stylesheet" href="frame.css"><link rel="stylesheet" href="unit5.css">
+<style>
+.stage{ grid-template-columns:.9fr 1.3fr; align-items:center; }
+.left, .right{ display:flex; align-items:center; justify-content:center; height:100%; gap:14px; }
+.right{ flex-direction:column; }
+#flash.qcard{ width:min(36vw,56vh,400px); }
+#flash .qcard{ position:absolute; inset:0; border:0; box-shadow:none; background:none; }
+.ans{ width:min(56vw,640px); } .ans .hands2{ width:min(44vw,60vh,540px); margin:0 auto; } .ans[hidden]{ display:none; }
+.bignum{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:clamp(90px,22vh,200px) !important; }
+.ear{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.ear svg{ width:46%; }
+.hero svg{ width:58%; margin:6% auto 0; display:block; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.75fr 1.25fr; } #flash.qcard{ width:min(64vw,30vh); } .ans{ width:94vw; } .ans .hands2{ width:86vw; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="left"><div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div></div>
+  <div class="right"><div class="ans panel" id="aH"></div><div class="ans" id="aF" hidden></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script><script src="frame.js"></script><script src="unit5.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var H, T, R, done, plan, shown;
+  var EAR = '<div class="ear"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#2FB5E8"/><path d="M10 19h7l9-7v24l-9-7h-7z" fill="#fff"/><path d="M30 17c3 2 4 4.5 4 7s-1 5-4 7M34 12c4 3.5 6 8 6 12s-2 8.5-6 12" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg></div>';
+  function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
+  function W() { return R.ans === 'frame' ? T : H; }
+  function ready() { var c = $('check'); var ok = W().count() > 0 || R.n === 0; c.classList.toggle('dim', !ok); c.classList.toggle('ready', ok && GAME.phase === 'answer'); }
+  function taps(k) { return R.ans === 'frame' ? T.moves(k).map(function (i) { return { tap: '#aF .cell[data-i="' + i + '"]' }; }) : H.moves(k, '#aH'); }
+  function hooks() { GAME.right = function () { return taps(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return taps(R.n + 1).concat([{ tap: '#check' }]); }; }
+  function put(html) { if (shown) shown.remove(); var d = document.createElement('div'); d.className = 'shown'; d.style.cssText = 'position:absolute;inset:0'; d.innerHTML = html || ''; $('flash').insertBefore(d, $('flash').firstChild); shown = d; return d; }
+  function scattered(n) { var pts = [], t = 0; while (pts.length < n && t++ < 600) { var x = 14 + Math.random() * 72, y = 14 + Math.random() * 72; if (pts.every(function (q) { return Math.hypot(q[0] - x, q[1] - y) > 21; })) pts.push([x, y]); } return pts; }
+  async function countTogether() {
+    var items = shown.querySelectorAll('svg.q'); for (var i = 0; i < items.length; i++) { items[i].style.filter = 'drop-shadow(0 0 8px #FFD23D)'; await FR.say(FR.Word(i + 1) + (i === items.length - 1 ? '!' : ','), { noRepeat: true }); }
+  }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer') return; var have = W().count(); if (!have && R.n !== 0) { FR.say('Show me first.'); return; }
+    GAME.phase = 'busy'; FR.lock(true); W().lock(true); cloth(true); var d = done; done = null;
+    if (have === R.n) { await FR.yes($(R.ans === 'frame' ? 'aF' : 'aH'), R.n === 0 ? 'Yes! Zero. None at all!' : FR.pick(['Yes!', 'Right!', 'You remember!'])); d(true); return; }
+    FR.oops($('check'));
+    if (R.type === 'count') { await FR.say("Let's count together."); await countTogether(); }
+    else if (R.type === 'next') await FR.say('After ' + FR.word(R.n - 1) + ' comes ' + FR.word(R.n) + '.');
+    else if (R.type === 'zero') await FR.say('Nothing there. That is zero!');
+    else if (R.L) { await FR.say("Let's look again."); await FR.showShape(shown.querySelector('.qcard') || shown, true); }
+    else await FR.say("Let's look. That is " + FR.word(R.n) + '.');
+    W().set(R.n); await FR.wait(700); d(false);
+  }
+  var ITEMS = [
+    { type: 'peek', make: function (F) { var n = F.pick([3, 4, 5]); var c = F.card(n, 'dots'); var w = put(); w.appendChild(c); return { n: n, L: c.L, flash: true, line: 'Peek! How many dots?' }; } },
+    { type: 'next', make: function (F) { var a = F.pick([3, 4, 5, 6]); put(EAR); return { n: a + 3, a: a, line: null }; } },
+    { type: 'give', make: function (F) { var n = F.pick([3, 4]); put('<svg class="q" viewBox="0 0 100 100" style="position:absolute;width:50%;height:50%;left:50%;top:50%"><use href="#nkOrange"/></svg>'); return { n: n, ans: 'frame', line: 'Bubby needs ' + F.word(n) + ' oranges. Fill ' + F.word(n) + '.' }; } },
+    { type: 'count', make: function (F) { var n = F.pick([6, 7, 8]), h = ''; scattered(n).forEach(function (p) { h += '<svg class="q" viewBox="0 0 100 100" style="position:absolute;width:19%;height:19%;transform:translate(-50%,-50%);left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); put(h); return { n: n, line: 'How many apples? Show me.' }; } },
+    { type: 'zero', make: function (F) { put('<div style="position:absolute;inset:12%;border-radius:50%;background:radial-gradient(ellipse at 50% 42%, #fff 0 55%, #C7D9EE 86%, #A9C1DE 100%)"></div>'); return { n: 0, line: 'How many cookies on the plate?' }; } },
+    { type: 'numeral', make: function (F) { var n = F.pick([2, 3, 4, 5]); put('<div class="numeral bignum">' + n + '</div>'); return { n: n, line: 'What number is this? Show me.' }; } }
+  ];
+  FR.game({
+    id: 'u5-review', title: 'Review Time', rounds: 6,
+    hero: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#fff" stroke="#3B2A7A" stroke-width="5"/><path d="M50 50 L50 22 M50 50 L70 60" stroke="#3B2A7A" stroke-width="6" stroke-linecap="round"/><path d="M14 30 A40 40 0 0 1 40 11" stroke="#22B45E" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M40 11 l-2 -8 M40 11 l-8 2" stroke="#22B45E" stroke-width="6" stroke-linecap="round"/></svg>',
+    init: function (F) { H = U5.hands(0, true); $('aH').appendChild(H.el); T = U5.frame(0, true); $('aF').appendChild(T.el); [H, T].forEach(function (w) { w.onChange = ready; w.lock(true); }); $('check').addEventListener('click', check); },
+    reset: function (F) { plan = ITEMS.slice(); },
+    demo: async function (F) { await F.say('Review time! Things we learned before.'); },
+    endSay: function (s) { return s >= 2 ? 'Great remembering!' : 'Good try! We will practice these again.'; },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var it = plan[i]; GAME.phase = 'busy'; F.lock(true); cloth(false); await F.wait(380);
+        var r = it.make(F); r.type = it.type; r.ans = r.ans || 'hands'; R = r;
+        $('aH').hidden = R.ans !== 'hands'; $('aF').hidden = R.ans !== 'frame'; H.set(0); T.set(0); H.lock(true); T.lock(true); ready();
+        if (R.type === 'next') { await F.say("Count with me. What comes next?"); for (var k = R.a; k < R.a + 3; k++) await F.say(F.Word(k) + '…', { noRepeat: true }); NK.last = 'What comes after ' + F.word(R.n - 1) + '? Show me.'; await F.say('What comes next? Show me.', { noRepeat: true }); }
+        else if (R.flash) { await F.say(R.line, { repeat: 'How many dots? Show me.' }); cloth(true); await F.wait(1200); cloth(false); await F.wait(380); }
+        else { cloth(true); await F.say(R.line); }
+        done = res; GAME.phase = 'answer'; F.lock(false); W().lock(false); ready(); hooks();
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>
