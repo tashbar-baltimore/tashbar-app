@@ -26,6 +26,10 @@ export const KINDS = {
   star:     { pts: [[0.0, 0.7], [-0.176, 0.243], [-0.666, 0.216], [-0.285, -0.093], [-0.411, -0.566], [-0.0, -0.3], [0.411, -0.566], [0.285, -0.093], [0.666, 0.216], [0.176, 0.243]], name: 'star' },
   hex:      { pts: [[0.68, 0], [0.34, 0.59], [-0.34, 0.59], [-0.68, 0], [-0.34, -0.59], [0.34, -0.59]], name: 'hexagon' },
   circle:   { circle: 0.66, name: 'circle' },
+  sphere:   { solid: 'sphere', name: 'sphere' },
+  cube:     { solid: 'cube', name: 'cube' },
+  cyl:      { solid: 'cyl', name: 'cylinder' },
+  cone:     { solid: 'cone', name: 'cone' },
   oval:     { oval: [0.9, 0.5], name: 'oval' },
   semi:     { semi: 0.75, name: 'half circle' },
   curvy:    { curvy: true, name: 'curvy shape' }
@@ -58,6 +62,13 @@ export function iconSVG(k, fill, cross) {
     return '<svg viewBox="0 0 64 64">' + d + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
   }
   const K = KINDS[k]; let d = '';
+  if (K.solid) {   /* simple pictures of the solid shapes */
+    const sh = { sphere: '<circle cx="32" cy="32" r="22" fill="F"/><ellipse cx="25" cy="24" rx="6" ry="4" fill="#fff" opacity=".5"/>',
+      cube: '<path d="M32 8 L54 20 L54 44 L32 56 L10 44 L10 20Z" fill="F"/><path d="M10 20 L32 32 L54 20 M32 32 L32 56" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/>',
+      cyl: '<path d="M14 16 L14 48 A18 7 0 0 0 50 48 L50 16Z" fill="F"/><ellipse cx="32" cy="16" rx="18" ry="7" fill="F" stroke="#fff" stroke-width="3" opacity=".9"/>',
+      cone: '<path d="M32 6 L52 50 A20 7 0 0 1 12 50Z" fill="F"/><path d="M12 50 A20 7 0 0 0 52 50" stroke="#fff" stroke-width="3" fill="none" opacity=".7"/>' }[K.solid];
+    return '<svg viewBox="0 0 64 64">' + sh.split('"F"').join('"' + fill + '"') + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
+  }
   if (K.circle) d = '<circle cx="32" cy="32" r="22" fill="' + fill + '"/>';
   else if (K.pts) d = '<path d="M' + K.pts.map(p => (32 + p[0] * 26).toFixed(1) + ' ' + (34 - p[1] * 26).toFixed(1)).join(' L') + 'Z" fill="' + fill + '" stroke-linejoin="round"/>';
   return '<svg viewBox="0 0 64 64">' + d + (cross ? '<path d="M10 10 L54 54" stroke="#E0574F" stroke-width="7" stroke-linecap="round"/>' : '') + '</svg>';
@@ -145,6 +156,8 @@ export function startGame(cfg) {
     if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none */
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.24, 40), paintM); ring.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075, 24), paintM); dot.position.set(p[0] * 0.38, BX.h * 0.4 + p[1] * 0.38, BX.d / 2 + 0.005); g.add(dot); });
+    } else if (bc.solid) {   /* a little real solid stuck on the front */
+      const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.4 })); b3.scale.setScalar(0.28); b3.position.set(0, BX.h * 0.45, BX.d / 2 + 0.18); b3.castShadow = true; g.add(b3);
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
       lab.scale.setScalar(0.36); lab.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(lab);
@@ -193,16 +206,23 @@ export function startGame(cfg) {
   const cornerGeo = new THREE.SphereGeometry(0.11, 24, 16);
   const cornerMat = new THREE.MeshStandardMaterial({ color: '#FFD23F', emissive: '#FFB000', emissiveIntensity: 1.4, roughness: 0.3 });
   const cornerFaint = new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 0.5, transparent: true, opacity: 0.75 });
+  function solidGeo(kind) {
+    if (kind === 'sphere') return new THREE.SphereGeometry(0.62, 48, 32);
+    if (kind === 'cube') return new RoundedBoxGeometry(1.0, 1.0, 1.0, 4, 0.08);
+    if (kind === 'cyl') return new THREE.CylinderGeometry(0.5, 0.5, 1.15, 48);
+    return new THREE.ConeGeometry(0.62, 1.25, 48);
+  }
   function makeShape(id, k, color, rotZ, scale) {
-    const { s, corners } = shapeOf(k);
-    const geo = new THREE.ExtrudeGeometry(s, { depth: DEPTH, bevelEnabled: true, bevelThickness: BEV, bevelSize: BEV, bevelSegments: 5, curveSegments: 48 });
-    geo.translate(0, 0, -DEPTH / 2);
+    const solid = KINDS[k].solid, { s, corners } = solid ? { s: null, corners: [] } : shapeOf(k);
+    const dep = cfg.thinFlat ? 0.06 : DEPTH, bev = cfg.thinFlat ? 0.03 : BEV;   /* "flat or solid": flat pieces are thin, like card */
+    const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: bev, bevelSize: bev, bevelSegments: 3, curveSegments: 48 });
+    if (!solid) geo.translate(0, 0, -dep / 2);
     const mat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.32, clearcoat: 1, clearcoatRoughness: 0.15, envMapIntensity: 0.45, emissive: '#FFC400', emissiveIntensity: 0 });
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
-    const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], DEPTH / 2 + BEV + 0.02); m.scale.setScalar(0); mesh.add(m); return m; });
-    const o = { id, k, box: boxOf(k), g, turn, mesh, mat, marks, corners, scale, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false };
+    const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], dep / 2 + bev + 0.02); m.scale.setScalar(0); mesh.add(m); return m; });
+    const o = { id, k, solid, box: boxOf(k), g, turn, mesh, mat, marks, corners, scale, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false };
     mesh.userData.shape = o; shapes.push(o); return o;
   }
 
@@ -275,6 +295,7 @@ export function startGame(cfg) {
     shapes.forEach(o => {
       if (o.inBox || o.busy || o === dragging || !o.g.visible || o.slot == null) return;
       o.g.position.set(o.home.x, o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06, o.home.z);
+      if (o.solid) { o.g.rotation.y = t * 0.5 + o.phase; o.g.rotation.x = 0; return; }
       o.g.rotation.y = Math.sin(t * 0.7 + o.phase) * 0.28;
       o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, camera.position.z - o.g.position.z);   /* faces the camera, so a square always looks square */
     });
@@ -393,11 +414,12 @@ export function startGame(cfg) {
     const r = KINDS[o.k].circle || 0.66; o.mesh.add(tracer); tracer.visible = true; plink();
     return tween(ms || 1600, k => { const a = Math.PI / 2 + k * Math.PI * 2; tracer.position.set(Math.cos(a) * (r + 0.02), Math.sin(a) * (r + 0.02), DEPTH / 2 + BEV + 0.05); }).then(() => { tracer.visible = false; });
   }
-  function tapShape(o) {   /* he taps the circle; the dot runs round */
+  function tapShape(o, nagLine, onTap) {   /* he taps the shape; something happens (the dot runs round, the ball rolls...) */
     return new Promise(done => {
       W.tapShape = o; let nag = null;
-      const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (shapeTap) { say('Tap the circle.'); remind(); } }, FAST ? 1e9 : 9000); };
-      shapeTap = (cx, cy) => { if (pick(cx, cy) !== o) return; shapeTap = null; clearTimeout(nag); W.shapeTaps = (W.shapeTaps || 0) + 1; hush(); say('Round and round!'); traceRound(o, 1400).then(done); };
+      const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (shapeTap) { say(nagLine || 'Tap the circle.'); remind(); } }, FAST ? 1e9 : 9000); };
+      shapeTap = (cx, cy) => { if (pick(cx, cy) !== o) return; shapeTap = null; clearTimeout(nag); W.shapeTaps = (W.shapeTaps || 0) + 1; hush();
+        if (onTap) return onTap().then(done); say('Round and round!'); traceRound(o, 1400).then(done); };
       remind();
     });
   }
@@ -476,8 +498,25 @@ export function startGame(cfg) {
     tween(600, t => o.g.scale.setScalar(Math.max(0.01, ease(t) * (scale || 1.25))));
     return o;
   }
+  function solidAction(o, a) {   /* what a solid does: a ball rolls, a block stacks, a cone spins on its point */
+    plink();
+    if (a === 'roll') { const x0 = o.g.position.x; return tween(1600, k => { const e = Math.sin(Math.PI * 2 * k); o.g.position.x = x0 + e * 1.1; o.turn.rotation.z = -e * 2.2; }).then(() => { o.g.position.x = x0; o.turn.rotation.z = 0; }); }
+    if (a === 'stack') { const top = new THREE.Mesh(o.mesh.geometry, o.mat); top.scale.setScalar(0.75); o.g.add(top); const y1 = 0.88;
+      return tween(700, k => { top.position.y = 2.4 - (2.4 - y1) * ease(k); }).then(() => { pop(); return wait(700); }).then(() => tween(300, k => top.scale.setScalar(0.75 * (1 - k)))).then(() => { o.g.remove(top); }); }
+    if (a === 'stand') return tween(1200, k => { o.turn.rotation.x = Math.sin(Math.PI * k) * 1.57; });
+    return tween(1400, k => { o.turn.rotation.y = ease(k) * Math.PI * 2; });
+  }
   function lessonFor(L, o) {
     const n = o.marks.length, steps = [];
+    if (L.kind === 'solid') {   /* a solid shape: its name, what it is like, what it does; he taps it to make it do it */
+      steps.push('This is a ' + L.word + '.', L.like, () => solidAction(o, L.action), ...(L.rule || []));
+      if (L.tap) steps.push(L.tap, () => { setName('tap'); task = [L.tap]; return tapShape(o, L.tap, () => Promise.all([say(L.tapSay || 'Yes!'), solidAction(o, L.action)])); }, () => { setName('learn'); task = null; });
+      if (!L.chant) return steps;
+      steps.push(() => { chant(true); }, 'Clap it with me! Tap the hands.');
+      L.chant.forEach(c => steps.push(c[0], () => claps(o, c[1])));
+      steps.push(() => { chant(false); burst(o.g.position, 30); chime(true); return cheer(mendy); });
+      return steps;
+    }
     if (L.short) {   /* the sorter's quick review: name it, count its corners (or trace it round), its rule */
       steps.push('This is a ' + L.word + '.');
       if (n) o.marks.forEach((m, i) => steps.push(() => lightCorner(o, i), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' corners!'));
@@ -818,8 +857,10 @@ export function startGame(cfg) {
     ]);
     if (ok) { if (cfg.mode === 'clues') { setClue(1); find(false, nextClue); } else find(false); }
   }
+  const ACT = { sphere: 'roll', cube: 'stack', cyl: 'roll', cone: 'spin' };
   function teachAgain(t) {
     if (!t) return [];
+    if (t.solid || cfg.thinFlat) return [cfg.remember, 'Look at this one.', () => solidAction(t, t.solid ? ACT[t.solid] : 'stand')];
     if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), () => wait(500), () => clearCorners(t)];
     return [cfg.remember, 'Look at this one.', () => traceRound(t, 1200)];
   }
