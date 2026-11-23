@@ -128,7 +128,7 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
     $('#mouth').classList.remove('on'); $('#ask').classList.remove('on'); SCENES[STEPS[i]](); }
   function fullSnake() { letter.visible = false; snake.opacity(1); snake.group.position.z = 0; snake.group.visible = true; grow(1); guide.visible = false; spark.visible = false; }
   var tapSnakeOK = false, arrowTold = false;
-  var veteran = false; try { veteran = Number(localStorage.getItem('v2.kabc.meet-s') || 0) >= 2; } catch (e) {}
+  var veteran = false;   /* set after he finishes once in this sitting (a shared Chromebook must not pass one boy's skips to the next) */
   function quickNext() { if (veteran && !FAST) setTimeout(function () { if (R.busy && st.name !== 'trace' && st.name !== 'listen' && st.name !== 'find') showNext(true); }, 2500); }
   function nextReady() { showNext(true); if (!arrowTold) { arrowTold = true; R.run(['Tap the green arrow to go on.']); } }
 
@@ -136,7 +136,7 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
     intro: function () {
       grow(0); guide.visible = false;
       R.run([
-        function () { return W.flyIn(2.4).then(function () { guide.visible = true; A.chime([523, 659, 784]); return W.tween(0.6, function (k) { guide.scale.setScalar(0.6 + 0.4 * k); }, 'elastic'); }); },
+        function () { return W.flyIn(2.4).then(function () { if (st.name !== 'intro') return; guide.visible = true; A.chime([523, 659, 784]); return W.tween(0.6, function (k) { guide.scale.setScalar(0.6 + 0.4 * k); }, 'elastic'); }); },
         'Watch me draw the snake!',
         function () { spark.visible = true; A.hissStart(); return W.tween(3.4, function (k) { grow(k); sparkAt(k); }, 'inout').then(function () { grow(1); A.hissStop(); spark.visible = false; guide.visible = false; A.chime([659, 784, 988]); var w = new T3.Vector3(); snake.head.getWorldPosition(w); W.burst(w, 24, 5); }); },
         'A snake! Listen.', function () { return snake.hiss(1.3); }, 'Tap the snake to hear it again.'
@@ -148,8 +148,8 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
         function () { letter.visible = true; letter.scale.setScalar(0.001); A.chime([784, 988, 1175, 1568]); W.burst(new T3.Vector3(0, 0.6, 1), 46, 6);
           return Promise.all([W.tween(1.4, function (k) { snake.opacity(1 - k); snake.group.position.z = -0.9 * k; }).then(function () { snake.group.visible = false; }),
             W.tween(1.5, function (k) { letter.scale.setScalar(Math.max(0.001, k)); letter.rotation.y = (1 - k) * Math.PI * 2; halo.material.opacity = 0.75 * k; }, 'elastic')]); },
-        'This letter makes the snake sound.', KW.echo(function () { A.hissStart(); return W.wait(1.3).then(A.hissStop); }), 'Snake shape, snake sound!'
-      ]).then(function (ok) { if (ok) nextReady(); }); quickNext();
+        'This letter makes the snake sound.', function () { A.hissStart(); return W.wait(1.3).then(A.hissStop); }, 'Snake shape, snake sound!'
+      ], ['This letter makes the snake sound.', function () { A.hissStart(); return W.wait(1.3).then(A.hissStop); }, 'Snake shape, snake sound!']).then(function (ok) { if (ok) nextReady(); }); quickNext();
     },
     mouth: function () {
       $('#mouth').classList.add('on');
@@ -159,7 +159,7 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
     wiggle: function () {
       fullSnake(); snake.still = true; tapSnakeOK = false; wiggleTaps = 0; wiggleOn = false;
       var three = [wbeat(-1), wbeat(1), wbeat(-1), wback];
-      R.run(['Wiggle like a snake with me!'].concat(three, ['Your turn! Tap the snake to wiggle it.']), ['Tap the snake to wiggle it.']).then(function (ok) { if (ok) wiggleOn = true; });
+      R.run(['Wiggle like a snake with me!'].concat(three, ['Your turn! Tap the snake to wiggle it.']), ['Tap the snake to wiggle it.']).then(function (ok) { if (ok) { wiggleOn = true; lastWig = W.time(); } });
     },
     trace: function () {
       tk = 0; tracing = false;
@@ -172,7 +172,7 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
       clearFind(); fullSnake(); snake.group.visible = true; var n = st.stars; W.tween(0.6, function (k) { stage.position.y = 0.65 + 0.9 * k; stage.scale.setScalar(1 - 0.18 * k); });
       $('#stars').innerHTML = [0, 1, 2].map(function (i) { return '<div class="star" id="star' + i + '"><svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (i < n ? '#FFC21A' : '#E6E9EF') + '" stroke="' + (i < n ? '#C48F00' : '#C9CED8') + '" stroke-width="4" stroke-linejoin="round"/></svg></div>'; }).join('');
       $('#end').classList.add('on'); [0, 1, 2].forEach(function (i) { setTimeout(function () { var s = $('#star' + i); if (s) s.classList.add('pop'); }, FAST ? 0 : 250 + i * 250); });
-      A.chime([659, 784, 988, 1319]); st.done = true; var w = new T3.Vector3(); snake.head.getWorldPosition(w); W.burst(w, 30, 6);
+      A.chime([659, 784, 988, 1319]); st.done = true; if (n >= 2) veteran = true; var w = new T3.Vector3(); snake.head.getWorldPosition(w); W.burst(w, 30, 6);
       try { var k = 'v2.kabc.meet-s', prev = Number(localStorage.getItem(k) || 0); if (n > prev) localStorage.setItem(k, String(n)); } catch (e) {}
       tapSnakeOK = true; R.run([n >= 2 ? 'You know the snake sound!' : 'Good trying! We will play the snake game again.', KW.echo(function () { return snake.hiss(1); })]);
     }
@@ -180,10 +180,10 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
   $('#replay').onclick = function () { $('#end').classList.remove('on'); st.done = false; st.easy = false; tapSnakeOK = false; stage.position.y = 0.65; stage.scale.setScalar(1); go(0); };
 
   /* ---------- wiggle beats ---------- */
-  var wiggleTaps = 0, wiggleOn = false, wdir = -1;
+  var wiggleTaps = 0, wiggleOn = false, wdir = -1, lastWig = 0;
   function wbeat(dir) { return function () { return W.tween(0.2, function (k) { snake.group.rotation.z = dir * 0.12 * k; snake.group.position.x = dir * 0.25 * k; }).then(function () { A.hissStart(); return W.wait(0.42).then(A.hissStop); }).then(function () { return W.wait(0.15); }); }; }
   function wback() { return W.tween(0.25, function (k) { snake.group.rotation.z *= (1 - k); snake.group.position.x *= (1 - k); }); }
-  function wiggleTap() { if (!wiggleOn || wiggleBusy) return; wiggleBusy = true; wdir = -wdir; wiggleTaps++; st.wiggleTaps = wiggleTaps;
+  function wiggleTap() { if (!wiggleOn || wiggleBusy) return; wiggleBusy = true; lastWig = W.time(); wdir = -wdir; wiggleTaps++; st.wiggleTaps = wiggleTaps;
     wbeat(wdir)().then(function () { wiggleBusy = false; if (wiggleTaps >= 3) { wiggleOn = false; wback().then(function () { snake.still = false; R.run(['You wiggled like a snake!']).then(function (ok) { if (ok) nextReady(); }); }); } }); }
   var wiggleBusy = false;
 
@@ -276,6 +276,7 @@ body{ touch-action:none; user-select:none; -webkit-user-select:none; }
   W.onFrame(function (dt, T) {
     if (st.name === 'trace' && T - lastMove > 0.18) A.hissStop();
     if (st.name === 'trace' && tracing && !down && !R.busy && T - lastProgress > 7) hint();
+    if (st.name === 'wiggle' && wiggleOn && !wiggleBusy && !R.busy && T - lastWig > 8) { lastWig = T; R.run(['Tap the snake to wiggle it.', function () { return W.tween(0.6, function (k) { snake.group.rotation.z = Math.sin(k * Math.PI * 2) * 0.08; }); }]); }
     startDot.visible = guide.visible && tk < 4; startDot.scale.setScalar((st.name === 'trace' && tk === 0 ? 1.1 : 0.7) * (0.85 + Math.sin(T * 5) * 0.2));
     dots.forEach(function (d, i) { d.scale.setScalar(0.3 + Math.sin(T * 4 - i * 0.35) * 0.05); });
     if (letter.visible) { letter.position.y = Math.sin(T * 1.6) * 0.07; letter.rotation.y += (Math.sin(T * 0.7) * 0.3 - letter.rotation.y) * 0.03; }
