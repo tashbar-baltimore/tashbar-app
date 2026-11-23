@@ -172,6 +172,7 @@ async function kidTests(browser) {
   /* QUALITY GATE + K-1 GAMES ONLY (HoS 2026-11-22: "we need guardrails"): new lessons must meet the quality rules, listed ones may not get worse */
   try { const q = await require('./lib/obquality.js')(pg); q.fails.forEach(fail); q.oks.forEach(ok); Object.assign(report.counts, q.counts); } catch (e) { fail('quality gate crashed: ' + String(e).slice(0, 200)); }
   try { const k = await require('./lib/k1home.js')(pg); k.fails.forEach(fail); k.oks.forEach(ok); } catch (e) { fail('K-1 games-only check crashed: ' + String(e).slice(0, 200)); }
+  try { const w = await require('./lib/warp3d.js')(pg); w.fails.forEach(fail); w.oks.forEach(ok); } catch (e) { fail('3D sign-in/home check crashed: ' + String(e).slice(0, 200)); }
   /* BLOCK BUILDERS workbook (tests/lib/blockbuilders.js, HoS 2026-11-22) */
   try { const bb = await require('./lib/blockbuilders.js')(pg); bb.fails.forEach(fail); bb.oks.forEach(ok); Object.assign(report.counts, bb.counts); }
   catch (e) { fail('Block Builders test crashed: ' + String(e && e.stack || e).slice(0, 300)); }

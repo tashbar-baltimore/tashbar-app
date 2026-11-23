@@ -29,6 +29,7 @@ function sgQuest_() {
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderGo').getContent(); } catch (e) {}   /* v7.2 Stage 5: opens the first lesson after a TEST boy's Pathfinder day-1 screens (inert otherwise) */
   try { bar += HtmlService.createHtmlOutputFromFile('HomePage').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('SignInEnergy').getContent(); } catch (e) {}   /* 2026-11-18 HoS: the first page, super-upgraded energy look (off switch TL_SIGNIN_V6=false) */
+  try { bar += HtmlService.createHtmlOutputFromFile('Warp3D').getContent(); } catch (e) {}   /* 2026-11-23: the 3D journey: galaxy keypad, hyperspace sign-in, 3D welcome and map home (off switch TL_W3D=false) */
   try { bar += HtmlService.createHtmlOutputFromFile('KidReminders').getContent(); } catch (e) {}   /* Access.js: reminders from home pop up at their time */   /* the front home page: logo, code pad, flying subjects, encouraging messages */   /* PATHFINDER: "Start your Pathfinder" card on his home screen */
   try { bar += HtmlService.createHtmlOutputFromFile('CalmScreens').getContent(); } catch (e) {}   /* HoS 2026-11-19: no flashing opening screens, pop-ups that do not blink, a calmer home. LAST: it lifts the cover below */
   var i = page.lastIndexOf('</body>');
