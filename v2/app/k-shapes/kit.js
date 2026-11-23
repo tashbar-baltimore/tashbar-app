@@ -367,10 +367,16 @@ export function startGame(cfg) {
   W.tapTarget = () => W.tapShape ? toScreen(W.tapShape.g.position) : null;
   const tracer = new THREE.Mesh(new THREE.SphereGeometry(0.13, 24, 16), new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 1 }));
   tracer.visible = false;
-  function traceSide(o, i) {
+  function traceSide(o, i, color) {   /* a glowing dot runs along one side; with a colour, a bar stays on that side (equal sides, long and short sides) */
     const a = o.corners[i], b = o.corners[(i + 1) % o.corners.length]; o.mesh.add(tracer); tracer.visible = true; plink();
-    return tween(700, k => tracer.position.set(a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, DEPTH / 2 + BEV + 0.05));
+    return tween(700, k => tracer.position.set(a[0] + (b[0] - a[0]) * k, a[1] + (b[1] - a[1]) * k, DEPTH / 2 + BEV + 0.05)).then(() => {
+      if (!color) return;
+      const len = Math.hypot(b[0] - a[0], b[1] - a[1]), bar = new THREE.Mesh(new THREE.CapsuleGeometry(0.07, Math.max(0.01, len - 0.14), 6, 12), new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.35, roughness: 0.4 }));
+      bar.rotation.z = Math.atan2(b[1] - a[1], b[0] - a[0]) + Math.PI / 2; bar.position.set((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, DEPTH / 2 + BEV + 0.04);
+      o.mesh.add(bar); (o.bars = o.bars || []).push(bar);
+    });
   }
+  function clearBars(o) { (o.bars || []).forEach(b => o.mesh.remove(b)); o.bars = []; }
   function traceRound(o, ms) {   /* a glowing dot runs all the way round a circle */
     const r = KINDS[o.k].circle || 0.66; o.mesh.add(tracer); tracer.visible = true; plink();
     return tween(ms || 1600, k => { const a = Math.PI / 2 + k * Math.PI * 2; tracer.position.set(Math.cos(a) * (r + 0.02), Math.sin(a) * (r + 0.02), DEPTH / 2 + BEV + 0.05); }).then(() => { tracer.visible = false; });
@@ -391,10 +397,12 @@ export function startGame(cfg) {
   clapBtn.onclick = () => { ac(); if (chantOn) boyClap(); };
   function chant(on) { chantOn = on; clapBtn.classList.toggle('show', on); }
   function waitClap(ms) { return new Promise(r => { if (FAST) return r(); const t = setTimeout(() => { clapWaiter = null; r(); }, ms); clapWaiter = () => { clearTimeout(t); clapWaiter = null; r('boy'); }; }); }
-  function claps(o, n) {
+  function claps(o, n, what) {
     W.claps = (W.claps || 0) + n;
+    const bars = what === 'sides' && o.bars && o.bars.length ? o.bars : null;
     return Array.from({ length: n }).reduce((p, _, i) => p.then(() => waitClap(1600)).then(by => {
       if (by !== 'boy') clap(); tone([BEAT[i % BEAT.length]], 'triangle', 0, .3, .12); clapBtn.classList.remove('beat'); void clapBtn.offsetWidth; clapBtn.classList.add('beat');
+      if (bars) { const b = bars[i % bars.length]; b.scale.set(1.8, 1, 1.8); return tween(320, k => b.scale.set(1.8 - k * 0.8, 1, 1.8 - k * 0.8)); }
       if (o.marks.length) { const m = o.marks[i % o.marks.length]; m.scale.setScalar(1.6); return tween(320, k => m.scale.setScalar(1.6 - k * 0.45)); }
       const s0 = o.g.scale.x; return tween(320, k => o.g.scale.setScalar(s0 * (1 + 0.12 * Math.sin(Math.PI * k))));
     }), Promise.resolve());
@@ -448,7 +456,11 @@ export function startGame(cfg) {
   let idleT = null, idleN = 0, idleFn = null;
   function idle() { clearTimeout(idleT); if (!idleFn) return; idleT = setTimeout(() => { if (!busy && allow) idleFn(++idleN); idle(); }, FAST ? 1e9 : 11000); }
   function stopIdle() { clearTimeout(idleT); idleFn = null; idleN = 0; }
-  function pointAt(o) { handOn = o; hand.style.display = 'block'; return wait(1800).then(() => { hand.style.display = 'none'; handOn = null; }); }
+  function pointAt(o, toBox) {   /* the hand points at a piece (and then at the box it goes in) */
+    handOn = o; hand.style.display = 'block';
+    return wait(1500).then(() => { handOn = null; if (toBox && o.box >= 0 && NB) { const p = toScreen(boxAt(o.box).clone().setY(1.1)); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; return wait(1300); } })
+      .then(() => { hand.style.display = 'none'; });
+  }
   W.idleNow = () => { if (idleFn) idleFn(++idleN); };
 
   /* ---------- the lesson: one shape up close ---------- */
@@ -473,15 +485,15 @@ export function startGame(cfg) {
         ...(L.rule || []));
     } else {
       steps.push('This is a ' + L.word + '.', 'Count the sides with me.');
-      for (let i = 0; i < n; i++) steps.push(() => traceSide(o, i), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' sides!');
-      steps.push(() => { tracer.visible = false; }, 'Now count the corners.');
+      for (let i = 0; i < n; i++) steps.push(() => traceSide(o, i, L.sideColors && L.sideColors[i]), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' sides!');
+      steps.push(() => { tracer.visible = false; }, ...(L.sidesLine || []), 'Now count the corners.');
       for (let i = 0; i < n; i++) steps.push(() => lightCorner(o, i), i < n - 1 ? NUMS[i] : cap(WORDS[n]) + ' corners!');
       steps.push(() => { clearCorners(o); return wait(300); }, 'Your turn! Tap each corner and count.', () => { setName('tap'); task = ['Tap each corner.']; return tapCorners(o); },
         () => { setName('learn'); task = null; }, cap(WORDS[n]) + ' corners! Great counting!', () => clearCorners(o), ...(L.rule || []));
     }
     steps.push(() => { chant(true); o.marks.forEach(m => { m.material = cornerMat; m.scale.setScalar(1.15); }); }, 'Clap it with me! Tap the hands.');
-    L.chant.forEach(c => steps.push(c[0], () => claps(o, c[1])));
-    steps.push(() => { chant(false); burst(o.g.position, 30); chime(true); clearCorners(o); return cheer(mendy); });
+    L.chant.forEach(c => steps.push(c[0], () => claps(o, c[1], c[2])));
+    steps.push(() => { chant(false); burst(o.g.position, 30); chime(true); clearCorners(o); clearBars(o); return cheer(mendy); });
     if (L.turn != null) steps.push(L.turnLine || 'Watch. I turn it.', () => tween(1100, k => { o.turn.rotation.z = ease(k) * L.turn; }), 'Still a ' + L.word + '!');
     steps.push('Now I make it small.', () => tween(800, k => o.g.scale.setScalar(1.25 - ease(k) * 0.7)), 'Small, but still a ' + L.word + '!');
     if (L.big) steps.push('Now big!', () => tween(800, k => o.g.scale.setScalar(0.55 + ease(k) * 1.0)), 'Big, and still a ' + L.word + '!');
@@ -533,7 +545,7 @@ export function startGame(cfg) {
   }
   function teachAgain(t) {
     if (!t) return [];
-    if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), () => wait(500), () => clearCorners(t)];
+    if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), cap(WORDS[t.marks.length]) + ' corners! A ' + FAMILY(t.k) + '!', () => wait(300), () => clearCorners(t)];
     return [cfg.remember, 'Look at this one.', () => traceRound(t, 1200)];
   }
   function find(bonus) {
@@ -544,7 +556,7 @@ export function startGame(cfg) {
     idleFn = n => { const t = shapes.find(x => x.box >= 0 && !x.inBox && x.g.visible && !x.busy); if (!t) return;
       W.reminders = (W.reminders || 0) + 1;
       if (n === 1) play([...ask, cfg.hint, () => pointAt(t)]);
-      else play([cfg.hint2 || 'Here is one.', () => pointAt(t), ...teachAgain(t).slice(2), cfg.ask]); };
+      else play([cfg.hint2 || 'Here is one.', () => pointAt(t, true), ...teachAgain(t).slice(2), ...ask]); };
     idle();
     onDrop = (o, bi) => {
       idle();
@@ -570,7 +582,7 @@ export function startGame(cfg) {
         if (W.misses >= 2 && !helped && !bonus) { const t = shapes.find(s => s.box === (NB === 1 ? 0 : o.box) && !s.inBox && s.g.visible && s !== o) || (o.box >= 0 ? o : null);
           if (t && t.box >= 0) { helped = true; steps.push(...teachAgain(t)); } }
         steps.push(...ask);
-        play(steps);
+        allow = false; play(steps).then(() => { if (onDrop) allow = true; });
       });
     };
     play(ask);
@@ -604,7 +616,7 @@ export function startGame(cfg) {
       play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), () => cheer(friend), M.after || (() => {}),
         () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.box != null ? dropInBox(d, M.box) : M.answer ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
     };
-    play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }]);
+    play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }, 'Green means yes. Crossed means no.']);
     setTimeout(() => { if (!answered) j.classList.add('show'); }, FAST ? 0 : 14000);
     const nudge = () => setTimeout(() => { if (answered || W.name !== 'mistake') return; if (!busy) play([M.ask + ' Tap your answer.']); nudge(); }, FAST ? 1e9 : 13000); nudge();
   }
@@ -640,10 +652,11 @@ export function wrongFor(T) {
     if (o.k === 'oval') return noCount(['That is an oval. It is long and squished.', T === 'circle' ? 'A circle is perfectly round.' : 'A ' + T + ' has straight sides.']);
     if (o.k === 'semi') return noCount(['That is half a circle.', T === 'circle' ? 'It has a straight side. A circle is all round.' : 'It has a round side. A ' + T + ' has straight sides.']);
     if (f === 'circle') return ['That is a circle.', 'A circle has no corners at all. A ' + T + ' has ' + has(CORNERS[T]) + '.'];
-    if (o.k === 'lean') return noCount(['This shape leans over.', T === 'square' ? 'A square stands up straight, like a box.' : 'A ' + T + ' has corners like a box.']);
+    if (o.k === 'lean') return noCount(['This shape leans over.', 'A ' + T + ' has corners like a box.']);
     if (o.k === 'kite') return noCount(['That is a kite shape.', 'Its corners are pointy, not like a box. It is not a ' + T + '.']);
     if (T === 'square' && f === 'rectangle') return noCount(['That is a rectangle.', 'Two sides are long. Two are short.', 'A square has four sides the same.']);
-    if (T === 'circle') return ['That is a ' + f + '.', 'It has ' + has(n) + '. A circle has none.'];
-    return ['That is a ' + f + '.', W_[n][0].toUpperCase() + W_[n].slice(1) + ' corners! A ' + T + ' has ' + (n > CORNERS[T] ? 'only ' : '') + has(CORNERS[T]) + '.'];
+    const name = (f === T || ['triangle', 'square', 'rectangle', 'circle'].includes(f) || T === 'hexagon') && !['pentagon', 'octagon'].includes(f) ? 'That is a ' + f + '.' : 'That shape is not a ' + T + '.';
+    if (T === 'circle') return [name, 'It has ' + has(n) + '. A circle has none.'];
+    return [name, W_[n][0].toUpperCase() + W_[n].slice(1) + ' corners! A ' + T + ' has ' + (n > CORNERS[T] ? 'only ' : '') + has(CORNERS[T]) + '.'];
   };
 }
