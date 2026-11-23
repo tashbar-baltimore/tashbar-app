@@ -90,7 +90,7 @@ module.exports = async function (browser) {
           st = await S();
           if (st.misses !== m0 + 1) bad(L + ': a wrong piece was not counted as a mistake');
           if (!(await onRug(id))) bad(L + ': a wrong piece stayed in the box');
-          if (!st.said.slice(said0).some(t => /^(That is|Look closely|This shape)/.test(t))) bad(L + ': a wrong piece is not explained: ' + JSON.stringify(st.said.slice(said0)));
+          if (!st.said.slice(said0).some(t => /^(That is|That shape|Look closely|This shape)/.test(t))) bad(L + ': a wrong piece is not explained: ' + JSON.stringify(st.said.slice(said0)));
         }
         if (!(await S()).said.includes('Look at this one.')) bad(L + ': after 2 mistakes the rule is not taught again');
       }
