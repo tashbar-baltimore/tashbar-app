@@ -26,33 +26,46 @@
   var PLAN = [3, 4, 5, 6, 7], KINDS = ['apple', 'orange', 'pear', 'apple', 'orange'];
 
   /* he taps each one to count it; resolves when all are counted */
-  function tapCount(F, els) {
+  function tapCount(F, els, silent) {
     return new Promise(function (res) {
       var k = 0, busy = false;
       function hooks() { var rest = els.filter(function (e) { return !e.classList.contains('counted'); }); GAME.right = rest.length ? function () { return [{ tap: '#scene .it[data-i="' + rest[0].dataset.i + '"]' }]; } : null; GAME.wrong = null; }
       async function tap(e) {
-        var it = e.target.closest('.it'); if (!it || it.classList.contains('counted') || busy || GAME.phase !== 'answer') return;
+        var it = e.target.closest('.it'); if (!it || busy || GAME.phase !== 'answer') return;
+        if (it.classList.contains('counted')) { busy = true; NK.sound.back(); await F.say('That one is counted.', { noRepeat: true }); busy = false; return; }
         busy = true; GAME.phase = 'busy'; it.classList.add('counted', 'lit'); k++; NK.sound.pop();
-        await F.say(F.Word(k) + (k === els.length ? '!' : ''), { noRepeat: true }); it.classList.remove('lit'); busy = false;
+        if (silent) await F.wait(150); else await F.say(F.Word(k) + (k === els.length ? '!' : ''), { noRepeat: true });
+        it.classList.remove('lit'); busy = false;
         if (k < els.length) { GAME.phase = 'answer'; hooks(); return; }
         $('scene').removeEventListener('pointerdown', tap); res();
       }
       $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
     });
   }
-  async function play(F, n, kind, intro) {
-    U.clear(); $('hands').hidden = false; H.set(0); H.lock(true);
-    var w = U.itemW(n), els = U.table(n, U.narrow() ? 30 : 64).map(function (p, i) { return U.put(kind, p, w, i); });
-    if (intro) await F.say('Tap each one. Count with me!', { repeat: 'Tap each one. Count with me!' });
-    await tapCount(F, els);
-    var a = await U.answer(F, { n: n, H: H, ask: 'How many ' + U.name(kind, 2) + '?',
-      explain: async function (F) { await F.say("Let's count together."); await U.countAlong(els); await F.say('The last number tells how many.'); } });
+  /* the fruit always stays on the table (also on a phone) */
+  function tableBox() { return U.narrow() ? [6, 94, 54, 95] : [8, 92, 54, 94]; }
+  async function mix(F, els, again) {
     GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
-    await F.say('Now I mix them up!');
-    var mixed = U.bunch(n, U.narrow() ? [12, 88, 12, 90] : [12, 88, 26, 86]); els.forEach(function (e, i) { e.classList.remove('counted'); U.place(e, mixed[i]); }); NK.sound.cloth(); await F.wait(500);
-    var b = await U.answer(F, { n: n, H: H, ask: 'How many now?',
+    await F.say(again ? 'Mixed again!' : 'Now I mix them up!');
+    var sp = U.spots(els.length, tableBox(), parseFloat(els[0].style.width)); els.forEach(function (e, i) { e.classList.remove('counted'); U.place(e, sp.p[i]); }); NK.sound.cloth(); await F.wait(500);
+  }
+  function askNow(F, n) {
+    return U.answer(F, { n: n, H: H, ask: 'How many now?',
       explain: async function (F) { await F.say('We did not add any. We did not take any.'); await F.say('Still ' + F.word(n) + '! Look again.'); } });
-    return a && b;
+  }
+  /* o: { n, kind, intro, silent (he counts by himself), twice (mix a second time, no recount) } */
+  async function play(F, o) {
+    U.clear(); $('hands').hidden = false; H.set(0); H.lock(true);
+    var w = U.itemW(o.n), els = U.table(o.n, 64).map(function (p, i) { return U.put(o.kind, p, w, i); });
+    if (els.length > 4 && U.narrow()) { var sp = U.spots(o.n, tableBox(), w); els.forEach(function (e, i) { U.place(e, sp.p[i]); e.style.width = sp.w + '%'; }); }
+    var ask = o.silent ? 'Tap each one. Count by yourself.' : 'Tap each one. Count with me!';
+    if (o.intro) await F.say(ask, { repeat: ask }); else NK.last = ask;
+    await tapCount(F, els, o.silent);
+    var a = await U.answer(F, { n: o.n, H: H, ask: 'How many ' + U.name(o.kind, 2) + '?',
+      explain: async function (F) { await F.say("Let's count together."); await U.countAlong(els); await F.say('The last number tells how many.'); } });
+    await mix(F, els, false); var b = await askNow(F, o.n), c = true;
+    if (o.twice) { await mix(F, els, true); c = await askNow(F, o.n); }
+    return a && b && c;
   }
   FR.game({
     id: 'u3-mix', title: 'Mix it up', rounds: 5,
@@ -68,11 +81,13 @@
       await F.say('Still three! Mixing does not change how many.');
     },
     round: async function (F, i) {
-      var n = easy > 0 ? F.pick([3, 4]) : PLAN[i]; if (easy > 0) easy--;
-      var first = await play(F, n, KINDS[i], i < 2);
+      var help = easy > 0, n = help ? F.pick([3, 4]) : PLAN[i]; if (easy > 0) easy--;
+      if (i === 3 && !help) await F.say('Now I will mix them two times!');
+      var first = await play(F, { n: n, kind: KINDS[i], intro: i < 2 || i === 3 || help, silent: !(i < 2 || help), twice: i >= 3 && !help });
       if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
       return first;
-    }
+    },
+    bonus: async function (F) { await play(F, { n: U.narrow() ? 8 : F.pick([8, 9, 10]), kind: 'pear', intro: true, silent: true, twice: true }); }
   });
 })();
 </script>

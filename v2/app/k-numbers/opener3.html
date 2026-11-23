@@ -44,6 +44,25 @@
       await F.say('The last number tells how many. Four rolls!');
       els.forEach(function (e) { e.classList.remove('lit'); });
     },
+    /* his turn: he taps each roll and counts with the voice */
+    async function (F) {
+      U.clear(); var els = U.table(3, 64).map(function (p, i) { return U.put('roll', p, U.itemW(3), i); });
+      await F.say('Your turn! Tap each roll with me.');
+      await new Promise(function (res) {
+        var k = 0, busy = false;
+        function hooks() { var rest = els.filter(function (e) { return !e.classList.contains('counted'); }); GAME.right = rest.length ? function () { return [{ tap: '#scene .it[data-i="' + rest[0].dataset.i + '"]' }]; } : null; GAME.wrong = null; }
+        async function tap(e) {
+          var it = e.target.closest('.it'); if (!it || busy || GAME.phase !== 'answer') return;
+          if (it.classList.contains('counted')) { busy = true; await F.say('That one is counted.', { noRepeat: true }); busy = false; return; }
+          busy = true; GAME.phase = 'busy'; it.classList.add('counted', 'lit'); k++; NK.sound.pop();
+          await F.say(F.Word(k) + (k === els.length ? '!' : ''), { noRepeat: true }); it.classList.remove('lit'); busy = false;
+          if (k < els.length) { GAME.phase = 'answer'; hooks(); return; }
+          $('scene').removeEventListener('pointerdown', tap); res();
+        }
+        $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
+      });
+      GAME.phase = 'busy'; F.lock(true); await F.say('Three rolls! You did it.');
+    },
     async function (F) { U.clear(); await F.chant('Touch it, say it, move it away!', true); },
     async function (F) {
       U.clear(); var els = U.line(4, 64).map(function (p, i) { return U.put('apple', p, 13, i); });

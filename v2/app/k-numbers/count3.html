@@ -41,8 +41,11 @@
       await F.yes($('hands'), 'Three siddurim!'); H.set(0);
     },
     round: async function (F, i) {
-      var n = easy > 0 ? F.pick([3, 4, 5]) : PLAN[i], line = easy > 0 || i < 3; if (easy > 0) easy--;
-      var first = await U.countRound(F, { n: n, kind: 'siddur', line: line, H: H, intro: i < 2 ? true : false });
+      var help = easy > 0, n = help ? F.pick([3, 4, 5]) : PLAN[i], line = help || i < 3; if (easy > 0) easy--;
+      if (i === 2 && !help) await F.say('Now you count by yourself!');
+      if (i === 4 && !help) await F.say('New way! The books stay. Each one gets a tick.');
+      /* the voice counts with him only in rounds 1-2, or as help after two misses; later he counts by himself (a soft pop per tap) */
+      var first = await U.countRound(F, { n: n, kind: 'siddur', line: line, H: H, silent: !(i < 2 || help), stay: i === 4 && !help, intro: i < 3 || help || i === 4 });
       if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
       return first;
     },

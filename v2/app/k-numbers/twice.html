@@ -22,7 +22,7 @@
 <script src="unit3.js"></script>
 <script>
 (function () {
-  var $ = function (id) { return document.getElementById(id); }, U = U3, H;
+  var $ = function (id) { return document.getElementById(id); }, U = U3, H, easy = 0, misses = 0;
   var PLAN = [[3, 'twice'], [4, 'skip'], [4, 'twice'], [5, 'skip'], [6, 'twice']], WHO = ['Ari', 'Mendy', 'Dovid', 'Eli', 'Yaakov'];
   function sticker(it) { var k = it.querySelectorAll('.tch').length, s = document.createElement('i'); s.className = 'tch'; s.style.left = (8 + k * 30) + '%'; it.appendChild(s); }
 
@@ -49,9 +49,13 @@
       $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
     });
   }
-  async function play(F, n, kind, who, show) {
+  async function play(F, n, kind, who, line) {
     U.clear(); H.set(0); H.lock(true); GAME.phase = 'busy'; F.lock(true);
-    var pts = U.bunch(n, U.narrow() ? [12, 88, 12, 90] : [14, 86, 30, 84]), els = pts.map(function (p, i) { return U.put('apple', p, U.itemW(n) + 2, i); }), bad = Math.floor(Math.random() * n);
+    /* each apple has its own spot and never touches another, so every sticker clearly belongs to one apple; easier path: a neat line */
+    var pts, w;
+    if (line) { pts = U.table(n, 62); w = U.itemW(n) + 2; }
+    else { var sp = U.spots(n, U.narrow() ? [6, 94, 8, 94] : [8, 92, 12, 92], U.itemW(n) + 3); pts = sp.p; w = sp.w; }
+    var els = pts.map(function (p, i) { return U.put('apple', p, w, i); }), bad = Math.floor(Math.random() * n);
     await F.say(who + ' is counting the apples.');
     var said = await boyCounts(F, els, kind, bad);
     await F.say(who + ' says: ' + F.word(said) + ' apples!');
@@ -73,7 +77,14 @@
       F.handHide(); await F.say('One sticker on each. Three apples!');
       await F.say('Two stickers means a mistake. Find it!');
     },
-    round: function (F, i) { var p = PLAN[i]; return play(F, p[0], p[1], WHO[i], i === 0); }
+    reset: function () { easy = 0; misses = 0; },
+    round: async function (F, i) {
+      var p = PLAN[i], help = easy > 0, n = help ? F.pick([3, 4]) : p[0]; if (easy > 0) easy--;
+      var first = await play(F, n, p[1], WHO[i], help);
+      if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
+      return first;
+    },
+    bonus: async function (F) { await play(F, F.pick([8, 9, 10]), F.pick(['twice', 'skip']), 'Chaim', false); }
   });
 })();
 </script>

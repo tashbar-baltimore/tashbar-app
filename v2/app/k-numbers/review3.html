@@ -32,18 +32,41 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); }, U = U3, H, plan;
   var KINDS = ['dots', 'apple', 'candle'];
-  async function peek(F, n, kind) {
+  /* a real hand demo the first time each kind of item appears */
+  async function showOnHands(F, n) {
+    for (var k = 0; k < n; k++) { var h = k < 5 ? H.a : H.b, f = h.finger(k % 5); await F.handTo(f, .5, .3); await F.handTap(); f.classList.remove('down'); NK.sound.pop(); }
+    await F.handTo($('check')); await F.handTap(); await F.yes($('hands'), F.Word(n) + '!'); F.handHide(); H.set(0);
+  }
+  function card(n, kind) {
     $('scene').innerHTML = '<div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div>';
-    var c = F.card(n, kind); c.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; $('flash').insertBefore(c, $('flash').firstChild);
+    var c = F0.card(n, kind); c.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; $('flash').insertBefore(c, $('flash').firstChild); return c;
+  }
+  async function peekDemo(F) {
+    GAME.phase = 'demo'; F.lock(true); card(3, 'dots');
+    await F.say('Watch me first. Peek!');
+    $('flash').classList.add('open'); NK.sound.cloth(); await F.wait(1200); $('flash').classList.remove('open'); await F.wait(380);
+    await F.say('I saw three. I show three fingers.'); await showOnHands(F, 3); await F.say('Now you!');
+  }
+  async function nextDemo(F) {
+    GAME.phase = 'demo'; F.lock(true); stones();
+    var st = $('stones').children; await F.say('Watch me. Start at two.');
+    for (var k = 0; k < 3; k++) { st[k].classList.add('on'); NK.sound.pop(); await F.say(F.Word(2 + k) + '…', { noRepeat: true }); }
+    await F.say('What comes next? Five!'); st[3].classList.add('on'); await showOnHands(F, 5); await F.say('Now you!');
+  }
+  function stones() { $('scene').innerHTML = '<div class="stones" id="stones"><div class="stone"></div><div class="stone"></div><div class="stone"></div><div class="stone q">?</div></div>'; }
+  var F0 = FR, shown = {};
+  async function peek(F, n, kind) {
+    if (!shown.peek) { shown.peek = true; GAME.phase = 'demo'; F.lock(true); await F.say('Review time! Things you learned before.'); await peekDemo(F); }
+    var c = card(n, kind);
     await F.say('Peek!', { repeat: 'How many? Show me on the hands.' });
     $('flash').classList.add('open'); NK.sound.cloth(); await F.wait(n <= 3 ? 1100 : 1300); $('flash').classList.remove('open'); await F.wait(380);
     return U.answer(F, { n: n, H: H, ask: 'How many? Show me.',
       explain: async function (F) { $('flash').classList.add('open'); if (c.L) await F.showShape(c, true); await F.wait(300); $('flash').classList.remove('open'); } });
   }
   async function next(F, a) {
-    $('scene').innerHTML = '<div class="stones" id="stones"><div class="stone"></div><div class="stone"></div><div class="stone"></div><div class="stone q">?</div></div>';
-    var st = $('stones').children;
-    await F.say('Count with me. What comes next?');
+    if (!shown.next) { shown.next = true; await nextDemo(F); }
+    stones(); var st = $('stones').children;
+    await F.say('Start at ' + F.word(a) + '. Count with me.');
     for (var k = 0; k < 3; k++) { st[k].classList.add('on'); NK.sound.pop(); await F.say(F.Word(a + k) + '…', { noRepeat: true }); }
     return U.answer(F, { n: a + 3, H: H, ask: 'What comes next? Show me.',
       explain: async function (F) { for (var j = 0; j < 3; j++) await F.say(F.Word(a + j) + ',', { noRepeat: true }); st[3].classList.add('on'); await F.say(F.Word(a + 3) + '!', { noRepeat: true }); } });
@@ -52,8 +75,7 @@
     id: 'u3-review', title: 'Review', rounds: 6,
     hero: '<svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg><svg viewBox="0 0 100 100"><use href="#nkStar"/></svg>',
     init: function () { U.addArt(); H = U.hands($('hands')); H.lock(true); },
-    reset: function (F) { plan = [['peek', F.pick([2, 3])], ['next', F.pick([1, 2, 3])], ['peek', F.pick([4, 5])], ['next', F.pick([4, 5])], ['peek', F.pick([3, 4, 5])], ['next', F.pick([5, 6, 7])]]; },
-    demo: async function (F) { await F.say('Review time! Things you learned before.'); await F.say('Peek fast, and count on.'); },
+    reset: function (F, again) { if (!again) shown = {}; plan = [['peek', F.pick([2, 3])], ['next', F.pick([1, 2, 3])], ['peek', F.pick([4, 5])], ['next', F.pick([4, 5])], ['peek', F.pick([3, 4, 5])], ['next', F.pick([5, 6, 7])]]; },
     endSay: function (s) { return s >= 2 ? 'You remember it all! Great review!' : 'Good try! Practice makes it stick.'; },
     round: function (F, i) { var p = plan[i]; return p[0] === 'peek' ? peek(F, p[1], KINDS[i % 3]) : next(F, p[1]); }
   });

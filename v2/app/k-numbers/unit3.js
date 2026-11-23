@@ -50,6 +50,17 @@
     return pts;
   };
 
+  /* scattered but never touching: each thing gets its own cell of a grid, jiggled inside it (so a sticker always belongs to one thing).
+     Returns { p: points, w: the item width in % that fits a cell } */
+  U.spots = function (n, box, wantW) {
+    var D = U.dims(), cols = n <= 4 ? 3 : n <= 6 ? 3 : 4, rows = Math.ceil(Math.max(n, cols + 1) / cols); if (cols * rows < n) rows++;
+    var cw = (box[1] - box[0]) / cols, ch = (box[3] - box[2]) / rows, cellPx = Math.min(cw / 100 * D[0], ch / 100 * D[1]);
+    var w = Math.min(wantW || U.itemW(n), cellPx * .86 / D[0] * 100), wPx = w / 100 * D[0], jx = Math.max(0, (cw / 100 * D[0] - wPx) / 2 * .8), jy = Math.max(0, (ch / 100 * D[1] - wPx) / 2 * .8);
+    var cells = []; for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) cells.push([r, c]);
+    cells = FR.shuffle(cells).slice(0, n);
+    return { w: w, p: cells.map(function (rc) { return [box[0] + cw * (rc[1] + .5) + (Math.random() * 2 - 1) * jx / D[0] * 100, box[2] + ch * (rc[0] + .5) + (Math.random() * 2 - 1) * jy / D[1] * 100]; }) };
+  };
+
   /* ---------- two hands: 0-10 fingers (left hand first, then right) ---------- */
   U.hands = function (box) {
     var a = FR.fingers(0, true), b = FR.fingers(0, true); a.el.classList.add('h0'); b.el.classList.add('h1'); b.el.style.transform = 'scaleX(-1)';
@@ -61,9 +72,15 @@
     api.count = function () { return a.count() + b.count(); };
     api.set = function (n) { a.set(Math.min(5, n)); b.set(Math.max(0, n - 5)); };
     api.lock = function (on) { a.lock(on); b.lock(on); };
+    /* the taps a boy would make: tap the palm to raise the next finger, tap a raised finger to fold it */
     api.moves = function (n) {
-      return FR.fingerMoves(a, Math.min(5, n)).map(function (i) { return { tap: '#hands .h0 .fg[data-f="' + i + '"]' }; })
-        .concat(FR.fingerMoves(b, Math.max(0, n - 5)).map(function (i) { return { tap: '#hands .h1 .fg[data-f="' + i + '"]' }; }));
+      var out = [];
+      [[a, 'h0', Math.min(5, n)], [b, 'h1', Math.max(0, n - 5)]].forEach(function (x) {
+        var h = x[0], c = h.count(), want = x[2], k;
+        for (k = c; k < want; k++) out.push({ tap: '#hands .' + x[1] + ' svg > path:first-of-type' });
+        for (k = 4; k >= 0 && c > want; k--) if (!h.finger(k).classList.contains('down')) { out.push({ tap: '#hands .' + x[1] + ' .fg[data-f="' + k + '"]' }); c--; }
+      });
+      return out;
     };
     a.onChange = b.onChange = function () { if (api.onChange) api.onChange(api.count()); };
     return api;
@@ -125,30 +142,36 @@
   };
 
   /* TOUCH AND COUNT: he taps each thing; it hops to the shelf as the voice counts; then he shows how many on the hands.
-     o: { n, kind, line (neat line, else a loose bunch), H, check, quiet (no counting voice: mastery check) } */
+     o: { n, kind, line (neat line, else a loose bunch), H, check, quiet (mastery check: no voice at all while counting),
+          silent (he counts by himself: only a soft pop per tap), stay (things stay in place and get a tick; a second tap: "That one is counted.") } */
   U.countRound = function (F, o) {
     return new Promise(async function (res) {
       U.clear(); $('hands').hidden = false; o.H.set(0); o.H.lock(true);
-      var sh = document.createElement('div'); sh.className = 'shelf'; $('scene').appendChild(sh);
-      var w = U.itemW(o.n), pts = o.line ? U.table(o.n, 72) : U.bunch(o.n, U.narrow() ? [10, 90, 52, 92] : [10, 90, 58, 90]), slots = U.line(o.n, 25), els = [], moved = 0, busy = false, shelfEls = [];
+      if (!o.stay) { var sh = document.createElement('div'); sh.className = 'shelf'; $('scene').appendChild(sh); }
+      var w = U.itemW(o.n), pts, slots = U.line(o.n, 25), els = [], moved = 0, busy = false, shelfEls = [];
+      if (o.line) pts = U.table(o.n, 72);
+      else { var sp = U.spots(o.n, o.stay ? (U.narrow() ? [8, 92, 8, 94] : [8, 92, 12, 90]) : (U.narrow() ? [8, 92, 50, 95] : [8, 92, 54, 94]), w); pts = sp.p; w = sp.w; }
       var shelfW = Math.min(w, Math.min(20, 86 / o.n) - 1);
       for (var i = 0; i < o.n; i++) els.push(U.put(o.kind, pts[i], w, i, 'cnt'));
       function hooks() { var rest = els.filter(function (e) { return !e.classList.contains('done'); }); GAME.right = rest.length ? function () { return [{ tap: '#scene .it[data-i="' + rest[0].dataset.i + '"]' }]; } : null; GAME.wrong = null; }
       async function tap(e) {
-        var it = e.target.closest('.it.cnt'); if (!it || it.classList.contains('done') || busy || GAME.phase !== 'answer') return;
-        busy = true; GAME.phase = 'busy'; it.classList.add('done'); it.style.width = shelfW + '%'; place(it, slots[moved]); shelfEls.push(it); moved++; NK.sound.pop();
-        if (!o.quiet) await F.say(F.Word(moved) + (moved === o.n ? '!' : ''), { noRepeat: true }); else await F.wait(150);
+        var it = e.target.closest('.it.cnt'); if (!it || busy || GAME.phase !== 'answer') return;
+        if (it.classList.contains('done')) { if (o.stay) { busy = true; NK.sound.back(); await F.say('That one is counted.', { noRepeat: true }); busy = false; } return; }
+        busy = true; GAME.phase = 'busy'; it.classList.add('done'); moved++; NK.sound.pop(); shelfEls.push(it);
+        if (o.stay) it.classList.add('counted'); else { it.style.width = shelfW + '%'; place(it, slots[moved - 1]); }
+        if (!o.quiet && !o.silent) await F.say(F.Word(moved) + (moved === o.n ? '!' : ''), { noRepeat: true }); else await F.wait(150);
         busy = false;
         if (moved < o.n) { GAME.phase = 'answer'; hooks(); return; }
         $('scene').removeEventListener('pointerdown', tap);
-        if (!o.quiet) await F.say('The last number tells how many.');
+        if (!o.quiet && !o.silent) await F.say('The last number tells how many.');
         var first = await U.answer(F, { n: o.n, H: o.H, check: o.check, ask: 'How many ' + U.name(o.kind, 2) + '?',
           explain: async function (F) { await F.say("Let's count them together."); await U.countAlong(shelfEls); await F.say(F.Word(o.n) + ' ' + U.name(o.kind, o.n) + '. The last number!'); } });
         res(first);
       }
       $('scene').addEventListener('pointerdown', tap);
       GAME.phase = 'answer'; F.lock(false); hooks();
-      if (o.intro !== false) await F.say(o.quiet ? 'Count them. Tap each one.' : 'Tap each one. Count with me!', { repeat: 'Tap each one. Count with me!' });
+      var ask = o.quiet || o.silent ? (o.stay ? 'Count them. Tap each one. They stay put.' : 'Count them yourself. Tap each one.') : 'Tap each one. Count with me!';
+      if (o.intro !== false) await F.say(ask, { repeat: ask }); else NK.last = ask;
     });
   };
 
@@ -176,7 +199,7 @@
         GAME.right = function () { return acts.concat([{ tap: '#check' }]); };
         GAME.wrong = d >= 0 && free.length > d ? function () { return acts.concat([{ tap: '#scene .it[data-i="' + free[d].dataset.i + '"]' }, { tap: '#check' }]); } : null;
       }
-      function add(r) { if (onPlate.indexOf(r) >= 0 || onPlate.length >= 10) return; onPlate.push(r); layout(); NK.sound.pop(); if (!o.check) F.say(F.Word(onPlate.length), { noRepeat: true }); ready(); hooks(); }
+      function add(r) { if (onPlate.indexOf(r) >= 0 || onPlate.length >= 10) return; onPlate.push(r); layout(); NK.sound.pop(); if (!o.check && !o.silent) F.say(F.Word(onPlate.length), { noRepeat: true }); ready(); hooks(); }
       function back(r) { var k = onPlate.indexOf(r); if (k < 0) return; onPlate.splice(k, 1); layout(); NK.sound.back(); ready(); hooks(); }
       var drag = null;
       function down(e) { if (GAME.phase !== 'answer') return; var r = e.target.closest('.it'); if (!r) return; e.preventDefault(); drag = { r: r, x: e.clientX, y: e.clientY, moved: false, id: e.pointerId }; }

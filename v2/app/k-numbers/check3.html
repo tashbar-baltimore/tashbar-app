@@ -28,7 +28,18 @@
     id: 'u3-check', title: 'Show Me!', rounds: PLAN.length,
     hero: '<svg viewBox="0 0 100 100"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><circle cx="42" cy="26" r="4" fill="#fff" opacity=".9"/></svg>',
     init: function () { U.addArt(); H = U.hands($('hands')); H.lock(true); },
-    demo: async function (F) { await F.say("Let's show what you learned!"); await F.say('Count carefully. Touch each one once.'); },
+    /* one silent example before the silent check: touch each one, count in your head, show it */
+    demo: async function (F) {
+      await F.say("Let's show what you learned!");
+      U.clear(); $('hands').hidden = false; H.set(0);
+      var els = U.line(3, 70).map(function (p, i) { return U.put('siddur', p, U.itemW(3), i); });
+      await F.say('Watch. I count in my head. No voice.');
+      for (var i = 0; i < 3; i++) { await F.handTo(els[i]); await F.handTap(); els[i].classList.add('counted'); NK.sound.pop(); await F.wait(350); }
+      await F.say('I counted three. I show three.');
+      for (i = 0; i < 3; i++) { var f = H.a.finger(i); await F.handTo(f, .5, .3); await F.handTap(); f.classList.remove('down'); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('hands'), 'Three!'); H.set(0);
+      await F.say('Count carefully. Touch each one once.');
+    },
     endSay: function (s) { return s >= 2 ? 'Unit three is done! You can count things!' : 'Good try! Let\'s practice and try again.'; },
     round: function (F, i) {
       var p = PLAN[i];
