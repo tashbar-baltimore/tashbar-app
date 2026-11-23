@@ -21,6 +21,9 @@ export const KINDS = {
   rectFat:  { pts: [[-0.8, -0.55], [0.8, -0.55], [0.8, 0.55], [-0.8, 0.55]], name: 'rectangle' },
   lean:     { pts: [[-0.85, -0.5], [0.45, -0.5], [0.85, 0.5], [-0.45, 0.5]], name: 'leaning shape' },
   kite:     { pts: [[0, -0.85], [0.55, 0.15], [0, 0.6], [-0.55, 0.15]], name: 'kite' },
+  pent:     { pts: [[0.0, 0.72], [-0.685, 0.222], [-0.423, -0.582], [0.423, -0.582], [0.685, 0.222]], name: 'pentagon' },
+  oct:      { pts: [[0.665, 0.276], [0.276, 0.665], [-0.276, 0.665], [-0.665, 0.276], [-0.665, -0.276], [-0.276, -0.665], [0.276, -0.665], [0.665, -0.276]], name: 'octagon' },
+  star:     { pts: [[0.0, 0.7], [-0.176, 0.243], [-0.666, 0.216], [-0.285, -0.093], [-0.411, -0.566], [-0.0, -0.3], [0.411, -0.566], [0.285, -0.093], [0.666, 0.216], [0.176, 0.243]], name: 'star' },
   hex:      { pts: [[0.68, 0], [0.34, 0.59], [-0.34, 0.59], [-0.68, 0], [-0.34, -0.59], [0.34, -0.59]], name: 'hexagon' },
   circle:   { circle: 0.66, name: 'circle' },
   oval:     { oval: [0.9, 0.5], name: 'oval' },
@@ -81,7 +84,7 @@ export function startGame(cfg) {
 <button class="btn" id="clapBtn" aria-label="Clap"><svg viewBox="0 0 64 64"><g fill="#F2C9A0" stroke="#B5742A" stroke-width="2.5" stroke-linejoin="round"><path d="M18 52 C10 44 8 34 12 24 L20 12 C22 9 26 10 25 14 L22 22 L30 8 C32 5 36 7 34 11 L28 24 L36 10 C38 7 42 9 40 13 L33 27 L39 18 C41 15 45 17 43 21 L36 36 C34 44 28 52 18 52Z"/></g><path d="M46 8 l4 -4 M52 14 l6 -2 M50 22 l6 2" stroke="#F5B400" stroke-width="3.5" stroke-linecap="round"/></svg></button>
 <div id="nogl">This computer cannot show the 3D game.</div>`);
   const $ = s => document.querySelector(s);
-  const W = window.__shp = { nb: cfg.boxes.length, game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
+  const W = window.__shp = { hasBonus: !!(cfg.bonus || cfg.bonusRounds), hasChant: !!(cfg.fixLesson || cfg.lessons.some(l => l.chant)), nb: cfg.boxes.length, game: cfg.id, name: 'start', misses: 0, stars: 0, said: [], done: false, again: 0, found: 0, ready: false };
   const wait = ms => new Promise(r => setTimeout(r, FAST ? 0 : ms));
   const NB = cfg.boxes.length;
   const boxOf = k => cfg.boxes.findIndex(b => b.accept.includes(k));   /* the box a piece belongs in, or -1 */
@@ -353,8 +356,8 @@ export function startGame(cfg) {
   const hand = $('#hand');
 
   /* ---------- counting corners and sides ---------- */
-  const NUMS = ['One.', 'Two.', 'Three.', 'Four.', 'Five.', 'Six.'], NUMX = ['One!', 'Two!', 'Three!', 'Four!', 'Five!', 'Six!'];
-  const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+  const NUMS = ['One.', 'Two.', 'Three.', 'Four.', 'Five.', 'Six.', 'Seven.', 'Eight.'], NUMX = ['One!', 'Two!', 'Three!', 'Four!', 'Five!', 'Six!', 'Seven!', 'Eight!'];
+  const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
   const cap = s => s[0].toUpperCase() + s.slice(1);
   function lightCorner(o, i) { plink(); const m = o.marks[i]; m.material = cornerMat; return tween(260, k => m.scale.setScalar(k * 1.15)); }
   function clearCorners(o) { o.marks.forEach(m => { m.scale.setScalar(0); m.material = cornerMat; }); }
@@ -650,31 +653,37 @@ export function startGame(cfg) {
       if (s.wait) return wait(s.wait);
     }), Promise.resolve());
   }
+  /* "Mystery shape" mode (cfg.mode === 'clues'): Mendy's piece gives clues; only the piece that fits them goes in the box */
+  let clueN = 0;
+  function setClue(i) { clueN = i; const C = cfg.clues[i]; shapes.forEach(o => { if (!o.inBox) o.box = C.accept.includes(o.k) ? 0 : -1; }); }
+  function nextClue() { if (clueN + 1 >= cfg.clues.length) { play([cfg.allDone, { wait: 300 }]).then(ok => { if (ok) mistake(); }); return; }
+    setClue(clueN + 1); find(false, nextClue); }
   async function watch() {
+    if (cfg.mode === 'clues') setClue(0);
     setName('watch'); dots(1);
     const demo = shapes.find(o => o.box >= 0);
     await camTo('wide', 1300);
     shapes.forEach((o, i) => { o.g.visible = true; o.g.scale.setScalar(0.01); setTimeout(() => { pop(); tween(420, k => o.g.scale.setScalar(Math.max(0.01, o.scale * ease(k)))); }, FAST ? 0 : i * 140); });
     await wait(1400);
     const ok = await play([
-      cfg.watchLine || "Here are Mendy's toys. Watch me.",
+      ...(cfg.mode === 'clues' ? [cfg.watchLine, ...cfg.clues[0].say] : [cfg.watchLine || "Here are Mendy's toys. Watch me."]),
       () => { handOn = demo; hand.style.display = 'block'; return wait(500); },
       () => { demo.busy = true; return moveTo(demo, new THREE.Vector3(demo.g.position.x, 1.25, demo.g.position.z), 400); },
       () => moveTo(demo, boxAt(demo.box).clone().setY(1.25), 1300),
       () => { hand.style.display = 'none'; handOn = null; chime(true); return dropInBox(demo); },
       cfg.watchDone || 'Into the box!', cfg.yourTurn
     ]);
-    if (ok) find(false);
+    if (ok) { if (cfg.mode === 'clues') { setClue(1); find(false, nextClue); } else find(false); }
   }
   function teachAgain(t) {
     if (!t) return [];
     if (t.marks.length) return [cfg.remember, 'Look at this one.', ...t.marks.flatMap((m, i) => [() => lightCorner(t, i), NUMS[i]]), () => wait(500), () => clearCorners(t)];
     return [cfg.remember, 'Look at this one.', () => traceRound(t, 1200)];
   }
-  function find(bonus) {
+  function find(bonus, next) {
     setName(bonus ? 'bonus' : 'find'); dots(2); allow = true;
     let left = shapes.filter(o => o.box >= 0 && !o.inBox && o.g.visible).length;
-    const ask = [bonus ? cfg.bonusAsk : cfg.ask]; task = ask;
+    const ask = cfg.mode === 'clues' ? [...cfg.clues[clueN].say, 'Find me!'] : [bonus ? cfg.bonusAsk : cfg.ask]; task = ask;
     let helped = false;
     idleFn = n => { const t = shapes.find(x => x.box >= 0 && !x.inBox && x.g.visible && !x.busy); if (!t) return;
       W.reminders = (W.reminders || 0) + 1;
@@ -690,7 +699,8 @@ export function startGame(cfg) {
         dropInBox(o, bi).then(() => {
           const yes = (cfg.yes && cfg.yes[o.id]) || cfg.yesDefault(o);
           if (left === 0) {
-            const quick = !bonus && W.misses <= 1 && cfg.bonus;
+            const quick = !bonus && W.misses <= 1 && cfg.bonus;   /* quick boys get a bonus round */
+            if (next) { play([yes, { wait: 300 }]).then(ok => { if (ok) next(); }); return; }
             play([yes, cfg.allDone, { wait: 300 }]).then(ok => { if (!ok) return; if (quick) bonusRound(); else mistake(); });
           } else play([yes]);
         });
@@ -767,7 +777,7 @@ export function startGame(cfg) {
 
 /* ================= why a piece is NOT the shape (said when he puts it in the wrong box) ================= */
 const CORNERS = { triangle: 3, square: 4, rectangle: 4, circle: 0, hexagon: 6 };
-const W_ = ['no', 'one', 'two', 'three', 'four', 'five', 'six'];
+const W_ = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
 const noCount = a => { a.count = false; return a; };
 export function wrongFor(T) {
   const has = n => (n === 0 ? 'no corners' : W_[n] + ' corners');

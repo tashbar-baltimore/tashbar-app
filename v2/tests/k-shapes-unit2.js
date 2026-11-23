@@ -73,7 +73,7 @@ module.exports = async function (browser) {
       await lesson();
       let st = await S();
       if (!st.said.some(t => /watch me/i.test(t))) bad(L + ': there is no "watch me" before he tries');
-      if (!(st.claps >= 6)) bad(L + ': the clap chant did not play');
+      if (st.hasChant && !(st.claps >= 6)) bad(L + ': the clap chant did not play');
       await drawn('the game');
       if (!perfect) {
         await pg.evaluate(() => window.__shp.idleNow()); await pg.waitForTimeout(80);
@@ -103,7 +103,7 @@ module.exports = async function (browser) {
         if (r) await into(r.id, r.box); else await pg.waitForTimeout(150);
       }
       if (!perfect && !(await S()).said.some(t => /^Remember/.test(t))) bad(L + ': after 2 mistakes the rule is not taught again');
-      if (perfect && !sawBonus) bad(L + ': a boy with no mistakes gets no bonus round');
+      if (perfect && (await S()).hasBonus && !sawBonus) bad(L + ': a boy with no mistakes gets no bonus round');
       await pg.waitForFunction(() => window.__shp.name === 'mistake', null, { timeout: 20000 });
       await pg.waitForSelector('.judge.show', { timeout: 15000 }); await drawn('find the mistake');
       if (!perfect) {
