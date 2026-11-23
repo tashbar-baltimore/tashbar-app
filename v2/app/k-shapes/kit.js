@@ -161,7 +161,7 @@ export function startGame(cfg) {
       const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.4 })); b3.scale.setScalar(0.28); b3.position.set(0, BX.h * 0.45, BX.d / 2 + 0.18); b3.castShadow = true; g.add(b3);
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
-      lab.scale.setScalar(0.36); lab.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(lab);
+      lab.scale.setScalar(NB === 1 ? 0.36 : 0.5); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
     }
     return { g, n: 0 };
   });
