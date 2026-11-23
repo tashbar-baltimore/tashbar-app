@@ -117,9 +117,10 @@ export default function setup(E, { unit }) {
     await show('beis', 'kaf', [['beis', 'Beis has a tail at the bottom.'], ['kaf', 'Kaf is round at the bottom.']]);
     await show('kaf', 'chaf', [['kaf', 'Kaf has a dot.', true], ['chaf', 'Chaf has no dot.', true]]);
     /* every letter so far, right to left, and the chant */
-    const all = [...unit.known, ...unit.letters], sz = P ? .4 : .7, gap = P ? .34 : .62;
-    const made = all.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (all.length - 1);
-    let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); });   /* evenly spaced by each letter's own width */
+    const all = [...unit.known, ...unit.letters], sz = P ? .5 : .7, gap = P ? .4 : .62;
+    const lines = P ? [all.slice(0, 7), all.slice(7)] : [all];   /* on a phone, two lines (right to left, top line first) so every letter fits */
+    lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
+      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? 2.2 - li * 1.0 : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });   /* evenly spaced by each letter's own width */
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(6, 6);
     await E.say('Let’s sing the Alef-Beis so far!');
