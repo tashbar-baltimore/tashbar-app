@@ -257,7 +257,8 @@ export function startGame(cfg) {
     shapes.forEach(o => {
       if (o.inBox || o.busy || o === dragging || !o.g.visible || o.slot == null) return;
       o.g.position.set(o.home.x, o.home.y + Math.sin(t * 1.6 + o.phase) * 0.06, o.home.z);
-      o.g.rotation.y = Math.sin(t * 0.7 + o.phase) * 0.28; o.g.rotation.x = -(tall ? 0.85 : 0.42);
+      o.g.rotation.y = Math.sin(t * 0.7 + o.phase) * 0.28;
+      o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, camera.position.z - o.g.position.z);   /* faces the camera, so a square always looks square */
     });
     for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
     const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25;
