@@ -827,3 +827,20 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - blue-front-door-yellow-house.webp | https://pixabay.com/photos/house-door-entrance-stone-stairway-7614753/ | Pixabay Content License | anaterate
 - wooden-bunk-beds-dorm-room.webp | https://pixabay.com/photos/bunk-beds-accommodation-house-beech-946988/ | Pixabay Content License | misska420
 - old-closed-wooden-box-hasp.webp | https://collections.museumsvictoria.com.au/items/404090 | CC BY 4.0 | Photographer: Taryn Ellis
+- old-keys-on-ring-wide.webp | https://pixabay.com/photos/keys-metal-old-black-and-white-96233/ | Pixabay Content License | weinstock
+- wheat-stalks-heads-wide.webp | https://pixabay.com/photos/grain-field-wheat-wheat-field-7272712/ | Pixabay Content License | Alexas_Fotos
+- dog-in-green-grass-wide.webp | https://pixabay.com/photos/shetland-sheepdog-dog-blue-merle-10562821/ | Pixabay Content License | JACLOU-DL
+- redwood-looking-up-wide.webp | https://www.flickr.com/photos/124320023@N06/14122525332 | CC BY-SA 2.0 | liquidcrash
+- sinai-desert-hills-wide.webp | https://www.flickr.com/photos/37707866@N00/6306690252 | CC BY 2.0 | prilfish
+- sinai-rocky-mountain-wide.webp | https://pixabay.com/photos/mount-sinai-mountains-rocks-2624821/ | Pixabay Content License | StockSnap
+- tallis-on-railing-wide.webp | https://pixabay.com/photos/tallit-synagogue-jewish-hebrew-444427/ | Pixabay Content License | barakbro
+- mezuzah-on-stone-doorpost.webp | https://www.flickr.com/photos/21160385@N02/8683269610 | CC BY 2.0 | paularps
+- snow-covered-cars-street.webp | https://pixabay.com/photos/snow-street-cars-covered-deep-1813456/ | Pixabay Content License | qimono
+- steam-engine-wheels-close.webp | https://pixabay.com/photos/railroad-black-and-white-301155/ | Pixabay Content License | ThomasWolter
+- president-lincoln-1863-wide.webp | https://pixabay.com/photos/abraham-lincoln-president-portrait-60558/ | Pixabay Content License | WikiImages
+- microscope-parts-wide.webp | https://pixabay.com/photos/white-chemistry-isolated-microscopy-219983/ | Pixabay Content License | PublicDomainPictures
+- bean-seed-to-seedling-stages.webp | https://commons.wikimedia.org/w/index.php?curid=99476965 | CC BY-SA 4.0 | B. Domangue
+- tomato-plant-parts-drawing.webp | https://pixabay.com/illustrations/tomato-plant-tomatoes-caterpillar-9716295/ | Pixabay Content License | Mollyroselee
+- skeleton-whole-wide.webp | https://pixabay.com/vectors/skeleton-bones-human-person-9663605/ | Pixabay Content License | BlenderTimer
+- duck-swimming-among-koi-fish.webp | https://pixabay.com/photos/mallard-water-bird-aquatic-bird-6725473/ | Pixabay Content License | Lancier
+- dove-sitting-on-its-nest.webp | https://www.flickr.com/photos/14884524@N08/3461696246 | CC BY 2.0 | Kilarin
