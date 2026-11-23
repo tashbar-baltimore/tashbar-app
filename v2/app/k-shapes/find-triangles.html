@@ -183,7 +183,7 @@ function placeMendy(mode) {
   if (mode === 'close') { mendy.visible = !dovid.visible; mendy.position.set(-1.45, 0, 0.6); mendy.rotation.set(0, 0.35, 0); }
   else { mendy.visible = true; mendy.position.copy(mendyAt()); mendy.rotation.set(tall ? -0.6 : 0, -0.35, 0); }
 }
-function mendyAt() { const b = boxAt(); return tall ? new THREE.Vector3(b.x + 1.85, 0, b.z + 0.5) : new THREE.Vector3(b.x + 3.0, 0, b.z + 2.0); }
+function mendyAt() { const b = boxAt(); return tall ? new THREE.Vector3(b.x + 2.1, 0, b.z + 0.35) : new THREE.Vector3(b.x + 3.0, 0, b.z + 2.0); }
 
 /* ---------------- shapes: chunky glossy toy pieces ---------------- */
 const KINDS = {
@@ -240,7 +240,7 @@ const VIEW = { wide: { pos: new THREE.Vector3(0, 8.6, 11.6), look: new THREE.Vec
   close: { pos: new THREE.Vector3(0, 2.7, 6.4), look: new THREE.Vector3(0, 2.05, 0.9) } };
 let camMode = 'wide';
 const camPos = new THREE.Vector3(), camLook = new THREE.Vector3();
-function viewFor(m) { if (m === 'close') { const v = VIEW.close; return tall ? { pos: v.pos.clone().multiplyScalar(1.55), look: v.look } : v; } return tall ? VIEW.tall : VIEW.wide; }
+function viewFor(m) { if (m === 'close') { const v = VIEW.close; return tall ? { pos: v.pos.clone().multiplyScalar(1.95), look: v.look } : v; } return tall ? VIEW.tall : VIEW.wide; }
 function boxAt() { return tall ? BOX_TALL : BOX_WIDE; }
 function homeFor(i) { const s = (tall ? SLOTS_TALL : SLOTS_WIDE)[i]; return new THREE.Vector3(s[0], 0.92, s[1]); }
 function resize() {
@@ -444,7 +444,7 @@ function buildSet() {
 }
 function inBoxSpot(n) { const b = boxAt(); return new THREE.Vector3(b.x - 0.75 + (n % 3) * 0.75, 0.32 + Math.floor(n / 3) * 0.16, b.z + (n % 2 ? 0.2 : -0.2)); }
 function dropInBox(o) {
-  o.inBox = true; o.boxN = W.found; const to = inBoxSpot(W.found++);
+  clearCorners(o); o.inBox = true; o.boxN = W.found; const to = inBoxSpot(W.found++);
   const s0 = o.g.scale.x, s1 = Math.min(s0, 1) * 0.55;
   tween(520, k => o.g.scale.setScalar(s0 + (s1 - s0) * ease(k)));
   return moveTo(o, to, 520, 1.2).then(() => { o.g.rotation.set(-1.45, (W.found % 3 - 1) * 0.6, 0); burst(to.clone().setY(1.2)); pop(); cheer(mendy); });
@@ -573,7 +573,7 @@ function bonusRound() {
   play(['Bonus round! You are so good at this.', 'Here come some tricky ones.', { wait: 500 }]).then(ok => { if (ok) find(true); });
 }
 function mistake() {
-  setName('mistake'); dots(3); task = null; stopIdle();
+  setName('mistake'); dots(3); task = null; stopIdle(); shapes.forEach(clearCorners);
   shapes.forEach(o => { if (!o.inBox) tween(300, k => o.g.scale.setScalar(Math.max(0.001, o.scale * (1 - k)))).then(() => { o.g.visible = false; }); });
   const d = makeShape('dv', 'tri', '#FF7A1A', Math.PI, 1.5); d.slot = null; d.busy = true;
   d.g.position.set(0.7, 2.05, 0.9); d.g.scale.setScalar(0.01);
@@ -612,7 +612,7 @@ $('#replay').onclick = () => { hush(); learn(); };
 buildSet(); resize();
 shapes.forEach(o => { o.g.visible = true; });
 dots(0); frame(); W.ready = true;
-preload(['Mendy is cleaning up his toys.', 'He needs all the triangles.', "Let's learn about triangles!", 'This is a triangle.', 'Count the sides with me.', 'One.', 'Two.', 'Three sides!', 'Now count the corners.', 'Three corners!']);
+preload(['Your turn! Tap each corner and count.', 'One!', 'Two!', 'Three!', 'Three corners! Great counting!', 'Three straight sides, three corners. A triangle!', 'Clap it with me! Tap the hands.', 'Tri-an-gle!', 'Watch. I turn it upside down.', 'Still a triangle!', 'Now I make it small.', 'Small, but still a triangle!', "Here are Mendy's toys. Watch me find a triangle.", 'Into the box!', 'Now you. Find all the other triangles!', 'Drag every triangle into the box.', 'Yes! A triangle!', 'That is a square.', 'Count the corners.', 'Four.', 'Four corners! A triangle has only three.', 'Mendy is cleaning up his toys.', 'He needs all the triangles.', "Let's learn about triangles!", 'This is a triangle.', 'Count the sides with me.', 'One.', 'Two.', 'Three sides!', 'Now count the corners.', 'Three corners!']);
 $('#start').onclick = () => { ac(); $('#start').style.display = 'none'; againBtn.style.visibility = 'visible'; learn(); };
 </script>
 </body>
