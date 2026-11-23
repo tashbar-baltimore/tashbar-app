@@ -22,7 +22,7 @@ module.exports = async function teachPicsTests(pg) {
         const has = id => !!((typeof BANK_ALL !== 'undefined' && BANK_ALL[id]) || (typeof GEN !== 'undefined' && GEN[id]));
         const worldOf = id => { const pre = id.split('.')[0], map = /^(LK|HEB)$/.test(pre) ? 'LK' : /^(READ|WRIT|LANG)$/.test(pre) ? 'READ' : /^(SS|SOC|FACT)$/.test(pre) ? 'SS' : /^(COMP|VOC)$/.test(pre) ? 'COMP' : pre;
           return WORLD[pre] ? pre : WORLD[map] ? map : Object.keys(WORLD)[0]; };
-        const fresh = () => { A.overlay = null; A.play = null; A.res = null; SRV.token = 't'; SRV.states = {}; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; render(); };
+        const fresh = () => { A.overlay = null; A.play = null; A.res = null; SRV.token = 't'; SRV.states = {}; A.st = loadStudent({ id: 'TEST-PICS2', name: 'Made-up Boy P' }); A.view = 'hub'; render(); };
         const app = () => document.getElementById('app');
         const wide = () => document.documentElement.scrollWidth > window.innerWidth + 1;
         const figH = sel => { const f = app().querySelector(sel + ' .rpbox'); return f ? f.getBoundingClientRect().height : 0; };
@@ -33,7 +33,7 @@ module.exports = async function teachPicsTests(pg) {
         const M = TL_PIC_MAP, keys = [id + '|@today', id + '|@watch'];
         /* 1. nothing linked: as before */
         fresh(); await sleep(10); startMission(worldOf(id), id, 'skill'); await sleep(20);
-        if (!A.play || !A.play.ob || A.play.ob.stage !== 'today') { o.bad.push(id + ': did not open on TODAY WE LEARN'); return o; }
+        if (!A.play || !A.play.ob || A.play.ob.stage !== 'today') { o.bad.push(id + ': did not open on TODAY WE LEARN (got ' + (A.play ? (A.play.ob ? 'stage ' + A.play.ob.stage : 'no One Bite, kind ' + A.play.kind) : 'no lesson') + ')'); return o; }
         if (app().querySelector('.rt')) o.bad.push('TODAY with no picture linked still shows a picture');
         /* 2. TODAY, through the UNIT prefix key */
         const unit = id.split('.').slice(0, -1).join('.'); M[unit + '|@today'] = { id: pic, mark: [], cap: 'Test picture' }; render(); await sleep(400);
