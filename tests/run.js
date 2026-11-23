@@ -124,7 +124,7 @@ async function kidTests(browser) {
     /* the 🎫 level check card (HoS 2026-11-20): with his level's check waiting, the goal card says so honestly and PLAY still leads on */
     const lcg = await pg.evaluate(async M => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {};
       A.overlay = null; A.play = null; SRV.token = 't'; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.view = 'hub'; GM.world = 'MATH'; GM.sig = ''; render(); await sleep(50);
-      const gm = document.getElementById('gm'); if (!gm) return o; o.h1 = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.m = (gm.querySelector('.gm-goal .m') || {}).textContent || ''; o.node = (gm.querySelector('.gm-l.now') || {}).textContent || '';
+      const gm = document.getElementById('gm'); if (!gm) return o; const mt0 = gm.querySelector('.gm-hts [data-gmnav=map]'); if (mt0) { mt0.click(); await sleep(50); } o.h1 = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.m = (gm.querySelector('.gm-goal .m') || {}).textContent || ''; o.node = (gm.querySelector('.gm-l.now') || {}).textContent || '';
       gm.querySelector('.gm-goal [data-gm=play]').click(); await sleep(400); o.play = A.view === 'play' && A.play && A.play.id; const cf = document.getElementById('pf-cf'); if (cf) cf.remove();
       A.play = null; A.view = 'hub'; window.TL_MAP = null; GM.world = ''; render(); await sleep(30); return o; }, km.map);
     const wantLc = km.map.names[km.map.subjects.MATH.now] || [];
@@ -134,19 +134,25 @@ async function kidTests(browser) {
     else ok('map home: a level whose check is waiting shows the 🎫 Level Check card and the lesson after it; PLAY leads into it');
     const passMap = JSON.parse(JSON.stringify(km.map)); if (passMap.lc) ['MATH', 'READ'].forEach(k => { passMap.lc[k] = passMap.lc[k].map(v => (v ? 2 : 0)); });
     const g = await pg.evaluate(async M => { const sleep = ms => new Promise(r => setTimeout(r, ms)), o = {};
-      A.overlay = null; A.play = null; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.view = 'hub'; render(); await sleep(50);
+      A.overlay = null; A.play = null; window.TL_MAP = M; A.st = loadStudent({ id: M.sid, name: 'Made-up Boy A' }); A.view = 'hub'; GM.sid = ''; render();  /* GM.sid = '': a fresh sign-in, which always lands on the home */ await sleep(50);
       const gm = document.getElementById('gm'); o.on = document.body.classList.contains('gm-on') && !!gm; if (!o.on) return o;
+      /* HOME (HoS 2026-11-23, docs/HOME-SIMPLE-PROMPT.md): the first screen is six equal tiles, his work first and glowing, the Canteen its own door, no tab bar */
+      const tl = [...gm.querySelectorAll('.gm-hts > .gm-ht')], sz = tl.map(x => { const r = x.getBoundingClientRect(), tp = x.querySelector('.top').getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), tp.height / r.height]; });
+      o.home = { n: tl.length, first: tl[0] && tl[0].classList.contains('work') && tl[0].classList.contains('now') && /DO THIS NOW/.test(tl[0].textContent), equal: sz.every(s => s[0] === sz[0][0] && s[1] === sz[0][1]), half: sz.every(s => s[2] > 0.44 && s[2] < 0.56),
+        canteen: !!gm.querySelector('.gm-hts .gm-ht.food[data-st=open][data-t=canteen]'), noBar: !document.querySelector('#gm-nav button') || getComputedStyle(document.getElementById('gm-nav')).display === 'none', others: gm.querySelectorAll('button:not(.gm-ht)').length };
+      const go = async t => { const h = document.querySelector('#gm-nav [data-gmnav=home]'); if (h) { h.click(); await sleep(30); } const b = gm.querySelector('.gm-hts [data-gmnav=' + t + ']'); if (b) { b.click(); await sleep(30); } };
+      await go('map');
       o.goal = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; o.learn = (gm.querySelector('.gm-goal .learn') || {}).textContent || ''; o.nodes = gm.querySelectorAll('.gm-n').length; o.boss = gm.querySelectorAll('.gm-n.boss').length;
-      o.tabs = document.querySelectorAll('#gm-nav [data-gmnav]').length; o.plays = gm.querySelectorAll('.gm-play').length; o.worldTabsOnMap = gm.querySelectorAll('[data-gm=world]').length;
+      o.tabs = document.querySelectorAll('#gm-nav [data-gmnav]').length; o.homeBtn = !!document.querySelector('#gm-nav [data-gmnav=home]'); o.plays = gm.querySelectorAll('.gm-play').length; o.worldTabsOnMap = gm.querySelectorAll('[data-gm=world]').length;
       const chg = gm.querySelector('[data-gmnav=subjects]'); if (chg) { chg.click(); await sleep(30); }
       const ch = gm.querySelector('[data-gm=world][data-k="K:CHU"]'); if (ch) { ch.click(); await sleep(30); const lk = gm.querySelector('.gm-n.u'); o.chu = (gm.querySelector('.gm-goal h1') || {}).textContent || ''; if (lk) { lk.click(); o.toast = (gm.querySelector('.gm-pop') || gm.querySelector('.gm-toast') || {}).textContent || ''; } const c2 = gm.querySelector('[data-gmnav=subjects]'); if (c2) { c2.click(); await sleep(30); } const mt = gm.querySelector('[data-gm=world][data-k="MATH"]'); if (mt) { mt.click(); await sleep(30); } }
-      document.querySelector('#gm-nav [data-gmnav=more]').click(); await sleep(30); o.shelves = gm.querySelectorAll('.gm-shelf').length;
+      await go('more'); o.shelves = gm.querySelectorAll('.gm-shelf').length;
       gm.querySelector('[data-gm=lib]').click(); await sleep(30); o.lib = GM.tab === 'lib' && document.body.classList.contains('gm-on');
-      document.querySelector('#gm-nav [data-gmnav=more]').click(); await sleep(30); gm.querySelector('[data-gmnav=games]').click(); await sleep(30); o.oldDoor = document.body.classList.contains('hf-games') || document.body.classList.contains('hf-lib') || document.body.classList.contains('hf-mine');
-      document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30); o.back = document.body.classList.contains('gm-on');
-      document.querySelector('#gm-nav [data-gmnav=missions]').click(); await sleep(30); o.rounds = gm.querySelectorAll('.gm-rd:not(.final):not(.rebbe)').length; o.live = gm.querySelectorAll('.gm-rd.live').length;
-      document.querySelector('#gm-nav [data-gmnav=more]').click(); await sleep(30); gm.querySelector('[data-gmnav=games]').click(); await sleep(30); o.locked = !!gm.querySelector('.gm-lock') && document.body.classList.contains('gm-on');
-      document.querySelector('#gm-nav [data-gmnav=map]').click(); await sleep(30);
+      await go('games'); o.oldDoor = document.body.classList.contains('hf-games') || document.body.classList.contains('hf-lib') || document.body.classList.contains('hf-mine');
+      await go('map'); o.back = document.body.classList.contains('gm-on');
+      await go('missions'); o.rounds = gm.querySelectorAll('.gm-rd:not(.final):not(.rebbe)').length; o.live = gm.querySelectorAll('.gm-rd.live').length;
+      await go('games'); o.locked = !!gm.querySelector('.gm-lock') && document.body.classList.contains('gm-on');
+      await go('map');
       gm.querySelector('[data-gm=play]').click(); await sleep(30); o.play = A.view === 'play' && A.play && A.play.id; o.offHome = !document.body.classList.contains('gm-on') && !document.body.classList.contains('gm-nav');
       A.play = null; A.view = 'hub'; window.TL_MAP = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); render(); await sleep(30); o.noMap = document.body.classList.contains('gm-on') && !!document.querySelector('#gm .gm-none'); return o; }, passMap);
     const want = km.map.names[km.map.subjects.MATH.now] || [];
@@ -161,10 +167,12 @@ async function kidTests(browser) {
       if (!g.noMap) fail('map home: a boy with no map must get the game screen ("Your map is almost ready"), never the old home');
       if (g.rounds !== 3 || g.live !== 1) fail('missions: 3 rounds with one live round expected (got ' + g.rounds + ' rounds, ' + g.live + ' live)');
       if (!g.locked) fail('missions: the Arcade must be locked before the 3 rounds are cleared');
-      if (g.tabs !== 4) fail('one button, one job: the bottom bar must have 4 tabs (got ' + g.tabs + ')');
+      const H = g.home || {};
+      if (H.n !== 6 || !H.first || !H.equal || !H.half || !H.canteen || !H.noBar || H.others) fail('home (HoS 2026-11-23): 6 equal tiles, icon on the top half, "My work · DO THIS NOW" first, a Canteen tile that opens the canteen, no tab bar and no other buttons (got ' + JSON.stringify(H) + ')');
+      if (g.tabs !== 1 || !g.homeBtn) fail('one button, one job: every page but the home has ONE Home button at the bottom (got ' + g.tabs + ')');
       if (g.plays !== 1 || g.worldTabsOnMap) fail('one button, one job: the map has ONE big PLAY and no subject tabs (got ' + g.plays + ' PLAY, ' + g.worldTabsOnMap + ' subject tabs)');
-      if (g.shelves < 4 || g.shelves > 5) fail('one button, one job: More must hold 4-5 shelves (got ' + g.shelves + ')');
-      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked && g.tabs === 4 && g.plays === 1) ok('map home: 4 tabs, one PLAY, Change subject + More shelves; next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); } }
+      if (g.shelves < 4 || g.shelves > 5) fail('one button, one job: My things must hold 4-5 shelves (got ' + g.shelves + ')');
+      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked && g.tabs === 1 && g.plays === 1 && H.n === 6 && H.equal && H.canteen) ok('home: 6 equal tiles (work first, Canteen its own door), one Home button elsewhere; map: one PLAY, Change subject; My things shelves; next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); } }
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* ONE BITE player (tests/lib/onebite.js) */
   try { const ob = await require('./lib/onebite.js')(pg); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
