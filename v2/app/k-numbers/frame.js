@@ -198,7 +198,7 @@
       S.results[S.round] = right ? 'ok' : 'fix'; if (right) S.first++; F.dots();
     }
     S.playing = false;
-    if (cfg.bonus && S.first >= cfg.rounds - 1) { GAME.phase = 'bonus'; await F.say(cfg.bonusSay || 'Bonus! Super quick!'); await cfg.bonus(F); }
+    if (cfg.bonus && S.first >= cfg.rounds - 1) { GAME.phase = 'bonus'; var bs = cfg.bonusSay != null ? cfg.bonusSay : 'Bonus! Super quick!'; if (bs) await F.say(bs); await cfg.bonus(F); }
     finish();
   }
   async function finish() {
