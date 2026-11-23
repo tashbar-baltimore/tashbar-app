@@ -432,7 +432,8 @@ export function startGame(cfg) {
     return new Promise(done => {
       W.tapShape = o; let nag = null;
       const remind = () => { clearTimeout(nag); nag = setTimeout(() => { if (shapeTap) { say(nagLine || 'Tap the circle.'); remind(); } }, FAST ? 1e9 : 9000); };
-      shapeTap = (cx, cy) => { if (!hitOn(o, cx, cy)) return; shapeTap = null; clearTimeout(nag); W.shapeTaps = (W.shapeTaps || 0) + 1; hush();
+      shapeTap = (cx, cy) => { const c = toScreen(o.g.getWorldPosition(new THREE.Vector3())); if (!hitOn(o, cx, cy) && Math.hypot(c.x - cx, c.y - cy) > Math.max(90, innerWidth * 0.08)) return;   /* small fingers: near it counts too */
+        shapeTap = null; clearTimeout(nag); W.shapeTaps = (W.shapeTaps || 0) + 1; hush();
         if (onTap) return onTap().then(done); say('Round and round!'); traceRound(o, 1400).then(done); };
       remind();
     });
