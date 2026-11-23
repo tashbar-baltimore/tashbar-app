@@ -27,12 +27,13 @@ export default function setup(E, { struggled, unit }) {
   const glow = E.glowSprite('#fff7b0', 2.2, 0); E.scene.add(glow);
   let P = false, S = 1, slotX = [], homes = [], busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), help = struggled, wrong = 0, wrongInRow = 0, resolveRound = null, gaps = null, rolling = false;
   const slotPos = i => new THREE.Vector3(slotX[i], 0, .2);
-  E.onLayout(p => { P = p; S = p ? .52 : 1;
-    const lx = p ? 1.85 : 4.6, step = p ? .62 : 1.22; loco.position.set(lx, 0, .2); loco.scale.setScalar(S); track.scale.set(1, 1, S); track.position.z = .2;
-    slotX = ORDER.map((_, i) => lx - (p ? .7 : 1.35) - i * step);
+  E.onLayout(p => { P = p; S = p ? .5 : 1;
+    const lx = p ? 1.68 : 4.6, step = p ? .55 : 1.22;   /* on a phone the whole train fits the width */ loco.position.set(lx, 0, .2); loco.scale.setScalar(S); track.scale.set(1, 1, S); track.position.z = .2;
+    slotX = ORDER.map((_, i) => lx - (p ? .67 : 1.35) - i * step);
     homes = ORDER.map((_, i) => p ? new THREE.Vector3(1.3 - (i % 3) * 1.3, i < 3 ? 3.3 : 2.05, .6) : new THREE.Vector3(3.0 - i * 1.3, 0, 3.9));   /* all inside the screen: on a phone, two rows above the train */   /* waiting on the grass in front of the track */
+    cars.forEach(c => c.userData.letter.scale.setScalar(p ? 1.35 : 1));   /* bigger letters on a phone */
     cars.forEach(c => { c.scale.setScalar(c.userData.on ? S : (p ? .75 : .8)); if (c.userData.on) c.position.copy(slotPos(c.userData.slot)); else if (c !== drag) c.position.copy(homes[c.userData.home ?? c.userData.i]); });
-    if (p) { E.camBase.set(0, 2.3, 10); E.camTarget.set(0, 1.8, 0); } else { E.camBase.set(0, 2.7, 10.2); E.camTarget.set(0, 1.5, 0); }
+    if (p) { E.camBase.set(0, 2.3, 11); E.camTarget.set(0, 1.8, 0); } else { E.camBase.set(0, 2.7, 10.2); E.camTarget.set(0, 1.5, 0); }
   });
   E.onFrame(t => {
     puffs.forEach((p, i) => { const k = ((t * .8 + i / 4) % 1); p.position.set(-.35 - k * .5, 1.4 + k * .9, 0); p.scale.setScalar(.6 + k * 1.2); p.material.opacity = .8 * (1 - k); });
@@ -101,7 +102,7 @@ export default function setup(E, { struggled, unit }) {
   async function roundTwo() {
     /* the train comes back with some cars on, and gaps to fill */
     gaps = [1, 3, 5]; const gapHomes = [0, 2, 4].sort(() => Math.random() - .5);
-    const lx = P ? 1.85 : 4.6; loco.position.x = lx + 10;
+    const lx = P ? 1.68 : 4.6; loco.position.x = lx + 10;
     cars.forEach((c, i) => { if (gaps.includes(i)) { c.userData.on = false; c.userData.slot = null; c.userData.home = gapHomes[gaps.indexOf(i)]; c.scale.setScalar(P ? .75 : .8); c.position.copy(homes[c.userData.home]); c.visible = true; }
       else { c.userData.on = true; c.userData.slot = i; c.scale.setScalar(S); c.position.copy(slotPos(i)).add(new THREE.Vector3(10, 0, 0)); } });
     const on = cars.filter(c => c.userData.on), sx = on.map(c => c.position.x);

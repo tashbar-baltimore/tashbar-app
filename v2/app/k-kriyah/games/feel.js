@@ -15,7 +15,8 @@ export default function setup(E, { unit }) {
     daled: [[[40, 615], [45, 510], [160, 500], [290, 500], [415, 495], [395, 380], [388, 250], [383, 120], [380, 25]]],
     hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
-  const ORDER = unit.n > 1 ? [...unit.letters, 'beis'] : unit.letters;   /* a later unit ends with one earlier letter (Beis, and its dot) */
+  const ORDER = unit.n > 1 ? [...unit.letters, 'beis'] : unit.letters;
+  const ROW = unit.n > 1 ? ['beis', ...unit.letters] : ORDER;   /* the finished row is in Alef-Beis order */   /* a later unit ends with one earlier letter (Beis, and its dot) */
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
   const boy = unit.n === 2 ? E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }) : E.mendy(); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
   const done = []; let cur = null, beads = [], next = 0, demo = false, active = false, lastHelp = 0, wander = 0, offTries = 0;
@@ -30,9 +31,9 @@ export default function setup(E, { unit }) {
     H = p ? 2.7 : 3.2;
     if (p) { E.camBase.set(0, 2.4, 10.5); E.camTarget.set(0, 2.1, 0); holder.position.set(0, 2.5, .8); boy.position.set(-1.25, 0, 2.2); boy.scale.setScalar(.8); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); holder.position.set(0, 1.95, .8); boy.position.set(-3.6, 0, 1.4); boy.scale.setScalar(1); }
-    done.forEach(layoutDone);
+    done.forEach(l => layoutDone(l, ROW.indexOf(l.userData.key)));
   });
-  function layoutDone(l, i) { if (E.portrait) l.position.set(1.5 - i * .78, .42, 2.0); else l.position.set(4.4 - i * 1.2, .62, 1.3); l.scale.setScalar(E.portrait ? .24 : .34); }
+  function layoutDone(l, i) { if (E.portrait) l.position.set(1.5 - i * .78, .42, 2.0); else l.position.set(4.1 - i * 1.2, .62, 1.3); l.scale.setScalar(E.portrait ? .24 : .34); }
   E.onFrame(t => {
     if (cur && !cur.userData.spin) cur.rotation.y = Math.sin(t * .7) * .12;
     if (target.parent) { const b = beads.find(x => !x.userData.lit); target.visible = !!b && active; if (b) { target.position.copy(b.position); target.scale.setScalar(.16 * H / 3.2 * (1 + Math.sin(t * 7) * .15)); } }
@@ -74,7 +75,7 @@ export default function setup(E, { unit }) {
   async function oneLetter(key, first) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
-    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? 'This is Beis, with Mendy’s dot. Feel it!' : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
       const st = PATHS[key][0].length; let [x, y] = beadScreen(0); E.hand.at(x, y); await E.wait(300);
@@ -91,9 +92,9 @@ export default function setup(E, { unit }) {
     if (key === 'beis') {   /* Beis: he touches Mendy's dot too, so the dagesh is something he feels */
       const dot = cur.userData.dot; const pad = new THREE.Mesh(new THREE.SphereGeometry(.55, 12, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })); dot.add(pad);   /* a tap area much bigger than the dot */
       const ring = E.noticeRing(.35); ring.position.copy(dot.position); ring.visible = true; cur.add(ring);
-      await E.say('Now tap Mendy\u2019s dot!'); dotTarget = dot; document.body.dataset.dotReady = 1;
+      await E.say(unit.n > 1 ? 'Now tap the dot!' : 'Now tap Mendy\u2019s dot!'); dotTarget = dot; document.body.dataset.dotReady = 1;
       await E.waitTap([dot]); delete document.body.dataset.dotReady; dotTarget = null; ring.visible = false; cur.remove(ring); E.sfx.chime(); E.sparkle(E.worldPos(dot), 22, 1); E.hop(dot, .25, 400);
-      await E.say('Someone is home!');
+      await E.say(unit.n > 1 ? 'Beis has a dot!' : 'Someone is home!');
     }
     /* the whole letter glows, spins, and says its name and sound */
     cur.userData.spin = true; E.joy(E.worldPos(cur).add(new THREE.Vector3(0, 0, .8)), true); boy.mood('cheer');
@@ -101,7 +102,7 @@ export default function setup(E, { unit }) {
     await E.say(key === 'alef' ? 'Alef! Alef is quiet.' : [E.LETTERS[key].name + '! ' + E.LETTERS[key].name + ' says', S(E.LETTERS[key].snd)]); boy.mood('calm');
     /* it moves to the side, so he sees the ones he has done */
     [...beads, ...roads, ...golds, target].forEach(b => b.parent && b.parent.remove(b)); beads = []; roads = []; golds = []; const l = cur; cur = null; holder.remove(l); E.scene.add(l); l.position.copy(holder.position);
-    const i = done.length; done.push(l); const p0 = l.position.clone(); const tmp = new THREE.Object3D(); layoutDone(tmp, i);
+    const i = ROW.indexOf(l.userData.key); done.push(l); const p0 = l.position.clone(); const tmp = new THREE.Object3D(); layoutDone(tmp, i);
     await E.tween(600, k => { l.position.lerpVectors(p0, tmp.position, k); l.scale.setScalar(1 + (tmp.scale.x - 1) * k); }); layoutDone(l, i);
     glow.material.opacity = 0; E.setProgress(ORDER.length, done.length);
   }

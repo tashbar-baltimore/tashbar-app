@@ -5,7 +5,7 @@
 import { makePictures, WORDS, WORD_NAME } from '../pictures.js';
 export default function setup(E, { struggled, unit }) {
   const { THREE, S } = E;
-  const PIC = makePictures(E), keys = unit.n > 1 ? [...unit.letters, 'beis'] : unit.letters;   /* one earlier letter comes back (Beis, with the bayis) */
+  const PIC = makePictures(E), keys = unit.n > 1 ? ['beis', ...unit.letters] : unit.letters;   /* in Alef-Beis order, right to left */   /* one earlier letter comes back (Beis, with the bayis) */
   const words = Object.keys(WORDS).filter(w => keys.includes(WORDS[w].letter));
   const kid = E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }); E.scene.add(kid);   /* Shloimy */
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
