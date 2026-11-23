@@ -282,7 +282,7 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   const head = new THREE.Group(); head.position.set(0, 1.32, 0); b.add(head);
   head.add(mesh(new THREE.SphereGeometry(.34, 32, 24), skinM));
   if (hat) { head.add(mesh(new THREE.CylinderGeometry(.46, .46, .03, 28), dark, 0, .22, 0)); head.add(mesh(new THREE.CylinderGeometry(.27, .3, .3, 24), dark, 0, .37, 0)); }
-  else if (woman) { const h = mesh(new THREE.SphereGeometry(.37, 28, 18, 0, Math.PI * 2, 0, Math.PI * .5), hairM, 0, .1, -.04); h.scale.set(1.05, 1.05, 1.02); head.add(h); head.add(mesh(new THREE.CapsuleGeometry(.2, .22, 6, 12), hairM, 0, -.2, -.14)); }   /* a neat sheitel */
+  else if (woman) { const h = mesh(new THREE.SphereGeometry(.37, 28, 18, 0, Math.PI * 2, 0, Math.PI * .5), hairM, 0, .1, -.04); h.scale.set(1.05, 1.05, 1.02); head.add(h); head.add(mesh(new THREE.CapsuleGeometry(.2, .22, 6, 12), hairM, 0, -.2, -.14)); [-1, 1].forEach(sd => head.add(mesh(new THREE.CapsuleGeometry(.1, .3, 6, 10), hairM, sd * .31, -.14, -.02))); }   /* a neat, shoulder-length sheitel */
   else { const k = mesh(new THREE.SphereGeometry(.24, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2.4), M(kippah, { roughness: .4, clearcoat: .5 }), 0, .2, -.03); k.rotation.x = -.25; head.add(k); }
   const eyes = [];
   [-.12, .12].forEach(x => { const e = new THREE.Group(); e.position.set(x, .04, .3); e.add(mesh(new THREE.SphereGeometry(.05, 14, 10), dark, 0, 0, 0, false)); e.add(mesh(new THREE.SphereGeometry(.016, 8, 6), M(0xffffff), .015, .02, .045, false)); head.add(e); eyes.push(e);
