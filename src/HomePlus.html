@@ -433,7 +433,7 @@ function rmo(){ return typeof RM!=='undefined'&&RM; }
 function tone(f,w,d,vol,type){ const c=ac(); if(!c) return; const t=c.currentTime+w, o=c.createOscillator(), g=c.createGain(); o.type=type||'triangle'; o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol||.12,t+.01); g.gain.exponentialRampToValueAtTime(.0008,t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+.05); }
 function cascade(n){ for(let k=0;k<n;k++){ tone(1400+k*60,k*.055,.18,.07,'square'); tone(2100+k*80,k*.055+.02,.14,.05,'sine'); } }
 function fanfare(){ [[523,0],[659,.12],[784,.24],[1047,.36],[1319,.52]].forEach(([f,w])=>{ tone(f,w,.5,.13,'triangle'); tone(f/2,w,.5,.07,'sawtooth'); }); tone(1568,.7,1.2,.12,'triangle'); tone(2093,.72,1.3,.09,'sine'); }
-function hpBankEl(){ const p=document.getElementById('tlcash'); if(p&&getComputedStyle(p).display!=='none') return p; return document.getElementById('wallet'); }   /* money badge (StoreKid) replaces the home bar: coins fly to it */
+function hpBankEl(){ const ms=document.getElementById('tlms'); if(ms&&ms.classList.contains('on')) return ms; const p=document.getElementById('tlcash'); if(p&&getComputedStyle(p).display!=='none') return p; return document.getElementById('wallet'); }   /* money badge (StoreKid) replaces the home bar: coins fly to it */
 function rain(n,emoji){ if(rmo()) return; const w=hpBankEl(); const r=w?w.getBoundingClientRect():{left:innerWidth-120,top:20,width:80,height:40};
  for(let k=0;k<n;k++){ const e=document.createElement('i'); e.className='hpcoin'; e.textContent=emoji&&k%3===0?emoji:(window.TL_CASH_EMOJI?TL_CASH_EMOJI():'🪙'); const x=Math.random()*innerWidth; e.style.left=x+'px'; e.style.top='-50px'; e.style.fontSize=(26+Math.random()*18)+'px'; document.body.appendChild(e);
   const fall=innerHeight*(.45+Math.random()*.35), tx=r.left+r.width/2-x, ty=r.top+r.height/2+50;
@@ -506,7 +506,7 @@ function svCss(){ if(document.getElementById('sv-css')) return; const s=document
 .svstar{font-size:18px}
 #tlcash.svgulp{animation:svgulp .55s cubic-bezier(.3,1.6,.5,1)}@keyframes svgulp{0%{transform:scale(1)}30%{transform:scale(1.35,0.8)}60%{transform:scale(.9,1.15)}100%{transform:scale(1)}}`; document.head.appendChild(s); }
 function svW(){ const sky=document.body.classList.contains('oh-sky')?(parseFloat(getComputedStyle(document.body).getPropertyValue('--skyw'))||96):0; return innerWidth-sky; }
-function svBank(){ const p=document.getElementById('tlcash'); const el=(p&&getComputedStyle(p).display!=='none')?p:(document.getElementById('hpjar')||document.getElementById('wallet')); if(!el) return [24,innerHeight-30,null]; const r=el.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2,el]; }
+function svBank(){ try{ if(window.TLMS&&TLMS.bank){ const b=TLMS.bank(); if(b) return b; } }catch(e){} const p=document.getElementById('tlcash');   /* 2026-11-23: the lesson money meter (MoneyShow.html) is the bank during a lesson */ const el=(p&&getComputedStyle(p).display!=='none')?p:(document.getElementById('hpjar')||document.getElementById('wallet')); if(!el) return [24,innerHeight-30,null]; const r=el.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2,el]; }
 function svEl(cls,html,x,y){ const e=document.createElement('div'); e.className='svx '+cls; e.innerHTML=html||''; e.style.transform=`translate(${x}px,${y}px)`; document.body.appendChild(e); return e; }
 function svCenter(e){ return [e.offsetWidth/2,e.offsetHeight/2]; }
 /* sounds (made here; quiet when sound is off) */

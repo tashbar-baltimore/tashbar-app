@@ -1,0 +1,218 @@
+<script>
+/* MoneyShow.html: THE MONEY SHOW IN EVERY LESSON (HoS 2026-11-23: "the money is not so exciting anymore ... the clicks don't mean so much ...
+   they want to feel like they're growing, each click matters ... a bigger show ... spinning and rolling ... throughout all the lessons").
+   What was wrong: during a lesson the boy's money was hidden (LearnFlow hides the money pill so it never covers a button), and in One Bite
+   every effect added to the page is hidden by One Bite's own rule, so a right answer moved nothing he could see.
+   (Where it sits when the page is scrolled: see place() below. It never stays on top of the work.)
+   What this does, on every lesson screen (One Bite and the regular lesson player, every subject, grades 2 and up):
+   1. THE MONEY METER: a gold meter at the top that never covers the work (One Bite: in the header, in its own reserved space;
+      other lessons: the empty strip at the top centre). It shows his REAL balance (A.st.balance, from the server) on rolling
+      odometer digits, a gold coin that keeps spinning, and a pile of "this lesson" coins that grows with every right answer.
+   2. EVERY RIGHT ANSWER (the engine and the Activity Kit both play SND.right): gold coins pop out of the answer he tapped,
+      spin, and roll in an arc into the meter; the meter coin whirls, the pile grows one coin, a rising clink plays.
+      A streak makes it bigger: more coins (2 to 6), and the meter glows warmer at 3, 5 and 8 in a row. Every 5th coin the meter jumps.
+      A miss never takes anything away; the streak just starts again.
+   3. CASH IN: when the server's saved balance comes back higher (the lesson is saved), the pile pours into the bank and the
+      odometer digits roll up to the new real amount, like a slot machine. Then the pile is empty for the next lesson.
+   MONEY RULE: display only. Coins count right answers in this lesson; they are not dollars. The only dollar amount shown is the
+   balance the server sent. Nothing here sets, guesses or changes an amount.
+   Never blocks a tap (pointer-events none), sits under pop-ups (z-index below .overlay; for the few seconds money is landing it rides in front), does nothing for K-1 boys (their game path),
+   staff screens or when no boy is signed in. Reduced motion: no flying or spinning; the numbers and the pile still change.
+   Loaded after OneBiteMoney (registered in Photos.js AND Speed.js). No double slash in this file. */
+(function(){
+if(typeof render!=='function'||typeof A==='undefined') return;
+const MS=window.TLMS=window.TLMS||{}; if(MS.on) return; MS.on=true;
+const RM=(()=>{ try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch(e){ return false; } })();
+const S={peek:0, pos:null, shown:null, sid:null, coins:0, streak:0, misses:0, playRef:null, last:0, linger:0, cashUntil:0, heat:0};
+MS.state=S;
+
+function css(){ if(document.getElementById('tlms-css')) return; const s=document.createElement('style'); s.id='tlms-css'; s.textContent=`
+body.ob-on > #tlms-fx, body.ob-on > #tlms{ display:flex !important; }
+body.ob-on > #tlms-fx{ display:block !important; }
+#tlms-fx{ position:fixed; inset:0; z-index:99980; pointer-events:none; overflow:hidden; }
+#tlms{ position:fixed; left:0; top:0; z-index:35; pointer-events:none; display:flex; align-items:center; gap:8px; height:40px; padding:0 12px 0 5px; border-radius:999px;
+  background:linear-gradient(180deg,#FFFBEA,#FDE68A); border:2.5px solid #E8B730; box-shadow:0 4px 0 #C9961C,0 8px 18px rgba(161,98,7,.28);
+  color:#5B3A00; font:900 21px/1 var(--display,system-ui),system-ui,sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap;
+  opacity:0; visibility:hidden; transition:opacity .25s, box-shadow .3s, border-color .3s; will-change:transform; }
+#tlms.on{ opacity:1; visibility:visible; }
+#tlms.up{ z-index:99995; }
+#tlms.peek{ transition:opacity .25s, box-shadow .3s, border-color .3s, transform .38s cubic-bezier(.3,1.35,.5,1); }
+#tlms .tc{ width:32px; height:32px; perspective:120px; flex:none; }
+#tlms .tc i{ display:grid; place-items:center; width:100%; height:100%; border-radius:50%; font:900 16px system-ui,sans-serif; font-style:normal; color:#7A4A00;
+  background:radial-gradient(circle at 35% 30%,#FFFDE7,#FACC15 45%,#CA8A04 82%); border:2px solid #A16207; box-shadow:inset 0 0 0 2.5px rgba(254,240,138,.75);
+  animation:tlmsSpin 3.2s linear infinite; }
+#tlms.whirl .tc i{ animation:tlmsSpin .32s linear 4; }
+@keyframes tlmsSpin{ to{ transform:rotateY(360deg); } }
+#tlms .od{ display:flex; align-items:flex-end; height:1em; overflow:hidden; letter-spacing:.01em; }
+#tlms .od .d{ display:inline-block; height:1em; overflow:hidden; }
+#tlms .od .d s{ display:flex; flex-direction:column; text-decoration:none; transition:transform .9s cubic-bezier(.2,.9,.25,1.12); }
+#tlms .od .d s b{ height:1em; line-height:1em; font-weight:900; }
+#tlms .od .p{ line-height:1em; }
+#tlms .tj{ display:none; } #tlms.has .tj{ display:flex; align-items:center; gap:4px; padding-left:8px; border-left:2px solid rgba(161,98,7,.28); height:26px; }
+#tlms .pile{ position:relative; width:24px; height:26px; flex:none; }
+#tlms .pile i{ position:absolute; left:1px; width:22px; height:8px; border-radius:50%; background:linear-gradient(180deg,#FDE047,#CA8A04); border:1.5px solid #A16207; }
+#tlms .pile i.new{ animation:tlmsDrop .45s cubic-bezier(.3,1.6,.5,1); }
+@keyframes tlmsDrop{ 0%{ transform:translateY(-16px) scale(1.2); opacity:0; } 60%{ opacity:1; } 100%{ transform:none; } }
+#tlms .n{ font-size:17px; color:#7A4A00; min-width:1.4em; }
+#tlms .n.pop{ animation:tlmsPop .45s cubic-bezier(.3,1.7,.5,1); }
+@keyframes tlmsPop{ 0%{ transform:scale(1); } 40%{ transform:scale(1.6); color:#15803D; } 100%{ transform:scale(1); } }
+#tlms.bump{ animation:tlmsBump .5s cubic-bezier(.3,1.6,.5,1); }
+#tlms.jump{ animation:tlmsJump .8s cubic-bezier(.3,1.5,.5,1); }
+@keyframes tlmsBump{ 0%{ scale:1; } 35%{ scale:1.14; } 70%{ scale:.97; } 100%{ scale:1; } }
+@keyframes tlmsJump{ 0%{ scale:1; translate:0 0; } 30%{ scale:1.3; translate:0 6px; } 60%{ scale:.95; } 100%{ scale:1; translate:0 0; } }
+#tlms.h1{ border-color:#F59E0B; box-shadow:0 4px 0 #C9961C,0 0 0 4px rgba(253,224,71,.55),0 8px 22px rgba(245,158,11,.45); }
+#tlms.h2{ border-color:#F97316; box-shadow:0 4px 0 #C2410C,0 0 0 5px rgba(251,146,60,.6),0 0 26px rgba(249,115,22,.65); }
+#tlms.h3{ border-color:#EF4444; box-shadow:0 4px 0 #B91C1C,0 0 0 6px rgba(248,113,113,.6),0 0 34px rgba(239,68,68,.7); }
+#tlms.h2::after,#tlms.h3::after{ content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.75) 46%,transparent 62%); background-size:250% 100%; animation:tlmsShine 1.4s linear infinite; }
+@keyframes tlmsShine{ from{ background-position:120% 0; } to{ background-position:-120% 0; } }
+.tlms-slot{ display:inline-block; height:40px; flex:none; }
+body.tlms-onbite #app .obm-chip{ display:none !important; }
+.tlms-fly{ position:absolute; left:0; top:0; width:40px; height:40px; perspective:140px; will-change:transform; }
+.tlms-fly i{ display:grid; place-items:center; width:100%; height:100%; border-radius:50%; font:900 17px system-ui,sans-serif; font-style:normal; color:#7A4A00;
+  background:radial-gradient(circle at 35% 30%,#FFFDE7,#FACC15 45%,#CA8A04 82%); border:2px solid #A16207; box-shadow:0 3px 8px rgba(0,0,0,.28),inset 0 0 0 2.5px rgba(254,240,138,.75);
+  animation:tlmsSpin .45s linear infinite; }
+.tlms-fly i{ font-size:20px; } .tlms-fly.big{ width:56px; height:56px; } .tlms-fly.big i{ font-size:28px; border-width:3px; }
+.tlms-spark{ position:absolute; left:0; top:0; width:9px; height:9px; border-radius:50%; background:#FDE047; box-shadow:0 0 10px 3px rgba(253,224,71,.9); }
+.tlms-plus{ position:absolute; left:0; top:0; font:900 30px var(--display,system-ui),system-ui,sans-serif; color:#A16207; -webkit-text-stroke:1px #fff; text-shadow:0 2px 0 #fff,0 4px 10px rgba(161,98,7,.35); white-space:nowrap; }
+@media (max-width:480px){ #tlms{ height:36px; font-size:18px; gap:6px; padding:0 10px 0 4px; } #tlms .tc{ width:28px; height:28px; } #tlms .n{ font-size:15px; } .tlms-slot{ height:36px; } }
+@media (prefers-reduced-motion:reduce){ #tlms .tc i,#tlms.whirl .tc i,.tlms-fly i{ animation:none; } #tlms .od .d s{ transition:none; } #tlms.bump,#tlms.jump,#tlms .n.pop,#tlms .pile i.new,#tlms.h2::after,#tlms.h3::after{ animation:none; } }
+`; document.head.appendChild(s); }
+
+const money=v=>{ try{ if(typeof fmt==='function') return fmt(v); }catch(e){} return '$'+(Math.round((Number(v)||0)*100)/100).toFixed(2); };
+function bal(){ return A.st?Number(A.st.balance)||0:0; }
+function onBite(){ return document.body.classList.contains('ob-on'); }
+function k1(){ return document.body.classList.contains('k1-mode'); }
+function playing(){ return !!(A.st&&A.view==='play'&&A.play&&!k1()); }
+
+function fx(){ let f=document.getElementById('tlms-fx'); if(!f){ f=document.createElement('div'); f.id='tlms-fx'; f.setAttribute('aria-hidden','true'); document.body.appendChild(f); } return f; }
+function meter(){ let m=document.getElementById('tlms'); if(m) return m; css(); m=document.createElement('div'); m.id='tlms';
+  m.innerHTML='<span class="tc" aria-hidden="true"><i>$</i></span><span class="od" aria-hidden="true"></span><span class="tj" aria-hidden="true"><span class="pile"></span><b class="n">0</b></span>';
+  document.body.appendChild(m); return m; }
+
+/* the odometer: every digit is a little 0-9 strip that rolls to its place */
+function setOd(v,instant){ const m=meter(), od=m.querySelector('.od'), txt=money(v);
+  m.setAttribute('aria-label','My money '+txt+'. '+S.coins+' coin'+(S.coins===1?'':'s')+' this lesson.'); m.setAttribute('role','img');
+  const shape=txt.replace(/[0-9]/g,'9');
+  if(od.dataset.shape!==shape){ od.dataset.shape=shape;
+    od.innerHTML=txt.split('').map(c=>/[0-9]/.test(c)?'<span class="d"><s>'+'0123456789'.split('').map(n=>'<b>'+n+'</b>').join('')+'</s></span>':'<span class="p">'+c+'</span>').join(''); instant=true; }
+  const ds=od.querySelectorAll('.d s'); let k=0;
+  txt.split('').forEach(c=>{ if(!/[0-9]/.test(c)) return; const s=ds[k++]; if(!s) return; const n=+c;
+    if(instant||RM){ s.style.transition='none'; s.style.transform='translateY('+(-n)+'em)'; void s.offsetWidth; s.style.transition=''; }
+    else { s.style.transitionDelay=((ds.length-k)*0.07)+'s'; s.style.transform='translateY('+(-n)+'em)'; } }); }
+
+function setPile(added){ const m=meter(), p=m.querySelector('.pile'), n=m.querySelector('.n'), show=Math.min(S.coins,6);
+  while(p.children.length>show) p.lastChild.remove();
+  while(p.children.length<show){ const i=document.createElement('i'); i.style.bottom=(p.children.length*3)+'px'; if(added&&!RM) i.className='new'; p.appendChild(i); }
+  n.textContent='+'+S.coins; m.classList.toggle('has',S.coins>0); if(added) place();
+  if(added&&!RM){ n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop'); } }
+
+function setHeat(){ const m=meter(), h=S.streak>=8?3:S.streak>=5?2:S.streak>=3?1:0; if(h===S.heat) return; S.heat=h; m.classList.remove('h1','h2','h3'); if(h) m.classList.add('h'+h); }
+
+function kick(cls){ const m=meter(); if(RM&&cls!=='whirl') return; m.classList.remove(cls); void m.offsetWidth; m.classList.add(cls); }
+
+/* where the meter sits, so it never sits on the work:
+   1. One Bite with its header on screen: in its reserved slot in the header.
+   2. Other lessons, before scrolling: the empty strip at the top centre (left of the Olam Haba column).
+   3. Scrolled, with room beside the lesson (Chromebook): in the side margin, next to the top of the lesson.
+   4. Scrolled, no room (phone): out of sight above the screen; it drops down to catch the coins for a moment after a right answer
+      (and for the cash in), then slides back up. Taps always pass through it. */
+function slot(){ return document.querySelector('#app .ob-head .tlms-slot'); }
+function skyW(){ return document.body.classList.contains('oh-sky')?(parseFloat(getComputedStyle(document.body).getPropertyValue('--skyw'))||0):0; }
+function midX(w){ const a=(document.getElementById('app')||document.body).getBoundingClientRect(), l=Math.max(0,a.left), r=Math.min(innerWidth-skyW(),a.right>l?a.right:innerWidth); return (l+r-w)/2; }
+function colRect(){ const sel=['#app .ob-play','#app .ob','#app .lf-card','#app .qcard','#app .stage','#app .play'];
+  for(const q of sel){ const e=document.querySelector(q); if(!e) continue; const r=e.getBoundingClientRect(); if(r.width>0&&r.height>0) return r; }
+  return {left:0,right:innerWidth,top:0,width:innerWidth}; }
+function place(){ const m=document.getElementById('tlms'); if(!m) return; const now=Date.now(), show=playing()||now<S.linger||now<S.cashUntil;
+  m.classList.toggle('on',show); if(!show) return;
+  const w=m.offsetWidth, h=m.offsetHeight, sl=slot(), sr=sl?sl.getBoundingClientRect():null, sky=skyW(); let x, y, mode;
+  if(sl&&Math.abs(sl.offsetWidth-w)>1) sl.style.width=w+'px';
+  if(sr&&sr.bottom>=4){ mode='slot'; x=sr.left+(sr.width-w)/2; y=sr.top+(sr.height-h)/2; }
+  else { const c=colRect();
+    if(!sl&&c.top>=h+12){ mode='top'; x=midX(w); y=10; }
+    else if(innerWidth-sky-c.right>=w+24){ mode='side'; x=c.right+12; y=10; }
+    else { mode='peek'; x=midX(w); y=now<S.peek?8:-h-24; } }
+  m.classList.toggle('peek',mode==='peek'); m.classList.toggle('up',now<S.peek); S.pos={x:Math.round(x),y:Math.round(mode==='peek'?8:y),mode};
+  m.style.transform='translate('+Math.round(x)+'px,'+Math.round(y)+'px)'; }
+function peek(ms){ S.peek=Math.max(S.peek||0,Date.now()+ms); place(); setTimeout(place,ms+30); }
+/* where coins fly to: the meter's coin, where the meter is (or is dropping down to) */
+function target(){ const m=document.getElementById('tlms'); if(!m||!m.classList.contains('on')||!S.pos) return null; const c=m.querySelector('.tc'); return {x:S.pos.x+c.offsetLeft+c.offsetWidth/2,y:S.pos.y+c.offsetTop+c.offsetHeight/2}; }
+MS.target=target;
+/* the Sky Vault (HomePlus) asks where the bank is: the meter drops into view for the whole show and the money lands in it */
+MS.bank=function(){ if(!playing()) return null; meter(); const c=(A.play&&A.play.combo)||1; peek(c>=8?3000:c>=5?2300:1900); const t=target(); return t?[t.x,t.y,document.getElementById('tlms')]:null; };
+
+/* after every draw: One Bite gets the reserved slot (in place of the small money chip) */
+function dress(){ if(!A.st) return; meter(); fx();
+  if(S.sid!==A.st.id){ S.sid=A.st.id; S.shown=bal(); S.coins=0; S.streak=0; setOd(S.shown,true); setPile(false); }
+  if(A.play!==S.playRef&&A.view==='play'){ S.playRef=A.play; S.coins=0; S.streak=0; S.misses=A.play?A.play.misses||0:0; setPile(false); setHeat(); }
+  if(A.view==='result'&&S.playRef&&!S.linger){ S.linger=Date.now()+10000; }   /* the end screen: stay for the cash in */
+  if(A.view!=='play'&&A.view!=='result'&&S.playRef){ S.playRef=null; S.linger=0; S.coins=0; S.streak=0; setPile(false); setHeat(); }   /* he left the lesson: nothing lingers */
+  if(A.view==='play') S.linger=0;
+  document.body.classList.toggle('tlms-onbite',onBite());
+  if(onBite()) document.querySelectorAll('#app .ob-head .ob-mid').forEach(mid=>{ if(mid.querySelector('.tlms-slot')) return;
+    let row=mid.querySelector('.obm-row'); if(!row){ row=document.createElement('div'); row.className='obm-row'; const nm=mid.querySelector('.ob-stepname'); if(nm) row.appendChild(nm); mid.appendChild(row); }
+    const s=document.createElement('span'); s.className='tlms-slot'; s.setAttribute('aria-hidden','true'); s.style.width=(meter().offsetWidth||150)+'px'; row.appendChild(s); });
+  place(); }
+
+/* sounds: a rising clink (the app's own coin sound), quiet when sound is off */
+function clink(i){ try{ if(typeof SND!=='undefined'&&SND&&SND.on!==false&&typeof SND.coin==='function') SND.coin(Math.min(i,10)); }catch(e){} }
+
+/* one gold coin: pops out of where he tapped, spins, then rolls along an arc into the meter */
+function flyCoin(x0,y0,big,delay,onLand){ const t=target(); if(!t){ if(onLand) onLand(); return; } const L=fx(), d=document.createElement('div'); d.className='tlms-fly'+(big?' big':''); d.innerHTML='<i>$</i>'; L.appendChild(d);
+  const half=big?28:20, sx=x0-half, sy=y0-half, ex=t.x-half, ey=t.y-half, up=Math.min(sy,ey)-70-Math.random()*70, mx=(sx+ex)/2+(Math.random()-.5)*160, pop=(Math.random()-.5)*60;
+  const a=d.animate([{transform:'translate('+sx+'px,'+sy+'px) scale(.3) rotate(0deg)',opacity:0},
+    {transform:'translate('+(sx+pop)+'px,'+(sy-46)+'px) scale(1.25) rotate(-40deg)',opacity:1,offset:.22},
+    {transform:'translate('+mx+'px,'+up+'px) scale(1) rotate(320deg)',opacity:1,offset:.6},
+    {transform:'translate('+ex+'px,'+ey+'px) scale(.55) rotate(720deg)',opacity:1}],{duration:900+Math.random()*150,delay:delay||0,easing:'cubic-bezier(.45,.05,.4,1)',fill:'both'});
+  let done=false; const fin=()=>{ if(done) return; done=true; try{ d.remove(); }catch(e){} if(onLand) onLand(); };
+  a.onfinish=fin; setTimeout(fin,(delay||0)+1500); }
+function sparks(x,y,n,col){ if(RM) return; const L=fx(); for(let k=0;k<n;k++){ const s=document.createElement('div'); s.className='tlms-spark'; if(col) s.style.background=col; L.appendChild(s);
+  const a=Math.PI*2*k/n+Math.random()*.5, r=26+Math.random()*26;
+  s.animate([{transform:'translate('+(x-4)+'px,'+(y-4)+'px) scale(1)',opacity:1},{transform:'translate('+(x-4+Math.cos(a)*r)+'px,'+(y-4+Math.sin(a)*r)+'px) scale(.2)',opacity:0}],{duration:520,easing:'ease-out',fill:'both'}).onfinish=()=>s.remove(); } }
+function plus(x,y,txt){ if(RM) return; const L=fx(), p=document.createElement('div'); p.className='tlms-plus'; p.textContent=txt; L.appendChild(p); const w=p.offsetWidth||40, px=Math.max(6,Math.min(innerWidth-w-6,x-w/2));
+  p.animate([{transform:'translate('+px+'px,'+(y-10)+'px) scale(.5)',opacity:0},{transform:'translate('+px+'px,'+(y-44)+'px) scale(1.15)',opacity:1,offset:.3},{transform:'translate('+px+'px,'+(y-78)+'px) scale(1)',opacity:0}],{duration:1100,easing:'ease-out',fill:'both'}).onfinish=()=>p.remove(); }
+
+/* a coin reached the meter */
+function land(i){ const t=target(); S.coins++; setPile(true); clink(i); kick('whirl'); kick('bump'); if(t) sparks(t.x,t.y,6);
+  if(S.coins%5===0){ setTimeout(()=>{ kick('jump'); const t2=target(); if(t2){ sparks(t2.x,t2.y,14,'#FB923C'); } [0,90,180].forEach((w,k)=>setTimeout(()=>clink(6+k*2),w)); },120); }
+  }
+
+/* a right answer in a lesson */
+let lastTap=null, tapAt=0; document.addEventListener('pointerdown',e=>{ lastTap=e.target; tapAt=Date.now(); },true);
+function onRight(){ if(!playing()) return; const now=Date.now(); if(now-S.last<150) return; S.last=now;
+  const ae=document.activeElement; if(ae&&ae.tagName==='TEXTAREA') return;   /* the writing meter filling up is not an answer */
+  const p=A.play, ms=p?p.misses||0:0; if(ms>S.misses){ S.streak=0; } S.misses=ms; S.streak++; setHeat();
+  dress();
+  const fresh=lastTap&&now-tapAt<2500&&document.body.contains(lastTap)&&lastTap.getBoundingClientRect().width;
+  const el=fresh?lastTap:(document.querySelector('#app .opt.right')||document.querySelector('#app .numin.ok')||null);   /* keyboard: the right answer, else the middle of the screen */
+  const r=el?el.getBoundingClientRect():{left:innerWidth/2,top:innerHeight*.55,width:0,height:0}, x0=r.left+r.width/2, y0=Math.max(70,Math.min(innerHeight-40,r.top+r.height/2));
+  if(RM||!target()){ peek(1800); S.coins++; setPile(true); clink(S.streak); return; }
+  const skyVault=!!window.HP_FX&&!onBite();   /* the Sky Vault (HomePlus) already rains money in the regular lesson player: one coin from the tap is enough */
+  const n=skyVault?1:2+Math.min(4,Math.floor(S.streak/2));
+  peek(1500+n*110); plus(x0,y0,'+1 🪙'); sparks(x0,y0,8);
+  for(let k=0;k<n;k++){ const last=k===n-1; flyCoin(x0+(Math.random()-.5)*20,y0,k===0,k*110,last?()=>land(S.streak):()=>{ clink(S.streak+k); kick('whirl'); const t=target(); if(t) sparks(t.x,t.y,4); }); } }
+MS.right=onRight;
+
+/* the saved balance came back higher: CASH IN. The pile pours into the bank and the digits roll up to the real amount. */
+function cashIn(from,to){ S.cashUntil=Date.now()+4500; peek(4200); const t=target(); const pile=S.coins;
+  if(t&&!RM){ for(let k=0;k<Math.min(10,Math.max(4,pile));k++){ setTimeout(()=>{ const t2=target(); if(!t2) return; sparks(t2.x,t2.y,5,k%2?'#4ADE80':'#FDE047'); clink(k); if(S.coins>0){ S.coins--; setPile(false); } },k*110); } }
+  setTimeout(()=>{ S.coins=0; S.streak=0; setHeat(); setPile(false); S.shown=to; setOd(to,false); kick('jump'); kick('whirl'); const t3=target(); if(t3){ sparks(t3.x,t3.y,18,'#4ADE80'); plus(t3.x,t3.y+70,'+'+money(Math.round((to-from)*100)/100)); } },RM?0:Math.min(10,Math.max(4,pile))*110+150); }
+
+/* hooks: draw, right-answer sound */
+const _r=render; render=function(){ const out=_r.apply(this,arguments); try{ dress(); }catch(e){ console.warn('MoneyShow',e); } return out; }; window.render=render;
+function hookSnd(){ if(typeof SND==='undefined'||!SND||SND.__tlms||typeof SND.right!=='function') return; const _rt=SND.right;
+  SND.right=function(){ const out=_rt.apply(this,arguments); try{ onRight(); }catch(e){} return out; }; SND.__tlms=true; }
+hookSnd(); setTimeout(hookSnd,1500);
+addEventListener('resize',place); addEventListener('scroll',place,{passive:true});
+
+/* watch the saved balance */
+setInterval(()=>{ try{ if(!A.st){ const m=document.getElementById('tlms'); if(m) m.classList.remove('on'); return; } meter();
+  if(S.sid!==A.st.id){ dress(); return; } const v=bal();
+  if(S.shown==null){ S.shown=v; setOd(v,true); }
+  else if(v>S.shown+.004){ const from=S.shown; S.shown=v; if(playing()||Date.now()<S.linger) cashIn(from,v); else setOd(v,true); }
+  else if(v<S.shown-.004){ S.shown=v; setOd(v,true); }
+  if(A.view!=='play'&&S.linger&&Date.now()>S.linger&&Date.now()>S.cashUntil){ S.linger=0; S.playRef=null; S.coins=0; S.streak=0; setPile(false); setHeat(); }
+  place(); }catch(e){} },400);
+try{ if(A.st) dress(); }catch(e){}
+})();
+</script>
