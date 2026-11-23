@@ -20,11 +20,18 @@ export default function setup(E, { struggled, unit }) {
   const feat = (k, other) => E.sameShape(k, other) ? E.DOT_FEATURE[k] : E.FEATURES[k];
   const LS = () => E.portrait ? .66 : 1;   /* letter size: smaller on a phone so the three never overlap */
   const glow = E.glowSprite('#fff7b0', 3, 0); E.scene.add(glow);
+  /* a basket that fills up: every letter he gets right jumps in and stays, so he can watch his letters pile up */
+  const basket = new THREE.Group(), wick = E.M(0xc68a52, { roughness: .7 }); basket.add(E.mesh(new THREE.CylinderGeometry(.75, .55, .7, 28, 1, true), wick, 0, .35, 0)); basket.children[0].material.side = THREE.DoubleSide;
+  for (let i = 0; i < 3; i++) basket.add(E.mesh(new THREE.TorusGeometry(.6 + i * .07, .035, 8, 32), E.M(0xa86f3c, { roughness: .6 }), 0, .12 + i * .23, 0)).children.at(-1).rotation.x = Math.PI / 2;
+  basket.add(E.mesh(new THREE.CylinderGeometry(.56, .56, .04, 28), E.M(0x8a5a3c), 0, .05, 0)); E.scene.add(basket); let inBasket = 0;
+  async function toBasket(k) { const c = E.letter(k, .55), p0 = E.worldPos(L[k]); c.position.copy(p0); E.scene.add(c); const n = inBasket++, to = basket.position.clone().add(new THREE.Vector3(((n % 3) - 1) * .32 * basket.scale.x, (.5 + Math.floor(n / 3) * .12) * basket.scale.x, ((n % 2) - .5) * .2));
+    E.sfx.whoosh(); await E.tween(520, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * 1.2; c.rotation.y = q * Math.PI * 2; c.scale.setScalar(basket.scale.x * (1 - q * .2) + .2 * (1 - q)); }); E.sfx.pop(); E.hop(basket, .12, 250); }
   let set = keys.slice(0, 3), slot = {}, gap = 2.3, active = false, glowOn = null, resolveQ = null, hidden = null;
   set.forEach((k, i) => slot[k] = i);
   const slotPos = i => new THREE.Vector3((1 - i) * gap, 0, .6);   /* right to left */
   E.onLayout(p => {
     gap = p ? 1.5 : 2.3; keys.forEach(k => L[k].scale.setScalar(LS()));
+    basket.position.set(p ? 1.35 : 4.3, p ? 3.7 : 0, p ? -.5 : .4); basket.scale.setScalar(p ? .55 : 1);
     if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
     else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.3, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
     place(false);
@@ -80,7 +87,7 @@ export default function setup(E, { struggled, unit }) {
       const q = queue.shift(); await showSet(q.k);
       let easy = false; if (inRow >= 2 || (struggled && q.first && done < 3 && !q.again)) { const drop = set.find(k => k !== q.k && k !== PAIR[q.k]); hidden = L[drop]; hidden.visible = false; easy = true; }
       const got = await ask(q);
-      if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
+      if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); if (q.first && !easy) toBasket(got); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(q.k === 'alef' ? 'Yes! Alef. Alef is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
       else { E.sfx.boop(); inRow++; rebbe.mood('think'); await E.shake(L[got], .15); await E.say(explain(got));
         if (PAIR[got] === q.k && CLUE[q.k]) {   /* a look-alike mix-up: show and say what to look for */
@@ -91,6 +98,7 @@ export default function setup(E, { struggled, unit }) {
       if (q.first && easy && !q.again) queue.push({ ...q, again: true });   /* with only two letters it was practice: it comes back with all three */
       else if (q.first) { done++; E.setProgress(Qs.length, done); }
     }
+    E.hop(basket, .35, 450); E.confetti(basket.position.clone().add(new THREE.Vector3(0, 1, .5)), 50);
     const stars = right >= 8 ? 3 : right >= 6 ? 2 : 1; window.__right = right;
     const names = unit.letters.map(k => E.LETTERS[k].name);
     return { stars, line: stars === 3 ? 'Three stars! You know ' + names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] + '!' : stars === 2 ? 'Two stars! You passed Unit ' + unit.n + '!' : null };

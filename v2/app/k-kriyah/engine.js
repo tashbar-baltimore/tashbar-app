@@ -369,7 +369,7 @@ export function arrow3d(size = .35, dir = 'down') {
   return g;
 }
 /* where to look on each letter (font units) and which way the arrow points at it */
-export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [200, 415, 'left'],
+export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [205, 440, 'left'],
   beis: [530, 70, 'left'], kaf: [450, 35, 'left'] };   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'] };
