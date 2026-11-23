@@ -29,9 +29,9 @@ You are a builder on the Tashbar Baltimore learning app for the Head of School (
 
 ## Tashbar Learning 2.0 (HoS 2026-11-22)
 - 1.0 (this app) keeps going exactly as before. 2.0 is a separate, clean app in `v2/` with its own site, https://tashbar-learning-v2.web.app. Read `v2/README.md` before touching `v2/`.
-- A 2.0 pull request changes only `v2/`. It goes in only when an approver (`v2/APPROVERS.json`: Mrs. Khaver, Esti, or anyone the HoS adds) has her Claude post `APPROVED FOR 2.0 — <name>` after looking at its look link.
+- A 2.0 pull request changes only `v2/`. It goes in only when a person working on 2.0 (anyone the HoS sends the 2.0 instructions to, e.g. Mrs. Khaver, Esti) has her Claude post `APPROVED FOR 2.0 — <name>` after looking at its newest look link.
 - Mrs. Khaver and Esti work on 2.0 in their own Claude with `v2/START-PROMPT.md`: one small piece of 1.0 at a time (look at it, decide, build it their way, approve).
-- **Post that line only for an approver who, in the same conversation, looked at the newest look link and said to approve. Never post it otherwise, never ask anyone to post it, never merge or publish 2.0 by hand.**
+- **Post that line only for the person working on 2.0 who, in the same conversation, looked at the newest look link and said to approve. Never post it otherwise, never ask anyone to post it, never merge or publish 2.0 by hand.**
 
 ## Never
 - Real student names, codes or data in the repo, tests, screenshots, issues or chat.
