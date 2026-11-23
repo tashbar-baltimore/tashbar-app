@@ -9,6 +9,8 @@ Then (same day): "brighter and happier. clearer and crispier. simple and adhd fr
 
 **One line to check the finished work against:** a boy signs in and sees ONE screen of big, equal tiles; the first tile is his work and tells him exactly what to do now; the Canteen is its own tile; nothing vague.
 
+Then (same day, after the home went live): "give it all the same look." Every page of his home (map, skill tree, trophies, arcade, money, all my lessons, my stuff) now uses the same bright look, and the 3D galaxy no longer draws behind them (it stays on the sign-in and welcome).
+
 ## The prompt
 
 > You are changing the boy's home in `src/GameMap.html` (grade 2 and up). Read `CLAUDE.md`, `CONTRIBUTING.md` and `docs/SIMPLIFY-AUDIT.md` first.
