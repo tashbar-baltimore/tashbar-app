@@ -1,0 +1,43 @@
+/* Kindergarten Shapes 3D kit: the look every game shares (v2/curriculum/k-shapes/MAP.md). */
+:root{ --bg:#F6F1E7; --ink:#1F2A44; --card:#FFFFFF; --line:#E4DCCB; --green:#1E9E5A; --gold:#F5B400; }
+*{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html,body{ margin:0; height:100%; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; overflow:hidden; user-select:none; -webkit-user-select:none; touch-action:none; }
+#view{ position:fixed; inset:0; display:block; width:100%; height:100%; touch-action:none; }
+.hud{ position:fixed; left:0; right:0; top:0; display:grid; grid-template-columns:96px 1fr 96px; justify-items:center; align-items:center; padding:10px 16px; pointer-events:none; }
+.hud > *{ pointer-events:auto; }
+.btn{ border:0; cursor:pointer; display:grid; place-items:center; border-radius:999px; min-width:72px; min-height:72px; background:var(--card); box-shadow:0 4px 0 var(--line), 0 6px 18px rgba(31,42,68,.12); }
+.btn:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--line); }
+.btn:focus-visible{ outline:4px solid var(--gold); outline-offset:3px; }
+#again{ width:84px; height:84px; visibility:hidden; transition:opacity .25s; }
+#again svg{ width:40px; height:40px; }
+#again.wait{ opacity:.45; }
+.dots{ display:flex; gap:7px; background:rgba(255,255,255,.75); padding:8px 12px; border-radius:999px; }
+.dots i{ width:12px; height:12px; border-radius:50%; background:var(--line); display:block; transition:background .3s; }
+.dots i.on{ background:var(--green); }
+#start{ position:fixed; left:50%; top:50%; width:170px; height:170px; margin:-85px 0 0 -85px; background:var(--green); box-shadow:0 8px 0 #157A45, 0 14px 34px rgba(30,158,90,.4); animation:pulse 1.4s ease-in-out infinite; }
+#start svg{ width:84px; height:84px; }
+@keyframes pulse{ 0%,100%{ transform:scale(1);} 50%{ transform:scale(1.07);} }
+#hand{ position:fixed; width:84px; height:84px; margin:-6px 0 0 -26px; pointer-events:none; display:none; filter:drop-shadow(0 6px 6px rgba(0,0,0,.25)); z-index:5; }
+.judge{ position:fixed; left:0; right:0; bottom:22px; display:none; justify-content:center; gap:32px; z-index:4; }
+.judge.show{ display:flex; }
+.judge button{ width:116px; height:116px; }
+.judge svg{ width:64px; height:64px; }
+.shake{ animation:shake .45s; }
+@keyframes shake{ 0%,100%{ transform:none;} 20%,60%{ transform:translateX(-10px);} 40%,80%{ transform:translateX(10px);} }
+.end{ position:fixed; left:0; right:0; top:104px; display:none; flex-direction:column; align-items:center; gap:16px; z-index:4; }
+.end.show{ display:flex; }
+.stars{ display:flex; gap:14px; }
+.stars svg{ width:min(18vmin,104px); height:min(18vmin,104px); }
+.star{ transform:scale(0); }
+.star.pop{ animation:pops .45s cubic-bezier(.3,1.6,.5,1) forwards; }
+@keyframes pops{ to{ transform:scale(1);} }
+#replay{ width:92px; height:92px; }
+#replay svg{ width:44px; height:44px; }
+#clapBtn{ position:fixed; left:50%; bottom:28px; width:132px; height:132px; margin-left:-66px; display:none; background:#FFF4D6; box-shadow:0 6px 0 #E8C36A, 0 10px 24px rgba(0,0,0,.12); z-index:4; }
+#clapBtn.show{ display:grid; }
+#clapBtn.beat{ animation:beat .25s ease-out; }
+@keyframes beat{ 0%{ transform:scale(1.18);} 100%{ transform:scale(1);} }
+#clapBtn svg{ width:84px; height:84px; }
+#nogl{ position:fixed; inset:0; display:none; place-items:center; text-align:center; padding:24px; font-size:22px; background:var(--bg); }
+@media (prefers-reduced-motion: reduce){ #start, #clapBtn.beat{ animation:none; } }
+.fast *{ animation-duration:.01s !important; transition-duration:.01s !important; animation-iteration-count:1 !important; }
