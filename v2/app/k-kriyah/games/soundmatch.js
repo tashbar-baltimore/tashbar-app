@@ -17,7 +17,7 @@ export default function setup(E, { struggled, unit }) {
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
   E.onLayout(p => { P = p; gap = p ? 1.45 : 2.3;
     if (p) { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 4.2, 2.2); kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
-    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.55, 2.2);   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
+    else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.35, 2.2);   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
     peds.forEach((pd, i) => { pd.position.set((1 - i) * gap, 0, .6); pd.scale.setScalar(p ? .62 : 1); });   /* right to left: Gimmel, Daled, Hei */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
