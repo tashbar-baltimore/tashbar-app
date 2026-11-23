@@ -50,20 +50,16 @@ svg{ display:block; }
 .card{ position:relative; border-radius:36px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); overflow:hidden; }
 
 /* Bubby's kitchen: wall, table, plate, towel */
-.peek{ display:flex; align-items:center; justify-content:center;
-  background:radial-gradient(circle at 20px 20px, rgba(255,170,120,.28) 6px, transparent 7px) 0 0/40px 40px, linear-gradient(180deg,#FFF6E4,#FFE9C9); }
-.peek::before{ content:''; position:absolute; left:0; right:0; top:58%; bottom:0;
-  background:linear-gradient(180deg, rgba(120,60,10,.35), rgba(120,60,10,0) 7%), repeating-linear-gradient(90deg, rgba(150,80,20,0) 0 46px, rgba(150,80,20,.16) 46px 49px), linear-gradient(180deg,var(--wood1),var(--wood2)); }
+.peek{ display:flex; align-items:center; justify-content:center; background:#F2C483 url(img/table.webp) center 70%/cover no-repeat; }
 .plate{ position:relative; width:min(88%, 62vh); aspect-ratio:1.25; z-index:1; }
-.dish{ position:absolute; inset:0; border-radius:50%;
-  background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%);
-  box-shadow:0 12px 0 rgba(120,70,20,.25), 0 20px 26px rgba(90,50,10,.28), inset 0 -6px 10px rgba(90,120,170,.25); }
-.dish::after{ content:''; position:absolute; left:16%; top:7%; width:38%; height:14%; border-radius:50%; border-top:5px solid rgba(255,255,255,.95); transform:rotate(-12deg); }
-.plate .ta{ position:absolute; width:22%; transform:translate(-50%,-50%) rotate(var(--r,0deg)); transition:transform .25s; }
+.dish{ position:absolute; inset:-6% -4%; background:url(img/plate.webp) center/contain no-repeat; filter:drop-shadow(0 14px 10px rgba(90,50,10,.35)); }
+.plate .ta{ position:absolute; width:27%; transform:translate(-50%,-50%) rotate(var(--r,0deg)); transition:transform .25s; }
 .plate .ta.hi{ transform:translate(-50%,-50%) scale(1.28); filter:drop-shadow(0 0 8px #FFD23D) drop-shadow(0 0 16px #FFB000); }
 .plate .ta.hi2{ transform:translate(-50%,-50%) scale(1.28); filter:drop-shadow(0 0 8px #5FD0FF) drop-shadow(0 0 16px #1E9CE8); }
 #clap{ position:fixed; inset:0; z-index:30; display:flex; align-items:center; justify-content:center; gap:4px; cursor:pointer; touch-action:none; background:radial-gradient(circle, rgba(255,255,255,.85), rgba(190,232,255,.75)); }
 #clap[hidden]{ display:none; }
+.claphands{ width:clamp(200px,40vh,340px); pointer-events:none; transition:transform .12s; filter:drop-shadow(0 12px 10px rgba(0,0,0,.25)); }
+#clap.hit .claphands{ transform:scale(1.15) rotate(-4deg); }
 #clap svg{ pointer-events:none;  width:clamp(120px,22vh,190px); height:clamp(120px,22vh,190px); transition:transform .12s; filter:drop-shadow(0 10px 6px rgba(0,0,0,.2)); }
 #clap svg:first-child{ transform:rotate(30deg) scaleX(-1); } #clap svg:last-child{ transform:rotate(-30deg); }
 #clap.hit svg:first-child{ transform:translateX(28px) rotate(16deg) scaleX(-1) scale(1.08); } #clap.hit svg:last-child{ transform:translateX(-28px) rotate(-16deg) scale(1.08); }
@@ -217,7 +213,7 @@ svg{ display:block; }
   </div>
 </div>
 
-<div id="clap" hidden><svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg><svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg></div>
+<div id="clap" hidden><img src="img/clapping-hands.webp" alt="" class="claphands"></div>
 <svg id="hand" viewBox="0 0 100 100" aria-hidden="true"><use href="#nkHand"/></svg>
 
 <div class="over" id="start">
