@@ -6,7 +6,7 @@ export default function setup(E, { unit }) {
   const pool = [...unit.known, ...unit.letters];
   const R = unit.n === 1 ? ['beis', 'veis', 'alef'] : unit.letters;   /* the letter to catch in each round */
   const { THREE, S } = E;
-  const boy = E.mendy(); E.scene.add(boy);
+  const boy = unit.n === 3 ? E.ari() : unit.n === 2 ? E.person({ kippah: 0x2e8b57, hair: 0x8a5a3c }) : E.mendy(); E.scene.add(boy);   /* each unit's own boy */
   const sign = new THREE.Group(); sign.add(E.mesh(E.rbox(1.25, 1.35, .14, .1), E.M(0xffd43b, { metalness: .4, roughness: .3 }), 0, 0, 0)); sign.add(E.mesh(E.rbox(1.05, 1.15, .08, .06), E.M(0xfffaf0), 0, 0, .06));
   sign.add(E.mesh(new THREE.CylinderGeometry(.05, .05, 1.2, 8), E.M(0x8a5a3c), 0, -1.2, -.05)); E.scene.add(sign);
   let signL = null; const falling = []; let want = 'beis', caught = 0, targets = 0, wrong = 0, active = false;
@@ -36,7 +36,7 @@ export default function setup(E, { unit }) {
     if (u.key === want) { u.busy = true; caught++; E.joy(l.position.clone()); boy.mood('cheer'); setTimeout(() => boy.mood('calm'), 700);
       const p0 = l.position.clone(), to = basket.position.clone().add(new THREE.Vector3(0, .5, 0)); await E.tween(420, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * .6); });
       u.gone = true; E.scene.remove(l); E.sfx.pop(); }
-    else { wrong++; u.t0 += 500; E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its little leg floats.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.' })[u.key], false); }
+    else { wrong++; u.t0 += 500; E.sfx.boop(); E.shake(l, .12, 350); E.say(u.key === 'alef' ? 'That is Alef.' : 'That is ' + E.LETTERS[u.key].name + '. ' + ({ beis: 'It has a dot.', veis: 'No dot.', gimmel: 'It has a foot.', daled: 'No little leg.', hei: 'Its leg doesn\u2019t touch the roof.', vov: 'No crown.', zayin: 'It has a crown.', ches: 'Its leg touches the roof.' })[u.key], false); }
   });
   async function round(k, n, every, ms) {
     want = k; setSign(k); E.hop(boy, .3);

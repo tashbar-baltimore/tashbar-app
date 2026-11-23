@@ -47,7 +47,7 @@ export function nextGame(id) { const i = GAMES.findIndex(g => g.id === id); retu
    Every letter sound plays the rebbe's recording when audio/sounds.json lists it; until then the computer voice says it
    (marked on screen as temporary). A line is an array of words and sounds: ['Beis says', S('b')]. */
 export const S = k => ({ snd: k });
-const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', ch: 'khh' };   /* 'khh' is only a stand-in: a computer can't say Ches well */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
+const FALLBACK = { b: 'buh', v: 'vuh', g: 'guh', d: 'duh', h: 'huh', z: 'zuh', ch: 'the sound at the start of challah' };   /* a computer can't say Ches: it names it until the rebbe's recording */          /* the computer can't say a lone sound well; the rebbe's recording replaces these */
 let SOUNDS = {}; const audioCache = {};
 export const soundsReady = fetch('audio/sounds.json').then(r => r.ok ? r.json() : {}).then(j => { SOUNDS = j || {}; }).catch(() => {});
 export let lastLine = null; let sayToken = 0;
@@ -234,7 +234,7 @@ export function buildWorld({ trees = true, flowers = true } = {}) {
   w.add(mesh(new THREE.SphereGeometry(30, 48, 24), grass2, 16, -28.2, -24, false));
   if (trees) { tree(-6.5, -3, 1.3); tree(6.8, -3.5, 1.5); tree(-9, -7, 1.6); tree(9.5, -8, 1.8); }
   if (flowers) { const cols = [0xff6fa5, 0xffd43b, 0xffffff, 0xb388ff]; let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    for (let k = 0; k < 26; k++) { const x = (rnd() - .5) * 16, z = 1 + rnd() * 3.2; if (Math.abs(x) < 1.6 && z < 3) continue; const f = new THREE.Group();
+    for (let k = 0; k < 26; k++) { const x = (rnd() - .5) * 16, z = 3.3 + rnd() * 1.2; if (Math.abs(x) < 1.2) continue; const f = new THREE.Group();
       f.add(mesh(new THREE.CylinderGeometry(.02, .02, .25, 5), M(0x2f8f3a), 0, .12, 0, false)); f.add(mesh(new THREE.SphereGeometry(.09, 10, 8), M(cols[k % 4], { roughness: .3 }), 0, .27, 0, false)); f.position.set(x, 0, z); w.add(f); } }
   const sunBall = mesh(new THREE.SphereGeometry(1.6, 32, 20), new THREE.MeshBasicMaterial({ color: 0xffe066 }), 9, 9, -25, false); w.add(sunBall);
   const halo = glowSprite('#fff3a0', 9, .9); halo.position.copy(sunBall.position); w.add(halo);
@@ -282,7 +282,7 @@ export function person({ skin = 0xffd2ad, shirt = 0xffffff, pants = 0x26324a, ki
   const head = new THREE.Group(); head.position.set(0, 1.32, 0); b.add(head);
   head.add(mesh(new THREE.SphereGeometry(.34, 32, 24), skinM));
   if (hat) { head.add(mesh(new THREE.CylinderGeometry(.46, .46, .03, 28), dark, 0, .22, 0)); head.add(mesh(new THREE.CylinderGeometry(.27, .3, .3, 24), dark, 0, .37, 0)); }
-  else if (woman) { const h = mesh(new THREE.SphereGeometry(.37, 28, 18, 0, Math.PI * 2, 0, Math.PI * .62), hairM, 0, .04, -.03); h.scale.set(1.05, 1.05, 1.02); head.add(h); head.add(mesh(new THREE.CapsuleGeometry(.2, .22, 6, 12), hairM, 0, -.2, -.14)); }   /* a neat sheitel */
+  else if (woman) { const h = mesh(new THREE.SphereGeometry(.37, 28, 18, 0, Math.PI * 2, 0, Math.PI * .5), hairM, 0, .1, -.04); h.scale.set(1.05, 1.05, 1.02); head.add(h); head.add(mesh(new THREE.CapsuleGeometry(.2, .22, 6, 12), hairM, 0, -.2, -.14)); }   /* a neat sheitel */
   else { const k = mesh(new THREE.SphereGeometry(.24, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2.4), M(kippah, { roughness: .4, clearcoat: .5 }), 0, .2, -.03); k.rotation.x = -.25; head.add(k); }
   const eyes = [];
   [-.12, .12].forEach(x => { const e = new THREE.Group(); e.position.set(x, .04, .3); e.add(mesh(new THREE.SphereGeometry(.05, 14, 10), dark, 0, 0, 0, false)); e.add(mesh(new THREE.SphereGeometry(.016, 8, 6), M(0xffffff), .015, .02, .045, false)); head.add(e); eyes.push(e);
@@ -352,6 +352,22 @@ export const nameLine = key => key === 'alef' ? ['Alef. Alef is quiet.'] : [LETT
 /* a glossy gold 3D star (used as a "done" mark above a letter, never below it, so it can't look like a nekudah) */
 export function star3d(r = .22) { const sh = new THREE.Shape(); for (let i = 0; i < 10; i++) { const a = Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; const x = Math.cos(a) * rr, y = Math.sin(a) * rr; i ? sh.lineTo(x, y) : sh.moveTo(x, y); } sh.closePath();
   const g = new THREE.ExtrudeGeometry(sh, { depth: r * .25, bevelEnabled: true, bevelThickness: r * .12, bevelSize: r * .1, bevelSegments: 3 }); g.center(); return mesh(g, goldDot(), 0, 0, 0, false); }
+/* an orange arrow that points at the part to notice, without covering it (never round, so it can't look like a dot).
+   dir: 'down' (points down at a crown or roof), 'right' (points right at a leg or gap), 'left' or 'up' */
+export function arrow3d(size = .35, dir = 'down') {
+  const g = new THREE.Group(), m = new THREE.MeshStandardMaterial({ color: 0xff5a1f, emissive: 0xff3d00, emissiveIntensity: .9 });
+  const shaft = mesh(new THREE.CylinderGeometry(size * .12, size * .12, size * .7, 10), m, 0, size * .55, 0, false), head = mesh(new THREE.ConeGeometry(size * .3, size * .45, 16), m, 0, size * .05, 0, false);
+  head.rotation.x = Math.PI; const inner = new THREE.Group(); inner.add(shaft, head); g.add(inner);
+  inner.rotation.z = { down: 0, up: Math.PI, right: Math.PI / 2, left: -Math.PI / 2 }[dir] || 0;
+  g.userData.inner = inner; g.visible = false;
+  onFrame(t => { if (g.visible) inner.position.set(...({ down: [0, Math.sin(t * 6) * size * .15, 0], up: [0, -Math.sin(t * 6) * size * .15, 0], right: [-Math.sin(t * 6) * size * .15, 0, 0], left: [Math.sin(t * 6) * size * .15, 0, 0] }[dir] || [0, 0, 0])); });
+  return g;
+}
+/* where to look on each letter (font units) and which way the arrow points at it */
+export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [100, 370, 'right'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [150, 420, 'right'] };
+/* put an arrow at a letter's feature (the letter object, its height); returns false if the letter has none */
+export function pointAt(arrow, l, key, height) { const f = FEATURES[key]; if (!f) return false; const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;
+  const d = { down: [0, off], up: [0, -off], right: [-off, 0], left: [off, 0] }[f[2]]; arrow.position.set(p.x + d[0], p.y + d[1], .5); if (arrow.parent !== l) l.add(arrow); arrow.visible = true; return true; }
 /* a soft ring that circles the thing to notice */
 export function noticeRing(r = .42) { const ring = mesh(new THREE.TorusGeometry(r, .06, 16, 40), new THREE.MeshStandardMaterial({ color: 0xff8a00, emissive: 0xff8a00, emissiveIntensity: 1.2 }), 0, 0, .7, false); ring.visible = false; onFrame(t => { if (ring.visible) ring.scale.setScalar(1 + Math.sin(t * 10) * .08); }); return ring; }
 

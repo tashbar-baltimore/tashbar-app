@@ -7,8 +7,8 @@ const PLAN = {
   1: { boy: 'Mendy', rounds: [['beis', 4, ['alef', 'alef', 'veis', 'veis'], ['alef', 'veis']], ['veis', 3, ['alef', 'alef', 'beis', 'beis'], ['alef', 'beis']]] },
   3: { boy: 'Ari', rounds: [['zayin', 4, ['vov', 'vov', 'ches', 'gimmel'], ['vov', 'ches']], ['ches', 3, ['hei', 'hei', 'zayin', 'daled'], ['hei', 'zayin']]] },
 };
-const CUE = { beis: 'with the dot', veis: 'with no dot', zayin: 'with the crown', vov: 'with no crown', ches: 'with the leg that touches', hei: 'with the floating leg' };
-const NOTE = { alef: '', beis: 'It has a dot.', veis: 'No dot.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg floats.', ches: 'Its leg touches.', gimmel: '', daled: '' };
+const CUE = { beis: 'with the dot', veis: 'with no dot', zayin: 'with the crown', vov: 'with no crown', ches: 'with its leg on the roof', hei: 'with its leg off the roof' };
+const NOTE = { alef: '', beis: 'It has a dot.', veis: 'No dot.', vov: 'No crown.', zayin: 'It has a crown.', hei: 'Its leg doesn\u2019t touch the roof.', ches: 'Its leg touches the roof.', gimmel: '', daled: '' };
 export default function setup(E, { struggled, unit }) {
   const plan = PLAN[unit.n] || PLAN[1], NM = k => E.LETTERS[k].name;
   const { THREE } = E;
@@ -87,7 +87,7 @@ export default function setup(E, { struggled, unit }) {
     E.sfx.boop(); wrong++; wrongInRound++; l.userData.busy = true; boy.mood('think'); await E.shake(l, .12); l.userData.busy = false;
     ring.position.copy(E.worldPos(l)).add(new THREE.Vector3(0, 0, .3)); ring.visible = true;
     const k = l.userData.key, look = 'Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!';
-    await E.say('That is ' + NM(k) + '. ' + (NOTE[k] ? NOTE[k] + ' ' : '') + look);
+    await E.say('That is ' + NM(k) + '. ' + look);   /* 12 words or fewer */
     ring.visible = false;
     if (wrongInRound >= 2) showHelp();
   }
@@ -99,19 +99,19 @@ export default function setup(E, { struggled, unit }) {
   setInterval(() => { if (active && !helpOn && performance.now() - lastAct > (help ? 7000 : 14000) * E.F) { lastAct = performance.now(); showHelp(); E.say('Find ' + NM(want) + (CUE[want] ? ', ' + CUE[want] : '') + '!'); } }, 500);
 
   return async () => {
-    /* round 1: Beis */
+    /* round 1 */
     const [r1, r2] = plan.rounds;
     setRound(r1[0], r1[1], help ? r1[3] : r1[2]);
     boy.mood('think'); await E.say(plan.boy + ' is in the sukkah. Letters are hiding!');
     await showAll();
-    await E.say('Watch me. I find a Beis. It has a dot!');
+    await E.say('Watch me. I find ' + (r1[0] === 'alef' ? 'an Alef' : 'a ' + NM(r1[0])) + '. ' + (NOTE[r1[0]] || ''));
     const first = letters.find(l => l.userData.key === r1[0]); let [x, y] = E.toScreen(E.worldPos(first)); E.hand.at(x + 10, y + 10); await E.wait(700);
     const fin1 = new Promise(r => resolveRound = r);
     await got(first); await E.wait(300);
     await E.say('Now you! Find every ' + NM(r1[0]) + '.'); active = true; lastAct = performance.now(); document.body.dataset.huntReady = r1[0];
     await fin1; active = false; await E.wait(500);
     await E.say('You found every ' + NM(r1[0]) + '!');
-    /* round 2: Veis */
+    /* round 2 */
     round = 1; letters.forEach(l => E.popOut(l)); await E.wait(450);
     setRound(r2[0], r2[1], help ? r2[3] : r2[2]);
     await showAll();

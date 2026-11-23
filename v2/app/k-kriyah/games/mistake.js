@@ -9,7 +9,7 @@ const PLAN = {
   2: { R: [['gimmel', 'gimmel'], ['daled', 'hei'], ['hei', 'hei'], ['gimmel', 'daled'], ['beis', 'beis'], ['veis', 'beis']],   /* the last two bring back Unit 1 */ demo: ['daled', 'gimmel', 'Hmm. Watch me. No foot. That is not a Gimmel!'] },
 };
 /* what to look for, in a few words */
-const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with the little floating leg', vov: 'with no crown', zayin: 'with the crown', ches: 'with the leg that touches' };
+const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof' };
 const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.' };
 /* where the difference is on each letter (font units), so it can glow: Gimmel's foot, Daled's empty left side, Hei's little leg */
 const FEATURE = { gimmel: [360, 110], daled: [150, 250], hei: [100, 370], vov: [235, 500], zayin: [250, 500], ches: [150, 420] };   /* Hei: the gap above its leg; Ches: where its leg meets the roof */
@@ -47,7 +47,9 @@ export default function setup(E, { struggled, unit }) {
 
   function showLetter(k) { if (shown) board.remove(shown); shown = E.letter(k, 1.3); shown.position.set(0, 0, .3); board.add(shown); shown.add(ring); ring.visible = false; return E.popIn(shown); }
   /* the orange ring circles the part to notice: the dot place on Beis/Veis, the foot or leg on the others */
-  const ringAt = k => { const s = shown.userData; if (s.dotHome) { ring.position.copy(s.dotHome).setZ(.6); return true; } const f = FEATURE[k]; if (!f) return false; ring.position.copy(E.fontToLocal(k, 1.3, f[0], f[1])).setZ(.6); return true; };
+  const arrow = E.arrow3d(.4);
+  const mark = k => { const s = shown.userData; if (s.dotHome) { ring.position.copy(s.dotHome).setZ(.6); ring.visible = true; return true; } return E.pointAt(arrow, shown, k, 1.3); };   /* a ring round the dot place; an arrow at a shape difference */
+  const unmark = () => { ring.visible = false; arrow.visible = false; };
   /* why the letter is not what Yaakov said, in a few words */
   const why = (k, c) => k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
     : k === 'beis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
@@ -88,7 +90,7 @@ export default function setup(E, { struggled, unit }) {
   async function roundOf(shownKey, claim, demo = false) {
     missed = false; curClaim = claim; yak.mood('calm'); await showLetter(shownKey); yak.mood('wave'); E.hop(yak, .25);
     await E.say('Yaakov says this is ' + an(claim) + '. Is he right?'); yak.mood('calm');
-    if (help && ringAt(shownKey)) { ring.visible = true; await E.say(shown.userData.dotHome ? 'Look at the dot place!' : 'Look carefully here!'); ring.visible = false; }
+    if (help && mark(shownKey)) { await E.say(shown.userData.dotHome ? 'Look at the dot place!' : 'Look carefully here!'); unmark(); }
     const right = shownKey === claim; let saysRight;
     if (demo) { await E.say(plan.demo[2]); bar.style.display = 'flex'; const [nx, ny] = btnXY('#no'); E.hand.at(nx - 20, ny - 10); await E.wait(700); bar.style.display = 'none'; E.hand.hide(); E.sfx.pop(); saysRight = false; }
     else saysRight = await ask();
@@ -97,13 +99,13 @@ export default function setup(E, { struggled, unit }) {
       else { E.sfx.chime(); await E.say(['Yes! Yaakov made a mistake. That is', E.LETTERS[shownKey].name + '.']); await fix(claim, demo); }
     } else {
       E.sfx.boop(); if (!demo && !missed) mistakes++; missed = true; yak.mood('think'); help = help || mistakes >= 2;
-      if (ringAt(shownKey)) ring.visible = true;
-      if (right) { await E.say(shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + LOOK[shownKey] + ' It is ' + E.LETTERS[shownKey].name + '.'); ring.visible = false; yak.mood('calm');
+      mark(shownKey);
+      if (right) { await E.say(shownKey === 'alef' ? 'Look again. It is Alef, not a house shape.' : 'Look again. ' + LOOK[shownKey] + ' It is ' + E.LETTERS[shownKey].name + '.'); unmark(); yak.mood('calm');
         await E.say('So is Yaakov right? Try again.');               /* he answers again (it doesn't count) */
         if (await ask()) { E.sfx.chime(); yak.mood('cheer'); E.joy(E.worldPos(board).add(new THREE.Vector3(0, 0, .8))); await E.say('Yes! Yaakov is right.'); }
         else await E.say('Yaakov is right. It is ' + E.LETTERS[shownKey].name + '.');
         yak.mood('calm'); }
-      else { await E.say(why(shownKey, claim)); ring.visible = false; await fix(claim, false); }
+      else { await E.say(why(shownKey, claim)); unmark(); await fix(claim, false); }
     }
   }
   return async () => {

@@ -6,7 +6,7 @@
 const N = k => ({ k, by: 'name' }), SND = k => ({ k, by: 'sound' });
 const QS = {
   1: [N('beis'), N('alef'), N('veis'), SND('beis'), SND('veis'), { k: 'alef', by: 'quiet' }, N('veis'), N('beis'), SND('veis')],
-  3: [N('zayin'), N('vov'), SND('ches'), N('ches'), SND('zayin'), N('hei'), N('vov'), SND('gimmel'), N('zayin')],
+  3: [N('zayin'), N('vov'), SND('zayin'), N('ches'), N('hei'), N('daled'), { k: 'alef', by: 'quiet' }, N('beis'), SND('gimmel')],   /* no 'Which says ch?' until the rebbe's recording */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {
@@ -43,7 +43,8 @@ export default function setup(E, { struggled, unit }) {
   E.onPointer('down', e => { if (!active) return; const l = E.pickFrom(e, keys.map(k => L[k]).filter(l => l.visible)); if (l && resolveQ) { const r = resolveQ; resolveQ = null; r(l.userData.key); } });
   /* the three letters for a question: the answer, its look-alike if it has one, then a new letter and an older one */
   const PAIR = { beis: 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', hei: 'ches', ches: 'hei' };
-  const SAME = { vov: 'veis', veis: 'vov' };   /* Vov and Veis both say v: never ask one with the other on screen */
+  const SAME = { vov: 'veis', veis: 'vov' };
+  const CLUE = { beis: 'Beis has a dot.', veis: 'Veis has no dot.', zayin: 'Zayin has a crown.', vov: 'Vov has no crown.', ches: 'Ches\u2019s leg touches the roof.', hei: 'Hei\u2019s leg doesn\u2019t touch the roof.' };   /* Vov and Veis both say v: never ask one with the other on screen */
   const mix = a => a.slice().sort(() => Math.random() - .5);
   function pick(k) {
     if (keys.length <= 3) return mix(keys);
@@ -80,6 +81,7 @@ export default function setup(E, { struggled, unit }) {
       if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(q.k === 'alef' ? 'Yes! Alef. Alef is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
       else { E.sfx.boop(); inRow++; rebbe.mood('think'); await E.shake(L[got], .15); await E.say(explain(got));
+        if (PAIR[got] === q.k && CLUE[q.k]) await E.say(CLUE[q.k]);   /* a look-alike mix-up: say what to look for */
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(q.k === 'alef' ? 'Here is Alef, the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
         if (q.first) queue.push({ ...q, first: false }); }
       if (hidden) { hidden.visible = true; hidden = null; }
