@@ -316,7 +316,9 @@ export function startGame(cfg) {
   }
   const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.25), hitP = new THREE.Vector3();
   function onPlane(cx, cy) { ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.ray.intersectPlane(dragPlane, hitP) ? hitP.clone() : null; }
-  function overBox(p) { if (cfg.mode === 'pattern') { if (!PS || PS.next >= PS.n) return -1; const g = slotAt(PS.next, PS.n, PS.z); return Math.hypot(p.x - g.x, p.z - g.z) < 1.3 ? 0 : -1; } if (cfg.mode === 'fix') { const g = OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : null; return g && Math.hypot(p.x - g.x, p.z - g.z) < 1.5 ? 0 : -1; } for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
+  function overBox(p) { if (cfg.mode === 'pattern') { if (!PS || PS.next >= PS.n) return -1;
+      if (PS.R.fixAt != null) { let best = -1, bd = 1e9; for (let i = 0; i < PS.n; i++) { const q = slotAt(i, PS.n, PS.z), d = Math.hypot(p.x - q.x, p.z - q.z); if (d < bd) { bd = d; best = i; } } return bd > 1.3 ? -1 : best === PS.next ? 0 : 2; }
+      const g = slotAt(PS.next, PS.n, PS.z); return Math.hypot(p.x - g.x, p.z - g.z) < 1.3 ? 0 : -1; } if (cfg.mode === 'fix') { const g = OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : null; return g && Math.hypot(p.x - g.x, p.z - g.z) < 1.5 ? 0 : -1; } for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
   /* for the automatic test */
   W.shapePt = id => toScreen(shapes.find(s => s.id === id).g.position);
   W.boxPt = i => cfg.mode === 'position' ? toScreen(zoneWorld(i === 0 ? posWant : i === 1 ? (posWant === 'behind' ? 'front' : 'behind') : i)) : cfg.mode === 'puzzle' ? toScreen(slotWorld(PZ.slots[i || 0])) : cfg.mode === 'pattern' ? toScreen(slotAt(PS.next, PS.n, PS.z).setY(1.25)) : cfg.mode === 'fix' ? toScreen(OL.mark.getWorldPosition(new THREE.Vector3()).setY(1.25)) : toScreen(boxAt(i || 0).clone().setY(1.25));
@@ -720,9 +722,10 @@ export function startGame(cfg) {
     const z = R.copy ? STR().copyZ : null;
     if (R.copy) { parts.push(stringAt(n, STR().z)); R.seq.forEach((t, i) => { const m = beadMesh(t); m.position.copy(slotAt(i, n)); scene.add(m); parts.push(m); }); }
     parts.push(stringAt(n, z));
-    const blanks = R.copy ? n : R.blanks;
-    R.seq.forEach((t, i) => { if (i < n - blanks) { const m = beadMesh(t); m.position.copy(slotAt(i, n, z)); scene.add(m); parts.push(m); beads.push(m); } });
-    PS = { parts, beads, next: n - blanks, n, z, R };
+    const fixing = R.fixAt != null, blanks = fixing ? 0 : R.copy ? n : R.blanks;
+    let bad = null;
+    R.seq.forEach((t, i) => { if (i < n - blanks) { const m = beadMesh(fixing && i === R.fixAt ? R.wrong : t); m.position.copy(slotAt(i, n, z)); scene.add(m); parts.push(m); beads.push(m); if (fixing && i === R.fixAt) bad = m; } });
+    PS = { parts, beads, next: fixing ? R.fixAt : n - blanks, n, z, R, bad, showRing: !fixing };
     const types = R.tray; types.forEach((t, i) => makeBead('b' + (++beadN), t, trayAt(i, types.length), i));
     markNext();
   }
@@ -730,12 +733,13 @@ export function startGame(cfg) {
   function markNext() {
     if (!PS) return; const want = PS.R.seq[PS.next];
     shapes.forEach(o => { if (!o.inBox) o.box = o.type === want ? 0 : -1; });
-    if (PS.next < PS.n) { ghost.visible = true; ghost.position.copy(slotAt(PS.next, PS.n, PS.z)); } else ghost.visible = false;
+    if (PS.next < PS.n && PS.showRing) { ghost.visible = true; ghost.position.copy(slotAt(PS.next, PS.n, PS.z)); } else ghost.visible = false;
   }
   function placeBead(o) {   /* the right bead slides onto the string; a fresh one appears in the tray */
-    const at = slotAt(PS.next, PS.n, PS.z), type = o.type, slot = o.slot;
-    o.inBox = true; o.box = -1; PS.next++;
-    return moveTo(o, at, 380, 0.5).then(() => { o.g.rotation.set(0, 0, 0); PS.beads.push(o.mesh); beadNote(type); pop();
+    const at = slotAt(PS.next, PS.n, PS.z), type = o.type, slot = o.slot, fixAt = PS.R.fixAt;
+    o.inBox = true; o.box = -1; PS.next = fixAt != null ? PS.n : PS.next + 1;
+    if (fixAt != null && PS.bad) { const b = PS.bad; PS.bad = null; tween(250, k => b.scale.setScalar(Math.max(0.001, 1 - k))).then(() => scene.remove(b)); }
+    return moveTo(o, at, 380, 0.5).then(() => { o.g.rotation.set(0, 0, 0); if (fixAt != null) PS.beads.splice(fixAt, 1, o.mesh); else PS.beads.push(o.mesh); beadNote(type); pop();
       const fresh = makeBead('b' + (++beadN), type, trayAt(slot, PS.R.tray.length), slot); fresh.g.scale.setScalar(0.01); tween(300, k => fresh.g.scale.setScalar(Math.max(0.01, k)));
       markNext(); });
   }
@@ -750,15 +754,16 @@ export function startGame(cfg) {
   function patternRound(R, bonus, help) {
     return new Promise(resolve => {
       setName(bonus ? 'bonus' : 'find'); dots(2); setPattern(R); allow = true;
-      const ask = [R.copy ? 'Make the same pattern below.' : 'What comes next?']; task = ask;
+      const ask = [R.fixAt != null ? 'Find the wrong bead. Put the right one on it.' : R.copy ? 'Make the same pattern below.' : 'What comes next?']; task = ask;
       idleFn = n => { const t = shapes.find(o => o.box === 0 && !o.inBox); if (!t) return; W.reminders = (W.reminders || 0) + 1;
         play(n === 1 ? [() => sing(), ...ask, () => pointAt(t)] : [cfg.hint2, () => pointAt(t)]); };
       idle();
       onDrop = (o, bi) => {
         idle();
         if (bi < 0) { goHome(o); play(['Put it on the string.']); return; }
+        if (bi === 2) { goHome(o); play(['That bead is right.', 'Find the wrong one.']); return; }
         if (o.box === 0) {
-          chime(true); const last = PS.next + 1 >= PS.n;
+          chime(true); const last = PS.R.fixAt != null || PS.next + 1 >= PS.n;
           if (last) { allow = false; onDrop = null; stopIdle(); }
           placeBead(o).then(() => {
             if (!last) { play([R.copy ? 'Yes! And next?' : 'Yes! And next?']); return; }
@@ -768,8 +773,9 @@ export function startGame(cfg) {
           return;
         }
         if (!bonus) W.misses++; chime(false); goHome(o);
-        const steps = ['Not that one.', () => sing(R.copy ? 0 : PS.next, R.copy ? 'Look at the beads above.' : null)];
-        if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false)); }
+        const steps = ['Not that one.', () => sing(R.copy ? 0 : R.fixAt != null ? undefined : PS.next, R.copy ? 'Look at the beads above.' : null)];
+        if (W.misses >= 2 && !help.done && !bonus) { help.done = true; steps.push(cfg.remember, () => coreGlow(true), () => say(wordsOf(R.seq, R.core || 2) + ' repeats.'), () => wait(600), () => coreGlow(false));
+          if (R.fixAt != null) steps.push(() => { PS.showRing = true; markNext(); }, 'The wrong bead is in the ring.'); }
         steps.push(...ask);
         play(steps);
       };
@@ -808,7 +814,7 @@ export function startGame(cfg) {
     await camTo('wide', 1200);
     const R0 = cfg.rounds[0]; setPattern(R0);
     const right = shapes.find(o => o.box === 0);
-    let ok = await play([cfg.watchLine, () => sing(), 'What comes next?', () => { handOn = right; hand.style.display = 'block'; return wait(500); },
+    let ok = await play([cfg.watchLine, () => sing(), cfg.watchAsk || 'What comes next?', () => { handOn = right; hand.style.display = 'block'; return wait(500); },
       () => moveTo(right, slotAt(PS.next, PS.n, PS.z), 1300), () => { hand.style.display = 'none'; handOn = null; return placeBead(right); },
       ...(PS.next < PS.n ? [] : []), R0.watchDone || cfg.watchDone, cfg.yourTurn]);
     if (!ok) return;
@@ -1152,7 +1158,7 @@ export function startGame(cfg) {
       const fixBad = () => { const m = PS.beads[M.pattern.bad], want = BEADS[M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t)[M.pattern.bad]];
         m.material.color.set(want.color); PS.R = { ...PS.R, seq: M.pattern.seq.map((t, i) => i === M.pattern.bad ? M.pattern.fix : t) }; chime(true); return sing(); };
       play([...M.right.slice(0, 1), ...prove, ...M.right.slice(1), ...(M.outline ? [M.closeLine || 'Let us close it.', () => closeIt()] : []),
-        ...(M.pattern ? [M.fixLine || 'Let us fix it.', fixBad] : []), () => cheer(friend), M.after || (() => {}),
+        ...(M.pattern && M.pattern.bad != null ? [M.fixLine || 'Let us fix it.', fixBad] : M.pattern ? [() => sing()] : []), () => cheer(friend), M.after || (() => {}),
         () => { friend.visible = false; return camTo('wide', 1000); }, () => (M.where ? (scene.remove(d.g), scene.remove(BR.g), BR = null, Promise.resolve()) : M.pattern ? (PS.parts.forEach(q => scene.remove(q)), PS = null, Promise.resolve()) : M.outline ? tween(400, k => d.g.scale.setScalar(Math.max(0.001, 1 - k))).then(() => { scene.remove(d.g); OL = null; }) : M.box != null ? dropInBox(d, M.box) : M.answer && NB ? dropInBox(d, Math.max(0, boxOf(p[0]))) : tween(400, k => d.g.scale.setScalar(Math.max(0.001, (1 - k)))).then(() => { d.g.visible = false; })), { wait: 300 }]).then(ok => { if (ok) end(); });
     };
     play(['This is ' + F.name + '.', ...M.claim, M.ask, () => { task = [M.ask + ' Tap your answer.']; j.classList.add('show'); }, 'Green means yes. Crossed means no.']);

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Fix the pattern</title>
+<!-- Kindergarten Shapes, Unit 8 "Patterns, part 2" (v2/curriculum/k-shapes/MAP.md): one bead is wrong: find it by singing the pattern, and put the right bead on it (AB, ABB, ABC).
+     Research: find the part that repeats (the core); fixing a broken pattern and continuing longer ones deepens it (Rittle-Johnson and colleagues).
+     Built on the shared 3D kit (kit.js), pattern mode. ?fast=1 for the automatic test. -->
+<link rel="stylesheet" href="kit.css">
+<script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
+</head>
+<body>
+<script type="module">
+import { startGame } from './kit.js';
+const BEADS = {
+  red: { color: '#E03A33', word: 'red', note: 523 }, blue: { color: '#1F6FEB', word: 'blue', note: 659 },
+  yellow: { color: '#F2A900', word: 'yellow', note: 784 }, green: { color: '#12A766', word: 'green', note: 587 },
+  triB: { color: '#7C4DFF', word: 'triangle', note: 698, kind: 'tri' }, sqB: { color: '#FF7A1A', word: 'square', note: 523, kind: 'square' },
+  ciB: { color: '#00A3B8', word: 'circle', note: 880, kind: 'circle' },
+  drum: { color: '#C0392B', word: 'drum', note: 196, kind: 'drum' }, bell: { color: '#F5C542', word: 'bell', note: 1046 },
+  rC: { color: '#E03A33', word: 'red', note: 523, kind: 'cube' }, yC: { color: '#F2A900', word: 'yellow', note: 784, kind: 'cube' },
+  bC: { color: '#1F6FEB', word: 'blue', note: 659, kind: 'cube' }, gC: { color: '#12A766', word: 'green', note: 587, kind: 'cube' }
+};
+const VIEW = { wide: [[0, 5.2, 8.6], [0, 1.2, 0.9]], tall: [[0, 7.6, 9.6], [0, 1.0, 0.6]] }, MENDY = { wide: [-4.6, 0, 0.6] };
+const LESSON = { seq: ['red', 'yellow', 'blue', 'red', 'yellow', 'blue'], first: 'Look at these beads.', say: 'Red, yellow, blue, red, yellow, blue.',
+  coreLine: 'Red, yellow, blue. That part repeats!', chant: [['Red, yellow, blue!', 3], ['Red, yellow, blue!', 3], ['A pattern!', 3]] };
+startGame({
+  id: 'fixpattern', mode: 'pattern', boxes: [], beads: BEADS, view: VIEW, mendyAt: MENDY, patternLesson: LESSON,
+  intro: ['Oh no! Some patterns got mixed up.', 'One bead is wrong.', "Let's fix the patterns!"],
+  rounds: [
+    { seq: ['red', 'blue', 'red', 'blue', 'red', 'blue'], fixAt: 3, wrong: 'red', tray: ['blue', 'red', 'green'], watchDone: 'Fixed! Red, blue, red, blue.' },
+    { seq: ['yellow', 'green', 'yellow', 'green', 'yellow', 'green'], fixAt: 4, wrong: 'green', tray: ['green', 'yellow', 'red'], say: 'Listen. One bead is wrong.' },
+    { seq: ['triB', 'sqB', 'triB', 'sqB', 'triB', 'sqB'], fixAt: 2, wrong: 'sqB', tray: ['sqB', 'triB', 'ciB'], say: 'Shapes this time. One is wrong.' },
+    { seq: ['red', 'blue', 'blue', 'red', 'blue', 'blue', 'red', 'blue'], fixAt: 4, wrong: 'red', tray: ['red', 'blue', 'yellow'], core: 3, say: 'Listen. One bead is wrong.' },
+    { seq: ['red', 'yellow', 'blue', 'red', 'yellow', 'blue', 'red', 'yellow'], fixAt: 5, wrong: 'yellow', tray: ['blue', 'yellow', 'red'], core: 3, say: 'Three colors. One is wrong.' }
+  ],
+  bonusRounds: [{ seq: ['drum', 'drum', 'bell', 'drum', 'drum', 'bell', 'drum', 'drum'], fixAt: 6, wrong: 'bell', tray: ['bell', 'drum'], core: 3, say: 'Listen to the sounds. One is wrong.' }],
+  watchLine: 'Watch me. I sing the beads.', watchAsk: 'One bead is wrong!', yourTurn: 'Now you. Fix the patterns!',
+  hint2: 'This bead goes on the wrong one.', remember: 'Find the part that repeats.',
+  mistake: { friend: { name: 'Ari', shirt: '#9C2F2F', hair: '#4A2C17' }, icon: 'beads',
+    pattern: { seq: ['red', 'yellow', 'blue', 'red', 'yellow', 'blue'], bad: null },
+    claim: ['Ari says this pattern is wrong.', 'Red, yellow, blue, red, yellow, blue.'], ask: 'Is it a good pattern?', answer: true,
+    explain: ['Listen: red, yellow, blue. Again!', 'The same part repeats.'], right: ['Yes! It is a good pattern.', 'Red, yellow, blue repeats.'] },
+  endLine: 'You fixed every pattern!', praise: 'You found every wrong bead. Pattern fixer!'
+});
+</script>
+</body>
+</html>
