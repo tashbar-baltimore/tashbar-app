@@ -14,7 +14,7 @@
   KW.STROKES = {
     s: ['M146 58 C130 34 62 34 60 68 C58 100 142 96 142 134 C142 172 70 174 52 146'],
     a: ['M128 84 C116 62 70 64 68 106 C66 148 118 150 128 120', 'M130 70 L130 152'],
-    t: ['M100 40 L100 136 C100 152 114 156 132 148', 'M70 78 L132 78'],
+    t: ['M100 70 L100 136 C100 152 114 156 132 148', 'M68 70 L132 70'],   /* no stem above the bar */
     m: ['M50 74 L50 152', 'M50 100 C54 70 98 70 98 100 L98 152', 'M98 100 C102 70 148 70 148 100 L148 152']
   };
   /* a stroke path -> a smooth 3D curve, centred, 1 unit = 40 path units */
@@ -104,8 +104,7 @@
     var pollen = new THREE.Points(pgeo, new THREE.PointsMaterial({ map: GLOW, color: col(0xFFF3C2).multiplyScalar(1.6), size: 0.12, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending })); scene.add(pollen);
 
     /* ---------- glow ---------- */
-    var composer = null;
-    try { if (!FAST && THREE.EffectComposer && THREE.UnrealBloomPass) { composer = new THREE.EffectComposer(renderer); composer.addPass(new THREE.RenderPass(scene, camera)); composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(256, 256), 0.55, 0.5, 0.88)); W.bloom = true; } } catch (e) { composer = null; W.bloom = false; }
+    var composer = null; W.bloom = false;   /* no glow pass: it washed the picture out; bright things glow with soft sprites instead */
 
     /* ---------- tweens, sparkles ---------- */
     var tweens = [], clock = new THREE.Clock(), T = 0, hooks = [];
@@ -134,8 +133,14 @@
     window.addEventListener('resize', size); W.size = size; size(); camera.position.copy(W.camFrom);
     W.flyIn = function (sec) { W.flying = true; return W.tween(sec || 2.4, function (k) { camera.position.lerpVectors(W.camFrom, W.camBase, k); }, 'inout').then(function () { W.flying = false; }); };
 
-    /* ---------- loop; if the computer is slow, the glow and extra grass turn off by themselves ---------- */
-    var frames = 0, slowT = 0;
+    /* ---------- if the computer is slow, the picture gets simpler by itself, one step at a time, at any point in the lesson ---------- */
+    W.levels = 0;
+    function degrade() { W.levels++;
+      if (W.levels === 1) { sunL.castShadow = false; renderer.setPixelRatio(1); size(); W.quality = 'medium'; }
+      else if (W.levels === 2) { grass.count = Math.round(GN * 0.35); renderer.setPixelRatio(0.8); size(); W.quality = 'low'; }
+      else if (W.levels === 3) { grass.count = Math.round(GN * 0.15); pollen.visible = false; renderer.setPixelRatio(0.65); size(); W.quality = 'lowest'; } }
+    /* ---------- loop ---------- */
+    var frames = 0, slowT = 0;   /* frame timing for the quality steps */
     function frame() {
       var dt = Math.min(clock.getDelta(), 0.05); T += dt; grassU.uTime.value = T;
       for (var i = tweens.length - 1; i >= 0; i--) { var tw = tweens[i], kk = Math.min(1, (T - tw.t0) / tw.d); tw.fn(tw.e(kk)); if (kk >= 1) { tweens.splice(i, 1); tw.res(); } }
@@ -147,8 +152,8 @@
       var pa = pollen.geometry.attributes.position; for (var q = 0; q < PN; q++) { pa.array[q * 3 + 1] += Math.sin(T + q) * 0.002 + 0.002; pa.array[q * 3] += Math.cos(T * 0.5 + q) * 0.003; if (pa.array[q * 3 + 1] > 4) pa.array[q * 3 + 1] = -1.8; } pa.needsUpdate = true;
       for (var s = sparks.length - 1; s >= 0; s--) { var sp = sparks[s], d = sp.userData; d.t += dt; d.v.y -= 6 * dt; sp.position.addScaledVector(d.v, dt); sp.material.opacity = Math.max(0, 1 - d.t / d.life); sp.material.rotation += dt * 3; if (d.t > d.life) { scene.remove(sp); sparks.splice(s, 1); } }
       hooks.forEach(function (h) { h(dt, T); });
-      if (composer && W.bloom) composer.render(); else renderer.render(scene, camera);
-      frames++; if (!FAST && frames > 30 && frames < 150) { slowT += dt; if (frames === 149 && slowT / 119 > 1 / 28 && W.quality === 'high') { W.quality = 'saver'; W.bloom = false; grass.count = Math.round(GN * 0.3); renderer.setPixelRatio(1); size(); } }
+      renderer.render(scene, camera);
+      frames++; slowT += dt; if (!FAST && frames % 90 === 0) { var avg = slowT / 90; slowT = 0; if (frames > 90 && avg > 1 / 28) degrade(); }
       W.ready = true; requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
@@ -219,8 +224,12 @@
     src.connect(hp); hp.connect(pk); pk.connect(g); g.connect(c.destination); src.start(); g.gain.setTargetAtTime(0.22, c.currentTime, 0.04); live = { src: src, g: g }; };
   audio.hissStop = function () { if (!live || !AC) { live = null; return; } var n = live; live = null; n.g.gain.setTargetAtTime(0, AC.currentTime, 0.05); setTimeout(function () { try { n.src.stop(); } catch (e) {} }, 300); };
   audio.hum = function (ms) { audio.humN++; var c = audio.ctx(); if (c && !FAST) { var o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain(), t0 = c.currentTime, d = (ms || 1200) / 1000;
-      o.type = 'sawtooth'; o.frequency.value = 135; f.type = 'lowpass'; f.frequency.value = 650; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.2, t0 + .06); g.gain.setValueAtTime(.2, t0 + d - .1); g.gain.linearRampToValueAtTime(0, t0 + d);
+      o.type = 'sawtooth'; o.frequency.value = 135; var vib = c.createOscillator(), vg = c.createGain(); vib.frequency.value = 5; vg.gain.value = 2.5; vib.connect(vg); vg.connect(o.frequency); vib.start(t0); vib.stop(t0 + d + .05); f.type = 'lowpass'; f.frequency.value = 520; g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.2, t0 + .06); g.gain.setValueAtTime(.2, t0 + d - .1); g.gain.linearRampToValueAtTime(0, t0 + d);
       o.connect(f); f.connect(g); g.connect(c.destination); o.start(t0); o.stop(t0 + d + .05); }
+    return new Promise(function (r) { setTimeout(r, FAST ? 0 : (ms || 1200)); }); };
+  audio.fff = function (ms) { audio.fffN = (audio.fffN || 0) + 1; var c = audio.ctx(); if (c && !FAST) { var len = c.sampleRate, b = c.createBuffer(1, len, c.sampleRate), d = b.getChannelData(0); for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      var src = c.createBufferSource(); src.buffer = b; src.loop = true; var hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900; var lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3200; var g = c.createGain(), t0 = c.currentTime, dd = (ms || 1200) / 1000;
+      g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.32, t0 + .06); g.gain.setValueAtTime(.32, t0 + dd - .1); g.gain.linearRampToValueAtTime(0, t0 + dd); src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(c.destination); src.start(t0); src.stop(t0 + dd + .05); }
     return new Promise(function (r) { setTimeout(r, FAST ? 0 : (ms || 1200)); }); };
   audio.chime = function (notes) { var c = audio.ctx(); if (!c || FAST) return; var t = c.currentTime; notes.forEach(function (f, i) { var o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = f;
     g.gain.setValueAtTime(0, t + i * .08); g.gain.linearRampToValueAtTime(.12, t + i * .08 + .02); g.gain.exponentialRampToValueAtTime(.001, t + i * .08 + .5); o.connect(g); g.connect(c.destination); o.start(t + i * .08); o.stop(t + i * .08 + .55); }); };
@@ -241,12 +250,12 @@
   /* ---------- the script runner: lines are spoken, functions run; "hear it again" repeats the words and marked sounds and never blocks the screen ---------- */
   KW.runner = function (againBtn) {
     var R = { cur: [], busy: false, tok: 0, echoTok: 0, again: 0 };
-    R.run = function (sc) { var my = ++R.tok; R.echoTok++; R.cur = sc; R.busy = true; if (againBtn) againBtn.classList.add('wait');
+    R.run = function (sc, again) { var my = ++R.tok; R.echoTok++; audio.hush(); R.cur = again || sc.filter(function (s) { return typeof s === 'string' || (typeof s === 'function' && s.echo); }); R.busy = true; R.pending = false; if (againBtn) againBtn.classList.add('wait');
       return sc.reduce(function (p, s) { return p.then(function () { if (my !== R.tok) return; return typeof s === 'string' ? audio.say(s) : s(); }); }, Promise.resolve())
-        .then(function () { if (my === R.tok) { R.busy = false; if (againBtn) againBtn.classList.remove('wait'); } return my === R.tok; }); };
+        .then(function () { if (my === R.tok) { R.busy = false; if (againBtn) againBtn.classList.remove('wait'); if (R.pending) { R.pending = false; setTimeout(R.echo, 0); } } return my === R.tok; }); };
     R.stop = function () { R.tok++; R.busy = false; audio.hush(); if (againBtn) againBtn.classList.remove('wait'); };
-    if (againBtn) againBtn.onclick = function () { R.again++; if (R.busy) return; var my = ++R.echoTok; audio.hush();
-      R.cur.filter(function (s) { return typeof s === 'string' || (typeof s === 'function' && s.echo); }).reduce(function (p, s) { return p.then(function () { if (my !== R.echoTok) return; return typeof s === 'string' ? audio.say(s) : s(); }); }, Promise.resolve()); };
+    R.echo = function () { var my = ++R.echoTok; audio.hush(); R.cur.reduce(function (p, s) { return p.then(function () { if (my !== R.echoTok) return; return typeof s === 'string' ? audio.say(s) : s(); }); }, Promise.resolve()); };
+    if (againBtn) againBtn.onclick = function () { R.again++; if (R.busy) { R.pending = true; againBtn.classList.add('queued'); setTimeout(function () { againBtn.classList.remove('queued'); }, 400); return; } R.echo(); };
     return R;
   };
   KW.echo = function (fn) { fn.echo = true; return fn; };

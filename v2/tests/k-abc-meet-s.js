@@ -2,7 +2,7 @@
    Builds v2/, opens the game with ?fast=1 (no voice, quick motion, simple graphics) at Chromebook size and phone size, and plays it as a made-up boy:
    - it loads with no page errors and the 3D world draws real pictures (the screen is not blank);
    - the 3D library is the copy inside the game folder (no outside website needed);
-   - the computer draws the snake along the s; tapping the snake makes the snake sound;
+   - the computer draws the snake along the s; tapping the snake makes the snake sound; in the wiggle chant he taps the snake 3 times;
    - he traces the s with a real finger path: the snake grows under his finger to the end; a start far from the green light does not count;
    - "is this the snake sound?": a wrong answer is explained, three rounds;
    - find the snake letter among 3D letters: a wrong tap shows the snake inside the right letter; 1 miss + 2 right = 2 stars;
@@ -43,7 +43,9 @@ module.exports = async function (browser) {
       await next(); await name('morph'); await pg.waitForSelector('#next.show', { timeout: 60000 }); await notBlank('the snake turns into the letter');
       await next(); await name('mouth'); await pg.waitForSelector('#next.show', { timeout: 60000 });
       if (!(await pg.evaluate(() => document.getElementById('mouth').classList.contains('on')))) bad(label + ': the mouth picture does not show');
-      await next(); await name('wiggle'); await pg.waitForSelector('#next.show', { timeout: 60000 });
+      await next(); await name('wiggle'); await pg.waitForFunction(() => window.__abc.wiggleReady(), null, { timeout: 60000 });
+        for (let wt = 0; wt < 3; wt++) { await pg.waitForFunction(() => window.__abc.wiggleReady() || window.__abc.wiggleTaps >= 3, null, { timeout: 60000 }); const hh = await pg.evaluate(() => window.__abc.screenOfHead()); await pg.mouse.click(hh.x, hh.y + 20); await pg.waitForFunction(n => (window.__abc.wiggleTaps || 0) >= n, wt + 1, { timeout: 30000 }); }
+        await pg.waitForSelector('#next.show', { timeout: 60000 });
       await next(); await name('trace'); await pg.waitForFunction(() => !document.querySelector('#again.wait'), null, { timeout: 60000 });
       await pg.mouse.click(30, h - 30); await pg.waitForTimeout(100);
       if (await pg.evaluate(() => window.__abc.progress) > 0) bad(label + ': a tap far from the green light started the snake');
@@ -79,6 +81,8 @@ module.exports = async function (browser) {
       if (label === 'Chromebook') {   /* a boy who struggles: two misses -> easier round with 2 letters, at most 2 stars */
         await pg.waitForSelector('#end.on #replay', { timeout: 30000 }); await pg.click('#replay', { force: true }); await name('intro');
         for (const n of ['morph', 'mouth', 'wiggle']) { await next(); await name(n); }
+        await pg.waitForFunction(() => window.__abc.wiggleReady(), null, { timeout: 60000 });
+        for (let wt = 0; wt < 3; wt++) { await pg.waitForFunction(() => window.__abc.wiggleReady() || window.__abc.wiggleTaps >= 3, null, { timeout: 60000 }); const hh = await pg.evaluate(() => window.__abc.screenOfHead()); await pg.mouse.click(hh.x, hh.y + 20); await pg.waitForFunction(n => (window.__abc.wiggleTaps || 0) >= n, wt + 1, { timeout: 30000 }); }
         await pg.waitForSelector('#next.show', { timeout: 60000 }); await next(); await name('trace'); await pg.waitForFunction(() => !document.querySelector('#again.wait'), null, { timeout: 60000 });
         p = await pg.evaluate(() => window.__abc.screenOfTrace(0)); await pg.mouse.move(p.x, p.y); await pg.mouse.down();
         for (let i = 8; i <= 320; i += 8) { p = await pg.evaluate(i => window.__abc.screenOfTrace(i), i); await pg.mouse.move(p.x, p.y); } await pg.mouse.up();
