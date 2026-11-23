@@ -8,7 +8,7 @@ module.exports = async function (pg) {
   const r = await pg.evaluate(async () => {
     const sleep = ms => new Promise(res => setTimeout(res, ms)), bad = [];
     if (!window.W3D) return { bad: ['Warp3D.html did not load (window.W3D missing)'] };
-    const keep = { st: A.st, view: A.view, overlay: A.overlay, play: A.play, pin: A.pin, busy: A.busy, err: A.err };
+    const keepOb = window.OB_LIVE, keep = { st: A.st, view: A.view, overlay: A.overlay, play: A.play, pin: A.pin, busy: A.busy, err: A.err };
     const on = () => document.body.classList.contains('w3d'), cv = () => document.getElementById('w3d');
     try {
       A.overlay = null; A.play = null; A.pin = ''; A.busy = false; A.err = ''; A.view = 'signin'; render(); await sleep(500);
@@ -17,12 +17,13 @@ module.exports = async function (pg) {
       if (keys !== '0123456789') bad.push('the keypad must keep its 10 number keys (got ' + keys + ')');
       if (!document.querySelector('.sg5keys [data-act="del"]') || !document.querySelector('[data-act="signin"]')) bad.push('the keypad lost Delete or Let\'s go');
       if (cv() && getComputedStyle(cv()).pointerEvents !== 'none') bad.push('the 3D layer must never catch a tap');
-      A.st = loadStudent({ id: 'TEST-W3D', name: 'Made-up Boy' }); A.view = 'play'; render(); await sleep(500);
+      A.st = loadStudent({ id: 'TEST-W3D', name: 'Made-up Boy' }); A.view = 'hub'; window.OB_LIVE = 'off'; const lid = Object.keys(BANK_ALL).filter(id => /^READ\./.test(id)).find(id => { try { const it = buildMission(id); return it && it.length; } catch (e) { return false; } }); startMission('READ', lid, 'skill'); await sleep(500);
+      if (A.view !== 'play') bad.push('could not open a lesson to check');
       if (on()) bad.push('the 3D layer is still on in a lesson');
       window.TL_W3D = false; A.view = 'signin'; render(); await sleep(500);
       if (on()) bad.push('the off switch TL_W3D=false does not turn the 3D layer off');
     } catch (e) { bad.push('crashed: ' + String(e).slice(0, 160)); }
-    finally { delete window.TL_W3D; Object.assign(A, keep); render(); await sleep(450); }
+    finally { delete window.TL_W3D; window.OB_LIVE = keepOb; Object.assign(A, keep); render(); await sleep(450); }
     return { bad };
   });
   r.bad.forEach(b => out.fails.push('3D sign-in/home: ' + b));
