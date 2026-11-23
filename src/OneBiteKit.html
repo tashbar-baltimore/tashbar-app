@@ -19,7 +19,8 @@
    sort      {type:'sort', bins:['Circle','Not a circle'], cards:[['⚪',0],['🔺',1]]}   cards into 2-3 bins
    trace     {type:'trace', glyph:'b', he:false}              finger-trace the dotted letter; passes at about 80% covered
    listen    {type:'listen', hear:'buh', clip:'letter-sound:b', o:['b','d','p'], a:'b', he:false}   hear it, tap the match
-   Pictures in cards, pairs, grids and tiles: bar:1,1,1*1 (fraction bar), pie:4*1 (pizza), nl:4*3 (number line 0 to 1, 4 jumps, dot at 3; 'nl:4*3 = 3/4' adds text).
+   Pictures in cards, pairs, grids and tiles: bar:1,1,1*1 (fraction bar), pie:4*1 (pizza), nl:4*3 (number line 0 to 1, 4 jumps, dot at 3; 'nl:4*3 = 3/4' adds text),
+   shape:rhombus, shape:tilted (a square on its corner).
    pic:'art:apple' uses the K-1 games' drawn pictures (KMG.ART). Hebrew (he:true) is never spoken by a computer voice; use clip.
    No double slash in this file (HtmlService rule). */
 (function(){
@@ -52,9 +53,13 @@ function pic(x){ x=x==null||x===''?'⭐':S(x);
     if(k>=0) g+='<circle cx="'+sx(k).toFixed(1)+'" cy="30" r="5.5" fill="#E8453C" stroke="#1F2A44" stroke-width="1.5"/>';
     g+='<text x="'+L+'" y="52" font-size="13" font-weight="700" text-anchor="middle" fill="#1F2A44">0</text><text x="'+R+'" y="52" font-size="13" font-weight="700" text-anchor="middle" fill="#1F2A44">1</text>';
     return '<span class="obk-nlw"><svg class="obk-nl" viewBox="0 0 '+W+' 56" role="img" aria-label="a number line from 0 to 1 cut into '+d+' equal jumps'+(k>=0?', with a dot '+k+' jump'+(k===1?'':'s')+' from 0':'')+'">'+g+'</svg>'+(m[3]?'<span class="obk-nlt">'+E(m[3])+'</span>':'')+'</span>'; }
+  /* shape:rhombus = a slanted rhombus (4 equal sides, no square corners); shape:tilted = a square standing on its corner (still a square). Filled like the emoji shapes. */
+  m=/^shape:(rhombus|tilted)$/.exec(x);
+  if(m){ const pts=m[1]==='rhombus'?'14,46 30,4 50,4 34,46':'30,4 56,30 30,56 4,30';
+    return '<svg class="obk-shape" viewBox="0 0 60 60" role="img" aria-label="'+(m[1]==='rhombus'?'a rhombus':'a square turned on its corner')+'"><polygon points="'+pts+'" fill="#3B82F6" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round"/></svg>'; }
   if(/^art:/.test(x)&&window.KMG&&KMG.ART){ const f=KMG.ART[x.slice(4)]; if(typeof f==='function') try{ return '<span class="obk-art">'+f()+'</span>'; }catch(e){} return '⭐'; }
   return E(x); }
-const tp=x=>/^(bar|pie|nl):/.test(S(x))?pic(x):E(x);   /* tiles: text, or a bar/pie/number-line picture */
+const tp=x=>/^(bar|pie|nl|shape):/.test(S(x))?pic(x):E(x);   /* tiles: text, or a bar/pie/number-line picture */
 function numChoices(n){ const set=[n]; [n+1,n-1,n+2,n-2].forEach(v=>{ if(set.length<3&&v>=0&&set.indexOf(v)<0) set.push(v); }); return shuf(set).map(String); }
 function heCls(d){ return d.he?' obk-he':''; }
 
@@ -356,6 +361,7 @@ OBK.css=function(){ if(document.getElementById('obk-css')) return; const s=docum
 .obk-bar{ display:flex; width:3.6em; max-width:100%; height:.9em; border:3px solid #1F2A44; border-radius:6px; overflow:hidden; background:#fff; margin:auto; box-sizing:border-box; }
 .obk-bar .p{ display:block; min-width:0; border-right:3px solid #1F2A44; background:#fff; } .obk-bar .p:last-child{ border-right:0; } .obk-bar .p.a{ background:#FFB347; }
 .obk-pie{ display:block; width:1.5em; height:1.5em; margin:auto; }
+.obk-shape{ display:inline-block; width:1.3em; height:1.3em; vertical-align:middle; }
 .obk-nlw{ display:inline-flex; align-items:center; justify-content:center; gap:.25em; max-width:100%; } .obk-nl{ display:block; width:max(6em,118px); max-width:100%; height:auto; } .obk-nlt{ white-space:nowrap; }
 .obk-tf{ display:flex; flex-direction:column; gap:10px; align-items:center; }
 .obk-tf-f{ display:grid; grid-template-columns:repeat(5,minmax(0,var(--cell))); gap:5px; padding:6px; background:#fff; border:3px solid #1F2A44; border-radius:10px; --cell:min(64px,calc((100vw - 84px) / 5)); }
