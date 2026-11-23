@@ -24,8 +24,23 @@ module.exports = async function oiltrail(pg) {
     /* a canvas a boy draws on is never covered in oil */
     const d = document.createElement('canvas'); d.style.cssText = 'position:fixed;left:0;top:0;width:50px;height:50px;z-index:5'; document.body.appendChild(d);
     d.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: 10, clientY: 10 })); if (!d.hasAttribute('data-no-oil')) f('a canvas a boy touches must be marked data-no-oil'); d.remove();
+    /* TAP OR SWIPE (HoS 2026-11-23, Chromebook touchscreens): a swipe never fires a tap effect; a real tap does */
+    let fx = 0; const mo = new MutationObserver(l => l.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 && /^(hpsplash|hpdot|hpem)/.test(n.className)) fx++; })));
+    mo.observe(document.body, { childList: true });
+    const P = (t, x, y) => document.body.dispatchEvent(new PointerEvent(t, { bubbles: true, pointerId: 41, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y }));
+    window.TL_OIL_OFF = true; TL_OIL.sync(); const hpfx = window.HP_FX;
+    if (hpfx) { fx = 0; P('pointerdown', 30, 700); await sleep(30); P('pointermove', 200, 600); P('pointerup', 220, 590); await sleep(60); if (fx) f('a swipe must not fire the tap splash (it fired ' + fx + ' pieces)');
+      fx = 0; P('pointerdown', 30, 700); await sleep(40); P('pointerup', 31, 700); await sleep(60); if (!fx) f('a real tap must fire the tap splash'); }
+    window.TL_OIL_OFF = undefined; TL_OIL.sync(); await sleep(30);
+    const e2 = TL_OIL.engine(); if (e2 && typeof Touch === 'function') { const o0 = e2.olives(), tgt = document.body;
+      const T = (type, x, y) => { const t = new Touch({ identifier: 7, target: tgt, clientX: x, clientY: y }); tgt.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchend' ? [] : [t], changedTouches: [t] })); };
+      T('touchstart', 30, 700); await sleep(30); T('touchend', 220, 590); await sleep(30);
+      if (e2.olives() !== o0) f('a quick swipe with few touch points must not drop an olive');
+      T('touchstart', 30, 700); await sleep(30); T('touchend', 31, 700); await sleep(30);
+      if (e2.olives() !== o0 + 1) f('a real tap on empty space must drop one olive'); }
+    mo.disconnect();
     window.TL_OIL_DAY = undefined; TL_OIL.sync();
-    if (!fails.length) oks.push('olive oil (Chanukah): the default trail 23 Nov 2026 to 3 Tevet 5787, off before and after; the free streak and tap splash step aside, a bought trail wins; clicks pass through; drawing canvases are kept clear');
+    if (!fails.length) oks.push('olive oil (Chanukah): the default trail 23 Nov 2026 to 3 Tevet 5787, off before and after; the free streak and tap splash step aside, a bought trail wins; clicks pass through; drawing canvases are kept clear; a swipe fires no tap effect and no olive, a real tap does');
     return { fails, oks };
   });
 };
