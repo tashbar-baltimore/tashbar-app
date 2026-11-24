@@ -78,7 +78,7 @@
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var RM = false; try { RM = W.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var S = null;
-  var COVER = { K1: 'core-t-cover-k1.webp' };   /* B23, E45 and M68 covers are being redrawn (picture order T-1, docs/core-growth/T-picture-orders.md) */
+  var COVER = { K1: 'core-t-cover-k1.webp', B23: 'core-t-cover-b23.webp', E45: 'core-t-cover-e45.webp', M68: 'core-t-cover-m68.webp' };   /* picture order T-1 (docs/core-growth/T-picture-orders.md) */
   function band(g) { g = Number(g); return g <= 1 ? 'K1' : g <= 3 ? 'B23' : g <= 5 ? 'E45' : 'M68'; }
   function K() { return W.TLK || null; }
   function btn(kind, text, attrs) { var k = K(); if (k && k[kind]) return k[kind](text, attrs); return '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
