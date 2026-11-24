@@ -55,6 +55,26 @@ module.exports = { ALL, glBrowser, open, passedBefore, canvasColours, startGame,
    KK_VIEW=phone plays it at phone size; KK_SHOTS=1 also saves the pictures in v2/screens/k-kriyah/. */
 function gameTest(id, kind, label) {
   return async browser0 => {
+    if (process.env.KK_SHOTS || process.env.KK_SERIAL) return runOne(browser0, id, kind, label);   /* picture runs stay one at a time */
+    startPool(browser0); return pool.get((process.env.KK_VIEW || 'chromebook') + ' ' + id) || runOne(browser0, id, kind, label);
+  };
+}
+/* The quick run plays up to 3 games at once (the check machine has 4 cores), so many units fit the 45-minute check.
+   The falling-letter bonus rounds need steady frames, so they play one at a time after the others. Each test file then reads its own result. */
+const pool = new Map(); let pooled = false;
+function startPool(browser0) {
+  if (pooled) return; pooled = true;
+  const view = process.env.KK_VIEW || 'chromebook', par = Number(process.env.KK_PAR || 3), games = ALL.filter(g => !g.bonus), bonus = ALL.filter(g => g.bonus), defer = {};
+  ALL.forEach(g => pool.set(view + ' ' + g.id, new Promise(r => defer[g.id] = r)));
+  const fail = g => e => ({ fails: ['k-kriyah ' + g.id + ': ' + String(e).slice(0, 200)], oks: [] });
+  let next = 0, running = 0, done; const finished = new Promise(r => done = r);
+  const pump = () => { while (running < par && next < games.length) { const g = games[next++]; running++;
+      runOne(browser0, g.id, g.kind, g.id).catch(fail(g)).then(r => { defer[g.id](r); running--; if (next >= games.length && !running) done(); else pump(); }); } };
+  if (games.length) pump(); else done();
+  finished.then(async () => { for (const g of bonus) defer[g.id](await runOne(browser0, g.id, g.kind, g.id).catch(fail(g))); });
+}
+function runOne(browser0, id, kind, label) {
+  return (async () => {
     const browser = await glBrowser(browser0);
     const fails = [], oks = [], P = require('./players.js'), view = process.env.KK_VIEW || 'chromebook', tag = 'k-kriyah ' + id + ' (' + label + ', ' + view + ')';
     const { ctx, pg, errs } = await open(browser, { view, save: passedBefore(id), url: 'play.html?g=' + id + '&fast=1' });
@@ -79,6 +99,6 @@ function gameTest(id, kind, label) {
         o.errs.forEach(e => fails.push(tag + ' path: ' + e)); await o.ctx.close(); }
     } catch (e) { fails.push(tag + ': ' + String(e).slice(0, 200)); errs.forEach(x => fails.push(tag + ': ' + x)); try { await shotF('x-stuck'); } catch (x) {} await ctx.close().catch(() => {}); }
     return { fails, oks };
-  };
+  })();
 }
 module.exports.gameTest = gameTest;
