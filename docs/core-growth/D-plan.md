@@ -62,7 +62,7 @@ The money page gets a short **"How I earn money"** card in plain words (right an
 
 ## 4. HoS DECISIONS (asked once, with pictures, before it goes on for everyone)
 1. **The default list** for K–1 and for Grades 2–8 (section 2 has a suggestion).
-2. **Turn it on for every boy** (until then only TEST- boys get it, and real boys keep "3 lessons = daily bonus").
+2. **Turn it on for every boy** (until then only TEST- boys get it, and real boys keep "3 lessons = daily bonus"). **DECIDED 2026-11-24: on for every boy from Grade 2 up, with the suggested default list** ("I wanted everything to go live"). Load check first (40 made-up boys saving at once, half on the list): saves on the list were no slower than on "3 lessons". K–1 keep their games-only day until their list of games is built.
 
 ## 5. Files (job D owns only these)
 `src/DailyPlan.js` (server: settings, the list check, staff calls), `src/DailyPlanUI.html` (the boy's list), `src/DailyPlanStaff.html` (staff screen), `tests/lib/dailyplan.js`; the "My work" rounds in `src/GameMap.html` (only that part); the daily-bonus trigger and payment labels in `src/Money.js` (only those parts). Nothing here touches Math lessons, `v2/`, Kodesh content or another job's files.
