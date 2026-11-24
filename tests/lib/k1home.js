@@ -36,7 +36,28 @@ module.exports = async function (pg) {
             if (getComputedStyle(ov).display === 'none') bad.push('the game window is hidden behind the path');
             if (src.indexOf('id="k1fit"') < 0) bad.push('the game does not get the full-screen styles');
             if (src.indexOf('k1say') < 0) bad.push('the game does not get the voice bridge');
+            /* never a white game window (2026-11-23): a cover shows until the game page has drawn, then leaves */
+            if (!ov.querySelector('.k1-wait')) bad.push('the game window has no "Here comes your game" cover while the game loads');
+            let t = 0; while (ov.querySelector('.k1-wait') && t < 15000) { await sleep(250); t += 250; }
+            if (ov.querySelector('.k1-wait')) bad.push('the "Here comes your game" cover did not leave after the game page drew (15 s)');
+            /* K-1 quiet: the hidden big-boy home does not keep changing itself behind the game */
+            /* sparks an earlier (older) boy set flying finish their flight first; then nothing new may start */
+            let w = 0; while (document.querySelector('#ohsky .rise, .ohp, .hlring') && w < 8000) { await sleep(250); w += 250; }
+            const WHO = {};
+            const n = await new Promise(res => { let c = 0; const mo = new MutationObserver(l => l.forEach(m => { const t = m.target.nodeType === 1 ? m.target : m.target.parentElement; if (!(t && t.closest && t.closest('#k1o,#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov'))) { c++; const k = (t && (t.id || String(t.className).slice(0, 30) || t.tagName)) + ':' + m.type + ':' + (m.attributeName || ''); WHO[k] = (WHO[k] || 0) + 1; } }));
+              mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true }); setTimeout(() => { mo.disconnect(); res(c); }, 3000); });
+            if (n > 15) bad.push('the hidden big-boy home changed ' + n + ' times in 3 s behind a K game (it should stay quiet): ' + Object.entries(WHO).sort((a, b) => b[1] - a[1]).slice(0, 8).map(e => e[0] + ' x' + e[1]).join(', '));
             const x = ov.querySelector('button'); if (x) x.click(); ov.remove(); } } }
+      /* every K subject: passing game 1 (the score each game pack really saves) opens game 2 */
+      for (const [subj, key] of [['MATH', 'klm'], ['READ', 'klr'], ['LK', 'klk']]) {
+        K1O.subj = subj; A.st[key] = {}; render(); await sleep(60);
+        const ids = [...document.querySelectorAll('#k1o .k1-t')].map(t => t.dataset.id); if (ids.length < 2) continue;
+        const pack = { MATH: window.KL, READ: window.KR, LK: window.KK }[subj]; if (!pack) continue;
+        A.st[key][ids[0]] = 3; render(); await sleep(60);
+        const t2 = document.querySelector('#k1o .k1-t[data-id="' + ids[1] + '"]');
+        if (!t2 || t2.classList.contains('lock')) bad.push('K ' + subj + ': passing game 1 (st.' + key + ') did not open game 2');
+        delete A.st[key]; }
+      K1O.subj = 'MATH';
       K1O.grade = 1; render(); await sleep(100);
       const g1 = [...document.querySelectorAll('#k1o .k1-t')].map(t => t.dataset.id);
       if (!g1.length) bad.push('a Grade 1 boy has no games'); else if (g1.some(id => !/\.L02\./.test(id))) bad.push('the Grade 1 path shows a game that is not Grade 1 level');
@@ -46,6 +67,6 @@ module.exports = async function (pg) {
     return { bad };
   });
   r.bad.forEach(b => out.fails.push('K-1 GAMES ONLY: ' + b));
-  if (!r.bad.length) out.oks.push('K-1 games only: a K boy gets the full-screen game path with nothing else on screen, Kindergarten games only in skill order (game 1 open, the rest locked), PLAY opens a real game full screen with the voice bridge; a Grade 1 boy gets Grade 1 games only');
+  if (!r.bad.length) out.oks.push('K-1 games only: a K boy gets the full-screen game path with nothing else on screen, Kindergarten games only in skill order (game 1 open, the rest locked), PLAY opens a real game full screen with the voice bridge, a "Here comes your game" cover until it draws and a quiet page behind it; a Grade 1 boy gets Grade 1 games only');
   return out;
 };

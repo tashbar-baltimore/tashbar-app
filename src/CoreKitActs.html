@@ -1,0 +1,279 @@
+<script>
+/* CoreKitActs.html: NEW ACTIVITY KINDS for the One Bite Activity Kit (Core Growth job T, T-6, 2026-11-24).
+   They join window.OBK.types (src/OneBiteKit.html) as soon as the kit has loaded, so a lesson's do:[...] and your:[...] can use them
+   exactly like the first ten (docs/ONE-BITE-PLAYBOOK.md section 10; docs/core-growth/HOW-TO-ADD-A-SKILL.md). The One Bite files are not changed.
+   Every activity may also have say, how, q, pic, why and mis:true, as before.
+
+   evidence  {type:'evidence', p:['sentence', 'sentence', ...], a:2, look:'how Dovid felt'}
+             a short passage (2-8 sentences); he taps the sentence that proves it (a = its number from 0, or a list). Put the question in q.
+   combine   {type:'combine', a:'Avi was tired.', b:'He kept walking.', o:['but','so','because'], j:'but', r:'Avi was tired, but he kept walking.'}
+             two short sentences become one strong one: he picks the joining word, and the new sentence snaps together (r is made if left out).
+   storymap  {type:'storymap', slots:['Who','Where','Problem','Solution'], cards:['Dovid and Zaidy','the shul','The key is missing','Biscuit had it'], extra:['a cake']}
+             a story map he fills in: card i belongs in slot i (2-5 slots). Tap a card, then its box.
+   parts     {type:'parts', parts:['un','help','ful'], extra:['re','less'], mean:'not helpful', roles:['prefix','root','suffix']}
+             a word-part builder: the blocks snap into prefix / root / suffix, and the word lights up with its meaning (roles are made if left out).
+   cloze     {type:'cloze', t:'The ant carried a ___ twice its size.', o:['crumb','rock','cloud'], a:'crumb'}
+             fill the gap: he taps a word into the ___ and reads the sentence with it.
+   dictation {type:'dictation', hear:'The cat sat on the mat.', w:['The','cat','sat','on','the','mat.'], extra:['sit']}
+             he hears a sentence (read aloud, 🔊 again), then builds it from word tiles, capital letter and end mark included.
+   order     {type:'order', steps:['Dovid saw paw prints.','He followed them.','He found Biscuit.'], extra:[]}
+             put the story (or the steps) in order: tap each strip into the next numbered place (2-6 strips).
+   read      {type:'read', text:'C45.B1.01', page:0}   opens the Reader (src/CoreReader.html) on a text from texts/; right when he reaches the end. Only in do.
+   proof     {type:'proof', text:'C45.B1.01', q:'Which sentence shows Dovid was surprised?', proof:'Dovid gasped', look:'how Dovid felt'}
+             opens the Reader on the page with the proof; he taps the sentence (3 tries, then the book shows it).
+   No double slash in this file (HtmlService rule). */
+(function () {
+  var W = window;
+  var E = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var S = function (x) { return String(x == null ? '' : x); }, isArr = Array.isArray;
+  var num = function (v) { return typeof v === 'number' && isFinite(v); };
+  function shuf(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function shufNot(a) { if (a.length < 2) return a.slice(); var b, t = 0; do { b = shuf(a); t++; } while (t < 10 && b.every(function (x, i) { return x === a[i]; })); return b; }
+  function idx(n) { var o = []; for (var i = 0; i < n; i++) o.push(i); return o; }
+  function speakIt(t) { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(S(t)); u.rate = .85; speechSynthesis.speak(u); } catch (e) {} }
+  function lowFirst(s) { s = S(s); return /^(He|She|It|They|We|You|The|A|An|There|This|That|These|Those|His|Her|Its|Our|Their|My|Your|Then|Now|Every|Some|All)\b/.test(s) ? s.charAt(0).toLowerCase() + s.slice(1) : s; }   /* "He ran." -> "he ran."; a name stays as it is */
+
+  var CSS = '.cka-pass,.cka-strips,.cka-map,.cka-ord,.cka-out,.cka-line{width:100%;box-sizing:border-box}.cka-pass{display:grid;gap:8px;max-width:640px;margin:0 auto;text-align:left}' +
+    '.cka-s{all:unset;box-sizing:border-box;display:block;padding:10px 14px;border-radius:12px;background:#fff;border:2px solid #D9E1EE;font:500 19px/1.45 inherit;color:#1F2A44;cursor:pointer;min-height:48px}' +
+    '.cka-s:hover{border-color:#9DB7E8}.cka-s:focus-visible{outline:3px solid #E0AE4F;outline-offset:2px}' +
+    '.cka-s.yes{background:#DDF4E6;border-color:#3FA36B;box-shadow:0 0 0 4px rgba(63,163,107,.25)}' +
+    '.cka-strips{display:grid;gap:8px;max-width:640px;margin:0 auto}' +
+    '.cka-strip{padding:10px 14px;border-radius:12px;background:#F4F7FC;border:2px dashed #C9D3E0;font:600 19px/1.4 inherit;color:#1F2A44;text-align:left}' +
+    '.cka-join{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0}' +
+    '.cka-out{min-height:56px;max-width:640px;margin:8px auto 0;padding:12px 16px;border-radius:14px;background:#FFF8E1;border:2px solid #F0D58A;font:700 20px/1.4 inherit;text-align:left;transition:box-shadow .2s,background .2s}' +
+    '.cka-out.lit{background:#DDF4E6;border-color:#3FA36B;box-shadow:0 0 0 5px rgba(63,163,107,.22)}' +
+    '.cka-out .gap{display:inline-block;min-width:80px;border-bottom:3px solid #1F2A44;margin:0 4px}' +
+    '.cka-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;max-width:720px;margin:0 auto}' +
+    '.cka-box{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;min-height:96px;padding:10px;border-radius:14px;background:#fff;border:2px solid #D9E1EE;cursor:pointer;text-align:left}' +
+    '.cka-box b{font:800 13px/1.2 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#4B5B78}' +
+    '.cka-box span{font:600 17px/1.3 inherit;color:#1F2A44}.cka-box.empty span{color:#9AA6BA}.cka-box.lit{border-color:#3FA36B;background:#F1FBF5}' +
+    '.cka-box.sel,.cka-card.sel{outline:3px solid #2F5FB3;outline-offset:2px}' +
+    '.cka-cards{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:12px}' +
+    '.cka-card{all:unset;box-sizing:border-box;padding:10px 14px;border-radius:12px;background:#FFFDF6;border:2px solid #E0C98F;box-shadow:0 4px 0 #E0C98F;font:600 17px/1.3 inherit;color:#1F2A44;cursor:pointer;min-height:48px;max-width:300px}' +
+    '.cka-card.gone{visibility:hidden}' +
+    '.cka-word{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:6px 0 4px}' +
+    '.cka-pslot{all:unset;box-sizing:border-box;min-width:96px;min-height:64px;padding:6px 10px;border-radius:12px;border:3px dashed #C9D3E0;display:grid;place-items:center;cursor:pointer;font:800 26px/1 inherit;color:#1F2A44}' +
+    '.cka-pslot small{display:block;font:700 11px/1.2 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#6B7890;margin-top:4px}' +
+    '.cka-pslot.full{border-style:solid}.cka-pslot.r-prefix{border-color:#7FA7E8}.cka-pslot.r-root{border-color:#E0AE4F}.cka-pslot.r-suffix{border-color:#7CC59A}' +
+    '.cka-pslot.r-prefix.full{background:#EAF1FF}.cka-pslot.r-root.full{background:#FFF4D6}.cka-pslot.r-suffix.full{background:#E6F6EC}' +
+    '.cka-word.lit .cka-pslot{border-color:#3FA36B;box-shadow:0 0 0 4px rgba(63,163,107,.2)}' +
+    '.cka-mean{text-align:center;font:600 18px/1.4 inherit;color:#0E7A4F;margin-top:6px}' +
+    '.cka-line{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;min-height:64px;padding:10px;border-bottom:3px solid #1F2A44;max-width:680px;margin:0 auto}' +
+    '.cka-line .obk-slot{min-width:70px}' +
+    '.cka-ord{display:grid;gap:8px;max-width:640px;margin:0 auto}' +
+    '.cka-oslot{all:unset;box-sizing:border-box;display:flex;gap:10px;align-items:center;min-height:52px;padding:8px 12px;border-radius:12px;border:2px dashed #C9D3E0;cursor:pointer;text-align:left;font:600 17px/1.35 inherit;color:#1F2A44}' +
+    '.cka-oslot i{font-style:normal;flex:0 0 32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#1F2A44;color:#fff;font:800 16px/1 system-ui,sans-serif}' +
+    '.cka-oslot.full{border-style:solid;background:#fff}.cka-ord.lit .cka-oslot{border-color:#3FA36B;background:#F1FBF5}' +
+    '.cka-shake{animation:ckaShake .3s}@keyframes ckaShake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}' +
+    '.cka-snap{animation:ckaSnap .28s cubic-bezier(.2,1.6,.4,1)}@keyframes ckaSnap{from{transform:scale(.85)}to{transform:none}}' +
+    '@media (max-width:480px){.cka-s,.cka-strip,.cka-out{font-size:17px}.cka-pslot{min-width:76px;font-size:22px}.cka-map{grid-template-columns:1fr 1fr}}' +
+    '@media (prefers-reduced-motion:reduce){.cka-shake,.cka-snap{animation:none}}';
+  function css() { if (document.getElementById('cka-css')) return; var s = document.createElement('style'); s.id = 'cka-css'; s.textContent = CSS; (document.head || document.documentElement).appendChild(s); }
+
+  var T = {};
+
+  /* ---------- evidence: tap the sentence that proves it ---------- */
+  T.evidence = {
+    ans: function (d) { return (isArr(d.a) ? d.a : [d.a]).map(Number); },
+    err: function (d) { if (!isArr(d.p) || d.p.length < 2 || d.p.length > 8) return 'p must be a list of 2 to 8 sentences';
+      var a = T.evidence.ans(d); if (!a.length || a.some(function (i) { return !(i >= 0 && i < d.p.length); })) return 'a must be the number of the proof sentence (from 0), or a list';
+      if (a.length >= d.p.length) return 'some sentences must not be the proof'; if (!d.q) return 'put the question in q'; return ''; },
+    opts: function (d) { return d.p; },
+    init: function () { return { hit: {}, bad: -1 }; },
+    say: function () { return 'Tap the sentence that proves it.'; },
+    how: function (d) { return 'Read each sentence. Which one shows ' + (d.look || 'the answer') + '? Tap it.'; },
+    label: function (d) { return 'Find the proof: ' + S(d.q); },
+    view: function (d, s, c) { var a = T.evidence.ans(d);
+      return '<div class="cka-pass">' + d.p.map(function (x, i) { return '<button class="cka-s' + (s.hit[i] ? ' yes' : '') + (s.bad === i ? ' cka-shake' : '') + ((c.hint) && a.filter(function (j) { return !s.hit[j]; })[0] === i ? ' obk-pulse' : '') + '" data-obk="sent" data-k="' + i + '">' + E(x) + '</button>'; }).join('') + '</div>'; },
+    tap: function (d, s, act, k) { if (act !== 'sent') return; var i = +k, a = T.evidence.ans(d); s.bad = -1;
+      if (a.indexOf(i) >= 0) { s.hit[i] = 1; return Object.keys(s.hit).length >= a.length ? 'ok' : undefined; }
+      s.bad = i; s.msg = 'That sentence does not prove it. Look for the words that tell ' + (d.look || 'the answer') + '.'; return 'bump'; },
+    solve: function (d, s) { T.evidence.ans(d).forEach(function (i) { s.hit[i] = 1; }); }
+  };
+
+  /* ---------- combine: two short sentences become one strong one ---------- */
+  T.combine = {
+    made: function (d, j) { if (d.r && S(j) === S(d.j)) return S(d.r); var a = S(d.a).replace(/[.!?]\s*$/, ''), b = lowFirst(S(d.b)); return a + (/^(because|when|after|before|until|if|since|although|though|while|unless|whereas|once|as)$/i.test(S(j)) ? ' ' : ', ') + j + ' ' + b; },
+    err: function (d) { if (!d.a || !d.b) return 'a and b are the two short sentences'; if (!isArr(d.o) || d.o.length < 2 || d.o.length > 4) return 'o must be 2 to 4 joining words'; if (d.o.map(S).indexOf(S(d.j)) < 0) return 'j (the right joining word) must be one of o'; return ''; },
+    opts: function (d) { return d.o; },
+    init: function (d) { return { order: shufNot(d.o.map(S)), pick: '', bad: '' }; },
+    say: function () { return 'Join the two sentences. Pick the best joining word.'; },
+    how: function () { return 'Read both sentences. How do they go together? Try each word out loud.'; },
+    label: function (d) { return 'Combine: ' + S(d.a) + ' + ' + S(d.b); },
+    view: function (d, s, c) {
+      var out = s.pick ? E(T.combine.made(d, s.pick)) : E(S(d.a).replace(/[.!?]\s*$/, '')) + ' <span class="gap"></span> ' + E(lowFirst(d.b));
+      return '<div class="cka-strips"><div class="cka-strip">' + E(d.a) + '</div><div class="cka-strip">' + E(d.b) + '</div></div>' +
+        '<div class="cka-join">' + s.order.map(function (w) { return '<button class="obk-tile' + (s.bad === w ? ' obk-shake' : '') + (c.hint && w === S(d.j) ? ' obk-pulse' : '') + '" data-obk="join" data-k="' + E(w) + '"' + (s.pick ? ' disabled' : '') + '>' + E(w) + '</button>'; }).join('') + '</div>' +
+        '<div class="cka-out' + (s.pick ? ' lit cka-snap' : '') + '" aria-live="polite">' + out + '</div>'; },
+    tap: function (d, s, act, k) { if (act !== 'join' || s.pick) return; s.bad = '';
+      if (S(k) === S(d.j)) { s.pick = S(k); return 'ok'; }
+      s.bad = S(k); s.msg = 'Read it with "' + S(k) + '": ' + T.combine.made(d, S(k)) + ' Does it make sense?'; return 'bump'; },
+    solve: function (d, s) { s.pick = S(d.j); }
+  };
+
+  /* ---------- storymap: a story map he fills in ---------- */
+  T.storymap = { check: true,
+    err: function (d) { if (!isArr(d.slots) || d.slots.length < 2 || d.slots.length > 5) return 'slots must be 2 to 5 box names'; if (!isArr(d.cards) || d.cards.length !== d.slots.length) return 'cards must have one card per box (card 0 goes in box 0)';
+      if (d.extra && (!isArr(d.extra) || d.extra.length > 2)) return 'extra must be a list of at most 2 cards'; return ''; },
+    init: function (d) { return { pool: shufNot(d.cards.concat(d.extra || []).map(S)), at: d.slots.map(function () { return -1; }), used: {}, sel: -1, wrong: {} }; },
+    say: function () { return 'Fill in the story map. Tap a card, then its box.'; },
+    how: function () { return 'Read each card. Is it who, where, the problem or how it ends? Tap the card, then the box.'; },
+    label: function (d) { return 'Story map: ' + d.slots.join(' / '); },
+    view: function (d, s, c) {
+      var h = '<div class="cka-map' + (s.ok ? ' lit' : '') + '">' + d.slots.map(function (b, i) { var j = s.at[i];
+        return '<button class="cka-box' + (j < 0 ? ' empty' : '') + (s.ok ? ' lit' : '') + (s.wrong[i] ? ' cka-shake' : '') + '" data-obk="box" data-k="' + i + '"><b>' + E(b) + '</b><span>' + (j >= 0 ? E(s.pool[j]) : (c.guided ? 'Tap a card, then here' : '…')) + '</span></button>'; }).join('') + '</div>';
+      return h + '<div class="cka-cards">' + s.pool.map(function (t, j) { return '<button class="cka-card' + (s.used[j] ? ' gone' : '') + (s.sel === j ? ' sel' : '') + '" data-obk="card" data-k="' + j + '"' + (s.used[j] ? ' disabled aria-hidden="true"' : '') + '>' + E(t) + '</button>'; }).join('') + '</div>'; },
+    tap: function (d, s, act, k) { s.wrong = {};
+      if (act === 'card') { var j = +k; if (s.used[j]) return; s.sel = s.sel === j ? -1 : j; return; }
+      if (act === 'box') { var i = +k, old = s.at[i];
+        if (s.sel < 0) { if (old >= 0) { delete s.used[old]; s.at[i] = -1; } return; }
+        if (old >= 0) delete s.used[old]; s.at[i] = s.sel; s.used[s.sel] = 1; s.sel = -1; } },
+    ready: function (d, s) { return s.at.indexOf(-1) < 0; },
+    judge: function (d, s) { var bad = 0; s.at.forEach(function (j, i) { if (s.pool[j] !== S(d.cards[i])) { bad++; s.wrong[i] = 1; } }); if (!bad) return { ok: true };
+      s.at.forEach(function (j, i) { if (s.wrong[i]) { delete s.used[j]; s.at[i] = -1; } }); return { ok: false, msg: 'Some cards are in the wrong box. Read those boxes again.' }; },
+    solve: function (d, s) { s.used = {}; s.at = d.cards.map(function (t) { var j = s.pool.findIndex(function (x, jj) { return x === S(t) && !s.used[jj]; }); s.used[j] = 1; return j; }); s.wrong = {}; }
+  };
+
+  /* ---------- parts: prefix + root + suffix ---------- */
+  T.parts = { check: true,
+    roles: function (d) { if (isArr(d.roles) && d.roles.length === d.parts.length) return d.roles.map(S); var n = d.parts.length; return n === 3 ? ['prefix', 'root', 'suffix'] : n === 2 ? ['root', 'suffix'] : idx(n).map(function () { return 'part'; }); },
+    err: function (d) { if (!isArr(d.parts) || d.parts.length < 2 || d.parts.length > 4) return 'parts must be 2 to 4 word parts in order'; if (d.extra && (!isArr(d.extra) || d.extra.length > 3)) return 'extra must be at most 3 parts';
+      if (d.roles && (!isArr(d.roles) || d.roles.length !== d.parts.length || d.roles.some(function (r) { return ['prefix', 'root', 'suffix', 'part'].indexOf(r) < 0; }))) return 'roles: one of prefix, root, suffix for each part'; if (!d.mean) return 'mean (what the whole word means) is missing'; return ''; },
+    init: function (d) { return { pool: shufNot(d.parts.concat(d.extra || []).map(S)), slots: d.parts.map(function () { return -1; }), used: {}, wrong: {} }; },
+    say: function () { return 'Build the word. Snap each part into its place.'; },
+    how: function () { return 'A prefix goes at the front. The root is the main part. A suffix goes at the end.'; },
+    label: function (d) { return 'Word parts: ' + d.parts.join(' + '); },
+    view: function (d, s, c) { var R = T.parts.roles(d);
+      var h = '<div class="cka-word' + (s.ok ? ' lit' : '') + '">' + s.slots.map(function (j, i) { return '<button class="cka-pslot r-' + R[i] + (j >= 0 ? ' full cka-snap' : '') + (s.wrong[i] ? ' cka-shake' : '') + '" data-obk="slot" data-k="' + i + '" aria-label="' + R[i] + (j >= 0 ? ': ' + E(s.pool[j]) : ', empty') + '"><span>' + (j >= 0 ? E(s.pool[j]) : (c.guided ? '<span style="opacity:.3">' + E(d.parts[i]) + '</span>' : '')) + '<small>' + R[i] + '</small></span></button>'; }).join('') + '</div>';
+      if (s.ok) h += '<div class="cka-mean" role="status">' + E(d.parts.join('')) + ' = ' + E(d.mean) + '</div>';
+      return h + '<div class="obk-pool">' + s.pool.map(function (t, j) { return s.used[j] ? '<span class="obk-tile gone"></span>' : '<button class="obk-tile" data-obk="part" data-k="' + j + '">' + E(t) + '</button>'; }).join('') + '</div>'; },
+    tap: function (d, s, act, k) { s.wrong = {};
+      if (act === 'slot') { var i = +k, j = s.slots[i]; if (j >= 0) { s.slots[i] = -1; delete s.used[j]; } return; }
+      if (act === 'part') { var jj = +k; if (s.used[jj]) return; var at = s.slots.indexOf(-1); if (at < 0) return; s.slots[at] = jj; s.used[jj] = 1; } },
+    ready: function (d, s) { return s.slots.indexOf(-1) < 0; },
+    judge: function (d, s) { var bad = 0; s.slots.forEach(function (j, i) { if (s.pool[j] !== S(d.parts[i])) { bad++; s.wrong[i] = 1; } }); if (!bad) return { ok: true };
+      s.slots.forEach(function (j, i) { if (s.wrong[i]) { delete s.used[j]; s.slots[i] = -1; } }); return { ok: false, msg: 'A part is in the wrong place. Which part goes first? Which is the main word?' }; },
+    solve: function (d, s) { s.used = {}; s.slots = d.parts.map(function (t) { var j = s.pool.findIndex(function (x, jj) { return x === S(t) && !s.used[jj]; }); s.used[j] = 1; return j; }); s.wrong = {}; }
+  };
+
+  /* ---------- cloze: fill the gap ---------- */
+  T.cloze = { check: true,
+    err: function (d) { if (!d.t || S(d.t).split('___').length !== 2) return 't must be a sentence with one ___ gap'; if (!isArr(d.o) || d.o.length < 2 || d.o.length > 4) return 'o must be 2 to 4 words'; if (d.o.map(S).indexOf(S(d.a)) < 0) return 'a must be one of o'; return ''; },
+    opts: function (d) { return d.o; },
+    init: function (d) { return { order: shufNot(d.o.map(S)), pick: '' }; },
+    say: function () { return 'Which word fits? Tap it into the gap.'; },
+    how: function () { return 'Read the whole sentence with each word. Which one makes sense?'; },
+    label: function (d) { return 'Fill the gap: ' + S(d.t); },
+    view: function (d, s, c) { var p = S(d.t).split('___');
+      return '<div class="cka-out' + (s.ok ? ' lit' : '') + '">' + E(p[0]) + (s.pick ? '<button class="obk-tile cka-snap" data-obk="clear" data-k="0">' + E(s.pick) + '</button>' : '<span class="gap"></span>') + E(p[1]) + '</div>' +
+        '<div class="cka-join">' + s.order.map(function (w) { return '<button class="obk-tile' + (c.hint && w === S(d.a) ? ' obk-pulse' : '') + '" data-obk="word" data-k="' + E(w) + '"' + (s.pick === w ? ' disabled' : '') + '>' + E(w) + '</button>'; }).join('') + '</div>'; },
+    tap: function (d, s, act, k) { if (act === 'word') { s.pick = S(k); return; } if (act === 'clear') s.pick = ''; },
+    ready: function (d, s) { return !!s.pick; },
+    judge: function (d, s) { if (s.pick === S(d.a)) return { ok: true }; var w = s.pick; s.pick = ''; return { ok: false, msg: 'Read it with "' + w + '". Does it make sense? Try another word.' }; },
+    solve: function (d, s) { s.pick = S(d.a); }
+  };
+
+  /* ---------- dictation: hear it, build it ---------- */
+  T.dictation = { check: true,
+    err: function (d) { if (!d.hear) return 'hear (the sentence he hears) is missing'; if (!isArr(d.w) || d.w.length < 2 || d.w.length > 10) return 'w must be the sentence in 2 to 10 word tiles';
+      if (d.w.map(S).join(' ').replace(/\s+/g, ' ').trim() !== S(d.hear).replace(/\s+/g, ' ').trim()) return 'w joined with spaces must be exactly hear'; if (d.extra && (!isArr(d.extra) || d.extra.length > 3)) return 'extra must be at most 3 tiles'; return ''; },
+    init: function (d) { return { pool: shufNot(d.w.concat(d.extra || []).map(S)), slots: d.w.map(function () { return -1; }), used: {}, wrong: {} }; },
+    say: function () { return 'Listen to the sentence. Then build it.'; },
+    how: function () { return 'Say the sentence back softly. Tap the words in order. Start with a capital, end with the mark.'; },
+    label: function (d) { return 'Dictation: ' + S(d.hear); },
+    view: function (d, s) {
+      var h = '<button class="obk-btn obk-hear" data-obk="hear" aria-label="Hear it">🔊 Hear it</button><div class="cka-line' + (s.ok ? ' lit' : '') + '">';
+      s.slots.forEach(function (j, i) { h += '<button class="obk-slot' + (j >= 0 ? ' full' : '') + (s.wrong[i] ? ' obk-shake' : '') + '" data-obk="slot" data-k="' + i + '" aria-label="word ' + (i + 1) + (j >= 0 ? ': ' + E(s.pool[j]) : ', empty') + '">' + (j >= 0 ? E(s.pool[j]) : '') + '</button>'; });
+      h += '</div><div class="obk-pool">'; s.pool.forEach(function (t, j) { h += s.used[j] ? '<span class="obk-tile gone"></span>' : '<button class="obk-tile" data-obk="tile" data-k="' + j + '">' + E(t) + '</button>'; });
+      return h + '</div>'; },
+    tap: function (d, s, act, k) { s.wrong = {};
+      if (act === 'hear') { speakIt(d.hear); return; }
+      if (act === 'slot') { var i = +k, j = s.slots[i]; if (j >= 0) { s.slots[i] = -1; delete s.used[j]; } return; }
+      if (act === 'tile') { var jj = +k; if (s.used[jj]) return; var at = s.slots.indexOf(-1); if (at < 0) return; s.slots[at] = jj; s.used[jj] = 1; } },
+    mount: function (root, d, s) { if (s.heard) return; s.heard = true; setTimeout(function () { speakIt(d.hear); }, 700); },
+    ready: function (d, s) { return s.slots.indexOf(-1) < 0; },
+    judge: function (d, s) { var bad = 0; s.slots.forEach(function (j, i) { if (s.pool[j] !== S(d.w[i])) { bad++; s.wrong[i] = 1; } }); if (!bad) return { ok: true };
+      s.slots.forEach(function (j, i) { if (s.wrong[i]) { delete s.used[j]; s.slots[i] = -1; } }); return { ok: false, msg: 'Listen again. Some words are not right yet. Check the capital and the end mark too.' }; },
+    solve: function (d, s) { s.used = {}; s.slots = d.w.map(function (t) { var j = s.pool.findIndex(function (x, jj) { return x === S(t) && !s.used[jj]; }); s.used[j] = 1; return j; }); s.wrong = {}; }
+  };
+
+  /* ---------- order: put the story in order ---------- */
+  T.order = { check: true,
+    err: function (d) { if (!isArr(d.steps) || d.steps.length < 2 || d.steps.length > 6) return 'steps must be 2 to 6 strips in the right order'; if (d.extra && (!isArr(d.extra) || d.extra.length > 2)) return 'extra must be at most 2 strips'; return ''; },
+    init: function (d) { return { pool: shufNot(d.steps.concat(d.extra || []).map(S)), slots: d.steps.map(function () { return -1; }), used: {}, wrong: {} }; },
+    say: function () { return 'What happened first? Put the story in order.'; },
+    how: function () { return 'Find what happened first. Then what came next. Tap the strips in order.'; },
+    label: function (d) { return 'Order ' + d.steps.length + ' strips'; },
+    view: function (d, s) {
+      var h = '<div class="cka-ord' + (s.ok ? ' lit' : '') + '">' + s.slots.map(function (j, i) { return '<button class="cka-oslot' + (j >= 0 ? ' full cka-snap' : '') + (s.wrong[i] ? ' cka-shake' : '') + '" data-obk="slot" data-k="' + i + '"><i>' + (i + 1) + '</i><span>' + (j >= 0 ? E(s.pool[j]) : '') + '</span></button>'; }).join('') + '</div>';
+      return h + '<div class="cka-cards">' + s.pool.map(function (t, j) { return '<button class="cka-card' + (s.used[j] ? ' gone' : '') + '" data-obk="strip" data-k="' + j + '"' + (s.used[j] ? ' disabled aria-hidden="true"' : '') + '>' + E(t) + '</button>'; }).join('') + '</div>'; },
+    tap: function (d, s, act, k) { s.wrong = {};
+      if (act === 'slot') { var i = +k, j = s.slots[i]; if (j >= 0) { s.slots[i] = -1; delete s.used[j]; } return; }
+      if (act === 'strip') { var jj = +k; if (s.used[jj]) return; var at = s.slots.indexOf(-1); if (at < 0) return; s.slots[at] = jj; s.used[jj] = 1; } },
+    ready: function (d, s) { return s.slots.indexOf(-1) < 0; },
+    judge: function (d, s) { var bad = 0; s.slots.forEach(function (j, i) { if (s.pool[j] !== S(d.steps[i])) { bad++; s.wrong[i] = 1; } }); if (!bad) return { ok: true };
+      s.slots.forEach(function (j, i) { if (s.wrong[i]) { delete s.used[j]; s.slots[i] = -1; } }); return { ok: false, msg: 'Some strips are out of order. What happened before that?' }; },
+    solve: function (d, s) { s.used = {}; s.slots = d.steps.map(function (t) { var j = s.pool.findIndex(function (x, jj) { return x === S(t) && !s.used[jj]; }); s.used[j] = 1; return j; }); s.wrong = {}; }
+  };
+
+  /* ---------- read and proof: the Reader (src/CoreReader.html) inside a lesson, named by data alone ---------- */
+  /* The Reader is a full screen of its own. The kit's tap opens it; when it closes, the activity goes on through the lesson player's
+     own tap (window.OB.kitTap), so the lesson counts it like any other activity. reader:true = only inside a One Bite lesson (not in a
+     unit check or a K-1 game, which refuse these two kinds). */
+  var TXT = /^[A-Z][A-Z0-9]*\.[A-Z0-9]+\.\d\d$/;
+  function play() { try { return typeof A !== 'undefined' && A && A.play; } catch (e) { return null; } }
+  function back(a, s) { setTimeout(function () { try { var p = play(); if (p && p.ob && p.ob.kit && p.ob.kit.s === s && W.OB && W.OB.kitTap) W.OB.kitTap(a, '', null); } catch (e) {} }, 0); }   /* only to the same activity that opened the book */
+  function book(d, s, btn) {   /* the question (q) and any message are already on the lesson screen, so the card is just the book and its button */
+    return '<div class="cka-book' + (s.busy ? ' busy' : '') + '"><div class="cka-bk" aria-hidden="true">📖</div><div class="cka-bt">' + E(s.title || 'The book') + '</div>' +
+      (s.over ? '<div class="cka-bw">' + (s.ok ? '✓ Done' : 'The book showed you the proof.') + '</div>' : '<button class="obk-btn obk-pri cka-open" data-obk="open"' + (s.busy ? ' disabled' : '') + '>' + E(btn) + '</button>') + '</div>'; }
+  function title(d, s) { if (s.title || !W.TLCORE || !W.TLCORE.text) return; W.TLCORE.text(d.text).then(function (t) { s.title = t.title; if (!s.busy) back('title', s); }).catch(function () {}); }   /* the book's title shows as soon as it has loaded */
+  var NOLOAD = 'The book did not open. Check the internet, then tap the button again.';
+  T.read = { reader: true,
+    err: function (d) { if (!TXT.test(S(d.text))) return 'text must be a text id from texts/ (like C45.B1.01)'; if (d.page != null && !(d.page >= 0)) return 'page must be a page number from 0'; return ''; },
+    init: function (d) { var s = { busy: false, done: false, left: false, fail: false, title: '' }; title(d, s); return s; },
+    say: function (d) { return d.page != null ? 'Open the book and read these pages.' : 'Open the book and read the chapter.'; },
+    how: function () { return 'Read every page. Tap a blue word to see what it means. Tap Next at the end.'; },
+    label: function (d) { return 'Read: ' + S(d.text); },
+    view: function (d, s) { return book(d, s, s.left ? 'Keep reading ▶' : 'Open the book ▶'); },
+    tap: function (d, s, act) {
+      if (act === 'read-back') { s.busy = false; if (s.done) return 'ok'; if (s.fail) { s.msg = NOLOAD; return; } s.left = true; s.msg = 'Read to the end of the chapter. Then tap Next.'; return; }
+      if (act !== 'open' || s.busy || !W.TLCORE || !W.TLCORE.reader) return; s.busy = true; s.fail = false;
+      W.TLCORE.reader.open(d.text, { exit: 'x', page: d.page }).then(function (r) { s.done = !!(r && r.done); back('read-back', s); }, function () { s.done = false; s.fail = true; back('read-back', s); }); },
+    solve: function (d, s) { s.done = true; }
+  };
+  T.proof = { reader: true,
+    err: function (d) { if (!TXT.test(S(d.text))) return 'text must be a text id from texts/ (like C45.B1.01)'; if (!d.q) return 'put the question in q';
+      if (!d.proof || !(typeof d.proof === 'string' ? d.proof.trim().split(/\s+/).length >= 2 : isArr(d.proof) && d.proof.length)) return 'proof must be 2 or more words from ONE sentence of the text (or sentence numbers)'; return ''; },
+    init: function (d) { var s = { busy: false, res: null, tries: 0, title: '' }; title(d, s); return s; },
+    say: function () { return 'Open the book. Tap the sentence that proves it.'; },
+    how: function (d) { return S(d.how) || ('Read the page. Which sentence shows ' + (d.look || 'the answer') + '? Tap it.'); },
+    label: function (d) { return 'Find the proof: ' + S(d.q); },
+    view: function (d, s) { return book(d, s, 'Find the proof ▶'); },
+    tap: function (d, s, act) {
+      if (act === 'proof-back') { s.busy = false; s.msg = s.fail ? NOLOAD : 'Open the book and tap the sentence that proves it.'; return; }
+      if (act !== 'open' || s.busy || !W.TLCORE || !W.TLCORE.reader) return; s.busy = true; s.fail = false;
+      /* tries carry over when he closes the book and opens it again, so closing never wipes out a miss */
+      W.TLCORE.reader.open(d.text, { exit: 'x', ask: { q: d.q, proof: d.proof, how: d.how, look: d.look, tries: s.tries } }).then(function (r) {
+        var p = r && r.proof;
+        if (!p) { try { console.warn('proof: "' + d.proof + '" is not in exactly one sentence of ' + d.text); } catch (e) {} s.res = { right: true, tries: 2, broken: true }; s.busy = false; return back('check', s); }   /* a broken question never traps him: it goes on, without first-try credit */
+        s.tries = Math.max(s.tries, p.tries);
+        if (p.right || p.tries >= 3) { s.res = p; s.busy = false; back('check', s); } else back('proof-back', s); }, function () { s.fail = true; back('proof-back', s); }); },
+    ready: function (d, s) { return !!s.res; },
+    judge: function (d, s) { var p = s.res, pl = play(), extra = Math.max(0, p.tries - 1 - s.misses);
+      if (pl && !p.broken) pl.misses = (pl.misses || 0) + extra;   /* + the 1 the lesson player adds itself when it is shown */
+      if (p.right) { s.misses = Math.max(s.misses, p.tries - 1); return { ok: true }; }   /* found it on try 2 or 3: right, but not first try */
+      s.misses = Math.max(s.misses, 1); return { ok: false, msg: 'The book showed you the proof. Read it again and see how it shows the answer.' }; },   /* the lesson player then marks it shown (and adds its own 1 miss) */
+    solve: function (d, s) { s.res = s.res || { right: false, tries: 3 }; }
+  };
+  CSS += '.cka-book{display:grid;justify-items:center;gap:10px;max-width:520px;margin:0 auto;padding:18px;border-radius:18px;background:linear-gradient(160deg,#FFF8E6,#F4ECFF);border:2px solid #E4D7F5;text-align:center}' +
+    '.cka-bk{font-size:64px;line-height:1}.cka-bt{font:800 22px/1.3 inherit;color:#1F2A44}.cka-bw{font:600 18px/1.4 inherit;color:#33415C}.cka-book.busy{opacity:.6}.cka-open{min-height:64px;font-size:20px}';
+
+  W.TLCORE = W.TLCORE || {}; W.TLCORE.acts = T;
+  /* join the kit as soon as it exists (OneBiteKit.html loads right after the core files) */
+  var tries = 0;
+  (function join() {
+    if (W.OBK && W.OBK.types) { css(); Object.keys(T).forEach(function (k) { if (!W.OBK.types[k]) W.OBK.types[k] = T[k]; }); W.TLCORE.actsJoined = true; return; }   /* OBK.list stays the first ten (tests/lib/onebite.js plays those); these seven are played by tests/lib/coreacts.js */
+    if (tries++ < 1200) setTimeout(join, 50);
+  })();
+})();
+</script>

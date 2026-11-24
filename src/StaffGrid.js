@@ -23,12 +23,16 @@ function sgRoute_(e) {
 /* The boy/staff sign-in page (QuestPage) plus SignOutBar: Sign out top-right on every boy screen, auto sign-out after 5 quiet minutes. */
 function sgQuest_() {
   var page = HtmlService.createHtmlOutputFromFile('QuestPage').getContent(), bar = '';
-  try { bar = HtmlService.createHtmlOutputFromFile('SignOutBar').getContent(); } catch (e) { bar = ''; }
+  try { bar = HtmlService.createHtmlOutputFromFile('UiKit').getContent(); } catch (e) { bar = ''; }   /* 2026-11-23 HoS: THE BUTTON SYSTEM, first, so every part can use it (window.TLK, docs/BUTTON-SYSTEM.md) */
+  try { bar += HtmlService.createHtmlOutputFromFile('SignOutBar').getContent(); } catch (e) {}
+  try { bar += HtmlService.createHtmlOutputFromFile('OilTrail').getContent(); } catch (e) {}
+  try { bar += HtmlService.createHtmlOutputFromFile('JellyTrail').getContent(); } catch (e) {}   /* 2026-11-24 HoS: the Sufganiyah jelly trail, a Chanukah store item (window.tlJellyOn) */   /* 2026-11-23 HoS: Chanukah olive oil, the default trail through 3 Tevet 5787 (window.tlOilOn) */
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderCard').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('FireLinks').getContent(); } catch (e) {}   /* EVERYTHING ON FIREBASE: links from web.app carry the sign-in (FireBridge.js) */
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderGo').getContent(); } catch (e) {}   /* v7.2 Stage 5: opens the first lesson after a TEST boy's Pathfinder day-1 screens (inert otherwise) */
   try { bar += HtmlService.createHtmlOutputFromFile('HomePage').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('SignInEnergy').getContent(); } catch (e) {}   /* 2026-11-18 HoS: the first page, super-upgraded energy look (off switch TL_SIGNIN_V6=false) */
+  try { bar += HtmlService.createHtmlOutputFromFile('Warp3D').getContent(); } catch (e) {}   /* 2026-11-23: the 3D journey: galaxy keypad, hyperspace sign-in, 3D welcome and map home (off switch TL_W3D=false) */
   try { bar += HtmlService.createHtmlOutputFromFile('KidReminders').getContent(); } catch (e) {}   /* Access.js: reminders from home pop up at their time */   /* the front home page: logo, code pad, flying subjects, encouraging messages */   /* PATHFINDER: "Start your Pathfinder" card on his home screen */
   try { bar += HtmlService.createHtmlOutputFromFile('CalmScreens').getContent(); } catch (e) {}   /* HoS 2026-11-19: no flashing opening screens, pop-ups that do not blink, a calmer home. LAST: it lifts the cover below */
   var i = page.lastIndexOf('</body>');
@@ -64,6 +68,7 @@ function sgPage_() {
   try { add += HtmlService.createHtmlOutputFromFile('StaffLibrary').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('StaffTeach').getContent(); } catch (e) {}   /* HoS 2026-11-21 simplify step 5: WHAT WE TEACH, the Curriculum area's one view (StaffHome.html draws it there) */
   try { add += HtmlService.createHtmlOutputFromFile('BlockBuildersData').getContent() + HtmlService.createHtmlOutputFromFile('BlockBuildersUI').getContent() + HtmlService.createHtmlOutputFromFile('BlockBuildersStaff').getContent(); } catch (e) {}   /* HoS 2026-11-22: Block Builders workbook teacher board (Reports), before StaffHome so its tile sees #bbs-btn */
+  try { add += HtmlService.createHtmlOutputFromFile('CoreWriteStaff').getContent(); } catch (e) {}   /* Core Growth (job T): the teacher's writing inbox (Reports), before StaffHome so its tile sees #cws-btn */
   try { add += HtmlService.createHtmlOutputFromFile('StaffHome').getContent(); } catch (e) {}   /* HoS 2026-11-19: the new staff home (5 areas: Students, Today, Curriculum, Reports, School). LAST: it organizes all the others */   /* Library & One-Tap Command Center (Library.js); floating button, own overlay, LAST */
   var i = page.lastIndexOf('</body>'); if (add) page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
   if (add.indexOf('id="sh-css"') >= 0) { var hd = page.indexOf('</head>');   /* HoS 2026-11-20: no flash of the old pills, banners and header while the boys load (StaffHome.html styles html.sh-boot) */

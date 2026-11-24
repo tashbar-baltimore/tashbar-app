@@ -30,10 +30,14 @@ async function call(fn, args) {
   fs.writeFileSync(path.join(OUT, 'tools.json'), JSON.stringify(tools));
   fs.writeFileSync(path.join(OUT, 'boot.js'), fs.readFileSync(path.join(__dirname, 'boot.js'), 'utf8').replace('__API_URL__', CALLS).replace('__APPS_URL__', API));
   fs.copyFileSync(path.join(__dirname, 'sw.js'), path.join(OUT, 'sw.js'));
-  /* PICS-1: real pictures for lessons (RealPics.html), served at /pics/. Without this a rebuild REMOVES them from the live site. */
-  const PICS = path.join(__dirname, 'pics'); if (fs.existsSync(PICS)) fs.cpSync(PICS, path.join(OUT, 'pics'), { recursive: true });
-  /* the sign-in theme tune as a ready sound file (GameMap.html), served at /sounds/. */
-  const SOUNDS = path.join(__dirname, 'sounds'); if (fs.existsSync(SOUNDS)) fs.cpSync(SOUNDS, path.join(OUT, 'sounds'), { recursive: true });
+  /* SHARED ART LIBRARY (HoS 2026-11-24): pictures, sounds and models come from art/ (one copy for 1.0, 2.0 and every app).
+     Every library file that 1.0 names (in src/, packs/ or texts/: e.g. TL_PICS in RealPics.html, the theme tune in GameMap.html)
+     is served at /pics/, /sounds/ and /models/, the same addresses as before. Without this a rebuild REMOVES them from the site. */
+  { const n = require('../tools/art-use.js').copyUsed(['src', 'packs', 'texts'], OUT); console.log('art: ' + n.pics + ' pictures, ' + n.sounds + ' sounds, ' + n.models + ' models from art/'); }
+  /* the screen-snapshot helper (html2canvas 1.4.1, MIT) for the Chanukah olive oil on the home screen (OilTrail.html), served at /vendor/ from our own site. */
+  const VENDOR = path.join(__dirname, 'vendor'); if (fs.existsSync(VENDOR)) fs.cpSync(VENDOR, path.join(OUT, 'vendor'), { recursive: true });
+  /* CORE GROWTH content store (job T): long texts (texts/<JOB>/<ID>.txt) as /texts/<ID>.json, loaded only when a boy opens one (TLCORE.text in CoreKit.html). A text with a problem stops the build. */
+  { const n = require('../tools/core/texts.js').build(path.join(OUT, 'texts')); console.log('texts: ' + n); }
   fs.writeFileSync(path.join(OUT, 'page-hash.json'), JSON.stringify({ h: pageR.h, built: BUILT }));
   let page = pageR.html; const at = page.indexOf('<head>'); if (at < 0) throw new Error('no <head> in the student page');
   page = page.slice(0, at + 6) + '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Tashbar Learning</title><script>window.TL_PAGE_HASH="' + pageR.h + '";window.TL_PAGE_BUILT=' + BUILT + ';</script><script src="/boot.js"></script>' + page.slice(at + 6);

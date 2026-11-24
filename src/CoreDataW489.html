@@ -1,0 +1,303 @@
+<script>
+/* CoreDataW489.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 7 (L08), Unit 2 "Explain It Clearly" (information writing). Cast: The Beacon newsroom.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L08.04':{name:'Cause and Effect',
+  teach:[
+    {how:'An informative piece can be organized by CAUSE AND EFFECT. A cause is what makes something happen; an effect is what happens because of it. One plan is ONE CAUSE, MANY EFFECTS: one cause in the middle, and every effect comes straight from it. A long dry summer lowers the reservoirs, browns the lawns and shrinks the crops.', q:'Gavriel’s chart starts: “The power went out.” Which plan is one cause, many effects?', o:['The power went out, so the lights went dark, the fridge stopped and the fans went quiet.','The power went out, which led to a warm fridge, which led to spoiled milk.','The power went out on Tuesday, and Thursday was sunny.']},
+    {how:'The other plan is A CHAIN: A causes B, and B causes C, like a row of dominoes. Each effect becomes the cause of the next step. Heavy snow fell, which led to icy roads; as a result, buses could not run safely; because of this, school closed.', q:'Which one is a chain?', o:['Yeast eats sugar and makes gas; the gas forms bubbles; the bubbles make the dough rise.','A storm closed school, stopped the mail and cancelled the game.','Bread is made of flour, water, yeast and salt.']},
+    {how:'SIGNAL WORDS show the reader each link: "because of this," "as a result," "which led to," "this, in turn,". With these words, the cause comes FIRST and the effect comes after the signal word. The mistake is a FLIPPED link, where the effect is written as if it were the cause: "School closed, which led to the snow." Snow closes school, not the other way around.', q:'Which link is written the right way, cause first?', o:['Heavy rain fell, which led to a flooded road.','The road flooded, which led to heavy rain.','The road flooded; as a result, rain fell all night.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each paragraph plan.', bins:[{id:'O',label:'🌟 One cause, many effects'},{id:'C',label:'⛓️ A chain'}],
+      items:[{label:'A drought lowered the reservoir, browned the lawns and shrank the crops.',bin:'O'},{label:'Snow fell, which led to icy roads; as a result, the buses stayed home.',bin:'C'},{label:'The heat wave dried the garden, warmed the classrooms and crowded the pool.',bin:'O'},{label:'Yeast made gas; the gas formed bubbles; the bubbles raised the dough.',bin:'C'}],
+      h:'Does every effect come straight from the one cause? Or does each effect cause the next one?'},
+    {t:'pairs', q:'Match each word to what it means.', pairs:[['the cause','what makes something happen'],['the effect','what happens because of it'],['a chain','each effect causes the next']],
+      h:'Ask: did it make something happen, or did it happen because of something?'},
+    {t:'spotall', q:'Tap every SIGNAL WORD that links a cause to its effect.', cells:[{label:'because of this,',ok:true},{label:'as a result,',ok:true},{label:'which led to',ok:true},{label:'for example,',ok:false},{label:'however,',ok:false}],
+      h:'Does the word say "this made that happen"?'},
+    {t:'sort', q:'Flipped links! Sort each sentence.', bins:[{id:'G',label:'✅ Cause first'},{id:'M',label:'⚠️ Mistake: flipped'}],
+      items:[{label:'The roads iced over, which led to school closing.',bin:'G'},{label:'School closed, which led to the snowstorm.',bin:'M'},{label:'The bread rose; as a result, the yeast made gas.',bin:'M'},{label:'The pipes froze; as a result, one cracked.',bin:'G'}],
+      h:'Which one really made the other happen? That one must come before the signal word.'},
+    {t:'order', q:'Build a chain from the first cause to the last effect. Tap the sentences in order.', tiles:['Heavy snow fell overnight.','This led to icy roads.','As a result, the buses could not run.','Because of this, school closed.'], extra:['Also, snow is white.'],
+      h:'Start with the first cause. Each next sentence is caused by the one before it.'},
+    {t:'spotall', q:'Benny’s piece is about a long, dry summer. Tap every effect that comes straight from the dry weather.', cells:[{label:'The reservoir dropped.',ok:true},{label:'Lawns turned brown.',ok:true},{label:'Crops grew smaller.',ok:true},{label:'School started in September.',ok:false},{label:'The Beacon got a new editor.',ok:false}],
+      h:'Ask: would this happen without the dry weather?'},
+    {t:'write', q:'Your turn to write. Topic: why a snow day happens, or why bread rises. Write three sentences in a chain, with a signal word at each link.', min:0, checks:['⛓️ Each effect causes the next one.','🔗 I used a signal word at each link.','➡️ The cause comes before the effect.'], h:'Try: "First … This led to … As a result, …". Then ask: did each step really cause the next?'}
+  ],
+  check:[
+    {q:'Eli’s report: “The new library opened near the yeshiva. Because of this, boys can borrow books after Maariv, the chess club has a room, and the Beacon staff has a quiet room to write.” Which is it: one cause, many effects; a chain; or flipped?', o:['one cause, many effects','a chain','flipped'], h:'Does every effect come straight from the one cause, or does each effect cause the next?'},
+    {q:'Yoni writes: “The streets flooded, which led to three days of heavy rain.” Which is it: one cause, many effects; a chain; or flipped?', o:['flipped','a chain','one cause, many effects'], h:'Which one really made the other happen? Is it written first?'},
+    {t:'order', q:'Build a chain from the first cause to the last effect. Tap the sentences in order.', tiles:['Leaves fell into the storm drains.','This blocked the drains.','As a result, the street flooded.'], extra:['Also, leaves are pretty.'], h:'Start with the first cause. Each next sentence is caused by the one before it.'}
+  ],
+  re:[
+    {how:'A new way: dominoes. In a chain, each domino knocks over the next one. With one cause, many effects, one push knocks over several dominoes standing around it.', q:'One push that knocks over several dominoes at once is like…', o:['one cause, many effects','a chain','a flipped link']},
+    {how:'A simpler step: find the cause first. Ask "Why did this happen?" The answer is the cause. Then add a signal word and the effect.', q:'“The lights went out.” Why? “A storm knocked down the power lines.” Which is the cause?', o:['the storm knocked down the power lines','the lights went out','the lights came back on']},
+    {how:'The skill underneath: Glue Words (Level 7). Result glue like "As a result," shows that one thing caused another.', q:'"As a result," shows…', o:['the effect of something before it','one more reason','proof']}
+  ]},
+
+  'WRIT.PARA.L08.05':{name:'Precise and Technical',
+  teach:[
+    {how:'You already cut vague words like "stuff" and "things". Now go further: use the PRECISE TOPIC WORD, the exact word an expert uses. Writing about Baltimore’s water? Say "reservoir", not "the big lake". About bread? Say "yeast", not "the stuff that makes it puffy". A sentence with no topic word is VAGUE.', q:'Which sentence uses the precise topic word?', o:['Baltimore stores its drinking water in reservoirs.','Baltimore keeps its water in some big lake things.','Baltimore has stuff for its water.']},
+    {how:'A topic word is new to many readers, so EXPLAIN IT the first time you use it. Three ways: after a comma ("klaf, parchment made from the skin of a kosher animal,"), with "called" ("the pages are sewn in groups called signatures"), or with "which is" ("black ice, which is a thin, clear layer of ice on a road,"). Topic word plus explanation is PRECISE AND EXPLAINED. A topic word with no help is NOT EXPLAINED.', q:'Which sentence is precise and explained?', o:['Gluten, a stretchy protein in wheat flour, traps the gas in dough.','Gluten traps the gas in dough.','The stretchy stuff traps the gas in dough.']},
+    {how:'Explain the word only the FIRST time. After that, just use it, and use the SAME word every time. Switching to "the lake", "the water place" and "it" makes the reader wonder if you mean something new.', q:'Benny explained "reservoir" in his first sentence. In his third sentence, what should he write?', o:['the reservoir','the reservoir, a lake made to store drinking water,','the big water lake']}
+  ],
+  practice:[
+    {t:'sort', q:'Benny’s piece on the city’s water. Each sentence is the first time its word appears. Sort each one.', bins:[{id:'P',label:'🎯 Precise and explained'},{id:'N',label:'❔ Not explained'},{id:'V',label:'🌫️ Vague'}],
+      items:[{label:'Water is cleaned at a filtration plant, a building that removes dirt and germs.',bin:'P'},{label:'Water is cleaned at a filtration plant.',bin:'N'},{label:'Water gets cleaned at some place with machines and stuff.',bin:'V'},{label:'The water flows through an aqueduct, a large pipe or tunnel that carries water.',bin:'P'},{label:'Then the water flows through an aqueduct.',bin:'N'},{label:'Then the water goes through the thing under the ground.',bin:'V'}],
+      h:'Is there an exact topic word? If yes, does the sentence tell the reader what it means?'},
+    {t:'pairs', q:'Match each vague phrase to the precise topic word.', pairs:[['the stuff that makes dough puffy','yeast'],['the big lake that holds city water','reservoir'],['the back edge of a sefer','spine']],
+      h:'What word would an expert use?'},
+    {t:'spotall', q:'Tap every sentence that EXPLAINS its topic word.', cells:[{label:'A sofer writes on klaf, parchment made from the skin of a kosher animal.',ok:true},{label:'The pages are sewn in groups called signatures.',ok:true},{label:'Black ice, which is clear ice on a road, is hard to see.',ok:true},{label:'The binder glued the signatures.',ok:false},{label:'Yeast makes carbon dioxide.',ok:false}],
+      h:'Look for a comma explanation, "called", or "which is".'},
+    {t:'sort', q:'Sneaky ones! Gavriel’s piece on binding a sefer. The sentences come in order. Sort each one.', bins:[{id:'G',label:'✅ Good'},{id:'M',label:'⚠️ Mistake'}],
+      items:[{label:'The binder sews the pages together at the spine, the back edge of the sefer.',bin:'G'},{label:'Then the binder glues the thingies.',bin:'M'},{label:'Next, he trims the text block.',bin:'M'},{label:'Last, he covers the spine with cloth.',bin:'G'}],
+      h:'A vague word? A topic word never explained? Or a word explained once and then reused?'},
+    {t:'order', q:'Build a sentence that explains a topic word. Tap the tiles in order.', tiles:['Yeast,','a tiny living thing,','turns sugar','into gas.'],
+      h:'Topic word first. Then what it means, between commas. Then the rest.'},
+    {t:'spotall', q:'Tap every PRECISE TOPIC WORD for a piece on snowstorms.', cells:[{label:'blizzard',ok:true},{label:'snowplow',ok:true},{label:'black ice',ok:true},{label:'white stuff',ok:false},{label:'cold thing',ok:false}],
+      h:'Which words would a weather reporter use?'},
+    {t:'write', q:'Your turn to write. Pick a topic: Baltimore’s water, why bread rises, or how a sefer is bound. Write two sentences. Use one precise topic word, and explain it the first time.', min:0, checks:['🎯 I used the exact topic word.','💬 I explained it the first time: a comma, "called", or "which is".','🔁 The second time, I used the same word without explaining it again.'], h:'Try: "___, a ___ that ___, ___." Then use the word again plainly.'}
+  ],
+  check:[
+    {q:'Eli’s piece on winter weather: “Sleet, which is rain that freezes into tiny ice balls as it falls, made the steps slippery.” Is it precise and explained, not explained, or vague?', o:['precise and explained','not explained','vague'], h:'Is there a topic word? Does the sentence tell the reader what it means?'},
+    {q:'Benny’s piece on the city’s water: “At the plant, the water goes through flocculation before it is filtered.” This is the first time the word appears. Is it precise and explained, not explained, or vague?', o:['not explained','precise and explained','vague'], h:'Is there a topic word? Would a new reader know what it means?'},
+    {t:'order', q:'Build a sentence that explains a topic word. Tap the tiles in order.', tiles:['A snowplow,','a truck with','a wide blade,','clears the roads.'], h:'Topic word first. Then what it means, between commas. Then the rest.'}
+  ],
+  re:[
+    {how:'A new way: a tour guide. A good guide says the real name of each thing, then tells the group what it is: "This is the spine, the back edge of the sefer."', q:'A guide who says the real name and what it means is…', o:['precise and explained','vague','not explained']},
+    {how:'A simpler step: first circle the vague word ("stuff", "thing", "the big lake"). Ask: what would an expert call it? Write that word.', q:'In a piece on bread, what is the topic word for "the stuff that makes dough puffy"?', o:['yeast','salt','water']},
+    {how:'The skill underneath: Explain It All (Level 8). An informative piece teaches the reader, so the reader must understand every word.', q:'An informative piece is written to…', o:['teach the reader','win an argument','tell a story']}
+  ]},
+
+  'WRIT.PARA.L08.06':{name:'Objective Tone',
+  teach:[
+    {how:'An informative piece keeps an OBJECTIVE tone: it gives facts the reader could check, not the writer’s feelings. A sentence that tells what the writer thinks or feels is an OPINION. Formal Voice cut slang ("gonna", "you guys"). Objective tone goes further: even a polite opinion does not belong in an information piece.', q:'Which sentence is objective?', o:['Baltimore’s water comes from three reservoirs.','Baltimore’s reservoirs are the most beautiful lakes in Maryland.','I think the reservoirs are interesting.']},
+    {how:'Opinion clues come in two kinds. Easy to see: "I think", "I feel", "in my view", "amazing", "boring", "the best". Harder to see: LOADED WORDS that judge quietly. "The plows finally crawled in" says they were too slow. "Only ten inches fell" says it was not much. "A whole two days" says it was too long. One loaded word turns a fact into an opinion. Fix it: cut the clue, or swap in a plain fact: "The plows reached our street at noon."', q:'Find the loaded word: “The plows finally reached our street.”', o:['finally','plows','street']},
+    {how:'Objective does not mean nobody’s view may appear. A reporter may give someone else’s view by naming who said it: "Mr. Gross said the trip was a success." It is a fact that he said it, so the sentence is still OBJECTIVE. But an UNNAMED VIEW, like "Everyone agrees the drill went well" or "Many people say", hides the writer’s own opinion behind "everyone". That is an OPINION.', q:'Which sentence stays objective?', o:['Rabbi Rosen said the new library is “a gift to every boy.”','Everyone agrees the new library is a gift to every boy.','I feel the new library is great.']}
+  ],
+  practice:[
+    {t:'sort', q:'Gavriel’s report: how a snowstorm closed school. Sort each sentence.', bins:[{id:'O',label:'📏 Objective'},{id:'P',label:'💭 Opinion'}],
+      items:[{label:'The storm dropped ten inches of snow overnight.',bin:'O'},{label:'Snow days are the best days of the year.',bin:'P'},{label:'The city plowed the main roads first.',bin:'O'},{label:'The plows finally crawled in at noon.',bin:'P'},{label:'Rabbi Rosen said the roads were “too dangerous for buses.”',bin:'O'}],
+      h:'Could the reader check it? Or does it tell what the writer thinks or feels?'},
+    {t:'pairs', q:'Match each opinion to its objective fix.', pairs:[['Only ten inches fell.','Ten inches of snow fell.'],['Sewing the pages is boring.','The binder sews each group of pages.'],['I feel the lake is huge.','The reservoir holds billions of gallons.']],
+      h:'Cut the feeling. Keep a fact the reader could check.'},
+    {t:'spotall', q:'Tap every OPINION CLUE.', cells:[{label:'I think',ok:true},{label:'amazing',ok:true},{label:'boring',ok:true},{label:'finally',ok:true},{label:'only ten inches',ok:true},{label:'reservoir',ok:false},{label:'said',ok:false}],
+      h:'Does the word tell what the writer feels or judges?'},
+    {t:'sort', q:'Sneaky ones! Benny tried to fix his opinions. Sort each fix.', bins:[{id:'G',label:'✅ Now objective'},{id:'M',label:'⚠️ Mistake: still an opinion'}],
+      items:[{label:'Yeast is a tiny living thing that makes gas.',bin:'G'},{label:'Yeast is a truly wonderful tiny living thing.',bin:'M'},{label:'Everyone agrees gluten is the key to good bread.',bin:'M'},{label:'Yeast takes a whole hour to work.',bin:'M'},{label:'Gluten traps the gas, so the dough rises.',bin:'G'}],
+      h:'Look for a clue word, a loaded word like "a whole", or a view with no name. One is enough to make it an opinion.'},
+    {t:'order', q:'Build an objective sentence. Tap the tiles in order.', tiles:['The city','plows the','main roads','first.'], extra:['the best!'],
+      h:'Who does it, what they do, and which comes first. No feelings.'},
+    {t:'spotall', q:'Akiva’s piece on Baltimore’s water. Tap every sentence that is OBJECTIVE.', cells:[{label:'Rain and streams fill the reservoirs.',ok:true},{label:'Pipes carry the water to the city.',ok:true},{label:'The city’s engineer said the water is “safe to drink.”',ok:true},{label:'Our water is the best in America.',ok:false},{label:'I find water pipes boring.',ok:false},{label:'Everyone says our water is the safest anywhere.',ok:false}],
+      h:'Could the reader check it? A view with a name on it is a fact about what he said.'},
+    {t:'write', q:'Your turn to write. Topic: how a snowstorm closes school, or why bread rises. Write three objective sentences. Then read them again and cut any opinion clue.', min:0, checks:['📏 Every sentence is a fact a reader could check.','✂️ No "I think", no "the best", no loaded words like "finally" or "only".','🗣️ If I gave someone’s view, I named who said it.'], h:'Ask about each sentence: could the reader check it? If it tells what YOU feel, cut it or swap in a fact.'}
+  ],
+  check:[
+    {q:'Benny’s report on the snowstorm: “The city took a whole two days to plow our street.” Is it objective, opinion, or slang?', o:['opinion','objective','slang'], h:'Could the reader check every word, or does one word judge quietly?'},
+    {q:'Eli’s report on the fire drill: “The fire chief said the drill went ‘very well.’” Is it objective, opinion, or slang?', o:['objective','opinion','slang'], h:'Whose view is it? Did the writer name who said it?'},
+    {t:'order', q:'Eli wrote: “The bus crawled in late again.” Rebuild it as an objective sentence. Tap the tiles in order.', tiles:['The bus','arrived','at 8:40.'], extra:['crawled'], h:'Who, what, when. Leave out the word that judges.'}
+  ],
+  re:[
+    {how:'A new way: the scale in the grocery. It does not say "a lovely, heavy watermelon". It just says "12 pounds". An objective writer is like the scale.', q:'A writer who gives only facts, like a scale, is…', o:['objective','an opinion','slang']},
+    {how:'A simpler step: hunt for clue words first: I think, in my view, amazing, the best. Then hunt for loaded words: finally, crawled, only, a whole. Each one marks an opinion.', q:'Which is a loaded word?', o:['finally','reservoir','inches']},
+    {how:'The skill underneath: Formal Voice (Level 7). Formal writing cuts slang and shouting. Objective writing also cuts the writer’s opinions.', q:'Formal Voice cut…', o:['slang and shouting','facts','topic words']}
+  ]},
+
+  'WRIT.PARA.L08.07':{name:'Bring It Home',
+  teach:[
+    {how:'Strong Finish (Level 6) said your main point again. Now go further: an informative conclusion BRINGS IT HOME in two moves. Move 1, ONE TAKEAWAY: join the key points into one sentence that shows how they fit together, instead of listing them again. Not "Snow fell. Roads iced. Buses stopped. School closed." Instead: "In short, one night of heavy snow can ice the roads and shut a whole school." Move 2 comes next: WHY IT MATTERS.', q:'Benny’s piece explained how snow closes school. Which sentence joins the key points into one takeaway?', o:['In short, one night of heavy snow can ice the roads and shut a whole school.','Snow fell. The roads iced. The buses stopped. School closed.','I love snow days more than anything.']},
+    {how:'Move 2, WHY IT MATTERS, stays objective: it shows how the facts help the reader, not how you feel. Start it with "Knowing this,". "Knowing this, families can check the news early on a snowy morning." Not "Snow days are awesome!"', q:'Which sentence says why it matters?', o:['Knowing this, a baker can keep dough warm so it rises well.','Bread is the best food ever.','Bread was first baked long ago.']},
+    {how:'Three mistakes undo a conclusion. ADDS A NEW FACT: a brand-new fact the piece never explained ("Also, snowflakes have six sides."). AN OPINION RANT: the writer’s feelings pile up ("Snow is the worst and I hate it!"). COPIES THE OPENING: the first sentence again, word for word or nearly, so the reader learns nothing from the end. One takeaway plus why it matters, with none of these, BRINGS IT HOME.', q:'Bread piece opening: “Bread rises because of two things.” Which ending copies the opening?', o:['Bread rises because of two things.','In short, yeast makes the gas and gluten holds it, so the dough rises.','Knowing this, a baker can keep dough warm so it rises well.']}
+  ],
+  practice:[
+    {t:'sort', q:'Akiva’s piece explained how rain becomes Baltimore’s tap water. Sort each closing sentence.', bins:[{id:'S',label:'📦 One takeaway'},{id:'W',label:'💡 Why it matters'},{id:'X',label:'⚠️ Does not belong'}],
+      items:[{label:'In short, our tap water is rain that was stored, cleaned and piped to our homes.',bin:'S'},{label:'Knowing this, families can see why saving water in a dry summer helps the whole city.',bin:'W'},{label:'Also, some reservoirs have fish.',bin:'X'},{label:'Water is the most amazing thing in the world!',bin:'X'},{label:'Knowing this, a boy can see why the city asks for care with water.',bin:'W'}],
+      h:'Does it join the key points, tell the reader why they are useful, or neither?'},
+    {t:'pairs', q:'Match each closing sentence to its name.', pairs:[['In short, one night of snow can shut a school.','one takeaway'],['Knowing this, families can plan for snow days.','why it matters'],['Also, snowflakes have six sides.','adds a new fact']],
+      h:'Does it join what the piece explained? Is it useful to the reader? Or is it new?'},
+    {t:'spotall', q:'Tap every sentence that joins the key points into ONE TAKEAWAY.', cells:[{label:'In short, yeast makes the gas and gluten holds it, so the dough rises.',ok:true},{label:'To sum up, folding, sewing and a cover turn loose pages into a sefer that lasts.',ok:true},{label:'Yeast makes gas. Gluten traps gas. The dough rises.',ok:false},{label:'Also, flour comes from wheat.',ok:false},{label:'I think binding is boring.',ok:false}],
+      h:'A takeaway is ONE sentence that shows how the points fit together. A list just says them again.'},
+    {t:'sort', q:'Sneaky endings! Yoni’s piece on binding a sefer opened: “A sefer is held together in three steps.” Sort each ending.', bins:[{id:'G',label:'✅ Brings it home'},{id:'C',label:'⚠️ Mistake: copies the opening'},{id:'R',label:'⚠️ Mistake: an opinion rant'}],
+      items:[{label:'In short, folding, sewing and a strong cover turn loose pages into a sefer that lasts. Knowing this, a boy can open his sefer gently.',bin:'G'},{label:'A sefer is held together in three steps.',bin:'C'},{label:'Binding is the coolest job ever and everyone should love it!',bin:'R'},{label:'As I said, a sefer is held together in three steps.',bin:'C'},{label:'To sum up, sewn pages and a cover keep a sefer whole. Knowing this, a boy can see why a sewn sefer lasts for years.',bin:'G'}],
+      h:'Does it join the points and say why they matter? Or does it repeat the first line, or pile up feelings?'},
+    {t:'order', q:'Build a conclusion: one takeaway, then why it matters. Tap the sentences in order.', tiles:['In short, yeast makes the gas and gluten holds it, so the dough rises.','Knowing this, a baker keeps dough warm','so the yeast can do its job.'], extra:['Also, challah is braided.'],
+      h:'The takeaway first. Then "Knowing this," and how it helps. Leave out anything new.'},
+    {t:'spotall', q:'Tap every sentence that says WHY IT MATTERS and stays objective.', cells:[{label:'Knowing this, drivers can watch for black ice.',ok:true},{label:'Knowing this, a baker can fix flat dough.',ok:true},{label:'Snow days are the greatest.',ok:false},{label:'Also, hail can be as big as a golf ball.',ok:false}],
+      h:'Does it show how the facts help the reader? Or is it a feeling, or a new fact?'},
+    {t:'write', q:'Your turn to write. Write a two-sentence conclusion for a piece on how a snowstorm closes school. Join the key points into one takeaway, then say why it matters.', min:0, checks:['📦 I joined the key points into one takeaway, not a list.','💡 I said why it matters to the reader.','🚫 No new fact, no opinion rant, no copied opening.'], h:'Start the takeaway with "In short,". Start the second sentence with "Knowing this,".'}
+  ],
+  check:[
+    {q:'Eli’s piece on how a heat wave dries out a garden opened: “A heat wave can dry out a garden in many ways.” His ending: “In conclusion, a heat wave can dry out a garden in many ways.” Which is it: brings it home, copies the opening, or adds a new fact?', o:['copies the opening','brings it home','adds a new fact'], h:'Read the opening and the ending side by side. What did the ending add?'},
+    {q:'Gavriel’s piece explained how a fire drill empties the building. His ending: “In short, one alarm and a set route for each class bring everyone safely to the yard. Also, smoke alarms need new batteries every year.” Which is it: brings it home, adds a new fact, or an opinion rant?', o:['adds a new fact','brings it home','an opinion rant'], h:'Did the piece already explain everything in the ending?'},
+    {t:'order', q:'Build a conclusion: one takeaway, then why it matters. Tap the sentences in order.', tiles:['In short, water that freezes in a pipe can crack it and flood a house.','Knowing this, families keep their pipes warm','during a hard freeze.'], extra:['Also, ice is slippery.'], h:'The takeaway first. Then "Knowing this," and how it helps. Leave out anything new.'}
+  ],
+  re:[
+    {how:'A new way: a tour guide at the end of the tour. He joins everything you saw into one line, then tells you why it matters: "Now you know how rain becomes the water in your sink."', q:'A guide who gives one takeaway and says why it matters…', o:['brings it home','adds a new fact','an opinion rant']},
+    {how:'A simpler step: list the key points on scrap paper. Ask: what do they add up to? Write that in one sentence that starts "In short,". Then add one sentence that starts "Knowing this,".', q:'A takeaway sentence can start with…', o:['In short,','Also,','I think']},
+    {how:'The skill underneath: Strong Finish (Level 6). A strong finish says the main point again and leaves the reader thinking.', q:'A strong finish says … again.', o:['the main point','a new fact','the title']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L08.04':{hook:'Why does one night of snow close a whole school?', big:'Organize an informative piece by cause and effect: one cause with many effects, or a chain where each effect causes the next.',
+    intro:['A cause makes something happen; an effect is what happens.','One cause, many effects: each effect comes straight from the cause.','A chain: A causes B, and B causes C.','Signal words mark each link: because of this, as a result, which led to.'],
+    ex:[{q:'Why school closes for snow.',steps:['Cause: heavy snow fell.','Link: this led to icy roads.','Link: as a result, buses could not run.'],a:'Because of this, school closed.'},
+        {q:'What a dry summer does.',steps:['One cause: very little rain.','Effects: a low reservoir, brown lawns, small crops.'],a:'One cause, many effects.'}],
+    oops:{q:'Snow and the school closing.',wrong:'School closed, which led to the snowstorm.',right:'The snowstorm led to icy roads, so school closed.',why:'The link is flipped. The cause must come before "which led to."'},
+    idea:['A chain is a row of dominoes: each one knocks over the next.'],
+    try:{q:'“Yeast made gas, which led to bubbles, which led to rising dough.”',o:['a chain','one cause, many effects','flipped'],a:'a chain',steps:['Does each effect cause the next one?']}},
+  'WRIT.PARA.L08.05':{hook:'Would you trust a doctor who said, "Your arm thingy is hurt"?', big:'Use the exact topic word, and explain it for the reader the first time.',
+    intro:['Vague: stuff, thing, the big lake.','Precise: the exact topic word an expert uses.','Explain it once: a comma, "called", or "which is".','After that, use the same word plainly.'],
+    ex:[{q:'The big lake holds the city’s water.',steps:['Vague: "the big lake".','Topic word: reservoir.','Explain it the first time.'],a:'A reservoir, a lake made to store drinking water, holds the city’s water.'},
+        {q:'The pages are sewn in groups.',steps:['What do binders call a group?','Signatures.','Explain it with "called".'],a:'The pages are sewn in groups called signatures.'}],
+    oops:{q:'Benny’s first sentence on the city’s water.',wrong:'Water is cleaned at a filtration plant.',right:'Water is cleaned at a filtration plant, a building that removes dirt and germs.',why:'The reader may not know the word. Explain it the first time.'},
+    idea:['A good guide says the real name, then what it means.'],
+    try:{q:'“Black ice, which is a thin, clear layer of ice on a road, is hard to see.”',o:['precise and explained','not explained','vague'],a:'precise and explained',steps:['Is there a topic word? Is it explained?']}},
+  'WRIT.PARA.L08.06':{hook:'A news report says, "The storm was awesome." What did you actually learn?', big:'An informative piece is objective: facts the reader can check, not the writer’s feelings or opinions.',
+    intro:['Objective: a fact the reader could check.','Opinion clues: I think, amazing, boring, the best.','Loaded words judge quietly: finally, crawled, only.','Name who said a view; "everyone agrees" is an opinion.'],
+    ex:[{q:'The amazing yeast made the dough rise.',steps:['Clue: "amazing" is a feeling.','Swap in a fact the reader can check.'],a:'The yeast made the dough double in about an hour.'},
+        {q:'The trip was a great success.',steps:['Whose view is it?','Name who said it.'],a:'Mr. Gross said the trip was a success.'}],
+    oops:{q:'Gavriel’s snow report.',wrong:'Only ten inches of snow fell, and the plows finally crawled in.',right:'Ten inches of snow fell, and the plows reached our street at noon.',why:'"Only", "finally" and "crawled" are loaded words. Report the facts plainly.'},
+    idea:['An objective writer is a scale: it gives the weight, not a feeling about it.'],
+    try:{q:'“The city plows the main roads first.”',o:['objective','opinion','slang'],a:'objective',steps:['Could the reader check it?']}},
+  'WRIT.PARA.L08.07':{hook:'You explained it all. How do you leave the reader knowing it, and caring?', big:'An informative conclusion joins the key points into one takeaway, then says why it matters: no new fact, no opinion rant, no copied opening.',
+    intro:['Move 1: join the key points into one takeaway.','Move 2, why it matters: "Knowing this," and how it helps.','Do not list the points again or copy the opening.','No new fact, and no opinion rant.'],
+    ex:[{q:'A piece on how snow closes school.',steps:['Key points: snow, icy roads, no buses, no school.','Join them into one takeaway.','Then show how it helps the reader.'],a:'In short, one night of heavy snow can ice the roads and shut a whole school. Knowing this, families can check the news early on snowy mornings.'},
+        {q:'A piece on why bread rises.',steps:['Key points: yeast makes gas; gluten holds it.','Join them: so the dough rises.','Why it matters: a baker can fix flat dough.'],a:'Knowing this, a baker can keep dough warm so it rises well.'}],
+    oops:{q:'Ending a piece on how a sefer is bound.',wrong:'In short, binding is the coolest job and everyone should love it!',right:'In short, folding, sewing and a strong cover turn loose pages into a sefer that lasts.',why:'That is an opinion rant. Join the facts into one takeaway, then say why they matter.'},
+    idea:['A tour guide ends by joining the tour into one line and saying why it matters.'],
+    try:{q:'“In short, the pages are folded and sewn into a sefer that lasts. Also, the first books were scrolls.”',o:['adds a new fact','brings it home','an opinion rant'],a:'adds a new fact',steps:['Did the piece explain scrolls? Is it new?']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L08.04':{s:'Find the cause: ask "Why did this happen?"\nOne cause, many effects: each effect comes straight from it.\nA chain: each effect causes the next, like dominoes.\nMark each link with a signal word, cause first: because of this, as a result, which led to.'},
+  'WRIT.PARA.L08.05':{s:'Circle vague words: stuff, thing, the big lake.\nSwap in the precise topic word an expert would use.\nExplain it the first time: a comma, "called", or "which is".\nAfter that, use the same word plainly.'},
+  'WRIT.PARA.L08.06':{s:'Read each sentence: could the reader check it?\nHunt for clues (I think, amazing, the best) and loaded words (finally, crawled, only).\nCut the clue, or swap it for a plain fact.\nA view stays only with a name: "Mr. Gross said …", never "everyone agrees".'},
+  'WRIT.PARA.L08.07':{s:'List the key points. Ask: what do they add up to?\nMove 1: one takeaway sentence, "In short, …", not a list.\nMove 2: "Knowing this," and how it helps the reader.\nCut a new fact, an opinion rant, or a copy of the opening.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L08.04':{ band:'M68', pic:'⛓️', today:'Explain how one thing causes another', why:'Science, history and the news all explain why things happen.',
+    ready:[{q:'"As a result," brings in…', o:['the effect of something before it','one more reason','proof','a greeting'], a:'the effect of something before it'}],
+    bridge:'WRIT.PARA.L07.01', bridgeName:'Glue Words',
+    watch:{ q:'Why did the snowstorm close the yeshiva?', m:{type:'scene', e:'❄️', t:'Benny is writing a Beacon explainer about last week’s snow day.'}, steps:[
+      {t:'First cause: eight inches of snow fell overnight.'},
+      {t:'Link: this led to icy roads by morning.'},
+      {t:'Link: as a result, the buses could not run safely.'},
+      {t:'Last effect: because of this, Rabbi Rosen closed school.'},
+      {t:'Each effect causes the next. That plan is a chain.'},
+      {t:'Teach it back: tell your chavrusa the two cause-and-effect plans.'}], a:'Snow fell, which led to icy roads. As a result, buses could not run, so school closed.' },
+    oops:{ q:'Benny’s snow-day explainer.', wrong:'School closed, which led to the snowstorm.', right:'The snowstorm led to icy roads, so school closed.', why:'The link is flipped. The cause comes before "which led to."' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can organize an explanation by cause and effect.',
+    board:{ one:'Cause and effect: one cause with many effects, or a chain (A → B → C), each link marked by a signal word.', activity:'Chavrusas lay out cause and effect cards as a fan (one cause, many effects) or a row (a chain), then read it aloud with signal words.', mistakes:['A flipped link: the effect written as the cause','Effects listed with no signal words','Calling a chain "one cause, many effects"'] },
+    do:[
+      {type:'sort', q:'Snow-day links.', bins:['Cause first','Mistake: flipped'], cards:[['Ice formed, which led to no buses.',0],['School closed, which led to snow.',1],['Bread rose; as a result, yeast made gas.',1],['Snow fell; as a result, roads iced.',0]], mis:true,
+        say:'Is the cause first? Sort each link.', how:'Which one really made the other happen? It goes first.'},
+      {type:'tiles', q:'Put the snow-day chain in order.', w:['Heavy snow','icy roads','no buses'], extra:['sunshine'],
+        say:'Build the chain: first cause first.', how:'Each step causes the next one.'}],
+    your:[
+      {type:'match', pairs:[['the cause','what makes it happen'],['the effect','what happens because of it'],['a chain','each effect causes the next']],
+        say:'Match each word to what it means.', how:'Did it make something happen, or did it happen?'},
+      {type:'sort', bins:['One cause, many effects','A chain'], cards:[['Drought: low lake, brown lawns, small crops.',0],['Yeast made gas, which made bubbles, which raised dough.',1],['Heat wave: dry garden, warm rooms, full pool.',0],['Snow led to ice, which led to no buses.',1]],
+        say:'Which plan is each one? Sort it.', how:'Straight from one cause, or each causing the next?'},
+      {type:'tiles', q:'Why bread rises.', w:['yeast eats','makes gas','dough rises'], extra:['oven cools'],
+        say:'Put the bread chain in order.', how:'What happens first? What does that cause?'},
+      {type:'match', pairs:[['Snow fell,','which led to icy roads.'],['The power went out.','As a result, the fridge warmed.'],['The pipes froze.','Because of this, one cracked.']],
+        say:'Match each cause to its effect.', how:'Which effect does each cause really make?'},
+      {type:'sort', bins:['Links cause to effect','Does not'], cards:[['because of this,',0],['which led to',0],['for example,',1],['as a result,',0],['however,',1]],
+        say:'Does each word link a cause to an effect?', how:'Does it say "this made that happen"?'}] },
+
+  'WRIT.PARA.L08.05':{ band:'M68', pic:'🔬', today:'Use the exact topic word, and explain it', why:'Experts use exact words. Readers learn them when you explain them.',
+    ready:[{q:'An informative piece is written to…', o:['teach the reader','win an argument','tell a story','sell something'], a:'teach the reader'}],
+    bridge:'WRIT.ESSAY.L08.03', bridgeName:'Explain It All',
+    watch:{ q:'How does Baltimore get its drinking water?', m:{type:'scene', e:'💧', t:'Gavriel is making a chart of the city’s water for The Beacon.'}, steps:[
+      {t:'Vague: "Rain fills some big lakes."'},
+      {t:'Precise topic word: reservoirs.'},
+      {t:'Explain it once: "reservoirs, lakes made to store drinking water."'},
+      {t:'Later: "The reservoirs feed the city." No need to explain again.'},
+      {t:'Teach it back: tell your chavrusa the three ways to explain.'}], a:'Rain fills reservoirs, lakes made to store drinking water.' },
+    oops:{ q:'Gavriel’s chart label.', wrong:'Rain fills some big lake things.', right:'Rain fills reservoirs, lakes made to store drinking water.', why:'"Big lake things" is vague. Use the topic word, then explain it.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can use precise topic words and explain them.',
+    board:{ one:'Use the exact topic word, explain it the first time (a comma, "called", "which is"), then reuse it plainly.', activity:'Chavrusas trade a paragraph full of vague words; each swaps in the topic words and explains each one once.', mistakes:['Vague words: stuff, thing, the big lake','A topic word never explained','Explaining the same word every time, or switching words'] },
+    do:[
+      {type:'match', pairs:[['the stuff that puffs dough','yeast'],['the big lake for city water','reservoir'],['the back edge of a sefer','spine']],
+        say:'Match each vague phrase to its topic word.', how:'What word would an expert use?'},
+      {type:'sort', q:'The first time each word appears.', bins:['Precise and explained','Mistake'], cards:[['A sofer writes on klaf, parchment from a kosher animal.',0],['The binder trims the text block.',1],['The thingies get glued.',1],['Pages form groups called signatures.',0]], mis:true,
+        say:'Will the reader understand each word? Sort it.', how:'Vague, or never explained? That is a mistake.'}],
+    your:[
+      {type:'tiles', q:'Explain the topic word with "which is".', w:['Black ice,','which is','clear ice,','is slippery.'],
+        say:'Build a sentence that explains black ice.', how:'Topic word first. Then "which is" and what it is.'},
+      {type:'match', pairs:[['a comma','klaf, parchment from …'],['"called"','groups called signatures'],['"which is"','black ice, which is …']],
+        say:'Match each way to explain with an example.', how:'Look for the comma, "called", or "which is".'},
+      {type:'sort', q:'The first time each word appears.', bins:['Precise and explained','Not explained','Vague'], cards:[['Yeast, a tiny living thing, makes gas.',0],['A nor’easter hit the city.',1],['The puffy stuff makes gas.',2],['The baker adds malt.',1],['Gluten, a wheat protein, traps gas.',0]],
+        say:'Sort each sentence by how clear it is.', how:'Is there a topic word? Is it explained the first time?'},
+      {type:'tiles', q:'Explain the topic word with commas.', w:['The spine,','the back','of a sefer,','holds pages.'],
+        say:'Build a sentence that explains the spine.', how:'Topic word first. Then what it means, between commas.'},
+      {type:'match', pairs:[['cold air pushing out warm air','cold front'],['the truck that clears snow','snowplow'],['a windy, blinding snowstorm','blizzard']],
+        say:'Match each vague phrase to the precise word.', how:'What would a weather reporter say?'}] },
+
+  'WRIT.PARA.L08.06':{ band:'M68', pic:'📏', today:'Keep your report objective: facts, not feelings', why:'Readers trust a report that lets the facts speak.',
+    ready:[{q:'A fact is something you can…', o:['check','feel','guess','like'], a:'check'}],
+    bridge:'WRIT.PARA.L07.02', bridgeName:'Formal Voice',
+    watch:{ q:'Gavriel’s report: how the snowstorm closed school.', m:{type:'scene', e:'📸', t:'Gavriel is checking his snow-day report before The Beacon prints.'}, steps:[
+      {t:'"Snow days are the best!" A feeling. Cut it.'},
+      {t:'"The plows finally crawled in." Loaded words judge quietly.'},
+      {t:'Swap in a fact: "The plows reached our street at noon."'},
+      {t:'Keep a named view: "Rabbi Rosen said the roads were unsafe."'},
+      {t:'Cut "Everyone agrees." A view needs a name.'},
+      {t:'Teach it back: tell your chavrusa about loaded words.'}], a:'The plows reached our street at noon. Rabbi Rosen said the roads were unsafe.' },
+    oops:{ q:'Gavriel’s snow report.', wrong:'Snow days are the best days of the year.', right:'The storm dropped ten inches of snow overnight.', why:'"The best" tells a feeling. An informative report gives facts.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can keep an informative piece objective.',
+    board:{ one:'Objective: facts the reader can check. Cut opinion clues and loaded words (finally, crawled, only) or swap in a fact; name anyone whose view you give.', activity:'Chavrusas read a report aloud; the listener says "Fact!" or "Feeling!" after each sentence, then they fix the feelings together.', mistakes:['"I think" or "the best" in an informative piece','A loaded word (finally, crawled, only) hiding in a fact','"Everyone agrees": a view with no name'] },
+    do:[
+      {type:'tiles', q:'Fix: "The dough rose amazingly fast."', w:['The dough','doubled in','an hour.'], extra:['amazingly'],
+        say:'Build the fact with no feeling words.', how:'Cut the clue word. Keep what you can check.'},
+      {type:'sort', q:'Benny’s fixes.', bins:['Now objective','Mistake: still opinion'], cards:[['Yeast is a tiny living thing.',0],['Yeast is a truly wonderful thing.',1],['Everyone agrees gluten is key.',1],['Gluten traps the gas.',0]], mis:true,
+        say:'Did Benny fix each opinion? Sort it.', how:'A clue, a loaded word or a view with no name: still opinion.'}],
+    your:[
+      {type:'match', pairs:[['I feel the lake is huge.','The reservoir holds billions of gallons.'],['Sewing pages is boring.','The binder sews each group of pages.'],['Snow days are the best!','School closed for one day.']],
+        say:'Match each opinion to its objective fix.', how:'Cut the feeling. Keep a fact.'},
+      {type:'tiles', q:'Give a view with a name.', w:['Mr. Gross','called it','"a success."'], extra:['amazing!'],
+        say:'Build a sentence that names who said it.', how:'Who said it first. Then his words.'},
+      {type:'sort', bins:['Objective','Opinion'], cards:[['The storm dropped ten inches.',0],['The plows finally crawled in.',1],['The city plowed main roads first.',0],['I think the plows were slow.',1],['Rabbi Rosen said roads were unsafe.',0]],
+        say:'Fact or feeling? Sort each sentence.', how:'Could the reader check it?'},
+      {type:'match', pairs:[['Objective','a fact the reader can check'],['A loaded word','judges quietly: finally, only'],['An unnamed view','"Everyone agrees …"']],
+        say:'Match each word to what it means.', how:'Whose view is it, and can it be checked?'},
+      {type:'sort', q:'Akiva’s water report.', bins:['Objective','Opinion'], cards:[['Pipes carry water to the city.',0],['Our water is the best anywhere.',1],['Rain fills the reservoirs.',0],['Water pipes are boring.',1]],
+        say:'Test each sentence in Akiva’s report.', how:'Look for clue words like best and boring.'}] },
+
+  'WRIT.PARA.L08.07':{ band:'M68', pic:'🏠', today:'End with one takeaway and why it matters', why:'The ending is what the reader remembers and uses.',
+    ready:[{q:'A strong finish says … again.', o:['the main point','a new fact','the title','a joke'], a:'the main point'}],
+    bridge:'WRIT.ESSAY.L06.04', bridgeName:'Strong Finish',
+    watch:{ q:'How should Benny end his snow-day explainer?', m:{type:'scene', e:'📝', t:'Benny has one paragraph left before The Beacon goes to print.'}, steps:[
+      {t:'Key points: snow, icy roads, no buses, no school.'},
+      {t:'Move 1, one takeaway: "One night of snow can shut a school."'},
+      {t:'Move 2, why it matters: "Knowing this, families check early."'},
+      {t:'Cut "Also, snowflakes have six sides." A new fact.'},
+      {t:'Cut a copy of his opening line. It adds nothing.'},
+      {t:'Teach it back: tell your chavrusa the two moves.'}], a:'In short, one night of heavy snow can ice the roads and shut a whole school. Knowing this, families can check the news early on snowy mornings.' },
+    oops:{ q:'Benny’s last line.', wrong:'Also, snowflakes have six sides.', right:'Knowing this, families can check the news early on snowy mornings.', why:'A new fact at the end opens a new topic. Say why the facts matter.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can write an informative ending that brings it home.',
+    board:{ one:'Two moves: join the key points into one takeaway ("In short,"), then why it matters ("Knowing this,"). No new fact, no opinion rant, no copied opening.', activity:'Chavrusas list a piece’s key points on cards, fold them into one takeaway sentence, add "Knowing this,", and explain what they cut.', mistakes:['A list of the points instead of one takeaway','A brand-new fact or an opinion rant','Copying the opening word for word'] },
+    do:[
+      {type:'sort', q:'Yoni’s sefer piece opened: "A sefer is held together in three steps."', bins:['Brings it home','Mistake: new fact','Mistake: copies the opening'], cards:[['In short, sewing and a cover make a sefer last.',0],['Also, paper was invented in China.',1],['A sefer is held together in three steps.',2],['Knowing this, open a sefer gently.',0]], mis:true,
+        say:'Does each line belong in the ending? Sort it.', how:'One takeaway and why it matters belong. Nothing new, no copies.'},
+      {type:'match', pairs:[['In short, one night of snow can shut a school.','one takeaway'],['Knowing this, families plan.','why it matters'],['Also, snowflakes have six sides.','adds a new fact']],
+        say:'Match each line to its name.', how:'Joins the points? Useful to the reader? Or new?'}],
+    your:[
+      {type:'tiles', q:'One takeaway: why bread rises.', w:['In short,','yeast makes','gas that','lifts dough.'],
+        say:'Build the takeaway sentence.', how:'Start with "In short,". Then join the key chain.'},
+      {type:'sort', bins:['One takeaway','Mistake: just a list'], cards:[['In short, snow can ice roads and shut a school.',0],['Snow fell. Roads iced. School closed.',1],['To sum up, sewn pages keep a sefer whole.',0],['Yeast. Gas. Gluten. Rising.',1]],
+        say:'One takeaway, or just a list? Sort each.', how:'Does one sentence show how the points fit together?'},
+      {type:'match', pairs:[['Move 1','join the key points into one takeaway'],['Move 2','say why it matters'],['Cut it','a new fact, a rant, a copied opening']],
+        say:'Match each move to its job.', how:'What comes first? What comes second? What goes?'},
+      {type:'tiles', q:'A piece on black ice. Why it matters.', w:['Knowing it,','drivers can','watch for','black ice.'],
+        say:'Build a why-it-matters sentence.', how:'Start like "Knowing this,". Then who, then what they can do.'},
+      {type:'sort', q:'Akiva’s water ending.', bins:['Brings it home','Mistake'], cards:[['In short, our tap water is stored, cleaned rain.',0],['Also, some reservoirs have fish.',1],['Water is the most amazing thing!',1],['Knowing this, save water in dry years.',0]],
+        say:'Test each line of Akiva’s ending.', how:'A new fact or a feeling? Then it is a mistake.'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

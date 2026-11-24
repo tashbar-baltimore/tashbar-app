@@ -1,0 +1,983 @@
+<script>
+/* CoreDataF1.html: Core Growth job F (Foundations K-2), lesson data, file 1.
+   Grade 2 Unit 1 "Syllables and long-vowel review" (docs/core-growth/F-map.md, section 5).
+   Added only through TLCORE.add (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Sounds are written as sounds in spoken lines.
+   In every choice list the right answer is written FIRST (the engine shuffles). */
+(function () {
+  var OPEN = 'Open: the vowel says its name', CLOSED = 'Closed: the vowel is short';
+  var REAL = 'Real word: keep it', SLIDE = 'Not a word: slide the line';
+  var LONGB = 'Long: split before', SHORTB = 'Short: slide after';
+  var SE = 'Silent e: long', NOSE = 'No silent e: short';
+
+  var LESSONS = {
+    'READ.PHON.L03.04':{name:'Open Door, Closed Door',
+      teach:[
+        {q:'Hi ends with the vowel i. Is the door open or closed?', o:[OPEN, CLOSED], how:'Look at the last letter. A vowel at the end means the door is open.'},
+        {q:'Hit ends with t. Is the door open or closed?', o:[CLOSED, OPEN], how:'Look at the last letter. A consonant at the end closes the door.'},
+        {q:'Hi is open. How does the i sound?', o:['long i, like its name','short i, like it'], how:'Open door: the vowel says its own name.'}
+      ],
+      practice:[
+        {t:'sort', q:'Open or closed? Sort each word.', bins:[{id:'o',label:OPEN},{id:'c',label:CLOSED}], items:[{label:'we',bin:'o'},{label:'wet',bin:'c'},{label:'so',bin:'o'},{label:'sob',bin:'c'},{label:'be',bin:'o'},{label:'bed',bin:'c'}], h:'Look at the last letter. Vowel: open. Consonant: closed.'},
+        {t:'pairs', q:'Match each word to its vowel sound.', pairs:[['hi','long i'],['hip','short i'],['no','long o'],['not','short o']], h:'Read the last letter first. Then say the vowel.'},
+        {t:'spotall', q:'Tap every open syllable.', cells:[{label:'me',ok:true},{label:'met',ok:false},{label:'go',ok:true},{label:'got',ok:false},{label:'she',ok:true},{label:'shed',ok:false}], h:'An open syllable ends with a vowel. Tap only those.'},
+        {t:'sort', q:'Look at the FIRST part. Open or closed?', bins:[{id:'o',label:OPEN},{id:'c',label:CLOSED}], items:[{label:'ti | ger',bin:'o'},{label:'nap | kin',bin:'c'},{label:'ro | bot',bin:'o'},{label:'bas | ket',bin:'c'},{label:'mu | sic',bin:'o'},{label:'rab | bit',bin:'c'}], h:'Cover the second part. Does the first part end with a vowel?'},
+        {t:'pairs', q:'Match the first part to its vowel sound.', pairs:[['ti | ger','long i'],['pic | nic','short i'],['ro | bot','long o'],['hot | dog','short o']], h:'First part ends with a vowel: long. With a consonant: short.'},
+        {t:'order', q:'Build the word: open part first, then closed part.', tiles:['ro','bot'], h:'Which part keeps its door open? That one makes the long o.'}
+      ],
+      check:[
+        {q:'The first part of "lady" is "la". Is it open or closed?', o:[OPEN, CLOSED]},
+        {q:'Look at "fun". Is it open or closed?', o:[CLOSED, OPEN]},
+        {q:'The first part of "pilot" is "pi". How does the i sound?', o:['long i, like its name','short i, like it']}
+      ],
+      re:[
+        {q:'Look at "he". Is it open or closed?', o:[OPEN, CLOSED]},
+        {q:'Look at "hen". Is it open or closed?', o:[CLOSED, OPEN]},
+        {q:'The first part of "tulip" is "tu". How does the u sound?', o:['long u, like its name','short u, like up']}
+      ]},
+
+    'READ.PHON.L03.05':{name:'Slide the Line',
+      teach:[
+        {q:'Robot has one consonant in the middle. Where do I split first?', o:['before it: ro | bot','after it: rob | ot'], how:'One consonant in the middle? Try the split before it first.'},
+        {q:'Ca | bin is not a real word. What do I do?', o:['slide the line: cab | in','read it long anyway: ca | bin'], how:'Not a word? Slide the line after the consonant and read it short.'},
+        {q:'Which split makes a real word: lem | on or le | mon?', o:['lem | on','le | mon'], how:'Say both. Keep the one that is a real word.'}
+      ],
+      practice:[
+        {t:'sort', q:'Real word, or slide the line?', bins:[{id:'r',label:REAL},{id:'s',label:SLIDE}], items:[{label:'ro | bot',bin:'r'},{label:'ca | bin',bin:'s'},{label:'mu | sic',bin:'r'},{label:'se | ven',bin:'s'},{label:'ti | ger',bin:'r'},{label:'wa | gon',bin:'s'}], h:'Read the first part long. Is it a word you know?'},
+        {t:'pairs', q:'Match each word to the right split.', pairs:[['moment','mo | ment'],['wagon','wag | on'],['tulip','tu | lip'],['robin','rob | in']], h:'Try long first. Not a word? Slide the line.'},
+        {t:'order', q:'Build the word "cabin" from its parts.', tiles:['cab','in'], h:'Try ca-bin first. Not a word? Slide the line after b.'},
+        {t:'spotall', q:'Tap every split that makes a real word.', cells:[{label:'pi | lot',ok:true},{label:'pil | ot',ok:false},{label:'mu | sic',ok:true},{label:'mus | ic',ok:false},{label:'lem | on',ok:true},{label:'le | mon',ok:false}], h:'Say each split. Tap only the real words.'},
+        {t:'sort', q:'Long first part or short first part?', bins:[{id:'l',label:LONGB},{id:'s',label:SHORTB}], items:[{label:'spider',bin:'l'},{label:'planet',bin:'s'},{label:'frozen',bin:'l'},{label:'visit',bin:'s'},{label:'silent',bin:'l'},{label:'never',bin:'s'}], h:'Try the long way first. If it is not a word, it is short.'},
+        {t:'order', q:'Build the word "tiger" from its parts.', tiles:['ti','ger'], h:'Split before the g. Is the first part open? Then it is long.'}
+      ],
+      check:[
+        {q:'Read "ca | mel" with a long a, like its name. Is it a real word?', o:[SLIDE, REAL]},
+        {q:'Read "so | da" with a long o, like its name. Is it a real word?', o:[REAL, SLIDE]},
+        {q:'Read "comet". Long first part or short first part?', o:[SHORTB, LONGB]}
+      ],
+      re:[
+        {q:'Read "fe | ver" with a long e, like its name. Is it a real word?', o:[REAL, SLIDE]},
+        {q:'Read "li | mit" with a long i, like its name. Is it a real word?', o:[SLIDE, REAL]},
+        {q:'Read "baker". Long first part or short first part?', o:[LONGB, SHORTB]}
+      ]},
+
+    'READ.PHON.L03.06':{name:'Silent E in Long Words',
+      teach:[
+        {q:'Read "cup | cake". How does the u sound?', o:['short: it is closed','long: it says its name'], how:'Look at the end of cup. A consonant closes the door.'},
+        {q:'Cupcake: which vowel says its name?', o:['a','u'], how:'Find the part with the quiet e. Its vowel says its name.'},
+        {q:'Read "in | vite". How does the i in vite sound?', o:['long: it says its name','short: it is closed'], how:'Vite ends with a quiet e, so the i is long.'}
+      ],
+      practice:[
+        {t:'sort', q:'Long vowel or short vowel? Sort the parts.', bins:[{id:'l',label:'Long: silent e'},{id:'s',label:'Short: closed'}], items:[{label:'cake',bin:'l'},{label:'cup',bin:'s'},{label:'vite',bin:'l'},{label:'in',bin:'s'},{label:'shine',bin:'l'},{label:'sun',bin:'s'}], h:'Look for the quiet e at the end of the part.'},
+        {t:'pairs', q:'Match each word to its picture.', pairs:[['pancake','🥞'],['bedtime','🛏️'],['sunrise','🌅'],['inside','🏠']], h:'Split it, read each part, then put it together.'},
+        {t:'order', q:'Build the word "concrete".', tiles:['con','crete'], h:'Split between n and c. Which part has a quiet e?'},
+        {t:'spotall', q:'Tap every part with a long vowel.', cells:[{label:'tile',ok:true},{label:'tip',ok:false},{label:'pine',ok:true},{label:'pin',ok:false},{label:'cube',ok:true},{label:'cub',ok:false}], h:'A quiet e at the end makes the vowel long.'},
+        {t:'sort', q:'Does the word have a silent e part?', bins:[{id:'y',label:SE},{id:'n',label:NOSE}], items:[{label:'mistake',bin:'y'},{label:'dentist',bin:'n'},{label:'sunshine',bin:'y'},{label:'basket',bin:'n'},{label:'reptile',bin:'y'},{label:'napkin',bin:'n'}], h:'Split it. Check EACH part for a quiet e.'},
+        {t:'order', q:'Build the word "pancake".', tiles:['pan','cake'], h:'Pan is closed: short a. Cake has a quiet e: long a.'}
+      ],
+      check:[
+        {q:'Read "trombone". How does the o in bone sound?', o:['long: it says its name','short: it is closed']},
+        {q:'Read "tadpole". How does the a sound?', o:['short: it is closed','long: it says its name']},
+        {q:'Read "combine". Which vowel says its name?', o:['i','o']}
+      ],
+      re:[
+        {q:'Read "dislike". How does the first i sound?', o:['short: it is closed','long: it says its name']},
+        {q:'Does the word "muffin" have a silent e part?', o:[NOSE, SE]},
+        {q:'Read "inflate". Which vowel says its name?', o:['a','i']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.PHON.L03.04':{ hook:'Every syllable is a little room with a door. Is it open or closed?',
+      big:'An open syllable ends with a vowel, and the vowel says its name. A closed syllable ends with a consonant, and the vowel is short.',
+      intro:['Look at the last letter of the part.','Vowel at the end: the door is open. Hi, go, me.','Consonant at the end: the door is closed. Hit, got, met.','Open: long. Closed: short. Big words too: ti | ger, nap | kin.'],
+      ex:[{q:'Read: so', steps:['The last letter is o, a vowel.','The door is open.','O says its name: so.'], a:'so (long o)'},
+          {q:'Read: sob', steps:['The last letter is b, a consonant.','The door is closed.','O is short, like hot: sob.'], a:'sob (short o)'}],
+      oops:{ q:'Read: me', wrong:'meh, with a short e', right:'mee, with a long e', why:'Me ends with the vowel. The door is open, so e says its name.' },
+      idea:['Hold your hand open for an open syllable, and make a fist for a closed one.'],
+      'try':{ q:'Look at "we". Is it open or closed?', o:[OPEN, CLOSED], a:OPEN, steps:['Look at the last letter.','It is e, a vowel.','Open door.'] } },
+    'READ.PHON.L03.05':{ hook:'A long word with one consonant in the middle? Here is a trick that works on hundreds of words.',
+      big:'With one consonant between two vowels, split before it and read the first part long. If that is not a real word, slide the line after it and read it short.',
+      intro:['Find the two vowels.','One consonant between them? Split before it.','Read the first part long. Is it a word?','No? Slide the line and read it short.'],
+      ex:[{q:'Read: robot', steps:['Vowels o and o. One consonant, b, between them.','Split before b: ro | bot.','Ro is open: long o. Robot! A real word.'], a:'ro | bot'},
+          {q:'Read: wagon', steps:['Split before g: wa | gon. Way-gon? Not a word.','Slide the line: wag | on.','Wag is closed: short a. Wagon!'], a:'wag | on'}],
+      oops:{ q:'Read: lemon', wrong:'lee | mon', right:'lem | on', why:'Lee-mon is not a real word. Slide the line after m and read it short.' },
+      idea:['Think of a sliding door: try it one way, and if it does not open, slide it the other way.'],
+      'try':{ q:'Which split makes a real word?', o:['mo | ment','mom | ent'], a:'mo | ment', steps:['Split before m: mo | ment.','Mo is open: long o.','Moment! A real word.'] } },
+    'READ.PHON.L03.06':{ hook:'Cupcake, sunshine, pancake: long words that are really two short ones.',
+      big:'Split a long word between the two middle consonants. The long vowel is in the part with the quiet e.',
+      intro:['Find the two consonants in the middle. Split between them.','Sh, ch and th stay together: sun | shine.','Read each part.','A part with a quiet e at the end: the vowel says its name.','Put the parts together.'],
+      ex:[{q:'Read: cupcake', steps:['p and c are in the middle. Split: cup | cake.','Cup is closed: short u.','Cake has a quiet e: long a. Cupcake!'], a:'cup | cake'},
+          {q:'Read: invite', steps:['n and v are in the middle. Split: in | vite.','In is closed: short i.','Vite has a quiet e: long i. Invite!'], a:'in | vite'}],
+      oops:{ q:'Read: invite', wrong:'in | vit, with a short i', right:'in | vite, with a long i', why:'The e at the end is quiet, but it makes the i say its name.' },
+      idea:['The silent e reaches back over one letter and taps the vowel: "Say your name!"'],
+      'try':{ q:'Read "sunshine". How does the i in shine sound?', o:['long: it says its name','short: it is closed'], a:'long: it says its name', steps:['Split: sun | shine.','Shine ends with a quiet e.','The i says its name.'] } }
+  };
+
+  var HOWTO = {
+    'READ.PHON.L03.04':{ s:'Look at the last letter of the part.\nVowel at the end: open, long.\nConsonant at the end: closed, short.',
+      q:{ 'The first part of "lady" is "la". Is it open or closed?':'Look at the end of the first part.\nIs it a vowel or a consonant?\nVowel: open. Consonant: closed.',
+          'Look at "fun". Is it open or closed?':'Find the last letter.\nIs it a vowel or a consonant?\nVowel: open. Consonant: closed.',
+          'The first part of "pilot" is "pi". How does the i sound?':'Look at the end of the part.\nOpen part: the vowel says its name.\nClosed part: the vowel is short.',
+          'Look at "he". Is it open or closed?':'Find the last letter.\nVowel: open. Consonant: closed.',
+          'Look at "hen". Is it open or closed?':'Find the last letter.\nVowel: open. Consonant: closed.',
+          'The first part of "tulip" is "tu". How does the u sound?':'Look at the end of the part.\nOpen: long. Closed: short.' } },
+    'READ.PHON.L03.05':{ s:'Find the two vowels.\nOne consonant between them? Split before it and read it long.\nNot a word? Slide the line and read it short.',
+      q:{ 'Read "ca | mel" with a long a, like its name. Is it a real word?':'Read the first part long, like its name.\nIs it a word you know?\nIf not, the line needs to slide.',
+          'Read "so | da" with a long o, like its name. Is it a real word?':'Read the first part long, like its name.\nIs it a word you know?\nIf not, the line needs to slide.',
+          'Read "fe | ver" with a long e, like its name. Is it a real word?':'Read the first part long, like its name.\nIs it a word you know?',
+          'Read "li | mit" with a long i, like its name. Is it a real word?':'Read the first part long, like its name.\nIs it a word you know?',
+          'Read "comet". Long first part or short first part?':'Split before the m and read it long.\nIs it a real word?\nIf not, slide the line: short.',
+          'Read "baker". Long first part or short first part?':'Split before the k and read it long.\nIs it a real word?\nIf not, slide the line: short.' } },
+    'READ.PHON.L03.06':{ s:'Split between the two middle consonants.\nRead each part.\nA quiet e at the end of a part: long vowel.',
+      q:{ 'Read "trombone". How does the o in bone sound?':'Split between the two middle consonants.\nLook at the end of that part.\nQuiet e or closed?',
+          'Read "tadpole". How does the a sound?':'Split between the two middle consonants.\nFind the part with the a.\nDoes it end with a consonant?',
+          'Read "combine". Which vowel says its name?':'Split between the two middle consonants.\nRead each part.\nWhich part ends with a quiet e?',
+          'Read "dislike". How does the first i sound?':'Split between the two middle consonants.\nLook at the first part. Does it end with a consonant?',
+          'Does the word "muffin" have a silent e part?':'Split the word into its parts.\nCheck each part for a quiet e.',
+          'Read "inflate". Which vowel says its name?':'Split between the two middle consonants.\nRead each part.\nWhich part ends with a quiet e?' } }
+  };
+
+  var BITE = {
+    'READ.PHON.L03.04':{ band:'B23', pic:'🚪', today:'Read open and closed syllables',
+      why:'Every long word is built from these two kinds of parts. Know them, and big words get easy.',
+      ready:[{q:'Which word has a short a, like apple?', o:['cat','cake','car'], a:'cat'},{q:'Which word has a long o?', o:['bone','bun','bin'], a:'bone'}],
+      bridge:'READ.LV.L02.01', bridgeName:'Silent E',
+      watch:{ q:'hi and hit', m:{type:'tiles',w:['h','i'],hi:[1]}, steps:[
+        {t:'Hi ends with i. Open door: i says its name!', m:{type:'tiles',w:['h','i'],hi:[1]}},
+        {t:'Hit ends with t. Closed door: short i. Hit!', m:{type:'tiles',w:['h','i','t'],hi:[2]}},
+        {t:'Go is open. Got is closed. Look at the last letter!', m:{type:'tiles',w:['g','o','t'],hi:[2]}},
+        {t:'Big words too! Ti is open: long i. Ger, tiger!', m:{type:'tiles',w:['ti','ger'],hi:[0]}},
+        {t:'Sing it with Naftali and his Zaidy. Open, close your hand!', m:{type:'chant', lines:['Open door: the vowel says its name!','Closed door: it is short, not the same!']}}], a:'Open: the vowel says its name. Closed: the vowel is short.' },
+      oops:{ q:'Read: me', wrong:'meh (short e)', right:'mee (long e)', why:'Me ends with the vowel. The door is open, so e says its name.' },
+      ways:['think-aloud','chant with hand moves','sort','build with tiles','Mistake Detective'], done:'You can tell open from closed, and read both!',
+      board:{ one:'Open syllable: ends with a vowel, the vowel is long. Closed: ends with a consonant, the vowel is short.', activity:'Open hand, closed fist: boys show the door for each word the rebbe reads.', mistakes:['Reading every vowel short','Looking at the first letter instead of the last','Reading me as meh'] },
+      do:[
+        {type:'sort', bins:['Open: says its name','Closed: short'], cards:[['go',0],['got',1],['we',0],['wet',1]], say:'Look at the last letter. Open or closed?', how:'Ends with a vowel? Open and long. A consonant? Closed and short.'},
+        {type:'listen', hear:'Which word is open?', o:['she','shed','shell'], a:'she', say:'Read each word. Which one has an open door?', how:'Look at the last letter of each word. Which one ends with a vowel?'}],
+      your:[
+        {type:'sort', bins:['First part open','First part closed'], cards:[['ti | ger',0],['nap | kin',1],['ro | bot',0],['bas | ket',1],['mu | sic',0],['rab | bit',1]], say:'Big words! Is the first part open or closed?', how:'Cover the second part. Does the first part end with a vowel?'},
+        {type:'listen', q:'Yossi read "tiger" to Abba: "tig-er".', hear:'Is Yossi right?', o:['No: ti is open','No: ger is open','Yes, tig-er'], a:'No: ti is open', mis:true, say:'Mistake Detective! Is Yossi right?', how:'Cover ger. Look at the last letter of ti. Is the door open or closed?'},
+        {type:'tiles', w:['ro','bot'], extra:['rob'], hear:'robot', pic:'🤖', say:'Build robot from its two parts.', how:'Say robot slowly. Does the first part end with a vowel or a consonant?'},
+        {type:'match', pairs:[['be','long e'],['bet','short e'],['no','long o'],['not','short o']], say:'Read each word. Match it to its vowel sound.', how:'Last letter a vowel: long. A consonant: short.'},
+        {type:'findall', grid:['ba','nap','ze','bas','lo','rab','pi','hot'], find:['ba','ze','lo','pi'], findSay:'open first part', say:'Tap every open first part.', how:'Check the last letter. Vowel at the end? Tap it.'}] },
+
+    'READ.PHON.L03.05':{ band:'B23', pic:'🤖', today:'Split a word with one middle consonant',
+      why:'Robot, tiger, wagon, lemon: one trick lets you read hundreds of long words.',
+      ready:[{q:'Is "ro" open or closed?', o:['open','closed'], a:'open'},{q:'Is "cab" open or closed?', o:['closed','open'], a:'closed'}],
+      bridge:'READ.PHON.L03.04', bridgeName:'Open Door, Closed Door',
+      watch:{ q:'robot and wagon', m:{type:'tiles',w:['ro','bot'],hi:[0]}, steps:[
+        {t:'Robot. One consonant, b, is in the middle. Split before it.', m:{type:'tiles',w:['ro','bot'],hi:[0]}},
+        {t:'Ro is open: long o. Robot! A real word.', m:{type:'tiles',w:['ro','bot'],hi:[0]}},
+        {t:'Wagon. Split before g: way-gon? Not a word!', m:{type:'tiles',w:['wa','gon'],hi:[0]}},
+        {t:'Slide the line after g: wag, on. Short a. Wagon!', m:{type:'tiles',w:['wag','on'],hi:[0]}},
+        {t:'Chant it with Avi!', m:{type:'chant', lines:['Split before, and read it long.','Not a word? Then slide it along!']}}], a:'Try ro | bot (long) first. Not a word? Slide: wag | on (short).' },
+      oops:{ q:'Read: lemon', wrong:'lee | mon', right:'lem | on', why:'Lee-mon is not a real word. Slide the line after m and read it short.' },
+      ways:['think-aloud','chant','build with tiles','sort','Mistake Detective'], done:'You can split a long word and slide the line when you need to!',
+      board:{ one:'One consonant between two vowels: split before it, read long. Not a word? Slide the line, read short.', activity:'Sliding-door cards: boys move a paper line on robot, cabin, music, lemon.', mistakes:['Keeping a split that is not a real word','Always splitting after the consonant','Reading both parts short'] },
+      do:[
+        {type:'tiles', w:['mu','sic'], extra:['mus'], hear:'music', pic:'🎵', say:'Build music from its two parts.', how:'One consonant in the middle? Split before it. Read the first part long.'},
+        {type:'listen', hear:'pilot', o:['pi | lot','pil | ot'], a:'pi | lot', pic:'✈️', say:'Listen. Which split makes the word you hear?', how:'Read both splits. Keep the one that sounds like a real word.'}],
+      your:[
+        {type:'sort', bins:['Real word','Not a word: slide it'], cards:[['ra | dish',1],['pa | per',0],['vi | sit',1],['ze | ro',0],['ro | bin',1],['mo | ment',0]], say:'Which splits need a slide?', how:'Read the first part long. Not a word? It needs a slide.'},
+        {type:'listen', q:'Dovid read seven to Savta as "see-ven".', hear:'Is Dovid right?', o:['No: sev | en','Yes, see-ven','No: se | vin'], a:'No: sev | en', mis:true, say:'Mistake Detective! Is he right?', how:'Try the first part long. Is it a word? If not, what do you do?'},
+        {type:'sort', bins:['Long: split before','Short: slide after'], cards:[['spider',0],['planet',1],['frozen',0],['visit',1],['silent',0],['never',1]], say:'Challenge! Long first part or short?', how:'Try long first. If it is not a word, it is short.'},
+        {type:'match', pairs:[['robin','short o'],['total','long o'],['habit','short a'],['paper','long a']], say:'Match each word to its first vowel sound.', how:'Try the first part long. Not a word? Slide the line: short.'},
+        {type:'tiles', w:['cab','in'], extra:['ca'], hear:'cabin', say:'Build cabin. Try the first part long first!', how:'Read the first part long. Is it a word? If not, slide the line.'}] },
+
+    'READ.PHON.L03.06':{ band:'B23', pic:'🧁', today:'Read long words with a silent e',
+      why:'Cupcake, sunshine, invite: big words are just two small parts you already know.',
+      ready:[{q:'Which word has a silent e?', o:['cake','cat','cap'], a:'cake'},{q:'Nap ends with p. Open or closed?', o:['closed','open'], a:'closed'}],
+      bridge:'READ.LV.L02.01', bridgeName:'Silent E',
+      watch:{ q:'cupcake and invite', m:{type:'tiles',w:['cup','cake'],hi:[0]}, steps:[
+        {t:'Shimon and Ima bake cupcakes for Shabbos. Split: cup, cake.', m:{type:'tiles',w:['cup','cake'],hi:[0]}},
+        {t:'Cup is closed: short u. Cake: quiet e, long a!', m:{type:'tiles',w:['cup','cake'],hi:[1]}},
+        {t:'Invite: in, vite. Quiet e: long i. Invite!', m:{type:'tiles',w:['in','vite'],hi:[1]}},
+        {t:'Stand up! Clap once for each part, and sing.', m:{type:'chant', lines:['Split it in two, read part by part.','A quiet e at the end: the vowel says its name!']}}], a:'cup | cake, in | vite: the part with the quiet e is long.' },
+      oops:{ q:'Read: invite', wrong:'in | vit (short i)', right:'in | vite (long i)', why:'The e at the end is quiet, but it makes the i say its name.' },
+      ways:['think-aloud','clap and chant','build with tiles','sort','Mistake Detective'], done:'You can read long words with a silent e!',
+      board:{ one:'Split between the middle consonants. A part with a quiet e has a long vowel.', activity:'Cut word cards (cupcake, sunshine, pancake) in two and read each half.', mistakes:['Reading the silent e part short (in-vit)','Saying the e out loud','Splitting in the wrong place'] },
+      do:[
+        {type:'tiles', w:['pan','cake'], extra:['pane','cak'], hear:'pancake', pic:'🥞', say:'Build pancake from its two parts.', how:'Say each part. Which part is closed? Which has a quiet e?'},
+        {type:'sort', bins:['Long: silent e','Short: closed'], cards:[['sun | rise',0],['sun | set',1],['in | side',0],['nap | kin',1]], say:'Is the vowel in the last part long or short?', how:'Look for a quiet e at the end of the part.'}],
+      your:[
+        {type:'listen', q:'Moishe read reptile as "rep-til".', hear:'Is Moishe right?', o:['No: rep | tile','Yes, rep-til','No: rep | teel'], a:'No: rep | tile', mis:true, say:'Mistake Detective! Did Moishe read it right?', how:'Look at the last part. Does it end with a quiet e? What does a quiet e do?'},
+        {type:'sort', bins:['Has a silent e part','No silent e part'], cards:[['mistake',0],['dentist',1],['sunshine',0],['basket',1],['reptile',0],['napkin',1]], say:'Challenge! Does it have a silent e part?', how:'Split it. Check EACH part for a quiet e.'},
+        {type:'tiles', w:['con','crete'], extra:['cret'], hear:'concrete', say:'Build the word concrete.', how:'Split between n and c. Which part has a quiet e?'},
+        {type:'findall', grid:['vite','vit','shine','sun','cake','cak','bone','kin'], find:['vite','shine','cake','bone'], findSay:'part with a long vowel', say:'Tap every part with a long vowel.', how:'A quiet e at the end makes the vowel say its name.'},
+        {type:'match', pairs:[['bedtime','long i'],['napkin','short i'],['escape','long a'],['catnap','short a']], say:'Match each word to the vowel in its last part.', how:'Split it. Does the last part end with a quiet e?'}] }
+  };
+
+  /* ===== Grade 2 Unit 2 "Vowel teams 2" (F-map section 5): aw/au/al, ew/ue/ui, vowel teams in long words ===== */
+  var ENDT = 'at the end', INT = 'inside the word';
+
+  LESSONS['READ.LV.L03.03'] = {name:'Saw, Haul, Ball',
+    teach:[
+      {q:'Saw ends with the aw sound. Which team spells it?', o:['aw','au'], how:'At the end of a word, the aw sound is spelled aw.'},
+      {q:'Haul has the aw sound inside the word. Which team spells it?', o:['au','aw'], how:'Inside the word, the aw sound is usually spelled au.'},
+      {q:'Read "walk". What does the a say?', o:['aw, like ball','a, like pal'], how:'In all, alk and alt, a says aw: ball, walk, salt.'}
+    ],
+    practice:[
+      {t:'sort', q:'Where is the aw sound? Sort each word.', bins:[{id:'e',label:'aw sound '+ENDT},{id:'i',label:'aw sound '+INT}], items:[{label:'claw',bin:'e'},{label:'sauce',bin:'i'},{label:'straw',bin:'e'},{label:'launch',bin:'i'},{label:'jaw',bin:'e'},{label:'fault',bin:'i'}], h:'Say the word. Is the aw sound the last sound, or inside?'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['straw','🥤'],['salt','🧂'],['paw','🐾'],['ball','⚽']], h:'Find the team. It says aw. Blend the word.'},
+      {t:'spotall', q:'Tap every word with the aw sound.', cells:[{label:'hawk',ok:true},{label:'hay',ok:false},{label:'talk',ok:true},{label:'tack',ok:false},{label:'cause',ok:true},{label:'cane',ok:false}], h:'Look for aw, au, or al like ball.'},
+      {t:'order', q:'Build the word "straw".', tiles:['s','t','r','aw'], h:'Say it slowly. The aw sound is at the end.'},
+      {t:'sort', q:'Which team fills the blank?', bins:[{id:'w',label:'aw'},{id:'u',label:'au'}], items:[{label:'dr__',bin:'w'},{label:'s__ce',bin:'u'},{label:'cl__',bin:'w'},{label:'l__nch',bin:'u'}], h:'Blank at the end: aw. Blank inside: au.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['yawn','a sleepy mouth'],['chalk','for the board'],['sauce','on the pasta'],['paw','a cat foot']], h:'Read the word first. Then think what it means.'}
+    ],
+    check:[
+      {q:'Which team finishes the word? The ice will th__ in the sun.', o:['aw','au','al']},
+      {q:'Which team finishes the word? Take a p__se and rest.', o:['au','aw','al']},
+      {q:'Read "chalk". What does the a say?', o:['aw, like ball','a, like pal','ay, like play']}
+    ],
+    re:[
+      {q:'Which team finishes the word? Eli will dr__ a picture.', o:['aw','au','al']},
+      {q:'Which team finishes the word? Pasta with tomato s__ce.', o:['au','aw','al']},
+      {q:'Read "small". What does the a say?', o:['aw, like ball','a, like pal','ay, like play']}
+    ]};
+
+  LESSONS['READ.LV.L03.04'] = {name:'Blue Moon Team',
+    teach:[
+      {q:'Blue ends with the oo sound. Which team could spell it?', o:['ue','ui'], how:'At the end of a word, oo is often ew or ue.'},
+      {q:'Read "fruit". What do u and i say together?', o:['oo, like moon','ih, like sit'], how:'U and i are a team here. They say oo: fruit, suit, juice.'},
+      {q:'Read "new". What do e and w say together?', o:['oo, like moon','eh-w'], how:'E and w are a team. Together they say oo.'}
+    ],
+    practice:[
+      {t:'sort', q:'Which team spells the oo sound?', bins:[{id:'w',label:'ew'},{id:'e',label:'ue'},{id:'i',label:'ui'}], items:[{label:'flew',bin:'w'},{label:'glue',bin:'e'},{label:'suit',bin:'i'},{label:'chew',bin:'w'},{label:'true',bin:'e'},{label:'juice',bin:'i'}], h:'Find the two vowels side by side. That is the team.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['juice','🧃'],['suitcase','🧳'],['fruit','🍇'],['screw','🔩']], h:'Find the team. It says oo. Blend the word.'},
+      {t:'spotall', q:'Tap every word with the oo sound.', cells:[{label:'grew',ok:true},{label:'grow',ok:false},{label:'clue',ok:true},{label:'club',ok:false},{label:'suit',ok:true},{label:'sit',ok:false}], h:'Look for ew, ue or ui.'},
+      {t:'order', q:'Build the word "chew".', tiles:['ch','ew'], h:'Two tiles: the first sound, then the oo team.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['new','not old'],['true','not made up'],['flew','went in the air'],['fruit','a pear or a plum']], h:'Read the word first. Then think what it means.'},
+      {t:'sort', q:'Oo sound, or not?', bins:[{id:'y',label:'oo sound'},{id:'n',label:'no oo sound'}], items:[{label:'drew',bin:'y'},{label:'dress',bin:'n'},{label:'cruise',bin:'y'},{label:'crush',bin:'n'}], h:'Read it. Do you hear oo, like moon?'}
+    ],
+    check:[
+      {q:'Read "stew". Which word rhymes with it?', o:['true','stow','step']},
+      {q:'Read "bruise". What do u and i say?', o:['oo, like moon','ih, like sit','you']},
+      {q:'Read "due". Which word rhymes with it?', o:['new','doe','dug']}
+    ],
+    re:[
+      {q:'Read "threw". Which word rhymes with it?', o:['blue','throw','three']},
+      {q:'Read "juice". Which word rhymes with it?', o:['goose','just','joke']},
+      {q:'Read "clue". Which word rhymes with it?', o:['flew','claw','club']}
+    ]};
+
+  LESSONS['READ.LV.L03.05'] = {name:'Teams in Long Words',
+    teach:[
+      {q:'Rainbow: where do I split?', o:['rain | bow','ra | inbow'], how:'Keep each vowel team together. Split between the two small words: rain | bow.'},
+      {q:'In "peanut", which part has the ea team?', o:['the first part','the second part'], how:'Find the team. It stays in one part: pea | nut.'},
+      {q:'Read "rain | coat". Is it a good split?', o:['Yes: the team stays together','No: the team is cut in half'], how:'Two vowels that work as a team always stay in the same part.'}
+    ],
+    practice:[
+      {t:'sort', q:'Good split or bad split?', bins:[{id:'g',label:'Team stays together'},{id:'b',label:'Team split in two'}], items:[{label:'rain | coat',bin:'g'},{label:'ra | incoat',bin:'b'},{label:'sea | weed',bin:'g'},{label:'se | aweed',bin:'b'},{label:'oat | meal',bin:'g'},{label:'o | atmeal',bin:'b'}], h:'Find each team. Is it whole, or cut in half?'},
+      {t:'order', q:'Build the word "teapot".', tiles:['tea','pot'], h:'Find the team ea. Keep it in one part.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['rainbow','🌈'],['peanut','🥜'],['raincoat','🧥'],['teapot','🫖']], h:'Read part by part. Keep each team together.'},
+      {t:'spotall', q:'Tap every split that keeps the team together.', cells:[{label:'pea | nut',ok:true},{label:'pe | anut',ok:false},{label:'day | time',ok:true},{label:'da | ytime',ok:false}], h:'A good split never cuts a team.'},
+      {t:'order', q:'Build the word "seaweed".', tiles:['sea','weed'], h:'Two teams: ea and ee. Each stays whole.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['oatmeal','a warm breakfast'],['daytime','when the sun is up'],['seaweed','a plant in the sea'],['raincoat','for a wet day']], h:'Read part by part, then think what it means.'}
+    ],
+    check:[
+      {q:'Read "mailbox". Is "mail | box" a good split?', o:['Yes: the team stays together','No: the team is cut in half']},
+      {q:'Read "sixteen". Is "sixte | en" a good split?', o:['No: the team is cut in half','Yes: the team stays together']},
+      {q:'Read "seashell". How many vowel teams are in it?', o:['1','2','3']}
+    ],
+    re:[
+      {q:'Read "sailboat". Is "sa | ilboat" a good split?', o:['No: the team is cut in half','Yes: the team stays together']},
+      {q:'Read "railroad". Is "rail | road" a good split?', o:['Yes: the team stays together','No: the team is cut in half']},
+      {q:'Read "steamboat". How many vowel teams are in it?', o:['2','1','3']}
+    ]};
+
+  TEACH['READ.LV.L03.03'] = { hook:'Saw, haul, ball: three ways to spell one sound!',
+    big:'The aw sound is spelled aw at the end of a word, au inside a word, and a in all, alk and alt (ball, walk, salt).',
+    intro:['Listen for the aw sound, like saw.','At the end of the word: aw. Saw, draw.','Inside the word: usually au. Haul, sauce. (But yawn and hawk use aw.)','In all, alk, alt: a says aw. Ball, walk, salt.'],
+    ex:[{q:'Spell the aw sound in "claw".', steps:['Say claw slowly.','The aw sound is at the end.','At the end, it is aw: claw.'], a:'aw'},
+        {q:'Spell the aw sound in "launch".', steps:['Say launch slowly.','The aw sound is inside.','Inside, it is au: launch.'], a:'au'}],
+    oops:{ q:'Read: haul', wrong:'hay-ool', right:'hawl', why:'A and u are a team. Together they say aw.' },
+    idea:['Open your mouth wide like a yawn: aw. Every team in this lesson makes that sound.'],
+    'try':{ q:'You hear "draw". Which team spells the aw sound?', o:['aw','au'], a:'aw', steps:['Is the sound at the end?','Yes. At the end: aw.'] } };
+  TEACH['READ.LV.L03.04'] = { hook:'New blue fruit juice: four words, one sound!',
+    big:'The teams ew, ue and ui can all say oo, like moon.',
+    intro:['Listen for oo, like moon.','Ew: new, flew, chew.','Ue: blue, glue, true.','Ui: fruit, suit, juice.'],
+    ex:[{q:'Read: flew', steps:['F, l, then the team ew.','Ew says oo.','Flew!'], a:'flew'},
+        {q:'Read: suit', steps:['S, then the team ui, then t.','Ui says oo.','Suit!'], a:'suit'}],
+    oops:{ q:'Read: chew', wrong:'cheh-w', right:'choo', why:'E and w are a team. They say oo together.' },
+    idea:['Make a round mouth like you are blowing a candle: oo.'],
+    'try':{ q:'Read "glue". What do u and e say together?', o:['oo, like moon','uh-eh'], a:'oo, like moon', steps:['Find the team: ue.','Ue says oo.','Glue!'] } };
+  TEACH['READ.LV.L03.05'] = { hook:'Rainbow, peanut, seaweed: long words full of vowel teams!',
+    big:'Split a long word so each vowel team stays whole. In a compound word, split between the two small words. Not two small words? Still keep every team whole: tea | cher.',
+    intro:['Find every vowel team.','Each team stays in one part.','Split between the two small words.','Read each part, then put them together.'],
+    ex:[{q:'Read: rainbow', steps:['Teams: ai and ow.','Two small words: rain | bow.','Rainbow!'], a:'rain | bow'},
+        {q:'Read: oatmeal', steps:['Teams: oa and ea.','Two small words: oat | meal.','Oatmeal!'], a:'oat | meal'}],
+    oops:{ q:'Read: raincoat', wrong:'ra | incoat', right:'rain | coat', why:'Ai is a team. A team is never cut in half.' },
+    idea:['A vowel team holds hands. Never pull the hands apart!'],
+    'try':{ q:'Read "daytime". Where does it split?', o:['day | time','da | ytime'], a:'day | time', steps:['Find the team ay.','Keep it together.','Day | time!'] } };
+
+  HOWTO['READ.LV.L03.03'] = { s:'Listen for the aw sound.\nAt the end: aw. Inside: usually au.\nIn all, alk, alt: a says aw.',
+    q:{ 'Which team finishes the word? The ice will th__ in the sun.':'Say the word. Is the aw sound at the end, or inside?\nPick the team for that place.',
+        'Which team finishes the word? Take a p__se and rest.':'Say the word. Is the aw sound at the end, or inside?\nPick the team for that place.',
+        'Read "chalk". What does the a say?':'Look at the letters after a.\nIn all, alk, alt: a says aw.',
+        'Which team finishes the word? Eli will dr__ a picture.':'Say the word. Is the aw sound at the end, or inside?\nPick the team for that place.',
+        'Which team finishes the word? Pasta with tomato s__ce.':'Say the word. Is the aw sound at the end, or inside?\nPick the team for that place.',
+        'Read "small". What does the a say?':'Look at the letters after a.\nIn all, alk, alt: a says aw.' } };
+  HOWTO['READ.LV.L03.04'] = { s:'Find the two vowels side by side.\nEw, ue and ui all say oo.\nBlend the word.',
+    q:{ 'Read "stew". Which word rhymes with it?':'Read the word. Ew, ue and ui say oo.\nFind the word that ends the same.',
+        'Read "bruise". What do u and i say?':'Find the team.\nEw, ue and ui all say oo.',
+        'Read "due". Which word rhymes with it?':'Read the word. Ew, ue and ui say oo.\nFind the word that ends the same.',
+        'Read "threw". Which word rhymes with it?':'Read the word. Ew, ue and ui say oo.\nFind the word that ends the same.',
+        'Read "juice". Which word rhymes with it?':'Read the word. Ui says oo.\nFind the word that ends the same.',
+        'Read "clue". Which word rhymes with it?':'Read the word. Ew, ue and ui say oo.\nFind the word that ends the same.' } };
+  HOWTO['READ.LV.L03.05'] = { s:'Find every vowel team.\nKeep each team in one part.\nSplit between the two small words.',
+    q:{ 'Read "mailbox". Is "mail | box" a good split?':'Find the team.\nIs it whole, or cut in half?',
+        'Read "sixteen". Is "sixte | en" a good split?':'Find the team.\nIs it whole, or cut in half?',
+        'Read "seashell". How many vowel teams are in it?':'Look for vowel teams like ai, ea, oa, ee.\nCount each team once.',
+        'Read "sailboat". Is "sa | ilboat" a good split?':'Find the team.\nIs it whole, or cut in half?',
+        'Read "railroad". Is "rail | road" a good split?':'Find the teams.\nIs each one whole?',
+        'Read "steamboat". How many vowel teams are in it?':'Look for vowel teams like ai, ea, oa, oo, ow, ay.\nCount each team once.' } };
+
+  BITE['READ.LV.L03.03'] = { band:'B23', pic:'🐾', today:'Read and spell aw, au and al',
+    why:'Saw, sauce, ball: one sound with three spellings. Know them all, and you can read and spell them.',
+    ready:[{q:'Which word has a vowel team?', o:['rain','ran','run'], a:'rain'},{q:'Which word has oo, like moon?', o:['spoon','spin','span'], a:'spoon'}],
+    bridge:'READ.LV.L02.02', bridgeName:'Vowel Teams 1',
+    watch:{ q:'three aw spellings', m:{type:'tiles',w:['s','aw'],hi:[1]}, steps:[
+      {t:'Saw. Aw at the end: spell it aw.', m:{type:'tiles',w:['s','aw'],hi:[1]}},
+      {t:'Haul. Aw inside the word? Most times, spell it au.', m:{type:'tiles',w:['h','au','l'],hi:[1]}},
+      {t:'Ball. In all, a says aw too!', m:{type:'tiles',w:['b','a','ll'],hi:[1]}},
+      {t:'Yawn with Avi and sing!', m:{type:'chant', lines:['At the end, aw: saw and draw!','Inside, au: sauce and haul!','All, alk, alt: ball and walk!']}}], a:'aw at the end, au inside, al in ball, walk, salt' },
+    oops:{ q:'Read: haul', wrong:'hay-ool', right:'hawl', why:'A and u are a team. Together they say aw.' },
+    ways:['think-aloud','chant','build with tiles','sort','Mistake Detective'], done:'You can read and spell aw, au and al!',
+    board:{ one:'Aw at the end, au inside, a in all, alk, alt: all say aw.', activity:'Spelling sort: boys hold up an aw or au card for each word the rebbe says.', mistakes:['Reading au as two sounds','Spelling sauce with aw','Reading ball like pal'] },
+    do:[
+      {type:'tiles', w:['d','r','aw'], extra:['au'], hear:'draw', pic:'✏️', say:'Listen. Build the word you hear.', how:'Where is the aw sound: at the end, or inside?'},
+      {type:'listen', q:'Zaidy put salt in the soup.', hear:'Which word has the aw sound?', o:['salt','soup','put'], a:'salt', say:'Read it. Find the aw sound.', how:'Say each word. Listen for aw, like ball.'}],
+    your:[
+      {type:'match', pairs:[['straw','🥤'],['paw','🐾'],['ball','⚽'],['saw','🪚']], say:'Read each word. Match it to its picture.', how:'Find the team. It says aw. Blend the word.'},
+      {type:'listen', q:'Dovid read "sauce" as "say-oos".', hear:'How should sauce sound?', o:['s-aw-s','say-oos','sock'], a:'s-aw-s', mis:true, say:'Mistake Detective! What should he say?', how:'A and u are a team. What sound do they make?'},
+      {type:'tiles', w:['l','au','n','ch'], extra:['aw'], hear:'launch', pic:'🚀', say:'Listen. Build the word you hear.', how:'Where is the aw sound: at the end, or inside?'},
+      {type:'findall', grid:['hawk','hay','talk','tack','cause','cane','yawn','yarn'], find:['hawk','talk','cause','yawn'], findSay:'word with the aw sound', say:'Tap every word with the aw sound.', how:'Look for aw, au, or al like ball.'},
+      {type:'sort', bins:['aw','au','al'], cards:[['str__',0],['j__',0],['l__nch',1],['h__l',1],['w__k',2],['t__k',2]], say:'Challenge! Which team fills the blank?', how:'Try each team in the blank. Which one makes a real word?'}] };
+
+  BITE['READ.LV.L03.04'] = { band:'B23', pic:'🧃', today:'Read ew, ue and ui',
+    why:'New, blue, fruit: these teams are in words you read every day.',
+    ready:[{q:'Which word has the aw sound?', o:['saw','say','sat'], a:'saw'},{q:'Which word has oo, like moon?', o:['food','fed','fad'], a:'food'}],
+    bridge:'READ.LV.L03.03', bridgeName:'Saw, Haul, Ball',
+    watch:{ q:'oo teams', m:{type:'tiles',w:['n','ew'],hi:[1]}, steps:[
+      {t:'New. E and w at the end say oo.', m:{type:'tiles',w:['n','ew'],hi:[1]}},
+      {t:'Blue. U and e at the end say oo too.', m:{type:'tiles',w:['b','l','ue'],hi:[2]}},
+      {t:'Fruit. U and i inside the word say oo.', m:{type:'tiles',w:['f','r','ui','t'],hi:[2]}},
+      {t:'Round your mouth with Chaim and chant!', m:{type:'chant', lines:['E-w, u-e, u-i too,','three little teams that can say oo!']}}], a:'ew, ue and ui all say oo, like moon' },
+    oops:{ q:'Read: chew', wrong:'cheh-w', right:'choo', why:'E and w are a team. They say oo together.' },
+    ways:['think-aloud','chant','sort','build with tiles','Mistake Detective'], done:'You can read ew, ue and ui!',
+    board:{ one:'Ew, ue and ui all say oo, like moon.', activity:'Team hunt: boys find ew, ue and ui words in a short story and sort them on the board.', mistakes:['Reading ew as eh-w','Reading ue as two sounds','Reading ui like the i in sit'] },
+    do:[
+      {type:'listen', q:'grew', hear:'Which word rhymes with grew?', o:['blue','grow','green'], a:'blue', say:'Read it. Find the word that rhymes.', how:'Read both words. Do they end with the same sound?'},
+      {type:'tiles', w:['b','l','ue'], extra:['ui'], hear:'blue', pic:'🔵', say:'Listen. Build the word you hear.', how:'Say it slowly. Which team says oo at the end?'}],
+    your:[
+      {type:'sort', bins:['oo, like moon','oh, like snow'], cards:[['grew',0],['grow',1],['blew',0],['blow',1],['chew',0],['show',1]], say:'Read it. Does it say oo or oh?', how:'Read the word. Listen to the vowel sound.'},
+      {type:'listen', q:'Avi read "fruit" as "frit".', hear:'Is Avi right?', o:['No: froot','Yes, frit','No: frowt'], a:'No: froot', mis:true, say:'Mistake Detective! Is he right?', how:'U and i are a team here. What do they say?'},
+      {type:'match', pairs:[['juice','🧃'],['suitcase','🧳'],['screw','🔩'],['fruit','🍐']], say:'Read each word. Match it to its picture.', how:'Find the team. It says oo. Blend the word.'},
+      {type:'findall', grid:['flew','flow','clue','club','suit','sit','moon','mint'], find:['flew','clue','suit','moon'], findSay:'word with the oo sound', say:'Tap every word with the oo sound.', how:'Read each word. Do you hear oo, like moon?'},
+      {type:'match', pairs:[['crew','glue'],['suit','boot'],['juice','loose']], say:'Challenge! Match the words that rhyme.', how:'Read both words. Do they end with the same sound?'}] };
+
+  BITE['READ.LV.L03.05'] = { band:'B23', pic:'🌈', today:'Read long words with vowel teams',
+    why:'Rainbow, peanut, seaweed: big words get easy when every team stays together.',
+    ready:[{q:'Which one is a vowel team?', o:['ai','at','an'], a:'ai'},{q:'Is "ra | bbit" a good split?', o:['no','yes'], a:'no'}],
+    bridge:'READ.PHON.L03.01', bridgeName:'Syllable Splitter',
+    watch:{ q:'rainbow and peanut', m:{type:'tiles',w:['rain','bow'],hi:[0]}, steps:[
+      {t:'Rainbow. Find the teams: ai and ow.', m:{type:'tiles',w:['r','ai','n','b','ow'],hi:[1,4]}},
+      {t:'Keep each team whole. Two small words: rain, bow!', m:{type:'tiles',w:['rain','bow'],hi:[0]}},
+      {t:'Peanut. The team ea stays in pea. Pea, nut!', m:{type:'tiles',w:['pea','nut'],hi:[0]}},
+      {t:'Teacher. Not two small words, but keep ea whole: tea, cher!', m:{type:'tiles',w:['tea','cher'],hi:[0]}},
+      {t:'Clasp your hands like a team, and chant!', m:{type:'chant', lines:['A team holds hands, it stays as one.','Split between, and the word is done!']}}], a:'Keep every team whole: rain | bow, pea | nut.' },
+    oops:{ q:'Read: raincoat', wrong:'ra | incoat', right:'rain | coat', why:'Ai is a team. A team is never cut in half.' },
+    ways:['think-aloud','chant with movement','sort','build with tiles','Mistake Detective'], done:'You can read long words with vowel teams!',
+    board:{ one:'A vowel team stays in one part. Split between the two small words.', activity:'Team scissors: boys cut word cards so no team is split.', mistakes:['Cutting a team in half','Reading each vowel of a team alone','Splitting in the middle of a small word'] },
+    do:[
+      {type:'tiles', w:['tea','pot'], extra:['te'], hear:'teapot', pic:'🫖', say:'Listen. Build the word you hear.', how:'Find the team. Keep it in one part.'},
+      {type:'sort', bins:['Team stays together','Team cut in half'], cards:[['oat | meal',0],['o | atmeal',1],['day | time',0],['da | ytime',1]], say:'Is the team kept whole?', how:'Find each team. Is it whole, or cut in half?'}],
+    your:[
+      {type:'listen', q:'Abba made oatmeal on a rainy day.', hear:'Which word has two vowel teams?', o:['oatmeal','rainy','made'], a:'oatmeal', say:'Which word has two teams?', how:'Look for teams like ai, ea, oa. Count them.'},
+      {type:'sort', bins:['Team stays together','Team cut in half'], cards:[['ex | plain',0],['expla | in',1],['tea | cher',0],['te | acher',1],['sleep | y',0],['sle | epy',1]], say:'Is the team kept whole?', how:'Find each team. Is it whole, or cut in half?'},
+      {type:'listen', q:'Moishe split seaweed as "se, aweed".', hear:'Where should the split go?', o:['sea | weed','se | aweed','seaw | eed'], a:'sea | weed', mis:true, say:'Mistake Detective! Fix his split.', how:'Find the teams. Is any team cut in half?'},
+      {type:'findall', grid:['rain','rab','pea','pic','sea','sun'], find:['rain','pea','sea'], findSay:'part with a vowel team', say:'Tap every part with a vowel team.', how:'Look for a vowel team like ai, ea, oa or ee.'},
+      {type:'tiles', w:['row','boat'], extra:['ro','oat'], hear:'rowboat', pic:'🚣', say:'Listen. Build the word you hear.', how:'Find both teams. Keep each one whole.'}] };
+
+  /* ===== Grade 2 Unit 3 "Bossy r and tricky endings" (F-map section 5): air/are/ear, consonant-le, tch/dge ===== */
+  var SHC = 'short: it is closed', LGN = 'long: it says its name';
+
+  LESSONS['READ.LV.L03.06'] = {name:'Chair, Share, Bear',
+    teach:[
+      {q:'Read "fair". What sound do a, i, r make together?', o:['air','ar','eer'], how:'A, i and r are a team. Together they say air, like chair.'},
+      {q:'Read "care". What sound do a, r, e make together?', o:['air','ar','are-eh'], how:'A, r, e is a team. The e is quiet. Together they say air.'},
+      {q:'Read "near". What sound does ear make here?', o:['eer','air','ar'], how:'Ear can say eer or air. Try eer first. Pick the word that makes sense.'}
+    ],
+    practice:[
+      {t:'sort', q:'Read each ear word. Air or eer?', bins:[{id:'a',label:'air, like chair'},{id:'e',label:'eer, like hear'}], items:[{label:'bear',bin:'a'},{label:'pear',bin:'a'},{label:'hear',bin:'e'},{label:'dear',bin:'e'},{label:'beard',bin:'e'},{label:'near',bin:'e'}], h:'Try eer, then air. Which word fits?'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['chair','🪑'],['pear','🍐'],['square','⬛'],['bear','🐻']], h:'Find the team. It says air. Blend the word.'},
+      {t:'spotall', q:'Tap every word with the air sound.', cells:[{label:'hair',ok:true},{label:'her',ok:false},{label:'care',ok:true},{label:'car',ok:false},{label:'pear',ok:true},{label:'peek',ok:false}], h:'Read each word. Do you hear air, like chair?'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['ch','air'], h:'Two tiles: the first sound, then the air team.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['share','give some to a friend'],['repair','fix it'],['scare','make someone afraid'],['bear','a big furry animal']], h:'Read the word first. Then think what it means.'},
+      {t:'sort', q:'Air sound, or not?', bins:[{id:'y',label:'air sound'},{id:'n',label:'no air sound'}], items:[{label:'stairs',bin:'y'},{label:'stars',bin:'n'},{label:'spare',bin:'y'},{label:'spark',bin:'n'}], h:'Read it. Do you hear air, like chair?'}
+    ],
+    check:[
+      {q:'Read "rare". What sound do a, r, e make together?', o:['air','ar','are-eh']},
+      {q:'"I wear my coat." Which word rhymes with wear?', o:['chair','near','car']},
+      {q:'Read "clear". What sound does ear make here?', o:['eer','air','ar']}
+    ],
+    re:[
+      {q:'Read "stair". Which word has the same sound?', o:['care','car','cheer']},
+      {q:'Read "year". What sound does ear make here?', o:['eer','air','ar']},
+      {q:'Read "glare". What sound do a, r, e make together?', o:['air','ar','are-eh']}
+    ]};
+
+  LESSONS['READ.PHON.L03.07'] = {name:'Table or Puddle?',
+    teach:[
+      {q:'Read "table". Where does it split?', o:['ta | ble','tab | le'], how:'Le takes the consonant before it: ta | ble.'},
+      {q:'In "ta | ble", is the first part open or closed?', o:[OPEN, CLOSED], how:'Ta ends with a vowel. The door is open.'},
+      {q:'In "pud | dle", how does the u sound?', o:[SHC, LGN], how:'Pud ends with a consonant. A closed part is short.'}
+    ],
+    practice:[
+      {t:'sort', q:'Is the first part long or short?', bins:[{id:'l',label:'Long first part'},{id:'s',label:'Short first part'}], items:[{label:'ta | ble',bin:'l'},{label:'pud | dle',bin:'s'},{label:'ti | tle',bin:'l'},{label:'lit | tle',bin:'s'},{label:'ea | gle',bin:'l'},{label:'can | dle',bin:'s'}], h:'Ends with a vowel or a team: long. Ends with a consonant: short.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['candle','🕯️'],['apple','🍎'],['bottle','🍼'],['eagle','🦅']], h:'Split before the consonant-le. Read each part.'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['bub','ble'], h:'Le takes one consonant. Then read the first part.'},
+      {t:'spotall', q:'Tap every word that ends in consonant-le.', cells:[{label:'table',ok:true},{label:'tablet',ok:false},{label:'candle',ok:true},{label:'candy',ok:false},{label:'gentle',ok:true},{label:'garden',ok:false}], h:'Look at the end. Is it a consonant, then le?'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['puz','zle'], h:'Two z letters: one stays, one goes with le.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['little','small'],['gentle','soft and kind'],['puddle','water on the ground'],['title','the name of a book']], h:'Read part by part. Then think what it means.'}
+    ],
+    check:[
+      {q:'Read "bugle". Is the first part open or closed?', o:[OPEN, CLOSED]},
+      {q:'Read "jungle". How does the u sound?', o:[SHC, LGN]},
+      {q:'Read "giggle". How does the first i sound?', o:[SHC, LGN]}
+    ],
+    re:[
+      {q:'Read "cradle". Is the first part open or closed?', o:[OPEN, CLOSED]},
+      {q:'Read "nibble". How does the i sound?', o:[SHC, LGN]},
+      {q:'Read "stable". How does the a sound?', o:[LGN, SHC]}
+    ]};
+
+  LESSONS['READ.PHON.L03.08'] = {name:'Catch the Bridge',
+    teach:[
+      {q:'Catch has a short a. How is the ch sound spelled at the end?', o:['tch','ch'], how:'After a short vowel, ch gets a t in front: tch.'},
+      {q:'Coach has a long o. How is the ch sound spelled at the end?', o:['ch','tch'], how:'After a long vowel, just ch.'},
+      {q:'Bridge has a short i. How is the j sound spelled at the end?', o:['dge','ge'], how:'After a short vowel, the j sound is dge.'}
+    ],
+    practice:[
+      {t:'sort', q:'Is the vowel short or long?', bins:[{id:'s',label:'Short vowel: tch or dge'},{id:'l',label:'Long vowel: ch or ge'}], items:[{label:'catch',bin:'s'},{label:'coach',bin:'l'},{label:'badge',bin:'s'},{label:'cage',bin:'l'},{label:'itch',bin:'s'},{label:'beach',bin:'l'}], h:'Read the vowel first. Short: tch or dge. Long: ch or ge.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['bridge','🌉'],['kitchen','🍳'],['fudge','🍫'],['badge','📛']], h:'Read the word. Short vowel, then tch or dge.'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['m','a','tch'], h:'Is the vowel short? Then the ch sound needs a t.'},
+      {t:'spotall', q:'Tap every word with a short vowel before tch or dge.', cells:[{label:'ditch',ok:true},{label:'beach',ok:false},{label:'sketch',ok:true},{label:'peach',ok:false},{label:'judge',ok:true},{label:'huge',ok:false}], h:'Read the vowel. Short? Then it is tch or dge.'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['h','e','dge'], h:'Short e, then the j sound. Which ending?'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['fetch','go and bring it'],['bridge','a road over water'],['kitchen','where we cook'],['badge','a pin with your name']], h:'Read the word first. Then think what it means.'}
+    ],
+    check:[
+      {q:'Which ending finishes the word? Abba will swi… on the light.', o:['tch','ch']},
+      {q:'Which ending finishes the word? An elephant is hu… .', o:['ge','dge']},
+      {q:'Which ending finishes the word? The rebbe will tea… us.', o:['ch','tch']}
+    ],
+    re:[
+      {q:'Which ending finishes the word? A box of ma…es.', o:['tch','ch']},
+      {q:'Which ending finishes the word? The bird is in a ca… .', o:['ge','dge']},
+      {q:'Which ending finishes the word? We ate a sweet pea… .', o:['ch','tch']}
+    ]};
+
+  TEACH['READ.LV.L03.06'] = { hook:'Chair, share, bear: three spellings that all say air!',
+    big:'The teams air, are and ear can all say air, like chair. Ear can also say eer, like hear: try eer first, then pick the word that makes sense.',
+    intro:['Air says air: chair, fair.','Are says air: share, care. The e is quiet.','Ear can say air: bear, pear.','Ear can also say eer: hear, near. Try eer first. Pick the word that makes sense.'],
+    ex:[{q:'Read: share', steps:['Sh, then the team are.','Are says air.','Share!'], a:'share'},
+        {q:'Read: pear', steps:['P, then the team ear.','Try eer: peer? That means look.','Try air: pear, the fruit we eat!'], a:'pear'}],
+    oops:{ q:'Read: share', wrong:'shar-eh', right:'shair', why:'A, r, e is a team. The e is quiet. Together they say air.' },
+    idea:['Point to a chair: air. Every team in this lesson can make that sound.'],
+    'try':{ q:'Read "fair". Which word has the same sound?', o:['care','car','fear'], a:'care', steps:['Find the team: air.','It says air.','Care has are, which says air too.'] } };
+  TEACH['READ.PHON.L03.07'] = { hook:'Table and puddle both end in le. Why do they sound so different?',
+    big:'In a word that ends with a consonant and le, the consonant goes with le. Then read the first part: open is long, closed is short.',
+    intro:['Find the le at the end.','Le takes the consonant just before it.','Look at the first part: open or closed?','Open: long vowel. Closed: short vowel.'],
+    ex:[{q:'Read: table', steps:['Le takes b: ta | ble.','Ta is open: long a.','Table!'], a:'ta | ble'},
+        {q:'Read: puddle', steps:['Le takes one d: pud | dle.','Pud is closed: short u.','Puddle!'], a:'pud | dle'}],
+    oops:{ q:'Read: maple', wrong:'map | le', right:'ma | ple', why:'Le takes the consonant before it. Ma is open: long a.' },
+    idea:['Le never goes alone. It always holds hands with one consonant.'],
+    'try':{ q:'In "ta | ble", is the first part open or closed?', o:[OPEN, CLOSED], a:OPEN, steps:['Look at ta.','It ends with a vowel.','Open: long a.'] } };
+  TEACH['READ.PHON.L03.08'] = { hook:'Why does catch have a t, but coach does not?',
+    big:'After a short vowel, the ch sound is usually spelled tch and the j sound is always dge. After a long vowel, it is just ch or ge.',
+    intro:['Listen to the vowel before the end.','Short vowel + ch sound: tch. Catch, itch.','Short vowel + j sound: dge. Bridge, badge.','Long vowel: just ch or ge. Coach, page.','After a consonant, just ch or ge too: lunch, hinge.'],
+    ex:[{q:'Spell the end of "fetch".', steps:['E is short.','Short vowel, then the ch sound.','Tch: fetch.'], a:'tch'},
+        {q:'Spell the end of "huge".', steps:['U is long.','Long vowel, then the j sound.','Ge: huge.'], a:'ge'}],
+    oops:{ q:'Spell: fetch', wrong:'fech', right:'fetch', why:'E is short. After a short vowel, the ch sound gets a t: tch.' },
+    idea:['The t and d are guards. They stand next to a short vowel to keep it safe.'],
+    'try':{ q:'Bridge has a short i. How is the j sound spelled at the end?', o:['dge','ge'], a:'dge', steps:['Is the vowel short?','Yes. Short vowel, j sound: dge.'] } };
+
+  HOWTO['READ.LV.L03.06'] = { s:'Find the team: air, are or ear.\nIt says air.\nEar can also say eer: try eer first, then pick the word that makes sense.',
+    q:{ 'Read "rare". What sound do a, r, e make together?':'Find the team.\nA, r, e with a quiet e: what does it say?',
+        '"I wear my coat." Which word rhymes with wear?':'Read wear in the sentence. Does it say eer or air?\nFind the word that ends the same.',
+        'Read "clear". What sound does ear make here?':'Try eer first.\nDoes it make a word that makes sense?',
+        'Read "stair". Which word has the same sound?':'Find the team in stair.\nWhich word has a team that says the same?',
+        'Read "year". What sound does ear make here?':'Try eer first.\nDoes it make a word that makes sense?',
+        'Read "glare". What sound do a, r, e make together?':'Find the team.\nA, r, e with a quiet e: what does it say?' } };
+  HOWTO['READ.PHON.L03.07'] = { s:'Le takes the consonant before it.\nLook at the first part.\nOpen: long. Closed: short.',
+    q:{ 'Read "bugle". Is the first part open or closed?':'Le takes the g.\nWhat is left in the first part?\nDoes it end with a vowel?',
+        'Read "jungle". How does the u sound?':'Le takes the g.\nWhat is left in the first part?\nDoes it end with a consonant?',
+        'Read "giggle". How does the first i sound?':'Le takes one g.\nWhat is left in the first part?\nDoes it end with a consonant?',
+        'Read "cradle". Is the first part open or closed?':'Le takes the d.\nDoes the first part end with a vowel?',
+        'Read "nibble". How does the i sound?':'Le takes one b.\nDoes the first part end with a consonant?',
+        'Read "stable". How does the a sound?':'Le takes the b.\nDoes the first part end with a vowel?' } };
+  HOWTO['READ.PHON.L03.08'] = { s:'Listen to the vowel before the end.\nShort: tch or dge.\nLong: ch or ge.',
+    q:{ 'Which ending finishes the word? Abba will swi… on the light.':'Say the word.\nIs the vowel before the end short or long?',
+        'Which ending finishes the word? An elephant is hu… .':'Say the word.\nIs the vowel before the end short or long?',
+        'Which ending finishes the word? The rebbe will tea… us.':'Say the word.\nIs the vowel before the end short or long?',
+        'Which ending finishes the word? A box of ma…es.':'Say the word.\nIs the vowel short or long?',
+        'Which ending finishes the word? The bird is in a ca… .':'Say the word.\nIs the vowel short or long?',
+        'Which ending finishes the word? We ate a sweet pea… .':'Say the word.\nIs the vowel short or long?' } };
+
+  BITE['READ.LV.L03.06'] = { band:'B23', pic:'🪑', today:'Read air, are and ear',
+    why:'Chair, share, bear: these teams are in words you read and say every day.',
+    ready:[{q:'Which word has bossy r?', o:['car','cat','cap'], a:'car'},{q:'Which word has a vowel team?', o:['rain','ran','run'], a:'rain'}],
+    bridge:'READ.PHON.L03.02', bridgeName:'Bossy R',
+    watch:{ q:'air teams', m:{type:'tiles',w:['ch','air'],hi:[1]}, steps:[
+      {t:'Chair. A, i, r together say air.', m:{type:'tiles',w:['ch','air'],hi:[1]}},
+      {t:'Share. A, r, e say air too. The e is quiet.', m:{type:'tiles',w:['sh','are'],hi:[1]}},
+      {t:'Bear. E, a, r can say air as well!', m:{type:'tiles',w:['b','ear'],hi:[1]}},
+      {t:'Ear can also say eer, like hear. Try eer first!', m:{type:'tiles',w:['h','ear'],hi:[1]}},
+      {t:'Point to a chair with Naftali and chant!', m:{type:'chant', lines:['Air and are and ear say air,','chair and share and a big brown bear!']}}], a:'air, are and ear say air; ear can also say eer' },
+    oops:{ q:'Read: share', wrong:'shar-eh', right:'shair', why:'A, r, e is a team. The e is quiet. Together they say air.' },
+    ways:['think-aloud','chant with pointing','sort by sound','build with tiles','Mistake Detective'], done:'You can read air, are and ear!',
+    board:{ one:'Air, are and ear can say air. Ear can also say eer: try eer first, then pick the word that makes sense.', activity:'Air or eer: boys stand up for air words and sit for eer words as the rebbe reads.', mistakes:['Saying the quiet e in are','Reading every ear as eer','Reading air as two sounds'] },
+    do:[
+      {type:'sort', bins:['air, like chair','eer, like hear'], cards:[['a big bear',0],['a pear to eat',0],['I hear you',1],['dear Abba',1],['a long beard',1],['near the door',1]], say:'Read each one. Does ear say air or eer?', how:'Try eer, then air. Which word fits?'},
+      {type:'tiles', w:['ch','air'], extra:['are'], hear:'chair', pic:'🪑', say:'Listen. Build the word you hear.', how:'Both teams say air. Which one did chair use in the lesson?'}],
+    your:[
+      {type:'listen', q:'Chaim read "pear" as "peer".', hear:'What should ear say here?', o:['air','eer','ar'], a:'air', mis:true, say:'Mistake Detective! What should ear say?', how:'Try both sounds. Which one is the fruit?'},
+      {type:'match', pairs:[['chair','🪑'],['pear','🍐'],['square','⬛'],['bear','🐻']], say:'Read each word. Match it to its picture.', how:'Find the team. It says air. Blend the word.'},
+      {type:'tiles', w:['s','qu','are'], extra:['air'], hear:'square', pic:'⬛', say:'Listen. Build the word you hear.', how:'Both teams say air. How did square look in the match?'},
+      {type:'findall', grid:['hair','her','care','car','pear','peek'], find:['hair','care','pear'], findSay:'word with the air sound', say:'Tap every word with the air sound.', how:'Read each word. Do you hear air, like chair?'},
+      {type:'listen', q:'Zaidy will repair the old chair.', hear:'Which two words have the air sound?', o:['repair, chair','old, will','Zaidy, repair'], a:'repair, chair', say:'Challenge! Find both air words.', how:'Read each word. Listen for air.'}] };
+
+  BITE['READ.PHON.L03.07'] = { band:'B23', pic:'🕯️', today:'Read words that end in consonant-le',
+    why:'Table, candle, puzzle, little: hundreds of words end this way.',
+    ready:[{q:'Is "ta" open or closed?', o:['open','closed'], a:'open'},{q:'Is "pud" open or closed?', o:['closed','open'], a:'closed'}],
+    bridge:'READ.PHON.L03.04', bridgeName:'Open Door, Closed Door',
+    watch:{ q:'table and puddle', m:{type:'tiles',w:['ta','ble'],hi:[1]}, steps:[
+      {t:'Table. Le grabs the b. Ble says bul.', m:{type:'tiles',w:['ta','ble'],hi:[1]}},
+      {t:'Ta is open, so a says its name. Table!', m:{type:'tiles',w:['ta','ble'],hi:[0]}},
+      {t:'Puddle. Le grabs one d: pud, dle.', m:{type:'tiles',w:['pud','dle'],hi:[1]}},
+      {t:'Pud is closed: short u. Puddle!', m:{type:'tiles',w:['pud','dle'],hi:[0]}},
+      {t:'Clap two beats with Dovid!', m:{type:'move', t:'Clap: ta! ble! Clap: pud! dle!'}}], a:'Le takes one consonant: ta | ble (long), pud | dle (short).' },
+    oops:{ q:'Read: maple', wrong:'map | le', right:'ma | ple', why:'Le takes the consonant before it. Ma is open: long a.' },
+    ways:['think-aloud','clapping','build with tiles','sort','Mistake Detective'], done:'You can read words that end in consonant-le!',
+    board:{ one:'Le takes the consonant before it. Then: open first part is long, closed is short.', activity:'Cut cards: boys cut table, puddle and candle so le keeps one consonant.', mistakes:['Leaving le alone (tab | le)','Reading every first part short','Saying le as lee'] },
+    do:[
+      {type:'tiles', w:['bub','ble'], extra:['bu'], hear:'bubble', pic:'🫧', say:'Listen. Build the word you hear.', how:'Le takes one consonant. Is the first part open or closed?'},
+      {type:'sort', bins:['Long first part','Short first part'], cards:[['ta | ble',0],['pud | dle',1],['ti | tle',0],['lit | tle',1],['can | dle',1]], say:'Long or short first part?', how:'Ends with a vowel: long. Ends with a consonant: short.'}],
+    your:[
+      {type:'match', pairs:[['bottle','🍼'],['bubble','🫧'],['candle','🕯️'],['eagle','🦅']], say:'Read each word. Match it to its picture.', how:'Split before the consonant-le. Read each part.'},
+      {type:'listen', q:'Avi split cable as "cab, le".', hear:'Where should the split go?', o:['ca | ble','cab | le','c | able'], a:'ca | ble', mis:true, say:'Mistake Detective! Fix his split.', how:'Le takes the consonant before it.'},
+      {type:'findall', grid:['table','tablet','candle','candy','gentle','garden'], find:['table','candle','gentle'], findSay:'word that ends in consonant-le', say:'Tap every word that ends in consonant-le.', how:'Look at the end. Is it a consonant, then le?'},
+      {type:'tiles', w:['puz','zle'], extra:['pu'], hear:'puzzle', pic:'🧩', say:'Listen. Build the word you hear.', how:'Two of the same letter: one stays, one goes with le.'},
+      {type:'listen', q:'A little candle sat on the table.', hear:'Which word has a long first part?', o:['table','little','candle'], a:'table', say:'Find the long first part.', how:'Split each one. Is the first part open or closed?'}] };
+
+  BITE['READ.PHON.L03.08'] = { band:'B23', pic:'🌉', today:'Read and spell tch and dge',
+    why:'Catch, kitchen, bridge, fudge: now you will know when to add the t or the d.',
+    ready:[{q:'Is the a in "cat" short or long?', o:['short','long'], a:'short'},{q:'Is the o in "coat" short or long?', o:['long','short'], a:'long'}],
+    bridge:'READ.LV.L02.01', bridgeName:'Silent E',
+    watch:{ q:'tch, dge', m:{type:'tiles',w:['c','a','tch'],hi:[2]}, steps:[
+      {t:'Catch. Short a, then the ch sound: spell it tch.', m:{type:'tiles',w:['c','a','tch'],hi:[2]}},
+      {t:'Coach. Long o, then ch: just ch, no t.', m:{type:'tiles',w:['c','oa','ch'],hi:[2]}},
+      {t:'Bridge. Short i, then the j sound: spell it dge.', m:{type:'tiles',w:['b','r','i','dge'],hi:[3]}},
+      {t:'Page. Long a, then j: just ge.', m:{type:'tiles',w:['p','a','ge'],hi:[2]}},
+      {t:'Stand like a guard with Shimon and chant!', m:{type:'chant', lines:['Short vowel? Bring a guard along:','t before ch, d before ge!']}}], a:'Short vowel: tch, dge. Long vowel: ch, ge.' },
+    oops:{ q:'Spell: fetch', wrong:'fech', right:'fetch', why:'E is short. After a short vowel, the ch sound gets a t: tch.' },
+    ways:['think-aloud','chant with a guard pose','build with tiles','sort','Mistake Detective'], done:'You can read and spell tch and dge!',
+    board:{ one:'Short vowel: tch and dge. Long vowel: ch and ge.', activity:'Guard game: boys stand straight like a guard for every tch or dge word the rebbe says.', mistakes:['Spelling itch as ich','Spelling bridge as brige','Adding a t after a long vowel (coatch)','Rich, much, such, which: just ch'] },
+    do:[
+      {type:'tiles', w:['m','a','tch'], extra:['ch'], hear:'match', say:'Listen. Build the word you hear.', how:'Is the vowel short? Then the ch sound needs a t.'},
+      {type:'sort', bins:['Short vowel: tch or dge','Long vowel: ch or ge'], cards:[['catch',0],['coach',1],['badge',0],['cage',1]], say:'Read it. Is the vowel short or long?', how:'Read the vowel first. Short: tch or dge. Long: ch or ge.'}],
+    your:[
+      {type:'findall', grid:['ditch','beatch','sketch','peach','juge','badge'], find:['ditch','sketch','peach','badge'], findSay:'word spelled right', say:'Tap every word spelled right.', how:'Read the vowel. Short: tch or dge. Long: ch or ge.'},
+      {type:'listen', q:'Eli spelled "itch" as "ich".', hear:'What did he forget?', o:['the t','the h','the e'], a:'the t', mis:true, say:'Mistake Detective! What is missing?', how:'Is the i short? What does a short vowel need before ch?'},
+      {type:'tiles', w:['h','e','dge'], extra:['ge'], hear:'hedge', say:'Listen. Build the word you hear.', how:'Short e, then the j sound. Which ending?'},
+      {type:'match', pairs:[['bridge','🌉'],['kitchen','🍳'],['fudge','🍫'],['badge','📛']], say:'Read each word. Match it to its picture.', how:'Read the word. Short vowel, then tch or dge.'},
+      {type:'listen', q:'Dovid\'s peach is in the kitchen.', hear:'Which word has a long vowel before ch?', o:['peach','kitchen','Dovid\'s'], a:'peach', say:'Find the long vowel before ch.', how:'Read each word. Is the vowel before ch long?'}] };
+
+  /* ===== Grade 2 Unit 4 "Soft c, soft g, silent letters" (F-map section 5) ===== */
+  var SC = 'sss, like city', HC = 'kuh, like cat', SG = 'juh, like gem', HG = 'guh, like goat';
+
+  LESSONS['READ.PHON.L03.09'] = {name:'City Cat',
+    teach:[
+      {q:'Read "cell". What does the c say?', o:[SC, HC], how:'Look at the letter after c. E, i or y: c says sss.'},
+      {q:'Read "cup". What does the c say?', o:[HC, SC], how:'Look at the letter after c. A, o, u or a consonant: c says kuh.'},
+      {q:'Which letters after c make it say sss?', o:['e, i or y','a, o or u'], how:'E, i and y make c soft: cent, city, cycle.'}
+    ],
+    practice:[
+      {t:'sort', q:'What does the c say?', bins:[{id:'s',label:SC},{id:'k',label:HC}], items:[{label:'cent',bin:'s'},{label:'cot',bin:'k'},{label:'cell',bin:'s'},{label:'cub',bin:'k'},{label:'face',bin:'s'},{label:'clap',bin:'k'}], h:'Look at the letter right after c.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['pencil','✏️'],['cake','🎂'],['circle','⭕'],['carrot','🥕']], h:'Look at the letter after each c. Then read the word.'},
+      {t:'spotall', q:'Tap every word where c says sss.', cells:[{label:'cent',ok:true},{label:'cap',ok:false},{label:'city',ok:true},{label:'cut',ok:false},{label:'face',ok:true},{label:'cot',ok:false}], h:'Is the letter after c an e, i or y?'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['i','c','e'], h:'Which letter can say sss before e?'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['cent','a penny'],['city','a big town'],['ice','frozen water'],['circle','a round shape']], h:'Read the word first. Then think what it means.'},
+      {t:'sort', q:'Soft c or hard c?', bins:[{id:'s',label:SC},{id:'k',label:HC}], items:[{label:'rice',bin:'s'},{label:'race',bin:'s'},{label:'cave',bin:'k'},{label:'camp',bin:'k'}], h:'Look at the letter after c.'}
+    ],
+    check:[
+      {q:'Read "cereal". What does the c say?', o:[SC, HC]},
+      {q:'Read "cactus". What does the first c say?', o:[HC, SC]},
+      {q:'Read "fancy". What does the c say?', o:[SC, HC]}
+    ],
+    re:[
+      {q:'Read "cycle". What does the first c say?', o:[SC, HC]},
+      {q:'Read "cabin". What does the c say?', o:[HC, SC]},
+      {q:'Read "mice". What does the c say?', o:[SC, HC]}
+    ]};
+
+  LESSONS['READ.PHON.L03.10'] = {name:'Giant Goat',
+    teach:[
+      {q:'Read "gentle". What does the g say?', o:[SG, HG], how:'G before e, i or y often says juh.'},
+      {q:'Read "gum". What does the g say?', o:[HG, SG], how:'G before a, o, u or a consonant says guh.'},
+      {q:'You try juh, and it is not a word. What now?', o:['try guh instead','skip the word'], how:'Try juh first. Not a word? Try guh.'}
+    ],
+    practice:[
+      {t:'sort', q:'What does the g say?', bins:[{id:'j',label:SG},{id:'g',label:HG}], items:[{label:'gem',bin:'j'},{label:'gum',bin:'g'},{label:'gym',bin:'j'},{label:'gap',bin:'g'},{label:'page',bin:'j'},{label:'glad',bin:'g'}], h:'Look at the letter right after g.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['giraffe','🦒'],['goat','🐐'],['gem','💎'],['gift','🎁']], h:'Look at the letter after g. Then read the word.'},
+      {t:'spotall', q:'Tap every word where g says juh.', cells:[{label:'gem',ok:true},{label:'gum',ok:false},{label:'germ',ok:true},{label:'gas',ok:false},{label:'cage',ok:true},{label:'gap',ok:false}], h:'Is the letter after g an e, i or y?'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['p','a','ge'], h:'At the end, the juh sound after a long vowel is ge.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['huge','very big'],['gentle','soft and kind'],['stage','where you stand to sing'],['gum','you chew it']], h:'Read the word first. Then think what it means.'},
+      {t:'sort', q:'Soft g or hard g?', bins:[{id:'j',label:SG},{id:'g',label:HG}], items:[{label:'large',bin:'j'},{label:'magic',bin:'j'},{label:'wagon',bin:'g'},{label:'frog',bin:'g'}], h:'Look at the letter after g.'}
+    ],
+    check:[
+      {q:'Read "ginger". What does the first g say?', o:[SG, HG]},
+      {q:'Read "gallon". What does the g say?', o:[HG, SG]},
+      {q:'Read "orange". What does the g say?', o:[SG, HG]}
+    ],
+    re:[
+      {q:'Read "gerbil". What does the g say?', o:[SG, HG]},
+      {q:'Read "gift". What does the g say?', o:[HG, SG]},
+      {q:'Read "sponge". What does the g say?', o:[SG, HG]}
+    ]};
+
+  LESSONS['READ.PHON.L03.11'] = {name:'Knock, Write, Lamb',
+    teach:[
+      {q:'Read "knee". Which letter is quiet?', o:['k','n','e'], how:'In kn, the k is quiet. Just say nnn.'},
+      {q:'Read "wrap". Which letter is quiet?', o:['w','r','p'], how:'In wr, the w is quiet. Just say rrr.'},
+      {q:'Read "comb". Which letter is quiet?', o:['b','m','c'], how:'In mb at the end, the b is quiet.'}
+    ],
+    practice:[
+      {t:'sort', q:'Which letter is quiet?', bins:[{id:'k',label:'k is quiet'},{id:'w',label:'w is quiet'},{id:'b',label:'b is quiet'}], items:[{label:'knee',bin:'k'},{label:'wrap',bin:'w'},{label:'thumb',bin:'b'},{label:'knife',bin:'k'},{label:'wrist',bin:'w'},{label:'comb',bin:'b'}], h:'Look for kn, wr or mb.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['knee','🦵'],['thumb','👍'],['wrench','🔧'],['lamb','🐑']], h:'Find the quiet letter. Then read the word.'},
+      {t:'spotall', q:'Tap every word with a quiet k, w or b.', cells:[{label:'knot',ok:true},{label:'nod',ok:false},{label:'wrap',ok:true},{label:'rag',ok:false},{label:'lamb',ok:true},{label:'lab',ok:false}], h:'Look for kn, wr or mb.'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['c','l','i','mb'], h:'Say it slowly. The end has a quiet letter.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['knock','tap on a door'],['write','make letters'],['climb','go up'],['wrist','between hand and arm']], h:'Read the word first. Then think what it means.'},
+      {t:'sort', q:'Quiet letter, or not?', bins:[{id:'y',label:'Has a quiet letter'},{id:'n',label:'No quiet letter'}], items:[{label:'kneel',bin:'y'},{label:'kid',bin:'n'},{label:'wrong',bin:'y'},{label:'wagon',bin:'n'}], h:'Look for kn, wr or mb.'}
+    ],
+    check:[
+      {q:'Read "knob". Which letter is quiet?', o:['k','n','b']},
+      {q:'Read "wreck". Which letter is quiet?', o:['w','r','e']},
+      {q:'Read "crumb". Which letter is quiet?', o:['b','m','c']}
+    ],
+    re:[
+      {q:'Read "knock". Which letter is quiet?', o:['k','n','o']},
+      {q:'Read "wrinkle". Which letter is quiet?', o:['w','r','k']},
+      {q:'Read "limb". Which letter is quiet?', o:['b','m','l']}
+    ]};
+
+  TEACH['READ.PHON.L03.09'] = { hook:'Cat and city both start with c. Why do they sound different?',
+    big:'C before e, i or y says sss (city, cent, cycle). Before anything else it says kuh (cat, cot, cup).',
+    intro:['Look at the letter right after c.','E, i or y: c is soft and says sss.','A, o, u or a consonant: c is hard and says kuh.','Read the word with that sound.'],
+    ex:[{q:'Read: city', steps:['After c comes i.','I makes c soft: sss.','City!'], a:'city'},
+        {q:'Read: cot', steps:['After c comes o.','O keeps c hard: kuh.','Cot!'], a:'cot'}],
+    oops:{ q:'Read: cent', wrong:'kent', right:'sss-ent', why:'C before e says sss.' },
+    idea:['E, i and y are soft friends. When they stand after c, c speaks softly.'],
+    'try':{ q:'Read "cell". What does the c say?', o:[SC, HC], a:SC, steps:['After c comes e.','E makes c soft.'] } };
+  TEACH['READ.PHON.L03.10'] = { hook:'Goat and giant both start with g. Why do they sound different?',
+    big:'G before e, i or y often says juh (gem, giant, gym). Before anything else it says guh (goat, gum). Try juh first; if it is not a word, try guh.',
+    intro:['Look at the letter right after g.','E, i or y: g often says juh.','A, o, u or a consonant: g says guh.','Try juh first. Not a word? Try guh.'],
+    ex:[{q:'Read: gem', steps:['After g comes e.','Try juh: gem!','A real word.'], a:'gem'},
+        {q:'Read: give', steps:['After g comes i. Try juh: jiv? Not a word.','Try guh: give!','A real word.'], a:'give'}],
+    oops:{ q:'Read: gym', wrong:'gim', right:'jim', why:'G before y often says juh.' },
+    idea:['A g before e, i or y is a two-sound g: try juh, then guh.'],
+    'try':{ q:'Read "gentle". What does the g say?', o:[SG, HG], a:SG, steps:['After g comes e.','Try juh: gentle! A real word.'] } };
+  TEACH['READ.PHON.L03.11'] = { hook:'Some letters hide in a word and say nothing at all!',
+    big:'In kn the k is quiet, in wr the w is quiet, and in mb at the end the b is quiet.',
+    intro:['Kn: the k is quiet. Knee, knot.','Wr: the w is quiet. Write, wrap.','Mb at the end: the b is quiet. Lamb, thumb.','Read the word without the quiet letter.'],
+    ex:[{q:'Read: knot', steps:['Kn: the k is quiet.','Say nnn, o, t.','Knot!'], a:'knot'},
+        {q:'Read: thumb', steps:['Mb at the end: the b is quiet.','Say th, u, m.','Thumb!'], a:'thumb'}],
+    oops:{ q:'Read: knot', wrong:'kuh-not', right:'nnn-ot', why:'In kn, the k is quiet. Just say nnn.' },
+    idea:['A quiet letter is like a shy friend: it is there, but it does not talk.'],
+    'try':{ q:'Read "wrap". Which letter is quiet?', o:['w','r','p'], a:'w', steps:['Find wr.','The w is quiet.'] } };
+
+  HOWTO['READ.PHON.L03.09'] = { s:'Look at the letter right after c.\nE, i or y: sss.\nAnything else: kuh.',
+    q:{ 'Read "cereal". What does the c say?':'Look at the letter right after c.\nIs it e, i or y?',
+        'Read "cactus". What does the first c say?':'Look at the letter right after the first c.\nIs it e, i or y?',
+        'Read "fancy". What does the c say?':'Look at the letter right after c.\nIs it e, i or y?',
+        'Read "cycle". What does the first c say?':'Look at the letter right after the first c.\nIs it e, i or y?',
+        'Read "cabin". What does the c say?':'Look at the letter right after c.\nIs it e, i or y?',
+        'Read "mice". What does the c say?':'Look at the letter right after c.\nIs it e, i or y?' } };
+  HOWTO['READ.PHON.L03.10'] = { s:'Look at the letter right after g.\nE, i or y: try juh first.\nNot a word? Try guh.',
+    q:{ 'Read "ginger". What does the first g say?':'Look at the letter after the first g.\nTry juh first. Is it a word?',
+        'Read "gallon". What does the g say?':'Look at the letter after g.\nIs it e, i or y?',
+        'Read "orange". What does the g say?':'Look at the letter after g.\nTry juh first. Is it a word?',
+        'Read "gerbil". What does the g say?':'Look at the letter after g.\nTry juh first. Is it a word?',
+        'Read "gift". What does the g say?':'Try juh first. Is it a word?\nIf not, try guh.',
+        'Read "sponge". What does the g say?':'Look at the letter after g.\nTry juh first. Is it a word?' } };
+  HOWTO['READ.PHON.L03.11'] = { s:'Look for kn, wr or mb.\nKn: k is quiet. Wr: w is quiet. Mb: b is quiet.',
+    q:{ 'Read "knob". Which letter is quiet?':'Look for kn, wr or mb.\nWhich letter do you not hear?',
+        'Read "wreck". Which letter is quiet?':'Look for kn, wr or mb.\nWhich letter do you not hear?',
+        'Read "crumb". Which letter is quiet?':'Look for kn, wr or mb.\nWhich letter do you not hear?',
+        'Read "knock". Which letter is quiet?':'Look for kn, wr or mb.\nWhich letter do you not hear?',
+        'Read "wrinkle". Which letter is quiet?':'Look for kn, wr or mb.\nWhich letter do you not hear?',
+        'Read "limb". Which letter is quiet?':'Look for kn, wr or mb.\nWhich letter do you not hear?' } };
+
+  BITE['READ.PHON.L03.09'] = { band:'B23', pic:'🏙️', today:'Read soft c and hard c',
+    why:'City, cent, ice and rice: c changes its sound, and now you will know when.',
+    ready:[{q:'Which word starts with kuh?', o:['cat','hat','sat'], a:'cat'},{q:'Which one is a vowel?', o:['e','c','t'], a:'e'}],
+    bridge:'READ.PHON.L01.02', bridgeName:'Sound Match',
+    watch:{ q:'hard c, soft c', m:{type:'tiles',w:['c','a','t'],hi:[0]}, steps:[
+      {t:'Cat. C before a says kuh.', m:{type:'tiles',w:['c','a','t'],hi:[0]}},
+      {t:'City. C before i says sss!', m:{type:'tiles',w:['c','i','t','y'],hi:[0]}},
+      {t:'Face. C before e says sss too.', m:{type:'tiles',w:['f','a','c','e'],hi:[2]}},
+      {t:'Cup. C before u says kuh.', m:{type:'tiles',w:['c','u','p'],hi:[0]}},
+      {t:'Whisper the soft c with Eli and chant!', m:{type:'chant', lines:['E, i and y make c say sss:','city, cent and ice, yes yes!']}}], a:'C before e, i or y says sss; otherwise kuh.' },
+    oops:{ q:'Read: cent', wrong:'kent', right:'sss-ent', why:'C before e says sss.' },
+    ways:['think-aloud','chant with a whisper','sort by sound','build with tiles','Mistake Detective'], done:'You can read soft c and hard c!',
+    board:{ one:'C before e, i or y says sss. Otherwise c says kuh.', activity:'Whisper or say: boys whisper sss for soft c words and say kuh out loud for hard c words.', mistakes:['Reading every c as kuh (kity)','Reading cent as kent','Forgetting to look at the next letter'] },
+    do:[
+      {type:'sort', bins:[SC, HC], cards:[['cent',0],['cot',1],['cell',0],['cub',1]], say:'Look at the letter after c. Which sound?', how:'E, i or y after c: sss. Anything else: kuh.'},
+      {type:'tiles', w:['i','c','e'], extra:['k'], hear:'ice', pic:'🧊', say:'Listen. Build the word you hear.', how:'Which letter says sss before e or i?'}],
+    your:[
+      {type:'listen', q:'Avi read "city" as "kitty".', hear:'What sound should c make?', o:['sss','kuh','chuh'], a:'sss', mis:true, say:'Mistake Detective! What should c say?', how:'Look at the letter right after c.'},
+      {type:'match', pairs:[['pencil','✏️'],['cake','🎂'],['circle','⭕'],['carrot','🥕']], say:'Read each word. Match it to its picture.', how:'Look at the letter after each c. Then read.'},
+      {type:'findall', grid:['cent','cap','icy','cut','face','cot'], find:['cent','icy','face'], findSay:'c that says sss', say:'Tap every word where c says sss.', how:'Is the letter after c an e, i or y?'},
+      {type:'tiles', w:['d','a','n','c','e'], extra:['k'], hear:'dance', say:'Listen. Build the word you hear.', how:'Say it slowly. Which letter says sss before e?'},
+      {type:'sort', bins:[SC, HC], cards:[['rice',0],['camp',1],['icy',0],['cave',1]], say:'Challenge! Sort by the c sound.', how:'Look at the letter after c.'}] };
+
+  BITE['READ.PHON.L03.10'] = { band:'B23', pic:'🦒', today:'Read soft g and hard g',
+    why:'Gem, giant, page and goat: g has two sounds, and you will know which to try.',
+    ready:[{q:'Which word starts with guh?', o:['goat','coat','boat'], a:'goat'},{q:'Read "city". What does the c say?', o:['sss','kuh'], a:'sss'}],
+    bridge:'READ.PHON.L03.09', bridgeName:'City Cat',
+    watch:{ q:'hard g, soft g', m:{type:'tiles',w:['g','oa','t'],hi:[0]}, steps:[
+      {t:'Goat. G before o says guh.', m:{type:'tiles',w:['g','oa','t'],hi:[0]}},
+      {t:'Gem. G before e says juh!', m:{type:'tiles',w:['g','e','m'],hi:[0]}},
+      {t:'Giraffe. G before i says juh too.', m:{type:'tiles',w:['g','i','r','a','ff','e'],hi:[0]}},
+      {t:'Give. Try juh: jiv? Not a word. Try guh: give!', m:{type:'tiles',w:['g','i','ve'],hi:[0]}},
+      {t:'Jump for juh with Avi!', m:{type:'move', t:'Gem: jump! Goat: stand! Gym: jump! Gum: stand!'}}], a:'G before e, i or y: try juh first. Not a word? Try guh.' },
+    oops:{ q:'Read: gym', wrong:'gim', right:'jim', why:'G before y often says juh.' },
+    ways:['think-aloud','jump and stand','sort by sound','build with tiles','Mistake Detective'], done:'You can read soft g and hard g!',
+    board:{ one:'G before e, i or y often says juh. Try juh first; not a word? Try guh.', activity:'Jump for juh: boys jump for soft g words and stand still for hard g words.', mistakes:['Reading every g as guh (gyant)','Reading gift as jift','Forgetting to look at the next letter'] },
+    do:[
+      {type:'findall', grid:['gem','gum','gym','gap'], find:['gem','gym'], findSay:'g that says juh', say:'Tap every g that says juh.', how:'Look at the letter after g.'},
+      {type:'tiles', w:['p','a','ge'], extra:['j'], hear:'page', pic:'📄', say:'Listen. Build the word you hear.', how:'Which letters spell juh at the end of a word?'}],
+    your:[
+      {type:'match', pairs:[['giraffe','🦒'],['goat','🐐'],['gem','💎'],['gift','🎁']], say:'Read each word. Match it to its picture.', how:'Look at the letter after g. Then read.'},
+      {type:'listen', q:'Chaim read "giant" as "guy-ant".', hear:'What sound should g make?', o:['juh','guh','zuh'], a:'juh', mis:true, say:'Mistake Detective! What should g say?', how:'Look at the letter right after g. Try juh.'},
+      {type:'tiles', w:['h','u','ge'], extra:['j'], hear:'huge', say:'Listen. Build the word you hear.', how:'Long u, then juh at the end. Which letters?'},
+      {type:'sort', bins:[SG, HG], cards:[['germ',0],['gold',1],['cage',0],['gas',1]], say:'Sort by the g sound.', how:'Look at the letter after g. Try juh first.'},
+      {type:'listen', q:'Dovid read a page about a goat.', hear:'Which word has a g that says juh?', o:['page','goat','Dovid'], a:'page', say:'Challenge! Find the soft g.', how:'Look at the letter after each g.'}] };
+
+  BITE['READ.PHON.L03.11'] = { band:'B23', pic:'🐑', today:'Read words with quiet letters',
+    why:'Knee, write, lamb, thumb: some letters hide. Find them and the word is easy.',
+    ready:[{q:'Read "gem". What does the g say?', o:['juh','guh'], a:'juh'},{q:'Which word starts with nnn?', o:['nest','west','rest'], a:'nest'}],
+    bridge:'READ.PHON.L03.10', bridgeName:'Giant Goat',
+    watch:{ q:'quiet letters', m:{type:'tiles',w:['kn','ee'],hi:[0]}, steps:[
+      {t:'Knee. In kn, the k is quiet. Nee!', m:{type:'tiles',w:['kn','ee'],hi:[0]}},
+      {t:'Write. In wr, the w is quiet: rrr.', m:{type:'tiles',w:['wr','i','te'],hi:[0]}},
+      {t:'Lamb. Mb at the end: the b is quiet.', m:{type:'tiles',w:['l','a','mb'],hi:[2]}},
+      {t:'Put a finger on your lips with Moishe and chant!', m:{type:'chant', lines:['K before n, w before r,','b after m: shh, quiet you are!']}}], a:'kn: k is quiet; wr: w is quiet; mb: b is quiet' },
+    oops:{ q:'Read: knot', wrong:'kuh-not', right:'nnn-ot', why:'In kn, the k is quiet. Just say nnn.' },
+    ways:['think-aloud','chant with a shh','sort','build with tiles','Mistake Detective'], done:'You can read words with quiet letters!',
+    board:{ one:'Kn, wr and mb each have one quiet letter.', activity:'Shh cards: boys put a finger on their lips under the quiet letter in knee, wrap and lamb.', mistakes:['Saying the k in knee','Saying the w in write','Saying the b in thumb'] },
+    do:[
+      {type:'listen', q:'Moishe read "knife" as "kuh-nife".', hear:'Which letter is quiet?', o:['k','n','f'], a:'k', mis:true, say:'Mistake Detective! Which letter is quiet?', how:'Look for kn, wr or mb.'},
+      {type:'tiles', w:['c','l','i','mb'], extra:['m'], hear:'climb', say:'Listen. Build the word you hear.', how:'Say it slowly. Is there a quiet letter at the end?'}],
+    your:[
+      {type:'sort', bins:['k is quiet','w is quiet','b is quiet'], cards:[['knit',0],['wrong',1],['numb',2],['kneel',0],['wren',1],['comb',2]], say:'Which letter is quiet?', how:'Look for kn, wr or mb.'},
+      {type:'match', pairs:[['knee','🦵'],['thumb','👍'],['wrench','🔧'],['lamb','🐑']], say:'Read each word. Match it to its picture.', how:'Find the quiet letter. Then read the word.'},
+      {type:'findall', grid:['knot','nod','wrap','rag','lamb','lab'], find:['knot','wrap','lamb'], findSay:'quiet k, w or b', say:'Tap every word with a quiet k, w or b.', how:'Look for kn, wr or mb.'},
+      {type:'tiles', w:['wr','i','s','t'], extra:['k'], hear:'wrist', say:'Listen. Build the word you hear.', how:'Say it slowly. Which spelling of r makes wrist?'},
+      {type:'listen', q:'Zaidy can knit a hat for the lamb.', hear:'Which two words have a quiet letter?', o:['knit, lamb','hat, lamb','can, knit'], a:'knit, lamb', say:'Find two quiet letters.', how:'Look for kn, wr or mb in each word.'}] };
+
+  /* ===== Grade 2 Unit 5 "Word endings that change the word" (F-map section 5) ===== */
+  LESSONS['READ.PHON.L03.13'] = {name:'Drop the E',
+    teach:[
+      {q:'Add -ing to "bake". Which is right?', o:['baking','bakeing'], how:'Bake ends in a quiet e. Drop the e, then add -ing.'},
+      {q:'Add -ed to "smile". Which is right?', o:['smiled','smileed'], how:'Smile ends in a quiet e. Drop the e, then add -ed.'},
+      {q:'Which word drops its e before -ing?', o:['ride','sing'], how:'Look at the end. Does it end in a quiet e?'}
+    ],
+    practice:[
+      {t:'sort', q:'Adding -ing: drop the e, or just add it?', bins:[{id:'d',label:'Drop the e'},{id:'j',label:'Just add -ing'}], items:[{label:'bake',bin:'d'},{label:'jump',bin:'j'},{label:'ride',bin:'d'},{label:'read',bin:'j'},{label:'smile',bin:'d'},{label:'play',bin:'j'}], h:'Look at the end. Is there a quiet e?'},
+      {t:'pairs', q:'Match each word to its -ing word.', pairs:[['bake','baking'],['ride','riding'],['smile','smiling'],['skate','skating']], h:'Drop the quiet e, then add -ing.'},
+      {t:'spotall', q:'Tap every word spelled the right way.', cells:[{label:'sliding',ok:true},{label:'slideing',ok:false},{label:'hoped',ok:true},{label:'hopeed',ok:false},{label:'making',ok:true},{label:'makeing',ok:false}], h:'A quiet e drops before -ing or -ed.'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['r','i','d','ing'], h:'Say the word without -ing. Does it end in a quiet e?'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['skating','gliding on ice'],['waving','moving your hand to say hi'],['hiking','a long walk up a hill'],['raking','gathering the leaves']], h:'Read the word first. Then think what it means.'},
+      {t:'sort', q:'Adding -ed: drop the e, or just add it?', bins:[{id:'d',label:'Drop the e'},{id:'j',label:'Just add -ed'}], items:[{label:'hope',bin:'d'},{label:'help',bin:'j'},{label:'wave',bin:'d'},{label:'fill',bin:'j'}], h:'Look at the end. Is there a quiet e?'}
+    ],
+    check:[
+      {q:'Add -ing to "make". Which is right?', o:['making','makeing','makking']},
+      {q:'Add -ed to "hope". Which is right?', o:['hoped','hopeed','hopped']},
+      {q:'Add -ing to "shine". Which is right?', o:['shining','shineing']}
+    ],
+    re:[
+      {q:'Add -ing to "hike". Which is right?', o:['hiking','hikeing']},
+      {q:'Add -ed to "wave". Which is right?', o:['waved','waveed']},
+      {q:'Add -ing to "slide". Which is right?', o:['sliding','slideing']}
+    ]};
+
+  LESSONS['READ.PHON.L03.14'] = {name:'Double It',
+    teach:[
+      {q:'Add -ing to "hop". Which is right?', o:['hopping','hoping'], how:'Hop has a short o and one p after it. Double the p.'},
+      {q:'Add -ing to "jump". Which is right?', o:['jumping','jumpping'], how:'Jump ends in two consonants, m and p. Just add -ing.'},
+      {q:'Read "hoping". Which word did it come from?', o:['hope','hop'], how:'One p after the o: the o is long. Hope, hoping.'}
+    ],
+    practice:[
+      {t:'sort', q:'Adding -ing: double it, or just add it?', bins:[{id:'d',label:'Double the last letter'},{id:'j',label:'Just add -ing'}], items:[{label:'hop',bin:'d'},{label:'jump',bin:'j'},{label:'run',bin:'d'},{label:'rest',bin:'j'},{label:'sit',bin:'d'},{label:'help',bin:'j'}], h:'Short vowel and one consonant at the end? Double it.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['running','🏃'],['clapping','👏'],['shopping','🛒'],['napping','😴']], h:'Find the double letter. Then read the word.'},
+      {t:'spotall', q:'Tap every word spelled the right way.', cells:[{label:'stopped',ok:true},{label:'stoped',ok:false},{label:'jumping',ok:true},{label:'jumpping',ok:false},{label:'sitting',ok:true},{label:'siting',ok:false}], h:'Short vowel, one consonant: double it. Two consonants: do not.'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['p','l','a','nn','ed'], h:'Short a, then one n. What happens to the n?'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['hopping','jumping on one foot'],['hoping','wanting it to happen'],['tapped','touched it lightly'],['taped','stuck it with tape']], h:'A double letter means a short vowel: hop, tap.'},
+      {t:'sort', q:'Double it, or not?', bins:[{id:'d',label:'Double the last letter'},{id:'n',label:'Do not double'}], items:[{label:'stop',bin:'d'},{label:'rain',bin:'n'},{label:'clap',bin:'d'},{label:'hope',bin:'n'}], h:'Short vowel and one consonant? Then double.'}
+    ],
+    check:[
+      {q:'Add -ing to "run". Which is right?', o:['running','runing','runeing']},
+      {q:'Add -ed to "stop". Which is right?', o:['stopped','stoped']},
+      {q:'Add -ing to "hope". Which is right?', o:['hoping','hopping','hopeing']}
+    ],
+    re:[
+      {q:'Add -ing to "swim". Which is right?', o:['swimming','swiming']},
+      {q:'Add -ed to "clap". Which is right?', o:['clapped','claped']},
+      {q:'Add -ed to "help". Which is right?', o:['helped','helpped']}
+    ]};
+
+  LESSONS['READ.PHON.L03.15'] = {name:'Y to I',
+    teach:[
+      {q:'Add -es to "baby". Which is right?', o:['babies','babys'], how:'Baby ends in a consonant and y. Change y to i, then add -es.'},
+      {q:'Add -ing to "cry". Which is right?', o:['crying','criing'], how:'Before -ing, keep the y.'},
+      {q:'Add -ed to "play". Which is right?', o:['played','plaied'], how:'A vowel comes before the y. Keep the y.'}
+    ],
+    practice:[
+      {t:'sort', q:'Adding -es or -ed: change the y, or keep it?', bins:[{id:'c',label:'Change y to i'},{id:'k',label:'Keep the y'}], items:[{label:'baby',bin:'c'},{label:'play',bin:'k'},{label:'cry',bin:'c'},{label:'enjoy',bin:'k'},{label:'bunny',bin:'c'},{label:'stay',bin:'k'}], h:'Look at the letter before the y. Consonant or vowel?'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['cherries','🍒'],['bunnies','🐰🐰'],['keys','🔑🔑'],['flies','🪰🪰']], h:'Read the ending. Then find the picture.'},
+      {t:'spotall', q:'Tap every word spelled the right way.', cells:[{label:'cried',ok:true},{label:'cryed',ok:false},{label:'babies',ok:true},{label:'babys',ok:false},{label:'played',ok:true},{label:'plaied',ok:false}], h:'Consonant before y: change it. Vowel before y: keep it.'},
+      {t:'order', q:'Listen. Build the word you hear.', tiles:['t','r','i','ed'], h:'Say the word without -ed. It ends in y. What happens to the y?'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['cried','had tears'],['dried','made it not wet'],['cities','big towns'],['berries','small round fruits']], h:'Read the word first. Then think what it means.'},
+      {t:'sort', q:'Keep the y, or change it?', bins:[{id:'k',label:'Keep the y'},{id:'c',label:'Change y to i'}], items:[{label:'cry + ing',bin:'k'},{label:'cry + ed',bin:'c'},{label:'play + ed',bin:'k'},{label:'fly + es',bin:'c'}], h:'Adding -ing? Keep y. Vowel before y? Keep y.'}
+    ],
+    check:[
+      {q:'Add -es to "bunny". Which is right?', o:['bunnies','bunnys','bunnyes']},
+      {q:'Add -ed to "try". Which is right?', o:['tried','tryed']},
+      {q:'Add -ing to "carry". Which is right?', o:['carrying','carriing']}
+    ],
+    re:[
+      {q:'Add -es to "berry". Which is right?', o:['berries','berrys']},
+      {q:'Add -ed to "stay". Which is right?', o:['stayed','staied']},
+      {q:'Add -ed to "dry". Which is right?', o:['dried','dryed']}
+    ]};
+
+  TEACH['READ.PHON.L03.13'] = { hook:'Zaidy is baking challah. Where did the e in bake go?',
+    big:'When a word ends in a quiet e, drop the e before you add -ing or -ed: bake → baking, make → making, smile → smiled.',
+    intro:['Look at the end of the word.','Does it end in a quiet e? Drop the e.','Then add -ing or -ed.','No quiet e? Just add the ending: jump → jumping.'],
+    ex:[{q:'Add -ing: bake', steps:['Bake ends in a quiet e.','Drop the e: bak.','Add -ing: baking!'], a:'baking'},
+        {q:'Add -ed: smile', steps:['Smile ends in a quiet e.','Drop the e: smil.','Add -ed: smiled!'], a:'smiled'}],
+    oops:{ q:'Add -ing: ride', wrong:'rideing', right:'riding', why:'Ride ends in a quiet e. Drop it before -ing.' },
+    idea:['The quiet e steps out, and the ending steps in. The vowel still says its name: baking, riding.'],
+    'try':{ q:'Add -ing to "bake". Which is right?', o:['baking','bakeing'], a:'baking', steps:['Bake ends in a quiet e.','Drop the e, then add -ing.'] } };
+  TEACH['READ.PHON.L03.14'] = { hook:'Hopping and hoping look almost the same. One letter makes a big difference!',
+    big:'In a short word with a short vowel and one consonant at the end, double the last letter before -ing or -ed: hop → hopping, plan → planned. Two consonants or a long vowel? Do not double: jump → jumping, hope → hoping.',
+    intro:['Look at the end of the word.','A short vowel and one consonant? Double the last letter.','Then add -ing or -ed: hop → hopping.','Two consonants, or a long vowel? Just add the ending.'],
+    ex:[{q:'Add -ing: hop', steps:['Short o, then one p.','Double the p: hopp.','Add -ing: hopping!'], a:'hopping'},
+        {q:'Add -ed: jump', steps:['Jump ends in two consonants, m and p.','Do not double.','Add -ed: jumped!'], a:'jumped'}],
+    oops:{ q:'Add -ed: plan', wrong:'planed', right:'planned', why:'Short a and one n: double the n before -ed.' },
+    idea:['The double letter is a guard. It keeps the short vowel short: hopping, not hoping.'],
+    'try':{ q:'Add -ing to "hop". Which is right?', o:['hopping','hoping'], a:'hopping', steps:['Short o, then one p.','Double the p, then add -ing.'] } };
+  TEACH['READ.PHON.L03.15'] = { hook:'One baby, two babies. Where did the y go?',
+    big:'A consonant and y at the end? Change y to i before -es or -ed: baby → babies, cry → cried. Keep the y before -ing (crying), and keep it after a vowel (play → played).',
+    intro:['Look at the letter right before the y.','A consonant? Change y to i, then add -es or -ed: try → tried.','Adding -ing? Keep the y: crying.','A vowel before the y? Keep the y: played, toys.'],
+    ex:[{q:'Add -es: baby', steps:['Before the y comes b, a consonant.','Change y to i: babi.','Add -es: babies!'], a:'babies'},
+        {q:'Add -ed: play', steps:['Before the y comes a, a vowel.','Keep the y.','Add -ed: played!'], a:'played'}],
+    oops:{ q:'Add -ed: cry', wrong:'cryed', right:'cried', why:'R is a consonant. Change y to i before -ed.' },
+    idea:['Y turns into i for -es and -ed. Y stays put for -ing, and when a vowel stands next to it.'],
+    'try':{ q:'Add -es to "baby". Which is right?', o:['babies','babys'], a:'babies', steps:['Before the y comes b, a consonant.','Change y to i, then add -es.'] } };
+
+  HOWTO['READ.PHON.L03.13'] = { s:'Look at the end of the word.\nQuiet e? Drop it, then add the ending.\nNo quiet e? Just add the ending.',
+    q:{ 'Add -ing to "make". Which is right?':'Does make end in a quiet e?\nIf it does, drop the e before -ing.',
+        'Add -ed to "hope". Which is right?':'Does hope end in a quiet e?\nIf it does, drop the e before -ed.',
+        'Add -ing to "shine". Which is right?':'Does shine end in a quiet e?\nIf it does, drop the e before -ing.',
+        'Add -ing to "hike". Which is right?':'Does hike end in a quiet e?\nIf it does, drop the e before -ing.',
+        'Add -ed to "wave". Which is right?':'Does wave end in a quiet e?\nIf it does, drop the e before -ed.',
+        'Add -ing to "slide". Which is right?':'Does slide end in a quiet e?\nIf it does, drop the e before -ing.' } };
+  HOWTO['READ.PHON.L03.14'] = { s:'Look at the end of the word.\nShort vowel and one consonant: double it.\nTwo consonants or a long vowel: just add the ending.',
+    q:{ 'Add -ing to "run". Which is right?':'Is the u short? How many consonants come after it?\nShort vowel and one consonant: double it.',
+        'Add -ed to "stop". Which is right?':'Is the o short? How many consonants come after it?\nShort vowel and one consonant: double it.',
+        'Add -ing to "hope". Which is right?':'Hope ends in a quiet e, and the o is long.\nDo not double. Drop the e, then add -ing.',
+        'Add -ing to "swim". Which is right?':'Is the i short? How many consonants come after it?\nShort vowel and one consonant: double it.',
+        'Add -ed to "clap". Which is right?':'Is the a short? How many consonants come after it?\nShort vowel and one consonant: double it.',
+        'Add -ed to "help". Which is right?':'How many consonants come after the e?\nTwo consonants: do not double.' } };
+  HOWTO['READ.PHON.L03.15'] = { s:'Look at the letter right before the y.\nConsonant: change y to i before -es or -ed.\nAdding -ing, or a vowel before y: keep the y.',
+    q:{ 'Add -es to "bunny". Which is right?':'Is the letter before the y a consonant or a vowel?\nConsonant: change y to i before -es.',
+        'Add -ed to "try". Which is right?':'Is the letter before the y a consonant or a vowel?\nConsonant: change y to i before -ed.',
+        'Add -ing to "carry". Which is right?':'Which ending are you adding?\nBefore -ing, keep the y.',
+        'Add -es to "berry". Which is right?':'Is the letter before the y a consonant or a vowel?\nConsonant: change y to i before -es.',
+        'Add -ed to "stay". Which is right?':'Is the letter before the y a consonant or a vowel?\nVowel: keep the y.',
+        'Add -ed to "dry". Which is right?':'Is the letter before the y a consonant or a vowel?\nConsonant: change y to i before -ed.' } };
+
+  BITE['READ.PHON.L03.13'] = { band:'B23', pic:'🍞', today:'Drop the e, then add -ing or -ed',
+    why:'Zaidy is baking and Avi is smiling: now you can read and spell words like these.',
+    ready:[{q:'Which word ends in a quiet e?', o:['bake','back','bark'], a:'bake'},{q:'Jump + ing makes which word?', o:['jumping','jumped'], a:'jumping'}],
+    bridge:'READ.LV.L02.01', bridgeName:'Silent E',
+    watch:{ q:'bake + ing', m:{type:'tiles',w:['b','a','k','e'],hi:[3]}, steps:[
+      {t:'Bake ends in a quiet e.', m:{type:'tiles',w:['b','a','k','e'],hi:[3]}},
+      {t:'Drop the e. Add -ing: baking!', m:{type:'tiles',w:['b','a','k','ing'],hi:[3]}},
+      {t:'Smile. Drop the e. Add -ed: smiled!', m:{type:'tiles',w:['s','m','i','l','ed'],hi:[4]}},
+      {t:'Jump has no quiet e. Just add -ing: jumping.', m:{type:'tiles',w:['j','u','m','p','ing'],hi:[4]}},
+      {t:'Wave bye-bye to the e with Naftali and chant!', m:{type:'chant', lines:['Quiet e, wave bye-bye,','-ing and -ed come in, say hi!']}}], a:'Ends in a quiet e? Drop the e, then add -ing or -ed.' },
+    oops:{ q:'Add -ing: ride', wrong:'rideing', right:'riding', why:'Ride ends in a quiet e. Drop it before -ing.' },
+    ways:['think-aloud','chant and wave','sort','build with tiles','Mistake Detective'], done:'You can drop the e and add -ing or -ed!',
+    board:{ one:'Ends in a quiet e? Drop the e, then add -ing or -ed.', activity:'Wave bye-bye: boys wave as the rebbe erases the e in bake, ride and smile, then writes the new ending.', mistakes:['Keeping the e: bakeing, smileed','Dropping a letter that is not a quiet e','Reading baking as backing'] },
+    do:[
+      {type:'sort', bins:['Drop the e','Just add -ing'], cards:[['bake',0],['jump',1],['ride',0],['read',1]], say:'Adding -ing: drop the e, or just add it?', how:'Look at the end. Is there a quiet e?'},
+      {type:'tiles', w:['b','a','k','ing'], extra:['e'], hear:'baking', pic:'🍞', say:'Listen. Build the word you hear.', how:'Say the word without -ing. Does it end in a quiet e?'}],
+    your:[
+      {type:'listen', q:'Dovid wrote "smileing".', hear:'How should he spell it?', o:['smiling','smileing','smilling'], a:'smiling', mis:true, say:'Mistake Detective! Fix the spelling.', how:'Smile ends in a quiet e. Drop it before -ing.'},
+      {type:'match', pairs:[['skating','⛸️'],['riding','🚲'],['smiling','😊'],['waving','👋']], say:'Read each word. Match it to its picture.', how:'Drop the -ing and read the word. Then find it.'},
+      {type:'findall', grid:['hoped','hopeed','hiking','hikeing','waved','waveed'], find:['hoped','hiking','waved'], findSay:'right spelling', say:'Tap every word spelled the right way.', how:'A quiet e drops before -ing or -ed.'},
+      {type:'tiles', w:['sh','i','n','ing'], extra:['e'], hear:'shining', say:'Listen. Build the word you hear.', how:'Say the word without -ing. Does it end in a quiet e?'},
+      {type:'sort', bins:['Drop the e','Just add -ed'], cards:[['rake',0],['help',1],['joke',0],['fill',1]], say:'Challenge! Adding -ed: drop the e, or just add it?', how:'Look at the end. Is there a quiet e?'}] };
+
+  BITE['READ.PHON.L03.14'] = { band:'B23', pic:'🐇', today:'Double the last letter, then add -ing or -ed',
+    why:'Running, clapping, shopping: double the letter and the vowel stays short.',
+    ready:[{q:'Which word has a short vowel?', o:['hop','hope','hoop'], a:'hop'},{q:'Add -ing to "bake".', o:['baking','bakeing'], a:'baking'}],
+    bridge:'READ.PHON.L03.13', bridgeName:'Drop the E',
+    watch:{ q:'hop + ing', m:{type:'tiles',w:['h','o','p'],hi:[2]}, steps:[
+      {t:'Hop. Short o, then one p.', m:{type:'tiles',w:['h','o','p'],hi:[2]}},
+      {t:'Double the p. Add -ing: hopping!', m:{type:'tiles',w:['h','o','pp','ing'],hi:[2]}},
+      {t:'Plan. Short a, one n. Double it: planned!', m:{type:'tiles',w:['p','l','a','nn','ed'],hi:[3]}},
+      {t:'Jump ends in two consonants. Just add -ing: jumping.', m:{type:'tiles',w:['j','u','m','p','ing'],hi:[4]}},
+      {t:'Hop twice with Chaim for every double!', m:{type:'move', t:'Hopping: hop, hop! Jumping: stand! Running: hop, hop! Hoping: stand!'}}], a:'Short vowel and one consonant: double it. Otherwise, just add the ending.' },
+    oops:{ q:'Add -ed: plan', wrong:'planed', right:'planned', why:'Short a and one n: double the n before -ed.' },
+    ways:['think-aloud','hop for doubles','sort','build with tiles','Mistake Detective'], done:'You can double the letter before -ing and -ed!',
+    board:{ one:'Short vowel and one consonant: double it before -ing or -ed.', activity:'Hop for doubles: boys hop twice for words that double (hopping, running) and stand still for words that do not (jumping, hoping).', mistakes:['Not doubling: hoping for hopping','Doubling after two consonants: jumpping','Doubling after a long vowel: rainning'] },
+    do:[
+      {type:'sort', bins:['Double it','Just add -ing'], cards:[['hop',0],['jump',1],['run',0],['help',1]], say:'Adding -ing: double the last letter, or not?', how:'Short vowel and one consonant at the end? Double it.'},
+      {type:'listen', q:'Naftali wrote: "I am hoping on one foot."', hear:'Which word should he write?', o:['hopping','hoping','hopeing'], a:'hopping', mis:true, say:'Mistake Detective! Which word fits?', how:'On one foot means hop. Hop has a short o.'}],
+    your:[
+      {type:'tiles', w:['s','w','i','mm','ing'], extra:['m'], hear:'swimming', say:'Listen. Build the word you hear.', how:'Short vowel and one consonant? Double it before -ing.'},
+      {type:'match', pairs:[['running','🏃'],['clapping','👏'],['shopping','🛒'],['napping','😴']], say:'Read each word. Match it to its picture.', how:'Find the double letter. Then read the word.'},
+      {type:'findall', grid:['stopped','stoped','clapped','claped','helped','helpped'], find:['stopped','clapped','helped'], findSay:'right spelling', say:'Tap every word spelled the right way.', how:'Short vowel, one consonant: double it. Two consonants: do not.'},
+      {type:'sort', bins:['Double it','Do not double'], cards:[['plan',0],['rest',1],['sit',0],['hope',1],['skip',0],['rain',1]], say:'Challenge! Double the last letter, or not?', how:'Short vowel and one consonant? Then double.'},
+      {type:'listen', q:'Avi taped a picture. Then he tapped on the door.', hear:'Which word means he touched it lightly?', o:['tapped','taped','picture'], a:'tapped', say:'Read it. Find the word that means touched lightly.', how:'A double letter keeps the vowel short: tap.'}] };
+
+  BITE['READ.PHON.L03.15'] = { band:'B23', pic:'🍒', today:'Change y to i, then add -es or -ed',
+    why:'Bunnies, cherries, cried and played: now you will know what happens to y.',
+    ready:[{q:'Which letter is a vowel?', o:['a','b','r'], a:'a'},{q:'Add -ing to "hop".', o:['hopping','hoping'], a:'hopping'}],
+    bridge:'READ.PHON.L03.14', bridgeName:'Double It',
+    watch:{ q:'baby + es', m:{type:'tiles',w:['b','a','b','y'],hi:[3]}, steps:[
+      {t:'Baby. Before the y is b, a consonant.', m:{type:'tiles',w:['b','a','b','y'],hi:[2]}},
+      {t:'Change y to i. Add -es: babies!', m:{type:'tiles',w:['b','a','b','i','es'],hi:[3]}},
+      {t:'Cry. Change y to i. Add -ed: cried!', m:{type:'tiles',w:['c','r','i','ed'],hi:[2]}},
+      {t:'Crying keeps the y. Played keeps it too: a comes before y.', m:{type:'tiles',w:['p','l','a','y','ed'],hi:[3]}},
+      {t:'Make a Y with your arms with Dovid and chant!', m:{type:'chant', lines:['Change y to i for -es and -ed,','keep the y for -ing instead!']}}], a:'Consonant + y: change y to i before -es or -ed. Keep the y before -ing and after a vowel.' },
+    oops:{ q:'Add -ed: cry', wrong:'cryed', right:'cried', why:'R is a consonant. Change y to i before -ed.' },
+    ways:['think-aloud','chant with Y arms','sort','build with tiles','Mistake Detective'], done:'You can change y to i!',
+    board:{ one:'Consonant + y: change y to i before -es or -ed. Keep the y before -ing and after a vowel.', activity:'Y arms: boys make a Y with their arms for words that keep the y (playing, toys) and stand straight like an i for words that change (babies, cried).', mistakes:['Just adding -s: babys','Keeping the y: cryed','Changing y before -ing: criing','Changing y after a vowel: plaied'] },
+    do:[
+      {type:'sort', bins:['Change y to i','Keep the y'], cards:[['baby + es',0],['play + ed',1],['cry + ed',0],['toy + s',1]], say:'Change the y to i, or keep it?', how:'Look at the letter before the y.'},
+      {type:'tiles', w:['b','u','nn','i','es'], extra:['y'], hear:'bunnies', pic:'🐰🐰', say:'Listen. Build the word you hear.', how:'Consonant before the y? Change y to i, then add -es.'}],
+    your:[
+      {type:'listen', q:'Mendy wrote: "The baby cryed."', hear:'How should he spell it?', o:['cried','cryed','cride'], a:'cried', mis:true, say:'Mistake Detective! Fix the spelling.', how:'R comes before the y. Change y to i before -ed.'},
+      {type:'match', pairs:[['cherries','🍒'],['bunnies','🐰🐰'],['keys','🔑🔑'],['flies','🪰🪰']], say:'Read each word. Match it to its picture.', how:'Read the ending. Then find the picture.'},
+      {type:'findall', grid:['crying','criing','played','plaied','stayed','staied'], find:['crying','played','stayed'], findSay:'right spelling', say:'Tap every word spelled the right way.', how:'Keep the y before -ing and after a vowel.'},
+      {type:'tiles', w:['c','a','rr','y','ing'], extra:['i'], hear:'carrying', say:'Listen. Build the word you hear.', how:'Adding -ing? Keep the y.'},
+      {type:'sort', bins:['Change y to i','Keep the y'], cards:[['story + es',0],['stay + ed',1],['fly + ing',1],['dry + ed',0],['key + s',1],['carry + ed',0]], say:'Challenge! Change the y, or keep it?', how:'Before -ing, keep the y. After a vowel, keep the y.'}] };
+
+  if (window.TLCORE) TLCORE.add('F', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

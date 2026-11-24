@@ -1,0 +1,153 @@
+<script>
+/* CoreK1.html: NEW K-1 GAMES ON THE K-1 GAME PATH (Core Growth job T, T-9, 2026-11-24).
+   HoS 2026-11-22: a Kindergarten or Grade 1 boy gets games only, full screen, his grade, in the order the skills build, no pop-ups
+   (src/K1Only.html). New K-1 skills from job F (or G, W13) join that path as REAL GAMES: a full-screen, voice-first game made of Activity Kit
+   pieces (listen, tiles, trace, find, match, sort, and the core kinds), with a star for each piece and a big win at the end. Not a question lesson.
+     TLCORE.k1.add({ id: 'READ.PHON.L01.07', grade: 0, name: 'Short a Train', pic: '🚂', after: 'READ.PHON.L01.01.f',
+                     acts: [ ...4 to 8 Activity Kit activities (docs/ONE-BITE-PLAYBOOK.md section 10), each with a short spoken say... ] });
+   grade 0 (K, a .L01. id) joins the Kindergarten ABC path (game pack KR); grade 1 (a .L02. id) joins the Grade 1 Reading path (G1R).
+   after = the game it comes after on that path (left out: the end of the path). The game pack's own list and window are not changed: its list()
+   gets the new games spliced in, and its open() sends a new game to this player. His stars are saved where that pack saves its scores
+   (st.klr for KR, st.g1r for G1R), so K1Only.html unlocks the next game the same way (2 stars or more passes). No money, no mastery,
+   no evidence rows (the same as the K-1 game packs). Buttons from window.TLK. No double slash in this file. */
+(function () {
+  var W = window, C = W.TLCORE = W.TLCORE || {}, K = C.k1 = C.k1 || { games: {}, list: [] };
+  var PACK = { 0: { g: 'KR', st: 'klr' }, 1: { g: 'G1R', st: 'g1r' } };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var RM = false; try { RM = W.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var G = null;
+  function T() { return W.TLK || null; }
+  function btn(kind, text, attrs) { var k = T(); return k && k[kind] ? k[kind](text, attrs) : '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
+  function say(t) { try { if (W.K1O && typeof K1O.voice === 'function') { K1O.voice(String(t || ''), function () {}); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(String(t || '')); u.rate = .85; speechSynthesis.speak(u); } catch (e) {} }   /* the same teacher voice as the K-1 home */
+
+  K.err = function (g) {
+    if (!g || !/^(READ|LANG|WRIT)\.[A-Z]+\.L0[12]\.\d\d(\.[a-z])?$/.test(String(g.id || ''))) return 'id must be a K-1 reading or writing skill id (level L01 or L02)';
+    var lv = Number(/\.L0(\d)\./.exec(g.id)[1]); if (g.grade !== lv - 1) return 'grade must be ' + (lv - 1) + ' for a .L0' + lv + '. id';
+    if (!g.name || String(g.name).length > 30) return 'name is needed (30 letters at most)';
+    if (!Array.isArray(g.acts) || g.acts.length < 4 || g.acts.length > 8) return 'acts must be 4 to 8 Activity Kit activities';
+    if (W.OBK) { for (var i = 0; i < g.acts.length; i++) { var e = OBK.err(g.acts[i], 'K1'); if (e) return 'act ' + (i + 1) + ': ' + e; if (OBK.types[g.acts[i].type].reader) return 'act ' + (i + 1) + ': ' + g.acts[i].type + ' opens the Reader; a K-1 game has no Reader';
+      var sw = String(g.acts[i].say || OBK.say(g.acts[i]) || '').trim().split(/\s+/).length; if (sw > 12) return 'act ' + (i + 1) + ': the spoken line has more than 12 words'; } }
+    if (new Set(g.acts.map(function (a) { return a.type; })).size < 3) return 'use 3 or more kinds of activity';
+    return '';
+  };
+  K.add = function (g) { if (!g || K.games[g.id]) return false; if (W.OBK) { var e = K.err(g); if (e) { (K.rejected = K.rejected || []).push((g && g.id) + ': ' + e); console.warn('K-1 game ' + (g && g.id) + ': ' + e); return false; } }   /* tests/lib/corek1.js fails on any refused game */
+    K.games[g.id] = g; K.list.push(g); install(); return true; };
+
+  /* ---------- join the game pack's path ---------- */
+  function packOf(g) { return PACK[g.grade]; }
+  function install() {
+    [0, 1].forEach(function (gr) { var P = PACK[gr], pk = W[P.g]; if (!pk || pk.__core) return;
+      var oList = pk.list, oOpen = pk.open, oHas = pk.has; pk.__core = true;
+      pk.list = function () { var l = oList.apply(pk, arguments).slice();
+        K.list.filter(function (g) { return g.grade === gr && W.OBK && !K.err(g); }).forEach(function (g) {   /* only a game that passes its check (once the kit has loaded) joins the path: a broken game never blocks it */ if (l.some(function (x) { return x[0] === g.id; })) return;
+          var at = g.after ? l.findIndex(function (x) { return x[0] === g.after; }) : -1; var row = [g.id, g.name];
+          if (at >= 0) l.splice(at + 1, 0, row); else l.push(row); });
+        return l; };
+      pk.open = function (id) { if (K.games[String(id)]) return play(String(id)); return oOpen.apply(pk, arguments); };
+      if (typeof oHas === 'function') pk.has = function (id) { return !!K.games[String(id)] || oHas.apply(pk, arguments); };
+    });
+    try { if (W.K1O && typeof A !== 'undefined' && A.view === 'hub' && K1O.on && K1O.on()) render(); } catch (e) {}
+  }
+  (function wait(n) { install(); if ((!W.KR || !W.G1R) && n < 400) setTimeout(function () { wait(n + 1); }, 150); })(0);
+
+  /* ---------- the game ---------- */
+  function ctx() { return { guided: G.i === 0, band: 'K1', k1: true, hint: !!(G.s && G.s.misses >= 2) }; }
+  function draw() {
+    var el = G.el, g = G.g;
+    if (G.view === 'end') {
+      var n = G.stars, k = T();
+      el.innerHTML = '<div class="k1c-top">' + (k ? k.x('data-k1c="x"', 'tl', 'Close the game') : '') + '</div><div class="k1c-end"><div class="k1c-big">' + [0, 1, 2].map(function (i) { return '<span class="' + (i < n ? 'on' : '') + '">⭐</span>'; }).join('') + '</div>' +
+        '<h2>' + (n >= 2 ? 'You did it!' : 'Good trying!') + '</h2><p>' + esc(g.name) + '</p><div class="k1c-acts">' + btn('main', 'Next', 'data-k1c="done"') + btn('quiet', 'Play again', 'data-k1c="again"') + '</div></div>';
+      return;
+    }
+    var d = g.acts[G.i], s = G.s, k2 = T(), check = OBK.isCheck(d);
+    var dots = g.acts.map(function (_, i) { return '<i class="' + (i < G.i ? (G.firsts[i] ? 'on' : 'ok') : i === G.i ? 'now' : '') + '"></i>'; }).join('');
+    el.innerHTML = '<div class="k1c-top">' + (k2 ? k2.x('data-k1c="x"', 'tl', 'Close the game') : '') + '<div class="k1c-dots" aria-label="' + (G.i + 1) + ' of ' + g.acts.length + '">' + dots + '</div>' +
+      (k2 ? k2.tool('🔊', 'Hear it again', 'data-k1c="say"') : '') + '</div>' +
+      '<div class="k1c-play">' + (d.pic && d.type !== 'count' ? '<div class="k1c-pic" aria-hidden="true">' + OBK.pic(d.pic) + '</div>' : '') + (d.q ? '<div class="k1c-q">' + esc(d.q) + '</div>' : '') +
+      '<h2 class="k1c-say">' + esc(OBK.say(d)) + '</h2><div class="obk obk-' + esc(d.type) + (G.shake ? ' obk-shake' : '') + '">' + OBK.view(d, s, ctx()) + '</div>' +
+      (s.msg && !s.over ? '<p class="k1c-msg" role="status">' + esc(s.msg) + '</p>' : '') + (s.over && s.ok ? '<p class="k1c-yay" role="status">⭐ Yes!</p>' : '') + '</div>' +
+      (check && !s.over ? '<div class="k1c-foot">' + btn('main', 'Check', 'data-k1c="check"' + (OBK.ready(d, s) ? '' : ' aria-disabled="true"')) + '</div>' : '') +
+      (s.over ? '<div class="k1c-foot">' + btn('main', 'Next', 'data-k1c="next"') + '</div>' : '');
+    G.shake = false;
+    try { OBK.mount(el.querySelector('.obk'), d, s, ctx()); } catch (e) {}
+  }
+  function start(i) {
+    G.i = i; G.s = OBK.init(G.g.acts[i], ctx()); G.view = 'act'; draw();
+    var d = G.g.acts[i]; say(OBK.say(d));
+    if ((d.type === 'listen' || (d.type === 'tiles' && d.hear)) && W.OBK.hear) setTimeout(function () { if (G && G.i === i) try { OBK.hear(d); } catch (e) {} }, 1400);
+  }
+  function right() {
+    var s = G.s; s.over = true; s.ok = true; G.firsts[G.i] = s.misses === 0;
+    try { if (typeof SND !== 'undefined' && SND.right) SND.right(G.i); } catch (e) {}
+    say('Yes!'); draw();
+    var i = G.i; setTimeout(function () { if (G && G.view === 'act' && G.i === i && G.s.over) next(); }, RM ? 1200 : 900);
+  }
+  function miss(msg) {
+    var s = G.s, d = G.g.acts[G.i]; s.misses++; G.shake = !RM;
+    try { if (typeof SND !== 'undefined' && SND.wrong) SND.wrong(); } catch (e) {}
+    if (s.misses >= 3) { OBK.solve(d, s); s.over = true; s.ok = false; s.msg = ''; G.firsts[G.i] = false; say('Here it is. Look!'); draw(); return; }
+    s.msg = msg || s.msg || 'Try again!'; say(s.msg); draw();
+  }
+  function next() {
+    if (G.i < G.g.acts.length - 1) return start(G.i + 1);
+    var n = G.firsts.filter(Boolean).length, r = n / G.g.acts.length;
+    G.stars = r >= .9 ? 3 : r >= .7 ? 2 : r >= .5 ? 1 : 0; G.view = 'end';
+    try { var st = A.st, key = packOf(G.g).st; if (st) { if (!st[key] || typeof st[key] !== 'object') st[key] = {}; st[key][G.g.id] = Math.max(Number(st[key][G.g.id]) || 0, G.stars); if (typeof saveStudent === 'function') saveStudent(st); } } catch (e) {}
+    say(G.stars >= 2 ? 'You did it! ' + G.stars + ' stars!' : 'Good trying! Let us play it again.');
+    try { if (G.stars >= 2 && !RM && typeof confetti === 'function') confetti(); } catch (e) {}
+    draw();
+  }
+  function close() {
+    if (!G) return; var el = G.el; G = null; try { speechSynthesis.cancel(); } catch (e) {}
+    try { if (W.OB && typeof OB.kitTap === 'function') OBK.onDrop(function (src, dst) { return OB.kitTap(src.a, src.k, dst); }); } catch (e) {}   /* drags go back to the One Bite player */ document.removeEventListener('keydown', onKey, true); if (el) el.remove();
+    try { if (typeof A !== 'undefined' && A.view === 'hub') render(); } catch (e) {}
+  }
+  function onKey(e) { if (G && e.key === 'Escape') { e.preventDefault(); close(); } }
+  function onClick(e) {
+    if (!G) return; var t = e.target.closest('[data-k1c],[data-obk]'); if (!t) return;
+    var a = t.getAttribute('data-k1c');
+    if (a === 'x' || a === 'done') return close();
+    if (a === 'again') { G.firsts = []; return start(0); }
+    if (a === 'say') { var dd = G.g.acts[G.i]; say(OBK.say(dd)); return; }
+    if (a === 'next') return next();
+    if (a === 'check') { if (t.getAttribute('aria-disabled') === 'true') { say('Finish it first.'); return; } var j = OBK.judge(G.g.acts[G.i], G.s); if (j && j.soft) { G.s.msg = j.msg; say(j.msg); return draw(); } return j && j.ok ? right() : miss(j && j.msg); }   /* soft: nothing done yet (trace), not a miss */
+    if (G.view !== 'act' || G.s.over) return;
+    var oa = t.getAttribute('data-obk'); if (!oa) return;
+    var d = G.g.acts[G.i];
+    if (oa === 'hear') { try { OBK.hear(d); } catch (er) {} return; }
+    var r = OBK.tap(d, G.s, oa, t.getAttribute('data-k'), null, ctx());
+    if (r === 'ok') return right(); if (r === 'bump' || r === 'miss') return miss(G.s.msg); draw();   /* the kit says 'miss' for a wrong listen or count pick */
+  }
+  function play(id) {
+    var g = K.games[id]; if (!g || !W.OBK) return;
+    var e = K.err(g); if (e) { (K.rejected = K.rejected || []).push(id + ': ' + e); console.warn('K-1 game ' + id + ': ' + e); return; }
+    if (G) close(); css(); try { OBK.css(); } catch (er) {}
+    var el = document.createElement('div'); el.id = 'k1cov'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', g.name); document.documentElement.appendChild(el);   /* outside body: the K-1 home hides every other child of body (K1Only.html, body.k1-home) */
+    document.addEventListener('keydown', onKey, true);
+    G = { g: g, el: el, i: 0, s: null, firsts: [], view: 'act' };
+    try { OBK.onDrop(function (src, dst) { if (!G || G.view !== 'act' || G.s.over) return; var r = OBK.tap(G.g.acts[G.i], G.s, src.a, src.k, dst, ctx()); if (r === 'ok') return right(); if (r === 'bump' || r === 'miss') return miss(G.s.msg); draw(); }); } catch (er) {}   /* drags go to this game while it is open */
+    start(0);
+  }
+  /* taps inside the game are ours: caught on window before the One Bite player's page-wide handler (document, capture) sees them */
+  W.addEventListener('click', function (e) { if (!G || !G.el || !G.el.contains(e.target)) return; e.stopPropagation(); onClick(e); }, true);
+  K.play = play; K.close = close;
+  K.state = function () { return G ? { id: G.g.id, view: G.view, i: G.i, n: G.g.acts.length, stars: G.stars, over: !!(G.s && G.s.over), type: G.view === 'act' ? G.g.acts[G.i].type : '' } : null; };
+
+  function css() { if (document.getElementById('k1c-css')) return; var s = document.createElement('style'); s.id = 'k1c-css'; s.textContent = '' +
+    '#k1cov{position:fixed;inset:0;z-index:2147483646;display:flex;flex-direction:column;background:linear-gradient(180deg,#BDE7FF 0%,#E8F6FF 45%,#FFF6D8 100%);color:#1F2A44;font:22px/1.35 "Nunito",system-ui,sans-serif}#k1cov *{box-sizing:border-box}' +
+    '#k1cov .k1c-top{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:68px}#k1cov .k1c-top .tlk-at-tl{position:static}' +
+    '#k1cov .k1c-dots{flex:1;display:flex;justify-content:center;gap:8px}#k1cov .k1c-dots i{width:22px;height:22px;border-radius:50%;background:rgba(31,42,68,.15)}#k1cov .k1c-dots i.now{background:#FFC83D;box-shadow:0 0 0 4px rgba(255,200,61,.35)}#k1cov .k1c-dots i.on{background:#2FBF71}#k1cov .k1c-dots i.ok{background:#8FD9B1}' +
+    '#k1cov .k1c-play{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 16px 20px}' +
+    '#k1cov .k1c-pic{font-size:80px;line-height:1}#k1cov .k1c-q{font:900 40px/1.1 inherit}#k1cov .k1c-say{margin:0;text-align:center;font:900 28px/1.25 inherit;max-width:760px}' +
+    '#k1cov .obk{width:100%;max-width:900px}#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:76px;min-width:76px;font-size:30px}#k1cov .k1c-top .tlk{width:76px;height:76px;min-width:76px}#k1cov .k1c-msg{margin:0;font-weight:800;color:#8A4B00}#k1cov .k1c-yay{margin:0;font:900 34px/1 inherit;color:#0E7A4F;animation:k1cPop .5s cubic-bezier(.2,1.6,.4,1)}' +
+    '#k1cov .k1c-foot{display:flex;justify-content:center;padding:12px 16px calc(14px + env(safe-area-inset-bottom))}#k1cov .k1c-foot .tlk-main{min-width:220px;min-height:76px;font-size:28px}#k1cov [aria-disabled=true].tlk-main{opacity:.5}' +
+    '#k1cov .k1c-end{flex:1;display:grid;place-items:center;align-content:center;gap:10px;text-align:center;padding:20px}#k1cov .k1c-end h2{font:900 44px/1.1 inherit;margin:0}' +
+    '#k1cov .k1c-big span{font-size:84px;filter:grayscale(1) opacity(.3);display:inline-block}#k1cov .k1c-big span.on{filter:none;animation:k1cPop .6s cubic-bezier(.2,1.6,.4,1) both}#k1cov .k1c-big span.on:nth-child(2){animation-delay:.15s}#k1cov .k1c-big span.on:nth-child(3){animation-delay:.3s}' +
+    '#k1cov .k1c-acts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}#k1cov .k1c-acts .tlk{min-height:72px;font-size:26px;min-width:180px}' +
+    '@keyframes k1cPop{from{transform:scale(.2);opacity:0}to{transform:none;opacity:1}}@media (prefers-reduced-motion:reduce){#k1cov .k1c-yay,#k1cov .k1c-big span.on{animation:none}}' +
+    '@media (min-width:900px){#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:104px;min-width:104px;font-size:44px}#k1cov .k1c-say{font-size:34px}}' +
+    '@media (max-width:480px){#k1cov .k1c-say{font-size:24px}#k1cov .k1c-q{font-size:32px}#k1cov .k1c-pic{font-size:64px}}';
+    (document.head || document.documentElement).appendChild(s); }
+})();
+</script>

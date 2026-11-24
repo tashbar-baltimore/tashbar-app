@@ -6,6 +6,7 @@
       It is quick (under a second), never covers the work, and lets taps through (pointer-events none). Reduced motion: only the chip bounce.
    3. When the server's saved balance comes back higher, the chip counts up to the new amount.
    4. Bite Done: the "earned" line becomes a big counting-up money moment with a short coin shower around it (the end of the bite, so nothing is covered).
+   2026-11-23: when the Money Show (MoneyShow.html) is loaded it takes over 1-2 (its meter and rolling coins); 3-4 stay here.
    Loaded after OneBite.html (registered in Photos.js AND Speed.js). If One Bite is not on the screen it does nothing. No double slash in this file. */
 (function(){
 if(typeof render!=='function'||typeof A==='undefined'||!window.OB) return;
@@ -39,7 +40,7 @@ function bump(){ const c=chip(); if(!c) return; c.classList.remove('bump'); void
 function countTo(v){ clearInterval(countT); const from=shown==null?v:shown; if(RM||Math.abs(v-from)<.005){ shown=v; setChip(v); return; }
   const t0=Date.now(), dur=900; countT=setInterval(()=>{ const k=Math.min(1,(Date.now()-t0)/dur), e=1-Math.pow(1-k,3); shown=from+(v-from)*e; setChip(shown); if(k>=1){ clearInterval(countT); shown=v; setChip(v); bump(); } },40); }
 function sound(){ try{ if(typeof SND!=='undefined'&&SND&&SND.on!==false&&typeof SND.coin==='function') SND.coin(); }catch(e){} }
-function flyCoin(fromEl){ const c=chip(); if(!c) return; bump(); if(RM) return;
+function flyCoin(fromEl){ if(window.TLMS&&TLMS.on) return; const c=chip(); if(!c) return; bump(); if(RM) return;
   const to=c.getBoundingClientRect(); const fr=(fromEl&&fromEl.getBoundingClientRect)?fromEl.getBoundingClientRect():{left:innerWidth/2,top:innerHeight/2,width:0,height:0};
   const x0=fr.left+fr.width/2-14, y0=fr.top+fr.height/2-14, x1=to.left+10, y1=to.top+to.height/2-14;
   const d=document.createElement('div'); d.className='obm-coin'; d.textContent='$'; d.setAttribute('aria-hidden','true'); document.body.appendChild(d);

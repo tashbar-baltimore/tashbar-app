@@ -9,7 +9,7 @@
    KEEP IN STEP: TL_PART_FILES must list the same files in the same order as msQuestToolsBody_ in Photos.js. */
 var TL_PART_FILES = ['CanteenKid', 'MathMore', 'ReadMore', ['ScienceMore', 'ScienceMore2'], 'ElectivesMore', 'FactsMore', 'TradesMore', 'ComputingMore', 'LifeMore', 'SocialMore',
   'KodeshMore', 'SimchaMore', 'Shine', 'Helpers', 'Review', 'Adapt', 'Motivation', 'JokeJar', 'SimchaLife', 'TalkRebbe', ['KodeshQuestPage', 'KodeshArt2'], 'KinderKriyah',
-  'Guides', 'Pictures', ['Music', 'EnergyMusic'], ['HowToDo', 'HowToDo2', 'HowToDo3'], 'FactsHowTo', 'AnswerGuard', 'HomePlus', 'StoreKid', 'Activities', ['KindsMore', 'KindsMore2', 'KindsMore3'], 'RebbePick', 'OlamHaba', 'TorahPlus', 'ChumashPage', 'KriyahMore', ['TorahTracks', 'TaryagQuest'], 'ArenaPage', 'ClassMode', 'HomeLift', 'LearnWays', 'DailyPath', ['BoyLibrary', 'HomeLayout', 'MasteryReview', 'WelcomeJoy', 'HomeFocus', 'LessonPop', 'LearnFlow', 'VoicePro', 'WorldThemeUI', 'KMathGamesUI', 'K1LettersUI', 'LblGateUI'], 'KLessons', 'KReading', 'RealPics', 'ScreenFit', 'KKriyah', 'G1Math', 'G1Reading', 'G2Math', 'G2Reading', 'G3Math', 'G4Math', 'G5Math', 'G6Math', 'G3Reading', 'KLearn', 'KScience', 'KWriting', 'G1Science', 'G1Writing', 'G2Science', 'G2Writing', 'G3Science', 'G3Writing', 'KElectives', 'AlgebraAscent', 'GameMap', 'OneBiteDataMath', 'OneBiteDataRead', 'OneBiteDataWrit', 'OneBiteDataKodesh', 'OneBiteDataMore', 'OneBiteDataRead2', 'OneBiteDataMath2', 'OneBiteDataUpper', 'OneBiteKit', 'OneBite', 'OneBiteMoney', 'BlockBuildersData', 'BlockBuildersUI', 'K1Only'];   /* BLOCK BUILDERS workbook (HoS 2026-11-22), before K1Only */   /* K1Only (HoS 2026-11-22 morning): K-1 boys get the games only, loads last */   /* ONE BITE (HoS 2026-11-21): bite data, then the player, after GameMap */   /* PF stage D: DailyPath LAST, as in msQuestToolsBody_ */
+  'Guides', 'Pictures', ['Music', 'EnergyMusic'], ['HowToDo', 'HowToDo2', 'HowToDo3'], 'FactsHowTo', 'AnswerGuard', 'HomePlus', 'StoreKid', 'Activities', ['KindsMore', 'KindsMore2', 'KindsMore3'], 'RebbePick', 'OlamHaba', 'TorahPlus', 'ChumashPage', 'KriyahMore', ['TorahTracks', 'TaryagQuest'], 'ArenaPage', 'ClassMode', 'HomeLift', 'LearnWays', 'DailyPath', ['BoyLibrary', 'HomeLayout', 'MasteryReview', 'WelcomeJoy', 'HomeFocus', 'LessonPop', 'LearnFlow', 'VoicePro', 'WorldThemeUI', 'KMathGamesUI', 'K1LettersUI', 'LblGateUI'], 'KLessons', 'KReading', 'RealPics', 'ScreenFit', 'KKriyah', 'G1Math', 'G1Reading', 'G2Math', 'G2Reading', 'G3Math', 'G4Math', 'G5Math', 'G6Math', 'G3Reading', 'KLearn', 'KScience', 'KWriting', 'G1Science', 'G1Writing', 'G2Science', 'G2Writing', 'G3Science', 'G3Writing', 'KElectives', 'AlgebraAscent', 'GameMap', 'OneBiteDataMath', 'OneBiteDataRead', 'OneBiteDataWrit', 'OneBiteDataKodesh', 'OneBiteDataMore', 'OneBiteDataRead2', 'OneBiteDataMath2', 'OneBiteDataUpper', '@core', 'OneBiteKit', 'OneBite', 'OneBiteMoney', 'MoneyShow', 'RealPicsTeach', 'BlockBuildersData', 'BlockBuildersUI', 'DailyPlanUI', 'K1Only'];   /* TODAY'S LIST (Core Growth job D, 2026-11-24), before K1Only */   /* BLOCK BUILDERS workbook (HoS 2026-11-22), before K1Only */   /* K1Only (HoS 2026-11-22 morning): K-1 boys get the games only, loads last */   /* ONE BITE (HoS 2026-11-21): bite data, then the player, after GameMap */   /* PF stage D: DailyPath LAST, as in msQuestToolsBody_ */
 
 function msSignInFast(code) {
   var r = msSignInCode(code);
@@ -35,6 +35,11 @@ function tlToolParts_() {
   while ((m = re.exec(src))) if (!listed[m[1]]) throw new Error('Speed.js TL_PART_FILES is missing ' + m[1]);
   var out = [{ h: 'M' + tlMd5_(QUEST_TOOLS.js), get: function () { return QUEST_TOOLS.js; } }];
   TL_PART_FILES.forEach(function (f) {
+    if (f === '@core') {   /* Core Growth: one piece per core file (CoreSkills.js coreFiles_), the same text msQuestToolsBody_ puts here */
+      (typeof coreFiles_ === 'function' ? coreFiles_() : []).forEach(function (n) {
+        var cj = ''; try { cj = tlStrip_(tlFileText_(n)); } catch (e) {} cj = tlWrap_(n, cj); out.push({ h: 'M' + tlMd5_(cj), get: function () { return cj; } }); });
+      return;
+    }
     var names = typeof f === 'string' ? [f] : f, label = names[0];
     var packOnly = names.every(function (n) { return TL_PACKS[n] && !tlHasCode_(n); });
     var build = function () {   /* same rules as msQuestToolsBody_: a missing file gives '' */
@@ -62,6 +67,25 @@ function msQuestToolsParts(have) {
 /* The page's loader (runs in the browser). OLD = the previous loader, used if anything here fails. */
 function tlLoader2Src_(OLD) {
   var DBN = 'tashbar-parts', ST = 'p', db = null, done = false;
+  /* TIMING BOX (2026-11-23, to find the white game window on a real K Chromebook): only with ?diag=1 on the address (kept for this
+     tab). Shows when the pieces arrived and ran, when PLAY was tapped, when the game window opened and loaded, what kept the
+     Chromebook busy (long tasks), slow downloads and errors. No names or codes are shown. Boys never see it. */
+  var DG = null; try { if (/[?&]diag=1\b/.test(location.search)) sessionStorage.setItem('tl-diag', '1'); if (sessionStorage.getItem('tl-diag') === '1') DG = { t0: performance.now(), lines: [], busy: 0, tap: 0 }; } catch (e) {}
+  function D(m) { if (!DG) return; DG.lines.push(((performance.now()) / 1000).toFixed(1) + 's ' + m); if (DG.lines.length > 40) DG.lines.splice(1, 1); }
+  if (DG) {
+    D('page open');
+    try { new PerformanceObserver(function (l) { l.getEntries().forEach(function (e) { DG.busy += e.duration; if (e.duration > 300 || (DG.tap && e.startTime > DG.tap)) D('busy ' + Math.round(e.duration) + 'ms'); }); }).observe({ entryTypes: ['longtask'] }); } catch (e) {}
+    try { new PerformanceObserver(function (l) { l.getEntries().forEach(function (e) { if (e.duration > 1500) D('slow download ' + Math.round(e.duration) + 'ms ' + String(e.name).replace(/^https?:[\/]{2}/, '').slice(0, 50)); }); }).observe({ entryTypes: ['resource'] }); } catch (e) {}
+    window.addEventListener('error', function (e) { D('ERROR ' + String(e.message || e).slice(0, 80)); });
+    window.addEventListener('unhandledrejection', function (e) { D('ERROR (promise) ' + String(e.reason && e.reason.message || e.reason).slice(0, 80)); });
+    document.addEventListener('click', function (e) { var b = e.target && e.target.closest && e.target.closest('.k1-play,.k1-t'); if (b) { DG.tap = performance.now(); D('PLAY tapped'); } }, true);
+    var seen = {}; setInterval(function () {
+      ['klov', 'krov', 'kkov', 'kkov2', 'g1mov', 'g1rov'].forEach(function (id) { var o = document.getElementById(id); if (o && !seen[id]) { seen[id] = 1; D('game window open (' + id + ')'); var f = o.querySelector('iframe'); if (f) f.addEventListener('load', function () { D('game page loaded'); }); } if (!o) seen[id] = 0; });
+      if (!seen.sh && document.querySelector('#k1o .k1-play')) { seen.sh = 1; D('PLAY button showing'); }
+      var box = document.getElementById('tl-diag'); if (!box && document.body) { box = document.createElement('pre'); box.id = 'tl-diag'; box.style.cssText = 'position:fixed;left:6px;bottom:6px;z-index:2147483647;max-width:46vw;max-height:70vh;overflow:hidden;margin:0;padding:8px 10px;background:rgba(0,0,0,.82);color:#7CFC9A;font:12px/1.35 monospace;border-radius:8px;pointer-events:none;white-space:pre-wrap'; box.style.setProperty('display', 'block', 'important'); document.body.appendChild(box); }
+      if (box) box.textContent = 'TIMING (busy total ' + Math.round(DG.busy / 1000) + 's)\n' + DG.lines.join('\n');
+    }, 500);
+  }
   /* FAST START (HoS 2026-11-22: "kindergarten and first grade ... opens up just to a white screen for the first 20 seconds"): the
      add-ons (about 40 MB) used to run as ONE block, so a Chromebook could not draw anything until all of them had run. Now the pieces
      run in order, a few at a time, with a short break between, so the screen draws and taps work while they load. The pieces and
@@ -69,7 +93,14 @@ function tlLoader2Src_(OLD) {
      "getting your games ready" screen, not the big-boy home, until his game path (K1Only, the last piece) has loaded. */
   function k1Wait() { try { if (window.K1O || typeof A === 'undefined' || !A || A.view !== 'hub' || !A.st || !A.st.id) return false;
       var f = localStorage.getItem('tl-k1only'); if (f === '0') return false; if (f === '1') return true;
-      var g = localStorage.getItem('tl-k1g:' + A.st.id); return g === '0' || g === '1'; } catch (e) { return false; } }
+      var sid = String(A.st.id), g = localStorage.getItem('tl-k1g:' + sid);
+      /* FIRST OPEN on a Chromebook (2026-11-23): nothing is kept yet, so a K-1 boy used to see the big-boy home and its pop-ups until
+         every piece had loaded (up to about 40 s). Ask the server for his grade once (klMe, read only) and keep it, as K1Only does. */
+      if (g === null && !k1Asked[sid] && typeof SRV !== 'undefined' && SRV && SRV.token) { k1Asked[sid] = 1;
+        google.script.run.withSuccessHandler(function (r) { try { var v = r && typeof r.grade === 'number' ? r.grade : null; if (localStorage.getItem('tl-k1g:' + sid) === null) localStorage.setItem('tl-k1g:' + sid, v == null ? '' : String(v)); } catch (e) {} })
+          .withFailureHandler(function () {}).klMe(SRV.token); }
+      return g === '0' || g === '1'; } catch (e) { return false; } }
+  var k1Asked = {};
   function cover(on) { var c = document.getElementById('tl-k1wait'); if (!on) { if (c) c.remove(); return; } if (c || !document.body) return;
     c = document.createElement('div'); c.id = 'tl-k1wait'; c.setAttribute('role', 'status');
     c.style.cssText = 'position:fixed;inset:0;z-index:2147483600;background:#FFF4D6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;font:800 clamp(28px,5vw,48px) system-ui,sans-serif;color:#16202C';
@@ -85,8 +116,15 @@ function tlLoader2Src_(OLD) {
     var r = { tl: k, f: f, ms: ms, a: Array.prototype.slice.call(arguments, 2), x: 0, id: null }; held.push(r); return r; }; }
   W.setTimeout = mk('t'); W.setInterval = mk('i');
   W.clearTimeout = W.clearInterval = function (r) { if (r && typeof r === 'object' && r.tl) { r.x = 1; if (r.id != null) { nCT.call(W, r.id); nCI.call(W, r.id); } return; } nCT.call(W, r); nCI.call(W, r); };
+  /* K-1 QUIET (2026-11-23, white game window on a real K Chromebook): the big-boy home is hidden while a K-1 boy is on his game path
+     or in a game (body.k1-home), but the pieces' repeating timers kept updating it (money pill, clock, sky, buttons) several times a
+     second, and every update woke the pieces' screen watchers. That took a large share of a slow Chromebook away from the game.
+     Now a repeating timer that a piece started while loading skips its turns while body.k1-home is on (a function marked __k1keep,
+     such as K1Only's own, always runs). Everything starts again as soon as he leaves the game path (sign out). */
+  function k1Quiet() { try { return !!(document.body && document.body.classList.contains('k1-home')); } catch (e) { return false; } }
+  function quietly(f) { if (typeof f !== 'function' || f.__k1keep) return f; return function () { if (k1Quiet()) return; return f.apply(this, arguments); }; }
   function release() { var list = held; held = []; W.setTimeout = nST; W.setInterval = nSI;
-    list.forEach(function (r) { if (!r.x) r.id = (r.tl === 'i' ? nSI : nST).apply(W, [r.f, r.ms].concat(r.a)); }); }
+    list.forEach(function (r) { if (!r.x) r.id = (r.tl === 'i' ? nSI : nST).apply(W, [r.tl === 'i' ? quietly(r.f) : r.f, r.ms].concat(r.a)); }); }
   function run1(js) { holding = true; try { (0, eval)(js); } catch (e) { console.error('QuestTools', e); } holding = false; }
   /* K-1 FIRST (HoS 2026-11-22: "it has to be fast, quick, smooth"): on a Chromebook whose last boy was K-1 (K1Only.html keeps
      tl-k1dev), his games (KL, KR, KK, G1M, G1R) and his game path (K1Only) run FIRST, so his PLAY button shows in a moment. The other
@@ -97,7 +135,7 @@ function tlLoader2Src_(OLD) {
      about 20 seconds (HoS test). Until that is understood, K-1 first runs only on a Chromebook where it is switched on by hand
      (localStorage tl-k1fast = '1', for testing). Everyone else gets the usual order, which worked on the first open. */
   try { fast = localStorage.getItem('tl-k1fast') === '1' && localStorage.getItem('tl-k1dev') === '1' && sessionStorage.getItem('tl-load-normal') !== '1'; } catch (e) {}
-  function gameOpen() { return !!document.querySelector('#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov'); }
+  function gameOpen() { return !!document.querySelector('#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov,#k1cov'); }
   function notK1() { try { return !!(window.K1O && typeof K1O.on === 'function' && typeof A !== 'undefined' && A && A.st && A.st.id && A.view !== 'signin' && !K1O.on()); } catch (e) { return false; } }
   /* LAZY LOADING, step 1 (HoS 2026-11-22: "do the lazy loading project too ... fast, quick, smooth"):
      - never a half-loaded app: a tap on the home (not the sign-in pad, not a K-1 boy's games) before every piece has run is held,
@@ -116,7 +154,7 @@ function tlLoader2Src_(OLD) {
   function same(p) { if (p.el && p.el.isConnected) return p.el; var all = document.querySelectorAll(p.tag);
     for (var k = 0; k < all.length; k++) { var x = all[k]; if ((x.id || '') === p.id && JSON.stringify(x.dataset || {}) === p.ds && String(x.textContent || '').trim().slice(0, 60) === p.tx) return x; } return null; }
   ['wheel', 'touchmove', 'keydown'].forEach(function (n) { document.addEventListener(n, function () { lastMove = Date.now(); }, { capture: true, passive: true }); });
-  function go(list) { var order = [], i = 0, firstN = 0;
+  function go(list) { var order = [], i = 0, firstN = 0; D('pieces ready: ' + list.length);
     if (fast) { list.forEach(function (t, k) { if (k === 0 || K1RE.test(t)) order.push(k); }); firstN = order.length; list.forEach(function (t, k) { if (!(k === 0 || K1RE.test(t))) order.push(k); }); }
     else list.forEach(function (t, k) { order.push(k); });
     var watch = fast ? nSI.call(W, function () { if (notK1()) { nCI.call(W, watch); try { sessionStorage.setItem('tl-load-normal', '1'); } catch (e) {} location.reload(); } }, 400) : null;
@@ -127,13 +165,13 @@ function tlLoader2Src_(OLD) {
         if (fast && i === firstN && !rush) { try { if (window.K1O && K1O.hook) K1O.hook(); if (typeof A !== 'undefined' && A.view === 'hub') render(); } catch (e) {} cover(k1Wait()); return nST.call(W, slice, 3000); }
         if (Date.now() - t0 > (rush ? 400 : 50)) break; }
       if (i < order.length) { cover(k1Wait()); return nST.call(W, slice, 0); }
-      finished = true; release(); stopWait();
+      finished = true; D('all pieces ran'); release(); stopWait();
       try { if (window.K1O && K1O.hook) K1O.hook(); } catch (e) {}
       try { if (typeof A !== 'undefined' && (A.view === 'play' || A.view === 'hub' || A.view === 'result')) render(); } catch (e) {}
       wait1(false); var p = pending; pending = null;
       if (p) nST.call(W, function () { try { var x = same(p); if (x) x.click(); } catch (e) {} }, 0); }
     nST.call(W, slice, 30); }
-  function fallback(why) { if (done) return; done = true; try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} stopWait(); try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } finished = true; wait1(false); var p = pending; pending = null; if (p) setTimeout(function () { try { var x = same(p); if (x) x.click(); } catch (e) {} }, 0); }
+  function fallback(why) { if (done) return; done = true; D('old loader: ' + why); try { console.warn('QuestTools v2: using the old loader', why); } catch (e) {} stopWait(); try { (0, eval)(OLD); } catch (e) { console.error('QuestTools', e); } finished = true; wait1(false); var p = pending; pending = null; if (p) setTimeout(function () { try { var x = same(p); if (x) x.click(); } catch (e) {} }, 0); }
   function store(mode) { return db.transaction(ST, mode).objectStore(ST); }
   function getMany(ks, cb) { var out = {}, n = ks.length; if (!n || !db) return cb(out); try { var s = store('readonly'); ks.forEach(function (k) { var q = s.get(k); q.onsuccess = function () { out[k] = q.result; if (--n === 0) cb(out); }; q.onerror = function () { if (--n === 0) cb(out); }; }); } catch (e) { cb(out); } }
   function save(parts, order) { if (!db) return; try { var s = store('readwrite'); Object.keys(parts).forEach(function (h) { s.put(parts[h], h); }); s.put(order, '__order');
@@ -142,7 +180,7 @@ function tlLoader2Src_(OLD) {
   function join(order, fresh, cached) { var a = []; for (var i = 0; i < order.length; i++) { var h = order[i], v = fresh[h] != null ? fresh[h] : cached[h]; if (typeof v !== 'string') return null; a.push(v); } return a; }
   function offline(e) { if (done) return; getMany(['__order'], function (o) { var order = o.__order; if (!order || !order.length) return fallback(e);
     getMany(order, function (c) { var js = join(order, {}, c); if (js === null) return fallback(e); done = true; go(js); }); }); }
-  function ask(have) { google.script.run.withSuccessHandler(function (r) { if (done) return; if (!r || !r.order || !r.parts) return fallback('bad reply');
+  function ask(have) { D('asking for pieces (have ' + have.length + ')'); google.script.run.withSuccessHandler(function (r) { if (done) return; if (!r || !r.order || !r.parts) return fallback('bad reply');
       var need = r.order.filter(function (h) { return r.parts[h] == null; });
       getMany(need, function (cached) { var js = join(r.order, r.parts, cached); if (js === null) return fallback('missing piece'); done = true; go(js); save(r.parts, r.order); }); })
     .withFailureHandler(offline).msQuestToolsParts(have); }

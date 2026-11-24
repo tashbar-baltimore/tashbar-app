@@ -1,0 +1,276 @@
+<script>
+/* CoreWrite.html: THE WRITING WORKSHOP (Core Growth job T, T-4, 2026-11-24). Plan -> Write -> Fix -> Finish, each its own screen, then
+   the piece goes to his teacher's writing inbox (src/CoreWrite.js, src/CoreWriteStaff.html). "A writing piece is never marked right just
+   for being typed" (CORE-GROWTH-PROMPT.md section 5): the Fix screen has a checklist he must MEET (the app checks what it can: sentences,
+   words, capitals and end marks, linking words, that he used his plan), and the teacher scores the piece. SRSD: the strategy card
+   (POW + TREE, TIDE ...) is on the Plan screen and stays one tap away while he writes.
+   TLCORE.write.open(task, opts) -> Promise of { sent, id, status }      opts: { grade, exit: 'home' | 'x' }
+   TLCORE.write.book() -> opens "My book": every piece his teacher published, with its picture, and pieces sent back to fix.
+   TLCORE.write.err(task) -> '' or what is wrong with the task data. The task (docs/core-growth/HOW-TO-ADD-A-WRITING-TASK.md):
+     { id:'W48.OPIN.01', title:'Should our class have a pet?', grade:5, kind:'opinion', prompt:'...',
+       strategy:{ name:'POW + TREE', steps:[['P','Pick my idea'],['O','Organize my notes'],['W','Write and say more']], more:[['T','Topic sentence'],['R','Reasons'],['E','Ending'],['E','Examine']] },
+       plan:[{ k:'topic', label:'T · My opinion', hint:'I think our class should...' }, ...],   (2-8 boxes)
+       starters:['I believe','One reason is','Another reason is','In the end,'],
+       min:60,   (words)
+       checks:[{ t:'I wrote at least 5 sentences.', sentences:5 }, { t:'I told my opinion first.', first:'topic' }, { t:'I used linking words.', any:['because','another','also'] },
+               { t:'Every sentence starts with a capital and ends with . ! or ?', caps:true }, { t:'I used every part of my plan.', plan:true }, { t:'I read it out loud to myself.', self:true }],
+       rubric:['My opinion is clear','Reasons with details','Order and linking words','Capitals, end marks and spelling'],   (2-6 rows; the teacher scores 1-4)
+       pics:['🐠','🐹','🦜','📚'] }   (his book page picture: 2-6 choices)
+   Buttons come only from the button system (window.TLK). No money here. A draft is kept on the Chromebook as he types and on the server
+   at each step. No double slash in this file. */
+(function () {
+  var W = window, C = W.TLCORE = W.TLCORE || {}, WR = C.write = {};
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var RM = false; try { RM = W.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var STAGES = ['Plan', 'Write', 'Fix', 'Finish'], S = null;
+  function K() { return W.TLK || null; }
+  function btn(kind, text, attrs) { var k = K(); return k && k[kind] ? k[kind](text, attrs) : '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
+  function pill(kind, text) { var k = K(); return k ? k.pill(kind, text) : '<span>' + esc(text) + '</span>'; }
+  function tok() { try { if (typeof SRV !== 'undefined' && SRV && SRV.token) return SRV.token; } catch (e) {} try { var t = JSON.parse(sessionStorage.getItem('tl-session') || 'null'); return (t && t.token) || ''; } catch (e) { return ''; } }
+  function sid() { try { return (typeof A !== 'undefined' && A && A.st && A.st.id) || ''; } catch (e) { return ''; } }
+  function call(fn) { var a = [].slice.call(arguments, 1); return new Promise(function (ok, no) { try { google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn].apply(null, [tok()].concat(a)); } catch (e) { no(e); } }); }
+  function words(t) { return (String(t || '').match(/[A-Za-z0-9’']+/g) || []).length; }
+  function sentences(t) { return String(t || '').replace(/\s+/g, ' ').trim().split(/(?<=[.!?]["”’']?)\s+(?=["“‘']?[A-Z0-9])/).filter(function (x) { return /[A-Za-z]/.test(x); }); }
+  function lsKey() { return 'cw-' + sid() + '-' + S.task.id; }
+  function stash() { if (!sid()) return; try { localStorage.setItem(lsKey(), JSON.stringify({ plan: S.piece.plan, text: S.piece.text, title: S.piece.title, pic: S.piece.pic, at: Date.now() })); } catch (e) {} }
+  function unstash() { if (!sid()) return null; try { return JSON.parse(localStorage.getItem(lsKey()) || 'null'); } catch (e) { return null; } }
+  function forget() { try { localStorage.removeItem(lsKey()); } catch (e) {} }
+
+  WR.err = function (t) {
+    if (!t || typeof t !== 'object') return 'not a task';
+    if (!/^[A-Z][A-Z0-9]*(\.[A-Z0-9]+){1,3}$/.test(String(t.id || ''))) return 'id must look like W48.OPIN.01';
+    if (!t.title || !t.prompt) return 'title and prompt are needed';
+    if (!t.strategy || !Array.isArray(t.strategy.steps) || !t.strategy.steps.length) return 'strategy.steps (the memory strategy, for example POW) is needed';
+    if (!Array.isArray(t.plan) || t.plan.length < 2 || t.plan.length > 8 || t.plan.some(function (p) { return !p || !p.k || !p.label; })) return 'plan must be 2 to 8 boxes, each { k, label }';
+    if (!Array.isArray(t.checks) || t.checks.length < 3) return 'checks must have 3 or more lines';
+    var bad = t.checks.filter(function (c) { return !c || !c.t || !(c.sentences || c.words || c.first || c.any || c.caps || c.plan || c.self); });
+    if (bad.length) return 'each check needs t and one of sentences, words, first, any, caps, plan, self';
+    if (!t.checks.some(function (c) { return !c.self; })) return 'at least one check must be one the app can check (not only self)';
+    if (!Array.isArray(t.rubric) || t.rubric.length < 2 || t.rubric.length > 6) return 'rubric must be 2 to 6 rows (the teacher scores each 1 to 4)';
+    if (t.pics && (!Array.isArray(t.pics) || t.pics.length < 2 || t.pics.length > 6)) return 'pics must be 2 to 6 choices';
+    return '';
+  };
+
+  /* ---------- the checklist: what the app can check, he must meet ---------- */
+  function check(c) {
+    var t = S.piece.text, ss = sentences(t), low = ' ' + t.toLowerCase().replace(/\s+/g, ' ') + ' ';
+    if (c.self) return !!S.self[c.t];
+    if (c.sentences) return ss.length >= c.sentences;
+    if (c.words) return words(t) >= c.words;
+    if (c.caps) return ss.length > 0 && ss.every(function (x) { return /^["“‘']?[A-Z0-9]/.test(x) && /[.!?]["”’']?$/.test(x); });
+    if (c.any) return c.any.some(function (w) { return low.indexOf(' ' + String(w).toLowerCase()) >= 0; });
+    if (c.first) { var v = String(S.piece.plan[c.first] || ''), key = keyWords(v); var f = (ss[0] || '').toLowerCase(); return key.length > 0 && key.filter(function (w) { return f.indexOf(w) >= 0; }).length >= Math.min(2, key.length); }
+    if (c.plan) return S.task.plan.every(function (p) { var key = keyWords(S.piece.plan[p.k]); return key.length > 0 && key.some(function (w) { return low.indexOf(w) >= 0; }); });
+    return false;
+  }
+  var STOP = ' the and our for that this with have has was were are you your his her they them then than from into will would should could because also just very really about there their what when which who why how one two think believe ';
+  function keyWords(v) {   /* the words that carry his plan box; a short box ("a dog", "Yes!") falls back to its own words, so a check can always be met */
+    var all = String(v || '').toLowerCase().match(/[a-z0-9’']+/g) || [], big = all.filter(function (w) { return w.length >= 4 && STOP.indexOf(' ' + w + ' ') < 0; });
+    if (big.length) return big; var mid = all.filter(function (w) { return w.length >= 3 && STOP.indexOf(' ' + w + ' ') < 0; }); return mid.length ? mid : all; }
+  function planDone() { return S.task.plan.every(function (p) { return words(S.piece.plan[p.k]) >= 2; }); }
+  function minWords() { return Number(S.task.min) || 30; }
+
+  /* ---------- screens ---------- */
+  function top() {
+    var k = K(), young = S.g <= 3, ex = S.o.exit === 'x' ? (k ? k.x('data-cw="exit"', 'tl') : '') : (k ? k.home('data-cw="exit"', 'tl', young) : '');
+    var read = (S.view === 'write' || S.view === 'fix') && k ? k.tool('🔊', 'Read my writing to me', 'data-cw="read"') : '';
+    var prog = S.view === 'stage' || S.view === 'write' || S.view === 'fix' || S.view === 'finish' ? pill('prog', 'Step ' + (S.st + 1) + ' of 4 · ' + STAGES[S.st]) : '';
+    return '<div class="cw-top">' + ex + '<div class="cw-ttl">' + esc(S.task.title) + '</div><div class="cw-tools">' + prog + read + '</div></div>';
+  }
+  function strip() { return '<ol class="cw-strip" aria-label="Steps">' + STAGES.map(function (s, i) { return '<li class="' + (i < S.st ? 'done' : i === S.st ? 'on' : '') + '">' + (i < S.st ? '✓ ' : '') + s + '</li>'; }).join('') + '</ol>'; }
+  function strat() { var st = S.task.strategy;
+    return '<div class="cw-strat" aria-label="My strategy"><b>' + esc(st.name || 'My strategy') + '</b><div class="cw-letters">' + st.steps.map(function (x) { return '<span><i>' + esc(x[0]) + '</i>' + esc(x[1]) + '</span>'; }).join('') + '</div>' +
+      (st.more && st.more.length ? '<div class="cw-letters more">' + st.more.map(function (x) { return '<span><i>' + esc(x[0]) + '</i>' + esc(x[1]) + '</span>'; }).join('') + '</div>' : '') + '</div>'; }
+  function planCard(ro) { return '<div class="cw-plan">' + S.task.plan.map(function (p) { var v = S.piece.plan[p.k] || '';
+      return '<label class="cw-box"><span>' + esc(p.label) + '</span>' + (ro ? '<div class="cw-ro">' + (esc(v) || '…') + '</div>' : '<textarea data-cwp="' + esc(p.k) + '" rows="2" maxlength="300" placeholder="' + esc(p.hint || '') + '">' + esc(v) + '</textarea>') + '</label>'; }).join('') + '</div>'; }
+  function foot(nextOk, nextText) {
+    var back = S.st > 0 && S.g >= 3 ? btn('quiet', '‹ Back', 'data-cw="back"') : '';
+    return '<div class="cw-foot">' + back + '<span class="cw-sp"></span><span class="cw-why" aria-live="polite">' + esc(S.why || '') + '</span>' + btn('main', nextText || 'Next', 'data-cw="next"' + (nextOk ? '' : ' aria-disabled="true"')) + '</div>';
+  }
+  function viewPlan() {
+    return strip() + '<div class="cw-body"><img class="cw-hero" alt="" src="/pics/core-t-workshop.webp" onerror="this.remove()"><div class="cw-prompt"><b>' + esc(S.task.title) + '</b><p>' + esc(S.task.prompt) + '</p></div>' + strat() + '<h3>My plan</h3>' + planCard(false) + '</div>';
+  }
+  function viewWrite() {
+    var n = words(S.piece.text), m = minWords();
+    return strip() + '<div class="cw-body cw-two"><aside class="cw-side"><details' + (innerWidth >= 900 ? ' open' : '') + '><summary>My plan</summary>' + strat() + planCard(true) + '</details></aside>' +
+      '<div class="cw-main"><div class="cw-starters">' + (S.task.starters || []).map(function (x) { return btn('quiet', x, 'data-cw="starter" data-k="' + esc(x) + '"'); }).join('') + '</div>' +
+      '<textarea class="cw-text" data-cw-text="1" spellcheck="true" aria-label="My writing" placeholder="Start with your first plan box.">' + esc(S.piece.text) + '</textarea>' +
+      '<div class="cw-count">' + pill(n >= m ? 'prog' : 'now', n + ' of ' + m + ' words') + '</div></div></div>';
+  }
+  function viewFix() {
+    var list = S.task.checks.map(function (c, i) { var ok = check(c);
+      return '<li class="' + (ok ? 'ok' : '') + '"><span class="cw-mark" aria-hidden="true">' + (ok ? '✓' : '○') + '</span><span class="cw-ct">' + esc(c.t) + '</span>' + (c.self && !ok ? btn('quiet', 'I did it', 'data-cw="self" data-k="' + i + '"') : '') + '</li>'; }).join('');
+    return strip() + (S.returned ? '<div class="cw-note" role="status"><b>Your teacher sent this back to fix.</b><p>' + esc(S.returned) + '</p></div>' : '') +
+      '<div class="cw-body cw-two"><div class="cw-main"><textarea class="cw-text" data-cw-text="1" spellcheck="true" aria-label="My writing">' + esc(S.piece.text) + '</textarea></div>' +
+      '<aside class="cw-side"><h3>My checklist</h3><ul class="cw-checks">' + list + '</ul><p class="cw-tip">Read it out loud. Fix one thing at a time.</p></aside></div>';
+  }
+  function viewFinish() {
+    var pics = S.task.pics || ['📝', '⭐', '📚', '✏️'];
+    return strip() + '<div class="cw-body"><label class="cw-box"><span>My title</span><input data-cw-title="1" maxlength="80" value="' + esc(S.piece.title) + '"></label>' +
+      '<h3>My book picture</h3><div class="cw-pics">' + pics.map(function (p) { return btn('quiet', p, 'data-cw="pic" data-k="' + esc(p) + '" aria-pressed="' + (S.piece.pic === p) + '"' + (S.piece.pic === p ? ' data-on="1"' : '')); }).join('') + '</div>' +
+      '<h3>My book page</h3><article class="cw-page"><div class="cw-pp" aria-hidden="true">' + esc(S.piece.pic || pics[0]) + '</div><h2>' + esc(S.piece.title || S.task.title) + '</h2>' + paras(S.piece.text) + '</article></div>';
+  }
+  function paras(t) { return String(t || '').split(/\n\s*\n|\n/).filter(function (x) { return x.trim(); }).map(function (x) { return '<p>' + esc(x) + '</p>'; }).join(''); }
+  function viewSent() {
+    return '<div class="cw-done"><div class="cw-star" aria-hidden="true">✉️</div><h2>Sent to your teacher!</h2><p>Your teacher will read it and write you a note.</p><div>' + pill('prog', words(S.piece.text) + ' words written') + '</div>' + btn('main', 'Next', 'data-cw="close"') + '</div>';
+  }
+  function draw() {
+    var el = S.el, v = S.view, body = v === 'sent' ? viewSent() : v === 'book' ? viewBook() : v === 'read' ? viewRead() : [viewPlan, viewWrite, viewFix, viewFinish][S.st]();
+    var nextOk = S.st === 0 ? planDone() : S.st === 1 ? words(S.piece.text) >= minWords() : S.st === 2 ? S.task.checks.every(check) : !!S.piece.title.trim();
+    el.className = 'b-' + (S.g <= 1 ? 'K1' : S.g <= 3 ? 'B23' : S.g <= 5 ? 'E45' : 'M68');
+    el.innerHTML = top() + '<div class="cw-scroll">' + body + '</div>' + (v === 'stage' || v === 'write' || v === 'fix' || v === 'finish' ? foot(nextOk, S.st === 3 ? (K() && K().WORDS ? K().WORDS.send : 'Send') : 'Next') : '');
+  }
+  function setStage(i) { S.st = i; S.view = ['stage', 'write', 'fix', 'finish'][i]; S.why = ''; draw(); var f = S.el.querySelector('textarea,input'); if (f && S.st < 3) try { f.focus({ preventScroll: true }); } catch (e) {} saveDraft(); }
+
+  /* ---------- saving ---------- */
+  function payload(status) { var plan = {}, lab = {}; S.task.plan.forEach(function (p) { plan[p.k] = String(S.piece.plan[p.k] || ''); lab[p.k] = p.label; }); plan._labels = lab;   /* the teacher sees the box names */
+    return { id: S.piece.id || '', task: S.task.id, title: S.piece.title || S.task.title, text: S.piece.text, plan: plan, pic: S.piece.pic || '', status: status,
+    checks: S.task.checks.map(function (c) { return { t: c.t, ok: check(c) }; }), rubric: S.task.rubric }; }
+  function saveDraft() { stash(); if (!S.piece.text && !Object.keys(S.piece.plan).length) return Promise.resolve(); return call('cwSave', payload('draft')).then(function (r) { if (S && r && r.id) S.piece.id = r.id; }).catch(function () {}); }
+  function send() {
+    S.sending = true; S.why = 'Sending…'; draw();
+    return call('cwSave', payload('sent')).then(function (r) { if (!S) return; S.sending = false; S.piece.id = r.id; S.piece.status = 'sent'; forget(); S.view = 'sent'; draw(); })
+      .catch(function (e) { if (!S) return; S.sending = false; S.why = 'Not sent yet: ' + String((e && e.message) || e).slice(0, 80) + '. Your work is saved on this Chromebook. Try again.'; draw(); });
+  }
+
+  /* ---------- My book ---------- */
+  function viewBook() {
+    var mine = S.mine || [], pub = mine.filter(function (p) { return p.status === 'published'; }), back = mine.filter(function (p) { return p.status === 'returned'; });
+    return '<div class="cw-body"><img class="cw-hero" alt="" src="/pics/core-t-mybook.webp" onerror="this.remove()"><h2 class="cw-bt">My book</h2>' + (back.length ? '<h3>Sent back to fix</h3><div class="cw-shelf">' + back.map(card).join('') + '</div>' : '') +
+      (pub.length ? '<div class="cw-shelf">' + pub.map(card).join('') + '</div>' : '<p class="cw-tip">Your published writing will be here, with its picture.</p>') + '</div>';
+  }
+  function card(p) { return '<button type="button" class="tlk tlk-tile cw-card" data-cw="openp" data-k="' + esc(p.id) + '"><span class="cw-cp" aria-hidden="true">' + esc(p.pic || '📝') + '</span><b>' + esc(p.title) + '</b><small>' + p.words + ' words</small></button>'; }
+  function viewRead() { var p = S.reading; return '<div class="cw-body"><article class="cw-page"><div class="cw-pp" aria-hidden="true">' + esc(p.pic || '📝') + '</div><h2>' + esc(p.title) + '</h2>' + paras(p.text) + (p.note ? '<div class="cw-note"><b>My teacher wrote:</b><p>' + esc(p.note) + '</p></div>' : '') + '</article></div>'; }
+
+  /* ---------- events ---------- */
+  function onInput(e) {
+    if (!S) return; var t = e.target;
+    if (t.hasAttribute('data-cwp')) S.piece.plan[t.getAttribute('data-cwp')] = t.value.slice(0, 300);
+    else if (t.hasAttribute('data-cw-text')) S.piece.text = t.value.slice(0, 7900);
+    else if (t.hasAttribute('data-cw-title')) S.piece.title = t.value.slice(0, 80);
+    else return;
+    S.touched = true; stash(); clearTimeout(S.redraw); S.redraw = setTimeout(softRefresh, 350);
+  }
+  function softRefresh() {   /* update the counter, the checklist and the Next button without redrawing the box he is typing in */
+    if (!S) return; var el = S.el;
+    if (S.st === 1) { var n = words(S.piece.text), m = minWords(), c = el.querySelector('.cw-count'); if (c) c.innerHTML = pill(n >= m ? 'prog' : 'now', n + ' of ' + m + ' words'); }
+    if (S.st === 2) { var ul = el.querySelector('.cw-checks'); if (ul) { var tmp = document.createElement('div'); tmp.innerHTML = viewFix(); var nu = tmp.querySelector('.cw-checks'); if (nu) ul.innerHTML = nu.innerHTML; } }
+    if (S.st === 3) { var pg = el.querySelector('.cw-page h2'); if (pg) pg.textContent = S.piece.title || S.task.title; }
+    var ok = S.st === 0 ? planDone() : S.st === 1 ? words(S.piece.text) >= minWords() : S.st === 2 ? S.task.checks.every(check) : !!S.piece.title.trim();
+    var nb = el.querySelector('[data-cw=next]'); if (nb) { if (ok) nb.removeAttribute('aria-disabled'); else nb.setAttribute('aria-disabled', 'true'); }
+  }
+  function whyNot() {
+    if (S.st === 0) { var p = S.task.plan.filter(function (x) { return words(S.piece.plan[x.k]) < 2; })[0]; return p ? 'Fill in "' + p.label + '" first (a few words is enough).' : ''; }
+    if (S.st === 1) return 'Keep writing: ' + (minWords() - words(S.piece.text)) + ' more words. Use your plan.';
+    if (S.st === 2) { var c = S.task.checks.filter(function (x) { return !check(x); })[0]; if (!c) return '';
+      if (c.first) { var pb = S.task.plan.filter(function (p) { return p.k === c.first; })[0]; return 'Not yet: ' + c.t + ' Start with words from your plan box "' + (pb ? pb.label : c.first) + '".'; }
+      if (c.plan) { var miss = S.task.plan.filter(function (p) { var kw = keyWords(S.piece.plan[p.k]), low = S.piece.text.toLowerCase(); return !kw.some(function (w) { return low.indexOf(w) >= 0; }); })[0]; return 'Not yet: ' + c.t + (miss ? ' Use words from "' + miss.label + '".' : ''); }
+      if (c.caps) return 'Not yet: ' + c.t + ' Look at the start and the end of each sentence.';
+      return 'Not yet: ' + c.t; }
+    if (S.st === 3) return 'Give your piece a title.';
+    return '';
+  }
+  function onClick(e) {
+    if (!S) return; var t = e.target.closest('[data-cw]'); if (!t) return; var a = t.getAttribute('data-cw');
+    if (a === 'exit') { if (S.o.exit === 'x' && K() && K().ask && S.view !== 'sent') return askLeave(); saveDraft(); return finish(); }
+    if (a === 'stay') { var ak = S.el.querySelector('.cw-askbox'); if (ak) ak.remove(); return; }
+    if (a === 'leave') { saveDraft(); return finish(); }
+    if (a === 'close') return finish();
+    if (a === 'read') { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(S.piece.text || 'Nothing written yet.'); u.rate = .92; speechSynthesis.speak(u); } catch (er) {} return; }
+    if (a === 'back') { if (S.st > 0) setStage(S.st - 1); return; }
+    if (a === 'next') {
+      if (S.sending) return;
+      if (t.getAttribute('aria-disabled') === 'true') { S.why = whyNot(); var w = S.el.querySelector('.cw-why'); if (w) w.textContent = S.why; return; }
+      if (S.st < 3) return setStage(S.st + 1);
+      return send();
+    }
+    if (a === 'starter') { var ta = S.el.querySelector('[data-cw-text]'), x = t.getAttribute('data-k'); if (!ta) return; var pos = ta.selectionStart || ta.value.length, pre = ta.value.slice(0, pos), sp = pre && !/\s$/.test(pre) ? ' ' : '';
+      ta.value = pre + sp + x + ' ' + ta.value.slice(pos); S.piece.text = ta.value; ta.focus(); var np = (pre + sp + x + ' ').length; try { ta.setSelectionRange(np, np); } catch (er) {} stash(); softRefresh(); return; }
+    if (a === 'self') { var c = S.task.checks[Number(t.getAttribute('data-k'))]; if (c) S.self[c.t] = 1; draw(); return; }
+    if (a === 'pic') { S.piece.pic = t.getAttribute('data-k'); draw(); return; }
+    if (a === 'openp') { var p = (S.mine || []).filter(function (x) { return x.id === t.getAttribute('data-k'); })[0]; if (!p) return;
+      if (p.status === 'returned' && S.onFix) return S.onFix(p);
+      S.reading = p; S.view = 'read'; draw(); return; }
+  }
+  function askLeave() {   /* the lesson X always asks (button system): Keep learning (main) or Leave (quiet); his work is saved either way */
+    if (S.el.querySelector('.cw-askbox')) return; var k = K(), d = document.createElement('div'); d.className = 'cw-askbox'; d.setAttribute('role', 'alertdialog');
+    d.innerHTML = '<div class="cw-askcard">' + k.ask({ title: k.WORDS.leaveLesson || 'Leave this lesson?', text: 'Your writing is saved.', yes: k.WORDS.keepLearning || 'Keep learning', yesAttrs: 'data-cw="stay"', no: k.WORDS.leave || 'Leave', noAttrs: 'data-cw="leave"' }) + '</div>';
+    S.el.appendChild(d); var b = d.querySelector('.tlk-main'); if (b) try { b.focus(); } catch (e) {} }
+  function onKey(e) { if (S && e.key === 'Escape' && S.view !== 'write' && S.view !== 'fix') { e.preventDefault(); saveDraft(); finish(); } }
+  function finish() {
+    if (!S) return; var r = S.resolve, el = S.el, res = { sent: S.piece.status === 'sent', id: S.piece.id || '', status: S.piece.status || 'draft' };
+    try { speechSynthesis.cancel(); } catch (e) {} clearTimeout(S.redraw); S = null; document.removeEventListener('keydown', onKey, true); if (el) el.remove(); r(res);
+  }
+  function mount(o, view) {
+    css(); var el = document.createElement('div'); el.id = 'cwr'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Writing workshop');
+    document.documentElement.appendChild(el);   /* on html, not body: a lesson screen (body.ob-on) and the K-1 home hide everything else in body */ el.addEventListener('input', onInput); el.addEventListener('click', onClick); document.addEventListener('keydown', onKey, true);
+    return el;
+  }
+
+  WR.open = function (task, opts) {
+    opts = opts || {}; var err = WR.err(task); if (err) { console.error('Writing workshop: ' + err); return Promise.reject(new Error(err)); }
+    if (S) finish();
+    return new Promise(function (resolve) {
+      var g = opts.grade != null && opts.grade !== '' && !isNaN(Number(opts.grade)) ? Number(opts.grade) : Number(task.grade) || 4;
+      S = { task: task, o: opts, g: g, piece: { id: '', plan: {}, text: '', title: task.title, pic: '', status: 'draft' }, self: {}, st: 0, view: 'stage', resolve: resolve, el: mount(opts) };
+      var local = unstash(); if (local) { S.piece.plan = local.plan || {}; S.piece.text = local.text || ''; S.piece.title = local.title || task.title; S.piece.pic = local.pic || ''; }
+      draw();
+      call('cwMine').then(function (r) {
+        if (!S || S.task !== task) return;
+        var p = ((r && r.pieces) || []).filter(function (x) { return x.task === task.id && x.status !== 'published'; })[0]; if (!p) return;
+        if (p.status === 'sent') { S.piece.status = 'sent'; S.piece.id = p.id; S.view = 'sent'; draw(); var h = S.el.querySelector('.cw-done h2'); if (h) h.textContent = 'Your teacher has this piece now.'; return; }
+        S.piece.id = p.id; var newer = (local && local.at > (p.updated || p.sent || p.created || 0)) || S.touched;   /* never throw away what he typed, or a newer copy on this Chromebook */
+        if (!newer) { S.piece.plan = p.plan || {}; S.piece.text = p.text || ''; S.piece.title = p.title || task.title; S.piece.pic = p.pic || ''; }
+        if (p.status === 'returned') { S.returned = p.note || 'Look at your checklist again.'; S.st = 2; S.view = 'fix'; }
+        draw();
+      }).catch(function () {});
+    });
+  };
+  WR.book = function (opts) {
+    opts = opts || {}; if (S) finish();
+    return new Promise(function (resolve) {
+      S = { task: { id: 'BOOK', title: 'My book', checks: [], plan: [] }, o: opts, g: opts.grade != null ? Number(opts.grade) : 4, piece: { plan: {}, text: '', title: '' }, self: {}, st: 0, view: 'book', mine: null, resolve: resolve, el: mount(opts), onFix: opts.onFix };
+      draw();
+      call('cwMine').then(function (r) { if (!S || S.view !== 'book') return; S.mine = (r && r.pieces) || []; draw(); }).catch(function () { if (S) { S.mine = []; draw(); } });
+    });
+  };
+  WR.close = function () { if (S) finish(); };
+  WR.state = function () { return S ? { view: S.view, st: S.st, task: S.task.id, id: S.piece.id, status: S.piece.status, words: words(S.piece.text), checks: (S.task.checks || []).map(function (c) { return check(c); }) } : null; };
+
+  function css() { if (document.getElementById('cw-css')) return; var s = document.createElement('style'); s.id = 'cw-css'; s.textContent = '' +
+    '#cwr{position:fixed;inset:0;z-index:2147483500;display:flex;flex-direction:column;background:#F6F3EC;color:#1F2633;font:17px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}' +
+    '#cwr *{box-sizing:border-box}' +
+    '#cwr .cw-top{display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:64px;background:#FFFDF7;border-bottom:1px solid #E6DCC5}#cwr .cw-top .tlk-at-tl{position:static}' +
+    '#cwr .cw-ttl{flex:1;min-width:0;text-align:center;font-weight:700;color:#5A5040;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#cwr .cw-tools{display:flex;gap:8px;align-items:center}' +
+    '#cwr .cw-scroll{flex:1;overflow-y:auto;overflow-x:hidden}' +
+    '#cwr .cw-strip{display:flex;gap:6px;list-style:none;margin:14px auto 0;padding:0 16px;max-width:980px}#cwr .cw-strip li{flex:1;text-align:center;padding:6px 4px;border-radius:999px;background:#E9E4D8;color:#6B6455;font-size:14px;font-weight:700}' +
+    '#cwr .cw-strip li.on{background:#2F5FB3;color:#fff}#cwr .cw-strip li.done{background:#DDF4E6;color:#0E7A4F}' +
+    '#cwr .cw-hero{display:block;width:100%;height:190px;object-fit:cover;object-position:50% 22%;border-radius:16px;margin-bottom:12px}@media (max-width:480px){#cwr .cw-hero{height:110px}}#cwr .cw-body{max-width:980px;margin:0 auto;padding:16px}#cwr h3{margin:18px 0 8px;font-size:17px}' +
+    '#cwr .cw-prompt{background:#fff;border-radius:16px;padding:14px 16px;border:1px solid #E6DCC5}#cwr .cw-prompt b{font-size:20px}#cwr .cw-prompt p{margin:6px 0 0}' +
+    '#cwr .cw-strat{margin-top:12px;background:#18284A;color:#fff;border-radius:16px;padding:12px 14px}#cwr .cw-strat b{font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:#FFD45C}' +
+    '#cwr .cw-letters{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}#cwr .cw-letters span{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border-radius:12px;padding:6px 10px 6px 6px;font-weight:600}' +
+    '#cwr .cw-letters i{font-style:normal;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#FFD45C;color:#18284A;font-weight:900;font-size:20px}#cwr .cw-letters.more i{background:#7CC59A}' +
+    '#cwr .cw-plan{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}#cwr .cw-box{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:15px}' +
+    '#cwr textarea,#cwr input{font:inherit;font-weight:500;border:2px solid #D8CFBC;border-radius:12px;padding:10px 12px;background:#fff;color:#1F2633;width:100%}#cwr textarea:focus,#cwr input:focus{outline:3px solid #E0AE4F;border-color:#E0AE4F}' +
+    '#cwr .cw-ro{font-weight:500;background:#fff;border:1px dashed #D8CFBC;border-radius:12px;padding:8px 10px;min-height:40px}' +
+    '#cwr .cw-two{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}@media (min-width:900px){#cwr .cw-two{grid-template-columns:320px minmax(0,1fr)}#cwr .cw-two .cw-main{order:2}#cwr .cw-two .cw-side{order:1}}' +
+    '#cwr .cw-side details summary{cursor:pointer;font-weight:800;padding:8px 0;min-height:44px}#cwr .cw-side .cw-plan{grid-template-columns:1fr}' +
+    '#cwr .cw-text{min-height:46vh;font-size:19px;line-height:1.6;resize:vertical}#cwr.b-B23 .cw-text{font-size:21px}#cwr.b-K1 .cw-text{font-size:24px}' +
+    '#cwr .cw-starters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}#cwr .cw-count{margin-top:8px}' +
+    '#cwr .cw-checks{list-style:none;margin:0;padding:0;display:grid;gap:8px}#cwr .cw-checks li{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #E6DCC5;border-radius:12px;padding:8px 10px;min-height:52px}' +
+    '#cwr .cw-checks li.ok{border-color:#3FA36B;background:#F1FBF5}#cwr .cw-mark{font-weight:900;font-size:20px;width:24px;text-align:center;color:#9AA6BA}#cwr li.ok .cw-mark{color:#0E7A4F}#cwr .cw-ct{flex:1}' +
+    '#cwr .cw-tip{color:#5A5040;font-size:15px}#cwr .cw-note{background:#FFF4D6;border:2px solid #E0AE4F;border-radius:14px;padding:10px 14px;margin:12px auto 0;max-width:948px}#cwr .cw-note p{margin:4px 0 0}' +
+    '#cwr .cw-foot{display:flex;align-items:center;gap:12px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:#FFFDF7;border-top:1px solid #E6DCC5}#cwr .cw-sp{flex:1}' +
+    '#cwr .cw-why{color:#8A4B00;font-weight:600;font-size:15px;max-width:52%;text-align:right}#cwr [aria-disabled=true].tlk-main{opacity:.55}' +
+    '#cwr .cw-pics{display:flex;gap:10px;flex-wrap:wrap}#cwr .cw-pics .tlk{min-width:72px;min-height:72px;font-size:36px}#cwr .cw-pics [data-on]{outline:4px solid #2F5FB3;outline-offset:2px}' +
+    '#cwr .cw-page{background:#fff;border-radius:6px 18px 18px 6px;box-shadow:0 18px 40px rgba(31,38,51,.16),inset 8px 0 0 #EFE6D2;padding:22px 26px;font-family:Georgia,serif;font-size:19px;line-height:1.65;max-width:720px}' +
+    '#cwr .cw-page h2{font-family:system-ui,sans-serif;margin:6px 0 10px}#cwr .cw-pp{font-size:56px}' +
+    '#cwr .cw-done{min-height:100%;display:grid;place-items:center;text-align:center;padding:24px;align-content:center;gap:10px}#cwr .cw-done h2{font-size:32px;margin:0}' +
+    '#cwr .cw-star{font-size:72px;display:inline-block;animation:cwPop .7s cubic-bezier(.2,1.6,.4,1)}@keyframes cwPop{from{transform:scale(.2) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}' +
+    '#cwr .cw-shelf{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}#cwr .cw-card{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px;text-align:left;min-height:140px}#cwr .cw-cp{font-size:44px}#cwr .cw-bt{margin:4px 0 12px}' +
+    '@media (max-width:480px){#cwr .cw-strip li{font-size:12px}#cwr .cw-why{max-width:46%;font-size:13px}#cwr .cw-ttl{font-size:14px}#cwr .cw-page{padding:16px;font-size:17px}}' +
+    '#cwr .cw-askbox{position:absolute;inset:0;background:rgba(20,24,34,.45);display:grid;place-items:center;padding:16px;z-index:5}#cwr .cw-askcard{background:#fff;border-radius:18px;padding:22px;max-width:420px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.3)}' +
+    '@media (prefers-reduced-motion:reduce){#cwr .cw-star{animation:none}}';
+    (document.head || document.documentElement).appendChild(s); }
+})();
+</script>

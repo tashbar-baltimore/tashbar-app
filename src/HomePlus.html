@@ -379,10 +379,10 @@ window.tlSplash=splash;
    Mouse and pen use pointer events. A finger uses touch events: the browser stops pointer events (pointercancel) as soon as a
    swipe starts scrolling the page, but touchmove keeps coming, so the trail keeps following the finger while the page scrolls. */
 const SW={}, STEP=38, CAP=60;
-function trailTo(p,x,y){ const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
+function trailTo(p,x,y){ if(typeof window.tlOilOn==='function'&&window.tlOilOn()) return; if(typeof window.tlJellyOn==='function'&&window.tlJellyOn()) return; const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
  while(dd>=STEP){ p.x+=ux*STEP; p.y+=uy*STEP; dd-=STEP; if(LIVE<CAP) splash(p.x,p.y,true); } }
 const BL={cv:null,cx:null,pts:[],raf:0,down:false,dpr:1};
-function bladeOn(){ try{ if(!window.HP_FX) return false;   /* 2026-11-19: the ribbon shows even with reduced motion: it only follows the boy's own finger (the bursts stay off then) */ if(typeof window.tlStoreTrailOn==='function'&&window.tlStoreTrailOn()) return false; return true; }catch(e){ return false; } }
+function bladeOn(){ try{ if(!window.HP_FX) return false;   /* 2026-11-19: the ribbon shows even with reduced motion: it only follows the boy's own finger (the bursts stay off then) */ if(typeof window.tlStoreTrailOn==='function'&&window.tlStoreTrailOn()) return false; if(typeof window.tlOilOn==='function'&&window.tlOilOn()) return false; /* 2026-11-23 HoS: through Chanukah the olive oil (OilTrail.html) is the free trail */ return true; }catch(e){ return false; } }
 function bladeCanvas(){ if(BL.cv&&BL.cv.isConnected) return BL.cx; const c=document.createElement('canvas'); c.id='hpblade'; c.setAttribute('aria-hidden','true');
  c.style.cssText='position:fixed;inset:0;width:100vw;height:100vh;z-index:2147483199;pointer-events:none'; document.body.appendChild(c); BL.cv=c; BL.cx=c.getContext('2d'); bladeSize(); return BL.cx; }
 function bladeSize(){ if(!BL.cv) return; BL.dpr=Math.min(2,window.devicePixelRatio||1); BL.cv.width=Math.round(innerWidth*BL.dpr); BL.cv.height=Math.round(innerHeight*BL.dpr); }
@@ -405,7 +405,16 @@ function bladeDraw(){ BL.raf=0; const cx=bladeCanvas(); if(!cx) return; const d=
   cx.globalAlpha=Math.min(1,.25+age); cx.strokeStyle=c; cx.shadowColor=c; cx.shadowBlur=12; cx.lineWidth=w; cx.stroke();
   cx.shadowBlur=0; cx.globalAlpha=Math.min(1,.2+age)*.9; cx.strokeStyle='#FFFFFF'; cx.lineWidth=w*.35; cx.stroke(); }
  cx.globalAlpha=1; BL.raf=requestAnimationFrame(bladeDraw); }
-document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ splash(e.clientX,e.clientY); BL.down=true; BL.pts=[]; bladeAdd(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
+/* TAP OR SWIPE (HoS 2026-11-23, Chromebook touchscreens): the tap splash or a bought tap blast plays only on a real TAP: the finger or mouse
+   lifts within 0.4 s, within 12 px of where it went down. A swipe gets only the streak. (It used to play the moment a finger touched, so
+   every swipe began with a "click".) A finger that starts scrolling the page sends pointercancel: that is a swipe, no tap. */
+const TAPQ={};
+document.addEventListener('pointermove',e=>{ const q=TAPQ[e.pointerId]; if(q) q.m=Math.max(q.m,Math.hypot(e.clientX-q.x,e.clientY-q.y)); },{capture:true,passive:true});
+document.addEventListener('pointerup',e=>{ const q=TAPQ[e.pointerId]; delete TAPQ[e.pointerId]; if(!q||!window.HP_FX) return;
+ if(Math.max(q.m,Math.hypot(e.clientX-q.x,e.clientY-q.y))>12||performance.now()-q.t>400) return;
+ try{ if(!(typeof window.tlOilTapOn==='function'&&window.tlOilTapOn())&&!(typeof window.tlJellyTapOn==='function'&&window.tlJellyTapOn())) splash(e.clientX,e.clientY); }catch(x){} },true);   /* the jelly donut is his tap while he wears it */
+document.addEventListener('pointercancel',e=>{ delete TAPQ[e.pointerId]; },true);
+document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ TAPQ[e.pointerId]={x:e.clientX,y:e.clientY,t:performance.now(),m:0}; BL.down=true; BL.pts=[]; bladeAdd(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
 document.addEventListener('pointermove',e=>{ if(!window.HP_FX||e.pointerType==='touch') return;
  try{ const pts=e.getCoalescedEvents?e.getCoalescedEvents():[], list=pts.length?pts:[e]; list.forEach(q=>bladeAdd(q.clientX,q.clientY));
   const p=SW['p'+e.pointerId]; if(!p) return; if(!e.buttons){ delete SW['p'+e.pointerId]; BL.down=false; return; } list.forEach(q=>trailTo(p,q.clientX,q.clientY)); }catch(x){} },{capture:true,passive:true});
@@ -433,7 +442,7 @@ function rmo(){ return typeof RM!=='undefined'&&RM; }
 function tone(f,w,d,vol,type){ const c=ac(); if(!c) return; const t=c.currentTime+w, o=c.createOscillator(), g=c.createGain(); o.type=type||'triangle'; o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol||.12,t+.01); g.gain.exponentialRampToValueAtTime(.0008,t+d); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+d+.05); }
 function cascade(n){ for(let k=0;k<n;k++){ tone(1400+k*60,k*.055,.18,.07,'square'); tone(2100+k*80,k*.055+.02,.14,.05,'sine'); } }
 function fanfare(){ [[523,0],[659,.12],[784,.24],[1047,.36],[1319,.52]].forEach(([f,w])=>{ tone(f,w,.5,.13,'triangle'); tone(f/2,w,.5,.07,'sawtooth'); }); tone(1568,.7,1.2,.12,'triangle'); tone(2093,.72,1.3,.09,'sine'); }
-function hpBankEl(){ const p=document.getElementById('tlcash'); if(p&&getComputedStyle(p).display!=='none') return p; return document.getElementById('wallet'); }   /* money badge (StoreKid) replaces the home bar: coins fly to it */
+function hpBankEl(){ const ms=document.getElementById('tlms'); if(ms&&ms.classList.contains('on')) return ms; const p=document.getElementById('tlcash'); if(p&&getComputedStyle(p).display!=='none') return p; return document.getElementById('wallet'); }   /* money badge (StoreKid) replaces the home bar: coins fly to it */
 function rain(n,emoji){ if(rmo()) return; const w=hpBankEl(); const r=w?w.getBoundingClientRect():{left:innerWidth-120,top:20,width:80,height:40};
  for(let k=0;k<n;k++){ const e=document.createElement('i'); e.className='hpcoin'; e.textContent=emoji&&k%3===0?emoji:(window.TL_CASH_EMOJI?TL_CASH_EMOJI():'🪙'); const x=Math.random()*innerWidth; e.style.left=x+'px'; e.style.top='-50px'; e.style.fontSize=(26+Math.random()*18)+'px'; document.body.appendChild(e);
   const fall=innerHeight*(.45+Math.random()*.35), tx=r.left+r.width/2-x, ty=r.top+r.height/2+50;
@@ -506,7 +515,7 @@ function svCss(){ if(document.getElementById('sv-css')) return; const s=document
 .svstar{font-size:18px}
 #tlcash.svgulp{animation:svgulp .55s cubic-bezier(.3,1.6,.5,1)}@keyframes svgulp{0%{transform:scale(1)}30%{transform:scale(1.35,0.8)}60%{transform:scale(.9,1.15)}100%{transform:scale(1)}}`; document.head.appendChild(s); }
 function svW(){ const sky=document.body.classList.contains('oh-sky')?(parseFloat(getComputedStyle(document.body).getPropertyValue('--skyw'))||96):0; return innerWidth-sky; }
-function svBank(){ const p=document.getElementById('tlcash'); const el=(p&&getComputedStyle(p).display!=='none')?p:(document.getElementById('hpjar')||document.getElementById('wallet')); if(!el) return [24,innerHeight-30,null]; const r=el.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2,el]; }
+function svBank(){ try{ if(window.TLMS&&TLMS.bank){ const b=TLMS.bank(); if(b) return b; } }catch(e){} const p=document.getElementById('tlcash');   /* 2026-11-23: the lesson money meter (MoneyShow.html) is the bank during a lesson */ const el=(p&&getComputedStyle(p).display!=='none')?p:(document.getElementById('hpjar')||document.getElementById('wallet')); if(!el) return [24,innerHeight-30,null]; const r=el.getBoundingClientRect(); return [r.left+r.width/2,r.top+r.height/2,el]; }
 function svEl(cls,html,x,y){ const e=document.createElement('div'); e.className='svx '+cls; e.innerHTML=html||''; e.style.transform=`translate(${x}px,${y}px)`; document.body.appendChild(e); return e; }
 function svCenter(e){ return [e.offsetWidth/2,e.offsetHeight/2]; }
 /* sounds (made here; quiet when sound is off) */
@@ -560,7 +569,7 @@ function ribbon(txt){ const r=svEl('svrib',txt,0,0); const [cx]=svCenter(r), W=s
  r.animate([{transform:`translate(${x}px,70px) scale(.3)`,opacity:0},{transform:`translate(${x}px,70px) scale(1.1)`,opacity:1,offset:.2},{transform:`translate(${x}px,70px) scale(1)`,opacity:1,offset:.8},{transform:`translate(${x}px,40px)`,opacity:0}],{duration:1600,easing:'ease-out',fill:'forwards'}).onfinish=()=>r.remove(); }
 window.tlSkyVault=skyVault;
 /* Kodesh Quest right answers (the sealed frame posts tlQuest ok) get the small show */
-window.addEventListener('message',e=>{ try{ const d=e.data; if(!d||d.tlQuest!==1||d.ok===false) return; const f=document.querySelector('#kkov iframe'); if(!f||e.source!==f.contentWindow) return; skyVault(null,!!d.first,true); }catch(x){} });
+window.addEventListener('message',e=>{ try{ if(window.TLMS&&TLMS.win) return;   /* 2026-11-23: the Money Show (MoneyShow.html) does Kodesh Quest now */ const d=e.data; if(!d||d.tlQuest!==1||d.ok===false) return; const f=document.querySelector('#kkov iframe'); if(!f||e.source!==f.contentWindow) return; skyVault(null,!!d.first,true); }catch(x){} });
 
 function fxOn(){ try{ jar(); fxcss(); document.body.classList.toggle('hpfx',!!window.HP_FX); document.body.classList.toggle('hp-modal',!!(HP.open||A.overlay||document.getElementById('kkov')||document.getElementById('tr-ov')||document.getElementById('elec-ov')||document.getElementById('sci-ov'))); }catch(e){} }
 fxOn(); setInterval(fxOn,400);

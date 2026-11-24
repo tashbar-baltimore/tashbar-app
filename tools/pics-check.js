@@ -1,11 +1,13 @@
-/* PICS-1 check. Run: node tools/pics-check.js src/RealPics.html <screens.json from tools/pics-screens.py> web/pics
+/* PICS-1 check. Run: node tools/pics-check.js src/RealPics.html <screens.json from tools/pics-screens.py> art/pics
    Fails (exit 1) on any of these:
    - a TL_PIC_MAP key that names no real screen (lesson id + exact question), or a picture id not in TL_PICS, or a bad box;
-   - a TL_PICS entry missing file, alt, source, licence or author, or whose file is not in web/pics;
+   - a TL_PICS entry missing file, alt, source, licence or author, or whose file is not in the shared art library (art/pics);
    - a picture file over 200 KB or wider than 1200 px;
    - a mark (box/label) on a pure question screen (its "how" line is empty): those get the plain picture;
    - a label with a word that is not in that screen's "how" line (labels only name what the screen already teaches).
    A 'LESSON.ID|*' key is checked against every screen of that lesson it would show on.
+   PICS-2 teaching keys (src/RealPicsTeach.html): 'SKILL.ID|@today' and 'SKILL.ID|@watch' (a skill id or a unit prefix of one)
+   and '@passage|KEY' (a reading passage used as p:'KEY'). They take no marks (no "how" line to teach a label).
    WARNS (does not fail) when a linked screen's own picture text is short words or numbers (under 40 characters, with a Latin letter
    or digit, no Hebrew) and the link has no "keep": true: the picture would hide text the boy needs. Set "keep": true or un-link. */
 const fs = require('fs'), vm = require('vm'); const [,, html, allq, picsDir] = process.argv;
@@ -36,10 +38,19 @@ function checkMarks(key, marks, how) {
   marks.forEach(m => { const miss = words(m.label || '').filter(w => !taughtWord(w, hw)); if (miss.length) say('LABEL NOT TAUGHT ON THIS SCREEN ("' + miss.join('", "') + '" not in its "how" line):', key, '→', m.label); });
 }
 
+let passText = null; const srcText = () => { if (passText == null) { const path = require('path'), root = path.join(__dirname, '..'); passText = '';
+  for (const d of ['src', 'packs']) for (const f of fs.readdirSync(path.join(root, d))) if (f.endsWith('.html')) passText += fs.readFileSync(path.join(root, d, f), 'utf8'); } return passText; };
+const passUsed = key => { srcText(); return new RegExp(`\\bp\\s*:\\s*['"]${key.replace(/[^\w-]/g, '')}['"]`).test(passText) && /^[\w-]+$/.test(key); };
 for (const [k, v] of Object.entries(ctx.TL_PIC_MAP)) {
   const [id, ...q] = k.split('|'); const qq = q.join('|'); const marks = v.mark || [];
   if (!ctx.TL_PICS[v.id]) say('NO SUCH PICTURE:', v.id);
   marks.forEach(m => { if (!Array.isArray(m.box) || m.box.length !== 4 || m.box.some(n => typeof n !== 'number')) say('BAD BOX', k); });
+  if (id === '@passage' || qq === '@today' || qq === '@watch') {
+    if (marks.length) say('NO MARKS ON A TEACHING PICTURE (TODAY / WATCH / passage):', k);
+    if (id === '@passage') { if (!passUsed(qq)) say('NO SUCH PASSAGE (no item uses p:\'' + qq + '\'):', k); }
+    else if (!/^[A-Z][A-Z0-9]*(\.[A-Za-z0-9]+)+$/.test(id) || (![...byLesson.keys()].some(s => s === id || s.startsWith(id + '.')) && !new RegExp(`['"]${id.replace(/\./g, '\\.')}(\\.[A-Za-z0-9]+)*['"]`).test(srcText()))) say('NO SUCH SKILL OR UNIT:', k);
+    continue;
+  }
   if (qq === '*') {
     const list = (byLesson.get(id) || []).filter(x => !ctx.TL_PIC_MAP[id + '|' + norm(x.q)]);
     if (!byLesson.has(id)) say('NO SUCH LESSON:', k);

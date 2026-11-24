@@ -91,7 +91,7 @@ function build(){ if(OH.sky) return OH.sky; css(); const k=document.createElemen
  k.innerHTML=`<i class="pillar"></i><div id="ohb" role="button" tabindex="0" aria-label="My Olam Haba cloud"><div class="ohc"><i class="halo"></i>${Array.from({length:8},(_,i)=>`<i class="ray" style="transform:rotate(${i*45}deg)"></i>`).join('')}${CLOUD('ohm')}${[0,1,2].map(i=>`<i class="orb" style="animation-delay:-${i*2}s"></i>`).join('')}</div><div class="ohl"></div></div><div class="tag">Every try<br>adds light ✨</div>`;
  document.body.appendChild(k); OH.sky=k; OH.el=k.querySelector('#ohb');
  OH.el.addEventListener('click',sheet); OH.el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); sheet(); } }); return k; }
-function shown(){ return !!A.st&&A.view!=='signin'&&!document.querySelector('.tmw'); }
+function shown(){ return !!A.st&&A.view!=='signin'&&!document.querySelector('.tmw')&&!document.body.classList.contains('k1-home'); }   /* K-1 game path or game: the sky is hidden there, so it rests (2026-11-23, K-1 quiet) */
 function paint(){ const on=shown(); if(!on){ if(OH.sky) OH.sky.style.display='none'; document.body.classList.remove('oh-sky'); return; }
  const k=build(); k.style.display=''; const w=wide(); k.classList.toggle('slim',!w); document.body.classList.add('oh-sky'); document.body.style.setProperty('--skyw',w?'96px':'46px'); k.classList.toggle('k',inK());
  k.style.setProperty('--g',glow().toFixed(3)); k.style.setProperty('--b',busy().toFixed(2)); const t=tier(), d=OH.el;

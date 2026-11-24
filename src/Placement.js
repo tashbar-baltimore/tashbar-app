@@ -520,8 +520,10 @@ var SS_K12 = [["SS.COMM.L01.01", "My Family", ""],
 ["SS.ECON.L13.01", "Measuring an Economy", ""],
 ["SS.ECON.L13.02", "Government and the Economy", ""],
 ["SS.CIV.L13.04", "The Jewish Community and Public Life", ""]];
+/* Core Growth (job T, 2026-11-24): new skills listed in src/CoreData<Job>.js join these ladders here (CoreSkills.js), once. */
+function plCore_() { try { if (typeof coreMerge_ === 'function') coreMerge_(); } catch (e) {} }
 /* TL-041: one list per subject that has a skill-by-skill path (Math, Reading; Science added SCI-PAGE 2026-11-10). */
-function plList_(k) { return k === 'READ' ? READ_K8 : k === 'MATH' ? MATH_K8 : k === 'SCI' ? SCI_K8 : k === 'LANG' ? LANG_K8 : k === 'SOC' ? SS_K12 : (k === 'COMP' || k === 'HEB') ? plIdxList_(k) : null; }
+function plList_(k) { plCore_(); return k === 'READ' ? READ_K8 : k === 'MATH' ? MATH_K8 : k === 'SCI' ? SCI_K8 : k === 'LANG' ? LANG_K8 : k === 'SOC' ? SS_K12 : (k === 'COMP' || k === 'HEB') ? plIdxList_(k) : null; }
 /* HoS 2026-11-20 ("a lot of screens don't go where they're supposed to"): Computing and Lashon Hakodesh have real lessons at every level
    (CurriculumIndex.js), and staff can place a boy in them, but they had no list here, so his map showed the subject with nothing to play
    (it even said CLEARED). Their list is now read from the curriculum index: every lesson of that subject, level by level, in id order. */
@@ -567,12 +569,12 @@ function plMathPath_(start) { var ids = MATH_K8.map(function (x) { return x[0]; 
 function plBand_(level) { return level <= 4 ? 'A' : level <= 6 ? 'B' : level <= 8 ? 'C' : 'D'; }
 /* Skills that already have playable lessons, read from the student page itself so this list never drifts. */
 function plBuilt_() {
-  var c = CacheService.getScriptCache(), hit = c.get('pl_built_v13');
+  var c = CacheService.getScriptCache(), hit = c.get('pl_built_v14');
   if (hit) return JSON.parse(hit);
-  var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ScienceMore2') + plFileText_('ElectivesMore') + plFileText_('ComputingMore') + plFileText_('LifeMore') + plFileText_('SocialMore') + plFileText_('OneBiteDataRead'), re = /['"]((?:MATH|READ|WRIT|LANG|VOC|SCI|ELEC|COMP|LIFE|SS)\.[A-Z]+\.L\d\d\.\d\d(?:\.[a-z])?)['"]\s*\]?\s*[:=]\s*\{\s*["']?name["']?\s*:/g, m, out = [];
+  var html = HtmlService.createHtmlOutputFromFile('QuestPage').getContent() + plFileText_('MathMore') + plFileText_('ReadMore') + plFileText_('ScienceMore') + plFileText_('ScienceMore2') + plFileText_('ElectivesMore') + plFileText_('ComputingMore') + plFileText_('LifeMore') + plFileText_('SocialMore') + plFileText_('OneBiteDataRead') + (typeof coreFiles_ === 'function' ? coreFiles_().filter(function (n) { return CORE_TOOL_FILES.indexOf(n) < 0; }).map(function (n) { return plFileText_(n); }).join('') : '') /* Core Growth data files (CoreSkills.js) */, re = /['"]((?:MATH|READ|WRIT|LANG|VOC|SCI|ELEC|COMP|LIFE|SS)\.[A-Z]+\.L\d\d\.\d\d(?:\.[a-z])?)['"]\s*\]?\s*[:=]\s*\{\s*["']?name["']?\s*:/g, m, out = [];
   while ((m = re.exec(html))) if (out.indexOf(m[1]) < 0) out.push(m[1]);
   ['COMP', 'HEB'].forEach(function (k) { plIdxList_(k).forEach(function (x) { if (out.indexOf(x[0]) < 0) out.push(x[0]); }); });   /* lessons in other packs (KodeshMore for HEB), listed in the curriculum index */
-  c.put('pl_built_v13', JSON.stringify(out), 300);
+  c.put('pl_built_v14', JSON.stringify(out), 300);
   return out;
 }
 /* Called by msLoad (MiddleSchool.gs): what this boy's own page follows. */
@@ -592,7 +594,8 @@ function plPlanFor_(sid, ranges) {
   }
   Object.keys(p).forEach(function (k) { if (!out[k]) out[k] = { level: p[k].level }; });
   try { if (typeof pfPlanPatch_ === 'function') pfPlanPatch_(String(sid), p, out); } catch (e) {}   /* PATHFINDER: gap fillers first */
-  try { if (typeof pfLcPlanPatch_ === 'function') pfLcPlanPatch_(String(sid), out); } catch (e) {}   /* LEVEL CHECK (PathfinderLevel.js): skills he already knows are skipped */
+  try { if (typeof pfLcPlanPatch_ === 'function') pfLcPlanPatch_(String(sid), out); } catch (e) {}
+  try { if (typeof coreUnitPlanPatch_ === 'function') coreUnitPlanPatch_(String(sid), out); } catch (e) {}   /* CORE GROWTH unit pre-check (CoreChecks.js): skills he showed he knows are skipped */   /* LEVEL CHECK (PathfinderLevel.js): skills he already knows are skipped */
   return { ranges: r, place: out };
 }
 
@@ -607,7 +610,7 @@ function plMastered_() {
   return out;
 }
 function plLoad(token) {
-  plStaff_(token);
+  plStaff_(token); plCore_();
   return { version: PL.VERSION, subjects: PL.SUBJECTS, worlds: PL.WORLDS, math: MATH_K8, read: READ_K8, sci: SCI_K8, lang: LANG_K8, built: plBuilt_(), students: plRoster_(), place: plPlacements_(), groups: plGroups_(), checks: plChecks_(), mastered: plMastered_() };
 }
 function plLocked_(fn) { var l = LockService.getScriptLock(); l.waitLock(20000); try { PL_CACHE_ = null; return fn(); } finally { PL_CACHE_ = null; l.releaseLock(); } }
@@ -681,3 +684,4 @@ function plSelfTest() {
 
 /* Editor helper for the TEST student only (TEST-01, Head of School 2026-11-08). Sets his Math level so a tester can play that level. Change lvl, run, log it in HQ. */
 function plPlaceTestStudent() { var lvl = 4; return plLocked_(function () { plUpsert_('TEST-01', 'MATH', lvl, '', 'test'); Logger.log('TEST-01 placed at Math Level ' + lvl); return lvl; }); }
+plCore_();   /* Core Growth: on the server every src/*.js runs in name order, so the CoreData<Job>.js lists and CoreSkills.js are already loaded here */

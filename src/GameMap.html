@@ -19,7 +19,7 @@
 if(typeof render!=='function'||typeof A==='undefined') return;
 const GM=window.GM=window.GM||{};
 if(GM.on) return; GM.on=true;
-GM.tab='map'; GM.view='path'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
+GM.tab='home'; GM.view='path'; GM.world=''; GM.sig=''; GM.sid=''; GM.fetching=false;
 const WORLDS={MATH:['🧮','Math'],READ:['📖','Reading'],LANG:['✍️','Writing'],SCI:['🔬','Science'],SOC:['🌍','Social Studies'],COMP:['💻','Computing'],HEB:['🔤','Lashon Hakodesh'],ELEC:['🛠️','Electives'],VOC:['🧰','Trades'],LIFE:['💰','Life & Money'],
  'K:KRI':['🔤','Kriyah'],'K:CHU':['📜','Chumash'],'K:RAS':['✒️','Rashi'],'K:MSH':['📚','Mishnayos'],'K:GEM':['🏛️','Gemara']};
 const ORDER=['MATH','K:CHU','READ','K:GEM','K:MSH','K:RAS','K:KRI','LANG','HEB','SCI','SOC','LIFE','COMP','ELEC','VOC'];
@@ -418,6 +418,115 @@ body.gm-nav #hlx-shelf{background:rgba(10,7,38,.82)!important}
 body.gm-nav #hlx-shelf .sh-in{border:4px solid #FFD84D;box-shadow:0 0 0 4px #3B1E8F,0 30px 70px rgba(0,0,0,.55)}
 body.gm-nav #hlx-shelf .sh-hd h2{font-style:italic;text-transform:uppercase}
 @media (prefers-reduced-motion:reduce){#gm .gm-n:active,#gm .gm-play:active,#gm .gm-say:active{transform:none}#gm .gm-n:active{transform:translate(-50%,-50%)}}
+/* ===== HOME: bright, crisp, calm (HoS 2026-11-23) ===== */
+body.gm-home #gm{background:linear-gradient(180deg,#FFF7D6 0%,#FFFDF5 55%,#EAF7FF 100%);color:#1E1B4B}
+body.gm-home #gm .gm-sun{position:absolute;inset:0 0 auto 0;height:220px;pointer-events:none;background:radial-gradient(circle at 92% -10%,rgba(255,214,64,.55) 0 120px,transparent 260px)}
+#gm .gm-in.gm-wide{max-width:1000px;padding:22px 20px calc(28px + env(safe-area-inset-bottom,0px))}
+#gm .gm-hi{padding:4px 110px 14px 4px}
+#gm .gm-hi h1{margin:0;font-size:34px;line-height:1.1;font-weight:900;color:#1E1B4B;letter-spacing:-.01em}
+#gm .gm-hi p{margin:8px 0 0;font-size:19px;font-weight:800;color:#3F3A7A;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#gm .gm-hi .dots{display:inline-flex;gap:6px}
+#gm .gm-hi .dots i{width:18px;height:18px;border-radius:50%;background:#E3E0F5;border:2px solid #C9C4EA}
+#gm .gm-hi .dots i.on{background:#22C55E;border-color:#15803D}
+#gm .gm-hts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+#gm .gm-ht{position:relative;display:flex;flex-direction:column;height:270px;padding:0;border:3px solid #E6E2F7;border-radius:26px;background:#fff;color:#1E1B4B;overflow:hidden;cursor:pointer;text-align:left;font-family:inherit;box-shadow:0 6px 0 #E6E2F7,0 10px 24px rgba(40,30,110,.08);-webkit-tap-highlight-color:transparent}
+#gm .gm-ht:active{transform:translateY(3px);box-shadow:0 3px 0 #E6E2F7}
+#gm .gm-ht:focus-visible{outline:4px solid #2563EB;outline-offset:3px}
+#gm .gm-ht .top{flex:0 0 50%;display:flex;align-items:center;justify-content:center;background:var(--c)}
+#gm .gm-ht .ic{font-size:84px;line-height:1;filter:drop-shadow(0 4px 0 rgba(0,0,0,.12))}
+#gm .gm-ht .bot{flex:1;display:flex;flex-direction:column;justify-content:center;gap:6px;padding:12px 18px}
+#gm .gm-ht .bot b{font-size:28px;line-height:1.05;font-weight:900}
+#gm .gm-ht .bot small{font-size:16px;line-height:1.25;font-weight:700;color:#4B4880;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#gm .gm-ht .bot small b{font-size:inherit;color:#047857}
+#gm .gm-ht .bdg{position:absolute;top:12px;left:12px;background:#fff;color:#1E1B4B;font-weight:900;font-size:14px;letter-spacing:.04em;border-radius:12px;padding:6px 10px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+#gm .gm-ht.work{--c:linear-gradient(135deg,#FFD23F,#FF9F1C)}
+#gm .gm-ht.work.now{border-color:#FFB800;box-shadow:0 6px 0 #E09A00,0 0 0 6px rgba(255,200,0,.35),0 12px 28px rgba(255,160,0,.3)}
+#gm .gm-ht.work.now .bdg{background:#1E1B4B;color:#FFE259}
+#gm .gm-ht.map{--c:linear-gradient(135deg,#7DD3FC,#38BDF8)}
+#gm .gm-ht.food{--c:linear-gradient(135deg,#86EFAC,#34D399)}
+#gm .gm-ht.store{--c:linear-gradient(135deg,#F9A8D4,#F472B6)}
+#gm .gm-ht.arcade{--c:linear-gradient(135deg,#C4B5FD,#A78BFA)}
+#gm .gm-ht.arcade.locked .ic{opacity:.55}
+#gm .gm-ht.things{--c:linear-gradient(135deg,#FDBA74,#FB923C)}
+body.gm-home #gm .gm-none{background:#fff;color:#1E1B4B;border-radius:22px;margin-bottom:16px}
+body.gm-home #gm .gm-none p{color:#3F3A7A!important}body.gm-home #gm .gm-none h1{color:#1E1B4B!important;text-shadow:none!important}
+@media (max-width:760px){#gm .gm-hts{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}#gm .gm-ht{height:210px;border-radius:22px}#gm .gm-ht .ic{font-size:64px}#gm .gm-ht .bot{padding:8px 12px;gap:3px}#gm .gm-ht .bot b{font-size:22px}#gm .gm-ht .bot small{font-size:14px}#gm .gm-hi h1{font-size:27px}#gm .gm-hi p{font-size:16px}#gm .gm-hi{padding-right:60px}#gm .gm-ht .bdg{font-size:12px;top:8px;left:8px;padding:4px 8px}}
+#gm-nav .gm-homebtn{flex:1;flex-direction:row;gap:12px;font-size:22px;color:#1E1B4B;letter-spacing:.02em}
+#gm-nav .gm-homebtn b{font-size:32px}
+body.gm-home #gm-nav{display:none!important}
+
+/* bright pages (HoS 2026-11-23: "brighter and happier ... ADHD friendly"): his work, My things and Change subject match the home */
+body.gm-lite #gm{background:linear-gradient(180deg,#FFF7D6 0%,#FFFDF5 55%,#EAF7FF 100%)!important;color:#1E1B4B}
+body.gm-lite #gm .gm-sky{display:none}
+body.gm-lite #gm .gm-top{background:#FFF7D6!important;box-shadow:0 0 0 100vmax #FFF7D6!important;border-bottom:0!important}
+body.gm-lite #gm .gm-marq{background:#fff!important;border:3px solid #E6E2F7!important;box-shadow:0 6px 0 #E6E2F7!important}
+body.gm-lite #gm .gm-marq:before{display:none}
+body.gm-lite #gm .gm-marq .s{color:#6D28D9!important;font-size:14px!important}
+body.gm-lite #gm .gm-marq h1{color:#1E1B4B!important;text-shadow:none!important;font-style:normal!important;font-size:36px!important}
+body.gm-lite #gm .gm-marq small{color:#3F3A7A!important;font-size:17px!important}
+body.gm-lite #gm .gm-rd{background:#fff!important;border:3px solid #E6E2F7!important;color:#1E1B4B!important;padding:14px 16px!important;min-height:78px;box-shadow:none!important}
+body.gm-lite #gm .gm-rd .t{font-size:18px!important}body.gm-lite #gm .gm-rd .t small{font-size:15px!important;color:#4B4880;opacity:1!important}
+body.gm-lite #gm .gm-rd .n{background:#EEEAFB!important;color:#1E1B4B!important}
+body.gm-lite #gm .gm-rd .p{color:#6D28D9!important;font-size:13px!important}
+body.gm-lite #gm .gm-rd.live{background:linear-gradient(135deg,#FFE27A,#FFC53D)!important;border-color:#FFB800!important;box-shadow:0 0 0 5px rgba(255,200,0,.3)!important}
+body.gm-lite #gm .gm-rd.live .n{background:#1E1B4B!important;color:#FFE259!important}body.gm-lite #gm .gm-rd.live .p{color:#1E1B4B!important}
+body.gm-lite #gm .gm-rd.won{background:#ECFDF5!important;border-color:#34D399!important}body.gm-lite #gm .gm-rd.won .n{background:#22C55E!important;color:#fff!important}body.gm-lite #gm .gm-rd.won .p{color:#047857!important}
+body.gm-lite #gm .gm-rd.rebbe{background:#F0F9FF!important;border-color:#7DD3FC!important}
+body.gm-lite #gm .gm-rd.final{background:#FAF5FF!important;border-color:#E9D5FF!important}body.gm-lite #gm .gm-rd.final .n{background:#E9D5FF!important}
+body.gm-lite #gm .gm-rd.final.open{background:#ECFDF5!important;border-color:#34D399!important}
+body.gm-lite #gm .gm-chest{background:#FFFBEB!important;border-color:#FCD34D!important;color:#78350F!important;font-size:15px!important}
+body.gm-lite #gm .gm-pg,body.gm-lite #gm .gm-pg h1{color:#1E1B4B!important;text-shadow:none!important;font-style:normal!important}
+body.gm-lite #gm .gm-why{color:#3F3A7A!important;font-size:18px!important}
+body.gm-lite #gm .gm-shelf{border-color:#E6E2F7!important;box-shadow:0 6px 0 #E6E2F7!important;min-height:92px!important;font-size:23px!important}
+body.gm-lite #gm .gm-shelf i{font-size:44px!important}
+body.gm-lite #gm .gm-quiet{color:#3F3A7A!important}
+@media (max-width:760px){body:has(#bbx-door).gm-home #gm .gm-hi{padding-top:46px}}
+body.gm-home #tlmenu,body.gm-lite #tlmenu{--cm-dot:#1E1B4B!important}
+
+/* ===== ALL HIS PAGES BRIGHT (HoS 2026-11-23: "give it all the same look"): map, skill tree, trophies, arcade, money, lessons, my stuff.
+   White cards, dark crisp text, nothing moving in the background (no drifting statues or dark hills on the map). ===== */
+body.gm-lite #gm .gm-land,body.gm-lite #gm .gm-dec{display:none!important}
+body.gm-lite #gm .gm-path>svg path{stroke:#A78BFA!important}
+body.gm-lite #gm .gm-unit,body.gm-lite #gm .gm-none,body.gm-lite #gm .gm-lock,body.gm-lite #gm .gm-br,body.gm-lite #gm .gm-rk,body.gm-lite #gm .gm-stat div,body.gm-lite #gm .gm-learned div,body.gm-lite #gm .gm-bdg div,body.gm-lite #gm .gm-games div,
+body.gm-lite #gm .mm-story,body.gm-lite #gm .mm-mine,body.gm-lite #gm .gm-find,body.gm-lite #gm .gm-subj,body.gm-lite #gm .gm-quest,body.gm-lite #gm .gm-earn div,body.gm-lite #gm .gm-mgrid button:not(.big),body.gm-lite #gm .gm-pop,body.gm-lite #gm .gm-chip2:not(.on),body.gm-lite #gm .gm-acts button,body.gm-lite #gm .mm-tabs button:not(.on){
+ background:#fff!important;border:3px solid #E6E2F7!important;color:#1E1B4B!important;box-shadow:0 4px 0 #E6E2F7!important;text-shadow:none!important}
+body.gm-lite #gm .gm-lock,body.gm-lite #gm .gm-none{border-style:dashed!important;border-color:#D4CDF3!important}
+body.gm-lite #gm .gm-unit small,body.gm-lite #gm .gm-lock p,body.gm-lite #gm .gm-none p,body.gm-lite #gm .gm-rk small,body.gm-lite #gm .gm-stat small,body.gm-lite #gm .gm-learned small,body.gm-lite #gm .gm-subj .nx,body.gm-lite #gm .gm-subj .cnt,body.gm-lite #gm .gm-earn small,body.gm-lite #gm .mm-story .r small,body.gm-lite #gm .mm-story .r em,body.gm-lite #gm .gm-pop .k,body.gm-lite #gm .gm-done small{color:#4B4880!important}
+body.gm-lite #gm .gm-unit .left{color:#B45309!important}
+body.gm-lite #gm .gm-lock h1,body.gm-lite #gm .gm-none h1,body.gm-lite #gm .gm-done,body.gm-lite #gm .gm-subj .top,body.gm-lite #gm .gm-subj b,body.gm-lite #gm .gm-quest h3,body.gm-lite #gm .gm-quest div,body.gm-lite #gm .mm-story .r,body.gm-lite #gm .gm-find input,body.gm-lite #gm .gm-br .h{color:#1E1B4B!important;text-shadow:none!important}
+body.gm-lite #gm .gm-find input::placeholder{color:#7A76B0!important}
+body.gm-lite #gm .gm-sec,body.gm-lite #gm .gm-grp,body.gm-lite #gm .mm-h{color:#6D28D9!important;text-shadow:none!important}
+body.gm-lite #gm .gm-games div{filter:none!important;opacity:.7!important}
+/* map */
+body.gm-lite #gm .gm-n.u{background:#F1EEFC!important;border-color:#D4CDF3!important;box-shadow:0 6px 0 #D4CDF3!important;color:#8B87C9!important}
+body.gm-lite #gm .gm-num b{animation:none!important;text-shadow:none!important;color:#8B87C9!important}
+body.gm-lite #gm .gm-num.now b{color:#D97706!important}body.gm-lite #gm .gm-num.d b{color:#059669!important}
+body.gm-lite #gm .gm-more{background:#ECFDF5!important;color:#047857!important}
+/* skill tree */
+body.gm-lite #gm .gm-br.here{background:#FFFBEB!important;border-color:#FCD34D!important}
+body.gm-lite #gm .gm-br.full{background:#ECFDF5!important;border-color:#6EE7B7!important}
+body.gm-lite #gm .gm-br .h small{color:#B45309!important}body.gm-lite #gm .gm-br.full .h small{color:#047857!important}
+body.gm-lite #gm .gm-tn span{color:#3F3A7A!important}body.gm-lite #gm .gm-tn.now span{color:#B45309!important}
+body.gm-lite #gm .gm-tn.u .hx{background:#F1EEFC!important;color:#8B87C9!important}
+body.gm-lite #gm .gm-tn.s .hx{outline-color:#D4CDF3!important;color:#8B87C9!important}
+/* trophies */
+body.gm-lite #gm .gm-rk{border-color:#FCD34D!important;box-shadow:0 6px 0 #FDE68A!important}
+body.gm-lite #gm .gm-rk h1{color:#B45309!important;text-shadow:none!important}
+body.gm-lite #gm .gm-ladder span{background:#F5F3FF!important}body.gm-lite #gm .gm-ladder span.got{background:#FEF3C7!important}body.gm-lite #gm .gm-ladder span.cur{outline-color:#F59E0B!important}
+body.gm-lite #gm .gm-stat b{color:#1E1B4B!important}
+/* money */
+body.gm-lite #gm .mm-chest,body.gm-lite #gm .gm-pay{background:#FFFBEB!important;border:2px solid #FCD34D!important;color:#78350F!important}
+body.gm-lite #gm .mm-story .r{border-bottom-color:#EEEAFB!important}
+body.gm-lite #gm .mm-story .r b.p{color:#047857!important}body.gm-lite #gm .mm-story .r b.m{color:#BE185D!important}
+body.gm-lite #gm .mm-mine{color:#1E1B4B!important}body.gm-lite #gm .mm-mine .go{color:#6D28D9!important}
+body.gm-lite #gm .gm-earn b{color:#047857!important}body.gm-lite #gm .gm-earn b.neg{color:#BE185D!important}
+/* lessons */
+body.gm-lite #gm .gm-strip{background:#ECFDF5!important;border-color:#6EE7B7!important;color:#1E1B4B!important}body.gm-lite #gm .gm-strip .t small{color:#047857!important}
+body.gm-lite #gm .gm-subj .bar,body.gm-lite #gm .gm-quest .bar{background:#EEEAFB!important}
+body.gm-lite #gm .gm-subj .row2 .s{background:#F5F3FF!important;color:#3F3A7A!important;border:2px solid #E6E2F7!important}
+body.gm-lite #gm .gm-subj .done,body.gm-lite #gm .gm-quest div.ok{color:#047857!important}
+body.gm-lite #gm .gm-mgrid button:not(.big){color:#1E1B4B!important}
+body.gm-lite #gm .gm-goal,body.gm-lite #gm .gm-cheer,body.gm-lite #gm .gm-thead,body.gm-lite #gm .gm-room-h,body.gm-lite #gm .mm-bal,body.gm-lite #gm .gm-vault{color:#fff}
 `; document.head.appendChild(s); }
 function root(){ let g=document.getElementById('gm'); if(!g){ g=document.createElement('div'); g.id='gm'; g.setAttribute('role','main'); g.setAttribute('aria-label','My Map'); document.body.appendChild(g); } return g; }
 function nav(){ let n=document.getElementById('gm-nav'); if(!n){ n=document.createElement('nav'); n.id='gm-nav'; n.setAttribute('aria-label','My places'); document.body.appendChild(n); } return n; }
@@ -451,20 +560,122 @@ function rankOf(n){ let r=RANKS[0],nx=null; for(let i=0;i<RANKS.length;i++){ if(
 function steps(){ const sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m).length; }
 function money(){ const b=Number(A.st&&A.st.balance)||0; return '$'+b.toFixed(2); }
 function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.style.display!=='none'&&c.querySelector('button')); }
-function hud(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
+/* SIMPLE HOME (HoS 2026-11-23: "much simpler ... clear and clean and helpful and big"): the top shows only his money; rank and XP live in Trophies */
+/* BACK (HoS 2026-11-24): a page he reached from another menu page gets the kit's Back top left (K-3: arrow + "Back"); it returns to that page */
+function backHTML(){ if(!GM.from||!window.TLK) return ''; const g=M()&&M().grade; return TLK.back('data-gm="gmback"','',TLK.young(g)); }
+function hud(){ return `<div class="gm-hud">${backHTML()}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>`; }
+function hudOld(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
 function subjectsHTML(ws){ const cur=GM.world;
  return `<div class="gm-pg"><h1>Change subject</h1><p class="gm-why">Pick the subject you want on your map.</p></div><div class="gm-shelves">${ws.map(w=>`<button type="button" class="gm-shelf${w.k===cur?' on':''}" data-gm="world" data-k="${esc(w.k)}"><i>${w.icon}</i><span>${esc(w.name)}<small>${w.cleared||!w.now?'✓ All cleared':lcOf(w)?'🎫 Level check first':'Level '+w.level+(w.k===cur?' · on your map now':'')}</small></span><em>›</em></button>`).join('')}</div>
- <button type="button" class="gm-quiet" data-gmnav="map">← Back to my map</button>`; }
-function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2');
- const rows=[['🎮','The Arcade',P.open?'Open! Go play.':'Opens when you finish today’s 3 rounds.','data-gmnav="games"'],
-  ['📚','All my lessons','Every subject. Pick any lesson.','data-gm="lib"']];
- if(!k2&&ws.length) rows.push(['🌳','Skill tree','Every skill on your map, in order.','data-gm="treeview"']);
- rows.push(['🎒','My stuff','Bank, passport, Shabbos page and more.','data-gm="stuff"']);
- if(pfOn()) rows.push(['🧭','Pathfinder','Your level checks.','data-gm="pf"']);
- return `<div class="gm-pg"><h1>More</h1><p class="gm-why">Everything else lives here. Pick a shelf.</p></div><div class="gm-shelves">${rows.map(r=>`<button type="button" class="gm-shelf" ${r[3]}><i>${r[0]}</i><span>${r[1]}<small>${r[2]}</small></span><em>›</em></button>`).join('')}</div>`; }
+`; }
+/* ===== HOME (HoS 2026-11-23: "how the student sees his day and his things ... much simpler ... what he needs to be doing should be clear
+   ... the canteen should be clear ... his work should be clear in front of him ... not so many vague options ... big ... equal size ...
+   one icon covering half the thing"; then "brighter and happier, clearer and crispier, simple and ADHD friendly"). The first screen after
+   sign-in: his name, one line on today's work, and SIX equal tiles. The top half of each tile is one big icon. Only his work glows.
+   Every door leads to a page that was already here; nothing new is paid or saved. Plan: docs/HOME-SIMPLE-PROMPT.md */
+function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\s+/)[0]||'', h=new Date().getHours(), hi=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+ const live=P.rounds.findIndex(r=>!r.won&&r.w), lw=live>=0?P.rounds[live].w:null;
+ const dots=P.rounds.length?`<span class="dots" aria-hidden="true">${P.rounds.map(r=>`<i class="${r.won?'on':''}"></i>`).join('')}</span>`:'';
+ const line=!ws.length?'Your map is almost ready.':P.rounds.length?(P.open?'All your work is done today! ✓':`${P.done} of ${P.total||ROUNDS} done today`):'Every world is cleared!';
+ const tile=(cls,ic,name,sub,attr,badge)=>`<button type="button" class="gm-ht ${cls}" ${attr}><span class="top" aria-hidden="true"><span class="ic">${ic}</span></span>${badge?`<span class="bdg">${badge}</span>`:''}<span class="bot"><b>${name}</b><small>${sub}</small></span></button>`;
+ let tiles='';
+ if(ws.length){
+  const wsub=lw?`${P.list?'Next':'Round '+(live+1)}: ${esc(lw.name)} · ${esc(nm(lw.now)[0])}`:P.open?'All done! Play more if you like.':P.list?'Open to see your list':'Every world is cleared!';
+  tiles+=tile('work'+(lw?' now':''),'✏️','My work',wsub,'data-gmnav="missions"',lw?'▶ DO THIS NOW':P.open?'✓ DONE':'');
+  const p=pick(ws); tiles+=tile('map','🗺️','My map',p?`${esc(p.name)} · Level ${p.level}`:'Your levels','data-gmnav="map"');
+ }
+ tiles+=tile('food','🥪','Canteen','Buy food with your money','data-cno="open"');   /* HoS 2026-11-23: opens the 3D canteen (CanteenKid.html): buy food, get canteen money, money story, money lessons */
+ tiles+=tile('store','🛍️','Store',`You have <b>${money()}</b>`,'data-gmnav="money"');
+ tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':'🔒');
+ tiles+=tile('things',pfAv('pr-tav'),'My profile','Badges, levels, my stuff','data-gmnav="more"');   /* HoS 2026-11-24: My things became My profile (his picture on the tile) */
+ return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
+/* ===== MY PROFILE (HoS 2026-11-24, boss cleared the general page; mock-up from Claude Chat): "My things" became "My profile".
+   One page with who he is (his picture, name, grade, days in a row, badges, lessons), his settings, Sign out,
+   his levels in every subject, what he finished lately, his badges, his bank, what he bought, his things from the store, and the doors
+   that were on My things / My stuff. Nothing new is paid or counted here: every number comes from his map, his state or the store
+   (stInfo), and every door presses the same button as before. His picture is kept in his state (st.av) and shared with the Arena. */
+const PF_AVS=['🦁','🦅','🐻','🦌','🐬','🐢','🦉','🐝','🐎','🐑','🦒','🐘','🚀','⭐','🎺','🏰'];   /* the Arena's pictures (ArenaPage.html AVS) */
+function pfAvOf(){ const a=A.st&&A.st.av; return PF_AVS.indexOf(a)>=0?a:''; }
+function pfAv(cls){ const a=pfAvOf(), n=String((A.st&&A.st.name)||'').trim();
+ return a?`<span class="${cls}" aria-hidden="true">${a}</span>`:`<span class="${cls} ltr" aria-hidden="true">${esc((n[0]||'?').toUpperCase())}</span>`; }
+function pfGrade(){ const g=M()&&M().grade; return g==null||g===''?'':Number(g)===0?'Kindergarten':'Grade '+Number(g); }
+function pfSoundOn(){ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } }
+const PF_SHELF=[['trail','🌈 Trails'],['tap','💥 Tap blasts'],['color','🎨 App colors'],['bonus','🎁 Bonuses'],['home','🏠 Home upgrades'],['other','✨ Other things']];
+const PF_LINE={bank:'Your money and paychecks',badges:'Every badge and what it pays',map:'See how far you have come',pass:'Stamps for what you learned',p3replay:'Watch your week, step by step',p3shab:'Share your learning at the Shabbos table'};
+function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2'), st=A.st||{}, Q=window.TLK, nm0=String(st.name||'').trim();
+ const sec=(t,extra)=>`<h2 class="pr-sec">${t}${extra||''}</h2>`;
+ /* who he is */
+ const streak=(st.streak&&st.streak.n)||0, earned=BADGES.filter(b=>(st.badges||[]).indexOf(b[0])>=0).length, g=M()&&M().growth, lessons=g&&g.total!=null?g.total:steps();
+ const snd=pfSoundOn();
+ const me=`<aside class="pr-me"><div class="pr-big">${pfAv('pr-bav')}</div>${Q.quiet('Change','data-gm="pfav" aria-label="Change my picture"','tlk-small')}
+  <h1>${esc(nm0||'Me')}</h1>${pfGrade()?`<p class="pr-gr">${pfGrade()}</p>`:''}
+  <div class="pr-boxes">${Q.box('rank','Days in a row',String(streak))}${Q.box('rank','Badges',String(earned))}${Q.box('prog','Lessons done',String(lessons))}</div>
+  <h2 class="pr-sec">My settings</h2>
+  <div class="pr-set"><span>Sound</span>${Q.pill(snd?'prog':'lock',snd?'On':'Off')}${Q.quiet(snd?'Turn off':'Turn on','data-gm="pfsnd"','tlk-small')}</div>
+  <div class="pr-set"><span>Music</span>${Q.quiet('Choose music','data-gm="pfmus"','tlk-small')}</div>
+  <div class="pr-out">${Q.quiet('Sign out','data-gm="pfout"')}</div></aside>`;
+ /* his levels */
+ const isDone=(w,x)=>!!(x[2]||done(x[0]));
+ let lv=ws.map(w=>{ const sk=(w.c&&w.c.skills)||[], tot=sk.length||w.ids.length, dn=sk.length?sk.filter(x=>isDone(w,x)).length:w.ids.filter(id=>done(id)).length, pc=tot?Math.round(100*dn/tot):0;
+  return `<div class="pr-lv"><div class="r">${Q.pill('subj',w.name)}${Q.pill('rank','Level '+w.level)}<span class="n">${dn} of ${tot} steps</span></div><span class="pr-bar" role="img" aria-label="${dn} of ${tot} steps"><i style="width:${pc}%"></i></span></div>`; }).join('');
+ if(!lv) lv='<p class="pr-none">Your rebbe or teacher sets your levels. Until then, find your levels below.</p>';
+ const find=document.querySelector('#app [data-hp=levels]');
+ const levels=sec('My levels')+`<div class="pr-card">${lv}</div>`+(find?`<div class="pr-row">${Q.quiet('Find my levels',px(find).trim())}</div>`:'');
+ /* what he finished lately (his map's growth: mastered steps in the last 7 days) */
+ const wk=((g&&g.week)||[]).slice(0,5), subjOf=id=>{ const w=ws.find(x=>x.ids.indexOf(id)>=0||((x.c&&x.c.skills)||[]).some(s=>s[0]===id)); return w?w.name:''; };
+ const fin=sec('Recently finished')+`<div class="pr-card">${wk.length?wk.map(x=>`<div class="pr-li">${subjOf(x[0])?Q.pill('subj',subjOf(x[0])):''}<b>${esc(nm(x[0])[0])}</b><span class="sp"></span><span class="d">${esc(dayWord(x[1]))}</span></div>`).join(''):'<p class="pr-none">Nothing finished this week yet. Your next lesson is waiting on My map.</p>'}</div>`;
+ /* badges (the same 8 as My trophies; earned = in his state) */
+ const R=rankOf(steps()).r;
+ const bdg=sec('My badges',' '+Q.pill('prog',earned+' of '+BADGES.length+' earned')+' '+Q.pill('rank','Rank: '+R[2]))+`<div class="pr-bdg">${BADGES.map(b=>{ const on=(st.badges||[]).indexOf(b[0])>=0;
+  return `<div class="pr-b${on?' on':''}"><span class="e" aria-hidden="true">${b[1]}</span><b>${esc(b[2])}</b>${Q.pill('money',b[5])}${on?Q.pill('rank','Earned'):''}</div>`; }).join('')}</div>`;
+ /* bank (the server's numbers) */
+ const L=(st.ledger||[]).filter(x=>x&&x.at&&Number(x.amt)>0), last=L[0];
+ const bank=sec('My bank')+`<div class="pr-two">${Q.box('money','Balance',money())}${last?Q.box('money','Latest money in · '+dayWord(last.at),'+$'+Number(last.amt).toFixed(2)):Q.box('money','Latest money in','None yet')}</div><div class="pr-row">${Q.quiet('Open my bank','data-gm="room" data-t="bank"')}</div>`;
+ /* what he bought, and his things (the store's own list) */
+ const I=storeInfo(), items={}; ((I&&I.items)||[]).forEach(x=>{ items[x.id]=x; });
+ const SW={waiting:'⏳ On its way',handed:'✅ Got it',cancelled:'↩️ Money back'};
+ const ord=((I&&I.orders)||[]).slice(0,5).map(o=>{ const it=items[o.item]||{}, kept=it.kind==='wear'||it.kind==='keep', w=o.status==='cancelled'?SW.cancelled:kept?'':(SW[o.status]||'✅ Done');
+  return `<div class="pr-li"><span class="e" aria-hidden="true">${esc(o.emoji||'🎁')}</span><b>${esc(o.label||it.name||'')}<small>${esc(it.cat==='real'?'Real prize':/canteen|card/.test(it.kind||'')?'Canteen':'Store')} · ${esc(dayWord(o.at))}</small></b><span class="sp"></span>${Q.pill('money','$'+(Number(o.cents||0)/100).toFixed(2))}${w?Q.pill('prog',w):''}</div>`; }).join('');
+ const bought=sec('Recently bought')+`<div class="pr-card">${!I?'<p class="pr-none">Loading…</p>':ord||'<p class="pr-none">Nothing bought yet.</p>'}</div>`+(ord?`<div class="pr-row">${Q.quiet('See all','data-gm="pfshop" data-t="mine"')}</div>`:'');
+ const wear=(st.store&&st.store.wear)||{}, own=((I&&I.owned)||[]).map(id=>items[id]).filter(Boolean), by={};
+ own.forEach(x=>{ const k=x.slot==='trail'||x.slot==='tap'||x.slot==='color'?x.slot:x.slot==='theme'||x.grp==='home'?'home':x.grp==='bonus'?'bonus':'other'; (by[k]=by[k]||[]).push(x); });
+ const shelves=PF_SHELF.filter(s=>by[s[0]]).map(s=>`<div class="pr-shelf"><div class="h"><b>${s[1]}</b>${by[s[0]].some(x=>x.kind==='wear')?Q.quiet('Change','data-gm="pfshop" data-t="fun"','tlk-small'):''}</div>${by[s[0]].map(x=>`<div class="pr-it"><span class="e" aria-hidden="true">${esc(x.emoji||'🎁')}</span>${esc(x.name)}${wear[x.slot]===x.id?' '+Q.pill('prog','In use'):''}</div>`).join('')}</div>`).join('');
+ const stuff=sec('My stuff')+(!I?'<div class="pr-card"><p class="pr-none">Loading…</p></div>':shelves?`<div class="pr-shelves">${shelves}</div>`:'<div class="pr-card"><p class="pr-none">Nothing yet. Things you buy in the Tashbar Store show up here.</p></div>');
+ /* doors: the same buttons My things and My stuff pressed */
+ const T=(ic,ti,sub,attr)=>`<button type="button" class="tlk tlk-tile pr-tile" ${attr}><span class="e" aria-hidden="true">${ic}</span><b>${esc(ti)}</b><small>${esc(sub)}</small></button>`;
+ const mine=document.querySelector('.hlx-mine'); let doors='';
+ const store=mine&&[...mine.querySelectorAll('#hlx-mrow > .hlx-btn')].find(b=>/store/i.test(b.textContent));
+ doors+=store?T('🛍️','Tashbar Store','Find more things to buy',px(store).trim()):T('🛍️','Tashbar Store','Find more things to buy','data-gmnav="money"');
+ if(mine) [...mine.querySelectorAll('#hlx-mrow > .hlx-btn')].forEach(b=>{ const key=b.dataset.t||b.dataset.tj||b.dataset.act||'', ic=(b.querySelector('.ic')||{}).textContent||'⭐', ti=b.textContent.replace(ic,'').replace(/\s+/g,' ').trim();
+  if(b===store||b.dataset.hp==='levels'||key==='bank'||key==='badges') return;   /* the store, Find my levels, the bank and the badges have their own place above */
+  doors+=T(ic,ti,PF_LINE[key]||'',b.dataset.hp==='tab'?`data-gm="room" data-t="${esc(b.dataset.t)}"`:px(b).trim()); });
+ doors+=T('📚','All my lessons','Every lesson in one place','data-gm="lib"');
+ if(!k2&&ws.length) doors+=T('🌳','Skill tree','Every skill on your map, in order','data-gm="treeview"');
+ if(!k2) doors+=T('📈','My week','Your rank and what you learned','data-gmnav="me"');
+ const more=sec('More of my things')+`<div class="pr-tiles">${doors}</div>`;
+ return `<div class="gm-pf"><div class="pr-title">My profile</div><div class="pr-cols">${me}<div class="pr-main">${levels}${fin}${bdg}${bank}${bought}${stuff}${more}</div></div></div>`; }
+/* his picture: a pop-up with the Arena's pictures (round X top right); kept in his state and given to the Arena too */
+function pfPick(){ const Q=window.TLK; let d=document.getElementById('pr-pick'); if(!d){ d=document.createElement('div'); d.id='pr-pick'; d.setAttribute('role','dialog'); d.setAttribute('aria-label','Pick your picture'); document.body.appendChild(d); }
+ const cur=pfAvOf(); d.innerHTML=`<div class="pr-pk">${Q.x('data-gm="pfavx"','tr')}<h2>Pick your picture</h2><div class="pr-avs">${PF_AVS.map(a=>`<button type="button" class="pr-avb${a===cur?' on':''}" data-gm="pfavk" data-k="${a}" aria-label="${a}" aria-pressed="${a===cur}">${a}</button>`).join('')}</div></div>`; }
+function pfClick(a,b){
+ if(a==='pfav'){ try{ SND.tap(); }catch(x){} pfPick(); return true; }
+ if(a==='pfavx'){ const d=document.getElementById('pr-pick'); if(d) d.remove(); return true; }
+ if(a==='pfavk'){ const k=b.dataset.k; if(PF_AVS.indexOf(k)<0||!A.st) return true; A.st.av=k; try{ localStorage.setItem('arAv',k); }catch(x){} try{ saveStudent(A.st); }catch(x){}
+  const d=document.getElementById('pr-pick'); if(d) d.remove(); GM.sig=''; sync(); pfDot(GM.tab==='home'); return true; }
+ if(a==='pfsnd'){ const on=pfSoundOn(); try{ if(window.TL_MENU) TL_MENU.actions.setSound(!on); else { const s=document.createElement('button'); s.dataset.act='sound'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); } }catch(x){} setTimeout(()=>{ GM.sig=''; sync(); },60); return true; }
+ if(a==='pfmus'){ try{ if(window.TL_MENU) TL_MENU.actions.openMusicPanel(); }catch(x){} return true; }
+ if(a==='pfout'){ try{ if(window.TL_MENU) TL_MENU.actions.signOut(); else { const s=document.createElement('button'); s.dataset.act='signout'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); } }catch(x){} return true; }
+ if(a==='pfshop'){ try{ SND.tap(); }catch(x){} try{ if(window.TLSTORE) TLSTORE.tab=b.dataset.t||'fun'; if(window.tlStore) tlStore(true); }catch(x){} return true; }
+ return false; }
+/* the small round picture next to Workbook on the home, in front of the corner menu: opens My profile (the tile is the other way in) */
+function pfDot(on){ let d=document.getElementById('pr-av'); on=!!on&&typeof A!=='undefined'&&A&&A.view==='hub'&&!!A.st;
+ if(!on){ if(d) d.remove(); document.body.classList.remove('pr-av-on'); return; }
+ if(!d){ d=document.createElement('button'); d.type='button'; d.id='pr-av'; d.setAttribute('aria-label','My profile'); d.dataset.gmnav='more'; document.body.appendChild(d); }
+ const h=pfAv('pr-dav'); if(d.innerHTML!==h) d.innerHTML=h; document.body.classList.add('pr-av-on'); }
+setInterval(()=>{ try{ pfDot(document.body.classList.contains('gm-on')&&GM.tab==='home'); }catch(e){} },800);
 /* PATH (HoS 2026-11-20): the page starts where he is and runs DOWN to the BOSS at the end; a longer path with wide, gentle curves;
    a small floating number over every step (1, 2, 3 ...); quiet subject symbols in the empty space beside the path (Math + - x / ...). */
 const DECO={MATH:['+','−','×','÷','=','%','½','<','>'],READ:['A','b','?','!','“','”','a','Z'],LANG:['✎','A','?','!','a','.'],
@@ -561,7 +772,8 @@ function goalHTML(w,isPick){
 /* ONE BUTTON, ONE JOB (HoS 2026-11-21, simplify step 3): 4 tabs (K-2: 3). Arcade, all lessons, skill tree, My Stuff and Pathfinder sit on
    ONE "More" page; Money opens from the money chip at the top (one door, not two). */
 function navOn(){ const t=GM.tab; return /^(games|lib|mine|more)$/.test(t)?'more':t==='subjects'?'map':t; }
-function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['more','🧺','More']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['me','🏆','Trophies'],['more','🧺','More']]; const on=navOn();
+function navHTML(k2,left){ return GM.tab==='home'?'':`<button type="button" data-gmnav="home" class="gm-homebtn"><b aria-hidden="true">🏠</b>Home</button>`; }
+function navHTMLOld(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','🎯','Missions'],['more','🧺','More']]:[['map','🗺️','Map'],['missions','🎯','Missions'],['me','🏆','Trophies'],['more','🧺','More']]; const on=navOn();
  return items.map(x=>`<button type="button" data-gmnav="${x[0]}" class="${[on===x[0]?'on':'',GM.tap===x[0]&&Date.now()-(GM.tapAt||0)<450?'tap':''].filter(Boolean).join(' ')}"${on===x[0]?' aria-current="page"':''}><b aria-hidden="true">${x[1]}</b>${x[2]}${x[0]==='missions'&&left?`<span class="cnt" aria-label="${left} left">${left}</span>`:''}</button>`).join(''); }
 /* ===== TODAY'S MISSIONS: "The Tashbar Challenge!" (HoS 2026-11-20: game show; today's plan built from his map + what his rebbe picked).
    3 rounds a day = the school's daily goal (3 lessons mastered in one day; the server pays its bonus, Money.js moneyDailyGoal_; nothing here
@@ -571,7 +783,8 @@ function navHTML(k2,left){ const items=k2?[['map','🗺️','Map'],['missions','
 const ROUNDS=3;
 function todayDone(){ const t=today(), sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&dayOf(sk[id].at)===t).sort((a,b)=>sk[a].at-sk[b].at); }
 function weekCounts(){ const sk=(A.st&&A.st.skills)||{}, now=Date.now(), d=864e5; let w=0,p=0; Object.keys(sk).forEach(id=>{ const x=sk[id]; if(!x||!x.m) return; const at=Number(x.at)||0; if(at>=now-7*d) w++; else if(at>=now-14*d) p++; }); return {w,p}; }
-function plan(ws){ const live=ws.filter(w=>w.now), done=todayDone(), n=Math.min(ROUNDS,done.length), out=[];
+function plan(ws){ try{ const dp=typeof window.tlDailyPlan==='function'?window.tlDailyPlan(ws):null; if(dp) return dp; }catch(e){ console.error('DailyPlan',e); } /* TODAY'S LIST (Core Growth job D, DailyPlanUI.html): his list of material to cover; null = the 3 rounds below */
+ const live=ws.filter(w=>w.now), done=todayDone(), n=Math.min(ROUNDS,done.length), out=[];
  if(!live.length) return {rounds:[],done:n,open:true,left:0};
  const fresh=live.filter(w=>!doneToday(w)), order=fresh.concat(live.filter(w=>fresh.indexOf(w)<0));
  for(let i=0;i<ROUNDS;i++){ if(i<n){ out.push({won:true,id:done[i]}); continue; } out.push({w:order[(i-n)%order.length]}); }
@@ -582,20 +795,21 @@ function missionsHTML(ws){ const P=plan(ws), wk=weekCounts(), pk=pick(ws), picks
  const toBoss=pk&&pk.now?pk.ids.length-pk.ids.indexOf(pk.now)-1:0;
  let rows='', live=null;
  P.rounds.forEach((r,i)=>{ const num=i+1;
-  if(r.won){ const n=nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐','']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">ROUND ${num} · ${esc((W[1]||'').toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">CLEARED<br>⭐⭐⭐</div></div>`; return; }
+  if(r.won){ const lc=/^LEVELCHECK\./.test(String(r.id)), n=lc?['Level check passed: you already knew it','']:nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐',r.name||'']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">${P.list?'':'ROUND '+num+' · '}${esc(String(P.list&&r.name?r.name:(W[1]||'')).toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">${P.list?'DONE':'CLEARED'}<br>⭐⭐⭐</div></div>`; return; }
+  if(!r.w){ rows+=`<div class="gm-rd"><div class="n">${num}</div><div class="t">${esc(String(r.name||'').toUpperCase())}<small>Nothing left at your level today. Tell your rebbe!</small></div><div class="p">ASK</div></div>`; return; }
   const w=r.w, n=nm(w.now), isLive=!live; if(isLive) live=w;
-  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="Round ${num}: ${esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">ROUND ${num} · ${esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?'YOUR<br>TURN!':'NEXT'}</div></button>`; });
+  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="${P.list?esc(r.name||w.name):'Round '+num+': '+esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">${P.list?esc(String(r.name||w.name).toUpperCase()):'ROUND '+num+' · '+esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?'YOUR<br>TURN!':'NEXT'}</div></button>`; });
  picks.forEach(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); rows+=`<button type="button" class="gm-rd rebbe" data-gm="play" data-id="${esc(p.id)}"><div class="n">📌</div><div class="t">FROM ${esc(String(p.by||'YOUR REBBE').toUpperCase())}<small>${esc(n)}</small></div><div class="p">PICKED<br>FOR YOU</div></button>`; });
- rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
+ rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':P.list?'Finish your list → 🎮 Arcade opens + daily bonus ✓':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
  const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
- const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ Play round ${P.done+1}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
- const head=P.open?`<div class="s">★ CHALLENGE COMPLETE ★</div><h1>You did it!</h1><small>All ${ROUNDS} rounds cleared today. Every extra level still counts!</small>`:`<div class="s">★ TODAY ON ★</div><h1>The Tashbar<br>Challenge!</h1><small>${P.rounds.length?'Clear '+ROUNDS+' rounds today. Round '+(P.done+1)+' is up!':'No rounds today: every world is cleared!'}</small>`;
- return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>
- <div class="gm-score"><div><small>THIS WEEK</small><b>${String(wk.w).padStart(2,'0')}</b></div><div><small>LAST WEEK</small><b style="color:#A9A6E8">${String(wk.p).padStart(2,'0')}</b></div><div><small>TO BOSS</small><b style="color:#FF5C8A">${String(toBoss).padStart(2,'0')}</b></div></div>${chest}${cta}`; }
+ const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ ${P.list?'Next':'Play round '+(P.done+1)}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
+ const TOT=P.total||ROUNDS, KICK=P.list?"TODAY'S LIST":'MY WORK TODAY';
+ const head=P.open?`<div class="s">${KICK}</div><h1>All done! ✓</h1><small>${P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every world is cleared!'):'All '+ROUNDS+' rounds cleared today. Every extra level still counts!'}</small>`:`<div class="s">${KICK}</div><h1>${P.rounds.length?P.done+' of '+TOT+' done':'All clear!'}</h1><small>${P.rounds.length?(P.list?(P.left?P.left+' more to go. Tap Next.':'Saving your work…'):'Round '+(P.done+1)+' is next. Tap Play.'):'No rounds today: every world is cleared!'}</small>`;
+ return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>${chest}${cta}`; }
 function arcadeHTML(ws){ const P=plan(ws);
- return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>Clear ${P.left} more round${P.left===1?'':'s'} of today's challenge to open the Arcade!</p></div>
+ return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>${P.list?`Finish ${P.left} more thing${P.left===1?'':'s'} on today's list to open the Arcade!`:`Clear ${P.left} more round${P.left===1?'':'s'} of your work to open the Arcade!`}</p></div>
  <div class="gm-games"><div><b>⚔️</b>SHOWDOWN</div><div><b>🕵️</b>DETECTIVE</div><div><b>📒</b>JOKE BOOK</div></div>
- <div class="gm-cta"><button type="button" class="gm-play" data-gmnav="missions">🎯 Go to my rounds</button></div>`; }
+ <div class="gm-cta"><button type="button" class="gm-play" data-gmnav="missions">▶ Go to my work</button></div>`; }
 /* ===== MY GROWTH / TROPHIES (HoS 2026-11-20: "steps climbed this week (vs last week), streaks, units finished, badges, you're stronger
    than last week, all from his own mastery data"). Rank ladder, this week vs last, streak, bosses beaten in his level, WHAT I LEARNED
    (game name + real skill: "I learned how to multiply"), badges he has (no amounts here: the server pays), and the old My Stuff door. */
@@ -646,7 +860,7 @@ function usd(x){ const v=Math.abs(Number(x)||0); return '$'+v.toFixed(2); }
    4. Things I bought. All amounts come from the server (ledger); this page only shows them. */
 function storeInfo(){ const I=window.TLSTORE&&TLSTORE.info; if(I) return I;
  if(!GM.infoAsk&&typeof SRV!=='undefined'&&SRV.token&&window.google&&google.script&&google.script.run){ GM.infoAsk=1;
-  try{ google.script.run.withSuccessHandler(r=>{ if(r&&r.ok&&window.TLSTORE){ TLSTORE.info=r; TLSTORE.at=Date.now(); GM.sig=''; if(GM.tab==='money') sync(); } }).withFailureHandler(()=>{}).stInfo(SRV.token); }catch(e){} }
+  try{ google.script.run.withSuccessHandler(r=>{ if(r&&r.ok&&window.TLSTORE){ TLSTORE.info=r; TLSTORE.at=Date.now(); GM.sig=''; if(GM.tab==='money'||GM.tab==='more') sync(); } }).withFailureHandler(()=>{}).stInfo(SRV.token); }catch(e){} }
  return null; }
 function dayWord(at){ const d=new Date(at), t=new Date(), y=new Date(t.getFullYear(),t.getMonth(),t.getDate()-1);
  return d.toDateString()===t.toDateString()?'Today':d.toDateString()===y.toDateString()?'Yesterday':d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'}); }
@@ -742,16 +956,16 @@ function celebrate(o){ try{ const old=document.getElementById('gm-cel'); if(old)
   d.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-cel]'); if(!b) return; d.remove(); const f=b.dataset.cel==='go'?(o.go&&o.go[1]):(o.alt&&o.alt[1]); try{ f&&f(); }catch(x){} });
   setTimeout(()=>{ const b=d.querySelector('[data-cel=go]'); try{ b&&b.focus({preventScroll:true}); }catch(e){} },50); }catch(e){ console.error('GameMap',e); } }
 GM.celebrate=celebrate;
-function dailyLoot(ws,wk){ const L=[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]];
+function dailyLoot(ws,wk){ const P=plan(ws), T=P.total||ROUNDS; const L=P.list?[["📋 Today's list",T+' of '+T+' done'],['🎮 Arcade','OPEN!'],['✅ Daily bonus','Whole list done'],['📈 Steps this week',String(wk.w)]]:[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]];
  try{ const d=todayDone(), last=d[d.length-1]; if(last){ const w=ws.find(x=>x.ids.indexOf(last)>=0); if(w&&w.ids.indexOf(last)===w.ids.length-1&&w.ids.every(mast)) L.splice(1,0,['🏰 Boss beaten',w.unitName]); const n=nm(last); L.splice(1,0,['🧠 Last level',n[0]]); } }catch(e){}
  return L; }
 function dayKey(){ return 'gm-day-'+(A.st&&A.st.id)+'-'+today(); }
 function seen(k){ try{ return localStorage.getItem(k)==='1'; }catch(e){ return !!GM['_'+k]; } }
 function mark(k){ try{ localStorage.setItem(k,'1'); }catch(e){} GM['_'+k]=1; }
-function checkDaily(ws){ const P=plan(ws); if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=P.done; GM.prevSid=A.st.id; return false; }
- if(P.rounds.length&&GM.prevDone<ROUNDS&&P.done>=ROUNDS&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=P.done; const wk=weekCounts();
-  setTimeout(()=>celebrate({kicker:'THE TASHBAR CHALLENGE',title:'Challenge<br>complete!',icon:'🏆',stars:true,loot:dailyLoot(ws,wk),go:['🎮 Arcade',()=>{ GM.tab='games'; GM.sig=''; sync(); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
- GM.prevDone=P.done; return false; }
+function checkDaily(ws){ const P=plan(ws), PD=P.list&&!P.open?Math.min(P.done,(P.total||ROUNDS)-1):P.done; /* today's list: the party waits for the server */ if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=PD; GM.prevSid=A.st.id; return false; }
+ const TOT=P.total||ROUNDS; if(P.rounds.length&&GM.prevDone<TOT&&PD>=TOT&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=PD; const wk=weekCounts();
+  setTimeout(()=>celebrate({kicker:P.list?"TODAY'S LIST":'THE TASHBAR CHALLENGE',title:P.list?'All done<br>today!':'Challenge<br>complete!',icon:'🏆',stars:true,loot:dailyLoot(ws,wk),go:['🎮 Arcade',()=>{ GM.tab='games'; GM.sig=''; sync(); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
+ GM.prevDone=PD; return false; }
 function mastSet(){ const sk=(A.st&&A.st.skills)||{}, o={}; Object.keys(sk).forEach(id=>{ if(sk[id]&&sk[id].m) o[id]=Number(sk[id].at)||0; }); return o; }
 function checkWin(ws,daily){ const now=mastSet(); if(!GM.snap||GM.snapSid!==A.st.id){ GM.snap=now; GM.snapSid=A.st.id; GM.snapRank=rankOf(steps()); return; }
  const fresh=Object.keys(now).filter(id=>!(id in GM.snap)&&Date.now()-now[id]<15*60e3).sort((a,b)=>now[a]-now[b]), rk=GM.snapRank;
@@ -763,7 +977,7 @@ function show(on,navOn){ document.body.classList.toggle('gm-on',!!on); document.
 function sync(){
  css(); const g=root(), nv=nav();
  const m=M(), hub=A.view==='hub'&&!!A.st&&!document.body.classList.contains('tm-on');
- if(A.st&&GM.sid!==A.st.id){ GM.sid=A.st.id; GM.tab='map'; GM.world=''; GM.sig=''; }
+ if(A.st&&GM.sid!==A.st.id){ GM.sid=A.st.id; GM.tab='home'; GM.world=''; GM.sig=''; GM.from=null; }
  const ws=m?worldsOf(m):[];
  liftDrawer();
  if(!hub){ show(false,false); return; }
@@ -771,7 +985,10 @@ function sync(){
  const k2=ws.length>0&&ws.every(w=>w.level<=2); document.body.classList.toggle('gm-k2',k2);
  if(k2&&GM.tab==='me') GM.tab='map';
  const P=plan(ws), daily=checkDaily(ws); checkWin(ws,daily);
- const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh;
+ const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh; document.body.classList.toggle('gm-home',GM.tab==='home'); document.body.classList.toggle('gm-lite',true);   /* HoS 2026-11-23: "give it all the same look": every page of his home is bright */
+ pfDot(GM.tab==='home');
+ if(GM.tab==='home'){ const html=`<div class="gm-sun"></div><div class="gm-in gm-wide">${homeHTML(ws,P)}</div>`;
+  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  if(GM.tab!=='map'||!ws.length){ const T=ws.length?GM.tab:(GM.tab==='map'?'nomap':GM.tab); const body=T==='subjects'?subjectsHTML(ws):T==='more'?moreHTML(ws,P):T==='missions'?missionsHTML(ws):T==='me'?growthHTML(ws):T==='money'?moneyHTML():T==='games'?(P.open?arcadeOpenHTML():arcadeHTML(ws)):T==='lib'?libHTML():T==='mine'?stuffHTML():noMapHTML();
   const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>${body}</div>`;
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
@@ -862,19 +1079,22 @@ document.addEventListener('click',e=>{
  const a=b.dataset.gm, t=b.dataset.gmnav;
  if(t){ e.preventDefault(); try{ SND.tap(); }catch(x){}
   if(t==='store'){ const s=document.createElement('button'); s.dataset.st='open'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); return; }
+  GM.from=t!=='home'&&GM.tab!=='home'&&GM.tab!==t?{tab:GM.tab,view:GM.view}:t==='subjects'?{tab:'map',view:'path'}:null;
   GM.tab=t; GM.sig=''; GM.rescroll=true; sync(); return; }
- if(a==='world'){ GM.world=b.dataset.k; GM.tab='map'; GM.sig=''; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
- if(a==='treeview'){ try{ SND.tap(); }catch(x){} GM.tab='map'; GM.view='tree'; GM.sig=''; root().scrollTop=0; sync(); return; }
+ if(a==='world'){ GM.world=b.dataset.k; GM.from=null; GM.tab='map'; GM.sig=''; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
+ if(a==='gmback'){ try{ SND.tap(); }catch(x){} const f=GM.from||{tab:'home'}; GM.from=null; GM.tab=f.tab; GM.view=f.view||'path'; GM.sig=''; root().scrollTop=0; GM.rescroll=true; sync(); return; }
+ if(a==='treeview'){ try{ SND.tap(); }catch(x){} GM.from=GM.tab!=='map'&&GM.tab!=='home'?{tab:GM.tab,view:GM.view}:null; GM.tab='map'; GM.view='tree'; GM.sig=''; root().scrollTop=0; sync(); return; }
  if(a==='play') return play(b.dataset.id);
  if(a==='stuff'){ try{ SND.tap(); }catch(x){} GM.tab='mine'; GM.sig=''; root().scrollTop=0; sync(); return; }
  if(a==='room'){ room(b.dataset.t); return; }
  if(a==='mstory'){ try{ SND.tap(); }catch(x){} GM.mstory=b.dataset.v; GM.sig=''; sync(); return; }
  if(a==='roomx'){ const r=document.getElementById('gm-room'); if(r) r.remove(); return; }
+ if(a&&a.indexOf('pf')===0&&pfClick(a,b)) return;
  if(a==='lf'){ GM.lf=b.dataset.f; GM.sig=''; sync(); return; }
  if(a==='tree'){ try{ SND.tap(); }catch(x){} GM.view=GM.view==='tree'?'path':'tree'; root().scrollTop=0; GM.rescroll=GM.view!=='tree'; sync(); return; }
  if(a==='tn'){ try{ SND.tap(); }catch(x){} sheet(b.dataset.id,b.dataset.st); return; }
  if(a==='sheetx'){ const s=root().querySelector('.gm-sheet'); if(s) s.remove(); return; }
- if(a==='lib'){ try{ SND.tap(); }catch(x){} GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); return; }
+ if(a==='lib'){ try{ SND.tap(); }catch(x){} GM.from=GM.tab!=='lib'&&GM.tab!=='home'?{tab:GM.tab,view:GM.view}:null; GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); return; }
  if(a==='pf'){ const c=document.querySelector('.pf-card button'); if(c) c.click(); return; }
  if(a==='say'){ readAloud(b.dataset.text); return; }
  if(a==='node'){ const id=b.dataset.id, m=M(); if(!m) return; const ws=worldsOf(m), w=ws.find(x=>x.k===GM.world);
@@ -883,7 +1103,7 @@ document.addEventListener('click',e=>{
   lockPop(b,id); }
  if(a==='info'){ infoToggle(b); return; }
 });
-document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-hf="home"]'); if(b&&b.classList.contains('hf-back')&&GM.tab!=='map'&&document.body.classList.contains('gm-nav')){ setTimeout(()=>{ GM.tab='map'; GM.sig=''; GM.rescroll=true; sync(); },0); } },true);
+document.addEventListener('click',e=>{ const b=e.target&&e.target.closest&&e.target.closest('[data-hf="home"]'); if(b&&b.classList.contains('hf-back')&&GM.tab!=='home'&&document.body.classList.contains('gm-nav')){ setTimeout(()=>{ GM.tab='home'; GM.sig=''; GM.rescroll=true; sync(); },0); } },true);
 const oldRender=render;
 render=function(){ const r=oldRender.apply(this,arguments);
  try{ GM.lessonLook&&GM.lessonLook(); }catch(e){}
@@ -949,6 +1169,70 @@ body #gm .gm-more{background:#fff;color:#047857}
 #gm .gm-shelves{display:flex;flex-direction:column;gap:10px;margin:16px auto 0;max-width:620px}
 #gm .gm-shelf{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;text-align:left;border:3px solid #FFD84D;border-radius:20px;background:#fff;color:#1E1B4B;padding:12px 16px;font:900 20px/1.15 var(--display,'Rubik'),'Inter',sans-serif;box-shadow:0 6px 0 rgba(43,20,120,.25);cursor:pointer}
 #gm .gm-shelf.on{background:#FFFBEA;border-color:#FFB800}
+/* MY PROFILE (HoS 2026-11-24): two columns on a Chromebook, one column on a phone (his card on top). Information is flat (kit pills
+   and boxes); buttons are the kit's. */
+#gm .gm-pf{max-width:1080px;margin:0 auto;padding:4px 0 120px;color:#1E1B4B}
+#gm .gm-pf .pr-title{font-weight:800;font-size:30px;line-height:1.1;letter-spacing:-.01em;margin:4px 0 14px;text-align:center}
+#gm .pr-cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}
+#gm .pr-me{display:flex;flex-direction:column;align-items:center;gap:8px;background:#fff;border-radius:22px;padding:16px 16px 18px;text-align:center}
+#gm .pr-big{width:88px;height:88px;border-radius:50%;background:#F5F3FF;border:4px solid #EDE9FE;display:grid;place-items:center}
+#gm .pr-bav{font-size:48px;line-height:1}
+#gm .pr-bav.ltr,#gm .pr-tav.ltr,.pr-dav.ltr{font-weight:800;color:#5B3FD0}
+#gm .pr-bav.ltr{font-size:42px}
+#gm .pr-me h1{margin:2px 0 0;font-size:22px;line-height:1.15}
+#gm .pr-gr{margin:0;color:#4C4A7A;font-weight:600}
+#gm .pr-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+#gm .pr-boxes .tlk-box{padding:8px 4px}#gm .pr-boxes .tlk-box small{font-size:10px;letter-spacing:.03em}
+#gm .pr-sec{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:22px 0 8px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4C4A7A}
+#gm .pr-sec .tlk-pill{text-transform:none;letter-spacing:0;font-size:13px}
+#gm .pr-me .pr-sec{align-self:flex-start;margin:6px 0 0}
+#gm .pr-set{display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between;font-weight:700}
+#gm .pr-set span:first-child{flex:1;text-align:left}
+#gm .pr-out{width:100%;margin-top:10px;padding-top:14px;border-top:1px solid #EEF0F6}
+#gm .pr-main>.pr-sec:first-child{margin-top:0}
+#gm .pr-card{background:#fff;border-radius:18px;padding:6px 14px}
+#gm .pr-lv{padding:10px 0;border-bottom:1px solid #F1F1F7}#gm .pr-lv:last-child{border-bottom:0}
+#gm .pr-lv .r{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+#gm .pr-lv .n,#gm .pr-li .d{margin-left:auto;white-space:nowrap;font-size:14px;font-weight:700;color:#075985}
+#gm .pr-bar{display:block;height:10px;border-radius:6px;background:#E0F2FE;overflow:hidden}
+#gm .pr-bar i{display:block;height:100%;border-radius:6px;background:#38BDF8}
+#gm .pr-row{margin-top:10px}
+#gm .pr-li{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #F1F1F7}#gm .pr-li:last-child{border-bottom:0}
+#gm .pr-li b{font-size:15px}#gm .pr-li b small{display:block;font-weight:600;color:#64748B;font-size:12px}
+#gm .pr-li .sp{flex:1}
+#gm .pr-li .e,#gm .pr-it .e{font-size:22px}
+#gm .pr-li .d{color:#64748B}
+#gm .pr-none{margin:8px 0;color:#64748B;font-weight:600}
+#gm .pr-bdg{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+#gm .pr-b{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:14px;background:#F8FAFC;text-align:center}
+#gm .pr-b .e{font-size:30px;filter:grayscale(1);opacity:.55}#gm .pr-b.on .e{filter:none;opacity:1}#gm .pr-b.on{background:#F5F3FF}
+#gm .pr-b b{font-size:13px;line-height:1.2;min-height:2.4em}
+#gm .pr-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#gm .pr-two .tlk-box{text-align:left;padding:12px 16px}#gm .pr-two .tlk-box b{font-size:26px}
+#gm .pr-shelves{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#gm .pr-shelf{background:#fff;border-radius:18px;padding:12px 14px}
+#gm .pr-shelf .h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;min-height:44px}
+#gm .pr-it{display:flex;align-items:center;gap:8px;padding:5px 0;font-weight:600}
+#gm .pr-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#gm .tlk.tlk-tile.pr-tile{padding:14px 16px;gap:2px;min-height:112px}
+#gm .pr-tile .e{font-size:30px;line-height:1.1}#gm .pr-tile b{font-size:17px}#gm .pr-tile small{color:#64748B;font-weight:600;font-size:13px}
+#gm .gm-ht .ic .pr-tav{display:grid;place-items:center;width:1.5em;height:1.5em;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.45);font-size:.82em;line-height:1}
+@media (max-width:860px){#gm .pr-cols{grid-template-columns:1fr}#gm .pr-tiles{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){#gm .pr-shelves,#gm .pr-two{grid-template-columns:1fr}#gm .pr-li{flex-wrap:wrap}}
+/* his picture by Workbook (outside #gm, like Workbook): round, the kit's floating look; Workbook steps left to make room */
+#pr-av{position:fixed;right:52px;top:calc(env(safe-area-inset-top) + 11px);z-index:60;width:44px;height:44px;padding:0;border-radius:50%;border:1.5px solid #E6E2F7;background:#fff;box-shadow:0 8px 20px rgba(30,27,75,.14),0 1px 3px rgba(30,27,75,.10);cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent;transition:box-shadow .15s,transform .12s}
+#pr-av:active{box-shadow:0 1px 3px rgba(30,27,75,.14);transform:translateY(2px)}#pr-av:focus-visible{outline:3px solid #FDE047;outline-offset:3px}
+#pr-av .pr-dav{font-size:24px;line-height:1}
+body.pr-av-on #bbx-door{right:104px}
+@media (max-width:760px){body.pr-av-on.gm-home #gm .gm-hi{padding-top:46px}}
+/* the picture pop-up */
+#pr-pick{position:fixed;inset:0;z-index:2147482000;background:rgba(30,27,75,.35);display:grid;place-items:center;padding:16px}
+#pr-pick .pr-pk{position:relative;background:#fff;border-radius:22px;padding:22px 20px 20px;max-width:440px;width:100%;box-sizing:border-box;text-align:center;color:#1E1B4B}
+#pr-pick h2{margin:4px 56px 16px;font-size:22px}
+#pr-pick .pr-avs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+#pr-pick .pr-avb{aspect-ratio:1;border-radius:50%;border:1.5px solid #E6E2F7;background:#fff;font-size:34px;cursor:pointer;box-shadow:0 6px 14px rgba(30,27,75,.12);-webkit-tap-highlight-color:transparent}
+#pr-pick .pr-avb.on{border:3px solid #5B3FD0;background:#F5F3FF}
+#pr-pick .pr-avb:active{box-shadow:0 1px 3px rgba(30,27,75,.14);transform:translateY(2px)}
 #gm .gm-shelf i{font-style:normal;font-size:34px;line-height:1;flex:none}
 #gm .gm-shelf span{flex:1}
 #gm .gm-shelf small{display:block;margin-top:3px;font:700 14px/1.3 'Inter',system-ui,sans-serif;color:#5B5FA8}
@@ -1058,7 +1342,7 @@ body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 5
   try{ if(c.state==='running') return run(); const r=c.resume(); const s=c.createBufferSource(); s.buffer=c.createBuffer(1,1,22050); s.connect(c.destination); s.start(0);
    if(r&&r.then) r.then(run,()=>{}); else setTimeout(run,50); }catch(e){} }
  ['pointerdown','touchend','keydown','click'].forEach(ev=>document.addEventListener(ev,themeUnlock,{capture:true,passive:true}));
- /* first choice: the same tune already saved as a sound file on the site (web/sounds/theme.mp3, made from themeBuild), so the tablet has
+ /* first choice: the same tune already saved as a sound file on the site (art/sounds/theme.mp3 in the shared art library, made from themeBuild), so the tablet has
     nothing to record; it downloads while the boy types his code. If that fails, it records the tune itself (themeRender). */
  function themeLoad(){ if(GM.themeL) return GM.themeL;
   const url=/\.web\.app$|\.firebaseapp\.com$|^localhost$|^127\./.test(location.hostname)?'/sounds/theme.mp3':'https://tashbar-learning-live.web.app/sounds/theme.mp3';

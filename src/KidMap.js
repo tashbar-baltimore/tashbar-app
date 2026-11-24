@@ -65,7 +65,7 @@ function kmMapFor_(sid, opt) {
     out[id] = names[id] || (N[id] ? [N[id][0], ''] : null) || (K.names && K.names[id] ? [kmKodeshName_(K.names[id]), ''] : null) ||
       (typeof CI_INDEX !== 'undefined' && CI_INDEX.sk && CI_INDEX.sk[id] ? [CI_INDEX.sk[id][0], ''] : [id, '']);
   });
-  var res = { v: 1, sid: sid, at: now, subjects: subjects, kodesh: kodesh, growth: { days: KM_DAYS, week: g.steps, prev: g.prev, total: g.total }, names: out };
+  var res = { v: 1, sid: sid, at: now, subjects: subjects, kodesh: kodesh, growth: { days: KM_DAYS, week: g.steps, prev: g.prev, total: g.total }, names: out, grade: grade == null ? null : grade };   /* grade: My profile shows it (HoS 2026-11-24) */
   if (lc) res.lc = lc;
   return res;
 }

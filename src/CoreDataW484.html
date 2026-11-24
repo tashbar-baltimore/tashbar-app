@@ -1,0 +1,304 @@
+<script>
+/* CoreDataW484.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 7 (L08), Unit 1 "Argument, Both Sides". Cast: The Beacon newsroom.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.PARA.L08.01':{name:'Logical Steps',
+  teach:[
+    {how:'A strong argument is a REASONING CHAIN: a fact, then a link, then "therefore". Test every step: does the reason really support THIS conclusion, and is the conclusion no bigger than the reason? If yes, the step FOLLOWS LOGICALLY.', q:'Claim: The library should stay open after Mincha. Which step follows logically?', o:['Many boys have no quiet place to learn at home, so the library would give them one.','The library got new shelves, so it should stay open later.','Two boys asked for more time, so every boy needs the library at night.']},
+    {how:'A GAP IN THE REASONING is a jump. Three common gaps: A HIDDEN ASSUMPTION ("The bus is late, so the driver overslept": maybe it was traffic). HAPPENED AFTER, SO CAUSED BY ("We wore new jerseys and won, so the jerseys made us win"). A SMALL SAMPLE ("Four boys at my table said so, so most boys think so").', q:'Which sentence has a gap in the reasoning?', o:['The bus was late today, so the driver must have overslept.','It rained on Sunday, so the outdoor game moved inside.','The road was closed, so the bus took a longer way.']},
+    {how:'Fix a gap with THE MISSING STEP: say the hidden idea that joins the reason to the conclusion. A small sample: ask more people, or make the conclusion smaller. Happened after: show that it really caused it. If no true step can fill the gap, make the conclusion smaller.', q:'“The school election is on Tuesday, so the candidates’ speeches must be before Tuesday.” Which missing step fills the gap?', o:['Boys need to hear the candidates before they vote.','The election has three candidates.','Speeches are usually short.']}
+  ],
+  practice:[
+    {t:'sort', q:'Claim: Our yeshiva should start a chesed club. Sort each step.', bins:[{id:'F',label:'🔗 Follows logically'},{id:'G',label:'🕳️ A gap in the reasoning'}],
+      items:[{label:'Many elderly neighbors live alone, so a weekly visit would give them company.',bin:'F'},{label:'Three boys in our class want a club, so most boys in the school want one.',bin:'G'},{label:'Another school started a club and its grades went up, so the club raised its grades.',bin:'G'},{label:'Rabbi Rosen asked for helpers after school, so a club gives boys a set time to help.',bin:'F'}],
+      h:'Does the reason really support THIS conclusion, and is the conclusion no bigger than the reason?'},
+    {t:'pairs', q:'Match each gap to its name.', pairs:[['Gavriel got a new camera, then won a prize, so the camera won it.','happened after, so caused by'],['Four boys at lunch want pizza, so most boys do.','a small sample'],['The bus was late, so the driver overslept.','a hidden assumption']],
+      h:'Is it one thing after another, a few people standing for many, or an idea nobody checked?'},
+    {t:'spotall', q:'Tap every sentence that has a GAP IN THE REASONING.', cells:[{label:'Sales rose after the new logo, so the logo raised sales.',ok:true},{label:'Five editors like the idea, so most readers want it.',ok:true},{label:'The heater broke, so the classroom was cold.',ok:false},{label:'Yoni was absent, so he did not care about the test.',ok:true},{label:'The road was closed, so the bus took a longer way.',ok:false}],
+      h:'Look for a hidden idea nobody checked, one thing after another, or a few people standing for many.'},
+    {t:'sort', q:'Sneaky jumps! Sort each step.', bins:[{id:'G',label:'✅ Good step'},{id:'M',label:'⚠️ Mistake: a gap'}],
+      items:[{label:'Twenty boys asked for more library time, so there is a real need.',bin:'G'},{label:'Twenty boys asked, so most of the 300 boys want it.',bin:'M'},{label:'The bus ride is two hours, so boys should bring a snack.',bin:'G'},{label:'Grades rose after the new rule, so the rule raised them.',bin:'M'}],
+      h:'Is the conclusion bigger than the reason? Did something only happen after?'},
+    {t:'order', q:'Build a reasoning chain: fact, link, therefore. Tap the sentences in order.', tiles:['Fifty boys signed up for the trip.','But the bus holds only forty.','Therefore, we need a second bus.'], extra:['Also, the bus is yellow.'],
+      h:'Start with the fact. Then the link that causes a problem. Then "Therefore". Leave out what does not follow.'},
+    {t:'spotall', q:'Akiva argues for a weekly Beacon. Tap every step that FOLLOWS LOGICALLY.', cells:[{label:'A weekly paper prints news sooner, so its news is fresher.',ok:true},{label:'A monthly paper reports some events weeks late, so readers hear about them late.',ok:true},{label:'Five editors want weekly, so most readers want it too.',ok:false},{label:'The last issue came out on a sunny day and sold well, so sun helps sales.',ok:false}],
+      h:'Does the reason support THIS conclusion, and is the conclusion no bigger than the reason?'},
+    {t:'write', q:'Your turn to write. Claim: Our school should hold a debate tournament. Write a reasoning chain of three sentences: a fact, a link, and a "Therefore".', min:0, checks:['🔗 Each sentence leads to the next.','🕳️ My "Therefore" is no bigger than my reason.','✂️ I said any hidden step out loud.'], h:'Try: "Fact: … This means … Therefore, …". Then ask: does my reason really support THIS conclusion?'}
+  ],
+  check:[
+    {q:'Benny writes: “The four boys I asked at lunch want a longer recess, so most boys in the school want one.” Which gap is it?', o:['a small sample','a hidden assumption','happened after, so caused by'], h:'Ask: does the reason really support THIS conclusion, and is the conclusion no bigger than the reason?'},
+    {q:'Yoni writes: “The road to the park is closed for repairs, so the trip bus will take a different road to the park.” Does it follow logically, or which gap is it?', o:['follows logically','a hidden assumption','happened after, so caused by'], h:'Ask: does the reason really support THIS conclusion, and is the conclusion no bigger than the reason?'},
+    {t:'order', q:'Build a reasoning chain: fact, link, therefore. Tap the sentences in order.', tiles:['The trip starts at 8:00.','But the bus comes at 9:00.','Therefore, we need an earlier bus.'], extra:['Also, the bus is new.'], h:'Fact first. Then the link that causes a problem. Then "Therefore".'}
+  ],
+  re:[
+    {how:'A new way: a row of dominoes. Each one must touch the next, or the row stops. A gap in the reasoning is a missing domino; the missing step puts it back.', q:'When one step does not lead to the next, the argument has…', o:['a gap in the reasoning','a strong ending','a new claim']},
+    {how:'A simpler step: read the conclusion and ask "Why?" If the reason truly answers why, and claims no more than it shows, it follows logically.', q:'“The gym is being painted, so the game moved to the yard.” Does the reason answer why the game moved?', o:['yes, it follows logically','no, it is a small sample','no, it only happened after']},
+    {how:'The skill underneath: State a claim with reasons (Level 7). A reason tells why the claim is true.', q:'A reason tells…', o:['why the claim is true','where the writer lives','the title']}
+  ]},
+
+  'WRIT.PARA.L08.02':{name:'Check the Source',
+  teach:[
+    {how:'Before you use a fact, check the source. Check 1: WHO wrote it? Does he know the subject? Does he gain if you believe it? ONE-SIDED means the writer gains, so he tells only the good part. A friend’s guess is the other problem: he gains nothing, but he does not know.', q:'The parent committee wants a longer school day. Benny writes about it for The Beacon. Which source is one-sided?', o:['The committee’s letter, which lists the benefits but leaves out the cost','The school office’s schedule for this year','A report comparing longer and shorter days at ten schools']},
+    {how:'Check 2: WHEN was it written? Facts change: hours, rules, schedules, records. A source that is too old for your topic is OUT OF DATE. Find the date first.', q:'Yoni is writing about this year’s library hours. Which source is out of date?', o:['A library sign from five years ago','This week’s note from the librarian','This year’s school schedule']},
+    {how:'Check 3: does a SECOND SOURCE AGREE? When a source passes checks 1 and 2, and a second careful source says the same, the fact is ACCURATE AND CREDIBLE. If two careful sources DISAGREE, do not pick the one you like: keep checking with a third.', q:'The city paper says the park reopens in May. The parks office says June. What should Benny do?', o:['Keep checking with a third source before he writes a date.','Pick May, because it was printed first.','Pick whichever month he likes better.']}
+  ],
+  practice:[
+    {t:'sort', q:'Topic: this year’s school election rules. Sort each source.', bins:[{id:'A',label:'✅ Accurate and credible'},{id:'O',label:'📅 Out of date'},{id:'S',label:'🎭 One-sided'}],
+      items:[{label:'This year’s rules from the school office, also posted by Mr. Gross',bin:'A'},{label:'The election rules from eight years ago',bin:'O'},{label:'The election club’s own article, which quotes only boys who want the new rules',bin:'S'},{label:'This year’s handbook, which matches the office list',bin:'A'}],
+      h:'Three checks: who wrote it (does he gain?), when, and does a second source agree?'},
+    {t:'pairs', q:'Match each problem to what a careful writer does.', pairs:[['Two careful sources disagree.','Keep checking with a third.'],['A friend guesses the date.','He does not know: find a real source.'],['The writer gains if you believe him.','One-sided: find another source.']],
+      h:'Who wrote it, does he know, and does a second source agree?'},
+    {t:'spotall', q:'Gavriel is writing about THIS YEAR’S debate tournament. Tap every source that is OUT OF DATE.', cells:[{label:'The 2019 tournament schedule',ok:true},{label:'A rules sheet from ten years ago',ok:true},{label:'This year’s letter from the organizers',ok:false},{label:'Today’s email from the debate coach',ok:false}],
+      h:'Find the date. Is it still true for this year?'},
+    {t:'sort', q:'Sneaky sources! Topic: healthy snacks for school. Sort each source.', bins:[{id:'G',label:'✅ Good source'},{id:'M',label:'⚠️ Mistake: weak source'}],
+      items:[{label:'A doctor’s article, and the health office says the same',bin:'G'},{label:'A friend’s guess about what the nurse said',bin:'M'},{label:'A snack list from 1990',bin:'M'},{label:'This year’s nurse letter, which matches the health office',bin:'G'}],
+      h:'A weak source does not know, gains from it, or is too old.'},
+    {t:'order', q:'Build a sentence that cites an up-to-date source. Tap the tiles in order.', tiles:['According to','this year’s','school calendar,','the trip is','on May 3.'],
+      h:'Name the source and show it is current. Then the fact.'},
+    {t:'spotall', q:'Tap every source that is ONE-SIDED (the writer gains, so he tells only the good part).', cells:[{label:'A parent committee letter that lists only the benefits of its plan',ok:true},{label:'The chess club’s own article, which quotes only boys who want a chess period',ok:true},{label:'The school office’s list of rules',ok:false},{label:'A science teacher’s weather chart',ok:false},{label:'A candidate’s flyer about his own record',ok:true}],
+      h:'Ask: does the writer gain if I believe this? Does he leave out the other side?'},
+    {t:'write', q:'Your turn to write. Topic: Should our class trip go to the science museum? Name TWO sources you would check, and say why each passes the three checks.', min:0, checks:['👤 I said who wrote each source and why he knows.','📅 I checked that each source is up to date.','🔁 I showed how a second source can agree.'], h:'Think: who knows the facts this year, and gains nothing if we go?'}
+  ],
+  check:[
+    {q:'Eli is writing about a plan for a longer recess. Source: an article by the recess committee that quotes only the boys who asked for the change. Is the source accurate and credible, out of date, or one-sided?', o:['one-sided','out of date','accurate and credible'], h:'Use the three checks: who wrote it, when, and does a second source agree?'},
+    {q:'Yoni is writing about this winter’s minyan times at the shul. Source: the shul’s new winter schedule, and the gabbai’s email this week lists the same times. Is the source accurate and credible, out of date, or one-sided?', o:['accurate and credible','out of date','one-sided'], h:'Use the three checks: who wrote it, when, and does a second source agree?'},
+    {t:'order', q:'Build a sentence that cites an up-to-date source. Tap the tiles in order.', tiles:['According to','this year’s','park map,','the trail is','two miles long.'], h:'Name the source and show it is current. Then the fact.'}
+  ],
+  re:[
+    {how:'A new way: a detective checks a witness. Who is he? Does he gain? Did he really see it? When? Does another witness agree?', q:'A witness who gains if you believe him is…', o:['one-sided','out of date','a second source']},
+    {how:'A simpler step: check only the date first. Find the year. Is the fact still true today?', q:'You need this year’s Chanukah vacation dates. Which source is up to date?', o:['this year’s school calendar','a calendar from 2019','a friend’s guess']},
+    {how:'The skill underneath: Best Evidence (Level 7). Evidence must come from a source you can trust.', q:'A source you can trust is…', o:['credible','relevant','formal']}
+  ]},
+
+  'WRIT.PARA.L08.03':{name:'Counter Glue',
+  teach:[
+    {how:'A strong argument is fair to the other side. Counter glue BRINGS IN THE OTHER SIDE: "Some people argue that…", "Although…", "While it is true that…". Say it FAIRLY, the way a person who disagrees would say it. Making the other side sound silly ("Some people foolishly think…") is a mistake: the reader stops trusting you.', q:'Claim: The Beacon should come out every week. Which sentence brings in the other side fairly?', o:['Some people argue that a weekly paper is too much work for the staff.','Some people foolishly think a weekly paper is too hard.','A weekly paper keeps the news fresh.']},
+    {how:'Other counter glue ANSWERS THE OTHER SIDE: "However," and "Even so," turn back to your claim with a reason. In one sentence, the part after the comma in "Although…, …" or "While it is true that…, …" answers it. Never bring in the other side and leave it unanswered.', q:'“Some people argue that a weekly paper is too much work. ___, a team of six can share the job.” Which glue answers the other side?', o:['However,','For example,','In addition,']},
+    {how:'Bring in the strongest, fair objection: the one a thoughtful person would really raise, said his way. Not an easy objection you can knock down, and not an unfair objection that makes him sound silly. Answering the hardest point is what convinces the reader.', q:'Claim: our school should hold a book fair. Which is the STRONGEST objection to bring in?', o:['Some people argue that setting it up takes a week of volunteers’ time.','Some people think the tables might be the wrong color.','Some people say books are heavy.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each piece of counter glue by its job.', bins:[{id:'B',label:'🗣️ Brings in the other side'},{id:'A',label:'↩️ Answers the other side'}],
+      items:[{label:'Some people argue that',bin:'B'},{label:'Even so,',bin:'A'},{label:'While it is true that',bin:'B'},{label:'However,',bin:'A'},{label:'Although',bin:'B'}],
+      h:'Does it name the objection, or turn back to your claim?'},
+    {t:'pairs', q:'Match each objection to the answer that fits it.', pairs:[['Some people argue that keeping the library open costs too much.','However, parent volunteers can staff it.'],['Although debate takes time,','it trains boys to think clearly.'],['While it is true that the bus ride is long,','the boys can learn together on the way.']],
+      h:'Which answer speaks to that exact worry?'},
+    {t:'spotall', q:'Claim: our class should visit the science museum. Tap every objection that is FAIR and STRONG.', cells:[{label:'Some people argue that the trip costs a full day of learning.',ok:true},{label:'While it is true that the bus ride is over an hour,',ok:true},{label:'Some people foolishly think museums are for babies.',ok:false},{label:'Some people say the museum has too many stairs to count.',ok:false}],
+      h:'Fair: said the way a thoughtful person would say it. Strong: a real reason, not an easy one.'},
+    {t:'sort', q:'Sneaky ones! Sort each counter sentence.', bins:[{id:'G',label:'✅ Good: fair, and answered'},{id:'M',label:'⚠️ Mistake'}],
+      items:[{label:'Some say lunch is long enough. However, many boys cannot finish.',bin:'G'},{label:'Some say lunch is long enough. Lunch is at noon.',bin:'M'},{label:'Although the gym is small, a schedule lets two classes share it.',bin:'G'},{label:'Some people foolishly think homework matters. However, rest matters more.',bin:'M'}],
+      h:'A good one names the other side fairly, then answers with a reason.'},
+    {t:'order', q:'Build one sentence that brings in the other side and answers it. Tap the tiles in order.', tiles:['While it is true that','the trip is long,','the boys will learn','more than in class.'],
+      h:'Bring in first. Then the comma. Then your answer.'},
+    {t:'spotall', q:'Claim: our shul should start an evening shiur for boys. Tap every sentence that ANSWERS THE OTHER SIDE.', cells:[{label:'However, older boys can walk the younger ones home.',ok:true},{label:'Some parents worry the walk home is dark.',ok:false},{label:'Even so, the shiur ends before dark in spring.',ok:true},{label:'Some people argue that boys are too tired at night.',ok:false}],
+      h:'An answer turns back to the claim with a reason.'},
+    {t:'write', q:'Your turn to write. Claim: Our school should hold a book fair. Write one sentence that brings in the strongest objection fairly, and one that answers it.', min:0, checks:['🗣️ I brought in the strongest objection, fairly.','↩️ I answered it with a real reason.','🔗 I used counter glue: Some people argue that, Although, However, or Even so.'], h:'Think: what would a thoughtful boy who disagrees say? Write it his way, then turn back with "However," and a reason.'}
+  ],
+  check:[
+    {q:'Claim: our yeshiva should start a Sunday morning chess program. Benny brings in: “Some people argue that a Sunday program takes boys away from family time.” Is it the strongest, fair objection, an easy objection, or an unfair objection?', o:['the strongest, fair objection','an easy objection','an unfair objection'], h:'Would a thoughtful parent really raise it? Is it said fairly?'},
+    {q:'“Some parents worry that the class trip is too far. Even so, the bus ride is only one hour.” What does the second sentence do?', o:['answers the other side','brings in the other side','makes the other side sound silly'], h:'Is it the objection, or the writer’s reply?'},
+    {t:'order', q:'Build one sentence that brings in the other side and answers it. Tap the tiles in order.', tiles:['Although','debate is noisy,','it trains','clear thinking.'], h:'Bring in first. Then the comma. Then your answer.'}
+  ],
+  re:[
+    {how:'A new way: a good debater says his opponent’s strongest point fairly, then answers it. The judges trust him more.', q:'"Some people argue that…" is the debater’s way to…', o:['bring in the other side','end the speech','tell a story']},
+    {how:'A simpler step: learn one pair first: "Some people argue that… However, …".', q:'After "Some people argue that…", which word turns back to your side?', o:['However,','Also,','For example,']},
+    {how:'The skill underneath: Glue Words (Level 7). Glue words show how ideas connect.', q:'Glue words show how ideas…', o:['connect','rhyme','look']}
+  ]},
+
+  'WRIT.PARA.L08.04':{name:'Qualify Your Claim',
+  teach:[
+    {how:'A claim must be exactly as big as its evidence. Words like "always", "every boy" and "never" make a claim bigger than most evidence can prove. That OVERCLAIMS: one example the other way breaks it.', q:'Evidence: in a survey, 41 of 60 boys said they read The Beacon every week. Which claim overclaims?', o:['Every boy in the school reads The Beacon every week.','Most boys we asked read The Beacon every week.','Many boys read The Beacon every week.']},
+    {how:'A QUALIFIED claim sets honest limits that match the evidence: "most", "in most cases", "for boys who…", "on most school days". It is still a clear, strong claim, and the evidence can carry it.', q:'Evidence: on 17 of 20 school days this month, the late bus came after 4:30. Which claim is qualified?', o:['On most school days, the late bus comes after 4:30.','The late bus is always late.','The bus might be late sometimes, or maybe not.']},
+    {how:'The other mistake: the writer hears an objection and GIVES IN: he drops his claim. Qualifying is not giving in. Keep the claim, and make it the right size. (Review from Grade 6: never end by doubting your own claim.)', q:'Claim: boys who stay for night seder should get a hot supper. Which one gives in?', o:['Some boys bring food, so I guess a hot supper is not needed after all.','For boys who stay past 7:00, a hot supper would help them learn.','A hot supper will make every boy learn twice as well.']}
+  ],
+  practice:[
+    {t:'sort', q:'Evidence: 12 of 15 boys in the new homework club finished their homework on time. Sort each claim.', bins:[{id:'Q',label:'📏 Qualified'},{id:'O',label:'🎈 Overclaims'},{id:'G',label:'🏳️ Gives in'}],
+      items:[{label:'For boys who use it, the homework club helps them finish on time.',bin:'Q'},{label:'The homework club makes every boy finish every assignment.',bin:'O'},{label:'Three boys still finished late, so the club probably does not help.',bin:'G'},{label:'In most cases, boys in the club finish their homework on time.',bin:'Q'}],
+      h:'Compare each claim to 12 of 15. Too big? The right size? Or did the writer drop his claim?'},
+    {t:'pairs', q:'Match each overclaiming word to an honest limit.', pairs:[['always','in most cases'],['every boy','most boys we asked'],['never','rarely']],
+      h:'Which limit is true for the evidence but still clear?'},
+    {t:'spotall', q:'Tap every word or phrase that QUALIFIES a claim honestly.', cells:[{label:'in most cases',ok:true},{label:'for boys who',ok:true},{label:'on most school days',ok:true},{label:'always',ok:false},{label:'every single boy',ok:false},{label:'never',ok:false}],
+      h:'A qualifier sets a true limit. Big words claim everyone or every time.'},
+    {t:'sort', q:'Sneaky ones! Evidence: the library was full on 9 of 10 days after Mincha. Sort each claim.', bins:[{id:'G',label:'✅ Good claim'},{id:'M',label:'⚠️ Mistake'}],
+      items:[{label:'On most days, the library is full after Mincha.',bin:'G'},{label:'The library is full every day after Mincha.',bin:'M'},{label:'It was empty one day, so the library is not really needed.',bin:'M'},{label:'Most afternoons, boys fill the library after Mincha.',bin:'G'}],
+      h:'9 of 10 is "most", not "every". One empty day is no reason to drop the claim.'},
+    {t:'order', q:'Build a qualified claim. Tap the tiles in order.', tiles:['In most cases,','boys who sleep early','focus better','in the morning.'], extra:['always'],
+      h:'Start with the honest limit. Then who. Then the claim.'},
+    {t:'spotall', q:'Evidence: in our survey, 30 of 40 boys want a chess club. Tap every claim the evidence CAN carry.', cells:[{label:'Most boys we asked want a chess club.',ok:true},{label:'Many boys want a chess club.',ok:true},{label:'Every boy wants a chess club.',ok:false},{label:'Ten boys said no, so we should drop the idea.',ok:false}],
+      h:'Too big overclaims. Dropping the claim gives in. Keep the ones that fit 30 of 40.'},
+    {t:'write', q:'Your turn to write. Evidence: on most cold mornings, about a third of the boys come to school without a hat. Write a qualified claim about it. Then write one sentence on why "every boy forgets his hat" overclaims.', min:0, checks:['📏 My claim is as big as the evidence, no bigger.','🎈 I did not use always, every or never.','💪 I kept a clear claim and did not give in.'], h:'Use "many", "on cold mornings" or "for boys who…". Then ask: does the evidence carry every word?'}
+  ],
+  check:[
+    {q:'Evidence: 18 of 25 boys who read before bed said they fall asleep faster. Claim: “Reading before bed makes every boy fall asleep faster.” Is the claim qualified, does it overclaim, or does it give in?', o:['overclaims','qualified','gives in'], h:'Compare the claim to the evidence, word by word.'},
+    {q:'Evidence: on 8 of 10 Fridays this term, the lunchroom ran out of rolls before the last class ate. Claim: “On most Fridays, the lunchroom runs out of rolls before the last class eats.” Is the claim qualified, does it overclaim, or does it give in?', o:['qualified','overclaims','gives in'], h:'Compare the claim to the evidence, word by word.'},
+    {t:'order', q:'Build a qualified claim. Tap the tiles in order.', tiles:['For boys who','take the late bus,','a homework room','would help.'], extra:['always'], h:'Start with the honest limit. Then the claim.'}
+  ],
+  re:[
+    {how:'A new way: a tailor cuts a suit to the right size, not too big and not too small. A claim is cut to the size of its evidence.', q:'A claim that is too big for its evidence…', o:['overclaims','gives in','is qualified']},
+    {how:'A simpler step: find just ONE big word (always, every, never) and swap it for a true limit.', q:'Swap the big word: “Boys always forget their siddur on trips.”', o:['Some boys forget their siddur on trips.','Boys never forget their siddur on trips.','Every boy forgets his siddur on every trip.']},
+    {how:'The skill underneath: Best Evidence (Level 7). A claim stands on its evidence.', q:'A claim must be backed by…', o:['evidence','a title','a greeting']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.PARA.L08.01':{hook:'"The bus was late, so the driver overslept." Are you sure?', big:'Each step of an argument must follow logically from the one before; a jump is a gap in the reasoning.',
+    intro:['A reasoning chain: a fact, a link, then "therefore".','Test: does the reason support THIS conclusion, and is the conclusion no bigger?','Gaps: a hidden assumption; happened after, so caused by; a small sample.','Fix a gap: add the missing step, or make the conclusion smaller.'],
+    ex:[{q:'Fifty boys signed up. The bus holds forty.',steps:['Fact: fifty boys signed up.','Link: the bus holds only forty.','Therefore: we need a second bus.'],a:'Therefore, we need a second bus.'},
+        {q:'Four boys at my table want pizza, so most boys do.',steps:['Is four boys enough to speak for most?','No: a small sample.','Fix: ask more boys, or make the conclusion smaller.'],a:'Four boys at my table want pizza on Fridays.'}],
+    oops:{q:'Claim: the library should stay open after Mincha.',wrong:'Two boys asked for more time, so every boy needs the library at night.',right:'Many boys have no quiet place to learn at home, so the library would give them one.',why:'Two boys cannot speak for every boy. The conclusion is bigger than the reason.'},
+    idea:['A chain is only as strong as its weakest link.'],
+    try:{q:'“We wore new jerseys and won, so the jerseys made us win.”',o:['happened after, so caused by','a small sample','follows logically'],a:'happened after, so caused by',steps:['Did the jerseys really cause the win, or just come first?']}},
+  'WRIT.PARA.L08.02':{hook:'A fact can be printed, popular, and still wrong. How do you know?', big:'Check every source three ways: who wrote it, when, and does a second source agree.',
+    intro:['Who wrote it? Does he know? Does he gain?','He gains, so he tells only the good part: one-sided.','Too old for your topic: out of date.','A second source agrees: accurate and credible. They disagree: keep checking.'],
+    ex:[{q:'Benny needs facts about a longer school day.',steps:['The committee’s letter leaves out the cost: one-sided.','A report on ten schools: they know, and gain nothing.','The school office agrees: accurate and credible.'],a:'Use the ten-school report, checked by a second source.'},
+        {q:'Yoni needs this year’s library hours.',steps:['A sign from five years ago: out of date.','This week’s note from the librarian: up to date.'],a:'Use this week’s note from the librarian.'}],
+    oops:{q:'Benny writes about the park’s hours.',wrong:'A sign from 2012 says the park closes at 5.',right:'This year’s parks office list says the park closes at 8, and the park ranger agrees.',why:'Hours change. A sign from 2012 is out of date.'},
+    idea:['A fact must pass all three checks: who, when, and a second source.'],
+    try:{q:'The chess club’s letter lists only the good parts of a chess period. The source is…',o:['one-sided','out of date','accurate and credible'],a:'one-sided',steps:['Does the writer gain if you believe it?']}},
+  'WRIT.PARA.L08.03':{hook:'Why does a debater who admits the other side has a point often win?', big:'Counter glue brings in the strongest objection fairly, then answers it and turns back to your claim.',
+    intro:['Bring in: Some people argue that…, Although…, While it is true that…','Bring in the STRONGEST objection, said fairly.','Answer: However, Even so, or after the comma.','Never leave it unanswered; never make it sound silly.'],
+    ex:[{q:'Claim: The Beacon should be weekly.',steps:['Strongest objection, said fairly: weekly is a lot of work.','Answer: However, a team of six can share it.'],a:'Some people argue that weekly is too much work. However, a team of six can share it.'},
+        {q:'Claim: the class trip is worth a school day.',steps:['Bring in with "While it is true that".','Answer after the comma, in the same sentence.'],a:'While it is true that the trip takes a day of class, the museum teaches what books cannot.'}],
+    oops:{q:'Claim: the library should stay open after Mincha.',wrong:'Some people foolishly think the library costs too much.',right:'Some people argue that it costs too much. However, parent volunteers can staff it.',why:'"Foolishly" makes the other side sound silly, and there is no answer. Be fair, then answer.'},
+    idea:['Name the strongest objection fairly, then answer it: the reader trusts you more.'],
+    try:{q:'Which glue answers the other side?',o:['Even so,','Some people argue that','While it is true that'],a:'Even so,',steps:['Which one turns back to your side?']}},
+  'WRIT.PARA.L08.04':{hook:'"Every boy loves it!" Then one boy says no. What happened to your argument?', big:'A strong claim is qualified: exactly as big as its evidence. Do not overclaim, and do not give in.',
+    intro:['Overclaims: always, every boy, never.','Qualified: most, in most cases, for boys who…','Gives in: drops the claim when someone objects.','Keep the claim; make it the right size.'],
+    ex:[{q:'Evidence: 41 of 60 boys read The Beacon weekly.',steps:['"Every boy reads it": overclaims.','41 of 60 is most, not all.','Qualify it: "most boys we asked".'],a:'Most boys we asked read The Beacon every week.'},
+        {q:'Objection: some boys bring their own supper to night seder.',steps:['Dropping the claim would give in.','Set an honest limit instead: "for boys who stay past 7:00".'],a:'For boys who stay past 7:00, a hot supper would help them learn.'}],
+    oops:{q:'Evidence: the late bus came after 4:30 on 17 of 20 days.',wrong:'The late bus is always late.',right:'On most school days, the late bus comes after 4:30.',why:'"Always" is bigger than the evidence. On three days it was on time.'},
+    idea:['Cut the claim to the size of the evidence: not bigger, not smaller.'],
+    try:{q:'"One boy disagreed, so I guess the plan is not needed." This…',o:['gives in','overclaims','is qualified'],a:'gives in',steps:['Did the writer keep his claim?']}}
+  };
+  var HOWTO = {
+  'WRIT.PARA.L08.01':{s:'Find the reason and the conclusion ("so", "therefore").\nAsk: does the reason really support THIS conclusion, and is the conclusion no bigger than the reason?\nLook for a hidden assumption, "happened after, so caused by", or a small sample.\nFix a gap: add the missing step, or make the conclusion smaller.'},
+  'WRIT.PARA.L08.02':{s:'Who wrote it? Does he know? Does he gain? (gains: one-sided)\nWhen was it written? (too old: out of date)\nDoes a second source agree? If they disagree, keep checking.\nPasses all three: accurate and credible.'},
+  'WRIT.PARA.L08.03':{s:'Pick the strongest objection, not an easy one.\nBring it in fairly: Some people argue that…, Although…, While it is true that…\nAnswer it: However, Even so, or after the comma, with a reason.\nNever leave it unanswered, and never make it sound silly.'},
+  'WRIT.PARA.L08.04':{s:'Look at the evidence: all, most, or some?\nFind big words: always, every, never. Bigger than the evidence? It overclaims.\nQualify it: most, in most cases, for boys who…\nKeep the claim. Dropping it gives in.'}
+  };
+  var BITE = {
+  'WRIT.PARA.L08.01':{ band:'M68', pic:'🧩', today:'Build a reasoning chain with no gaps', why:'A reader who spots one jump stops trusting the whole argument.',
+    ready:[{q:'A reason tells…', o:['why the claim is true','what the title is','who the reader is','when it was written'], a:'why the claim is true'}],
+    bridge:'WRIT.ESSAY.L07.01', bridgeName:'State a claim with reasons',
+    watch:{ q:'Claim: the debate club needs a bigger room.', m:{type:'scene', e:'🗣️', t:'Eli makes his case to Mr. Gross before debate practice.'}, steps:[
+      {t:'Fact: thirty boys joined the debate club.'},
+      {t:'Link: the room seats only twenty.'},
+      {t:'Therefore: the club needs a bigger room. It follows.'},
+      {t:'A gap: "Ten joined after our poster, so the poster did it."'},
+      {t:'Fix it: show the missing step, or make the conclusion smaller.'},
+      {t:'Teach it back: tell your chavrusa the three kinds of gaps.'}], a:'Thirty boys joined, but the room seats twenty. Therefore, the club needs a bigger room.' },
+    oops:{ q:'Claim: The Beacon should come out weekly.', wrong:'Three boys on staff want it, so most readers want a weekly Beacon.', right:'In a survey of 60 readers, 45 asked for a weekly Beacon.', why:'Three boys are a small sample. They cannot speak for most readers.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can build a reasoning chain and spot a gap.',
+    board:{ one:'Does the reason support THIS conclusion, and is the conclusion no bigger? If not, it is a gap.', activity:'Chavrusas lay out chain cards (fact, link, therefore), then slip in a "gap" card for the partner to catch and name.', mistakes:['A hidden assumption','Happened after, so caused by','A small sample turned into "most boys"'] },
+    do:[
+      {type:'sort', q:'Claim: our school needs a chesed club.', bins:['Follows logically','Mistake: a gap'], cards:[['Neighbors live alone, so visits help.',0],['Three boys want it, so most boys do.',1],['Rabbi Rosen wants helpers; a club sets a time.',0],['A club started, then grades rose, so it did it.',1]], mis:true,
+        say:'Does each step follow? Sort each card.', how:'Does the reason support THIS end, and is the end no bigger?'},
+      {type:'tiles', q:'The bus holds forty. Finish the chain.', w:['Fifty boys','signed up,','so we need','a second bus.'], extra:['is yellow.'],
+        say:'Build the chain: fact, then what follows.', how:'Fact first. Then "so". Then what the fact supports.'}],
+    your:[
+      {type:'match', pairs:[['A camera came, then a prize.','happened after, so caused by'],['Four boys said so, so most do.','a small sample'],['The bus was late: he overslept.','a hidden assumption']],
+        say:'Match each gap to its name.', how:'One thing after another? A few for many? An unchecked idea?'},
+      {type:'sort', bins:['Follows logically','A gap in the reasoning'], cards:[['It rained, so the game moved inside.',0],['Four boys said so, so most agree.',1],['The heater broke, so the room was cold.',0],['The bus was late, so the driver overslept.',1]],
+        say:'Follows, or a gap? Sort each one.', how:'Does the reason support this end, with nothing hidden?'},
+      {type:'tiles', q:'Fix the jump: make the conclusion smaller.', w:['Eli won once,','so he has','a good chance','in round two.'], extra:['always wins'],
+        say:'Build a step that does not jump.', how:'One win gives a chance, not a promise.'},
+      {type:'match', pairs:[['A small sample','Ask more, or make it smaller.'],['A hidden assumption','Add the missing step.'],['Happened after','Show it really caused it.']],
+        say:'Match each gap to its fix.', how:'What would make the step follow?'},
+      {type:'sort', q:'Akiva’s chain for a weekly Beacon.', bins:['Follows logically','A gap'], cards:[['Weekly prints sooner, so news is fresher.',0],['Five editors like it, so most readers do.',1],['Sales rose after the logo, so it did it.',1]],
+        say:'Test each step of Akiva’s chain.', how:'Is the conclusion bigger than the reason?'}] },
+
+  'WRIT.PARA.L08.02':{ band:'M68', pic:'🗂️', today:'Check who wrote it, when, and who agrees', why:'One fact from a weak source can sink your whole argument.',
+    ready:[{q:'A credible source is one you can…', o:['trust','skip','sell','draw'], a:'trust'}],
+    bridge:'WRIT.ESSAY.L07.04', bridgeName:'Best Evidence',
+    watch:{ q:'Yoni needs the food pantry’s hours for The Beacon.', m:{type:'scene', e:'🔎', t:'Yoni is writing a Beacon story on the city food pantry.'}, steps:[
+      {t:'Source 1: a flyer from 2018. Out of date.'},
+      {t:'Source 2: a volunteer’s guess from memory. He does not know.'},
+      {t:'Source 3: this month’s city list of pantry hours.'},
+      {t:'Second check: the pantry director says the same hours.'},
+      {t:'New, from people who know, and two agree: accurate and credible.'},
+      {t:'Teach it back: tell your chavrusa the three checks.'}], a:'This month’s city list, confirmed by the pantry director.' },
+    oops:{ q:'Yoni needs the pantry’s hours.', wrong:'A flyer from 2018 lists the hours.', right:'This month’s city list, and the director agrees.', why:'Hours change. A flyer from 2018 is out of date.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can check a source: who wrote it, when, and who agrees.',
+    board:{ one:'Check the source: who wrote it (does he know, does he gain?), when, and does a second source agree?', activity:'Chavrusas get source cards with a writer and a date and stamp each one: CREDIBLE, OLD, ONE-SIDED or KEEP CHECKING.', mistakes:['Trusting a source because it is printed','Trusting a writer who gains and tells only the good part','Picking the source you like when two disagree'] },
+    do:[
+      {type:'match', pairs:[['Who wrote it?','Does he know? Does he gain?'],['When was it written?','Is it still true?'],['A second source?','Does it agree?']],
+        say:'Match each check to the question it asks.', how:'Three checks: who, when, and a second source.'},
+      {type:'sort', q:'Topic: this year’s class trip.', bins:['Good source','Mistake: weak'], cards:[['This year’s office list',0],['A friend’s guess',1],['A trip schedule from 1998',1],['Two teachers who agree',0]], mis:true,
+        say:'Good source, or a mistake? Sort each card.', how:'Does he know? When was it written? Does another agree?'}],
+    your:[
+      {type:'tiles', q:'Cite an up-to-date source for the trip date.', w:['According to','this year’s','calendar,','it is in May.'], extra:['from 1998,'],
+        say:'Build it: a current source first, then the fact.', how:'Name the source and show it is current.'},
+      {type:'sort', q:'Topic: this year’s class trip.', bins:['Accurate and credible','Out of date','One-sided'], cards:[['Office list; a teacher agrees',0],['A schedule from 2009',1],['Committee letter, no cost given',2],['Trip planners quote only fans',2]],
+        say:'Sort each source into its group.', how:'Who wrote it? When? Does a second source agree?'},
+      {type:'match', pairs:[['One-sided','He gains; only the good part.'],['Out of date','Too old for today.'],['Two sources disagree','Keep checking.']],
+        say:'Match each problem to what it means.', how:'Who, when, or a second source?'},
+      {type:'tiles', q:'Check it twice.', w:['The coach','and the office','both say','Thursday.'], extra:['I think'],
+        say:'Build a fact that two sources agree on.', how:'Name both sources. Then what they agree on.'},
+      {type:'sort', q:'Topic: this year’s library hours.', bins:['Up to date','Out of date'], cards:[['This week’s email',0],['A sign from 2015',1],['Today’s school news',0],['A 2010 handbook',1]],
+        say:'Is each source new enough?', how:'Find the date. Is it still true this year?'}] },
+
+  'WRIT.PARA.L08.03':{ band:'M68', pic:'🔄', today:'Bring in the other side, then answer it', why:'Readers trust a writer who hears the objection and still proves his point.',
+    ready:[{q:'Glue words show how ideas…', o:['connect','rhyme','look','sound'], a:'connect'}],
+    bridge:'WRIT.PARA.L07.01', bridgeName:'Glue Words',
+    watch:{ q:'Claim: the yeshiva should hold a book fair.', m:{type:'scene', e:'📚', t:'Benny writes a Beacon editorial about a book fair.'}, steps:[
+      {t:'Pick the strongest objection: the setup work.'},
+      {t:'Bring it in fairly: "Some people argue that it takes a week."'},
+      {t:'Answer it: "However, ten volunteers can set it up in two days."'},
+      {t:'Or one sentence: "Although it takes work, it builds readers."'},
+      {t:'Never say "foolishly". Never leave it unanswered.'},
+      {t:'Teach it back: tell your chavrusa the bring-in and answer words.'}], a:'Some people argue that a book fair takes a week to set up. However, ten volunteers can set it up in two days.' },
+    oops:{ q:'Claim: the yeshiva should hold a book fair.', wrong:'Some people foolishly think a book fair is too much work.', right:'Some people argue that it takes a week to set up. However, volunteers can do it in two days.', why:'"Foolishly" is unfair, and there is no answer. Be fair, then answer.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can bring in the strongest objection fairly and answer it.',
+    board:{ one:'Bring in the strongest objection fairly (Some people argue that, Although, While it is true that), then answer it (However, Even so).', activity:'Chavrusa debate: one boy gives his strongest objection with "Some people argue that…"; the other answers with "However," and a reason.', mistakes:['Bringing in the other side and never answering','Picking an easy objection instead of the strongest','Making the other side sound silly'] },
+    do:[
+      {type:'tiles', q:'Claim: our class should take a trip.', w:['Some people','argue that','trips cost','a class day.'], extra:['foolishly'],
+        say:'Build a fair sentence that brings in the other side.', how:'Who argues, then what they argue. Keep it fair.'},
+      {type:'sort', q:'Claim: the library should open after Mincha.', bins:['Good','Mistake'], cards:[['Some say it costs too much. However, parents can staff it.',0],['Some say it costs too much.',1],['Although it is extra work, boys need the space.',0],['Some foolishly say it is useless.',1]], mis:true,
+        say:'Fair and answered, or a mistake? Sort each.', how:'A good one is fair to the other side, then answers it.'}],
+    your:[
+      {type:'match', pairs:[['Some say debate is noisy.','However, it builds clear thinking.'],['Some say the trip is long.','Even so, the boys learn on the bus.'],['Some say lunch is long enough.','However, many boys cannot finish.']],
+        say:'Match each objection to the answer that fits.', how:'Which answer speaks to that exact worry?'},
+      {type:'tiles', q:'Bring in and answer in one sentence.', w:['Although','it is long,','the trip','is worth it.'], extra:['However,'],
+        say:'Build one sentence: bring in, then answer.', how:'"Although" and the other side, a comma, then your answer.'},
+      {type:'sort', bins:['Brings in the other side','Answers the other side'], cards:[['Some people argue that',0],['However,',1],['While it is true that',0],['Even so,',1],['Although',0]],
+        say:'Bring in or answer? Sort each phrase.', how:'Does it name the objection, or turn back to your claim?'},
+      {type:'match', pairs:[['The strongest, fair objection','Setup takes a week.'],['An easy objection','Tables are the wrong color.'],['An unfair objection','Some foolishly think…']],
+        say:'Match each kind of objection to an example.', how:'Strong is a real worry. Unfair makes it sound silly.'},
+      {type:'sort', q:'Some say debate takes too much time.', bins:['Good answer','Mistake: no reason'], cards:[['However, it is only one hour a week.',0],['However, debate is cool.',1],['Even so, debate is the best club.',1]],
+        say:'Does each answer give a real reason?', how:'"However" must be followed by a real reason.'}] },
+
+  'WRIT.PARA.L08.04':{ band:'M68', pic:'📏', today:'Make your claim as big as your evidence', why:'One "every boy" can be broken by one boy. An honest claim stands.',
+    ready:[{q:'A claim must be backed by…', o:['evidence','a title','a greeting','a picture'], a:'evidence'}],
+    bridge:'WRIT.ESSAY.L07.04', bridgeName:'Best Evidence',
+    watch:{ q:'Evidence: 45 of 50 boys came to last year’s chesed day.', m:{type:'scene', e:'🤝', t:'Gavriel drafts a Beacon editorial asking for a second chesed day.'}, steps:[
+      {t:'Evidence: 45 of 50 boys came to chesed day.'},
+      {t:'First try: "Every boy loves chesed day." That overclaims.'},
+      {t:'Five boys did not come, so "every" breaks.'},
+      {t:'Objection: "Some boys were busy." Do not give in.'},
+      {t:'Qualified: "Most came, so a second day would likely draw many."'},
+      {t:'Teach it back: tell your chavrusa overclaims, qualified and gives in.'}], a:'Most boys came to chesed day, so a second day would likely draw many boys.' },
+    oops:{ q:'Evidence: 45 of 50 boys came.', wrong:'Every boy loves chesed day.', right:'Most boys came to chesed day.', why:'Five boys did not come. "Every" is bigger than the evidence.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can qualify a claim so it is as big as your evidence.',
+    board:{ one:'Cut the claim to the evidence: qualified, not overclaimed, and never given up.', activity:'Chavrusas get evidence cards and claim cards, and trim each claim with a limit word until it fits.', mistakes:['"Always", "every boy" or "never" with small evidence','Dropping the claim at the first objection','Overclaiming to sound stronger'] },
+    do:[
+      {type:'sort', q:'Evidence: the gym was full 9 of 10 days.', bins:['Qualified','Mistake: overclaims','Mistake: gives in'], cards:[['On most days, the gym is full.',0],['The gym is full every day.',1],['It was empty once, so forget it.',2],['Most afternoons, the gym fills up.',0]], mis:true,
+        say:'Qualified, or a mistake? Sort each claim.', how:'Does it fit 9 of 10? Did the writer keep his claim?'},
+      {type:'match', pairs:[['always','in most cases'],['every boy','most boys we asked'],['never','rarely']],
+        say:'Match each big word to an honest limit.', how:'Which limit is true but still clear?'}],
+    your:[
+      {type:'tiles', q:'Evidence: 12 of 15 club boys finish on time.', w:['Most boys','in the club','finish','on time.'], extra:['every'],
+        say:'Build a qualified claim.', how:'Start with the honest limit. Then the claim.'},
+      {type:'sort', q:'The evidence says most, not all.', bins:['Qualified','Overclaims'], cards:[['Many boys want chess.',0],['Every boy wants chess.',1],['On most days, the bus is late.',0],['The bus is never on time.',1]],
+        say:'Qualified, or too big? Sort each claim.', how:'Most is not all. Look for always, every and never.'},
+      {type:'match', pairs:[['Overclaims','Bigger than the evidence'],['Qualified','As big as the evidence'],['Gives in','Drops the claim']],
+        say:'Match each word to what it means.', how:'Too big, the right size, or given up?'},
+      {type:'tiles', q:'Evidence: boys who stay late learn better after supper.', w:['For boys','who stay late,','a hot supper','helps.'], extra:['always'],
+        say:'Build a claim with an honest limit.', how:'Say which boys first. Then the claim.'},
+      {type:'sort', bins:['Keeps the claim','Gives in'], cards:[['Most boys came, so add a day.',0],['Five did not come, so forget it.',1],['For boys who stay, supper helps.',0],['Some bring food, so never mind.',1]],
+        say:'Did the writer keep his claim? Sort each.', how:'An honest limit keeps the claim. Giving in drops it.'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

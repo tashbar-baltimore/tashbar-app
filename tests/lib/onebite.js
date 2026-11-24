@@ -41,6 +41,14 @@ function obkStep(wrong) {
         return 'trace dots'; }
       return check(); }
     case 'listen': { const j = w ? s.o.findIndex((o, k) => o !== S(d.a) && !s.off[k]) : s.o.indexOf(S(d.a)); return tap('pick', j); }
+    /* the seven new kinds (src/CoreKitActs.html), played by tap only, as in tests/lib/coreacts.js, so real lessons that use them play to "mastered" */
+    case 'evidence': { const a = (Array.isArray(d.a) ? d.a : [d.a]).map(Number); if (w) return tap('sent', d.p.findIndex((x, k) => a.indexOf(k) < 0)); return tap('sent', a.find(k => !s.hit[k])); }
+    case 'combine': { if (w) return tap('join', d.o.map(S).find(x => x !== S(d.j))); return tap('join', S(d.j)); }
+    case 'cloze': { if (OBK.ready(d, s)) return check(); return tap('word', S(d.a)); }
+    case 'storymap': { if (OBK.ready(d, s)) return check(); const i = s.at.indexOf(-1), want = S(d.cards[i]);
+      if (s.sel < 0) return tap('card', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); return tap('box', i); }
+    case 'parts': case 'dictation': case 'order': { if (OBK.ready(d, s)) return check(); const list = d.parts || d.w || d.steps, i = s.slots.indexOf(-1), want = S(list[i]);
+      return tap(d.type === 'parts' ? 'part' : d.type === 'order' ? 'strip' : 'tile', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); }
   }
   return 'unknown type ' + d.type;
 }
@@ -169,6 +177,9 @@ module.exports = async function oneBiteTests(pg) {
     /* ---- every real bite (and 6 auto-bites) to mastered ---- */
     const auto = Object.keys(BANK_ALL).filter((x, i) => i % 230 === 7).slice(0, 6);
     for (const id of ids.concat(auto)) { let s;
+      /* the boy's page signs out after 5 minutes with no tap (SignOutBar.html IDLE); scripted clicks are not taps, and with 260+ bites
+         this loop runs longer than that, so the test boy was signed out mid-run (A.st null). Count each lesson as a tap. */
+      try { document.dispatchEvent(new Event('pointerdown')); } catch (e) {}
       try { s = await play(id); } catch (e) { s = { err: String(e && e.stack || e).slice(0, 200) }; }
       if (s.err) o.bad.push(id + ': ' + s.err); else { o.played++; o.mastered++; o.kitActs += s.kit || 0; }
       o.steps[id] = s.screens; }
