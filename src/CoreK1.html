@@ -25,7 +25,7 @@
     var lv = Number(/\.L0(\d)\./.exec(g.id)[1]); if (g.grade !== lv - 1) return 'grade must be ' + (lv - 1) + ' for a .L0' + lv + '. id';
     if (!g.name || String(g.name).length > 30) return 'name is needed (30 letters at most)';
     if (!Array.isArray(g.acts) || g.acts.length < 4 || g.acts.length > 8) return 'acts must be 4 to 8 Activity Kit activities';
-    if (W.OBK) { for (var i = 0; i < g.acts.length; i++) { var e = OBK.err(g.acts[i], 'K1'); if (e) return 'act ' + (i + 1) + ': ' + e; if (OBK.types[g.acts[i].type].reader) return 'act ' + (i + 1) + ': ' + g.acts[i].type + ' opens the Reader; a K-1 game has no Reader';
+    if (W.OBK) { for (var i = 0; i < g.acts.length; i++) { var e = OBK.err(g.acts[i], 'K1'); if (e) return 'act ' + (i + 1) + ': ' + e; if (OBK.types[g.acts[i].type].reader && g.acts[i].type !== 'read') return 'act ' + (i + 1) + ': ' + g.acts[i].type + ' opens the Reader; a K-1 game opens a book only with read';
       var sw = String(g.acts[i].say || OBK.say(g.acts[i]) || '').trim().split(/\s+/).length; if (sw > 12) return 'act ' + (i + 1) + ': the spoken line has more than 12 words'; } }
     if (new Set(g.acts.map(function (a) { return a.type; })).size < 3) return 'use 3 or more kinds of activity';
     return '';
@@ -74,6 +74,7 @@
   }
   function start(i) {
     G.i = i; G.s = OBK.init(G.g.acts[i], ctx()); G.view = 'act'; draw();
+    if (G.g.acts[i].type === 'read' && W.TLCORE && TLCORE.text) { var bs = G.s; TLCORE.text(G.g.acts[i].text).then(function (t) { if (G && G.s === bs && t && t.title) { bs.title = t.title; draw(); } }).catch(function () {}); }   /* the book card shows its title */
     var d = G.g.acts[i]; say(OBK.say(d));
     if ((d.type === 'listen' || (d.type === 'tiles' && d.hear)) && W.OBK.hear) setTimeout(function () { if (G && G.i === i) try { OBK.hear(d); } catch (e) {} }, 1400);
   }
@@ -115,9 +116,20 @@
     if (G.view !== 'act' || G.s.over) return;
     var oa = t.getAttribute('data-obk'); if (!oa) return;
     var d = G.g.acts[G.i];
+    if (d.type === 'read' && oa === 'open') return book(d);   /* a little book (HoS 2026-11-24: K boys get little-book games) */
     if (oa === 'hear') { try { OBK.hear(d); } catch (er) {} return; }
     var r = OBK.tap(d, G.s, oa, t.getAttribute('data-k'), null, ctx());
     if (r === 'ok') return right(); if (r === 'bump' || r === 'miss') return miss(G.s.msg); draw();   /* the kit says 'miss' for a wrong listen or count pick */
+  }
+  /* ---------- a little book inside a K-1 game (HoS 2026-11-24, yes to little-book games on the K path) ----------
+     The read piece opens the book Reader over the game (the game hides while the book is open, because it sits above the Reader).
+     Reading to the end is right; closing the book early leaves the piece open with a line that says to read to the end. */
+  function book(d) {
+    var s = G.s; if (s.busy || s.over || !W.TLCORE || !W.TLCORE.reader) return; s.busy = true; s.msg = ''; draw();
+    var me = G, el = G.el; el.style.visibility = 'hidden'; try { speechSynthesis.cancel(); } catch (e) {}
+    var back = function (done, fail) { if (G !== me) return; el.style.visibility = ''; s.busy = false;
+      if (done) return right(); s.msg = fail ? 'The book did not open. Tap it again.' : 'Read to the very end of the book. Then you get your star!'; say(s.msg); draw(); };
+    W.TLCORE.reader.open(d.text, { exit: 'x', grade: G.g.grade, page: 0 }).then(function (r) { back(!!(r && r.done), false); }, function () { back(false, true); });
   }
   function play(id) {
     var g = K.games[id]; if (!g || !W.OBK) return;

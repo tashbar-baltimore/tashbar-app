@@ -2,7 +2,8 @@
    1. Played inside the REAL One Bite player as a TEST- boy, with the made-up chapter tests/fixtures/ZZTEST.KEY.01.txt (core.js serves it):
       read: Open the book, close it early (he is told to read to the end), open again, read to the end: the activity is right.
       proof: Find the proof, one wrong sentence (the Reader says what to look for), close and open again (the miss is kept), then the proof: right, but not first try.
-      The lesson goes on to the next activity both times. Unit checks and K-1 games refuse these two kinds.
+      The lesson goes on to the next activity both times. Unit checks refuse these two kinds. A K-1 game refuses proof and plays read
+      as a little book (HoS 2026-11-24): the Reader opens on top, closing early is not right, reading to the end is.
    2. Every real lesson that uses them names a text that is in texts/, and a proof that is in exactly ONE sentence of it; read only in "do". */
 const path = require('path');
 module.exports = async function (pg) {
@@ -16,7 +17,10 @@ module.exports = async function (pg) {
     if (!OBK.err({ type: 'read', text: 'nope' }, 'B23')) out.bad.push('read: a bad text id was not refused');
     if (!OBK.err({ type: 'proof', text: 'ZZTEST.KEY.01', q: 'Why?', proof: 'Dovid' }, 'B23')) out.bad.push('proof: a one-word proof was not refused');
     if (TLCORE.units && !/Reader/.test(TLCORE.units.err({ id: 'ZZ.U01', title: 'x', c: 'READ', skills: ['a', 'b'], items: [{ skill: 'a', type: 'proof', text: 'ZZTEST.KEY.01', q: 'q', proof: 'Dovid gasped' }] }))) out.bad.push('a unit check must refuse a proof item');
-    if (TLCORE.k1 && !/Reader/.test(TLCORE.k1.err({ id: 'READ.PHON.L01.91', grade: 0, name: 'x', acts: [{ type: 'read', text: 'ZZTEST.KEY.01' }, { type: 'listen', hear: 'b', o: ['b', 'd'], a: 'b' }, { type: 'listen', hear: 'b', o: ['b', 'd'], a: 'b' }, { type: 'listen', hear: 'b', o: ['b', 'd'], a: 'b' }] }) || '')) out.bad.push('a K-1 game must refuse a read act');
+    /* K-1 games (HoS 2026-11-24: yes to little-book games on the K path): a read act opens the book; a proof act is still refused */
+    if (TLCORE.k1 && !/Reader/.test(TLCORE.k1.err({ id: 'READ.PHON.L01.91', grade: 0, name: 'x', acts: [{ type: 'proof', text: 'ZZTEST.KEY.01', q: 'Why?', proof: 'Dovid gasped' }, { type: 'listen', hear: 'b', o: ['b', 'd'], a: 'b' }, { type: 'findall', grid: ['b', 'd', 'b'], find: 'b' }, { type: 'match', pairs: [['B', 'b'], ['D', 'd']] }] }) || '')) out.bad.push('a K-1 game must refuse a proof act');
+    const K1B = { id: 'READ.PHON.L01.92', grade: 0, name: 'Book test', acts: [{ type: 'read', text: 'ZZTEST.KEY.01', say: 'Read the book.' }, { type: 'listen', hear: 'b', o: ['b', 'd'], a: 'b' }, { type: 'findall', grid: ['b', 'd', 'b'], find: 'b' }, { type: 'match', pairs: [['B', 'b'], ['D', 'd']] }] };
+    if (TLCORE.k1 && TLCORE.k1.err(K1B)) out.bad.push('a K-1 game must accept a read act (got: ' + TLCORE.k1.err(K1B) + ')');
     const FIX = Object.keys(BANK_ALL).find(x => /^READ\.COMP\.L04\./.test(x)) || Object.keys(BANK_ALL).find(x => /^READ\./.test(x));
     const keep = ONE_BITE[FIX], prev = window.OB_LIVE, KEEP = { st: A.st }; window.OB_LIVE = 'test';
     const world = (() => { const pre = FIX.split('.')[0]; return WORLD[pre] ? pre : 'READ'; })();
@@ -58,6 +62,22 @@ module.exports = async function (pg) {
       Q('#app .ob-foot [data-ob=knext]').click(); await sleep(20); out.seen.after = p.ob.stage + ':' + (p.ob.kit ? p.ob.kit.acts[p.ob.kit.i].type : '');
       out.seen.wide = document.documentElement.scrollWidth > innerWidth + 1;
     } catch (e) { out.bad.push(String(e.message || e).slice(0, 300)); }
+    /* a little book inside a K-1 game: Open the book shows the Reader on top (the game hides), closing early is not right, reading to the end is */
+    if (TLCORE.k1 && TLCORE.k1.play) try {
+      try { delete (A.st.reads || {})['ZZTEST.KEY.01']; } catch (e) {}
+      TLCORE.k1.add(K1B); TLCORE.k1.play(K1B.id); await sleep(80);
+      if (!Q('#k1cov [data-obk=open]')) throw new Error('K-1 book: no Open the book button');
+      Q('#k1cov [data-obk=open]').click(); if (!await until(() => Q('#crd .crd-cover'))) throw new Error('K-1 book: the Reader did not open');
+      const top = document.elementFromPoint(innerWidth / 2, innerHeight / 2); out.seen.k1Top = !!(top && top.closest('#crd')) && getComputedStyle(Q('#k1cov')).visibility === 'hidden';
+      Q('#crd [data-crd=exit]').click(); await until(() => !Q('#crd') && getComputedStyle(Q('#k1cov')).visibility !== 'hidden');
+      out.seen.k1Early = (Q('#k1cov .k1c-msg') || {}).textContent || ''; out.seen.k1EarlyOver = TLCORE.k1.state().over;
+      Q('#k1cov [data-obk=open]').click(); await until(() => Q('#crd .crd-cover')); Q('#crd [data-crd=start]').click(); await sleep(60);
+      for (let i = 0; i < 6 && Q('#crd [data-crd=next]'); i++) { Q('#crd [data-crd=next]').click(); await sleep(60); }
+      if (!Q('#crd [data-crd=finish]')) throw new Error('K-1 book: no book-done screen');
+      Q('#crd [data-crd=finish]').click(); await until(() => TLCORE.k1.state() && TLCORE.k1.state().over);
+      out.seen.k1Done = TLCORE.k1.state().over && /Yes/.test((Q('#k1cov .k1c-yay') || {}).textContent || '') && getComputedStyle(Q('#k1cov')).visibility !== 'hidden';
+    } catch (e) { out.bad.push(String(e.message || e).slice(0, 300)); }
+    try { TLCORE.k1.close(); delete TLCORE.k1.games[K1B.id]; TLCORE.k1.list = TLCORE.k1.list.filter(g => g.id !== K1B.id); } catch (e) {}
     try { if (TLCORE.reader.isOpen()) TLCORE.reader.close(); } catch (e) {}
     if (keep) ONE_BITE[FIX] = keep; else delete ONE_BITE[FIX]; window.OB_LIVE = prev;
     A.overlay = null; A.play = null; A.res = null; A.st = KEEP.st || loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; render();
@@ -79,6 +99,9 @@ module.exports = async function (pg) {
     if (s.triesKept !== 1 || s.missAdded !== 1) fails.push('proof: closing and opening the book again must keep his miss (tries ' + s.triesKept + ', lesson misses +' + s.missAdded + ')');
     if (s.after !== 'wiggle:' && s.after !== 'your:cloze') fails.push('the lesson must go on after the two Reader activities (got ' + s.after + ')');
     if (s.wide) fails.push('read and proof kinds: the page scrolls sideways');
+    if (!s.k1Top) fails.push('K-1 book: the Reader must show on top of the K-1 game, with the game hidden');
+    if (s.k1EarlyOver || !/very end/.test(s.k1Early)) fails.push('K-1 book: closing the book early must say to read to the end, and not finish the piece (got "' + s.k1Early + '")');
+    if (!s.k1Done) fails.push('K-1 book: reading to the end must finish the piece, right, with the game showing again');
   }
   /* the static check of real lessons */
   const T = require(path.join(__dirname, '..', '..', 'tools', 'core', 'texts.js')).load(), byId = {}; T.out.forEach(t => { byId[t.id] = t; });
@@ -89,6 +112,6 @@ module.exports = async function (pg) {
     if (u.a.type === 'proof') { const sents = []; t.pages.forEach(pg2 => pg2.forEach(par => (par.s || []).forEach(x => sents.push(x))));
       const pr = u.a.proof, hits = Array.isArray(pr) ? pr.filter(i => i >= 0 && i < sents.length).length : sents.filter(x => x.toLowerCase().indexOf(String(pr).toLowerCase()) >= 0).length;
       if (Array.isArray(pr) ? hits !== pr.length : hits !== 1) fails.push(at + 'the proof "' + pr + '" must be in exactly one sentence of ' + t.id + ' (found ' + hits + ')'); } });
-  if (!fails.length) oks.push('read and proof kinds: a lesson opens the Reader from its data alone ("read" to the end, "find the proof" with one wrong tap), the lesson goes on; unit checks and K-1 games refuse them; ' + (r.uses || []).length + ' real use(s) point at real texts and one sentence each');
+  if (!fails.length) oks.push('read and proof kinds: a lesson opens the Reader from its data alone ("read" to the end, "find the proof" with one wrong tap), the lesson goes on; unit checks refuse them; a K-1 game refuses proof and plays a little book (read on top, the end is right); ' + (r.uses || []).length + ' real use(s) point at real texts and one sentence each');
   return { fails, oks };
 };
