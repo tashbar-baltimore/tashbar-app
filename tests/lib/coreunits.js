@@ -95,7 +95,9 @@ async function page(pg) {
       startMission('READ', unit.skills[0], 'skill'); await sleep(150); out.hook = !!Q('#cun') && U.state() && U.state().mode; if (Q('#cun')) Q('#cun [data-cu=exit]').click();
       await sleep(80); out.afterPre = A.play ? [A.play.id, !!A.play.ob] : null; A.play = null; A.view = 'hub';
       window.CU_LIVE = prevLive; window.google.script.run = orig;
-      A.play = KEEP.play; A.st = KEEP.st; A.view = KEEP.view; A.overlay = KEEP.overlay; window.OB_LIVE = KEEP.live; try { render(); } catch (e) {}
+      /* take the made-up unit away again, so it never touches a later test; put the page back (never an empty boy) */
+      delete U.byId[unit.id]; const li = U.list.indexOf(unit); if (li >= 0) U.list.splice(li, 1); unit.skills.forEach(id => { if (U.ofSkill[id] === unit.id) delete U.ofSkill[id]; }); U.reset();
+      A.play = null; A.st = KEEP.st || loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = 'hub'; A.overlay = null; window.OB_LIVE = KEEP.live; try { render(); } catch (e) {}
       return out;
     }).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 300)], looks: [], saves: [] }));
     r.bad.forEach(b => fails.push(at + b)); if (r.bad.length) continue;
