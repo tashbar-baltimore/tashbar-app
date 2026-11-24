@@ -1,0 +1,339 @@
+<script>
+/* CoreDataC458.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 5 Unit 5.4 "Big ideas in articles", topic set: Oceans (docs/core-growth/C45-map.md): sum up an article, link map, explain with the text, pace.
+   READ.COMP.L06.03 (Two big ideas) is an existing lesson and is not rebuilt here.
+   Short lesson passages (under 300 words) go in PASS under c45_ keys; each lesson teaches on one passage and checks on a different, cold passage:
+   L06.10 tides -> reef, L06.11 ships -> trench, L06.12 kosherfish -> saltsea, FLU.L06.03 trench -> deeplight.
+   Kosher fish (c45_kosherfish): fins and scales, a kosher scale comes off without tearing the skin, ask a Rav when in doubt. REBBE: review after live.
+   The E45 passage-card style lives in CoreDataC451.html. */
+(function () {
+  var P = {
+    c45_tides: { title: 'Why the Tide Comes In', text: 'Twice a day, the ocean creeps up the beach, and twice a day it slides back out. These changes are called tides. When the water is at its highest, it is high tide. When it is at its lowest, it is low tide.\nWhat moves all that water? Mostly the moon. The moon\'s gravity pulls on the whole Earth, but it pulls hardest on the ocean on the side facing it. The water there bulges toward the moon. A second bulge forms on the far side of the Earth. As the Earth spins, a beach passes through both bulges each day. That is why most beaches have two high tides and two low tides a day.\nThe sun pulls on the oceans too, but less, because it is so far away. Around Rosh Chodesh, and again in the middle of the Jewish month, the sun, the moon and the Earth line up. Then their pulls add together, and the tides are extra high and extra low.\nTides matter to people. Fishermen leave the harbor when the tide is right. At low tide, families can explore tide pools full of crabs and snails. In the Bay of Fundy in Canada, the water can rise more than forty feet between low tide and high tide.' },
+    c45_reef: { title: 'Cities Under the Sea', text: 'A coral reef looks like a garden of colorful rocks, but it is really built by animals. Each coral is made of tiny animals called polyps, some no bigger than a pencil eraser. A polyp builds a hard cup of stone around its soft body. When it dies, the cup stays, and new polyps build on top. Over thousands of years, the cups pile up into a reef.\nReefs need warm, clear, shallow water. Tiny plant-like living things called algae live inside the polyps. The algae use sunlight to make food, and they share it with the coral. They also give the coral its bright colors.\nA reef is like a busy city. Reefs cover less than one percent of the ocean floor, but about one out of every four kinds of sea creatures lives on or near a reef. Fish hide in its cracks, and sea turtles and eels hunt among its branches. The biggest reef, the Great Barrier Reef near Australia, is so long that astronauts can see it from space.\nBut reefs are in danger. When the water gets too hot, the coral push out their algae and turn white. Without the algae, they can starve. Scientists and divers are working hard to protect the reefs that are left.' },
+    c45_ships: { title: 'Why a Steel Ship Floats', text: 'Dovid Lerner dropped a steel bolt into a tub of water. Plunk! It sank straight to the bottom. "So how," he asked his Abba, "does a giant ship made of steel float?"\nThe answer has to do with pushing. When anything is set in water, it pushes some water out of the way. At the same time, the water pushes back up on it. The more water an object pushes aside, the harder the water pushes up.\nA small, solid bolt pushes aside only a little water. The push is too weak to hold it up, so it sinks. A ship is different. Its steel is spread out into a wide, hollow shape filled with air. Because the ship is so wide, it pushes aside a huge amount of water, and the water pushes up hard enough to hold it.\nDovid tested the idea with modeling clay. First he rolled a lump into a tight ball. It sank. Then he shaped the same lump into a wide, flat boat. It floated! Next he added marbles one at a time. With each marble, the boat sat lower. On the twelfth marble, water poured over the side, and the boat sank.\nReal ships work the same way. That is why every cargo ship has a line painted on its side, called a load line. If the water rises above the line, the ship is carrying too much.' },
+    c45_trench: { title: 'The Deepest Place on Earth', text: 'In the Pacific Ocean, near the island of Guam, the sea floor drops into a long, narrow valley called the Mariana Trench. Its deepest spot, the Challenger Deep, is almost 36,000 feet down. Mount Everest, the tallest mountain on land, is about 29,000 feet tall. If you set Everest at the bottom of the trench, its top would still be more than a mile under water.\nDeep water is heavy. The deeper you go, the more water presses down from above. At the bottom of the trench, the water presses more than a thousand times harder than the air at the beach. A person could never survive there without a very strong shell.\nIn 1960, two explorers, Jacques Piccard and Don Walsh, tried anyway. They climbed into a small steel ball with walls about five inches thick, hanging under a diving ship called the Trieste. First they sank slowly for almost five hours. About 30,000 feet down, they heard a loud crack. An outer window had cracked, but they kept going. Then they reached the bottom and stayed about twenty minutes. Finally, they rose back up and returned safely.\nAt the bottom, it is completely dark and very cold, because sunlight cannot reach that deep. Yet scientists have found small shrimp-like animals living there.' },
+    c45_kosherfish: { title: 'How Do We Know a Fish Is Kosher?', text: 'On Thursday afternoon, Yehuda Benaim went with his Abba to the fish store. They were buying fish for Savta\'s spicy fish on Friday night. Behind the counter lay salmon, carp, whitefish and a long gray catfish.\n"Which ones can we buy?" Yehuda asked.\n"The Torah gives us two signs," said Abba. "A kosher fish has fins and scales." Fins are the thin flaps a fish uses to swim and steer. Scales are the small, flat plates that cover its skin, like shingles on a roof.\nAbba explained that not everything that looks like a scale counts. A kosher scale can be scraped off with a knife or a fingernail without tearing the skin underneath. A shark\'s skin is covered with tiny hard points that cannot be removed that way, so a shark is not kosher. A catfish has fins but no scales at all, so it is not kosher either.\n"And what if the fish is already cut into pieces?" asked Yehuda.\n"Good question," said Abba. "Without the skin, you cannot see the scales. That is why we buy from a store with a trusted hashgacha, or we buy pieces with some skin still on. And whenever we are not sure, we ask a Rav."\nThey bought a big salmon, its silver scales shining under the lights.' },
+    c45_saltsea: { title: 'Why Is the Ocean Salty?', text: 'Rivers and lakes taste fresh, but the ocean tastes salty. Why?\nIt starts with rain. As rain falls and flows over the land, it slowly wears away tiny bits of rock. Rocks hold minerals, and some of these minerals are salts. The rainwater carries the salts into streams, the streams carry them into rivers, and the rivers carry them into the ocean.\nA river does not taste salty, because the amount of salt in it is very small, and its water keeps moving. But the ocean is where the water stops. The sun warms the ocean, and some of the water evaporates, rising into the air as water vapor. The salt cannot rise with it, so it stays behind in the sea. Then rain falls again, and the circle goes on. This has happened for millions of years, so the salt has built up.\nThere is a lot of it. Scientists say that if all the salt in the ocean were spread over the land, it would make a layer more than 500 feet thick.\nSome waters are even saltier. Yam HaMelach, the Dead Sea in Eretz Yisrael, is almost ten times saltier than the ocean. Water leaves it only by evaporating, so the salt stays behind there too. The water is so full of salt that a person floats on top like a cork.' },
+    c45_deeplight: { title: 'Lights in the Deep', text: 'Far below the waves, where sunlight never reaches, the water is as dark as a closet at night. Yet the darkness is full of tiny lights. Many deep-sea animals make their own light. Scientists call this bioluminescence (bye-oh-loo-mih-NESS-ence).\nThe light comes from a chemical reaction inside the animal\'s body. Most of it glows blue-green, because blue-green light travels farthest through seawater.\nAnimals use their lights in clever ways. The anglerfish has a long spine on its head with a glowing tip, like a fishing rod with a lantern. Small fish swim toward the light, and the anglerfish snaps them up. Some deep-sea shrimp squirt a glowing cloud into the water when an enemy comes near. While the enemy stares at the cloud, the shrimp darts away.\nScientists think that about three out of every four animals in the deep sea can make light. Explorers in special submarines have turned off their lamps and watched the dark water sparkle all around them.\nThe deep sea is still the least explored place on our planet. Who knows what lights are still waiting to be found?' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+    'READ.COMP.L06.10':{name:'Sum Up an Article',
+      teach:[
+        {p:'c45_tides', q:'What is the big idea of the whole article?', o:['Tides are the ocean\'s daily rise and fall, caused mostly by the moon.', 'Tide pools are full of crabs and snails.', 'The Bay of Fundy has the biggest tides.'], how:'The big idea covers every paragraph, not just one part. Ask: what is the whole article about?'},
+        {p:'c45_tides', q:'Which detail is a KEY detail to keep in a summary?', o:['The moon\'s pull makes the water bulge.', 'Families explore tide pools.', 'The Bay of Fundy is in Canada.'], how:'A key detail explains the big idea. A small extra is only interesting.'},
+        {p:'c45_tides', q:'Which is the best summary of the article?', o:['Tides are the ocean\'s daily rise and fall. The moon\'s pull, helped by the sun, causes them, and they matter to people.', 'Twice a day, the ocean creeps up the beach and slides back out. These changes are called tides, high tide and low tide.', 'Tides are amazing, and the Bay of Fundy is the best place in the world to see them.'], how:'A good summary covers the whole article in a few sentences, with no opinion.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_tides', q:'What pulls on the oceans the most? Type the word: the ___.', a:'moon', kb:'abc',
+          h:'Look at the start of the second paragraph.', how:'Find the question "What moves all that water?" The answer comes right after it.'},
+        {t:'sort', p:'c45_tides', q:'Keep it in the summary, or leave it out?', bins:[{id:'k', label:'Keep it in'}, {id:'l', label:'Leave it out'}],
+          items:[{label:'The moon\'s pull causes tides.', bin:'k'}, {label:'Most beaches get two high tides a day.', bin:'k'}, {label:'When the sun and moon line up, tides are extra big.', bin:'k'}, {label:'Crabs and snails live in tide pools.', bin:'l'}, {label:'The Bay of Fundy is in Canada.', bin:'l'}],
+          h:'Does the detail explain the big idea, or is it only interesting?', how:'Keep what explains the big idea. Leave out small extras: one example, one place, one number.'},
+        {t:'pairs', p:'c45_tides', q:'Match each paragraph to its big idea.', pairs:[['Paragraph 1', 'Tides are the rise and fall of the ocean.'], ['Paragraph 2', 'The moon\'s pull makes two bulges of water.'], ['Paragraph 3', 'When the sun and moon line up, tides are extra big.'], ['Paragraph 4', 'Tides matter to people.']],
+          h:'Read one paragraph. What is it mostly about?', how:'Each paragraph has one big idea. Find what most of its sentences talk about.'},
+        {t:'sort', p:'c45_tides', q:'Mistake Detective. What is wrong with each summary?', bins:[{id:'o', label:'It adds an opinion'}, {id:'d', label:'It has too many small details'}, {id:'f', label:'It only tells the first part'}],
+          items:[{label:'Tides are the coolest thing in the ocean.', bin:'o'}, {label:'Tides are amazing, and I love the beach.', bin:'o'}, {label:'Crabs and snails live in tide pools, and the Bay of Fundy rises forty feet.', bin:'d'}, {label:'Twice a day, the ocean creeps up the beach and slides back out.', bin:'f'}],
+          h:'Does it say what YOU think? Is it a list of extras? Does it stop after paragraph 1?', how:'Check three things: no opinion, no pile of small details, and the whole article.'},
+        {t:'order', p:'c45_tides', q:'Build the summary. Put the sentences in the article\'s order.', tiles:['Tides are the ocean\'s daily rise and fall.', 'The moon\'s pull, helped by the sun, causes them.', 'They matter to fishermen and families.'],
+          h:'Follow the paragraphs from first to last.', how:'A summary walks through the article in order, one big idea at a time.'},
+        {t:'spotall', p:'c45_tides', q:'Tap every detail that belongs in a summary.', cells:[{label:'The moon\'s pull makes the water bulge.', ok:true}, {label:'Most beaches get two high tides a day.', ok:true}, {label:'Tides matter to people.', ok:true}, {label:'Crabs and snails live in tide pools.', ok:false}, {label:'The Bay of Fundy is in Canada.', ok:false}],
+          h:'Ask of each one: would the summary miss it?', how:'Tap a detail only if it explains a big idea. Skip the fun extras.'}
+      ],
+      check:[
+        {p:'c45_reef', q:'Detail: astronauts can see the Great Barrier Reef from space. In the summary?', o:['Leave it out', 'Keep it in']},
+        {p:'c45_reef', q:'Detail: reefs are in danger when the water gets too hot. In the summary?', o:['Keep it in', 'Leave it out']},
+        {p:'c45_reef', q:'Summary: "Reefs are the most beautiful place on Earth." What is wrong?', o:['It adds an opinion', 'It has too many small details', 'It only tells the first part']}
+      ],
+      re:[
+        {p:'c45_tides', q:'A summary tells...', o:['the big ideas and key details, in a few sentences', 'every detail, in order', 'what you think of the article'], how:'Short, the whole article, no opinion.'},
+        {p:'c45_tides', q:'A small extra, like one example or one number, should...', o:['be left out of a short summary', 'always come first', 'be the big idea'], how:'Does the summary need it to make sense?'},
+        {p:'c45_tides', q:'"Tides are the coolest thing ever." In a summary, this is...', o:['an opinion: leave it out', 'a key detail', 'the big idea'], how:'Does it tell what the article says, or what someone thinks?'}
+      ]},
+    'READ.COMP.L06.11':{name:'Link Map',
+      teach:[
+        {p:'c45_ships', q:'The bolt sinks, but the ship floats. How are these two ideas linked?', o:['Comparison: how two things are alike or different', 'Sequence: what happens first and next', 'Cause and effect: what makes something happen'], how:'Ask: are we looking at two things side by side? The word "but" is a clue.'},
+        {p:'c45_ships', q:'Why does the ship push aside so much water?', o:['Because it is wide and hollow, filled with air', 'Because it is made of steel', 'Because it has a line painted on its side'], how:'Find the word "Because" in the third paragraph. The cause comes right after it.'},
+        {p:'c45_ships', q:'In Dovid\'s test, what happened right after he shaped the clay into a boat?', o:['It floated.', 'It sank.', 'Water poured over the side.'], how:'Sequence: find "Then" in the test paragraph and read what comes next.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_ships', q:'With each marble, the boat sat ___. Type the word.', a:'lower', kb:'abc',
+          h:'Look in the paragraph about Dovid\'s test.', how:'Find the sentence that starts "With each marble" and copy the last word.'},
+        {t:'sort', p:'c45_ships', q:'What kind of link is it? Sort each one.', bins:[{id:'c', label:'Cause and effect'}, {id:'s', label:'Sequence'}, {id:'m', label:'Comparison'}],
+          items:[{label:'The ship is wide, so it pushes aside lots of water.', bin:'c'}, {label:'The push is too weak, so the bolt sinks.', bin:'c'}, {label:'First a clay ball, then a clay boat, then marbles.', bin:'s'}, {label:'The ball sank, but the boat floated.', bin:'m'}, {label:'A bolt is small and solid; a ship is wide and hollow.', bin:'m'}],
+          h:'Does one make the other happen? Does one come after? Are two things side by side?', how:'Cause and effect: one makes the other happen. Sequence: time order. Comparison: alike or different.'},
+        {t:'order', p:'c45_ships', q:'Build the cause-and-effect chain for a floating ship.', tiles:['The steel is shaped wide and hollow.', 'The ship pushes aside a huge amount of water.', 'The water pushes up hard.', 'The ship floats.'],
+          h:'Start with the ship\'s shape. End with what happens to the ship.', how:'Each link causes the next one. Ask: because of this, what happens?'},
+        {t:'pairs', p:'c45_ships', q:'Match the signal words to the kind of link.', pairs:[['so, because, as a result', 'Cause and effect'], ['first, then, finally', 'Sequence'], ['but, unlike, both', 'Comparison']],
+          h:'Which words tell why? Which tell when? Which put two things side by side?', how:'Signal words are road signs. They tell you how two ideas connect.'},
+        {t:'sort', p:'c45_ships', q:'Mistake Detective. Is the link named right?', bins:[{id:'r', label:'Right link'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Too many marbles, so the boat sank: cause and effect', bin:'r'}, {label:'The bolt sinks, but the ship floats: comparison', bin:'r'}, {label:'Clay ball first, then clay boat: cause and effect', bin:'w'}, {label:'The ship floats because it is wide: sequence', bin:'w'}],
+          h:'Coming first does not mean causing.', how:'Check the link: did one thing MAKE the other happen, or did it only come first?'},
+        {t:'spotall', p:'c45_ships', q:'Tap every sentence that shows cause and effect.', cells:[{label:'The push is too weak to hold it up, so it sinks.', ok:true}, {label:'With each marble, the boat sat lower.', ok:true}, {label:'A ship is different.', ok:false}, {label:'Then he shaped the same lump into a wide, flat boat.', ok:false}, {label:'Dovid tested the idea with modeling clay.', ok:false}],
+          h:'Does something in the sentence make something else happen?', how:'Look for a cause and its effect in the same sentence.'}
+      ],
+      check:[
+        {p:'c45_trench', q:'Everest is about 29,000 feet tall; the trench is almost 36,000. The link?', o:['Comparison', 'Cause and effect', 'Sequence']},
+        {p:'c45_trench', q:'They sank for five hours, stayed twenty minutes, and rose. The link?', o:['Sequence', 'Comparison', 'Cause and effect']},
+        {p:'c45_trench', q:'Sunlight cannot reach the bottom. It is completely dark there. The link?', o:['Cause and effect', 'Sequence', 'Comparison']}
+      ],
+      re:[
+        {p:'c45_ships', q:'A cause is...', o:['what makes something happen', 'what happens much later', 'how two things are alike'], how:'Ask: what made it happen?'},
+        {p:'c45_ships', q:'"First... then... finally" shows...', o:['sequence', 'comparison', 'cause and effect'], how:'These words tell when.'},
+        {p:'c45_ships', q:'"but" and "unlike" often show...', o:['a comparison', 'a sequence', 'a cause'], how:'These words put two things side by side.'}
+      ]},
+    'READ.COMP.L06.12':{name:'Explain It with the Text',
+      teach:[
+        {p:'c45_kosherfish', q:'Why is a catfish not kosher? Which answer uses the text?', o:['It has fins but no scales at all.', 'It has whiskers.', 'It lives in muddy water.'], how:'Find the sentence about the catfish. Use the text\'s own reason, not a guess.'},
+        {p:'c45_kosherfish', q:'Why is a shark not kosher, the way the text explains it?', o:['Its skin has tiny hard points that cannot be removed.', 'It is dangerous.', 'It is too big to cook.'], how:'Find the sentence about the shark. What does the text say about its skin?'},
+        {p:'c45_kosherfish', q:'Why buy fish pieces with some skin still on?', o:['Without the skin, you cannot see the scales.', 'The skin makes it taste better.', 'The store has no knives.'], how:'Find Abba\'s answer to Yehuda\'s question about pieces.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_kosherfish', q:'"A kosher fish has fins and ___." Type the missing word.', a:'scales', kb:'abc',
+          h:'Look at what Abba says first.', how:'Find the two signs Abba names, and copy the second one.'},
+        {t:'sort', p:'c45_kosherfish', q:'From the text, or an outside guess?', bins:[{id:'t', label:'From the text'}, {id:'g', label:'An outside guess'}],
+          items:[{label:'A catfish has no scales at all.', bin:'t'}, {label:'A kosher scale comes off without tearing the skin.', bin:'t'}, {label:'Catfish are not kosher because they have whiskers.', bin:'g'}, {label:'Sharks are not kosher because they are dangerous.', bin:'g'}, {label:'Salmon is kosher because it is pink.', bin:'g'}],
+          h:'Can you point to it in the text?', how:'If you can put your finger on it in the text, it is from the text. If not, it is a guess.'},
+        {t:'pairs', p:'c45_kosherfish', q:'Match each answer to the text detail that explains it.', pairs:[['Catfish: not kosher', 'It has fins but no scales at all.'], ['Shark: not kosher', 'Its tiny points cannot be removed.'], ['Pieces: be careful', 'Without the skin, you cannot see the scales.']],
+          h:'Find each one in the text. What reason does it give?', how:'An answer needs a reason. Find the reason the text gives.'},
+        {t:'sort', p:'c45_kosherfish', q:'Mistake Detective. Strong explanation, or weak?', bins:[{id:'s', label:'Strong: uses the text'}, {id:'w', label:'Weak: no detail from the text'}],
+          items:[{label:'A shark is not kosher: the text says its tiny points cannot be removed.', bin:'s'}, {label:'A catfish is not kosher: the text says it has no scales at all.', bin:'s'}, {label:'A catfish is not kosher because it just isn\'t.', bin:'w'}, {label:'A shark is not kosher. Everybody knows that.', bin:'w'}],
+          h:'Does it point to something the text says?', how:'A strong explanation gives the answer AND the text\'s detail. "Everybody knows" is not proof.'},
+        {t:'order', p:'c45_kosherfish', q:'Build the explanation, step by step.', tiles:['A shark is not kosher.', 'The text says its skin has tiny hard points.', 'They cannot be scraped off without tearing the skin.', 'So they are not kosher scales.'],
+          h:'Answer first. Then the text. Then how it proves it.', how:'Answer, then the detail from the text, then what the detail shows.'},
+        {t:'spotall', p:'c45_kosherfish', q:'Tap every detail the TEXT gives about scales.', cells:[{label:'They are small, flat plates.', ok:true}, {label:'They cover the skin like shingles on a roof.', ok:true}, {label:'A kosher scale comes off without tearing the skin.', ok:true}, {label:'They are always silver.', ok:false}, {label:'They make a fish swim faster.', ok:false}],
+          h:'Read the part where Abba explains scales.', how:'Tap only what you can find in the text. Skip ideas that only sound right.'}
+      ],
+      check:[
+        {p:'c45_saltsea', q:'Eli says salt stays behind when ocean water evaporates. From the text or a guess?', o:['From the text', 'An outside guess']},
+        {p:'c45_saltsea', q:'Eli says the ocean is salty because seaweed makes salt. From the text or a guess?', o:['An outside guess', 'From the text']},
+        {p:'c45_saltsea', q:'Eli says the Dead Sea is salty because it just is. Strong or weak explanation?', o:['Weak: no detail from the text', 'Strong: uses the text']}
+      ],
+      re:[
+        {p:'c45_kosherfish', q:'To explain with the text, use...', o:['details the text gives', 'your best guess', 'whatever sounds right'], how:'Point to the words in the text.'},
+        {p:'c45_kosherfish', q:'An outside guess is...', o:['an idea that is not in the text', 'a quote from the text', 'a key detail'], how:'Can you find it in the text?'},
+        {p:'c45_kosherfish', q:'A strong explanation gives...', o:['the answer, then the text detail that proves it', 'only the answer', 'only "everybody knows"'], how:'Answer + detail + how it proves it.'}
+      ]},
+    'READ.FLU.L06.03':{name:'Pace It',
+      teach:[
+        {p:'c45_trench', q:'Which part of the article should you read SLOWLY?', o:['Jacques Piccard and Don Walsh', 'Deep water is heavy.', 'but they kept going'], how:'Look for the hard parts: new names, long words and big numbers.'},
+        {p:'c45_trench', q:'How should you read "Deep water is heavy."?', o:['Smoothly, at talking speed', 'Slowly, one word at a time', 'As fast as you can'], how:'Short, easy words? Read them the way you talk.'},
+        {p:'c45_trench', q:'Why slow down for "almost 36,000 feet down"?', o:['A big number needs every part said clearly.', 'Numbers are not important.', 'It is the end of the article.'], how:'A number packs a lot of meaning into a few marks.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_trench', q:'"Deep water is ___." Type the last word.', a:'heavy', kb:'abc',
+          h:'Look at the start of the second paragraph.', how:'Find the short sentence that starts "Deep water" and copy its last word.'},
+        {t:'sort', p:'c45_trench', q:'Slow down, or read smoothly?', bins:[{id:'w', label:'Slow down'}, {id:'s', label:'Read smoothly'}],
+          items:[{label:'the Mariana Trench', bin:'w'}, {label:'Jacques Piccard and Don Walsh', bin:'w'}, {label:'almost 36,000 feet down', bin:'w'}, {label:'Deep water is heavy.', bin:'s'}, {label:'but they kept going', bin:'s'}],
+          h:'Is it a new name, a long word or a big number?', how:'Slow down for names, new words and numbers. Easy words go at talking speed.'},
+        {t:'pairs', p:'c45_trench', q:'Match each hard part to what your voice should do.', pairs:[['A long, new word', 'Read it in beats, then say it whole'], ['A big number', 'Say every part clearly'], ['A short, easy sentence', 'Read it at talking speed']],
+          h:'What makes each one hard, or easy?', how:'Good readers change speed. Match the speed to the words.'},
+        {t:'sort', p:'c45_trench', q:'Mistake Detective. Good pacing, or a mistake?', bins:[{id:'g', label:'Good pacing'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Slows down for "Mariana Trench," then speeds up again.', bin:'g'}, {label:'Reads "Deep water is heavy." at talking speed.', bin:'g'}, {label:'Races through "almost 36,000 feet" and says it wrong.', bin:'m'}, {label:'Reads every easy sentence word by word.', bin:'m'}, {label:'Reads the whole article at one speed.', bin:'m'}],
+          h:'Is the speed right for those words?', how:'Two mistakes: racing through hard parts, and crawling through easy parts.'},
+        {t:'order', p:'c45_trench', q:'Put the pacing steps in order.', tiles:['Find the hard parts first.', 'Practice the hard words in beats.', 'Read: slow on hard parts, smooth on easy ones.', 'Reread the whole part smoothly.'],
+          h:'What do you do before you read aloud?', how:'Find, practice, read, then reread.'},
+        {t:'spotall', p:'c45_trench', q:'Tap every hard part where you should slow down.', cells:[{label:'the Challenger Deep', ok:true}, {label:'about 29,000 feet tall', ok:true}, {label:'Jacques Piccard', ok:true}, {label:'Deep water is heavy.', ok:false}, {label:'but they kept going', ok:false}],
+          h:'Names and numbers are speed bumps.', how:'Tap new names, long words and numbers. Skip the easy words.'}
+      ],
+      check:[
+        {p:'c45_deeplight', q:'"bioluminescence (bye-oh-loo-mih-NESS-ence)": slow down or read smoothly?', o:['Slow down', 'Read smoothly']},
+        {p:'c45_deeplight', q:'"Small fish swim toward the light": slow down or read smoothly?', o:['Read smoothly', 'Slow down']},
+        {p:'c45_deeplight', q:'Eli reads "Yet the darkness is full of tiny lights." word by word. Pacing?', o:['Mistake', 'Good pacing']}
+      ],
+      re:[
+        {p:'c45_trench', q:'Good pacing means...', o:['slow for hard parts, smooth for easy parts', 'always as fast as you can', 'always very slowly'], how:'Change speed to fit the words.'},
+        {p:'c45_trench', q:'Before you read a hard passage aloud, first...', o:['find the hard parts', 'read only the last line', 'count the words'], how:'Look before you read.'},
+        {p:'c45_trench', q:'A new science word should be read...', o:['slowly, in beats', 'as fast as you can', 'skipped'], how:'Break it into beats.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L06.10':{
+      hook:'Could you tell a whole article to a friend in three sentences?',
+      big:'A summary sums up a whole article in a few sentences: its big ideas and the key details that explain them, in your own words, with no opinion.',
+      intro:['Read the whole article. Find the big idea of each paragraph.', 'Keep the key details that explain the big ideas.', 'Leave out small extras: one example, one place, one number.', 'Join the big ideas into 2 or 3 sentences. Check: the whole article, no opinion.'],
+      ex:[{q:'Sum up "Why the Tide Comes In"', steps:['Paragraph 1: tides are the ocean\'s daily rise and fall.', 'Paragraph 2: the moon\'s pull makes the water bulge.', 'Paragraph 3: when the sun and moon line up, tides are extra big.', 'Paragraph 4: tides matter to people.', 'Leave out the crabs and the forty feet. Join the rest.'], a:'Tides are the ocean\'s daily rise and fall. The moon\'s pull, helped by the sun, causes them, and they matter to people.'},
+          {q:'Keep it or leave it out: "In the Bay of Fundy in Canada, the water can rise more than forty feet."', steps:['Is it a big idea? No, it is one place.', 'Would the summary make sense without it? Yes.', 'So it is a small extra.'], a:'Leave it out'}],
+      oops:{q:'Sum up "Why the Tide Comes In"', wrong:'Twice a day the ocean creeps up the beach. Crabs and snails live in tide pools. Fundy rises forty feet.', right:'Tides are the ocean\'s daily rise and fall, caused mostly by the moon, and they matter to people.', why:'A summary is not a list of details. It tells the big ideas of the whole article.'},
+      idea:['A summary is like a map of a city: it shows the big roads, not every house.'],
+      try:{q:'Which belongs in a summary of the tides article?', o:['The moon\'s pull causes tides.', 'Crabs live in tide pools.', 'Tides are the coolest thing ever.'], a:'The moon\'s pull causes tides.', steps:['Is it a big idea, a small extra, or an opinion?']}
+    },
+    'READ.COMP.L06.11':{
+      hook:'Ideas in an article are not alone. They hold hands.',
+      big:'In an article, ideas and events connect. Some cause each other, some come in time order, and some are compared. A link map shows how they connect.',
+      intro:['Pick the two ideas or events.', 'Ask: did one MAKE the other happen? That is cause and effect.', 'Ask: did one only come before the other? That is sequence.', 'Ask: are two things shown side by side, alike or different? That is comparison. Look for signal words: so, then, but.'],
+      ex:[{q:'Why does a steel ship float?', steps:['The steel is shaped wide and hollow.', 'So the ship pushes aside a huge amount of water.', 'So the water pushes up hard.', 'So the ship floats. Each link causes the next.'], a:'Cause and effect'},
+          {q:'The bolt sinks. The ship floats.', steps:['Did the bolt make the ship float? No.', 'Did one come first in time? That is not the point.', 'Two things side by side, one different from the other.'], a:'Comparison'}],
+      oops:{q:'Dovid rolled a clay ball first, and then shaped a clay boat. How are the ball and the boat linked?', wrong:'Cause and effect: the ball made the boat float.', right:'Sequence: the ball came first, then the boat.', why:'Coming first is not the same as causing. Ask: did one MAKE the other happen?'},
+      idea:['Cause and effect is a row of dominoes. Sequence is a line of boys waiting their turn. Comparison is two boys standing side by side.'],
+      try:{q:'"With each marble, the boat sat lower." What kind of link?', o:['Cause and effect', 'Sequence', 'Comparison'], a:'Cause and effect', steps:['Did the marbles make the boat sit lower?']}
+    },
+    'READ.COMP.L06.12':{
+      hook:'"Because I think so" is not an explanation. "Because the text says so" is.',
+      big:'To explain something in an article, use the details the text gives. Say the answer, show the text\'s detail, and tell how it proves the answer. Do not use outside guesses.',
+      intro:['Read the question. What do you have to explain?', 'Find the part of the text that answers it.', 'Use the text\'s own detail. If you cannot point to it, it is a guess.', 'Say it: answer, then "The text says...", then "This shows..."'],
+      ex:[{q:'Why is a catfish not kosher?', steps:['Find the catfish in the text.', 'The text says: "A catfish has fins but no scales at all."', 'A kosher fish needs fins and scales.', 'So the catfish is not kosher.'], a:'It has fins but no scales at all.'},
+          {q:'Why is a shark not kosher?', steps:['A guess: "It is dangerous." Can I point to that? No.', 'The text says its skin has tiny hard points that cannot be removed that way.', 'A kosher scale must come off without tearing the skin.'], a:'Its tiny points cannot be removed, so they are not kosher scales.'}],
+      oops:{q:'Why is a catfish not kosher?', wrong:'Because it has whiskers.', right:'The text says a catfish has fins but no scales at all.', why:'Whiskers are not in the text. Use the text\'s own detail.'},
+      idea:['Be a lawyer: every answer needs proof from the text.'],
+      try:{q:'Why do we buy fish pieces with some skin on?', o:['Without the skin, you cannot see the scales.', 'The skin makes it taste better.', 'It is cheaper.'], a:'Without the skin, you cannot see the scales.', steps:['Find what Abba says about pieces.']}
+    },
+    'READ.FLU.L06.03':{
+      hook:'A good driver slows down for the curves and speeds up on the straight road. So does a good reader.',
+      big:'Good pacing means reading slowly and carefully through the hard parts, like new words, names and numbers, and smoothly, at talking speed, through the easy parts.',
+      intro:['Before reading aloud, find the hard parts: long words, names, numbers.', 'Practice the hard words in beats.', 'Read: slow down at the hard parts, then go back to talking speed.', 'Reread the whole part, smoother each time.'],
+      ex:[{q:'"In 1960, two explorers, Jacques Piccard and Don Walsh, tried anyway."', steps:['Hard parts: a date and two new names.', 'Practice: nineteen sixty. Zhahk Pee-KAR. Don Walsh.', 'Read slowly through the names, then smoothly: tried anyway.'], a:'Slow on the date and names, smooth at the end.'},
+          {q:'"Deep water is heavy."', steps:['Any hard words? No.', 'Read it at talking speed, like telling a friend.'], a:'Smooth, at talking speed.'}],
+      oops:{q:'"Its deepest spot, the Challenger Deep, is almost 36,000 feet down."', wrong:'Racing through it at full speed and saying the number wrong.', right:'Slowing down for "Challenger Deep" and "36,000 feet," then going on.', why:'Hard parts need a slower speed. Racing makes you say them wrong.'},
+      idea:['Pacing is like a car on a road: slow on the curves, smooth on the straight parts.'],
+      try:{q:'How should you read "Then they reached the bottom"?', o:['Smoothly, at talking speed', 'Slowly, in beats', 'As fast as you can'], a:'Smoothly, at talking speed', steps:['Are there any hard words?']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.COMP.L06.10':{ band:'E45', pic:'🌊', today:'Sum up an article with its big ideas',
+      why:'A good summary shows you understood the whole article, and helps you remember it.',
+      ready:[{q:'The main idea of a paragraph is...', o:['what the whole paragraph is mostly about','its first word','its longest sentence'], a:'what the whole paragraph is mostly about'},
+             {q:'A summary should be...', o:['short, with only the big ideas','longer than the article','full of your opinions'], a:'short, with only the big ideas'}],
+      bridge:'READ.COMP.L05.13', bridgeName:'GIST: Sum It Up',
+      watch:{ q:'Why the Tide Comes In', m:{type:'scene', e:'🌊', t:'Four paragraphs: what tides are, the moon\'s pull, the sun helping, and why tides matter to people.'}, steps:[
+        {t:'Read each paragraph. Ask: what is this part mostly about?'},
+        {t:'Paragraph 1: tides are the ocean\'s daily rise and fall.'},
+        {t:'Paragraph 2: the moon\'s pull makes the water bulge.'},
+        {t:'Paragraph 3: sun and moon in a line make extra-big tides.'},
+        {t:'Paragraph 4: tides matter to people. Crabs and forty feet? Extras.'}],
+        a:'Join the big ideas: tides rise and fall, mostly from the moon\'s pull, and matter to people.' },
+      oops:{ q:'Sum up the tides article.', wrong:'Crabs live in tide pools. Fundy rises forty feet.', right:'Tides rise and fall each day, mostly from the moon\'s pull.', why:'A summary is not a list of extras. Keep the big ideas.' },
+      ways:['worked example with fading','summary map','Mistake Detective','tap the reason','retrieval'], done:'You can sum up an article! Tell your chavrusa the tides article in three sentences.',
+      board:{ one:'Big idea of each paragraph + key details. Leave out extras and opinions. 2 or 3 sentences.', activity:'Shrink it: pairs get an article cut into paragraphs, write one big-idea line per paragraph on a sticky note, then join the notes into a 3-sentence summary.', mistakes:['Listing every detail','Summing up only the first paragraph','Adding an opinion'] },
+      do:[
+        {type:'sort', bins:['Keep it in','Leave it out'], cards:[['The moon\'s pull causes tides.',0],['Most beaches get two high tides a day.',0],['Crabs and snails live in tide pools.',1],['The Bay of Fundy is in Canada.',1]],
+          say:'Keep it in the summary, or leave it out?', how:'Keep what explains the big idea. Leave out small extras.'},
+        {type:'storymap', slots:['Paragraph 1','Paragraph 2','Paragraph 3','Paragraph 4'], cards:['Tides are the rise and fall of the ocean.','The moon\'s pull makes two bulges of water.','When the sun and moon line up, tides are extra big.','Tides matter to people.'], extra:['Crabs live in tide pools.'],
+          say:'Build the summary map. One big idea per paragraph.', how:'Read each card. Which paragraph is mostly about it?'}],
+      your:[
+        {type:'sort', mis:true, bins:['Good summary','Mistake'], cards:[['Tides rise and fall each day because of the moon\'s pull, and they matter to people.',0],['Crabs, snails and fishermen are at the beach.',1],['Tides are the coolest thing in the ocean.',1],['Twice a day, the ocean creeps up the beach.',1]],
+          say:'Mistake Detective: a good summary, or a mistake?', how:'Check: the whole article, no pile of extras, no opinion.'},
+        {type:'combine', a:'The moon pulls the ocean into two bulges.', b:'Most beaches get two high tides a day.', o:['so','but','or'], j:'so',
+          say:'Join two big ideas into one summary sentence.', how:'Does the first idea cause the second, or go against it?',
+          why:{q:'Why does "so" fit?', o:['The bulges cause the two high tides','The ideas are opposites','It is the shortest word'], a:'The bulges cause the two high tides'}},
+        {type:'evidence', q:'Which sentence is the big idea of paragraph 4?', p:['Tides matter to people.','Fishermen leave the harbor when the tide is right.','At low tide, families can explore tide pools full of crabs and snails.'], a:0, look:'the sentence the other two are examples of',
+          say:'Tap the big idea of the last paragraph.', how:'The big idea covers the other sentences. They are its examples.',
+          why:{q:'Why is it the big idea?', o:['The other sentences are examples of it','It is the shortest sentence','It mentions the most people'], a:'The other sentences are examples of it'}},
+        {type:'order', steps:['Tides are the ocean\'s daily rise and fall.','The moon\'s pull, helped by the sun, causes them.','They matter to fishermen and families.'],
+          say:'Put the summary sentences in the article\'s order.', how:'Follow the paragraphs from first to last.'},
+        {type:'listen', q:'Challenge: Which summary covers the WHOLE article?', hear:'Which summary covers the whole article?', o:['Tides rise and fall each day, mostly from the moon\'s pull, and matter to people.','Twice a day, the ocean creeps up the beach and slides back out.','The Bay of Fundy has giant tides, and crabs live in tide pools.'], a:'Tides rise and fall each day, mostly from the moon\'s pull, and matter to people.',
+          say:'Challenge! Which summary covers the whole article?', how:'Does it reach every paragraph, or just one part?',
+          why:{q:'What is wrong with the other two?', o:['One tells only the start; one is only extras','They are too short','They have no names'], a:'One tells only the start; one is only extras'}}] },
+    'READ.COMP.L06.11':{ band:'E45', pic:'🚢', today:'Map how two ideas in an article connect',
+      why:'Seeing how ideas connect turns a list of facts into real understanding.',
+      ready:[{q:'"It rained, so the game was called off." What is the cause?', o:['It rained','the game was called off','so'], a:'It rained'},
+             {q:'Words like "first" and "then" show...', o:['time order','an opinion','a question'], a:'time order'}],
+      bridge:'READ.COMP.L05.02', bridgeName:'Sequence and cause and effect',
+      watch:{ q:'Why a Steel Ship Floats', m:{type:'scene', e:'🚢', t:'A steel bolt sinks. A giant steel ship floats. Dovid tests why with clay and marbles.'}, steps:[
+        {t:'A link map shows how two ideas connect.'},
+        {t:'Does one make the other happen? Cause and effect.'},
+        {t:'Does one only come after the other? Sequence.'},
+        {t:'Are two things side by side, alike or different? Comparison.'},
+        {t:'Wide and hollow, so lots of water pushed aside. Cause and effect.'}],
+        a:'Name the link, then show it with the text.' },
+      oops:{ q:'Clay ball first, then a clay boat. The link?', wrong:'Cause and effect: the ball made the boat float.', right:'Sequence: the ball came first, then the boat.', why:'Coming first is not the same as causing.' },
+      ways:['link map','worked example','Mistake Detective','tap the reason','topic set (oceans)'], done:'You can map how ideas connect! Tell your chavrusa why a steel ship floats, link by link.',
+      board:{ one:'Cause and effect: one makes the other happen. Sequence: time order. Comparison: alike or different.', activity:'Link cards: pairs get two fact cards from an article and a string; they tie them with a label (cause, sequence or comparison) and prove it with a signal word.', mistakes:['Calling "came first" a cause','Missing a comparison with no signal word','Mixing up the cause and the effect'] },
+      do:[
+        {type:'storymap', slots:['The ship\'s shape','What the ship does','What the water does','The result'], cards:['Wide and hollow, filled with air','Pushes aside a huge amount of water','Pushes up hard','The ship floats'], extra:['A line painted on its side'],
+          say:'Build the link map: each link causes the next.', how:'Start with the shape. Ask: because of this, what happens?'},
+        {type:'sort', bins:['Cause and effect','Sequence','Comparison'], cards:[['The ship is wide, so it pushes aside lots of water.',0],['First a clay ball, then a clay boat.',1],['The ball sank, but the boat floated.',2],['With each marble, the boat sat lower.',0]],
+          say:'What kind of link is each one?', how:'Makes it happen? Time order? Alike or different?'}],
+      your:[
+        {type:'combine', mis:true, a:'The ship pushes aside a huge amount of water.', b:'The water pushes up hard enough to hold it.', o:['so','but','before'], j:'so',
+          say:'Join the two ideas with the right link word.', how:'Does the first idea cause the second? Then use a cause word.',
+          why:{q:'Why "so"?', o:['The first part causes the second','The two parts are opposites','One happens long after'], a:'The first part causes the second'}},
+        {type:'evidence', q:'Which sentence tells WHY the bolt sinks?', p:['Dovid Lerner dropped a steel bolt into a tub of water.','It sank straight to the bottom.','The push is too weak to hold it up, so it sinks.','A ship is different.'], a:2, look:'the cause, not only what happened',
+          say:'Tap the sentence with the cause.', how:'"It sank" is what happened. Find WHY it happened.',
+          why:{q:'Why is this the cause?', o:['It tells why: the push is too weak','It tells when the bolt fell','It is the first sentence'], a:'It tells why: the push is too weak'}},
+        {type:'order', steps:['He rolls clay into a ball. It sinks.','He shapes the same clay into a boat. It floats.','He adds marbles. The boat sits lower.','Water pours over the side. The boat sinks.'],
+          say:'Put Dovid\'s test in sequence.', how:'Follow the test from first to last.'},
+        {type:'match', pairs:[['so, because, as a result','Cause and effect'],['first, then, finally','Sequence'],['but, unlike, both','Comparison']],
+          say:'Match the signal words to the kind of link.', how:'Why words, when words, side-by-side words.'},
+        {type:'listen', q:'Challenge: the moon pulls on the ocean, so the water bulges.', hear:'How are these two ideas linked?', o:['Cause and effect','Comparison','Sequence'], a:'Cause and effect',
+          say:'Challenge! Remember the tides? Name the link.', how:'Does the moon\'s pull make the water bulge?',
+          why:{q:'Which word shows it?', o:['so','the','on'], a:'so'}}] },
+    'READ.COMP.L06.12':{ band:'E45', pic:'🐟', today:'Explain with the text\'s own details',
+      why:'An explanation is only as strong as its proof. The text is your proof.',
+      ready:[{q:'A quote is...', o:['the exact words from the text','your own idea','a question'], a:'the exact words from the text'},
+             {q:'To prove an answer, you...', o:['find the words in the text that show it','guess what sounds right','say it louder'], a:'find the words in the text that show it'}],
+      bridge:'READ.COMP.L06.06', bridgeName:'Quote to Prove It',
+      watch:{ q:'How Do We Know a Fish Is Kosher?', m:{type:'scene', e:'🐟', t:'At the fish store, Yehuda asks Abba which fish they can buy for Shabbos.'}, steps:[
+        {t:'The question: why is a catfish not kosher?'},
+        {t:'A guess: "It has whiskers." That is not in the text.'},
+        {t:'Find the text\'s words: "fins but no scales at all."'},
+        {t:'Explain: no scales, so it is not kosher.'}],
+        a:'Answer, then the text\'s detail, then how it proves it.' },
+      oops:{ q:'Why is a catfish not kosher?', wrong:'Because it has whiskers.', right:'The text says it has fins but no scales at all.', why:'Whiskers are not in the text. Use the text\'s own detail.' },
+      ways:['evidence tap','worked example','Mistake Detective','tap the reason','chavrusa'], done:'You can explain with the text! Tell your chavrusa the two signs of a kosher fish, and prove it.',
+      board:{ one:'Answer + "The text says..." + "This shows..." No outside guesses.', activity:'Finger on the proof: the teacher asks a why-question; every boy puts his finger on the sentence that explains it before anyone answers.', mistakes:['Answering from a guess, not the text','Giving the answer with no detail','Quoting a detail that does not explain the answer'] },
+      do:[
+        {type:'evidence', q:'Why is a catfish not kosher? Tap the text\'s reason.', p:['Behind the counter lay salmon, carp, whitefish and a long gray catfish.','A catfish has fins but no scales at all, so it is not kosher either.','"Which ones can we buy?" Yehuda asked.'], a:1, look:'the sentence that gives the reason',
+          say:'Tap the sentence that explains it.', how:'Find the catfish sentence that gives a reason, not only its name.',
+          why:{q:'Why is this the best proof?', o:['It gives the reason in the text\'s own words','It names the most fish','It is the first sentence'], a:'It gives the reason in the text\'s own words'}},
+        {type:'match', pairs:[['Catfish: not kosher','It has fins but no scales at all.'],['Shark: not kosher','Its tiny points cannot be removed.'],['Pieces: be careful','Without the skin, you cannot see the scales.']],
+          say:'Match each answer to the text\'s reason.', how:'Find each one in the text. What reason does it give?'}],
+      your:[
+        {type:'sort', mis:true, bins:['From the text','An outside guess'], cards:[['A catfish has no scales at all.',0],['A kosher scale comes off without tearing the skin.',0],['Catfish are not kosher because they have whiskers.',1],['Sharks are not kosher because they are dangerous.',1]],
+          say:'Mistake Detective: from the text, or an outside guess?', how:'Can you put your finger on it in the text?'},
+        {type:'cloze', t:'A shark is not kosher. The text says its tiny hard points cannot be ___.', o:['removed','seen','counted'], a:'removed',
+          say:'Fill in the text\'s own word.', how:'Find the shark sentence. What can its points not do?'},
+        {type:'order', steps:['A shark is not kosher.','The text says its skin has tiny hard points.','They cannot be scraped off without tearing the skin.','So they are not kosher scales.'],
+          say:'Build the explanation in order.', how:'Answer, then the text\'s detail, then what it shows.'},
+        {type:'listen', q:'Yehuda asks: why buy fish pieces with some skin on?', hear:'Which answer uses the text?', o:['Without the skin, you cannot see the scales','Skin makes the fish taste better','The store has no knives'], a:'Without the skin, you cannot see the scales',
+          say:'Which answer uses the text?', how:'Find what Abba says about pieces.',
+          why:{q:'Where did that answer come from?', o:['Abba\'s words in the text','A guess about taste','The title'], a:'Abba\'s words in the text'}},
+        {type:'evidence', q:'Challenge: remember the tides? What makes them extra big?', p:['Twice a day, the ocean creeps up the beach, and twice a day it slides back out.','Then their pulls add together, and the tides are extra high and extra low.','Fishermen leave the harbor when the tide is right.'], a:1, look:'the sentence that tells why',
+          say:'Challenge! Tap the tides sentence that explains it.', how:'Look for the reason, not just a fact about tides.',
+          why:{q:'What does this sentence explain?', o:['The sun\'s and moon\'s pulls add together','The water is warmer','The fishermen go out'], a:'The sun\'s and moon\'s pulls add together'}}] },
+    'READ.FLU.L06.03':{ band:'E45', pic:'🐢', today:'Pace it: slow for hard parts, smooth for easy',
+      why:'When your speed fits the words, you read them right and understand them.',
+      ready:[{q:'A comma tells your voice to...', o:['pause a little','shout','skip a word'], a:'pause a little'},
+             {q:'How many beats in "in-ven-tion"?', o:['3','2','4'], a:'3'}],
+      bridge:'READ.FLU.L05.03', bridgeName:'Scoop the Words',
+      watch:{ q:'The Deepest Place on Earth', m:{type:'scene', e:'🌊', t:'In 1960, two explorers, Jacques Piccard and Don Walsh, tried anyway.'}, steps:[
+        {t:'First, I look for the hard parts before reading.'},
+        {t:'A date and two new names: I slow down here.'},
+        {t:'I practice them: Zhahk Pee-KAR. Don Walsh.'},
+        {t:'Easy words like "tried anyway": back to talking speed.'},
+        {t:'Then I reread the sentence smoothly, start to end.'}],
+        a:'Slow for the hard parts, smooth for the easy parts.' },
+      oops:{ q:'"the Challenger Deep, is almost 36,000 feet down"', wrong:'Racing through it and saying the number wrong.', right:'Slowing down for the name and the number.', why:'Hard parts need a slower speed.' },
+      ways:['repeated reading with a model','fluency','sort and match','Mistake Detective','tap the reason','chavrusa'], done:'You can pace your reading! Read the trench article to your chavrusa twice: slow on the hard parts, smooth on the easy.',
+      board:{ one:'Find the hard parts first. Slow on names, new words and numbers. Smooth on easy words. Reread.', activity:'Speed bumps: pairs mark the hard parts of a passage with a pencil bump, practice them, then read it aloud twice to each other.', mistakes:['Racing through names and numbers','Reading easy sentences word by word','Reading everything at one speed'] },
+      do:[
+        {type:'sort', bins:['Slow down','Read smoothly'], cards:[['the Challenger Deep',0],['almost 36,000 feet down',0],['Deep water is heavy.',1],['but they kept going',1]],
+          say:'Slow down, or read smoothly?', how:'New names and big numbers are hard. Short, easy words are not.'},
+        {type:'match', pairs:[['A long, new word','Read it in beats, then say it whole'],['A big number','Say every part clearly'],['A short, easy sentence','Read it at talking speed']],
+          say:'Match each part to what your voice should do.', how:'Hard parts go slow. Easy parts go at talking speed.'}],
+      your:[
+        {type:'sort', mis:true, bins:['Good pacing','Mistake'], cards:[['Slows for "Mariana Trench," then speeds up again.',0],['Reads "Deep water is heavy." at talking speed.',0],['Races through "36,000 feet" and says it wrong.',1],['Reads every easy sentence word by word.',1]],
+          say:'Mistake Detective: good pacing, or a mistake?', how:'Is the speed right for those words?'},
+        {type:'evidence', q:'Which sentence needs the slowest reading?', p:['Deep water is heavy.','In 1960, two explorers, Jacques Piccard and Don Walsh, tried anyway.','A person could never survive there without a very strong shell.'], a:1, look:'a date and new names',
+          say:'Tap the sentence with the most hard parts.', how:'Count the names, numbers and new words in each one.',
+          why:{q:'Why slow down there?', o:['It has a date and two new names','It is a question','It is the last sentence'], a:'It has a date and two new names'}},
+        {type:'tiles', w:['First they sank slowly','for almost five hours.','About 30,000 feet down,','they heard a loud crack.'], extra:['slowly for'],
+          say:'Scoop the sentences into phrases. Then read them aloud.', how:'Keep words that go together. Slow down for the number.'},
+        {type:'order', steps:['Find the hard parts first.','Practice the hard words in beats.','Read: slow on hard parts, smooth on easy ones.','Reread the whole part smoothly.'],
+          say:'Put the pacing steps in order.', how:'What do you do before you read aloud?',
+          why:{q:'Why reread at the end?', o:['The second time, the hard parts get smooth','To finish faster','To skip the hard words'], a:'The second time, the hard parts get smooth'}},
+        {type:'listen', q:'Challenge: "Each coral is made of tiny animals called polyps."', hear:'Which word should you slow down for?', o:['polyps','tiny','animals'], a:'polyps',
+          say:'Challenge! Which word needs you to slow down?', how:'Look for the new science word.',
+          why:{q:'Why that word?', o:['It is a new science word','It is the shortest word','It comes first'], a:'It is a new science word'}}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
