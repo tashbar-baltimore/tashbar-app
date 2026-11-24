@@ -15,7 +15,7 @@ else {
   let ok = true;
   try { E.initRenderer(); } catch (e) { ok = false; E.flatFallback(); }
   if (ok) {
-    E.buildWorld(game.world || {}); E.initPointer();
+    E.buildWorld(Object.assign({ backdrop: E.backdropFor ? E.backdropFor(game) : null }, game.world || {})); E.initPointer();
     const mod = await import('./games/' + game.kind + '.js');
     const run = mod.default(E, { id, struggled: E.struggled(id) });
     await E.soundsReady;

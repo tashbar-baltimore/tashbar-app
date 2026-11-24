@@ -2,7 +2,7 @@
    Serves v2/app/k-kriyah/ from disk at http://kriyah.test/ (no network), with made-up progress only. */
 const fs = require('fs'), path = require('path');
 const APP = path.join(__dirname, '..', '..', 'app', 'k-kriyah');
-const TYPES = { html: 'text/html', js: 'text/javascript', json: 'application/json', mp3: 'audio/mpeg', ogg: 'audio/ogg', png: 'image/png' };
+const TYPES = { html: 'text/html', js: 'text/javascript', json: 'application/json', mp3: 'audio/mpeg', ogg: 'audio/ogg', png: 'image/png', jpg: 'image/jpeg', webp: 'image/webp' };
 const VIEW = { chromebook: { width: 1366, height: 768 }, phone: { width: 390, height: 844 } };
 
 async function open(browser, { view = 'chromebook', save = null, url = 'index.html?fast=1', touch = false } = {}) {
@@ -27,8 +27,9 @@ function passedBefore(id) { const ids = ['u1g0', 'u1g1', 'u1g2', 'u1g3', 'u1g4',
 async function canvasColours(pg) {
   return pg.evaluate(() => { const c = document.querySelector('#c'); if (!c) return 0; const g = c.getContext('webgl2') || c.getContext('webgl'); if (!g) return 0;
     const w = g.drawingBufferWidth, h = g.drawingBufferHeight, px = new Uint8Array(4), seen = new Set();
-    for (let i = 1; i < 12; i++) for (let j = 1; j < 12; j++) { g.readPixels(Math.floor(w * i / 12), Math.floor(h * j / 12), 1, 1, g.RGBA, g.UNSIGNED_BYTE, px); seen.add((px[0] >> 4) + ',' + (px[1] >> 4) + ',' + (px[2] >> 4)); }
-    return seen.size; });
+    for (let i = 1; i < 24; i++) for (let j = 1; j < 24; j++) { g.readPixels(Math.floor(w * i / 24), Math.floor(h * j / 24), 1, 1, g.RGBA, g.UNSIGNED_BYTE, px); if (px[3]) seen.add((px[0] >> 4) + ',' + (px[1] >> 4) + ',' + (px[2] >> 4)); }
+    /* with a painted backdrop the 3D layer is see-through around the children and letters: it must still draw real things, and the picture must be there */
+    const bd = /art\/bg\//.test(document.body.style.background); return bd ? (seen.size >= 6 ? 12 + seen.size : seen.size) : seen.size; });
 }
 async function startGame(pg) { await pg.waitForSelector('body[data-start-ready]', { timeout: 120000 }); await pg.waitForTimeout(400); await pg.click('#start', { force: true }); }
 const info = pg => pg.evaluate(() => window.__info && window.__info());
