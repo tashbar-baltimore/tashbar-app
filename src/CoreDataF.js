@@ -50,5 +50,9 @@ CORE_SKILLS.F = [
   ["READ.PHON.L01.25", "Long or Short?", "Hear long a, which says its name, and short a", { after: "READ.FLU.L01.09", std: "RF.K.3b", file: "CoreDataFH1", min: 5 }],
   ["READ.PHON.L01.26", "Shhh, Ch, Th", "Know that sh, ch and th are two letters, one sound", { after: "READ.PHON.L01.25", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
   ["READ.PA.L01.15", "Four Sounds", "Blend and chop words with four sounds", { after: "READ.PHON.L01.26", std: "RF.K.2d", file: "CoreDataFH1", min: 4 }],
-  ["READ.FLU.L01.10", "Heart Words: have, of, they", "Read the heart words have, of, they and are", { after: "READ.PA.L01.15", std: "RF.K.3c", file: "CoreDataFH1", min: 5 }]
+  ["READ.FLU.L01.10", "Heart Words: have, of, they", "Read the heart words have, of, they and are", { after: "READ.PA.L01.15", std: "RF.K.3c", file: "CoreDataFH1", min: 5 }],
+  ["READ.LIT.L01.01", "Who Is in the Story?", "Listen to a story and name its characters", { after: "READ.COMP.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.02", "Where Is the Story?", "Listen to a story and tell where and when it happens", { after: "READ.LIT.L01.01", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.03", "Problem and Fix", "Listen to a story and tell its problem and how it was fixed", { after: "READ.LIT.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }]
 ];
