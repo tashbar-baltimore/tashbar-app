@@ -593,7 +593,7 @@ function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\
  tiles+=tile('things',pfAv('pr-tav'),'My profile','Badges, levels, my stuff','data-gmnav="more"');   /* HoS 2026-11-24: My things became My profile (his picture on the tile) */
  return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
 /* ===== MY PROFILE (HoS 2026-11-24, boss cleared the general page; mock-up from Claude Chat): "My things" became "My profile".
-   One page with who he is (his picture, name, grade, the code reminder, days in a row, badges, lessons), his settings, Sign out,
+   One page with who he is (his picture, name, grade, days in a row, badges, lessons), his settings, Sign out,
    his levels in every subject, what he finished lately, his badges, his bank, what he bought, his things from the store, and the doors
    that were on My things / My stuff. Nothing new is paid or counted here: every number comes from his map, his state or the store
    (stInfo), and every door presses the same button as before. His picture is kept in his state (st.av) and shared with the Arena. */
@@ -612,7 +612,6 @@ function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2'), st=
  const snd=pfSoundOn();
  const me=`<aside class="pr-me"><div class="pr-big">${pfAv('pr-bav')}</div>${Q.quiet('Change','data-gm="pfav" aria-label="Change my picture"','tlk-small')}
   <h1>${esc(nm0||'Me')}</h1>${pfGrade()?`<p class="pr-gr">${pfGrade()}</p>`:''}
-  <div class="pr-code"><b>My code <span aria-hidden="true">• • • •</span></b><small>Your teacher can help if you forget it.</small></div>
   <div class="pr-boxes">${Q.box('rank','Days in a row',String(streak))}${Q.box('rank','Badges',String(earned))}${Q.box('prog','Lessons done',String(lessons))}</div>
   <h2 class="pr-sec">My settings</h2>
   <div class="pr-set"><span>Sound</span>${Q.pill(snd?'prog':'lock',snd?'On':'Off')}${Q.quiet(snd?'Turn off':'Turn on','data-gm="pfsnd"','tlk-small')}</div>
@@ -1182,9 +1181,6 @@ body #gm .gm-more{background:#fff;color:#047857}
 #gm .pr-bav.ltr{font-size:42px}
 #gm .pr-me h1{margin:2px 0 0;font-size:22px;line-height:1.15}
 #gm .pr-gr{margin:0;color:#4C4A7A;font-weight:600}
-#gm .pr-code{width:100%;box-sizing:border-box;background:#F1F5F9;border-radius:12px;padding:8px 12px;text-align:left}
-#gm .pr-code b{display:block;font-size:15px}#gm .pr-code b span{letter-spacing:.2em;margin-left:6px}
-#gm .pr-code small{color:#475569;font-size:13px}
 #gm .pr-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
 #gm .pr-boxes .tlk-box{padding:8px 4px}#gm .pr-boxes .tlk-box small{font-size:10px;letter-spacing:.03em}
 #gm .pr-sec{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:22px 0 8px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4C4A7A}
