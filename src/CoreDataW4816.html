@@ -1,0 +1,393 @@
+<script>
+/* CoreDataW4816.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 4 (L05), Unit 4 "Explain It" (information writing). Cast: the Glen Avenue Crew.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L05.03':{name:'TIDE Plan',
+  teach:[
+    {how:'The Glen Avenue Gazette wants a new piece: how the Gold family bakery makes challah for Shabbos. This piece does not try to convince anyone. It TEACHES. You know POW: Pick my idea, Organize my notes, Write and say more. Here, Pick my idea means: pick a topic you can teach.', q:'Tzvi Hirsch says: “I will teach how our bakery makes challah.” Which POW step is that?', o:['Pick my idea','Organize my notes','Write and say more']},
+    {how:'For an opinion, you organized your notes with TREE. To teach, organize them with TIDE. T: Topic sentence: tell what you will teach. I: Important ideas: the main parts, often three. D: Details: facts about each idea. E: Ending: wrap it up and tell the reader what he now knows.', q:'Tzvi Hirsch’s note says: “braiding.” It is one main part of making challah. Which TIDE part is it?', o:['Important idea','Topic sentence','Ending']},
+    {how:'The mistake: an opinion in a teaching plan. “I think challah is the best bread” is TREE talk. An information piece teaches facts, not what you like. Another mistake: important ideas with no details. Ask: Will my reader learn how it really works?', q:'Which plan is ready to write?', o:['A topic sentence, three important ideas, details for each, and an ending.','“I think challah is the best bread,” and three reasons.','Three important ideas, but no details.']}
+  ],
+  practice:[
+    {t:'sort', q:'Tzvi Hirsch’s TIDE notes for the Gazette. Sort each note.', bins:[{id:'T',label:'📰 Topic sentence'},{id:'I',label:'💡 Important idea'},{id:'D',label:'🔍 Detail'}],
+      items:[{label:'Here is how our bakery makes challah for Shabbos.',bin:'T'},{label:'making the dough',bin:'I'},{label:'the dough rises for 2 hours',bin:'D'},{label:'braiding',bin:'I'},{label:'each challah gets 6 strands',bin:'D'},{label:'baking',bin:'I'},{label:'the challos bake for 30 minutes',bin:'D'}],
+      h:'The topic sentence tells what the whole piece teaches. An important idea is one main part, in a word or two. A detail is a fact about one part, often with a number.'},
+    {t:'pairs', q:'Match each part of TIDE to its job.', pairs:[['Topic sentence','tell what I will teach'],['Important ideas','name the main parts'],['Details','give facts about each part'],['Ending','wrap it up']],
+      h:'Say TIDE slowly. What does each part do for the reader?'},
+    {t:'order', q:'Put the parts of a teaching plan in TIDE order. Tap the tiles in order.', tiles:['Topic sentence','Important ideas','Details','Ending'],
+      h:'T, I, D, E. Say the word TIDE in your head.'},
+    {t:'spotall', q:'Tzvi Hirsch is teaching how challah is made. Tap every note that is a DETAIL.', cells:[{label:'the dough rises for 2 hours',ok:true},{label:'each challah gets 6 strands',ok:true},{label:'the challos bake for 30 minutes',ok:true},{label:'braiding',ok:false},{label:'I think challah is the best bread',ok:false},{label:'Now you know how challah gets to your table.',ok:false}],
+      h:'A detail is a fact about one part, often with a number. A main part, in a word or two, is an important idea. An opinion does not belong in this plan at all.'},
+    {t:'pairs', q:'Match each important idea to the detail that tells about it.', pairs:[['making the dough','the dough rises for 2 hours'],['braiding','each challah gets 6 strands'],['baking','the challos bake for 30 minutes']],
+      h:'Which fact tells about that part?'},
+    {t:'sort', q:'Sort each plan: ready to write, or not ready?', bins:[{id:'G',label:'✅ Ready to write'},{id:'M',label:'❌ Not ready'}],
+      items:[{label:'Topic sentence, three important ideas, details, ending',bin:'G'},{label:'T, I, D, E: every part has a note',bin:'G'},{label:'A topic sentence and one detail',bin:'M'},{label:'Three important ideas, but no details',bin:'M'},{label:'I think challah is the best bread, with three reasons',bin:'M'}],
+      h:'Check for all four TIDE parts. An opinion with reasons is a TREE plan, not TIDE.'},
+    {t:'write', q:'Your turn to plan. Pick something you can teach: how your family gets ready for Shabbos, or how your shul gets ready for Yom Tov. Write POW at the top. Then make a TIDE: a topic sentence, three important ideas, two details for each, and an ending.', min:0, checks:['📰 My Topic sentence tells what I will teach.','💡 I have three Important ideas: the main parts.','🔍 Each idea has Details, and I have an Ending.'], h:'Pick a topic you know well. Ask: What are the main parts? For each part, ask: What facts can I teach?'}
+  ],
+  check:[
+    {q:'Binyamin plans a Gazette piece: how his family makes plov for Shabbos. His first note says: “My family makes plov for Shabbos in three steps.” Which TIDE part is it?', o:['Topic sentence','Detail','Ending'], h:'Does the note tell what the whole piece teaches, give one fact, or wrap it up?'},
+    {q:'Dovid plans a piece: how the class weather station works. One important idea is “the rain gauge.” His next note: “it filled to 2 inches last week.” Which TIDE part is the next note?', o:['Detail','Important idea','Topic sentence'], h:'Is it a main part, or a fact about one part?'},
+    {t:'order', q:'Yehuda plans a piece about how his shul gets ready for Pesach. Put his notes in TIDE order. Tap the tiles in order.', tiles:['Our shul gets ready for Pesach in three big ways.','The first big job is cleaning.','For example, the men wipe all 40 shelves.','Now you know how our shul gets ready for Pesach.'], h:'T, I, D, E. What the piece teaches comes first, and the wrap-up comes last.'}
+  ],
+  re:[
+    {how:'A new way: picture a museum tour. The guide says what the tour is about: the Topic. He stops in three rooms: the Important ideas. In each room he points out facts: the Details. At the door he wraps it up: the Ending.', q:'On the tour, what are the three rooms?', o:['Important ideas','Details','Ending']},
+    {how:'A simpler step: start with just T and I. Say what you will teach. Then ask: “What are the main parts?”', q:'Topic: how the bakery makes challah. Which is a main part?', o:['braiding','challah is yummy','the end']},
+    {how:'The skill underneath: POW + TREE. You planned an opinion with POW and TREE. POW stays the same. Now you go further: TIDE takes the place of TREE, because an information piece teaches facts about main parts, not reasons for an opinion.', q:'In POW, what does the P stand for?', o:['Pick my idea','Plan the ending','Put it in order']}
+  ]},
+
+  'WRIT.ESSAY.L05.04':{name:'Group It',
+  teach:[
+    {how:'Tzvi Hirsch has a pile of facts about the bakery. If he writes them in any order, the reader gets lost. So he sorts them into GROUPS. Facts about the same part go together. One group becomes one paragraph.', q:'Which two facts go in the same group?', o:['The dough rises for 2 hours. The mixer mixes flour, water, eggs and yeast.','The dough rises for 2 hours. The challos bake for 30 minutes.','Each challah gets 6 strands. The ovens run all night.']},
+    {how:'Give each group a NAME. The name tells what all its facts have in common: Making the Dough, Braiding, Baking. Ask: What are these facts all about? If the name fits every fact in the group, it is a good name.', q:'Facts: each challah gets 6 strands; each braid takes about a minute. What is a good name for this group?', o:['Braiding','Baking','Challah']},
+    {how:'The mistakes: one paragraph with facts from two groups mixed together, or a name that is too big. “Challah” is the topic of the whole piece, not the name of one group. And a name like “Stuff” tells nothing. Keep each group to one part.', q:'Which group name is too big?', o:['Challah','Making the Dough','Baking']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort Tzvi Hirsch’s bakery facts into groups.', bins:[{id:'D',label:'🥣 Making the Dough'},{id:'B',label:'🪢 Braiding'},{id:'K',label:'🔥 Baking'}],
+      items:[{label:'The mixer mixes flour, water, eggs and yeast.',bin:'D'},{label:'The dough rises for 2 hours.',bin:'D'},{label:'Mr. Gold takes off a small piece of dough with a bracha.',bin:'D'},{label:'Each challah gets 6 strands.',bin:'B'},{label:'Each braid takes about a minute.',bin:'B'},{label:'The challos bake for 30 minutes.',bin:'K'},{label:'The ovens run all night on Thursday.',bin:'K'}],
+      h:'Ask: which part of making challah does this fact tell about?'},
+    {t:'pairs', q:'Match each group of facts to its name.', pairs:[['rises for 2 hours; the mixer mixes flour and yeast','Making the Dough'],['6 strands; about a minute for each braid','Braiding'],['30 minutes; the ovens run all night','Baking']],
+      h:'Ask: what are these facts all about?'},
+    {t:'spotall', q:'This paragraph is about Braiding. Tap every fact that BELONGS in it.', cells:[{label:'Each challah gets 6 strands.',ok:true},{label:'Each braid takes about a minute.',ok:true},{label:'Tzvi Hirsch braids challah on Fridays.',ok:true},{label:'The dough rises for 2 hours.',ok:false},{label:'The challos bake for 30 minutes.',ok:false}],
+      h:'Keep only facts about braiding. Facts about the dough or the oven go in their own group.'},
+    {t:'sort', q:'Sort each group name.', bins:[{id:'G',label:'✅ Good name'},{id:'B',label:'📦 Too big: it names the whole piece'},{id:'N',label:'🤷 Tells nothing'}],
+      items:[{label:'Making the Dough',bin:'G'},{label:'Braiding',bin:'G'},{label:'Baking',bin:'G'},{label:'Challah',bin:'B'},{label:'All About Challah',bin:'B'},{label:'Stuff',bin:'N'},{label:'Some Things',bin:'N'}],
+      h:'A good name tells what one group of facts is about. A name for the whole piece is too big. A name like Stuff tells nothing.'},
+    {t:'order', q:'Put Tzvi Hirsch’s groups in the order the bakers work. Tap the tiles in order.', tiles:['Making the Dough','Braiding','Baking'],
+      h:'What happens first in the bakery? Dough first, then the braid, then the oven.'},
+    {t:'pairs', q:'Match each mistake to its fix.', pairs:[['It mixes two groups.','Split it into two paragraphs.'],['A group has no name.','Ask what its facts are all about.'],['The name is “Challah.”','Pick a name for just one part.']],
+      h:'What is wrong? Find the fix for that problem.'},
+    {t:'write', q:'Your turn to write. Take your TIDE plan. List at least six facts. Sort them into groups, one group for each important idea. Give each group a name. Then write one paragraph for each group.', min:0, checks:['🗂️ Every fact is in a group with facts like it.','🏷️ Each group has a name that fits every fact in it.','📄 Each group became its own paragraph.'], h:'For each fact, ask: Which part is it about? Put it in that group. Then ask: What are these facts all about? That is the name.'}
+  ],
+  check:[
+    {q:'Binyamin writes how his family makes plov for Shabbos. His groups are The Rice, The Meat and Cooking. He names one more group “Plov.” What is wrong with that name?', o:['Too big: it names the whole piece','Good name','Tells nothing'], h:'Is plov one part of the piece, or the whole topic?'},
+    {q:'Dovid writes about the class weather station. One paragraph says: “The rain gauge filled to 2 inches. The wind vane points north. It rained on Tuesday too.” What is wrong?', o:['It mixes two groups','Nothing: it is one group','Too big: it names the whole piece'], h:'Are all the facts about the same part? Look for one that is about something else.'},
+    {t:'order', q:'Avrumi writes how his Abba, a sofer, makes a mezuzah. Put his group names in the order the work happens. Tap the tiles in order.', tiles:['Getting the Klaf Ready','Writing the Words','Checking Every Letter'], h:'Which part happens first? Put the groups in the order the work happens.'}
+  ],
+  re:[
+    {how:'A new way: groups are drawers in a dresser. Socks go in one drawer, shirts in another. Each drawer has a label. Each fact goes in the drawer where it belongs.', q:'In the dresser, what is the label on each drawer like?', o:['the group name','one fact','the ending']},
+    {how:'A simpler step: start with just two groups. Ask about each fact: Is it about the dough, or about the oven?', q:'Is “The challos bake for 30 minutes” about the dough or the oven?', o:['the oven','the dough','neither']},
+    {how:'The skill underneath: Umbrella Sentence. There, one topic sentence covered every detail in ONE paragraph. Now you go further: you sort many facts into several groups, give each group a name, and make each group its own paragraph.', q:'An umbrella sentence covers…', o:['every detail in the paragraph','only one detail','a different topic']}
+  ]},
+
+  'WRIT.ESSAY.L05.05':{name:'Headings Help',
+  teach:[
+    {how:'A heading is a short title over one part of your piece. It tells the reader what that part teaches. Your group names make great headings: Making the Dough, Braiding, Baking. A reader can look at the headings and jump right to the part he wants.', q:'Tzvi Hirsch’s paragraph tells about the 6 strands and how fast a braid is made. Which heading fits it?', o:['Braiding','Baking','Yum!']},
+    {how:'A picture can teach too. Right under it, write a CAPTION: one short line that tells what the picture shows. A good caption gives the reader a fact. “Look at this!” or “My picture” tells him nothing.', q:'A picture shows Mr. Gold sliding a tray of challos into the oven. Which caption tells what it shows?', o:['Mr. Gold slides a tray of challos into the oven.','Look at this!','I love this picture.']},
+    {how:'The mistakes: a heading that does not match its paragraph, a heading that is a whole long sentence, or a caption that does not say what the picture shows. Keep a heading short, three words or fewer, and check it against the paragraph under it.', q:'The paragraph is about the oven. Which heading is a mistake?', o:['Braiding','Baking','In the Oven']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each paragraph to its heading.', pairs:[['The mixer mixes flour, water, eggs and yeast. The dough rises for 2 hours.','Making the Dough'],['Each challah gets 6 strands. A braid takes about a minute.','Braiding'],['The challos bake for 30 minutes. The ovens run all night.','Baking']],
+      h:'Read the paragraph. What is it all about? That is the heading.'},
+    {t:'sort', q:'Sort each heading for the Braiding paragraph.', bins:[{id:'G',label:'✅ Good heading'},{id:'M',label:'🔀 Does not match'},{id:'L',label:'📏 Too long'}],
+      items:[{label:'Braiding',bin:'G'},{label:'Six Strands',bin:'G'},{label:'Baking',bin:'M'},{label:'Making the Dough',bin:'M'},{label:'This part is all about how the bakers braid the challah',bin:'L'}],
+      h:'A good heading is three words or fewer, and it matches the paragraph under it.'},
+    {t:'spotall', q:'A picture shows Tzvi Hirsch braiding six strands of dough. Tap every caption that tells what the picture shows.', cells:[{label:'Tzvi Hirsch braids six strands into one challah.',ok:true},{label:'Six strands of dough become one braid.',ok:true},{label:'Look at this!',ok:false},{label:'My favorite picture.',ok:false},{label:'The challos bake for 30 minutes.',ok:false}],
+      h:'A caption tells what is in THIS picture. A feeling, or a fact about something else, is not a caption for it.'},
+    {t:'order', q:'Build the Baking part of Tzvi Hirsch’s page. Tap the parts in order, top to bottom.', tiles:['Heading: Baking','Picture: challos in the oven','Caption: Golden challos bake in the oven.'],
+      h:'The heading goes on top of its part. The caption goes right under its picture.'},
+    {t:'sort', q:'Sort each caption.', bins:[{id:'G',label:'✅ Tells what it shows'},{id:'N',label:'❌ Tells nothing'}],
+      items:[{label:'Mr. Gold slides a tray of challos into the oven.',bin:'G'},{label:'The mixer turns flour, eggs and yeast into dough.',bin:'G'},{label:'Wow!',bin:'N'},{label:'Here is a picture.',bin:'N'},{label:'This is so cool.',bin:'N'}],
+      h:'Does the caption tell the reader what he is looking at? Wow, Here is a picture, and so cool tell him nothing.'},
+    {t:'pairs', q:'Match each mistake to its fix.', pairs:[['The heading does not match.','Read the paragraph and rename it.'],['The heading is a long sentence.','Cut it to three words or fewer.'],['The caption says “Wow!”','Tell what the picture shows.']],
+      h:'What is wrong? Find the fix for that problem.'},
+    {t:'write', q:'Your turn to write. Take your groups from last time. Write a short heading over each paragraph. Then draw one picture for one part, and write a caption under it that tells what it shows.', min:0, checks:['🏷️ Each paragraph has a short heading that matches it.','🖼️ I drew a picture for one part.','📝 My caption tells what the picture shows.'], h:'Use your group names as headings. For the caption, say: “This picture shows …” Then write what comes after those words.'}
+  ],
+  check:[
+    {q:'Dovid writes about the class weather station. His paragraph tells how the rain gauge fills up and how to read the inches. He gives it the heading “The Wind Vane.” What is wrong with the heading?', o:['Does not match','Too long','Good heading'], h:'Read the paragraph. Is it about the wind vane?'},
+    {q:'Avrumi draws his Abba, a sofer, writing a mezuzah with a feather quill. Under it he writes: “My Abba writes a mezuzah with a feather quill.” What kind of caption is it?', o:['Tells what it shows','Tells nothing','Does not match'], h:'Does the caption tell the reader what he is looking at?'},
+    {t:'order', q:'Yehuda builds one part of his piece about Pesach cleaning in shul. Tap the parts in order, top to bottom.', tiles:['Heading: Cleaning the Shelves','Picture: men wiping the shelves','Caption: The men wipe all 40 shelves.'], h:'The heading goes on top of its part. The caption goes right under its picture.'}
+  ],
+  re:[
+    {how:'A new way: headings are the signs over the aisles in a grocery. The sign says Bread or Fruit, so you know what is in that aisle before you walk in.', q:'Like an aisle sign, a heading tells…', o:['what that part is about','how the writer feels','the ending']},
+    {how:'A simpler step: start with your group name. Write it over the paragraph. That is your heading.', q:'Tzvi Hirsch’s group is Baking. What is his heading?', o:['Baking','Braiding','The End']},
+    {how:'The skill underneath: Group It. There you sorted facts into groups and named each one. Now you go further: the name goes on the page as a heading, and a picture with a caption teaches one part too.', q:'One group of facts becomes…', o:['one paragraph','one word','one picture']}
+  ]},
+
+  'WRIT.PARA.L05.19':{name:'Facts and Quotes',
+  teach:[
+    {how:'You already say more with “For example” and “In fact.” A teaching piece goes further. Add FACTS the reader can check: a number (3 big ovens), a date (June 1985) or a name (Glen Avenue). A feeling, like “Challah is yummy,” is not a fact.', q:'Which sentence gives a fact with a date?', o:['Tzvi Hirsch’s Zeidy opened the bakery in 1985.','The bakery is the best on the street.','The bakery smells so good.']},
+    {how:'Now add a QUOTE: an expert’s exact words. Put them inside quotation marks. Then say WHO said it, and his job: “You cannot rush good dough,” says Mr. Gold, the baker. An expert knows the topic from his work or his learning. Put the quote in the paragraph it teaches about.', q:'Who is the best expert to quote about why dough rises?', o:['Mr. Halpern, the science teacher','a boy walking past the bakery','Tzvi Hirsch’s baby brother']},
+    {how:'The mistakes: a quote with no name, like “Someone said the dough needs time,” or a quote from someone who is not an expert. The reader asks: Who said that? How does he know? Always tell who said it, and pick a person who knows.', q:'Which quote tells who said it?', o:['“My father taught me the six-strand braid,” says Mr. Gold, the baker.','“My father taught me the six-strand braid.”','Someone said six strands are best.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each sentence from Tzvi Hirsch’s notes.', bins:[{id:'F',label:'🔢 A fact (a number, a date or a name)'},{id:'Q',label:'💬 A quote with who said it'},{id:'X',label:'😊 A feeling'}],
+      items:[{label:'The bakery makes 300 challos each Friday.',bin:'F'},{label:'Tzvi Hirsch’s Zeidy opened the bakery in 1985.',bin:'F'},{label:'“You cannot rush good dough,” says Mr. Gold, the baker.',bin:'Q'},{label:'“Yeast makes tiny bubbles of gas, so the dough rises,” says Mr. Halpern, the science teacher.',bin:'Q'},{label:'Challah is the yummiest bread.',bin:'X'},{label:'The bakery is so cozy.',bin:'X'}],
+      h:'A fact can be checked: a number, a date or a name. A quote has an expert’s exact words and his name. A feeling tells what someone likes.'},
+    {t:'pairs', q:'Each quote belongs in one paragraph. Match each quote to its heading.', pairs:[['“You cannot rush good dough,” says Mr. Gold, the baker.','Making the Dough'],['“My father taught me the six-strand braid,” says Mr. Gold, the baker.','Braiding'],['“We check every tray at 30 minutes,” says Mr. Gold, the baker.','Baking']], h:'What is the quote about? Put it in the paragraph about the same part.'},
+    {t:'spotall', q:'Tap every quote that tells WHO said it.', cells:[{label:'“You cannot rush good dough,” says Mr. Gold, the baker.',ok:true},{label:'Rabbi Feldman says, “Taking challah is a mitzvah.”',ok:true},{label:'“Yeast makes tiny bubbles of gas, so the dough rises,” says Mr. Halpern.',ok:true},{label:'“You cannot rush good dough.”',ok:false},{label:'Someone said the dough needs time.',ok:false}],
+      h:'Look for a person’s name next to the quotation marks.'},
+    {t:'order', q:'Build Tzvi Hirsch’s sentence with a quote. Tap the tiles in order.', tiles:['“You cannot','rush good dough,”','says Mr. Gold,','the baker.'],
+      h:'The expert’s exact words go inside the quotation marks. Then say who said it, and his job.'},
+    {t:'sort', q:'Topic: how the bakery makes challah. Who is an expert to quote?', bins:[{id:'E',label:'✅ An expert'},{id:'N',label:'❌ Not an expert'}],
+      items:[{label:'Mr. Gold, the baker',bin:'E'},{label:'Mr. Halpern, the science teacher, about yeast',bin:'E'},{label:'Rabbi Feldman, about taking challah',bin:'E'},{label:'a boy walking past the bakery',bin:'N'},{label:'Tzvi Hirsch’s baby brother',bin:'N'}],
+      h:'An expert knows the topic from his work or his learning.'},
+    {t:'pairs', q:'Match each quote to the expert who said it.', pairs:[['“You cannot rush good dough.”','Mr. Gold, the baker'],['“Taking challah is a mitzvah.”','Rabbi Feldman'],['“Yeast makes tiny bubbles of gas, so the dough rises.”','Mr. Halpern, the science teacher']],
+      h:'Who knows about baking? Who knows about the mitzvah? Who knows about science?'},
+    {t:'write', q:'Your turn to write. Take one paragraph from your piece. Add one fact with a number, a date or a name. Then ask an expert one question: your Abba, your rebbe or a teacher. Add a short quote with his exact words, and say who said it.', min:0, checks:['🔢 I added a fact with a number, a date or a name.','💬 I put the expert’s exact words inside quotation marks.','🧑‍🏫 I said who said it, and his job.'], h:'Ask someone who knows your topic one question. Write his exact words. Then add says, his name, and his job.'}
+  ],
+  check:[
+    {q:'Dovid writes about the class weather station: “It rained 2 inches last Tuesday.” What kind of sentence is it?', o:['A fact','A feeling','A quote with who said it'], h:'Does it have a number you can check, an expert’s words, or what someone likes?'},
+    {q:'Binyamin writes about chess: “Think three moves ahead,” says Zeidy Yusupov, who has played chess for 50 years. What is this?', o:['A quote with who said it','A feeling','A fact with a date'], h:'Look for quotation marks and a name.'},
+    {t:'order', q:'Build Avrumi’s sentence with a quote. Tap the tiles in order.', tiles:['“A sofer checks','every letter,”','says Mr. Katz,','a sofer.'], h:'The expert’s exact words go inside the quotation marks. Then say who said it, and his job.'}
+  ],
+  re:[
+    {how:'A new way: a quote is like a guest speaker. You bring him into your piece, and you introduce him: his name and his job.', q:'When you bring in a quote, you tell the reader…', o:['who said it','how you feel','the ending']},
+    {how:'A simpler step: start with one fact. Look for a number first: 300 challos, 2 hours, 30 minutes.', q:'Which sentence has a fact with a number?', o:['The dough rises for 2 hours.','The dough is soft and nice.','I love dough.']},
+    {how:'The skill underneath: Say More. There you added “For example” or “In fact” to a detail. Now you go further: you bring in an expert, quote his exact words, say who he is, and put the quote in the paragraph it teaches about.', q:'In Say More, a fact often has…', o:['a number','a feeling','a question']}
+  ]},
+
+  'WRIT.PARA.L05.20':{name:'Expert Words',
+  teach:[
+    {how:'Experts use the exact word for each thing. Mr. Gold does not say “the big machine.” He says “the mixer.” In your piece, use the exact topic word, so the reader learns it too: the dough, the yeast, the oven, the strands.', q:'Tzvi Hirsch wrote: “Then they put it in the hot thing.” Which exact word fixes “the hot thing”?', o:['the oven','the stuff','the place']},
+    {how:'Hunt for thing words: thing, stuff, and “it” when the reader cannot tell what “it” means. Swap each one for the exact word. “The stuff makes it puff up” becomes “The yeast makes the dough rise.”', q:'Which sentence uses exact words?', o:['The yeast makes the dough rise.','The stuff makes it puff up.','That thing makes it get big.']},
+    {how:'The mistake: a word that sounds expert but is the wrong word. The bakers braid the strands, not the yeast. Check: does the word name exactly the thing you mean? If you are not sure, ask the expert.', q:'Tzvi Hirsch means the long ropes of dough. Which word is exact AND right?', o:['strands','yeast','oven']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each thing word to the exact word.', pairs:[['the big machine that stirs','the mixer'],['the stuff that makes it rise','the yeast'],['the hot thing','the oven'],['the long ropes of dough','the strands']],
+      h:'Which exact word names that thing?'},
+    {t:'sort', q:'Sort each phrase.', bins:[{id:'E',label:'✅ Exact word'},{id:'T',label:'🌫️ Thing word'}],
+      items:[{label:'the mixer',bin:'E'},{label:'the egg wash',bin:'E'},{label:'the cooling rack',bin:'E'},{label:'the stuff',bin:'T'},{label:'the thing',bin:'T'},{label:'the shiny stuff',bin:'T'}],
+      h:'An exact word names one thing. Thing, stuff and that do not.'},
+    {t:'spotall', q:'Tzvi Hirsch’s draft: “First, the stuff goes in the mixer. Then the dough rises. Next, the bakers braid the things. Then it goes in the hot thing.” Tap every word that needs an exact word.', cells:[{label:'the stuff',ok:true},{label:'the things',ok:true},{label:'it',ok:true},{label:'the hot thing',ok:true},{label:'the mixer',ok:false},{label:'the dough',ok:false}],
+      h:'Tap the words that do not name exactly what they mean. Ask: what stuff? what things? what is it?'},
+    {t:'order', q:'Fix “They put shiny stuff on the challos” with exact words. Tap the tiles in order.', tiles:['The bakers brush','egg wash','on the braids','to make them shine.'],
+      h:'Who does it, what they brush, where, and why.'},
+    {t:'sort', q:'Tzvi Hirsch means the long ropes of dough. Sort each word.', bins:[{id:'R',label:'✅ Exact and right'},{id:'T',label:'🌫️ Thing word'},{id:'W',label:'❌ Wrong word'}],
+      items:[{label:'the strands',bin:'R'},{label:'the stuff',bin:'T'},{label:'the long things',bin:'T'},{label:'the yeast',bin:'W'},{label:'the oven',bin:'W'}],
+      h:'Exact and right names exactly what he means. A real bakery word for something else is the wrong word.'},
+    {t:'pairs', q:'Match each fuzzy sentence to its exact fix.', pairs:[['Put the stuff in the big machine.','Put the flour in the mixer.'],['The thing makes it rise.','The yeast makes the dough rise.'],['Take them out of the hot thing.','Take the challos out of the oven.']],
+      h:'Find the fix about the same step, with every thing word swapped.'},
+    {t:'write', q:'Your turn to write. Read one paragraph of your piece. Find every thing, stuff or unclear it. Swap each one for the exact topic word. Ask an expert if you need the word.', min:0, checks:['🔎 I found every thing, stuff and unclear it.','🎯 I swapped each one for the exact topic word.','✅ Each word names exactly what I mean.'], h:'Read slowly. Each time you see thing or stuff, ask: what thing? Write the real name.'}
+  ],
+  check:[
+    {q:'Dovid writes about the weather station: “The thing on the roof shows where the wind blows.” What kind of word is “the thing”?', o:['Thing word','Exact word','Wrong word'], h:'Does it name exactly what Dovid means?'},
+    {q:'Avrumi writes about his Abba’s work: “A sofer writes on the klaf with a feather quill.” What kind of word is “klaf”?', o:['Exact word','Thing word','Wrong word'], h:'Is it the real name of what a sofer writes on?'},
+    {t:'order', q:'Binyamin wrote: “Zeidy cooks the stuff in the big pot thing.” Fix it with exact words. Tap the tiles in order.', tiles:['Zeidy cooks','the rice','and carrots','in a kazan.'], h:'Swap the stuff for what he cooks. Swap the big pot thing for the pot’s real name: a kazan is the big pot for plov.'}
+  ],
+  re:[
+    {how:'A new way: be a tour guide in the bakery. A guide points and names: “This is the mixer. That is the oven.” He never says “that thing over there.”', q:'A good tour guide says…', o:['“This is the mixer.”','“That thing over there.”','“Some stuff.”']},
+    {how:'A simpler step: hunt for just one word first: thing. Each time you find it, ask: what thing?', q:'“The hot thing bakes the challah.” What thing?', o:['the oven','the yeast','the strands']},
+    {how:'The skill underneath: Five-Senses Camera. There you swapped vague words like nice and fun for sense details. Now you go further: you swap thing, stuff and an unclear it for the exact topic word an expert would use.', q:'In Five-Senses Camera, which word was vague?', o:['nice','crackled','peppery']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L05.03':{hook:'The Gazette asks: how does the bakery on the corner make 300 challos every Friday?', big:'Plan an information piece with POW and TIDE: Topic sentence, Important ideas, Details, Ending.',
+    intro:['P: Pick my idea: pick a topic you can teach.','O: Organize my notes with TIDE.','T: Topic sentence. I: Important ideas (the main parts). D: Details (facts for each). E: Ending.','W: Write and say more.'],
+    ex:[{q:'Tzvi Hirsch’s plan: how the bakery makes challah.',steps:['T: Here is how our bakery makes challah for Shabbos.','I: making the dough, braiding, baking.','D: the dough rises for 2 hours; each challah gets 6 strands; the challos bake for 30 minutes.','E: Now you know how challah gets to your Shabbos table.'],a:'A TIDE plan with a note for every part.'},
+        {q:'Tzvi Hirsch’s note: “each challah gets 6 strands.”',steps:['It is a fact about one part: braiding.','A fact about one part is a detail.'],a:'Details'}],
+    oops:{q:'Avrumi starts a plan for the bakery piece.',wrong:'“I think challah is the best bread.” Then he lists three reasons.',right:'He makes a TIDE: a topic sentence, three important ideas, details for each, and an ending.',why:'This piece teaches how challah is made. An opinion with reasons belongs in TREE, not TIDE.'},
+    idea:['TIDE teaches: the topic, the main parts, the facts, the wrap-up.'],
+    try:{q:'Which TIDE part tells what the whole piece will teach?',o:['Topic sentence','Details','Ending'],a:'Topic sentence',steps:['T comes first: tell what you will teach.']}},
+  'WRIT.ESSAY.L05.04':{hook:'Tzvi Hirsch has a pile of facts and no order. How will the reader follow?', big:'Sort your facts into groups. Give each group a name. One group is one paragraph.',
+    intro:['List your facts.','Ask about each fact: which part is it about?','Put facts about the same part together.','Name each group. One group becomes one paragraph.'],
+    ex:[{q:'Facts: the dough rises for 2 hours; each challah gets 6 strands; the challos bake for 30 minutes; the mixer mixes flour and yeast.',steps:['Rises and the mixer: about the dough.','6 strands: about braiding.','30 minutes: about baking.'],a:'Three groups: Making the Dough, Braiding, Baking.'},
+        {q:'Name this group: each challah gets 6 strands; each braid takes about a minute.',steps:['What are both facts about?','Both tell about braiding.'],a:'Braiding'}],
+    oops:{q:'Avrumi writes his first paragraph.',wrong:'The dough rises for 2 hours. The challos bake for 30 minutes. Each challah gets 6 strands.',right:'The mixer mixes flour, water, eggs and yeast. The dough rises for 2 hours. (Braiding and baking get their own paragraphs.)',why:'One paragraph holds one group. Mixed facts make the reader jump around.'},
+    idea:['Same part, same group, same paragraph.'],
+    try:{q:'Which name fits the facts “rises for 2 hours” and “the mixer mixes flour and yeast”?',o:['Making the Dough','Baking','Challah'],a:'Making the Dough',steps:['What are both facts about?']}},
+  'WRIT.ESSAY.L05.05':{hook:'The Gazette editor flips the page. Can he find the part about braiding in one second?', big:'Put a short heading over each part, and give a picture a caption that tells what it shows.',
+    intro:['Use each group name as a heading.','Keep it short: three words or fewer.','Check that it matches the paragraph under it.','Under a picture, write a caption that tells what it shows.'],
+    ex:[{q:'Paragraph: each challah gets 6 strands; a braid takes about a minute.',steps:['What is it all about?','Braiding.'],a:'Heading: Braiding'},
+        {q:'Picture: Mr. Gold slides a tray of challos into the oven.',steps:['What does the picture show?','Say it in one short line.'],a:'Caption: Mr. Gold slides a tray of challos into the oven.'}],
+    oops:{q:'Avrumi adds a picture of the mixer.',wrong:'Caption: Wow!',right:'Caption: The mixer turns flour, eggs and yeast into dough.',why:'“Wow!” tells nothing. A caption tells the reader what he is looking at.'},
+    idea:['A heading tells what a part teaches. A caption tells what a picture shows.'],
+    try:{q:'Which is a good heading for a paragraph about the oven?',o:['Baking','Braiding','This part is all about how the challah gets baked'],a:'Baking',steps:['Short, and it matches the paragraph.']}},
+  'WRIT.PARA.L05.19':{hook:'Who knows more about challah than the baker himself? Let him speak in your piece!', big:'Develop a topic with a fact (a number, a date or a name) and a short quote from an expert, and say who said it.',
+    intro:['Add a fact the reader can check: a number, a date or a name.','Find an expert: someone who knows the topic from his work or his learning.','Put his exact words inside quotation marks.','Tell who said it, and his job: says Mr. Gold, the baker.'],
+    ex:[{q:'Paragraph: Making the Dough.',steps:['Fact: The dough rises for 2 hours.','Quote: “You cannot rush good dough,” says Mr. Gold, the baker.'],a:'The dough rises for 2 hours. “You cannot rush good dough,” says Mr. Gold, the baker.'},
+        {q:'Why does the dough rise?',steps:['Ask an expert on science: Mr. Halpern.','Quote his exact words, and say who he is.'],a:'“Yeast makes tiny bubbles of gas, so the dough rises,” says Mr. Halpern, the science teacher.'}],
+    oops:{q:'Tzvi Hirsch adds a quote.',wrong:'Someone said, “You cannot rush good dough.”',right:'“You cannot rush good dough,” says Mr. Gold, the baker.',why:'“Someone” could be anybody. The reader trusts a quote when he knows who said it and why he knows.'},
+    idea:['A fact the reader can check, an expert’s exact words, and his name.'],
+    try:{q:'Which quote tells who said it?',o:['“You cannot rush good dough,” says Mr. Gold, the baker.','“You cannot rush good dough.”','Someone said dough is slow.'],a:'“You cannot rush good dough,” says Mr. Gold, the baker.',steps:['Look for a name and a job next to the quote.']}},
+  'WRIT.PARA.L05.20':{hook:'“Then they put it in the hot thing.” Can the reader picture the bakery?', big:'Use the exact topic word, not thing, stuff or an unclear it.',
+    intro:['Read your sentence.','Hunt for thing words: thing, stuff, and an unclear it.','Ask: what exactly do I mean?','Swap in the exact word an expert would use.'],
+    ex:[{q:'Then they put it in the hot thing.',steps:['What is it? The challah.','What is the hot thing? The oven.'],a:'Then they put the challah in the oven.'},
+        {q:'The stuff makes it puff up.',steps:['What stuff? The yeast.','What puffs up? The dough.'],a:'The yeast makes the dough rise.'}],
+    oops:{q:'Tzvi Hirsch writes about braiding.',wrong:'The bakers braid the yeast into a challah.',right:'The bakers braid six strands into a challah.',why:'“Yeast” sounds expert, but it is the wrong word. The exact word must name what you mean.'},
+    idea:['Name it like an expert: the mixer, the yeast, the oven.'],
+    try:{q:'Which sentence uses exact words?',o:['The mixer stirs the dough.','The big machine stirs the stuff.','The thing stirs it.'],a:'The mixer stirs the dough.',steps:['Which one names each thing exactly?']}},
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L05.03':{s:'Say POW. Pick my idea means pick a topic you can teach.\nOrganize with TIDE: Topic sentence, Important ideas, Details, Ending.\nImportant ideas are the main parts. Details are facts about each part.\nNo opinion here: you are teaching, not convincing.'},
+  'WRIT.ESSAY.L05.04':{s:'Read each fact. Ask: which part is it about?\nPut facts about the same part together.\nName the group: what are all its facts about?\nOne group, one paragraph. A name for the whole piece is too big.'},
+  'WRIT.ESSAY.L05.05':{s:'Read the paragraph. Ask: what is it all about?\nWrite that as a heading: three words or fewer, on top.\nUnder a picture, write a caption: what does it show?\nNo Wow! or Look! A caption tells a fact.'},
+  'WRIT.PARA.L05.19':{s:'Add a fact you can check: a number, a date or a name.\nFind an expert: who knows this from his work or his learning?\nPut his exact words inside quotation marks.\nThen tell who said it: says Mr. Gold, the baker.'},
+  'WRIT.PARA.L05.20':{s:'Read your sentence. Hunt for thing, stuff and an unclear it.\nAsk: what exactly do I mean?\nSwap in the exact topic word: the mixer, the yeast, the oven.\nCheck that the word names exactly what you mean.'},
+  };
+  var BITE = {
+  'WRIT.ESSAY.L05.03':{ band:'E45', pic:'🍞', today:'Plan an information piece with POW and TIDE', why:'A plan helps you teach a reader how something really works.',
+    ready:[{q:'In TREE, what does the T stand for?', o:['Topic sentence','Table','Title'], a:'Topic sentence'}],
+    bridge:'WRIT.ESSAY.L05.02', bridgeName:'POW + TREE',
+    watch:{ q:'Tzvi Hirsch plans his piece for the Gazette.', m:{type:'scene', e:'🍞', t:'The Gazette asks: how does the Gold family bakery make challah for Shabbos?'}, steps:[
+      {t:'P: Pick my idea. Tzvi Hirsch will teach how challah is made.'},
+      {t:'O: Organize my notes. To teach, use TIDE.'},
+      {t:'T: Topic sentence. Here is how our bakery makes challah.'},
+      {t:'I: Important ideas. Making the dough, braiding, baking.'},
+      {t:'D: Details. The dough rises 2 hours. Each challah gets 6 strands.'},
+      {t:'E: Ending. Now you know how challah gets to your table.'}], a:'A full POW + TIDE plan, ready to write.' },
+    oops:{ q:'Avrumi starts a plan for the bakery piece.', wrong:'“I think challah is the best bread.” Then he lists three reasons.', right:'He makes a TIDE: a topic sentence, three important ideas, details for each, and an ending.', why:'This piece teaches how challah is made. An opinion with reasons belongs in TREE, not TIDE.' },
+    ways:['bakery scene','memory strategy (POW + TIDE)','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can plan an information piece with POW and TIDE.',
+    board:{ one:'POW + TIDE: Topic sentence, Important ideas, Details, Ending.', activity:'Write T, I, D, E down the board; the class fills it for “how our school gets ready for Shabbos,” then each boy plans his own topic.', mistakes:['An opinion instead of a topic to teach','Important ideas with no details','A feeling where a fact should be'] },
+    do:[
+      {type:'sort', q:'Which plans are ready to write?', bins:['Ready to write','Mistake: not ready'], cards:[['Topic, 3 ideas, details, ending',0],['I think challah is the best',1],['3 ideas, but no details',1],['T, I, D, E: every part filled',0]], mis:true,
+        say:'Ready to write, or a mistake? Sort each plan.', how:'Check for all four parts: Topic sentence, Important ideas, Details, Ending.',
+        why:{q:'Why is “I think challah is the best” a mistake?', o:['It is an opinion, but this piece teaches facts','It has too many details','It is too long','It has a number'], a:'It is an opinion, but this piece teaches facts'}},
+      {type:'match', pairs:[['Topic sentence','what I will teach'],['Important ideas','the main parts'],['Details','facts about each part'],['Ending','wrap it up']],
+        say:'Match each part of TIDE to its job.', how:'Say TIDE slowly. What does each part do for the reader?'}],
+    your:[
+      {type:'tiles', q:'Put the parts of TIDE in order.', w:['Topic','Ideas','Details','Ending'], extra:['Reasons'],
+        say:'Build TIDE: tap the parts in order.', how:'T, I, D, E: say the word TIDE in your head.'},
+      {type:'sort', q:'Tzvi Hirsch’s notes for the Gazette.', bins:['Important idea','Detail'], cards:[['making the dough',0],['rises for 2 hours',1],['braiding',0],['6 strands each',1]],
+        say:'Important idea or detail? Sort each note.', how:'An important idea is a main part. A detail is a fact, often with a number.',
+        why:{q:'How do you know “6 strands each” is a detail?', o:['It is a fact about one part, braiding','It names a main part','It ends the piece','It is a feeling'], a:'It is a fact about one part, braiding'}},
+      {type:'match', pairs:[['making the dough','rises for 2 hours'],['braiding','6 strands each'],['baking','30 minutes in the oven']],
+        say:'Match each important idea to its detail.', how:'Which fact tells about that part?'},
+      {type:'tiles', q:'Build Tzvi Hirsch’s Topic sentence.', w:['Here is how','our bakery','makes','challah.'], extra:['I love'],
+        say:'Build the Topic sentence: what the piece will teach.', how:'Start with Here is how. Then who. Then what they make.'},
+      {type:'sort', q:'Avrumi’s plan: how our shul gets ready for Shabbos.', bins:['Topic sentence','Detail','Ending'], cards:[['Our shul gets ready for Shabbos in three ways.',0],['the men set out 200 siddurim',1],['Now you know how our shul gets ready.',2],['the bimah gets a clean cover',1]],
+        say:'Topic, detail, or ending? Sort each note.', how:'What it teaches is the topic. A fact is a detail. Now you know … wraps it up.',
+        why:{q:'How do you know “Now you know how our shul gets ready.” is the Ending?', o:['It wraps up what the piece taught','It gives one fact','It is a number','It starts the piece'], a:'It wraps up what the piece taught'}}] },
+
+  'WRIT.ESSAY.L05.04':{ band:'E45', pic:'🗂️', today:'Sort facts into groups, one group for each paragraph', why:'Groups help the reader learn one part at a time.',
+    ready:[{q:'In TIDE, what does the I stand for?', o:['Important ideas','Ending','Opinion'], a:'Important ideas'}],
+    bridge:'WRIT.PARA.L05.06', bridgeName:'Umbrella Sentence',
+    watch:{ q:'Tzvi Hirsch sorts his bakery facts.', m:{type:'scene', e:'🗂️', t:'Fact cards cover Tzvi Hirsch’s desk. Where does each one go?'}, steps:[
+      {t:'Card: the dough rises for 2 hours. That is about the dough.'},
+      {t:'Card: each challah gets 6 strands. That is about braiding.'},
+      {t:'Card: the challos bake for 30 minutes. That is about baking.'},
+      {t:'Three piles grow: dough, braiding, baking.'},
+      {t:'Name each pile: Making the Dough, Braiding, Baking.'},
+      {t:'One pile becomes one paragraph.'}], a:'Three named groups, ready to be three paragraphs.' },
+    oops:{ q:'Avrumi writes his first paragraph.', wrong:'The dough rises for 2 hours. The challos bake for 30 minutes. Each challah gets 6 strands.', right:'The mixer mixes flour, water, eggs and yeast. The dough rises for 2 hours.', why:'One paragraph holds one group. Mixed facts make the reader jump around.' },
+    ways:['bakery scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can sort facts into named groups, one group for each paragraph.',
+    board:{ one:'Same part, same group, same paragraph. Name every group.', activity:'Hand out fact cards about one topic; boys stand in corners by group, then the class names each corner.', mistakes:['Facts from two groups in one paragraph','A group name that is too big (the whole topic)','A group name that tells nothing, like “Stuff”'] },
+    do:[
+      {type:'sort', q:'Paragraph: Braiding. Which facts belong?', bins:['Belongs','Mistake: wrong group'], cards:[['Each challah gets 6 strands.',0],['The dough rises 2 hours.',1],['A braid takes a minute.',0],['They bake 30 minutes.',1]], mis:true,
+        say:'Belongs here, or a mistake? Sort each fact.', how:'Keep only facts about braiding.',
+        why:{q:'Why is “The dough rises 2 hours.” a mistake here?', o:['It is about the dough, not braiding','It is a feeling','It is too long','It has no number'], a:'It is about the dough, not braiding'}},
+      {type:'match', pairs:[['rises 2 hours; the mixer','Making the Dough'],['6 strands; a minute each','Braiding'],['30 minutes; ovens all night','Baking']],
+        say:'Match each group of facts to its name.', how:'Ask: what are these facts all about?'}],
+    your:[
+      {type:'tiles', q:'Put Tzvi Hirsch’s groups in the order challah is made.', w:['Dough','Braiding','Baking'], extra:['Challah'],
+        say:'Tap the groups in the order the bakers work.', how:'Dough first. Then braiding. Then baking.',
+        why:{q:'Why does Dough come first?', o:['The bakers make the dough before they braid it','It is the shortest word','It is the best part','It has a number'], a:'The bakers make the dough before they braid it'}},
+      {type:'sort', q:'Which group names work?', bins:['Good name','Too big','Tells nothing'], cards:[['Braiding',0],['Challah',1],['Stuff',2],['Baking',0],['All About Challah',1]],
+        say:'Good name, too big, or tells nothing? Sort each one.', how:'A good name fits one group. Too big names the whole piece.',
+        why:{q:'Why is “Challah” too big for a group?', o:['It names the whole piece, not one part','It tells nothing','It is about braiding','It is a feeling'], a:'It names the whole piece, not one part'}},
+      {type:'match', pairs:[['It mixes two groups.','Split it in two.'],['A group has no name.','Ask what its facts share.'],['The name is “Challah.”','Name just one part.']],
+        say:'Match each mistake to its fix.', how:'What is wrong? Find the fix for that.'},
+      {type:'tiles', q:'Build a fact for the Baking paragraph.', w:['The challos','bake for','30 minutes.'], extra:['6 strands'],
+        say:'Build a fact that belongs in Baking.', how:'Pick the words about the oven. Leave out the braiding fact.'},
+      {type:'sort', q:'Sort the bakery facts into groups.', bins:['Making the Dough','Braiding','Baking'], cards:[['The mixer mixes flour and yeast.',0],['A piece of dough is taken with a bracha.',0],['Each challah gets 6 strands.',1],['The ovens run all night.',2],['They bake 30 minutes.',2]],
+        say:'Sort each fact into its group.', how:'Ask: which part of making challah is it about?',
+        why:{q:'How do you know “The ovens run all night.” goes in Baking?', o:['It tells about the oven, where challah bakes','It tells about the dough','It is about braiding','It is a feeling'], a:'It tells about the oven, where challah bakes'}}] },
+
+  'WRIT.ESSAY.L05.05':{ band:'E45', pic:'🏷️', today:'Add headings, and a picture with a caption', why:'Headings and captions help a reader find and see what you teach.',
+    ready:[{q:'One group of facts becomes…', o:['one paragraph','one word','one title'], a:'one paragraph'}],
+    bridge:'WRIT.ESSAY.L05.04', bridgeName:'Group It',
+    watch:{ q:'Tzvi Hirsch sets up his Gazette page.', m:{type:'scene', e:'📰', t:'Three paragraphs fill the page. The editor wants to find each part fast.'}, steps:[
+      {t:'Paragraph 1 tells about the dough. Heading: Making the Dough.'},
+      {t:'Paragraph 2 tells about the 6 strands. Heading: Braiding.'},
+      {t:'Paragraph 3 tells about the oven. Heading: Baking.'},
+      {t:'Short headings, and each one matches its paragraph.'},
+      {t:'Now a picture: Mr. Gold at the oven with challos.'},
+      {t:'Caption: Mr. Gold slides a tray of challos into the oven.'}], a:'Every part has a heading, and the picture has a caption that teaches.' },
+    oops:{ q:'Avrumi adds a picture of the mixer.', wrong:'Caption: Wow!', right:'Caption: The mixer turns flour, eggs and yeast into dough.', why:'“Wow!” tells nothing. A caption tells the reader what he is looking at.' },
+    ways:['newspaper page scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can add headings, and a picture with a caption that tells what it shows.',
+    board:{ one:'Heading on top: what the part teaches. Caption under the picture: what it shows.', activity:'Show one page with three paragraphs and no headings; the class writes a heading for each, then writes a caption for one picture.', mistakes:['A heading that does not match its paragraph','A heading that is a long sentence','A caption like “Wow!” that tells nothing'] },
+    do:[
+      {type:'sort', q:'Captions for a picture of the mixer.', bins:['Tells what it shows','Mistake: tells nothing'], cards:[['The mixer turns the dough.',0],['Wow!',1],['Here is a picture.',1],['Flour and eggs mix into dough.',0]], mis:true,
+        say:'Tells what it shows, or a mistake? Sort each caption.', how:'A caption tells what the reader is looking at.',
+        why:{q:'Why is “Wow!” a mistake?', o:['It does not tell what the picture shows','It is too long','It is a heading','It has a number'], a:'It does not tell what the picture shows'}},
+      {type:'match', pairs:[['The dough rises 2 hours.','Making the Dough'],['Each challah gets 6 strands.','Braiding'],['They bake 30 minutes.','Baking']],
+        say:'Match each paragraph to its heading.', how:'What is the paragraph all about?'}],
+    your:[
+      {type:'tiles', q:'Build one part of the page, top to bottom.', w:['Heading','Picture','Caption'], extra:['Wow!'],
+        say:'Tap the parts in order, top to bottom.', how:'Heading on top. The caption goes right under its picture.',
+        why:{q:'Why does the Caption come right after the Picture?', o:['A caption sits under the picture it tells about','It is the heading','It is the longest part','It ends the piece'], a:'A caption sits under the picture it tells about'}},
+      {type:'sort', q:'Headings for the Baking paragraph.', bins:['Good heading','Does not match','Too long'], cards:[['Baking',0],['Braiding',1],['In the Oven',0],['This is about how the challah bakes',2]],
+        say:'Good, does not match, or too long? Sort each heading.', how:'Short, and it matches the paragraph under it.',
+        why:{q:'Why is “Braiding” wrong for the Baking paragraph?', o:['It does not match what the paragraph teaches','It is too long','It is a caption','It is a feeling'], a:'It does not match what the paragraph teaches'}},
+      {type:'match', pairs:[['The heading does not match.','Rename it.'],['The heading is a long sentence.','Cut it to 3 words or fewer.'],['The caption says “Wow!”','Tell what it shows.']],
+        say:'Match each mistake to its fix.', how:'What is wrong? Find the fix for that.'},
+      {type:'tiles', q:'Build a caption for a picture of the braid.', w:['Six strands','make one','challah.'], extra:['Wow!'],
+        say:'Build a caption that tells what the picture shows.', how:'Tell what the reader sees. Leave out Wow.'},
+      {type:'sort', q:'Where does each one go on the page?', bins:['Heading','Caption'], cards:[['Braiding',0],['Mr. Gold braids six strands.',1],['Baking',0],['Challos bake in the oven.',1]],
+        say:'Heading or caption? Sort each one.', how:'A heading is a few words over a part. A caption tells what a picture shows.',
+        why:{q:'How do you know “Mr. Gold braids six strands.” is a caption?', o:['It tells what a picture shows, in a sentence','It is two words over a part','It is an ending','It is a feeling'], a:'It tells what a picture shows, in a sentence'}}] },
+
+  'WRIT.PARA.L05.19':{ band:'E45', pic:'💬', today:'Add a fact and an expert’s quote, and say who said it', why:'Facts and an expert’s words make the reader trust what you teach.',
+    ready:[{q:'Which sentence says more with a fact?', o:['In fact, they bake 300 challos every Friday.','They bake a lot, a lot.','Challah is nice.'], a:'In fact, they bake 300 challos every Friday.'}],
+    bridge:'WRIT.PARA.L05.08', bridgeName:'Say More',
+    watch:{ q:'Tzvi Hirsch interviews his Abba for the Gazette.', m:{type:'scene', e:'🎤', t:'Tzvi Hirsch brings his notebook into the bakery kitchen.'}, steps:[
+      {t:'His paragraph is Making the Dough. It needs more.'},
+      {t:'Add a fact with a number: the dough rises for 2 hours.'},
+      {t:'Now ask the expert: Abba, why so long?'},
+      {t:'Abba says: “You cannot rush good dough.”'},
+      {t:'Write his exact words inside quotation marks.'},
+      {t:'Then who said it: says Mr. Gold, the baker.'}], a:'A fact, an expert’s quote, and who said it.' },
+    oops:{ q:'Tzvi Hirsch adds a quote.', wrong:'Someone said, “You cannot rush good dough.”', right:'“You cannot rush good dough,” says Mr. Gold, the baker.', why:'“Someone” could be anybody. The reader trusts a quote when he knows who said it and why he knows.' },
+    ways:['bakery interview scene','worked example','sort it','word tiles','match it','tap the reason','Mistake Detective'], done:'You can add a fact and an expert’s quote, and say who said it.',
+    board:{ one:'A fact you can check + an expert’s exact words + who said it.', activity:'Invite a guest (the custodian, the cook, a rebbe) to answer one question; boys write his exact words in quotation marks with his name and job.', mistakes:['A quote with no name (“Someone said …”)','A quote from someone who is not an expert','A feeling where a fact should be'] },
+    do:[
+      {type:'sort', q:'Quotes for Tzvi Hirsch’s piece.', bins:['Says who said it','Mistake: no name'], cards:[['“You cannot rush good dough,” says Mr. Gold.',0],['Someone said the dough needs time.',1],['Rabbi Feldman says, “Taking challah is a mitzvah.”',0],['“You cannot rush good dough.”',1]], mis:true,
+        say:'Says who said it, or a mistake? Sort each quote.', how:'Look for a name next to the quote.',
+        why:{q:'Why is “Someone said the dough needs time.” a mistake?', o:['The reader does not know who said it','It has a number','It is too short','It is a heading'], a:'The reader does not know who said it'}},
+      {type:'tiles', q:'Add who said the quote.', w:['says','Mr. Gold,','the baker.'], extra:['someone'],
+        say:'Build the words that tell who said the quote.', how:'Start with says. Then his name. Then his job.',
+        why:{q:'Why add “the baker” after his name?', o:['It tells the reader why he knows','It is a feeling','It is a date','It ends the piece'], a:'It tells the reader why he knows'}}],
+    your:[
+      {type:'match', pairs:[['“You cannot rush good dough.”','Making the Dough'],['“My father taught me the six-strand braid.”','Braiding'],['“We check every tray at 30 minutes.”','Baking']], say:'Match each quote to the paragraph where it belongs.', how:'What is the quote about? Find that paragraph.'},
+      {type:'sort', q:'Topic: how the bakery makes challah.', bins:['Expert','Not an expert'], cards:[['Mr. Gold, the baker',0],['a boy walking by',1],['Mr. Halpern, on yeast',0],['a baby brother',1]],
+        say:'Expert or not? Sort who to quote.', how:'An expert knows the topic from his work or his learning.',
+        why:{q:'Why is Mr. Gold an expert?', o:['He bakes challah for his work','He is tall','He likes challah','He lives nearby'], a:'He bakes challah for his work'}},
+      {type:'tiles', q:'Build a fact with a number.', w:['The dough','rises for','2 hours.'], extra:['so soft'],
+        say:'Build a fact with a number.', how:'Tell what happens and how long. Leave out the feeling.'},
+      {type:'match', pairs:[['“You cannot rush good dough.”','Mr. Gold, the baker'],['“Taking challah is a mitzvah.”','Rabbi Feldman'],['“Yeast makes tiny bubbles of gas, so the dough rises.”','Mr. Halpern, the science teacher']],
+        say:'Match each quote to the expert who said it.', how:'Who knows baking? The mitzvah? Science?'},
+      {type:'sort', q:'Tzvi Hirsch’s sentences.', bins:['Fact','Quote','Feeling'], cards:[['The bakery opened in 1985.',0],['“You cannot rush good dough,” says Mr. Gold.',1],['Challah is the yummiest.',2],['They bake 300 challos each Friday.',0]],
+        say:'Fact, quote, or feeling? Sort each sentence.', how:'A fact can be checked. A quote has an expert’s words. A feeling tells what someone likes.',
+        why:{q:'How do you know “The bakery opened in 1985.” is a fact?', o:['It has a date you can check','It has an expert’s words','It is a feeling','It has no name'], a:'It has a date you can check'}}] },
+
+  'WRIT.PARA.L05.20':{ band:'E45', pic:'🎯', today:'Use the exact topic word, not thing or stuff', why:'Exact words teach the reader to talk like an expert.',
+    ready:[{q:'Which sentence is vague?', o:['The bakery was nice.','The bakery smelled of fresh bread.','Flour dusted every table.'], a:'The bakery was nice.'}],
+    bridge:'WRIT.PARA.L05.12', bridgeName:'Five-Senses Camera',
+    watch:{ q:'Tzvi Hirsch fixes his draft with his Abba.', m:{type:'scene', e:'🔥', t:'Tzvi Hirsch reads his draft aloud. His Abba, the baker, starts to smile.'}, steps:[
+      {t:'Draft: The stuff goes in the big machine.'},
+      {t:'Abba asks: “What stuff? What machine?”'},
+      {t:'Fix: The flour goes in the mixer.'},
+      {t:'Draft: Then it goes in the hot thing.'},
+      {t:'Fix: Then the challah goes in the oven.'},
+      {t:'Now every word names exactly what he means.'}], a:'Abba laughs: “Now you sound like a baker!”' },
+    oops:{ q:'Tzvi Hirsch writes about braiding.', wrong:'The bakers braid the yeast into a challah.', right:'The bakers braid six strands into a challah.', why:'“Yeast” sounds expert, but it is the wrong word. The exact word must name what you mean.' },
+    ways:['bakery scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can use the exact topic word, not thing, stuff or an unclear it.',
+    board:{ one:'Name it like an expert: swap thing, stuff and an unclear it for the exact word.', activity:'Read a “thing and stuff” paragraph aloud; boys raise a hand at each thing word and call out the exact word.', mistakes:['“Thing” or “stuff” instead of the real name','“It” when the reader cannot tell what it is','An expert-sounding word that names the wrong thing'] },
+    do:[
+      {type:'sort', q:'Words for Tzvi Hirsch’s piece.', bins:['Exact word','Mistake: thing word'], cards:[['the mixer',0],['the stuff',1],['the oven',0],['the hot thing',1]], mis:true,
+        say:'Exact word, or a mistake? Sort each one.', how:'An exact word names one thing. Thing and stuff do not.',
+        why:{q:'Why is “the hot thing” a mistake?', o:['It does not name exactly what he means','It is too exact','It is a quote','It has a number'], a:'It does not name exactly what he means'}},
+      {type:'match', pairs:[['the big machine','the mixer'],['the stuff that makes it rise','the yeast'],['the hot thing','the oven']],
+        say:'Match each thing word to the exact word.', how:'Which exact word names that thing?'}],
+    your:[
+      {type:'tiles', q:'Fix: “The stuff makes it puff up.”', w:['The yeast','makes the','dough rise.'], extra:['stuff'],
+        say:'Build the sentence with exact words.', how:'Name the yeast and the dough. Leave out stuff.',
+        why:{q:'Why is “The yeast makes the dough rise.” better?', o:['It names exactly what makes what rise','It is shorter','It has a feeling','It has a quote'], a:'It names exactly what makes what rise'}},
+      {type:'sort', q:'He means the long ropes of dough.', bins:['Exact and right','Thing word','Wrong word'], cards:[['the strands',0],['the long things',1],['the yeast',2],['the stuff',1]],
+        say:'Exact and right, thing word, or wrong word? Sort.', how:'The right word names exactly what he means.',
+        why:{q:'Why is “the yeast” the wrong word here?', o:['Yeast is real, but it is not the ropes of dough','It is a thing word','It is a feeling','It is too long'], a:'Yeast is real, but it is not the ropes of dough'}},
+      {type:'match', pairs:[['Put the stuff in the machine.','Put the flour in the mixer.'],['Braid the things.','Braid the strands.'],['Take it out of the hot thing.','Take the challah out of the oven.']],
+        say:'Match each fuzzy sentence to its exact fix.', how:'Find the fix about the same step.'},
+      {type:'tiles', q:'Fix: “They put shiny stuff on top.”', w:['They brush','egg wash','on top.'], extra:['the stuff'],
+        say:'Build the fix with the exact word.', how:'Who does it, what they brush, and where.'},
+      {type:'sort', q:'Words from Avrumi’s piece about his Abba, a sofer.', bins:['Exact word','Thing word'], cards:[['the klaf',0],['the quill',0],['the writing stuff',1],['the thing he checks',1]],
+        say:'Exact word or thing word? Sort each one.', how:'Does it name exactly one thing a sofer uses?',
+        why:{q:'How do you know “the klaf” is an exact word?', o:['It is the real name of what a sofer writes on','It is a thing word','It is a feeling','It is a quote'], a:'It is the real name of what a sofer writes on'}}] },
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

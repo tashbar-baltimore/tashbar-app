@@ -70,5 +70,14 @@ CORE_SKILLS.W48 = [
   ["WRIT.ESSAY.L09.05", "Memoir Moment", "Choose a small true moment that changed you, and zoom in", { after: "WRIT.PARA.L09.05", std: "W.8.3a", file: "CoreDataW4815", min: 9 }],
   ["WRIT.PARA.L09.06", "Then and Now", "Move between the boy then and the writer now, and signal each cut", { after: "WRIT.ESSAY.L09.05", std: "W.8.3c", file: "CoreDataW4815", min: 9 }],
   ["WRIT.PARA.L09.07", "Voice", "Sound like a real person: exact words, rhythm and your own lens", { after: "WRIT.PARA.L09.06", std: "W.8.3d", file: "CoreDataW4815", min: 8 }],
-  ["WRIT.PARA.L09.08", "Reflection", "End a memoir with an honest reflection from today", { after: "WRIT.PARA.L09.07", std: "W.8.3e", file: "CoreDataW4815", min: 8 }]
+  ["WRIT.PARA.L09.08", "Reflection", "End a memoir with an honest reflection from today", { after: "WRIT.PARA.L09.07", std: "W.8.3e", file: "CoreDataW4815", min: 8 }],
+  ["WRIT.ESSAY.L05.03", "TIDE Plan", "Plan an information piece with TIDE: Topic sentence, Important ideas, Details, Ending", { after: "WRIT.PARA.L05.18", std: "W.4.2a", file: "CoreDataW4816", min: 9 }],
+  ["WRIT.ESSAY.L05.04", "Group It", "Sort facts into named groups: one group, one paragraph", { after: "WRIT.ESSAY.L05.03", std: "W.4.2a", file: "CoreDataW4816", min: 8 }],
+  ["WRIT.ESSAY.L05.05", "Headings Help", "Add a heading for each group and a picture with a caption", { after: "WRIT.ESSAY.L05.04", std: "W.4.2a", file: "CoreDataW4816", min: 7 }],
+  ["WRIT.PARA.L05.19", "Facts and Quotes", "Develop a topic with a fact and an expert's exact words, and say who said them", { after: "WRIT.ESSAY.L05.05", std: "W.4.2b", file: "CoreDataW4816", min: 8 }],
+  ["WRIT.PARA.L05.20", "Expert Words", "Use the exact topic word, not thing or stuff", { after: "WRIT.PARA.L05.19", std: "W.4.2d", file: "CoreDataW4816", min: 7 }],
+  ["WRIT.ESSAY.L06.07", "Same and Different", "Plan a compare-and-contrast piece, block or point by point", { after: "WRIT.PARA.L06.12", std: "W.5.2a", file: "CoreDataW4817", min: 9 }],
+  ["WRIT.PARA.L06.13", "In Contrast", "Link compared things with alike and different words", { after: "WRIT.ESSAY.L06.07", std: "W.5.2c", file: "CoreDataW4817", min: 7 }],
+  ["WRIT.PARA.L06.14", "Quote It Right", "Weave a few exact words into your own sentence, and punctuate quotes", { after: "WRIT.PARA.L06.13", std: "W.5.2b", file: "CoreDataW4817", min: 8 }],
+  ["WRIT.ESSAY.L06.08", "Two Texts, One Piece", "Use a detail from each of two texts on one point, and name both", { after: "WRIT.PARA.L06.14", std: "W.5.9", file: "CoreDataW4817", min: 9 }]
 ];
