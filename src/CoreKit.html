@@ -1,0 +1,35 @@
+<script>
+/* CoreKit.html: Core Growth (job T, 2026-11-24). Loads on the boy's page right before the CoreData<Job><n>.html files
+   (CoreSkills.js coreFiles_; Photos.js and Speed.js), after the One Bite data and before the One Bite player.
+   A data file adds its lessons with ONE call (docs/core-growth/HOW-TO-ADD-A-SKILL.md):
+     TLCORE.add('F', LESSONS, { teach: TEACHER_TIME, howto: HOW_TO_BOXES, bite: ONE_BITE_LESSONS });
+   LESSONS: id -> the lesson in the engine's shape, written as  ID : { name: ..., teach: [3], practice: [6], check: [3 tap kinds], re: [3] }
+     (the server finds a lesson by that exact "id, colon, brace, name" shape; keep  name  first).
+   teach / howto / bite are optional: id -> TL_TEACH entry, TL_DO entry, ONE_BITE entry (docs/ONE-BITE-PLAYBOOK.md).
+   A lesson goes into READ (READ.*), WRIT (LANG.* and WRIT.*) and always BANK_ALL. An id that is already there is NOT replaced
+   (an existing lesson is improved in its own file); the clash is listed in TLCORE.clash for the tests. */
+(function () {
+  var W = window, C = W.TLCORE = W.TLCORE || { jobs: {}, ids: {}, clash: [] };
+  function bag(id) {
+    var p = String(id).split('.')[0];
+    try { if (p === 'READ' && typeof READ !== 'undefined') return READ; } catch (e) {}
+    try { if ((p === 'LANG' || p === 'WRIT') && typeof WRIT !== 'undefined') return WRIT; } catch (e) {}
+    return null;
+  }
+  function all() { try { return typeof BANK_ALL !== 'undefined' ? BANK_ALL : null; } catch (e) { return null; } }
+  C.add = function (job, lessons, extra) {
+    extra = extra || {}; job = String(job || '?');
+    var BA = all(), TT = W.TL_TEACH = W.TL_TEACH || {}, DO = W.TL_DO = W.TL_DO || {}, OB = W.ONE_BITE = W.ONE_BITE || {}, mine = C.jobs[job] = C.jobs[job] || [];
+    Object.keys(lessons || {}).forEach(function (id) {
+      var L = lessons[id], b = bag(id);
+      if ((BA && BA[id] && !C.ids[id]) || C.ids[id]) { C.clash.push(job + ' ' + id); return; }
+      if (b) b[id] = L; if (BA) BA[id] = L;
+      C.ids[id] = job; mine.push(id);
+      if (extra.teach && extra.teach[id] && !TT[id]) TT[id] = extra.teach[id];
+      if (extra.howto && extra.howto[id] && !DO[id]) DO[id] = extra.howto[id];
+      if (extra.bite && extra.bite[id] && !OB[id]) OB[id] = extra.bite[id];
+    });
+    return mine.length;
+  };
+})();
+</script>
