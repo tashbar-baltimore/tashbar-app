@@ -324,7 +324,7 @@ export function startGame(cfg) {
     for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
     syncCam();
     if (handOn) { const p = toScreen(handOn.g.position); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; }
-    if (SHOT ? window.__shotDraw : (!FAST || (++fastN % 8) === 0)) { if (LK) LK.render(); else renderer.render(scene, camera); }   /* pictures: draw only while one is taken */
+    if (SHOT ? window.__shotDraw : (!FAST || (fastN++ < 12 || fastN % 8 === 0))) { if (LK) LK.render(); else renderer.render(scene, camera); }   /* pictures: draw only while one is taken */
     requestAnimationFrame(frame);
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
