@@ -1,0 +1,138 @@
+<script>
+/* CoreDataFH1.html: Core Growth job F, HELPER 1 (Helpers wanted: "F · K Units 6–10"), Kindergarten games (docs/core-growth/F-map.md section 3).
+   Keep this file under 150 KB. A Kindergarten boy gets games only (HoS 2026-11-22), so every skill here is a K-1 game on the Kindergarten
+   ABC path (docs/core-growth/HOW-TO-ADD-A-K1-GAME.md), not a question lesson. The skill rows are in src/CoreDataF.js (file CoreDataFH1).
+   F's rules for every game (F-map section 2): sounds are written as sounds in anything the voice says (fff, lll, uh, rrr, buh), never a bare
+   consonant letter; no "count the pictures"; one right tile order; the voice never reads a word the boy is asked to read; cold practice
+   (later pieces are harder); the boy's likely mistake is one piece (mis:true). Letters already taught by Unit 6: m a s t p i n c k o d g h e.
+   Path order: each game names the game it comes after on the K path, so Units 6, 7 and 8 sit in skill order around the existing
+   Chop It and Read CVC games, before Snap Words (Unit 9). Cast: the Peretz family on Maple Street (F-map section 8). */
+(function () {
+  var LESSONS = {};
+  var K1G = [
+    /* ===== K Unit 6 · f, l, u, r ===== */
+    { id:'READ.PHON.L01.16', grade:0, name:'Fish and Lion', pic:'🐟', after:'READ.PA.L01.06', acts:[
+      {type:'listen', hear:'fish', o:['f','l','m'], a:'f', say:'Fish starts with fff. Tap the letter for fff.', how:'Say fish slowly. Fff comes first.'},
+      {type:'findall', grid:['f','t','l','f','i','f','l','t'], find:'f', findSay:'letter for fff', say:'Tap every letter that says fff.', how:'Look for the hook on top and the line across.'},
+      {type:'listen', hear:'lion', o:['l','f','t'], a:'l', say:'Lion starts with lll. Tap the letter for lll.', how:'Say lion slowly. Lll is one tall line.'},
+      {type:'sort', bins:['f','l'], cards:[['🐟',0],['🦊',0],['🐸',0],['🦁',1],['🍋',1],['🪜',1]], say:'Fff or lll? Put each picture in its box.', how:'Say the picture. What sound comes first?'},
+      {type:'tiles', w:['f','a','n'], extra:['l'], hear:'fan', say:'Build fan. One tile for each sound.', how:'Say it slowly: fff, ah, nnn.'},
+      {type:'listen', hear:'leaf', o:['l','f','n'], a:'l', mis:true, say:'Careful! Leaf ends with fff. What sound comes first?', how:'Say leaf slowly. Listen to the very start.'},
+      {type:'tiles', w:['l','i','d'], extra:['f'], hear:'lid', say:'Bubby needs the pot lid. Build lid.', how:'Say it slowly: lll, ih, duh.'}]},
+
+    { id:'READ.PHON.L01.17', grade:0, name:'Run Up the Hill', pic:'🏃', after:'READ.PHON.L01.16', acts:[
+      {type:'listen', hear:'up', o:['u','a','o'], a:'u', say:'Up starts with uh. Tap the letter for uh.', how:'Say up. Uh comes first. It looks like a cup.'},
+      {type:'findall', grid:['u','n','u','a','u','o','n','a'], find:'u', findSay:'letter for uh', say:'Tap every letter that says uh, like up.', how:'Look for a cup with a little tail. A hump is different.'},
+      {type:'listen', hear:'rain', o:['r','n','l'], a:'r', say:'Rain starts with rrr. Tap the letter for rrr.', how:'Say rain slowly. Rrr is a short line with an arm.'},
+      {type:'sort', bins:['r','u'], cards:[['🌈',0],['💍',0],['🚀',0],['☂️',1],['⬆️',1]], say:'Rrr or uh? Put each picture in its box.', how:'Say the picture. What sound comes first?'},
+      {type:'match', pairs:[['sun','☀️'],['cup','☕'],['nut','🥜']], say:'Read each word. Uh is in the middle. Match it.', how:'Sound it out: first, middle, last. Then push them together.'},
+      {type:'listen', hear:'cup', o:['cup','cap','cop'], a:'cup', mis:true, say:'Careful! Cup, cap and cop look alike. Hear the middle.', how:'The start and the end are the same. Look for the cup letter.'},
+      {type:'tiles', w:['r','u','n'], extra:['a'], hear:'run', say:'Moishy loves to run! Build run.', how:'Say it slowly: rrr, uh, nnn.'}]},
+
+    { id:'READ.PA.L01.12', grade:0, name:'Sound Train', pic:'🚂', after:'READ.PHON.L01.17', acts:[
+      {type:'listen', hear:'sss... uh... nnn', o:['☀️','🌙','⭐'], a:'☀️', say:'Push the sounds together, like train cars. What is it?', how:'Say the sounds faster and faster. Hear the word?'},
+      {type:'findall', grid:['🎩','🐱','🎩','🐟','🎩','🦊'], find:'🎩', findSay:'picture you heard', say:'Hhh... ah... tuh. Push it together. Tap every one.', how:'Say the three sounds fast, as one word.'},
+      {type:'listen', hear:'buh... eh... duh', o:['🛏️','🐝','🐶'], a:'🛏️', mis:true, say:'Careful! Do not stop at the first sound. Use all three.', how:'Push all three sounds together, not just the first one.'},
+      {type:'tiles', w:['s','i','t'], extra:['a'], hear:'sit', say:'Now with letters! Sss, ih, tuh. Build it.', how:'One tile for each sound, in order.'},
+      {type:'listen', hear:'mmm... ah... puh', o:['🗺️','🧢','🐭'], a:'🗺️', say:'Eli found a treasure clue! Push the sounds together.', how:'Say mmm, ah, puh faster. Then tap the picture.'}]},
+
+    { id:'READ.PHON.L01.18', grade:0, name:'Every Letter Counts', pic:'🔍', after:'READ.PHON.L01.04', acts:[
+      {type:'sort', bins:['🎩','🔥','🛖'], cards:[['hat',0],['hot',1],['hut',2]], say:'Read every letter. Put each word with its picture.', how:'Say all three sounds. Then push them together.'},
+      {type:'match', pairs:[['pan','🍳'],['pin','📌'],['pen','🖊️']], say:'They all start the same. Read every letter. Match.', how:'Look at the middle letter. Say its sound.'},
+      {type:'listen', hear:'dog', o:['dig','dog','dug'], a:'dog', mis:true, say:'Careful! They all start with duh. Read every letter.', how:'Do not guess from the first letter. Look at the middle.'},
+      {type:'findall', pic:'🐷', grid:['pig','peg','pin','pig','pit','pig'], find:'pig', findSay:'word that names the picture', say:'Tap every word that names the picture.', how:'Read each word to the very end.'},
+      {type:'tiles', w:['h','u','g'], extra:['a'], hear:'hug', say:'Zeidy gives Eli a big hug. Build hug.', how:'Hhh, uh, guh. One tile for each sound.'}]},
+
+    { id:'WRIT.HAND.L01.09', grade:0, name:'Write f, l, u, r', pic:'✏️', after:'READ.PHON.L01.18', acts:[
+      {type:'trace', glyph:'l', name:'the letter for lll', say:'Lll: start at the top. One tall line down.', how:'Start at the top dot. Pull straight down.'},
+      {type:'match', pairs:[['F','f'],['L','l'],['R','r']], say:'Big letter, little letter. Match them.', how:'Say the sound of each one. Find its partner.'},
+      {type:'trace', glyph:'f', name:'the letter for fff', say:'Fff: curve over like a cane, down, then across.', how:'Start near the top. Curve, go down, then a short line across.'},
+      {type:'findall', grid:['u','n','u','n','u','m'], find:'u', findSay:'letter for uh', mis:true, say:'Careful! Uh is a cup. A hump is not uh.', how:'A cup is open at the top. Tap only the cups.'},
+      {type:'trace', glyph:'u', name:'the letter for uh', say:'Uh: down, curve around, up, then a little tail.', how:'Make a cup. Then add a short line down.'},
+      {type:'listen', hear:'rain', o:['r','n','h'], a:'r', say:'Which letter starts rain? You write it next.', how:'Say rain slowly. Find the short line with an arm.'},
+      {type:'trace', glyph:'r', name:'the letter for rrr', say:'Rrr: line down, back up, then a little arm.', how:'Pull down. Go back up the line. Curve out a little.'}]},
+
+    /* ===== K Unit 7 · b, j, w (and b/d look-alikes) ===== */
+    { id:'READ.PHON.L01.19', grade:0, name:'Bat and Ball', pic:'🏏', after:'WRIT.HAND.L01.09', acts:[
+      {type:'listen', hear:'ball', o:['b','d','p'], a:'b', say:'Ball starts with buh. Tap the letter for buh.', how:'First the bat, then the ball: a line, then a circle.'},
+      {type:'sort', bins:['b','d'], cards:[['🏀',0],['🍌',0],['🐻',0],['🦆',1],['🐶',1],['🥁',1]], say:'Buh or duh? Put each picture in its box.', how:'Say the picture. Listen to the first sound.'},
+      {type:'findall', grid:['b','d','b','d','b','p','d','b'], find:'b', findSay:'letter for buh', mis:true, say:'Careful! Buh and duh look alike. Bat first, then ball.', how:'The line comes first, then the ball on its right.'},
+      {type:'match', pairs:[['bed','🛏️'],['bus','🚌'],['bag','🎒']], say:'Read each word with buh. Match its picture.', how:'Sound it out: first, middle, last. Then push them together.'},
+      {type:'listen', hear:'dig', o:['big','dig','bag'], a:'dig', say:'Duh or buh? Listen, then tap the word you hear.', how:'Dig starts with duh: the circle first, then the line.'},
+      {type:'tiles', w:['t','u','b'], extra:['d'], hear:'tub', say:'Moishy splashes in the tub. Build tub.', how:'Tuh, uh, buh. The last sound is buh.'}]},
+
+    { id:'READ.PHON.L01.20', grade:0, name:'Jam and Web', pic:'🕸️', after:'READ.PHON.L01.19', acts:[
+      {type:'listen', hear:'jam', o:['j','g','w'], a:'j', say:'Jam starts with juh. Tap the letter for juh.', how:'It hooks down under the line, with a dot on top.'},
+      {type:'sort', bins:['j','w'], cards:[['🧃',0],['🤹',0],['⌚',1],['🍉',1],['🌊',1]], say:'Juh or wuh? Put each picture in its box.', how:'Say the picture slowly. Hear the very first sound.'},
+      {type:'listen', hear:'web', o:['w','m','v'], a:'w', say:'Web starts with wuh. Tap the letter for wuh.', how:'It goes down, up, down, up: two pointy valleys.'},
+      {type:'match', pairs:[['web','🕸️'],['jet','✈️'],['win','🏆']], say:'Read each word. Match it to its picture.', how:'Sound it out: first, middle, last. Then push them together.'},
+      {type:'findall', grid:['w','m','w','m','w','n'], find:'w', findSay:'letter for wuh', mis:true, say:'Careful! Wuh and mmm look alike. Find the pointy valleys.', how:'Wuh points down at the bottom. Mmm has round humps on top.'},
+      {type:'tiles', w:['j','o','g'], extra:['w'], hear:'jog', say:'Abba and Shmuli jog to shul. Build jog.', how:'Juh, ah, guh. One tile for each sound.'}]},
+
+    { id:'READ.PA.L01.13', grade:0, name:'Change the First Sound', pic:'🔄', after:'READ.PHON.L01.20', acts:[
+      {type:'listen', hear:'Cat. Change kuh to huh.', o:['🎩','🐱','🦇'], a:'🎩', say:'Cat. Change the first sound to huh. What is it?', how:'Keep the end. Put huh in front.'},
+      {type:'tiles', w:['m','a','t'], extra:['h'], say:'Hat. Change huh to mmm. Build the new word.', how:'Keep the end. Only the first tile changes.'},
+      {type:'listen', hear:'Pig. Change puh to duh.', o:['⛏️','🐷','🐶'], a:'⛏️', mis:true, say:'Careful! Change only the first sound. Pig, with duh.', how:'Keep the end of pig. Put duh in front.'},
+      {type:'findall', grid:['run','fun','sat','bun','sip','nut'], find:['run','fun','bun'], findSay:'word that ends like sun', say:'Change the first sound of sun. Tap every new word.', how:'Read each one. Does it end with uh, nnn?'},
+      {type:'listen', hear:'Rug. Change rrr to buh.', o:['🐛','🧶','🦆'], a:'🐛', say:'Rug. Change the first sound to buh. What is it?', how:'Keep the end of rug. Put buh in front.'}]},
+
+    { id:'READ.FLU.L01.06', grade:0, name:'Heart Words: my, go, no, so', pic:'❤️', after:'READ.PA.L01.13', acts:[
+      {type:'listen', hear:'my', o:['my','me','mom'], a:'my', say:'My is a heart word. Its end says eye. Tap my.', how:'Look for mmm at the start and a tail at the end.'},
+      {type:'findall', grid:['go','no','go','so','got','go'], find:'go', findSay:'go', say:'Go is a heart word. Green light, go! Tap every go.', how:'Guh, then oh. Two letters, no more.'},
+      {type:'match', pairs:[['no','👎'],['go','🟢'],['my','🙋']], say:'Read each heart word. Match its picture.', how:'Read the word. Think what it means.'},
+      {type:'listen', hear:'no', o:['no','not','nod'], a:'no', mis:true, say:'Careful! No says oh at the end. Tap no.', how:'Not and nod have one more letter. No stops at oh.'},
+      {type:'dictation', hear:'My cat can go.', w:['My','cat','can','go.'], say:'Listen. Build the sentence with heart words.', how:'Say it softly. Tap the words in order.'}]},
+
+    { id:'READ.FLU.L01.07', grade:0, name:'Point and Read', pic:'👉', after:'READ.FLU.L01.06', acts:[
+      {type:'sort', bins:['🐱','🐶'], cards:[['The cat can nap.',0],['The dog can dig.',1],['A cat sat on a mat.',0],['A dog ran to Dan.',1]], say:'Point to each word. Is it about the cat or the dog?', how:'Touch each word as you read it. Read to the end.'},
+      {type:'dictation', hear:'Dan can run.', w:['Dan','can','run.'], say:'Listen. Build the sentence. Then point and read it.', how:'Say it softly. Tap the words in order.'},
+      {type:'match', pairs:[['Dov can hop.','🐇'],['Gad can nap.','😴'],['Tal can dig.','⛏️']], say:'Read each sentence. Match it to its picture.', how:'Point to each word. The last word tells you.'},
+      {type:'sort', bins:['👍 makes sense','👎 silly'], cards:[['Ben can run.',0],['A hat can run.',1],['Ben sat on a mat.',0],['The bus can sit.',1]], mis:true, say:'Careful! Read every word to the end. Then sort.', how:'Point to each word. Can that really happen?'},
+      {type:'dictation', hear:'I see a big bus.', w:['I','see','a','big','bus.'], extra:['the'], say:'Listen. Build it. Little words count too!', how:'Say it softly. One tile for each word, even the little ones.'}]},
+
+    { id:'WRIT.HAND.L01.10', grade:0, name:'Write b, j, w', pic:'✏️', after:'READ.FLU.L01.07', acts:[
+      {type:'trace', glyph:'b', name:'the letter for buh', say:'Buh: a tall line down, back up, around for the ball.', how:'Start at the top. Bat first, then the ball.'},
+      {type:'match', pairs:[['B','b'],['J','j'],['W','w']], say:'Big letter, little letter. Match them.', how:'Say the sound of each one. Find its partner.'},
+      {type:'trace', glyph:'j', name:'the letter for juh', say:'Juh: down below the line, hook back, then a dot.', how:'Pull down past the line. Curve back. Dot on top.'},
+      {type:'listen', hear:'bed', o:['b','d','p'], a:'b', mis:true, say:'Bed starts with buh. Careful, not duh! Which letter?', how:'The line comes first, then the circle: that is buh.'},
+      {type:'trace', glyph:'w', name:'the letter for wuh', say:'Wuh: down, up, down, up. Two pointy valleys.', how:'Slant down, slant up, two times.'},
+      {type:'tiles', w:['w','e','b'], extra:['d'], hear:'web', say:'Write it with tiles! Build web.', how:'Wuh, eh, buh. One tile for each sound.'}]},
+
+    /* ===== K Unit 8 · y, v, z, x, qu ===== */
+    { id:'READ.PHON.L01.21', grade:0, name:'Yo-yo, Van, Zebra', pic:'🦓', after:'WRIT.HAND.L01.10', acts:[
+      {type:'listen', hear:'van', o:['v','w','f'], a:'v', say:'Van starts with vvv. Tap the letter for vvv.', how:'It is one pointy valley. Two valleys is wuh.'},
+      {type:'sort', bins:['y','v','z'], cards:[['🪀',0],['🧶',0],['🎻',1],['🌋',1],['🦓',2],['0️⃣',2]], say:'Yuh, vvv or zzz? Put each picture in its box.', how:'Say the picture slowly. Hear the first sound.'},
+      {type:'listen', hear:'yes', o:['y','v','u'], a:'y', say:'Yes starts with yuh. Tap the letter for yuh.', how:'It has a long tail that hangs below the line.'},
+      {type:'match', pairs:[['yes','👍'],['yam','🍠'],['van','🚐']], say:'Read each word. Match it to its picture.', how:'Sound it out: first, middle, last. Then push them together.'},
+      {type:'findall', grid:['z','s','z','s','z','n'], find:'z', findSay:'letter for zzz', mis:true, say:'Careful! Zzz and sss sound close. Zzz buzzes like a bee.', how:'Zzz is all straight lines. Sss is a curvy snake.'},
+      {type:'tiles', w:['y','u','m'], extra:['v'], hear:'yum', say:'Bubby made kugel. Yum! Build yum.', how:'Yuh, uh, mmm. One tile for each sound.'}]},
+
+    { id:'READ.PHON.L01.22', grade:0, name:'Box and Queen', pic:'📦', after:'READ.PHON.L01.21', acts:[
+      {type:'listen', hear:'box', o:['x','k','s'], a:'x', say:'Box ends with ks. Tap the letter that says ks.', how:'It looks like two lines that cross.'},
+      {type:'findall', grid:['box','six','fog','fox','sit','mix'], find:['box','six','fox','mix'], findSay:'word that ends with ks', say:'Tap every word that ends with ks.', how:'Read to the end. Is the last letter the cross?'},
+      {type:'listen', hear:'queen', o:['qu','c','w'], a:'qu', say:'Queen starts with kw. Tap the letters for kw.', how:'Kw is two letters that stick together. The first has a tail.'},
+      {type:'match', pairs:[['six','6️⃣'],['fox','🦊'],['box','📦']], say:'Each word ends with ks. Read it and match.', how:'Sound it out to the end. The cross says ks.'},
+      {type:'listen', hear:'six', o:['six','sis','sit'], a:'six', mis:true, say:'Careful! Six ends with ks, not sss. Tap six.', how:'Look at the last letter. The cross says ks.'},
+      {type:'tiles', w:['qu','i','z'], extra:['c'], hear:'quiz', say:'Rebbe Gutman gives a fun quiz. Build quiz.', how:'Kw, ih, zzz. Kw is one tile.'}]},
+
+    { id:'READ.PA.L01.14', grade:0, name:'Change the End', pic:'🔁', after:'READ.PHON.L01.22', acts:[
+      {type:'listen', hear:'Cat. Change the last sound to puh.', o:['🧢','🐱','🍳'], a:'🧢', say:'Cat. Change the last sound to puh. What is it?', how:'Keep the start of cat. Put puh at the end.'},
+      {type:'tiles', w:['h','o','t'], extra:['a','u'], say:'Hat. Change the middle to the sound in mop. Build it.', how:'Keep huh and tuh. Only the middle tile changes.'},
+      {type:'listen', hear:'Big. Change the middle to uh.', o:['🐛','🐷','🛍️'], a:'🐛', mis:true, say:'Careful! Change only the middle. Big, with uh.', how:'Keep buh and guh. Put uh in the middle.'},
+      {type:'findall', grid:['cap','cat','can','cup','map','cab'], find:['cat','can','cab'], findSay:'cap with a new end', say:'Change the end of cap. Tap every new word.', how:'The start stays kuh, ah. Only the end is new.'},
+      {type:'listen', hear:'Cub. Change the last sound to puh.', o:['☕','🐻','🧢'], a:'☕', say:'Cub. Change the last sound to puh. What is it?', how:'Keep the start of cub. Put puh at the end.'}]},
+
+    { id:'WRIT.HAND.L01.11', grade:0, name:'Write y, v, z, x, q', pic:'✏️', after:'READ.PA.L01.14', acts:[
+      {type:'trace', glyph:'y', name:'the letter for yuh', say:'Yuh: slant in, then a long slant with a tail.', how:'A short slant, then a long slant down below the line.'},
+      {type:'match', pairs:[['Y','y'],['V','v'],['Z','z']], say:'Big letter, little letter. Match them.', how:'Say the sound of each one. Find its partner.'},
+      {type:'trace', glyph:'v', name:'the letter for vvv', say:'Vvv: slant down, slant up. One pointy valley.', how:'Slant down to the bottom point. Slant back up.'},
+      {type:'listen', hear:'zip', o:['z','s','x'], a:'z', mis:true, say:'Careful! Zip buzzes. Which letter says zzz?', how:'Zzz is across, slant, across. Sss is a curvy snake.'},
+      {type:'trace', glyph:'z', name:'the letter for zzz', say:'Zzz: across, slant down, across again.', how:'Line across the top. Slant back. Line across the bottom.'},
+      {type:'tiles', w:['f','o','x'], extra:['s'], hear:'fox', say:'Write it with tiles! Build fox.', how:'Fff, ah, ks. The cross says ks.'},
+      {type:'trace', glyph:'x', name:'the letter for ks', say:'Ks: one slant down, then cross it with another.', how:'Slant one way. Then slant the other way across it.'},
+      {type:'trace', glyph:'q', name:'the letter for kw', say:'For kw: a circle, then down with a tail.', how:'Round like a ball. Then a line down that flicks out.'}]}
+  ];
+  if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
+  if (window.TLCORE) TLCORE.add('F', LESSONS, {});
+})();
+</script>
