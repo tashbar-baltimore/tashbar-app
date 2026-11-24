@@ -68,5 +68,10 @@ CORE_SKILLS.F = [
   ["READ.PA.L02.04", "Every Beat Has a Vowel", "Hear the beats in a word and find the vowel in each beat", { after: "READ.PHON.L02.03", std: "RF.1.3d", file: "CoreDataFH2", min: 5 }],
   ["READ.PHON.L02.27", "Rab-bit Split", "Split a two-beat word between two consonants and read each beat", { after: "READ.PA.L02.04", std: "RF.1.3e", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.28", "Fast, Faster, Fastest", "Read -er (more) and -est (the most)", { after: "READ.PHON.L02.04", std: "RF.1.3f", file: "CoreDataFH2", min: 6 }],
-  ["WRIT.HAND.L02.04", "Copy It Neatly", "Copy a sentence with a capital, spaces, an end mark and tails below the line", { after: "LANG.MECH.L02.02", std: "L.1.1a", file: "CoreDataFH2", min: 5 }]
+  ["WRIT.HAND.L02.04", "Copy It Neatly", "Copy a sentence with a capital, spaces, an end mark and tails below the line", { after: "LANG.MECH.L02.02", std: "L.1.1a", file: "CoreDataFH2", min: 5 }],
+  ["READ.LV.L02.12", "Cloud and Cow", "Read ou and ow that say ow, and try both sounds of ow", { after: "READ.COMP.L02.01", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.13", "Coin and Boy", "Read and spell oi and oy", { after: "READ.LV.L02.12", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.14", "Moon and Book", "Read the two sounds of oo", { after: "READ.LV.L02.13", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.FLU.L02.11", "Heart Words: friend, people", "Read the heart words because, people, water and friend", { after: "READ.LV.L02.14", std: "RF.1.3g", file: "CoreDataFH2", min: 5 }],
+  ["READ.PHON.L02.29", "Hear It, Write It", "Hear a sentence and build it with the right spellings", { after: "READ.FLU.L02.11", std: "L.1.2d", file: "CoreDataFH2", min: 6 }]
 ];
