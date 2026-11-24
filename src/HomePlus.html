@@ -379,7 +379,7 @@ window.tlSplash=splash;
    Mouse and pen use pointer events. A finger uses touch events: the browser stops pointer events (pointercancel) as soon as a
    swipe starts scrolling the page, but touchmove keeps coming, so the trail keeps following the finger while the page scrolls. */
 const SW={}, STEP=38, CAP=60;
-function trailTo(p,x,y){ if(typeof window.tlOilOn==='function'&&window.tlOilOn()) return; const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
+function trailTo(p,x,y){ if(typeof window.tlOilOn==='function'&&window.tlOilOn()) return; if(typeof window.tlJellyOn==='function'&&window.tlJellyOn()) return; const dx=x-p.x, dy=y-p.y, len=Math.hypot(dx,dy); if(len<STEP) return; const ux=dx/len, uy=dy/len; let dd=len;
  while(dd>=STEP){ p.x+=ux*STEP; p.y+=uy*STEP; dd-=STEP; if(LIVE<CAP) splash(p.x,p.y,true); } }
 const BL={cv:null,cx:null,pts:[],raf:0,down:false,dpr:1};
 function bladeOn(){ try{ if(!window.HP_FX) return false;   /* 2026-11-19: the ribbon shows even with reduced motion: it only follows the boy's own finger (the bursts stay off then) */ if(typeof window.tlStoreTrailOn==='function'&&window.tlStoreTrailOn()) return false; if(typeof window.tlOilOn==='function'&&window.tlOilOn()) return false; /* 2026-11-23 HoS: through Chanukah the olive oil (OilTrail.html) is the free trail */ return true; }catch(e){ return false; } }
@@ -412,7 +412,7 @@ const TAPQ={};
 document.addEventListener('pointermove',e=>{ const q=TAPQ[e.pointerId]; if(q) q.m=Math.max(q.m,Math.hypot(e.clientX-q.x,e.clientY-q.y)); },{capture:true,passive:true});
 document.addEventListener('pointerup',e=>{ const q=TAPQ[e.pointerId]; delete TAPQ[e.pointerId]; if(!q||!window.HP_FX) return;
  if(Math.max(q.m,Math.hypot(e.clientX-q.x,e.clientY-q.y))>12||performance.now()-q.t>400) return;
- try{ if(!(typeof window.tlOilTapOn==='function'&&window.tlOilTapOn())) splash(e.clientX,e.clientY); }catch(x){} },true);
+ try{ if(!(typeof window.tlOilTapOn==='function'&&window.tlOilTapOn())&&!(typeof window.tlJellyTapOn==='function'&&window.tlJellyTapOn())) splash(e.clientX,e.clientY); }catch(x){} },true);   /* the jelly donut is his tap while he wears it */
 document.addEventListener('pointercancel',e=>{ delete TAPQ[e.pointerId]; },true);
 document.addEventListener('pointerdown',e=>{ if(!window.HP_FX) return; try{ TAPQ[e.pointerId]={x:e.clientX,y:e.clientY,t:performance.now(),m:0}; BL.down=true; BL.pts=[]; bladeAdd(e.clientX,e.clientY); if(e.pointerType!=='touch') SW['p'+e.pointerId]={x:e.clientX,y:e.clientY}; }catch(x){} },true);
 document.addEventListener('pointermove',e=>{ if(!window.HP_FX||e.pointerType==='touch') return;

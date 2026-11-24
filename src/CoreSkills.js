@@ -110,9 +110,17 @@ function coreProblemsBefore_(rows) {
 }
 
 /* The data files the boy's page loads, in order: the kit first, then every file a row names (jobs by name, files by first use). */
+/* Data files that add NO new skill and only upgrade existing ones with a One Bite lesson (TLCORE.upgrade), for example job S:
+   in src/CoreDataS.js,  var CORE_DATA_FILES = ...; CORE_DATA_FILES.S = ['CoreDataS1'];  (docs/core-growth/HOW-TO-ADD-A-SKILL.md) */
+function coreUpgradeFiles_() {
+  var o = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {}, out = [];
+  Object.keys(o).sort().forEach(function (j) { (Array.isArray(o[j]) ? o[j] : []).forEach(function (f) { out.push(String(f)); }); });
+  return out;
+}
 function coreFiles_() {
   var out = [], seen = {};
   coreRows_().forEach(function (r) { if (CORE_FILE_RE.test(r.file) && !seen[r.file]) { seen[r.file] = 1; out.push(r.file); } });
+  coreUpgradeFiles_().forEach(function (f) { if (CORE_FILE_RE.test(f) && !seen[f]) { seen[f] = 1; out.push(f); } });
   return CORE_TOOL_FILES.concat(out);   /* the tools always load (the content store and the Reader serve every job), then the data files */
 }
 
