@@ -9,7 +9,7 @@ const QS = {
   3: [N('zayin'), N('vov'), SND('zayin'), N('ches'), N('hei'), N('daled'), { k: 'alef', by: 'quiet' }, N('beis'), SND('gimmel')],   /* no 'Which says ch?' until the rebbe's recording */
   4: [N('kaf'), N('tes'), N('chaf'), SND('kaf'), N('yud'), SND('tes'), N('beis'), SND('yud'), N('ches')],   /* Beis comes with Kaf; no 'Which says ch?' */
   5: [N('lamed'), N('nun'), SND('mem'), N('mem'), SND('nun'), N('tes'), SND('lamed'), N('gimmel'), N('kaf')],   /* Nun beside Gimmel, Mem beside Tes */
-  6: [N('pei'), N('samech'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), SND('fei')],   /* Pei beside Fei; Kaf beside Chaf; 'Which says f?' with Pei beside it */
+  6: [N('pei'), N('nun'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), SND('fei')],   /* Pei beside Fei; Kaf beside Chaf; 'Which says f?' with Pei beside it */
   7: [N('reish'), N('tzadik'), N('kuf'), SND('reish'), N('daled'), SND('tzadik'), N('hei'), N('pei'), N('samech')],   /* Reish beside Daled, Kuf beside Hei */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
@@ -22,7 +22,7 @@ export default function setup(E, { struggled, unit }) {
   keys.forEach(k => { L[k] = E.letter(k, 1.6); E.scene.add(L[k]); L[k].visible = false; });
   const arrows = [E.arrow3d(.3), E.arrow3d(.3)];   /* on a look-alike mix-up: point at the place to look on both letters */
   const feat = (k, other) => E.featFor(k, other);
-  const LS = () => E.portrait ? .62 : .86;   /* letter size: small enough that wide letters (Mem, Nun) never touch */
+  const LS = () => E.portrait ? .55 : .86;   /* letter size: small enough that wide letters (Mem, Nun) never touch */
   const glow = E.glowSprite('#fff7b0', 3, 0); E.scene.add(glow);
   /* a basket that fills up: every letter he gets right jumps in and stays, so he can watch his letters pile up */
   const basket = new THREE.Group(), wick = E.M(0xc68a52, { roughness: .7 }); basket.add(E.mesh(new THREE.CylinderGeometry(.75, .55, .7, 28, 1, true), wick, 0, .35, 0)); basket.children[0].material.side = THREE.DoubleSide;
@@ -34,7 +34,7 @@ export default function setup(E, { struggled, unit }) {
   set.forEach((k, i) => slot[k] = i);
   const slotPos = i => new THREE.Vector3((1 - i) * gap, 0, .6);   /* right to left */
   E.onLayout(p => {
-    gap = p ? 1.7 : 2.55; keys.forEach(k => L[k].scale.setScalar(LS()));
+    gap = p ? 1.5 : 2.55; keys.forEach(k => L[k].scale.setScalar(LS()));
     basket.position.set(p ? .9 : 4.3, 0, p ? 3.3 : .4); basket.scale.setScalar(p ? .5 : 1);   /* on a phone it sits on the grass in front */
     if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
     else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.3, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
