@@ -31,7 +31,7 @@ if (window.TLCORE && TLCORE.units) TLCORE.units.add({
 **Keep it cold:** the unit check should not repeat the exact question he just answered in the lesson's Show me. Give each skill more than 3 check questions where you can, or add `items`.
 
 ## When the boy meets it
-While the switch is `'test'` (TEST- boys only, until the HoS has seen it; `CU_LIVE` in `src/CoreUnits.html` and `src/CoreChecks.js`):
+**On for every boy** (HoS decision 2026-11-24; the switch is `CU_LIVE` in `src/CoreUnits.html` and `src/CoreChecks.js`: `'on'`, `'test'` for TEST- boys only, or `'off'`):
 - Starting the **first lesson of a unit** (no lesson of it mastered yet, and 3 or more skills) opens the **pre-check** first. If that lesson was shown, he goes straight to the first lesson he still needs.
 - Starting a lesson of a unit whose **earlier unit is finished but not passed** opens that earlier unit's **check** first, once per visit. If he passes it or closes it, his lesson opens. If he does not pass, the screen gives him Practice buttons for exactly the lessons he missed, and the check comes back next time.
 - The checks never wait on the internet: until his unit results have loaded, lessons open as usual. A unit with fewer than 2 tap questions never blocks anything. Every lesson still opens through One Bite.
@@ -43,7 +43,7 @@ While the switch is `'test'` (TEST- boys only, until the HoS has seen it; `CU_LI
   - one pre-check per unit, so no second try to fish for skips;
   - shown skills leave the path, and a missed skill comes back;
   - 80% passes, and a passed unit stays passed;
-  - a boy who is not a TEST- boy is not changed while the switch is 'test';
+  - the switch is `'on'`, and `'test'` still keeps it to TEST- boys;
   - no money and no mastery are written.
 - On the page, at 1366 and 390:
   - the entrance; cleared at 80%; "Almost there!" with Practice opening exactly the missed lesson;
