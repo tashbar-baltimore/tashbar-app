@@ -56,6 +56,7 @@ try{ if(!document.getElementById('kk-css')){ const s=document.createElement('sty
 .kkov{position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.55);display:flex;align-items:center;justify-content:center;padding:10px}
 .kkov .kkbox{position:relative;width:min(980px,100%);height:min(94vh,900px);background:#D9EEFF;border-radius:22px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.35)}
 .kkov iframe{width:100%;height:100%;border:0;display:block}
+.kkov .kkbox:has(>.tlk-x){padding-top:64px;box-sizing:border-box}
 .kkov .kkx{position:absolute;top:10px;right:10px;z-index:2;border:0;border-radius:999px;background:#fff;color:#0C4A6E;font:800 18px system-ui,sans-serif;padding:10px 16px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2)}`; document.head.appendChild(s); } }catch(e){}
 /* v197 CURRICULUM MAP: land -> [track, lowest level, highest level]. Track = a Limudei Kodesh track (KodeshMore wiring) or READ / MATH.
    Levels come from the land's own grade bands (K = 1, 1st = 2, 2nd = 3, 3-4 = 4-5, 5-6 = 6-7, 7-8 = 8-9). */
@@ -96,7 +97,7 @@ const _find=window.tlFindLevelCard;
 /* v197: the separate home card shows ONLY when the Limudei Kodesh panel is missing (Kodesh Quest now lives inside the curriculum) */
 window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ if(st&&A.view==='hub'&&on(st)&&needs(st)&&!/class="lkpanel"/.test(h)) h+=`<section class="kkcard"><span class="ki" aria-hidden="true">🎮</span><span class="kt"><b>Kodesh Quest</b><small>112 games and step-by-step Island Lessons for every grade: letters, brachos, pesukim, the parsha, the calendar and more.</small></span><button type="button" data-kk="open">Play</button></section>`; }catch(e){} return h; };
 function open(o){ o=o||{}; close(); const ov=document.createElement('div'); ov.className='kkov'; ov.id='kkov';
-  ov.innerHTML='<div class="kkbox"><button class="kkx" data-kk="close" aria-label="Close Kodesh Quest">✕ Done</button><iframe title="Kodesh Quest" sandbox="allow-scripts"></iframe></div>';
+  ov.innerHTML='<div class="kkbox">'+(window.TLK?TLK.x('data-kk="close"','tr'):'<button class="kkx" data-kk="close" aria-label="Close Kodesh Quest">✕</button>')+'<iframe title="Kodesh Quest" sandbox="allow-scripts"></iframe></div>';
   document.body.appendChild(ov); ov.querySelector('iframe').srcdoc=memScript()+PAGE+INJECT+((o.land||o.kodesh)?goScript(o):''); }
 function close(quiet){ const o=document.getElementById('kkov'); if(o){ o.remove(); if(quiet) return; try{ if(A.view==='hub'&&typeof render==='function') setTimeout(()=>{ try{ render(); }catch(x){} },0); }catch(e){} } }
 /* v159 PROGRESS: the sealed frame has no localStorage. A tiny shim placed BEFORE the page gives it one, filled from st.kq,
