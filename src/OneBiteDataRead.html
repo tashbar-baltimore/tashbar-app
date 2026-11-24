@@ -18,17 +18,27 @@ B['READ.PA.L01.05']={ band:'K1', pic:'🐢', today:'Push sounds together to make
   oops:{ q:'Push together: c, a, t.', wrong:'c … a … t (still apart)', right:'cat 🐱', why:'Slide the sounds into each other, like going down a slide.' },
   ways:['letter tiles','movement','picture','Mistake Detective'], done:'You can push sounds together to read a word!',
   board:{ one:'Turtle, then race car: push the sounds together.', activity:'Three boys each hold one sound card and walk closer until they say the word.', mistakes:['Leaving a gap between sounds','Adding uh after a sound (buh-a-tuh)','Saying the first sound only'] } };
-B['READ.PHON.L03.01']={ band:'B23', pic:'🤖', today:'Split long words into beats', why:'Long words are just short beats stuck together. Split them and you can read them.',
+B['READ.PHON.L03.01']={ band:'B23', pic:'✂️', today:'Snip a long word between two consonants', why:'Long words are just short beats stuck together. Snip them and you can read them.',
   ready:[{q:'Clap it: how many beats in "basket"?', o:['2','1','3'], a:'2'},{q:'Which is a vowel?', o:['a','b','t'], a:'a'}],
   bridge:'READ.PA.L01.03', bridgeName:'Clap the Beats',
-  watch:{ q:'robot', pic:'🤖', steps:[
-    {t:'Find the vowels: r-O-b-O-t. Two vowels, two beats.', m:{type:'tiles',w:['r','o','b','o','t'],hi:[1,3]}},
-    {t:'Stand up! Stomp each beat: ro … bot.', m:{type:'move',t:'Stomp: ro! bot!'}},
-    {t:'Split between the beats.', m:{type:'tiles',w:['ro','bot']}},
-    {t:'Read each beat, then blend: robot!'}], a:'ro | bot = robot' },
-  oops:{ q:'bottle or button?', wrong:'button', right:'bottle', why:'Stomp it: bot … tle. The second beat is tle, not ton.' },
-  ways:['part tiles','movement','picture','Mistake Detective'], done:'You can split long words into beats and read them.',
-  board:{ one:'Every beat has one vowel sound. Split between beats.', activity:'Stomp-and-split: write words on cards, boys cut them into beats.', mistakes:['Splitting in the middle of a blend','Giving a beat no vowel','Reading every letter separately'] } };
+  watch:{ q:'rabbit and candle', pic:'🐇', steps:[
+    {t:'Rabbit. Find the vowels: a and i.', m:{type:'tiles',w:['r','a','b','b','i','t'],hi:[1,4]}},
+    {t:'Two consonants stand between them: b and b.', m:{type:'tiles',w:['r','a','b','b','i','t'],hi:[2,3]}},
+    {t:'Snip between them: rab, bit. Rabbit!', m:{type:'tiles',w:['rab','bit'],hi:[0]}},
+    {t:'Candle ends in le. Keep le with the consonant before it: can, dle!', m:{type:'tiles',w:['can','dle'],hi:[1]}},
+    {t:'Stand up with Chaim! Stomp each beat.', m:{type:'move',t:'Stomp: rab! bit! Stomp: can! dle!'}}], a:'Two in the middle: snip between them, rab | bit. Ends in le? Keep one consonant with it: can | dle.' },
+  oops:{ q:'basket', wrong:'ba | sket', right:'bas | ket', why:'S and k are both in the middle. Snip between them, not before them.' },
+  ways:['part tiles','movement','sort good and bad snips','build with tiles','Mistake Detective'], done:'You can snip long words into beats and read them!',
+  board:{ one:'Find the vowels. Two consonants between them? Snip between the consonants.', activity:'Stomp-and-snip: write words on cards, boys cut them into beats with scissors.', mistakes:['Snipping before both consonants (ba | sket)','Snipping after both consonants (bask | et)','Reading every letter separately'] },
+  do:[
+    {type:'tiles', w:['tab','let'], extra:['ta'], hear:'tablet', say:'Build tablet, one beat at a time.', how:'Find the two consonants in the middle. Snip between them.'},
+    {type:'listen', q:'mitten', hear:'Where does mitten snip?', o:['mit | ten','mi | tten','mitt | en'], a:'mit | ten', say:'Tap the right snip.', how:'Find the vowels. Snip between the two consonants in the middle.'}],
+  your:[
+    {type:'sort', bins:['Good snip','Bad snip'], cards:[['bas | ket',0],['ba | sket',1],['pic | nic',0],['picn | ic',1],['hel | met',0],['he | lmet',1]], mis:true, say:'Mistake Detective! Which snips are bad?', how:'A good snip goes between the two middle consonants.'},
+    {type:'match', pairs:[['rab','bit'],['nap','kin'],['mag','net'],['hel','met']], say:'Match the beats to make a real word.', how:'Say the first beat. Which beat finishes the word?'},
+    {type:'tiles', w:['pur','ple'], extra:['purp'], hear:'purple', say:'Mommy made purple jam! Build purple, beat by beat.', how:'Find the le at the end. Keep one consonant with it.'},
+    {type:'listen', q:'Zaidy fixed the window.', hear:'Where does window snip?', o:['win | dow','wi | ndow','wind | ow'], a:'win | dow', say:'Snip the long word.', how:'Find the two consonants between the vowels. Snip between them.'},
+    {type:'sort', bins:['Two in the middle','One in the middle'], cards:[['rabbit',0],['robot',1],['napkin',0],['music',1],['contest',0],['tiger',1]], say:'Challenge! Two consonants in the middle, or one?', how:'Find the vowels. Count the consonants between them.'}] };
 
 /* ==== QUALITY ROUND q1 (2026-11-22 night, HoS: "boys must genuinely learn the skill"): Grade 1 phonics, 5 lessons ====
    READ.PA.L02.01 swap a sound, READ.PHON.L02.01 digraphs, READ.PHON.L02.02 blends, READ.LV.L02.01 silent e, READ.LV.L02.02 vowel teams.
