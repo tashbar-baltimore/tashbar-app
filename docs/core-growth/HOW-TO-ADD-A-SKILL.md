@@ -92,6 +92,26 @@ Quality-gate tips:
 - A `combine` or `cloze` whose wrong choices are the mistake boys really make counts as the **mistake activity** when you mark it `mis:true`. An `evidence` with a tempting wrong sentence counts the same way.
 - K–1 lessons get 3 choices at most here too.
 
+## Upgrade a skill that already exists (One Bite lesson, its questions kept)
+For a skill that already has its lesson, such as the Grades 4–8 Science skills that job S rebuilds: do **not** add a row, and do not use `TLCORE.add`, which never replaces a lesson.
+1. List your data file in `src/CoreData<Job>.js`:
+   ```js
+   var CORE_DATA_FILES = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {};
+   CORE_DATA_FILES.S = ['CoreDataS1'];
+   ```
+   The file then loads on the boy's page after the tools, the same way as a new skill's file.
+2. In the data file, call:
+   ```js
+   TLCORE.upgrade('S', { bite: ONE_BITE_LESSONS, teach: TEACHER_TIME, howto: HOW_TO_BOXES });
+   ```
+   - The skill keeps its id, its questions, its mastery and its place on the map.
+   - Its questions become the lesson's practice and "Show me".
+   - Every One Bite rule and the quality gate apply.
+3. **Refused, and named by the tests:**
+   - a skill with no lesson;
+   - a skill that already has a One Bite lesson (improve that one in its own file);
+   - a skill another job already upgraded.
+
 ## What happens at start-up (so you know what you get)
 `src/CoreSkills.js` reads every `CORE_SKILLS.<Job>` list and:
 - puts each skill into its ladder in `Placement.js` (`READ_K8`, `LANG_K8`, `SCI_K8`, `SS_K12`) at its place. That gives you the boy's map and path, placement, the staff grid, "Give him this skill", the Library and the Pathfinder level lists;

@@ -31,6 +31,26 @@
     });
     return mine.length;
   };
+  /* UPGRADE an EXISTING skill (job S and any job that rebuilds an old lesson in the One Bite shape, without touching its file):
+       TLCORE.upgrade('S', { bite: ONE_BITE_LESSONS, teach: TEACHER_TIME, howto: HOW_TO_BOXES });
+     The skill must already have its lesson (BANK_ALL): its questions stay as they are and become the lesson's practice and "Show me".
+     Nothing is replaced: a skill that already has a One Bite lesson (or Teacher Time, or a How-to box) keeps it, and the refusal is
+     listed in TLCORE.clash, so the tests fail and name it. TLCORE.up[id] = job. */
+  C.up = C.up || {};
+  C.upgrade = function (job, extra) {
+    extra = extra || {}; job = String(job || '?');
+    var BA = all(), TT = W.TL_TEACH = W.TL_TEACH || {}, DO = W.TL_DO = W.TL_DO || {}, OB = W.ONE_BITE = W.ONE_BITE || {}, n = 0;
+    var ids = {}; ['bite', 'teach', 'howto'].forEach(function (k) { Object.keys(extra[k] || {}).forEach(function (id) { ids[id] = 1; }); });
+    Object.keys(ids).forEach(function (id) {
+      if (!BA || !BA[id]) { C.clash.push(job + ' ' + id + ': upgrade of a skill that has no lesson (use TLCORE.add for a new skill)'); return; }
+      if (C.up[id] && C.up[id] !== job) { C.clash.push(job + ' ' + id + ': already upgraded by job ' + C.up[id]); return; }
+      var b = extra.bite && extra.bite[id], t = extra.teach && extra.teach[id], h = extra.howto && extra.howto[id];
+      if (b && OB[id]) { C.clash.push(job + ' ' + id + ': already has a One Bite lesson (improve that one in its own file)'); return; }
+      if (b) OB[id] = b; if (t && !TT[id]) TT[id] = t; if (h && !DO[id]) DO[id] = h;
+      C.up[id] = job; n++;
+    });
+    return n;
+  };
   /* CONTENT STORE (job T, T-2): a long text (story, chapter, article, poem, play) is NOT in the start-up download. It is written in
      texts/<JOB>/<ID>.txt (docs/core-growth/HOW-TO-ADD-A-TEXT.md), published as /texts/<ID>.json, and fetched here only when a boy opens it.
      TLCORE.text(id) gives a Promise of { id, title, grade, kind, topic, book, chapter, pic, source, words, pages: [[{ s: [sentences], who? }]], glossary: { word: meaning } }.
