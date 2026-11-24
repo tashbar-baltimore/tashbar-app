@@ -337,12 +337,12 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     const skull = new THREE.Mesh(new THREE.SphereGeometry(hr, 48, 36), skin); skull.scale.set(1.02, 0.96, 0.97); skull.castShadow = true; head.add(skull);
     [-1, 1].forEach(s => { const ear = new THREE.Mesh(new THREE.SphereGeometry(0.13, 16, 12), skin); ear.scale.set(0.5, 1, 0.75); ear.position.set(s * hr * 0.98, -0.02, -0.02); head.add(ear);
       const pe = curl(hairM, hr); pe.position.set(s * hr * 0.9, -0.06, 0.16); head.add(pe); });
-    const hairCap = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.035, 48, 24, 0, Math.PI * 2, 0, Math.PI * 0.5), hairM); hairCap.rotation.x = -0.78; hairCap.position.set(0, 0.03, -0.03); hairCap.castShadow = true; head.add(hairCap);
+    const hairCap = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.035, 48, 24, 0, Math.PI * 2, 0, Math.PI * 0.5), hairM); hairCap.rotation.x = -0.58; hairCap.position.set(0, 0.03, -0.03); hairCap.castShadow = true; head.add(hairCap);
     for (let i = 0; i < 7; i++) { const a = -0.75 + i * 0.25, t = new THREE.Mesh(new THREE.SphereGeometry(0.13, 14, 10), hairM); t.scale.set(1.15, 0.7, 0.8);
-      t.position.set(Math.sin(a) * hr * 0.9, hr * 0.78 - Math.abs(a) * 0.1, Math.cos(a) * hr * 0.42 - 0.02); head.add(t); }
-    const kip = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.06, 40, 10, 0, Math.PI * 2, 0, 0.62), kipM); kip.rotation.x = -0.55; kip.position.set(0, 0.03, -0.02); head.add(kip);
-    const kr = new THREE.Mesh(new THREE.TorusGeometry(hr * 1.06 * Math.sin(0.62), 0.018, 6, 48), mat('kipRim', () => phys('#E8C35A', { metalness: 0.4, roughness: 0.4 }))); kr.rotation.x = Math.PI / 2;
-    kr.position.y = hr * 1.06 * Math.cos(0.62) - 0.005; kip.add(kr);
+      t.position.set(Math.sin(a) * hr * 0.9, hr * 0.7 - Math.abs(a) * 0.1, Math.cos(a) * hr * 0.5 - 0.02); head.add(t); }
+    const kip = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.07, 40, 10, 0, Math.PI * 2, 0, 0.68), kipM); kip.rotation.x = -0.3; kip.position.set(0, 0.03, -0.02); head.add(kip);
+    const kr = new THREE.Mesh(new THREE.TorusGeometry(hr * 1.07 * Math.sin(0.68), 0.018, 6, 48), mat('kipRim', () => phys('#E8C35A', { metalness: 0.4, roughness: 0.4 }))); kr.rotation.x = Math.PI / 2;
+    kr.position.y = hr * 1.07 * Math.cos(0.68) - 0.005; kip.add(kr);
     const F = face(head, { y: 0, r: hr, hair, glasses, eye: opts.eye });
     k.userData = { armL, armR, head, body, eyes: F.eyes, blink: 2 + Math.random() * 3, kind: 'kid' };
     k.traverse(o => { if (o.isMesh) o.castShadow = true; });
@@ -419,7 +419,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
 
   /* ================= the glow on the corners he counts ================= */
-  L.cornerHalo = () => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: '#FFE070', transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false })); s.scale.setScalar(0.55); return s; };
+  L.cornerHalo = () => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: '#FFD84A', transparent: true, opacity: 0.55, blending: THREE.AdditiveBlending, depthWrite: false })); s.scale.setScalar(0.34); return s; };
 
   /* ================= celebration: confetti, stars, twinkles ================= */
   const CN = 220, conf = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.13, 0.075), new THREE.MeshStandardMaterial({ roughness: 0.5, side: THREE.DoubleSide }), CN);
