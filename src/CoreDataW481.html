@@ -1,0 +1,316 @@
+<script>
+/* CoreDataW481.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 4 (L05), Unit 1 "Paragraph Power".
+   Cast for Grades 4-5: the Glen Avenue Crew (docs/core-growth/C45-map.md section 5): Yehuda Benaim, Avrumi Katz, Dovid Lerner,
+   Binyamin Yusupov, Tzvi Hirsch Gold, Rabbi Feldman, Mr. Halpern. In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+
+  'WRIT.PARA.L05.06':{name:'Umbrella Sentence',
+  teach:[
+    {how:'A topic sentence is an umbrella. It comes first, and every detail in the paragraph fits under it. To find it, ask: what do all the details have in common?', q:'Details: Yehuda feeds the fish. He feeds the birds. He cleans the hamster cage. Which topic sentence covers all three?', o:['Yehuda takes care of his pets.','Yehuda feeds the fish.','Animals are nice to have.']},
+    {how:'TOO SMALL: the sentence covers only one detail, so the other details stick out in the rain. Test it: does every detail fit under it?', q:'Details: Avrumi draws a map. He labels the streets. He colors the park green. Which topic sentence is too small?', o:['Avrumi colors the park green.','Avrumi makes a map of Glen Avenue.','Avrumi spends the afternoon making a map.']},
+    {how:'TOO BIG: the sentence is about everything, so the reader cannot tell what this paragraph is about. A good umbrella names WHO or WHAT, and WHAT the details share. And it TELLS: a topic sentence is never a question.', q:'Details: Dovid tests a ramp. He tests a toy car. He tests a bridge of sticks. Which topic sentence is too big?', o:['Science is important.','Dovid tests three things he built.','Dovid spends Sunday testing his projects.']}
+  ],
+  practice:[
+    {t:'sort', q:'Details: Binyamin sets up the chessboard. He shows Tzvi Hirsch how each piece moves. He lets him win once. Sort each topic sentence.', bins:[{id:'U',label:'☂️ Covers all 3'},{id:'S',label:'🔍 Too small'},{id:'B',label:'🌍 Too big'}],
+      items:[{label:'Binyamin teaches Tzvi Hirsch to play chess.',bin:'U'},{label:'Binyamin sets up the chessboard.',bin:'S'},{label:'Binyamin lets Tzvi Hirsch win.',bin:'S'},{label:'Games are fun.',bin:'B'}],
+      h:'Hold each sentence over the 3 details. Covers all 3? Covers only 1? Or about everything, not Binyamin?'},
+    {t:'pairs', q:'Match each set of details to its umbrella sentence.', pairs:[['kugel, salad, chicken','Ima cooks a big Shabbos meal.'],['ball, bat, glove','Binyamin packs for baseball.'],['pencils, ruler, glue','Yehuda fills his school bag.']],
+      h:'Ask what the 3 things have in common. Find the sentence that covers all of them.'},
+    {t:'spotall', q:'Umbrella: The Crew gets the sukkah ready. Tap every detail that fits under it.', cells:[{label:'Avrumi hangs paper chains.',ok:true},{label:'Dovid carries the boards.',ok:true},{label:'Yehuda spreads the schach.',ok:true},{label:'Tzvi Hirsch eats a pretzel.',ok:false},{label:'Binyamin plays chess.',ok:false}],
+      h:'Read each detail. Does it tell how the Crew gets the sukkah ready? Only tap those.'},
+    {t:'order', q:'Details: After the storm, Tzvi Hirsch shovels the steps. He salts the path. He brushes snow off the car. Build the umbrella sentence. Tap the tiles in order.', tiles:['Tzvi Hirsch','clears away','the snow','after the storm.'],
+      h:'Start with WHO. Then WHAT he does in all 3 details. Then WHEN.'},
+    {t:'sort', q:'This paragraph is about Pesach cleaning. Which sentence is the topic sentence, and which are details?', bins:[{id:'T',label:'☂️ Topic sentence'},{id:'D',label:'💧 Detail'}],
+      items:[{label:'The Katz family cleans for Pesach together.',bin:'T'},{label:'Avrumi vacuums the car.',bin:'D'},{label:'His brothers check every coat pocket.',bin:'D'},{label:'Abba cleans the bookshelves.',bin:'D'}],
+      h:'The topic sentence covers all the others. A detail is one part of it.'},
+    {t:'spotall', q:'Details: Yehuda packs a flashlight. He packs a map. He packs snacks. Tap every GOOD topic sentence.', cells:[{label:'Yehuda packs for a hike.',ok:true},{label:'Yehuda gets his hiking bag ready.',ok:true},{label:'Yehuda packs a flashlight.',ok:false},{label:'Hiking is a sport.',ok:false},{label:'Does Yehuda like hikes?',ok:false}],
+      h:'A good umbrella covers all 3 details, is not about everything, and TELLS (it is not a question).'},
+    {t:'write', q:'Your turn to write. Pick a topic you know: your Shabbos table, your room, or your favorite game. Write 3 details. Then write one umbrella sentence that covers all 3.', min:0, checks:['☂️ My topic sentence covers all 3 details.','🔍 It is not too small: it is not just one detail.','🌍 It is not too big: it names who or what.'], h:'Write the 3 details first. Ask what they share. Then write one telling sentence that covers them.'}
+  ],
+  check:[
+    {q:'Details: Tzvi Hirsch rakes the leaves. He bags them. He sweeps the walk. Topic sentence: “Fall is a busy season.” Is it just right, too small, or too big?', o:['too big','too small','just right'], h:'Hold it over the 3 details. Covers all 3 and names who? Just right. One detail? Too small. About everything? Too big.'},
+    {q:'Details: Dovid oils the chain. He pumps the tires. He tightens the seat. Topic sentence: “Dovid gets his bike ready to ride.” Is it just right, too small, or too big?', o:['just right','too small','too big'], h:'Does it cover all 3 details, only 1, or everything in the world?'},
+    {t:'order', q:'Details: Avrumi waters the plants. He pulls the weeds. He picks the tomatoes. Build the umbrella sentence. Tap the tiles in order.', tiles:['Avrumi','takes care of','the','garden.'], h:'Start with WHO. Then WHAT all 3 details share: where do plants, weeds and tomatoes grow?'}
+  ],
+  re:[
+    {how:'A new way: the topic sentence is the NAME of a box. The details are the things inside. "School bag" is a good name for pencils, a ruler and glue.', q:'Inside the box: siddur, tallis bag, yarmulka. What is the best name for the box?', o:['Things I take to shul','Things','My siddur']},
+    {how:'A simpler step: first just find what the details share, in two or three words. Then turn it into a sentence.', q:'Details: Binyamin dries the dishes. He sweeps. He takes out the trash. What do they share?', o:['jobs at home','games','food']},
+    {how:'The skill underneath: Paragraph: topic sentence, three details, closing (Level 4). A paragraph has one main idea, said first.', q:'Where does the topic sentence usually go?', o:['first','in the middle','last']}
+  ]},
+
+  'WRIT.PARA.L05.07':{name:'Belongs or Not?',
+  teach:[
+    {how:'Every detail must fit under the umbrella. Test each one: does it tell about the TOPIC SENTENCE? If not, it wanders off. Cut it.', q:'Topic: Avrumi’s family gets ready for Shabbos. Which detail wanders off?', o:['Avrumi’s baseball team won on Tuesday.','Abba buys the flowers.','Avrumi polishes the candlesticks.']},
+    {how:'The sneaky one: a detail about the SAME person or thing that still does not fit. Being about Dovid’s robot is not enough. It must fit what the topic sentence SAYS about it.', q:'Topic: Dovid’s robot can do three tricks. Which detail wanders off?', o:['The robot is painted blue.','It can wave hello.','It can pick up a cup.']},
+    {how:'After you cut, read the paragraph again. Every sentence should now point to the topic sentence, like arrows to a target.', q:'Topic: Snow days are busy on Glen Avenue. Which detail belongs?', o:['Every boy on the street is out with a shovel.','Yehuda’s cousin lives in Florida.','Last summer was very hot.']}
+  ],
+  practice:[
+    {t:'sort', q:'Topic: Binyamin learned chess from his Zeidy. Sort each detail: belongs, or wanders off?', bins:[{id:'K',label:'✅ Belongs'},{id:'C',label:'✂️ Wanders off'}],
+      items:[{label:'Zeidy showed him how the knight moves.',bin:'K'},{label:'They played every Motzei Shabbos.',bin:'K'},{label:'Binyamin has a red bike.',bin:'C'},{label:'Zeidy taught him to protect his king.',bin:'K'},{label:'Binyamin’s sister likes puzzles.',bin:'C'}],
+      h:'Read the topic sentence. Does the detail tell how Binyamin learned chess from Zeidy?'},
+    {t:'spotall', q:'Topic: Tzvi Hirsch’s bakery is busy before Rosh Hashanah. Tap every detail that wanders off.', cells:[{label:'The bakery has a blue sign.',ok:true},{label:'Round challos fill every shelf.',ok:false},{label:'The line goes out the door.',ok:false},{label:'Tzvi Hirsch likes soccer.',ok:true},{label:'The ovens run all night.',ok:false}],
+      h:'A detail belongs only if it shows the bakery is BUSY before Rosh Hashanah. Tap the ones that do not.'},
+    {t:'pairs', q:'Match each topic sentence to a detail that belongs under it.', pairs:[['Dovid’s basement is full of gadgets.','A homemade alarm clock sits on the shelf.'],['Yehuda keeps a notebook of clues.','He writes down every footprint he sees.'],['Avrumi draws maps of everything.','He even mapped his Bubby’s kitchen.']],
+      h:'Read the topic sentence. Find the detail that tells more about exactly that.'},
+    {t:'order', q:'Fix the paragraph: leave out the detail that wanders off. Tap the sentences that belong, in order.', tiles:['Yehuda solved the mystery of the missing siddur.','First, he found a clue on the bench.','Next, he asked who sat there last.','Last, he found it in the lost-and-found box.'], extra:['Yehuda’s favorite color is green.'],
+      h:'Topic sentence first. Then follow the order words: first, next, last. Skip the one that is not about the mystery.'},
+    {t:'sort', q:'Sneaky ones! Topic: The Crew’s newsletter has three parts. Sort each detail.', bins:[{id:'K',label:'✅ Belongs'},{id:'C',label:'✂️ Wanders off'}],
+      items:[{label:'The first part is news from the class.',bin:'K'},{label:'The newsletter is printed on blue paper.',bin:'C'},{label:'The second part is a riddle.',bin:'K'},{label:'Avrumi is the best speller in the class.',bin:'C'},{label:'The last part is a recipe.',bin:'K'}],
+      h:'Being about the newsletter is not enough. Does it tell one of the three PARTS?'},
+    {t:'spotall', q:'Topic: Mr. Halpern’s science fair has strict rules. Tap every detail that belongs.', cells:[{label:'Every project needs a question.',ok:true},{label:'You must test it 3 times.',ok:true},{label:'Labels must be neat.',ok:true},{label:'Mr. Halpern drives a van.',ok:false},{label:'The gym has a high ceiling.',ok:false}],
+      h:'A detail belongs if it tells a RULE of the science fair.'},
+    {t:'write', q:'Your turn to write. Write a topic sentence about getting ready for school. Then write 3 details that all fit under it. Read each one again: does it belong?', min:0, checks:['✅ Every detail tells about my topic sentence.','✂️ I cut any detail that wandered off.','📖 I read it all again after cutting.'], h:'Write the topic sentence first. For each detail, ask: does it tell about THAT? If not, cut it.'}
+  ],
+  check:[
+    {q:'Topic: Avrumi’s map shows three ways to get to shul. Detail: “The map is drawn in green ink.” Belongs, or wanders off?', o:['it wanders off','it belongs','it is the topic sentence'], h:'Watch for the sneaky one. It is about the map, but does it tell about the WAYS to shul?'},
+    {q:'Topic: Dovid’s family moved to a new house. Detail: “The moving truck came at 8 o’clock.” Belongs, or wanders off?', o:['it belongs','it wanders off','it is the topic sentence'], h:'Test it: does it tell about the MOVE?'},
+    {t:'order', q:'Fix the paragraph: leave out the detail that wanders off. Tap the sentences that belong, in order.', tiles:['Dovid sets up his science fair table.','First, he spreads the cloth.','Next, he stands up his poster.','Last, he puts his robot in front.'], extra:['His science fair table is made of wood.'], h:'Topic sentence first. Then the order words. Watch for the sneaky one: it is about the table, but is it about SETTING IT UP?'}
+  ],
+  re:[
+    {how:'A new way: the topic sentence is a target. Each detail is an arrow. An arrow that misses the target gets pulled out.', q:'Target: Yehuda gets ready for school. Which arrow misses?', o:['Yehuda’s uncle has a boat.','He packs his lunch.','He finds his shoes.']},
+    {how:'A simpler step: say the topic in 3 words, like "getting ready for school". Then ask about each detail: is it about those 3 words?', q:'Topic in 3 words: helping at the bakery. Which detail fits?', o:['Tzvi Hirsch packs the cookies.','Tzvi Hirsch has a cold.','Tzvi Hirsch loves maps.']},
+    {how:'The skill underneath: Umbrella Sentence. You find the umbrella first. Then each detail must fit under it.', q:'The topic sentence is the…', o:['umbrella','first detail','last word']}
+  ]},
+
+  'WRIT.PARA.L05.08':{name:'Say More',
+  teach:[
+    {how:'A detail alone can be thin. Say more: ask "how do I know?" and add an EXAMPLE. Start it with "For example," or "For instance,".', q:'Detail: The bakery is busy on Fridays. Which sentence says more with an example?', o:['For example, last Friday the challah line went out the door.','It is very, very busy.','The bakery has a blue sign.']},
+    {how:'You can also say more with a FACT: a number or something true you can check. Start it with "In fact,".', q:'Detail: Tzvi Hirsch’s family bakes a lot of challah. Which sentence adds a fact?', o:['In fact, they bake 300 challos every Friday.','They bake a really big amount.','Challah is delicious.']},
+    {how:'The mistake: saying the same thing again, only louder. "Very, very busy" adds nothing new. An example or a fact SHOWS it.', q:'Detail: Dovid’s gadgets are useful. Which sentence only says it again?', o:['His gadgets are very, very useful.','For example, his alarm wakes his brother for davening.','In fact, he has built 12 gadgets that work.']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each detail to the example that proves it.', pairs:[['Yehuda notices everything.','For example, he spotted a tiny footprint in the snow.'],['Binyamin is patient.','For instance, he explained the chess rules again when Tzvi Hirsch got stuck.'],['Avrumi loves maps.','For example, he mapped every room in his house.']],
+      h:'Read the detail. Which example SHOWS it is true?'},
+    {t:'sort', q:'Detail: Our class is generous. Sort each sentence: says more, or just says it again?', bins:[{id:'M',label:'➕ Says more'},{id:'A',label:'🔁 Just says it again'}],
+      items:[{label:'For example, we collected food for the food drive.',bin:'M'},{label:'Our class is really, really generous.',bin:'A'},{label:'In fact, we raised $200 for tzedakah.',bin:'M'},{label:'Everyone in our class is so generous.',bin:'A'}],
+      h:'Does it add an example or a fact you did not know? Or does it only repeat the detail, louder?'},
+    {t:'sort', q:'Detail: Dovid is a good builder. Sort each sentence: an example, or a fact?', bins:[{id:'E',label:'👀 Example'},{id:'F',label:'🔢 Fact'}],
+      items:[{label:'Last week, he built a ramp for his little sister.',bin:'E'},{label:'He has built 12 gadgets that work.',bin:'F'},{label:'One Sunday, he fixed the shul’s squeaky door.',bin:'E'},{label:'His bridges have held up to 20 pounds.',bin:'F'}],
+      h:'An example tells ONE time it happened. A fact is a number or record you could check.'},
+    {t:'order', q:'Detail: Glen Avenue is a friendly street. Build the sentence that says more. Tap the tiles in order.', tiles:['For example,','neighbors bring soup','when someone','is sick.'],
+      h:'Start with the example words. Then WHO does WHAT. Then WHEN.'},
+    {t:'spotall', q:'Detail: Snow days are fun on Glen Avenue. Tap every sentence that says more.', cells:[{label:'For example, we built a snow fort.',ok:true},{label:'In fact, we stayed out for 3 hours.',ok:true},{label:'Snow days are so much fun.',ok:false},{label:'It was really, really fun.',ok:false},{label:'For instance, Tzvi Hirsch made a sled run.',ok:true}],
+      h:'Tap a sentence only if it adds an example or a fact. Skip the ones that just repeat.'},
+    {t:'pairs', q:'Match each detail to the fact that backs it up.', pairs:[['The Golds’ rugelach are popular.','In fact, they sell out every Friday by noon.'],['The shul is very old.','In fact, it was built 100 years ago.'],['Binyamin practices chess a lot.','In fact, he played 200 games this year.']],
+      h:'A fact backs up the detail with something true you can check.'},
+    {t:'write', q:'Your turn to write. Finish this detail with one example and one fact: My family is busy before Shabbos. For example, … In fact, …', min:0, checks:['👀 My example tells one time it happened.','🔢 My fact is a number or something you could check.','🔁 I did not just say the detail again, louder.'], h:'For the example, think of one Friday you remember. For the fact, use a number: how many, how long, what time.'}
+  ],
+  check:[
+    {q:'Detail: The shul library is big. Next sentence: “It has over 2,000 sefarim.” What does the next sentence add?', o:['a fact','an example','just says it again'], h:'A number or record you could check is a fact. One time it happened is an example.'},
+    {q:'Detail: Mr. Halpern makes science fun. Next sentence: “Science is really, really fun with him.” What does the next sentence add?', o:['just says it again','an example','a fact'], h:'Does it add anything new, or is it the detail again, louder?'},
+    {t:'order', q:'Detail: Tzvi Hirsch’s Abba is a great baker. Build the sentence that says more. Tap the tiles in order.', tiles:['For example,','his challah','won the shul','bake-off.'], h:'Start with the example words. Then WHAT. Then what it won.'}
+  ],
+  re:[
+    {how:'A new way: pretend the reader says, "Prove it!" Your next sentence is the proof.', q:'You wrote: Avrumi is a good artist. The reader says, "Prove it!" Which is proof?', o:['For example, his drawing won first prize.','Avrumi is a very good artist.','Avrumi has brown hair.']},
+    {how:'A simpler step: an example often starts with "For example,". Find those words first.', q:'Which words start an example?', o:['For example,','In the end,','First,']},
+    {how:'The skill underneath: Belongs or Not? Your example must fit the topic, too.', q:'Detail: Tzvi Hirsch is brave. Which example fits?', o:['For example, he rescued a cat from a tree.','For example, he likes cookies.','For example, he has a bike.']}
+  ]},
+
+  'WRIT.PARA.L05.09':{name:'Tie It Up',
+  teach:[
+    {how:'The closing sentence ties up the paragraph. It says the BIG IDEA again, in NEW words. It can start with "All in all," "That is why" or "In the end,".', q:'Topic: Yehuda’s notebook of clues helps him solve mysteries. Which is a good closing sentence?', o:['That is why Yehuda never goes anywhere without his notebook.','Yehuda’s notebook of clues helps him solve mysteries.','His notebook has a red cover.']},
+    {how:'Mistake 1: COPYING the topic sentence word for word. The reader already read it. Say it a new way.', q:'Topic: Tzvi Hirsch loves Friday at the bakery. Which closing just copies?', o:['Tzvi Hirsch loves Friday at the bakery.','For Tzvi Hirsch, Friday is the best day of the week.','All in all, the bakery on Friday is his favorite place.']},
+    {how:'Mistake 2: adding a NEW detail at the end. The closing ties up. It does not start something new. Mistake 3: no closing at all. A paragraph that just stops leaves the reader hanging.', q:'Topic: Binyamin is a patient chess teacher. Which closing adds a new detail?', o:['Binyamin also likes soccer.','That is why everyone wants Binyamin to teach them.','All in all, Binyamin never gives up on a student.']}
+  ],
+  practice:[
+    {t:'sort', q:'Topic: Dovid’s gadgets help his family. Sort each closing sentence.', bins:[{id:'R',label:'🎀 Ties it up'},{id:'C',label:'📋 Copies'},{id:'N',label:'➕ New detail'}],
+      items:[{label:'All in all, the Lerners are lucky to have an inventor.',bin:'R'},{label:'Dovid’s gadgets help his family.',bin:'C'},{label:'Dovid also has a cat.',bin:'N'},{label:'That is why his family depends on his gadgets.',bin:'R'}],
+      h:'Ties it up: the big idea, new words. Copies: the same words. New detail: something not in the paragraph yet.'},
+    {t:'pairs', q:'Match each topic sentence to its closing sentence.', pairs:[['The Crew loves snow days.','In the end, a snow day is the best day of the winter.'],['Avrumi draws maps of everything.','All in all, Avrumi never stops mapping.'],['Yehuda’s family welcomes guests.','All in all, their Shabbos table is always full.']],
+      h:'Find the closing that says the SAME big idea in NEW words.'},
+    {t:'order', q:'Topic: Binyamin practices chess every day. Build the closing sentence. Tap the tiles in order.', tiles:['All in all,','hard work','made Binyamin','a strong player.'],
+      h:'Start with the closing words. Then say the big idea a new way.'},
+    {t:'spotall', q:'Tap every phrase that can start a closing sentence.', cells:[{label:'All in all,',ok:true},{label:'That is why',ok:true},{label:'In the end,',ok:true},{label:'First,',ok:false},{label:'For example,',ok:false}],
+      h:'Closing words tell the reader: we are finishing. Which ones say "the end is here"?'},
+    {t:'sort', q:'Sort each sentence: a topic sentence, or a closing sentence?', bins:[{id:'T',label:'☂️ Topic sentence'},{id:'E',label:'🎀 Closing sentence'}],
+      items:[{label:'Glen Avenue has the best sukkah party.',bin:'T'},{label:'In the end, it was the best party on the street.',bin:'E'},{label:'Mr. Halpern’s class built a weather station.',bin:'T'},{label:'That is why the class is proud of its weather station.',bin:'E'}],
+      h:'A topic sentence opens the idea. A closing sentence wraps it up, often with closing words.'},
+    {t:'pairs', q:'Match each closing mistake to how to fix it.', pairs:[['It copies the topic sentence.','Say the big idea in new words.'],['It adds a new detail.','Take out the new detail.'],['It just stops.','Add a sentence that wraps it up.']],
+      h:'Read each mistake. What would make the closing tie it up?'},
+    {t:'write', q:'Your turn to write. Here is a topic sentence: My street is a great place to live. Write a closing sentence for it.', min:0, checks:['🎀 It says the big idea in NEW words.','📋 It does not copy the topic sentence.','➕ It does not add a new detail.'], h:'Start with All in all, That is why, or In the end. Then say the big idea a new way.'}
+  ],
+  check:[
+    {q:'Topic: Dovid’s family loves Sukkos. Closing: “All in all, Sukkos is the Lerners’ favorite Yom Tov.” Ties it up, copies, or new detail?', o:['ties it up','copies','new detail'], h:'Same big idea in new words? It ties it up. Same words? It copies. Something new? A new detail.'},
+    {q:'Topic: The Crew’s newsletter comes out every month. Closing: “The newsletter costs 50 cents.” Ties it up, copies, or new detail?', o:['new detail','ties it up','copies'], h:'Did the paragraph talk about the price? Or is it something new?'},
+    {t:'order', q:'Topic: Avrumi’s maps help his friends. Build the closing sentence. Tap the tiles in order.', tiles:['In the end,','no friend','of Avrumi','gets lost.'], h:'Start with the closing words. Then say the big idea a new way.'}
+  ],
+  re:[
+    {how:'A new way: the topic sentence opens the door. The closing sentence closes it, from the other side, with new words.', q:'Opened: Yehuda loves mysteries. Which closes the door?', o:['In the end, no puzzle is too hard for Yehuda.','Yehuda loves mysteries.','Yehuda has two sisters.']},
+    {how:'A simpler step: first, find the closing words: All in all, That is why, In the end.', q:'Which sentence has closing words?', o:['All in all, it was a great day.','First, we got up early.','For example, we ate pancakes.']},
+    {how:'The skill underneath: Umbrella Sentence. The closing says the umbrella idea again, a new way.', q:'The closing sentence says the same big idea as the…', o:['topic sentence','last detail','title']}
+  ]}
+
+  };
+
+  var TEACH = {
+  'WRIT.PARA.L05.06':{hook:'Every paragraph needs an umbrella, or the details get wet!', big:'The topic sentence covers every detail in the paragraph: not too small, not too big.',
+    intro:['Read all the details first.','Ask: what do they have in common?','Write one telling sentence that covers them all.','Test it: does every detail fit under it?'],
+    ex:[{q:'Tzvi Hirsch braids challah, sweeps the floor and packs rugelach.',steps:['They are all bakery jobs.','Too small: "He braids challah."','Too big: "Bakeries are busy."','Just right: covers all 3.'],a:'On Fridays, Tzvi Hirsch has three jobs at the bakery.'},
+        {q:'Dovid tests a ramp, a car and a stick bridge.',steps:['They are all things he built.','Name who and what they share.'],a:'Dovid tests three things he built.'}],
+    oops:{q:'Yehuda feeds the fish, feeds the birds, cleans the hamster cage.',wrong:'Yehuda feeds the fish.',right:'Yehuda takes care of his pets.',why:'One detail cannot be the umbrella for the others.'},
+    idea:['The topic sentence is the name on a box; the details are what is inside.'],
+    try:{q:'Details: pencils, ruler, glue. Best umbrella?',o:['Yehuda fills his school bag.','Yehuda has a ruler.','School is important.'],a:'Yehuda fills his school bag.',steps:['What do they share? School things.']}},
+  'WRIT.PARA.L05.07':{hook:'One sentence in this paragraph does not belong. Can you catch it?', big:'Every detail must fit what the topic sentence says. Cut the one that wanders off.',
+    intro:['Read the topic sentence: it is the umbrella.','Test each detail: does it tell about THAT? If yes, it belongs.','If not, it wanders off. Watch for the sneaky one: same person, wrong idea.','Cut it, then reread.'],
+    ex:[{q:'Topic: Avrumi’s family gets ready for Shabbos.',steps:['Flowers: yes.','Candlesticks: yes.','His team won on Tuesday: no.'],a:'Cut the baseball sentence.'},
+        {q:'Topic: Dovid’s robot can do three tricks.',steps:['Waves hello: a trick.','Painted blue: about the robot, but NOT a trick.'],a:'Cut "painted blue".'}],
+    oops:{q:'Topic: the robot’s three tricks. Detail: it is painted blue.',wrong:'Keep it: it is about the robot.',right:'Cut it: it is not a trick.',why:'Being about the same thing is not enough. It must fit what the topic sentence says.'},
+    idea:['The topic sentence is a target; every detail is an arrow that must hit it.'],
+    try:{q:'Topic: Snow days are busy. Which detail wanders?',o:['Last summer was hot.','Everyone shovels.','Kids build forts.'],a:'Last summer was hot.',steps:['Is it about snow days being busy?']}},
+  'WRIT.PARA.L05.08':{hook:'Your reader says: "Prove it!" What do you write next?', big:'Say more about a detail with an example or a fact, not by saying it again louder.',
+    intro:['Read your detail. Ask: how do I know?','Add an example: "For example, ..."','Or add a fact: "In fact, ..." (often a number).','Never just repeat it louder.'],
+    ex:[{q:'The bakery is busy on Fridays.',steps:['How do I know?','People line up early.'],a:'For example, last Friday the challah line went out the door.'},
+        {q:'They bake a lot of challah.',steps:['A number you can check.'],a:'In fact, they bake 300 challos every Friday.'}],
+    oops:{q:'Dovid’s gadgets are useful.',wrong:'His gadgets are very, very useful.',right:'For example, his alarm wakes his brother for davening.',why:'Saying it louder adds nothing. An example shows it.'},
+    idea:['An example is proof you can see; a fact is proof you can check.'],
+    try:{q:'Binyamin is patient. Which says more?',o:['For instance, he explained the rules again when Tzvi Hirsch got stuck.','He is very patient.','He has a red bike.'],a:'For instance, he explained the rules again when Tzvi Hirsch got stuck.',steps:['Find the one that shows it.']}},
+  'WRIT.PARA.L05.09':{hook:'How do you say goodbye to a reader?', big:'A closing sentence says the big idea again, in new words, with no new details.',
+    intro:['Reread the topic sentence.','Say the big idea a new way.','Start with All in all, That is why, or In the end.','No new details, and no copying.'],
+    ex:[{q:'Topic: Yehuda’s notebook of clues helps him solve mysteries.',steps:['Big idea: the notebook helps him.','New words.'],a:'All in all, that notebook is his best detective tool.'},
+        {q:'Topic: Binyamin practices chess every day.',steps:['Closing words: All in all.','Big idea, new words.'],a:'All in all, hard work made Binyamin a strong player.'}],
+    oops:{q:'Topic: Tzvi Hirsch loves Friday at the bakery.',wrong:'Tzvi Hirsch loves Friday at the bakery.',right:'For Tzvi Hirsch, Friday is the best day of the week.',why:'Copying is boring; say it a new way.'},
+    idea:['The topic sentence opens the door; the closing sentence closes it.'],
+    try:{q:'Which phrase starts a closing?',o:['All in all,','First,','For example,'],a:'All in all,',steps:['Which one says the end is here?']}}
+  };
+
+  var HOWTO = {
+  'WRIT.PARA.L05.06':{s:'Read all the details first.\nAsk: what do they have in common?\nToo small covers one detail. Too big covers everything.\nIt must tell, not ask a question.\nPick the one that covers all of them.'},
+  'WRIT.PARA.L05.07':{s:'Read the topic sentence: it is the umbrella.\nTest each detail: does it tell about THAT?\nWatch for the sneaky one: same person, wrong idea.\nCut the one that does not fit.'},
+  'WRIT.PARA.L05.08':{s:'Ask: how do I know the detail is true?\nAn example starts with For example or For instance.\nA fact starts with In fact, often with a number.\nRepeating it louder does not say more.'},
+  'WRIT.PARA.L05.09':{s:'Reread the topic sentence.\nThe closing says the big idea in NEW words.\nNo copying, no new details, and never just stop.\nClosing words: All in all, That is why, In the end.'}
+  };
+
+  var BITE = {
+  'WRIT.PARA.L05.06':{ band:'E45', pic:'☂️', today:'Write a topic sentence that covers every detail', why:'The reader meets the topic sentence first. It tells him what the whole paragraph is about.',
+    ready:[{q:'Which one is a whole sentence?', o:['Our sukkah has paper chains.','Paper chains in the sukkah','Because of the chains'], a:'Our sukkah has paper chains.'},{q:'Kugel, salad and chicken are all…', o:['foods','animals','places'], a:'foods'}],
+    bridge:'WRIT.PARA.L04.01', bridgeName:'Paragraph: topic sentence, three details, closing',
+    watch:{ q:'Details: Tzvi Hirsch braids the challah. He sweeps the bakery floor. He packs the rugelach.', m:{type:'scene', e:'🥖', t:'Every Friday, Tzvi Hirsch helps at his family’s bakery on the corner.'}, steps:[
+      {t:'Read every detail. Ask: what do they all have in common?'},
+      {t:'All three are jobs Tzvi Hirsch does at the bakery.'},
+      {t:'Too small: "Tzvi Hirsch braids the challah." It covers only one detail.'},
+      {t:'Too big: "Bakeries are busy." It is about all bakeries.'},
+      {t:'Just right: "On Fridays, Tzvi Hirsch has three jobs at the bakery."'}], a:'On Fridays, Tzvi Hirsch has three jobs at the bakery.' },
+    oops:{ q:'Details: Yehuda feeds the fish. He feeds the birds. He cleans the hamster cage.', wrong:'Yehuda feeds the fish.', right:'Yehuda takes care of his pets.', why:'One detail cannot be the umbrella. The topic sentence must cover all three.' },
+    ways:['frum-family scene','worked example','sort it','word tiles','match it','tap the reason','Mistake Detective'], done:'You can write a topic sentence that covers every detail: not too small, not too big.',
+    board:{ one:'The topic sentence is an umbrella: every detail fits under it.', activity:'Pairs get 3 detail strips, write an umbrella sentence, then test it: does each strip fit under it?', mistakes:['Using one detail as the topic sentence','A sentence so big it is about everything','A topic sentence that is a question'] },
+    do:[
+      {type:'sort', q:'Avrumi draws a map. He labels the streets. He colors the park.', bins:['Covers all 3','Too small','Too big'], cards:[['Avrumi makes a map of Glen Avenue.',0],['Avrumi colors the park.',1],['Maps are useful.',2]], mis:true,
+        say:'Covers all, too small, or too big? Sort each one.', how:'Covers all 3: the umbrella. Only 1 detail: too small. About everything, not just Avrumi’s map: too big.',
+        why:{q:'Why is "Avrumi colors the park" too small?', o:['It covers only one detail','It is too long','It is not about Avrumi','It has no action word'], a:'It covers only one detail'}},
+      {type:'tiles', q:'Dovid tests a ramp. He tests a toy car. He tests a stick bridge.', w:['Dovid tests','three things','he built.'], extra:['a ramp'],
+        say:'Build the umbrella sentence from the tiles.', how:'Start with who. Then what he does. Then what all three share.',
+        why:{q:'Why does the tile "a ramp" not belong?', o:['It is only one detail','It is too long','It has no action word','It is a name'], a:'It is only one detail'}}],
+    your:[
+      {type:'match', pairs:[['kugel, salad, chicken','Ima cooks a big Shabbos meal.'],['ball, bat, glove','Binyamin packs for baseball.'],['pencils, ruler, glue','Yehuda fills his school bag.']],
+        say:'Match each set of details to its umbrella.', how:'Ask what the three things share. Find the umbrella that covers them.'},
+      {type:'sort', q:'Binyamin sets up the board, teaches the moves, lets Tzvi Hirsch win.', bins:['Good umbrella','Mistake'], cards:[['Binyamin teaches Tzvi Hirsch chess.',0],['Binyamin sets up the board.',1],['Games are fun.',1],['Does Binyamin like chess?',1]], mis:true,
+        say:'Good umbrella or mistake? Sort each topic sentence.', how:'Does it cover all 3 details? Is it a telling sentence, not a question?',
+        why:{q:'Why is "Does Binyamin like chess?" a mistake?', o:['A topic sentence tells; it does not ask','It is too short','It has a name in it','It is about chess'], a:'A topic sentence tells; it does not ask'}},
+      {type:'tiles', q:'After the storm, Tzvi Hirsch shovels, salts the path, brushes off the car.', w:['Tzvi Hirsch','clears away','the snow.'], extra:['the car.'],
+        say:'Build the umbrella sentence.', how:'Who is it about? What does he do in all three details?'},
+      {type:'match', q:'Yehuda packs a flashlight, a map and snacks.', pairs:[['Too small','Yehuda packs a flashlight.'],['Too big','Hiking is a sport.'],['Just right','Yehuda packs for a hike.']],
+        say:'Match each label to its topic sentence.', how:'Just right covers all the details. Too small covers one. Too big covers everything.'},
+      {type:'sort', q:'A paragraph about Pesach cleaning.', bins:['Topic sentence','Detail'], cards:[['The Katz family cleans for Pesach together.',0],['Avrumi vacuums the car.',1],['His brothers check the coat pockets.',1],['Abba cleans the bookshelves.',1]],
+        say:'Sort: the topic sentence, or a detail?', how:'The topic sentence covers all the others. A detail is one part.',
+        why:{q:'How do you know which one is the topic sentence?', o:['It covers all the other sentences','It is the longest','It has the most names','It comes last'], a:'It covers all the other sentences'}}] },
+
+  'WRIT.PARA.L05.07':{ band:'E45', pic:'✂️', today:'Cut the detail that wanders off', why:'One sentence that does not belong confuses the reader. Good writers cut it.',
+    ready:[{q:'The topic sentence is the paragraph’s…', o:['umbrella','last word','title page'], a:'umbrella'},{q:'Topic: Yehuda’s pets. Which detail fits?', o:['He feeds the fish.','He likes pizza.','He has a bike.'], a:'He feeds the fish.'}],
+    bridge:'WRIT.PARA.L05.06', bridgeName:'Umbrella Sentence',
+    watch:{ q:'Avrumi’s family gets ready for Shabbos together. Abba buys the flowers. Avrumi polishes the candlesticks. His brothers set the table. Avrumi’s baseball team won on Tuesday.', m:{type:'scene', e:'🕯️', t:'Erev Shabbos at the Katz house: everyone has a job.'}, steps:[
+      {t:'Read the topic sentence first. It is the umbrella.'},
+      {t:'This umbrella: getting ready for Shabbos.'},
+      {t:'Test each detail. Flowers? Yes. Candlesticks? Yes. Setting the table? Yes.'},
+      {t:'Baseball on Tuesday? No. It wanders off the topic.'},
+      {t:'Cut it and reread. Every sentence now points to Shabbos.'}], a:'Cut: "Avrumi’s baseball team won on Tuesday."' },
+    oops:{ q:'Topic: Dovid’s robot can do three tricks. Detail: The robot is painted blue.', wrong:'Keep it: it is about the robot', right:'Cut it: it is not a trick', why:'Being about the same thing is not enough. It must fit what the topic sentence says.' },
+    ways:['frum-family scene','worked example','sort it','word tiles','match it','tap the reason','Mistake Detective'], done:'You can test every detail and cut the one that wanders off.',
+    board:{ one:'Every detail must hit the target: the topic sentence.', activity:'Read a paragraph aloud; boys stand up when they hear the sentence that wanders off.', mistakes:['Keeping a detail because it names the same person','Cutting a detail that belongs','Not rereading after cutting'] },
+    do:[
+      {type:'sort', q:'Topic: Binyamin learned chess from his Zeidy.', bins:['Belongs','Wanders off'], cards:[['Zeidy showed him the knight.',0],['They played every Motzei Shabbos.',0],['Binyamin has a red bike.',1],['His sister likes puzzles.',1]],
+        say:'Belongs or wanders off? Sort each detail.', how:'Does the detail tell how Binyamin learned chess from Zeidy?',
+        why:{q:'Why does "Binyamin has a red bike" wander off?', o:['It is not about learning chess','It is too short','It names Binyamin','It is a fact'], a:'It is not about learning chess'}},
+      {type:'match', pairs:[['Dovid’s three chores','He takes out the trash.'],['How to make a kite','Tie the string to the frame.'],['Binyamin’s big chess win','He trapped the king.']],
+        say:'Match each topic to the detail that belongs.', how:'Read the topic. Find the detail that fits exactly what it says.'}],
+    your:[
+      {type:'sort', q:'Sneaky ones! Topic: The newsletter has three parts.', bins:['Belongs','Mistake: wanders off'], cards:[['Part one is class news.',0],['It is printed on blue paper.',1],['Part two is a riddle.',0],['Avrumi spells well.',1],['Part three is a recipe.',0]], mis:true,
+        say:'Watch for sneaky ones. Belongs or wanders off?', how:'Being about the newsletter is not enough. Does it name one of the three parts?',
+        why:{q:'Why does "It is printed on blue paper" wander off?', o:['It is not one of the three parts','It is about color','It is too long','It is a question'], a:'It is not one of the three parts'}},
+      {type:'tiles', q:'Topic: Binyamin helps Zeidy on Sundays.', w:['He carries','Zeidy’s','groceries.'], extra:['his own bike'],
+        say:'Build a detail that belongs under this topic.', how:'The detail must show Binyamin HELPING Zeidy. Leave out the tile that does not.'},
+      {type:'match', pairs:[['Dovid’s basement is full of gadgets.','A homemade alarm sits on the shelf.'],['Yehuda keeps a notebook of clues.','He writes down every footprint.'],['Avrumi draws maps of everything.','He even mapped Bubby’s kitchen.']],
+        say:'Match each topic sentence to a detail that belongs.', how:'Read the topic sentence. Find the detail that tells more about exactly that.'},
+      {type:'sort', q:'Topic: The bakery is busy before Rosh Hashanah.', bins:['Belongs','Wanders off'], cards:[['Round challos fill every shelf.',0],['The line goes out the door.',0],['The sign is blue.',1],['The ovens run all night.',0],['Tzvi Hirsch likes soccer.',1]],
+        say:'Sort each detail. Does it show the bakery is busy?', how:'Keep a detail only if it shows the bakery is busy before Rosh Hashanah.'},
+      {type:'tiles', q:'Topic: Yehuda searched for the lost siddur.', w:['He looked','under','the bench.'], extra:['likes pizza'],
+        say:'Build a detail that belongs under this topic.', how:'The detail must show Yehuda SEARCHING. Leave out the tile that does not.'}] },
+
+  'WRIT.PARA.L05.08':{ band:'E45', pic:'🔎', today:'Say more with an example or a fact', why:'A detail with proof is believable. Your reader can see it is true.',
+    ready:[{q:'Topic: snow days. Which detail belongs?', o:['We build forts.','My uncle has a boat.','Pizza is round.'], a:'We build forts.'}],
+    bridge:'WRIT.PARA.L05.07', bridgeName:'Belongs or Not?',
+    watch:{ q:'Detail: The bakery is busy on Fridays.', m:{type:'scene', e:'🥖', t:'Friday morning at the Gold family bakery.'}, steps:[
+      {t:'A detail alone is thin. Ask: how do I know?'},
+      {t:'Add an example: one time it happened.'},
+      {t:'"For example, last Friday the line went out the door."'},
+      {t:'Or a fact: "In fact, they bake 300 challos every Friday."'},
+      {t:'Not this: "It is very, very busy." That only repeats it.'}], a:'The bakery is busy on Fridays. For example, last Friday the challah line went out the door.' },
+    oops:{ q:'Detail: Dovid’s gadgets are useful.', wrong:'His gadgets are very, very useful.', right:'For example, his alarm wakes his brother for davening.', why:'Saying it louder adds nothing new. An example shows it.' },
+    ways:['frum-family scene','worked example','match it','sort it','word tiles','tap the reason','Mistake Detective'], done:'You can say more about a detail with an example or a fact.',
+    board:{ one:'Prove it: add an example (For example) or a fact (In fact).', activity:'One boy says a detail; his chavrusa answers "Prove it!" and he adds an example.', mistakes:['Repeating the detail louder','An example that does not fit the detail','A "fact" that is only an opinion'] },
+    do:[
+      {type:'match', pairs:[['Yehuda notices everything.','He spotted a tiny footprint.'],['Binyamin is patient.','He explained the rules again when Tzvi Hirsch got stuck.'],['Avrumi loves maps.','He mapped every room at home.']],
+        say:'Match each detail to the example that proves it.', how:'Which example SHOWS the detail is true?'},
+      {type:'sort', q:'Detail: Our class is generous.', bins:['Says more','Mistake: says it again'], cards:[['We collected food for the food drive.',0],['We are really, really generous.',1],['We raised $200 for tzedakah.',0],['Everyone is so generous.',1]], mis:true,
+        say:'Says more, or just says it again?', how:'Does it add an example or a fact? Or only repeat the detail, louder?',
+        why:{q:'Why does "really, really generous" not say more?', o:['It repeats the detail, louder','It has a number','It is an example','It is too short'], a:'It repeats the detail, louder'}}],
+    your:[
+      {type:'tiles', q:'Detail: Glen Avenue is a friendly street.', w:['For example,','neighbors','bring soup.'], extra:['so friendly'],
+        say:'Build the sentence that says more.', how:'Start with the example words. Then who does what.'},
+      {type:'sort', q:'Detail: Dovid is a good builder.', bins:['Example','Fact'], cards:[['Last week he built a ramp.',0],['He has built 12 gadgets.',1],['One Sunday he fixed a door.',0],['His bridges have held up to 20 pounds.',1]],
+        say:'Sort each sentence: an example, or a fact?', how:'An example tells one time it happened. A fact is a number you could check.',
+        why:{q:'Why is "His bridges have held up to 20 pounds" a fact?', o:['It is a record you could check','It tells one time it happened','It is about Dovid','It is short'], a:'It is a record you could check'}},
+      {type:'match', pairs:[['The Golds’ rugelach are popular.','They sell out by noon.'],['The shul is very old.','It was built 100 years ago.'],['Binyamin practices a lot.','He played 200 games this year.']],
+        say:'Match each detail to the fact that backs it up.', how:'A fact backs up the detail with something you can check.'},
+      {type:'sort', q:'Detail: Snow days are fun.', bins:['Says more','Says it again'], cards:[['We built a snow fort.',0],['We stayed out 3 hours.',0],['Snow days are so fun.',1],['It was really fun.',1]],
+        say:'Which sentences say more?', how:'Keep a sentence only if it adds an example or a fact.'},
+      {type:'tiles', q:'Detail: Yehuda is a careful detective.', w:['For example,','he measured','the footprint.'], extra:['so careful'],
+        say:'Build the sentence that proves it.', how:'Example words first. Then what he did.'}] },
+
+  'WRIT.PARA.L05.09':{ band:'E45', pic:'🎀', today:'Tie it up with a closing sentence', why:'A good ending tells the reader the paragraph is done, and leaves the big idea in his head.',
+    ready:[{q:'Where does the topic sentence go?', o:['first','last','in the middle'], a:'first'},{q:'Which says more with an example?', o:['For example, we built a fort.','It was very fun.','The end.'], a:'For example, we built a fort.'}],
+    bridge:'WRIT.PARA.L05.06', bridgeName:'Umbrella Sentence',
+    watch:{ q:'Topic: Yehuda’s notebook of clues helps him solve mysteries.', m:{type:'scene', e:'📓', t:'Yehuda writes every clue he finds on Glen Avenue in his notebook.'}, steps:[
+      {t:'Reread the topic sentence. The big idea: the notebook helps him.'},
+      {t:'Say the big idea in new words. Do not copy.'},
+      {t:'Closing words: All in all, That is why, In the end.'},
+      {t:'No new details. A closing ties up the paragraph.'}], a:'All in all, that notebook is his best detective tool.' },
+    oops:{ q:'Topic: Tzvi Hirsch loves Friday at the bakery.', wrong:'Closing: Tzvi Hirsch loves Friday at the bakery.', right:'Closing: For Tzvi Hirsch, Friday is the best day of the week.', why:'Copying the topic sentence word for word is boring. Say the big idea a new way.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can tie up a paragraph with a closing sentence in new words.',
+    board:{ one:'The closing says the big idea again, in new words, with no new details.', activity:'Pairs swap paragraphs and write two different closings for each other’s topic sentence.', mistakes:['Copying the topic sentence','Adding a new detail at the end','Just stopping with no closing'] },
+    do:[
+      {type:'tiles', q:'Topic: Binyamin practices chess every day.', w:['All in all,','Binyamin','never skips','a day.'], extra:['likes soccer'],
+        say:'Build the closing sentence from the tiles.', how:'Start with the closing words. Then say the big idea a new way.'},
+      {type:'sort', q:'Topic: Dovid’s gadgets help his family.', bins:['Ties it up','Copies','New detail'], cards:[['All in all, the Lerners are lucky to have an inventor.',0],['Dovid’s gadgets help his family.',1],['Dovid also has a cat.',2]], mis:true,
+        say:'Ties it up, copies, or new detail? Sort each.', how:'Ties it up: big idea, new words. Copies: same words. New detail: something new.',
+        why:{q:'Why is "Dovid also has a cat" a mistake here?', o:['It adds a new detail at the end','It copies the topic','It is too long','It has closing words'], a:'It adds a new detail at the end'}}],
+    your:[
+      {type:'match', pairs:[['The Crew loves snow days.','A snow day is the best day.'],['Avrumi draws maps of everything.','Avrumi never stops mapping.'],['Yehuda’s family welcomes guests.','Their Shabbos table is always full.']],
+        say:'Match each topic sentence to its closing.', how:'Find the closing that says the same big idea in new words.'},
+      {type:'sort', bins:['Topic sentence','Closing sentence'], cards:[['Glen Avenue has the best sukkah party.',0],['In the end, it was the best party.',1],['Our class built a weather station.',0],['That is why we are proud of it.',1]],
+        say:'Sort: a topic sentence, or a closing sentence?', how:'A topic sentence opens the idea. A closing wraps it up, often with closing words.',
+        why:{q:'How do you know "In the end, it was the best party" is a closing?', o:['It has closing words and wraps up','It is the shortest','It names a person','It asks a question'], a:'It has closing words and wraps up'}},
+      {type:'tiles', q:'Topic: Tzvi Hirsch helps at the bakery.', w:['That is why','Tzvi Hirsch','is a big help.'], extra:['bakes bagels'],
+        say:'Build the closing sentence.', how:'Closing words first. Then the big idea, a new way.'},
+      {type:'match', pairs:[['It copies the topic sentence.','Say it in new words.'],['It adds a new detail.','Take out the new detail.'],['It just stops.','Add a sentence that wraps up.']],
+        say:'Match each closing mistake to its fix.', how:'What would make the closing tie it up?'},
+      {type:'sort', q:'Topic: Avrumi’s Abba is a careful sofer.', bins:['Ties it up','Mistake'], cards:[['All in all, Abba takes great care with every letter.',0],['Avrumi’s Abba is a careful sofer.',1],['He also likes to garden.',1],['In the end, no one is more careful than Abba.',0]],
+        say:'Good closing, or a mistake?', how:'Big idea, new words: good. Copying or a new detail: a mistake.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

@@ -32,7 +32,7 @@ queen: the one ant that lays all the eggs
   - In a **play**, each line is `NAME: words`, in a paragraph of its own.
 - **topic:** texts in one topic set share a topic, for example "Ants". Build knowledge with 5–8 texts per topic.
 - **source:** `original`, or `adapted from <a public-domain work>` (for example "adapted from Aesop"). **Never copy a copyrighted book or article.**
-- **pic** (optional): a picture already in `web/pics/`, with its line in `web/pics/SOURCES.md` (`docs/HANDOFF-PICS.md`).
+- **pic** (optional): a picture already in the shared art library `art/pics/`, with its row in `art/CATALOG.md` (`art/README.md`).
 - **words** (optional): the robust-vocabulary words for this text, 5–8 of them, each with a kid-friendly meaning of 120 letters at most. A boy taps the word in the Reader to see its meaning. Each one must be **one word, written exactly as it appears in the text** ("gasped", not "gasp"); the check refuses anything else.
 - **Pages:** a page is what fits on one screen of the Reader. Aim for about 80–150 words a page for Grades 2–3, 150–250 for 4–5 and 200–300 for 6–8. K–1 pages are 1–3 sentences.
 
