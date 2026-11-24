@@ -55,5 +55,9 @@ CORE_SKILLS.F = [
   ["READ.LV.L02.07", "Green Tree, Sweet Peach", "Read ee and ea, which both say ee", { after: "READ.LV.L02.06", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
   ["READ.LV.L02.08", "Boat in the Snow", "Read and spell the oh sound with oa and ow", { after: "READ.LV.L02.07", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
   ["READ.LV.L02.09", "Which Team? Spell It!", "Pick the right vowel team to spell a word", { after: "READ.LV.L02.08", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
-  ["READ.FLU.L02.08", "Does It Make Sense?", "Check that a sentence makes sense, and go back to fix a misread word", { after: "READ.LV.L02.09", std: "RF.1.4c", file: "CoreDataFH2", min: 6 }]
+  ["READ.FLU.L02.08", "Does It Make Sense?", "Check that a sentence makes sense, and go back to fix a misread word", { after: "READ.LV.L02.09", std: "RF.1.4c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.10", "Night Light, Fly High", "Read igh and end y, which say eye", { after: "READ.FLU.L02.08", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.11", "Happy Bunny", "Read y at the end of a two-beat word, which says ee", { after: "READ.LV.L02.10", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.PHON.L02.19", "Open Door: Go, Me, Hi", "Read open syllables: a vowel at the end says its name", { after: "READ.LV.L02.11", std: "RF.1.3e", file: "CoreDataFH2", min: 6 }],
+  ["READ.FLU.L02.09", "Heart Words: many, very", "Read the heart words any, many, very and again", { after: "READ.PHON.L02.19", std: "RF.1.3g", file: "CoreDataFH2", min: 5 }]
 ];
