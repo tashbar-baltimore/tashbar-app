@@ -15,7 +15,7 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 | 1 | **T · Tools** (Reader, Writing Workshop and teacher inbox, unit checks and test-out, new activity kinds, content store, how to add a skill, style sheets) | TAKEN | https://claude.ai/code/session_01WBvMX2ukMEquyXqwaDMAGw | 2026-11-24 | 2026-11-24 02:30 UTC | Piece 1 (how to add a skill) built on branch `claude/core-T-add-skill`, testing; next: content store, then Reader | none; start first |
 | 2 | **D · The daily plan** (replace "3 lessons, then the Arcade" with today's list of material to cover; daily bonus when the whole list is done; every payment says what it is for) | OPEN | | | | | none; can start now |
 | 3 | **F · Foundations K–2** | OPEN | | | | | T for lesson PRs; can start the map now |
-| 4 | **C45 · Comprehension Gr 4–5** | OPEN | | | | | T for lesson PRs; can start the map now |
+| 4 | **C45 · Comprehension Gr 4–5** | TAKEN | https://claude.ai/code/session_01JPKZXEMq9S1KawXgCw533p | 2026-11-24 | 2026-11-24 02:54 UTC | Claimed; reading the rules, then the Gr 4–5 comprehension skill map (`docs/core-growth/C45-map.md`) | T for lesson PRs; can start the map now |
 | 5 | **W48 · Writing Gr 4–8** | OPEN | | | | | T (Writing Workshop); can start the map now |
 | 6 | **C23 · Comprehension Gr 2–3** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 7 | **G · Grammar and words K–8** | OPEN | | | | | T for lesson PRs; can start the map now |
