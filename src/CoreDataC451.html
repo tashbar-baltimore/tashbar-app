@@ -21,6 +21,11 @@
     c45_hunters: { title: 'The Hurricane Hunters', text: 'Most pilots stay far away from storms. The hurricane hunters fly right into them.\nThese pilots fly special airplanes into the middle of a hurricane. The ride is bumpy and dangerous. Inside the plane, scientists watch computer screens and measure the wind, the rain and the temperature.\nThey drop small instruments out of the plane. Each instrument falls through the storm on a little parachute and sends information back to the plane.\nWith that information, forecasters can predict where the hurricane will travel next. Then families in its path have time to get ready and stay safe. It is uncomfortable work, but it is important.' }
   };
   try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+  /* Grades 4-5 reading checks (E45 band, a passage on the card): the question was the large default size, so the choices fell
+     below the fold at 1366x768 (issue #296). Only E45 cards that show a passage change. */
+  try { if (!document.getElementById('c45-css')) { var st = document.createElement('style'); st.id = 'c45-css';
+    st.textContent = 'body.ob-on.ob-b-E45 .play.ob-play:has(aside.passage) .qtext{font-size:22px !important;line-height:1.35 !important}';
+    document.head.appendChild(st); } } catch (e) {}
 
   var RT = 'Right there: one sentence holds it', TS = 'Think and search: pieces from 2+ places', NT = 'Not in the text at all';
   var LESSONS = {
