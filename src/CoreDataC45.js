@@ -36,5 +36,9 @@ CORE_SKILLS.C45 = [
   ["READ.COMP.L06.10", "Sum Up an Article", "Sum up an article with its big ideas and key details", { after: "READ.LIT.L06.09", std: "RI.5.2", file: "CoreDataC458", min: 8 }],
   ["READ.COMP.L06.11", "Link Map", "Show how two ideas or events connect", { std: "RI.5.3", file: "CoreDataC458", min: 8 }],
   ["READ.COMP.L06.12", "Explain It with the Text", "Explain using the text's own details", { std: "RI.5.3", file: "CoreDataC458", min: 8 }],
-  ["READ.FLU.L06.03", "Pace It", "Slow down for the hard parts, read the easy parts smoothly", { std: "RF.5.4b", file: "CoreDataC458", min: 8 }]
+  ["READ.FLU.L06.03", "Pace It", "Slow down for the hard parts, read the easy parts smoothly", { std: "RF.5.4b", file: "CoreDataC458", min: 8 }],
+  ["READ.COMP.L05.14", "Signal Words", "Use signal words to see how a text is built", { after: "READ.LIT.L05.06", std: "RI.4.5", file: "CoreDataC457", min: 8 }],
+  ["READ.COMP.L05.15", "How and Why", "Explain a process step by step, and why", { after: "READ.COMP.L05.14", std: "RI.4.3", file: "CoreDataC457", min: 8 }],
+  ["READ.COMP.L05.16", "Pick the Organizer", "Pick the organizer that fits how a text is built", { after: "READ.COMP.L05.15", std: "RI.4.5", file: "CoreDataC457", min: 8 }],
+  ["READ.FLU.L05.04", "Punctuation Tells Your Voice", "Let punctuation tell your voice what to do", { after: "READ.COMP.L05.16", std: "RF.4.4b", file: "CoreDataC457", min: 8 }]
 ];
