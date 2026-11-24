@@ -31,7 +31,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 
 | Job | Piece | Status | Helper (session link) | Last update |
 |---|---|---|---|---|
-| F | K Units 6–10 (lessons and little readers; see `docs/core-growth/F-map.md`) | TAKEN | https://claude.ai/code/session_01WBvMX3fU9VBkZU9jYUfjGF | 2026-11-24 17:01 UTC: claimed; reading F-map Units 6–10, files `src/CoreDataFH1.html` |
+| F | K Units 6–10 (lessons and little readers; see `docs/core-growth/F-map.md`) | TAKEN | https://claude.ai/code/session_01WBvMX3fU9VBkZU9jYUfjGF | 2026-11-24 18:36 UTC: Units 6–8 live (#381, 15 K games); Units 9–10 in PR #386 (9 K games, reviewed 4–5, tests pass). Next: little readers 15–50, waiting on a way for a K boy to open a text on the games-only K path (asked the HoS). Files `src/CoreDataFH1.html` |
 | F | Grade 1 Units 7–12 (lessons and little readers) | OPEN | | |
 | F | K–1 listen-along stories (70, in topic sets) and their understanding lessons | OPEN | | |
 | F | Grade 2 Units 4–6 (lessons, word-study readers, Readers' Theatre) | OPEN | | |
