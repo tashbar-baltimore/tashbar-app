@@ -698,7 +698,7 @@ if(typeof tlFindLevel==='function'){ var oldFind=tlFindLevel;
   '#pl-ov{position:fixed;inset:0;z-index:70;background:rgba(15,10,40,.6);display:grid;place-items:center;padding:12px;animation:fade .2s}'+
   '#pl-ov .box{width:min(980px,100%);height:min(760px,100%);background:#fff;border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.4)}'+
   '#pl-ov .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(90deg,#4338CA,#7C3AED);color:#fff;font:800 17px var(--display,system-ui)}'+
-  '#pl-ov .bar span{flex:1}#pl-ov .bar button{border:0;border-radius:999px;padding:8px 14px;font:800 15px var(--body,system-ui);background:rgba(255,255,255,.2);color:#fff;cursor:pointer}'+
+  '#pl-ov .bar span{flex:1}#pl-ov .bar button:not(.tlk){border:0;border-radius:999px;padding:8px 14px;font:800 15px var(--body,system-ui);background:rgba(255,255,255,.2);color:#fff;cursor:pointer}'+
   '#pl-ov iframe{flex:1;border:0;width:100%}#pl-ov .load{position:absolute;inset:auto;color:#4338CA;font-weight:800}'; document.head.appendChild(st); };
  var plFrame=function(){ var f=document.querySelector('#pl-ov iframe'); return f||null; };
  var plFrom=function(src){ var f=plFrame(); if(!f||!src) return false; var w=src; for(var i=0;i<7&&w;i++){ if(w===f.contentWindow) return true; var p=null; try{ p=w.parent; }catch(e){ return false; } if(!p||p===w) break; w=p; } return false; };
@@ -715,10 +715,10 @@ if(typeof tlFindLevel==='function'){ var oldFind=tlFindLevel;
  document.addEventListener('click',function(e){ var b=e.target.closest&&e.target.closest('[data-pl="close"]'); if(b) plClose(); });
  /* v172: one window for every level check: MATH, READ (Reading) and SS (Social Studies) */
  window.tlOpenCheck=function(sub){ sub=PLN[sub]?sub:'MATH'; var u=window.TL_APP_URL;
-  if(!u){ if(sub==='MATH') return oldFind(); run('msAppUrl').then(function(x){ window.TL_APP_URL=x; window.tlOpenCheck(sub); }).catch(function(){ try{ toast('Could not open the check. Try again.'); }catch(e){} }); return; }
+  if(!u){ /* HoS 2026-11-23: math opens the same in-app window as every other check (the old pop-up had no way out) */ run('msAppUrl').then(function(x){ window.TL_APP_URL=x; window.tlOpenCheck(sub); }).catch(function(){ try{ toast('Could not open the check. Try again.'); }catch(e){} }); return; }
   plSub=sub; try{ sessionStorage.setItem('tl-check',JSON.stringify({token:SRV.token,at:Date.now()})); }catch(e){}
   try{ SND.tap(); }catch(x){} plCss(); plClose(); if(A.overlay){ A.overlay=null; render(); } var nm=PLN[sub], title='Find your '+nm[1]+' level', d=document.createElement('div'); d.id='pl-ov';
-  d.innerHTML='<div class="box" role="dialog" aria-label="'+title+'"><div class="bar"><span>'+nm[0]+' '+title+'</span><button type="button" data-pl="close">\u2715 Close</button></div><iframe src="'+esc(u+'?pl=1&check=1&embed=1'+(sub==='MATH'?'':'&s='+sub))+'" title="'+title+'"></iframe></div>';
+  d.innerHTML='<div class="box" role="dialog" aria-label="'+title+'"><div class="bar"><span>'+nm[0]+' '+title+'</span>'+(window.TLK?TLK.x('data-pl="close"','',TLK.WORDS.close):'<button type="button" data-pl="close" aria-label="Close">\u2715</button>')+'</div><iframe src="'+esc(u+'?pl=1&check=1&embed=1'+(sub==='MATH'?'':'&s='+sub))+'" title="'+title+'"></iframe></div>';
   document.body.appendChild(d); };
  tlFindLevel=function(){ return window.tlOpenCheck('MATH'); }; }
 })();</script>
