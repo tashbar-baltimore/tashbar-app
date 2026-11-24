@@ -135,7 +135,7 @@ function tlLoader2Src_(OLD) {
      about 20 seconds (HoS test). Until that is understood, K-1 first runs only on a Chromebook where it is switched on by hand
      (localStorage tl-k1fast = '1', for testing). Everyone else gets the usual order, which worked on the first open. */
   try { fast = localStorage.getItem('tl-k1fast') === '1' && localStorage.getItem('tl-k1dev') === '1' && sessionStorage.getItem('tl-load-normal') !== '1'; } catch (e) {}
-  function gameOpen() { return !!document.querySelector('#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov'); }
+  function gameOpen() { return !!document.querySelector('#klov,#krov,#kkov,#kkov2,#g1mov,#g1rov,#k1cov'); }
   function notK1() { try { return !!(window.K1O && typeof K1O.on === 'function' && typeof A !== 'undefined' && A && A.st && A.st.id && A.view !== 'signin' && !K1O.on()); } catch (e) { return false; } }
   /* LAZY LOADING, step 1 (HoS 2026-11-22: "do the lazy loading project too ... fast, quick, smooth"):
      - never a half-loaded app: a tap on the home (not the sign-in pad, not a K-1 boy's games) before every piece has run is held,

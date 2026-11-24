@@ -18,7 +18,7 @@
   var G = null;
   function T() { return W.TLK || null; }
   function btn(kind, text, attrs) { var k = T(); return k && k[kind] ? k[kind](text, attrs) : '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
-  function say(t) { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(String(t || '')); u.rate = .85; speechSynthesis.speak(u); } catch (e) {} }
+  function say(t) { try { if (W.K1O && typeof K1O.voice === 'function') { K1O.voice(String(t || ''), function () {}); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(String(t || '')); u.rate = .85; speechSynthesis.speak(u); } catch (e) {} }   /* the same teacher voice as the K-1 home */
 
   K.err = function (g) {
     if (!g || !/^(READ|LANG|WRIT)\.[A-Z]+\.L0[12]\.\d\d(\.[a-z])?$/.test(String(g.id || ''))) return 'id must be a K-1 reading or writing skill id (level L01 or L02)';
@@ -30,7 +30,8 @@
     if (new Set(g.acts.map(function (a) { return a.type; })).size < 3) return 'use 3 or more kinds of activity';
     return '';
   };
-  K.add = function (g) { if (!g || K.games[g.id]) return false; K.games[g.id] = g; K.list.push(g); install(); return true; };
+  K.add = function (g) { if (!g || K.games[g.id]) return false; if (W.OBK) { var e = K.err(g); if (e) { console.error('K-1 game ' + (g && g.id) + ': ' + e); return false; } }
+    K.games[g.id] = g; K.list.push(g); install(); return true; };
 
   /* ---------- join the game pack's path ---------- */
   function packOf(g) { return PACK[g.grade]; }
@@ -38,7 +39,7 @@
     [0, 1].forEach(function (gr) { var P = PACK[gr], pk = W[P.g]; if (!pk || pk.__core) return;
       var oList = pk.list, oOpen = pk.open, oHas = pk.has; pk.__core = true;
       pk.list = function () { var l = oList.apply(pk, arguments).slice();
-        K.list.filter(function (g) { return g.grade === gr; }).forEach(function (g) { if (l.some(function (x) { return x[0] === g.id; })) return;
+        K.list.filter(function (g) { return g.grade === gr && W.OBK && !K.err(g); }).forEach(function (g) {   /* only a game that passes its check (once the kit has loaded) joins the path: a broken game never blocks it */ if (l.some(function (x) { return x[0] === g.id; })) return;
           var at = g.after ? l.findIndex(function (x) { return x[0] === g.after; }) : -1; var row = [g.id, g.name];
           if (at >= 0) l.splice(at + 1, 0, row); else l.push(row); });
         return l; };
@@ -98,7 +99,8 @@
     draw();
   }
   function close() {
-    if (!G) return; var el = G.el; G = null; try { speechSynthesis.cancel(); } catch (e) {} document.removeEventListener('keydown', onKey, true); if (el) el.remove();
+    if (!G) return; var el = G.el; G = null; try { speechSynthesis.cancel(); } catch (e) {}
+    try { if (W.OB && typeof OB.kitTap === 'function') OBK.onDrop(function (src, dst) { return OB.kitTap(src.a, src.k, dst); }); } catch (e) {}   /* drags go back to the One Bite player */ document.removeEventListener('keydown', onKey, true); if (el) el.remove();
     try { if (typeof A !== 'undefined' && A.view === 'hub') render(); } catch (e) {}
   }
   function onKey(e) { if (G && e.key === 'Escape') { e.preventDefault(); close(); } }
@@ -109,13 +111,13 @@
     if (a === 'again') { G.firsts = []; return start(0); }
     if (a === 'say') { var dd = G.g.acts[G.i]; say(OBK.say(dd)); return; }
     if (a === 'next') return next();
-    if (a === 'check') { if (t.getAttribute('aria-disabled') === 'true') { say('Finish it first.'); return; } var j = OBK.judge(G.g.acts[G.i], G.s); return j && j.ok ? right() : miss(j && j.msg); }
+    if (a === 'check') { if (t.getAttribute('aria-disabled') === 'true') { say('Finish it first.'); return; } var j = OBK.judge(G.g.acts[G.i], G.s); if (j && j.soft) { G.s.msg = j.msg; say(j.msg); return draw(); } return j && j.ok ? right() : miss(j && j.msg); }   /* soft: nothing done yet (trace), not a miss */
     if (G.view !== 'act' || G.s.over) return;
     var oa = t.getAttribute('data-obk'); if (!oa) return;
     var d = G.g.acts[G.i];
     if (oa === 'hear') { try { OBK.hear(d); } catch (er) {} return; }
     var r = OBK.tap(d, G.s, oa, t.getAttribute('data-k'), null, ctx());
-    if (r === 'ok') return right(); if (r === 'bump') return miss(G.s.msg); draw();
+    if (r === 'ok') return right(); if (r === 'bump' || r === 'miss') return miss(G.s.msg); draw();   /* the kit says 'miss' for a wrong listen or count pick */
   }
   function play(id) {
     var g = K.games[id]; if (!g || !W.OBK) return;
@@ -123,7 +125,9 @@
     if (G) close(); css(); try { OBK.css(); } catch (er) {}
     var el = document.createElement('div'); el.id = 'k1cov'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', g.name); document.documentElement.appendChild(el);   /* outside body: the K-1 home hides every other child of body (K1Only.html, body.k1-home) */
     document.addEventListener('keydown', onKey, true);
-    G = { g: g, el: el, i: 0, s: null, firsts: [], view: 'act' }; start(0);
+    G = { g: g, el: el, i: 0, s: null, firsts: [], view: 'act' };
+    try { OBK.onDrop(function (src, dst) { if (!G || G.view !== 'act' || G.s.over) return; var r = OBK.tap(G.g.acts[G.i], G.s, src.a, src.k, dst, ctx()); if (r === 'ok') return right(); if (r === 'bump' || r === 'miss') return miss(G.s.msg); draw(); }); } catch (er) {}   /* drags go to this game while it is open */
+    start(0);
   }
   /* taps inside the game are ours: caught on window before the One Bite player's page-wide handler (document, capture) sees them */
   W.addEventListener('click', function (e) { if (!G || !G.el || !G.el.contains(e.target)) return; e.stopPropagation(); onClick(e); }, true);
@@ -136,7 +140,7 @@
     '#k1cov .k1c-dots{flex:1;display:flex;justify-content:center;gap:8px}#k1cov .k1c-dots i{width:22px;height:22px;border-radius:50%;background:rgba(31,42,68,.15)}#k1cov .k1c-dots i.now{background:#FFC83D;box-shadow:0 0 0 4px rgba(255,200,61,.35)}#k1cov .k1c-dots i.on{background:#2FBF71}#k1cov .k1c-dots i.ok{background:#8FD9B1}' +
     '#k1cov .k1c-play{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 16px 20px}' +
     '#k1cov .k1c-pic{font-size:80px;line-height:1}#k1cov .k1c-q{font:900 40px/1.1 inherit}#k1cov .k1c-say{margin:0;text-align:center;font:900 28px/1.25 inherit;max-width:760px}' +
-    '#k1cov .obk{width:100%;max-width:900px}#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:72px;min-width:72px;font-size:30px}#k1cov .k1c-msg{margin:0;font-weight:800;color:#8A4B00}#k1cov .k1c-yay{margin:0;font:900 34px/1 inherit;color:#0E7A4F;animation:k1cPop .5s cubic-bezier(.2,1.6,.4,1)}' +
+    '#k1cov .obk{width:100%;max-width:900px}#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:76px;min-width:76px;font-size:30px}#k1cov .k1c-top .tlk{width:76px;height:76px;min-width:76px}#k1cov .k1c-msg{margin:0;font-weight:800;color:#8A4B00}#k1cov .k1c-yay{margin:0;font:900 34px/1 inherit;color:#0E7A4F;animation:k1cPop .5s cubic-bezier(.2,1.6,.4,1)}' +
     '#k1cov .k1c-foot{display:flex;justify-content:center;padding:12px 16px calc(14px + env(safe-area-inset-bottom))}#k1cov .k1c-foot .tlk-main{min-width:220px;min-height:76px;font-size:28px}#k1cov [aria-disabled=true].tlk-main{opacity:.5}' +
     '#k1cov .k1c-end{flex:1;display:grid;place-items:center;align-content:center;gap:10px;text-align:center;padding:20px}#k1cov .k1c-end h2{font:900 44px/1.1 inherit;margin:0}' +
     '#k1cov .k1c-big span{font-size:84px;filter:grayscale(1) opacity(.3);display:inline-block}#k1cov .k1c-big span.on{filter:none;animation:k1cPop .6s cubic-bezier(.2,1.6,.4,1) both}#k1cov .k1c-big span.on:nth-child(2){animation-delay:.15s}#k1cov .k1c-big span.on:nth-child(3){animation-delay:.3s}' +

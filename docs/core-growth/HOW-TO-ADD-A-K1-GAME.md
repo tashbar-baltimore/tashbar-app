@@ -6,10 +6,14 @@ Job T wrote this note (2026-11-24) for job F, and for any job with K–1 skills.
 
 ## What a K–1 game is (`src/CoreK1.html`)
 - **Full screen and voice first:** each piece's spoken line is read to him. 🔊 says it again.
-- **4 to 8 Activity Kit pieces:** find, sort, match, tiles, trace, listen, count, ten-frame, or the core kinds. Each piece uses big targets (at least 72 px, 104 px on a Chromebook).
+- **4 to 8 Activity Kit pieces:** find, sort, match, tiles, trace, listen, count, ten-frame, or the core kinds. Each piece uses big targets (at least 76 px, 104 px on a Chromebook).
+- **Voice:** the same teacher voice as the K–1 home.
+- **The ✕** closes the game with no question, like the other K–1 games (stars he earned are kept). If the HoS wants games to ask "Leave?", that is one line.
 - **Mistakes:**
   - a wrong tap shakes, and the game says what to look at;
-  - after 3 misses the game shows the answer and moves on.
+  - after 3 misses the game shows the answer, and **Next** moves on.
+  - Tapping Check before doing anything (for example before tracing) is not a miss; the game just says what to do.
+  - Dragging works as well as tapping.
 - **Stars:** a star for each piece right on the first try. At the end he gets 0 to 3 stars ("You did it!" at 2 or more), with **Next** and **Play again**.
 - **Where stars are saved:** where his path's game pack saves its stars (Kindergarten ABC: `st.klr`; Grade 1 Reading: `st.g1r`). The path opens the next game at 2 stars, exactly like the other games.
 - **Nothing else:** no money, no mastery and no evidence rows, the same as the K–1 game packs.
@@ -25,14 +29,14 @@ if (window.TLCORE && TLCORE.k1) TLCORE.k1.add({
   after: 'READ.PHON.L01.01.f',     /* the game it comes right after on that path (left out: the end of the path) */
   acts: [
     { type: 'listen', hear: 'apple', clip: '...', o: ['a', 'e', 'i'], a: 'a', say: 'What sound starts apple?', how: 'Say apple slowly. Hear the first sound.' },
-    { type: 'findall', grid: ['a', 'e', 'a', 'o', 'a', 'i'], find: 'a', say: 'Tap every a.', how: 'Look at each letter. Is it a?' },
+    { type: 'findall', grid: ['a', 'e', 'a', 'o', 'a', 'i'], find: 'a', say: 'Find the letter for apple. Tap every one.', how: 'Apple starts with this letter. Look at each one.' },
     { type: 'tiles', w: ['c', 'a', 't'], extra: ['b'], hear: 'cat', say: 'Build cat.', how: 'Say it slowly. Tap the sounds in order.' },
     { type: 'sort', bins: ['Short a', 'Not a'], cards: [['🐱', 0], ['🐝', 1], ['🎩', 0]], say: 'Short a or not?', how: 'Say the word. Hear the middle.', mis: true }
   ]
 });
 ```
 
-**Rules** (`TLCORE.k1.err(game)` refuses a game that breaks them):
+**Rules** (`TLCORE.k1.err(game)` refuses a game that breaks them, and a game that breaks them never shows on the path, so it can never block a boy):
 - 4 to 8 pieces, with 3 or more kinds;
 - every piece passes the Activity Kit's own check at the K1 band (3 choices at most);
 - every spoken line is 12 words or fewer.

@@ -13,11 +13,12 @@ module.exports = async function (pg) {
       if (!window.KR || !TLCORE.k1) { out.bad.push('the ABC game pack or CoreK1 did not load'); return out; }
       const first = KR.list().map(x => x[0]).filter(id => /\.L01\./.test(id))[0];
       const G = { id: 'READ.PHON.L01.91', grade: 0, name: 'Made-up Sound Game', pic: '🐝', after: first, acts: [
-        { type: 'findall', grid: ['b', 'd', 'b', 'p', 'b', 'q'], find: 'b', findSay: 'b', say: 'Tap every b.', how: 'Look at each letter. Is it b?' },
+        { type: 'findall', grid: ['b', 'd', 'b', 'p', 'b', 'q'], find: 'b', findSay: 'b', say: 'Find the letter for bee. Tap every one.', how: 'Bee starts with this letter. Look at each one.' },
         { type: 'sort', bins: ['Starts with b', 'Not b'], cards: [['🐝', 0], ['🍎', 1], ['⚽', 0]], say: 'Does it start with b?', how: 'Say the word. Hear the first sound.', mis: true },
         { type: 'match', pairs: [['B', 'b'], ['D', 'd'], ['P', 'p']], say: 'Match big and small letters.', how: 'Find the same letter.' },
         { type: 'tiles', w: ['b', 'e', 'e'], say: 'Build the word bee.', how: 'Say it slowly. Tap the sounds in order.' } ] };
       out.errGood = TLCORE.k1.err(G); out.errBad = TLCORE.k1.err(Object.assign({}, G, { id: 'READ.PHON.L02.91' })); out.errFew = TLCORE.k1.err(Object.assign({}, G, { acts: G.acts.slice(0, 2) }));
+      out.badAdded = TLCORE.k1.add(Object.assign({}, G, { id: 'READ.PHON.L01.93', acts: G.acts.slice(0, 2) }));
       TLCORE.k1.add(G);
       const keep = { st: A.st, view: A.view, overlay: A.overlay };
       try { localStorage.setItem('tl-k1only', '1'); } catch (e) {}
@@ -55,6 +56,7 @@ module.exports = async function (pg) {
     }).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 300)], looks: [] }));
     r.bad.forEach(b => fails.push(at + b)); if (r.bad.length) continue;
     if (r.errGood !== '' || !r.errBad || !r.errFew) fails.push(at + 'game check: good -> "' + r.errGood + '", wrong level -> "' + r.errBad + '", 2 acts -> "' + r.errFew + '"');
+    if (r.badAdded !== false) fails.push(at + 'a broken game must be refused, so it never sits on the path');
     if (r.pos !== 1 || !r.lockedFirst) fails.push(at + 'the new game must sit right after its "after" game, locked at first (position ' + r.pos + ')');
     if (!r.openAfter || r.playId !== 'READ.PHON.L01.91' || !r.opened) fails.push(at + 'after game 1 is passed, PLAY must open the new game full screen');
     if (!/b/i.test(r.missMsg || '')) fails.push(at + 'a wrong tap must say something to do (got "' + r.missMsg + '")');
