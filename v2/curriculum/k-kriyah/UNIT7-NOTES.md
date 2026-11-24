@@ -15,7 +15,7 @@
 | 3 | Look-Alike Detective | He sorts Daled and Reish (the corner), then Hei and Kuf (the short leg and the long leg). |
 | 4 | Sound Match | Tzipor and tzav (turtle) go to Tzadik, kof and kubiyos (blocks) to Kuf, rakeves and rimon (pomegranate) to Reish, and bayis to Beis. At the end Kaf appears above Kuf: "Kuf sounds just like Kaf!" |
 | 5 | Find the Mistake | The demo: "Yaakov says this is a Hei" (it is a Kuf, with the long leg). Then "Yaakov says this is a Reish. Is he right?" An orange arrow points at the corner or the leg. |
-| 6 | Show what you know (mastery check) | 9 questions. Reish stands beside Daled, and Kuf beside Hei. Kuf and Kaf are never asked side by side, since both say k. |
+| 6 | Show what you know (mastery check) | 9 questions, including "Which letter says k?" with Kuf (Kaf is never on screen then). Reish stands beside Daled, and Kuf beside Hei. Kuf and Kaf never stand together, since both say k. |
 | 7 | Review: Alef-Beis Train | The train carries Ayin, Pei, Fei, Tzadik, Kuf, Reish. He puts each car in order. |
 | 8 | Bonus: letter rain | Three short rounds: Tzadik, Kuf, Reish. |
 
@@ -30,7 +30,7 @@
 
 ## For the rebbe (every sound and rule used in Unit 7)
 - **Letters:** Tzadik (צ) says "tz"; Kuf (ק) says "k", the same sound as Kaf; Reish (ר) says "r". These are lone sounds, never with a vowel.
-- **Look-alikes:** Daled has a corner at the top right; Reish is round there. Hei's left leg is short; Kuf's goes down low.
+- **Look-alikes:** Daled has a corner at the top right; Reish is round there. Hei's left leg is short; Kuf's goes down low, below the line. (For the rebbe: the app says "Hei has a short leg. Kuf has a long leg." He may prefer "Kuf's leg goes below the line.")
 - **Words:** tzipor (bird), tzav (turtle), kof (monkey), kubiyos (blocks), rakeves (train), rimon (pomegranate), playroom.
 - **Chant order:** Alef, Beis, Veis, Gimmel, Daled, Hei, Vov, Zayin, Ches, Tes, Yud, Kaf, Chaf, Lamed, Mem, Nun, Samech, Ayin, Pei, Fei, Tzadik, Kuf, Reish.
 - **Words are said the Ashkenazi way:** rakeves and kubiyos (ת without a dot says s), like bayis and zayis.

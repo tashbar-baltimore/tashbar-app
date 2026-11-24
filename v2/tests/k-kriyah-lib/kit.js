@@ -89,6 +89,8 @@ function runOne(browser0, id, kind, label) {
       log.oks.forEach(m => oks.push(tag + ': ' + m)); log.fails.forEach(m => fails.push(tag + ': ' + m));
       const badLines = await pg.evaluate(() => window.__lines.filter(l => /\bundefined\b|\bnull\b|\bNaN\b|\[undefined\]/.test(l)));   /* a missing word must never be spoken */
       if (badLines.length) fails.push(tag + ': a spoken line is missing a word: ' + badLines[0]); else oks.push(tag + ': every spoken line is whole words');
+      const longLines = await pg.evaluate(() => window.__lines.filter(l => l.split(/\s+/).filter(w => /[A-Za-z\u0590-\u05FF\[]/.test(w)).length > 12));   /* HoS rule: 12 words or fewer (a sound counts as one) */
+      if (longLines.length) fails.push(tag + ': a spoken line is longer than 12 words: ' + longLines[0]); else oks.push(tag + ': every spoken line is 12 words or fewer');
       if (log.wrongHandled) oks.push(tag + ': a wrong answer gets a kind correction'); else fails.push(tag + ': a wrong answer was not handled');
       const sv = await saved(pg); if (sv.games && sv.games[id] && sv.games[id].stars === stars) oks.push(tag + ': saves the stars'); else fails.push(tag + ': stars were not saved');
       errs.forEach(e => fails.push(tag + ': ' + e));

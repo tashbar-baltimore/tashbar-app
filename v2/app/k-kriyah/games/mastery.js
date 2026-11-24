@@ -10,7 +10,7 @@ const QS = {
   4: [N('kaf'), N('tes'), N('chaf'), SND('kaf'), N('yud'), SND('tes'), N('beis'), SND('yud'), N('ches')],   /* Beis comes with Kaf; no 'Which says ch?' */
   5: [N('lamed'), N('nun'), SND('mem'), N('mem'), SND('nun'), N('tes'), SND('lamed'), N('gimmel'), N('kaf')],   /* Nun beside Gimmel, Mem beside Tes */
   6: [N('pei'), N('nun'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), SND('fei')],   /* Pei beside Fei; Kaf beside Chaf; 'Which says f?' with Pei beside it */
-  7: [N('reish'), N('tzadik'), N('kuf'), SND('reish'), N('daled'), SND('tzadik'), N('hei'), N('pei'), N('samech')],   /* Reish beside Daled, Kuf beside Hei */
+  7: [N('reish'), N('tzadik'), N('kuf'), SND('reish'), N('daled'), SND('tzadik'), N('hei'), N('pei'), SND('kuf')],   /* Reish beside Daled, Kuf beside Hei */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {
