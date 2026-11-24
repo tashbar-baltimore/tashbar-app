@@ -33,7 +33,7 @@ export default function setup(E, { unit }) {
     hei: [[[75, 615], [80, 510], [200, 500], [340, 500], [505, 495], [507, 380], [500, 250], [494, 120], [490, 25]], [[102, 300], [100, 190], [100, 80], [100, 20]]],
   };
   const REVIEW = { 2: 'beis', 3: 'hei', 5: 'gimmel', 7: 'daled' }[unit.n];   /* Unit 6 already has four letters; Daled comes back beside Reish */   /* one earlier letter comes back: Beis in Unit 2, Hei (Ches's look-alike) in Unit 3; Unit 4 already has four letters */
-  const ORDER = REVIEW ? [...unit.letters, REVIEW] : unit.letters;
+  const ORDER = (REVIEW ? [...unit.letters, REVIEW] : unit.letters).slice().sort((a, b) => E.AB(a) - E.AB(b));   /* always in Alef-Beis order, the review letter too */
   const ROW = [...unit.known, ...unit.letters].filter(k => ORDER.includes(k));   /* the finished row is in Alef-Beis order */
   let H = 3.2; const holder = new THREE.Group(); E.scene.add(holder);
   const boy = E.unitBoy(unit.n); E.scene.add(boy);   /* each unit's own boy: Mendy, then Shloimy */
