@@ -1,0 +1,306 @@
+<script>
+/* CoreDataW482.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 5 (L06), Unit 1 "Plan the Whole Piece". Cast: the Glen Avenue Crew
+   (docs/core-growth/C45-map.md section 5). In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L06.02':{name:'Hook the Reader',
+  teach:[
+    {how:'The hook is the first sentence of a piece. It grabs the reader so he wants to keep reading. There are three kinds: a QUESTION hook, a FACT hook (something true and surprising), and a SCENE hook (a short moment the reader can see or hear).', q:'Avrumi’s piece is about how a sofer writes a sefer Torah. Which is a question hook?', o:['How long does it take to write one sefer Torah?','In this piece I will tell you about sofrim.','A sofer is a scribe.']},
+    {how:'A FACT hook surprises the reader with something true. A SCENE hook drops him into one moment: what someone sees, hears or does.', q:'Same piece. Which is a scene hook?', o:['The quill scratched slowly across the parchment.','A sefer Torah has 304,805 letters.','This essay is about writing.']},
+    {how:'The mistake is ANNOUNCING: "Hi, my name is Dovid and I will tell you about bees." It tells the reader what you will do instead of grabbing him. A hook must also be ON TOPIC: it fits the piece.', q:'Yehuda’s piece is about honeybees. Which opening is announcing, not a hook?', o:['In this essay I am going to tell you about bees.','A bee can visit about 100 flowers on one trip.','Bzzz! Hundreds of bees poured out of the hive.']}
+  ],
+  practice:[
+    {t:'sort', q:'Dovid’s piece is about snow days. Sort each hook: a question hook, a fact hook, or a scene hook?', bins:[{id:'Q',label:'❓ Question hook'},{id:'F',label:'🔢 Fact hook'},{id:'S',label:'🎬 Scene hook'}],
+      items:[{label:'What is the best part of a snow day?',bin:'Q'},{label:'Baltimore gets about 20 inches of snow a year.',bin:'F'},{label:'Crunch! My boots sank into the fresh snow.',bin:'S'},{label:'Have you ever built a fort taller than you?',bin:'Q'}],
+      h:'A question asks. A fact tells something true you could check. A scene shows one moment you can see or hear.'},
+    {t:'pairs', q:'Match each hook to its kind.', pairs:[['Have you ever tasted honey straight from the hive?','Question hook'],['A bee’s wings beat about 200 times a second.','Fact hook'],['The hive hummed as the bees flew home.','Scene hook']],
+      h:'Does it ask, tell a true fact, or show a moment?'},
+    {t:'spotall', q:'The Crew’s piece is about their class weather station. Tap every real hook.', cells:[{label:'Will it rain tomorrow? Our class knows.',ok:true},{label:'Our rain gauge caught 2 inches in one storm.',ok:true},{label:'The wind vane spun wildly in the storm.',ok:true},{label:'This piece is about our weather station.',ok:false},{label:'My name is Avrumi and I will tell you about weather.',ok:false}],
+      h:'A real hook grabs the reader. Announcing ("This piece is about…") is not a hook.'},
+    {t:'sort', q:'Sort each opening: a hook, or announcing?', bins:[{id:'H',label:'🎣 Hook'},{id:'A',label:'📢 Announcing'}],
+      items:[{label:'Checkmate! Binyamin could not believe it.',bin:'H'},{label:'In this piece I will tell you about chess.',bin:'A'},{label:'What makes one game last for hours?',bin:'H'},{label:'This essay is about my Zeidy.',bin:'A'}],
+      h:'Announcing tells the reader what you will write about. A hook pulls him in.'},
+    {t:'order', q:'Tzvi Hirsch’s piece is about why bread rises. Build a question hook. Tap the tiles in order.', tiles:['Have you ever','wondered','why bread','rises?'],
+      h:'A question hook starts with a question word and ends with a question mark.'},
+    {t:'spotall', q:'Binyamin’s piece is about learning chess from his Zeidy. Tap every hook that is ON TOPIC.', cells:[{label:'“Watch the knight,” Zeidy whispered.',ok:true},{label:'Can a game teach you patience?',ok:true},{label:'Baseball is fun to watch.',ok:false},{label:'Kugel is my favorite food.',ok:false}],
+      h:'A hook must fit the piece. Does it lead into chess with Zeidy?'},
+    {t:'write', q:'Your turn to write. Your piece is about your favorite Yom Tov. Write two different hooks for it: one question hook and one scene hook.', min:0, checks:['❓ One hook asks a question.','🎬 One hook shows a moment I can see or hear.','📢 Neither one announces ("This piece is about…").'], h:'For the scene, close your eyes. What do you see, hear or smell on that Yom Tov? Write that moment.'}
+  ],
+  check:[
+    {q:'Piece: the Crew’s trip to the science museum. Opening: “The bus doors hissed open, and there stood a dinosaur.” What kind of hook is it?', o:['a scene hook','a question hook','a fact hook'], h:'Does it ask, tell a true fact, or show a moment?'},
+    {q:'Piece: our class garden. Opening: “In this essay I will tell you about our class garden.” What is it?', o:['announcing','a question hook','a scene hook'], h:'Does it grab the reader, or tell him what you will write about?'},
+    {t:'order', q:'Piece: amazing honeybees. Build a fact hook. Tap the tiles in order.', tiles:['A honeybee has','five eyes,','not just','two.'], h:'Start with what it is. Then the surprising number.'}
+  ],
+  re:[
+    {how:'A new way: a hook is like the smell of fresh challah from the bakery door. It pulls you inside before you decide to go in.', q:'Which opening pulls you inside?', o:['The oven door swung open and a cloud of steam rolled out.','This is about baking.','I will write about bread now.']},
+    {how:'A simpler step: first decide which kind you want. Ask, tell a true fact, or show a moment.', q:'“An octopus has three hearts.” Which kind of hook is it?', o:['a fact hook','a scene hook','announcing']},
+    {how:'The skill underneath: Three-Part Piece (Level 6). The hook is the first sentence of the introduction.', q:'Where does the hook go?', o:['the very first sentence','the last sentence','the middle']}
+  ]},
+
+  'WRIT.ESSAY.L06.03':{name:'Point, Proof, Explain',
+  teach:[
+    {how:'A body paragraph has three parts. The POINT: the one thing this paragraph proves. The PROOF: a fact, an example or a quote that shows it. The EXPLAIN: how the proof shows the point.', q:'Paragraph: “Bees help farmers grow more food. One farmer said his apple trees gave much more fruit after he brought in bees. This shows that bees help plants make fruit.” Which sentence is the point?', o:['Bees help farmers grow more food.','One farmer said his apple trees gave much more fruit after he brought in bees.','This shows that bees help plants make fruit.']},
+    {how:'The proof is the evidence. The explain answers the reader’s question, "So what?" It often starts with "This shows that" or "This means that".', q:'Same paragraph. Which sentence explains the proof?', o:['This shows that bees help plants make fruit.','Bees help farmers grow more food.','One farmer said his apple trees gave much more fruit after he brought in bees.']},
+    {how:'Two mistakes. One: a paragraph with no explain, so the reader asks "so what?" Two: an explain that just repeats the proof. A real explain tells HOW the proof shows the point.', q:'Point: Binyamin is a patient teacher. Proof: He showed Tzvi Hirsch the knight’s move again and again. Which explain is best?', o:['This shows that he does not give up when a friend is stuck.','He showed him the knight’s move again and again.','Chess is a hard game.']}
+  ],
+  practice:[
+    {t:'sort', q:'Paragraph about Dovid’s sukkah. Sort each sentence: the point, the proof, or the explain?', bins:[{id:'P',label:'📍 Point'},{id:'R',label:'🔎 Proof'},{id:'E',label:'💡 Explain'}],
+      items:[{label:'Dovid built a sukkah that can stand up to wind.',bin:'P'},{label:'In the big storm, Dovid’s was the only sukkah on the street still standing.',bin:'R'},{label:'His braces kept all four walls standing.',bin:'R'},{label:'This shows that his careful building really worked.',bin:'E'}],
+      h:'The point is what the paragraph proves. The proof is what happened. The explain tells how the proof shows the point.'},
+    {t:'order', q:'Put the body paragraph in order: point, proof, explain. Tap the sentences in order.', tiles:['Avrumi’s maps help his friends.','Last week, Yehuda used Avrumi’s map to find the new park.','This shows that the maps are clear enough for anyone to use.'], extra:['Avrumi likes blue pencils.'],
+      h:'Point first. Then the proof. Then the explain. Leave out the one that is not part of it.'},
+    {t:'spotall', q:'Tap every phrase that can start an EXPLAIN sentence.', cells:[{label:'This shows that',ok:true},{label:'This means that',ok:true},{label:'So we can see that',ok:true},{label:'For example,',ok:false},{label:'Once upon a time',ok:false}],
+      h:'An explain answers "so what?" Which phrases point back to the proof and tell what it means?'},
+    {t:'pairs', q:'Match each proof to the explain that goes with it.', pairs:[['The Golds bake through the night before Yom Tov.','This shows how hard the family works for its customers.'],['Binyamin beat three older boys at the chess club.','This shows that his practice paid off.'],['Yehuda found the lost siddur using his notes.','This shows that careful notes can solve a mystery.']],
+      h:'Read the proof. Which explain tells what THAT proof shows?'},
+    {t:'sort', q:'Point: Tzvi Hirsch is brave. Proof: He climbed the ladder to rescue a cat. Sort each explain.', bins:[{id:'E',label:'💡 Explains'},{id:'J',label:'🔁 Just repeats'}],
+      items:[{label:'This shows that he helps even when he is scared.',bin:'E'},{label:'He climbed the ladder to get the cat.',bin:'J'},{label:'This means he puts others before his fear.',bin:'E'},{label:'The cat was rescued by Tzvi Hirsch.',bin:'J'}],
+      h:'Does it tell HOW the proof shows the point? Or does it just say the proof again?'},
+    {t:'spotall', q:'Point: Mr. Halpern makes science exciting. Tap every sentence that is good PROOF.', cells:[{label:'He let us build a real volcano.',ok:true},{label:'Our class asks to stay late for his labs.',ok:true},{label:'Mr. Halpern has a gray van.',ok:false},{label:'Science is a subject.',ok:false}],
+      h:'Good proof shows the point is true. Does it show that science is exciting with him?'},
+    {t:'write', q:'Your turn to write. Point: Shabbos is the best day of the week. Write one sentence of proof and one sentence that explains it.', min:0, checks:['🔎 My proof is something that really happens.','💡 My explain tells how the proof shows the point.','🔁 My explain does not just repeat the proof.'], h:'For the proof, think of one thing your family does on Shabbos. Then start the explain with "This shows that".'}
+  ],
+  check:[
+    {q:'Point: The Golds’ bakery is busy before Yom Tov. Sentence: “The line went out the door every morning that week.” Is this sentence the point, the proof, or the explain?', o:['proof','point','explain'], h:'Is it what the paragraph proves, what happened, or what it means?'},
+    {q:'Point: Avrumi’s maps help his friends. Proof: Dovid used Avrumi’s map to find the science museum. Explain: “Dovid found the museum with the map.” Does this explain really explain, or does it just repeat?', o:['just repeats','explains'], h:'Does it tell HOW the proof shows the point, or say the proof again?'},
+    {t:'order', q:'Put the body paragraph in order: point, proof, explain. Tap the sentences in order.', tiles:['Snow days on Glen Avenue are busy.','After the last storm, every boy on the street was out shoveling.','This shows that a snow day here is not a lazy day.'], extra:['Snow is white and cold.'], h:'Point first. Then what happened. Then what it shows.'}
+  ],
+  re:[
+    {how:'A new way: think of a judge in court. The point is "He is innocent." The proof is "Here is a photo." The explain is "This photo shows he was home all day."', q:'In court, which part says what the photo means?', o:['the explain','the point','the proof']},
+    {how:'A simpler step: after your proof, write the words "This shows that". Then finish the sentence.', q:'Proof: Yehuda checked every clue twice. Finish it: This shows that…', o:['he is a careful detective.','he checked every clue twice.','clues are small.']},
+    {how:'The skill underneath: Say More (Level 5). Your proof is an example or a fact.', q:'"For example, he built a ramp." What is this sentence?', o:['an example','a closing','a question']}
+  ]},
+
+  'WRIT.ESSAY.L06.04':{name:'Strong Finish',
+  teach:[
+    {how:'A conclusion has three jobs. RESTATE: say the main idea again, in new words. SUM UP: name the main points in one sentence. FINAL THOUGHT: leave the reader with why it matters, or tie back to your hook.', q:'Piece: why bees matter. Which sentence restates the main idea?', o:['Bees matter far more than most people know.','Bees have five eyes.','The end.']},
+    {how:'A final thought can tie back to the hook. If the hook asked "Have you ever wondered where honey comes from?", the final thought can answer it with a picture the reader remembers.', q:'Hook: “Have you ever wondered where honey comes from?” Which final thought ties back to the hook?', o:['So the next time you taste honey, thank a bee.','Bees live in hives.','In this essay I told you about bees.']},
+    {how:'Two mistakes. A NEW POINT at the end: the conclusion is not the place for something new. And "That is all, the end": it just stops. Both leave the reader unsatisfied.', q:'Piece: why bees matter. Which ending sentence adds a new point?', o:['Also, some bees live alone in the ground.','So the next time you taste honey, thank a bee.','Bees truly help us every day.']}
+  ],
+  practice:[
+    {t:'sort', q:'Conclusion of a piece about Shabbos guests. Sort each sentence: restate, sum up, or final thought?', bins:[{id:'R',label:'🔁 Restate'},{id:'S',label:'📋 Sum up'},{id:'F',label:'💭 Final thought'}],
+      items:[{label:'Having guests makes Shabbos even more special.',bin:'R'},{label:'Guests bring new stories, new friends and a fuller table.',bin:'S'},{label:'So this Shabbos, invite someone who would love to come.',bin:'F'}],
+      h:'Restate: the main idea in new words. Sum up: the points in one sentence. Final thought: what the reader should think or do.'},
+    {t:'sort', q:'Piece: how the Crew built a weather station. Sort each ending sentence: a strong ending, or a mistake?', bins:[{id:'G',label:'🏁 Strong ending'},{id:'N',label:'➕ Mistake: new point'},{id:'X',label:'🛑 Mistake: just stops'}],
+      items:[{label:'Building it taught us to measure the world around us.',bin:'G'},{label:'We also want to build a robot next year.',bin:'N'},{label:'That is all. The end.',bin:'X'},{label:'Building it showed us how much weather we can measure ourselves.',bin:'G'}],
+      h:'A strong ending wraps up. A new point starts something new. "The end" just stops.'},
+    {t:'pairs', q:'Match each hook to the final thought that ties back to it.', pairs:[['What is the best part of a snow day?','The best part is not the snow. It is being out there with friends.'],['Checkmate! Binyamin could not believe it.','And Binyamin still cannot believe how far patience took him.'],['The oven door swung open and steam rolled out.','So next Erev Shabbos, stop and smell the challah.']],
+      h:'A final thought can answer the hook’s question or come back to its moment.'},
+    {t:'order', q:'Put the conclusion in order: restate, sum up, final thought. Tap the sentences in order.', tiles:['Snow days are the best days of winter.','We build forts, help our neighbors and come home with red cheeks.','So the next time it snows, grab your boots and head outside.'], extra:['My cousin lives in Florida.'],
+      h:'Main idea first. Then the points. Then what the reader should think or do. Leave out the new point.'},
+    {t:'spotall', q:'Tap every sentence that is a good final thought.', cells:[{label:'So the next time you taste honey, thank a bee.',ok:true},{label:'Next time you see a sofer, think of every letter.',ok:true},{label:'That is all I know.',ok:false},{label:'Some bees live alone in the ground.',ok:false}],
+      h:'A final thought leaves the reader thinking or doing something. It is not a new fact, and it does not just stop.'},
+    {t:'pairs', q:'Match each ending mistake to its fix.', pairs:[['It adds a new point.','Take it out, or move it into a body paragraph.'],['It just stops.','Add a final thought for the reader.'],['It copies the introduction word for word.','Restate the main idea in new words.']],
+      h:'Read each mistake. What would make the ending strong?'},
+    {t:'write', q:'Your turn to write. Your piece was about why it is good to help at home. Write a final thought for its conclusion.', min:0, checks:['💭 It tells the reader what to think or do.','➕ It does not add a new point.','🛑 It does not just say "the end".'], h:'Think: after reading, what should the reader DO tomorrow at home?'}
+  ],
+  check:[
+    {q:'Piece: why we visit Bubby. Ending sentence: “So this Sunday, call your Bubby and plan a visit.” Is it a restate, a sum up, or a final thought?', o:['final thought','restate','sum up'], h:'Does it say the main idea, list the points, or tell the reader what to think or do?'},
+    {q:'Piece: our class garden. Ending sentence: “Some gardens grow on rooftops in the city.” Is it a strong ending, or a mistake?', o:['mistake: new point','strong ending','mistake: just stops'], h:'Did the piece talk about rooftop gardens? Or is it something new?'},
+    {t:'order', q:'Piece: what the chess club teaches. Put the conclusion in order: restate, sum up, final thought. Tap the sentences in order.', tiles:['Chess club teaches much more than chess.','We learn to plan ahead, wait for the right move and lose with a smile.','So next time you want to quit, think like a chess player.'], extra:['The club meets in room 12.'], h:'Main idea first. Then the points. Then what the reader should think or do.'}
+  ],
+  re:[
+    {how:'A new way: a conclusion is like walking a guest to the door. You say what the visit was about (restate), remind him what you did together (sum up), and say a warm goodbye (final thought).', q:'Which part is the warm goodbye?', o:['the final thought','the restate','the sum up']},
+    {how:'A simpler step: start your final thought with "So the next time…" and finish it.', q:'Piece about recycling. Finish it: So the next time…', o:['you finish a bottle, put it in the blue bin.','recycling is a word.','the end.']},
+    {how:'The skill underneath: Tie It Up (Level 5). A closing sentence says the big idea in new words, with no new details.', q:'A closing sentence should NOT add…', o:['a new detail','new words','the big idea']}
+  ]},
+
+  'WRIT.PARA.L06.03':{name:'Who Is Reading?',
+  teach:[
+    {how:'Before you write, ask: WHO is reading? The same news needs different words for a friend, a teacher, or a little brother.', q:'Dovid writes to Rabbi Feldman to ask for a science club. Which opening fits the reader?', o:['Dear Rabbi Feldman, I would like to ask about starting a science club.','Hey! Can we do a science club?','Science club. Yes or no?']},
+    {how:'FORMAL words for a teacher, a rav or a company: full sentences, polite, no slang. FRIENDLY words for a friend: relaxed, and still kind. A formal letter closes with Sincerely; a friendly note can close with See you!', q:'Which sentence is formal?', o:['Thank you for thinking about our request.','Thanks a bunch, you are the best!','Cool, see you.']},
+    {how:'For a little child, use SIMPLE words and short sentences, often with a picture he knows. The mistake: using the same words for every reader. Ask: do these words FIT THE READER, or DO NOT FIT? Hard words do not fit a little child; slang does not fit a rav.', q:'Avrumi explains the moon to his little brother, who is 5. Which sentence fits the reader?', o:['The moon goes around the earth, like you walk around the table.','The moon orbits the earth in an elliptical path.','The lunar cycle lasts about 29 and a half days.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each sentence: formal, or friendly?', bins:[{id:'F',label:'🎩 Formal'},{id:'R',label:'😊 Friendly'}],
+      items:[{label:'I am writing to ask for your help.',bin:'F'},{label:'Guess what happened today!',bin:'R'},{label:'Thank you for your time.',bin:'F'},{label:'See you at shul, buddy!',bin:'R'}],
+      h:'Formal: polite, full sentences, no slang. Friendly: relaxed, like talking to a friend.'},
+    {t:'pairs', q:'Same news: the Crew won the science fair. Match each reader to the sentence that fits.', pairs:[['Mr. Halpern, the judge','Thank you for choosing our project for first place.'],['Yehuda’s best friend','We won! Can you believe it?'],['Yehuda’s little sister','Our weather box won a big gold ribbon!']],
+      h:'Formal for a teacher. Friendly for a friend. Simple for a little child.'},
+    {t:'spotall', q:'Dovid is writing to the menahel. Tap every phrase that does NOT fit this reader.', cells:[{label:'Hey dude',ok:true},{label:'super awesome',ok:true},{label:'Thank you for',ok:false},{label:'I would like to ask',ok:false},{label:'gonna',ok:true}],
+      h:'The menahel needs formal words. Tap the slang.'},
+    {t:'order', q:'Build a formal opening for a letter to the shul’s rav. Tap the tiles in order.', tiles:['Dear Rav Gold,','Thank you for','speaking at','our siyum.'],
+      h:'Start with Dear and the name. Then thank him. Then for what.'},
+    {t:'sort', q:'Binyamin explains chess to his cousin, who is 6. Sort each sentence: fits the reader, or does not fit?', bins:[{id:'Y',label:'✅ Fits the reader'},{id:'N',label:'❌ Does not fit'}],
+      items:[{label:'The horse jumps in an L shape.',bin:'Y'},{label:'The knight’s movement creates tactical forks.',bin:'N'},{label:'If the king is trapped, the game is over.',bin:'Y'},{label:'Checkmate occurs when the king has no legal moves.',bin:'N'}],
+      h:'A 6-year-old needs simple words and short sentences. Hard words do not fit.'},
+    {t:'pairs', q:'Match each reader to the closing that fits.', pairs:[['A letter to a company','Sincerely, Tzvi Hirsch Gold'],['A note to a friend','See you tomorrow! Tzvi Hirsch'],['A letter to Zeidy','With love, your grandson Tzvi Hirsch']],
+      h:'Formal for a company. Friendly for a friend. Warm and respectful for Zeidy.'},
+    {t:'write', q:'Your turn to write. Write the same news two ways: "Our class is collecting food for families in need." First write it to your friend. Then write it to the menahel.', min:0, checks:['😊 My note to my friend is friendly and kind.','🎩 My note to the menahel is formal and polite.','🚫 I used no slang for the menahel.'], h:'For the friend, write like you talk at recess. For the menahel, start with Dear and use full, polite sentences.'}
+  ],
+  check:[
+    {q:'Dovid writes a note to the menahel about the class trip: “Hey, the trip was super cool, thx!” Do the words fit the reader?', o:['does not fit','fits the reader'], h:'Is the menahel a friend, or does he need formal words?'},
+    {q:'Binyamin explains chess to his cousin, who is 6: “The castle moves in a straight line, like a train on a track.” Do the words fit the reader?', o:['fits the reader','does not fit'], h:'Are the words simple and short, with a picture a 6-year-old knows?'},
+    {t:'order', q:'Avrumi wants to ask Mr. Stern, the librarian, a question. Build a formal opening. Tap the tiles in order.', tiles:['Dear Mr. Stern,','I would like','to ask about','the library hours.'], h:'Start with Dear and the name. Then say politely what you would like.'}
+  ],
+  re:[
+    {how:'A new way: you speak differently at the Shabbos table with a guest than at recess with friends. Writing is the same.', q:'Where would you say "Good Shabbos, thank you for coming"?', o:['to a guest at the Shabbos table','to a friend at recess, joking','to your little brother at bedtime']},
+    {how:'A simpler step: first name the reader. Then pick: formal, friendly, or simple.', q:'The reader is a company that made your bike. Which kind of words?', o:['formal','friendly','simple, for a little child']},
+    {how:'The skill underneath: Letter Writer (Level 6). A letter has a greeting, a body and a closing.', q:'"Dear Rav Gold," is the letter’s…', o:['greeting','closing','body']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L06.02':{hook:'Why do some pieces make you keep reading, and others put you to sleep?', big:'The first sentence is a hook: a question, a surprising fact, or a short scene, never an announcement.',
+    intro:['A question hook asks something the reader wants answered.','A fact hook tells something true and surprising.','A scene hook shows one moment.','Never announce ("This piece is about…").'],
+    ex:[{q:'Piece: how a sofer writes a sefer Torah.',steps:['Question: How long does it take?','Fact: 304,805 letters.','Scene: the quill on the parchment.'],a:'How long does it take to write one sefer Torah?'},
+        {q:'Piece: honeybees.',steps:['Not: "I will tell you about bees."','Scene instead.'],a:'Bzzz! Hundreds of bees poured out of the hive.'}],
+    oops:{q:'Piece: honeybees.',wrong:'Hi! My name is Yehuda and I will tell you about bees.',right:'Bzzz! The hive hummed as the bees came home.',why:'Announcing tells what you will do. A hook pulls the reader in.'},
+    idea:['A hook is the smell of challah from the bakery door: it pulls you in.'],
+    try:{q:'Which is a hook?',o:['What makes a game last for hours?','This piece is about chess.','I will write about chess.'],a:'What makes a game last for hours?',steps:['Which one grabs you?']}},
+  'WRIT.ESSAY.L06.03':{hook:'"Trust me" is not proof. What is?', big:'A body paragraph has a point, proof, and an explain that tells how the proof shows the point.',
+    intro:['Point: what this paragraph proves.','Proof: a fact, example or quote.','Explain: "This shows that…"','Never stop after the proof, and never just repeat it.'],
+    ex:[{q:'Point: Bees help farmers grow more food.',steps:['Proof: a farmer got more apples with bees.','Explain: This shows that bees help plants make fruit.'],a:'Point, proof, explain.'},
+        {q:'Point: Binyamin is a patient teacher.',steps:['Proof: he showed the move again and again.','Explain: he does not give up on a friend.'],a:'This shows that he does not give up when a friend is stuck.'}],
+    oops:{q:'Point and proof, then the paragraph stops.',wrong:'The proof speaks for itself.',right:'Add: "This shows that…"',why:'Without an explain, the reader does not know why the proof matters.'},
+    idea:['A judge needs the photo AND someone to say what it shows.'],
+    try:{q:'Which starts an explain?',o:['This shows that','For example,','Once upon a time'],a:'This shows that',steps:['Which one says what the proof means?']}},
+  'WRIT.ESSAY.L06.04':{hook:'How do you say goodbye to a reader so he remembers you?', big:'A conclusion restates the main idea, sums up the points, and ends with a final thought.',
+    intro:['Restate: the main idea in new words.','Sum up: the points in one sentence.','Final thought: why it matters, or back to the hook.','No new points, and never just "the end".'],
+    ex:[{q:'Piece: why bees matter.',steps:['Restate: Bees matter more than most people know.','Sum up: They make honey and help farmers.','Final thought: thank a bee.'],a:'So the next time you taste honey, thank a bee.'},
+        {q:'Piece: snow days.',steps:['Restate, sum up, then what to do.'],a:'So the next time it snows, grab your boots and head outside.'}],
+    oops:{q:'The last sentence of the bee piece.',wrong:'That is all I know about bees. The end.',right:'So the next time you taste honey, thank a bee.',why:'"The end" just stops. A final thought leaves the reader thinking.'},
+    idea:['A conclusion is walking a guest to the door with a warm goodbye.'],
+    try:{q:'Which is a final thought?',o:['So this Shabbos, invite a guest.','Also, guests like kugel.','The end.'],a:'So this Shabbos, invite a guest.',steps:['Which tells the reader what to do?']}},
+  'WRIT.PARA.L06.03':{hook:'Would you write to the menahel the way you talk at recess?', big:'Choose words that fit the reader: formal, friendly, or simple.',
+    intro:['Ask: who is reading?','Formal for a teacher, rav or company.','Friendly for a friend.','Simple for a little child.'],
+    ex:[{q:'Dovid asks Rabbi Feldman for a science club.',steps:['Reader: his rebbe.','Formal: Dear, full polite sentences.'],a:'Dear Rabbi Feldman, I would like to ask about starting a science club.'},
+        {q:'Avrumi explains the moon to his brother, age 5.',steps:['Reader: a little child.','Simple words, a picture he knows.'],a:'The moon goes around the earth, like you walk around the table.'}],
+    oops:{q:'A thank-you note to the shul’s rav.',wrong:'Thanks a bunch, you are awesome!',right:'Thank you for your beautiful words at our siyum.',why:'Slang does not fit a rav. Formal words show respect.'},
+    idea:['You speak one way to a Shabbos guest and another way at recess; writing is the same.'],
+    try:{q:'Reader: a company. Which words?',o:['formal','friendly','simple'],a:'formal',steps:['A company needs polite, full sentences.']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L06.02':{s:'Read the opening.\nDoes it ask? A question hook.\nDoes it tell a surprising true thing? A fact hook.\nDoes it show one moment? A scene hook.\n"This piece is about…" is announcing, not a hook.'},
+  'WRIT.ESSAY.L06.03':{s:'Point: what the paragraph proves.\nProof: what happened, a fact or a quote.\nExplain: how the proof shows the point ("This shows that…").\nAn explain never just repeats the proof.'},
+  'WRIT.ESSAY.L06.04':{s:'Restate: the main idea in new words.\nSum up: the points in one sentence.\nFinal thought: what to think or do, or back to the hook.\nNo new points. Never just "the end".'},
+  'WRIT.PARA.L06.03':{s:'Ask: who is reading?\nTeacher, rav or company: formal, polite, no slang.\nFriend: friendly and kind.\nLittle child: simple words, short sentences.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L06.02':{ band:'E45', pic:'🎣', today:'Hook the reader with your first sentence', why:'If the first sentence is boring, the reader stops. A hook makes him want more.',
+    ready:[{q:'Which is a whole topic sentence?', o:['Bees help farmers grow food.','Bees and farmers','Do bees?'], a:'Bees help farmers grow food.'}],
+    bridge:'WRIT.ESSAY.L06.01', bridgeName:'Three-Part Piece',
+    watch:{ q:'Piece: how a sofer writes a sefer Torah', m:{type:'scene', e:'🪶', t:'Avrumi’s Abba is a sofer. Avrumi is writing a piece about his work.'}, steps:[
+      {t:'Boring start: "This piece is about a sofer." It only announces.'},
+      {t:'Question hook: "How long does it take to write a sefer Torah?"'},
+      {t:'Fact hook: "A sefer Torah has 304,805 letters, all by hand."'},
+      {t:'Scene hook: "The quill scratched slowly across the parchment."'},
+      {t:'Pick the hook that fits your piece best.'}], a:'How long does it take to write one sefer Torah?' },
+    oops:{ q:'Piece: how bees make honey', wrong:'Hi! My name is Yehuda and I will tell you about bees.', right:'Bzzz! The hive hummed as the bees came home.', why:'Announcing tells what you will do. A hook pulls the reader in.' },
+    ways:['frum-family scene','worked example','match it','sort it','word tiles','tap the reason','Mistake Detective'], done:'You can open a piece with a question, fact or scene hook.',
+    board:{ one:'A hook grabs the reader: a question, a surprising fact, or a scene. Never announce.', activity:'Read three openings of the same piece aloud; boys vote which one makes them want more, and say why.', mistakes:['Announcing ("This piece is about…")','A hook that does not fit the topic','A "fact" that is not true'] },
+    do:[
+      {type:'match', pairs:[['Have you ever tasted fresh honey?','Question hook'],['A bee’s wings beat about 200 times a second.','Fact hook'],['The hive hummed as the bees flew home.','Scene hook']],
+        say:'Match each hook to its kind.', how:'Does it ask, tell a surprising fact, or show a moment?',
+        why:{q:'Why is "The hive hummed as the bees flew home" a scene hook?', o:['It shows a moment you can hear','It asks a question','It gives a number','It announces'], a:'It shows a moment you can hear'}},
+      {type:'sort', bins:['Hook','Mistake: announcing'], cards:[['Checkmate! Binyamin could not believe it.',0],['In this piece I will tell you about chess.',1],['What makes one game last for hours?',0],['This essay is about my Zeidy.',1]], mis:true,
+        say:'Hook, or announcing? Sort each opening.', how:'Announcing tells what you will write about. A hook pulls the reader in.',
+        why:{q:'Why is "This essay is about my Zeidy" not a hook?', o:['It announces instead of grabbing','It is too long','It asks a question','It has a name in it'], a:'It announces instead of grabbing'}}],
+    your:[
+      {type:'tiles', q:'Piece: why challah is braided.', w:['Have you ever','wondered','why challah','is braided?'], extra:['This is about'],
+        say:'Build a question hook from the tiles.', how:'Start with the question words. End with the question mark.'},
+      {type:'sort', bins:['Question','Fact','Scene'], cards:[['Why do leaves change color?',0],['A maple tree can live 300 years.',1],['Crunch! Leaves piled up to my knees.',2]],
+        say:'Question, fact, or scene? Sort each hook.', how:'A question asks. A fact tells something true. A scene shows a moment.'},
+      {type:'match', pairs:[['A piece about Pesach cleaning','Not one crumb could hide from us.'],['A piece about snow days','The whole street woke up white.'],['A piece about chess','Checkmate in four moves? Impossible!']],
+        say:'Match each piece to a hook that fits it.', how:'A hook must fit the topic of the piece.'},
+      {type:'sort', q:'Piece: our class weather station.', bins:['On topic','Off topic'], cards:[['Will it rain tomorrow? We know.',0],['The wind vane spun in the storm.',0],['My favorite food is kugel.',1],['Baseball is fun to watch.',1]],
+        say:'Does each hook fit this piece?', how:'A hook must lead into the weather station.'},
+      {type:'tiles', q:'Piece: the bakery on Erev Shabbos.', w:['Warm challah','filled','the street','with smells.'], extra:['I will write'],
+        say:'Build a scene hook from the tiles.', how:'Start with what you smell. Then what it did to the street.'}] },
+
+  'WRIT.ESSAY.L06.03':{ band:'E45', pic:'🧱', today:'Build a body paragraph: point, proof, explain', why:'Readers believe a point when you prove it AND show what the proof means.',
+    ready:[{q:'"For example, he built a ramp." What is it?', o:['an example','a question','a closing'], a:'an example'}],
+    bridge:'WRIT.PARA.L05.08', bridgeName:'Say More',
+    watch:{ q:'Point: Bees help farmers grow more food.', m:{type:'scene', e:'🐝', t:'Yehuda is writing about honeybees for the Glen Avenue Gazette.'}, steps:[
+      {t:'POINT: one sentence that says what this paragraph proves.'},
+      {t:'PROOF: a farmer got more apples after he brought in bees.'},
+      {t:'EXPLAIN: "This shows that bees help plants make fruit."'},
+      {t:'The explain answers the reader’s question: so what?'}], a:'Bees help farmers grow more food. One farmer got many more apples after he brought in bees. This shows that bees help plants make fruit.' },
+    oops:{ q:'Point and proof, then the paragraph stops.', wrong:'The proof speaks for itself.', right:'Add: "This shows that…"', why:'Without an explain, the reader does not know why the proof matters.' },
+    ways:['frum-family scene','worked example','word tiles','sort it','match it','tap the reason','Mistake Detective'], done:'You can build a body paragraph with a point, proof and explain.',
+    board:{ one:'Point, proof, explain: say it, show it, tell what it means.', activity:'Give pairs a point and a proof card; each pair writes the explain and reads it to the class.', mistakes:['Stopping after the proof','An explain that repeats the proof','Proof that does not fit the point'] },
+    do:[
+      {type:'match', q:'A paragraph about Avrumi’s maps.', pairs:[['Point','Avrumi’s maps help his friends.'],['Proof','Yehuda used one to find the park.'],['Explain','This shows the maps are clear.']],
+        say:'Match each part to its sentence.', how:'Point: what it proves. Proof: what happened. Explain: what it shows.'},
+      {type:'sort', q:'Point: Tzvi Hirsch is brave. Proof: he climbed up to rescue a cat.', bins:['Explains','Mistake: just repeats'], cards:[['He helps even when he is scared.',0],['He climbed up to get the cat.',1],['He puts others before his fear.',0],['The cat was rescued by him.',1]], mis:true,
+        say:'Does it explain, or just repeat the proof?', how:'An explain tells HOW the proof shows the point.',
+        why:{q:'Why does "He climbed up to get the cat" not explain?', o:['It just says the proof again','It is too short','It is a question','It is about a cat'], a:'It just says the proof again'}}],
+    your:[
+      {type:'match', pairs:[['The Golds bake all night before Yom Tov.','They work hard for their customers.'],['Binyamin beat three older boys.','His practice paid off.'],['Yehuda found the siddur with his notes.','Careful notes solve mysteries.']],
+        say:'Match each proof to what it shows.', how:'Read the proof. What does THAT proof show?'},
+      {type:'sort', q:'Paragraph about Dovid’s strong sukkah.', bins:['Point','Proof','Explain'], cards:[['Dovid built a sukkah that stands up to wind.',0],['In the storm, his was the only one standing.',1],['His braces held all four walls.',1],['This shows his careful building worked.',2]],
+        say:'Point, proof, or explain? Sort each sentence.', how:'Point: what it proves. Proof: what happened. Explain: what it shows.',
+        why:{q:'Why is "In the storm, his was the only one standing" proof?', o:['It tells what really happened','It says what the paragraph proves','It tells what it means','It is a question'], a:'It tells what really happened'}},
+      {type:'tiles', q:'Point: Binyamin is patient. Proof: he showed the move again and again.', w:['This shows','he never','gives up','on a friend.'], extra:['he moved'],
+        say:'Build the explain sentence from the tiles.', how:'Start with This shows. Then tell what the proof means.'},
+      {type:'match', pairs:[['Point','Yehuda’s notes help him.'],['Proof','His notes led him to the lost siddur.'],['Explain','This shows careful notes solve mysteries.']],
+        say:'Match each part to its sentence.', how:'Point says it. Proof shows it. Explain tells what it means.'},
+      {type:'sort', q:'Point: Mr. Halpern makes science exciting.', bins:['Good proof','Not proof'], cards:[['He let us build a real volcano.',0],['We ask to stay late for his labs.',0],['He has a gray van.',1],['Science is a subject.',1]],
+        say:'Which sentences are good proof?', how:'Good proof shows the point is true.'}] },
+
+  'WRIT.ESSAY.L06.04':{ band:'E45', pic:'🏁', today:'End your piece with a strong finish', why:'The ending is what the reader remembers. A strong finish makes your whole piece stick.',
+    ready:[{q:'A closing sentence should NOT add…', o:['a new detail','new words','the big idea'], a:'a new detail'}],
+    bridge:'WRIT.PARA.L05.09', bridgeName:'Tie It Up',
+    watch:{ q:'Piece: why bees matter. The hook asked: "Where does honey come from?"', m:{type:'scene', e:'🍯', t:'Yehuda finishes his honeybee piece for the Gazette.'}, steps:[
+      {t:'Job 1, RESTATE: "Bees matter far more than most people know."'},
+      {t:'Job 2, SUM UP: "They make honey and help farmers grow food."'},
+      {t:'Job 3, FINAL THOUGHT: tie back to the hook.'},
+      {t:'"So the next time you taste honey, thank a bee."'}], a:'Bees matter far more than most people know. They make honey and help farmers grow food. So the next time you taste honey, thank a bee.' },
+    oops:{ q:'The last sentence of the bee piece', wrong:'That is all I know about bees. The end.', right:'So the next time you taste honey, thank a bee.', why:'"The end" just stops. A final thought leaves the reader thinking.' },
+    ways:['frum-family scene','worked example','sort it','word tiles','match it','tap the reason','Mistake Detective'], done:'You can finish a piece: restate, sum up, and leave a final thought.',
+    board:{ one:'A conclusion restates, sums up, and leaves a final thought. Nothing new.', activity:'Each boy reads only his final thought aloud; the class guesses what his piece was about.', mistakes:['Adding a new point at the end','"That is all, the end."','Copying the introduction word for word'] },
+    do:[
+      {type:'sort', q:'Piece: how the Crew built a weather station.', bins:['Strong ending','Mistake: new point','Mistake: just stops'], cards:[['It showed us how much we can measure.',0],['We also want to build a robot.',1],['That is all. The end.',2]], mis:true,
+        say:'Strong ending, or a mistake? Sort each.', how:'A strong ending wraps up. A new point starts something new. "The end" just stops.',
+        why:{q:'Why is "We also want to build a robot" a mistake here?', o:['It adds a new point at the end','It is too short','It is a question','It restates the main idea'], a:'It adds a new point at the end'}},
+      {type:'match', q:'Piece: snow days. A conclusion in three parts.', pairs:[['Restate','Snow days are the best days of winter.'],['Sum up','We build forts and help neighbors.'],['Final thought','So next time, grab your boots!']],
+        say:'Match each job to its sentence.', how:'Restate: the main idea. Sum up: the points. Final thought: what to do.'}],
+    your:[
+      {type:'sort', q:'Piece: why Shabbos guests matter.', bins:['Restate','Sum up','Final thought'], cards:[['Guests make Shabbos more special.',0],['They bring stories, friends and a full table.',1],['So this Shabbos, invite someone new.',2]],
+        say:'Restate, sum up, or final thought? Sort each.', how:'Restate: the main idea. Sum up: the points. Final thought: what to think or do.',
+        why:{q:'Why is "So this Shabbos, invite someone new" a final thought?', o:['It tells the reader what to do','It lists the points','It adds a new point','It copies the hook'], a:'It tells the reader what to do'}},
+      {type:'match', pairs:[['Hook: What is the best part of a snow day?','The best part is being out with friends.'],['Hook: Checkmate! He could not believe it.','He still cannot believe what patience did.'],['Hook: The oven door swung open.','So next Erev Shabbos, smell the challah.']],
+        say:'Match each hook to the final thought that ties back.', how:'A final thought can answer the hook or come back to its moment.'},
+      {type:'tiles', q:'Piece: what a sofer does.', w:['Next time,','thank','a sofer','for his care.'], extra:['the end.'],
+        say:'Build a final thought from the tiles.', how:'Start with Next time. Then what the reader should do.'},
+      {type:'match', pairs:[['It adds a new point.','Move it into a body paragraph.'],['It just stops.','Add a final thought.'],['It copies the introduction.','Restate in new words.']],
+        say:'Match each ending mistake to its fix.', how:'What would make the ending strong?'},
+      {type:'sort', bins:['Good final thought','Mistake'], cards:[['So the next time you taste honey, thank a bee.',0],['Some bees live in the ground.',1],['That is all I know.',1],['Next time you see a sofer, think of every letter.',0]],
+        say:'Good final thought, or a mistake?', how:'A final thought leaves the reader thinking. No new facts, no "the end".'}] },
+
+  'WRIT.PARA.L06.03':{ band:'E45', pic:'👥', today:'Choose words that fit your reader', why:'The same news sounds right to a friend and rude to a rav. Good writers think about who is reading.',
+    ready:[{q:'"Dear Rav Gold," is the letter’s…', o:['greeting','closing','body'], a:'greeting'}],
+    bridge:'WRIT.PARA.L06.02', bridgeName:'Letter Writer',
+    watch:{ q:'News: the Crew won the science fair.', m:{type:'scene', e:'🏆', t:'Yehuda wants to tell three different people the big news.'}, steps:[
+      {t:'First ask: WHO is reading?'},
+      {t:'To Mr. Halpern, formal: "Thank you for choosing our project."'},
+      {t:'To his best friend, friendly: "We won! Can you believe it?"'},
+      {t:'To his little sister, simple: "Our weather box won a gold ribbon!"'},
+      {t:'Same news, three readers, three ways to say it.'}], a:'Pick words that fit the reader: formal, friendly, or simple.' },
+    oops:{ q:'A thank-you note to the shul’s rav', wrong:'Thanks a bunch, you are awesome!', right:'Thank you for your beautiful words at our siyum.', why:'Slang does not fit a rav. Formal words show respect.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can choose words that fit your reader: formal, friendly or simple.',
+    board:{ one:'Ask who is reading: formal, friendly, or simple.', activity:'Pairs write one piece of news three ways, then swap and guess the reader of each.', mistakes:['Slang in a letter to a rav or teacher','Hard words for a little child','The same words for every reader'] },
+    do:[
+      {type:'sort', q:'Dovid is writing to the menahel.', bins:['Fits the reader','Mistake: does not fit'], cards:[['I would like to ask for your help.',0],['Hey dude, guess what!',1],['Thank you for your time.',0],['This is gonna be awesome.',1]], mis:true,
+        say:'Do the words fit the menahel? Sort each one.', how:'The menahel needs formal words: polite, no slang.',
+        why:{q:'Why does "Hey dude, guess what!" not fit?', o:['It is slang for a formal reader','It is too long','It is a question','It is polite'], a:'It is slang for a formal reader'}},
+      {type:'match', pairs:[['Mr. Halpern, the judge','Thank you for choosing our project.'],['Yehuda’s best friend','We won! Can you believe it?'],['Yehuda’s little sister','Our box won a gold ribbon!']],
+        say:'Match each reader to the words that fit.', how:'Formal for a teacher. Friendly for a friend. Simple for a little child.'}],
+    your:[
+      {type:'tiles', q:'A letter to the shul’s rav.', w:['Dear Rav Gold,','Thank you for','speaking at','our siyum.'], extra:['Hey Rav!'],
+        say:'Build a formal opening from the tiles.', how:'Start with Dear and the name. Then thank him. Then for what.'},
+      {type:'sort', q:'Binyamin explains chess to his cousin, age 6.', bins:['Fits the reader','Does not fit'], cards:[['The horse jumps in an L shape.',0],['Knights create tactical forks.',1],['If the king is trapped, the game ends.',0],['Checkmate means no legal moves.',1]],
+        say:'Do the words fit a 6-year-old?', how:'A little child needs simple words and short sentences.',
+        why:{q:'Why does "Knights create tactical forks" not fit?', o:['The words are too hard for a 6-year-old','It is too polite','It is slang','It is a question'], a:'The words are too hard for a 6-year-old'}},
+      {type:'match', pairs:[['A letter to a company','Sincerely, Tzvi Hirsch Gold'],['A note to a friend','See you tomorrow! Tzvi Hirsch'],['A letter to Zeidy','With love, your grandson']],
+        say:'Match each reader to the closing that fits.', how:'Formal for a company. Friendly for a friend. Warm for Zeidy.'},
+      {type:'sort', bins:['Formal','Friendly'], cards:[['I am writing to ask for your help.',0],['Guess what happened today!',1],['Thank you for your time.',0],['See you at shul, buddy!',1]],
+        say:'Formal or friendly? Sort each sentence.', how:'Formal: polite and full. Friendly: relaxed, like talking.'},
+      {type:'tiles', q:'Explain the moon to a 5-year-old.', w:['The moon','goes around','and around','the earth.'], extra:['elliptical'],
+        say:'Build a sentence that fits a little child.', how:'Simple words a little child knows. Leave out the hard word.'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
