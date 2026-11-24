@@ -230,6 +230,8 @@ async function kidTests(browser) {
   /* CHANUKAH OLIVE OIL (tests/lib/oiltrail.js, src/OilTrail.html, HoS 2026-11-23) */
   try { const ot = await require('./lib/oiltrail.js')(pg); ot.fails.forEach(fail); ot.oks.forEach(ok); }
   catch (e) { fail('olive oil test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* CHANUKAH SUFGANIYAH JELLY TRAIL (tests/lib/jellytrail.js, src/JellyTrail.html, HoS 2026-11-24) */
+  try { const jt = await require('./lib/jellytrail.js')(pg); jt.fails.forEach(fail); jt.oks.forEach(ok); } catch (e) { fail('jelly trail test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const sf = require('./lib/storefx.js'), n = sf.names(), e = await sf.effects(pg); n.fails.concat(e.fails).forEach(fail);
     if (!n.fails.length && !e.fails.length) ok('store Fun tab: ' + n.count + ' items, no two share a name, picture, tap blast, trail or app colors (closest app colors: ' + (e.closest && e.closest.d) + ')'); }
   catch (e) { fail('store check crashed: ' + String(e && e.stack || e).slice(0, 300)); }
