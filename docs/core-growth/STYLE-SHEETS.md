@@ -68,10 +68,11 @@ Each job keeps `docs/core-growth/<job>-picture-orders.md`. One table per batch o
 - **Tell the HoS in one line:** "Picture order 3 is ready (24 pictures): <link to the file on GitHub>."
 
 ## When the pictures arrive
-1. The HoS puts them in a Google Drive folder. Fetch them with the Drive connector into your scratchpad (never into the repository as-is).
-2. **Check every picture** against its order and the rules above. Zoom in: a cross in a window, a girl in the background, letters on a sign, a brand on a box. Anything doubtful is `REDO`, with the reason.
-3. Make each one WebP at its size (`python3 -I tools/pics-save.py` or Pillow), at most 200 KB.
-4. Add the files to `web/pics/`, one line each to `web/pics/SOURCES.md`, and link them (the text's `pic:`, or a `TL_PIC_ADD` block in `src/RealPicsTeach.html`). `tools/pics-check.js` must say 0 problems.
-5. One PR per batch, with the pictures at 1366×768 and 390 px in it.
+1. **Sending the order:** the HoS gave builders the email address of the school's image account (HoS 2026-11-24; ask him for it, and never write it in the repository). Email the batch there: the rules above, the band styles, and one numbered block per picture, with its file name, size and prompt. Ask for a reply with each picture attached under its file name. **Check that inbox every hour** for replies and new instructions. The HoS may also put pictures in a Google Drive folder.
+2. Fetch the pictures (Gmail attachment or Drive connector) into your scratchpad, never into the repository as they are.
+3. **Check every picture** against its order and the rules above. Zoom in: a cross in a window, a girl in the background, letters on a sign, a brand on a box. Anything doubtful is `REDO`, with the reason.
+4. Make each one WebP at its size (`python3 -I tools/pics-save.py` or Pillow), at most 200 KB.
+5. Add the files to `web/pics/`, one line each to `web/pics/SOURCES.md`, and link them (the text's `pic:`, or a `TL_PIC_ADD` block in `src/RealPicsTeach.html`). `tools/pics-check.js` must say 0 problems.
+6. One PR per batch, with the pictures at 1366×768 and 390 px in it.
 
 **Until a picture arrives,** the screen shows a coded placeholder that still teaches and still looks good (the Reader's cover already does this). It is never an empty box.
