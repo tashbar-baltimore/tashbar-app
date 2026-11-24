@@ -11,7 +11,7 @@ These are expected minutes for a typical boy. "Built" counts only lessons, piece
 ## Plan vs built
 | Grade | Small skills (plan: count / min) | Pieces (plan) | Quick writes (plan) | Unit checks (plan) | **Plan hours** | **Built hours** |
 |---|---|---|---|---|---|---|
-| K (L01) | 18 / 86 | 30 / 360 | 30 / 90 | 6 / 30 | **9.4** | 0 |
+| K (L01) | 20 / 96 | 30 / 360 | 30 / 90 | 6 / 30 | **9.6** | 0 |
 | 1 (L02) | 21 / 105 | 30 / 450 | 40 / 160 | 6 / 36 | **12.5** | 0 |
 | 2 (L03) | 26 / 186 | 14 / 700 | 40 / 200 | 6 / 60 | **19.1** | 0 |
 | 3 (L04) | 31 / 217 | 14 / 840 | 40 / 240 | 6 / 60 | **22.6** | 0 |
