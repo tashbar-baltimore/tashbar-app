@@ -49,4 +49,4 @@ function staff() {
   return { page, error, loadErrors };
 }
 
-module.exports = { ROOT, SRC, PACKS, kid, staff, packTable };
+module.exports = { ROOT, SRC, PACKS, kid, staff, packTable, sandbox };
