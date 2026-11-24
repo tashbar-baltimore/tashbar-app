@@ -6,16 +6,16 @@
 const PAIRS = { 3: [['vov', 'zayin'], ['hei', 'ches']] };   /* a game can bring its own pairs (Unit 4: Beis/Kaf, then Kaf/Chaf) */
 /* the place to look on each letter (font units), and what to say about it */
 const LOOK = { vov: 'No crown. That is Vov.', zayin: 'A crown on top! That is Zayin.', hei: 'The leg doesn’t touch the roof. That is Hei.', ches: 'The leg touches the roof. That is Ches.',
-  beis: 'A tail at the bottom! That is Beis.', kafRound: 'Round at the bottom. That is Kaf.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.' };
+  beis: 'A tail at the bottom! That is Beis.', gimmel: 'A foot at the bottom! That is Gimmel.', nun: 'Flat at the bottom. That is Nun.', tes: 'Closed at the bottom. That is Tes.', mem: 'An opening at the bottom! That is Mem.', kafRound: 'Round at the bottom. That is Kaf.', kaf: 'A dot inside! That is Kaf.', chaf: 'No dot. That is Chaf.' };
 const CLUE = { vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', hei: 'Hei’s leg doesn’t touch the roof.', ches: 'Ches’s leg touches the roof.',
-  beis: 'Beis has a tail at the bottom.', kafRound: 'Kaf is round at the bottom.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.' };
+  beis: 'Beis has a tail at the bottom.', gimmel: 'Gimmel has a foot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', kafRound: 'Kaf is round at the bottom.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.' };
 /* in a Beis/Kaf round the thing to see is the bottom, in a Kaf/Chaf round the dot */
 const say = (T, k, pr) => T[k === 'kaf' && pr.includes('beis') ? 'kafRound' : k];
-const WATCH = { zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!' };
+const WATCH = { zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!', nun: 'Flat at the bottom!', mem: 'An opening at the bottom!' };
 export default function setup(E, { struggled, unit, game }) {
   const { THREE, S } = E;
   const pairs = (game && game.pairs) || PAIRS[unit.n] || PAIRS[3];
-  const feat = (k, pr) => E.sameShape(pr[0], pr[1]) ? E.DOT_FEATURE[k] : E.FEATURES[k];   /* a dot pair: point at the dot place */
+  const feat = (k, pr) => E.featFor(k, pr[0] === k ? pr[1] : pr[0]);   /* a dot pair: point at the dot place */
   const kid = E.unitBoy(unit.n); E.scene.add(kid);
   const wood = E.M(0xc68a52, { roughness: .6 }), wood2 = E.M(0xa86f3c, { roughness: .6 });
   function crate() { const c = new THREE.Group(); c.add(E.mesh(E.rbox(2.0, 1.2, 1.4, .08), wood, 0, .6, 0)); for (let i = 0; i < 3; i++) c.add(E.mesh(new THREE.BoxGeometry(2.05, .1, .05), wood2, 0, .25 + i * .35, .72));
@@ -89,6 +89,6 @@ export default function setup(E, { struggled, unit, game }) {
     await E.say('Great! Now ' + E.LETTERS[pairs[1][0]].name + ' and ' + E.LETTERS[pairs[1][1]].name + '!');
     await playPair(pairs[1], false);
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
-    return { stars, line: stars >= 2 ? (unit.n === 3 ? 'Great detective work! Crown or no crown, leg or gap!' : 'Great detective work! You know Beis, Kaf and Chaf!') : null };
+    return { stars, line: stars >= 2 ? ({ 3: 'Great detective work! Crown or no crown, leg or gap!', 4: 'Great detective work! You know Beis, Kaf and Chaf!', 5: 'Great detective work! Foot or flat, open or closed!' }[unit.n]) : null };
   };
 }

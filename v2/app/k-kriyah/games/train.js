@@ -2,9 +2,9 @@
    Skill: knows the order Alef, Beis, Veis, Gimmel, Daled, Hei. The chant plays with a drum (rhythm and music learners).
    Round 1: he fills the whole train, one car after another. Round 2: some cars are already on; he fills the empty places.
    A wrong car rolls back and he hears the chant up to the place he needs; if he struggles, the right car glows. */
-export default function setup(E, { struggled, unit }) {
+export default function setup(E, { struggled, unit, game = {} }) {
   const { THREE } = E;
-  const ORDER = [...unit.known, ...unit.letters];          /* Alef, Beis, Veis, Gimmel, Daled, Hei */
+  const ORDER = game.order || [...unit.known, ...unit.letters];   /* a later unit's train carries the newest six letters, in order */          /* Alef, Beis, Veis, Gimmel, Daled, Hei */
   const n = ORDER.length, carCols = [0xff7aa8, 0x46c3ff, 0xffcf3a, 0x7bd94a, 0xb388ff, 0xff9f1a, 0x00c2d1];
   const dark = E.M(0x26324a, { roughness: .4 }), red = E.M(0xe8322b, { roughness: .3, clearcoat: .8 }), gold = E.M(0xffd43b, { metalness: .5, roughness: .3 });
   /* the track */
@@ -18,7 +18,7 @@ export default function setup(E, { struggled, unit }) {
   loco.add(E.mesh(new THREE.BoxGeometry(.4, .3, .06), E.M(0xbfe8ff, { roughness: .1, clearcoat: 1 }), .38, 1.2, .42, false));
   [-.38, .38].forEach(x => [-.42, .42].forEach(z => { const w = E.mesh(new THREE.CylinderGeometry(.2, .2, .1, 20), dark, x, .22, z); w.rotation.x = Math.PI / 2; loco.add(w); }));
   const puffs = []; for (let i = 0; i < 4; i++) { const p = E.mesh(new THREE.SphereGeometry(.14, 12, 8), E.M(0xffffff, { roughness: .9, clearcoat: 0, transparent: true, opacity: .8 }), -.35, 1.4, 0, false); loco.add(p); puffs.push(p); }
-  const driver = E.mendy(); driver.scale.setScalar(.42); driver.position.set(.38, .85, -.05); loco.add(driver);
+  const driver = E.unitBoy ? E.unitBoy(unit.n) : E.mendy(); driver.scale.setScalar(.42); driver.position.set(.38, .85, -.05); loco.add(driver);
   /* the cars: each carries one letter */
   const cars = ORDER.map((k, i) => { const c = new THREE.Group(); c.add(E.mesh(E.rbox(1.0, .55, .75, .08), E.M(carCols[i % 7], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     [-.3, .3].forEach(x => [-.38, .38].forEach(z => { const w = E.mesh(new THREE.CylinderGeometry(.15, .15, .08, 16), dark, x, .2, z); w.rotation.x = Math.PI / 2; c.add(w); }));
@@ -87,9 +87,9 @@ export default function setup(E, { struggled, unit }) {
   }
   async function roundOne() {
     E.setProgress(2, 0);
-    await E.say('All aboard the Alef-Beis train!');
+    await E.say('All aboard the Alef-Beis train!'); if (game.order) await E.say('This train starts at ' + E.LETTERS[ORDER[0]].name + '.');
     await E.say('Listen to the order.'); await chant();
-    await E.say('Watch me. Alef goes first.');
+    await E.say('Watch me. ' + E.LETTERS[ORDER[0]].name + ' goes first.');
     const c0 = cars.find(c => c.userData.key === ORDER[0]);   /* the demo: Alef goes first */ let [x, y] = E.toScreen(c0.position); E.hand.at(x, y); await E.wait(350);
     const p0 = c0.position.clone(), p1 = slotPos(0).add(new THREE.Vector3(0, .6, .3)); await E.tween(1100, q => { c0.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(c0.position); E.hand.at(a, b); });
     E.hand.hide(); await place(c0, 0);

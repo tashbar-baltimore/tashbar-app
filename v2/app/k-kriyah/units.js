@@ -5,8 +5,8 @@ export const UNITS = [
   { n: 1, letters: ['alef', 'beis', 'veis'], known: [],
     games: [
       { id: 'u1g0', name: 'Mendy’s first day', kind: 'story', icon: 'book' },
-      { id: 'u1g1', name: 'Look-Alike Detective', kind: 'detective', icon: 'house' },
-      { id: 'u1g2', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
+      { id: 'u1g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },   /* Alef first, then Beis and Veis: Alef-Beis order */
+      { id: 'u1g2', name: 'Look-Alike Detective', kind: 'detective', icon: 'house' },
       { id: 'u1g3', name: 'Letter Hunt', kind: 'hunt', icon: 'glass' },
       { id: 'u1g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
       { id: 'u1g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
@@ -14,7 +14,7 @@ export const UNITS = [
     ] },
   { n: 2, letters: ['gimmel', 'daled', 'hei'], known: ['alef', 'beis', 'veis'],
     games: [
-      { id: 'u2g0', name: 'Shloimy visits Zeidy', kind: 'story2', icon: 'grapes' },
+      { id: 'u2g0', name: 'Shloimy at the zoo', kind: 'story2', icon: 'grapes' },
       { id: 'u2g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
       { id: 'u2g2', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },
       { id: 'u2g3', name: 'Alef-Beis Train', kind: 'train', icon: 'train' },
@@ -25,7 +25,7 @@ export const UNITS = [
     ] },
   { n: 3, letters: ['vov', 'zayin', 'ches'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei'],
     games: [
-      { id: 'u3g0', name: 'Ari bakes challah', kind: 'story3', icon: 'challah' },
+      { id: 'u3g0', name: 'Ari in the garden', kind: 'story3', icon: 'challah' },
       { id: 'u3g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
       { id: 'u3g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair' },
       { id: 'u3g3', name: 'Letter Hunt', kind: 'hunt', icon: 'glass' },
@@ -36,7 +36,7 @@ export const UNITS = [
     ] },
   { n: 4, letters: ['tes', 'yud', 'kaf', 'chaf'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches'],
     games: [
-      { id: 'u4g0', name: 'Dovid’s Shabbos', kind: 'story4', icon: 'cup' },
+      { id: 'u4g0', name: 'Dovid at the park', kind: 'story4', icon: 'cup' },
       { id: 'u4g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
       { id: 'u4g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['beis', 'kaf'], ['kaf', 'chaf']] },
       { id: 'u4g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish', stands: ['ches', 'tes', 'yud', 'kaf'] },   /* Ches (challah) comes back: Chaf sounds just like it */
@@ -44,6 +44,17 @@ export const UNITS = [
       { id: 'u4g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u4g6', name: 'Review: Letter Hunt', kind: 'hunt', icon: 'glass', review: true, reviewOf: 3 },
       { id: 'u4g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+    ] },
+  { n: 5, letters: ['lamed', 'mem', 'nun'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches', 'tes', 'yud', 'kaf', 'chaf'],
+    games: [
+      { id: 'u5g0', name: 'Eli’s picnic', kind: 'story5', icon: 'lemon' },
+      { id: 'u5g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
+      { id: 'u5g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['gimmel', 'nun'], ['tes', 'mem']] },
+      { id: 'u5g3', name: 'Alef-Beis Train', kind: 'train', icon: 'train', order: ['yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun'] },
+      { id: 'u5g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u5g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
+      { id: 'u5g6', name: 'Review: Sound Match', kind: 'soundmatch', icon: 'fish', review: true, reviewOf: 4 },
+      { id: 'u5g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
 ];
 /* every game in order, each knowing its unit */
