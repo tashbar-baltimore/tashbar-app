@@ -1,0 +1,404 @@
+<script>
+/* CoreDataC453.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Grade 4 Unit 4.2 "The big umbrella (main idea)" (docs/core-growth/C45-map.md). Short lesson passages go in PASS under c45_ keys;
+   each lesson teaches on one passage and checks on a different, cold passage. The E45 passage-card style lives in CoreDataC451.html. */
+(function () {
+  var P = {
+    c45_kites: { title: 'Kites Around the World', text: 'People all over the world fly kites, but they do it in very different ways.\nIn Japan, some kite makers build giant kites so big that it takes a whole team of men to hold the string. In India, boys fly small, fast paper kites and try to cut each other\'s strings in friendly contests. In Afghanistan, kite flying is a favorite winter sport on the rooftops.\nIn Eretz Yisrael, many families fly kites on Lag BaOmer and on long summer afternoons at the beach. Dovid Lerner\'s cousin in Yerushalayim builds his own kites out of bamboo sticks and plastic bags.\nBig or small, fancy or homemade, a kite needs only three things: a light frame, a cover that catches the wind, and a strong string.' },
+    c45_penguins: { title: 'Penguin Fathers', text: 'In the coldest place on Earth, the emperor penguin father has one of the hardest jobs in the animal world.\nAfter the mother lays a single egg, she passes it to the father and goes to the sea to eat. The father balances the egg on top of his feet and covers it with a warm flap of skin. For about two months he stands in the wind and the dark, keeping the egg warm.\nDuring all that time, he eats nothing at all. Hundreds of fathers huddle together in a tight crowd to share their warmth, taking turns standing on the cold outside edge.\nWhen the chick hatches, the father even feeds it a little milky food from his throat until the mother comes back.' },
+    c45_kiddush: { title: 'Getting Ready for the Kiddush', text: 'On Friday night, the Lerners\' kitchen is the busiest room in the house.\nAbba sets out the cups and fills the becher. Dovid carries the challah board to the table and covers the two challos with the embroidered cover. His little brother Shloimy puts a siddur at every place, even for the guests.\nZeidy arrives early every week. He is the one who tells the best stories at the table, and he always brings a bag of candies for the children.\nBy the time everyone comes home from shul, the table is ready, the candles are glowing, and the whole family is waiting to make kiddush together.' },
+    c45_beaver: { title: 'The Beaver\'s Pond', text: 'A beaver chews through a young tree in a single night, using its strong orange front teeth. It drags the branches to a stream and pushes them into the mud.\nOne branch at a time, the beaver builds a dam. It packs the cracks with mud and stones. Slowly, the water behind the dam rises and spreads out into a quiet pond.\nSoon the pond is full of new life. Frogs lay their eggs in the still water. Ducks swim in from the river. Fish hide among the sunken branches, and herons come to hunt them.\nIn the middle of the pond, the beaver builds its lodge, a dome of sticks with an underwater door, where its family stays safe and dry all winter.' },
+    c45_moving: { title: 'Moving Day on Park Heights', text: 'When the Adler family moved into the house on the corner, the truck arrived at seven in the morning.\nBy seven-fifteen, Mr. Katz from next door was carrying boxes up the front steps. The Benaim boys brought over a cooler of cold drinks. Binyamin\'s father, who owns a big van, made three trips to the old apartment for the last pieces of furniture.\nAt lunchtime, a pot of chicken soup and a tray of potato kugel appeared on the porch with a note: "Welcome to the street!"\nBy evening, every box was inside, the beds were set up, and the Adler boys were already playing catch in the street with their new friends.' },
+    c45_market: { title: 'The Floating Market', text: 'Long before sunrise, the canal outside the city is dark and quiet. Then the first wooden boats slide out of the mist.\nThe boats are piled high with mangoes, coconuts, bananas and bright green vegetables. Some sellers paddle with long oars. Others steer small motors that sputter and cough.\nBuyers do not walk from stall to stall. Instead, they paddle their own boats right up to the sellers. They point, ask the price, and hand over money on the end of a long pole. The seller passes the fruit across the water in a basket.\nBy the time the sun is high, the canal is crowded with boats bumping gently together, and almost every basket is empty.' },
+    c45_bike: { title: 'Taking Care of a Bike', text: 'A bike lasts for years if you take care of it.\nFirst, keep the tires full of air. Soft tires make pedaling hard and can get flat on sharp stones. Check them with your thumb every week.\nNext, keep the chain clean and oiled. A dry, dirty chain squeaks and wears out quickly. A few drops of oil once a month keep it running smoothly.\nThe first bicycles, more than two hundred years ago, had no pedals at all. Riders pushed along with their feet.\nFinally, store your bike indoors when it rains. Water makes the metal parts rust, and rust makes the brakes and gears stick.' },
+    c45_robins: { title: 'Zeidy\'s Garden Robins', text: 'Robins are some of the hardest-working birds in Zeidy\'s garden.\nIn the spring, the mother robin builds a cup-shaped nest out of grass and mud while the father keeps watch nearby. She tucks it into a safe spot in the branches of the maple tree.\nWhen the eggs hatch, the parents fly back and forth all day long, carrying worms to the hungry chicks. A family of robins can catch hundreds of worms in a single day.\nRobin eggs are a beautiful light blue color, and some paint companies even name a color after them.\nAfter about two weeks, the chicks are big enough to leave the nest, and the parents still feed them for a few more days while they learn to find food.' },
+    c45_braille: { title: 'Dots That Speak', text: 'Louis Braille lost his sight when he was a small boy in France, two hundred years ago. In those days, books for blind children had huge raised letters. They were heavy, expensive, and very slow to read.\nAt school, Louis learned about a code of raised dots that soldiers had used to send messages at night. The code was too hard, so Louis decided to make a better one.\nHe worked on it for years. When he was only fifteen, he finished a code that used just six dots in a small rectangle. Each pattern of dots stood for a letter or a number. A reader could feel a whole letter with one fingertip.\nToday, people all over the world read and write with Braille\'s dots.' },
+    c45_letter: { title: 'How a Letter Travels', text: 'When Yehuda mails a letter to his cousin in Los Angeles, it goes on a long trip.\nFirst, a mail carrier picks it up from the blue mailbox on the corner and brings it to the post office. There, a machine reads the address and sprays a row of tiny lines on the envelope, a code for where it is going.\nNext, the letter rides in a truck to a giant sorting center. Machines sort thousands of letters a minute by their codes. Yehuda\'s letter goes into a bin for California.\nThe bin flies across the country on a cargo plane. Another truck carries it to a post office near his cousin\'s house.\nFinally, a mail carrier walks it to the front door, usually just three or four days after Yehuda dropped it in the box.' },
+    c45_harbor: { title: 'A Morning at the Harbor', text: 'Early on Sunday morning, Avrumi and his Zeidy walked down to the harbor with a bag of sandwiches.\nThe water was calm and gray, and the tall ships rocked gently at the dock. Seagulls circled over the fishing boats, crying loudly for scraps.\nAt the end of the pier, an old man in a wool cap was painting a picture of the boats. Avrumi stood behind him for a long time, watching every careful stroke of his brush.\n"You like to draw?" asked the old man without turning around.\n"Every day," said Avrumi.\nThe man smiled, handed him a small brush, and said, "Then show me the sky."' },
+    c45_rain: { title: 'Caught in the Rain', text: 'On the way home from the park, the sky turned dark and the wind began to blow.\nTzvi Hirsch and his little brother ran past the bakery, past the bus stop and past the shul, but the rain was faster.\nBy the time they reached the corner of their street, their shirts were soaked, their shoes were squishing, and their hair was dripping into their eyes.\nAt the front door, Abba was waiting with two big towels and a smile.\n"Next time," he said, "maybe you will listen to the weather report."' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+    'READ.COMP.L05.10':{name:'Topic or Main Idea?',
+      teach:[
+        {p:'c45_kites', q:'"Kites." Is this the topic or the main idea?', o:['Topic (one or two words)', 'Main idea (a full sentence)', 'Only a detail'], how:'A topic is what the text is about, in one or two words. A main idea says something about the topic, in a full sentence.'},
+        {p:'c45_kites', q:'"People all over the world fly kites, in very different ways." Topic or main idea?', o:['Main idea (a full sentence)', 'Topic (one or two words)', 'Only a detail'], how:'Is it a full sentence that tells what the WHOLE text says about kites?'},
+        {p:'c45_kites', q:'"In India, boys fly small, fast paper kites." What is it?', o:['Only a detail', 'Main idea (a full sentence)', 'Topic (one or two words)'], how:'It is a full sentence, but is it about the whole text, or just one part?'}
+      ],
+      practice:[
+        {t:'type', p:'c45_kites', q:'What is the topic of this text, in one word?', a:'kites', alt:['kite'], kb:'abc',
+          h:'What word keeps coming back in every paragraph?', how:'The topic is the one or two words the whole text is about.'},
+        {t:'sort', p:'c45_kiddush', q:'Sort each one: topic, main idea, or detail?', bins:[{id:'t', label:'Topic (one or two words)'}, {id:'m', label:'Main idea (a full sentence)'}, {id:'d', label:'Only a detail'}],
+          items:[{label:'Kiddush', bin:'t'}, {label:'The whole family works together to get ready for kiddush.', bin:'m'}, {label:'Abba fills the becher.', bin:'d'}, {label:'Shloimy puts a siddur at every place.', bin:'d'}],
+          h:'One or two words? A topic. A sentence about the whole text? The main idea. One small part? A detail.', how:'Topic = what it is about. Main idea = what the whole text says about it. Detail = one small piece.'},
+        {t:'sort', p:'c45_kiddush', q:'Mistake Detective. Did each boy pick the main idea, or make a mistake?', bins:[{id:'g', label:'Main idea: right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Everyone in the family helps get ready for kiddush.', bin:'g'}, {label:'Kiddush.', bin:'m'}, {label:'Zeidy brings a bag of candies.', bin:'m'}, {label:'The family works together so the table is ready for kiddush.', bin:'g'}],
+          h:'Is it a full sentence? Does it cover the whole text?', how:'Two mistakes: giving only the topic (one word), or giving one detail. The main idea covers everything.'},
+        {t:'pairs', p:'c45_kites', q:'Match each one to what it is.', pairs:[['Kites', 'the topic'], ['People fly kites in different ways around the world.', 'the main idea'], ['A cousin builds kites from bamboo.', 'a detail']],
+          h:'Count the words. Then ask: does it cover the whole text?', how:'Topic: a word or two. Main idea: a sentence about the whole text. Detail: one part.'},
+        {t:'spotall', p:'c45_kites', q:'Main idea: "People fly kites in many different ways." Tap every detail that supports it.', cells:[{label:'Giant team kites in Japan', ok:true}, {label:'Fast string-cutting kites in India', ok:true}, {label:'Rooftop kites in winter in Afghanistan', ok:true}, {label:'A kite needs a strong string', ok:false}],
+          h:'Which details show a DIFFERENT way of flying kites?', how:'Supporting details are examples that prove the main idea. Tap each one that shows a different way.'},
+        {t:'order', p:'c45_kiddush', q:'Build the main idea of the kiddush text.', tiles:['The whole family', 'works together', 'to get ready for kiddush.'],
+          h:'Who, what they do, and why.', how:'A main idea is a full sentence: who or what, what about it, for the whole text.'}
+      ],
+      check:[
+        {p:'c45_penguins', q:'"Emperor penguins." Topic, main idea, or detail?', o:['Topic (one or two words)', 'Main idea (a full sentence)', 'Only a detail']},
+        {p:'c45_penguins', q:'"The father keeps the egg warm on his feet for two months." Main idea or detail?', o:['Only a detail', 'Main idea (a full sentence)', 'Topic (one or two words)']},
+        {p:'c45_penguins', q:'"The emperor penguin father works very hard to raise his chick." What is it?', o:['Main idea (a full sentence)', 'Only a detail', 'Topic (one or two words)']}
+      ],
+      re:[
+        {p:'c45_kites', q:'A topic is...', o:['what the text is about, in one or two words', 'a full sentence about the whole text', 'one small fact'], how:'Topic = one or two words.'},
+        {p:'c45_kites', q:'A main idea is...', o:['a full sentence about the whole text', 'one or two words', 'the first fact you see'], how:'Main idea = what the whole text says about the topic.'},
+        {p:'c45_kiddush', q:'"Zeidy tells the best stories." Is it the main idea?', o:['No, it is only a detail', 'Yes, it is the main idea', 'It is the topic'], how:'Does it cover the whole text, or one part?'}
+      ]},
+    'READ.COMP.L05.11':{name:'The Main Idea Nobody Says',
+      teach:[
+        {p:'c45_beaver', q:'Which sentence in the text says the main idea out loud?', o:['None: we have to figure it out', 'The first sentence', 'The last sentence'], how:'Read each sentence. Does any one of them cover the whole text? If not, the main idea is unstated.'},
+        {p:'c45_beaver', q:'"The beaver\'s dam makes a pond that many animals live in." Main idea or only a detail?', o:['Main idea (a full sentence)', 'Only a detail', 'Topic (one or two words)'], how:'Ask: what do ALL the paragraphs add up to? Teeth, dam, pond, frogs, ducks, lodge.'},
+        {p:'c45_beaver', q:'"Frogs lay their eggs in the still water." Main idea or only a detail?', o:['Only a detail', 'Main idea (a full sentence)', 'Topic (one or two words)'], how:'Is it about the whole text, or one small part?'}
+      ],
+      practice:[
+        {t:'type', p:'c45_moving', q:'What kind of food arrived in a pot at lunchtime? Type the word before "soup".', a:'chicken', kb:'abc',
+          h:'Find the lunchtime sentence.', how:'Find the key word lunchtime. Read that sentence.'},
+        {t:'spotall', p:'c45_moving', q:'Tap every detail that shows neighbors helping.', cells:[{label:'Mr. Katz carried boxes.', ok:true}, {label:'The Benaim boys brought cold drinks.', ok:true}, {label:'A neighbor made three van trips.', ok:true}, {label:'The truck came at seven.', ok:false}],
+          h:'Which details are about someone helping?', how:'An unstated main idea is hiding in the details. Collect the details that point the same way.'},
+        {t:'sort', p:'c45_moving', q:'Mistake Detective. Is each one the main idea, or a mistake?', bins:[{id:'g', label:'Main idea: right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'The neighbors all helped the new family feel welcome.', bin:'g'}, {label:'The truck came at seven.', bin:'m'}, {label:'Moving day.', bin:'m'}, {label:'A whole street worked together to welcome the Adlers.', bin:'g'}],
+          h:'Does it cover every paragraph? Is it a full sentence?', how:'Mistakes: a detail, or only the topic. The main idea adds all the details together.'},
+        {t:'order', p:'c45_moving', q:'Build the unstated main idea.', tiles:['The neighbors', 'all helped', 'the new family feel welcome.'],
+          h:'Who did it, what they did, for whom.', how:'Add up the details: carrying, drinks, van trips, soup. What do they all show?'},
+        {t:'pairs', p:'c45_beaver', q:'Match each paragraph to what it adds.', pairs:[['Paragraph 1', 'The beaver cuts and drags branches.'], ['Paragraph 2', 'The dam makes a pond.'], ['Paragraph 3', 'Many animals come to live there.']],
+          h:'Read each paragraph. Say it in a few words.', how:'Sum up each paragraph first. Then add them together to find the main idea.'},
+        {t:'sort', p:'c45_beaver', q:'Which sentences are hints toward the main idea "a beaver\'s pond gives many animals a home"?', bins:[{id:'h', label:'Points to the main idea'}, {id:'n', label:'Does not'}],
+          items:[{label:'Frogs lay their eggs in the still water.', bin:'h'}, {label:'Ducks swim in from the river.', bin:'h'}, {label:'Fish hide among the sunken branches.', bin:'h'}, {label:'A beaver has strong orange teeth.', bin:'n'}],
+          h:'Is the sentence about animals living in the pond?', how:'Hints toward the main idea all point in the same direction.'}
+      ],
+      check:[
+        {p:'c45_market', q:'Does any one sentence say the main idea of "The Floating Market" out loud?', o:['None: we have to figure it out', 'The first sentence', 'The last sentence']},
+        {p:'c45_market', q:'"At the floating market, people buy and sell food from boats." Main idea or detail?', o:['Main idea (a full sentence)', 'Only a detail', 'Topic (one or two words)']},
+        {p:'c45_market', q:'"Buyers hand over money on a long pole." Main idea or detail?', o:['Only a detail', 'Main idea (a full sentence)', 'Topic (one or two words)']}
+      ],
+      re:[
+        {p:'c45_beaver', q:'An unstated main idea is...', o:['one we figure out by adding up the details', 'always the first sentence', 'the title'], how:'No single sentence says it. The details add up to it.'},
+        {p:'c45_moving', q:'First step to find an unstated main idea?', o:['Say what each paragraph is about', 'Pick the longest sentence', 'Copy the title'], how:'Sum up each part, then add them.'},
+        {p:'c45_moving', q:'"Moving day." Is it the main idea?', o:['No, it is only the topic', 'Yes', 'It is a detail'], how:'A main idea is a full sentence.'}
+      ]},
+    'READ.COMP.L05.12':{name:'Which Detail Doesn\'t Belong?',
+      teach:[
+        {p:'c45_bike', q:'Main idea: "Taking care of a bike makes it last." Does "the first bicycles had no pedals" belong?', o:['Does not belong', 'Belongs: it supports the main idea'], how:'Ask: does this detail help prove the main idea? An interesting fact can still be off the main idea.'},
+        {p:'c45_bike', q:'Does "a few drops of oil once a month keep the chain running smoothly" belong?', o:['Belongs: it supports the main idea', 'Does not belong'], how:'Is it a way to take care of a bike so it lasts?'},
+        {p:'c45_bike', q:'Why does the pedal fact not belong, even though it is true?', o:['It is about history, not about taking care of a bike', 'It is false', 'It is too short'], how:'True is not enough. A detail must support THIS main idea.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_bike', q:'How often should you oil the chain? Type the word after "once a".', a:'month', kb:'abc',
+          h:'Find the chain paragraph.', how:'Find the key word oil and read that sentence.'},
+        {t:'sort', p:'c45_bike', q:'Main idea: "Taking care of a bike makes it last." Sort each detail.', bins:[{id:'b', label:'Belongs: it supports the main idea'}, {id:'n', label:'Does not belong'}],
+          items:[{label:'Keep the tires full of air.', bin:'b'}, {label:'Keep the chain clean and oiled.', bin:'b'}, {label:'Store your bike indoors when it rains.', bin:'b'}, {label:'The first bicycles had no pedals.', bin:'n'}],
+          h:'Does the detail tell a way to care for a bike?', how:'Every supporting detail holds up the main idea. A detail about something else does not belong.'},
+        {t:'sort', p:'c45_robins', q:'Mistake Detective. Main idea: "Robins work hard to raise their chicks." Did each boy sort right?', bins:[{id:'r', label:'Sorted right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'"The mother builds a nest" → belongs', bin:'r'}, {label:'"Eggs are light blue" → belongs', bin:'w'}, {label:'"They carry hundreds of worms" → belongs', bin:'r'}, {label:'"Paint companies name a color" → does not belong', bin:'r'}],
+          h:'Is the detail about the parents\' hard work?', how:'The trap: a pretty fact that is true but is not about hard work. Check each one against the main idea.'},
+        {t:'spotall', p:'c45_robins', q:'Tap every detail that supports "Robins work hard to raise their chicks."', cells:[{label:'The mother builds a nest of grass and mud.', ok:true}, {label:'They carry worms all day long.', ok:true}, {label:'They keep feeding chicks after they leave.', ok:true}, {label:'Robin eggs are light blue.', ok:false}],
+          h:'Which details show the parents working?', how:'Tap only the details that prove the main idea.'},
+        {t:'pairs', p:'c45_bike', q:'Match each detail to the reason it helps the bike.', pairs:[['Full tires', 'easier pedaling, fewer flats'], ['Oiled chain', 'no squeaks, lasts longer'], ['Indoors in rain', 'no rust']],
+          h:'Find each detail. What does it protect?', how:'Supporting details each give a reason the main idea is true.'},
+        {t:'order', p:'c45_bike', q:'Build the bike text\'s main idea.', tiles:['Taking care of a bike', 'helps it', 'last for years.'],
+          h:'What is the first sentence saying about all of the text?', how:'Here the main idea is stated in the first sentence. Rebuild it.'}
+      ],
+      check:[
+        {p:'c45_braille', q:'Main idea: Braille made a code for the blind. "A reader feels a whole letter with one fingertip." Belongs?', o:['Belongs: it supports the main idea', 'Does not belong']},
+        {p:'c45_braille', q:'Would "Louis\'s father made saddles for horses" belong in this text?', o:['Does not belong', 'Belongs: it supports the main idea']},
+        {p:'c45_braille', q:'Does "his code used just six dots" belong?', o:['Belongs: it supports the main idea', 'Does not belong']}
+      ],
+      re:[
+        {p:'c45_bike', q:'A detail belongs when...', o:['it helps prove the main idea', 'it is true', 'it is interesting'], how:'True and interesting are not enough.'},
+        {p:'c45_bike', q:'Does "rust makes the brakes stick" belong?', o:['Yes, it shows why to keep the bike dry', 'No'], how:'Is it about caring for a bike?'},
+        {p:'c45_robins', q:'Does "robin eggs are light blue" support "robins work hard"?', o:['No, it does not belong', 'Yes'], how:'Is it about hard work?'}
+      ]},
+    'READ.COMP.L05.13':{name:'GIST: Sum It Up in 15 Words',
+      teach:[
+        {p:'c45_braille', q:'A GIST of a text is...', o:['the main idea in about 15 words', 'every detail, in order', 'my opinion of the text'], how:'GIST = who, what and why it matters, in about 15 words. No small details, no opinions.'},
+        {p:'c45_braille', q:'"Louis Braille, blind since boyhood, invented a six-dot code that blind people read." (13 words). Good GIST?', o:['Good summary', 'Too much detail', 'Missing the main idea'], how:'GIST: who, what, why, in about 15 words. Does it have the main idea and no small details?'},
+        {p:'c45_braille', q:'"Louis lived in France, learned about soldiers, worked for years, and finished at fifteen with six dots." GIST?', o:['Too much detail', 'Good summary', 'Missing the main idea'], how:'Count the small facts. Does it say why the code mattered?'}
+      ],
+      practice:[
+        {t:'type', p:'c45_braille', q:'How many dots did Braille\'s code use? Type the number.', a:'6', alt:['six'], kb:'abc',
+          h:'Find the sentence about his finished code.', how:'Find the key word dots near "finished".'},
+        {t:'sort', p:'c45_braille', q:'Sort each summary of "Dots That Speak".', bins:[{id:'g', label:'Good summary'}, {id:'d', label:'Too much detail'}, {id:'m', label:'Missing the main idea'}],
+          items:[{label:'A blind boy, Louis Braille, made a six-dot code so blind people can read.', bin:'g'}, {label:'Soldiers used dots at night.', bin:'m'}, {label:'Louis lived in France, the books were heavy, expensive and slow, soldiers had a code, it was hard, he worked years.', bin:'d'}, {label:'Louis Braille invented a dot code that lets blind people read with their fingers.', bin:'g'}],
+          h:'Good: main idea, about 15 words. Too much: a list of small facts. Missing: about one small part.', how:'A GIST has the main idea in about 15 words, without the small details.'},
+        {t:'order', p:'c45_braille', q:'Build a GIST in order: who, what, why.', tiles:['Louis Braille', 'invented', 'a six-dot code', 'so blind people could read.'],
+          h:'Who first, then what he did, then why it mattered.', how:'GIST pattern: who, what, why, in about 15 words.'},
+        {t:'sort', p:'c45_braille', q:'Mistake Detective. Is each summary right, or a mistake?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Braille made a six-dot code that blind people use to read.', bin:'r'}, {label:'Books for blind children were heavy.', bin:'w'}, {label:'I think Louis was very smart and brave.', bin:'w'}, {label:'A blind French boy invented the dot code blind people read today.', bin:'r'}],
+          h:'Does it have the main idea? Is it the text, not your opinion?', how:'Two mistakes: only one detail, or your own opinion. A GIST tells what the text says.'},
+        {t:'spotall', p:'c45_braille', q:'Tap every word group a GIST of "Dots That Speak" NEEDS.', cells:[{label:'Louis Braille', ok:true}, {label:'invented a dot code', ok:true}, {label:'so blind people can read', ok:true}, {label:'in France', ok:false}, {label:'at age fifteen', ok:false}],
+          h:'Who, what, why. Leave out where and when if they are small details.', how:'Keep the big pieces. Drop the small facts.'},
+        {t:'pairs', p:'c45_braille', q:'Match each GIST part to its words.', pairs:[['Who?', 'Louis Braille'], ['What?', 'invented a six-dot code'], ['Why it matters?', 'blind people can read and write']],
+          h:'Find who, what and why in the text.', how:'A GIST answers who, what and why.'}
+      ],
+      check:[
+        {p:'c45_letter', q:'"A mailed letter makes a long trip, with many people and machines helping it arrive." Good GIST?', o:['Good summary', 'Too much detail', 'Missing the main idea']},
+        {p:'c45_letter', q:'"A machine sprays tiny lines on the envelope." GIST of the whole text?', o:['Missing the main idea', 'Good summary', 'Too much detail']},
+        {p:'c45_letter', q:'"A carrier, a machine, lines, a truck, bins, a plane, a truck, a carrier." GIST?', o:['Too much detail', 'Good summary', 'Missing the main idea']}
+      ],
+      re:[
+        {p:'c45_braille', q:'A GIST is...', o:['the main idea in about 15 words', 'every detail', 'your opinion'], how:'Short, and only the big idea.'},
+        {p:'c45_braille', q:'A GIST answers...', o:['who, what, and why', 'only when', 'only where'], how:'Who did it, what, and why it matters.'},
+        {p:'c45_braille', q:'"I liked this story." Is it a GIST?', o:['No, it is an opinion', 'Yes'], how:'A GIST tells what the text says.'}
+      ]},
+    'READ.FLU.L05.03':{name:'Scoop the Words',
+      teach:[
+        {p:'c45_harbor', q:'Which shows the sentence scooped into good phrases?', o:['Early on Sunday morning / Avrumi and his Zeidy / walked down to the harbor', 'Early on / Sunday morning Avrumi / and his Zeidy walked / down to the harbor', 'Early / on / Sunday / morning'], how:'A phrase is a group of words that go together, like "on Sunday morning". Do not break a group in the middle.'},
+        {p:'c45_harbor', q:'"The water was calm and gray," Where do you pause?', o:['At the comma', 'After "water"', 'After "calm"'], how:'Punctuation tells your voice where to pause. A comma is a short pause.'},
+        {p:'c45_harbor', q:'Why read in phrases instead of word by word?', o:['It sounds like talking and helps you understand', 'It is faster to skip words', 'It is only for poems'], how:'When words that go together stay together, your brain sees the picture.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_harbor', q:'What did the old man hand Avrumi? Type the last word: "a small ___".', a:'brush', kb:'abc',
+          h:'Find the last paragraph.', how:'Find the sentence where the man smiled.'},
+        {t:'order', p:'c45_harbor', q:'Put the phrases in order to read the sentence smoothly.', tiles:['Seagulls circled', 'over the fishing boats,', 'crying loudly', 'for scraps.'],
+          h:'Read the sentence in the text. Scoop the words that go together.', how:'A phrase keeps words that belong together: who and what they did, where, why.'},
+        {t:'sort', p:'c45_harbor', q:'Mistake Detective. Good phrase, or broken phrase?', bins:[{id:'g', label:'Good phrase'}, {id:'b', label:'Broken phrase'}],
+          items:[{label:'at the end of the pier', bin:'g'}, {label:'an old man in a wool cap', bin:'g'}, {label:'the end of', bin:'b'}, {label:'man in a', bin:'b'}],
+          h:'Does the group make sense on its own?', how:'A good phrase makes sense by itself. A broken phrase stops in the middle of an idea.'},
+        {t:'pairs', p:'c45_harbor', q:'Match each phrase to the question it answers.', pairs:[['on Sunday morning', 'When?'], ['to the harbor', 'Where?'], ['with a bag of sandwiches', 'With what?']],
+          h:'When, where, with what: each phrase answers one.', how:'Phrases often answer a question: when, where, how, with what.'},
+        {t:'spotall', p:'c45_harbor', q:'Tap every place where you should pause in: The man smiled, handed him a small brush, and said, "Then show me the sky."', cells:[{label:'after "smiled,"', ok:true}, {label:'after "brush,"', ok:true}, {label:'after "said,"', ok:true}, {label:'after "small"', ok:false}, {label:'after "the"', ok:false}], h:'Look at the commas and the speaker tag.', how:'Pause at each comma and before the words someone says.'},
+        {t:'sort', p:'c45_harbor', q:'Is each one a phrase or just a pile of words?', bins:[{id:'g', label:'Good phrase'}, {id:'b', label:'Broken phrase'}],
+          items:[{label:'every careful stroke', bin:'g'}, {label:'of his brush', bin:'g'}, {label:'stroke of his', bin:'b'}, {label:'watching every', bin:'b'}],
+          h:'Say it out loud. Does it sound complete?', how:'Words that hold one small idea together are a phrase.'}
+      ],
+      check:[
+        {p:'c45_rain', q:'"past the bus stop" Good phrase or broken phrase?', o:['Good phrase', 'Broken phrase']},
+        {p:'c45_rain', q:'"their shoes were" Good phrase or broken phrase?', o:['Broken phrase', 'Good phrase']},
+        {p:'c45_rain', q:'"At the front door, Abba was waiting." Where do you pause?', o:['At the comma', 'After "front"', 'After "Abba"']}
+      ],
+      re:[
+        {p:'c45_harbor', q:'A phrase is...', o:['a group of words that go together', 'one single word', 'a whole paragraph'], how:'Words that hold one small idea.'},
+        {p:'c45_harbor', q:'A comma tells your voice to...', o:['pause a little', 'stop for a long time', 'shout'], how:'Comma = short pause.'},
+        {p:'c45_harbor', q:'"to the harbor" answers...', o:['Where?', 'When?', 'Who?'], how:'Harbor is a place.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L05.10':{
+      hook:'"What is it about?" has two answers: a word, and a sentence. Good readers know the difference.',
+      big:'The topic is what a text is about, in one or two words. The main idea is what the whole text says about it, in a sentence.',
+      intro:['Find the topic: the word that keeps coming back.', 'Ask: what does the WHOLE text say about it?', 'Say it as a full sentence. That is the main idea.', 'One small fact is a detail. Details hold up the main idea.'],
+      ex:[{q:'Kites Around the World', steps:['The word that keeps coming back: kites. Topic: kites.', 'What does the whole text say? Japan, India, Afghanistan, Eretz Yisrael: different ways.', 'Main idea: People all over the world fly kites in different ways.'], a:'Topic: kites. Main idea: people fly kites in different ways.'},
+          {q:'Getting Ready for the Kiddush', steps:['Topic: Friday night kiddush.', 'Abba, Dovid, Shloimy all help.', 'Main idea: the whole family works together to get ready.'], a:'The whole family works together to get ready for kiddush.'}],
+      oops:{q:'What is the main idea of the kites text?', wrong:'Kites.', right:'People all over the world fly kites in different ways.', why:'"Kites" is only the topic. The main idea is a sentence about the whole text.'},
+      idea:['The topic is the name on the folder. The main idea is the one sentence that tells what is inside.'],
+      try:{q:'Is "Shloimy puts out the siddurim" the main idea?', o:['No, it is a detail', 'Yes'], a:'No, it is a detail', steps:['Does it cover the whole text?', 'It is one small part.']}
+    },
+    'READ.COMP.L05.11':{
+      hook:'Sometimes the author never says the main idea. You have to add it up yourself, like a detective.',
+      big:'When no sentence says the main idea, sum up each paragraph, then ask what they all add up to.',
+      intro:['Look for a sentence that covers the whole text. If there is none, the main idea is unstated.', 'Say what each paragraph is about, in a few words.', 'Ask: what do all of them add up to?', 'Say it in one full sentence. Check it against every paragraph.'],
+      ex:[{q:'The Beaver\'s Pond', steps:['No sentence covers it all.', 'P1: cuts and drags branches. P2: builds a dam, a pond forms. P3: frogs, ducks, fish, herons. P4: the lodge.', 'Add up: the beaver builds a pond, and the pond becomes a home for many animals.'], a:'A beaver\'s dam makes a pond where many animals live.'},
+          {q:'Moving Day', steps:['Boxes, drinks, van trips, soup, new friends.', 'Every detail is a neighbor helping.', 'Main idea: the neighbors all helped the new family feel welcome.'], a:'The neighbors helped the new family feel welcome.'}],
+      oops:{q:'Main idea of Moving Day?', wrong:'The truck came at seven.', right:'The neighbors all helped the new family feel welcome.', why:'The first sentence is not always the main idea. Here it is only a detail.'},
+      idea:['Details are like numbers in an addition problem. The main idea is the total.'],
+      try:{q:'"Fish hide among the branches." Main idea?', o:['No, only a detail', 'Yes'], a:'No, only a detail', steps:['Does it cover the whole text?']}
+    },
+    'READ.COMP.L05.12':{
+      hook:'A detail can be true and interesting and still not belong. Good readers can spot it.',
+      big:'A detail belongs only if it helps prove the main idea.',
+      intro:['Say the main idea first.', 'Read each detail and ask: does it help prove the main idea?', 'True is not enough. Interesting is not enough.', 'A detail about something else does not belong.'],
+      ex:[{q:'Taking Care of a Bike', steps:['Main idea: taking care of a bike makes it last.', 'Tires, chain, rain: all ways to care for it. They belong.', '"The first bicycles had no pedals": true, but it is history, not care.', 'It does not belong.'], a:'The pedal fact does not belong.'},
+          {q:'Zeidy\'s Garden Robins', steps:['Main idea: robins work hard to raise chicks.', 'Nest, worms, feeding: hard work. They belong.', '"Eggs are light blue": pretty, true, not hard work. It does not belong.'], a:'The blue eggs fact does not belong.'}],
+      oops:{q:'Does "eggs are light blue" belong with "robins work hard"?', wrong:'Yes, it is true.', right:'No. It is true, but it is not about hard work.', why:'A detail must support the main idea, not just be true.'},
+      idea:['Supporting details are the legs of a table. A detail that does not hold up the table is just decoration.'],
+      try:{q:'Does "Check the tires every week" belong?', o:['Yes', 'No'], a:'Yes', steps:['Is it a way to care for a bike?']}
+    },
+    'READ.COMP.L05.13':{
+      hook:'Can you tell a whole article in one breath? A GIST does it in about 15 words.',
+      big:'A GIST is the main idea in about 15 words: who, what, and why it matters, with no small details.',
+      intro:['Find the main idea.', 'Answer: who? what? why does it matter?', 'Leave out small facts like dates, places and lists.', 'Count: about 15 words. No opinions.'],
+      ex:[{q:'Dots That Speak', steps:['Who? Louis Braille, a blind boy.', 'What? He invented a six-dot code.', 'Why? So blind people can read and write.', 'GIST: A blind boy, Louis Braille, invented a six-dot code so blind people can read. (14 words)'], a:'A blind boy, Louis Braille, invented a six-dot code so blind people can read.'},
+          {q:'Taking Care of a Bike', steps:['Who/what: a bike. Main idea: care makes it last.', 'How: air, oil, keep it dry.', 'GIST: Keep tires full, oil the chain and keep your bike dry so it lasts. (14 words)'], a:'Keep tires full, oil the chain and keep your bike dry so it lasts.'}],
+      oops:{q:'GIST of Dots That Speak?', wrong:'Louis lived in France, books were heavy, soldiers had a code, he worked for years.', right:'Louis Braille invented a six-dot code so blind people can read.', why:'The first one is a list of small facts. A GIST keeps only the main idea.'},
+      idea:['A GIST is like a text message to a friend: the whole story, short.'],
+      try:{q:'"Braille\'s code used six dots." Good GIST?', o:['No, it is missing the main idea', 'Yes'], a:'No, it is missing the main idea', steps:['Does it say why the code matters?']}
+    },
+    'READ.FLU.L05.03':{
+      hook:'Good readers do not read word... by... word. They scoop words into groups, like talking.',
+      big:'Scoop words that go together into phrases, and pause at punctuation.',
+      intro:['Find the groups: who, did what, where, when, how.', 'Read each group smoothly, as one piece.', 'Pause a little at commas and between groups.', 'Read it again, faster, still in phrases.'],
+      ex:[{q:'Early on Sunday morning Avrumi and his Zeidy walked down to the harbor.', steps:['When? Early on Sunday morning.', 'Who? Avrumi and his Zeidy.', 'Did what, where? walked down to the harbor.', 'Read: Early on Sunday morning / Avrumi and his Zeidy / walked down to the harbor.'], a:'Three smooth scoops.'},
+          {q:'Seagulls circled over the fishing boats, crying loudly for scraps.', steps:['Seagulls circled / over the fishing boats, / crying loudly / for scraps.', 'Pause at the comma.'], a:'Four scoops, a pause at the comma.'}],
+      oops:{q:'An old man in a wool cap was painting.', wrong:'An old / man in a / wool cap was / painting.', right:'An old man / in a wool cap / was painting.', why:'Broken phrases chop ideas in half. Keep words that go together together.'},
+      idea:['Reading in phrases is like scooping ice cream: a full scoop, not crumbs.'],
+      try:{q:'Which is a good phrase?', o:['in a wool cap', 'man in a', 'cap was'], a:'in a wool cap', steps:['Does it make sense by itself?']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.COMP.L05.10':{ band:'E45', pic:'🪁', today:'Tell the topic from the main idea',
+      why:'A word tells what it is about. A sentence tells what it says. You need both.',
+      ready:[{q:'Proof is a sentence that...', o:['makes the answer true','is the longest','comes first'], a:'makes the answer true'},
+             {q:'Which is ONE word about a text?', o:['the topic','the main idea','the proof'], a:'the topic'}],
+      bridge:'READ.COMP.L05.01', bridgeName:'Big Idea',
+      watch:{ q:'Kites Around the World', m:{type:'scene', e:'🪁', t:'People all over the world fly kites, in very different ways. In Japan, giant team kites. In India, fast paper kites. In Eretz Yisrael, kites on Lag BaOmer.'}, steps:[
+        {t:'Which word keeps coming back? Kites. That is the TOPIC: one or two words.'},
+        {t:'What does the WHOLE text say about kites? Different countries, different ways.'},
+        {t:'I say it in a full sentence: People all over the world fly kites in different ways. That is the MAIN IDEA.'},
+        {t:'"In India, boys fly fast paper kites" is one part. That is a DETAIL. It holds up the main idea.'}],
+        a:'Topic = a word or two. Main idea = a sentence about the whole text.' },
+      oops:{ q:'Main idea of the kites text?', wrong:'Kites.', right:'People all over the world fly kites in different ways.', why:'"Kites" is only the topic. The main idea is a full sentence.' },
+      ways:['worked example','graphic organizer: topic, main idea, details','sort and build','Mistake Detective','tap the reason'], done:'You can tell the topic from the main idea!',
+      board:{ one:'Topic = a word. Main idea = a sentence about the whole text. Details hold it up.', activity:'Umbrella poster: the topic on the handle, the main idea on the umbrella, details as raindrops underneath.', mistakes:['Giving the topic instead of the main idea','Giving one detail as the main idea','A main idea that covers only part of the text'] },
+      do:[
+        {type:'sort', bins:['Topic','Main idea','Detail'], cards:[['Kites',0],['People fly kites in different ways.',1],['India has fast paper kites.',2],['Japan has giant team kites.',2]],
+          say:'Topic, main idea, or detail? Sort each card.', how:'One or two words: topic. A sentence about all of it: main idea.'},
+        {type:'listen', q:'Abba fills the becher. Dovid brings the challah. Shloimy sets the siddurim.', hear:'What is the main idea?', o:['The family works together for kiddush','Abba fills the becher','Kiddush'], a:'The family works together for kiddush',
+          say:'Listen. Which one is the main idea?', how:'Does it cover all three sentences? Is it a full sentence?',
+          why:{q:'Why not "Kiddush"?', o:['It is only the topic','It is a detail','It is too long'], a:'It is only the topic'}}],
+      your:[
+        {type:'sort', mis:true, q:'What is the main idea of the kiddush text?', bins:['Right','Mistake'], cards:[['Everyone helps get ready for kiddush.',0],['Kiddush.',1],['Zeidy brings candies.',1],['The family works together for kiddush.',0]],
+          say:'Mistake Detective: main idea, or a mistake?', how:'Just the topic is a mistake. One detail is a mistake too.'},
+        {type:'match', pairs:[['Kites','topic'],['People fly kites in different ways.','main idea'],['A cousin builds bamboo kites.','detail']],
+          say:'Match each one to what it is.', how:'Count the words. Does it cover the whole text?'},
+        {type:'tiles', w:['The whole family','works together','to get ready for kiddush.'], extra:['Zeidy brings candies.'],
+          say:'Build the main idea of the kiddush text.', how:'Who, what they do, and why. Leave out the detail.',
+          why:{q:'Why leave out "Zeidy brings candies"?', o:['It is only one detail','It is not true','It is too short'], a:'It is only one detail'}},
+        {type:'sort', q:'Main idea: people fly kites in many ways.', bins:['Supports it','Does not'], cards:[['Giant team kites in Japan',0],['Rooftop kites in winter',0],['A kite needs a string',1]],
+          say:'Which details support the main idea?', how:'Does the detail show a different way to fly kites?'},
+        {type:'listen', q:'Challenge: Yehuda says the main idea is "Kites need a strong string."', hear:'Is Yehuda right?', o:['No, that is only one detail','Yes, that is the main idea','No, that is the topic'], a:'No, that is only one detail',
+          say:'Challenge! Is Yehuda right?', how:'Does his sentence cover the whole text?'}] },
+    'READ.COMP.L05.11':{ band:'E45', pic:'🦫', today:'Find a main idea the author never says',
+      why:'Many authors hide the main idea. Add up the details, and you find it.',
+      ready:[{q:'A main idea is...', o:['a sentence about the whole text','one word','one detail'], a:'a sentence about the whole text'},
+             {q:'"Kites." Topic or main idea?', o:['Topic','Main idea','Detail'], a:'Topic'}],
+      bridge:'READ.COMP.L05.10', bridgeName:'Topic or Main Idea?',
+      watch:{ q:'The Beaver\'s Pond', m:{type:'scene', e:'🦫', t:'A beaver chews down trees and builds a dam. The water rises into a pond. Frogs, ducks, fish and herons come to live there.'}, steps:[
+        {t:'I look for one sentence that covers it all. There is none. The main idea is unstated.'},
+        {t:'I sum up each part: branches, a dam, a pond, many animals.'},
+        {t:'I add them up: the beaver\'s dam makes a pond, and the pond is a home for many animals.'},
+        {t:'I check it against every paragraph. It fits them all. That is the main idea.'}],
+        a:'Sum up each part, then add them up.' },
+      oops:{ q:'Main idea of Moving Day?', wrong:'The truck came at seven.', right:'The neighbors helped the new family feel welcome.', why:'The first sentence is not always the main idea.' },
+      ways:['worked example','adding up details','sort and build','Mistake Detective','tap the reason'], done:'You can find a main idea the author never says!',
+      board:{ one:'No sentence says it? Sum up each part, then add them up.', activity:'Detail cards in a hat: each group pulls 4 details and writes the main idea they add up to.', mistakes:['Picking the first sentence as the main idea','Giving a detail','Giving only the topic'] },
+      do:[
+        {type:'match', pairs:[['Chews trees, drags branches','the beaver works hard'],['Builds a dam','a pond forms'],['Frogs, ducks, fish','animals move in']],
+          say:'Sum up each paragraph. Match it.', how:'Say each paragraph in a few words.'},
+        {type:'sort', mis:true, q:'What is the main idea of Moving Day?', bins:['Right','Mistake'], cards:[['Neighbors helped them feel welcome.',0],['The truck came at seven.',1],['Moving day.',1],['The street welcomed the Adlers.',0]],
+          say:'Mistake Detective: main idea, or a mistake?', how:'The first sentence is not always it. Add up all the details.'}],
+      your:[
+        {type:'tiles', w:['The neighbors','all helped','the new family feel welcome.'], extra:['the truck came early.'],
+          say:'Build the unstated main idea.', how:'Who, what they did, for whom.',
+          why:{q:'Why is this the main idea?', o:['Every detail adds up to it','It is the first sentence','It is the shortest'], a:'Every detail adds up to it'}},
+        {type:'sort', q:'Main idea: neighbors helped the new family.', bins:['Points to it','Does not'], cards:[['Mr. Katz carried boxes.',0],['Cold drinks for the movers.',0],['Three van trips.',0],['The truck came at seven.',1]],
+          say:'Which details point to the main idea?', how:'Is the detail about someone helping?'},
+        {type:'listen', q:'Lanterns hung. Tables set in the sukkah. Paper chains on the walls.', hear:'What do these details add up to?', o:['The family is getting the sukkah ready','Lanterns are bright','Paper chains are long'], a:'The family is getting the sukkah ready',
+          say:'Add up the details. What is the main idea?', how:'What do all three details have in common?',
+          why:{q:'Why not "Lanterns are bright"?', o:['It is only one detail','It is not true','It is the title'], a:'It is only one detail'}},
+        {type:'match', pairs:[['Frogs lay eggs in the pond.','detail'],['A beaver\'s pond is a home for many animals.','main idea'],['Beavers','topic']],
+          say:'Match each one to what it is.', how:'One or two words, one part, or the whole text?'},
+        {type:'listen', q:'Challenge: Dovid says the main idea is "Beavers have orange teeth."', hear:'Is Dovid right?', o:['No, that is only a detail','Yes, that is the main idea','No, that is the topic'], a:'No, that is only a detail',
+          say:'Challenge! Is Dovid right?', how:'Does his sentence add up every paragraph?'}] },
+    'READ.COMP.L05.12':{ band:'E45', pic:'🚲', today:'Spot the detail that does not belong',
+      why:'A true fact can still be off topic. Spot it, and you see the main idea clearly.',
+      ready:[{q:'A main idea is...', o:['a sentence about the whole text','one word','one detail'], a:'a sentence about the whole text'},
+             {q:'Details do what to the main idea?', o:['hold it up','hide it','replace it'], a:'hold it up'}],
+      bridge:'READ.COMP.L05.10', bridgeName:'Topic or Main Idea?',
+      watch:{ q:'Taking Care of a Bike', m:{type:'scene', e:'🚲', t:'A bike lasts for years if you take care of it. Keep the tires full. Oil the chain. The first bicycles had no pedals. Keep it dry in the rain.'}, steps:[
+        {t:'Main idea first: taking care of a bike makes it last.'},
+        {t:'Tires, chain, rain: each one is a way to care for it. They belong.'},
+        {t:'"The first bicycles had no pedals." True, and interesting. But is it about caring for a bike?'},
+        {t:'No. It is history. It does not belong.'}],
+        a:'A detail belongs only if it helps prove the main idea.' },
+      oops:{ q:'"Eggs are light blue" with "robins work hard"?', wrong:'It belongs: it is true.', right:'It does not belong: it is not about hard work.', why:'True is not enough. It must support the main idea.' },
+      ways:['worked example','graphic organizer (table legs)','sort and match','Mistake Detective','tap the reason'], done:'You can spot the detail that does not belong!',
+      board:{ one:'A detail belongs only if it holds up the main idea.', activity:'Odd one out: the teacher reads 4 details; boys stand when they hear the one that does not belong.', mistakes:['Keeping a detail because it is true','Keeping a detail because it is interesting','Throwing out a detail that does support it'] },
+      do:[
+        {type:'sort', q:'Main idea: care makes a bike last.', bins:['Belongs','Does not'], cards:[['Keep the tires full.',0],['Oil the chain.',0],['Keep it dry.',0],['The first bikes had no pedals.',1]],
+          say:'Does each detail belong with the main idea?', how:'Is it a way to care for a bike?'},
+        {type:'listen', q:'Main idea: robins work hard to raise chicks.', hear:'Which detail does NOT belong?', o:['Robin eggs are light blue','The mother builds a nest','They carry worms all day'], a:'Robin eggs are light blue',
+          say:'Which detail does not belong?', how:'Which one is not about hard work?',
+          why:{q:'Why does it not belong?', o:['It is true but not about hard work','It is false','It is too long'], a:'It is true but not about hard work'}}],
+      your:[
+        {type:'sort', mis:true, q:'Main idea: robins work hard.', bins:['Sorted right','Mistake'], cards:[['Nest → belongs',0],['Blue eggs → belongs',1],['Worms → belongs',0],['Paint color → does not',0]],
+          say:'Mistake Detective: did Avrumi sort each one right?', how:'The trap: a true fact that is not about hard work.'},
+        {type:'match', pairs:[['Full tires','fewer flats'],['Oiled chain','lasts longer'],['Indoors in rain','no rust']],
+          say:'Match each detail to how it helps.', how:'What does each detail protect?'},
+        {type:'tiles', w:['Taking care of a bike','helps it','last for years.'], extra:['had no pedals.'],
+          say:'Build the main idea of the bike text.', how:'The first sentence says it. Rebuild it.',
+          why:{q:'Why leave out "had no pedals"?', o:['It does not belong to the main idea','It is false','It is too short'], a:'It does not belong to the main idea'}},
+        {type:'sort', q:'Main idea: Shabbos table is ready.', bins:['Belongs','Does not'], cards:[['The candles are lit.',0],['The challah is covered.',0],['The car needs gas.',1]],
+          say:'New text! Which details belong?', how:'Is it about the table being ready?'},
+        {type:'listen', q:'Challenge: main idea: "Our class trip was full of learning."', hear:'Which detail does NOT belong?', o:['The bus had blue seats','We saw a moon rock','We tried an electricity experiment'], a:'The bus had blue seats',
+          say:'Challenge! Which detail does not belong?', how:'Which one is not about learning?'}] },
+    'READ.COMP.L05.13':{ band:'E45', pic:'✂️', today:'Sum up a whole text in 15 words',
+      why:'If you can say it in 15 words, you really understood it.',
+      ready:[{q:'"Robins work hard to raise chicks." This is...', o:['the main idea','a detail','the topic'], a:'the main idea'},
+             {q:'Small facts like dates and places are...', o:['details','the main idea','the topic'], a:'details'}],
+      bridge:'READ.COMP.L05.12', bridgeName:'Which Detail Doesn\'t Belong?',
+      watch:{ q:'Dots That Speak', m:{type:'scene', e:'⠃', t:'Louis Braille lost his sight as a boy. At fifteen, he finished a code of six raised dots. Today, blind people all over the world read with his dots.'}, steps:[
+        {t:'GIST means the main idea in about 15 words. First: WHO? Louis Braille, a blind boy.'},
+        {t:'WHAT did he do? He invented a code of six raised dots.'},
+        {t:'WHY does it matter? Blind people can read and write with it.'},
+        {t:'Put it together: A blind boy, Louis Braille, invented a six-dot code so blind people can read. 14 words!'}],
+        a:'Who + what + why, in about 15 words.' },
+      oops:{ q:'GIST of Dots That Speak?', wrong:'Louis lived in France, books were heavy, soldiers had a code...', right:'Louis Braille invented a six-dot code so blind people can read.', why:'A list of small facts is not a GIST. Keep only the main idea.' },
+      ways:['worked example with fading','who-what-why organizer','sort and build','Mistake Detective','tap the reason','challenge round'], done:'You can sum up a whole text in 15 words! Tell your chavrusa your GIST.',
+      board:{ one:'GIST = who + what + why, about 15 words, no small details.', activity:'15-word challenge: pairs write a GIST on a strip with 15 boxes, one word per box.', mistakes:['A list of every detail','Only one small detail','Adding my opinion'] },
+      do:[
+        {type:'match', pairs:[['Who?','Louis Braille'],['What?','invented a dot code'],['Why?','blind people can read']],
+          say:'Find who, what and why. Match them.', how:'A GIST answers who, what and why.'},
+        {type:'tiles', w:['Louis Braille','invented','a six-dot code','so blind people could read.'], extra:['in France,'],
+          say:'Build the GIST: who, what, why.', how:'Who first, then what, then why. Leave out small facts.'}],
+      your:[
+        {type:'sort', mis:true, bins:['Good GIST','Mistake'], cards:[['Braille made a dot code so the blind can read.',0],['Books were heavy.',1],['I think he was brave.',1],['A blind boy invented the code blind people read.',0]],
+          say:'Mistake Detective: good GIST, or a mistake?', how:'One small fact is a mistake. An opinion is a mistake.'},
+        {type:'listen', q:'Keep tires full, oil the chain, keep it dry, so it lasts.', hear:'Is this a good GIST of the bike text?', o:['Good summary','Too much detail','Missing the main idea'], a:'Good summary',
+          say:'Is this a good GIST of the bike text?', how:'Does it have the main idea, in about 15 words?',
+          why:{q:'What makes it good?', o:['It has the main idea and no small facts','It is very long','It has an opinion'], a:'It has the main idea and no small facts'}},
+        {type:'sort', bins:['Keep','Leave out'], cards:[['Louis Braille',0],['invented a dot code',0],['in France',1],['at age fifteen',1]],
+          say:'Keep it or leave it out of the GIST?', how:'Keep who, what, why. Drop small facts.'},
+        {type:'tiles', w:['Robins','work hard','to feed and raise','their chicks.'], extra:['have blue eggs'],
+          say:'Build a GIST of the robin text.', how:'Who, what they do, why. Leave out the pretty fact.',
+          why:{q:'Why leave out "blue eggs"?', o:['It is a small detail, not the main idea','It is false','It is too long'], a:'It is a small detail, not the main idea'}},
+        {type:'listen', q:'Challenge: "Neighbors carried boxes, brought drinks, drove a van and cooked soup."', hear:'Is this a good GIST of Moving Day?', o:['Too much detail','Good summary','Missing the main idea'], a:'Too much detail',
+          say:'Challenge! Is this a good GIST?', how:'Is it a list of details, or the main idea?'}] },
+    'READ.FLU.L05.03':{ band:'E45', pic:'🍨', today:'Scoop words into phrases and read smoothly',
+      why:'Reading in phrases sounds like talking, and it helps you see the picture.',
+      ready:[{q:'How many beats in "invention"?', o:['3','2','4'], a:'3'},
+             {q:'A comma tells you to...', o:['pause a little','stop reading','read faster'], a:'pause a little'}],
+      bridge:'READ.FLU.L05.02', bridgeName:'Long Word Breaker',
+      watch:{ q:'A Morning at the Harbor', m:{type:'scene', e:'⚓', t:'Early on Sunday morning / Avrumi and his Zeidy / walked down to the harbor / with a bag of sandwiches.'}, steps:[
+        {t:'Word by word sounds like a robot: Early. On. Sunday. Morning.'},
+        {t:'I scoop words that go together. When? Early on Sunday morning.'},
+        {t:'Who? Avrumi and his Zeidy. Did what? walked down to the harbor.'},
+        {t:'Now smoothly: Early on Sunday morning / Avrumi and his Zeidy / walked down to the harbor.'}],
+        a:'Scoop the words, pause at commas.' },
+      oops:{ q:'An old man in a wool cap was painting.', wrong:'An old / man in a / wool cap was', right:'An old man / in a wool cap / was painting', why:'Broken phrases chop ideas in half.' },
+      ways:['repeated reading with a model','phrase scoops','sort and build','Mistake Detective','tap the reason','chavrusa'], done:'You can scoop words into phrases! Read the harbor story to your chavrusa.',
+      board:{ one:'Scoop words that go together. Pause at punctuation.', activity:'Scoop strips: sentences cut into phrases; pairs rebuild them and read them smoothly, three times.', mistakes:['Reading word by word','Breaking a phrase in the middle','Ignoring commas'] },
+      do:[
+        {type:'tiles', w:['Seagulls circled','over the fishing boats,','crying loudly','for scraps.'], extra:['boats crying'],
+          say:'Put the scoops in order. Then read it smoothly.', how:'Keep the words that go together together.'},
+        {type:'sort', mis:true, bins:['Good phrase','Broken phrase'], cards:[['at the end of the pier',0],['in a wool cap',0],['the end of',1],['man in a',1]],
+          say:'Mistake Detective: good phrase, or broken?', how:'Does the group make sense by itself?'}],
+      your:[
+        {type:'match', pairs:[['on Sunday morning','When?'],['to the harbor','Where?'],['with a bag of sandwiches','With what?']],
+          say:'Match each phrase to its question.', how:'When, where, with what.'},
+        {type:'listen', q:'The man smiled and said, "Then show me the sky."', hear:'Where does the voice pause before this line?', o:['After "said"','After "show"','After "the"'], a:'After "said"',
+          say:'Listen. Where do you pause?', how:'Pause between who speaks and the words he says.',
+          why:{q:'Why pause there?', o:['The speaker tag ends and the talking starts','It is a long word','The line is short'], a:'The speaker tag ends and the talking starts'}},
+        {type:'sort', bins:['Good phrase','Broken phrase'], cards:[['every careful stroke',0],['of his brush',0],['stroke of his',1]],
+          say:'Good phrase or broken phrase?', how:'Say it out loud. Does it sound complete?'},
+        {type:'tiles', w:['The man smiled,','handed him','a small brush,','and said...'], extra:['smiled handed'],
+          say:'Build the sentence in scoops.', how:'Pause at each comma.',
+          why:{q:'Why pause at the commas?', o:['Each comma ends one small group of words','Commas mean the sentence is over','Commas are only for lists of numbers'], a:'Each comma ends one small group of words'}},
+        {type:'listen', q:'Challenge: "The water was calm and gray, and the tall ships rocked gently at the dock."', hear:'Which is the best scoop?', o:['The water was calm and gray, / and the tall ships / rocked gently / at the dock.','The water / was calm and / gray and the tall / ships rocked','The / water / was / calm'], a:'The water was calm and gray, / and the tall ships / rocked gently / at the dock.',
+          say:'Challenge! Which is the best scoop?', how:'Keep groups whole and pause at the comma.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
