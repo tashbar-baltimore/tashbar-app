@@ -21,8 +21,8 @@ Share of the 90 core hours (proposal): comprehension and fluency ≈ 35 h (this 
 ## Built and live (passes the standard)
 | Date | PR | What | Grade 4 min | Grade 5 min |
 |---|---|---|---|---|
-| — | — | nothing yet | 0 | 0 |
-| | | **Running total** | **0 / 2,095** | **0 / 2,169** |
+| 2026-11-24 | (this PR) | Unit 4.1 "Prove it!": 6 small skill lessons (READ.COMP.L05.05–.09, READ.FLU.L05.02), 13 short passages | 48 | 0 |
+| | | **Running total** | **48 / 2,095** | **0 / 2,169** |
 
 ## Left out on purpose
 - Vocabulary, word parts and figurative language (`READ.VOC.*`): job G.

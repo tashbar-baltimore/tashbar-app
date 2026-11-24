@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""PICS-1: adds web/pics/* to the LIVE Firebase Hosting site WITHOUT rebuilding it.
+"""PICS-1: adds the shared art library's pictures (art/pics/*) to the LIVE Firebase Hosting site WITHOUT rebuilding it.
 It clones the version that is live now (every file and setting stays exactly as it is), adds /pics/<file> for each picture,
-and releases that. Use it when only pictures changed; web/refresh.sh (full rebuild) also ships web/pics.
+and releases that. Use it when only pictures changed; web/refresh.sh (full rebuild) also ships them.
 Usage: python3 web/pics_deploy.py <project-id> <access-token-file> [release note]   (the token is read from a file, never printed)"""
 import sys, os, json, gzip, hashlib, time, urllib.request
 proj, tokfile = sys.argv[1], sys.argv[2]; note = sys.argv[3] if len(sys.argv) > 3 else 'pictures'
-TOK = open(tokfile).read().strip(); PICS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'pics')
+TOK = open(tokfile).read().strip(); PICS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'art', 'pics')
 API = 'https://firebasehosting.googleapis.com/v1beta1'
 def call(method, url, body=None, raw=None, ctype='application/json'):
     data = raw if raw is not None else (json.dumps(body).encode() if body is not None else None)
