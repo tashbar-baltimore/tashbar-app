@@ -1,0 +1,389 @@
+<script>
+/* CoreDataW4812.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 5 (L06), Unit 3 "Opinion, Level 2" (reasons and proof from a text). Cast: the Glen Avenue Crew.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L06.06':{name:'TREE, Level 2',
+  teach:[
+    {how:'In Grade 4 you planned an opinion with TREE: Topic sentence, Reasons, Explain, Ending. Level 2 goes further: the question is about a TEXT, so your reasons come FROM THE TEXT. Read Yehuda’s Gazette article: “The empty lot behind our yeshiva gets about 7 hours of sun a day. Mr. Halpern said, ‘A garden is a science lab that grows.’ Lettuce is ready to pick about 6 weeks after planting. The Tomchei Shabbos pantry nearby needs fresh vegetables every week. Rabbi Feldman said, ‘When a boy plants a seed, he learns patience.’ Dovid’s Abba offered to build six raised beds, one for each class.” The TOPIC sentence turns the question into your answer.', q:'The question: “Should our yeshiva start a vegetable garden?” Which topic sentence answers it?', o:['Our yeshiva should start a vegetable garden.','Gardens have many plants.','This piece is about gardens.']},
+    {how:'R is for REASONS. At Level 2, every reason must come from the text. Ask: can I point to the sentence in the article that gives me this reason? If yes, it is FROM THE TEXT. If not, it is NOT IN THE TEXT, and it does not belong in this plan, even if it is true.', q:'Same article. Which reason comes from the text?', o:['The garden could give fresh vegetables to the pantry.','Gardening is more fun than math.','Everyone in our class wants a garden.']},
+    {how:'E is for EXPLAIN: under each reason, write the detail from the text that backs it up. The last E is the ENDING: say your opinion again. Two mistakes: a reason that is NOT IN THE TEXT, and a topic sentence that DOES NOT ANSWER THE QUESTION.', q:'Reason: a garden teaches science. Which detail from the text explains it?', o:['Mr. Halpern said, “A garden is a science lab that grows.”','Rabbi Feldman said, “When a boy plants a seed, he learns patience.”','Gardens are good for everyone.']}
+  ],
+  practice:[
+    {t:'sort', q:'The article: about 7 hours of sun; “a science lab that grows”; lettuce in about 6 weeks; the pantry needs fresh vegetables; a boy “learns patience”; six raised beds. Sort each reason: from the text, or not in the text?', bins:[{id:'F',label:'📄 From the text'},{id:'N',label:'💭 Not in the text'}],
+      items:[{label:'The pantry nearby needs fresh vegetables every week.',bin:'F'},{label:'The lot gets about 7 hours of sun a day.',bin:'F'},{label:'Gardening is better than recess.',bin:'N'},{label:'Most boys love tomatoes.',bin:'N'},{label:'Dovid’s Abba offered to build the beds.',bin:'F'}],
+      h:'Look back at the article. Can you find the sentence it came from? If not, it is not in the text.'},
+    {t:'order', q:'Put Yehuda’s TREE plan in order: topic, reason, explain, ending. Tap the lines in order.', tiles:['Our yeshiva should start a vegetable garden.','One reason is that a garden can help families in need.','The article proves it: the pantry nearby needs fresh vegetables every week.','For all these reasons, a garden would be good for our yeshiva and our neighbors.'], extra:['Gardens are green.'],
+      h:'T, R, E, E: the topic answers the question, the reason comes next, the detail explains it, the ending says it again.'},
+    {t:'pairs', q:'Match each reason to the detail from the text that explains it.', pairs:[['A garden teaches science.','Mr. Halpern: “A garden is a science lab that grows.”'],['A garden teaches patience.','Rabbi Feldman: “When a boy plants a seed, he learns patience.”'],['The lot is ready for a garden.','It gets about 7 hours of sun a day.'],['A garden can help families in need.','The pantry needs fresh vegetables every week.']],
+      h:'Read the reason. Which sentence in the article proves THAT reason?'},
+    {t:'spotall', q:'Question: “Should our yeshiva start a vegetable garden?” Tap every topic sentence that answers the question.', cells:[{label:'Our yeshiva should start a vegetable garden.',ok:true},{label:'I think a garden behind our yeshiva is a smart idea.',ok:true},{label:'Yes, our yeshiva needs a vegetable garden.',ok:true},{label:'Vegetables are healthy.',ok:false},{label:'I will tell you about plants.',ok:false}],
+      h:'Does it say yes or no to the question? A sentence that only talks about plants does not answer it.'},
+    {t:'sort', q:'Question: “Should our yeshiva start a vegetable garden?” Sort each plan line: a strong TREE line, or a mistake?', bins:[{id:'S',label:'✅ Strong TREE line'},{id:'N',label:'❌ Mistake: not in the text'},{id:'Q',label:'❌ Mistake: does not answer the question'}],
+      items:[{label:'Reason: The vegetables could help the pantry.',bin:'S'},{label:'Explain: Lettuce is ready to pick about 6 weeks after planting.',bin:'S'},{label:'Topic: Plants need water to grow.',bin:'Q'},{label:'Reason: My cousin’s school has a garden.',bin:'N'},{label:'Topic: Seeds come in small packets.',bin:'Q'}],
+      h:'A topic line must answer the question. A reason or explain line must be in the article.'},
+    {t:'spotall', q:'Yehuda’s reason: “Our yeshiva is ready to start a garden.” Tap every detail from the text that explains it.', cells:[{label:'The lot gets about 7 hours of sun a day.',ok:true},{label:'Dovid’s Abba offered to build six raised beds.',ok:true},{label:'Mr. Halpern said, “A garden is a science lab that grows.”',ok:false},{label:'Seeds are cheap at every store.',ok:false}],
+      h:'Two tests: is it in the article, AND does it show the yeshiva is ready?'},
+    {t:'write', q:'Your turn to plan. Question: “Should our yeshiva start a vegetable garden?” Use Yehuda’s article. Write your TREE plan: a topic sentence, two reasons from the text, a detail that explains each reason, and an ending.', min:0, checks:['🌳 My topic sentence answers the question.','📄 Both reasons come from the text.','🔎 Each reason has a detail from the article.'], h:'Turn the question into your answer. Then reread the article and find the sentences that give you reasons.'}
+  ],
+  check:[
+    {q:'New article: “Our yeshiva library is open only at lunch. Forty boys signed a list asking for more time to read. Mr. Halpern said, ‘Reading every day makes you a stronger thinker.’” Question: should the library stay open after school? A boy plans: “Reason: The library has comfy chairs.” What is wrong with it?', o:['not in the text','does not answer the question','nothing, it is a strong TREE line'], h:'Look back at the article. Can you find that sentence?'},
+    {q:'Library article: “Forty boys signed a list asking for more time to read.” A boy’s reason: “Boys want more time to read.” In his TREE plan, which part is the line “Forty boys signed a list asking for more time to read”?', o:['Explain','Topic','Ending'], h:'Is it the answer to the question, the detail that backs up a reason, or the opinion said again?'},
+    {t:'order', q:'Put this TREE plan for the library question in order. Tap the lines in order.', tiles:['Our library should stay open after school.','One reason is that reading makes boys stronger thinkers.','The article proves it: Mr. Halpern said, “Reading every day makes you a stronger thinker.”','For all these reasons, the library should stay open after school.'], extra:['Libraries have many shelves.'], h:'The answer first. Then a reason, then the article’s proof of it. “For all these reasons” comes last.'}
+  ],
+  re:[
+    {how:'A new way: a text-based plan is like a detective who may only use the clues in his notebook. If it is not in the notebook, he cannot use it.', q:'In a text-based plan, every reason must be…', o:['in the text','something you like','a question']},
+    {how:'A simpler step: first turn the question into your answer. “Should we…?” becomes “We should…”.', q:'Question: “Should the Crew start a book club?” Which is the topic sentence?', o:['The Crew should start a book club.','Books have many pages.','Should we start one?']},
+    {how:'The skill underneath: Three-Part Piece (Level 6) and Grade 4’s TREE. Level 2 goes further: you answer a question about a text, and every reason and detail now comes from that text, not from your head.', q:'At Level 2, your reasons come from…', o:['the text','your head','your friends']}
+  ]},
+
+  'WRIT.PARA.L06.09':{name:'Best Reason First?',
+  teach:[
+    {how:'Yehuda has three reasons from the article. Which one goes first? First RANK them with two questions. 1. Is it a SHOULD reason, or only a CAN reason? A CAN reason, like “the lot gets about 7 hours of sun,” only shows we are able to; it is the weakest. 2. Of the SHOULD reasons, who is helped, and how often? Families in need, every week, is more good than our classes learning science. So: families in need is strongest, science is in the middle, and sun is weakest.', q:'Which of these garden reasons is strongest?', o:['It can help families in need every week.','The lot gets about 7 hours of sun a day.','Gardens are fun.']},
+    {how:'Then pick an order, and know WHY. BUILD UP: weakest first, strongest LAST, so the reader remembers it. BEST FIRST: strongest FIRST, so the reader is on your side from the start. Both are good, when you can say why.', q:'Yehuda puts his strongest reason last. Why?', o:['so the reader remembers it','so the reader is on your side from the start','because it is the shortest']},
+    {how:'The mistake: the strongest reason BURIED in the middle, where the reader skims past it. Another mistake: NO WHY, an order picked by chance. Ask: where is my strongest reason, and why is it there?', q:'Yehuda’s order: sun, families in need, science. What is wrong?', o:['the strongest is buried','nothing, it builds up','nothing, it is best first']}
+  ],
+  practice:[
+    {t:'pairs', q:'Rank Yehuda’s three garden reasons. Match each reason to its rank.', pairs:[['It can help families in need every week.','Strongest: helps the most, most often'],['It can teach our classes science.','Middle'],['The lot gets about 7 hours of sun a day.','Weakest: it shows we can, not why we should']],
+      h:'Ask about each reason: how much good does it do, and for whom?'},
+    {t:'order', q:'Build up! Put Yehuda’s reasons in order: weakest first, strongest last. Tap the sentences in order.', tiles:['First, the empty lot gets about 7 hours of sun a day.','Also, Mr. Halpern says a garden is a science lab that grows.','Most important, our vegetables could help families in need every week.'], extra:['Gardens are fun.'],
+      h:'Start with the reason that does the least good. End with the one that does the most.'},
+    {t:'sort', q:'Strongest: families in need. Middle: science. Weakest: sun. Sort each order of reasons: build up, best first, or a mistake?', bins:[{id:'B',label:'📈 Build up'},{id:'F',label:'🥇 Best first'},{id:'X',label:'❌ Mistake: the strongest is buried'}],
+      items:[{label:'sun, science, families in need',bin:'B'},{label:'families in need, science, sun',bin:'F'},{label:'sun, families in need, science',bin:'X'},{label:'science, families in need, sun',bin:'X'}],
+      h:'Find families in need in each order. Is it last, first, or in the middle?'},
+    {t:'spotall', q:'Tap every sentence that says WHY the writer chose his order.', cells:[{label:'I put my strongest reason last, so the reader remembers it.',ok:true},{label:'I start with my strongest reason, so the reader is on my side from the start.',ok:true},{label:'I put them in this order because that is how I wrote them.',ok:false},{label:'The order does not matter.',ok:false},{label:'I put my strongest reason in the middle.',ok:false}],
+      h:'A real WHY tells what the order does for the reader.'},
+    {t:'order', q:'Best first! Put Yehuda’s reasons in order: strongest first. Tap the sentences in order.', tiles:['Most important, our vegetables could help families in need every week.','Next, Mr. Halpern says a garden is a science lab that grows.','Last, the empty lot already gets about 7 hours of sun a day.'], extra:['Also, gardens are fun.'],
+      h:'Start with the reason that does the most good. The words “Most important,” “Next,” and “Last,” help too.'},
+    {t:'pairs', q:'Match each order to what it does for the reader.', pairs:[['Build up: strongest last','so the reader remembers it'],['Best first: strongest first','so the reader is on your side from the start'],['Buried: strongest in the middle','a mistake: the reader skims past it']],
+      h:'Where is the strongest reason? What does that spot do for the reader?'},
+    {t:'write', q:'Your turn. Write your three garden reasons from the article in the order you choose: build up or best first. Then write one sentence that says why you chose that order.', min:0, checks:['🥇 I know which reason is strongest.','📈 My strongest reason is first or last, not buried.','💬 I wrote why I chose my order.'], h:'Ask about each reason: how much good does it do? Then decide: first or last?'}
+  ],
+  check:[
+    {q:'Binyamin thinks our yeshiva should start a chess club. His reasons, weakest to strongest: chess sets are cheap; boys could play at recess; chess teaches boys to think before they move. He writes them in this order: recess, think before they move, cheap sets. What is wrong with his order?', o:['the strongest is buried','nothing, it builds up','nothing, it is best first'], h:'Find his strongest reason. Is it first, last, or in the middle?'},
+    {q:'Dovid writes his strongest reason first. Which WHY fits his order?', o:['so the reader is on your side from the start','so the reader remembers it','because it is the shortest'], h:'What does putting the strongest reason FIRST do for the reader?'},
+    {t:'order', q:'Put Binyamin’s chess club reasons in build-up order: weakest first, strongest last. Tap the sentences in order.', tiles:['First, chess sets are cheap.','Also, boys could play at recess.','Most important, chess teaches boys to think before they move.'], extra:['Chess has 32 pieces.'], h:'Weakest first. Strongest last.'}
+  ],
+  re:[
+    {how:'A new way: at a Shabbos meal, a host may bring out his best dish first to wow the guests, or save it for the end as the big finish. Either way, he knows why.', q:'Saving your strongest reason for last is…', o:['build up','best first','buried']},
+    {how:'A simpler step: just find your strongest reason and put a star on it. Then put the star first or last.', q:'Where can the starred reason go?', o:['first or last','in the middle','anywhere at all']},
+    {how:'The skill underneath: TREE, Level 2. Your plan already has reasons from the text. Now you go further: you rank them, put them in a logical order, and say why.', q:'Before you put your reasons in order, you…', o:['rank them','cut them','hide them']}
+  ]},
+
+  'WRIT.PARA.L06.10':{name:'Proof from the Text',
+  teach:[
+    {how:'In Grade 4 you backed up a reason with a fact. In Point, Proof, Explain, your proof could be a fact, an example or a quote. Now you go further: the proof comes from a TEXT you read, and the reader must be able to find it. Give it as a FACT in your own words, or as a QUOTE: the exact words, inside quotation marks.', q:'Reason: a garden teaches science. Which is a quote from Yehuda’s article?', o:['Mr. Halpern said, “A garden is a science lab that grows.”','Mr. Halpern likes science a lot.','Science is very important.']},
+    {how:'Say WHERE the proof comes from with a SOURCE TAG before it: “According to the Gazette article,” “In Yehuda’s article,” or “Mr. Halpern said,”. A quote is copied word for word. A fact in your own words gets no quotation marks, but it still gets a tag. A fact in your own words changes the words but keeps the meaning.', q:'Which sentence has a source tag?', o:['According to the Gazette article, the lot is sunny for about 7 hours each day.','The lot is sunny for about 7 hours each day.','Everyone knows the lot is sunny.']},
+    {how:'Two mistakes. MADE-UP PROOF: it is not in the text, like “Everyone knows gardens are great.” NO SOURCE TAG: the proof is in the text, but the reader cannot tell where it came from. And a quote must be the EXACT words: never change them.', q:'Avrumi writes: “A pantry nearby must get fresh vegetables each week.” He writes nothing before it. Which mistake is it?', o:['no source tag','made-up proof','a quote']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each piece of proof: a fact in my own words, or a quote?', bins:[{id:'F',label:'📝 A fact in my own words'},{id:'Q',label:'💬 A quote'}],
+      items:[{label:'According to the article, the lot is sunny for about 7 hours each day.',bin:'F'},{label:'Rabbi Feldman said, “When a boy plants a seed, he learns patience.”',bin:'Q'},{label:'Mr. Halpern said, “A garden is a science lab that grows.”',bin:'Q'},{label:'The article says that lettuce can be picked about 6 weeks after it is planted.',bin:'F'},{label:'In Yehuda’s article, we learn that Dovid’s Abba is willing to make six garden beds.',bin:'F'}],
+      h:'A quote has someone’s exact words inside quotation marks. A fact in your own words has none.'},
+    {t:'pairs', q:'Match each reason to its proof from the text.', pairs:[['A garden can help families in need.','According to the article, a pantry near our yeshiva must get fresh vegetables each week.'],['A garden teaches patience.','Rabbi Feldman said, “When a boy plants a seed, he learns patience.”'],['A garden is easy to set up.','The article says Dovid’s Abba is willing to make six garden beds.']],
+      h:'Read the reason. Which proof shows THAT reason is true?'},
+    {t:'spotall', q:'Tap every sentence that has a source tag.', cells:[{label:'According to the Gazette article, a pantry near our yeshiva must get fresh vegetables each week.',ok:true},{label:'Mr. Halpern said, “A garden is a science lab that grows.”',ok:true},{label:'In Yehuda’s article, we learn that lettuce can be picked in about 6 weeks.',ok:true},{label:'Lettuce can be picked in about 6 weeks.',ok:false},{label:'Everyone knows gardens are good.',ok:false}],
+      h:'A source tag names where it comes from: the article, or the person who said it.'},
+    {t:'sort', q:'Sort each piece of proof for the garden: proof from the text with a tag, or a mistake?', bins:[{id:'T',label:'✅ Proof from the text, tagged'},{id:'M',label:'❌ Mistake: made-up proof'},{id:'N',label:'❌ Mistake: no source tag'}],
+      items:[{label:'According to the article, the lot is sunny for about 7 hours each day.',bin:'T'},{label:'Everyone knows gardens make boys happy.',bin:'M'},{label:'A pantry nearby must get fresh vegetables each week.',bin:'N'},{label:'Most yeshivos already have gardens.',bin:'M'},{label:'Rabbi Feldman said, “When a boy plants a seed, he learns patience.”',bin:'T'}],
+      h:'Is it in the article? If not, it is made up. If it is, does it say where it comes from?'},
+    {t:'order', q:'Build a reason with proof: reason, source tag, quote, explain. Tap the parts in order.', tiles:['A garden would teach us science.','In Yehuda’s article, Mr. Halpern said,','“A garden is a science lab that grows.”','This shows that we would learn by doing, not only from books.'], extra:['Everyone knows science is fun.'],
+      h:'The reason comes first. The tag comes right before the quote. The explain comes last.'},
+    {t:'spotall', q:'Reason: a garden teaches patience. Tap every piece of proof from the text that supports it.', cells:[{label:'Rabbi Feldman said, “When a boy plants a seed, he learns patience.”',ok:true},{label:'According to the article, lettuce can be picked about 6 weeks after it is planted.',ok:true},{label:'Rabbi Feldman said, “Patience is the best middah.”',ok:false},{label:'Waiting is hard for everyone.',ok:false},{label:'According to the article, the lot is sunny for about 7 hours each day.',ok:false}],
+      h:'Two tests: are these the article’s real words or facts, AND do they show patience?'},
+    {t:'write', q:'Your turn. Pick one garden reason. Write the reason, then proof from Yehuda’s article with a source tag (a fact or a quote), then one sentence that explains it.', min:0, checks:['📄 My proof is really in the article.','🏷️ I said where it comes from.','💬 A quote has the exact words in quotation marks.'], h:'Find the sentence in the article first. Then start with “According to the article,” or the name of the person who said it.'}
+  ],
+  check:[
+    {q:'New article: “Our yeshiva library is open only at lunch. Forty boys signed a list asking for more time to read.” A boy writes: “Forty boys signed their names to ask for more reading time.” He writes nothing before it. Which mistake is it?', o:['no source tag','made-up proof','nothing, it is proof from the text, tagged'], h:'Is it in the article? Does the reader know where it came from?'},
+    {q:'In the library article, Mr. Halpern said, “Reading every day makes you a stronger thinker.” A boy writes: Mr. Halpern said, “Reading every day makes you a stronger thinker.” What kind of proof is it?', o:['a quote','a fact in my own words','made-up proof'], h:'Are these his exact words, inside quotation marks?'},
+    {t:'order', q:'Build a reason with proof from the library article: reason, source tag, fact, explain. Tap the parts in order.', tiles:['Many boys want more time to read.','According to the article,','forty boys signed their names to ask for more reading time.','This shows that one lunch period is not enough time to read.'], extra:['Everyone loves books.'], h:'Reason first. Then where it comes from. Then the fact. Then what it shows.'}
+  ],
+  re:[
+    {how:'A new way: proof from the text is like a receipt. It shows where you got it. The source tag is the store’s name printed on the receipt.', q:'The source tag is like…', o:['the store’s name on the receipt','the price','the bag']},
+    {how:'A simpler step: start your proof with “According to the article,”. Then write the fact.', q:'Which one starts with a source tag?', o:['According to the article,','Everyone knows','I think']},
+    {how:'The skill underneath: Point, Proof, Explain. There, proof was a fact, an example or a quote from anywhere. Now you go further: the proof comes from a text, in your own words or as an exact quote, and a source tag says where.', q:'Proof from the text needs…', o:['a source tag','a hook','a title']}
+  ]},
+
+  'WRIT.PARA.L06.11':{name:'Because, So, Therefore',
+  teach:[
+    {how:'In Grade 4 you joined ideas with linking words like “for instance” and “in addition”. Now you go further: you link your opinion and reasons with PHRASES and CLAUSES that show which way your thinking goes. A link that GIVES THE REASON points back to the cause: “because the pantry needs fresh vegetables every week.” Because and since give the reason. Because, since and so join INSIDE one sentence. Therefore, As a result, Consequently and Specifically START a new sentence, with a comma after them.', q:'“Our yeshiva should start a garden ___ the pantry needs fresh vegetables every week.” Which link gives the reason?', o:['because','Consequently,','Specifically,']},
+    {how:'A link that SHOWS THE RESULT points forward to what follows: so, Therefore, As a result, Consequently, Because of this. (“Because of this” shows a result: “this” is the reason you already said.) A link that ZOOMS IN, “Specifically,” goes from a general reason to an exact detail.', q:'“A garden would teach us science. ___, we could watch lettuce grow from seed in about 6 weeks.” Which link zooms in?', o:['Specifically,','Because','Consequently,']},
+    {how:'The mistake: a link that POINTS THE WRONG WAY. “Therefore” comes before the result, never before the reason. Read every link as an arrow: reason → result. Another mistake: VAGUE AFTER “SPECIFICALLY”: it promises an exact detail, so give one.', q:'Which pair links the right way?', o:['The pantry needs fresh vegetables every week. Therefore, our garden could help families in need.','Our garden could help families in need. Therefore, the pantry needs fresh vegetables every week.','A garden helps. Specifically, it helps with things.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each link: it joins INSIDE one sentence, or it STARTS a new sentence?', bins:[{id:'I',label:'🧩 Inside one sentence (no capital)'},{id:'N',label:'🚪 Starts a new sentence (capital and comma)'}],
+      items:[{label:'because',bin:'I'},{label:'since',bin:'I'},{label:'so',bin:'I'},{label:'Therefore,',bin:'N'},{label:'As a result,',bin:'N'},{label:'Specifically,',bin:'N'}],
+      h:'Lowercase links join two parts of ONE sentence. A capital and a comma start a NEW sentence.'},
+    {t:'pairs', q:'Match each first part to the link and ending that finish it.', pairs:[['Our yeshiva should start a garden','because the pantry nearby needs fresh vegetables every week.'],['Dovid’s Abba offered to build six raised beds.','As a result, every class could have its own bed.'],['A garden would teach us science.','Specifically, we could watch lettuce grow from seed.']],
+      h:'Does the first part need a reason, a result, or a closer look?'},
+    {t:'order', q:'Build the sentence: opinion, link, reason. Tap the parts in order.', tiles:['Our yeshiva should start a vegetable garden','because','the pantry nearby needs fresh vegetables every week.'], extra:['Therefore,'],
+      h:'The opinion comes first. Then the link that points back to the reason.'},
+    {t:'spotall', q:'Tap every pair that links the RIGHT way: reason first, then result.', cells:[{label:'The lot gets about 7 hours of sun a day. Therefore, vegetables would grow well there.',ok:true},{label:'Dovid’s Abba offered to build six raised beds. Because of this, we would not need to buy beds.',ok:true},{label:'The pantry needs fresh vegetables every week. As a result, our garden could help families in need.',ok:true},{label:'Vegetables would grow well there. Therefore, the lot gets about 7 hours of sun a day.',ok:false},{label:'We would not need to buy beds. Consequently, Dovid’s Abba offered to build them.',ok:false}],
+      h:'Read each pair as an arrow. Does the first sentence cause the second?'},
+    {t:'sort', q:'Sort each sentence: does it link the right way, or is it a mistake?', bins:[{id:'R',label:'✅ Links the right way'},{id:'W',label:'❌ Mistake: points the wrong way'},{id:'V',label:'❌ Mistake: vague after “Specifically”'}],
+      items:[{label:'A garden teaches patience. Specifically, we wait about 6 weeks for lettuce.',bin:'R'},{label:'We should plant a garden since it would teach us science.',bin:'R'},{label:'A garden teaches science. Specifically, it is good stuff.',bin:'V'},{label:'Our garden could feed families. Therefore, the pantry needs vegetables.',bin:'W'},{label:'The lot is sunny because vegetables would grow well there.',bin:'W'}],
+      h:'Check the arrow: reason → result. After “Specifically,” look for an exact detail.'},
+    {t:'order', q:'Build a linked paragraph: opinion with a reason, zoom in, result. Tap the sentences in order.', tiles:['Our yeshiva should start a vegetable garden because it would teach us science.','Specifically, we could watch lettuce grow from seed in about 6 weeks.','As a result, by the end of those 6 weeks, we would know how a plant grows.'], extra:['Therefore, the lot is sunny.'],
+      h:'Opinion and reason first. “Specifically” zooms in on that reason. The result needs “those 6 weeks” to make sense.'},
+    {t:'write', q:'Your turn. Write three sentences about the garden: your opinion with a because clause, a sentence that starts with “Specifically,”, and a sentence that starts with a result link (As a result, Consequently or Therefore).', min:0, checks:['🔙 My because clause gives a real reason.','🔍 After “Specifically,” I give an exact detail.','➡️ My result link points forward: reason, then result.'], h:'Pick one reason from the article. Say it with because. Zoom in on one fact. Then say what follows from it.'}
+  ],
+  check:[
+    {q:'“Our yeshiva library is open only at lunch. ___, many boys never get time to read.” Which kind of link fits the blank?', o:['shows the result','gives the reason','zooms in'], h:'Is “many boys never get time to read” a cause, a result, or a closer look?'},
+    {q:'“Our library should stay open after school. Therefore, forty boys signed a list asking for more time to read.” What is wrong?', o:['points the wrong way','vague after “Specifically”','nothing, it links the right way'], h:'Read it as an arrow. Did the list come because of the opinion, or is the list the reason?'},
+    {t:'order', q:'Build the sentence: opinion, link, reason. Tap the parts in order.', tiles:['Our library should stay open after school','because','forty boys signed a list asking for more time to read.'], extra:['Specifically,'], h:'Opinion first. Then the link that points back to the reason.'}
+  ],
+  re:[
+    {how:'A new way: links are arrows. “Because” points back to the reason. “Therefore” points forward to the result. “Specifically” is a magnifying glass.', q:'Which link is like a magnifying glass?', o:['Specifically,','Therefore,','because']},
+    {how:'A simpler step: say it with “so” first. If “so” fits, you can use a result link: Therefore, As a result, Consequently.', q:'“The lot is sunny, so plants will grow.” Which link could start “plants will grow”?', o:['Therefore,','because','Specifically,']},
+    {how:'The skill underneath: Proof from the Text, and Grade 4’s linking words (because, In addition, For instance). Now you go further: you check which WAY each link points, reason → result, and you zoom in with “Specifically,”.', q:'“Therefore” comes before…', o:['a result','a reason','a question']}
+  ]},
+
+  'WRIT.PARA.L06.12':{name:'Ending That Pushes',
+  teach:[
+    {how:'In Grade 4 your opinion ending said your opinion again and pushed the reader to act. In Strong Finish you left a final thought. Now you go further. First say your opinion again. Then SUM UP your reasons in one sentence. Then write ONE push that fits THIS reader. A CALL TO ACT tells him one thing he can really do.', q:'Yehuda’s piece is for Rabbi Feldman, who decides about the lot. Which is a call to act that fits him?', o:['Please let our classes use the empty lot for a garden.','Please vote yes at the next class meeting.','That is my opinion.']},
+    {how:'A CALL TO THINK leaves the reader with a picture or a question to think about. It often starts with “Imagine…” or “What if…?”. Either push must be about YOUR opinion.', q:'Which is a call to think?', o:['Imagine a family’s Shabbos table with lettuce our boys grew.','Please vote yes for the garden.','The lot gets about 7 hours of sun a day.']},
+    {how:'Two mistakes. An OFF-TOPIC PUSH: it pushes, but about something else, like “So everyone should drink more water!”. The WRONG READER: a push this reader cannot do, like asking your classmates, “Please give us the empty lot.” Only the menahel can give the lot. And never just stop with “The end.”', q:'Garden piece. Last sentence: “So remember to clean your room!” What is the mistake?', o:['an off-topic push','no push','a call to think']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each push sentence for the garden piece: a call to act, or a call to think?', bins:[{id:'A',label:'📣 A call to act'},{id:'T',label:'💭 A call to think'}],
+      items:[{label:'Please vote yes for the garden at the next class meeting.',bin:'A'},{label:'Imagine a family’s Shabbos table with lettuce our boys grew.',bin:'T'},{label:'Ask your rebbe to sign up your class for a garden bed.',bin:'A'},{label:'What if every boy could watch a seed become food?',bin:'T'}],
+      h:'Does it tell the reader to DO something, or give him a picture or a question to THINK about?'},
+    {t:'spotall', q:'Tap every sentence that could end the garden piece with a push.', cells:[{label:'Please vote yes for the garden at the next class meeting.',ok:true},{label:'Imagine watching lettuce you planted grow, week by week.',ok:true},{label:'That is all. The end.',ok:false},{label:'So everyone should drink more water!',ok:false},{label:'Also, gardens need water.',ok:false}],
+      h:'A push tells him to act or think, and it is about the garden. A new fact is not a push.'},
+    {t:'sort', q:'Yehuda’s piece is for his CLASSMATES. Sort each push: it fits, or a mistake?', bins:[{id:'F',label:'✅ It fits the reader'},{id:'O',label:'❌ Mistake: an off-topic push'},{id:'W',label:'❌ Mistake: the wrong reader'}],
+      items:[{label:'Please vote yes at the next class meeting.',bin:'F'},{label:'Imagine pantry shelves full of lettuce we grew.',bin:'F'},{label:'So remember to clean your room!',bin:'O'},{label:'Please give our classes the empty lot.',bin:'W'},{label:'Please hire a gardener for our yeshiva.',bin:'W'}],
+      h:'Is the push about the garden? Can a classmate really do it?'},
+    {t:'order', q:'Build Yehuda’s ending: opinion again, sum up, then the push. Tap the sentences in order.', tiles:['For all these reasons, our yeshiva should start a vegetable garden.','It would teach us science and help families in need.','So please vote yes at the next class meeting.'], extra:['The end.'],
+      h:'Say the opinion again first. “It” needs the garden before it. The push comes last.'},
+    {t:'pairs', q:'Match each opinion to the push that fits it.', pairs:[['Our yeshiva should start a garden.','Please vote yes for the garden.'],['Our library should stay open after school.','Imagine forty boys reading after school.'],['The Crew should start a chess club.','Come to the first chess club meeting.']],
+      h:'A push must be about the same opinion. Look for the same topic.'},
+    {t:'spotall', q:'Tap every call to think.', cells:[{label:'What if every class had its own garden bed?',ok:true},{label:'Imagine boys learning patience one seed at a time.',ok:true},{label:'Please vote yes for the garden.',ok:false},{label:'Sign up your class today.',ok:false},{label:'The end.',ok:false}],
+      h:'A call to think gives a picture or a question. A call to act tells him what to do.'},
+    {t:'write', q:'Your turn. Your garden piece is for your classmates. Write its ending: one sentence that says your opinion again, one sentence that sums up your reasons, and ONE push: a call to act or a call to think that a classmate can really use.', min:0, checks:['🔁 I said my opinion again and summed up my reasons.','📣 I wrote ONE push: act or think.','🎯 My push fits the garden AND my classmates can do it.'], h:'Start with “For all these reasons,”. Then name your reasons in one sentence. Then: what can a classmate really do, or picture?'}
+  ],
+  check:[
+    {q:'Binyamin’s piece: our class should collect coats for families in need. His ending: “Our class should collect coats this winter. Bring one coat you have outgrown to school on Monday.” What kind of push is it?', o:['a call to act','a call to think','an off-topic push'], h:'Does it tell the reader to do something, or give him something to think about?'},
+    {q:'Dovid’s science-fair piece is for his classmates. His last sentence: “Please pay for the science fair hall.” What is the mistake?', o:['the wrong reader','an off-topic push','no push'], h:'Is it about the science fair? Can a boy in his class really do it?'},
+    {t:'order', q:'Build Dovid’s ending: opinion again, sum up, then the push. Tap the sentences in order.', tiles:['For all these reasons, our yeshiva should hold a science fair every year.','It would teach us to test ideas and show what we built.','Imagine a hall full of boys showing projects they built themselves.'], extra:['That is all.'], h:'Opinion again first. Then the sum up. The push comes last.'}
+  ],
+  re:[
+    {how:'A new way: a coach’s last words before the game are a push. “Go out and play hard!” is a call to act. “Think how proud you will feel” is a call to think.', q:'“Go out and play hard!” is…', o:['a call to act','a call to think','no push']},
+    {how:'A simpler step: start your push with “Please” for a call to act, or “Imagine” for a call to think.', q:'“Imagine…” usually starts…', o:['a call to think','a call to act','a new reason']},
+    {how:'The skill underneath: Strong Finish (Level 6), which ends with a final thought. Now you go further: you sum up your reasons, then push THIS reader to act or to think. (In Grade 6, Close the Case adds more.)', q:'An opinion ending says the opinion again, sums up, then…', o:['one push that fits the reader','a new reason','“The end.”']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L06.06':{hook:'Can you win an argument using only what is written on the page?', big:'Plan an opinion on a text question with TREE: a Topic sentence that answers it, Reasons from the text, an Explain detail from the text for each, and an Ending.',
+    intro:['Topic: turn the question into your answer.','Reasons: find them in the text.','Explain: a detail from the text for each.','Ending: say your opinion again.'],
+    ex:[{q:'Question: should our yeshiva start a vegetable garden?',steps:['Topic: Our yeshiva should start a vegetable garden.','Reason from the text: it can help families in need.','Explain: the pantry nearby needs fresh vegetables every week.'],a:'Ending: A garden would help our yeshiva and our neighbors.'},
+        {q:'Reason: a garden teaches science.',steps:['Find the sentence in the article that proves it.'],a:'Explain: Mr. Halpern said, “A garden is a science lab that grows.”'}],
+    oops:{q:'A reason for the garden plan.',wrong:'Reason: Gardening is more fun than math.',right:'Reason: The garden could give fresh vegetables to the pantry.',why:'The first reason is not in the text. In a text-based plan, every reason comes from the article.'},
+    idea:['Your reasons are already in the text: find them, do not invent them.'],
+    try:{q:'Is “The lot gets about 7 hours of sun a day” from the text or not in the text?',o:['from the text','not in the text'],a:'from the text',steps:['Look back at the article.']}},
+  'WRIT.PARA.L06.09':{hook:'Should you play your best card first, or save it for last?', big:'Rank your reasons, put the strongest first or last (never buried in the middle), and say why.',
+    intro:['Rank: which reason does the most good?','Build up: strongest last, so he remembers it.','Best first: strongest first, so he is with you.','Never bury the strongest in the middle.'],
+    ex:[{q:'Yehuda’s three garden reasons.',steps:['Strongest: families in need.','Middle: science.','Weakest: about 7 hours of sun.'],a:'Build up: sun, science, families in need.'},
+        {q:'The same reasons, best first.',steps:['Strongest reason first.'],a:'Families in need, science, sun: the reader is on his side from the start.'}],
+    oops:{q:'Yehuda’s order of reasons.',wrong:'Sun, families in need, science.',right:'Sun, science, families in need.',why:'The strongest reason was buried in the middle. Put it last (or first), where the reader notices it.'},
+    idea:['Your best reason goes where the reader notices it: first or last.'],
+    try:{q:'The strongest reason comes last. Which order is it?',o:['build up','best first','buried'],a:'build up',steps:['Where is the strongest reason?']}},
+  'WRIT.PARA.L06.10':{hook:'If you say “The article says so,” how can the reader check?', big:'Back up a reason with a fact or a quote from the text, and say where it comes from with a source tag.',
+    intro:['Fact: the text’s idea in your own words.','Quote: the exact words, in quotation marks.','Source tag: “According to the article,”','Never made-up proof; never leave out the tag.'],
+    ex:[{q:'Reason: a garden can help families in need.',steps:['Find it in the article.','Add a source tag.'],a:'According to the Gazette article, a pantry near our yeshiva must get fresh vegetables each week.'},
+        {q:'Reason: a garden teaches patience.',steps:['Find the exact words.','Put quotation marks around them.'],a:'Rabbi Feldman said, “When a boy plants a seed, he learns patience.”'}],
+    oops:{q:'Proof for the garden.',wrong:'Everyone knows gardens make boys happy.',right:'According to the article, a pantry near our yeshiva must get fresh vegetables each week.',why:'“Everyone knows” is made-up proof. Real proof is in the text, and you say where it comes from.'},
+    idea:['Proof from the text is a receipt: it shows where it came from.'],
+    try:{q:'Mr. Halpern said, “A garden is a science lab that grows.” What kind of proof is it?',o:['a quote','a fact in my own words','made-up proof'],a:'a quote',steps:['Are these his exact words, in quotation marks?']}},
+  'WRIT.PARA.L06.11':{hook:'Can one small word flip your whole argument backwards?', big:'Link opinion and reasons with phrases and clauses: because gives the reason, therefore shows the result, specifically zooms in.',
+    intro:['Because, since: gives the reason.','So, Therefore, As a result, Consequently: shows the result.','Specifically: zooms in on an exact detail.','Never point the arrow the wrong way.'],
+    ex:[{q:'Opinion and reason in one sentence.',steps:['Opinion: Our yeshiva should start a garden.','Clause: because it would teach us science.'],a:'Our yeshiva should start a garden because it would teach us science.'},
+        {q:'A reason, then its result.',steps:['Reason: Dovid’s Abba offered to build six raised beds.','Result link: As a result,'],a:'As a result, every class could have its own bed.'}],
+    oops:{q:'Link the pantry reason.',wrong:'Our garden could feed families. Therefore, the pantry needs vegetables.',right:'The pantry needs fresh vegetables every week. Therefore, our garden could help families in need.',why:'“Therefore” points forward to a result. The pantry’s need is the reason, so it comes first.'},
+    idea:['A link is an arrow: reason → result.'],
+    try:{q:'“___, every class could have its own bed.” Which kind of link fits?',o:['shows the result','gives the reason','zooms in'],a:'shows the result',steps:['Is it the reason, what follows, or a closer look?']}},
+  'WRIT.PARA.L06.12':{hook:'What do you want the reader to DO or THINK when he puts your piece down?', big:'End an opinion piece: say your opinion again, sum up your reasons, then one push that fits this reader: a call to act or a call to think.',
+    intro:['Say your opinion again, then sum up your reasons.','Call to act: one thing THIS reader can really do.','Call to think: “Imagine…” or “What if…?”','Never off topic, never the wrong reader, never just stop.'],
+    ex:[{q:'Yehuda’s garden piece.',steps:['Opinion again: our yeshiva should start a garden.','Push to act.'],a:'Please vote yes for the garden at the next class meeting.'},
+        {q:'The same piece, with a push to think.',steps:['Give the reader a picture.'],a:'Imagine a family’s Shabbos table with lettuce our boys grew.'}],
+    oops:{q:'The end of the garden piece.',wrong:'A garden would help our yeshiva. That is all. The end.',right:'A garden would help our yeshiva. Please vote yes at the next class meeting.',why:'“The end” just stops. One push sentence tells the reader what to do or think.'},
+    idea:['An opinion ending is a gentle push, not a stop sign.'],
+    try:{q:'“What if every boy could watch a seed become food?” Which push is it?',o:['a call to think','a call to act','an off-topic push'],a:'a call to think',steps:['Does it tell him to do something, or give him something to think about?']}},
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L06.06':{s:'Topic: turn the question into your answer.\nReasons: find each one in the text, not in your head.\nExplain: write the detail from the text under each reason.\nEnding: say your opinion again.'},
+  'WRIT.PARA.L06.09':{s:'Rank: is it only a CAN reason? That one is weakest.\nOf the rest: who is helped, and how often? More is stronger.\nBuild up: weakest first, strongest last.\nBest first: strongest first.\nNever bury it in the middle. Say why you chose your order.'},
+  'WRIT.PARA.L06.10':{s:'Find the sentence in the text that backs up your reason.\nFact: say it in your own words. Quote: copy the exact words in “ ”.\nAdd a source tag: “According to the article,” or “Mr. Halpern said,”.\nThen explain it: “This shows that…”'},
+  'WRIT.PARA.L06.11':{s:'Ask: which way does my thinking go?\nGives the reason: because, since.\nShows the result: so, Therefore, As a result, Consequently, Because of this.\nZooms in: Specifically, then an exact detail. Reason first, result after.'},
+  'WRIT.PARA.L06.12':{s:'Say your opinion again, in new words.\nSum up your reasons in one sentence.\nAdd ONE push that fits THIS reader.\nCall to act: one thing he can really do (“Please…”). Call to think: a picture or a question (“Imagine…”, “What if…?”).'},
+  };
+  var BITE = {
+  'WRIT.ESSAY.L06.06':{ band:'E45', pic:'🌱', today:'Plan an opinion with reasons from a text', why:'When the question is about a text, the strongest reasons are the ones you can point to on the page.',
+    ready:[{q:'In TREE, what does the T stand for?', o:['Topic sentence','Title','The end'], a:'Topic sentence'}],
+    bridge:'WRIT.ESSAY.L06.01', bridgeName:'Three-Part Piece',
+    watch:{ q:'Yehuda plans from his Gazette article', m:{type:'scene', e:'📰', t:'Yehuda’s article: the empty lot gets about 7 hours of sun, and the pantry nearby needs fresh vegetables every week.'}, steps:[
+      {t:'QUESTION: Should our yeshiva start a vegetable garden?'},
+      {t:'TOPIC: Our yeshiva should start a vegetable garden.'},
+      {t:'REASON from the text: it can help families in need.'},
+      {t:'EXPLAIN: the pantry nearby needs fresh vegetables every week.'},
+      {t:'REASON from the text: it teaches science. Mr. Halpern: “a science lab that grows.”'},
+      {t:'ENDING: A garden would help our yeshiva and our neighbors.'}], a:'Topic, Reasons from the text, Explain with a detail, Ending.' },
+    oops:{ q:'A reason for the garden plan', wrong:'Reason: Gardening is more fun than math.', right:'Reason: The garden could give fresh vegetables to the pantry.', why:'The first reason is not in the text. In a text-based plan, every reason comes from the article.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can plan an opinion with TREE, using reasons from a text.',
+    board:{ one:'TREE, Level 2: every reason comes from the text, with a detail to explain it.', activity:'Read the garden article aloud; boys stand when they hear a sentence that could be a reason, then the class builds a TREE on the board.', mistakes:['A reason that is not in the text','A topic sentence that does not answer the question','A reason with no detail from the text'] },
+    do:[
+      {type:'sort', q:'Question: should our yeshiva start a garden?', bins:['From the text','Not in the text'], cards:[['The pantry needs fresh vegetables.',0],['Gardening beats recess.',1],['The lot gets about 7 hours of sun.',0],['Most boys love tomatoes.',1]], mis:true,
+        say:'Is each reason in the article? Sort them.', how:'Look back at the article. Find the sentence, or it is not in the text.',
+        why:{q:'Why is "Most boys love tomatoes" not a text reason?', o:['The article never says it','It is too short','It is a question','It is the ending'], a:'The article never says it'}},
+      {type:'tiles', q:'Question: Should we start a garden? Build the topic sentence.', w:['We should','start a','garden.'], extra:['I wonder'],
+        say:'Turn the question into your answer.', how:'“Should we…?” becomes “We should…”.'}],
+    your:[
+      {type:'match', pairs:[['Teaches science','“A science lab that grows.”'],['Teaches patience','Rabbi Feldman: a boy “learns patience.”'],['Helps families','The pantry needs vegetables.']],
+        say:'Match each reason to its detail from the text.', how:'Which sentence in the article proves that reason?',
+        why:{q:'Why does Rabbi Feldman’s line go with "Teaches patience"?', o:['It is the text’s proof of that reason','It is a new opinion','It is the topic sentence','It is not in the text'], a:'It is the text’s proof of that reason'}},
+      {type:'sort', bins:['Answers the question','Does not answer it'], cards:[['Our yeshiva should start a garden.',0],['Plants need water.',1],['Yes, we need a vegetable garden.',0],['I will tell you about seeds.',1]],
+        say:'Does each topic sentence answer the question? Sort them.', how:'Does it say yes or no to starting a garden?'},
+      {type:'tiles', q:'Reason: it helps families in need. Build the detail from the text.', w:['The pantry','needs fresh','vegetables','every week.'], extra:['Most boys'],
+        say:'Build the article’s detail for this reason.', how:'Find the sentence in the article that proves it.'},
+      {type:'sort', bins:['From the text','Not in the text'], cards:[['Dovid’s Abba offered beds.',0],['Gardens look pretty.',1],['Lettuce is ready in about 6 weeks.',0],['My cousin’s school has one.',1]],
+        say:'From the article, or not? Sort each reason.', how:'Find the sentence in the article. If you cannot, it is not in the text.',
+        why:{q:'Why is "Lettuce is ready in about 6 weeks" from the text?', o:['The article says it','It sounds true','It is about food','Everyone knows it'], a:'The article says it'}},
+      {type:'match', pairs:[['Reason not in the text','Find one in the article.'],['Topic does not answer','Say yes or no to the question.'],['Reason with no detail','Add a sentence from the article.']],
+        say:'Match each plan mistake to its fix.', how:'What would make the plan text-based and complete?'}] },
+
+  'WRIT.PARA.L06.09':{ band:'E45', pic:'🥇', today:'Put your reasons in an order you can explain', why:'Readers notice the first and the last reason most. Put your strongest reason there.',
+    ready:[{q:'In a TREE plan for a text question, where do the reasons come from?', o:['the text','your head','the ending'], a:'the text'}],
+    bridge:'WRIT.ESSAY.L06.06', bridgeName:'TREE, Level 2',
+    watch:{ q:'Yehuda orders his garden reasons', m:{type:'scene', e:'📰', t:'Three reasons from the article: about 7 hours of sun, a science lab that grows, and families in need.'}, steps:[
+      {t:'RANK: CAN or SHOULD? Then, who is helped, how often?'},
+      {t:'STRONGEST: families in need. The pantry needs fresh vegetables every week.'},
+      {t:'MIDDLE: science. “A garden is a science lab that grows.”'},
+      {t:'WEAKEST: about 7 hours of sun. It shows we CAN, not why we SHOULD.'},
+      {t:'BUILD UP: sun, then science, then families in need.'},
+      {t:'WHY: so the reader remembers the strongest one.'}], a:'Rank the reasons, choose build up or best first, and say why.' },
+    oops:{ q:'Yehuda’s order of reasons', wrong:'Sun, families in need, science.', right:'Sun, science, families in need.', why:'The strongest reason was buried in the middle. Put it last (or first), where the reader notices it.' },
+    ways:['frum-family scene','worked example','match it','sort it','word tiles','tap the reason','Mistake Detective'], done:'You can put your reasons in a logical order and say why.',
+    board:{ one:'Strongest first or last, never buried, and say why.', activity:'Three boys hold reason cards; the class ranks them, then lines the boys up build up and best first, and says why each order works.', mistakes:['The strongest reason buried in the middle','An order picked by chance, with no why','Not ranking the reasons first'] },
+    do:[
+      {type:'match', q:'Yehuda’s three garden reasons.', pairs:[['Helps families every week','Strongest'],['Teaches science','Middle'],['About 7 hours of sun','Weakest']],
+        say:'Rank Yehuda’s reasons. Match each to its rank.', how:'Which reason does the most good? Which does the least?',
+        why:{q:'Why is "Helps families every week" the strongest?', o:['It does the most good','It is the shortest','It is about the sun','It comes first in the article'], a:'It does the most good'}},
+      {type:'sort', q:'Families in need is the strongest reason.', bins:['Strongest first or last','Mistake: buried'], cards:[['Sun, science, families',0],['Families, science, sun',0],['Sun, families, science',1],['Science, families, sun',1]], mis:true,
+        say:'Where is the strongest reason? Sort each order.', how:'Find families in each order. First, last, or in the middle?'}],
+    your:[
+      {type:'tiles', q:'Build up: weakest first, strongest last.', w:['Sun','Science','Families'], extra:['Pretty yard'],
+        say:'Build up Yehuda’s reasons, weakest to strongest.', how:'Start with the reason that does the least good.'},
+      {type:'match', pairs:[['Build up','So he remembers it'],['Best first','So he is with you'],['Buried','He skims past it']],
+        say:'Match each order to what it does.', how:'Where is the strongest reason? What does that spot do?',
+        why:{q:'Why put the strongest reason last?', o:['So the reader remembers it','So it is hidden','Because it is short','So he stops reading'], a:'So the reader remembers it'}},
+      {type:'sort', q:'Strongest: thinking (chess) and families (garden).', bins:['Build up','Best first'], cards:[['Cheap sets, recess, thinking',0],['Thinking, recess, cheap sets',1],['Sun, science, families',0],['Families, science, sun',1]],
+        say:'Strongest last or first? Sort each order.', how:'Find the strongest reason. Is it at the end or the start?'},
+      {type:'tiles', q:'Best first. Cheap sets only shows we CAN.', w:['Thinking','Recess','Cheap sets'], extra:['Board color'],
+        say:'Best first: put the chess reasons in order.', how:'Start with the reason that does the most good.'},
+      {type:'sort', bins:['Says why','No why'], cards:[['Last, so he remembers it.',0],['First, so he is with me.',0],['I just wrote it that way.',1],['The order does not matter.',1]],
+        say:'Does the writer say why? Sort each one.', how:'A real why tells what the order does for the reader.',
+        why:{q:'Why is "I just wrote it that way" not a real why?', o:['It does not say what it does for the reader','It is too long','It is about the sun','It is a quote'], a:'It does not say what it does for the reader'}}] },
+
+  'WRIT.PARA.L06.10':{ band:'E45', pic:'📄', today:'Back up a reason with proof from the text', why:'A reader believes your reason when he can find the proof himself.',
+    ready:[{q:'Which reason for the garden comes from the article?', o:['The pantry needs fresh vegetables.','Gardening beats recess.','Most boys love tomatoes.'], a:'The pantry needs fresh vegetables.'}],
+    bridge:'WRIT.ESSAY.L06.03', bridgeName:'Point, Proof, Explain',
+    watch:{ q:'Yehuda proves a garden reason', m:{type:'scene', e:'📄', t:'Yehuda’s reason: a garden would teach us science. He looks back at his article.'}, steps:[
+      {t:'REASON: a garden would teach us science.'},
+      {t:'FIND IT: Mr. Halpern’s words are in the article.'},
+      {t:'QUOTE: copy his exact words, in quotation marks.'},
+      {t:'TAG: In Yehuda’s article, Mr. Halpern said,'},
+      {t:'PROOF: “A garden is a science lab that grows.”'},
+      {t:'EXPLAIN: This shows we would learn by doing.'}], a:'In Yehuda’s article, Mr. Halpern said, “A garden is a science lab that grows.”' },
+    oops:{ q:'Proof for the garden', wrong:'Everyone knows gardens make boys happy.', right:'According to the article, a pantry near our yeshiva must get fresh vegetables each week.', why:'“Everyone knows” is made-up proof. Real proof is in the text, and you say where it comes from.' },
+    ways:['frum-family scene','worked example','match it','sort it','word tiles','tap the reason','Mistake Detective'], done:'You can back up a reason with a fact or a quote from a text, and say where it comes from.',
+    board:{ one:'Proof from the text: a fact or a quote, with a source tag.', activity:'Pairs get the garden article; one reads a reason, the other finds and tags the proof before the timer ends.', mistakes:['Made-up proof (“Everyone knows…”)','No source tag','A quote with changed words or no quotation marks'] },
+    do:[
+      {type:'match', q:'Match each reason to its proof.', pairs:[['Helps families in need','The article: the pantry needs food.'],['Teaches patience','Rabbi Feldman: a boy “learns patience.”'],['Easy to set up','The article: Dovid’s Abba offered beds.']],
+        say:'Match each reason to its proof from the text.', how:'Which proof shows that reason is true?',
+        why:{q:'Why does the pantry fact prove "Helps families in need"?', o:['The pantry gives food to families','It is a quote','It is made up','It has no source'], a:'The pantry gives food to families'}},
+      {type:'sort', bins:['Tagged proof','Made-up proof','No source tag'], cards:[['The article says the lot is sunny.',0],['Everyone knows gardens are great.',1],['A pantry nearby must get vegetables.',2],['Most yeshivos have gardens.',1]], mis:true,
+        say:'Is the proof real and tagged? Sort each one.', how:'Not in the article? Made up. In it, but no tag? No source tag.',
+        why:{q:'Why is "Most yeshivos have gardens" made-up proof?', o:['The article never says it','It has a tag','It is a quote','It is too short'], a:'The article never says it'}}],
+    your:[
+      {type:'tiles', w:['Reason','Source tag','Proof','Explain'], extra:['Made-up'],
+        say:'Put the parts of a proven reason in order.', how:'Say the reason. Say where. Give the proof. Say what it shows.'},
+      {type:'sort', q:'Reason: a garden teaches patience.', bins:['Proves patience','Does not'], cards:[['Rabbi Feldman: a boy “learns patience.”',0],['The article: lettuce in about 6 weeks.',0],['The article: about 7 hours of sun.',1],['Gardens look nice.',1]],
+        say:'Does each one prove the reason? Sort them.', how:'Is it in the article, AND does it show patience?'},
+      {type:'match', pairs:[['Everyone knows gardens help.','Made-up proof'],['A pantry nearby must get vegetables.','No source tag'],['The article: lettuce in about 6 weeks.','Tagged proof']],
+        say:'Match each piece of proof to what it is.', how:'In the article? Does it say where it is from?'},
+      {type:'tiles', q:'Build a tagged fact.', w:['The article','says that','the lot is','sunny.'], extra:['everyone'],
+        say:'Build a fact with a source tag.', how:'The tag comes first. Then the fact.'},
+      {type:'sort', bins:['Fact in my own words','Quote'], cards:[['The article says the lot is sunny.',0],['Mr. Halpern: “a science lab that grows.”',1],['The article: lettuce in about 6 weeks.',0],['Rabbi Feldman: a boy “learns patience.”',1]],
+        say:'Fact or quote? Sort each piece of proof.', how:'A quote has the exact words in quotation marks.'}] },
+
+  'WRIT.PARA.L06.11':{ band:'E45', pic:'🔗', today:'Link your opinion and reasons the right way', why:'The right link shows the reader exactly how your reason leads to your opinion.',
+    ready:[{q:'Which sentence has a source tag?', o:['According to the article, the lot is sunny.','The lot is sunny.','Everyone knows it is sunny.'], a:'According to the article, the lot is sunny.'}],
+    bridge:'WRIT.PARA.L06.10', bridgeName:'Proof from the Text',
+    watch:{ q:'Avrumi links the garden reasons', m:{type:'scene', e:'🗺️', t:'Avrumi draws arrows between the garden reasons on his map.'}, steps:[
+      {t:'OPINION: Our yeshiva should start a vegetable garden.'},
+      {t:'BECAUSE gives the reason: because it would teach us science.'},
+      {t:'REASON 2: A garden would help families in need.'},
+      {t:'SPECIFICALLY zooms in: the pantry must get vegetables each week.'},
+      {t:'AS A RESULT shows what follows: our lettuce would feed families.'},
+      {t:'CHECK each arrow: reason first, then result.'}], a:'Because gives the reason. As a result shows the result. Specifically zooms in.' },
+    oops:{ q:'Link the pantry reason', wrong:'Our garden could feed families. Therefore, the pantry needs vegetables.', right:'The pantry needs fresh vegetables every week. Therefore, our garden could help families in need.', why:'“Therefore” points forward to a result. The pantry’s need is the reason, so it comes first.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can link opinion and reasons with phrases and clauses that point the right way.',
+    board:{ one:'Because points back to the reason; therefore points forward to the result; specifically zooms in.', activity:'Draw arrows on the board between reason and result cards; boys pick the link card that fits each arrow and read the pair aloud.', mistakes:['“Therefore” before the reason (the arrow points the wrong way)','“Specifically,” followed by something vague','The same link every time'] },
+    do:[
+      {type:'sort', bins:['Gives the reason','Shows the result','Zooms in'], cards:[['because',0],['As a result,',1],['Specifically,',2],['Consequently,',1],['since',0]],
+        say:'What does each link do? Sort them.', how:'Back to a reason, forward to a result, or closer in?',
+        why:{q:'Why does "Consequently," show the result?', o:['It points forward to what follows','It gives the reason','It zooms in','It asks a question'], a:'It points forward to what follows'}},
+      {type:'tiles', q:'The lot gets about 7 hours of sun.', w:['Therefore,','plants','will grow.'], extra:['because'],
+        say:'Build the result sentence.', how:'The result link comes first. Then what follows.'}],
+    your:[
+      {type:'match', pairs:[['We should plant','because the pantry needs food.'],['Dovid’s Abba offered beds.','As a result, each class gets one.'],['It teaches science.','Specifically, we watch lettuce grow.']],
+        say:'Match each start to the link that finishes it.', how:'Does it need a reason, a result, or a closer look?'},
+      {type:'sort', bins:['Right way','Wrong way'], cards:[['It is sunny. Therefore, plants grow.',0],['Plants grow. Therefore, it is sunny.',1],['Beds were built. As a result, we plant.',0],['We plant. As a result, beds were built.',1]], mis:true,
+        say:'Does the arrow point the right way? Sort them.', how:'Reason first, then the result link, then the result.',
+        why:{q:'Why is "Plants grow. Therefore, it is sunny." the wrong way?', o:['The sun is the reason, so it comes first','It has no link','It zooms in','It is too short'], a:'The sun is the reason, so it comes first'}},
+      {type:'tiles', w:['The lot','is sunny,','so','plants grow.'], extra:['since'],
+        say:'Build the sentence: reason, then result.', how:'Reason first. “So” points forward to the result.'},
+      {type:'sort', q:'After “Specifically,” is it exact?', bins:['Exact detail','Vague'], cards:[['Specifically, lettuce in about 6 weeks.',0],['Specifically, good stuff.',1],['Specifically, six raised beds.',0],['Specifically, lots of things.',1]],
+        say:'Is the detail exact, or vague? Sort them.', how:'Exact means you could count it or see it.'},
+      {type:'match', pairs:[['since','Gives the reason'],['Because of this,','Shows the result'],['Specifically,','Zooms in']],
+        say:'Match each link to its job.', how:'Back to a reason, forward to a result, or closer in?',
+        why:{q:'Why does "Because of this," show a result?', o:['"This" is the reason already said','It starts with because','It zooms in','It ends the piece'], a:'"This" is the reason already said'}}] },
+
+  'WRIT.PARA.L06.12':{ band:'E45', pic:'📣', today:'End your opinion with a push that fits your reader', why:'The last sentence is what the reader carries away. Make it move him.',
+    ready:[{q:'Which link shows a result?', o:['As a result,','because','Specifically,'], a:'As a result,'}],
+    bridge:'WRIT.ESSAY.L06.04', bridgeName:'Strong Finish',
+    watch:{ q:'Yehuda ends his garden piece for his classmates', m:{type:'scene', e:'📣', t:'Yehuda has his opinion and three reasons. Now he needs the last sentence.'}, steps:[
+      {t:'SAY IT AGAIN: For all these reasons, our yeshiva should start a garden.'},
+      {t:'SUM UP: it would teach us science and help families in need.'},
+      {t:'ACT: Please vote yes for the garden at the class meeting.'},
+      {t:'THINK: Imagine a Shabbos table with lettuce our boys grew.'},
+      {t:'PICK ONE push his classmates can use. He picks think.'},
+      {t:'CHECK: it fits the opinion, not something else.'}], a:'For all these reasons, our yeshiva should start a garden. Imagine a family’s Shabbos table with lettuce our boys grew.' },
+    oops:{ q:'The end of the garden piece', wrong:'A garden would help our yeshiva. That is all. The end.', right:'A garden would help our yeshiva. Please vote yes at the next class meeting.', why:'“The end” just stops. One push sentence tells the reader what to do or think.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can end an opinion piece with a sum up and one push that fits your reader.',
+    board:{ one:'Say the opinion again, sum up, then one push that fits the reader: act or think.', activity:'Read endings aloud; boys raise a hand for a call to act, tap their head for a call to think, and cross their arms for no push.', mistakes:['An off-topic push','A push the reader cannot do','No push: “The end.”'] },
+    do:[
+      {type:'sort', bins:['Call to act','Call to think'], cards:[['Please vote yes for the garden.',0],['Imagine lettuce we grew.',1],['Sign up your class today.',0],['What if each class had a bed?',1]],
+        say:'Act or think? Sort each push.', how:'Act tells him to do something. Think gives a picture or a question.',
+        why:{q:'Why is "Imagine lettuce we grew" a call to think?', o:['It gives a picture to think about','It tells him to do something','It is off topic','It says the opinion again'], a:'It gives a picture to think about'}},
+      {type:'match', q:'Endings of the garden piece.', pairs:[['“Give us the lot!” (to classmates)','Wrong reader'],['“Drink more water!”','Off-topic push'],['“Please vote yes.”','Call to act']], mis:true,
+        say:'Match each ending to what it is.', how:'Is the push about the garden? Can this reader do it?'}],
+    your:[
+      {type:'sort', q:'Garden piece endings.', bins:['Pushes','Mistake'], cards:[['Please vote yes for the garden.',0],['That is all. The end.',1],['So clean your room!',1],['Imagine our lettuce on Shabbos.',0]],
+        say:'Does each ending push the right way? Sort them.', how:'A push is about the garden. A mistake stops, or goes off topic.',
+        why:{q:'Why is "So clean your room!" a mistake?', o:['It is an off-topic push','It is a call to think','It says the opinion again','It is too short'], a:'It is an off-topic push'}},
+      {type:'tiles', w:['Please','vote yes','for the','garden.'], extra:['The end.'],
+        say:'Build a call to act.', how:'Start with the polite word. Then what to do.'},
+      {type:'match', pairs:[['Please vote yes.','Call to act'],['Imagine our lettuce.','Call to think'],['That is all.','No push']],
+        say:'Match each ending to its kind.', how:'Do something? Picture something? Or does it just stop?'},
+      {type:'sort', q:'Opinion: keep the library open after school.', bins:['Fits the opinion','Off-topic push'], cards:[['Please keep the library open.',0],['So eat more apples!',1],['Imagine forty boys reading.',0],['Go play outside more!',1]],
+        say:'Does each push fit the opinion? Sort them.', how:'Is the push about the library?',
+        why:{q:'Why does "Imagine forty boys reading" fit?', o:['It is about the library opinion','It tells him to eat','It just stops','It is a new reason'], a:'It is about the library opinion'}},
+      {type:'tiles', w:['Imagine','lettuce','from our','own garden.'], extra:['Please'],
+        say:'Build a call to think.', how:'Start with the picture word. Then what to picture.'}] },
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
