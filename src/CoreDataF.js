@@ -54,5 +54,8 @@ CORE_SKILLS.F = [
   ["READ.LIT.L01.01", "Who Is in the Story?", "Listen to a story and name its characters", { after: "READ.COMP.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
   ["READ.LIT.L01.02", "Where Is the Story?", "Listen to a story and tell where and when it happens", { after: "READ.LIT.L01.01", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
   ["READ.LIT.L01.03", "Problem and Fix", "Listen to a story and tell its problem and how it was fixed", { after: "READ.LIT.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
-  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }]
+  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }],
+  ["READ.PHON.L03.12", "Phone and Photo", "Read ph, which says fff", { after: "READ.PHON.L03.11", std: "RF.2.3e", file: "CoreDataF3", min: 7 }],
+  ["READ.FLU.L03.02", "Scoop and Read", "Read phrase by phrase: scoop the words that go together", { after: "READ.LV.L03.05", std: "RF.2.4b", file: "CoreDataF3", min: 7 }],
+  ["READ.FLU.L03.03", "Who Is Talking?", "Read talking parts with expression: who is talking and how", { after: "READ.PHON.L03.08", std: "RF.2.4b", file: "CoreDataF3", min: 7 }]
 ];
