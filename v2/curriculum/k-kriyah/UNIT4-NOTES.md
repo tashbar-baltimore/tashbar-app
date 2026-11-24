@@ -4,24 +4,24 @@
 
 **Checked against the map:**
 - **Skill:** ט "t", י "y", כּ "k", כ "ch". Tells כ from ב: Beis has a tail at the bottom; Kaf is round.
-- **Story:** Dovid sees Tatty's tallis in shul. Tatty makes Kiddush with his kos.
+- **Story:** Dovid goes to the park with Tatty. **Everyday themes (Esti, 2026-11-24):** "Not everything needs to be so Jewish themed... Mendy's outside and he finds flowers or beach balls or balloons." The stories now use everyday things; the words are real Hebrew words that start with each letter.
 - **Games:** Picture Story, Feel the Shape, Look-Alike Detective (ב/כ), Sound Match, Find the Mistake.
 - **Mastery:** all the letters so far, mixed.
 
 ## The games, in order (Unit 4 opens when Unit 3's check is passed)
 | Stone | Game | What he does |
 |---|---|---|
-| 1 | Dovid's Shabbos (story) | Tatty's tallis turns into Tes, Dovid's waving hand (a yad) into Yud, and the Kiddush cup (a kos) into Kaf. Kaf's dot floats away and it becomes Chaf. Then the look-alikes side by side, a chant of all 13 letters, and he taps each new one. |
+| 1 | Dovid at the park (story) | A peacock (tavas) turns into Tes, a dove (yonah) into Yud, and a big ball (kadur) into Kaf. Kaf's dot floats away and it becomes Chaf. Then the look-alikes side by side, a chant of all 13 letters, and he taps each new one. |
 | 2 | Feel the Shape | Feels Tes, Yud, Kaf (and taps its dot) and Chaf. |
 | 3 | Look-Alike Detective | Two crates. He sorts Beis and Kaf (an arrow points at Beis's tail and Kaf's round bottom), then Kaf and Chaf (the dot). |
-| 4 | Sound Match | Tallis and taleh (a lamb) go to Tes, yad (hand) and yeled (boy) to Yud, kos and kippah to Kaf, and challah to Ches. At the end Chaf joins Ches: "Chaf sounds just like Ches." |
+| 4 | Sound Match | Taleh (lamb) and tavas (peacock) go to Tes, yad (hand) and yonah (dove) to Yud, kadur (ball) and kelev (dog) to Kaf, and chatul (cat) and chamor (donkey) to Ches. At the end Chaf joins Ches: "Chaf sounds just like Ches." |
 | 5 | Find the Mistake | "Yaakov says this is a Chaf. Is he right?" A ring marks the dot place; an arrow points at a shape difference. |
 | 6 | Show what you know (mastery check) | 9 questions. Beis always stands beside Kaf, and Kaf beside Chaf. Each right letter jumps into a basket. |
 | 7 | Review: Letter Hunt | Finds Zayin and Ches again, the spaced review of Unit 3. |
 | 8 | Bonus: letter rain | Four short rounds: Tes, Yud, Kaf, Chaf. |
 
 ## Decisions I made on my own (each one line, so you can say yes or change it)
-1. **Yud's picture is a yad (a hand),** waving to a friend in shul. The map didn't name a Yud picture.
+1. **Yud's pictures are a yonah (dove) in the story and a yad (hand) in Sound Match.**
 2. **The story's boy is Dovid,** in a purple kippah. Tatty is the same Tatty as in the other units.
 3. **Chaf has no picture.** Very few words a 5-year-old knows start with Chaf. Chaf comes from Kaf losing its dot, the way Veis comes from Beis.
 4. **The computer can't say "ch",** so Chaf, like Ches, is "the sound at the start of challah" until the rebbe's recording is in. The mastery check never asks "Which letter says ch?".
@@ -38,8 +38,8 @@
 - **Letters:** Tes (ט) says "t", Yud (י) says "y", Kaf (כּ) says "k", Chaf (כ) says "ch" (the same sound as Ches). These are lone sounds, never with a vowel.
 - **Dot rule:** Kaf has a dot (dagesh) and says k. Without the dot it is Chaf and says ch, like Beis and Veis.
 - **Look-alikes:** Beis has a tail at the bottom right, and Kaf is round at the bottom.
-- **Words:** tallis, taleh (lamb), yad, yeled, kos, Kiddush, kippah, Friday night.
-- **Shown:** Tatty holds the Kiddush cup on Friday night, with the Shabbos candles lit and the challah covered. There is no bracha, no pasuk and no Divine Name. The sefarim on the shul shelf have plain spines with no writing.
+- **Words:** tavas (peacock), taleh (lamb), yonah (dove), yad (hand), kadur (ball), kelev (dog), park.
+- **Shown:** a park with a bench and a lamp post; nothing from Shabbos or Yom Tov.
 - **Chant order:** Alef, Beis, Veis, Gimmel, Daled, Hei, Vov, Zayin, Ches, Tes, Yud, Kaf, Chaf.
 - **Temporary:** the letter sounds are the computer voice until the rebbe's recording is in, especially Chaf.
 
