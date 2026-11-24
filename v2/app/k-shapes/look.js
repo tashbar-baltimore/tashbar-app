@@ -126,6 +126,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   function farify(o) { o.traverse(c => { c.layers.set(FAR); c.castShadow = false; }); }   /* far things do not need to cast shadows on the toys: faster on a slow computer */
   const anim = [];   /* things that gently move: fn(t, q) */
   const noDepth = [];   /* far things that must not hide the near ground (the sky, the far ground) */
+  const groundMats = [];   /* the ground's materials (a painted ground picture replaces the drawn one) */
 
   /* ================= the world kit: pieces every world is built from ================= */
   const G = {   /* shared shapes (made once, used many times) */
@@ -151,6 +152,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     const uv = near.geometry.attributes.uv, R0 = o.r || 13, S = o.size || 160; for (let i = 0; i < uv.count; i++) { uv.setXY(i, 0.5 + (uv.getX(i) - 0.5) * 2 * R0 / S, 0.5 + (uv.getY(i) - 0.5) * 2 * R0 / S); }
     const fm = new THREE.MeshStandardMaterial({ color: color || '#FFFFFF', map: tex, roughness: 0.95 });
     const far = new THREE.Mesh(new THREE.PlaneGeometry(o.size || 160, o.size || 160), fm); far.rotation.x = -Math.PI / 2; far.position.y = -0.03; far.layers.set(FAR); scene.add(far); noDepth.push(far);
+    groundMats.push(near.material, fm);
     near.material.alphaMap.repeat.set(1, 1);
     /* the alpha map uses the round piece's own 0..1 UVs */
     near.material.alphaMap = fadeT.clone(); near.material.alphaMap.repeat.set(S / (2 * R0), S / (2 * R0)); near.material.alphaMap.offset.set(0.5 - S / (4 * R0), 0.5 - S / (4 * R0)); near.material.alphaMap.needsUpdate = true;
@@ -693,7 +695,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     /* the island he stands on: grass on top, a rim of soft grass, earth and rock underneath */
     const top = grassTex('#62D057', '#3BA845', '#A3EC74', ['#FFFFFF', '#FFD84D', '#FF8FB1'], 12);
     const isl = new THREE.Mesh(new THREE.CircleGeometry(15, 96), new PM({ map: top, roughness: 0.85, sheen: 0.5, sheenColor: new THREE.Color('#D8FFB0') }));
-    const uv = isl.geometry.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 15 / 80, uv.getY(i) * 15 / 80); isl.rotation.x = -Math.PI / 2; isl.receiveShadow = true; scene.add(isl);
+    const uv = isl.geometry.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 15 / 80, uv.getY(i) * 15 / 80); isl.rotation.x = -Math.PI / 2; isl.receiveShadow = true; scene.add(isl); groundMats.push(isl.material);
     const rimG = new THREE.Mesh(new THREE.TorusGeometry(15, 0.45, 16, 120), pm('#58C84C', { roughness: 0.6 })); rimG.rotation.x = Math.PI / 2; rimG.position.y = -0.15; scene.add(rimG);
     const far = group(), near = group();
     const rock = new THREE.Mesh(new THREE.ConeGeometry(15.2, 14, 40, 6), new THREE.MeshStandardMaterial({ color: '#C98A5A', roughness: 0.9, flatShading: true })); rock.rotation.x = Math.PI; rock.position.y = -7.4; far.add(rock);
@@ -1012,6 +1014,12 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   const PAINT = { toyland: {}, garden: {}, sky: { g: 1, y: -7, haze: false }, bakery: { R: 14, span: 2.3, y: -0.4, cut: -7.9 }, space: {}, beach: {}, underwater: {}, traintown: {}, jungle: {}, snow: {}, farm: { cut: -11 }, party: {} };
   function painted(name) {
     const P = PAINT[name]; if (!P || FAST) return;
+    /* the painted ground under the toys (worlds/<name>-ground.jpg, seamless): same size of pattern as the drawn one */
+    new THREE.TextureLoader().load(new URL('./worlds/' + name + '-ground.jpg', import.meta.url).href, gt => {
+      gt.colorSpace = THREE.SRGBColorSpace; gt.anisotropy = ANISO; gt.wrapS = gt.wrapT = THREE.RepeatWrapping;
+      const tint = { toyland: '#BFE3AE', garden: '#C6E6B4', sky: '#C2E4AE', traintown: '#C6E6B4', farm: '#C2E2AC', jungle: '#CFE8C0', party: '#A9D898', underwater: '#D4DFD2', space: '#F0E2DC', beach: '#F2E6D6', snow: '#E6EEFF' }[name] || '#FFFFFF';   /* a little deeper, so the bright sun does not wash it out */
+      groundMats.forEach(m => { const old = m.map; const t = gt.clone(); if (old) { t.repeat.copy(old.repeat); t.offset.copy(old.offset); } t.needsUpdate = true; m.map = t; m.color.set(tint); m.needsUpdate = true; });
+    });
     new THREE.TextureLoader().load(new URL('./worlds/' + name + '.jpg', import.meta.url).href, tex => {
       tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = ANISO; tex.repeat.x = -1; tex.offset.x = 1;
       const R = P.R || 46, span = P.span || 1.55, H = R * span * tex.image.height / tex.image.width, g = P.g || 0.97, y0 = P.y == null ? -2 : P.y;
