@@ -16,7 +16,7 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 | 2 | **D · The daily plan** (replace "3 lessons, then the Arcade" with today's list of material to cover; daily bonus when the whole list is done; every payment says what it is for) | TAKEN | https://claude.ai/code/session_01TScHB4zG82RAGTetxXcxpj | 2026-11-24 | 2026-11-24 02:45 UTC | Plan in #284; building today's list for TEST- boys (server list check, daily bonus on the whole list, My work rows) | none; can start now |
 | 3 | **F · Foundations K–2** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 4 | **C45 · Comprehension Gr 4–5** | TAKEN | https://claude.ai/code/session_01JPKZXEMq9S1KawXgCw533p | 2026-11-24 | 2026-11-24 03:17 UTC | Skill map + ledger in review (`docs/core-growth/C45-map.md`); next: Units 4.1 + 5.1 and Book B1 ch. 1–3, lessons once T's how-to is merged | T for lesson PRs; can start the map now |
-| 5 | **W48 · Writing Gr 4–8** | OPEN | | | | | T (Writing Workshop); can start the map now |
+| 5 | **W48 · Writing Gr 4–8** | TAKEN | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf | 2026-11-24 | 2026-11-24 03:15 UTC | Skill map and ledger written (`docs/core-growth/W48-map.md`, `W48-ledger.md`); next: Unit 1 lessons once job T's how-to is on main | T (Writing Workshop); can start the map now |
 | 6 | **C23 · Comprehension Gr 2–3** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 7 | **G · Grammar and words K–8** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 8 | **C68 · Comprehension Gr 6–8** | OPEN | | | | | T for lesson PRs; can start the map now |
@@ -42,7 +42,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | K1 (K–1) | | |
 | B23 (2–3) | | |
 | E45 (4–5) | The Glen Avenue Crew: `docs/core-growth/C45-map.md` section 5 | C45 |
-| M68 (6–8) | | |
+| M68 (6–8) | The Beacon newsroom: `docs/core-growth/W48-map.md` section 7 (C68 may replace it if it writes one first) | W48 |
 
 ## Shared texts
 The F and C jobs list texts that the G and W jobs may use for "his own sentence" and writing tasks.
