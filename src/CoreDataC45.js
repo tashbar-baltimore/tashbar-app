@@ -32,5 +32,9 @@ CORE_SKILLS.C45 = [
   ["READ.LIT.L05.06", "What Did He Learn?", "Find the theme in the lesson the character learns", { std: "RL.4.2", file: "CoreDataC455", min: 8 }],
   ["READ.LIT.L06.07", "Where It Happens Matters", "See how the setting shapes what happens", { after: "READ.FLU.L06.02", std: "RL.5.3", file: "CoreDataC456", min: 8 }],
   ["READ.LIT.L06.08", "Changed by Each Other", "Show how two characters change each other", { std: "RL.5.3", file: "CoreDataC456", min: 8 }],
-  ["READ.LIT.L06.09", "The Turning Point", "Find the turning point on the plot mountain", { std: "RL.5.5", file: "CoreDataC456", min: 8 }]
+  ["READ.LIT.L06.09", "The Turning Point", "Find the turning point on the plot mountain", { std: "RL.5.5", file: "CoreDataC456", min: 8 }],
+  ["READ.COMP.L06.10", "Sum Up an Article", "Sum up an article with its big ideas and key details", { after: "READ.LIT.L06.09", std: "RI.5.2", file: "CoreDataC458", min: 8 }],
+  ["READ.COMP.L06.11", "Link Map", "Show how two ideas or events connect", { std: "RI.5.3", file: "CoreDataC458", min: 8 }],
+  ["READ.COMP.L06.12", "Explain It with the Text", "Explain using the text's own details", { std: "RI.5.3", file: "CoreDataC458", min: 8 }],
+  ["READ.FLU.L06.03", "Pace It", "Slow down for the hard parts, read the easy parts smoothly", { std: "RF.5.4b", file: "CoreDataC458", min: 8 }]
 ];
