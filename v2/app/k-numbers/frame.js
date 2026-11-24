@@ -165,20 +165,21 @@
       '<g fill="none" stroke="#E8B48A" stroke-width="3" stroke-linecap="round" opacity=".8"><path d="M80 100 q 9 -6 18 0"/><path d="M104 96 q 9 -6 18 0"/><path d="M128 99 q 9 -6 18 0"/><path d="M151 104 q 8 -5 16 0"/></g>' +
       '<path d="M72 112 C 70 104, 166 100, 166 112" stroke="#E8B48A" stroke-width="3" fill="none" opacity=".7"/><ellipse cx="96" cy="170" rx="10" ry="22" fill="#fff" opacity=".35"/></svg>';
     var fs = el.querySelectorAll('.fg'), api = { el: el, onChange: null };
-    api.set = function (k) { fs.forEach(function (f, i) { f.classList.toggle('down', i >= k); }); };
+    function mark() { el.classList.toggle('empty', api.count() === 0); }
+    api.set = function (k) { fs.forEach(function (f, i) { f.classList.toggle('down', i >= k); }); mark(); };
     api.count = function () { var c = 0; fs.forEach(function (f) { if (!f.classList.contains('down')) c++; }); return c; };
     api.lock = function (on) { el.classList.toggle('locked', on); };
     api.finger = function (i) { return fs[i]; };
     if (interactive) el.addEventListener('pointerdown', function (e) {
       if (el.classList.contains('locked')) return; var f = e.target.closest('.fg'); e.preventDefault();
       if (!f || f.classList.contains('down')) { f = null; for (var i = 0; i < 5; i++) if (fs[i].classList.contains('down')) { f = fs[i]; break; } if (!f) return; }   /* tap the hand: the next finger goes up */
-      f.classList.toggle('down'); NK.sound[f.classList.contains('down') ? 'back' : 'pop'](); if (api.onChange) api.onChange(api.count());
+      f.classList.toggle('down'); NK.sound[f.classList.contains('down') ? 'back' : 'pop'](); mark(); if (api.onChange) api.onChange(api.count());
     });
     if (interactive) {
       var dn = document.createElement('button'); dn.className = 'fdown btn3d b-sun'; dn.setAttribute('aria-label', 'Put one finger down');
       dn.innerHTML = '<svg viewBox="0 0 48 48"><path d="M24 10v26M13 26l11 11 11-11" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       dn.addEventListener('pointerdown', function (e) { e.preventDefault(); e.stopPropagation(); if (el.classList.contains('locked')) return;
-        for (var i = 4; i >= 0; i--) if (!fs[i].classList.contains('down')) { fs[i].classList.add('down'); NK.sound.back(); if (api.onChange) api.onChange(api.count()); return; } });
+        for (var i = 4; i >= 0; i--) if (!fs[i].classList.contains('down')) { fs[i].classList.add('down'); NK.sound.back(); mark(); if (api.onChange) api.onChange(api.count()); return; } });
       el.appendChild(dn);
     }
     api.set(n || 0); return api;
