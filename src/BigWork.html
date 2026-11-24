@@ -1,0 +1,107 @@
+<script>
+/* BigWork.html: a boy's work fills the whole Chromebook screen (HoS 2026-11-24: "That's not good. The biggest possible.").
+   The school Chromebook (Lenovo 500e Gen 3) is 1366x768, open like a laptop. Before this, lesson screens, worksheets and practice
+   cards sat in a 640-860 px column in the middle with empty sides.
+   ON A WIDE, LANDSCAPE SCREEN ONLY (min-width 1024 px, min-height 560 px), this add-on:
+     1. takes the width caps off the lesson frame (One Bite: Today we learn, Ready check, Watch me, Mistake Detective, Do it with me,
+        Your turn, Show me, Level clear), the workbook (Block Builders) and the Core unit and reader pages;
+     2. makes everything bigger the same way K1Only.html already does for Little Learners: CSS zoom (text, pictures and tap targets
+        grow together; drag and drop and tracing keep working because Chrome reports zoomed sizes to the page);
+     3. puts the work in two columns: the question and its picture on the left, the answers and the activity on the right.
+   Phone size and every screen narrower than 1024 px are not changed. K-1 (Little Learners) lessons keep K1Only.html's own big look.
+   The button system (UiKit.html, window.TLK) is not touched: no rule here names a .tlk class, and no zoom is put on a page part
+   that holds kit buttons. No words, answers, rules or money change. No double slash in this file (HtmlService rule). */
+(function(){
+if(window.TL_BIGWORK) return; window.TL_BIGWORK=1;
+const LEFT=/^(qrow|pxrow|tlpic|rp|tbnudge|akwe|lf-help)$/;
+/* Show me (the engine's own question card): left = the question and its picture or page, right = How to do it and the answers. Only on a wide
+   screen (a phone card is never touched); the wrappers are display:contents below that size. Not split when a passage already sits beside the card. */
+const WIDE='(min-width:1024px) and (min-height:560px) and (orientation:landscape)';
+function split(){ try{
+  if(typeof A==='undefined'||A.view!=='play'||!window.matchMedia||!matchMedia(WIDE).matches) return;
+  const play=document.querySelector('#app .play.ob-play'); if(!play||play.classList.contains('ob-K1')) return;
+  const st=play.querySelector('.stage'); if(!st||st.classList.contains('withp')) return;
+  const card=st.querySelector('.qcard'); if(!card||card.querySelector(':scope > .bw-l')) return;
+  const kids=[...card.children].filter(e=>getComputedStyle(e).position!=='absolute'&&getComputedStyle(e).position!=='fixed');
+  const first=e=>String(e.className||'').trim().split(/\s+/)[0];
+  const L=kids.filter(e=>LEFT.test(first(e))), R=kids.filter(e=>!LEFT.test(first(e)));
+  if(!L.length||!R.length) return;
+  const l=document.createElement('div'), r=document.createElement('div'); l.className='bw-l'; r.className='bw-r';
+  card.insertBefore(l,kids[0]); card.insertBefore(r,l.nextSibling);
+  L.forEach(e=>l.appendChild(e)); R.forEach(e=>r.appendChild(e)); card.classList.add('bw-split');
+}catch(e){ console.error('BigWork',e); } }
+if(typeof window.render==='function'&&!window.render.__bw){ const _r=window.render;
+  window.render=function(){ const out=_r.apply(this,arguments); split(); return out; }; window.render.__bw=true; }
+
+const W='@media '+WIDE;
+document.head.insertAdjacentHTML('beforeend',`<style id="bigwork-css">
+.qcard > .bw-l,.qcard > .bw-r{ display:contents; }
+${W}{
+:root{ --bw-z:1.2; }
+}
+@media (min-width:1280px) and (min-height:680px) and (orientation:landscape){ :root{ --bw-z:1.3; } }
+@media (min-width:1600px) and (min-height:860px) and (orientation:landscape){ :root{ --bw-z:1.5; } }
+${W}{
+/* ---------- One Bite lesson frame: no narrow column ---------- */
+body.ob-on:not(.ob-b-K1) .wrap{ max-width:none !important; }
+.ob:not(.ob-K1) .ob-main{ zoom:var(--bw-z); max-width:none; width:100%; flex:0 0 auto; margin:auto 0; padding:16px 40px calc(110px / var(--bw-z)); }
+.ob:not(.ob-K1) .ob-foot{ zoom:var(--bw-z); }
+/* two columns: left items stack at the top; the one big right item spans every row and sits in the middle of its column.
+   The last row is 1fr so a tall right item never pulls the left items apart. */
+.ob:not(.ob-K1) .ob-main:is(:has(> .ob-today),:has(> .ob-opts),:has(> .ob-steps),:has(> .ob-oops),:has(> .obk)){
+  display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); grid-template-rows:repeat(9,auto) 1fr; column-gap:48px; row-gap:0; align-items:start; }
+.ob:not(.ob-K1) .ob-main:is(:has(> .ob-today),:has(> .ob-opts),:has(> .ob-steps),:has(> .ob-oops),:has(> .obk)) > *{ grid-column:1; margin:0 0 16px; }
+.ob:not(.ob-K1) .ob-main:is(:has(> .ob-opts),:has(> .ob-steps),:has(> .ob-oops),:has(> .obk)) > :is(.ob-opts,.ob-steps,.ob-oops,.obk){ grid-column:2; grid-row:1 / -1; align-self:center; margin:0; }
+.ob:not(.ob-K1) .ob-main > .ob-tag{ justify-self:start; }
+/* Today we learn: the picture on the left, the words on the right */
+.ob:not(.ob-K1) .ob-main:has(> .ob-today){ grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+.ob:not(.ob-K1) .ob-main:has(> .ob-today) > *{ grid-column:2; }
+.ob:not(.ob-K1) .ob-main:has(> .ob-today) > :is(.ob-bigpic,.rt){ grid-column:1; grid-row:1 / -1; align-self:center; justify-self:center; margin:0; }
+.ob:not(.ob-K1) .ob-main:has(> .ob-today) > .ob-bigpic{ font-size:200px; }
+.ob:not(.ob-K1) .ob-main:has(> .ob-today) > .rt{ max-width:100% !important; width:100%; }
+.ob:not(.ob-K1) .ob-main:has(> .ob-today) > .ob-today{ font-size:calc(var(--fs) * 1.9); }
+/* Watch me, Mistake Detective: the question (and its picture) on the left, the steps on the right */
+.ob:not(.ob-K1) .ob-main > .rt-watch{ max-width:100% !important; }
+.ob:not(.ob-K1) .ob-main:has(> .ob-steps) > .ob-bigpic.sm{ font-size:120px; }
+.ob:not(.ob-K1) .ob-main:has(> .ob-oops) > .ob-why{ font-size:calc(var(--fs) * 1.1); }
+.ob:not(.ob-K1) .ob-oops .ob-wrong,.ob:not(.ob-K1) .ob-oops .ob-right{ font-size:calc(var(--fs) * 1.3); padding:20px; }
+/* Do it with me, Your turn: the activity gets the right column; its own size caps open up to fill it */
+.ob:not(.ob-K1) .ob-main > .obk-top{ align-self:stretch; }
+.ob:not(.ob-K1) .ob-main > .obk-q{ text-align:left; }
+.ob:not(.ob-K1) .obk :is(.obk-nl,.obk-objs,.obk-mat,.obk-find,.obk-bins){ max-width:100%; }
+.ob:not(.ob-K1) .obk .obk-col{ max-width:260px; }
+.ob:not(.ob-K1) .obk .obk-opt{ max-width:200px; }
+.ob:not(.ob-K1) .obk .obk-trace{ max-width:340px; }
+.ob:not(.ob-K1) .obk .obk-tf-f{ --cell:64px; }
+.ob:not(.ob-K1) .obk .obk-obj{ --o:var(--tap); }
+/* "Tap the reason": the reason question takes the right column; the finished activity moves left, smaller and dimmed */
+.ob:not(.ob-K1) .ob-main:has(> .obk-why) > .obk-why{ grid-column:2; grid-row:1 / -1; align-self:center; margin:0; }
+.ob:not(.ob-K1) .ob-main:has(> .obk-why) > .obk{ grid-column:1; grid-row:auto; zoom:.75; margin:0 0 16px; }
+.ob-M68{ --fs:20px; }
+/* Level clear and the wiggle break: one column, centered, bigger */
+.ob:not(.ob-K1) .ob-main.ob-center{ max-width:900px; margin:auto; }
+/* ---------- Show me: the engine's question card, wide and in two columns ---------- */
+body.ob-on .play.ob-play:not(.ob-K1){ max-width:none !important; }
+body.ob-on .play.ob-play:not(.ob-K1) > .stage{ zoom:calc(var(--bw-z) - .2); max-width:none !important; padding:0 28px 24px; }
+body.ob-on .play.ob-play:not(.ob-K1) > .ob-qtag{ zoom:calc(var(--bw-z) - .2); margin:8px 28px 0; }
+body.ob-on .play.ob-play:not(.ob-K1) .qcard.bw-split{ display:grid; grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); column-gap:40px; align-items:center; }
+.qcard.bw-split > .bw-l,.qcard.bw-split > .bw-r{ display:flex; flex-direction:column; gap:14px; min-width:0; }
+.qcard.bw-split > .bw-l{ align-self:start; }
+.qcard.bw-split > .bw-r > .opts{ grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:0; }
+.qcard.bw-split > .bw-r > *{ margin-top:0; }
+.qcard.bw-split > .bw-l > .qrow{ order:-2; flex-wrap:wrap; } .qcard.bw-split > .bw-l > .qrow > .qtext{ flex:1 1 100%; min-width:0; } .qcard.bw-split > .bw-r > :is(.ob-peek,.how){ order:-2; } .qcard.bw-split > .bw-r > .ob-peek{ align-self:flex-start; } .qcard.bw-split > .bw-l > :is(.pxrow,.tlpic,.rp,.akwe){ order:-1; }
+/* ---------- the workbook (Block Builders): the page grows to fill the screen ---------- */
+/* only zoom: the page keeps its own 860 px layout, so pen ink a boy already wrote (saved relative to the page) stays in place */
+.bbx-wrap{ zoom:var(--bw-z); }
+/* ---------- the Reader (Core Growth): the reading page grows; the lines stay short enough to read ---------- */
+#crd:not(.b-K1) .crd-page{ zoom:var(--bw-z); max-width:900px; }
+#crd:not(.b-K1) .crd-ask{ max-width:min(1170px,100%); font-size:20px; } #crd:not(.b-K1) .crd-ask .crd-q{ font-size:24px; } #crd:not(.b-K1) .crd-ask .crd-how{ font-size:18px; }
+/* ---------- the unit check (Core Growth): wider, bigger question and page. Its answer buttons are kit buttons: their size stays the kit's ---------- */
+#cun .cu-body{ max-width:1180px; padding:20px 32px; }
+#cun .cu-q{ font-size:30px; line-height:1.3; }
+#cun .cu-p{ font-size:24px; }
+#cun .cu-opts{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+</style>`);
+})();
+</script>
