@@ -21,7 +21,7 @@
 
 ## Decisions I made on my own (each one line, so you can say yes or change it)
 1. **The story is the playroom,** not tzitzis, Kiddush and Rosh Hashanah: tzipor (bird), kof (toy monkey), rakeves (toy train).
-2. **Tzvi** is the Unit 7 boy (red kippah); **Mommy** is with him.
+2. **Tzvi** is the Unit 7 boy (purple kippah); **Mommy** is with him.
 3. **Sound Match instead of Letter Hunt.** The Letter Hunt's world is a sukkah; Sound Match fits the playroom and practises the new sounds.
 4. **Hei and Kuf are look-alikes too:** "Hei has a short leg. Kuf has a long leg."
 5. **Kaf is never a stand beside Kuf in Sound Match,** since both say k and the boy could not tell which one a picture goes to. Beis (bayis) comes back instead. At the end Kaf appears above Kuf: "This is Kaf. Kuf sounds just like Kaf!"
@@ -33,7 +33,7 @@
 - **Look-alikes:** Daled has a corner at the top right; Reish is round there. Hei's left leg is short; Kuf's goes down low, below the line. (For the rebbe: the app says "Hei has a short leg. Kuf has a long leg." He may prefer "Kuf's leg goes below the line.")
 - **Words:** tzipor (bird), tzav (turtle), kof (monkey), kubiyos (blocks), rakeves (train), rimon (pomegranate), playroom.
 - **Chant order:** Alef, Beis, Veis, Gimmel, Daled, Hei, Vov, Zayin, Ches, Tes, Yud, Kaf, Chaf, Lamed, Mem, Nun, Samech, Ayin, Pei, Fei, Tzadik, Kuf, Reish.
-- **Words are said the Ashkenazi way:** rakeves and kubiyos (ת without a dot says s), like bayis and zayis.
+- **Words are said the Ashkenazi way:** rakeves and kubiyos (ת without a dot says s), like bayis and zayis. (For the rebbe: tzav is written like the earlier units' dag and gamal; a strict cheder may say tzov.)
 - **Temporary:** the letter sounds are the computer voice until the rebbe's recording is in. The computer cannot say a lone sound, so for now it says "tsuh", "kuh" and "ruh"; the rebbe's recording says the lone sounds.
 
 ## What's next

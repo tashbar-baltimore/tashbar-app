@@ -25,7 +25,7 @@ export function makeStory(E, unit, script) {
     showHand(l); document.body.dataset.tapReady = l.userData.key;
     await E.waitTap([l]); delete document.body.dataset.tapReady; E.hand.hide();
     E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .2, .6)), 26, 1.2);
-    float(l, false); const r0 = l.rotation.y, y0 = l.position.y; await E.tween(800, k => { l.rotation.y = r0 + k * Math.PI * 2; l.position.y = y0 + Math.sin(k * Math.PI) * .6; }, E.ease.out); l.position.y = y0; float(l);
+    float(l, false); const r0 = l.rotation.y, y0 = l.position.y; await E.tween(800, k => { l.rotation.y = r0 + Math.sin(k * Math.PI * 2) * .5; l.position.y = y0 + Math.sin(k * Math.PI) * .6; }, E.ease.out);   /* a happy wobble, never turned round to show the letter backwards */ l.position.y = y0; float(l);
     await E.say(line);
   }
   window.__info = () => Object.assign({ tap: document.body.dataset.tapReady || null }, Object.fromEntries(Object.entries(L).map(([k, l]) => [k, E.toScreen(E.worldPos(l))])),

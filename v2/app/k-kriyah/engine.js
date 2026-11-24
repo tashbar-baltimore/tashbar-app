@@ -389,7 +389,7 @@ export const ari = () => person({ kippah: 0xd97706, hair: 0x3b2a1a });
 export const shloimy = () => person({ kippah: 0x2e8b57, hair: 0x8a5a3c });
 export const avi = () => person({ kippah: 0x2f7de1, hair: 0x5a3a22, shirt: 0xeaffea });
 export const zeidy = () => { const p = person({ beard: 0xf2f2f2, hat: true, jacket: 0x1d2433, pants: 0x1d2433, hair: 0xe0e0e0, skin: 0xf6c9a2 }); p.scale.setScalar(1.45); return p; };
-export const tzvi = () => person({ kippah: 0xc0392b, hair: 0x2b1d12, shirt: 0xe8f0ff });
+export const tzvi = () => person({ kippah: 0x8e44ad, hair: 0x2b1d12, shirt: 0xe8f0ff });
 export const eli = () => person({ kippah: 0x1f7a8c, hair: 0x7a4a24, shirt: 0xfff4e0 });
 export const bubby = () => { const p = person({ woman: true, hair: 0xb8a48c, dress: 0x6b4f8a, shirt: 0x6b4f8a, skin: 0xf6cfae }); p.scale.setScalar(1.3); return p; };   /* a light sheitel and a long dress */
 export const dovid = () => person({ kippah: 0x6a3fa0, hair: 0x2b1d12, shirt: 0xeaf4ff });
