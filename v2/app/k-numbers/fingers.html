@@ -41,8 +41,8 @@
   function show(n) { var f = $('flash'); if (shown) shown.el.remove(); shown = FR.fingers(n, false); shown.el.classList.add('fh'); f.insertBefore(shown.el, f.firstChild); }
   function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
   function hooks() {
-    GAME.right = function () { return FR.fingerMoves(H, R.n).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
-    GAME.wrong = function () { var w = R.n < 5 ? R.n + 1 : R.n - 1; return FR.fingerMoves(H, w).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+    GAME.right = function () { return FR.fingerTaps(H, R.n, '#bighand').concat([{ tap: '#check' }]); };
+    GAME.wrong = function () { var w = R.n < 5 ? R.n + 1 : R.n - 1; return FR.fingerTaps(H, w, '#bighand').concat([{ tap: '#check' }]); };
   }
   function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
 

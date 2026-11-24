@@ -1,0 +1,9 @@
+/* Unit 2 page layout: the stone path in the middle of the screen, loose stones (or the drum) below */
+.stage{ grid-template-rows:auto auto auto; grid-template-columns:minmax(0,1fr); align-content:center; align-items:center; justify-items:center; gap:clamp(18px,5vh,48px); }
+#path, .carrow, .u2path{ min-width:0; }
+#path{ width:100%; display:flex; justify-content:center; padding-top:20px; }
+.hero{ display:flex; align-items:center; justify-content:center; gap:6px; }
+.hero .u2stone{ width:24%; }
+.carrow{ display:flex; align-items:center; justify-content:flex-end; width:100%; max-width:1240px; min-height:10px; }
+@media (min-width:761px) and (min-aspect-ratio:4/5){ .u2path{ gap:clamp(8px,1.2vw,16px); } }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ gap:20px; padding:4px 6px 18px; } }

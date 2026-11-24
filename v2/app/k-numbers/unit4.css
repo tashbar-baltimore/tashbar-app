@@ -1,0 +1,30 @@
+/* Kindergarten Numbers, Unit 4 (numbers 0-5): five-frame, big written numbers, tracing, cookies. Used with frame.css. */
+.ff{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; padding:10px; border-radius:22px; background:linear-gradient(180deg,#4FA8F0,#2A78D0); box-shadow:inset 0 3px 0 rgba(255,255,255,.45), 0 8px 0 #1C5A9E, 0 14px 22px rgba(30,60,120,.25); border:4px solid #fff; touch-action:none; }
+.ff .box{ aspect-ratio:1; border-radius:14px; background:radial-gradient(circle at 50% 40%,#FFFFFF,#E6F0FC); box-shadow:inset 0 4px 8px rgba(30,70,140,.25); display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; }
+.ff.locked .box{ cursor:default; }
+.ff .ctr{ width:78%; aspect-ratio:1; border-radius:50%; background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 4px 0 rgba(90,0,10,.35), inset 0 -4px 0 rgba(0,0,0,.15); position:relative; animation:ctrin .28s cubic-bezier(.3,1.6,.5,1); pointer-events:none; }
+.ff .ctr::after{ content:''; position:absolute; left:20%; top:16%; width:30%; height:26%; border-radius:50%; background:rgba(255,255,255,.8); }
+@keyframes ctrin{ from{ transform:scale(.2); } to{ transform:scale(1); } }
+.ff .box.need{ box-shadow:inset 0 0 0 5px #22B45E, inset 0 4px 8px rgba(30,70,140,.25); }
+.ff .box.extra .ctr{ opacity:.5; filter:drop-shadow(0 0 6px #FF5A4E); }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .ff{ padding:6px; gap:4px; border-width:3px; } }
+#num{ transition:opacity .3s; }
+.ff.hi .box{ box-shadow:inset 0 0 0 4px #FFD23D, inset 0 4px 8px rgba(30,70,140,.25); }
+
+.numcard{ position:relative; aspect-ratio:.82; border-radius:28px; border:5px solid #fff; background:radial-gradient(circle at 50% 30%,#FFFFFF,#EEF4FF); box-shadow:0 8px 0 rgba(40,70,140,.16), 0 14px 22px rgba(40,70,140,.18); display:flex; align-items:center; justify-content:center; touch-action:none; }
+.numcard svg{ width:78%; height:86%; pointer-events:none; overflow:visible; }
+.numcard.picked{ border-color:var(--sun); box-shadow:0 0 0 6px rgba(255,201,61,.6), 0 8px 0 rgba(40,70,140,.16); }
+.numcard.done{ border-color:#7BE0A4; }
+
+.tracer{ position:relative; border-radius:34px; border:6px solid #fff; background:radial-gradient(circle at 50% 30%,#FFFFFF,#EAF3FF); box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); touch-action:none; }
+.tracer svg{ width:100%; height:100%; display:block; touch-action:none; cursor:crosshair; }
+.tracer .startdot{ animation:sd 1s infinite; transform-box:fill-box; transform-origin:center; } @keyframes sd{ 50%{ transform:scale(1.25); } }
+
+.plate4{ position:relative; aspect-ratio:1.2; border-radius:50%; background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%); box-shadow:0 12px 0 rgba(120,70,20,.2), 0 20px 26px rgba(90,50,10,.22); }
+.plate4 svg.ck{ position:absolute; width:30%; height:34%; transform:translate(-50%,-50%); transition:left .7s ease-in, top .7s ease-in, opacity .7s; }
+.plate4 svg.ck.gone{ opacity:0; }
+
+.stones{ display:flex; gap:clamp(4px,1vw,12px); flex-wrap:wrap; justify-content:center; }
+.stone{ width:clamp(64px,9vh,86px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:clamp(28px,4.4vh,40px); font-weight:900; color:#fff; }
+.stone.lit{ --b:var(--green); --b-l:var(--green-l); --b-d:var(--green-d); }
+.stone.dark{ --b:#C9D4E6; --b-l:#EEF3FB; --b-d:#9AA8C0; color:transparent; }

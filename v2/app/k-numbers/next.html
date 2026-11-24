@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What Comes Next? — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 2, game 2: WHAT COMES NEXT? Skill: the counting words in order, from any number (K.CC.2).
+     A path of stepping stones (dots, no numerals). The voice counts along and stops at an empty stone: "What comes next?"
+     He taps a loose stone to hear it, then drags the right one into the gap. Mistake: listen again (count up to the gap);
+     second mistake: "Next comes seven." Slow: paths of 1-5. Quick: a bonus counting past ten to twenty. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="u2.css">
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="carrow" id="carrow"></div>
+  <div id="path"></div>
+  <div class="u2loose" id="loose"></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit2.js"></script>
+<script>
+U2.gapGame({
+  id: 'u2-next', title: 'What Comes Next?', rounds: 6,
+  hero: '<div class="u2stone">' + U2.dots(2) + '</div><div class="u2stone">' + U2.dots(3) + '</div><div class="u2stone gap" style="animation:none"></div>',
+  plan: function (i) {
+    if (i < 2) return [{ from: 1, to: 5, startN: 1, gapN: 3 }, { from: 1, to: 5, startN: 2, gapN: 5 }][i];
+    var P = [[1, 6], [4, 8], [3, 9], [6, 10]][i - 2]; return { from: 1, to: 10, startN: P[0], gapN: P[1], say: i >= 3 ? 'Now we start at ' + U2.word(P[0]) + '.' : null };
+  },
+  bonus: { from: 11, to: 20, startN: 14, gapN: 18, say: 'Bonus! Past ten. Big numbers!' },
+  demo: async function (F, setup) {
+    var x = setup({ from: 1, to: 5, startN: 1, gapN: 4 });
+    await F.say('Stones in order. One stone is missing.');
+    await U2.countAlong(x.P, 0, 2); await F.say('What comes next? Watch me.');
+    var good = document.querySelector('#loose .u2stone[data-n="4"]');
+    await F.handTo(good); await F.handTap(); await F.say('Four!', { noRepeat: true });
+    await F.handDrag(good, x.P.stones[3]); good.remove(); x.P.fill(3); x.P.place(3, true);
+    await F.yes(x.P.stones[3], 'One, two, three, four. Yes!');
+  }
+});
+</script>
+</body>
+</html>

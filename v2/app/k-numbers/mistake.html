@@ -11,27 +11,27 @@
 <style>
 .stage{ grid-template-columns:1fr 1fr; align-items:center; }
 .col{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; height:100%; }
-#plate.qcard{ width:min(40vw,56vh,400px); border-radius:50%; background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%); }
+#plate.qcard{ transition:opacity .35s; width:min(40vw,56vh,400px); border-radius:50%; background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%); }
 #plate.qcard svg.q{ width:24%; height:24%; }
 .saywrap{ display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:22px; }
 .who svg{ width:clamp(80px,15vh,120px); height:auto; filter:drop-shadow(0 6px 4px rgba(0,0,0,.2)); }
 .spk{ cursor:pointer; }
 .says{ position:relative; display:flex; align-items:center; gap:12px; background:#fff; border-radius:30px; border:5px solid #fff; padding:10px 18px 10px 12px; box-shadow:0 8px 0 rgba(40,70,140,.14), 0 14px 22px rgba(40,70,140,.18); }
 .says::after{ content:''; position:absolute; left:-18px; top:44%; border:12px solid transparent; border-right:18px solid #fff; }
-.says .spk{ width:54px; height:54px; border-radius:50%; background:radial-gradient(circle at 50% 30%,#8BE0FF,#2FB5E8); display:flex; align-items:center; justify-content:center; }
+.says .spk{ width:64px; height:64px; flex:none; border-radius:50%; background:radial-gradient(circle at 50% 30%,#8BE0FF,#2FB5E8); display:flex; align-items:center; justify-content:center; }
 .says .spk svg{ width:30px; height:30px; }
 .says .fhand{ width:clamp(100px,26vh,200px); aspect-ratio:170/230; }
 .thumbs button{ width:clamp(104px,17vh,140px) !important; }
 .fixrow{ display:flex; align-items:center; gap:14px; }
 .fixrow[hidden], .thumbs[hidden]{ display:none; }
 .bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:30px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14); padding:6px; }
-.bighand .fhand{ width:min(22vw,36vh,240px); aspect-ratio:170/230; }
+.bighand .fhand{ width:min(20vw,30vh,220px); aspect-ratio:170/230; }
 .hero .qcard{ position:absolute; width:56%; left:22%; border-radius:50%; }
 @media (max-width:760px), (max-aspect-ratio:4/5){
   .stage{ grid-template-columns:1fr; grid-template-rows:1fr 1.1fr; }
-  #plate.qcard{ width:min(60vw,24vh); }
+  #plate.qcard{ width:min(68vw,30vh); }
   .stage{ grid-template-rows:.8fr 1.2fr; grid-template-columns:minmax(0,1fr); }
-  .who svg{ width:54px; } .says .fhand{ width:72px; } .says{ padding:6px 12px 6px 8px; } .saywrap{ gap:14px; } .col{ gap:10px; }
+  .who svg{ width:96px; } .says .fhand{ width:104px; } .says{ padding:6px 12px 6px 8px; } .saywrap{ gap:14px; } .col{ gap:10px; }
   .thumbs button{ width:96px !important; }
   .bighand .fhand{ width:min(40vw,24vh); }
 }
@@ -62,14 +62,15 @@
   function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
   function hooks() {
     if (R.stage === 'judge') { var ok = R.claim === R.n; GAME.right = function () { return [{ tap: ok ? '#up' : '#down' }]; }; GAME.wrong = function () { return [{ tap: ok ? '#down' : '#up' }]; }; }
-    else { GAME.right = function () { return FR.fingerMoves(H, R.n).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
-      GAME.wrong = function () { var w = R.n === R.claim ? R.n + 1 : R.claim; return FR.fingerMoves(H, w).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); }; }
+    else { GAME.right = function () { return FR.fingerTaps(H, R.n, '#bighand').concat([{ tap: '#check' }]); };
+      GAME.wrong = function () { var w = R.n === R.claim ? R.n + 1 : R.claim; return FR.fingerTaps(H, w, '#bighand').concat([{ tap: '#check' }]); }; }
   }
   function finish(first) { var d = done; done = null; d(first); }
 
   async function judge(sayRight) {
     NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'judge') return; GAME.phase = 'busy'; FR.lock(true);
     var isRight = R.claim === R.n, who = R.who;
+    $('plate').style.opacity = '';
     if (sayRight === isRight) {
       if (isRight) { await FR.yes($('says'), 'Yes! ' + who + ' is right. ' + FR.Word(R.n) + '!'); finish(R.misses === 0); return; }
       NK.sound.yes(); await FR.say('Yes! ' + who + ' made a mistake.');
@@ -78,7 +79,7 @@
     }
     FR.oops($('says')); R.misses++; if (R.misses >= 2) easy = 2; $('plate').style.opacity = '';
     await FR.say("Let's look again."); await FR.showShape($('plate'), R.misses > 1);
-    await FR.say(R.misses > 1 ? (isRight ? who + ' is right.' : who + ' said ' + FR.word(R.claim) + '. Not right.') : 'Is ' + who + ' right?');
+    await FR.say(R.misses > 1 ? (isRight ? who + ' is right. Tap thumbs up.' : who + ' said ' + FR.word(R.claim) + '. Not right.') : 'Is ' + who + ' right?');
     GAME.phase = 'answer'; FR.lock(false); hooks();
   }
   async function check() {
@@ -101,7 +102,7 @@
       $('check').addEventListener('click', check);
       $('spk').addEventListener('click', function () { NK.unlock(); NK.again(); });
     },
-    reset: function (F) { ORDER = F.shuffle([true, false, false, true, false, true]); NAMES = F.shuffle(F.NAMES); easy = 0; },
+    reset: function (F, again, slow) { ORDER = F.shuffle([true, false, false, true, false, true]); NAMES = F.shuffle(F.NAMES); easy = slow ? 6 : 0; },
     demo: async function (F) {
       R = { n: 2, claim: 3, who: 'Mendy', misses: 0, stage: 'demo' };
       setPlate(2, 'apple'); setClaim(3); $('thumbs').hidden = false; $('fixrow').hidden = true;
@@ -123,7 +124,7 @@
           var n = b === 0 ? 4 : 5, claim = b === 0 ? 4 : 4, who = (NAMES || F.NAMES)[6 + b];
           R = { n: n, claim: claim, who: who, misses: 0, stage: 'judge' }; setPlate(n, 'apple'); setClaim(claim);
           $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0); done = res; GAME.phase = 'busy'; F.lock(true);
-          await F.say('Quick look!'); await F.wait(1200); $('plate').style.opacity = '.06';
+          await F.say('Quick look!'); await F.wait(1200); $('plate').style.opacity = '0';
           await F.say(who + ' says: ' + F.word(claim) + '! Is ' + who + ' right?');
           GAME.phase = 'answer'; F.lock(false); hooks();
         });
@@ -139,6 +140,7 @@
         setPlate(n, fr[0]); setClaim(claim); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
         done = res; GAME.phase = 'busy'; F.lock(true);
         await F.say(who + ' says: ' + F.word(claim) + ' ' + (claim === 1 ? fr[0] : fr[1]) + '!', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
+        await F.wait(1500); $('plate').style.opacity = '0';
         GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say('Is ' + who + ' right?', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
       });

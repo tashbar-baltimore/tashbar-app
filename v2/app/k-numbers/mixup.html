@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mix it up — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 3, game 3: MIX IT UP. Skill: the order does not matter; moving things does not change how many
+     (the order-irrelevance and conservation ideas of the counting rules). He taps each fruit to count it (a green tick marks
+     each one counted), shows how many on two hands; then the fruit get mixed up and he shows how many now: still the same.
+     A miss after the mix: "We did not add any. We did not take any. Still five!" -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit3.css">
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="scene" id="scene"></div>
+  <div class="panel"><div id="hands"></div>
+    <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit3.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, U = U3, H, easy = 0, misses = 0;
+  var PLAN = [3, 4, 5, 6, 7], KINDS = ['apple', 'orange', 'pear', 'apple', 'orange'];
+
+  /* he taps each one to count it; resolves when all are counted */
+  function tapCount(F, els, silent) {
+    return new Promise(function (res) {
+      var k = 0, busy = false;
+      function hooks() { var rest = els.filter(function (e) { return !e.classList.contains('counted'); }); GAME.right = rest.length ? function () { return [{ tap: '#scene .it[data-i="' + rest[0].dataset.i + '"]' }]; } : null; GAME.wrong = null; }
+      async function tap(e) {
+        var it = e.target.closest('.it'); if (!it || busy || GAME.phase !== 'answer') return;
+        if (it.classList.contains('counted')) { busy = true; NK.sound.back(); await F.say('That one is counted.', { noRepeat: true }); busy = false; return; }
+        busy = true; GAME.phase = 'busy'; it.classList.add('counted', 'lit'); k++; NK.sound.pop();
+        if (silent) await F.wait(150); else await F.say(F.Word(k) + (k === els.length ? '!' : ''), { noRepeat: true });
+        it.classList.remove('lit'); busy = false;
+        if (k < els.length) { GAME.phase = 'answer'; hooks(); return; }
+        $('scene').removeEventListener('pointerdown', tap); res();
+      }
+      $('scene').addEventListener('pointerdown', tap); GAME.phase = 'answer'; F.lock(false); hooks();
+    });
+  }
+  /* the fruit always stays on the table (also on a phone) */
+  function tableBox() { return U.narrow() ? [6, 94, 54, 95] : [8, 92, 54, 94]; }
+  async function mix(F, els, again) {
+    GAME.phase = 'busy'; F.lock(true); H.set(0); H.lock(true);
+    await F.say(again ? 'Mixed again!' : 'Now I mix them up!');
+    var sp = U.spots(els.length, tableBox(), parseFloat(els[0].style.width)); els.forEach(function (e, i) { e.classList.remove('counted'); U.place(e, sp.p[i]); }); NK.sound.cloth(); await F.wait(500);
+  }
+  /* after a mix: a miss gets a recount with the voice, not just being told */
+  function askNow(F, n, els) {
+    return U.answer(F, { n: n, H: H, ask: 'How many now?',
+      explain: async function (F) { await F.say("Let's count them again."); await U.countAlong(els); await F.say('Still ' + F.word(n) + '! We did not add or take any.'); } });
+  }
+  /* o: { n, kind, intro, silent (he counts by himself), twice (mix a second time, no recount) } */
+  async function play(F, o) {
+    U.clear(); $('hands').hidden = false; H.set(0); H.lock(true);
+    var w = U.itemW(o.n), els = U.table(o.n, 64).map(function (p, i) { return U.put(o.kind, p, w, i); });
+    if (els.length > (U.narrow() ? 4 : 7)) { var sp = U.spots(o.n, tableBox(), w); els.forEach(function (e, i) { U.place(e, sp.p[i]); e.style.width = sp.w + '%'; }); }
+    var ask = o.silent ? 'Tap each one. Count by yourself.' : 'Tap each one. Count with me!';
+    if (o.intro) await F.say(ask, { repeat: ask }); else NK.last = ask;
+    await tapCount(F, els, o.silent);
+    var a = await U.answer(F, { n: o.n, H: H, ask: 'How many ' + U.name(o.kind, 2) + '?',
+      explain: async function (F) { await F.say("Let's count together."); await U.countAlong(els); await F.say('The last number tells how many.'); } });
+    await mix(F, els, false); var b = await askNow(F, o.n, els);
+    return a && b;
+  }
+  FR.game({
+    id: 'u3-mix', title: 'Mix it up', rounds: 5,
+    hero: '<svg viewBox="0 0 100 100" style="transform:rotate(-12deg)"><use href="#nkApple"/></svg><svg viewBox="0 0 100 100" style="transform:translateY(20%)"><use href="#nkOrange"/></svg><svg viewBox="0 0 100 100" style="transform:rotate(10deg)"><use href="#nkPear"/></svg>',
+    init: function (F) { U.addArt(); H = U.hands($('hands')); H.lock(true); },
+    reset: function (F, again, slow) { easy = slow ? 3 : 0; misses = 0; },   /* he did not pass last time: start on the easier path */
+    demo: async function (F) {
+      U.clear(); var els = U.line(3, 64).map(function (p, i) { return U.put('apple', p, U.size(3), i); });
+      await F.say('Watch me count the apples.');
+      for (var i = 0; i < 3; i++) { await F.handTo(els[i]); await F.handTap(); els[i].classList.add('counted'); NK.sound.pop(); await F.say(F.Word(i + 1), { noRepeat: true }); }
+      await F.say('Three apples. Now I mix them up!');
+      var m = U.bunch(3, [14, 86, 58, 90]); els.forEach(function (e, i) { e.classList.remove('counted'); U.place(e, m[i]); }); NK.sound.cloth(); await F.wait(600);
+      await F.say('Still three! Mixing does not change how many.');
+    },
+    round: async function (F, i) {
+      var help = easy > 0, n = help ? F.pick([3, 4]) : PLAN[i]; if (easy > 0) easy--;
+      if (i === 2 && !help) await F.say('Count by yourself!');
+      var first = await play(F, { n: n, kind: KINDS[i], intro: i < 3 || help, silent: !(i < 2 || help) });
+      if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
+      return first;
+    },
+    bonus: async function (F) { await play(F, { n: U.narrow() ? 8 : F.pick([8, 9, 10]), kind: 'pear', intro: true, silent: true }); }
+  });
+})();
+</script>
+</body>
+</html>

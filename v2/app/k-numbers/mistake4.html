@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Fix the Frame — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 4, game 5: FIND THE MISTAKE. Skill: check that an amount matches a written number.
+     "Dovid put dots for three." The written number and his five-frame are shown. He taps thumbs up (right) or down (a mistake);
+     after a mistake he fixes the five-frame himself. Wrong judging: look again; second time the counts are said. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit4.css">
+<style>
+.stage{ grid-template-columns:.7fr 1.3fr; align-items:center; }
+.col{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; height:100%; }
+#num{ width:min(22vw,44vh,250px); }
+#ffw .ff{ width:min(52vw,84vh,600px); }
+.thumbs[hidden], #check[hidden]{ display:none; }
+.hero{ display:flex; align-items:center; justify-content:center; gap:5%; }
+.hero .numcard{ width:30%; } .hero .ff{ width:62%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.8fr 1.2fr; } #num{ width:min(40vw,24vh); } #ffw .ff{ width:96vw; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="col"><div id="numw"></div></div>
+  <div class="col"><div id="ffw"></div>
+    <div class="thumbs" id="thumbs">
+      <button class="btn3d b-green" id="up" aria-label="Right"><svg viewBox="0 0 64 64"><path d="M14 30h9v24h-9z" fill="#fff"/><path d="M27 30l9-17c2-4 9-3 8 3l-2 10h11c4 0 6 3 5 7l-4 17c-1 3-3 4-6 4H27z" fill="#fff"/></svg></button>
+      <button class="btn3d b-sun" id="down" aria-label="A mistake"><svg viewBox="0 0 64 64" style="transform:rotate(180deg)"><path d="M14 30h9v24h-9z" fill="#2B2350"/><path d="M27 30l9-17c2-4 9-3 8 3l-2 10h11c4 0 6 3 5 7l-4 17c-1 3-3 4-6 4H27z" fill="#2B2350"/></svg></button>
+    </div>
+    <button id="check" class="btn3d b-green" aria-label="Check" hidden><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit4.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var FF, R, done, RIGHT = [false, true, false, false, true, false], A = U4.adapt();
+  /* count the counters together, lighting each one */
+  async function countWith() {
+    var boxes = [].slice.call(FF.el.querySelectorAll('.box')).filter(function (b) { return b.querySelector('.ctr'); });
+    if (!boxes.length) { await FR.say('No dots at all. Zero.'); return; }
+    await FR.say("Let's count together.");
+    for (var k = 0; k < boxes.length; k++) { boxes[k].classList.add('need'); NK.sound.pop(); await FR.say(FR.Word(k + 1) + (k === boxes.length - 1 ? '.' : ','), { noRepeat: true }); }
+    await FR.wait(300); boxes.forEach(function (b) { b.classList.remove('need'); });
+  }
+  function end2(first) { if (R.misses >= 2) A.miss(); else if (!R.misses) A.hit(); end(first); }
+  function setNum(n) { var c = U4.numCard(n); c.id = 'num'; $('numw').innerHTML = ''; $('numw').appendChild(c); }
+  function taps(m) { return FF.moves(m).map(function (i) { return { tap: '#ffw .box[data-b="' + i + '"]' }; }); }
+  function hooks() {
+    if (R.stage === 'judge') { var ok = R.put === R.n; GAME.right = function () { return [{ tap: ok ? '#up' : '#down' }]; }; GAME.wrong = function () { return [{ tap: ok ? '#down' : '#up' }]; }; }
+    else { GAME.right = function () { return taps(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return taps(R.put).concat([{ tap: '#check' }]); }; }
+  }
+  function end(first) { var d = done; done = null; d(first); }
+  async function judge(saysRight) {
+    NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'judge') return; GAME.phase = 'busy'; FR.lock(true);
+    var ok = R.put === R.n;
+    if (saysRight === ok) {
+      if (ok) { await FR.yes($('ffw'), 'Yes! ' + R.who + ' is right. ' + FR.Word(R.n) + '!'); end2(R.misses === 0); return; }
+      NK.sound.yes(); await FR.say('Yes! ' + R.who + ' made a mistake.');
+      R.stage = 'fix'; $('thumbs').hidden = true; $('check').hidden = false; FF.lock(false);
+      GAME.phase = 'answer'; FR.lock(false); hooks(); await FR.say('Fix the frame to show ' + FR.word(R.n) + '.'); return;
+    }
+    FR.oops($('ffw')); R.misses++;
+    if (R.misses === 1) { await FR.say("Let's look again."); await countWith(); await FR.say('This says ' + FR.word(R.n) + '. Is ' + R.who + ' right?'); }
+    else { await FR.say(R.who + ' put ' + FR.word(R.put) + '. This says ' + FR.word(R.n) + '.');
+      await FR.say(ok ? 'So ' + R.who + ' is right! Tap thumbs up.' : 'So it is a mistake. Tap thumbs down.'); }
+    GAME.phase = 'answer'; FR.lock(false); hooks();
+  }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'fix') return; GAME.phase = 'busy'; FR.lock(true); FF.lock(true);
+    var have = FF.count();
+    if (have === R.n) { await FR.yes($('ffw'), 'Yes! ' + FR.Word(R.n) + '. Thank you for helping ' + R.who + '!'); end2(R.misses === 0); return; }
+    FR.oops($('ffw')); R.misses++; if (R.misses === 1) await countWith(); FF.hint(R.n);
+    var k = R.n - have; await FR.say('You have ' + FR.word(have) + '. ' + (k > 0 ? 'Put ' + FR.word(k) + ' more in.' : 'Take ' + FR.word(-k) + ' out.'));
+    GAME.phase = 'answer'; FR.lock(false); FF.lock(false); hooks();
+  }
+  FR.game({
+    id: 'u4-mistake', title: 'Fix the Frame', rounds: 6, bonusSay: '',
+    hero: U4.num(3).replace('<svg', '<div class="numcard"><svg') + '</div><div class="ff locked"><div class="box"><i class="ctr"></i></div><div class="box"><i class="ctr"></i></div><div class="box"><i class="ctr"></i></div><div class="box"><i class="ctr"></i></div><div class="box"></div></div>',
+    init: function (F) {
+      FF = U4.frame5(0, true); $('ffw').appendChild(FF.el); FF.lock(true);
+      $('up').addEventListener('click', function () { judge(true); }); $('down').addEventListener('click', function () { judge(false); }); $('check').addEventListener('click', check);
+    },
+    demo: async function (F) {
+      R = { n: 3, put: 4, who: 'Dovid', misses: 0, stage: 'demo' }; setNum(3); FF.set(4); $('thumbs').hidden = false; $('check').hidden = true;
+      await F.say('This says three. Dovid put four dots.');
+      await F.say('Is Dovid right? Watch me.');
+      FF.el.classList.add('hi'); await F.say('Four, not three. A mistake!'); FF.el.classList.remove('hi');
+      await F.handTo($('down')); await F.handTap(); NK.sound.yes();
+      await F.say('I fix it: take one out.'); await F.handTo(FF.box(3)); await F.handTap(); FF.box(3).innerHTML = ''; NK.sound.back();
+      await F.yes($('ffw'), 'Three!');
+    },
+    reset: function () { A.reset(); },
+    round: function (F, i) { return play(F, i, false); },
+    /* bonus for a quick boy: big numbers, off by just one */
+    bonusSay: '', bonus: function (F) { return play(F, 2, true); }
+  });
+  function play(F, i, quick) {
+      return new Promise(async function (res) {
+        /* easier after two misses: small numbers, and a mistake is off by two (easy to see) */
+        var easy = A.easy() && !quick, n = quick ? F.pick([4, 5]) : i === 3 ? 0 : easy ? F.pick([1, 2, 3]) : i < 2 ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]), ok = quick ? false : RIGHT[i];
+        /* zero once (round 4): "This says zero" with one or two dots in the frame */
+        var put = ok ? n : n === 0 ? F.pick([1, 2]) : easy ? (n <= 2 ? n + 2 : n - 2) : (n === 5 ? 4 : Math.random() < .5 ? n + 1 : n - 1);
+        var who = F.NAMES[(i * 3 + 4) % F.NAMES.length];
+        if (quick) await F.say('Bonus! Look closely.');
+        R = { n: n, put: put, who: who, misses: 0, stage: 'judge' }; setNum(n); FF.set(put); FF.lock(true); $('thumbs').hidden = false; $('check').hidden = true;
+        GAME.phase = 'busy'; F.lock(true);
+        await F.say('This says ' + F.word(n) + '. ' + who + ' put dots.', { repeat: 'This says ' + F.word(n) + '. Is ' + who + ' right?' });
+        done = res; GAME.phase = 'answer'; F.lock(false); hooks();
+        await F.say('Is ' + who + ' right?', { repeat: 'This says ' + F.word(n) + '. Is ' + who + ' right?' });
+      });
+  }
+})();
+</script>
+</body>
+</html>

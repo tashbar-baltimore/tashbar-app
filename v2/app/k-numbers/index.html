@@ -11,8 +11,9 @@
 <style>
 .stage{ height:calc(100% - 92px); grid-template-rows:auto 1fr; gap:6px; }
 .uhead{ display:flex; align-items:center; justify-content:center; gap:14px; }
-.uchips{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
-.uchip{ width:46px; height:46px; border-radius:50%; font-size:20px; font-weight:900; color:#fff; display:flex; align-items:center; justify-content:center; }
+.uchips{ display:flex; gap:8px; justify-content:flex-start; overflow-x:auto; padding:6px 10px 10px; max-width:100%; scrollbar-width:none; }
+.uhead{ overflow:hidden; }
+.uchip{ width:64px; height:64px; flex:none; border-radius:50%; font-size:24px; font-weight:900; color:#fff; display:flex; align-items:center; justify-content:center; }
 .uchip.lock{ filter:saturate(.15) brightness(1.15); }
 .uchip.cur{ transform:scale(1.18); }
 .path{ position:relative; width:min(100%,1100px); margin:0 auto; height:100%; }
@@ -26,7 +27,7 @@
 .stop .lk{ position:absolute; right:-6px; top:-6px; width:42px; height:42px; }
 .trophy{ position:absolute; right:3%; top:2%; width:110px; display:none; }
 .trophy.on{ display:block; animation:bob 2.4s ease-in-out infinite; }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ height:calc(100% - 80px); } .uchip{ width:38px; height:38px; font-size:16px; } .stop{ width:clamp(88px,13vh,112px); } .stop .st svg{ width:24px; height:24px; } }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ height:calc(100% - 80px); } .uchip{ width:64px; height:64px; font-size:22px; } .stop{ width:clamp(88px,13vh,112px); } .stop .st svg{ width:24px; height:24px; } }
 </style>
 </head>
 <body>
@@ -83,8 +84,8 @@
   document.addEventListener('click', function (e) {
     var c = e.target.closest('.uchip'), st = e.target.closest('.stop'); NK.unlock();
     if (c) { var i = +c.dataset.u, u = U[i];
-      if (!u.stops.length) { NK.hush(); NK.say(u.say + ' Coming soon!'); return; }
-      if (!unitOpen(i)) { NK.hush(); NK.say('Finish unit ' + NK.word(i) + ' first.'); c.classList.add('shake'); return; }
+      if (!u.stops.length) { NK.hush(); NK.say(u.say + ' Coming soon!', { noRepeat: true }); return; }
+      if (!unitOpen(i)) { NK.hush(); NK.say('Finish unit ' + NK.word(i) + ' first.', { noRepeat: true }); c.classList.add('shake'); return; }
       cur = i; draw(); NK.hush(); NK.say(u.say); return; }
     if (st) { var k = +st.dataset.k, s = U[cur].stops[k];
       if (st.classList.contains('lock')) { NK.hush(); NK.say('Do the shining one first.'); st.classList.remove('shake'); void st.offsetWidth; st.classList.add('shake'); return; }

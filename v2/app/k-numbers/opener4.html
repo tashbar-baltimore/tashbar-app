@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn it: Numbers 0 to 5 — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 4 OPENER: a short, warm lesson. Each number 1-5, then 0, shown three ways side by side:
+     things (fruit), fingers, and now the WRITTEN number (concrete -> picture -> numeral), with its tracing rhyme.
+     Movement: stand up and jump three times; show five fingers. He taps the big arrow to go on. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit4.css">
+<style>
+.stage{ grid-template-rows:1fr auto; justify-items:center; align-items:center; }
+.trio{ display:flex; gap:clamp(12px,3vw,40px); align-items:center; justify-content:center; width:100%; }
+.trio > *{ transition:transform .35s cubic-bezier(.3,1.6,.5,1), opacity .35s; }
+.trio .qcard{ width:min(26vw,40vh,280px); }
+.trio .numcard{ width:min(24vw,40vh,250px); }
+.trio .hidden{ opacity:0; transform:scale(.4); }
+.trio .tapme{ animation:pulse 1.1s infinite; cursor:pointer; box-shadow:0 0 0 8px rgba(255,201,61,.6), 0 8px 0 rgba(40,70,140,.16); }
+.trio .eq{ font-size:clamp(52px,10vh,96px); line-height:1; font-weight:900; color:#fff; -webkit-text-stroke:4px #3B2A7A; paint-order:stroke fill; }
+#go{ width:clamp(100px,15vh,130px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; visibility:hidden; animation:pulse 1.2s infinite; }
+#go.on{ visibility:visible; } #go svg{ width:52%; height:52%; position:relative; }
+.hero{ display:flex; align-items:center; justify-content:center; gap:4%; }
+.hero svg{ width:26%; height:auto; }
+@media (max-width:760px), (max-aspect-ratio:4/5){
+  .trio{ flex-direction:column; gap:8px; } .trio .eq{ display:none; }
+  .trio .qcard{ width:min(44vw,17vh); } .trio .numcard{ width:min(38vw,19vh); }
+}
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="trio" id="trio"></div>
+  <button id="go" class="btn3d b-green" aria-label="Go on"><svg viewBox="0 0 48 48"><path d="M8 24h28M26 12l12 12-12 12" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit4.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, done;
+  var SLIDES = [
+    { n: 1, k: 'apple', name: 'apple', first: ['Numbers have a shape we write!', 'One apple. One finger.'] },
+    { n: 2, k: 'orange', name: 'oranges' },
+    { n: 3, k: 'candle', name: 'candles', move: 'Stand up! Jump three times!' },
+    { n: 4, k: 'pear', name: 'pears' },
+    { n: 5, k: 'dots', name: 'dots', move: 'Show me five fingers!' },
+    { n: 0, k: 'apple', name: 'apples', zero: true }
+  ];
+  FR.game({
+    id: 'u4-opener', title: 'Numbers 0 to 5', rounds: SLIDES.length, stars: function () { return 3; },
+    hero: U4.num(1) + U4.num(2) + U4.num(3),
+    endSay: function () { return 'Great! Now let\'s fill, match and write!'; },
+    init: function () { U4.defs(); $('go').addEventListener('click', function () { if (GAME.phase !== 'answer') return; NK.sound.pop(); $('go').classList.remove('on'); GAME.phase = 'busy'; var d = done; done = null; d(true); }); },
+    round: function (F, i) {
+      return new Promise(async function (res) {
+        var s = SLIDES[i], n = s.n; GAME.phase = 'busy'; F.lock(true); $('go').classList.remove('on');
+        var grp = F.card(n, s.k), fh = F.card(n, 'fingers'), num = U4.numCard(n);
+        num.classList.add('hidden');
+        var t = $('trio'); t.innerHTML = ''; t.appendChild(grp); t.insertAdjacentHTML('beforeend', '<span class="eq">=</span>'); t.appendChild(fh); t.insertAdjacentHTML('beforeend', '<span class="eq">=</span>'); t.appendChild(num);
+        if (s.first) { for (var k = 0; k < s.first.length; k++) await F.say(s.first[k]); }
+        else if (s.zero) { await F.say('No apples. No fingers up.'); }
+        else await F.say(F.Word(n) + ' ' + s.name + '. ' + F.Word(n) + ' fingers.');
+        num.classList.remove('hidden'); NK.sound.pop();
+        await F.say(s.zero ? 'This is zero. Zero means none!' : 'This is how we write ' + F.word(n) + '.');
+        await F.say(U4.RHYME[n]);
+        if (s.move) { await F.say(s.move); if (n === 3) for (var j = 0; j < 3; j++) { NK.sound.clap(); await F.wait(600); } else await F.wait(1500); }
+        /* his turn on every slide: tap the written number */
+        num.id = 'tapnum'; num.classList.add('tapme');
+        num.addEventListener('pointerdown', async function tapped(e) {
+          if (GAME.phase !== 'answer') return; e.preventDefault(); GAME.phase = 'busy'; num.removeEventListener('pointerdown', tapped); num.classList.remove('tapme'); num.classList.add('good');
+          NK.sound.pop(); await F.say(n === 0 ? 'Zero!' : F.Word(n) + '!', { noRepeat: true }); var d = done; done = null; d(true);
+        });
+        done = res; GAME.phase = 'answer'; GAME.right = function () { return [{ tap: '#tapnum' }]; }; GAME.wrong = null; F.lock(false);
+        await F.say('Tap the ' + (n === 0 ? 'zero' : F.word(n)) + '!', { repeat: 'Tap the number!' });
+      });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Review — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 4 REVIEW ROUND: six short, mixed items from earlier units so nothing is forgotten (spaced review):
+     PEEK (Unit 1: see how many at a glance, show it on the hand), WHAT COMES NEXT (Unit 2: the voice counts, he taps the next
+     stepping stone), and GIVE ME (Unit 3: "Bubby needs four rolls", he puts exactly that many on the plate). A miss is shown and
+     he fixes it. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="unit4.css">
+<style>
+.stage{ grid-template-columns:1fr 1fr; align-items:center; }
+.stage.wide{ grid-template-columns:1fr !important; grid-template-rows:1fr !important; }
+.stage.wide .stone{ width:clamp(76px,min(10.5vw,16vh),130px); font-size:clamp(32px,5vh,56px); }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage.wide .stones{ max-width:360px; } .stage.wide .stone{ width:80px; } }
+.col{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; height:100%; }
+.col[hidden]{ display:none; }
+#flash.qcard{ width:min(40vw,58vh,400px); }
+.bighand{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:36px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14); padding:8px; }
+.bighand .fhand{ width:min(26vw,46vh,300px); aspect-ratio:170/230; }
+#plate{ width:min(40vw,52vh,420px); }
+.rolls{ display:flex; gap:8px; flex-wrap:wrap; justify-content:center; max-width:min(44vw,480px); padding:12px; border-radius:28px; background:linear-gradient(180deg,var(--wood1),var(--wood2)); border:5px solid #FFE3B8; box-shadow:0 8px 0 rgba(40,70,140,.14); }
+.rolls svg, #plate svg.rl{ width:clamp(64px,10vh,90px); height:clamp(64px,10vh,90px); cursor:pointer; }
+#plate svg.rl{ position:absolute; transform:translate(-50%,-50%); }
+#plate svg.rl.extra{ filter:drop-shadow(0 0 8px #FF5A4E); opacity:.6; }
+#check[hidden]{ display:none; }
+.hero{ display:flex; align-items:center; justify-content:center; }
+.hero .stones{ width:90%; }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:1fr 1fr; } #flash.qcard{ width:min(62vw,28vh); } .bighand .fhand{ width:min(40vw,26vh); } #plate{ width:min(70vw,26vh); } .rolls{ max-width:92vw; } .rolls svg{ width:64px; height:64px; } }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="col" id="c1"></div>
+  <div class="col" id="c2"></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit4.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var CHECK = '<button id="check" class="btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+  var TASKS = ['peek', 'next', 'give', 'peek', 'next', 'give'], R, done, H, A = U4.adapt();
+  function end(first) { if (R.misses >= 2) A.miss(); else if (!R.misses) A.hit(); var d = done; done = null; d(first); }
+  function onPlate() { return $('plate') ? $('plate').querySelectorAll('svg.rl').length : 0; }
+  function drawPlate(k) { var L = FR.LAYOUTS[Math.min(k, 5)] ? FR.LAYOUTS[Math.min(k, 5)][0] : null, h = ''; for (var i = 0; i < k; i++) { var p = L && L.p[i] ? L.p[i] : [20 + 15 * i, 50]; h += '<svg class="rl' + (R.hint && i >= R.n ? ' extra' : '') + '" data-i="' + i + '" viewBox="0 0 100 100" style="left:' + (14 + p[0] * .72) + '%;top:' + (14 + p[1] * .72) + '%"><use href="#u4Roll"/></svg>'; } $('plate').innerHTML = h; }
+  function drawRolls(k) { var h = ''; for (var i = 0; i < k; i++) h += '<svg data-r="' + i + '" viewBox="0 0 100 100"><use href="#u4Roll"/></svg>'; $('rolls').innerHTML = h; }
+  function hooks() {
+    if (R.task === 'peek') { GAME.right = function () { return U4.fingerTaps(H, R.n, '#c2').concat([{ tap: '#check' }]); };
+      GAME.wrong = function () { return U4.fingerTaps(H, R.n === 5 ? 4 : R.n + 1, '#c2').concat([{ tap: '#check' }]); }; }
+    else if (R.task === 'next') { GAME.right = function () { return [{ tap: '.stone[data-s="' + R.n + '"]' }]; }; GAME.wrong = function () { return [{ tap: '.stone[data-s="' + (R.n + 1) + '"]' }]; }; }
+    else { var add = function (k) { var out = [], have = onPlate(); if (have > k) for (var i = have - 1; i >= k; i--) out.push({ tap: '#plate svg.rl[data-i="' + i + '"]' }); else for (var j = 0; j < k - have; j++) out.push({ tap: '#rolls svg[data-r="0"]' }); return out; };
+      GAME.right = function () { return add(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return add(R.n + 1).concat([{ tap: '#check' }]); }; }
+  }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
+    if (R.task === 'peek') {
+      H.lock(true); $('flash').classList.add('open');
+      if (H.count() === R.n) { await FR.yes($('c2'), 'Yes! ' + FR.Word(R.n) + '!'); end(R.misses === 0); return; }
+      FR.oops($('c2')); R.misses++; await FR.say("Let's look again."); await FR.showShape(R.card, R.misses > 1); await FR.say('Fix your fingers.');
+      H.lock(false);
+    } else {
+      var have = onPlate();
+      if (have === R.n) { await FR.yes($('plate'), FR.Word(R.n) + (R.n === 1 ? ' roll.' : ' rolls.') + ' Thank you!'); end(R.misses === 0); return; }
+      FR.oops($('plate')); R.misses++; R.hint = R.misses > 1; drawPlate(have);
+      await FR.say('Look! You put ' + FR.word(have) + '. Bubby needs ' + FR.word(R.n) + '.');
+      if (R.hint) { var k = R.n - have; await FR.say(k > 0 ? 'Put ' + FR.word(k) + ' more.' : 'Take ' + FR.word(-k) + ' off.'); }
+    }
+    GAME.phase = 'answer'; FR.lock(false); hooks();
+  }
+  async function stone(s) {
+    if (GAME.phase !== 'answer' || R.task !== 'next') return; GAME.phase = 'busy'; FR.lock(true);
+    if (s === R.n) { s && document.querySelector('.stone[data-s="' + s + '"]').classList.replace('dark', 'lit'); await FR.yes(document.querySelector('.stone[data-s="' + s + '"]'), FR.Word(s + 1) + '! ' + FR.Word(s + 1) + ' comes next.'); end(R.misses === 0); return; }
+    FR.oops(document.querySelector('.stone[data-s="' + s + '"]')); R.misses++;
+    await FR.say("Let's look: the next stone is right after."); await FR.say(R.count + '...');
+    GAME.phase = 'answer'; FR.lock(false); hooks();
+  }
+  document.addEventListener('click', function (e) {
+    var st = e.target.closest('.stone'); if (st) { NK.unlock(); stone(+st.dataset.s); return; }
+    if (e.target.closest('#check')) { check(); return; }
+    var r = e.target.closest('#rolls svg'); if (r && GAME.phase === 'answer' && R.task === 'give') { R.hint = false; drawPlate(onPlate() + 1); drawRolls(Math.max(0, 6 - onPlate())); NK.sound.pop(); return; }
+    var p = e.target.closest('#plate svg.rl'); if (p && GAME.phase === 'answer' && R.task === 'give') { R.hint = false; drawPlate(onPlate() - 1); drawRolls(6 - onPlate()); NK.sound.back(); }
+  });
+  FR.game({
+    id: 'u4-review', title: 'Review Time', rounds: 6,
+    hero: '<div class="stones"><span class="stone btn3d lit">1</span><span class="stone btn3d lit">2</span><span class="stone btn3d lit">3</span><span class="stone btn3d dark">4</span></div>',
+    init: function () { U4.defs(); },
+    demo: async function (F) { await F.say('Review time! Things we learned before.'); await F.say('Peek, count, and help Bubby.'); },
+    reset: function () { A.reset(); shown = {}; },
+    round: function (F, i) { return item(F, TASKS[i], false); },
+    bonusSay: '', bonus: function (F) { return item(F, 'peek', true); }   /* a quick boy: one super quick peek of 4 or 5 */
+  });
+  var shown = {};
+  function layout(task) { $('stage').classList.toggle('wide', task === 'next'); $('c2').hidden = task === 'next'; $('c1').innerHTML = ''; $('c2').innerHTML = ''; }
+  /* the first time each kind of item comes, the hand shows how (with a different number) */
+  async function showMe(F, task) {
+    GAME.phase = 'demo'; F.lock(true); layout(task); R = { task: task, misses: 0, n: 2, hint: false };
+    if (task === 'peek') {
+      $('c1').innerHTML = '<div class="qcard flash" id="flash"></div>';
+      var card = F.card(2, 'apple'); card.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; $('flash').appendChild(card);
+      var b = document.createElement('div'); b.className = 'bighand'; H = F.fingers(0, true); b.appendChild(H.el); $('c2').appendChild(b); $('c2').insertAdjacentHTML('beforeend', CHECK);
+      await F.say('Watch me. I see two. I show two.');
+      for (var k = 0; k < 2; k++) { await F.handTo(H.el, .5, .7); await F.handTap(); H.set(H.count() + 1); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('c2'), 'Two!');
+    } else if (task === 'next') {
+      var h = '<div class="stones">'; for (var s = 0; s < 6; s++) h += '<button class="stone btn3d ' + (s < 2 ? 'lit' : 'dark') + '" data-s="' + s + '">' + (s < 5 ? s + 1 : '') + '</button>';
+      $('c1').innerHTML = h + '</div>'; await F.say('Watch me. One, two...');
+      var st = document.querySelector('.stone[data-s="2"]'); await F.handTo(st); await F.handTap(); st.classList.replace('dark', 'lit');
+      await F.yes(st, 'Three comes next!');
+    } else {
+      $('c1').innerHTML = '<div class="plate4" id="plate"></div>'; $('c2').innerHTML = '<div class="rolls" id="rolls"></div>' + CHECK; drawPlate(0); drawRolls(6);
+      await F.say('Watch me. Bubby needs two rolls.');
+      for (var j = 0; j < 2; j++) { await F.handTo($('rolls').querySelector('svg')); await F.handTap(); drawPlate(j + 1); drawRolls(5 - j); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('plate'), 'Two rolls. Thank you!');
+    }
+    F.handHide(); await F.say('Now you!');
+  }
+  function item(F, task, quick) {
+      return new Promise(async function (res) {
+        if (!quick && !shown[task]) { shown[task] = true; await showMe(F, task); }
+        R = { task: task, misses: 0, quick: quick }; GAME.phase = 'busy'; F.lock(true);
+        layout(task);
+        var easy = A.easy() && !R.quick;   /* easier after two misses: small numbers, a longer peek */
+        if (task === 'peek') {
+          R.n = R.quick ? F.pick([4, 5]) : easy ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]);
+          $('c1').innerHTML = '<div class="qcard flash" id="flash"><div class="cloth"><div class="eyes"><i></i><i></i></div></div></div>';
+          R.card = F.card(R.n, F.pick(['apple', 'dots', 'orange'])); R.card.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; $('flash').insertBefore(R.card, $('flash').firstChild);
+          var b = document.createElement('div'); b.className = 'bighand'; H = F.fingers(0, true); b.appendChild(H.el); $('c2').appendChild(b); $('c2').insertAdjacentHTML('beforeend', CHECK);
+          await F.say(R.quick ? 'Bonus! Super quick peek!' : 'Peek!', { repeat: 'How many? Show me on the hand.' }); $('flash').classList.add('open'); NK.sound.cloth(); await F.wait(R.quick ? 850 : easy ? 1700 : 1200); $('flash').classList.remove('open'); await F.wait(380);
+          done = res; GAME.phase = 'answer'; F.lock(false); hooks(); await F.say('How many? Show me.');
+        } else if (task === 'next') {
+          /* only numbers he has learned (up to 5) are written; the stones after them stay blank */
+          var k = easy ? F.pick([1, 2]) : F.pick([2, 3, 4]); R.n = k; var h = '<div class="stones">';
+          for (var s = 0; s < 6; s++) h += '<button class="stone btn3d ' + (s < k ? 'lit' : 'dark') + '" data-s="' + s + '" aria-label="stone">' + (s < 5 ? s + 1 : '') + '</button>';
+          $('c1').innerHTML = h + '</div>'; var words = []; for (s = 1; s <= k; s++) words.push(F.Word(s)); R.count = words.join(', ');
+          await F.say(R.count + '...', { repeat: R.count + '... What comes next?' });
+          done = res; GAME.phase = 'answer'; F.lock(false); hooks(); await F.say('What comes next? Tap its stone.');
+        } else {
+          R.n = easy ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]); R.hint = false;
+          $('c1').innerHTML = '<div class="plate4" id="plate"></div>'; $('c2').innerHTML = '<div class="rolls" id="rolls"></div>' + CHECK; drawPlate(0); drawRolls(6);
+          done = res; GAME.phase = 'answer'; F.lock(false); hooks();
+          var rl = R.n === 1 ? ' roll.' : ' rolls.';
+          await F.say('Bubby needs ' + F.word(R.n) + rl + ' Put them on the plate.', { repeat: 'Bubby needs ' + F.word(R.n) + rl + ' Then press check.' });
+        }
+      });
+  }
+})();
+</script>
+</body>
+</html>

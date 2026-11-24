@@ -34,6 +34,8 @@ module.exports = async function (browser) {
       if (a.drag) { const s = await pg.locator(a.drag[0]).boundingBox(), t = await pg.locator(a.drag[1]).boundingBox();
         await pg.mouse.move(s.x + s.width / 2, s.y + s.height / 2); await pg.mouse.down(); await pg.mouse.move(s.x + s.width / 2 + 20, s.y + s.height / 2 + 20, { steps: 3 });
         await pg.mouse.move(t.x + t.width / 2, t.y + t.height / 2, { steps: 5 }); await pg.mouse.up(); await pg.waitForTimeout(40); }
+      if (a.trace) { const p = a.trace; await pg.mouse.move(p[0][0], p[0][1]); await pg.mouse.down();   /* a finger traces through these screen points */
+        for (const q of p.slice(1)) await pg.mouse.move(q[0], q[1], { steps: 2 }); await pg.mouse.up(); await pg.waitForTimeout(40); }
     }
   }
 
@@ -78,6 +80,8 @@ module.exports = async function (browser) {
       const cut = fit.filter(f => f.r[0] < -2 || f.r[1] < -2 || f.r[2] > 392 || f.r[3] > 846); if (cut.length) bad(file + ': on a phone something is cut off: ' + cut.slice(0, 3).map(c => c.q).join(', '));
       const small = await ph.evaluate(() => [...document.querySelectorAll('#stage button, .top button')].filter(b => b.offsetParent && getComputedStyle(b).visibility !== 'hidden').map(b => { const r = b.getBoundingClientRect(); return [b.id || b.className, Math.min(r.width, r.height)]; }).filter(x => x[1] < 63));
       if (small.length) bad(file + ': on a phone these buttons are under 64 px: ' + small.map(x => x[0] + ' ' + Math.round(x[1])).join(', '));
+      const tiny = await ph.evaluate(() => [...document.querySelectorAll('.ff:not(.locked) .box, #src .numcard, .srcs .numcard, .stone, #rolls svg')].filter(b => b.offsetParent || b.getBoundingClientRect().width).map(b => { const r = b.getBoundingClientRect(); return [b.className.baseVal != null ? 'svg' : b.className, Math.min(r.width, r.height)]; }).filter(x => x[1] < 63));
+      if (tiny.length) bad(file + ': on a phone these things he taps are under 64 px: ' + tiny.slice(0, 4).map(x => x[0] + ' ' + Math.round(x[1])).join(', '));
       await ph.screenshot({ path: path.join(shots, 'k-numbers-' + name + '-round-phone.png') });
       w.errs.forEach(e => bad(file + ' page error (phone): ' + e)); await w.ctx.close(); w = null;
     } catch (e) { bad(file + ' crashed: ' + String(e).slice(0, 200)); }
