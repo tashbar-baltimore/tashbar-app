@@ -70,7 +70,8 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   const BG = new THREE.Color('#FBE7C8');
   scene.background = BG; scene.fog = new THREE.Fog('#FBE3C0', 24, 52);
 
-  /* light: a warm sunny key light with soft shadows, a sky/floor fill, a gentle rim light from the window, a warm bounce from the front */
+  /* light: a warm sunny key light with soft shadows, a sky/floor fill, a gentle rim light from behind, a warm bounce from the front.
+     Each world tunes the colours (see ENV below). */
   const hemi = new THREE.HemisphereLight('#F4F8FF', '#E8C9A6', 0.75);
   const sun = new THREE.DirectionalLight('#FFF3E0', 2.5); sun.position.set(-6, 12, 8); sun.castShadow = true;
   sun.shadow.mapSize.set(FAST ? 512 : 2048, FAST ? 512 : 2048); sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.02;
@@ -79,21 +80,220 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   const front = new THREE.DirectionalLight('#FFE9D2', 0.5); front.position.set(7, 3, 4);
   [hemi, sun, rim, front].forEach(l => { l.layers.enableAll(); scene.add(l); });
   sun.shadow.camera.layers.enableAll();
+  /* the settings a world can change */
+  const ENV = { exposure: 0.92, bloom: 0.22, vib: 0.18, box: ['#FFC94A', '#FFFFFF', '#E9A93A'], css: '#FBE7C8' };
+  function setEnv(o) {
+    Object.assign(ENV, o);
+    if (o.bg) { BG.set(o.bg); scene.fog.color.set(o.fog ? o.fog[0] : o.bg); }
+    if (o.fog) { scene.fog.color.set(o.fog[0]); scene.fog.near = o.fog[1]; scene.fog.far = o.fog[2]; }
+    if (o.sun) { sun.color.set(o.sun[0]); sun.intensity = o.sun[1]; if (o.sun[2]) sun.position.set(...o.sun[2]); }
+    if (o.hemi) { hemi.color.set(o.hemi[0]); hemi.groundColor.set(o.hemi[1]); hemi.intensity = o.hemi[2]; }
+    if (o.rim) { rim.color.set(o.rim[0]); rim.intensity = o.rim[1]; }
+    if (o.front) { front.color.set(o.front[0]); front.intensity = o.front[1]; }
+    renderer.toneMappingExposure = ENV.exposure;
+    if (o.css) document.body.style.background = o.css;
+  }
 
   /* ---------- materials ---------- */
-  const M = {};
   const std = (color, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color, roughness: 0.6 }, o));
   const phys = (color, o = {}) => new THREE.MeshPhysicalMaterial(Object.assign({ color, roughness: 0.35, clearcoat: 0.6, clearcoatRoughness: 0.2 }, o));
-  L.pieceMat = color => new THREE.MeshPhysicalMaterial({ color: vivid(color), roughness: 0.42, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.18, envMapIntensity: 0.38, emissive: '#FFC400', emissiveIntensity: 0 });
+  const MC = {}; const pm = (c, o) => { const k = c + JSON.stringify(o || {}); return MC[k] || (MC[k] = phys(c, o)); };   /* shared glossy material */
+  const glow = (c, i) => { const k = 'g' + c + i; return MC[k] || (MC[k] = new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: i == null ? 1 : i, roughness: 0.4 })); };
+  L.pieceMat = color => new THREE.MeshPhysicalMaterial({ color: vivid(color), roughness: 0.36, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.12, envMapIntensity: 0.22, sheen: 0.25, sheenColor: new THREE.Color('#FFFFFF'), sheenRoughness: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
   L.stickMat = color => new THREE.MeshPhysicalMaterial({ color: vivid(color), roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.0 });
   L.solidMat = color => L.pieceMat(color);
 
   /* ---------- the far layer (drawn softly blurred, like a camera focused on the toys) ---------- */
   const FAR = 1;
   function farify(o) { o.traverse(c => { c.layers.set(FAR); }); }
+  const anim = [];   /* things that gently move: fn(t, q) */
+  const noDepth = [];   /* far things that must not hide the near ground (the sky, the far ground) */
 
-  /* ================= the worlds ================= */
-  const anim = [];   /* things that gently move: fn(t, dt) */
+  /* ================= the world kit: pieces every world is built from ================= */
+  const G = {   /* shared shapes (made once, used many times) */
+    ball: new THREE.SphereGeometry(1, 32, 22), ballLo: new THREE.SphereGeometry(1, 16, 12), cyl: new THREE.CylinderGeometry(1, 1, 1, 28), cone: new THREE.ConeGeometry(1, 1, 28),
+    box: new RoundedBoxGeometry(1, 1, 1, 3, 0.12), torus: new THREE.TorusGeometry(1, 0.32, 16, 48), disc: new THREE.CircleGeometry(1, 48), plane: new THREE.PlaneGeometry(1, 1)
+  };
+  function mesh(geo, m, x, y, z, sx, sy, sz, par) { const o = new THREE.Mesh(geo, m); o.position.set(x || 0, y || 0, z || 0); o.scale.set(sx || 1, sy == null ? (sx || 1) : sy, sz == null ? (sx || 1) : sz); o.castShadow = true; o.receiveShadow = true; (par || scene).add(o); return o; }
+  function group(x, y, z, par) { const g = new THREE.Group(); g.position.set(x || 0, y || 0, z || 0); (par || scene).add(g); return g; }
+  /* the sky: a big soft dome, bright at the top, glowing at the horizon */
+  function skyDome(top, mid, hor, sunDir) {
+    const m = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false,
+      uniforms: { top: { value: new THREE.Color(top) }, mid: { value: new THREE.Color(mid) }, hor: { value: new THREE.Color(hor) }, sd: { value: new THREE.Vector3(...(sunDir || [-0.4, 0.35, -1])).normalize() } },
+      vertexShader: 'varying vec3 vD; void main(){ vD = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: 'uniform vec3 top; uniform vec3 mid; uniform vec3 hor; uniform vec3 sd; varying vec3 vD; void main(){ float h = vD.y; vec3 c = h > 0.18 ? mix(mid, top, smoothstep(0.18, 0.75, h)) : mix(hor, mid, smoothstep(-0.05, 0.18, h)); float s = max(dot(normalize(vD), sd), 0.0); c += vec3(1.0, 0.93, 0.75) * (pow(s, 40.0) * 1.2 + pow(s, 6.0) * 0.18); gl_FragColor = vec4(c, 1.0); }' });
+    const d = new THREE.Mesh(new THREE.SphereGeometry(90, 40, 20), m); d.renderOrder = -10; d.layers.set(FAR); d.frustumCulled = false; scene.add(d); noDepth.push(d); return d;
+  }
+  /* the ground: sharp near the toys, softly blurred far away (the near part fades out at its edge, so there is no line) */
+  const fadeT = paint(256, 256, (x, w) => { const g = x.createRadialGradient(w / 2, w / 2, w * 0.36, w / 2, w / 2, w / 2); g.addColorStop(0, '#FFFFFF'); g.addColorStop(1, '#000000'); x.fillStyle = g; x.fillRect(0, 0, w, w); }, { srgb: false });
+  function ground(tex, color, o = {}) {
+    const near = new THREE.Mesh(new THREE.CircleGeometry(o.r || 13, 96), new THREE.MeshPhysicalMaterial({ color: color || '#FFFFFF', map: tex, roughness: o.rough || 0.85, sheen: o.sheen || 0, sheenColor: new THREE.Color(o.sheenColor || '#FFFFFF'), clearcoat: o.coat || 0, clearcoatRoughness: 0.4, alphaMap: fadeT, transparent: true, depthWrite: true }));
+    near.rotation.x = -Math.PI / 2; near.position.y = 0.002; near.receiveShadow = true; near.renderOrder = -1; scene.add(near);
+    /* UVs of the round piece match the far piece, so the pattern lines up where they meet */
+    const uv = near.geometry.attributes.uv, R0 = o.r || 13, S = o.size || 160; for (let i = 0; i < uv.count; i++) { uv.setXY(i, 0.5 + (uv.getX(i) - 0.5) * 2 * R0 / S, 0.5 + (uv.getY(i) - 0.5) * 2 * R0 / S); }
+    const fm = new THREE.MeshStandardMaterial({ color: color || '#FFFFFF', map: tex, roughness: 0.95 });
+    const far = new THREE.Mesh(new THREE.PlaneGeometry(o.size || 160, o.size || 160), fm); far.rotation.x = -Math.PI / 2; far.position.y = -0.03; far.layers.set(FAR); scene.add(far); noDepth.push(far);
+    near.material.alphaMap.repeat.set(1, 1);
+    /* the alpha map uses the round piece's own 0..1 UVs */
+    near.material.alphaMap = fadeT.clone(); near.material.alphaMap.repeat.set(S / (2 * R0), S / (2 * R0)); near.material.alphaMap.offset.set(0.5 - S / (4 * R0), 0.5 - S / (4 * R0)); near.material.alphaMap.needsUpdate = true;
+    return { near, far };
+  }
+  /* the stage: the round mat in the middle where the shapes sit (its top is at 0.1, like the rug) */
+  function stage(draw, o = {}) {
+    const t = paint(1024, 1024, (x, w) => draw(x, w / 2, w));
+    const top = new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });
+    const s = new THREE.Mesh(new THREE.CylinderGeometry(o.r || 6.6, (o.r || 6.6) + 0.1, o.h || 0.1, 128), [std(o.edge || '#F4E6D2', { roughness: 0.8 }), top, top]);
+    s.position.y = (o.h || 0.1) / 2; s.receiveShadow = true; s.castShadow = false; scene.add(s); return s;
+  }
+  /* soft round puffs (clouds, bushes, tree tops) */
+  function puff(x, y, z, r, m, n, seed, par) {
+    const g = group(x, y, z, par), R = rng(seed || 3);
+    for (let i = 0; i < (n || 7); i++) { const a = R() * Math.PI * 2, d = R() * r * 0.7, s = r * (0.45 + R() * 0.4);
+      mesh(G.ball, m, Math.cos(a) * d, (R() - 0.3) * r * 0.45, Math.sin(a) * d * 0.6, s, s * 0.9, s, g); }
+    mesh(G.ball, m, 0, 0, 0, r * 0.8, r * 0.7, r * 0.7, g); return g;
+  }
+  function cloud(x, y, z, s, seed, color) { const g = puff(x, y, z, s, MC['cloud' + (color || '')] || (MC['cloud' + (color || '')] = new THREE.MeshStandardMaterial({ color: color || '#FFFFFF', emissive: color || '#FFFFFF', emissiveIntensity: 0.35, roughness: 1, fog: true })), 9, seed); g.scale.y = 0.62; g.traverse(o => { o.castShadow = false; }); return g; }
+  const swirlT = {};
+  function swirlTex(c1, c2) { const k = c1 + c2; return swirlT[k] || (swirlT[k] = paint(256, 256, (x, w) => { const c = w / 2; x.fillStyle = c2; x.fillRect(0, 0, w, w);
+    for (let arm = 0; arm < 3; arm++) { x.beginPath(); for (let i = 0; i <= 120; i++) { const u = i / 120, a = arm * 2.094 + u * 9.5, r = u * c; x.lineTo(c + Math.cos(a) * r, c + Math.sin(a) * r); } x.strokeStyle = c1; x.lineWidth = 22; x.lineCap = 'round'; x.stroke(); }
+    const g = x.createRadialGradient(c * 0.7, c * 0.6, 0, c, c, c); g.addColorStop(0, 'rgba(255,255,255,.35)'); g.addColorStop(0.5, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, w, w); })); }
+  function lollipopTree(x, z, h, c1, c2, par) {   /* a giant lollipop: a striped stick and a glossy swirl */
+    const g = group(x, 0, z, par), r = 0.9 * h / 3;
+    mesh(G.cyl, pm('#FFFFFF', { roughness: 0.3 }), 0, h / 2, 0, 0.09 * h / 3, h, 0.09 * h / 3, g);
+    const top = new THREE.Mesh(new THREE.CylinderGeometry(r, r, r * 0.35, 48), [pm(c1, { clearcoat: 1, roughness: 0.2 }), new THREE.MeshPhysicalMaterial({ map: swirlTex(c1, c2), roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05 }), new THREE.MeshPhysicalMaterial({ map: swirlTex(c1, c2), roughness: 0.2, clearcoat: 1 })]);
+    top.rotation.x = Math.PI / 2; top.position.y = h + r * 0.9; top.castShadow = true; g.add(top);
+    const ph = x * 0.7; anim.push((t, q) => { if (q >= 1) top.rotation.y = Math.sin(t * 0.5 + ph) * 0.15; });
+    return g;
+  }
+  function roundTree(x, z, h, leaf, trunk, seed, par) {
+    const g = group(x, 0, z, par); mesh(G.cyl, pm(trunk || '#9A6237', { roughness: 0.7, clearcoat: 0.2 }), 0, h * 0.35, 0, h * 0.07, h * 0.7, h * 0.07, g);
+    puff(0, h * 0.82, 0, h * 0.42, pm(leaf, { roughness: 0.55, clearcoat: 0.3 }), 8, seed, g); return g;
+  }
+  function pine(x, z, h, leaf, snow, par) {
+    const g = group(x, 0, z, par); mesh(G.cyl, pm('#8A5530', { roughness: 0.8 }), 0, h * 0.12, 0, h * 0.06, h * 0.25, h * 0.06, g);
+    for (let i = 0; i < 3; i++) { const r = h * (0.36 - i * 0.08), y = h * (0.3 + i * 0.22); mesh(G.cone, pm(leaf, { roughness: 0.6, clearcoat: 0.3 }), 0, y + h * 0.15, 0, r, h * 0.38, r, g);
+      if (snow) mesh(G.cone, pm('#FFFFFF', { roughness: 0.5, clearcoat: 0.4 }), 0, y + h * 0.27, 0, r * 0.62, h * 0.16, r * 0.62, g); }
+    return g;
+  }
+  function flower(x, z, h, petal, center, n, petalLen, par, seed) {   /* a giant flower on a gently swaying stem */
+    const g = group(x, 0, z, par), stemM = pm('#3FB54A', { roughness: 0.5 });
+    const head = group(0, h, 0, g);
+    mesh(G.cyl, stemM, 0, h / 2, 0, h * 0.025, h, h * 0.025, g);
+    [-1, 1].forEach((s, i) => { const lf = mesh(G.ball, pm('#4CC85A', { roughness: 0.45, clearcoat: 0.5 }), s * h * 0.12, h * (0.3 + i * 0.15), 0, h * 0.13, h * 0.035, h * 0.06, g); lf.rotation.z = s * 0.5; });
+    const N = n || 10, pl = petalLen || h * 0.2;
+    for (let i = 0; i < N; i++) { const a = i / N * Math.PI * 2, p = mesh(G.ball, pm(petal, { roughness: 0.4, clearcoat: 0.6, sheen: 0.6, sheenColor: new THREE.Color('#FFFFFF') }), Math.cos(a) * pl * 0.95, Math.sin(a) * pl * 0.95, 0, pl * 0.95, pl * 0.42, pl * 0.12, head); p.rotation.z = a; }
+    mesh(G.ball, pm(center, { roughness: 0.5, clearcoat: 0.6 }), 0, 0, pl * 0.15, pl * 0.55, pl * 0.55, pl * 0.3, head);
+    head.rotation.x = -0.25; const ph = (seed || x) * 1.7;
+    anim.push((t, q) => { if (q < 1) return; g.rotation.z = Math.sin(t * 0.6 + ph) * 0.025; head.rotation.y = Math.sin(t * 0.45 + ph) * 0.08; });
+    return g;
+  }
+  function tulip(x, z, h, c, par) {
+    const g = group(x, 0, z, par); mesh(G.cyl, pm('#3FB54A'), 0, h / 2, 0, h * 0.025, h, h * 0.025, g);
+    const lf = mesh(G.ball, pm('#4CC85A', { clearcoat: 0.5 }), h * 0.06, h * 0.25, 0, h * 0.06, h * 0.28, h * 0.03, g); lf.rotation.z = -0.3;
+    const cup = group(0, h, 0, g), m = pm(c, { roughness: 0.35, clearcoat: 0.8, sheen: 0.5, sheenColor: new THREE.Color('#FFFFFF') });
+    for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2, p = mesh(G.ball, m, Math.cos(a) * h * 0.06, h * 0.07, Math.sin(a) * h * 0.06, h * 0.08, h * 0.16, h * 0.05, cup); p.rotation.y = -a; p.rotation.z = Math.cos(a) * 0.18; p.rotation.x = Math.sin(a) * 0.18; }
+    const ph = x * 2.1; anim.push((t, q) => { if (q >= 1) g.rotation.z = Math.sin(t * 0.7 + ph) * 0.03; });
+    return g;
+  }
+  function mushroom(x, z, s, cap, par) {
+    const g = group(x, 0, z, par); mesh(G.cyl, pm('#FFF4E2', { roughness: 0.6 }), 0, s * 0.35, 0, s * 0.22, s * 0.7, s * 0.22, g);
+    const c = new THREE.Mesh(new THREE.SphereGeometry(s * 0.6, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), pm(cap, { clearcoat: 1, roughness: 0.25 })); c.position.y = s * 0.62; c.castShadow = true; g.add(c);
+    for (let i = 0; i < 7; i++) { const a = i * 2.4, r = 0.25 + (i % 3) * 0.12; const d = mesh(G.ball, pm('#FFFFFF', { roughness: 0.4 }), Math.cos(a) * s * r, s * (0.62 + Math.sqrt(Math.max(0, 0.36 - r * r * 0.36)) * 0.95), Math.sin(a) * s * r, s * 0.07, s * 0.03, s * 0.07, g); d.lookAt(0, -s, 0); }
+    return g;
+  }
+  function bush(x, z, r, c, flowers, seed, par) { const g = puff(x, r * 0.55, z, r, pm(c, { roughness: 0.6, clearcoat: 0.2 }), 7, seed, par);
+    if (flowers) { const R = rng(seed || 1); for (let i = 0; i < 9; i++) { const a = R() * 6.28, h = R(); mesh(G.ball, pm(flowers[i % flowers.length], { clearcoat: 0.6 }), Math.cos(a) * r * 0.85, (h - 0.2) * r * 0.6, Math.sin(a) * r * 0.55 + r * 0.25, r * 0.12, r * 0.12, r * 0.12, g); } }
+    return g; }
+  function house(x, z, w, h, wall, roof, par, rot) {
+    const g = group(x, 0, z, par); g.rotation.y = rot || 0;
+    mesh(G.box, pm(wall, { roughness: 0.5 }), 0, h / 2, 0, w, h, w * 0.85, g);
+    const r = mesh(new THREE.ConeGeometry(w * 0.78, h * 0.7, 4), pm(roof, { clearcoat: 1, roughness: 0.3 }), 0, h + h * 0.35, 0, 1, 1, 1, g); r.rotation.y = Math.PI / 4;
+    mesh(G.box, pm('#8A5530', { roughness: 0.5 }), 0, h * 0.28, w * 0.43, w * 0.22, h * 0.56, 0.05, g);
+    [-1, 1].forEach(s => { mesh(G.box, glow('#FFE7A0', 0.55), s * w * 0.28, h * 0.62, w * 0.43, w * 0.2, w * 0.2, 0.04, g); mesh(G.box, pm('#FFFFFF'), s * w * 0.28, h * 0.62, w * 0.425, w * 0.26, w * 0.26, 0.03, g); });
+    return g;
+  }
+  function balloon(x, y, z, c, s, par) {
+    const g = group(x, y, z, par), b = mesh(G.ball, pm(c, { roughness: 0.15, clearcoat: 1, clearcoatRoughness: 0.05 }), 0, 0, 0, s * 0.8, s, s * 0.8, g);
+    mesh(G.cone, pm(c), 0, -s * 1.02, 0, s * 0.12, s * 0.15, s * 0.12, g).rotation.x = Math.PI;
+    const str = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, s * 3, 4), std('#FFFFFF')); str.position.y = -s * 2.5; g.add(str);
+    const ph = x * 1.3 + y; anim.push((t, q) => { if (q < 1) return; g.position.y = y + Math.sin(t * 0.8 + ph) * 0.18; g.rotation.z = Math.sin(t * 0.6 + ph) * 0.06; });
+    void b; return g;
+  }
+  function bunting(a, b, sag, colors, n, par) {   /* a string of little triangle flags (no writing) */
+    const g = group(0, 0, 0, par), pts = [], N = n || 14;
+    for (let i = 0; i <= 24; i++) { const u = i / 24; pts.push(new THREE.Vector3(a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u - Math.sin(u * Math.PI) * sag, a[2] + (b[2] - a[2]) * u)); }
+    const curve = new THREE.CatmullRomCurve3(pts); g.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 40, 0.025, 6), std('#FFFFFF')));
+    const tri = new THREE.Shape(); tri.moveTo(-0.28, 0); tri.lineTo(0.28, 0); tri.lineTo(0, -0.55); tri.closePath(); const tg = new THREE.ShapeGeometry(tri);
+    for (let i = 0; i < N; i++) { const p = curve.getPoint((i + 0.5) / N), f = new THREE.Mesh(tg, std(colors[i % colors.length], { side: THREE.DoubleSide, roughness: 0.7 })); f.position.copy(p); g.add(f);
+      const ph = i * 0.7; anim.push((t, q) => { if (q >= 1) f.rotation.x = Math.sin(t * 1.3 + ph) * 0.18; }); }
+    return g;
+  }
+  function hill(x, z, r, h, tex, color, par) { const m = mesh(new THREE.SphereGeometry(1, 48, 24, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshStandardMaterial({ color, map: tex || null, roughness: 0.9 }), x, 0, z, r, h, r * 0.8, par); m.castShadow = false; return m; }
+  function rainbow(x, y, z, r, par) {
+    const g = group(x, y, z, par), cols = ['#FF4E50', '#FF9A2E', '#FFD93B', '#4CD964', '#3AA8FF', '#9B6BFF'];
+    cols.forEach((c, i) => { const t = new THREE.Mesh(new THREE.TorusGeometry(r - i * r * 0.07, r * 0.036, 12, 96, Math.PI), new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 0.55, roughness: 0.6, transparent: true, opacity: 0.88 })); g.add(t); });
+    return g;
+  }
+  /* things that float: dust in sunbeams, petals, bubbles, snow, twinkles */
+  function motes(o) {
+    const N = o.n || 140, pos = new Float32Array(N * 3), col = new Float32Array(N * 3), seed = [], R = rng(o.seed || 11), c = new THREE.Color();
+    for (let i = 0; i < N; i++) { seed.push([R(), R(), R(), R() * 6.28]); c.set(o.colors ? o.colors[i % o.colors.length] : '#FFFFFF'); col.set([c.r, c.g, c.b], i * 3); }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    const p = new THREE.Points(g, new THREE.PointsMaterial({ map: o.tex || soft, vertexColors: true, size: o.size || 0.1, transparent: true, opacity: o.opacity || 0.9, blending: o.add === false ? THREE.NormalBlending : THREE.AdditiveBlending, depthWrite: false, fog: false }));
+    p.frustumCulled = false; p.renderOrder = 3; scene.add(p);
+    const [x0, x1, y0, y1, z0, z1] = o.box || [-12, 12, 0.2, 8, -12, 6], kind = o.kind || 'drift';
+    const place = t => { for (let i = 0; i < N; i++) { const [u, v, w, ph] = seed[i]; let x = x0 + u * (x1 - x0), y, z = z0 + w * (z1 - z0);
+        if (kind === 'fall') { y = y1 - ((v + t * (o.speed || 0.03) * (0.6 + w * 0.8)) % 1) * (y1 - y0); x += Math.sin(t * 0.7 + ph) * 0.5; z += Math.cos(t * 0.5 + ph) * 0.3; }
+        else if (kind === 'rise') { y = y0 + ((v + t * (o.speed || 0.05) * (0.6 + w * 0.8)) % 1) * (y1 - y0); x += Math.sin(t * 1.2 + ph * 3) * 0.15; }
+        else { y = y0 + v * (y1 - y0) + Math.sin(t * 0.4 + ph * 2) * 0.35; x += Math.sin(t * 0.25 + ph) * 0.6; z += Math.cos(t * 0.2 + ph) * 0.4; }
+        pos[i * 3] = x; pos[i * 3 + 1] = y; pos[i * 3 + 2] = z; }
+      g.attributes.position.needsUpdate = true; };
+    place(0); anim.push((t, q) => { p.visible = q >= 1; if (q >= 1) { place(t); if (kind === 'twinkle') p.material.opacity = (o.opacity || 0.9) * (0.75 + 0.25 * Math.sin(t * 2.3)); } });
+    return p;
+  }
+  /* butterflies: two wings that flap, on a lazy loop */
+  function butterflies(n, colors, area) {
+    const wingS = new THREE.Shape(); wingS.moveTo(0, 0); wingS.bezierCurveTo(0.1, 0.35, 0.5, 0.42, 0.42, 0.08); wingS.bezierCurveTo(0.5, -0.15, 0.2, -0.32, 0, 0);
+    const wg = new THREE.ShapeGeometry(wingS, 16);
+    for (let i = 0; i < n; i++) { const g = group(), m = std(colors[i % colors.length], { side: THREE.DoubleSide, roughness: 0.5, emissive: colors[i % colors.length], emissiveIntensity: 0.15 });
+      const l = new THREE.Mesh(wg, m), r = new THREE.Mesh(wg, m); r.scale.x = -1; g.add(l, r); mesh(G.ballLo, std('#3A2A3A'), 0, 0, 0, 0.03, 0.03, 0.14, g).rotation.x = Math.PI / 2;
+      g.scale.setScalar(0.9); const [cx, cy, cz, rr] = area[i % area.length], ph = i * 2.3;
+      anim.push((t, q) => { if (q < 1) return; const a = t * 0.35 + ph; g.position.set(cx + Math.cos(a) * rr, cy + Math.sin(t * 0.9 + ph) * 0.4, cz + Math.sin(a) * rr * 0.6); g.rotation.y = -a; const f = Math.sin(t * 14 + ph); l.rotation.y = f * 1.0; r.rotation.y = -f * 1.0; }); }
+  }
+  /* small sharp things scattered just outside the stage (grass tufts, little flowers, toys) */
+  function scatter(n, rMin, rMax, seed, make) {
+    const R = rng(seed || 17);
+    for (let i = 0; i < n; i++) { const a = R() * Math.PI * 2, r = rMin + R() * (rMax - rMin), x = Math.cos(a) * r, z = Math.sin(a) * r * 0.9 - 0.6;
+      if (z > 2 && Math.abs(x) < 7.5) continue;   /* keep the front clear (the toy box, Mendy) */
+      make(x, z, R, i); }
+  }
+  function tuft(x, z, s, c, par) { const g = group(x, 0, z, par), m = pm(c, { roughness: 0.5, clearcoat: 0.3 }); for (let i = 0; i < 5; i++) { const b = mesh(G.cone, m, (i - 2) * 0.06 * s, 0.22 * s, ((i * 7) % 3 - 1) * 0.05 * s, 0.05 * s, 0.45 * s * (0.7 + (i % 3) * 0.2), 0.05 * s, g); b.rotation.z = (i - 2) * 0.22; } return g; }
+  function bloomFlower(x, z, s, petal, par) { const g = group(x, 0, z, par); mesh(G.cyl, pm('#3FB54A'), 0, 0.2 * s, 0, 0.025 * s, 0.4 * s, 0.025 * s, g);
+    for (let i = 0; i < 6; i++) { const a = i / 6 * 6.28; mesh(G.ball, pm(petal, { clearcoat: 0.8, roughness: 0.3 }), Math.cos(a) * 0.09 * s, 0.42 * s, Math.sin(a) * 0.09 * s, 0.08 * s, 0.035 * s, 0.08 * s, g); }
+    mesh(G.ball, pm('#FFD23F', { clearcoat: 0.8 }), 0, 0.44 * s, 0, 0.055 * s, 0.04 * s, 0.055 * s, g); return g; }
+  /* painted textures */
+  function grassTex(base, dark, light, flowers, seed) {
+    const R = rng(seed || 5);
+    return paint(1024, 1024, (x, w) => { x.fillStyle = base; x.fillRect(0, 0, w, w);
+      for (let i = 0; i < 40; i++) { x.fillStyle = R() < 0.5 ? light : dark; x.globalAlpha = 0.12; x.beginPath(); x.arc(R() * w, R() * w, 40 + R() * 110, 0, 7); x.fill(); }
+      x.globalAlpha = 1; x.lineCap = 'round';
+      for (let i = 0; i < 9000; i++) { const px = R() * w, py = R() * w, l = 5 + R() * 9; x.strokeStyle = R() < 0.55 ? dark : light; x.globalAlpha = 0.35 + R() * 0.35; x.lineWidth = 1.5 + R() * 1.5; x.beginPath(); x.moveTo(px, py); x.lineTo(px + (R() - 0.5) * 4, py - l); x.stroke(); }
+      x.globalAlpha = 1;
+      if (flowers) for (let i = 0; i < 160; i++) { const px = R() * w, py = R() * w, c = flowers[i % flowers.length]; x.fillStyle = c; for (let k = 0; k < 5; k++) { const a = k / 5 * 6.28; x.beginPath(); x.arc(px + Math.cos(a) * 4, py + Math.sin(a) * 4, 3.4, 0, 7); x.fill(); } x.fillStyle = '#FFE14D'; x.beginPath(); x.arc(px, py, 2.4, 0, 7); x.fill(); }
+    }, { repeat: [16, 16] });
+  }
+  function speckTex(base, specks, n, rMax, seed, rep) {
+    const R = rng(seed || 9);
+    return paint(512, 512, (x, w) => { x.fillStyle = base; x.fillRect(0, 0, w, w); for (let i = 0; i < n; i++) { x.fillStyle = specks[i % specks.length]; x.globalAlpha = 0.25 + R() * 0.5; x.beginPath(); x.arc(R() * w, R() * w, 0.6 + R() * rMax, 0, 7); x.fill(); } x.globalAlpha = 1; }, { repeat: rep || [24, 24] });
+  }
+  /* a stage drawn as a cream centre with happy rings at the edge */
+  const ringStage = (rings, center, extra) => (x, c, w) => {
+    rings.forEach(([r, col]) => { x.fillStyle = col; x.beginPath(); x.arc(c, c, r * c, 0, Math.PI * 2); x.fill(); });
+    const lastR = rings[rings.length - 1][0], g = x.createRadialGradient(c, c, 0, c, c, c * lastR); g.addColorStop(0, center[0]); g.addColorStop(1, center[1]); x.fillStyle = g; x.beginPath(); x.arc(c, c, c * lastR, 0, Math.PI * 2); x.fill();
+    const R = rng(4); for (let i = 0; i < 20000; i++) { const a = R() * Math.PI * 2, r = Math.sqrt(R()) * c; x.fillStyle = R() < 0.5 ? 'rgba(255,255,255,.3)' : 'rgba(160,110,70,.05)'; x.fillRect(c + Math.cos(a) * r, c + Math.sin(a) * r, 2, 2); }
+    if (extra) extra(x, c, w);
+  };
+
   function playroom() {
     const R = rng(7);
     /* floor: warm honey wood planks, polished */
@@ -253,11 +453,60 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
       dg.attributes.position.needsUpdate = true; };
     placeDust(0); anim.push((t, q) => { dust.visible = q >= 1; if (q >= 1) placeDust(t); });
   }
-  const WORLDS = { playroom };
+
+  /* ================= the worlds (one per unit) =================
+     Every world: a sky, ground that is sharp near the toys and soft far away, a round stage in the middle,
+     a frame of things on the left and right (seen in every view), low things at the back (seen from above),
+     tall things far away (seen in the close-ups), gentle movement and something floating in the air. */
+
+  /* Unit 1: Toy Land - candy-coloured hills, lollipop trees, a castle of giant blocks, a rainbow, balloons */
+  function toyland() {
+    setEnv({ bg: '#BFE6FF', fog: ['#D9F0FF', 34, 120], sun: ['#FFF1D6', 2.6, [-6, 13, 8]], hemi: ['#CFE8FF', '#7FCB6A', 0.6], rim: ['#FFD2A0', 1.1], front: ['#FFE9D2', 0.35],
+      exposure: 0.84, box: ['#FF5A7A', '#FFFFFF', '#E8456A'], css: '#BFE6FF' });
+    skyDome('#3E9BFF', '#8FCBFF', '#E6F6FF', [-0.5, 0.4, -1]);
+    ground(grassTex('#5ECF4F', '#36A83F', '#9BEA6E', ['#FFFFFF', '#FF6FA3', '#FFD23F', '#A77BFF', '#FF8A3D'], 5), '#FFFFFF', { sheen: 0.5, sheenColor: '#D8FFB0' });
+    const near = group();
+    scatter(70, 7.1, 11.5, 31, (x, z, R, i) => { const k = i % 7; if (k < 3) tuft(x, z, 0.8 + R() * 0.6, ['#3FBF4A', '#58D35A', '#2EA845'][k], near);
+      else if (k < 6) bloomFlower(x, z, 0.9 + R() * 0.7, ['#FF6FA3', '#FFFFFF', '#FFC93C', '#A77BFF', '#FF8A3D'][i % 5], near);
+      else { const b = mesh(G.box, pm(['#FF5A5A', '#3AA8FF', '#FFC93C', '#4CD964'][i % 4], { clearcoat: 1, roughness: 0.2 }), x, 0.22, z, 0.44, 0.44, 0.44, near); b.rotation.y = R() * 3; } });
+    stage(ringStage([[1.0, '#FFFFFF'], [0.965, '#FF8FB1'], [0.915, '#FFFFFF'], [0.895, '#FFD84D'], [0.845, '#FFFFFF'], [0.825, '#7FDCC6'], [0.77, '#FFF8EE']], ['#FFFDF8', '#FFF1E0'],
+      (x, c) => { x.strokeStyle = 'rgba(255,170,190,.35)'; x.lineWidth = 4; x.setLineDash([14, 14]); x.beginPath(); x.arc(c, c, c * 0.72, 0, 7); x.stroke(); }), { edge: '#FFD4DF' });
+    /* left and right: lollipop trees, candy bushes, block towers */
+    const far = group();
+    [[-10.5, -3, 4.2, '#FF6FA3', '#FFFFFF'], [-13.5, -8, 5.2, '#FFC93C', '#FF6FA3'], [-9, -11, 3.6, '#7ED6FF', '#FFFFFF'], [10.8, -2.5, 4.4, '#B98CFF', '#FFFFFF'], [13.8, -8.5, 5.4, '#FF8A3D', '#FFE37A'], [9.4, -11.5, 3.4, '#5BE0A8', '#FFFFFF'],
+     [-16, 1, 4.8, '#FF5A5A', '#FFFFFF'], [16.5, 1.5, 4.6, '#3AA8FF', '#FFFFFF']]
+      .forEach(([x, z, h, a, b]) => lollipopTree(x, z, h, a, b, far));
+    [[-8.4, -8.6, 1.2, '#7ED957', ['#FF8FB1', '#FFFFFF']], [8.6, -8.8, 1.3, '#6CD3A0', ['#FFD84D', '#FFFFFF']], [-11.6, 3.5, 1.4, '#7ED957', ['#FF6FA3', '#FFD84D']], [11.8, 4.2, 1.3, '#6CD3A0', ['#B98CFF', '#FFFFFF']],
+     [-4, -11, 1.0, '#8EE07A', ['#FFFFFF', '#FF8FB1']], [3.6, -11.4, 1.1, '#7ED957', ['#FFD84D', '#7ED6FF']], [0, -12.6, 1.2, '#6CD3A0', ['#FF8FB1']]]
+      .forEach(([x, z, r, c, f], i) => bush(x, z, r, c, f, 20 + i, far));
+    /* the castle of giant toy blocks, back left */
+    const castle = group(-7.5, 0, -16, far), BC = ['#FF5A5A', '#3AA8FF', '#FFC93C', '#4CD964', '#B98CFF', '#FF8A3D'];
+    let n = 0; for (let tx = 0; tx < 3; tx++) for (let ty = 0; ty < 3 + (tx === 1 ? 2 : 0); ty++) { const s = 1.6; mesh(G.box, pm(BC[n++ % 6], { clearcoat: 1, roughness: 0.25 }), (tx - 1) * s * 1.05, s / 2 + ty * s * 1.02, 0, s, s, s, castle); }
+    [-1, 0, 1].forEach(tx => mesh(G.cone, pm(['#FF6FA3', '#FFC93C', '#3AA8FF'][tx + 1], { clearcoat: 1 }), tx * 1.68, (tx === 0 ? 5 : 3) * 1.63 + 1.1, 0, 0.95, 2.2, 0.95, castle));
+    const flag = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.55), std('#FF5A5A', { side: THREE.DoubleSide })); flag.position.set(0.45, 5 * 1.63 + 2.6, 0); castle.add(flag); mesh(G.cyl, pm('#FFFFFF'), 0, 5 * 1.63 + 2.4, 0, 0.04, 1.2, 0.04, castle);
+    anim.push((t, q) => { if (q >= 1) flag.rotation.y = Math.sin(t * 2) * 0.3; });
+    /* stacking-ring toy and a giant ball, back right */
+    ['#FF5A5A', '#FF8A3D', '#FFC93C', '#4CD964', '#3AA8FF'].forEach((c, i) => { const r = mesh(G.torus, pm(c, { clearcoat: 1, roughness: 0.2 }), 7.5, 0.55 + i * 0.62, -15, 1.25 - i * 0.16, 1.25 - i * 0.16, 1.25 - i * 0.16, far); r.rotation.x = Math.PI / 2; r.scale.z = (1.25 - i * 0.16) * 1.4; });
+    mesh(G.cyl, pm('#FFE7B0'), 7.5, 2, -15, 0.16, 4, 0.16, far); mesh(G.ball, pm('#FFE7B0', { clearcoat: 1 }), 7.5, 4.1, -15, 0.38, 0.38, 0.38, far);
+    const bb = group(11, 1.4, -12.5, far); mesh(G.ball, pm('#FFFFFF', { clearcoat: 1, roughness: 0.15 }), 0, 0, 0, 1.4, 1.4, 1.4, bb);
+    ['#FF5A5A', '#3AA8FF', '#FFC93C'].forEach((c, i) => { const s = new THREE.Mesh(new THREE.SphereGeometry(1.41, 32, 16, i * 2.09, 0.9), pm(c, { clearcoat: 1, roughness: 0.15 })); bb.add(s); });
+    /* rolling candy hills, far away, and a rainbow */
+    const stripes = paint(256, 256, (x, w) => { for (let i = 0; i < 8; i++) { x.fillStyle = i % 2 ? '#FFFFFF' : '#FFC2D6'; x.fillRect(0, i * 32, w, 32); } });
+    hill(-26, -40, 16, 9, null, '#9DE38A', far); hill(0, -52, 22, 11, null, '#B5EC8F', far); hill(28, -42, 18, 10, null, '#8FDDB0', far); hill(-12, -34, 9, 5, stripes, '#FFFFFF', far); hill(16, -32, 8, 4.5, null, '#FFD9E6', far);
+    rainbow(4, -6, -60, 30, far);
+    [[-18, 18, -55, 3.2, 1], [8, 22, -70, 4, 2], [26, 15, -50, 2.8, 3], [-34, 12, -45, 2.6, 4], [36, 20, -62, 3, 5]].forEach(([x, y, z, s, sd]) => { const cl = cloud(x, y, z, s, sd, null); cl.parent.remove(cl); far.add(cl); const ph = sd; anim.push((t, q) => { if (q >= 1) cl.position.x = x + Math.sin(t * 0.05 + ph) * 3; }); });
+    /* balloons floating up at the sides */
+    [[-12.5, 7, -6, '#FF5A5A', 0.7], [-11.6, 8.2, -7, '#FFC93C', 0.6], [12.3, 7.4, -6.5, '#3AA8FF', 0.7], [13.4, 8.6, -7.5, '#4CD964', 0.6], [-6, 12, -20, '#B98CFF', 0.9], [6, 13, -22, '#FF6FA3', 0.9]].forEach(([x, y, z, c, s]) => balloon(x, y, z, c, s, far));
+    farify(far);
+    motes({ n: 120, colors: ['#FFFFFF', '#FFE58A', '#FFC2D6', '#BDE8FF'], size: 0.12, box: [-12, 12, 0.6, 7, -13, -1.5], kind: 'drift', seed: 3 });
+  }
+
+
+  const WORLDS = { playroom, toyland };
   L.buildWorld = () => { (WORLDS[world] || playroom)(); };
 
   /* ================= toy boxes: glossy painted toy chests ================= */
-  L.boxMats = () => ({ body: phys('#FFC94A', { roughness: 0.3, clearcoat: 1, clearcoatRoughness: 0.12 }), rim: phys('#FFFFFF', { roughness: 0.3, clearcoat: 1 }), inside: std('#E9A93A', { roughness: 0.8 }) });
+  L.boxMats = () => ({ body: phys(ENV.box[0], { roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.1 }), rim: phys(ENV.box[1], { roughness: 0.3, clearcoat: 1 }), inside: std(ENV.box[2], { roughness: 0.8 }) });
   L.emblem = (shape, color, scale) => {   /* the box's shape, raised and glossy, with a white edge */
     const g = new THREE.Group();
     const back = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: 0.02, bevelEnabled: true, bevelThickness: 0.02, bevelSize: 0.1, bevelSegments: 3, curveSegments: 40 }), phys('#FFFFFF', { roughness: 0.3 }));
@@ -497,40 +746,73 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     return fam;
   };
 
-  /* ================= drawing: the far room softly blurred, the toys sharp ================= */
-  let rtW = 1, rtH = 1;
-  const rtOpt = { type: THREE.HalfFloatType, depthBuffer: true };
-  const farRT = new THREE.WebGLRenderTarget(1, 1, rtOpt), blurA = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, depthBuffer: false }), blurB = blurA.clone();
-  const blurMat = new THREE.ShaderMaterial({ uniforms: { tex: { value: null }, dir: { value: new THREE.Vector2() } }, depthTest: false, depthWrite: false,
-    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+
+  /* ================= drawing =================
+     1. the far world, at half size, softly blurred (like a camera focused on the toys)
+     2. the near world (toys, people, the stage) drawn sharp on top; the far things still hide what is behind them
+     3. a warm glow around the brightest things (sun, sparkles, stars), then the colour finish: bright, rich, never grey */
+  let rtW = 1, rtH = 1, fW = 1, fH = 1;
+  const HF = THREE.HalfFloatType;
+  const farRT = new THREE.WebGLRenderTarget(1, 1, { type: HF, depthBuffer: true }), blurA = new THREE.WebGLRenderTarget(1, 1, { type: HF, depthBuffer: false }), blurB = blurA.clone();
+  const mainRT = new THREE.WebGLRenderTarget(1, 1, { type: HF, depthBuffer: true, samples: 4 });
+  const bloomA = new THREE.WebGLRenderTarget(1, 1, { type: HF, depthBuffer: false }), bloomB = bloomA.clone();
+  const VS = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
+  const blurMat = new THREE.ShaderMaterial({ uniforms: { tex: { value: null }, dir: { value: new THREE.Vector2() } }, depthTest: false, depthWrite: false, vertexShader: VS,
     fragmentShader: 'uniform sampler2D tex; uniform vec2 dir; varying vec2 vUv; void main(){ vec4 c = texture2D(tex, vUv) * 0.2270270270; c += texture2D(tex, vUv + dir * 1.3846153846) * 0.3162162162; c += texture2D(tex, vUv - dir * 1.3846153846) * 0.3162162162; c += texture2D(tex, vUv + dir * 3.2307692308) * 0.0702702703; c += texture2D(tex, vUv - dir * 3.2307692308) * 0.0702702703; gl_FragColor = c; }' });
-  const showMat = new THREE.MeshBasicMaterial({ depthTest: false, depthWrite: false });
+  const copyMat = new THREE.ShaderMaterial({ uniforms: { tex: { value: null } }, depthTest: false, depthWrite: false, vertexShader: VS, fragmentShader: 'uniform sampler2D tex; varying vec2 vUv; void main(){ gl_FragColor = texture2D(tex, vUv); }' });
+  const brightMat = new THREE.ShaderMaterial({ uniforms: { tex: { value: null }, th: { value: 2.4 } }, depthTest: false, depthWrite: false, vertexShader: VS,
+    fragmentShader: 'uniform sampler2D tex; uniform float th; varying vec2 vUv; void main(){ vec3 c = texture2D(tex, vUv).rgb; float l = max(c.r, max(c.g, c.b)); float k = smoothstep(th, th * 1.8, l); gl_FragColor = vec4(c * k, 1.0); }' });
+  const finalMat = new THREE.ShaderMaterial({ uniforms: { tex: { value: null }, bloom: { value: null }, bs: { value: 0.3 }, vib: { value: 0.14 }, px: { value: new THREE.Vector2(1, 1) } }, depthTest: false, depthWrite: false, toneMapped: true, vertexShader: VS,
+    fragmentShader: `uniform sampler2D tex; uniform sampler2D bloom; uniform float bs; uniform float vib; uniform vec2 px; varying vec2 vUv;
+      void main(){
+        vec3 c = texture2D(tex, vUv).rgb;
+        /* a light sharpen, so edges stay crisp after the picture is scaled to the screen */
+        vec3 n = texture2D(tex, vUv + vec2(px.x, 0.0)).rgb + texture2D(tex, vUv - vec2(px.x, 0.0)).rgb + texture2D(tex, vUv + vec2(0.0, px.y)).rgb + texture2D(tex, vUv - vec2(0.0, px.y)).rgb;
+        c = max(c + (c - n * 0.25) * 0.22, vec3(0.0));
+        c += texture2D(bloom, vUv).rgb * bs;
+        float l = dot(c, vec3(0.2126, 0.7152, 0.0722)); float s = max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b));
+        c = mix(vec3(l), c, 1.0 + vib * (1.0 - s));   /* vibrance: dull colours get richer, rich ones stay */
+        vec2 d = vUv - 0.5; c *= 1.0 - dot(d, d) * 0.28;   /* a soft frame at the edges */
+        gl_FragColor = vec4(c, 1.0);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }` });
   const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), blurMat), qScene = new THREE.Scene(), qCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
   quad.frustumCulled = false; qScene.add(quad);
-  const showQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({ uniforms: { tex: { value: null } }, depthTest: false, depthWrite: false, toneMapped: true,
-    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
-    fragmentShader: 'uniform sampler2D tex; varying vec2 vUv; void main(){ gl_FragColor = texture2D(tex, vUv); \n#include <tonemapping_fragment>\n#include <colorspace_fragment>\n }' }));
-  showQuad.frustumCulled = false; const sScene = new THREE.Scene(); sScene.add(showQuad);
-  void showMat;
-  L.resize = () => { const v = renderer.getDrawingBufferSize(new THREE.Vector2()); rtW = Math.max(1, Math.round(v.x / 2)); rtH = Math.max(1, Math.round(v.y / 2)); farRT.setSize(rtW, rtH); blurA.setSize(rtW, rtH); blurB.setSize(rtW, rtH); };
-  let first = true;
+  const depthOnly = new THREE.MeshBasicMaterial({ colorWrite: false });
+  const pass = (m, dst) => { quad.material = m; renderer.setRenderTarget(dst); renderer.render(qScene, qCam); };
+  L.resize = () => { const v = renderer.getDrawingBufferSize(new THREE.Vector2()); rtW = Math.max(1, v.x); rtH = Math.max(1, v.y); fW = Math.max(1, Math.round(rtW / 2)); fH = Math.max(1, Math.round(rtH / 2));
+    farRT.setSize(fW, fH); blurA.setSize(fW, fH); blurB.setSize(fW, fH); mainRT.setSize(rtW, rtH); bloomA.setSize(Math.max(1, rtW >> 2), Math.max(1, rtH >> 2)); bloomB.setSize(Math.max(1, rtW >> 2), Math.max(1, rtH >> 2));
+    finalMat.uniforms.px.value.set(1 / rtW, 1 / rtH); };
   L.render = () => {
-    const dof = L.Q >= 2 && !FAST;
-    if (!dof) { camera.layers.enableAll(); scene.background = BG; renderer.shadowMap.needsUpdate = true; renderer.render(scene, camera); return; }
-    /* 1. the far room, at half size */
-    camera.layers.set(FAR); scene.background = BG; renderer.shadowMap.needsUpdate = first; first = false;
+    const full = L.Q >= 2 && !FAST;
+    if (!full) { camera.layers.enableAll(); scene.background = BG; renderer.shadowMap.needsUpdate = true; renderer.setRenderTarget(null); renderer.render(scene, camera); return; }
+    /* 1. the far world, half size, blurred */
+    camera.layers.set(FAR); scene.background = BG; renderer.shadowMap.needsUpdate = true;
     renderer.setRenderTarget(farRT); renderer.clear(); renderer.render(scene, camera);
-    /* 2. soften it (two passes each way) */
-    quad.material = blurMat; const R = 1.25;
-    [[farRT, blurA, R / rtW, 0], [blurA, blurB, 0, R / rtH], [blurB, blurA, R * 1.8 / rtW, 0], [blurA, blurB, 0, R * 1.8 / rtH]].forEach(([src, dst, x, y]) => {
-      blurMat.uniforms.tex.value = src.texture; blurMat.uniforms.dir.value.set(x, y); renderer.setRenderTarget(dst); renderer.render(qScene, qCam); });
-    renderer.setRenderTarget(null);
-    /* 3. the soft room behind, then the sharp toys and people on top */
-    const ac = renderer.autoClear; renderer.autoClear = false; renderer.clear();
-    showQuad.material.uniforms.tex.value = blurB.texture; renderer.render(sScene, qCam); renderer.clearDepth();
-    camera.layers.set(0); scene.background = null; renderer.shadowMap.needsUpdate = true; renderer.render(scene, camera);
+    const R = 1.2;
+    blurMat.uniforms.tex.value = farRT.texture; blurMat.uniforms.dir.value.set(R / fW, 0); pass(blurMat, blurA);
+    blurMat.uniforms.tex.value = blurA.texture; blurMat.uniforms.dir.value.set(0, R / fH); pass(blurMat, blurB);
+    blurMat.uniforms.tex.value = blurB.texture; blurMat.uniforms.dir.value.set(R * 1.8 / fW, 0); pass(blurMat, blurA);
+    blurMat.uniforms.tex.value = blurA.texture; blurMat.uniforms.dir.value.set(0, R * 1.8 / fH); pass(blurMat, blurB);
+    /* 2. into the big picture: the soft far world, its depth (so it still hides what is behind it), then the sharp near world */
+    const ac = renderer.autoClear; renderer.autoClear = false;
+    renderer.setRenderTarget(mainRT); renderer.clear();
+    copyMat.uniforms.tex.value = blurB.texture; quad.material = copyMat; renderer.render(qScene, qCam);
+    renderer.clearDepth();
+    noDepth.forEach(o => { o.visible = false; }); scene.overrideMaterial = depthOnly; scene.background = null; renderer.shadowMap.needsUpdate = false;
+    renderer.render(scene, camera);
+    scene.overrideMaterial = null; noDepth.forEach(o => { o.visible = true; });
+    camera.layers.set(0); renderer.render(scene, camera);
     renderer.autoClear = ac; scene.background = BG;
+    /* 3. glow and colour finish */
+    brightMat.uniforms.tex.value = mainRT.texture; pass(brightMat, bloomA);
+    const bw = bloomA.width, bh = bloomA.height;
+    [[1.3, 0], [0, 1.3], [2.6, 0], [0, 2.6]].forEach(([x, y], i) => { blurMat.uniforms.tex.value = (i % 2 ? bloomB : bloomA).texture; blurMat.uniforms.dir.value.set(x / bw, y / bh); pass(blurMat, i % 2 ? bloomA : bloomB); });
+    finalMat.uniforms.tex.value = mainRT.texture; finalMat.uniforms.bloom.value = bloomA.texture; finalMat.uniforms.bs.value = ENV.bloom; finalMat.uniforms.vib.value = ENV.vib;
+    pass(finalMat, null);
   };
+
 
   /* ================= keeping it smooth: a slow computer gets simpler effects, never a slower game ================= */
   let fN = 0, fAcc = 0, warm = 0, lastNow = performance.now();
