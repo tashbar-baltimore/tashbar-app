@@ -34,6 +34,8 @@ function staticChecks() {
   if (!bad) ok(Object.keys(T).length + ' lesson packs match ContentPacks.js');
   report.counts.packs = Object.keys(T).length;
   picsCheck();
+  /* SHARED ART LIBRARY (HoS 2026-11-24): every file in art/ cataloged, sources and licences recorded, size limits, no duplicates */
+  try { const a = require('./lib/art.js')(); a.fails.forEach(fail); a.oks.forEach(ok); } catch (e) { fail('art library check crashed: ' + String(e).slice(0, 200)); }
 }
 
 /* PICS-1: every picture link must pass tools/pics-check.js (real screen, real file, licence recorded, size limits,

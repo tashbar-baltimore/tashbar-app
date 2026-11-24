@@ -3,6 +3,8 @@
 For any Claude Code session that continues this work. The starter prompt is at the bottom.
 CLAUDE.md wins where anything here differs: publish ONLY by pull request (auto-publish), never by hand, never clasp.
 
+**Shared art library (HoS 2026-11-24):** every picture lives once in `art/` (see CLAUDE.md, "Shared art library", and `art/README.md`). Search `art/CATALOG.md` before finding or ordering a picture; a new picture goes into `art/pics/` with a catalog row in the same pull request.
+
 ## What PICS-1 is
 - Every lesson screen that talks about something a boy should see gets a real photo, scan, drawing or model, not an emoji.
 - When the screen's "how" line teaches a part of the thing, that part gets a red box, an arrow and a short label.
