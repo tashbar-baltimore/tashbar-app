@@ -59,6 +59,8 @@ async function page(pg) {
       const out = { bad: [], looks: [], saves: [] }, sleep = ms => new Promise(x => setTimeout(x, ms)), Q = s => document.querySelector(s);
       const ids = Object.keys(BANK_ALL).filter(id => /^READ\.COMP\.L05\.\d\d$/.test(id)).sort().slice(0, 4);
       if (ids.length < 4) { out.bad.push('not enough Level 5 Reading lessons for the made-up unit'); return out; }
+      const KEEP = { st: A.st, view: A.view, play: A.play, overlay: A.overlay, live: window.OB_LIVE };
+      window.OB_LIVE = 'test'; A.overlay = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.st.skills = {};   /* a TEST- boy: One Bite and the unit checks are on for him */
       const U = TLCORE.units; const unit = { id: 'ZZTEST.U77', title: 'Made-up Unit', c: 'READ', grade: 4, skills: ids.slice(0, 3), review: [ids[3]], n: 8 };
       out.err = U.err(unit); U.add(unit); U.reset();
       const orig = window.google.script.run;
@@ -92,7 +94,8 @@ async function page(pg) {
       A.play = null; A.view = 'hub'; await U.mine();
       startMission('READ', unit.skills[0], 'skill'); await sleep(150); out.hook = !!Q('#cun') && U.state() && U.state().mode; if (Q('#cun')) Q('#cun [data-cu=exit]').click();
       await sleep(80); out.afterPre = A.play ? [A.play.id, !!A.play.ob] : null; A.play = null; A.view = 'hub';
-      window.CU_LIVE = prevLive; window.google.script.run = orig; A.play = null; A.view = 'hub'; try { render(); } catch (e) {}
+      window.CU_LIVE = prevLive; window.google.script.run = orig;
+      A.play = KEEP.play; A.st = KEEP.st; A.view = KEEP.view; A.overlay = KEEP.overlay; window.OB_LIVE = KEEP.live; try { render(); } catch (e) {}
       return out;
     }).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 300)], looks: [], saves: [] }));
     r.bad.forEach(b => fails.push(at + b)); if (r.bad.length) continue;
