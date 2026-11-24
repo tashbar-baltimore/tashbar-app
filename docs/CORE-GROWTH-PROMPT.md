@@ -236,6 +236,7 @@ The HoS wants a **dramatic** upgrade: 3D, immersive, cutting-edge, **exciting an
 - Images of people: modest, warm, frum family life, by the Family Life decision.
 
 ### Who makes the art
+- **Shared art library (HoS 2026-11-24):** all art lives once in `art/` for 1.0, 2.0 and every future app. Search `art/CATALOG.md` first and add what you make, with its row (CLAUDE.md, "Shared art library"; `art/README.md`).
 - **You can make in code:** diagrams, organizers, story maps, letter and word tiles, 3D models (CSS 3D or a small WebGL scene), animated steps, and sound effects.
 - **The HoS's image account makes illustrations:** scenes, characters and book pages. You cannot reach it yourself. Instead:
   1. Write a **picture order list**: `docs/core-growth/<job>-picture-orders.md`. For each picture give the file name, the screen it goes on, its size, the exact image prompt, and the band's **style sheet** (one per band, written once by job T: same art style, same characters, same colors).
