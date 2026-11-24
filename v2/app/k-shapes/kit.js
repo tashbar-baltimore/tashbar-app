@@ -79,6 +79,7 @@ export function iconSVG(k, fill, cross) {
 /* ================= the game ================= */
 export function startGame(cfg) {
   const FAST = /[?&]fast=1/.test(location.search);
+  const SHOT = FAST && /[?&]shot=1/.test(location.search);   /* pictures only (v2/screens/k-shapes-graphics/shoot.js): test speed, but the full look */
   if (FAST) document.documentElement.classList.add('fast');
   document.body.insertAdjacentHTML('afterbegin', `
 <canvas id="view"></canvas>
@@ -114,7 +115,7 @@ export function startGame(cfg) {
   scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer), 0.04).texture;
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
   /* the new look (look.js): a game with cfg.world gets the rich world, light, characters and effects. Others keep the first look. */
-  const LK = cfg.world ? createLook({ renderer, scene, camera, FAST, world: cfg.world }) : null;
+  const LK = cfg.world ? createLook({ renderer, scene, camera, FAST: FAST && !SHOT, world: cfg.world }) : null;
   if (LK) document.body.classList.add('world');
   const PAL = LK ? ['#FF3B30', '#2F80FF', '#FFC21A', '#1DC77A', '#9A5BFF', '#FF8A1F', '#00C3D6', '#FF4FA0'] : COLORS;
   if (LK) { LK.buildWorld(); const add0 = scene.add.bind(scene); scene.add = (...os) => { os.forEach(o => LK.toyify(o)); return add0(...os); }; } else {
@@ -296,7 +297,7 @@ export function startGame(cfg) {
   }
   const sparks = [], sparkGeo = new THREE.OctahedronGeometry(0.09);
   function burst(at, n) {
-    if (FAST) return;
+    if (FAST && !SHOT) return;
     if (LK) return LK.celebrate(at, n);
     for (let i = 0; i < (n || 22); i++) {
       const m = new THREE.Mesh(sparkGeo, new THREE.MeshStandardMaterial({ color: COLORS[i % COLORS.length], emissive: COLORS[i % COLORS.length], emissiveIntensity: .5, transparent: true }));
@@ -322,7 +323,7 @@ export function startGame(cfg) {
     const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25, bob = FAST || !LK ? 0 : Math.sin(t * 0.37) * 0.08;
     camera.position.set(camPos.x + sway, camPos.y + bob, camPos.z); camera.lookAt(camLook);
     if (handOn) { const p = toScreen(handOn.g.position); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; }
-    if (!FAST || (++fastN % 3) === 0) { if (LK) LK.render(); else renderer.render(scene, camera); }
+    if (SHOT ? window.__shotDraw : (!FAST || (++fastN % 3) === 0)) { if (LK) LK.render(); else renderer.render(scene, camera); }   /* pictures: draw only while one is taken */
     requestAnimationFrame(frame);
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
