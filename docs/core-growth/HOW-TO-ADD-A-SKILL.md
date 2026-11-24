@@ -115,4 +115,4 @@ Quality-gate tips:
 ## Not covered yet (job T is building these next)
 - **K–1 home:** a K or Grade 1 boy sees only the game path (`K1Only.html`). A new K–1 skill joins it as a game: `HOW-TO-ADD-A-K1-GAME.md`.
 - **Pathfinder level-check items** for new skills. Until then a new skill is simply not part of the level check, which is safe: the boy meets it on his path.
-- The staff **skill-flow chart** (`tools/skill_flow.js`) still charts only the old ladders.
+- The staff **skill-flow chart** shows new skills once someone runs `node tools/skill_flow.js` and commits `src/SkillFlowData.js` (it is rebuilt by hand, not at start-up).
