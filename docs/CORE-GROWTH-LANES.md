@@ -14,12 +14,12 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 |---|---|---|---|---|---|---|---|
 | 1 | **T · Tools** (Reader, Writing Workshop and teacher inbox, unit checks and test-out, new activity kinds, content store, how to add a skill, style sheets) | TAKEN | https://claude.ai/code/session_01WBvMX2ukMEquyXqwaDMAGw | 2026-11-24 | 2026-11-24 02:30 UTC | Piece 1 (how to add a skill) built on branch `claude/core-T-add-skill`, testing; next: content store, then Reader | none; start first |
 | 2 | **D · The daily plan** (replace "3 lessons, then the Arcade" with today's list of material to cover; daily bonus when the whole list is done; every payment says what it is for) | TAKEN | https://claude.ai/code/session_01TScHB4zG82RAGTetxXcxpj | 2026-11-24 | 2026-11-24 02:45 UTC | Plan in #284; building today's list for TEST- boys (server list check, daily bonus on the whole list, My work rows) | none; can start now |
-| 3 | **F · Foundations K–2** | OPEN | | | | | T for lesson PRs; can start the map now |
+| 3 | **F · Foundations K–2** | TAKEN | https://claude.ai/code/session_01JPKZXHjMHR8MBsBECX3W7A | 2026-11-24 | 2026-11-24 05:00 UTC | Skill map + ledger in (`docs/core-growth/F-map.md`, `F-ledger.md`); Grade 2 Unit 1: 3 new lessons in final review | T for lesson PRs; can start the map now |
 | 4 | **C45 · Comprehension Gr 4–5** | TAKEN | https://claude.ai/code/session_01JPKZXEMq9S1KawXgCw533p | 2026-11-24 | 2026-11-24 03:17 UTC | Skill map + ledger in review (`docs/core-growth/C45-map.md`); next: Units 4.1 + 5.1 and Book B1 ch. 1–3, lessons once T's how-to is merged | T for lesson PRs; can start the map now |
 | 5 | **W48 · Writing Gr 4–8** | TAKEN | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf | 2026-11-24 | 2026-11-24 03:15 UTC | Skill map and ledger written (`docs/core-growth/W48-map.md`, `W48-ledger.md`); next: Unit 1 lessons once job T's how-to is on main | T (Writing Workshop); can start the map now |
 | 6 | **C23 · Comprehension Gr 2–3** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 7 | **G · Grammar and words K–8** | TAKEN | https://claude.ai/code/session_013qbMrgAu9CyoyPphT4PmMj | 2026-11-24 | 2026-11-24 04:10 UTC | Skill map and ledger written (`docs/core-growth/G-map.md`, `G-ledger.md`); next: rebuild the 2 to-fix lessons, then Unit 1 of every grade | T for lesson PRs; can start the map now |
-| 8 | **C68 · Comprehension Gr 6–8** | OPEN | | | | | T for lesson PRs; can start the map now |
+| 8 | **C68 · Comprehension Gr 6–8** | TAKEN | https://claude.ai/code/session_01F5TiU4gVh7WZ9cRWBJEpNU | 2026-11-24 | 2026-11-24 04:35 UTC | Claimed; reading the C45, W48 and G maps and casts, then the C68 skill map `docs/core-growth/C68-map.md` (docs only) | T for lesson PRs; can start the map now |
 | 9 | **W13 · Writing K–3** | OPEN | | | | | T (Writing Workshop); can start the map now |
 | 10 | **S · Science and Social Studies** | OPEN | | | | | the core map of a band; can start the map now |
 | 11 | **V · Verifier** (reviews, takes no building job) | OPEN | | | | | starts when the first lesson PR opens |
@@ -31,6 +31,10 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 
 | Job | Piece | Status | Helper (session link) | Last update |
 |---|---|---|---|---|
+| F | K Units 6–10 (lessons and little readers; see `docs/core-growth/F-map.md`) | OPEN | | |
+| F | Grade 1 Units 7–12 (lessons and little readers) | OPEN | | |
+| F | K–1 listen-along stories (70, in topic sets) and their understanding lessons | OPEN | | |
+| F | Grade 2 Units 4–6 (lessons, word-study readers, Readers' Theatre) | OPEN | | |
 | C45 | Grade 5, Units 5.4–5.6 (lessons and topic-set texts; see `docs/core-growth/C45-map.md`) | OPEN | | |
 | C45 | Grade 5, Units 5.7–5.9 | OPEN | | |
 | C45 | Books B2 *Lost on the Ridge Trail* and B5 *Shabbos at the Lighthouse* (after B1 sets the pattern) | OPEN | | |
@@ -41,8 +45,8 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 ## Casts (recurring characters, one per band)
 | Band | Cast note | Written by |
 |---|---|---|
-| K1 (K–1) | | |
-| B23 (2–3) | | |
+| K1 (K–1) | the Peretz family on Maple Street (`docs/core-growth/F-map.md`, section 8) | F |
+| B23 (2–3) | the Shabbos Street Club, proposed by F; C23 confirms or extends (`docs/core-growth/F-map.md`, section 8) | F |
 | E45 (4–5) | The Glen Avenue Crew: `docs/core-growth/C45-map.md` section 5 | C45 |
 | M68 (6–8) | The Beacon newsroom: `docs/core-growth/W48-map.md` section 7 (C68 may replace it if it writes one first) | W48 |
 
