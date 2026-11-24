@@ -155,10 +155,12 @@
     var qs = build(u, mode); if (qs.length < 2) { console.error('Unit ' + u.id + ': not enough tap questions for a ' + mode + ' (' + qs.length + ')'); return Promise.resolve({ mode: mode, unit: u.id, done: false, skipped: true }); }
     return new Promise(function (resolve) {
       var el = document.createElement('div'); el.id = 'cun'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', mode === 'pre' ? 'Quick check' : 'Unit check'); css();
-      document.body.appendChild(el); el.addEventListener('click', onClick); document.addEventListener('keydown', onKey, true);
+      document.body.appendChild(el); document.addEventListener('keydown', onKey, true);
       S = { u: u, mode: mode, qs: qs, ans: [], i: 0, view: 'gate', el: el, resolve: resolve }; draw();
     });
   }
+  /* taps inside the check are ours: caught on window before the One Bite player's page-wide handler (document, capture) sees Activity Kit taps */
+  W.addEventListener('click', function (e) { if (!S || !S.el || !S.el.contains(e.target)) return; e.stopPropagation(); onClick(e); }, true);
   U.check = function (u) { return open(u, 'check'); };
   U.pre = function (u) { return open(u, 'pre'); };
   U.mine = function () { if (MINE) return Promise.resolve(MINE); return call('cuMine').then(function (r) { if (r && r.units) MINE = r.units; return MINE || {}; }).catch(function () { return {}; }); };   /* a failed call is never kept: the hook stays off until his real results load */
