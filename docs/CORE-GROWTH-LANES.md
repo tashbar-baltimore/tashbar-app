@@ -45,6 +45,10 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | C68 | Grade 8, Units 8.5–8.8 (lessons and topic-set texts) | OPEN | | |
 | C68 | Longer works W2 *Snowbound* and W6 *The Flood* (after W1 sets the pattern) | OPEN | | |
 | C68 | Adapted public-domain works W5 (Verne), W8 (Conan Doyle), W9 (Stevenson) | OPEN | | |
+| W13 | Grade 3, Units 4–6 (lessons, pieces and unit checks; see `docs/core-growth/W13-map.md`) | OPEN | | |
+| W13 | Grade 2, Units 5–6 | OPEN | | |
+| W13 | K–1 picture-piece prompts (60), ready for job T's K–1 writing step | OPEN | | |
+| W13 | Grade 2–3 quick-write prompts (80, two per C23 text) | OPEN | | |
 
 ## Casts (recurring characters, one per band)
 | Band | Cast note | Written by |
