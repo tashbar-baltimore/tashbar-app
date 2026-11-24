@@ -48,6 +48,16 @@ module.exports = async function (pg) {
               mo.observe(document.documentElement, { subtree: true, childList: true, attributes: true, characterData: true }); setTimeout(() => { mo.disconnect(); res(c); }, 3000); });
             if (n > 15) bad.push('the hidden big-boy home changed ' + n + ' times in 3 s behind a K game (it should stay quiet): ' + Object.entries(WHO).sort((a, b) => b[1] - a[1]).slice(0, 8).map(e => e[0] + ' x' + e[1]).join(', '));
             const x = ov.querySelector('button'); if (x) x.click(); ov.remove(); } } }
+      /* every K subject: passing game 1 (the score each game pack really saves) opens game 2 */
+      for (const [subj, key] of [['MATH', 'klm'], ['READ', 'klr'], ['LK', 'klk']]) {
+        K1O.subj = subj; A.st[key] = {}; render(); await sleep(60);
+        const ids = [...document.querySelectorAll('#k1o .k1-t')].map(t => t.dataset.id); if (ids.length < 2) continue;
+        const pack = { MATH: window.KL, READ: window.KR, LK: window.KK }[subj]; if (!pack) continue;
+        A.st[key][ids[0]] = 3; render(); await sleep(60);
+        const t2 = document.querySelector('#k1o .k1-t[data-id="' + ids[1] + '"]');
+        if (!t2 || t2.classList.contains('lock')) bad.push('K ' + subj + ': passing game 1 (st.' + key + ') did not open game 2');
+        delete A.st[key]; }
+      K1O.subj = 'MATH';
       K1O.grade = 1; render(); await sleep(100);
       const g1 = [...document.querySelectorAll('#k1o .k1-t')].map(t => t.dataset.id);
       if (!g1.length) bad.push('a Grade 1 boy has no games'); else if (g1.some(id => !/\.L02\./.test(id))) bad.push('the Grade 1 path shows a game that is not Grade 1 level');

@@ -37,8 +37,8 @@ K1O.on=on;
    Each game pack keeps its own list in the order the skills build (LIST) and saves the best check score (0-3) in the boy's state.
    Kindergarten (Level 1 games only): KL Math, KR Reading (ABC), KK Kriyah. Grade 1 (Level 2 games only): G1M Math, G1R Reading, KK Kriyah. A game counts as passed at 2 or more.
    The next game unlocks when the one before it is passed; a passed game can always be played again. */
-const PACKS={0:[{k:'MATH',g:'KL',st:'klm',lv:1,i:'🔢',n:'Numbers'},{k:'READ',g:'KR',st:'krm',lv:1,i:'🔤',n:'ABC'},{k:'LK',g:'KK',st:'kkm',lv:1,i:'א',n:'Kriyah'}],
-             1:[{k:'MATH',g:'G1M',st:'g1m',lv:2,i:'🔢',n:'Numbers'},{k:'READ',g:'G1R',st:'g1r',lv:2,i:'📖',n:'Reading'},{k:'LK',g:'KK',st:'kkm',lv:2,i:'א',n:'Kriyah'}]};
+const PACKS={0:[{k:'MATH',g:'KL',st:'klm',lv:1,i:'🔢',n:'Numbers'},{k:'READ',g:'KR',st:'klr',lv:1,i:'🔤',n:'ABC'},{k:'LK',g:'KK',st:'klk',lv:1,i:'א',n:'Kriyah'}],
+             1:[{k:'MATH',g:'G1M',st:'g1m',lv:2,i:'🔢',n:'Numbers'},{k:'READ',g:'G1R',st:'g1r',lv:2,i:'📖',n:'Reading'},{k:'LK',g:'KK',st:'klk',lv:2,i:'א',n:'Kriyah'}]};   /* st = where each game pack saves its scores: KLessons st.klm, KReading st.klr, KKriyah st.klk, G1Math st.g1m, G1Reading st.g1r (2026-11-24: Reading and Kriyah read the wrong name, so their game 2 never opened) */
 const OVS=['klov','krov','kkov','kkov2','g1mov','g1rov'];
 function gradeNow(){ if(K1O.grade===0||K1O.grade===1) return K1O.grade;
   try{ const m=window.TL_MAP, L=m&&m.subjects&&m.subjects.MATH&&Number(m.subjects.MATH.level); if(L===2) return 1; }catch(e){} return 0; }
