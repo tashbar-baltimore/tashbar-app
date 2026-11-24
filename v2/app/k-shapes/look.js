@@ -433,7 +433,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   L.celebrate = (at, n) => {
     if (FAST) return;
     const k = L.Q >= 2 ? 1 : L.Q === 1 ? 0.6 : 0.3, N = Math.round((n || 26) * 2 * k);
-    for (let i = 0; i < N; i++) { const c = cs[cNext]; cNext = (cNext + 1) % CN; c.life = 2.6 + Math.random();
+    for (let i = 0; i < N; i++) { const c = cs[cNext]; cNext = (cNext + 1) % CN; c.life = 1.8 + Math.random() * 0.6;
       c.p.copy(at); const a = Math.random() * Math.PI * 2, sp = 2 + Math.random() * 4; c.v.set(Math.cos(a) * sp, 5 + Math.random() * 5, Math.sin(a) * sp * 0.6);
       c.ax.set(Math.random() - .5, Math.random() - .5, Math.random() - .5).normalize(); c.spin = 6 + Math.random() * 10; c.q.setFromAxisAngle(c.ax, Math.random() * 6); }
     conf.count = CN;
