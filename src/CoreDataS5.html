@@ -132,5 +132,35 @@
           say:'Match each reading to what the reaction did.', how:'Find the direction first, then subtract.'}] }
   };
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
+  /* Unit S8.1: the unit check (boss level) and test-out, and the unit project: four kitchen changes, physical or chemical, then a short write */
+  var PROJECT = { id: 'S.PROJ8.01', title: 'Four Kitchen Changes', grade: 8, kind: 'information',
+    prompt: 'Be a chemist! With a grown-up in the kitchen, try four changes: melt an ice cube, stir sugar into warm water, drop baking soda into vinegar, and stir a spoon of lemon juice into a cup of milk (use a dairy cup and spoon). Look for lumps: a new solid. Watch each one closely for the clues of a reaction. Then write which changes were physical and which were chemical, and the evidence for each.',
+    strategy: { name: 'Claim, Evidence, Reasoning', steps: [['C', 'Claim: physical or chemical?'], ['E', 'Evidence: what clue did I see, or not see?'], ['R', 'Reasoning: was something new made?']] },
+    plan: [ { k: 'did', label: 'What I did', hint: 'First I melted an ice cube…' },
+            { k: 'claims', label: 'C + E · My claims and evidence', hint: 'The baking soda and vinegar was ___, because I saw…' },
+            { k: 'reason', label: 'R · My reasoning', hint: 'A clue can trick you, so…' } ],
+    starters: ['First, I', 'The ice melting was', 'I saw', 'This is evidence that', 'Something new was made because', 'The trickiest one was'],
+    min: 100,
+    checks: [
+      { t: 'I wrote at least 8 sentences.', sentences: 8 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I used the words physical and chemical.', any: ['physical'] },
+      { t: 'I called at least one change chemical.', any: ['chemical'] },
+      { t: 'I named a real clue I saw (bubbles, lumps, a new color…).', any: ['bubble', 'fizz', 'foam', 'gas', 'lump', 'solid', 'curd'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I did it with a grown-up, and I did not taste anything.', self: true } ],
+    rubric: ['I made a claim for each of the four changes', 'I gave a real clue as evidence for each', 'I explained whether a new substance was made', 'I used the right science words'],
+    pics: ['🧪', '🧊', '🥛', '🍋'] };
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'S.U05', title: 'Changes in Matter', c: 'SCI', grade: 8,
+    skills: ['SCI.MATT.L09.01', 'SCI.MATT.L09.02', 'SCI.MATT.L09.03', 'SCI.MATT.L09.04'], n: 8, task: PROJECT,
+    items: [   /* one fresh question per skill: L09.03 and L09.04 have only 1 check question of the tap kinds a unit check can use */
+      { skill: 'SCI.MATT.L09.01', type: 'evidence', q: 'Which sentence proves a new substance was made?', p: ['The butter melted in the pan.', 'The juice froze into a solid block.', 'The nail turned orange and flaky with rust.', 'The salt seemed to disappear in the water.'], a: 2, look: 'a change in what it is, not just its form',
+        say: 'Tap the sentence that proves it.', how: 'Melting, freezing and dissolving are physical. Look for something new.' },
+      { skill: 'SCI.MATT.L09.02', type: 'cloze', t: 'A liquid with a pH of 11 is ___.', o: ['a base', 'an acid', 'neutral'], a: 'a base',
+        say: 'Tap the words that fit the gap.', how: 'Below 7 is an acid. 7 is neutral. Above 7 is a base.' },
+      { skill: 'SCI.MATT.L09.03', type: 'cloze', t: 'A sealed jar weighs 400 g before a reaction. After it, the jar weighs ___ g.', o: ['400', '390', '410'], a: '400',
+        say: 'Tap the number that fits the gap.', how: 'In a sealed jar, nothing gets in or out.' },
+      { skill: 'SCI.MATT.L09.04', type: 'cloze', t: 'A reaction goes from 18 °C to 9 °C, so it ___ heat.', o: ['took in', 'gave off', 'kept all its'], a: 'took in',
+        say: 'Tap the words that fit the gap.', how: 'If the temperature goes down, heat was pulled in.' } ] });
 })();
 </script>
