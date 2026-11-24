@@ -47,7 +47,7 @@
 #crd .crd-cover.k-poem,#crd .crd-cover.k-play{background:radial-gradient(120% 90% at 50% 0%,#7A3E8C 0%,#41204D 65%,#24112B 100%)}
 #crd .crd-card{width:min(560px,100%);text-align:center;transform-style:preserve-3d;transition:transform .25s ease-out}
 #crd .crd-art{position:relative;width:min(420px,82vw);aspect-ratio:4/3;margin:0 auto 18px;border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45);transform:translateZ(40px);overflow:hidden;background:#24365F}
-#crd .crd-art img{width:100%;height:100%;object-fit:cover;display:block}
+#crd .crd-art img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;display:block}
 #crd .crd-art .crd-art-ph{position:absolute;inset:0;display:grid;place-items:center;font-size:84px;background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,0) 60%)}
 #crd .crd-cover h1{margin:6px 0 6px;font-size:clamp(28px,5vw,44px);line-height:1.1;transform:translateZ(60px);text-shadow:0 4px 20px rgba(0,0,0,.4)}
 #crd .crd-cover .crd-sub{font:600 14px/1.3 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#FFD45C;transform:translateZ(30px)}
@@ -78,6 +78,7 @@
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var RM = false; try { RM = W.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var S = null;
+  var COVER = { K1: 'core-t-cover-k1.webp' };   /* B23, E45 and M68 covers are being redrawn (picture order T-1, docs/core-growth/T-picture-orders.md) */
   function band(g) { g = Number(g); return g <= 1 ? 'K1' : g <= 3 ? 'B23' : g <= 5 ? 'E45' : 'M68'; }
   function K() { return W.TLK || null; }
   function btn(kind, text, attrs) { var k = K(); if (k && k[kind]) return k[kind](text, attrs); return '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
@@ -124,7 +125,7 @@
   }
   function coverHtml() {
     var t = S.t, emo = { story: '📖', chapter: '📖', article: '🔎', poem: '🎵', play: '🎭', letter: '✉️', speech: '🎤', fable: '🦊' }[t.kind] || '📖';
-    var art = t.pic ? '<img alt="" src="/pics/' + esc(t.pic) + '" onerror="this.remove()">' : '';
+    var pic = t.pic || COVER[S.band] || '', art = pic ? '<img alt="" src="/pics/' + esc(pic) + '" onerror="this.remove()">' : '';   /* a text with no picture of its own gets its band's cover (art library, picture order T-1) */
     var sub = t.kind === 'chapter' ? esc(t.book) + ' · Chapter ' + t.chapter : t.topic ? esc(t.topic) : esc(t.kind);
     return '<div class="crd-cover k-' + esc(t.kind) + '"><div class="crd-card" data-crd="tilt"><div class="crd-art"><div class="crd-art-ph" aria-hidden="true">' + emo + '</div>' + art + '</div>' +
       '<div class="crd-sub">' + sub + '</div><h1>' + esc(t.title) + '</h1><div class="crd-meta">' + pill('prog', t.pages.length + (t.pages.length === 1 ? ' page' : ' pages')) + (S.p > 0 ? pill('now', 'Keep going: page ' + (S.p + 1)) : '') + '</div>' +
