@@ -6,7 +6,7 @@
      node tools/core/texts.js build <dir>      writes <dir>/<ID>.json for every text (web/build.js does this) */
 const fs = require('fs'), path = require('path');
 const F = require('./textfmt.js');
-const ROOT = path.join(__dirname, '..', '..'), TEXTS = path.join(ROOT, 'texts'), PICS = path.join(ROOT, 'web', 'pics');
+const ROOT = path.join(__dirname, '..', '..'), TEXTS = path.join(ROOT, 'texts'), PICS = path.join(ROOT, 'art', 'pics');
 
 function load() {
   const out = [], problems = [], seen = {};

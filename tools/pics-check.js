@@ -1,7 +1,7 @@
-/* PICS-1 check. Run: node tools/pics-check.js src/RealPics.html <screens.json from tools/pics-screens.py> web/pics
+/* PICS-1 check. Run: node tools/pics-check.js src/RealPics.html <screens.json from tools/pics-screens.py> art/pics
    Fails (exit 1) on any of these:
    - a TL_PIC_MAP key that names no real screen (lesson id + exact question), or a picture id not in TL_PICS, or a bad box;
-   - a TL_PICS entry missing file, alt, source, licence or author, or whose file is not in web/pics;
+   - a TL_PICS entry missing file, alt, source, licence or author, or whose file is not in the shared art library (art/pics);
    - a picture file over 200 KB or wider than 1200 px;
    - a mark (box/label) on a pure question screen (its "how" line is empty): those get the plain picture;
    - a label with a word that is not in that screen's "how" line (labels only name what the screen already teaches).

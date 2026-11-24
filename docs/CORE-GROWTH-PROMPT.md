@@ -232,15 +232,16 @@ The HoS wants a **dramatic** upgrade: 3D, immersive, cutting-edge, **exciting an
 - **Every picture on a work screen must carry meaning.** Ask: "If I take it away, does the boy lose information?" If not, it goes to the opener or the win moment instead.
 - **No 3D drawing behind question screens.** The existing guard (`tests/lib/warp3d.js`) keeps lessons at full speed. A 3D model is allowed on a question screen only when the model *is* the question.
 - A 3D scene must be ready in under 2 seconds on a Chromebook, have an off switch, and respect "reduce motion".
-- Pictures follow the PICS rules (`docs/HANDOFF-PICS.md`): WebP, at most 1,100 px wide, at most 200 KB, a line in `web/pics/SOURCES.md` with source, licence and author, and alt text. `tools/pics-check.js` must pass.
+- Pictures follow the PICS rules (`docs/HANDOFF-PICS.md`): WebP, at most 1,100 px wide, at most 200 KB, a row in `art/CATALOG.md` with source, licence and author, and alt text (the shared art library, `art/README.md`). `tools/pics-check.js` must pass.
 - Images of people: modest, warm, frum family life, by the Family Life decision.
 
 ### Who makes the art
+- **Shared art library (HoS 2026-11-24):** all art lives once in `art/` for 1.0, 2.0 and every future app. Search `art/CATALOG.md` first and add what you make, with its row (CLAUDE.md, "Shared art library"; `art/README.md`).
 - **You can make in code:** diagrams, organizers, story maps, letter and word tiles, 3D models (CSS 3D or a small WebGL scene), animated steps, and sound effects.
 - **The HoS's image account makes illustrations:** scenes, characters and book pages. You cannot reach it yourself. Instead:
   1. Write a **picture order list**: `docs/core-growth/<job>-picture-orders.md`. For each picture give the file name, the screen it goes on, its size, the exact image prompt, and the band's **style sheet** (one per band, written once by job T: same art style, same characters, same colors).
   2. Batch the orders (20–40 at a time) and tell the HoS in one line: "Picture order N is ready: <link>."
-  3. The HoS makes them and puts them in a Google Drive folder. Use the Drive connector to fetch them, check every one against its order and the Family Life rules, convert to WebP, and add them by PR.
+  3. The HoS makes them and puts them in a Google Drive folder. Use the Drive connector to fetch them, check every one against its order and the Family Life rules, convert to WebP, and add them by PR to `art/` (original in `art/originals/`, app-ready WebP in `art/pics/`, a catalog row).
   4. Licence line: "made for Tashbar Baltimore with an AI image tool, owned by the school".
   5. Until the pictures arrive, the screen uses a coded placeholder that still teaches and still looks good, never an empty box.
 
