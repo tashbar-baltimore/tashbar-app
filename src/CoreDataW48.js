@@ -15,5 +15,9 @@ CORE_SKILLS.W48 = [
   ["WRIT.ESSAY.L07.04", "Best Evidence", "Choose evidence that is relevant and credible", { after: "WRIT.ESSAY.L07.01", std: "W.6.1b", file: "CoreDataW483", min: 9 }],
   ["WRIT.PARA.L07.01", "Glue Words", "Link claim, reasons and proof with the right glue words", { after: "WRIT.ESSAY.L07.02", std: "W.6.1c", file: "CoreDataW483", min: 8 }],
   ["WRIT.PARA.L07.02", "Formal Voice", "Write an argument in a formal voice: no slang, no shouting, exact words", { after: "WRIT.PARA.L07.01", std: "W.6.1d", file: "CoreDataW483", min: 8 }],
-  ["WRIT.PARA.L07.03", "Close the Case", "End an argument: claim with force, strongest reason, call to action", { after: "WRIT.PARA.L07.02", std: "W.6.1e", file: "CoreDataW483", min: 8 }]
+  ["WRIT.PARA.L07.03", "Close the Case", "End an argument: claim with force, strongest reason, call to action", { after: "WRIT.PARA.L07.02", std: "W.6.1e", file: "CoreDataW483", min: 8 }],
+  ["WRIT.PARA.L08.01", "Logical Steps", "Show the reasoning from reason to conclusion and spot a gap", { after: "WRIT.ESSAY.L08.02", std: "W.7.1b", file: "CoreDataW484", min: 9 }],
+  ["WRIT.PARA.L08.02", "Check the Source", "Check a source: does the writer know, is it up to date, does it gain", { after: "WRIT.PARA.L08.01", std: "W.7.8", file: "CoreDataW484", min: 8 }],
+  ["WRIT.PARA.L08.03", "Counter Glue", "Bring in the strongest other side fairly, then answer it", { after: "WRIT.PARA.L08.02", std: "W.7.1c", file: "CoreDataW484", min: 8 }],
+  ["WRIT.PARA.L08.04", "Qualify Your Claim", "Make the claim exactly as big as the evidence", { after: "WRIT.PARA.L08.03", std: "W.7.1b", file: "CoreDataW484", min: 8 }]
 ];
