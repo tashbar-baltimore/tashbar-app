@@ -16,7 +16,7 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 | 2 | **D · The daily plan** (replace "3 lessons, then the Arcade" with today's list of material to cover; daily bonus when the whole list is done; every payment says what it is for) | TAKEN | https://claude.ai/code/session_01TScHB4zG82RAGTetxXcxpj | 2026-11-24 | 2026-11-24 02:45 UTC | Plan in #284; building today's list for TEST- boys (server list check, daily bonus on the whole list, My work rows) | none; can start now |
 | 3 | **F · Foundations K–2** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 4 | **C45 · Comprehension Gr 4–5** | OPEN | | | | | T for lesson PRs; can start the map now |
-| 5 | **W48 · Writing Gr 4–8** | OPEN | | | | | T (Writing Workshop); can start the map now |
+| 5 | **W48 · Writing Gr 4–8** | TAKEN | https://claude.ai/code/session_01F5TiU4gVh7WZ9cRWBJEpNU | 2026-11-24 | 2026-11-24 03:04 UTC | Claimed; reading the rules, then the skill map `docs/core-growth/W48-map.md` (docs only) | T (Writing Workshop); can start the map now |
 | 6 | **C23 · Comprehension Gr 2–3** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 7 | **G · Grammar and words K–8** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 8 | **C68 · Comprehension Gr 6–8** | OPEN | | | | | T for lesson PRs; can start the map now |
