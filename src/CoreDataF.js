@@ -20,5 +20,8 @@ CORE_SKILLS.F = [
   ["READ.PA.L01.08", "Rhyme Maker", "Hear and make rhymes", { after: "READ.PA.L01.02", std: "RF.K.2a", file: "CoreDataF2", min: 5 }],
   ["READ.PA.L01.09", "Beat Builder", "Push beats together and take one away", { after: "READ.PA.L01.03", std: "RF.K.2b", file: "CoreDataF2", min: 5 }],
   ["READ.PHON.L02.22", "CVC Speedway", "Read and build short-vowel words fast", { after: "READ.PA.L02.01", std: "RF.1.3b", file: "CoreDataF2", min: 6 }],
-  ["READ.PA.L02.02", "Long or Short?", "Hear long and short vowel sounds", { after: "READ.PHON.L02.22", std: "RF.1.2a", file: "CoreDataF2", min: 5 }]
+  ["READ.PA.L02.02", "Long or Short?", "Hear long and short vowel sounds", { after: "READ.PHON.L02.22", std: "RF.1.2a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L03.13", "Drop the E", "Drop the silent e, then add -ing or -ed", { after: "READ.PHON.L03.11", std: "L.2.2d", file: "CoreDataF1", min: 7 }],
+  ["READ.PHON.L03.14", "Double It", "Double the last letter before -ing or -ed", { after: "READ.PHON.L03.13", std: "L.2.2d", file: "CoreDataF1", min: 7 }],
+  ["READ.PHON.L03.15", "Y to I", "Change y to i before -es or -ed", { after: "READ.PHON.L03.14", std: "L.2.2d", file: "CoreDataF1", min: 7 }]
 ];
