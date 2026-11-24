@@ -31,14 +31,16 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 
 | Job | Piece | Status | Helper (session link) | Last update |
 |---|---|---|---|---|
+| W48 · Writing Gr 4–8 | Grade 7, Units 1–5 (22 skill lessons, per `docs/core-growth/W48-map.md`) | OPEN | | |
+| W48 · Writing Gr 4–8 | Grade 8, Units 1–5 (20 skill lessons, per `docs/core-growth/W48-map.md`) | OPEN | | |
 
 ## Casts (recurring characters, one per band)
 | Band | Cast note | Written by |
 |---|---|---|
 | K1 (K–1) | | |
 | B23 (2–3) | | |
-| E45 (4–5) | | |
-| M68 (6–8) | | |
+| E45 (4–5) | **The Rosewood Gazette** (4 friends run a kids' newspaper): `docs/core-growth/W48-map.md` section 5. Proposed; C45 may adopt or replace it. | W48 |
+| M68 (6–8) | **The Rosewood Town Hall** (the middle-school student council): `docs/core-growth/W48-map.md` section 5. Proposed; C68 may adopt or replace it. | W48 |
 
 ## Shared texts
 The F and C jobs list texts that the G and W jobs may use for "his own sentence" and writing tasks.
