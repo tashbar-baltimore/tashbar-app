@@ -473,7 +473,7 @@ export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right']
   beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'],
   lamed: [90, 820, 'down'], mem: [195, 70, 'up'], nun: [310, 50, 'left'] };   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
 /* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
-const PAIR_FEAT = { 'tes|mem': [300, 20, 'up'], 'kaf|pei': false, 'pei|kaf': [120, 300, 'right'] };   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+const PAIR_FEAT = { 'tes|mem': [300, 20, 'up'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'] };   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 /* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
 export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : (k + '|' + other) in PAIR_FEAT ? PAIR_FEAT[k + '|' + other] : (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));

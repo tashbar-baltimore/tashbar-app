@@ -31,7 +31,7 @@ export default function setup(E, { struggled, unit }) {
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); yak.position.set(-3.3, 0, 1.2); yak.scale.setScalar(1.1); board.position.set(.2, 2.35, .4); board.scale.setScalar(1); }
     tiles.forEach((t, i) => { if (t !== dragT) t.position.copy(tileHome(i)); });
   });
-  const tileHome = i => P ? new THREE.Vector3([1.6, .55, -.5][i], .5, 2.1) : new THREE.Vector3(2.3 - i * 1.55, .6, 1.9);   /* never in front of the sign's pole */
+  const tileHome = i => P ? new THREE.Vector3([1.4, .45, -.55][i], .5, 2.1) : new THREE.Vector3(2.3 - i * 1.55, .6, 1.9);   /* never in front of the sign's pole */
   E.onFrame(t => {
     if (shown) shown.rotation.y = Math.sin(t * 1.2) * .15;
     tiles.forEach((tl, i) => { if (tl !== dragT && tl.visible && !tl.userData.busy) { tl.position.y = tileHome(i).y + Math.sin(t * 2 + i) * .05; } });
@@ -57,7 +57,7 @@ export default function setup(E, { struggled, unit }) {
     : k === 'beis' && c === 'veis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
     : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : lookOf(k, c)) + ' This is ' + E.LETTERS[k].name + '.';
   const an = k => E.an(k);
-  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
+  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, P ? .8 : .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
   const onBoard = () => { const [bx, by] = E.toScreen(E.worldPos(board)), [tx, ty] = E.toScreen(dragT.position); return Math.hypot(bx - tx, by - ty) < Math.min(innerWidth, innerHeight) * .16; };
   E.onPointer('down', e => { if (!fixKey || busy) return; const t = E.pickFrom(e, tiles); if (t) { dragT = t; const p = E.planePoint(e, t.position.z); if (p) grab.copy(t.position).sub(p); t.scale.setScalar(1.12); } });
   E.onPointer('move', e => { if (!dragT) return; const p = E.planePoint(e, dragT.position.z); if (p) dragT.position.copy(p.add(grab)); });
