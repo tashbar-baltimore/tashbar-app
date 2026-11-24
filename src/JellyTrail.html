@@ -1,0 +1,1033 @@
+<script>
+/* JellyTrail.html — CHANUKAH SUFGANIYAH JELLY TRAIL, a Tashbar Store holiday item (HoS 2026-11-24, made in Claude Chat with the owner;
+   look and timings kept exactly). "Sufganiyah jelly trail", $250.00, Chanukah shelf (src/Store.js hol-jelly), next to the Rolling donuts
+   trail (a different item).
+   1. THE ENGINE: jelly-trail.js from the handoff, unchanged except: its comments use slash-star (HtmlService rule: no slash-slash in
+      this file), "export function createJellyTrail" is a plain function exposed as window.TL_JELLY.create, and two small app additions: the lift point counts as movement (a quick swipe is never a tap), and the option
+      eventTarget (where it listens for the finger; default the container, as in the handoff), so the app can lay it over the whole
+      screen without catching a single tap (the screen-sized box has pointer-events: none and the engine listens on the window).
+   2. THE APP RULE: on for a signed-in boy who bought it and is wearing it (his trail slot). It is his trail AND his tap: a swipe draws
+      the jelly, a tap drops a donut that splats. A tap blast he wears separately wins the tap (the store's matching-sets rule).
+      Like the olive oil (OilTrail.html): a doughnut on EVERY tap, buttons too, never where a boy types or draws; the free streak and
+      the free tap splash (HomePlus.html) step aside while it is on (window.tlJellyOn / tlJellyTapOn).
+      LIGHT BENDING: on every page of the boy's home (#gm) the jelly bends a snapshot of the screen (html2canvas from our own /vendor/,
+      half size, taken when the boy is idle, the same way as the oil); in lessons it bends the plain page colour.
+   3. THE STORE PREVIEW: the card plays the real engine in its little window (TL_JELLY.preview), a fingertip swipe and a tap.
+   Test switch: window.TL_JELLY = false before load turns it off. No slash-slash in this file (HtmlService rule). */
+(function(){
+if(window.TL_JELLY===false||window.TL_JELLY) return;
+
+/**
+ * jelly-trail.js — Tashbar "sufganiyah" (Hanukkah jelly donut) finger trail.
+ * Plain JavaScript (ES module). No TypeScript, no dependencies.
+ *
+ * What it does
+ *   - Swipe: a thick, glossy raspberry-jelly trail that lags behind the finger, thins and drips.
+ *   - Mini powdered jelly donuts hop off the trail and roll away, each leaving a jelly streak.
+ *   - Tap: a big donut drops in, squishes (its jelly dot oozes and drips down the front),
+ *     then bursts: jelly starburst splat, flying blobs, torn pieces, crumbs, a sugar puff,
+ *     a flash ring and a little steam.
+ *   - The jelly BENDS LIGHT: it refracts whatever is underneath it (text, cards, background),
+ *     like a lens. See "How the light bending works" below.
+ *
+ * How the light bending works (read this before wiring it up)
+ *   WebGL cannot read the web page that sits under it. So the engine is given a PICTURE of
+ *   what is under the jelly (the "backdrop"): a <canvas> or <img> the same shape as the
+ *   container. The jelly shader samples that picture with a bent offset, which is what
+ *   makes the text underneath warp. If no backdrop is given, the jelly still works but has
+ *   nothing to bend (it refracts a flat colour).
+ *   You supply the picture with the `captureBackdrop` option: an (async) function that
+ *   returns a canvas/image of exactly the area covered by the container. The React wrapper
+ *   (JellyTrail.jsx) does this for you with html2canvas.
+ *   Call `refreshBackdrop()` whenever what's under the jelly changes (the wrapper does this
+ *   automatically on resize and when the wrapped content changes).
+ *
+ * Usage (no framework)
+ *   import { createJellyTrail } from './jelly-trail.js';
+ *   const trail = createJellyTrail(containerEl, { captureBackdrop: async () => myCanvas });
+ *   trail.setOptions({ jelly: 1.2, donuts: 0.5 });
+ *   trail.clear();
+ *   trail.destroy();
+ *
+ *   containerEl must have a size. The engine adds two absolutely positioned canvases
+ *   inside it (pointer-events: none) and listens for pointer events on it.
+ */
+
+const DEFAULTS = {
+  jelly: 1,           /* trail thickness, 0.6 – 1.6 */
+  donuts: 1,          /* how often mini donuts pop off the trail, 0 (none) – 2 */
+  maxDpr: 2,          /* cap on devicePixelRatio (keeps Chromebooks fast) */
+  hoverTrail: true,   /* a mouse leaves a trail just by moving (no button needed) */
+  tapToPop: true,     /* a quick tap drops a big donut that bursts */
+  captureBackdrop: null,  /* () => HTMLCanvasElement | HTMLImageElement | Promise<…> | null */
+  backdropColor: null,    /* flat colour to refract until/unless a backdrop picture exists */
+  ignoreSelector: 'button, a, input, select, textarea, label, [role="button"], [data-no-jelly]',
+  zIndex: 10,
+  eventTarget: null,  /* Tashbar: where to listen for the finger (default: the container) */
+};
+
+function createJellyTrail(container, options = {}) {
+  if (!container) throw new Error('createJellyTrail: container element is required');
+  const o = { ...DEFAULTS, ...options };
+  if (getComputedStyle(container).position === 'static') container.style.position = 'relative';
+
+  /* two layers: WebGL jelly (bottom) and 2D donuts/blobs/crumbs (top) */
+  const makeLayer = (z) => {
+    const c = document.createElement('canvas');
+    c.setAttribute('aria-hidden', 'true');
+    c.setAttribute('data-jelly-layer', '');
+    Object.assign(c.style, { position: 'absolute', left: '0', top: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: String(z) });
+    container.appendChild(c);
+    return c;
+  };
+  const glc = makeLayer(o.zIndex);
+  const canvas = makeLayer(o.zIndex + 1);
+  const ctx = canvas.getContext('2d');
+
+  const CELL = 2;            /* css px per simulation cell */
+  const T = 0.32;            /* surface threshold */
+  const MAXH = 2.6;          /* max jelly thickness */
+  const HALF_LIFE = 620;     /* ms to thin by half */
+  let W = 0, Hh = 0, H = null, Tmp = null, rowOn = null, dpr = 1, vw = 0, vh = 0;
+  let thick = o.jelly, donutAmt = o.donuts;
+  let destroyed = false, lastBackdrop = null, bdToken = 0, bdTimer = 0;
+
+  /* ================================================================
+      WebGL jelly with refraction of the backdrop picture
+     ================================================================ */
+  let gl = null;
+  try { gl = glc.getContext('webgl', { premultipliedAlpha: true, alpha: true, antialias: false }); } catch (e) { gl = null; }
+  let prog, hTex, bgTex, uTex, uK, uH, uRes, uDpr, pack = null, prevY0 = 1e9, prevY1 = -1;
+
+  function setupGL() {
+    const deriv = !!gl.getExtension('OES_standard_derivatives');
+    const vs = 'attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }';
+    const fs = (deriv ? '#extension GL_OES_standard_derivatives : enable\n' : '') + `
+precision highp float;
+uniform sampler2D u_h; uniform vec2 u_tex; uniform float u_k; uniform float u_hpx;
+uniform sampler2D u_bg; uniform vec2 u_res; uniform float u_dpr;
+const float T = ${T.toFixed(3)}; const float MAXH = ${MAXH.toFixed(3)};
+float dec(vec2 t){ vec4 c = texture2D(u_h, (t + 0.5) / u_tex); return (c.r * 65280.0 + c.g * 255.0) / 65535.0 * MAXH; }
+float hAt(vec2 p){
+  vec2 q = p - 0.5; vec2 i = floor(q); vec2 f = q - i;
+  return mix(mix(dec(i), dec(i + vec2(1.0, 0.0)), f.x), mix(dec(i + vec2(0.0, 1.0)), dec(i + vec2(1.0, 1.0)), f.x), f.y);
+}
+void main(){
+  vec2 p = vec2(gl_FragCoord.x, u_hpx - gl_FragCoord.y) * u_k;
+  float h = hAt(p);
+  if (h < T * 0.55) {
+    /* soft shadow, with red light glowing through the thick jelly */
+    vec2 so = vec2(1.0, 1.8);
+    float sh = smoothstep(T * 0.8, T * 1.5, hAt(p - so)) * 0.3;
+    float ca = smoothstep(T * 1.4, T * 3.0, hAt(p - so * 0.7)) * 0.35;
+    if (sh < 0.004 && ca < 0.004) discard;
+    gl_FragColor = vec4(vec3(1.0, 0.18, 0.25) * ca * 0.7, sh * 0.85);
+    return;
+  }
+  float e = 1.4;
+  float gx = (hAt(p + vec2(e, 0.0)) - hAt(p - vec2(e, 0.0))) / (2.0 * e) * 5.6;
+  float gy = (hAt(p + vec2(0.0, e)) - hAt(p - vec2(0.0, e))) / (2.0 * e) * 5.6;
+  vec3 n = normalize(vec3(-gx, -gy, 1.0));
+  vec3 V = vec3(0.0, 0.0, 1.0);
+  vec3 L = normalize(vec3(-0.55, -0.75, 0.9));
+  vec3 HV = normalize(L + V);
+  vec3 HV2 = normalize(normalize(vec3(0.7, 0.2, 1.6)) + V);
+  float dif = max(0.0, dot(n, L));
+  float sp = pow(max(0.0, dot(n, HV)), 60.0);
+  float sp2 = pow(max(0.0, dot(n, HV2)), 10.0);
+  float aw = ${deriv ? 'max(fwidth(h) * 0.9, 0.003)' : '0.02'};
+  float edge = smoothstep(T - aw, T + aw, h);
+  float th = clamp((h - T) / 1.4, 0.0, 1.0);
+  float fres = 1.0 - n.z;
+  float shade = 0.6 + 0.5 * dif;
+  /* raspberry jam: bright red where thin, deep ruby where thick, darker at the rim */
+  vec3 jam = vec3(205.0 - 85.0 * th - 70.0 * fres, 22.0 - 12.0 * th - 8.0 * fres, 48.0 - 24.0 * th - 14.0 * fres) / 255.0 * shade;
+  vec2 suv = gl_FragCoord.xy / u_res;
+  /* strong refraction: the jelly acts like a lens over the text and background beneath it.
+     The slopes bend the view hard (most at the curved rims), and the three colours bend by
+     slightly different amounts for a faint rainbow fringe.
+     bend through a smoothed surface (wide sampling, linear in slope) so it reads as a clean lens:
+     text under the flat middle shifts and warps but stays readable; the curved rims bend it hardest */
+  float e2 = 6.0;
+  float rx = (hAt(p + vec2(e2, 0.0)) - hAt(p - vec2(e2, 0.0))) / (2.0 * e2);
+  float ry = (hAt(p + vec2(0.0, e2)) - hAt(p - vec2(0.0, e2))) / (2.0 * e2);
+  vec2 bpx = vec2(rx, -ry) * 210.0;
+  float bl = length(bpx); if (bl > 64.0) bpx *= 64.0 / bl;
+  vec2 bend = bpx * u_dpr / u_res;
+  vec3 under = vec3(
+    texture2D(u_bg, suv - bend * 1.07).r,
+    texture2D(u_bg, suv - bend).g,
+    texture2D(u_bg, suv - bend * 0.93).b);
+  /* colour like real jelly: it ABSORBS green and blue light passing through it, more where it's thicker
+     (Beer-Lambert). Works on any background: rich red over white, deep ruby over dark purple. */
+  vec3 absorb = exp(-vec3(0.22, 2.4, 2.0) * (0.55 + 1.6 * th + 0.7 * fres));
+  float lum = dot(under, vec3(0.299, 0.587, 0.114));
+  float body = (0.18 + 0.2 * th + 0.14 * fres) * mix(1.0, 0.4, smoothstep(0.35, 0.85, lum)); /* a bit more body on dark screens */
+  vec3 col = mix(under * absorb * 1.08, jam, clamp(body, 0.0, 0.55));
+  col += vec3(0.30, 0.02, 0.06) * (1.0 - th) * edge * 0.45;   /* light glowing through the thin edges */
+  float s = sp * 0.22 + sp2 * 0.02;                            /* glare toned way down: the bending does the 3-D work now */
+  col += vec3(1.0, 0.94, 0.94) * s;
+  vec3 R = reflect(-V, n);
+  vec3 env = mix(vec3(0.16, 0.06, 0.2), vec3(1.0, 0.85, 0.8), smoothstep(-0.25, 0.55, -R.y));
+  float win = smoothstep(0.08, 0.0, abs(R.x + 0.3)) * smoothstep(0.05, 0.45, -R.y);
+  col += env * (0.01 + 0.05 * fres) + vec3(1.0, 0.95, 0.92) * win * 0.05;
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0) * edge, edge);
+}`;
+    const sh = (type, src) => { const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
+      if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(x)); return x; };
+    prog = gl.createProgram();
+    gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+    gl.useProgram(prog);
+    const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    uTex = gl.getUniformLocation(prog, 'u_tex'); uK = gl.getUniformLocation(prog, 'u_k'); uH = gl.getUniformLocation(prog, 'u_hpx');
+    uRes = gl.getUniformLocation(prog, 'u_res'); uDpr = gl.getUniformLocation(prog, 'u_dpr');
+    gl.uniform1i(gl.getUniformLocation(prog, 'u_h'), 0);
+    gl.uniform1i(gl.getUniformLocation(prog, 'u_bg'), 1);
+    const tex = (unit, filter) => {
+      const t = gl.createTexture(); gl.activeTexture(unit); gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      return t;
+    };
+    bgTex = tex(gl.TEXTURE1, gl.LINEAR);
+    hTex = tex(gl.TEXTURE0, gl.NEAREST);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+  }
+  if (gl) { try { setupGL(); } catch (e) { console.warn('WebGL jelly off:', e); gl = null; } }
+
+  /* ---------------------------------------------------------------- the backdrop (what the jelly bends) */
+  function flatColor() {
+    if (o.backdropColor) return o.backdropColor;
+    /* first non-transparent background going up from the container */
+    for (let el = container; el; el = el.parentElement) {
+      const bg = getComputedStyle(el).backgroundColor;
+      if (bg && bg !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(bg)) return bg;
+    }
+    return '#ffffff';
+  }
+  function uploadBackdrop(src) {
+    if (!gl) return;
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, bgTex);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+    let ok = false;
+    if (src) {
+      try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src); ok = true; }
+      catch (e) { console.warn('jelly-trail: backdrop could not be used (cross-origin image?) — bending a flat colour instead.', e); }
+    }
+    if (!ok) {
+      const c = document.createElement('canvas'); c.width = c.height = 2;
+      const x = c.getContext('2d'); x.fillStyle = flatColor(); x.fillRect(0, 0, 2, 2);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    }
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.activeTexture(gl.TEXTURE0);
+    kick();
+  }
+  async function refreshBackdrop() {
+    if (destroyed || !gl) return;
+    const token = ++bdToken;
+    let src = null;
+    if (o.captureBackdrop) {
+      try { src = await o.captureBackdrop(); } catch (e) { console.warn('jelly-trail: captureBackdrop failed', e); }
+    }
+    if (destroyed || token !== bdToken) return;
+    lastBackdrop = src || null;
+    uploadBackdrop(lastBackdrop);
+  }
+  function scheduleBackdrop(ms = 250) { clearTimeout(bdTimer); bdTimer = setTimeout(refreshBackdrop, ms); }
+
+  /* ---------------------------------------------------------------- 2D fallback when WebGL is unavailable */
+  let fb = null, fbx = null, fbImg = null;
+  function drawFallback2D() {
+    if (!fb || fb.width !== W || fb.height !== Hh) {
+      fb = document.createElement('canvas'); fb.width = W; fb.height = Hh;
+      fbx = fb.getContext('2d'); fbImg = fbx.createImageData(W, Hh);
+    }
+    const d = fbImg.data;
+    for (let i = 0, n = W * Hh; i < n; i++) {
+      const h = H[i], j = i * 4;
+      if (h < T) { d[j + 3] = 0; continue; }
+      const th = Math.min(1, (h - T) / 1.4);
+      d[j] = 205 - 90 * th; d[j + 1] = 20 - 10 * th; d[j + 2] = 45 - 20 * th; d[j + 3] = 235;
+    }
+    fbx.putImageData(fbImg, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(fb, -CELL * 0.5, -CELL * 0.5, W * CELL, Hh * CELL);
+  }
+
+  /* ---------------------------------------------------------------- size */
+  function resize() {
+    const r = container.getBoundingClientRect();
+    vw = Math.max(1, Math.round(r.width)); vh = Math.max(1, Math.round(r.height));
+    dpr = Math.min(window.devicePixelRatio || 1, o.maxDpr);
+    canvas.width = Math.round(vw * dpr); canvas.height = Math.round(vh * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    W = Math.ceil(vw / CELL) + 2; Hh = Math.ceil(vh / CELL) + 2;
+    H = new Float32Array(W * Hh); Tmp = new Float32Array(W * Hh); rowOn = new Uint8Array(Hh);
+    if (gl) resizeGL(); else { glc.width = glc.height = 1; }
+    buildSprites();
+    kick();
+    scheduleBackdrop(150);   /* the picture under the jelly changed size too */
+  }
+
+  function resizeGL() {
+    glc.width = Math.round(vw * dpr); glc.height = Math.round(vh * dpr);
+    pack = new Uint8Array(W * Hh * 4);
+    gl.bindTexture(gl.TEXTURE_2D, hTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, W, Hh, 0, gl.RGBA, gl.UNSIGNED_BYTE, pack);
+    gl.viewport(0, 0, glc.width, glc.height);
+    gl.uniform2f(uTex, W, Hh); gl.uniform1f(uK, 1 / (dpr * CELL)); gl.uniform1f(uH, glc.height);
+    gl.uniform2f(uRes, glc.width, glc.height); gl.uniform1f(uDpr, dpr);
+    uploadBackdrop(lastBackdrop);
+    prevY0 = 1e9; prevY1 = -1;
+  }
+  function drawGL(y0, y1) {
+    const a0 = Math.max(0, Math.min(prevY0, y1 >= 0 ? y0 : 1e9)), a1 = Math.min(Hh - 1, Math.max(prevY1, y1));
+    if (a1 >= a0) {
+      for (let y = a0; y <= a1; y++) {
+        const row = y * W;
+        for (let x = 0; x < W; x++) { const q = (H[row + x] / MAXH * 65535) | 0, i4 = (row + x) * 4; pack[i4] = q >> 8; pack[i4 + 1] = q & 255; }
+      }
+      gl.bindTexture(gl.TEXTURE_2D, hTex);
+      gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, a0, W, a1 - a0 + 1, gl.RGBA, gl.UNSIGNED_BYTE, pack.subarray(a0 * W * 4, (a1 + 1) * W * 4));
+    }
+    prevY0 = y1 >= 0 ? y0 : 1e9; prevY1 = y1;
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+    if (y1 >= 0) gl.drawArrays(gl.TRIANGLES, 0, 3);
+  }
+
+  function stamp(cx, cy, r, amp) {
+    const x0 = Math.max(1, Math.floor(cx - r)), x1 = Math.min(W - 2, Math.ceil(cx + r));
+    const y0 = Math.max(1, Math.floor(cy - r)), y1 = Math.min(Hh - 2, Math.ceil(cy + r));
+    const r2 = r * r;
+    for (let y = y0; y <= y1; y++) {
+      let hit = false;
+      for (let x = x0; x <= x1; x++) {
+        const d2 = (x - cx) * (x - cx) + (y - cy) * (y - cy);
+        if (d2 >= r2) continue;
+        const f = 1 - d2 / r2, i = y * W + x, v = H[i] + amp * f * f;
+        H[i] = v > MAXH ? MAXH : v; hit = true;
+      }
+      if (hit) rowOn[y] = 1;
+    }
+  }
+
+
+  /* ================================================================
+      Donuts (sufganiyot): golden fried dough, the pale ring around the
+      middle, powdered sugar on top and a dab of jelly.
+     ================================================================ */
+  function drawDonut(c, r, seed, withShadow = true) {
+    let s = seed;
+    const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+    if (withShadow) donutShadow(c, r);
+    /* a puffy, slightly lumpy outline (fried dough is never a perfect circle) */
+    const N = 40, ph1 = rnd() * 6.28, ph2 = rnd() * 6.28, pts = [];
+    for (let i = 0; i < N; i++) {
+      const a = (i / N) * Math.PI * 2, rr = r * (1 + 0.028 * Math.sin(3 * a + ph1) + 0.016 * Math.sin(5 * a + ph2));
+      pts.push([Math.cos(a) * rr, Math.sin(a) * rr * (Math.sin(a) > 0 ? 0.9 : 0.95)]);
+    }
+    const body = () => {
+      c.beginPath();
+      const m = (i) => { const p = pts[i % N], q = pts[(i + 1) % N]; return [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2]; };
+      let st = m(N - 1); c.moveTo(st[0], st[1]);
+      for (let i = 0; i < N; i++) { const mm = m(i); c.quadraticCurveTo(pts[i][0], pts[i][1], mm[0], mm[1]); }
+      c.closePath();
+    };
+    /* fried dough, lit from the upper left */
+    body();
+    const g = c.createRadialGradient(-r * 0.32, -r * 0.42, r * 0.04, 0, 0, r * 1.06);
+    g.addColorStop(0, '#f3c074'); g.addColorStop(0.35, '#de9a45'); g.addColorStop(0.7, '#b96b2b'); g.addColorStop(1, '#7c3c12');
+    c.fillStyle = g; c.fill();
+    c.save(); body(); c.clip();
+    /* mottled crust: uneven browning */
+    for (let i = 0; i < 34; i++) {
+      const x = (rnd() * 2 - 1) * r, y = (rnd() * 2 - 1) * r, rr = r * (0.08 + rnd() * 0.2), dark = rnd() < 0.6;
+      const mg = c.createRadialGradient(x, y, 0, x, y, rr);
+      mg.addColorStop(0, dark ? `rgba(110,50,12,${0.12 + rnd() * 0.14})` : `rgba(255,214,140,${0.1 + rnd() * 0.12})`);
+      mg.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = mg; c.fillRect(x - rr, y - rr, rr * 2, rr * 2);
+    }
+    /* the pale un-fried band around the middle, where the dough floated at the oil line */
+    const band = (off) => {
+      c.beginPath();
+      for (let j = 0; j <= 24; j++) {
+        const x = -r * 1.05 + (j / 24) * r * 2.1, u = Math.max(0, 1 - (x / r) * (x / r));
+        const y = r * (0.16 + 0.22 * Math.sqrt(u)) + Math.sin(x * 0.5 + ph1) * r * 0.025 + off;
+        j ? c.lineTo(x, y) : c.moveTo(x, y);
+      }
+    };
+    c.filter = `blur(${Math.max(0.8, r * 0.045)}px)`;
+    c.lineCap = 'round';
+    band(0); c.strokeStyle = 'rgba(250,228,182,0.82)'; c.lineWidth = r * 0.15; c.stroke();
+    band(-r * 0.02); c.strokeStyle = 'rgba(255,244,214,0.55)'; c.lineWidth = r * 0.06; c.stroke();
+    c.filter = 'none';
+    /* tiny fry bubbles in the crust */
+    for (let i = 0; i < Math.round(r * 0.9); i++) {
+      const a = rnd() * Math.PI * 2, d = r * (0.45 + rnd() * 0.5), x = Math.cos(a) * d, y = Math.sin(a) * d * 0.92, br = 0.5 + rnd() * r * 0.035;
+      c.fillStyle = 'rgba(95,42,10,0.35)'; c.beginPath(); c.arc(x + 0.3, y + 0.4, br, 0, Math.PI * 2); c.fill();
+      c.fillStyle = 'rgba(255,205,130,0.35)'; c.beginPath(); c.arc(x - br * 0.3, y - br * 0.3, br * 0.5, 0, Math.PI * 2); c.fill();
+    }
+    /* darker underside and a warm rim light on the right */
+    const ao = c.createLinearGradient(0, r * 0.25, 0, r);
+    ao.addColorStop(0, 'rgba(60,24,4,0)'); ao.addColorStop(1, 'rgba(60,24,4,0.5)');
+    c.fillStyle = ao; c.fillRect(-r * 1.1, -r, r * 2.2, r * 2.1);
+    c.strokeStyle = 'rgba(255,190,120,0.3)'; c.lineWidth = r * 0.08;
+    c.beginPath(); c.ellipse(0, 0, r * 0.98, r * 0.9, 0, -0.9, 0.5); c.stroke();
+    /* a faint oily sheen */
+    const sh = c.createRadialGradient(-r * 0.45, -r * 0.1, 0, -r * 0.45, -r * 0.1, r * 0.4);
+    sh.addColorStop(0, 'rgba(255,240,210,0.22)'); sh.addColorStop(1, 'rgba(255,240,210,0)');
+    c.fillStyle = sh; c.fillRect(-r, -r, r * 2, r * 2);
+    /* powdered sugar: a dusty cap with an uneven edge, heaviest on top */
+    for (let i = 0; i < 26; i++) {
+      const a = rnd() * Math.PI * 2, d = Math.pow(rnd(), 0.8) * r * 0.62;
+      const x = Math.cos(a) * d * 1.15 - r * 0.06, y = Math.sin(a) * d * 0.62 - r * 0.32, rr = r * (0.16 + rnd() * 0.2);
+      const pg = c.createRadialGradient(x, y, 0, x, y, rr);
+      pg.addColorStop(0, `rgba(255,254,250,${0.3 + rnd() * 0.25})`); pg.addColorStop(0.7, 'rgba(255,252,246,0.12)'); pg.addColorStop(1, 'rgba(255,252,246,0)');
+      c.fillStyle = pg; c.fillRect(x - rr, y - rr, rr * 2, rr * 2);
+    }
+    const grains = Math.round(r * 14);
+    for (let i = 0; i < grains; i++) {
+      const a = rnd() * Math.PI * 2, d = Math.pow(rnd(), 0.6) * r * 0.95;
+      const x = Math.cos(a) * d * 1.02 - r * 0.05, y = Math.sin(a) * d * 0.78 - r * 0.24;
+      const big = rnd() < 0.03, gs = big ? 0.6 + rnd() * r * 0.025 : 0.25 + rnd() * Math.max(0.4, r * 0.016);
+      c.fillStyle = `rgba(255,255,255,${0.45 + rnd() * 0.55})`;
+      c.beginPath(); c.arc(x, y, gs, 0, Math.PI * 2); c.fill();
+    }
+    c.restore();
+    /* a soft dark edge so it sits on the page */
+    body(); c.strokeStyle = 'rgba(70,28,6,0.35)'; c.lineWidth = Math.max(0.6, r * 0.03); c.stroke();
+    /* the jelly dot: piped through a little hole, the sugar around it damp and pink */
+    const jx = r * 0.08, jy = -r * 0.18, jr = r * 0.2;
+    c.fillStyle = 'rgba(214,120,128,0.35)';
+    c.beginPath(); c.ellipse(jx, jy + jr * 0.1, jr * 1.45, jr * 1.2, 0.2, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(80,30,10,0.55)';
+    c.beginPath(); c.ellipse(jx + jr * 0.08, jy + jr * 0.2, jr * 1.12, jr * 0.92, 0.2, 0, Math.PI * 2); c.fill();
+    const jg = c.createRadialGradient(jx - jr * 0.35, jy - jr * 0.35, jr * 0.05, jx, jy, jr * 1.1);
+    jg.addColorStop(0, '#ff5a6c'); jg.addColorStop(0.5, '#c8102e'); jg.addColorStop(1, '#6e0414');
+    c.fillStyle = jg; c.beginPath(); c.ellipse(jx, jy, jr, jr * 0.8, 0.2, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(255,240,240,0.85)';
+    c.beginPath(); c.ellipse(jx - jr * 0.38, jy - jr * 0.3, jr * 0.26, jr * 0.14, -0.5, 0, Math.PI * 2); c.fill();
+  }
+  /* soft contact shadow (a gradient, not a blur filter, so it's cheap every frame) */
+  function donutShadow(c, r) {
+    c.save(); c.translate(r * 0.08, r * 0.86); c.scale(1, 0.26);
+    const g = c.createRadialGradient(0, 0, 0, 0, 0, r * 0.95);
+    g.addColorStop(0, 'rgba(0,0,0,0.38)'); g.addColorStop(0.6, 'rgba(0,0,0,0.2)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(0, 0, r * 0.95, 0, Math.PI * 2); c.fill(); c.restore();
+  }
+  /* each tapped donut is painted once and reused for its squish and its broken pieces */
+  const donutCache = new Map();
+  function donutSprite(r, seed) {
+    const key = r + ':' + seed;
+    let sp = donutCache.get(key);
+    if (sp) return sp;
+    const half = r * 1.2, size = Math.ceil(half * 2 * dpr);
+    const cv = document.createElement('canvas'); cv.width = cv.height = size;
+    const c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, size / 2, size / 2);
+    drawDonut(c, r, seed, false);
+    sp = { cv, half };
+    donutCache.set(key, sp);
+    if (donutCache.size > 12) donutCache.delete(donutCache.keys().next().value);
+    return sp;
+  }
+  function paintDonut(c, r, seed) { const sp = donutSprite(r, seed); c.drawImage(sp.cv, -sp.half, -sp.half, sp.half * 2, sp.half * 2); }
+
+  /* pre-rendered mini donuts (drawing powdered sugar every frame would be slow) */
+  let sprites = [];
+  function buildSprites() {
+    sprites = []; donutCache.clear();
+    for (let k = 0; k < 6; k++) {
+      const r = 11 + (k % 3) * 2.5, size = Math.ceil((r * 2 + 12) * dpr);
+      const cv = document.createElement('canvas'); cv.width = cv.height = size;
+      const c = cv.getContext('2d');
+      c.setTransform(dpr, 0, 0, dpr, size / 2, size / 2);
+      drawDonut(c, r, 1000 + k * 7919, false);
+      sprites.push({ cv, r, half: size / 2 / dpr });
+    }
+  }
+
+  /* ---------------------------------------------------------------- mini donuts rolling off the trail */
+  const minis = [];
+  function addMini(x, y, vx, vy) {
+    if (minis.length >= 36) minis.shift();
+    const sp = sprites[(Math.random() * sprites.length) | 0];
+    minis.push({ x, y, vx, vy, sp, ang: Math.random() * 6.28, t: 0, life: 2.6 + Math.random() * 0.8, leak: 0.55 + Math.random() * 0.45 });
+    kick();
+  }
+
+  /* ---------------------------------------------------------------- strokes */
+  const strokes = new Map();
+  function addPoint(s, x, y, t) {
+    /* viscous lag: the jelly trails behind the finger, then catches up */
+    s.tx = x; s.ty = y;
+    if (s.bx === undefined) { s.bx = x; s.by = y; }
+    s.bx += (x - s.bx) * 0.26; s.by += (y - s.by) * 0.26;
+    x = s.bx; y = s.by;
+    if (s.last) {
+      const dx = x - s.last.x, dy = y - s.last.y, d = Math.hypot(dx, dy);
+      if (d < 1) return;
+      const speed = d / Math.max(t - s.last.t, 1);
+      const target = Math.max(7, Math.min(18, 18 - speed * 4)) * thick;
+      s.w += (target - s.w) * 0.3;
+      const steps = Math.ceil(d / (CELL * 0.5));
+      const amp = 0.5 + 0.35 / (1 + speed);
+      for (let k = 1; k <= steps; k++) stamp((s.last.x + dx * k / steps) / CELL, (s.last.y + dy * k / steps) / CELL, s.w / 2 / CELL, amp * 0.42);
+      /* every so often a mini donut pops off the trail and rolls away */
+      s.dist += d;
+      if (donutAmt > 0 && s.dist > 85 / donutAmt) {
+        s.dist = 0;
+        const len = d || 1, ux = dx / len, uy = dy / len, side = Math.random() < 0.5 ? -1 : 1;
+        const push = Math.min(1.6, speed) * 120;
+        addMini(x, y, ux * push * 0.6 + -uy * side * (50 + Math.random() * 80), uy * push * 0.4 - 140 - Math.random() * 110);
+      }
+      /* the odd flick of jelly on fast swipes */
+      if (speed > 1.6 && Math.random() < 0.06) {
+        const a = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.8, v = 150 + Math.random() * 180;
+        addDroplet(x, y, Math.cos(a) * v, Math.sin(a) * v, 1.8 + Math.random() * 1.6);
+      }
+    }
+    s.last = { x, y, t };
+  }
+
+  const drips = [], drops = [];
+  function addDrip(x, y, r, vol) { if (drips.length < 40) drips.push({ x, y, r, vol, vy: 0, ph: Math.random() * 6 }); }
+  function addDroplet(x, y, vx, vy, r) { if (drops.length < 150) drops.push({ x, y, vx, vy, r, t: 0, land: 0.12 + Math.random() * 0.18 }); }
+
+  /* ================================================================
+      The big donut: tap → it puffs up, squishes, then pops
+     ================================================================ */
+  const bigs = [], shards = [], puffs = [], crumbs = [], rings = [];
+  const BIG_R = 29;                 /* a little smaller than before (was 36) */
+  const DROP_MS = 80, SQUISH_MS = 300, POP_MS = DROP_MS + SQUISH_MS;
+  function spawnBig(x, y) {
+    if (bigs.length > 5) return;
+    bigs.push({ x, y, t: 0, rot: (Math.random() - 0.5) * 0.4, seed: 1 + ((Math.random() * 1e6) | 0) });
+    kick();
+  }
+  const smooth = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  /* the jelly dot on top oozes as soon as the squish starts: it swells, spreads, and runs down the front in drips
+     one run of jelly: a smooth tapered rivulet that hugs the donut's curve, necks in, and hangs a heavy drop at the tip */
+  function trickle(c, x0, y0, x1, y1, bend, w0, w1, bead, pass) {
+    const n = 22, L = [], Rt = [], mid = [];
+    const P = f => { const u = 1 - f; return [u * u * x0 + 2 * u * f * (x0 + bend) + f * f * x1, u * u * y0 + 2 * u * f * (y0 + (y1 - y0) * 0.35) + f * f * y1]; };
+    for (let j = 0; j <= n; j++) {
+      const f = j / n, [x, y] = P(f), [xa, ya] = P(Math.min(1, f + 0.01)), [xb, yb] = P(Math.max(0, f - 0.01));
+      let tx = xa - xb, ty = ya - yb; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+      /* wide where it leaves the dab, a slim neck, then swelling into the drop */
+      const w = w0 * (1 - f) + w1 * f - Math.sin(f * Math.PI) * w1 * 0.25 + smooth(0.75, 1, f) * (bead - w1) * 0.6;
+      L.push([x - ty * w, y + tx * w]); Rt.push([x + ty * w, y - tx * w]); mid.push([x, y, w, -ty, tx]);
+    }
+    const outline = () => {
+      c.beginPath(); c.moveTo(L[0][0], L[0][1]);
+      for (let j = 1; j <= n; j++) c.lineTo(L[j][0], L[j][1]);
+      c.arc(x1, y1 + bead * 0.1, bead, Math.atan2(L[n][1] - y1, L[n][0] - x1), Math.atan2(Rt[n][1] - y1, Rt[n][0] - x1), false);
+      for (let j = n; j >= 0; j--) c.lineTo(Rt[j][0], Rt[j][1]);
+      c.closePath();
+    };
+    if (pass === 0) {
+      /* the sugar soaks up a little jelly: a damp pink halo, then a soft contact shadow */
+      outline(); c.save(); c.strokeStyle = 'rgba(210,110,120,0.35)'; c.lineWidth = 3; c.lineJoin = 'round'; c.stroke();
+      c.translate(0.8, 1.8); c.fillStyle = 'rgba(55,0,10,0.38)'; c.fill(); c.restore(); return;
+    }
+    /* body: lit from upper left, deep ruby on the shadow side and in the thick drop */
+    const g = c.createLinearGradient(x0 - w0 * 1.5, y0, x1 + bead, y1 + bead);
+    g.addColorStop(0, '#e2344c'); g.addColorStop(0.45, '#b70f2c'); g.addColorStop(1, '#5e0312');
+    outline(); c.fillStyle = g; c.fill();
+    /* light glowing through the thinner jelly along the lit edge */
+    c.save(); outline(); c.clip();
+    c.strokeStyle = 'rgba(255,90,110,0.55)'; c.lineWidth = 1.6; c.beginPath();
+    mid.forEach(([x, y, w, nx, ny], j) => { const px = x + nx * w * 0.62, py = y + ny * w * 0.62; j ? c.lineTo(px, py) : c.moveTo(px, py); }); c.stroke();
+    /* a long wet specular streak running down the rivulet */
+    c.strokeStyle = 'rgba(255,240,242,0.75)'; c.lineCap = 'round'; c.lineWidth = Math.max(0.8, w1 * 0.4); c.beginPath();
+    for (let j = 2; j <= n - 4; j++) { const [x, y, w, nx, ny] = mid[j]; const px = x + nx * w * 0.35, py = y + ny * w * 0.35; j > 2 ? c.lineTo(px, py) : c.moveTo(px, py); }
+    c.stroke(); c.restore();
+    /* the hanging drop catches the light */
+    c.fillStyle = 'rgba(255,240,242,0.9)'; c.beginPath(); c.ellipse(x1 - bead * 0.38, y1 - bead * 0.18, bead * 0.28, bead * 0.16, -0.7, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(255,120,135,0.5)'; c.beginPath(); c.ellipse(x1 + bead * 0.3, y1 + bead * 0.55, bead * 0.35, bead * 0.14, 0.2, 0, Math.PI * 2); c.fill();
+  }
+  function drawOoze(c, jx, jy, R, k, sx) {
+    const g = smooth(0, 0.85, k);                           /* starts right away, keeps growing until the pop */
+    const jr = R * (0.2 + 0.17 * g);
+    /* viscous: the runs creep slowly at first, then sag faster as more jelly is pushed out */
+    const run = (a, x) => Math.pow(smooth(a, 1, x), 1.4);
+    const runs = [
+      { dx: R * 0.12, len: R * (0.12 + 0.72 * run(0.04, k)), bend: R * 0.24, w: 0.5, bd: 1 },
+      { dx: -R * 0.1, len: R * (0.08 + 0.44 * run(0.32, k)), bend: -R * 0.22, w: 0.4, bd: 0.8, from: 0.32 },
+      { dx: R * 0.02, len: R * (0.05 + 0.22 * run(0.6, k)), bend: R * 0.04, w: 0.34, bd: 0.65, from: 0.6 },
+    ];
+    /* the sugar around the dab darkens where it's getting wet */
+    const ew = jr * (1 + (sx - 1.05) * 0.8), eh = jr * 0.8;
+    c.fillStyle = 'rgba(200,110,120,0.28)';
+    c.beginPath(); c.ellipse(jx, jy + eh * 0.1, ew * 1.35, eh * 1.3, 0.2, 0, Math.PI * 2); c.fill();
+    for (let pass = 0; pass < 2; pass++) for (const r of runs) {
+      if (r.from && k < r.from) continue;
+      trickle(c, jx + r.dx * 0.5, jy + eh * 0.35, jx + r.dx + r.bend * 0.35, jy + eh * 0.35 + r.len, r.bend, jr * r.w * 1.25, jr * r.w * 0.7, jr * r.bd * (0.32 + 0.2 * g), pass);
+    }
+    /* the dab itself: a wet dome welling up and spreading as it's squeezed */
+    c.fillStyle = 'rgba(80,0,12,0.38)';
+    c.beginPath(); c.ellipse(jx + jr * 0.12, jy + jr * 0.28, ew * 1.06, eh * 1.05, 0.2, 0, Math.PI * 2); c.fill();
+    const jg = c.createRadialGradient(jx - ew * 0.3, jy - eh * 0.45, jr * 0.05, jx + ew * 0.1, jy + eh * 0.1, ew * 1.15);
+    jg.addColorStop(0, '#ff6274'); jg.addColorStop(0.35, '#d41634'); jg.addColorStop(0.8, '#8c0720'); jg.addColorStop(1, '#5a0211');
+    c.fillStyle = jg; c.beginPath(); c.ellipse(jx, jy, ew, eh, 0.2, 0, Math.PI * 2); c.fill();
+    /* light coming through the lower rim of the dome, and two wet highlights on top */
+    c.strokeStyle = 'rgba(255,95,115,0.55)'; c.lineWidth = Math.max(1, jr * 0.12);
+    c.beginPath(); c.ellipse(jx, jy, ew * 0.82, eh * 0.78, 0.2, 0.35, Math.PI - 0.35); c.stroke();
+    c.fillStyle = 'rgba(255,242,244,0.92)';
+    c.beginPath(); c.ellipse(jx - ew * 0.36, jy - eh * 0.4, ew * 0.3, eh * 0.17, -0.45, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(255,242,244,0.6)';
+    c.beginPath(); c.arc(jx + ew * 0.3, jy - eh * 0.5, Math.max(0.8, jr * 0.08), 0, Math.PI * 2); c.fill();
+  }
+  /* a broken piece: a jagged wedge of donut with soft dough and jelly along the torn edge */
+  function drawShard(c, poly, seed) {
+    const trace = () => { c.beginPath(); c.moveTo(poly[0], poly[1]); for (let j = 2; j < poly.length; j += 2) c.lineTo(poly[j], poly[j + 1]); c.closePath(); };
+    c.save(); trace(); c.clip(); paintDonut(c, BIG_R, seed); c.restore();
+    c.save(); c.beginPath(); c.ellipse(0, 0, BIG_R, BIG_R * 0.94, 0, 0, Math.PI * 2); c.clip(); trace(); c.clip();
+    const n = poly.length / 2;
+    c.beginPath(); c.moveTo(poly[(n - 1) * 2], poly[(n - 1) * 2 + 1]);
+    for (let j = n - 2; j >= n - 3; j--) c.lineTo(poly[j * 2], poly[j * 2 + 1]);
+    c.lineTo(poly[0], poly[1]);
+    for (let j = 1; j <= 3; j++) c.lineTo(poly[j * 2], poly[j * 2 + 1]);
+    c.lineJoin = 'round'; c.lineCap = 'round';
+    c.strokeStyle = '#f6dfaa'; c.lineWidth = 9; c.stroke();          /* fluffy inside of the dough */
+    c.strokeStyle = '#b3122c'; c.lineWidth = 3.2; c.stroke();        /* jelly smeared on the torn edge */
+    c.strokeStyle = 'rgba(255,170,180,0.7)'; c.lineWidth = 0.9; c.stroke();
+    c.restore();
+  }
+  function pop(b) {
+    /* 4 uneven pieces fly apart */
+    const n = 4, cuts = []; let acc = Math.random() * Math.PI * 2;
+    for (let k = 0; k < n; k++) { cuts.push(acc); acc += (Math.PI * 2 / n) * (0.75 + Math.random() * 0.5); }
+    const jit = () => (Math.random() - 0.5) * 5;
+    for (let k = 0; k < n; k++) {
+      const a0 = cuts[k], a1 = k === n - 1 ? cuts[0] + Math.PI * 2 : cuts[k + 1], mid = (a0 + a1) / 2;
+      const poly = [Math.cos(mid) * 3, Math.sin(mid) * 3];
+      const RI = BIG_R * 1.17, RO = BIG_R * 1.22;
+      for (let j = 1; j <= 3; j++) { const r = (j / 3) * RI; poly.push(Math.cos(a0) * r + jit(), Math.sin(a0) * r + jit()); }
+      for (let j = 1; j < 6; j++) { const a = a0 + (a1 - a0) * j / 6; poly.push(Math.cos(a) * RO, Math.sin(a) * RO); }
+      for (let j = 3; j >= 1; j--) { const r = (j / 3) * RI; poly.push(Math.cos(a1) * r + jit(), Math.sin(a1) * r + jit()); }
+      const sp = 330 + Math.random() * 220, dir = mid + b.rot;
+      shards.push({ x: b.x, y: b.y, rot: b.rot, t: 0, poly, seed: b.seed, vx: Math.cos(dir) * sp, vy: Math.sin(dir) * sp - 170, vr: (Math.random() - 0.5) * 8, flip: 0.5 + Math.random() * 0.8 });
+    }
+    /* jelly bursts out: a big glossy splat, splatter spokes shooting outward, and blobs flying everywhere */
+    stamp(b.x / CELL, b.y / CELL, 19 * thick, 2.3);
+    for (let k = 0; k < 16; k++) { const a = Math.random() * Math.PI * 2, d = 9 + Math.random() * 13; stamp(b.x / CELL + Math.cos(a) * d, b.y / CELL + Math.sin(a) * d, 4.5 + Math.random() * 5, 1.4); }
+    const spokes = 13 + ((Math.random() * 5) | 0);
+    for (let k = 0; k < spokes; k++) {
+      const a = (k / spokes) * Math.PI * 2 + (Math.random() - 0.5) * 0.45, len = 30 + Math.random() * 48;
+      for (let j = 0; j <= len; j += 1) {
+        const f = j / len, wob = Math.sin(j * 0.45 + k) * 1.1;
+        stamp(b.x / CELL + Math.cos(a) * (12 + j) - Math.sin(a) * wob, b.y / CELL + Math.sin(a) * (12 + j) + Math.cos(a) * wob, (3.8 - 2.6 * f) * thick, 0.6 * (1 - f * 0.55));
+      }
+      stamp(b.x / CELL + Math.cos(a) * (14 + len), b.y / CELL + Math.sin(a) * (14 + len), 2.6 + Math.random() * 2, 1.3);   /* bead at the tip */
+    }
+    for (let i = 0; i < 56; i++) { const a = Math.random() * Math.PI * 2, v = 260 + Math.random() * 520; addDroplet(b.x, b.y, Math.cos(a) * v, Math.sin(a) * v - 130, 2.2 + Math.random() * 4.8); }
+    for (let i = 0; i < 6; i++) addDrip(b.x / CELL + (Math.random() - 0.5) * 26, b.y / CELL + 10 + Math.random() * 6, 2.8 + Math.random() * 1.2, 2 + Math.random() * 1.2);
+    /* a puff of powdered sugar */
+    for (let i = 0; i < 40; i++) {
+      const a = Math.random() * Math.PI * 2, v = 60 + Math.random() * 200;
+      puffs.push({ x: b.x + Math.cos(a) * 10, y: b.y + Math.sin(a) * 10, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 50, r: 8 + Math.random() * 13, t: 0, life: 0.6 + Math.random() * 0.45 });
+    }
+    /* crumbs of soft dough */
+    for (let i = 0; i < 24; i++) {
+      const a = Math.random() * Math.PI * 2, v = 200 + Math.random() * 380, size = 2 + Math.random() * 3.5, pts = [];
+      for (let k = 0; k < 7; k++) { const aa = (k / 7) * Math.PI * 2, rr = size * (0.6 + Math.random() * 0.45); pts.push(Math.cos(aa) * rr, Math.sin(aa) * rr); }
+      crumbs.push({ x: b.x, y: b.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 140, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 12, size, pts, t: 0, life: 0.7 + Math.random() * 0.3 });
+    }
+    rings.push({ x: b.x, y: b.y, t: 0, big: true });
+    rings.push({ x: b.x, y: b.y, t: -0.07 });
+    /* a little warm steam drifts up out of the splat afterwards */
+    for (let i = 0; i < 7; i++) {
+      steams.push({ x: b.x + (Math.random() - 0.5) * 46, y: b.y + (Math.random() - 0.3) * 18, t: -(0.12 + Math.random() * 0.55),
+        life: 1.5 + Math.random() * 0.8, rise: 38 + Math.random() * 26, ph: Math.random() * 6.28, sw: 5 + Math.random() * 6, r: 7 + Math.random() * 5 });
+    }
+  }
+  const steams = [];
+
+
+  /* ================================================================
+      Input (coordinates are relative to the container)
+     ================================================================ */
+  const local = (e) => { const r = container.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const ignored = (e) => o.ignoreSelector && e.target && e.target.closest && e.target.closest(o.ignoreSelector);
+  function onDown(e) {
+    if (ignored(e)) return;
+    let touches = 0; strokes.forEach(s => { if (s.down) touches++; });
+    if (touches >= 2) return;
+    const [x, y] = local(e), now = performance.now();
+    strokes.set(e.pointerId, { down: true, w: 14 * thick, last: null, dist: 0, sx: x, sy: y, st: now, moved: 0 });
+    addPoint(strokes.get(e.pointerId), x, y, now);
+    kick();
+  }
+  function onMove(e) {
+    let s = strokes.get(e.pointerId);
+    if (!s) {
+      if (e.pointerType !== 'mouse' || !o.hoverTrail || ignored(e)) return;
+      s = { down: false, w: 14 * thick, last: null, dist: 0, moved: 0 }; strokes.set(e.pointerId, s);
+    }
+    const r = container.getBoundingClientRect();
+    const list = e.getCoalescedEvents ? e.getCoalescedEvents() : [];
+    if (list.length) for (const c of list) addPoint(s, c.clientX - r.left, c.clientY - r.top, performance.now());
+    else addPoint(s, e.clientX - r.left, e.clientY - r.top, performance.now());
+    if (s.down) s.moved = Math.max(s.moved, Math.hypot(e.clientX - r.left - s.sx, e.clientY - r.top - s.sy));
+    kick();
+  }
+  function onUp(e) {
+    const s = strokes.get(e.pointerId);
+    if (!s) return;
+    if (s.down && s.sx !== undefined) { const [lx, ly] = local(e); s.moved = Math.max(s.moved, Math.hypot(lx - s.sx, ly - s.sy)); }   /* Tashbar: where the finger lifted counts too (slow Chromebook touchscreens) */
+    if (o.tapToPop && s.down && e.type === 'pointerup' && s.moved < 10 && performance.now() - s.st < 400) { const [x, y] = local(e); spawnBig(x, y); }
+    if (e.pointerType === 'mouse') { s.down = false; s.last = null; s.bx = s.tx = undefined; } else strokes.delete(e.pointerId);
+  }
+  function onLeave(e) { const s = strokes.get(e.pointerId); if (s) { s.last = null; s.bx = s.tx = undefined; } }
+  const evt = o.eventTarget || container;   /* Tashbar: the app listens on the window (the screen-sized box catches no taps) */
+  evt.addEventListener('pointerdown', onDown);
+  evt.addEventListener('pointermove', onMove);
+  evt.addEventListener('pointerup', onUp);
+  evt.addEventListener('pointercancel', onUp);
+  evt.addEventListener('pointerleave', onLeave);
+  const ro = new ResizeObserver(() => resize());
+  ro.observe(container);
+
+  /* ================================================================
+      Frame loop
+     ================================================================ */
+  let raf = 0, last = 0;
+  function kick() { if (!raf && !destroyed && W) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05); last = now;
+    let busy = false;
+    strokes.forEach(s => { if (s.tx !== undefined && s.last && Math.hypot(s.tx - s.bx, s.ty - s.by) > 1.5) { addPoint(s, s.tx, s.ty, now); busy = true; } });
+
+    /* drips: slow, thick jelly crawling down */
+    for (let i = drips.length - 1; i >= 0; i--) {
+      const d = drips[i];
+      if (d.vol <= 0) { drips.splice(i, 1); continue; }
+      busy = true;
+      d.vy = Math.min(d.vy + 4.5 * dt, 3.4 + d.r * 1.0);
+      d.y += d.vy * dt; d.x += Math.sin(now / 450 + d.ph) * 0.03;
+      const k = dt * 60;
+      stamp(d.x, d.y, d.r * 0.5, 0.05 * k);
+      stamp(d.x, d.y + d.r * 0.5, d.r * 1.2, 0.085 * k);
+      d.vol -= dt * 0.9;
+      if (d.y > Hh) d.vol = 0;
+    }
+
+    /* mini donuts: hop off the trail, fall and roll away, smearing jelly behind them */
+    for (let i = minis.length - 1; i >= 0; i--) {
+      const m = minis[i]; m.t += dt;
+      if (m.t >= m.life || m.y > vh + 40 || m.x < -40 || m.x > vw + 40) { minis.splice(i, 1); continue; }
+      busy = true;
+      m.vy += 820 * dt; m.x += m.vx * dt; m.y += m.vy * dt;
+      m.vx *= Math.exp(-0.5 * dt);
+      m.ang += (m.vx + m.vy * 0.35 * Math.sign(m.vx || 1)) / m.sp.r * dt;   /* rolls as it moves */
+      /* a red jelly streak follows the donut (thins out as the donut empties) */
+      const leak = m.leak * Math.max(0, 1 - m.t / (m.life * 0.85));
+      if (m.px === undefined) { m.px = m.x; m.py = m.y; }
+      const ddx = m.x - m.px, ddy = m.y - m.py, dl = Math.hypot(ddx, ddy);
+      if (leak > 0.05 && dl > 0) {
+        const n = Math.ceil(dl / CELL);
+        for (let k = 1; k <= n; k++) {
+          const sx = m.px + ddx * k / n, sy = m.py + ddy * k / n;
+          stamp(sx / CELL, sy / CELL, (m.sp.r * (0.32 + 0.18 * leak)) / CELL * thick, 0.32 * leak);
+        }
+      }
+      m.px = m.x; m.py = m.y;
+    }
+
+    /* thin the jelly over time */
+    const decay = Math.pow(0.5, (dt * 1000) / HALF_LIFE), thinRate = 0.2 * dt;
+    let y0 = Hh, y1 = -1;
+    for (let y = 0; y < Hh; y++) {
+      if (!rowOn[y]) continue;
+      let any = false;
+      const row = y * W;
+      for (let x = 0; x < W; x++) {
+        const i = row + x; let v = H[i];
+        if (v === 0) continue;
+        v = v * decay - thinRate; if (v < 0.02) v = 0; else any = true;
+        H[i] = v;
+      }
+      if (any) { if (y < y0) y0 = y; y1 = y; } else rowOn[y] = 0;
+    }
+
+    /* smoothing keeps it glossy; thick jelly sags very slowly (it's viscous) */
+    if (y1 >= 0) {
+      const a0 = Math.max(1, y0 - 1), a1 = Math.min(Hh - 2, y1 + 1);
+      const b0 = Math.max(1, a0 - 1), b1 = Math.min(Hh - 2, a1 + 1);
+      for (let y = b0; y <= b1; y++) { const r = y * W; for (let x = 1; x < W - 1; x++) { const i = r + x; Tmp[i] = (H[i - 1] + 2 * H[i] + H[i + 1]) * 0.25; } }
+      for (let y = a0; y <= a1; y++) { const r = y * W; for (let x = 1; x < W - 1; x++) { const i = r + x; H[i] = H[i] * 0.76 + 0.24 * (Tmp[i - W] + 2 * Tmp[i] + Tmp[i + W]) * 0.25; } rowOn[y] = 1; }
+      for (let y = b0; y <= b1; y++) { if (y < a0 || y > a1) { const r = y * W; for (let x = 0; x < W; x++) Tmp[r + x] = 0; } }
+      for (let y = a1; y >= a0; y--) {
+        const r = y * W;
+        for (let x = 1; x < W - 1; x++) { const i = r + x, ex = H[i] - 1.0; if (ex > 0) { const m = ex * 0.32 * dt; H[i] -= m; H[i + W] += m; } }
+      }
+      rowOn[Math.min(Hh - 2, a1 + 1)] = 1;
+      y0 = a0; y1 = Math.min(Hh - 2, a1 + 1);
+    }
+
+    ctx.clearRect(0, 0, vw, vh);
+    if (gl) { drawGL(y0, y1); if (y1 >= 0) busy = true; }
+    else if (y1 >= 0) { drawFallback2D(); busy = true; }
+
+    /* flying jelly blobs, which land as jelly */
+    for (let i = drops.length - 1; i >= 0; i--) {
+      const d = drops[i]; d.t += dt;
+      if (d.t >= d.land) {
+        stamp(d.x / CELL, d.y / CELL, d.r * 1.15, 1.1);
+        if (Math.random() < 0.3) addDrip(d.x / CELL, (d.y + d.r) / CELL, 1.3 + d.r * 0.25, 0.5 + Math.random() * 0.7);
+        drops.splice(i, 1); continue;
+      }
+      busy = true;
+      d.vy += 900 * dt; d.x += d.vx * dt; d.y += d.vy * dt;
+      /* fast blobs stretch along their flight path */
+      const spd = Math.hypot(d.vx, d.vy), st = 1 + Math.min(spd / 650, 1) * 0.9;
+      ctx.save(); ctx.translate(d.x, d.y); ctx.rotate(Math.atan2(d.vy, d.vx));
+      const g = ctx.createRadialGradient(-d.r * 0.2, -d.r * 0.35, 0.2, 0, 0, d.r * st);
+      g.addColorStop(0, '#ff6b7a'); g.addColorStop(0.6, '#c8102e'); g.addColorStop(1, '#6e0414');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(-d.r * (st - 1) * 0.5, 0, d.r * st, d.r / Math.sqrt(st), 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = 'rgba(255,240,240,0.9)'; ctx.beginPath(); ctx.arc(d.r * 0.2, -d.r * 0.3, d.r * 0.24, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+
+    /* mini donuts (drawn from the pre-rendered sprites) */
+    for (const m of minis) {
+      const fade = Math.min(1, (m.life - m.t) / 0.35);
+      ctx.save(); ctx.globalAlpha = fade;
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      ctx.beginPath(); ctx.ellipse(m.x + 1, m.y + m.sp.r * 0.95, m.sp.r * 0.8, m.sp.r * 0.22, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.translate(m.x, m.y); ctx.rotate(m.ang);
+      ctx.drawImage(m.sp.cv, -m.sp.half, -m.sp.half, m.sp.half * 2, m.sp.half * 2);
+      ctx.restore();
+    }
+
+    /* splash ring */
+    for (let i = rings.length - 1; i >= 0; i--) {
+      const r = rings[i]; r.t += dt; busy = true;
+      if (r.t < 0) continue;
+      const k = r.t / (r.big ? 0.38 : 0.3);
+      if (k >= 1) { rings.splice(i, 1); continue; }
+      const rr = r.big ? 26 + 140 * (1 - Math.pow(1 - k, 3)) : 18 + 80 * (1 - Math.pow(1 - k, 3));
+      /* a quick bright flash, then a shock ring */
+      if (r.big && k < 0.35) { const fa = 0.7 * (1 - k / 0.35), fg = ctx.createRadialGradient(r.x, r.y, 0, r.x, r.y, 100);
+        fg.addColorStop(0, `rgba(255,240,230,${fa})`); fg.addColorStop(0.45, `rgba(255,150,165,${fa * 0.45})`); fg.addColorStop(1, 'rgba(255,200,210,0)');
+        ctx.fillStyle = fg; ctx.beginPath(); ctx.arc(r.x, r.y, 100, 0, Math.PI * 2); ctx.fill(); }
+      ctx.strokeStyle = `rgba(255,140,160,${(r.big ? 0.55 : 0.35) * (1 - k)})`; ctx.lineWidth = (r.big ? 6 : 3) * (1 - k) + 0.5;
+      ctx.beginPath(); ctx.arc(r.x, r.y, rr, 0, Math.PI * 2); ctx.stroke();
+    }
+
+    /* big donuts: pop in, swell with jelly, then burst */
+    for (let i = bigs.length - 1; i >= 0; i--) {
+      const b = bigs[i]; b.t += dt * 1000;
+      if (b.t >= POP_MS) { bigs.splice(i, 1); pop(b); continue; }
+      busy = true;
+      let sx, sy, k = 0;
+      if (b.t < DROP_MS) { const d = b.t / DROP_MS; sx = sy = 0.45 + 0.6 * (1 - Math.pow(1 - d, 3)); }     /* drops in */
+      else {
+        /* squish: it flattens and spreads (bottom stays planted), trembling harder right before it bursts */
+        k = (b.t - DROP_MS) / SQUISH_MS;
+        const q = smooth(0, 0.8, k) * 0.8 + smooth(0.8, 1, k) * 0.35;
+        const wob = Math.sin(k * 34) * 0.04 * k;
+        sx = 1.05 + 0.34 * q + wob; sy = 1.05 - 0.38 * q - wob;
+      }
+      ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.rot);
+      ctx.translate(0, BIG_R * 0.94 * (1.05 - sy) * (b.t < DROP_MS ? 0 : 1));
+      ctx.save(); ctx.scale(sx, sy); donutShadow(ctx, BIG_R); paintDonut(ctx, BIG_R, b.seed); ctx.restore();
+      if (b.t >= DROP_MS) drawOoze(ctx, BIG_R * 0.08 * sx, -BIG_R * 0.18 * sy, BIG_R, k, sx);
+      ctx.restore();
+    }
+
+    /* broken pieces fly, tumble and fade */
+    for (let i = shards.length - 1; i >= 0; i--) {
+      const h = shards[i]; h.t += dt * 1000;
+      if (h.t >= 520) { shards.splice(i, 1); continue; }
+      busy = true;
+      h.vy += 1600 * dt; h.x += h.vx * dt; h.y += h.vy * dt; h.rot += h.vr * 1.4 * dt;
+      ctx.save(); ctx.globalAlpha = 1 - Math.pow(h.t / 520, 2);
+      ctx.translate(h.x, h.y); ctx.rotate(h.rot); ctx.scale(0.9, 0.9);
+      ctx.scale(Math.max(0.15, Math.abs(Math.cos(h.t * 0.009 * h.flip))), 1);
+      drawShard(ctx, h.poly, h.seed);
+      ctx.restore();
+    }
+
+    /* dough crumbs */
+    for (let i = crumbs.length - 1; i >= 0; i--) {
+      const ch = crumbs[i]; ch.t += dt;
+      if (ch.t >= ch.life) { crumbs.splice(i, 1); continue; }
+      busy = true;
+      ch.vy += 1300 * dt; ch.x += ch.vx * dt; ch.y += ch.vy * dt; ch.rot += ch.vr * dt;
+      const k = ch.t / ch.life;
+      ctx.save(); ctx.globalAlpha = k < 0.6 ? 1 : 1 - (k - 0.6) / 0.4; ctx.translate(ch.x, ch.y); ctx.rotate(ch.rot);
+      ctx.beginPath(); ctx.moveTo(ch.pts[0], ch.pts[1]);
+      for (let j = 2; j < ch.pts.length; j += 2) ctx.lineTo(ch.pts[j], ch.pts[j + 1]);
+      ctx.closePath();
+      ctx.fillStyle = '#f3d79c'; ctx.fill();
+      ctx.strokeStyle = '#b8681f'; ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.restore();
+    }
+
+    /* powdered sugar puff: soft white clouds that spread and fade */
+    for (let i = puffs.length - 1; i >= 0; i--) {
+      const p = puffs[i]; p.t += dt;
+      if (p.t >= p.life) { puffs.splice(i, 1); continue; }
+      busy = true;
+      p.vx *= Math.exp(-3 * dt); p.vy = p.vy * Math.exp(-3 * dt) + 30 * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt;
+      const k = p.t / p.life, r = p.r * (1 + k * 1.6), a = 0.55 * (1 - k) * (1 - k);
+      const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+      g.addColorStop(0, `rgba(255,255,255,${a})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill();
+    }
+
+    /* steam: faint, warm wisps that curl upward out of the splat and fade */
+    for (let i = steams.length - 1; i >= 0; i--) {
+      const s = steams[i]; s.t += dt; busy = true;
+      if (s.t < 0) continue;
+      if (s.t >= s.life) { steams.splice(i, 1); continue; }
+      const k = s.t / s.life, fadeIn = smooth(0, 0.18, k), fadeOut = 1 - smooth(0.45, 1, k);
+      for (let j = 0; j < 6; j++) {
+        const tj = Math.max(0, s.t - j * 0.09);                 /* each puff trails the one above, so it reads as a curling wisp */
+        const yy = s.y - s.rise * tj - 6 * tj * tj;
+        const xx = s.x + Math.sin(tj * 3.2 + s.ph) * s.sw * (0.4 + tj) + Math.sin(tj * 7 + s.ph * 2) * 1.5;
+        const rr = s.r * (0.7 + tj * 1.3) * (1 - j * 0.08);
+        const a = 0.21 * fadeIn * fadeOut * (1 - j * 0.13);
+        const g = ctx.createRadialGradient(xx, yy, 0, xx, yy, rr);
+        g.addColorStop(0, `rgba(255,246,244,${a})`); g.addColorStop(0.6, `rgba(255,240,240,${a * 0.45})`); g.addColorStop(1, 'rgba(255,240,240,0)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(xx, yy, rr, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+
+    raf = !destroyed && (busy || drips.length) ? requestAnimationFrame(frame) : 0;
+  }
+
+  resize();
+  refreshBackdrop();
+
+  /* ---------------------------------------------------------------- public API */
+  return {
+    /** change options live, e.g. { jelly: 1.3, donuts: 0 } */
+    setOptions(next = {}) {
+      Object.assign(o, next);
+      if ('jelly' in next) thick = +next.jelly;
+      if ('donuts' in next) donutAmt = +next.donuts;
+      if ('captureBackdrop' in next || 'backdropColor' in next) refreshBackdrop();
+    },
+    /** re-take the picture of what is under the jelly (call after the content underneath changes) */
+    refreshBackdrop,
+    /** wipe all jelly, donuts and effects */
+    clear() {
+      H.fill(0); rowOn.fill(1);
+      drips.length = drops.length = minis.length = crumbs.length = bigs.length = shards.length = puffs.length = rings.length = steams.length = 0;
+      kick();
+    },
+    /** drop and burst a big donut at a point (container coordinates, css px) */
+    popAt(x, y) { spawnBig(x, y); },
+    /** remove canvases and listeners */
+    destroy() {
+      destroyed = true;
+      cancelAnimationFrame(raf); raf = 0; clearTimeout(bdTimer); ro.disconnect();
+      evt.removeEventListener('pointerdown', onDown);
+      evt.removeEventListener('pointermove', onMove);
+      evt.removeEventListener('pointerup', onUp);
+      evt.removeEventListener('pointercancel', onUp);
+      evt.removeEventListener('pointerleave', onLeave);
+      if (gl) { const ext = gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); }
+      glc.remove(); canvas.remove();
+    },
+  };
+}
+
+/* ================================================================ THE APP RULE (Tashbar) ================================================================ */
+const ID = 'hol-jelly';
+function signedIn() { try { return typeof A !== 'undefined' && A && A.st && A.view !== 'signin'; } catch (e) { return false; } }
+function wear() { try { return (A.st && A.st.store && A.st.store.wear) || {}; } catch (e) { return {}; } }
+/* on while he wears it as his trail; a tap blast he wears separately wins the tap (the store's matching-sets rule) */
+window.tlJellyOn = function () { return window.TL_JELLY_OFF !== true && signedIn() && wear().trail === ID; };
+window.tlJellyTapOn = function () { return window.tlJellyOn() && !wear().tap; };
+
+/* LIGHT BENDING (the olive oil's way, OilTrail.html): on every page of the boy's home (#gm) a half-size snapshot of the screen is taken
+   with html2canvas (our own /vendor/ copy, loaded only when needed) once he has been idle 1.5 s, and retaken when the page changes. */
+const VENDOR = '/vendor/html2canvas.min.js';
+let h2c = null, snap = null, snapSig = '', snapTimer = 0, snapping = false, lastInput = 0, gmChanges = 0, gmWatched = null, scrolls = 0;
+['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(t => addEventListener(t, () => { lastInput = performance.now(); }, { capture: true, passive: true }));
+addEventListener('scroll', () => { scrolls++; }, { capture: true, passive: true });
+const gmObs = typeof MutationObserver === 'function' ? new MutationObserver(() => { gmChanges++; }) : null;
+function onHome() { try { const gm = document.getElementById('gm'); return A.view === 'hub' && !!gm && document.body.classList.contains('gm-on') && getComputedStyle(gm).display !== 'none' && !A.overlay; } catch (e) { return false; } }
+function loadH2c() {
+  if (window.html2canvas) return Promise.resolve(window.html2canvas);
+  if (!h2c) h2c = new Promise((ok, no) => { const s = document.createElement('script'); s.src = VENDOR; s.async = true; s.onload = () => window.html2canvas ? ok(window.html2canvas) : no(new Error('no html2canvas')); s.onerror = no; document.head.appendChild(s); });
+  return h2c;
+}
+function noAnim(d) { const st = d.createElement('style'); st.textContent = '*,*::before,*::after{animation:none!important;transition:none!important}'; d.head.appendChild(st); }
+function takeSnap() {
+  if (!eng || snapping || !onHome() || window.TL_JELLY_NOBEND) return;
+  if (performance.now() - lastInput < 1500) { clearTimeout(snapTimer); snapTimer = setTimeout(takeSnap, 500); return; }
+  const gm = document.getElementById('gm'); if (!gm) return;
+  snapping = true; const sig = snapSig;
+  loadH2c().then(fn => fn(gm, { onclone: noAnim, backgroundColor: null, scale: 0.5, logging: false, useCORS: true,
+      ignoreElements: el => { if (el.tagName === 'SCRIPT' || el.tagName === 'NOSCRIPT') return true;
+        if (el.hasAttribute && (el.hasAttribute('data-jelly-layer') || el.id === 'tl-jelly' || el.id === 'hpblade')) return true;
+        if (el.tagName === 'STYLE' || el.tagName === 'LINK') return false;
+        if (!document.body.contains(el) || el === document.body) return false;
+        return !(el === gm || el.contains(gm) || gm.contains(el)); } }))
+    .then(c => { snapping = false; if (eng && onHome() && sig === snapSig) { snap = c; eng.refreshBackdrop(); } })
+    .catch(e => { snapping = false; window.TL_JELLY_NOBEND = true; console.warn('JellyTrail: no light bending (snapshot helper)', e && e.message); });
+}
+function watch() {
+  if (!eng) return;
+  const gm = document.getElementById('gm'); if (gmObs && gm && gm !== gmWatched) { gmObs.disconnect(); gmObs.observe(gm, { childList: true, subtree: true }); gmWatched = gm; }
+  const home = onHome(), sig = home ? [innerWidth, innerHeight, scrolls, gmChanges].join(',') : '';
+  if (sig !== snapSig) { snapSig = sig; if (snap) { snap = null; eng.refreshBackdrop(); } if (home) { clearTimeout(snapTimer); snapTimer = setTimeout(takeSnap, 1500); } }
+}
+
+let eng = null, box = null;
+function sync() {
+  const on = window.tlJellyOn();
+  if (on && !eng) {
+    try {
+      box = document.createElement('div'); box.id = 'tl-jelly'; box.setAttribute('aria-hidden', 'true');
+      box.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483190';
+      document.body.appendChild(box);
+      eng = createJellyTrail(box, { eventTarget: window, zIndex: 1, tapToPop: window.tlJellyTapOn(), maxDpr: /CrOS/.test(navigator.userAgent) ? 1.5 : 2,
+        /* like the olive (HoS 2026-11-24): a donut on EVERY tap, buttons too; never where a boy types or draws */
+        ignoreSelector: 'input, select, textarea, [contenteditable], [data-no-jelly], [data-no-oil]',
+        captureBackdrop: () => snap });
+    } catch (e) { console.warn('JellyTrail', e); window.TL_JELLY_OFF = true; if (box) box.remove(); box = null; eng = null; return; }
+  }
+  if (!on && eng) { eng.destroy(); eng = null; if (box) box.remove(); box = null; snap = null; snapSig = ''; return; }
+  if (eng) { eng.setOptions({ tapToPop: window.tlJellyTapOn() }); watch(); }
+}
+/* anything a boy draws or plays on (every canvas, writing boxes) blocks the jelly, marked just before the engine sees the touch */
+addEventListener('pointerdown', function (e) {
+  const t = e.target; if (!t || !t.closest) return;
+  const area = t.closest('canvas, textarea, [contenteditable], [data-obk-trace]');
+  if (area && !area.hasAttribute('data-no-jelly')) area.setAttribute('data-no-jelly', '');
+}, { capture: true, passive: true });
+setInterval(sync, 500);
+
+/* THE STORE PREVIEW: the real engine in the card's little window. A fingertip swipes across, then taps (a donut drops and splats). */
+function preview(el) {
+  try {
+    const r = el.getBoundingClientRect(); if (r.width < 40) return null;
+    const tg = document.createElement('i');   /* a private target: the preview's own finger never reaches the page */
+    const e = createJellyTrail(el, { tapToPop: true, hoverTrail: false, donuts: 0.8, zIndex: 1, eventTarget: tg, backdropColor: '#1E1B4B' });
+    const x0 = 22, x1 = r.width - 40, yc = r.height / 2 - 4, amp = r.height * 0.2, dur = 1150, t0 = performance.now();
+    const fire = (type, x, y) => { try { tg.dispatchEvent(new PointerEvent(type, { pointerId: 7, pointerType: 'touch', clientX: r.left + x, clientY: r.top + y })); } catch (err) {} };
+    let started = false;
+    const step = now => { const k = Math.min(1, (now - t0) / dur), q = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, x = x0 + (x1 - x0) * q, y = yc + Math.sin(q * Math.PI * 2) * amp;
+      if (!started) { started = true; fire('pointerdown', x, y); } else fire('pointermove', x, y);
+      if (k < 1) requestAnimationFrame(step);
+      else { fire('pointercancel', x, y); setTimeout(() => e.popAt(Math.max(30, x1 - 10), yc), 150); setTimeout(() => e.destroy(), 2800); } };
+    requestAnimationFrame(step);
+    return e;
+  } catch (err) { return null; }
+}
+window.TL_JELLY = { create: createJellyTrail, sync: sync, engine: () => eng, preview: preview, bending: () => !!snap };
+})();
+</script>
