@@ -16,7 +16,7 @@
 | 3 | Look-Alike Detective | He sorts Kaf and Pei (Pei has a little tongue inside), then Pei and Fei (the dot). |
 | 4 | Sound Match | Sus and sulam (ladder) go to Samech, eitz and anan (cloud) to Ayin, parpar and pil (elephant) to Pei, and bayis to Beis. Then Fei joins Pei. |
 | 5 | Find the Mistake | "Yaakov says this is a Pei. Is he right?" A ring marks the dot place; an arrow points at a shape difference. |
-| 6 | Show what you know (mastery check) | 9 questions, including "Which letter says f?" with Pei beside Fei. Alef and Ayin are never asked side by side, since both are quiet. |
+| 6 | Show what you know (mastery check) | 9 questions, including "Which letter says f?" with Pei beside Fei. When the question is about Ayin or being quiet, Alef never stands beside it, since both are quiet. |
 | 7 | Review: Look-Alikes | Gimmel and Nun, then Tes and Mem, the spaced review of Unit 5. |
 | 8 | Bonus: letter rain | Four short rounds: Samech, Ayin, Pei, Fei. |
 
@@ -29,7 +29,7 @@
 6. **The farm background and the six word pictures** (horse, ladder, tree, cloud, butterfly, elephant) are the painted pictures from Rabbi Khaver.
 7. **Kaf and Pei, in the same words in every game:** "Pei has a little tongue inside. Kaf has no little tongue." The arrow points at the same spot on both, left of Kaf's dot, so it never points at a dot.
 8. **Sound Match ends with Fei** standing above Pei: "This is Fei. Pei without its dot. Fei says f."
-9. **The Kaf/Pei arrow points up at the left side, where Pei's tongue starts and Kaf is open,** well away from Kaf's dot. If a boy mixes up Kaf and Pei in the mastery check, he hears about the little tongue.
+9. **For Kaf and Pei, the arrow points only at Pei's little tongue.** Kaf's dot sits where Pei's tongue is, so an arrow on Kaf would point at its dot; the words say "Kaf has no little tongue" instead. If a boy mixes up Kaf and Pei in the mastery check, he hears about the little tongue.
 10. **Each Sound Match picture sits on a cream card,** so a tree or a cloud never melts into the painting.
 
 ## For the rebbe (every sound and rule used in Unit 6)

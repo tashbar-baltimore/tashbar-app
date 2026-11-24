@@ -44,7 +44,7 @@ export default function setup(E, { unit }) {
   const glow = E.glowSprite('#fff4b0', 7, 0); glow.position.set(0, 0, -.6); holder.add(glow);
   E.onLayout(p => {
     H = p ? 2.7 : 3.2;
-    if (p) { E.camBase.set(0, 2.4, 10.5); E.camTarget.set(0, 2.1, 0); holder.position.set(0, 2.5, .8); boy.position.set(-1.6, 0, 2.2); boy.scale.setScalar(.75); }
+    if (p) { E.camBase.set(0, 2.4, 10.5); E.camTarget.set(0, 2.1, 0); holder.position.set(0, 2.5, .8); boy.position.set(-1.3, 0, 2.2); boy.scale.setScalar(.75); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); holder.position.set(0, 1.95, .8); boy.position.set(-3.6, 0, 1.4); boy.scale.setScalar(1); }
     done.forEach(l => layoutDone(l, ROW.indexOf(l.userData.key)));
   });
