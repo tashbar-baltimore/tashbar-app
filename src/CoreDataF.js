@@ -9,5 +9,8 @@ CORE_SKILLS.F = [
   ["READ.PHON.L03.06", "Silent E in Long Words", "Read long words that have a silent e part", { after: "READ.PHON.L03.05", std: "RF.2.3c", file: "CoreDataF1", min: 7 }],
   ["READ.LV.L03.03", "Saw, Haul, Ball", "Read and spell the aw sound: aw, au and al", { after: "READ.LV.L03.02", std: "RF.2.3b", file: "CoreDataF1", min: 7 }],
   ["READ.LV.L03.04", "Blue Moon Team", "Read ew, ue and ui, which say oo", { after: "READ.LV.L03.03", std: "RF.2.3b", file: "CoreDataF1", min: 7 }],
-  ["READ.LV.L03.05", "Teams in Long Words", "Read two-part words with vowel teams, keeping each team together", { after: "READ.PHON.L03.06", std: "RF.2.3c", file: "CoreDataF1", min: 7 }]
+  ["READ.LV.L03.05", "Teams in Long Words", "Read two-part words with vowel teams, keeping each team together", { after: "READ.PHON.L03.06", std: "RF.2.3c", file: "CoreDataF1", min: 7 }],
+  ["READ.LV.L03.06", "Chair, Share, Bear", "Read air, are and ear, which say air", { after: "READ.LV.L03.05", std: "RF.2.3b", file: "CoreDataF1", min: 7 }],
+  ["READ.PHON.L03.07", "Table or Puddle?", "Read words that end in consonant-le, long or short", { after: "READ.LV.L03.06", std: "RF.2.3c", file: "CoreDataF1", min: 7 }],
+  ["READ.PHON.L03.08", "Catch the Bridge", "Read and spell tch and dge after a short vowel", { after: "READ.PHON.L03.07", std: "L.2.2d", file: "CoreDataF1", min: 7 }]
 ];
