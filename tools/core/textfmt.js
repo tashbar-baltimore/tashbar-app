@@ -17,6 +17,8 @@
      Second paragraph.
      ===
      (=== on its own line starts a new page)
+     [pic: goats.webp]
+     (optional, on its own line in a page: that page's picture, a file in art/pics or a few emoji; K-1 listen-along stories)
      --- words
      colony: a big group of ants that live and work together
      queen: the one ant that lays all the eggs
@@ -54,15 +56,18 @@ function parse(src, file) {
   const head = {}; txt.slice(0, cut).split('\n').forEach(l => { const m = /^([a-z]+):\s*(.*)$/.exec(l.trim()); if (m) head[m[1]] = m[2].trim(); else if (l.trim()) problems.push('header line not understood: ' + l.trim()); });
   let body = txt.slice(cut + 5), glo = '';
   const gi = body.search(/^--- words\s*$/m); if (gi >= 0) { glo = body.slice(gi).replace(/^--- words\s*\n?/, ''); body = body.slice(0, gi); }
-  const pages = body.split(/^===\s*$/m).map(pg => pg.split(/\n\s*\n/).map(x => x.trim()).filter(Boolean).map(par => {
+  /* [pic: file.webp] or [pic: 🐐🌾] on its own line: that page's picture (K-1 listen-along stories; the Reader draws it above the words) */
+  const pics = []; let anyPic = false;
+  const pages = body.split(/^===\s*$/m).map(pg => { let pic = ''; pg = pg.replace(/^\s*\[pic:\s*([^\]\n]+?)\s*\]\s*$/m, (m0, x) => { pic = x; return ''; }); return { pic, pg }; }).map(({ pic, pg }) => ({ pic, pars: pg.split(/\n\s*\n/).map(x => x.trim()).filter(Boolean).map(par => {
     const m = /^([A-Z][A-Za-z' ]{0,24}):\s+(.+)$/s.exec(par); const who = head.kind === 'play' && m ? m[1] : '';
     const words = who ? m[2] : par; return who ? { who, s: sentences(words) } : { s: sentences(words) };
-  })).filter(pg => pg.length);
+  }) })).filter(x => x.pars.length).map(x => { pics.push(x.pic); if (x.pic) anyPic = true; return x.pars; });
   const words = {}; glo.split('\n').map(x => x.trim()).filter(Boolean).forEach(l => { const m = /^([^:]{1,40}):\s*(.+)$/.exec(l); if (m) words[m[1].trim().toLowerCase()] = m[2].trim(); else problems.push('word line not understood: ' + l); });
   const grade = head.grade === 'K' ? 0 : Number(head.grade);
   const all = pages.map(pg => pg.map(p => p.s.join(' ')).join(' ')).join(' ');
   const T = { id: head.id || '', title: head.title || '', grade, kind: head.kind || '', topic: head.topic || '', book: head.book || '', chapter: head.chapter ? Number(head.chapter) : 0,
     pic: head.pic || '', source: head.source || '', words: wordCount(all), pages, glossary: words };
+  if (anyPic) T.pics = pics;   /* one per page ('' = no picture on that page) */
   return { text: T, problems };
 }
 
@@ -85,6 +90,8 @@ function check(T, pics) {
   const low = T.pages.map(pg => pg.map(par => par.s.join(' ')).join(' ')).join(' ').toLowerCase();
   Object.keys(T.glossary).forEach(w => { if (!/^[a-z0-9’'\-]+$/.test(w)) p.push('word "' + w + '" must be one word, written as it is in the text'); else if (!new RegExp('(^|[^a-z0-9])' + w.replace(/[-’']/g, '.') + '([^a-z0-9]|$)').test(low)) p.push('word "' + w + '" is not in the text (write it exactly as it appears, for example "gasped", not "gasp")'); if (T.glossary[w].length > 120) p.push('meaning of "' + w + '" is longer than 120 letters'); });
   if (T.pic && pics && !pics.has(T.pic)) p.push('picture ' + T.pic + ' is not in art/pics');
+  (T.pics || []).forEach((x, i) => { if (!x) return; if (/\.(webp|jpg|jpeg|png|svg)$/i.test(x)) { if (pics && !pics.has(x)) p.push('page ' + (i + 1) + ': picture ' + x + ' is not in art/pics'); }
+    else if (/[A-Za-z0-9]/.test(x) || [...x].length > 12) p.push('page ' + (i + 1) + ': [pic: ...] must be a file in art/pics or a few emoji (no words in pictures)'); });
   if (Buffer.byteLength(JSON.stringify(T)) > 60 * 1024) p.push('over 60 KB: split it into chapters');
   return p;
 }

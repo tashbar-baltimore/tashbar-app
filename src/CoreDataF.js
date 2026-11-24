@@ -76,5 +76,9 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.47", "Hear It, Write It", "Hear a sentence and build it: words, capital and end mark", { after: "READ.FLU.L02.23", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.48", "Try the Vowel", "Read a new word by trying the other vowel sound", { after: "READ.PHON.L02.47", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.FLU.L02.24", "Heart Word Dash", "Read the Grade 1 heart words quickly and surely", { after: "READ.PHON.L02.48", std: "RF.1.3g", file: "CoreDataFH2", min: 5 }],
-  ["READ.FLU.L02.25", "Read It 3 Times", "Read a short story 3 times: in phrases, smoothly, with expression", { after: "READ.FLU.L02.24", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }]
+  ["READ.FLU.L02.25", "Read It 3 Times", "Read a short story 3 times: in phrases, smoothly, with expression", { after: "READ.FLU.L02.24", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }],
+  ["READ.LIT.L01.01", "Who Is in the Story?", "Listen to a story and name its characters", { after: "READ.COMP.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.02", "Where Is the Story?", "Listen to a story and tell where and when it happens", { after: "READ.LIT.L01.01", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.03", "Problem and Fix", "Listen to a story and tell its problem and how it was fixed", { after: "READ.LIT.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }]
 ];
