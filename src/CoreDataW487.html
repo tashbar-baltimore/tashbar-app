@@ -1,0 +1,455 @@
+<script>
+/* CoreDataW487.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 5 (L06), Unit 2 "Stories That Pull You In". Cast: the Glen Avenue Crew.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L06.05':{name:'Story Mountain',
+  teach:[
+    {how:'A story mountain is a plan with four parts. THE PROBLEM: what goes wrong at the start. RISING EVENTS: each one makes the problem harder, so the story climbs. THE TURNING POINT: the top of the mountain, the moment everything changes. THE END: how it works out, on the way down.', q:'Tzvi Hirsch’s story: on Erev Shabbos morning, the oven in his family’s bakery breaks, with 200 challos still to bake. Which part of the mountain is this?', o:['the problem','the turning point','the end']},
+    {how:'Ask about every event: does it make the problem HARDER? If yes, it is a rising event. The turning point is the highest moment: a choice, a discovery, or a big try that changes everything after it.', q:'Same story. “The repairman says he cannot come until Sunday.” What is it?', o:['a rising event','the turning point','the problem']},
+    {how:'Two mistakes. A FLAT STORY: there is no real problem at all, just events that go “and then, and then”. And a story that SKIPS THE CLIMB: the problem is fixed right away, so there is no mountain at all, and the reader never worries.', q:'Which plan skips the climb?', o:['The oven breaks. A neighbor fixes it in one minute. The end.','The oven breaks. No repairman can come. The dough keeps rising. Then Tzvi Hirsch has an idea.','The oven breaks. Every phone call fails. Customers start calling.']}
+  ],
+  practice:[
+    {t:'sort', q:'Dovid’s story about his model bridge. Sort each event: the problem, a rising event, or the turning point?', bins:[{id:'P',label:'⛰️ The problem'},{id:'R',label:'📈 Rising event'},{id:'T',label:'🔄 Turning point'}],
+      items:[{label:'The night before the science fair, Dovid’s bridge cracks in half.',bin:'P'},{label:'The glue he needs is all used up.',bin:'R'},{label:'His little brother bumps the table, and another piece falls off.',bin:'R'},{label:'Dovid sees that triangles hold weight.',bin:'T'}],
+      h:'The problem starts the story. A rising event makes it harder. The turning point changes everything after it.'},
+    {t:'order', q:'Put Yehuda’s story mountain in order: problem, rising event, turning point, end. Tap the sentences in order.', tiles:['Yehuda’s notebook of clues goes missing the day before the Gazette is printed.','He searches his desk, his backpack and the shul, but it is not there.','Then he remembers lending it to his little sister to draw in.','He finds it under her crayons and finishes his article just in time.'], extra:['Yehuda likes the color green.'],
+      h:'Start at the bottom: what goes wrong. Climb: what makes it harder. Top: what changes. Then down: how it works out.'},
+    {t:'spotall', q:'Problem: Avrumi is lost on a class trip. Tap every event that makes the problem HARDER (a rising event).', cells:[{label:'His phone battery dies.',ok:true},{label:'It starts to rain, and his map gets wet.',ok:true},{label:'The bus he thought was his drives away.',ok:true},{label:'He eats a snack.',ok:false},{label:'Rabbi Feldman finds him right away.',ok:false}],
+      h:'Ask about each one: does it make things worse for Avrumi?'},
+    {t:'pairs', q:'The Crew’s sukkah story. Match each event to its part of the mountain.', pairs:[['A storm knocks down the sukkah on Erev Sukkos.','The problem'],['Two walls blow away down the street.','A rising event'],['Dovid has the idea to tie the walls to the fence.','The turning point'],['They eat in a strong sukkah all Yom Tov.','The end']],
+      h:'What goes wrong? What makes it worse? What changes everything? How does it work out?'},
+    {t:'sort', q:'Sort each plan: a story mountain, a flat story, or a story that skips the climb?', bins:[{id:'M',label:'⛰️ Story mountain'},{id:'F',label:'➖ Mistake: flat story'},{id:'S',label:'⏩ Mistake: skips the climb'}],
+      items:[{label:'The siyum cake falls. The store is closed. Guests come in an hour. Tzvi Hirsch and Abba bake a new one together.',bin:'M'},{label:'We went to the park, and then we ate, and then we went home.',bin:'F'},{label:'The bike chain falls off. Abba fixes it in a second. The end.',bin:'S'},{label:'I woke up, davened, ate breakfast and went to yeshiva.',bin:'F'}],
+      h:'A flat story has no problem at all. Skipping the climb means there is a problem, but it is fixed at once.'},
+    {t:'spotall', q:'Problem: Binyamin keeps losing to the same older boy at chess club. Tap every event that could be the TURNING POINT.', cells:[{label:'Zeidy shows him a trap the older boy always falls for.',ok:true},{label:'Binyamin decides to study the older boy’s games, move by move.',ok:true},{label:'Binyamin loses again.',ok:false},{label:'The club meets on Tuesdays.',ok:false}],
+      h:'A turning point is a choice or a discovery that changes everything after it.'},
+    {t:'write', q:'Your turn to write. Plan a story mountain about a time something went wrong before Shabbos. Write one sentence for each part: the problem, two rising events, the turning point, and the end.', min:0, checks:['⛰️ My problem is a real problem.','📈 Each rising event makes it harder.','🔄 My turning point is where everything changes.'], h:'Think of an Erev Shabbos when your family was rushing. What went wrong? What made it worse?'}
+  ],
+  check:[
+    {q:'Story: the Crew’s shalach manos baskets are ready on Purim morning, but snow closes the roads. Then the delivery van gets stuck. Then Avrumi has the idea to pull the baskets on sleds. Every basket arrives before the seudah. What is “Avrumi has the idea to pull the baskets on sleds”?', o:['the turning point','a rising event','the problem','the end'], h:'Is it what goes wrong, what makes it worse, what changes everything, or how it works out?'},
+    {q:'Plan: “Dovid’s robot will not turn on before the science fair. He changes the battery, and it works. The end.” What mistake does this plan make?', o:['skips the climb','a flat story','a story mountain'], h:'Is there a problem? Does anything make it harder before it is fixed?'},
+    {t:'order', q:'Put this story mountain in order: problem, rising event, turning point, end. Tap the sentences in order.', tiles:['The Crew’s weather balloon floats away the morning of the science fair.','The store has no more balloons, and the fair starts at noon.','Dovid remembers the box of party balloons in his basement.','They tie three together and launch it again just in time.'], extra:['Balloons come in many colors.'], h:'What goes wrong? What makes it harder? What changes? How does it end?'}
+  ],
+  re:[
+    {how:'A new way: a story mountain is like a real hike. Each step up is harder, the top is the turning point, and then it is downhill to the end.', q:'On a story mountain, where is the turning point?', o:['at the top','at the bottom','before the problem']},
+    {how:'A simpler step: ask one question about each event. Does it make the problem HARDER? If yes, it is a rising event.', q:'Problem: the Crew is late for the bus. “Dovid cannot find his other shoe.” What is it?', o:['a rising event','the end','the turning point']},
+    {how:'The skill underneath: Three-Part Piece (Level 6). A story has a beginning, a middle and an end too. The rising events fill the middle.', q:'Where do the rising events go?', o:['in the middle','at the very end','before the problem']}
+  ]},
+
+  'WRIT.PARA.L06.04':{name:'Dialogue + Action',
+  teach:[
+    {how:'DIALOGUE is what a character says, inside quotation marks. ACTION is what he does: his hands, his feet, his face. Strong stories mix them, so the reader hears AND sees the scene.', q:'“I’ll hold the ladder,” Tzvi Hirsch said, planting his feet on the bottom rung. Which part is the action?', o:['planting his feet on the bottom rung','“I’ll hold the ladder,”','Tzvi Hirsch said']},
+    {how:'The mistake is TALKING HEADS: line after line of talk, and no one moves, so the reader cannot see anyone. The fix: add an action that shows how the character feels.', q:'Which line mixes dialogue and action?', o:['“We lost,” Binyamin said, slowly putting the pieces back in the box.','“We lost,” Binyamin said.','Binyamin said that they lost.']},
+    {how:'Punctuate it right. The spoken words go inside quotation marks. If “he said” comes next, put a comma inside the quotation mark, not a period inside the quotation mark. A question mark goes inside too: “Is it ready?” Avrumi asked. An exclamation mark goes inside too: “Wait!” Dovid called. A new speaker starts a new line.', q:'Which line is punctuated correctly?', o:['“Pass the glue,” Dovid said.','“Pass the glue.” Dovid said.','“Pass the glue” Dovid said.']}
+  ],
+  practice:[
+    {t:'sort', q:'The Crew starts a race on Glen Avenue. Sort each part: dialogue or action?', bins:[{id:'D',label:'💬 Dialogue'},{id:'A',label:'🏃 Action'}],
+      items:[{label:'“It’s my turn to start!”',bin:'D'},{label:'Avrumi pushed up his glasses',bin:'A'},{label:'“Ready, set, go!”',bin:'D'},{label:'Yehuda tucked his notebook in his pocket',bin:'A'}],
+      h:'Dialogue is the words someone says, in quotation marks. Action is what someone does.'},
+    {t:'spotall', q:'Tap every line that mixes dialogue AND action.', cells:[{label:'“Got it!” Dovid yelled, catching the ball.',ok:true},{label:'Tzvi Hirsch wiped flour off his hands. “Who wants a hot roll?”',ok:true},{label:'“Hi,” he said.',ok:false},{label:'“Let’s go,” said Yehuda.',ok:false},{label:'Binyamin moved his knight.',ok:false}],
+      h:'Look for BOTH: words in quotation marks, and something the character does.'},
+    {t:'pairs', q:'Each line is talking heads. Match it to the action that shows how he feels.', pairs:[['“I’m not scared,” Tzvi Hirsch said,','gripping the rail until his knuckles turned white.'],['“We won!” Dovid shouted,','jumping off the stage.'],['“I’m sorry,” Binyamin said,','looking down at his shoes.']],
+      h:'Read the words. How does he feel? Which action shows that feeling?'},
+    {t:'sort', q:'Sort each line: punctuated correctly, or a mistake?', bins:[{id:'C',label:'✅ Punctuated correctly'},{id:'M',label:'❌ Mistake'}],
+      items:[{label:'“Pass the challah,” Abba said.',bin:'C'},{label:'“Pass the challah” Abba said.',bin:'M'},{label:'“Is it ready?” Avrumi asked.',bin:'C'},{label:'“Pass the salt.” Yehuda said.',bin:'M'},{label:'“Ready?” Dovid asked. “Ready!” Avrumi said.',bin:'M'}],
+      h:'Before “Abba said”, the spoken words end with a comma, a question mark or an exclamation mark, inside the quotation mark. A new speaker starts a new line.'},
+    {t:'order', q:'Build a line with dialogue and action. Tap the parts in order.', tiles:['“Watch this,”','Dovid said,','flipping the switch.'], extra:['“Watch this.”'],
+      h:'Spoken words first, with a comma inside. Then who said it. Then what he did.'},
+    {t:'spotall', q:'“I can’t find it anywhere,” Yehuda said. Tap every action that shows he is worried.', cells:[{label:'flipping his notebook pages faster and faster',ok:true},{label:'biting his lip',ok:true},{label:'smiling and stretching',ok:false},{label:'yawning',ok:false}],
+      h:'Which actions would a worried boy really do?'},
+    {t:'write', q:'Your turn to write. The Crew is setting up the sukkah, and the roof keeps sliding off. Write three lines of dialogue. Give each line an action too.', min:0, checks:['💬 Each line has words in quotation marks.','🏃 Each line has an action that shows a feeling.','✏️ My commas go inside the quotation marks.'], h:'Picture the boys. Who is on the ladder? Who is holding the boards? What are their faces doing?'}
+  ],
+  check:[
+    {q:'Line: “Look at this,” Avrumi whispered, spreading the map across the table. What is “spreading the map across the table”?', o:['action','dialogue','talking heads'], h:'Is it what he says, or what he does?'},
+    {q:'Line: “Close the window” Abba said. What does this line need?', o:['a comma inside the quotation mark','a period inside the quotation mark','a question mark'], h:'“Abba said” comes next. What goes at the end of the spoken words?'},
+    {t:'order', q:'Build a line with dialogue and action. Tap the parts in order.', tiles:['“Careful,”','Rabbi Feldman said,','lifting the old sefer','with both hands.'], h:'Spoken words first. Then who said it. Then what he did.'}
+  ],
+  re:[
+    {how:'A new way: dialogue is the sound, and action is the picture. A story with only dialogue is like a phone call. Add the picture.', q:'A story with only dialogue is like…', o:['a phone call','a movie','a photo']},
+    {how:'A simpler step: after each line someone says, ask, “What are his hands doing?” Write that.', q:'“Done!” Tzvi Hirsch said. Which action can you add?', o:['slapping the last box shut','said loudly','“Done!”']},
+    {how:'The skill underneath: Talking Characters (Level 5). Dialogue shows what a character thinks.', q:'Which one is dialogue?', o:['“I think we can fix it.”','He walked in.','It was raining.']}
+  ]},
+
+  'WRIT.PARA.L06.05':{name:'Slow Motion',
+  teach:[
+    {how:'Writers control TIME. SLOW DOWN the big moment: tell it second by second, with small actions, sounds and thoughts. SPEED UP the boring part: one quick sentence, then move on.', q:'Dovid’s story is about the moment his robot must climb the ramp at the science fair. Which part should he slow down?', o:['the big moment','the bus ride to the fair','eating lunch']},
+    {how:'To slow down, zoom in. Not “The robot made it,” but each tiny step: the wheels spin, one slips, Dovid holds his breath, the robot tips over the top. To speed up, sum it up: “After a long bus ride, we got to the fair.”', q:'Which sentence speeds up the boring part?', o:['After a long bus ride, we got to the fair.','The wheels spun. One slipped. Dovid held his breath.','The judge leaned closer to the ramp.']},
+    {how:'Two mistakes. RUSHING THE BIG MOMENT: the best part in one quick line. DRAGGING THE BORING PART: every step of tying your shoes. Either way, the reader gets bored or misses the best part.', q:'“Tzvi Hirsch caught the last ball, and we won.” This is the biggest moment of the story. What is wrong?', o:['rushing the big moment','dragging the boring part','nothing, it is fine']}
+  ],
+  practice:[
+    {t:'sort', q:'Dovid’s story: his robot at the science fair. Should he slow down or speed up each part?', bins:[{id:'S',label:'🐢 Slow down'},{id:'U',label:'⏩ Speed up'}],
+      items:[{label:'the robot climbing the steep ramp',bin:'S'},{label:'the bus ride to the fair',bin:'U'},{label:'the robot’s wheels gripping the ramp',bin:'S'},{label:'waiting in line for lunch',bin:'U'}],
+      h:'Slow down the part the reader is waiting for. Speed past the parts where nothing much happens.'},
+    {t:'pairs', q:'Match each rushed line to its slow-motion version.', pairs:[['He caught the ball.','The ball flew toward him. He stretched. His fingers closed around it.'],['The robot made it.','The wheels spun. One slipped. Then it tipped over the top.'],['The shofar blew.','The shul went silent. The baal tokeia lifted the shofar. A long blast filled the room.']],
+      h:'Which slow-motion version tells the SAME moment, second by second?'},
+    {t:'spotall', q:'Tap every sentence that SPEEDS UP time.', cells:[{label:'Two hours later, we got home.',ok:true},{label:'The rest of the week went by fast.',ok:true},{label:'Nothing much happened until Thursday.',ok:true},{label:'His hand shook as he reached for the door.',ok:false},{label:'One wheel slipped. Dovid held his breath.',ok:false}],
+      h:'Speeding up skips over time in one sentence. Slowing down stays on one second.'},
+    {t:'order', q:'Tzvi Hirsch’s big moment, in slow motion. Tap the sentences in order.', tiles:['Tzvi Hirsch opened the oven door.','Heat rushed onto his face.','He reached in with the big wooden paddle.','He slid out the first golden challah.'], extra:['The bakery is on the corner.'],
+      h:'Tell it second by second: what happens first, then next, then next.'},
+    {t:'sort', q:'Sort each piece of a story: slow motion, rushing, or dragging?', bins:[{id:'G',label:'🎬 Slow motion'},{id:'R',label:'💨 Mistake: rushing the big moment'},{id:'D',label:'🐌 Mistake: dragging the boring part'}],
+      items:[{label:'The shul went still. The baal tokeia raised the shofar. A long blast rang out.',bin:'G'},{label:'The last answer was right, and he won the whole contest.',bin:'R'},{label:'I put on my left sock. Then my right sock. Then my left shoe. Then my right shoe.',bin:'D'},{label:'Yehuda opened the box, and the lost key was inside.',bin:'R'}],
+      h:'Is it the big moment told slowly, the big moment rushed, or a boring part dragged out?'},
+    {t:'spotall', q:'Avrumi’s big moment: he walks up to get the siyum award. Tap every detail that SLOWS it down.', cells:[{label:'His legs felt like jelly.',ok:true},{label:'Every eye in the room followed him.',ok:true},{label:'He heard his own footsteps on the stage.',ok:true},{label:'Later we had cake.',ok:false},{label:'The next day was Sunday.',ok:false}],
+      h:'Slow-motion details stay inside that one moment: what he feels, sees and hears.'},
+    {t:'write', q:'Your turn to write. Think of a big moment: a last chess move, catching a ball, opening a gift. First speed past the trip there in ONE sentence. Then slow the big moment down in three or four short sentences.', min:0, checks:['⏩ The boring part is one quick sentence.','🐢 The big moment has three or more sentences.','👂 I used a small action, a sound or a thought.'], h:'Close your eyes and play the moment like a video, one second at a time. What do you see, hear and think?'}
+  ],
+  check:[
+    {q:'Binyamin’s story has three parts: the walk to the chess club, the setup at the table, and the last move of the final game. What should he do with the walk and the setup at the table?', o:['speed up','slow down','nothing, it is fine'], h:'Which part is the reader waiting for? What about the other two?'},
+    {q:'Story: the Crew drives to the lake. Avrumi writes ten sentences about the car ride: the seat belts, the snacks, every red light. What is the mistake?', o:['dragging the boring part','rushing the big moment','nothing, it is fine'], h:'Is the car ride the big moment, or a boring part?'},
+    {t:'order', q:'Binyamin’s last chess move, in slow motion. Tap the sentences in order.', tiles:['Binyamin picked up his queen.','He slid it slowly across the board.','He set it down on the last square.','Zeidy smiled and tipped over his king.'], h:'Tell it second by second: pick it up, move it, put it down, then what happens.'}
+  ],
+  re:[
+    {how:'A new way: think of a replay of the best moment in a ball game. They show it in slow motion, but they never replay the walk to the field.', q:'In a replay, which part goes in slow motion?', o:['the big moment','the walk to the field','the drive home']},
+    {how:'A simpler step: find the ONE most exciting second. Give it three sentences. Give everything else one.', q:'How many sentences for a boring part?', o:['one','three','ten']},
+    {how:'The skill underneath: Hook the Reader (Level 6). A scene hook shows one moment. Slow motion stretches that moment out.', q:'“The quill scratched slowly across the parchment.” What kind of hook is it?', o:['a scene hook','a fact hook','a question hook']}
+  ]},
+
+  'WRIT.PARA.L06.06':{name:'Time Jumps',
+  teach:[
+    {how:'Stories jump through time. A TIME-JUMP PHRASE is a few words that move the clock: “That evening,” “The next morning,” “Three days later,”. When it starts the sentence, put a comma after it.', q:'Which is a time-jump phrase?', o:['The next morning,','and then','he ran']},
+    {how:'A TIME-JUMP CLAUSE moves the clock too, but it has its own who-or-what AND a doing word inside it: “After we left the shul,” “By the time we got home,” “As soon as Shabbos ended,”. And “Meanwhile,” jumps to another place at the same time.', q:'Which is a time-jump clause?', o:['By the time we got home,','That evening,','Three days later,']},
+    {how:'The mistake is AND THEN, AND THEN: “and then” is not a time jump, because every event starts the same way, so the reader cannot tell if a minute or a week went by. Another mistake is jumping with no time words at all, so the reader gets lost.', q:'Which sentence tells the reader how much time passed?', o:['Two days later, the package came.','And then the package came.','The package came.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each time jump: a time-jump phrase, or a time-jump clause (it has a who-or-what and a doing word)?', bins:[{id:'P',label:'🕐 Time-jump phrase'},{id:'C',label:'🕰️ Time-jump clause'}],
+      items:[{label:'Later that night,',bin:'P'},{label:'When Zeidy came home,',bin:'C'},{label:'The week after Pesach,',bin:'P'},{label:'Once the snow stopped,',bin:'C'},{label:'By the time the soup was hot,',bin:'C'},{label:'Early Friday morning,',bin:'P'}],
+      h:'Look for a who-or-what and a doing word, like “Zeidy came”. If it has both, it is a clause.'},
+    {t:'pairs', q:'Match each amount of time to the time jump that fits it.', pairs:[['a few minutes','Moments later,'],['one night','The next morning,'],['a whole year','By the next Sukkos,']],
+      h:'How much time goes by? Which words say that much time?'},
+    {t:'spotall', q:'Tzvi Hirsch’s story. Tap every time jump.', cells:[{label:'That Friday,',ok:true},{label:'As the sun set,',ok:true},{label:'Meanwhile,',ok:true},{label:'the bakery',ok:false},{label:'very hot',ok:false}],
+      h:'A time jump tells WHEN, or moves to another place at the same time.'},
+    {t:'order', q:'Put Binyamin’s week in order. Tap the sentences in order.', tiles:['On Sunday, Binyamin signed up for the chess tournament.','Every night that week, he practiced with Zeidy.','By the time Thursday came, he knew every trap.','On Friday morning, he walked into the tournament hall.'], extra:['Chess has 32 pieces.'],
+      h:'Follow the time jumps: Sunday, then that week, then Thursday, then Friday.'},
+    {t:'sort', q:'Sort each one: a clear time jump, or the “and then” mistake?', bins:[{id:'C',label:'⏳ Clear time jump'},{id:'M',label:'❌ Mistake: and then, and then'}],
+      items:[{label:'And then we ate. And then we played.',bin:'M'},{label:'After supper, we played a board game.',bin:'C'},{label:'And then it was Shabbos.',bin:'M'},{label:'Two hours later, the guests arrived.',bin:'C'}],
+      h:'Does it tell the reader how much time passed, or just say “and then”?'},
+    {t:'spotall', q:'Tap every time jump that is a CLAUSE (it has a who-or-what and a doing word).', cells:[{label:'After Abba made havdalah,',ok:true},{label:'While the cholent cooked,',ok:true},{label:'Before we left for shul,',ok:true},{label:'That evening,',ok:false},{label:'Three days later,',ok:false}],
+      h:'Find the who-or-what and the doing word: “Abba made”, “the cholent cooked”.'},
+    {t:'write', q:'Your turn to write. Tell about one Erev Shabbos, from morning to candle lighting, in four sentences. Start each sentence with a different time jump. Use at least one clause.', min:0, checks:['⏳ Each sentence starts with a time jump.','🕰️ At least one is a clause (a who-or-what and a doing word).','🚫 I never wrote “and then”.'], h:'Morning, noon, afternoon, candle lighting. What happened at each time? How much time passed?'}
+  ],
+  check:[
+    {q:'Sentence: “As soon as the bell rang, the boys ran out to the yard.” What is “As soon as the bell rang,”?', o:['a time-jump clause','a time-jump phrase','not a time jump'], h:'Is there a who-or-what and a doing word inside it?'},
+    {q:'Yehuda is at home, searching for his notebook. The next sentence tells what Avrumi is doing at the same time, at the bakery. Which time jump starts it?', o:['Meanwhile,','The next morning,','Three days later,'], h:'Same time, another place. Which words say that?'},
+    {t:'order', q:'Put the chesed fair story in order. Tap the sentences in order.', tiles:['On Sunday, the Crew planned a chesed fair.','By Wednesday, they had collected forty games.','On Thursday morning, the doors opened.','By the time it ended, every game was on its way to the hospital.'], h:'Follow the time jumps: which day comes first?'}
+  ],
+  re:[
+    {how:'A new way: a time jump is a door in the story. The reader steps through it into a new time.', q:'“The next morning,” is like…', o:['a door to a new time','the end of the story','a character']},
+    {how:'A simpler step: ask how much time passed. Minutes? A night? A year? Then pick the words that say it.', q:'A whole night passed. Which time jump fits?', o:['The next morning,','Moments later,','A year later,']},
+    {how:'The skill underneath: Summary Paragraph (Level 6). A summary tells the key events in order.', q:'A summary tells the key events…', o:['in order','in any order','with your opinion']}
+  ]},
+
+  'WRIT.PARA.L06.07':{name:'Picture Words',
+  teach:[
+    {how:'A VAGUE WORD makes a blurry picture: thing, stuff, nice, good, went, got. A PICTURE WORD is exact, so the reader sees just what you mean: not “food” but “Savta’s spicy fish”, not “went” but “tiptoed”. Swap vague words for picture words.', q:'Which is a picture word?', o:['tiptoed','went','moved']},
+    {how:'Use an exact NOUN (a thing you can point to) and an exact VERB (how it is done). A weak verb plus an adverb is often ONE exact verb: “walked quietly” is “tiptoed”, “ate quickly” is “gobbled”. Each verb for moving paints its own picture: tiptoed, shuffled (slow, dragging steps), marched, sprinted. Then add a sense detail: a sound, a smell, a taste or a feel. Sense details put the reader right there. “The bread was good” becomes “The warm challah crackled when Abba tore it.”', q:'Which sentence uses picture words?', o:['The warm challah crackled when Abba tore it.','The bread was good.','The food was really nice.']},
+    {how:'The mistake is PILING ON: “a very very big nice cake.” Many vague words still make a blurry picture. One exact word beats them all: “a three-layer honey cake.” And THE WORD MUST FIT: a little sukkah for four boys is not “gigantic”; it is “cozy”.', q:'Which one is piling on?', o:['a very very big nice cake','a three-layer honey cake','a cake']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each word: vague words, or picture words?', bins:[{id:'V',label:'🌫️ Vague word'},{id:'P',label:'🖼️ Picture word'}],
+      items:[{label:'stuff',bin:'V'},{label:'crunchy',bin:'P'},{label:'nice',bin:'V'},{label:'sprinted',bin:'P'},{label:'thing',bin:'V'},{label:'esrog',bin:'P'}],
+      h:'Can you see exactly what the word means? Then it is a picture word.'},
+    {t:'pairs', q:'Match each weak verb and adverb to ONE exact verb.', pairs:[['walked quietly','tiptoed'],['ate quickly','gobbled'],['said softly','whispered'],['ran fast','sprinted']],
+      h:'Which one verb means the same thing, all by itself?'},
+    {t:'spotall', q:'Avrumi wrote: “Dovid looked carefully at the clue.” Tap every exact verb that could take the place of “looked carefully”.', cells:[{label:'studied',ok:true},{label:'examined',ok:true},{label:'inspected',ok:true},{label:'saw',ok:false},{label:'glanced',ok:false}],
+      h:'“Looked carefully” means a long, close look. “Glanced” is a quick look, so it does not fit.'},
+    {t:'order', q:'Build a sentence with picture words. Tap the parts in order.', tiles:['Tzvi Hirsch','savored','the warm','potato kugel.'], extra:['slowly ate'],
+      h:'Who? What did he do, in one exact verb? What did he eat?'},
+    {t:'sort', q:'Sort each one: exact, or the piling-on mistake?', bins:[{id:'E',label:'🎯 Exact'},{id:'M',label:'❌ Mistake: piling on'}],
+      items:[{label:'a freezing day',bin:'E'},{label:'a really really super cold day',bin:'M'},{label:'a worn leather siddur',bin:'E'},{label:'a very very old big book',bin:'M'}],
+      h:'Piling on uses many vague words. Exact uses words that paint the picture.'},
+    {t:'spotall', q:'The word must fit. Dovid’s little sukkah holds four boys. Tap every word that FITS it.', cells:[{label:'cozy',ok:true},{label:'snug',ok:true},{label:'small',ok:true},{label:'gigantic',ok:false},{label:'enormous',ok:false}],
+      h:'Picture four boys squeezed around one table. Which words match that picture?'},
+    {t:'write', q:'Your turn to write. Fix this sentence with picture words: “We went to the place and got some stuff, and it was nice.” Pick a real place, like the bakery or the esrog market.', min:0, checks:['🖼️ I swapped every vague word for a picture word.','🏃 I used one exact verb, not a verb plus “quickly” or “slowly”.','🎯 Every word fits, and I did not pile on “very”.'], h:'Circle each vague word first: went, place, got, stuff, nice. For each one ask: which one exactly? How exactly?'}
+  ],
+  check:[
+    {q:'Sentence: “Dovid walked slowly to the bimah.” Which ONE exact verb could take the place of “walked slowly”?', o:['shuffled','sprinted','walked'], h:'Which verb shows slow steps, all by itself?'},
+    {q:'Avrumi writes: “It was a really really very loud noise.” What is the mistake?', o:['piling on','a sense detail','a picture word'], h:'Count the vague words in front of “noise”.'},
+    {t:'order', q:'Build a sentence with picture words. Tap the parts in order.', tiles:['The icy wind','stung','Tzvi Hirsch’s','red cheeks.'], h:'What did it? What did it do? To whose cheeks?'}
+  ],
+  re:[
+    {how:'A new way: a vague word is a blurry photo. A picture word is the same photo in focus.', q:'The word “stuff” is like…', o:['a blurry photo','a photo in focus','a map']},
+    {how:'A simpler step: circle one vague word. Ask, “Which one exactly? How exactly?”', q:'“He ate food.” Which one exactly?', o:['a bowl of cholent','some food','a thing']},
+    {how:'The skill underneath: Who Is Reading? (Level 6). You already pick words for the reader. Now pick the exact word too.', q:'A letter to Rabbi Feldman needs…', o:['formal words','slang','baby words']}
+  ]},
+
+  'WRIT.PARA.L06.08':{name:'It Follows',
+  teach:[
+    {how:'A strong ending FOLLOWS from the events. The problem is solved by something the reader already saw: the character’s skill, a clue, or a choice he made. When it follows, the reader thinks, “Of course!”', q:'All week, Yehuda wrote every clue in his notebook. On Sunday morning, Zeidy’s old siddur is missing from the shul. Which ending follows?', o:['Yehuda checks his notebook and sees where it went.','A stranger walks in holding the siddur.','Yehuda wakes up. It was all a dream.']},
+    {how:'A strong ending also shows how the character CHANGED, or what he learned, through what he does, not through a speech.', q:'Binyamin hated losing at chess and walked away from every loss. At the end, he loses the final game. Which ending shows he changed?', o:['He shakes the winner’s hand and asks him to show him the trap.','He knocks the pieces off the table.','He wins every game forever.']},
+    {how:'Three endings that do NOT follow. IT WAS ALL A DREAM: nothing in the story mattered. A SUDDEN RESCUE: someone or something new comes from nowhere and fixes it. IT JUST STOPS: the problem is never solved.', q:'Dovid’s bridge is falling apart, and the fair starts in an hour. Suddenly a famous engineer walks in and fixes it. What is the mistake?', o:['a sudden rescue','it was all a dream','it just stops']}
+  ],
+  practice:[
+    {t:'sort', q:'Problem: Avrumi is lost in the museum on a class trip. That morning, he drew a map of every hall. Sort each ending.', bins:[{id:'F',label:'🔗 It follows'},{id:'D',label:'💤 Mistake: it was all a dream'},{id:'R',label:'🚁 Mistake: a sudden rescue'}],
+      items:[{label:'Avrumi checks his map and finds the way to the front door.',bin:'F'},{label:'He wakes up at home in bed.',bin:'D'},{label:'A helicopter lands on the roof and flies him home.',bin:'R'},{label:'He follows the halls on his map, one by one, back to the bus.',bin:'F'},{label:'It turns out the whole trip was a dream.',bin:'D'}],
+      h:'Does the ending use the map the story set up? Or is it a dream, or help from nowhere?'},
+    {t:'pairs', q:'Match each thing the story set up to the ending it leads to.', pairs:[['Binyamin studies Zeidy’s chess traps.','He sets a trap in the final game.'],['Avrumi draws maps of everything.','His map leads the Crew out of the woods.'],['Yehuda writes down every clue.','His notebook shows who took the key.']],
+      h:'Which ending uses that skill or clue?'},
+    {t:'spotall', q:'Tap every ending that does NOT follow.', cells:[{label:'Then he woke up. It was all a dream.',ok:true},{label:'Out of nowhere, a famous scientist arrived and fixed it.',ok:true},{label:'And then the story was over.',ok:true},{label:'He used the clue he found at the start.',ok:false},{label:'He tried the plan he made with Zeidy.',ok:false}],
+      h:'A dream, a rescue from nowhere, or just stopping does not follow.'},
+    {t:'order', q:'Put the story in order so the ending follows. Tap the sentences in order.', tiles:['Every night, Binyamin practiced one chess trap with Zeidy.','At the tournament, he faced the strongest player in the city.','The game was close, and Binyamin was running out of time.','He saw his chance and set Zeidy’s trap: checkmate.'], extra:['Then he woke up in bed.'],
+      h:'First the set-up. Then the problem and what makes it harder. Last, the ending that uses the set-up.'},
+    {t:'sort', q:'Tzvi Hirsch always rushed and made mistakes with the bakery orders. Sort each ending: does it show he changed?', bins:[{id:'C',label:'🌱 Shows he changed'},{id:'N',label:'🔁 Does not show it'}],
+      items:[{label:'He checks each box twice before the delivery leaves.',bin:'C'},{label:'He rushes out the door as usual.',bin:'N'},{label:'He counts the challos slowly, one by one.',bin:'C'},{label:'He forgets three boxes again.',bin:'N'}],
+      h:'Does he act in a new way at the end?'},
+    {t:'spotall', q:'Problem: the Crew’s sukkah keeps blowing down. Tap every set-up that could help solve it LATER.', cells:[{label:'Dovid’s Abba has a box of strong clamps.',ok:true},{label:'Avrumi drew a plan with extra braces.',ok:true},{label:'The sukkah walls are blue.',ok:false},{label:'Yehuda likes pickles.',ok:false}],
+      h:'A good set-up is something the boys can USE at the end.'},
+    {t:'write', q:'Your turn to write. Story: Yehuda never used to notice details. Today his little sister loses her bag on the way home from the park, and it is getting dark. Early in the story, he did notice one thing: the bag had a bright red ribbon. Write an ending that follows.', min:0, checks:['🔗 My ending uses something from earlier in the story.','🚫 No dream and no sudden rescue.','🌱 It shows how someone changed or what he learned.'], h:'What did the story already give Yehuda? How could he use it to find the bag?'}
+  ],
+  check:[
+    {q:'Story: Tzvi Hirsch is stuck on the sukkah roof in a storm. Ending: “Then he woke up in his bed.” What kind of ending is it?', o:['it was all a dream','it follows','a sudden rescue'], h:'Did the story really happen, or not?'},
+    {q:'Story: the Crew’s Chanukah play falls apart because no one remembers the lines. All week, Avrumi wrote every line on cue cards. Ending: Avrumi hands out his cue cards, and the play goes on. What kind of ending is it?', o:['it follows','a sudden rescue','it just stops'], h:'Did the story set up what solves the problem?'},
+    {t:'order', q:'Put the story in order so the ending follows. Tap the sentences in order.', tiles:['Every morning, Dovid packed a roll of strong tape, “just in case.”','On the class trip, the strap of Avrumi’s bag snapped.','Everyone’s hands were full, and the bus was leaving.','Dovid pulled out his tape and fixed the strap.'], h:'First the set-up. Then the problem and what makes it harder. Last, the ending that uses the set-up.'}
+  ],
+  re:[
+    {how:'A new way: a good ending is like the last piece of a puzzle. It fits because of the pieces already there.', q:'An ending that follows is like…', o:['the last puzzle piece','a piece from another puzzle','an empty box']},
+    {how:'A simpler step: before you write the ending, list what your character has: a skill, a clue, a friend. Use one of them.', q:'Avrumi is great at maps. He is lost. What should solve it?', o:['his own map','a helicopter','a dream']},
+    {how:'The skill underneath: Strong Finish (Level 6). A strong finish ties back to the beginning.', q:'A strong finish ties back to…', o:['the beginning','a new point','the title page']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L06.05':{hook:'Why can’t you stop reading some stories, even at bedtime?', big:'Plan a story like a mountain: the problem, rising events that make it harder, the turning point at the top, then the end.',
+    intro:['The problem: what goes wrong.','Rising events: each makes it harder.','The turning point: everything changes.','The end: how it works out.'],
+    ex:[{q:'Tzvi Hirsch: the bakery oven breaks on Erev Shabbos.',steps:['Problem: the oven breaks.','Rising: no repairman until Sunday.','Turning point: he asks the neighbors to bake.'],a:'Every family gets challah before candle lighting.'},
+        {q:'Dovid: his bridge cracks before the fair.',steps:['Rising: the glue runs out.','Turning point: triangles hold weight.'],a:'He rebuilds it with triangles.'}],
+    oops:{q:'Plan: the oven breaks.',wrong:'The oven breaks. A neighbor fixes it in one minute. The end.',right:'The oven breaks. No one can fix it. The dough keeps rising. Then Tzvi Hirsch has an idea.',why:'If the problem is fixed right away, the story skips the climb, and the reader never worries.'},
+    idea:['A story climbs like a hike: harder and harder, the top, then down.'],
+    try:{q:'“His phone battery dies.” Problem: Avrumi is lost. What is it?',o:['a rising event','the end','the turning point'],a:'a rising event',steps:['Does it make the problem harder?']}},
+  'WRIT.PARA.L06.04':{hook:'Can you hear a story AND see it at the same time?', big:'Mix dialogue (what they say) with action (what they do), and punctuate each line correctly.',
+    intro:['Dialogue: the words, in quotation marks.','Action: hands, feet, face.','Talking heads: talk with no action.','A comma goes inside the quotation mark.'],
+    ex:[{q:'The Crew puts up the sukkah roof.',steps:['Talk: “Hold it.”','Add action: gripping the ladder.'],a:'“Hold it,” Dovid said, gripping the ladder with both hands.'},
+        {q:'Binyamin loses a chess game.',steps:['Talk: “We lost.”','Add action that shows the feeling.'],a:'“We lost,” Binyamin said, slowly putting the pieces back in the box.'}],
+    oops:{q:'A line of dialogue.',wrong:'“Hold it.” Dovid said.',right:'“Hold it,” Dovid said.',why:'When “Dovid said” comes next, use a comma inside the quotation mark, not a period.'},
+    idea:['Dialogue is the sound; action is the picture.'],
+    try:{q:'Which line mixes dialogue and action?',o:['“Here,” Avrumi said, handing over the map.','“Here,” Avrumi said.','Avrumi said here.'],a:'“Here,” Avrumi said, handing over the map.',steps:['Look for words in quotation marks AND something he does.']}},
+  'WRIT.PARA.L06.05':{hook:'How do movies make the best second feel like a whole minute?', big:'Slow down the big moment, second by second. Speed up the boring part in one sentence.',
+    intro:['Find the big moment.','Slow down: small actions, sounds, thoughts.','Speed up: one quick sentence.','Never rush the big moment or drag the boring part.'],
+    ex:[{q:'Dovid’s robot at the science fair.',steps:['Speed up: After a long bus ride, we got there.','Slow down: The wheels spun. One slipped.'],a:'Dovid held his breath. The robot tipped over the top.'},
+        {q:'Avrumi walks up for the siyum award.',steps:['Slow down: what he feels, sees, hears.'],a:'His legs felt like jelly. He heard his own footsteps on the stage.'}],
+    oops:{q:'The science fair story.',wrong:'We rode the bus. We got there. We went in. We found our table. The robot made it.',right:'After a long ride, we got there. The wheels spun. One slipped. Dovid held his breath.',why:'He dragged the boring part and rushed the big moment. Flip it.'},
+    idea:['A replay shows the goal in slow motion, never the walk to the field.'],
+    try:{q:'“Two hours later, we got home.” Does it slow down or speed up?',o:['speed up','slow down'],a:'speed up',steps:['Does it skip over time, or stay on one second?']}},
+  'WRIT.PARA.L06.06':{hook:'How can one sentence skip a whole week?', big:'Move through time with time-jump phrases and clauses, so the reader always knows when it is.',
+    intro:['Phrase: “That evening,” “The next morning,”','Clause: “After we left the shul,”','Meanwhile: same time, another place.','Never “and then, and then”.'],
+    ex:[{q:'Erev Shabbos at the bakery, dawn to candle lighting.',steps:['Phrase: By noon, the shelves were empty.','Clause: As soon as the last challah sold, he swept up.'],a:'By noon, the shelves were empty. As soon as the last challah sold, Tzvi Hirsch swept up.'},
+        {q:'Jump to home at the same time.',steps:['Same time, another place.'],a:'Meanwhile, at home, the twins were napping.'}],
+    oops:{q:'Erev Shabbos at the bakery.',wrong:'And then we baked. And then we sold. And then it was Shabbos.',right:'At dawn, we baked. By noon, every challah was sold. As the sun set, Shabbos came.',why:'“And then” never says how much time passed. A time jump does.'},
+    idea:['A time jump is a door into a new time.'],
+    try:{q:'Which is a time-jump clause?',o:['When Zeidy came home,','Later that night,','Early Friday morning,'],a:'When Zeidy came home,',steps:['Find a who-or-what and a doing word.']}},
+  'WRIT.PARA.L06.07':{hook:'Why does “good food” make no one hungry?', big:'Swap vague words for picture words: an exact noun, an exact verb, and a sense detail.',
+    intro:['Vague words: thing, stuff, nice, went.','Weak verb + adverb → one exact verb: walked quietly → tiptoed.','The word must fit: a little sukkah is cozy, not gigantic.','Never pile on “very” and “really”.'],
+    ex:[{q:'“The food was good.”',steps:['Exact noun: Savta’s spicy fish.','Exact verb: sizzled.','Sense detail: the smell of cumin.'],a:'Savta’s spicy fish sizzled, and the smell of cumin filled the room.'},
+        {q:'“Avrumi walked quietly up the stairs.”',steps:['Weak verb + adverb.','One exact verb instead.'],a:'Avrumi tiptoed up the attic stairs.'}],
+    oops:{q:'Describe the Shabbos cake.',wrong:'It was a very very big nice cake.',right:'It was a three-layer honey cake.',why:'Piling on vague words does not help. One exact word paints the picture.'},
+    idea:['A vague word is a blurry photo; a picture word is in focus.'],
+    try:{q:'Which is a picture word?',o:['sprinted','went','did'],a:'sprinted',steps:['Can you see exactly how he moved?']}},
+  'WRIT.PARA.L06.08':{hook:'Have you ever read an ending and felt cheated?', big:'End with what grows out of the story: the hero uses what the story set up, and shows how he changed.',
+    intro:['It follows: it uses a skill, a clue or a choice from earlier.','Show how he changed by what he does.','Never “it was all a dream” or a sudden rescue.','Never let it just stop.'],
+    ex:[{q:'Zeidy’s old siddur is missing from the shul.',steps:['What did the story set up? Yehuda’s notebook.','Use it.'],a:'Yehuda checks his notebook and sees where it went.'},
+        {q:'Binyamin hated losing. He loses the final.',steps:['Show the change by what he does.'],a:'He shakes the winner’s hand and asks him to show him the trap.'}],
+    oops:{q:'The lost siddur mystery.',wrong:'Then Yehuda woke up. It was all a dream.',right:'Yehuda checked his notebook and found where the siddur went.',why:'A dream ending throws the whole story away. Use what the story set up.'},
+    idea:['A good ending is the last puzzle piece: it fits because of the pieces already there.'],
+    try:{q:'A famous engineer walks in from nowhere and fixes it. What is it?',o:['a sudden rescue','it follows','it was all a dream'],a:'a sudden rescue',steps:['Did the story set him up before?']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L06.05':{s:'The problem: what goes wrong at the start.\nRising events: each one makes it HARDER.\nThe turning point: the top, where everything changes.\nThe end: how it works out. Never skip the climb.'},
+  'WRIT.PARA.L06.04':{s:'Dialogue: what he says, in quotation marks.\nAction: what his hands, feet and face do.\nMix them, so the reader hears AND sees.\nBefore “he said”, a comma, ? or ! goes inside the quotation mark.'},
+  'WRIT.PARA.L06.05':{s:'Find the big moment.\nSlow it down: small actions, sounds, thoughts.\nSpeed up the boring part: one quick sentence.\nNever rush the big moment or drag the boring part.'},
+  'WRIT.PARA.L06.06':{s:'Ask: how much time passed?\nPhrase: “That evening,” “Three days later,”\nClause: a who-or-what and a doing word: “After we left,”\n“Meanwhile,” jumps to another place. Never “and then, and then”.'},
+  'WRIT.PARA.L06.07':{s:'Find the vague words: thing, stuff, nice, went.\nSwap each for a picture word: which one exactly?\nVerb + adverb? Use one exact verb: ate quickly → gobbled.\nMake sure the word fits, and do not pile on “very”.'},
+  'WRIT.PARA.L06.08':{s:'List what the story set up: a skill, a clue, a choice.\nSolve the problem with one of them.\nShow how the hero changed by what he does.\nNo dream, no sudden rescue, and never just stop.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L06.05':{ band:'E45', pic:'⛰️', today:'Plan a story that climbs to a turning point', why:'A story pulls you in when the problem keeps getting harder, then everything changes.',
+    ready:[{q:'A piece has three parts. Which one comes last?', o:['the conclusion','the introduction','the body'], a:'the conclusion'}],
+    bridge:'WRIT.ESSAY.L06.01', bridgeName:'Three-Part Piece',
+    watch:{ q:'Tzvi Hirsch’s Erev Shabbos story', m:{type:'scene', e:'🥖', t:'The Golds’ bakery oven breaks on Erev Shabbos morning, with 200 challos to bake.'}, steps:[
+      {t:'THE PROBLEM: the oven breaks on Erev Shabbos morning.'},
+      {t:'RISING: the repairman cannot come until Sunday.'},
+      {t:'RISING: the dough keeps rising, and customers keep calling.'},
+      {t:'TURNING POINT: Tzvi Hirsch asks neighbors to bake in their ovens.'},
+      {t:'THE END: every family has challah before candle lighting.'}], a:'Problem, rising events, turning point, end: the story climbs, then comes down.' },
+    oops:{ q:'Plan: the oven breaks', wrong:'The oven breaks. A neighbor fixes it in one minute. The end.', right:'The oven breaks. No one can fix it. The dough keeps rising. Then Tzvi Hirsch has an idea.', why:'If the problem is fixed right away, the story skips the climb, and the reader never worries.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can plan a story mountain: problem, rising events, turning point, end.',
+    board:{ one:'A story climbs: the problem, rising events that make it harder, the turning point, then the end.', activity:'Draw a mountain on the board; the class places event cards from a Crew story on it and argues where the top is.', mistakes:['A flat story: “and then, and then”','Fixing the problem right away (skips the climb)','Events that do not make the problem harder'] },
+    do:[
+      {type:'sort', q:'Problem: Avrumi is lost on a class trip.', bins:['Rising event','Mistake: skips the climb'], cards:[['His phone battery dies.',0],['Rabbi Feldman finds him at once.',1],['The map gets wet in the rain.',0],['He sees his bus right away.',1]], mis:true,
+        say:'Does it make the problem harder? Sort each event.', how:'A rising event makes it harder. Fixing it at once skips the climb.',
+        why:{q:'Why is "His phone battery dies" a rising event?', o:['It makes the problem harder','It solves the problem','It is the end','It changes everything after it'], a:'It makes the problem harder'}},
+      {type:'match', q:'The Crew’s sukkah story.', pairs:[['A storm knocks down the sukkah.','The problem'],['The walls blow down the street.','A rising event'],['Dovid ties the walls to the fence.','The turning point']],
+        say:'Match each event to its part of the mountain.', how:'What goes wrong? What makes it worse? What changes everything?'}],
+    your:[
+      {type:'tiles', w:['Problem','Rising event','Turning point','End'], extra:['Flat part'],
+        say:'Build the story mountain in order, bottom to top.', how:'Start with what goes wrong. Climb. Reach the top. Come down.'},
+      {type:'sort', q:'Problem: Binyamin keeps losing to the same older boy.', bins:['Rising event','Turning point'], cards:[['The tournament is moved to tomorrow.',0],['Zeidy shows him a new trap.',1],['His practice partner gets sick.',0],['Binyamin decides to study his games.',1]],
+        say:'Rising event, or turning point? Sort each one.', how:'A rising event makes it harder. A turning point changes everything after it.',
+        why:{q:'Why is "Zeidy shows him a new trap" the turning point?', o:['It changes everything after it','It makes the problem harder','It is the problem','It is the end'], a:'It changes everything after it'}},
+      {type:'match', pairs:[['We ate, then played, then slept.','A flat story'],['The chain breaks. Abba fixes it. The end.','Skips the climb'],['Lost on a trip. Phone dies. He finds his map! Back on the bus.','A story mountain']],
+        say:'Match each plan to what it is.', how:'No problem at all? Fixed at once? Or a problem that grows?'},
+      {type:'tiles', q:'Dovid’s bridge story.', w:['Bridge cracks','Glue runs out','Triangle idea','Wins a ribbon'], extra:['Eats lunch'],
+        say:'Put Dovid’s story mountain in order.', how:'The problem, then harder, then the change, then the end.'},
+      {type:'sort', bins:['Story mountain','Flat story'], cards:[['Woke up, davened, ate, went to yeshiva.',1],['Cake falls. Store closed. Guests soon. Bake a new one!',0],['Went to the park, then went home.',1],['Sukkah falls. Walls fly. Tie them up. Yom Tov saved!',0]],
+        say:'Does the plan climb? Sort each one.', how:'A story mountain has a problem that gets harder, then changes.'}] },
+
+  'WRIT.PARA.L06.04':{ band:'E45', pic:'💬', today:'Mix what characters say with what they do', why:'When characters talk AND move, the reader can hear and see the scene like a movie.',
+    ready:[{q:'Which one has dialogue?', o:['“Let’s go,” said Dovid.','Dovid went outside.','It was cold.'], a:'“Let’s go,” said Dovid.'}],
+    bridge:'WRIT.PARA.L05.03', bridgeName:'Talking Characters',
+    watch:{ q:'The Crew puts up the sukkah roof', m:{type:'scene', e:'🪜', t:'Erev Sukkos. Tzvi Hirsch is on the ladder, and Dovid holds it.'}, steps:[
+      {t:'Talking heads: “Hold it.” “I am.” “Higher.” No one moves.'},
+      {t:'Ask: what are their hands and faces doing?'},
+      {t:'“Hold it,” Dovid said, gripping the ladder with both hands.'},
+      {t:'The comma goes inside the closing quotation mark.'},
+      {t:'A new speaker starts a new line.'}], a:'“Hold it,” Dovid said, gripping the ladder with both hands.' },
+    oops:{ q:'A line of dialogue', wrong:'“Hold it.” Dovid said.', right:'“Hold it,” Dovid said.', why:'When “Dovid said” comes next, use a comma inside the quotation mark, not a period.' },
+    ways:['frum-family scene','worked example','word tiles','sort it','match it','tap the reason','Mistake Detective'], done:'You can mix dialogue with action and punctuate a line correctly.',
+    board:{ one:'Dialogue is the sound, action is the picture: mix them, comma inside the quotation mark.', activity:'Two boys act out a short Crew scene with no words, then with words; the class writes one line with both.', mistakes:['Talking heads: talk with no action','A period instead of a comma before “he said”','Two speakers on the same line'] },
+    do:[
+      {type:'tiles', q:'Avrumi sees something in the sky.', w:['“Look!”','Avrumi said,','pointing up.'], extra:['“Look.”'],
+        say:'Build a line with dialogue and action.', how:'Spoken words first. Then who said it. Then what he did.',
+        why:{q:'Why does "pointing up" make the line better?', o:['It lets the reader see him','It is what he says','It adds a comma','It ends the story'], a:'It lets the reader see him'}},
+      {type:'sort', bins:['Punctuated right','Mistake'], cards:[['“Pass the challah,” Abba said.',0],['“Pass the challah” Abba said.',1],['“Is it ready?” Avrumi asked.',0],['“Pass the salt.” Yehuda said.',1]], mis:true,
+        say:'Is each line punctuated right? Sort them.', how:'A comma, ? or ! goes inside the closing quotation mark.',
+        why:{q:'Why is “Pass the salt.” Yehuda said. a mistake?', o:['It needs a comma, not a period','It needs no quotation marks','It is too short','It has an action'], a:'It needs a comma, not a period'}}],
+    your:[
+      {type:'match', pairs:[['“Shh, the twins are sleeping,”','Tzvi Hirsch whispered, tiptoeing in.'],['“Goal!”','Dovid shouted, leaping in the air.'],['“Let me think,”','Binyamin said, staring at the board.']],
+        say:'Match each line to the action that fits it.', how:'Read the words. What would he be doing?'},
+      {type:'sort', bins:['Dialogue','Action'], cards:[['“It’s my turn!”',0],['Avrumi pushed up his glasses',1],['“Ready, set, go!”',0],['Yehuda tucked away his notebook',1]],
+        say:'Dialogue or action? Sort each part.', how:'Dialogue is what he says. Action is what he does.'},
+      {type:'tiles', q:'Dovid’s team wins the science fair.', w:['“We won!”','Dovid shouted,','jumping up.'], extra:['“We won”'],
+        say:'Build a line with dialogue and action.', how:'Spoken words with their mark inside. Who said it. What he did.'},
+      {type:'match', pairs:[['“I’m not scared,” he said,','his knuckles white on the rail.'],['“I’m sorry,” he said,','looking down at his shoes.'],['“We did it!” he said,','grinning from ear to ear.']],
+        say:'Match each line to the action that shows the feeling.', how:'How does he feel? Which action shows it?',
+        why:{q:'Why does "his knuckles white on the rail" fit "I’m not scared"?', o:['His action shows he really is scared','It says he is scared','It is dialogue','It is funny'], a:'His action shows he really is scared'}},
+      {type:'sort', bins:['Dialogue + action','Talking heads'], cards:[['“Hi,” he said.',1],['“Got it!” Dovid yelled, catching the ball.',0],['“OK,” said Yehuda.',1],['“Here,” Avrumi said, handing over the map.',0]],
+        say:'Can you see the character? Sort each line.', how:'Talking heads only talk. Look for an action too.'}] },
+
+  'WRIT.PARA.L06.05':{ band:'E45', pic:'⏱️', today:'Slow down the big moment, speed past the rest', why:'Readers want to live the best moment, not every step of the trip there.',
+    ready:[{q:'Which one is a scene hook?', o:['The bus doors hissed open.','How do buses work?','This piece is about buses.'], a:'The bus doors hissed open.'}],
+    bridge:'WRIT.ESSAY.L06.02', bridgeName:'Hook the Reader',
+    watch:{ q:'Dovid’s robot at the science fair', m:{type:'scene', e:'🤖', t:'Science fair day. Dovid’s robot must climb the steep ramp.'}, steps:[
+      {t:'Speed up the boring part: “After a long ride, we arrived.”'},
+      {t:'Find the big moment: the robot on the ramp.'},
+      {t:'Slow down: “The wheels spun. One wheel slipped.”'},
+      {t:'Add a thought: “Dovid held his breath. Not now!”'},
+      {t:'Then the robot tipped over the top.'}], a:'One quick line for the trip, many short lines for the ramp.' },
+    oops:{ q:'The science fair story', wrong:'We rode the bus. We got there. We went in. We found our table. The robot made it.', right:'After a long ride, we got there. The wheels spun. One slipped. Dovid held his breath.', why:'He dragged the boring part and rushed the big moment. Flip it.' },
+    ways:['frum-family scene','worked example','match it','sort it','word tiles','tap the reason','Mistake Detective'], done:'You can slow down the big moment and speed past the boring part.',
+    board:{ one:'Slow down the big moment, second by second. Speed up the boring part in one sentence.', activity:'A boy acts out catching a ball in slow motion while the class calls out one sentence for each second.', mistakes:['Rushing the big moment in one line','Dragging the boring part','Slowing down every part the same'] },
+    do:[
+      {type:'match', pairs:[['He caught the ball.','The ball flew. He stretched. Got it!'],['The robot made it.','Wheels spun. One slipped. Over!'],['The shofar blew.','The shul went still. A long blast.']],
+        say:'Match each rushed line to its slow-motion version.', how:'Which one tells the SAME moment, second by second?',
+        why:{q:'Why is "The ball flew. He stretched. Got it!" slow motion?', o:['It tells the moment second by second','It skips ahead in time','It is one quick sentence','It tells the boring part'], a:'It tells the moment second by second'}},
+      {type:'sort', bins:['Slow motion','Mistake: rushing'], cards:[['The ball flew. He stretched. He caught it!',0],['He caught it, and we won.',1],['The door creaked. Yehuda froze.',0],['He opened the door and found the key.',1]], mis:true,
+        say:'The big moment: slow motion, or rushing? Sort each.', how:'Slow motion zooms in. Rushing tells it all in one quick line.'}],
+    your:[
+      {type:'tiles', w:['Two hours','later,','we got home.'], extra:['Then he'],
+        say:'Build a sentence that speeds past the boring part.', how:'Say how much time passed. Then what happened.'},
+      {type:'sort', q:'Dovid’s science fair story.', bins:['Slow down','Speed up'], cards:[['the robot tipping over the top',0],['the bus ride there',1],['the wheels gripping the ramp',0],['waiting in line for lunch',1]],
+        say:'Should Dovid slow down or speed up each part?', how:'Slow down the part the reader is waiting for.'},
+      {type:'match', pairs:[['A small action','His fingers tightened on the rope.'],['A sound','Crack! The branch snapped.'],['A thought','Don’t let go, he told himself.']],
+        say:'Match each slow-motion tool to its example.', how:'Is it something he does, something he hears, or something he thinks?',
+        why:{q:'Why does "Crack! The branch snapped." slow the moment down?', o:['It zooms in on one second','It skips ahead','It sums up the day','It ends the story'], a:'It zooms in on one second'}},
+      {type:'tiles', q:'Chanukah, lighting the first candle.', w:['His hand','shook','as he lit','the menorah.'], extra:['Then we ate.'],
+        say:'Build a slow-motion sentence.', how:'Start with his hand. What did it do? When?'},
+      {type:'sort', bins:['Speeds up','Slows down'], cards:[['A week later, the cast came off.',0],['The ice cracked under his boot.',1],['By Sunday, the snow had melted.',0],['He held his breath and jumped.',1]],
+        say:'Does each sentence speed up or slow down?', how:'Skipping time speeds up. Staying on one second slows down.'}] },
+
+  'WRIT.PARA.L06.06':{ band:'E45', pic:'⏳', today:'Jump through time with phrases and clauses', why:'Time jumps tell the reader when it is, so he never gets lost in your story.',
+    ready:[{q:'A good summary tells the key events…', o:['in order','with your opinion','in any order'], a:'in order'}],
+    bridge:'WRIT.PARA.L06.01', bridgeName:'Summary Paragraph',
+    watch:{ q:'Erev Shabbos at the bakery, from dawn to candle lighting', m:{type:'scene', e:'🕯️', t:'Tzvi Hirsch writes about one busy Erev Shabbos at his family’s bakery.'}, steps:[
+      {t:'Dawn to noon is a big jump. Tell the reader.'},
+      {t:'Phrase: “By noon,” the shelves were empty.'},
+      {t:'Clause: “As soon as the last challah sold,” he swept up.'},
+      {t:'“Meanwhile,” jumps home, where the twins were napping.'},
+      {t:'Not “and then”: say how much time passed.'}], a:'By noon, the shelves were empty. As soon as the last challah sold, Tzvi Hirsch swept up.' },
+    oops:{ q:'Erev Shabbos at the bakery', wrong:'And then we baked. And then we sold. And then it was Shabbos.', right:'At dawn, we baked. By noon, every challah was sold. As the sun set, Shabbos came.', why:'“And then” never says how much time passed. A time jump does.' },
+    ways:['frum-family scene','worked example','word tiles','sort it','match it','tap the reason','Mistake Detective'], done:'You can move through time with time-jump phrases and clauses.',
+    board:{ one:'A time jump tells when: a phrase (“That evening,”) or a clause (“After we left,”).', activity:'Pairs get four event cards from one Crew week and write a time jump on the front of each one.', mistakes:['“And then, and then”','Jumping with no time words','No comma after a time jump at the start'] },
+    do:[
+      {type:'tiles', w:['As soon as','Shabbos ended,','we packed.'], extra:['and then'],
+        say:'Build a sentence that starts with a time-jump clause.', how:'Start with when. Put the comma after it. Then what happened.',
+        why:{q:'Why is "As soon as Shabbos ended," a clause?', o:['It has a who-or-what and a doing word','It has no doing word','It ends the story','It asks a question'], a:'It has a who-or-what and a doing word'}},
+      {type:'sort', bins:['Clear time jump','Mistake: and then'], cards:[['And then we ate. And then we played.',1],['After supper, we played a game.',0],['And then it was Shabbos.',1],['Two hours later, the guests came.',0]], mis:true,
+        say:'Clear time jump, or the and-then mistake?', how:'A clear time jump says how much time passed.'}],
+    your:[
+      {type:'match', pairs:[['a few minutes','Moments later,'],['one night','The next morning,'],['a whole year','By the next Sukkos,']],
+        say:'Match each amount of time to its time jump.', how:'How much time went by? Which words say that?'},
+      {type:'tiles', w:['Meanwhile,','at the bakery,','Abba waited.'], extra:['Moments ago'],
+        say:'Build a sentence that jumps to another place.', how:'Start with the jump word. Then where. Then what happened.'},
+      {type:'sort', bins:['Phrase','Clause'], cards:[['Later that night,',0],['When Zeidy came home,',1],['Early Friday morning,',0],['Once the snow stopped,',1]],
+        say:'Phrase or clause? Sort each time jump.', how:'A clause has a who-or-what and a doing word.',
+        why:{q:'Why is "Later that night," a phrase?', o:['It has no doing word','It has a who and a doing word','It is a question','It ends the story'], a:'It has no doing word'}},
+      {type:'match', pairs:[['Meanwhile,','Same time, another place'],['The next morning,','Skips the night'],['Moments later,','Skips a few minutes']],
+        say:'Match each time jump to what it does.', how:'Does it skip time, or move to another place?'},
+      {type:'sort', bins:['Tells the reader when','Does not tell'], cards:[['A week later,',0],['And then',1],['By sundown,',0],['So',1]],
+        say:'Does it tell the reader when?', how:'A clear time jump tells the reader WHEN.'}] },
+
+  'WRIT.PARA.L06.07':{ band:'E45', pic:'🖼️', today:'Swap vague words for picture words', why:'Exact words let the reader see, hear and smell your story, not just read it.',
+    ready:[{q:'A letter to Rabbi Feldman should NOT use…', o:['slang','formal words','polite words'], a:'slang'}],
+    bridge:'WRIT.PARA.L06.03', bridgeName:'Who Is Reading?',
+    watch:{ q:'Friday night at Savta’s house', m:{type:'scene', e:'🐟', t:'Yehuda writes about Friday night at Savta’s house.'}, steps:[
+      {t:'First try: “The food was good, and the room was nice.”'},
+      {t:'Find the vague words: food, good, nice.'},
+      {t:'Exact noun: Savta’s spicy fish.'},
+      {t:'Add an exact verb and a smell: sizzled, cumin.'}], a:'Savta’s spicy fish sizzled, and the smell of cumin filled the room.' },
+    oops:{ q:'Describe the Shabbos cake', wrong:'It was a very very big nice cake.', right:'It was a three-layer honey cake.', why:'Piling on vague words does not help. One exact word paints the picture.' },
+    ways:['frum-family scene','worked example','match it','sort it','word tiles','tap the reason','Mistake Detective'], done:'You can swap vague words for picture words and use one exact verb.',
+    board:{ one:'Swap vague words for picture words: an exact noun and one exact verb, not a verb plus an adverb.', activity:'Write “We ate good food” on the board; each boy swaps one vague word, and the class keeps the best picture.', mistakes:['Vague words (thing, stuff, nice)','Piling on “very” and “really”','A fancy word that does not fit'] },
+    do:[
+      {type:'match', pairs:[['said','whispered'],['food','potato kugel'],['book','siddur']],
+        say:'Match each vague word to a picture word.', how:'Which word tells exactly WHICH one or exactly HOW?',
+        why:{q:'Why is "whispered" better than "said"?', o:['It shows exactly how he spoke','It is longer','It is a vague word','It rhymes'], a:'It shows exactly how he spoke'}},
+      {type:'sort', bins:['Exact','Mistake: piling on'], cards:[['a freezing day',0],['a really really super cold day',1],['a worn leather siddur',0],['a very very old big book',1]], mis:true,
+        say:'Exact, or piling on? Sort each one.', how:'Piling on uses many vague words. Exact paints the picture.',
+        why:{q:'Why is "a really really super cold day" a mistake?', o:['It piles on vague words','It has a picture word','It is too short','It is a sense detail'], a:'It piles on vague words'}}],
+    your:[
+      {type:'tiles', w:['The rain','drummed on','the sukkah.'], extra:['was loud'],
+        say:'Build a sentence with picture words.', how:'What made the sound? What sound? On what?'},
+      {type:'match', pairs:[['walked quietly','tiptoed'],['ate quickly','gobbled'],['ran fast','sprinted']],
+        say:'Match each verb and adverb to one exact verb.', how:'Which one verb means the same thing by itself?'},
+      {type:'sort', bins:['Vague word','Picture word'], cards:[['stuff',0],['crunchy',1],['thing',0],['sprinted',1],['nice',0],['esrog',1]],
+        say:'Vague word, or picture word? Sort each one.', how:'Can you see exactly what it means?'},
+      {type:'tiles', q:'Avrumi climbs to the attic.', w:['Avrumi','tiptoed','up the','attic stairs.'], extra:['nice'],
+        say:'Build a sentence with an exact verb.', how:'Who? How exactly did he go? Where?'},
+      {type:'sort', q:'Dovid’s little sukkah holds four boys.', bins:['Fits','Does not fit'], cards:[['cozy',0],['gigantic',1],['snug',0],['enormous',1]],
+        say:'Does each word fit the little sukkah?', how:'Picture four boys at one small table.',
+        why:{q:'Why does "gigantic" not fit?', o:['The sukkah holds only four boys','It is a vague word','It is too short','It is a sound'], a:'The sukkah holds only four boys'}}] },
+
+  'WRIT.PARA.L06.08':{ band:'E45', pic:'🔗', today:'End with what grows out of the story', why:'An ending that follows makes the reader say, “Of course!” A dream ending feels like a trick.',
+    ready:[{q:'Which one belongs in a conclusion?', o:['a final thought','a brand-new point','“That is all, the end.”'], a:'a final thought'}],
+    bridge:'WRIT.ESSAY.L06.04', bridgeName:'Strong Finish',
+    watch:{ q:'The lost siddur mystery', m:{type:'scene', e:'📓', t:'All week, Yehuda wrote every clue in his notebook. Now Zeidy’s old siddur is missing.'}, steps:[
+      {t:'Problem: Zeidy’s old siddur is missing from the shul.'},
+      {t:'Ask: what did the story already show?'},
+      {t:'Yehuda’s notebook! He wrote down every clue.'},
+      {t:'Ending: the notebook shows where the siddur went.'},
+      {t:'Not a dream. Not a sudden rescue. It follows.'}], a:'Yehuda checks his notebook and finds where the siddur went.' },
+    oops:{ q:'The lost siddur mystery', wrong:'Then Yehuda woke up. It was all a dream.', right:'Yehuda checked his notebook and found where the siddur went.', why:'A dream ending throws the whole story away. Use what the story set up.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can write an ending that follows from the events.',
+    board:{ one:'The ending uses what the story set up: a skill, a clue or a choice.', activity:'Read a Crew story with the ending cut off; pairs list what it set up, then write an ending that uses one.', mistakes:['“It was all a dream”','A sudden rescue from nowhere','The story just stops'] },
+    do:[
+      {type:'sort', q:'Avrumi is lost. That morning, he drew a map.', bins:['It follows','Mistake: dream or rescue'], cards:[['He uses his map to find the bus.',0],['He wakes up in bed.',1],['A helicopter flies him home.',1],['He follows his map to the door.',0]], mis:true,
+        say:'Does the ending follow? Sort each one.', how:'An ending that follows uses what the story set up.',
+        why:{q:'Why does "He uses his map to find the bus" follow?', o:['The story already showed his map','It comes from nowhere','It was a dream','It just stops'], a:'The story already showed his map'}},
+      {type:'match', pairs:[['Binyamin studies chess traps.','He sets a trap in the final.'],['Avrumi draws maps of everything.','His map leads them home.'],['Yehuda writes down every clue.','His notebook names the thief.']],
+        say:'Match each set-up to the ending it leads to.', how:'Which ending uses that skill or clue?'}],
+    your:[
+      {type:'tiles', q:'Avrumi drew a map that morning. Now he is lost.', w:['He used','the map','he drew.'], extra:['woke up'],
+        say:'Build an ending that follows.', how:'Who? What did he use? Where did it come from?',
+        why:{q:'Why does this ending follow?', o:['It uses the map from earlier','It comes from nowhere','It was a dream','It just stops'], a:'It uses the map from earlier'}},
+      {type:'match', pairs:[['Then he woke up in bed.','It was all a dream'],['Out of nowhere, a famous chef saved the day.','A sudden rescue'],['And then it was over.','It just stops']],
+        say:'Match each ending to its mistake.', how:'A dream? Help from nowhere? Or no ending at all?'},
+      {type:'sort', q:'The sukkah keeps blowing down. Dovid’s Abba has clamps.', bins:['It follows','A sudden rescue','It just stops'], cards:[['Dovid brings Abba’s clamps, and they rebuild.',0],['A stranger’s truck brings a new sukkah.',1],['And that was that.',2],['They tie the walls with Abba’s clamps.',0]],
+        say:'Sort each ending for the sukkah story.', how:'Does it use the clamps, come from nowhere, or just stop?'},
+      {type:'tiles', q:'Binyamin always stormed off after a loss. Now he loses the final.', w:['He shook','the winner’s','hand.'], extra:['the board'],
+        say:'Build an ending that shows he changed.', how:'What does he do now that he never did before?'},
+      {type:'sort', q:'Tzvi Hirsch always rushed the bakery orders.', bins:['Shows he changed','Does not show it'], cards:[['He checks each box twice.',0],['He rushes out as usual.',1],['He counts the challos slowly.',0],['He forgets three boxes again.',1]],
+        say:'Does the ending show he changed?', how:'Does he act in a new way at the end?'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

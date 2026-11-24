@@ -1,0 +1,452 @@
+<script>
+/* CoreDataW486.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 4 (L05), Unit 2 "Real Stories". Cast: the Glen Avenue Crew.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L05.01':{name:'POW + WWW',
+  teach:[
+    {how:'Good story writers plan before they write. The trick is POW. P: Pick my idea. O: Organize my notes. W: Write and say more. Say it with me: POW!', q:'Tzvi Hirsch wants to write a story. He chooses the Erev Shabbos the bakery van broke down. Which POW step is that?', o:['Pick my idea','Organize my notes','Write and say more']},
+    {how:'To Organize my notes, ask the W-W-W questions, one at a time: Who? When? Where? What does he want? What happens? How does it end? How does he feel? Jot a few words for each, not whole sentences.', q:'Tzvi Hirsch’s note says: “Friday morning, Erev Shabbos.” Which W-W-W question does it answer?', o:['When?','Who?','Where?']},
+    {how:'The mistake: skipping the plan and just starting to write. The story wanders and forgets its ending. Plan first. Then Write and say more: turn each note into sentences, and add details.', q:'Which boy is doing the step Write and say more?', o:['Dovid turns his notes into sentences and adds details.','Dovid chooses a story about his gadget.','Dovid jots “basement, Sunday” on his plan.']}
+  ],
+  practice:[
+    {t:'sort', q:'Tzvi Hirsch’s plan notes. Sort each note: which W-W-W question does it answer?', bins:[{id:'O',label:'👦 Who?'},{id:'N',label:'🕐 When?'},{id:'R',label:'📍 Where?'}],
+      items:[{label:'Tzvi Hirsch and Abba',bin:'O'},{label:'Erev Shabbos morning',bin:'N'},{label:'outside the bakery on the corner',bin:'R'},{label:'four hours before Shabbos',bin:'N'},{label:'the Crew from Glen Avenue',bin:'O'}],
+      h:'A person is Who. A time is When. A place is Where.'},
+    {t:'pairs', q:'Match each W-W-W question to Tzvi Hirsch’s note.', pairs:[['What does he want?','to get 30 challos to families before Shabbos'],['What happens?','the van will not start, so the Crew brings wagons'],['How does it end?','every challah arrives in time']],
+      h:'Want is his goal. Happens is what goes on as he tries. End is how it all works out.'},
+    {t:'spotall', q:'Tap every job that belongs to the O step: Organize my notes.', cells:[{label:'Answer Who? When? Where?',ok:true},{label:'Jot a few words for each W',ok:true},{label:'Note how it ends',ok:true},{label:'Choose which story to tell',ok:false},{label:'Write whole sentences with details',ok:false}],
+      h:'Organize means filling in the W-W-W notes. Choosing the story comes before it. Writing sentences comes after it.'},
+    {t:'order', q:'A story plan goes in story order. Put these W-W-W questions in order. Tap the tiles in order.', tiles:['Who? When? Where?','What does he want?','What happens?','How does it end?'],
+      h:'First meet the character and the place. Then his goal. Then what happens. The ending comes last.'},
+    {t:'sort', q:'Binyamin is writing about his chess game with Zeidy. Sort each line: a plan note, or a story sentence?', bins:[{id:'P',label:'📝 Plan note'},{id:'S',label:'📖 Story sentence'}],
+      items:[{label:'Binyamin, Zeidy',bin:'P'},{label:'Motzei Shabbos, living room',bin:'P'},{label:'Binyamin set up the board while Zeidy poured the tea.',bin:'S'},{label:'wants to win one game',bin:'P'},{label:'Zeidy smiled and slid his knight forward.',bin:'S'}],
+      h:'A plan note is a few words. A story sentence is a whole sentence with details: that is Write and say more.'},
+    {t:'spotall', q:'Yehuda’s notes: “Yehuda, Sukkos night, his family’s sukkah, wants to find the lost lulav.” Tap every W-W-W question his notes ANSWER.', cells:[{label:'Who?',ok:true},{label:'When?',ok:true},{label:'Where?',ok:true},{label:'What does he want?',ok:true},{label:'How does it end?',ok:false},{label:'How does he feel?',ok:false}],
+      h:'Check each part of his note. Which questions does it answer? Which ones still have no note?'},
+    {t:'write', q:'Your turn to plan. Pick a true story: a time you helped get ready for Shabbos or Yom Tov. Your own true story uses “I”, like “I helped Abba carry the boxes.” Write POW at the top. Then write a few words for each W-W-W question.', min:0, checks:['💡 I picked one idea.','📝 I wrote a note for every W-W-W question.','✍️ My notes are a few words each, ready to write and say more.'], h:'Think of one real day. Then go down the list: Who? When? Where? What did he want? What happened? How did it end? How did he feel?'}
+  ],
+  check:[
+    {q:'Avrumi has finished his notes. Now he writes: “Avrumi carried the rolled-up map into shul.” Then he adds two more details. Which POW step is he doing?', o:['Write and say more','Organize my notes','Pick my idea'], h:'Is he choosing a story, jotting notes, or turning notes into sentences?'},
+    {q:'Binyamin’s plan note says: “scared at first, then proud.” Which W-W-W question does it answer?', o:['How does he feel?','How does it end?','What happens?'], h:'Look at the words in the note. Are they about events, the ending, or something inside him?'},
+    {t:'order', q:'Dovid plans a story. Put his notes in W-W-W order. Tap the tiles in order.', tiles:['Dovid, in his basement, Sunday','wants to build a bird feeder','the glue will not hold','he uses screws, and it works'], h:'Who, when and where come first. Then what he wants. Then what happens. Then how it ends.'}
+  ],
+  re:[
+    {how:'A new way: POW is like a trip. Pick where to go. Organize your bag. Then go!', q:'In POW, what does the O stand for?', o:['Organize my notes','Open the story','Only one idea']},
+    {how:'A simpler step: answer just the first three W’s: Who? When? Where? A person, a time, a place.', q:'Note: “in the shul kitchen.” Which W does it answer?', o:['Where?','Who?','When?']},
+    {how:'The skill underneath: Paragraph Builder (Level 4). A paragraph has parts in order. A story plan has parts in order, too.', q:'In a paragraph, what comes first?', o:['the topic sentence','the closing','a detail']}
+  ]},
+
+  'WRIT.PARA.L05.10':{name:'Open the Scene',
+  teach:[
+    {how:'A story opening drops the reader right into the scene. In the first two or three sentences, tell WHO the story is about, WHERE he is, and THE PROBLEM: what goes wrong, or what he needs.', q:'Opening: “Tzvi Hirsch stood outside the bakery on Erev Shabbos. Thirty challos sat in boxes, but the van would not start.” Which part is the problem?', o:['the van would not start','Tzvi Hirsch','outside the bakery']},
+    {how:'The problem is the engine of a story. With no problem, nothing happens, and the reader stops reading. Who and where with no problem is just a picture.', q:'Which opening has a problem?', o:['Dovid sat in his basement. His robot had lost a wheel, and the fair was tomorrow.','Dovid sat in his basement. It was a sunny day.','Dovid has a basement full of gadgets.']},
+    {how:'Two mistakes. A slow start: “I woke up. I davened. I ate breakfast.” The reader waits and waits for the story. Announcing: “Hi! My story is about Sukkos.” Do not announce. Jump right in, close to the problem.', q:'Which opening jumps right in?', o:['The lulav was gone, and Sukkos started in one hour.','I woke up and brushed my teeth.','Hi! My story is about Sukkos.']}
+  ],
+  practice:[
+    {t:'sort', q:'Tzvi Hirsch’s opening, in parts. Sort each part: who, where, or the problem?', bins:[{id:'O',label:'👦 Who'},{id:'R',label:'📍 Where'},{id:'P',label:'⚠️ The problem'}],
+      items:[{label:'Tzvi Hirsch and his Abba',bin:'O'},{label:'outside the bakery on the corner',bin:'R'},{label:'the van would not start',bin:'P'},{label:'in the cold parking lot',bin:'R'},{label:'thirty challos still had to go out',bin:'P'}],
+      h:'A person is who. A place is where. Something that goes wrong, or something he needs, is the problem.'},
+    {t:'spotall', q:'Tap every opening that tells who, where AND the problem.', cells:[{label:'Yehuda stood in the dark sukkah. The wind had blown the schach away.',ok:true},{label:'Avrumi sat in class. His map was missing from his desk.',ok:true},{label:'Dovid was in the basement.',ok:false},{label:'Binyamin played chess.',ok:false},{label:'In the kitchen, the cake was burnt.',ok:false}],
+      h:'Check all three for each one: a person, a place, and something wrong.'},
+    {t:'pairs', q:'Match each opening to its kind.', pairs:[['The cholent pot cracked an hour before Shabbos.','jumps right in'],['I woke up, got dressed and ate cereal.','a slow start'],['This story is about my Shabbos.','announcing']],
+      h:'Does it go straight to the problem? Does it make the reader wait? Or does it tell what the story is about?'},
+    {t:'order', q:'Build Tzvi Hirsch’s opening. Tap the sentences in order.', tiles:['On Erev Shabbos, Tzvi Hirsch ran out of the bakery.','His thirty challah orders waited by the door.','But the delivery van would not start.'],
+      h:'Who and where come first. Then what is waiting. The problem comes last, and it starts with But.'},
+    {t:'sort', q:'Sort each opening: jumps right in, or a slow start?', bins:[{id:'J',label:'🚀 Jumps right in'},{id:'S',label:'🐢 Slow start'}],
+      items:[{label:'The lights went out just as the guests came in.',bin:'J'},{label:'I got up and put on my shoes and my coat.',bin:'S'},{label:'Binyamin’s king was trapped, and Zeidy was smiling.',bin:'J'},{label:'First I ate breakfast, and then I got dressed.',bin:'S'}],
+      h:'Is something already going wrong? Or is it a normal morning that makes the reader wait?'},
+    {t:'spotall', q:'Tap every sentence that could be THE PROBLEM in a story.', cells:[{label:'The van would not start.',ok:true},{label:'Zeidy’s glasses were lost.',ok:true},{label:'The bus left without Dovid.',ok:true},{label:'The sky was blue.',ok:false},{label:'Yehuda likes cholent.',ok:false}],
+      h:'A problem is something that goes wrong, or something a character must fix.'},
+    {t:'write', q:'Your turn to write. Use your POW plan from last time. Write the first 2 or 3 sentences of your story: who, where, and the problem.', min:0, checks:['👦 My opening tells who.','📍 It tells where.','⚠️ It gets to the problem fast, with no slow start.'], h:'Look at your Who, When and Where notes. Then look at What happens. Put them together in 2 or 3 sentences.'}
+  ],
+  check:[
+    {q:'Opening: “In the shul kitchen, Binyamin held the tray. The kiddush cake had slid onto the floor.” What do the words “in the shul kitchen” tell?', o:['where','who','the problem'], h:'Is it a person, a place, or something that went wrong?'},
+    {q:'Avrumi’s story begins: “I packed my bag. I zipped my coat. I walked to the corner.” What kind of opening is this?', o:['a slow start','jumps right in','announcing'], h:'Is anything going wrong yet? Does the reader have to wait?'},
+    {t:'order', q:'Build Dovid’s opening. Tap the sentences in order.', tiles:['Dovid stood in the school gym on the morning of the science fair.','His robot sat on the table, ready to go.','But when he pressed the button, nothing happened.'], h:'Who and where first. Then set up the scene. The problem comes last.'}
+  ],
+  re:[
+    {how:'A new way: an opening is a camera. Point it at WHO. Show WHERE he is. Then zoom in on the problem.', q:'What does the camera zoom in on last?', o:['the problem','the sky','the title']},
+    {how:'A simpler step: find the problem first. It is the part where something goes wrong, or someone needs help.', q:'“Yehuda ran to the bus stop, but the bus was gone.” Which part is the problem?', o:['the bus was gone','Yehuda','the bus stop']},
+    {how:'The skill underneath: Umbrella Sentence. A topic sentence tells the reader what a paragraph is about. A story opening tells him what the story is about.', q:'Where does the topic sentence go in a paragraph?', o:['first','last','in the middle']}
+  ]},
+
+  'WRIT.PARA.L05.11':{name:'Then What?',
+  teach:[
+    {how:'A story tells events in the order they happened. Time words show the reader the order. At the beginning: First, or One morning. In the middle: Next, After that, Later. At the end: Finally, or In the end.', q:'Tzvi Hirsch tells his story. Which time word fits the very first event?', o:['First,','Finally,','After that,']},
+    {how:'“Just then” (or “Suddenly”) is a special time word for the middle. It shows something SURPRISING happens right at that moment. It wakes the reader up.', q:'Which sentence uses a time word for a surprise?', o:['Just then, the van’s engine coughed and died.','First, the boys packed the challos.','Finally, Shabbos came.']},
+    {how:'The mistake: “and then … and then … and then.” Every event sounds the same, and the reader gets tired. Use different time words.', q:'Which one has the “and then” mistake?', o:['And then they packed, and then they loaded, and then they drove.','First they packed. After that, they loaded the wagon.','Later, they pulled the wagon to shul.']}
+  ],
+  practice:[
+    {t:'order', q:'Put Tzvi Hirsch’s story in order. Use the time words. Tap the sentences in order.', tiles:['First, Tzvi Hirsch loaded the challos into the van.','Just then, the engine died.','After that, the Crew ran over with wagons.','In the end, every challah arrived before Shabbos.'],
+      h:'Find the beginning word first. The surprise comes next. The end word goes last.'},
+    {t:'sort', q:'Sort each time word: the beginning, the middle, or the end of a story?', bins:[{id:'B',label:'🟢 Beginning'},{id:'M',label:'🟡 Middle'},{id:'E',label:'🔴 End'}],
+      items:[{label:'First,',bin:'B'},{label:'One morning,',bin:'B'},{label:'After that,',bin:'M'},{label:'Just then,',bin:'M'},{label:'In the end,',bin:'E'},{label:'Finally,',bin:'E'}],
+      h:'Does the word start the story, keep it moving, or wrap it up?'},
+    {t:'pairs', q:'Match each part of a story to its time word.', pairs:[['the start of the day','One morning,'],['a sudden surprise','Just then,'],['the very last thing','In the end,']],
+      h:'Which word starts? Which one surprises? Which one wraps up?'},
+    {t:'spotall', q:'Yehuda’s story: “Later, he checked under the bench. Next, he asked Abba. Finally, he found the lulav in the car.” Tap every time word.', cells:[{label:'Later',ok:true},{label:'Next',ok:true},{label:'Finally',ok:true},{label:'bench',ok:false},{label:'lulav',ok:false},{label:'car',ok:false}],
+      h:'A time word tells WHEN in the story. A thing or a place is not a time word.'},
+    {t:'sort', q:'Sort each story: good time words, or the “and then” mistake?', bins:[{id:'G',label:'✅ Good time words'},{id:'A',label:'🔁 And then, and then'}],
+      items:[{label:'First they ate. After that, they sang.',bin:'G'},{label:'And then they ate and then they sang and then they slept.',bin:'A'},{label:'Later, Abba told a story. Finally, they bentched.',bin:'G'},{label:'And then he ran and then he fell.',bin:'A'}],
+      h:'Does each event get its own time word? Or does every event start with and then?'},
+    {t:'order', q:'Put Binyamin’s chess story in order. Tap the sentences in order.', tiles:['One Sunday, Binyamin asked Zeidy for a game.','Later, Zeidy trapped his queen.','Just then, Binyamin saw a way out.','In the end, he won his first game.'],
+      h:'Start with the beginning word. His queen is trapped before he can see a way out of it. The end word goes last.'},
+    {t:'write', q:'Your turn to write. Write the middle of your story in 4 sentences. Start each one with a different time word. Use Just then for the surprise.', min:0, checks:['🟢 My events are in the order they happened.','⏰ Each sentence starts with a different time word.','🔁 I did not write and then, and then.'], h:'Look at your What happens note. Break it into 4 steps. Give each step its own time word.'}
+  ],
+  check:[
+    {q:'Yehuda’s story: he loses his esrog box, he searches the house, and he finds it. Where in the story do the words “After that,” belong?', o:['the middle','the beginning','the end'], h:'Does the word start a story, keep it moving, or wrap it up?'},
+    {q:'Dovid is flying his kite in the park. All at once, a gust of wind snaps the string. Which time word fits that moment?', o:['Just then,','First,','In the end,'], h:'Is this the start, a sudden surprise, or the wrap-up?'},
+    {t:'order', q:'Put Avrumi’s story in order. Tap the sentences in order.', tiles:['First, Avrumi drew a map for the Chanukah party.','Next, he hung it by the shul door.','Just then, a guest knocked it down.','In the end, he taped it up higher.'], h:'Beginning word first. Then the middle words, with the surprise. The end word goes last.'}
+  ],
+  re:[
+    {how:'A new way: time words are stepping stones across a stream. Step on them in order, and the reader crosses safely.', q:'Which stepping stone comes last?', o:['In the end,','First,','Next,']},
+    {how:'A simpler step: learn just two words first. One starts a story, and one ends it.', q:'Which word starts a story?', o:['First,','Finally,','Later,']},
+    {how:'The skill underneath: Paragraph Builder (Level 4). The details in a paragraph go in an order that makes sense.', q:'In a paragraph, what comes right after the topic sentence?', o:['the details','the closing','the title']}
+  ]},
+
+  'WRIT.PARA.L05.12':{name:'Five-Senses Camera',
+  teach:[
+    {how:'Your story is a movie in the reader’s head. Be a camera with five senses: what can he SEE, HEAR, SMELL, TASTE and TOUCH? One sense detail makes the scene come alive.', q:'Tzvi Hirsch’s bakery. Which detail uses the sense of smell?', o:['The kitchen smelled of warm challah and cinnamon.','The trays were silver and shiny.','The mixer whirred loudly.']},
+    {how:'Pick details the reader can almost feel. Sounds are strong: a slam, a whir, a crunch. Touch is strong too: hot, sticky, icy, rough.', q:'Which detail uses touch?', o:['The dough felt soft and sticky in his hands.','The oven bell dinged.','The rugelach tasted sweet.']},
+    {how:'The mistake: a vague word like “nice”, “good” or “fun”. The reader cannot see “nice”. A vague word is not a sense detail. Swap it for one.', q:'Which sentence is vague?', o:['The bakery was nice.','The bakery smelled of fresh bread.','Flour dusted every table.']}
+  ],
+  practice:[
+    {t:'sort', q:'Tzvi Hirsch’s bakery scene. Sort each detail: see, hear, or smell?', bins:[{id:'S',label:'👀 See'},{id:'H',label:'👂 Hear'},{id:'M',label:'👃 Smell'}],
+      items:[{label:'golden braided challos',bin:'S'},{label:'the oven door banged shut',bin:'H'},{label:'warm cinnamon in the air',bin:'M'},{label:'flour on Abba’s apron',bin:'S'},{label:'the bell over the door rang',bin:'H'}],
+      h:'Ask: would I know this with my eyes, my ears, or my nose?'},
+    {t:'pairs', q:'Match each sense to its detail.', pairs:[['taste','sour pickles from the barrel'],['touch','the icy wagon handle'],['hear','the wagon wheels rattling']],
+      h:'Which one goes in your mouth? Which one is in your hands? Which one makes a sound?'},
+    {t:'spotall', q:'Fix this draft. Avrumi wrote: “The Purim seudah was fun. The hamantaschen smelled of warm jam. The room was nice. Bright costumes filled every chair. The food was great.” Tap every vague sentence that needs a sense detail.', cells:[{label:'The Purim seudah was fun.',ok:true},{label:'The hamantaschen smelled of warm jam.',ok:false},{label:'The room was nice.',ok:true},{label:'Bright costumes filled every chair.',ok:false},{label:'The food was great.',ok:true}],
+      h:'Can the reader see, hear, smell, taste or touch it? If not, it is vague and needs fixing.'},
+    {t:'order', q:'Build a sense detail for the walk to shul. Tap the tiles in order.', tiles:['The wagon wheels','rattled','over the','bumpy sidewalk.'],
+      h:'Start with WHAT. Then the sound it makes. Then WHERE.'},
+    {t:'sort', q:'Sort each sentence: a sense detail, or vague?', bins:[{id:'D',label:'🎥 Sense detail'},{id:'V',label:'🌫️ Vague'}],
+      items:[{label:'The sukkah was fun.',bin:'V'},{label:'Paper chains rustled in the wind.',bin:'D'},{label:'Shabbos dinner was good.',bin:'V'},{label:'The soup steamed in the bowls.',bin:'D'}],
+      h:'Could a camera with ears and a nose catch it? Or is it a vague word like nice, good or fun?'},
+    {t:'pairs', q:'Match each vague sentence to a sense detail that fixes it.', pairs:[['The kiddush was good.','The kugel was crisp and peppery.'],['The night was fun.','The Lag BaOmer bonfire crackled and popped.'],['The music was nice.','The fiddle played fast and bright.']],
+      h:'Find the fix that is about the same thing, but lets you taste, feel or hear it.'},
+    {t:'write', q:'Your turn to write. Pick one moment from your story. Write 3 sentences about it. Use at least 3 different senses.', min:0, checks:['🎥 I used at least 3 senses.','🌫️ I did not use vague words like nice, good or fun.','📍 My details fit the moment in my story.'], h:'Close your eyes and stand in the moment. What do you see? What do you hear? What do you smell?'}
+  ],
+  check:[
+    {q:'Which sense does this detail use: “The kettle whistled in the kitchen.”?', o:['hear','see','smell'], h:'Would you know it with your eyes, your ears, or your nose?'},
+    {q:'Dovid writes: “The science fair was nice.” Mr. Halpern says it is not a sense detail. What is it?', o:['vague','smell','touch'], h:'Can the reader see, hear or feel “nice”?'},
+    {t:'order', q:'Build a sense detail for a snowy morning. Tap the tiles in order.', tiles:['The snow','crunched','under','his boots.'], h:'Start with WHAT. Then the sound. Then WHERE.'}
+  ],
+  re:[
+    {how:'A new way: close your eyes and stand in the scene. Ask each part of you: eyes, ears, nose, tongue, hands. What do you notice?', q:'Which part tells you a sound?', o:['ears','nose','hands']},
+    {how:'A simpler step: start with just two senses: see and hear.', q:'Which one is a hear detail?', o:['the door creaked','the door was red','the door was tall']},
+    {how:'The skill underneath: Say More. A sense detail is one way to say more about a moment.', q:'Detail: the bakery was busy. Which sentence says more?', o:['For example, the line went out the door.','It was very, very busy.','The bakery has a sign.']}
+  ]},
+
+  'WRIT.PARA.L05.13':{name:'Show the Feeling',
+  teach:[
+    {how:'“Tzvi Hirsch was worried.” tells the feeling. “Tzvi Hirsch paced by the van and kept checking the clock.” shows the feeling. Showing lets the reader SEE the feeling and figure it out himself. And “Tzvi Hirsch wore a blue jacket.” has no feeling at all.', q:'Which sentence SHOWS that Tzvi Hirsch is worried?', o:['Tzvi Hirsch paced by the van and kept checking the clock.','Tzvi Hirsch was worried.','Tzvi Hirsch wore a blue jacket.']},
+    {how:'Three ways to show a feeling. ACTIONS: what his body does. FACE: his eyes, mouth and cheeks. WORDS: what he says, and how he says it. Pick one or two.', q:'“His eyes went wide, and his mouth fell open.” Which way does it show the feeling?', o:['face','actions','words']},
+    {how:'The mistake: naming the feeling with a feeling word, like sad, happy, nervous, scared, proud or sleepy. “Eli was nervous.” and “Eli felt scared.” are telling. Cross out the feeling word and show it instead.', q:'Which sentence is telling, not showing?', o:['Yehuda was proud of his clue notebook.','Yehuda held up his notebook and grinned.','“I solved it!” Yehuda called.']}
+  ],
+  practice:[
+    {t:'spotall', q:'Tap every sentence that SHOWS the feeling.', cells:[{label:'Yehuda’s face lit up.',ok:true},{label:'“Yes!” Yehuda cheered.',ok:true},{label:'Yehuda jumped up and down.',ok:true},{label:'Yehuda was glad.',ok:false},{label:'Yehuda felt very happy.',ok:false}],
+      h:'Skip any sentence that names the feeling with a feeling word.'},
+    {t:'pairs', q:'Match each showing sentence to the feeling it shows.', pairs:[['He yawned and rubbed his eyes.','sleepy'],['He stood up tall and smiled.','proud'],['His hands shook on the doorknob.','nervous']],
+      h:'Act it out. What would make your body do that?'},
+    {t:'sort', q:'Sort each sentence: does it show the feeling with actions, face, or words?', bins:[{id:'A',label:'🏃 Actions'},{id:'F',label:'🙂 Face'},{id:'W',label:'💬 Words'}],
+      items:[{label:'He hugged Zeidy tight.',bin:'A'},{label:'His cheeks turned red.',bin:'F'},{label:'“We did it!” he shouted.',bin:'W'},{label:'He frowned at the board.',bin:'F'},{label:'He ran to the window.',bin:'A'}],
+      h:'Quotation marks mean words. Eyes, mouth or cheeks mean face. The rest of his body means actions.'},
+    {t:'order', q:'Show that Tzvi Hirsch is worried. Build the sentence. Tap the tiles in order.', tiles:['Tzvi Hirsch','chewed his lip','and stared','at the dead van.'],
+      h:'Start with WHO. Then what his face does. Then what he looks at.'},
+    {t:'sort', q:'Sort each sentence: shows the feeling, or tells the feeling?', bins:[{id:'S',label:'👀 Showing'},{id:'T',label:'🗣️ Telling'}],
+      items:[{label:'Dovid was excited.',bin:'T'},{label:'Dovid hopped from foot to foot.',bin:'S'},{label:'Avrumi felt sad.',bin:'T'},{label:'Avrumi stared at the torn map, and his chin shook.',bin:'S'},{label:'Binyamin was happy.',bin:'T'}],
+      h:'Is there a feeling word that names it? Or do you see what he does?'},
+    {t:'pairs', q:'Match each telling sentence to a showing sentence for the same feeling.', pairs:[['Binyamin was sad.','Binyamin’s shoulders drooped.'],['Avrumi was nervous.','Avrumi’s knees shook.'],['Dovid was excited.','Dovid bounced on his toes.']],
+      h:'Find the showing sentence that a person with that feeling would do.'},
+    {t:'write', q:'Your turn to write. Pick the hardest moment in your story. Show how you felt with actions, face and words. Do not use the feeling word.', min:0, checks:['🏃 I showed the feeling with actions or face.','💬 I added words he says.','✂️ I did not name the feeling with a feeling word.'], h:'Act it out first. What did your body do? Your face? What did you say?'}
+  ],
+  check:[
+    {q:'Nosson is new in class, and Rabbi Feldman calls on him to read aloud. “Nosson’s voice shook, and he gripped the edge of his desk.” Does this sentence show the feeling or tell it?', o:['shows the feeling','tells the feeling','has no feeling'], h:'Is there a feeling word? Or do you see what his body and voice do?'},
+    {q:'Binyamin’s story: “Binyamin smiled so wide his cheeks hurt.” Which way does it show the feeling?', o:['face','words','actions'], h:'Which part of him does the sentence tell about?'},
+    {t:'order', q:'Show that Binyamin is proud. Build the sentence. Tap the tiles in order.', tiles:['Binyamin','stood tall','and showed Zeidy','his trophy.'], h:'Start with WHO. Then what his body does. Then what he shows.'}
+  ],
+  re:[
+    {how:'A new way: be an actor. How do your body, face and voice look? A nervous actor might show it like this: “Nosson’s knees bounced under his desk.” Now try proud.', q:'An actor shows “proud” with…', o:['a tall back and a big smile','the word proud','a yawn']},
+    {how:'A simpler step: first find the feeling word. That is the telling part to cross out.', q:'“Dovid was angry at the broken robot.” Which word is the feeling word?', o:['angry','robot','Dovid']},
+    {how:'The skill underneath: Story with Dialogue. A character’s words can show how he feels.', q:'“I can’t believe we won!” shouted Binyamin. What do his words show?', o:['excited','sleepy','bored']}
+  ]},
+
+  'WRIT.PARA.L05.14':{name:'Story Ending',
+  teach:[
+    {how:'The ending ties up the story. First tell HOW IT WORKED OUT: was the problem solved? Then tell HOW HE FELT and WHAT HE LEARNED. Save what he learned for the very last line. That is the line the reader remembers.', q:'Tzvi Hirsch’s story. Which sentence tells how it worked out?', o:['The last challah reached the Katz house ten minutes before candle lighting.','Tzvi Hirsch learned that friends make heavy jobs light.','Tzvi Hirsch grinned all through Kiddush.']},
+    {how:'To tell how he felt, show it with actions, face or words. To tell what he learned, use lesson words: “He learned that,” “Now he knew,” or “From that day on,”.', q:'Which sentence tells what he learned?', o:['Tzvi Hirsch learned that friends make heavy jobs light.','The van was fixed on Sunday.','Tzvi Hirsch grinned all through Kiddush.']},
+    {how:'Two mistakes. It JUST STOPS: “And then they went home. The end.” The reader never finds out how it worked out. Or it adds a NEW PROBLEM at the very end, and the reader is left hanging. A good ending has neither.', q:'Which ending just stops?', o:['And then he went to sleep. The end.','In the end, Yehuda found the lulav under the bench.','Now Yehuda knew to check twice before he worried.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each story ending: a good ending, it just stops, or a new problem?', bins:[{id:'G',label:'✅ Good ending'},{id:'S',label:'🛑 Just stops'},{id:'N',label:'🆕 New problem'}],
+      items:[{label:'In the end, Zeidy’s glasses were in his pocket, and everyone laughed.',bin:'G'},{label:'And then they went home. The end.',bin:'S'},{label:'Yehuda found the lulav, but then the esrog went missing!',bin:'N'},{label:'Finally, the sukkah stood tall, and Avrumi beamed.',bin:'G'},{label:'So that was it.',bin:'S'}],
+      h:'Does it tell how it worked out? Does it just stop? Or does something new go wrong?'},
+    {t:'pairs', q:'Binyamin dropped the kiddush cake. Match each ending sentence to what it tells.', pairs:[['The cake was saved with fresh frosting.','how it worked out'],['Binyamin laughed and let out a long breath.','how he felt'],['Now he knew to hold trays with two hands.','what he learned']],
+      h:'Is it about the problem, about his feeling, or about a lesson for next time?'},
+    {t:'spotall', q:'Read Dovid’s whole story: “On Erev Chanukah, Dovid stood in his basement. His homemade menorah leaned to one side. First, he checked every cup. Just then, he saw that one leg was too short. After that, Abba helped him glue on a small block. In the end, the menorah stood perfectly straight. Dovid grinned as the first flame glowed. He learned to test his gadgets before the big day.” Tap every sentence that belongs to the ending.', cells:[{label:'On Erev Chanukah, Dovid stood in his basement.',ok:false},{label:'His homemade menorah leaned to one side.',ok:false},{label:'First, he checked every cup.',ok:false},{label:'Just then, he saw that one leg was too short.',ok:false},{label:'After that, Abba helped him glue on a small block.',ok:false},{label:'In the end, the menorah stood perfectly straight.',ok:true},{label:'Dovid grinned as the first flame glowed.',ok:true},{label:'He learned to test his gadgets before the big day.',ok:true}],
+      h:'The ending starts when the problem is solved. Look for how it worked out, how he felt, and what he learned.'},
+    {t:'order', q:'Build Tzvi Hirsch’s ending. Tap the sentences in order.', tiles:['In the end, the Crew delivered every challah.','Tzvi Hirsch grinned all through the Shabbos meal.','He learned that friends make heavy jobs light.'],
+      h:'How it worked out comes first. Then how he felt. Save what he learned for last.'},
+    {t:'sort', q:'Sort each ending sentence: how he felt, or what he learned?', bins:[{id:'F',label:'🙂 How he felt'},{id:'L',label:'💡 What he learned'}],
+      items:[{label:'He jumped up and cheered.',bin:'F'},{label:'From that day on, he always double-checked.',bin:'L'},{label:'His cheeks glowed.',bin:'F'},{label:'Now he knew that patience pays.',bin:'L'}],
+      h:'A feeling shows in his body, face or words. A lesson is something he will do from now on.'},
+    {t:'pairs', q:'Match each ending mistake to its fix.', pairs:[['It just stops.','Tell how the problem worked out.'],['It adds a new problem.','Take the new problem out.'],['It never says how he felt.','Show his face, actions or words.']],
+      h:'What is missing, or what is extra? Find the fix for exactly that.'},
+    {t:'write', q:'Your turn to write. Write the ending of your story in 2 or 3 sentences: how it worked out, how you felt, and what you learned.', min:0, checks:['✅ I told how the problem worked out.','🙂 I showed how I felt.','💡 My last line tells what I learned, with no new problem.'], h:'Look at your How does it end and How does he feel notes. What would you do differently next time?'}
+  ],
+  check:[
+    {q:'Binyamin’s chess story ends: “From that day on, Binyamin knew that every loss teaches you something.” What does the last line tell?', o:['what he learned','how it worked out','how he felt'], h:'Is it about the problem, his feeling, or a lesson he keeps?'},
+    {q:'Avrumi’s story about the Purim snowstorm ends: “Then he had supper. The end.” What kind of ending is it?', o:['just stops','new problem','good ending'], h:'Does the reader find out how it worked out? Does something new go wrong?'},
+    {t:'order', q:'Build Yehuda’s ending. He lost the key to the shul. Tap the sentences in order.', tiles:['In the end, the key was in Rabbi Feldman’s coat pocket.','Yehuda laughed and handed it to the gabbai.','He learned to look closely before worrying.'], h:'How it worked out first. Then how he felt. What he learned goes last.'}
+  ],
+  re:[
+    {how:'A new way: an ending is like landing a plane. Touch down: how it worked out. Roll to a stop: how he felt and what he learned.', q:'What is the touch down?', o:['how it worked out','the problem','the title']},
+    {how:'A simpler step: answer one question. Was the problem solved? Write that in one sentence.', q:'Problem: Yehuda could not find his tzitzis. Which sentence says how it worked out?', o:['Ima found them in the dryer.','Yehuda likes blue.','The dryer was loud.']},
+    {how:'The skill underneath: Tie It Up. A closing sentence ties up a paragraph. A story ending ties up a story.', q:'A closing sentence says the big idea in…', o:['new words','the same words','a question']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L05.01':{hook:'What do great story writers do BEFORE they write? They say POW!', big:'Plan a story with POW and the W-W-W questions before you write it.',
+    intro:['P: Pick my idea.','O: Organize my notes: ask the W-W-W questions and jot a few words for each.','W-W-W, What = 2, How = 2: Who? When? Where? What does he want? What happens? How does it end? How does he feel?','W: Write and say more: turn each note into sentences.'],
+    ex:[{q:'Tzvi Hirsch’s story: the Erev Shabbos the van broke down.',steps:['Pick my idea: the van story.','Who? When? Where? Tzvi Hirsch, Erev Shabbos, the bakery.','Want: get 30 challos out. Happens: the Crew brings wagons.','End: all in time. Feel: worried, then thankful.'],a:'A full plan, with a note for every W-W-W question.'},
+        {q:'Note: “in Zeidy’s living room.”',steps:['It names a place.','A place answers Where?'],a:'Where?'}],
+    oops:{q:'Avrumi wants to write about his Purim map.',wrong:'He starts writing right away, with no plan.',right:'He says POW and jots a note for each W-W-W question.',why:'With no plan, the story wanders and forgets its ending.'},
+    idea:['A plan is a map: the story knows where it is going.'],
+    try:{q:'Which POW step comes first?',o:['Pick my idea','Write and say more','Organize my notes'],a:'Pick my idea',steps:['P comes first in POW.']}},
+  'WRIT.PARA.L05.10':{hook:'Would you keep reading a story that starts with “I woke up”?', big:'Open the scene: tell who, where and the problem in the first few sentences.',
+    intro:['Tell WHO the story is about.','Tell WHERE he is.','Get to THE PROBLEM fast.','No slow start, and no announcing.'],
+    ex:[{q:'Tzvi Hirsch’s van story.',steps:['Who: Tzvi Hirsch and his Abba.','Where: outside the bakery.','The problem: the van would not start.'],a:'On Erev Shabbos, Tzvi Hirsch and Abba stood by the bakery van. Thirty challos were packed, but the van would not start.'},
+        {q:'Dovid’s robot story.',steps:['Who and where: Dovid, in his basement.','The problem: a lost wheel, and the fair is tomorrow.'],a:'Dovid sat in his basement. His robot had lost a wheel, and the fair was tomorrow.'}],
+    oops:{q:'Start Tzvi Hirsch’s story.',wrong:'I woke up. I davened. I ate breakfast.',right:'Thirty challos were waiting, and the van would not start.',why:'A slow start makes the reader wait. Jump right in, close to the problem.'},
+    idea:['The problem is the engine of a story: no problem, no story.'],
+    try:{q:'Which opening jumps right in?',o:['The cholent pot cracked an hour before Shabbos.','I woke up and got dressed.','This story is about my Shabbos.'],a:'The cholent pot cracked an hour before Shabbos.',steps:['Which one already has a problem?']}},
+  'WRIT.PARA.L05.11':{hook:'First, next, just then … how does the reader know what happened when?', big:'Tell events in order, and show the order with time words.',
+    intro:['At the beginning: First, or One morning.','In the middle: Next, After that, Later.','For a surprise: Just then, or Suddenly.','At the end: Finally, or In the end. Never and then, and then.'],
+    ex:[{q:'Tzvi Hirsch’s van story.',steps:['First, Tzvi Hirsch loaded the challos.','Just then, the engine died.','After that, the Crew brought wagons.'],a:'In the end, every challah arrived before Shabbos.'},
+        {q:'Binyamin’s chess game.',steps:['One Sunday, Binyamin asked Zeidy for a game.','Later, Zeidy trapped his queen.','Just then, Binyamin saw a way out.'],a:'In the end, he won his first game.'}],
+    oops:{q:'Tell the van story.',wrong:'And then the van died, and then they got wagons, and then they walked.',right:'Just then, the van died. After that, the Crew brought wagons.',why:'“And then” over and over sounds the same. Different time words keep the reader awake.'},
+    idea:['Time words are stepping stones: they lead the reader through the story in order.'],
+    try:{q:'Which time word shows a surprise?',o:['Just then,','First,','In the end,'],a:'Just then,',steps:['Which one means something happened all at once?']}},
+  'WRIT.PARA.L05.12':{hook:'Can you make the reader smell the challah?', big:'Add sense details: what the reader can see, hear, smell, taste and touch.',
+    intro:['Stand in the scene in your head.','Ask: what do I see and hear?','Ask: what do I smell, taste and touch?','Swap vague words (nice, good, fun) for sense details.'],
+    ex:[{q:'Tzvi Hirsch’s bakery kitchen.',steps:['See: golden challos on silver racks.','Hear: the mixer whirred and thumped.','Smell: warm cinnamon and honey.'],a:'The kitchen smelled of warm cinnamon, and the mixer whirred and thumped.'},
+        {q:'Pulling the wagon down Glen Avenue.',steps:['Touch: the icy handle.','Hear: the wheels rattling.'],a:'The icy handle stung his hands as the wheels rattled.'}],
+    oops:{q:'Describe the bakery.',wrong:'The bakery was nice.',right:'The bakery smelled of warm cinnamon.',why:'The reader cannot see “nice”. A sense detail puts him in the room.'},
+    idea:['A sense detail turns your story into a movie the reader can step into.'],
+    try:{q:'Which detail uses taste?',o:['sour pickles from the barrel','the icy wagon handle','the oven bell dinged'],a:'sour pickles from the barrel',steps:['Which one goes in your mouth?']}},
+  'WRIT.PARA.L05.13':{hook:'How can you tell a boy is worried, when nobody says a word?', big:'Show a feeling with actions, face and words, instead of naming it.',
+    intro:['Find the feeling word, like sad or nervous.','Cross it out: that is telling.','Show it: actions, face, or words.','Let the reader figure out the feeling himself.'],
+    ex:[{q:'Tzvi Hirsch was worried.',steps:['Actions: he paced beside the van.','Face: he chewed his lip.','Words: “What will the families do?”'],a:'Tzvi Hirsch paced beside the van and chewed his lip. “What will the families do?” he whispered.'},
+        {q:'Avrumi was sad.',steps:['Face: his chin shook.','Actions: he stared at the torn map.'],a:'Avrumi stared at the torn map, and his chin shook.'}],
+    oops:{q:'Show that Avrumi is sad about his torn map.',wrong:'Avrumi was sad.',right:'Avrumi stared at the torn map, and his chin shook.',why:'“Sad” is telling. Actions and face let the reader see it.'},
+    idea:['Don’t tell me he was happy: show me his smile.'],
+    try:{q:'Which sentence shows the feeling?',o:['Dovid bounced on his toes.','Dovid was excited.','Dovid felt happy.'],a:'Dovid bounced on his toes.',steps:['Which one has no feeling word?']}},
+  'WRIT.PARA.L05.14':{hook:'How do you land a story so the reader smiles?', big:'End with how it worked out, how he felt and what he learned.',
+    intro:['Tell how the problem worked out.','Show how he felt.','Save what he learned for the last line.','No “The end.” and no new problem.'],
+    ex:[{q:'Tzvi Hirsch’s van story.',steps:['Worked out: every challah arrived in time.','Felt: he grinned all through Kiddush.','Learned: friends make heavy jobs light.'],a:'In the end, every challah arrived in time. Tzvi Hirsch grinned all through Kiddush. He learned that friends make heavy jobs light.'},
+        {q:'Yehuda’s lost lulav.',steps:['Worked out: it was under the bench.','Learned: check twice before you worry.'],a:'In the end, Yehuda found the lulav under the bench. Now he knew to check twice before he worried.'}],
+    oops:{q:'End the van story.',wrong:'And then they went home. The end.',right:'Every challah arrived in time, and Tzvi Hirsch learned that friends make heavy jobs light.',why:'An ending that just stops never tells how it worked out.'},
+    idea:['The last line is the one the reader takes home.'],
+    try:{q:'Which line belongs last?',o:['He learned that friends make heavy jobs light.','The van would not start.','First, Tzvi Hirsch loaded the challos.'],a:'He learned that friends make heavy jobs light.',steps:['Save what he learned for the very end.']}},
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L05.01':{s:'Say POW: Pick my idea, Organize my notes, Write and say more.\nAsk the W-W-W questions one at a time.\nA person is Who, a time is When, a place is Where.\nJot a few words for each, not whole sentences.'},
+  'WRIT.PARA.L05.10':{s:'Tell who the story is about.\nTell where he is.\nGet to the problem fast: what goes wrong?\nNo slow start, and no announcing.'},
+  'WRIT.PARA.L05.11':{s:'Beginning words: First, One morning.\nMiddle words: Next, After that, Later.\nSurprise words: Just then, Suddenly. End words: Finally, In the end.\nNever and then, and then.'},
+  'WRIT.PARA.L05.12':{s:'Stand in the scene in your head.\nAsk: what do I see, hear, smell, taste, touch?\nEars hear, nose smells, hands touch.\nSwap vague words like nice or good for a sense detail.'},
+  'WRIT.PARA.L05.13':{s:'Find the feeling word and cross it out.\nShow it with actions: what his body does.\nOr face: eyes, mouth, cheeks. Or words: what he says.\nLet the reader figure out the feeling.'},
+  'WRIT.PARA.L05.14':{s:'First tell how the problem worked out.\nThen show how he felt.\nSave what he learned for the last line.\nNo sudden stop, and no new problem.'},
+  };
+  var BITE = {
+  'WRIT.ESSAY.L05.01':{ band:'E45', pic:'📝', today:'Plan a story with POW and the W-W-W questions', why:'A plan keeps your story on track, from the first line to the ending.',
+    ready:[{q:'Every story has a beginning, a middle and…', o:['an end','a title page','a question'], a:'an end'},{q:'In a paragraph, what comes first?', o:['the topic sentence','the closing','a detail'], a:'the topic sentence'}],
+    bridge:'WRIT.PARA.L04.01', bridgeName:'Paragraph: topic sentence, three details, closing',
+    watch:{ q:'Tzvi Hirsch plans his story with POW.', m:{type:'scene', e:'🥖', t:'Erev Shabbos at the Gold family bakery: the delivery van will not start.'}, steps:[
+      {t:'P: Pick my idea. The Friday the van broke down.'},
+      {t:'O: Organize my notes. Who? When? Where? Tzvi Hirsch, Erev Shabbos, bakery.'},
+      {t:'Want: get 30 challos out. Happens: the Crew brings wagons.'},
+      {t:'End: all in time. Feel: worried, then very thankful.'},
+      {t:'W: Write and say more. Turn each note into sentences.'}], a:'A full plan: POW, with a note for every W-W-W question.' },
+    oops:{ q:'Avrumi wants to write about his Purim map.', wrong:'He starts writing right away, with no plan.', right:'He says POW and jots a note for each W-W-W question.', why:'With no plan, the story wanders and forgets its ending.' },
+    ways:['frum-family scene','memory strategy (POW)','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can plan a story with POW and the W-W-W questions.',
+    board:{ one:'POW: Pick my idea, Organize my notes, Write and say more. W-W-W, What = 2, How = 2.', activity:'Chant POW together; then pairs fill a W-W-W plan for a story from their own Erev Shabbos.', mistakes:['Skipping the plan and just writing','Leaving a W-W-W question with no note','Writing whole sentences in the plan instead of a few words'] },
+    do:[
+      {type:'sort', q:'Tzvi Hirsch is getting ready to write.', bins:['Good POW','Mistake'], cards:[['Pick one idea first.',0],['Jot a note for each W.',0],['Skip the plan and start writing.',1],['Leave out how it ends.',1]], mis:true,
+        say:'Good POW or a mistake? Sort each one.', how:'Good POW picks an idea and answers every W. A mistake skips the plan or a W.',
+        why:{q:'Why is “Skip the plan and start writing” a mistake?', o:['The story may wander and forget its ending','Plans are too short','It uses too many W’s','Writing is not allowed'], a:'The story may wander and forget its ending'}},
+      {type:'match', pairs:[['P','Pick my idea'],['O','Organize my notes'],['W','Write and say more']],
+        say:'Match each letter of POW to its step.', how:'Say the trick out loud: P, O, W. What does each letter stand for?'}],
+    your:[
+      {type:'tiles', q:'Put the POW steps in order.', w:['Pick','Organize','Write'], extra:['Publish'],
+        say:'Build POW: tap the steps in order.', how:'P, O, W: say the trick in your head.'},
+      {type:'sort', q:'Binyamin’s chess story notes.', bins:['Who?','When?','Where?'], cards:[['Binyamin and Zeidy',0],['Motzei Shabbos',1],['Zeidy’s living room',2],['after Havdalah',1]],
+        say:'Who, when, or where? Sort each note.', how:'A person is Who. A time is When. A place is Where.',
+        why:{q:'How do you know “after Havdalah” answers When?', o:['It tells the time it happens','It names a person','It names a place','It tells the problem'], a:'It tells the time it happens'}},
+      {type:'match', pairs:[['What does he want?','to beat Zeidy once'],['What happens?','he loses three games'],['How does it end?','he finally wins']],
+        say:'Match each W-W-W question to Binyamin’s note.', how:'Want is his goal. Happens is what goes on. End is how it works out.'},
+      {type:'tiles', q:'Dovid’s kite story notes. Put them in story order.', w:['Dovid, Sunday','wants a kite','kite is stuck','he flies it'], extra:['Pick my idea'],
+        say:'Put Dovid’s notes in story order.', how:'Who and when first. Then what he wants, what goes wrong, and how it ends.'},
+      {type:'sort', q:'Avrumi’s Purim story.', bins:['Plan note','Story sentence'], cards:[['Avrumi, Purim morning',0],['Avrumi ran up the steps with the basket.',1],['wants to deliver on time',0],['The snow crunched under his boots.',1]],
+        say:'Plan note or story sentence? Sort each one.', how:'A plan note is a few words. A story sentence is whole, with details.',
+        why:{q:'Why is “wants to deliver on time” a plan note?', o:['It is a few words that answer a W-W-W question','It has a sense detail','It is a whole sentence','It is the ending'], a:'It is a few words that answer a W-W-W question'}}] },
+
+  'WRIT.PARA.L05.10':{ band:'E45', pic:'🎬', today:'Open your story with who, where and the problem', why:'The first lines decide if the reader keeps going. A problem makes him want more.',
+    ready:[{q:'What does a topic sentence do?', o:['Tells what the paragraph is about','Ends the paragraph','Asks a question'], a:'Tells what the paragraph is about'},{q:'In POW, which W-W-W question asks for a place?', o:['Where?','Who?','When?'], a:'Where?'}],
+    bridge:'WRIT.PARA.L05.06', bridgeName:'Umbrella Sentence',
+    watch:{ q:'Tzvi Hirsch opens his story.', m:{type:'scene', e:'🚐', t:'Erev Shabbos morning, outside the Gold family bakery.'}, steps:[
+      {t:'First tell who: Tzvi Hirsch and his Abba.'},
+      {t:'Then tell where: outside the bakery on the corner.'},
+      {t:'Then jump to the problem: the van will not start.'},
+      {t:'No slow start. Skip waking up and eating breakfast.'}], a:'On Erev Shabbos, Tzvi Hirsch and Abba stood by the bakery van. Thirty challos were packed, but the van would not start.' },
+    oops:{ q:'Start Tzvi Hirsch’s story.', wrong:'I woke up. I davened. I ate breakfast.', right:'Thirty challos were waiting, and the van would not start.', why:'A slow start makes the reader wait. Jump right in, close to the problem.' },
+    ways:['frum-family scene','worked example','match it','sort it','word tiles','tap the reason','Mistake Detective'], done:'You can open a story with who, where and the problem.',
+    board:{ one:'Open the scene: who, where, and the problem, fast.', activity:'Read three openings aloud; boys hold up 1, 2 or 3 fingers for how many of who, where and problem they hear.', mistakes:['A slow start that makes the reader wait for the problem','Announcing: “My story is about…”','An opening with no problem at all'] },
+    do:[
+      {type:'match', q:'Tzvi Hirsch’s opening.', pairs:[['Who','Tzvi Hirsch and Abba'],['Where','outside the bakery'],['The problem','the van will not start']],
+        say:'Match each part of the opening.', how:'A person is who. A place is where. Something going wrong is the problem.'},
+      {type:'sort', q:'Which openings jump right in?', bins:['Good opening','Mistake: slow start'], cards:[['The van would not start, and Shabbos was coming.',0],['I woke up and got dressed.',1],['Binyamin’s king was trapped.',0],['First I ate my cereal.',1]], mis:true,
+        say:'Good opening or slow start? Sort each one.', how:'A good opening has a problem already. A slow start makes the reader wait.',
+        why:{q:'Why is “I woke up and got dressed” a mistake?', o:['The reader waits too long for the problem','It is too short','It names a person','It has a problem'], a:'The reader waits too long for the problem'}}],
+    your:[
+      {type:'tiles', q:'Yehuda is in his sukkah. Build the problem.', w:['The wind','blew away','the schach.'], extra:['I woke up'],
+        say:'Build the problem for Yehuda’s opening.', how:'What went wrong? Start with what did it.'},
+      {type:'match', pairs:[['This story is about my Shabbos.','Announcing'],['I woke up and got dressed.','Slow start'],['The cholent pot cracked at noon.','Jumps right in']],
+        say:'Match each opening to its kind.', how:'Does it tell what the story is about, make you wait, or start with a problem?'},
+      {type:'sort', q:'Binyamin’s opening.', bins:['Who','Where','The problem'], cards:[['Binyamin',0],['in Zeidy’s living room',1],['a chess piece is missing',2],['Zeidy Yusupov',0]],
+        say:'Who, where, or the problem? Sort each part.', how:'A person is who. A place is where. Something wrong is the problem.',
+        why:{q:'How do you know “a chess piece is missing” is the problem?', o:['Something is wrong that he must fix','It names a place','It is the longest','It comes first'], a:'Something is wrong that he must fix'}},
+      {type:'tiles', q:'Dovid is in the gym at the science fair. Build the problem.', w:['His robot','would not','move.'], extra:['My story is'],
+        say:'Build the problem for Dovid’s opening.', how:'What goes wrong? Start with what is broken.'},
+      {type:'match', pairs:[['In the sukkah, the wind blew the schach away.','Missing who'],['Avrumi sat in the shul.','Missing the problem'],['Avrumi’s map was gone.','Missing where']],
+        say:'Match each opening to what it is missing.', how:'Check each one for a person, a place, and a problem.'}] },
+
+  'WRIT.PARA.L05.11':{ band:'E45', pic:'⏰', today:'Tell events in order with time words', why:'Time words lead the reader through the story, so he always knows what came next.',
+    ready:[{q:'Which part of a story comes last?', o:['the ending','the opening','the problem'], a:'the ending'}],
+    bridge:'WRIT.PARA.L04.01', bridgeName:'Paragraph: topic sentence, three details, closing',
+    watch:{ q:'Tzvi Hirsch tells what happened, in order.', m:{type:'scene', e:'🚐', t:'Erev Shabbos: the van breaks down, and the Crew comes to help.'}, steps:[
+      {t:'Beginning word: First, Tzvi Hirsch loaded the challos.'},
+      {t:'Surprise word: Just then, the engine coughed and died.'},
+      {t:'Middle word: After that, the Crew ran over with wagons.'},
+      {t:'End word: In the end, every challah arrived in time.'}], a:'First … Just then … After that … In the end: the reader always knows what came next.' },
+    oops:{ q:'Tell the van story.', wrong:'And then the van died, and then they got wagons, and then they walked.', right:'Just then, the van died. After that, the Crew brought wagons.', why:'“And then” over and over sounds the same. Different time words keep the reader awake.' },
+    ways:['frum-family scene','worked example','word tiles','sort it','match it','tap the reason','Mistake Detective'], done:'You can tell events in order with time words.',
+    board:{ one:'Time words show the order: beginning, middle, surprise, end.', activity:'Four boys hold event cards; the class puts them in order and gives each one a time word.', mistakes:['And then, and then, and then','An end word in the middle of the story','Events told out of order'] },
+    do:[
+      {type:'tiles', q:'The van broke down. Build the surprise sentence.', w:['Just then,','the engine','died.'], extra:['Because'],
+        say:'Build the surprise sentence from the tiles.', how:'Start with the surprise words. Then what broke. Then what happened.',
+        why:{q:'Why does “Just then,” fit this sentence?', o:['It shows a sudden surprise','It starts the story','It ends the story','It is a feeling word'], a:'It shows a sudden surprise'}},
+      {type:'sort', bins:['Beginning','Middle','End'], cards:[['First,',0],['One morning,',0],['After that,',1],['Later,',1],['In the end,',2],['Finally,',2]],
+        say:'Beginning, middle or end? Sort each time word.', how:'Does the word start the story, keep it moving, or wrap it up?'}],
+    your:[
+      {type:'match', pairs:[['a sudden surprise','Just then,'],['the very first event','First,'],['the very last event','Finally,']],
+        say:'Match each part of a story to its time word.', how:'Which word starts? Which one surprises? Which one wraps up?'},
+      {type:'sort', q:'How does each story move along?', bins:['Good time words','Mistake: and then, and then'], cards:[['First they ate. After that, they sang.',0],['And then they ate and then they sang.',1],['Later, Abba told a story.',0],['And then he ran and then he fell.',1]], mis:true,
+        say:'Good time words, or the and-then mistake?', how:'Does each event get its own time word, or is it and then again?',
+        why:{q:'Why is “and then, and then” a mistake?', o:['Every event sounds the same','It is too short','It has no names','It tells a feeling'], a:'Every event sounds the same'}},
+      {type:'tiles', q:'Binyamin’s chess story. Build the ending sentence.', w:['In the end,','Binyamin','won the game.'], extra:['Just then, the'],
+        say:'Build the last sentence of the story.', how:'Start with an end word. Then who. Then what happened.'},
+      {type:'match', pairs:[['Beginning','One Sunday, Binyamin set up the board.'],['Middle','Later, Zeidy trapped his queen.'],['End','Finally, Binyamin won.']],
+        say:'Match each part to its sentence.', how:'Look at the time word at the start of each sentence.'},
+      {type:'sort', bins:['Starts the story','Shows a surprise'], cards:[['One morning,',0],['Just then,',1],['First,',0],['Suddenly,',1]],
+        say:'Starts the story, or shows a surprise?', how:'A start word opens the story. A surprise word means all at once.'}] },
+
+  'WRIT.PARA.L05.12':{ band:'E45', pic:'🎥', today:'Add details for all five senses', why:'Sense details turn your story into a movie the reader can step into.',
+    ready:[{q:'Detail: the bakery is busy. Which sentence says more?', o:['For example, the line went out the door.','It is very, very busy.','The sign is blue.'], a:'For example, the line went out the door.'}],
+    bridge:'WRIT.PARA.L05.08', bridgeName:'Say More',
+    watch:{ q:'Tzvi Hirsch adds senses to his bakery scene.', m:{type:'scene', e:'🥖', t:'Friday morning in the Gold family bakery kitchen.'}, steps:[
+      {t:'See: golden challos sit on silver racks.'},
+      {t:'Hear: the big mixer whirs and thumps.'},
+      {t:'Smell: warm cinnamon and honey fill the air.'},
+      {t:'Touch: the dough feels soft and sticky.'},
+      {t:'Taste: one crumb of rugelach, sweet and buttery.'}], a:'The kitchen smelled of warm cinnamon, and the mixer whirred and thumped.' },
+    oops:{ q:'Describe the bakery.', wrong:'The bakery was nice.', right:'The bakery smelled of warm cinnamon.', why:'The reader cannot see “nice”. A sense detail puts him in the room.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can add sense details the reader can see, hear, smell, taste and touch.',
+    board:{ one:'Be a five-senses camera: see, hear, smell, taste, touch.', activity:'Pass around a real object (a pinecone, an esrog box); each boy says one sense detail about it.', mistakes:['Vague words like nice, good or fun','Using only the sense of sight','Sense details that do not fit the moment'] },
+    do:[
+      {type:'sort', q:'Tzvi Hirsch’s bakery.', bins:['See','Hear','Smell'], cards:[['golden braided challos',0],['the oven door banged',1],['warm cinnamon in the air',2],['flour on Abba’s apron',0],['the bell over the door rang',1]],
+        say:'See, hear, or smell? Sort each detail.', how:'Would you know it with your eyes, your ears, or your nose?',
+        why:{q:'How do you know “the oven door banged” is a hear detail?', o:['Banged is a sound','It names a color','It is about food','It is long'], a:'Banged is a sound'}},
+      {type:'match', pairs:[['Taste','sour pickles from the barrel'],['Touch','the icy wagon handle'],['Hear','the wagon wheels rattling']],
+        say:'Match each sense to its detail.', how:'Mouth tastes. Hands touch. Ears hear.'}],
+    your:[
+      {type:'tiles', q:'Build a smell detail for Shabbos morning.', w:['The challah','smelled of','warm honey.'], extra:['was nice'],
+        say:'Build a sense detail from the tiles.', how:'Start with what it is. Then the sense. Then what it was like.'},
+      {type:'sort', q:'Which sentences put you in the scene?', bins:['Sense detail','Mistake: vague'], cards:[['The sukkah was fun.',1],['Paper chains rustled in the wind.',0],['Shabbos dinner was good.',1],['The soup steamed in the bowls.',0]], mis:true,
+        say:'Sense detail, or vague? Sort each one.', how:'Could a camera with ears and a nose catch it? Or is it nice, good or fun?',
+        why:{q:'Why is “Shabbos dinner was good” a mistake?', o:['The reader cannot see, hear or taste “good”','It is too long','It has no time word','It names Shabbos'], a:'The reader cannot see, hear or taste “good”'}},
+      {type:'match', pairs:[['The kiddush was good.','The kugel was crisp and peppery.'],['The night was fun.','The Lag BaOmer bonfire crackled and popped.'],['The music was nice.','The fiddle played fast and bright.']],
+        say:'Match each vague sentence to its fix.', how:'Find the fix about the same thing, with a sense you can feel.'},
+      {type:'tiles', q:'Build a touch detail for the walk to shul.', w:['Cold wind','stung','his cheeks.'], extra:['was good'],
+        say:'Build a touch detail from the tiles.', how:'Start with what it is. Then what it did. Then where he felt it.'},
+      {type:'sort', bins:['Taste','Touch'], cards:[['salty pretzel twists',0],['a scratchy wool scarf',1],['sweet honey cake',0],['a smooth, cold railing',1]],
+        say:'Taste or touch? Sort each detail.', how:'Does it go in your mouth, or do you feel it with your hands?'}] },
+
+  'WRIT.PARA.L05.13':{ band:'E45', pic:'🎭', today:'Show a feeling with actions, face and words', why:'When you show a feeling, the reader feels it too.',
+    ready:[{q:'Which sentence has words a character says?', o:['“We did it!” Dovid shouted.','Dovid ran home.','Dovid was tall.'], a:'“We did it!” Dovid shouted.'}],
+    bridge:'WRIT.PARA.L05.03', bridgeName:'Story with Dialogue',
+    watch:{ q:'Show that Tzvi Hirsch is worried when the van breaks.', m:{type:'scene', e:'🚐', t:'The van is dead, thirty challos are waiting, and Shabbos is coming.'}, steps:[
+      {t:'Telling: “Tzvi Hirsch was worried.” Cross out the feeling word.'},
+      {t:'Actions: he paced back and forth beside the van.'},
+      {t:'Face: his forehead wrinkled, and he chewed his lip.'},
+      {t:'Words: “What will the families do?” he whispered.'}], a:'Tzvi Hirsch paced beside the van and chewed his lip. “What will the families do?” he whispered.' },
+    oops:{ q:'Show that Avrumi is sad about his torn map.', wrong:'Avrumi was sad.', right:'Avrumi stared at the torn map, and his chin shook.', why:'“Sad” is telling. Actions and face let the reader see it.' },
+    ways:['frum-family scene','worked example','act it out','match it','word tiles','sort it','tap the reason','Mistake Detective'], done:'You can show a feeling with actions, face and words.',
+    board:{ one:'Do not tell the feeling: show it with actions, face and words.', activity:'Feeling charades: one boy acts out a feeling card; the class writes a showing sentence.', mistakes:['Naming the feeling: he was sad','Actions that do not match the feeling','Telling and showing in the same sentence'] },
+    do:[
+      {type:'match', pairs:[['He yawned and rubbed his eyes.','sleepy'],['He stood tall and grinned.','proud'],['His knees shook.','nervous']],
+        say:'Match each showing sentence to its feeling.', how:'Act it out. What feeling makes your body do that?'},
+      {type:'tiles', q:'Show that Yehuda is nervous at the door.', w:['His hands','shook on','the doorknob.'], extra:['was nervous'],
+        say:'Build a sentence that shows nervous.', how:'Show it with his body. Leave out the feeling word.'}],
+    your:[
+      {type:'sort', q:'Which sentences show the feeling?', bins:['Showing','Mistake: telling'], cards:[['Dovid hopped from foot to foot.',0],['Dovid was excited.',1],['Avrumi’s chin shook.',0],['Avrumi felt sad.',1]], mis:true,
+        say:'Showing or telling? Sort each sentence.', how:'A feeling word means telling. What he does means showing.',
+        why:{q:'Why is “Dovid was excited” a mistake?', o:['It names the feeling instead of showing it','It is too long','It has no name','It is a question'], a:'It names the feeling instead of showing it'}},
+      {type:'match', pairs:[['Actions','He ran to hug Zeidy.'],['Face','His cheeks turned pink.'],['Words','“We won!” he cried.']],
+        say:'Match each way of showing to its sentence.', how:'Body moves: actions. Eyes, mouth, cheeks: face. Quotation marks: words.'},
+      {type:'tiles', q:'Show that Avrumi is proud of his map.', w:['Avrumi','held up','his map','and grinned.'], extra:['felt proud'],
+        say:'Build a sentence that shows proud.', how:'Show what he does and his face. Leave out the feeling word.'},
+      {type:'sort', bins:['Actions','Face','Words'], cards:[['He hugged Zeidy tight.',0],['His cheeks turned red.',1],['“Yes!” he shouted.',2],['He frowned at the board.',1]],
+        say:'Actions, face, or words? Sort each one.', how:'Quotation marks mean words. Eyes, mouth or cheeks mean face.',
+        why:{q:'How do you know “He frowned at the board” shows the face?', o:['A frown is on his face','It has quotation marks','He moves his feet','It names a feeling'], a:'A frown is on his face'}},
+      {type:'match', pairs:[['Binyamin was sad.','Binyamin’s shoulders drooped.'],['Avrumi was nervous.','Avrumi’s knees shook.'],['Dovid was excited.','Dovid bounced on his toes.']],
+        say:'Match each telling sentence to its showing sentence.', how:'Find what a boy with that feeling would do.'}] },
+
+  'WRIT.PARA.L05.14':{ band:'E45', pic:'🏁', today:'End with how it worked out and what he learned', why:'The last line is the one the reader takes home.',
+    ready:[{q:'A closing sentence says the big idea in…', o:['new words','the same words','a question'], a:'new words'}],
+    bridge:'WRIT.PARA.L05.09', bridgeName:'Tie It Up',
+    watch:{ q:'Tzvi Hirsch ends his story.', m:{type:'scene', e:'🕯️', t:'Ten minutes before candle lighting, the last wagon reaches the Katz house.'}, steps:[
+      {t:'First, how it worked out: every challah arrived in time.'},
+      {t:'Then, how he felt: he grinned all through Kiddush.'},
+      {t:'Last, what he learned: friends make heavy jobs light.'},
+      {t:'No “The end.” and no new problem.'}], a:'In the end, every challah arrived in time. Tzvi Hirsch grinned all through Kiddush. He learned that friends make heavy jobs light.' },
+    oops:{ q:'End the van story.', wrong:'And then they went home. The end.', right:'Every challah arrived in time, and Tzvi Hirsch learned that friends make heavy jobs light.', why:'An ending that just stops never tells how it worked out.' },
+    ways:['frum-family scene','worked example','word tiles','sort it','match it','tap the reason','Mistake Detective'], done:'You can end a story with how it worked out, how he felt and what he learned.',
+    board:{ one:'Land the story: how it worked out, how he felt, what he learned.', activity:'The rebbe reads a story with no ending; pairs write the last three lines and read them aloud.', mistakes:['It just stops: The end.','A new problem in the last line','Never saying how the problem worked out'] },
+    do:[
+      {type:'tiles', q:'The van story. Build the sentence that tells how it worked out.', w:['In the end,','the challos','arrived','in time.'], extra:['The end.'],
+        say:'Build the sentence that tells how it worked out.', how:'Start with an end word. Then what. Then what happened.',
+        why:{q:'Why does this sentence belong in the ending?', o:['It tells how the problem worked out','It starts the story','It shows a surprise','It adds a new problem'], a:'It tells how the problem worked out'}},
+      {type:'sort', q:'Which endings land the story?', bins:['Good ending','Mistake: just stops','Mistake: new problem'], cards:[['Finally, the sukkah stood tall.',0],['And then they went home.',1],['But then the esrog went missing!',2],['From that day on, he double-checked.',0]], mis:true,
+        say:'Good ending or a mistake? Sort each one.', how:'Does it tell how it worked out? Does it just stop? Does something new go wrong?',
+        why:{q:'Why is “But then the esrog went missing!” a mistake?', o:['It adds a new problem at the end','It just stops','It tells what he learned','It is too short'], a:'It adds a new problem at the end'}}],
+    your:[
+      {type:'match', pairs:[['The kiddush cake was saved.','How it worked out'],['Binyamin laughed and let out a long breath.','How he felt'],['Now he holds trays with two hands.','What he learned']],
+        say:'Match each ending sentence to what it tells.', how:'About the problem, about his feeling, or a lesson for next time?'},
+      {type:'tiles', q:'Dovid could not fix his robot alone. Build what he learned.', w:['Now he knew','to ask','for help.'], extra:['broke again'],
+        say:'Build the sentence that tells what he learned.', how:'Start with lesson words. Then what he will do next time.'},
+      {type:'sort', bins:['How he felt','What he learned'], cards:[['He jumped up and cheered.',0],['He learned that patience pays.',1],['His cheeks glowed.',0],['Now he knew to pack spare parts.',1]],
+        say:'How he felt, or what he learned? Sort each one.', how:'A feeling shows in his body or face. A lesson is for next time.',
+        why:{q:'How do you know “Now he knew to pack spare parts” tells what he learned?', o:['It is something he will do from now on','It shows his face','It tells the problem','It is a surprise'], a:'It is something he will do from now on'}},
+      {type:'match', pairs:[['It just stops.','Tell how the problem worked out.'],['It adds a new problem.','Take the new problem out.'],['It never says how he felt.','Show his face, actions or words.']],
+        say:'Match each ending mistake to its fix.', how:'What is missing, or what is extra? Find the fix for that.'},
+      {type:'tiles', q:'Binyamin finally beat Zeidy at chess. Show how he felt.', w:['Binyamin','smiled','at Zeidy.'], extra:['The end.'],
+        say:'Build a sentence that shows how he felt.', how:'Start with who. Then what his face did. Then at whom.'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
