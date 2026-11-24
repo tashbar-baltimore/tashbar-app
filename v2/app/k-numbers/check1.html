@@ -48,7 +48,7 @@
     R.fixing = true; done = d; await FR.say('Show me again.'); GAME.phase = 'answer'; FR.lock(false); H.lock(false); ready(); hooks();
   }
   FR.game({
-    id: 'u1-check', title: 'Show Me!', rounds: 8,
+    id: 'u1-check', title: 'Show Me!', rounds: 8, practice: 'fingers.html',
     hero: '<svg viewBox="0 0 100 100"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><circle cx="42" cy="26" r="4" fill="#fff" opacity=".9"/></svg>',
     init: function (F) { H = F.fingers(0, true); $('bighand').appendChild(H.el); H.onChange = ready; H.lock(true); $('check').addEventListener('click', check); },
     reset: function (F) { plan = F.shuffle([1, 2, 3, 4, 5, 2, 3, 4]); },
@@ -60,7 +60,7 @@
       for (var k = 0; k < 2; k++) { await F.handTo(H.el, .5, .75); await F.handTap(); H.finger(k).classList.remove('down'); NK.sound.pop(); }
       await F.handTo($('check')); await F.handTap(); cloth(true); await F.yes($('bighand'), 'Yes! Two!'); H.set(0);
     },
-    endSay: function (s) { return s >= 2 ? 'Unit one is done! You see how many fast!' : 'Good try! Let\'s practice and try again.'; },
+    endSay: function (s) { return s >= 2 ? 'Unit one is done! You see how many fast!' : 'Good try! Let\'s practice with Finger Flash.'; },
     round: function (F, i) {
       return new Promise(async function (res) {
         var n = plan[i]; R = { n: n }; H.set(0); H.lock(true); GAME.phase = 'flash'; F.lock(true); ready();
