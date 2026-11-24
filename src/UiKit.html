@@ -92,7 +92,7 @@ window.TLK={ X_SVG:X_SVG, HOME_SVG:HOME_SVG, WORDS:WORDS, KINDS:KINDS,
   quiet:function(text,attrs,extra){ return '<button type="button" class="tlk tlk-quiet'+(extra?' '+extra:'')+'"'+A(attrs)+'>'+esc(text)+'</button>'; },
   /* X: closes a pop-up (place "tr") or leaves a lesson (place "tl"; the screen asks "Leave this lesson?" first) */
   x:function(attrs,place,label){ return '<button type="button" class="tlk tlk-x'+(place?' tlk-at-'+place:'')+'" aria-label="'+esc(label||WORDS.close)+'"'+A(attrs)+'>'+X_SVG+'</button>'; },
-  /* HOUSE: leaves a full page (My map, My work, My things), top left. young = a K-3 boy: the bigger button with the house and "Home".
+  /* HOUSE: leaves a full page (My map, My work, My profile), top left. young = a K-3 boy: the bigger button with the house and "Home".
      TLK.young(grade): true for K (0) through grade 3. */
   home:function(attrs,place,young){ return '<button type="button" class="tlk tlk-home'+(young?' tlk-home-k3':'')+(place===''?'':' tlk-at-'+(place||'tl'))+'" aria-label="'+WORDS.home+'"'+A(attrs)+'>'+HOME_SVG+(young?'<span>'+WORDS.home+'</span>':'')+'</button>'; },
   young:function(grade){ var g=Number(grade); return grade!=null&&grade!==''&&!isNaN(g)&&g<=3; },

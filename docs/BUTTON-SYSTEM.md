@@ -9,7 +9,7 @@ The look lives in ONE file, `src/UiKit.html`, and the test `tests/lib/uikit.js` 
 | Main | The one thing to do now | Solid gold, words only, at most one per screen | `TLK.main('Start', 'data-act="…"')` |
 | Quiet | Every other choice | White, thin outline, words only | `TLK.quiet('Not now', …)` |
 | ✕ | Close a pop-up / leave a lesson | Round 44 px, icon only | `TLK.x(attrs, 'tr')` pop-up · `TLK.x(attrs, 'tl')` lesson |
-| House | Leave a full page (My map, My work, My things) | Grade 4+: round 44 px, icon only, top left. **K–3: a bigger button with the house and the word "Home"** (the one exception to "icon or words") | `TLK.home(attrs, 'tl', TLK.young(grade))` |
+| House | Leave a full page (My map, My work, My profile) | Grade 4+: round 44 px, icon only, top left. **K–3: a bigger button with the house and the word "Home"** (the one exception to "icon or words") | `TLK.home(attrs, 'tl', TLK.young(grade))` |
 | Tool | Read it to me, music, hint | Round, one icon, one look per tool everywhere | `TLK.tool(icon, label, attrs)` |
 | Tile | Opens a place | The whole card is the button; no "OPEN ▶" inside | class `tlk tlk-tile` |
 
@@ -19,7 +19,7 @@ The look lives in ONE file, `src/UiKit.html`, and the test `tests/lib/uikit.js` 
 
 ## Where things sit
 - **Pop-up** (bank, trophies, store, passport): one round ✕ **top right**. Nothing else closes it (tapping outside or Escape also closes it).
-- **Full page** (My map, My work, My things): the round **house top left**.
+- **Full page** (My map, My work, My profile): the round **house top left**.
 - **Lesson**: ✕ **top left**; it always asks "Leave this lesson?" with **Keep learning** (main) and **Leave** (quiet).
   Grade 3 and up: a quiet **‹ Back** beside Next on **teaching screens only** (never on questions; never for K–2).
 - Top left always means "out". The corner menu dots stay top right.
