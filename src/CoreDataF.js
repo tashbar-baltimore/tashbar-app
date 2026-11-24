@@ -64,5 +64,9 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.42", "Fork and Storm", "Read and spell or words (bossy r)", { after: "READ.PHON.L02.41", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.43", "Her, Bird, Fur", "Read er, ir and ur, which all say er", { after: "READ.PHON.L02.42", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.44", "Spell Bossy R", "Spell words with ar, or and er", { after: "READ.PHON.L02.43", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
-  ["READ.FLU.L02.22", "Talking in a Story", "Find who is talking and read the talking part with feeling", { after: "READ.PHON.L02.44", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }]
+  ["READ.FLU.L02.22", "Talking in a Story", "Find who is talking and read the talking part with feeling", { after: "READ.PHON.L02.44", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }],
+  ["READ.LIT.L01.01", "Who Is in the Story?", "Listen to a story and name its characters", { after: "READ.COMP.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.02", "Where Is the Story?", "Listen to a story and tell where and when it happens", { after: "READ.LIT.L01.01", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.03", "Problem and Fix", "Listen to a story and tell its problem and how it was fixed", { after: "READ.LIT.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }]
 ];
