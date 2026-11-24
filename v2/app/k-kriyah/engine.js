@@ -473,7 +473,7 @@ export function arrow3d(size = .35, dir = 'down') {
 /* where to look on each letter (font units) and which way the arrow points at it */
 export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right'], hei: [135, 375, 'left'], vov: [235, 560, 'down'], zayin: [250, 560, 'down'], ches: [205, 440, 'left'],
   beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'],
-  lamed: [90, 820, 'down'], mem: [195, 70, 'up'], nun: [310, 50, 'left'],
+  lamed: [90, 820, 'down'], mem: [130, 55, 'right'], nun: [310, 50, 'left'],
   reish: [445, 540, 'left'], kuf: [60, -140, 'right'] };   /* Reish: round on top; Kuf: its long leg */   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
 /* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
 const PAIR_FEAT = { 'tes|mem': [60, 70, 'right'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'], 'daled|reish': [475, 520, 'left'], 'hei|kuf': [60, 60, 'right'] };   /* Daled's corner beside Reish's round top; Hei's short leg beside Kuf's long one */   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
