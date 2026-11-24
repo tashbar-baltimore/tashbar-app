@@ -32,16 +32,16 @@ export function makeStory(E, unit, script) {
     Object.fromEntries(row.map(l => ['row-' + l.userData.key, E.toScreen(E.worldPos(l))])));
   async function morph(picObj, k) {
     const from = E.worldPos(picObj), s0 = picObj.scale.x, l = L[k]; E.sfx.sparkle(); E.sfx.whoosh(); E.sparkle(from.clone().add(new THREE.Vector3(0, 0, .5)), 36, 1.4);
-    l.position.set(P ? .35 : 0, 1.6, .6); l.visible = true; l.scale.setScalar(.01); glow.position.set(P ? .35 : 0, 1.6, -.3);
+    l.position.set(P ? .35 : -.3, P ? 1.6 : 1.45, .6); l.visible = true; l.scale.setScalar(.01); glow.position.set(P ? .35 : -.3, 1.6, -.3);
     await E.tween(1300, q => { picObj.scale.setScalar(Math.max(.001, s0 * (1 - q))); picObj.rotation.y = q * 3; l.scale.setScalar(.01 + q * .99); l.rotation.y = (1 - q) * Math.PI * 2; glow.material.opacity = q * .8; });
     picObj.visible = false; float(l);
   }
   async function letterDone(k) {   /* the new letters wait in a row along the top, right to left */
-    const l = L[k]; float(l, false); const n = unit.letters.length, i = unit.letters.indexOf(k), gap = P ? (n > 3 ? 1.05 : 1.45) : (n > 3 ? 2.3 : 3.0);
-    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i), P ? 4.4 : 3.6, -.5);
-    await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? .28 : .5))); glow.material.opacity = .8 * (1 - q); }); float(l);
+    const l = L[k]; float(l, false); const n = unit.letters.length, i = unit.letters.indexOf(k), gap = P ? (n > 3 ? 1.05 : 1.45) : (n > 3 ? 2.3 : 2.7);
+    const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i) + (!P && n % 2 ? gap / 2 : 0), (P ? 4.4 + l.userData.below * .28 : 3.6), -.5);   /* on a Chromebook no waiting letter sits right above the big one */   /* a long leg (Kuf) waits higher, never touching the big letter */
+    await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? .28 : .42))); glow.material.opacity = .8 * (1 - q); }); float(l);
   }
-  const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : 0, 1.6, .6), q)); };
+  const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : -.3, P ? 1.6 : 1.45, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
   return async () => {
     boy.position.set(P ? -1.3 : -2.0, 0, 1.4); if (grown) grown.position.set(P ? -1.75 : -3.9, 0, P ? .2 : .6); if (P) { boy.scale.setScalar(.75); if (grown) grown.scale.multiplyScalar(.75); }   /* on a phone both are smaller, clear of the big letter */

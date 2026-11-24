@@ -52,7 +52,7 @@ export default function setup(E, { unit }) {
     active = false; delete document.body.dataset.rainReady; homeBtn(true);
   }
   const homeBtn = on => { const h = E.$('#home'); if (h) h.style.display = on ? '' : 'none'; };
-  const keysBut = k => pool.filter(x => x !== k && !(E.quiet(x) && E.quiet(k)));   /* never Alef in an Ayin round: both are quiet */
+  const keysBut = k => pool.filter(x => x !== k && !(E.quiet(x) && E.quiet(k)) && !(E.LETTERS[x].snd && E.LETTERS[x].snd === E.LETTERS[k].snd));   /* never two quiet letters, or two with the same sound (Kuf and Kaf), in one round */   /* never Alef in an Ayin round: both are quiet */
   return async () => {
     E.setProgress(R.length, 0);
     await E.say('Bonus round! Letters are falling from the clouds.');

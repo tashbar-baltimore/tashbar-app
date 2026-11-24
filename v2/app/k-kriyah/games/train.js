@@ -30,7 +30,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   E.onLayout(p => { P = p; S = p ? .5 : 1;
     const lx = p ? (ORDER.length >= 6 ? 1.85 : 1.68) : 4.6, step = p ? (ORDER.length >= 6 ? .6 : .55) : 1.22;   /* on a phone the whole train fits the width */ loco.position.set(lx, 0, .2); loco.scale.setScalar(S); track.scale.set(1, 1, S); track.position.z = .2;
     slotX = ORDER.map((_, i) => lx - (p ? .67 : 1.35) - i * step);
-    homes = ORDER.map((_, i) => p ? new THREE.Vector3(1.3 - (i % 3) * 1.3, i < 3 ? 2.85 : 1.7, .6) : new THREE.Vector3(2.25 - i * .98, 0, 4.2));   /* all inside the screen: on a phone, two rows above the train */   /* waiting on the grass in front of the track */
+    homes = ORDER.map((_, i) => p ? new THREE.Vector3(1.3 - (i % 3) * 1.3, i < 3 ? 3.05 : 1.75, .6) : new THREE.Vector3(2.25 - i * .98, 0, 4.2));   /* all inside the screen: on a phone, two rows above the train */   /* waiting on the grass in front of the track */
     cars.forEach(c => c.userData.letter.scale.setScalar(p ? (ORDER.length >= 6 ? 1.3 : 1.35) : 1));   /* bigger letters on a phone */
     cars.forEach(c => { c.scale.setScalar(c.userData.on ? S : (p ? .75 : .7)); if (c.userData.on) c.position.copy(slotPos(c.userData.slot)); else if (c !== drag) c.position.copy(homes[c.userData.home ?? c.userData.i]); });
     if (p) { E.camBase.set(0, 2.3, 11); E.camTarget.set(0, 1.8, 0); } else { E.camBase.set(0, 2.7, 10.2); E.camTarget.set(0, 1.5, 0); }
