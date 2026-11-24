@@ -42,7 +42,7 @@ Writing is one part of a boy's core day. Reading foundations (F), comprehension 
 | Per grade | K (L01) | Gr 1 (L02) | Gr 2 (L03) | Gr 3 (L04) |
 |---|---|---|---|---|
 | Units | 6 | 6 | 6 | 6 |
-| Small skill lessons | 20 (4–5 min) | 21 (5 min) | 26 (7 min) | 32 (7 min) |
+| Small skill lessons | 20 (4–5 min) | 21 (5 min) | 26 (7 min) | 31 (7 min) |
 | Writing pieces | 30 (a picture and 1–3 sentences; ≈ 12 min) | 30 (a picture and 2–5 sentences; ≈ 15 min) | 14 (sentences, then paragraphs, a letter, stories; ≈ 50 min over 2–3 days) | 14 (paragraphs, stories, a short report, a letter; ≈ 60 min over 2–3 days) |
 | Quick writes (K–1: "say it, draw it"; Gr 2–3: 2–5 sentences about the day's text) | 30 (3 min) | 40 (4 min) | 40 (5 min) | 40 (6 min) |
 | Unit checks | 6 (5 min) | 6 (6 min) | 6 (10 min) | 6 (10 min) |
