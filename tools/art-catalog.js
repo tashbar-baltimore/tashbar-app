@@ -241,6 +241,8 @@ function check() {
     if (f.kind === 'pics') { const w = widthOf(b); if (w == null) problems.push('art/' + f.rel + ': cannot read the picture size'); else if (w > MAX_W) problems.push('art/' + f.rel + ' is too wide (' + w + ' px, max ' + MAX_W + ')'); }
     const h = sha(b); if (byHash.has(h)) problems.push('the same file is in the library twice: art/' + byHash.get(h) + ' and art/' + f.rel + ' (keep one)'); else byHash.set(h, f.rel); }
   for (const f of listDir(ART)) if (!/^(README|CATALOG)\.md$/.test(f)) problems.push('art/' + f + ': put art in art/pics, art/originals, art/sounds or art/models');
+  /* the old places (before 2026-11-24): art lives only in art/, one copy (a merge from an old branch can bring them back) */
+  for (const d of ['web/pics', 'web/sounds', 'voice-samples']) for (const f of listDir(path.join(ROOT, d))) problems.push(d + '/' + f + ': art lives only in the shared library art/ (one copy); move it there with its catalog row, or delete this old copy');
   return problems;
 }
 
