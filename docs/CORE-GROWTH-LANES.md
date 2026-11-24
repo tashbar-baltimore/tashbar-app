@@ -12,7 +12,7 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 ## Jobs
 | Order | Job | Status | Owner (session link) | Taken on | Last update | Where I am | Needs |
 |---|---|---|---|---|---|---|---|
-| 1 | **T · Tools** (Reader, Writing Workshop and teacher inbox, unit checks and test-out, new activity kinds, content store, how to add a skill, style sheets) | TAKEN | https://claude.ai/code/session_01WBvMX2ukMEquyXqwaDMAGw | 2026-11-24 | 2026-11-24 02:30 UTC | Piece 1 (how to add a skill) built on branch `claude/core-T-add-skill`, testing; next: content store, then Reader | none; start first |
+| 1 | **T · Tools** (Reader, Writing Workshop and teacher inbox, unit checks and test-out, new activity kinds, content store, how to add a skill, style sheets) | TAKEN | https://claude.ai/code/session_01WBvMX2ukMEquyXqwaDMAGw | 2026-11-24 | 2026-11-24 05:30 UTC | LIVE: how to add a skill (#288, `HOW-TO-ADD-A-SKILL.md`), content store (#304, `HOW-TO-ADD-A-TEXT.md`). In PR: Reader (#305), style sheets + picture order T-1 (#303). Built and tested, PRs next: 7 new activity kinds (`claude/core-T-activities`), Writing Workshop + teacher inbox (`claude/core-T-writing`, `HOW-TO-ADD-A-WRITING-TASK.md`). Next: unit checks and test-out, minutes ledger report | none; start first |
 | 2 | **D · The daily plan** (replace "3 lessons, then the Arcade" with today's list of material to cover; daily bonus when the whole list is done; every payment says what it is for) | TAKEN | https://claude.ai/code/session_01TScHB4zG82RAGTetxXcxpj | 2026-11-24 | 2026-11-24 02:45 UTC | Plan in #284; building today's list for TEST- boys (server list check, daily bonus on the whole list, My work rows) | none; can start now |
 | 3 | **F · Foundations K–2** | TAKEN | https://claude.ai/code/session_01JPKZXHjMHR8MBsBECX3W7A | 2026-11-24 | 2026-11-24 05:00 UTC | Skill map + ledger in (`docs/core-growth/F-map.md`, `F-ledger.md`); Grade 2 Unit 1: 3 new lessons in final review | T for lesson PRs; can start the map now |
 | 4 | **C45 · Comprehension Gr 4–5** | TAKEN | https://claude.ai/code/session_01JPKZXEMq9S1KawXgCw533p | 2026-11-24 | 2026-11-24 03:17 UTC | Skill map + ledger in review (`docs/core-growth/C45-map.md`); next: Units 4.1 + 5.1 and Book B1 ch. 1–3, lessons once T's how-to is merged | T for lesson PRs; can start the map now |
@@ -41,6 +41,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | C45 | Fluency passages, Grades 4 and 5 (50, from the unit texts) | OPEN | | |
 | G | Grades 6–8 (L07–L09), Units 1–6 (see `docs/core-growth/G-map.md`) | OPEN | | |
 | G | Word Work sets for C45 and C68 texts (Grades 4–8), once their Shared texts are listed | OPEN | | |
+| T | Minutes ledger report: `tools/core/ledger.js` reads every job's `docs/core-growth/<job>-ledger.md` and the `min` of each listed skill, and writes the hours per grade per strand into the Ledger table below (prompt section 7, T(8)) | OPEN | | |
 
 ## Casts (recurring characters, one per band)
 | Band | Cast note | Written by |
