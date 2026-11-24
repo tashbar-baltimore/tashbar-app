@@ -53,7 +53,7 @@
     return it.t === 'mc' ? { skill: id, kind: 'mc', q: it.q, p: it.p || '', o: it.shown.slice(), a: it.correct } : { skill: id, kind: 'order', q: it.q, p: it.p || '', tiles: it.tiles.slice() };
   }
   function build(u, mode) {
-    var used = {}, out = [], extra = (u.items || []).filter(function (x) { return x && x.skill; });
+    var used = {}, out = [], extra = (u.items || []).filter(function (x) { var ty = x && W.OBK && OBK.types[x.type]; return x && x.skill && !(ty && ty.reader); });   /* again here: a unit added before the kit loaded was not checked for Reader kinds */
     var per = function (id) { var own = extra.filter(function (x) { return x.skill === id && !x.__used; })[0]; if (own) { own.__used = 1; return { skill: id, kind: 'kit', act: own }; } return fromSkill(id, used); };
     u.skills.forEach(function (id) { var q = per(id); if (q) out.push(q); });
     if (mode === 'check') {

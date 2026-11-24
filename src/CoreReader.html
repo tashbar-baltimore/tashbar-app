@@ -69,7 +69,7 @@
      exit       'home' (a full page: the house, top left) or 'x' (inside a lesson: the X, top left). Default 'home'.
      page       start at this page (0 = first). Default: where he stopped last time.
      ask        "tap the sentence that proves it": { q: 'Which sentence shows Avi was surprised?', proof: [sentence numbers] or 'words in the sentence',
-                how: 'Find the words that tell how Avi felt.', look: 'how Avi felt' }. The whole text is the answer area.
+                how: 'Find the words that tell how Avi felt.', look: 'how Avi felt', tries: misses he already used on this question (0-2) }. The whole text is the answer area.
                 Opens on the page that holds the proof. Ends with proof = { right, tries } (no answer is shown before his own tries).
    Sentence numbers are TLCORE.textSentences(text) order. Progress is kept in the boy's state (st.reads[id] = last page, or 'd' when done).
    Uses only the button system (window.TLK). No money here. */
@@ -211,7 +211,7 @@
   function finish(done) {
     if (!S) return; var res = { id: S.t.id, page: S.p, pages: S.t.pages.length, done: !!done, words: S.tapped, proof: S.ask ? { right: !!S.ask.ok && S.ask.over, tries: S.ask.tries } : null };
     if (!S.ask) keep(S.t.id, done ? 'd' : S.p, true);   /* a question never changes where he stopped reading, or marks the chapter done */
-    stopRead(); closeBubble(); var r = S.resolve, el = S.el; S = null; document.removeEventListener('keydown', onKey, true);
+    stopRead(); closeBubble(); clearInterval(S.watch); var r = S.resolve, el = S.el; S = null; document.removeEventListener('keydown', onKey, true);
     if (el) el.remove(); try { document.body.classList.remove('crd-open'); } catch (e) {}
     r(res);
   }
@@ -261,7 +261,7 @@
           if (Array.isArray(pr)) idx = pr.map(Number).filter(function (i) { return i >= 0 && i < sents.length; });
           else if (pr) { var low = String(pr).toLowerCase(); sents.forEach(function (x, i) { if (x.s.toLowerCase().indexOf(low) >= 0) idx.push(i); });
             if (idx.length > 1) { console.error('Reader: the proof "' + pr + '" matches ' + idx.length + ' sentences in ' + id + '; write words from ONE sentence'); idx = []; } }
-          if (idx.length) ask = { q: opts.ask.q, how: opts.ask.how, look: opts.ask.look, proofIdx: idx, tries: 0, over: false, ok: false, fb: '', marks: [] };
+          if (idx.length) ask = { q: opts.ask.q, how: opts.ask.how, look: opts.ask.look, proofIdx: idx, tries: Math.max(0, Math.min(2, Number(opts.ask.tries) || 0)), over: false, ok: false, fb: '', marks: [] };
           else console.error('Reader: the proof for "' + opts.ask.q + '" is not in ' + id);
         }
         var start = opts.page != null ? Number(opts.page) : lastPage(id); if (!(start >= 0 && start < t.pages.length)) start = 0;
@@ -272,6 +272,7 @@
         el.addEventListener('click', onClick); el.addEventListener('pointermove', onMove); el.addEventListener('touchmove', onMove, { passive: true });
         el.querySelector && el.addEventListener('scroll', closeBubble, true);
         document.addEventListener('keydown', onKey, true);
+        S.watch = setInterval(function () { try { if (S && typeof A !== 'undefined' && A && !A.st) finish(false); } catch (e) {} }, 1000);   /* signed out (Sign out, or the idle timer): the book closes, so the next boy never finds it open */
         draw();
       });
     });

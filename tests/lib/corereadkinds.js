@@ -1,7 +1,7 @@
 /* Core Growth (job T): the "read" and "proof" activity kinds (src/CoreKitActs.html) open the Reader from a lesson's data alone.
    1. Played inside the REAL One Bite player as a TEST- boy, with the made-up chapter tests/fixtures/ZZTEST.KEY.01.txt (core.js serves it):
       read: Open the book, close it early (he is told to read to the end), open again, read to the end: the activity is right.
-      proof: Find the proof, one wrong sentence (the Reader says what to look for), then the proof: right, but not first try.
+      proof: Find the proof, one wrong sentence (the Reader says what to look for), close and open again (the miss is kept), then the proof: right, but not first try.
       The lesson goes on to the next activity both times. Unit checks and K-1 games refuse these two kinds.
    2. Every real lesson that uses them names a text that is in texts/, and a proof that is in exactly ONE sentence of it; read only in "do". */
 const path = require('path');
@@ -47,9 +47,14 @@ module.exports = async function (pg) {
       out.seen.proofQ = (Q('#app .obk-q') || {}).textContent || '';
       Q('#app [data-obk=open]').click(); if (!await until(() => Q('#crd.pick'))) throw new Error('proof: the Reader question did not open');
       out.seen.proofShows = shows(); const S = TLCORE.reader.state(), want = S.ask.proof[0], wrong = [...document.querySelectorAll('#crd [data-crds]')].map(x => +x.getAttribute('data-crds')).find(i => i !== want);
+      const m0 = p.misses;
       Q('#crd [data-crds="' + wrong + '"]').click(); await sleep(60); out.seen.miss = (Q('#crd .crd-fb') || {}).textContent || '';
+      /* he closes the book and opens it again: the miss must not be wiped out */
+      Q('#crd [data-crd=exit]').click(); await until(() => !Q('#crd') && Q('#app [data-obk=open]:not([disabled])'));
+      Q('#app [data-obk=open]').click(); if (!await until(() => Q('#crd.pick'))) throw new Error('proof: the question did not open again');
+      out.seen.triesKept = TLCORE.reader.state().ask.tries;
       Q('#crd [data-crds="' + want + '"]').click(); await sleep(60); Q('#crd [data-crd=finish]').click(); await until(() => p.ob.kit.s.over);
-      out.seen.proofRes = Object.assign({}, p.results[p.ob.krec.length - 1] || {}); out.seen.proofOk = p.ob.kit.s.ok;
+      out.seen.proofRes = Object.assign({}, p.results[p.ob.krec.length - 1] || {}); out.seen.proofOk = p.ob.kit.s.ok; out.seen.missAdded = p.misses - m0;
       Q('#app .ob-foot [data-ob=knext]').click(); await sleep(20); out.seen.after = p.ob.stage + ':' + (p.ob.kit ? p.ob.kit.acts[p.ob.kit.i].type : '');
       out.seen.wide = document.documentElement.scrollWidth > innerWidth + 1;
     } catch (e) { out.bad.push(String(e.message || e).slice(0, 300)); }
@@ -71,6 +76,7 @@ module.exports = async function (pg) {
     if (!/surprised/.test(s.proofQ)) fails.push('proof: the question must show before the book opens');
     if (!/look for|does not say/i.test(s.miss)) fails.push('proof: a wrong sentence must say what to look for (got "' + s.miss + '")');
     if (!s.proofOk || !s.proofRes.ok || s.proofRes.first) fails.push('proof: found on the second try must count as right, not first try (' + JSON.stringify(s.proofRes) + ')');
+    if (s.triesKept !== 1 || s.missAdded !== 1) fails.push('proof: closing and opening the book again must keep his miss (tries ' + s.triesKept + ', lesson misses +' + s.missAdded + ')');
     if (s.after !== 'wiggle:' && s.after !== 'your:cloze') fails.push('the lesson must go on after the two Reader activities (got ' + s.after + ')');
     if (s.wide) fails.push('read and proof kinds: the page scrolls sideways');
   }
