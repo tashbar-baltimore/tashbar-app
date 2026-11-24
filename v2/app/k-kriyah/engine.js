@@ -226,7 +226,16 @@ function starTex() { const cv = document.createElement('canvas'); cv.width = cv.
   for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4, r = i % 2 ? 9 : 32; x.lineTo(32 + Math.cos(a) * r, 32 + Math.sin(a) * r); } x.fill(); const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; return t; }
 
 export const world = { group: null, clouds: [] };
-export function buildWorld({ trees = true, flowers = true } = {}) {
+/* ---------------- painted backgrounds (made with ChatGPT; art/bg) ---------------- */
+export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5: 'picnic' };
+export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'street', detective: 'street', hunt: null };   /* the sukkah hunt keeps its 3D world */
+export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
+export let backdrop = null;
+export function setBackdrop(name) { backdrop = name || null; document.body.style.background = name ? `#8fd8ff url(art/bg/${name}.jpg) center 64% / cover no-repeat` : ''; }
+export function buildWorld({ trees = true, flowers = true, backdrop: bd = null } = {}) {
+  if (bd) {   /* a painted scene behind; only a see-through ground that catches shadows, so the children and letters stand in it */
+    setBackdrop(bd); const w = new THREE.Group(); scene.add(w); world.group = w;
+    const g = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.ShadowMaterial({ opacity: .28 })); g.rotation.x = -Math.PI / 2; g.receiveShadow = true; w.add(g); return w; }
   /* the outdoor world: green hills, a little village far away, a fence, many kinds of trees, bushes, rocks, flowers, butterflies, birds and clouds.
      Everything stays at the sides and the back, so the middle, where the letters are, stays clear. */
   const w = new THREE.Group(); scene.add(w); world.group = w;
