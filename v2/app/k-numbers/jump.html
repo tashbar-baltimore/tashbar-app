@@ -43,10 +43,13 @@
     NK.unlock(); if (GAME.phase !== 'answer') return;
     var d = $('drum'); d.classList.remove('hit'); void d.offsetWidth; d.classList.add('hit'); setTimeout(function () { d.classList.remove('hit'); }, 150); NK.sound.clap();
     if (P.at >= P.nums.length - 1) { NK.hush(); NK.say('That is the end!', { noRepeat: true }); return; }
-    P.place(P.at + 1, true); NK.hush(); NK.say(U2.Word(P.nums[P.at]) + '!', { noRepeat: true }); ready(); hooks();
+    /* he says the number first; a moment later the voice says it too (a new tap cancels the old one) */
+    P.place(P.at + 1, true); NK.hush(); var n = P.nums[P.at], my = ++sayTok;
+    setTimeout(function () { if (my === sayTok) NK.say(U2.Word(n) + '!', { noRepeat: true }); }, NK.fast ? 0 : 650); ready(); hooks();
   }
+  var sayTok = 0;
   async function check() {
-    NK.unlock(); if (GAME.phase !== 'answer' || P.at < 0) return; GAME.phase = 'busy'; FR.lock(true);
+    NK.unlock(); if (GAME.phase !== 'answer' || P.at < 0) return; GAME.phase = 'busy'; FR.lock(true); sayTok++; NK.hush();
     var at = P.nums[P.at];
     if (at === R.t) { var d = done; done = null; await FR.yes(P.stones[P.at], 'Yes! You stopped at ' + U2.word(R.t) + '!'); d(R.misses === 0); return; }
     FR.oops(P.stones[P.at]); R.misses++;
@@ -63,11 +66,11 @@
       if (pl.stand) await F.say('Stand up! Jump each time you tap!');
       await F.say('Hop to ' + U2.word(pl.t) + '!', { repeat: 'Hop to ' + U2.word(pl.t) + '! Tap the drum, then check.' });
       done = res; GAME.phase = 'answer'; F.lock(false); ready(); hooks();
-      if (i === 0) await F.say('Tap the drum to count.');
+      if (i === 0) { await F.say('Tap the drum to count.'); await F.say('Say each number. Then I say it too.'); }
     });
   }
   FR.game({
-    id: 'u2-jump', title: 'Count and Jump', rounds: 5,
+    id: 'u2-jump', title: 'Count and Jump', rounds: 5, bonusSay: 'Bonus! Hop past ten!',
     hero: '<div style="width:60%">' + U2.DRUM + '</div>',
     init: function () { $('drum').innerHTML = U2.DRUM; $('drum').addEventListener('pointerdown', function (e) { e.preventDefault(); drum(); }); $('check').addEventListener('click', check); },
     reset: function () { lastEasy = 0; },

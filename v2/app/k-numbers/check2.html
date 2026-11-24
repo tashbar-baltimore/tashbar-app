@@ -29,7 +29,15 @@
     hero: '<svg viewBox="0 0 100 100" style="width:56%"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/></svg>',
     endSay: function (s) { return s >= 2 ? 'Unit two is done! You can count to ten!' : 'Good try! Let\'s practice and try again.'; },
     plan: function (i) { return PLAN[i]; },
-    demo: async function (F) { await F.say("Let's show what you learned!"); await F.say('Listen, then find what comes next.'); }
+    demo: async function (F, setup) {
+      await F.say("Let's show what you learned!");
+      var x = setup({ from: 1, to: 5, startN: 1, gapN: 3 }); await U2.countAlong(x.P, 0, 1); await F.say('What comes next? Watch me.');
+      var loose = [].slice.call(document.querySelectorAll('#loose .u2stone')), bad = loose.filter(function (s) { return s.dataset.n !== '3'; })[0], good = loose.filter(function (s) { return s.dataset.n === '3'; })[0];
+      await F.handTo(bad); await F.handTap(); await F.say(U2.Word(+bad.dataset.n) + '! Not that one.', { noRepeat: true });
+      await F.handTo(good); await F.handTap(); await F.say('Three! That one.', { noRepeat: true });
+      await F.handDrag(good, x.P.stones[2]); good.remove(); x.P.fill(2); x.P.place(2, true);
+      await F.yes(x.P.stones[2], 'Tap to hear, then drag it in.');
+    }
   });
 })();
 </script>

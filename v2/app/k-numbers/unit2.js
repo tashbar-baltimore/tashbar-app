@@ -24,7 +24,7 @@
     '.u2stone.bad{ animation:shake .45s; box-shadow:0 7px 0 #C0392B, 0 0 0 6px rgba(255,90,78,.45); }',
     '.u2ball{ position:absolute; width:var(--bw,60px); height:var(--bw,60px); left:0; top:0; z-index:4; pointer-events:none; transition:left .32s ease-in-out, top .32s ease-in-out; filter:drop-shadow(0 8px 5px rgba(0,0,0,.3)); }',
     '.u2ball.hop svg{ animation:u2hop .32s ease-in-out; } @keyframes u2hop{ 50%{ transform:translateY(-34px) scale(1.05,.95); } }',
-    '.u2loose{ display:flex; gap:clamp(14px,3vw,36px); justify-content:center; min-height:clamp(84px,14vh,120px); }',
+    '.u2loose{ display:flex; gap:clamp(14px,3vw,36px); justify-content:center; align-items:center; min-height:clamp(84px,14vh,120px); }',
     '.u2loose .u2stone{ width:clamp(84px,14vh,120px); cursor:grab; }',
     '.u2loose .u2stone.picked{ box-shadow:0 7px 0 #C98A00, 0 0 0 7px rgba(255,201,61,.7); }',
     '.u2drum{ width:clamp(150px,30vh,250px); aspect-ratio:1; border-radius:50%; position:relative; cursor:pointer; touch-action:none; background:none; border:0; }',
@@ -63,9 +63,9 @@
       var s = stones[i], w = s.offsetWidth * .62; ball.style.setProperty('--bw', w + 'px'); ball.style.opacity = 1;
       ball.style.left = (s.offsetLeft + s.offsetWidth / 2 - w / 2) + 'px'; ball.style.top = (s.offsetTop - w * .85) + 'px';
       if (hop) { ball.classList.remove('hop'); void ball.offsetWidth; ball.classList.add('hop'); NK.sound.pop(); }
-      stones.forEach(function (x, k) { x.classList.toggle('lit', k === i); if (k < i && !x.classList.contains('gap')) x.classList.add('been'); });
+      stones.forEach(function (x, k) { x.classList.toggle('lit', k === i); if (k < i && k >= (api.lo || 0) && !x.classList.contains('gap')) x.classList.add('been'); });
     };
-    api.reset = function () { stones.forEach(function (x) { x.className = 'u2stone' + (+x.dataset.n > 10 ? ' star' : ''); x.innerHTML = U2.dots(+x.dataset.n); }); api.place(-1); };
+    api.reset = function () { stones.forEach(function (x) { x.className = 'u2stone' + (+x.dataset.n > 10 ? ' star' : ''); x.innerHTML = U2.dots(+x.dataset.n); }); api.lo = null; api.place(-1); };
     api.gap = function (i) { stones[i].classList.add('gap'); stones[i].classList.remove('lit', 'been'); };
     api.fill = function (i) { stones[i].classList.remove('gap'); };
     addEventListener('resize', function () { if (api.at >= 0) api.place(api.at); });
@@ -73,6 +73,7 @@
   };
   /* count along the path from stone a to stone b (inclusive), saying each number */
   U2.countAlong = async function (P, a, b, gapStop) {
+    if (P.lo == null || a < P.lo) P.lo = a;   /* stones before where we started stay plain */
     for (var i = a; i <= b; i++) { if (gapStop && P.stones[i].classList.contains('gap')) return i; P.place(i, true); await FR.say(FR.Word(P.nums[i]) + (i === b ? '.' : ','), { noRepeat: true }); }
     return -1;
   };
@@ -119,14 +120,14 @@
       GAME.phase = 'answer'; FR.lock(false); hooks();
     }
     FR.game({
-      id: o.id, title: o.title, rounds: o.rounds, hero: o.hero, endSay: o.endSay, chant: o.chant,
+      id: o.id, title: o.title, rounds: o.rounds, hero: o.hero, endSay: o.endSay, chant: o.chant, bonusSay: o.bonus && o.bonus.say,
       init: function (F) {
         F.dragTap({ sources: '#loose .u2stone', targets: '#path .u2stone.gap', drop: drop });
         document.addEventListener('pointerdown', function (e) { var s = e.target.closest('#loose .u2stone'); if (s && GAME.phase === 'answer') { NK.hush(); NK.say(U2.Word(+s.dataset.n) + '!', { noRepeat: true }); } });
         if (o.init) o.init(F);
       },
       demo: o.demo ? async function (F) { await o.demo(F, function (pl) { return setup(pl); }); } : null,
-      bonus: o.bonus ? function (F) { return round(F, 0, o.bonus); } : null,
+      bonus: o.bonus ? function (F) { var b = Object.assign({}, o.bonus); delete b.say; return round(F, 9, b); } : null,
       /* a missed round adds a short, easier round (1-5) right after it; the main rounds stay the same */
       round: async function (F, i) {
         var r = await round(F, i, o.plan(i));

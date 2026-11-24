@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mendy's Mistake — Kindergarten Numbers</title>
 <!-- Kindergarten Numbers, Unit 2, game 4: FIND THE MISTAKE. Skill: hear when the counting words are out of order.
-     Mendy counts along the stones (the ball hops with each word). Did he skip a number, say one twice, or mix two up?
-     He taps the stone where Mendy went wrong, or the thumbs up when Mendy counted right. Then we count it right together.
-     Mistake: listen again (Mendy counts again); second time the stone glows and we say why. -->
+     A boy counts along the stones (the ball hops with each word); under each stone a little bubble keeps what he said, in dots.
+     Did he skip a number, say one twice, or mix two up? He taps a stone where it went wrong, or thumbs up if he counted right.
+     A wrong tap says why ("Mendy said three here. That is right."), then he tries again; the second time we show it and count it right. -->
 <link rel="stylesheet" href="frame.css">
 <link rel="stylesheet" href="u2.css">
 <style>
@@ -16,13 +16,19 @@
 #ok{ width:clamp(120px,18vh,150px); aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; }
 #ok svg{ width:60%; height:60%; position:relative; }
 #path .u2stone.tapme{ cursor:pointer; }
+#path .u2path{ row-gap:clamp(60px,9vh,80px); }
+.said{ position:absolute; left:50%; top:100%; width:78%; aspect-ratio:1.5; transform:translate(-50%,18%); border-radius:16px; background:#fff; box-shadow:0 4px 0 rgba(40,70,140,.18); pointer-events:none; }
+.said::before{ content:''; position:absolute; left:50%; top:-9px; margin-left:-9px; border:9px solid transparent; border-top:0; border-bottom:10px solid #fff; }
+.said .u2mini{ position:absolute; inset:6%; }
+.said .u2mini .dd, .said .u2mini .dice{ inset:0; }
+.said.off{ background:#FFE9E6; box-shadow:0 4px 0 rgba(192,57,43,.35), 0 0 0 3px rgba(255,90,78,.55); }
 </style>
 </head>
 <body>
 <div id="game" class="locked"><div class="stage" id="stage">
   <div class="carrow" id="carrow"></div>
   <div id="path"></div>
-  <div class="okrow"><button class="btn3d b-green" id="ok" aria-label="Mendy is right"><svg viewBox="0 0 64 64"><path d="M14 30h9v24h-9z" fill="#fff"/><path d="M27 30l9-17c2-4 9-3 8 3l-2 10h11c4 0 6 3 5 7l-4 17c-1 3-3 4-6 4H27z" fill="#fff"/></svg></button></div>
+  <div class="okrow"><button class="btn3d b-green" id="ok" aria-label="He counted right"><svg viewBox="0 0 64 64"><path d="M14 30h9v24h-9z" fill="#fff"/><path d="M27 30l9-17c2-4 9-3 8 3l-2 10h11c4 0 6 3 5 7l-4 17c-1 3-3 4-6 4H27z" fill="#fff"/></svg></button></div>
 </div></div>
 <script src="kit.js"></script>
 <script src="frame.js"></script>
@@ -30,8 +36,8 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var P, R, done;
-  /* what Mendy says on each stone: one mistake (or none) */
+  var P, R, done, lastEasy = 0;
+  /* what he says on each stone: one mistake (or none) */
   function words(len, kind, at) {
     var w = []; for (var i = 1; i <= len; i++) w.push(i);
     if (kind === 'skip') for (i = at; i < len; i++) w[i] = i + 2;
@@ -39,64 +45,63 @@
     if (kind === 'swap') { var t = w[at]; w[at] = w[at + 1]; w[at + 1] = t; }
     return w;
   }
-  var PLAN = [{ len: 5, kind: 'skip', at: 3 }, { len: 5, kind: 'none' }, { len: 6, kind: 'twice', at: 3 }, { len: 7, kind: 'skip', at: 5 }, { len: 7, kind: 'swap', at: 2 }, { len: 8, kind: 'skip', at: 6 }];
-  async function mendy(F) {
-    P.reset(); await F.say(R.who + ' counts. Listen!', { noRepeat: true });
-    for (var i = 0; i < R.w.length; i++) { P.place(i, true); await F.say(U2.Word(R.w[i]) + (i === R.w.length - 1 ? '.' : ','), { noRepeat: true }); }
-    P.place(-1);
+  var PLAN = [{ len: 5, kind: 'skip', at: 3 }, { len: 5, kind: 'none' }, { len: 6, kind: 'twice', at: 3 }, { len: 6, kind: 'swap', at: 2 }];
+  function bubble(i) { var b = document.createElement('div'); b.className = 'said'; b.innerHTML = '<span class="u2mini">' + U2.dots(R.w[i]) + '</span>'; P.stones[i].appendChild(b); }
+  async function count(F) {
+    P.reset(); P.stones.forEach(function (s) { s.classList.add('tapme'); });
+    for (var i = 0; i < R.w.length; i++) { P.place(i, true); bubble(i); await F.say(U2.Word(R.w[i]) + (i === R.w.length - 1 ? '.' : ','), { noRepeat: true }); }
   }
+  /* a stone counts as "found" if the word there is wrong, or (said twice) it is either of the two same words */
+  function isFound(i) { if (i < 0) return R.bad < 0; if (R.w[i] !== i + 1) return true; return R.kind === 'twice' && R.w[i] === R.w[R.bad]; }
   function hooks() {
     GAME.right = function () { return [{ tap: R.bad < 0 ? '#ok' : '#st' + R.bad }]; };
-    GAME.wrong = function () { return [{ tap: R.bad < 0 ? '#st1' : (R.bad === 0 ? '#st1' : '#st0') }]; };
+    GAME.wrong = function () { return [{ tap: R.bad < 0 ? '#st1' : '#st0' }]; };
   }
-  async function fixIt(F) {
-    if (R.bad >= 0) { P.stones[R.bad].classList.add('lit'); await F.say(R.who + ' said ' + U2.word(R.w[R.bad]) + ' here.'); await F.say('This is ' + U2.word(R.bad + 1) + '.'); }
-    await F.say("Let's count it right!"); P.reset(); await U2.countAlong(P, 0, R.w.length - 1);
+  async function showRight(F) {   /* short: light the stone, say why, count up to just past it */
+    var b = R.bad; P.stones[b].querySelector('.said').classList.add('off'); P.stones[b].classList.add('lit');
+    await F.say(R.who + ' said ' + U2.word(R.w[b]) + ' here.'); await F.say('This stone is ' + U2.word(b + 1) + '.');
+    P.reset(); await U2.countAlong(P, 0, Math.min(R.w.length - 1, b + 1));
   }
   async function pick(where) {
     NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
-    /* any stone where the word is wrong counts as finding the mistake (after a skip, every later word is off too) */
-    var found = R.bad < 0 ? where < 0 : (where >= 0 && R.w[where] !== where + 1);
-    if (found) {
+    if (isFound(where)) {
       var d = done; done = null;
       if (R.bad < 0) { await FR.yes($('ok'), 'Yes! ' + R.who + ' counted right!'); d(R.misses === 0); return; }
-      NK.sound.yes(); await FR.say('Yes! You found it!'); await fixIt(FR); await FR.yes(P.stones[R.bad], 'Now it is right!'); d(R.misses === 0); return;
+      NK.sound.yes(); await FR.say('Yes! You found it!'); await showRight(FR); await FR.yes(P.stones[R.bad], 'Now it is right!'); d(R.misses === 0); return;
     }
     FR.oops(where < 0 ? $('ok') : P.stones[where]); R.misses++;
-    if (R.misses === 1) { await FR.say("Let's look and listen again."); await mendy(FR); await FR.say('Where did ' + R.who + ' go wrong?'); GAME.phase = 'answer'; FR.lock(false); hooks(); return; }
+    if (where >= 0) await FR.say(R.who + ' said ' + U2.word(R.w[where]) + ' here. That is right.');
+    if (R.misses === 1) { await FR.say('Look and listen again. Did he make a mistake?'); await count(FR); GAME.phase = 'answer'; FR.lock(false); hooks(); return; }
     var d2 = done; done = null;
-    await (R.bad < 0 ? FR.say(R.who + ' counted right this time.') : fixIt(FR)); d2(false);
+    if (R.bad < 0) await FR.say(R.who + ' counted right this time.'); else await showRight(FR);
+    d2(false);
   }
-  var lastEasy = 0;
-  function play(F, pl, who, intro) {
+  function play(F, pl, who) {
     return new Promise(async function (res) {
       GAME.phase = 'busy'; F.lock(true);
-      P = U2.path($('path'), { from: 1, to: pl.len }); P.stones.forEach(function (s) { s.classList.add('tapme'); });
-      R = { who: who, w: words(pl.len, pl.kind, pl.at), bad: pl.kind === 'none' ? -1 : pl.at, misses: 0 };
-      if (intro) await F.say(intro);
-      await mendy(F); done = res; GAME.phase = 'answer'; F.lock(false); hooks();
-      NK.last = R.who + ' said: ' + R.w.map(U2.word).join(', ') + '.';
-      await F.say('Did ' + who + ' make a mistake? Tap it. Thumbs up if not.', { repeat: NK.last });
+      P = U2.path($('path'), { from: 1, to: pl.len });
+      R = { who: who, kind: pl.kind, w: words(pl.len, pl.kind, pl.at), bad: pl.kind === 'none' ? -1 : pl.at, misses: 0 };
+      await F.say(who + ' counts. Listen!'); await count(F);
+      done = res; GAME.phase = 'answer'; F.lock(false); hooks();
+      await F.say('Did ' + who + ' make a mistake? Tap it. Thumbs up if not.', { repeat: who + ' said: ' + R.w.map(U2.word).join(', ') + '.' });
     });
   }
   FR.game({
-    id: 'u2-mistake', title: "Mendy's Mistake", rounds: 6,
+    id: 'u2-mistake', title: "Mendy's Mistake", rounds: 4, bonusSay: 'Bonus! A long count. Listen hard!',
     hero: '<div class="u2stone" style="width:26%">' + U2.dots(3) + '</div><div class="u2stone" style="width:26%;box-shadow:0 7px 0 #C0392B,0 0 0 6px rgba(255,90,78,.45)">' + U2.dots(4) + '</div>',
     init: function () {
       document.addEventListener('pointerdown', function (e) { var s = e.target.closest('#path .u2stone'); if (s) { e.preventDefault(); pick(+s.dataset.i); } });
       $('ok').addEventListener('click', function () { pick(-1); });
     },
     demo: async function (F) {
-      P = U2.path($('path'), { from: 1, to: 5 }); R = { who: 'Mendy', w: words(5, 'skip', 2), bad: 2, misses: 0 };
-      await F.say('Mendy is counting. Did he make a mistake?');
-      await mendy(F);
-      await F.say('He said four on the three stone!');
-      await F.say('I tap the stone where he went wrong.');
+      P = U2.path($('path'), { from: 1, to: 4 }); R = { who: 'Mendy', kind: 'skip', w: words(4, 'skip', 2), bad: 2, misses: 0 };
+      await F.say('Mendy counts. Did he make a mistake?'); await count(F);
+      await F.say('Look! He said four on the three stone.');
       await F.handTo(P.stones[2]); await F.handTap(); NK.sound.yes();
-      await fixIt(F); await F.handTo($('ok')); await F.say('No mistake? Tap thumbs up.');
+      await showRight(F); await F.handTo($('ok')); await F.say('No mistake? Tap thumbs up.');
     },
-    bonus: function (F) { return play(F, { len: 10, kind: 'skip', at: 8 }, 'Moshe', 'Bonus! A long count. Listen hard!'); },
-    /* a missed round adds a short, easier round (1-5) right after it; the main rounds stay the same */
+    bonus: function (F) { return play(F, { len: 9, kind: 'skip', at: 7 }, 'Moshe'); },
+    /* a missed round adds a short, easier round right after it; the main rounds stay the same */
     round: async function (F, i) {
       var r = await play(F, PLAN[i], F.NAMES[(i * 3) % F.NAMES.length]);
       if (!r) { var at; do { at = 2 + Math.floor(Math.random() * 2); } while (at === lastEasy); lastEasy = at;
