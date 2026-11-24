@@ -14,5 +14,10 @@ CORE_SKILLS.C45 = [
   ["READ.COMP.L06.07", "Two Clues, One Inference", "Join clues from different places into one inference", { std: "RL.5.1", file: "CoreDataC452", min: 8 }],
   ["READ.COMP.L06.08", "Strongest Evidence", "Pick the quote that proves it best", { std: "RL.5.1", file: "CoreDataC452", min: 8 }],
   ["READ.COMP.L06.09", "Draw a Conclusion", "Build a conclusion from facts and prove it", { std: "RI.5.1", file: "CoreDataC452", min: 8 }],
-  ["READ.FLU.L06.01", "Prefix-Suffix Peel", "Peel prefixes and suffixes to read long words", { after: "READ.COMP.L06.09", std: "RF.5.3a", file: "CoreDataC452", min: 8 }]
+  ["READ.FLU.L06.01", "Prefix-Suffix Peel", "Peel prefixes and suffixes to read long words", { after: "READ.COMP.L06.09", std: "RF.5.3a", file: "CoreDataC452", min: 8 }],
+  ["READ.COMP.L05.10", "Topic or Main Idea?", "Tell the topic from the main idea", { after: "READ.FLU.L05.02", std: "RI.4.2", file: "CoreDataC453", min: 8 }],
+  ["READ.COMP.L05.11", "The Main Idea Nobody Says", "Find a main idea the author never says", { std: "RI.4.2", file: "CoreDataC453", min: 8 }],
+  ["READ.COMP.L05.12", "Which Detail Doesn't Belong?", "Spot the detail that does not support the main idea", { std: "RI.4.2", file: "CoreDataC453", min: 8 }],
+  ["READ.COMP.L05.13", "GIST: Sum It Up", "Sum up a whole text in about 15 words", { std: "RI.4.2", file: "CoreDataC453", min: 8 }],
+  ["READ.FLU.L05.03", "Scoop the Words", "Read in phrases and pause at punctuation", { after: "READ.COMP.L05.13", std: "RF.4.4b", file: "CoreDataC453", min: 8 }]
 ];
