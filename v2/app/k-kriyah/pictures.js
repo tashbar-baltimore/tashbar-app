@@ -50,7 +50,7 @@ export function makePictures(E) {
       const palm = mesh(E.rbox(.62, .6, .2, .12), skin, 0, -.2, 0); g.add(palm);
       [[-.22, .26, .44], [-.075, .3, .5], [.075, .29, .48], [.22, .24, .4]].forEach(([x, y, h]) => { const f = mesh(new THREE.CapsuleGeometry(.07, h - .14, 6, 12), skin, x, y, 0); g.add(f); });
       const th = mesh(new THREE.CapsuleGeometry(.075, .22, 6, 12), skin, .4, -.15, 0); th.rotation.z = -.9; g.add(th); g.rotation.z = .12; return g; },
-    yeled() { const k = E.person({ shirt: 0x5aa0e6, pants: 0x2a3550 }); const g = new THREE.Group(); k.scale.setScalar(.42); k.position.y = -.6; g.add(k); return g; },   /* a boy */
+    yeled() { const k = E.person({ shirt: 0x5aa0e6, pants: 0x2a3550 }); const g = new THREE.Group(); k.scale.setScalar(.62); k.position.y = -.85; g.add(k); return g; },   /* a boy */
     kos() { const g = new THREE.Group(), silver = M(0xd8dde6, { metalness: .9, roughness: .15 });   /* a silver Kiddush cup with wine */
       const cup = mesh(new THREE.CylinderGeometry(.34, .22, .5, 28, 1, true), silver, 0, .25, 0); cup.material.side = THREE.DoubleSide; g.add(cup);
       g.add(mesh(new THREE.CylinderGeometry(.31, .31, .03, 28), M(0x7a1030, { roughness: .1, clearcoat: 1 }), 0, .44, 0));
