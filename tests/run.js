@@ -34,6 +34,8 @@ function staticChecks() {
   if (!bad) ok(Object.keys(T).length + ' lesson packs match ContentPacks.js');
   report.counts.packs = Object.keys(T).length;
   picsCheck();
+  /* SHARED ART LIBRARY (HoS 2026-11-24): every file in art/ cataloged, sources and licences recorded, size limits, no duplicates */
+  try { const a = require('./lib/art.js')(); a.fails.forEach(fail); a.oks.forEach(ok); } catch (e) { fail('art library check crashed: ' + String(e).slice(0, 200)); }
 }
 
 /* PICS-1: every picture link must pass tools/pics-check.js (real screen, real file, licence recorded, size limits,
@@ -43,7 +45,7 @@ function picsCheck() {
   const tmp = path.join(os.tmpdir(), 'tl-screens-' + process.pid + '.json');
   try {
     execFileSync('python3', [path.join(B.ROOT, 'tools', 'pics-screens.py'), tmp], { stdio: 'pipe' });
-    const out = execFileSync('node', [path.join(B.ROOT, 'tools', 'pics-check.js'), path.join(B.SRC, 'RealPics.html'), tmp, path.join(B.ROOT, 'web', 'pics')], { stdio: 'pipe' }).toString().trim().split('\n').pop();
+    const out = execFileSync('node', [path.join(B.ROOT, 'tools', 'pics-check.js'), path.join(B.SRC, 'RealPics.html'), tmp, path.join(B.ROOT, 'art', 'pics')], { stdio: 'pipe' }).toString().trim().split('\n').pop();
     ok('pictures: ' + out);
   } catch (e) {
     const lines = String((e.stdout || '') + (e.stderr || '') || e).trim().split('\n');

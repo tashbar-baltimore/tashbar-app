@@ -1195,7 +1195,7 @@ body.gm-nav #pf-cf button.go{background:linear-gradient(180deg,#FFF06A,#FFC21A 5
   try{ if(c.state==='running') return run(); const r=c.resume(); const s=c.createBufferSource(); s.buffer=c.createBuffer(1,1,22050); s.connect(c.destination); s.start(0);
    if(r&&r.then) r.then(run,()=>{}); else setTimeout(run,50); }catch(e){} }
  ['pointerdown','touchend','keydown','click'].forEach(ev=>document.addEventListener(ev,themeUnlock,{capture:true,passive:true}));
- /* first choice: the same tune already saved as a sound file on the site (web/sounds/theme.mp3, made from themeBuild), so the tablet has
+ /* first choice: the same tune already saved as a sound file on the site (art/sounds/theme.mp3 in the shared art library, made from themeBuild), so the tablet has
     nothing to record; it downloads while the boy types his code. If that fails, it records the tune itself (themeRender). */
  function themeLoad(){ if(GM.themeL) return GM.themeL;
   const url=/\.web\.app$|\.firebaseapp\.com$|^localhost$|^127\./.test(location.hostname)?'/sounds/theme.mp3':'https://tashbar-learning-live.web.app/sounds/theme.mp3';
