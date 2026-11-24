@@ -19,9 +19,9 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
   E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
-    if (p) { if (peds.length > 3) { E.camBase.set(0, 8.5, 10.5); E.camTarget.set(0, .8, .8); cardHome.set(0, 2.3, -2.6); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
+    if (p) { if (peds.length > 3) { E.camBase.set(0, 5.6, 11.5); E.camTarget.set(0, 1.3, .8); cardHome.set(0, 3.6, -3.4); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.15, 2.2);   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
-    const m = peds.length, two = P && m > 3; peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -1.4 : 2.6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
+    const m = peds.length, two = P && m > 3; peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -3.0 : 2.6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
   E.onFrame(t => {
@@ -90,8 +90,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
       const pd = peds.find(x => x.userData.key === 'pei'), c = E.letter('fei', 1.2); if (P && peds.length > 3) c.position.set(0, 1.2, .6); else c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 2.6 : 2.1) * pd.scale.x, .6));   /* two rows on a phone: between the rows */ c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);   /* just above its partner, a little smaller, so the two never look like one tall letter */
       await E.say('This is Fei. Pei without its dot.'); E.hop(c, .3); await E.say(['Fei says', S(E.LETTERS.fei.snd), '.']); }
     if (keys.includes('kuf') && !keys.includes('kaf') && unit.letters.includes('kuf')) {   /* Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
-      const pd = peds.find(x => x.userData.key === 'kuf'), c = E.letter('kaf', 1.2); if (P && peds.length > 3) c.position.set(0, 1.2, .6); else c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 3.0 : 2.6) * pd.scale.x, .6));   /* two rows on a phone: Kaf between the rows */ c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);
-      await E.say('This is Kaf.'); E.hop(c, .3); await E.say('Kuf sounds just like Kaf!'); }
+      const pd = peds.find(x => x.userData.key === 'kuf'), c = E.letter('kaf', 1.2); if (P && peds.length > 3) c.position.copy(pd.position).add(new THREE.Vector3(0, .55, 1.5)); else c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 3.0 : 2.6) * pd.scale.x, .6));   /* two rows on a phone: Kaf just in front of Kuf */ c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);
+      await E.say('This is Kaf.'); E.hop(c, .3); E.hop(L.kuf, .3); await E.say('Kuf sounds just like Kaf!'); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Great matching! Every picture found its letter.' : null };
   };
