@@ -1,0 +1,50 @@
+<script>
+/* CoreDataFH3.html: Core Growth job F, HELPER 3 (Helpers wanted: "F · K–1 listen-along stories"), Kindergarten listening games
+   (docs/core-growth/F-map.md section 3 "K listening and understanding" and section 6). Keep this file under 150 KB.
+   A K boy gets games only (HoS 2026-11-22), so each understanding skill is a K-1 game on the Kindergarten ABC path
+   (docs/core-growth/HOW-TO-ADD-A-K1-GAME.md). Its first piece is a LISTEN-ALONG STORY ({type:'story'}, src/CoreK1.html): the Reader reads
+   every page aloud with the words lighting up and a picture on each page, and the rich words can be tapped for their meaning. Then the
+   game's pieces ask about that story. The stories are in texts/F/ (F.LA.K01 ...), topic set "Eli's First Week" (the Peretz family on
+   Maple Street, F-map section 8). The skill rows are in src/CoreDataF.js (file CoreDataFH3).
+   Rules kept on every game: the voice never bare-letters a sound; 3 choices at most; spoken lines of 12 words or fewer; the boy's likely
+   mistake is one piece (mis:true); every "how" says how to think, never the answer. Pictures in choices are the same emoji as the story
+   pages (Eli 🧒🎒, Abba 🧔, Moishy 👶, Rebbe Gutman 👨‍🏫, Ovadia 👦🪑). */
+(function () {
+  var LESSONS = {};
+  var K1G = [
+    { id:'READ.LIT.L01.01', grade:0, name:'Who Is in the Story?', pic:'🧒', after:'READ.COMP.L01.02', acts:[
+      {type:'story', text:'F.LA.K01', say:"Listen to the story of Eli's first day."},
+      {type:'listen', hear:'This story is mostly about one boy. Who is he?', o:['🧒🎒','👶','👨‍🏫'], a:'🧒🎒', say:'Who is the story about? Tap him.', how:'The main character is in almost every page. Who do we hear about most?'},
+      {type:'sort', bins:['📖 In the story','🚫 Not in it'], cards:[['👨‍🏫',0],['🐘',1],['👶',0],['🚒',1],['🧔',0]], say:'Who was in the story? Sort each picture.', how:'Ask yourself: did we hear about him in the story? Yes or no.'},
+      {type:'listen', hear:'Eli sat next to a worried boy. Who was the worried boy?', o:['🧒🎒','👦🪑','👶'], a:'👦🪑', mis:true, say:'Listen. Who was the worried boy? Tap him.', how:'Eli sat next to him. So was it Eli, or someone else?'},
+      {type:'match', pairs:[['👨‍🏫','🏫'],['👶','🍼'],['🧔','🎒']], say:'Stand up and wave like Moishy! Now match each person.', how:'Think where we met him. Who helped pack? Who is tiny?'},
+      {type:'listen', hear:'Who helped Ovadia feel better?', o:['🧔','🧒🎒','👶'], a:'🧒🎒', say:'Who was a kind friend? Tap him.', how:'Think about the page with the rugelach.'}]},
+
+    { id:'READ.LIT.L01.02', grade:0, name:'Where Is the Story?', pic:'🛖', after:'READ.PA.L01.09', acts:[
+      {type:'story', text:'F.LA.K02', say:'Listen to the story. Where are they? When is it?'},
+      {type:'listen', hear:'Where does this story happen?', o:['🏫','🛖🌿','🏖️'], a:'🛖🌿', say:'Where did the family eat supper? Tap the place.', how:'The setting is where the story happens. Listen for the place.'},
+      {type:'listen', hear:'When does this story happen? In the day, or at night?', o:['☀️','🌙⭐'], a:'🌙⭐', say:'When did it happen? Day or night?', how:'Listen for clues. What color was the sky? What could Eli see?'},
+      {type:'sort', bins:['🛖 In the sukkah','🚫 Not there'], cards:[['🕯️',0],['🛝',1],['⭐',0],['⛄',1],['🍲',0]], say:'Sway like the branches! Then sort: was it in the sukkah?', how:'Close your eyes. Picture the sukkah. Was it there?'},
+      {type:'listen', hear:'A cat peeked in. Did Eli leave the sukkah and go to the cat?', o:['👍','👎'], a:'👎', mis:true, say:'A cat peeked in! Did Eli leave the sukkah?', how:'Think: where was Eli the whole time the story happened?'},
+      {type:'match', pairs:[['😴','🌙'],['🌿','🛖'],['🎒','🏫']], say:'Clues tell the setting. Match each clue to its place or time.', how:'Ask: where would I see this? When would I see it?'}]},
+
+    { id:'READ.LIT.L01.03', grade:0, name:'Problem and Fix', pic:'💡', after:'READ.PA.L01.04', acts:[
+      {type:'story', text:'F.LA.K03', say:'Listen. Something goes wrong for Eli!'},
+      {type:'listen', hear:'What was the problem in the story?', o:['🍪','💨🔵','🌧️'], a:'💨🔵', say:'What went wrong? Tap the problem.', how:'The problem is the thing that went wrong. What did Eli lose?'},
+      {type:'listen', hear:'Was the kippah under the bench?', o:['👍','👎'], a:'👎', mis:true, say:'Listen carefully. Was the kippah under the bench?', how:'Think: where did they look, and where did they find it?'},
+      {type:'listen', hear:'How was the problem fixed?', o:['🛒','🔍🌳','📮🌲🔵'], a:'📮🌲🔵', say:'How did it get better? Tap the fix.', how:'The fix is how the problem got better. Who came by?'},
+      {type:'order', steps:['💨🔵','🔍🌳','📮🌲🔵'], say:'Blow like the wind! Then put it in order.', how:'First something goes wrong. Then they try. Last it gets better.'},
+      {type:'sort', bins:['😟 Problem part','😊 Fix part'], cards:[['💨',0],['😢',0],['📮',1],['📎',1]], say:'Is it part of the problem, or the fix?', how:'Did it make things worse, or better?'}]},
+
+    { id:'READ.LIT.L01.04', grade:0, name:'Retell It', pic:'🍞', after:'READ.PHON.L01.02', acts:[
+      {type:'story', text:'F.LA.K04', say:'Listen. Then you will tell it back in order!'},
+      {type:'listen', hear:'What did Eli and Abba do first?', o:['🔥','🥣🌾','🕯️'], a:'🥣🌾', say:'What happened first? Tap it.', how:'Think of the beginning. What do you need before you bake?'},
+      {type:'listen', hear:'Did Abba braid the dough before it rested?', o:['👍','👎'], a:'👎', mis:true, say:'Think! Did Abba braid the dough before it rested?', how:'Think: the dough waited and grew. Then what came after?'},
+      {type:'order', steps:['🥣🌾','🥖🥖','🔥','🕯️🍞'], say:'Stand up and act it out! Then put it in order.', how:'Say it: first, next, then, last. Does it make sense?'},
+      {type:'sort', bins:['🌅 Beginning','🌙 End'], cards:[['🥣',0],['🕯️',1],['👐',0],['😊🍞',1]], say:'Beginning or end of the story? Sort them.', how:'Was it at the bakery, or at the Shabbos table?'},
+      {type:'listen', hear:'What came right before the oven?', o:['🕯️','🥖🥖','🥣🌾'], a:'🥖🥖', say:'What came right before the oven? Tap it.', how:'Say the steps in order. Stop when you reach the oven.'}]}
+  ];
+  if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
+  if (window.TLCORE) TLCORE.add('F', LESSONS, {});
+})();
+</script>
