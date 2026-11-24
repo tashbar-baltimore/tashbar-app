@@ -11,8 +11,8 @@ export { THREE };
 /* ---------------- the unit's games, in skill order ---------------- */
 export const GAMES = [
   { id: 'u1g0', name: 'Mendy’s first day', kind: 'story', icon: 'book' },
-  { id: 'u1g1', name: 'Look-Alike Detective', kind: 'detective', icon: 'house' },
-  { id: 'u1g2', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
+  { id: 'u1g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },   /* Alef first, then Beis and Veis: Alef-Beis order */
+  { id: 'u1g2', name: 'Look-Alike Detective', kind: 'detective', icon: 'house' },
   { id: 'u1g3', name: 'Letter Hunt', kind: 'hunt', icon: 'glass' },
   { id: 'u1g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
   { id: 'u1g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy' },
