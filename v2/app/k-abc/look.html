@@ -52,11 +52,11 @@ import { worldS, worldA } from './worlds.js';
 const which = (location.search.match(/[?&]w=([a-z])/) || [])[1] || 's';
 const L = window.__look = { name: 'loading', world: which, ready: false };
 let S;
-try { S = stage(document.getElementById('stage')); } catch (e) { L.name = 'nogl'; L.err = String(e); document.getElementById('nogl').style.display = 'grid'; throw e; }
+try { S = stage(document.getElementById('stage')); } catch (e) { L.name = 'nogl'; L.err = String(e); document.getElementById('nogl').style.display = 'grid'; const help = () => { try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance('Please ask your teacher for help.')); } catch (x) {} }; help(); document.getElementById('nogl').onclick = help; throw e; }
 const W = which === 'a' ? worldA(S) : worldS(S);
 const narrow = () => innerWidth / innerHeight < 0.8;
 S.focus.target.copy(W.focus.target); S.focus.w = 8.2; S.focus.h = 6.4;
-const setFocus = () => { S.focus.w = narrow() ? 4.7 : (W.focusW || 8.4); S.focus.h = narrow() ? 5 : 6.4; S.fit(); if (W.layout) W.layout(narrow()); }; setFocus(); addEventListener('resize', setFocus);
+const setFocus = () => { S.focus.w = narrow() ? 4.1 : (W.focusW || 8.4); S.focus.h = narrow() ? 5 : 6.4; S.fit(); if (W.layout) W.layout(narrow()); }; setFocus(); addEventListener('resize', setFocus);
 S.start();
 const cam = S.camera, $ = id => document.getElementById(id), again = $('again');
 const R = runner(again);
@@ -78,14 +78,16 @@ const T = tracer(S, W.strokes, {
   onUp: () => W.soundStop(),
   onFar: () => { if (S.t - lastNag > 3) { lastNag = S.t; R.run([W.lines.far]); } },
   onDone: () => { W.soundStop(); done(); }
-  , startZ: W.name === 's' ? 1.0 : 0.3
+  , startZ: W.name === 's' ? 0.75 : 0.3, ringOnly: W.name === 's'
+  , onLost: () => { if (S.t - lastNag > 3) { lastNag = S.t; hint(); } }
+  , onOff: () => { if (S.t - lastNag > 3) { lastNag = S.t; R.run([W.lines.off]); } }
 });
 let lastNag = -9;
 S.tick(t => { if (T.on && T.down && t - T.lastMove > 0.2) W.soundStop();
   if (T.on && !T.down && !R.busy && t - T.lastProgress > 7) { T.lastProgress = t; hint(); } });
 function hint() { /* show the way: a sparkle runs along the next part of the path */
   const P = T.strokes[T.si], k0 = T.k; let i = k0; const id = setInterval(() => { i += 2; if (i >= P.length || i > k0 + 40 || !T.on) return clearInterval(id); W.party.twinkle(P[i], 1); }, 40);
-  R.run([T.k === 0 ? W.lines.far : W.lines.you]); }
+  R.run([T.k === 0 ? W.lines.far : W.lines.keep]); }
 
 /* taps on the friend: always a happy reaction and the letter's pure sound */
 L.pokes = 0;
@@ -100,7 +102,7 @@ async function intro() {
   L.name = 'watch';
   await R.run([W.lines.hi, W.lines.watch]);
   await W.demo(); W.cheer(); await S.wait(1600);
-  await R.run([echo(() => W.sound()), echo(() => S.wait(250)), echo(() => W.sound())]);
+  await R.run([W.lines.word, echo(() => W.sound()), echo(() => S.wait(300)), W.lines.say, echo(() => W.sound()), echo(() => S.wait(300)), echo(() => W.sound())]);
   await W.reset();
   L.name = 'trace'; T.reset(); T.on = true; T.lastProgress = S.t;
   R.run([W.lines.you]);

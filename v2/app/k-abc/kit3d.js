@@ -444,7 +444,7 @@ export function tracer(S, strokes, o = {}) {
   T.strokeProgress = () => T.k / (strokes[T.si].length - 1);
   T.startPoint = () => strokes[T.si][0];
   T.reset = () => { T.si = 0; T.k = 0; T.done = false; };
-  const reach = () => (innerWidth < 600 ? 0.95 : 0.75) * (o.reach || 1);
+  const reach = () => (innerWidth < 600 ? 0.82 : 0.62) * (o.reach || 1);
   T.step = w => { const P = strokes[T.si]; let best = T.k, bd = Math.min(reach(), w.distanceTo(P[T.k]));   /* follow the finger: the nearest path point just ahead, never running ahead of it */
     for (let i = T.k + 1; i < Math.min(P.length, T.k + 14); i++) { const d = w.distanceTo(P[i]); if (d < reach() && d <= bd + 1e-6) { best = i; bd = d; } }
     if (best > T.k) { T.k = best; T.lastMove = T.lastProgress = S.t; T.onMove(T);
@@ -453,17 +453,22 @@ export function tracer(S, strokes, o = {}) {
   const el = S.renderer.domElement;
   el.addEventListener('pointerdown', e => { if (!T.on) return; const w = S.onPlane(e, 0); if (!w) return;
     if (T.k === 0 && w.distanceTo(strokes[T.si][0]) > reach() * 1.3) { if (o.onFar) o.onFar(); return; }
+    if (T.k > 0 && w.distanceTo(strokes[T.si][T.k]) > reach() * 1.5) { if (o.onLost) o.onLost(); return; }   /* partway: he must go on from where he stopped */
     T.down = true; try { el.setPointerCapture(e.pointerId); } catch (x) {} T.step(w); });
-  el.addEventListener('pointermove', e => { if (T.down && T.on) { const w = S.onPlane(e, 0); if (w) T.step(w); } });
+  el.addEventListener('pointermove', e => { if (T.down && T.on) { const w = S.onPlane(e, 0); if (!w) return; T.step(w);
+    if (T.on && w.distanceTo(strokes[T.si][T.k]) > reach() * 1.8 && o.onOff) o.onOff(); } });   /* wandered off the path: a kind reminder */
   const up = () => { if (T.down) { T.down = false; if (o.onUp) o.onUp(); } };
   addEventListener('pointerup', up); addEventListener('pointercancel', up);
   /* glowing guide dots along the path and a pulsing green start light */
-  const dots = new THREE.Group(), dm = new THREE.MeshBasicMaterial({ color: C(0xffffff).multiplyScalar(1.4), transparent: true, opacity: 0.9 }), dg = new THREE.SphereGeometry(0.075, 12, 8);
+  const dots = new THREE.Group(), dm = new THREE.MeshBasicMaterial({ color: C(0xffffff).multiplyScalar(1.4), transparent: true, opacity: 0.9 }), dg = new THREE.SphereGeometry(0.1, 12, 8);
   strokes.forEach(P => P.forEach((p, i) => { if (i % 3) return; const d = new THREE.Mesh(dg, dm); d.position.copy(p); d.position.z += 0.05; dots.add(d); }));
   const start = new THREE.Mesh(new THREE.SphereGeometry(0.26, 24, 16), glow(0x3DFF7A, 2.4)), halo = new THREE.Mesh(new THREE.RingGeometry(0.32, 0.42, 40), new THREE.MeshBasicMaterial({ color: C(0x9CFFBE).multiplyScalar(1.6), transparent: true, opacity: 0.8, side: THREE.DoubleSide }));
-  start.add(halo); dots.visible = start.visible = false; S.scene.add(dots, start);
+  start.add(halo); dots.visible = start.visible = false; S.scene.add(dots, start); if (o.ringOnly) { start.material.visible = false; }
+  /* a wide, soft, shiny track under the dots so the path is easy to see on bright grass */
+  const trackM = new THREE.MeshBasicMaterial({ color: C(0xFFFBE8), transparent: true, opacity: 0.32, depthWrite: false });
+  strokes.forEach(P => { const g = growTube(P, () => 0.3, (t, n, c) => c.set(0xffffff), 10); g.userData.grow(1); const m = new THREE.Mesh(g, trackM); m.scale.z = 0.15; dots.add(m); });
   T.dots = dots; T.start = start; T.dm = dm;
-  S.tick(t => { start.visible = T.on && T.k < 3; if (start.visible) { start.position.copy(T.startPoint()); start.position.z += o.startZ || 0.25; const k = 1 + Math.sin(t * 6) * 0.15; start.scale.setScalar(k); halo.scale.setScalar(1 + ((t * 1.2) % 1) * 0.8); halo.material.opacity = 0.8 * (1 - (t * 1.2) % 1); }
+  S.tick(t => { start.visible = T.on && (T.k < 3 || !T.down); if (start.visible) { start.position.copy(strokes[T.si][T.k]); start.position.z += o.startZ || 0.25; const k = 1 + Math.sin(t * 6) * 0.15; start.scale.setScalar(k); halo.scale.setScalar((o.ringOnly ? 1.7 : 1) * (1 + ((t * 1.2) % 1) * (o.ringOnly ? 0.3 : 0.8))); halo.material.opacity = 0.8 * (1 - (t * 1.2) % 1); }
     dots.visible = !!(T.on || T.showDots); if (dots.visible) dm.opacity = 0.55 + Math.sin(t * 3) * 0.25; });
   return T;
 }

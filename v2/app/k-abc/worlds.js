@@ -141,8 +141,8 @@ export function worldS(S) {
   const W = {
     name: 's', strokes, focus: { target: new THREE.Vector3(0, 2.75, 0) }, party: P, trees,
     camFrom: new THREE.Vector3(-6, 7, 22),
-    lines: { hi: 'Hi! I am a happy little snake.', watch: 'Watch me make my shape!', you: 'Now you! Start at the green light.', far: 'Start at the green light.',
-      yay: 'You made the snake!', tap: 'Tap me!', again: 'Again!' },
+    lines: { hi: 'Hi! I am a happy little snake.', watch: 'Watch me make my shape!', you: 'Now you! Start at the glowing ring.', far: 'Start at the glowing ring.', keep: 'Keep going! Put your finger on the ring.', off: 'Stay on the shiny path.',
+      word: 'Snake starts with this sound.', say: 'Say it with me!', yay: 'You made the snake!', tap: 'Tap me!', again: 'Again!' },
     hero: hit, heroPos,
     async appear() { await S.tween(700, e => { headS = e; }, ease.elastic); audio.boing(260); },
     sound: () => audio.hiss(900),
@@ -251,16 +251,16 @@ export function worldA(S) {
     shoes.forEach((s, i) => s.position.y = -0.76 + (dance > 0 ? Math.max(0, Math.sin(t * 8 + i * Math.PI)) * 0.12 : 0));
     AF.eyes.forEach(E => E.userData.big = big); AF.open.scale.y = Math.max(react.kind === 'surprise' ? react.k : 0, dance > 0 ? 0.7 : 0, sayK > 0 ? 0.8 : 0) + 0.01;
     hs.scale.setScalar(1 - y * 0.3); });
-  const tmpV = new THREE.Vector3();
+  const tmpV = new THREE.Vector3(); let lastA = -9;
   const W = {
     name: 'a', strokes, focusW: 6.8, focus: { target: new THREE.Vector3(-0.6, 2.55, 0) }, party: P, trees,
     camFrom: new THREE.Vector3(5, 6, 22),
-    lines: { hi: 'Hi! Welcome to my apple orchard.', watch: 'Watch the apple vine grow!', you: 'Now you! Start at the green light.', far: 'Start at the green light.',
-      yay: 'You grew the apple vine!', tap: 'Tap me!', again: 'Again!' },
+    lines: { hi: 'Hi! Welcome to my apple orchard.', watch: 'Watch the apple vine grow!', you: 'Now you! Start at the green light.', far: 'Start at the green light.', keep: 'Keep going! Put your finger on the light.', off: 'Stay on the shiny path.',
+      word: 'Apple starts with this sound.', say: 'Say it with me!', yay: 'You grew the apple vine!', tap: 'Tap me!', again: 'Again!' },
     hero: ahit, heroPos: () => hero.getWorldPosition(tmpV).clone().add(new THREE.Vector3(0, 0.6, 0)),
     async appear() { await S.tween(700, e => { heroS = e; }, ease.elastic); audio.boing(220); },
     sound: () => { sayK = 0.5; return audio.vowelA(450); },
-    soundStart: () => {}, soundStop: () => {},
+    soundStart: () => { if (S.t - lastA > 1.1) { lastA = S.t; sayK = 0.4; audio.vowelA(380); } }, soundStop: () => {},   /* while he traces, the friend says the pure short sound now and then */
     async demo() { await S.tween(2400, e => setVine(0, e), ease.inOut); await S.wait(250); await S.tween(900, e => setVine(1, e), ease.inOut); },
     grow(T) { if (T.si === 0) setVine(0, T.strokeProgress()); else { setVine(0, 1); setVine(1, T.done ? 1 : T.strokeProgress()); } },
     reset() { return S.tween(450, e => { setVine(0, 1 - e); setVine(1, 1 - e); }, ease.inOut); },
