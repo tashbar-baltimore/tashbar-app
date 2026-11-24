@@ -21,6 +21,13 @@ function msSignInFast(code) {
   return r;
 }
 
+/* CORE GROWTH (job T, 2026-11-24): the list in use = TL_PART_FILES with CoreKit and every job's CoreData file (SkillRegistry.js
+   crToolNames_) right after OneBiteDataUpper, the same place as in msQuestToolsBody_ (Photos.js crToolsJs_). */
+function tlPartFiles_() {
+  var core = typeof crToolNames_ === 'function' ? crToolNames_() : [], i = TL_PART_FILES.indexOf('OneBiteDataUpper');
+  return core.length && i >= 0 ? TL_PART_FILES.slice(0, i + 1).concat(core, TL_PART_FILES.slice(i + 1)) : TL_PART_FILES;
+}
+
 function tlStrip_(t) { return String(t).replace(/^\s*<script>/, '').replace(/<\/script>\s*$/, ''); }
 var TL_PART_NOSEP = { ComputingMore: 1, LifeMore: 1, SocialMore: 1, KodeshMore: 1, SimchaMore: 1, Shine: 1, Helpers: 1, Review: 1, Adapt: 1 };   /* msQuestToolsBody_ joins these without "\n;" in front; copied so the pieces match it byte for byte */
 function tlWrap_(label, text) { return (TL_PART_NOSEP[label] ? '' : '\n;') + 'try{(0,eval)(' + JSON.stringify(text) + ');}catch(e){console.error("' + label + '",e);}'; }
@@ -30,11 +37,11 @@ function tlHasCode_(name) { try { HtmlService.createHtmlOutputFromFile(name).get
 /* The pieces in order: [{h: hash, get: function () { return the piece's text }}]. */
 function tlToolParts_() {
   /* SAFETY: if someone adds a file to msQuestToolsBody_ (Photos.js) and not to TL_PART_FILES, stop here: the page then uses the old loader (slower, still right) */
-  var listed = {}; TL_PART_FILES.forEach(function (f) { (typeof f === 'string' ? [f] : f).forEach(function (n) { listed[n] = 1; }); });
+  var listed = {}; tlPartFiles_().forEach(function (f) { (typeof f === 'string' ? [f] : f).forEach(function (n) { listed[n] = 1; }); });
   var src = String(msQuestToolsBody_), re = /tlFileText_\('([A-Za-z0-9_]+)'\)/g, m;
   while ((m = re.exec(src))) if (!listed[m[1]]) throw new Error('Speed.js TL_PART_FILES is missing ' + m[1]);
   var out = [{ h: 'M' + tlMd5_(QUEST_TOOLS.js), get: function () { return QUEST_TOOLS.js; } }];
-  TL_PART_FILES.forEach(function (f) {
+  tlPartFiles_().forEach(function (f) {
     var names = typeof f === 'string' ? [f] : f, label = names[0];
     var packOnly = names.every(function (n) { return TL_PACKS[n] && !tlHasCode_(n); });
     var build = function () {   /* same rules as msQuestToolsBody_: a missing file gives '' */

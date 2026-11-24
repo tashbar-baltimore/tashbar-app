@@ -1,0 +1,37 @@
+<script>
+/* CoreKit.html: the boy-page side of "one way to add a skill" (Core Growth, job T, 2026-11-24).
+   Read docs/core-growth/HOW-TO-ADD-A-SKILL.md. Loads after OneBiteDataUpper and before every CoreData file (SkillRegistry.js crToolNames_).
+   A job's data file calls, once per file:
+     CORE_ADD('F', {
+       'READ.PHON.L02.20': { name: 'Read words with silent e',
+          teach: [3 worked items with how], practice: [items with h], check: [exactly 3 tap items],
+          tt: { Teacher Time: hook, big, intro, ex, oops, idea, try },      (optional; goes to TL_TEACH)
+          bite: { One Bite lesson: band, today, why, watch, oops, do, your ... }, (goes to ONE_BITE; the quality gate checks it)
+          how: { s: 'How to do it, one line', q: {...} } }                 (optional; goes to TL_DO)
+     });
+   Write each lesson as 'ID': { name: ... } exactly (the server finds built skills by that text, Placement.js plBuilt_).
+   An id that is already a lesson is refused with a console error, which fails the tests. No double slash in this file. */
+(function () {
+  var W = window;
+  W.TL_TEACH = W.TL_TEACH || {}; W.ONE_BITE = W.ONE_BITE || {}; W.TL_DO = W.TL_DO || {};
+  W.CORE_LESSONS = W.CORE_LESSONS || {};
+  var RE = /^(READ|LANG|WRIT|SCI|SS)\.[A-Z]+\.L\d\d\.\d\d(\.[a-z])?$/;
+  W.CORE_ADD = function (job, lessons) {
+    job = String(job || '');
+    Object.keys(lessons || {}).forEach(function (id) {
+      var src = lessons[id];
+      if (!RE.test(id)) { console.error('CORE_ADD ' + job + ': bad skill id ' + id); return; }
+      if (W.CORE_LESSONS[id] || (typeof BANK_ALL !== 'undefined' && BANK_ALL[id])) { console.error('CORE_ADD ' + job + ': ' + id + ' is already a lesson'); return; }
+      if (!src || !src.name || !src.check || src.check.length !== 3) { console.error('CORE_ADD ' + job + ': ' + id + ' needs a name and exactly 3 check items'); return; }
+      var lesson = {};
+      Object.keys(src).forEach(function (k) { if (k !== 'tt' && k !== 'bite' && k !== 'how') lesson[k] = src[k]; });
+      if (src.tt) W.TL_TEACH[id] = src.tt;
+      if (src.bite) W.ONE_BITE[id] = src.bite;
+      if (src.how) W.TL_DO[id] = src.how;
+      try { if (/^READ\./.test(id)) READ[id] = lesson; else if (/^(LANG|WRIT)\./.test(id)) WRIT[id] = lesson; } catch (e) {}
+      if (typeof BANK_ALL !== 'undefined') BANK_ALL[id] = lesson;
+      W.CORE_LESSONS[id] = { job: job };
+    });
+  };
+})();
+</script>

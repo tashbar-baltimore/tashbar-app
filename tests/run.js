@@ -192,6 +192,10 @@ async function kidTests(browser) {
   /* PICS-2 teaching pictures (tests/lib/teachpics.js): TODAY WE LEARN, WATCH ME and passages show a linked picture and do not break the screen */
   try { const tp = await require('./lib/teachpics.js')(pg); tp.fails.forEach(fail); tp.oks.forEach(ok); }
   catch (e) { fail('teaching pictures test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* CORE GROWTH, job T: one way to add a skill (tests/lib/coreskills.js): the server rows, the data files, and the lessons on this page */
+  try { const C = require('./lib/coreskills.js'), cs = C.server(); cs.fails.forEach(fail); cs.oks.forEach(ok); report.counts.coreGrowthSkills = cs.rows;
+    const cp = await C.page(pg, cs.ids || []); cp.fails.forEach(fail); cp.oks.forEach(ok); }
+  catch (e) { fail('add-a-skill test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* QUALITY GATE + K-1 GAMES ONLY (HoS 2026-11-22: "we need guardrails"): new lessons must meet the quality rules, listed ones may not get worse */
   try { const q = await require('./lib/obquality.js')(pg); q.fails.forEach(fail); q.oks.forEach(ok); Object.assign(report.counts, q.counts); } catch (e) { fail('quality gate crashed: ' + String(e).slice(0, 200)); }
   try { const k = await require('./lib/k1home.js')(pg); k.fails.forEach(fail); k.oks.forEach(ok); } catch (e) { fail('K-1 games-only check crashed: ' + String(e).slice(0, 200)); }
