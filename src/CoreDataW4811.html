@@ -1,0 +1,395 @@
+<script>
+/* CoreDataW4811.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 4 (L05), Unit 3 "My Opinion, My Reasons". Cast: the Glen Avenue Crew.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L05.02':{name:'POW + TREE',
+  teach:[
+    {how:'Rabbi Feldman has news: the class will take one trip, to the farm or to the aquarium. Who can convince him? You know POW from planning stories: Pick my idea, Organize my notes, Write and say more. For an opinion, Pick my idea means: pick the side you believe.', q:'Tzvi Hirsch decides: “I think our class should go to the farm.” Which POW step is that?', o:['Pick my idea','Organize my notes','Write and say more']},
+    {how:'For a story, you organized your notes with W-W-W. For an opinion, organize them with TREE. T: Topic sentence: tell what you believe. R: Reasons: three reasons why. E: Explain: say more about each reason. E: Ending: wrap it up with your opinion again.', q:'Tzvi Hirsch’s note says: “we learn where our food comes from.” Which TREE part is it?', o:['Reasons','Topic sentence','Ending']},
+    {how:'The mistake: a plan with one reason, or reasons with nothing to explain them. “The farm. It is good.” will not convince Rabbi Feldman. Ask: Will my reader believe this? Give three reasons, and explain each one.', q:'Whose plan is ready to write?', o:['Avrumi: his opinion, three reasons, a note to explain each, and an ending.','Avrumi: his opinion and one reason.','Avrumi: three reasons, but no opinion.']}
+  ],
+  practice:[
+    {t:'sort', q:'Tzvi Hirsch’s TREE notes for the farm. Sort each note.', bins:[{id:'T',label:'🌳 Topic sentence'},{id:'R',label:'💡 Reason'},{id:'X',label:'🔍 Explain'}],
+      items:[{label:'I think our class should go to the farm.',bin:'T'},{label:'we learn where our food comes from',bin:'R'},{label:'we watch wheat ground into flour at the mill',bin:'X'},{label:'we learn to care for animals',bin:'R'},{label:'each boy feeds the goats and milks a cow',bin:'X'}],
+      h:'The topic sentence tells what he believes. A reason tells why, in a few words. An explain note tells exactly what will happen, so we know the reason is true.'},
+    {t:'pairs', q:'Match each part of TREE to its job.', pairs:[['Topic sentence','tell what I believe'],['Reasons','tell why I believe it'],['Explain','say more about each reason'],['Ending','wrap it up and say my opinion again']],
+      h:'Say TREE slowly. What does each part do for the reader?'},
+    {t:'order', q:'Put the parts of an opinion plan in TREE order. Tap the tiles in order.', tiles:['Topic sentence','Reasons','Explain','Ending'],
+      h:'T, R, E, E. Say the word TREE in your head.'},
+    {t:'spotall', q:'Dovid wants the aquarium. Tap every note that is a REASON.', cells:[{label:'we learn how sea animals live',ok:true},{label:'rain cannot cancel an indoor trip',ok:true},{label:'it is close to school',ok:true},{label:'I think we should go to the aquarium',ok:false},{label:'over 500 kinds of sea animals',ok:false}],
+      h:'A reason answers “why?” in a few words. What he believes is the topic sentence. A number that proves a reason is an explain note.'},
+    {t:'pairs', q:'Match each of Dovid’s reasons to the note that explains it.', pairs:[['we learn how sea animals live','a guide teaches how fish breathe with gills'],['rain cannot cancel an indoor trip','the whole trip is inside the building'],['it is close to school','only 20 minutes by bus']],
+      h:'Find the note that shows how we know the reason is true.'},
+    {t:'sort', q:'Sort each plan: ready to write, or missing a part?', bins:[{id:'G',label:'✅ Ready to write'},{id:'M',label:'❌ Missing a part'}],
+      items:[{label:'Opinion, three reasons, explain notes, ending',bin:'G'},{label:'Opinion and one reason',bin:'M'},{label:'Three reasons, but no opinion',bin:'M'},{label:'T, R, E, E: every part has a note',bin:'G'},{label:'Opinion and three reasons, but nothing to explain them',bin:'M'}],
+      h:'Check for all four TREE parts: Topic sentence, Reasons, Explain, Ending.'},
+    {t:'write', q:'Your turn to plan. Pick your side: the farm or the aquarium? Write POW at the top. Then make a TREE: your opinion, three reasons, a few words to explain each one, and an ending.', min:0, checks:['🌳 My Topic sentence tells what I believe.','💡 I have three reasons that tell why.','🔍 Each reason has an Explain note, and I have an Ending.'], h:'Pick your side first. Then ask: Why? Write three reasons. For each one, ask: How do I know?'}
+  ],
+  check:[
+    {q:'Binyamin plans a piece: our class should start a chess club. His first note says: “I think every class needs a chess club.” Which TREE part is it?', o:['Topic sentence','Explain','Reasons'], h:'Does the note tell what he believes, why, or how we know?'},
+    {q:'Avrumi plans a piece: Glen Avenue needs a crosswalk by the shul. His reason: the street is too busy to cross safely. His next note: “cars pass the shul every minute.” Which TREE part is the next note?', o:['Explain','Topic sentence','Ending'], h:'Does the note tell what he believes, or does it show how we know his reason is true?'},
+    {t:'order', q:'Yehuda plans a piece about a class library shelf. Put his notes in TREE order. Tap the tiles in order.', tiles:['I think our class needs a library shelf.','Boys will read more.','We know because the 5th grade shelf sends home 20 books a week.','That is why our class needs a shelf.'], h:'T, R, E, E. What he believes comes first, and the wrap-up comes last.'}
+  ],
+  re:[
+    {how:'A new way: picture a real tree. The top is the Topic sentence. The branches are the Reasons. The leaves on each branch Explain. The ground at the bottom is the Ending.', q:'In TREE, what do the branches stand for?', o:['Reasons','Ending','Topic sentence']},
+    {how:'A simpler step: start with just T and R. Say what you believe. Then ask yourself “why?” three times.', q:'Which note answers “why?”', o:['it is close to school','I think we should go to the aquarium','the end']},
+    {how:'The skill underneath: POW + WWW. You planned a story with POW and W-W-W. POW stays the same. Now you go further: TREE takes the place of W-W-W, because an opinion needs reasons and proof, not story events.', q:'In POW, what does the P stand for?', o:['Pick my idea','Plan the ending','Put it in order']}
+  ]},
+
+  'WRIT.PARA.L05.15':{name:'Reason or Not?',
+  teach:[
+    {how:'A reason tells WHY your opinion is right. A real reason works for the reader too, not only for you. Rabbi Feldman will ask: “Why is that good for the class?” A real reason has an answer.', q:'Opinion: our class should go to the aquarium. Which is a real reason?', o:['We will learn how sea animals live.','I like the aquarium.','Everyone wants to go.']},
+    {how:'The mistake: a reason that is only a feeling. “Because I like it.” “Because it is fun.” “Because it is the best.” These tell about YOU. The reader may not feel the same way. A feeling is not a reason.', q:'Which reason is only a feeling?', o:['The farm is the best place ever.','We learn to care for animals.','We work as a team outside.']},
+    {how:'Two more non-reasons. “Everyone wants it” does not tell why it is good. And an OFF-TOPIC fact, like “The bus is yellow,” is true, but it does not tell why. To fix a non-reason, ask “Why is that good for the class?” and write the answer.', q:'Dovid wrote: “I like fish.” Which fixes it into a real reason?', o:['We will learn how fish breathe.','I really, really like fish.','Fish are my favorite.']}
+  ],
+  practice:[
+    {t:'sort', q:'Opinion: our class should go to the farm. Sort each sentence: a real reason, or not a reason?', bins:[{id:'R',label:'✅ Real reason'},{id:'N',label:'❌ Not a reason'}],
+      items:[{label:'We learn where our food comes from.',bin:'R'},{label:'I like cows.',bin:'N'},{label:'We learn to care for animals.',bin:'R'},{label:'Everyone wants the farm.',bin:'N'},{label:'The farm is so much fun.',bin:'N'}],
+      h:'Ask: “Why is that good for the class?” A real reason has an answer. A feeling, or “everyone wants it,” does not.'},
+    {t:'pairs', q:'Match each non-reason to its kind.', pairs:[['I love sharks.','only a feeling'],['All my friends want to go.','everyone wants it'],['The bus is yellow.','off topic']],
+      h:'Does it tell about me, about other people, or something true that is not about why?'},
+    {t:'sort', q:'Sort each NON-reason: what kind of mistake is it?', bins:[{id:'F',label:'😊 Only a feeling'},{id:'E',label:'👥 Everyone wants it'},{id:'O',label:'🚫 Off topic'}],
+      items:[{label:'Because I like it.',bin:'F'},{label:'The aquarium is the coolest.',bin:'F'},{label:'All my friends want to go.',bin:'E'},{label:'Every boy in class wants it.',bin:'E'},{label:'The farm has a red gate.',bin:'O'}],
+      h:'A feeling tells about you. “Everyone wants it” tells about other people. Off topic is true, but it does not tell why.'},
+    {t:'spotall', q:'Dovid’s reasons for the aquarium. Tap every REAL reason.', cells:[{label:'It is close, so the bus ride is short.',ok:true},{label:'We will learn how fish breathe.',ok:true},{label:'Rain cannot cancel an indoor trip.',ok:true},{label:'I love sharks.',ok:false},{label:'It is the best place in town.',ok:false},{label:'The aquarium has blue walls.',ok:false}],
+      h:'Skip feelings, “everyone wants it,” and facts that do not tell why.'},
+    {t:'order', q:'Dovid fixes “I like fish.” Build his real reason. Tap the tiles in order.', tiles:['We should go','to the aquarium','because we will learn','how fish breathe.'],
+      h:'Start with the opinion. Then because. Then the reason that helps the class.'},
+    {t:'sort', q:'Avrumi wants the farm. Sort each sentence: about Avrumi only, or good for the whole class?', bins:[{id:'M',label:'🙋 About me only'},{id:'C',label:'🏫 Good for the class'}],
+      items:[{label:'I love goats.',bin:'M'},{label:'I want to ride the tractor.',bin:'M'},{label:'We learn to care for animals.',bin:'C'},{label:'We work as a team outside.',bin:'C'}],
+      h:'Does it tell what Avrumi wants? Or why the trip helps everyone?'},
+    {t:'write', q:'Your turn to write. Use your TREE plan. Test every reason: is it a real reason? Write your opinion and two real reasons. If you find “I like it,” fix it.', min:0, checks:['✅ Each reason tells why it is good for the reader or the class.','😊 No reason is only a feeling, like “I like it.”','👥 No reason is just “everyone wants it.”'], h:'For each reason, ask: “Why is that good for the class?” If you have an answer, write the answer.'}
+  ],
+  check:[
+    {q:'Yehuda thinks the class should have a reading corner. He writes: “Because reading corners are the coolest.” What is this?', o:['only a feeling','a real reason','off topic'], h:'Ask: why is that good for the class? Does the sentence answer that?'},
+    {q:'Yehuda’s next reason: “A quiet corner helps boys read longer.” What is this?', o:['a real reason','only a feeling','off topic'], h:'Does it tell why the corner is good for the class?'},
+    {t:'order', q:'Binyamin wants a chess club. Build his real reason. Tap the tiles in order.', tiles:['Our class should','start a chess club','because chess teaches us','to keep trying.'], h:'Start with the opinion. Then because. Then the reason that helps the class.'}
+  ],
+  re:[
+    {how:'A new way: the “Why is that good?” test. Say your reason. Then ask, “Why is that good for the class?” If all you can say is “because I like it,” it is not a reason yet.', q:'Which reason passes the test?', o:['We learn how sea animals live.','Sharks are cool.','I want to go.']},
+    {how:'A simpler step: hunt for feeling words first: like, love, fun, best, cool. A reason built only on them is not a real reason.', q:'Which word is a feeling word?', o:['love','learn','animals']},
+    {how:'The skill underneath: Say What You Think. There you said your opinion clearly in one sentence. Now you go further: give reasons, test each one, and fix the ones that are only a feeling.', q:'An opinion tells…', o:['what you think','a number','a story']}
+  ]},
+
+  'WRIT.PARA.L05.16':{name:'Back It Up',
+  teach:[
+    {how:'Yehuda always asks: “But how do we know?” A reason needs proof. Back it up with a FACT: a number, or something you can check. Or a DETAIL: exactly what you will see or do.', q:'Reason: the farm costs less. Which sentence backs it up with a fact?', o:['The farm is $8 a boy, and the aquarium is $12.','The farm is a really good deal.','Everyone knows farms are cheap.']},
+    {how:'The proof must match THAT reason. Reason: rain cannot cancel the aquarium trip. Proof: the whole trip is indoors. A fact about sea animals is true, but it proves a different reason. That is the wrong reason.', q:'Reason: rain cannot cancel the aquarium trip. Which proof matches it?', o:['The whole trip is indoors.','It has over 500 kinds of sea animals.','It is 20 minutes by bus.']},
+    {how:'The mistake: a feeling or a guess dressed up as proof. “Everyone knows it is great.” “I bet it is the best.” Those prove nothing. A fact or a detail can be checked.', q:'Reason: the aquarium teaches us about sea life. Which one is NOT real proof?', o:['Everyone knows it is great.','A guide teaches how fish breathe with gills.','It has over 500 kinds of sea animals.']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each of Dovid’s reasons to the fact or detail that backs it up.', pairs:[['the bus ride is short','It is only 20 minutes by bus.'],['we will learn about sea life','A guide teaches how fish breathe with gills.'],['rain cannot cancel it','The whole trip is indoors.']],
+      h:'Ask Yehuda’s question: how do we know THIS reason is true?'},
+    {t:'sort', q:'Reason: at the farm, we learn where our food comes from. Sort each sentence: backs it up, or does not?', bins:[{id:'B',label:'✅ Backs it up'},{id:'N',label:'❌ Does not back it up'}],
+      items:[{label:'We watch wheat ground into flour at the mill.',bin:'B'},{label:'Each boy milks a cow.',bin:'B'},{label:'Everyone knows farms are great.',bin:'N'},{label:'The farm is 40 minutes away.',bin:'N'},{label:'I bet it is the best trip.',bin:'N'}],
+      h:'Does it prove THIS reason with a fact or a detail? A feeling, a guess, or a fact about something else does not.'},
+    {t:'spotall', q:'Tap every sentence that is a FACT you could check.', cells:[{label:'The farm is $8 a boy.',ok:true},{label:'The farm is 40 minutes by bus.',ok:true},{label:'The aquarium has over 500 kinds of sea animals.',ok:true},{label:'The farm is the best.',ok:false},{label:'Everyone loves the aquarium.',ok:false}],
+      h:'A fact can be checked: you could look it up or count it. A feeling cannot be checked.'},
+    {t:'order', q:'Build Tzvi Hirsch’s reason with its proof. Tap the sentences in order.', tiles:['I think our class should go to the farm.','First, we will learn where our food comes from.','For example, we will watch wheat ground into flour at the mill.'],
+      h:'The opinion comes first. Then the reason. The proof comes right after the reason it backs up.'},
+    {t:'sort', q:'Reason: rain cannot cancel the aquarium trip. Sort each proof sentence.', bins:[{id:'G',label:'✅ Good proof'},{id:'F',label:'😊 A feeling or a guess'},{id:'W',label:'🔀 Wrong reason'}],
+      items:[{label:'The whole trip is indoors.',bin:'G'},{label:'Sharks are amazing.',bin:'F'},{label:'I bet it stays dry in there.',bin:'F'},{label:'It has over 500 kinds of sea animals.',bin:'W'},{label:'The bus ride is 20 minutes.',bin:'W'}],
+      h:'Good proof matches THIS reason and can be checked. A feeling or a guess cannot be checked. A true fact about another reason is the wrong reason.'},
+    {t:'pairs', q:'Each proof is weak. Match it to a stronger fact or detail.', pairs:[['Farms are great for learning.','Each boy feeds the goats and milks a cow.'],['The farm is really cheap.','The farm is $8 a boy.'],['We would work together a lot.','The class plants a row of corn together.']],
+      h:'Find the one about the same thing that you could check or see.'},
+    {t:'write', q:'Your turn to write. Take your two real reasons from last time. After each one, write a fact or a detail that backs it up.', min:0, checks:['🔍 Each reason has a fact or a detail right after it.','🎯 Each proof matches its own reason.','😊 No proof is just a feeling or a guess.'], h:'For each reason, ask Yehuda’s question: “But how do we know?” Your answer is the proof.'}
+  ],
+  check:[
+    {q:'Yehuda wants a class reading corner. Reason: a quiet corner helps boys read longer. Proof: “In the quiet library last month, boys read for 30 minutes, not 10.” What is the proof?', o:['good proof','a feeling or a guess','wrong reason'], h:'Does it match the reason? Could you check it?'},
+    {q:'Binyamin wants a chess club. Reason: chess teaches us to keep trying. Proof: “A chess set costs only $10.” What is the proof?', o:['wrong reason','good proof','a feeling or a guess'], h:'It is a true fact. But does it prove THIS reason?'},
+    {t:'order', q:'Build Avrumi’s reason with its proof. Tap the sentences in order.', tiles:['I think our shul needs a map of Glen Avenue.','First, guests could find their way.','For example, three guests got lost last Shabbos.'], h:'The opinion comes first. Then the reason. The proof comes right after the reason it backs up.'}
+  ],
+  re:[
+    {how:'A new way: proof is a key that fits ONE lock. Try your proof in the reason’s lock. If it fits a different reason, it is the wrong key.', q:'Reason: the bus ride is short. Which key fits this lock?', o:['It is only 20 minutes by bus.','The whole trip is indoors.','Sharks are amazing.']},
+    {how:'A simpler step: look for a number first. A number is often a fact you can check.', q:'Which sentence has a fact with a number?', o:['It is only 20 minutes by bus.','It is close enough.','It is not so far.']},
+    {how:'The skill underneath: Say More. There you added an example or a fact to a detail. Now you go further: pick the proof that matches your reason, and throw out a feeling or a guess.', q:'Which words can start a sentence that says more?', o:['For example,','The end.','Once upon a time,']}
+  ]},
+
+  'WRIT.PARA.L05.17':{name:'Linking Words',
+  teach:[
+    {how:'Linking words are glue. They show the reader how your ideas fit together. “because” and “in order to” join your opinion to a reason. After “in order to,” put an action word: in order to learn, in order to see.', q:'“We should go to the farm ___ we will learn where our food comes from.” Which linking word fits?', o:['because','For instance,','In addition,']},
+    {how:'“In addition,” adds your NEXT reason. “For instance,” brings in PROOF for the reason you just gave. “Therefore,” comes near the end: it shows your reasons lead back to your opinion.', q:'Dovid has given one reason. Now he wants to give his second reason. Which linking word starts it?', o:['In addition,','For instance,','because']},
+    {how:'The mistake: the wrong glue. “For instance, rain cannot cancel the trip.” But that is a NEW reason, not proof, so it needs “In addition,”. Ask what job the sentence does first. Then pick the word.', q:'Dovid’s first reason: we learn about sea life. Which next sentence uses the wrong linking word?', o:['For instance, rain cannot cancel an indoor trip.','In addition, rain cannot cancel an indoor trip.','For instance, a guide teaches how fish breathe with gills.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each linking word by its job.', bins:[{id:'A',label:'➕ Adds a reason'},{id:'P',label:'🔍 Brings in proof'},{id:'J',label:'🔗 Joins opinion and reason'}],
+      items:[{label:'In addition,',bin:'A'},{label:'Also,',bin:'A'},{label:'For instance,',bin:'P'},{label:'For example,',bin:'P'},{label:'because',bin:'J'},{label:'in order to',bin:'J'}],
+      h:'Does it add the next reason, bring in proof, or join the opinion to a reason?'},
+    {t:'pairs', q:'Match each sentence to the linking word that fills the blank.', pairs:[['We should go ___ it is close.','because'],['We should go ___ learn about sea life.','in order to'],['___ rain cannot cancel it. (a second reason)','In addition,']],
+      h:'After in order to comes an action word. After because comes a reason. A new reason starts with In addition.'},
+    {t:'order', q:'Glue Dovid’s paragraph together. Tap the sentences in order.', tiles:['I think our class should go to the aquarium.','First, we will learn about sea life.','For instance, a guide teaches how fish breathe with gills.','In addition, rain cannot cancel an indoor trip.'],
+      h:'The opinion comes first. The proof comes right after its reason. In addition brings the next reason.'},
+    {t:'spotall', q:'Tzvi Hirsch wrote: “I think we should go to the farm because we will learn where our food comes from. For instance, we will watch wheat ground into flour. In addition, we will learn to care for animals.” Tap every linking word.', cells:[{label:'because',ok:true},{label:'For instance,',ok:true},{label:'In addition,',ok:true},{label:'farm',ok:false},{label:'wheat',ok:false},{label:'animals',ok:false}],
+      h:'Linking words glue ideas together. Things, like wheat or animals, are not linking words.'},
+    {t:'sort', q:'Each sentence comes right after the reason “we learn about sea life.” Sort it: right glue, or wrong glue?', bins:[{id:'R',label:'✅ Right glue'},{id:'W',label:'❌ Wrong glue'}],
+      items:[{label:'For instance, a guide teaches how fish breathe.',bin:'R'},{label:'In addition, the bus ride is short.',bin:'R'},{label:'For instance, the bus ride is short.',bin:'W'},{label:'We should go in order to it is close.',bin:'W'}],
+      h:'Proof gets For instance. A new reason gets In addition. After in order to comes an action word.'},
+    {t:'pairs', q:'Match each linking word to its job.', pairs:[['In addition,','adds the next reason'],['For instance,','brings in proof'],['in order to','tells the goal, with an action word'],['Therefore,','leads back to the opinion']],
+      h:'Think about where each word goes in an opinion piece.'},
+    {t:'write', q:'Your turn to write. Glue your opinion paragraph together. Use because or in order to in your first sentence, For instance before a proof, and In addition before your second reason.', min:0, checks:['🔗 I joined my opinion and a reason with because or in order to.','🔍 I used For instance before a proof.','➕ I used In addition before my next reason.'], h:'Write your opinion and first reason in one sentence with because. Then For instance and your proof. Then In addition and your next reason.'}
+  ],
+  check:[
+    {q:'Mr. Halpern asks if the class should build a weather station. Dovid writes: “We should build one because we would learn to read the weather. ___ each morning we would read the rain gauge and write the number on a chart.” Which linking word fits?', o:['For instance,','In addition,','because'], h:'Is it a new reason, or a detail that shows exactly how we would learn the weather?'},
+    {q:'Binyamin writes: “Our class should start a chess club ___ learn to keep trying when we lose.” Which linking word fits?', o:['in order to','For instance,','In addition,'], h:'What comes right after the blank: an action word, or a whole new sentence?'},
+    {t:'order', q:'Glue Tzvi Hirsch’s paragraph about baking challah together. Tap the sentences in order.', tiles:['I think our class should bake challah for Shabbos.','First, we would learn a real skill.','For instance, we would braid the dough ourselves.','In addition, we could give challos to families.'], h:'The opinion comes first. The proof comes right after its reason. In addition brings the next reason.'}
+  ],
+  re:[
+    {how:'A new way: linking words are road signs for your reasons. “In addition” says: another reason ahead! “For instance” says: proof ahead!', q:'Which sign says “proof ahead”?', o:['For instance,','In addition,','because']},
+    {how:'A simpler step: start with just “because.” Write your opinion, then “because,” then your reason, all in one sentence.', q:'Which sentence uses because to join an opinion and a reason?', o:['We should go to the farm because it costs less.','Because. The farm.','The farm is because.']},
+    {how:'The skill underneath: Road Sign Words. You used transition words to move between details. Now you go further: in an opinion, each linking word has a job: join a reason, add one, or bring in proof.', q:'What do transition words do?', o:['link ideas together','end the story','name a feeling']}
+  ]},
+
+  'WRIT.PARA.L05.18':{name:'Opinion Ending',
+  teach:[
+    {how:'The Ending is the last E in TREE. It does two jobs. First, say your opinion again, in new words. Start with “For all these reasons,” or “That is why”. Then give a PUSH: tell the reader what to do. “So please choose the farm!”', q:'Which sentence is a push?', o:['So please choose the farm, Rabbi Feldman!','I think we should go to the farm.','We will watch wheat ground into flour.']},
+    {how:'Stay on your side all the way to the end. An ending that switches sides, like “But the aquarium is fine too,” tells the reader you were not sure. And do not add a NEW reason at the end. The ending wraps up. It does not start something new.', q:'Tzvi Hirsch is for the farm. Which ending sentence switches sides?', o:['But the aquarium would be fine too.','For all these reasons, the farm is the right trip for our class.','So please choose the farm!']},
+    {how:'One more mistake: no push. “That is all I think.” The reader nods and does nothing. A push asks for action: please choose, let’s sign up, come and help. Make it polite, and make it clear.', q:'Which ending has a push?', o:['That is why we should go to the aquarium. Let’s sign up today!','That is all I think.','The end.']}
+  ],
+  practice:[
+    {t:'sort', q:'Tzvi Hirsch’s ending sentences. Sort each one: says the opinion again, or a push?', bins:[{id:'O',label:'🔁 Opinion again'},{id:'P',label:'👉 A push'}],
+      items:[{label:'For all these reasons, the farm is the right trip for us.',bin:'O'},{label:'That is why our class should visit the farm.',bin:'O'},{label:'So please choose the farm, Rabbi Feldman!',bin:'P'},{label:'Let’s sign up for the farm today!',bin:'P'}],
+      h:'Opinion again tells what he believes. A push asks the reader to do something.'},
+    {t:'pairs', q:'Match each ending mistake to its fix.', pairs:[['It switches sides.','Keep the same side to the end.'],['It adds a new reason.','Move the reason up into the body.'],['It has no push.','Ask the reader to act: please choose.']],
+      h:'What is wrong? Find the fix for that problem.'},
+    {t:'spotall', q:'Dovid is for the aquarium. Tap every sentence that belongs in his ending.', cells:[{label:'For all these reasons, the aquarium is the trip for us.',ok:true},{label:'So please choose the aquarium, Rabbi Feldman!',ok:true},{label:'That is why our class should go to the aquarium.',ok:true},{label:'But the farm might be fun too.',ok:false},{label:'Also, the gift shop sells shark hats.',ok:false},{label:'That is all.',ok:false}],
+      h:'Skip anything that switches sides, adds a new reason, or just stops with no push.'},
+    {t:'order', q:'Build Tzvi Hirsch’s ending. Tap the sentences in order.', tiles:['We will learn about food, care for animals and work as a team.','For all these reasons, the farm is the right trip for our class.','So please choose the farm, Rabbi Feldman!'],
+      h:'Name the reasons again first. “For all these reasons” points back to them. The push comes last.'},
+    {t:'sort', q:'Sort each ending: strong, switches sides, or no push?', bins:[{id:'S',label:'💪 Strong ending'},{id:'W',label:'🔀 Switches sides'},{id:'N',label:'😶 No push'}],
+      items:[{label:'That is why we need the farm. Please choose it!',bin:'S'},{label:'For all these reasons, the aquarium wins. Let’s go!',bin:'S'},{label:'So please choose the farm! But the aquarium is fine too.',bin:'W'},{label:'Please pick the farm, or maybe the aquarium!',bin:'W'},{label:'That is all I think.',bin:'N'},{label:'So that is my opinion.',bin:'N'}],
+      h:'A strong ending says the opinion again and pushes. Does it stay on one side? Does it ask the reader to act?'},
+    {t:'pairs', q:'Match each opinion to its push.', pairs:[['Our class should collect tzedakah coins.','Bring one coin each Friday!'],['Our class should start a chess club.','Sign up with Binyamin today!'],['Our shul needs a map of Glen Avenue.','Let’s hang one by the door!']],
+      h:'Find the push that asks for action on the same thing.'},
+    {t:'write', q:'Your turn to write. Write the Ending of your opinion piece: farm or aquarium. Say your opinion again in new words. Then give Rabbi Feldman a polite push.', min:0, checks:['🔁 I said my opinion again, in new words.','👉 I gave a push: I asked the reader to do something.','🔀 I stayed on my side, with no new reason.'], h:'Start with For all these reasons, or That is why. Then write So please … and tell him what to do.'}
+  ],
+  check:[
+    {q:'Avrumi wants a crosswalk by the shul. His ending: “That is why Glen Avenue needs a crosswalk. Please ask the city for one today!” What kind of ending is it?', o:['strong ending','switches sides','no push'], h:'Does it say the opinion again? Does it stay on one side? Does it push?'},
+    {q:'Binyamin wants a chess club. His ending: “For all these reasons, sign up for chess club! But a drawing club would be good too.” What is wrong?', o:['switches sides','no push','strong ending'], h:'Read the last sentence. Which side is it on?'},
+    {t:'order', q:'Build Yehuda’s ending for a class reading corner. Tap the sentences in order.', tiles:['A quiet corner helps us read longer and share more books.','For all these reasons, our class needs a reading corner.','So please help us set it up this week, Rabbi Feldman!'], h:'Name the reasons again first. “For all these reasons” points back to them. The push comes last.'}
+  ],
+  re:[
+    {how:'A new way: an ending is a handshake at the door. You say your opinion one last time, and you ask: “So, will you?”', q:'What do you give the reader at the very end?', o:['a push to do something','a new reason','a riddle']},
+    {how:'A simpler step: write just the push. Start with “So please” and tell the reader what to do.', q:'Which is a push?', o:['So please choose the aquarium!','The aquarium has big tanks.','I like the aquarium.']},
+    {how:'The skill underneath: Tie It Up. A closing sentence says the big idea again in new words. An opinion ending goes further: it keeps your side and pushes the reader to act.', q:'A closing sentence says the big idea in…', o:['new words','the same words','a question']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L05.02':{hook:'Farm or aquarium? Rabbi Feldman will pick the side with the best plan!', big:'Plan an opinion with POW and TREE: Topic sentence, Reasons, Explain, Ending.',
+    intro:['P: Pick my idea: pick the side you believe.','O: Organize my notes with TREE.','T: Topic sentence. R: Reasons (three). E: Explain each reason. E: Ending.','W: Write and say more.'],
+    ex:[{q:'Tzvi Hirsch’s plan: the farm.',steps:['T: I think our class should go to the farm.','R: we learn where our food comes from (and two more reasons).','E: we watch wheat ground into flour at the mill.','E: That is why the farm is the right trip.'],a:'A TREE plan with a note for every part.'},
+        {q:'Dovid’s note: “rain cannot cancel an indoor trip.”',steps:['It tells why the aquarium is a good choice.','A note that tells why is a reason.'],a:'Reasons'}],
+    oops:{q:'Avrumi plans his piece about the trip.',wrong:'“The farm. It is good.” Then he starts writing.',right:'He makes a TREE: his opinion, three reasons, a note to explain each, and an ending.',why:'One thin note will not convince Rabbi Feldman. TREE gives him reasons to believe you.'},
+    idea:['A TREE plan stands strong: an opinion, held up by reasons.'],
+    try:{q:'Which TREE part tells what you believe?',o:['Topic sentence','Reasons','Ending'],a:'Topic sentence',steps:['T comes first: say what you believe.']}},
+  'WRIT.PARA.L05.15':{hook:'“Because I like it!” Will that convince Rabbi Feldman?', big:'A real reason tells why your opinion is good for the reader, not only that you like it.',
+    intro:['Say your reason.','Ask: “Why is that good for the class?”','Feelings (like, fun, best) and “everyone wants it” are not reasons.','Fix a non-reason: write the answer to “why is that good?”'],
+    ex:[{q:'Dovid: “I like fish.”',steps:['Why is that good for the class?','We will learn how fish breathe.'],a:'We should go to the aquarium because we will learn how fish breathe.'},
+        {q:'Tzvi Hirsch: “The farm is fun.”',steps:['Why is that good for the class?','We will learn where our food comes from.'],a:'We should go to the farm because we will learn where our food comes from.'}],
+    oops:{q:'Dovid gives a reason for the aquarium.',wrong:'Because I like fish.',right:'Because we will learn how fish breathe.',why:'“I like it” tells about Dovid. A real reason tells why the trip is good for the class.'},
+    idea:['A feeling is not a reason. Ask “Why is that good?” and write the answer.'],
+    try:{q:'Which is a real reason?',o:['Rain cannot cancel an indoor trip.','The aquarium is the coolest.','All my friends want to go.'],a:'Rain cannot cancel an indoor trip.',steps:['Which one tells why it is good for the class?']}},
+  'WRIT.PARA.L05.16':{hook:'Yehuda asks: “But how do we know?” Can your reason answer him?', big:'Back up each reason with a fact or a detail that proves it.',
+    intro:['Read your reason.','Ask: “But how do we know?”','Write a fact (a number, something you can check) or a detail (what you will see or do).','Check that the proof matches THAT reason.'],
+    ex:[{q:'Reason: the farm costs less.',steps:['How do we know?','Fact: $8 a boy at the farm, $12 at the aquarium.'],a:'In fact, the farm is $8 a boy, and the aquarium is $12.'},
+        {q:'Reason: rain cannot cancel the aquarium trip.',steps:['How do we know?','Detail: the whole trip is indoors.'],a:'The whole trip is indoors, so rain cannot stop it.'}],
+    oops:{q:'Back up the reason: we will learn about sea life.',wrong:'Everyone knows the aquarium is great.',right:'A guide teaches how fish breathe with gills.',why:'A feeling proves nothing. A detail shows how we know.'},
+    idea:['A reason says why; the proof shows how we know.'],
+    try:{q:'Reason: the bus ride is short. Which proof matches?',o:['It is only 20 minutes by bus.','It has over 500 kinds of sea animals.','Sharks are amazing.'],a:'It is only 20 minutes by bus.',steps:['Which one proves THIS reason?']}},
+  'WRIT.PARA.L05.17':{hook:'Dovid has great reasons, but they sound like a list. What glue does he need?', big:'Join your opinion, reasons and proof with linking words: because, in order to, In addition, For instance, Therefore.',
+    intro:['because or in order to: join the opinion and a reason.','In addition, or Also: add the next reason.','For instance, or For example: bring in proof.','Therefore: lead back to the opinion at the end.'],
+    ex:[{q:'Dovid’s list: We should go to the aquarium. We learn about sea life. A guide teaches about gills.',steps:['Join the opinion and the reason: because.','Bring in the proof: For instance.'],a:'We should go to the aquarium because we will learn about sea life. For instance, a guide teaches how fish breathe with gills.'},
+        {q:'Add Dovid’s next reason.',steps:['A new reason needs In addition.'],a:'In addition, rain cannot cancel an indoor trip.'}],
+    oops:{q:'Dovid adds his second reason.',wrong:'For instance, rain cannot cancel an indoor trip.',right:'In addition, rain cannot cancel an indoor trip.',why:'It is a new reason, not proof. A new reason needs In addition.'},
+    idea:['Pick the job first, then the linking word.'],
+    try:{q:'Which linking word adds the next reason?',o:['In addition,','For instance,','in order to'],a:'In addition,',steps:['Which one says: another reason is coming?']}},
+  'WRIT.PARA.L05.18':{hook:'Rabbi Feldman read every piece. Which ending made him say yes?', big:'End an opinion piece by saying your opinion again, then giving the reader a push.',
+    intro:['You may name your reasons again in a few words.','Say your opinion again: For all these reasons, or That is why.','Give a push: So please … or Let’s …','Stay on your side, and add no new reason.'],
+    ex:[{q:'Tzvi Hirsch’s farm piece.',steps:['Reasons again: food, animals, teamwork.','Opinion again: For all these reasons, the farm is the right trip for our class.','Push: So please choose the farm, Rabbi Feldman!'],a:'For all these reasons, the farm is the right trip for our class. So please choose the farm, Rabbi Feldman!'},
+        {q:'Dovid’s aquarium piece.',steps:['Opinion again: That is why we should go to the aquarium.','Push: Let’s sign up today!'],a:'That is why we should go to the aquarium. Let’s sign up today!'}],
+    oops:{q:'Dovid ends his aquarium piece.',wrong:'That is all I think. But the farm is nice too.',right:'That is why we should go to the aquarium. Let’s sign up today!',why:'Switching sides and giving no push leave the reader unsure. Stay on your side and ask him to act.'},
+    idea:['Say it again, then ask for action: that is how you convince.'],
+    try:{q:'Which ending is strong?',o:['That is why we need the farm. Please choose it!','That is all I think.','The farm is great, but the aquarium is too.'],a:'That is why we need the farm. Please choose it!',steps:['Which one says the opinion again AND asks for action?']}},
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L05.02':{s:'Say POW. Pick my idea means pick your side.\nOrganize with TREE: Topic sentence, Reasons, Explain, Ending.\nThe Topic sentence tells what you believe. Reasons tell why.\nExplain tells how you know. The Ending says it again.'},
+  'WRIT.PARA.L05.15':{s:'Read the reason.\nAsk: “Why is that good for the class?”\nLike, love, fun, best, “everyone wants it”: not a reason.\nTrue, but not about why: off topic.'},
+  'WRIT.PARA.L05.16':{s:'Read your reason.\nAsk Yehuda’s question: “But how do we know?”\nA fact can be checked. A detail tells what you will see or do.\nThe proof must match that reason, not another one.'},
+  'WRIT.PARA.L05.17':{s:'Ask: what job does this sentence do?\nJoin the opinion and a reason: because, in order to.\nAdd the next reason: In addition, Also. Bring in proof: For instance.\nAfter in order to, put an action word.'},
+  'WRIT.PARA.L05.18':{s:'Say your opinion again in new words: For all these reasons, or That is why.\nThen push: So please … or Let’s …\nStay on your side to the very end.\nNo new reason in the ending.'},
+  };
+  var BITE = {
+  'WRIT.ESSAY.L05.02':{ band:'E45', pic:'🌳', today:'Plan an opinion with POW and TREE', why:'A plan with real reasons is how you convince someone.',
+    ready:[{q:'In POW, what does the P stand for?', o:['Pick my idea','Plan the ending','Put it in order'], a:'Pick my idea'}],
+    bridge:'WRIT.ESSAY.L05.01', bridgeName:'POW + WWW',
+    watch:{ q:'Tzvi Hirsch plans his piece for Rabbi Feldman.', m:{type:'scene', e:'🚌', t:'Rabbi Feldman asks the class: a trip to the farm, or to the aquarium?'}, steps:[
+      {t:'P: Pick my idea. Tzvi Hirsch picks the farm.'},
+      {t:'O: Organize my notes. This time, use TREE.'},
+      {t:'T: Topic sentence. I think our class should go to the farm.'},
+      {t:'R: Reasons. We learn about food, care for animals, and work as a team.'},
+      {t:'E: Explain. We watch wheat ground into flour. Each boy milks a cow.'},
+      {t:'E: Ending. That is why we should go to the farm! Then W: Write and say more.'}], a:'A full POW + TREE plan, ready to write.' },
+    oops:{ q:'Avrumi plans his piece about the trip.', wrong:'“The farm. It is good.” Then he starts writing.', right:'He makes a TREE: his opinion, three reasons, a note to explain each, and an ending.', why:'One thin note will not convince Rabbi Feldman. TREE gives him reasons to believe you.' },
+    ways:['class trip scene','memory strategy (POW + TREE)','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can plan an opinion with POW and TREE.',
+    board:{ one:'POW + TREE: Topic sentence, Reasons, Explain, Ending.', activity:'Draw a tree on the board; the class fills it for “farm or aquarium?”, then each boy plans his own side.', mistakes:['Only one reason','Reasons with nothing to explain them','No opinion at the top, so the reader does not know what you believe'] },
+    do:[
+      {type:'sort', q:'Which plans are ready to write?', bins:['Ready to write','Mistake: missing a part'], cards:[['Opinion, 3 reasons, explain, ending',0],['Opinion and one reason',1],['3 reasons, but no opinion',1],['T, R, E, E: every part filled',0]], mis:true,
+        say:'Ready to write or missing a part? Sort each plan.', how:'Check for all four parts: Topic sentence, Reasons, Explain, Ending.',
+        why:{q:'Why is “Opinion and one reason” a mistake?', o:['One reason, with nothing explained, will not convince','It is too long','It has too many parts','It has no title'], a:'One reason, with nothing explained, will not convince'}},
+      {type:'match', pairs:[['Topic sentence','what I believe'],['Reasons','why I believe it'],['Explain','how I know'],['Ending','my opinion again']],
+        say:'Match each part of TREE to its job.', how:'Say TREE slowly. What does each part do for the reader?'}],
+    your:[
+      {type:'tiles', q:'Put the parts of TREE in order.', w:['Topic','Reasons','Explain','Ending'], extra:['Title'],
+        say:'Build TREE: tap the parts in order.', how:'T, R, E, E: say the word TREE in your head.'},
+      {type:'sort', q:'Dovid’s notes for the aquarium.', bins:['Reason','Explain'], cards:[['we learn how sea animals live',0],['over 500 kinds of sea animals',1],['it is close to school',0],['only 20 minutes by bus',1]],
+        say:'Reason or explain? Sort each of Dovid’s notes.', how:'A reason tells why. An explain note shows how we know, often with a number.',
+        why:{q:'How do you know “only 20 minutes by bus” is an explain note?', o:['It shows how we know the trip is close','It tells what Dovid believes','It ends the piece','It is a feeling'], a:'It shows how we know the trip is close'}},
+      {type:'match', pairs:[['we learn about food','we watch wheat become flour'],['we care for animals','each boy feeds the goats'],['we work as a team','we plant a row of corn']],
+        say:'Match each farm reason to the note that explains it.', how:'Which note shows how we know the reason is true?'},
+      {type:'tiles', q:'Build Tzvi Hirsch’s Topic sentence.', w:['I think','our class','should go','to the farm.'], extra:['Ending'],
+        say:'Build the Topic sentence: what Tzvi Hirsch believes.', how:'Start with I think. Then who. Then what they should do.'},
+      {type:'sort', q:'Avrumi’s plan for the farm.', bins:['Topic sentence','Reason','Ending'], cards:[['I think we should visit the farm.',0],['we learn to care for animals',1],['That is why we should visit the farm.',2],['we work as a team outside',1]],
+        say:'Topic, reason, or ending? Sort each note.', how:'What he believes is the topic. Why is a reason. That is why … wraps it up: the ending.',
+        why:{q:'How do you know “That is why we should visit the farm.” is the Ending?', o:['It says the opinion again and wraps it up','It tells one reason','It is a number','It starts the piece'], a:'It says the opinion again and wraps it up'}}] },
+
+  'WRIT.PARA.L05.15':{ band:'E45', pic:'🤔', today:'Tell a real reason from “because I like it”', why:'Only real reasons convince a reader who does not already agree.',
+    ready:[{q:'In TREE, what does R stand for?', o:['Reasons','Rules','Read'], a:'Reasons'}],
+    bridge:'WRIT.PARA.L05.04', bridgeName:'Say What You Think',
+    watch:{ q:'Dovid tests his reasons for the aquarium.', m:{type:'scene', e:'🐠', t:'Dovid reads his TREE plan. Will it convince Rabbi Feldman?'}, steps:[
+      {t:'Reason 1: I like fish. Test: why is that good for the class?'},
+      {t:'No answer. It is only a feeling. Fix it.'},
+      {t:'New reason 1: we will learn how fish breathe.'},
+      {t:'Reason 2: everyone wants to go. That does not tell why.'},
+      {t:'New reason 2: rain cannot cancel an indoor trip.'},
+      {t:'Reason 3: it is close, so the bus ride is short. A real reason!'}], a:'Three real reasons, each one good for the whole class.' },
+    oops:{ q:'Dovid gives a reason for the aquarium.', wrong:'Because I like fish.', right:'Because we will learn how fish breathe.', why:'“I like it” tells about Dovid. A real reason tells why the trip is good for the class.' },
+    ways:['class trip scene','worked example','sort it','word tiles','match it','tap the reason','Mistake Detective'], done:'You can tell a real reason from “because I like it,” and fix it.',
+    board:{ one:'Ask: “Why is that good for the class?” A feeling is not a reason.', activity:'The rebbe calls out reasons for a class trip; boys stand for a real reason and sit for a non-reason, then fix the non-reasons together.', mistakes:['“Because I like it” as a reason','“Everyone wants it” as a reason','A true fact that does not tell why'] },
+    do:[
+      {type:'sort', q:'Opinion: our class should go to the farm.', bins:['Real reason','Mistake: not a reason'], cards:[['We learn where food comes from.',0],['I like cows.',1],['We care for animals.',0],['The farm is so much fun.',1]], mis:true,
+        say:'Real reason or not? Sort each one.', how:'Ask: why is that good for the class?',
+        why:{q:'Why is “I like cows” a mistake?', o:['It tells about him, not why it helps the class','It is too short','It is about the aquarium','It has a number'], a:'It tells about him, not why it helps the class'}},
+      {type:'tiles', q:'Fix “I like fish.” Build a real reason.', w:['We learn','how fish','breathe.'], extra:['so fun'],
+        say:'Fix the feeling. Build a real reason.', how:'Tell what the class will learn. Leave out the feeling.',
+        why:{q:'Why is “We learn how fish breathe” a real reason?', o:['It tells why the trip is good for the class','It says Dovid likes fish','It says everyone wants it','It names the bus'], a:'It tells why the trip is good for the class'}}],
+    your:[
+      {type:'match', pairs:[['I love sharks.','Only a feeling'],['All my friends want it.','Everyone wants it'],['The bus is yellow.','Off topic']],
+        say:'Match each non-reason to its kind.', how:'About you? About other people? Or true, but not about why?'},
+      {type:'sort', q:'Dovid’s aquarium reasons.', bins:['Real reason','Not a reason'], cards:[['Rain cannot cancel it.',0],['Sharks are cool.',1],['The bus ride is short.',0],['It is the best place.',1]],
+        say:'Real reason or not? Sort Dovid’s reasons.', how:'Feeling words like cool and best are not reasons.',
+        why:{q:'How do you know “Rain cannot cancel it” is a real reason?', o:['It tells why the trip is good for the class','It is a feeling','Everyone says it','It is about the bus color'], a:'It tells why the trip is good for the class'}},
+      {type:'tiles', q:'Fix “The farm is fun.” Build a real reason.', w:['We learn','where food','comes from.'], extra:['the best'],
+        say:'Build a real reason for the farm.', how:'Tell what the class will learn there.'},
+      {type:'match', pairs:[['I love sharks.','We learn how sharks swim.'],['Cows are cute.','We learn where milk comes from.'],['Tractors are cool.','We see how corn is planted.']],
+        say:'Match each feeling to the real reason that fixes it.', how:'Find the real reason about the same thing.'},
+      {type:'sort', q:'Yehuda’s reasons for a reading corner.', bins:['Real reason','Feeling','Off topic'], cards:[['Quiet helps boys read longer.',0],['Reading corners are cool.',1],['The rug is blue.',2],['I love pillows.',1]],
+        say:'Real reason, feeling, or off topic? Sort each one.', how:'Good for the class? Real. About me? Feeling. True but not why? Off topic.',
+        why:{q:'Why is “The rug is blue” off topic?', o:['It is true, but it does not tell why','It is a feeling','It is a real reason','It has a number'], a:'It is true, but it does not tell why'}}] },
+
+  'WRIT.PARA.L05.16':{ band:'E45', pic:'🔍', today:'Back up a reason with a fact or a detail', why:'Proof turns “I think so” into “Now I believe you.”',
+    ready:[{q:'Which is a real reason for a trip?', o:['We will learn how fish breathe.','I like fish.','Everyone wants it.'], a:'We will learn how fish breathe.'}],
+    bridge:'WRIT.PARA.L05.08', bridgeName:'Say More',
+    watch:{ q:'Yehuda helps Dovid prove his reasons.', m:{type:'scene', e:'🦈', t:'Yehuda opens his notebook: “But how do we know?”'}, steps:[
+      {t:'Reason: the bus ride is short. How do we know?'},
+      {t:'Fact: it is only 20 minutes by bus.'},
+      {t:'Reason: rain cannot cancel it. How do we know?'},
+      {t:'Detail: the whole trip is indoors.'},
+      {t:'Dovid adds: “Sharks are amazing.” Yehuda shakes his head.'},
+      {t:'That is a feeling. Proof is a fact or a detail that matches the reason.'}], a:'Every reason has proof that matches it.' },
+    oops:{ q:'Back up the reason: we will learn about sea life.', wrong:'Everyone knows the aquarium is great.', right:'A guide teaches how fish breathe with gills.', why:'A feeling proves nothing. A detail shows how we know.' },
+    ways:['class trip scene','worked example','match it','sort it','word tiles','tap the reason','Mistake Detective'], done:'You can back up a reason with a fact or a detail that matches it.',
+    board:{ one:'Reason, then proof: “But how do we know?”', activity:'Pairs trade reasons; each partner asks “But how do we know?” and the writer adds a fact or a detail.', mistakes:['A feeling as proof (“everyone knows”)','Proof that fits a different reason','A guess instead of a fact'] },
+    do:[
+      {type:'match', pairs:[['The bus ride is short.','only 20 minutes by bus'],['Rain cannot cancel it.','The trip is indoors.'],['We learn about sea life.','A guide teaches about gills.']],
+        say:'Match each reason to the proof that backs it up.', how:'Ask: how do we know THIS reason is true?',
+        why:{q:'Why does “only 20 minutes by bus” back up “The bus ride is short”?', o:['It is a fact that proves the ride is short','It is a feeling','It is about sea life','It is a guess'], a:'It is a fact that proves the ride is short'}},
+      {type:'sort', q:'Reason: the farm costs less.', bins:['Good proof','Mistake: not proof'], cards:[['The farm is $8 a boy.',0],['The farm is a great deal.',1],['It is $4 less than the aquarium.',0],['I bet it is cheap.',1]], mis:true,
+        say:'Good proof or a mistake? Sort each one.', how:'A fact can be checked. A feeling or a guess cannot.',
+        why:{q:'Why is “I bet it is cheap” a mistake?', o:['It is a guess, not a fact you can check','It has a number','It matches the reason','It is too long'], a:'It is a guess, not a fact you can check'}}],
+    your:[
+      {type:'tiles', q:'Build the proof for: the farm costs less.', w:['In fact,','the farm is','$8 a boy.'], extra:['so fun'],
+        say:'Build a fact that backs up the reason.', how:'Start with In fact. Then the number you can check.'},
+      {type:'sort', q:'Reason: rain cannot cancel the aquarium trip.', bins:['Good proof','Feeling or guess','Wrong reason'], cards:[['The whole trip is indoors.',0],['Sharks are amazing.',1],['Over 500 kinds of animals.',2],['I bet it stays dry.',1]],
+        say:'Good proof, feeling, or wrong reason? Sort each one.', how:'Does it prove THIS reason, and can you check it?',
+        why:{q:'Why is “Over 500 kinds of animals” the wrong reason?', o:['It is true, but it does not prove rain cannot cancel it','It is a feeling','It is a guess','It is about the farm'], a:'It is true, but it does not prove rain cannot cancel it'}},
+      {type:'match', pairs:[['Farms are great for learning.','Each boy milks a cow.'],['The farm is cheap.','The farm is $8 a boy.'],['We would work together.','We plant corn together.']],
+        say:'Match each weak proof to a stronger one.', how:'Find the one about the same thing that you could see or check.'},
+      {type:'tiles', q:'Build the proof for: we learn where our food comes from.', w:['We watch','wheat turn','into flour.'], extra:['so yummy'],
+        say:'Build a detail that backs up the reason.', how:'Tell exactly what the boys will see.'},
+      {type:'sort', q:'Proof for Tzvi Hirsch’s farm reasons.', bins:['Fact','Feeling'], cards:[['The trip is 40 minutes.',0],['Farms are the best.',1],['It costs $8 a boy.',0],['Everyone loves goats.',1]],
+        say:'Fact or feeling? Sort each one.', how:'A fact can be checked. A feeling cannot.',
+        why:{q:'How do you know “It costs $8 a boy” is a fact?', o:['You can check the price','It tells how he feels','Everyone says so','It is a guess'], a:'You can check the price'}}] },
+
+  'WRIT.PARA.L05.17':{ band:'E45', pic:'🔗', today:'Join your opinion and reasons with linking words', why:'Linking words show the reader how your reasons hold up your opinion.',
+    ready:[{q:'Which sentence backs up “the bus ride is short”?', o:['It is only 20 minutes by bus.','Sharks are amazing.','I like buses.'], a:'It is only 20 minutes by bus.'}],
+    bridge:'WRIT.PARA.L05.01', bridgeName:'Road Sign Words',
+    watch:{ q:'Dovid glues his paragraph together.', m:{type:'scene', e:'🐟', t:'Dovid’s aquarium notes sit in a list. They need glue.'}, steps:[
+      {t:'Opinion and reason: we should go because we will learn about sea life.'},
+      {t:'Proof for that reason? Use For instance.'},
+      {t:'For instance, a guide teaches how fish breathe with gills.'},
+      {t:'A new reason? Use In addition.'},
+      {t:'In addition, rain cannot cancel an indoor trip.'},
+      {t:'At the end, Therefore leads back to the opinion.'}], a:'Every idea is glued to the one before it.' },
+    oops:{ q:'Dovid adds his second reason.', wrong:'For instance, rain cannot cancel an indoor trip.', right:'In addition, rain cannot cancel an indoor trip.', why:'It is a new reason, not proof. A new reason needs In addition.' },
+    ways:['class trip scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can join an opinion, reasons and proof with linking words.',
+    board:{ one:'Pick the job, then the glue: because, In addition, For instance, Therefore.', activity:'Write five linking words on cards; the class builds one paragraph on the board, and boys hold up the card each sentence needs.', mistakes:['For instance before a new reason','No linking words, so the reasons sound like a list','in order to with no action word after it'] },
+    do:[
+      {type:'sort', q:'After the reason “we learn about sea life”.', bins:['Right glue','Mistake: wrong glue'], cards:[['For instance, a guide teaches about gills.',0],['In addition, the bus ride is short.',0],['For instance, the bus ride is short.',1],['Therefore, the bus ride is short.',1]], mis:true,
+        say:'Right glue or wrong glue? Sort each sentence.', how:'Proof needs For instance. A new reason needs In addition. Therefore comes at the end.',
+        why:{q:'Why is “For instance, the bus ride is short” a mistake?', o:['It is a new reason, so it needs In addition','It is proof about sea life','It has no reason','It is too short'], a:'It is a new reason, so it needs In addition'}},
+      {type:'match', pairs:[['In addition,','adds the next reason'],['For instance,','brings in proof'],['because','joins opinion and reason']],
+        say:'Match each linking word to its job.', how:'What does each word tell the reader is coming?'}],
+    your:[
+      {type:'tiles', q:'Join the opinion and a reason.', w:['We should go','because','it is close.'], extra:['In addition'],
+        say:'Join the opinion and the reason with one word.', how:'Opinion first. Then the joining word. Then the reason.'},
+      {type:'sort', q:'Which job does each linking word do?', bins:['Adds a reason','Brings in proof','Joins a reason'], cards:[['In addition,',0],['For example,',1],['in order to',2],['Also,',0],['For instance,',1],['because',2]],
+        say:'Sort each linking word by its job.', how:'Next reason? Proof? Or joins the opinion to a reason?',
+        why:{q:'Why does “Also,” go with Adds a reason?', o:['It tells the reader another reason is coming','It brings in proof','It ends the piece','It names a feeling'], a:'It tells the reader another reason is coming'}},
+      {type:'match', pairs:[['adds the next reason','In addition, we work as a team.'],['brings in proof','For instance, we milk a cow.'],['tells the goal','in order to see a mill']],
+        say:'Match each job to the words that do it.', how:'Look at the linking word at the start of each one.'},
+      {type:'tiles', q:'Tell the goal of the farm trip.', w:['We should go','in order to','see a mill.'], extra:['because'],
+        say:'Build the sentence with in order to.', how:'After in order to, put an action word.'},
+      {type:'sort', q:'After the reason “we care for animals”.', bins:['Right glue','Wrong glue'], cards:[['For instance, we milk a cow.',0],['In addition, we work as a team.',0],['For instance, it costs less.',1],['We go in order to it is close.',1]],
+        say:'Right glue or wrong glue? Sort each sentence.', how:'Proof gets For instance. After in order to comes an action word.',
+        why:{q:'Why is “For instance, it costs less” wrong glue?', o:['It is a new reason, not proof','It is proof about animals','It tells the goal','It has an action word'], a:'It is a new reason, not proof'}}] },
+
+  'WRIT.PARA.L05.18':{ band:'E45', pic:'👉', today:'End an opinion with your opinion again and a push', why:'The ending is your last chance to get the reader to say yes.',
+    ready:[{q:'A closing sentence says the big idea in…', o:['new words','the same words','a question'], a:'new words'}],
+    bridge:'WRIT.PARA.L05.09', bridgeName:'Tie It Up',
+    watch:{ q:'Tzvi Hirsch writes his ending for Rabbi Feldman.', m:{type:'scene', e:'🐄', t:'Rabbi Feldman will read every piece tonight. Who will convince him?'}, steps:[
+      {t:'First, name the reasons again: food, animals, teamwork.'},
+      {t:'Then say the opinion again, in new words.'},
+      {t:'For all these reasons, the farm is the right trip for our class.'},
+      {t:'Now the push: ask Rabbi Feldman to act.'},
+      {t:'So please choose the farm, Rabbi Feldman!'},
+      {t:'No switching sides, and no new reason.'}], a:'Rabbi Feldman smiled: “Real reasons, real proof, and a clear push. The farm it is!”' },
+    oops:{ q:'Dovid ends his aquarium piece.', wrong:'That is all I think. But the farm is nice too.', right:'That is why we should go to the aquarium. Let’s sign up today!', why:'Switching sides and giving no push leave the reader unsure. Stay on your side and ask him to act.' },
+    ways:['class trip scene','worked example','sort it','word tiles','match it','tap the reason','Mistake Detective'], done:'You can end an opinion with your opinion again and a push.',
+    board:{ one:'Opinion again + a push: “For all these reasons … So please …”', activity:'Pairs swap opinion pieces, read only the last two lines, and give a thumbs-up if they hear the opinion again and a push.', mistakes:['Switching sides at the end','A new reason in the ending','No push: “That is all I think.”'] },
+    do:[
+      {type:'sort', q:'Tzvi Hirsch is for the farm. Which sentences belong in his ending?', bins:['Belongs in the ending','Mistake: leave it out'], cards:[['Please choose the farm!',0],['But the aquarium is fine too.',1],['That is all I think.',1],['That is why we need the farm.',0]], mis:true,
+        say:'Belongs in the ending, or a mistake? Sort each one.', how:'Does it keep his side and push? Or switch sides, or just stop?',
+        why:{q:'Why is “But the aquarium is fine too” a mistake?', o:['It switches sides at the end','It gives a push','It says the opinion again','It is a fact'], a:'It switches sides at the end'}},
+      {type:'tiles', q:'Build Tzvi Hirsch’s push.', w:['So please','choose the','farm!'], extra:['the end'],
+        say:'Build the push: ask Rabbi Feldman to act.', how:'Start with So please. Then tell him what to do.',
+        why:{q:'Why is “So please choose the farm!” a push?', o:['It asks the reader to do something','It adds a new reason','It switches sides','It tells a story'], a:'It asks the reader to do something'}}],
+    your:[
+      {type:'match', pairs:[['It switches sides.','Keep your side.'],['It adds a new reason.','Move it to the body.'],['It has no push.','Ask the reader to act.']],
+        say:'Match each ending mistake to its fix.', how:'What is wrong? Find the fix for that.'},
+      {type:'sort', q:'Dovid’s ending for the aquarium.', bins:['Opinion again','Push'], cards:[['That is why we need the aquarium.',0],['Let’s sign up today!',1],['The aquarium is the right trip.',0],['Please choose the aquarium!',1]],
+        say:'Opinion again, or a push? Sort each one.', how:'Opinion tells what he believes. A push asks the reader to act.',
+        why:{q:'How do you know “Let’s sign up today!” is a push?', o:['It asks the reader to act','It says what Dovid believes','It is a reason','It switches sides'], a:'It asks the reader to act'}},
+      {type:'tiles', q:'Say Dovid’s opinion again.', w:['That is why','we need the','aquarium.'], extra:['But maybe'],
+        say:'Build Dovid’s opinion again, in new words.', how:'Start with That is why. Then what the class should do.'},
+      {type:'match', pairs:[['Our class should collect tzedakah.','Bring a coin each Friday!'],['We need a chess club.','Sign up with Binyamin!'],['Our shul needs a map.','Let’s hang one by the door!']],
+        say:'Match each opinion to its push.', how:'Find the push about the same thing.'},
+      {type:'sort', q:'Which endings convince?', bins:['Strong ending','Switches sides','No push'], cards:[['That is why we need the farm. Please choose it!',0],['Pick the farm, or maybe the aquarium!',1],['So that is my opinion.',2],['Choose the farm! But the aquarium is fine too.',1]],
+        say:'Strong, switches sides, or no push? Sort each one.', how:'A strong ending keeps one side and asks for action.',
+        why:{q:'Why is “So that is my opinion.” a no-push ending?', o:['It does not ask the reader to do anything','It switches sides','It adds a new reason','It is very strong'], a:'It does not ask the reader to do anything'}}] },
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
