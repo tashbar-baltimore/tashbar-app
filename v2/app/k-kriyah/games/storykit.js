@@ -81,10 +81,10 @@ export function makeStory(E, unit, script) {
     }
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
-    const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
-    const nl = P && many ? Math.ceil(all.length / 8) : all.length > 12 ? 2 : 1, per = Math.ceil(all.length / nl), lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
+    const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? (all.length > 16 ? .58 : .5) : (all.length > 20 ? .78 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
+    const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 3 : all.length > 12 ? 2 : 1, per = Math.ceil(all.length / nl), lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
-      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 2.9 - li * .95 : 2.3 - li * 1.1) : 2.55 - li * 1.4) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
+      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 2 ? 3.0 - li * 1.15 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(steps, steps);
     await E.say('Let’s sing the Alef-Beis so far!');

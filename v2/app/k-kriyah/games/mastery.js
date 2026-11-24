@@ -9,7 +9,7 @@ const QS = {
   3: [N('zayin'), N('vov'), SND('zayin'), N('ches'), N('hei'), N('daled'), { k: 'alef', by: 'quiet' }, N('beis'), SND('gimmel')],   /* no 'Which says ch?' until the rebbe's recording */
   4: [N('kaf'), N('tes'), N('chaf'), SND('kaf'), N('yud'), SND('tes'), N('beis'), SND('yud'), N('ches')],   /* Beis comes with Kaf; no 'Which says ch?' */
   5: [N('lamed'), N('nun'), SND('mem'), N('mem'), SND('nun'), N('tes'), SND('lamed'), N('gimmel'), N('kaf')],   /* Nun beside Gimmel, Mem beside Tes */
-  6: [N('pei'), N('samech'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), N('mem')],   /* Pei beside Fei; Kaf beside Chaf */
+  6: [N('pei'), N('samech'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), SND('fei')],   /* Pei beside Fei; Kaf beside Chaf; 'Which says f?' with Pei beside it */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {
@@ -29,7 +29,7 @@ export default function setup(E, { struggled, unit }) {
   basket.add(E.mesh(new THREE.CylinderGeometry(.56, .56, .04, 28), E.M(0x8a5a3c), 0, .05, 0)); E.scene.add(basket); let inBasket = 0;
   async function toBasket(k) { const c = E.letter(k, .55), p0 = E.worldPos(L[k]); c.position.copy(p0); E.scene.add(c); const n = inBasket++, to = basket.position.clone().add(new THREE.Vector3(((n % 3) - 1) * .32 * basket.scale.x, (.5 + Math.floor(n / 3) * .12) * basket.scale.x, ((n % 2) - .5) * .2));
     E.sfx.whoosh(); await E.tween(520, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * 1.2; c.rotation.y = q * Math.PI * 2; c.scale.setScalar(basket.scale.x * (1 - q * .2) + .2 * (1 - q)); }); E.sfx.pop(); E.hop(basket, .12, 250); }
-  let set = keys.slice(0, 3), slot = {}, gap = 2.3, active = false, glowOn = null, resolveQ = null, hidden = null;
+  let set = keys.slice(0, 3), slot = {}, gap = 2.3, active = false, glowOn = null, resolveQ = null, hidden = null, hiddenPed = null;
   set.forEach((k, i) => slot[k] = i);
   const slotPos = i => new THREE.Vector3((1 - i) * gap, 0, .6);   /* right to left */
   E.onLayout(p => {
@@ -90,7 +90,7 @@ export default function setup(E, { struggled, unit }) {
     const queue = Qs.map((q, i) => ({ ...q, i, first: true })); let right = 0, done = 0, inRow = 0;
     while (queue.length) {
       const q = queue.shift(); await showSet(q.k);
-      let easy = false; if (inRow >= 2 || (struggled && q.first && done < 3 && !q.again)) { const drop = set.find(k => k !== q.k && k !== PAIR[q.k]); hidden = L[drop]; hidden.visible = false; easy = true; }
+      let easy = false; if (inRow >= 2 || (struggled && q.first && done < 3 && !q.again)) { const drop = set.find(k => k !== q.k && k !== PAIR[q.k]); hidden = L[drop]; hidden.visible = false; hiddenPed = peds[slot[drop]]; if (hiddenPed) hiddenPed.visible = false; easy = true; }
       const got = await ask(q);
       if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); if (q.first && !easy) toBasket(got); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(E.quiet(q.k) ? 'Yes! ' + E.LETTERS[q.k].name + '. ' + E.LETTERS[q.k].name + ' is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
@@ -99,7 +99,7 @@ export default function setup(E, { struggled, unit }) {
           [got, q.k].forEach((k, i) => E.pointAt(arrows[i], L[k], k, 1.6, feat(k, i ? got : q.k))); await E.say(clue(q.k, got)); arrows.forEach(a => a.visible = false); }
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(E.quiet(q.k) ? 'Here is ' + E.LETTERS[q.k].name + ', the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
         if (q.first) queue.push({ ...q, first: false }); }
-      if (hidden) { hidden.visible = true; hidden = null; }
+      if (hidden) { hidden.visible = true; hidden = null; } if (hiddenPed) { hiddenPed.visible = true; hiddenPed = null; }
       if (q.first && easy && !q.again) queue.push({ ...q, again: true });   /* with only two letters it was practice: it comes back with all three */
       else if (q.first) { done++; E.setProgress(Qs.length, done); }
     }

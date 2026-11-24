@@ -473,11 +473,11 @@ export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right']
   beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'],
   lamed: [90, 820, 'down'], mem: [195, 70, 'up'], nun: [310, 50, 'left'] };   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
 /* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
-const PAIR_FEAT = { 'tes|mem': [300, 20, 'up'], 'kaf|pei': [150, 300, 'up'], 'pei|kaf': [150, 300, 'up'] };   /* Pei's little tongue inside; the same place is empty in Kaf (an arrow from below, left of Kaf's dot, never level with it) */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+const PAIR_FEAT = { 'tes|mem': [300, 20, 'up'], 'kaf|pei': [70, 250, 'up'], 'pei|kaf': [70, 250, 'up'] };   /* Pei's little tongue inside; the same place is empty in Kaf (an arrow from below, left of Kaf's dot, never level with it) */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 /* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
 export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : PAIR_FEAT[k + '|' + other] || (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));
-export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'], pei: [410, 300, 'left'], fei: [410, 300, 'left'] };
+export const DOT_FEATURE = { beis: [240, 296, 'right'], veis: [240, 296, 'right'], kaf: [220, 296, 'right'], chaf: [220, 296, 'right'], pei: [385, 300, 'left'], fei: [385, 300, 'left'] };
 /* put an arrow at a letter's feature (the letter object, its height); returns false if the letter has none */
 export function pointAt(arrow, l, key, height, feat) { const f = feat || FEATURES[key]; if (!f) return false; const p = fontToLocal(key, height, f[0], f[1]), off = height * .2;
   const d = { down: [0, off], up: [0, -off], right: [-off, 0], left: [off, 0] }[f[2]]; if (arrow.setDir) arrow.setDir(f[2]); arrow.position.set(p.x + d[0], p.y + d[1], .5); if (arrow.parent !== l) l.add(arrow); arrow.visible = true; return true; }
