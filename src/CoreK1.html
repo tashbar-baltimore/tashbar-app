@@ -18,7 +18,8 @@
   var G = null;
   function T() { return W.TLK || null; }
   function btn(kind, text, attrs) { var k = T(); return k && k[kind] ? k[kind](text, attrs) : '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
-  function say(t) { try { if (W.K1O && typeof K1O.voice === 'function') { K1O.voice(String(t || ''), function () {}); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(String(t || '')); u.rate = .85; speechSynthesis.speak(u); } catch (e) {} }   /* the same teacher voice as the K-1 home */
+  function say(t, done) { var fin = false, end = function () { if (fin) return; fin = true; if (done) try { done(); } catch (e) {} };   /* done: called once the line has finished (or failed), so the word he must find never plays on top of the teacher */
+    try { if (W.K1O && typeof K1O.voice === 'function') { K1O.voice(String(t || ''), end); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(String(t || '')); u.rate = .85; u.onend = end; u.onerror = end; speechSynthesis.speak(u); } catch (e) { end(); } }   /* the same teacher voice as the K-1 home */
 
   K.err = function (g) {
     if (!g || !/^(READ|LANG|WRIT)\.[A-Z]+\.L0[12]\.\d\d(\.[a-z])?$/.test(String(g.id || ''))) return 'id must be a K-1 reading or writing skill id (level L01 or L02)';
@@ -63,19 +64,21 @@
     var d = g.acts[G.i], s = G.s, k2 = T(), check = OBK.isCheck(d);
     var dots = g.acts.map(function (_, i) { return '<i class="' + (i < G.i ? (G.firsts[i] ? 'on' : 'ok') : i === G.i ? 'now' : '') + '"></i>'; }).join('');
     el.innerHTML = '<div class="k1c-top">' + (k2 ? k2.x('data-k1c="x"', 'tl', 'Close the game') : '') + '<div class="k1c-dots" aria-label="' + (G.i + 1) + ' of ' + g.acts.length + '">' + dots + '</div>' +
-      (k2 ? k2.tool('🔊', 'Hear it again', 'data-k1c="say"') : '') + '</div>' +
+      (k2 ? k2.tool('💡', 'How to do it', 'data-k1c="how"') + k2.tool('🔊', 'Hear it again', 'data-k1c="say"') : '') + '</div>' +
       '<div class="k1c-play">' + (d.pic && d.type !== 'count' ? '<div class="k1c-pic" aria-hidden="true">' + OBK.pic(d.pic) + '</div>' : '') + (d.q ? '<div class="k1c-q">' + esc(d.q) + '</div>' : '') +
       '<h2 class="k1c-say">' + esc(OBK.say(d)) + '</h2><div class="obk obk-' + esc(d.type) + (G.shake ? ' obk-shake' : '') + '">' + OBK.view(d, s, ctx()) + '</div>' +
-      (s.msg && !s.over ? '<p class="k1c-msg" role="status">' + esc(s.msg) + '</p>' : '') + (s.over && s.ok ? '<p class="k1c-yay" role="status">⭐ Yes!</p>' : '') + '</div>' +
+      (s.msg && !s.over ? '<p class="k1c-msg" role="status">' + esc(s.msg) + '</p>' : '') + (G.help && !s.over ? '<p class="k1c-how" role="note">💡 ' + esc(OBK.how(d)) + '</p>' : '') + (s.over && s.ok ? '<p class="k1c-yay" role="status">⭐ Yes!</p>' : '') + '</div>' +
       (check && !s.over ? '<div class="k1c-foot">' + btn('main', 'Check', 'data-k1c="check"' + (OBK.ready(d, s) ? '' : ' aria-disabled="true"')) + '</div>' : '') +
       (s.over ? '<div class="k1c-foot">' + btn('main', 'Next', 'data-k1c="next"') + '</div>' : '');
     G.shake = false;
     try { OBK.mount(el.querySelector('.obk'), d, s, ctx()); } catch (e) {}
   }
   function start(i) {
-    G.i = i; G.s = OBK.init(G.g.acts[i], ctx()); G.view = 'act'; draw();
-    var d = G.g.acts[i]; say(OBK.say(d));
-    if ((d.type === 'listen' || (d.type === 'tiles' && d.hear)) && W.OBK.hear) setTimeout(function () { if (G && G.i === i) try { OBK.hear(d); } catch (e) {} }, 1400);
+    var d = G.g.acts[i]; G.i = i; G.s = OBK.init(d, ctx()); G.help = false; G.view = 'act';
+    if (d.type === 'dictation') G.s.heard = true;   /* the kit would play the sentence after 0.7 s, on top of the teacher; it plays below, after her line */
+    draw();
+    var here = function () { return G && G.i === i && G.view === 'act'; };
+    say(OBK.say(d), function () { if (!here() || !(d.type === 'listen' || d.type === 'dictation' || (d.type === 'tiles' && d.hear)) || !W.OBK.hear) return; setTimeout(function () { if (here()) try { OBK.hear(d); } catch (e) {} }, 250); });
   }
   function right() {
     var s = G.s; s.over = true; s.ok = true; G.firsts[G.i] = s.misses === 0;
@@ -87,7 +90,7 @@
     var s = G.s, d = G.g.acts[G.i]; s.misses++; G.shake = !RM;
     try { if (typeof SND !== 'undefined' && SND.wrong) SND.wrong(); } catch (e) {}
     if (s.misses >= 3) { OBK.solve(d, s); s.over = true; s.ok = false; s.msg = ''; G.firsts[G.i] = false; say('Here it is. Look!'); draw(); return; }
-    s.msg = msg || s.msg || 'Try again!'; say(s.msg); draw();
+    s.msg = msg || s.msg || 'Try again!'; G.help = true; say(s.msg + ' ' + OBK.how(d)); draw();   /* a wrong try opens the How to do it line (playbook section 10) */
   }
   function next() {
     if (G.i < G.g.acts.length - 1) return start(G.i + 1);
@@ -110,6 +113,7 @@
     if (a === 'x' || a === 'done') return close();
     if (a === 'again') { G.firsts = []; return start(0); }
     if (a === 'say') { var dd = G.g.acts[G.i]; say(OBK.say(dd)); return; }
+    if (a === 'how') { if (G.view !== 'act') return; G.help = true; say(OBK.how(G.g.acts[G.i])); return draw(); }
     if (a === 'next') return next();
     if (a === 'check') { if (t.getAttribute('aria-disabled') === 'true') { say('Finish it first.'); return; } var j = OBK.judge(G.g.acts[G.i], G.s); if (j && j.soft) { G.s.msg = j.msg; say(j.msg); return draw(); } return j && j.ok ? right() : miss(j && j.msg); }   /* soft: nothing done yet (trace), not a miss */
     if (G.view !== 'act' || G.s.over) return;
@@ -140,14 +144,14 @@
     '#k1cov .k1c-dots{flex:1;display:flex;justify-content:center;gap:8px}#k1cov .k1c-dots i{width:22px;height:22px;border-radius:50%;background:rgba(31,42,68,.15)}#k1cov .k1c-dots i.now{background:#FFC83D;box-shadow:0 0 0 4px rgba(255,200,61,.35)}#k1cov .k1c-dots i.on{background:#2FBF71}#k1cov .k1c-dots i.ok{background:#8FD9B1}' +
     '#k1cov .k1c-play{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 16px 20px}' +
     '#k1cov .k1c-pic{font-size:80px;line-height:1}#k1cov .k1c-q{font:900 40px/1.1 inherit}#k1cov .k1c-say{margin:0;text-align:center;font:900 28px/1.25 inherit;max-width:760px}' +
-    '#k1cov .obk{width:100%;max-width:900px}#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:76px;min-width:76px;font-size:30px}#k1cov .k1c-top .tlk{width:76px;height:76px;min-width:76px}#k1cov .k1c-msg{margin:0;font-weight:800;color:#8A4B00}#k1cov .k1c-yay{margin:0;font:900 34px/1 inherit;color:#0E7A4F;animation:k1cPop .5s cubic-bezier(.2,1.6,.4,1)}' +
+    '#k1cov .obk{width:100%;max-width:900px}#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:76px;min-width:76px;font-size:30px}#k1cov .k1c-how{margin:10px auto 0;max-width:760px;padding:10px 16px;border-radius:14px;background:#FFF3C4;color:#1F2A44;font-weight:700;font-size:22px;line-height:1.3;text-align:center}#k1cov .k1c-top .tlk{width:76px;height:76px;min-width:76px}#k1cov .k1c-msg{margin:0;font-weight:800;color:#8A4B00}#k1cov .k1c-yay{margin:0;font:900 34px/1 inherit;color:#0E7A4F;animation:k1cPop .5s cubic-bezier(.2,1.6,.4,1)}' +
     '#k1cov .k1c-foot{display:flex;justify-content:center;padding:12px 16px calc(14px + env(safe-area-inset-bottom))}#k1cov .k1c-foot .tlk-main{min-width:220px;min-height:76px;font-size:28px}#k1cov [aria-disabled=true].tlk-main{opacity:.5}' +
     '#k1cov .k1c-end{flex:1;display:grid;place-items:center;align-content:center;gap:10px;text-align:center;padding:20px}#k1cov .k1c-end h2{font:900 44px/1.1 inherit;margin:0}' +
     '#k1cov .k1c-big span{font-size:84px;filter:grayscale(1) opacity(.3);display:inline-block}#k1cov .k1c-big span.on{filter:none;animation:k1cPop .6s cubic-bezier(.2,1.6,.4,1) both}#k1cov .k1c-big span.on:nth-child(2){animation-delay:.15s}#k1cov .k1c-big span.on:nth-child(3){animation-delay:.3s}' +
     '#k1cov .k1c-acts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}#k1cov .k1c-acts .tlk{min-height:72px;font-size:26px;min-width:180px}' +
     '@keyframes k1cPop{from{transform:scale(.2);opacity:0}to{transform:none;opacity:1}}@media (prefers-reduced-motion:reduce){#k1cov .k1c-yay,#k1cov .k1c-big span.on{animation:none}}' +
     '@media (min-width:900px){#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:104px;min-width:104px;font-size:44px}#k1cov .k1c-say{font-size:34px}}' +
-    '@media (max-width:480px){#k1cov .k1c-say{font-size:24px}#k1cov .k1c-q{font-size:32px}#k1cov .k1c-pic{font-size:64px}}';
+    '@media (max-width:480px){#k1cov .k1c-top{gap:8px;padding:10px}#k1cov .k1c-top .tlk{width:56px;height:56px;min-width:56px}#k1cov .k1c-dots{gap:5px}#k1cov .k1c-dots i{width:14px;height:14px}#k1cov .k1c-how{font-size:19px}#k1cov .k1c-say{font-size:24px}#k1cov .k1c-q{font-size:32px}#k1cov .k1c-pic{font-size:64px}}';
     (document.head || document.documentElement).appendChild(s); }
 })();
 </script>
