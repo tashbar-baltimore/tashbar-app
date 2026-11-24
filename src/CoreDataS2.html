@@ -134,5 +134,26 @@
           say:PROOF, how:'Find the page about guarding the world. Look for what soaks in.'}] }
   };
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
+
+  var PROJECT = { id: 'S.PROJ5.01', title: 'A Water Table in a Cup', grade: 5, kind: 'information',
+    prompt: 'Be a scientist! Fill a clear cup with gravel or small stones. Slowly pour in water until it is about halfway up. Look at the side of the cup: the line where the stones become soaked is your water table. Push a straw down into the stones: is there water at the bottom of the straw? Then pour in more "rain" and watch the line again. Write what you predicted, what you did, what you saw, and why it happens.',
+    strategy: { name: 'Predict, Do, See, Explain', steps: [['P', 'Predict: what do I think will happen?'], ['D', 'Do it: what did I do, in order?'], ['S', 'See: what did I see?'], ['E', 'Explain: why does it happen?']] },
+    plan: [ { k: 'predict', label: 'P · I predicted', hint: 'I thought the water would…' },
+            { k: 'do', label: 'D · What I did', hint: 'I filled a cup with stones and…' },
+            { k: 'see', label: 'S · What I saw', hint: 'The water line…' },
+            { k: 'explain', label: 'E · Why it happens', hint: 'The water fills the spaces, so…' } ],
+    starters: ['I predicted that', 'First, I', 'Then I', 'I saw that', 'This happens because'],
+    min: 60,
+    checks: [
+      { t: 'I wrote at least 5 sentences.', sentences: 5 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I explained why, with "because".', any: ['because'] },
+      { t: 'I used the words "water table".', any: ['water table'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I did the investigation with a grown-up nearby.', self: true } ],
+    rubric: ['I told what I predicted', 'I told what I did, in order', 'I told what I saw', 'I explained it with the science of groundwater'],
+    pics: ['🥤', '🪨', '💧', '🌧️'] };
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'S.U02', title: 'Oceans and Fresh Water', c: 'SCI', grade: 5,
+    skills: ['SCI.LAND.L06.01', 'SCI.LAND.L06.02', 'SCI.LAND.L06.03', 'SCI.LAND.L06.04'], n: 8, task: PROJECT });
 })();
 </script>
