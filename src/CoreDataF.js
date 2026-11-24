@@ -26,5 +26,20 @@ CORE_SKILLS.F = [
   ["READ.PHON.L03.15", "Y to I", "Change y to i before -es or -ed", { after: "READ.PHON.L03.14", std: "L.2.2d", file: "CoreDataF1", min: 7 }],
   ["READ.PHON.L03.16", "Helpful Endings", "Read words that end in -ful, -less, -ly and -ness", { after: "READ.PHON.L03.15", std: "RF.2.3d", file: "CoreDataF1", min: 7 }],
   ["READ.PHON.L03.17", "Prefix Peel", "Read long words that start with un-, re-, pre- or dis-", { after: "READ.PHON.L03.16", std: "RF.2.3d", file: "CoreDataF1", min: 7 }],
-  ["READ.FLU.L03.04", "Just-Right Speed", "Read at talking speed: not too fast, not too slow", { after: "READ.PHON.L03.17", std: "RF.2.4b", file: "CoreDataF1", min: 7 }]
+  ["READ.FLU.L03.04", "Just-Right Speed", "Read at talking speed: not too fast, not too slow", { after: "READ.PHON.L03.17", std: "RF.2.4b", file: "CoreDataF1", min: 7 }],
+  ["READ.PHON.L01.16", "Fish and Lion", "Know the sounds of f and l and read words with them", { after: "READ.PHON.L01.04", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.17", "Run Up the Hill", "Know the sounds of u and r and read words with them", { after: "READ.PHON.L01.16", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PA.L01.12", "Sound Train", "Blend three spoken sounds into a word", { after: "READ.PHON.L01.17", std: "RF.K.2c", file: "CoreDataFH1", min: 4 }],
+  ["READ.PHON.L01.18", "Every Letter Counts", "Sound out every letter instead of guessing", { after: "READ.PA.L01.12", std: "RF.K.3d", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.19", "Bat and Ball", "Know the sound of b and tell b from d", { after: "READ.PHON.L01.18", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.20", "Jam and Web", "Know the sounds of j and w and read words with them", { after: "READ.PHON.L01.19", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PA.L01.13", "Change the First Sound", "Change the first sound to make a new word", { after: "READ.PHON.L01.20", std: "RF.K.2e", file: "CoreDataFH1", min: 4 }],
+  ["READ.FLU.L01.06", "Heart Words: my, go, no, so", "Read the heart words my, go, no and so by sight", { after: "READ.PA.L01.13", std: "RF.K.3c", file: "CoreDataFH1", min: 4 }],
+  ["READ.FLU.L01.07", "Point and Read", "Read a short sentence, one word at a time", { after: "READ.FLU.L01.06", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.21", "Yo-yo, Van, Zebra", "Know the sounds of y, v and z and read words with them", { after: "READ.FLU.L01.07", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.22", "Box and Queen", "Know x says ks and qu says kw", { after: "READ.PHON.L01.21", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PA.L01.14", "Change the End", "Change the last or middle sound to make a new word", { after: "READ.PHON.L01.22", std: "RF.K.2e", file: "CoreDataFH1", min: 4 }],
+  ["WRIT.HAND.L01.09", "Write f, l, u, r", "Form the letters f, l, u and r", { after: "WRIT.HAND.L01.04", std: "L.K.1a", file: "CoreDataFH1", min: 5 }],
+  ["WRIT.HAND.L01.10", "Write b, j, w", "Form the letters b, j and w", { after: "WRIT.HAND.L01.09", std: "L.K.1a", file: "CoreDataFH1", min: 5 }],
+  ["WRIT.HAND.L01.11", "Write y, v, z, x, q", "Form the letters y, v, z, x and q", { after: "WRIT.HAND.L01.10", std: "L.K.1a", file: "CoreDataFH1", min: 5 }]
 ];

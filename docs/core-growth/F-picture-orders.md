@@ -25,7 +25,7 @@ Arrived 06:06 UTC, all 8 checked by eye and zoomed. Files follow job T's naming 
 | 2 | f-cast-b23 | LIVE (library only) | `core-f-cast-b23.webp`: B23 cast reference (the Shabbos Street Club and Zaidy) |
 | 3 | f-g2-u1-opener | LIVE | `core-f-g2u1-opener.webp` on `READ.PHON.L03.05|@today` until order 1 #5 is redone. The clock faces were softened (their numerals count as text). |
 | 4 | f-g2-open-door | LIVE | `core-f-l0304-today.webp` on `READ.PHON.L03.04|@today` |
-| 5 | f-g2-slide-line | **REDO** | The small arched window at the end of the hall has one vertical and one horizontal bar: a plain cross. Ask again with no crossing window bars. |
+| 5 | f-g2-slide-line | LIVE (redo) | Redone in order 2 with single-pane windows: `core-f-l0305-today.webp` now on `READ.PHON.L03.05|@today` (the opener is back in the library only). |
 | 6 | f-g2-silent-e | LIVE | `core-f-l0306-today.webp` on `READ.PHON.L03.06|@today` |
 | 7 | f-g2-syllable-snip | LIVE | `core-f-l0301-today.webp` on `READ.PHON.L03.01|@today` |
 | 8 | f-g2-garden | LIVE | `core-f-flu0301-today.webp` on `READ.FLU.L03.01|@today` |
@@ -43,3 +43,15 @@ Arrived 06:06 UTC, all 8 checked by eye and zoomed. Files follow job T's naming 
 | 8 | `f-g2-garden.webp` | `READ.FLU.L03.01` TODAY WE LEARN ("Fluent Flyer") | Warm watercolor storybook picture: two boys in kippahs and tzitzis in a small backyard garden at the end of summer. Tall corn stalks on one side, and a big orange pumpkin sitting by a wooden fence. One boy waters the garden with a hose; the other points proudly at the pumpkin. A sukkah frame is being built in the background. No words or letters anywhere. Boys only. |
 
 **Delivery:** reply to the email with the pictures attached (PNG or JPG), or put them in a Google Drive folder and reply with the link. Use the file names above (or number them 1–8).
+
+## Order 2 (2026-11-24): the slide-line redo, Grade 2 Unit 2 and the cast cards
+Sent by email on 2026-11-24 with the shared band styles (K1 and B23 lines from job T's style sheets). All 12 arrived the same day and passed the check (boys and men only, modest dress, kosher food, no text, no crossing window bars).
+
+| # | File | Status | Where |
+|---|---|---|---|
+| redo | core-f-l0305-today | LIVE | `READ.PHON.L03.05|@today` (Avi slides the door, Naftali watches) |
+| B1 | core-f-l0303-today | LIVE | `READ.LV.L03.03|@today` (aw: straw, paws, ball) |
+| B2 | core-f-l0304b-today | LIVE | `READ.LV.L03.04|@today` (oo: juice, fruit, blue, boat) |
+| B3 | core-f-l0305b-today | LIVE | `READ.LV.L03.05|@today` (rainbow, raincoat, peanuts) |
+| A1–A3 | core-f-cast-eli, -shmuli, -abba | library | K1 cast cards (Peretz family) for later orders to match |
+| A4–A8 | core-f-cast-naftali, -avi, -chaim, -dovid, -zaidy | library | B23 cast cards (Shabbos Street Club) for later orders to match |

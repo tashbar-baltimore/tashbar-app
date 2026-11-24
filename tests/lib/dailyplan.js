@@ -1,9 +1,9 @@
 /* TODAY'S LIST (Core Growth job D, src/DailyPlan.js + the daily bonus in src/Money.js) on the real server code, MADE-UP boys only.
-   Proves, for a TEST- boy (TDL_LIVE 'test'): his list comes from his own map, core first (Reading, Writing, Math, Kodesh, Science or
+   Proves, for a TEST- boy: his list comes from his own map, core first (Reading, Writing, Math, Kodesh, Science or
    Social Studies); a subject he has nothing in gives its lines to Reading; a line is covered only by a lesson the SERVER paid as
    mastered today; 3 lessons no longer pay the daily bonus, the WHOLE list does, once, with the same amount and a clear reason; extra
-   lessons in one subject never fill another; a staff amount for the boy is used. For a real boy nothing changes: no list, and the
-   bonus still comes after 3 lessons. A K-1 boy keeps his games-only day (no list yet).
+   lessons in one subject never fill another; a staff amount for the boy is used. A real (non-TEST) boy gets his list too (TDL_LIVE
+   'on', HoS 2026-11-24); the switch on 'test' puts him back on "3 lessons". A K-1 boy keeps his games-only day (no list yet).
    Also server(): the page part, page(pg, map): "My work" shows one row per thing on the list, "0 of 6 done", the Arcade locked; all
    done opens it; a boy with no list keeps the 3 rounds. Returns { fails, oks }. */
 const R = require('path').join(__dirname, '..', '..', 'server') + '/';
@@ -77,19 +77,26 @@ function server() {
   const e = sign('7415'); const Le = e && call('tdlToday', e.token);
   chk(Le && Le.total === 1 && Le.items.length === 1 && Le.items[0].k === 'READ', 'a staff amount for the boy sets his list (got ' + JSON.stringify(Le && Le.items) + ')');
   if (Le) { const Me = e.map || call('kmMyMap', e.token); master(e.token, 'TEST-DP04', built(Me, 'READ', 1)[0]); chk(bonus('TEST-DP04').length === 1, 'his one-line list pays the bonus when done'); }
-  /* 7. a real boy: no list, and the bonus still comes after 3 lessons, as before */
+  /* 7. a real (non-TEST) boy: the list is on for every boy (HoS 2026-11-24, TDL_LIVE 'on'); 3 lessons no longer pay him either.
+     The switch still works: 'test' puts him back on "3 lessons", with no list. */
   const c = sign('7413'); if (chk(c, 'made-up boy C could not sign in')) {
-    chk(call('tdlToday', c.token) === null, 'a real boy gets no list while it is for TEST- boys only');
-    const Mc = c.map || call('kmMyMap', c.token), r = built(Mc, 'READ', 3);
-    master(c.token, 'DPREAL01', r[0]); master(c.token, 'DPREAL01', r[1]); chk(!bonus('DPREAL01').length, 'a real boy: no bonus after 2 lessons');
-    master(c.token, 'DPREAL01', r[2]); const Bc = bonus('DPREAL01');
-    chk(Bc.length === 1 && Bc[0].reason === 'Daily goal: 3 lessons today', 'a real boy still gets the daily bonus after 3 lessons, as before (got ' + JSON.stringify(Bc) + ')'); }
+    chk(ev('TDL_LIVE') === 'on', "today's list must be on for every boy (TDL_LIVE 'on', HoS 2026-11-24)");
+    const Lc = call('tdlToday', c.token);
+    chk(Lc && Lc.on && Lc.total >= 1 && !Lc.complete, 'a real boy gets his list too (got ' + JSON.stringify(Lc).slice(0, 160) + ')');
+    const Mc = c.map || call('kmMyMap', c.token), r = built(Mc, 'READ', 4);
+    master(c.token, 'DPREAL01', r[0]); master(c.token, 'DPREAL01', r[1]); master(c.token, 'DPREAL01', r[2]);
+    chk(!bonus('DPREAL01').length, 'a real boy on the list: 3 lessons no longer pay the daily bonus');
+    vm.runInContext("TDL_LIVE = 'test'", rt.ctx);
+    chk(call('tdlToday', c.token) === null, "with the switch on 'test', a real boy gets no list");
+    master(c.token, 'DPREAL01', r[3] || r[2]); const Bc = bonus('DPREAL01');
+    chk(Bc.length === 1 && Bc[0].reason === 'Daily goal: 3 lessons today', "with the switch on 'test', a real boy is back on the bonus after 3 lessons (got " + JSON.stringify(Bc) + ')');
+    vm.runInContext("TDL_LIVE = 'on'", rt.ctx); }
   /* 8. a K-1 boy keeps his games-only day */
   const d = sign('7414'); chk(d && call('tdlToday', d.token) === null, 'a K-1 boy gets no list yet (his games-only home stays)');
   /* 9. only boys ask for a list */
   let refused = false; try { call('tdlToday', 'dp-staff'); } catch (x) { refused = true; } chk(refused, 'a staff token must be refused');
   const demo = { map: M, list: L };   /* for pictures (made-up boy A) */
-  if (!fails.length) oks.push("today's list (server, TEST- boys): core first from his own map, empty subjects go to Reading, covered only by paid mastery, 3 lessons no longer pay, the whole list pays the same bonus once (chest counts it), staff amount per boy; real boys unchanged; K-1 unchanged");
+  if (!fails.length) oks.push("today's list (server, TEST- boys): core first from his own map, empty subjects go to Reading, covered only by paid mastery, 3 lessons no longer pay, the whole list pays the same bonus once (chest counts it), staff amount per boy; on for real boys too (switch 'test' = old rule); K-1 unchanged");
   return { fails, oks, demo };
 }
 /* the page: "My work" with a list (one row per thing, "0 of 6 done", Next, Arcade locked) and when it is all done */
