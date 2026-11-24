@@ -83,11 +83,11 @@
   function btn(kind, text, attrs) { var k = K(); if (k && k[kind]) return k[kind](text, attrs); return '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
   function pill(kind, text) { var k = K(); return k ? k.pill(kind, text) : '<span>' + esc(text) + '</span>'; }
   function st() { try { return (typeof A !== 'undefined' && A && A.st) ? A.st : null; } catch (e) { return null; } }
-  function keep(id, v) {
+  function keep(id, v, save) {
     var s = st(); if (!s) return;
     var r = s.reads = s.reads || {}; if (r[id] === 'd' && v !== 'd') return; delete r[id]; r[id] = v;
     var ks = Object.keys(r); while (ks.length > 150) { delete r[ks.shift()]; }
-    try { if (typeof saveStudent === 'function') saveStudent(s); } catch (e) {}
+    if (save) { try { if (typeof saveStudent === 'function') saveStudent(s); } catch (e) {} }   /* saved once, when he leaves or finishes (not at every page turn) */
   }
   function lastPage(id) { var s = st(); var v = s && s.reads && s.reads[id]; return typeof v === 'number' ? v : 0; }
 
@@ -95,12 +95,12 @@
   function wordsHtml(sent, gl) {
     return sent.replace(/[^\s]+/g, function (tok) {
       var m = /^([("“‘']*)([A-Za-z0-9’'\-֐-׿]+)(.*)$/.exec(tok); if (!m) return esc(tok);
-      var w = m[2], low = w.toLowerCase().replace(/[’']s$/, ''), g = gl[low] != null ? low : (gl[w.toLowerCase()] != null ? w.toLowerCase() : '');
+      var w = m[2], low = w.toLowerCase().replace(/[’']s$/, ''), g = !gl ? '' : gl[low] != null ? low : (gl[w.toLowerCase()] != null ? w.toLowerCase() : '');
       return esc(m[1]) + '<span class="crd-w' + (g ? ' crd-g' : '') + '" data-crdw="' + esc(g || w) + '"' + (g ? ' data-crdg="1" role="button" tabindex="0"' : '') + '>' + esc(w) + '</span>' + esc(m[3]);
     });
   }
   function pageHtml() {
-    var t = S.t, pg = t.pages[S.p] || [], n = S.first[S.p], gl = t.glossary || {};
+    var t = S.t, pg = t.pages[S.p] || [], n = S.first[S.p], gl = S.ask && !S.ask.over ? null : (t.glossary || {});   /* on a question screen the sentence is the button, not the word */
     return pg.map(function (par) {
       var h = par.s.map(function (x) { var i = n++; return '<span class="crd-s" data-crds="' + i + '"' + (S.ask ? ' role="button" tabindex="0"' : '') + '>' + wordsHtml(x, gl) + '</span>'; }).join(' ');
       return '<p>' + (par.who ? '<span class="crd-who">' + esc(par.who) + '</span>' : '') + h + '</p>';
@@ -142,7 +142,8 @@
     var body = S.view === 'cover' ? coverHtml() : S.view === 'end' ? endHtml() : '<div class="crd-page' + (dir && !RM ? (dir > 0 ? ' turn' : ' turnb') : '') + '" lang="en">' + pageHtml() + '</div>';
     el.innerHTML = top() + '<div class="crd-main" data-crd-scroll="1">' + body + '</div>' + (S.view === 'page' ? askHtml() + foot() : '');
     var m = el.querySelector('.crd-main'); if (m) m.scrollTop = 0;
-    if (S.view === 'page') { keep(S.t.id, S.p); if (S.ask && S.ask.marks) S.ask.marks.forEach(function (x) { var s = el.querySelector('[data-crds="' + x[0] + '"]'); if (s) s.classList.add(x[1]); }); if (S.band === 'K1' && !S.ask) setTimeout(function () { if (S && S.view === 'page') readPage(); }, 400); }
+    if (S.view === 'page') { if (!S.ask) keep(S.t.id, S.p); if (S.ask && S.ask.marks) S.ask.marks.forEach(function (x) { var s = el.querySelector('[data-crds="' + x[0] + '"]'); if (s) s.classList.add(x[1]); });
+      if (S.ask && S.ask.shake != null) { var sh = el.querySelector('[data-crds="' + S.ask.shake + '"]'); if (sh) { if (!RM) sh.classList.add('no'); if (!S.ask.over) try { sh.focus({ preventScroll: true }); } catch (e) {} } S.ask.shake = null; } if (S.band === 'K1' && !S.ask) { var me = S, pg0 = S.p; setTimeout(function () { if (S === me && S.view === 'page' && S.p === pg0) readPage(); }, 400); } }
     var f = el.querySelector('.tlk-main'); if (f) try { f.focus({ preventScroll: true }); } catch (e) {}
   }
 
@@ -183,7 +184,7 @@
     var r = el.getBoundingClientRect(), b = document.createElement('div'); b.className = 'crd-bub'; b.setAttribute('role', 'status');
     b.innerHTML = '<b>' + esc(w) + '</b>' + esc(mean); S.el.appendChild(b);
     var x = Math.max(8, Math.min(innerWidth - b.offsetWidth - 8, r.left + r.width / 2 - b.offsetWidth / 2)), y = r.bottom + 8; if (y + b.offsetHeight > innerHeight - 8) y = r.top - b.offsetHeight - 8;
-    b.style.left = x + 'px'; b.style.top = y + 'px'; S.bub = b; sayWord(w + '. ' + mean);
+    b.style.left = x + 'px'; b.style.top = y + 'px'; S.bub = b; if (!S.reading) sayWord(w + '. ' + mean);
   }
   function closeBubble() { if (S && S.bub) { S.bub.remove(); S.bub = null; } }
 
@@ -194,10 +195,13 @@
     var el = S.el.querySelector('[data-crds="' + i + '"]');
     if (isProof(i)) { a.ok = true; a.over = true; a.fb = a.tries === 1 ? 'Yes! That sentence proves it.' : 'Yes! You found the proof.'; a.marks.push([i, 'yes']); try { if (typeof SFX !== 'undefined' && SFX.right) SFX.right(0); } catch (e) {} draw(); return; }
     a.ok = false;
-    if (a.tries >= 3) { a.over = true; a.fb = 'Here is the proof. Read it again and see how it shows the answer.'; a.proofIdx.forEach(function (j) { a.marks.push([j, 'yes']); }); goToSentence(a.proofIdx[0]); return; }
+    if (a.tries >= 3) { a.over = true; a.fb = 'Here is the proof. Read it again and see how it shows the answer.'; a.proofIdx.forEach(function (j) { a.marks.push([j, 'yes']); }); goToSentence(a.proofIdx[0]); sayWord(a.proofIdx.map(function (j) { return S.sents[j].s; }).join(' ')); return; }
     a.fb = a.tries === 1 ? 'That sentence does not say it. Look for the words that tell ' + (a.look || 'the answer') + '.' : 'Not that one. The proof is in a sentence with a blue glow. Read those slowly.';
-    if (a.tries === 2) { var tgt = S.sents[a.proofIdx[0]]; S.sents.forEach(function (x, j) { if (x.page === tgt.page && x.par === tgt.par && a.marks.every(function (m) { return m[0] !== j; })) a.marks.push([j, 'near']); }); }
-    if (el && !RM) { el.classList.remove('no'); void el.offsetWidth; el.classList.add('no'); }
+    if (a.tries === 2) {   /* a soft glow on the part of the page that holds the proof: never fewer than 3 sentences, so the glow is a hint and not the answer */
+      var p0 = a.proofIdx[0], tgt = S.sents[p0], near = []; S.sents.forEach(function (x, j) { if (x.page === tgt.page && x.par === tgt.par) near.push(j); });
+      var lo = near[0], hi = near[near.length - 1]; while (hi - lo + 1 < 3) { var moved = false; if (lo > 0 && S.sents[lo - 1].page === tgt.page) { lo--; moved = true; } if (hi - lo + 1 < 3 && hi + 1 < S.sents.length && S.sents[hi + 1].page === tgt.page) { hi++; moved = true; } if (!moved) break; }
+      for (var j2 = lo; j2 <= hi; j2++) if (a.marks.every(function (m) { return m[0] !== j2; })) a.marks.push([j2, 'near']); }
+    a.shake = i;
     try { if (typeof SFX !== 'undefined' && SFX.wrong) SFX.wrong(); } catch (e) {}
     draw();
   }
@@ -205,14 +209,14 @@
 
   function finish(done) {
     if (!S) return; var res = { id: S.t.id, page: S.p, pages: S.t.pages.length, done: !!done, words: S.tapped, proof: S.ask ? { right: !!S.ask.ok && S.ask.over, tries: S.ask.tries } : null };
-    if (done) keep(S.t.id, 'd');
+    if (!S.ask) keep(S.t.id, done ? 'd' : S.p, true);   /* a question never changes where he stopped reading, or marks the chapter done */
     stopRead(); closeBubble(); var r = S.resolve, el = S.el; S = null; document.removeEventListener('keydown', onKey, true);
     if (el) el.remove(); try { document.body.classList.remove('crd-open'); } catch (e) {}
     r(res);
   }
   function onKey(e) {
     if (!S) return;
-    if (e.key === 'Escape') { e.preventDefault(); if (S.bub) closeBubble(); else finish(false); return; }
+    if (e.key === 'Escape') { e.preventDefault(); if (S.bub) closeBubble(); else if (!(S.ask && !S.ask.over)) finish(false); return; }
     if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('[data-crds]') && S.ask && !S.ask.over) { e.preventDefault(); pickSentence(Number(e.target.getAttribute('data-crds'))); return; }
     if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('[data-crdg]')) { e.preventDefault(); bubble(e.target, e.target.getAttribute('data-crdw')); return; }
     if (e.key === 'ArrowRight' && S.view === 'page' && S.p < S.t.pages.length - 1 && !(S.ask && !S.ask.over)) { e.preventDefault(); S.p++; draw(1); }
@@ -227,7 +231,7 @@
     if (act === 'exit') return finish(false);
     if (act === 'start') { S.view = 'page'; draw(1); return; }
     if (act === 'read') { if (S.reading) stopRead(); else readPage(); return; }
-    if (act === 'next') { if (S.p < S.t.pages.length - 1) { S.p++; draw(1); } else { S.view = 'end'; keep(S.t.id, 'd'); draw(); } return; }
+    if (act === 'next') { if (S.p < S.t.pages.length - 1) { S.p++; draw(1); } else { S.view = 'end'; if (!S.ask) keep(S.t.id, 'd'); draw(); } return; }
     if (act === 'back') { if (S.p > 0) { S.p--; draw(-1); } return; }
     if (act === 'finish') return finish(true);
     if (S.ask && !S.ask.over && t.hasAttribute('data-crds') && !t.hasAttribute('data-crdw')) return pickSentence(Number(t.getAttribute('data-crds')));
@@ -254,7 +258,8 @@
         if (opts.ask && opts.ask.q) {
           var pr = opts.ask.proof, idx = [];
           if (Array.isArray(pr)) idx = pr.map(Number).filter(function (i) { return i >= 0 && i < sents.length; });
-          else if (pr) { var low = String(pr).toLowerCase(); sents.forEach(function (x, i) { if (x.s.toLowerCase().indexOf(low) >= 0) idx.push(i); }); }
+          else if (pr) { var low = String(pr).toLowerCase(); sents.forEach(function (x, i) { if (x.s.toLowerCase().indexOf(low) >= 0) idx.push(i); });
+            if (idx.length > 1) { console.error('Reader: the proof "' + pr + '" matches ' + idx.length + ' sentences in ' + id + '; write words from ONE sentence'); idx = []; } }
           if (idx.length) ask = { q: opts.ask.q, how: opts.ask.how, look: opts.ask.look, proofIdx: idx, tries: 0, over: false, ok: false, fb: '', marks: [] };
           else console.error('Reader: the proof for "' + opts.ask.q + '" is not in ' + id);
         }

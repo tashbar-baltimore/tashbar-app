@@ -33,7 +33,7 @@ queen: the one ant that lays all the eggs
 - **topic:** texts in one topic set share a topic, for example "Ants". Build knowledge with 5–8 texts per topic.
 - **source:** `original`, or `adapted from <a public-domain work>` (for example "adapted from Aesop"). **Never copy a copyrighted book or article.**
 - **pic** (optional): a picture already in `web/pics/`, with its line in `web/pics/SOURCES.md` (`docs/HANDOFF-PICS.md`).
-- **words** (optional): the robust-vocabulary words for this text, 5–8 of them, each with a kid-friendly meaning of 120 letters at most. A boy taps the word in the Reader to see its meaning. Every listed word must appear in the text.
+- **words** (optional): the robust-vocabulary words for this text, 5–8 of them, each with a kid-friendly meaning of 120 letters at most. A boy taps the word in the Reader to see its meaning. Each one must be **one word, written exactly as it appears in the text** ("gasped", not "gasp"); the check refuses anything else.
 - **Pages:** a page is what fits on one screen of the Reader. Aim for about 80–150 words a page for Grades 2–3, 150–250 for 4–5 and 200–300 for 6–8. K–1 pages are 1–3 sentences.
 
 ## 2. Check it
@@ -57,7 +57,7 @@ Sentences are split by the tool at `.`, `!` and `?`. `show` lets you see the spl
 
 ## 3. Open it in the Reader
 The book Reader (`src/CoreReader.html`) shows any text from the store:
-- a cover with depth for a story or chapter;
+- a cover with depth (every text opens on its cover);
 - one calm page at a time, with "Page 2 of 5";
 - **Read it to me** (🔊): each sentence lights up, and each word as it is said;
 - tap a vocabulary word to see its meaning, or tap any word in Grades K–3 to hear it;
@@ -82,9 +82,10 @@ TLCORE.reader.open('C45.ANTS.01', { grade: 5, exit: 'x', ask: {
 - The question opens on the page that holds the proof. That page has no paging buttons and no Back.
 - A wrong tap names what to look for ("Look for the words that tell what the queen does").
 - The second miss puts a soft glow on the paragraph that holds the proof.
-- After the third miss, the proof is shown and read again. It is never shown before he tries.
+- After the third miss, the proof is shown and read aloud. It is never shown before he tries.
+- A question never changes the page where he stopped reading and never marks the text as read. Escape does not close a question.
 - `exit: 'x'` puts the lesson ✕ top left (inside a lesson); the default is the house (a full page).
-- Write `proof` so it matches **one** sentence. `node tools/core/texts.js show <ID>` lists the sentences.
+- Write `proof` with words from **one** sentence; if they match two sentences, the question does not open (the tests fail on that error). Make sure no other sentence also proves the answer. `node tools/core/texts.js show <ID>` lists the sentences.
 
 To load a text in your own code: `TLCORE.text('C45.ANTS.01')` gives a Promise of the text, and `TLCORE.textSentences(t)` gives every sentence in reading order.
 

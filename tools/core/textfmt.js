@@ -83,7 +83,7 @@ function check(T, pics) {
   if (/\bG[o0]d\b|\bLord\b|\bJehovah\b|\bYahweh\b/i.test(flat) || /י[֑-ׇ]*ה[֑-ׇ]*ו[֑-ׇ]*ה/.test(flat)) p.push('never write the Divine Name (use Hashem, or ה׳ in Hebrew)');
   T.pages.forEach((pg, i) => pg.forEach((par, j) => par.s.forEach(s => { if (s.length > 400) p.push('page ' + (i + 1) + ', paragraph ' + (j + 1) + ': a sentence over 400 letters (missing a full stop?)'); })));
   const low = T.pages.map(pg => pg.map(par => par.s.join(' ')).join(' ')).join(' ').toLowerCase();
-  Object.keys(T.glossary).forEach(w => { if (low.indexOf(w) < 0) p.push('word "' + w + '" is not in the text'); if (T.glossary[w].length > 120) p.push('meaning of "' + w + '" is longer than 120 letters'); });
+  Object.keys(T.glossary).forEach(w => { if (!/^[a-z0-9’'\-]+$/.test(w)) p.push('word "' + w + '" must be one word, written as it is in the text'); else if (!new RegExp('(^|[^a-z0-9])' + w.replace(/[-’']/g, '.') + '([^a-z0-9]|$)').test(low)) p.push('word "' + w + '" is not in the text (write it exactly as it appears, for example "gasped", not "gasp")'); if (T.glossary[w].length > 120) p.push('meaning of "' + w + '" is longer than 120 letters'); });
   if (T.pic && pics && !pics.has(T.pic)) p.push('picture ' + T.pic + ' is not in web/pics');
   if (Buffer.byteLength(JSON.stringify(T)) > 60 * 1024) p.push('over 60 KB: split it into chapters');
   return p;
