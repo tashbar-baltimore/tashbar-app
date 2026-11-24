@@ -581,7 +581,7 @@ function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\
  const tile=(cls,ic,name,sub,attr,badge)=>`<button type="button" class="gm-ht ${cls}" ${attr}><span class="top" aria-hidden="true"><span class="ic">${ic}</span></span>${badge?`<span class="bdg">${badge}</span>`:''}<span class="bot"><b>${name}</b><small>${sub}</small></span></button>`;
  let tiles='';
  if(ws.length){
-  const wsub=lw?`${P.list?'Next':'Round '+(live+1)}: ${esc(lw.name)} · ${esc(nm(lw.now)[0])}`:P.open?'All done! Play more if you like.':'Every world is cleared!';
+  const wsub=lw?`${P.list?'Next':'Round '+(live+1)}: ${esc(lw.name)} · ${esc(nm(lw.now)[0])}`:P.open?'All done! Play more if you like.':P.list?'Open to see your list':'Every world is cleared!';
   tiles+=tile('work'+(lw?' now':''),'✏️','My work',wsub,'data-gmnav="missions"',lw?'▶ DO THIS NOW':P.open?'✓ DONE':'');
   const p=pick(ws); tiles+=tile('map','🗺️','My map',p?`${esc(p.name)} · Level ${p.level}`:'Your levels','data-gmnav="map"');
  }
@@ -725,7 +725,7 @@ function missionsHTML(ws){ const P=plan(ws), wk=weekCounts(), pk=pick(ws), picks
  const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
  const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ ${P.list?'Next':'Play round '+(P.done+1)}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
  const TOT=P.total||ROUNDS, KICK=P.list?"TODAY'S LIST":'MY WORK TODAY';
- const head=P.open?`<div class="s">${KICK}</div><h1>All done! ✓</h1><small>${P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every world is cleared!'):'All '+ROUNDS+' rounds cleared today. Every extra level still counts!'}</small>`:`<div class="s">${KICK}</div><h1>${P.rounds.length?P.done+' of '+TOT+' done':'All clear!'}</h1><small>${P.rounds.length?(P.list?P.left+' more to go. Tap Next.':'Round '+(P.done+1)+' is next. Tap Play.'):'No rounds today: every world is cleared!'}</small>`;
+ const head=P.open?`<div class="s">${KICK}</div><h1>All done! ✓</h1><small>${P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every world is cleared!'):'All '+ROUNDS+' rounds cleared today. Every extra level still counts!'}</small>`:`<div class="s">${KICK}</div><h1>${P.rounds.length?P.done+' of '+TOT+' done':'All clear!'}</h1><small>${P.rounds.length?(P.list?(P.left?P.left+' more to go. Tap Next.':'Saving your work…'):'Round '+(P.done+1)+' is next. Tap Play.'):'No rounds today: every world is cleared!'}</small>`;
  return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>${chest}${cta}`; }
 function arcadeHTML(ws){ const P=plan(ws);
  return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>${P.list?`Finish ${P.left} more thing${P.left===1?'':'s'} on today's list to open the Arcade!`:`Clear ${P.left} more round${P.left===1?'':'s'} of your work to open the Arcade!`}</p></div>
@@ -883,10 +883,10 @@ function dailyLoot(ws,wk){ const P=plan(ws), T=P.total||ROUNDS; const L=P.list?[
 function dayKey(){ return 'gm-day-'+(A.st&&A.st.id)+'-'+today(); }
 function seen(k){ try{ return localStorage.getItem(k)==='1'; }catch(e){ return !!GM['_'+k]; } }
 function mark(k){ try{ localStorage.setItem(k,'1'); }catch(e){} GM['_'+k]=1; }
-function checkDaily(ws){ const P=plan(ws); if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=P.done; GM.prevSid=A.st.id; return false; }
- const TOT=P.total||ROUNDS; if(P.rounds.length&&GM.prevDone<TOT&&P.done>=TOT&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=P.done; const wk=weekCounts();
+function checkDaily(ws){ const P=plan(ws), PD=P.list&&!P.open?Math.min(P.done,(P.total||ROUNDS)-1):P.done; /* today's list: the party waits for the server */ if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=PD; GM.prevSid=A.st.id; return false; }
+ const TOT=P.total||ROUNDS; if(P.rounds.length&&GM.prevDone<TOT&&PD>=TOT&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=PD; const wk=weekCounts();
   setTimeout(()=>celebrate({kicker:P.list?"TODAY'S LIST":'THE TASHBAR CHALLENGE',title:P.list?'All done<br>today!':'Challenge<br>complete!',icon:'🏆',stars:true,loot:dailyLoot(ws,wk),go:['🎮 Arcade',()=>{ GM.tab='games'; GM.sig=''; sync(); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
- GM.prevDone=P.done; return false; }
+ GM.prevDone=PD; return false; }
 function mastSet(){ const sk=(A.st&&A.st.skills)||{}, o={}; Object.keys(sk).forEach(id=>{ if(sk[id]&&sk[id].m) o[id]=Number(sk[id].at)||0; }); return o; }
 function checkWin(ws,daily){ const now=mastSet(); if(!GM.snap||GM.snapSid!==A.st.id){ GM.snap=now; GM.snapSid=A.st.id; GM.snapRank=rankOf(steps()); return; }
  const fresh=Object.keys(now).filter(id=>!(id in GM.snap)&&Date.now()-now[id]<15*60e3).sort((a,b)=>now[a]-now[b]), rk=GM.snapRank;

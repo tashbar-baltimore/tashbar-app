@@ -36,7 +36,8 @@ window.tlDailyPlan=function(ws){ const s=sid(), d=s&&T.by[s]; if(!d||!d.on||!Arr
   const got=ids.slice(0,n), w=worldFor(it,ws||[]);
   for(let i=0;i<n;i++){ if(i<got.length) rounds.push({won:true,id:got[i],k:it.k,name:it.name}); else rounds.push({w:stepOf(w,i-got.length),k:it.k,name:it.name}); }
   done+=got.length; total+=n; });
- return {rounds,done,total,left:Math.max(0,total-done),open:!total||done>=total,list:true,paid:!!d.paid}; };
+ /* open (Arcade, party, "daily bonus") only when the SERVER says the whole list is done: a row can turn ✓ here first, the bonus is the server's */
+ return {rounds,done,total,left:Math.max(0,total-done),open:!total||(done>=total&&!!d.complete),list:true,paid:!!d.paid}; };
 /* his list arrives after sign-in, and again after every save (the server's count of what he covered) */
 if(typeof loadStudent==='function'&&!T._ls){ T._ls=loadStudent; loadStudent=function(r){ const st=T._ls.apply(this,arguments); try{ if(r&&r.id){ delete T.by[r.id]; setTimeout(ask,0); } }catch(e){} return st; }; }
 /* the lesson's payout list names the daily bonus by the old rule ("3 lessons"): a boy with a list is paid for the whole list, so say that */

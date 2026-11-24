@@ -19,7 +19,7 @@ function server() {
   call('msBootstrap');
   const H = (s, c) => vm.runInContext('msHash_(' + JSON.stringify(s) + ',' + JSON.stringify(c) + ')', rt.ctx);
   const boys = [['TEST-DP01', 'Made-up Boy A', '7411', 'grade 4'], ['TEST-DP02', 'Made-up Boy B', '7412', 'grade 4'], ['DPREAL01', 'Made-up Boy C', '7413', 'grade 4'],
-    ['TEST-DP03', 'Made-up Boy D', '7414', 'grade 1'], ['TEST-DP04', 'Made-up Boy E', '7415', 'grade 4']];
+    ['TEST-DP03', 'Made-up Boy D', '7414', 'grade 1'], ['TEST-DP04', 'Made-up Boy E', '7415', 'grade 4'], ['TEST-DP05', 'Made-up Boy F', '7416', 'grade 4']];
   const roster = bk.tabs.MS_Roster.rows; boys.forEach((b, i) => { const row = roster[0].map(() => ''); row[0] = b[0]; row[1] = b[1]; row[5] = 'dpsalt' + i; row[6] = H('dpsalt' + i, b[2]); row[7] = true; row[8] = b[3]; roster.push(row); });
   vm.runInContext("CacheService.getScriptCache().put('ms_tok_dp-staff', JSON.stringify({role:'staff',sid:null,pid:null,staff:null,who:{id:'DPT',name:'Made-up Rebbe',role:'head'}}), 600)", rt.ctx);
   const place = (sid, key, level) => { try { call('libApply', 'dp-staff', { action: 'place', boys: [sid], key, level }); } catch (e) { fails.push('daily plan: placing ' + key + ' ' + level + ' failed: ' + e.message); } };
@@ -65,6 +65,13 @@ function server() {
   /* 5. a boy with nothing in Kodesh, Science or Social Studies: those lines go to Reading (core first) */
   const b = sign('7412'); const Lb = b && call('tdlToday', b.token);
   chk(Lb && Lb.items.map(x => x.k + x.n).join(',') === 'READ4,LANG1,MATH1' && Lb.total === 6, 'subjects he has nothing in give their lines to Reading (got ' + (Lb && Lb.items.map(x => x.k + x.n).join(',')) + ')');
+  /* 5b. a level check covers a line only when he really knew it (80%+), at his own level, once a subject a day */
+  { const lcRun = (tok, subj, lvl, right) => { const st = call('pfLevelCheckStart', tok, subj, lvl); if (!st || !st.items || !st.items.length) return null;
+      const ans = st.items.map(it => ev('(function(){ var it=pfIx_().byId[' + JSON.stringify(it.id) + ']; return it.ans; })()'));
+      return call('pfLevelCheckSave', tok, subj, lvl, st.items.map((it, j) => ({ item: it.id, value: right ? ans[j] : 'zz-not-it' }))); };
+    if (b) { const sv = lcRun(b.token, 'MATH', 5, false); if (sv) chk(call('tdlToday', b.token).items.find(x => x.k === 'MATH').c === 0, 'an empty level check (0 right) must not cover a line'); }
+    const f = sign('7416'); if (f) { const sv = lcRun(f.token, 'MATH', 5, true); if (sv) { const Lf = call('tdlToday', f.token); chk(Lf.items.find(x => x.k === 'MATH').c === 1, 'a level check he got right at his own level covers his Math line (he showed he knows it)'); }
+      const s3 = lcRun(f.token, 'MATH', 3, true); if (s3) chk(call('tdlToday', f.token).items.find(x => x.k === 'MATH').c === 1, 'a level check below his level must not cover another line'); } }
   /* 6. a staff amount for one boy is used */
   vm.runInContext("put_('Settings', { id: 'tdl:boy:TEST-DP04', value: { READ: 1, LANG: 0, MATH: 0, KODESH: 0, KNOW: 0 } }, 'test')", rt.ctx);
   const e = sign('7415'); const Le = e && call('tdlToday', e.token);

@@ -17,7 +17,8 @@ var TDL = {
   ORDER: ['READ', 'LANG', 'MATH', 'KODESH', 'KNOW'],
   NAMES: { READ: 'Reading', LANG: 'Writing', MATH: 'Math', KODESH: 'Kodesh', SCI: 'Science', SOC: 'Social Studies' },
   MAX_EACH: 5,
-  CACHE_S: 21600
+  CACHE_S: 21600,
+  LC_PASS: 0.8   /* a level check covers a line only when he got 80% or more right, at his own level, once per subject a day */
 };
 function tdlIsTest_(sid) { return /^TEST-/.test(String(sid || '')); }
 function tdlGrade_(sid) { try { return typeof kmGradeOf_ === 'function' ? kmGradeOf_(String(sid)) : null; } catch (e) { return null; } }
@@ -57,8 +58,9 @@ function tdlAvail_(sid, day) {
   var ck = 'tdl_av_' + sid + '_' + day, c = null;
   try { c = CacheService.getScriptCache(); var hit = c.get(ck); if (hit) return JSON.parse(hit); } catch (e) {}
   var m = null; try { m = kmMapFor_(String(sid)); } catch (e) { m = null; }
-  var S = (m && m.subjects) || {}, K = (m && m.kodesh) || {}, av = {};
-  ['READ', 'LANG', 'MATH'].forEach(function (k) { if (S[k] && S[k].now) av[k] = k; });
+  if (!m) return {};   /* the map did not load: nothing kept, so the next ask tries again */
+  var S = m.subjects || {}, K = m.kodesh || {}, av = { lv: {} };
+  ['READ', 'LANG', 'MATH'].forEach(function (k) { if (S[k] && S[k].now) av[k] = k; if (S[k] && S[k].level) av.lv[k] = Number(S[k].level); });
   var kk = Object.keys(K).filter(function (k) { return K[k] && K[k].now; });
   if (kk.length) { var pref = ['K:CHU', 'K:GEM', 'K:MSH', 'K:RAS', 'K:KRI']; kk.sort(function (a, b) { return (pref.indexOf(a) < 0 ? 9 : pref.indexOf(a)) - (pref.indexOf(b) < 0 ? 9 : pref.indexOf(b)); }); av.KODESH = kk[0]; }
   else if (S.HEB && S.HEB.now) av.KODESH = 'HEB';
@@ -68,7 +70,7 @@ function tdlAvail_(sid, day) {
   return av;
 }
 /* what he really covered today: the server's paid mastery rows and today's level check passes */
-function tdlCovered_(sid, day) {
+function tdlCovered_(sid, day, lv) {
   var cov = {}, pre = 'ms:' + sid + ':Mastered ';
   function add(k, id) { if (!k) return; (cov[k] = cov[k] || []).push(id); }
   moneyRowsFor_(sid).slice().sort(function (a, b) { return a.at < b.at ? -1 : a.at > b.at ? 1 : 0; }).forEach(function (r) {
@@ -77,12 +79,13 @@ function tdlCovered_(sid, day) {
   });
   try {
     if (typeof pfLcPasses_ === 'function') { var P = pfLcPasses_(sid);
-      ['MATH', 'READ'].forEach(function (k) { Object.keys(P[k] || {}).forEach(function (L) { var x = P[k][L]; if (x && x.at && !x.old && moneyDay_(new Date(x.at).toISOString()) === day) add(k, 'LEVELCHECK.' + k + '.L' + L); }); }); }
+      ['MATH', 'READ'].forEach(function (k) { var L = lv && lv[k], x = L ? (P[k] || {})[String(L)] : null;
+        if (x && x.at && !x.old && x.of > 0 && x.right / x.of >= TDL.LC_PASS && moneyDay_(new Date(x.at).toISOString()) === day) add(k, 'LEVELCHECK.' + k + '.L' + L); }); }
   } catch (e) {}
   return cov;
 }
 function tdlStatus_(sid) {
-  sid = String(sid || ''); var day = moneyDay_(), amt = tdlAmounts_(sid), av = tdlAvail_(sid, day), cov = tdlCovered_(sid, day);
+  sid = String(sid || ''); var day = moneyDay_(), amt = tdlAmounts_(sid), av = tdlAvail_(sid, day), cov = tdlCovered_(sid, day, av.lv);
   var items = [], spare = 0;
   TDL.ORDER.forEach(function (k) { var n = amt[k] || 0; if (!n) return; if (!av[k] && !(cov[k] && cov[k].length)) { spare += n; return; } items.push({ k: k, n: n }); });
   if (spare && items.length) { var t = items.filter(function (x) { return x.k === 'READ'; })[0] || items[0]; t.n += spare; }
