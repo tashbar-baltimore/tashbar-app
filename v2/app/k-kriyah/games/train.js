@@ -25,12 +25,12 @@ export default function setup(E, { struggled, unit, game = {} }) {
     c.add(E.mesh(new THREE.BoxGeometry(.12, .06, .06), gold, .56, .4, 0));
     const l = E.letter(k, .8); l.position.set(0, 1.15 + l.userData.below, .1);   /* Kuf's long leg shows above the car */ c.add(l); c.userData = { key: k, i, on: false, letter: l }; E.scene.add(c); return c; });
   const glow = E.glowSprite('#fff7b0', 2.2, 0); E.scene.add(glow);
-  let P = false, S = 1, slotX = [], homes = [], busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), help = struggled, wrong = 0, wrongInRow = 0, resolveRound = null, gaps = null, rolling = false;
+  let LX = 4.6, P = false, S = 1, slotX = [], homes = [], busy = true, enabled = false, drag = null, grab = new THREE.Vector3(), help = struggled, wrong = 0, wrongInRow = 0, resolveRound = null, gaps = null, rolling = false;
   const slotPos = i => new THREE.Vector3(slotX[i], 0, .2);
-  E.onLayout(p => { P = p; S = p ? .5 : 1;
-    const lx = p ? (ORDER.length >= 6 ? 1.85 : 1.68) : 4.6, step = p ? (ORDER.length >= 6 ? .6 : .55) : 1.22;   /* on a phone the whole train fits the width */ loco.position.set(lx, 0, .2); loco.scale.setScalar(S); track.scale.set(1, 1, S); track.position.z = .2;
+  E.onLayout(p => { P = p; S = p ? (ORDER.length === 5 ? .6 : .5) : 1;
+    const lx = p ? (ORDER.length >= 6 ? 1.85 : ORDER.length === 5 ? 1.75 : 1.68) : 4.6, step = p ? (ORDER.length >= 6 ? .6 : ORDER.length === 5 ? .68 : .55) : 1.22;   /* on a phone the whole train fits the width */ LX = lx; loco.position.set(lx, 0, .2); loco.scale.setScalar(S); track.scale.set(1, 1, S); track.position.z = .2;
     slotX = ORDER.map((_, i) => lx - (p ? .67 : 1.35) - i * step);
-    homes = ORDER.map((_, i) => p ? new THREE.Vector3(1.3 - (i % 3) * 1.3, i < 3 ? 3.05 : 1.75, .6) : new THREE.Vector3(2.25 - i * .98, 0, 4.2));   /* all inside the screen: on a phone, two rows above the train */   /* waiting on the grass in front of the track */
+    homes = ORDER.map((_, i) => p ? new THREE.Vector3(1.3 - (i % 3) * 1.3, i < 3 ? 3.2 : 1.6, .6) : new THREE.Vector3(2.25 - i * .98, 0, 4.2));   /* all inside the screen: on a phone, two rows above the train */   /* waiting on the grass in front of the track */
     cars.forEach(c => c.userData.letter.scale.setScalar(p ? (ORDER.length >= 6 ? 1.3 : 1.35) : 1));   /* bigger letters on a phone */
     cars.forEach(c => { c.scale.setScalar(c.userData.on ? S : (p ? .75 : .7)); if (c.userData.on) c.position.copy(slotPos(c.userData.slot)); else if (c !== drag) c.position.copy(homes[c.userData.home ?? c.userData.i]); });
     if (p) { E.camBase.set(0, 2.3, 11); E.camTarget.set(0, 1.8, 0); } else { E.camBase.set(0, 2.7, 10.2); E.camTarget.set(0, 1.5, 0); }
@@ -104,8 +104,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
   }
   async function roundTwo() {
     /* the train comes back with some cars on, and gaps to fill */
-    gaps = [1, 3, 5]; const gapHomes = [0, 2, 4].sort(() => Math.random() - .5);
-    const lx = P ? 1.68 : 4.6; loco.position.x = lx + 10;
+    gaps = [...Array(n).keys()].filter(i => i % 2 === 1); const gapHomes = gaps.map((_, i) => i * 2).sort(() => Math.random() - .5);   /* every other car is missing, however long the train */
+    const lx = LX; loco.position.x = lx + 10;
     cars.forEach((c, i) => { if (gaps.includes(i)) { c.userData.on = false; c.userData.slot = null; c.userData.home = gapHomes[gaps.indexOf(i)]; c.scale.setScalar(P ? .75 : .7); c.position.copy(homes[c.userData.home]); c.visible = true; }
       else { c.userData.on = true; c.userData.slot = i; c.scale.setScalar(S); c.position.copy(slotPos(i)).add(new THREE.Vector3(10, 0, 0)); } });
     const on = cars.filter(c => c.userData.on), sx = on.map(c => c.position.x);
