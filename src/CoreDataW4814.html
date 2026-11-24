@@ -1,0 +1,304 @@
+<script>
+/* CoreDataW4814.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 7 (L08), Unit 3 "Story Architect". Cast: The Beacon newsroom.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L08.05':{name:'Plot Plan',
+  teach:[
+    {how:'On a story mountain, each rising event makes the problem harder. A plot plan goes further: each event also RAISES THE STAKES, what the hero could lose. In Benny’s story for The Beacon, the wind knocks Shimon’s sukkah flat on Erev Sukkos. Then the s’chach mats blow over the fence. Then a wall cracks. Each event puts the first night in the sukkah in more danger. A busy event that changes nothing he could lose is the SAME STAKES.', q:'Which next event raises the stakes?', o:['Rain starts, and Zaidy’s hands get too cold to tie the knots.','Shimon’s little sister asks what color the paper chains are.','Shimon remembers that last year’s sukkah was green.']},
+    {how:'A TICKING CLOCK turns the tension up: the reader always knows how much time is left. “Two hours to candle lighting.” “One hour.” “Ten minutes.” Put the MOST TENSE MOMENT near the end, after the stakes have climbed, so the whole story builds to it. Then end soon after it. Once the peak is over, the reader should not wait long.', q:'Where does the most tense moment go in a plot plan?', o:['near the end, after the stakes have climbed','first, to grab the reader','in the middle, then a long, calm ending']},
+    {how:'Two mistakes let the tension leak out. In Grade 5, a story that skipped the climb was fixed at once. SOLVED TOO EARLY is sneakier: the stakes do climb, but the fix comes halfway (“Mr. Haddad lent us his sukkah”), and the rest is just decorating. PEAKS TOO SOON: the most tense moment comes first, and each event after it is smaller. A plan whose stakes keep rising to a late peak BUILDS TENSION.', q:'Yoni’s plan: his bar mitzvah speech is lost; the hall’s printer is broken; then Abba finds it in the car; then Yoni practices and eats cake. Which is it: builds tension, solved too early, or peaks too soon?', o:['solved too early','peaks too soon','builds tension']}
+  ],
+  practice:[
+    {t:'sort', q:'Benny’s plan: the wind knocked Shimon’s sukkah flat on Erev Sukkos. Sort each possible next event.', bins:[{id:'R',label:'📈 Raises the stakes'},{id:'S',label:'➖ Same stakes'}],
+      items:[{label:'The s’chach mats blow over Mr. Haddad’s fence.',bin:'R'},{label:'Shimon’s sister asks for a snack.',bin:'S'},{label:'A wall panel cracks, and there is no spare.',bin:'R'},{label:'Zaidy tells what color his coat used to be.',bin:'S'},{label:'Rain starts, and Zaidy’s cold hands cannot tie.',bin:'R'},{label:'Shimon changes into a dry shirt.',bin:'S'}],
+      h:'Does it put the first night in the sukkah in more danger, or leave things where they were?'},
+    {t:'pairs', q:'Match each word to its job in a plot.', pairs:[['the stakes','what the hero could lose'],['a ticking clock','how much time is left'],['the most tense moment','the peak, near the end']],
+      h:'Read each word. Which part of the plan does it name?'},
+    {t:'spotall', q:'Tap every line that works as a TICKING CLOCK.', cells:[{label:'Two hours to candle lighting.',ok:true},{label:'Only one hour left before Yom Tov.',ok:true},{label:'Ima called, “Ten minutes!”',ok:true},{label:'The mats were made of bamboo.',ok:false},{label:'Zaidy wore his gray coat.',ok:false}],
+      h:'Does the line tell the reader how much time is left?'},
+    {t:'sort', q:'Sneaky plans! Sort each story plan.', bins:[{id:'G',label:'✅ Builds tension'},{id:'E',label:'⚠️ Mistake: solved too early'},{id:'P',label:'⚠️ Mistake: peaks too soon'}],
+      items:[{label:'Sukkah falls; mats blow away; rain; ten minutes to Yom Tov, a gust lifts the frame.',bin:'G'},{label:'Sukkah falls; mats blow away; a neighbor lends his sukkah; the boys decorate all afternoon.',bin:'E'},{label:'A huge gust nearly lifts the frame; then a mat slips; then a paper chain tears.',bin:'P'},{label:'Camera lost at the fort; not in the gift shop; the bus driver honks to leave.',bin:'G'},{label:'Camera lost; not in the gift shop; his teacher finds it; the class tours the fort all day.',bin:'E'}],
+      h:'Where is the most tense moment? Is the problem fixed before the end?'},
+    {t:'order', q:'Build Benny’s plot plan so the stakes climb. Tap the events in order.', tiles:['At noon, the wind knocks the sukkah flat.','At two, the s’chach mats blow over the fence.','At four, rain starts, and Zaidy’s hands are too cold to tie.','Ten minutes before Yom Tov, a gust lifts the frame.'], extra:['Then Shimon eats an apple.'],
+      h:'Follow the clock. Each event should put the sukkah in more danger.'},
+    {t:'spotall', q:'Yoni’s story: he loses his speech on the night of his bar mitzvah seudah. Tap every event that RAISES THE STAKES.', cells:[{label:'The hall’s printer is broken.',ok:true},{label:'Abba’s phone, with the only copy, is dead.',ok:true},{label:'The rav says, “Yoni, you’re next.”',ok:true},{label:'Yoni’s tie is blue.',ok:false},{label:'The cake has chocolate icing.',ok:false}],
+      h:'Does it make losing the speech worse?'},
+    {t:'write', q:'Your turn to write. Plan a story in four short lines: a problem, two events that raise the stakes, and the most tense moment near the end. Add a ticking clock.', min:0, checks:['📈 Each event raises the stakes.','⏰ A ticking clock tells how much time is left.','🏔️ The most tense moment comes near the end, and nothing is solved before it.'], h:'After each line, ask: what could he lose now that he could not lose before?'}
+  ],
+  check:[
+    {q:'Eli’s plan for a debate story: his partner is sick on the morning of the final; Eli must argue alone; his notes get soaked in the rain; with one minute left, the judge asks the hardest question. Which is it: builds tension, solved too early, or peaks too soon?', o:['builds tension','solved too early','peaks too soon'], h:'Does each event raise the stakes? Where is the most tense moment?'},
+    {q:'Akiva’s plan: the printer breaks the night before The Beacon is due; then the spare ink is dry too; Mr. Gross fixes both by eight o’clock; then the boys fold papers and talk about the weather. Which is it: builds tension, solved too early, or peaks too soon?', o:['solved too early','peaks too soon','builds tension'], h:'When is the problem fixed? What is left for the rest of the story?'},
+    {t:'order', q:'Build Gavriel’s plot plan so the stakes climb. Tap the events in order.', tiles:['At the fort, Gavriel’s camera is gone.','He searches the gift shop, but it is not there.','Then the bus driver honks: the class is leaving.'], extra:['Also, the fort has old cannons.'], h:'Start with the problem. Each next event should make it worse.'}
+  ],
+  re:[
+    {how:'A new way: a pot of water on the fire. It heats a little at a time and boils near the end. Take it off the fire halfway, and it never boils.', q:'Taking the pot off the fire halfway is like a story that is…', o:['solved too early','builds tension','peaks too soon']},
+    {how:'A simpler step: after each event, ask one question: “What could he lose now?” If the answer is bigger than before, the stakes went up.', q:'After the mats blow away, what could Shimon lose?', o:['the first night in the sukkah','his gray coat','a pencil']},
+    {how:'The skill underneath: Story Mountain (Grade 5). Each rising event makes the problem harder, up to a turning point. A plot plan goes further: each event raises what he could lose, a clock ticks, and nothing is solved before the late peak.', q:'On a story mountain, each rising event makes the problem…', o:['harder','solved','shorter']}
+  ]},
+
+  'WRIT.PARA.L08.08':{name:'Character by Dialogue',
+  teach:[
+    {how:'In Dialogue + Action you mixed talk with action. Now make the talk itself show WHO HE IS. Turn the dials. WORD CHOICE: the words only he would use. Zaidy says, “Nu, Shimon’ke, twice around, then pull.” His big brother Nachum says, “Forget knots. Tape it.” LENGTH: short and clipped, or long and winding. A boy in a rush talks in bits; a calm Zaidy takes his time.', q:'Nachum is in a rush and thinks the knots waste time. Which line sounds like him?', o:['“Forget knots. Tape it. Let’s go.”','“Let us take our time and tie each knot with care.”','“My dear brother, perhaps we might try another way.”']},
+    {how:'The third dial is WHAT HE AVOIDS SAYING. Real people often step around the hard thing. Shimon asks, “Zaidy, are you tired?” Zaidy says, “Hand me the rope.” He never answers, and the reader sees his pride. What a character will not say tells as much as what he says.', q:'Shimon asks, “Should I call Abba to come home early?” Which answer shows Zaidy will not admit he needs help?', o:['“Your Abba has a job. Hold the pole straight.”','“Yes, I am too tired to finish.”','“Zaidy is a proud man who never asks for help.”']},
+    {how:'Two mistakes. TELLS THE TRAIT: the writer names it instead of showing it (“Zaidy, who was very patient, said…”), or a character announces himself (“I am a careful man”). SAME VOICE: everyone talks alike, so if you swapped the names, nothing would change. When the words, the length and the silences fit one person, the line SHOWS BY HOW HE SPEAKS.', q:'“Nachum, who was always impatient, said, ‘Hurry up.’” Which is it: shows by how he speaks, tells the trait, or same voice?', o:['tells the trait','same voice','shows by how he speaks']}
+  ],
+  practice:[
+    {t:'sort', q:'Benny’s sukkah story. Sort each line.', bins:[{id:'S',label:'🗣️ Shows by how he speaks'},{id:'T',label:'🏷️ Tells the trait'}],
+      items:[{label:'“Twice around, then pull. A knot is a promise,” Zaidy said.',bin:'S'},{label:'Zaidy was a very patient and careful man.',bin:'T'},{label:'“Tape. It’s fine. Let’s go,” Nachum said.',bin:'S'},{label:'Nachum was always in a hurry.',bin:'T'},{label:'“A ladder? I have two! Three, with the broken one!” Mr. Haddad called.',bin:'S'},{label:'“I am a cheerful neighbor,” said Mr. Haddad.',bin:'T'}],
+      h:'Does the line let you hear who he is? Or does it just name what he is like?'},
+    {t:'pairs', q:'Match each dial to an example.', pairs:[['word choice','Zaidy’s “Nu” and “Shimon’ke”'],['length','“Tape. Fine. Go.” Three clipped words.'],['what he avoids','asked if he is tired, he asks for the rope']],
+      h:'Which dial is turned: the words, how long he talks, or what he steps around?'},
+    {t:'spotall', q:'Zaidy is warm, patient and old-fashioned. Tap every line that sounds like HIM.', cells:[{label:'“Nu, slowly. A rushed knot is two knots later.”',ok:true},{label:'“Come, Shimon’ke, I’ll show you once more.”',ok:true},{label:'“In my day, we built with what we had.”',ok:true},{label:'“Faster! Just tape it.”',ok:false},{label:'“Hurry up, we’re wasting time!”',ok:false}],
+      h:'Hear each line in your head. Could it come from a warm, patient, old-fashioned Zaidy?'},
+    {t:'sort', q:'Sneaky ones! Gavriel gave each boy in his camera story a voice. Moshe is nervous; Dovi is calm. Sort each try.', bins:[{id:'G',label:'✅ Shows by how he speaks'},{id:'T',label:'⚠️ Mistake: tells the trait'},{id:'V',label:'⚠️ Mistake: same voice'}],
+      items:[{label:'Moshe: “Is that the bus? Is it leaving? Did we miss it?” Dovi: “It’s parked. Breathe.”',bin:'G'},{label:'Moshe, who was a nervous boy, said, “Let’s go.”',bin:'T'},{label:'Moshe: “We should look for the camera.” Dovi: “We should look for the camera.”',bin:'V'},{label:'“I am a calm person, so I am not worried,” said Dovi.',bin:'T'},{label:'Moshe: “Bus! Now! Hurry!” Dovi: “It leaves at three. We have twenty minutes.”',bin:'G'}],
+      h:'Is the trait named? Could you swap the names and not notice?'},
+    {t:'order', q:'Build a scene where Zaidy steps around the question. Tap the sentences in order.', tiles:['“Are you tired, Zaidy?” I asked.','“Hand me the rope,” he said.','“And hold the pole straight.”'], extra:['Zaidy was a very proud man.'],
+      h:'The question comes first. Then his answer that is not an answer. Leave out the line that names a trait.'},
+    {t:'spotall', q:'Yoni writes about practicing his bar mitzvah speech. His Rebbi is strict but kind. Tap every line that SHOWS it by how he speaks.', cells:[{label:'“Again. From the top. Slower.”',ok:true},{label:'“Good. Now so the back row hears you.”',ok:true},{label:'“Same word again. We fix it, then we eat.”',ok:true},{label:'Rebbi was strict but kind.',ok:false},{label:'“I am strict, but I am also kind,” said Rebbi.',ok:false}],
+      h:'Do the words and the length let you hear him? Or does the line name the trait?'},
+    {t:'write', q:'Your turn to write. Write two lines of dialogue, one for Zaidy and one for Nachum, about the falling sukkah. Make each voice different. Then write one line where Zaidy steps around a question.', min:0, checks:['🎚️ Word choice and length fit each speaker.','🤐 One character steps around a question.','🏷️ I never named a trait like "patient" or "impatient".'], h:'Read the lines with the names covered. Can you still tell who is talking?'}
+  ],
+  check:[
+    {q:'Eli’s story: before the debate final, Eli asks his coach, “Well? Am I ready?” The coach straightens his tie. “You have your notes. Go.” Which is it: shows by how he speaks, tells the trait, or same voice?', o:['shows by how he speaks','tells the trait','same voice'], h:'Is a trait named? Or do his words, his length and what he skips show it?'},
+    {q:'Akiva’s story: two boys at the lost-and-found. “I think the hat is mine,” says Shaya. “I think the hat is mine,” says Leib. Which is it: shows by how he speaks, tells the trait, or same voice?', o:['same voice','tells the trait','shows by how he speaks'], h:'Cover the names. Can you tell who is talking?'},
+    {t:'order', q:'Build a scene where Rebbi steps around the question. Tap the sentences in order.', tiles:['“Is my speech ready, Rebbi?” Yoni asked.','“Read it to me again,” Rebbi said.','“And this time, slower.”'], extra:['Rebbi was a strict man.'], h:'The question comes first. Then the answer that is not a yes. Leave out the line that names a trait.'}
+  ],
+  re:[
+    {how:'A new way: a phone call. You cannot see anyone, but you know Zaidy from Nachum in three words. Good dialogue works like a voice on the phone.', q:'If you can tell who is talking with the names covered, the dialogue…', o:['shows by how he speaks','tells the trait','same voice']},
+    {how:'A simpler step: turn ONE dial. Make one speaker short and clipped, and the other long and winding. That alone gives you two voices.', q:'Which dial is “short and clipped, or long and winding”?', o:['length','word choice','what he avoids']},
+    {how:'The skill underneath: Dialogue + Action (Grade 5). You mixed what characters say with what they do. Now the words themselves, how long he talks and what he leaves unsaid, show who each character is.', q:'Dialogue + Action mixes what a character says with…', o:['what he does','what he ate','the title']}
+  ]},
+
+  'WRIT.PARA.L08.10':{name:'Precise Detail',
+  teach:[
+    {how:'In Picture Words you swapped a vague word for an exact one. Now choose a whole DETAIL. A GENERAL DETAIL could be in any story: “It was very windy. It was cold. Everything was wet.” A TELLING DETAIL could only be in THIS story, at THIS moment: “The wind peeled the mat out of my hands and flung it over Mr. Haddad’s fence.” One telling detail beats three general ones.', q:'Which is a telling detail?', o:['The paper chain my sister made snapped and skittered down the driveway.','It was a really stormy day.','The weather was very bad.']},
+    {how:'A telling detail captures the ACTION or the FEELING. For a feeling, do not pile up “I was nervous, worried and scared.” Find the one thing a camera would catch: “I checked the oven clock three times in one minute.” Test every detail: could it be in someone else’s story? If yes, it is general. Cut it.', q:'Shimon is afraid the sukkah will not be ready. Which detail captures the feeling?', o:['I checked the oven clock three times in one minute.','I was very, very worried.','I felt nervous and scared and upset.']},
+    {how:'Two mistakes. BURIED: the telling detail is there, but general ones bury it: “It was windy and cold and wet and loud, and the rope burned my palm.” Cut the general ones. BESIDE THE POINT: the detail is exact, but it does not capture this action or feeling. In the scariest gust, “Zaidy’s coat had four brown buttons” is exact, but it tells the reader nothing about the moment.', q:'The frame is lifting in the gust. Which detail is beside the point?', o:['Zaidy’s coat had four brown buttons.','The pole jumped in my hands like a fish.','The rope burned a red line across my palm.']}
+  ],
+  practice:[
+    {t:'sort', q:'Benny’s storm scene. Sort each detail.', bins:[{id:'T',label:'🎯 Telling detail'},{id:'G',label:'🌫️ General detail'}],
+      items:[{label:'The wind peeled the mat out of my hands.',bin:'T'},{label:'It was very windy.',bin:'G'},{label:'Rain dripped off Zaidy’s hat onto the knot.',bin:'T'},{label:'Everything was wet.',bin:'G'},{label:'My sister’s paper chain snapped and blew away.',bin:'T'},{label:'It was a stormy day.',bin:'G'}],
+      h:'Could this detail be in someone else’s story? If yes, it is general.'},
+    {t:'pairs', q:'Match each general line to a telling detail that could replace it.', pairs:[['I was nervous.','I checked the oven clock three times.'],['It was very windy.','The mat flew over the fence.'],['Zaidy was tired.','Zaidy sat down on the wet bench.']],
+      h:'Which telling detail shows the same thing?'},
+    {t:'spotall', q:'Shimon holds the pole in the big gust. Tap every detail that captures the MOMENT.', cells:[{label:'The pole jumped in my hands like a fish.',ok:true},{label:'The rope burned a red line across my palm.',ok:true},{label:'The whole frame groaned.',ok:true},{label:'Zaidy’s coat had four brown buttons.',ok:false},{label:'Our street has six houses.',ok:false}],
+      h:'Does the detail show this action or this feeling? Or is it true but beside the point?'},
+    {t:'sort', q:'Sneaky ones! Benny tried to sharpen his sentences. Sort each one.', bins:[{id:'G',label:'✅ One telling detail'},{id:'P',label:'⚠️ Mistake: buried'},{id:'B',label:'⚠️ Mistake: beside the point'}],
+      items:[{label:'The rope burned a red line across my palm.',bin:'G'},{label:'It was windy, cold, wet and loud, and the rope burned my palm.',bin:'P'},{label:'As the gust hit, I saw the fence was painted white.',bin:'B'},{label:'My fingers kept slipping off the wet knot.',bin:'G'},{label:'I was scared, worried and nervous, and my fingers slipped.',bin:'P'},{label:'As the frame lifted, I remembered our car is blue.',bin:'B'}],
+      h:'Is the telling detail buried under general ones? Or is it exact but about something else?'},
+    {t:'order', q:'Build a sentence with one telling detail. Tap the tiles in order.', tiles:['The wind','peeled the mat','out of my hands','and flung it over the fence.'], extra:['It was windy.'],
+      h:'What did it, what it did, and where it went. Leave out the general detail.'},
+    {t:'spotall', q:'Yoni’s story: he stands up to give his bar mitzvah speech. Tap every TELLING DETAIL.', cells:[{label:'My knees knocked against the shtender.',ok:true},{label:'My Zaidy, in the front row, nodded once.',ok:true},{label:'The microphone squealed when I leaned in.',ok:true},{label:'It was a big night.',ok:false},{label:'I was very nervous.',ok:false}],
+      h:'Could it be in someone else’s story? Does it show this moment?'},
+    {t:'write', q:'Your turn to write. Take this general sentence: “It was a stormy day, and I was scared.” Rewrite it with ONE telling detail for the action and ONE for the feeling.', min:0, checks:['🎯 Each detail could only be in this story.','✂️ I cut the general words.','🔍 Each detail shows the action or the feeling, not something beside the point.'], h:'Ask: what would a camera catch at that second? Write only that.'}
+  ],
+  check:[
+    {q:'Gavriel’s story: he finds his lost camera just as the bus starts. He writes, “It was a crazy, stressful, wild, intense moment.” Is it a telling detail, a general detail, or beside the point?', o:['general detail','telling detail','beside the point'], h:'Could the sentence be in someone else’s story?'},
+    {q:'Eli’s story: the judge reads the winner’s name. Eli writes, “My coach grabbed my sleeve so hard a button popped off.” Is it a telling detail, a general detail, or beside the point?', o:['telling detail','general detail','beside the point'], h:'Could it be in any story? Does it show this moment?'},
+    {t:'order', q:'Build a sentence with one telling detail for the feeling. Tap the tiles in order.', tiles:['Gavriel','checked under','the same seat','three times.'], extra:['He was worried.'], h:'Who, what he did, where, and how often. Leave out the general detail.'}
+  ],
+  re:[
+    {how:'A new way: a photographer at a simcha takes a hundred pictures. The album keeps the one of the chassan’s father wiping his eyes. One picture tells the whole feeling.', q:'The one picture that tells the whole feeling is like…', o:['a telling detail','a general detail','buried']},
+    {how:'A simpler step: list three details for the moment. Cross out every one that could be in someone else’s story. Keep the one that is left.', q:'“It was cold.” Could it be in someone else’s story?', o:['yes, so it is a general detail','no, so it is a telling detail','it is beside the point']},
+    {how:'The skill underneath: Picture Words (Grade 5). You swapped a vague word for an exact one. Now you choose the one whole detail that carries the moment, and cut the general ones around it.', q:'Picture Words swaps a vague word for…', o:['an exact one','a longer one','a feeling word']}
+  ]},
+
+  'WRIT.PARA.L08.11':{name:'Reflective Ending',
+  teach:[
+    {how:'In Ending That Lands you learned that a reflection shows what the main character now understands. Now make it EARNED: it grows out of one real moment in the story. Point back at that moment, then say what it meant: “When the second loop Zaidy made me tie held in the gust, I saw why he never rushed a knot.” A reflection about something the story never showed is OUT OF NOWHERE.', q:'Benny’s story is about building the sukkah with Zaidy in the storm. Which reflection is earned?', o:['When the second loop held in the gust, I finally saw why Zaidy never rushed a knot.','I realized I should be nicer to my little sister.','I realized that school is important.']},
+    {how:'A strong reflection shows a CHANGE in understanding: what he used to think, and what he sees now. Use a BEFORE and a NOW. “All week I had rolled my eyes at Zaidy’s double knots. Tonight I understood: he was not slow. He was building for the worst night, not the nice one.” The reader watched the knot hold, so he believes the change.', q:'Which reflection shows a change in understanding?', o:['I used to think Zaidy was slow. Now I knew he built for the worst night.','Zaidy is a good builder.','When the rain stopped, we made kiddush in the sukkah.']},
+    {how:'Two mistakes. OUT OF NOWHERE: the reflection is about something the story never showed (“I realized I should be nicer to my sister”). NO CHANGE: it is about the story, but it only says what is true, with no before: “Zaidy is a good builder.” Nothing turned in his thinking. (A pasted-on moral from Grade 6, like “I learned never to give up,” is still a mistake.) An EARNED REFLECTION points to this story’s moment and shows how his thinking changed.', q:'Which ending has no change?', o:['Zaidy is a very careful builder.','I had rolled my eyes at the double knots; tonight one held.','I used to tease my sister. Now I am nicer to her.']}
+  ],
+  practice:[
+    {t:'sort', q:'Endings for Benny’s sukkah story. Sort each one.', bins:[{id:'E',label:'🌱 Earned reflection'},{id:'C',label:'➖ No change'}],
+      items:[{label:'I used to think Zaidy’s double knots were slow. Tonight one held.',bin:'E'},{label:'Zaidy is a very careful builder.',bin:'C'},{label:'All week I wanted tape. Now I knew why Zaidy ties twice.',bin:'E'},{label:'Zaidy’s double knots are very strong.',bin:'C'},{label:'The knot I had called old-fashioned held at candle lighting.',bin:'E'},{label:'Our sukkah has strong knots.',bin:'C'}],
+      h:'Does it point back to a moment and show a before and a now? Or does it just say how things are?'},
+    {t:'pairs', q:'Match each part of a reflective ending to an example.', pairs:[['the moment','The second loop held in the gust.'],['before','I used to roll my eyes at his knots.'],['now','Now I knew he built for the worst night.']],
+      h:'What happened? What did he think then? What does he see now?'},
+    {t:'spotall', q:'Tap every ending that shows a CHANGE in understanding.', cells:[{label:'I used to think Zaidy was slow. Now I knew he was careful.',ok:true},{label:'I had called the knots old-fashioned. Tonight they held.',ok:true},{label:'Before tonight, a sukkah was a box. Now it was something we held up together.',ok:true},{label:'The sukkah was green.',ok:false},{label:'When the rain stopped, we made kiddush in the sukkah.',ok:false}],
+      h:'Look for a before and a now: what he used to think, and what he sees now.'},
+    {t:'sort', q:'Sneaky endings! Yoni’s story: for weeks his Rebbi made him repeat the hard line, “Again.” At the seudah the microphone died, and Yoni said the hard line with no notes. Sort each ending.', bins:[{id:'G',label:'✅ Earned reflection'},{id:'C',label:'⚠️ Mistake: no change'},{id:'N',label:'⚠️ Mistake: out of nowhere'}],
+      items:[{label:'I thought Rebbi’s “Again” was a punishment. With the microphone dead, that line was already in me.',bin:'G'},{label:'Rebbi’s “Again” is a good way to practice.',bin:'C'},{label:'I used to skip the dishes. Now I help Ima every night.',bin:'N'},{label:'Rebbi is a very good teacher.',bin:'C'},{label:'I used to hate baseball. Now I love it.',bin:'N'},{label:'All those “Agains” had seemed a waste. With no notes, they were all I had.',bin:'G'}],
+      h:'First ask: did the story show it? If not, it is out of nowhere. If it did, is there a before and a now?'},
+    {t:'order', q:'Build an earned reflection: the moment, before, then now. Tap the sentences in order.', tiles:['The second loop Zaidy made me tie was still holding when the gust passed.','All week I had rolled my eyes at that loop.','Now I knew he had been building for the worst night, not the nice one.'], extra:['And I learned a lesson: never give up.'],
+      h:'First the moment. Then what he used to think. Then what he sees now. Leave out the moral.'},
+    {t:'spotall', q:'Gavriel’s story: the boys always teased him for noticing small things. He finds his lost camera because he noticed which seat he sat in. Tap every EARNED reflection.', cells:[{label:'They teased me for noticing small things. A small thing found my camera.',ok:true},{label:'I used to hide that I notice everything. Now I was glad I did.',ok:true},{label:'And I learned never to give up.',ok:false},{label:'I realized I should eat more vegetables.',ok:false}],
+      h:'Does it point back to how he found the camera?'},
+    {t:'write', q:'Your turn to write. Write a two- or three-sentence reflective ending for the story you planned. Point back to one real moment, then show what he used to think and what he sees now.', min:0, checks:['📍 I pointed back to one real moment in the story.','🔄 I showed a change: before and now.','🚫 Nothing out of nowhere, and no pasted-on moral.'], h:'Start with the moment. Then try “I used to think … Now I …”.'}
+  ],
+  check:[
+    {q:'Eli’s debate story: in the final he had to argue the side he disagreed with. His ending: “I used to think the other side was only there to beat. Arguing it myself, I found it had a point.” Which is it: earned reflection, no change, or out of nowhere?', o:['earned reflection','no change','out of nowhere'], h:'Does it point back to a moment in this story? Does it show a before and a now?'},
+    {q:'Akiva’s story: The Beacon’s printer broke the night before it was due, and the boys copied every page by hand. His ending: “We are a hard-working staff.” Which is it: earned reflection, no change, or out of nowhere?', o:['no change','earned reflection','out of nowhere'], h:'Is there a before and a now?'},
+    {t:'order', q:'Build an earned reflection for Akiva’s story: the moment, before, then now. Tap the sentences in order.', tiles:['By midnight, every page was copied in five different handwritings.','Until those five handwritings, I thought The Beacon was mine.','Now I knew it was ours.'], extra:['And I learned that hard work pays off.'], h:'First the moment. Then what he used to think. Then what he sees now. Leave out the moral.'}
+  ],
+  re:[
+    {how:'A new way: a seed and a tree. The reflection is the tree; the moment in the story is the seed. A tree with no seed is out of nowhere.', q:'A reflection with no moment in the story behind it is…', o:['out of nowhere','an earned reflection','no change']},
+    {how:'A simpler step: fill two blanks. “I used to think ___. Now I ___.” Then add the moment that changed it.', q:'Which words show the BEFORE?', o:['I used to think','Now I knew','The end']},
+    {how:'The skill underneath: Ending That Lands (Grade 6). A reflection shows what he now understands, and the ending ties back. Now the reflection must be earned by one real moment and show a before and a now inside the story, told in the past: “Now I knew.”', q:'Ending That Lands taught that a reflection shows…', o:['what he now understands','a new problem','the title']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L08.05':{hook:'Why can’t you stop reading the last pages of a good story?', big:'Plan a plot that builds tension: each event raises the stakes, a clock ticks, and the most tense moment comes near the end.',
+    intro:['The stakes are what the hero could lose.','Each event raises the stakes.','A ticking clock tells how much time is left.','The most tense moment comes near the end; nothing is solved before it.'],
+    ex:[{q:'The sukkah falls on Erev Sukkos.',steps:['Raise the stakes: the mats blow away.','Raise them again: rain, and Zaidy cannot tie.','Tick the clock: ten minutes to Yom Tov.'],a:'The peak, near the end: a gust lifts the frame.'},
+        {q:'Yoni’s lost speech.',steps:['Problem: the speech is missing.','Stakes rise: the printer is broken, the phone is dead.'],a:'The peak: the rav says, “Yoni, you’re next.”'}],
+    oops:{q:'Benny’s first plan.',wrong:'The sukkah falls. The mats blow away. Mr. Haddad lends us his sukkah. We decorate all afternoon.',right:'The sukkah falls. The mats blow away. Rain starts. Ten minutes before Yom Tov, a gust lifts the frame.',why:'The first plan is solved too early, so the tension leaks out.'},
+    idea:['A plot is a pot on the fire: it should boil near the end.'],
+    try:{q:'“The biggest gust hits first. Then a mat slips. Then a paper chain tears.”',o:['peaks too soon','builds tension','solved too early'],a:'peaks too soon',steps:['Where is the most tense moment?']}},
+  'WRIT.PARA.L08.08':{hook:'Cover the names. Can you still tell who is talking?', big:'Show who a character is by how he speaks: his word choice, how long he talks, and what he avoids saying.',
+    intro:['Word choice: the words only he would use.','Length: short and clipped, or long and winding.','What he avoids: the question he steps around.','Never name the trait; let the reader hear it.'],
+    ex:[{q:'Nachum is impatient.',steps:['Short, clipped words.','No time for details.'],a:'“Tape it. Fine. Let’s go.”'},
+        {q:'Zaidy is too proud to say he is tired.',steps:['Shimon asks, “Are you tired?”','Zaidy steps around it.'],a:'“Hand me the rope.”'}],
+    oops:{q:'Benny’s first try.',wrong:'Zaidy, who was very patient, said, “Tie it.”',right:'“Nu, slowly, Shimon’ke. Twice around, then pull,” Zaidy said.',why:'The first one tells the trait. The second lets you hear it.'},
+    idea:['A good voice is like a voice on the phone: you know who it is in three words.'],
+    try:{q:'“I am a careful man,” said Zaidy.',o:['tells the trait','shows by how he speaks','same voice'],a:'tells the trait',steps:['Does he name his own trait?']}},
+  'WRIT.PARA.L08.10':{hook:'Three sentences about a storm, or one that makes you feel the wind?', big:'Choose the one telling detail that captures the action or the feeling, and cut the general ones.',
+    intro:['A general detail could be in any story.','A telling detail could only be in this one.','It captures the action or the feeling.','Cut details that are buried or beside the point.'],
+    ex:[{q:'It was windy and cold and wet.',steps:['Could it be in any story? Yes: general.','What would a camera catch?'],a:'The wind peeled the mat out of my hands and flung it over the fence.'},
+        {q:'I was very nervous.',steps:['A feeling word, not a detail.','Find the one thing he does.'],a:'I checked the oven clock three times in one minute.'}],
+    oops:{q:'Benny’s gust scene.',wrong:'It was windy and cold and wet and loud, and the rope burned my palm.',right:'The rope burned a red line across my palm.',why:'The telling detail was buried. Cut the general ones.'},
+    idea:['One telling detail is the one photo that goes in the album.'],
+    try:{q:'“As the frame lifted, I saw the fence was painted white.”',o:['beside the point','telling detail','general detail'],a:'beside the point',steps:['Does it show this action or this feeling?']}},
+  'WRIT.PARA.L08.11':{hook:'What does the hero know at the end that he did not know at the start?', big:'End a story by reflecting on what the moment meant: point back to a real moment, show a change from before to now, and never reflect on something from nowhere.',
+    intro:['Point back to one real moment in the story.','Show a change: what he used to think, what he sees now.','No change: no before, just how things are.','A reflection with no moment behind it is out of nowhere.'],
+    ex:[{q:'The end of Benny’s sukkah story.',steps:['The moment: the second loop held in the gust.','Before: I rolled my eyes at that loop.','Now: what I understand.'],a:'Now I knew he had been building for the worst night, not the nice one.'},
+        {q:'“Zaidy is a good builder.”',steps:['Is there a before? No: no change.','Add what he used to think, and the moment that changed it.'],a:'I had called the knots old-fashioned. Tonight they held.'}],
+    oops:{q:'Benny’s first ending.',wrong:'Zaidy is a very good builder.',right:'All week I had rolled my eyes at Zaidy’s double knots. Tonight one held the whole sukkah.',why:'The first has no change. The second is earned by the story.'},
+    idea:['The moment is the seed; the reflection is the tree.'],
+    try:{q:'A story about the knots ends: “I used to tease my sister. Now I am nicer to her.”',o:['out of nowhere','earned reflection','no change'],a:'out of nowhere',steps:['Did the story show anything about his sister?']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L08.05':{s:'Name the problem and the stakes: what could he lose?\nAfter each event, ask: what could he lose now? It must be more.\nAdd a ticking clock: how much time is left.\nPut the most tense moment near the end. Solve nothing before it.'},
+  'WRIT.PARA.L08.08':{s:'Decide the trait, but never write it.\nTurn the dials: word choice and length.\nLet him step around one hard question.\nCover the names: can you still tell who is talking?'},
+  'WRIT.PARA.L08.10':{s:'List three details for the moment.\nCross out any that could be in someone else’s story.\nKeep the one that shows the action or the feeling.\nCut details that are buried or beside the point.'},
+  'WRIT.PARA.L08.11':{s:'Find the one moment that changed your character.\nWrite what he used to think: "I used to think …"\nWrite what he sees now, because of that moment.\nCheck: is there a before? If not, there is no change.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L08.05':{ band:'M68', pic:'🌬️', today:'Plan a plot that keeps the reader on edge', why:'Readers keep turning pages when the stakes keep rising.',
+    ready:[{q:'On a story mountain, each rising event makes the problem…', o:['harder','easier','shorter','funnier'], a:'harder'}],
+    bridge:'WRIT.ESSAY.L06.05', bridgeName:'Story Mountain',
+    watch:{ q:'How does Benny plan his story for The Beacon’s fiction page?', m:{type:'scene', e:'🌬️', t:'Benny is planning a Sukkos story about a sukkah built in a storm.'}, steps:[
+      {t:'Problem: on Erev Sukkos, the wind knocks Shimon’s sukkah flat.'},
+      {t:'Stakes up: the s’chach mats blow over the fence.'},
+      {t:'Stakes up again: rain, and Zaidy’s hands are too cold to tie.'},
+      {t:'Ticking clock: ten minutes to Yom Tov. A gust lifts the frame.'},
+      {t:'Nothing is solved before that late peak. Then the story ends soon after.'},
+      {t:'Teach it back: tell your chavrusa the two ways tension leaks out.'}], a:'Each event raises the stakes, a clock ticks, and the most tense moment comes near the end.' },
+    oops:{ q:'Benny’s first plan.', wrong:'The sukkah falls. The mats blow away. Mr. Haddad lends us his sukkah. We decorate all afternoon.', right:'The sukkah falls. The mats blow away. Rain starts. Ten minutes before Yom Tov, a gust lifts the frame.', why:'Solved too early: the tension leaks out halfway.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can plan a plot that builds tension.',
+    board:{ one:'Each event raises the stakes (what the hero could lose), a ticking clock counts down, and the most tense moment comes near the end.', activity:'Chavrusas lay out event cards, ask "What could he lose now?" after each one, and move the peak card near the end.', mistakes:['Solved too early: the problem is fixed halfway','Peaks too soon: the biggest moment comes first','Busy events that leave the stakes the same'] },
+    do:[
+      {type:'sort', q:'Benny’s next events.', bins:['Raises the stakes','Mistake: same stakes'], cards:[['The mats blow over the fence.',0],['His sister asks for a snack.',1],['A wall panel cracks.',0],['Zaidy’s coat is gray.',1]], mis:true,
+        say:'Does each event raise the stakes? Sort it.', how:'Ask: what could Shimon lose now?'},
+      {type:'tiles', q:'Put the plan in order.', w:['Problem','Stakes up','Peak'], extra:['Side trip'],
+        say:'Build the plan so the tension climbs.', how:'Start with the problem. Save the peak for last.'}],
+    your:[
+      {type:'match', pairs:[['the stakes','what he could lose'],['a ticking clock','how much time is left'],['the peak','the most tense moment']],
+        say:'Match each word to its job in a plot.', how:'What does each word name?'},
+      {type:'sort', bins:['Builds tension','Solved too early','Peaks too soon'], cards:[['Fall, mats fly, rain, late gust.',0],['Fall, mats fly, neighbor fixes it.',1],['Huge gust, then a small slip.',2],['Lost speech, dead phone, “Next!”',0],['Lost speech, dead phone, then found.',1]],
+        say:'Which plan is each one? Sort it.', how:'Where is the peak? Is the problem fixed too soon?'},
+      {type:'tiles', q:'Add a ticking clock.', w:['Ten minutes','to Yom Tov,','the frame','lifted.'],
+        say:'Build a line that shows time running out.', how:'Time left first. Then what happens.'},
+      {type:'match', pairs:[['The mats blow away.','no roof on the sukkah'],['A wall cracks.','a side could fall'],['Zaidy cannot tie.','the walls may not get tied']],
+        say:'Match each event to what is now at stake.', how:'What could Shimon lose after each one?'},
+      {type:'sort', q:'Yoni’s lost speech.', bins:['Raises the stakes','Same stakes'], cards:[['The printer is broken.',0],['His tie is blue.',1],['Abba’s phone is dead.',0],['The cake is chocolate.',1],['The rav calls his name.',0]],
+        say:'Test each event in Yoni’s story.', how:'Does it make losing the speech worse?'}] },
+
+  'WRIT.PARA.L08.08':{ band:'M68', pic:'🗣️', today:'Show who a character is by how he talks', why:'Readers believe what they hear more than what they are told.',
+    ready:[{q:'Dialogue + Action mixes what a character says with…', o:['what he does','what he ate','the title','the date'], a:'what he does'}],
+    bridge:'WRIT.PARA.L06.04', bridgeName:'Dialogue + Action',
+    watch:{ q:'How does Benny show who Zaidy and Nachum are?', m:{type:'scene', e:'🗣️', t:'Benny reads his sukkah story aloud to the newsroom.'}, steps:[
+      {t:'Nachum: “Tape it. Fine. Let’s go.” Short and clipped.'},
+      {t:'Zaidy: “Nu, slowly, Shimon’ke.” His own word choice.'},
+      {t:'Shimon asks, “Are you tired, Zaidy?”'},
+      {t:'Zaidy: “Hand me the rope.” He avoids the question.'},
+      {t:'Akiva covers the names. He can still tell who is talking.'},
+      {t:'Teach it back: tell your chavrusa the three dials of a voice.'}], a:'Word choice, length and what he avoids show who each character is.' },
+    oops:{ q:'Benny’s first draft.', wrong:'Nachum, who was impatient, said, “Hurry.”', right:'“Tape it. Fine. Let’s go,” Nachum said.', why:'The first tells the trait. The second lets you hear it.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can show a character by how he speaks.',
+    board:{ one:'Show who he is by how he speaks: word choice, length, and what he avoids saying. Never name the trait.', activity:'Chavrusas write two lines for two characters, cover the names, and see if the partner can tell who said each one.', mistakes:['Telling the trait: "Zaidy, who was patient, said …"','Everyone talks in the same voice','A character announcing himself: "I am a careful man"'] },
+    do:[
+      {type:'match', pairs:[['word choice','Zaidy’s “Nu” and “Shimon’ke”'],['length','“Tape. Fine. Go.” Three words.'],['what he avoids','asked if tired, asks for rope']],
+        say:'Match each dial to a line from the story.', how:'Which dial is turned in each line?'},
+      {type:'sort', q:'Benny’s lines.', bins:['Shows by how he speaks','Mistake: tells the trait'], cards:[['“Twice around. Pull,” Zaidy said.',0],['Zaidy was a patient man.',1],['“I am impatient,” Nachum said.',1],['“Tape it. Let’s go,” Nachum said.',0]], mis:true,
+        say:'Hear it, or told it? Sort each line.', how:'Is the trait named? Then it is a mistake.'}],
+    your:[
+      {type:'tiles', q:'Nachum’s clipped line.', w:['“Forget','the knots.','Tape it.”'], extra:['impatient'],
+        say:'Build Nachum’s line, short and clipped.', how:'Open the quote first. Keep it short.'},
+      {type:'sort', bins:['Zaidy','Nachum'], cards:[['“Nu, slowly. A rushed knot fails.”',0],['“Tape works. Faster, Shimon.”',1],['“In my day, we built with less.”',0],['“Done yet? Let’s move.”',1],['“Come, I’ll show you once more.”',0]],
+        say:'Who is talking? Sort each line.', how:'Listen for word choice and length.'},
+      {type:'match', pairs:[['“Are you tired, Zaidy?”','“Tired? Pass me the rope.”'],['“Should I call Abba?”','“Your Abba has a job.”'],['“Will the wall hold?”','“The wall? Mind your fingers.”']],
+        say:'Match each question to the answer that steps around it.', how:'Find the answer that repeats his word, then dodges it.'},
+      {type:'tiles', q:'Zaidy dodges the question.', w:['Asked if he','was tired,','Zaidy asked','for rope.'],
+        say:'Build the line where Zaidy dodges the question.', how:'Start with the question. End with what he asked for.'},
+      {type:'sort', q:'Yoni’s Rebbi: strict but kind.', bins:['Shows it','Mistake: tells it'], cards:[['“Again. Slower.”',0],['Rebbi was strict but kind.',1],['“Good. Now louder.”',0],['“I am strict but kind,” he said.',1]],
+        say:'Test each line about Yoni’s Rebbi.', how:'Do you hear the trait, or is it named?'}] },
+
+  'WRIT.PARA.L08.10':{ band:'M68', pic:'🎯', today:'Choose the one detail that tells the moment', why:'One sharp detail lets the reader feel the scene.',
+    ready:[{q:'Picture Words swaps a vague word for…', o:['an exact one','a longer one','a feeling word','a title'], a:'an exact one'}],
+    bridge:'WRIT.PARA.L06.07', bridgeName:'Picture Words',
+    watch:{ q:'How does Benny sharpen the biggest gust?', m:{type:'scene', e:'🎯', t:'Benny is revising the most tense moment of his sukkah story.'}, steps:[
+      {t:'First draft: “It was windy, cold, wet and loud.” Four general details.'},
+      {t:'Test: could each one be in someone else’s story? Yes. Cut them.'},
+      {t:'The action: “The pole jumped in my hands like a fish.”'},
+      {t:'The feeling: “The rope burned a red line across my palm.”'},
+      {t:'Cut “Zaidy’s coat had four brown buttons.” Beside the point.'},
+      {t:'Teach it back: tell your chavrusa the test for a general detail.'}], a:'The pole jumped in my hands like a fish, and the rope burned a red line across my palm.' },
+    oops:{ q:'Benny’s gust scene.', wrong:'It was windy and cold and wet and loud, and the pole shook.', right:'The pole jumped in my hands like a fish.', why:'The telling detail was buried. Cut the general ones.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can choose the one detail that captures the moment.',
+    board:{ one:'One telling detail (only this story, this moment) beats three general ones. Cut details that are buried or beside the point.', activity:'Chavrusas list three details for one moment, cross out any that could be in another story, and read aloud the one that is left.', mistakes:['General details: windy, cold, wet','A telling detail buried under general ones','An exact detail that is beside the point'] },
+    do:[
+      {type:'sort', q:'Benny’s gust scene.', bins:['Telling detail','Mistake: general'], cards:[['The pole jumped like a fish.',0],['It was very windy.',1],['The rope burned my palm.',0],['Everything was wet.',1]], mis:true,
+        say:'Telling or general? Sort each detail.', how:'Could it be in someone else’s story?'},
+      {type:'tiles', q:'One telling detail.', w:['The mat','flew over','the fence.'], extra:['windy'],
+        say:'Build the detail that shows the action.', how:'What it was, what it did, then where.'}],
+    your:[
+      {type:'match', pairs:[['It was very windy.','The mat flew over the fence.'],['I was nervous.','I checked the clock three times.'],['Zaidy was tired.','Zaidy sat on the wet bench.']],
+        say:'Match each general line to its telling detail.', how:'Which detail shows the same thing?'},
+      {type:'sort', bins:['One telling detail','Buried','Beside the point'], cards:[['The rope burned my palm.',0],['Windy, cold, wet; the rope burned.',1],['In the gust, I saw a white fence.',2],['My fingers slipped off the knot.',0],['Scared, worried; my fingers slipped.',1]],
+        say:'Sort each sentence Benny tried.', how:'Buried in general words? About something else?'},
+      {type:'tiles', q:'Show the feeling.', w:['I checked','the oven','clock three','times.'],
+        say:'Build a detail that shows Shimon is worried.', how:'What does he do, again and again?'},
+      {type:'match', pairs:[['a general detail','It was a stormy day.'],['a telling detail','The mat flew over the fence.'],['beside the point','Zaidy’s coat had four buttons.']],
+        say:'Match each name to an example.', how:'Any story? Only this one? Or about something else?'},
+      {type:'sort', q:'Yoni’s speech scene.', bins:['Telling detail','General detail'], cards:[['My knees knocked the shtender.',0],['It was a big night.',1],['The microphone squealed.',0],['I was very nervous.',1]],
+        say:'Test each detail in Yoni’s story.', how:'Could it be in any story?'}] },
+
+  'WRIT.PARA.L08.11':{ band:'M68', pic:'🌱', today:'End with a reflection the story has earned', why:'An earned reflection stays with the reader after the last line.',
+    ready:[{q:'Ending That Lands taught that a reflection shows…', o:['what he now understands','a new problem','the title','the date'], a:'what he now understands'}],
+    bridge:'WRIT.PARA.L07.05', bridgeName:'Ending That Lands',
+    watch:{ q:'How does Benny end his sukkah story?', m:{type:'scene', e:'🌱', t:'Benny is writing his last lines before The Beacon’s fiction page goes to print.'}, steps:[
+      {t:'Cut: “Zaidy is a good builder.” No change.'},
+      {t:'The moment: the second loop Zaidy made him tie held in the gust.'},
+      {t:'Before: “All week I had rolled my eyes at that loop.”'},
+      {t:'Now: “He was building for the worst night, not the nice one.”'},
+      {t:'The reader saw the knot hold, so he believes the change.'},
+      {t:'Teach it back: tell your chavrusa what makes a reflection earned.'}], a:'All week I had rolled my eyes at Zaidy’s double knots. Tonight one held the whole sukkah. He had been building for the worst night, not the nice one.' },
+    oops:{ q:'Benny’s first ending.', wrong:'Zaidy is a very good builder.', right:'All week I had rolled my eyes at Zaidy’s double knots. Tonight one held.', why:'No before, no change. Earn it with this story’s moment.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can end a story with an earned reflection.',
+    board:{ one:'An earned reflection points back to one real moment and shows a change: what he used to think, and what he understands now. Never out of nowhere.', activity:'Chavrusas trade story endings, circle the moment each reflection points to, and rewrite any line with no change as a before and a now.', mistakes:['No change: no before, just "Zaidy is a good builder"','A reflection out of nowhere, about something the story never showed','A pasted-on moral from Grade 6: "I learned never to give up"'] },
+    do:[
+      {type:'sort', q:'Benny’s endings.', bins:['Earned reflection','Mistake: out of nowhere'], cards:[['I mocked his knots. One held us.',0],['I should do homework faster.',1],['I want to learn to draw.',1],['I wanted tape. His knot saved us.',0]], mis:true,
+        say:'Earned, or out of nowhere? Sort each ending.', how:'Did the story show it?'},
+      {type:'tiles', q:'Point back to the moment.', w:['The knot','I mocked','held us.'], extra:['never quit'],
+        say:'Build the line that points back to the moment.', how:'Start with the knot. Then what he once did, then what it did.'}],
+    your:[
+      {type:'match', pairs:[['the moment','The second loop held.'],['before','I used to mock his knots.'],['now','Now I knew he built for storms.']],
+        say:'Match each part of the ending.', how:'What happened? What did he think? What does he see now?'},
+      {type:'sort', q:'Yoni’s bar mitzvah story.', bins:['Earned reflection','No change','Out of nowhere'], cards:[['I hated “Again.” Then it saved me.',0],['Rebbi is a very good teacher.',1],['I used to skip dishes. Now I help.',2],['My speech was very good.',1],['I hated baseball. Now I love it.',2]],
+        say:'Sort each ending Yoni tried.', how:'In the story? Then: is there a before?'},
+      {type:'tiles', q:'Show the change.', w:['I thought','Zaidy slow;','tonight, I','knew better.'],
+        say:'Build a line that shows a before and a now.', how:'What he thought first. Then what he knows now.'},
+      {type:'match', pairs:[['earned reflection','It points back to the knot.'],['no change','No before, just how things are.'],['out of nowhere','The story never showed it.']],
+        say:'Match each ending to what is true of it.', how:'Ask: where did this ending come from?'},
+      {type:'sort', q:'Gavriel’s camera story.', bins:['Earned reflection','Mistake'], cards:[['They teased me. Noticing saved me.',0],['I am good at noticing things.',1],['I hid what I notice. Not anymore.',0],['I should eat more vegetables.',1]],
+        say:'Test each ending of Gavriel’s story.', how:'Does it grow out of finding the camera?'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
