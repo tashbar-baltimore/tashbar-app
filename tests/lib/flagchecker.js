@@ -19,13 +19,15 @@ module.exports = function () {
   if (L.open !== 2 || !f1 || f1.open !== 2 || f1.staff !== 1 || f1.answers !== 2 || f1.wrong !== 1 || f1.boys !== 2) fails.push('flag checker list: wrong counts ' + txt.slice(0, 300));
   else if (!f1.notes.some(n => /^boy: \[name\] and \[name\] think the key says 8, call \[number\]$/.test(n))) fails.push('flag checker list: boy note missing or names not blanked: ' + JSON.stringify(f1.notes));
   if (/Zevulun|Ploni|Madeup|"B1"|"B2"|"S1"/i.test(txt)) fails.push('flag checker list leaks a name or an id');
-  const m = J(`rpBotMark_([{skill:'SK1',item:'What is 3+4?',verdict:'fixed',why:'key said 8; now 7'},{skill:'SK2',item:'Spell cat',verdict:'delete'}],${L.upTo - 1})`);
-  if (m.changed !== 0) fails.push('flag checker mark: changed reports newer than the list (' + m.changed + ')');
+  const wait = Date.now() + 5; while (Date.now() < wait) {}   /* a report made AFTER the list was read */
+  J(`msReport('b2',{skill:'SK1',phase:'practice',item:'What is 3+4?',reason:'wrong'})`);
   const m2 = J(`rpBotMark_([{skill:'SK1',item:'What is 3+4?',verdict:'fixed',why:'key said 8; now 7'},{skill:'SK2',item:'Spell cat',verdict:'delete'}],${L.upTo})`);
-  const L2 = J('rpBotList_()');
-  if (m2.changed !== 2 || L2.open !== 1 || L2.flags[0].skill !== 'SK2') fails.push('flag checker mark: expected 2 changed and only SK2 open, got ' + JSON.stringify(m2) + ' ' + JSON.stringify(L2.flags.map(f => f.skill)));
+  const L2 = J('rpBotList_()'), late = (L2.flags || []).find(f => f.skill === 'SK1');
+  if (m2.changed !== 2) fails.push('flag checker mark: expected the 2 listed SK1 reports changed, got ' + JSON.stringify(m2));
+  if (!late || late.open !== 1) fails.push('flag checker mark: a report made after the list must stay open for the next hour: ' + JSON.stringify(late));
+  if (!(L2.flags || []).some(f => f.skill === 'SK2')) fails.push('flag checker mark: an unknown verdict must change nothing (SK2 should stay open)');
   const st = J(`(function(){ var x=msReport('b1',{skill:'SK1',phase:'practice',item:'What is 3+4?',reason:'wrong'}); return rpBotList_().flags.filter(function(f){return f.skill==='SK1'})[0]; })()`);
-  if (!st || st.before.join() !== 'fixed: key said 8; now 7') fails.push('flag checker: a new report on a fixed question should show the earlier decision: ' + JSON.stringify(st && st.before));
+  if (!st || st.before.join() !== 'fixed: key said 8; now 7' || st.open !== 2) fails.push('flag checker: a new report on a fixed question should show the earlier decision: ' + JSON.stringify(st && st.before));
   if (!fails.length) oks.push('flag checker: boys can write what is wrong; the hourly list blanks names and has no ids; marks change only reports up to the list time');
   return { fails, oks };
 };
