@@ -19,5 +19,9 @@ CORE_SKILLS.W48 = [
   ["WRIT.PARA.L08.01", "Logical Steps", "Show the reasoning from reason to conclusion and spot a gap", { after: "WRIT.ESSAY.L08.02", std: "W.7.1b", file: "CoreDataW484", min: 9 }],
   ["WRIT.PARA.L08.02", "Check the Source", "Check a source: does the writer know, is it up to date, does it gain", { after: "WRIT.PARA.L08.01", std: "W.7.8", file: "CoreDataW484", min: 8 }],
   ["WRIT.PARA.L08.03", "Counter Glue", "Bring in the strongest other side fairly, then answer it", { after: "WRIT.PARA.L08.02", std: "W.7.1c", file: "CoreDataW484", min: 8 }],
-  ["WRIT.PARA.L08.04", "Qualify Your Claim", "Make the claim exactly as big as the evidence", { after: "WRIT.PARA.L08.03", std: "W.7.1b", file: "CoreDataW484", min: 8 }]
+  ["WRIT.PARA.L08.04", "Qualify Your Claim", "Make the claim exactly as big as the evidence", { after: "WRIT.PARA.L08.03", std: "W.7.1b", file: "CoreDataW484", min: 8 }],
+  ["WRIT.ESSAY.L09.02", "Claim vs Counterclaim", "Tell your claim from the other side, and state the other side fairly at its strongest", { before: "WRIT.RES.L09.01", std: "W.8.1a", file: "CoreDataW485", min: 9 }],
+  ["WRIT.ESSAY.L09.03", "Rebuttal", "Answer a counterclaim: show it is mistaken, show it matters less, or concede and outweigh", { after: "WRIT.ESSAY.L09.02", std: "W.8.1a", file: "CoreDataW485", min: 9 }],
+  ["WRIT.PARA.L09.01", "Spot the Weak Link", "Name the weak link in an argument: overgeneralizing, false cause, attacking the person, either-or", { after: "WRIT.ESSAY.L09.03", std: "W.8.1b", file: "CoreDataW485", min: 9 }],
+  ["WRIT.PARA.L09.02", "Evidence Ladder", "Rank evidence from a single story up to several careful sources that agree", { after: "WRIT.PARA.L09.01", std: "W.8.1b", file: "CoreDataW485", min: 8 }]
 ];
