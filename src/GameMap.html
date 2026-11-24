@@ -575,13 +575,13 @@ function subjectsHTML(ws){ const cur=GM.world;
    sign-in: his name, one line on today's work, and SIX equal tiles. The top half of each tile is one big icon. Only his work glows.
    Every door leads to a page that was already here; nothing new is paid or saved. Plan: docs/HOME-SIMPLE-PROMPT.md */
 function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\s+/)[0]||'', h=new Date().getHours(), hi=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
- const live=P.rounds.findIndex(r=>!r.won), lw=live>=0?P.rounds[live].w:null;
+ const live=P.rounds.findIndex(r=>!r.won&&r.w), lw=live>=0?P.rounds[live].w:null;
  const dots=P.rounds.length?`<span class="dots" aria-hidden="true">${P.rounds.map(r=>`<i class="${r.won?'on':''}"></i>`).join('')}</span>`:'';
- const line=!ws.length?'Your map is almost ready.':P.rounds.length?(P.open?'All your work is done today! ✓':`${P.done} of ${ROUNDS} done today`):'Every world is cleared!';
+ const line=!ws.length?'Your map is almost ready.':P.rounds.length?(P.open?'All your work is done today! ✓':`${P.done} of ${P.total||ROUNDS} done today`):'Every world is cleared!';
  const tile=(cls,ic,name,sub,attr,badge)=>`<button type="button" class="gm-ht ${cls}" ${attr}><span class="top" aria-hidden="true"><span class="ic">${ic}</span></span>${badge?`<span class="bdg">${badge}</span>`:''}<span class="bot"><b>${name}</b><small>${sub}</small></span></button>`;
  let tiles='';
  if(ws.length){
-  const wsub=lw?`Round ${live+1}: ${esc(lw.name)} · ${esc(nm(lw.now)[0])}`:P.open?'All done! Play more if you like.':'Every world is cleared!';
+  const wsub=lw?`${P.list?'Next':'Round '+(live+1)}: ${esc(lw.name)} · ${esc(nm(lw.now)[0])}`:P.open?'All done! Play more if you like.':P.list?'Open to see your list':'Every world is cleared!';
   tiles+=tile('work'+(lw?' now':''),'✏️','My work',wsub,'data-gmnav="missions"',lw?'▶ DO THIS NOW':P.open?'✓ DONE':'');
   const p=pick(ws); tiles+=tile('map','🗺️','My map',p?`${esc(p.name)} · Level ${p.level}`:'Your levels','data-gmnav="map"');
  }
@@ -704,7 +704,8 @@ function navHTMLOld(k2,left){ const items=k2?[['map','🗺️','Map'],['missions
 const ROUNDS=3;
 function todayDone(){ const t=today(), sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&dayOf(sk[id].at)===t).sort((a,b)=>sk[a].at-sk[b].at); }
 function weekCounts(){ const sk=(A.st&&A.st.skills)||{}, now=Date.now(), d=864e5; let w=0,p=0; Object.keys(sk).forEach(id=>{ const x=sk[id]; if(!x||!x.m) return; const at=Number(x.at)||0; if(at>=now-7*d) w++; else if(at>=now-14*d) p++; }); return {w,p}; }
-function plan(ws){ const live=ws.filter(w=>w.now), done=todayDone(), n=Math.min(ROUNDS,done.length), out=[];
+function plan(ws){ try{ const dp=typeof window.tlDailyPlan==='function'?window.tlDailyPlan(ws):null; if(dp) return dp; }catch(e){ console.error('DailyPlan',e); } /* TODAY'S LIST (Core Growth job D, DailyPlanUI.html): his list of material to cover; null = the 3 rounds below */
+ const live=ws.filter(w=>w.now), done=todayDone(), n=Math.min(ROUNDS,done.length), out=[];
  if(!live.length) return {rounds:[],done:n,open:true,left:0};
  const fresh=live.filter(w=>!doneToday(w)), order=fresh.concat(live.filter(w=>fresh.indexOf(w)<0));
  for(let i=0;i<ROUNDS;i++){ if(i<n){ out.push({won:true,id:done[i]}); continue; } out.push({w:order[(i-n)%order.length]}); }
@@ -715,17 +716,19 @@ function missionsHTML(ws){ const P=plan(ws), wk=weekCounts(), pk=pick(ws), picks
  const toBoss=pk&&pk.now?pk.ids.length-pk.ids.indexOf(pk.now)-1:0;
  let rows='', live=null;
  P.rounds.forEach((r,i)=>{ const num=i+1;
-  if(r.won){ const n=nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐','']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">ROUND ${num} · ${esc((W[1]||'').toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">CLEARED<br>⭐⭐⭐</div></div>`; return; }
+  if(r.won){ const lc=/^LEVELCHECK\./.test(String(r.id)), n=lc?['Level check passed: you already knew it','']:nm(r.id), W=WORLDS[subjOfId(r.id)]||['⭐',r.name||'']; rows+=`<div class="gm-rd won"><div class="n">✓</div><div class="t">${P.list?'':'ROUND '+num+' · '}${esc(String(P.list&&r.name?r.name:(W[1]||'')).toUpperCase())}<small>${esc(n[0])}</small></div><div class="p">${P.list?'DONE':'CLEARED'}<br>⭐⭐⭐</div></div>`; return; }
+  if(!r.w){ rows+=`<div class="gm-rd"><div class="n">${num}</div><div class="t">${esc(String(r.name||'').toUpperCase())}<small>Nothing left at your level today. Tell your rebbe!</small></div><div class="p">ASK</div></div>`; return; }
   const w=r.w, n=nm(w.now), isLive=!live; if(isLive) live=w;
-  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="Round ${num}: ${esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">ROUND ${num} · ${esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?'YOUR<br>TURN!':'NEXT'}</div></button>`; });
+  rows+=`<button type="button" class="gm-rd ${isLive?'live':''}" data-gm="play" data-id="${esc(w.now)}" aria-label="${P.list?esc(r.name||w.name):'Round '+num+': '+esc(w.name)}, ${esc(n[0])}"><div class="n">${isLive?num:w.icon}</div><div class="t">${P.list?esc(String(r.name||w.name).toUpperCase()):'ROUND '+num+' · '+esc(w.name.toUpperCase())}<small>${esc(n[0])}${n[1]&&!/ Level \d+$/.test(n[1])?' · '+esc(n[1]):''}</small></div><div class="p">${isLive?'YOUR<br>TURN!':'NEXT'}</div></button>`; });
  picks.forEach(p=>{ const n=nm(p.id)[0]!==p.id?nm(p.id)[0]:(p.name||p.id); rows+=`<button type="button" class="gm-rd rebbe" data-gm="play" data-id="${esc(p.id)}"><div class="n">📌</div><div class="t">FROM ${esc(String(p.by||'YOUR REBBE').toUpperCase())}<small>${esc(n)}</small></div><div class="p">PICKED<br>FOR YOU</div></button>`; });
- rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
+ rows+=P.rounds.length?`<button type="button" class="gm-rd final${P.open?' open':''}" ${P.open?'data-gmnav="games"':''}><div class="n">${P.open?'🎮':'🏆'}</div><div class="t">BONUS ROUND<small>${P.open?'The Arcade is OPEN! Go play!':P.list?'Finish your list → 🎮 Arcade opens + daily bonus ✓':'Clear all '+ROUNDS+' → 🎮 Arcade opens + daily goal ✓'}</small></div><div class="p">${P.open?'OPEN':'🔒'}</div></button>`:'';
  const ch=A.st&&A.st.chest, chest=ch&&ch.need?`<div class="gm-chest">🎁 Treasure chest: daily goal on <b>${Math.min(ch.days||0,ch.need)} of ${ch.need}</b> days this week${ch.paid?' · opened ✓':''}</div>`:'';
- const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ Play round ${P.done+1}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
- const head=P.open?`<div class="s">MY WORK TODAY</div><h1>All done! ✓</h1><small>All ${ROUNDS} rounds cleared today. Every extra level still counts!</small>`:`<div class="s">MY WORK TODAY</div><h1>${P.rounds.length?P.done+' of '+ROUNDS+' done':'All clear!'}</h1><small>${P.rounds.length?'Round '+(P.done+1)+' is next. Tap Play.':'No rounds today: every world is cleared!'}</small>`;
+ const cta=live?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(live.now)}">▶ ${P.list?'Next':'Play round '+(P.done+1)}</button></div>`:(pk&&pk.now?`<div class="gm-cta"><button type="button" class="gm-play" data-gm="play" data-id="${esc(pk.now)}">▶ Keep climbing</button></div>`:'');
+ const TOT=P.total||ROUNDS, KICK=P.list?"TODAY'S LIST":'MY WORK TODAY';
+ const head=P.open?`<div class="s">${KICK}</div><h1>All done! ✓</h1><small>${P.list?(P.rounds.length?'Your whole list is done today. Every extra level still counts!':'Nothing on your list today: every world is cleared!'):'All '+ROUNDS+' rounds cleared today. Every extra level still counts!'}</small>`:`<div class="s">${KICK}</div><h1>${P.rounds.length?P.done+' of '+TOT+' done':'All clear!'}</h1><small>${P.rounds.length?(P.list?(P.left?P.left+' more to go. Tap Next.':'Saving your work…'):'Round '+(P.done+1)+' is next. Tap Play.'):'No rounds today: every world is cleared!'}</small>`;
  return `<div class="gm-marq">${head}</div><div class="gm-rounds">${rows}</div>${chest}${cta}`; }
 function arcadeHTML(ws){ const P=plan(ws);
- return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>Clear ${P.left} more round${P.left===1?'':'s'} of your work to open the Arcade!</p></div>
+ return `<div class="gm-lock"><div class="ic">🔒</div><h1>Arcade locked</h1><p>${P.list?`Finish ${P.left} more thing${P.left===1?'':'s'} on today's list to open the Arcade!`:`Clear ${P.left} more round${P.left===1?'':'s'} of your work to open the Arcade!`}</p></div>
  <div class="gm-games"><div><b>⚔️</b>SHOWDOWN</div><div><b>🕵️</b>DETECTIVE</div><div><b>📒</b>JOKE BOOK</div></div>
  <div class="gm-cta"><button type="button" class="gm-play" data-gmnav="missions">▶ Go to my work</button></div>`; }
 /* ===== MY GROWTH / TROPHIES (HoS 2026-11-20: "steps climbed this week (vs last week), streaks, units finished, badges, you're stronger
@@ -874,16 +877,16 @@ function celebrate(o){ try{ const old=document.getElementById('gm-cel'); if(old)
   d.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closest('[data-cel]'); if(!b) return; d.remove(); const f=b.dataset.cel==='go'?(o.go&&o.go[1]):(o.alt&&o.alt[1]); try{ f&&f(); }catch(x){} });
   setTimeout(()=>{ const b=d.querySelector('[data-cel=go]'); try{ b&&b.focus({preventScroll:true}); }catch(e){} },50); }catch(e){ console.error('GameMap',e); } }
 GM.celebrate=celebrate;
-function dailyLoot(ws,wk){ const L=[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]];
+function dailyLoot(ws,wk){ const P=plan(ws), T=P.total||ROUNDS; const L=P.list?[["📋 Today's list",T+' of '+T+' done'],['🎮 Arcade','OPEN!'],['✅ Daily bonus','Whole list done'],['📈 Steps this week',String(wk.w)]]:[['🎯 Rounds cleared',ROUNDS+' of '+ROUNDS],['🎮 Arcade','OPEN!'],['✅ Daily goal','3 lessons today'],['📈 Steps this week',String(wk.w)]];
  try{ const d=todayDone(), last=d[d.length-1]; if(last){ const w=ws.find(x=>x.ids.indexOf(last)>=0); if(w&&w.ids.indexOf(last)===w.ids.length-1&&w.ids.every(mast)) L.splice(1,0,['🏰 Boss beaten',w.unitName]); const n=nm(last); L.splice(1,0,['🧠 Last level',n[0]]); } }catch(e){}
  return L; }
 function dayKey(){ return 'gm-day-'+(A.st&&A.st.id)+'-'+today(); }
 function seen(k){ try{ return localStorage.getItem(k)==='1'; }catch(e){ return !!GM['_'+k]; } }
 function mark(k){ try{ localStorage.setItem(k,'1'); }catch(e){} GM['_'+k]=1; }
-function checkDaily(ws){ const P=plan(ws); if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=P.done; GM.prevSid=A.st.id; return false; }
- if(P.rounds.length&&GM.prevDone<ROUNDS&&P.done>=ROUNDS&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=P.done; const wk=weekCounts();
-  setTimeout(()=>celebrate({kicker:'THE TASHBAR CHALLENGE',title:'Challenge<br>complete!',icon:'🏆',stars:true,loot:dailyLoot(ws,wk),go:['🎮 Arcade',()=>{ GM.tab='games'; GM.sig=''; sync(); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
- GM.prevDone=P.done; return false; }
+function checkDaily(ws){ const P=plan(ws), PD=P.list&&!P.open?Math.min(P.done,(P.total||ROUNDS)-1):P.done; /* today's list: the party waits for the server */ if(GM.prevDone===undefined||GM.prevSid!==A.st.id){ GM.prevDone=PD; GM.prevSid=A.st.id; return false; }
+ const TOT=P.total||ROUNDS; if(P.rounds.length&&GM.prevDone<TOT&&PD>=TOT&&!seen(dayKey())){ mark(dayKey()); GM.prevDone=PD; const wk=weekCounts();
+  setTimeout(()=>celebrate({kicker:P.list?"TODAY'S LIST":'THE TASHBAR CHALLENGE',title:P.list?'All done<br>today!':'Challenge<br>complete!',icon:'🏆',stars:true,loot:dailyLoot(ws,wk),go:['🎮 Arcade',()=>{ GM.tab='games'; GM.sig=''; sync(); }],alt:['🗺️ Map',()=>{ GM.tab='map'; GM.sig=''; sync(); }]}),250); return true; }
+ GM.prevDone=PD; return false; }
 function mastSet(){ const sk=(A.st&&A.st.skills)||{}, o={}; Object.keys(sk).forEach(id=>{ if(sk[id]&&sk[id].m) o[id]=Number(sk[id].at)||0; }); return o; }
 function checkWin(ws,daily){ const now=mastSet(); if(!GM.snap||GM.snapSid!==A.st.id){ GM.snap=now; GM.snapSid=A.st.id; GM.snapRank=rankOf(steps()); return; }
  const fresh=Object.keys(now).filter(id=>!(id in GM.snap)&&Date.now()-now[id]<15*60e3).sort((a,b)=>now[a]-now[b]), rk=GM.snapRank;
