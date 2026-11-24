@@ -41,4 +41,4 @@ Until a picture arrives, each lesson screen shows a coded picture that still tea
 ## Batch 1 status (2026-11-24)
 - **Live with this update (in `art/`):** 1 w48-g4u1-opener (Grade 4 writing TODAY screens), 2 w48-umbrella, 4 w48-scissors-paragraph, 6 w48-prove-it, 7 w48-closing-bow, 9 w48-g5u1-opener (Grade 5 essay TODAY screens), 10 w48-sofer-quill, 12 w48-three-readers.
 - **In the library for later Grade 4 units:** 3 w48-bakery-friday, 5 w48-shabbos-prep (a WATCH ME picture shows only when the step draws no scene, and these lessons draw one).
-- **Sent back for a change:** 8 w48-notebook-clues and 11 w48-beehive (a tower with a dome and a cross-like spire in the background). Re-ordered by email.
+- **Sent back once, redrawn and approved:** 8 w48-notebook-clues (in the library for a later Grade 4 unit) and 11 w48-beehive (Grade 5 Point, Proof, Explain TODAY screen). The first versions had a tower with a dome and a cross-like spire in the background.
