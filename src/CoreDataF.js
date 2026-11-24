@@ -15,5 +15,10 @@ CORE_SKILLS.F = [
   ["READ.PHON.L03.08", "Catch the Bridge", "Read and spell tch and dge after a short vowel", { after: "READ.PHON.L03.07", std: "L.2.2d", file: "CoreDataF1", min: 7 }],
   ["READ.PHON.L03.09", "City Cat", "Read soft c and hard c", { after: "READ.PHON.L03.08", std: "RF.2.3", file: "CoreDataF1", min: 7 }],
   ["READ.PHON.L03.10", "Giant Goat", "Read soft g and hard g", { after: "READ.PHON.L03.09", std: "RF.2.3", file: "CoreDataF1", min: 7 }],
-  ["READ.PHON.L03.11", "Knock, Write, Lamb", "Read words with quiet letters: kn, wr, mb", { after: "READ.PHON.L03.10", std: "RF.2.3e", file: "CoreDataF1", min: 7 }]
+  ["READ.PHON.L03.11", "Knock, Write, Lamb", "Read words with quiet letters: kn, wr, mb", { after: "READ.PHON.L03.10", std: "RF.2.3e", file: "CoreDataF1", min: 7 }],
+  ["READ.PA.L01.07", "Clap the Words", "Hear and count the words in a sentence", { after: "READ.PA.L01.01", std: "RF.K.1c", file: "CoreDataF2", min: 5 }],
+  ["READ.PA.L01.08", "Rhyme Maker", "Hear and make rhymes", { after: "READ.PA.L01.02", std: "RF.K.2a", file: "CoreDataF2", min: 5 }],
+  ["READ.PA.L01.09", "Beat Builder", "Push beats together and take one away", { after: "READ.PA.L01.03", std: "RF.K.2b", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L02.22", "CVC Speedway", "Read and build short-vowel words fast", { after: "READ.PA.L02.01", std: "RF.1.3b", file: "CoreDataF2", min: 6 }],
+  ["READ.PA.L02.02", "Long or Short?", "Hear long and short vowel sounds", { after: "READ.PHON.L02.22", std: "RF.1.2a", file: "CoreDataF2", min: 5 }]
 ];
