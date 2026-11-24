@@ -65,12 +65,14 @@ async function page(pg) {
       if (ids.length < 4) { out.bad.push('not enough Level 5 Reading lessons for the made-up unit'); return out; }
       const KEEP = { st: A.st, view: A.view, play: A.play, overlay: A.overlay, live: window.OB_LIVE };
       window.OB_LIVE = 'test'; A.overlay = null; A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.st.skills = {};   /* a TEST- boy: One Bite and the unit checks are on for him */
-      const U = TLCORE.units; const unit = { id: 'ZZTEST.U77', title: 'Made-up Unit', c: 'READ', grade: 4, skills: ids.slice(0, 3), review: [ids[3]], n: 8 };
+      const U = TLCORE.units; const unit = { id: 'ZZTEST.U77', title: 'Made-up Unit', c: 'READ', grade: 4, skills: ids.slice(0, 3), review: [ids[3]], n: 8,
+        task: { id: 'ZZTEST.PROJ.01', title: 'My made-up project', grade: 4, kind: 'information', prompt: 'Tell what you found out.', strategy: { name: 'TIDE', steps: [['T', 'Topic'], ['I', 'Important details'], ['E', 'Ending']] }, plan: [{ k: 'topic', label: 'Topic' }, { k: 'd1', label: 'Detail' }, { k: 'end', label: 'Ending' }], min: 20, checks: [{ t: 'I wrote at least 3 sentences.', sentences: 3 }, { t: 'Capitals and end marks.', caps: true }, { t: 'I read it out loud.', self: true }], rubric: ['Clear topic', 'Details'] } };
       out.err = U.err(unit); U.add(unit); U.reset();
       const orig = window.google.script.run;
       const chain = (okf, nof) => new Proxy({}, { get(_, k) { if (k === 'withSuccessHandler') return f => chain(f, nof); if (k === 'withFailureHandler') return f => chain(okf, f); if (k === 'withUserObject') return () => chain(okf, nof);
         return (...a) => setTimeout(() => { if (k === 'cuSave') { out.saves.push([a[1], a[2], a[3]]); return okf && okf({ ok: true, row: { unit: a[1], pre: a[2] === 'pre', passed: a[2] === 'check' && a[3].right / a[3].total >= .8, shown: a[3].shown || [] } }); }
-          if (k === 'cuMine') return okf && okf({ ok: true, live: true, units: {} }); return orig.withSuccessHandler(okf).withFailureHandler(nof)[k](...a); }, 10); } });
+          if (k === 'cuMine') return okf && okf({ ok: true, live: true, units: {} });
+          if (k === 'cwMine') return okf && okf({ ok: true, pieces: window.__cwPieces || [] }); return orig.withSuccessHandler(okf).withFailureHandler(nof)[k](...a); }, 10); } });
       window.google.script.run = chain(null, null);
       const look = async name => { await sleep(80); const el = Q('#cun'); if (!el) { out.bad.push(name + ': not open'); return; } const all = [...el.querySelectorAll('button')];
         out.looks.push({ name, mains: el.querySelectorAll('.tlk-main').length, own: all.filter(b => !b.classList.contains('tlk')).length, wide: document.documentElement.scrollWidth > innerWidth + 1 || el.scrollWidth > innerWidth + 1, x: !!el.querySelector('.tlk-x.tlk-at-tl') }); };
@@ -80,7 +82,13 @@ async function page(pg) {
           await sleep(10); if (n === 1) await look('question'); Q('#cun [data-cu=next]').click(); await sleep(10); } };
       /* 1. the boss level, all right */
       let p = U.check(unit); await sleep(60); await look('entrance'); out.n = U.state() && U.state().n; out.kinds = U.state() && U.state().kinds; out.review = U.state() && U.state().skills.indexOf(ids[3]) >= 0;
-      Q('#cun [data-cu=start]').click(); await sleep(20); await play(true); await look('win'); out.win = (Q('#cun .cu-end h2') || {}).textContent; Q('#cun [data-cu=done]').click(); out.r1 = await p;
+      Q('#cun [data-cu=start]').click(); await sleep(20); await play(true); await look('win'); out.win = (Q('#cun .cu-end h2') || {}).textContent;
+      /* the unit project: "Start your project" opens his Writing Workshop piece; U.projects() lists it until the piece is sent */
+      out.projBtn = !!Q('#cun [data-cu=project]'); window.__cwPieces = []; out.projList = (await U.projects()).map(x => x.task);
+      if (out.projBtn) Q('#cun [data-cu=project]').click(); else Q('#cun [data-cu=done]').click(); out.r1 = await p; await sleep(80);
+      out.projOpen = !!document.getElementById('cwr') && TLCORE.write.state() && TLCORE.write.state().task; TLCORE.write.close();
+      window.__cwPieces = [{ id: 'x', task: 'ZZTEST.PROJ.01', status: 'sent' }]; out.projAfterSend = (await U.projects()).length; window.__cwPieces = [];
+      out.badTask = U.err(Object.assign({}, unit, { id: 'ZZTEST.U78', task: { id: 'ZZTEST.PROJ.02', title: 'x' } }));
       /* 2. all wrong: practice the missed lesson */
       p = U.check(unit); await sleep(60); Q('#cun [data-cu=start]').click(); await sleep(20); await play(false); await look('almost'); out.almost = (Q('#cun .cu-end h2') || {}).textContent;
       out.practice = [...document.querySelectorAll('#cun [data-cu=practice]')].map(b => b.getAttribute('data-k'));
@@ -109,6 +117,9 @@ async function page(pg) {
     if (r.err) fails.push(at + 'the made-up unit was refused: ' + r.err);
     if (!(r.n >= 4) || !r.review) fails.push(at + 'the unit check must mix every skill and a review skill (' + r.n + ' questions, review ' + r.review + ')');
     if (r.win !== 'Unit cleared!' || !r.r1.passed) fails.push(at + 'all right must clear the unit (' + r.win + ')');
+    if (!r.projBtn || !r.r1.project || r.projOpen !== 'ZZTEST.PROJ.01') fails.push(at + '"Unit cleared!" must offer "Start your project", and it must open the unit\'s Writing Workshop piece (' + JSON.stringify({ btn: r.projBtn, open: r.projOpen }) + ')');
+    if (JSON.stringify(r.projList) !== '["ZZTEST.PROJ.01"]' || r.projAfterSend !== 0) fails.push(at + 'TLCORE.units.projects() must list the project of a passed unit until its piece is sent (' + JSON.stringify([r.projList, r.projAfterSend]) + ')');
+    if (!/^task \(the unit project\)/.test(r.badTask || '')) fails.push(at + 'a unit with a broken project task must be refused (' + r.badTask + ')');
     if (r.almost !== 'Almost there!' || r.r2.passed || !r.practice.length) fails.push(at + 'all wrong must say "Almost there!" with lessons to practice');
     if (!r.started || r.started[1] !== r.practice[0] || !r.started[3]) fails.push(at + '"Practice" must open exactly the missed lesson, as a One Bite lesson (' + JSON.stringify(r.started) + ')');
     if (!r.noWait) fails.push(at + 'before his unit results load, a lesson must open at once (never wait on the internet)');
@@ -119,7 +130,7 @@ async function page(pg) {
     if (r.hook !== 'pre') fails.push(at + 'starting the first lesson of a unit (TEST- boy) must open the pre-check first (got ' + r.hook + ')');
   }
   await pg.setViewportSize({ width: 1366, height: 768 });
-  if (!fails.length) oks.push('unit checks (page): boss entrance, cleared at 80%+, "Almost there!" with Practice that opens exactly the missed lesson, pre-check skips what he showed, the pre-check opens before a unit (TEST- boys); button system only at 1366 and 390');
+  if (!fails.length) oks.push('unit checks (page): boss entrance, cleared at 80%+ with "Start your project" (the unit's Workshop piece, listed by projects() until sent), "Almost there!" with Practice that opens exactly the missed lesson, pre-check skips what he showed, the pre-check opens before a unit (TEST- boys); button system only at 1366 and 390');
   return { fails: fails.map(x => 'unit checks: ' + x), oks };
 }
 module.exports = { server, page };
