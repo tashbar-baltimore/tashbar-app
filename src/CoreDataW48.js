@@ -47,5 +47,15 @@ CORE_SKILLS.W48 = [
   ["WRIT.ESSAY.L09.04", "Big Idea, Many Parts", "Organize a piece from several sources into one big idea and categories", { after: "WRIT.PARA.L09.02", std: "W.8.2a", file: "CoreDataW4810", min: 9 }],
   ["WRIT.PARA.L09.03", "Well-Chosen Facts", "Pick the telling facts, from different sources, for each point", { after: "WRIT.ESSAY.L09.04", std: "W.8.2b", file: "CoreDataW4810", min: 9 }],
   ["WRIT.PARA.L09.04", "Varied Transitions", "Join sources with transitions that show agree, differ or add", { after: "WRIT.PARA.L09.03", std: "W.8.2c", file: "CoreDataW4810", min: 8 }],
-  ["WRIT.PARA.L09.05", "Implications", "Conclude with what the facts mean and why it matters", { after: "WRIT.PARA.L09.04", std: "W.8.2f", file: "CoreDataW4810", min: 8 }]
+  ["WRIT.PARA.L09.05", "Implications", "Conclude with what the facts mean and why it matters", { after: "WRIT.PARA.L09.04", std: "W.8.2f", file: "CoreDataW4810", min: 8 }],
+  ["WRIT.ESSAY.L05.02", "POW + TREE", "Plan an opinion with TREE: Topic, Reasons, Explain, Ending", { before: "WRIT.PARA.L05.04", std: "W.4.1a", file: "CoreDataW4811", min: 9 }],
+  ["WRIT.PARA.L05.15", "Reason or Not?", "Tell a real reason from a feeling or 'everyone wants it'", { after: "WRIT.PARA.L05.04", std: "W.4.1b", file: "CoreDataW4811", min: 8 }],
+  ["WRIT.PARA.L05.16", "Back It Up", "Back up a reason with proof that fits that reason", { after: "WRIT.PARA.L05.15", std: "W.4.1b", file: "CoreDataW4811", min: 8 }],
+  ["WRIT.PARA.L05.17", "Linking Words", "Join opinion, reasons and proof with the right linking word", { after: "WRIT.PARA.L05.16", std: "W.4.1c", file: "CoreDataW4811", min: 7 }],
+  ["WRIT.PARA.L05.18", "Opinion Ending", "End an opinion piece: the opinion again, then a polite push", { after: "WRIT.PARA.L05.17", std: "W.4.1d", file: "CoreDataW4811", min: 7 }],
+  ["WRIT.ESSAY.L06.06", "TREE, Level 2", "Plan an opinion on a text-based question, with reasons from the text", { after: "WRIT.PARA.L06.08", std: "W.5.1a", file: "CoreDataW4812", min: 8 }],
+  ["WRIT.PARA.L06.09", "Best Reason First?", "Rank reasons and put them in a logical order, and say why", { after: "WRIT.ESSAY.L06.06", std: "W.5.1b", file: "CoreDataW4812", min: 8 }],
+  ["WRIT.PARA.L06.10", "Proof from the Text", "Back a reason with a fact in your own words or an exact quote, with its source", { after: "WRIT.PARA.L06.09", std: "W.5.1b", file: "CoreDataW4812", min: 9 }],
+  ["WRIT.PARA.L06.11", "Because, So, Therefore", "Link reasons and results inside a sentence and across sentences", { after: "WRIT.PARA.L06.10", std: "W.5.1c", file: "CoreDataW4812", min: 7 }],
+  ["WRIT.PARA.L06.12", "Ending That Pushes", "End with the opinion, a sum-up and one push that fits the reader", { after: "WRIT.PARA.L06.11", std: "W.5.1d", file: "CoreDataW4812", min: 7 }]
 ];

@@ -7,8 +7,8 @@ Expected minutes for a typical boy. "Built" counts only lessons that are live an
 ## Plan vs built
 | Grade | Small skills (plan: count / min) | Pieces (plan) | Quick writes (plan) | Unit checks (plan) | **Plan hours** | **Built hours** |
 |---|---|---|---|---|---|---|
-| 4 (L05) | 32 / 251 | 12 / 900 | 30 / 180 | 5 / 50 | **23.0** | 1.3 |
-| 5 (L06) | 30 / 239 | 12 / 900 | 30 / 180 | 5 / 50 | **22.8** | 1.3 |
+| 4 (L05) | 32 / 251 | 12 / 900 | 30 / 180 | 5 / 50 | **23.0** | 2.0 |
+| 5 (L06) | 30 / 239 | 12 / 900 | 30 / 180 | 5 / 50 | **22.8** | 2.0 |
 | 6 (L07) | 27 / 231 | 10 / 900 | 25 / 175 | 5 / 50 | **22.6** | 1.2 |
 | 7 (L08) | 25 / 212 | 10 / 900 | 25 / 175 | 5 / 50 | **22.3** | 1.1 |
 | 8 (L09) | 23 / 198 | 10 / 900 | 25 / 175 | 5 / 50 | **22.1** | 1.2 |
@@ -27,3 +27,4 @@ Nothing yet.
 - 2026-11-24 · Grade 8 Unit 1, 4 new small skills (WRIT.ESSAY.L09.02–03, WRIT.PARA.L09.01–02: Claim vs Counterclaim, Rebuttal, Spot the Weak Link, Evidence Ladder), 35 min. Built: Grade 8 0.6 hours. Left out of the map's Grade 8 Unit 1: "Connect the Logic" and "Final Word" (Grades 6–7 already teach them; the review asked Grade 8 to go further, not repeat).
 - 2026-11-24 · Unit 2 for Grades 4 and 5, 12 new small skills: Grade 4 "Real Stories" (WRIT.ESSAY.L05.01, WRIT.PARA.L05.10–14: POW + WWW, Open the Scene, Then What?, Five-Senses Camera, Show the Feeling, Story Ending), 47 min; Grade 5 "Stories That Pull You In" (WRIT.ESSAY.L06.05, WRIT.PARA.L06.04–08: Story Mountain, Dialogue + Action, Slow Motion, Time Jumps, Picture Words, It Follows), 48 min. Built: Grade 4 1.3 h, Grade 5 1.3 h.
 - 2026-11-24 · Unit 2 for Grades 6, 7 and 8, 12 new small skills: Grade 6 "Stories That Hold the Reader" (WRIT.ESSAY.L07.05–06, WRIT.PARA.L07.04–05: Hook and Orient, Whose Eyes?, Flashback and Back, Ending That Lands), 33 min; Grade 7 "Explain It Clearly" (WRIT.ESSAY.L08.04, WRIT.PARA.L08.05–07: Cause and Effect, Precise and Technical, Objective Tone, Bring It Home), 33 min; Grade 8 "Many Sources, One Piece" (WRIT.ESSAY.L09.04, WRIT.PARA.L09.03–05: Big Idea Many Parts, Well-Chosen Facts, Varied Transitions, Implications), 34 min. Built: Grade 6 1.2 h, Grade 7 1.1 h, Grade 8 1.2 h. The map's "Meanwhile, Elsewhere" became "Flashback and Back": the review found it repeated Grade 5 Time Jumps, so it now teaches going back in time and returning. Grade 8 ids are L09.03–05 (the map's proposals L09.05–07 were not the next free ids).
+- 2026-11-24 · Unit 3 for Grades 4 and 5, 10 new small skills: Grade 4 "My Opinion, My Reasons" (WRIT.ESSAY.L05.02, WRIT.PARA.L05.15–18: POW + TREE, Reason or Not?, Back It Up, Linking Words, Opinion Ending), 39 min; Grade 5 "Opinion, Level 2" (WRIT.ESSAY.L06.06, WRIT.PARA.L06.09–12: TREE Level 2, Best Reason First?, Proof from the Text, Because So Therefore, Ending That Pushes), 39 min. Built: Grade 4 2.0 h, Grade 5 2.0 h. Not yet done in this unit: the upgrades of the old lessons WRIT.PARA.L05.04 (Say What You Think; it should drop the OREO memory word now that TREE is taught) and WRIT.PARA.L06.02 (Letter Writer).
