@@ -22,11 +22,12 @@ Share of the 90 core hours (proposal): comprehension and fluency ≈ 35 h (this 
 | Date | PR | What | Grade 4 min | Grade 5 min |
 |---|---|---|---|---|
 | 2026-11-24 | #312 (live) | Unit 4.1 "Prove it!": 6 small skill lessons (READ.COMP.L05.05–.09, READ.FLU.L05.02), 13 short passages | 48 | 0 |
-| 2026-11-24 | (next PR) | Unit 5.1 "Quote to prove it": 5 small skill lessons (READ.COMP.L06.06–.09, READ.FLU.L06.01), 10 short passages | 0 | 40 |
-| 2026-11-24 | (next PR) | Unit 4.2 "The big umbrella": 5 small skill lessons (READ.COMP.L05.10–.13, READ.FLU.L05.03), 12 short passages | 40 | 0 |
-| | | **Running total** | **88 / 2,095** | **40 / 2,169** |
+| 2026-11-24 | #326 (live) | Unit 5.1 "Quote to prove it": 5 small skill lessons (READ.COMP.L06.06–.09, READ.FLU.L06.01), 10 short passages | 0 | 40 |
+| 2026-11-24 | #326 (live) | Unit 4.2 "The big umbrella": 5 small skill lessons (READ.COMP.L05.10–.13, READ.FLU.L05.03), 12 short passages | 40 | 0 |
+| 2026-11-24 | (next PR) | Unit 5.2 "What it teaches, in a few sentences": 6 small skill lessons (READ.LIT.L06.02–.06, READ.FLU.L06.02), theme and summary | 0 | 48 |
+| | | **Running total** | **88 / 2,095** | **88 / 2,169** |
 
-**Written, not yet counted** (a boy cannot open them until job T's Reader activity is in a lesson): Book B1 *The Missing Esrog*, 10 chapters, 8,346 words (planned 200 min, Grade 4); the Deserts topic set, 5 articles, about 2,800 words (planned 100 min, Grade 4). Both in `texts/C45/`.
+**Written, not yet counted** (a boy cannot open them until job T's Reader activity is in a lesson): Book B1 *The Missing Esrog*, 10 chapters, 8,346 words (planned 200 min, Grade 4); the Deserts topic set, 5 articles, about 2,800 words (planned 100 min, Grade 4); Book B4 *The Map in Zeidy's Attic*, chapters 1–6 of 12, about 7,500 words (planned 120 of 240 min, Grade 5). All in `texts/C45/`.
 
 ## Left out on purpose
 - Vocabulary, word parts and figurative language (`READ.VOC.*`): job G.
