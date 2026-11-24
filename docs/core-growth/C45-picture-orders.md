@@ -18,7 +18,7 @@ Job T's band style sheet is binding: `docs/core-growth/STYLE-SHEETS.md`, **E45 �
 | Zeidy Benaim | about 75, white beard, flat cap, warm smile |
 | Mr. Gomez (custodian) | about 55, gray work clothes, mustache, toolbox |
 
-## Order 1 (2026-11-24) · status: SENT
+## Order 1 (2026-11-24) · status: COMPLETE (all 25 in `art/`; 4 were redrawn once: b1-ch1-empty, b1-ch3-leaves, p-chess, p-tomthumb)
 Sent by email to the HoS's image account; a correction with T's style and these file names followed the same night. The 5 cast cards come first:
 
 | # | File name | Screen | Size | Prompt |
