@@ -9,7 +9,7 @@ export function makeStory(E, unit, script) {
   const PIC = makePictures(E);
   const boy = script.boy ? script.boy(E) : E.unitBoy(unit.n); E.scene.add(boy);
   const grown = script.grown ? script.grown(E) : null; if (grown) E.scene.add(grown);
-  const props = new THREE.Group(); E.scene.add(props); if (script.scene) script.scene(E, props);
+  const props = new THREE.Group(); E.scene.add(props); if (script.scene && !E.backdrop) script.scene(E, props);   /* a painted backdrop already has the zoo, garden, park or picnic */
   const L = {}; unit.letters.forEach(k => { L[k] = E.letter(k, 2.5); L[k].visible = false; E.scene.add(L[k]); });
   const row = [], glow = E.glowSprite('#ffffff', 6, 0); E.scene.add(glow);
   const arrow = E.arrow3d ? E.arrow3d(.45) : new THREE.Object3D(), ring = E.noticeRing(.32);
@@ -81,10 +81,10 @@ export function makeStory(E, unit, script) {
     }
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
-    const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? (many ? .5 : .5) : (many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
-    const lines = P && many ? [all.slice(0, Math.ceil(all.length / 2)), all.slice(Math.ceil(all.length / 2))] : [all];
+    const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
+    const two = (P && many) || all.length > 12, lines = two ? [all.slice(0, Math.ceil(all.length / 2)), all.slice(Math.ceil(all.length / 2))] : [all];   /* two lines (right to left, top line first) when they would not fit in one */
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
-      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? 2.2 - li * 1.0 : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
+      let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? 2.3 - li * 1.1 : 2.55 - li * 1.4) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
     for (const l of row) { E.popIn(l, 1, 280); await E.wait(60); }
     E.setProgress(steps, steps);
     await E.say('Let’s sing the Alef-Beis so far!');

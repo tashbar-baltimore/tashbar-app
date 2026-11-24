@@ -135,8 +135,16 @@ export function makePictures(E) {
         const an = mesh(new THREE.CylinderGeometry(.012, .012, .25, 4), bm, .36, .22, s * .06, false); an.rotation.z = -.5; g.add(an);
         [-.12, 0, .12].forEach(x => { const lg = mesh(new THREE.CylinderGeometry(.015, .015, .3, 4), bm, x, -.12, s * .14, false); lg.rotation.x = s * .7; g.add(lg); }); }); return g; },
   };
+  /* the ChatGPT pictures (art/obj) replace the simple 3D ones; each stands as a flat card that always faces the boy */
+  const IMG = { dag: ['fish', 1.24], dov: ['bear', .85], gamal: ['camel', 1.02], gezer: ['carrot', .84], har: ['mountain', 1.27], bayis: ['house', 1.14], vered: ['rose', .88], zevuv: ['fly', 1.06], zayis: ['olives', 1.23],
+    chatul: ['cat', .82], chamor: ['donkey', .79], taleh: ['lamb', .91], tavas: ['peacock', 1.06], yonah: ['dove', 1.1], yad: ['hand', .91], kadur: ['beachball', 1], kelev: ['dog', .94], limon: ['lemon', .86], mayim: ['water', .85],
+    melafefon: ['cucumber', 1.16], nemalah: ['ant', 1.06] };
+  const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp'); t.colorSpace = THREE.SRGBColorSpace; return t; })());
+  for (const [w, [f, a]] of Object.entries(IMG)) P[w] = () => { const g = new THREE.Group(), h = 1.35, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex(f), transparent: true, alphaTest: .4 }));
+    sp.scale.set(h * a, h, 1); g.add(sp); g.userData.card = sp; return g; };
   return P;
 }
+const texCache = {};   /* each picture loads once */
 /* the words, each with the letter it starts with and the short line he hears */
 export const WORDS = {
   bayis: { letter: 'beis', say: 'Bayis. A house!' },

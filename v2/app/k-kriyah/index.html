@@ -19,7 +19,7 @@ E.setUnit(U.n);
 let ok = true;
 try { E.initRenderer(); } catch (e) { ok = false; E.flatFallback([...U.known, ...U.letters]); }
 if (ok) {
-  E.buildWorld({ flowers: true }); E.initPointer(); E.setSway(.6);
+  E.buildWorld(Object.assign({ backdrop: 'park' }, { flowers: true })); E.initPointer(); E.setSway(.6);
   const save = E.loadSave();
   const stops = [], colors = [0xff7aa8, 0x46c3ff, 0xffcf3a, 0x7bd94a, 0xb388ff, 0xff9f1a, 0x00c2d1, 0xff6b6b];
   const greyM = E.M(0xc9d2dc, { roughness: .4 }), greyIcon = E.M(0xaab4c0, { roughness: .5, clearcoat: .2 }), edgeM = E.M(0xffffff, { roughness: .3, clearcoat: .8 });
