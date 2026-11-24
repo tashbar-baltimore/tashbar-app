@@ -8,9 +8,11 @@
   css.textContent = [
     '.u2path{ position:relative; display:grid; grid-template-columns:repeat(var(--cols,10),1fr); gap:clamp(6px,1vw,14px); width:100%; max-width:1240px; align-items:center; padding:28px 4px 6px; }',
     '.u2stone{ position:relative; aspect-ratio:1; border-radius:42% 46% 44% 48%; background:radial-gradient(circle at 40% 30%,#FFFFFF,#E3ECF8 55%,#B9C9E0); border:4px solid #fff; box-shadow:0 7px 0 #8FA3C2, 0 12px 16px rgba(40,70,140,.25); display:flex; align-items:center; justify-content:center; transition:transform .2s, box-shadow .2s; touch-action:none; }',
-    '.u2stone .dd{ position:absolute; inset:22% 2%; display:grid; grid-template-rows:1fr 1fr; gap:6%; }',
-    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:.5%; }',
-    '.u2stone .dd i{ width:19.5%; aspect-ratio:1; border-radius:50%; flex:none; }',
+    '.u2stone .dd{ position:absolute; inset:26% 9%; display:grid; grid-template-rows:1fr 1fr; gap:8%; }',
+    '.u2stone .dd b{ display:flex; justify-content:flex-start; align-items:center; gap:1.5%; }',
+    '.u2stone .dd i{ width:18.5%; aspect-ratio:1; border-radius:50%; flex:none; }',
+    '.u2stone.glowme{ box-shadow:0 7px 0 #C98A00, 0 0 0 8px rgba(255,201,61,.85), 0 0 22px 8px rgba(255,201,61,.7); animation:u2gap 1s infinite; }',
+    '.u2stone.redmark{ box-shadow:0 7px 0 #C0392B, 0 0 0 6px rgba(255,90,78,.55) !important; }',
     '.u2stone svg.hear{ width:52%; height:52%; }',
     '.u2stone .dd i, .u2stone .dice i{ background:radial-gradient(circle at 35% 30%,#FF9B8A,#E5322D 55%,#8E0E17); box-shadow:0 2px 0 rgba(90,0,10,.35); }',
     '.u2stone .dice{ position:absolute; inset:8%; } .u2stone .dice i{ position:absolute; width:25%; aspect-ratio:1; border-radius:50%; transform:translate(-50%,-50%); }',
@@ -103,7 +105,7 @@
       if (n === R.want) {
         src.remove(); P.fill(R.g); P.place(R.g, true); NK.sound.yes();
         if (NK.said[NK.said.length - 1] !== U2.Word(n) + '!') await FR.say(U2.Word(n) + '!', { noRepeat: true });
-        var end = Math.min(P.nums.length - 1, R.g + 2); await U2.countAlong(P, R.g + 1, end);
+        var end = o.finish ? P.nums.length - 1 : Math.min(P.nums.length - 1, R.g + 2); await U2.countAlong(P, R.g + 1, end);
         if (o.afterRight) await o.afterRight(P, R);
         await FR.yes(P.stones[R.g], FR.pick(['Yes! You know what comes next!', 'Right! Good listening!', 'Yes! In order!']));
         var d = done; done = null; d(R.misses === 0); return;
@@ -112,6 +114,8 @@
       if (o.check || R.misses >= 2) {
         await FR.say('That says ' + U2.word(n) + '. Look: next comes ' + U2.word(R.want) + '.');
         if (o.check) { var w = document.querySelector('#loose .u2stone[data-n="' + R.want + '"]'); if (w) w.remove(); P.fill(R.g); P.place(R.g, true); await FR.say(U2.Word(R.want) + '.', { noRepeat: true }); var d2 = done; done = null; d2(false); return; }
+        var gl = document.querySelector('#loose .u2stone[data-n="' + R.want + '"]'); if (gl) gl.classList.add('glowme');   /* second miss: the right stone glows */
+        await FR.say('This one. Drag it in.');
       } else {
         await FR.say('That one says ' + U2.word(n) + ". Let's look and listen again.");
         await U2.countAlong(P, Math.max(0, R.g - 3), R.g - 1);
@@ -158,9 +162,9 @@
         await F.wait(150);
         if (i === 0 || pl.say) await F.say(pl.say || (P.nums[0] > P.nums[1] ? "Let's count down." : "Let's count."));
         await U2.countAlong(P, R.s, R.g - 1);
-        done = res; GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say('What comes next?', { repeat: 'What comes next? Drag it in.' });
         if (i === 0 && !o.check) await F.say('Tap a stone to hear it.');
+        done = res; GAME.phase = 'answer'; F.lock(false); hooks();   /* he taps only after the instructions */
       });
     }
     return { get: function () { return { P: P, R: R }; } };

@@ -57,21 +57,25 @@
     GAME.right = function () { return [{ tap: R.bad < 0 ? '#ok' : '#st' + R.bad }]; };
     GAME.wrong = function () { return [{ tap: R.bad < 0 ? '#st1' : '#st0' }]; };
   }
-  async function showRight(F) {   /* short: light the stone, say why, count up to just past it */
-    var b = R.bad; P.stones[b].querySelector('.said').classList.add('off'); P.stones[b].classList.add('lit');
+  async function showRight(F, at) {   /* short: mark the stone (the one he tapped, or the first mistake), say why, count up to just past it */
+    var b = at != null && at >= 0 ? at : R.bad, sd = P.stones[b].querySelector('.said'); if (sd) sd.classList.add('off'); P.stones[b].classList.add('redmark');
     await F.say(R.who + ' said ' + U2.word(R.w[b]) + ' here.'); await F.say('This stone is ' + U2.word(b + 1) + '.');
-    P.reset(); await U2.countAlong(P, 0, Math.min(R.w.length - 1, b + 1));
+    P.lo = 0; await U2.countAlong(P, 0, Math.min(R.w.length - 1, b + 1));   /* the bubbles and the red mark stay on screen */
   }
   async function pick(where) {
     NK.unlock(); if (GAME.phase !== 'answer') return; GAME.phase = 'busy'; FR.lock(true);
     if (isFound(where)) {
       var d = done; done = null;
       if (R.bad < 0) { await FR.yes($('ok'), 'Yes! ' + R.who + ' counted right!'); d(R.misses === 0); return; }
-      NK.sound.yes(); await FR.say('Yes! You found it!'); await showRight(FR); await FR.yes(P.stones[R.bad], 'Now it is right!'); d(R.misses === 0); return;
+      NK.sound.yes(); await FR.say('Yes! You found it!'); await showRight(FR, where); await FR.yes(P.stones[where], 'Now it is right!'); d(R.misses === 0); return;
     }
     FR.oops(where < 0 ? $('ok') : P.stones[where]); R.misses++;
     if (where >= 0) await FR.say(R.who + ' said ' + U2.word(R.w[where]) + ' here. That is right.');
-    if (R.misses === 1) { await FR.say('Look and listen again. Did he make a mistake?'); await count(FR); GAME.phase = 'answer'; FR.lock(false); hooks(); return; }
+    else await FR.say('Listen. ' + R.who + ' made a mistake.');
+    if (R.misses === 1) {
+      if (where < 0) { await count(FR); await FR.say("Look again. Tap where he went wrong."); }
+      else { await FR.say('Look and listen again. Did he make a mistake?'); await count(FR); }
+      GAME.phase = 'answer'; FR.lock(false); hooks(); return; }
     var d2 = done; done = null;
     if (R.bad < 0) await FR.say(R.who + ' counted right this time.'); else await showRight(FR);
     d2(false);
@@ -82,8 +86,8 @@
       P = U2.path($('path'), { from: 1, to: pl.len });
       R = { who: who, kind: pl.kind, w: words(pl.len, pl.kind, pl.at), bad: pl.kind === 'none' ? -1 : pl.at, misses: 0 };
       await F.say(who + ' counts. Listen!'); await count(F);
-      done = res; GAME.phase = 'answer'; F.lock(false); hooks();
       await F.say('Did ' + who + ' make a mistake? Tap it. Thumbs up if not.', { repeat: who + ' said: ' + R.w.map(U2.word).join(', ') + '.' });
+      done = res; GAME.phase = 'answer'; F.lock(false); hooks();   /* he taps only after the instructions */
     });
   }
   FR.game({

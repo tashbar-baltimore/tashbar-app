@@ -21,7 +21,7 @@
 <script src="unit2.js"></script>
 <script>
 U2.gapGame({
-  id: 'u2-down', title: 'Countdown', rounds: 5, reverse: true,
+  id: 'u2-down', title: 'Countdown', rounds: 5, reverse: true, finish: true,
   hero: '<div style="width:80%">' + U2.CAR.replace('id="car"', '').replace('class="u2car"', 'style="width:100%"') + '</div>',
   init: function () { document.getElementById('carrow').innerHTML = U2.CAR; },
   plan: function (i) {
@@ -31,7 +31,7 @@ U2.gapGame({
   bonus: { from: 6, to: 15, startN: 15, gapN: 12, say: 'Bonus! Count down from fifteen!' },
   beforeRound: async function () { document.getElementById('car').classList.remove('go'); },
   afterRight: async function (P) {
-    if (P.at === P.nums.length - 1) { await FR.say('Zero! Vroom!', { noRepeat: true }); document.getElementById('car').classList.add('go'); NK.sound.win(); await FR.wait(900); }
+    if (P.at === P.nums.length - 1 && P.nums[P.at] === 1) { await FR.say('Zero! Vroom!', { noRepeat: true }); document.getElementById('car').classList.add('go'); NK.sound.win(); await FR.wait(900); }
   },
   demo: async function (F, setup) {
     var x = setup({ from: 1, to: 5, startN: 5, gapN: 2 });

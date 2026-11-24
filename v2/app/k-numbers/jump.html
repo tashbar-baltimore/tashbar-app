@@ -32,31 +32,38 @@
   var P, R, done, lastEasy = 0;
   function idx(n) { return P.nums.indexOf(n); }
   function hooks() {
-    var need = idx(R.t) - P.at, taps = [];
+    var need = idx(R.t) - (P.at + queued), taps = [];
     for (var k = 0; k < need; k++) taps.push({ tap: '#drum' });
     GAME.right = function () { return taps.concat([{ tap: '#check' }]); };
     GAME.wrong = function () { var w = idx(R.t) < P.nums.length - 1 ? need + 1 : need - 1, t = []; for (var k = 0; k < w; k++) t.push({ tap: '#drum' }); return t.concat([{ tap: '#check' }]); };
   }
   function ready() { var c = $('check'); c.classList.toggle('dim', P.at < 0); c.classList.toggle('ready', P.at >= 0 && GAME.phase === 'answer'); }
-  var talking = Promise.resolve();
+  /* every tap is counted: taps wait in a line, and the ball hops and the voice says each number in turn (none is cut off).
+     He says the number first; a moment later the voice says it too. */
+  var queued = 0, pumping = null;
+  function hitDrum() { var d = $('drum'); d.classList.remove('hit'); void d.offsetWidth; d.classList.add('hit'); setTimeout(function () { d.classList.remove('hit'); }, 150); NK.sound.clap(); }
   function drum() {
-    NK.unlock(); if (GAME.phase !== 'answer') return;
-    var d = $('drum'); d.classList.remove('hit'); void d.offsetWidth; d.classList.add('hit'); setTimeout(function () { d.classList.remove('hit'); }, 150); NK.sound.clap();
-    if (P.at >= P.nums.length - 1) { NK.hush(); NK.say('That is the end!', { noRepeat: true }); return; }
-    /* he says the number first; a moment later the voice says it too (a new tap cancels the old one) */
-    P.place(P.at + 1, true); NK.hush(); var n = P.nums[P.at], my = ++sayTok;
-    setTimeout(function () { if (my === sayTok) NK.say(U2.Word(n) + '!', { noRepeat: true }); }, NK.fast ? 0 : 650); ready(); hooks();
+    NK.unlock(); if (GAME.phase !== 'answer') return; hitDrum();
+    if (P.at + queued >= P.nums.length - 1) { if (!pumping) { NK.hush(); NK.say('That is the end!', { noRepeat: true }); } return; }
+    queued++; hooks(); if (!pumping) pumping = pump();
   }
-  var sayTok = 0;
+  async function pump() {
+    while (queued > 0) { queued--; P.place(P.at + 1, true); ready(); await FR.wait(450); await NK.say(U2.Word(P.nums[P.at]) + '!', { noRepeat: true }); }
+    pumping = null; hooks();
+  }
   async function check() {
-    NK.unlock(); if (GAME.phase !== 'answer' || P.at < 0) return; GAME.phase = 'busy'; FR.lock(true); sayTok++; NK.hush();
+    NK.unlock(); if (GAME.phase !== 'answer' || P.at + queued < 0) return; GAME.phase = 'busy'; FR.lock(true);
+    if (pumping) await pumping;
     var at = P.nums[P.at];
     if (at === R.t) { var d = done; done = null; await FR.yes(P.stones[P.at], 'Yes! You stopped at ' + U2.word(R.t) + '!'); d(R.misses === 0); return; }
     FR.oops(P.stones[P.at]); R.misses++;
     await FR.say("Let's look. We are at " + U2.word(at) + '.'); await FR.say('Listen for ' + U2.word(R.t) + '.');
-    if (R.misses >= 2) { P.stones[idx(R.t)].classList.add('goal'); await FR.say(U2.Word(R.t) + ' is here.'); }
-    P.reset(); if (R.misses >= 2) P.stones[idx(R.t)].classList.add('goal');
-    await FR.say('Try again. Tap the drum.');
+    if (R.misses >= 2) {   /* third step: we tap together, the voice counting each tap, so the round always ends */
+      P.reset(); P.stones[idx(R.t)].classList.add('goal'); await FR.say("Let's tap together.");
+      for (var k = 0; k <= idx(R.t); k++) { await FR.handTo($('drum'), .5, .35); await FR.handTap(); hitDrum(); P.place(k, true); await FR.say(U2.Word(P.nums[k]) + '!', { noRepeat: true }); }
+      FR.handHide(); await FR.say('Stop! ' + U2.Word(R.t) + '!'); var d2 = done; done = null; await FR.yes(P.stones[idx(R.t)], 'We stopped at ' + U2.word(R.t) + '!'); d2(false); return;
+    }
+    P.reset(); await FR.say('Try again. Tap the drum.');
     GAME.phase = 'answer'; FR.lock(false); ready(); hooks();
   }
   function round(F, i, pl) {
@@ -65,8 +72,8 @@
       P = U2.path($('path'), { from: pl.from, to: pl.to }); R = { t: pl.t, misses: 0 }; ready();
       if (pl.stand) await F.say('Stand up! Jump each time you tap!');
       await F.say('Hop to ' + U2.word(pl.t) + '!', { repeat: 'Hop to ' + U2.word(pl.t) + '! Tap the drum, then check.' });
-      done = res; GAME.phase = 'answer'; F.lock(false); ready(); hooks();
       if (i === 0) { await F.say('Tap the drum to count.'); await F.say('Say each number. Then I say it too.'); }
+      queued = 0; done = res; GAME.phase = 'answer'; F.lock(false); ready(); hooks();   /* he taps only after the instructions */
     });
   }
   FR.game({
