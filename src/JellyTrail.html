@@ -3,7 +3,7 @@
    look and timings kept exactly). "Sufganiyah jelly trail", $250.00, Chanukah shelf (src/Store.js hol-jelly), next to the Rolling donuts
    trail (a different item).
    1. THE ENGINE: jelly-trail.js from the handoff, unchanged except: its comments use slash-star (HtmlService rule: no slash-slash in
-      this file), "export function createJellyTrail" is a plain function exposed as window.TL_JELLY.create, and one added option,
+      this file), "export function createJellyTrail" is a plain function exposed as window.TL_JELLY.create, and two small app additions: the lift point counts as movement (a quick swipe is never a tap), and the option
       eventTarget (where it listens for the finger; default the container, as in the handoff), so the app can lay it over the whole
       screen without catching a single tap (the screen-sized box has pointer-events: none and the engine listens on the window).
    2. THE APP RULE: on for a signed-in boy who bought it and is wearing it (his trail slot). It is his trail AND his tap: a swipe draws
@@ -680,6 +680,7 @@ void main(){
   function onUp(e) {
     const s = strokes.get(e.pointerId);
     if (!s) return;
+    if (s.down && s.sx !== undefined) { const [lx, ly] = local(e); s.moved = Math.max(s.moved, Math.hypot(lx - s.sx, ly - s.sy)); }   /* Tashbar: where the finger lifted counts too (slow Chromebook touchscreens) */
     if (o.tapToPop && s.down && e.type === 'pointerup' && s.moved < 10 && performance.now() - s.st < 400) { const [x, y] = local(e); spawnBig(x, y); }
     if (e.pointerType === 'mouse') { s.down = false; s.last = null; s.bx = s.tx = undefined; } else strokes.delete(e.pointerId);
   }
