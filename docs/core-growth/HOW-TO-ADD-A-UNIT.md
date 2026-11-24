@@ -17,7 +17,7 @@ In your data file, next to `TLCORE.add(...)`:
 if (window.TLCORE && TLCORE.units) TLCORE.units.add({
   id: 'C45.U01',                          /* job letters, .U, two digits; units of a job run in this order */
   title: 'Main Idea Detectives',
-  c: 'READ',                              /* READ, WRIT, SCI or SS: the subject of his path */
+  c: 'READ',                              /* READ, WRIT or SCI: the subject of his path (Social Studies has no skill-by-skill path yet) */
   grade: 5,
   skills: ['READ.COMP.L06.13', 'READ.COMP.L06.14', 'READ.COMP.L06.15', 'READ.COMP.L06.16'],   /* the unit's small skills, in order (2-12) */
   review: ['READ.COMP.L05.03', 'READ.VOC.L05.02'],   /* 2-3 skills from earlier units (at most 4) */
@@ -33,8 +33,9 @@ if (window.TLCORE && TLCORE.units) TLCORE.units.add({
 ## When the boy meets it
 While the switch is `'test'` (TEST- boys only, until the HoS has seen it; `CU_LIVE` in `src/CoreUnits.html` and `src/CoreChecks.js`):
 - Starting the **first lesson of a unit** (no lesson of it mastered yet, and 3 or more skills) opens the **pre-check** first. If that lesson was shown, he goes straight to the first lesson he still needs.
-- Starting a lesson of a unit whose **earlier unit is finished but not passed** opens that earlier unit's **check** first. He passes it, then his lesson opens.
-- Code can open them at any time: `TLCORE.units.pre('C45.U01')` and `TLCORE.units.check('C45.U01')`. Both return a Promise of `{ passed, shown, missed }`.
+- Starting a lesson of a unit whose **earlier unit is finished but not passed** opens that earlier unit's **check** first, once per visit. If he passes it or closes it, his lesson opens. If he does not pass, the screen gives him Practice buttons for exactly the lessons he missed, and the check comes back next time.
+- The checks never wait on the internet: until his unit results have loaded, lessons open as usual. A unit with fewer than 2 tap questions never blocks anything. Every lesson still opens through One Bite.
+- Code can open them at any time: `TLCORE.units.pre('C45.U01')` and `TLCORE.units.check('C45.U01')`. Both return a Promise of `{ done, passed, shown, missed }`, or `{ skipped: true }` when the unit has fewer than 2 tap questions. The questions are picked at random from each lesson's check questions, so a retry is not the same test.
 
 ## The rules the tests check
 - `TLCORE.units.err(unit)` refuses a bad unit: bad id, no title, unknown subject, fewer than 2 skills, or `n` outside 6–12.

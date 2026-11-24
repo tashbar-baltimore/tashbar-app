@@ -33,7 +33,7 @@
   U.err = function (u) {
     if (!u || !/^[A-Z][A-Z0-9]*\.U\d{2}$/.test(String(u.id || ''))) return 'id must look like C45.U01';
     if (!u.title) return 'title is needed';
-    if (['READ', 'WRIT', 'SCI', 'SS'].indexOf(u.c) < 0) return 'c must be READ, WRIT, SCI or SS';
+    if (['READ', 'WRIT', 'SCI'].indexOf(u.c) < 0) return 'c must be READ, WRIT or SCI (the subjects with a skill-by-skill path)';
     if (!Array.isArray(u.skills) || u.skills.length < 2 || u.skills.length > 12) return 'skills must list 2 to 12 skill ids';
     if (u.review && (!Array.isArray(u.review) || u.review.length > 4)) return 'review must list at most 4 skill ids';
     if (u.n != null && !(u.n >= 6 && u.n <= 12)) return 'n (questions in the unit check) must be 6 to 12';
@@ -48,7 +48,7 @@
     var items = []; try { items = (typeof buildMission === 'function' ? buildMission(id) : []).filter(function (x) { return x.phase === 'check'; }); } catch (e) { items = []; }
     var ok = items.filter(function (x) { return (x.t === 'mc' && Array.isArray(x.shown) && x.shown.length >= 2 && x.shown.indexOf(x.correct) >= 0) || (x.t === 'order' && Array.isArray(x.tiles) && x.tiles.length >= 2 && x.tiles.length <= 8); })
       .filter(function (x) { return !used[x.q]; });
-    var it = ok[0]; if (!it) return null; used[it.q] = 1;
+    var it = ok[Math.floor(Math.random() * ok.length)]; if (!it) return null; used[it.q] = 1;   /* a different question each time when the lesson has more than one */
     return it.t === 'mc' ? { skill: id, kind: 'mc', q: it.q, p: it.p || '', o: it.shown.slice(), a: it.correct } : { skill: id, kind: 'order', q: it.q, p: it.p || '', tiles: it.tiles.slice() };
   }
   function build(u, mode) {
@@ -120,12 +120,13 @@
     var right = S.ans.filter(function (x) { return x && x.ok; }).length, n = S.qs.length;
     if (S.mode === 'pre') { var sk = {}; S.qs.forEach(function (q, k) { if (S.ans[k] && S.ans[k].ok) sk[q.skill] = 1; });
       S.shown = S.u.skills.filter(function (id) { return sk[id]; }); S.view = 'end'; draw();
-      call('cuSave', S.u.id, 'pre', { shown: S.shown }).then(function (r) { if (MINE && r && r.row) MINE[S && S.u ? S.u.id : r.row.unit] = r.row; }).catch(function () {}); return; }
+      var pu = S.u.id, ps = S.shown.slice(); if (MINE) MINE[pu] = Object.assign({}, MINE[pu] || {}, { pre: true, shown: ps }); save(pu, 'pre', { shown: ps }); return; }
     S.passed = right / n >= 0.8; var miss = {}; S.qs.forEach(function (q, k) { if (!(S.ans[k] && S.ans[k].ok)) miss[q.skill] = 1; });
     S.missed = Object.keys(miss); S.view = 'end'; draw();
     if (S.passed && !RM) try { if (typeof confetti === 'function') confetti(); } catch (e) {}
-    var uid = S.u.id; call('cuSave', uid, 'check', { right: right, total: n, missed: S.missed }).then(function (r) { if (MINE && r && r.row) MINE[uid] = r.row; }).catch(function () {});
+    var uid = S.u.id; if (MINE) MINE[uid] = Object.assign({}, MINE[uid] || {}, { passed: (MINE[uid] && MINE[uid].passed) || S.passed }); save(uid, 'check', { right: right, total: n, missed: S.missed });
   }
+  function save(uid, kind, res, n) { call('cuSave', uid, kind, res).then(function (r) { if (MINE && r && r.row) MINE[uid] = r.row; }).catch(function () { if ((n || 0) < 3) setTimeout(function () { save(uid, kind, res, (n || 0) + 1); }, 4000 * ((n || 0) + 1)); }); }
   function close(res) { if (!S) return; var r = S.resolve, el = S.el, out = res || { mode: S.mode, unit: S.u.id, done: S.view === 'end', passed: !!S.passed, shown: S.shown || [], missed: S.missed || [] }; S = null; document.removeEventListener('keydown', onKey, true); if (el) el.remove(); r(out); }
   function onKey(e) { if (S && e.key === 'Escape') { e.preventDefault(); close(); } }
   function onClick(e) {
@@ -146,7 +147,7 @@
     if (a === 'practice') { var id = t.getAttribute('data-k'), out = { mode: 'check', unit: S.u.id, done: true, passed: false, missed: S.missed, practice: id }; close(out); practice(id); return; }
   }
   function worldOf(id) { var p = id.split('.')[0]; try { return WORLD[p] ? p : (/^(LANG|WRIT)$/.test(p) && WORLD.WRIT ? 'WRIT' : 'READ'); } catch (e) { return 'READ'; } }
-  function practice(id) { try { (U.origStart || W.startMission)(worldOf(id), id, 'skill'); } catch (e) {} }
+  function practice(id) { try { restart(worldOf(id), id, 'skill'); } catch (e) {} }   /* through every add-on, so One Bite still opens it */
 
   function open(u, mode) {
     if (typeof u === 'string') u = BY[u]; if (!u) return Promise.reject(new Error('Unknown unit'));
@@ -160,32 +161,41 @@
   }
   U.check = function (u) { return open(u, 'check'); };
   U.pre = function (u) { return open(u, 'pre'); };
-  U.mine = function () { if (MINE) return Promise.resolve(MINE); return call('cuMine').then(function (r) { MINE = (r && r.units) || {}; return MINE; }).catch(function () { MINE = {}; return MINE; }); };
-  U.reset = function () { MINE = null; };
+  U.mine = function () { if (MINE) return Promise.resolve(MINE); return call('cuMine').then(function (r) { if (r && r.units) MINE = r.units; return MINE || {}; }).catch(function () { return {}; }); };   /* a failed call is never kept: the hook stays off until his real results load */
+  U.reset = function () { MINE = null; for (var k in OFFERED) delete OFFERED[k]; };
   U.state = function () { return S ? { mode: S.mode, unit: S.u.id, view: S.view, i: S.i, n: S.qs.length, kinds: S.qs.map(function (q) { return q.kind; }), skills: S.qs.map(function (q) { return q.skill; }), passed: !!S.passed, shown: S.shown || null, missed: S.missed || null } : null; };
   /* the answer to question i, for the tests (never shown to a boy) */
   U.__solve = function () { if (!S || S.view !== 'q') return null; var q = S.qs[S.i]; return q.kind === 'mc' ? { pick: q.o.indexOf(q.a) } : q.kind === 'order' ? { order: q.tiles.map(function (x) { return S.ord.pool.indexOf(x); }) } : null; };
 
   /* ---------- the hooks: before a lesson starts (TEST- boys only while CU_LIVE is 'test') ---------- */
+  /* The hook never waits on the network and never leaves a lesson button doing nothing:
+     - it acts only when his unit results are already loaded (they load in the background as soon as a TEST- boy is signed in);
+     - a lesson is always (re)started through the WHOLE chain of add-ons (window.startMission, so One Bite still takes over), with a one-time pass;
+     - a boss he closes or fails is not forced again in this visit (he gets Practice instead), and a check without enough questions never blocks. */
+  var PASS = false, OFFERED = {};
+  function restart(c, id, kind) { PASS = true; try { W.startMission(c, id, kind || 'skill'); } finally { PASS = false; } }
+  U.start = restart;
   function hook() {
     if (U.origStart || typeof W.startMission !== 'function') return !!U.origStart;
     var orig = U.origStart = W.startMission;
     W.startMission = function (c, id, kind) {
-      var args = arguments, go = function () { return orig.apply(W, args); };
-      if ((kind && kind !== 'skill') || !live() || !OF[id] || mastered(id)) return go();
-      var u = BY[OF[id]], prev = prevUnit(u);
-      U.mine().then(function (m) {
-        var pr = prev && m[prev.id];
-        var prevDone = prev && prev.skills.every(function (s) { return mastered(s) || (pr && pr.shown && pr.shown.indexOf(s) >= 0); });
-        if (prev && prevDone && !(pr && pr.passed)) return U.check(prev).then(function (r) { if (r && r.passed) go(); });
-        if (u.skills.length >= 3 && !(m[u.id] && m[u.id].pre) && !u.skills.some(mastered) && u.skills[0] === id)
-          return U.pre(u).then(function (r) { var sh = (r && r.shown) || []; if (sh.indexOf(id) < 0) return go();
-            var nx = u.skills.filter(function (s) { return sh.indexOf(s) < 0 && !mastered(s); })[0]; if (nx) orig.call(W, c, nx, kind); });
-        return go();
-      });
+      if (PASS || (kind && kind !== 'skill') || !live() || !OF[id] || mastered(id) || !MINE) return orig.apply(W, arguments);
+      var m = MINE, u = BY[OF[id]], prev = prevUnit(u), pr = prev && m[prev.id];
+      var prevDone = prev && prev.skills.every(function (s) { return mastered(s) || (pr && pr.shown && pr.shown.indexOf(s) >= 0); });
+      if (prev && prevDone && !(pr && pr.passed) && !OFFERED[prev.id]) { OFFERED[prev.id] = 1;
+        U.check(prev).then(function (r) { if (r && (r.passed || r.skipped || !r.done)) restart(c, id, kind); });   /* passed, no check to give, or he closed it: his lesson opens. Failed: Practice is on the screen. */
+        return; }
+      if (u.skills.length >= 3 && !(m[u.id] && m[u.id].pre) && !OFFERED['pre:' + u.id] && !u.skills.some(mastered) && u.skills[0] === id) { OFFERED['pre:' + u.id] = 1;
+        U.pre(u).then(function (r) { var sh = (r && r.shown) || [];
+          var nx = sh.indexOf(id) < 0 ? id : (u.skills.filter(function (s2) { return sh.indexOf(s2) < 0 && !mastered(s2); })[0] || id);
+          restart(c, nx, kind); });
+        return; }
+      return orig.apply(W, arguments);
     };
     return true;
   }
+  /* load his unit results in the background once a TEST- boy (or any boy when 'on') is signed in */
+  (function warm() { try { if (live() && !MINE && !U.loading) { U.loading = true; U.mine().then(function () { U.loading = false; }); } } catch (e) {} setTimeout(warm, MINE ? 60000 : 3000); })();
   if (!hook()) { var tries = 0; (function again() { if (hook() || tries++ > 600) return; setTimeout(again, 100); })(); }
 
   function css() { if (document.getElementById('cu-css')) return; var s = document.createElement('style'); s.id = 'cu-css'; s.textContent = '' +

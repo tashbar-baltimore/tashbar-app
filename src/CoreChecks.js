@@ -18,7 +18,7 @@ function cuRows_() { var sh = cuTab_(), n = sh.getLastRow(); return n < 2 ? [] :
 function cuJson_(t, d) { try { return JSON.parse(t || '') || d; } catch (e) { return d; } }
 function cuKid_(token) { var s = msSession_(token); if (!s || s.role !== 'kid' || !s.sid) throw new Error('This is for students only.'); return String(s.sid); }
 function cuOkUnit_(id) { id = String(id || ''); if (!/^[A-Z][A-Z0-9]*\.U\d{2}$/.test(id)) throw new Error('Unknown unit.'); return id; }
-function cuIds_(a) { return (Array.isArray(a) ? a : []).map(String).filter(function (x) { return /^(READ|LANG|WRIT|SCI|SS)\.[A-Z]+\.L\d\d\.\d\d(\.[a-z])?$/.test(x); }).slice(0, 40); }
+function cuIds_(a) { return (Array.isArray(a) ? a : []).map(String).filter(function (x) { return /^(READ|LANG|WRIT|SCI)\.[A-Z]+\.L\d\d\.\d\d(\.[a-z])?$/.test(x); }).slice(0, 12); }   /* a unit has at most 12 skills */
 function cuRow_(r) { return { unit: String(r[1]), pre: !!Number(r[2]), shown: cuJson_(r[3], []), passed: !!Number(r[4]), right: Number(r[5]) || 0, total: Number(r[6]) || 0, missed: cuJson_(r[7], []), tries: Number(r[8]) || 0, at: r[9] ? new Date(r[9]).getTime() : 0 }; }
 
 function cuSave(token, unitId, kind, result) {
@@ -30,6 +30,7 @@ function cuSave(token, unitId, kind, result) {
     for (var i = 0; i < rows.length; i++) if (String(rows[i][0]) === sid && String(rows[i][1]) === unitId) { at = i; break; }
     var r = at >= 0 ? rows[at].slice() : [sid, unitId, 0, '[]', 0, 0, 0, '[]', 0, ''];
     if (kind === 'pre') { if (Number(r[2])) return { ok: true, row: cuRow_(r), already: true };   /* one pre-check per unit: no fishing for skips */
+      if (at < 0 && rows.filter(function (x) { return String(x[0]) === sid && Number(x[2]); }).length >= 60) throw new Error('Too many pre-checks.');   /* a cap, so skips cannot be piled up without end */
       r[2] = 1; r[3] = JSON.stringify(cuIds_(result.shown)); }
     else { var tot = Math.max(1, Math.min(30, Math.round(Number(result.total) || 0))), right = Math.max(0, Math.min(tot, Math.round(Number(result.right) || 0)));
       var passed = right / tot >= CU.PASS; r[4] = (Number(r[4]) || passed) ? 1 : 0; r[5] = right; r[6] = tot; r[7] = JSON.stringify(passed ? [] : cuIds_(result.missed)); r[8] = (Number(r[8]) || 0) + 1; }

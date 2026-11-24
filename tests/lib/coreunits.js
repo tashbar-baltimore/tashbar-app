@@ -59,8 +59,8 @@ async function page(pg) {
       const out = { bad: [], looks: [], saves: [] }, sleep = ms => new Promise(x => setTimeout(x, ms)), Q = s => document.querySelector(s);
       const ids = Object.keys(BANK_ALL).filter(id => /^READ\.COMP\.L05\.\d\d$/.test(id)).sort().slice(0, 4);
       if (ids.length < 4) { out.bad.push('not enough Level 5 Reading lessons for the made-up unit'); return out; }
-      const U = TLCORE.units; const unit = { id: 'ZZTEST.U' + String(10 + Math.floor(Math.random() * 80)), title: 'Made-up Unit', c: 'READ', grade: 4, skills: ids.slice(0, 3), review: [ids[3]], n: 8 };
-      out.err = U.err(unit); U.add(unit);
+      const U = TLCORE.units; const unit = { id: 'ZZTEST.U77', title: 'Made-up Unit', c: 'READ', grade: 4, skills: ids.slice(0, 3), review: [ids[3]], n: 8 };
+      out.err = U.err(unit); U.add(unit); U.reset();
       const orig = window.google.script.run;
       const chain = (okf, nof) => new Proxy({}, { get(_, k) { if (k === 'withSuccessHandler') return f => chain(f, nof); if (k === 'withFailureHandler') return f => chain(okf, f); if (k === 'withUserObject') return () => chain(okf, nof);
         return (...a) => setTimeout(() => { if (k === 'cuSave') { out.saves.push([a[1], a[2], a[3]]); return okf && okf({ ok: true, row: { unit: a[1], pre: a[2] === 'pre', passed: a[2] === 'check' && a[3].right / a[3].total >= .8, shown: a[3].shown || [] } }); }
@@ -78,8 +78,7 @@ async function page(pg) {
       /* 2. all wrong: practice the missed lesson */
       p = U.check(unit); await sleep(60); Q('#cun [data-cu=start]').click(); await sleep(20); await play(false); await look('almost'); out.almost = (Q('#cun .cu-end h2') || {}).textContent;
       out.practice = [...document.querySelectorAll('#cun [data-cu=practice]')].map(b => b.getAttribute('data-k'));
-      let started = null; const keep = U.origStart; U.origStart = (c, id, kind) => { started = [c, id, kind]; };
-      Q('#cun [data-cu=practice]').click(); out.r2 = await p; out.started = started; U.origStart = keep;
+      Q('#cun [data-cu=practice]').click(); out.r2 = await p; await sleep(60); out.started = A.play ? [A.play.c, A.play.id, A.play.kind, !!A.play.ob] : null; A.play = null; A.view = 'hub';
       /* 3. the pre-check: first two right */
       p = U.pre(unit); await sleep(60); await look('pre-entrance'); Q('#cun [data-cu=start]').click(); await sleep(20);
       let k = 0; while (U.state() && U.state().view === 'q' && k < 10) { const s = U.__solve(), st = U.state(), good = k < 2;
@@ -89,7 +88,10 @@ async function page(pg) {
       await look('pre-result'); out.preText = (Q('#cun .cu-end h2') || {}).textContent; Q('#cun [data-cu=done]').click(); out.r3 = await p;
       /* 4. the hook: a TEST- boy starting the unit's first lesson gets the pre-check first */
       const prevLive = window.CU_LIVE; window.CU_LIVE = 'test'; U.reset(); A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.st.skills = {};
+      startMission('READ', unit.skills[0], 'skill'); await sleep(150); out.noWait = !Q('#cun') && !!A.play;   /* results not loaded yet: the lesson just opens */
+      A.play = null; A.view = 'hub'; await U.mine();
       startMission('READ', unit.skills[0], 'skill'); await sleep(150); out.hook = !!Q('#cun') && U.state() && U.state().mode; if (Q('#cun')) Q('#cun [data-cu=exit]').click();
+      await sleep(80); out.afterPre = A.play ? [A.play.id, !!A.play.ob] : null; A.play = null; A.view = 'hub';
       window.CU_LIVE = prevLive; window.google.script.run = orig; A.play = null; A.view = 'hub'; try { render(); } catch (e) {}
       return out;
     }).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 300)], looks: [], saves: [] }));
@@ -99,7 +101,9 @@ async function page(pg) {
     if (!(r.n >= 4) || !r.review) fails.push(at + 'the unit check must mix every skill and a review skill (' + r.n + ' questions, review ' + r.review + ')');
     if (r.win !== 'Unit cleared!' || !r.r1.passed) fails.push(at + 'all right must clear the unit (' + r.win + ')');
     if (r.almost !== 'Almost there!' || r.r2.passed || !r.practice.length) fails.push(at + 'all wrong must say "Almost there!" with lessons to practice');
-    if (!r.started || r.started[1] !== r.practice[0] || r.started[2] !== 'skill') fails.push(at + '"Practice" must open exactly the missed lesson (' + JSON.stringify(r.started) + ')');
+    if (!r.started || r.started[1] !== r.practice[0] || !r.started[3]) fails.push(at + '"Practice" must open exactly the missed lesson, as a One Bite lesson (' + JSON.stringify(r.started) + ')');
+    if (!r.noWait) fails.push(at + 'before his unit results load, a lesson must open at once (never wait on the internet)');
+    if (!r.afterPre || !r.afterPre[1]) fails.push(at + 'after the pre-check, his lesson must open, still as a One Bite lesson (' + JSON.stringify(r.afterPre) + ')');
     const pre = r.saves.find(s => s[1] === 'pre'), chk = r.saves.filter(s => s[1] === 'check');
     if (!pre || pre[2].shown.length !== 2 || !/already know 2/.test(r.preText || '')) fails.push(at + 'the pre-check must save the 2 skills he showed and tell him (' + r.preText + ')');
     if (chk.length !== 2 || chk[0][2].right !== chk[0][2].total || chk[1][2].right !== 0) fails.push(at + 'each unit check must be saved once with its score');
