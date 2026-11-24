@@ -64,5 +64,17 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.42", "Fork and Storm", "Read and spell or words (bossy r)", { after: "READ.PHON.L02.41", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.43", "Her, Bird, Fur", "Read er, ir and ur, which all say er", { after: "READ.PHON.L02.42", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.44", "Spell Bossy R", "Spell words with ar, or and er", { after: "READ.PHON.L02.43", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
-  ["READ.FLU.L02.22", "Talking in a Story", "Find who is talking and read the talking part with feeling", { after: "READ.PHON.L02.44", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }]
+  ["READ.FLU.L02.22", "Talking in a Story", "Find who is talking and read the talking part with feeling", { after: "READ.PHON.L02.44", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }],
+  ["READ.PA.L02.20", "Every Beat Has a Vowel", "Hear the beats in a word: every beat has a vowel", { after: "READ.PHON.L02.03", std: "RF.1.3d", file: "CoreDataFH2", min: 5 }],
+  ["READ.PHON.L02.45", "Rabbit Split", "Split a two-beat word between two consonants and read it", { after: "READ.PA.L02.20", std: "RF.1.3e", file: "CoreDataFH2", min: 6 }],
+  ["READ.PHON.L02.46", "Fast, Faster, Fastest", "Read and use the endings -er and -est", { after: "READ.PHON.L02.45", std: "RF.1.3f", file: "CoreDataFH2", min: 6 }],
+  ["WRIT.HAND.L02.20", "Copy It Neatly", "Copy a sentence neatly: capital, spaces, end mark", { after: "WRIT.HAND.L02.01", std: "L.1.1a", file: "CoreDataFH2", min: 5 }],
+  ["READ.LV.L02.26", "Cloud and Cow", "Read ou and ow, which say ow", { after: "READ.FLU.L02.02", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.27", "Coin and Boy", "Read and spell oi inside a word and oy at the end", { after: "READ.LV.L02.26", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.28", "Moon and Book", "Read oo with its two sounds, as in moon and book", { after: "READ.LV.L02.27", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.FLU.L02.23", "Heart Words: friend, people", "Read and spell the heart words because, people, water and friend", { after: "READ.LV.L02.28", std: "RF.1.3g", file: "CoreDataFH2", min: 5 }],
+  ["READ.PHON.L02.47", "Hear It, Write It", "Hear a sentence and build it: words, capital and end mark", { after: "READ.FLU.L02.23", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
+  ["READ.PHON.L02.48", "Try the Vowel", "Read a new word by trying the other vowel sound", { after: "READ.PHON.L02.47", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
+  ["READ.FLU.L02.24", "Heart Word Dash", "Read the Grade 1 heart words quickly and surely", { after: "READ.PHON.L02.48", std: "RF.1.3g", file: "CoreDataFH2", min: 5 }],
+  ["READ.FLU.L02.25", "Read It 3 Times", "Read a short story 3 times: in phrases, smoothly, with expression", { after: "READ.FLU.L02.24", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }]
 ];
