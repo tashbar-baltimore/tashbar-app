@@ -130,10 +130,9 @@ export const WORDS = {
   yad: { letter: 'yud', say: 'Yad. A hand!' },
   yonah: { letter: 'yud', say: 'Yonah. A dove!' },
   kadur: { letter: 'kaf', say: 'Kadur. A ball!' },
-  kelev: { letter: 'kaf', say: 'Kelev. A dog!' },
   limon: { letter: 'lamed', say: 'Limon. A lemon!' },
   mayim: { letter: 'mem', say: 'Mayim. Water!' },
   melafefon: { letter: 'mem', say: 'Melafefon. A cucumber!' },
   nemalah: { letter: 'nun', say: 'Nemalah. An ant!' },
 };
-export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', kelev: 'Kelev', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah' };
+export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah' };

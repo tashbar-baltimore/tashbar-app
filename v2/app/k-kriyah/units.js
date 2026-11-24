@@ -14,7 +14,7 @@ export const UNITS = [
     ] },
   { n: 2, letters: ['gimmel', 'daled', 'hei'], known: ['alef', 'beis', 'veis'],
     games: [
-      { id: 'u2g0', name: 'Shloimy at the zoo', kind: 'story2', icon: 'grapes' },
+      { id: 'u2g0', name: 'Shloimy at the zoo', kind: 'story2', icon: 'balloon' },
       { id: 'u2g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
       { id: 'u2g2', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },
       { id: 'u2g3', name: 'Alef-Beis Train', kind: 'train', icon: 'train' },
