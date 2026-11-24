@@ -588,15 +588,93 @@ function homeHTML(ws,P){ const nm0=String((A.st&&A.st.name)||'').trim().split(/\
  tiles+=tile('food','🥪','Canteen','Buy food with your money','data-cno="open"');   /* HoS 2026-11-23: opens the 3D canteen (CanteenKid.html): buy food, get canteen money, money story, money lessons */
  tiles+=tile('store','🛍️','Store',`You have <b>${money()}</b>`,'data-gmnav="money"');
  tiles+=tile('arcade'+(P.open?'':' locked'),'🎮','Arcade',P.open?'Open! Go play.':'Opens when your work is done','data-gmnav="games"',P.open?'':'🔒');
- tiles+=tile('things','🎒','My things','Trophies, lessons, my stuff','data-gmnav="more"');
+ tiles+=tile('things',pfAv('pr-tav'),'My profile','Badges, levels, my stuff','data-gmnav="more"');   /* HoS 2026-11-24: My things became My profile (his picture on the tile) */
  return `<div class="gm-hi"><h1>${hi}${nm0?', '+esc(nm0):''}!</h1><p>${dots}${line}</p></div>${ws.length?'':noMapHTML()}<div class="gm-hts">${tiles}</div>`; }
-function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2');
- const rows=k2?[]:[['🏆','My trophies','Your rank, your week, what you learned.','data-gmnav="me"']];
- rows.push(['📚','All my lessons','Every subject. Pick any lesson.','data-gm="lib"']);
- if(!k2&&ws.length) rows.push(['🌳','Skill tree','Every skill on your map, in order.','data-gm="treeview"']);
- rows.push(['🎒','My stuff','Bank, passport, Shabbos page and more.','data-gm="stuff"']);
- if(pfOn()) rows.push(['🧭','Pathfinder','Your level checks.','data-gm="pf"']);
- return `<div class="gm-pg"><h1>My things</h1><p class="gm-why">Your trophies, lessons and stuff.</p></div><div class="gm-shelves">${rows.map(r=>`<button type="button" class="gm-shelf" ${r[3]}><i>${r[0]}</i><span>${r[1]}<small>${r[2]}</small></span><em>›</em></button>`).join('')}</div>`; }
+/* ===== MY PROFILE (HoS 2026-11-24, boss cleared the general page; mock-up from Claude Chat): "My things" became "My profile".
+   One page with who he is (his picture, name, grade, the code reminder, days in a row, badges, lessons), his settings, Sign out,
+   his levels in every subject, what he finished lately, his badges, his bank, what he bought, his things from the store, and the doors
+   that were on My things / My stuff. Nothing new is paid or counted here: every number comes from his map, his state or the store
+   (stInfo), and every door presses the same button as before. His picture is kept in his state (st.av) and shared with the Arena. */
+const PF_AVS=['🦁','🦅','🐻','🦌','🐬','🐢','🦉','🐝','🐎','🐑','🦒','🐘','🚀','⭐','🎺','🏰'];   /* the Arena's pictures (ArenaPage.html AVS) */
+function pfAvOf(){ const a=A.st&&A.st.av; return PF_AVS.indexOf(a)>=0?a:''; }
+function pfAv(cls){ const a=pfAvOf(), n=String((A.st&&A.st.name)||'').trim();
+ return a?`<span class="${cls}" aria-hidden="true">${a}</span>`:`<span class="${cls} ltr" aria-hidden="true">${esc((n[0]||'?').toUpperCase())}</span>`; }
+function pfGrade(){ const g=M()&&M().grade; return g==null||g===''?'':Number(g)===0?'Kindergarten':'Grade '+Number(g); }
+function pfSoundOn(){ try{ return typeof SND==='undefined'||SND.on!==false; }catch(e){ return true; } }
+const PF_SHELF=[['trail','🌈 Trails'],['tap','💥 Tap blasts'],['color','🎨 App colors'],['bonus','🎁 Bonuses'],['home','🏠 Home upgrades'],['other','✨ Other things']];
+const PF_LINE={bank:'Your money and paychecks',badges:'Every badge and what it pays',map:'See how far you have come',pass:'Stamps for what you learned',p3replay:'Watch your week, step by step',p3shab:'Share your learning at the Shabbos table'};
+function moreHTML(ws,P){ const k2=document.body.classList.contains('gm-k2'), st=A.st||{}, Q=window.TLK, nm0=String(st.name||'').trim();
+ const sec=(t,extra)=>`<h2 class="pr-sec">${t}${extra||''}</h2>`;
+ /* who he is */
+ const streak=(st.streak&&st.streak.n)||0, earned=BADGES.filter(b=>(st.badges||[]).indexOf(b[0])>=0).length, g=M()&&M().growth, lessons=g&&g.total!=null?g.total:steps();
+ const snd=pfSoundOn();
+ const me=`<aside class="pr-me"><div class="pr-big">${pfAv('pr-bav')}</div>${Q.quiet('Change','data-gm="pfav" aria-label="Change my picture"','tlk-small')}
+  <h1>${esc(nm0||'Me')}</h1>${pfGrade()?`<p class="pr-gr">${pfGrade()}</p>`:''}
+  <div class="pr-code"><b>My code <span aria-hidden="true">• • • •</span></b><small>Your teacher can help if you forget it.</small></div>
+  <div class="pr-boxes">${Q.box('rank','Days in a row',String(streak))}${Q.box('rank','Badges',String(earned))}${Q.box('prog','Lessons done',String(lessons))}</div>
+  <h2 class="pr-sec">My settings</h2>
+  <div class="pr-set"><span>Sound</span>${Q.pill(snd?'prog':'lock',snd?'On':'Off')}${Q.quiet(snd?'Turn off':'Turn on','data-gm="pfsnd"','tlk-small')}</div>
+  <div class="pr-set"><span>Music</span>${Q.quiet('Choose music','data-gm="pfmus"','tlk-small')}</div>
+  <div class="pr-out">${Q.quiet('Sign out','data-gm="pfout"')}</div></aside>`;
+ /* his levels */
+ const isDone=(w,x)=>!!(x[2]||done(x[0]));
+ let lv=ws.map(w=>{ const sk=(w.c&&w.c.skills)||[], tot=sk.length||w.ids.length, dn=sk.length?sk.filter(x=>isDone(w,x)).length:w.ids.filter(id=>done(id)).length, pc=tot?Math.round(100*dn/tot):0;
+  return `<div class="pr-lv"><div class="r">${Q.pill('subj',w.name)}${Q.pill('rank','Level '+w.level)}<span class="n">${dn} of ${tot} steps</span></div><span class="pr-bar" role="img" aria-label="${dn} of ${tot} steps"><i style="width:${pc}%"></i></span></div>`; }).join('');
+ if(!lv) lv='<p class="pr-none">Your rebbe or teacher sets your levels. Until then, find your levels below.</p>';
+ const find=document.querySelector('#app [data-hp=levels]');
+ const levels=sec('My levels')+`<div class="pr-card">${lv}</div>`+(find?`<div class="pr-row">${Q.quiet('Find my levels',px(find).trim())}</div>`:'');
+ /* what he finished lately (his map's growth: mastered steps in the last 7 days) */
+ const wk=((g&&g.week)||[]).slice(0,5), subjOf=id=>{ const w=ws.find(x=>x.ids.indexOf(id)>=0||((x.c&&x.c.skills)||[]).some(s=>s[0]===id)); return w?w.name:''; };
+ const fin=sec('Recently finished')+`<div class="pr-card">${wk.length?wk.map(x=>`<div class="pr-li">${subjOf(x[0])?Q.pill('subj',subjOf(x[0])):''}<b>${esc(nm(x[0])[0])}</b><span class="sp"></span><span class="d">${esc(dayWord(x[1]))}</span></div>`).join(''):'<p class="pr-none">Nothing finished this week yet. Your next lesson is waiting on My map.</p>'}</div>`;
+ /* badges (the same 8 as My trophies; earned = in his state) */
+ const R=rankOf(steps()).r;
+ const bdg=sec('My badges',' '+Q.pill('prog',earned+' of '+BADGES.length+' earned')+' '+Q.pill('rank','Rank: '+R[2]))+`<div class="pr-bdg">${BADGES.map(b=>{ const on=(st.badges||[]).indexOf(b[0])>=0;
+  return `<div class="pr-b${on?' on':''}"><span class="e" aria-hidden="true">${b[1]}</span><b>${esc(b[2])}</b>${Q.pill('money',b[5])}${on?Q.pill('rank','Earned'):''}</div>`; }).join('')}</div>`;
+ /* bank (the server's numbers) */
+ const L=(st.ledger||[]).filter(x=>x&&x.at&&Number(x.amt)>0), last=L[0];
+ const bank=sec('My bank')+`<div class="pr-two">${Q.box('money','Balance',money())}${last?Q.box('money','Latest money in · '+dayWord(last.at),'+$'+Number(last.amt).toFixed(2)):Q.box('money','Latest money in','None yet')}</div><div class="pr-row">${Q.quiet('Open my bank','data-gm="room" data-t="bank"')}</div>`;
+ /* what he bought, and his things (the store's own list) */
+ const I=storeInfo(), items={}; ((I&&I.items)||[]).forEach(x=>{ items[x.id]=x; });
+ const SW={waiting:'⏳ On its way',handed:'✅ Got it',cancelled:'↩️ Money back'};
+ const ord=((I&&I.orders)||[]).slice(0,5).map(o=>{ const it=items[o.item]||{}, kept=it.kind==='wear'||it.kind==='keep', w=o.status==='cancelled'?SW.cancelled:kept?'':(SW[o.status]||'✅ Done');
+  return `<div class="pr-li"><span class="e" aria-hidden="true">${esc(o.emoji||'🎁')}</span><b>${esc(o.label||it.name||'')}<small>${esc(it.cat==='real'?'Real prize':/canteen|card/.test(it.kind||'')?'Canteen':'Store')} · ${esc(dayWord(o.at))}</small></b><span class="sp"></span>${Q.pill('money','$'+(Number(o.cents||0)/100).toFixed(2))}${w?Q.pill('prog',w):''}</div>`; }).join('');
+ const bought=sec('Recently bought')+`<div class="pr-card">${!I?'<p class="pr-none">Loading…</p>':ord||'<p class="pr-none">Nothing bought yet.</p>'}</div>`+(ord?`<div class="pr-row">${Q.quiet('See all','data-gm="pfshop" data-t="mine"')}</div>`:'');
+ const wear=(st.store&&st.store.wear)||{}, own=((I&&I.owned)||[]).map(id=>items[id]).filter(Boolean), by={};
+ own.forEach(x=>{ const k=x.slot==='trail'||x.slot==='tap'||x.slot==='color'?x.slot:x.slot==='theme'||x.grp==='home'?'home':x.grp==='bonus'?'bonus':'other'; (by[k]=by[k]||[]).push(x); });
+ const shelves=PF_SHELF.filter(s=>by[s[0]]).map(s=>`<div class="pr-shelf"><div class="h"><b>${s[1]}</b>${by[s[0]].some(x=>x.kind==='wear')?Q.quiet('Change','data-gm="pfshop" data-t="fun"','tlk-small'):''}</div>${by[s[0]].map(x=>`<div class="pr-it"><span class="e" aria-hidden="true">${esc(x.emoji||'🎁')}</span>${esc(x.name)}${wear[x.slot]===x.id?' '+Q.pill('prog','In use'):''}</div>`).join('')}</div>`).join('');
+ const stuff=sec('My stuff')+(!I?'<div class="pr-card"><p class="pr-none">Loading…</p></div>':shelves?`<div class="pr-shelves">${shelves}</div>`:'<div class="pr-card"><p class="pr-none">Nothing yet. Things you buy in the Tashbar Store show up here.</p></div>');
+ /* doors: the same buttons My things and My stuff pressed */
+ const T=(ic,ti,sub,attr)=>`<button type="button" class="tlk tlk-tile pr-tile" ${attr}><span class="e" aria-hidden="true">${ic}</span><b>${esc(ti)}</b><small>${esc(sub)}</small></button>`;
+ const mine=document.querySelector('.hlx-mine'); let doors='';
+ const store=mine&&[...mine.querySelectorAll('#hlx-mrow > .hlx-btn')].find(b=>/store/i.test(b.textContent));
+ doors+=store?T('🛍️','Tashbar Store','Find more things to buy',px(store).trim()):T('🛍️','Tashbar Store','Find more things to buy','data-gmnav="money"');
+ if(mine) [...mine.querySelectorAll('#hlx-mrow > .hlx-btn')].forEach(b=>{ const key=b.dataset.t||b.dataset.tj||b.dataset.act||'', ic=(b.querySelector('.ic')||{}).textContent||'⭐', ti=b.textContent.replace(ic,'').replace(/\s+/g,' ').trim();
+  if(b===store||b.dataset.hp==='levels'||key==='bank'||key==='badges') return;   /* the store, Find my levels, the bank and the badges have their own place above */
+  doors+=T(ic,ti,PF_LINE[key]||'',b.dataset.hp==='tab'?`data-gm="room" data-t="${esc(b.dataset.t)}"`:px(b).trim()); });
+ doors+=T('📚','All my lessons','Every lesson in one place','data-gm="lib"');
+ if(!k2&&ws.length) doors+=T('🌳','Skill tree','Every skill on your map, in order','data-gm="treeview"');
+ if(!k2) doors+=T('📈','My week','Your rank and what you learned','data-gmnav="me"');
+ const more=sec('More of my things')+`<div class="pr-tiles">${doors}</div>`;
+ return `<div class="gm-pf"><div class="pr-title">My profile</div><div class="pr-cols">${me}<div class="pr-main">${levels}${fin}${bdg}${bank}${bought}${stuff}${more}</div></div></div>`; }
+/* his picture: a pop-up with the Arena's pictures (round X top right); kept in his state and given to the Arena too */
+function pfPick(){ const Q=window.TLK; let d=document.getElementById('pr-pick'); if(!d){ d=document.createElement('div'); d.id='pr-pick'; d.setAttribute('role','dialog'); d.setAttribute('aria-label','Pick your picture'); document.body.appendChild(d); }
+ const cur=pfAvOf(); d.innerHTML=`<div class="pr-pk">${Q.x('data-gm="pfavx"','tr')}<h2>Pick your picture</h2><div class="pr-avs">${PF_AVS.map(a=>`<button type="button" class="pr-avb${a===cur?' on':''}" data-gm="pfavk" data-k="${a}" aria-label="${a}" aria-pressed="${a===cur}">${a}</button>`).join('')}</div></div>`; }
+function pfClick(a,b){
+ if(a==='pfav'){ try{ SND.tap(); }catch(x){} pfPick(); return true; }
+ if(a==='pfavx'){ const d=document.getElementById('pr-pick'); if(d) d.remove(); return true; }
+ if(a==='pfavk'){ const k=b.dataset.k; if(PF_AVS.indexOf(k)<0||!A.st) return true; A.st.av=k; try{ localStorage.setItem('arAv',k); }catch(x){} try{ saveStudent(A.st); }catch(x){}
+  const d=document.getElementById('pr-pick'); if(d) d.remove(); GM.sig=''; sync(); pfDot(GM.tab==='home'); return true; }
+ if(a==='pfsnd'){ const on=pfSoundOn(); try{ if(window.TL_MENU) TL_MENU.actions.setSound(!on); else { const s=document.createElement('button'); s.dataset.act='sound'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); } }catch(x){} setTimeout(()=>{ GM.sig=''; sync(); },60); return true; }
+ if(a==='pfmus'){ try{ if(window.TL_MENU) TL_MENU.actions.openMusicPanel(); }catch(x){} return true; }
+ if(a==='pfout'){ try{ if(window.TL_MENU) TL_MENU.actions.signOut(); else { const s=document.createElement('button'); s.dataset.act='signout'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); } }catch(x){} return true; }
+ if(a==='pfshop'){ try{ SND.tap(); }catch(x){} try{ if(window.TLSTORE) TLSTORE.tab=b.dataset.t||'fun'; if(window.tlStore) tlStore(true); }catch(x){} return true; }
+ return false; }
+/* the small round picture next to Workbook on the home, in front of the corner menu: opens My profile (the tile is the other way in) */
+function pfDot(on){ let d=document.getElementById('pr-av'); on=!!on&&typeof A!=='undefined'&&A&&A.view==='hub'&&!!A.st;
+ if(!on){ if(d) d.remove(); document.body.classList.remove('pr-av-on'); return; }
+ if(!d){ d=document.createElement('button'); d.type='button'; d.id='pr-av'; d.setAttribute('aria-label','My profile'); d.dataset.gmnav='more'; document.body.appendChild(d); }
+ const h=pfAv('pr-dav'); if(d.innerHTML!==h) d.innerHTML=h; document.body.classList.add('pr-av-on'); }
+setInterval(()=>{ try{ pfDot(document.body.classList.contains('gm-on')&&GM.tab==='home'); }catch(e){} },800);
 /* PATH (HoS 2026-11-20): the page starts where he is and runs DOWN to the BOSS at the end; a longer path with wide, gentle curves;
    a small floating number over every step (1, 2, 3 ...); quiet subject symbols in the empty space beside the path (Math + - x / ...). */
 const DECO={MATH:['+','−','×','÷','=','%','½','<','>'],READ:['A','b','?','!','“','”','a','Z'],LANG:['✎','A','?','!','a','.'],
@@ -781,7 +859,7 @@ function usd(x){ const v=Math.abs(Number(x)||0); return '$'+v.toFixed(2); }
    4. Things I bought. All amounts come from the server (ledger); this page only shows them. */
 function storeInfo(){ const I=window.TLSTORE&&TLSTORE.info; if(I) return I;
  if(!GM.infoAsk&&typeof SRV!=='undefined'&&SRV.token&&window.google&&google.script&&google.script.run){ GM.infoAsk=1;
-  try{ google.script.run.withSuccessHandler(r=>{ if(r&&r.ok&&window.TLSTORE){ TLSTORE.info=r; TLSTORE.at=Date.now(); GM.sig=''; if(GM.tab==='money') sync(); } }).withFailureHandler(()=>{}).stInfo(SRV.token); }catch(e){} }
+  try{ google.script.run.withSuccessHandler(r=>{ if(r&&r.ok&&window.TLSTORE){ TLSTORE.info=r; TLSTORE.at=Date.now(); GM.sig=''; if(GM.tab==='money'||GM.tab==='more') sync(); } }).withFailureHandler(()=>{}).stInfo(SRV.token); }catch(e){} }
  return null; }
 function dayWord(at){ const d=new Date(at), t=new Date(), y=new Date(t.getFullYear(),t.getMonth(),t.getDate()-1);
  return d.toDateString()===t.toDateString()?'Today':d.toDateString()===y.toDateString()?'Yesterday':d.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'}); }
@@ -907,6 +985,7 @@ function sync(){
  if(k2&&GM.tab==='me') GM.tab='map';
  const P=plan(ws), daily=checkDaily(ws); checkWin(ws,daily);
  const nh=navHTML(k2,P.left&&P.rounds.length?P.left:0); if(nv.innerHTML!==nh) nv.innerHTML=nh; document.body.classList.toggle('gm-home',GM.tab==='home'); document.body.classList.toggle('gm-lite',true);   /* HoS 2026-11-23: "give it all the same look": every page of his home is bright */
+ pfDot(GM.tab==='home');
  if(GM.tab==='home'){ const html=`<div class="gm-sun"></div><div class="gm-in gm-wide">${homeHTML(ws,P)}</div>`;
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  if(GM.tab!=='map'||!ws.length){ const T=ws.length?GM.tab:(GM.tab==='map'?'nomap':GM.tab); const body=T==='subjects'?subjectsHTML(ws):T==='more'?moreHTML(ws,P):T==='missions'?missionsHTML(ws):T==='me'?growthHTML(ws):T==='money'?moneyHTML():T==='games'?(P.open?arcadeOpenHTML():arcadeHTML(ws)):T==='lib'?libHTML():T==='mine'?stuffHTML():noMapHTML();
@@ -1007,6 +1086,7 @@ document.addEventListener('click',e=>{
  if(a==='room'){ room(b.dataset.t); return; }
  if(a==='mstory'){ try{ SND.tap(); }catch(x){} GM.mstory=b.dataset.v; GM.sig=''; sync(); return; }
  if(a==='roomx'){ const r=document.getElementById('gm-room'); if(r) r.remove(); return; }
+ if(a&&a.indexOf('pf')===0&&pfClick(a,b)) return;
  if(a==='lf'){ GM.lf=b.dataset.f; GM.sig=''; sync(); return; }
  if(a==='tree'){ try{ SND.tap(); }catch(x){} GM.view=GM.view==='tree'?'path':'tree'; root().scrollTop=0; GM.rescroll=GM.view!=='tree'; sync(); return; }
  if(a==='tn'){ try{ SND.tap(); }catch(x){} sheet(b.dataset.id,b.dataset.st); return; }
@@ -1086,6 +1166,73 @@ body #gm .gm-more{background:#fff;color:#047857}
 #gm .gm-shelves{display:flex;flex-direction:column;gap:10px;margin:16px auto 0;max-width:620px}
 #gm .gm-shelf{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;text-align:left;border:3px solid #FFD84D;border-radius:20px;background:#fff;color:#1E1B4B;padding:12px 16px;font:900 20px/1.15 var(--display,'Rubik'),'Inter',sans-serif;box-shadow:0 6px 0 rgba(43,20,120,.25);cursor:pointer}
 #gm .gm-shelf.on{background:#FFFBEA;border-color:#FFB800}
+/* MY PROFILE (HoS 2026-11-24): two columns on a Chromebook, one column on a phone (his card on top). Information is flat (kit pills
+   and boxes); buttons are the kit's. */
+#gm .gm-pf{max-width:1080px;margin:0 auto;padding:4px 0 120px;color:#1E1B4B}
+#gm .gm-pf .pr-title{font-weight:800;font-size:30px;line-height:1.1;letter-spacing:-.01em;margin:4px 0 14px;text-align:center}
+#gm .pr-cols{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}
+#gm .pr-me{display:flex;flex-direction:column;align-items:center;gap:8px;background:#fff;border-radius:22px;padding:16px 16px 18px;text-align:center}
+#gm .pr-big{width:88px;height:88px;border-radius:50%;background:#F5F3FF;border:4px solid #EDE9FE;display:grid;place-items:center}
+#gm .pr-bav{font-size:48px;line-height:1}
+#gm .pr-bav.ltr,#gm .pr-tav.ltr,.pr-dav.ltr{font-weight:800;color:#5B3FD0}
+#gm .pr-bav.ltr{font-size:42px}
+#gm .pr-me h1{margin:2px 0 0;font-size:22px;line-height:1.15}
+#gm .pr-gr{margin:0;color:#4C4A7A;font-weight:600}
+#gm .pr-code{width:100%;box-sizing:border-box;background:#F1F5F9;border-radius:12px;padding:8px 12px;text-align:left}
+#gm .pr-code b{display:block;font-size:15px}#gm .pr-code b span{letter-spacing:.2em;margin-left:6px}
+#gm .pr-code small{color:#475569;font-size:13px}
+#gm .pr-boxes{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%}
+#gm .pr-boxes .tlk-box{padding:8px 4px}#gm .pr-boxes .tlk-box small{font-size:10px;letter-spacing:.03em}
+#gm .pr-sec{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:22px 0 8px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#4C4A7A}
+#gm .pr-sec .tlk-pill{text-transform:none;letter-spacing:0;font-size:13px}
+#gm .pr-me .pr-sec{align-self:flex-start;margin:6px 0 0}
+#gm .pr-set{display:flex;align-items:center;gap:8px;width:100%;justify-content:space-between;font-weight:700}
+#gm .pr-set span:first-child{flex:1;text-align:left}
+#gm .pr-out{width:100%;margin-top:10px;padding-top:14px;border-top:1px solid #EEF0F6}
+#gm .pr-main>.pr-sec:first-child{margin-top:0}
+#gm .pr-card{background:#fff;border-radius:18px;padding:6px 14px}
+#gm .pr-lv{padding:10px 0;border-bottom:1px solid #F1F1F7}#gm .pr-lv:last-child{border-bottom:0}
+#gm .pr-lv .r{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+#gm .pr-lv .n,#gm .pr-li .d{margin-left:auto;white-space:nowrap;font-size:14px;font-weight:700;color:#075985}
+#gm .pr-bar{display:block;height:10px;border-radius:6px;background:#E0F2FE;overflow:hidden}
+#gm .pr-bar i{display:block;height:100%;border-radius:6px;background:#38BDF8}
+#gm .pr-row{margin-top:10px}
+#gm .pr-li{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #F1F1F7}#gm .pr-li:last-child{border-bottom:0}
+#gm .pr-li b{font-size:15px}#gm .pr-li b small{display:block;font-weight:600;color:#64748B;font-size:12px}
+#gm .pr-li .sp{flex:1}
+#gm .pr-li .e,#gm .pr-it .e{font-size:22px}
+#gm .pr-li .d{color:#64748B}
+#gm .pr-none{margin:8px 0;color:#64748B;font-weight:600}
+#gm .pr-bdg{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+#gm .pr-b{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:14px;background:#F8FAFC;text-align:center}
+#gm .pr-b .e{font-size:30px;filter:grayscale(1);opacity:.55}#gm .pr-b.on .e{filter:none;opacity:1}#gm .pr-b.on{background:#F5F3FF}
+#gm .pr-b b{font-size:13px;line-height:1.2;min-height:2.4em}
+#gm .pr-two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#gm .pr-two .tlk-box{text-align:left;padding:12px 16px}#gm .pr-two .tlk-box b{font-size:26px}
+#gm .pr-shelves{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#gm .pr-shelf{background:#fff;border-radius:18px;padding:12px 14px}
+#gm .pr-shelf .h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;min-height:44px}
+#gm .pr-it{display:flex;align-items:center;gap:8px;padding:5px 0;font-weight:600}
+#gm .pr-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#gm .tlk.tlk-tile.pr-tile{padding:14px 16px;gap:2px;min-height:112px}
+#gm .pr-tile .e{font-size:30px;line-height:1.1}#gm .pr-tile b{font-size:17px}#gm .pr-tile small{color:#64748B;font-weight:600;font-size:13px}
+#gm .gm-ht .ic .pr-tav{display:grid;place-items:center;width:1.5em;height:1.5em;border-radius:50%;background:#fff;box-shadow:0 0 0 6px rgba(255,255,255,.45);font-size:.82em;line-height:1}
+@media (max-width:860px){#gm .pr-cols{grid-template-columns:1fr}#gm .pr-tiles{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){#gm .pr-shelves,#gm .pr-two{grid-template-columns:1fr}#gm .pr-li{flex-wrap:wrap}}
+/* his picture by Workbook (outside #gm, like Workbook): round, the kit's floating look; Workbook steps left to make room */
+#pr-av{position:fixed;right:52px;top:calc(env(safe-area-inset-top) + 11px);z-index:60;width:44px;height:44px;padding:0;border-radius:50%;border:1.5px solid #E6E2F7;background:#fff;box-shadow:0 8px 20px rgba(30,27,75,.14),0 1px 3px rgba(30,27,75,.10);cursor:pointer;display:grid;place-items:center;-webkit-tap-highlight-color:transparent;transition:box-shadow .15s,transform .12s}
+#pr-av:active{box-shadow:0 1px 3px rgba(30,27,75,.14);transform:translateY(2px)}#pr-av:focus-visible{outline:3px solid #FDE047;outline-offset:3px}
+#pr-av .pr-dav{font-size:24px;line-height:1}
+body.pr-av-on #bbx-door{right:104px}
+@media (max-width:760px){body.pr-av-on.gm-home #gm .gm-hi{padding-top:46px}}
+/* the picture pop-up */
+#pr-pick{position:fixed;inset:0;z-index:2147482000;background:rgba(30,27,75,.35);display:grid;place-items:center;padding:16px}
+#pr-pick .pr-pk{position:relative;background:#fff;border-radius:22px;padding:22px 20px 20px;max-width:440px;width:100%;box-sizing:border-box;text-align:center;color:#1E1B4B}
+#pr-pick h2{margin:4px 56px 16px;font-size:22px}
+#pr-pick .pr-avs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+#pr-pick .pr-avb{aspect-ratio:1;border-radius:50%;border:1.5px solid #E6E2F7;background:#fff;font-size:34px;cursor:pointer;box-shadow:0 6px 14px rgba(30,27,75,.12);-webkit-tap-highlight-color:transparent}
+#pr-pick .pr-avb.on{border:3px solid #5B3FD0;background:#F5F3FF}
+#pr-pick .pr-avb:active{box-shadow:0 1px 3px rgba(30,27,75,.14);transform:translateY(2px)}
 #gm .gm-shelf i{font-style:normal;font-size:34px;line-height:1;flex:none}
 #gm .gm-shelf span{flex:1}
 #gm .gm-shelf small{display:block;margin-top:3px;font:700 14px/1.3 'Inter',system-ui,sans-serif;color:#5B5FA8}
