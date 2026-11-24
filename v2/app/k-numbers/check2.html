@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Count With Me! — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 2 MASTERY CHECK: finish counts that start at 1, at 4 and at 7, and a count down from ten
+     (MAP.md Unit 2). Same stone path; no hints during the check: after a miss we hear what comes next and go on. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="u2.css">
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="carrow" id="carrow"></div>
+  <div id="path"></div>
+  <div class="u2loose" id="loose"></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit2.js"></script>
+<script>
+(function () {
+  /* MAP.md Unit 2 check: finish counts that start at 1, 4 and 7, and one countdown from 10 (plus two more of the same kinds) */
+  var PLAN = [{ from: 1, to: 10, startN: 1, gapN: 5, say: 'Start at one.' }, { from: 1, to: 10, startN: 4, gapN: 7, say: 'Start at four.' },
+    { from: 1, to: 10, startN: 7, gapN: 10, say: 'Start at seven.' }, { from: 1, to: 10, startN: 10, gapN: 6, reverse: true, say: 'Count down from ten.' },
+    { from: 1, to: 10, startN: 3, gapN: 8, say: 'Start at three.' }, { from: 1, to: 10, startN: 9, gapN: 4, reverse: true, say: 'Count down from nine.' }];
+  U2.gapGame({
+    id: 'u2-check', title: 'Count With Me!', rounds: 6, check: true,
+    hero: '<svg viewBox="0 0 100 100" style="width:56%"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/></svg>',
+    endSay: function (s) { return s >= 2 ? 'Unit two is done! You can count to ten!' : 'Good try! Let\'s practice and try again.'; },
+    plan: function (i) { return PLAN[i]; },
+    demo: async function (F, setup) {
+      await F.say("Let's show what you learned!");
+      var x = setup({ from: 1, to: 5, startN: 1, gapN: 3 }); await U2.countAlong(x.P, 0, 1); await F.say('What comes next? Watch me.');
+      var loose = [].slice.call(document.querySelectorAll('#loose .u2stone')), bad = loose.filter(function (s) { return s.dataset.n !== '3'; })[0], good = loose.filter(function (s) { return s.dataset.n === '3'; })[0];
+      await F.handTo(bad); await F.handTap(); await F.say(U2.Word(+bad.dataset.n) + '! Not that one.', { noRepeat: true });
+      await F.handTo(good); await F.handTap(); await F.say('Three! That one.', { noRepeat: true });
+      await F.handDrag(good, x.P.stones[2]); good.remove(); x.P.fill(2); x.P.place(2, true);
+      await F.yes(x.P.stones[2], 'Tap to hear, then drag it in.');
+    }
+  });
+})();
+</script>
+</body>
+</html>

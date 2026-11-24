@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Count and Jump — Kindergarten Numbers</title>
+<!-- Kindergarten Numbers, Unit 2, game 1: COUNT AND JUMP. Skill: say the counting words in order to 10 (K.CC.1), with rhythm and movement.
+     "Hop to six!" Each tap on the big drum hops the ball one stone and the voice says the next number (he jumps along, standing up).
+     He presses the check when he hears "six". Too far or too short: "We are at eight. Listen for six." Second time: six glows.
+     Slow: paths of 1-5. Quick: a bonus past ten. -->
+<link rel="stylesheet" href="frame.css">
+<link rel="stylesheet" href="u2.css">
+<style>
+.stage{ grid-template-rows:auto auto auto; }
+.drumrow{ display:flex; align-items:center; justify-content:center; gap:clamp(20px,5vw,70px); }
+.goal{ box-shadow:0 7px 0 #1E9E5A, 0 0 0 8px rgba(34,180,94,.45) !important; }
+</style>
+</head>
+<body>
+<div id="game" class="locked"><div class="stage" id="stage">
+  <div class="carrow" id="carrow"></div>
+  <div id="path"></div>
+  <div class="drumrow"><button class="u2drum" id="drum" aria-label="Drum"></button>
+    <button id="check" class="dim btn3d b-green" aria-label="Stop here"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+</div></div>
+<script src="kit.js"></script>
+<script src="frame.js"></script>
+<script src="unit2.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var P, R, done, lastEasy = 0;
+  function idx(n) { return P.nums.indexOf(n); }
+  function hooks() {
+    var need = idx(R.t) - (P.at + queued), taps = [];
+    for (var k = 0; k < need; k++) taps.push({ tap: '#drum' });
+    GAME.right = function () { return taps.concat([{ tap: '#check' }]); };
+    GAME.wrong = function () { var w = idx(R.t) < P.nums.length - 1 ? need + 1 : need - 1, t = []; for (var k = 0; k < w; k++) t.push({ tap: '#drum' }); return t.concat([{ tap: '#check' }]); };
+  }
+  function ready() { var c = $('check'); c.classList.toggle('dim', P.at < 0); c.classList.toggle('ready', P.at >= 0 && GAME.phase === 'answer'); }
+  /* every tap is counted: taps wait in a line, and the ball hops and the voice says each number in turn (none is cut off).
+     He says the number first; a moment later the voice says it too. */
+  var queued = 0, pumping = null;
+  function hitDrum() { var d = $('drum'); d.classList.remove('hit'); void d.offsetWidth; d.classList.add('hit'); setTimeout(function () { d.classList.remove('hit'); }, 150); NK.sound.clap(); }
+  function drum() {
+    NK.unlock(); if (GAME.phase !== 'answer') return; hitDrum();
+    if (P.at + queued >= P.nums.length - 1) { if (!pumping) { NK.hush(); NK.say('That is the end!', { noRepeat: true }); } return; }
+    queued++; hooks(); if (!pumping) pumping = pump();
+  }
+  async function pump() {
+    while (queued > 0) { queued--; P.place(P.at + 1, true); ready(); await FR.wait(450); await NK.say(U2.Word(P.nums[P.at]) + '!', { noRepeat: true }); }
+    pumping = null; hooks();
+  }
+  async function check() {
+    NK.unlock(); if (GAME.phase !== 'answer' || P.at + queued < 0) return; GAME.phase = 'busy'; FR.lock(true);
+    if (pumping) await pumping;
+    var at = P.nums[P.at];
+    if (at === R.t) { var d = done; done = null; await FR.yes(P.stones[P.at], 'Yes! You stopped at ' + U2.word(R.t) + '!'); d(R.misses === 0); return; }
+    FR.oops(P.stones[P.at]); R.misses++;
+    await FR.say("Let's look. We are at " + U2.word(at) + '.'); await FR.say('Listen for ' + U2.word(R.t) + '.');
+    if (R.misses >= 2) {   /* third step: we tap together, the voice counting each tap, so the round always ends */
+      P.reset(); P.stones[idx(R.t)].classList.add('goal'); await FR.say("Let's tap together.");
+      for (var k = 0; k <= idx(R.t); k++) { await FR.handTo($('drum'), .5, .35); await FR.handTap(); hitDrum(); P.place(k, true); await FR.say(U2.Word(P.nums[k]) + '!', { noRepeat: true }); }
+      FR.handHide(); await FR.say('Stop! ' + U2.Word(R.t) + '!'); var d2 = done; done = null; await FR.yes(P.stones[idx(R.t)], 'We stopped at ' + U2.word(R.t) + '!'); d2(false); return;
+    }
+    P.reset(); await FR.say('Try again. Tap the drum.');
+    GAME.phase = 'answer'; FR.lock(false); ready(); hooks();
+  }
+  function round(F, i, pl) {
+    return new Promise(async function (res) {
+      GAME.phase = 'busy'; F.lock(true);
+      P = U2.path($('path'), { from: pl.from, to: pl.to }); R = { t: pl.t, misses: 0 }; ready();
+      if (pl.stand) await F.say('Stand up! Jump each time you tap!');
+      await F.say('Hop to ' + U2.word(pl.t) + '!', { repeat: 'Hop to ' + U2.word(pl.t) + '! Tap the drum, then check.' });
+      if (i === 0) { await F.say('Tap the drum to count.'); await F.say('Say each number. Then I say it too.'); }
+      queued = 0; done = res; GAME.phase = 'answer'; F.lock(false); ready(); hooks();   /* he taps only after the instructions */
+    });
+  }
+  FR.game({
+    id: 'u2-jump', title: 'Count and Jump', rounds: 5, bonusSay: 'Bonus! Hop past ten!',
+    hero: '<div style="width:60%">' + U2.DRUM + '</div>',
+    init: function () { $('drum').innerHTML = U2.DRUM; $('drum').addEventListener('pointerdown', function (e) { e.preventDefault(); drum(); }); $('check').addEventListener('click', check); },
+    reset: function () { lastEasy = 0; },
+    demo: async function (F) {
+      P = U2.path($('path'), { from: 1, to: 10 }); R = { t: 10, misses: 0 }; ready();
+      /* the plan's chant: count to ten while you jump and clap */
+      var c = $('clap'); c.hidden = false; await F.say('Stand up! Jump and clap. Count to ten!');
+      for (var j = 0; j < 10; j++) { NK.sound.clap(); c.classList.add('hit'); setTimeout(function () { c.classList.remove('hit'); }, 140); P.place(j, true); await F.say(U2.Word(j + 1) + '!', { noRepeat: true }); }
+      c.hidden = true; await F.say('Great jumping! Now the drum game.');
+      P = U2.path($('path'), { from: 1, to: 5 }); R = { t: 3, misses: 0 }; ready();
+      await F.say('Tap the drum. The ball hops and counts.');
+      await F.say('Hop to three! Watch me.');
+      for (var k = 0; k < 3; k++) { await F.handTo($('drum'), .5, .35); await F.handTap(); $('drum').classList.add('hit'); setTimeout(function () { $('drum').classList.remove('hit'); }, 150); NK.sound.clap(); P.place(k, true); await F.say(U2.Word(k + 1) + '!', { noRepeat: true }); }
+      await F.say('I heard three. I stop!'); await F.handTo($('check')); await F.handTap();
+      await F.yes(P.stones[2], 'Three! Yes!');
+    },
+    bonus: function (F) { return round(F, 9, { from: 11, to: 20, t: 15 }); },
+    /* a missed round adds a short, easier round (1-5) right after it; the main rounds stay the same */
+    round: async function (F, i) {
+      var pl = i < 2 ? { from: 1, to: 5, t: [3, 5][i] } : { from: 1, to: 10, t: [6, 8, 10][i - 2] };
+      pl.stand = i === 0 || i === 3; var r = await round(F, i, pl);
+      if (!r) { var t; do { t = 2 + Math.floor(Math.random() * 3); } while (t === lastEasy); lastEasy = t; await F.say("Let's try a short one."); await round(F, 99, { from: 1, to: 5, t: t }); }
+      return r;
+    }
+  });
+})();
+</script>
+</body>
+</html>
