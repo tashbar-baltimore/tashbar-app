@@ -102,10 +102,24 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   L.pieceMat = color => new THREE.MeshPhysicalMaterial({ color: vivid(color), roughness: 0.36, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.12, envMapIntensity: 0.22, sheen: 0.25, sheenColor: new THREE.Color('#FFFFFF'), sheenRoughness: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
   L.stickMat = color => new THREE.MeshPhysicalMaterial({ color: vivid(color), roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.0 });
   L.solidMat = color => L.pieceMat(color);
+  /* the props a game mode adds (beads' string, the puzzle board, the bridge, pencils, towers, the scale...) get the glossy toy finish.
+     Only plain, solid materials change; glowing, see-through and character materials are left as they are. */
+  const toyCache = new Map();
+  L.toyify = (root) => {
+    if (!root || (root.userData && root.userData.kind)) return;
+    root.traverse(o => {
+      if (!o.isMesh || !o.material || Array.isArray(o.material)) return;
+      const m = o.material; if (!m.isMeshStandardMaterial || m.isMeshPhysicalMaterial || m.transparent || m.map || (m.emissiveIntensity > 0 && (m.emissive.r + m.emissive.g + m.emissive.b) > 0)) return;
+      let t = toyCache.get(m); if (!t) { const matte = m.roughness >= 0.85;
+        t = new THREE.MeshPhysicalMaterial({ color: m.color.clone(), roughness: matte ? m.roughness : Math.min(m.roughness, 0.42), metalness: m.metalness, clearcoat: matte ? 0 : 0.75, clearcoatRoughness: 0.15, envMapIntensity: 0.3, flatShading: m.flatShading, side: m.side });
+        toyCache.set(m, t); }
+      o.material = t; o.castShadow = true;
+    });
+  };
 
   /* ---------- the far layer (drawn softly blurred, like a camera focused on the toys) ---------- */
   const FAR = 1;
-  function farify(o) { o.traverse(c => { c.layers.set(FAR); }); }
+  function farify(o) { o.traverse(c => { c.layers.set(FAR); c.castShadow = false; }); }   /* far things do not need to cast shadows on the toys: faster on a slow computer */
   const anim = [];   /* things that gently move: fn(t, q) */
   const noDepth = [];   /* far things that must not hide the near ground (the sky, the far ground) */
 
@@ -502,8 +516,514 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
 
 
-  const WORLDS = { playroom, toyland };
-  L.buildWorld = () => { (WORLDS[world] || playroom)(); };
+  /* ---------- more pieces for the worlds ---------- */
+  function palm(x, z, h, par, lean) {
+    const g = group(x, 0, z, par), tm = pm('#B98552', { roughness: 0.7, clearcoat: 0.2 }), lm = pm('#2FBF55', { roughness: 0.45, clearcoat: 0.4, side: THREE.DoubleSide }), L0 = lean || 0.25;
+    let px = 0, py = 0; for (let i = 0; i < 9; i++) { const s = 0.24 - i * 0.012; mesh(G.cyl, tm, px, py + h / 18, 0, s, h / 9 + 0.05, s, g); py += h / 9; px += L0 * (i / 9) * 0.35; }
+    const top = group(px, py, 0, g);
+    const leafS = new THREE.Shape(); leafS.moveTo(0, 0); leafS.quadraticCurveTo(0.6, 0.35, 2.4, 0); leafS.quadraticCurveTo(0.6, -0.15, 0, 0);
+    const lg = new THREE.ShapeGeometry(leafS, 12);
+    for (let i = 0; i < 8; i++) { const lf = new THREE.Mesh(lg, lm); lf.rotation.set(-Math.PI / 2 + 0.2, i / 8 * Math.PI * 2, -0.45); lf.scale.setScalar(h / 5.5); lf.castShadow = true; const pv = group(0, 0, 0, top); pv.rotation.y = i / 8 * Math.PI * 2; lf.rotation.set(0, 0, -0.5); lf.rotation.order = 'YXZ'; pv.add(lf); }
+    for (let i = 0; i < 3; i++) mesh(G.ball, pm('#8A5A2B', { roughness: 0.5 }), Math.cos(i * 2) * 0.22, -0.18, Math.sin(i * 2) * 0.22, 0.18, 0.2, 0.18, top);
+    const ph = x; anim.push((t, q) => { if (q >= 1) top.rotation.z = Math.sin(t * 0.7 + ph) * 0.05; });
+    return g;
+  }
+  function umbrella(x, z, h, c1, c2, par) {
+    const g = group(x, 0, z, par); mesh(G.cyl, pm('#FFFFFF'), 0, h / 2, 0, 0.05, h, 0.05, g); g.rotation.z = 0.12;
+    const st = paint(256, 64, (c, w, hh) => { for (let i = 0; i < 8; i++) { c.fillStyle = i % 2 ? c1 : c2; c.fillRect(i * w / 8, 0, w / 8, hh); } });
+    const top = new THREE.Mesh(new THREE.ConeGeometry(h * 0.62, h * 0.3, 32, 1, true), new THREE.MeshPhysicalMaterial({ map: st, roughness: 0.6, sheen: 0.6, side: THREE.DoubleSide })); top.position.y = h + h * 0.12; top.castShadow = true; g.add(top);
+    return g;
+  }
+  function sandcastle(x, z, s, par) {
+    const g = group(x, 0, z, par), m = pm('#F2CF8A', { roughness: 0.85, clearcoat: 0 }), d = pm('#E8BC6E', { roughness: 0.9, clearcoat: 0 });
+    mesh(G.box, m, 0, 0.5 * s, 0, 2.2 * s, 1.0 * s, 1.6 * s, g);
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([a, b]) => { mesh(G.cyl, m, a * 1.05 * s, 0.85 * s, b * 0.75 * s, 0.42 * s, 1.7 * s, 0.42 * s, g); mesh(G.cone, d, a * 1.05 * s, 2.0 * s, b * 0.75 * s, 0.5 * s, 0.6 * s, 0.5 * s, g); });
+    mesh(G.cyl, m, 0, 1.5 * s, 0, 0.6 * s, 1.1 * s, 0.6 * s, g); mesh(G.cone, d, 0, 2.4 * s, 0, 0.7 * s, 0.8 * s, 0.7 * s, g);
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(0.45 * s, 0.28 * s), std('#FF5A5A', { side: THREE.DoubleSide })); fl.position.set(0.22 * s, 3.1 * s, 0); g.add(fl); mesh(G.cyl, pm('#FFFFFF'), 0, 2.95 * s, 0, 0.02 * s, 0.7 * s, 0.02 * s, g);
+    mesh(G.box, pm('#8A5A2B'), 0, 0.3 * s, 0.81 * s, 0.4 * s, 0.6 * s, 0.03, g);
+    anim.push((t, q) => { if (q >= 1) fl.rotation.y = Math.sin(t * 2.2 + x) * 0.35; });
+    return g;
+  }
+  function bucket(x, z, s, c, par) { const g = group(x, 0, z, par); mesh(new THREE.CylinderGeometry(0.42, 0.32, 0.7, 24, 1, true), pm(c, { clearcoat: 1, side: THREE.DoubleSide }), 0, 0.35 * s, 0, s, s, s, g);
+    mesh(G.disc, pm(c), 0, 0.01, 0, 0.32 * s, 0.32 * s, 1, g).rotation.x = -Math.PI / 2; const h = mesh(new THREE.TorusGeometry(0.42, 0.025, 6, 24, Math.PI), pm('#FFFFFF'), 0, 0.7 * s, 0, s, s, s, g); void h; return g; }
+  function starfish(x, z, s, c, par) { const sh = new THREE.Shape(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 0.16 : 0.42, a = Math.PI / 2 + i * Math.PI / 5; i ? sh.lineTo(Math.cos(a) * r, Math.sin(a) * r) : sh.moveTo(Math.cos(a) * r, Math.sin(a) * r); } sh.closePath();
+    const m = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 0.06, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.06, bevelSegments: 3 }), pm(c, { roughness: 0.5, clearcoat: 0.6 })); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.08, z); m.scale.setScalar(s); m.castShadow = true; (par || scene).add(m); return m; }
+  function shell(x, z, s, c, par) { const m = mesh(new THREE.SphereGeometry(0.3, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), pm(c, { roughness: 0.3, clearcoat: 1 }), x, 0.02, z, s, s * 0.6, s * 1.2, par); m.rotation.y = x; return m; }
+  function coralBranch(x, z, h, c, seed, par) {
+    const g = group(x, 0, z, par), m = pm(c, { roughness: 0.5, clearcoat: 0.5, sheen: 0.6, sheenColor: new THREE.Color('#FFFFFF') }), R = rng(seed || 2);
+    const grow = (px, py, pz, len, ang, dz, depth) => { const ex = px + Math.sin(ang) * len, ey = py + Math.cos(ang) * len, ez = pz + dz * len;
+      const c1 = new THREE.Mesh(new THREE.CapsuleGeometry(0.11 * h * (1 - depth * 0.18), len, 4, 10), m); c1.position.set((px + ex) / 2, (py + ey) / 2, (pz + ez) / 2); c1.lookAt(ex, ey, ez); c1.rotateX(Math.PI / 2); c1.castShadow = true; g.add(c1);
+      if (depth < 3) { grow(ex, ey, ez, len * 0.75, ang - 0.5 - R() * 0.3, (R() - 0.5) * 0.6, depth + 1); grow(ex, ey, ez, len * 0.75, ang + 0.5 + R() * 0.3, (R() - 0.5) * 0.6, depth + 1); } };
+    grow(0, 0, 0, h * 0.4, 0, 0, 0); return g;
+  }
+  function seaweed(x, z, h, c, par) {
+    const g = group(x, 0, z, par), n = 8, segs = [], m = pm(c, { roughness: 0.5, clearcoat: 0.3, side: THREE.DoubleSide });
+    let p = g; for (let i = 0; i < n; i++) { const s = group(0, i ? h / n : 0, 0, p); const lf = mesh(G.ball, m, 0, h / n / 2, 0, 0.2 * (1 - i / n * 0.45), h / n * 0.85, 0.04, s); void lf; segs.push(s); p = s; }
+    const ph = x * 1.3 + z; anim.push((t, q) => { if (q < 1) return; segs.forEach((s, i) => { s.rotation.z = Math.sin(t * 1.1 + ph + i * 0.5) * 0.09; s.rotation.x = Math.cos(t * 0.8 + ph + i * 0.4) * 0.05; }); });
+    return g;
+  }
+  function fishSchool(cx, cy, cz, r, n, colors, speed, par) {
+    const body = new THREE.SphereGeometry(0.22, 16, 12), tail = new THREE.ConeGeometry(0.14, 0.22, 3), fish = [];
+    for (let i = 0; i < n; i++) { const f = group(0, 0, 0, par), m = pm(colors[i % colors.length], { clearcoat: 1, roughness: 0.25 });
+      const b = new THREE.Mesh(body, m); b.scale.set(1.5, 1, 0.6); f.add(b); const tl = new THREE.Mesh(tail, m); tl.rotation.z = Math.PI / 2; tl.position.x = -0.38; tl.scale.z = 0.4; f.add(tl);
+      const fin = new THREE.Mesh(tail, m); fin.position.set(0, 0.2, 0); fin.scale.set(0.6, 0.6, 0.3); f.add(fin); fish.push([f, tl, i]); }
+    anim.push((t, q) => { fish.forEach(([f, tl, i]) => { const a = t * (speed || 0.25) + i * 0.45, rr = r + Math.sin(i * 1.7) * 0.8; f.position.set(cx + Math.cos(a) * rr, cy + Math.sin(i * 2.3 + t * 0.6) * 0.5 + (i % 3) * 0.35, cz + Math.sin(a) * rr * 0.5); f.rotation.y = -a - Math.PI / 2 * Math.sign(speed || 1); if (q >= 1) tl.rotation.y = Math.sin(t * 8 + i) * 0.4; }); });
+  }
+  function barn(x, z, s, par, rot) {
+    const g = group(x, 0, z, par); g.rotation.y = rot || 0; const red = pm('#E5413A', { roughness: 0.55 }), wh = pm('#FFFFFF', { roughness: 0.4 });
+    mesh(G.box, red, 0, 1.6 * s, 0, 4 * s, 3.2 * s, 3 * s, g);
+    const rs = new THREE.Shape(); rs.moveTo(-2.2, 0); rs.lineTo(-1.6, 1.2); rs.lineTo(0, 1.9); rs.lineTo(1.6, 1.2); rs.lineTo(2.2, 0); rs.closePath();
+    const roof = new THREE.Mesh(new THREE.ExtrudeGeometry(rs, { depth: 3.2, bevelEnabled: false }), pm('#7A3B2E', { roughness: 0.5 })); roof.position.set(0, 3.2 * s, -1.6 * s); roof.scale.setScalar(s); roof.castShadow = true; g.add(roof);
+    mesh(G.box, wh, 0, 1.1 * s, 1.52 * s, 1.6 * s, 2.2 * s, 0.06, g); mesh(G.box, red, 0, 1.1 * s, 1.56 * s, 1.3 * s, 1.9 * s, 0.05, g);
+    [-1, 1].forEach(k => { const b = mesh(G.box, wh, 0, 1.1 * s, 1.6 * s, 0.12 * s, 2.3 * s, 0.05, g); b.rotation.z = k * 0.62; });
+    mesh(G.box, wh, 0, 3.7 * s, 1.55 * s, 0.9 * s, 0.7 * s, 0.05, g); mesh(G.box, glow('#FFE7A0', 0.4), 0, 3.7 * s, 1.58 * s, 0.7 * s, 0.5 * s, 0.04, g);
+    const silo = group(2.9 * s, 0, -0.4 * s, g); mesh(G.cyl, pm('#E8E2D6', { metalness: 0.2 }), 0, 2.6 * s, 0, 0.9 * s, 5.2 * s, 0.9 * s, silo); mesh(new THREE.SphereGeometry(1, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2), pm('#3A7BD5'), 0, 5.2 * s, 0, 0.92 * s, 0.7 * s, 0.92 * s, silo);
+    return g;
+  }
+  function pumpkin(x, z, s, par) {
+    const pts = []; for (let i = 0; i <= 20; i++) { const a = i / 20 * Math.PI; pts.push(new THREE.Vector2(Math.sin(a) * 0.5, -Math.cos(a) * 0.38)); }
+    const geo = new THREE.LatheGeometry(pts, 48), p = geo.attributes.position; for (let i = 0; i < p.count; i++) { const vx = p.getX(i), vz = p.getZ(i), a = Math.atan2(vz, vx), k = 1 + Math.cos(a * 8) * 0.06; p.setX(i, vx * k); p.setZ(i, vz * k); } geo.computeVertexNormals();
+    const g = group(x, 0.36 * s, z, par); mesh(geo, pm('#FF8A1F', { roughness: 0.45, clearcoat: 0.6 }), 0, 0, 0, s, s, s, g); mesh(G.cyl, pm('#5A8A2E'), 0, 0.42 * s, 0, 0.05 * s, 0.2 * s, 0.05 * s, g); return g;
+  }
+  function hay(x, z, s, par, rot) { const t = paint(256, 128, (c, w, h) => { c.fillStyle = '#F2C94C'; c.fillRect(0, 0, w, h); const R = rng(8); for (let i = 0; i < 700; i++) { c.strokeStyle = R() < 0.5 ? '#D9A92E' : '#FFE28A'; c.lineWidth = 1.5; c.beginPath(); const px = R() * w, py = R() * h; c.moveTo(px, py); c.lineTo(px + 12, py + (R() - 0.5) * 4); c.stroke(); } });
+    const m = mesh(G.cyl, new THREE.MeshStandardMaterial({ map: t, roughness: 0.95 }), x, 0.6 * s, z, 0.75 * s, 1.0 * s, 0.75 * s, par); m.rotation.z = Math.PI / 2; m.rotation.y = rot || 0; return m; }
+  function fence(x0, z0, x1, z1, n, c, par) { const g = group(0, 0, 0, par), m = pm(c || '#FFFFFF', { roughness: 0.5 });
+    for (let i = 0; i <= n; i++) { const u = i / n; mesh(G.box, m, x0 + (x1 - x0) * u, 0.45, z0 + (z1 - z0) * u, 0.14, 0.9, 0.1, g); }
+    const len = Math.hypot(x1 - x0, z1 - z0), a = Math.atan2(z1 - z0, x1 - x0); [0.3, 0.65].forEach(y => { const r = mesh(G.box, m, (x0 + x1) / 2, y, (z0 + z1) / 2, len, 0.1, 0.06, g); r.rotation.y = -a; }); return g; }
+  function windmill(x, z, s, par) { const g = group(x, 0, z, par); mesh(new THREE.CylinderGeometry(0.5, 0.9, 1, 8), pm('#FFFFFF'), 0, 2.5 * s, 0, s, 5 * s, s, g); mesh(G.cone, pm('#E5413A'), 0, 5.4 * s, 0, 0.75 * s, 1 * s, 0.75 * s, g);
+    const hub = group(0, 4.6 * s, 0.75 * s, g); for (let i = 0; i < 4; i++) { const b = mesh(G.box, pm('#FFF4D6'), 0, 1.3 * s, 0, 0.5 * s, 2.4 * s, 0.05, group(0, 0, 0, hub)); b.parent.rotation.z = i * Math.PI / 2; }
+    anim.push((t) => { hub.rotation.z = t * 0.5; }); return g; }
+  function snowman(x, z, s, scarf, par) { const g = group(x, 0, z, par), sn = pm('#FFFFFF', { roughness: 0.6, clearcoat: 0.2, sheen: 0.6, sheenColor: new THREE.Color('#D8ECFF') });
+    mesh(G.ball, sn, 0, 0.75 * s, 0, 0.8 * s, 0.75 * s, 0.8 * s, g); mesh(G.ball, sn, 0, 1.85 * s, 0, 0.58 * s, 0.55 * s, 0.58 * s, g); mesh(G.ball, sn, 0, 2.7 * s, 0, 0.42 * s, 0.42 * s, 0.42 * s, g);
+    const n = mesh(G.cone, pm('#FF8A1F', { clearcoat: 1 }), 0, 2.68 * s, 0.5 * s, 0.07 * s, 0.35 * s, 0.07 * s, g); n.rotation.x = Math.PI / 2;
+    [-1, 1].forEach(k => mesh(G.ballLo, std('#2A2A35'), k * 0.14 * s, 2.82 * s, 0.37 * s, 0.05 * s, 0.05 * s, 0.05 * s, g));
+    for (let i = 0; i < 5; i++) { const a = -0.5 + i * 0.25; mesh(G.ballLo, std('#2A2A35'), Math.sin(a) * 0.3 * s, 2.55 * s - Math.cos(a) * 0.08 * s + 0.08 * s, 0.36 * s, 0.035 * s, 0.035 * s, 0.035 * s, g); }
+    const sc = mesh(G.torus, pm(scarf, { roughness: 0.8, sheen: 1 }), 0, 2.32 * s, 0, 0.42 * s, 0.42 * s, 0.6 * s, g); sc.rotation.x = Math.PI / 2;
+    mesh(G.box, pm(scarf, { roughness: 0.8 }), 0.25 * s, 2.0 * s, 0.4 * s, 0.16 * s, 0.5 * s, 0.06 * s, g);
+    [0, 1, 2].forEach(i => mesh(G.ballLo, std('#2A2A35'), 0, (1.65 + i * 0.2) * s, 0.56 * s, 0.05 * s, 0.05 * s, 0.05 * s, g));
+    [-1, 1].forEach(k => { const a = mesh(G.cyl, pm('#7A4A26'), k * 0.85 * s, 2.0 * s, 0, 0.03 * s, 0.9 * s, 0.03 * s, g); a.rotation.z = k * 1.0; });
+    return g; }
+  function cabin(x, z, s, par, rot) { const g = group(x, 0, z, par); g.rotation.y = rot || 0; const wd = pm('#B5653A', { roughness: 0.6 });
+    mesh(G.box, wd, 0, 1.2 * s, 0, 3.2 * s, 2.4 * s, 2.6 * s, g); const rf = mesh(new THREE.ConeGeometry(2.6, 1.6, 4), pm('#FFFFFF', { roughness: 0.5, sheen: 0.6 }), 0, 3.2 * s, 0, s * 1.05, s, s * 0.95, g); rf.rotation.y = Math.PI / 4;
+    [-0.8, 0.8].forEach(k => { mesh(G.box, glow('#FFC861', 1.4), k * s, 1.4 * s, 1.31 * s, 0.7 * s, 0.7 * s, 0.04, g); mesh(G.box, pm('#FFFFFF'), k * s, 1.4 * s, 1.3 * s, 0.85 * s, 0.85 * s, 0.03, g); });
+    mesh(G.box, pm('#7A3B2E'), 0, 0.75 * s, 1.31 * s, 0.7 * s, 1.5 * s, 0.04, g); mesh(G.box, pm('#C94A3A'), 0.9 * s, 3.6 * s, -0.4 * s, 0.45 * s, 1.4 * s, 0.45 * s, g); return g; }
+  function cupcake(x, y, z, s, frost, par) { const g = group(x, y, z, par); mesh(new THREE.CylinderGeometry(0.42, 0.32, 0.5, 20), pm('#FFB3C7', { roughness: 0.6 }), 0, 0.25 * s, 0, s, s, s, g);
+    [0.32, 0.24, 0.14].forEach((r, i) => mesh(G.ball, pm(frost, { roughness: 0.35, clearcoat: 0.6 }), 0, (0.55 + i * 0.16) * s, 0, r * 1.45 * s, 0.16 * s, r * 1.45 * s, g)); mesh(G.ball, pm('#FF3B5C', { clearcoat: 1, roughness: 0.15 }), 0, 0.98 * s, 0, 0.1 * s, 0.1 * s, 0.1 * s, g); return g; }
+  function cookie(x, y, z, s, c, par) { const g = group(x, y, z, par), m = mesh(G.cyl, pm('#E0A45E', { roughness: 0.7, clearcoat: 0.1 }), 0, 0.06 * s, 0, 0.4 * s, 0.12 * s, 0.4 * s, g); void m;
+    mesh(G.cyl, pm(c, { roughness: 0.35, clearcoat: 0.8 }), 0, 0.13 * s, 0, 0.32 * s, 0.03 * s, 0.32 * s, g); for (let i = 0; i < 6; i++) mesh(G.ballLo, pm(['#FFFFFF', '#FFD23F', '#3AA8FF'][i % 3]), Math.cos(i) * 0.2 * s, 0.15 * s, Math.sin(i) * 0.2 * s, 0.03 * s, 0.02 * s, 0.03 * s, g); return g; }
+  function challah(x, y, z, s, par) { const g = group(x, y, z, par), m = pm('#D98A3A', { roughness: 0.45, clearcoat: 0.6 }); for (let i = 0; i < 5; i++) mesh(G.ball, m, (i - 2) * 0.34 * s, 0.22 * s, (i % 2 ? 0.1 : -0.1) * s, 0.3 * s * (1 - Math.abs(i - 2) * 0.12), 0.24 * s, 0.26 * s, g); return g; }
+  function gift(x, z, s, c, rb, par) { const g = group(x, 0, z, par); mesh(G.box, pm(c, { clearcoat: 1, roughness: 0.25 }), 0, 0.5 * s, 0, s, s, s, g); mesh(G.box, pm(rb, { clearcoat: 1 }), 0, 0.5 * s, 0, 1.02 * s, 1.02 * s, 0.18 * s, g); mesh(G.box, pm(rb, { clearcoat: 1 }), 0, 0.5 * s, 0, 0.18 * s, 1.02 * s, 1.02 * s, g);
+    [-1, 1].forEach(k => { const b = mesh(G.torus, pm(rb, { clearcoat: 1 }), k * 0.16 * s, 1.08 * s, 0, 0.16 * s, 0.12 * s, 0.16 * s, g); b.rotation.y = Math.PI / 2; b.rotation.z = k * 0.5; }); return g; }
+  function lights(a, b, sag, colors, n, par) { const g = group(0, 0, 0, par), pts = []; for (let i = 0; i <= 24; i++) { const u = i / 24; pts.push(new THREE.Vector3(a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u - Math.sin(u * Math.PI) * sag, a[2] + (b[2] - a[2]) * u)); }
+    const cv = new THREE.CatmullRomCurve3(pts); g.add(new THREE.Mesh(new THREE.TubeGeometry(cv, 40, 0.015, 5), std('#3A3A4A'))); const bulbs = [];
+    for (let i = 0; i < n; i++) { const p = cv.getPoint((i + 0.5) / n), m = new THREE.MeshStandardMaterial({ color: colors[i % colors.length], emissive: colors[i % colors.length], emissiveIntensity: 2.2 }); const bl = mesh(G.ballLo, m, p.x, p.y - 0.1, p.z, 0.09, 0.12, 0.09, g); bl.castShadow = false; bulbs.push(m); }
+    anim.push((t, q) => { if (q >= 1) bulbs.forEach((m, i) => { m.emissiveIntensity = 1.8 + Math.sin(t * 2 + i * 1.3) * 0.7; }); }); return g; }
+  function planet(x, y, z, r, c, ring, par) { const g = group(x, y, z, par); const t = paint(256, 128, (cx, w, h) => { cx.fillStyle = c[0]; cx.fillRect(0, 0, w, h); for (let i = 0; i < 6; i++) { cx.fillStyle = c[1 + i % (c.length - 1)]; cx.globalAlpha = 0.55; cx.fillRect(0, h * (0.1 + i * 0.15), w, h * (0.04 + (i % 3) * 0.03)); } });
+    const p = mesh(G.ball, new THREE.MeshStandardMaterial({ map: t, roughness: 0.5, emissive: c[0], emissiveIntensity: 0.25 }), 0, 0, 0, r, r, r, g); p.castShadow = false;
+    if (ring) { const rg = new THREE.Mesh(new THREE.RingGeometry(r * 1.35, r * 2.0, 64), new THREE.MeshStandardMaterial({ color: ring, emissive: ring, emissiveIntensity: 0.35, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })); rg.rotation.x = -1.2; rg.rotation.y = 0.3; g.add(rg); }
+    anim.push(t => { p.rotation.y = t * 0.08; }); return g; }
+  function rocket(x, z, s, par) { const g = group(x, 0, z, par); mesh(G.cyl, pm('#FFFFFF', { clearcoat: 1, roughness: 0.2 }), 0, 2.2 * s, 0, 0.75 * s, 3.2 * s, 0.75 * s, g); mesh(G.cone, pm('#FF4E50', { clearcoat: 1 }), 0, 4.45 * s, 0, 0.75 * s, 1.3 * s, 0.75 * s, g);
+    mesh(G.cyl, glow('#7FE7FF', 0.9), 0, 2.9 * s, 0.7 * s, 0.32 * s, 0.08 * s, 0.32 * s, g).rotation.x = Math.PI / 2; mesh(G.torus, pm('#3AA8FF', { clearcoat: 1 }), 0, 2.9 * s, 0.72 * s, 0.34 * s, 0.34 * s, 0.34 * s, g);
+    for (let i = 0; i < 3; i++) { const f = group(0, 0, 0, g); f.rotation.y = i * Math.PI * 2 / 3; mesh(G.box, pm('#FF4E50', { clearcoat: 1 }), 0.85 * s, 0.9 * s, 0, 0.5 * s, 1.4 * s, 0.12 * s, f); }
+    mesh(G.cyl, pm('#B9C2D6', { metalness: 0.5 }), 0, 0.45 * s, 0, 0.55 * s, 0.4 * s, 0.55 * s, g); return g; }
+  function crystal(x, z, s, c, par) { const m = mesh(new THREE.OctahedronGeometry(0.4, 0), new THREE.MeshPhysicalMaterial({ color: c, emissive: c, emissiveIntensity: 0.6, roughness: 0.1, clearcoat: 1, flatShading: true }), x, 0.45 * s, z, s * 0.7, s * 1.5, s * 0.7, par); m.rotation.y = x; return m; }
+  function bigLeaf(x, z, h, c, rot, par) {   /* a giant tropical leaf on a stem */
+    const g = group(x, 0, z, par); g.rotation.y = rot || 0; const s = new THREE.Shape(); s.moveTo(0, 0); s.bezierCurveTo(-1.2, 0.5, -1.0, 2.0, 0, 2.6); s.bezierCurveTo(1.0, 2.0, 1.2, 0.5, 0, 0);
+    const geo = new THREE.ShapeGeometry(s, 24), p = geo.attributes.position; for (let i = 0; i < p.count; i++) p.setZ(i, -Math.pow(p.getX(i), 2) * 0.35 + Math.pow(p.getY(i) / 2.6, 2) * 0.6); geo.computeVertexNormals();
+    mesh(G.cyl, pm('#2E9E44'), 0, h * 0.3, 0, 0.05 * h / 3, h * 0.6, 0.05 * h / 3, g);
+    const lf = new THREE.Mesh(geo, pm(c, { roughness: 0.4, clearcoat: 0.7, side: THREE.DoubleSide })); lf.position.y = h * 0.55; lf.rotation.x = -0.5; lf.scale.setScalar(h / 3); lf.castShadow = true; g.add(lf);
+    const ph = x + z; anim.push((t, q) => { if (q >= 1) lf.rotation.x = -0.5 + Math.sin(t * 0.8 + ph) * 0.06; }); return g; }
+  function parrot(x, y, z, s, c1, c2, par) { const g = group(x, y, z, par); mesh(G.ball, pm(c1, { clearcoat: 0.8 }), 0, 0, 0, 0.32 * s, 0.45 * s, 0.32 * s, g); mesh(G.ball, pm(c1, { clearcoat: 0.8 }), 0, 0.5 * s, 0.05 * s, 0.24 * s, 0.24 * s, 0.24 * s, g);
+    const bk = mesh(G.cone, pm('#FFD23F'), 0, 0.46 * s, 0.3 * s, 0.07 * s, 0.18 * s, 0.07 * s, g); bk.rotation.x = Math.PI / 2 + 0.6; [-1, 1].forEach(k => { const w = mesh(G.ball, pm(c2, { clearcoat: 0.8 }), k * 0.28 * s, 0.05 * s, -0.05 * s, 0.1 * s, 0.38 * s, 0.22 * s, g); w.rotation.z = k * 0.2; });
+    const tl = mesh(G.box, pm(c2), 0, -0.6 * s, -0.12 * s, 0.14 * s, 0.6 * s, 0.05 * s, g); tl.rotation.x = 0.3; [-1, 1].forEach(k => mesh(G.ballLo, std('#1A1A1A'), k * 0.12 * s, 0.56 * s, 0.17 * s, 0.035 * s, 0.035 * s, 0.035 * s, g));
+    const ph = x; anim.push((t, q) => { if (q >= 1) g.rotation.y = Math.sin(t * 0.5 + ph) * 0.3; }); return g; }
+  function waterfall(x, y0, z, w, h, par) { const t = paint(64, 256, (c, ww, hh) => { const R = rng(3); c.fillStyle = '#7FDBFF'; c.fillRect(0, 0, ww, hh); for (let i = 0; i < 120; i++) { c.fillStyle = R() < 0.5 ? 'rgba(255,255,255,.75)' : 'rgba(200,245,255,.6)'; c.fillRect(R() * ww, R() * hh, 2 + R() * 3, 10 + R() * 30); } }, { repeat: [2, 1] });
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; const m = mesh(G.plane, new THREE.MeshBasicMaterial({ map: t, color: '#E8FBFF' }), x, y0 + h / 2, z, w, h, 1, par); m.castShadow = false;
+    anim.push(tt => { t.offset.y = tt * 0.6; }); return m; }
+  function train(path, cars, par) {   /* a little toy train going round and round */
+    const parts = []; const mk = (c, eng) => { const g = group(0, 0, 0, par); mesh(G.box, pm(c, { clearcoat: 1, roughness: 0.2 }), 0, 0.55, 0, 1.4, 0.7, 0.8, g);
+      if (eng) { mesh(G.cyl, pm(c, { clearcoat: 1 }), 0.2, 0.7, 0, 0.4, 1.0, 0.4, g).rotation.z = Math.PI / 2; mesh(G.box, pm('#FFFFFF', { clearcoat: 1 }), -0.35, 1.1, 0, 0.7, 0.7, 0.8, g); mesh(G.cyl, pm('#2A2F45'), 0.55, 1.25, 0, 0.12, 0.5, 0.12, g); mesh(G.box, pm('#FF4E50'), -0.35, 1.5, 0, 0.9, 0.12, 1.0, g); }
+      else [0, 1, 2].forEach(i => mesh(G.ball, pm(['#FFD23F', '#3AA8FF', '#FF6FA3'][i], { clearcoat: 1 }), (i - 1) * 0.42, 1.05, 0, 0.2, 0.2, 0.2, g));
+      [-0.45, 0.45].forEach(wx => [-0.42, 0.42].forEach(wz => { const wh = mesh(G.cyl, pm('#2A2F45'), wx, 0.22, wz, 0.2, 0.08, 0.2, g); wh.rotation.x = Math.PI / 2; }));
+      parts.push(g); return g; };
+    cars.forEach((c, i) => mk(c, i === 0));
+    anim.push(t => { parts.forEach((g, i) => { const u = ((t * 0.018 - i * 0.022) % 1 + 1) % 1, p = path.getPointAt(u), d = path.getTangentAt(u); g.position.copy(p); g.rotation.y = Math.atan2(-d.z, d.x); }); });
+    return parts;
+  }
+  function track(path, par) { const g = group(0, 0, 0, par), N = 160; for (let i = 0; i < N; i++) { const u = i / N, p = path.getPointAt(u), d = path.getTangentAt(u), tie = mesh(G.box, pm('#9A6237', { roughness: 0.7 }), p.x, 0.05, p.z, 0.16, 0.08, 1.1, g); tie.rotation.y = Math.atan2(-d.z, d.x); tie.castShadow = false; }
+    [-0.4, 0.4].forEach(off => { const pts = []; for (let i = 0; i <= N; i++) { const u = (i % N) / N, p = path.getPointAt(u), d = path.getTangentAt(u); pts.push(new THREE.Vector3(p.x - d.z * off, 0.12, p.z + d.x * off)); } g.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, true), 300, 0.05, 6, true), pm('#C9CED6', { metalness: 0.6, roughness: 0.3 }))); });
+    return g; }
+
+  /* Unit 2: a garden of giant flowers */
+  function garden() {
+    setEnv({ bg: '#BDE6FF', fog: ['#D6F0FF', 34, 120], sun: ['#FFF0D2', 2.6, [-7, 13, 7]], hemi: ['#CFE8FF', '#6FC060', 0.6], rim: ['#FFE0B0', 1.1], front: ['#FFE9D2', 0.35], exposure: 0.84,
+      box: ['#5FBF5A', '#FFFFFF', '#3E9E45'], css: '#BDE6FF' });
+    skyDome('#3E9BFF', '#93CFFF', '#EAF8FF', [0.4, 0.45, -1]);
+    ground(grassTex('#58C84C', '#349E3C', '#93E46A', ['#FFFFFF', '#FFE14D', '#FF8FB1', '#B98CFF'], 8), '#FFFFFF', { sheen: 0.5, sheenColor: '#D8FFB0' });
+    stage((x, c) => { x.fillStyle = '#9BE07A'; x.fillRect(0, 0, 2 * c, 2 * c); x.fillStyle = '#FFFFFF'; for (let i = 0; i < 28; i++) { const a = i / 28 * Math.PI * 2; x.save(); x.translate(c + Math.cos(a) * c * 0.86, c + Math.sin(a) * c * 0.86); x.rotate(a); x.beginPath(); x.ellipse(0, 0, c * 0.14, c * 0.075, 0, 0, 7); x.fill(); x.restore(); }
+      x.fillStyle = '#FFE58A'; x.beginPath(); x.arc(c, c, c * 0.8, 0, 7); x.fill(); const g = x.createRadialGradient(c, c, 0, c, c, c * 0.77); g.addColorStop(0, '#FFFDF2'); g.addColorStop(1, '#FFF4D2'); x.fillStyle = g; x.beginPath(); x.arc(c, c, c * 0.77, 0, 7); x.fill();
+      const R = rng(6); for (let i = 0; i < 260; i++) { const a = R() * 6.28, r = Math.sqrt(R()) * c * 0.74; x.fillStyle = 'rgba(255,214,90,.25)'; x.beginPath(); x.arc(c + Math.cos(a) * r, c + Math.sin(a) * r, 2 + R() * 3, 0, 7); x.fill(); } }, { edge: '#FFF0C0', r: 6.9 });
+    const far = group(), near = group();
+    scatter(80, 7.4, 11.5, 41, (x, z, R, i) => { const k = i % 6; if (k < 3) tuft(x, z, 0.9 + R() * 0.7, ['#3FBF4A', '#58D35A', '#2EA845'][k], near); else if (k < 5) bloomFlower(x, z, 1 + R() * 0.8, ['#FF6FA3', '#FFFFFF', '#FFC93C', '#A77BFF', '#FF5A5A'][i % 5], near); else if (i % 12 === 5) mushroom(x, z, 0.45 + R() * 0.25, '#FF4E50', near); else bloomFlower(x, z, 1.1, '#FFFFFF', near); });
+    [[-10, -2.5, 6.5, '#FF6FA3', '#FFD23F'], [-13, -7, 8.5, '#FFFFFF', '#FFC93C'], [-8.6, -11, 5.2, '#B98CFF', '#FFFFFF'], [10.4, -3, 7, '#FFD23F', '#8A4E1E'], [13.6, -8, 8.8, '#FF8A3D', '#FFE37A'], [8.8, -11.5, 5, '#FF5A5A', '#FFFFFF'], [-15.5, 1.5, 7.5, '#3AA8FF', '#FFFFFF'], [16, 1, 7.2, '#FF6FA3', '#FFFFFF']]
+      .forEach(([x, z, h, p, c], i) => flower(x, z, h, p, c, p === '#FFD23F' ? 16 : 10, h * (p === '#FFD23F' ? 0.17 : 0.2), far, i));
+    [[-6, -10.5, 2.6, '#FF5A5A'], [-4.4, -11.5, 3, '#FFC93C'], [4.6, -11, 2.8, '#FF6FA3'], [6.2, -10.2, 2.4, '#B98CFF'], [-11.5, 4, 2.6, '#FF8A3D'], [11.8, 4.5, 2.8, '#FF5A5A'], [0, -13, 3, '#FFFFFF']].forEach(([x, z, h, c]) => tulip(x, z, h, c, far));
+    [[-2, -11.6, 1.1, '#56C452', ['#FFFFFF', '#FF8FB1']], [2.2, -12, 1.2, '#4BB84A', ['#FFD84D', '#FFFFFF']], [-9, -8, 1.3, '#56C452', ['#B98CFF']], [9.2, -8.4, 1.2, '#4BB84A', ['#FF6FA3']]].forEach(([x, z, r, c, f], i) => bush(x, z, r, c, f, 60 + i, far));
+    mushroom(-7.5, -9, 1.4, '#FF4E50', far); mushroom(7.6, -9.3, 1.1, '#FF8A3D', far);
+    [[-20, -28, 14, '#FFD23F', '#8A4E1E'], [-6, -34, 16, '#FF6FA3', '#FFFFFF'], [9, -30, 15, '#FFFFFF', '#FFC93C'], [24, -26, 13, '#B98CFF', '#FFFFFF']].forEach(([x, z, h, p, c], i) => flower(x, z, h, p, c, p === '#FFD23F' ? 16 : 11, h * 0.17, far, 10 + i));
+    hill(-30, -50, 20, 9, null, '#8FDD7E', far); hill(20, -55, 24, 10, null, '#A6E58A', far);
+    [[-16, 16, -50, 3, 1], [12, 19, -60, 3.6, 2], [30, 14, -48, 2.6, 3]].forEach(([x, y, z, s, sd]) => { const cl = cloud(x, y, z, s, sd); far.add(cl); anim.push((t, q) => { if (q >= 1) cl.position.x = x + Math.sin(t * 0.05 + sd) * 3; }); });
+    butterflies(6, ['#FF6FA3', '#FFC93C', '#3AA8FF', '#B98CFF', '#FF8A3D', '#FFFFFF'], [[-8, 3, -5, 2.5], [8, 3.4, -6, 2.2], [0, 4.5, -9, 3], [-11, 2.5, 0, 1.8], [11, 2.8, 1, 2], [0, 6, -14, 4]]);
+    farify(far);
+    motes({ n: 90, colors: ['#FFFFFF', '#FFD6E5', '#FFF3A8'], size: 0.13, box: [-12, 12, 0.6, 7, -13, -1.5], kind: 'drift', seed: 5 });
+  }
+
+  /* Unit 3: floating islands in the clouds */
+  function sky() {
+    setEnv({ bg: '#BFE3FF', fog: ['#FFE6F2', 30, 110], sun: ['#FFF2DE', 2.6, [-6, 13, 8]], hemi: ['#D6EBFF', '#FFE2EE', 0.65], rim: ['#FFD6E8', 1.2], front: ['#FFE9F2', 0.35], exposure: 0.85,
+      box: ['#7FB8FF', '#FFFFFF', '#5D97E8'], css: '#BFE3FF' });
+    skyDome('#3D8BFF', '#9CCBFF', '#FFE0EE', [-0.5, 0.35, -1]);
+    /* the island he stands on: grass on top, a rim of soft grass, earth and rock underneath */
+    const top = grassTex('#62D057', '#3BA845', '#A3EC74', ['#FFFFFF', '#FFD84D', '#FF8FB1'], 12);
+    const isl = new THREE.Mesh(new THREE.CircleGeometry(15, 96), new THREE.MeshPhysicalMaterial({ map: top, roughness: 0.85, sheen: 0.5, sheenColor: new THREE.Color('#D8FFB0') }));
+    const uv = isl.geometry.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 15 / 80, uv.getY(i) * 15 / 80); isl.rotation.x = -Math.PI / 2; isl.receiveShadow = true; scene.add(isl);
+    const rimG = new THREE.Mesh(new THREE.TorusGeometry(15, 0.45, 16, 120), pm('#58C84C', { roughness: 0.6 })); rimG.rotation.x = Math.PI / 2; rimG.position.y = -0.15; scene.add(rimG);
+    const far = group(), near = group();
+    const rock = new THREE.Mesh(new THREE.ConeGeometry(15.2, 14, 40, 6), new THREE.MeshStandardMaterial({ color: '#C98A5A', roughness: 0.9, flatShading: true })); rock.rotation.x = Math.PI; rock.position.y = -7.4; far.add(rock);
+    { const p = rock.geometry.attributes.position, R = rng(3); for (let i = 0; i < p.count; i++) { if (p.getY(i) < 6.9) { p.setX(i, p.getX(i) * (0.92 + R() * 0.16)); p.setZ(i, p.getZ(i) * (0.92 + R() * 0.16)); } } rock.geometry.computeVertexNormals(); }
+    /* the cloud sea far below, and clouds all around */
+    const sea = new THREE.Mesh(new THREE.PlaneGeometry(260, 260), new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFF2F8', emissiveIntensity: 0.55, roughness: 1 })); sea.rotation.x = -Math.PI / 2; sea.position.y = -7; far.add(sea);
+    const R = rng(21); for (let i = 0; i < 34; i++) { const a = R() * Math.PI * 2, d = 18 + R() * 34, cl = cloud(Math.cos(a) * d, -4.5 + R() * 3, Math.sin(a) * d - 4, 3 + R() * 3.5, i, R() < 0.35 ? '#FFE3F0' : null); far.add(cl); const x0 = cl.position.x; anim.push((t, q) => { if (q >= 1) cl.position.x = x0 + Math.sin(t * 0.07 + i) * 1.2; }); }
+    [[-20, 14, -50, 3.6], [14, 18, -60, 4], [30, 10, -40, 3], [-34, 8, -38, 3]].forEach(([x, y, z, s], i) => { const cl = cloud(x, y, z, s, 40 + i); far.add(cl); anim.push((t, q) => { if (q >= 1) cl.position.x = x + Math.sin(t * 0.06 + i) * 3; }); });
+    /* little islands floating nearby, with trees and a waterfall */
+    const islet = (x, y, z, r, seed) => { const g = group(x, y, z, far); const tp = mesh(new THREE.CylinderGeometry(r, r * 0.95, 0.5, 32), pm('#62D057', { roughness: 0.7 }), 0, 0, 0, 1, 1, 1, g);
+      const rk = mesh(new THREE.ConeGeometry(r * 0.95, r * 1.6, 12, 2), new THREE.MeshStandardMaterial({ color: '#C98A5A', roughness: 0.9, flatShading: true }), 0, -r * 0.8 - 0.25, 0, 1, 1, 1, g); rk.rotation.x = Math.PI;
+      roundTree(-r * 0.3, 0, r * 1.1, ['#5ED36A', '#FF8FB1', '#7FD9FF'][seed % 3], null, seed, g); bloomFlower(r * 0.5, r * 0.2, 1.6, '#FFFFFF', g); bloomFlower(r * 0.3, -r * 0.4, 1.4, '#FF6FA3', g);
+      const ph = seed * 1.3; anim.push((t, q) => { if (q >= 1) g.position.y = y + Math.sin(t * 0.4 + ph) * 0.35; }); void tp; return g; };
+    islet(-17, 2, -12, 3, 1); islet(18, 4, -16, 3.6, 2); islet(-8, 7, -30, 4, 3); islet(12, 9, -36, 4.5, 4); islet(-26, 6, -24, 3.5, 5);
+    waterfall(18 + 2.8, -9, -16 + 1.5, 1.2, 13, far); waterfall(-17 + 2.2, -8, -12 + 1.2, 1, 10, far);
+    rainbow(-2, -4, -55, 28, far);
+    /* hot-air balloons drifting by */
+    [[-12, 9, -22, '#FF6FA3', '#FFD23F'], [14, 12, -28, '#3AA8FF', '#FFFFFF'], [2, 15, -40, '#FF8A3D', '#FFE37A']].forEach(([x, y, z, c1, c2], i) => { const g = group(x, y, z, far);
+      const st = paint(256, 128, (c, w, h) => { for (let k = 0; k < 8; k++) { c.fillStyle = k % 2 ? c1 : c2; c.fillRect(k * w / 8, 0, w / 8, h); } });
+      const b = mesh(G.ball, new THREE.MeshPhysicalMaterial({ map: st, roughness: 0.3, clearcoat: 0.6 }), 0, 0, 0, 1.6, 1.9, 1.6, g); void b; mesh(G.cone, pm(c1), 0, -2.1, 0, 0.8, 1, 0.8, g).rotation.x = Math.PI; mesh(G.box, pm('#B9824E'), 0, -3, 0, 0.7, 0.5, 0.7, g);
+      anim.push((t, q) => { if (q >= 1) { g.position.y = y + Math.sin(t * 0.3 + i * 2) * 0.6; g.position.x = x + Math.sin(t * 0.04 + i) * 2; } }); });
+    /* on our island: trees and bushes at the sides */
+    [[-10.5, -3, 4.6, '#5ED36A', 1], [-12.5, -9, 5.4, '#FF8FB1', 2], [10.6, -2.6, 4.8, '#7FD9FF', 3], [12.6, -9.5, 5.6, '#5ED36A', 4], [-13.5, 3, 4.2, '#FFC93C', 5], [13.6, 3.5, 4.4, '#FF8FB1', 6]].forEach(([x, z, h, c, sd]) => roundTree(x, z, h, c, '#A86A3D', sd, far));
+    [[-6, -11.4, 1.1, '#56C452', ['#FFFFFF', '#FF8FB1']], [5.6, -11.6, 1.2, '#4BB84A', ['#FFD84D', '#FFFFFF']], [0, -12.8, 1.0, '#56C452', ['#B98CFF', '#FFFFFF']]].forEach(([x, z, r, c, f], i) => bush(x, z, r, c, f, 70 + i, far));
+    stage(ringStage([[1.0, '#FFFFFF'], [0.965, '#9CCBFF'], [0.915, '#FFFFFF'], [0.895, '#FFB8D9'], [0.845, '#FFFFFF'], [0.825, '#FFE58A'], [0.77, '#FFFAF4']], ['#FFFFFF', '#F7F3FF']), { edge: '#E6EEFF' });
+    scatter(60, 7.2, 12, 51, (x, z, Rr, i) => { const k = i % 5; if (k < 2) tuft(x, z, 0.9 + Rr() * 0.6, ['#3FBF4A', '#58D35A'][k], near); else bloomFlower(x, z, 1 + Rr() * 0.6, ['#FFFFFF', '#FF8FB1', '#FFD84D'][i % 3], near); });
+    farify(far);
+    motes({ n: 110, colors: ['#FFFFFF', '#FFE6F2', '#FFF6C8'], size: 0.12, box: [-13, 13, 0.6, 8, -14, -1.5], kind: 'drift', seed: 7 });
+  }
+
+  /* Unit 4: a sunny bakery */
+  function bakery() {
+    setEnv({ bg: '#FFE8D6', fog: ['#FFE3CF', 26, 70], sun: ['#FFF0DA', 2.5, [-6, 12, 8]], hemi: ['#FFF4EA', '#F2C9A8', 0.65], rim: ['#FFCFA0', 1.0], front: ['#FFE6D0', 0.4], exposure: 0.86,
+      box: ['#FF9EBB', '#FFFFFF', '#F07A9E'], css: '#FFE8D6' });
+    const tiles = paint(512, 512, (x, w) => { const n = 8, s = w / n; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { x.fillStyle = (i + j) % 2 ? '#FFFFFF' : '#FFD3DF'; x.fillRect(i * s, j * s, s, s); } x.strokeStyle = 'rgba(200,140,150,.35)'; x.lineWidth = 2; for (let i = 0; i <= n; i++) { x.beginPath(); x.moveTo(i * s, 0); x.lineTo(i * s, w); x.stroke(); x.beginPath(); x.moveTo(0, i * s); x.lineTo(w, i * s); x.stroke(); } }, { repeat: [20, 20] });
+    ground(tiles, '#FFFFFF', { coat: 0.6, rough: 0.4 });
+    const far = group(), near = group();
+    /* the back wall: pastel tiles, a long counter full of good things, the oven, shelves, a sunny window */
+    const wallT = paint(512, 512, (x, w) => { x.fillStyle = '#C9F0E6'; x.fillRect(0, 0, w, w); const s = w / 8; x.strokeStyle = '#FFFFFF'; x.lineWidth = 6; for (let i = 0; i <= 8; i++) { x.beginPath(); x.moveTo(0, i * s); x.lineTo(w, i * s); x.stroke(); for (let j = 0; j <= 8; j++) { x.beginPath(); x.moveTo(j * s + (i % 2) * s / 2, i * s); x.lineTo(j * s + (i % 2) * s / 2, i * s + s); x.stroke(); } } }, { repeat: [10, 3] });
+    mesh(G.plane, std('#FFFFFF', { map: wallT, roughness: 0.6 }), 0, 8, -11, 70, 16, 1, far).castShadow = false;
+    mesh(G.box, pm('#FFB3C7', { roughness: 0.4 }), 0, 1.0, -9.8, 26, 2.0, 1.8, far); mesh(G.box, pm('#FFFFFF', { roughness: 0.25, clearcoat: 1 }), 0, 2.05, -9.8, 26.4, 0.14, 2.0, far);
+    for (let i = -6; i <= 6; i++) mesh(G.box, pm('#FFC9D6', { roughness: 0.5 }), i * 2, 1.0, -8.88, 1.6, 1.4, 0.05, far);
+    const goods = [[-10, 'c', '#FFFFFF'], [-8.6, 'c', '#FFB3E6'], [-7.2, 'k', '#FF6FA3'], [-5.6, 'b'], [-3.8, 'c', '#BDE8FF'], [-2.4, 'k', '#FFD23F'], [-1, 'c', '#FFE37A'], [0.6, 'b'], [2.4, 'k', '#7ED6FF'], [3.8, 'c', '#C8F7C5'], [5.2, 'c', '#FFFFFF'], [6.8, 'k', '#B98CFF'], [8.4, 'b'], [10, 'c', '#FFB3E6']];
+    goods.forEach(([x, k, c]) => { if (k === 'c') cupcake(x, 2.12, -9.6, 0.9, c, far); else if (k === 'k') { const st = group(x, 2.12, -9.6, far); mesh(G.cyl, pm('#FFFFFF', { clearcoat: 1 }), 0, 0.02, 0, 0.6, 0.04, 0.6, st); cookie(0, 0.05, 0, 1.2, c, st); cookie(0.1, 0.2, 0.05, 1.1, c === '#FFD23F' ? '#FF6FA3' : '#FFD23F', st); } else challah(x, 2.12, -9.6, 1.2, far); });
+    /* a big layer cake on a stand */
+    const ck = group(-4.6, 2.12, -9.4, far); mesh(G.cyl, pm('#FFFFFF', { clearcoat: 1 }), 0, 0.5, 0, 0.12, 1.0, 0.12, ck); mesh(G.cyl, pm('#FFFFFF', { clearcoat: 1 }), 0, 1.0, 0, 1.0, 0.06, 1.0, ck);
+    [['#FF9EBB', 0.85, 0.55], ['#FFF4E2', 0.65, 0.45], ['#9EE2FF', 0.45, 0.4]].forEach(([c, r, h], i) => { const y = 1.05 + [0, 0.55, 1.0][i]; mesh(G.cyl, pm(c, { roughness: 0.4, clearcoat: 0.5 }), 0, y + h / 2, 0, r, h, r, ck); for (let k = 0; k < 10; k++) mesh(G.ballLo, pm('#FFFFFF'), Math.cos(k / 10 * 6.28) * r, y + h, Math.sin(k / 10 * 6.28) * r, 0.08, 0.08, 0.08, ck); });
+    mesh(G.ball, pm('#FF3B5C', { clearcoat: 1 }), 0, 2.55, 0, 0.13, 0.13, 0.13, ck); ck.position.y = 2.12; ck.position.x = 1.6;
+    /* the oven with a warm glow */
+    const ov = group(9, 0, -9.6, far); mesh(G.box, pm('#FFFFFF', { roughness: 0.3 }), 0, 2.0, 0, 3.2, 4.0, 1.6, ov); mesh(G.box, glow('#FF9A3C', 1.6), 0, 1.6, 0.81, 2.2, 1.4, 0.04, ov); mesh(G.box, pm('#E8E2D6', { metalness: 0.4 }), 0, 2.55, 0.85, 2.3, 0.12, 0.1, ov);
+    [-0.9, -0.3, 0.3, 0.9].forEach(k => mesh(G.cyl, pm('#FF6FA3'), k, 3.5, 0.82, 0.13, 0.08, 0.13, ov).rotation.x = Math.PI / 2); ov.position.set(11.5, 0, -9.4);
+    /* shelves of round breads and jars */
+    const sh = group(-11.5, 0, -10.2, far); [3, 4.5, 6].forEach(y => mesh(G.box, pm('#E7A867', { roughness: 0.5 }), 0, y, 0, 4, 0.16, 1, sh));
+    [3, 4.5, 6].forEach((y, r) => [-1.4, -0.5, 0.4, 1.3].forEach((x, i) => { if ((i + r) % 2) mesh(G.ball, pm('#D98A3A', { clearcoat: 0.6, roughness: 0.4 }), x, y + 0.3, 0, 0.38, 0.28, 0.38, sh); else { mesh(G.cyl, new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', transmission: 0.6, roughness: 0.1, thickness: 0.2 }), x, y + 0.4, 0, 0.3, 0.65, 0.3, sh); mesh(G.cyl, pm(['#FF6FA3', '#FFC93C', '#7ED6FF'][r]), x, y + 0.78, 0, 0.32, 0.1, 0.32, sh); } }));
+    /* the window and the bunting */
+    const view = paint(512, 400, (x, w, h) => { const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#5DB8FF'); g.addColorStop(1, '#D9F2FF'); x.fillStyle = g; x.fillRect(0, 0, w, h); x.fillStyle = '#8FDD7E'; x.beginPath(); x.ellipse(w * 0.3, h, w * 0.5, h * 0.3, 0, 0, 7); x.fill(); x.fillStyle = '#6FCB6A'; x.beginPath(); x.ellipse(w * 0.8, h, w * 0.5, h * 0.25, 0, 0, 7); x.fill(); x.fillStyle = '#FFFFFF'; [[120, 90], [160, 80], [380, 120], [420, 110]].forEach(([a, b]) => { x.beginPath(); x.arc(a, b, 34, 0, 7); x.fill(); }); });
+    mesh(G.plane, new THREE.MeshBasicMaterial({ map: view }), 0, 6.2, -10.95, 6, 3.6, 1, far).castShadow = false; mesh(G.box, pm('#FFFFFF'), 0, 6.2, -10.98, 6.5, 4.1, 0.1, far); mesh(G.box, pm('#FFFFFF'), 0, 6.2, -10.9, 0.15, 3.6, 0.1, far);
+    bunting([-14, 10, -10.8], [14, 10, -10.8], 1.4, ['#FF6FA3', '#FFD23F', '#7ED6FF', '#B98CFF', '#7ED957'], 20, far);
+    [[-5, 12, -7], [5, 12, -7]].forEach(([x, y, z]) => { mesh(G.cyl, std('#3A3A4A'), x, y + 1.5, z, 0.02, 3, 0.02, far); const sh2 = mesh(new THREE.SphereGeometry(0.9, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), pm('#FFC93C', { side: THREE.DoubleSide }), x, y, z, 1, 1, 1, far); void sh2; mesh(G.ball, glow('#FFF2C8', 2.2), x, y - 0.1, z, 0.35, 0.35, 0.35, far); });
+    stage((x, c) => { x.fillStyle = '#FF9EBB'; for (let i = 0; i < 36; i++) { const a = i / 36 * Math.PI * 2; x.beginPath(); x.arc(c + Math.cos(a) * c * 0.93, c + Math.sin(a) * c * 0.93, c * 0.09, 0, 7); x.fill(); }
+      x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(c, c, c * 0.9, 0, 7); x.fill(); x.fillStyle = 'rgba(255,158,187,.35)'; for (let i = 0; i < 48; i++) { const a = i / 48 * Math.PI * 2; x.beginPath(); x.arc(c + Math.cos(a) * c * 0.83, c + Math.sin(a) * c * 0.83, c * 0.025, 0, 7); x.fill(); }
+      const g = x.createRadialGradient(c, c, 0, c, c, c * 0.78); g.addColorStop(0, '#FFFDF8'); g.addColorStop(1, '#FFF4E8'); x.fillStyle = g; x.beginPath(); x.arc(c, c, c * 0.78, 0, 7); x.fill(); }, { edge: '#FFD3DF', coat: 0.3 });
+    scatter(26, 7.6, 11, 61, (x, z, Rr, i) => { const k = i % 4; if (k === 0) cupcake(x, 0, z, 0.8, ['#FFFFFF', '#FFB3E6', '#BDE8FF'][i % 3], near); else if (k === 1) cookie(x, 0, z, 1.3, ['#FF6FA3', '#FFD23F', '#7ED6FF'][i % 3], near); else if (k === 2) { const b = mesh(new THREE.SphereGeometry(0.6, 24, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), pm(['#7ED6FF', '#FFC93C', '#C8F7C5'][i % 3], { side: THREE.DoubleSide, clearcoat: 1 }), x, 0.6, z, 1, 1, 1, near); void b; } else { const rp = mesh(G.cyl, pm('#E7B57A', { roughness: 0.5 }), x, 0.2, z, 0.18, 1.4, 0.18, near); rp.rotation.z = Math.PI / 2; rp.rotation.y = Rr() * 3; } });
+    farify(far);
+    motes({ n: 90, colors: ['#FFFFFF', '#FFF0D8'], size: 0.09, box: [-12, 12, 0.6, 7, -9, -1.5], kind: 'drift', seed: 9 });
+  }
+
+  /* Unit 5: a starry space playground */
+  function space() {
+    setEnv({ bg: '#2B1C78', fog: ['#5B3BB0', 40, 120], sun: ['#FFF6EE', 2.6, [-6, 13, 8]], hemi: ['#C8B8FF', '#7A5BD0', 0.75], rim: ['#7FE7FF', 1.2], front: ['#FFD6F5', 0.45], exposure: 0.88, bloom: 0.24,
+      box: ['#7A6BFF', '#FFFFFF', '#5A4BD8'], css: '#2B1C78' });
+    skyDome('#140C4A', '#3B2391', '#FF8FCB', [0.6, 0.25, -1]);
+    const moon = paint(1024, 1024, (x, w) => { x.fillStyle = '#F2B98E'; x.fillRect(0, 0, w, w); const R = rng(13); for (let i = 0; i < 4000; i++) { x.fillStyle = R() < 0.5 ? 'rgba(255,255,255,.25)' : 'rgba(120,90,200,.15)'; x.beginPath(); x.arc(R() * w, R() * w, 1 + R() * 3, 0, 7); x.fill(); }
+      for (let i = 0; i < 26; i++) { const cx = R() * w, cy = R() * w, r = 10 + R() * 40; x.fillStyle = 'rgba(214,130,110,.35)'; x.beginPath(); x.arc(cx, cy, r, 0, 7); x.fill(); x.strokeStyle = 'rgba(255,255,255,.45)'; x.lineWidth = 3; x.beginPath(); x.arc(cx - 2, cy - 2, r, 2.6, 5.6); x.stroke(); } }, { repeat: [12, 12] });
+    ground(moon, '#FFFFFF', { sheen: 0.4, sheenColor: '#FFE6DB' });
+    const far = group(), near = group();
+    /* stars on the dome */
+    const SN = 700, sp = new Float32Array(SN * 3), sc = new Float32Array(SN * 3), R = rng(77), cc = new THREE.Color();
+    for (let i = 0; i < SN; i++) { const a = R() * Math.PI * 2, e = 0.08 + Math.pow(R(), 0.7) * 1.4, d = 80; sp.set([Math.cos(a) * Math.cos(e) * d, Math.sin(e) * d, Math.sin(a) * Math.cos(e) * d], i * 3); cc.set(['#FFFFFF', '#FFF3B0', '#BDE8FF', '#FFC2E8'][i % 4]); sc.set([cc.r, cc.g, cc.b], i * 3); }
+    const sg = new THREE.BufferGeometry(); sg.setAttribute('position', new THREE.BufferAttribute(sp, 3)); sg.setAttribute('color', new THREE.BufferAttribute(sc, 3));
+    const stars = new THREE.Points(sg, new THREE.PointsMaterial({ map: twinkleTex, size: 1.6, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, fog: false })); far.add(stars); anim.push(t => { stars.rotation.y = t * 0.004; stars.material.opacity = 0.85 + Math.sin(t * 1.7) * 0.15; });
+    planet(-22, 16, -50, 7, ['#FF9EBB', '#FFD1E0', '#E86A9A', '#FFE0EA'], '#FFE58A', far); planet(26, 22, -60, 5, ['#7ED6FF', '#C9F1FF', '#3AA8FF'], null, far); planet(8, 30, -70, 3, ['#FFC93C', '#FFE58A', '#FF9A2E'], null, far); planet(-6, 10, -40, 2.2, ['#7ED957', '#C8F7C5', '#3FBF4A'], '#FFFFFF', far);
+    const mn = mesh(G.ball, new THREE.MeshStandardMaterial({ color: '#FFF6D8', emissive: '#FFF2C0', emissiveIntensity: 0.9, map: moon }), 34, 26, -55, 6, 6, 6, far); mn.castShadow = false;
+    /* the playground: a rocket slide, glowing crystals, round moon rocks, a ringed planet ball */
+    rocket(-11, -6, 1.3, far); rocket(12.5, -8, 1.0, far);
+    const slide = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(-10.2, 4.6, -5.5), new THREE.Vector3(-8.6, 3.0, -4.0), new THREE.Vector3(-7.4, 1.0, -2.4), new THREE.Vector3(-6.6, 0.3, -1.6)]), 40, 0.35, 12), pm('#FFC93C', { clearcoat: 1, roughness: 0.2 })); slide.castShadow = true; far.add(slide);
+    [[-8.5, -10, 1.2, '#FF6FA3'], [-6.8, -11, 0.9, '#7FE7FF'], [7.5, -10.5, 1.3, '#B98CFF'], [9.2, -9.6, 0.9, '#FFE58A'], [-13, 2, 1.4, '#7FE7FF'], [13.6, 2.6, 1.3, '#FF6FA3'], [0, -13, 1.1, '#7ED957']].forEach(([x, z, s, c]) => { crystal(x, z, s, c, far); crystal(x + 0.6, z + 0.3, s * 0.6, c, far); crystal(x - 0.5, z + 0.2, s * 0.5, c, far); });
+    [[-4, -11.5, 1.0], [4.2, -12, 1.3], [-14, -4, 1.6], [14.5, -3, 1.4]].forEach(([x, z, r]) => mesh(G.ball, pm('#B48AD8', { roughness: 0.8, clearcoat: 0 }), x, r * 0.4, z, r, r * 0.7, r, far));
+    const swing = group(10.5, 0, -2, far); mesh(G.torus, pm('#7FE7FF', { clearcoat: 1 }), 0, 3.2, 0, 2.2, 2.2, 2.2, swing).scale.z = 1.4; const seat = group(0, 3.2, 0, swing);
+    [-0.4, 0.4].forEach(k => mesh(G.cyl, pm('#FFFFFF'), k, -1.1, 0, 0.03, 2.2, 0.03, seat)); mesh(G.box, pm('#FF6FA3', { clearcoat: 1 }), 0, -2.2, 0, 1.1, 0.12, 0.5, seat); anim.push((t, q) => { if (q >= 1) seat.rotation.x = Math.sin(t * 1.1) * 0.25; });
+    farify(far);
+    stage(ringStage([[1.0, '#FFFFFF'], [0.97, '#7FE7FF'], [0.93, '#FFFFFF'], [0.9, '#FF9EDB'], [0.86, '#FFFFFF'], [0.84, '#B9A8FF'], [0.79, '#FBF8FF']], ['#FFFFFF', '#F1EBFF']), { edge: '#B9A8FF', sheenColor: '#F3EEFF' });
+    const ring = mesh(new THREE.TorusGeometry(6.75, 0.07, 10, 160), new THREE.MeshStandardMaterial({ color: '#7FE7FF', emissive: '#7FE7FF', emissiveIntensity: 2.0 }), 0, 0.1, 0, 1, 1, 1); ring.rotation.x = Math.PI / 2; ring.castShadow = false;
+    scatter(36, 7.5, 12, 71, (x, z, Rr, i) => { if (i % 3) crystal(x, z, 0.35 + Rr() * 0.3, ['#FF6FA3', '#7FE7FF', '#B98CFF', '#FFE58A'][i % 4], near); else mesh(G.ball, pm('#A893E8', { roughness: 0.8, clearcoat: 0 }), x, 0.05, z, 0.35, 0.2, 0.35, near); });
+    motes({ n: 140, colors: ['#FFFFFF', '#FFF3B0', '#BDE8FF', '#FFC2E8'], size: 0.14, box: [-13, 13, 0.6, 8, -14, -1.5], kind: 'twinkle', seed: 15, tex: twinkleTex });
+  }
+
+  /* Unit 6: a sunny beach with sandcastles */
+  function beach() {
+    setEnv({ bg: '#A9E2FF', fog: ['#CFF0FF', 40, 130], sun: ['#FFF2DA', 2.7, [-6, 13, 8]], hemi: ['#CFEAFF', '#F4D79A', 0.62], rim: ['#FFE0A8', 1.1], front: ['#FFEBD0', 0.35], exposure: 0.84,
+      box: ['#3FC3E8', '#FFFFFF', '#2A9FC4'], css: '#A9E2FF' });
+    skyDome('#2F8FFF', '#8FD0FF', '#E3F7FF', [-0.5, 0.4, -1]);
+    const sand = paint(1024, 1024, (x, w) => { x.fillStyle = '#F7DDA2'; x.fillRect(0, 0, w, w); const R = rng(17); for (let i = 0; i < 30; i++) { x.fillStyle = R() < 0.5 ? 'rgba(255,240,200,.35)' : 'rgba(220,180,110,.18)'; x.beginPath(); x.arc(R() * w, R() * w, 40 + R() * 120, 0, 7); x.fill(); }
+      for (let i = 0; i < 16000; i++) { x.fillStyle = ['rgba(200,150,80,.35)', 'rgba(255,255,255,.55)', 'rgba(230,180,110,.4)'][i % 3]; x.fillRect(R() * w, R() * w, 1.5, 1.5); }
+      x.strokeStyle = 'rgba(210,165,95,.25)'; x.lineWidth = 3; for (let i = 0; i < 14; i++) { x.beginPath(); const y0 = R() * w; for (let k = 0; k <= 20; k++) x.lineTo(k * w / 20, y0 + Math.sin(k * 0.9 + i) * 8); x.stroke(); } }, { repeat: [14, 14] });
+    ground(sand, '#FFFFFF', { sheen: 0.3, sheenColor: '#FFF4DA' });
+    const far = group(), near = group();
+    /* the sea: turquoise, with moving sparkles and a soft line of foam */
+    const seaT = paint(512, 512, (x, w) => { x.fillStyle = '#28C7D9'; x.fillRect(0, 0, w, w); const R = rng(5); for (let i = 0; i < 900; i++) { x.fillStyle = R() < 0.5 ? 'rgba(255,255,255,.55)' : 'rgba(120,240,255,.5)'; x.fillRect(R() * w, R() * w, 6 + R() * 18, 2); } }, { repeat: [10, 10] });
+    const sea = mesh(G.plane, new THREE.MeshStandardMaterial({ map: seaT, roughness: 0.15, metalness: 0.1, emissive: '#1AA6C9', emissiveIntensity: 0.25 }), 0, 0.05, -70, 260, 100, 1, far); sea.rotation.x = -Math.PI / 2; sea.castShadow = false;
+    const shore = mesh(G.plane, new THREE.MeshStandardMaterial({ color: '#7FE8E8', transparent: true, opacity: 0.8, roughness: 0.3 }), 0, 0.04, -19.5, 260, 3, 1, far); shore.rotation.x = -Math.PI / 2;
+    const foam = mesh(G.plane, new THREE.MeshStandardMaterial({ color: '#FFFFFF', emissive: '#FFFFFF', emissiveIntensity: 0.3, transparent: true, opacity: 0.9 }), 0, 0.07, -20.6, 260, 0.6, 1, far); foam.rotation.x = -Math.PI / 2;
+    anim.push(t => { seaT.offset.set(t * 0.004, t * 0.01); foam.position.z = -20.6 + Math.sin(t * 0.6) * 0.5; shore.position.z = -19.5 + Math.sin(t * 0.6) * 0.5; });
+    [[-26, -45, 1], [18, -60, 2], [40, -50, 3]].forEach(([x, z, i]) => { const b = group(x, 0, z, far); mesh(G.box, pm('#FFFFFF', { clearcoat: 1 }), 0, 0.4, 0, 3, 0.6, 1, b); const sl = new THREE.Shape(); sl.moveTo(0, 0); sl.lineTo(1.6, 0); sl.lineTo(0, 3); sl.closePath();
+      const s = new THREE.Mesh(new THREE.ShapeGeometry(sl), std(['#FF6FA3', '#FFD23F', '#FF5A5A'][i - 1], { side: THREE.DoubleSide })); s.position.set(-0.2, 0.8, 0); b.add(s); anim.push((t, q) => { if (q >= 1) { b.rotation.z = Math.sin(t * 0.8 + i) * 0.05; b.position.x = x + Math.sin(t * 0.05 + i) * 2; } }); });
+    hill(-40, -80, 22, 8, null, '#5FC86A', far); hill(36, -90, 26, 10, null, '#6FD27A', far);
+    [[-18, 13, -60, 3, 1], [10, 16, -70, 3.6, 2], [30, 11, -55, 2.6, 3]].forEach(([x, y, z, s, sd]) => { const cl = cloud(x, y, z, s, sd); far.add(cl); });
+    /* on the sand: palm trees, umbrellas, sandcastles, buckets, a beach ball */
+    palm(-11, -4, 7, far, 0.4); palm(-14, -10, 8.5, far, 0.2); palm(12, -5, 7.5, far, -0.4); palm(15, -11, 8, far, -0.2); palm(-16, 2, 6.5, far, 0.3);
+    umbrella(-9, -9.5, 3.4, '#FF5A5A', '#FFFFFF', far); umbrella(9.6, -9, 3.6, '#3AA8FF', '#FFFFFF', far); umbrella(13.4, 3, 3.2, '#FFC93C', '#FF6FA3', far);
+    sandcastle(-6.5, -11.5, 1.0, far); sandcastle(6, -12.5, 1.2, far); sandcastle(-12, 4.5, 0.8, far);
+    bucket(-4, -10, 1.2, '#FF6FA3', far); bucket(3.2, -10.5, 1.0, '#FFC93C', far); bucket(11, 5.6, 1.1, '#3AA8FF', far);
+    const bb = group(-10.6, 0.9, 6, far); mesh(G.ball, pm('#FFFFFF', { clearcoat: 1, roughness: 0.15 }), 0, 0, 0, 0.9, 0.9, 0.9, bb); ['#FF5A5A', '#3AA8FF', '#FFC93C'].forEach((c, i) => bb.add(new THREE.Mesh(new THREE.SphereGeometry(0.91, 32, 16, i * 2.09, 0.9), pm(c, { clearcoat: 1, roughness: 0.15 }))));
+    /* sea birds gliding high (simple soft V shapes) */
+    for (let i = 0; i < 4; i++) { const b = group(0, 0, 0, far), wm = std('#FFFFFF', { side: THREE.DoubleSide }); [-1, 1].forEach(k => { const w = mesh(G.plane, wm, k * 0.45, 0, 0, 0.9, 0.18, 1, b); w.rotation.z = -k * 0.35; });
+      anim.push((t, q) => { const a = t * 0.12 + i * 1.6; b.position.set(Math.cos(a) * (14 + i * 3), 12 + i * 1.5 + Math.sin(t + i) * 0.4, -30 + Math.sin(a) * 8); b.rotation.y = -a; if (q >= 1) b.children.forEach((w, k) => { w.rotation.z = (k ? 1 : -1) * (0.35 + Math.sin(t * 5 + i) * 0.3); }); }); }
+    farify(far);
+    stage((x, c) => { const cols = ['#3FC3E8', '#FFFFFF', '#FFC93C', '#FFFFFF', '#FF6FA3', '#FFFFFF']; for (let i = 0; i < 48; i++) { x.fillStyle = cols[i % 6]; x.beginPath(); x.moveTo(c, c); x.arc(c, c, c, i / 48 * Math.PI * 2, (i + 1) / 48 * Math.PI * 2); x.fill(); }
+      x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(c, c, c * 0.86, 0, 7); x.fill(); const g = x.createRadialGradient(c, c, 0, c, c, c * 0.83); g.addColorStop(0, '#FFFFFF'); g.addColorStop(1, '#F2FBFF'); x.fillStyle = g; x.beginPath(); x.arc(c, c, c * 0.83, 0, 7); x.fill();
+      x.strokeStyle = 'rgba(63,195,232,.35)'; x.lineWidth = 5; x.setLineDash([16, 14]); x.beginPath(); x.arc(c, c, c * 0.78, 0, 7); x.stroke(); }, { edge: '#BDEFFF' });
+    scatter(40, 7.4, 11.5, 81, (x, z, Rr, i) => { const k = i % 4; if (k === 0) starfish(x, z, 0.7 + Rr() * 0.5, ['#FF8A3D', '#FF6FA3', '#FFC93C'][i % 3], near); else if (k === 1) shell(x, z, 0.7 + Rr() * 0.4, ['#FFFFFF', '#FFD6E0', '#FFE7B0'][i % 3], near); else if (k === 2) { const p = mesh(G.ball, pm('#E9C27F', { roughness: 0.9, clearcoat: 0 }), x, 0.05, z, 0.5 + Rr() * 0.3, 0.18, 0.4, near); void p; } else bucket(x, z, 0.5, ['#FF6FA3', '#3AA8FF', '#7ED957'][i % 3], near); });
+    motes({ n: 60, colors: ['#FFFFFF', '#FFF6C8'], size: 0.1, box: [-12, 12, 0.6, 6, -13, -1.5], kind: 'drift', seed: 17 });
+  }
+
+  /* Unit 7: an underwater bubble world */
+  function underwater() {
+    setEnv({ bg: '#2EB8D4', fog: ['#3CC3DA', 14, 55], sun: ['#E6FFFF', 2.2, [-3, 14, 6]], hemi: ['#7FDCF5', '#A8B890', 0.55], rim: ['#9CF2FF', 1.5], front: ['#C8FFF4', 0.3], exposure: 0.76, bloom: 0.26, vib: 0.28,
+      box: ['#FFC93C', '#FFFFFF', '#E0A52A'], css: '#2EB8D4' });
+    skyDome('#BFF6FF', '#4CCDE2', '#2AAFCB', [0, 1, -0.2]);
+    const sand = paint(1024, 1024, (x, w) => { x.fillStyle = '#F4E2B6'; x.fillRect(0, 0, w, w); const R = rng(23); for (let i = 0; i < 14000; i++) { x.fillStyle = ['rgba(210,180,120,.35)', 'rgba(255,255,255,.5)', 'rgba(255,220,180,.4)'][i % 3]; x.fillRect(R() * w, R() * w, 1.6, 1.6); }
+      x.strokeStyle = 'rgba(200,170,110,.22)'; x.lineWidth = 4; for (let i = 0; i < 18; i++) { x.beginPath(); const y0 = R() * w; for (let k = 0; k <= 20; k++) x.lineTo(k * w / 20, y0 + Math.sin(k * 1.1 + i) * 9); x.stroke(); } }, { repeat: [14, 14] });
+    ground(sand, '#D9CFA8', { sheen: 0.3, sheenColor: '#BFF4FF' });
+    /* dancing light on the sand (caustics) */
+    const caus = paint(512, 512, (x, w) => { x.fillStyle = '#000'; x.fillRect(0, 0, w, w); x.strokeStyle = 'rgba(255,255,255,.9)'; x.lineWidth = 3; const R = rng(4); for (let i = 0; i < 70; i++) { const cx = R() * w, cy = R() * w, r = 18 + R() * 30; x.beginPath(); for (let k = 0; k <= 7; k++) { const a = k / 7 * 6.28; x.lineTo(cx + Math.cos(a) * r * (0.8 + R() * 0.4), cy + Math.sin(a) * r * (0.8 + R() * 0.4)); } x.stroke(); } }, { repeat: [5, 5], srgb: false });
+    const cm = new THREE.Mesh(new THREE.CircleGeometry(16, 64), new THREE.MeshBasicMaterial({ map: caus, color: '#9CF6FF', transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false })); cm.rotation.x = -Math.PI / 2; cm.position.y = 0.115; cm.renderOrder = 2; scene.add(cm);
+    anim.push((t, q) => { caus.offset.set(Math.sin(t * 0.13) * 0.3, t * 0.02); cm.visible = q >= 1; });
+    const far = group(), near = group();
+    /* coral, seaweed, rocks, a treasure chest, shells */
+    const CC = ['#FF6F91', '#FF9A3C', '#B98CFF', '#FFD23F', '#FF5A7A', '#7FE7C4'];
+    [[-10, -3, 3.4, 0], [-12.5, -8, 4, 1], [-8, -10.5, 2.8, 2], [10.2, -3.4, 3.6, 3], [12.8, -8.6, 4.2, 4], [8.4, -11, 3, 5], [-14.5, 2.5, 3.2, 2], [14.6, 2.8, 3, 0], [0, -13, 2.6, 3], [-4, -12, 2.2, 1], [4.4, -12.4, 2.4, 4]].forEach(([x, z, h, c]) => coralBranch(x, z, h, CC[c], c + 3, far));
+    [[-11, -5.5], [-9, -12], [-6, -10.5], [11.5, -6], [9.5, -12], [6.5, -10], [-15, -1], [15.5, -1], [-2, -12.5], [2, -12.8]].forEach(([x, z], i) => { seaweed(x, z, 3 + (i % 3) * 1.2, ['#2FBF71', '#3FD68A', '#1FA35E'][i % 3], far); seaweed(x + 0.4, z + 0.3, 2.4 + (i % 2), '#4FE39A', far); });
+    [[-7, -8.8, 1.2], [7.6, -9.2, 1.0], [-13, 5.5, 1.4], [13, 6, 1.2]].forEach(([x, z, r]) => { const b = mesh(G.ball, pm('#FF8FB1', { roughness: 0.6, clearcoat: 0.3 }), x, r * 0.5, z, r, r * 0.75, r, far); const tex = paint(128, 128, (c, w) => { c.fillStyle = '#FF8FB1'; c.fillRect(0, 0, w, w); c.strokeStyle = '#FF5A88'; c.lineWidth = 5; for (let k = 0; k < 9; k++) { c.beginPath(); for (let j = 0; j <= 12; j++) c.lineTo(j * w / 12, k * 15 + Math.sin(j * 1.6 + k) * 5); c.stroke(); } }); b.material = new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.6, clearcoat: 0.3 }); });
+    const ch = group(11, 0, -5, far); ch.rotation.y = -0.5; mesh(G.box, pm('#B5703A', { roughness: 0.5 }), 0, 0.6, 0, 2, 1.2, 1.3, ch); const lid = group(0, 1.2, -0.65, ch); mesh(new THREE.CylinderGeometry(0.65, 0.65, 2, 24, 1, false, 0, Math.PI), pm('#B5703A'), 0, 0, 0.65, 1, 1, 1, lid).rotation.z = Math.PI / 2; lid.rotation.x = -0.7;
+    [-0.8, 0, 0.8].forEach(k => mesh(G.box, pm('#FFC93C', { metalness: 0.6, roughness: 0.25 }), k, 0.6, 0, 0.14, 1.25, 1.35, ch)); for (let i = 0; i < 8; i++) mesh(G.cyl, glow('#FFD23F', 0.9), (i % 4 - 1.5) * 0.4, 1.25, (Math.floor(i / 4) - 0.5) * 0.4, 0.16, 0.05, 0.16, ch);
+    /* sunbeams from far above */
+    const beamT = paint(64, 256, (x, w, h) => { const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, 'rgba(255,255,255,0.9)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, w, h); const e = x.createLinearGradient(0, 0, w, 0); e.addColorStop(0, 'rgba(0,0,0,1)'); e.addColorStop(0.35, 'rgba(0,0,0,0)'); e.addColorStop(0.65, 'rgba(0,0,0,0)'); e.addColorStop(1, 'rgba(0,0,0,1)'); x.globalCompositeOperation = 'destination-out'; x.fillStyle = e; x.fillRect(0, 0, w, h); }, { srgb: false });
+    [[-8, -14, 3, 0.16], [-2, -16, 4, 0.2], [5, -13, 2.6, 0.14], [11, -17, 3.6, 0.18]].forEach(([x, z, w, op], i) => { const b = new THREE.Mesh(new THREE.PlaneGeometry(w, 30), new THREE.MeshBasicMaterial({ map: beamT, color: '#E8FFFF', transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); b.position.set(x, 15, z); b.rotation.z = 0.25; far.add(b); anim.push((t) => { b.material.opacity = op * (0.7 + 0.3 * Math.sin(t * 0.5 + i * 1.9)); }); });
+    fishSchool(0, 5, -10, 9, 9, ['#FFC93C', '#FF8A3D', '#FFFFFF'], 0.22, far); fishSchool(-6, 7, -20, 7, 7, ['#7FE7FF', '#3AA8FF'], -0.18, far); fishSchool(8, 3, -4, 6, 5, ['#FF6FA3', '#FFD23F'], 0.3, far);
+    farify(far);
+    stage((x, c) => { const g = x.createRadialGradient(c, c, 0, c, c, c); g.addColorStop(0, '#FFF6DE'); g.addColorStop(0.75, '#F6E6BE'); g.addColorStop(0.9, '#8FE3E8'); g.addColorStop(1, '#4CC9D8'); x.fillStyle = g; x.fillRect(0, 0, 2 * c, 2 * c);
+      const R = rng(9); for (let i = 0; i < 40; i++) { const a = i / 40 * Math.PI * 2 + R() * 0.05, r = c * 0.9; x.fillStyle = ['#FFFFFF', '#FFD6E0', '#FFE7B0', '#C9F3FF'][i % 4]; x.beginPath(); x.ellipse(c + Math.cos(a) * r, c + Math.sin(a) * r, c * 0.04, c * 0.03, a, 0, 7); x.fill(); } }, { edge: '#F4E2B6', sheen: 0.3 });
+    scatter(46, 7.2, 11.5, 91, (x, z, Rr, i) => { const k = i % 5; if (k === 0) starfish(x, z, 0.6 + Rr() * 0.4, ['#FF8A3D', '#FF6FA3', '#B98CFF'][i % 3], near); else if (k === 1) shell(x, z, 0.6 + Rr() * 0.4, ['#FFFFFF', '#FFD6E0', '#FFE7B0'][i % 3], near); else if (k === 2) seaweed(x, z, 1.2 + Rr(), '#3FD68A', near); else if (k === 3) coralBranch(x, z, 1.1, CC[i % 6], i, near); else mesh(G.ball, pm('#9FB7C9', { roughness: 0.8, clearcoat: 0 }), x, 0.08, z, 0.35, 0.22, 0.3, near); });
+    motes({ n: 130, colors: ['#FFFFFF', '#DFFBFF'], size: 0.22, box: [-12, 12, 0.2, 10, -14, -1.5], kind: 'rise', speed: 0.035, seed: 19, tex: bubbleTex(), add: false, opacity: 0.85 });
+  }
+  let bubbleT = null; function bubbleTex() { return bubbleT || (bubbleT = paint(64, 64, (x) => { x.strokeStyle = 'rgba(255,255,255,.95)'; x.lineWidth = 3; x.beginPath(); x.arc(32, 32, 26, 0, 7); x.stroke(); const g = x.createRadialGradient(32, 32, 0, 32, 32, 28); g.addColorStop(0, 'rgba(255,255,255,0.05)'); g.addColorStop(1, 'rgba(200,250,255,.35)'); x.fillStyle = g; x.beginPath(); x.arc(32, 32, 26, 0, 7); x.fill(); x.fillStyle = 'rgba(255,255,255,.95)'; x.beginPath(); x.ellipse(22, 20, 7, 4, -0.6, 0, 7); x.fill(); })); }
+
+  /* Unit 8: a toy train town */
+  function traintown() {
+    setEnv({ bg: '#BDE6FF', fog: ['#D9F0FF', 34, 120], sun: ['#FFF1D6', 2.6, [-6, 13, 8]], hemi: ['#CFE8FF', '#7FCB6A', 0.6], rim: ['#FFD2A0', 1.1], front: ['#FFE9D2', 0.35], exposure: 0.84,
+      box: ['#FF5A5A', '#FFFFFF', '#D8403F'], css: '#BDE6FF' });
+    skyDome('#3E9BFF', '#8FCBFF', '#E6F6FF', [0.5, 0.4, -1]);
+    ground(grassTex('#62CF55', '#3BA845', '#A0EA74', ['#FFFFFF', '#FFD84D', '#FF8FB1'], 14), '#FFFFFF', { sheen: 0.5, sheenColor: '#D8FFB0' });
+    const far = group(), near = group();
+    const path = new THREE.CatmullRomCurve3([[-12, -4], [-9, -11], [0, -12.6], [9, -11], [12, -4], [11, 3], [0, 9.5], [-11, 3]].map(([x, z]) => new THREE.Vector3(x, 0, z)), true, 'centripetal');
+    track(path, near); train(path, ['#FF5A5A', '#3AA8FF', '#FFC93C', '#4CD964', '#B98CFF'], near);
+    /* a puff of steam now and then */
+    const puffs = []; for (let i = 0; i < 6; i++) { const p = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: '#FFFFFF', transparent: true, opacity: 0, depthWrite: false })); scene.add(p); puffs.push(p); }
+    anim.push((t, q) => { const u = ((t * 0.018) % 1 + 1) % 1, p0 = path.getPointAt(u); puffs.forEach((p, i) => { const k = ((t * 0.5 + i / puffs.length) % 1); p.position.set(p0.x, 1.6 + k * 2.4, p0.z); p.scale.setScalar(0.4 + k * 1.2); p.material.opacity = q >= 1 ? (1 - k) * 0.7 : 0; }); });
+    const roofs = ['#FF5A5A', '#3AA8FF', '#FFC93C', '#B98CFF', '#4CD964', '#FF8A3D'], walls = ['#FFF4E2', '#FFE3EC', '#E3F4FF', '#FFF7C8', '#E8FFE3'];
+    [[-15, -6, 2.2, 2.2, 0.4], [-16.5, 0, 2.0, 2.0, 0.6], [-13, -13, 2.4, 2.8, 0.2], [-7, -16, 2.2, 2.4, 0], [7.5, -16, 2.4, 2.6, 0], [13.5, -13, 2.2, 2.4, -0.2], [15.5, -6, 2.2, 2.2, -0.4], [16.5, 0.5, 2.0, 2.2, -0.6], [-3, -17.5, 2, 2.2, 0], [3, -18, 2.2, 2.6, 0]].forEach(([x, z, w, h, r], i) => house(x, z, w, h, walls[i % 5], roofs[i % 6], far, r));
+    /* the clock tower (no numbers) */
+    const tw = group(0, 0, -21, far); mesh(G.box, pm('#FFE3C2'), 0, 3, 0, 2.2, 6, 2.2, tw); mesh(new THREE.ConeGeometry(1.8, 2.4, 4), pm('#3AA8FF', { clearcoat: 1 }), 0, 7.2, 0, 1, 1, 1, tw).rotation.y = Math.PI / 4;
+    mesh(G.cyl, pm('#FFFFFF'), 0, 4.6, 1.12, 0.75, 0.08, 0.75, tw).rotation.x = Math.PI / 2; const hand1 = mesh(G.box, std('#2A2F45'), 0, 4.6, 1.2, 0.06, 0.55, 0.03, tw), hand2 = mesh(G.box, std('#2A2F45'), 0, 4.6, 1.21, 0.05, 0.4, 0.03, tw);
+    hand1.geometry = hand1.geometry.clone().translate(0, 0.4, 0); hand2.geometry = hand2.geometry.clone().translate(0, 0.4, 0); anim.push(t => { hand1.rotation.z = -t * 0.2; hand2.rotation.z = -t * 0.02; });
+    [[-10.5, -9, 4, '#5ED36A', 1], [10.5, -9.5, 4.2, '#4CC85A', 2], [-18, -10, 5, '#5ED36A', 3], [18, -10, 5, '#7FD9A0', 4], [-6, -20, 4.4, '#4CC85A', 5], [6, -21, 4.6, '#5ED36A', 6], [-14, 5.5, 3.6, '#7FD9A0', 7], [14, 6, 3.8, '#5ED36A', 8]].forEach(([x, z, h, c, sd]) => roundTree(x, z, h, c, null, sd, far));
+    hill(-28, -45, 18, 9, null, '#8FDD7E', far); hill(0, -55, 24, 11, null, '#A6E58A', far); hill(28, -45, 18, 9, null, '#8FDD7E', far);
+    /* a bridge over a little blue stream at the back */
+    const st = mesh(G.plane, new THREE.MeshStandardMaterial({ color: '#5CC8FF', roughness: 0.15, emissive: '#2A9CE0', emissiveIntensity: 0.2 }), 0, 0.03, -27, 80, 3, 1, far); st.rotation.x = -Math.PI / 2; st.castShadow = false;
+    const br = new THREE.Mesh(new THREE.TorusGeometry(2.6, 0.35, 12, 40, Math.PI), pm('#FF8A3D', { clearcoat: 1 })); br.position.set(9, 0, -27); far.add(br);
+    [[-18, 16, -55, 3.2, 1], [10, 20, -65, 4, 2], [30, 14, -50, 2.8, 3]].forEach(([x, y, z, s, sd]) => far.add(cloud(x, y, z, s, sd)));
+    farify(far);
+    stage(ringStage([[1.0, '#FFFFFF'], [0.965, '#FF5A5A'], [0.92, '#FFFFFF'], [0.9, '#3AA8FF'], [0.855, '#FFFFFF'], [0.835, '#FFC93C'], [0.78, '#FFFBF2']], ['#FFFFFF', '#FFF5E6']), { edge: '#FFE3C2', r: 6.6 });
+    scatter(50, 7.2, 10.5, 101, (x, z, Rr, i) => { if (Math.abs(path.getPointAt(0).z) && i % 2) tuft(x, z, 0.9 + Rr() * 0.6, '#3FBF4A', near); else bloomFlower(x, z, 1 + Rr() * 0.6, ['#FFFFFF', '#FF8FB1', '#FFD84D'][i % 3], near); });
+    motes({ n: 80, colors: ['#FFFFFF', '#FFF6C8'], size: 0.1, box: [-12, 12, 0.6, 7, -13, -1.5], kind: 'drift', seed: 21 });
+  }
+
+  /* Unit 9: a bright, friendly jungle */
+  function jungle() {
+    setEnv({ bg: '#A8E6C8', fog: ['#BFF0D6', 26, 90], sun: ['#FFF4D2', 2.6, [-5, 13, 8]], hemi: ['#D6FFE8', '#4FA35A', 0.65], rim: ['#FFE7A0', 1.2], front: ['#F2FFE0', 0.35], exposure: 0.86,
+      box: ['#FF8A3D', '#FFFFFF', '#E06A1F'], css: '#A8E6C8' });
+    skyDome('#4FB6FF', '#A7E3FF', '#E6FFF2', [-0.3, 0.5, -1]);
+    const leafT = paint(1024, 1024, (x, w) => { x.fillStyle = '#4CBF4A'; x.fillRect(0, 0, w, w); const R = rng(29); for (let i = 0; i < 700; i++) { const cx = R() * w, cy = R() * w, s = 10 + R() * 18, a = R() * 6.28; x.save(); x.translate(cx, cy); x.rotate(a); x.fillStyle = ['#3BA845', '#5ED36A', '#2E9E44', '#7ADF6A'][i % 4]; x.beginPath(); x.ellipse(0, 0, s, s * 0.45, 0, 0, 7); x.fill(); x.restore(); }
+      for (let i = 0; i < 120; i++) { x.fillStyle = ['#FF6FA3', '#FFD23F', '#FF8A3D', '#FFFFFF'][i % 4]; x.beginPath(); x.arc(R() * w, R() * w, 4, 0, 7); x.fill(); } }, { repeat: [14, 14] });
+    ground(leafT, '#FFFFFF', { sheen: 0.5, sheenColor: '#C8FFB0' });
+    const far = group(), near = group();
+    const LC = ['#2FBF55', '#3FD06A', '#25A84A', '#5ED36A'];
+    [[-10, -3, 4.2, 0.6], [-12, -7, 5.4, 0.3], [-9, -10, 3.6, 0.1], [-14, 1.5, 4.6, 0.9], [10, -3, 4.4, -0.6], [12.4, -7.5, 5.6, -0.3], [9.2, -10.5, 3.8, -0.1], [14.4, 2, 4.8, -0.9], [-4.5, -11.5, 3.2, 0], [4.5, -12, 3.4, 0], [0, -13.5, 3.8, 0]].forEach(([x, z, h, r], i) => { bigLeaf(x, z, h, LC[i % 4], r, far); bigLeaf(x + 0.8, z - 0.6, h * 0.8, LC[(i + 1) % 4], r + 0.6, far); });
+    palm(-16, -12, 9, far, 0.3); palm(16, -13, 9.5, far, -0.3); palm(-7, -18, 8, far, 0.1); palm(8, -19, 8.5, far, -0.1);
+    /* hibiscus flowers */
+    [[-8, -7, '#FF4E6A'], [8.4, -7.4, '#FF8A3D'], [-12, 4, '#FFD23F'], [12.4, 4.2, '#FF6FA3'], [-2.5, -11, '#FF6FA3'], [2.8, -11.4, '#FFD23F']].forEach(([x, z, c], i) => flower(x, z, 1.6, c, '#FFF2B0', 5, 0.42, far, 30 + i));
+    /* the waterfall and its pool */
+    const cliff = mesh(new THREE.CylinderGeometry(9, 11, 14, 12, 3), new THREE.MeshStandardMaterial({ color: '#7FAF6A', roughness: 0.9, flatShading: true }), 0, 5, -32, 1, 1, 1, far); cliff.castShadow = false;
+    waterfall(0, -0.5, -23.2, 4, 12, far); const pool = mesh(G.disc, new THREE.MeshStandardMaterial({ color: '#4FD8F0', roughness: 0.1, emissive: '#2AB8E0', emissiveIntensity: 0.25 }), 0, 0.05, -21.5, 5, 2.4, 1, far); pool.rotation.x = -Math.PI / 2;
+    /* vines hanging from above (seen in the close-ups) */
+    for (let i = 0; i < 9; i++) { const x = -14 + i * 3.5 + (i % 2) * 0.8, z = -9 - (i % 3) * 3, len = 4 + (i % 4) * 1.5, pts = []; for (let k = 0; k <= 10; k++) pts.push(new THREE.Vector3(x + Math.sin(k * 0.6 + i) * 0.3, 16 - k / 10 * len, z));
+      const v = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 24, 0.06, 6), pm('#3FA34A')); far.add(v); for (let k = 2; k < 10; k += 2) mesh(G.ball, pm('#4FC45A', { clearcoat: 0.5 }), pts[k].x + 0.15, pts[k].y, z, 0.22, 0.1, 0.12, far); }
+    parrot(-10, 4.4, -9, 1.1, '#FF4E50', '#3AA8FF', far); parrot(10.5, 4.8, -9.5, 1.1, '#3AA8FF', '#FFD23F', far); parrot(-5, 7, -18, 1.3, '#FFD23F', '#4CD964', far); parrot(6, 8, -19, 1.3, '#FF4E50', '#FFD23F', far);
+    butterflies(6, ['#3AA8FF', '#FF6FA3', '#FFC93C', '#B98CFF', '#FF8A3D', '#7FE7FF'], [[-8, 3, -6, 2.4], [8, 3.4, -6, 2.2], [0, 5, -10, 3], [-11, 2.5, 1, 1.8], [11, 2.8, 1, 2], [0, 6, -16, 4]]);
+    farify(far);
+    stage((x, c) => { x.fillStyle = '#E3B27A'; x.fillRect(0, 0, 2 * c, 2 * c); x.fillStyle = '#C98A4E'; x.beginPath(); x.arc(c, c, c, 0, 7); x.fill(); x.fillStyle = '#F2CB92'; x.beginPath(); x.arc(c, c, c * 0.94, 0, 7); x.fill();
+      x.strokeStyle = 'rgba(190,130,70,.35)'; x.lineWidth = 4; for (let r = 0.12; r < 0.92; r += 0.075) { x.beginPath(); x.arc(c, c, c * r, 0, 7); x.stroke(); } const g = x.createRadialGradient(c, c, 0, c, c, c * 0.9); g.addColorStop(0, 'rgba(255,248,230,.85)'); g.addColorStop(1, 'rgba(255,240,210,.35)'); x.fillStyle = g; x.beginPath(); x.arc(c, c, c * 0.9, 0, 7); x.fill(); }, { edge: '#B8773E', sheen: 0.3, h: 0.1 });
+    scatter(50, 7.2, 11.5, 111, (x, z, Rr, i) => { const k = i % 4; if (k < 2) tuft(x, z, 1.0 + Rr() * 0.6, ['#2FBF55', '#3FD06A'][k], near); else if (k === 2) bloomFlower(x, z, 1.1 + Rr() * 0.6, ['#FF4E6A', '#FFD23F', '#FF8A3D', '#FF6FA3'][i % 4], near); else mushroom(x, z, 0.4 + Rr() * 0.2, '#FF8A3D', near); });
+    motes({ n: 90, colors: ['#FFFFFF', '#FFF6C8', '#E0FFD0'], size: 0.11, box: [-12, 12, 0.6, 7, -13, -1.5], kind: 'drift', seed: 23 });
+  }
+
+  /* Unit 10: a winter wonderland */
+  function snow() {
+    setEnv({ bg: '#CFEAFF', fog: ['#E8F4FF', 30, 110], sun: ['#FFF0DC', 2.2, [-6, 12, 8]], hemi: ['#BFDFFF', '#9FB8E0', 0.55], rim: ['#FFD6E6', 1.2], front: ['#FFEFE0', 0.3], exposure: 0.76, vib: 0.3,
+      box: ['#FF5A5A', '#FFFFFF', '#D8403F'], css: '#CFEAFF' });
+    skyDome('#5BA8FF', '#A8D6FF', '#FFE3EE', [-0.5, 0.3, -1]);
+    const snowT = paint(1024, 1024, (x, w) => { x.fillStyle = '#EAF3FF'; x.fillRect(0, 0, w, w); const R = rng(31); for (let i = 0; i < 40; i++) { x.fillStyle = R() < 0.5 ? 'rgba(200,220,255,.25)' : 'rgba(255,255,255,.6)'; x.beginPath(); x.arc(R() * w, R() * w, 40 + R() * 140, 0, 7); x.fill(); }
+      for (let i = 0; i < 2600; i++) { x.fillStyle = ['rgba(180,205,255,.5)', 'rgba(255,255,255,1)', 'rgba(210,230,255,.6)'][i % 3]; x.beginPath(); x.arc(R() * w, R() * w, 0.8 + R() * 1.6, 0, 7); x.fill(); } }, { repeat: [12, 12] });
+    ground(snowT, '#FFFFFF', { sheen: 0.8, sheenColor: '#E6F2FF', coat: 0.3 });
+    const far = group(), near = group();
+    [[-10, -3, 5, 1], [-12.5, -8, 7, 0], [-9, -11, 3.6, 1], [-15, 1.5, 6, 1], [10, -3, 4.4, 1], [12.6, -8.5, 7.5, 0], [9, -11.5, 3.2, 1], [15, 2, 5.4, 1], [-5, -13, 4.5, 1], [5, -13.5, 5.5, 1], [-18, -14, 9, 1], [18, -15, 8.5, 1]].forEach(([x, z, h, s], i) => pine(x, z, h, ['#2E9E5A', '#3BB36A', '#26875A'][i % 3], s, far));
+    snowman(-7, -9, 1.0, '#FF5A5A', far); snowman(7.5, -9.6, 0.75, '#3AA8FF', far); snowman(-12.5, 4.5, 0.6, '#FFC93C', far);
+    cabin(12.5, -16, 1.4, far, -0.4); const smoke = []; for (let i = 0; i < 5; i++) { const p = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: '#FFFFFF', transparent: true, opacity: 0.5, depthWrite: false })); far.add(p); smoke.push(p); }
+    anim.push((t, q) => smoke.forEach((p, i) => { const k = (t * 0.12 + i / 5) % 1; p.position.set(12.5 + 1.2 + k * 1.2, 5.6 + k * 4, -16.6); p.scale.setScalar(0.6 + k * 1.8); p.material.opacity = q >= 1 ? (1 - k) * 0.6 : 0; }));
+    const pond = mesh(G.disc, new THREE.MeshPhysicalMaterial({ color: '#BFE6FF', roughness: 0.05, clearcoat: 1, metalness: 0.1 }), -10, 0.03, -17, 5, 2.4, 1, far); pond.rotation.x = -Math.PI / 2; pond.castShadow = false;
+    const sled = group(10.5, 0, 4.5, far); sled.rotation.y = -0.6; mesh(G.box, pm('#FF5A5A', { clearcoat: 1 }), 0, 0.45, 0, 1.6, 0.12, 0.8, sled); [-0.35, 0.35].forEach(k => { const r = mesh(G.torus, pm('#FFC93C', { metalness: 0.5 }), 0.2, 0.25, k, 0.6, 0.25, 0.1, sled); r.scale.set(1.1, 0.4, 0.2); });
+    hill(-26, -40, 16, 7, null, '#FFFFFF', far); hill(0, -50, 22, 10, null, '#F4F9FF', far); hill(28, -42, 18, 8, null, '#FFFFFF', far);
+    [[-18, 15, -55, 3, 1], [12, 19, -62, 3.6, 2]].forEach(([x, y, z, s, sd]) => far.add(cloud(x, y, z, s, sd)));
+    farify(far);
+    stage((x, c) => { const g = x.createRadialGradient(c * 0.8, c * 0.7, 0, c, c, c); g.addColorStop(0, '#E6F5FF'); g.addColorStop(0.7, '#BFE4FF'); g.addColorStop(1, '#8CCBFF'); x.fillStyle = g; x.fillRect(0, 0, 2 * c, 2 * c);
+      x.strokeStyle = '#FF6F91'; x.lineWidth = 14; x.beginPath(); x.arc(c, c, c * 0.96, 0, 7); x.stroke(); x.strokeStyle = '#FFFFFF'; x.lineWidth = 8; x.beginPath(); x.arc(c, c, c * 0.93, 0, 7); x.stroke(); x.strokeStyle = 'rgba(70,140,230,.55)'; x.lineWidth = 4; x.beginPath(); x.arc(c, c, c * 0.88, 0, 7); x.stroke();
+      const R = rng(33); x.strokeStyle = 'rgba(255,255,255,.7)'; x.lineWidth = 2; for (let i = 0; i < 30; i++) { const a = R() * 6.28, r = R() * c * 0.8; x.beginPath(); x.arc(c, c, r, a, a + 0.6 + R()); x.stroke(); }
+      for (let i = 0; i < 16; i++) { const a = i / 16 * 6.28, px = c + Math.cos(a) * c * 0.915, py = c + Math.sin(a) * c * 0.915; x.strokeStyle = '#8FC6FF'; x.lineWidth = 3; for (let k = 0; k < 3; k++) { x.beginPath(); x.moveTo(px - Math.cos(k * 1.05) * 10, py - Math.sin(k * 1.05) * 10); x.lineTo(px + Math.cos(k * 1.05) * 10, py + Math.sin(k * 1.05) * 10); x.stroke(); } } }, { edge: '#D6ECFF', coat: 0.8, sheen: 0.4 });
+    scatter(44, 7.4, 11.5, 121, (x, z, Rr, i) => { const k = i % 4; if (k < 2) pine(x, z, 0.9 + Rr() * 0.9, '#3BB36A', true, near); else if (k === 2) mesh(G.ball, pm('#FFFFFF', { roughness: 0.6, sheen: 0.6 }), x, 0.1, z, 0.5 + Rr() * 0.3, 0.3, 0.45, near); else { const p = mesh(G.box, pm(['#FF5A5A', '#3AA8FF', '#FFC93C'][i % 3], { clearcoat: 1 }), x, 0.25, z, 0.45, 0.45, 0.45, near); p.rotation.y = Rr() * 3; } });
+    motes({ n: 220, colors: ['#FFFFFF'], size: 0.13, box: [-14, 14, 0.1, 10, -16, -1], kind: 'fall', speed: 0.025, seed: 25, add: false, opacity: 0.95 });
+  }
+
+  /* Unit 11: a sunny farm */
+  function farm() {
+    setEnv({ bg: '#BDE6FF', fog: ['#DAF0FF', 34, 120], sun: ['#FFF0CF', 2.7, [-6, 13, 8]], hemi: ['#CFE8FF', '#86C860', 0.6], rim: ['#FFD6A0', 1.1], front: ['#FFE9D2', 0.35], exposure: 0.84,
+      box: ['#FFC93C', '#FFFFFF', '#E0A52A'], css: '#BDE6FF' });
+    skyDome('#3E9BFF', '#93CFFF', '#F2F9E6', [-0.5, 0.4, -1]);
+    ground(grassTex('#6AD35A', '#41AE45', '#A9EC78', ['#FFFFFF', '#FFE14D'], 16), '#FFFFFF', { sheen: 0.5, sheenColor: '#D8FFB0' });
+    const far = group(), near = group();
+    barn(-9, -17, 1.5, far, 0.35); windmill(11, -18, 1.4, far);
+    fence(-16, -9, -6, -11.5, 8, '#FFFFFF', far); fence(6, -11.5, 16, -9, 8, '#FFFFFF', far);
+    hay(-12, -5, 1.2, far, 0.4); hay(-13.6, -3.4, 1.0, far, 0.2); hay(12.6, -5, 1.2, far, -0.4);
+    [[-9.4, -8.6, 1.4], [-8.2, -9.6, 1.0], [8.6, -9, 1.3], [9.8, -8.2, 0.9], [-12.4, 3.6, 1.6], [12.8, 4, 1.4], [0, -12.6, 1.2], [-1.4, -12.2, 0.9]].forEach(([x, z, s]) => pumpkin(x, z, s, far));
+    [[-14, -12, 4.6, 1], [14, -12.5, 4.8, 2], [-17, 1, 4.2, 3], [17, 1.5, 4.4, 4], [-4, -22, 5, 5], [4, -23, 5.2, 6]].forEach(([x, z, h, sd]) => { const tr = roundTree(x, z, h, '#4CC85A', null, sd, far); const R = rng(sd); for (let i = 0; i < 10; i++) { const a = R() * 6.28; mesh(G.ball, pm('#FF3B30', { clearcoat: 1, roughness: 0.2 }), Math.cos(a) * h * 0.36, h * (0.75 + R() * 0.2), Math.sin(a) * h * 0.25 + h * 0.15, h * 0.04, h * 0.04, h * 0.04, tr); } });
+    [[-6, -10.5], [-4.6, -11], [5, -10.8], [6.4, -10.2]].forEach(([x, z], i) => flower(x, z, 3 + (i % 2) * 0.6, '#FFD23F', '#8A4E1E', 16, 0.5, far, 50 + i));
+    hill(-30, -45, 20, 8, null, '#9DE38A', far); hill(0, -55, 26, 10, null, '#B5EC8F', far); hill(30, -45, 20, 8, null, '#8FDD7E', far);
+    const rows = paint(512, 512, (x, w) => { x.fillStyle = '#C8E68A'; x.fillRect(0, 0, w, w); for (let i = 0; i < 16; i++) { x.fillStyle = i % 2 ? '#9BD45A' : '#E8F2A0'; x.fillRect(0, i * 32, w, 18); } }, { repeat: [2, 2] }); hill(-14, -34, 12, 4, rows, '#FFFFFF', far);
+    [[-18, 16, -55, 3.2, 1], [10, 20, -65, 4, 2], [30, 14, -50, 2.8, 3]].forEach(([x, y, z, s, sd]) => far.add(cloud(x, y, z, s, sd)));
+    butterflies(4, ['#FFFFFF', '#FFC93C', '#FF8A3D', '#B98CFF'], [[-8, 3, -6, 2.4], [8, 3.4, -6, 2.2], [0, 5, -11, 3], [0, 6, -16, 4]]);
+    farify(far);
+    stage((x, c) => { const n = 24; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { x.fillStyle = (i + j) % 2 ? '#FFFFFF' : ((i % 2) ? '#FFB3B0' : '#FFD9D6'); x.fillRect(i * 2 * c / n, j * 2 * c / n, 2 * c / n, 2 * c / n); }
+      x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(c, c, c * 0.86, 0, 7); x.fill(); const g = x.createRadialGradient(c, c, 0, c, c, c * 0.84); g.addColorStop(0, '#FFFDF6'); g.addColorStop(1, '#FFF6E2'); x.fillStyle = g; x.beginPath(); x.arc(c, c, c * 0.84, 0, 7); x.fill();
+      x.strokeStyle = 'rgba(255,120,110,.4)'; x.lineWidth = 4; x.setLineDash([14, 12]); x.beginPath(); x.arc(c, c, c * 0.8, 0, 7); x.stroke(); }, { edge: '#FFD9D6' });
+    scatter(50, 7.2, 11.5, 131, (x, z, Rr, i) => { const k = i % 4; if (k < 2) tuft(x, z, 1 + Rr() * 0.6, ['#3FBF4A', '#58D35A'][k], near); else if (k === 2) bloomFlower(x, z, 1 + Rr() * 0.6, ['#FFFFFF', '#FFD84D'][i % 2], near); else pumpkin(x, z, 0.45 + Rr() * 0.2, near); });
+    motes({ n: 80, colors: ['#FFFFFF', '#FFF6C8'], size: 0.12, box: [-12, 12, 0.6, 7, -13, -1.5], kind: 'drift', seed: 27 });
+  }
+
+  /* Unit 12: a happy shape party at golden hour */
+  function party() {
+    setEnv({ bg: '#FFD6C2', fog: ['#FFD9C8', 34, 110], sun: ['#FFE2B8', 2.6, [-8, 10, 6]], hemi: ['#FFE6F2', '#8FCB6A', 0.65], rim: ['#FFB27A', 1.4], front: ['#FFE0D0', 0.4], exposure: 0.86, bloom: 0.34,
+      box: ['#B98CFF', '#FFFFFF', '#9467E8'], css: '#FFD6C2' });
+    skyDome('#6E8CFF', '#FFB0D4', '#FFD59A', [-0.6, 0.2, -1]);
+    ground(grassTex('#6AD35A', '#41AE45', '#B3EE7A', ['#FFFFFF', '#FFE14D', '#FF8FB1'], 18), '#FFFFFF', { sheen: 0.5, sheenColor: '#FFE8C8' });
+    const far = group(), near = group();
+    const poles = [[-13, -4], [-13, -12], [13, -12], [13, -4]];
+    poles.forEach(([x, z]) => { mesh(G.cyl, pm('#FFFFFF', { clearcoat: 1 }), x, 3.5, z, 0.12, 7, 0.12, far); mesh(G.ball, pm('#FFC93C', { clearcoat: 1, metalness: 0.3 }), x, 7.1, z, 0.25, 0.25, 0.25, far); });
+    for (let i = 0; i < poles.length - 1; i++) { const a = [poles[i][0], 6.6, poles[i][1]], b = [poles[i + 1][0], 6.6, poles[i + 1][1]]; bunting(a, b, 1.2, ['#FF5A5A', '#FFC93C', '#4CD964', '#3AA8FF', '#B98CFF', '#FF6FA3'], 10, far); lights([a[0], 6.2, a[2]], [b[0], 6.2, b[2]], 1.6, ['#FFF2B0', '#FFD0E8', '#C8F0FF'], 12, far); }
+    /* balloon bunches */
+    [[-11, -6, ['#FF5A5A', '#FFC93C', '#3AA8FF']], [11, -6.5, ['#B98CFF', '#FF6FA3', '#4CD964']], [-15, 3, ['#FF8A3D', '#FFFFFF', '#FF6FA3']], [15, 3.5, ['#3AA8FF', '#FFC93C', '#FF5A5A']]].forEach(([x, z, cs]) => cs.forEach((c, i) => balloon(x + (i - 1) * 0.6, 4.2 + (i % 2) * 0.6, z + (i % 2) * 0.3, c, 0.6, far)));
+    /* gifts with ribbons, and a cake table */
+    [[-8, -9.5, 1.1, '#FF6FA3', '#FFFFFF'], [-6.8, -10.6, 0.7, '#3AA8FF', '#FFC93C'], [8.2, -9.8, 1.0, '#FFC93C', '#FF5A5A'], [7, -10.8, 0.75, '#4CD964', '#FFFFFF'], [-12.5, 5.5, 0.9, '#B98CFF', '#FFC93C'], [12.8, 6, 0.8, '#FF5A5A', '#FFFFFF']].forEach(([x, z, s, c, r]) => gift(x, z, s, c, r, far));
+    const tb = group(0, 0, -12.5, far); mesh(G.cyl, pm('#FFFFFF', { clearcoat: 0.6 }), 0, 1.0, 0, 2.6, 0.12, 1.3, tb); mesh(G.cyl, pm('#FFFFFF'), 0, 0.5, 0, 0.12, 1.0, 0.12, tb);
+    [['#FF9EBB', 0.9, 0.55], ['#FFF4E2', 0.7, 0.45], ['#9EE2FF', 0.5, 0.4]].forEach(([c, r, h], i) => { const y = 1.06 + [0, 0.55, 1.0][i]; mesh(G.cyl, pm(c, { roughness: 0.4, clearcoat: 0.5 }), 0, y + h / 2, 0, r, h, r, tb); });
+    [-0.3, 0, 0.3].forEach(k => { mesh(G.cyl, pm('#FFFFFF'), k, 2.65, 0, 0.04, 0.3, 0.04, tb); mesh(G.ball, glow('#FFD27A', 2.4), k, 2.86, 0, 0.05, 0.09, 0.05, tb); });
+    cupcake(-1.8, 1.06, 0.2, 0.7, '#FFB3E6', tb); cupcake(1.8, 1.06, 0.2, 0.7, '#BDE8FF', tb);
+    /* paper lanterns glowing softly */
+    [[-6, 8, -9, '#FF8FB1'], [-2, 8.6, -11, '#FFD27A'], [2, 8.4, -11, '#B98CFF'], [6, 8, -9, '#7ED6FF']].forEach(([x, y, z, c], i) => { const l = mesh(G.ball, new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: 1.1, roughness: 0.8 }), x, y, z, 0.6, 0.75, 0.6, far); anim.push((t, q) => { if (q >= 1) l.position.y = y + Math.sin(t * 0.8 + i) * 0.12; }); });
+    rainbow(0, -6, -60, 30, far);
+    [[-14, -14, 4.2, '#FF8FB1', 1], [14, -14.5, 4.4, '#FFC93C', 2], [-18, -3, 4.8, '#5ED36A', 3], [18, -2.5, 4.6, '#B98CFF', 4]].forEach(([x, z, h, c, sd]) => roundTree(x, z, h, c, null, sd, far));
+    hill(-28, -45, 18, 8, null, '#9DE38A', far); hill(28, -48, 20, 9, null, '#8FDD7E', far);
+    [[-18, 15, -55, 3, 1, '#FFE0EE'], [12, 19, -62, 3.6, 2, '#FFF0E0'], [30, 12, -50, 2.8, 3, '#FFE0EE']].forEach(([x, y, z, s, sd, c]) => far.add(cloud(x, y, z, s, sd, c)));
+    farify(far);
+    stage((x, c) => { x.fillStyle = '#7ED957'; x.fillRect(0, 0, 2 * c, 2 * c); x.fillStyle = '#FFC93C'; for (let i = 0; i < 40; i++) { const a = i / 40 * Math.PI * 2; x.beginPath(); x.arc(c + Math.cos(a) * c * 0.94, c + Math.sin(a) * c * 0.94, c * 0.07, 0, 7); x.fill(); }
+      x.fillStyle = '#FFFFFF'; x.beginPath(); x.arc(c, c, c * 0.92, 0, 7); x.fill(); const cols = ['#FF5A5A', '#FFC93C', '#4CD964', '#3AA8FF', '#B98CFF', '#FF6FA3']; for (let i = 0; i < 60; i++) { const a = i / 60 * Math.PI * 2; x.fillStyle = cols[i % 6]; x.beginPath(); x.arc(c + Math.cos(a) * c * 0.86, c + Math.sin(a) * c * 0.86, c * 0.018, 0, 7); x.fill(); }
+      const g = x.createRadialGradient(c, c, 0, c, c, c * 0.82); g.addColorStop(0, '#FFFDF8'); g.addColorStop(1, '#FFF2E6'); x.fillStyle = g; x.beginPath(); x.arc(c, c, c * 0.82, 0, 7); x.fill(); }, { edge: '#FFE3A0', coat: 0.3 });
+    scatter(40, 7.2, 11.5, 141, (x, z, Rr, i) => { const k = i % 3; if (k === 0) gift(x, z, 0.4 + Rr() * 0.2, ['#FF6FA3', '#3AA8FF', '#FFC93C', '#4CD964'][i % 4], '#FFFFFF', near); else if (k === 1) bloomFlower(x, z, 1 + Rr() * 0.6, ['#FFFFFF', '#FF8FB1', '#FFD84D'][i % 3], near); else tuft(x, z, 1 + Rr() * 0.5, '#3FBF4A', near); });
+    motes({ n: 160, colors: ['#FF5A5A', '#FFC93C', '#4CD964', '#3AA8FF', '#B98CFF', '#FF6FA3', '#FFFFFF'], size: 0.12, box: [-13, 13, 0.3, 9, -14, -1.5], kind: 'fall', speed: 0.02, seed: 29, add: false, opacity: 0.9 });
+  }
+
+  const WORLDS = { playroom, toyland, garden, sky, bakery, space, beach, underwater, traintown, jungle, snow, farm, party };
+  /* painted backdrops (v2/app/k-shapes/worlds/*.jpg, painted for us, ground cut away): a big curved picture far behind the 3D world,
+     softly blurred like an animated film background. The 3D things in front give depth; far 3D scenery steps aside for the painting.
+     g: where its ground line is (0 top .. 1 bottom); y: the height of that line; R / span: how far away and how wide; cut: 3D things wholly behind this line (z) hide. */
+  const PAINT = { toyland: {}, garden: {}, sky: { g: 1, y: -7, haze: false }, bakery: { R: 14, span: 2.3, y: -0.4, cut: -7.9 }, space: {}, beach: {}, underwater: {}, traintown: {}, jungle: {}, snow: {}, farm: { cut: -11 }, party: {} };
+  function painted(name) {
+    const P = PAINT[name]; if (!P || FAST) return;
+    new THREE.TextureLoader().load(new URL('./worlds/' + name + '.jpg', import.meta.url).href, tex => {
+      tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = ANISO; tex.repeat.x = -1; tex.offset.x = 1;
+      const R = P.R || 46, span = P.span || 1.55, H = R * span * tex.image.height / tex.image.width, g = P.g || 0.97, y0 = P.y == null ? -2 : P.y;
+      const back = new THREE.Mesh(new THREE.CylinderGeometry(R, R, H, 96, 1, true, Math.PI - span / 2, span), new THREE.MeshBasicMaterial({ map: tex, side: THREE.BackSide, fog: false, color: new THREE.Color(1.1, 1.1, 1.1) }));
+      back.position.y = y0 + H * (g - 0.5); back.layers.set(FAR); back.renderOrder = -5; scene.add(back);
+      /* the haze where the painting meets the 3D ground takes its colour from the painting */
+      let hc = null;
+      try { const c = document.createElement('canvas'), w = 64, h = Math.round(64 * tex.image.height / tex.image.width); c.width = w; c.height = h; const x = c.getContext('2d'); x.drawImage(tex.image, 0, 0, w, h);
+        const row = Math.max(0, Math.min(h - 1, Math.round(g * h) - 2)), d = x.getImageData(Math.round(w * 0.3), row, Math.round(w * 0.4), 1).data; let r = 0, gg = 0, b = 0; for (let i = 0; i < d.length; i += 4) { r += d[i]; gg += d[i + 1]; b += d[i + 2]; } const n = d.length / 4;
+        hc = new THREE.Color().setRGB(r / n / 255, gg / n / 255, b / n / 255, THREE.SRGBColorSpace); } catch (e) {}
+      if (hc && P.haze !== false) { scene.fog.color.lerp(hc, 0.6); BG.lerp(hc, 0.6);
+        const hz = paint(4, 64, (x, w, h) => { const gr = x.createLinearGradient(0, 0, 0, h); gr.addColorStop(0, '#000'); gr.addColorStop(0.55, '#555'); gr.addColorStop(1, '#FFF'); x.fillStyle = gr; x.fillRect(0, 0, w, h); }, { srgb: false });
+        const band = new THREE.Mesh(new THREE.CylinderGeometry(R - 1.5, R - 1.5, 4.5, 96, 1, true, Math.PI - span / 2 - 0.3, span + 0.6), new THREE.MeshBasicMaterial({ color: hc, alphaMap: hz, transparent: true, depthWrite: false, side: THREE.BackSide, fog: false }));
+        band.position.y = 1.0; band.layers.set(FAR); band.renderOrder = -4; scene.add(band); }
+      /* far 3D scenery steps aside (the painting has its own) */
+      const cut = P.cut || -14, bx = new THREE.Box3();
+      scene.children.forEach(c => { if (c === back || noDepth.includes(c) || !(c.layers.mask & 2)) return;
+        (c.isGroup ? c.children.slice() : [c]).forEach(o => { bx.setFromObject(o); if (!bx.isEmpty() && bx.max.z < cut) o.visible = false; }); });
+      L.painted = name;
+    });
+  }
+  L.buildWorld = () => { (WORLDS[world] || playroom)(); painted(world); };
 
   /* ================= toy boxes: glossy painted toy chests ================= */
   L.boxMats = () => ({ body: phys(ENV.box[0], { roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.1 }), rim: phys(ENV.box[1], { roughness: 0.3, clearcoat: 1 }), inside: std(ENV.box[2], { roughness: 0.8 }) });
@@ -784,7 +1304,9 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   L.resize = () => { const v = renderer.getDrawingBufferSize(new THREE.Vector2()); rtW = Math.max(1, v.x); rtH = Math.max(1, v.y); fW = Math.max(1, Math.round(rtW / 2)); fH = Math.max(1, Math.round(rtH / 2));
     farRT.setSize(fW, fH); blurA.setSize(fW, fH); blurB.setSize(fW, fH); mainRT.setSize(rtW, rtH); bloomA.setSize(Math.max(1, rtW >> 2), Math.max(1, rtH >> 2)); bloomB.setSize(Math.max(1, rtW >> 2), Math.max(1, rtH >> 2));
     finalMat.uniforms.px.value.set(1 / rtW, 1 / rtH); };
+  renderer.info.autoReset = false;
   L.render = () => {
+    renderer.info.reset();
     const full = L.Q >= 2 && !FAST;
     if (!full) { camera.layers.enableAll(); scene.background = BG; renderer.shadowMap.needsUpdate = true; renderer.setRenderTarget(null); renderer.render(scene, camera); return; }
     /* 1. the far world, half size, blurred */
@@ -835,6 +1357,6 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     stepSprings(dt); stepFx(dt); if (!FAST) stepPeople(t, dt);
     placeBlobs(shapes);
   };
-  if (window.__shp) window.__shp.quality = L.Q;
+  if (window.__shp) { window.__shp.quality = L.Q; window.__shp.drawInfo = () => ({ calls: renderer.info.render.calls, tris: renderer.info.render.triangles, q: L.Q }); }
   return L;
 }

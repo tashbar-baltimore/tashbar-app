@@ -117,7 +117,7 @@ export function startGame(cfg) {
   const LK = cfg.world ? createLook({ renderer, scene, camera, FAST, world: cfg.world }) : null;
   if (LK) document.body.classList.add('world');
   const PAL = LK ? ['#FF3B30', '#2F80FF', '#FFC21A', '#1DC77A', '#9A5BFF', '#FF8A1F', '#00C3D6', '#FF4FA0'] : COLORS;
-  if (LK) LK.buildWorld(); else {
+  if (LK) { LK.buildWorld(); const add0 = scene.add.bind(scene); scene.add = (...os) => { os.forEach(o => LK.toyify(o)); return add0(...os); }; } else {
   renderer.setPixelRatio(FAST ? 0.5 : Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
