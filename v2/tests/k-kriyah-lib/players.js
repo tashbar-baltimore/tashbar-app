@@ -100,3 +100,4 @@ P.story3 = P.story;
 P.story4 = P.story;
 P.story5 = P.story;
 P.story6 = P.story;
+P.story7 = P.story;

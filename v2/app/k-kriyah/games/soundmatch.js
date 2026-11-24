@@ -87,6 +87,8 @@ export default function setup(E, { struggled, unit, game = {} }) {
     if (keys.includes('pei') && unit.letters.includes('fei')) {   /* Fei has no picture: it stands beside Pei and says f */
       const pd = peds.find(x => x.userData.key === 'pei'), c = E.letter('fei', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 1.3 * pd.scale.x, .6)); c.scale.setScalar(pd.scale.x); E.scene.add(c); await E.popIn(c, pd.scale.x);
       await E.say('This is Fei. Pei without its dot.'); E.hop(c, .3); await E.say(['Fei says', S(E.LETTERS.fei.snd), '.']); }
+    if (keys.includes('kaf') && keys.includes('kuf') && unit.letters.includes('kuf')) {   /* Kuf and Kaf say the same sound */
+      E.hop(L.kuf, .3); await E.wait(200); E.hop(L.kaf, .3); await E.say('Kuf sounds just like Kaf!'); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Great matching! Every picture found its letter.' : null };
   };

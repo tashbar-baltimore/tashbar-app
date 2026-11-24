@@ -67,6 +67,17 @@ export const UNITS = [
       { id: 'u6g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['gimmel', 'nun'], ['tes', 'mem']] },
       { id: 'u6g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
+  { n: 7, letters: ['tzadik', 'kuf', 'reish'], known: ['alef', 'beis', 'veis', 'gimmel', 'daled', 'hei', 'vov', 'zayin', 'ches', 'tes', 'yud', 'kaf', 'chaf', 'lamed', 'mem', 'nun', 'samech', 'ayin', 'pei', 'fei'],
+    games: [
+      { id: 'u7g0', name: 'Tzvi in the playroom', kind: 'story7', icon: 'train' },
+      { id: 'u7g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
+      { id: 'u7g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['daled', 'reish'], ['hei', 'kuf']] },
+      { id: 'u7g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish', stands: ['kaf', 'tzadik', 'kuf', 'reish'] },   /* Kaf (kadur) comes back: Kuf sounds just like it */
+      { id: 'u7g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
+      { id: 'u7g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
+      { id: 'u7g6', name: 'Review: Alef-Beis Train', kind: 'train', icon: 'train', review: true, order: ['ayin', 'pei', 'fei', 'tzadik', 'kuf', 'reish'] },
+      { id: 'u7g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
+    ] },
 ];
 /* every game in order, each knowing its unit */
 export const GAMES = UNITS.flatMap(u => u.games.map(g => ({ ...g, unit: u.n })));
