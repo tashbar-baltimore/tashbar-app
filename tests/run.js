@@ -74,7 +74,11 @@ async function openPage(browser, html, init, throttle, staffSession) {
   const pg = await ctx.newPage(); const errs = [];
   pg.on('pageerror', e => errs.push('page error: ' + String(e).slice(0, 240)));
   pg.on('console', m => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push('console error: ' + m.text().slice(0, 240)); });
-  await pg.route('**/*', r => r.request().url() === 'http://app.test/' ? r.fulfill({ contentType: 'text/html', body: html }) : r.abort());
+  /* the content store (job T): /texts/<ID>.json is served from texts/ the way web/build.js publishes it, so a lesson can open a real text */
+  const TXP = [path.join(__dirname, '..', 'tools', 'core', 'texts.js'), path.join(process.cwd(), 'tools', 'core', 'texts.js')].find(p => fs.existsSync(p));
+  let TX = null; const realText = id => { if (!TX) { TX = {}; try { require(TXP).load().out.forEach(t => { TX[t.id] = t; }); } catch (e) {} } return TX[id]; };
+  await pg.route('**/*', r => { const u = r.request().url(); if (u === 'http://app.test/') return r.fulfill({ contentType: 'text/html', body: html });
+    const m = /\/texts\/([A-Za-z0-9.]+)\.json$/.exec(u), t = m && realText(m[1]); return t ? r.fulfill({ contentType: 'application/json', body: JSON.stringify(t) }) : r.abort(); });
   if (throttle) { const cdp = await ctx.newCDPSession(pg); await cdp.send('Emulation.setCPUThrottlingRate', { rate: throttle }); }
   return { ctx, pg, errs };
 }

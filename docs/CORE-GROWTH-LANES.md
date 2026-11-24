@@ -22,7 +22,7 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 | 8 | **C68 · Comprehension Gr 6–8** | TAKEN | https://claude.ai/code/session_01F5TiU4gVh7WZ9cRWBJEpNU | 2026-11-24 | 2026-11-24 05:00 UTC | Skill map + ledger in review (`docs/core-growth/C68-map.md`, `C68-ledger.md`); next: Units 6.1, 7.1, 8.1 skill lessons (`src/CoreDataC681.html`) and W1/W4/W7 ch. 1–4 | T for lesson PRs; can start the map now |
 | 9 | **W13 · Writing K–3** | TAKEN | https://claude.ai/code/session_01884AzDu2mcQ4Gee5HstyGK | 2026-11-24 | 2026-11-24 13:30 UTC | Claimed; writing the K–3 writing skill map (docs/core-growth/W13-map.md) | T (Writing Workshop); can start the map now |
 | 10 | **S · Science and Social Studies** | TAKEN | https://claude.ai/code/session_01WBvMX2ukMEquyXqwaDMAGw | 2026-11-24 | 2026-11-24 15:20 UTC | Claimed (after finishing job T). First: what Science and Social Studies already have, then the skill map docs/core-growth/S-map.md, starting with the bands whose core ladders exist (Grades 4–5 and 6–8) | the core map of a band; can start the map now |
-| 11 | **V · Verifier** (reviews, takes no building job) | OPEN | | | | | starts when the first lesson PR opens |
+| 11 | **V · Verifier** (reviews, takes no building job) | TAKEN | https://claude.ai/code/session_016cU9PZnL41RMv1H8tMHTi5 | 2026-11-24 | 2026-11-24 17:35 UTC | Round 1 done: all 151 live lessons scored (98 pass), 4 urgent fixes, in `docs/core-growth/REVIEWS.md` + `reviews/R1-*.md`; next: K–1 games, unit checks, re-scores, each new lesson PR | starts when the first lesson PR opens |
 
 Status values: `OPEN`, `TAKEN`, `DONE`.
 
@@ -31,7 +31,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 
 | Job | Piece | Status | Helper (session link) | Last update |
 |---|---|---|---|---|
-| F | K Units 6–10 (lessons and little readers; see `docs/core-growth/F-map.md`) | OPEN | | |
+| F | K Units 6–10 (lessons and little readers; see `docs/core-growth/F-map.md`) | TAKEN | https://claude.ai/code/session_01WBvMX3fU9VBkZU9jYUfjGF | 2026-11-24 17:01 UTC: claimed; reading F-map Units 6–10, files `src/CoreDataFH1.html` |
 | F | Grade 1 Units 7–12 (lessons and little readers) | OPEN | | |
 | F | K–1 listen-along stories (70, in topic sets) and their understanding lessons | OPEN | | |
 | F | Grade 2 Units 4–6 (lessons, word-study readers, Readers' Theatre) | OPEN | | |
