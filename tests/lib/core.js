@@ -89,6 +89,55 @@ async function page(pg, rep) {
     const T = require('../../tools/core/texts.js').load(); T.problems.forEach(p => fail('text: ' + p));
     if (!fails.length) oks.push('content store: a long text loads only when opened, once; ' + T.out.length + ' real text(s) in texts/, no problems');
   }
+  /* the Reader (src/CoreReader.html), with a made-up chapter (tests/fixtures/ZZTEST.KEY.01.txt), as a boy taps it */
+  {
+    const F = require('../../tools/core/textfmt.js');
+    const RT = F.parse(fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'ZZTEST.KEY.01.txt'), 'utf8'), 'fixture').text;
+    await pg.route('**/texts/ZZTEST.KEY.01.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(RT) }));
+    const sents = []; RT.pages.forEach((pg2, i) => pg2.forEach(par => par.s.forEach(x => sents.push({ page: i, s: x }))));
+    const proof = sents.findIndex(x => /Dovid gasped/.test(x.s)), wrong = sents.findIndex(x => /flowerpot/.test(x.s));
+    const one = async (vp) => {
+      await pg.setViewportSize(vp);
+      return pg.evaluate(async ([proof, wrong]) => {
+        const out = { steps: [] }, Q = s => document.querySelector(s), tick = () => new Promise(r => setTimeout(r, 60));
+        const look = async name => { await new Promise(r => setTimeout(r, 380)); const el = Q('#crd'); const mains = el.querySelectorAll('.tlk-main').length, all = [...el.querySelectorAll('button')];
+          out.steps.push({ name, mains, ownButtons: all.filter(b => !b.classList.contains('tlk')).length, wide: el.scrollWidth > innerWidth + 1 || (Q('#crd .crd-main') && Q('#crd .crd-main').scrollWidth > innerWidth + 1), exitTL: !!el.querySelector('.tlk-home.tlk-at-tl,.tlk-x.tlk-at-tl') }); };
+        try { if (A.st) delete (A.st.reads || {})['ZZTEST.KEY.01']; } catch (e) {}
+        const pr = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 3 }); await new Promise(r => { const t = setInterval(() => { if (Q('#crd .crd-cover')) { clearInterval(t); r(); } }, 30); });
+        await look('cover'); Q('#crd [data-crd=start]').click(); await tick(); await look('page 1');
+        out.backOnFirst = !!Q('#crd [data-crd=back]'); out.prog = (Q('#crd .tlk-pill') || {}).textContent;
+        const g = Q('#crd .crd-g'); g.click(); await tick(); out.bubble = (Q('#crd .crd-bub') || {}).textContent || '';
+        Q('#crd [data-crd=next]').click(); await tick(); await look('page 2'); out.back2 = !!Q('#crd [data-crd=back]');
+        Q('#crd [data-crd=next]').click(); await tick(); Q('#crd [data-crd=next]').click(); await tick(); await look('end'); out.end = (Q('#crd .crd-end h2') || {}).textContent;
+        Q('#crd [data-crd=finish]').click(); out.res = await pr; out.closed = !Q('#crd'); out.saved = A.st && A.st.reads && A.st.reads['ZZTEST.KEY.01'];
+        const pa = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 3, exit: 'x', ask: { q: 'Which sentence shows Dovid was surprised?', proof: 'Dovid gasped', how: 'Find the words that show a surprise.', look: 'how Dovid felt' } });
+        await new Promise(r => { const t = setInterval(() => { if (Q('#crd.pick')) { clearInterval(t); r(); } }, 30); });
+        await look('ask'); out.askOpenEarlyAnswer = !!Q('#crd .crd-s.yes'); out.askMain = Q('#crd .tlk-main') ? Q('#crd .tlk-main').textContent : '';
+        Q('#crd [data-crds="' + wrong + '"]').click(); await tick(); out.miss = (Q('#crd .crd-fb') || {}).textContent;
+        Q('#crd [data-crds="' + proof + '"]').click(); await tick(); out.hit = (Q('#crd .crd-fb') || {}).textContent; out.yes = !!Q('#crd [data-crds="' + proof + '"].yes'); await look('proof');
+        Q('#crd [data-crd=finish]').click(); out.askRes = await pa;
+        const pk = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 0, page: 0 }); await new Promise(r => { const t = setInterval(() => { if (Q('#crd .crd-cover')) { clearInterval(t); r(); } }, 30); });
+        out.k1 = Q('#crd').className; out.k1home = !!Q('#crd .tlk-home-k3'); TLCORE.reader.close(); out.k1res = await pk;
+        return out;
+      }, [proof, wrong]);
+    };
+    for (const vp of [{ width: 1366, height: 768 }, { width: 390, height: 844 }]) {
+      const at = vp.width + 'px: '; let o;
+      try { o = await one(vp); } catch (e) { fail(at + 'the Reader crashed: ' + String(e).slice(0, 200)); continue; }
+      o.steps.forEach(st => { if (st.mains > 1) fail(at + st.name + ' has ' + st.mains + ' main buttons (at most one)'); if (st.ownButtons) fail(at + st.name + ' draws ' + st.ownButtons + ' button(s) outside the button system'); if (st.wide) fail(at + st.name + ' scrolls sideways'); if (!st.exitTL) fail(at + st.name + ': the way out must be top left'); });
+      if (o.backOnFirst) fail(at + 'no Back on the first page');
+      if (!o.back2) fail(at + 'Grade 3 gets ‹ Back on page 2');
+      if (o.prog !== 'Page 1 of 3') fail(at + 'progress must say Page 1 of 3 (got ' + o.prog + ')');
+      if (!/puzzled/.test(o.bubble) || !/figure it out/.test(o.bubble)) fail(at + 'tapping a word must show its meaning (got ' + o.bubble + ')');
+      if (o.end !== 'Chapter 1 done!' || !o.res.done || !o.closed || o.saved !== 'd') fail(at + 'finishing must show "Chapter 1 done!", close, and keep it as done (' + JSON.stringify({ end: o.end, res: o.res, saved: o.saved }) + ')');
+      if (o.askOpenEarlyAnswer) fail(at + 'the proof must not be shown before he tries');
+      if (!/does not say it/.test(o.miss || '') || !/Yes!/.test(o.hit || '') || !o.yes) fail(at + 'tap the sentence: a miss names what to look for, the proof lights up (' + o.miss + ' | ' + o.hit + ')');
+      if (!o.askRes.proof || !o.askRes.proof.right || o.askRes.proof.tries !== 2) fail(at + 'the proof result must say right after 2 tries (' + JSON.stringify(o.askRes.proof) + ')');
+      if (!/b-K1/.test(o.k1) || !o.k1home) fail(at + 'a K boy gets the big K1 type and the K-3 Home button (' + o.k1 + ')');
+    }
+    await pg.setViewportSize({ width: 1366, height: 768 });
+    if (!fails.length) oks.push('Reader: cover, pages, tap a word for its meaning, Back from Grade 3, chapter done and kept, tap the sentence that proves it (miss names the step, no early answer), K-1 band; button system only, no sideways scroll at 1366 and 390');
+  }
   if (!fails.length) oks.push('core skills (page): ' + got.mine.length + ' core lesson(s) loaded, no clash' + (notYet.length ? '; listed, no lesson yet (hidden from boys): ' + notYet.length : ''));
   return { fails, oks };
 }

@@ -28,6 +28,7 @@ const ID_RE = /^[A-Z][A-Z0-9]*(\.[A-Z0-9]+){1,3}$/;
 const BAND = { 0: [20, 400], 1: [30, 600], 2: [80, 800], 3: [150, 900], 4: [300, 1500], 5: [500, 1500], 6: [500, 2500], 7: [600, 2500], 8: [800, 2500] };
 
 /* split a paragraph into sentences: ends at . ! ? (and a closing quote) followed by a space and a capital, a quote or a digit */
+const SAID = /^ (?:[A-Z][a-z]+(?: [A-Z][a-z]+)?|he|she|they|I|we|Zaidy|Bubby|Mommy|Tatty) (?:said|asked|called|shouted|whispered|laughed|answered|cried|added|replied|yelled|explained|told)\b/i;
 function sentences(p) {
   const out = []; let s = '';
   const t = p.replace(/\s+/g, ' ').trim();
@@ -36,7 +37,8 @@ function sentences(p) {
     if (/[.!?]/.test(t[i])) {
       let j = i + 1; while (j < t.length && /["'”’)]/.test(t[j])) { s += t[j]; j++; }
       if (j >= t.length || (t[j] === ' ' && /["'“‘A-Z0-9(]/.test(t[j + 1] || ''))) {
-        if (!/\b(Mr|Mrs|Dr|St|Mt|R|Rabbi|Rav|No|vs)\.$/.test(s.trim())) { out.push(s.trim()); s = ''; }
+        const tag = /[!?,]["”’']$/.test(s) && SAID.test(t.slice(j));   /* "Look!" Dovid said.  stays one sentence */
+        if (!tag && !/\b(Mr|Mrs|Dr|St|Mt|R|Rabbi|Rav|No|vs)\.$/.test(s.trim())) { out.push(s.trim()); s = ''; }
       }
       i = j - 1;
     }

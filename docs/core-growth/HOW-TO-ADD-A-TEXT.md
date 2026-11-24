@@ -55,12 +55,40 @@ The check (also run by `node tests/run.js`) fails on:
 
 Sentences are split by the tool at `.`, `!` and `?`. `show` lets you see the split. "Mr.", "Mrs.", "Dr." and "R." are not treated as the end of a sentence.
 
-## 3. Use it in a lesson
-Your lesson data names the text by its id. The Reader opens it (`TLCORE.reader`, built next by job T), and a question can say which sentence proves the answer. Until then, code can load a text with:
+## 3. Open it in the Reader
+The book Reader (`src/CoreReader.html`) shows any text from the store:
+- a cover with depth for a story or chapter;
+- one calm page at a time, with "Page 2 of 5";
+- **Read it to me** (🔊): each sentence lights up, and each word as it is said;
+- tap a vocabulary word to see its meaning, or tap any word in Grades K–3 to hear it;
+- ‹ Back from Grade 3 up;
+- a short "Chapter 3 done!" moment at the end.
+
+K–1 boys get big type, and each page is read to them by itself. The Reader remembers the page where he stopped, and that he finished, in his own saved state.
+
 ```js
-TLCORE.text('C45.ANTS.01').then(function (t) { /* t.title, t.pages, t.glossary */ });
+TLCORE.reader.open('C45.ANTS.01', { grade: 5 }).then(function (r) { /* r.done, r.page, r.pages */ });
 ```
-`TLCORE.textSentences(t)` gives every sentence in reading order with its page and paragraph. Those numbers are what "tap the sentence that proves it" uses.
+
+**Tap the sentence that proves it.** Add `ask`, and the whole text becomes the answer area:
+```js
+TLCORE.reader.open('C45.ANTS.01', { grade: 5, exit: 'x', ask: {
+  q: 'Which sentence shows that the queen is important to the colony?',
+  proof: 'The queen lays the eggs',          /* words from the proof sentence, or sentence numbers [12] */
+  how: 'Find the sentence about what the queen does.',
+  look: 'what the queen does' } })
+  .then(function (r) { /* r.proof = { right: true, tries: 1 } */ });
+```
+- The question opens on the page that holds the proof. That page has no paging buttons and no Back.
+- A wrong tap names what to look for ("Look for the words that tell what the queen does").
+- The second miss puts a soft glow on the paragraph that holds the proof.
+- After the third miss, the proof is shown and read again. It is never shown before he tries.
+- `exit: 'x'` puts the lesson ✕ top left (inside a lesson); the default is the house (a full page).
+- Write `proof` so it matches **one** sentence. `node tools/core/texts.js show <ID>` lists the sentences.
+
+To load a text in your own code: `TLCORE.text('C45.ANTS.01')` gives a Promise of the text, and `TLCORE.textSentences(t)` gives every sentence in reading order.
+
+Coming next from job T: the Reader inside a lesson as an activity ("read this chapter", "tap the proof"), so a lesson's data can name a text without any code.
 
 ## Rules that do not bend
 Family Life (modest, warm, normal frum family life; a wide mix of names; kosher food), never the Divine Name (Hashem in English, ה׳ in Hebrew), reading level that matches the grade, and **cold check passages**: teach on one text and check on another.
