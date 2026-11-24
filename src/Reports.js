@@ -78,7 +78,8 @@ function rpBotList_() {
     var key = String(r[4]) + '|' + String(r[6]), st = String(r[9]), at = r[0] instanceof Date ? r[0].getTime() : Number(new Date(r[0])) || 0;
     var g = groups[key] = groups[key] || { skill: String(r[4]), phase: String(r[5]), item: String(r[6]), open: 0, staff: 0, reasons: {}, notes: [], before: [] };
     if (st === 'open') { g.open++; if (r[1] === 'staff') g.staff++; g.reasons[r[7]] = (g.reasons[r[7]] || 0) + 1; if (at > upTo) upTo = at;
-      if (r[8] && g.notes.length < 12) g.notes.push((r[1] === 'staff' ? 'staff: ' : 'boy: ') + rpScrub_(r[8], words)); }
+      if (r[8] && g.notes.length < 12) g.notes.push((r[1] === 'staff' ? 'staff: ' : 'boy: ') + rpScrub_(r[8], words));
+      if (r[10] && g.before.indexOf('open: ' + r[10]) < 0 && g.before.length < 5) g.before.push('open: ' + String(r[10])); }   /* already looked at, left for a person */
     else if (r[10] && g.before.indexOf(st + ': ' + r[10]) < 0 && g.before.length < 5) g.before.push(st + ': ' + String(r[10]));
   });
   var list = Object.keys(groups).map(function (k) { return groups[k]; }).filter(function (g) { return g.open > 0; })
@@ -91,17 +92,20 @@ function rpBotList_() {
   list.forEach(function (g) { delete g._b; });
   return { upTo: upTo, open: list.length, flags: list, reasons: RP.REASONS };
 }
-/* marks: [{skill, item, verdict: 'fine'|'fixed'|'open', why}] ; only reports made at or before upTo are changed
-   (one that came in while the checker worked stays open for the next hour). */
+/* marks: [{skill, item, verdict: 'fine'|'fixed'|'open'|'reopen', why}] ; only reports made at or before upTo are changed
+   (one that came in while the checker worked stays open for the next hour). 'reopen' puts reports marked 'fixed' back to
+   'open' (a fix whose pull request did not pass the tests). */
 function rpBotMark_(marks, upTo) {
   upTo = Number(upTo) || 0; var by = {}, done = 0;
   (Array.isArray(marks) ? marks : []).slice(0, 60).forEach(function (x) { var v = String((x && x.verdict) || '');
-    if (v === 'fine' || v === 'fixed' || v === 'open') by[String(x.skill || '') + '|' + String(x.item || '')] = { v: v, why: rpClip_(x.why, 300) }; });
+    if (v === 'fine' || v === 'fixed' || v === 'open' || v === 'reopen') by[String(x.skill || '') + '|' + String(x.item || '')] = { v: v, why: rpClip_(x.why, 300) }; });
   return sgLock_(function () {
     var sh = rpSheet_(), n = sh.getLastRow(); if (n < 2) return { changed: 0 };
     sh.getRange(2, 1, n - 1, RP.HEAD.length).getValues().forEach(function (r, i) {
       var d = by[String(r[4]) + '|' + String(r[6])], at = r[0] instanceof Date ? r[0].getTime() : Number(new Date(r[0])) || 0;
-      if (!d || String(r[9]) !== 'open' || at > upTo) return;
+      if (!d || at > upTo) return;
+      if (d.v === 'reopen') { if (String(r[9]) !== 'fixed') return; sh.getRange(i + 2, 10, 1, 2).setValues([['open', d.why]]); done++; return; }
+      if (String(r[9]) !== 'open') return;
       sh.getRange(i + 2, 10, 1, 2).setValues([[d.v, d.why]]); done++;
     });
     return { changed: done };
