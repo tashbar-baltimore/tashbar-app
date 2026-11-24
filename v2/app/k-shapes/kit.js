@@ -1478,7 +1478,7 @@ export function startGame(cfg) {
     const m = W.misses, stars = m === 0 ? 3 : m <= 2 ? 2 : 1;
     W.stars = stars; W.done = true; setName('end'); dots(STEPS);
     burst(boxAt(0).clone().setY(1.4), 60); chime(true); task = null; cheer(mendy).then(() => cheer(mendy));
-    if (LK) { placeFamily(); LK.family(true, true); }
+    if (LK) { placeFamily(true); LK.family(true, true); }
     const STAR = on => '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (on ? '#F5B400' : '#EDE6D6') + '" stroke="' + (on ? '#C48F00' : '#D8CFBC') + '" stroke-width="4" stroke-linejoin="round"/></svg>';
     $('#stars').innerHTML = [0, 1, 2].map(i => '<div class="star">' + STAR(i < stars) + '</div>').join('');
     if (cfg.certificate) showCertificate();
@@ -1502,7 +1502,8 @@ export function startGame(cfg) {
   $('#replay').onclick = () => { hush(); learn(); };
 
   /* Tatty and Mommy (new look): they are there to welcome him, and they come back to clap at the end */
-  function placeFamily() { const f = LK.family(false); f[0].position.set(tall ? -1.3 : -3.0, 0, tall ? -5.2 : -5.6); f[1].position.set(tall ? 1.3 : 3.0, 0, tall ? -5.2 : -5.6);
+  function placeFamily(atEnd) { const f = LK.family(false), z = tall ? (atEnd ? -1.6 : -5.2) : -5.6, x = tall ? (atEnd ? 1.75 : 1.3) : 3.0;   /* phone end: below the stars */
+    f[0].position.set(-x, 0, z); f[1].position.set(x, 0, z);
     f[0].rotation.y = 0.25; f[1].rotation.y = -0.25; return f; }
   /* ---------- start: the room is already moving behind the play button ---------- */
   buildSet(); resize();
