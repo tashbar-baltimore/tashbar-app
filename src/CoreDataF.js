@@ -59,5 +59,10 @@ CORE_SKILLS.F = [
   ["READ.LV.L02.10", "Night Light, Fly High", "Read igh and end y, which say eye", { after: "READ.FLU.L02.08", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
   ["READ.LV.L02.11", "Happy Bunny", "Read y at the end of a two-beat word, which says ee", { after: "READ.LV.L02.10", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.19", "Open Door: Go, Me, Hi", "Read open syllables: a vowel at the end says its name", { after: "READ.LV.L02.11", std: "RF.1.3e", file: "CoreDataFH2", min: 6 }],
-  ["READ.FLU.L02.09", "Heart Words: many, very", "Read the heart words any, many, very and again", { after: "READ.PHON.L02.19", std: "RF.1.3g", file: "CoreDataFH2", min: 5 }]
+  ["READ.FLU.L02.09", "Heart Words: many, very", "Read the heart words any, many, very and again", { after: "READ.PHON.L02.19", std: "RF.1.3g", file: "CoreDataFH2", min: 5 }],
+  ["READ.PHON.L02.23", "Car in the Barn", "Read ar, where bossy r makes the a say ar", { after: "READ.FLU.L02.09", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
+  ["READ.PHON.L02.24", "Fork in the Storm", "Read or, where bossy r makes the o say or", { after: "READ.PHON.L02.23", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
+  ["READ.PHON.L02.25", "Bird, Fern and Fur", "Read er, ir and ur, which all say er", { after: "READ.PHON.L02.24", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
+  ["READ.PHON.L02.26", "Spell the Bossy R", "Spell ar and or by sound, and pick the er spelling you have seen", { after: "READ.PHON.L02.25", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
+  ["READ.FLU.L02.10", "Who Is Talking?", "Find the talking words in a story and read them like the speaker", { after: "READ.PHON.L02.26", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }]
 ];
