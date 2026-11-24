@@ -14,7 +14,7 @@
 | 1 | Dovid at the park (story) | A peacock (tavas) turns into Tes, a dove (yonah) into Yud, and a big ball (kadur) into Kaf. Kaf's dot floats away and it becomes Chaf. Then the look-alikes side by side, a chant of all 13 letters, and he taps each new one. |
 | 2 | Feel the Shape | Feels Tes, Yud, Kaf (and taps its dot) and Chaf. |
 | 3 | Look-Alike Detective | Two crates. He sorts Beis and Kaf (an arrow points at Beis's tail and Kaf's round bottom), then Kaf and Chaf (the dot). |
-| 4 | Sound Match | Taleh (lamb) and tavas (peacock) go to Tes, yad (hand) and yonah (dove) to Yud, kadur (ball) and kelev (dog) to Kaf, and chatul (cat) and chamor (donkey) to Ches. At the end Chaf joins Ches: "Chaf sounds just like Ches." |
+| 4 | Sound Match | Taleh (lamb) and tavas (peacock) go to Tes, yad (hand) and yonah (dove) to Yud, kadur (ball) to Kaf, and chatul (cat) and chamor (donkey) to Ches. At the end Chaf joins Ches: "Chaf sounds just like Ches." |
 | 5 | Find the Mistake | "Yaakov says this is a Chaf. Is he right?" A ring marks the dot place; an arrow points at a shape difference. |
 | 6 | Show what you know (mastery check) | 9 questions. Beis always stands beside Kaf, and Kaf beside Chaf. Each right letter jumps into a basket. |
 | 7 | Review: Letter Hunt | Finds Zayin and Ches again, the spaced review of Unit 3. |
@@ -38,7 +38,7 @@
 - **Letters:** Tes (ט) says "t", Yud (י) says "y", Kaf (כּ) says "k", Chaf (כ) says "ch" (the same sound as Ches). These are lone sounds, never with a vowel.
 - **Dot rule:** Kaf has a dot (dagesh) and says k. Without the dot it is Chaf and says ch, like Beis and Veis.
 - **Look-alikes:** Beis has a tail at the bottom right, and Kaf is round at the bottom.
-- **Words:** tavas (peacock), taleh (lamb), yonah (dove), yad (hand), kadur (ball), kelev (dog), park.
+- **Words:** tavas (peacock), taleh (lamb), yonah (dove), yad (hand), kadur (ball), park.
 - **Shown:** a park with a bench and a lamp post; nothing from Shabbos or Yom Tov.
 - **Chant order:** Alef, Beis, Veis, Gimmel, Daled, Hei, Vov, Zayin, Ches, Tes, Yud, Kaf, Chaf.
 - **Temporary:** the letter sounds are the computer voice until the rebbe's recording is in, especially Chaf.
