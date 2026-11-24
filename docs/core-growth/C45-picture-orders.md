@@ -1,6 +1,6 @@
 # Job C45 · Picture orders (Grades 4–5 comprehension)
 
-Pictures are made by the HoS's image account (requests go by email). When they come back, C45 checks each one against its order and the picture rules, converts it to WebP (≤ 1,100 px wide, ≤ 200 KB), adds a line to `web/pics/SOURCES.md` ("made for Tashbar Baltimore with an AI image tool, owned by the school") and links it by PR (`docs/HANDOFF-PICS.md`, PICS-2 keys `@today` and `@passage|KEY`).
+Pictures are made by the HoS's image account (requests go by email). When they come back, C45 checks each one against its order and the picture rules, converts it to WebP (≤ 1,100 px wide, ≤ 200 KB), adds it to the shared art library (`art/pics/`, the original in `art/originals/`, its row in `art/CATALOG.md` with the licence "made for Tashbar Baltimore with an AI image tool, owned by the school"; `art/README.md`) and links it by PR (`docs/HANDOFF-PICS.md`, PICS-2 keys `@today` and `@passage|KEY`).
 
 ## Style
 Job T's band style sheet is binding: `docs/core-growth/STYLE-SHEETS.md`, **E45 · Explorers** (clean graphic-novel style, cel shading; deep teal `#1F6E5A`, signal orange `#F28C28`, navy `#18284A`, sand `#E8D9B5`). Every prompt = the E45 prompt start + the prompt below + the standard ending. File names follow `core-c45-<what>-<slot>.webp`. Sizes: openers and passage pictures 1100×620; book covers and cast cards 825×1100; chapter pictures 1100×825.
