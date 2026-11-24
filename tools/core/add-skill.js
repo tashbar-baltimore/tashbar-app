@@ -57,7 +57,9 @@ if (!/^[A-Z][A-Z0-9]*$/.test(job || '')) die('JOB must be the job letters, like 
 if (!/^(READ|LANG|WRIT|SCI|SS)\.[A-Z]+\.L\d\d\.\d\d$/.test(id || '')) die('ID must look like READ.COMP.L06.12 (use "next" to get a free one)');
 if (!name || !obj) die('give a game name and a plain objective, each in quotes');
 if (name.length > 40) die('the game name is longer than 40 letters');
-const file = opt.file || ''; if (!new RegExp('^CoreData' + job + '\\d+$').test(file)) die('--file must be CoreData' + job + '<n>, for example CoreData' + job + '1 (keep each file under 150 KB)');
+const file = opt.file || ''; if (!new RegExp('^CoreData' + job + 'H?\\d+$').test(file)) die('--file must be CoreData' + job + '<n> (a helper: CoreData' + job + 'H<n>), for example CoreData' + job + '1 (keep each file under 150 KB)');
+if (opt.std && !/^[A-Z][A-Za-z0-9.\-]+$/.test(opt.std)) die('--std looks wrong: use a code like RL.5.2 or RF.1.3c');
+if (opt.min != null && !(Number(opt.min) > 0 && Number(opt.min) <= 60)) die('--min must be a number of minutes from 1 to 60');
 if (opt.after && opt.before) die('give --after or --before, not both');
 const ctx = server(); const u = used(ctx, id); if (u) die(id + ' is ' + u + '. Pick a free id: node tools/core/add-skill.js next ' + id.split('.').slice(0, 3).join('.'));
 
@@ -87,6 +89,8 @@ const row = '  [' + [id, name, obj].map(x => JSON.stringify(x)).join(', ') + ', 
 const end = src.lastIndexOf('];'); if (end < 0) die(reg + ' has no closing ];');
 let head = src.slice(0, end).replace(/\s*$/, ''); if (rows.length) head += ',';
 src = head + '\n' + row + '\n' + src.slice(end);
+const vc2 = {}; vm.createContext(vc2); try { vm.runInContext(src, vc2); } catch (e) { die(reg + ' would not parse after adding the row; nothing was written'); }
+if (((vc2.CORE_SKILLS || {})[job] || []).length !== rows.length + 1) die('the list in ' + reg + ' did not grow by one row (a // comment at the end of a row?); nothing was written');
 fs.writeFileSync(reg, src);
 
 const data = path.join(SRC, file + '.html');
