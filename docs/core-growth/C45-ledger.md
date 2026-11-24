@@ -26,8 +26,10 @@ Share of the 90 core hours (proposal): comprehension and fluency ≈ 35 h (this 
 | 2026-11-24 | #326 (live) | Unit 4.2 "The big umbrella": 5 small skill lessons (READ.COMP.L05.10–.13, READ.FLU.L05.03), 12 short passages | 40 | 0 |
 | 2026-11-24 | #329 (live) | Unit 5.2 "What it teaches, in a few sentences": 6 small skill lessons (READ.LIT.L06.02–.06, READ.FLU.L06.02), theme and summary | 0 | 48 |
 | 2026-11-24 | #355 (live) | Unit 4.3 "Story builders": 4 small skill lessons (READ.LIT.L05.03–.06): story map, traits, motive, theme; on Book B1 retellings and 4 new stories | 32 | 0 |
-| 2026-11-24 | (next PR) | Unit 5.3 "Characters who change each other": 3 small skill lessons (READ.LIT.L06.07–.09): setting, changed by each other, the turning point | 0 | 24 |
-| | | **Running total** | **120 / 2,095** | **112 / 2,169** |
+| 2026-11-24 | #357 (live) | Unit 5.3 "Characters who change each other": 3 small skill lessons (READ.LIT.L06.07–.09): setting, changed by each other, the turning point | 0 | 24 |
+| 2026-11-24 | #388 (live) | Unit 5.4 "Big ideas in articles" (Oceans): 4 small skill lessons (READ.COMP.L06.10–.12, READ.FLU.L06.03): summary, link map, explain with the text, pace; 7 ocean passages | 0 | 32 |
+| 2026-11-24 | (next PR) | Unit 4.4 "How it happened" (Weather and storms): 4 small skill lessons (READ.COMP.L05.14–.16, READ.FLU.L05.04): signal words, process, organizers, punctuation voice; 12 weather passages | 32 | 0 |
+| | | **Running total** | **152 / 2,095** | **144 / 2,169** |
 
 **Written, not yet counted** (a boy cannot open them until job T's Reader activity is in a lesson): Book B1 *The Missing Esrog*, 10 chapters, 8,346 words (planned 200 min, Grade 4); the Deserts topic set, 5 articles, about 2,800 words (planned 100 min, Grade 4); Book B4 *The Map in Zeidy's Attic*, chapters 1–6 of 12, about 7,500 words (planned 120 of 240 min, Grade 5). All in `texts/C45/`.
 
