@@ -11,7 +11,7 @@
 <style>
 .stage{ grid-template-columns:1fr 1fr; align-items:center; }
 .col{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; height:100%; }
-#plate.qcard{ width:min(40vw,56vh,400px); border-radius:50%; background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%); }
+#plate.qcard{ transition:opacity .35s; width:min(40vw,56vh,400px); border-radius:50%; background:radial-gradient(ellipse at 50% 42%, #fff 0 50%, #EEF5FC 54%, #DDE9F6 60%, #fff 63%, #F4F8FD 69%, #C7D9EE 86%, #A9C1DE 100%); }
 #plate.qcard svg.q{ width:24%; height:24%; }
 .saywrap{ display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:22px; }
 .who svg{ width:clamp(80px,15vh,120px); height:auto; filter:drop-shadow(0 6px 4px rgba(0,0,0,.2)); }
@@ -29,7 +29,7 @@
 .hero .qcard{ position:absolute; width:56%; left:22%; border-radius:50%; }
 @media (max-width:760px), (max-aspect-ratio:4/5){
   .stage{ grid-template-columns:1fr; grid-template-rows:1fr 1.1fr; }
-  #plate.qcard{ width:min(56vw,22vh); }
+  #plate.qcard{ width:min(68vw,30vh); }
   .stage{ grid-template-rows:.8fr 1.2fr; grid-template-columns:minmax(0,1fr); }
   .who svg{ width:96px; } .says .fhand{ width:104px; } .says{ padding:6px 12px 6px 8px; } .saywrap{ gap:14px; } .col{ gap:10px; }
   .thumbs button{ width:96px !important; }
@@ -124,7 +124,7 @@
           var n = b === 0 ? 4 : 5, claim = b === 0 ? 4 : 4, who = (NAMES || F.NAMES)[6 + b];
           R = { n: n, claim: claim, who: who, misses: 0, stage: 'judge' }; setPlate(n, 'apple'); setClaim(claim);
           $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0); done = res; GAME.phase = 'busy'; F.lock(true);
-          await F.say('Quick look!'); await F.wait(1200); $('plate').style.opacity = '.06';
+          await F.say('Quick look!'); await F.wait(1200); $('plate').style.opacity = '0';
           await F.say(who + ' says: ' + F.word(claim) + '! Is ' + who + ' right?');
           GAME.phase = 'answer'; F.lock(false); hooks();
         });
@@ -140,7 +140,7 @@
         setPlate(n, fr[0]); setClaim(claim); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
         done = res; GAME.phase = 'busy'; F.lock(true);
         await F.say(who + ' says: ' + F.word(claim) + ' ' + (claim === 1 ? fr[0] : fr[1]) + '!', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
-        await F.wait(1500); $('plate').style.opacity = '.06';
+        await F.wait(1500); $('plate').style.opacity = '0';
         GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say('Is ' + who + ' right?', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
       });
