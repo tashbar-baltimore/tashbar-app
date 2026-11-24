@@ -322,24 +322,26 @@ export function startGame(cfg) {
     if (BS) placePans(dt);
     if (LK) LK.update(dt, t, shapes);
     for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
-    const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25, bob = FAST || !LK ? 0 : Math.sin(t * 0.37) * 0.08;
-    camera.position.set(camPos.x + sway, camPos.y + bob, camPos.z); camera.lookAt(camLook);
+    syncCam();
     if (handOn) { const p = toScreen(handOn.g.position); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; }
-    if (SHOT ? window.__shotDraw : (!FAST || (++fastN % 3) === 0)) { if (LK) LK.render(); else renderer.render(scene, camera); }   /* pictures: draw only while one is taken */
+    if (SHOT ? window.__shotDraw : (!FAST || (++fastN % 8) === 0)) { if (LK) LK.render(); else renderer.render(scene, camera); }   /* pictures: draw only while one is taken */
     requestAnimationFrame(frame);
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
-  function toScreen(v) { const p = v.clone().project(camera); return { x: (p.x + 1) / 2 * innerWidth, y: (1 - p.y) / 2 * innerHeight }; }
+  /* the camera is put in place before every drawing AND before every tap is measured, so a tap during a camera move still lands */
+  function syncCam() { const t = clock.elapsedTime, sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25, bob = FAST || !LK ? 0 : Math.sin(t * 0.37) * 0.08;
+    camera.position.set(camPos.x + sway, camPos.y + bob, camPos.z); camera.lookAt(camLook); camera.updateMatrixWorld(); }
+  function toScreen(v) { syncCam(); const p = v.clone().project(camera); return { x: (p.x + 1) / 2 * innerWidth, y: (1 - p.y) / 2 * innerHeight }; }
   function hitOn(o, cx, cy) {   /* did he tap this piece? (works even when it is lined up or in place) */
-    ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.intersectObject(o.g, true).length > 0;
+    ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); (syncCam(), ray.setFromCamera(ndc, camera)); return ray.intersectObject(o.g, true).length > 0;
   }
   function pick(cx, cy) {
-    ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera);
+    ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); (syncCam(), ray.setFromCamera(ndc, camera));
     const hits = ray.intersectObjects(shapes.filter(o => o.g.visible && !o.inBox).map(o => o.mesh), false);
     return hits.length ? hits[0].object.userData.shape : null;
   }
   const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -1.25), hitP = new THREE.Vector3();
-  function onPlane(cx, cy) { ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); ray.setFromCamera(ndc, camera); return ray.ray.intersectPlane(dragPlane, hitP) ? hitP.clone() : null; }
+  function onPlane(cx, cy) { ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1); (syncCam(), ray.setFromCamera(ndc, camera)); return ray.ray.intersectPlane(dragPlane, hitP) ? hitP.clone() : null; }
   function overBox(p) { if (cfg.mode === 'pattern') { if (!PS || PS.next >= PS.n) return -1;
       if (PS.R.fixAt != null) { let best = -1, bd = 1e9; for (let i = 0; i < PS.n; i++) { const q = slotAt(i, PS.n, PS.z), d = Math.hypot(p.x - q.x, p.z - q.z); if (d < bd) { bd = d; best = i; } } return bd > 1.3 ? -1 : best === PS.next ? 0 : 2; }
       const g = slotAt(PS.next, PS.n, PS.z); return Math.hypot(p.x - g.x, p.z - g.z) < 1.3 ? 0 : -1; } if (cfg.mode === 'fix') { const g = OL ? OL.mark.getWorldPosition(new THREE.Vector3()) : null; return g && Math.hypot(p.x - g.x, p.z - g.z) < 1.5 ? 0 : -1; } for (let i = 0; i < NB; i++) { const b = boxAt(i); if (Math.abs(p.x - b.x) < BX.w / 2 + 0.3 && Math.abs(p.z - b.z) < BX.d / 2 + 0.4) return i; } return -1; }
