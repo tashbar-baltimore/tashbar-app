@@ -186,6 +186,8 @@ async function kidTests(browser) {
       if (g.shelves < 4 || g.shelves > 5) fail('one button, one job: My things must hold 4-5 shelves (got ' + g.shelves + ')');
       if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked && g.tabs === 1 && g.plays === 1 && H.n === 6 && H.equal && H.canteen) ok('home: 6 equal tiles (work first, Canteen its own door), one Home button elsewhere; map: one PLAY, Change subject; My things shelves; next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); } }
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* CORE GROWTH (tests/lib/core.js, job T): every core lesson reached the page, no clash with an existing lesson */
+  try { const cg = await require('./lib/core.js').page(pg); cg.fails.forEach(fail); cg.oks.forEach(ok); } catch (e) { fail('core skills page check crashed: ' + String(e).slice(0, 200)); }
   /* ONE BITE player (tests/lib/onebite.js) */
   try { const ob = await require('./lib/onebite.js')(pg); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
   catch (e) { fail('One Bite test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
@@ -228,6 +230,7 @@ async function staffTests(browser) {
   try { const v = require('./lib/v2check.js')(); v.fails.forEach(fail); v.oks.forEach(ok); } catch (e) { fail('2.0 check crashed: ' + String(e).slice(0, 200)); }
   try { const c = await require('./lib/canteen.js')(); c.fails.forEach(fail); if (!c.fails.length) ok('canteen on the Firebase engine: sell, same sale charged once, crew cashier, two kiosks at once, last sale, undo'); report.timings.canteenSaleMs = c.ms.sale; }
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  try { const cs = require('./lib/core.js').server(); cs.fails.forEach(fail); cs.oks.forEach(ok); } catch (e) { fail('core skills check crashed: ' + String(e).slice(0, 200)); }   /* CORE GROWTH: the one way to add a skill (src/CoreSkills.js) */
   try { const k = require('./lib/kidmap.js')(); k.fails.forEach(fail); if (!k.fails.length) ok("boy's own map (kmMyMap): rides with sign-in, only his own data, goal now, unit, Kodesh, growth; staff and bad tokens refused"); report.timings.kidMapMs = k.ms.map; report.timings.kidSignInWithMapMs = k.ms.signIn; }
   catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const sc = await require('./lib/staffcard.js')(browser); sc.fails.forEach(fail); sc.oks.forEach(ok); }
