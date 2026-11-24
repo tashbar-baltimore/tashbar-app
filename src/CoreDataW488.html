@@ -1,0 +1,304 @@
+<script>
+/* CoreDataW488.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 6 (L07), Unit 2 "Stories That Hold the Reader". Cast: The Beacon newsroom.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L07.05':{name:'Hook and Orient',
+  teach:[
+    {how:'You know hooks from Grade 5: a scene hook, a question hook, a fact hook. Now add orienting. A story opening has two jobs. The first is the HOOK: it makes the reader curious, with a scene hook (a moment of action), a question hook, or a fact hook (a surprising detail). "This is a story about…" is not a hook.', q:'Which opening sentence is a hook?', o:['“The printer is jammed, and we go to press in an hour!”','My story is about a printer.','This is a story about The Beacon.']},
+    {how:'The second job is to ORIENT the reader. Within the first few sentences he must know WHO the story is about, WHERE (and when) it happens, and WHY CARE: what the main character wants, or what he could lose.', q:'“Benny stood in the empty newsroom on Thursday night.” What does this opening still need?', o:['why care','who','where']},
+    {how:'Two mistakes. HOOK ONLY: "Crash!" and the reader has no idea who or where. FACTS ONLY: a list like "My name is Benny. I am in sixth grade." with no reason to read on. A strong opening HOOKS AND ORIENTS in the first few sentences.', q:'“Boom! Then it was quiet.” Does this opening hook and orient, or is it hook only, or facts only?', o:['hook only','facts only','hooks and orients']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each story opening.', bins:[{id:'H',label:'🎣 Hook only'},{id:'F',label:'📋 Facts only'},{id:'B',label:'🧭 Hooks and orients'}],
+      items:[{label:'“Run!” Then everything went dark.',bin:'H'},{label:'My name is Eli Mizrahi. I am in sixth grade. I like debate.',bin:'F'},{label:'In the Beacon newsroom, Akiva stared at a blank front page. Mr. Gross tapped his watch: “One hour.”',bin:'B'},{label:'It was a Tuesday. The school had three floors. Yoni was in the hall.',bin:'F'},{label:'Somewhere, a phone rang and rang.',bin:'H'},{label:'Yoni’s hands shook outside Rabbi Rosen’s office. The menahel had given him exactly five minutes.',bin:'B'}],
+      h:'Two jobs. Does it make you curious? Do you know who, where and why care?'},
+    {t:'pairs', q:'Match each piece of an opening to the question it answers.', pairs:[['Gavriel, the Beacon’s photographer','Who?'],['the yeshiva roof, just before sunrise','Where?'],['if he misses the sunrise, there is no cover photo','Why care?']],
+      h:'A person? A place and time? Or what he wants or could lose?'},
+    {t:'spotall', q:'Benny’s opening. Tap every sentence that ORIENTS the reader: who, where, or why care.', cells:[{label:'Benny Okafor-Levine had never lost a story before.',ok:true},{label:'Now it was nine at night in the computer lab, and his screen was blank.',ok:true},{label:'Without his file, The Beacon would print with no lead story.',ok:true},{label:'It was a story about a computer.',ok:false},{label:'Some screens are bright.',ok:false}],
+      h:'Does the sentence name a person, a place or time, or what is at stake?'},
+    {t:'sort', q:'Sneaky ones! Every opening tries to hook and orient. Sort them.', bins:[{id:'G',label:'✅ Hooks and orients'},{id:'M',label:'⚠️ Mistake: reader lost or bored'}],
+      items:[{label:'Crash! Glass everywhere. Nobody moved.',bin:'M'},{label:'Hi, my name is Akiva and this is my story about the paper.',bin:'M'},{label:'Eli froze at the podium in the packed beis medrash. His notes were gone, and the debate began in one minute.',bin:'G'},{label:'One morning I woke up, brushed my teeth and ate breakfast.',bin:'M'},{label:'“Who took my camera?” Gavriel called across the Beacon newsroom, two hours before the photo deadline.',bin:'G'}],
+      h:'A crash with no who or where loses the reader. Waking up and "my story is about" bore him.'},
+    {t:'order', q:'Build an opening that hooks and orients. Tap the tiles in order.', tiles:['Two minutes before the debate,','in the beis medrash,','Eli reached into his pocket','and found it empty.'],
+      h:'When first. Then where. Then who, and the trouble.'},
+    {t:'spotall', q:'Tap every detail that gives the reader a reason to care.', cells:[{label:'the deadline is in one hour',ok:true},{label:'his only copy is missing',ok:true},{label:'he promised his zeidy a copy',ok:true},{label:'the walls are beige',ok:false},{label:'it was a Tuesday',ok:false}],
+      h:'Why care means what he wants, or what he could lose.'},
+    {t:'write', q:'Your turn to write. A Beacon reporter misses the school bus on the morning of a big interview. Write the first two or three sentences of the story. Hook AND orient.', min:0, checks:['🎣 My first sentence makes the reader curious.','🧭 The reader knows who and where.','❤️ The reader knows why care: what he wants or could lose.'], h:'Start at the moment the trouble begins, not when he wakes up. Then slip in who, where, and what is at stake.'}
+  ],
+  check:[
+    {q:'Opening: “Chaim Dovid was twelve. He lived in Baltimore. He had two brothers.” Does it hook and orient, or is it hook only, or facts only?', o:['facts only','hook only','hooks and orients'], h:'Is there anything that makes you curious, or a reason to read on?'},
+    {q:'Opening: “The lights went out in the yeshiva lunchroom. In the dark, Shimon heard someone whisper his name.” What does this opening still need?', o:['why care','who','where'], h:'Ask the three questions. Which one has no answer yet?'},
+    {t:'order', q:'Build an opening sentence that hooks and orients. Tap the tiles in order.', tiles:['An hour before Shabbos,','Yoni','dropped the only key','to the shul.'], h:'When first. Then who. Then the trouble.'}
+  ],
+  re:[
+    {how:'A new way: think of the first minute of a good film. The camera shows something exciting, then pulls back so you see who it is, where he is, and what he wants.', q:'The first minute of a good film shows…', o:['action, then who, where and what he wants','the credits only','the ending']},
+    {how:'A simpler step: after your first sentences, ask three questions. Who? Where? Why care? If one has no answer, add a few words.', q:'“Moshe ran down the hospital hallway.” Which question is not answered?', o:['Why care?','Who?','Where?']},
+    {how:'The skill underneath: Story Mountain (Grade 5). The bottom of the mountain sets up the story. Hook and Orient packs that setup into the first few sentences.', q:'Hook and Orient packs the setup of the story into…', o:['the first few sentences','the last line','the title']}
+  ]},
+
+  'WRIT.ESSAY.L07.06':{name:'Whose Eyes?',
+  teach:[
+    {how:'POINT OF VIEW is whose eyes tell the story. In FIRST PERSON the narrator is inside the story and says I, me, my, we. In THIRD PERSON the narrator stands outside and says he, his, and names. A first-person narrator still says he about others; the test is how the narrator speaks about himself.', q:'“My camera bag felt heavy as I climbed to the roof.” Which point of view?', o:['first person','third person','switches person']},
+    {how:'Choose one point of view and keep it. The mistake is SWITCHES PERSON: the main boy is "he" and then suddenly "I", or a story told by "I" suddenly calls the narrator by his name.', q:'A story about Benny, told in third person: “Benny ran into the lab and opened his file. I could not believe it was empty.” What went wrong?', o:['switches person','knows too much','stays in one point of view']},
+    {how:'A narrator can only tell what he could know. A first-person narrator knows his own thoughts, and only what he sees and hears of others. If "I" tells someone else’s secret thoughts, or what happens in a room he is not in, the narrator KNOWS TOO MUCH.', q:'Told by Gavriel: “I took the photo. In the office downstairs, Mr. Gross was quietly deciding to put it on the cover.” What went wrong?', o:['knows too much','switches person','stays in one point of view']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each sentence by point of view.', bins:[{id:'F',label:'🙋 First person'},{id:'T',label:'👤 Third person'}],
+      items:[{label:'I wiped the lens on my sleeve.',bin:'F'},{label:'Yoni flipped to a clean page in his notebook.',bin:'T'},{label:'My questions were ready, but my voice was not.',bin:'F'},{label:'Akiva circled the headline twice.',bin:'T'},{label:'Mr. Gross handed me the proofs.',bin:'F'},{label:'He had never seen the newsroom so quiet.',bin:'T'}],
+      h:'Look for I, me, my, we. No I, me, my or we anywhere: third person.'},
+    {t:'pairs', q:'Match each term to what shows it.', pairs:[['First person','I, me, my, we'],['Third person','he, his, and names'],['Switches person','the same boy is "he", then suddenly "I"']],
+      h:'Which words does each narrator use? Which one breaks the rule?'},
+    {t:'spotall', q:'Yoni tells this story in first person. Tap every sentence he COULD know.', cells:[{label:'I knocked on Rabbi Rosen’s door.',ok:true},{label:'He smiled and pointed to a chair.',ok:true},{label:'My hands were cold.',ok:true},{label:'Rabbi Rosen secretly hoped I would ask about his father.',ok:false},{label:'Down the hall, Akiva was reading my notes.',ok:false}],
+      h:'Could Yoni see it, hear it, or feel it himself? If not, he cannot tell it.'},
+    {t:'sort', q:'Point-of-view mistakes! Each line is told in first person. Sort them.', bins:[{id:'G',label:'✅ Stays in one point of view'},{id:'S',label:'⚠️ Switches person'},{id:'K',label:'⚠️ Knows too much'}],
+      items:[{label:'Told by Eli: “I stood. Then Eli cleared his throat.”',bin:'S'},{label:'Told by Gavriel: “I took the shot. Akiva secretly hated it.”',bin:'K'},{label:'Told by Yoni: “I asked my question. Rabbi Rosen laughed.”',bin:'G'},{label:'Told by Benny: “I hit save. Across town, my zeidy was thinking of me.”',bin:'K'},{label:'Told by Akiva: “I read the page. Akiva sighed.”',bin:'S'},{label:'Told by Eli: “I heard Benny gasp behind me.”',bin:'G'}],
+      h:'Does the narrator stay "I"? Could he really see, hear or know that?'},
+    {t:'order', q:'Build a first-person sentence that keeps its point of view. Tap the tiles in order.', tiles:['Through the window,','I watched','Eli','pace the hallway.'],
+      h:'Where he is looking from first. Then the narrator. Then what he sees.'},
+    {t:'spotall', q:'Told by Akiva in first person. Tap every sentence that KNOWS TOO MUCH.', cells:[{label:'Mr. Gross was secretly proud of me.',ok:true},{label:'Across town, Benny was opening the wrong file.',ok:true},{label:'I heard Eli laugh.',ok:false},{label:'Gavriel looked tired.',ok:false},{label:'I wanted to go home.',ok:false}],
+      h:'Akiva knows his own thoughts and what he sees and hears. Nothing more.'},
+    {t:'write', q:'Your turn to write. Choose first person OR third person. Write three sentences about Gavriel taking the cover photo in the rain. Keep the point of view.', min:0, checks:['👁️ I chose first person or third person.','🔒 I kept it: the main boy never switches between I and he.','🧠 If first person: only what I see, hear and think.'], h:'First person: I, me, my, and only what you see and hear. Third person: Gavriel, he, his. Read it back and circle every I and he.'}
+  ],
+  check:[
+    {q:'“Shmuel tightened his grip on the rope as the sukkah wall swayed.” Which point of view is this?', o:['third person','first person','switches person'], h:'Look for I, me, my. Is the narrator inside the story or outside it?'},
+    {q:'Told by Benny in first person: “I handed in my story. In the next room, Akiva was secretly worried it was too long.” What went wrong?', o:['knows too much','switches person','stays in one point of view'], h:'Could Benny see it, hear it, or think it himself?'},
+    {t:'order', q:'Build a first-person sentence that stays in one point of view. Tap the tiles in order.', tiles:['From the back row,','I saw','Yoni’s hand','shoot up.'], h:'Where he is first. Then the narrator. Then what he sees.'}
+  ],
+  re:[
+    {how:'A new way: first person is a camera strapped to the narrator’s head. It records only what he sees and hears, plus his own thoughts. It cannot see through walls.', q:'A head camera cannot record…', o:['what someone else secretly thinks','what the narrator hears','what the narrator sees']},
+    {how:'A simpler step: circle every I, me and my, then every he and his for the main boy. If the main boy is both "I" and "he", the story switches person.', q:'“I ran. He stopped at the door, panting.” Both mean the narrator. The story…', o:['switches person','stays in one point of view','knows too much']},
+    {how:'The skill underneath: Show, Don’t Tell. You show what the narrator can see and hear. Point of view decides whose eyes do the seeing.', q:'Point of view tells…', o:['whose eyes tell the story','how long the story is','where the story ends']}
+  ]},
+
+  'WRIT.PARA.L07.04':{name:'Flashback and Back',
+  teach:[
+    {how:'Review from Grade 5: time jumps move the clock FORWARD IN TIME, and "Meanwhile," moves TO ANOTHER PLACE at the same time. New in Grade 6: a signal can take the story BACK IN TIME, a flashback. The signal names the earlier time ("Two days earlier," "The night before,") and the verb uses HAD: "had lost," "had promised."', q:'“The night before, Eli had lost his voice.” This signal moves the story…', o:['back in time','forward in time','to another place']},
+    {how:'A flashback must also come back. Signal the RETURN to the present with "Now," or "Back in the present," and drop the "had": "Now Gavriel held the broken camera." With no return signal, the reader thinks the old scene is still going on.', q:'A flashback is over. Which signal brings the reader back to the present?', o:['Now,','Two days earlier,','The night before,']},
+    {how:'Two traps. "Back at the newsroom," moves TO ANOTHER PLACE, not back in time: "back at" means returning to a place. And the WRONG SIGNAL: "Meanwhile" for something days later, or "Later" for something that happened before. A NO SIGNAL jump loses the reader too.', q:'“Yoni finished the interview. Meanwhile, three days later, it was printed.” What is wrong?', o:['wrong signal','no signal','nothing is wrong']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each shift signal by where it moves the story.', bins:[{id:'F',label:'⏩ Forward in time'},{id:'B',label:'⏪ Back in time'},{id:'P',label:'📍 To another place'}],
+      items:[{label:'By Thursday night,',bin:'F'},{label:'A year earlier,',bin:'B'},{label:'Across the hall,',bin:'P'},{label:'Two hours later,',bin:'F'},{label:'Back at the newsroom,',bin:'P'},{label:'The summer before,',bin:'B'}],
+      h:'Does it move the clock ahead, move it back, or move the camera to a new spot?'},
+    {t:'pairs', q:'Match each part of a flashback to its job.', pairs:[['A week earlier,','Takes the reader back in time'],['had promised','Shows the action came before'],['Now,','Brings the reader back to the present']],
+      h:'One part opens the past, one keeps it in the past, one closes it.'},
+    {t:'spotall', q:'Benny’s flashback. Tap every signal or verb that shows the story went BACK in time.', cells:[{label:'Two days earlier,',ok:true},{label:'had promised',ok:true},{label:'The summer before,',ok:true},{label:'Back at the bus stop,',ok:false},{label:'An hour later,',ok:false}],
+      h:'Look for "earlier", "before" and "had". "Back at" moves the place, not the clock.'},
+    {t:'sort', q:'Signal mistakes! Sort each pair of sentences.', bins:[{id:'G',label:'✅ Clear signal'},{id:'N',label:'⚠️ No signal'},{id:'W',label:'⚠️ Wrong signal'}],
+      items:[{label:'Gavriel held the broken camera. The day before, he had left it on the bleachers.',bin:'G'},{label:'Gavriel held the broken camera. He left it on the bleachers.',bin:'N'},{label:'Benny lost his file on Monday. Meanwhile, on Friday, he found it.',bin:'W'},{label:'Eli opened his notes. Later, the week before, he had written them.',bin:'W'},{label:'Akiva locked the newsroom. The next morning, the papers were gone.',bin:'G'},{label:'Gavriel snapped a photo on the roof. Rabbi Rosen read a letter.',bin:'N'}],
+      h:'Is there a signal at the start of the new part? Does it tell the truth about when?'},
+    {t:'order', q:'A flashback is over. Build the sentence that returns to the present. Tap the tiles in order.', tiles:['Now,','back in the newsroom,','Akiva','reached for the phone.'],
+      h:'The return signal first. Then the place. Then who, and what he does.'},
+    {t:'spotall', q:'A flashback about Eli. Tap every sentence that brings the reader BACK TO THE PRESENT.', cells:[{label:'Now Eli lifted his notes.',ok:true},{label:'Back in the present, the room went quiet.',ok:true},{label:'A year earlier, Eli had lost his first debate.',ok:false},{label:'He had forgotten every word.',ok:false}],
+      h:'The return signal comes first, and the "had" is gone.'},
+    {t:'write', q:'Your turn to write. On printing day, Gavriel’s camera is broken. Start in the present, go back to when it broke, then return to the present.', min:0, checks:['⏪ A signal takes the reader back, and I used "had".','↩️ A signal brings the reader back to the present.','📍 The reader always knows when and where he is.'], h:'One sentence now. Then a signal for the earlier time, with "had". Then a return signal, without "had".'}
+  ],
+  check:[
+    {q:'“Back at the Kaplans’ house, Yoni’s mother set out the Shabbos candles.” This signal moves the story…', o:['to another place','back in time','forward in time'], h:'Does "back at" move the clock, or the camera?'},
+    {q:'“The week before, Akiva had argued with the printer.” This signal moves the story…', o:['back in time','forward in time','to another place'], h:'Is it ahead of the story, behind it, or somewhere else? Look at the verb too.'},
+    {t:'order', q:'Build a sentence that shifts back in time. Tap the tiles in order.', tiles:['Two days earlier,','Gavriel','had tested','the new camera.'], h:'The signal first. Then who. Then what he had done.'}
+  ],
+  re:[
+    {how:'A new way: a flashback in a film. The picture goes soft, we see the past, and then a sharp cut returns to now. The viewer always knows which time he is in.', q:'A good flashback lets the viewer always know…', o:['which time he is in','who made the film','how long it lasts']},
+    {how:'A simpler step: at every new part, ask: did the clock move ahead, move back, or stay? Did the place move? Going back? Use "had". Coming back? Start with "Now,".', q:'The story goes back to last week. Which verb fits?', o:['had argued','will argue','argues']},
+    {how:'The skill underneath: Time Jumps (Grade 5). A time-jump phrase moves the clock forward. Now you can also move it back, and bring it home again.', q:'"The next morning," moves the clock…', o:['forward','back','nowhere']}
+  ]},
+
+  'WRIT.PARA.L07.05':{name:'Ending That Lands',
+  teach:[
+    {how:'In Grade 5 you learned that an ending must follow from the story. Now make it LAND. A RESOLUTION shows how the problem turns out. A REFLECTION shows what the main character now thinks or understands, inside his own head, inside the story.', q:'“The judges called it a tie.” What kind of ending is this?', o:['a resolution','a reflection','a pasted-on moral']},
+    {how:'You know a strong finish ties back. Now show the opening image CHANGED. A strong ending often TIES BACK TO THE OPENING: it returns to an image, object or line from the first paragraph, now changed. A story that opens on a blank page might end on a full one.', q:'A story opens with Gavriel’s cracked lens. Which ending ties back to the opening?', o:['Gavriel looked through the crack and saw the whole team smiling.','The Beacon came out on Friday.','Everyone went home.']},
+    {how:'Two mistakes. A PASTED-ON MORAL: the narrator steps out of the story and lectures, "The lesson is…" or "So always remember…". Or the story JUST STOPS: "And then I went home. The end."', q:'“And that is why you should always be honest.” This ending is…', o:['a pasted-on moral','a reflection','a resolution']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each ending.', bins:[{id:'R',label:'🏁 Resolution: how the problem turns out'},{id:'F',label:'💭 Reflection: what he now understands'},{id:'M',label:'📌 Pasted-on moral'}],
+      items:[{label:'The printer called at noon: all 300 copies were ready.',bin:'R'},{label:'Benny realized his lost story had come out better the second time he wrote it.',bin:'F'},{label:'The moral of the story is: always save your work.',bin:'M'},{label:'Yoni’s interview ran on the front page.',bin:'R'},{label:'Akiva thought about how many hands it takes to make one page.',bin:'F'},{label:'So remember, boys, never give up!',bin:'M'}],
+      h:'Is it something that happens, a thought in his head, or the narrator lecturing the reader?'},
+    {t:'pairs', q:'Match each opening to the ending that ties back to it.', pairs:[['Opens: the front page is blank at midnight.','Ends: Akiva runs his hand over the full front page.'],['Opens: Yoni’s pen dies before the interview.','Ends: Yoni keeps the dead pen in his desk drawer.'],['Opens: Eli’s notes are gone.','Ends: Eli speaks without notes and does not miss them.']],
+      h:'Find the same thing in the opening and the ending. How has it changed?'},
+    {t:'spotall', q:'The story opened: “Gavriel hated his blurry photo of the siyum.” Tap every ending that LANDS: a resolution or reflection that fits, with no lecture.', cells:[{label:'Gavriel framed the blurry photo. It was his favorite.',ok:true},{label:'Gavriel saw that the blur showed everyone dancing.',ok:true},{label:'The end.',ok:false},{label:'The lesson here is to be happy with what you have.',ok:false},{label:'Then everyone ate pizza and went home.',ok:false}],
+      h:'Does it stay inside the story? Does it finish what the story started?'},
+    {t:'sort', q:'Ending mistakes! A story about Eli losing a debate. Sort each ending.', bins:[{id:'G',label:'✅ Lands'},{id:'P',label:'⚠️ Pasted-on moral'},{id:'S',label:'⚠️ Just stops'}],
+      items:[{label:'Eli folded his notes and, for the first time, asked the winner how he prepared.',bin:'G'},{label:'And that teaches us that losing is good for you.',bin:'P'},{label:'Then the debate was over. The end.',bin:'S'},{label:'Eli saw that the boy who beat him had simply listened better.',bin:'G'},{label:'So, boys, always be a good sport!',bin:'P'},{label:'And then everyone went home.',bin:'S'}],
+      h:'A lecture to the reader is pasted on. A sudden "The end" just stops.'},
+    {t:'order', q:'The story opened on a blank front page. Build an ending that ties back. Tap the tiles in order.', tiles:['At midnight,','Akiva','turned off the light','over a full front page.'],
+      h:'When first. Then who. Then what he does, and the page from the opening.'},
+    {t:'spotall', q:'The story opened: “Yoni’s hands shook outside the menahel’s door.” Tap every ending that ties back to the opening.', cells:[{label:'A week later, Yoni walked past that door, and his hands were steady.',ok:true},{label:'This time, Yoni knocked on the menahel’s door without a second thought.',ok:true},{label:'The paper sold out.',ok:false},{label:'Yoni ate supper.',ok:false},{label:'The moral is: be brave.',ok:false}],
+      h:'Find the image from the opening: the door, the shaking hands.'},
+    {t:'write', q:'Your turn to write. A story opens: “The wind tore The Beacon’s banner off the wall and dropped it in a puddle.” Write a two- or three-sentence ending that lands.', min:0, checks:['🏁 My ending shows a resolution or a reflection.','🔁 It ties back to the opening image.','📌 No pasted-on moral: no "The lesson is".'], h:'Go back to the first image. How does it look now that the story is over? What does the main boy understand now?'}
+  ],
+  check:[
+    {q:'Ending: “Walking home, Yoni kept thinking about how close he had come to not asking his question at all.” Is it a reflection, a resolution, or a pasted-on moral?', o:['a reflection','a resolution','a pasted-on moral'], h:'Is it something that happens, a thought inside his head, or a lecture to the reader?'},
+    {q:'A story opens: “Benny’s zeidy handed him an old fountain pen that leaked.” It ends: “Benny signed his first Beacon story with the leaky pen, ink on every finger.” Which describes this ending?', o:['ties back to the opening','a pasted-on moral','just stops'], h:'Look at the first line and the last line. What do they share?'},
+    {t:'order', q:'Build a reflection ending. Tap the tiles in order.', tiles:['Yoni realized','the hardest question','had been','the best one.'], h:'Who first. Then what he understood.'}
+  ],
+  re:[
+    {how:'A new way: a good bar mitzvah speech often ends by returning to the story it opened with. The circle closes, and everyone feels it.', q:'A speech that ends by returning to its opening story…', o:['closes the circle','lectures the crowd','just stops']},
+    {how:'A simpler step: reread your first paragraph. Circle one image or object. In your last lines, show that same thing again, changed.', q:'To tie back, first find…', o:['an image from the opening','a new character','a lesson to add']},
+    {how:'The skill underneath: It Follows (Grade 5). The ending must come from what happened in the story.', q:'An ending that follows comes from…', o:['what happened in the story','a surprise from nowhere','the title']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L07.05':{hook:'Would you keep reading a story that starts "One day I woke up"?', big:'A strong opening hooks the reader and orients him: who, where, and why care, within the first few sentences.',
+    intro:['Hook: a scene, a question, or a surprising fact.','Orient: who, where, and why care.','Why care: what he wants, or what he could lose.','Do both jobs within the first few sentences.'],
+    ex:[{q:'Opening: "Crash! Then silence."',steps:['Curious? Yes: a hook.','Who? Where? Why care? No answers.'],a:'Hook only'},
+        {q:'Opening: "On the yeshiva roof, Gavriel’s camera slipped from his hands. The cover photo was due at sunrise."',steps:['Hook: the camera slips.','Who: Gavriel. Where: the roof.','Why care: the cover photo.'],a:'Hooks and orients'}],
+    oops:{q:'Open a story about a missing camera.',wrong:'One morning I woke up and got dressed for school.',right:'“Who took my camera?” Gavriel called across the newsroom, two hours before the photo deadline.',why:'Waking up is not a hook and gives no reason to care. Start at the moment the trouble begins.'},
+    idea:['A good opening is a film’s first minute: action, then the camera pulls back to show who, where and why care.'],
+    try:{q:'What is missing? "Shloimy ran into the shul."',o:['why care','who','where'],a:'why care',steps:['Who: Shloimy. Where: the shul. What does he want, or what could he lose?']}},
+  'WRIT.ESSAY.L07.06':{hook:'Can a narrator read minds?', big:'Choose a point of view, first person or third person, keep it, and let the narrator tell only what he could know.',
+    intro:['First person: I, me, my. The narrator is in the story.','Third person: he, his, names. The narrator is outside.','Pick one and keep it: the main boy never switches person.','First person knows only what he sees, hears and thinks.'],
+    ex:[{q:'Told by Yoni: "I knocked. Rabbi Rosen smiled."',steps:['The narrator says I: first person.','Yoni saw the smile, so he can tell it.'],a:'Stays in one point of view'},
+        {q:'Told by Eli: "I began my speech. In the back row, Benny secretly doubted me."',steps:['First person.','Can Eli see inside Benny’s head? No.'],a:'Knows too much'}],
+    oops:{q:'Told by Akiva, in first person.',wrong:'I read the page. Akiva sighed and picked up his pen.',right:'I read the page. I sighed and picked up my pen.',why:'Akiva is the narrator, so he must stay "I". Switching to "Akiva" and "his" breaks the point of view.'},
+    idea:['First person is a camera on the narrator’s head: it sees what he sees, and nothing behind a wall.'],
+    try:{q:'Which point of view? "Benny saved his file twice."',o:['third person','first person','switches person'],a:'third person',steps:['Any I, me or my? No. A name and his.']}},
+  'WRIT.PARA.L07.04':{hook:'How does a story visit the past without losing you?', big:'Every shift gets a signal: forward, back in time with "had", to another place, and a clear return to now.',
+    intro:['Review: forward in time, and "Meanwhile," for the same time in another place.','Back in time: "Two days earlier," plus "had".','Coming back: "Now," and drop the "had".','"Back at" moves the place, not the clock.'],
+    ex:[{q:'Eli stands at the podium. Show last year’s loss.',steps:['The clock goes back: signal first.','Use "had".'],a:'A year before, Eli had lost his very first debate.'},
+        {q:'The flashback is over. Return to the podium.',steps:['Signal the return.','Drop the "had".'],a:'Now Eli stood at the podium again.'}],
+    oops:{q:'Gavriel held the broken camera. ___',wrong:'He left it on the bleachers.',right:'The day before, he had left it on the bleachers.',why:'With no signal and no "had", the reader thinks he is leaving it there right now.'},
+    idea:['A flashback is a door into the past: a signal opens it, "had" keeps it open, and "Now," closes it.'],
+    try:{q:'Which signal moves the story back in time?',o:['The night before,','Back at the newsroom,','An hour later,'],a:'The night before,',steps:['"Back at" is a place. Look for "before" or "earlier".']}},
+  'WRIT.PARA.L07.05':{hook:'Why do some endings stay with you for days?', big:'An ending that lands gives a resolution or a reflection that fits, often ties back to the opening, and never pastes on a moral.',
+    intro:['Resolution: how the problem turns out.','Reflection: what he now understands, inside the story.','Tie back: return to an opening image, now changed.','No "The lesson is…", and never just stop.'],
+    ex:[{q:'Opens: the newsroom door squeaks every time Benny comes in late.',steps:['Find the opening image: the squeaky door.','Show it again, changed.'],a:'On the last day of the year, Benny oiled the door and came in early.'},
+        {q:'Ending: "The moral is: work hard."',steps:['The narrator lectures the reader.','Replace it with a thought inside the story.'],a:'Akiva looked at the stack of papers and thought of every late night it took.'}],
+    oops:{q:'End the story of Eli’s lost debate.',wrong:'And that teaches us that losing is good for you.',right:'Walking out, Eli asked the winner how he had prepared.',why:'The lecture steps out of the story. Showing what Eli does next lets the reader feel the lesson.'},
+    idea:['A good ending closes the circle: it comes back to where the story started, and the reader sees how much changed.'],
+    try:{q:'Which ending has no pasted-on moral?',o:['Akiva smiled at the full front page.','The lesson is to work hard.','So always remember to try.'],a:'Akiva smiled at the full front page.',steps:['Which one stays inside the story?']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L07.05':{s:'First line: a hook. A scene hook, a question hook, or a fact hook.\nThen orient: who is it about? Where (and when) is he?\nWhy care: what does he want, or what could he lose?\nNo waking up, no "This is a story about".'},
+  'WRIT.ESSAY.L07.06':{s:'Decide: first person (I, me, my) or third person (he, his, names).\nCircle every I and he. The main boy must stay the same one.\nFirst person tells only what he sees, hears and thinks.\nNo secret thoughts of others, no rooms he is not in.'},
+  'WRIT.PARA.L07.04':{s:'At every new part, ask: did the clock move ahead, move back, or did the place move?\nGoing back: "Two days earlier," or "The night before," and use "had".\nComing back: signal the return with "Now," and drop the "had".\n"Back at" moves the place, not the clock. "Meanwhile" means the same time.'},
+  'WRIT.PARA.L07.05':{s:'Reread the opening. Circle one image or object.\nEnd with a resolution (how it turns out) or a reflection (what he understands).\nShow the opening image again, changed.\nNo "The lesson is…", and no "The end." as the whole ending.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L07.05':{ band:'M68', pic:'🎣', today:'Open a story that hooks and orients the reader', why:'Readers decide in three sentences whether to keep reading. Give them a reason.',
+    ready:[{q:'The bottom of a story mountain shows…', o:['characters, setting and the problem','the climax','the ending','the moral'], a:'characters, setting and the problem'}],
+    bridge:'WRIT.ESSAY.L06.05', bridgeName:'Story Mountain',
+    watch:{ q:'Open a story about Yoni’s first big interview.', m:{type:'scene', e:'🎙️', t:'Yoni is about to interview Rabbi Rosen, the menahel, for The Beacon.'}, steps:[
+      {t:'Draft 1: "One day I went to do an interview."'},
+      {t:'No hook, no who, no reason to care.'},
+      {t:'Hook: start at the trouble. "Yoni’s pen died."'},
+      {t:'Who and where: Yoni, outside Rabbi Rosen’s office.'},
+      {t:'Why care: the menahel gave him exactly five minutes.'},
+      {t:'Teach it back: tell your chavrusa the two jobs of an opening.'}], a:'Yoni’s pen died outside Rabbi Rosen’s office, and the menahel had given him exactly five minutes.' },
+    oops:{ q:'Open a story about a missing camera.', wrong:'One morning I woke up and got dressed for school.', right:'“Who took my camera?” Gavriel called across the newsroom, two hours before the photo deadline.', why:'Waking up is not a hook and gives no reason to care. Start at the moment the trouble begins.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can open a story that hooks and orients the reader.',
+    board:{ one:'The first few sentences hook (make him curious) and orient (who, where, why care).', activity:'Chavrusas trade opening sentences; the partner must answer who, where and why care, or hand it back to fix.', mistakes:['Waking-up and "This is a story about" openings','A hook with no who or where','A list of facts with no reason to read on'] },
+    do:[
+      {type:'sort', bins:['Hooks and orients','Mistake: lost or bored'], cards:[['Crash! Then silence.',1],['I woke up and ate breakfast.',1],['At the podium, Eli’s notes vanished a minute before the debate.',0],['This is a story about a camera.',1],['In the newsroom, Gavriel’s lens cracked on photo day.',0]], mis:true,
+        say:'Does each opening hook and orient? Sort each card.', how:'Curious? Then: who, where, why care? It needs both jobs.'},
+      {type:'match', pairs:[['Akiva, the Beacon’s editor','Who?'],['the newsroom, late Thursday','Where?'],['the front page is still blank','Why care?']],
+        say:'Match each detail to the question it answers.', how:'A person? A place or time? Or what is at stake?'}],
+    your:[
+      {type:'tiles', q:'Open with who, then the trouble.', w:['Akiva stared','at the blank','front page.'], extra:['Once upon'],
+        say:'Build the opening: who, then what he sees.', how:'Start with the person. End with the trouble.'},
+      {type:'sort', q:'Which question does each detail answer?', bins:['Who?','Where?','Why care?'], cards:[['Yoni, red hair, notebook ready',0],['the hall outside the office',1],['if he is late, the interview is off',2],['Benny, the story writer',0],['his file is gone',2]],
+        say:'Sort each detail: who, where, or why care?', how:'A person? A place? Or what he wants or could lose?'},
+      {type:'match', pairs:[['Hook only','“Run!” Then darkness.'],['Facts only','I am Eli. I am twelve.'],['Hooks and orients','Eli froze at the podium; the debate began in a minute.']],
+        say:'Match each kind of opening to an example.', how:'A reason to read on? Do you know who and where?'},
+      {type:'tiles', q:'Open with when, who, and the trouble.', w:['At midnight,','Benny lost','his story.'], extra:['The end.'],
+        say:'Build the opening sentence.', how:'When first. Then who. Then the trouble.'},
+      {type:'sort', bins:['A reason to care','No reason to care'], cards:[['his notes are lost, and the debate starts in a minute',0],['his zeidy is waiting to read it',0],['the walls are beige',1],['it was a Tuesday',1]],
+        say:'Does each detail give the reader a reason to care?', how:'Does he want something, or could he lose something?'}] },
+
+  'WRIT.ESSAY.L07.06':{ band:'M68', pic:'👁️', today:'Choose a point of view and keep it', why:'When the eyes of a story wobble, the reader stops trusting the narrator.',
+    ready:[{q:'Which sentence SHOWS that Eli is nervous?', o:['Eli’s hands shook on his notes.','Eli was nervous.','Eli was a boy.','Eli liked debates.'], a:'Eli’s hands shook on his notes.'}],
+    bridge:'WRIT.ESSAY.L07.03', bridgeName:'Show, Don\'t Tell',
+    watch:{ q:'Gavriel tells the story of the cover photo.', m:{type:'scene', e:'📷', t:'Gavriel is on the roof at sunrise, shooting The Beacon’s cover.'}, steps:[
+      {t:'Choose: Gavriel tells it himself. First person: I, me, my.'},
+      {t:'"I knelt on the cold roof and raised my camera." Good.'},
+      {t:'Slip: "Gavriel held his breath." Now he is "he". Fix: "I".'},
+      {t:'Slip: "Below, Akiva secretly doubted me." Gavriel cannot know that.'},
+      {t:'Fix: "Below, Akiva frowned up at me." He can see that.'},
+      {t:'Teach it back: tell your chavrusa the two point-of-view slips.'}], a:'I knelt on the cold roof and raised my camera. Below, Akiva frowned up at me.' },
+    oops:{ q:'Told by Akiva, in first person.', wrong:'I read the page. Akiva sighed and picked up his pen.', right:'I read the page. I sighed and picked up my pen.', why:'Akiva is the narrator, so he must stay "I". Switching to "Akiva" and "his" breaks the point of view.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can choose a point of view and keep it.',
+    board:{ one:'Pick first or third person, keep it, and tell only what the narrator could know.', activity:'One chavrusa reads a first-person paragraph aloud; the other claps at every slip: a switch to "he", or a secret the narrator could not know.', mistakes:['Switching from I to he for the same boy','A first-person narrator telling someone else’s secret thoughts','Telling what happens in a room the narrator is not in'] },
+    do:[
+      {type:'match', pairs:[['First person','I, me, my, we'],['Third person','he, his, names'],['Knows too much','someone else’s secret thoughts']],
+        say:'Match each term to what it means.', how:'Who is talking, and what could he know?'},
+      {type:'sort', q:'Told by Yoni, in first person.', bins:['He could know it','Mistake: knows too much'], cards:[['I knocked twice.',0],['Rabbi Rosen smiled.',0],['Akiva secretly envied me.',1],['My pen shook.',0],['At home, Ima was worrying.',1]], mis:true,
+        say:'Could Yoni really know this? Sort each line.', how:'Did he see it, hear it, or think it himself?'}],
+    your:[
+      {type:'tiles', q:'Told by Eli. Keep first person.', w:['I gripped','my notes','and stood.'], extra:['he'],
+        say:'Build the sentence. Keep it in first person.', how:'Eli is telling it. Use I and my.'},
+      {type:'match', pairs:[['Told by Gavriel: "I saw Eli wave."','Stays in one point of view'],['Told by Gavriel: "Gavriel waved back."','Switches person'],['Told by Gavriel: "Eli secretly felt sad."','Knows too much']],
+        say:'Match each line to what it does.', how:'Who tells it? Does he stay I? Could he know it?'},
+      {type:'sort', bins:['First person','Third person'], cards:[['I wiped my lens.',0],['Akiva circled it twice.',1],['He laughed at the joke.',1],['Mr. Gross handed me a pen.',0],['We ran to the bus.',0]],
+        say:'Sort each sentence: first person or third person.', how:'No I, me, my or we anywhere: third person.'},
+      {type:'tiles', q:'Third person, about Benny.', w:['Benny ran','to the lab','at dawn.'], extra:['me'],
+        say:'Build it in third person.', how:'Use his name. No I, me or my.'},
+      {type:'match', q:'Told by Yoni, in first person.', pairs:[['Rabbi Rosen smiled.','He could see it.'],['My hands were cold.','He could feel it.'],['Akiva was secretly jealous.','He could not know it.']],
+        say:'Match each line to how Yoni knows it.', how:'Did Yoni see it, feel it, or could he not know?'}] },
+
+  'WRIT.PARA.L07.04':{ band:'M68', pic:'🎬', today:'Signal a flashback and the return to now', why:'A reader who cannot tell where or when he is stops reading.',
+    ready:[{q:'Which is a time-jump phrase?', o:['The next morning,','and then','he ran','very fast'], a:'The next morning,'}],
+    bridge:'WRIT.PARA.L06.06', bridgeName:'Time Jumps',
+    watch:{ q:'Printing day for The Beacon, and Gavriel’s camera is broken.', m:{type:'scene', e:'🎬', t:'Gavriel stares at a cracked camera in the newsroom. How did it happen?'}, steps:[
+      {t:'Now: Gavriel stares at the broken camera.'},
+      {t:'Go back: signal the earlier time, and use "had".'},
+      {t:'"The day before, he had left it on the bleachers."'},
+      {t:'Come back: signal "Now," and drop the "had".'},
+      {t:'"Now he needed a cover photo by noon."'},
+      {t:'Teach it back: tell your chavrusa how to leave and return.'}], a:'The day before, he had left it on the bleachers. Now he needed a cover photo by noon.' },
+    oops:{ q:'Gavriel held the broken camera. ___', wrong:'He left it on the bleachers.', right:'The day before, he had left it on the bleachers.', why:'With no signal and no "had", the reader thinks he is leaving it there right now.' },
+    ways:['worked example','word tiles','sort it','match it','Mistake Detective','teach it back'], done:'You can signal a flashback and the return to now.',
+    board:{ one:'Every shift gets a signal first: back in time with "had", a return with "Now,", or another place.', activity:'Chavrusas tell a two-minute story aloud; the partner raises a hand at every shift and names the signal used, or the one missing.', mistakes:['A flashback with no signal or no "had"','No signal to return to the present','Reading "Back at" as back in time'] },
+    do:[
+      {type:'tiles', q:'The flashback is over. Return to now.', w:['Now,','Gavriel','shook it.'], extra:['had'],
+        say:'Build the return to the present.', how:'Signal "Now," first. Then who. No "had".'},
+      {type:'sort', bins:['Clear signal','Mistake: no signal'], cards:[['Gavriel held the broken camera. The day before, he had left it outside.',0],['Gavriel held the broken camera. He left it outside.',1],['Akiva locked up. The next morning, the papers were gone.',0],['Gavriel snapped a photo on the roof. Rabbi Rosen read a letter.',1]], mis:true,
+        say:'Does each shift have a clear signal?', how:'New place or time? Is there a signal at the start?'}],
+    your:[
+      {type:'match', pairs:[['Two hours later,','Forward in time'],['The night before,','Back in time'],['Now,','Back to the present']],
+        say:'Match each signal to where it moves the story.', how:'Clock ahead, clock back, or home to now?'},
+      {type:'sort', bins:['Forward in time','Back in time','To another place'], cards:[['By Friday,',0],['A year earlier,',1],['Back at the newsroom,',2],['Across town,',2],['The day before,',1]],
+        say:'Sort each signal by its job.', how:'"Back at" moves the place. "Earlier" moves the clock back.'},
+      {type:'tiles', q:'Shift back in time.', w:['Earlier,','Eli had lost','his notes.'], extra:['Now,'],
+        say:'Build a sentence that goes back in time.', how:'Signal first. Then who. Then "had" and what happened.'},
+      {type:'match', pairs:[['Gavriel held the camera. He left it outside.','Add a signal and "had"'],['Benny lost his file on Monday. Meanwhile, on Friday, he found it.','Fix the wrong signal'],['Akiva left. Two hours later, he came back.','Clear already']],
+        say:'Match each passage to what it needs.', how:'Is there a signal? Does it tell the truth?'},
+      {type:'sort', bins:['Back in time','Back to a place'], cards:[['Two days earlier,',0],['Back at the shul,',1],['The summer before,',0],['Back at the lunchroom,',1]],
+        say:'Sort: back in time, or back to a place?', how:'"Earlier" and "before" move the clock. "Back at" moves the place.'}] },
+
+  'WRIT.PARA.L07.05':{ band:'M68', pic:'🔁', today:'End a story so it lands', why:'The last lines are what the reader remembers. Make them count.',
+    ready:[{q:'A good ending…', o:['follows from what happened','comes out of nowhere','starts a new problem','repeats the title'], a:'follows from what happened'}],
+    bridge:'WRIT.PARA.L06.08', bridgeName:'It Follows',
+    watch:{ q:'End Gavriel’s story. It opened: “Gavriel’s lens had a crack.”', m:{type:'scene', e:'📷', t:'Gavriel used his cracked camera all year for The Beacon.'}, steps:[
+      {t:'Draft: "The lesson is: use what you have." A pasted-on moral.'},
+      {t:'Cut the lecture. Go back to the opening image: the crack.'},
+      {t:'Resolution: the year ends, and the last issue is printed.'},
+      {t:'Reflection: what does Gavriel see now through that crack?'},
+      {t:'"Through the crack, Gavriel saw his whole team, smiling."'},
+      {t:'Teach it back: tell your chavrusa how your ending ties back.'}], a:'Through the crack, Gavriel saw his whole team, smiling.' },
+    oops:{ q:'End the story of Eli’s lost debate.', wrong:'And that teaches us that losing is good for you.', right:'Walking out, Eli asked the winner how he had prepared.', why:'The lecture steps out of the story. Showing what Eli does next lets the reader feel the lesson.' },
+    ways:['worked example','sort it','word tiles','match it','Mistake Detective','teach it back'], done:'You can end a story so it lands.',
+    board:{ one:'End with a resolution or a reflection that fits; tie back to the opening; no pasted-on moral.', activity:'Chavrusas swap stories, circle an image in the partner’s opening, and suggest how the last line could return to it.', mistakes:['"The lesson is…" pasted on at the end','"And then I went home. The end."','An ending with nothing from the opening'] },
+    do:[
+      {type:'sort', bins:['Lands','Mistake: moral or stop'], cards:[['Eli asked the winner how he prepared.',0],['So, boys, always be a good sport!',1],['Then it was over. The end.',1],['Benny’s story ran on the front page.',0]], mis:true,
+        say:'Does each ending land? Sort each card.', how:'Inside the story? Or a lecture, or a sudden stop?'},
+      {type:'tiles', q:'Opening: a crack in Gavriel’s lens. Tie back.', w:['He smiled','at the','crack.'], extra:['clock.'],
+        say:'Build an ending that returns to the crack.', how:'Who first. Then what he does with the crack.'}],
+    your:[
+      {type:'match', pairs:[['Resolution','how the problem turns out'],['Reflection','what he now understands'],['Pasted-on moral','the narrator lectures the reader']],
+        say:'Match each ending word to what it means.', how:'Something that happens? A thought? Or a lecture?'},
+      {type:'sort', bins:['Resolution','Reflection'], cards:[['All 300 copies came out on time.',0],['Akiva realized how many hands one page takes.',1],['Yoni’s interview made the front page.',0],['Benny knew the rewrite was better.',1]],
+        say:'Something that happens, or a thought? Sort each ending.', how:'Resolution: what happens. Reflection: what he understands.'},
+      {type:'tiles', q:'Opening: the blank front page. Tie back.', w:['Akiva held','the full','front page.'], extra:['the blank'],
+        say:'Build an ending that ties back to the opening.', how:'Return to the page from the opening, now changed.'},
+      {type:'match', pairs:[['Opens: Mr. Gross’s red pen covers every draft.','Ends: one draft comes back clean.'],['Opens: the newsroom is empty.','Ends: the newsroom is full and noisy.'],['Opens: Akiva’s chair squeaks all year.','Ends: on the last day, he oils it and laughs.']],
+        say:'Match each opening to the ending that ties back.', how:'Find the same thing in both, now changed.'},
+      {type:'sort', q:'Gavriel’s blurry siyum photo story.', bins:['Lands','Pasted-on moral','Just stops'], cards:[['Gavriel pinned the photo above his desk.',0],['The lesson: every photo is special.',1],['And then everyone went home.',2],['Always try your best, boys!',1],['The end.',2]],
+        say:'Sort each ending of Gavriel’s story.', how:'Inside the story, a lecture, or a sudden stop?'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
