@@ -217,7 +217,7 @@
   /* join the kit as soon as it exists (OneBiteKit.html loads right after the core files) */
   var tries = 0;
   (function join() {
-    if (W.OBK && W.OBK.types) { css(); Object.keys(T).forEach(function (k) { if (!W.OBK.types[k]) W.OBK.types[k] = T[k]; }); W.OBK.list = Object.keys(W.OBK.types); W.TLCORE.actsJoined = true; return; }
+    if (W.OBK && W.OBK.types) { css(); Object.keys(T).forEach(function (k) { if (!W.OBK.types[k]) W.OBK.types[k] = T[k]; }); W.TLCORE.actsJoined = true; return; }   /* OBK.list stays the first ten (tests/lib/onebite.js plays those); these seven are played by tests/lib/coreacts.js */
     if (tries++ < 1200) setTimeout(join, 50);
   })();
 })();
