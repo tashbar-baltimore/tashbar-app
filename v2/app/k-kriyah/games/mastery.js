@@ -58,7 +58,8 @@ export default function setup(E, { struggled, unit }) {
   const PAIR = { beis: unit.n >= 4 ? 'kaf' : 'veis', veis: 'beis', vov: 'zayin', zayin: 'vov', hei: 'ches', ches: 'hei', kaf: 'chaf', chaf: 'kaf', ...(unit.n >= 5 ? { gimmel: 'nun', nun: 'gimmel', tes: 'mem', mem: 'tes' } : {}), ...(unit.n >= 6 ? { pei: 'fei', fei: 'pei' } : {}), ...(unit.n >= 7 ? { reish: 'daled', daled: 'reish', kuf: 'hei', hei: 'kuf' } : {}) };   /* from Unit 4, Beis is shown with its look-alike Kaf */
   const SAME = { vov: 'veis', veis: 'vov', chaf: 'ches', ches: 'chaf', alef: 'ayin', ayin: 'alef', samech: 'sin', kaf: 'kuf', kuf: 'kaf' };   /* the same sound, never asked side by side */   /* the same sound */
   const CLUE = { beis: 'Beis has a dot.', veis: 'Veis has no dot.', zayin: 'Zayin has a crown.', vov: 'Vov has no crown.', ches: 'Ches\u2019s leg touches the roof.', hei: 'Hei\u2019s leg doesn\u2019t touch the roof.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.', gimmel: 'Gimmel has a foot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', lamed: 'Lamed is the tall one.', pei: 'Pei has a dot.', fei: 'Fei has no dot.', reish: 'Reish is round on top.', kuf: 'Kuf has a long leg.' };
-  const clue = (k, got) => (k === 'daled' && got === 'reish') ? 'Daled has a corner.' : (k === 'hei' && got === 'kuf') ? 'Hei has a short leg.' : (k === 'beis' && got === 'kaf') ? 'Beis has a tail at the bottom.' : (k === 'kaf' && got === 'beis') ? 'Kaf is round at the bottom.' : CLUE[k];   /* Vov and Veis both say v: never ask one with the other on screen */
+  const ALSO = unit.n >= 6 ? { kaf: 'pei', pei: 'kaf' } : {};   /* this unit's own look-alike (Pei's little tongue) */
+  const clue = (k, got) => (k === 'pei' && got === 'kaf') ? 'Pei has a little tongue inside.' : (k === 'kaf' && got === 'pei') ? 'Kaf has no little tongue.' : (k === 'daled' && got === 'reish') ? 'Daled has a corner.' : (k === 'hei' && got === 'kuf') ? 'Hei has a short leg.' : (k === 'beis' && got === 'kaf') ? 'Beis has a tail at the bottom.' : (k === 'kaf' && got === 'beis') ? 'Kaf is round at the bottom.' : CLUE[k];   /* Vov and Veis both say v: never ask one with the other on screen */
   const mix = a => a.slice().sort(() => Math.random() - .5);
   function pick(k) {
     if (keys.length <= 3) return mix(keys);
@@ -95,7 +96,7 @@ export default function setup(E, { struggled, unit }) {
       if (got === q.k) { E.joy(E.worldPos(L[got]).add(new THREE.Vector3(0, .3, .6))); E.hop(L[got]); if (q.first && !easy) toBasket(got); rebbe.mood('cheer'); if (q.first && !easy) right++; inRow = 0;
         await E.say(E.quiet(q.k) ? 'Yes! ' + E.LETTERS[q.k].name + '. ' + E.LETTERS[q.k].name + ' is quiet.' : ['Yes!', ...E.nameLine(q.k)]); rebbe.mood('calm'); }
       else { E.sfx.boop(); inRow++; rebbe.mood('think'); await E.shake(L[got], .15); await E.say(explain(got));
-        if ((PAIR[got] === q.k || PAIR[q.k] === got) && clue(q.k, got)) {   /* a look-alike mix-up: show and say what to look for */
+        if ((PAIR[got] === q.k || PAIR[q.k] === got || ALSO[got] === q.k) && clue(q.k, got)) {   /* a look-alike mix-up: show and say what to look for */
           [got, q.k].forEach((k, i) => E.pointAt(arrows[i], L[k], k, 1.6, feat(k, i ? got : q.k))); await E.say(clue(q.k, got)); arrows.forEach(a => a.visible = false); }
         glowOn = L[q.k]; E.hop(L[q.k]); await E.say(E.quiet(q.k) ? 'Here is ' + E.LETTERS[q.k].name + ', the quiet one.' : ['Here is ' + E.LETTERS[q.k].name + '.', ...E.nameLine(q.k)]); glowOn = null; rebbe.mood('calm');
         if (q.first) queue.push({ ...q, first: false }); }

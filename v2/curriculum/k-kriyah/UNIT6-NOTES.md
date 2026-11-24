@@ -28,7 +28,9 @@
 5. **The Look-Alike Detective also sorts Kaf and Pei,** since Pei has a little tongue inside and Kaf does not.
 6. **The farm background and the six word pictures** (horse, ladder, tree, cloud, butterfly, elephant) are the painted pictures from Rabbi Khaver.
 7. **Kaf and Pei, in the same words in every game:** "Pei has a little tongue inside. Kaf has no little tongue." The arrow points at the same spot on both, left of Kaf's dot, so it never points at a dot.
-8. **Sound Match ends with Fei** standing beside Pei: "This is Fei. Pei without its dot. Fei says f."
+8. **Sound Match ends with Fei** standing above Pei: "This is Fei. Pei without its dot. Fei says f."
+9. **The Kaf/Pei arrow comes up from inside, below the tongue,** never level with Kaf's dot. If a boy mixes up Kaf and Pei in the mastery check, he hears about the little tongue.
+10. **Each Sound Match picture sits on a cream card,** so a tree or a cloud never melts into the painting.
 
 ## For the rebbe (every sound and rule used in Unit 6)
 - **Letters:** Samech (ס) says "s"; Ayin (ע) is quiet; Pei (פּ) says "p"; Fei (פ) says "f". These are lone sounds, never with a vowel.
