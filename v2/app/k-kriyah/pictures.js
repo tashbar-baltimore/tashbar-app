@@ -62,6 +62,28 @@ export function makePictures(E) {
         g.add(mesh(new THREE.CylinderGeometry(.05, .05, .45, 12), M(0xffffff), x, .26, 0)); g.add(mesh(new THREE.ConeGeometry(.05, .16, 12), new THREE.MeshStandardMaterial({ color: 0xffb020, emissive: 0xff8a00, emissiveIntensity: 1.6 }), x, .57, 0, false));
         const gl = E.glowSprite('#ffcf70', .5, .8); gl.position.set(x, .57, 0); g.add(gl); }); return g; },
     bayis() { const h = E.house({ bushes: false }); h.scale.setScalar(.38); h.position.y = -.55; const g = new THREE.Group(); g.add(h); return g; },
+    sus() { const g = new THREE.Group(), fur = M(0x9a5a2a, { roughness: .7 }), dk = M(0x3a2414);   /* a horse */
+      const body = mesh(new THREE.SphereGeometry(.34, 20, 14), fur, 0, 0, 0); body.scale.set(1.4, .85, .8); g.add(body);
+      const neck = mesh(new THREE.CapsuleGeometry(.11, .3, 6, 10), fur, .42, .3, 0); neck.rotation.z = -.5; g.add(neck);
+      const head = mesh(new THREE.SphereGeometry(.15, 16, 12), fur, .6, .5, 0); head.scale.set(1.5, .9, .9); g.add(head);
+      [-1, 1].forEach(s => { const e = mesh(new THREE.ConeGeometry(.04, .12, 6), fur, .52, .66, s * .06); g.add(e); g.add(mesh(new THREE.SphereGeometry(.022, 8, 6), dk, .62, .55, s * .12, false)); });
+      for (let k = 0; k < 6; k++) g.add(mesh(new THREE.SphereGeometry(.05, 8, 6), dk, .3 + k * .06, .25 + k * .08, 0, false));
+      [[-.28, .14], [-.22, -.14], [.24, .14], [.3, -.14]].forEach(([x, z]) => { g.add(mesh(new THREE.CylinderGeometry(.06, .055, .34, 10), fur, x, -.4, z)); g.add(mesh(new THREE.CylinderGeometry(.06, .065, .06, 10), dk, x, -.58, z)); });
+      const t = mesh(new THREE.CapsuleGeometry(.04, .3, 4, 6), dk, -.5, -.05, 0); t.rotation.z = -.5; g.add(t); g.position.y = .12; return g; },
+    sulam() { const g = new THREE.Group(), w = M(0xb87a42, { roughness: .6 });   /* a ladder */
+      [-.25, .25].forEach(x => g.add(mesh(new THREE.BoxGeometry(.07, 1.3, .07), w, x, 0, 0))); for (let k = 0; k < 5; k++) g.add(mesh(new THREE.BoxGeometry(.5, .05, .06), w, 0, -.5 + k * .25, 0)); g.rotation.z = .1; return g; },
+    eitz() { const g = new THREE.Group(); g.add(mesh(new THREE.CylinderGeometry(.08, .12, .6, 10), M(0x8a5a3c), 0, -.35, 0));   /* a tree */
+      [[0, .2, 0, .4], [.25, .05, .05, .3], [-.25, .07, 0, .3], [0, .45, 0, .28]].forEach(([a, b, c, r]) => g.add(mesh(new THREE.SphereGeometry(r, 18, 12), M(0x3fae4a, { roughness: .6 }), a, b, c))); return g; },
+    anan() { const g = new THREE.Group(), cm = M(0xffffff, { roughness: .8 });   /* a cloud */
+      [[0, 0, .35], [.32, -.05, .27], [-.32, -.06, .26], [.12, .2, .26], [-.14, .18, .22]].forEach(([x, y, r]) => g.add(mesh(new THREE.SphereGeometry(r, 18, 12), cm, x, y, 0))); return g; },
+    parpar() { const g = new THREE.Group(), wm = M(0xff7aa8, { roughness: .4 }), wm2 = M(0xffd43b, { roughness: .4 });   /* a butterfly */
+      [-1, 1].forEach(s => { const a = mesh(new THREE.SphereGeometry(.28, 16, 10), wm, s * .26, .1, 0); a.scale.set(1, 1.2, .15); g.add(a); const b = mesh(new THREE.SphereGeometry(.18, 14, 10), wm2, s * .2, -.25, 0); b.scale.set(1, 1.1, .15); g.add(b); });
+      g.add(mesh(new THREE.CapsuleGeometry(.04, .5, 4, 8), M(0x3a2a1a), 0, 0, .03)); [-1, 1].forEach(s => { const an = mesh(new THREE.CylinderGeometry(.01, .01, .25, 4), M(0x3a2a1a), s * .06, .37, .03, false); an.rotation.z = -s * .4; g.add(an); }); return g; },
+    pil() { const g = new THREE.Group(), sk = M(0x9aa3b0, { roughness: .7 });   /* an elephant */
+      const b = mesh(new THREE.SphereGeometry(.38, 20, 14), sk, 0, 0, 0); b.scale.set(1.3, .95, .9); g.add(b); g.add(mesh(new THREE.SphereGeometry(.25, 16, 12), sk, .45, .18, 0));
+      const tr = mesh(new THREE.CapsuleGeometry(.07, .35, 6, 10), sk, .65, -.05, 0); tr.rotation.z = .3; g.add(tr);
+      [-1, 1].forEach(s => { const e = mesh(new THREE.SphereGeometry(.2, 14, 10), M(0xb5bcc6), .35, .22, s * .22); e.scale.set(.3, 1, 1); g.add(e); g.add(mesh(new THREE.SphereGeometry(.03, 8, 6), M(0x222222), .58, .26, s * .12, false)); });
+      [[-.28, .16], [-.22, -.16], [.22, .16], [.28, -.16]].forEach(([x, z]) => g.add(mesh(new THREE.CylinderGeometry(.09, .09, .3, 10), sk, x, -.42, z))); g.position.y = .1; return g; },
     /* ---- everyday pictures (zoo, garden, park, picnic) ---- */
     gamal() { const g = new THREE.Group(), fur = M(0xd9a35b, { roughness: .7 }), dk = M(0x3a2a1a);   /* a camel */
       const body = mesh(new THREE.SphereGeometry(.38, 20, 14), fur, 0, .05, 0); body.scale.set(1.5, .8, .75); g.add(body);
@@ -166,8 +188,14 @@ export const WORDS = {
   yonah: { letter: 'yud', say: 'Yonah. A dove!' },
   kadur: { letter: 'kaf', say: 'Kadur. A ball!' },
   limon: { letter: 'lamed', say: 'Limon. A lemon!' },
+  sus: { letter: 'samech', say: 'Sus. A horse!' },
+  sulam: { letter: 'samech', say: 'Sulam. A ladder!' },
+  eitz: { letter: 'ayin', say: 'Eitz. A tree!' },
+  anan: { letter: 'ayin', say: 'Anan. A cloud!' },
+  parpar: { letter: 'pei', say: 'Parpar. A butterfly!' },
+  pil: { letter: 'pei', say: 'Pil. An elephant!' },
   mayim: { letter: 'mem', say: 'Mayim. Water!' },
   melafefon: { letter: 'mem', say: 'Melafefon. A cucumber!' },
   nemalah: { letter: 'nun', say: 'Nemalah. An ant!' },
 };
-export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah' };
+export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah', sus: 'Sus', sulam: 'Sulam', eitz: 'Eitz', anan: 'Anan', parpar: 'Parpar', pil: 'Pil' };

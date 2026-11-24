@@ -55,17 +55,17 @@ export default function setup(E, { struggled, unit, game = {} }) {
       await E.tween(450, q => { card.position.lerpVectors(p0, to, q); card.scale.setScalar((P ? .9 : .85) * (1 - q * .9)); });
       card.visible = false; card.scale.setScalar(1); E.joy(to); E.hop(L[k], .4); kid.mood('cheer'); setTimeout(() => kid.mood('calm'), 900 * E.F);
       idx++; E.setProgress(deck.length, idx);
-      await E.say(['Yes! ' + WORD_NAME[w] + ' starts with', S(snd), '. ' + name + '!']);
+      await E.say(E.quiet(k) ? 'Yes! ' + WORD_NAME[w] + ' starts with ' + name + ', the quiet letter!' : ['Yes! ' + WORD_NAME[w] + ' starts with', S(snd), '. ' + name + '!']);   /* a quiet letter (Ayin) has no sound to say */
       if (idx < deck.length) { busy = true; await showCard(deck[idx]); enabled = true; } else onDone();
     } else {
       E.sfx.boop(); if (!missed) mistakes++; missed = true; kid.mood('think'); await back(); busy = true; await E.shake(card, .15); busy = false;
-      help = true; await E.say(['Listen. ' + WORD_NAME[w] + '.', WORD_NAME[w] + ' starts with', S(snd), '.']);
-      E.hop(L[k], .35); await E.say([name + ' says', S(snd), '. Try again!']); kid.mood('calm');
+      help = true; await E.say(E.quiet(k) ? ['Listen. ' + WORD_NAME[w] + '.', WORD_NAME[w] + ' starts with ' + name + '.'] : ['Listen. ' + WORD_NAME[w] + '.', WORD_NAME[w] + ' starts with', S(snd), '.']);
+      E.hop(L[k], .35); await E.say(E.quiet(k) ? name + ' is quiet. Try again!' : [name + ' says', S(snd), '. Try again!']); kid.mood('calm');
       if (mistakes < 2 && !struggled) help = false;   /* the glow stays on once he has missed twice */
     }
   }
   /* the pictures: the demo first, then the rest mixed */
-  const first = (!game.reviewOf && words.find(w => unit.letters.includes(WORDS[w].letter) && E.LETTERS[WORDS[w].letter].snd !== 'ch')) || words[0];   /* the demo shows a new letter */
+  const first = (!game.reviewOf && words.find(w => unit.letters.includes(WORDS[w].letter) && E.LETTERS[WORDS[w].letter].snd && E.LETTERS[WORDS[w].letter].snd !== 'ch')) || words[0];   /* the demo shows a new letter */
   const rest = words.filter(w => w !== first).sort(() => Math.random() - .5), deck = [first, ...rest];
   return async () => {
     E.setProgress(deck.length, 0);
@@ -73,7 +73,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
     await E.say('Each picture goes to the letter it starts with.');
     await showCard(first);
     const k0 = WORDS[first].letter, pd0 = peds.find(pd => pd.userData.key === k0);
-    await E.say(['Watch me. ' + WORD_NAME[first] + ' starts with', S(E.LETTERS[k0].snd), '.']);
+    await E.say(E.quiet(k0) ? 'Watch me. ' + WORD_NAME[first] + ' starts with ' + E.LETTERS[k0].name + '.' : ['Watch me. ' + WORD_NAME[first] + ' starts with', S(E.LETTERS[k0].snd), '.']);
     busy = true; let [x, y] = E.toScreen(card.position); E.hand.at(x, y); await E.wait(350);
     const p0 = card.position.clone(), p1 = top(pd0); await E.tween(1200, q => { card.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(card.position); E.hand.at(a, b); });
     E.hand.hide(); busy = false; enabled = true;

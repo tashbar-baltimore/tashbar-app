@@ -62,7 +62,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
       wrongInRow = 0; c.userData.on = true; c.userData.slot = slot; const to = slotPos(slot);
       await E.tween(420, q => { c.position.lerpVectors(p0, to, q); c.position.y += Math.sin(q * Math.PI) * .6; c.scale.setScalar((P ? .75 : .8) + (S - (P ? .75 : .8)) * q); });
       E.sfx.drum(); E.sparkle(to.clone().add(new THREE.Vector3(0, .8 * S, .4)), 14); E.hop(c, .25, 300);
-      await E.say(c.userData.key === 'alef' ? 'Alef!' : [E.LETTERS[c.userData.key].name + '!', E.S(E.LETTERS[c.userData.key].snd)], false);
+      await E.say(E.quiet(c.userData.key) ? E.LETTERS[c.userData.key].name + '!' : [E.LETTERS[c.userData.key].name + '!', E.S(E.LETTERS[c.userData.key].snd)], false);
       busy = false;
       if (nextNeeded() == null && resolveRound) { const r = resolveRound; resolveRound = null; r(); }
     } else {

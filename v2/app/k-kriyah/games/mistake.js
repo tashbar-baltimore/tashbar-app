@@ -8,12 +8,13 @@ const PLAN = {
   3: { R: [['vov', 'vov'], ['vov', 'zayin'], ['ches', 'ches'], ['hei', 'ches'], ['zayin', 'zayin'], ['ches', 'hei']], demo: ['zayin', 'vov', 'Hmm. Watch me. A crown! That is not a Vov.'] },
   4: { R: [['tes', 'tes'], ['kaf', 'chaf'], ['yud', 'yud'], ['beis', 'kaf'], ['chaf', 'chaf'], ['chaf', 'kaf']], demo: ['kaf', 'beis', 'Hmm. Watch me. Round at the bottom. That is not a Beis!'] },
   5: { R: [['lamed', 'lamed'], ['gimmel', 'nun'], ['mem', 'mem'], ['mem', 'tes'], ['nun', 'nun'], ['tes', 'mem']], demo: ['nun', 'gimmel', 'Hmm. Watch me. Flat at the bottom. That is not a Gimmel!'] },
+  6: { R: [['samech', 'samech'], ['pei', 'fei'], ['ayin', 'ayin'], ['pei', 'kaf'], ['fei', 'fei'], ['kaf', 'pei']], demo: ['fei', 'pei', 'Hmm. Watch me. No dot. That is not a Pei!'] },
   2: { R: [['gimmel', 'gimmel'], ['daled', 'hei'], ['hei', 'hei'], ['gimmel', 'daled'], ['beis', 'beis'], ['veis', 'beis']],   /* the last two bring back Unit 1 */ demo: ['daled', 'gimmel', 'Hmm. Watch me. No foot. That is not a Gimmel!'] },
 };
 /* what to look for, in a few words */
-const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof', tes: 'the round one', yud: 'the little one', kaf: 'with the dot', chaf: 'with no dot', lamed: 'the tall one', mem: 'with the opening at the bottom', nun: 'flat at the bottom' };
-const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.', tes: 'Tes is round, with a curl on top.', yud: 'Yud is the little one.', kaf: 'A dot!', chaf: 'No dot.', lamed: 'Lamed is the tall one.', mem: 'Mem has an opening at the bottom.', nun: 'Nun is flat at the bottom.' };
-const lookOf = (k, c) => k === 'beis' && c === 'kaf' ? 'Beis has a tail at the bottom.' : k === 'kaf' && c === 'beis' ? 'Kaf is round at the bottom.' : k === 'tes' && c === 'mem' ? 'Tes is closed at the bottom.' : LOOK[k];
+const CUE = { beis: 'with the dot', veis: 'with no dot', gimmel: 'with the foot', daled: 'with no little leg', hei: 'with its leg off the roof', vov: 'with no crown', zayin: 'with the crown', ches: 'with its leg on the roof', tes: 'the round one', yud: 'the little one', kaf: 'with the dot', chaf: 'with no dot', lamed: 'the tall one', mem: 'with the opening at the bottom', nun: 'flat at the bottom', samech: 'the round one', ayin: 'with two arms up', pei: 'with the dot', fei: 'with no dot' };
+const LOOK = { beis: 'A dot!', veis: 'No dot.', gimmel: 'Gimmel has a foot.', daled: 'Daled has no little leg.', hei: 'Hei\u2019s little leg doesn\u2019t touch the roof.', vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', ches: 'Ches\u2019s leg touches the roof.', tes: 'Tes is round, with a curl on top.', yud: 'Yud is the little one.', kaf: 'A dot!', chaf: 'No dot.', lamed: 'Lamed is the tall one.', mem: 'Mem has an opening at the bottom.', nun: 'Nun is flat at the bottom.', samech: 'Samech is round all around.', ayin: 'Ayin has two arms up.', pei: 'A dot!', fei: 'No dot.' };
+const lookOf = (k, c) => k === 'beis' && c === 'kaf' ? 'Beis has a tail at the bottom.' : k === 'kaf' && c === 'beis' ? 'Kaf is round at the bottom.' : k === 'tes' && c === 'mem' ? 'Tes is closed at the bottom.' : k === 'pei' && c === 'kaf' ? 'Pei has a little tongue inside.' : k === 'kaf' && c === 'pei' ? 'Kaf has nothing inside.' : LOOK[k];
 export default function setup(E, { struggled, unit }) {
   const plan = PLAN[unit.n] || PLAN[1];
   const { THREE, S, ICON } = E;
@@ -55,7 +56,7 @@ export default function setup(E, { struggled, unit }) {
   const why = (k, c) => k === 'alef' ? 'Look again. This is Alef. Beis and Veis look like a house.' : c === 'alef' ? 'Look again. This looks like a house. It is ' + E.LETTERS[k].name + '.'
     : k === 'beis' && c === 'veis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
     : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : lookOf(k, c)) + ' This is ' + E.LETTERS[k].name + '.';
-  const an = k => k === 'alef' ? 'an Alef' : 'a ' + E.LETTERS[k].name;
+  const an = k => E.an(k);
   function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
   const onBoard = () => { const [bx, by] = E.toScreen(E.worldPos(board)), [tx, ty] = E.toScreen(dragT.position); return Math.hypot(bx - tx, by - ty) < Math.min(innerWidth, innerHeight) * .16; };
   E.onPointer('down', e => { if (!fixKey || busy) return; const t = E.pickFrom(e, tiles); if (t) { dragT = t; const p = E.planePoint(e, t.position.z); if (p) grab.copy(t.position).sub(p); t.scale.setScalar(1.12); } });
@@ -86,7 +87,7 @@ export default function setup(E, { struggled, unit }) {
     else document.body.dataset.fixReady = 1;
     await done; delete document.body.dataset.fixReady; fixKey = null; yak.visible = true;
     tiles.forEach(t => t.visible && E.popOut(t));
-    await E.say(k === 'alef' ? 'Now Yaakov has his Alef! Thank you!' : E.LETTERS[k].snd === 'ch' ? 'Now Yaakov has his ' + E.LETTERS[k].name + '! Thank you!' : ['Now Yaakov has his ' + E.LETTERS[k].name + '!', ...E.nameLine(k)]);   /* 12 words or fewer */
+    await E.say(E.quiet(k) ? 'Now Yaakov has his ' + E.LETTERS[k].name + '! Thank you!' : E.LETTERS[k].snd === 'ch' ? 'Now Yaakov has his ' + E.LETTERS[k].name + '! Thank you!' : ['Now Yaakov has his ' + E.LETTERS[k].name + '!', ...E.nameLine(k)]);   /* 12 words or fewer */
     yak.mood('calm');
   }
   async function roundOf(shownKey, claim, demo = false) {
