@@ -1,0 +1,299 @@
+<script>
+/* CoreDataW131.html: Core Growth job W13, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW13.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W13 = Writing K-3 (docs/core-growth/W13-map.md). This file: Grade 2 (L03), Unit 1 "Writers Plan".
+   Cast for Grades 2-3: the Shabbos Street Club (docs/core-growth/F-map.md section 8): Naftali Rosen, Avi Benhamou, Chaim Weiss,
+   Dovid Katz, Rabbi Feld, Naftali's Zeidy (a watchmaker), Mr. Benhamou (the corner grocery). In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+
+  'WRIT.ESSAY.L03.01':{name:'POW Power',
+  teach:[
+    {how:'Writers make a plan before they write. The plan is called POW. P is the first step: Pick my idea. Pick something you know a lot about.', q:'Avi knows a lot about maps. He knows a little about rockets. What should he pick to write about?', o:['the map of our street','rockets','he should not pick yet']},
+    {how:'O is the second step: Organize my notes. A note is just a few words, not a whole sentence. Put your notes in an order that makes sense.', q:'Naftali is writing about the clubhouse. Which one is a good note?', o:['old blue sofa','The clubhouse has an old blue sofa that squeaks.','I like pizza.']},
+    {how:'W is the last step: Write and say more. Turn each note into a sentence, and add more so the reader can see it.', q:'The note says: old blue sofa. Which sentence says more?', o:['Our clubhouse has an old blue sofa that squeaks.','Sofa.','It is a sofa.']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each letter of POW to its step.', pairs:[['P','Pick my idea'],['O','Organize my notes'],['W','Write and say more']], h:'Say the steps in order: pick, organize, write.'},
+    {t:'sort', q:'Pick my idea: Chaim reads everything about birds. Sort the ideas.', bins:[{id:'Y',label:'He knows a lot'},{id:'N',label:'He knows very little'}],
+      items:[{label:'birds by the river',bin:'Y'},{label:'how a bird builds a nest',bin:'Y'},{label:'how a car engine works',bin:'N'},{label:'deep sea fish',bin:'N'}],
+      h:'A good idea is something you know a lot about. Chaim knows birds.'},
+    {t:'spotall', q:'Organize my notes: tap every good note for a piece about the corner grocery.', cells:[{label:'fresh pita',ok:true},{label:'olives in big jars',ok:true},{label:'Mr. Benhamou says hello',ok:true},{label:'The grocery is on the corner and it has lots of food and drinks.',ok:false},{label:'my bike is red',ok:false}],
+      h:'A good note is a few words about the idea. A whole long sentence is too long for a note.'},
+    {t:'order', q:'Put the steps of POW in order. Tap the tiles in order.', tiles:['Pick my idea','Organize my notes','Write and say more'], h:'First you choose, then you plan, then you write.'},
+    {t:'sort', q:'Write and say more: sort each sentence.', bins:[{id:'M',label:'Says more'},{id:'L',label:'Says less'}],
+      items:[{label:'We fix old clocks with Zeidy’s tiny tools.',bin:'M'},{label:'We fix clocks.',bin:'L'},{label:'The sofa squeaks when Dovid jumps on it.',bin:'M'},{label:'It is fun.',bin:'L'}],
+      h:'A sentence that says more lets the reader see it: what, where, how.'},
+    {t:'write', q:'Your turn. Use POW. Pick an idea you know a lot about. Write 3 notes. Then write one sentence that says more.', min:0, checks:['P: I picked something I know a lot about.','O: I wrote 3 short notes.','W: I wrote a sentence that says more.'], h:'Pick first. Notes are a few words. Then turn one note into a sentence.'}
+  ],
+  check:[
+    {q:'Chaim picked his idea: the shul library. What should he do next?', o:['Organize my notes','Write the ending','Pick another idea'], h:'Say POW: P, then O, then W. He did P.'},
+    {q:'Dovid’s note: “On Shabbos we eat lunch at the big table with all my cousins.” What is it?', o:['too long for a note','a good note','not about his idea'], h:'A note is just a few words. Is it a few words, or a whole long sentence?'},
+    {q:'Avi’s note: fresh pita. Avi writes: “Mr. Benhamou sells fresh pita that is still warm.” What did he do?', o:['says more','says less','just a note'], h:'Says more: the reader can see what, where or how.'}
+  ],
+  re:[
+    {how:'A new way: POW is like going on a trip. Pick where to go. Pack your bag. Then go!', q:'In POW, packing your bag is like…', o:['Organize my notes','Pick my idea','Write and say more']},
+    {how:'A simpler step: just say the three words of POW out loud: Pick, Organize, Write.', q:'Which word comes first in POW?', o:['Pick','Write','Organize']},
+    {how:'The skill underneath: a sentence tells a whole thought (Whole Thought). Notes are short; sentences are whole.', q:'Which one is a whole sentence?', o:['Our clubhouse has a sofa.','old blue sofa','in the garage']}
+  ]},
+
+  'WRIT.PARA.L03.04':{name:'Topic Sentence',
+  teach:[
+    {how:'A paragraph starts with a topic sentence. It tells what the WHOLE paragraph is about. Read all the details. Ask: what are they all about?', q:'Details: Zeidy has gears in jars. He has tiny screwdrivers. He has a lamp that bends. Which is the topic sentence?', o:['Zeidy’s workshop is full of tools.','Zeidy has gears in jars.','I like lamps.']},
+    {how:'Watch out: one detail cannot be the topic sentence. It tells about only ONE thing, not about all of them.', q:'Details: Dovid has a bagel. He has two apples. He has a cookie for Avi. Which one is just one detail?', o:['He has two apples.','Dovid’s lunch box is always full.','Dovid packs a big lunch.']},
+    {how:'A topic sentence TELLS. It is not a question. It names the topic so the reader knows what is coming.', q:'Which is a good topic sentence about the park by the river?', o:['The park by the river has lots to do.','Do you like parks?','There are ducks.']}
+  ],
+  practice:[
+    {t:'sort', q:'A paragraph about Mr. Benhamou’s grocery. Sort each sentence.', bins:[{id:'T',label:'Topic sentence'},{id:'D',label:'Detail'}],
+      items:[{label:'Mr. Benhamou’s grocery sells many good things.',bin:'T'},{label:'It has fresh pita.',bin:'D'},{label:'It has olives in big jars.',bin:'D'},{label:'It has cold milk.',bin:'D'}],
+      h:'The topic sentence tells about all the others. A detail tells one thing.'},
+    {t:'pairs', q:'Match each set of details to its topic sentence.', pairs:[['challah, fish, kugel','We eat a big Shabbos meal.'],['gears, springs, tiny screws','Zeidy fixes old clocks.'],['boots, scarf, mittens','Dovid gets ready for the snow.']],
+      h:'Ask: what are all three things about?'},
+    {t:'spotall', q:'Details: Avi draws the streets. He colors the park green. He marks the shul with a star. Tap every GOOD topic sentence.', cells:[{label:'Avi makes a map of our street.',ok:true},{label:'Avi draws a map.',ok:true},{label:'Avi colors the park green.',ok:false},{label:'Do you like maps?',ok:false}],
+      h:'A good topic sentence covers all the details, and it tells. It is not a question.'},
+    {t:'order', q:'Details: Chaim reads in bed. He reads at lunch. He reads on the bus. Build the topic sentence. Tap the tiles in order.', tiles:['Chaim','reads','all the time.'], h:'Who is it about? What does he do in all three details?'},
+    {t:'sort', q:'Details: Naftali fixed a gear. Avi fixed a lamp. Dovid fixed a chair. Good topic sentence, or a mistake?', bins:[{id:'G',label:'Good topic sentence'},{id:'M',label:'Mistake'}],
+      items:[{label:'The club fixes many things.',bin:'G'},{label:'Is the club fun?',bin:'M'},{label:'Avi fixed a lamp.',bin:'M'},{label:'The club is good at fixing.',bin:'G'}],
+      h:'A mistake: it is a question, or it is just one detail. A good one is just right: it covers all the details.'},
+    {t:'write', q:'Your turn. Pick a topic: your Shabbos table, your room, or your street. Write one topic sentence that tells what a whole paragraph about it is about.', min:0, checks:['It tells. It is not a question.','It names my topic.','It could cover many details, not just one.'], h:'Name your topic. Then say one big thing about it.'}
+  ],
+  check:[
+    {q:'Naftali sweeps. Avi wipes the table. Dovid takes out the trash. Topic sentence: “The club cleans up the clubhouse.”', o:['just right','just one detail','a question'], h:'Does it tell about all three details? Is it only one? Does it ask?'},
+    {q:'Topic sentence: “Do you like the corner grocery?” What is wrong?', o:['it is a question','it is just one detail','nothing, it is just right'], h:'A topic sentence tells. Does this one tell, or ask?'},
+    {q:'Chaim has bird books, a bird feeder and a bird list. Topic sentence: “Chaim has a bird feeder.”', o:['just one detail','just right','a question'], h:'Does it tell about all three details, or only one?'}
+  ],
+  re:[
+    {how:'A new way: the topic sentence is the name on a box. The details are the things inside the box.', q:'Inside the box: siddur, tallis bag, kippah. What is the best name for the box?', o:['Things I take to shul','Kippah','Toys']},
+    {how:'A simpler step: first find what the details share, in two or three words.', q:'Details: Dovid sweeps. He dries the dishes. He takes out the trash. What do they share?', o:['jobs at home','games','food']},
+    {how:'The skill underneath: a sentence tells a whole thought. A topic sentence is a whole thought too.', q:'Which one is a whole sentence?', o:['The club meets on Sunday.','on Sunday','the club']}
+  ]},
+
+  'WRIT.PARA.L03.05':{name:'Keep It or Cut It',
+  teach:[
+    {how:'Every detail must tell about the topic sentence. Test each one: does it fit? If yes, keep it. If not, cut it.', q:'Topic: The club fixed Zeidy’s old clock. Which detail should be cut?', o:['Dovid ate a pickle.','Naftali found the broken gear.','Avi held the flashlight.']},
+    {how:'The tricky one: a detail about the SAME boy that still does not fit. Being about Dovid is not enough. It must fit what the topic sentence says.', q:'Topic: Dovid helps get ready for Shabbos. Which detail should be cut?', o:['Dovid has a red bike.','Dovid sets the table.','Dovid puts out the challah cover.']},
+    {how:'After you cut, read it again. Now every sentence tells about the topic, like arrows that all hit the target.', q:'Topic: The park by the river is busy on Sunday. Which detail should we keep?', o:['Families walk on the path.','Avi’s cousin lives far away.','It was cold last winter.']}
+  ],
+  practice:[
+    {t:'sort', q:'Topic: Chaim set up the shul library. Keep it or cut it?', bins:[{id:'K',label:'Keep it'},{id:'C',label:'Cut it'}],
+      items:[{label:'He put the books on the shelves.',bin:'K'},{label:'He made a sign that says Library.',bin:'K'},{label:'Chaim likes soup.',bin:'C'},{label:'He sorted the books by size.',bin:'K'},{label:'His brother has a cold.',bin:'C'}],
+      h:'Does the detail tell how Chaim set up the library? Then keep it: it fits the topic. If not, cut it: it does not fit the topic.'},
+    {t:'spotall', q:'Topic: The corner grocery is busy before Shabbos. Tap every detail to CUT.', cells:[{label:'The grocery has a green door.',ok:true},{label:'People line up for challah.',ok:false},{label:'Mr. Benhamou packs bags fast.',ok:false},{label:'Avi likes math.',ok:true}],
+      h:'Keep only the details that show the grocery is busy before Shabbos.'},
+    {t:'pairs', q:'Match each topic to the detail that belongs.', pairs:[['The club builds a bird feeder.','Naftali cuts the wood.'],['Dovid gets ready for school.','He packs his lunch.'],['Zeidy fixes a watch.','He opens the back.']],
+      h:'Read the topic. Find the detail that fits what it says.'},
+    {t:'sort', q:'Tricky ones! Topic: Avi’s map shows our whole street. Keep it or cut it?', bins:[{id:'K',label:'Keep it'},{id:'C',label:'Cut it'}],
+      items:[{label:'It shows every house.',bin:'K'},{label:'It shows the shul.',bin:'K'},{label:'Avi drew it on Tuesday.',bin:'C'},{label:'Avi’s pencil is blue.',bin:'C'}],
+      h:'It must tell what the map SHOWS, not just be about Avi or the map.'},
+    {t:'order', q:'After cutting, put the kept details in order. Topic: The club fixed the old clock. Tap the tiles in order.', tiles:['First, Naftali opened the clock.','Next, he found the broken gear.','Last, Zeidy put in a new one.'], h:'Look at the words First, Next and Last.'},
+    {t:'write', q:'Your turn. Here is a topic: “Erev Shabbos is busy at my house.” Write 3 details that belong. Then check: does every one fit?', min:0, checks:['Every detail tells how Erev Shabbos is busy.','I did not add a detail that wanders off.','I read it again after I wrote it.'], h:'For each detail, ask: does it show Erev Shabbos is busy?'}
+  ],
+  check:[
+    {q:'Topic: Naftali builds a bird feeder. Detail: “Naftali’s sister has a cat.” Keep it or cut it?', o:['Cut it: it does not fit the topic','Keep it: it fits the topic','Keep it: it is about Naftali'], h:'Test it: does it tell about building the bird feeder?'},
+    {q:'Topic: Dovid helps Naftali’s Zeidy in the workshop. Detail: “Dovid’s shoes are new.” Keep it or cut it?', o:['Cut it: it does not fit the topic','Keep it: it fits the topic','Keep it: it is about Dovid'], h:'It is about Dovid. But does it tell how he helps Zeidy?'},
+    {q:'Topic: Chaim gets ready for shul. Detail: “Chaim puts his siddur in his bag.” Keep it or cut it?', o:['Keep it: it fits the topic','Cut it: it does not fit the topic','Cut it: it is about a bag'], h:'Does it show Chaim getting ready for shul?'}
+  ],
+  re:[
+    {how:'A new way: the topic sentence is a target. Each detail is an arrow. Cut the arrow that misses.', q:'Target: the club’s Sunday trip to the park. Which arrow misses?', o:['Naftali’s math test','They fed the ducks','They walked by the river']},
+    {how:'A simpler step: read the topic and the detail together. Do they go together?', q:'Topic: Shabbos lunch. Detail: “We ate cholent.” Do they go together?', o:['Yes','No']},
+    {how:'The skill underneath: the topic sentence tells what the paragraph is about (Topic Sentence).', q:'Which sentence tells what a paragraph is about?', o:['the topic sentence','the last detail','the title page']}
+  ]},
+
+  'WRIT.PARA.L03.06':{name:'Closing Sentence',
+  teach:[
+    {how:'A paragraph ends with a closing sentence. It says the main idea again, in new words. It tells the reader: this paragraph is done.', q:'Topic: The club meets every Sunday. Which is a good closing sentence?', o:['That is why Sunday is club day.','The club meets every Sunday.','Avi has a cat.']},
+    {how:'Closing words help: That is why, In the end, Now you know. They tell the reader the end is here.', q:'Which words start a closing sentence?', o:['That is why','First,','Next,']},
+    {how:'Two mistakes. It copies the topic sentence word for word. Or it adds a new detail at the end. A closing has no new details.', q:'Topic: Zeidy’s workshop is full of tools. Which closing is a mistake?', o:['Zeidy also has a dog.','In the end, Zeidy has a tool for every job.','Now you know why we love his workshop.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each sentence: does it open a paragraph, or close it?', bins:[{id:'T',label:'Topic sentence'},{id:'C',label:'Closing sentence'}],
+      items:[{label:'Our street has a great park.',bin:'T'},{label:'That is why we love our park.',bin:'C'},{label:'Chaim reads all the time.',bin:'T'},{label:'In the end, Chaim always has a book.',bin:'C'}],
+      h:'A topic sentence opens the idea. A closing wraps it up, often with closing words.'},
+    {t:'pairs', q:'Match each topic sentence to its closing.', pairs:[['Dovid is always hungry.','That is why Dovid packs three snacks.'],['Avi loves maps.','Now you know why Avi carries a map.'],['The club fixes old things.','In the end, nothing stays broken for long.']],
+      h:'Find the closing that says the same big idea in new words.'},
+    {t:'spotall', q:'Topic: The bird feeder brought many birds. Tap every GOOD closing.', cells:[{label:'That is why our yard is full of birds.',ok:true},{label:'In the end, the birds loved our feeder.',ok:true},{label:'The bird feeder brought many birds.',ok:false},{label:'Naftali also has a kite.',ok:false}],
+      h:'Good: the big idea in new words. A mistake: a copy, or a new detail.'},
+    {t:'order', q:'Build the closing sentence. Topic: Mr. Benhamou is kind to everyone. Tap the tiles in order.', tiles:['That is why','everyone loves','Mr. Benhamou.'], h:'Closing words first. Then the big idea in new words.'},
+    {t:'sort', q:'Good closing, or a mistake?', bins:[{id:'G',label:'Good closing'},{id:'M',label:'Mistake'}],
+      items:[{label:'That is why our sukkah is all set for Yom Tov.',bin:'G'},{label:'Our sukkah is ready for Yom Tov.',bin:'M'},{label:'Also, my uncle came.',bin:'M'},{label:'Now you know we can eat in our sukkah.',bin:'G'}],
+      h:'Is it the big idea in new words? Or a copy, or a new detail?'},
+    {t:'write', q:'Your turn. Topic sentence: “Shabbos is the best day of the week.” Write a closing sentence for this paragraph.', min:0, checks:['It starts with closing words (That is why, In the end, Now you know).','It says the big idea in new words.','It has no new detail.'], h:'Pick closing words. Then say why Shabbos is the best, a new way.'}
+  ],
+  check:[
+    {q:'Topic: Chaim takes care of the shul library. Closing: “Now you know how Chaim cares for the library.”', o:['a good closing','a copy of the topic sentence','a new detail'], h:'Is it the big idea in new words? A copy? Something new?'},
+    {q:'Topic: Chaim loves birds. Closing: “Chaim’s new hat is blue.” What is wrong?', o:['It adds a new detail','It copies the topic sentence','Nothing, it is a good closing'], h:'Does it say the big idea again, or does it add something new?'},
+    {t:'order', q:'Topic: The club helps old Mr. Fine. Build the closing.', tiles:['In the end,','the club is','Mr. Fine’s best helper.'], h:'Closing words first. Then the big idea in new words.'}
+  ],
+  re:[
+    {how:'A new way: the topic sentence opens the door. The closing sentence closes the door.', q:'Which sentence closes the door?', o:['That is why we love Shabbos.','First, we light candles.','Shabbos is coming.']},
+    {how:'A simpler step: just learn the closing words: That is why, In the end, Now you know.', q:'Which one is closing words?', o:['In the end,','Once upon a time,','First,']},
+    {how:'The skill underneath: the topic sentence tells the main idea (Topic Sentence). The closing says it again.', q:'What does a closing sentence say again?', o:['the main idea','a new detail','the title']}
+  ]}
+  };
+
+  var TEACH = {
+  'WRIT.ESSAY.L03.01':{hook:'What do writers do BEFORE they write? They make a plan with POW!', big:'POW: Pick my idea, Organize my notes, Write and say more.',
+    intro:['P: Pick my idea. Pick something you know a lot about.','O: Organize my notes. A note is just a few words.','W: Write and say more. Turn notes into sentences.'],
+    ex:[{q:'Naftali must write about the clubhouse.',steps:['P: the clubhouse in the garage.','O: notes: old blue sofa, Zeidy’s gears, club rules.','W: Our clubhouse has an old blue sofa that squeaks.'],a:'A plan, then a sentence that says more.'},
+        {q:'Avi wants to write about something.',steps:['He knows a lot about maps.','P: the map of our street.'],a:'Pick what you know.'}],
+    oops:{q:'Dovid starts writing with no plan.',wrong:'Start writing right away.',right:'Pick, organize notes, then write.',why:'With no plan, you get stuck after one sentence.'},
+    idea:['POW is like a trip: pick where to go, pack your bag, then go.'],
+    try:{q:'Which step comes after Pick my idea?',o:['Organize my notes','Write and say more','Pick again'],a:'Organize my notes',steps:['Say P, O, W.']}},
+  'WRIT.PARA.L03.04':{hook:'How does a reader know what a paragraph is about? The very first sentence tells him!', big:'A topic sentence comes first. It tells what the whole paragraph is about.',
+    intro:['Read all the details.','Ask: what are they all about?','Write one sentence that tells it. Not a question.','Check: does it cover every detail?'],
+    ex:[{q:'Zeidy has gears in jars, tiny screwdrivers and a lamp that bends.',steps:['All about Zeidy’s workshop.','Not just one detail.'],a:'Zeidy’s workshop is full of tools.'},
+        {q:'Dovid has a bagel, two apples and a cookie.',steps:['All about his lunch.'],a:'Dovid’s lunch box is always full.'}],
+    oops:{q:'Gears in jars, tiny screwdrivers, a lamp that bends.',wrong:'Zeidy has gears in jars.',right:'Zeidy’s workshop is full of tools.',why:'One detail cannot tell about all of them.'},
+    idea:['The topic sentence is the name on a box. The details are inside.'],
+    try:{q:'Details: boots, scarf, mittens. Best topic sentence?',o:['Dovid gets ready for the snow.','Dovid has a scarf.','Is it cold?'],a:'Dovid gets ready for the snow.',steps:['What do all three share?']}},
+  'WRIT.PARA.L03.05':{hook:'One sentence in this paragraph is a sneaky stranger. Can you catch it?', big:'Keep every detail that fits the topic sentence. Cut the one that does not.',
+    intro:['Read the topic sentence.','Test each detail: does it fit?','Watch for the tricky one: same boy, wrong idea.','Cut it. Read it again.'],
+    ex:[{q:'Topic: The club fixed Zeidy’s old clock.',steps:['Found the gear: keep.','Held the flashlight: keep.','Ate a pickle: cut.'],a:'Cut “Dovid ate a pickle.”'},
+        {q:'Topic: Dovid helps get ready for Shabbos.',steps:['Sets the table: keep.','Has a red bike: about Dovid, but cut.'],a:'Cut “Dovid has a red bike.”'}],
+    oops:{q:'Topic: Dovid helps get ready for Shabbos. Detail: Dovid has a red bike.',wrong:'Keep it: it is about Dovid.',right:'Cut it: it is not about getting ready.',why:'Being about the same boy is not enough. It must fit the topic.'},
+    idea:['The topic is a target. Every detail is an arrow that must hit it.'],
+    try:{q:'Topic: the sukkah is ready. Which detail goes?',o:['Chaim likes to swim.','The schach is on.','The chains are up.'],a:'Chaim likes to swim.',steps:['Does it show the sukkah is ready?']}},
+  'WRIT.PARA.L03.06':{hook:'How do you say goodbye to your reader?', big:'A closing sentence says the main idea again, in new words, with no new detail.',
+    intro:['Read the topic sentence again.','Start with closing words: That is why, In the end, Now you know.','Say the big idea a new way.','No copying, and no new details.'],
+    ex:[{q:'Topic: The club meets every Sunday.',steps:['Big idea: Sunday is club day.','Closing words: That is why.'],a:'That is why Sunday is club day.'},
+        {q:'Topic: Zeidy’s workshop is full of tools.',steps:['Big idea: lots of tools.','New words.'],a:'In the end, Zeidy has a tool for every job.'}],
+    oops:{q:'Topic: Avi loves maps.',wrong:'Avi loves maps.',right:'Now you know why Avi carries a map.',why:'Copying is boring. Say it a new way.'},
+    idea:['The topic sentence opens the door. The closing sentence closes it.'],
+    try:{q:'Which words start a closing?',o:['That is why','First,','Next,'],a:'That is why',steps:['Which words say the end is here?']}}
+  };
+
+  var HOWTO = {
+  'WRIT.ESSAY.L03.01':{s:'Say POW: Pick, Organize, Write.\nP: pick something you know a lot about.\nO: notes are just a few words.\nW: turn a note into a sentence and say more.'},
+  'WRIT.PARA.L03.04':{s:'Read all the details.\nAsk: what are they all about?\nOne detail is too small.\nA topic sentence tells. It is not a question.'},
+  'WRIT.PARA.L03.05':{s:'Read the topic sentence.\nTest each detail: does it fit?\nSame boy, wrong idea? Cut it.\nRead it again after you cut.'},
+  'WRIT.PARA.L03.06':{s:'Closing words: That is why, In the end, Now you know.\nSay the big idea in NEW words.\nNo copying the topic sentence.\nNo new details at the end.'}
+  };
+
+  var BITE = {
+  'WRIT.ESSAY.L03.01':{ band:'B23', pic:'💥', today:'Plan your writing with POW', why:'With a plan, you always know what to write next.',
+    ready:[{q:'Which one is a whole sentence?', o:['Our clubhouse has a sofa.','old blue sofa','in the garage'], a:'Our clubhouse has a sofa.'}],
+    bridge:'LANG.SENT.L03.01', bridgeName:'Whole Thought',
+    watch:{ q:'Naftali must write about the club’s clubhouse.', m:{type:'scene', e:'🛠️', t:'The Shabbos Street Club meets in the Rosens’ garage. Naftali keeps the notebook.'}, steps:[
+      {t:'P: Pick my idea. Naftali knows the clubhouse well. He picks it.'},
+      {t:'O: Organize my notes. Just a few words: the club, the garage, fix clocks, old blue sofa.'},
+      {t:'Put notes in boxes: Who? the club. Where? the garage. What? we fix clocks.'},
+      {t:'W: Write and say more. Our clubhouse has an old blue sofa that squeaks.'},
+      {t:'Say it with me, and clap on each letter!', m:{type:'chant', lines:['P! Pick my idea!','O! Organize my notes!','W! Write and say more!','That is POW power!']}}], a:'Pick, organize, then write: a plan before every piece.' },
+    oops:{ q:'Dovid wants to write about Shabbos lunch.', wrong:'He starts writing right away, with no plan.', right:'He picks, writes notes, then writes.', why:'With no plan, he gets stuck after one sentence.' },
+    ways:['worked example','chant','put it in order','sort it','match it','plan boxes','build with tiles','Mistake Detective'], done:'You can plan your writing with POW: pick, organize, write!',
+    board:{ one:'POW: Pick my idea, Organize my notes, Write and say more.', activity:'Clap and chant POW. Then the class picks one idea together and calls out notes.', mistakes:['Writing with no plan','Notes that are long sentences','Picking an idea he knows little about'] },
+    do:[
+      {type:'order', steps:['Pick my idea','Organize my notes','Write and say more'],
+        say:'Put the steps of POW in order.', how:'First choose, then plan, then write.'},
+      {type:'sort', q:'Notes for a piece about the clubhouse.', bins:['Good note','Mistake'], cards:[['old blue sofa',0],['Zeidy’s gears',0],['The clubhouse is in the garage and it has a sofa.',1],['I like pizza.',1]], mis:true,
+        say:'Mistake Detective! Good note, or a mistake?', how:'A good note is a few words about the idea. Long or off topic is a mistake.'}],
+    your:[
+      {type:'match', pairs:[['P','Pick my idea'],['O','Organize my notes'],['W','Write and say more']],
+        say:'Match each letter to its step.', how:'Say POW slowly: pick, organize, write.'},
+      {type:'sort', q:'Avi knows maps, and Saba’s stories about Morocco.', bins:['He knows a lot','He knows very little'], cards:[['the map of our street',0],['Saba’s trip from Morocco',0],['how a submarine works',1],['rocks on the moon',1]],
+        say:'Pick my idea: what does Avi know a lot about?', how:'A good idea is something you know well.'},
+      {type:'storymap', slots:['Who','Where','What we do'], cards:['the Shabbos Street Club','the Rosens’ garage','fix old clocks'], extra:['a red kite'],
+        say:'Organize the notes. Put each note in its box.', how:'Who is it about? Where is it? What do they do?'},
+      {type:'tiles', w:['Zeidy keeps','his tiny gears','in glass jars.'], extra:['gears.'],
+        say:'The note says: Zeidy’s gears. Build a sentence that says more.', how:'Who has them? What are they? Where are they?'},
+      {type:'evidence', q:'Which sentence says more?', p:['We fix clocks.','It is fun.','We fix old clocks with Zeidy’s tiny tools.'], a:2, look:'the sentence that lets you see what and how',
+        say:'Tap the sentence that says more.', how:'Says more: the reader can see what, where or how.'}] },
+
+  'WRIT.PARA.L03.04':{ band:'B23', pic:'🏷️', today:'Start a paragraph with a topic sentence', why:'It tells your reader what the whole paragraph is about.',
+    ready:[{q:'POW notes: old blue sofa, Zeidy’s gears, club rules. They are all about…', o:['the clubhouse','pizza','birds'], a:'the clubhouse'}],
+    bridge:'WRIT.ESSAY.L03.01', bridgeName:'POW Power',
+    watch:{ q:'Zeidy has gears in jars. He has tiny screwdrivers. He has a lamp that bends.', m:{type:'scene', e:'⚙️', t:'Naftali’s Zeidy fixes watches in a little workshop.'}, steps:[
+      {t:'Read every detail first.'},
+      {t:'Ask: what are they ALL about? Zeidy’s workshop.'},
+      {t:'Too small: “Zeidy has gears in jars.” That is just one detail.'},
+      {t:'Just right: “Zeidy’s workshop is full of tools.” It covers all three.'},
+      {t:'Not a question: “Do you like tools?” A topic sentence tells.'},
+      {t:'Stand up tall, like a topic sentence: first in line!', m:{type:'move', t:'Stand tall and point up: I go first! I tell it all!'}}], a:'Zeidy’s workshop is full of tools.' },
+    oops:{ q:'Details: Dovid sweeps. He dries the dishes. He takes out the trash.', wrong:'Dovid dries the dishes.', right:'Dovid helps a lot at home.', why:'One detail cannot be the topic sentence. It must cover all three.' },
+    ways:['worked example','movement','sort it','tap the sentence','build with tiles','match it','fill the gap','Mistake Detective'], done:'You can start a paragraph with a topic sentence!',
+    board:{ one:'The topic sentence comes first and tells about all the details.', activity:'Give pairs three detail strips. They write the topic sentence and test it on each strip.', mistakes:['Using one detail as the topic sentence','Writing a question','A topic sentence about something else'] },
+    do:[
+      {type:'match', pairs:[['challah, fish, kugel','We eat a big Shabbos meal.'],['gears, springs, screws','Zeidy fixes old clocks.'],['boots, scarf, mittens','Dovid gets ready for snow.']],
+        say:'Match the details to their topic sentence.', how:'Ask: what are all three about?'},
+      {type:'sort', q:'Details: Avi draws streets, colors the park, marks the shul.', bins:['Good topic sentence','Mistake'], cards:[['Avi makes a map of our street.',0],['Avi colors the park.',1],['Do you like maps?',1]], mis:true,
+        say:'Mistake Detective! Good topic sentence, or a mistake?', how:'Just one detail is a mistake. A question is a mistake too.'}],
+    your:[
+      {type:'evidence', q:'These sentences got mixed up. Which one is the topic sentence?', p:['He has a bagel.','Dovid’s lunch box is always full.','He has two apples.','He has a cookie for Avi.'], a:1, look:'the sentence that covers all the others',
+        say:'Tap the topic sentence.', how:'Find the one sentence that tells about all the others.'},
+      {type:'sort', q:'A paragraph about the corner grocery.', bins:['Topic sentence','Detail'], cards:[['The grocery sells many good things.',0],['It has fresh pita.',1],['It has olives in jars.',1],['It has cold milk.',1]],
+        say:'Topic sentence or detail? Sort each one.', how:'The topic sentence tells about all the others.'},
+      {type:'tiles', w:['Chaim','reads','all the time.'], extra:['at lunch'],
+        say:'Build the topic sentence: reading in bed, at lunch, on the bus.', how:'Who is it about? What does he do in all three?'},
+      {type:'cloze', t:'___ has lots to do. There are ducks. There are swings. There is a path.', o:['The park by the river','The duck','A swing'], a:'The park by the river',
+        say:'Pick the words that start the topic sentence.', how:'Which one covers the ducks, the swings and the path?'},
+      {type:'sort', q:'Details: Avi feeds the ducks. He swings. He walks the path.', bins:['Just right','Just one detail','A question'], cards:[['Avi has fun at the park.',0],['Avi feeds the ducks.',1],['Do you like the park?',2],['Avi spends the day at the park.',0]],
+        say:'Just right, one detail, or a question?', how:'Does it cover all three? Is it only one? Does it ask?'}] },
+
+  'WRIT.PARA.L03.05':{ band:'B23', pic:'✂️', today:'Keep details that belong; cut the rest', why:'One detail that does not belong mixes up your reader.',
+    ready:[{q:'The topic sentence tells…', o:['what the paragraph is about','the last thing','a joke'], a:'what the paragraph is about'}],
+    bridge:'WRIT.PARA.L03.04', bridgeName:'Topic Sentence',
+    watch:{ q:'The club fixed Zeidy’s old clock. Naftali found the broken gear. Avi held the flashlight. Chaim read the steps. Dovid ate a pickle.', m:{type:'scene', e:'🕰️', t:'Zeidy’s old clock stopped. The club wants to fix it.'}, steps:[
+      {t:'Read the topic sentence: the club fixed the old clock.'},
+      {t:'Test each detail. The broken gear? Keep it. The flashlight? Keep it. The steps? Keep it.'},
+      {t:'Dovid ate a pickle? It does not tell about fixing the clock. Cut it!'},
+      {t:'Read it again. Now every sentence tells about fixing the clock.'},
+      {t:'Do it with me! Thumbs up to keep, scissors to cut!', m:{type:'move', t:'Fits? Thumbs up: keep it! Does not fit? Scissors hands: cut it!'}}], a:'Cut “Dovid ate a pickle.”' },
+    oops:{ q:'Topic: Dovid helps get ready for Shabbos. Detail: Dovid has a red bike.', wrong:'Keep it: it is about Dovid.', right:'Cut it: it is not about getting ready.', why:'Being about the same boy is not enough. It must fit the topic.' },
+    ways:['worked example','movement','sort it','tap the sentence','match it','fill the gap','Mistake Detective'], done:'You can keep the details that belong and cut the rest!',
+    board:{ one:'Every detail must fit the topic sentence.', activity:'Read a paragraph aloud. Boys make scissors hands when they hear the detail to cut.', mistakes:['Keeping a detail because it names the same boy','Cutting a detail that fits','Not reading it again after cutting'] },
+    do:[
+      {type:'sort', q:'Topic: Chaim set up the shul library.', bins:['Keep it','Cut it'], cards:[['He put books on the shelves.',0],['He made a Library sign.',0],['Chaim likes soup.',1],['His brother has a cold.',1]],
+        say:'Keep it or cut it? Sort each detail.', how:'Does it tell how Chaim set up the library?'},
+      {type:'evidence', q:'Topic: The corner grocery is busy before Shabbos. Which sentence should be cut?', p:['People line up for challah.','Mr. Benhamou packs bags fast.','The grocery has a green door.','The phone keeps ringing.'], a:2, look:'the sentence that does not show the grocery is busy', mis:true,
+        say:'Find the sneaky sentence. Tap the one to cut.', how:'Each one is about the grocery. Which one does not show it is busy?'}],
+    your:[
+      {type:'match', pairs:[['The club builds a bird feeder.','Naftali cuts the wood.'],['Dovid gets ready for school.','He packs his lunch.'],['Zeidy fixes a watch.','He opens the back.']],
+        say:'Match each topic to the detail that belongs.', how:'Read the topic. Find the detail that fits it.'},
+      {type:'sort', q:'Tricky! Topic: Avi’s map shows our whole street.', bins:['Keep it','Mistake: cut it'], cards:[['It shows every house.',0],['It shows the shul.',0],['Avi drew it on Tuesday.',1],['Avi’s pencil is blue.',1]], mis:true,
+        say:'Tricky ones! Keep it, or cut it?', how:'Keep only what the map shows. Facts about Avi do not fit.'},
+      {type:'cloze', t:'Topic: Erev Shabbos is busy. Abba ___.', o:['buys flowers','likes his car','was born in May'], a:'buys flowers',
+        say:'Pick the detail that belongs.', how:'Which one shows Erev Shabbos is busy?'},
+      {type:'evidence', q:'Topic: The sukkah is ready for Yom Tov. Which sentence should be cut?', p:['The schach is on the roof.','The paper chains are up.','Our sukkah is next to the garage.','The chairs are inside.'], a:2, look:'the sentence about the sukkah that does not show it is ready',
+        say:'Tap the sentence to cut.', how:'Each one is about the sukkah. Which one does not show it is ready?'},
+      {type:'cloze', t:'Topic: The park is busy on Sunday. ___', o:['Kids wait in line for the swings.','The park has a green fence.','It was cold last winter.'], a:'Kids wait in line for the swings.', mis:true,
+        say:'Pick the detail to keep.', how:'Keep what shows the park is busy on Sunday.'}] },
+
+  'WRIT.PARA.L03.06':{ band:'B23', pic:'🚪', today:'End a paragraph with a closing sentence', why:'It tells your reader the paragraph is done, and what mattered.',
+    ready:[{q:'Which sentence comes first in a paragraph?', o:['the topic sentence','the last detail','the closing'], a:'the topic sentence'}],
+    bridge:'WRIT.PARA.L03.04', bridgeName:'Topic Sentence',
+    watch:{ q:'The club meets every Sunday. They fix old things. They plan trips. They eat Dovid’s snacks.', m:{type:'scene', e:'🧰', t:'Every Sunday, the Shabbos Street Club meets in the garage.'}, steps:[
+      {t:'Read the topic sentence again: the club meets every Sunday.'},
+      {t:'Pick closing words: That is why, In the end, or Now you know.'},
+      {t:'Say the big idea a NEW way: That is why Sunday is club day.'},
+      {t:'Check: no copying, and no new detail.'},
+      {t:'Not this: “Avi also has a cat.” That is a new detail!'},
+      {t:'Open the door, close the door! Do it with me.', m:{type:'move', t:'Open a door: topic sentence! Swing it shut: closing sentence!'}}], a:'That is why Sunday is club day.' },
+    oops:{ q:'Topic: Avi loves maps. Closing: Avi loves maps.', wrong:'Copy the topic sentence word for word.', right:'Now you know why Avi carries a map.', why:'A copy is boring. Say the big idea a new way.' },
+    ways:['worked example','movement','sort it','match it','build with tiles','tap the sentence','fill the gap','Mistake Detective'], done:'You can end a paragraph with a closing sentence!',
+    board:{ one:'The closing sentence says the big idea again in new words.', activity:'Read a topic sentence. Boys call out closing words, then the big idea a new way.', mistakes:['Copying the topic sentence','Adding a new detail at the end','Just stopping with no closing'] },
+    do:[
+      {type:'order', steps:['The club had a busy Sunday.','First, they fixed a clock.','Then, they painted the bird feeder.','That is why Sunday was so busy.'],
+        say:'Put the paragraph in order, topic to closing.', how:'Topic sentence first. First, then Then. The closing goes last.'},
+      {type:'sort', q:'Topic: Zeidy fixes old clocks.', bins:['Good closing','Copy','New detail'], cards:[['In the end, Zeidy can fix any old clock.',0],['Zeidy fixes old clocks.',1],['Zeidy also likes soup.',2],['Now you know who fixes our clocks.',0]], mis:true,
+        say:'Mistake Detective! Good closing, copy, or new detail?', how:'Same idea in new words is good. Same words is a copy.'}],
+    your:[
+      {type:'tiles', w:['That is why','everyone loves','Mr. Benhamou.'], extra:['his fresh milk.'],
+        say:'Topic: Mr. Benhamou is kind. Build the closing.', how:'Closing words first. Then the big idea in new words.'},
+      {type:'evidence', q:'Which sentence is the closing sentence?', p:['The bird feeder brought many birds.','Blue jays came first.','Then the sparrows came.','In the end, our yard was full of birds.'], a:3, look:'the sentence with closing words',
+        say:'Tap the closing sentence.', how:'Look for closing words and the big idea again.'},
+      {type:'sort', q:'Topic: Our sukkah is ready for Yom Tov.', bins:['Good closing','Mistake'], cards:[['That is why our sukkah is all set for Yom Tov.',0],['Our sukkah is ready for Yom Tov.',1],['Also, my uncle came.',1],['Now you know we can eat in our sukkah.',0]], mis:true,
+        say:'Good closing, or a mistake?', how:'A copy or a new detail is a mistake.'},
+      {type:'cloze', t:'Topic: Naftali loves Shabbos. ___ Shabbos is his best day.', o:['That is why','First,','Once upon a time,'], a:'That is why',
+        say:'Pick the closing words.', how:'Which words tell the reader the end is here?'},
+      {type:'match', pairs:[['Dovid is always hungry.','That is why he packs three snacks.'],['Avi loves maps.','Now you know why he carries one.'],['The club fixes things.','In the end, nothing stays broken.']],
+        say:'Match each topic sentence to its closing.', how:'Find the same big idea, said a new way.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  /* Units: W13.U<grade><unit> (K = 0): W13.U21 = Grade 2, Unit 1 (docs/core-growth/HOW-TO-ADD-A-UNIT.md) */
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U21', title: 'Writers Plan', c: 'WRIT', grade: 2,
+    skills: ['WRIT.ESSAY.L03.01', 'WRIT.PARA.L03.04', 'WRIT.PARA.L03.05', 'WRIT.PARA.L03.06', 'WRIT.SENT.L03.01'],
+    review: ['WRIT.SENT.L02.01', 'LANG.SENT.L03.02', 'LANG.SENT.L03.03'], n: 8 });
+})();
+</script>
