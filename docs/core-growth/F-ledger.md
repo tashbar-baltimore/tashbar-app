@@ -38,3 +38,11 @@ Existing lessons count only once they pass the standard (prompt, section 2).
 ## Left out on purpose
 - K little readers in Units 1–2: a boy cannot yet decode text, so "readers" there would be filler. Listen-along stories take that time.
 - K fluency passages: 20, not 40, for the same reason (they start in Unit 7).
+
+## Helper: K–1 listen-along stories (`src/CoreDataFH3.html`, `texts/F/`)
+Each listen-along game is one story (read aloud, rich words) plus its understanding questions: 10 minutes (the "Listen-along story" row above), plus 5 minutes of spaced review.
+
+| Grade | Built (live) | Minutes | Planned (map) |
+|---|---|---|---|
+| K | 4 stories, topic set "Eli's First Week" (`F.LA.K01`–`K04`), each with its game: `READ.LIT.L01.01` Who Is in the Story?, `.02` Where Is the Story?, `.03` Problem and Fix, `.04` Retell It | 4 × (10 + 5) = **60** | 40 stories and fact books (400 min) + their 12 understanding skills |
+| 1 | 0 | 0 | 30 stories and fact books (300 min) |

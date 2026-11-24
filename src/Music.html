@@ -186,12 +186,11 @@ function muPanel(){ const wait=!MU.info&&!!SRV.token; MU.slow=false; muDraw(wait
  muLoadInfo().then(()=>{ clearTimeout(t); if(open()){ MU.slow=false; muDraw(false); } }); }
 function muDraw(wait){ { const m=muPrefs(), off=MU.info&&MU.info.off;
  const mood=(k,ic,name,sub,dis)=>`<button class="mumood ${m.mood===k?'on':''}" data-act="mumood" data-m="${k}" ${dis?'disabled':''}><span class="mui">${ic}</span><b>${name}</b><small>${sub}</small></button>`;
- A.overlay={html:`<div class="overlay" data-act="closeov-bg"><div class="ocard mupanel" role="dialog" aria-modal="true" aria-label="Music">
+ A.overlay={html:`<div class="overlay" data-act="closeov-bg"><div class="ocard mupanel" role="dialog" aria-modal="true" aria-label="Music">${window.TLK?TLK.x('data-act="closeov"','tr'):'<button type="button" class="btn" data-act="closeov" aria-label="Close">✕</button>'}
  <h2>🎵 Music</h2>${off?'<p class="muoff">Your teacher turned music off for the school right now. Sound effects still work.</p>':''}
- <p class="musub">${MU.slow?'The songs are taking a long time to come. Tap Done and try the music button again in a minute.':wait?'⏳ Getting the songs ready…':'Pick a kind of music. It keeps playing new songs of that kind.'}</p><div class="mumoods">${mood('off','🔇','No music','Quiet. Game sounds stay on.',false)}${MU_MOODS.map(r=>mood(r[0],r[1],r[2],r[3]+(muTracks(r[0]).length?' · '+muTracks(r[0]).length+' songs':''),off||wait)).join('')}</div>
+ <p class="musub">${MU.slow?'The songs are taking a long time to come. Close this and try the music button again in a minute.':wait?'⏳ Getting the songs ready…':'Pick a kind of music. It keeps playing new songs of that kind.'}</p><div class="mumoods">${mood('off','🔇','No music','Quiet. Game sounds stay on.',false)}${MU_MOODS.map(r=>mood(r[0],r[1],r[2],r[3]+(muTracks(r[0]).length?' · '+muTracks(r[0]).length+' songs':''),off||wait)).join('')}</div>
  <label class="muvol"><span>🔈</span><input type="range" id="muvol" min="0" max="100" value="${Math.round((m.vol==null?.6:m.vol)*100)}" aria-label="Volume"><span>🔊</span></label>
- <p class="muhp">🎧 Please use headphones, so the music is just for you.</p><p id="munow" class="munow"></p>
- <button class="btn go big" data-act="closeov">Done</button></div></div>`};
+ <p class="muhp">🎧 Please use headphones, so the music is just for you.</p><p id="munow" class="munow"></p></div></div>`};
  const cur=document.querySelector('.mupanel'); if(cur){ const t=document.createElement('div'); t.innerHTML=A.overlay.html; const nw=t.querySelector('.mupanel'), y=cur.scrollTop; cur.innerHTML=nw.innerHTML; cur.scrollTop=y; } else render(); muUI(); } }
 document.addEventListener('click',e=>{ const b=e.target.closest('[data-act]'); if(!b) return; const a=b.dataset.act;
  if(a==='mubtn'){ muCtx(); muLoadSfx(); return muPanel(); }

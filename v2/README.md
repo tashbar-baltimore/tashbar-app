@@ -31,7 +31,8 @@ Other builders (like the HoS's sessions) may also prepare a 2.0 piece the same w
 See `v2/FEATURES.md`.
 
 ## For builders
-- A 2.0 pull request changes **only** files under `v2/`. A pull request that mixes 1.0 and 2.0 changes is refused.
+- A 2.0 pull request changes **only** files under `v2/` and the shared art library `art/`. A pull request that mixes 1.0 code and 2.0 changes is refused.
+- **Art is shared (HoS 2026-11-24):** every picture, sound and model lives once in `art/` (rule: CLAUDE.md, "Shared art library"; how: `art/README.md`). Search `art/CATALOG.md` first, add new art there with its row, and name it in 2.0 as `/pics/<file>` (or `/sounds/`, `/models/`); `v2/build.js` copies it in. 2.0 keeps its own clean code and screens.
 - 1.0 pull requests must not touch `v2/`. If one does, it waits for an approver like any 2.0 change.
 - A 2.0 piece brings its own tests in `v2/tests/` (each file exports `async (browser) => ({ fails, oks })`). `node tests/run.js` runs them all.
 - Never publish 2.0 by hand. `publish-v2` puts it live only after the gate (`v2-gate`) has seen an approval.
