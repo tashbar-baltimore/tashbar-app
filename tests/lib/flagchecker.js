@@ -28,6 +28,9 @@ module.exports = function () {
   if (!(L2.flags || []).some(f => f.skill === 'SK2')) fails.push('flag checker mark: an unknown verdict must change nothing (SK2 should stay open)');
   const st = J(`(function(){ var x=msReport('b1',{skill:'SK1',phase:'practice',item:'What is 3+4?',reason:'wrong'}); return rpBotList_().flags.filter(function(f){return f.skill==='SK1'})[0]; })()`);
   if (!st || st.before.join() !== 'fixed: key said 8; now 7' || st.open !== 2) fails.push('flag checker: a new report on a fixed question should show the earlier decision: ' + JSON.stringify(st && st.before));
+  const ro = J(`rpBotMark_([{skill:'SK1',item:'What is 3+4?',verdict:'reopen',why:'fix did not pass the tests; still open'}],Date.now()+1000)`);
+  const L3 = J('rpBotList_()'), f3 = (L3.flags || []).find(f => f.skill === 'SK1');
+  if (ro.changed !== 2 || !f3 || f3.open !== 4 || f3.before.indexOf('open: fix did not pass the tests; still open') < 0) fails.push('flag checker reopen: a failed fix must put its reports back to open and show the note: ' + JSON.stringify(ro) + ' ' + JSON.stringify(f3));
   if (!fails.length) oks.push('flag checker: boys can write what is wrong; the hourly list blanks names and has no ids; marks change only reports up to the list time');
   return { fails, oks };
 };

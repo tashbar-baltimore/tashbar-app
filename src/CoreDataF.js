@@ -68,5 +68,13 @@ CORE_SKILLS.F = [
   ["READ.LIT.L01.01", "Who Is in the Story?", "Listen to a story and name its characters", { after: "READ.COMP.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
   ["READ.LIT.L01.02", "Where Is the Story?", "Listen to a story and tell where and when it happens", { after: "READ.LIT.L01.01", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
   ["READ.LIT.L01.03", "Problem and Fix", "Listen to a story and tell its problem and how it was fixed", { after: "READ.LIT.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
-  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }]
+  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }],
+  ["READ.PHON.L03.12", "Phone and Photo", "Read ph, which says fff", { after: "READ.PHON.L03.11", std: "RF.2.3e", file: "CoreDataF3", min: 7 }],
+  ["READ.FLU.L03.02", "Scoop and Read", "Read phrase by phrase: scoop the words that go together", { after: "READ.LV.L03.05", std: "RF.2.4b", file: "CoreDataF3", min: 7 }],
+  ["READ.FLU.L03.03", "Who Is Talking?", "Read talking parts with expression: who is talking and how", { after: "READ.PHON.L03.08", std: "RF.2.4b", file: "CoreDataF3", min: 7 }],
+  ["READ.PHON.L01.05", "Moon and Apple", "Know the sounds of m (moon) and a (apple)", { after: "READ.PHON.L01.01.a", std: "RF.K.3a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L01.06", "Sss and Tuh", "Know the sounds of s (snake) and t (tiger)", { after: "READ.PHON.L01.05", std: "RF.K.3a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L01.07", "My First Words", "Blend and read am, at, sat and mat", { after: "READ.PA.L01.05", std: "RF.K.3", file: "CoreDataF2", min: 5 }],
+  ["READ.FLU.L01.02", "Heart Words: the, a", "Read the heart words the and a by sight", { after: "READ.PHON.L01.07", std: "RF.K.3c", file: "CoreDataF2", min: 4 }],
+  ["WRIT.HAND.L01.05", "Write m, a, s, t", "Say it, trace it, write it: m, a, s and t", { after: "WRIT.HAND.L01.01", std: "L.K.1a", file: "CoreDataF2", min: 5 }]
 ];
