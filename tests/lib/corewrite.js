@@ -44,6 +44,9 @@ module.exports = function coreWrite() {
   if (!rt1 || rt1.status !== 'returned') f('send back did not work (' + JSON.stringify(rt1) + ')');
   const mine = res('cwMine', A.token).pieces[0];
   if (!mine || mine.status !== 'returned' || !/one detail/.test(mine.note) || JSON.stringify(mine.scores) !== '[3,2,3,2]') f('he must see the note and the scores on a piece sent back (' + JSON.stringify(mine).slice(0, 200) + ')');
+  const keep = res('cwSave', A.token, { task: 'ZZTEST.OPIN.01', title: 'A Fish for Our Class', text: text + ' Fish', plan, status: 'draft' });
+  if (!keep || keep.id !== d.id || keep.status !== 'returned') f('a draft save of a piece sent back must keep the same piece (found without its id) and stay "sent back" (' + JSON.stringify(keep) + ')');
+  const mine2 = res('cwMine', A.token).pieces; if (mine2.length !== 1 || !/one detail/.test(mine2[0].note) || !mine2[0].updated) f('he must still see the note after saving a draft, with one piece only');
   const fix = res('cwSave', A.token, { id: d.id, task: 'ZZTEST.OPIN.01', title: 'A Fish for Our Class', text: text + ' Fish do not need walks.', plan, status: 'sent' });
   if (!fix || fix.status !== 'sent') f('he must be able to fix a piece sent back and send it again');
   const pb = res('cwScore', 'cw-staff', d.id, [4, 3, 4, 3], 'Published! Well done.', 'publish');

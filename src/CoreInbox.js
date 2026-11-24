@@ -12,7 +12,7 @@
      cwInbox(token)                           staff: pieces from the boys they may see, newest first (sent ones first)
      cwScore(token, id, scores, note, action) staff: rubric scores (1-4 each) and a note; action 'return' (send back to fix) or 'publish' (My book)
    No money, no mastery and no evidence rows are written here (any of those needs a Head of School DECISION). */
-var CW = { TAB: 'CW_Pieces', HEAD: ['piece_id', 'student_id', 'task_id', 'title', 'text', 'plan_json', 'checks_json', 'status', 'scores_json', 'note', 'pic', 'created_at', 'sent_at', 'scored_at', 'scored_by', 'rubric_json'],
+var CW = { TAB: 'CW_Pieces', HEAD: ['piece_id', 'student_id', 'task_id', 'title', 'text', 'plan_json', 'checks_json', 'status', 'scores_json', 'note', 'pic', 'created_at', 'sent_at', 'scored_at', 'scored_by', 'rubric_json', 'updated_at'],
   MAX_TEXT: 8000, MAX_PLAN: 4000, MAX_NOTE: 600, STATUS: ['draft', 'sent', 'returned', 'published'] };
 
 function cwTab_() {
@@ -29,7 +29,7 @@ function cwStaff_(token) { var s = msSession_(token); if (!s || s.role !== 'staf
 function cwOkTask_(id) { id = String(id || ''); if (!/^[A-Z][A-Z0-9]*(\.[A-Z0-9]+){1,3}$/.test(id)) throw new Error('Unknown writing task.'); return id; }
 function cwPiece_(r, full) {
   var p = { id: String(r[0]), sid: String(r[1]), task: String(r[2]), title: String(r[3] || ''), status: String(r[7] || 'draft'), scores: cwJson_(r[8], []), note: String(r[9] || ''), pic: String(r[10] || ''),
-    created: cwTime_(r[11]), sent: cwTime_(r[12]), scored: cwTime_(r[13]), rubric: cwJson_(r[15], []), words: (String(r[4] || '').match(/[A-Za-z0-9’']+/g) || []).length };
+    created: cwTime_(r[11]), sent: cwTime_(r[12]), scored: cwTime_(r[13]), rubric: cwJson_(r[15], []), updated: cwTime_(r[16]), words: (String(r[4] || '').match(/[A-Za-z0-9’']+/g) || []).length };
   if (full) { p.text = String(r[4] || ''); p.plan = cwJson_(r[5], {}); p.checks = cwJson_(r[6], []); }
   return p;
 }
@@ -48,11 +48,14 @@ function cwSave(token, piece) {
     var sh = cwTab_(), rows = cwRows_(), at = -1, id = String(piece.id || '');
     if (id) { for (var i = 0; i < rows.length; i++) if (String(rows[i][0]) === id) { at = i; break; }
       if (at < 0) throw new Error('That piece was not found.');
-      if (String(rows[at][1]) !== sid) throw new Error('Not allowed.');
-      var st = String(rows[at][7]); if (st === 'sent' || st === 'published') throw new Error(st === 'sent' ? 'Your teacher has this piece now.' : 'This piece is already in your book.'); }
-    else id = 'CW-' + Utilities.getUuid().slice(0, 12);
+      if (String(rows[at][1]) !== sid) throw new Error('Not allowed.'); }
+    else {   /* ONE open piece per boy and task: a save without an id (a double tap, or offline) finds his open piece instead of adding a row */
+      var mine = 0; for (var k = 0; k < rows.length; k++) if (String(rows[k][1]) === sid && String(rows[k][2]) === task) { mine++; var sk = String(rows[k][7]); if (sk === 'draft' || sk === 'returned' || sk === 'sent') at = k; }
+      if (at >= 0) id = String(rows[at][0]); else { if (mine >= 5) throw new Error('You already have 5 pieces for this task.'); id = 'CW-' + Utilities.getUuid().slice(0, 12); } }
+    if (at >= 0) { var st = String(rows[at][7]); if (st === 'sent' || st === 'published') throw new Error(st === 'sent' ? 'Your teacher has this piece now.' : 'This piece is already in your book.'); }
+    if (at >= 0 && status === 'draft' && String(rows[at][7]) === 'returned') status = 'returned';   /* a piece sent back stays "sent back" (with the teacher's note) until he sends it again */
     var old = at >= 0 ? rows[at] : null, now = new Date();
-    var line = [id, sid, task, title, text, plan, checks, status, old ? old[8] : '', old ? old[9] : '', pic, old ? old[11] : now, status === 'sent' ? now : (old ? old[12] : ''), old ? old[13] : '', old ? old[14] : '', rubric];
+    var line = [id, sid, task, title, text, plan, checks, status, old ? old[8] : '', old ? old[9] : '', pic, old ? old[11] : now, status === 'sent' ? now : (old ? old[12] : ''), old ? old[13] : '', old ? old[14] : '', rubric, now];
     if (at >= 0) sh.getRange(at + 2, 1, 1, CW.HEAD.length).setValues([line]); else sh.appendRow(line);
     return { ok: true, id: id, status: status };
   } finally { lock.releaseLock(); }
