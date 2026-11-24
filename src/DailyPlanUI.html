@@ -4,8 +4,8 @@
    The server (DailyPlan.js tdlToday) sends his list: lines like "2 Reading, 1 Writing, 1 Math, 1 Kodesh, 1 Science", each with how
    many he covered today. GameMap's "My work" asks window.tlDailyPlan(ws) for its rows: one row per thing to cover, his next step in
    that subject on each open row, "3 of 6 done", one Next button, and the Arcade opens when the whole list is done.
-   - Only a boy the server gives a list to (TEST- boys while TDL_LIVE is 'test') sees it; for everyone else this returns null and
-     "My work" keeps its 3 rounds exactly as before.
+   - Only a boy the server gives a list to (every boy from Grade 2 up, TDL_LIVE 'on', HoS 2026-11-24) sees it; for everyone else
+     (K-1 for now) this returns null and "My work" keeps its 3 rounds exactly as before.
    - No minutes, no timers. Nothing here pays: the server checks the list itself and pays the same daily bonus (Money.js).
    - A lesson he masters shows as covered at once (his own skills, today); the server's count catches up with the next save. */
 (function(){
@@ -14,7 +14,7 @@ const T=window.TL_TDL={by:{},asked:{}};
 const SUBJ=id=>{ const p=(/^([A-Z]+)\./.exec(String(id||''))||[])[1]||''; return p==='READ'?'READ':(p==='LANG'||p==='WRIT')?'LANG':p==='MATH'?'MATH':(p==='LK'||p==='HEB')?'KODESH':(p==='SCI'||p==='SS')?'KNOW':''; };
 const day=at=>{ const d=new Date(Number(at)||0); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); };
 function sid(){ return typeof A!=='undefined'&&A.st&&A.st.id?String(A.st.id):''; }
-function maybe(){ return /^TEST-/.test(sid()); }   /* the server decides; this only saves a call for boys who cannot have a list yet */
+function maybe(){ return !!sid(); }   /* every boy asks; the server decides (K-1 boys get null) */
 function redraw(){ try{ if(typeof render==='function'&&A.view==='hub') render(); }catch(e){} }
 function ask(){ const s=sid(); if(!s||!maybe()||typeof run!=='function'||typeof SRV==='undefined'||!SRV.token) return;
  T.asked[s]=Date.now(); run('tdlToday',SRV.token).then(d=>{ if(sid()===s){ T.by[s]=d&&d.on?d:null; redraw(); } }).catch(()=>{}); }

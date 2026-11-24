@@ -211,8 +211,8 @@ function moneyDailyGoal_(sid) {
   var today = moneyDay_(), key = 'daily3:' + sid + ':' + today;
   if (moneyHasKey_(key)) return null;
   /* TODAY'S LIST (Core Growth job D, HoS 2026-11-24 "if you do everything, you get your bonus"; DailyPlan.js): a boy on the list gets
-     the SAME bonus (same rule, same key, so the chest follows) when the WHOLE list is done, checked from his paid rows. TEST- boys only
-     while TDL_LIVE is 'test'; every other boy keeps "3 lessons" below. */
+     the SAME bonus (same rule, same key, so the chest follows) when the WHOLE list is done, checked from his paid rows. Every boy (TDL_LIVE 'on',
+     HoS 2026-11-24); K-1 boys keep "3 lessons" below for now. */
   if (typeof tdlOn_ === 'function' && tdlOn_(sid)) {
     var L = null; try { L = tdlStatus_(sid); } catch (e) { L = null; }
     return L && L.complete ? moneyEarn_(sid, 'dailyGoal', key, '', '', "Daily bonus · You finished today's list") : null;
