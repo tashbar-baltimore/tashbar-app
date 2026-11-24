@@ -22,14 +22,19 @@ a.card .go svg{ width:52%; height:52%; margin-left:8%; }
 a.card .tag{ position:absolute; left:14px; top:14px; min-width:64px; height:64px; padding:0 12px; border-radius:22px; display:grid; place-items:center; background:rgba(255,255,255,.92);
   font:800 44px/1 "Comic Sans MS","Chalkboard SE",system-ui,sans-serif; color:#1F2A44; box-shadow:0 4px 0 rgba(0,0,0,.12); }
 .old{ filter:saturate(.75); }
+/* pictures come from the shared art library (art/pics, served at /pics/); until 2.0 copies it, each card shows a drawn picture instead */
+a.card{ background:radial-gradient(circle at 30% 25%,#FFF7C2,transparent 40%),linear-gradient(160deg,#7FD3FF,#5ED46A 62%,#2FA84F); }
+a.card.apple{ background:radial-gradient(circle at 70% 30%,#FFE0B0,transparent 40%),linear-gradient(160deg,#9FDCFF,#8BD44A 60%,#3D9E3A); }
+a.card .big{ position:absolute; inset:0; display:grid; place-items:center; font:800 150px/1 "Comic Sans MS","Chalkboard SE",system-ui,sans-serif; color:#fff; text-shadow:0 6px 0 rgba(0,60,20,.25); z-index:0; }
+a.card img{ position:relative; z-index:1; } a.card .tag, a.card .go{ z-index:2; }
 @media (max-width:600px){ main{ grid-template-columns:1fr; padding-top:20px; } }
 </style>
 </head>
 <body>
 <main>
-  <a class="card" href="look.html?w=s" aria-label="the snake world"><img src="pics/look-s.jpg" alt=""><span class="tag">s</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
-  <a class="card" href="look.html?w=a" aria-label="the apple world"><img src="pics/look-a.jpg" alt=""><span class="tag">a</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
-  <a class="card old" href="meet-s.html" aria-label="the first snake game, old look"><img src="pics/meet-s-old.jpg" alt=""><span class="tag">s</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
+  <a class="card" href="look.html?w=s" data-img="/pics/v2-kabc-look-s.webp" aria-label="the snake world"><span class="big">s</span><img onerror="this.remove()" src="/pics/v2-kabc-look-s.webp" alt=""><span class="tag">s</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
+  <a class="card apple" href="look.html?w=a" data-img="/pics/v2-kabc-look-a.webp" aria-label="the apple world"><span class="big">a</span><img onerror="this.remove()" src="/pics/v2-kabc-look-a.webp" alt=""><span class="tag">a</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
+  <a class="card old" href="meet-s.html" data-img="/pics/v2-kabc-meet-s-old.webp" aria-label="the first snake game, old look"><span class="big">s</span><img onerror="this.remove()" src="/pics/v2-kabc-meet-s-old.webp" alt=""><span class="tag">s</span><span class="go"><svg viewBox="0 0 24 24"><path fill="#fff" d="M7 4.5v15l13-7.5z"/></svg></span></a>
 </main>
 </body>
 </html>

@@ -72,10 +72,12 @@ module.exports = async function (browser) {
   /* the menu: a picture button for every game, each opens a page that exists */
   { const { ctx, pg, errs } = await open(1366, 768, '/k-abc/');
     try { await pg.waitForSelector('a.card', { timeout: 20000 });
-      const cards = await pg.evaluate(() => [...document.querySelectorAll('a.card')].map(a => ({ href: a.getAttribute('href'), img: a.querySelector('img') && a.querySelector('img').getAttribute('src'), ok: a.querySelector('img') && a.querySelector('img').naturalWidth > 0 })));
+      const cards = await pg.evaluate(() => [...document.querySelectorAll('a.card')].map(a => ({ href: a.getAttribute('href'), img: a.dataset.img, big: !!a.querySelector('.big') })));
       if (cards.length < 3) bad('the menu has ' + cards.length + ' games (should have at least 3)');
       cards.forEach(c => { const page = c.href.split('?')[0]; if (!fs.existsSync(path.join(dist, 'k-abc', page))) bad('the menu button ' + c.href + ' opens a page that does not exist');
-        if (!c.ok) bad('the menu button ' + c.href + ' has no picture'); });
+        const pic = (c.img || '').replace(/^\/pics\//, '');   /* pictures live in the shared art library (art/README.md) */
+        if (!pic || !fs.existsSync(path.join(R, 'art', 'pics', pic)) || !fs.readFileSync(path.join(R, 'art', 'CATALOG.md'), 'utf8').includes('pics/' + pic)) bad('the menu button ' + c.href + ' has no picture in the art library');
+        if (!c.big) bad('the menu button ' + c.href + ' has no drawn picture to show while the art library picture loads'); });
       errs.forEach(e => bad('menu: page error: ' + e));
     } catch (e) { bad('menu crashed: ' + String(e).slice(0, 200)); } finally { await ctx.close(); } }
 
