@@ -30,8 +30,8 @@ function server() {
     const need = ['READ.COMP.L06.93: its place', 'READ.COMP.L06.94: was not added', 'READ.COMP.L06.01: already on the ladder'];
     need.forEach(n => { if (!r.problems.some(p => p.indexOf(n) >= 0)) fail('the problem list must report ' + n); });
     if (r.problems.some(p => /L06\.9[12]|L09\.91/.test(p))) fail('good rows were reported as problems: ' + r.problems.filter(p => /L06\.9[12]|L09\.91/.test(p)).join(' | '));
-    const ci = JSON.parse(vm.runInContext('JSON.stringify({ lad: CI_INDEX.lad.READ.map(function (x) { return x[0]; }), sk: CI_INDEX.sk["READ.COMP.L06.91"], built: CI_INDEX.built })', ctx));
-    if (ci.lad.indexOf('READ.COMP.L06.91') !== ci.lad.indexOf('READ.COMP.L06.01') + 1 || !ci.sk || ci.sk[0] !== 'Test A' || !/\+core3$/.test(ci.built)) fail('the curriculum index must get the new skills in the same order, with names and a new cache key');
+    const ci = JSON.parse(vm.runInContext('JSON.stringify({ lad: CI_INDEX.lad.READ.map(function (x) { return x[0]; }), names: CI_INDEX.lad.READ.filter(function (x) { return x[0] === "READ.COMP.L06.91"; })[0], sk: CI_INDEX.sk["READ.COMP.L06.91"], built: CI_INDEX.built })', ctx));
+    if (ci.lad.indexOf('READ.COMP.L06.91') !== ci.lad.indexOf('READ.COMP.L06.01') + 1 || !ci.names || ci.names[1] !== 'Test A' || ci.sk || !/\+core3\.[0-9a-z]+$/.test(ci.built)) fail('the curriculum index must get the new skills in the same order, with names, no "built" entry, and a new cache key');
     if (JSON.stringify(r.files) !== JSON.stringify(['CoreKit', 'CoreDataZZTEST1', 'CoreDataZZTEST2'])) fail('the page must load CoreKit first, then each data file once (got ' + r.files.join(', ') + ')');
     const again = vm.runInContext('coreMerge_(); coreMerge_(); plList_("READ").filter(function (x) { return x[0] === "READ.COMP.L06.91"; }).length', ctx);
     if (again !== 1) fail('merging twice must not add a skill twice');

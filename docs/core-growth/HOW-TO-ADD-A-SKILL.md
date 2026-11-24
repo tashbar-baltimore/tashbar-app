@@ -70,7 +70,7 @@ The tool makes this. You fill in `LESSONS`:
 ## What happens at start-up (so you know what you get)
 `src/CoreSkills.js` reads every `CORE_SKILLS.<Job>` list and:
 - puts each skill into its ladder in `Placement.js` (`READ_K8`, `LANG_K8`, `SCI_K8`, `SS_K12`) at its place. That gives you the boy's map and path, placement, the staff grid, "Give him this skill", the Library and the Pathfinder level lists;
-- adds it to the curriculum index (`CI_INDEX`), for the Departments course map and skill names;
+- adds it to the curriculum index ladders (`CI_INDEX.lad`), so the Departments course map shows it in order, with its name. Until job T's ledger report rebuilds the index with lesson counts, the map shows a new skill as "No lesson yet". The first new skill on a ladder also makes that map's order match the ladder exactly (today two Level 4 Reading skills are swapped there);
 - tells `plBuilt_` to look in your data files, so the skill counts as "built" once its lesson is there;
 - loads `CoreKit.html` and then every data file named in a list on the boy's page. They load after the One Bite data and before the One Bite player, one cached piece per file, so a Chromebook only downloads the file that changed.
 

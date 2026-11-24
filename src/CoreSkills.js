@@ -93,8 +93,10 @@ function coreMerge_() {
       var lk = { READ: 'READ', LANG: 'LANG', SCI: 'SCI', SOC: 'SOC' };
       Object.keys(lk).forEach(function (k) { var src = coreLadder_(k), lad = CI_INDEX.lad && CI_INDEX.lad[lk[k]]; if (!src || !lad) return;
         if (Object.keys(placed).some(function (id) { return coreLadderKey_(id) === k; })) CI_INDEX.lad[lk[k]] = src.map(function (x) { return [x[0], x[1], x[2]]; }); });
-      Object.keys(placed).forEach(function (id) { if (CI_INDEX.sk && !CI_INDEX.sk[id]) CI_INDEX.sk[id] = [placed[id].name, 0, 0, 0, '', 'c', [], []]; });
-      if (added) CI_INDEX.built = String(CI_INDEX.built || '') + '+core' + added;   /* new cache key for the Departments map */
+      /* no CI_INDEX.sk entry here: the Departments map counts an sk entry as "built", and a listed skill may not have its lesson yet.
+         The ladder row already gives it its name there ("No lesson yet" until the index is rebuilt with lesson counts). */
+      if (added) { var h = 0, key = Object.keys(placed).join('|'); for (var q = 0; q < key.length; q++) h = (h * 31 + key.charCodeAt(q)) | 0;
+        CI_INDEX.built = String(CI_INDEX.built || '') + '+core' + added + '.' + (h >>> 0).toString(36); }   /* new cache key for the Departments map whenever the list changes */
     }
   } catch (e) {}
   CORE_MERGED_ = { added: added, skipped: skipped, ids: Object.keys(placed) };
