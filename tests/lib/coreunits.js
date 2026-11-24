@@ -130,7 +130,7 @@ async function page(pg) {
     if (r.hook !== 'pre') fails.push(at + 'starting the first lesson of a unit (TEST- boy) must open the pre-check first (got ' + r.hook + ')');
   }
   await pg.setViewportSize({ width: 1366, height: 768 });
-  if (!fails.length) oks.push('unit checks (page): boss entrance, cleared at 80%+ with "Start your project" (the unit's Workshop piece, listed by projects() until sent), "Almost there!" with Practice that opens exactly the missed lesson, pre-check skips what he showed, the pre-check opens before a unit (TEST- boys); button system only at 1366 and 390');
+  if (!fails.length) oks.push('unit checks (page): boss entrance, cleared at 80%+ with "Start your project" (the unit Workshop piece, listed by projects() until sent), "Almost there!" with Practice that opens exactly the missed lesson, pre-check skips what he showed, the pre-check opens before a unit (TEST- boys); button system only at 1366 and 390');
   return { fails: fails.map(x => 'unit checks: ' + x), oks };
 }
 module.exports = { server, page };
