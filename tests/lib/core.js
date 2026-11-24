@@ -32,7 +32,7 @@ function server() {
     if (r.problems.some(p => /L06\.9[12]|L09\.91/.test(p))) fail('good rows were reported as problems: ' + r.problems.filter(p => /L06\.9[12]|L09\.91/.test(p)).join(' | '));
     const ci = JSON.parse(vm.runInContext('JSON.stringify({ lad: CI_INDEX.lad.READ.map(function (x) { return x[0]; }), names: CI_INDEX.lad.READ.filter(function (x) { return x[0] === "READ.COMP.L06.91"; })[0], sk: CI_INDEX.sk["READ.COMP.L06.91"], built: CI_INDEX.built })', ctx));
     if (ci.lad.indexOf('READ.COMP.L06.91') !== ci.lad.indexOf('READ.COMP.L06.01') + 1 || !ci.names || ci.names[1] !== 'Test A' || ci.sk || !/\+core3\.[0-9a-z]+$/.test(ci.built)) fail('the curriculum index must get the new skills in the same order, with names, no "built" entry, and a new cache key');
-    if (JSON.stringify(r.files) !== JSON.stringify(['CoreKit', 'CoreDataZZTEST1', 'CoreDataZZTEST2'])) fail('the page must load CoreKit first, then each data file once (got ' + r.files.join(', ') + ')');
+    if (r.files[0] !== 'CoreKit' || JSON.stringify(r.files.filter(f => /^CoreData/.test(f))) !== JSON.stringify(['CoreDataZZTEST1', 'CoreDataZZTEST2'])) fail('the page must load CoreKit first, then each data file once (got ' + r.files.join(', ') + ')');
     const again = vm.runInContext('coreMerge_(); coreMerge_(); plList_("READ").filter(function (x) { return x[0] === "READ.COMP.L06.91"; }).length', ctx);
     if (again !== 1) fail('merging twice must not add a skill twice');
     const sg = vm.runInContext('sgNames_()["READ.COMP.L06.91"]', ctx);
@@ -45,12 +45,12 @@ function server() {
     const r = JSON.parse(vm.runInContext('JSON.stringify(coreReport_())', ctx));
     r.built = JSON.parse(vm.runInContext('JSON.stringify(plBuilt_())', ctx)).filter(id => r.merged.ids.includes(id));
     r.problems.forEach(p => fail(p));
-    r.files.forEach(f => { const p = path.join(B.SRC, f + '.html'); if (!fs.existsSync(p)) fail('src/' + f + '.html is listed but missing'); else if (fs.statSync(p).size > 150 * 1024) fail('src/' + f + '.html is over 150 KB: start the next file'); });
+    r.files.filter(f => !/^Core(Kit|Reader|Write)/.test(f)).forEach(f => { const p = path.join(B.SRC, f + '.html'); if (!fs.existsSync(p)) fail('src/' + f + '.html is listed but missing'); else if (fs.statSync(p).size > 150 * 1024) fail('src/' + f + '.html is over 150 KB: start the next file'); });
     const body = vm.runInContext('msQuestToolsBody_().js', ctx), parts = JSON.parse(vm.runInContext('JSON.stringify(msQuestToolsParts([]))', ctx));
     if (parts.order.map(h => parts.parts[h]).join('') !== body) fail("the boy's page pieces (Speed.js) do not match msQuestToolsBody_ (Photos.js)");
     const reg = fs.readdirSync(B.SRC).filter(f => /^CoreData[A-Z][A-Z0-9]*\.js$/.test(f));
     reg.forEach(f => { const t = fs.readFileSync(path.join(B.SRC, f), 'utf8'), job = f.slice(8, -3); if (t.indexOf('CORE_SKILLS.' + job + ' = [') < 0) fail('src/' + f + ' must set CORE_SKILLS.' + job + ' (its own job only)'); });
-    if (!r.problems.length) oks.push('core skills: ' + r.merged.added + ' new skill(s) from ' + reg.length + ' job list(s), ' + Math.max(0, r.files.length - 1) + ' data file(s), no problems');
+    if (!r.problems.length) oks.push('core skills: ' + r.merged.added + ' new skill(s) from ' + reg.length + ' job list(s), ' + r.files.filter(f => /^CoreData/.test(f)).length + ' data file(s), no problems');
     return { fails, oks, rep: r };
   }
 }
@@ -63,14 +63,50 @@ async function page(pg, rep) {
     return { kit: !!window.TLCORE, clash: C.clash || [], mine: Object.keys(C.ids || {}), missing: ids.filter(id => !BA[id] || !BA[id].name), bad: Object.keys(C.ids || {}).filter(id => { const L = BA[id]; return !L || !Array.isArray(L.check) || L.check.length < 3; }) };
   }, (rep && rep.merged.ids) || []);
   const files = (rep && rep.files) || [];
-  if (files.length && !got.kit) fail('CoreKit did not load on the boy\'s page');
+  if (!got.kit) fail('CoreKit did not load on the boy\'s page');
   got.clash.forEach(c => fail('a core lesson tried to replace an existing lesson: ' + c + ' (improve it in its own file, or pick a new id)'));
   got.bad.forEach(id => fail(id + ' needs 3 or more check questions'));
   const built = new Set(rep && rep.built || []);
   got.missing.filter(id => built.has(id)).forEach(id => fail(id + ' is "built" on the server but not a lesson on the page'));
   const notYet = got.missing.filter(id => !built.has(id));
+  /* the content store: a made-up text, served the way the site serves /texts/<ID>.json, loads only when asked, once */
+  {
+    const F = require('../../tools/core/textfmt.js');
+    const r = F.parse(FIXTURE_TEXT, 'fixture'); const probs = r.problems.concat(F.check(r.text, null));
+    if (probs.length) fail('the made-up text has problems: ' + probs.join('; '));
+    let hits = 0;
+    await pg.route('**/texts/ZZTEST.ANTS.01.json', route => { hits++; route.fulfill({ contentType: 'application/json', body: JSON.stringify(r.text) }); });
+    await pg.route('**/texts/ZZTEST.NOPE.01.json', route => route.fulfill({ status: 404, body: 'not found' }));
+    const t = await pg.evaluate(async () => {
+      const a = await TLCORE.text('ZZTEST.ANTS.01'), b = await TLCORE.text('ZZTEST.ANTS.01');
+      let miss = ''; try { await TLCORE.text('ZZTEST.NOPE.01'); } catch (e) { miss = String(e.message || e); }
+      let bad = ''; try { await TLCORE.text('../x'); } catch (e) { bad = String(e.message || e); }
+      return { same: a === b, title: a.title, pages: a.pages.length, n: TLCORE.textSentences(a).length, word: a.glossary.colony, miss, bad };
+    });
+    if (hits !== 1 || !t.same) fail('a text must be fetched once and kept (fetched ' + hits + ' times)');
+    if (t.title !== 'The Busy Ant Colony' || t.pages !== 2 || t.n !== r.text.pages.reduce((n, pg) => n + pg.reduce((m, p) => m + p.s.length, 0), 0) || !t.word) fail('the text did not arrive whole: ' + JSON.stringify(t));
+    if (!/not on the site/.test(t.miss) || !/not a text id/.test(t.bad)) fail('a missing text or a bad id must give a clear error (got ' + t.miss + ' | ' + t.bad + ')');
+    const T = require('../../tools/core/texts.js').load(); T.problems.forEach(p => fail('text: ' + p));
+    if (!fails.length) oks.push('content store: a long text loads only when opened, once; ' + T.out.length + ' real text(s) in texts/, no problems');
+  }
   if (!fails.length) oks.push('core skills (page): ' + got.mine.length + ' core lesson(s) loaded, no clash' + (notYet.length ? '; listed, no lesson yet (hidden from boys): ' + notYet.length : ''));
   return { fails, oks };
 }
+
+const FIXTURE_TEXT = `id: ZZTEST.ANTS.01
+title: The Busy Ant Colony
+grade: 5
+kind: article
+topic: Ants
+source: original
+---
+${'An ant colony is like a busy town. Every ant has a job to do, and the whole colony works together. '.repeat(30)}
+
+The queen lays the eggs. Worker ants find food, and soldier ants guard the nest.
+===
+When Avi and his Zaidy watched an ant hill in the park, they counted more than fifty ants in one minute. "They never stop," said Avi.
+--- words
+colony: a big group of ants that live and work together
+`;
 
 module.exports = { server, page };

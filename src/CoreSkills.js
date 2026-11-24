@@ -18,7 +18,8 @@
 var CORE_SKILLS = (typeof CORE_SKILLS !== 'undefined' && CORE_SKILLS) || {};
 var CORE_ID_RE = /^(READ|LANG|WRIT|SCI|SS)\.[A-Z]+\.L\d\d\.\d\d$/;
 var CORE_FILE_RE = /^CoreData[A-Z][A-Z0-9]*$/;
-var CORE_KIT_FILE = 'CoreKit';   /* src/CoreKit.html: the helper every data file uses; it loads first */
+var CORE_KIT_FILE = 'CoreKit';   /* src/CoreKit.html: the helper every data file uses, and the content store; it loads first */
+var CORE_TOOL_FILES = [CORE_KIT_FILE];   /* job T's page tools, before every data file (never scanned for lessons) */
 var CORE_MERGED_ = null;
 
 /* Which ladder an id belongs to (the same lists Placement.js uses). */
@@ -112,7 +113,7 @@ function coreProblemsBefore_(rows) {
 function coreFiles_() {
   var out = [], seen = {};
   coreRows_().forEach(function (r) { if (CORE_FILE_RE.test(r.file) && !seen[r.file]) { seen[r.file] = 1; out.push(r.file); } });
-  return out.length ? [CORE_KIT_FILE].concat(out) : [];
+  return CORE_TOOL_FILES.concat(out);   /* the tools always load (the content store and the Reader serve every job), then the data files */
 }
 
 /* One piece per file for the boy's page. Photos.js (msQuestToolsBody_) and Speed.js (tlToolParts_) both use this, so they match byte for byte. */
