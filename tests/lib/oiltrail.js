@@ -37,10 +37,18 @@ module.exports = async function oiltrail(pg) {
       T('touchstart', 30, 700); await sleep(30); T('touchend', 220, 590); await sleep(30);
       if (e2.olives() !== o0) f('a quick swipe with few touch points must not drop an olive');
       T('touchstart', 30, 700); await sleep(30); T('touchend', 31, 700); await sleep(30);
-      if (e2.olives() !== o0 + 1) f('a real tap on empty space must drop one olive'); }
+      if (e2.olives() !== o0 + 1) f('a real tap on empty space must drop one olive');
+      /* HoS 2026-11-24: a tap on a button drops an olive too, and the button still works; a writing box never gets one */
+      const btn = document.createElement('button'); btn.textContent = 'x'; let clicked = 0; btn.onclick = () => clicked++; btn.style.cssText = 'position:fixed;left:10px;top:10px;z-index:9'; document.body.appendChild(btn);
+      const TB = (type, el) => { const t = new Touch({ identifier: 8, target: el, clientX: 15, clientY: 15 }); el.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchend' ? [] : [t], changedTouches: [t] })); };
+      const o1 = e2.olives(); TB('touchstart', btn); await sleep(30); TB('touchend', btn); btn.click(); await sleep(30);
+      if (e2.olives() !== o1 + 1) f('a tap on a button must drop an olive too'); if (!clicked) f('the button must still work under the olive');
+      const ta = document.createElement('textarea'); ta.style.cssText = 'position:fixed;left:10px;top:60px'; document.body.appendChild(ta);
+      const o2 = e2.olives(); TB('touchstart', ta); await sleep(30); TB('touchend', ta); await sleep(30);
+      if (e2.olives() !== o2) f('a tap in a writing box must never drop an olive'); btn.remove(); ta.remove(); }
     mo.disconnect();
     window.TL_OIL_DAY = undefined; TL_OIL.sync();
-    if (!fails.length) oks.push('olive oil (Chanukah): the default trail 23 Nov 2026 to 3 Tevet 5787, off before and after; the free streak and tap splash step aside, a bought trail wins; clicks pass through; drawing canvases are kept clear; a swipe fires no tap effect and no olive, a real tap does');
+    if (!fails.length) oks.push('olive oil (Chanukah): the default trail 23 Nov 2026 to 3 Tevet 5787, off before and after; the free streak and tap splash step aside, a bought trail wins; clicks pass through; drawing canvases are kept clear; a swipe fires no tap effect and no olive, a real tap does (buttons too, never in a writing box)');
     return { fails, oks };
   });
 };
