@@ -72,7 +72,7 @@ export const UNITS = [
       { id: 'u7g0', name: 'Tzvi in the playroom', kind: 'story7', icon: 'train' },
       { id: 'u7g1', name: 'Feel the Shape', kind: 'feel', icon: 'hand' },
       { id: 'u7g2', name: 'Look-Alike Detective', kind: 'sorter', icon: 'pair', pairs: [['daled', 'reish'], ['hei', 'kuf']] },
-      { id: 'u7g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish', stands: ['kaf', 'tzadik', 'kuf', 'reish'] },   /* Kaf (kadur) comes back: Kuf sounds just like it */
+      { id: 'u7g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },   /* Beis comes back; Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
       { id: 'u7g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
       { id: 'u7g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
       { id: 'u7g6', name: 'Review: Alef-Beis Train', kind: 'train', icon: 'train', review: true, order: ['ayin', 'pei', 'fei', 'tzadik', 'kuf', 'reish'] },

@@ -32,7 +32,7 @@ export default function setup(E, { struggled, unit }) {
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); yak.position.set(-3.3, 0, 1.2); yak.scale.setScalar(1.1); board.position.set(.2, 2.35, .4); board.scale.setScalar(1); }
     tiles.forEach((t, i) => { if (t !== dragT) t.position.copy(tileHome(i)); });
   });
-  const tileHome = i => P ? new THREE.Vector3([1.55, -.1, -1.1][i], .5, 2.1) : new THREE.Vector3(2.3 - i * 1.55, .6, 1.9);   /* never in front of the sign's pole */
+  const tileHome = i => P ? new THREE.Vector3([1.35, -.1, -1.25][i], .5, 2.1) : new THREE.Vector3(2.55 - i * 1.65, .6, 1.9);   /* never in front of the sign's pole */
   E.onFrame(t => {
     if (shown) shown.rotation.y = Math.sin(t * 1.2) * .15;
     tiles.forEach((tl, i) => { if (tl !== dragT && tl.visible && !tl.userData.busy) { tl.position.y = tileHome(i).y + Math.sin(t * 2 + i) * .05; } });

@@ -447,7 +447,8 @@ export function letter(key, height = 2.6, color = 'blue') {
   const dp = DOT_AT[L.ch];
   if (dp) {   /* the dagesh sits in the middle of the letter's open space (font units /10: Beis x 24, y 29.6 of 56.1 x 64.7) */
     dot = mesh(new THREE.SphereGeometry(Math.max(.2 * height / 2.6, .075), 32, 24), goldDot(), (dp[0] - c.x) * s, (dp[1] - REF_CY) * s, .42 * height / 2.6); grp.add(dot); dot.visible = !!L.dagesh; }
-  grp.userData = { key, body: m, dot, hit, height, width: W * s, color, dotHome: dot ? dot.position.clone() : null };
+  const below = Math.max(0, -(bb.min.y + c.y) - 4) * s;   /* how far a long leg (Kuf) reaches below the line: stands and cars lift it by this much */
+  grp.userData = { key, body: m, dot, hit, height, width: W * s, color, below, dotHome: dot ? dot.position.clone() : null };
   grp.setKey = k => { grp.userData.key = k; if (dot) { dot.visible = !!LETTERS[k].dagesh; dot.scale.setScalar(1); dot.position.copy(grp.userData.dotHome); } };
   grp.setColor = col => { m.material = letterMats(col); grp.userData.color = col; };
   return grp;
@@ -476,7 +477,7 @@ export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right']
   lamed: [90, 820, 'down'], mem: [130, 55, 'right'], nun: [310, 50, 'left'],
   reish: [445, 540, 'left'], kuf: [60, -140, 'right'] };   /* Reish: round on top; Kuf: its long leg */   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
 /* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
-const PAIR_FEAT = { 'tes|mem': [60, 70, 'right'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'], 'daled|reish': [475, 520, 'left'], 'hei|kuf': [60, 60, 'right'] };   /* Daled's corner beside Reish's round top; Hei's short leg beside Kuf's long one */   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+const PAIR_FEAT = { 'tes|mem': [60, 70, 'right'], 'kaf|pei': false, 'pei|kaf': [190, 300, 'right'], 'daled|reish': [420, 500, 'left'], 'hei|kuf': [60, 60, 'right'] };   /* Daled's corner beside Reish's round top; Hei's short leg beside Kuf's long one */   /* Pei: an arrow at its little tongue. Kaf beside Pei gets no arrow: its dot sits where Pei's tongue is, so the words say it */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 /* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
 export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : (k + '|' + other) in PAIR_FEAT ? PAIR_FEAT[k + '|' + other] : (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));

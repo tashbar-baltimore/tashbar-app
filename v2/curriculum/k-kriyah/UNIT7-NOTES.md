@@ -11,9 +11,9 @@
 | Stone | Game | What he does |
 |---|---|---|
 | 1 | Tzvi in the playroom (story) | A bird at the window (tzipor) turns into Tzadik, his toy monkey (kof) into Kuf, and his toy train (rakevet) into Reish. Then the look-alikes side by side, a chant of all 23 letters, and he taps each new one. |
-| 2 | Feel the Shape | Feels Tzadik, Kuf (its long leg) and Reish (round on top), then Daled (its corner). |
+| 2 | Feel the Shape | Feels Tzadik, Kuf (its long leg) and Reish (round on top), then Daled (an arrow at its corner). |
 | 3 | Look-Alike Detective | He sorts Daled and Reish (the corner), then Hei and Kuf (the short leg and the long leg). |
-| 4 | Sound Match | Tzipor and tzav (turtle) go to Tzadik, kof and kubiyot (blocks) to Kuf, rakevet and rimon (pomegranate) to Reish, and kadur to Kaf. At the end: "Kuf sounds just like Kaf!" |
+| 4 | Sound Match | Tzipor and tzav (turtle) go to Tzadik, kof and kubiyot (blocks) to Kuf, rakevet and rimon (pomegranate) to Reish, and bayis to Beis. At the end Kaf appears above Kuf: "Kuf sounds just like Kaf!" |
 | 5 | Find the Mistake | "Yaakov says this is a Reish. Is he right?" An orange arrow points at the corner or the leg. |
 | 6 | Show what you know (mastery check) | 9 questions. Reish stands beside Daled, and Kuf beside Hei. Kuf and Kaf are never asked side by side, since both say k. |
 | 7 | Review: Alef-Beis Train | The train carries Ayin, Pei, Fei, Tzadik, Kuf, Reish. He puts each car in order. |
@@ -24,7 +24,7 @@
 2. **Tzvi** is the Unit 7 boy (red kippah); **Mommy** is with him.
 3. **Sound Match instead of Letter Hunt.** The Letter Hunt's world is a sukkah; Sound Match fits the playroom and practises the new sounds.
 4. **Hei and Kuf are look-alikes too:** "Hei has a short leg. Kuf has a long leg."
-5. **Kaf comes back in Sound Match** (kadur), so Kuf can be heard beside it: "Kuf sounds just like Kaf!"
+5. **Kaf is never a stand beside Kuf in Sound Match,** since both say k and the boy could not tell which one a picture goes to. Beis (bayis) comes back instead. At the end Kaf appears above Kuf: "This is Kaf. Kuf sounds just like Kaf!"
 6. **The review is the Alef-Beis Train** with the newest six letters, Ayin to Reish.
 7. **What to look for, in the same words in every game:** Daled has a corner; Reish is round on top. Hei has a short leg; Kuf has a long leg.
 
