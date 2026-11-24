@@ -67,6 +67,7 @@ function sgPage_() {
   try { add += HtmlService.createHtmlOutputFromFile('StaffLibrary').getContent(); } catch (e) {}
   try { add += HtmlService.createHtmlOutputFromFile('StaffTeach').getContent(); } catch (e) {}   /* HoS 2026-11-21 simplify step 5: WHAT WE TEACH, the Curriculum area's one view (StaffHome.html draws it there) */
   try { add += HtmlService.createHtmlOutputFromFile('BlockBuildersData').getContent() + HtmlService.createHtmlOutputFromFile('BlockBuildersUI').getContent() + HtmlService.createHtmlOutputFromFile('BlockBuildersStaff').getContent(); } catch (e) {}   /* HoS 2026-11-22: Block Builders workbook teacher board (Reports), before StaffHome so its tile sees #bbs-btn */
+  try { add += HtmlService.createHtmlOutputFromFile('CoreWriteStaff').getContent(); } catch (e) {}   /* Core Growth (job T): the teacher's writing inbox (Reports), before StaffHome so its tile sees #cws-btn */
   try { add += HtmlService.createHtmlOutputFromFile('StaffHome').getContent(); } catch (e) {}   /* HoS 2026-11-19: the new staff home (5 areas: Students, Today, Curriculum, Reports, School). LAST: it organizes all the others */   /* Library & One-Tap Command Center (Library.js); floating button, own overlay, LAST */
   var i = page.lastIndexOf('</body>'); if (add) page = i < 0 ? page + add : page.slice(0, i) + add + page.slice(i);
   if (add.indexOf('id="sh-css"') >= 0) { var hd = page.indexOf('</head>');   /* HoS 2026-11-20: no flash of the old pills, banners and header while the boys load (StaffHome.html styles html.sh-boot) */
