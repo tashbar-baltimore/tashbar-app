@@ -89,7 +89,7 @@ TLCORE.reader.open('C45.ANTS.01', { grade: 5, exit: 'x', ask: {
 
 To load a text in your own code: `TLCORE.text('C45.ANTS.01')` gives a Promise of the text, and `TLCORE.textSentences(t)` gives every sentence in reading order.
 
-Coming next from job T: the Reader inside a lesson as an activity ("read this chapter", "tap the proof"), so a lesson's data can name a text without any code.
+**Inside a lesson, with no code:** the `read` and `proof` activity kinds name a text by its id (`HOW-TO-ADD-A-SKILL.md`, "Two kinds that open the Reader"). `read` opens the chapter and goes on when he reaches the end. `proof` asks a question and he taps the sentence that proves it.
 
 ## Rules that do not bend
 Family Life (modest, warm, normal frum family life; a wide mix of names; kosher food), never the Divine Name (Hashem in English, ה׳ in Hebrew), reading level that matches the grade, and **cold check passages**: teach on one text and check on another.

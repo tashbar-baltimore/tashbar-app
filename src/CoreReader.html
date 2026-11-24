@@ -268,7 +268,7 @@
         if (ask) start = sents[ask.proofIdx[0]].page;   /* a question opens on its page, like a passage question */
         var el = document.createElement('div'); el.id = 'crd'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', t.title);
         S = { t: t, o: opts, g: g, band: band(g), p: start, first: first, sents: sents, ask: ask, el: el, view: ask ? 'page' : 'cover', resolve: resolve, seen: {}, tapped: 0, reading: false };
-        document.body.appendChild(el); try { document.body.classList.add('crd-open'); } catch (e) {}
+        document.documentElement.appendChild(el); try { document.body.classList.add('crd-open'); } catch (e) {}   /* on html, not body: a lesson screen (body.ob-on) and the K-1 home hide everything else in body */
         el.addEventListener('click', onClick); el.addEventListener('pointermove', onMove); el.addEventListener('touchmove', onMove, { passive: true });
         el.querySelector && el.addEventListener('scroll', closeBubble, true);
         document.addEventListener('keydown', onKey, true);

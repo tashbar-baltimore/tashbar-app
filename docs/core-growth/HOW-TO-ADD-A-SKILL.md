@@ -80,6 +80,14 @@ Besides the first ten kinds (`docs/ONE-BITE-PLAYBOOK.md`, section 10), a lesson'
 | `dictation` | `{type:'dictation', hear:'The cat sat on the mat.', w:['The','cat','sat','on','the','mat.'], extra:['sit']}` (`w` joined with spaces must equal `hear`) | hears the sentence (🔊 again), then builds it from word tiles, capital letter and end mark included |
 | `order` | `{type:'order', steps:['Dovid saw paw prints.','He followed them.','He found Biscuit.']}` (2–6 strips) | taps each strip into the next numbered place, then Check |
 
+### Two kinds that open the Reader (a long text from `texts/`, no code)
+| Kind | Data | He does |
+|---|---|---|
+| `read` | `{type:'read', text:'C45.B1.01'}` (`page`: the page to start on, from 0) | taps **Open the book**. The Reader fills the screen. He reads to the end of the chapter and taps Next, and the lesson goes on. If he closes the book early, the lesson asks him to keep reading. **Put `read` in `do` only** (in `your` it would count as a free right answer). |
+| `proof` | `{type:'proof', text:'C45.B1.01', q:'Which sentence shows Dovid was surprised?', proof:'Dovid gasped', look:'how Dovid felt'}` (`proof`: 2 or more words from ONE sentence of the text, or the sentence numbers) | taps **Find the proof**. The Reader opens on the page with the proof, and he taps the sentence. Right on the first try counts as first try; right on the 2nd or 3rd try counts as right, not first try; after 3 misses the book shows the proof, and it counts as shown. |
+
+The book's title shows on the card as soon as the text loads. The test (`tests/lib/corereadkinds.js`) checks every lesson that uses them: the text must be in `texts/`, and the proof must be in exactly one sentence. Unit checks and K–1 games do not take these two kinds.
+
 Quality-gate tips:
 - A `combine` or `cloze` whose wrong choices are the mistake boys really make counts as the **mistake activity** when you mark it `mis:true`. An `evidence` with a tempting wrong sentence counts the same way.
 - K–1 lessons get 3 choices at most here too.
@@ -105,7 +113,6 @@ Quality-gate tips:
 - Then the usual rules: the quality gate, "taught, then asked" (`tests/baseline.json` may not go up), play to "mastered" (`PLAY=<id>`), the independent review (every point 4 or 5) and pictures at 1366×768 and 390 px.
 
 ## Not covered yet (job T is building these next)
-- **K–1 home:** a K or Grade 1 boy sees only the game path (`K1Only.html`). How a new K–1 skill joins that path will be added here.
-- The content store for long texts, the Reader, the Writing Workshop, unit checks and test-out, and the new activity kinds.
+- **K–1 home:** a K or Grade 1 boy sees only the game path (`K1Only.html`). A new K–1 skill joins it as a game: `HOW-TO-ADD-A-K1-GAME.md`.
 - **Pathfinder level-check items** for new skills. Until then a new skill is simply not part of the level check, which is safe: the boy meets it on his path.
 - The staff **skill-flow chart** (`tools/skill_flow.js`) still charts only the old ladders.
