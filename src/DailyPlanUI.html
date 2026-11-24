@@ -1,0 +1,48 @@
+<script>
+/* TODAY'S LIST on the boy's page (Core Growth job D, HoS 2026-11-24; plan: docs/core-growth/D-plan.md).
+   "I would much rather make it dependent on covering a certain amount of material."
+   The server (DailyPlan.js tdlToday) sends his list: lines like "2 Reading, 1 Writing, 1 Math, 1 Kodesh, 1 Science", each with how
+   many he covered today. GameMap's "My work" asks window.tlDailyPlan(ws) for its rows: one row per thing to cover, his next step in
+   that subject on each open row, "3 of 6 done", one Next button, and the Arcade opens when the whole list is done.
+   - Only a boy the server gives a list to (TEST- boys while TDL_LIVE is 'test') sees it; for everyone else this returns null and
+     "My work" keeps its 3 rounds exactly as before.
+   - No minutes, no timers. Nothing here pays: the server checks the list itself and pays the same daily bonus (Money.js).
+   - A lesson he masters shows as covered at once (his own skills, today); the server's count catches up with the next save. */
+(function(){
+if(window.TL_TDL) return;
+const T=window.TL_TDL={by:{},asked:{}};
+const SUBJ=id=>{ const p=(/^([A-Z]+)\./.exec(String(id||''))||[])[1]||''; return p==='READ'?'READ':(p==='LANG'||p==='WRIT')?'LANG':p==='MATH'?'MATH':(p==='LK'||p==='HEB')?'KODESH':(p==='SCI'||p==='SS')?'KNOW':''; };
+const day=at=>{ const d=new Date(Number(at)||0); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); };
+function sid(){ return typeof A!=='undefined'&&A.st&&A.st.id?String(A.st.id):''; }
+function maybe(){ return /^TEST-/.test(sid()); }   /* the server decides; this only saves a call for boys who cannot have a list yet */
+function redraw(){ try{ if(typeof render==='function'&&A.view==='hub') render(); }catch(e){} }
+function ask(){ const s=sid(); if(!s||!maybe()||typeof run!=='function'||typeof SRV==='undefined'||!SRV.token) return;
+ T.asked[s]=Date.now(); run('tdlToday',SRV.token).then(d=>{ if(sid()===s){ T.by[s]=d&&d.on?d:null; redraw(); } }).catch(()=>{}); }
+T.ask=ask;
+/* lessons he mastered today on this page, by line (so a row turns ✓ the moment he finishes, before the save comes back) */
+function localToday(){ const sk=(A.st&&A.st.skills)||{}, t=day(Date.now()), o={};
+ Object.keys(sk).filter(id=>sk[id]&&sk[id].m&&day(sk[id].at)===t).sort((a,b)=>sk[a].at-sk[b].at).forEach(id=>{ const k=SUBJ(id); if(k) (o[k]=o[k]||[]).push(id); }); return o; }
+/* the world (GameMap's subject on his map) that plays the next step of a line */
+function isDone(id){ const s=A.st&&A.st.skills&&A.st.skills[id], m=window.TL_MAP; return !!(s&&s.m)||!!(m&&m.lc&&m.lc.known&&m.lc.known.indexOf(id)>=0); }
+/* the j-th open row of a subject shows his j-th next step there (2 Reading rows = this step, then the one after it) */
+function stepOf(w,j){ if(!w) return w; const up=(w.ids||[]).filter(id=>!isDone(id)), id=up[j]||(j===1&&w.next)||w.now; return id===w.now?w:Object.assign({},w,{now:id}); }
+function worldFor(it,ws){ const live=ws.filter(w=>w.now);
+ if(it.k==='KODESH') return live.find(w=>w.k===it.w)||live.find(w=>w.isK||w.k==='HEB')||null;
+ if(it.k==='KNOW') return live.find(w=>w.k===it.w)||live.find(w=>w.k==='SCI'||w.k==='SOC')||null;
+ return live.find(w=>w.k===it.k)||null; }
+window.tlDailyPlan=function(ws){ const s=sid(), d=s&&T.by[s]; if(!d||!d.on||!Array.isArray(d.items)) return null;
+ const loc=localToday(), rounds=[]; let done=0, total=0;
+ d.items.forEach(it=>{ const n=Math.max(0,Number(it.n)||0), ids=(it.ids||[]).slice(); (loc[it.k]||[]).forEach(id=>{ if(ids.indexOf(id)<0) ids.push(id); });
+  const got=ids.slice(0,n), w=worldFor(it,ws||[]);
+  for(let i=0;i<n;i++){ if(i<got.length) rounds.push({won:true,id:got[i],k:it.k,name:it.name}); else rounds.push({w:stepOf(w,i-got.length),k:it.k,name:it.name}); }
+  done+=got.length; total+=n; });
+ return {rounds,done,total,left:Math.max(0,total-done),open:!total||done>=total,list:true,paid:!!d.paid}; };
+/* his list arrives after sign-in, and again after every save (the server's count of what he covered) */
+if(typeof loadStudent==='function'&&!T._ls){ T._ls=loadStudent; loadStudent=function(r){ const st=T._ls.apply(this,arguments); try{ if(r&&r.id){ delete T.by[r.id]; setTimeout(ask,0); } }catch(e){} return st; }; }
+/* the lesson's payout list names the daily bonus by the old rule ("3 lessons"): a boy with a list is paid for the whole list, so say that */
+function relabel(){ try{ const r=A.res, s=sid(); if(!r||!r.payout||!T.by[s]) return false; let ch=false; r.payout.forEach(x=>{ if(x&&x[0]==='Daily goal: 3 lessons today'){ x[0]="Daily bonus · You finished today's list"; ch=true; } }); return ch; }catch(e){ return false; } }
+if(typeof saveStudent==='function'&&!T._ss){ T._ss=saveStudent; saveStudent=function(st,cb){ return T._ss.call(this,st,function(){ let out; try{ if(st&&st.id&&st.id===sid()) ask(); }catch(e){} if(cb) out=cb.apply(this,arguments); if(relabel()) try{ if((A.view==='result'&&A.res&&A.res.shown)||A.view==='hub') render(); }catch(e){} return out; }); }; }
+/* the add-ons arrived after he signed in: ask once */
+try{ const s=sid(); if(s&&!T.asked[s]) ask(); }catch(e){}
+})();
+</script>

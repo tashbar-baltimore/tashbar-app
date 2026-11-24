@@ -184,7 +184,10 @@ async function kidTests(browser) {
       if (g.tabs !== 1 || !g.homeBtn) fail('one button, one job: every page but the home has ONE Home button at the bottom (got ' + g.tabs + ')');
       if (g.plays !== 1 || g.worldTabsOnMap) fail('one button, one job: the map has ONE big PLAY and no subject tabs (got ' + g.plays + ' PLAY, ' + g.worldTabsOnMap + ' subject tabs)');
       if (g.shelves < 4 || g.shelves > 5) fail('one button, one job: My things must hold 4-5 shelves (got ' + g.shelves + ')');
-      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked && g.tabs === 1 && g.plays === 1 && H.n === 6 && H.equal && H.canteen) ok('home: 6 equal tiles (work first, Canteen its own door), one Home button elsewhere; map: one PLAY, Change subject; My things shelves; next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); } }
+      if (g.goal === want[0] && g.play === km.map.subjects.MATH.now && g.noMap && g.lib && g.back && g.rounds === 3 && g.locked && g.tabs === 1 && g.plays === 1 && H.n === 6 && H.equal && H.canteen) ok('home: 6 equal tiles (work first, Canteen its own door), one Home button elsewhere; map: one PLAY, Change subject; My things shelves; next level + real skill, path with BOSS, PLAY starts it, locked says so, All lessons is a game screen, no old pages; missions: 3 rounds, Arcade locked until cleared'); }
+    /* TODAY'S LIST on My work (Core Growth job D, tests/lib/dailyplan.js) */
+    try { const dp = await require('./lib/dailyplan.js').page(pg, km.map); dp.fails.forEach(fail); dp.oks.forEach(ok); } catch (e) { fail("today's list page test crashed: " + String(e && e.stack || e).slice(0, 300)); }
+  }
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* ONE BITE player (tests/lib/onebite.js) */
   try { const ob = await require('./lib/onebite.js')(pg); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
@@ -232,6 +235,8 @@ async function staffTests(browser) {
   catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const sc = await require('./lib/staffcard.js')(browser); sc.fails.forEach(fail); sc.oks.forEach(ok); }
   catch (e) { fail('staff card test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  try { const d = require('./lib/dailyplan.js').server(); d.fails.forEach(fail); d.oks.forEach(ok); }
+  catch (e) { fail("today's list test crashed: " + String(e && e.stack || e).slice(0, 300)); }
   try { const l = require('./lib/levelpass.js')(); l.fails.forEach(fail); if (!l.fails.length) ok('level checks and the 🎫 Level Pass: 25% before the check, full pay after, known skills skipped and not paid, one check per level, staff placement wins, no check = never cut'); report.timings.levelCheckStartMs = l.ms.start; report.timings.levelCheckSaveMs = l.ms.save; }
   catch (e) { fail('level pass test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   await browser.close();
