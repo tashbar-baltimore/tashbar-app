@@ -28,7 +28,7 @@
     id: 'u3-touch', title: 'Touch and Count', rounds: 5,
     hero: '<svg viewBox="0 0 100 100"><use href="#u3Siddur"/></svg><svg viewBox="0 0 100 100"><use href="#u3Siddur"/></svg><svg viewBox="0 0 100 100"><use href="#u3Siddur"/></svg>',
     init: function (F) { U.addArt(); H = U.hands($('hands')); H.lock(true); },
-    reset: function () { easy = 0; misses = 0; },
+    reset: function (F, again, slow) { easy = slow ? 3 : 0; misses = 0; },   /* he did not pass last time: start on the easier path */
     demo: async function (F) {
       U.clear(); var sh = document.createElement('div'); sh.className = 'shelf'; $('scene').appendChild(sh);
       var pts = U.line(3, 72), slots = U.line(3, 25), els = [0, 1, 2].map(function (i) { return U.put('siddur', pts[i], U.size(3), i, 'cnt'); });
@@ -43,13 +43,13 @@
     round: async function (F, i) {
       var help = easy > 0, n = help ? F.pick([3, 4, 5]) : PLAN[i], line = help || i < 3; if (easy > 0) easy--;
       if (i === 2 && !help) await F.say('Now you count by yourself!');
-      if (i === 4 && !help) await F.say('New way! The books stay. Each one gets a tick.');
+      if (i === 4 && !help) await F.say('New way! The books stay on the shelf.');
       /* the voice counts with him only in rounds 1-2, or as help after two misses; later he counts by himself (a soft pop per tap) */
       var first = await U.countRound(F, { n: n, kind: 'siddur', line: line, H: H, silent: !(i < 2 || help), stay: i === 4 && !help, intro: i < 3 || help || i === 4 });
       if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
       return first;
     },
-    bonus: async function (F) { await U.countRound(F, { n: F.pick([9, 10]), kind: 'siddur', line: false, H: H }); }
+    bonus: async function (F) { await U.countRound(F, { n: F.pick([9, 10]), kind: 'siddur', line: false, H: H, silent: true }); }
   });
 })();
 </script>

@@ -38,7 +38,7 @@
   U.dims = function () { var s = $('scene'), r = s ? s.getBoundingClientRect() : { width: 800, height: 500 }; return [r.width || 800, r.height || 500]; };
   U.narrow = function () { return U.dims()[0] < 560; };
   U.tapPct = function () { return 68 / U.dims()[0] * 100; };          /* 68 px as % of the scene width */
-  U.itemW = function (n) { return U.narrow() ? Math.max(U.size(n), U.tapPct()) : U.size(n); };
+  U.itemW = function (n) { return Math.max(U.size(n), U.tapPct()); };   /* never smaller than 68 px, on a phone or a Chromebook */
   U.grid = function (n, y0, cols, stepY) { var out = [], gx = 88 / cols; for (var i = 0; i < n; i++) { var r = Math.floor(i / cols), c = i % cols, inRow = Math.min(cols, n - r * cols), x0 = 50 - gx * (inRow - 1) / 2; out.push([x0 + gx * c, y0 + r * stepY]); } return out; };
   U.table = function (n, y) { if (!U.narrow() || n <= 3) return U.line(n, y); var d = U.dims(), stepY = 72 / d[1] * 100; return U.grid(n, Math.min(y, 92 - stepY * (Math.ceil(n / 4) - 1)), 4, stepY); };
   U.bunch = function (n, box) {
@@ -53,9 +53,13 @@
   /* scattered but never touching: each thing gets its own cell of a grid, jiggled inside it (so a sticker always belongs to one thing).
      Returns { p: points, w: the item width in % that fits a cell } */
   U.spots = function (n, box, wantW) {
-    var D = U.dims(), cols = n <= 4 ? 3 : n <= 6 ? 3 : 4, rows = Math.ceil(Math.max(n, cols + 1) / cols); if (cols * rows < n) rows++;
+    var D = U.dims(), cols = 3, rows, best = -1;
+    /* pick the grid (2-5 across) that gives each thing the biggest cell, with a spare cell or two so it looks scattered */
+    for (var tc = 2; tc <= 5; tc++) for (var spare = 1; spare >= 0; spare--) {
+      var tr = Math.ceil((n + spare) / tc), px = Math.min((box[1] - box[0]) / tc / 100 * D[0], (box[3] - box[2]) / tr / 100 * D[1]);
+      if (px > best + (spare ? 0 : 6)) { best = px; cols = tc; rows = tr; } }   /* a spare cell only if it costs little */
     var cw = (box[1] - box[0]) / cols, ch = (box[3] - box[2]) / rows, cellPx = Math.min(cw / 100 * D[0], ch / 100 * D[1]);
-    var w = Math.min(wantW || U.itemW(n), cellPx * .86 / D[0] * 100), wPx = w / 100 * D[0], jx = Math.max(0, (cw / 100 * D[0] - wPx) / 2 * .8), jy = Math.max(0, (ch / 100 * D[1] - wPx) / 2 * .8);
+    var w = Math.min(wantW || U.itemW(n), cellPx * .95 / D[0] * 100), wPx = w / 100 * D[0], jx = Math.max(0, (cw / 100 * D[0] - wPx) / 2 * .8), jy = Math.max(0, (ch / 100 * D[1] - wPx) / 2 * .8);
     var cells = []; for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) cells.push([r, c]);
     cells = FR.shuffle(cells).slice(0, n);
     return { w: w, p: cells.map(function (rc) { return [box[0] + cw * (rc[1] + .5) + (Math.random() * 2 - 1) * jx / D[0] * 100, box[2] + ch * (rc[0] + .5) + (Math.random() * 2 - 1) * jy / D[1] * 100]; }) };
@@ -63,8 +67,8 @@
 
   /* ---------- two hands: 0-10 fingers (left hand first, then right) ---------- */
   U.hands = function (box) {
-    var a = FR.fingers(0, true), b = FR.fingers(0, true); a.el.classList.add('h0'); b.el.classList.add('h1'); b.el.style.transform = 'scaleX(-1)';
-    box.innerHTML = ''; box.appendChild(a.el); box.appendChild(b.el);
+    var a = FR.fingers(0, true), b = FR.fingers(0, true); b.el.style.transform = 'scaleX(-1)';
+    box.innerHTML = ''; [[a, 'h0'], [b, 'h1']].forEach(function (x) { var w = document.createElement('div'); w.className = 'hw ' + x[1]; w.appendChild(x[0].el); box.appendChild(w); });
     /* bigger tap zones: each finger answers to its whole column, from the top of the hand down to the palm */
     [a.el, b.el].forEach(function (h) { h.querySelectorAll('.fg:not([data-f="4"]) > g').forEach(function (g) { var r = g.querySelector('rect.skin'), x = +r.getAttribute('x'), w = +r.getAttribute('width'), y = +r.getAttribute('y'), ht = +r.getAttribute('height');
       var z = document.createElementNS('http://www.w3.org/2000/svg', 'rect'); z.setAttribute('x', x - 1.5); z.setAttribute('y', y - 16); z.setAttribute('width', w + 3); z.setAttribute('height', ht + 16); z.setAttribute('fill', 'transparent'); g.insertBefore(z, g.firstChild); }); });
@@ -72,16 +76,8 @@
     api.count = function () { return a.count() + b.count(); };
     api.set = function (n) { a.set(Math.min(5, n)); b.set(Math.max(0, n - 5)); };
     api.lock = function (on) { a.lock(on); b.lock(on); };
-    /* the taps a boy would make: tap the palm to raise the next finger, tap a raised finger to fold it */
-    api.moves = function (n) {
-      var out = [];
-      [[a, 'h0', Math.min(5, n)], [b, 'h1', Math.max(0, n - 5)]].forEach(function (x) {
-        var h = x[0], c = h.count(), want = x[2], k;
-        for (k = c; k < want; k++) out.push({ tap: '#hands .' + x[1] + ' svg > path:first-of-type' });
-        for (k = 4; k >= 0 && c > want; k--) if (!h.finger(k).classList.contains('down')) { out.push({ tap: '#hands .' + x[1] + ' .fg[data-f="' + k + '"]' }); c--; }
-      });
-      return out;
-    };
+    /* the taps a boy would make: tap a hand to raise its next finger, its put-one-down button to fold one */
+    api.moves = function (n) { return FR.fingerTaps(a, Math.min(5, n), '#hands .h0').concat(FR.fingerTaps(b, Math.max(0, n - 5), '#hands .h1')); };
     a.onChange = b.onChange = function () { if (api.onChange) api.onChange(api.count()); };
     return api;
   };
@@ -147,10 +143,14 @@
   U.countRound = function (F, o) {
     return new Promise(async function (res) {
       U.clear(); $('hands').hidden = false; o.H.set(0); o.H.lock(true);
-      if (!o.stay) { var sh = document.createElement('div'); sh.className = 'shelf'; $('scene').appendChild(sh); }
+      var sh = document.createElement('div'); sh.className = 'shelf'; $('scene').appendChild(sh);
       var w = U.itemW(o.n), pts, slots = U.line(o.n, 25), els = [], moved = 0, busy = false, shelfEls = [];
-      if (o.line) pts = U.table(o.n, 72);
-      else { var sp = U.spots(o.n, o.stay ? (U.narrow() ? [8, 92, 8, 94] : [8, 92, 12, 90]) : (U.narrow() ? [8, 92, 50, 95] : [8, 92, 54, 94]), w); pts = sp.p; w = sp.w; }
+      if (o.stay) {   /* the books stand on the shelf (two shelves on a phone) and stay there; each gets a tick */
+        if (U.narrow() && o.n > 4) { var s2 = document.createElement('div'); s2.className = 'shelf'; s2.style.top = '76%'; $('scene').appendChild(s2); pts = U.grid(o.n, 23, 4, 43); }
+        else { pts = U.line(o.n, 24); w = Math.min(w, Math.min(20, 86 / o.n) - 1); }
+      }
+      else if (o.line) pts = U.table(o.n, 72);
+      else { var sp = U.spots(o.n, U.narrow() ? [3, 97, 39, 98] : [8, 92, 42, 95], w); pts = sp.p; w = sp.w; }
       var shelfW = Math.min(w, Math.min(20, 86 / o.n) - 1);
       for (var i = 0; i < o.n; i++) els.push(U.put(o.kind, pts[i], w, i, 'cnt'));
       function hooks() { var rest = els.filter(function (e) { return !e.classList.contains('done'); }); GAME.right = rest.length ? function () { return [{ tap: '#scene .it[data-i="' + rest[0].dataset.i + '"]' }]; } : null; GAME.wrong = null; }
@@ -200,7 +200,7 @@
         GAME.wrong = d >= 0 && free.length > d ? function () { return acts.concat([{ tap: '#scene .it[data-i="' + free[d].dataset.i + '"]' }, { tap: '#check' }]); } : null;
       }
       function add(r) { if (onPlate.indexOf(r) >= 0 || onPlate.length >= 10) return; onPlate.push(r); layout(); NK.sound.pop(); if (!o.check && !o.silent) F.say(F.Word(onPlate.length), { noRepeat: true }); ready(); hooks(); }
-      function back(r) { var k = onPlate.indexOf(r); if (k < 0) return; onPlate.splice(k, 1); layout(); NK.sound.back(); ready(); hooks(); }
+      function back(r) { var k = onPlate.indexOf(r); if (k < 0) return; onPlate.splice(k, 1); layout(); NK.sound.back(); if (!o.check && !o.silent) F.say(onPlate.length ? 'Now ' + F.word(onPlate.length) + '.' : 'None.', { noRepeat: true }); ready(); hooks(); }
       var drag = null;
       function down(e) { if (GAME.phase !== 'answer') return; var r = e.target.closest('.it'); if (!r) return; e.preventDefault(); drag = { r: r, x: e.clientX, y: e.clientY, moved: false, id: e.pointerId }; }
       function move(e) { if (!drag || e.pointerId !== drag.id) return; if (!drag.moved && Math.hypot(e.clientX - drag.x, e.clientY - drag.y) < 10) return;

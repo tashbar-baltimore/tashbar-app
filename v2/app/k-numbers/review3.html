@@ -54,12 +54,12 @@
     await F.say('What comes next? Five!'); st[3].classList.add('on'); await showOnHands(F, 5); await F.say('Now you!');
   }
   function stones() { $('scene').innerHTML = '<div class="stones" id="stones"><div class="stone"></div><div class="stone"></div><div class="stone"></div><div class="stone q">?</div></div>'; }
-  var F0 = FR, shown = {};
-  async function peek(F, n, kind) {
+  var F0 = FR, shown = {}, easy = 0, misses = 0;
+  async function peek(F, n, kind, ms) {
     if (!shown.peek) { shown.peek = true; GAME.phase = 'demo'; F.lock(true); await F.say('Review time! Things you learned before.'); await peekDemo(F); }
     var c = card(n, kind);
     await F.say('Peek!', { repeat: 'How many? Show me on the hands.' });
-    $('flash').classList.add('open'); NK.sound.cloth(); await F.wait(n <= 3 ? 1100 : 1300); $('flash').classList.remove('open'); await F.wait(380);
+    $('flash').classList.add('open'); NK.sound.cloth(); await F.wait(ms || (n <= 3 ? 1100 : 1300)); $('flash').classList.remove('open'); await F.wait(380);
     return U.answer(F, { n: n, H: H, ask: 'How many? Show me.',
       explain: async function (F) { $('flash').classList.add('open'); if (c.L) await F.showShape(c, true); await F.wait(300); $('flash').classList.remove('open'); } });
   }
@@ -75,9 +75,17 @@
     id: 'u3-review', title: 'Review', rounds: 6,
     hero: '<svg viewBox="0 0 100 100"><use href="#nkPalm"/></svg><svg viewBox="0 0 100 100"><use href="#nkStar"/></svg>',
     init: function () { U.addArt(); H = U.hands($('hands')); H.lock(true); },
-    reset: function (F, again) { if (!again) shown = {}; plan = [['peek', F.pick([2, 3])], ['next', F.pick([1, 2, 3])], ['peek', F.pick([4, 5])], ['next', F.pick([4, 5])], ['peek', F.pick([3, 4, 5])], ['next', F.pick([5, 6, 7])]]; },
+    reset: function (F, again, slow) { if (!again) shown = {}; easy = slow ? 3 : 0; misses = 0; plan = [['peek', F.pick([2, 3])], ['next', F.pick([1, 2, 3])], ['peek', F.pick([4, 5])], ['next', F.pick([4, 5])], ['peek', F.pick([3, 4, 5])], ['next', F.pick([5, 6, 7])]]; },
     endSay: function (s) { return s >= 2 ? 'You remember it all! Great review!' : 'Good try! Practice makes it stick.'; },
-    round: function (F, i) { var p = plan[i]; return p[0] === 'peek' ? peek(F, p[1], KINDS[i % 3]) : next(F, p[1]); }
+    /* easier path after two misses: small numbers and a longer peek */
+    round: async function (F, i) {
+      var p = plan[i], help = easy > 0; if (easy > 0) easy--;
+      var first = p[0] === 'peek' ? await peek(F, help ? F.pick([1, 2, 3]) : p[1], KINDS[i % 3], help ? 1600 : 0) : await next(F, help ? F.pick([1, 2]) : p[1]);
+      if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
+      return first;
+    },
+    bonusSay: 'Bonus! Super quick!',
+    bonus: async function (F) { await peek(F, 5, 'dots', 900); await next(F, 7); }
   });
 })();
 </script>

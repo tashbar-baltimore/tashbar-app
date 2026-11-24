@@ -10,24 +10,12 @@
      "You have five. Bubby needs four." A second miss also says "Take one off." Slow: 2-4. Quick: a bonus of 8-9. -->
 <link rel="stylesheet" href="frame.css">
 <link rel="stylesheet" href="unit3.css">
-<style>.panel #check{ width:clamp(110px,16vh,140px); }
-.bubby{ width:min(28vw,40vh,300px); filter:drop-shadow(0 10px 8px rgba(60,40,20,.25)); }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .bubby{ display:none; } }</style>
+<style>.panel #check{ width:clamp(110px,16vh,140px); }</style>
 </head>
 <body>
 <div id="game" class="locked"><div class="stage" id="stage">
   <div class="scene" id="scene"></div>
   <div class="panel"><div id="hands" hidden></div>
-    <!-- Bubby's hands hold out an empty plate (long, modest sleeves with a lace cuff; no face) -->
-    <svg class="bubby" viewBox="-16 0 252 172" aria-hidden="true"><defs>
-      <linearGradient id="bbSleeve" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7A5FB8"/><stop offset="1" stop-color="#4B3887"/></linearGradient></defs>
-      <ellipse cx="110" cy="70" rx="96" ry="34" fill="#A9C1DE"/><ellipse cx="110" cy="66" rx="96" ry="34" fill="#fff" stroke="#C7D9EE" stroke-width="4"/><ellipse cx="110" cy="66" rx="62" ry="20" fill="#EEF5FC"/>
-      <path d="M-10 170 L 8 112 C 14 98, 34 92, 46 98 L 62 150 L 40 170 Z" fill="url(#bbSleeve)" stroke="#2F2360" stroke-width="3"/>
-      <path d="M230 170 L 212 112 C 206 98, 186 92, 174 98 L 158 150 L 180 170 Z" fill="url(#bbSleeve)" stroke="#2F2360" stroke-width="3"/>
-      <path d="M8 112 C 18 104, 36 100, 48 104" stroke="#fff" stroke-width="6" fill="none" stroke-dasharray="3 3" stroke-linecap="round"/><path d="M212 112 C 202 104, 184 100, 172 104" stroke="#fff" stroke-width="6" fill="none" stroke-dasharray="3 3" stroke-linecap="round"/>
-      <path d="M22 104 C 20 88, 30 74, 44 72 C 56 70, 62 80, 58 92 C 54 104, 40 110, 22 104 Z" fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="3"/>
-      <path d="M198 104 C 200 88, 190 74, 176 72 C 164 70, 158 80, 162 92 C 166 104, 180 110, 198 104 Z" fill="url(#nkSkin)" stroke="#7A4A2B" stroke-width="3"/>
-      <path d="M40 74 C 42 66, 50 62, 56 66 M180 74 C 178 66, 170 62, 164 66" stroke="#7A4A2B" stroke-width="3" fill="url(#nkSkin)" stroke-linecap="round"/></svg>
     <button id="check" class="dim btn3d b-green" aria-label="Check"><svg viewBox="0 0 48 48"><path d="M10 25l9 9 19-20" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
 </div></div>
 <script src="kit.js"></script>
@@ -41,7 +29,7 @@
     id: 'u3-give', title: 'Give me!', rounds: 5,
     hero: '<svg viewBox="0 0 100 100"><use href="#u3Roll"/></svg><svg viewBox="0 0 100 100"><use href="#u3Roll"/></svg>',
     init: function () { U.addArt(); },
-    reset: function () { easy = 0; misses = 0; },
+    reset: function (F, again, slow) { easy = slow ? 3 : 0; misses = 0; },   /* he did not pass last time: start on the easier path */
     demo: async function (F) {
       U.clear(); var pl = document.createElement('div'); pl.className = 'plate3'; $('scene').appendChild(pl);
       var rolls = [[12, 64], [24, 64], [36, 64], [48, 64], [60, 64], [72, 64], [84, 64]].map(function (p, i) { return U.put('roll', p, 10.5, i, 'pile'); });
@@ -61,7 +49,7 @@
       if (!first) { misses++; if (misses >= 2) { easy = 2; misses = 0; } } else misses = 0;
       return first;
     },
-    bonus: async function (F) { await U.giveRound(F, { n: F.pick([8, 9]) }); }
+    bonus: async function (F) { await U.giveRound(F, { n: F.pick([8, 9]), silent: true }); }
   });
 })();
 </script>
