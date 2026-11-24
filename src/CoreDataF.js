@@ -64,5 +64,9 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.24", "Fork in the Storm", "Read or, where bossy r makes the o say or", { after: "READ.PHON.L02.23", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.25", "Bird, Fern and Fur", "Read er, ir and ur, which all say er", { after: "READ.PHON.L02.24", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.26", "Spell the Bossy R", "Spell ar and or by sound, and pick the er spelling you have seen", { after: "READ.PHON.L02.25", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
-  ["READ.FLU.L02.10", "Who Is Talking?", "Find the talking words in a story and read them like the speaker", { after: "READ.PHON.L02.26", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }]
+  ["READ.FLU.L02.10", "Who Is Talking?", "Find the talking words in a story and read them like the speaker", { after: "READ.PHON.L02.26", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }],
+  ["READ.PA.L02.04", "Every Beat Has a Vowel", "Hear the beats in a word and find the vowel in each beat", { after: "READ.PHON.L02.03", std: "RF.1.3d", file: "CoreDataFH2", min: 5 }],
+  ["READ.PHON.L02.27", "Rab-bit Split", "Split a two-beat word between two consonants and read each beat", { after: "READ.PA.L02.04", std: "RF.1.3e", file: "CoreDataFH2", min: 6 }],
+  ["READ.PHON.L02.28", "Fast, Faster, Fastest", "Read -er (more) and -est (the most)", { after: "READ.PHON.L02.04", std: "RF.1.3f", file: "CoreDataFH2", min: 6 }],
+  ["WRIT.HAND.L02.04", "Copy It Neatly", "Copy a sentence with a capital, spaces, an end mark and tails below the line", { after: "LANG.MECH.L02.02", std: "L.1.1a", file: "CoreDataFH2", min: 5 }]
 ];
