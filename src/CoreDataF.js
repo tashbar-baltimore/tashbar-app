@@ -65,6 +65,15 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.43", "Her, Bird, Fur", "Read er, ir and ur, which all say er", { after: "READ.PHON.L02.42", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.44", "Spell Bossy R", "Spell words with ar, or and er", { after: "READ.PHON.L02.43", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
   ["READ.FLU.L02.22", "Talking in a Story", "Find who is talking and read the talking part with feeling", { after: "READ.PHON.L02.44", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }],
+  ["READ.LIT.L01.01", "Who Is in the Story?", "Listen to a story and name its characters", { after: "READ.COMP.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.02", "Where Is the Story?", "Listen to a story and tell where and when it happens", { after: "READ.LIT.L01.01", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.03", "Problem and Fix", "Listen to a story and tell its problem and how it was fixed", { after: "READ.LIT.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
+  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }],
+  ["READ.PHON.L01.05", "Moon and Apple", "Know the sounds of m (moon) and a (apple)", { after: "READ.PHON.L01.01.a", std: "RF.K.3a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L01.06", "Sss and Tuh", "Know the sounds of s (snake) and t (tiger)", { after: "READ.PHON.L01.05", std: "RF.K.3a", file: "CoreDataF2", min: 5 }],
+  ["READ.PHON.L01.07", "My First Words", "Blend and read am, at, sat and mat", { after: "READ.PA.L01.05", std: "RF.K.3", file: "CoreDataF2", min: 5 }],
+  ["READ.FLU.L01.02", "Heart Words: the, a", "Read the heart words the and a by sight", { after: "READ.PHON.L01.07", std: "RF.K.3c", file: "CoreDataF2", min: 4 }],
+  ["WRIT.HAND.L01.05", "Write m, a, s, t", "Say it, trace it, write it: m, a, s and t", { after: "WRIT.HAND.L01.01", std: "L.K.1a", file: "CoreDataF2", min: 5 }],
   ["READ.PA.L02.20", "Every Beat Has a Vowel", "Hear the beats in a word: every beat has a vowel", { after: "READ.PHON.L02.03", std: "RF.1.3d", file: "CoreDataFH2", min: 5 }],
   ["READ.PHON.L02.45", "Rabbit Split", "Split a two-beat word between two consonants and read it", { after: "READ.PA.L02.20", std: "RF.1.3e", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.46", "Fast, Faster, Fastest", "Read and use the endings -er and -est", { after: "READ.PHON.L02.45", std: "RF.1.3f", file: "CoreDataFH2", min: 6 }],
@@ -76,9 +85,5 @@ CORE_SKILLS.F = [
   ["READ.PHON.L02.47", "Hear It, Write It", "Hear a sentence and build it: words, capital and end mark", { after: "READ.FLU.L02.23", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
   ["READ.PHON.L02.48", "Try the Vowel", "Read a new word by trying the other vowel sound", { after: "READ.PHON.L02.47", std: "RF.1.3", file: "CoreDataFH2", min: 6 }],
   ["READ.FLU.L02.24", "Heart Word Dash", "Read the Grade 1 heart words quickly and surely", { after: "READ.PHON.L02.48", std: "RF.1.3g", file: "CoreDataFH2", min: 5 }],
-  ["READ.FLU.L02.25", "Read It 3 Times", "Read a short story 3 times: in phrases, smoothly, with expression", { after: "READ.FLU.L02.24", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }],
-  ["READ.LIT.L01.01", "Who Is in the Story?", "Listen to a story and name its characters", { after: "READ.COMP.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
-  ["READ.LIT.L01.02", "Where Is the Story?", "Listen to a story and tell where and when it happens", { after: "READ.LIT.L01.01", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
-  ["READ.LIT.L01.03", "Problem and Fix", "Listen to a story and tell its problem and how it was fixed", { after: "READ.LIT.L01.02", std: "RL.K.3", file: "CoreDataFH3", min: 6 }],
-  ["READ.LIT.L01.04", "Retell It", "Retell a story in order: beginning, middle and end", { after: "READ.LIT.L01.03", std: "RL.K.2", file: "CoreDataFH3", min: 6 }]
+  ["READ.FLU.L02.25", "Read It 3 Times", "Read a short story 3 times: in phrases, smoothly, with expression", { after: "READ.FLU.L02.24", std: "RF.1.4b", file: "CoreDataFH2", min: 6 }]
 ];
