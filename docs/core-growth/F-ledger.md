@@ -25,7 +25,7 @@ A boy who tests out of a skill skips it, so a fast boy needs fewer minutes. That
 ## Built and live (passes the standard)
 | Grade | Lessons | Texts | Hours built | Planned |
 |---|---|---|---|---|
-| K | 3 games (`READ.PA.L01.07`–`.09`) | 0 | ≈ 0.25 (3 × 5 min) | 36 |
+| K | 36 games: Unit 1 (`READ.PA.L01.07`–`.09`), Unit 2 (`READ.PHON.L01.05`–`.07`, `READ.FLU.L01.02`, `WRIT.HAND.L01.05`), Units 6–10 by the F helper (24 games, `src/CoreDataFH1.html`), listen-along set 1 by the F helper (4 games, `src/CoreDataFH3.html`) | 4 listen-along stories (helper) | ≈ 3.0 (36 × 5 min) | 36 |
 | 1 | 2 games (`READ.PHON.L02.22`, `READ.PA.L02.02`) | 0 | ≈ 0.2 (2 × 6 min) | 52 |
 | 2 | 19 (`READ.PHON.L03.04`–`.11`, `.13`–`.17`, `READ.LV.L03.03`–`.06`, `READ.FLU.L03.04` new; `READ.PHON.L03.01` rebuilt) | 0 | ≈ 3.8 (19 × 7 min + review) | 20 |
 
