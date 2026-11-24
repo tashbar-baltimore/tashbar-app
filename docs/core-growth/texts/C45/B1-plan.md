@@ -2,11 +2,11 @@
 
 Job C45. Units 4.1–4.3. Cast: the Glen Avenue Crew (`docs/core-growth/C45-map.md` §5). Draft texts; they move to job T's content store when it exists.
 
-**The story in one line:** Two days before Sukkos, the beautiful esrog Rabbi Feldman brought to class disappears from its silver box, and the Glen Avenue Crew must find it before Yom Tov without blaming someone who did nothing wrong.
+**The story in one line:** Three days before Sukkos, the beautiful esrog Rabbi Feldman brought to class disappears from its silver box, and the Glen Avenue Crew must find it before Yom Tov without blaming someone who did nothing wrong.
 
 **Theme (for Unit 4.3):** Judge people favorably (dan l'kaf zechus): look at all the clues before you decide what someone did.
 
-**Who did it (the answer):** Nobody stole it. During recess Rabbi Feldman noticed a tiny dark spot on the esrog. He rushed it upstairs to the Rav (Rav Mizrachi) to ask if it was still kosher, and wrote "Back by 3, esrog with me" on a sticky note. The note fell behind the radiator when the window blew open. The new boy, Nosson Abergel, who stayed inside at recess, looks guilty but was only helping.
+**Who did it (the answer):** Nobody stole it. During recess Rabbi Feldman noticed a tiny dark spot on the esrog. He rushed it upstairs to the Rav (Rav Mizrachi) to ask if it was still kosher, and wrote "Back soon. The esrog is with me. R.F." on a sticky note. The note fell behind the radiator when the window blew open. The new boy, Nosson Abergel, who stayed inside at recess, looks guilty but was only helping.
 
 **Fair clues the reader can use (planted for inference):**
 | Clue | Chapter | What it really means |
@@ -15,7 +15,7 @@ Job C45. Units 4.1–4.3. Cast: the Glen Avenue Crew (`docs/core-growth/C45-map.
 | A faint lemony smell on the soft cloth in the empty box | 1 | The esrog was taken out gently and carefully, not grabbed |
 | The window is open and papers are scattered | 2 | Wind; something could have blown away |
 | Nosson has flax (esrog wrapping fluff) on his sleeve | 2 | Red herring: he carried the flax-filled shipping box to the garbage for the rebbe before davening (explained in ch. 3) |
-| Footprints of wet leaves going UP the stairs, not out the door | 3 | Someone went upstairs (to the Rav's office) |
+| Wet leaves blown in by the open window, by the rebbe's desk, and the same leaves on the stairs going UP past the class's floor | 2–3 | Someone walked from the classroom upstairs (to the Rav's office) |
 | A corner of yellow paper behind the radiator | 3 (cliffhanger, unseen) / 8 (found) | The note |
 
 **Chapters (≈ 1,000–1,300 words each; each ends on a hook):**
@@ -29,6 +29,8 @@ Job C45. Units 4.1–4.3. Cast: the Glen Avenue Crew (`docs/core-growth/C45-map.
 8. In the Daylight: each boy's piece of evidence; the Rav looks from the side and brushes off a wisp of flax. *Hook: a surprise for the class.*
 9. The Voice from Far Away: a phone call with Reb Elazar, the grower (thorns, daily checking, asking a Rav); Chol HaMoed groups. *Hook: a wind warning for their turn.*
 10. The Wind Alarm: Dovid's alarm saves the sukkah decorations; the bracha; "A good detective looks at all the clues before he decides." THE END.
+
+**Avrumi's special dot:** ch. 1 plants it ("pressed one dot extra dark"); ch. 6–8 pay it off.
 
 **Words to know (for job G):** examine, peculiar, suspicious, flax, hadar, clue, conclusion, evidence.
 
