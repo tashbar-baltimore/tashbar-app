@@ -149,6 +149,7 @@ async function page(pg, rep) {
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push('390px: ' + f)); } catch (e) { fail('new activity kinds (390 px) crashed: ' + String(e).slice(0, 200)); }
   await pg.setViewportSize({ width: 1366, height: 768 });
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push(f)); ca.oks.forEach(o => oks.push(o)); } catch (e) { fail('new activity kinds crashed: ' + String(e).slice(0, 200)); }
+  try { const rk = await require('./corereadkinds.js')(pg); rk.fails.forEach(f => fails.push(f)); rk.oks.forEach(o => oks.push(o)); } catch (e) { fail('read and proof kinds crashed: ' + String(e).slice(0, 200)); }
   if (!fails.length) oks.push('core skills (page): ' + got.mine.length + ' core lesson(s) loaded, no clash' + (notYet.length ? '; listed, no lesson yet (hidden from boys): ' + notYet.length : ''));
   return { fails, oks };
 }

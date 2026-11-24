@@ -37,6 +37,7 @@
     if (!Array.isArray(u.skills) || u.skills.length < 2 || u.skills.length > 12) return 'skills must list 2 to 12 skill ids';
     if (u.review && (!Array.isArray(u.review) || u.review.length > 4)) return 'review must list at most 4 skill ids';
     if (u.n != null && !(u.n >= 6 && u.n <= 12)) return 'n (questions in the unit check) must be 6 to 12';
+    if (u.items && W.OBK) { for (var i = 0; i < u.items.length; i++) { var it = u.items[i], ty = it && OBK.types[it.type]; if (ty && ty.reader) return 'items: ' + it.type + ' opens the Reader; use it in a lesson, not in a unit check'; } }
     return '';
   };
   U.add = function (u) { var e = U.err(u); if (e) { console.error('Unit ' + (u && u.id) + ': ' + e); return false; } if (BY[u.id]) return false;
@@ -52,7 +53,7 @@
     return it.t === 'mc' ? { skill: id, kind: 'mc', q: it.q, p: it.p || '', o: it.shown.slice(), a: it.correct } : { skill: id, kind: 'order', q: it.q, p: it.p || '', tiles: it.tiles.slice() };
   }
   function build(u, mode) {
-    var used = {}, out = [], extra = (u.items || []).filter(function (x) { return x && x.skill; });
+    var used = {}, out = [], extra = (u.items || []).filter(function (x) { var ty = x && W.OBK && OBK.types[x.type]; return x && x.skill && !(ty && ty.reader); });   /* again here: a unit added before the kit loaded was not checked for Reader kinds */
     var per = function (id) { var own = extra.filter(function (x) { return x.skill === id && !x.__used; })[0]; if (own) { own.__used = 1; return { skill: id, kind: 'kit', act: own }; } return fromSkill(id, used); };
     u.skills.forEach(function (id) { var q = per(id); if (q) out.push(q); });
     if (mode === 'check') {
@@ -155,7 +156,7 @@
     var qs = build(u, mode); if (qs.length < 2) { console.error('Unit ' + u.id + ': not enough tap questions for a ' + mode + ' (' + qs.length + ')'); return Promise.resolve({ mode: mode, unit: u.id, done: false, skipped: true }); }
     return new Promise(function (resolve) {
       var el = document.createElement('div'); el.id = 'cun'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', mode === 'pre' ? 'Quick check' : 'Unit check'); css();
-      document.body.appendChild(el); document.addEventListener('keydown', onKey, true);
+      document.documentElement.appendChild(el);   /* on html, not body: a lesson screen (body.ob-on) hides everything else in body */ document.addEventListener('keydown', onKey, true);
       S = { u: u, mode: mode, qs: qs, ans: [], i: 0, view: 'gate', el: el, resolve: resolve }; draw();
     });
   }

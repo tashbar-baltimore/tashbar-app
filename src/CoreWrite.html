@@ -203,7 +203,7 @@
   }
   function mount(o, view) {
     css(); var el = document.createElement('div'); el.id = 'cwr'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Writing workshop');
-    document.body.appendChild(el); el.addEventListener('input', onInput); el.addEventListener('click', onClick); document.addEventListener('keydown', onKey, true);
+    document.documentElement.appendChild(el);   /* on html, not body: a lesson screen (body.ob-on) and the K-1 home hide everything else in body */ el.addEventListener('input', onInput); el.addEventListener('click', onClick); document.addEventListener('keydown', onKey, true);
     return el;
   }
 
