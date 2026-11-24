@@ -40,5 +40,10 @@ CORE_SKILLS.C45 = [
   ["READ.COMP.L05.14", "Signal Words", "Use signal words to see how a text is built", { after: "READ.LIT.L05.06", std: "RI.4.5", file: "CoreDataC457", min: 8 }],
   ["READ.COMP.L05.15", "How and Why", "Explain a process step by step, and why", { after: "READ.COMP.L05.14", std: "RI.4.3", file: "CoreDataC457", min: 8 }],
   ["READ.COMP.L05.16", "Pick the Organizer", "Pick the organizer that fits how a text is built", { after: "READ.COMP.L05.15", std: "RI.4.5", file: "CoreDataC457", min: 8 }],
-  ["READ.FLU.L05.04", "Punctuation Tells Your Voice", "Let punctuation tell your voice what to do", { after: "READ.COMP.L05.16", std: "RF.4.4b", file: "CoreDataC457", min: 8 }]
+  ["READ.FLU.L05.04", "Punctuation Tells Your Voice", "Let punctuation tell your voice what to do", { after: "READ.COMP.L05.16", std: "RF.4.4b", file: "CoreDataC457", min: 8 }],
+  ["READ.COMP.L05.17", "Predict and Check", "Predict with clues, then check what really happens", { after: "READ.FLU.L05.04", std: "RL.4.1", file: "CoreDataC459", min: 8 }],
+  ["READ.COMP.L05.18", "Ask a Good Question", "Ask thick and thin questions while you read", { after: "READ.COMP.L05.17", std: "RL.4.1", file: "CoreDataC459", min: 8 }],
+  ["READ.COMP.L05.19", "Clarify It", "Fix a confusing part: reread, read on, or look at word parts", { after: "READ.COMP.L05.18", std: "RF.4.4c", file: "CoreDataC459", min: 8 }],
+  ["READ.COMP.L05.20", "The Best Summary", "Pick a summary that is not too long and not too short", { after: "READ.COMP.L05.19", std: "RL.4.2", file: "CoreDataC459", min: 8 }],
+  ["READ.COMP.L05.21", "Reading Coach", "Predict, question, clarify and summarize as you read", { after: "READ.COMP.L05.20", std: "RL.4.10", file: "CoreDataC459", min: 10 }]
 ];
