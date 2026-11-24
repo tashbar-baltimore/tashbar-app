@@ -270,7 +270,7 @@ document.addEventListener('click',e=>{ const b=e.target.closest&&e.target.closes
  if(a==='close-bg'&&e.target!==b) return;
  if(a==='check'){ try{ SND.tap(); }catch(x){} if(typeof window.tlOpenCheck==='function') window.tlOpenCheck(b.dataset.s); return; }   /* v172 */
  if(a==='levels'){ try{ SND.tap(); }catch(x){} const P=(A.st&&A.st.place)||{}; const row=(k,s,ic,t,sub)=>`<button class="btn ${P[k]?'':'go'} big" data-hp="check" data-s="${sub}" style="width:100%;margin:6px 0">${ic} ${t}${P[k]?' · ✓ done, check again':''}</button>`;
-   overlay('<div class="oe">🧭</div><h2>Find my levels</h2><p>A short check for each subject finds where your own path starts. Not for marks.</p>'+row('MATH','MATH','🧭','Math','MATH')+row('READ','READ','📖','Reading','READ')+row('SOC','SS','🌍','Social Studies','SS')+'<button class="btn" data-act="closeov" style="margin-top:8px">Later</button>'); return; }
+   overlay('<div class="oe">🧭</div><h2>Find my levels</h2><p>A short check for each subject finds where your own path starts. Not for marks.</p>'+row('MATH','MATH','🧭','Math','MATH')+row('READ','READ','📖','Reading','READ')+row('SOC','SS','🌍','Social Studies','SS')+(window.TLK?TLK.x('data-act="closeov"','tr'):'<button class="btn" data-act="closeov" style="margin-top:8px">Later</button>')); return; }
  if(a==='jokes'){ try{ SND.tap(); }catch(x){} if(typeof window.tlJokeBook==='function') window.tlJokeBook(); return; }   /* v164 */
  if(a==='open'){ HP.open=b.dataset.k; }
  else if(a==='close'||a==='close-bg'){ HP.open=null; }

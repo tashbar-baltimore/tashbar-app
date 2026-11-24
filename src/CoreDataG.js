@@ -97,5 +97,8 @@ CORE_SKILLS.G = [
   ["READ.VOC.L09.03", "Clue Strategies", "Choose context clues, word parts or the dictionary for an unknown word, and verify the meaning", { after: "READ.VOC.L09.02", std: "L.8.4a", file: "CoreDataG7", min: 8 }],
   ["READ.VOC.L09.04", "Irony and Puns", "Interpret verbal irony and puns in context", { after: "READ.VOC.L09.03", std: "L.8.5a", file: "CoreDataG7", min: 8 }],
   ["READ.VOC.L09.05", "Firm or Bullheaded?", "Tell how connotation makes a side of an argument sound good or bad", { after: "READ.VOC.L09.04", std: "L.8.5c", file: "CoreDataG7", min: 8 }],
-  ["READ.VOC.L09.06", "Academic Words 8", "Use the research words source, cite, synthesize, credible and paraphrase", { after: "READ.VOC.L09.05", std: "L.8.6", file: "CoreDataG7", min: 7 }]
+  ["READ.VOC.L09.06", "Academic Words 8", "Use the research words source, cite, synthesize, credible and paraphrase", { after: "READ.VOC.L09.05", std: "L.8.6", file: "CoreDataG7", min: 7 }],
+  ["READ.VOC.L05.06", "As Brave as a Lion", "Tell a simile (like or as) from a metaphor (is) and explain what each means", { after: "READ.VOC.L05.05", std: "L.4.5a", file: "CoreDataG8", min: 8 }],
+  ["READ.VOC.L07.07", "Part and Whole", "Solve analogies with part/whole, item/category, cause/effect and tool/use relationships", { after: "READ.VOC.L07.06", std: "L.6.5b", file: "CoreDataG8", min: 8 }],
+  ["READ.VOC.L08.07", "Analogy Ladder", "Use synonym, antonym and analogy relationships to understand words", { after: "READ.VOC.L08.06", std: "L.7.5b", file: "CoreDataG8", min: 8 }]
 ];
