@@ -33,7 +33,11 @@ queen: the one ant that lays all the eggs
 - **topic:** texts in one topic set share a topic, for example "Ants". Build knowledge with 5–8 texts per topic.
 - **source:** `original`, or `adapted from <a public-domain work>` (for example "adapted from Aesop"). **Never copy a copyrighted book or article.**
 - **pic** (optional): a picture already in `web/pics/`, with its line in `web/pics/SOURCES.md` (`docs/HANDOFF-PICS.md`).
+<<<<<<< HEAD
 - **words** (optional): the robust-vocabulary words for this text, 5–8 of them, each with a kid-friendly meaning of 120 letters at most. A boy taps the word in the Reader to see its meaning. Each one must be **one word, written exactly as it appears in the text** ("gasped", not "gasp"); the check refuses anything else.
+=======
+- **words** (optional): the robust-vocabulary words for this text, 5–8 of them, each with a kid-friendly meaning of 120 letters at most. A boy taps the word in the Reader to see its meaning. Every listed word must appear in the text.
+>>>>>>> origin/main
 - **Pages:** a page is what fits on one screen of the Reader. Aim for about 80–150 words a page for Grades 2–3, 150–250 for 4–5 and 200–300 for 6–8. K–1 pages are 1–3 sentences.
 
 ## 2. Check it
@@ -55,6 +59,7 @@ The check (also run by `node tests/run.js`) fails on:
 
 Sentences are split by the tool at `.`, `!` and `?`. `show` lets you see the split. "Mr.", "Mrs.", "Dr." and "R." are not treated as the end of a sentence.
 
+<<<<<<< HEAD
 ## 3. Open it in the Reader
 The book Reader (`src/CoreReader.html`) shows any text from the store:
 - a cover with depth (every text opens on its cover);
@@ -90,6 +95,14 @@ TLCORE.reader.open('C45.ANTS.01', { grade: 5, exit: 'x', ask: {
 To load a text in your own code: `TLCORE.text('C45.ANTS.01')` gives a Promise of the text, and `TLCORE.textSentences(t)` gives every sentence in reading order.
 
 Coming next from job T: the Reader inside a lesson as an activity ("read this chapter", "tap the proof"), so a lesson's data can name a text without any code.
+=======
+## 3. Use it in a lesson
+Your lesson data names the text by its id. The Reader opens it (`TLCORE.reader`, built next by job T), and a question can say which sentence proves the answer. Until then, code can load a text with:
+```js
+TLCORE.text('C45.ANTS.01').then(function (t) { /* t.title, t.pages, t.glossary */ });
+```
+`TLCORE.textSentences(t)` gives every sentence in reading order with its page and paragraph. Those numbers are what "tap the sentence that proves it" uses.
+>>>>>>> origin/main
 
 ## Rules that do not bend
 Family Life (modest, warm, normal frum family life; a wide mix of names; kosher food), never the Divine Name (Hashem in English, ה׳ in Hebrew), reading level that matches the grade, and **cold check passages**: teach on one text and check on another.
