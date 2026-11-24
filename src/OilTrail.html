@@ -801,7 +801,9 @@ let eng = null;
 function sync() {
   const on = window.tlOilOn();
   if (on && !eng) {
-    try { eng = createOilTrail({ zIndex: 2147483199, crackOnTap: !boughtTap(), dprCap: /CrOS/.test(navigator.userAgent) ? 1.5 : 2 }); }   /* Chromebooks: lighter drawing (the handoff's advice) */ catch (e) { console.warn('OilTrail', e); window.TL_OIL_OFF = true; return; }
+    try { eng = createOilTrail({ zIndex: 2147483199, crackOnTap: !boughtTap(),
+      /* HoS 2026-11-24: an olive on EVERY tap, buttons too (not only empty space); never where a boy types or draws */
+      ignore: 'input, select, textarea, [contenteditable], [data-no-oil]', dprCap: /CrOS/.test(navigator.userAgent) ? 1.5 : 2 }); }   /* Chromebooks: lighter drawing (the handoff's advice) */ catch (e) { console.warn('OilTrail', e); window.TL_OIL_OFF = true; return; }
   }
   if (eng) { eng.setEnabled(on); if (on) watchHome(); }
 }
