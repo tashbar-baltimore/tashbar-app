@@ -10,7 +10,7 @@ const fs = require('fs'), path = require('path');
 module.exports = async function teachPicsTests(pg) {
   const out = { fails: [], oks: [] }, root = path.join(__dirname, '..', '..');
   const size = pg.viewportSize(), shots = process.env.SHOTS;
-  const serve = r => { const f = path.join(root, 'web/pics', decodeURIComponent(r.request().url().split('/pics/')[1] || '').replace(/[\\/]/g, ''));
+  const serve = r => { const f = path.join(root, 'art/pics', decodeURIComponent(r.request().url().split('/pics/')[1] || '').replace(/[\\/]/g, ''));
     return fs.existsSync(f) ? r.fulfill({ body: fs.readFileSync(f), contentType: 'image/webp' }) : r.abort(); };
   await pg.route('https://tashbar-learning-live.web.app/pics/**', serve);
   try {
