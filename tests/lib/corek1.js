@@ -52,7 +52,7 @@ module.exports = async function (pg) {
       const done = Q('#k1cov [data-k1c=done]'); if (done) done.click(); await sleep(150);
       out.closed = !Q('#k1cov'); out.nextOpen = (() => { const ids = tiles(), i = ids.indexOf(G.id); return i >= 0 && ids[i + 1] ? !Q('#k1o .k1-t[data-id="' + ids[i + 1] + '"].lock') : null; })();
       try { localStorage.removeItem('tl-k1only'); K1O.grade = null; K1O.sid = null; } catch (e) {}
-      A.st = keep.st; A.view = keep.view; A.overlay = keep.overlay; try { render(); } catch (e) {}
+      A.st = keep.st || loadStudent({ id: 'TEST-01', name: 'Test Kid' }); A.view = keep.view || 'hub'; A.overlay = keep.overlay; try { render(); } catch (e) {}   /* never leave the page with no boy */
       return out;
     }).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 300)], looks: [] }));
     r.bad.forEach(b => fails.push(at + b)); if (r.bad.length) continue;
