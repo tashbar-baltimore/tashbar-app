@@ -19,5 +19,11 @@ CORE_SKILLS.C45 = [
   ["READ.COMP.L05.11", "The Main Idea Nobody Says", "Find a main idea the author never says", { std: "RI.4.2", file: "CoreDataC453", min: 8 }],
   ["READ.COMP.L05.12", "Which Detail Doesn't Belong?", "Spot the detail that does not support the main idea", { std: "RI.4.2", file: "CoreDataC453", min: 8 }],
   ["READ.COMP.L05.13", "GIST: Sum It Up", "Sum up a whole text in about 15 words", { std: "RI.4.2", file: "CoreDataC453", min: 8 }],
-  ["READ.FLU.L05.03", "Scoop the Words", "Read in phrases and pause at punctuation", { after: "READ.COMP.L05.13", std: "RF.4.4b", file: "CoreDataC453", min: 8 }]
+  ["READ.FLU.L05.03", "Scoop the Words", "Read in phrases and pause at punctuation", { after: "READ.COMP.L05.13", std: "RF.4.4b", file: "CoreDataC453", min: 8 }],
+  ["READ.LIT.L06.02", "Theme or Topic?", "Tell a story's theme from its topic", { after: "READ.FLU.L06.01", std: "RL.5.2", file: "CoreDataC454", min: 8 }],
+  ["READ.LIT.L06.03", "Meeting the Challenge", "How a character meets a challenge shows the theme", { std: "RL.5.2", file: "CoreDataC454", min: 8 }],
+  ["READ.LIT.L06.04", "Theme in a Poem", "Find the theme in what the speaker thinks about", { std: "RL.5.2", file: "CoreDataC454", min: 8 }],
+  ["READ.LIT.L06.05", "Summary with a Theme", "Summarize a story and end with its theme", { std: "RL.5.2", file: "CoreDataC454", min: 8 }],
+  ["READ.LIT.L06.06", "Keep Yourself Out", "Summarize without your own opinion", { std: "RL.5.2", file: "CoreDataC454", min: 8 }],
+  ["READ.FLU.L06.02", "Who Is Talking?", "Read dialogue with the right speaker and voice", { after: "READ.LIT.L06.06", std: "RF.5.4b", file: "CoreDataC454", min: 8 }]
 ];
