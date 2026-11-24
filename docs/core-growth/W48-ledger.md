@@ -9,7 +9,7 @@ Expected minutes for a typical boy. "Built" counts only lessons that are live an
 |---|---|---|---|---|---|---|
 | 4 (L05) | 32 / 251 | 12 / 900 | 30 / 180 | 5 / 50 | **23.0** | 0.5 |
 | 5 (L06) | 30 / 239 | 12 / 900 | 30 / 180 | 5 / 50 | **22.8** | 0.5 |
-| 6 (L07) | 27 / 231 | 10 / 900 | 25 / 175 | 5 / 50 | **22.6** | 0 |
+| 6 (L07) | 27 / 231 | 10 / 900 | 25 / 175 | 5 / 50 | **22.6** | 0.6 |
 | 7 (L08) | 25 / 212 | 10 / 900 | 25 / 175 | 5 / 50 | **22.3** | 0 |
 | 8 (L09) | 23 / 198 | 10 / 900 | 25 / 175 | 5 / 50 | **22.1** | 0 |
 
@@ -22,3 +22,4 @@ Nothing yet.
 - 2026-11-24 · Map written. Built: 0 hours. The 19 existing Gr 4–8 writing lessons are not counted until they are upgraded to the standard.
 - 2026-11-24 · Grade 4 Unit 1, 4 new small skills (WRIT.PARA.L05.06–09: Umbrella Sentence, Belongs or Not?, Say More, Tie It Up), 30 min. Built: Grade 4 0.5 hours.
 - 2026-11-24 · Grade 5 Unit 1, 4 new small skills (WRIT.ESSAY.L06.02–04, WRIT.PARA.L06.03: Hook the Reader, Point Proof Explain, Strong Finish, Who Is Reading?), 32 min. Built: Grade 5 0.5 hours.
+- 2026-11-24 · Grade 6 Unit 1, 4 new small skills (WRIT.ESSAY.L07.04, WRIT.PARA.L07.01–03: Best Evidence, Glue Words, Formal Voice, Close the Case), 33 min. Built: Grade 6 0.6 hours.
