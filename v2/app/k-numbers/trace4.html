@@ -38,7 +38,7 @@
     $('grp').innerHTML = ''; $('grp').appendChild(FR.card(n, kind));
     $('tw').innerHTML = ''; T = U4.tracer(n, opts); $('tw').appendChild(T.el); T.locked = true;
     T.onDone = finish; T.onMiss = miss;
-    T.onPart = function () { if (!told) { told = true; FR.say('Good! Keep going.'); } };   /* he lifted his finger: what he traced stays */
+    T.onPart = function () { NK.hush(); FR.say('Good! Keep going.', { noRepeat: true }); };   /* he lifted his finger: what he traced stays */
   }
   function hooks() {
     GAME.right = function () { return [{ trace: T.screenPts(T.stroke(), 2) }]; };

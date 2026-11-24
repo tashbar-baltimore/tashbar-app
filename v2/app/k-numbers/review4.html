@@ -89,14 +89,40 @@
     hero: '<div class="stones"><span class="stone btn3d lit">1</span><span class="stone btn3d lit">2</span><span class="stone btn3d lit">3</span><span class="stone btn3d dark">4</span></div>',
     init: function () { U4.defs(); },
     demo: async function (F) { await F.say('Review time! Things we learned before.'); await F.say('Peek, count, and help Bubby.'); },
-    reset: function () { A.reset(); },
+    reset: function () { A.reset(); shown = {}; },
     round: function (F, i) { return item(F, TASKS[i], false); },
-    bonus: function (F) { return item(F, 'peek', true); }   /* a quick boy: one super quick peek of 4 or 5 */
+    bonusSay: '', bonus: function (F) { return item(F, 'peek', true); }   /* a quick boy: one super quick peek of 4 or 5 */
   });
+  var shown = {};
+  function layout(task) { $('stage').classList.toggle('wide', task === 'next'); $('c2').hidden = task === 'next'; $('c1').innerHTML = ''; $('c2').innerHTML = ''; }
+  /* the first time each kind of item comes, the hand shows how (with a different number) */
+  async function showMe(F, task) {
+    GAME.phase = 'demo'; F.lock(true); layout(task); R = { task: task, misses: 0, n: 2, hint: false };
+    if (task === 'peek') {
+      $('c1').innerHTML = '<div class="qcard flash" id="flash"></div>';
+      var card = F.card(2, 'apple'); card.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; $('flash').appendChild(card);
+      var b = document.createElement('div'); b.className = 'bighand'; H = F.fingers(0, true); b.appendChild(H.el); $('c2').appendChild(b); $('c2').insertAdjacentHTML('beforeend', CHECK);
+      await F.say('Watch me. I see two. I show two.');
+      for (var k = 0; k < 2; k++) { await F.handTo(H.el, .5, .7); await F.handTap(); H.set(H.count() + 1); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('c2'), 'Two!');
+    } else if (task === 'next') {
+      var h = '<div class="stones">'; for (var s = 0; s < 6; s++) h += '<button class="stone btn3d ' + (s < 2 ? 'lit' : 'dark') + '" data-s="' + s + '">' + (s < 5 ? s + 1 : '') + '</button>';
+      $('c1').innerHTML = h + '</div>'; await F.say('Watch me. One, two...');
+      var st = document.querySelector('.stone[data-s="2"]'); await F.handTo(st); await F.handTap(); st.classList.replace('dark', 'lit');
+      await F.yes(st, 'Three comes next!');
+    } else {
+      $('c1').innerHTML = '<div class="plate4" id="plate"></div>'; $('c2').innerHTML = '<div class="rolls" id="rolls"></div>' + CHECK; drawPlate(0); drawRolls(6);
+      await F.say('Watch me. Bubby needs two rolls.');
+      for (var j = 0; j < 2; j++) { await F.handTo($('rolls').querySelector('svg')); await F.handTap(); drawPlate(j + 1); drawRolls(5 - j); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('plate'), 'Two rolls. Thank you!');
+    }
+    F.handHide(); await F.say('Now you!');
+  }
   function item(F, task, quick) {
       return new Promise(async function (res) {
+        if (!quick && !shown[task]) { shown[task] = true; await showMe(F, task); }
         R = { task: task, misses: 0, quick: quick }; GAME.phase = 'busy'; F.lock(true);
-        $('stage').classList.toggle('wide', task === 'next'); $('c2').hidden = task === 'next'; $('c1').innerHTML = ''; $('c2').innerHTML = '';
+        layout(task);
         var easy = A.easy() && !R.quick;   /* easier after two misses: small numbers, a longer peek */
         if (task === 'peek') {
           R.n = R.quick ? F.pick([4, 5]) : easy ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]);
