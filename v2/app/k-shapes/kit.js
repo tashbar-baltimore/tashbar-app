@@ -182,7 +182,7 @@ export function startGame(cfg) {
 
   /* ---------- the boys: Mendy (by the toy box) and a friend for "find the mistake" ---------- */
   function makeKid(shirt, hair, glasses) {
-    if (LK) return LK.makeKid(shirt, hair, glasses);
+    if (LK && (!FAST || SHOT)) return LK.makeKid(shirt, hair, glasses);   /* the automatic test keeps the simple boys (quicker on a test machine) */
     const k = new THREE.Group(), skin = new THREE.MeshStandardMaterial({ color: '#F2C9A0', roughness: 0.6 });
     const pants = new THREE.MeshStandardMaterial({ color: '#2E3650', roughness: 0.7 }), top = new THREE.MeshStandardMaterial({ color: shirt, roughness: 0.55 });
     const add = (geo, m, x, y, z) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = true; k.add(o); return o; };
@@ -232,7 +232,7 @@ export function startGame(cfg) {
   function makeShape(id, k, color, rotZ, scale) {
     const solid = KINDS[k].solid, { s, corners } = solid ? { s: null, corners: [] } : shapeOf(k);
     const dep = cfg.thinFlat ? 0.06 : DEPTH, bev = cfg.thinFlat ? 0.03 : BEV;   /* "flat or solid": flat pieces are thin, like card */
-    const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: LK ? bev * 1.25 : bev, bevelSize: bev, bevelSegments: LK ? 6 : 3, curveSegments: LK ? 64 : 48 });
+    const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: LK ? bev * 1.25 : bev, bevelSize: bev, bevelSegments: LK && (!FAST || SHOT) ? 6 : 3, curveSegments: LK && (!FAST || SHOT) ? 64 : 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
     const mat = LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;

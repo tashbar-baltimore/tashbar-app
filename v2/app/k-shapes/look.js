@@ -44,10 +44,13 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   const ANISO = Math.min(8, renderer.capabilities.getMaxAnisotropy ? renderer.capabilities.getMaxAnisotropy() : 1);
   const DPR = window.devicePixelRatio || 1;
   const L = { kids: [], adults: [], springs: [], fx: [], Q: FAST ? 0 : 2 };
+  /* the automatic test (?fast=1) uses plain materials and small painted pictures, so a test machine stays quick (a boy always gets the full look) */
+  const PM = FAST ? class extends THREE.MeshStandardMaterial { constructor(o = {}) { const c = Object.assign({}, o); ['clearcoat', 'clearcoatRoughness', 'sheen', 'sheenColor', 'sheenRoughness', 'transmission', 'thickness'].forEach(k => delete c[k]); super(c); } } : THREE.MeshPhysicalMaterial;
+  const TK = FAST ? 0.25 : 1;
 
   /* ---------- pictures painted in code ---------- */
   function paint(w, h, draw, o = {}) {
-    const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); draw(x, w, h);
+    const c = document.createElement('canvas'); c.width = Math.max(4, Math.round(w * TK)); c.height = Math.max(4, Math.round(h * TK)); const x = c.getContext('2d'); if (TK !== 1) x.scale(TK, TK); draw(x, w, h);
     const t = new THREE.CanvasTexture(c); if (o.srgb !== false) t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = ANISO;
     if (o.repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(o.repeat[0], o.repeat[1]); }
     return t;
@@ -79,6 +82,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   const rim = new THREE.DirectionalLight('#FFD9A8', 1.0); rim.position.set(-4, 6, -9);
   const front = new THREE.DirectionalLight('#FFE9D2', 0.5); front.position.set(7, 3, 4);
   [hemi, sun, rim, front].forEach(l => { l.layers.enableAll(); scene.add(l); });
+  if (FAST) { rim.visible = false; front.visible = false; renderer.shadowMap.enabled = false; }   /* the automatic test: fewer lights, quicker */
   sun.shadow.camera.layers.enableAll();
   /* the settings a world can change */
   const ENV = { exposure: 0.92, bloom: 0.22, vib: 0.18, box: ['#FFC94A', '#FFFFFF', '#E9A93A'], css: '#FBE7C8' };
@@ -96,22 +100,22 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
 
   /* ---------- materials ---------- */
   const std = (color, o = {}) => new THREE.MeshStandardMaterial(Object.assign({ color, roughness: 0.6 }, o));
-  const phys = (color, o = {}) => new THREE.MeshPhysicalMaterial(Object.assign({ color, roughness: 0.35, clearcoat: 0.6, clearcoatRoughness: 0.2 }, o));
+  const phys = (color, o = {}) => new PM(Object.assign({ color, roughness: 0.35, clearcoat: 0.6, clearcoatRoughness: 0.2 }, o));
   const MC = {}; const pm = (c, o) => { const k = c + JSON.stringify(o || {}); return MC[k] || (MC[k] = phys(c, o)); };   /* shared glossy material */
   const glow = (c, i) => { const k = 'g' + c + i; return MC[k] || (MC[k] = new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: i == null ? 1 : i, roughness: 0.4 })); };
-  L.pieceMat = color => new THREE.MeshPhysicalMaterial({ color: vivid(color), roughness: 0.36, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.12, envMapIntensity: 0.22, sheen: 0.25, sheenColor: new THREE.Color('#FFFFFF'), sheenRoughness: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
-  L.stickMat = color => new THREE.MeshPhysicalMaterial({ color: vivid(color), roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.0 });
+  L.pieceMat = color => new PM({ color: vivid(color), roughness: 0.36, metalness: 0, clearcoat: 0.85, clearcoatRoughness: 0.12, envMapIntensity: 0.22, sheen: 0.25, sheenColor: new THREE.Color('#FFFFFF'), sheenRoughness: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
+  L.stickMat = color => new PM({ color: vivid(color), roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1, envMapIntensity: 1.0 });
   L.solidMat = color => L.pieceMat(color);
   /* the props a game mode adds (beads' string, the puzzle board, the bridge, pencils, towers, the scale...) get the glossy toy finish.
      Only plain, solid materials change; glowing, see-through and character materials are left as they are. */
   const toyCache = new Map();
   L.toyify = (root) => {
-    if (!root || (root.userData && root.userData.kind)) return;
+    if (FAST || !root || (root.userData && root.userData.kind)) return;
     root.traverse(o => {
       if (!o.isMesh || !o.material || Array.isArray(o.material)) return;
       const m = o.material; if (!m.isMeshStandardMaterial || m.isMeshPhysicalMaterial || m.transparent || m.map || (m.emissiveIntensity > 0 && (m.emissive.r + m.emissive.g + m.emissive.b) > 0)) return;
       let t = toyCache.get(m); if (!t) { const matte = m.roughness >= 0.85;
-        t = new THREE.MeshPhysicalMaterial({ color: m.color.clone(), roughness: matte ? m.roughness : Math.min(m.roughness, 0.42), metalness: m.metalness, clearcoat: matte ? 0 : 0.75, clearcoatRoughness: 0.15, envMapIntensity: 0.3, flatShading: m.flatShading, side: m.side });
+        t = new PM({ color: m.color.clone(), roughness: matte ? m.roughness : Math.min(m.roughness, 0.42), metalness: m.metalness, clearcoat: matte ? 0 : 0.75, clearcoatRoughness: 0.15, envMapIntensity: 0.3, flatShading: m.flatShading, side: m.side });
         toyCache.set(m, t); }
       o.material = t; o.castShadow = true;
     });
@@ -141,7 +145,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* the ground: sharp near the toys, softly blurred far away (the near part fades out at its edge, so there is no line) */
   const fadeT = paint(256, 256, (x, w) => { const g = x.createRadialGradient(w / 2, w / 2, w * 0.36, w / 2, w / 2, w / 2); g.addColorStop(0, '#FFFFFF'); g.addColorStop(1, '#000000'); x.fillStyle = g; x.fillRect(0, 0, w, w); }, { srgb: false });
   function ground(tex, color, o = {}) {
-    const near = new THREE.Mesh(new THREE.CircleGeometry(o.r || 13, 96), new THREE.MeshPhysicalMaterial({ color: color || '#FFFFFF', map: tex, roughness: o.rough || 0.85, sheen: o.sheen || 0, sheenColor: new THREE.Color(o.sheenColor || '#FFFFFF'), clearcoat: o.coat || 0, clearcoatRoughness: 0.4, alphaMap: fadeT, transparent: true, depthWrite: true }));
+    const near = new THREE.Mesh(new THREE.CircleGeometry(o.r || 13, 96), new PM({ color: color || '#FFFFFF', map: tex, roughness: o.rough || 0.85, sheen: o.sheen || 0, sheenColor: new THREE.Color(o.sheenColor || '#FFFFFF'), clearcoat: o.coat || 0, clearcoatRoughness: 0.4, alphaMap: fadeT, transparent: true, depthWrite: true }));
     near.rotation.x = -Math.PI / 2; near.position.y = 0.002; near.receiveShadow = true; near.renderOrder = -1; scene.add(near);
     /* UVs of the round piece match the far piece, so the pattern lines up where they meet */
     const uv = near.geometry.attributes.uv, R0 = o.r || 13, S = o.size || 160; for (let i = 0; i < uv.count; i++) { uv.setXY(i, 0.5 + (uv.getX(i) - 0.5) * 2 * R0 / S, 0.5 + (uv.getY(i) - 0.5) * 2 * R0 / S); }
@@ -155,7 +159,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* the stage: the round mat in the middle where the shapes sit (its top is at 0.1, like the rug) */
   function stage(draw, o = {}) {
     const t = paint(1024, 1024, (x, w) => draw(x, w / 2, w));
-    const top = new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });
+    const top = new PM({ color: '#FFFFFF', map: t, roughness: o.rough || 0.9, sheen: o.sheen == null ? 0.8 : o.sheen, sheenColor: new THREE.Color(o.sheenColor || '#FFF6E8'), sheenRoughness: 0.7, clearcoat: o.coat || 0, clearcoatRoughness: 0.3 });
     const s = new THREE.Mesh(new THREE.CylinderGeometry(o.r || 6.6, (o.r || 6.6) + 0.1, o.h || 0.1, 128), [std(o.edge || '#F4E6D2', { roughness: 0.8 }), top, top]);
     s.position.y = (o.h || 0.1) / 2; s.receiveShadow = true; s.castShadow = false; scene.add(s); return s;
   }
@@ -174,7 +178,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   function lollipopTree(x, z, h, c1, c2, par) {   /* a giant lollipop: a striped stick and a glossy swirl */
     const g = group(x, 0, z, par), r = 0.9 * h / 3;
     mesh(G.cyl, pm('#FFFFFF', { roughness: 0.3 }), 0, h / 2, 0, 0.09 * h / 3, h, 0.09 * h / 3, g);
-    const top = new THREE.Mesh(new THREE.CylinderGeometry(r, r, r * 0.35, 48), [pm(c1, { clearcoat: 1, roughness: 0.2 }), new THREE.MeshPhysicalMaterial({ map: swirlTex(c1, c2), roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05 }), new THREE.MeshPhysicalMaterial({ map: swirlTex(c1, c2), roughness: 0.2, clearcoat: 1 })]);
+    const top = new THREE.Mesh(new THREE.CylinderGeometry(r, r, r * 0.35, 48), [pm(c1, { clearcoat: 1, roughness: 0.2 }), new PM({ map: swirlTex(c1, c2), roughness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05 }), new PM({ map: swirlTex(c1, c2), roughness: 0.2, clearcoat: 1 })]);
     top.rotation.x = Math.PI / 2; top.position.y = h + r * 0.9; top.castShadow = true; g.add(top);
     const ph = x * 0.7; anim.push((t, q) => { if (q >= 1) top.rotation.y = Math.sin(t * 0.5 + ph) * 0.15; });
     return g;
@@ -250,6 +254,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
   /* things that float: dust in sunbeams, petals, bubbles, snow, twinkles */
   function motes(o) {
+    if (FAST) return null;   /* the automatic test (?fast=1) gets a light world: it must stay quick on a test machine */
     const N = o.n || 140, pos = new Float32Array(N * 3), col = new Float32Array(N * 3), seed = [], R = rng(o.seed || 11), c = new THREE.Color();
     for (let i = 0; i < N; i++) { seed.push([R(), R(), R(), R() * 6.28]); c.set(o.colors ? o.colors[i % o.colors.length] : '#FFFFFF'); col.set([c.r, c.g, c.b], i * 3); }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.BufferAttribute(col, 3));
@@ -267,6 +272,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
   /* butterflies: two wings that flap, on a lazy loop */
   function butterflies(n, colors, area) {
+    if (FAST) return;
     const wingS = new THREE.Shape(); wingS.moveTo(0, 0); wingS.bezierCurveTo(0.1, 0.35, 0.5, 0.42, 0.42, 0.08); wingS.bezierCurveTo(0.5, -0.15, 0.2, -0.32, 0, 0);
     const wg = new THREE.ShapeGeometry(wingS, 16);
     for (let i = 0; i < n; i++) { const g = group(), m = std(colors[i % colors.length], { side: THREE.DoubleSide, roughness: 0.5, emissive: colors[i % colors.length], emissiveIntensity: 0.15 });
@@ -276,6 +282,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
   /* small sharp things scattered just outside the stage (grass tufts, little flowers, toys) */
   function scatter(n, rMin, rMax, seed, make) {
+    if (FAST) return;
     const R = rng(seed || 17);
     for (let i = 0; i < n; i++) { const a = R() * Math.PI * 2, r = rMin + R() * (rMax - rMin), x = Math.cos(a) * r, z = Math.sin(a) * r * 0.9 - 0.6;
       if (z > 2 && Math.abs(x) < 7.5) continue;   /* keep the front clear (the toy box, Mendy) */
@@ -341,7 +348,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
       for (let i = 0; i < 26000; i++) { const a = R() * Math.PI * 2, r = Math.sqrt(R()) * c; x.fillStyle = R() < 0.5 ? 'rgba(255,255,255,.35)' : 'rgba(200,150,110,.06)'; x.fillRect(c + Math.cos(a) * r, c + Math.sin(a) * r, 2, 2); }
       x.strokeStyle = 'rgba(255,190,120,.25)'; x.lineWidth = 3; x.setLineDash([10, 12]); x.beginPath(); x.arc(c, c, c * 0.7, 0, Math.PI * 2); x.stroke();
     });
-    const rugM = new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', map: rugT, roughness: 1, sheen: 1, sheenColor: new THREE.Color('#FFF4E0'), sheenRoughness: 0.8 });
+    const rugM = new PM({ color: '#FFFFFF', map: rugT, roughness: 1, sheen: 1, sheenColor: new THREE.Color('#FFF4E0'), sheenRoughness: 0.8 });
     const rug = new THREE.Mesh(new THREE.CylinderGeometry(6.6, 6.7, 0.1, 128), [std('#F4E6D2', { roughness: 1 }), rugM, rugM]);
     rug.position.y = 0.05; rug.receiveShadow = true; scene.add(rug);
 
@@ -393,7 +400,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     /* curtains that gently sway */
     const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, WW + 3.4, 16), phys('#E8B84A', { metalness: 0.6, roughness: 0.3 })); rod.rotation.z = Math.PI / 2; rod.position.set(WX, WY + WH / 2 + 0.55, -8.15); far.add(rod);
     [-1, 1].forEach(s => { const f = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 12), rod.material); f.position.set(WX + s * (WW / 2 + 1.75), rod.position.y, -8.15); far.add(f); });
-    const curtM = new THREE.MeshPhysicalMaterial({ color: '#FF9C86', roughness: 0.85, sheen: 1, sheenColor: new THREE.Color('#FFE0D0'), sheenRoughness: 0.5, side: THREE.DoubleSide });
+    const curtM = new PM({ color: '#FF9C86', roughness: 0.85, sheen: 1, sheenColor: new THREE.Color('#FFE0D0'), sheenRoughness: 0.5, side: THREE.DoubleSide });
     [-1, 1].forEach(s => {
       const cw = 1.6, ch = WH + 1.6, geo = new THREE.PlaneGeometry(cw, ch, 22, 18), pos = geo.attributes.position, rest = pos.array.slice();
       const cu = new THREE.Mesh(geo, curtM); cu.position.set(WX + s * (WW / 2 + 0.75), rod.position.y - ch / 2, -8.05); cu.castShadow = true; far.add(cu);
@@ -439,7 +446,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     for (let i = 0; i < gN; i++) { const u = i / (gN - 1), x = -12 + u * 24, y = 8.2 - Math.sin(u * Math.PI * 3) ** 2 * 0.9;
       const fb = new THREE.Mesh(new THREE.SphereGeometry(0.17, 16, 12), felt[i % felt.length]); fb.position.set(x, y, -8.3); far.add(fb); }
     /* a low toy bench and a big soft pouf off to the side */
-    const pouf = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), new THREE.MeshPhysicalMaterial({ color: '#FFB547', roughness: 0.9, sheen: 1, sheenColor: new THREE.Color('#FFE3A8') }));
+    const pouf = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 24), new PM({ color: '#FFB547', roughness: 0.9, sheen: 1, sheenColor: new THREE.Color('#FFE3A8') }));
     pouf.scale.set(1.1, 0.55, 1.1); pouf.position.set(-8.6, 0.5, -5.8); pouf.castShadow = true; pouf.receiveShadow = true; far.add(pouf);
     farify(far);
 
@@ -531,7 +538,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   function umbrella(x, z, h, c1, c2, par) {
     const g = group(x, 0, z, par); mesh(G.cyl, pm('#FFFFFF'), 0, h / 2, 0, 0.05, h, 0.05, g); g.rotation.z = 0.12;
     const st = paint(256, 64, (c, w, hh) => { for (let i = 0; i < 8; i++) { c.fillStyle = i % 2 ? c1 : c2; c.fillRect(i * w / 8, 0, w / 8, hh); } });
-    const top = new THREE.Mesh(new THREE.ConeGeometry(h * 0.62, h * 0.3, 32, 1, true), new THREE.MeshPhysicalMaterial({ map: st, roughness: 0.6, sheen: 0.6, side: THREE.DoubleSide })); top.position.y = h + h * 0.12; top.castShadow = true; g.add(top);
+    const top = new THREE.Mesh(new THREE.ConeGeometry(h * 0.62, h * 0.3, 32, 1, true), new PM({ map: st, roughness: 0.6, sheen: 0.6, side: THREE.DoubleSide })); top.position.y = h + h * 0.12; top.castShadow = true; g.add(top);
     return g;
   }
   function sandcastle(x, z, s, par) {
@@ -626,7 +633,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     mesh(G.cyl, glow('#7FE7FF', 0.9), 0, 2.9 * s, 0.7 * s, 0.32 * s, 0.08 * s, 0.32 * s, g).rotation.x = Math.PI / 2; mesh(G.torus, pm('#3AA8FF', { clearcoat: 1 }), 0, 2.9 * s, 0.72 * s, 0.34 * s, 0.34 * s, 0.34 * s, g);
     for (let i = 0; i < 3; i++) { const f = group(0, 0, 0, g); f.rotation.y = i * Math.PI * 2 / 3; mesh(G.box, pm('#FF4E50', { clearcoat: 1 }), 0.85 * s, 0.9 * s, 0, 0.5 * s, 1.4 * s, 0.12 * s, f); }
     mesh(G.cyl, pm('#B9C2D6', { metalness: 0.5 }), 0, 0.45 * s, 0, 0.55 * s, 0.4 * s, 0.55 * s, g); return g; }
-  function crystal(x, z, s, c, par) { const m = mesh(new THREE.OctahedronGeometry(0.4, 0), new THREE.MeshPhysicalMaterial({ color: c, emissive: c, emissiveIntensity: 0.6, roughness: 0.1, clearcoat: 1, flatShading: true }), x, 0.45 * s, z, s * 0.7, s * 1.5, s * 0.7, par); m.rotation.y = x; return m; }
+  function crystal(x, z, s, c, par) { const m = mesh(new THREE.OctahedronGeometry(0.4, 0), new PM({ color: c, emissive: c, emissiveIntensity: 0.6, roughness: 0.1, clearcoat: 1, flatShading: true }), x, 0.45 * s, z, s * 0.7, s * 1.5, s * 0.7, par); m.rotation.y = x; return m; }
   function bigLeaf(x, z, h, c, rot, par) {   /* a giant tropical leaf on a stem */
     const g = group(x, 0, z, par); g.rotation.y = rot || 0; const s = new THREE.Shape(); s.moveTo(0, 0); s.bezierCurveTo(-1.2, 0.5, -1.0, 2.0, 0, 2.6); s.bezierCurveTo(1.0, 2.0, 1.2, 0.5, 0, 0);
     const geo = new THREE.ShapeGeometry(s, 24), p = geo.attributes.position; for (let i = 0; i < p.count; i++) p.setZ(i, -Math.pow(p.getX(i), 2) * 0.35 + Math.pow(p.getY(i) / 2.6, 2) * 0.6); geo.computeVertexNormals();
@@ -685,7 +692,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     skyDome('#3D8BFF', '#9CCBFF', '#FFE0EE', [-0.5, 0.35, -1]);
     /* the island he stands on: grass on top, a rim of soft grass, earth and rock underneath */
     const top = grassTex('#62D057', '#3BA845', '#A3EC74', ['#FFFFFF', '#FFD84D', '#FF8FB1'], 12);
-    const isl = new THREE.Mesh(new THREE.CircleGeometry(15, 96), new THREE.MeshPhysicalMaterial({ map: top, roughness: 0.85, sheen: 0.5, sheenColor: new THREE.Color('#D8FFB0') }));
+    const isl = new THREE.Mesh(new THREE.CircleGeometry(15, 96), new PM({ map: top, roughness: 0.85, sheen: 0.5, sheenColor: new THREE.Color('#D8FFB0') }));
     const uv = isl.geometry.attributes.uv; for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 15 / 80, uv.getY(i) * 15 / 80); isl.rotation.x = -Math.PI / 2; isl.receiveShadow = true; scene.add(isl);
     const rimG = new THREE.Mesh(new THREE.TorusGeometry(15, 0.45, 16, 120), pm('#58C84C', { roughness: 0.6 })); rimG.rotation.x = Math.PI / 2; rimG.position.y = -0.15; scene.add(rimG);
     const far = group(), near = group();
@@ -706,7 +713,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     /* hot-air balloons drifting by */
     [[-12, 9, -22, '#FF6FA3', '#FFD23F'], [14, 12, -28, '#3AA8FF', '#FFFFFF'], [2, 15, -40, '#FF8A3D', '#FFE37A']].forEach(([x, y, z, c1, c2], i) => { const g = group(x, y, z, far);
       const st = paint(256, 128, (c, w, h) => { for (let k = 0; k < 8; k++) { c.fillStyle = k % 2 ? c1 : c2; c.fillRect(k * w / 8, 0, w / 8, h); } });
-      const b = mesh(G.ball, new THREE.MeshPhysicalMaterial({ map: st, roughness: 0.3, clearcoat: 0.6 }), 0, 0, 0, 1.6, 1.9, 1.6, g); void b; mesh(G.cone, pm(c1), 0, -2.1, 0, 0.8, 1, 0.8, g).rotation.x = Math.PI; mesh(G.box, pm('#B9824E'), 0, -3, 0, 0.7, 0.5, 0.7, g);
+      const b = mesh(G.ball, new PM({ map: st, roughness: 0.3, clearcoat: 0.6 }), 0, 0, 0, 1.6, 1.9, 1.6, g); void b; mesh(G.cone, pm(c1), 0, -2.1, 0, 0.8, 1, 0.8, g).rotation.x = Math.PI; mesh(G.box, pm('#B9824E'), 0, -3, 0, 0.7, 0.5, 0.7, g);
       anim.push((t, q) => { if (q >= 1) { g.position.y = y + Math.sin(t * 0.3 + i * 2) * 0.6; g.position.x = x + Math.sin(t * 0.04 + i) * 2; } }); });
     /* on our island: trees and bushes at the sides */
     [[-10.5, -3, 4.6, '#5ED36A', 1], [-12.5, -9, 5.4, '#FF8FB1', 2], [10.6, -2.6, 4.8, '#7FD9FF', 3], [12.6, -9.5, 5.6, '#5ED36A', 4], [-13.5, 3, 4.2, '#FFC93C', 5], [13.6, 3.5, 4.4, '#FF8FB1', 6]].forEach(([x, z, h, c, sd]) => roundTree(x, z, h, c, '#A86A3D', sd, far));
@@ -740,7 +747,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     [-0.9, -0.3, 0.3, 0.9].forEach(k => mesh(G.cyl, pm('#FF6FA3'), k, 3.5, 0.82, 0.13, 0.08, 0.13, ov).rotation.x = Math.PI / 2); ov.position.set(11.5, 0, -9.4);
     /* shelves of round breads and jars */
     const sh = group(-11.5, 0, -10.2, far); [3, 4.5, 6].forEach(y => mesh(G.box, pm('#E7A867', { roughness: 0.5 }), 0, y, 0, 4, 0.16, 1, sh));
-    [3, 4.5, 6].forEach((y, r) => [-1.4, -0.5, 0.4, 1.3].forEach((x, i) => { if ((i + r) % 2) mesh(G.ball, pm('#D98A3A', { clearcoat: 0.6, roughness: 0.4 }), x, y + 0.3, 0, 0.38, 0.28, 0.38, sh); else { mesh(G.cyl, new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', transmission: 0.6, roughness: 0.1, thickness: 0.2 }), x, y + 0.4, 0, 0.3, 0.65, 0.3, sh); mesh(G.cyl, pm(['#FF6FA3', '#FFC93C', '#7ED6FF'][r]), x, y + 0.78, 0, 0.32, 0.1, 0.32, sh); } }));
+    [3, 4.5, 6].forEach((y, r) => [-1.4, -0.5, 0.4, 1.3].forEach((x, i) => { if ((i + r) % 2) mesh(G.ball, pm('#D98A3A', { clearcoat: 0.6, roughness: 0.4 }), x, y + 0.3, 0, 0.38, 0.28, 0.38, sh); else { mesh(G.cyl, new PM({ color: '#FFFFFF', transmission: 0.6, roughness: 0.1, thickness: 0.2 }), x, y + 0.4, 0, 0.3, 0.65, 0.3, sh); mesh(G.cyl, pm(['#FF6FA3', '#FFC93C', '#7ED6FF'][r]), x, y + 0.78, 0, 0.32, 0.1, 0.32, sh); } }));
     /* the window and the bunting */
     const view = paint(512, 400, (x, w, h) => { const g = x.createLinearGradient(0, 0, 0, h); g.addColorStop(0, '#5DB8FF'); g.addColorStop(1, '#D9F2FF'); x.fillStyle = g; x.fillRect(0, 0, w, h); x.fillStyle = '#8FDD7E'; x.beginPath(); x.ellipse(w * 0.3, h, w * 0.5, h * 0.3, 0, 0, 7); x.fill(); x.fillStyle = '#6FCB6A'; x.beginPath(); x.ellipse(w * 0.8, h, w * 0.5, h * 0.25, 0, 0, 7); x.fill(); x.fillStyle = '#FFFFFF'; [[120, 90], [160, 80], [380, 120], [420, 110]].forEach(([a, b]) => { x.beginPath(); x.arc(a, b, 34, 0, 7); x.fill(); }); });
     mesh(G.plane, new THREE.MeshBasicMaterial({ map: view }), 0, 6.2, -10.95, 6, 3.6, 1, far).castShadow = false; mesh(G.box, pm('#FFFFFF'), 0, 6.2, -10.98, 6.5, 4.1, 0.1, far); mesh(G.box, pm('#FFFFFF'), 0, 6.2, -10.9, 0.15, 3.6, 0.1, far);
@@ -838,7 +845,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     const CC = ['#FF6F91', '#FF9A3C', '#B98CFF', '#FFD23F', '#FF5A7A', '#7FE7C4'];
     [[-10, -3, 3.4, 0], [-12.5, -8, 4, 1], [-8, -10.5, 2.8, 2], [10.2, -3.4, 3.6, 3], [12.8, -8.6, 4.2, 4], [8.4, -11, 3, 5], [-14.5, 2.5, 3.2, 2], [14.6, 2.8, 3, 0], [0, -13, 2.6, 3], [-4, -12, 2.2, 1], [4.4, -12.4, 2.4, 4]].forEach(([x, z, h, c]) => coralBranch(x, z, h, CC[c], c + 3, far));
     [[-11, -5.5], [-9, -12], [-6, -10.5], [11.5, -6], [9.5, -12], [6.5, -10], [-15, -1], [15.5, -1], [-2, -12.5], [2, -12.8]].forEach(([x, z], i) => { seaweed(x, z, 3 + (i % 3) * 1.2, ['#2FBF71', '#3FD68A', '#1FA35E'][i % 3], far); seaweed(x + 0.4, z + 0.3, 2.4 + (i % 2), '#4FE39A', far); });
-    [[-7, -8.8, 1.2], [7.6, -9.2, 1.0], [-13, 5.5, 1.4], [13, 6, 1.2]].forEach(([x, z, r]) => { const b = mesh(G.ball, pm('#FF8FB1', { roughness: 0.6, clearcoat: 0.3 }), x, r * 0.5, z, r, r * 0.75, r, far); const tex = paint(128, 128, (c, w) => { c.fillStyle = '#FF8FB1'; c.fillRect(0, 0, w, w); c.strokeStyle = '#FF5A88'; c.lineWidth = 5; for (let k = 0; k < 9; k++) { c.beginPath(); for (let j = 0; j <= 12; j++) c.lineTo(j * w / 12, k * 15 + Math.sin(j * 1.6 + k) * 5); c.stroke(); } }); b.material = new THREE.MeshPhysicalMaterial({ map: tex, roughness: 0.6, clearcoat: 0.3 }); });
+    [[-7, -8.8, 1.2], [7.6, -9.2, 1.0], [-13, 5.5, 1.4], [13, 6, 1.2]].forEach(([x, z, r]) => { const b = mesh(G.ball, pm('#FF8FB1', { roughness: 0.6, clearcoat: 0.3 }), x, r * 0.5, z, r, r * 0.75, r, far); const tex = paint(128, 128, (c, w) => { c.fillStyle = '#FF8FB1'; c.fillRect(0, 0, w, w); c.strokeStyle = '#FF5A88'; c.lineWidth = 5; for (let k = 0; k < 9; k++) { c.beginPath(); for (let j = 0; j <= 12; j++) c.lineTo(j * w / 12, k * 15 + Math.sin(j * 1.6 + k) * 5); c.stroke(); } }); b.material = new PM({ map: tex, roughness: 0.6, clearcoat: 0.3 }); });
     const ch = group(11, 0, -5, far); ch.rotation.y = -0.5; mesh(G.box, pm('#B5703A', { roughness: 0.5 }), 0, 0.6, 0, 2, 1.2, 1.3, ch); const lid = group(0, 1.2, -0.65, ch); mesh(new THREE.CylinderGeometry(0.65, 0.65, 2, 24, 1, false, 0, Math.PI), pm('#B5703A'), 0, 0, 0.65, 1, 1, 1, lid).rotation.z = Math.PI / 2; lid.rotation.x = -0.7;
     [-0.8, 0, 0.8].forEach(k => mesh(G.box, pm('#FFC93C', { metalness: 0.6, roughness: 0.25 }), k, 0.6, 0, 0.14, 1.25, 1.35, ch)); for (let i = 0; i < 8; i++) mesh(G.cyl, glow('#FFD23F', 0.9), (i % 4 - 1.5) * 0.4, 1.25, (Math.floor(i / 4) - 0.5) * 0.4, 0.16, 0.05, 0.16, ch);
     /* sunbeams from far above */
@@ -925,7 +932,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     snowman(-7, -9, 1.0, '#FF5A5A', far); snowman(7.5, -9.6, 0.75, '#3AA8FF', far); snowman(-12.5, 4.5, 0.6, '#FFC93C', far);
     cabin(12.5, -16, 1.4, far, -0.4); const smoke = []; for (let i = 0; i < 5; i++) { const p = new THREE.Sprite(new THREE.SpriteMaterial({ map: soft, color: '#FFFFFF', transparent: true, opacity: 0.5, depthWrite: false })); far.add(p); smoke.push(p); }
     anim.push((t, q) => smoke.forEach((p, i) => { const k = (t * 0.12 + i / 5) % 1; p.position.set(12.5 + 1.2 + k * 1.2, 5.6 + k * 4, -16.6); p.scale.setScalar(0.6 + k * 1.8); p.material.opacity = q >= 1 ? (1 - k) * 0.6 : 0; }));
-    const pond = mesh(G.disc, new THREE.MeshPhysicalMaterial({ color: '#BFE6FF', roughness: 0.05, clearcoat: 1, metalness: 0.1 }), -10, 0.03, -17, 5, 2.4, 1, far); pond.rotation.x = -Math.PI / 2; pond.castShadow = false;
+    const pond = mesh(G.disc, new PM({ color: '#BFE6FF', roughness: 0.05, clearcoat: 1, metalness: 0.1 }), -10, 0.03, -17, 5, 2.4, 1, far); pond.rotation.x = -Math.PI / 2; pond.castShadow = false;
     const sled = group(10.5, 0, 4.5, far); sled.rotation.y = -0.6; mesh(G.box, pm('#FF5A5A', { clearcoat: 1 }), 0, 0.45, 0, 1.6, 0.12, 0.8, sled); [-0.35, 0.35].forEach(k => { const r = mesh(G.torus, pm('#FFC93C', { metalness: 0.5 }), 0.2, 0.25, k, 0.6, 0.25, 0.1, sled); r.scale.set(1.1, 0.4, 0.2); });
     hill(-26, -40, 16, 7, null, '#FFFFFF', far); hill(0, -50, 22, 10, null, '#F4F9FF', far); hill(28, -42, 18, 8, null, '#FFFFFF', far);
     [[-18, 15, -55, 3, 1], [12, 19, -62, 3.6, 2]].forEach(([x, y, z, s, sd]) => far.add(cloud(x, y, z, s, sd)));
@@ -995,6 +1002,9 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     motes({ n: 160, colors: ['#FF5A5A', '#FFC93C', '#4CD964', '#3AA8FF', '#B98CFF', '#FF6FA3', '#FFFFFF'], size: 0.12, box: [-13, 13, 0.3, 9, -14, -1.5], kind: 'fall', speed: 0.02, seed: 29, add: false, opacity: 0.9 });
   }
 
+  /* the automatic test (?fast=1) builds a light world: the sky, ground and stage, without the decorations (quicker on a test machine) */
+  if (FAST) { const stub = (...a) => group(0, 0, 0, a.find(x => x && x.isObject3D));
+    puff = cloud = lollipopTree = roundTree = pine = flower = tulip = mushroom = bush = house = balloon = bunting = hill = rainbow = palm = umbrella = sandcastle = bucket = starfish = shell = coralBranch = seaweed = fishSchool = barn = pumpkin = hay = fence = windmill = snowman = cabin = cupcake = cookie = challah = gift = lights = planet = rocket = crystal = bigLeaf = parrot = waterfall = train = track = tuft = bloomFlower = stub; }
   const WORLDS = { playroom, toyland, garden, sky, bakery, space, beach, underwater, traintown, jungle, snow, farm, party };
   /* painted backdrops (v2/app/k-shapes/worlds/*.jpg, painted for us, ground cut away): a big curved picture far behind the 3D world,
      softly blurred like an animated film background. The 3D things in front give depth; far 3D scenery steps aside for the painting.
@@ -1023,7 +1033,9 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
       L.painted = name;
     });
   }
-  L.buildWorld = () => { (WORLDS[world] || playroom)(); painted(world); };
+  L.buildWorld = () => { (WORLDS[world] || playroom)(); painted(world);
+    /* the automatic test (?fast=1): no far scenery (it is only seen softly blurred), so a test machine stays quick. A boy always gets the full world. */
+    if (FAST) scene.children.slice().forEach(c => { if ((c.layers.mask & 2) && !(c.layers.mask & 1) && !noDepth.includes(c)) scene.remove(c); }); };
 
   /* ================= toy boxes: glossy painted toy chests ================= */
   L.boxMats = () => ({ body: phys(ENV.box[0], { roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.1 }), rim: phys(ENV.box[1], { roughness: 0.3, clearcoat: 1 }), inside: std(ENV.box[2], { roughness: 0.8 }) });
@@ -1082,11 +1094,11 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   L.makeKid = (shirt, hair, glasses, opts = {}) => {
     const k = new THREE.Group(), body = new THREE.Group(); k.add(body);
     const add = (o, x, y, z, par) => { o.position.set(x, y, z); o.castShadow = true; (par || body).add(o); return o; };
-    const skin = mat('skin', () => new THREE.MeshPhysicalMaterial({ color: SKIN, roughness: 0.55, sheen: 0.6, sheenColor: new THREE.Color('#FFD7C2'), sheenRoughness: 0.6 }));
-    const shirtM = mat('shirt' + shirt, () => new THREE.MeshPhysicalMaterial({ color: shirt, roughness: 0.7, sheen: 0.8, sheenColor: new THREE.Color('#FFFFFF'), sheenRoughness: 0.7 }));
-    const pants = mat('pants', () => new THREE.MeshPhysicalMaterial({ color: '#2B3656', roughness: 0.75, sheen: 0.5, sheenColor: new THREE.Color('#6D7BA8') }));
-    const shoe = mat('shoe', () => phys('#3B2418', { roughness: 0.3, clearcoat: 1 })), hairM = mat('hair' + hair, () => new THREE.MeshPhysicalMaterial({ color: hair, roughness: 0.6, sheen: 1, sheenColor: new THREE.Color(hair).lerp(new THREE.Color('#FFFFFF'), 0.4), sheenRoughness: 0.4 }));
-    const kipM = mat('kip' + (opts.kippah || '#1F2C5C'), () => new THREE.MeshPhysicalMaterial({ color: opts.kippah || '#1F2C5C', roughness: 0.8, sheen: 1, sheenColor: new THREE.Color('#7E8FD0'), sheenRoughness: 0.4 }));
+    const skin = mat('skin', () => new PM({ color: SKIN, roughness: 0.55, sheen: 0.6, sheenColor: new THREE.Color('#FFD7C2'), sheenRoughness: 0.6 }));
+    const shirtM = mat('shirt' + shirt, () => new PM({ color: shirt, roughness: 0.7, sheen: 0.8, sheenColor: new THREE.Color('#FFFFFF'), sheenRoughness: 0.7 }));
+    const pants = mat('pants', () => new PM({ color: '#2B3656', roughness: 0.75, sheen: 0.5, sheenColor: new THREE.Color('#6D7BA8') }));
+    const shoe = mat('shoe', () => phys('#3B2418', { roughness: 0.3, clearcoat: 1 })), hairM = mat('hair' + hair, () => new PM({ color: hair, roughness: 0.6, sheen: 1, sheenColor: new THREE.Color(hair).lerp(new THREE.Color('#FFFFFF'), 0.4), sheenRoughness: 0.4 }));
+    const kipM = mat('kip' + (opts.kippah || '#1F2C5C'), () => new PM({ color: opts.kippah || '#1F2C5C', roughness: 0.8, sheen: 1, sheenColor: new THREE.Color('#7E8FD0'), sheenRoughness: 0.4 }));
     [-1, 1].forEach(s => { add(new THREE.Mesh(new THREE.SphereGeometry(0.17, 20, 14), shoe), s * 0.19, 0.1, 0.06).scale.set(1, 0.62, 1.45);
       add(new THREE.Mesh(new THREE.CapsuleGeometry(0.14, 0.3, 6, 14), pants), s * 0.18, 0.42, 0); });
     add(lathe([[0, 0.5], [0.3, 0.52], [0.41, 0.62], [0.42, 0.78], [0.39, 0.86], [0, 0.88]], pants), 0, 0, 0);
@@ -1123,9 +1135,9 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
     const add = (o, x, y, z, par) => { o.position.set(x, y, z); o.castShadow = true; (par || body).add(o); return o; };
     const skin = mat('skin', () => phys(SKIN, { roughness: 0.55, clearcoat: 0 }));
     const isT = who === 'tatty', hair = isT ? '#4A2F1E' : '#5A3A28';
-    const top = isT ? mat('suit', () => new THREE.MeshPhysicalMaterial({ color: '#1E2232', roughness: 0.6, sheen: 0.6, sheenColor: new THREE.Color('#5A6488') }))
-      : mat('dress', () => new THREE.MeshPhysicalMaterial({ color: '#4E7FD0', roughness: 0.7, sheen: 0.8, sheenColor: new THREE.Color('#BFD4FF') }));
-    const white = mat('shirtW', () => new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', roughness: 0.7, sheen: 0.6, sheenColor: new THREE.Color('#FFFFFF') }));
+    const top = isT ? mat('suit', () => new PM({ color: '#1E2232', roughness: 0.6, sheen: 0.6, sheenColor: new THREE.Color('#5A6488') }))
+      : mat('dress', () => new PM({ color: '#4E7FD0', roughness: 0.7, sheen: 0.8, sheenColor: new THREE.Color('#BFD4FF') }));
+    const white = mat('shirtW', () => new PM({ color: '#FFFFFF', roughness: 0.7, sheen: 0.6, sheenColor: new THREE.Color('#FFFFFF') }));
     const shoe = mat('shoe', () => phys('#3B2418', { roughness: 0.3, clearcoat: 1 }));
     [-1, 1].forEach(s => add(new THREE.Mesh(new THREE.SphereGeometry(0.17, 18, 12), shoe), s * 0.2, 0.09, 0.08).scale.set(1, 0.55, 1.6));
     if (isT) {
@@ -1158,7 +1170,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
       const band = new THREE.Mesh(new THREE.CylinderGeometry(hr * 0.97, hr * 0.97, 0.08, 40), mat('band', () => std('#2C2E3A'))); band.position.y = hr * 0.62 + 0.04; band.scale.set(1, 1, 0.92); head.add(band);
       [-1, 1].forEach(s => { const pe = curl(hairM, hr * 1.1); pe.position.set(s * hr * 0.9, -0.02, 0.12); head.add(pe); });
     } else {   /* a tichel (head scarf) covering her hair, tied at the back */
-      const tM = mat('tichel', () => new THREE.MeshPhysicalMaterial({ color: '#7A3E8E', roughness: 0.75, sheen: 1, sheenColor: new THREE.Color('#D9A8EA'), sheenRoughness: 0.5 }));
+      const tM = mat('tichel', () => new PM({ color: '#7A3E8E', roughness: 0.75, sheen: 1, sheenColor: new THREE.Color('#D9A8EA'), sheenRoughness: 0.5 }));
       const cap = new THREE.Mesh(new THREE.SphereGeometry(hr * 1.08, 40, 24, 0, Math.PI * 2, 0, Math.PI * 0.62), tM); cap.rotation.x = -0.62; cap.position.set(0, 0.03, -0.03); head.add(cap);
       const knot = new THREE.Mesh(new THREE.SphereGeometry(0.2, 20, 14), tM); knot.scale.set(1.2, 0.9, 0.9); knot.position.set(0, -0.08, -hr * 1.0); head.add(knot);
     }
@@ -1261,6 +1273,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* Tatty and Mommy */
   let fam = null;
   L.family = (on, clap) => {
+    if (FAST) on = false;   /* the automatic test does not need them (quicker on a test machine) */
     if (!fam) { fam = [L.makeAdult('mommy'), L.makeAdult('tatty')]; fam.forEach(f => { f.visible = false; }); }
     fam.forEach((f, i) => { f.visible = on; if (on) { f.scale.setScalar(0.9); L.pop(f, 0.9); if (clap) f.userData.clap = 4; } });
     return fam;
