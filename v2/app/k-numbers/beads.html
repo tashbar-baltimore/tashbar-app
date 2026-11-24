@@ -28,7 +28,7 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var K, P, R, done, plan;
+  var K, P, R, done, plan, easy = 0, streak = 0;
   function ready() { var c = $('check'); c.classList.toggle('dim', K.count() === 0); c.classList.toggle('ready', K.count() > 0 && GAME.phase === 'answer'); }
   function taps(k) { return K.moves(k).map(function (m) { return { tap: '#rackwrap .bead[data-r="' + m[0] + '"][data-i="' + m[1] + '"]' }; }).concat([{ tap: '#check' }]); }
   function hooks() { GAME.right = function () { return taps(R.n); }; GAME.wrong = function () { return taps(R.n === 10 ? 9 : R.n + 1); }; }
@@ -36,13 +36,23 @@
   async function check() {
     NK.unlock(); if (GAME.phase !== 'answer') return; var have = K.count(); if (!have) { FR.say('Tap a bead to push it.'); return; }
     GAME.phase = 'busy'; FR.lock(true); K.lock(true);
-    if (have === R.n) { K.el.classList.add('glowmoved'); await FR.yes(K.el, R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + some(R.n)); K.el.classList.remove('glowmoved'); var d = done; done = null; d(R.misses === 0); return; }
+    if (have === R.n) { $('pic').classList.remove('hiddenpic'); K.el.classList.add('glowmoved'); await FR.yes(K.el, R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + some(R.n)); K.el.classList.remove('glowmoved'); var d = done; done = null; d(R.misses === 0); return; }
     FR.oops(K.el); R.misses++;
     if (R.misses === 1) { await FR.say("Let's look again. Five red is five."); await FR.say('Fix your beads.'); }
-    else { K.el.classList.add('glowmoved'); await FR.say(some(R.n)); var k = R.n - have; await FR.say(k > 0 ? 'Push ' + FR.word(k) + ' more.' : 'Push ' + FR.word(-k) + ' back.'); K.el.classList.remove('glowmoved'); }
+    else { $('pic').classList.remove('hiddenpic'); mark(true); K.el.classList.add('glowmoved'); await FR.say(some(R.n)); var k = R.n - have; await FR.say(k > 0 ? 'Push ' + FR.word(k) + ' more.' : 'Push ' + FR.word(-k) + ' back.'); K.el.classList.remove('glowmoved'); }
     GAME.phase = 'answer'; FR.lock(false); K.lock(false); ready(); hooks();
   }
-  function ask(n) { $('num').textContent = n; P.set(n); }
+  function ask(n) { U5.setNum($('num'), n); P.set(n); }
+  function mark(on) { K.el.querySelectorAll('.bead').forEach(function (b) { b.classList.remove('hint-bead'); }); if (on) { var b = K.bead(0, R.n - 1); if (b) b.classList.add('hint-bead'); } }
+  function play(F, n, line, noPic) {
+    return new Promise(async function (res) {
+      R = { n: n, misses: 0 }; ask(n); K.set(0, 0); $('pic').classList.toggle('hiddenpic', !!noPic); GAME.phase = 'busy'; F.lock(true); ready(); mark(easy > 0);
+      await F.say(line, { repeat: 'Push ' + F.word(n) + ' beads. Try one move!' });
+      if (easy > 0) await F.say('Tap the bead with the green ring.');
+      done = function (first) { mark(false); if (R.misses >= 2) { easy = 2; streak = 0; } else if (first) streak++; else streak = 0; res(first); };
+      GAME.phase = 'answer'; F.lock(false); K.lock(false); ready(); hooks();
+    });
+  }
   FR.game({
     id: 'u5-beads', title: 'Bead Push', rounds: 6,
     hero: '<div id="herorack"></div>',
@@ -51,7 +61,7 @@
       K = U5.rack(true); $('rackwrap').appendChild(K.el); K.onChange = ready; K.lock(true);
       P = U5.frame(0, false); $('pic').appendChild(P.el); $('check').addEventListener('click', check);
     },
-    reset: function (F) { plan = F.shuffle([6, 7, 8, 9, 10]).concat([F.pick([6, 7, 8, 9])]); },
+    reset: function (F, again) { plan = F.shuffle([6, 7, 8, 9, 10]).concat([F.pick([6, 7, 8, 9])]); if (!again) { easy = 0; streak = 0; } },
     demo: async function (F) {
       R = { n: 8, misses: 0 }; ask(8); K.set(0, 0);
       await F.say('A bead rack! Five red, five white.');
@@ -62,12 +72,10 @@
       K.el.classList.add('glowmoved'); await F.yes(K.el, 'One push. No counting!'); K.el.classList.remove('glowmoved');
     },
     round: function (F, i) {
-      return new Promise(async function (res) {
-        var n = plan[i]; R = { n: n, misses: 0 }; ask(n); K.set(0, 0); GAME.phase = 'busy'; F.lock(true); ready();
-        await F.say(i === 0 ? 'Push ' + F.word(n) + '. Try one move!' : 'Push ' + F.word(n) + '.', { repeat: 'Push ' + F.word(n) + ' beads. Try one move!' });
-        done = res; GAME.phase = 'answer'; F.lock(false); K.lock(false); ready(); hooks();
-      });
-    }
+      var n = easy > 0 ? F.pick([6, 7]) : plan[i], noPic = streak >= 3 && easy === 0; if (easy > 0) easy--;
+      return play(F, n, noPic ? 'No picture now. Push ' + F.word(n) + '!' : i === 0 ? 'Push ' + F.word(n) + '. Try one move!' : 'Push ' + F.word(n) + '.', noPic);
+    },
+    bonus: async function (F) { var ns = F.shuffle([8, 9, 10]); for (var b = 0; b < 2; b++) await play(F, ns[b], (b === 0 ? 'Just the number! ' : '') + 'Push ' + F.word(ns[b]) + '!', true); }
   });
 })();
 </script>

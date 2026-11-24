@@ -15,7 +15,7 @@
 #flash.qcard{ width:min(40vw,60vh,420px); display:flex; align-items:center; justify-content:center; }
 #flash .tf{ width:88%; }
 .right .panel .hands2{ width:min(46vw,64vh,560px); }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.75fr 1.25fr; } #flash.qcard{ width:min(70vw,28vh); } .right .panel .hands2{ width:88vw; } }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.75fr 1.25fr; } #flash.qcard{ width:min(70vw,28vh); } .right .panel .hands2{ width:76vw; } .right .panel{ margin:0 auto; } }
 </style>
 </head>
 <body>
@@ -57,13 +57,17 @@
       await F.say('Peek, then show it on two hands. Watch me.');
       cloth(true); await F.wait(1400); cloth(false); await F.wait(400);
       await F.say('A full row and two more. Seven!');
-      await F.handTo(H.hands[0].el, .5, .5); await F.handTap(); H.hands[0].set(5); NK.sound.pop();
+      await F.say('Tap the hand. One finger goes up each tap.');
+      await F.handTo(H.hands[0].el, .5, .6);
+      for (var t = 1; t <= 5; t++) { await F.handTap(); H.hands[0].set(t); NK.sound.pop(); await F.wait(120); }
       await F.say('One whole hand is five.');
-      for (var i = 0; i < 2; i++) { await F.handTo(H.hands[1].finger(i), .5, .3); await F.handTap(); H.hands[1].finger(i).classList.remove('down'); NK.sound.pop(); }
+      await F.handTo(H.hands[1].el, .5, .6);
+      for (var i = 1; i <= 2; i++) { await F.handTap(); H.hands[1].set(i); NK.sound.pop(); await F.wait(120); }
       await F.handTo($('check')); await F.handTap(); cloth(true);
       await F.yes($('hp'), 'Five and two. Seven!');
       await F.say('Show me on your hands too!');
     },
+    bonus: async function (F) { var ns = F.shuffle([7, 8, 9]); for (var b = 0; b < 2; b++) { plan[6 + b] = ns[b]; slow = -3; await this.round(F, 6 + b); } slow = 0; },
     round: function (F, i) {
       return new Promise(async function (res) {
         var n = plan[i]; R = { n: n, misses: 0 }; H.set(0); H.lock(true); GAME.phase = 'flash'; F.lock(true); ready();

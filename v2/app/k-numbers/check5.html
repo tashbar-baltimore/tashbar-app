@@ -64,7 +64,7 @@
       return new Promise(async function (res) {
         var n = plan[i], kind = KINDS[i]; R = { n: n, kind: kind }; GAME.phase = 'busy'; F.lock(true);
         $('aH').hidden = kind !== 'hands'; $('aF').hidden = kind !== 'frame'; $('aB').hidden = kind !== 'beads';
-        $('flash').hidden = kind !== 'hands'; $('ask').hidden = kind === 'hands'; $('num').textContent = n;
+        $('flash').hidden = kind !== 'hands'; $('ask').hidden = kind === 'hands'; U5.setNum($('num'), n);
         H.set(0); T.set(0); K.set(0, 0); [H, T, K].forEach(function (w) { w.lock(true); }); ready();
         if (kind === 'hands') { cloth(false); await F.wait(380); F5.set(n); await F.say('Peek!', { repeat: 'How many? Show me on two hands.' }); cloth(true); await F.wait(1400); cloth(false); await F.wait(380); }
         else await F.say((kind === 'frame' ? 'Fill ' : 'Push ') + F.word(n) + '.', { repeat: (kind === 'frame' ? 'Fill the frame with ' : 'Push ') + F.word(n) + '.' });

@@ -89,9 +89,15 @@
     api.set = function (k) { a.set(Math.min(5, k)); b.set(Math.max(0, k - 5)); };
     api.count = function () { return a.count() + b.count(); };
     api.lock = function (on) { a.lock(on); b.lock(on); };
+    /* the taps that make k, the way a boy does it: tap the palm to raise the next finger; tap a raised finger to put it down */
     api.moves = function (k, sel) {
-      var out = []; FR.fingerMoves(a, Math.min(5, k)).forEach(function (i) { out.push({ tap: sel + ' .h0 .fg[data-f="' + i + '"]' }); });
-      FR.fingerMoves(b, Math.max(0, k - 5)).forEach(function (i) { out.push({ tap: sel + ' .h1 .fg[data-f="' + i + '"]' }); }); return out;
+      var out = [];
+      [[a, '.h0', Math.min(5, k)], [b, '.h1', Math.max(0, k - 5)]].forEach(function (x) {
+        var h = x[0], c = h.count(), want = x[2], i;
+        for (i = c; i < want; i++) out.push({ tap: sel + ' ' + x[1] + ' svg > path:first-of-type' });
+        for (i = c - 1; i >= want; i--) out.push({ tap: sel + ' ' + x[1] + ' .fg[data-f="' + i + '"]' });
+      });
+      return out;
     };
     api.set(n || 0); return api;
   };

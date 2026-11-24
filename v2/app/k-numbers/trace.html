@@ -28,17 +28,42 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var TR, F5, R, done;
+  var TR, F5, R, done, easyNext = false;
   function hooks() {
     GAME.right = function () { return [{ path: TR.points() }]; };
     GAME.wrong = R.misses ? null : function () { return [{ path: TR.offPath() }]; };
   }
   function some(n) { return n === 10 ? 'Ten is two full rows.' : FR.Word(n) + ' is five and ' + FR.word(n - 5) + ' more.'; }
-  function newTracer(n) {
-    if (TR) TR.el.remove(); TR = U5.tracer(n); $('tp').appendChild(TR.el); $('num').textContent = n; F5.set(n);
-    TR.onOff = async function () { FR.oops($('tp')); R.misses++; GAME.phase = 'busy'; hooks(); await FR.say('Stay on the road. Look at the green dot.'); GAME.phase = 'answer'; hooks(); };
+  async function showMe(n, ms) {   /* the hand traces it (the demo, and the slow help) */
+    var hand = document.getElementById('hand'); newTracer(n, true); TR.lock(true);
+    var pts = TR.points(); hand.style.transition = 'left .08s linear, top .08s linear';
+    await FR.handTo(TR.el.querySelector('.startdot')); var go = TR.auto(ms);
+    var step = Math.max(1, Math.round(pts.length / (ms / 85)));
+    for (var k = 0; k < pts.length; k += step) { hand.style.left = (pts[k][0] - 20) + 'px'; hand.style.top = (pts[k][1] - 8) + 'px'; await FR.wait(85); }
+    await go; hand.style.transition = ''; FR.handHide();
+  }
+  function newTracer(n, quiet) {
+    if (TR) TR.el.remove(); TR = U5.tracer(n); $('tp').appendChild(TR.el); U5.setNum($('num'), n); F5.set(n);
+    if (quiet) return;
+    TR.easy = R.easy; if (R.faint) TR.fade(true);
+    TR.onOff = async function () {
+      FR.oops($('tp')); R.misses++; GAME.phase = 'busy'; hooks();
+      if (R.misses >= 2 && !R.redemo) {   /* two slips: watch me again, slowly, then a wider road */
+        R.redemo = true; FR.lock(true); await FR.say('Watch me again, slowly.'); await showMe(n, 3200);
+        R.easy = true; newTracer(n); TR.easy = true; await FR.say('Your turn. Start at the green dot.'); FR.lock(false);
+      } else { await FR.say('Stay on the road. Look at the green dot.'); TR.rearm(); }
+      GAME.phase = 'answer'; hooks();
+    };
     TR.onStroke = function () { FR.say('Now the zero. Start at the green dot.'); hooks(); };
     TR.onDone = async function () { GAME.phase = 'busy'; FR.lock(true); await FR.say(U5.NUMERALS[n].rhyme); F5.glow(true); await FR.yes($('tp'), some(n)); F5.glow(false); var d = done; done = null; if (d) d(R.misses === 0); };
+  }
+  function play(F, n, line, opts) {
+    return new Promise(async function (res) {
+      R = { n: n, misses: 0, easy: !!opts.easy, faint: !!opts.faint }; newTracer(n); TR.lock(true); GAME.phase = 'busy'; F.lock(true);
+      await F.say(line, { repeat: 'Trace ' + F.word(n) + '. Start at the green dot.' });
+      done = function (first) { easyNext = R.misses >= 2; res(first); };
+      GAME.phase = 'answer'; F.lock(false); TR.lock(false); hooks();
+    });
   }
   FR.game({
     id: 'u5-trace', title: 'Trace it', rounds: 5,
@@ -47,24 +72,19 @@
       var t = U5.tracer(8); t.el.style.cssText = 'width:100%;height:100%;pointer-events:none'; $('herotr').appendChild(t.el); t.auto(1);
       F5 = U5.frame(0, false); $('tfh').appendChild(F5.el);
     },
+    reset: function () { easyNext = false; },
     demo: async function (F) {
-      R = { n: 7, misses: 0 }; newTracer(7); TR.lock(true); TR.onDone = null;
+      R = { n: 7, misses: 0 };
       await F.say('Numbers have roads. Watch me trace seven.');
-      var pts = TR.points(); hand.style.transition = 'left .08s linear, top .08s linear';
-      await F.handTo(TR.el.querySelector('.startdot')); var go = TR.auto(1800);
-      for (var k = 0; k < pts.length; k += 3) { hand.style.left = (pts[k][0] - 20) + 'px'; hand.style.top = (pts[k][1] - 8) + 'px'; await F.wait(85); }
-      await go; hand.style.transition = '';
+      await showMe(7, 1800);
       await F.say(U5.NUMERALS[7].rhyme); await F.yes($('tp'), 'Seven is five and two more.');
     },
     round: function (F, i) {
-      return new Promise(async function (res) {
-        var n = [6, 7, 8, 9, 10][i]; R = { n: n, misses: 0 }; newTracer(n); TR.lock(true); GAME.phase = 'busy'; F.lock(true);
-        await F.say('Trace ' + F.word(n) + '. Start at the green dot.', { repeat: 'Trace ' + F.word(n) + '. Start at the green dot.' });
-        done = res; GAME.phase = 'answer'; F.lock(false); TR.lock(false); hooks();
-      });
-    }
+      var n = [6, 7, 8, 9, 10][i], e = easyNext; easyNext = false;
+      return play(F, n, (e ? 'A wide road this time. ' : '') + 'Trace ' + F.word(n) + '.', { easy: e });
+    },
+    bonus: function (F) { var n = F.pick([6, 8, 9]); return play(F, n, 'Bonus! A faint road. Trace ' + F.word(n) + '.', { faint: true }); }
   });
-  var hand = document.getElementById('hand');
 })();
 </script>
 </body>

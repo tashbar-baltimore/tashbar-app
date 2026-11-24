@@ -40,7 +40,7 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var T, C, H, R, done;
+  var T, C, H, R, done, easy = 0, cover = false;
   function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
   function hooks() {
     if (R.stage === 'judge') { var ok = R.claim === R.n; GAME.right = function () { return [{ tap: ok ? '#up' : '#down' }]; }; GAME.wrong = function () { return [{ tap: ok ? '#down' : '#up' }]; }; }
@@ -48,7 +48,20 @@
   }
   function some(n) { return n === 10 ? 'Two full rows. Ten!' : 'A full row is five, and ' + FR.word(n - 5) + ' more.'; }
   function finish(first) { var d = done; done = null; d(first); }
-  async function look(whole) { T.glow(true); await FR.say(whole ? some(R.n) + ' ' + FR.Word(R.n) + '!' : 'A full row is five.'); T.glow(false); }
+  function play(F, i, quick) {
+    return new Promise(async function (res) {
+      var n = easy > 0 ? F.pick([6, 7]) : F.pick([6, 7, 8, 9, 10]), right = quick ? i === 1 : [false, true, false, true, false, false][i];
+      var claim = right ? n : easy > 0 ? n + 2 : (n === 10 ? 9 : n === 6 ? 7 : n + (Math.random() < .5 ? 1 : -1)); if (easy > 0) easy--;
+      var who = F.NAMES[(i * 3 + (quick ? 2 : 5)) % F.NAMES.length];
+      R = { n: n, claim: claim, who: who, misses: 0, stage: 'judge' }; T.set(n); C.set(claim); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
+      done = function (first) { if (R.misses >= 2 && !quick) easy = 2; res(first); }; GAME.phase = 'busy'; F.lock(true); $('tfh').style.visibility = '';
+      if (quick) { await F.say(i === 0 ? 'Bonus! A quick peek.' : 'Peek!'); await F.wait(1500); $('tfh').style.visibility = 'hidden'; }
+      await F.say(who + ' says: ' + F.word(claim) + '!', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
+      GAME.phase = 'answer'; F.lock(false); hooks();
+      await F.say('Is ' + who + ' right?', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
+    });
+  }
+  async function look(whole) { $('tfh').style.visibility = ''; T.glow(true); await FR.say(whole ? some(R.n) + ' ' + FR.Word(R.n) + '!' : 'A full row is five.'); T.glow(false); }
   async function judge(sayRight) {
     NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'judge') return; GAME.phase = 'busy'; FR.lock(true);
     var isRight = R.claim === R.n, who = R.who;
@@ -87,18 +100,13 @@
       T.glow(true); await F.say('A full row is five, and three more. Eight!'); T.glow(false);
       await F.say('Eight, not nine. A mistake!');
       await F.handTo($('down')); await F.handTap(); NK.sound.yes(); await F.say('Thumbs down means a mistake.');
+      $('thumbs').hidden = true; $('fixrow').hidden = false; H.set(0); await F.say('Then show the right number. Tap the hands.');
+      await F.handTo(H.hands[0].el, .5, .6); for (var t = 1; t <= 5; t++) { await F.handTap(); H.hands[0].set(t); NK.sound.pop(); }
+      await F.handTo(H.hands[1].el, .5, .6); for (t = 1; t <= 3; t++) { await F.handTap(); H.hands[1].set(t); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('hp'), 'Eight! Thank you for helping Eli!'); H.set(0);
     },
-    round: function (F, i) {
-      return new Promise(async function (res) {
-        var n = F.pick([6, 7, 8, 9, 10]), right = [false, true, false, true, false, false][i], claim = right ? n : (n === 10 ? 9 : n === 6 ? 7 : n + (Math.random() < .5 ? 1 : -1));
-        var who = F.NAMES[(i * 3 + 5) % F.NAMES.length];
-        R = { n: n, claim: claim, who: who, misses: 0, stage: 'judge' }; T.set(n); C.set(claim); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
-        done = res; GAME.phase = 'busy'; F.lock(true);
-        await F.say(who + ' says: ' + F.word(claim) + '!', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
-        GAME.phase = 'answer'; F.lock(false); hooks();
-        await F.say('Is ' + who + ' right?', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
-      });
-    }
+    round: function (F, i) { return play(F, i, false); },
+    bonus: async function (F) { cover = true; for (var b = 0; b < 2; b++) await play(F, b, true); cover = false; }
   });
 })();
 </script>
