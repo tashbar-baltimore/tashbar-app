@@ -270,7 +270,8 @@ var A={
  slip:['📉','Automatic and slipping','Skills a boy mastered and then missed in review.','rv:all'],
  stuck:['🧩','Where kids get stuck','The questions and lessons boys get stuck on most.','#ss-btn'],
  rep:['🚩','Problem reports','Reports from boys and staff about lessons, and the questions most boys miss.','[data-act=rep]','app'],
- bb:['📘','Block Builders workbook','Each boy’s workbook pages: scores, and his own pen work on the page.','#bbs-btn'],   /* HoS 2026-11-22: BlockBuildersStaff.html */
+ bb:['📘','Block Builders workbook','Each boy’s workbook pages: scores, and his own pen work on the page.','#bbs-btn'],
+ cw:['✍️','Writing inbox','Writing pieces the boys sent: read, score, send back to fix or publish to his book.','#cws-btn'],   /* Core Growth job T: CoreWriteStaff.html */   /* HoS 2026-11-22: BlockBuildersStaff.html */
  month:['🏆','This month','The month’s stars, most improved, and certificates.','[data-act=month]','app'],
  staff:['👤','Staff accounts','Add staff and set their codes.','[data-sx=stf]','app'],
  access:['🔐','Access & Parents','Who can see what, and parent sign-ins.','#acOpen'],
@@ -538,7 +539,7 @@ function rpName(id){ return (RP.data&&RP.data.names&&RP.data.names[id])||skName(
 function loadReport(){ RP.err=''; srv('sgMapReport',[tok(),RP.days]).then(function(r){ RP.data=r; drawReport(); }).catch(function(e){ RP.err=String(e); drawReport(); }); }
 function reportHTML(){ return '<div class="st-head"><div><h1>Reports</h1><p class="why">Who is growing and who is slipping.</p><p class="lead" style="margin:0">Every number here is about steps on the curriculum: who climbed, who is stuck, and where.</p></div><div class="st-acts">'
    +[[7,'This week'],[30,'This month']].map(function(x){ return '<button type="button" class="chip'+(RP.days===x[0]?' on':'')+'" data-rp="days" data-v="'+x[0]+'">'+x[1]+'</button>'; }).join('')+grpSlot()+'</div></div><div id="rp-body"><div class="st-empty">Loading the report…</div></div>'
-   +'<h3>More reports</h3>'+tilesHTML(['gs','lkt','month','slip','stuck','rep','bb']); }
+   +'<h3>More reports</h3>'+tilesHTML(['cw','gs','lkt','month','slip','stuck','rep','bb']); }
 function goalOf(id){ var C=cellsOf(id), best=null; SUBJ.forEach(function(x){ var c=C[x[0]]; if(!best&&c&&c.now) best={x:x,c:c}; }); return best; }
 function drawReport(){ var B=q('#rp-body'); if(!B) return; if(RP.err){ B.innerHTML='<div class="st-empty">Could not load the report: '+E(RP.err)+'</div>'; return; } var D=RP.data; if(!D){ B.innerHTML='<div class="st-empty">Loading the report…</div>'; return; }
   var boys=(D.boys||[]).filter(function(b){ return inG(b.id); }), n=boys.length, steps=0, prev=0, moved=0, bySub={}, byStep={};

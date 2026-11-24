@@ -1,4 +1,4 @@
-/* ===== CORE GROWTH WRITING WORKSHOP + TEACHER WRITING INBOX (job T, T-4, 2026-11-24).
+/* ===== CoreInbox.js: CORE GROWTH WRITING WORKSHOP + TEACHER WRITING INBOX, the server (job T, T-4, 2026-11-24). The boy's screens are src/CoreWrite.html.
    HoS rule (CORE-GROWTH-PROMPT.md section 5, Writing): "A writing piece is never marked right just for being typed." The boy plans, writes,
    fixes (a checklist he must meet) and sends his piece (src/CoreWrite.html). His teacher reads it in the staff portal's writing inbox
    (src/CoreWriteStaff.html), scores it with the task's simple rubric (1 to 4 on each row) and sends it back to fix with a note, or publishes it
