@@ -4,6 +4,10 @@
 import { THREE, C, rnd, clamp, smooth, ease, toon, glow, merge, M4, sky, clouds, hills, ground, grass, forest, flowers, flowerGeo, sparkles, butterflies, party,
   eye, eyesTick, blob, aura, STROKES, strokePoints, growTube, audio } from './kit3d.js';
 
+/* CALM (Esti 2026-11-24, after looking at kindergarten games: "a careful balance ... engaging, but not too overwhelming"):
+   a soft, simple background that fades into the distance, few small things, so the letter and the friend stand out.
+   ?busy=1 shows the first, busier look for comparison. */
+const CALM = !/[?&]busy=1/.test(location.search), PLAIN = /[?&]plain=1/.test(location.search);   /* plain=1: smooth lawn, no grass blades (a second, even simpler option) */
 /* ---------- shared scenery ---------- */
 function tree(S, x, z, o = {}) {
   const s = o.s || 1, H = S.groundH(x, z), G = new THREE.Group(); G.position.set(x, H - 0.05, z); G.rotation.y = rnd(0, 6);
@@ -45,14 +49,14 @@ function face(G, o) {   /* cheeks + smile + eyes on a character head */
 export function worldS(S) {
   const pond = { x: -8.5, z: -7, r: 4.6 };
   const H = (x, z) => hills(x, z) - 0.9 * (1 - smooth(pond.r * 0.55, pond.r + 0.6, Math.hypot(x - pond.x, (z - pond.z) * 1.15)));
-  sky(S, { top: 0x1C64F2, mid: 0x4DB8FF, hor: 0xFFD4C4, fog: 0xC9E6FF, sunDir: [0.42, 0.3, -1], hemiSky: 0xBEE3FF, hemiGround: 0x4FBF4A, fogNear: 40, fogFar: 170 });
-  clouds(S, 9, { rim: 0xFFE4F4 });
+  sky(S, { top: 0x1C64F2, mid: 0x4DB8FF, hor: 0xFFD4C4, fog: 0xC9E6FF, sunDir: [0.42, 0.3, -1], hemiSky: 0xBEE3FF, hemiGround: 0x4FBF4A, fogNear: CALM ? 14 : 40, fogFar: CALM ? 75 : 170 });
+  clouds(S, CALM ? 4 : 9, { rim: 0xFFE4F4 });
   ground(S, { height: H, g1: 0x2FB34C, g2: 0x7FD83F, g3: 0x23A374, g4: 0x9BD96A,
     paint: (x, z, c) => { const d = Math.hypot(x - pond.x, (z - pond.z) * 1.15); if (d < pond.r + 1) c.lerp(C(0xE8D49A), smooth(pond.r + 1, pond.r - 0.2, d) * 0.85); } });
-  forest(S);
+  if (!CALM) forest(S);
   const inPond = (x, z) => Math.hypot(x - pond.x, (z - pond.z) * 1.15) < pond.r + 0.5;
-  grass(S, { colors: [0x16A34A, 0x2CC45C, 0x5BD93F, 0x9BE83A, 0x22B07A, 0x46C94E], tip: 0xF2FF8C, skip: inPond, count: 16000 });
-  flowers(S, { count: 230, size: 1.3, skip: (x, z) => inPond(x, z) || (Math.abs(x) < 3.5 && z > -2 && z < 3), colors: [0xFF4FA3, 0xFF7A45, 0xFFD23F, 0xB46BFF, 0xffffff, 0x4FC3FF, 0xFF5577] });
+  grass(S, { colors: [0x16A34A, 0x2CC45C, 0x5BD93F, 0x9BE83A, 0x22B07A, 0x46C94E], tip: 0xF2FF8C, skip: inPond, count: PLAIN ? 1 : CALM ? 6000 : 16000, tall: CALM ? 0.6 : 1 });
+  flowers(S, { count: CALM ? 45 : 230, size: CALM ? 1.1 : 1.3, skip: (x, z) => inPond(x, z) || (Math.abs(x) < (CALM ? 5 : 3.5) && z > -2 && z < 3), colors: [0xFF4FA3, 0xFF7A45, 0xFFD23F, 0xB46BFF, 0xffffff, 0x4FC3FF, 0xFF5577] });
 
   /* the pond: deep turquoise, moving light lines, a foamy edge, sun sparkles */
   const U = { uTime: { value: 0 }, deep: { value: C(0x0C7FB8) }, shallow: { value: C(0x34E0D2) }, foam: { value: C(0xF4FFFF) } };
@@ -81,20 +85,20 @@ export function worldS(S) {
   const lc = new THREE.Mesh(new THREE.SphereGeometry(0.1, 12, 8), toon(0xFFE14D, { emissive: 0xFFB000, ei: .6 })); lc.position.set(-7.9, 0.02, -8.3); S.scene.add(lc);
   S.tick(t => pads.forEach((p, i) => { p.position.y = -0.15 + Math.sin(t * 1.3 + i) * 0.02; p.rotation.y += 0.0008 * (i % 2 ? 1 : -1); }));
   /* stones around the pond */
-  for (let i = 0; i < 13; i++) { const a = -0.4 + i / 13 * 5.4, r = pond.r + rnd(0.1, 0.5); rock(S, pond.x + Math.cos(a) * r, pond.z + Math.sin(a) * r / 1.15, rnd(0.28, 0.6), [0xC6BEE6, 0xE3D7C9, 0xB7C4E8, 0xF0D8C8][i % 4]); }
-  rock(S, 5.2, 1.6, 0.55, 0xC9C1EA); rock(S, 5.9, 1.2, 0.32, 0xE6D8CA);
+  for (let i = 0; i < (CALM ? 8 : 13); i++) { const a = -0.4 + i / 13 * 5.4, r = pond.r + rnd(0.1, 0.5); rock(S, pond.x + Math.cos(a) * r, pond.z + Math.sin(a) * r / 1.15, rnd(0.28, 0.6), [0xC6BEE6, 0xE3D7C9, 0xB7C4E8, 0xF0D8C8][i % 4]); }
+  if (!CALM) { rock(S, 5.2, 1.6, 0.55, 0xC9C1EA); rock(S, 5.9, 1.2, 0.32, 0xE6D8CA); }
   /* trees: lush greens, one in pink blossom; mushrooms */
   const trees = [tree(S, -13, -12, { s: 1.5, c1: 0x13924A, c2: 0x7FE04A }), tree(S, 9, -9, { s: 1.6, c1: 0x188F3E, c2: 0xA6E64A }), tree(S, 14, -16, { s: 1.9, c1: 0x0F8A52, c2: 0x5ED67A }),
     tree(S, -4, -17, { s: 1.4, c1: 0xE85A9E, c2: 0xFFC2E2, rim: 0xFFF0FA, sheen: 0xFFFFFF }), tree(S, 6.5, -20, { s: 1.3, c1: 0x1D9A44, c2: 0xC3EB55 }), tree(S, -18, -4, { s: 1.7, c1: 0x18914A, c2: 0x8FE35A }),
-    tree(S, 18, -5, { s: 1.6, c1: 0x13924A, c2: 0x9BE94F })];
+    tree(S, 18, -5, { s: 1.6, c1: 0x13924A, c2: 0x9BE94F })].filter((T, i) => !CALM || [0, 1, 3].includes(i) || (T.visible = false, S.scene.remove(T), false));
   wobbleTrees(S, trees);
-  mushroom(S, 7.2, -6.2, 1.1); mushroom(S, 7.9, -5.6, 0.7); mushroom(S, -11.6, -9.6, 0.9);
+  if (!CALM) { mushroom(S, 7.2, -6.2, 1.1); mushroom(S, 7.9, -5.6, 0.7); mushroom(S, -11.6, -9.6, 0.9); }
   /* a soft rainbow behind the hills */
   const rb = new THREE.TorusGeometry(70, 4.2, 12, 80, Math.PI), rc = []; const rp = rb.attributes.position, cols = [0xFF4D4D, 0xFF9A3C, 0xFFE14D, 0x4DDB6A, 0x4DB2FF, 0x9B6BFF].map(C);
   for (let i = 0; i < rp.count; i++) { const x = rp.getX(i), y = rp.getY(i), r = Math.hypot(x, y), k = clamp((r - 65.8) / 8.4, 0, 0.999) * 5, a = Math.floor(k), c = cols[a].clone().lerp(cols[Math.min(5, a + 1)], k - a); rc.push(c.r, c.g, c.b); }
   rb.setAttribute('color', new THREE.Float32BufferAttribute(rc, 3));
-  const rain = new THREE.Mesh(rb, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.24, fog: false, depthWrite: false })); rain.position.set(40, -12, -175); rain.scale.set(0.75, 0.75, 0.05); S.scene.add(rain);
-  sparkles(S, { count: 170 }); butterflies(S, 4); const P = party(S);
+  const rain = new THREE.Mesh(rb, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: 0.24, fog: false, depthWrite: false })); rain.position.set(40, -12, -175); rain.scale.set(0.75, 0.75, 0.05); if (!CALM) S.scene.add(rain);
+  sparkles(S, { count: CALM ? 35 : 170 }); butterflies(S, CALM ? 1 : 4); const P = party(S);
 
   /* ---------- the snake: emerald with golden bands, glossy, big eyes ---------- */
   const strokes = STROKES.s.map(d => strokePoints(d, 0.05)), pts = strokes[0], R0 = 0.34;
@@ -161,18 +165,18 @@ export function worldS(S) {
 /* ============================== a: the apple orchard ============================== */
 export function worldA(S) {
   const lane = (x, z) => z < 1 && Math.abs(x + Math.sin(z * 0.15) * 0.6) < 1.2 + (-z) * 0.02;
-  sky(S, { top: 0x2A6CF5, mid: 0x78CFFF, hor: 0xFFDFA0, fog: 0xD8ECFF, sunDir: [-0.45, 0.3, -1], sunCol: 0xFFE2A0, hemiSky: 0xCDE8FF, hemiGround: 0x7BBF3A, fogNear: 40, fogFar: 170 });
-  clouds(S, 8, { rim: 0xFFEBD0 });
+  sky(S, { top: 0x2A6CF5, mid: 0x78CFFF, hor: 0xFFDFA0, fog: 0xD8ECFF, sunDir: [-0.45, 0.3, -1], sunCol: 0xFFE2A0, hemiSky: 0xCDE8FF, hemiGround: 0x7BBF3A, fogNear: CALM ? 14 : 40, fogFar: CALM ? 75 : 170 });
+  clouds(S, CALM ? 4 : 8, { rim: 0xFFEBD0 });
   ground(S, { g1: 0x5DBA3A, g2: 0xA3D53E, g3: 0x3FA548, g4: 0xC9D96A,
     paint: (x, z, c) => { if (z < 1) { const d = Math.abs(x + Math.sin(z * 0.15) * 0.6) - (1.2 + (-z) * 0.02); c.lerp(C(0xB98250), smooth(0.6, -0.2, d) * 0.85); } } });
-  forest(S, { colors: [0x1E9A48, 0x3BAF4A, 0x6CC44A, 0x99D84A, 0x2A9E3A] });
-  grass(S, { colors: [0x3FAE37, 0x6CC632, 0x9AD93B, 0x2E9E4F, 0xC2E05A, 0x58BD3E], tip: 0xFFF29A, skip: lane, count: 15000, tall: 0.9 });
-  flowers(S, { count: 170, size: 1.1, skip: (x, z) => lane(x, z) || (Math.abs(x) < 3.5 && z > -2 && z < 3), colors: [0xffffff, 0xFFD23F, 0xFF8AC2, 0xFFFFFF, 0xB46BFF] });
+  if (!CALM) forest(S, { colors: [0x1E9A48, 0x3BAF4A, 0x6CC44A, 0x99D84A, 0x2A9E3A] });
+  grass(S, { colors: [0x3FAE37, 0x6CC632, 0x9AD93B, 0x2E9E4F, 0xC2E05A, 0x58BD3E], tip: 0xFFF29A, skip: lane, count: PLAIN ? 1 : CALM ? 5500 : 15000, tall: CALM ? 0.55 : 0.9 });
+  flowers(S, { count: CALM ? 30 : 170, size: 1.1, skip: (x, z) => lane(x, z) || (Math.abs(x) < (CALM ? 5 : 3.5) && z > -2 && z < 3), colors: [0xffffff, 0xFFD23F, 0xFF8AC2, 0xFFFFFF, 0xB46BFF] });
 
   /* orchard rows going into the distance, heavy with shiny apples */
   const trees = [], spots = [];
-  [-1, 1].forEach(side => { [-4, -9.5, -15, -21, -27, -33].forEach((z, i) => { trees.push(tree(S, side * (4.8 + i * 0.25) + rnd(-.3, .3), z, { s: 1.15 + rnd(0, .2), c1: 0x16883A, c2: 0x8EDB4A, puffs: 10 })); });
-    [-7, -13, -19, -25].forEach(z => trees.push(tree(S, side * rnd(10, 12), z, { s: 1.3, c1: 0x1A8F3C, c2: 0xA0E04F, puffs: 10 }))); });
+  [-1, 1].forEach(side => { (CALM ? [-4, -10.5, -17] : [-4, -9.5, -15, -21, -27, -33]).forEach((z, i) => { trees.push(tree(S, side * (4.8 + i * 0.25) + rnd(-.3, .3), z, { s: 1.15 + rnd(0, .2), c1: 0x16883A, c2: 0x8EDB4A, puffs: 10 })); });
+    (CALM ? [] : [-7, -13, -19, -25]).forEach(z => trees.push(tree(S, side * rnd(10, 12), z, { s: 1.3, c1: 0x1A8F3C, c2: 0xA0E04F, puffs: 10 }))); });
   trees.push(tree(S, -9.6, 0.5, { s: 1.45, c1: 0x15853A, c2: 0x98E04C, puffs: 11 }), tree(S, 10.4, -0.5, { s: 1.5, c1: 0x15853A, c2: 0x98E04C, puffs: 11 }));
   wobbleTrees(S, trees);
   const ag = new THREE.SphereGeometry(0.17, 20, 14), ap = ag.attributes.position; for (let i = 0; i < ap.count; i++) { const x = ap.getX(i), y = ap.getY(i), z = ap.getZ(i), r = Math.hypot(x, z); if (y > 0) ap.setY(i, y - 0.06 * Math.exp(-r * r / 0.004)); } ag.computeVertexNormals();
@@ -193,9 +197,9 @@ export function worldA(S) {
   const ladder = new THREE.Group(); [-0.3, 0.3].forEach(x => { const r = new THREE.Mesh(new THREE.BoxGeometry(0.09, 3.2, 0.09), wood); r.position.set(x, 1.6, 0); ladder.add(r); });
   for (let i = 0; i < 6; i++) { const r = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.07, 0.07), wood2); r.position.set(0, 0.4 + i * 0.5, 0); ladder.add(r); }
   const lt = trees[0]; ladder.position.set(lt.position.x + 1.1, lt.position.y, lt.position.z + 0.6); ladder.rotation.set(-0.15, -0.6, -0.3); ladder.traverse(o => o.castShadow = true); S.scene.add(ladder);
-  sparkles(S, { count: 150, colors: [0xFFF3B0, 0xFFFFFF, 0xFFE0C0] }); butterflies(S, 4, [0xFFB020, 0xFF5FB8, 0x4FC3FF, 0xFFE14D]); const P = party(S);
+  sparkles(S, { count: CALM ? 30 : 150, colors: [0xFFF3B0, 0xFFFFFF, 0xFFE0C0] }); butterflies(S, CALM ? 1 : 4, [0xFFB020, 0xFF5FB8, 0x4FC3FF, 0xFFE14D]); const P = party(S);
   /* falling blossom petals */
-  const pg = new THREE.CircleGeometry(0.06, 8); pg.scale(1, 0.6, 1); const PN = 60, petals = new THREE.InstancedMesh(pg, toon(0xFFD6EA, { side: THREE.DoubleSide, emissive: 0xFF9AC8, ei: .3 }), PN), pd = [];
+  const pg = new THREE.CircleGeometry(0.06, 8); pg.scale(1, 0.6, 1); const PN = CALM ? 0 : 60, petals = new THREE.InstancedMesh(pg, toon(0xFFD6EA, { side: THREE.DoubleSide, emissive: 0xFF9AC8, ei: .3 }), PN), pd = [];
   for (let i = 0; i < PN; i++) pd.push({ p: new THREE.Vector3(rnd(-12, 12), rnd(0, 8), rnd(-14, 4)), ph: rnd(0, 6) }); petals.frustumCulled = false; S.scene.add(petals);
   S.tick((t, dt) => { pd.forEach((o, i) => { o.p.y -= dt * 0.45; o.p.x += Math.sin(t + o.ph) * dt * 0.4; if (o.p.y < 0) { o.p.y = 8; o.p.x = rnd(-12, 12); }
     m.compose(o.p, new THREE.Quaternion().setFromEuler(new THREE.Euler(t * 2 + o.ph, t + o.ph, 0)), new THREE.Vector3(1, 1, 1)); petals.setMatrixAt(i, m); }); petals.instanceMatrix.needsUpdate = true; });

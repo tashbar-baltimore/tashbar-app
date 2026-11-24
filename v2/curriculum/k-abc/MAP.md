@@ -10,6 +10,8 @@
 - **Print basics are things a boy does, never things he reads.** Nothing boring.
 - **The look (later the same day): cute, cartoony, immersive 3D, "nothing simple".** Every game happens in one 3D world (the meadow kit, `v2/app/k-abc/world.js`).
 - **Each letter turns into its picture as it is traced.** For example, the snake grows along the s while the computer traces it, and again under the boy's finger.
+- **The letter t (Esti 2026-11-24):** written with a short stem above the bar (option 2 of the two she was shown).
+- **The look (Esti 2026-11-24, after the first look sample):** "a careful balance of the graphics being engaging, but not too overwhelming." The background stays soft and simple; the letter and the friend stay bright and interactive.
 
 ---
 

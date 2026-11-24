@@ -412,7 +412,8 @@ export function blob(S, r = 1, k = 0.35) {
 /* one set of stroke paths (0..200 box) for drawing, tracing and the 3D letter */
 export const STROKES = {
   s: ['M146 58 C130 34 62 34 60 68 C58 100 142 96 142 134 C142 172 70 174 52 146'],
-  a: ['M128 84 C116 62 70 64 68 106 C66 148 118 150 128 120', 'M130 70 L130 152']
+  a: ['M128 84 C116 62 70 64 68 106 C66 148 118 150 128 120', 'M130 70 L130 152'],
+  t: ['M100 40 L100 136 C100 152 114 156 132 148', 'M68 70 L132 70']   /* Esti 2026-11-24: the t with a short stem above the bar (option 2) */
 };
 /* a stroke path -> evenly spaced 3D points (1 unit = 40 path units), centred on (cx, cy) */
 export function strokePoints(d, step = 0.06, cx = 0, cy = 2.75, z = 0) {
