@@ -37,7 +37,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   });
   E.onFrame(t => {
     puffs.forEach((p, i) => { const k = ((t * .8 + i / 4) % 1); p.position.set(-.35 - k * .5, 1.4 + k * .9, 0); p.scale.setScalar(.6 + k * 1.2); p.material.opacity = .8 * (1 - k); });
-    cars.forEach((c, i) => { if (!c.userData.on && c !== drag && !c.userData.busy && c.visible) { c.position.y = homes[c.userData.home ?? i].y + Math.sin(t * 2 + i) * .05; } c.userData.letter.rotation.y = Math.sin(t * 1.3 + i) * .2; if (P && ORDER.length >= 6) c.userData.letter.scale.setScalar(c.userData.on ? 1.6 : 1.3); });   /* on a phone, letters on the train are bigger */
+    cars.forEach((c, i) => { if (!c.userData.on && c !== drag && !c.userData.busy && c.visible) { c.position.y = homes[c.userData.home ?? i].y + Math.sin(t * 2 + i) * .05; } c.userData.letter.rotation.y = Math.sin(t * 1.3 + i) * .2; if (P && ORDER.length >= 6) c.userData.letter.scale.setScalar(c.userData.on ? 1.25 : 1.3); });   /* on a phone, letters on the train are bigger */
     const need = nextNeeded(), g = need != null && cars.find(c => c.userData.key === ORDER[need] && !c.userData.on);
     if (help && g && enabled) { glow.position.copy(g.position).add(new THREE.Vector3(0, .9 * g.scale.x, -.4)); glow.material.opacity = .55 + Math.sin(t * 5) * .3; } else glow.material.opacity = 0;
   });

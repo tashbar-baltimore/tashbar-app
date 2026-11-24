@@ -96,7 +96,8 @@ export function makeStory(E, unit, script) {
       const target = left[0]; const [hx, hy] = E.toScreen(E.worldPos(target).add(new THREE.Vector3(.15, -.35, .5))); E.hand.at(hx, hy, true);
       document.body.dataset.tapReady = left.map(l => 'row-' + l.userData.key).join(',');
       const l = await E.waitTap(row); E.hand.hide();
-      if (!left.includes(l)) { E.sfx.boop(); E.shake(l, .08); await E.say(E.nameLine(l.userData.key)); await E.say('Now tap ' + E.LETTERS[target.userData.key].name + '!'); continue; }
+      if (!left.includes(l)) { E.sfx.boop(); E.shake(l, .08); const tk = target.userData.key, lk = l.userData.key, same = E.LETTERS[lk].snd && E.LETTERS[lk].snd === E.LETTERS[tk].snd;   /* Kaf for Kuf: both say k, so the sound is no help */
+        await E.say(same ? 'That is ' + E.LETTERS[lk].name + '.' : E.nameLine(lk)); await E.say(same && tk === 'kuf' ? 'Kuf has a long leg. Tap Kuf!' : 'Now tap ' + E.LETTERS[tk].name + '!'); continue; }
       left.splice(left.indexOf(l), 1);
       E.sfx.chime(); E.sparkle(E.worldPos(l).add(new THREE.Vector3(0, .3, .5)), 20, 1); E.hop(l, .45);
       if (lines.length > 1) { const s0 = l.scale.x; E.tween(300, q => l.scale.setScalar(s0 * (1 + .18 * q))); }   /* more than one line: no star, which could sit under a letter above and look like a nekudah; the letter grows instead */
