@@ -9,7 +9,7 @@ const QS = {
   3: [N('zayin'), N('vov'), SND('zayin'), N('ches'), N('hei'), N('daled'), { k: 'alef', by: 'quiet' }, N('beis'), SND('gimmel')],   /* no 'Which says ch?' until the rebbe's recording */
   4: [N('kaf'), N('tes'), N('chaf'), SND('kaf'), N('yud'), SND('tes'), N('beis'), SND('yud'), N('ches')],   /* Beis comes with Kaf; no 'Which says ch?' */
   5: [N('lamed'), N('nun'), SND('mem'), N('mem'), SND('nun'), N('tes'), SND('lamed'), N('gimmel'), N('kaf')],   /* Nun beside Gimmel, Mem beside Tes */
-  6: [N('pei'), N('samech'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), N('mem')],   /* Pei beside Fei, and Kaf beside Pei */
+  6: [N('pei'), N('samech'), N('fei'), SND('pei'), N('ayin'), SND('samech'), { k: 'ayin', by: 'quiet' }, N('kaf'), N('mem')],   /* Pei beside Fei; Kaf beside Chaf */
   2: [N('gimmel'), SND('daled'), N('hei'), SND('gimmel'), SND('hei'), N('daled'), SND('beis'), { k: 'alef', by: 'quiet' }, N('veis')],
 };
 export default function setup(E, { struggled, unit }) {

@@ -14,7 +14,7 @@
 | 1 | Avi on the farm (story) | At Zeidy's farm, a horse (sus) turns into Samech, a tree (eitz) into Ayin, and a butterfly (parpar) into Pei. Pei's dot floats away and it becomes Fei. Then the look-alikes side by side, a chant of all 20 letters, and he taps each new one. |
 | 2 | Feel the Shape | Feels Samech (round), Ayin (two arms), Pei (and taps its dot) and Fei. |
 | 3 | Look-Alike Detective | He sorts Kaf and Pei (Pei has a little tongue inside), then Pei and Fei (the dot). |
-| 4 | Sound Match | Sus and sulam (ladder) go to Samech, eitz and anan (cloud) to Ayin, parpar and pil (elephant) to Pei, and bayis to Beis. |
+| 4 | Sound Match | Sus and sulam (ladder) go to Samech, eitz and anan (cloud) to Ayin, parpar and pil (elephant) to Pei, and bayis to Beis. Then Fei joins Pei. |
 | 5 | Find the Mistake | "Yaakov says this is a Pei. Is he right?" A ring marks the dot place; an arrow points at a shape difference. |
 | 6 | Show what you know (mastery check) | 9 questions. Pei stands beside Fei. Alef and Ayin are never asked side by side, since both are quiet. |
 | 7 | Review: Look-Alikes | Gimmel and Nun, then Tes and Mem, the spaced review of Unit 5. |
@@ -26,12 +26,14 @@
 3. **Ayin is "the quiet letter, like Alef."** Sound Match says "Eitz starts with Ayin, the quiet letter."
 4. **Fei has no picture.** A word that starts with פ takes the dot, so Fei comes from Pei losing its dot, the way Veis comes from Beis.
 5. **The Look-Alike Detective also sorts Kaf and Pei,** since Pei has a little tongue inside and Kaf does not.
-6. **Until the farm painting arrives,** Unit 6 uses the park background.
+6. **The farm background and the six word pictures** (horse, ladder, tree, cloud, butterfly, elephant) are the painted pictures from Rabbi Khaver.
+7. **Kaf and Pei, in the same words in every game:** "Pei has a little tongue inside. Kaf has no little tongue." The arrow points at the same spot on both, left of Kaf's dot, so it never points at a dot.
+8. **Sound Match ends with Fei** standing beside Pei: "This is Fei. Pei without its dot. Fei says f."
 
 ## For the rebbe (every sound and rule used in Unit 6)
 - **Letters:** Samech (ס) says "s"; Ayin (ע) is quiet; Pei (פּ) says "p"; Fei (פ) says "f". These are lone sounds, never with a vowel.
 - **Dot rule:** Pei has a dot (dagesh) and says p. Without the dot it is Fei and says f.
-- **Look-alikes:** Pei has a little tongue inside; Kaf does not.
+- **Look-alikes:** Pei has a little tongue inside; Kaf has no little tongue.
 - **Words:** sus (horse), sulam (ladder), eitz (tree), anan (cloud), parpar (butterfly), pil (elephant), farm.
 - **Chant order:** Alef, Beis, Veis, Gimmel, Daled, Hei, Vov, Zayin, Ches, Tes, Yud, Kaf, Chaf, Lamed, Mem, Nun, Samech, Ayin, Pei, Fei.
 - **Temporary:** the letter sounds are the computer voice until the rebbe's recording is in.

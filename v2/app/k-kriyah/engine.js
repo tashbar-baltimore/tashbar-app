@@ -227,7 +227,7 @@ function starTex() { const cv = document.createElement('canvas'); cv.width = cv.
 
 export const world = { group: null, clouds: [] };
 /* ---------------- painted backgrounds (made with ChatGPT; art/bg) ---------------- */
-export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5: 'picnic', 6: 'park' };   /* Unit 6 moves to the farm when its painting arrives */
+export const UNIT_BACKDROP = { 1: 'street', 2: 'zoo', 3: 'garden', 4: 'park', 5: 'picnic', 6: 'farm' };
 export const KIND_BACKDROP = { mastery: 'classroom', bonus: 'beach', story: 'street', detective: 'street', hunt: null };   /* the sukkah hunt keeps its 3D world */
 export const backdropFor = (game, unitN) => game && 'bg' in game ? game.bg : game && game.kind in KIND_BACKDROP ? KIND_BACKDROP[game.kind] : UNIT_BACKDROP[unitN || (game && game.unit) || 1] || null;
 export let backdrop = null;
@@ -473,7 +473,7 @@ export const FEATURES = { gimmel: [360, 110, 'left'], daled: [150, 250, 'right']
   beis: [530, 70, 'left'], kaf: [450, 35, 'left'], tes: [470, 610, 'down'], yud: [150, 610, 'down'],
   lamed: [90, 820, 'down'], mem: [195, 70, 'up'], nun: [310, 50, 'left'] };   /* Lamed: its tall neck; Mem: the opening at the bottom; Nun: its flat bottom */
 /* a place to look that depends on the look-alike beside it: Tes's closed round bottom (beside Mem) */
-const PAIR_FEAT = { 'tes|mem': [300, 20, 'up'], 'kaf|pei': [200, 330, 'right'], 'pei|kaf': [150, 330, 'right'] };   /* Pei's little tongue inside; the same place is empty in Kaf */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
+const PAIR_FEAT = { 'tes|mem': [300, 20, 'up'], 'kaf|pei': [80, 275, 'right'], 'pei|kaf': [80, 275, 'right'] };   /* Pei's little tongue inside; the same place is empty in Kaf (left of Kaf's dot) */   /* Tes: its curl on top; Yud: the little head */   /* Beis's tail sticks out at the bottom; Kaf's bottom is round */
 /* the dot place, for Beis/Veis and Kaf/Chaf (an arrow from the open side) */
 /* the place to look on k when it might be taken for other: the dot place for a dot pair or any lone dotted letter, the shape for Beis/Kaf */
 export const featFor = (k, other) => sameShape(k, other) ? DOT_FEATURE[k] : PAIR_FEAT[k + '|' + other] || (((k === 'beis' && other === 'kaf') || (k === 'kaf' && other === 'beis')) ? FEATURES[k] : (DOT_FEATURE[k] || FEATURES[k]));

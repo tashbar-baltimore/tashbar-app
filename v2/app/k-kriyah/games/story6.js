@@ -13,6 +13,6 @@ export default function setup(E, { unit }) {
       { pic: 'parpar', lines: ['A butterfly lands on Avi’s hand!', 'A butterfly is a parpar.'], letter: 'pei', after: ['Parpar starts with Pei. Pei has a dot.', ['Pei says', S('p')]] },
       { fromDot: 'pei', letter: 'fei', lines: ['No dot. This is Fei!', ['Fei says', S('f')]] },
     ],
-    lookalikes: [['kaf', 'pei', 'Kaf has nothing inside.', 'Pei has a little tongue inside.'], ['pei', 'fei', 'Pei has a dot.', 'Fei has no dot.']],
+    lookalikes: [['kaf', 'pei', 'Kaf has no little tongue.', 'Pei has a little tongue inside.'], ['pei', 'fei', 'Pei has a dot.', 'Fei has no dot.']],
   });
 }

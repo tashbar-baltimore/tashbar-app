@@ -160,7 +160,8 @@ export function makePictures(E) {
   /* the ChatGPT pictures (art/obj) replace the simple 3D ones; each stands as a flat card that always faces the boy */
   const IMG = { dag: ['fish', 1.24], dov: ['bear', .85], gamal: ['camel', 1.02], gezer: ['carrot', .84], har: ['mountain', 1.27], bayis: ['house', 1.14], vered: ['rose', .88], zevuv: ['fly', 1.06], zayis: ['olives', 1.23],
     chatul: ['cat', .82], chamor: ['donkey', .79], taleh: ['lamb', .91], tavas: ['peacock', 1.06], yonah: ['dove', 1.1], yad: ['hand', .91], kadur: ['beachball', 1], kelev: ['dog', .94], limon: ['lemon', .86], mayim: ['water', .85],
-    melafefon: ['cucumber', 1.16], nemalah: ['ant', 1.06] };
+    melafefon: ['cucumber', 1.16], nemalah: ['ant', 1.06],
+    sus: ['horse', .9], sulam: ['ladder', .66], eitz: ['tree', 1.03], anan: ['cloud', 1.6], parpar: ['butterfly', 1.21], pil: ['elephant', 1.19] };
   const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp'); t.colorSpace = THREE.SRGBColorSpace; return t; })());
   for (const [w, [f, a]] of Object.entries(IMG)) P[w] = () => { const g = new THREE.Group(), h = 1.7, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex(f), transparent: true, alphaTest: .4 }));
     sp.scale.set(h * a, h, 1); g.add(sp); g.userData.card = sp; return g; };
