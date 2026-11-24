@@ -115,7 +115,9 @@ export function startGame(cfg) {
   scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer), 0.04).texture;
   const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
   /* the new look (look.js): a game with cfg.world gets the rich world, light, characters and effects. Others keep the first look. */
-  const LK = cfg.world ? createLook({ renderer, scene, camera, FAST: FAST && !SHOT, world: cfg.world }) : null;
+  /* the automatic game test (?fast=1) plays on the first plain look, so it stays quick on a test machine; look=1 (v2/tests/k-shapes-look.js) and pictures (shot=1) use the new look */
+  const LOOKTEST = FAST && /[?&]look=1/.test(location.search);
+  const LK = cfg.world && (!FAST || SHOT || LOOKTEST || cfg.id === 'triangles') ? createLook({ renderer, scene, camera, FAST: FAST && !SHOT, world: cfg.world }) : null;
   if (LK) document.body.classList.add('world');
   const PAL = LK ? ['#FF3B30', '#2F80FF', '#FFC21A', '#1DC77A', '#9A5BFF', '#FF8A1F', '#00C3D6', '#FF4FA0'] : COLORS;
   if (LK) { LK.buildWorld(); const add0 = scene.add.bind(scene); scene.add = (...os) => { os.forEach(o => LK.toyify(o)); return add0(...os); }; } else {
