@@ -207,6 +207,198 @@
         {type:'match', pairs:[['bedtime','long i'],['napkin','short i'],['escape','long a'],['catnap','short a']], say:'Match each word to the vowel in its last part.', how:'Split it. Does the last part end with a quiet e?'}] }
   };
 
+  /* ===== Grade 2 Unit 2 "Vowel teams 2" (F-map section 5): aw/au/al, ew/ue/ui, vowel teams in long words ===== */
+  var ENDT = 'at the end', INT = 'inside the word';
+
+  LESSONS['READ.LV.L03.03'] = {name:'Saw, Haul, Ball',
+    teach:[
+      {q:'Saw ends with the aw sound. Which team spells it?', o:['aw','au'], how:'At the end of a word, the aw sound is spelled aw.'},
+      {q:'Haul has the aw sound inside the word. Which team spells it?', o:['au','aw'], how:'Inside the word, the aw sound is usually spelled au.'},
+      {q:'Read "walk". What does the a say?', o:['aw, like ball','a, like pal'], how:'In all, alk and alt, a says aw: ball, walk, salt.'}
+    ],
+    practice:[
+      {t:'sort', q:'Where is the aw sound? Sort each word.', bins:[{id:'e',label:'aw sound '+ENDT},{id:'i',label:'aw sound '+INT}], items:[{label:'claw',bin:'e'},{label:'sauce',bin:'i'},{label:'straw',bin:'e'},{label:'launch',bin:'i'},{label:'jaw',bin:'e'},{label:'fault',bin:'i'}], h:'Say the word. Is the aw sound the last sound, or inside?'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['straw','🥤'],['salt','🧂'],['paw','🐾'],['ball','⚽']], h:'Find the team. It says aw. Blend the word.'},
+      {t:'spotall', q:'Tap every word with the aw sound.', cells:[{label:'hawk',ok:true},{label:'hay',ok:false},{label:'talk',ok:true},{label:'tack',ok:false},{label:'cause',ok:true},{label:'cane',ok:false}], h:'Look for aw, au, or al like ball.'},
+      {t:'order', q:'Build the word "straw".', tiles:['s','t','r','aw'], h:'Say it slowly. The aw sound is at the end.'},
+      {t:'sort', q:'Which team fills the blank?', bins:[{id:'w',label:'aw'},{id:'u',label:'au'}], items:[{label:'dr__',bin:'w'},{label:'s__ce',bin:'u'},{label:'cl__',bin:'w'},{label:'l__nch',bin:'u'}], h:'Blank at the end: aw. Blank inside: au.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['yawn','a sleepy mouth'],['chalk','for the board'],['sauce','on the pasta'],['paw','a cat foot']], h:'Read the word first. Then think what it means.'}
+    ],
+    check:[
+      {q:'Which team finishes the word? The ice will th__ in the sun.', o:['aw','au','al']},
+      {q:'Which team finishes the word? Take a p__se and rest.', o:['au','aw','al']},
+      {q:'Read "chalk". What does the a say?', o:['aw, like ball','a, like pal','ay, like play']}
+    ],
+    re:[
+      {q:'Which team finishes the word? Eli will dr__ a picture.', o:['aw','au','al']},
+      {q:'Which team finishes the word? Pasta with tomato s__ce.', o:['au','aw','al']},
+      {q:'Read "small". What does the a say?', o:['aw, like ball','a, like pal','ay, like play']}
+    ]};
+
+  LESSONS['READ.LV.L03.04'] = {name:'Blue Moon Team',
+    teach:[
+      {q:'Blue ends with the oo sound. Which team could spell it?', o:['ue','ui'], how:'At the end of a word, oo is often ew or ue.'},
+      {q:'Read "fruit". What do u and i say together?', o:['oo, like moon','ih, like sit'], how:'U and i are a team here. They say oo: fruit, suit, juice.'},
+      {q:'Read "new". What do e and w say together?', o:['oo, like moon','eh-w'], how:'E and w are a team. Together they say oo.'}
+    ],
+    practice:[
+      {t:'sort', q:'Which team spells the oo sound?', bins:[{id:'w',label:'ew'},{id:'e',label:'ue'},{id:'i',label:'ui'}], items:[{label:'flew',bin:'w'},{label:'glue',bin:'e'},{label:'suit',bin:'i'},{label:'chew',bin:'w'},{label:'true',bin:'e'},{label:'juice',bin:'i'}], h:'Find the two vowels side by side. That is the team.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['juice','🧃'],['suitcase','🧳'],['fruit','🍇'],['screw','🔩']], h:'Find the team. It says oo. Blend the word.'},
+      {t:'spotall', q:'Tap every word with the oo sound.', cells:[{label:'grew',ok:true},{label:'grow',ok:false},{label:'clue',ok:true},{label:'club',ok:false},{label:'suit',ok:true},{label:'sit',ok:false}], h:'Look for ew, ue or ui.'},
+      {t:'order', q:'Build the word "chew".', tiles:['ch','ew'], h:'Two tiles: the first sound, then the oo team.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['new','not old'],['true','not made up'],['flew','went in the air'],['fruit','a pear or a plum']], h:'Read the word first. Then think what it means.'},
+      {t:'sort', q:'Oo sound, or not?', bins:[{id:'y',label:'oo sound'},{id:'n',label:'no oo sound'}], items:[{label:'drew',bin:'y'},{label:'dress',bin:'n'},{label:'cruise',bin:'y'},{label:'crush',bin:'n'}], h:'Read it. Do you hear oo, like moon?'}
+    ],
+    check:[
+      {q:'Read "stew". Which word rhymes with it?', o:['true','stow','step']},
+      {q:'Read "bruise". What do u and i say?', o:['oo, like moon','ih, like sit','you']},
+      {q:'Read "due". Which word rhymes with it?', o:['new','doe','dug']}
+    ],
+    re:[
+      {q:'Read "threw". Which word rhymes with it?', o:['blue','throw','three']},
+      {q:'Read "juice". Which word rhymes with it?', o:['goose','just','joke']},
+      {q:'Read "clue". Which word rhymes with it?', o:['flew','claw','club']}
+    ]};
+
+  LESSONS['READ.LV.L03.05'] = {name:'Teams in Long Words',
+    teach:[
+      {q:'Rainbow: where do I split?', o:['rain | bow','ra | inbow'], how:'Keep each vowel team together. Split between the two small words: rain | bow.'},
+      {q:'In "peanut", which part has the ea team?', o:['the first part','the second part'], how:'Find the team. It stays in one part: pea | nut.'},
+      {q:'Read "rain | coat". Is it a good split?', o:['Yes: the team stays together','No: the team is cut in half'], how:'Two vowels that work as a team always stay in the same part.'}
+    ],
+    practice:[
+      {t:'sort', q:'Good split or bad split?', bins:[{id:'g',label:'Team stays together'},{id:'b',label:'Team split in two'}], items:[{label:'rain | coat',bin:'g'},{label:'ra | incoat',bin:'b'},{label:'sea | weed',bin:'g'},{label:'se | aweed',bin:'b'},{label:'oat | meal',bin:'g'},{label:'o | atmeal',bin:'b'}], h:'Find each team. Is it whole, or cut in half?'},
+      {t:'order', q:'Build the word "teapot".', tiles:['tea','pot'], h:'Find the team ea. Keep it in one part.'},
+      {t:'pairs', q:'Match each word to its picture.', pairs:[['rainbow','🌈'],['peanut','🥜'],['raincoat','🧥'],['teapot','🫖']], h:'Read part by part. Keep each team together.'},
+      {t:'spotall', q:'Tap every split that keeps the team together.', cells:[{label:'pea | nut',ok:true},{label:'pe | anut',ok:false},{label:'day | time',ok:true},{label:'da | ytime',ok:false}], h:'A good split never cuts a team.'},
+      {t:'order', q:'Build the word "seaweed".', tiles:['sea','weed'], h:'Two teams: ea and ee. Each stays whole.'},
+      {t:'pairs', q:'Match each word to what it means.', pairs:[['oatmeal','a warm breakfast'],['daytime','when the sun is up'],['seaweed','a plant in the sea'],['raincoat','for a wet day']], h:'Read part by part, then think what it means.'}
+    ],
+    check:[
+      {q:'Read "mailbox". Is "mail | box" a good split?', o:['Yes: the team stays together','No: the team is cut in half']},
+      {q:'Read "sixteen". Is "sixte | en" a good split?', o:['No: the team is cut in half','Yes: the team stays together']},
+      {q:'Read "seashell". How many vowel teams are in it?', o:['1','2','3']}
+    ],
+    re:[
+      {q:'Read "sailboat". Is "sa | ilboat" a good split?', o:['No: the team is cut in half','Yes: the team stays together']},
+      {q:'Read "railroad". Is "rail | road" a good split?', o:['Yes: the team stays together','No: the team is cut in half']},
+      {q:'Read "steamboat". How many vowel teams are in it?', o:['2','1','3']}
+    ]};
+
+  TEACH['READ.LV.L03.03'] = { hook:'Saw, haul, ball: three ways to spell one sound!',
+    big:'The aw sound is spelled aw at the end of a word, au inside a word, and a in all, alk and alt (ball, walk, salt).',
+    intro:['Listen for the aw sound, like saw.','At the end of the word: aw. Saw, draw.','Inside the word: usually au. Haul, sauce. (But yawn and hawk use aw.)','In all, alk, alt: a says aw. Ball, walk, salt.'],
+    ex:[{q:'Spell the aw sound in "claw".', steps:['Say claw slowly.','The aw sound is at the end.','At the end, it is aw: claw.'], a:'aw'},
+        {q:'Spell the aw sound in "launch".', steps:['Say launch slowly.','The aw sound is inside.','Inside, it is au: launch.'], a:'au'}],
+    oops:{ q:'Read: haul', wrong:'hay-ool', right:'hawl', why:'A and u are a team. Together they say aw.' },
+    idea:['Open your mouth wide like a yawn: aw. Every team in this lesson makes that sound.'],
+    'try':{ q:'You hear "draw". Which team spells the aw sound?', o:['aw','au'], a:'aw', steps:['Is the sound at the end?','Yes. At the end: aw.'] } };
+  TEACH['READ.LV.L03.04'] = { hook:'New blue fruit juice: four words, one sound!',
+    big:'The teams ew, ue and ui can all say oo, like moon.',
+    intro:['Listen for oo, like moon.','Ew: new, flew, chew.','Ue: blue, glue, true.','Ui: fruit, suit, juice.'],
+    ex:[{q:'Read: flew', steps:['F, l, then the team ew.','Ew says oo.','Flew!'], a:'flew'},
+        {q:'Read: suit', steps:['S, then the team ui, then t.','Ui says oo.','Suit!'], a:'suit'}],
+    oops:{ q:'Read: chew', wrong:'cheh-w', right:'choo', why:'E and w are a team. They say oo together.' },
+    idea:['Make a round mouth like you are blowing a candle: oo.'],
+    'try':{ q:'Read "glue". What do u and e say together?', o:['oo, like moon','uh-eh'], a:'oo, like moon', steps:['Find the team: ue.','Ue says oo.','Glue!'] } };
+  TEACH['READ.LV.L03.05'] = { hook:'Rainbow, peanut, seaweed: long words full of vowel teams!',
+    big:'Split a long word so each vowel team stays whole. In a compound word, split between the two small words. Not two small words? Still keep every team whole: tea | cher.',
+    intro:['Find every vowel team.','Each team stays in one part.','Split between the two small words.','Read each part, then put them together.'],
+    ex:[{q:'Read: rainbow', steps:['Teams: ai and ow.','Two small words: rain | bow.','Rainbow!'], a:'rain | bow'},
+        {q:'Read: oatmeal', steps:['Teams: oa and ea.','Two small words: oat | meal.','Oatmeal!'], a:'oat | meal'}],
+    oops:{ q:'Read: raincoat', wrong:'ra | incoat', right:'rain | coat', why:'Ai is a team. A team is never cut in half.' },
+    idea:['A vowel team holds hands. Never pull the hands apart!'],
+    'try':{ q:'Read "daytime". Where does it split?', o:['day | time','da | ytime'], a:'day | time', steps:['Find the team ay.','Keep it together.','Day | time!'] } };
+
+  HOWTO['READ.LV.L03.03'] = { s:'Listen for the aw sound.\nAt the end: aw. Inside: usually au.\nIn all, alk, alt: a says aw.',
+    q:{ 'Which team finishes the word? The ice will th__ in the sun.':'Say the word. Is the aw sound at the end, or inside?\nPick the team for that place.',
+        'Which team finishes the word? Take a p__se and rest.':'Say the word. Is the aw sound at the end, or inside?\nPick the team for that place.',
+        'Read "chalk". What does the a say?':'Look at the letters after a.\nIn all, alk, alt: a says aw.',
+        'Which team finishes the word? Eli will dr__ a picture.':'Say the word. Is the aw sound at the end, or inside?\nPick the team for that place.',
+        'Which team finishes the word? Pasta with tomato s__ce.':'Say the word. Is the aw sound at the end, or inside?\nPick the team for that place.',
+        'Read "small". What does the a say?':'Look at the letters after a.\nIn all, alk, alt: a says aw.' } };
+  HOWTO['READ.LV.L03.04'] = { s:'Find the two vowels side by side.\nEw, ue and ui all say oo.\nBlend the word.',
+    q:{ 'Read "stew". Which word rhymes with it?':'Read the word. Ew, ue and ui say oo.\nFind the word that ends the same.',
+        'Read "bruise". What do u and i say?':'Find the team.\nEw, ue and ui all say oo.',
+        'Read "due". Which word rhymes with it?':'Read the word. Ew, ue and ui say oo.\nFind the word that ends the same.',
+        'Read "threw". Which word rhymes with it?':'Read the word. Ew, ue and ui say oo.\nFind the word that ends the same.',
+        'Read "juice". Which word rhymes with it?':'Read the word. Ui says oo.\nFind the word that ends the same.',
+        'Read "clue". Which word rhymes with it?':'Read the word. Ew, ue and ui say oo.\nFind the word that ends the same.' } };
+  HOWTO['READ.LV.L03.05'] = { s:'Find every vowel team.\nKeep each team in one part.\nSplit between the two small words.',
+    q:{ 'Read "mailbox". Is "mail | box" a good split?':'Find the team.\nIs it whole, or cut in half?',
+        'Read "sixteen". Is "sixte | en" a good split?':'Find the team.\nIs it whole, or cut in half?',
+        'Read "seashell". How many vowel teams are in it?':'Look for vowel teams like ai, ea, oa, ee.\nCount each team once.',
+        'Read "sailboat". Is "sa | ilboat" a good split?':'Find the team.\nIs it whole, or cut in half?',
+        'Read "railroad". Is "rail | road" a good split?':'Find the teams.\nIs each one whole?',
+        'Read "steamboat". How many vowel teams are in it?':'Look for vowel teams like ai, ea, oa, oo, ow, ay.\nCount each team once.' } };
+
+  BITE['READ.LV.L03.03'] = { band:'B23', pic:'🐾', today:'Read and spell aw, au and al',
+    why:'Saw, sauce, ball: one sound with three spellings. Know them all, and you can read and spell them.',
+    ready:[{q:'Which word has a vowel team?', o:['rain','ran','run'], a:'rain'},{q:'Which word has oo, like moon?', o:['spoon','spin','span'], a:'spoon'}],
+    bridge:'READ.LV.L02.02', bridgeName:'Vowel Teams 1',
+    watch:{ q:'three aw spellings', m:{type:'tiles',w:['s','aw'],hi:[1]}, steps:[
+      {t:'Saw. Aw at the end: spell it aw.', m:{type:'tiles',w:['s','aw'],hi:[1]}},
+      {t:'Haul. Aw inside the word? Most times, spell it au.', m:{type:'tiles',w:['h','au','l'],hi:[1]}},
+      {t:'Ball. In all, a says aw too!', m:{type:'tiles',w:['b','a','ll'],hi:[1]}},
+      {t:'Yawn with Avi and sing!', m:{type:'chant', lines:['At the end, aw: saw and draw!','Inside, au: sauce and haul!','All, alk, alt: ball and walk!']}}], a:'aw at the end, au inside, al in ball, walk, salt' },
+    oops:{ q:'Read: haul', wrong:'hay-ool', right:'hawl', why:'A and u are a team. Together they say aw.' },
+    ways:['think-aloud','chant','build with tiles','sort','Mistake Detective'], done:'You can read and spell aw, au and al!',
+    board:{ one:'Aw at the end, au inside, a in all, alk, alt: all say aw.', activity:'Spelling sort: boys hold up an aw or au card for each word the rebbe says.', mistakes:['Reading au as two sounds','Spelling sauce with aw','Reading ball like pal'] },
+    do:[
+      {type:'tiles', w:['d','r','aw'], extra:['au'], hear:'draw', pic:'✏️', say:'Listen. Build the word you hear.', how:'Where is the aw sound: at the end, or inside?'},
+      {type:'listen', q:'Zaidy put salt in the soup.', hear:'Which word has the aw sound?', o:['salt','soup','put'], a:'salt', say:'Read it. Find the aw sound.', how:'Say each word. Listen for aw, like ball.'}],
+    your:[
+      {type:'match', pairs:[['straw','🥤'],['paw','🐾'],['ball','⚽'],['saw','🪚']], say:'Read each word. Match it to its picture.', how:'Find the team. It says aw. Blend the word.'},
+      {type:'listen', q:'Dovid read "sauce" as "say-oos".', hear:'How should sauce sound?', o:['s-aw-s','say-oos','sock'], a:'s-aw-s', mis:true, say:'Mistake Detective! What should he say?', how:'A and u are a team. What sound do they make?'},
+      {type:'tiles', w:['l','au','n','ch'], extra:['aw'], hear:'launch', pic:'🚀', say:'Listen. Build the word you hear.', how:'Where is the aw sound: at the end, or inside?'},
+      {type:'findall', grid:['hawk','hay','talk','tack','cause','cane','yawn','yarn'], find:['hawk','talk','cause','yawn'], findSay:'word with the aw sound', say:'Tap every word with the aw sound.', how:'Look for aw, au, or al like ball.'},
+      {type:'sort', bins:['aw','au','al'], cards:[['str__',0],['j__',0],['l__nch',1],['h__l',1],['w__k',2],['t__k',2]], say:'Challenge! Which team fills the blank?', how:'Try each team in the blank. Which one makes a real word?'}] };
+
+  BITE['READ.LV.L03.04'] = { band:'B23', pic:'🧃', today:'Read ew, ue and ui',
+    why:'New, blue, fruit: these teams are in words you read every day.',
+    ready:[{q:'Which word has the aw sound?', o:['saw','say','sat'], a:'saw'},{q:'Which word has oo, like moon?', o:['food','fed','fad'], a:'food'}],
+    bridge:'READ.LV.L03.03', bridgeName:'Saw, Haul, Ball',
+    watch:{ q:'oo teams', m:{type:'tiles',w:['n','ew'],hi:[1]}, steps:[
+      {t:'New. E and w at the end say oo.', m:{type:'tiles',w:['n','ew'],hi:[1]}},
+      {t:'Blue. U and e at the end say oo too.', m:{type:'tiles',w:['b','l','ue'],hi:[2]}},
+      {t:'Fruit. U and i inside the word say oo.', m:{type:'tiles',w:['f','r','ui','t'],hi:[2]}},
+      {t:'Round your mouth with Chaim and chant!', m:{type:'chant', lines:['E-w, u-e, u-i too,','three little teams that can say oo!']}}], a:'ew, ue and ui all say oo, like moon' },
+    oops:{ q:'Read: chew', wrong:'cheh-w', right:'choo', why:'E and w are a team. They say oo together.' },
+    ways:['think-aloud','chant','sort','build with tiles','Mistake Detective'], done:'You can read ew, ue and ui!',
+    board:{ one:'Ew, ue and ui all say oo, like moon.', activity:'Team hunt: boys find ew, ue and ui words in a short story and sort them on the board.', mistakes:['Reading ew as eh-w','Reading ue as two sounds','Reading ui like the i in sit'] },
+    do:[
+      {type:'listen', q:'grew', hear:'Which word rhymes with grew?', o:['blue','grow','green'], a:'blue', say:'Read it. Find the word that rhymes.', how:'Read both words. Do they end with the same sound?'},
+      {type:'tiles', w:['b','l','ue'], extra:['ui'], hear:'blue', pic:'🔵', say:'Listen. Build the word you hear.', how:'Say it slowly. Which team says oo at the end?'}],
+    your:[
+      {type:'sort', bins:['oo, like moon','oh, like snow'], cards:[['grew',0],['grow',1],['blew',0],['blow',1],['chew',0],['show',1]], say:'Read it. Does it say oo or oh?', how:'Read the word. Listen to the vowel sound.'},
+      {type:'listen', q:'Avi read "fruit" as "frit".', hear:'Is Avi right?', o:['No: froot','Yes, frit','No: frowt'], a:'No: froot', mis:true, say:'Mistake Detective! Is he right?', how:'U and i are a team here. What do they say?'},
+      {type:'match', pairs:[['juice','🧃'],['suitcase','🧳'],['screw','🔩'],['fruit','🍐']], say:'Read each word. Match it to its picture.', how:'Find the team. It says oo. Blend the word.'},
+      {type:'findall', grid:['flew','flow','clue','club','suit','sit','moon','mint'], find:['flew','clue','suit','moon'], findSay:'word with the oo sound', say:'Tap every word with the oo sound.', how:'Read each word. Do you hear oo, like moon?'},
+      {type:'match', pairs:[['crew','glue'],['suit','boot'],['juice','loose']], say:'Challenge! Match the words that rhyme.', how:'Read both words. Do they end with the same sound?'}] };
+
+  BITE['READ.LV.L03.05'] = { band:'B23', pic:'🌈', today:'Read long words with vowel teams',
+    why:'Rainbow, peanut, seaweed: big words get easy when every team stays together.',
+    ready:[{q:'Which one is a vowel team?', o:['ai','at','an'], a:'ai'},{q:'Is "ra | bbit" a good split?', o:['no','yes'], a:'no'}],
+    bridge:'READ.PHON.L03.01', bridgeName:'Syllable Splitter',
+    watch:{ q:'rainbow and peanut', m:{type:'tiles',w:['rain','bow'],hi:[0]}, steps:[
+      {t:'Rainbow. Find the teams: ai and ow.', m:{type:'tiles',w:['r','ai','n','b','ow'],hi:[1,4]}},
+      {t:'Keep each team whole. Two small words: rain, bow!', m:{type:'tiles',w:['rain','bow'],hi:[0]}},
+      {t:'Peanut. The team ea stays in pea. Pea, nut!', m:{type:'tiles',w:['pea','nut'],hi:[0]}},
+      {t:'Teacher. Not two small words, but keep ea whole: tea, cher!', m:{type:'tiles',w:['tea','cher'],hi:[0]}},
+      {t:'Clasp your hands like a team, and chant!', m:{type:'chant', lines:['A team holds hands, it stays as one.','Split between, and the word is done!']}}], a:'Keep every team whole: rain | bow, pea | nut.' },
+    oops:{ q:'Read: raincoat', wrong:'ra | incoat', right:'rain | coat', why:'Ai is a team. A team is never cut in half.' },
+    ways:['think-aloud','chant with movement','sort','build with tiles','Mistake Detective'], done:'You can read long words with vowel teams!',
+    board:{ one:'A vowel team stays in one part. Split between the two small words.', activity:'Team scissors: boys cut word cards so no team is split.', mistakes:['Cutting a team in half','Reading each vowel of a team alone','Splitting in the middle of a small word'] },
+    do:[
+      {type:'tiles', w:['tea','pot'], extra:['te'], hear:'teapot', pic:'🫖', say:'Listen. Build the word you hear.', how:'Find the team. Keep it in one part.'},
+      {type:'sort', bins:['Team stays together','Team cut in half'], cards:[['oat | meal',0],['o | atmeal',1],['day | time',0],['da | ytime',1]], say:'Is the team kept whole?', how:'Find each team. Is it whole, or cut in half?'}],
+    your:[
+      {type:'listen', q:'Abba made oatmeal on a rainy day.', hear:'Which word has two vowel teams?', o:['oatmeal','rainy','made'], a:'oatmeal', say:'Which word has two teams?', how:'Look for teams like ai, ea, oa. Count them.'},
+      {type:'sort', bins:['Team stays together','Team cut in half'], cards:[['ex | plain',0],['expla | in',1],['tea | cher',0],['te | acher',1],['sleep | y',0],['sle | epy',1]], say:'Is the team kept whole?', how:'Find each team. Is it whole, or cut in half?'},
+      {type:'listen', q:'Moishe split seaweed as "se, aweed".', hear:'Where should the split go?', o:['sea | weed','se | aweed','seaw | eed'], a:'sea | weed', mis:true, say:'Mistake Detective! Fix his split.', how:'Find the teams. Is any team cut in half?'},
+      {type:'findall', grid:['rain','rab','pea','pic','sea','sun'], find:['rain','pea','sea'], findSay:'part with a vowel team', say:'Tap every part with a vowel team.', how:'Look for a vowel team like ai, ea, oa or ee.'},
+      {type:'tiles', w:['row','boat'], extra:['ro','oat'], hear:'rowboat', pic:'🚣', say:'Listen. Build the word you hear.', how:'Find both teams. Keep each one whole.'}] };
+
   if (window.TLCORE) TLCORE.add('F', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>

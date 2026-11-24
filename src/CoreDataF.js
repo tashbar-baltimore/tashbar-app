@@ -6,5 +6,8 @@ var CORE_SKILLS = (typeof CORE_SKILLS !== 'undefined' && CORE_SKILLS) || {};
 CORE_SKILLS.F = [
   ["READ.PHON.L03.04", "Open Door, Closed Door", "Tell open from closed syllables and read the vowel right", { before: "READ.PHON.L03.01", std: "RF.2.3a", file: "CoreDataF1", min: 7 }],
   ["READ.PHON.L03.05", "Slide the Line", "Split a word with one middle consonant, and slide the line when needed", { after: "READ.PHON.L03.01", std: "RF.2.3c", file: "CoreDataF1", min: 7 }],
-  ["READ.PHON.L03.06", "Silent E in Long Words", "Read long words that have a silent e part", { after: "READ.PHON.L03.05", std: "RF.2.3c", file: "CoreDataF1", min: 7 }]
+  ["READ.PHON.L03.06", "Silent E in Long Words", "Read long words that have a silent e part", { after: "READ.PHON.L03.05", std: "RF.2.3c", file: "CoreDataF1", min: 7 }],
+  ["READ.LV.L03.03", "Saw, Haul, Ball", "Read and spell the aw sound: aw, au and al", { after: "READ.LV.L03.02", std: "RF.2.3b", file: "CoreDataF1", min: 7 }],
+  ["READ.LV.L03.04", "Blue Moon Team", "Read ew, ue and ui, which say oo", { after: "READ.LV.L03.03", std: "RF.2.3b", file: "CoreDataF1", min: 7 }],
+  ["READ.LV.L03.05", "Teams in Long Words", "Read two-part words with vowel teams, keeping each team together", { after: "READ.PHON.L03.06", std: "RF.2.3c", file: "CoreDataF1", min: 7 }]
 ];
