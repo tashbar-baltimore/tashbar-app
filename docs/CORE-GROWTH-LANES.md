@@ -19,7 +19,7 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 | 5 | **W48 · Writing Gr 4–8** | TAKEN | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf | 2026-11-24 | 2026-11-24 03:15 UTC | Skill map and ledger written (`docs/core-growth/W48-map.md`, `W48-ledger.md`); next: Unit 1 lessons once job T's how-to is on main | T (Writing Workshop); can start the map now |
 | 6 | **C23 · Comprehension Gr 2–3** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 7 | **G · Grammar and words K–8** | TAKEN | https://claude.ai/code/session_013qbMrgAu9CyoyPphT4PmMj | 2026-11-24 | 2026-11-24 04:10 UTC | Skill map and ledger written (`docs/core-growth/G-map.md`, `G-ledger.md`); next: rebuild the 2 to-fix lessons, then Unit 1 of every grade | T for lesson PRs; can start the map now |
-| 8 | **C68 · Comprehension Gr 6–8** | OPEN | | | | | T for lesson PRs; can start the map now |
+| 8 | **C68 · Comprehension Gr 6–8** | TAKEN | https://claude.ai/code/session_01F5TiU4gVh7WZ9cRWBJEpNU | 2026-11-24 | 2026-11-24 04:35 UTC | Claimed; reading the C45, W48 and G maps and casts, then the C68 skill map `docs/core-growth/C68-map.md` (docs only) | T for lesson PRs; can start the map now |
 | 9 | **W13 · Writing K–3** | OPEN | | | | | T (Writing Workshop); can start the map now |
 | 10 | **S · Science and Social Studies** | OPEN | | | | | the core map of a band; can start the map now |
 | 11 | **V · Verifier** (reviews, takes no building job) | OPEN | | | | | starts when the first lesson PR opens |
