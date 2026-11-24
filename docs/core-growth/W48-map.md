@@ -77,10 +77,10 @@ Each unit: **opener** → **small skills** (in this order) → **the real task**
 
 ---
 
-### Grade 4 (L05) · "Maple Street Writers"
+### Grade 4 (L05) · "Glen Avenue Gazette"
 
 **U1 · Paragraph Power** (W.4.2a, W.4.2c, W.4.4, W.4.5)
-Opener: the Maple Street friends start a club newsletter, and every page needs a strong paragraph.
+Opener: the Glen Avenue Crew start a club newsletter, the *Glen Avenue Gazette*, and every page needs a strong paragraph.
 
 | # | Id | Game name | He learns to … | Std | Status | Min |
 |---|---|---|---|---|---|---|
@@ -94,7 +94,7 @@ Opener: the Maple Street friends start a club newsletter, and every page needs a
 Real task: **Piece 1** · one information paragraph for the newsletter on a topic from a C45 text. **Piece 2** · a "club notice" paragraph (who, what, when, why come). Quick writes: 6.
 
 **U2 · Real Stories** (W.4.3a–e)
-Opener: Shimon's Erev Shabbos when everything went wrong, told two ways: flat and alive.
+Opener: Tzvi Hirsch's Erev Shabbos at the bakery when everything went wrong, told two ways: flat and alive.
 
 | # | Id | Game name | He learns to … | Std | Status | Min |
 |---|---|---|---|---|---|---|
@@ -106,10 +106,10 @@ Opener: Shimon's Erev Shabbos when everything went wrong, told two ways: flat an
 | 6 | WRIT.PARA.L05.13 *(new)* | Show the Feeling | show a feeling with actions, not "he was sad" | W.4.3b | build | 8 |
 | 7 | WRIT.PARA.L05.14 *(new)* | Story Ending | end with how it worked out and what he learned | W.4.3e | build | 7 |
 
-Real task: **Piece 3** · a true story ("A time I helped get ready for Yom Tov"). **Piece 4** · a made-up scene with the Maple Street cast. **Piece 5** · a short journal entry from a character's view. Quick writes: 6.
+Real task: **Piece 3** · a true story ("A time I helped get ready for Yom Tov"). **Piece 4** · a made-up scene with the Glen Avenue Crew. **Piece 5** · a short journal entry from a character's view. Quick writes: 6.
 
 **U3 · My Opinion, My Reasons** (W.4.1a–d)
-Opener: the class must choose: a trip to the farm or to the aquarium. Who convinces Rabbi Adler?
+Opener: the class must choose: a trip to the farm or to the aquarium. Who convinces Rabbi Feldman?
 
 | # | Id | Game name | He learns to … | Std | Status | Min |
 |---|---|---|---|---|---|---|
@@ -123,7 +123,7 @@ Opener: the class must choose: a trip to the farm or to the aquarium. Who convin
 Real task: **Piece 6** · an opinion piece (intro, 2–3 reason paragraphs, ending). **Piece 7** · an opinion letter to the principal or a parent. Quick writes: 6.
 
 **U4 · Explain It** (W.4.2a–e)
-Opener: the friends build a "How it works" corner for the class museum.
+Opener: the Crew build a "How it works" corner for the class museum.
 
 | # | Id | Game name | He learns to … | Std | Status | Min |
 |---|---|---|---|---|---|---|
@@ -137,7 +137,7 @@ Opener: the friends build a "How it works" corner for the class museum.
 Real task: **Piece 8** · a how-to. **Piece 9** · a multi-paragraph "All about …" piece with headings (a topic from job S or C45). **Piece 10** · a labelled diagram page with captions. Quick writes: 6.
 
 **U5 · Little Researcher** (W.4.7, W.4.8, W.4.9, W.4.5)
-Opener: a mystery question ("Why does the challah rise?") the friends must answer from real sources.
+Opener: a mystery question ("Why does the challah rise?") the Crew must answer from real sources.
 
 | # | Id | Game name | He learns to … | Std | Status | Min |
 |---|---|---|---|---|---|---|
@@ -155,7 +155,7 @@ Grade 4 totals: 32 small skills (5 upgrades, 27 new); 12 pieces; 30 quick writes
 
 ---
 
-### Grade 5 (L06) · "Maple Street Writers, year 2"
+### Grade 5 (L06) · "Glen Avenue Gazette, year 2"
 
 **U1 · Plan the Whole Piece** (W.5.2a, W.5.2e, W.5.9, W.5.4)
 
@@ -450,24 +450,17 @@ The teacher scores it and writes one note. The piece counts as done when the tea
 
 ## 7. The casts (shared with the reading jobs of the same band)
 
-**If job C45 or C68 has already written a cast for the band, theirs wins and I use it.** If not, these are offered for the band and listed in the lanes file.
+**E45 (Grades 4–5): the Glen Avenue Crew**, written by job C45 (`docs/core-growth/C45-map.md`, section 5). W48 uses it exactly: Yehuda Benaim, Avrumi Katz, Dovid Lerner, Binyamin Yusupov, Tzvi Hirsch Gold, Rabbi Feldman and Mr. Halpern. Their club newsletter, the *Glen Avenue Gazette*, is where Grade 4–5 boys publish. A new recurring character is added to C45's note first.
 
-**E45 (Grades 4–5) · The Maple Street friends.** Four boys on one street in a warm frum neighborhood, who start a club newsletter:
-- **Shimon Benayoun** (10): bursting with ideas, never finishes a plan. His family is Moroccan; his mother's Friday fish is famous on the street.
-- **Moishe Klein** (10): careful, likes lists and facts, keeps the club's notebook. His Bubby runs the kosher bakery on the corner.
-- **Daniel Sasson** (11): the storyteller; his family came from Persia. Has a little brother, Eli (6), who follows them everywhere.
-- **Pinny Weiss** (9): youngest, asks the best questions, collects stones and bugs.
-- Grown-ups: Rabbi Adler (their rebbe), Mr. Feld (their English teacher), the parents and the bakery Bubby. Shabbos, Yom Tov, chesed visits, a lost cat, a snow day, a science fair.
-
-**M68 (Grades 6–8) · The Beacon newsroom.** Five boys who run their yeshiva's class newspaper, *The Beacon*:
-- **Akiva Feldman**: the editor; fair, strict about facts.
+**M68 (Grades 6–8): The Beacon newsroom** (offered by W48; if job C68 writes a different cast first, I switch to theirs). Five boys who run their yeshiva's class newspaper, *The Beacon*:
+- **Akiva Feldman**: the editor; fair, strict about facts. (Rabbi Feldman of the Glen Avenue Crew is his uncle.)
 - **Eli Mizrahi**: sports and debates; argues every side.
 - **Gavriel Shirazi**: photos and charts; quiet, notices everything.
 - **Yoni Kaplan**: features and interviews; talks to everyone, from the custodian to his Zaidy.
-- **Binyamin (Benny) Okafor-Levine**: joined this year from another city; writes the best stories.
+- **Benny Okafor-Levine**: joined this year from another city; writes the best stories.
 - Grown-ups: Rabbi Rosen (the menahel, who reads every issue), Mr. Gross (the faculty adviser). Stories: a fundraiser for a family in need, a school election, a trip to a historic site, a mystery in the school archive, a debate tournament.
 
-Both casts: modest, warm frum family life; kosher food; a wide mix of names and backgrounds; the Divine Name never written.
+**Rules for both casts (same as C45's):** same names and traits in every text and job; modest, warm, normal frum family life, Shabbos and Yom Tov, kosher food; **pictures show boys and men only** (`docs/HANDOFF-PICS.md`); never the Divine Name (ה׳ in Hebrew, "Hashem" in English).
 
 ## 8. Order of building
 
