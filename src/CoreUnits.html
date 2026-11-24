@@ -19,6 +19,7 @@
   var LIST = U.list = U.list || [], BY = U.byId = U.byId || {}, OF = U.ofSkill = U.ofSkill || {}, S = null, MINE = null;
   function K() { return W.TLK || null; }
   function btn(kind, text, attrs) { var k = K(); return k && k[kind] ? k[kind](text, attrs) : '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
+  function qb(text, attrs, extra) { var k = K(); return k ? k.quiet(text, attrs, extra) : '<button type="button" class="' + extra + '" ' + attrs + '>' + esc(text) + '</button>'; }   /* every answer is a quiet button (the button system: "every other choice") */
   function pill(kind, text) { var k = K(); return k ? k.pill(kind, text) : '<span>' + esc(text) + '</span>'; }
   function tok() { try { if (typeof SRV !== 'undefined' && SRV && SRV.token) return SRV.token; } catch (e) {} return ''; }
   function call(fn) { var a = [].slice.call(arguments, 1); return new Promise(function (ok, no) { try { google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn].apply(null, [tok()].concat(a)); } catch (e) { no(e); } }); }
@@ -26,7 +27,7 @@
   function nameOf(id) { var b = bank()[id]; return (b && b.name) || id; }
   function shuf(a) { a = a.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
   function sid() { try { return (A && A.st && A.st.id) || ''; } catch (e) { return ''; } }
-  function live() { var v = W.CU_LIVE; return v === 'on' || (v === 'test' && /^TEST/i.test(sid())); }
+  function live() { var v = W.CU_LIVE; return v === 'on' || (v === 'test' && /^TEST-/.test(sid())); }
   function mastered(id) { try { var s = A.st.skills[id]; return !!(s && s.m); } catch (e) { return false; } }
 
   U.err = function (u) {
@@ -76,9 +77,9 @@
   function question() {
     var q = S.qs[S.i], a = S.ans[S.i], hp = S.qs.map(function (_, k) { var r = S.ans[k]; return '<i class="' + (r ? (r.ok ? 'hit' : 'miss') : '') + '"></i>'; }).join('');
     var h = '<div class="cu-body"><div class="cu-hp" aria-hidden="true">' + hp + '</div>' + (q.review ? pill('subj', 'From before') : '') + '<h2 class="cu-q">' + esc(q.q || (q.act && (q.act.q || (W.OBK ? OBK.say(q.act) : ''))) || '') + '</h2>' + (q.p ? '<div class="cu-p">' + esc(q.p) + '</div>' : '');
-    if (q.kind === 'mc') h += '<div class="cu-opts">' + q.o.map(function (o, k) { var cls = a ? (o === q.a ? ' yes' : (a.pick === k ? ' no' : '')) : ''; return '<button type="button" class="tlk tlk-tile cu-opt' + cls + '" data-cu="pick" data-k="' + k + '"' + (a ? ' disabled' : '') + '>' + esc(o) + '</button>'; }).join('') + '</div>';
-    else if (q.kind === 'order') { var st = S.ord; h += '<div class="cu-slots">' + q.tiles.map(function (_, i) { var j = st.slots[i]; return '<button type="button" class="tlk tlk-tile cu-slot' + (j >= 0 ? ' full' : '') + (a ? (a.ok ? ' yes' : (st.pool[j] !== q.tiles[i] ? ' no' : '')) : '') + '" data-cu="slot" data-k="' + i + '"' + (a ? ' disabled' : '') + '>' + (j >= 0 ? esc(st.pool[j]) : (i + 1)) + '</button>'; }).join('') + '</div>' +
-      '<div class="cu-pool">' + st.pool.map(function (t, j) { return st.used[j] ? '' : '<button type="button" class="tlk tlk-tile cu-tile" data-cu="tile" data-k="' + j + '"' + (a ? ' disabled' : '') + '>' + esc(t) + '</button>'; }).join('') + '</div>'; }
+    if (q.kind === 'mc') h += '<div class="cu-opts">' + q.o.map(function (o, k) { var cls = a ? (o === q.a ? ' yes' : (a.pick === k ? ' no' : '')) : ''; return qb(o, 'data-cu="pick" data-k="' + k + '"' + (a ? ' disabled' : ''), 'cu-opt' + cls); }).join('') + '</div>';
+    else if (q.kind === 'order') { var st = S.ord; h += '<div class="cu-slots">' + q.tiles.map(function (_, i) { var j = st.slots[i]; return qb(j >= 0 ? st.pool[j] : String(i + 1), 'data-cu="slot" data-k="' + i + '"' + (a ? ' disabled' : ''), 'cu-slot' + (j >= 0 ? ' full' : '') + (a ? (a.ok ? ' yes' : (st.pool[j] !== q.tiles[i] ? ' no' : '')) : '')); }).join('') + '</div>' +
+      '<div class="cu-pool">' + st.pool.map(function (t, j) { return st.used[j] ? '' : qb(t, 'data-cu="tile" data-k="' + j + '"' + (a ? ' disabled' : ''), 'cu-tile'); }).join('') + '</div>'; }
     else if (q.kind === 'kit' && W.OBK) h += '<div class="obk cu-kit">' + OBK.view(q.act, S.ks, {}) + '</div>';
     if (a) h += '<p class="cu-fb ' + (a.ok ? 'ok' : 'miss') + '" role="status">' + (a.ok ? 'Right!' : 'Not this one. This was about: ' + esc(nameOf(q.skill)) + '.') + '</p>';
     return h + '</div>';
@@ -199,7 +200,7 @@
     '#cun .cu-q{font-size:22px;margin:8px 0 12px}#cun .cu-p{background:#fff;border-radius:14px;padding:12px 16px;border:1px solid #E6DCC5;font-family:Georgia,serif;font-size:19px;line-height:1.6;margin-bottom:12px}' +
     '#cun .cu-opts{display:grid;gap:10px}#cun .cu-opt{text-align:left;padding:14px 16px;min-height:56px;font-size:18px}#cun .cu-opt.yes,#cun .cu-slot.yes{outline:3px solid #3FA36B;background:#E6F6EC}#cun .cu-opt.no,#cun .cu-slot.no{outline:3px solid #E9A23B;background:#FFF1DC}' +
     '#cun .cu-slots,#cun .cu-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}#cun .cu-slot{min-width:90px;min-height:52px;color:#9AA6BA}#cun .cu-slot.full{color:#1F2633}#cun .cu-tile{min-height:52px;padding:8px 14px}' +
-    '#cun .cu-fb{font-weight:700;margin-top:12px}#cun .cu-fb.ok{color:#0E7A4F}#cun .cu-fb.miss{color:#8A4B00}' +
+    '#cun .cu-body .tlk[disabled]{opacity:1;color:#1F2633;cursor:default}#cun .cu-body .tlk[disabled]:not(.yes):not(.no){opacity:.6}#cun .cu-fb{font-weight:700;margin-top:12px}#cun .cu-fb.ok{color:#0E7A4F}#cun .cu-fb.miss{color:#8A4B00}' +
     '#cun .cu-foot{display:flex;justify-content:space-between;align-items:center;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:#FFFDF7;border-top:1px solid #E6DCC5}#cun [aria-disabled=true].tlk-main{opacity:.55}' +
     '#cun .cu-end{min-height:100%;display:grid;place-items:center;align-content:center;text-align:center;padding:24px;gap:8px}#cun .cu-end h2{font-size:32px;margin:0}#cun .cu-big{font-size:76px}#cun .cu-pop{animation:cuIn .7s cubic-bezier(.2,1.6,.4,1)}' +
     '#cun .cu-end .tlk-pill{margin:3px}#cun .cu-list{list-style:none;padding:0;margin:4px 0 12px;font-weight:600}#cun .cu-practice{display:grid;gap:10px;justify-items:center}' +

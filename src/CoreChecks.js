@@ -12,7 +12,7 @@
 var CU_LIVE = 'test';
 var CU = { TAB: 'CU_Results', HEAD: ['student_id', 'unit_id', 'pre_done', 'shown_json', 'check_passed', 'check_right', 'check_total', 'missed_json', 'tries', 'updated_at'], PASS: 0.8 };
 
-function cuOn_(sid) { if (CU_LIVE === 'off') return false; if (CU_LIVE === 'on') return true; try { return msIsTest_(String(sid)); } catch (e) { return /^TEST/i.test(String(sid)); } }
+function cuOn_(sid) { if (CU_LIVE === 'off') return false; if (CU_LIVE === 'on') return true; try { return msIsTest_(String(sid)); } catch (e) { return /^TEST-/.test(String(sid)); } }
 function cuTab_() { var ss = msBook_(), sh = ss.getSheetByName(CU.TAB); if (!sh) { sh = ss.insertSheet(CU.TAB); sh.getRange(1, 1, 1, CU.HEAD.length).setValues([CU.HEAD]); } return sh; }
 function cuRows_() { var sh = cuTab_(), n = sh.getLastRow(); return n < 2 ? [] : sh.getRange(2, 1, n - 1, CU.HEAD.length).getValues(); }
 function cuJson_(t, d) { try { return JSON.parse(t || '') || d; } catch (e) { return d; } }
