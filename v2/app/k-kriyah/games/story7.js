@@ -9,7 +9,7 @@ export default function setup(E, { unit }) {
     intro: ['This is Tzvi. He is playing in the playroom!'],
     steps: [
       { pic: 'tzipor', lines: ['A bird sings at the window.', 'A bird is a tzipor.'], letter: 'tzadik', after: ['Tzipor starts with Tzadik.', ['Tzadik says', S('tz')]] },
-      { pic: 'kof', near: 'grown', lines: ['Mommy finds his toy monkey.', 'A monkey is a kof.'], letter: 'kuf', after: ['Kof starts with Kuf.', ['Kuf says', S('k')]] },
+      { pic: 'kof', near: 'grown', lines: ['Mommy finds his toy monkey.', 'A monkey is a kof.'], letter: 'kuf', after: ['Kof starts with Kuf.', ['Kuf says', S('k')], 'Kuf sounds just like Kaf!'] },
       { pic: 'rakevet', lines: ['Tzvi drives his toy train. Choo choo!', 'A train is a rakevet.'], letter: 'reish', after: ['Rakevet starts with Reish.', ['Reish says', S('r')]] },
     ],
     lookalikes: [['daled', 'reish', 'Daled has a corner.', 'Reish is round on top.'], ['hei', 'kuf', 'Hei has a short leg.', 'Kuf has a long leg.']],

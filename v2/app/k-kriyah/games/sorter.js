@@ -11,7 +11,7 @@ const CLUE = { vov: 'Vov has no crown.', zayin: 'Zayin has a crown.', hei: 'Heiâ
   beis: 'Beis has a tail at the bottom.', gimmel: 'Gimmel has a foot.', pei: 'Pei has a dot.', peiTongue: 'Pei has a little tongue inside.', kafNoTongue: 'Kaf has no little tongue.', fei: 'Fei has no dot.', nun: 'Nun is flat at the bottom.', tes: 'Tes is closed at the bottom.', mem: 'Mem has an opening at the bottom.', kafRound: 'Kaf is round at the bottom.', reish: 'Reish is round on top.', daledCorner: 'Daled has a corner.', kuf: 'Kuf has a long leg.', heiShort: 'Hei has a short leg.', kaf: 'Kaf has a dot.', chaf: 'Chaf has no dot.' };
 /* in a Beis/Kaf round the thing to see is the bottom, in a Kaf/Chaf round the dot */
 const say = (T, k, pr) => T[k === 'kaf' && pr.includes('beis') ? 'kafRound' : k === 'kaf' && pr.includes('pei') ? 'kafNoTongue' : k === 'pei' && pr.includes('kaf') ? 'peiTongue' : k === 'daled' && pr.includes('reish') ? 'daledCorner' : k === 'hei' && pr.includes('kuf') ? 'heiShort' : k];
-const WATCH = { zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!', nun: 'Flat at the bottom!', mem: 'An opening at the bottom!', pei: 'A little tongue inside!', fei: 'No dot!' };
+const WATCH = { reish: 'Round on top!', kuf: 'A long leg!', zayin: 'A crown on top!', ches: 'The leg touches the roof!', kaf: 'Round at the bottom!', chaf: 'No dot!', nun: 'Flat at the bottom!', mem: 'An opening at the bottom!', pei: 'A little tongue inside!', fei: 'No dot!' };
 export default function setup(E, { struggled, unit, game }) {
   const { THREE, S } = E;
   const pairs = (game && game.pairs) || PAIRS[unit.n] || PAIRS[3];
@@ -73,7 +73,7 @@ export default function setup(E, { struggled, unit, game }) {
     let d; do { d = Array.from({ length: 6 }, (_, i) => pr[i % 2]).sort(() => Math.random() - .5); } while (new RegExp(`(${pr[0]},){2}${pr[0]}|(${pr[1]},){2}${pr[1]}`).test(d.join(',')));
     deck = [pr[1], ...d]; idx = 0; E.setProgress(deck.length, 0);
     await setCard(deck[0]); busy = false;
-    await E.say('Watch me. ' + WATCH[pr[1]]);
+    await E.say('Watch me. ' + (WATCH[pr[1]] || say(LOOK, pr[1], pr)));
     E.pointAt(cardArrow, card, pr[1], 1.9, feat(pr[1], pr)); await E.wait(600); cardArrow.visible = false;
     busy = true; let [x, y] = E.toScreen(card.position); E.hand.at(x, y); await E.wait(350);
     const p0 = card.position.clone(), p1 = centre(crates[1]).add(new THREE.Vector3(.3, .6, .6)); await E.tween(1200, q => { card.position.lerpVectors(p0, p1, q); const [a, b] = E.toScreen(card.position); E.hand.at(a, b); });

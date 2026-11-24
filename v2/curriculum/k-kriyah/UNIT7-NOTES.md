@@ -10,7 +10,7 @@
 ## The games, in order (Unit 7 opens when Unit 6's check is passed)
 | Stone | Game | What he does |
 |---|---|---|
-| 1 | Tzvi in the playroom (story) | A bird at the window (tzipor) turns into Tzadik, his toy monkey (kof) into Kuf, and his toy train (rakevet) into Reish. Then the look-alikes side by side, a chant of all 23 letters, and he taps each new one. |
+| 1 | Tzvi in the playroom (story) | A bird at the window (tzipor) turns into Tzadik, his toy monkey (kof) into Kuf ("Kuf sounds just like Kaf!"), and his toy train (rakevet) into Reish. Then the look-alikes side by side, a chant of all 23 letters, and he taps each new one. |
 | 2 | Feel the Shape | Feels Tzadik, Kuf (its long leg) and Reish (round on top), then Daled (an arrow at its corner). |
 | 3 | Look-Alike Detective | He sorts Daled and Reish (the corner), then Hei and Kuf (the short leg and the long leg). |
 | 4 | Sound Match | Tzipor and tzav (turtle) go to Tzadik, kof and kubiyot (blocks) to Kuf, rakevet and rimon (pomegranate) to Reish, and bayis to Beis. At the end Kaf appears above Kuf: "Kuf sounds just like Kaf!" |

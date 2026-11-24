@@ -44,7 +44,7 @@ export default function setup(E, { struggled, unit }) {
     peds.forEach((p, i) => p.position.copy(slotPos(i)));
     const ps = [];
     keys.forEach(k => { const l = L[k]; if (!set.includes(k)) { l.visible = false; l.userData.base = null; return; }
-      const to = slotPos(slot[k]).add(new THREE.Vector3(0, E.portrait ? 1.05 : 1.75, 0));
+      const to = slotPos(slot[k]).add(new THREE.Vector3(0, (E.portrait ? 1.05 : 1.75) + l.userData.below * LS(), 0));   /* Kuf's long leg above the pedestal */
       if (!animate || !l.visible) { l.visible = true; l.position.copy(to); l.userData.base = to.clone(); if (animate) ps.push(E.popIn(l, LS(), 400)); return; }
       const from = l.position.clone(); l.userData.base = null; ps.push(E.tween(600, q => { l.position.lerpVectors(from, to, q); l.position.y += Math.sin(q * Math.PI) * 1.0; }).then(() => { l.userData.base = to.clone(); })); });
     return Promise.all(ps);
@@ -64,7 +64,7 @@ export default function setup(E, { struggled, unit }) {
   function pick(k) {
     if (keys.length <= 3) return mix(keys);
     const out = [k]; if (PAIR[k]) out.push(PAIR[k]);
-    const ok = c => !out.includes(c) && c !== SAME[k];
+    const ok = c => !out.includes(c) && !out.some(o => SAME[o] === c);   /* never two letters with the same sound together (Kuf and Kaf, Alef and Ayin) */
     const newer = mix(unit.letters).find(ok); if (out.length < 3 && newer) out.push(newer);   /* one new letter and one older one, so old and new stay mixed */
     const older = mix(unit.known).find(ok); if (out.length < 3 && older) out.push(older);
     for (const c of mix(keys)) if (out.length < 3 && ok(c)) out.push(c);
