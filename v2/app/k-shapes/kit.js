@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from './lib/RoomEnvironment.js';
 import { RoundedBoxGeometry } from './lib/RoundedBoxGeometry.js';
+import { createLook } from './look.js';
 
 /* ================= shapes ================= */
 export const KINDS = {
@@ -109,14 +110,19 @@ export function startGame(cfg) {
   try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: FAST }); }
   catch (e) { $('#nogl').style.display = 'grid'; $('#start').style.display = 'none'; throw e; }
   /* the automatic test (?fast=1) draws at low detail: test machines have no graphics card. A boy always gets full detail. */
+  const scene = new THREE.Scene();
+  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer), 0.04).texture;
+  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+  /* the new look (look.js): a game with cfg.world gets the rich world, light, characters and effects. Others keep the first look. */
+  const LK = cfg.world ? createLook({ renderer, scene, camera, FAST, world: cfg.world }) : null;
+  if (LK) document.body.classList.add('world');
+  const PAL = LK ? ['#FF3B30', '#2F80FF', '#FFC21A', '#1DC77A', '#9A5BFF', '#FF8A1F', '#00C3D6', '#FF4FA0'] : COLORS;
+  if (LK) LK.buildWorld(); else {
   renderer.setPixelRatio(FAST ? 0.5 : Math.min(window.devicePixelRatio || 1, 2));
   renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  const scene = new THREE.Scene();
   scene.background = new THREE.Color('#F6EBDA'); scene.fog = new THREE.Fog('#F6EBDA', 22, 48);
-  scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(renderer), 0.04).texture;
-  const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
   scene.add(new THREE.HemisphereLight('#FFF6E8', '#C9B48E', 0.7));
   const sun = new THREE.DirectionalLight('#FFF1DC', 2.2);
   sun.position.set(-5, 11, 7); sun.castShadow = true; sun.shadow.mapSize.set(FAST ? 512 : 2048, FAST ? 512 : 2048); sun.shadow.radius = 6; sun.shadow.bias = -0.0004;
@@ -142,9 +148,11 @@ export function startGame(cfg) {
       const bk = new THREE.Mesh(new RoundedBoxGeometry(w, h, 0.7, 2, 0.03), new THREE.MeshStandardMaterial({ color: c, roughness: 0.6 })); bk.position.set(x + w / 2, y + h / 2, -8.0); bk.castShadow = true; scene.add(bk);
       const gold = new THREE.Mesh(new THREE.BoxGeometry(w * 0.7, 0.05, 0.01), new THREE.MeshStandardMaterial({ color: '#E8C36A', metalness: 0.6, roughness: 0.3 })); gold.position.set(x + w / 2, y + h * 0.7, -7.64); scene.add(gold);
       x += w + 0.04; }); }); }
+  }
 
   /* ---------- the toy boxes (one, or one per shape for the sorter), each with its shape painted on the front ---------- */
-  const wood = new THREE.MeshStandardMaterial({ color: '#D49A5E', roughness: 0.55 }), woodDark = new THREE.MeshStandardMaterial({ color: '#8A5A33', roughness: 0.7 });
+  const BM = LK ? LK.boxMats() : null;
+  const wood = BM ? BM.body : new THREE.MeshStandardMaterial({ color: '#D49A5E', roughness: 0.55 }), woodDark = BM ? BM.inside : new THREE.MeshStandardMaterial({ color: '#8A5A33', roughness: 0.7 });
   const BX = NB === 1 ? { w: 3.0, d: 1.9, h: 0.95, t: 0.16 } : { w: 2.25, d: 1.55, h: 0.8, t: 0.14 };
   const boxes = cfg.boxes.map(bc => {
     const g = new THREE.Group(); scene.add(g);
@@ -154,12 +162,16 @@ export function startGame(cfg) {
     plank(BX.w, BX.h * 0.8, BX.t, 0, BX.h * 0.4, BX.d / 2 - BX.t / 2);
     plank(BX.t, BX.h, BX.d, -BX.w / 2 + BX.t / 2, BX.h / 2, 0);
     plank(BX.t, BX.h, BX.d, BX.w / 2 - BX.t / 2, BX.h / 2, 0);
+    if (BM) { plank(BX.w + 0.06, 0.1, BX.t + 0.06, 0, BX.h, -BX.d / 2 + BX.t / 2, BM.rim); plank(BX.w + 0.06, 0.1, BX.t + 0.06, 0, BX.h * 0.8, BX.d / 2 - BX.t / 2, BM.rim);
+      plank(BX.t + 0.06, 0.1, BX.d + 0.06, -BX.w / 2 + BX.t / 2, BX.h, 0, BM.rim); plank(BX.t + 0.06, 0.1, BX.d + 0.06, BX.w / 2 - BX.t / 2, BX.h, 0, BM.rim); }
     const paintM = new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.6 });
     if (bc.dots != null) {   /* a box for "how many corners": that many dots, or an empty ring for none */
       if (!bc.dots) { const ring = new THREE.Mesh(new THREE.RingGeometry(0.16, 0.24, 40), paintM); ring.position.set(0, BX.h * 0.4, BX.d / 2 + 0.005); g.add(ring); }
       DOTS[bc.dots].forEach(p => { const dot = new THREE.Mesh(new THREE.CircleGeometry(0.075, 24), paintM); dot.position.set(p[0] * 0.38, BX.h * 0.4 + p[1] * 0.38, BX.d / 2 + 0.005); g.add(dot); });
     } else if (bc.solid) {   /* a little real solid stuck on the front */
       const b3 = new THREE.Mesh(solidGeo(bc.solid), new THREE.MeshStandardMaterial({ color: bc.color || '#FFFFFF', roughness: 0.4 })); b3.scale.setScalar(0.28); b3.position.set(0, BX.h * 0.45, BX.d / 2 + 0.18); b3.castShadow = true; g.add(b3);
+    } else if (LK) {
+      const lab = LK.emblem(shapeOf(bc.paint).s, bc.color || '#FFFFFF', (NB === 1 ? 0.5 : 0.44) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.42, BX.d / 2 + 0.01); g.add(lab);
     } else {
       const lab = new THREE.Mesh(new THREE.ShapeGeometry(shapeOf(bc.paint).s, 32), paintM);
       lab.scale.setScalar((NB === 1 ? 0.48 : 0.5) * (bc.paintScale || 1)); lab.position.set(0, BX.h * 0.45, BX.d / 2 + 0.005); g.add(lab);
@@ -169,6 +181,7 @@ export function startGame(cfg) {
 
   /* ---------- the boys: Mendy (by the toy box) and a friend for "find the mistake" ---------- */
   function makeKid(shirt, hair, glasses) {
+    if (LK) return LK.makeKid(shirt, hair, glasses);
     const k = new THREE.Group(), skin = new THREE.MeshStandardMaterial({ color: '#F2C9A0', roughness: 0.6 });
     const pants = new THREE.MeshStandardMaterial({ color: '#2E3650', roughness: 0.7 }), top = new THREE.MeshStandardMaterial({ color: shirt, roughness: 0.55 });
     const add = (geo, m, x, y, z) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = true; k.add(o); return o; };
@@ -198,10 +211,11 @@ export function startGame(cfg) {
   }
   function cheer(kid) {
     const { armL, armR } = kid.userData, y0 = kid.position.y;
-    return tween(700, t => { const e = Math.sin(Math.PI * t); kid.position.y = y0 + e * 0.5; armL.rotation.z = -0.15 - e * 2.4; armR.rotation.z = 0.15 + e * 2.4; }).then(() => { kid.position.y = y0; });
+    return tween(700, t => { const e = Math.sin(Math.PI * t); kid.position.y = y0 + e * 0.5; armL.rotation.z = -0.15 - e * 2.4; armR.rotation.z = 0.15 + e * 2.4;
+      if (LK && kid.userData.body) kid.userData.body.scale.set(1 - e * 0.06 + (t > 0.9 ? 0 : 0), 1 + e * 0.1, 1 - e * 0.06); }).then(() => { kid.position.y = y0; if (LK && kid.userData.body) LK.squash(kid.userData.body, 1, 0.14); });
   }
   const F = cfg.mistake.friend;
-  const mendy = makeKid('#FFFFFF', '#B5773E'), friend = makeKid(F.shirt, F.hair, F.glasses); friend.visible = false;
+  const mendy = makeKid('#FFFFFF', LK ? '#6E4426' : '#B5773E'), friend = makeKid(F.shirt, F.hair, F.glasses); friend.visible = false;
 
   /* ---------- pieces ---------- */
   const DEPTH = 0.34, BEV = 0.09, shapes = [];
@@ -217,13 +231,13 @@ export function startGame(cfg) {
   function makeShape(id, k, color, rotZ, scale) {
     const solid = KINDS[k].solid, { s, corners } = solid ? { s: null, corners: [] } : shapeOf(k);
     const dep = cfg.thinFlat ? 0.06 : DEPTH, bev = cfg.thinFlat ? 0.03 : BEV;   /* "flat or solid": flat pieces are thin, like card */
-    const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: bev, bevelSize: bev, bevelSegments: 3, curveSegments: 48 });
+    const geo = solid ? solidGeo(solid) : new THREE.ExtrudeGeometry(s, { depth: dep, bevelEnabled: true, bevelThickness: LK ? bev * 1.25 : bev, bevelSize: bev, bevelSegments: LK ? 6 : 3, curveSegments: LK ? 64 : 48 });
     if (!solid) geo.translate(0, 0, -dep / 2);
-    const mat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
+    const mat = LK ? LK.pieceMat(color) : new THREE.MeshPhysicalMaterial({ color, roughness: 0.4, clearcoat: 0.6, clearcoatRoughness: 0.3, envMapIntensity: 0.35, emissive: '#FFC400', emissiveIntensity: 0 });
     const mesh = new THREE.Mesh(geo, mat); mesh.castShadow = true; mesh.receiveShadow = true;
     const turn = new THREE.Group(); turn.rotation.z = rotZ; turn.add(mesh);
     const g = new THREE.Group(); g.add(turn); g.scale.setScalar(scale); scene.add(g);
-    const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], dep / 2 + bev + 0.02); m.scale.setScalar(0); mesh.add(m); return m; });
+    const marks = corners.map(p => { const m = new THREE.Mesh(cornerGeo, cornerMat); m.position.set(p[0], p[1], dep / 2 + bev + 0.02); m.scale.setScalar(0); if (LK) m.add(LK.cornerHalo()); mesh.add(m); return m; });
     const o = { id, k, solid, color, box: cfg.sortBy ? sortBox(color, scale) : boxOf(k), g, turn, mesh, mat, marks, corners, scale, home: new THREE.Vector3(), phase: (shapes.length * 1.7) % 6.28, inBox: false, busy: false };
     mesh.userData.shape = o; shapes.push(o); return o;
   }
@@ -259,7 +273,7 @@ export function startGame(cfg) {
   }
   function inBoxSpot(bi, n) { const b = boxAt(bi), sp = NB === 1 ? 0.75 : 0.55; return new THREE.Vector3(b.x - sp + (n % 3) * sp, 0.3 + Math.floor(n / 3) * 0.15, b.z + (n % 2 ? 0.18 : -0.18)); }
   function resize() {
-    const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h;
+    const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; if (LK) LK.resize();
     const was = tall; tall = w / h < 0.95; camera.fov = tall ? 46 : 40; camera.updateProjectionMatrix();
     boxes.forEach((b, i) => b.g.position.copy(boxAt(i)));
     if (was !== tall) shapes.forEach(o => { if (o.inBox && o.boxN != null && !o.busy) o.g.position.copy(inBoxSpot(o.inBoxAt, o.boxN)); else if (o.slot != null) { o.home.copy(homeFor(o.slot)); if (!o.busy && !o.inBox) o.g.position.copy(o.home); } });
@@ -283,6 +297,7 @@ export function startGame(cfg) {
   const sparks = [], sparkGeo = new THREE.OctahedronGeometry(0.09);
   function burst(at, n) {
     if (FAST) return;
+    if (LK) return LK.celebrate(at, n);
     for (let i = 0; i < (n || 22); i++) {
       const m = new THREE.Mesh(sparkGeo, new THREE.MeshStandardMaterial({ color: COLORS[i % COLORS.length], emissive: COLORS[i % COLORS.length], emissiveIntensity: .5, transparent: true }));
       m.position.copy(at); scene.add(m);
@@ -302,11 +317,12 @@ export function startGame(cfg) {
       o.g.rotation.x = -Math.atan2(camera.position.y - o.g.position.y, camera.position.z - o.g.position.z);   /* faces the camera, so a square always looks square */
     });
     if (BS) placePans(dt);
+    if (LK) LK.update(dt, t, shapes);
     for (let i = sparks.length - 1; i >= 0; i--) { const s = sparks[i]; s.v.y -= 9 * dt; s.m.position.addScaledVector(s.v, dt); s.m.rotation.x += dt * 6; s.life -= dt * 0.9; s.m.material.opacity = Math.max(0, s.life); if (s.life <= 0) { scene.remove(s.m); sparks.splice(i, 1); } }
-    const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25;
-    camera.position.set(camPos.x + sway, camPos.y, camPos.z); camera.lookAt(camLook);
+    const sway = FAST ? 0 : Math.sin(t * 0.25) * 0.25, bob = FAST || !LK ? 0 : Math.sin(t * 0.37) * 0.08;
+    camera.position.set(camPos.x + sway, camPos.y + bob, camPos.z); camera.lookAt(camLook);
     if (handOn) { const p = toScreen(handOn.g.position); hand.style.left = p.x + 'px'; hand.style.top = p.y + 'px'; }
-    if (!FAST || (++fastN % 3) === 0) renderer.render(scene, camera);
+    if (!FAST || (++fastN % 3) === 0) { if (LK) LK.render(); else renderer.render(scene, camera); }
     requestAnimationFrame(frame);
   }
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
@@ -462,16 +478,17 @@ export function startGame(cfg) {
   let allow = false, down = null, onDrop = null;
   function buildSet() {
     shapes.splice(0).forEach(o => scene.remove(o.g)); friend.visible = false; boxes.forEach(b => { b.n = 0; });
-    (cfg.set || []).forEach((s, i) => { const o = makeShape(s[0], s[1], s[4] || COLORS[i % COLORS.length], s[2], s[3]); o.slot = i; o.home.copy(homeFor(i)); o.g.position.copy(o.home); o.g.visible = false; });
+    (cfg.set || []).forEach((s, i) => { const o = makeShape(s[0], s[1], s[4] || PAL[i % PAL.length], s[2], s[3]); o.slot = i; o.home.copy(homeFor(i)); o.g.position.copy(o.home); o.g.visible = false; });
   }
   function dropInBox(o, bi) {
     bi = bi == null ? Math.max(0, o.box) : bi;
     clearCorners(o); o.inBox = true; o.inBoxAt = bi; o.boxN = boxes[bi].n++; W.found++;
     const to = inBoxSpot(bi, o.boxN), s0 = o.g.scale.x, s1 = Math.min(s0, 1) * (NB === 1 ? 0.55 : 0.42);
     tween(520, k => o.g.scale.setScalar(s0 + (s1 - s0) * ease(k)));
-    return moveTo(o, to, 520, 1.2).then(() => { o.g.rotation.set(-1.45, (o.boxN % 3 - 1) * 0.6, 0); burst(to.clone().setY(1.2)); pop(); cheer(mendy); });
+    return moveTo(o, to, 520, 1.2).then(() => { o.g.rotation.set(-1.45, (o.boxN % 3 - 1) * 0.6, 0); burst(to.clone().setY(1.2)); pop(); cheer(mendy);
+      if (LK) { LK.squash(o.g, s1, 0.4); LK.wiggle(boxes[bi].g); LK.sparkle(to.clone().setY(1.0)); } });
   }
-  function goHome(o) { return moveTo(o, o.home, 420, 0.4); }
+  function goHome(o) { return moveTo(o, o.home, 420, 0.4).then(() => { if (LK) LK.squash(o.g, o.scale, 0.22); }); }
 
   canvas.addEventListener('pointerdown', e => {
     ac();
@@ -520,7 +537,7 @@ export function startGame(cfg) {
   function showcase(k, color, rot, scale, at) {
     const o = makeShape('show', k, color, rot || 0, 1); o.slot = null; o.busy = true;
     o.g.position.copy(at || new THREE.Vector3(0.55, 2.05, 0.9)); o.g.scale.setScalar(0.01);
-    tween(600, t => o.g.scale.setScalar(Math.max(0.01, ease(t) * (scale || 1.25))));
+    if (LK) LK.pop(o.g, scale || 1.25); else tween(600, t => o.g.scale.setScalar(Math.max(0.01, ease(t) * (scale || 1.25))));
     return o;
   }
   function solidAction(o, a) {   /* what a solid does: a ball rolls, a block stacks, a cone spins on its point */
@@ -1278,6 +1295,7 @@ export function startGame(cfg) {
   async function learn() {
     setName('learn'); dots(0); W.misses = 0; W.found = 0; allow = false; onDrop = null; task = null; W.bonus = false; chant(false); stopIdle();
     $('#end').classList.remove('show');
+    if (LK) LK.family(false);
     buildSet(); resize(); camTo('close', 10);
     if (BALANCED) { const ok = await balanceLesson(); if (ok) balanceGame(); return; }
     if (MEASURED) { const ok = await measureLesson(); if (ok) measureGame(); return; }
@@ -1316,7 +1334,7 @@ export function startGame(cfg) {
     setName('watch'); dots(1);
     const demo = shapes.find(o => o.box >= 0);
     await camTo('wide', 1300);
-    shapes.forEach((o, i) => { o.g.visible = true; o.g.scale.setScalar(0.01); setTimeout(() => { pop(); tween(420, k => o.g.scale.setScalar(Math.max(0.01, o.scale * ease(k)))); }, FAST ? 0 : i * 140); });
+    shapes.forEach((o, i) => { o.g.visible = true; o.g.scale.setScalar(0.01); setTimeout(() => { pop(); if (LK) return LK.pop(o.g, o.scale); tween(420, k => o.g.scale.setScalar(Math.max(0.01, o.scale * ease(k)))); }, FAST ? 0 : i * 140); });
     await wait(1400);
     const ok = await play([
       ...(cfg.mode === 'clues' ? [cfg.watchLine, ...cfg.clues[0].say] : [cfg.watchLine || "Here are Mendy's toys. Watch me."]),
@@ -1459,6 +1477,7 @@ export function startGame(cfg) {
     const m = W.misses, stars = m === 0 ? 3 : m <= 2 ? 2 : 1;
     W.stars = stars; W.done = true; setName('end'); dots(STEPS);
     burst(boxAt(0).clone().setY(1.4), 60); chime(true); task = null; cheer(mendy).then(() => cheer(mendy));
+    if (LK) { placeFamily(); LK.family(true, true); }
     const STAR = on => '<svg viewBox="0 0 100 100"><path d="M50 6l13 28 30 3-23 20 7 30-27-16-27 16 7-30L7 37l30-3z" fill="' + (on ? '#F5B400' : '#EDE6D6') + '" stroke="' + (on ? '#C48F00' : '#D8CFBC') + '" stroke-width="4" stroke-linejoin="round"/></svg>';
     $('#stars').innerHTML = [0, 1, 2].map(i => '<div class="star">' + STAR(i < stars) + '</div>').join('');
     if (cfg.certificate) showCertificate();
@@ -1481,6 +1500,9 @@ export function startGame(cfg) {
   }
   $('#replay').onclick = () => { hush(); learn(); };
 
+  /* Tatty and Mommy (new look): they are there to welcome him, and they come back to clap at the end */
+  function placeFamily() { const f = LK.family(false); f[0].position.set(tall ? -1.3 : -3.0, 0, tall ? -5.2 : -5.6); f[1].position.set(tall ? 1.3 : 3.0, 0, tall ? -5.2 : -5.6);
+    f[0].rotation.y = 0.25; f[1].rotation.y = -0.25; return f; }
   /* ---------- start: the room is already moving behind the play button ---------- */
   buildSet(); resize();
   if (FIXED) setRound(cfg.rounds[0]);
@@ -1490,6 +1512,7 @@ export function startGame(cfg) {
   if (MEASURED) setMeasure(cfg.rounds[0]);
   if (BALANCED) setBalance(cfg.rounds[0]);
   shapes.forEach(o => { o.g.visible = true; });
+  if (LK) { placeFamily(); LK.family(true); }
   dots(0); frame(); W.ready = true;
   preload([...cfg.intro, cfg.ask, cfg.yourTurn, 'Count the sides with me.', 'Now count the corners.', 'Your turn! Tap each corner and count.', 'One!', 'Two!', 'Three!', 'Four!', 'One.', 'Two.', 'Three.', 'Four.', 'Clap it with me! Tap the hands.']);
   $('#start').onclick = () => { ac(); $('#start').style.display = 'none'; againBtn.style.visibility = 'visible'; learn(); };
