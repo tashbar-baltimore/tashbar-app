@@ -68,11 +68,13 @@
     hero: '<div class="plate4"><svg class="ck" viewBox="0 0 100 100" style="left:38%;top:48%"><use href="#u4Cookie"/></svg><svg class="ck" viewBox="0 0 100 100" style="left:64%;top:44%;opacity:.35"><use href="#u4Cookie"/></svg></div>',
     init: function (F) { U4.defs(); H = F.fingers(0, true); $('bighand').appendChild(H.el); H.lock(true); $('check').addEventListener('click', check); },
     demo: async function (F) {
-      put(2); H.set(0);
+      put(2); H.set(2);
       await F.say('Bubby baked two cookies.');
       await take(['Ari', 'Eli']);
       await F.say('How many are left? None. Zero!');
-      await F.say('Zero is no fingers up. Watch me.');
+      await F.say('Zero is no fingers up. Watch me fold them.');
+      var dn = $('bighand').querySelector('.fdown');
+      for (var k = 0; k < 2; k++) { await F.handTo(dn); await F.handTap(); H.set(H.count() - 1); NK.sound.back(); }
       await F.handTo($('check')); await F.handTap(); await F.yes($('plate'), 'Zero! The plate is empty.');
     },
     reset: function () { A.reset(); },
@@ -83,7 +85,9 @@
   function play(F, p, i, quick) {
     return new Promise(async function (res) {
       var names = F.shuffle(F.NAMES).slice(0, p[1]); R = { left: p[0] - p[1], misses: 0 }; $('zn').classList.remove('on');
-      H.set(i % 2 ? 2 : 0); H.lock(true); GAME.phase = 'busy'; F.lock(true); put(p[0]);
+      /* the hand never starts at the answer: for zero some fingers are up, so he must fold them all */
+      var left = p[0] - p[1], start = left === 0 ? F.pick([1, 2, 3]) : F.pick([0, 1, 2, 3, 4, 5].filter(function (x) { return x !== left; }));
+      H.set(start); H.lock(true); GAME.phase = 'busy'; F.lock(true); put(p[0]);
       await F.say(quick ? 'Bubby baked five! Watch fast.' : 'Bubby baked ' + F.word(p[0]) + ' cookies.');
       if (quick) { [].slice.call($('plate').querySelectorAll('.ck')).forEach(function (c, k) { c.style.left = (k % 2 ? 120 : -20) + '%'; c.style.top = '-20%'; c.classList.add('gone'); }); NK.sound.pop(); await F.say('Five children each took one!'); }
       else await take(names);

@@ -23,11 +23,14 @@
   window.KNum = { svg: function (n, w) { return U4.num(n, w); }, card: function (n) { return U4.numCard(n); }, strokes: U4.STROKES, colors: U4.COLOR };
 
   /* the taps a boy makes to show m on a finger hand: tap the palm to raise the next finger, tap an up finger to fold it */
-  U4.fingerTaps = function (H, m, sel) {
-    var out = [], c = H.count(), i;
-    if (m > c) for (i = 0; i < m - c; i++) out.push({ tap: sel + ' .fhand svg > path:first-of-type' });
-    else for (i = 4; i >= 0 && out.length < c - m; i--) if (!H.finger(i).classList.contains('down')) out.push({ tap: sel + ' .fg[data-f="' + i + '"]' });
-    return out;
+  U4.fingerTaps = function (H, m, sel) { return FR.fingerTaps(H, m, sel); };   /* tap the hand to raise, the yellow button to fold */
+  /* count the counters in a five-frame together, lighting each one */
+  U4.countWith = async function (FF) {
+    var boxes = [].slice.call(FF.el.querySelectorAll('.box')).filter(function (b) { return b.querySelector('.ctr'); });
+    if (!boxes.length) { await FR.say('No counters at all. Zero.'); return; }
+    await FR.say("Let's count together.");
+    for (var k = 0; k < boxes.length; k++) { boxes[k].classList.add('need'); NK.sound.pop(); await FR.say(FR.Word(k + 1) + (k === boxes.length - 1 ? '.' : ','), { noRepeat: true }); }
+    await NK.wait(300); boxes.forEach(function (b) { b.classList.remove('need'); });
   };
   /* easier after two misses: A.miss() / A.hit() each round; A.easy() is true for the next 3 rounds after 2 misses */
   U4.adapt = function () { var A = { run: 0, left: 0 }; A.miss = function () { if (++A.run >= 2) { A.left = 3; A.run = 0; } }; A.hit = function () { A.run = 0; if (A.left > 0) A.left--; }; A.easy = function () { return A.left > 0; }; A.reset = function () { A.run = 0; A.left = 0; }; return A; };

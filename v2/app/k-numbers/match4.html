@@ -57,7 +57,7 @@
       s.classList.add('done'); t.classList.add('done'); var tag = document.createElement('div'); tag.innerHTML = U4.num(n); tag.firstChild.setAttribute('class', 'tag'); t.appendChild(tag.firstChild);
       /* all three together: the things, the fingers, the written number */
       var mini = FR.fingers(n, false); mini.el.classList.add('mini'); t.appendChild(mini.el);
-      await FR.yes(t, n === 0 ? 'No things, no fingers. Zero!' : FR.Word(n) + ' ' + NAME[t.dataset.kd] + ', ' + FR.word(n) + ' fingers. ' + FR.Word(n) + '!');
+      await FR.yes(t, n === 0 ? 'No things, no fingers. Zero!' : FR.Word(n) + ' ' + (n === 1 ? NAME[t.dataset.kd].replace(/s$/, '') : NAME[t.dataset.kd]) + ', ' + FR.word(n) + (n === 1 ? ' finger. ' : ' fingers. ') + FR.Word(n) + '!');
       R.left--;
     } else {
       FR.oops(t); R.misses++;

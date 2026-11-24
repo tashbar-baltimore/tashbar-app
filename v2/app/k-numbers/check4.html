@@ -47,6 +47,11 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var KINDS = ['apple', 'dots', 'orange', 'candle', 'pear', 'dots'], plan, R, done, FF, H;
+  function readLayout(n) {
+    $('prompt').innerHTML = ''; $('work').innerHTML = ''; $('prompt').appendChild(U4.numCard(n));
+    var both = document.createElement('div'); both.className = 'both'; FF = U4.frame5(0, true); both.appendChild(FF.el);
+    var b2 = document.createElement('div'); b2.className = 'bighand'; H = FR.fingers(0, true); b2.appendChild(H.el); both.appendChild(b2); $('work').appendChild(both);
+  }
   function end(right) { var d = done; done = null; d(right); }
   async function missed() {
     FR.oops($('work')); await FR.say("Let's look.");
@@ -79,7 +84,16 @@
       var a = F.shuffle([0, 1, 2, 3, 4, 5]), b = F.shuffle([0, 1, 2, 3, 4, 5]); plan = [];
       for (var k = 0; k < 6; k++) { plan.push(['read', a[k]]); plan.push(['match', b[k]]); }
     },
-    demo: async function (F) { await F.say("Let's show what you know!"); await F.say('Read the number. Build it and show it.'); },
+    demo: async function (F) {
+      await F.say("Let's show what you know! Watch me first.");
+      readLayout(2); $('check').hidden = false;
+      await F.say('This says two. I build two.');
+      for (var k = 0; k < 2; k++) { await F.handTo(FF.box(k)); await F.handTap(); FF.box(k).innerHTML = '<i class="ctr"></i>'; NK.sound.pop(); }
+      await F.say('I show two on fingers.');
+      for (k = 0; k < 2; k++) { await F.handTo(H.el, .5, .7); await F.handTap(); H.set(H.count() + 1); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); await F.yes($('work'), 'Two and two. Yes!');
+      $('prompt').innerHTML = ''; $('work').innerHTML = '';
+    },
     endSay: function (s) { return s >= 2 ? 'Unit four is done! You know zero to five!' : 'Good try! Let\'s practice and try again.'; },
     round: function (F, i) {
       return new Promise(async function (res) {
@@ -94,9 +108,7 @@
           return;
         }
         /* read it: the written number is shown and NOT said */
-        $('prompt').appendChild(U4.numCard(n));
-        var both = document.createElement('div'); both.className = 'both'; FF = U4.frame5(0, true); both.appendChild(FF.el);
-        var b2 = document.createElement('div'); b2.className = 'bighand'; H = F.fingers(0, true); b2.appendChild(H.el); both.appendChild(b2); $('work').appendChild(both);
+        readLayout(n);
         done = res; GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say(i < 2 ? 'Read this number. Build it, and show it on fingers.' : 'Read it. Build it. Show it.', { repeat: 'Read this number. Build it, and show it on fingers.' });
       });

@@ -34,6 +34,7 @@
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var FF, R, done, prev = -1, A = U4.adapt();
+  var helping = false;   /* easier path: the voice counts along as he fills */
   function setNum(n) { var c = U4.numCard(n); c.id = 'num'; $('numw').innerHTML = ''; $('numw').appendChild(c); }
   function taps(m) { return FF.moves(m).map(function (i) { return { tap: '#ffw .box[data-b="' + i + '"]' }; }); }
   function hooks() { GAME.right = function () { return taps(R.n).concat([{ tap: '#check' }]); }; GAME.wrong = function () { return taps(R.n === 5 ? 4 : R.n + 1).concat([{ tap: '#check' }]); }; }
@@ -43,14 +44,15 @@
     var have = FF.count(), d;
     if (have === R.n) { $('num').style.opacity = ''; await FR.yes($('ffw'), shape(R.n)); if (R.misses) A.miss(); else A.hit(); d = done; done = null; d(R.misses === 0); return; }
     FR.oops($('ffw')); R.misses++; $('num').style.opacity = '';
-    if (R.misses === 1) { await FR.say("Let's look again."); FF.el.classList.add('hi'); await FR.say('Is that ' + FR.word(R.n) + '? Fix the frame.'); FF.el.classList.remove('hi'); }
+    if (R.misses === 1) { await FR.say("Let's look again."); await U4.countWith(FF); await FR.say('This says ' + FR.word(R.n) + '. Fix the frame.'); }
     else { var k = R.n - have; FF.hint(R.n); await FR.say('You have ' + FR.word(have) + '. ' + (k > 0 ? 'Put ' + FR.word(k) + ' more in.' : 'Take ' + FR.word(-k) + ' out.')); }
     GAME.phase = 'answer'; FR.lock(false); FF.lock(false); hooks();
   }
   FR.game({
     id: 'u4-frame', title: 'Fill the Frame', rounds: 6,
     hero: '<div class="ff locked"><div class="box"><i class="ctr"></i></div><div class="box"><i class="ctr"></i></div><div class="box"><i class="ctr"></i></div><div class="box"></div><div class="box"></div></div>',
-    init: function (F) { FF = U4.frame5(0, true); $('ffw').appendChild(FF.el); FF.lock(true); $('check').addEventListener('click', check); },
+    init: function (F) { FF = U4.frame5(0, true); $('ffw').appendChild(FF.el); FF.lock(true); $('check').addEventListener('click', check);
+      FF.onChange = function (c) { if (helping && GAME.phase === 'answer') { NK.hush(); NK.say(c === 0 ? 'Zero.' : FR.Word(c) + '.', { noRepeat: true }); } }; },
     demo: async function (F) {
       setNum(2); FF.set(0);
       await F.say('This is a five-frame. Five boxes.');
@@ -61,12 +63,13 @@
     reset: function () { A.reset(); },
     round: function (F, i) {
       return new Promise(async function (res) {
-        /* easier after two misses: small numbers, and the frame starts with one counter to copy from */
-        var pool = A.easy() ? [1, 2, 3] : i === 4 ? [0] : i < 3 ? [1, 2, 3] : [3, 4, 5], n; do { n = F.pick(pool); } while (n === prev && pool.length > 1); prev = n;
-        R = { n: n, misses: 0 }; FF.set(A.easy() && n > 1 ? 1 : 0); FF.lock(true); setNum(n); GAME.phase = 'busy'; F.lock(true);
+        /* the same numbers for everyone; after two misses he gets help: a starter counter and the voice counts along */
+        var pool = i === 4 ? [0] : i < 3 ? [1, 2, 3] : [3, 4, 5], n; do { n = F.pick(pool); } while (n === prev && pool.length > 1); prev = n;
+        helping = A.easy();
+        R = { n: n, misses: 0 }; FF.set(n === 0 ? F.pick([1, 2]) : helping && n > 1 ? 1 : 0); FF.lock(true); setNum(n); GAME.phase = 'busy'; F.lock(true);
         await F.say(n === 0 ? 'This says zero. Show zero.' : 'This says ' + F.word(n) + '. Fill the frame.', { repeat: 'This says ' + F.word(n) + '. Fill the frame.' });
-        if (n === 0) await F.say('Zero means none. Then press check.');
-        else if (A.easy() && n > 1) await F.say('One is in. Put in the rest.');
+        if (n === 0) await F.say('Zero means none. Take them all out.');
+        else if (helping && n > 1) await F.say('One is in. I will count with you.');
         done = res; GAME.phase = 'answer'; F.lock(false); FF.lock(false); hooks();
       });
     },
@@ -75,7 +78,7 @@
       var nums = F.shuffle([4, 5, 3]).slice(0, 2);
       for (var k = 0; k < nums.length; k++) {
         await new Promise(async function (res) {
-          var n = nums[k]; R = { n: n, misses: 0 }; FF.set(0); FF.lock(true); setNum(n); GAME.phase = 'busy'; F.lock(true);
+          var n = nums[k]; helping = false; R = { n: n, misses: 0 }; FF.set(0); FF.lock(true); setNum(n); GAME.phase = 'busy'; F.lock(true);
           await F.say('Quick! Look at the number.', { repeat: 'Fill the frame with that number.' });
           await F.wait(1200); $('num').style.opacity = '.08';
           done = res; GAME.phase = 'answer'; F.lock(false); FF.lock(false); hooks();

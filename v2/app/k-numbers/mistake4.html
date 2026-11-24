@@ -65,7 +65,8 @@
     }
     FR.oops($('ffw')); R.misses++;
     if (R.misses === 1) { await FR.say("Let's look again."); await countWith(); await FR.say('This says ' + FR.word(R.n) + '. Is ' + R.who + ' right?'); }
-    else { await FR.say(R.who + ' put ' + FR.word(R.put) + '. This says ' + FR.word(R.n) + '.'); if (ok) { end2(false); return; } }
+    else { await FR.say(R.who + ' put ' + FR.word(R.put) + '. This says ' + FR.word(R.n) + '.');
+      await FR.say(ok ? 'So ' + R.who + ' is right! Tap thumbs up.' : 'So it is a mistake. Tap thumbs down.'); }
     GAME.phase = 'answer'; FR.lock(false); hooks();
   }
   async function check() {
@@ -95,13 +96,14 @@
     reset: function () { A.reset(); },
     round: function (F, i) { return play(F, i, false); },
     /* bonus for a quick boy: big numbers, off by just one */
-    bonus: function (F) { return play(F, 2, true); }
+    bonusSay: '', bonus: function (F) { return play(F, 2, true); }
   });
   function play(F, i, quick) {
       return new Promise(async function (res) {
         /* easier after two misses: small numbers, and a mistake is off by two (easy to see) */
-        var easy = A.easy() && !quick, n = quick ? F.pick([4, 5]) : easy ? F.pick([1, 2, 3]) : i < 2 ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]), ok = quick ? false : RIGHT[i];
-        var put = ok ? n : easy ? (n <= 2 ? n + 2 : n - 2) : (n === 5 ? 4 : Math.random() < .5 ? n + 1 : n - 1);
+        var easy = A.easy() && !quick, n = quick ? F.pick([4, 5]) : i === 3 ? 0 : easy ? F.pick([1, 2, 3]) : i < 2 ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]), ok = quick ? false : RIGHT[i];
+        /* zero once (round 4): "This says zero" with one or two dots in the frame */
+        var put = ok ? n : n === 0 ? F.pick([1, 2]) : easy ? (n <= 2 ? n + 2 : n - 2) : (n === 5 ? 4 : Math.random() < .5 ? n + 1 : n - 1);
         var who = F.NAMES[(i * 3 + 4) % F.NAMES.length];
         if (quick) await F.say('Bonus! Look closely.');
         R = { n: n, put: put, who: who, misses: 0, stage: 'judge' }; setNum(n); FF.set(put); FF.lock(true); $('thumbs').hidden = false; $('check').hidden = true;
