@@ -135,5 +135,26 @@
           say:'Tap the sentence that proves it.', how:'High tide means the water is at its very highest.'}] }
   };
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
+  /* Unit S4.1: the unit check (boss level) and test-out, and the unit project: a real investigation with a lamp and a ball, then a short write */
+  var PROJECT = { id: 'S.PROJ4.01', title: 'Moon Phases with a Lamp and a Ball', grade: 4, kind: 'information',
+    prompt: 'Be a scientist! In a dark room, a lamp is the sun and a ball is the moon. Your head is the Earth. Hold the ball out in front of you and turn slowly in a circle. Watch the lit part of the ball. Then write what you predicted, what you did, what you saw, and why it happens.',
+    strategy: { name: 'Predict, Do, See, Explain', steps: [['P', 'Predict: what do I think will happen?'], ['D', 'Do it: what did I do, in order?'], ['S', 'See: what did I see?'], ['E', 'Explain: why does it happen?']] },
+    plan: [ { k: 'predict', label: 'P · I predicted', hint: 'I thought the lit part would…' },
+            { k: 'do', label: 'D · What I did', hint: 'I held the ball and turned…' },
+            { k: 'see', label: 'S · What I saw', hint: 'The lit part grew…' },
+            { k: 'explain', label: 'E · Why it happens', hint: 'The sun lights half the moon, so…' } ],
+    starters: ['I predicted that', 'First, I', 'Then I', 'I saw that', 'This happens because'],
+    min: 50,
+    checks: [
+      { t: 'I wrote at least 5 sentences.', sentences: 5 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I explained why, with "because".', any: ['because'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I did the investigation with a grown-up nearby.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['I told what I predicted', 'I told what I did, in order', 'I told what I saw', 'I explained it with the science of the phases'],
+    pics: ['🌕', '🌓', '💡', '🌍'] };
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'S.U01', title: 'Sun, Moon and Tides', c: 'SCI', grade: 4,
+    skills: ['SCI.SKY.L05.01', 'SCI.SKY.L05.02', 'SCI.SKY.L05.03', 'SCI.SKY.L05.04'], n: 8, task: PROJECT });
 })();
 </script>
