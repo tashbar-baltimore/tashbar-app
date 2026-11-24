@@ -47,7 +47,7 @@ function css(){ if(document.getElementById('tq-css')) return; const s=document.c
 body.oh-sky .tq-ov,body.oh-sky .tq-pv{right:var(--skyw,96px)}
 .tq-hd{position:sticky;top:0;z-index:3;display:flex;gap:10px;align-items:center;padding:10px 14px;background:linear-gradient(90deg,#1e3a8a,#3730a3);color:#fff;box-shadow:0 2px 10px #0003}
 .tq-hd h2{margin:0;font-size:19px;flex:1;font-weight:900}.tq-hd h2 small{display:block;font-size:12px;font-weight:600;color:#fde68a}
-.tq-hd button{border:0;border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer;background:#fff;color:#1e1b4b}
+.tq-hd button:not(.tlk){border:0;border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer;background:#fff;color:#1e1b4b}
 .tq-in{max-width:1000px;margin:0 auto;padding:14px 14px 100px}
 .tq-top{display:grid;grid-template-columns:300px 1fr;gap:16px;align-items:start}
 .tq-handbox{background:#fff;border:3px solid #fcd34d;border-radius:24px;padding:10px;box-shadow:0 6px 18px #f59e0b22;text-align:center}
@@ -98,7 +98,7 @@ function worldPanel(w){ const W=TQ_WORLDS[w-1], L=worldIds(w);
 function shut(){ document.querySelectorAll('.tq-ov,.tq-pv').forEach(x=>x.remove()); }
 function map(){ shut(); css(); const ov=document.createElement('div'); ov.className='tq-ov'; const n=met(), nx=nextId();
  const op=ORDER.find(id=>CARD[id].kind==='open');
- ov.innerHTML='<div class="tq-hd"><h2>✋ Taryag Quest<small>All 613 mitzvos in the Rambam\'s order · 14 Worlds on your hand</small></h2><button type="button" data-tq="x">✕ Close</button></div><div class="tq-in">'
+ ov.innerHTML='<div class="tq-hd"><h2>✋ Taryag Quest<small>All 613 mitzvos in the Rambam\'s order · 14 Worlds on your hand</small></h2>'+(window.TLK?TLK.x('data-tq="x"',''):'<button type="button" data-tq="x" aria-label="Close">✕</button>')+'</div><div class="tq-in">'
   +'<div class="tq-top"><div class="tq-handbox">'+hand(SEL)+'<p>Tap a bone to visit its World. Gold fills up as you learn.</p></div>'
   +'<div class="tq-hero"><h3>Meet all 613 mitzvos</h3><p>248 Do mitzvos, like the parts of the body. 365 Don\'t mitzvos, like the days of the year. One mitzvah at a time: <b>know it, feel it, live it</b>.</p>'
   +'<div class="tq-count"><b>'+n+'</b><span>of 613 mitzvos mastered</span></div><div class="tq-bar"><i style="width:'+Math.max(1,Math.round(100*n/613))+'%"></i></div>'

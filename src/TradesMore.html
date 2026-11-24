@@ -18,13 +18,13 @@ function css(){ if(document.getElementById('tr-css')) return; const s=document.c
 #tr-ov{position:fixed;inset:0;z-index:80;background:rgba(10,15,25,.6);display:grid;place-items:center;padding:12px}
 #tr-ov .box{width:min(1100px,100%);height:min(94vh,900px);background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
 #tr-ov .bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,#F97316,#EA580C);color:#fff;font:700 17px var(--display,'Barlow'),sans-serif}
-#tr-ov .bar span{flex:1}#tr-ov .bar button{border:0;border-radius:10px;padding:10px 16px;font-weight:800;background:#fff;color:#1F2933;cursor:pointer}
+#tr-ov .bar span{flex:1}#tr-ov .bar button:not(.tlk){border:0;border-radius:10px;padding:10px 16px;font-weight:800;background:#fff;color:#1F2933;cursor:pointer}
 #tr-ov iframe{flex:1;border:0;width:100%}`; document.head.appendChild(s); }
 function panel(){ return `<section class="trpanel"><div class="th"><span class="ic" aria-hidden="true">⚡</span><span><b>Spark Path · Electricity</b><small>Trades: learn how electricity works, safely, step by step</small></span></div>
 <div class="tb"><p>9 levels and a boss challenge: circuits, switches, safety and more. Every level you finish is saved to your school record.</p><button class="go" data-tr="spark" type="button">Open Spark Path ⚡</button></div></section>`; }
 const _find=window.tlFindLevelCard;
 window.tlFindLevelCard=function(st){ let h=''; try{ h=_find?_find(st):''; }catch(e){} try{ css(); h+=panel(); }catch(e){ console.error('TradesMore panel',e); } return h; };
-function open(){ const go=u=>{ APP=u; css(); const d=document.createElement('div'); d.id='tr-ov'; d.innerHTML=`<div class="box" role="dialog" aria-label="Spark Path Electricity"><div class="bar"><span>⚡ Spark Path · Electricity</span><button data-tr="close" type="button">✕ Close</button></div><iframe src="${E(u+'?spark=1')}" title="Spark Path Electricity" allow="autoplay"></iframe></div>`; document.body.appendChild(d); };
+function open(){ const go=u=>{ APP=u; css(); const d=document.createElement('div'); d.id='tr-ov'; d.innerHTML=`<div class="box" role="dialog" aria-label="Spark Path Electricity"><div class="bar"><span>⚡ Spark Path · Electricity</span>${window.TLK?TLK.x('data-tr="close"',''):'<button data-tr="close" type="button" aria-label="Close">✕</button>'}</div><iframe src="${E(u+'?spark=1')}" title="Spark Path Electricity" allow="autoplay"></iframe></div>`; document.body.appendChild(d); };
  if(!APP&&window.TL_APP_URL) APP=window.TL_APP_URL;   /* v164: known since sign-in */
  if(APP) return go(APP); run('msAppUrl').then(go).catch(()=>{ try{ toast('Can’t open Spark Path right now. Check the Wi-Fi.'); }catch(e){} }); }
 document.addEventListener('click',e=>{ const b=e.target.closest('[data-tr]'); if(!b) return; if(b.dataset.tr==='spark'){ try{ SND.tap(); }catch(x){} open(); } if(b.dataset.tr==='close'){ const o=document.getElementById('tr-ov'); if(o) o.remove(); } });

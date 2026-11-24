@@ -228,8 +228,8 @@ function rpHTML(use) { const P = window.TL_PICS[use.id]; if (!P) return '';
     `<div class="rpbox" style="aspect-ratio:${P.w}/${P.h}"><img src="${RP_BASE + rpEsc(P.file)}" alt="" loading="eager" decoding="async" onerror="this.closest('.rp').classList.add('rpno')">${rpMarks(use.mark)}</div>` +
     `<figcaption>${rpEsc(use.cap || P.alt)}<button type="button" class="rpz" aria-label="Make the picture bigger">🔍</button></figcaption></figure>`; }
 function rpZoom(fig) { const id = fig.getAttribute('data-rp'), P = window.TL_PICS[id]; if (!P) return; const d = document.createElement('div'); d.className = 'rpzoom';
-  d.innerHTML = `<div class="rpzin">${fig.querySelector('.rpbox').outerHTML}<p class="rpcred">Picture: ${rpEsc(P.author)} · ${rpEsc(P.licence)}</p><button type="button" class="rpclose">Close ✕</button></div>`;
-  d.addEventListener('click', e => { if (e.target === d || e.target.classList.contains('rpclose')) d.remove(); }); document.body.appendChild(d); requestAnimationFrame(() => rpFit(d.querySelector('.rpbox'))); }
+  d.innerHTML = `<div class="rpzin">${fig.querySelector('.rpbox').outerHTML}<p class="rpcred">Picture: ${rpEsc(P.author)} · ${rpEsc(P.licence)}</p></div>${window.TLK?TLK.x('data-rpx="1"','tr'):'<button type="button" class="rpclose" data-rpx="1" aria-label="Close">✕</button>'}`;
+  d.addEventListener('click', e => { if (e.target === d || e.target.closest('[data-rpx]')) d.remove(); }); document.body.appendChild(d); requestAnimationFrame(() => rpFit(d.querySelector('.rpbox'))); }
 function rpDecorate() { try { if (typeof A === 'undefined' || A.view !== 'play' || !A.play) return; const p = A.play, it = p.items[p.i]; const card = document.querySelector('.qcard'); if (!card || card.querySelector('.rp')) return;
   const use = rpFind(p.id, it); if (!use) return; const h = rpHTML(use); if (!h) return;
   const old = card.querySelector('.tlpic');   /* an emoji picture is replaced; Hebrew text the boy must read (a Rashi, a pasuk) always stays */
