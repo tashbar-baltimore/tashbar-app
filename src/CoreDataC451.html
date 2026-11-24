@@ -1,0 +1,104 @@
+<script>
+/* CoreDataC451.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 4 Unit 4.1 "Prove it!" (docs/core-growth/C45-map.md). Short lesson passages (under 300 words) go in PASS under c45_ keys;
+   each lesson teaches on one passage and checks on a different, cold passage. Cast: the Glen Avenue Crew (C45-map.md section 5). */
+(function () {
+  var P = {
+    c45_sukkah: { title: 'The Sukkah on Glen Avenue', text: 'On the night after Yom Kippur, Abba and Yehuda Benaim carried the sukkah boards up from the basement. There were eight boards, each one painted white with blue trim. Yehuda\'s job was to hold each board straight while Abba screwed them together. It took them almost two hours. By the time they finished, the moon was high, and Yehuda\'s arms ached.\nThe next morning, Savta came out with a bowl of dates and a ball of string. She showed Yehuda how to tie the dates so they would hang from the s\'chach like little brown lanterns. "In Morocco," she said, "my father hung dates and pomegranates in our sukkah every year." Yehuda tied twelve strings of dates. When his little sisters saw them, they clapped and asked if they could eat one.\n"After Yom Tov," said Savta, laughing.' },
+    c45_bakery: { title: 'Friday at the Bakery', text: 'Every Friday, Tzvi Hirsch Gold wakes up at five o\'clock. His family owns the kosher bakery on the corner of Glen Avenue, and Friday is the busiest day of the week. Tzvi Hirsch\'s job is to fold the bakery boxes. He folds sixty boxes before davening. His Abba braids the challah dough, and the big oven heats up to four hundred degrees.\nBy seven o\'clock, the first trays come out, golden and shiny. People line up outside before the door even opens. Everyone wants fresh challah for Shabbos. Old Mr. Weiss always buys two round challos with raisins. Rabbi Feldman buys six small rolls for his children.\nAt eight, Tzvi Hirsch eats one warm roll and runs to catch the school bus. He is tired all morning, but he never complains. He says the smell of fresh challah is worth it.' },
+    c45_bees: { title: 'Bees in Winter', text: 'When the weather turns cold, most insects hide or die. Honeybees do something different. They stay awake all winter inside the hive.\nThe bees crowd together in a tight ball called a winter cluster. The queen bee stays in the middle of the ball. The worker bees on the outside shiver their wing muscles without flying. All that shivering makes heat. On the coldest days, the middle of the cluster can be as warm as a summer afternoon.\nThe bees take turns. A bee on the cold outside slowly works her way in, and a warm bee moves out.\nTo keep shivering, the bees need energy. They eat the honey they stored in the summer. A strong hive can eat about thirty pounds of honey in one winter. That is why a good beekeeper never takes all the honey in the fall.' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var RT = 'Right there: one sentence holds it', TS = 'Think and search: pieces from 2+ places', NT = 'Not in the text at all';
+  var LESSONS = {
+    'READ.COMP.L05.05':{name:'Where Does the Answer Live?',
+      teach:[
+        {p:'c45_sukkah', q:'"How many boards were there?" Where does the answer live?', o:[RT, TS, NT], how:'Find the key word "boards". Read that one sentence. Is the whole answer there?'},
+        {p:'c45_sukkah', q:'"What two jobs did Yehuda do?" Where does the answer live?', o:[TS, RT, NT], how:'Find each job. Is the first job in the same sentence as the second? Count the places.'},
+        {p:'c45_sukkah', q:'Think and search: why did Yehuda\'s arms ache?', o:['He held boards straight for almost two hours.', 'The moon was high.', 'He tied twelve strings of dates.'], how:'Join two sentences: what his job was, and how long it took.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_bakery', q:'Sort each question: where does its answer live?', bins:[{id:'rt', label:'Right there'}, {id:'ts', label:'Think and search'}],
+          items:[{label:'What time does Tzvi Hirsch wake up?', bin:'rt'}, {label:'How hot does the oven get?', bin:'rt'}, {label:'How many boxes does he fold?', bin:'rt'}, {label:'Why is the bakery so busy on Friday?', bin:'ts'}, {label:'What does Tzvi Hirsch do from five to eight?', bin:'ts'}, {label:'Why is he tired, and why doesn\'t he mind?', bin:'ts'}],
+          h:'Find the key word. If one sentence holds the whole answer, it is right there.', how:'Right there: the key word and the answer sit in one sentence. Think and search: you need two or more places.'},
+        {t:'pairs', p:'c45_bakery', q:'Right there! Match each question to its answer.', pairs:[['What does Abba braid?', 'the challah dough'], ['What does Mr. Weiss buy?', 'two round challos with raisins'], ['What does Rabbi Feldman buy?', 'six small rolls'], ['When does Tzvi Hirsch eat a roll?', 'at eight']],
+          h:'Find the name or key word from the question. The answer is in that sentence.', how:'Point to the key word in the story. Read only that sentence. The answer is right there.'},
+        {t:'spotall', p:'c45_bakery', q:'Think and search: why is Friday so busy? Tap every piece that helps.', cells:[{label:'Friday is the busiest day of the week', ok:true}, {label:'People line up before the door opens', ok:true}, {label:'Everyone wants fresh challah for Shabbos', ok:true}, {label:'He folds sixty boxes', ok:false}, {label:'He runs to catch the school bus', ok:false}],
+          h:'Ask of each piece: does it tell why so many people come?', how:'A think-and-search answer has pieces in different places. Tap each piece that answers why.'},
+        {t:'order', p:'c45_bakery', q:'Build a think-and-search answer: what does Tzvi Hirsch do on Friday morning?', tiles:['He wakes up at five,', 'folds sixty boxes before davening,', 'eats a warm roll at eight,', 'and runs for the bus.'],
+          h:'Find each piece in the story. Put them in the order they happen.', how:'Collect the pieces from different sentences. Put them in time order: five, before davening, eight.'},
+        {t:'sort', p:'c45_bakery', q:'Mistake Detective. "Why is Tzvi Hirsch tired, and why doesn\'t he mind?" Whole answer, or only one piece?', bins:[{id:'w', label:'Whole answer'}, {id:'o', label:'Only one piece'}],
+          items:[{label:'He wakes at five and works hard, but loves the smell of challah.', bin:'w'}, {label:'He wakes up at five.', bin:'o'}, {label:'He loves the smell of challah.', bin:'o'}, {label:'He gets up early to work, and the challah smell is worth it to him.', bin:'w'}],
+          h:'The question asks two things. Does the answer give both?', how:'A think-and-search question can have two parts. One piece is the trap. Check every part.'},
+        {t:'type', p:'c45_bakery', q:'Right there: how many boxes does Tzvi Hirsch fold before davening? Type the number.', a:'60', alt:['sixty'], kb:'abc',
+          h:'Find the word "boxes". Read that sentence.', how:'Find the key word "boxes". The number is in the same sentence.'}
+      ],
+      check:[
+        {p:'c45_bees', q:'"What do the bees eat in winter?" Where does the answer live?', o:[RT, TS, NT]},
+        {p:'c45_bees', q:'"Why does a good beekeeper leave honey in the hive?" Where does the answer live?', o:[TS, RT, NT]},
+        {p:'c45_bees', q:'Think and search: how do the bees stay warm all winter?', o:['They crowd into a ball, shiver to make heat, and take turns in the middle.', 'They shiver their wing muscles.', 'They hide under the ground until spring.']}
+      ],
+      re:[
+        {p:'c45_sukkah', q:'"What color was the trim?" One sentence holds it. What kind of question is it?', o:['Right there', 'Think and search', 'Not in the text'], how:'Find "trim". The whole answer is in that one sentence.'},
+        {p:'c45_sukkah', q:'"What did Savta and Yehuda do with the dates?" How many places do you need?', o:['Two or more places: think and search', 'One sentence: right there', 'It is not in the story'], how:'Savta showed him how. Yehuda tied them. Those are two sentences.'},
+        {p:'c45_sukkah', q:'Which answer has EVERY piece of "What two jobs did Yehuda do?"', o:['He held the boards straight and tied twelve strings of dates.', 'He tied twelve strings of dates.', 'He held the boards straight.'], how:'The question asks for two jobs. Count the jobs in each answer.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L05.05':{
+      hook:'Some answers sit in one sentence. Others are hiding in pieces all over the page.',
+      big:'Before you answer, ask: does one sentence hold the whole answer, or do I need to search in two or more places?',
+      intro:['Find the key word from the question in the text.', 'Read that sentence. Does it hold the WHOLE answer? Then it is right there.', 'If not, keep searching. Collect every piece, then put them together: think and search.'],
+      ex:[{q:'"How many boards were there?"', steps:['Key word: boards.', 'Sentence: "There were eight boards."', 'One sentence holds it all. Right there: eight.'], a:'Right there: eight boards'},
+          {q:'"Why did Yehuda\'s arms ache?"', steps:['Key word: arms. "Yehuda\'s arms ached." But why?', 'Search back: his job was to hold each board straight.', 'Search more: it took almost two hours.', 'Put the pieces together.'], a:'Think and search: he held boards for almost two hours'}],
+      oops:{q:'"What two jobs did Yehuda do?"', wrong:'He tied dates.', right:'He held the boards and tied the dates.', why:'That is only one piece. A think-and-search answer needs every piece.'},
+      idea:['Right there is like finding your coat on its hook. Think and search is like packing for camp: the things are in different rooms.'],
+      try:{q:'"Where did Savta\'s father hang dates?" Where does the answer live?', o:['Right there', 'Think and search', 'Not in the text'], a:'Right there', steps:['Key word: father.', 'One sentence: "In Morocco, my father hung dates..." It holds it all.']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.COMP.L05.05':{ band:'E45', pic:'🔎', today:'Find where the answer lives before you answer',
+      why:'Some answers sit in one sentence. Others hide in pieces. Know which, and you will not miss half.',
+      ready:[{q:'"Avi found his siddur in the shul." Where was the siddur?', o:['in the shul','Avi','his siddur'], a:'in the shul'},
+             {q:'"On Sunday, Zeidy built a shtender." When did Zeidy build it?', o:['on Sunday','a shtender','Zeidy'], a:'on Sunday'}],
+      bridge:'READ.COMP.L04.01', bridgeName:'Five Questions',
+      watch:{ q:'The Sukkah on Glen Avenue', m:{type:'scene', e:'🛖', t:'There were eight boards, white with blue trim. Yehuda held each board straight while Abba screwed them together. It took almost two hours. By the end, Yehuda\'s arms ached.'}, steps:[
+        {t:'Question 1: "How many boards were there?" I find the key word: boards.'},
+        {t:'One sentence: "There were eight boards." It holds the whole answer. That is RIGHT THERE.'},
+        {t:'Question 2: "Why did his arms ache?" The ache sentence does not say why.'},
+        {t:'I search back. Piece 1: he held each board. Piece 2: it took two hours. I join them. That is THINK AND SEARCH.'}],
+        a:'Right there: one sentence. Think and search: pieces from two or more places.' },
+      oops:{ q:'"What two jobs did Yehuda do?"', wrong:'He tied dates.', right:'He held the boards and tied the dates.', why:'Only one piece. A think-and-search answer needs every piece.' },
+      ways:['worked example','question-answer types (QAR)','sort and build','Mistake Detective','tap the reason'], done:'You can tell where an answer lives, and find every piece!',
+      board:{ one:'Right there = one sentence. Think and search = pieces from 2+ places.', activity:'Question cards: boys hold up 1 finger (right there) or 2+ fingers (think and search), then point to the sentences.', mistakes:['Stopping after one piece of a think-and-search answer','Answering from memory instead of the sentence','Picking a sentence with the key word that does not answer the question'] },
+      do:[
+        {type:'sort', bins:['Right there','Think and search'], cards:[['How many boards were there?',0],['What color was the trim?',0],['What two jobs did Yehuda do?',1],['Why did his arms ache?',1]],
+          say:'Where does each answer live? Sort the questions.', how:'One sentence holds it? Right there. Need two places? Think and search.'},
+        {type:'listen', q:'He held each board straight. It took almost two hours.', hear:'Why did Yehuda\'s arms ache?', o:['He held boards for two hours','He held a board','The moon was high'], a:'He held boards for two hours',
+          say:'Join the two sentences. Why did his arms ache?', how:'Read both sentences. Join the job and the time.',
+          why:{q:'Why is this a think-and-search answer?', o:['It needs two sentences','It is one word','It is not in the story'], a:'It needs two sentences'}}],
+      your:[
+        {type:'sort', mis:true, q:'"What two jobs did Yehuda do?"', bins:['Whole answer','Only one piece'], cards:[['held boards and tied dates',0],['tied dates',1],['held boards',1],['held each board and tied twelve date strings',0]],
+          say:'Mistake Detective: whole answer, or only one piece?', how:'Count the jobs in each card. One job is the trap.'},
+        {type:'match', q:'Tzvi Hirsch wakes at five. He folds sixty boxes. Abba braids challah.', pairs:[['When does he wake?','at five'],['How many boxes?','sixty'],['What does Abba braid?','challah']],
+          say:'Right there! Match each question to its answer.', how:'Find the key word. The answer is in that sentence.'},
+        {type:'tiles', q:'Why is Friday busy? Shabbos is coming. People want fresh challah.', w:['Shabbos is coming,','so people line up','for fresh challah.'], extra:['the oven is hot'],
+          say:'Build a think-and-search answer from the pieces.', how:'Join the reason and what people do. Leave out what does not answer why.',
+          why:{q:'Why did you need two sentences?', o:['The reason and the people are in different places','The answer is in the title','You can guess it'], a:'The reason and the people are in different places'}},
+        {type:'listen', q:'Dovid oiled the bike chain. Then the wheels spun fast.', hear:'Why did the wheels spin fast? Where does the answer live?', o:['Think and search','Right there'], a:'Think and search',
+          say:'Challenge! Right there, or think and search?', how:'Does one sentence say why? Or do you join two?',
+          why:{q:'What tells you it is think and search?', o:['You join the oil and the fast wheels','One sentence says why','The word Dovid'], a:'You join the oil and the fast wheels'}},
+        {type:'match', q:'The bus leaves at 8:10. It stops on Glen Avenue.', pairs:[['When does the bus leave?','8:10'],['Where does it stop?','Glen Avenue']],
+          say:'Right there again. Match each question to its answer.', how:'Find when and where words. Each answer sits in one sentence.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
