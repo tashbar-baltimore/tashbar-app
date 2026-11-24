@@ -1,7 +1,7 @@
 /* Core Growth (job T, T-5): unit checks and test-out. MADE-UP boys only.
    server(): on the real server code, a TEST- boy's pre-check is kept once (no second try to fish for skips), the skills he showed leave
              his Reading path, a skill he then missed in a unit check comes back, a passed check stays passed; a boy who is not a TEST- boy
-             is not changed while CU_LIVE is 'test'; staff and bad tokens are refused; no money and no mastery are written.
+             is changed with CU_LIVE 'on' (the live setting) and not while it is 'test'; staff and bad tokens are refused; no money and no mastery are written.
    page(pg):  with a made-up unit of real Reading lessons: the boss entrance, every question answered right -> "Unit cleared!" and the save;
              answered wrong -> "Almost there!" with "Practice: <the missed lesson>" that opens exactly that lesson; the pre-check shows what he
              skips; starting a unit's first lesson as a TEST- boy opens the pre-check first. Button system only, at 1366 and 390. */
@@ -34,7 +34,11 @@ function server() {
   const p1 = plan('TEST-CU01');
   if (show.some(id => p1.path.indexOf(id) >= 0) || p1.path.length !== p0.path.length - 2 || p1.skippedShown !== 2) f('the skills he showed must leave his path (' + JSON.stringify({ before: p0.path.slice(0, 4), after: p1.path.slice(0, 3) }) + ')');
   res('cuSave', B.token, 'ZZTEST.U01', 'pre', { shown: show });
+  if (vm.runInContext('CU_LIVE', rt.ctx) !== 'on') f('unit checks must be on for every boy (HoS decision 2026-11-24): CU_LIVE is ' + vm.runInContext('CU_LIVE', rt.ctx));
+  const pOn = plan('CU000002'); if (show.some(id => pOn.path.indexOf(id) >= 0)) f('with CU_LIVE "on", the skills any boy showed must leave his path');
+  vm.runInContext("CU_LIVE = 'test'", rt.ctx);
   const pb = plan('CU000002'); if (show.some(id => pb.path.indexOf(id) < 0)) f('while CU_LIVE is "test", a boy who is not a TEST- boy must keep his whole path');
+  vm.runInContext("CU_LIVE = 'on'", rt.ctx);
   const c1 = res('cuSave', A.token, 'ZZTEST.U01', 'check', { right: 6, total: 10, missed: [show[0]] });
   if (!c1 || c1.row.passed || c1.row.missed[0] !== show[0]) f('6 of 10 must not pass, and keep the missed skill');
   if (plan('TEST-CU01').path.indexOf(show[0]) < 0) f('a skill he missed in the unit check must come back into his path');
@@ -42,13 +46,13 @@ function server() {
   if (!c2 || !c2.row.passed || c2.row.tries !== 2) f('9 of 10 must pass (' + JSON.stringify(c2) + ')');
   const c3 = res('cuSave', A.token, 'ZZTEST.U01', 'check', { right: 1, total: 10, missed: [show[1]] });
   if (!c3 || !c3.row.passed) f('a passed unit must stay passed');
-  const m = res('cuMine', A.token); if (!m || !m.units || !m.units['ZZTEST.U01'] || !m.live) f('cuMine must give his units, and say the checks are on for a TEST- boy');
+  const m = res('cuMine', A.token); if (!m || !m.units || !m.units['ZZTEST.U01'] || !m.live) f('cuMine must give his units, and say the checks are on');
   if (res('cuMine', B.token).units['ZZTEST.U01'].pre !== true) f('boy B keeps his own row');
   if (!res('cuSave', 'cu-staff', 'ZZTEST.U01', 'pre', { shown: [] }).error) f('a staff token must be refused');
   if (!res('cuSave', A.token, 'bad id', 'pre', { shown: [] }).error) f('a bad unit id must be refused');
   if (!res('cuSave', A.token, 'ZZTEST.U02', 'gold', {}).error) f('an unknown kind must be refused');
   if (JSON.stringify(bk.tabs.MS_State.rows) + JSON.stringify(bk.tabs.MS_Bank || '') !== before) f('unit checks must not write mastery or money');
-  return { fails, oks: fails.length ? [] : ['unit checks (server): one pre-check per unit, shown skills leave the path (TEST- boys only for now), a missed skill comes back, 80% passes and stays passed, no money or mastery'] };
+  return { fails, oks: fails.length ? [] : ['unit checks (server): one pre-check per unit, shown skills leave the path (on for every boy; the test switch still keeps it to TEST- boys), a missed skill comes back, 80% passes and stays passed, no money or mastery'] };
 }
 
 async function page(pg) {

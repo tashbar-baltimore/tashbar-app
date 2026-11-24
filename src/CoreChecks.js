@@ -8,8 +8,8 @@
      cuMine(token)                         the signed-in boy: his rows (which pre-checks are done, which units are passed)
    The pre-check's "shown" skills are taken out of his path in plPlanFor_ (Placement.js), the same way the Pathfinder level check skips known
    skills (PathfinderLevel.js pfLcPlanPatch_). Nothing is marked mastered, and NO MONEY is paid for a pre-check or a unit check (any money for
-   them needs a Head of School DECISION). Switch: CU_LIVE 'test' (TEST- boys only, the default until the HoS sees it), 'on', or 'off'. */
-var CU_LIVE = 'test';
+   them needs a Head of School DECISION). Switch: CU_LIVE 'on' (every boy; HoS decision 2026-11-24), 'test' (TEST- boys only), or 'off'. */
+var CU_LIVE = 'on';   /* HoS DECISION 2026-11-24: "Turn unit checks on for everyone." */
 var CU = { TAB: 'CU_Results', HEAD: ['student_id', 'unit_id', 'pre_done', 'shown_json', 'check_passed', 'check_right', 'check_total', 'missed_json', 'tries', 'updated_at'], PASS: 0.8 };
 
 function cuOn_(sid) { if (CU_LIVE === 'off') return false; if (CU_LIVE === 'on') return true; try { return msIsTest_(String(sid)); } catch (e) { return /^TEST-/.test(String(sid)); } }
