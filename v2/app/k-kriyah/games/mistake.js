@@ -53,7 +53,7 @@ export default function setup(E, { struggled, unit }) {
     : k === 'beis' ? 'Look again. A dot! This is Beis, not Veis.' : k === 'veis' ? 'Look again. No dot. This is Veis, not Beis.'
     : 'Look again. ' + (k === 'daled' && c === 'gimmel' ? 'Daled has no foot.' : LOOK[k]) + ' This is ' + E.LETTERS[k].name + '.';
   const an = k => k === 'alef' ? 'an Alef' : 'a ' + E.LETTERS[k].name;
-  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort(() => Math.random() - .5).forEach((k, i) => { const t = E.letter(k, .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
+  function makeTiles() { tiles.forEach(t => E.scene.remove(t)); tiles.length = 0; [...new Set([fixKey, shown.userData.key, ...unit.letters])].slice(0, 3).sort((a, b) => E.AB(a) - E.AB(b)).forEach((k, i) => { const t = E.letter(k, .95); t.position.copy(tileHome(i)); E.scene.add(t); tiles.push(t); E.popIn(t); }); }
   const onBoard = () => { const [bx, by] = E.toScreen(E.worldPos(board)), [tx, ty] = E.toScreen(dragT.position); return Math.hypot(bx - tx, by - ty) < Math.min(innerWidth, innerHeight) * .16; };
   E.onPointer('down', e => { if (!fixKey || busy) return; const t = E.pickFrom(e, tiles); if (t) { dragT = t; const p = E.planePoint(e, t.position.z); if (p) grab.copy(t.position).sub(p); t.scale.setScalar(1.12); } });
   E.onPointer('move', e => { if (!dragT) return; const p = E.planePoint(e, dragT.position.z); if (p) dragT.position.copy(p.add(grab)); });
