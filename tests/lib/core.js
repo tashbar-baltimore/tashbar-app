@@ -50,6 +50,7 @@ function server() {
     if (parts.order.map(h => parts.parts[h]).join('') !== body) fail("the boy's page pieces (Speed.js) do not match msQuestToolsBody_ (Photos.js)");
     const reg = fs.readdirSync(B.SRC).filter(f => /^CoreData[A-Z][A-Z0-9]*\.js$/.test(f));
     reg.forEach(f => { const t = fs.readFileSync(path.join(B.SRC, f), 'utf8'), job = f.slice(8, -3); if (t.indexOf('CORE_SKILLS.' + job + ' = [') < 0) fail('src/' + f + ' must set CORE_SKILLS.' + job + ' (its own job only)'); });
+    try { const cw = require('./corewrite.js')(); cw.fails.forEach(x => fails.push(x)); if (!cw.fails.length) oks.push('writing inbox (server): draft, send, locked while the teacher has it, other boys kept out, send back needs a note, fix and resend, publish to his book, no money'); } catch (e) { fail('writing inbox server check crashed: ' + String(e).slice(0, 200)); }
     if (!r.problems.length) oks.push('core skills: ' + r.merged.added + ' new skill(s) from ' + reg.length + ' job list(s), ' + r.files.filter(f => /^CoreData/.test(f)).length + ' data file(s), no problems');
     return { fails, oks, rep: r };
   }
@@ -139,6 +140,7 @@ async function page(pg, rep) {
     await pg.setViewportSize({ width: 1366, height: 768 });
     if (!fails.length) oks.push('Reader: cover, pages, tap a word for its meaning, Back from Grade 3, chapter done and kept, tap the sentence that proves it (miss names the step, no early answer), K-1 band; button system only, no sideways scroll at 1366 and 390');
   }
+  try { const cu = await require('./corewriteui.js')(pg); cu.fails.forEach(f => fails.push(f)); cu.oks.forEach(o => oks.push(o)); } catch (e) { fail('Writing Workshop screens crashed: ' + String(e).slice(0, 200)); }
   await pg.setViewportSize({ width: 390, height: 844 });
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push('390px: ' + f)); } catch (e) { fail('new activity kinds (390 px) crashed: ' + String(e).slice(0, 200)); }
   await pg.setViewportSize({ width: 1366, height: 768 });

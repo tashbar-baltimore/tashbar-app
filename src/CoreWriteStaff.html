@@ -1,0 +1,61 @@
+<script>
+/* CoreWriteStaff.html: THE TEACHER'S WRITING INBOX (Core Growth job T, T-4, 2026-11-24). Staff portal -> Reports -> "Writing inbox"
+   (StaffHome.html presses the hidden #cws-btn). Every piece a boy sent from the Writing Workshop (src/CoreWrite.html), from the boys
+   this staff member may see, newest first, waiting ones on top. Open one: his piece, his plan, his checklist, then score each rubric row
+   1 to 4, write a short note, and "Send back to fix" (he sees the note on the Fix screen) or "Publish to his book" ("My book").
+   Calls cwInbox / cwScore (src/CoreInbox.js). No money on this screen. No double slash in this file. */
+(function(){
+ if(window.CWS) return;
+ var Z=window.CWS={data:null,err:'',open:false,view:null,scores:[],note:'',busy:false};
+ var E=function(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); };
+ function call(fn){ var a=[].slice.call(arguments,1); return new Promise(function(ok,no){ try{ google.script.run.withSuccessHandler(ok).withFailureHandler(no)[fn].apply(null,a); }catch(e){ no(e); } }); }
+ function tok(){ try{ if(typeof S!=='undefined'&&S&&S.token) return S.token; }catch(e){} try{ var t=JSON.parse(sessionStorage.getItem('tl-session')||'null'); return t&&t.token||''; }catch(e){ return ''; } }
+ function when(t){ if(!t) return ''; var d=new Date(t); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'}); }
+ function css(){ if(document.getElementById('cws-css')) return; var s=document.createElement('style'); s.id='cws-css'; s.textContent=''+
+  '#cws{position:fixed;inset:0;z-index:99980;background:#f3f5f9;color:#1d2433;font:15px/1.45 "Nunito","Segoe UI",system-ui,sans-serif;display:flex;flex-direction:column}'+
+  '#cws .cws-top{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#fff;border-bottom:1px solid #dde3ee}#cws .cws-top b{flex:1;font-size:17px}'+
+  '#cws button{font:inherit;cursor:pointer;border-radius:10px;border:1px solid #c9d3e0;background:#fff;padding:8px 14px;min-height:40px}#cws button.pri{background:#2f5fb3;color:#fff;border-color:#2f5fb3;font-weight:700}'+
+  '#cws .cws-body{flex:1;overflow:auto;padding:16px;max-width:1100px;width:100%;margin:0 auto}'+
+  '#cws table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}#cws th,#cws td{text-align:left;padding:10px 12px;border-bottom:1px solid #eef1f6}#cws tr.row{cursor:pointer}#cws tr.row:hover{background:#f7f9fd}'+
+  '#cws .st{display:inline-block;border-radius:999px;padding:2px 10px;font-size:13px;font-weight:700}#cws .st.sent{background:#fff1c9;color:#7a5600}#cws .st.returned{background:#e6efff;color:#1d4e9e}#cws .st.published{background:#dcf3e5;color:#0e7a4f}'+
+  '#cws .grid{display:grid;gap:16px;grid-template-columns:minmax(0,1.4fr) minmax(280px,1fr)}@media(max-width:860px){#cws .grid{grid-template-columns:1fr}}'+
+  '#cws .paper{background:#fff;border-radius:12px;padding:18px 20px;font:17px/1.65 Georgia,serif;white-space:pre-wrap}#cws .card{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px}'+
+  '#cws .card h4{margin:0 0 6px}#cws .plan div{margin:4px 0}#cws .plan b{display:block;font-size:13px;color:#5a6680}#cws .ck{margin:2px 0}#cws .ck.no{color:#9a3d00}'+
+  '#cws .rub{display:flex;align-items:center;gap:8px;margin:6px 0;flex-wrap:wrap}#cws .rub span{flex:1;min-width:160px}#cws .rub button{min-width:44px;padding:6px 0}#cws .rub button.on{background:#2f5fb3;color:#fff;border-color:#2f5fb3}'+
+  '#cws textarea{width:100%;min-height:90px;font:inherit;border:1px solid #c9d3e0;border-radius:10px;padding:8px}#cws .acts{display:flex;gap:10px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}#cws .err{color:#9a3d00;font-weight:700}'+
+  '#cws .key{color:#5a6680;font-size:13px;margin:4px 0 12px}';
+  document.head.appendChild(s); }
+ function root(){ var r=document.getElementById('cws'); if(!r){ r=document.createElement('div'); r.id='cws'; r.setAttribute('role','dialog'); r.setAttribute('aria-label','Writing inbox'); document.body.appendChild(r); } return r; }
+ function list(){ var D=Z.data; if(Z.err) return '<p class="err">'+E(Z.err)+'</p>'; if(!D) return '<p>Loading the writing inbox…</p>';
+  var h='<p class="key">'+(D.waiting?'<b>'+D.waiting+'</b> waiting for you. ':'Nothing waiting. ')+'A piece is never marked right just for being typed: you score it here.</p>';
+  if(!D.pieces.length) return h+'<p>No boy has sent a piece yet. Pieces come from the Writing Workshop in the Core Growth writing lessons.</p>';
+  return h+'<table><tr><th>Boy</th><th>Piece</th><th>Words</th><th>Sent</th><th></th></tr>'+D.pieces.map(function(p){ return '<tr class="row" data-cws="open" data-k="'+E(p.id)+'"><td>'+E(p.name)+'</td><td>'+E(p.title)+'<br><small>'+E(p.task)+'</small></td><td>'+p.words+'</td><td>'+when(p.sent)+'</td><td><span class="st '+E(p.status)+'">'+({sent:'Waiting',returned:'Sent back',published:'Published'}[p.status]||E(p.status))+'</span></td></tr>'; }).join('')+'</table>'; }
+ function detail(){ var p=Z.view, rub=p.rubric&&p.rubric.length?p.rubric:['Ideas','Organization','Sentences','Capitals, end marks and spelling'];
+  var lab=(p.plan&&p.plan._labels)||{}, plan=Object.keys(p.plan||{}).filter(function(k){ return k!=='_labels'; }).map(function(k){ return '<div><b>'+E(lab[k]||k)+'</b>'+E(p.plan[k])+'</div>'; }).join('');
+  var checks=(p.checks||[]).map(function(c){ return '<div class="ck'+(c.ok?'':' no')+'">'+(c.ok?'✓ ':'○ ')+E(c.t)+'</div>'; }).join('');
+  return '<div class="grid"><div><div class="paper">'+E(p.text)+'</div></div><div>'+
+   '<div class="card"><h4>Score it (1 = not yet, 4 = strong)</h4>'+rub.map(function(r,i){ return '<div class="rub"><span>'+E(r)+'</span>'+[1,2,3,4].map(function(v){ return '<button type="button" data-cws="sc" data-i="'+i+'" data-v="'+v+'" class="'+(Z.scores[i]===v?'on':'')+'" aria-pressed="'+(Z.scores[i]===v)+'">'+v+'</button>'; }).join('')+'</div>'; }).join('')+
+   '<h4 style="margin-top:10px">Note to him</h4><textarea data-cws-note="1" maxlength="600" placeholder="One thing he did well, and one thing to fix next.">'+E(Z.note)+'</textarea>'+
+   (Z.err?'<p class="err">'+E(Z.err)+'</p>':'')+'<div class="acts"><button type="button" data-cws="return"'+(Z.busy?' disabled':'')+'>Send back to fix</button><button type="button" class="pri" data-cws="publish"'+(Z.busy?' disabled':'')+'>Publish to his book</button></div></div>'+
+   (plan?'<div class="card plan"><h4>His plan</h4>'+plan+'</div>':'')+(checks?'<div class="card"><h4>His checklist when he sent it</h4>'+checks+'</div>':'')+'</div></div>'; }
+ function draw(){ css(); var r=root(); var top=Z.view?'<button type="button" data-cws="back">‹ All pieces</button><b>'+E(Z.view.name)+' · '+E(Z.view.title)+' <span class="st '+E(Z.view.status)+'">'+E(Z.view.status)+'</span></b>':'<b>✍️ Writing inbox</b>';
+  r.innerHTML='<div class="cws-top">'+top+'<button type="button" data-cws="close" aria-label="Close">✕</button></div><div class="cws-body">'+(Z.view?detail():list())+'</div>'; }
+ function load(){ return call('cwInbox',tok()).then(function(r){ Z.data=r&&r.ok?r:{pieces:[],waiting:0}; Z.err=''; if(Z.open&&!Z.view) draw(); }).catch(function(e){ Z.err=String(e&&e.message||e); if(Z.open) draw(); }); }
+ Z.show=function(){ Z.open=true; Z.view=null; Z.err=''; draw(); return load(); };
+ document.addEventListener('input',function(e){ if(e.target&&e.target.hasAttribute&&e.target.hasAttribute('data-cws-note')) Z.note=e.target.value; });
+ document.addEventListener('click',function(e){ var t=e.target.closest&&e.target.closest('[data-cws],#cws-btn'); if(!t) return;
+  if(t.id==='cws-btn'){ Z.show(); return; } var a=t.getAttribute('data-cws');
+  if(a==='close'){ Z.open=false; var r=document.getElementById('cws'); if(r) r.remove(); return; }
+  if(a==='back'){ Z.view=null; Z.err=''; draw(); return; }
+  if(a==='open'){ var p=(Z.data.pieces||[]).filter(function(x){ return x.id===t.getAttribute('data-k'); })[0]; if(!p) return; Z.view=p; Z.scores=(p.scores||[]).slice(); Z.note=p.note||''; Z.err=''; draw(); return; }
+  if(a==='sc'){ Z.scores[Number(t.getAttribute('data-i'))]=Number(t.getAttribute('data-v')); Z.err=''; draw(); return; }
+  if(a==='return'||a==='publish'){ if(Z.busy) return; var rub=Z.view.rubric&&Z.view.rubric.length?Z.view.rubric.length:4;
+   if(a==='publish'&&Z.scores.filter(function(v){ return v>=1; }).length<rub){ Z.err='Score every row before you publish.'; draw(); return; }
+   Z.busy=true; Z.err=''; draw();
+   call('cwScore',tok(),Z.view.id,Z.scores,Z.note,a).then(function(){ Z.busy=false; Z.view=null; Z.note=''; Z.scores=[]; return load(); }).then(function(){ if(Z.open) draw(); })
+    .catch(function(e2){ Z.busy=false; Z.err=String(e2&&e2.message||e2); draw(); }); return; }
+ });
+ function addBtn(){ if(document.getElementById('cws-btn')||!document.body) return; var b=document.createElement('button'); b.type='button'; b.id='cws-btn'; b.hidden=true; b.textContent='Writing inbox'; document.body.appendChild(b); }
+ if(document.body) addBtn(); else document.addEventListener('DOMContentLoaded',addBtn);
+})();
+</script>
