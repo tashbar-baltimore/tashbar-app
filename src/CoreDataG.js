@@ -36,5 +36,17 @@ CORE_SKILLS.G = [
   ["LANG.SENT.L07.02", "Kernel to Masterpiece", "Expand a kernel with details that add meaning", { std: "L.6.3a", file: "CoreDataG3", min: 9 }],
   ["LANG.MECH.L08.01", "Coordinate Adjectives", "A comma between equal describers: the \"and\" and switch tests", { after: "LANG.GRAM.L08.02", std: "L.7.2a", file: "CoreDataG3", min: 7 }],
   ["LANG.GRAM.L09.05", "If I Were", "Verb moods, and were for a wish", { after: "LANG.GRAM.L09.01", std: "L.8.1c", file: "CoreDataG3", min: 9 }],
-  ["LANG.GRAM.L09.06", "Shift Check", "Find and fix shifts in voice and mood", { std: "L.8.1d", file: "CoreDataG3", min: 8 }]
+  ["LANG.GRAM.L09.06", "Shift Check", "Find and fix shifts in voice and mood", { std: "L.8.1d", file: "CoreDataG3", min: 8 }],
+  ["LANG.GRAM.L03.05", "How Did He Do It?", "Adjective or adverb: what kind, or how", { after: "LANG.GRAM.L03.04", std: "L.2.1e", file: "CoreDataG4", min: 7 }],
+  ["LANG.GRAM.L03.06", "Best Describer", "Pick the strongest describing word that fits", { std: "L.2.1e", file: "CoreDataG4", min: 6 }],
+  ["LANG.GRAM.L04.06", "Walked, Walk, Will Walk", "Past, present and future tense", { after: "LANG.GRAM.L04.05", std: "L.3.1e", file: "CoreDataG4", min: 7 }],
+  ["LANG.GRAM.L04.07", "Sang, Brought, Thought", "Past tense verbs that change", { std: "L.3.1d", file: "CoreDataG4", min: 7 }],
+  ["LANG.GRAM.L05.04", "Big Old Red Truck", "Put adjectives in the right order", { after: "LANG.GRAM.L05.03", std: "L.4.1d", file: "CoreDataG4", min: 7 }],
+  ["LANG.USE.L05.02", "The Precise Word", "Choose the exact word for the moment", { after: "LANG.USE.L05.01", std: "L.4.3a", file: "CoreDataG4", min: 8 }],
+  ["LANG.USE.L05.03", "Punctuation for Effect", "Use ! ... and ? to make the reader feel it", { std: "L.4.3b", file: "CoreDataG4", min: 7 }],
+  ["LANG.GRAM.L06.05", "Either Or, Neither Nor", "Correlative conjunctions: word pairs that join", { after: "LANG.GRAM.L06.04", std: "L.5.1e", file: "CoreDataG4", min: 8 }],
+  ["LANG.GRAM.L06.06", "Wow! Oops!", "Interjections: strong with !, mild with a comma", { std: "L.5.1a", file: "CoreDataG4", min: 7 }],
+  ["LANG.USE.L07.02", "Standard English Fix", "Fix slang and common errors for formal writing", { after: "LANG.USE.L07.01", std: "L.6.1e", file: "CoreDataG4", min: 8 }],
+  ["LANG.SENT.L08.02", "Sharpen the Sentence", "Strong verbs, no empty words, no \"There was\"", { after: "LANG.USE.L08.01", std: "L.7.3a", file: "CoreDataG4", min: 8 }],
+  ["LANG.MECH.L09.02", "Leave It Out…", "An ellipsis to shorten a quote fairly", { after: "LANG.MECH.L09.01", std: "L.8.2b", file: "CoreDataG4", min: 7 }]
 ];

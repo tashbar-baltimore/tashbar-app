@@ -6,13 +6,13 @@ Expected minutes for a typical boy (prompt section 2). **Built** counts only les
 |---|---|---|---|---|---|---|---|---|---|---|
 | Kindergarten | 15 | 0 | 40 | 0 | 0 | 0 | 4 | 0 | 4.2 | **0** |
 | Grade 1 | 20 | 0 | 40 | 0 | 0 | 0 | 5 | 0 | 4.8 | **0** |
-| Grade 2 | 20 | 5 | 50 | 0 | 30 | 0 | 5 | 0 | 12.2 | **0.6** |
-| Grade 3 | 24 | 6 | 50 | 0 | 30 | 0 | 6 | 0 | 13.1 | **0.8** |
-| Grade 4 | 22 | 5 | 35 | 0 | 40 | 0 | 6 | 0 | 13.2 | **0.7** |
-| Grade 5 | 21 | 5 | 35 | 0 | 40 | 0 | 6 | 0 | 13.1 | **0.7** |
-| Grade 6 | 17 | 4 | 30 | 0 | 40 | 0 | 6 | 0 | 11.8 | **0.6** |
-| Grade 7 | 16 | 3 | 30 | 0 | 40 | 0 | 6 | 0 | 11.7 | **0.4** |
-| Grade 8 | 18 | 5 | 30 | 0 | 40 | 0 | 6 | 0 | 12.0 | **0.7** |
+| Grade 2 | 20 | 7 | 50 | 0 | 30 | 0 | 5 | 0 | 12.2 | **0.8** |
+| Grade 3 | 24 | 8 | 50 | 0 | 30 | 0 | 6 | 0 | 13.1 | **1.0** |
+| Grade 4 | 22 | 8 | 35 | 0 | 40 | 0 | 6 | 0 | 13.2 | **1.1** |
+| Grade 5 | 21 | 7 | 35 | 0 | 40 | 0 | 6 | 0 | 13.1 | **0.9** |
+| Grade 6 | 17 | 5 | 30 | 0 | 40 | 0 | 6 | 0 | 11.8 | **0.7** |
+| Grade 7 | 16 | 4 | 30 | 0 | 40 | 0 | 6 | 0 | 11.7 | **0.6** |
+| Grade 8 | 18 | 6 | 30 | 0 | 40 | 0 | 6 | 0 | 12.0 | **0.8** |
 
 ## Log
 | Date | PR | What | Grade(s) | Minutes added |
@@ -20,7 +20,8 @@ Expected minutes for a typical boy (prompt section 2). **Built** counts only les
 | 2026-11-24 | #299 | Skill map and ledger (docs only) | K–8 | 0 |
 | 2026-11-24 | #308 | `READ.VOC.L03.01` and `LANG.MECH.L09.01` off the to-fix list (existing lessons; not counted until a fresh 9-point review) | 2, 8 | 0 |
 | 2026-11-24 | #315 | Unit 1, 20 new lessons (`LANG.SENT` / `LANG.GRAM`), independent review all 4–5 | 2–8 | 163 |
-| 2026-11-24 | (this PR) | Unit 2, 13 new lessons (nouns, pronouns, verbs, modals, tense, combining, coordinate adjectives, mood, shifts), independent review all 4–5 | 2–8 | 101 |
+| 2026-11-24 | #321 | Unit 2, 13 new lessons (nouns, pronouns, verbs, modals, tense, combining, coordinate adjectives, mood, shifts), independent review all 4–5 | 2–8 | 101 |
+| 2026-11-24 | (this PR) | Unit 3, 12 new lessons (adjective or adverb, tenses, irregular past, adjective order, precise words, punctuation for effect, either/neither, interjections, standard English, sharper sentences, ellipsis), independent review all 4–5 | 2–8 | 87 |
 
 ## Left out on purpose
 - Spelling K–2 (`LANG.MECH.L01.01`, `LANG.MECH.L02.03`): job F (phonics-based spelling).
