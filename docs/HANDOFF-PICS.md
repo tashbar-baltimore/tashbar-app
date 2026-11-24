@@ -22,7 +22,7 @@ CLAUDE.md wins where anything here differs: publish ONLY by pull request (auto-p
 - `src/RealPics.html` holds everything. `TL_PICS` is the library: id -> {file, w, h, alt, source, licence, author}.
   `TL_PIC_MAP` maps `'LESSON.ID|exact question'` -> `{id, mark:[{box:[x,y,w,h] %, label, from, at}], cap, keep}`.
   Each batch is its own `TL_PIC_ADD({...lib}, {...map})` block at the end of the file.
-- `web/pics/` holds the files (WebP, <=1100 px wide, <=200 KB; aim for 150 KB). `web/pics/SOURCES.md` has one line per file.
+- `art/pics/` (the shared art library) holds the files (WebP, <=1100 px wide, <=200 KB; aim for 150 KB). `art/CATALOG.md` has one row per file (`node tools/art-catalog.js` adds it; `web/pics/SOURCES.md` was merged into it on 2026-11-24).
 - `node tests/run.js` runs `tools/pics-check.js`, so a bad link fails the `test` check and nothing goes live. The checker fails on:
   - a link to a screen that does not exist;
   - a picture missing source, licence, author or alt;
@@ -68,8 +68,8 @@ CLAUDE.md wins where anything here differs: publish ONLY by pull request (auto-p
 - A lane folder = `lib.json`, `map.json`, `pics/`, `sources.md`. Commands:
   - `node tools/pics-lane.js check <lane> screens.json` runs the real checker on RealPics + the lane (must say 0 problems);
   - `... sheet <lane> out.png "ID|q" ...` draws screens through the real add-on;
-  - `... merge <lane> "note"` adds the block to RealPics.html, copies the files and adds the source lines.
-- `node tools/pics-sheet.js src/RealPics.html web/pics out.png "ID|q" ...` draws screens from the repo itself.
+  - `... merge <lane> "note"` adds the block to RealPics.html, copies the files into `art/pics` and adds their catalog rows.
+- `node tools/pics-sheet.js src/RealPics.html art/pics out.png "ID|q" ...` draws screens from the repo itself.
 
 ## Rules that do not bend
 1. **Picture rules:**
@@ -123,7 +123,7 @@ developer@ and the Head of School have approved this work. Use a workflow.
 1. Read CLAUDE.md, CONTRIBUTING.md and docs/HANDOFF-PICS.md. CLAUDE.md wins: publish ONLY by pull request (auto-publish),
    never push to main, never clasp, never deploy by hand.
 2. Check PIXABAY_KEY and the allowed domains in the hand-off. Tell me in one line if anything is missing, then continue.
-3. python3 tools/pics-screens.py /tmp/screens.json; node tools/pics-check.js src/RealPics.html /tmp/screens.json web/pics (0 problems).
+3. python3 tools/pics-screens.py /tmp/screens.json; node tools/pics-check.js src/RealPics.html /tmp/screens.json art/pics (0 problems).
    List the screens that still have no picture, by subject. Group them by THING; things that cover the most screens go first.
 4. Run a workflow: one worker per subject group using tools/pics-find.py, pics-save.py and pics-lane.js (lane folders), then a
    separate checker per group that removes anything doubtful. Follow every rule in the hand-off; reuse existing pictures first.

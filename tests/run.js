@@ -45,7 +45,7 @@ function picsCheck() {
   const tmp = path.join(os.tmpdir(), 'tl-screens-' + process.pid + '.json');
   try {
     execFileSync('python3', [path.join(B.ROOT, 'tools', 'pics-screens.py'), tmp], { stdio: 'pipe' });
-    const out = execFileSync('node', [path.join(B.ROOT, 'tools', 'pics-check.js'), path.join(B.SRC, 'RealPics.html'), tmp, path.join(B.ROOT, 'web', 'pics')], { stdio: 'pipe' }).toString().trim().split('\n').pop();
+    const out = execFileSync('node', [path.join(B.ROOT, 'tools', 'pics-check.js'), path.join(B.SRC, 'RealPics.html'), tmp, path.join(B.ROOT, 'art', 'pics')], { stdio: 'pipe' }).toString().trim().split('\n').pop();
     ok('pictures: ' + out);
   } catch (e) {
     const lines = String((e.stdout || '') + (e.stderr || '') || e).trim().split('\n');

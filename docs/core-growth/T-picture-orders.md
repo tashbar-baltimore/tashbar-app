@@ -15,4 +15,4 @@ Format and rules: `docs/core-growth/STYLE-SHEETS.md`. Every prompt below is the 
 | 6 | core-t-mybook.webp | "My book" shelf (the boy's published writing) | 1100x620 | B23 style. A warm wooden bookshelf full of handmade books with colorful covers and ribbon bookmarks, a small trophy and a plant, in a cozy room | A wooden shelf of colorful handmade books |
 | 7 | core-t-boss-gate.webp | Unit check "boss level" entrance | 1100x620 | E45 style. A dramatic stone gate at the top of a mountain path at sunrise, glowing golden light pouring through it, clouds below, a winding trail behind. No people | A glowing stone gate at the top of a mountain path at sunrise |
 
-When they arrive: check each one against its row and the rules, make it WebP at its size (200 KB or less), add it to `web/pics/` with its `SOURCES.md` line, and link it. Status moves to ARRIVED, then LIVE.
+When they arrive: check each one against its row and the rules, make it WebP at its size (200 KB or less), add it to the shared art library (`art/pics/`, the original in `art/originals/`, its row in `art/CATALOG.md`; `art/README.md`), and link it. Status moves to ARRIVED, then LIVE.
