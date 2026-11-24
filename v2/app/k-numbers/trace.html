@@ -45,12 +45,12 @@
   function newTracer(n, quiet) {
     if (TR) TR.el.remove(); TR = U5.tracer(n); $('tp').appendChild(TR.el); U5.setNum($('num'), n); F5.set(n);
     if (quiet) return;
-    TR.easy = R.easy; if (R.faint) TR.fade(true);
+    TR.easy = R.easy; if (R.easy) TR.widen(); if (R.faint) TR.fade(true);
     TR.onOff = async function () {
       FR.oops($('tp')); R.misses++; GAME.phase = 'busy'; hooks();
       if (R.misses >= 2 && !R.redemo) {   /* two slips: watch me again, slowly, then a wider road */
         R.redemo = true; FR.lock(true); await FR.say('Watch me again, slowly.'); await showMe(n, 3200);
-        R.easy = true; newTracer(n); TR.easy = true; await FR.say('Your turn. Start at the green dot.'); FR.lock(false);
+        R.easy = true; newTracer(n); await FR.say('Your turn. Start at the green dot.'); FR.lock(false);
       } else { await FR.say('Stay on the road. Look at the green dot.'); TR.rearm(); }
       GAME.phase = 'answer'; hooks();
     };
@@ -66,7 +66,7 @@
     });
   }
   FR.game({
-    id: 'u5-trace', title: 'Trace it', rounds: 5,
+    id: 'u5-trace', title: 'Trace it', rounds: 5, bonusSay: '',
     hero: '<div id="herotr" style="width:60%;margin:4% auto 0;aspect-ratio:220/270"></div>',
     init: function (F) {
       var t = U5.tracer(8); t.el.style.cssText = 'width:100%;height:100%;pointer-events:none'; $('herotr').appendChild(t.el); t.auto(1);

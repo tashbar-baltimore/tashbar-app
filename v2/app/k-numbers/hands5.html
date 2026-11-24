@@ -28,14 +28,14 @@
 <script>
 (function () {
   var $ = function (id) { return document.getElementById(id); };
-  var H, F5, R, done, plan, slow = 0;
+  var H, F5, R, done, plan, slow = 0, easy = 0;
   function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
   function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
   function hooks() { GAME.right = function () { return H.moves(R.n, '#hp').concat([{ tap: '#check' }]); }; GAME.wrong = function () { return H.moves(R.n === 10 ? 9 : R.n + 1, '#hp').concat([{ tap: '#check' }]); }; }
   async function check() {
     NK.unlock(); if (GAME.phase !== 'answer') return; var have = H.count(); if (!have) { FR.say('Raise some fingers first.'); return; }
     GAME.phase = 'busy'; FR.lock(true); H.lock(true);
-    if (have === R.n) { cloth(true); await FR.yes($('hp'), R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + FR.Word(R.n) + ' is five and ' + FR.word(R.n - 5) + '.'); if (!R.misses) slow = Math.max(0, slow - 1); var d = done; done = null; d(R.misses === 0); return; }
+    if (have === R.n) { cloth(true); await FR.yes($('hp'), R.misses ? 'Yes! ' + FR.Word(R.n) + '!' : 'Yes! ' + FR.Word(R.n) + ' is five and ' + FR.word(R.n - 5) + '.'); if (!R.misses) slow = Math.max(0, slow - 1); if (R.misses >= 2) easy = 2; var d = done; done = null; d(R.misses === 0); return; }
     FR.oops($('hp')); R.misses++; if (R.misses === 1) slow = Math.min(3, slow + 1);
     cloth(true); F5.glow(true);
     if (R.misses === 1) { await FR.say("Let's look again. One whole hand is five."); await FR.wait(700); cloth(false); F5.glow(false); await FR.say('Fix your fingers.'); }
@@ -50,7 +50,7 @@
       H = U5.hands(0, true); $('hp').appendChild(H.el); H.onChange = ready; H.lock(true);
       F5 = U5.frame(0, false); $('flash').insertBefore(F5.el, $('flash').firstChild); $('check').addEventListener('click', check);
     },
-    reset: function (F, again) { plan = F.shuffle([6, 7, 8, 9, 10]).concat([F.pick([6, 7, 8])]); if (!again) slow = 0; },
+    reset: function (F, again) { plan = F.shuffle([6, 7, 8, 9, 10]).concat([F.pick([6, 7, 8])]); if (!again) { slow = 0; easy = 0; } },
     demo: async function (F) {
       R = { n: 7, misses: 0 }; F5.set(7); H.set(0); cloth(false);
       await F.say('A ten-frame hides under the cloth.');
@@ -70,10 +70,10 @@
     bonus: async function (F) { var ns = F.shuffle([7, 8, 9]); for (var b = 0; b < 2; b++) { plan[6 + b] = ns[b]; slow = -3; await this.round(F, 6 + b); } slow = 0; },
     round: function (F, i) {
       return new Promise(async function (res) {
-        var n = plan[i]; R = { n: n, misses: 0 }; H.set(0); H.lock(true); GAME.phase = 'flash'; F.lock(true); ready();
+        var n = easy > 0 && i < 6 ? FR.pick([6, 7]) : plan[i], longer = easy > 0 && i < 6 ? 500 : 0; if (easy > 0 && i < 6) easy--; R = { n: n, misses: 0 }; H.set(0); H.lock(true); GAME.phase = 'flash'; F.lock(true); ready();
         cloth(false); await F.wait(380); F5.set(n);
         await F.say('Peek!', { repeat: 'How many? Show me on two hands.' });
-        cloth(true); await F.wait(1400 + slow * 150); cloth(false); await F.wait(380);
+        cloth(true); await F.wait(1400 + slow * 150 + longer); cloth(false); await F.wait(380);
         done = res; GAME.phase = 'answer'; F.lock(false); H.lock(false); ready(); hooks();
         if (i < 2) await F.say('How many? Show me on two hands.');
       });

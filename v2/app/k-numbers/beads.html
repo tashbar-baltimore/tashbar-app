@@ -14,7 +14,7 @@
 .ask{ display:flex; align-items:center; gap:18px; }
 .ask .panel{ display:flex; align-items:center; gap:16px; padding:8px 22px; }
 .ask .tf{ width:min(26vw,230px); }
-.rackwrap{ width:min(92vw,1000px); }
+.rackwrap{ width:min(96vw,1100px); }
 @media (max-width:760px), (max-aspect-ratio:4/5){ .ask .tf{ width:40vw; } .rackwrap{ width:96vw; } }
 </style>
 </head>
@@ -48,7 +48,7 @@
     return new Promise(async function (res) {
       R = { n: n, misses: 0 }; ask(n); K.set(0, 0); $('pic').classList.toggle('hiddenpic', !!noPic); GAME.phase = 'busy'; F.lock(true); ready(); mark(easy > 0);
       await F.say(line, { repeat: 'Push ' + F.word(n) + ' beads. Try one move!' });
-      if (easy > 0) await F.say('Tap the bead with the green ring.');
+      if (easy > 0) await F.say('Tap the bead with the ring.');
       done = function (first) { mark(false); if (R.misses >= 2) { easy = 2; streak = 0; } else if (first) streak++; else streak = 0; res(first); };
       GAME.phase = 'answer'; F.lock(false); K.lock(false); ready(); hooks();
     });

@@ -18,13 +18,14 @@
 
 /* bead rack */
 .rack{ touch-action:none; }
-.rframe{ position:relative; aspect-ratio:3/1.15; border-radius:24px; padding:5% 6%; display:flex; flex-direction:column; justify-content:space-around;
+.rframe{ position:relative; border-radius:24px; padding:3.5% 7%; display:flex; flex-direction:column; justify-content:space-around; gap:14px;
   background:linear-gradient(180deg,#F2C483,#D9954D 60%,#A2642C); border:5px solid #FFE3B8; box-shadow:0 8px 0 #7A451A, 0 14px 22px rgba(90,50,10,.28), inset 0 0 0 5px rgba(122,69,26,.35); }
 .post{ position:absolute; top:6%; bottom:6%; width:4%; border-radius:8px; background:linear-gradient(90deg,#8A5220,#C98544,#8A5220); }
 .post.l{ left:3%; } .post.r{ right:3%; }
-.rod{ position:relative; height:28%; cursor:pointer; }
+.rod{ position:relative; cursor:pointer; padding:10px 0; }
+.rod::before{ content:''; display:block; padding-top:7.4%; } .rack.wrap .rod::before{ padding-top:18.6%; }
 .wire{ position:absolute; left:0; right:0; top:46%; height:8%; border-radius:4px; background:linear-gradient(180deg,#F4F7FC,#8C99AE); box-shadow:0 2px 0 rgba(0,0,0,.2); }
-.bead{ position:absolute; top:0; width:6.4%; height:100%; border-radius:50%; transition:left .32s cubic-bezier(.3,1.25,.5,1); }
+.bead{ position:absolute; top:10px; aspect-ratio:1; height:auto; border-radius:50%; transition:left .32s cubic-bezier(.3,1.25,.5,1); }
 .rack.live .bead{ cursor:pointer; }
 .bead.red{ background:radial-gradient(circle at 35% 28%,#FFB0A2,#F0322C 50%,#8E0E17); box-shadow:inset -3px -5px 0 rgba(0,0,0,.18), 0 4px 4px rgba(60,0,0,.3); }
 .bead.white{ background:radial-gradient(circle at 35% 28%,#FFFFFF,#EEF2F8 50%,#A9B4C6); box-shadow:inset -3px -5px 0 rgba(0,0,0,.12), 0 4px 4px rgba(0,0,0,.25); }
@@ -46,11 +47,16 @@
 .panel{ background:radial-gradient(circle at 50% 35%,#FFFFFF,#EAF3FF); border-radius:32px; border:6px solid #fff; box-shadow:0 10px 0 rgba(40,70,140,.14), 0 18px 30px rgba(40,70,140,.18); padding:12px; position:relative; }
 .numeral{ font-weight:900; font-size:clamp(48px,10vh,96px); line-height:1; color:#FFD23D; -webkit-text-stroke:6px #3B2A7A; paint-order:stroke fill; text-shadow:0 6px 0 #3B2A7A; }
 
-@media (max-width:760px), (max-aspect-ratio:4/5){ .rframe{ aspect-ratio:3/1.75; padding:6% 5%; } .rod{ height:34%; } }
+.rack.wrap .rframe{ padding:4% 3%; }
 .tracer.faint .road{ opacity:.28; } .tracer.faint path[stroke-dasharray="2 12"]{ opacity:.25; }
 .unum{ display:flex; align-items:center; justify-content:center; }
 .unum svg{ height:clamp(64px,13vh,120px); width:auto; overflow:visible; }
 .tf.live .tfboard{ cursor:pointer; }
-.hint-bead{ outline:5px dashed #1E9E5A; outline-offset:3px; }
+.hint-bead{ animation:hintb 1s infinite; } .bead.red.hint-bead{ box-shadow:0 0 0 5px #fff, 0 0 0 10px #E5322D; } .bead.white.hint-bead{ box-shadow:0 0 0 5px #8E0E17, 0 0 0 10px #fff; }
+@keyframes hintb{ 50%{ transform:scale(1.1); } }
 .hiddenpic{ visibility:hidden; }
 @media (max-width:760px), (max-aspect-ratio:4/5){ .tfboard{ padding:2.5%; gap:1.5%; } }
+
+/* two hands: the shared "put one down" button sits under each hand, so the palm stays free to tap */
+.hands2{ padding-bottom:58px; } .hands2 .fhand .fdown{ right:auto; left:50%; bottom:-62px; width:66px; height:66px; transform:translateX(-50%); }
+.hands2 .fhand .fdown:active{ transform:translateX(-50%) translateY(5px); }

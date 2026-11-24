@@ -14,8 +14,8 @@
 .right{ flex-direction:column; }
 #flash.qcard{ width:min(32vw,54vh,360px); display:flex; align-items:center; justify-content:center; }
 #flash .tf{ width:88%; }
-#ask{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:min(28vw,46vh,300px); aspect-ratio:1; } #ask .numeral{ font-size:clamp(90px,22vh,190px); } #ask[hidden], .ans[hidden], #flash[hidden]{ display:none; }
-.ans{ width:min(58vw,680px); } .ans .hands2{ width:min(46vw,64vh,560px); margin:0 auto; }
+#ask{ display:flex; flex-direction:column; align-items:center; justify-content:center; width:min(28vw,46vh,300px); aspect-ratio:1; } #ask .numeral{ font-size:clamp(90px,22vh,190px); } #ask .unum svg{ height:min(24vh,190px); } .stage.one #ask .unum svg{ height:clamp(64px,11vh,110px); } #ask[hidden], .ans[hidden], #flash[hidden]{ display:none; }
+.ans{ width:min(58vw,680px); } .stage.one{ grid-template-columns:1fr; grid-template-rows:auto 1fr; } .stage.one .left{ height:auto; } #aB{ width:min(96vw,1100px); } .stage.one #ask{ width:auto; aspect-ratio:auto; padding:6px 24px; } .ans .hands2{ width:min(46vw,64vh,560px); margin:0 auto; }
 .hero svg{ width:56%; height:auto; margin:6% auto 0; display:block; }
 @media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-columns:1fr; grid-template-rows:.7fr 1.3fr; } #flash.qcard{ width:min(64vw,28vh); } #ask{ width:min(52vw,26vh); } .ans{ width:94vw; } .ans .hands2{ width:86vw; } }
 </style>
@@ -63,7 +63,7 @@
     round: function (F, i) {
       return new Promise(async function (res) {
         var n = plan[i], kind = KINDS[i]; R = { n: n, kind: kind }; GAME.phase = 'busy'; F.lock(true);
-        $('aH').hidden = kind !== 'hands'; $('aF').hidden = kind !== 'frame'; $('aB').hidden = kind !== 'beads';
+        $('stage').classList.toggle('one', kind === 'beads'); $('aH').hidden = kind !== 'hands'; $('aF').hidden = kind !== 'frame'; $('aB').hidden = kind !== 'beads';
         $('flash').hidden = kind !== 'hands'; $('ask').hidden = kind === 'hands'; U5.setNum($('num'), n);
         H.set(0); T.set(0); K.set(0, 0); [H, T, K].forEach(function (w) { w.lock(true); }); ready();
         if (kind === 'hands') { cloth(false); await F.wait(380); F5.set(n); await F.say('Peek!', { repeat: 'How many? Show me on two hands.' }); cloth(true); await F.wait(1400); cloth(false); await F.wait(380); }

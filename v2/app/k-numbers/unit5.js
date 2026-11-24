@@ -32,50 +32,60 @@
     api.set(n || 0); return api;
   };
 
-  /* ---------- bead rack ---------- */
+  /* ---------- bead rack ----------
+     One rod of 10 big beads: 5 red, then 5 white (five and five). Wide screens: one row of 10. Narrow screens (a phone):
+     the same rod in two rows, red five on top, white five below, so every bead is at least 64 px.
+     Tap a bead: it and every bead before it slide over together (one move). Tap a moved bead: it and the ones after slide back.
+     Slide a finger along a row: the beads follow and snap to the nearest count.
+     (The old two-rod calls still work: set(a, b) = a + b, tap(r, i) and bead(r, i) use i.) */
   U5.rack = function (interactive) {
     var el = document.createElement('div'); el.className = 'rack' + (interactive ? ' live' : '');
-    var h = '<div class="rframe"><div class="post l"></div><div class="post r"></div>';
-    for (var r = 0; r < 2; r++) { h += '<div class="rod" data-r="' + r + '"><i class="wire"></i>'; for (var i = 0; i < 10; i++) h += '<b class="bead' + (i < 5 ? ' red' : ' white') + '" data-r="' + r + '" data-i="' + i + '"></b>'; h += '</div>'; }
-    el.innerHTML = h + '</div>';
-    var api = { el: el, pushed: [0, 0], onChange: null };
+    var api = { el: el, pushed: 0, onChange: null }, wrap = null;
+    function build() {
+      var w = innerWidth < 760 || innerHeight > innerWidth * 1.25; if (w === wrap) return; wrap = w;
+      el.classList.toggle('wrap', w);
+      var h = '<div class="rframe"><div class="post l"></div><div class="post r"></div>', lines = w ? [[0, 5], [5, 10]] : [[0, 10]];
+      lines.forEach(function (L, r) { h += '<div class="rod" data-r="' + r + '" data-from="' + L[0] + '" data-len="' + (L[1] - L[0]) + '"><i class="wire"></i>'; for (var i = L[0]; i < L[1]; i++) h += '<b class="bead' + (i < 5 ? ' red' : ' white') + '" data-r="' + r + '" data-i="' + i + '"></b>'; h += '</div>'; });
+      el.innerHTML = h + '</div>'; place();
+    }
     function place() {
-      el.querySelectorAll('.bead').forEach(function (b) {
-        var r = +b.dataset.r, i = +b.dataset.i, left = i < api.pushed[r];
-        b.style.left = left ? 'calc(' + (i * 6.6) + '% + 2%)' : 'calc(' + (100 - (10 - i) * 6.6) + '% - 2%)';
-        b.classList.toggle('moved', left);
+      el.querySelectorAll('.rod').forEach(function (rod) {
+        var from = +rod.dataset.from, len = +rod.dataset.len, bw = len === 10 ? 7.4 : 18.6, gap = 100 - bw * len;
+        rod.querySelectorAll('.bead').forEach(function (b) {
+          var i = +b.dataset.i, j = i - from, left = i < api.pushed;
+          b.style.width = bw + '%'; b.style.left = (left ? j * bw : gap + j * bw) + '%'; b.classList.toggle('moved', left);
+        });
       });
     }
-    api.count = function () { return api.pushed[0] + api.pushed[1]; };
-    api.set = function (a, b) { api.pushed = [a || 0, b || 0]; place(); };
+    api.count = function () { return api.pushed; };
+    api.set = function (a, b) { api.pushed = Math.max(0, Math.min(10, (a || 0) + (b || 0))); place(); };
     api.lock = function (on) { el.classList.toggle('locked', on); };
-    api.tap = function (r, i) { var p = api.pushed[r]; api.pushed[r] = i >= p ? i + 1 : i; place(); NK.sound[api.pushed[r] > p ? 'pop' : 'back'](); if (api.onChange) api.onChange(api.count()); };
-    api.bead = function (r, i) { return el.querySelector('.bead[data-r="' + r + '"][data-i="' + i + '"]'); };
-    /* taps that make k on the top rod (bottom rod back to 0) */
-    api.moves = function (k) { var out = []; if (api.pushed[1] > 0) out.push([1, 0]); if (api.pushed[0] !== k) out.push(k > api.pushed[0] ? [0, k - 1] : [0, k]); return out; };
+    api.tapBead = function (i) { var p = api.pushed; api.pushed = i >= p ? i + 1 : i; place(); NK.sound[api.pushed > p ? 'pop' : 'back'](); if (api.onChange) api.onChange(api.count()); };
+    api.tap = function (r, i) { api.tapBead(i == null ? r : i); };
+    api.bead = function (r, i) { return el.querySelector('.bead[data-i="' + (i == null ? r : i) + '"]'); };
+    api.lineOf = function (i) { var b = api.bead(i); return b ? +b.dataset.r : 0; };
+    /* the one tap that makes k, as [row, bead] (row is for the selector only) */
+    api.moves = function (k) { if (api.pushed === k) return []; var i = k > api.pushed ? k - 1 : k; return [[api.lineOf(i), i]]; };
     if (interactive) {
-      var down = null;
-      /* Tap: anywhere on a rod picks the nearest bead (a big target for small fingers): it and the beads before it slide over.
-         Slide: put a finger on a rod and slide; the beads follow the finger and snap to the nearest count. */
       var drag = null;
       function rodOf(e) { var rod = e.target.closest('.rod'); if (rod) return rod; var best = null, bd = 1e9; el.querySelectorAll('.rod').forEach(function (r) { var b = r.getBoundingClientRect(), d = Math.abs(b.top + b.height / 2 - e.clientY); if (d < bd) { bd = d; best = r; } }); return best; }
-      function snap(rod, x) { var r = rod.getBoundingClientRect(), bw = r.width * .066; return Math.max(0, Math.min(10, Math.round((x - r.left - r.width * .02) / bw))); }
+      function nearest(rod, x) { var best = null, bd = 1e9; rod.querySelectorAll('.bead').forEach(function (b) { var r = b.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - x); if (d < bd) { bd = d; best = b; } }); return best; }
+      function snap(rod, x) { var r = rod.getBoundingClientRect(), from = +rod.dataset.from, len = +rod.dataset.len, bw = r.width * (len === 10 ? .074 : .186); return from + Math.max(0, Math.min(len, Math.round((x - r.left) / bw))); }
       el.addEventListener('pointerdown', function (e) {
         if (el.classList.contains('locked')) return; var rod = rodOf(e); if (!rod) return; e.preventDefault();
-        var b = e.target.closest('.bead');
-        if (!b) { var best = null, bd = 1e9; rod.querySelectorAll('.bead').forEach(function (x) { var r = x.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - e.clientX); if (d < bd) { bd = d; best = x; } }); b = best; }
-        drag = { rod: rod, r: +rod.dataset.r, bead: b, x: e.clientX, moved: false, from: api.pushed[+rod.dataset.r] };
+        drag = { rod: rod, bead: e.target.closest('.bead') || nearest(rod, e.clientX), x: e.clientX, moved: false };
       });
       document.addEventListener('pointermove', function (e) {
-        if (!drag) return; if (!drag.moved && Math.abs(e.clientX - drag.x) < 14) return; drag.moved = true;
-        var k = snap(drag.rod, e.clientX); if (k !== api.pushed[drag.r]) { api.pushed[drag.r] = k; place(); NK.sound.pop(); }
+        if (!drag) return; if (!drag.moved && Math.abs(e.clientX - drag.x) < 16) return; drag.moved = true;
+        var k = snap(drag.rod, e.clientX); if (k !== api.pushed) { api.pushed = k; place(); NK.sound.pop(); }
       });
       document.addEventListener('pointerup', function () {
         if (!drag) return; var d = drag; drag = null; if (el.classList.contains('locked')) return;
-        if (!d.moved) api.tap(d.r, +d.bead.dataset.i); else if (api.onChange) api.onChange(api.count());
+        if (!d.moved) api.tapBead(+d.bead.dataset.i); else if (api.onChange) api.onChange(api.count());
       });
     }
-    api.set(0, 0); return api;
+    addEventListener('resize', build);
+    build(); return api;
   };
 
   /* ---------- two hands (0-10) ---------- */
@@ -125,7 +135,7 @@
   U5.NUMERALS = {
     6: { strokes: ['M138 42 C 92 44, 62 92, 62 160 C 62 206, 86 228, 110 228 C 140 228, 158 204, 158 176 C 158 146, 138 126, 110 126 C 86 126, 66 140, 62 160'], rhyme: 'Down and around. Six has a loop!' },
     7: { strokes: ['M52 52 L 150 52 L 92 228'], rhyme: 'Across the top, then down. Seven!' },
-    8: { strokes: ['M100 130 C 62 122, 62 50, 100 48 C 138 50, 138 122, 100 130 C 52 140, 52 226, 100 228 C 148 226, 148 140, 100 130'], rhyme: 'Make an S, then go back up. Eight!' },
+    8: { strokes: ['M140 74 C 130 42, 66 40, 62 76 C 58 106, 144 132, 146 178 C 148 224, 58 234, 56 186 C 54 140, 142 116, 140 74'], rhyme: 'Make an S, then go back up. Eight!' },
     9: { strokes: ['M148 96 C 148 62, 126 46, 100 46 C 72 46, 52 66, 52 96 C 52 124, 74 140, 100 140 C 124 140, 148 126, 148 96 L 148 228'], rhyme: 'A loop and a line. Nine!' },
     10: { strokes: ['M42 76 L 70 52 L 70 228', 'M146 52 C 118 52, 104 92, 104 140 C 104 190, 118 228, 146 228 C 174 228, 188 190, 188 140 C 188 92, 174 52, 146 52'], rhyme: 'A one and a zero. Ten!' }
   };
@@ -163,7 +173,8 @@
       else { api.done = true; startDot.remove(); head.remove(); el.classList.add('traced'); if (api.onDone) api.onDone(); }
     }
     api.lock = function (on) { el.classList.toggle('locked', on); };
-    api.rearm = function () { warned = false; };   /* the "stay on the road" help can come again */
+    api.rearm = function () { warned = false; };
+    api.widen = function () { svg.querySelectorAll('.road').forEach(function (r) { r.setAttribute('stroke-width', 60); }); };   /* the easier path: a wider road */   /* the "stay on the road" help can come again */
     api.fade = function (on) { el.classList.toggle('faint', on); };   /* bonus: a faint road */
     api.auto = async function (ms) { /* the demo: the road fills slowly */ while (!api.done) { cur = Math.min(samples.length - 1, cur + 1); show(); await FR.wait((ms || 1600) / 60); if (cur >= samples.length - 1) finishStroke(); } };
     el.addEventListener('pointerdown', function (e) {

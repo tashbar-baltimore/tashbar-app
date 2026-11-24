@@ -50,6 +50,7 @@
   $('aG').addEventListener('pointerdown', function (e) {
     var o = e.target.closest('.og'); if (!o || $('aG').classList.contains('locked') || GAME.phase !== 'answer') return; e.preventDefault();
     (o.parentNode.id === 'pile' ? $('plt') : $('pile')).appendChild(o); NK.sound[o.parentNode.id === 'plt' ? 'pop' : 'back'](); ready();
+    NK.hush(); var c = G.count(); NK.say(c ? FR.Word(c) + '!' : 'Zero.', { noRepeat: true });   /* each orange is counted as it lands */
   });
   function W() { return R.ans === 'give' ? G : H; }
   function ready() { var c = $('check'); var ok = W().count() > 0 || R.n === 0; c.classList.toggle('dim', !ok); c.classList.toggle('ready', ok && GAME.phase === 'answer'); }
@@ -66,11 +67,12 @@
   }
   async function help(second) {
     if (R.type === 'count') { await FR.say("Let's count together. Touch each one."); await countTogether(); }
-    else if (R.type === 'give') await FR.say(second ? FR.Word(R.n) + ' oranges. One, two... count them out.' : "Let's count the plate together.");
+    else if (R.type === 'give') { await FR.say("Let's count the plate together."); var os = $('plt').querySelectorAll('.og'); for (var i = 0; i < os.length; i++) { os[i].style.filter = 'drop-shadow(0 0 8px #FFD23D)'; await FR.say(FR.Word(i + 1) + (i === os.length - 1 ? '.' : ','), { noRepeat: true }); } os.forEach(function (x) { x.style.filter = ''; }); await FR.say('Bubby needs ' + FR.word(R.n) + '.'); }
     else if (R.type === 'next') await FR.say("Let's look again. After " + FR.word(R.n - 1) + ' comes ' + (second ? FR.word(R.n) + '.' : '...?'));
     else if (R.type === 'zero') await FR.say("Let's look. Nothing there. That is zero!");
     else if (R.type === 'peek') { cloth(true); await FR.say("Let's look again."); if (R.L) await FR.showShape(shown.querySelector('.qcard') || shown, second); }
-    else await FR.say("Let's look. That number is " + (second ? FR.word(R.n) + '.' : 'small.'));
+    else if (!second) { await FR.say("Let's look again. It means this many."); var d = put('<div class="bignum" style="bottom:42%">' + U5.num(R.n) + '</div>'); var c = FR.card(R.n, 'dots'); c.style.cssText = 'position:absolute;left:25%;right:25%;bottom:4%;border:0;box-shadow:none;background:none'; d.appendChild(c); await FR.wait(1500); }
+    else { await FR.say('That is ' + FR.word(R.n) + '. Like this.'); }
   }
   async function check() {
     NK.unlock(); if (GAME.phase !== 'answer') return; var have = W().count(); if (!have && R.n !== 0) { FR.say('Show me first.'); return; }
@@ -91,7 +93,7 @@
   var ITEMS = [
     { type: 'peek', make: function (F) { var n = easy ? F.pick([2, 3]) : F.pick([3, 4, 5]), c = F.card(n, 'dots'); c.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; put().appendChild(c); return { n: n, L: c.L, flash: true, line: 'Peek! How many dots?' }; } },
     { type: 'next', make: function (F) { var a = easy ? F.pick([1, 2]) : F.pick([3, 4, 5, 6]); put(EAR); return { n: a + 3, a: a }; } },
-    { type: 'give', make: function (F) { var n = easy ? 2 : F.pick([3, 4]); put('<svg class="q" viewBox="0 0 100 100" style="position:absolute;width:50%;height:50%;left:50%;top:50%"><use href="#nkOrange"/></svg>'); return { n: n, ans: 'give', line: 'Bubby needs ' + F.word(n) + ' oranges. Give her ' + F.word(n) + '.' }; } },
+    { type: 'give', make: function (F) { var n = easy ? 2 : F.pick([3, 4]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, ans: 'give', line: 'Bubby needs ' + F.word(n) + ' oranges. Give her ' + F.word(n) + '.' }; } },
     { type: 'count', make: function (F) { var n = easy ? 5 : F.pick([6, 7, 8]), h = ''; scattered(n).forEach(function (p) { h += '<svg class="q" viewBox="0 0 100 100" style="position:absolute;width:19%;height:19%;transform:translate(-50%,-50%);left:' + p[0] + '%;top:' + p[1] + '%"><use href="#nkApple"/></svg>'; }); put(h); return { n: n, line: 'How many apples? Count, then show me.' }; } },
     { type: 'zero', make: function (F) { put('<div style="position:absolute;inset:12%;border-radius:50%;background:radial-gradient(ellipse at 50% 42%, #fff 0 55%, #C7D9EE 86%, #A9C1DE 100%)"></div>'); return { n: 0, line: 'How many cookies on the plate?' }; } },
     { type: 'numeral', make: function (F) { var n = easy ? F.pick([1, 2, 3]) : F.pick([2, 3, 4, 5]); put('<div class="bignum">' + U5.num(n) + '</div>'); return { n: n, line: 'What number is this? Show me.' }; } }
@@ -102,7 +104,7 @@
       var r = it.make(F); r.type = it.type; r.ans = r.ans || 'hands'; r.misses = 0; R = r; if (easy > 0) easy--;
       $('aH').hidden = R.ans !== 'hands'; $('aG').hidden = R.ans !== 'give'; H.set(0); G.set(0); H.lock(true); G.lock(true); ready();
       if (DEMO[R.type] && !seen[R.type]) { seen[R.type] = true; await DEMO[R.type](F); }
-      if (R.type === 'next') { await F.say('Count with me. What comes next?'); for (var k = R.a; k < R.a + 3; k++) await F.say(F.Word(k) + '…', { noRepeat: true }); NK.last = 'What comes after ' + F.word(R.n - 1) + '? Show me.'; await F.say('What comes next? Show me.', { noRepeat: true }); }
+      if (R.type === 'next') { $('flash').classList.add('open'); await F.say('Count with me. What comes next?'); for (var k = R.a; k < R.a + 3; k++) await F.say(F.Word(k) + '…', { noRepeat: true }); NK.last = 'What comes after ' + F.word(R.n - 1) + '? Show me.'; await F.say('What comes next? Show me.', { noRepeat: true }); }
       else if (R.flash) { await F.say(R.line, { repeat: 'How many dots? Show me.' }); cloth(true); await F.wait(1300); cloth(false); await F.wait(380); }
       else { cloth(true); await F.say(R.line); }
       done = function (first) { if (R.misses >= 2) easy = 2; res(first); };
@@ -110,7 +112,7 @@
     });
   }
   FR.game({
-    id: 'u5-review', title: 'Review Time', rounds: 6,
+    id: 'u5-review', bonusSay: '', title: 'Review Time', rounds: 6,
     hero: '<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="#fff" stroke="#3B2A7A" stroke-width="5"/><path d="M50 50 L50 22 M50 50 L70 60" stroke="#3B2A7A" stroke-width="6" stroke-linecap="round"/><path d="M14 30 A40 40 0 0 1 40 11" stroke="#22B45E" stroke-width="8" fill="none" stroke-linecap="round"/><path d="M40 11 l-2 -8 M40 11 l-8 2" stroke="#22B45E" stroke-width="6" stroke-linecap="round"/></svg>',
     init: function (F) { H = U5.hands(0, true); $('aH').appendChild(H.el); H.onChange = ready; H.lock(true); $('check').addEventListener('click', check); },
     reset: function (F, again) { plan = ITEMS.slice(); if (!again) { easy = 0; seen = {}; } },
