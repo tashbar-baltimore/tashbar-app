@@ -4,7 +4,9 @@ window.NK_UNITS = [
   { n: 1, name: 'How many? Look and say', say: 'Unit one. Look and say how many!', stops: [
     ['u1-opener', 'opener1.html', 'book', 'Learn it'], ['peek', 'peek.html', 'towel', 'Peek'], ['match', 'match.html', 'cards', 'Match it'],
     ['fingers', 'fingers.html', 'hand', 'Finger flash'], ['mistake', 'mistake.html', 'glass', 'Find the mistake'], ['u1-check', 'check1.html', 'trophy', 'Show me'] ] },
-  { n: 2, name: 'Counting out loud to 10', say: 'Unit two. Counting out loud.', stops: [] },
+  { n: 2, name: 'Counting out loud to 10', say: 'Unit two. Counting out loud.', stops: [
+    ['u2-opener', 'opener2.html', 'book', 'Learn it'], ['u2-jump', 'jump.html', 'hand', 'Count and jump'], ['u2-next', 'next.html', 'cards', 'What comes next'],
+    ['u2-down', 'down.html', 'towel', 'Countdown'], ['u2-mistake', 'skip.html', 'glass', 'Find the mistake'], ['u2-check', 'check2.html', 'trophy', 'Count with me'] ] },
   { n: 3, name: 'Counting things', say: 'Unit three. Counting things.', stops: [
     ['u3-opener', 'opener3.html', 'book', 'Learn it'], ['u3-touch', 'count3.html', 'hand', 'Touch and count'], ['u3-give', 'giveme.html', 'cards', 'Give me'],
     ['u3-mix', 'mixup.html', 'towel', 'Mix it up'], ['u3-twice', 'twice.html', 'glass', 'Find the mistake'], ['u3-check', 'check3.html', 'trophy', 'Show me'],
