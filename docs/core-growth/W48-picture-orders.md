@@ -37,3 +37,8 @@ Until a picture arrives, each lesson screen shows a coded picture that still tea
 | 10 | `w48-sofer-quill.webp` | Grade 5 "Hook the Reader", Watch me | 800×600 | Avrumi watches his Abba, a sofer, at a slanted wooden desk with a feather quill and a blank sheet of parchment (NO letters on it), an ink pot, soft window light. Respectful and calm. |
 | 11 | `w48-beehive.webp` | Grade 5 "Point, Proof, Explain" and "Strong Finish", Watch me | 800×600 | An apple orchard in spring with white beehive boxes; bees fly between the blossoms; Yehuda and Binyamin watch from a safe distance with a beekeeper (a man in a veiled hat). |
 | 12 | `w48-three-readers.webp` | Grade 5 "Who Is Reading?", Watch me | 800×600 | Split into three panels: Yehuda hands a neat letter to his teacher Mr. Halpern (a man in a jacket); Yehuda high-fives his best friend Dovid; Yehuda kneels to show a gold ribbon to his little cousin (a small boy). No words. |
+
+## Batch 1 status (2026-11-24)
+- **Live with this update (in `art/`):** 1 w48-g4u1-opener (Grade 4 writing TODAY screens), 2 w48-umbrella, 4 w48-scissors-paragraph, 6 w48-prove-it, 7 w48-closing-bow, 9 w48-g5u1-opener (Grade 5 essay TODAY screens), 10 w48-sofer-quill, 12 w48-three-readers.
+- **In the library for later Grade 4 units:** 3 w48-bakery-friday, 5 w48-shabbos-prep (a WATCH ME picture shows only when the step draws no scene, and these lessons draw one).
+- **Sent back once, redrawn and approved:** 8 w48-notebook-clues (in the library for a later Grade 4 unit) and 11 w48-beehive (Grade 5 Point, Proof, Explain TODAY screen). The first versions had a tower with a dome and a cross-like spire in the background.
