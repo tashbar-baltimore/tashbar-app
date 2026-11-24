@@ -23,5 +23,18 @@ CORE_SKILLS.G = [
   ["LANG.SENT.L08.01", "Compound-Complex", "Build sentences that show how ideas connect", { after: "LANG.GRAM.L08.01", std: "L.7.1b", file: "CoreDataG2", min: 9 }],
   ["LANG.GRAM.L09.02", "Gerunds", "Spot an -ing word used as a noun", { before: "LANG.GRAM.L09.01", std: "L.8.1a", file: "CoreDataG2", min: 9 }],
   ["LANG.GRAM.L09.03", "Participles", "Use a verb form to describe, without a dangle", { std: "L.8.1a", file: "CoreDataG2", min: 9 }],
-  ["LANG.GRAM.L09.04", "Infinitives", "Spot to + verb and the job it does", { std: "L.8.1a", file: "CoreDataG2", min: 8 }]
+  ["LANG.GRAM.L09.04", "Infinitives", "Spot to + verb and the job it does", { std: "L.8.1a", file: "CoreDataG2", min: 8 }],
+  ["LANG.GRAM.L03.03", "A Flock of Words", "Collective nouns: one word for a whole group", { after: "LANG.GRAM.L03.01", std: "L.2.1a", file: "CoreDataG3", min: 6 }],
+  ["LANG.GRAM.L03.04", "Myself, Himself", "Reflexive pronouns that point back to the doer", { std: "L.2.1c", file: "CoreDataG3", min: 6 }],
+  ["LANG.GRAM.L04.04", "What Job Does It Do?", "Noun, verb, adjective or adverb: the job in the sentence", { after: "LANG.SENT.L04.04", std: "L.3.1a", file: "CoreDataG3", min: 8 }],
+  ["LANG.GRAM.L04.05", "Kindness and Courage", "Abstract nouns: ideas and feelings", { std: "L.3.1c", file: "CoreDataG3", min: 7 }],
+  ["LANG.GRAM.L05.02", "Was Running, Will Be Running", "Progressive verbs: an action that keeps going", { after: "LANG.SENT.L05.03", std: "L.4.1b", file: "CoreDataG3", min: 8 }],
+  ["LANG.GRAM.L05.03", "Can, May, Must", "Modal verbs that change the meaning", { std: "L.4.1c", file: "CoreDataG3", min: 8 }],
+  ["LANG.GRAM.L06.03", "Time Signal", "Let time words pick the tense, and use had for the earlier action", { after: "LANG.GRAM.L06.02", std: "L.5.1c", file: "CoreDataG3", min: 8 }],
+  ["LANG.GRAM.L06.04", "Tense Shift Fix", "Find and fix a jump in tense", { std: "L.5.1d", file: "CoreDataG3", min: 8 }],
+  ["LANG.SENT.L07.01", "Sentence Combining Lab", "Combine three sentences into one with four tools", { after: "LANG.GRAM.L07.03", std: "L.6.3a", file: "CoreDataG3", min: 9 }],
+  ["LANG.SENT.L07.02", "Kernel to Masterpiece", "Expand a kernel with details that add meaning", { std: "L.6.3a", file: "CoreDataG3", min: 9 }],
+  ["LANG.MECH.L08.01", "Coordinate Adjectives", "A comma between equal describers: the \"and\" and switch tests", { after: "LANG.GRAM.L08.02", std: "L.7.2a", file: "CoreDataG3", min: 7 }],
+  ["LANG.GRAM.L09.05", "If I Were", "Verb moods, and were for a wish", { after: "LANG.GRAM.L09.01", std: "L.8.1c", file: "CoreDataG3", min: 9 }],
+  ["LANG.GRAM.L09.06", "Shift Check", "Find and fix shifts in voice and mood", { std: "L.8.1d", file: "CoreDataG3", min: 8 }]
 ];
