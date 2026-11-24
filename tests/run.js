@@ -74,7 +74,11 @@ async function openPage(browser, html, init, throttle, staffSession) {
   const pg = await ctx.newPage(); const errs = [];
   pg.on('pageerror', e => errs.push('page error: ' + String(e).slice(0, 240)));
   pg.on('console', m => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push('console error: ' + m.text().slice(0, 240)); });
-  await pg.route('**/*', r => r.request().url() === 'http://app.test/' ? r.fulfill({ contentType: 'text/html', body: html }) : r.abort());
+  /* the content store (job T): /texts/<ID>.json is served from texts/ the way web/build.js publishes it, so a lesson can open a real text */
+  const TXP = [path.join(__dirname, '..', 'tools', 'core', 'texts.js'), path.join(process.cwd(), 'tools', 'core', 'texts.js')].find(p => fs.existsSync(p));
+  let TX = null; const realText = id => { if (!TX) { TX = {}; try { require(TXP).load().out.forEach(t => { TX[t.id] = t; }); } catch (e) {} } return TX[id]; };
+  await pg.route('**/*', r => { const u = r.request().url(); if (u === 'http://app.test/') return r.fulfill({ contentType: 'text/html', body: html });
+    const m = /\/texts\/([A-Za-z0-9.]+)\.json$/.exec(u), t = m && realText(m[1]); return t ? r.fulfill({ contentType: 'application/json', body: JSON.stringify(t) }) : r.abort(); });
   if (throttle) { const cdp = await ctx.newCDPSession(pg); await cdp.send('Emulation.setCPUThrottlingRate', { rate: throttle }); }
   return { ctx, pg, errs };
 }
@@ -254,6 +258,8 @@ async function staffTests(browser) {
   try { const v = require('./lib/v2check.js')(); v.fails.forEach(fail); v.oks.forEach(ok); } catch (e) { fail('2.0 check crashed: ' + String(e).slice(0, 200)); }
   try { const c = await require('./lib/canteen.js')(); c.fails.forEach(fail); if (!c.fails.length) ok('canteen on the Firebase engine: sell, same sale charged once, crew cashier, two kiosks at once, last sale, undo'); report.timings.canteenSaleMs = c.ms.sale; }
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  try { const sl = await require('./lib/saveload.js')(); sl.fails.forEach(fail); sl.oks.forEach(ok); }   /* a class saving lessons at once: no "busy" (MS_State/MS_Evidence row-merge) */
+  catch (e) { fail('class saving test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const cs = require('./lib/core.js').server(); cs.fails.forEach(fail); cs.oks.forEach(ok); } catch (e) { fail('core skills check crashed: ' + String(e).slice(0, 200)); }   /* CORE GROWTH: the one way to add a skill (src/CoreSkills.js) */
   try { const k = require('./lib/kidmap.js')(); k.fails.forEach(fail); if (!k.fails.length) ok("boy's own map (kmMyMap): rides with sign-in, only his own data, goal now, unit, Kodesh, growth; staff and bad tokens refused"); report.timings.kidMapMs = k.ms.map; report.timings.kidSignInWithMapMs = k.ms.signIn; }
   catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }

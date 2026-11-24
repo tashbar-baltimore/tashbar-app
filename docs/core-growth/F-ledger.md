@@ -27,12 +27,22 @@ A boy who tests out of a skill skips it, so a fast boy needs fewer minutes. That
 |---|---|---|---|---|
 | K | 3 games (`READ.PA.L01.07`–`.09`) | 0 | ≈ 0.25 (3 × 5 min) | 36 |
 | 1 | 2 games (`READ.PHON.L02.22`, `READ.PA.L02.02`) | 0 | ≈ 0.2 (2 × 6 min) | 52 |
-| 2 | 16 (`READ.PHON.L03.04`–`.11`, `.13`–`.15`, `READ.LV.L03.03`–`.06` new; `READ.PHON.L03.01` rebuilt) | 0 | ≈ 3.2 (16 × 7 min + review) | 20 |
+| 2 | 19 (`READ.PHON.L03.04`–`.11`, `.13`–`.17`, `READ.LV.L03.03`–`.06`, `READ.FLU.L03.04` new; `READ.PHON.L03.01` rebuilt) | 0 | ≈ 3.8 (19 × 7 min + review) | 20 |
 
 Existing lessons count only once they pass the standard (prompt, section 2).
 
-**Waiting:** `READ.FLU.L03.01` Fluent Flyer (Grade 2 Unit 1) needs a new, cold check story in its content pack before it can pass; it is the next F pull request.
+**Waiting:** `READ.FLU.L03.01` Fluent Flyer (Grade 2 Unit 1) needs a new, cold check story in its content pack before it can pass (issue #310). `READ.FLU.L03.04` Just-Right Speed did not need it: its checks are about reading speed, not about a passage.
+
+**Still to build in Grade 2 (map):** `READ.PHON.L03.12` (ph), `READ.FLU.L03.02` (scoop and read), `READ.FLU.L03.03` (who is talking?), Unit 6 (`READ.FLU.L03.05`–`.07`, `READ.PHON.L03.18`, `WRIT.HAND.L03.01`) and the six unit checks.
 
 ## Left out on purpose
 - K little readers in Units 1–2: a boy cannot yet decode text, so "readers" there would be filler. Listen-along stories take that time.
 - K fluency passages: 20, not 40, for the same reason (they start in Unit 7).
+
+## Helper: K–1 listen-along stories (`src/CoreDataFH3.html`, `texts/F/`)
+Each listen-along game is one story (read aloud, rich words) plus its understanding questions: 10 minutes (the "Listen-along story" row above), plus 5 minutes of spaced review.
+
+| Grade | Built (live) | Minutes | Planned (map) |
+|---|---|---|---|
+| K | 4 stories, topic set "Eli's First Week" (`F.LA.K01`–`K04`), each with its game: `READ.LIT.L01.01` Who Is in the Story?, `.02` Where Is the Story?, `.03` Problem and Fix, `.04` Retell It | 4 × (10 + 5) = **60** | 40 stories and fact books (400 min) + their 12 understanding skills |
+| 1 | 0 | 0 | 30 stories and fact books (300 min) |

@@ -7,12 +7,13 @@
    - A subject with nothing at his level gives its lines to Reading (core first). Nothing anywhere = an empty list (Arcade open, no bonus).
    - MONEY: nothing here pays. Money.js moneyDailyGoal_ asks tdlStatus_ whether the whole list is done and then pays the SAME daily bonus
      (rule dailyGoal, same key daily3:, so the treasure chest follows by itself). Every amount stays in MONEY.RULES.
-   - Behind a switch: TDL_LIVE 'test' = TEST- boys only (now). 'on' = every boy = HoS DECISION. Until then real boys keep "3 lessons".
+   - Switch TDL_LIVE: 'on' = every boy (HoS decision 2026-11-24: "I wanted everything to go live"; load check: no slower than "3 lessons").
+     'test' = TEST- boys only, 'off' = nobody (every boy back on "3 lessons").
    - K-1 boys (grade 0-1) keep the games-only home and the old rule for now; their list of games is the next job D step. */
-var TDL_LIVE = 'test';
+var TDL_LIVE = 'on';
 var TDL = {
   VERSION: 'tdl-0.1.0',
-  /* Suggested default (HoS DECISION pending, D-plan.md section 4): 6 things, about 45-60 minutes for a typical boy. */
+  /* Default (HoS 2026-11-24, D-plan.md section 4): 6 things, about 45-60 minutes for a typical boy. */
   DEFAULT: { READ: 2, LANG: 1, MATH: 1, KODESH: 1, KNOW: 1 },
   ORDER: ['READ', 'LANG', 'MATH', 'KODESH', 'KNOW'],
   NAMES: { READ: 'Reading', LANG: 'Writing', MATH: 'Math', KODESH: 'Kodesh', SCI: 'Science', SOC: 'Social Studies' },
@@ -97,7 +98,7 @@ function tdlStatus_(sid) {
   return { v: 1, on: true, day: day, items: items, done: done, total: total, complete: total > 0 && done >= total,
     paid: moneyHasKey_('daily3:' + sid + ':' + day), bonusCents: moneyRule_('dailyGoal') };
 }
-/* the boy's page asks for his list (sign-in and after each save). Real boys get null while TDL_LIVE is 'test'. */
+/* the boy's page asks for his list (sign-in and after each save). K-1 boys get null (and every boy while TDL_LIVE is 'off'). */
 function tdlToday(token) {
   var s = msSession_(token);
   if (!s || s.role !== 'kid' || !s.sid) throw new Error('This is for students only.');
