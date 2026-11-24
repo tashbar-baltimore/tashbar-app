@@ -561,14 +561,16 @@ function steps(){ const sk=(A.st&&A.st.skills)||{}; return Object.keys(sk).filte
 function money(){ const b=Number(A.st&&A.st.balance)||0; return '$'+b.toFixed(2); }
 function pfOn(){ const c=document.querySelector('.pf-card'); return !!(c&&c.style.display!=='none'&&c.querySelector('button')); }
 /* SIMPLE HOME (HoS 2026-11-23: "much simpler ... clear and clean and helpful and big"): the top shows only his money; rank and XP live in Trophies */
-function hud(){ return `<div class="gm-hud"><button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>`; }
+/* BACK (HoS 2026-11-24): a page he reached from another menu page gets the kit's Back top left (K-3: arrow + "Back"); it returns to that page */
+function backHTML(){ if(!GM.from||!window.TLK) return ''; const g=M()&&M().grade; return TLK.back('data-gm="gmback"','',TLK.young(g)); }
+function hud(){ return `<div class="gm-hud">${backHTML()}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>`; }
 function hudOld(){ const n=steps(), R=rankOf(n), xp=n*100, s=(A.st&&A.st.streak&&A.st.streak.n)||0;
  const pct=R.nx?Math.round(100*(n-R.r[0])/(R.nx[0]-R.r[0])):100;
  return `<div class="gm-hud"><span class="gm-chip gm-rank" title="Your rank: ${n} steps mastered">${R.r[1]} ${R.r[2].toUpperCase()}</span>${s?`<span class="gm-chip" title="Days in a row">🔥${s}</span>`:''}<button type="button" class="gm-chip gm-money" data-gmnav="money" aria-label="My money ${money()}">💵 ${money()}</button></div>
  <div class="gm-xp" aria-label="${xp} XP"><i style="width:${pct}%"></i><span>⚡ ${xp.toLocaleString()} XP${R.nx?` · ${R.nx[0]-n} step${R.nx[0]-n===1?'':'s'} to ${R.nx[1]} ${R.nx[2].toUpperCase()}`:' · TOP RANK!'}</span></div>`; }
 function subjectsHTML(ws){ const cur=GM.world;
  return `<div class="gm-pg"><h1>Change subject</h1><p class="gm-why">Pick the subject you want on your map.</p></div><div class="gm-shelves">${ws.map(w=>`<button type="button" class="gm-shelf${w.k===cur?' on':''}" data-gm="world" data-k="${esc(w.k)}"><i>${w.icon}</i><span>${esc(w.name)}<small>${w.cleared||!w.now?'✓ All cleared':lcOf(w)?'🎫 Level check first':'Level '+w.level+(w.k===cur?' · on your map now':'')}</small></span><em>›</em></button>`).join('')}</div>
- <button type="button" class="gm-quiet" data-gmnav="map">← Back to my map</button>`; }
+`; }
 /* ===== HOME (HoS 2026-11-23: "how the student sees his day and his things ... much simpler ... what he needs to be doing should be clear
    ... the canteen should be clear ... his work should be clear in front of him ... not so many vague options ... big ... equal size ...
    one icon covering half the thing"; then "brighter and happier, clearer and crispier, simple and ADHD friendly"). The first screen after
@@ -976,7 +978,7 @@ function show(on,navOn){ document.body.classList.toggle('gm-on',!!on); document.
 function sync(){
  css(); const g=root(), nv=nav();
  const m=M(), hub=A.view==='hub'&&!!A.st&&!document.body.classList.contains('tm-on');
- if(A.st&&GM.sid!==A.st.id){ GM.sid=A.st.id; GM.tab='home'; GM.world=''; GM.sig=''; }
+ if(A.st&&GM.sid!==A.st.id){ GM.sid=A.st.id; GM.tab='home'; GM.world=''; GM.sig=''; GM.from=null; }
  const ws=m?worldsOf(m):[];
  liftDrawer();
  if(!hub){ show(false,false); return; }
@@ -1078,9 +1080,11 @@ document.addEventListener('click',e=>{
  const a=b.dataset.gm, t=b.dataset.gmnav;
  if(t){ e.preventDefault(); try{ SND.tap(); }catch(x){}
   if(t==='store'){ const s=document.createElement('button'); s.dataset.st='open'; s.style.display='none'; document.body.appendChild(s); s.click(); s.remove(); return; }
+  GM.from=t!=='home'&&GM.tab!=='home'&&GM.tab!==t?{tab:GM.tab,view:GM.view}:t==='subjects'?{tab:'map',view:'path'}:null;
   GM.tab=t; GM.sig=''; GM.rescroll=true; sync(); return; }
- if(a==='world'){ GM.world=b.dataset.k; GM.tab='map'; GM.sig=''; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
- if(a==='treeview'){ try{ SND.tap(); }catch(x){} GM.tab='map'; GM.view='tree'; GM.sig=''; root().scrollTop=0; sync(); return; }
+ if(a==='world'){ GM.world=b.dataset.k; GM.from=null; GM.tab='map'; GM.sig=''; try{ SND.tap(); }catch(x){} root().scrollTop=0; GM.rescroll=true; sync(); return; }
+ if(a==='gmback'){ try{ SND.tap(); }catch(x){} const f=GM.from||{tab:'home'}; GM.from=null; GM.tab=f.tab; GM.view=f.view||'path'; GM.sig=''; root().scrollTop=0; GM.rescroll=true; sync(); return; }
+ if(a==='treeview'){ try{ SND.tap(); }catch(x){} GM.from=GM.tab!=='map'&&GM.tab!=='home'?{tab:GM.tab,view:GM.view}:null; GM.tab='map'; GM.view='tree'; GM.sig=''; root().scrollTop=0; sync(); return; }
  if(a==='play') return play(b.dataset.id);
  if(a==='stuff'){ try{ SND.tap(); }catch(x){} GM.tab='mine'; GM.sig=''; root().scrollTop=0; sync(); return; }
  if(a==='room'){ room(b.dataset.t); return; }
@@ -1091,7 +1095,7 @@ document.addEventListener('click',e=>{
  if(a==='tree'){ try{ SND.tap(); }catch(x){} GM.view=GM.view==='tree'?'path':'tree'; root().scrollTop=0; GM.rescroll=GM.view!=='tree'; sync(); return; }
  if(a==='tn'){ try{ SND.tap(); }catch(x){} sheet(b.dataset.id,b.dataset.st); return; }
  if(a==='sheetx'){ const s=root().querySelector('.gm-sheet'); if(s) s.remove(); return; }
- if(a==='lib'){ try{ SND.tap(); }catch(x){} GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); return; }
+ if(a==='lib'){ try{ SND.tap(); }catch(x){} GM.from=GM.tab!=='lib'&&GM.tab!=='home'?{tab:GM.tab,view:GM.view}:null; GM.tab='lib'; GM.sig=''; root().scrollTop=0; sync(); return; }
  if(a==='pf'){ const c=document.querySelector('.pf-card button'); if(c) c.click(); return; }
  if(a==='say'){ readAloud(b.dataset.text); return; }
  if(a==='node'){ const id=b.dataset.id, m=M(); if(!m) return; const ws=worldsOf(m), w=ws.find(x=>x.k===GM.world);
