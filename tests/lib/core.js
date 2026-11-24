@@ -115,7 +115,7 @@ async function page(pg, rep) {
         await look('ask'); out.askOpenEarlyAnswer = !!Q('#crd .crd-s.yes'); out.askMain = Q('#crd .tlk-main') ? Q('#crd .tlk-main').textContent : '';
         Q('#crd [data-crds="' + wrong + '"]').click(); await tick(); out.miss = (Q('#crd .crd-fb') || {}).textContent;
         Q('#crd [data-crds="' + proof + '"]').click(); await tick(); out.hit = (Q('#crd .crd-fb') || {}).textContent; out.yes = !!Q('#crd [data-crds="' + proof + '"].yes'); await look('proof');
-        Q('#crd [data-crd=finish]').click(); out.askRes = await pa;
+        Q('#crd [data-crd=finish]').click(); out.askRes = await pa; out.afterAsk = A.st && A.st.reads && A.st.reads['ZZTEST.KEY.01'];
         const pk = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 0, page: 0 }); await new Promise(r => { const t = setInterval(() => { if (Q('#crd .crd-cover')) { clearInterval(t); r(); } }, 30); });
         out.k1 = Q('#crd').className; out.k1home = !!Q('#crd .tlk-home-k3'); TLCORE.reader.close(); out.k1res = await pk;
         return out;
@@ -132,6 +132,7 @@ async function page(pg, rep) {
       if (o.end !== 'Chapter 1 done!' || !o.res.done || !o.closed || o.saved !== 'd') fail(at + 'finishing must show "Chapter 1 done!", close, and keep it as done (' + JSON.stringify({ end: o.end, res: o.res, saved: o.saved }) + ')');
       if (o.askOpenEarlyAnswer) fail(at + 'the proof must not be shown before he tries');
       if (!/does not say it/.test(o.miss || '') || !/Yes!/.test(o.hit || '') || !o.yes) fail(at + 'tap the sentence: a miss names what to look for, the proof lights up (' + o.miss + ' | ' + o.hit + ')');
+      if (o.afterAsk !== 'd') fail(at + 'a question must not change where he stopped reading (got ' + o.afterAsk + ')');
       if (!o.askRes.proof || !o.askRes.proof.right || o.askRes.proof.tries !== 2) fail(at + 'the proof result must say right after 2 tries (' + JSON.stringify(o.askRes.proof) + ')');
       if (!/b-K1/.test(o.k1) || !o.k1home) fail(at + 'a K boy gets the big K1 type and the K-3 Home button (' + o.k1 + ')');
     }
