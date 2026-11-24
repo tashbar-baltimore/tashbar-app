@@ -11,7 +11,7 @@ Expected minutes for a typical boy. "Built" counts only lessons that are live an
 | 5 (L06) | 30 / 239 | 12 / 900 | 30 / 180 | 5 / 50 | **22.8** | 0.5 |
 | 6 (L07) | 27 / 231 | 10 / 900 | 25 / 175 | 5 / 50 | **22.6** | 0.6 |
 | 7 (L08) | 25 / 212 | 10 / 900 | 25 / 175 | 5 / 50 | **22.3** | 0.55 |
-| 8 (L09) | 23 / 198 | 10 / 900 | 25 / 175 | 5 / 50 | **22.1** | 0 |
+| 8 (L09) | 23 / 198 | 10 / 900 | 25 / 175 | 5 / 50 | **22.1** | 0.6 |
 
 Writing is about a quarter of each grade's 90 core hours; jobs C45, C68 and G build the rest.
 
@@ -24,3 +24,4 @@ Nothing yet.
 - 2026-11-24 · Grade 5 Unit 1, 4 new small skills (WRIT.ESSAY.L06.02–04, WRIT.PARA.L06.03: Hook the Reader, Point Proof Explain, Strong Finish, Who Is Reading?), 32 min. Built: Grade 5 0.5 hours.
 - 2026-11-24 · Grade 6 Unit 1, 4 new small skills (WRIT.ESSAY.L07.04, WRIT.PARA.L07.01–03: Best Evidence, Glue Words, Formal Voice, Close the Case), 33 min. Built: Grade 6 0.6 hours.
 - 2026-11-24 · Grade 7 Unit 1, 4 new small skills (WRIT.PARA.L08.01–04: Logical Steps, Check the Source, Counter Glue, Qualify Your Claim), 33 min. Built: Grade 7 0.55 hours. The map's "Accurate Sources", "Cohesion Words" and "Argument Ending" became "Check the Source", "Counter Glue" and "Qualify Your Claim": the review found "Argument Ending" repeated Grade 6's "Close the Case".
+- 2026-11-24 · Grade 8 Unit 1, 4 new small skills (WRIT.ESSAY.L09.02–03, WRIT.PARA.L09.01–02: Claim vs Counterclaim, Rebuttal, Spot the Weak Link, Evidence Ladder), 35 min. Built: Grade 8 0.6 hours. Left out of the map's Grade 8 Unit 1: "Connect the Logic" and "Final Word" (Grades 6–7 already teach them; the review asked Grade 8 to go further, not repeat).
