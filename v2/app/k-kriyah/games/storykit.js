@@ -44,7 +44,7 @@ export function makeStory(E, unit, script) {
   const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(0, 1.6, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
   return async () => {
-    boy.position.set(P ? -1.0 : -2.0, 0, 1.4); if (grown) grown.position.set(P ? -1.9 : -3.9, 0, .6);
+    boy.position.set(P ? -1.5 : -2.0, 0, 1.4); if (grown) grown.position.set(P ? -2.0 : -3.9, 0, P ? .2 : .6); if (P) { boy.scale.setScalar(.75); if (grown) grown.scale.multiplyScalar(.75); }   /* on a phone both are smaller, clear of the big letter */
     E.setProgress(steps, 0);
     for (const line of script.intro) await say(boy, line);
     for (const [si, st] of script.steps.entries()) {

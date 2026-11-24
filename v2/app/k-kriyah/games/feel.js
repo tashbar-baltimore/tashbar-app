@@ -44,11 +44,11 @@ export default function setup(E, { unit }) {
   const glow = E.glowSprite('#fff4b0', 7, 0); glow.position.set(0, 0, -.6); holder.add(glow);
   E.onLayout(p => {
     H = p ? 2.7 : 3.2;
-    if (p) { E.camBase.set(0, 2.4, 10.5); E.camTarget.set(0, 2.1, 0); holder.position.set(0, 2.5, .8); boy.position.set(-1.25, 0, 2.2); boy.scale.setScalar(.8); }
+    if (p) { E.camBase.set(0, 2.4, 10.5); E.camTarget.set(0, 2.1, 0); holder.position.set(0, 2.5, .8); boy.position.set(-1.6, 0, 2.2); boy.scale.setScalar(.75); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.6, 0); holder.position.set(0, 1.95, .8); boy.position.set(-3.6, 0, 1.4); boy.scale.setScalar(1); }
     done.forEach(l => layoutDone(l, ROW.indexOf(l.userData.key)));
   });
-  function layoutDone(l, i) { if (E.portrait) l.position.set(1.5 - i * .78, .42, 2.0); else l.position.set(4.1 - i * 1.2, .62, 1.3); l.scale.setScalar(E.portrait ? .24 : .34); }
+  function layoutDone(l, i) { if (E.portrait) l.position.set(1.4 - i * .62, .42, 2.0); else l.position.set(4.1 - i * 1.2, .62, 1.3); l.scale.setScalar(E.portrait ? .24 : .34); }
   E.onFrame(t => {
     if (cur && !cur.userData.spin) cur.rotation.y = Math.sin(t * .7) * .12;
     if (target.parent) { const b = beads.find(x => !x.userData.lit); target.visible = !!b && active; if (b) { target.position.copy(b.position); target.scale.setScalar(.16 * H / 3.2 * (1 + Math.sin(t * 7) * .15)); } }
@@ -92,7 +92,7 @@ export default function setup(E, { unit }) {
     cur = E.letter(key, H); cur.position.set(0, 0, 0); holder.add(cur); makeBeads(key); glow.material.opacity = .12;
     E.sfx.whoosh(); await E.popIn(cur, 1, 500);
     const showsPlace = ['vov', 'zayin', 'hei', 'ches', 'lamed', 'mem', 'nun'].includes(key) && E.pointAt(arrow, cur, key, H);   /* the place the line talks about */
-    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : key === 'kaf' ? 'This is Kaf. It has a dot. Feel it!' : key === 'chaf' ? 'This is Chaf. No dot. Feel it!' : key === 'yud' ? 'This is Yud, the little one. Feel it!' : key === 'lamed' ? 'This is Lamed, the tall one. Feel it!' : key === 'samech' ? 'This is Samech. It is round. Feel it!' : key === 'ayin' ? 'This is Ayin. Feel its two arms!' : key === 'pei' ? 'This is Pei. It has a dot. Feel it!' : key === 'fei' ? 'This is Fei. No dot. Feel it!' : key === 'mem' ? 'This is Mem. Feel the opening at the bottom!' : key === 'nun' ? 'This is Nun. Feel its flat bottom!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
+    await E.say(key === 'alef' ? 'This is Alef. Let’s feel its shape.' : key === 'beis' ? (unit.n > 1 ? 'This is Beis. It has a dot. Feel it!' : 'This is Beis, with Mendy’s dot. Feel it!') : key === 'veis' ? 'This is Veis. No dot. Feel it!' : key === 'hei' ? 'This is Hei. Its little leg doesn\u2019t touch the roof.' : key === 'ches' ? 'This is Ches. Its leg touches the roof.' : key === 'zayin' ? 'This is Zayin. Feel its crown on top!' : key === 'vov' ? 'This is Vov. No crown. Feel its shape!' : key === 'kaf' ? 'This is Kaf. It has a dot. Feel it!' : key === 'chaf' ? 'This is Chaf. No dot. Feel it!' : key === 'yud' ? 'This is Yud, the little one. Feel it!' : key === 'lamed' ? 'This is Lamed, the tall one. Feel it!' : key === 'samech' ? 'This is Samech. It is round. Feel it!' : key === 'ayin' ? 'This is Ayin. Feel its two arms!' : key === 'pei' ? 'This is Pei. Feel its little tongue and its dot!' : key === 'fei' ? 'This is Fei. No dot. Feel it!' : key === 'mem' ? 'This is Mem. Feel the opening at the bottom!' : key === 'nun' ? 'This is Nun. Feel its flat bottom!' : 'This is ' + E.LETTERS[key].name + '. Let’s feel its shape.');
     if (showsPlace) { await E.wait(500); arrow.visible = false; }
     if (first) {
       demo = true; active = true; await E.say('Watch me. I follow the glowing road.');
