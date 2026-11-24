@@ -18,7 +18,8 @@ function server() {
       ['LANG.GRAM.L09.91', 'Test C', 'Made-up skill C', { before: 'LANG.GRAM.L09.01', file: 'CoreDataZZTEST2' }],
       ['READ.COMP.L06.93', 'Bad level', 'Wrong level', { after: 'READ.COMP.L05.01', file: 'CoreDataZZTEST1' }],
       ['READ.COMP.L06.94', 'No place', 'Unknown place', { after: 'READ.COMP.L06.77', file: 'CoreDataZZTEST1' }],
-      ['READ.COMP.L06.01', 'Dup', 'Already there', { after: 'READ.COMP.L06.02', file: 'CoreDataZZTEST1' }] ] };`, ctx);
+      ['READ.COMP.L06.01', 'Dup', 'Already there', { after: 'READ.COMP.L06.02', file: 'CoreDataZZTEST1' }] ] };
+      CORE_DATA_FILES = { ZZTEST: ['CoreDataZZTEST3', 'CoreDataZZTEST1', 'not a file name'] };`, ctx);
     const r = JSON.parse(vm.runInContext('JSON.stringify(coreReport_())', ctx));
     const ids = JSON.parse(vm.runInContext('JSON.stringify(plList_("READ").map(function (x) { return x[0]; }))', ctx));
     const lang = JSON.parse(vm.runInContext('JSON.stringify(plList_("LANG").map(function (x) { return x[0]; }))', ctx));
@@ -32,7 +33,7 @@ function server() {
     if (r.problems.some(p => /L06\.9[12]|L09\.91/.test(p))) fail('good rows were reported as problems: ' + r.problems.filter(p => /L06\.9[12]|L09\.91/.test(p)).join(' | '));
     const ci = JSON.parse(vm.runInContext('JSON.stringify({ lad: CI_INDEX.lad.READ.map(function (x) { return x[0]; }), names: CI_INDEX.lad.READ.filter(function (x) { return x[0] === "READ.COMP.L06.91"; })[0], sk: CI_INDEX.sk["READ.COMP.L06.91"], built: CI_INDEX.built })', ctx));
     if (ci.lad.indexOf('READ.COMP.L06.91') !== ci.lad.indexOf('READ.COMP.L06.01') + 1 || !ci.names || ci.names[1] !== 'Test A' || ci.sk || !/\+core3\.[0-9a-z]+$/.test(ci.built)) fail('the curriculum index must get the new skills in the same order, with names, no "built" entry, and a new cache key');
-    if (r.files[0] !== 'CoreKit' || JSON.stringify(r.files.filter(f => /^CoreData/.test(f))) !== JSON.stringify(['CoreDataZZTEST1', 'CoreDataZZTEST2'])) fail('the page must load CoreKit first, then each data file once (got ' + r.files.join(', ') + ')');
+    if (r.files[0] !== 'CoreKit' || JSON.stringify(r.files.filter(f => /^CoreData/.test(f))) !== JSON.stringify(['CoreDataZZTEST1', 'CoreDataZZTEST2', 'CoreDataZZTEST3'])) fail('the page must load CoreKit first, then each data file once, upgrade-only files (CORE_DATA_FILES) too, bad names never (got ' + r.files.join(', ') + ')');
     const again = vm.runInContext('coreMerge_(); coreMerge_(); plList_("READ").filter(function (x) { return x[0] === "READ.COMP.L06.91"; }).length', ctx);
     if (again !== 1) fail('merging twice must not add a skill twice');
     const sg = vm.runInContext('sgNames_()["READ.COMP.L06.91"]', ctx);
@@ -49,7 +50,7 @@ function server() {
     const body = vm.runInContext('msQuestToolsBody_().js', ctx), parts = JSON.parse(vm.runInContext('JSON.stringify(msQuestToolsParts([]))', ctx));
     if (parts.order.map(h => parts.parts[h]).join('') !== body) fail("the boy's page pieces (Speed.js) do not match msQuestToolsBody_ (Photos.js)");
     const reg = fs.readdirSync(B.SRC).filter(f => /^CoreData[A-Z][A-Z0-9]*\.js$/.test(f));
-    reg.forEach(f => { const t = fs.readFileSync(path.join(B.SRC, f), 'utf8'), job = f.slice(8, -3); if (t.indexOf('CORE_SKILLS.' + job + ' = [') < 0) fail('src/' + f + ' must set CORE_SKILLS.' + job + ' (its own job only)'); });
+    reg.forEach(f => { const t = fs.readFileSync(path.join(B.SRC, f), 'utf8'), job = f.slice(8, -3); if (t.indexOf('CORE_SKILLS.' + job + ' = [') < 0 && t.indexOf('CORE_DATA_FILES.' + job + ' = [') < 0) fail('src/' + f + ' must set CORE_SKILLS.' + job + ' or CORE_DATA_FILES.' + job + ' (its own job only)'); });
     try { const cw = require('./corewrite.js')(); cw.fails.forEach(x => fails.push(x)); if (!cw.fails.length) oks.push('writing inbox (server): draft, send, locked while the teacher has it, other boys kept out, send back needs a note, fix and resend, publish to his book, no money'); } catch (e) { fail('writing inbox server check crashed: ' + String(e).slice(0, 200)); }
     try { const cu = require('./coreunits.js').server(); cu.fails.forEach(x => fails.push(x)); (cu.oks || []).forEach(o => oks.push(o)); } catch (e) { fail('unit checks server check crashed: ' + String(e).slice(0, 200)); }
     if (!r.problems.length) oks.push('core skills: ' + r.merged.added + ' new skill(s) from ' + reg.length + ' job list(s), ' + r.files.filter(f => /^CoreData/.test(f)).length + ' data file(s), no problems');
@@ -149,6 +150,25 @@ async function page(pg, rep) {
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push('390px: ' + f)); } catch (e) { fail('new activity kinds (390 px) crashed: ' + String(e).slice(0, 200)); }
   await pg.setViewportSize({ width: 1366, height: 768 });
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push(f)); ca.oks.forEach(o => oks.push(o)); } catch (e) { fail('new activity kinds crashed: ' + String(e).slice(0, 200)); }
+  /* TLCORE.upgrade: a One Bite lesson for a skill that already has its lesson (job S), with nothing replaced; refusals are named */
+  {
+    const u = await pg.evaluate(() => {
+      const C = window.TLCORE, out = { bad: [] }; if (!C || !C.upgrade) return { bad: ['TLCORE.upgrade is missing'] };
+      const id = Object.keys(BANK_ALL).filter(x => /^SCI\.[A-Z]+\.L0[5-9]\.\d\d$/.test(x) && !(window.ONE_BITE || {})[x] && !(C.up || {})[x]).sort()[0];
+      if (!id) return { bad: ['no Science skill without a One Bite lesson to test with'] };
+      const keepQ = JSON.stringify(BANK_ALL[id]), n0 = C.clash.length, bite = { band: 'E45', today: 'Test', do: [], your: [] };
+      const n = C.upgrade('ZZTEST', { bite: { [id]: bite, 'SCI.NOPE.L05.99': bite } });
+      if (n !== 1 || ONE_BITE[id] !== bite) out.bad.push('a real skill must get its One Bite lesson (got ' + n + ')');
+      if (JSON.stringify(BANK_ALL[id]) !== keepQ) out.bad.push('the skill\'s own questions must not change');
+      if (!C.clash.slice(n0).some(x => /SCI\.NOPE\.L05\.99: upgrade of a skill that has no lesson/.test(x))) out.bad.push('a skill with no lesson must be refused and named');
+      const other = { band: 'E45', today: 'Other' }; C.upgrade('ZZTEST2', { bite: { [id]: other } });
+      if (ONE_BITE[id] !== bite || !C.clash.slice(n0).some(x => x.indexOf('ZZTEST2 ' + id) === 0)) out.bad.push('a second upgrade must never replace the first, and must be named');
+      delete ONE_BITE[id]; delete C.up[id]; C.clash.length = n0;   /* put the page back */
+      return out;
+    }).catch(e => ({ bad: ['crashed: ' + String(e).slice(0, 200)] }));
+    u.bad.forEach(b => fail('TLCORE.upgrade: ' + b));
+    if (!u.bad.length) oks.push('TLCORE.upgrade: an existing skill gets a One Bite lesson with its questions untouched; a skill with no lesson, and a second upgrade, are refused and named');
+  }
   try { const rk = await require('./corereadkinds.js')(pg); rk.fails.forEach(f => fails.push(f)); rk.oks.forEach(o => oks.push(o)); } catch (e) { fail('read and proof kinds crashed: ' + String(e).slice(0, 200)); }
   if (!fails.length) oks.push('core skills (page): ' + got.mine.length + ' core lesson(s) loaded, no clash' + (notYet.length ? '; listed, no lesson yet (hidden from boys): ' + notYet.length : ''));
   return { fails, oks };
