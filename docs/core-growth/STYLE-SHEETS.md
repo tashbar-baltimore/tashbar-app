@@ -11,7 +11,7 @@ Job T wrote this note (2026-11-24, prompt section 6). Every picture order from e
 - **Every picture carries meaning on a work screen.** Big scenes go on unit openers, covers, chapter openers and win moments.
 - **Files** (`docs/HANDOFF-PICS.md`):
   - WebP, at most 1,100 px wide and 200 KB (aim for 150 KB);
-  - a line in `web/pics/SOURCES.md`, with the licence "made for Tashbar Baltimore with an AI image tool, owned by the school";
+  - a row in `art/CATALOG.md` (the shared art library), with the licence "made for Tashbar Baltimore with an AI image tool, owned by the school";
   - alt text that describes the picture without naming a check answer.
 
 ## Sizes (what to ask for)
@@ -62,7 +62,7 @@ Each job keeps `docs/core-growth/<job>-picture-orders.md`. One table per batch o
 | 2 | core-c45-ants01-cover.webp | Reader cover, text C45.ANTS.01 | 1100x825 | A giant cutaway of an ant colony under a Baltimore park, tunnels and rooms, a queen ant in the deepest room | A cutaway drawing of an ant colony under the ground |
 ```
 
-- **File name:** `core-<job>-<what>-<slot>.webp`, all lower case, for example `core-f-u03-opener.webp`, `core-c23-key01-p2.webp` or `core-g-cast-tzvi.webp`. Never reuse a name that is already in `web/pics/`.
+- **File name:** `core-<job>-<what>-<slot>.webp`, all lower case, for example `core-f-u03-opener.webp`, `core-c23-key01-p2.webp` or `core-g-cast-tzvi.webp`. Never reuse a name that is already in `art/pics/` (search `art/CATALOG.md` first).
 - **Screen:** the skill id with `@today` (unit opener), `@watch`, or the text id with `cover` or `p<page>`, exactly where it will be linked (`src/RealPicsTeach.html` keys, or the text's `pic:`).
 - **Status:** `DRAFT` (you are still writing it), `SENT` (you told the HoS), `ARRIVED` (in Drive), `LIVE` (merged), `REDO` (failed a check: say why on the row).
 - **Tell the HoS in one line:** "Picture order 3 is ready (24 pictures): <link to the file on GitHub>."
@@ -72,7 +72,7 @@ Each job keeps `docs/core-growth/<job>-picture-orders.md`. One table per batch o
 2. Fetch the pictures (Gmail attachment or Drive connector) into your scratchpad, never into the repository as they are.
 3. **Check every picture** against its order and the rules above. Zoom in: a cross in a window, a girl in the background, letters on a sign, a brand on a box. Anything doubtful is `REDO`, with the reason.
 4. Make each one WebP at its size (`python3 -I tools/pics-save.py` or Pillow), at most 200 KB.
-5. Add the files to `web/pics/`, one line each to `web/pics/SOURCES.md`, and link them (the text's `pic:`, or a `TL_PIC_ADD` block in `src/RealPicsTeach.html`). `tools/pics-check.js` must say 0 problems.
+5. Add the files to the shared art library (`art/pics/`, originals in `art/originals/`), one row each in `art/CATALOG.md`, and link them (the text's `pic:`, or a `TL_PIC_ADD` block in `src/RealPicsTeach.html`). `tools/pics-check.js` must say 0 problems.
 6. One PR per batch, with the pictures at 1366×768 and 390 px in it.
 
 **Until a picture arrives,** the screen shows a coded placeholder that still teaches and still looks good (the Reader's cover already does this). It is never an empty box.

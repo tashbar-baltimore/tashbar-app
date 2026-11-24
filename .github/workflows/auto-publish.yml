@@ -35,6 +35,8 @@ jobs:
           [ "$head" = "$SHA" ] || { echo "PR #$n has newer commits than the tested one; its own test run will publish it."; exit 0; }
           gh api "repos/$REPO/pulls/$n" --jq '.labels[].name' | grep -qx hold && { echo "PR #$n is on hold."; exit 0; }
           # 2.0 (HoS 2026-11-22): a pull request that changes v2/ is never auto-published. v2-gate takes it (look link, then an approver's yes).
+          # Shared art library (HoS 2026-11-24): a pull request that changes only art/ (no v2/) goes live here like any 1.0 pull request;
+          # one that changes v2/ and art/ together still goes to v2-gate and needs an approver.
           if gh api --paginate "repos/$REPO/pulls/$n/files" --jq '.[].filename' | grep -q '^v2/'; then
             echo "PR #$n changes 2.0: handed to v2-gate (it goes in only with an approver's yes)."
             gh api -X POST "repos/$REPO/actions/workflows/v2-gate.yml/dispatches" -f ref=main -f "inputs[pr]=$n"

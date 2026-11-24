@@ -1,6 +1,6 @@
 # Job F · picture orders
 
-How this works (`docs/CORE-GROWTH-PROMPT.md`, section 6): F writes the orders, the HoS's image account makes them, F checks every picture against its order and the Family Life and picture rules, converts it to WebP (at most 1,100 px wide, at most 200 KB), and adds it by pull request with a line in `web/pics/SOURCES.md`: "made for Tashbar Baltimore with an AI image tool, owned by the school". Until a picture arrives, the screen keeps its coded placeholder (emoji and tiles), never an empty box.
+How this works (`docs/CORE-GROWTH-PROMPT.md`, section 6): F writes the orders, the HoS's image account makes them, F checks every picture against its order and the Family Life and picture rules, converts it to WebP (at most 1,100 px wide, at most 200 KB), and adds it by pull request to the shared art library (`art/pics/`, the original in `art/originals/`, a row in `art/CATALOG.md`), with the licence "made for Tashbar Baltimore with an AI image tool, owned by the school". Until a picture arrives, the screen keeps its coded placeholder (emoji and tiles), never an empty box.
 
 Orders go by email to the HoS's image account (HoS instruction, 2026-11-24). F checks for replies every hour.
 

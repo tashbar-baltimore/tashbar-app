@@ -3,7 +3,7 @@
    node tools/pics-lane.js check <lane> <screens.json>        -> runs tools/pics-check.js on RealPics.html + this lane (must say 0 problems)
    node tools/pics-lane.js sheet <lane> <out.png> "ID|q" ...  -> draws those screens through the real add-on (look at it!)
    node tools/pics-lane.js block <lane>                       -> prints the TL_PIC_ADD block
-   node tools/pics-lane.js merge <lane> "<comment>"           -> adds the block to src/RealPics.html, copies pics into web/pics, adds the SOURCES.md lines */
+   node tools/pics-lane.js merge <lane> "<comment>"           -> adds the block to src/RealPics.html, copies pics into the shared art library art/pics and adds their art/CATALOG.md rows */
 const fs = require('fs'), path = require('path'), os = require('os'), { execFileSync } = require('child_process');
 const [,, cmd, lane, ...rest] = process.argv; const root = path.join(__dirname, '..');
 const rd = f => fs.existsSync(path.join(lane, f)) ? JSON.parse(fs.readFileSync(path.join(lane, f), 'utf8')) : {};
@@ -16,15 +16,15 @@ if (cmd === 'merge') {
   const note = (rest[0] || 'lane ' + path.basename(lane)).replace(/\*\//g, '');
   fs.writeFileSync(rp, cur.replace(/<\/script>\s*$/, `/* ${note} */\n` + block + '</script>\n'));
   const used = new Set(Object.values(lib).map(p => p.file)); let n = 0;
-  for (const f of fs.readdirSync(path.join(lane, 'pics'))) if (used.has(f)) { fs.copyFileSync(path.join(lane, 'pics', f), path.join(root, 'web/pics', f)); n++; }
-  const sp = path.join(root, 'web/pics/SOURCES.md'); let src = fs.readFileSync(sp, 'utf8'); if (!src.endsWith('\n')) src += '\n';
-  const have = new Set(src.split('\n').map(l => l.split(' | ')[0]));
-  const add = (fs.existsSync(path.join(lane, 'sources.md')) ? fs.readFileSync(path.join(lane, 'sources.md'), 'utf8') : '').split('\n').filter(l => l.trim() && used.has(l.slice(2).split(' | ')[0]) && !have.has(l.split(' | ')[0]));
-  fs.writeFileSync(sp, src + add.map(l => l + '\n').join(''));
-  console.log('merged', Object.keys(lib).length, 'pictures,', Object.keys(map).length, 'links,', n, 'files,', add.length, 'source lines'); process.exit(0);
+  /* SHARED ART LIBRARY (HoS 2026-11-24): never replace a library file (a new picture gets a new name) */
+  for (const f of fs.readdirSync(path.join(lane, 'pics'))) if (used.has(f)) { const to = path.join(root, 'art/pics', f);
+    if (fs.existsSync(to) && !fs.readFileSync(to).equals(fs.readFileSync(path.join(lane, 'pics', f)))) { console.log('art/pics/' + f + ' already exists with a different picture: pick a new name (never replace a library item without the HoS)'); process.exit(1); }
+    fs.copyFileSync(path.join(lane, 'pics', f), to); n++; }
+  execFileSync('node', [path.join(root, 'tools/art-catalog.js')], { stdio: 'inherit' });   /* adds the catalog rows (alt, source, licence from TL_PICS) */
+  console.log('merged', Object.keys(lib).length, 'pictures,', Object.keys(map).length, 'links,', n, 'files. Fill in the rest of each new row in art/CATALOG.md (band, who ordered it).'); process.exit(0);
 }
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'lane-')); const pics = path.join(tmp, 'pics'); fs.mkdirSync(pics);
-for (const d of [path.join(root, 'web/pics'), path.join(lane, 'pics')]) if (fs.existsSync(d)) for (const f of fs.readdirSync(d)) { const t = path.join(pics, f); if (fs.existsSync(t)) fs.unlinkSync(t); fs.symlinkSync(path.resolve(d, f), t); }
+for (const d of [path.join(root, 'art/pics'), path.join(lane, 'pics')]) if (fs.existsSync(d)) for (const f of fs.readdirSync(d)) { const t = path.join(pics, f); if (fs.existsSync(t)) fs.unlinkSync(t); fs.symlinkSync(path.resolve(d, f), t); }
 const html = fs.readFileSync(path.join(root, 'src/RealPics.html'), 'utf8').replace(/<\/script>\s*$/, block + '</script>\n');
 fs.writeFileSync(path.join(tmp, 'RealPics.html'), html);
 const ids = new Set(); const tl = fs.readFileSync(path.join(root, 'src/RealPics.html'), 'utf8');

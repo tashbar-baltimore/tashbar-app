@@ -29,12 +29,14 @@ jobs:
         with: { fetch-depth: 1 }
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
-      - name: For a look link, take the pull request's 2.0 files (only v2/)
+      - name: For a look link, take the pull request's 2.0 files (only v2/ and the shared art library art/)
         if: inputs.what == 'preview'
         run: |
           n='${{ inputs.pr }}'; [[ "$n" =~ ^[0-9]+$ ]] || { echo "preview needs a pull request number"; exit 1; }
           git fetch -q origin "pull/$n/head"
           rm -rf v2 && git archive FETCH_HEAD v2 | tar -x
+          # the shared art library (HoS 2026-11-24): a 2.0 pull request may add art to art/ for its screens
+          if git cat-file -e FETCH_HEAD:art 2>/dev/null; then rm -rf art && git archive FETCH_HEAD art | tar -x; fi
           echo "look link for PR #$n at $(git rev-parse --short FETCH_HEAD)"
       - name: Build 2.0
         run: node v2/build.js
