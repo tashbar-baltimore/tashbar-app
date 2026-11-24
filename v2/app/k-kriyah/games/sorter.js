@@ -33,7 +33,7 @@ export default function setup(E, { struggled, unit, game }) {
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
   function setPair(pr) {   /* right crate: the first letter of the pair (as Hebrew reads), left crate: the second */
-    pair = pr; labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.3); l.position.set(0, 1.9, .62); crates[i].add(l); crates[i].userData.key = k; return l; });
+    pair = pr; labels.forEach(l => l.parent && l.parent.remove(l)); labels = pr.map((k, i) => { const l = E.letter(k, 1.15); l.position.set(0, 1.95, .62); if (l.userData.below) { l.scale.setScalar(.8); l.position.y += l.userData.below * .8; }   /* on the white label, Kuf's leg too */ crates[i].add(l); crates[i].userData.key = k; return l; });
     pr.forEach((k, i) => E.pointAt(arrows[i], labels[i], k, 1.3, feat(k, pr)));
   }
   E.onFrame(t => {

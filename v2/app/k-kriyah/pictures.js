@@ -199,11 +199,11 @@ export const WORDS = {
   tzipor: { letter: 'tzadik', say: 'Tzipor. A bird!' },
   tzav: { letter: 'tzadik', say: 'Tzav. A turtle!' },
   kof: { letter: 'kuf', say: 'Kof. A monkey!' },
-  kubiyot: { letter: 'kuf', say: 'Kubiyot. Blocks!' },
-  rakevet: { letter: 'reish', say: 'Rakevet. A train!' },
+  kubiyot: { letter: 'kuf', say: 'Kubiyos. Blocks!' },
+  rakevet: { letter: 'reish', say: 'Rakeves. A train!' },
   rimon: { letter: 'reish', say: 'Rimon. A pomegranate!' },
   mayim: { letter: 'mem', say: 'Mayim. Water!' },
   melafefon: { letter: 'mem', say: 'Melafefon. A cucumber!' },
   nemalah: { letter: 'nun', say: 'Nemalah. An ant!' },
 };
-export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah', sus: 'Sus', sulam: 'Sulam', eitz: 'Eitz', anan: 'Anan', parpar: 'Parpar', pil: 'Pil', tzipor: 'Tzipor', tzav: 'Tzav', kof: 'Kof', kubiyot: 'Kubiyot', rakevet: 'Rakevet', rimon: 'Rimon' };
+export const WORD_NAME = { bayis: 'Bayis', gefen: 'Gefen', gamal: 'Gamal', gezer: 'Gezer', dag: 'Dag', dov: 'Dov', har: 'Har', vered: 'Vered', vov: 'Vov', zevuv: 'Zevuv', zayis: 'Zayis', chatul: 'Chatul', chamor: 'Chamor', taleh: 'Taleh', tavas: 'Tavas', yad: 'Yad', yonah: 'Yonah', kadur: 'Kadur', limon: 'Limon', mayim: 'Mayim', melafefon: 'Melafefon', nemalah: 'Nemalah', sus: 'Sus', sulam: 'Sulam', eitz: 'Eitz', anan: 'Anan', parpar: 'Parpar', pil: 'Pil', tzipor: 'Tzipor', tzav: 'Tzav', kof: 'Kof', kubiyot: 'Kubiyos', rakevet: 'Rakeves', rimon: 'Rimon' };

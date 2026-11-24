@@ -44,7 +44,7 @@ export default function setup(E, { struggled, unit }) {
     peds.forEach((p, i) => p.position.copy(slotPos(i)));
     const ps = [];
     keys.forEach(k => { const l = L[k]; if (!set.includes(k)) { l.visible = false; l.userData.base = null; return; }
-      const to = slotPos(slot[k]).add(new THREE.Vector3(0, (E.portrait ? 1.05 : 1.75) + l.userData.below * LS(), 0));   /* Kuf's long leg above the pedestal */
+      const to = slotPos(slot[k]).add(new THREE.Vector3(0, (E.portrait ? .38 : .61) + .5 * 1.6 * LS() + .12 + l.userData.below * LS(), 0));   /* just above the pedestal top, Kuf's leg too */   /* Kuf's long leg above the pedestal */
       if (!animate || !l.visible) { l.visible = true; l.position.copy(to); l.userData.base = to.clone(); if (animate) ps.push(E.popIn(l, LS(), 400)); return; }
       const from = l.position.clone(); l.userData.base = null; ps.push(E.tween(600, q => { l.position.lerpVectors(from, to, q); l.position.y += Math.sin(q * Math.PI) * 1.0; }).then(() => { l.userData.base = to.clone(); })); });
     return Promise.all(ps);

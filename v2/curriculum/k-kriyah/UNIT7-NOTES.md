@@ -10,17 +10,17 @@
 ## The games, in order (Unit 7 opens when Unit 6's check is passed)
 | Stone | Game | What he does |
 |---|---|---|
-| 1 | Tzvi in the playroom (story) | A bird at the window (tzipor) turns into Tzadik, his toy monkey (kof) into Kuf ("Kuf sounds just like Kaf!"), and his toy train (rakevet) into Reish. Then the look-alikes side by side, a chant of all 23 letters, and he taps each new one. |
+| 1 | Tzvi in the playroom (story) | A bird at the window (tzipor) turns into Tzadik, his toy monkey (kof) into Kuf ("Kuf sounds just like Kaf!"), and his toy train (rakeves) into Reish. Then the look-alikes side by side, a chant of all 23 letters, and he taps each new one. |
 | 2 | Feel the Shape | In Alef-Beis order: Daled (an arrow at its corner), Tzadik, Kuf (its long leg) and Reish (round on top). |
 | 3 | Look-Alike Detective | He sorts Daled and Reish (the corner), then Hei and Kuf (the short leg and the long leg). |
-| 4 | Sound Match | Tzipor and tzav (turtle) go to Tzadik, kof and kubiyot (blocks) to Kuf, rakevet and rimon (pomegranate) to Reish, and bayis to Beis. At the end Kaf appears above Kuf: "Kuf sounds just like Kaf!" |
+| 4 | Sound Match | Tzipor and tzav (turtle) go to Tzadik, kof and kubiyos (blocks) to Kuf, rakeves and rimon (pomegranate) to Reish, and bayis to Beis. At the end Kaf appears above Kuf: "Kuf sounds just like Kaf!" |
 | 5 | Find the Mistake | The demo: "Yaakov says this is a Hei" (it is a Kuf, with the long leg). Then "Yaakov says this is a Reish. Is he right?" An orange arrow points at the corner or the leg. |
 | 6 | Show what you know (mastery check) | 9 questions. Reish stands beside Daled, and Kuf beside Hei. Kuf and Kaf are never asked side by side, since both say k. |
 | 7 | Review: Alef-Beis Train | The train carries Ayin, Pei, Fei, Tzadik, Kuf, Reish. He puts each car in order. |
 | 8 | Bonus: letter rain | Three short rounds: Tzadik, Kuf, Reish. |
 
 ## Decisions I made on my own (each one line, so you can say yes or change it)
-1. **The story is the playroom,** not tzitzis, Kiddush and Rosh Hashanah: tzipor (bird), kof (toy monkey), rakevet (toy train).
+1. **The story is the playroom,** not tzitzis, Kiddush and Rosh Hashanah: tzipor (bird), kof (toy monkey), rakeves (toy train).
 2. **Tzvi** is the Unit 7 boy (red kippah); **Mommy** is with him.
 3. **Sound Match instead of Letter Hunt.** The Letter Hunt's world is a sukkah; Sound Match fits the playroom and practises the new sounds.
 4. **Hei and Kuf are look-alikes too:** "Hei has a short leg. Kuf has a long leg."
@@ -31,9 +31,10 @@
 ## For the rebbe (every sound and rule used in Unit 7)
 - **Letters:** Tzadik (צ) says "tz"; Kuf (ק) says "k", the same sound as Kaf; Reish (ר) says "r". These are lone sounds, never with a vowel.
 - **Look-alikes:** Daled has a corner at the top right; Reish is round there. Hei's left leg is short; Kuf's goes down low.
-- **Words:** tzipor (bird), tzav (turtle), kof (monkey), kubiyot (blocks), rakevet (train), rimon (pomegranate), playroom.
+- **Words:** tzipor (bird), tzav (turtle), kof (monkey), kubiyos (blocks), rakeves (train), rimon (pomegranate), playroom.
 - **Chant order:** Alef, Beis, Veis, Gimmel, Daled, Hei, Vov, Zayin, Ches, Tes, Yud, Kaf, Chaf, Lamed, Mem, Nun, Samech, Ayin, Pei, Fei, Tzadik, Kuf, Reish.
-- **Temporary:** the letter sounds are the computer voice until the rebbe's recording is in.
+- **Words are said the Ashkenazi way:** rakeves and kubiyos (ת without a dot says s), like bayis and zayis.
+- **Temporary:** the letter sounds are the computer voice until the rebbe's recording is in. The computer cannot say a lone sound, so for now it says "tsuh", "kuh" and "ruh"; the rebbe's recording says the lone sounds.
 
 ## What's next
 Unit 8: Shin, Sin, Tuf, Suf (שׁ שׂ תּ ת), the last letters.
