@@ -57,14 +57,15 @@ The F and C jobs list texts that the G and W jobs may use for "his own sentence"
 |---|---|---|---|---|
 
 ## Ledger (core hours built / target, per grade)
+_Written by `node tools/core/ledger.js --write` on 2026-11-24 05:45 UTC: hours of new Core Growth learning that is built (lessons, texts, unit checks)._
 | Grade | Foundations | Comprehension | Grammar and words | Writing | Total built | Target |
 |---|---|---|---|---|---|---|
-| K | | | | | 0 | 68 |
-| 1 | | | | | 0 | 68 |
-| 2 | | | | | 0 | 90 |
-| 3 | | | | | 0 | 90 |
-| 4 | | | | | 0 | 90 |
-| 5 | | | | | 0 | 90 |
-| 6 | | | | | 0 | 90 |
-| 7 | | | | | 0 | 90 |
-| 8 | | | | | 0 | 90 |
+| K |  |  |  |  | 0 | 68 |
+| 1 |  |  |  |  | 0 | 68 |
+| 2 |  |  |  |  | 0 | 90 |
+| 3 |  |  |  |  | 0 | 90 |
+| 4 |  |  |  |  | 0 | 90 |
+| 5 |  |  |  |  | 0 | 90 |
+| 6 |  |  |  |  | 0 | 90 |
+| 7 |  |  |  |  | 0 | 90 |
+| 8 |  |  |  |  | 0 | 90 |
