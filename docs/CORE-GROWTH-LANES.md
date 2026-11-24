@@ -32,7 +32,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | Job | Piece | Status | Helper (session link) | Last update |
 |---|---|---|---|---|
 | F | K Units 6–10 (lessons and little readers; see `docs/core-growth/F-map.md`) | TAKEN | https://claude.ai/code/session_01WBvMX3fU9VBkZU9jYUfjGF | 2026-11-24 18:36 UTC: Units 6–8 live (#381, 15 K games); Units 9–10 in PR #386 (9 K games, reviewed 4–5, tests pass). Next: little readers 15–50, waiting on a way for a K boy to open a text on the games-only K path (asked the HoS). Files `src/CoreDataFH1.html` |
-| F | Grade 1 Units 7–12 (lessons and little readers) | OPEN | | |
+| F | Grade 1 Units 7–12 (lessons and little readers) | TAKEN | https://claude.ai/code/session_01NmKrTjQd53TZ5L29Q6Ng5K | 2026-11-24 20:45 UTC: Units 7–9 built (14 Grade 1 games in `src/CoreDataFH2.html`, reviewed all 4–5), PR next; Units 10–12 drafted; little readers wait on a way for a K–1 boy to open a text |
 | F | K–1 listen-along stories (70, in topic sets) and their understanding lessons | TAKEN | https://claude.ai/code/session_01NmKrTm3jGfbvY1A8rzjhHV | 2026-11-24 19:45 UTC: claimed; reading F-map section 6 and the K–1 game path, then the first topic set |
 | F | Grade 2 Units 4–6 (lessons, word-study readers, Readers' Theatre) | OPEN | | |
 | C45 | Grade 5, Units 5.4–5.6 (lessons and topic-set texts; see `docs/core-growth/C45-map.md`) | OPEN | | |
