@@ -21,14 +21,14 @@ export default function setup(E, { struggled, unit, game }) {
   function crate() { const c = new THREE.Group(); c.add(E.mesh(E.rbox(2.0, 1.2, 1.4, .08), wood, 0, .6, 0)); for (let i = 0; i < 3; i++) c.add(E.mesh(new THREE.BoxGeometry(2.05, .1, .05), wood2, 0, .25 + i * .35, .72));
     c.add(E.mesh(E.rbox(1.55, 1.6, .1, .08), E.M(0xfffaf0, { roughness: .4 }), 0, 1.9, .45)); E.scene.add(c); return c; }
   const crates = [crate(), crate()];
-  const arrows = crates.map(() => E.arrow3d(.32));   /* on each label an arrow points at the difference */
+  const arrows = crates.map(() => E.arrow3d(.4));   /* on each label an arrow points at the difference */
   const glows = crates.map(c => { const g = E.glowSprite('#fff7b0', 3.6, 0); g.position.set(0, 1.2, -.6); c.add(g); return g; });
   let card = E.letter('vov', 1.9); card.visible = false; E.scene.add(card);
   const cardArrow = E.arrow3d(.45);
   function makeCard(k) { const old = card; card = E.letter(k, 1.9); card.visible = false; E.scene.add(card); E.scene.remove(old); }   /* each letter has its own shape */
   let pair = pairs[0], labels = [], P = false, CS = 1, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, wrongInRow = 0, missed = false, deck = [], idx = 0, onDone = null, kRound = 0;
   E.onLayout(p => { P = p; CS = p ? .85 : 1;
-    if (p) { E.camBase.set(0, 3.2, 11.8); E.camTarget.set(0, 2.4, 0); crates[0].position.set(1.3, 0, 0); crates[1].position.set(-1.3, 0, 0); crates.forEach(c => c.scale.setScalar(.72)); cardHome.set(0, 4.5, 1.5); kid.visible = false; }
+    if (p) { E.camBase.set(0, 3.2, 11.8); E.camTarget.set(0, 2.4, 0); crates[0].position.set(1.3, 0, 0); crates[1].position.set(-1.3, 0, 0); crates.forEach(c => c.scale.setScalar(.86)); cardHome.set(0, 4.5, 1.5); kid.visible = false; }
     else { E.camBase.set(0, 2.7, 9.8); E.camTarget.set(0, 1.5, 0); crates[0].position.set(2.6, 0, 0); crates[1].position.set(-2.6, 0, 0); crates.forEach(c => c.scale.setScalar(1)); cardHome.set(0, 2.1, 1.5); kid.visible = true; kid.position.set(-4.7, 0, 1.4); }
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
