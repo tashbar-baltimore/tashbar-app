@@ -42,3 +42,6 @@ Until a picture arrives, each lesson screen shows a coded picture that still tea
 - **Live with this update (in `art/`):** 1 w48-g4u1-opener (Grade 4 writing TODAY screens), 2 w48-umbrella, 4 w48-scissors-paragraph, 6 w48-prove-it, 7 w48-closing-bow, 9 w48-g5u1-opener (Grade 5 essay TODAY screens), 10 w48-sofer-quill, 12 w48-three-readers.
 - **In the library for later Grade 4 units:** 3 w48-bakery-friday, 5 w48-shabbos-prep (a WATCH ME picture shows only when the step draws no scene, and these lessons draw one).
 - **Sent back once, redrawn and approved:** 8 w48-notebook-clues (in the library for a later Grade 4 unit) and 11 w48-beehive (Grade 5 Point, Proof, Explain TODAY screen). The first versions had a tower with a dome and a cross-like spire in the background.
+
+## Batch 2 · Grades 6–8, The Beacon newsroom (order W48-2, emailed 2026-11-24)
+All 10 approved on first look and live in `art/`: w48-beacon-cast (cast reference), w48-g6u1-opener, w48-g7u1-opener, w48-g8u1-opener (each grade's writing TODAY screens), w48-best-evidence, w48-glue-words, w48-formal-voice, w48-close-case (Grade 6 Unit 1), w48-check-source, w48-qualify-claim (Grade 7 Unit 1). Style: calmer graphic-novel look, muted blues and warm grays; no towers, domes or spires.

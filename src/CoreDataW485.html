@@ -1,0 +1,304 @@
+<script>
+/* CoreDataW485.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 8 (L09), Unit 1 "Argument That Holds Up". Cast: The Beacon newsroom.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L09.02':{name:'Claim vs Counterclaim',
+  teach:[
+    {how:'MY CLAIM is the position I will prove. A COUNTERCLAIM is the opposing position. In Grade 7 you brought the other side in and answered it. In Grade 8 you choose WHICH version of the other side to answer: the strongest one.', q:'Debate topic: our grade should hold the class election by secret ballot. Eli argues FOR it. Which sentence is a counterclaim?', o:['A show of hands is faster and lets everyone see that the count is honest.','A secret ballot lets every boy vote without pressure from his friends.','The election will be held in Cheshvan.']},
+    {how:'Many counterclaims are polite and true but carry little weight: FAIR BUT WEAK. The FAIR AND STRONGEST counterclaim is the reason a wise person on the other side would lead with: the one that would hurt your claim most if it were true. Answer that one, and the reader trusts you.', q:'Claim: our yeshiva should join the debate tournament. All three are polite. Which counterclaim is fair and strongest?', o:['Some argue that weeks of preparation would take real time from learning.','Some point out that the bus ride is a little long.','Some mention that the tournament hall may be chilly.']},
+    {how:'Watch for a SUBTLE STRAW MAN: polite words that SHRINK the other side, like "a few boys simply prefer…" or "some feel, a little, that…". It sounds fair, but it leaves out their real reason. The test: would a person who holds that view say, "Yes, that is exactly my point"?', q:'Claim: the boys should elect the Beacon’s editor. Which counterclaim is a subtle straw man?', o:['A few boys simply prefer that the adviser pick, out of habit.','Some argue that the adviser sees all year who works hardest, so he can choose best.','Some worry that an election could turn into a contest of who is most popular.']}
+  ],
+  practice:[
+    {t:'sort', q:'Topic: should our yeshiva join a debate tournament against other schools? Eli’s claim: yes. Sort each sentence.', bins:[{id:'M',label:'🙋 My claim (Eli’s side)'},{id:'C',label:'↔️ Counterclaim'}],
+      items:[{label:'Debating other schools sharpens how boys think.',bin:'M'},{label:'Travel to other schools takes boys away from learning.',bin:'C'},{label:'Boys learn to listen to the other side with respect.',bin:'M'},{label:'Losing in public could discourage the younger boys.',bin:'C'}],
+      h:'Who would say it: Eli, or a thoughtful person who disagrees with him?'},
+    {t:'sort', q:'Claim: our school should elect a student council. Every counterclaim is polite. Sort each one.', bins:[{id:'S',label:'💪 Fair and strong'},{id:'W',label:'🪶 Fair but weak'},{id:'X',label:'⚠️ Straw man'}],
+      items:[{label:'Some argue a council could split the grade into camps that last all year.',bin:'S'},{label:'Some note that the ballots would need to be printed.',bin:'W'},{label:'A few boys simply feel that elections are a bit unusual.',bin:'X'},{label:'Some argue the teachers already know which boys lead well.',bin:'S'},{label:'Some point out that the vote would take ten minutes.',bin:'W'}],
+      h:'Strong: real weight against the claim. Weak: true, but small. Straw man: polite words that leave out the real reason.'},
+    {t:'pairs', q:'Topic: should the boys elect the Beacon’s editor? Match each label to the counterclaim it fits.', pairs:[['Fair and strongest','The adviser sees all year who works hardest.'],['Fair but weak','The vote would take ten minutes.'],['Straw man','A few simply like the old way.']],
+      h:'Which one has the most weight? Which is true but small? Which shrinks the other side?'},
+    {t:'spotall', q:'Claim: the boys should elect the Beacon’s editor. Tap every counterclaim that is fair AND strong.', cells:[{label:'Some argue that the adviser sees all year who works hardest, so he should choose.',ok:true},{label:'Some worry that an election could become a popularity contest.',ok:true},{label:'Some note that the vote would take ten minutes.',ok:false},{label:'A few simply prefer the old way, out of habit.',ok:false}],
+      h:'Is it the real reason a wise person would give? Does it carry weight?'},
+    {t:'order', q:'Build a fair and strong counterclaim. Tap the tiles in order.', tiles:['Some argue that','a debate tournament','could take time','from learning.'],
+      h:'First who says it. Then the other side’s weightiest point.'},
+    {t:'spotall', q:'Tap every phrase that is a warning sign of a polite straw man.', cells:[{label:'A few simply prefer…',ok:true},{label:'Some feel, a little, that…',ok:true},{label:'Out of habit, some…',ok:true},{label:'Some argue that…',ok:false},{label:'A serious concern is…',ok:false}],
+      h:'Shrinking words make the other side’s reason sound small, or leave it out.'},
+    {t:'write', q:'Your turn to write. Claim: our school should elect a student council. Write the STRONGEST counterclaim, stated so fairly that a person who holds it would agree with every word.', min:0, checks:['↔️ It is the other side, not my claim.','💪 It is the reason with the most weight, not a small one.','⚖️ No shrinking words: a person on that side would say, "Yes, that is my point."'], h:'List two or three reasons the other side might give. Pick the one that would hurt your claim most. Start with "Some argue that…".'}
+  ],
+  check:[
+    {q:'Claim: the yeshiva should add a Friday afternoon learning program. One boy says: “The classroom is chilly on Friday afternoons.” Another says: “Some argue that Erev Shabbos afternoon is when many boys help their families prepare for Shabbos.” Is the Erev Shabbos one fair and strongest, fair but weak, or a straw man?', o:['fair and strongest','fair but weak','straw man'], h:'Is it the other side’s real reason? If it were true, how much would it hurt the claim?'},
+    {q:'Claim: our class should vote on where the class trip goes. Shimon writes: “A few boys simply like it when the teachers decide.” Is it fair and strongest, fair but weak, or a straw man?', o:['straw man','fair and strongest','fair but weak'], h:'Did Shimon give the other side’s real reason, or make it sound small?'},
+    {t:'order', q:'Claim: keep The Beacon on paper. Build a fair counterclaim. Tap the tiles in order.', tiles:['Some point out that','an online Beacon','would reach parents','sooner.'], h:'First who says it. Then the other side’s best point.'}
+  ],
+  re:[
+    {how:'A new way: in the beis medrash, a good chavrusa says his partner’s question even better than his partner did, and only then answers it. That is stating the other side fair and strongest.', q:'Saying the other side at its strongest, with its real reason, is…', o:['fair and strongest','a straw man','fair but weak']},
+    {how:'A simpler step: list the other side’s reasons. Then ask: if this one were true, how much would it hurt my claim? The one that hurts most has the most weight.', q:'The strongest counterclaim is the one with the most…', o:['weight','words','politeness']},
+    {how:'The skill underneath: Answer a counterclaim (Level 8). You learned to bring in the other side; now you choose its strongest form.', q:'A counterclaim is…', o:['the other side’s position','my reason','a title']}
+  ]},
+
+  'WRIT.ESSAY.L09.03':{name:'Rebuttal',
+  teach:[
+    {how:'A REBUTTAL answers a counterclaim with evidence and reasoning. Move 1: SHOWS IT IS MISTAKEN. Bring evidence that the counterclaim is simply not true: "In fact, …".', q:'Claim: our yeshiva should join the debate tournament. Counterclaim: “It will cost a whole week of learning.” Which rebuttal shows it is mistaken?', o:['In fact, the schedule shows the tournament falls during Chanukah vacation, so no school day is missed.','But debate is really fun.','The tournament should happen because it is a good idea.']},
+    {how:'Move 2: SHOWS IT MATTERS LESS. The counterclaim is true, but the problem is small. The test: matters less talks only about the problem and makes it smaller. Outweigh admits the problem and adds a different good on your side.', q:'Counterclaim: “Debate practice will make boys late for supper.” Which rebuttal shows it matters less?', o:['Practice ends only ten minutes after the usual supper time, on one night a week.','Yes, supper may be late, but boys learn to speak with confidence.','Only boys who complain about everything say that.']},
+    {how:'Move 3: CONCEDE AND OUTWEIGH. Admit the problem openly ("Yes, …"), then add a different good that weighs more ("but …"). The mistake: answering with an INSULT ("only lazy boys say that") or JUST REPEATING YOUR CLAIM ("we should still do it"). Neither brings evidence or reasoning.', q:'Counterclaim: “A student election takes two afternoons.” Which rebuttal is concede and outweigh?', o:['Yes, it takes two afternoons, but every boy learns how to choose leaders wisely.','We should still hold the election.','People who say that just want to complain.']}
+  ],
+  practice:[
+    {t:'sort', q:'Counterclaim: “A school election will cause fights.” Sort each rebuttal by its move.', bins:[{id:'M',label:'🔎 Shows it is mistaken'},{id:'L',label:'📏 Shows it matters less'},{id:'C',label:'⚖️ Concede and outweigh'}],
+      items:[{label:'In fact, Rabbi Rosen says last year’s election in the lower grades had no fights at all.',bin:'M'},{label:'The campaign lasts only one week, so any arguing ends quickly.',bin:'L'},{label:'Yes, a few boys may argue, but every boy learns to choose leaders and respect the result.',bin:'C'},{label:'At most a few boys argue, and the poster rules keep it small.',bin:'L'},{label:'Yes, feelings may run high, but boys practice winning and losing graciously.',bin:'C'}],
+      h:'Does it prove the worry false? Does it talk only about the problem and make it smaller? Or does it admit it and add a different good?'},
+    {t:'pairs', q:'Match each move to the words that fit it.', pairs:[['Shows it is mistaken','In fact, the record shows…'],['Shows it matters less','The problem is small: only…'],['Concede and outweigh','Yes, …, but …']],
+      h:'Does the move deny it, shrink it, or admit it and weigh it?'},
+    {t:'spotall', q:'Counterclaim: “The debate tournament costs too much learning time.” Tap every REAL rebuttal (it brings evidence or reasoning).', cells:[{label:'The tournament is during Chanukah vacation, so no class is missed.',ok:true},{label:'Practice is held after night seder, so no learning time is used.',ok:true},{label:'People who say that do not like debate.',ok:false},{label:'We should still have the tournament.',ok:false},{label:'That is a silly thing to say.',ok:false}],
+      h:'A real rebuttal brings evidence or a reason. An insult or the claim again brings neither.'},
+    {t:'sort', q:'Counterclaim: “An op-ed page will take space from school news.” Sort each answer.', bins:[{id:'G',label:'✅ Real rebuttal'},{id:'X',label:'⚠️ Mistake: insult or repeat'}],
+      items:[{label:'Yes, it takes one page, but it gives every boy a voice in the paper.',bin:'G'},{label:'Only people who cannot write say that.',bin:'X'},{label:'We need an op-ed page, period.',bin:'X'},{label:'In fact, Akiva says two pages sit empty in every issue.',bin:'G'}],
+      h:'Does it answer the point with evidence or a reason? Or does it attack, or just say the claim again?'},
+    {t:'order', q:'Build a concede and outweigh rebuttal. Tap the tiles in order.', tiles:['Yes, the drive takes time,','but forty families','will get warm coats','this winter.'],
+      h:'Admit the problem first. Then the different good that weighs more.'},
+    {t:'spotall', q:'Tap every phrase that can begin a CONCEDE AND OUTWEIGH move.', cells:[{label:'Yes, it is true that',ok:true},{label:'Granted,',ok:true},{label:'Admittedly,',ok:true},{label:'In fact, the record shows',ok:false},{label:'Only a fool thinks',ok:false}],
+      h:'Concede means you admit the point first. Which words admit it?'},
+    {t:'write', q:'Your turn to write. Counterclaim: “A student election will turn friends against each other.” Write a rebuttal that uses ONE of the three moves, and name the move.', min:0, checks:['🔎 I used one move and named it.','📊 I gave evidence or a reason.','🚫 No insult, and not just my claim again.'], h:'Pick a move. Mistaken: "In fact, …". Matters less: "The problem is small: …". Concede: "Yes, …, but …".'}
+  ],
+  check:[
+    {q:'Counterclaim: “Election posters will clutter the hallway.” Rebuttal: “The posters stay up for only three days, all on one board.” Which move is it: shows it is mistaken, shows it matters less, or concede and outweigh?', o:['shows it matters less','shows it is mistaken','concede and outweigh'], h:'Matters less talks only about the problem and makes it smaller. Outweigh admits the problem and adds a different good on your side.'},
+    {q:'Counterclaim: “If the library stays open in the evening, no adult will be in charge.” Rebuttal: “In fact, Mr. Gross’s sign-up sheet already lists a parent volunteer for every evening.” Which move is it?', o:['shows it is mistaken','shows it matters less','concede and outweigh'], h:'Does the evidence show the worry is not true, or only small?'},
+    {t:'order', q:'Counterclaim: “Debate practice runs late.” Build a concede and outweigh rebuttal. Tap the tiles in order.', tiles:['Yes, practice runs late,','but every debater','learns to speak','with confidence.'], h:'Admit the problem first. Then the different good that weighs more.'}
+  ],
+  re:[
+    {how:'A new way: picture a scale. The counterclaim sits on one side. You can show the pan is empty (mistaken), show it is light (matters less), or admit its weight and put something heavier on your side (concede and outweigh).', q:'Admitting the other side’s weight, then adding more to yours, is…', o:['concede and outweigh','shows it is mistaken','an insult']},
+    {how:'A simpler step: start every rebuttal with one of three openers: "In fact," or "The problem is small:" or "Yes, …, but …". Then add your evidence.', q:'Which opener admits the point?', o:['Yes, …, but …','In fact,','The problem is small:']},
+    {how:'The skill underneath: Answer a counterclaim (Level 8). First bring in the other side; then you can answer it.', q:'Before you rebut it, you must first state the…', o:['counterclaim','title','greeting']}
+  ]},
+
+  'WRIT.PARA.L09.01':{name:'Spot the Weak Link',
+  teach:[
+    {how:'In Grade 7 you fixed jumps in your own chain of reasons. Debaters give those jumps names: OVERGENERALIZING (one case becomes "always") and FALSE CAUSE ("it came after, so it was caused by it"). Now you add two more, and you use all four to NAME THE WEAK LINK in your OPPONENT’S argument.', q:'Your opponent says: “The week after the new water fountain went in, our team won every game, so the fountain won the games.” Name the weak link.', o:['false cause','overgeneralizing','either-or']},
+    {how:'ATTACKING THE PERSON: the opponent goes after who said it instead of what he said, so the idea is still unanswered. It can even sound polite: "With respect, he is only in sixth grade." Your answer: bring the debate back to the idea.', q:'Opponent: “We should not use Gavriel’s schedule plan; he is always late himself.” Name the weak link.', o:['attacking the person','either-or','false cause']},
+    {how:'EITHER-OR: the opponent offers only two choices when there are more. Your answer: NAME THE OTHER CHOICES ("There is a third way: …"). SOUND REASONING has none of the four weak links: enough cases, a real cause, the idea not the person, and more than two choices.', q:'Opponent: “Either we cancel recess, or we never finish the year’s learning.” What is the best answer?', o:['Name the other choices, like a shorter recess or a better schedule.','Agree that there are only two choices.','Say that the opponent is lazy.']}
+  ],
+  practice:[
+    {t:'sort', q:'Your opponent argues that the lunch line needs a second server. Sort each of his reasons.', bins:[{id:'S',label:'🧩 Sound reasoning'},{id:'O',label:'🔁 Overgeneralizing'},{id:'F',label:'⏱️ False cause'}],
+      items:[{label:'Akiva waited a long time once, so the line is always slow.',bin:'O'},{label:'The line got slower after the walls were painted, so the paint slowed it.',bin:'F'},{label:'The office timed the line at 20 minutes on each of the last ten days.',bin:'S'},{label:'One boy was late to Mincha because of the line, so every boy is late.',bin:'O'},{label:'One server handles 120 boys, while the other grades have two.',bin:'S'}],
+      h:'One case turned into "always"? "After" turned into "because"? Or enough real evidence?'},
+    {t:'sort', q:'Debate: should the school hold a student election? Sort each of the speakers’ reasons.', bins:[{id:'P',label:'🧑 Attacking the person'},{id:'E',label:'🔀 Either-or'},{id:'S',label:'🧩 Sound reasoning'}],
+      items:[{label:'Don’t listen to Yoni; he lost last year’s chess match.',bin:'P'},{label:'Either we hold an election, or no boy will ever lead anything.',bin:'E'},{label:'Rabbi Rosen says the last five club votes all went smoothly.',bin:'S'},{label:'With respect, Eli only wants an election because he wants to win it.',bin:'P'},{label:'Either the teachers choose everything, or the boys choose everything.',bin:'E'}],
+      h:'Does it answer the idea or the person? Are there really only two choices?'},
+    {t:'pairs', q:'Match each weak link to the way you answer it.', pairs:[['Overgeneralizing','Ask for enough cases, not just one.'],['Attacking the person','Bring it back to the idea.'],['Either-or','Name the other choices.']],
+      h:'What would you say back to the opponent?'},
+    {t:'spotall', q:'Your opponent’s speech against the class trip. Tap every sentence with a WEAK LINK.', cells:[{label:'One trip went badly, so every trip is a mistake.',ok:true},{label:'Either we go to the museum, or we learn nothing this year.',ok:true},{label:'The boys who want the zoo are just immature.',ok:true},{label:'The trip falls during Chanukah vacation, so no class is missed.',ok:false},{label:'The museum’s guide explains each exhibit to school groups.',ok:false}],
+      h:'Ask the four questions of each sentence.'},
+    {t:'order', q:'Build sound reasoning. Tap the tiles in order.', tiles:['Over ten days,','the office timed','a 20-minute wait','each day.'],
+      h:'Start with how many cases. Then who checked. Then what was found.'},
+    {t:'spotall', q:'Opponent: “Either we buy new chairs, or the library must close.” Tap every OTHER CHOICE he left out.', cells:[{label:'Borrow chairs from the lunchroom.',ok:true},{label:'Set study times by grade.',ok:true},{label:'Move some tables to make room.',ok:true},{label:'Close the library.',ok:false},{label:'Buy new chairs.',ok:false}],
+      h:'His two choices are already on the table. Which choices did he leave out?'},
+    {t:'write', q:'Your turn to write. Your opponent says: “Either we hold the tournament this year, or our yeshiva will never debate again.” Name the weak link, then answer it in one or two sentences.', min:0, checks:['🏷️ I named the weak link.','🔀 I named at least one other choice.','🤝 I answered his idea, not him.'], h:'Find the jump first. Then show a choice he left out.'}
+  ],
+  check:[
+    {q:'In the election debate, Shimon says: “Don’t vote for Naftali’s plan; he can’t even keep his locker neat.” Name the weak link: attacking the person, either-or, or sound reasoning?', o:['attacking the person','either-or','sound reasoning'], h:'Is Shimon answering the plan, or talking about Naftali?'},
+    {q:'Your opponent says: “Either the boys elect the editor, or the boys will have no say in The Beacon at all.” Name the weak link.', o:['either-or','false cause','sound reasoning'], h:'Are there really only two choices? Could the boys have a say another way?'},
+    {t:'order', q:'Claim: boys in our grade need more sleep. Build sound reasoning. Tap the tiles in order.', tiles:['The nurse’s log','shows 30 visits','for tiredness','this month.'], h:'First the careful source. Then what it counted.'}
+  ],
+  re:[
+    {how:'A new way: a chain is only as strong as its weakest link. A good judge pulls on every link: enough cases, a real cause, the idea not the person, all the choices.', q:'Saying "it came after, so it was caused by it" is…', o:['false cause','either-or','sound reasoning']},
+    {how:'A simpler step: look for one warning word: "always" or "everyone", "after", "either … or", or a word about the person instead of the idea.', q:'Which words warn of either-or?', o:['either … or','because','evidence shows']},
+    {how:'The skill underneath: Glue Words (Level 7). "As a result" needs a real cause before it.', q:'"As a result" needs a real cause, not just something that…', o:['came first','was long','was polite']}
+  ]},
+
+  'WRIT.PARA.L09.02':{name:'Evidence Ladder',
+  teach:[
+    {how:'Not all credible evidence is equally strong. Picture a ladder. Rung 1, the WEAKEST: ONE STORY (an anecdote), what happened to one person. It is real, but it may be unusual. Rung 2: AN EXPERT’S OPINION, what someone who knows the field thinks.', q:'Claim: boys focus better after a short break. Which is one story (an anecdote)?', o:['Moshe says he did his best on a test right after recess.','The school psychologist says breaks help most boys focus.','A study of 300 students found better focus after breaks.']},
+    {how:'Rung 3: A NUMBER FROM A CAREFUL STUDY or AN OFFICIAL RECORD. Careful = many cases, chosen fairly, counted the same way. Rung 4, the STRONGEST: SEVERAL CAREFUL SOURCES THAT AGREE.', q:'Same claim. Which evidence is the strongest?', o:['Three separate studies and another school’s records all show better focus after breaks.','A study of 300 students found better focus after breaks.','The school psychologist says breaks help most boys focus.']},
+    {how:'When two pieces compete, the one on the higher rung is STRONGER. Many stories are still stories: nobody counted them with care. Lead with the highest rung you have. A story can still help, but put it AFTER strong evidence to make it feel real, never in place of it.', q:'Which is stronger: a coach’s opinion, or the league’s official record of 40 games?', o:['the league’s official record of 40 games','the coach’s opinion','they are equal']}
+  ],
+  practice:[
+    {t:'sort', q:'Claim: The Beacon should come out every week. Sort each piece of evidence by its rung.', bins:[{id:'S',label:'📖 One story'},{id:'X',label:'🎓 An expert’s opinion'},{id:'N',label:'📊 A number from a careful study or record'}],
+      items:[{label:'Yoni’s cousin’s school went weekly, and he loved it.',bin:'S'},{label:'Mr. Gross, who has advised school papers for 20 years, thinks weekly works best.',bin:'X'},{label:'Our survey of all 180 boys found 132 want a weekly paper.',bin:'N'},{label:'One boy said he forgot about last month’s issue.',bin:'S'}],
+      h:'One person’s experience? One expert’s view? Or many cases, counted with care?'},
+    {t:'pairs', q:'Match each rung to its example.', pairs:[['Rung 1, the weakest','One story about one person'],['Rung 3','A number from a careful study'],['Rung 4, the strongest','Several careful sources that agree']],
+      h:'The more careful cases behind it, the higher it climbs.'},
+    {t:'spotall', q:'Claim: our school should add a second recess. Tap every piece of evidence that is STRONGER than one story.', cells:[{label:'A study of 300 students found better focus after breaks.',ok:true},{label:'The school psychologist says breaks help most boys focus.',ok:true},{label:'Another school’s office log shows fewer interruptions on days with two recesses.',ok:true},{label:'Avi felt better after an extra recess once.',ok:false},{label:'My brother’s yeshiva has two recesses, and he likes it.',ok:false}],
+      h:'One person’s experience is the lowest rung. What is above it?'},
+    {t:'sort', q:'Sneaky ones! Sort each ranking.', bins:[{id:'G',label:'✅ Ranked right'},{id:'M',label:'⚠️ Mistake: ranked wrong'}],
+      items:[{label:'A study of 400 boys is stronger than one boy’s story.',bin:'G'},{label:'One exciting story is stronger than a careful study.',bin:'M'},{label:'Three careful studies that agree are stronger than one study.',bin:'G'},{label:'Ten stories are stronger than a careful study.',bin:'M'}],
+      h:'The higher rung is stronger. Many stories are still stories.'},
+    {t:'order', q:'Put the evidence in order from weakest to strongest. Tap the tiles in order.', tiles:['Benny’s friend liked debate camp.','The debate coach says camp builds skills.','A careful survey of 200 campers found better speaking.','Three surveys and camp records all agree.'],
+      h:'One person, then one expert, then a careful count, then many careful sources that agree.'},
+    {t:'spotall', q:'Tap every piece that is on the TOP rung: several careful sources that agree.', cells:[{label:'The nurse’s log and a city study both show it.',ok:true},{label:'Two careful studies and the school’s records agree.',ok:true},{label:'One careful study found it.',ok:false},{label:'Three boys each tell a story.',ok:false},{label:'A famous coach is sure of it.',ok:false}],
+      h:'The top rung needs MORE than one source, and every one must be careful: many cases, chosen fairly, counted the same way.'},
+    {t:'write', q:'Your turn to write. Claim: our school should hold a debate tournament. Write two pieces of evidence: one from a low rung and one from a higher rung. Then say which is stronger and why.', min:0, checks:['📖 I wrote one piece from a low rung.','📊 I wrote one piece from a higher rung.','🪜 I said which is stronger and why.'], h:'Low: one boy’s story or one opinion. Higher: a careful count, an official record, or several sources that agree.'}
+  ],
+  check:[
+    {q:'Claim: the class election should be held in the morning. Evidence: “Last year Chaim voted after lunch and forgot which boy he had picked.” On the ladder, what kind of evidence is it?', o:['one story','an expert’s opinion','several careful sources that agree'], h:'How many people does it tell about?'},
+    {q:'Claim: the corner by our school needs a crossing guard. A: a traffic officer thinks the corner is dangerous. B: the city’s official record counts 14 near-accidents at that corner this year. Which kind of evidence is stronger?', o:['a number from an official record','an expert’s opinion'], h:'Which one is on the higher rung of the ladder?'},
+    {t:'order', q:'Claim: a short review game helps boys learn. Put the evidence in order from weakest to strongest. Tap the tiles in order.', tiles:['Dovid says the game helped him once.','Mr. Gross thinks review games help.','A careful study of 500 students found higher scores.','Four studies and our test records all agree.'], h:'One person, then one expert, then a careful count, then many careful sources that agree.'}
+  ],
+  re:[
+    {how:'A new way: think of the weather. A neighbor saying "it rained a lot" is one story. The weather station’s record of every day is a careful number. Several stations whose records agree are the strongest of all.', q:'Several weather stations whose records agree are like…', o:['several careful sources that agree','one story','an expert’s opinion']},
+    {how:'A simpler step: ask one question: how many cases does it count, and were they counted with care? One person is low. Many, counted the same way, is high.', q:'Which counts the most cases?', o:['a survey of 200 boys','one boy’s story','one teacher’s opinion']},
+    {how:'The skill underneath: Best Evidence (Level 7). Evidence must first be relevant and credible. Only then do you climb the ladder.', q:'Before ranking evidence, check that it is relevant and…', o:['credible','long','exciting']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L09.02':{hook:'Every objection here is polite. Which one should you answer?', big:'Know your claim from the counterclaim, and state the other side fair and strongest: not a weak point, and never a straw man.',
+    intro:['My claim: the side I will prove.','Counterclaim: the other side’s position.','Fair and strongest: the reason a wise opponent would lead with.','Straw man: words, even polite ones, that shrink the other side.'],
+    ex:[{q:'Claim: join the debate tournament.',steps:['Fair but weak: the bus ride is long.','Fair and strongest: preparing takes learning time.'],a:'Some argue that weeks of preparation would take real time from learning.'},
+        {q:'Claim: the boys should elect the Beacon’s editor.',steps:['Subtle straw man: "a few simply prefer the old way."','Fair and strongest: the adviser sees the work all year.'],a:'Some argue that the adviser sees all year who works hardest.'}],
+    oops:{q:'Claim: The Beacon should add an op-ed page.',wrong:'A few boys simply feel the paper is fine as it is.',right:'Some worry that op-eds could hurt feelings if they are not edited with care.',why:'The first is polite, but it shrinks the other side to a habit. The second gives their real reason.'},
+    idea:['Answer the counterclaim a wise opponent would lead with, not the easiest one.'],
+    try:{q:'Claim: start Sunday learning later. Which counterclaim is fair and strongest?',o:['Some worry a later start leaves less time for learning.','Some note the bell would need resetting.','A few simply like the old time.'],a:'Some worry a later start leaves less time for learning.',steps:['If it were true, which would hurt the claim most?']}},
+  'WRIT.ESSAY.L09.03':{hook:'The other side made a good point. Now what?', big:'A rebuttal answers a counterclaim with evidence and reasoning: it shows it is mistaken, shows it matters less, or concedes and outweighs.',
+    intro:['Shows it is mistaken: evidence that it is not true.','Shows it matters less: talks only about the problem and makes it smaller.','Concede and outweigh: "Yes, …, but …" a different good that weighs more.','Never an insult, and never just your claim again.'],
+    ex:[{q:'Counterclaim: "The tournament costs a week of learning."',steps:['Check the facts: the schedule.','It falls during Chanukah vacation.'],a:'In fact, the schedule shows it falls during Chanukah vacation, so no school day is missed. That shows it is mistaken.'},
+        {q:'Counterclaim: "The election takes two afternoons."',steps:['It is true. Admit it.','Add a different good on your side.'],a:'Yes, it takes two afternoons, but every boy learns to choose leaders wisely.'}],
+    oops:{q:'Counterclaim: "An op-ed page could hurt feelings."',wrong:'Anyone who says that is just scared.',right:'Mr. Gross edits every op-ed before it prints, so harsh words are caught.',why:'An insult answers the person, not the point. Evidence answers the point.'},
+    idea:['Weigh the counterclaim: show the pan is empty, show it is light, or admit its weight and add more to your side.'],
+    try:{q:'Which opener concedes?',o:['Yes, …, but …','In fact,','Only a fool…'],a:'Yes, …, but …',steps:['Which one admits the point first?']}},
+  'WRIT.PARA.L09.01':{hook:'Your opponent sounds convincing. Can you find the link that snaps?', big:'Name the weak link in your opponent’s argument: overgeneralizing, false cause, attacking the person, or either-or.',
+    intro:['Overgeneralizing: one case becomes "everyone" or "always".','False cause: it came after, so it must be because.','Attacking the person: who said it, not what he said.','Either-or: only two choices when there are more. Name the others.'],
+    ex:[{q:'Opponent: "Don’t trust Yoni’s plan; he is new here."',steps:['Is it about the plan, or about Yoni?','About Yoni. Bring it back to the plan.'],a:'attacking the person'},
+        {q:'Opponent: "Either The Beacon goes online, or it shuts down."',steps:['Only two choices?','Name the others: print less often, or print fewer pages.'],a:'either-or'}],
+    oops:{q:'Naftali argues for a later start.',wrong:'Naftali just likes to sleep late.',right:'A later start would make the buses late for the lower grades.',why:'The first attacks the person. The second answers his idea.'},
+    idea:['Name the weak link in his chain, and your rebuttal has its first step.'],
+    try:{q:'"One boy was late, so the whole class is always late." Which weak link?',o:['overgeneralizing','false cause','either-or'],a:'overgeneralizing',steps:['One case became "always".']}},
+  'WRIT.PARA.L09.02':{hook:'Which wins: one great story, or a careful count of 300 boys?', big:'Evidence climbs a ladder from weakest to strongest: one story, an expert’s opinion, a careful number, several careful sources that agree.',
+    intro:['Weakest: one story (an anecdote) about one person.','Next: an expert’s opinion.','Stronger: a number from a careful study, or a number from an official record.','Strongest: several careful sources that agree.'],
+    ex:[{q:'Claim: boys focus better after a break.',steps:['Moshe’s story: rung 1.','The psychologist’s opinion: rung 2.','A study of 300 students: rung 3.'],a:'A study of 300 students found better focus after breaks.'},
+        {q:'Which is stronger: a coach’s opinion, or the league’s record of 40 games?',steps:['An opinion: rung 2.','An official record: rung 3.'],a:'the league’s record of 40 games'}],
+    oops:{q:'Akiva picks the first evidence for a weekly Beacon.',wrong:'My cousin’s school went weekly, and he loved it.',right:'Our survey found 132 of 180 boys want a weekly paper.',why:'One story is the weakest rung. Lead with the highest rung you have.'},
+    idea:['Careful means many cases, chosen fairly, counted the same way. Many stories are still stories.'],
+    try:{q:'Which rung is the strongest?',o:['several careful sources that agree','one story','an expert’s opinion'],a:'several careful sources that agree',steps:['Which one has the most careful proof behind it?']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L09.02':{s:'My claim: the side I prove. Counterclaim: the other side.\nList the other side’s reasons. Which one has the most weight?\nWrite that one at its strongest: "Some argue that…".\nTest: would he say, "Yes, that is my point"? Polite words that shrink it make a straw man.'},
+  'WRIT.ESSAY.L09.03':{s:'Read the counterclaim. Is it false, small, or true?\nFalse: "In fact, …" plus evidence (shows it is mistaken).\nSmall: talk only about the problem and make it smaller (shows it matters less).\nTrue: "Yes, …, but …" a different good (concede and outweigh). Never insult; never just repeat.'},
+  'WRIT.PARA.L09.01':{s:'Read your opponent’s reason. Ask four questions.\nOne case made "always"? (overgeneralizing) Only "after"? (false cause)\nAbout the person, not the idea? (attacking the person)\nOnly two choices? (either-or) Then name the other choices.'},
+  'WRIT.PARA.L09.02':{s:'Rung 1, weakest: one story about one person.\nRung 2: an expert’s opinion.\nRung 3: a number from a careful study or an official record (many cases, chosen fairly, counted the same way).\nRung 4, strongest: several careful sources that agree. Lead with the highest rung.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L09.02':{ band:'M68', pic:'🤝', today:'State the other side at its strongest', why:'A reader trusts you only if you answer the real argument, not a weak or shrunken one.',
+    ready:[{q:'A counterclaim is…', o:['the other side’s position','my reason','a quote','a title'], a:'the other side’s position'}],
+    bridge:'WRIT.ESSAY.L08.02', bridgeName:'Answer a counterclaim',
+    watch:{ q:'Topic: should our grade’s class election use a secret ballot?', m:{type:'scene', e:'🗳️', t:'Eli prepares for the school debate tournament.'}, steps:[
+      {t:'My claim: a secret ballot lets every boy vote freely.'},
+      {t:'List their reasons: quick, open, easy to check, familiar.'},
+      {t:'Fair but weak: "A show of hands is familiar."'},
+      {t:'Subtle straw man: "A few simply like raising hands."'},
+      {t:'Fair and strongest: "An open count lets everyone check it."'},
+      {t:'Teach it back: tell your chavrusa weak, strongest, straw man.'}], a:'Some argue that an open count lets everyone check that the vote is honest.' },
+    oops:{ q:'Claim: The Beacon should add an op-ed page.', wrong:'A few boys simply feel the paper is fine as it is.', right:'Some worry op-eds could hurt feelings if not edited with care.', why:'The first is polite, but it shrinks the other side. The second gives their real reason.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can choose the other side’s strongest point and state it fairly.',
+    board:{ one:'Know my claim from the counterclaim, and state the counterclaim fair and strongest: not weak, not shrunk.', activity:'Chavrusas list three reasons for the other side of a debate topic, rank them by weight, and write the strongest so the partner would sign it.', mistakes:['Answering a weak objection instead of the strongest','Polite words that shrink the other side','Mixing up my claim and the counterclaim'] },
+    do:[
+      {type:'match', pairs:[['Fair and strongest','The reason a wise opponent leads with'],['Fair but weak','True, but it carries little weight'],['Straw man','Polite words that shrink their side']],
+        say:'Match each label to what it means.', how:'Most weight? Little weight? Or shrunk?'},
+      {type:'sort', q:'Claim: our school should hold a coat drive.', bins:['Fair','Mistake: straw man'], cards:[['They worry it takes learning time.',0],['A few just prefer not to bother.',1],['They say shuls already collect coats.',0],['Some feel, a little, it is not our job.',1]], mis:true,
+        say:'Fair counterclaim, or a polite straw man? Sort each.', how:'Would the other side say, "Yes, that is my point"?'}],
+    your:[
+      {type:'tiles', q:'Claim: join the debate tournament.', w:['Some argue','practice takes','time from','learning.'], extra:['a little'],
+        say:'Build a fair and strong counterclaim.', how:'Who says it first. Then their weightiest point.'},
+      {type:'sort', q:'Claim: elect a student council. All are polite.', bins:['Fair and strong','Fair but weak'], cards:[['It could split the grade into camps.',0],['Ballots must be printed.',1],['Teachers know who leads well.',0],['The vote takes ten minutes.',1]],
+        say:'Strong objection, or weak? Sort each.', how:'If it were true, would it hurt the claim a lot?'},
+      {type:'match', q:'Topic: should the boys elect the Beacon’s editor?', pairs:[['Fair and strongest','The adviser sees the work all year.'],['Fair but weak','The vote takes ten minutes.'],['Straw man','A few just like the old way.']],
+        say:'Match each label to a counterclaim on this topic.', how:'Most weight, little weight, or shrunk?'},
+      {type:'sort', bins:['Straw man sign','Fair wording'], cards:[['A few simply prefer…',0],['Some feel, a little, that…',0],['Some argue that…',1],['A serious concern is…',1]],
+        say:'Straw man sign, or fair wording?', how:'Shrinking words make their reason sound small.'},
+      {type:'tiles', q:'Claim: the boys should elect the editor.', w:['Some say','the adviser','should choose.'], extra:['a little'],
+        say:'Build the fair counterclaim.', how:'Who says it. Then who they think should choose.'}] },
+
+  'WRIT.ESSAY.L09.03':{ band:'M68', pic:'↩️', today:'Answer the other side with evidence and reasoning', why:'A strong rebuttal turns the other side’s best point into a win for your claim.',
+    ready:[{q:'A counterclaim is…', o:['the other side’s position','my reason','a quote','a title'], a:'the other side’s position'}],
+    bridge:'WRIT.ESSAY.L08.02', bridgeName:'Answer a counterclaim',
+    watch:{ q:'Counterclaim: "A school election will cause fights."', m:{type:'scene', e:'🗳️', t:'Akiva writes a Beacon op-ed about a student council election.'}, steps:[
+      {t:'First ask: is the worry false, small, or true?'},
+      {t:'False? Show it is mistaken: "In fact, the record shows…"'},
+      {t:'Small? Show it matters less: "It lasts only one week."'},
+      {t:'True? Concede and outweigh: "Yes, …, but …" a different good.'},
+      {t:'Akiva: "Yes, some may argue, but all learn to choose leaders."'},
+      {t:'Teach it back: tell your chavrusa the three moves.'}], a:'Yes, some boys may argue, but every boy learns to choose leaders and respect the result.' },
+    oops:{ q:'Counterclaim: "The op-ed page takes space from news."', wrong:'Only people who cannot write say that.', right:'In fact, two pages sit empty in every issue, Akiva says.', why:'An insult attacks the person. A rebuttal answers the point with evidence.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can rebut a counterclaim with evidence and reasoning.',
+    board:{ one:'Rebut with evidence: show it is mistaken, show it matters less, or concede and outweigh.', activity:'One boy reads a counterclaim; his chavrusa answers it, and the class names the move: MISTAKEN, MATTERS LESS or OUTWEIGH.', mistakes:['An insult instead of a reason','Just repeating the claim','"You are wrong" with no evidence'] },
+    do:[
+      {type:'tiles', q:'Counterclaim: "The coat drive takes time."', w:['Yes, it does,','but forty','families','get coats.'], extra:['you are lazy'],
+        say:'Build a concede and outweigh rebuttal.', how:'Admit the problem first. Then a different good.'},
+      {type:'sort', q:'Counterclaim: "Op-eds take space from news."', bins:['Real rebuttal','Mistake: insult or repeat'], cards:[['Two pages sit empty each issue.',0],['Only bad writers say that.',1],['We need op-eds, period.',1],['Yes, one page, but boys get a voice.',0]], mis:true,
+        say:'Real rebuttal, or a mistake? Sort each.', how:'Real: evidence or a reason. Mistake: an insult or the claim again.'}],
+    your:[
+      {type:'match', pairs:[['Shows it is mistaken','In fact, the record shows…'],['Shows it matters less','It lasts only one week.'],['Concede and outweigh','Yes, …, but …']],
+        say:'Match each move to words that fit it.', how:'Deny it, shrink it, or admit it and weigh it?'},
+      {type:'sort', q:'Counterclaim: "The election causes fights."', bins:['Shows it is mistaken','Shows it matters less','Concede and outweigh'], cards:[['In fact, last year had none.',0],['It lasts only one week.',1],['Yes, some argue, but all learn.',2],['Any arguing ends in days.',1]],
+        say:'Which move does each rebuttal use?', how:'False? Smaller problem? Or a different good that outweighs?'},
+      {type:'tiles', q:'Counterclaim: "It is on a school day."', w:['In fact, it','falls during','Chanukah','vacation.'], extra:['you are wrong'],
+        say:'Build a rebuttal that shows it is mistaken.', how:'Start with "In fact," then the evidence.'},
+      {type:'sort', bins:['Real rebuttal','Mistake'], cards:[['In fact, it falls in vacation.',0],['That is a silly idea.',1],['Yes, it is long, but boys learn to speak.',0],['We should still do it.',1]],
+        say:'Real rebuttal, or a mistake? Sort each.', how:'Evidence or reasoning answers the point. Insults and repeats do not.'},
+      {type:'match', pairs:[['"In fact, the record shows…"','Shows it is mistaken'],['"Only a fool says that."','Mistake: an insult'],['"We should do it anyway."','Mistake: repeats the claim']],
+        say:'Match each answer to what it is.', how:'Does it bring evidence, an insult, or the claim again?'}] },
+
+  'WRIT.PARA.L09.01':{ band:'M68', pic:'⛓️', today:'Name the weak link in your opponent’s argument', why:'Name his weak link, and your rebuttal has its first step.',
+    ready:[{q:'"As a result," must follow a…', o:['cause','greeting','title','question'], a:'cause'}],
+    bridge:'WRIT.PARA.L07.01', bridgeName:'Glue Words',
+    watch:{ q:'Debate round: should the school hold a student election?', m:{type:'scene', e:'🏆', t:'Eli judges a practice round before the debate tournament.'}, steps:[
+      {t:'"One vote had a fight, so votes always do": overgeneralizing.'},
+      {t:'"Grades fell after the vote, so the vote did it": false cause.'},
+      {t:'"Ignore Eli; he just wants to win": attacking the person.'},
+      {t:'"Elect now, or no boy ever leads": either-or.'},
+      {t:'Answer either-or by naming the other choices.'},
+      {t:'Teach it back: tell your chavrusa the four weak links.'}], a:'Sound reasoning has enough cases and a real cause, answers the idea, and sees more than two choices.' },
+    oops:{ q:'Naftali argues for a later start.', wrong:'Naftali just likes to sleep late.', right:'A later start would make the buses late for the lower grades.', why:'The first attacks the person. The second answers his idea.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can name the weak link in your opponent’s argument.',
+    board:{ one:'Name the opponent’s weak link: overgeneralizing, false cause, attacking the person, either-or.', activity:'One boy reads an opponent’s reason from a card; his chavrusa names the weak link and answers it in one sentence.', mistakes:['Answering the person, not the idea','Accepting only two choices','"After" treated as "because"'] },
+    do:[
+      {type:'sort', q:'His claim: the lunch line needs a second server.', bins:['Sound reasoning','Mistake: weak link'], cards:[['Timed at 20 minutes on ten days.',0],['I waited once, so it is always slow.',1],['It slowed after the paint, so paint did it.',1],['One server for 120 boys.',0]], mis:true,
+        say:'Sound reasoning, or a weak link? Sort each.', how:'Enough cases? A real cause? Then it is sound.'},
+      {type:'match', pairs:[['One case becomes "always"','Overgeneralizing'],['Who said it, not what','Attacking the person'],['Only two choices','Either-or']],
+        say:'Match each weak link to its name.', how:'What went wrong in the chain?'}],
+    your:[
+      {type:'sort', bins:['Attacking the person','Either-or','Sound reasoning'], cards:[['Ignore him; he is new.',0],['Vote now, or never vote.',1],['Last five club votes went smoothly.',2],['He only wants to win.',0],['Elect him, or lose the club.',1]],
+        say:'Name the weak link, or say it is sound.', how:'The person? Only two choices? Or real evidence?'},
+      {type:'tiles', q:'Make it sound.', w:['On ten days,','the line took','20 minutes','or more.'], extra:['always'],
+        say:'Build a sound reason from the tiles.', how:'Enough cases first. Then what was measured.'},
+      {type:'match', pairs:[['Overgeneralizing','Ask for enough cases.'],['Attacking the person','Bring it back to the idea.'],['Either-or','Name the other choices.']],
+        say:'Match each weak link to how you answer it.', how:'What would you say back to him?'},
+      {type:'sort', q:'His speech against the class trip.', bins:['Weak link','Sound reasoning'], cards:[['One trip went badly, so all trips fail.',0],['The museum, or we learn nothing.',0],['It falls in Chanukah vacation.',1],['Zoo fans are just immature.',0]],
+        say:'Weak link, or sound? Sort each.', how:'Ask the four questions of each sentence.'},
+      {type:'tiles', q:'Claim: the library needs more chairs.', w:['All 20 chairs','fill by 3:15','every day.'], extra:['so everyone'],
+        say:'Build a sound reason for more chairs.', how:'What was counted, and how often?'}] },
+
+  'WRIT.PARA.L09.02':{ band:'M68', pic:'🪜', today:'Rank evidence from weakest to strongest', why:'The higher your evidence climbs, the harder it is for a reader to say no.',
+    ready:[{q:'Credible evidence comes from…', o:['a source you can trust','a rumor','an ad','"everyone knows"'], a:'a source you can trust'}],
+    bridge:'WRIT.ESSAY.L07.04', bridgeName:'Best Evidence',
+    watch:{ q:'Claim: our school should add a second recess.', m:{type:'scene', e:'📊', t:'Gavriel builds a chart for Akiva’s op-ed in The Beacon.'}, steps:[
+      {t:'Rung 1: "Moshe did better after recess once." One story.'},
+      {t:'Rung 2: the school psychologist thinks breaks help. An opinion.'},
+      {t:'Rung 3: a careful study of 300 students found better focus.'},
+      {t:'Rung 4: three studies and another school’s records all agree.'},
+      {t:'Lead with rung 4. Use Moshe’s story after it, never instead.'},
+      {t:'Teach it back: tell your chavrusa the four rungs.'}], a:'Three studies and another school’s records all show better focus after a break.' },
+    oops:{ q:'Akiva’s first evidence for a weekly Beacon', wrong:'My cousin’s school went weekly, and he loved it.', right:'Our survey found 132 of 180 boys want a weekly paper.', why:'One story is the weakest rung. Lead with the highest rung you have.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can rank evidence from weakest to strongest.',
+    board:{ one:'Evidence ladder: one story, then an expert’s opinion, then a careful number, then several careful sources that agree.', activity:'Groups tape four evidence cards for one claim on a paper ladder, weakest to strongest, then defend the top card.', mistakes:['Leading with an exciting story','Thinking many stories equal a study','Trusting one opinion over a careful record'] },
+    do:[
+      {type:'tiles', q:'Climb from weakest to strongest.', w:['one story','an opinion','a study','sources agree'], extra:['a title'],
+        say:'Build the ladder from weakest to strongest.', how:'One person, one expert, a careful count, many agree.'},
+      {type:'sort', q:'Which is stronger?', bins:['Ranked right','Mistake: ranked wrong'], cards:[['A study beats one story.',0],['An exciting story beats a study.',1],['Three studies beat one.',0],['Ten stories beat a study.',1]], mis:true,
+        say:'Ranked right, or a mistake? Sort each.', how:'The higher rung is stronger. Many stories are still stories.'}],
+    your:[
+      {type:'match', pairs:[['One story','Avi liked it once.'],['An expert’s opinion','The coach thinks so.'],['A careful number','A study of 300 boys.']],
+        say:'Match each rung to its example.', how:'One person, one expert, or a careful count?'},
+      {type:'sort', q:'Claim: The Beacon should be weekly.', bins:['Weaker','Stronger'], cards:[['My cousin liked weekly.',0],['132 of 180 boys want it.',1],['One boy forgot an issue.',0],['Three surveys agree.',1]],
+        say:'Weaker or stronger evidence? Sort each.', how:'One person is weaker. A careful count is stronger.'},
+      {type:'tiles', q:'Build the strongest kind of evidence.', w:['Two studies','agree with','our records.'], extra:['one boy'],
+        say:'Build top-rung evidence from the tiles.', how:'Name the careful sources. Then say they agree.'},
+      {type:'sort', bins:['Top rung','Not top rung'], cards:[['Two studies and a record agree.',0],['The nurse’s log and a study agree.',0],['Three boys each tell a story.',1],['One careful study.',1],['A famous coach is sure.',1]],
+        say:'Is each one on the top rung?', how:'Top rung: several careful sources, all agreeing.'},
+      {type:'match', pairs:[['A study vs. one story','The first is stronger.'],['An opinion vs. a record','The second is stronger.'],['A survey vs. an official count','Both are on the same rung.']],
+        say:'Match each pair to the right answer.', how:'Find each one’s rung. Then compare.'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

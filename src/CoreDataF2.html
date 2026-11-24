@@ -1,0 +1,56 @@
+<script>
+/* CoreDataF2.html: Core Growth job F, Kindergarten and Grade 1 games (K-1 boys get games only), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataF.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite. */
+(function () {
+  var LESSONS = {
+  };
+  var TEACH = {}, HOWTO = {}, BITE = {};
+  /* ===== K-1 Unit 1 games (F-map sections 3 and 4). A K or Grade 1 boy plays these on his game path (docs/core-growth/HOW-TO-ADD-A-K1-GAME.md).
+     Kindergarten Unit 1 is listening only: no letters are spoken or shown, and sort boxes are pictures (a K boy cannot read yet).
+     The teaching is in the spoken lines (say), because the game speaks them. ===== */
+  /* ===== K-1 Unit 1 games (F-map sections 3 and 4). A K or Grade 1 boy plays these on his game path (docs/core-growth/HOW-TO-ADD-A-K1-GAME.md).
+     Kindergarten Unit 1 is listening only: no letters are spoken or shown, and sort boxes are pictures (a K boy cannot read yet).
+     The teaching is in the spoken lines (say), because the game speaks them. ===== */
+  var K1G = [
+    { id:'READ.PA.L01.07', grade:0, name:'Clap the Words', pic:'👏', after:'READ.PA.L01.01', acts:[
+      {type:'listen', hear:'Yossi runs fast.', o:['👏👏👏','👏👏','👏👏👏👏'], a:'👏👏👏', say:'Eli eats: clap, clap. Two words! Now listen. How many claps?', how:'Clap once for each word you hear.'},
+      {type:'tiles', w:['I','see','a','dog'], hear:'I see a dog.', say:'Words have spaces between them. Put each word in order.', how:'Listen. Which word comes first? Then next?'},
+      {type:'sort', bins:['one word','two words'], cards:[['cat',0],['big cat',1],['hat',0],['a hat',1]], say:'Look for the space. One word or two words?', how:'A space means a new word.'},
+      {type:'listen', hear:'Abba has a pumpkin.', o:['👏👏👏👏','👏👏👏👏👏','👏👏👏'], a:'👏👏👏👏', mis:true, say:'Careful! Pumpkin is long, but it is one word.', how:'Clap once for each word, not each part.'},
+      {type:'listen', hear:'Moshe has a big dog.', o:['👏👏👏👏👏','👏👏👏','👏👏👏👏'], a:'👏👏👏👏👏', say:'Listen. How many words? Clap each one.', how:'Clap once for each word you hear.'}]},
+
+    { id:'READ.PA.L01.08', grade:0, name:'Rhyme Maker', pic:'🎩', after:'READ.PA.L01.02', acts:[
+      {type:'match', pairs:[['🐝','🌳'],['🚗','⭐'],['🐐','⛵']], say:'Bee, tree. They end the same. Match the rhymes.', how:'Say both words. Do they end the same?'},
+      {type:'listen', hear:'cake', o:['🐍','🐱','🍎'], a:'🐍', say:'Mendy baked a cake! Which picture rhymes with cake?', how:'Say cake, then each picture. Which ends the same?'},
+      {type:'sort', bins:['👍','👎'], cards:[['🌳',0],['🐻',1],['🔑',0],['🐢',1]], say:'Rhymes with bee? Thumbs up. No? Thumbs down.', how:'Say bee. Say the picture. Do the ends match?'},
+      {type:'findall', grid:['🐶','🎩','🐔','🦇','☀️','🐟'], find:['🎩','🦇'], findSay:'picture that rhymes with mat', say:'Dovid sat on a mat. Tap every picture that rhymes with mat.', how:'Say each picture. Does it end like mat?'},
+      {type:'listen', hear:'bun', o:['☀️','🐟','🍞'], a:'☀️', mis:true, say:'Careful! Bread goes with bun, but does it rhyme? Tap the rhyme.', how:'Say bun, then each picture. Which ends the same?'}]},
+
+    { id:'READ.PA.L01.09', grade:0, name:'Beat Builder', pic:'🥁', after:'READ.PA.L01.03', acts:[
+      {type:'listen', hear:'cup... cake', o:['🧁','🎂','☕'], a:'🧁', say:'Sun, flower: sunflower! Now you. Push these two parts together.', how:'Say the two parts fast, as one word.'},
+      {type:'listen', hear:'pop... corn', o:['🍿','🌽','🎈'], a:'🍿', say:'Listen. Push the parts together. Which picture?', how:'Say the two parts fast, as one word.'},
+      {type:'sort', bins:['👏','👏👏'], cards:[['🐝',0],['🐵',1],['🐟',0],['🐰',1]], say:'Clap with Shmuli! Mon-key: two claps. Bee: one clap.', how:'Say it and clap. Count your claps.'},
+      {type:'findall', grid:['🌈','🐝','🧁','🐟','🍕','🔑'], find:['🌈','🧁','🍕'], findSay:'picture with two claps', say:'Tap every picture with two claps.', how:'Say each one and clap. Two claps? Tap it.'},
+      {type:'listen', hear:'Say cowboy without cow.', o:['👦','🐄','🤠'], a:'👦', mis:true, say:'Careful! Not the cow. Say cowboy, take off cow. What is left?', how:'Say cowboy. Now say it again, but leave off cow.'},
+      {type:'listen', hear:'Say snowman without snow.', o:['⛄','❄️','👨'], a:'👨', say:'Yanky built a snowman. Take away snow. What is left?', how:'Say snowman. Say it again, but leave off snow.'}]},
+
+    { id:'READ.PHON.L02.22', grade:1, name:'CVC Speedway', pic:'🏎️', after:'READ.PA.L02.01', acts:[
+      {type:'tiles', w:['m','a','p'], extra:['o'], hear:'map', say:'Zevi has a map. Three sounds. One tile for each.', how:'Say it slowly. First sound, middle sound, last sound.'},
+      {type:'match', pairs:[['bag','🎒'],['bus','🚌'],['web','🕸️']], say:'Help Avi read. Push the sounds together fast. Match it.', how:'Sound it out: first, middle, last. Then blend.'},
+      {type:'listen', hear:'hip', o:['hip','hop','hap'], a:'hip', mis:true, say:'Careful! Listen to the middle sound.', how:'The first and last sounds are the same. Listen to the middle.'},
+      {type:'sort', bins:['like cat','like six'], cards:[['cap',0],['pin',1],['map',0],['fin',1]], say:'Read it. Middle like cat, or middle like six?', how:'Look at the middle letter. Say its sound.'},
+      {type:'findall', grid:['cat','cot','cut','hat','hot','hut'], find:['cat','hat'], findSay:'word with the middle sound of cat', say:'Tap every word with the middle sound of cat.', how:'Read each word. Look at the middle letter.'},
+      {type:'tiles', w:['j','e','t'], extra:['i','a'], hear:'jet', say:'Zevi flies to Bubby on a jet. Middle sound like egg.', how:'Say it slowly. Listen to the middle sound.'}]},
+
+    { id:'READ.PA.L02.02', grade:1, name:'Long or Short?', pic:'🐍', after:'READ.PHON.L02.22', acts:[
+      {type:'sort', bins:['🎂','🐱'], cards:[['🍇',0],['🎩',1],['🐍',0],['🦇',1]], say:'Long like cake, or short like cat? Drag each picture.', how:'Say the picture. Listen to the middle sound.'},
+      {type:'listen', hear:'kite, fish, socks', o:['🪁','🐟','🧦'], a:'🪁', say:'Yehuda packed three things. Which one has a long sound?', how:'Say each picture. Which middle sound says its name?'},
+      {type:'listen', hear:'pin', o:['🐟','🚲'], a:'🐟', mis:true, say:'Careful! Pin, not pine. Like fish, or like bike?', how:'Say pin slowly. Does the middle say its name?'},
+      {type:'findall', grid:['🐝','🥚','🌳','🛏️','🔑','🕸️'], find:['🐝','🌳','🔑'], findSay:'picture with the long sound of bee', say:'Bee has a long sound. Tap every picture with that sound.', how:'Say each picture. Does it sound like bee?'},
+      {type:'match', pairs:[['🐍','🚂'],['🦇','🎩'],['🪁','🚲']], say:'Match the two pictures that have the same sound inside.', how:'Say both words. Listen to the middle sound.'}]}
+  ];
+  if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
+  if (window.TLCORE) TLCORE.add('F', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
