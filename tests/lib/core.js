@@ -104,6 +104,7 @@ async function page(pg, rep) {
         const out = { steps: [] }, Q = s => document.querySelector(s), tick = () => new Promise(r => setTimeout(r, 60));
         const look = async name => { await new Promise(r => setTimeout(r, 380)); const el = Q('#crd'); const mains = el.querySelectorAll('.tlk-main').length, all = [...el.querySelectorAll('button')];
           out.steps.push({ name, mains, ownButtons: all.filter(b => !b.classList.contains('tlk')).length, wide: el.scrollWidth > innerWidth + 1 || (Q('#crd .crd-main') && Q('#crd .crd-main').scrollWidth > innerWidth + 1), exitTL: !!el.querySelector('.tlk-home.tlk-at-tl,.tlk-x.tlk-at-tl') }); };
+        if (!A.st) A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' });   /* the Reader keeps his page in his own state */
         try { if (A.st) delete (A.st.reads || {})['ZZTEST.KEY.01']; } catch (e) {}
         const pr = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 3 }); await new Promise(r => { const t = setInterval(() => { if (Q('#crd .crd-cover')) { clearInterval(t); r(); } }, 30); });
         await look('cover'); Q('#crd [data-crd=start]').click(); await tick(); await look('page 1');
