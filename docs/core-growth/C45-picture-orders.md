@@ -2,11 +2,8 @@
 
 Pictures are made by the HoS's image account (requests go by email). When they come back, C45 checks each one against its order and the picture rules, converts it to WebP (≤ 1,100 px wide, ≤ 200 KB), adds a line to `web/pics/SOURCES.md` ("made for Tashbar Baltimore with an AI image tool, owned by the school") and links it by PR (`docs/HANDOFF-PICS.md`, PICS-2 keys `@today` and `@passage|KEY`).
 
-## Style sheet E45 (provisional until job T writes the band style sheets)
-- **Look:** warm, painted storybook illustration; semi-realistic people with friendly faces; soft natural light; rich color but calm backgrounds (one clear focus, no clutter). The same style in every picture.
-- **Sizes:** unit openers and passage pictures 16:9 landscape (1100 × 620); book covers 3:4 portrait (825 × 1100); chapter pictures 4:3 (1000 × 750).
-- **No words, letters or numbers inside any picture** (no signs, no book titles, no Hebrew letters). No logos or brands.
-- **Picture rules (binding):** boys and men only; no women or girls anywhere, even far in the background. Modest frum dress: boys in kippot, long pants, tzitzis strings showing; men in kippot or hats, beards are fine. Kosher food only. No crosses, churches or other religions' symbols. No Divine Name. No fantasy creatures.
+## Style
+Job T's band style sheet is binding: `docs/core-growth/STYLE-SHEETS.md`, **E45 · Explorers** (clean graphic-novel style, cel shading; deep teal `#1F6E5A`, signal orange `#F28C28`, navy `#18284A`, sand `#E8D9B5`). Every prompt = the E45 prompt start + the prompt below + the standard ending. File names follow `core-c45-<what>-<slot>.webp`. Sizes: openers and passage pictures 1100×620; book covers and cast cards 825×1100; chapter pictures 1100×825.
 
 ## The cast (draw them the same every time)
 | Who | Look |
@@ -21,7 +18,18 @@ Pictures are made by the HoS's image account (requests go by email). When they c
 | Zeidy Benaim | about 75, white beard, flat cap, warm smile |
 | Mr. Gomez (custodian) | about 55, gray work clothes, mustache, toolbox |
 
-## Batch 1 (requested 2026-11-24)
+## Order 1 (2026-11-24) · status: COMPLETE (all 25 in `art/`; 4 were redrawn once: b1-ch1-empty, b1-ch3-leaves, p-chess, p-tomthumb)
+Sent by email to the HoS's image account; a correction with T's style and these file names followed the same night. The 5 cast cards come first:
+
+| # | File name | Screen | Size | Prompt |
+|---|---|---|---|---|
+| C1 | core-c45-cast-yehuda.webp | cast card | 825×1100 | Yehuda Benaim, full body, standing, plain sand background |
+| C2 | core-c45-cast-avrumi.webp | cast card | 825×1100 | Avrumi Katz, full body, standing, plain sand background |
+| C3 | core-c45-cast-dovid.webp | cast card | 825×1100 | Dovid Lerner, full body, standing, plain sand background |
+| C4 | core-c45-cast-binyamin.webp | cast card | 825×1100 | Binyamin Yusupov, full body, standing, plain sand background |
+| C5 | core-c45-cast-tzvi.webp | cast card | 825×1100 | Tzvi Hirsch Gold, full body, standing, plain sand background |
+
+Then the 20 pictures (file name = `core-` + the name below + `.webp`):
 | # | File name | Goes on | Size | Prompt (add the style sheet and picture rules above) |
 |---|---|---|---|---|
 | 1 | c45-b1-cover | Book B1 cover, *The Missing Esrog* | 3:4 | A wooden classroom desk in warm afternoon light; an open, ornate silver box with a soft white cloth inside and NO esrog in it; behind it, four 10-year-old frum boys (Yehuda, Avrumi, Dovid, Tzvi Hirsch) lean in with wide, curious eyes; Yehuda holds a magnifying glass. Mysterious but friendly. |

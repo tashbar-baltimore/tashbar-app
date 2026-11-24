@@ -1,0 +1,483 @@
+<script>
+/* CoreDataC454.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 5 Unit 5.2 "What's it really about?" (theme and summary) (docs/core-growth/C45-map.md). Short lesson passages (under 300 words) go in PASS
+   under c45_ keys; each lesson teaches on one passage and checks on a different, cold passage. The E45 passage-card style lives in CoreDataC451.html. */
+(function () {
+  var P = {
+    c45_rainymap: { title: 'Avrumi\'s Rainy-Day Map', text: 'It rained all Sunday on Glen Avenue, and Avrumi Katz had a plan. He spread a huge sheet of paper on the dining room table and began to draw a map of the whole neighborhood, house by house.\nHe had drawn only three houses when his little brother Shloimy climbed onto a chair. "Can I help?"\n"Not now," said Avrumi. "This has to be perfect."\nTen minutes later, his sister Chani asked if she could color the park. Then Mendy and Yossi wanted to add the bakery. Avrumi sent each of them away. The house grew loud with bored children, and the map grew slowly. By lunchtime, Avrumi had a headache and only one street.\nIma looked at the map and then at the bored faces. "Maybe they know things you don\'t," she said quietly.\nAvrumi sighed and handed out pencils. Shloimy drew the fire hydrant where the mail carrier always stops to talk. Chani added every tree in the park. Mendy and Yossi remembered the gray cat that sleeps on the Golds\' steps.\nBy the time Abba came home, the map covered the whole table. It was the best map Avrumi had ever made, because it held what everyone loved about Glen Avenue.' },
+    c45_shofar: { title: 'Eli\'s Shofar', text: 'In the first week of Elul, two months after his bar mitzvah, Eli Mizrahi\'s grandfather gave him a small shofar. "This year," said Saba, "you will blow for the old men in our shul who cannot walk to the big minyan."\nEli put the shofar to his lips and blew. Nothing came out but a sound like air leaving a bicycle tire. He tried again. A squeak. His cousin Raphael laughed so hard he fell off the couch.\nEvery day after school, Eli practiced on the back porch. He pressed his lips tight. He blew softer, then harder. Some days he wanted to give the shofar back. One afternoon he blew until he felt dizzy, and still only a squeak came out.\nIn the third week, something changed. A short, rough note came out. The next day it was longer. By the last week of Elul, Eli could blow a clear tekiah that made the neighbor\'s dog bark.\nOn Rosh Hashanah, the old men in Saba\'s shul listened in silence as Eli blew every sound. Afterward, the oldest man shook his hand. "That," he said, "is the sound of a young man who did not give up."' },
+    c45_firstloss: { title: 'The First Round', text: 'Binyamin Yusupov had played chess with Zeidy Yusupov every Motzaei Shabbos for two years. When the Baltimore Junior Chess Tournament began, he was sure he would win his first game.\nHe lost in nineteen moves.\nBinyamin walked out of the room with his face burning. He sat on the steps outside and told Zeidy he wanted to go home. "I am not good at chess," he said. "I never want to play again."\nZeidy sat down beside him. He did not argue. He took out a small notebook. "Before we go," he said, "show me the game. Every move."\nBinyamin did not want to. But slowly he set up the pocket chessboard and played the game again, move by move. On move eleven, he stopped. "Here," he said. "I moved my queen out too early. He chased it all over the board."\n"Good," said Zeidy. "Now you know something you did not know this morning."\nBinyamin played his second game slowly. Before every move, he asked himself, "Is my queen safe?" The game took more than an hour. When it ended, he had won.\nThat night he wrote in Zeidy\'s notebook: "Lost game 1. Learned about my queen."' },
+    c45_challos: { title: 'The Friday Tray', text: 'Friday mornings at Gold\'s Bakery were the busiest of the week. By nine o\'clock, the line stretched out the door, and everyone wanted challah.\nTzvi Hirsch Gold was helping his father before school. "Carry this tray to the front," said Mr. Gold. "Carefully."\nTzvi Hirsch hurried. He always hurried. Halfway across the kitchen, his sneaker caught on a box. The tray tipped, and twelve golden challos rolled across the floor.\nFor one second, nobody had seen. He could push them under the table and say nothing. His heart was pounding.\nInstead, he walked straight to his father. "Abba, I dropped a whole tray. I was rushing."\nMr. Gold closed his eyes for a moment. Then he nodded. "Thank you for telling me right away. There is more dough rising in the back. Wash your hands."\nTzvi Hirsch braided dough more carefully than ever before. His father showed him how to tuck the ends. The new challos came out of the oven just in time.\nWhen the last customer left, Mr. Gold put a hand on his shoulder. "Challos I can bake again," he said. "A son who tells the truth, I cannot buy."' },
+    c45_quill: { title: 'My Abba\'s Quill (a poem by Avrumi Katz)', text: 'Each night my Abba sits to write\nbeneath the lamp\'s warm yellow light.\nHe dips his quill and shapes one letter,\nthen looks again to make it better.\n\nI watch him from the kitchen chair.\nOne word an hour? It isn\'t fair!\nI race my pencil through my math.\nI like a quick and easy path.\n\n"Why so slow?" I ask him, yawning.\n"You will be writing here till morning!"\nHe smiles, his eyes still on the line:\n"A rushing hand won\'t write it fine."\n\nIn shul there is a Megillah, old,\nits parchment brown, its letters bold.\nA sofer wrote it long ago,\none careful letter, row by row.\n\nA hundred years, and every line\nis still as clear and still as fine.\nEach Purim, when it\'s read aloud,\nI hear it clearly through the crowd.\n\nSo now, whenever I start to race,\nI think of Abba\'s patient face.\nThe careful work is work that lasts,\nand lasting things are seldom fast.' },
+    c45_oak: { title: 'The Oak Behind the Shul (a poem)', text: 'Behind our shul there is an oak,\nas old as all the oldest folk.\nIts bark is rough, its trunk is wide,\nand squirrels race along its side.\n\nLast winter, on a stormy night,\nthe wind howled out with all its might.\nIts branches bent down low and groaned;\nthe windows rattled, shutters moaned.\n\nAt dawn I ran out in the cold.\nThe fence was down, the trash cans rolled\nacross the yard. But there it stood,\nthe oak, still tall in its old wood.\n\nI asked my Zeidy, "How can that be?\nThe wind was stronger than the tree!"\nHe said, "Its roots go deep and wide,\nmuch deeper than the part outside."\n\nI think a person is like that.\nWhen troubles come and knock you flat,\nwhat holds you up is underground:\nthe roots you planted, safe and sound.\n\nSo I will plant my roots down deep,\nin learning and the friends I keep,\nin Shabbos meals and family,\nso I can stand just like that tree.' },
+    c45_siddur: { title: 'The Siddur on the Bus', text: 'On the way home from yeshiva, Yehuda Benaim found a small, worn siddur on the seat of the number 27 bus. Its leather cover was cracked, and the pages were soft from years of davening.\nYehuda opened it, looking for a name. On the first page, in faded blue ink, someone had written: "To our son Mordechai, on his bar mitzvah."\n"There is no address," said Dovid. "You\'ll never find him."\nBut Yehuda was a detective. He took out his clue notebook and turned every page of the siddur. Tucked in the back was a small card from the Shaarei Tefillah shul, with the times for davening.\nThe next morning, Yehuda\'s Abba took him to the early minyan at Shaarei Tefillah. Near the window sat an old man, davening from a borrowed siddur and looking sad.\nYehuda walked up and held out the worn siddur. "Is this yours, Reb Mordechai?"\nThe old man\'s hands began to shake. "My parents gave me this," he whispered. "I thought it was gone forever."\nThat afternoon, Yehuda wrote in his notebook: "Case closed. Smallest case. Biggest smile."' },
+    c45_robot: { title: 'Dovid\'s Robot', text: 'The science fair was on Thursday, and Dovid Lerner\'s robot was almost ready. It could roll forward, turn left and pick up a plastic cup with its claw.\nOn Wednesday night, Dovid pressed the switch for one last test. The robot rolled two inches, made a grinding noise and stopped. Its claw hung open.\nDovid took the robot apart. He checked every wire. He put it back together. It still would not move. By nine o\'clock, his eyes were stinging.\nAvrumi had offered to help twice that week. Both times Dovid had said, "I can do it myself." Now he stared at the phone for a long time. Finally, he called.\nAvrumi came over with his sketchbook. "Show me how it works," he said, "and I\'ll draw it." As Dovid explained, Avrumi drew a diagram of every gear. Halfway through, Dovid stopped talking and pointed at the drawing. "There," he said. "That gear is on backwards."\nTen minutes later, the robot rolled across the kitchen floor and lifted a cup.\nOn Thursday, the judge asked Dovid who had built the robot. "I did," said Dovid. "But Avrumi helped me see the problem."' },
+    c45_twins: { title: 'One Promised Hour', text: 'On Sunday afternoon, Tzvi Hirsch Gold\'s Ima needed to bring a pot of soup to a neighbor who had just come home from the hospital. "Tzvi Hirsch," she said, "can you watch the twins for one hour? I will be back by three."\nTzvi Hirsch looked out the window. Down the block, the Glen Avenue Crew was choosing teams for a ball game. "Okay," he said. "I promise."\nThe moment the door closed, both babies began to cry. Tzvi Hirsch tried a bottle. He tried the rattle. He tried walking up and down the hall. The crying only got louder.\nThrough the window, he heard Binyamin call, "Tzvi Hirsch, we need you!" He wanted to run outside so badly that his feet itched. But he had promised.\nSo he sat down on the rug and made the silliest face he knew. One twin stopped crying and stared. Tzvi Hirsch made an even sillier face and sang the bakery song his Zeidy used to sing. Soon both twins were laughing.\nAt three o\'clock, Ima found all three of them asleep on the rug. She covered her son with a blanket and smiled.' },
+    c45_lastbus: { title: 'The Last Bus', text: 'Meir Shapiro and his cousin Ezra went to the library after school to finish a project about the Chesapeake Bay. The last bus home left at 5:15. "We have plenty of time," said Ezra, opening a book about crabs.\nThe boys read about blue crabs and oysters. They copied a map of the bay. When Meir finally looked at the clock, it said 5:22.\nThey ran outside just in time to see the bus turn the corner and disappear.\nIt was getting dark and cold. Ezra wanted to walk home, but home was four miles away. Meir remembered what his Abba always said: "When you are stuck, stop and think first." The boys went back inside, and the librarian let them use the phone to call home.\nTwenty minutes later, Meir\'s Abba pulled up in the family van. He was quiet for a while. Then he said, "I am glad you called, and did not try to walk home in the dark."\nThe next day, both boys set an alarm on Meir\'s watch for 5:00.' },
+    c45_basement: { title: 'The Noise in the Basement', text: 'After Melave Malka, Yehuda and Avrumi stayed at Dovid\'s house to finish a puzzle. The house was dark and quiet. Suddenly, a strange beeping came from the basement.\n"Did you hear that?" whispered Avrumi.\n"It\'s nothing," said Dovid. "Probably the dryer."\nBeep. Beep. BEEEEP.\n"That is not a dryer," Yehuda said slowly. He pulled out his notebook. "It beeps every ten seconds. Something is counting."\nAvrumi grabbed Dovid\'s sleeve. "Maybe we should get your Abba."\n"My Abba is asleep," Dovid groaned. "He has to get up early for Shacharis."\nThe three boys crept down the stairs. Dovid flipped on the light. On the workbench sat a small metal box covered in wires. A red light blinked on top.\n"Oh no," said Dovid, slapping his forehead. "It\'s my moisture alarm! I built it last week to tell us if the basement floods."\nYehuda pointed at the floor. A thin stream of water was running from the washing machine.\n"It works!" shouted Dovid. "My alarm really works!"\n"Great," Avrumi sighed. "Now go wake up your Abba."' },
+    c45_bakerykey: { title: 'The Missing Key', text: 'It was almost Shabbos, and the door of Gold\'s Bakery would not lock.\n"Where is the key?" shouted Tzvi Hirsch, pulling open every drawer behind the counter.\n"Shh," whispered Binyamin, pointing at the stroller by the door. "The twins just fell asleep."\nTzvi Hirsch dropped his voice. "Sorry. But Abba gave it to me this morning. He said, \'Don\'t lose it.\'"\n"Think," said Binyamin calmly. "Where were you when he gave it to you?"\n"In the back, by the big oven." Tzvi Hirsch ran to the kitchen. He came back with empty hands. "Not there."\nBinyamin looked at the clock. Only forty minutes were left until candle-lighting.\n"What about your apron?" he asked.\nTzvi Hirsch reached into the pocket of his flour-covered apron and pulled out a shiny silver key. "I had it the whole time," he groaned.\nBinyamin laughed quietly. "Come on. Lock up, and let\'s get these boys home."\nJust then, Mr. Gold came around the corner and took the handle of the stroller. "Good Shabbos, boys," he said with a tired smile. "Did everything go smoothly?"\nThe two boys looked at each other. "Very smoothly," they said together.' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+    'READ.LIT.L06.02':{name:'Theme or Topic?',
+      teach:[
+        {p:'c45_rainymap', q:'What is the TOPIC of this story, in a few words?', o:['Drawing a map on a rainy day', 'Letting others help can make your work better.', 'Avrumi gets a headache.'], how:'The topic is what the story is about, in a few words. It is not a sentence that teaches a lesson.'},
+        {p:'c45_rainymap', q:'Which is the THEME, the life lesson of the story?', o:['Letting others help can make your work better.', 'A map of Glen Avenue', 'Rainy days are long.'], how:'A theme is a full sentence that teaches a life lesson. Ask: what did Avrumi learn?'},
+        {p:'c45_rainymap', q:'Why is "Sharing" alone not a theme?', o:['It is one word, not a full-sentence lesson.', 'It is too long.', 'It is not in the story at all.'], how:'One word names a topic. A theme says what the story teaches, in a whole sentence.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_rainymap', q:'The topic, in one word: Avrumi draws a ___ of Glen Avenue. Type it.', a:'map', kb:'abc',
+          h:'What is Avrumi making on the dining room table?', how:'A topic is short: one or two words that name what the story is about.'},
+        {t:'sort', p:'c45_rainymap', q:'Theme or topic? Sort each one for Avrumi\'s story.', bins:[{id:'t', label:'Theme (a life lesson)'}, {id:'p', label:'Topic (one or two words)'}],
+          items:[{label:'A rainy Sunday', bin:'p'}, {label:'Drawing a map', bin:'p'}, {label:'Brothers and sisters', bin:'p'}, {label:'Letting others help can make your work better.', bin:'t'}, {label:'Work that is shared can turn out better.', bin:'t'}],
+          h:'Is it a few words, or a whole sentence with a lesson?', how:'A topic names a thing. A theme is a full sentence that teaches something about life.'},
+        {t:'order', p:'c45_rainymap', q:'Build the theme of Avrumi\'s story as a full sentence.', tiles:['Letting others help', 'can make your work', 'even better.'],
+          h:'Start with what Avrumi finally did, then what it does.', how:'A theme is a whole sentence: who or what, then the lesson.'},
+        {t:'sort', p:'c45_rainymap', q:'Mistake Detective. Is each one a real theme?', bins:[{id:'r', label:'Real theme'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Letting others join in can make your work better.', bin:'r'}, {label:'People you love may notice things you miss.', bin:'r'}, {label:'Sharing', bin:'w'}, {label:'Avrumi drew a map.', bin:'w'}, {label:'Maps are fun.', bin:'w'}],
+          h:'Is it a full sentence? Does it teach a lesson the story shows?', how:'Three common mistakes: one word, an event from the story, or a fun fact that teaches nothing.'},
+        {t:'sort', p:'c45_rainymap', q:'Test each idea. Does it fit the WHOLE story?', bins:[{id:'w', label:'Fits the whole story'}, {id:'o', label:'Fits only one part'}],
+          items:[{label:'Letting others help can make your work better.', bin:'w'}, {label:'Rainy days make children bored.', bin:'o'}, {label:'Little brothers can be noisy.', bin:'o'}, {label:'A big paper is good for maps.', bin:'o'}],
+          h:'Check the beginning, the middle and the end.', how:'A theme fits the whole story. An idea from one scene fits only one part.'},
+        {t:'spotall', p:'c45_rainymap', q:'Tap every sentence that could be the THEME of Avrumi\'s story.', cells:[{label:'Letting others help can make your work better.', ok:true}, {label:'Work that is shared can turn out better.', ok:true}, {label:'A map of Glen Avenue', ok:false}, {label:'It rained all Sunday.', ok:false}, {label:'Never let little children touch your things.', ok:false}],
+          h:'Full sentence? A lesson? Fits the beginning, middle and end?', how:'Tap only full-sentence lessons that the whole story shows.'}
+      ],
+      check:[
+        {p:'c45_shofar', q:'Idea: "If you keep practicing, hard things get easier." Whole story, or one part?', o:['Fits the whole story', 'Fits only one part']},
+        {p:'c45_shofar', q:'Idea: "Never let your cousin hear you practice." Real theme, or a mistake?', o:['Mistake', 'Real theme']},
+        {p:'c45_shofar', q:'Idea: "Old men like to hear the shofar." Whole story, or one part?', o:['Fits only one part', 'Fits the whole story']}
+      ],
+      re:[
+        {p:'c45_rainymap', q:'A theme is...', o:['a life lesson in a full sentence', 'one word', 'the title'], how:'Theme = what the story teaches, said as a sentence.'},
+        {p:'c45_rainymap', q:'"Drawing a map" is the story\'s...', o:['topic', 'theme', 'ending'], how:'A few words that name a thing are a topic.'},
+        {p:'c45_rainymap', q:'A real theme fits...', o:['the whole story', 'one sentence', 'only the ending'], how:'Test it on the beginning, the middle and the end.'}
+      ]},
+    'READ.LIT.L06.03':{name:'How He Meets the Challenge',
+      teach:[
+        {p:'c45_firstloss', q:'What is Binyamin\'s challenge in this story?', o:['He loses his first tournament game.', 'He plays chess with Zeidy.', 'He writes in a notebook.'], how:'The challenge is the hard thing the main character must face.'},
+        {p:'c45_firstloss', q:'How does Binyamin meet the challenge?', o:['He goes over the game and finds his mistake.', 'He goes home and quits chess.', 'He blames the other boy.'], how:'Look at what he DOES after the hard thing happens. That is how he meets it.'},
+        {p:'c45_firstloss', q:'What theme does his choice show?', o:['A loss can teach you how to do better.', 'Chess is a hard game.', 'Grandfathers carry notebooks.'], how:'Ask: what did his choice teach him? Say it as a life lesson for anyone.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_firstloss', q:'Binyamin found his mistake. Which piece did he move out too early? Type it.', a:'queen', kb:'abc',
+          h:'Find move eleven.', how:'Find the place where he stops and explains. Copy the name of the piece.'},
+        {t:'sort', p:'c45_firstloss', q:'Challenge, or how he meets it? Sort each event.', bins:[{id:'c', label:'The challenge'}, {id:'m', label:'How he meets it'}],
+          items:[{label:'He lost in nineteen moves.', bin:'c'}, {label:'He wanted to go home and never play again.', bin:'c'}, {label:'He played the game again, move by move.', bin:'m'}, {label:'He asked himself, "Is my queen safe?"', bin:'m'}, {label:'He wrote, "Learned about my queen."', bin:'m'}],
+          h:'Did it happen TO him, or did he CHOOSE to do it?', how:'The challenge is the hard thing. How he meets it is what he chooses to do about it.'},
+        {t:'order', p:'c45_firstloss', q:'Put Binyamin\'s story in order.', tiles:['He loses the first game.', 'He goes over every move.', 'He finds his queen mistake.', 'He plays slowly and wins.'],
+          h:'Challenge first, then his choices, then the result.', how:'Follow the story: the hard thing, what he does, and how it turns out.'},
+        {t:'sort', p:'c45_firstloss', q:'Mistake Detective. Is each theme shown by how he meets the challenge?', bins:[{id:'s', label:'Shown by how he meets it'}, {id:'n', label:'Not shown in the story'}],
+          items:[{label:'A loss can teach you how to do better.', bin:'s'}, {label:'Learn from your mistakes instead of quitting.', bin:'s'}, {label:'If you lose, try a different game.', bin:'n'}, {label:'Winners never make mistakes.', bin:'n'}],
+          h:'What did Binyamin do after he lost?', how:'The theme comes from his choice. Check: do his actions show it?'},
+        {t:'pairs', p:'c45_firstloss', q:'Match each choice to what it shows about Binyamin.', pairs:[['He plays the game again, move by move.', 'He is willing to look at his mistake.'], ['He asks, "Is my queen safe?"', 'He uses what he learned.'], ['He writes, "Learned about my queen."', 'He sees the loss as a lesson.']],
+          h:'What does each action tell you about him?', how:'A character\'s actions show what he has learned.'},
+        {t:'spotall', p:'c45_firstloss', q:'Tap every quote that shows how Binyamin meets the challenge.', cells:[{label:'"slowly he set up the pocket chessboard and played the game again"', ok:true}, {label:'"I moved my queen out too early."', ok:true}, {label:'"Binyamin played his second game slowly."', ok:true}, {label:'"He lost in nineteen moves."', ok:false}, {label:'"walked out of the room with his face burning"', ok:false}],
+          h:'Find what he chose to do after the loss.', how:'Tap only actions he chose after the hard thing happened, not the hard thing itself.'}
+      ],
+      check:[
+        {p:'c45_challos', q:'Tzvi Hirsch drops a whole tray of challos. Challenge, or how he meets it?', o:['The challenge', 'How he meets it']},
+        {p:'c45_challos', q:'He tells his father right away. Challenge, or how he meets it?', o:['How he meets it', 'The challenge']},
+        {p:'c45_challos', q:'Theme: "Hurrying always saves time." Shown by how he meets it?', o:['Not shown in the story', 'Shown by how he meets it']}
+      ],
+      re:[
+        {p:'c45_firstloss', q:'The challenge is...', o:['the hard thing the character faces', 'the happy ending', 'the title'], how:'Find the problem he must deal with.'},
+        {p:'c45_firstloss', q:'The theme often shows in...', o:['how the character meets the challenge', 'the first sentence only', 'the names'], how:'Watch what he chooses to do.'},
+        {p:'c45_firstloss', q:'Binyamin went over his game. That shows...', o:['he learned from the loss', 'he loves notebooks', 'he wanted to go home'], how:'What does his choice show?'}
+      ]},
+    'READ.LIT.L06.04':{name:'Theme in a Poem',
+      teach:[
+        {p:'c45_quill', q:'Who is the speaker of this poem?', o:['A boy watching his Abba write', 'The Abba who writes', 'A teacher in a classroom'], how:'The speaker is the "I" in the poem. Look for I, me and my.'},
+        {p:'c45_quill', q:'Which line shows the speaker REFLECTING on what it all means?', o:['"The careful work is work that lasts,"', '"He dips his quill and shapes one letter,"', '"I watch him from the kitchen chair."'], how:'Seeing tells what happens. Reflecting tells what the speaker now thinks or believes.'},
+        {p:'c45_quill', q:'What is the theme of the poem?', o:['Careful, patient work is work that lasts.', 'Quills need ink.', 'Math homework is easy.'], how:'Read the last stanza closely. A poem\'s theme often comes where the speaker reflects.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_quill', q:'At first the speaker likes things fast: "a quick and ___ path." Type the word.', a:'easy', kb:'abc',
+          h:'Look in the second stanza.', how:'Find the line in the poem and copy the missing word exactly.'},
+        {t:'sort', p:'c45_quill', q:'Sees, or reflects? Sort each line from the poem.', bins:[{id:'s', label:'The speaker sees'}, {id:'r', label:'The speaker reflects'}],
+          items:[{label:'"He dips his quill and shapes one letter,"', bin:'s'}, {label:'"its parchment brown, its letters bold."', bin:'s'}, {label:'"I watch him from the kitchen chair."', bin:'s'}, {label:'"The careful work is work that lasts,"', bin:'r'}, {label:'"and lasting things are seldom fast."', bin:'r'}],
+          h:'Is it something he sees, or what he thinks it all means?', how:'Seeing tells what happens. Reflecting tells what the speaker now believes.'},
+        {t:'sort', p:'c45_quill', q:'Mistake Detective. Is each one the theme of this poem?', bins:[{id:'t', label:'Theme of this poem'}, {id:'n', label:'Not this poem\'s theme'}],
+          items:[{label:'Careful, patient work is work that lasts.', bin:'t'}, {label:'Things done with care last a long time.', bin:'t'}, {label:'Always finish your homework fast.', bin:'n'}, {label:'Quills are better than pencils.', bin:'n'}],
+          h:'What does the speaker believe in the last stanza?', how:'The theme comes from where the speaker reflects. A wrong theme fights the poem or is only about a thing in it.'},
+        {t:'order', p:'c45_quill', q:'Put the speaker\'s journey in order.', tiles:['He watches Abba write slowly.', 'He asks, "Why so slow?"', 'He thinks of the old Megillah.', 'He decides to slow down.'],
+          h:'Follow the stanzas from first to last.', how:'A poem can move like a story: what he sees, what he asks, what he decides.'},
+        {t:'pairs', p:'c45_quill', q:'Match each stanza to what happens in it.', pairs:[['Stanza 1', 'Abba writes one letter at a time.'], ['Stanza 3', 'The speaker asks, "Why so slow?"'], ['Stanza 4', 'He thinks of an old Megillah.'], ['Stanza 6', 'He decides careful work is worth it.']],
+          h:'Read one stanza at a time.', how:'A poem\'s stanzas are like a story\'s parts. The last one often holds the theme.'},
+        {t:'spotall', p:'c45_quill', q:'Tap every line where the SPEAKER reflects on what he learned.', cells:[{label:'"The careful work is work that lasts,"', ok:true}, {label:'"and lasting things are seldom fast."', ok:true}, {label:'"A rushing hand won\'t write it fine."', ok:false}, {label:'"He dips his quill and shapes one letter,"', ok:false}, {label:'"I watch him from the kitchen chair."', ok:false}],
+          h:'Careful: who is talking in each line?', how:'Tap only the speaker\'s own thinking. Words in quotation marks inside the poem belong to someone else.'}
+      ],
+      check:[
+        {p:'c45_oak', q:'"Its branches bent down low and groaned": sees, or reflects?', o:['The speaker sees', 'The speaker reflects']},
+        {p:'c45_oak', q:'"what holds you up is underground": sees, or reflects?', o:['The speaker reflects', 'The speaker sees']},
+        {p:'c45_oak', q:'Theme: "The wind is stronger than any tree." Is it this poem\'s theme?', o:['Not this poem\'s theme', 'Theme of this poem']}
+      ],
+      re:[
+        {p:'c45_quill', q:'The speaker of a poem is...', o:['the "I" who is talking', 'the person in the picture', 'the title'], how:'Look for I, me and my.'},
+        {p:'c45_quill', q:'When a speaker reflects, he...', o:['tells what he now thinks it means', 'describes colors', 'counts the lines'], how:'Reflecting is thinking about what it all means.'},
+        {p:'c45_quill', q:'The theme of a poem often shows...', o:['where the speaker reflects, often at the end', 'in the title only', 'in the first word'], how:'Read the last stanza closely.'}
+      ]},
+    'READ.LIT.L06.05':{name:'Summarize with the Theme',
+      teach:[
+        {p:'c45_siddur', q:'Which is the BEST start for a summary?', o:['Yehuda found a lost siddur on the bus and wanted to return it.', 'The siddur had a cracked leather cover.', 'Dovid said, "You\'ll never find him."'], how:'A summary starts with who and what he wanted. Small details stay out.'},
+        {p:'c45_siddur', q:'Which detail is too small for the summary?', o:['The bus was number 27.', 'A card inside led Yehuda to the owner\'s shul.', 'He gave the siddur back to Reb Mordechai.'], how:'Ask: would the story still make sense without it? Then it is too small.'},
+        {p:'c45_siddur', q:'Which sentence adds the THEME to the summary?', o:['A small kindness can mean a lot to someone.', 'The old man\'s hands began to shake.', 'Yehuda keeps a clue notebook.'], how:'End your summary with the life lesson the whole story teaches.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_siddur', q:'Summary frame: Somebody, Wanted, But, So, ___. Type the last word.', a:'then', kb:'abc',
+          h:'The last part tells how it ended.', how:'The frame: who, what he wanted, the problem, what he did, how it ended.'},
+        {t:'sort', p:'c45_siddur', q:'In the summary, or too small? Sort each detail.', bins:[{id:'b', label:'Belongs in the summary'}, {id:'s', label:'Too small a detail'}],
+          items:[{label:'Yehuda found a lost siddur on the bus.', bin:'b'}, {label:'A card inside led him to the owner\'s shul.', bin:'b'}, {label:'He returned it to Reb Mordechai.', bin:'b'}, {label:'The bus was number 27.', bin:'s'}, {label:'The ink was faded blue.', bin:'s'}, {label:'The old man sat near the window.', bin:'s'}],
+          h:'Would the story still make sense without it?', how:'Keep the big events. Leave out details the story could do without.'},
+        {t:'pairs', p:'c45_siddur', q:'Match each frame word to its part of the story.', pairs:[['Somebody', 'Yehuda'], ['Wanted', 'to return the lost siddur'], ['But', 'there was no address'], ['So', 'he used the card to find the shul']],
+          h:'Who? What did he want? What was the problem? What did he do?', how:'Somebody, Wanted, But, So, Then: each word holds one big part.'},
+        {t:'sort', p:'c45_siddur', q:'Mistake Detective. Does each summary end with the theme?', bins:[{id:'h', label:'Has the theme'}, {id:'m', label:'Missing the theme'}],
+          items:[{label:'Yehuda returned a lost siddur. A small kindness can mean a lot.', bin:'h'}, {label:'Yehuda returned a lost siddur. Kindness can change someone\'s day.', bin:'h'}, {label:'Yehuda returned a lost siddur, and the old man\'s hands shook.', bin:'m'}, {label:'Yehuda returned a lost siddur. The bus was number 27.', bin:'m'}],
+          h:'Read the last sentence. Is it a life lesson?', how:'A strong story summary ends with the theme, not with one more detail.'},
+        {t:'order', p:'c45_siddur', q:'Build the summary in order.', tiles:['Yehuda found a lost siddur.', 'He wanted to return it,', 'but there was no address.', 'So he used a card to find the shul.', 'Then he gave it back.'],
+          h:'Somebody, Wanted, But, So, Then.', how:'Follow the frame. Each tile is one big part of the story.'},
+        {t:'spotall', p:'c45_siddur', q:'Tap every sentence that belongs in a summary of this story.', cells:[{label:'Yehuda found an old man\'s lost siddur.', ok:true}, {label:'He used a clue to find the owner\'s shul.', ok:true}, {label:'A small kindness can mean a lot.', ok:true}, {label:'The cover was cracked leather.', ok:false}, {label:'Dovid said, "You\'ll never find him."', ok:false}, {label:'Yehuda keeps a clue notebook.', ok:false}, {label:'Old siddurs are worth a lot of money.', ok:false}],
+          h:'Big events and the theme. No small details.', how:'Tap the sentences the summary needs. Skip what the story could do without.'}
+      ],
+      check:[
+        {p:'c45_robot', q:'"Its claw hung open." In the summary, or too small a detail?', o:['Too small a detail', 'Belongs in the summary']},
+        {p:'c45_robot', q:'Summary: "Avrumi helped Dovid find the backward gear. Robots are fun." Theme?', o:['Missing the theme', 'Has the theme']},
+        {p:'c45_robot', q:'"Dovid finally asks Avrumi for help." In the summary, or too small?', o:['Belongs in the summary', 'Too small a detail']}
+      ],
+      re:[
+        {p:'c45_siddur', q:'A story summary tells...', o:['the most important events and the theme', 'every detail', 'your favorite part'], how:'Big events plus the lesson. Leave small details out.'},
+        {p:'c45_siddur', q:'"The bus was number 27" is...', o:['too small for a summary', 'the theme', 'the main event'], how:'Would the story still make sense without it?'},
+        {p:'c45_siddur', q:'A strong story summary ends with...', o:['the theme', 'a small detail', 'a question'], how:'Finish with the life lesson.'}
+      ]},
+    'READ.LIT.L06.06':{name:'Summarize Without Your Opinion',
+      teach:[
+        {p:'c45_twins', q:'Which sentence belongs in a summary?', o:['Tzvi Hirsch promised to watch the twins for an hour.', 'Tzvi Hirsch is the best brother in Baltimore.', 'Babies are always annoying.'], how:'A summary tells what happened. It does not tell what YOU think.'},
+        {p:'c45_twins', q:'"He was the best brother ever." Which word is an opinion?', o:['best', 'brother', 'was'], how:'Words like best, worst, boring, silly, amazing and should tell what someone thinks. Leave them out.'},
+        {p:'c45_twins', q:'Which is a fair summary, with no opinion?', o:['He kept his promise to watch the twins instead of playing ball.', 'He should have gone to play ball. Babies are boring.', 'This sweet story was my favorite.'], how:'Stick to what happened and what the story teaches. Your own feelings go somewhere else.'}
+      ],
+      practice:[
+        {t:'type', p:'c45_twins', q:'Type the opinion word: "It was a boring afternoon for Tzvi Hirsch."', a:'boring', kb:'abc',
+          h:'Which word tells what someone thinks, not what happened?', how:'An opinion word tells a feeling or a judgment. Find it, and leave it out of a summary.'},
+        {t:'sort', p:'c45_twins', q:'Fact from the story, or an opinion? Sort each sentence.', bins:[{id:'f', label:'Fact from the story'}, {id:'o', label:'Has an opinion'}],
+          items:[{label:'Ima went to bring soup to a neighbor.', bin:'f'}, {label:'Tzvi Hirsch promised to watch the twins.', bin:'f'}, {label:'The twins cried when the door closed.', bin:'f'}, {label:'Tzvi Hirsch is the best brother ever.', bin:'o'}, {label:'Ball games are more fun than babies.', bin:'o'}, {label:'The bakery song is silly.', bin:'o'}],
+          h:'Did it happen in the story, or is it what someone thinks?', how:'A fact can be found in the story. An opinion is someone\'s judgment.'},
+        {t:'sort', p:'c45_twins', q:'Mistake Detective. Good summary, or has an opinion?', bins:[{id:'g', label:'Good summary'}, {id:'o', label:'Has an opinion'}],
+          items:[{label:'He watched the twins instead of playing ball, and kept his promise.', bin:'g'}, {label:'He stayed with the twins until Ima came home.', bin:'g'}, {label:'He watched the twins, which was so boring.', bin:'o'}, {label:'He made the twins laugh. I think he was amazing.', bin:'o'}],
+          h:'Hunt for opinion words: boring, amazing, I think.', how:'One opinion word is enough to spoil a summary. Read every word.'},
+        {t:'pairs', p:'c45_twins', q:'Fix it! Match each opinion to a fair fact from the story.', pairs:[['"Babies are boring."', 'The twins cried until he made them laugh.'], ['"He was the best brother ever."', 'He kept his promise to watch the twins.'], ['"The game outside was more fun."', 'His friends were playing ball down the block.']],
+          h:'What does the story SHOW about each one?', how:'Swap what you think for what really happened.'},
+        {t:'order', p:'c45_twins', q:'Build a fair summary in order.', tiles:['Tzvi Hirsch promised to watch the twins.', 'They cried, and his friends called him.', 'He stayed and made them laugh.', 'Keeping a promise matters.'],
+          h:'Events in order, then the theme.', how:'Tell what happened, in order, and end with what the story teaches. No opinion words.'},
+        {t:'spotall', p:'c45_twins', q:'Tap every sentence that can go in a FAIR summary.', cells:[{label:'He promised to watch the twins for an hour.', ok:true}, {label:'He stayed even when his friends called him.', ok:true}, {label:'Keeping a promise matters, even when it is hard.', ok:true}, {label:'He should have told Ima no.', ok:false}, {label:'The twins were boring babies.', ok:false}, {label:'It was a sweet, amazing ending.', ok:false}],
+          h:'Hunt for opinion words: should, boring, amazing.', how:'Keep what happened and the theme. Leave out any sentence that judges, even with one word like should.'}
+      ],
+      check:[
+        {p:'c45_lastbus', q:'"Ezra was careless to open the crab book." Fact, or has an opinion?', o:['Has an opinion', 'Fact from the story']},
+        {p:'c45_lastbus', q:'"Ezra should have watched the clock." Fact, or has an opinion?', o:['Has an opinion', 'Fact from the story']},
+        {p:'c45_lastbus', q:'Summary: "They missed the bus, called home and learned to watch the time."', o:['Good summary', 'Has an opinion']}
+      ],
+      re:[
+        {p:'c45_twins', q:'A summary should NOT have...', o:['your opinion', 'the main events', 'the theme'], how:'Tell what happened, not what you think.'},
+        {p:'c45_twins', q:'Which is an opinion word?', o:['boring', 'promised', 'kitchen'], how:'Opinion words tell what someone thinks or feels.'},
+        {p:'c45_twins', q:'"Keeping a promise matters" in a summary is...', o:['the story\'s theme', 'your opinion', 'a small detail'], how:'The theme is what the STORY teaches, so it belongs.'}
+      ]},
+    'READ.FLU.L06.02':{name:'Who Is Talking, and How?',
+      teach:[
+        {p:'c45_basement', q:'"Did you hear that?" whispered Avrumi. Who is talking?', o:['Avrumi', 'Dovid', 'Yehuda'], how:'The tag next to the quotation marks names the speaker.'},
+        {p:'c45_basement', q:'How should you read "Did you hear that?"', o:['softly, almost a whisper', 'loudly, like a shout', 'in a sleepy voice'], how:'The tag word tells HOW: whispered means soft and quiet.'},
+        {p:'c45_basement', q:'"Maybe we should get your Abba." There is no "said." Who is talking?', o:['Avrumi', 'Dovid', 'Dovid\'s Abba'], how:'No tag? Look at the sentence right before it: who is doing something?'}
+      ],
+      practice:[
+        {t:'type', p:'c45_basement', q:'"My Abba is asleep," Dovid ___. Type the tag word.', a:'groaned', kb:'abc',
+          h:'Find the line about Dovid\'s Abba.', how:'The tag word comes right after the quotation marks. Copy it exactly.'},
+        {t:'sort', p:'c45_basement', q:'Spoken aloud, or the narrator\'s words? Sort each part.', bins:[{id:'s', label:'Words someone says'}, {id:'n', label:'Narrator\'s words (the tag)'}],
+          items:[{label:'"Did you hear that?"', bin:'s'}, {label:'whispered Avrumi', bin:'n'}, {label:'"It\'s nothing,"', bin:'s'}, {label:'said Dovid', bin:'n'}, {label:'"It works!"', bin:'s'}, {label:'shouted Dovid', bin:'n'}],
+          h:'Is it inside quotation marks?', how:'Read the words inside the marks in the character\'s voice. Read the tag in a plain voice.'},
+        {t:'sort', p:'c45_basement', q:'How should each line sound? Sort by the tag word.', bins:[{id:'s', label:'Soft voice'}, {id:'l', label:'Loud voice'}, {id:'t', label:'Tired, unhappy voice'}],
+          items:[{label:'"Did you hear that?" whispered Avrumi.', bin:'s'}, {label:'"It works!" shouted Dovid.', bin:'l'}, {label:'"My Abba is asleep," Dovid groaned.', bin:'t'}, {label:'"Great," Avrumi sighed.', bin:'t'}],
+          h:'Look at the tag word: whispered, shouted, groaned, sighed.', how:'The tag word tells how to say it. Match your voice to it.'},
+        {t:'order', p:'c45_basement', q:'Put these lines in the order they are spoken.', tiles:['"Did you hear that?"', '"It\'s nothing,"', '"That is not a dryer,"', '"It works!"'],
+          h:'Start with the first beep. End with the alarm.', how:'Follow the story. A new speaker starts a new paragraph.'},
+        {t:'sort', p:'c45_basement', q:'Mistake Detective. Is the speaker right for each line?', bins:[{id:'r', label:'Right speaker'}, {id:'w', label:'Mistake'}],
+          items:[{label:'"That is not a dryer,": Yehuda', bin:'r'}, {label:'"Maybe we should get your Abba.": Avrumi', bin:'r'}, {label:'"My Abba is asleep,": Dovid', bin:'r'}, {label:'"Did you hear that?": Dovid', bin:'w'}, {label:'"It\'s my moisture alarm!": Yehuda', bin:'w'}, {label:'"Great,": Dovid', bin:'w'}],
+          h:'Check the tag, or the action sentence right before the words.', how:'Never guess the speaker. Find the tag, or the person doing something next to the words.'},
+        {t:'spotall', p:'c45_basement', q:'Tap every line that DOVID says.', cells:[{label:'"It\'s nothing,"', ok:true}, {label:'"My Abba is asleep,"', ok:true}, {label:'"It works!"', ok:true}, {label:'"Did you hear that?"', ok:false}, {label:'"That is not a dryer,"', ok:false}, {label:'"Great,"', ok:false}],
+          h:'Check the tag or the action next to each line.', how:'Find who is talking for every line: the tag, or the sentence beside it.'}
+      ],
+      check:[
+        {p:'c45_bakerykey', q:'"What about your apron?" he asked. Speaker: Tzvi Hirsch. Right speaker, or a mistake?', o:['Mistake', 'Right speaker']},
+        {p:'c45_bakerykey', q:'Tzvi Hirsch dropped his voice. "Sorry." How should "Sorry" sound?', o:['Soft voice', 'Loud voice', 'Tired, unhappy voice']},
+        {p:'c45_bakerykey', q:'"Think," said Binyamin calmly. Is "said Binyamin calmly" spoken?', o:['Narrator\'s words (the tag)', 'Words someone says']}
+      ],
+      re:[
+        {p:'c45_basement', q:'Quotation marks show...', o:['the exact words someone says', 'the narrator\'s thoughts', 'the title'], how:'Inside the marks: a character talking.'},
+        {p:'c45_basement', q:'"shouted" tells you to read it...', o:['loudly', 'softly', 'sadly'], how:'The tag word tells how.'},
+        {p:'c45_basement', q:'No tag? To find the speaker, look at...', o:['the sentence right next to the words', 'the last page', 'the title'], how:'An action sentence beside the quote names the speaker.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.LIT.L06.02':{
+      hook:'Every story is ABOUT something. A great story also TEACHES something.',
+      big:'The topic is what the story is about, in a word or two. The theme is the life lesson, in a full sentence that fits the whole story.',
+      intro:['Name the topic: one or two words, like "a map" or "a rainy day."', 'Ask: what does the main character learn or realize?', 'Say it as a full sentence about life, for anyone, not only this boy.', 'Test it: does it fit the beginning, the middle and the end?'],
+      ex:[{q:'Topic of "Avrumi\'s Rainy-Day Map"?', steps:['What is it about? Avrumi draws a map.', 'Say it short: drawing a map.'], a:'Drawing a map'},
+          {q:'Theme of "Avrumi\'s Rainy-Day Map"?', steps:['Beginning: he sends everyone away, and the map grows slowly.', 'Middle: Ima says, "Maybe they know things you don\'t."', 'End: everyone helps, and it is his best map ever.', 'Life lesson: letting others help can make your work better.'], a:'Letting others help can make your work better.'}],
+      oops:{q:'Theme of Avrumi\'s story?', wrong:'Sharing', right:'Letting others help can make your work better.', why:'"Sharing" is one word: a topic. A theme is a full sentence that teaches.'},
+      idea:['The topic is the box. The theme is the present inside.'],
+      try:{q:'Which is a theme, not a topic?', o:['What you share can turn out even better.', 'A big map', 'Glen Avenue'], a:'What you share can turn out even better.', steps:['Find the full sentence.', 'Does it teach a life lesson?']}
+    },
+    'READ.LIT.L06.03':{
+      hook:'Every hero hits a wall. What he does next tells you what the story teaches.',
+      big:'Find the challenge, watch how the character meets it, and ask what his choice teaches. That is the theme.',
+      intro:['Find the challenge: the hard thing he must face.', 'Watch how he meets it: what does he choose to do?', 'Ask: what happened because of his choice?', 'Turn it into a life lesson for anyone. That is the theme.'],
+      ex:[{q:'Binyamin\'s challenge and his choice', steps:['Challenge: he loses his first game and wants to quit.', 'How he meets it: he plays the game again, move by move.', 'Result: he finds his mistake and wins the next game.', 'Theme: a loss can teach you how to do better.'], a:'A loss can teach you how to do better.'},
+          {q:'What does his notebook line show?', steps:['He writes: "Lost game 1. Learned about my queen."', 'He sees the loss as a lesson, not an ending.', 'That fits the theme.'], a:'He learned from the loss.'}],
+      oops:{q:'Theme of "The First Round"', wrong:'Chess is hard.', right:'A loss can teach you how to do better.', why:'"Chess is hard" is about the topic. The theme comes from how he meets the challenge.'},
+      idea:['The challenge is the test. His choice is his answer. The theme is what the answer teaches.'],
+      try:{q:'Which is how Binyamin meets the challenge?', o:['He asks, "Is my queen safe?" before every move.', 'He lost in nineteen moves.', 'His face was burning.'], a:'He asks, "Is my queen safe?" before every move.', steps:['Did it happen to him, or did he choose to do it?']}
+    },
+    'READ.LIT.L06.04':{
+      hook:'A poem is a small window into someone\'s thinking. Look through it, and you find the lesson.',
+      big:'Find the speaker, notice what he sees, then find where he reflects. The reflection points to the theme.',
+      intro:['Find the speaker: who is the "I"?', 'What does he see or do? That is the picture.', 'Where does he stop and think about what it means? That is the reflection.', 'Turn the reflection into a life lesson. That is the theme.'],
+      ex:[{q:'"My Abba\'s Quill": sees, or reflects?', steps:['"He dips his quill and shapes one letter": he sees.', '"I like a quick and easy path": he tells how he feels at first.', '"The careful work is work that lasts": he reflects.'], a:'The last stanza is the reflection.'},
+          {q:'Theme of the poem?', steps:['At first, he likes things fast.', 'He thinks of an old Megillah, still clear after a hundred years.', 'He reflects: careful work lasts.', 'Theme: careful, patient work is work that lasts.'], a:'Careful, patient work is work that lasts.'}],
+      oops:{q:'Theme of "My Abba\'s Quill"', wrong:'Abba writes with a quill.', right:'Careful, patient work is work that lasts.', why:'The first is something the speaker sees. The theme comes from what he reflects.'},
+      idea:['What the speaker sees is the window. What he reflects is the view.'],
+      try:{q:'Which line shows the speaker has changed?', o:['"I think of Abba\'s patient face."', '"I like a quick and easy path."', '"I watch him from the kitchen chair."'], a:'"I think of Abba\'s patient face."', steps:['At first he liked things fast.', 'Which line shows him thinking differently now, when he starts to race?']}
+    },
+    'READ.LIT.L06.05':{
+      hook:'A summary is the whole story in a few sentences, plus what it teaches.',
+      big:'Use Somebody, Wanted, But, So, Then for the big events, leave out small details, and finish with the theme.',
+      intro:['Somebody: who is the main character?', 'Wanted, But: what did he want, and what was the problem?', 'So, Then: what did he do, and how did it end?', 'Finish with the theme: the life lesson of the whole story.'],
+      ex:[{q:'Summarize "The Siddur on the Bus"', steps:['Somebody: Yehuda.', 'Wanted: to return a lost siddur. But: there was no address.', 'So: he used a card inside to find the owner\'s shul. Then: he gave it back.', 'Theme: a small kindness can mean a lot.'], a:'Yehuda found a lost siddur with no address, used a clue to find its owner and returned it. A small kindness can mean a lot.'},
+          {q:'Keep or leave out: "Its leather cover was cracked"?', steps:['Would the story still make sense without it? Yes.', 'So it is too small for the summary.'], a:'Leave it out.'}],
+      oops:{q:'Summary of "The Siddur on the Bus"', wrong:'Yehuda found a siddur on bus 27. It had a cracked cover and faded blue ink.', right:'Yehuda found a lost siddur, tracked down its owner and returned it. A small kindness can mean a lot.', why:'The first is all small details and no theme. A summary tells the big events and the lesson.'},
+      idea:['A summary is a suitcase: pack only what matters, and put the lesson on top.'],
+      try:{q:'Which belongs in the summary?', o:['Yehuda gave the siddur back to its owner.', 'The ink was faded blue.', 'The bus was number 27.'], a:'Yehuda gave the siddur back to its owner.', steps:['Which one is a big event the story needs?']}
+    },
+    'READ.LIT.L06.06':{
+      hook:'A summary is like a news report: what happened, not what you think of it.',
+      big:'Tell the important events and the theme in fair, plain words. Leave your own opinion out.',
+      intro:['Write the big events: who, what he wanted, the problem, what he did, how it ended.', 'Hunt for opinion words: best, worst, boring, silly, amazing, should, I think.', 'Swap each opinion for a fact from the story.', 'The theme is what the STORY teaches, so it stays in.'],
+      ex:[{q:'Fix: "Tzvi Hirsch was the best brother ever."', steps:['"best brother ever" is my opinion.', 'What does the story SHOW? He kept his promise to watch the twins.', 'Fair: Tzvi Hirsch kept his promise to watch the twins.'], a:'Tzvi Hirsch kept his promise to watch the twins.'},
+          {q:'Summarize "One Promised Hour"', steps:['Tzvi Hirsch promised to watch his twin brothers for an hour.', 'They cried, and his friends called him to play ball.', 'He stayed and made them laugh until Ima came home.', 'Theme: keeping a promise matters, even when it is hard.'], a:'He kept his promise to watch the twins, even when it was hard. Keeping a promise matters.'}],
+      oops:{q:'Summary of "One Promised Hour"', wrong:'Tzvi Hirsch was amazing. Babies are boring, but he was so nice.', right:'Tzvi Hirsch kept his promise to watch the twins instead of playing ball.', why:'"Amazing", "boring" and "so nice" are opinions. A summary tells what happened.'},
+      idea:['Be a reporter, not a fan: tell what happened, and let the reader decide.'],
+      try:{q:'Which sentence has NO opinion?', o:['At three o\'clock, all three were asleep on the rug.', 'It was the sweetest ending ever.', 'He should have played ball.'], a:'At three o\'clock, all three were asleep on the rug.', steps:['Look for opinion words like sweetest and should.']}
+    },
+    'READ.FLU.L06.02':{
+      hook:'Good readers sound like a whole cast of characters, not one flat voice.',
+      big:'Find who is talking from the tag or the sentence beside it, and let the tag word tell you how to say it.',
+      intro:['Quotation marks hold the exact words someone says.', 'The tag names the speaker: said Dovid, whispered Avrumi.', 'The tag word tells HOW: whispered is soft, shouted is loud, groaned is unhappy.', 'No tag? Look at the action sentence beside the words. A new paragraph means a new speaker.'],
+      ex:[{q:'"Did you hear that?" whispered Avrumi.', steps:['Who? The tag says Avrumi.', 'How? Whispered: soft and quiet.', 'Read the tag itself in a plain voice.'], a:'Avrumi, softly'},
+          {q:'Avrumi grabbed Dovid\'s sleeve. "Maybe we should get your Abba."', steps:['There is no "said" here.', 'The sentence right before tells who: Avrumi grabbed Dovid\'s sleeve.', 'He is scared, so read it in a worried voice.'], a:'Avrumi, worried'}],
+      oops:{q:'"It works!" shouted Dovid.', wrong:'Read it in a flat, quiet voice.', right:'Read "It works!" loudly and excitedly.', why:'"Shouted" and the exclamation mark both say: loud and excited.'},
+      idea:['Be a radio actor: every character gets his own voice, and the tag words are your stage directions.'],
+      try:{q:'"Great," Avrumi sighed. How do you read "Great"?', o:['In a tired, unhappy voice', 'In a happy shout', 'In a whisper'], a:'In a tired, unhappy voice', steps:['Look at the tag word: sighed.']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.LIT.L06.02':{ band:'E45', pic:'🗺️', today:'Tell the theme from the topic',
+      why:'The topic says what a story is about. The theme says what it teaches you.',
+      ready:[{q:'The main idea is...', o:['what the whole text is mostly about','one small detail','the title'], a:'what the whole text is mostly about'},
+             {q:'"Deserts" is a...', o:['topic','main idea','quote'], a:'topic'}],
+      bridge:'READ.COMP.L05.10', bridgeName:'Topic or Main Idea?',
+      watch:{ q:'Avrumi\'s Rainy-Day Map', m:{type:'scene', e:'🗺️', t:'Avrumi sends his brothers and sisters away, and his map grows slowly. Then he lets them help. It becomes the best map he ever made.'}, steps:[
+        {t:'Topic first: what is it about? Drawing a map. Just a few words.'},
+        {t:'Now the theme: what does Avrumi learn?'},
+        {t:'Alone, the map was slow. With everyone helping, it was his best.'},
+        {t:'Theme: letting others help can make your work better. It fits the whole story.'}],
+        a:'Topic: a few words. Theme: a life lesson in a full sentence.' },
+      oops:{ q:'Theme of Avrumi\'s story?', wrong:'Sharing', right:'Letting others help can make your work better.', why:'One word is a topic. A theme is a full-sentence lesson.' },
+      ways:['worked example','sort and build','Mistake Detective','tap the reason','chavrusa'], done:'You can tell a theme from a topic! Tell your chavrusa the theme of a story you know.',
+      board:{ one:'Topic: a few words. Theme: a life lesson in a full sentence that fits the whole story.', activity:'Stand or sit: the teacher reads a card; boys stand for a theme and sit for a topic, then one boy says why.', mistakes:['Giving one word as the theme','Giving an event from the story as the theme','A theme that fits only one scene'] },
+      do:[
+        {type:'sort', q:'Avrumi\'s story', bins:['Theme (a life lesson)','Topic (one or two words)'], cards:[['Drawing a map',1],['A rainy Sunday',1],['Letting others help can make work better.',0],['Shared work can turn out better.',0]],
+          say:'Theme or topic? Sort each one.', how:'A few words is a topic. A full-sentence lesson is a theme.'},
+        {type:'tiles', w:['Letting others help','can make your work','even better.'], extra:['a map'],
+          say:'Build the theme as a full sentence.', how:'Start with what Avrumi finally did, then the lesson.',
+          why:{q:'Why is a theme a full sentence?', o:['It has to teach a lesson','Sentences are longer','Titles are sentences'], a:'It has to teach a lesson'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Real theme','Mistake'], cards:[['Letting others help can make work better.',0],['Sharing',1],['Avrumi drew a map.',1],['Maps are fun.',1]],
+          say:'Mistake Detective: real theme, or a mistake?', how:'One word, an event, or a fun fact is not a theme.'},
+        {type:'listen', q:'Avrumi sent everyone away. By lunchtime he had only one street.', hear:'Does the theme fit the beginning, too?', o:['Yes: alone, his work went slowly','No: it only fits the end','No: it is about the rain'], a:'Yes: alone, his work went slowly',
+          say:'Test the theme on the beginning.', how:'A theme fits the whole story, from start to end.',
+          why:{q:'Why test the beginning?', o:['A theme must fit the whole story','The beginning is the best part','The title is there'], a:'A theme must fit the whole story'}},
+        {type:'match', pairs:[['A map','Topic'],['Letting others help can make work better.','Theme'],['"Maybe they know things you don\'t."','A clue to the theme']],
+          say:'Match each one to what it is.', how:'A few words, a lesson, or a line that points to the lesson?'},
+        {type:'sort', bins:['Fits the whole story','Fits only one part'], cards:[['Letting others help can make work better.',0],['Rainy days make children bored.',1],['Little brothers can be noisy.',1]],
+          say:'Does each idea fit the whole story?', how:'Test it on the beginning, the middle and the end.'},
+        {type:'listen', q:'Challenge: Chani added every tree. Shloimy drew the hydrant. Mendy and Yossi remembered the cat.', hear:'Why was this the best map Avrumi ever made?', o:['Each child added a place they knew well','It used the biggest paper','Abba drew most of it'], a:'Each child added a place they knew well',
+          say:'Challenge! Why was it his best map ever?', how:'Join the details from the end. What do they show together?'}] },
+    'READ.LIT.L06.03':{ band:'E45', pic:'♟️', today:'See how meeting the challenge shows the theme',
+      why:'What a character does when things get hard shows what the story teaches.',
+      ready:[{q:'A theme is...', o:['a life lesson in a full sentence','one word','the title'], a:'a life lesson in a full sentence'},
+             {q:'"Losing a game" is a...', o:['topic','theme','quote'], a:'topic'}],
+      bridge:'READ.LIT.L06.02', bridgeName:'Theme or Topic?',
+      watch:{ q:'The First Round', m:{type:'scene', e:'♟️', t:'Binyamin lost his first game and wanted to quit. Zeidy asked him to play it again, move by move. Binyamin found his mistake and won the next game.'}, steps:[
+        {t:'The challenge: Binyamin loses and wants to quit.'},
+        {t:'How he meets it: he plays the game again, move by move.'},
+        {t:'He finds his mistake: his queen came out too early.'},
+        {t:'His choice teaches: a loss can teach you how to do better.'}],
+        a:'Challenge + how he meets it = the theme.' },
+      oops:{ q:'Theme of "The First Round"', wrong:'Chess is hard.', right:'A loss can teach you how to do better.', why:'That is about the topic. The theme comes from his choice.' },
+      ways:['worked example','evidence','sort and build','Mistake Detective','tap the reason','chavrusa'], done:'You can see how a hero\'s choice shows the theme! Tell your chavrusa about a hard moment and a good choice.',
+      board:{ one:'Find the challenge, watch his choice, say the lesson.', activity:'Two endings: pairs get a hard moment, act out two different choices, and the class names the theme each choice would show.', mistakes:['Naming the challenge as the theme','A theme about the topic, not the choice','A theme the character\'s actions do not show'] },
+      do:[
+        {type:'sort', bins:['The challenge','How he meets it'], cards:[['He lost in nineteen moves.',0],['He wanted to quit.',0],['He played the game again.',1],['He asked, "Is my queen safe?"',1]],
+          say:'Challenge, or how he meets it?', how:'Did it happen to him, or did he choose it?'},
+        {type:'tiles', w:['He loses.','He studies the game.','He finds his mistake.','He wins.'], extra:['He quits.'],
+          say:'Build the story of how he meets it.', how:'Challenge first, then his choices, then the result.'}],
+      your:[
+        {type:'sort', mis:true, bins:['Shown by how he meets it','Mistake'], cards:[['A loss can teach you how to do better.',0],['Learn from mistakes instead of quitting.',0],['Chess is hard.',1],['Winners never make mistakes.',1]],
+          say:'Mistake Detective: shown by his choice, or a mistake?', how:'The theme must come from what he chose to do.'},
+        {type:'listen', q:'Binyamin wrote: "Lost game 1. Learned about my queen."', hear:'What does this line show?', o:['He sees the loss as a lesson','He wants to quit chess','He forgot the game'], a:'He sees the loss as a lesson',
+          say:'What does his notebook line show?', how:'Learning a lesson is the opposite of giving up.',
+          why:{q:'Why does this line fit the theme?', o:['He learned from losing','It is the last line','It has a number'], a:'He learned from losing'}},
+        {type:'match', pairs:[['Plays it again, move by move','He faces his mistake.'],['Asks, "Is my queen safe?"','He uses what he learned.'],['Wins the second game','His choice paid off.']],
+          say:'Match each choice to what it shows.', how:'What does each action tell you about him?'},
+        {type:'tiles', w:['A loss','can teach you','how to do better.'], extra:['chess is hard.'],
+          say:'Build the theme from his choices.', how:'Say it as a lesson for anyone, not just Binyamin.',
+          why:{q:'Why not say "Binyamin learned chess"?', o:['A theme is a lesson for anyone','It is too short','He did not learn chess'], a:'A theme is a lesson for anyone'}},
+        {type:'listen', q:'Challenge: What if Binyamin had gone home and never played again?', hear:'Then what would the story teach?', o:['Giving up stops you from learning','A loss can teach you how to do better','Zeidy is a good teacher'], a:'Giving up stops you from learning',
+          say:'Challenge! A different choice teaches a different lesson.', how:'Change the choice, and the lesson changes too.'}] },
+    'READ.LIT.L06.04':{ band:'E45', pic:'🪶', today:'Find the theme where the speaker reflects',
+      why:'In a poem, the speaker\'s thinking leads you to the life lesson.',
+      ready:[{q:'A theme is...', o:['a life lesson in a full sentence','one word','a rhyme'], a:'a life lesson in a full sentence'},
+             {q:'In a poem, a stanza is...', o:['a group of lines','one word','the title'], a:'a group of lines'}],
+      bridge:'READ.LIT.L06.02', bridgeName:'Theme or Topic?',
+      watch:{ q:'My Abba\'s Quill', m:{type:'scene', e:'🪶', t:'"I race my pencil through my math. / I like a quick and easy path." ... "The careful work is work that lasts, / and lasting things are seldom fast."'}, steps:[
+        {t:'The speaker is a boy watching his Abba write.'},
+        {t:'At first he sees slow work, and he likes a quick path.'},
+        {t:'He thinks of an old Megillah, still clear after a hundred years.'},
+        {t:'He reflects: careful work lasts. That points to the theme.'}],
+        a:'What he sees + what he reflects = the theme.' },
+      oops:{ q:'Theme of "My Abba\'s Quill"', wrong:'Abba writes with a quill.', right:'Careful, patient work is work that lasts.', why:'That is something he sees. The theme comes from what he reflects.' },
+      ways:['worked example','fluency','sort and match','Mistake Detective','tap the reason','chavrusa'], done:'You can find the theme in a poem! Read your chavrusa the lines where the speaker reflects.',
+      board:{ one:'Find the speaker, notice what he sees, then find where he reflects. That points to the theme.', activity:'Two-color reading: the class reads a poem aloud; one color marks lines the speaker sees, another marks lines where he reflects.', mistakes:['Naming something the speaker sees as the theme','Mixing up the speaker with another person in the poem','Missing the change in the last stanza'] },
+      do:[
+        {type:'sort', bins:['The speaker sees','The speaker reflects'], cards:[['"He dips his quill and shapes one letter,"',0],['"its parchment brown, its letters bold."',0],['"The careful work is work that lasts,"',1],['"and lasting things are seldom fast."',1]],
+          say:'Sees, or reflects? Sort each line.', how:'Seeing tells what happens. Reflecting tells what he believes.'},
+        {type:'match', pairs:[['Stanza 1','Abba writes one letter at a time.'],['Stanza 3','"Why so slow?"'],['Stanza 6','Careful work lasts.']],
+          say:'Match each stanza to what happens.', how:'The last stanza is where he reflects.'}],
+      your:[
+        {type:'sort', mis:true, bins:['Theme of this poem','Mistake'], cards:[['Careful, patient work is work that lasts.',0],['Things done with care last a long time.',0],['Abba writes with a quill.',1],['Always finish fast.',1]],
+          say:'Mistake Detective: the theme, or a mistake?', how:'A thing he sees is not the theme. Find what he reflects.'},
+        {type:'listen', q:'He smiles, his eyes still on the line: / "A rushing hand won\'t write it fine."', hear:'Who says, "A rushing hand won\'t write it fine"?', o:['Abba, not the speaker','The speaker','The Megillah'], a:'Abba, not the speaker',
+          say:'Careful! Who is talking in this line?', how:'The speaker is the "I". Look at the quotation marks.',
+          why:{q:'How can you tell?', o:['The words are in quotation marks after "He smiles"','They rhyme','They come first'], a:'The words are in quotation marks after "He smiles"'}},
+        {type:'tiles', w:['He likes things fast.','He thinks of the old Megillah.','He decides to slow down.'], extra:['He buys a quill.'],
+          say:'Build how the speaker changes.', how:'How he was at first, what he thinks of, what he decides.'},
+        {type:'match', pairs:[['"I like a quick and easy path."','How he felt at first'],['"one careful letter, row by row"','What he pictured'],['"The careful work is work that lasts,"','What he reflects']],
+          say:'Match each line to its job in the poem.', how:'Feeling at first, a picture, then reflecting.',
+          why:{q:'Which line holds the theme?', o:['The one where he reflects','The first line','The shortest line'], a:'The one where he reflects'}},
+        {type:'listen', q:'Challenge: "So now, whenever I start to race, / I think of Abba\'s patient face."', hear:'What does the speaker do differently now?', o:['He remembers to slow down','He races even faster','He stops doing math'], a:'He remembers to slow down',
+          say:'Challenge! How has the speaker changed?', how:'Compare him at the start and at the end.'}] },
+    'READ.LIT.L06.05':{ band:'E45', pic:'📖', today:'Summarize a story and finish with its theme',
+      why:'A good summary shows you understood the whole story, and what it teaches.',
+      ready:[{q:'Somebody, Wanted, But, So, ...', o:['Then','Where','Why'], a:'Then'},
+             {q:'A theme is...', o:['a life lesson in a full sentence','one word','a small detail'], a:'a life lesson in a full sentence'}],
+      bridge:'READ.LIT.L05.01', bridgeName:'Summarize the Story',
+      watch:{ q:'The Siddur on the Bus', m:{type:'scene', e:'📖', t:'Yehuda found an old siddur on the bus. Inside was a card from a shul. He went there, found Reb Mordechai and gave it back. The old man\'s hands began to shake.'}, steps:[
+        {t:'Somebody: Yehuda. Wanted: to return a lost siddur.'},
+        {t:'But: there was no address. So: he used the card to find the shul.'},
+        {t:'Then: he gave it back to Reb Mordechai.'},
+        {t:'I finish with the theme: a small kindness can mean a lot.'}],
+        a:'Big events + the theme = a strong summary.' },
+      oops:{ q:'Summary of "The Siddur on the Bus"', wrong:'He found a siddur on bus 27 with a cracked cover.', right:'He returned a lost siddur to its owner. A small kindness can mean a lot.', why:'Small details and no theme. Tell the big events and the lesson.' },
+      ways:['worked example (fading)','story frame','sort and build','Mistake Detective','tap the reason'], done:'You can sum up a whole story and its lesson!',
+      board:{ one:'Somebody, Wanted, But, So, Then, and finish with the theme.', activity:'Summary relay: five boys each say one part of the frame for a story the class knows; a sixth adds the theme.', mistakes:['Retelling every detail','Leaving out the problem','Ending without the theme'] },
+      do:[
+        {type:'tiles', w:['Somebody: Yehuda','Wanted: return the siddur','But: no address','So: he used the card','Then: he gave it back'],
+          say:'Build the summary frame in order.', how:'Somebody, Wanted, But, So, Then.'},
+        {type:'sort', mis:true, bins:['Belongs in the summary','Too small a detail'], cards:[['He found a lost siddur.',0],['He returned it to its owner.',0],['The bus was number 27.',1],['The cover was cracked.',1]],
+          say:'Mistake Detective: big event, or too small?', how:'Would the story still make sense without it?'}],
+      your:[
+        {type:'match', pairs:[['Somebody','Yehuda'],['But','no address inside'],['So','used the card to find the shul']],
+          say:'Match each frame word to the story.', how:'Who, the problem, and what he did about it.'},
+        {type:'listen', q:'Summary: "Yehuda found a lost siddur, found its owner and gave it back."', hear:'What is this summary missing?', o:['The theme','The bus number','The color of the ink'], a:'The theme',
+          say:'What is missing from this summary?', how:'A strong story summary ends with the life lesson.',
+          why:{q:'Why add the theme?', o:['It shows what the story teaches','It makes it longer','It is the title'], a:'It shows what the story teaches'}},
+        {type:'sort', bins:['Has the theme','Missing the theme'], cards:[['...gave it back. A small kindness can mean a lot.',0],['...gave it back. His hands shook.',1],['...gave it back. Kindness can change someone\'s day.',0]],
+          say:'Does each summary end with the theme?', how:'Look at the last sentence. Is it a life lesson?'},
+        {type:'tiles', w:['Yehuda returned a lost siddur.','A small kindness','can mean a lot.'], extra:['The bus was 27.'],
+          say:'Build the summary with its theme.', how:'Big event first, then the lesson.',
+          why:{q:'Why does the lesson go last?', o:['It sums up the whole story','It is the shortest','It is a detail'], a:'It sums up the whole story'}},
+        {type:'listen', q:'Challenge: three summaries. Which is the best?', hear:'Which summary is the best?', o:['Yehuda returned a lost siddur. A small kindness means a lot.','Yehuda found a siddur on bus 27 with faded ink.','Yehuda, Dovid, a bus, a card, a shul, an old man.'], a:'Yehuda returned a lost siddur. A small kindness means a lot.',
+          say:'Challenge! Which summary is the best?', how:'Big events, no small details, and the theme.'}] },
+    'READ.LIT.L06.06':{ band:'E45', pic:'📰', today:'Summarize fairly, with no opinion',
+      why:'A fair summary lets the reader trust you. Your opinion can come later.',
+      ready:[{q:'A story summary tells...', o:['the big events and the theme','every detail','only the ending'], a:'the big events and the theme'},
+             {q:'"Pizza is the best food." This is...', o:['an opinion','a fact','a summary'], a:'an opinion'}],
+      bridge:'READ.LIT.L06.05', bridgeName:'Summarize with the Theme',
+      watch:{ q:'One Promised Hour', m:{type:'scene', e:'🍼', t:'Tzvi Hirsch promised to watch the twins. They cried, and his friends called him to play. He stayed, made faces and sang until they laughed.'}, steps:[
+        {t:'My first try: "Tzvi Hirsch was the best brother ever." Wait.'},
+        {t:'"best brother ever" is my opinion. I hunt for opinion words.'},
+        {t:'What did the story show? He kept his promise instead of playing ball.'},
+        {t:'Fair summary: he kept his promise to watch the twins, even when it was hard.'}],
+        a:'What happened + the theme. No opinion words.' },
+      oops:{ q:'Summary of "One Promised Hour"', wrong:'Tzvi Hirsch was amazing. Babies are boring.', right:'Tzvi Hirsch kept his promise to watch the twins instead of playing ball.', why:'"Amazing" and "boring" are opinions. Tell what happened.' },
+      ways:['worked example','Mistake Detective','sort and build','tap the reason','challenge round'], done:'You can summarize like a fair reporter!',
+      board:{ one:'Be a reporter, not a fan: events and theme, no opinion words.', activity:'Opinion hunt: the teacher reads a summary full of opinions; boys call "Opinion!" at each one and offer a fair fact instead.', mistakes:['Opinion words like best, boring or amazing','Telling what the character should have done','Thinking the theme is an opinion'] },
+      do:[
+        {type:'sort', bins:['Fact from the story','Has an opinion'], cards:[['He promised to watch the twins.',0],['The twins cried.',0],['He is the best brother ever.',1],['Babies are boring.',1]],
+          say:'Fact from the story, or an opinion?', how:'Did it happen in the story, or is it what someone thinks?'},
+        {type:'match', pairs:[['"He was the best brother."','He kept his promise.'],['"Babies are boring."','The twins cried.'],['"The game was more fun."','His friends were playing ball.']],
+          say:'Fix it! Match each opinion to a fair fact.', how:'Swap what you think for what the story shows.'}],
+      your:[
+        {type:'sort', mis:true, bins:['Good summary','Has an opinion'], cards:[['He kept his promise instead of playing ball.',0],['He stayed with the twins until three.',0],['He watched the boring twins.',1],['I think he was amazing.',1]],
+          say:'Mistake Detective: good summary, or an opinion?', how:'Hunt for opinion words like boring and amazing.'},
+        {type:'listen', q:'"Tzvi Hirsch should have gone to play ball."', hear:'Can this sentence go in a summary?', o:['No: it says what he should do','Yes: it is a fact','Yes: it is the theme'], a:'No: it says what he should do',
+          say:'Can this sentence go in a summary?', how:'"Should" tells what someone thinks. That is an opinion.',
+          why:{q:'Which word gives it away?', o:['should','ball','play'], a:'should'}},
+        {type:'tiles', w:['He promised to watch the twins.','They cried; his friends called.','He stayed and made them laugh.','Keeping a promise matters.'], extra:['He was amazing.'],
+          say:'Build a fair summary in order.', how:'Events in order, then the theme. No opinion words.'},
+        {type:'listen', q:'"Keeping a promise matters, even when it is hard."', hear:'Is this the story\'s theme, or your opinion?', o:['The story\'s theme','My opinion','A small detail'], a:'The story\'s theme',
+          say:'The story\'s theme, or your opinion?', how:'The theme is what the STORY teaches. The whole story shows it.',
+          why:{q:'How do you know it is the theme?', o:['His actions in the whole story show it','I like promises','It is short'], a:'His actions in the whole story show it'}},
+        {type:'sort', q:'Challenge: fix the summary', bins:['Keep','Cut: opinion'], cards:[['Tzvi Hirsch promised to watch the twins.',0],['Sadly, his friends had more fun.',1],['He made faces and sang until they laughed.',0],['Ima was lucky to have him.',1],['Keeping a promise matters.',0]],
+          say:'Challenge! Keep each part, or cut the opinion?', how:'Keep events and the theme. Cut what someone thinks.'}] },
+    'READ.FLU.L06.02':{ band:'E45', pic:'🎭', today:'Read dialogue: who is talking, and how',
+      why:'When each character sounds right, the story comes alive and you understand it better.',
+      ready:[{q:'A comma or a period tells you to...', o:['pause','shout','skip'], a:'pause'},
+             {q:'Quotation marks show...', o:['someone talking','a list','a title'], a:'someone talking'}],
+      bridge:'READ.FLU.L05.03', bridgeName:'Scoop the Words',
+      watch:{ q:'The Noise in the Basement', m:{type:'scene', e:'🔦', t:'"Did you hear that?" whispered Avrumi.\n"It\'s nothing," said Dovid. "Probably the dryer."'}, steps:[
+        {t:'Quotation marks: someone is talking.'},
+        {t:'The tag says whispered Avrumi. So Avrumi talks, softly.'},
+        {t:'Next line: said Dovid. A new speaker, a calm voice.'},
+        {t:'I read the tags plainly, and give each voice its own sound.'}],
+        a:'The tag tells who is talking, and how.' },
+      oops:{ q:'"It works!" shouted Dovid.', wrong:'Read it in a flat, quiet voice.', right:'Read "It works!" loudly and excitedly.', why:'"Shouted" and the "!" both say: loud and excited.' },
+      ways:['worked example','fluency','theatre','sort and match','Mistake Detective','tap the reason'], done:'You can read dialogue like a radio actor! Read the scene with your chavrusa, one part each.',
+      board:{ one:'The tag tells who is talking and how. No tag? Look at the sentence beside it.', activity:'Radio play: groups of four read the basement scene aloud, one boy per character and one narrator for the tags.', mistakes:['Reading every voice the same flat way','Reading the tag in the character\'s voice','Losing track of the speaker when there is no tag'] },
+      do:[
+        {type:'sort', bins:['Words someone says','Narrator\'s words (the tag)'], cards:[['"Did you hear that?"',0],['whispered Avrumi',1],['"It\'s nothing,"',0],['said Dovid',1]],
+          say:'Spoken words, or the narrator\'s tag?', how:'Inside quotation marks: spoken. Outside: the tag.'},
+        {type:'match', pairs:[['whispered','soft'],['shouted','loud'],['groaned','tired and unhappy']],
+          say:'Match each tag word to how it sounds.', how:'The tag word is a direction for your voice.'}],
+      your:[
+        {type:'sort', mis:true, bins:['Right speaker','Mistake'], cards:[['"That is not a dryer": Yehuda',0],['"Maybe we should get your Abba": Avrumi',0],['"Did you hear that?": Dovid',1],['"It\'s my moisture alarm!": Yehuda',1]],
+          say:'Mistake Detective: is the speaker right?', how:'Check the tag, or the action sentence next to it.'},
+        {type:'listen', q:'Avrumi grabbed Dovid\'s sleeve. "Maybe we should get your Abba."', hear:'There is no tag. Who is talking?', o:['Avrumi','Dovid','Yehuda'], a:'Avrumi',
+          say:'No tag! Who is talking?', how:'Look at the action sentence right before the words.',
+          why:{q:'How do you know?', o:['The sentence before is about Avrumi','Avrumi talks the most','It is the first line'], a:'The sentence before is about Avrumi'}},
+        {type:'tiles', w:['"Did you hear that?"','"It\'s nothing,"','"That is not a dryer,"','"It works!"'], extra:['"Good night!"'],
+          say:'Put the lines in the order they are spoken.', how:'Follow the story from the first beep to the alarm.'},
+        {type:'sort', bins:['Soft voice','Loud voice','Tired, unhappy voice'], cards:[['"Did you hear that?" whispered Avrumi.',0],['"It works!" shouted Dovid.',1],['"My Abba is asleep," Dovid groaned.',2],['"Great," Avrumi sighed.',2]],
+          say:'How should each line sound? Sort them.', how:'Let the tag word choose your voice.',
+          why:{q:'Why read "Great" in an unhappy voice?', o:['Avrumi sighed: he is not really happy','It has a comma','Great is a happy word'], a:'Avrumi sighed: he is not really happy'}},
+        {type:'listen', q:'Challenge: "Oh no," said Dovid, slapping his forehead. "It\'s my moisture alarm!"', hear:'How should Dovid sound here?', o:['Like he just figured something out','Sleepy and slow','Calm, in a whisper'], a:'Like he just figured something out',
+          say:'Challenge! How should Dovid sound here?', how:'The tag is only "said." Use his action and the "!"'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
