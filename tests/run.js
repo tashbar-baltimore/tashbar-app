@@ -267,6 +267,7 @@ async function staffTests(browser) {
   catch (e) { fail('staff card test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const d = require('./lib/dailyplan.js').server(); d.fails.forEach(fail); d.oks.forEach(ok); }
   catch (e) { fail("today's list test crashed: " + String(e && e.stack || e).slice(0, 300)); }
+  try { const fc = require('./lib/flagchecker.js')(); fc.fails.forEach(fail); fc.oks.forEach(ok); } catch (e) { fail('flag checker check crashed: ' + String(e).slice(0, 200)); }   /* HoS 2026-11-24: docs/FLAG-CHECKER.md */
   try { const l = require('./lib/levelpass.js')(); l.fails.forEach(fail); if (!l.fails.length) ok('level checks and the 🎫 Level Pass: 25% before the check, full pay after, known skills skipped and not paid, one check per level, staff placement wins, no check = never cut'); report.timings.levelCheckStartMs = l.ms.start; report.timings.levelCheckSaveMs = l.ms.save; }
   catch (e) { fail('level pass test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   await browser.close();
