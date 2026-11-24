@@ -44,7 +44,7 @@
     if (NK.fast) document.body.classList.add('fast');
     $('again').addEventListener('click', function () { NK.unlock(); $('again').classList.add('talk'); NK.again(); setTimeout(function () { $('again').classList.remove('talk'); }, 1800); });
     $('home').addEventListener('click', function () { NK.hush(); location.href = './'; });
-    $('next').addEventListener('click', function () { NK.hush(); location.href = './'; });
+    $('next').addEventListener('click', function () { NK.hush(); location.href = (S.stars < 2 && cfg.practice) ? cfg.practice : './'; });
     $('replay').addEventListener('click', function () { NK.unlock(); $('end').hidden = true; run(false); });
     $('play').addEventListener('click', function () { NK.unlock(); $('start').hidden = true; run(true); });
     $('clap').addEventListener('pointerdown', function (e) { e.preventDefault(); NK.unlock(); S.claps = (S.claps || 0) + 1; hit(); });
@@ -174,13 +174,20 @@
       if (!f || f.classList.contains('down')) { f = null; for (var i = 0; i < 5; i++) if (fs[i].classList.contains('down')) { f = fs[i]; break; } if (!f) return; }   /* tap the hand: the next finger goes up */
       f.classList.toggle('down'); NK.sound[f.classList.contains('down') ? 'back' : 'pop'](); if (api.onChange) api.onChange(api.count());
     });
+    if (interactive) {
+      var dn = document.createElement('button'); dn.className = 'fdown btn3d b-sun'; dn.setAttribute('aria-label', 'Put one finger down');
+      dn.innerHTML = '<svg viewBox="0 0 48 48"><path d="M24 10v26M13 26l11 11 11-11" stroke="#2B2350" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      dn.addEventListener('pointerdown', function (e) { e.preventDefault(); e.stopPropagation(); if (el.classList.contains('locked')) return;
+        for (var i = 4; i >= 0; i--) if (!fs[i].classList.contains('down')) { fs[i].classList.add('down'); NK.sound.back(); if (api.onChange) api.onChange(api.count()); return; } });
+      el.appendChild(dn);
+    }
     api.set(n || 0); return api;
   };
   /* the fingers he should tap to show n, starting from what is up now */
   /* the taps that show n: tap the hand to raise the next finger, tap a raised finger to fold it */
   F.fingerTaps = function (h, n, root) {
     var out = [], c = h.count();
-    for (var i = 4; i >= 0 && c > n; i--) if (!h.finger(i).classList.contains('down')) { out.push({ tap: root + ' .fg[data-f="' + i + '"]' }); c--; }
+    for (; c > n; c--) out.push({ tap: root + ' .fdown' });
     for (; c < n; c++) out.push({ tap: root + ' .fhand' });
     return out;
   };
@@ -189,7 +196,7 @@
   /* ---------- the flow ---------- */
   async function run(first) {
     S.round = 0; S.results = []; S.first = 0; S.rounds = cfg.rounds; S.playing = true; F.dots();
-    if (cfg.reset) cfg.reset(F, !first);
+    if (cfg.reset) cfg.reset(F, !first, !first && S.stars < 2);
     if (first && cfg.chant) await F.chant(cfg.chant);
     if (first && cfg.demo) { GAME.phase = 'demo'; F.lock(true); await cfg.demo(F); F.handHide(); await F.say('Now you!'); }
     for (S.round = 0; S.round < cfg.rounds; S.round++) {
@@ -205,7 +212,7 @@
     GAME.phase = 'end'; F.lock(true);
     var stars = S.stars = cfg.stars ? cfg.stars(S) : NK.starsFor(S.first, cfg.rounds); S.saved = NK.save(cfg.id, stars);
     var h = ''; for (var i = 0; i < 3; i++) h += '<svg class="' + (i < stars ? '' : 'off') + '" viewBox="0 0 100 100"><use href="#nkStar"/></svg>';
-    $('stars').innerHTML = h; $('next').hidden = stars < 2; $('end').hidden = false; NK.sound.win(); burst();
+    $('stars').innerHTML = h; $('next').hidden = stars < 2 && !cfg.practice; $('end').hidden = false; NK.sound.win(); burst();
     $('stars').querySelectorAll('svg').forEach(function (s, i) { setTimeout(function () { s.classList.add('on'); }, 150 + i * 250); });
     await F.say(cfg.endSay ? cfg.endSay(stars) : stars === 3 ? 'Wow! Three stars!' : stars === 2 ? 'You did it! Two stars!' : 'Nice try! Let\'s play once more.');
     GAME.phase = 'done';

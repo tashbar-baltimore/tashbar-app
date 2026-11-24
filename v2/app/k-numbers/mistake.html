@@ -29,9 +29,9 @@
 .hero .qcard{ position:absolute; width:56%; left:22%; border-radius:50%; }
 @media (max-width:760px), (max-aspect-ratio:4/5){
   .stage{ grid-template-columns:1fr; grid-template-rows:1fr 1.1fr; }
-  #plate.qcard{ width:min(60vw,24vh); }
+  #plate.qcard{ width:min(56vw,22vh); }
   .stage{ grid-template-rows:.8fr 1.2fr; grid-template-columns:minmax(0,1fr); }
-  .who svg{ width:54px; } .says .fhand{ width:72px; } .says{ padding:6px 12px 6px 8px; } .saywrap{ gap:14px; } .col{ gap:10px; }
+  .who svg{ width:96px; } .says .fhand{ width:104px; } .says{ padding:6px 12px 6px 8px; } .saywrap{ gap:14px; } .col{ gap:10px; }
   .thumbs button{ width:96px !important; }
   .bighand .fhand{ width:min(40vw,24vh); }
 }
@@ -70,6 +70,7 @@
   async function judge(sayRight) {
     NK.unlock(); if (GAME.phase !== 'answer' || R.stage !== 'judge') return; GAME.phase = 'busy'; FR.lock(true);
     var isRight = R.claim === R.n, who = R.who;
+    $('plate').style.opacity = '';
     if (sayRight === isRight) {
       if (isRight) { await FR.yes($('says'), 'Yes! ' + who + ' is right. ' + FR.Word(R.n) + '!'); finish(R.misses === 0); return; }
       NK.sound.yes(); await FR.say('Yes! ' + who + ' made a mistake.');
@@ -101,7 +102,7 @@
       $('check').addEventListener('click', check);
       $('spk').addEventListener('click', function () { NK.unlock(); NK.again(); });
     },
-    reset: function (F) { ORDER = F.shuffle([true, false, false, true, false, true]); NAMES = F.shuffle(F.NAMES); easy = 0; },
+    reset: function (F, again, slow) { ORDER = F.shuffle([true, false, false, true, false, true]); NAMES = F.shuffle(F.NAMES); easy = slow ? 6 : 0; },
     demo: async function (F) {
       R = { n: 2, claim: 3, who: 'Mendy', misses: 0, stage: 'demo' };
       setPlate(2, 'apple'); setClaim(3); $('thumbs').hidden = false; $('fixrow').hidden = true;
@@ -139,6 +140,7 @@
         setPlate(n, fr[0]); setClaim(claim); $('thumbs').hidden = false; $('fixrow').hidden = true; H.set(0);
         done = res; GAME.phase = 'busy'; F.lock(true);
         await F.say(who + ' says: ' + F.word(claim) + ' ' + (claim === 1 ? fr[0] : fr[1]) + '!', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
+        await F.wait(1500); $('plate').style.opacity = '.06';
         GAME.phase = 'answer'; F.lock(false); hooks();
         await F.say('Is ' + who + ' right?', { repeat: who + ' says ' + F.word(claim) + '. Is ' + who + ' right?' });
       });
