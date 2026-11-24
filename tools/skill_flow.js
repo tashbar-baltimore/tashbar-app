@@ -11,7 +11,10 @@ let chromium; try { ({ chromium } = require('playwright')); } catch (e) { ({ chr
 /* standards (Common Core) recorded with the Pathfinder bank: Math and Reading skills, Language Arts skills */
 const STD = (() => { try { const vm = require('vm'), rt = require(path.join(ROOT, 'server/runtime.js')).createRuntime({ store: { books: {}, props: {} } });
   return JSON.parse(vm.runInContext('(function(){ var o={}, a=(typeof PF_BANK!=="undefined"&&PF_BANK.skills)||{}, b=(typeof pf5Ix_==="function"&&pf5Ix_().laSkills)||{}; [a,b].forEach(function(m){ Object.keys(m).forEach(function(k){ if(m[k]&&m[k].ccss) o[k]=String(m[k].ccss); }); }); return JSON.stringify(o); })()', rt.ctx)); } catch (e) { console.warn('standards not read: ' + e.message); return {}; } })();
-const CI = new Function(fs.readFileSync(path.join(ROOT, 'src/CurriculumIndex.js'), 'utf8') + '; return CI_INDEX;')();
+/* the ladders as the app really uses them: CurriculumIndex.js with the Core Growth skills merged in (src/CoreSkills.js, coreMerge_) */
+const CI = (() => { const vm = require('vm'), { ctx, loadErrors } = B.sandbox(); if (loadErrors.length) throw new Error('src does not load: ' + loadErrors.join('; '));
+  try { vm.runInContext('if (typeof coreMerge_ === "function") coreMerge_();', ctx); } catch (e) {}
+  return JSON.parse(vm.runInContext('JSON.stringify(CI_INDEX)', ctx)); })();
 
 /* ---------- 1. live lesson contents from the test page ---------- */
 async function liveLessons(ids) {
@@ -29,7 +32,11 @@ async function liveLessons(ids) {
       return { id, name, desc, built: !!b, k3: K3.filter(g => window[g] && window[g].has && window[g].has(id)),
         teach: b && b.teach ? b.teach.map(x => ({ how: x.how || '', q: x.q })) : [], we: b && b.we ? b.we.map(x => ({ q: x.q })) : [],
         practice: b && b.practice ? b.practice.map(x => ({ t: x.t || 'mc', q: x.q })) : [], check: b && b.check ? b.check.map(x => ({ t: x.t || 'tap', q: x.q })) : [], re: b && b.re ? b.re.map(x => ({ t: x.t || 'mc' })) : [],
-        tt: t ? { hook: t.hook, big: t.big, intro: t.intro, ex: (t.ex || []).length, oops: !!t.oops } : null }; }); }, ids);
+        tt: t ? { hook: t.hook, big: t.big, intro: t.intro, ex: (t.ex || []).length, oops: !!t.oops } : null,
+        ob: (() => { const o = (window.ONE_BITE || {})[id]; if (!o || window.OB_LIVE === 'off') return null;   /* the One Bite lesson he really gets (src/OneBite.html, live for every boy) */
+          const kinds = a => (a || []).map(x => x && x.type).filter(Boolean);
+          return { today: o.today || '', why: o.why || '', watch: (o.watch && o.watch.steps || []).length, oops: !!o.oops, ways: (o.ways || []).length, do: kinds(o.do), your: kinds(o.your),
+            mis: (o.do || []).concat(o.your || []).some(x => x && x.mis), song: (o.watch && o.watch.steps || []).some(x => x && x.m && /chant|move/.test(x.m.type)) }; })() }; }); }, ids);
   await browser.close(); return out;
 }
 
@@ -133,6 +140,10 @@ function buildFlow(ela, k3, C) {
     if (mcShare > .25) { score--; flags.push('Much of the practice is plain multiple choice.'); }
     if (s.re.length) score++; else flags.push('No re-teach path if he fails the check: he repeats the same lesson.');
     if (C.extra) C.extra({ s, lane, L, K, flags });
+    const OBL = s.ob && (s.ob.do.length + s.ob.your.length) ? s.ob : null;
+    if (OBL) { /* a One Bite lesson with hands-on activities is real teaching: the opener, a worked model, a common mistake, then activities with help, then on his own */
+      score = Math.max(score, 4); for (let i = flags.length - 1; i >= 0; i--) if (/^No full teaching lesson|^No worked example|^No Teacher Time/.test(flags[i])) flags.splice(i, 1);
+      has.unshift('A One Bite lesson: an opener ("' + OBL.today + '"), ' + (OBL.watch ? 'a ' + OBL.watch + '-step worked model, ' : '') + (OBL.oops ? 'a common mistake to spot, ' : '') + OBL.do.length + ' activities done with him (' + [...new Set(OBL.do)].join(', ') + '), then ' + OBL.your.length + ' on his own (' + [...new Set(OBL.your)].join(', ') + ').'); }
     if (C === ENGLISH_CFG && (lane === 'COMP' || lane === 'LIT') && !K && !s.practice.concat(s.check).some(p => (p.q || '').length > 140)) flags.push('Reading questions use one-line examples, not a real passage or story to read.');
     if (C === ENGLISH_CFG && L >= 5 && /^(ESSAY|PARA|RES)$/.test(lane)) flags.push('Writing is practiced by tapping and sorting; the boy never writes a whole paragraph or essay that gets feedback.');
     const steps = [], quest = [];
@@ -144,13 +155,16 @@ function buildFlow(ela, k3, C) {
       steps.push({ st: 'Together', t: K.together.length + ' items done with help that fades: ' + tally(K.together).join(', ') + '.' }); steps.push({ st: 'Practice', t: K.practice.length + ' items on his own, mixed: ' + tally(K.practice).join(', ') + '.' });
       if (K.real) steps.push({ st: 'Real life', t: (K.realIntro ? '“' + K.realIntro + '” ' : '') + 'One task using the skill in everyday life (' + human(K.real) + ').' });
       steps.push({ st: 'Check', t: K.check.length + ' items with no help: ' + tally(K.check).join(', ') + '.' }); steps.push({ st: 'Celebrate', t: 'Stars for the lesson, then the skill’s practice games.' }); }
+    if (OBL && !K) { steps.push({ st: 'Opener', t: [OBL.today, OBL.why].filter(Boolean).map(x => /[.!?]$/.test(x) ? x : x + '.').join(' ') }); if (OBL.watch) steps.push({ st: 'Watch me', t: OBL.watch + ' steps, shown and said.' });
+      if (OBL.oops) steps.push({ st: 'Spot the mistake', t: 'A common mistake, and why it is wrong.' }); steps.push({ st: 'Do it with me', t: OBL.do.length + ' activities with help: ' + OBL.do.join(', ') + '.' });
+      steps.push({ st: 'Your turn', t: OBL.your.length + ' activities on his own (3 right in a row and he is ready): ' + OBL.your.join(', ') + '.' }); steps.push({ st: 'Show me', t: s.check.length + ' check questions, no help.' }); }
     if (s.tt) quest.push({ st: 'Teacher Time', t: [s.tt.hook, s.tt.big].filter(Boolean).join(' ') + (s.tt.intro && s.tt.intro.length ? ' Steps: ' + s.tt.intro.join(' → ') : '') });
     if (s.teach.length) quest.push({ st: 'Learn it', t: s.teach.length + ' examples, each with a tip: ' + [...new Set(s.teach.map(t => '“' + (t.how || t.q) + '”'))].join(' ') });
     if (s.we.length) quest.push({ st: 'Together', t: s.we.length + ' worked examples step by step.' });
     quest.push({ st: 'Practice games', t: s.practice.length + ' items: ' + tally(pk).join(', ') + '. Examples: ' + s.practice.slice(0, 3).map(p => '“' + p.q + '”').join(' ') });
     quest.push({ st: 'Mastery check', t: s.check.length + ' questions, no help: ' + s.check.map(c => '“' + c.q + '”').join(' ') });
     if (s.re.length) quest.push({ st: 'If he misses', t: s.re.length + ' simpler re-teach items on the skill underneath, then he tries again.' });
-    nodes.push({ id: s.id, std: STD[s.id] || '', lane, L, g: GRADE(L), name: s.name, obj: s.desc || (s.tt && s.tt.big) || '', big: s.tt && s.tt.big || '', k3t: K ? K.t : '', depth: K ? 'taught' : score >= 4 ? 'guided' : 'quiz', flags, has, steps, quest, nc: s.check.length, key: C.keyOf(s.id) }); }
+    nodes.push({ id: s.id, std: STD[s.id] || '', lane, L, g: GRADE(L), name: s.name, obj: s.desc || (s.tt && s.tt.big) || '', big: s.tt && s.tt.big || '', k3t: K ? K.t : '', depth: K || OBL ? 'taught' : score >= 4 ? 'guided' : 'quiz', flags, has, steps, quest, nc: s.check.length, key: C.keyOf(s.id) }); }
   const byLane = {}; nodes.forEach(n => (byLane[n.lane] = byLane[n.lane] || []).push(n));
   PLAN.forEach(([lane, L, name, obj], i) => nodes.push({ id: 'PLAN.' + lane + '.L' + String(L).padStart(2, '0') + '.' + (i + 1), lane, L, g: GRADE(L), name, obj, planned: 1, depth: 'planned', flags: ['Not built yet. No lesson, no questions.'], has: [], steps: [], quest: [] }));
   const edges = [], add = (a, b, k) => { if (a && b && a.id !== b.id && !edges.some(e => e[0] === a.id && e[1] === b.id)) edges.push([a.id, b.id, k]); };

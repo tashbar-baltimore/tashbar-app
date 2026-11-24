@@ -1,4 +1,4 @@
-/* PICS-1 contact sheet through the real add-on. Run: node tools/pics-sheet.js src/RealPics.html web/pics out.png "LESSON.ID|question" ... */
+/* PICS-1 contact sheet through the real add-on. Run: node tools/pics-sheet.js src/RealPics.html art/pics out.png "LESSON.ID|question" ... */
 // contact sheet: render screens through the real RealPics.html. Args: html picsDir out.png then "LESSON|question" ...
 const { chromium } = require('playwright'); const fs = require('fs'); const [,, html, dir, out, ...keys] = process.argv;
 (async () => { const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 380 * Math.min(keys.length, 4), height: 900 }, deviceScaleFactor: 1 });

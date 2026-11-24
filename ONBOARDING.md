@@ -50,7 +50,7 @@ Do these in order. Ask the HoS or developer@ for anything marked **(ask)**.
   - **The code:** GitHub `tashbar-baltimore/tashbar-app`.
     - `src/`: app code.
     - `packs/`: lesson packs.
-    - `web/`: site builder, and pictures in `web/pics/`.
+    - `web/`: site builder. Pictures, sounds and models live once in the shared art library `art/` (`art/README.md`).
     - `tests/`: the test kit.
     - `tools/`: helpers.
   - **Coordination:** GitHub Issues and pull requests, plus the **HQ LOG** folder in Drive for short notes.
@@ -100,7 +100,7 @@ Do these in order. Ask the HoS or developer@ for anything marked **(ask)**.
 - **When in doubt, leave it out.**
 - **Licences:**
   - **Allowed:** public domain, CC0, CC BY, CC BY-SA, the Pixabay or Pexels licence, the Library of Congress "no known restrictions", or our own photos.
-  - **Record** the source, licence and author for every file in `web/pics/SOURCES.md`.
+  - **Record** the source, licence and author for every file in its row in `art/CATALOG.md`.
   - **Never:** modern publisher pages (ArtScroll, Koren and similar), textbooks, or Google Images.
 - **Never give the answer away:**
   - A label is allowed only where the screen's "how" line already teaches that word.
@@ -138,7 +138,7 @@ SETUP
    If anything is missing, tell me in one line what to add, then continue with what works.
 3. Build the screen list from the code, not the audit sheet:
    python3 tools/pics-screens.py /tmp/screens.json
-   node tools/pics-check.js src/RealPics.html /tmp/screens.json web/pics   (must say 0 problems)
+   node tools/pics-check.js src/RealPics.html /tmp/screens.json art/pics   (must say 0 problems)
    Every new link uses the exact key 'LESSON.ID|question' from screens.json.
 
 FIRST PULL REQUEST: make the checker enforce the rules (small, before any pictures)
@@ -181,7 +181,7 @@ WORK
    studies; computing; electives; life skills; the remaining Kodesh.
    - Each WORKER: lists its screens from screens.json; searches the sources in order; drops anything
      whose tags break the rules; makes a contact sheet and looks at every candidate; picks the best;
-     crops into web/pics with a SOURCES.md line; writes TL_PICS and TL_PIC_MAP entries.
+     crops into art/pics with an art/CATALOG.md row; writes TL_PICS and TL_PIC_MAP entries.
    - Each worker saves its work after every picture, so a restart or usage limit loses nothing.
    - Each worker returns its entries and files. It does NOT publish.
 6. A separate CHECKER per subject opens every chosen picture and every link and removes anything doubtful:

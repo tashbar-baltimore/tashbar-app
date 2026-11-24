@@ -276,15 +276,16 @@ Real reading: B6 ch. 7–10 · 2 stories (a short mystery, a short adventure) ·
 
 Shared with every E45 job (C45, G and W48 for Grades 4–5, S). The lanes file links here.
 
-**The Glen Avenue Crew:** five boys in the same Grade 4–5 class at a yeshiva in Baltimore, who live within a few blocks of each other. They are 10 in Grade 4 books and 11 in Grade 5 books.
+**The Glen Avenue Crew:** five boys (six from Book B1 on, when Nosson joins) in the same Grade 4–5 class at a yeshiva in Baltimore, who live within a few blocks of each other. They are 10 in Grade 4 books and 11 in Grade 5 books.
 
 | Boy | Family | What he is like | Shows up most in |
 |---|---|---|---|
 | **Yehuda Benaim** | Moroccan family; Savta's spicy fish on Friday night; two little sisters | Asks "but how do we know?" Keeps a notebook of clues. The detective. | B1, B4 |
-| **Avrumi Katz** | Oldest of seven; Abba is a sofer | Draws maps and diagrams for everything; quiet, then says the smart thing | B2, B4 |
+| **Avrumi Katz** | Oldest of seven; Abba is a sofer | Red hair, round glasses; draws maps and diagrams for everything; quiet, then says the smart thing | B2, B4 |
 | **Dovid Lerner** | Abba is an engineer; a basement full of gadgets | Builds, tests, breaks, tries again | B3, B6 |
 | **Binyamin Yusupov** | Bukharian family; Zeidy Yusupov teaches him chess; plov on Shabbos | Calm and patient; hates to lose and is learning to | B6 |
 | **Tzvi Hirsch Gold** | Twin baby brothers; his family runs the kosher bakery on the corner | Funny, brave, sometimes too fast; a big heart | B2, B5 |
+| **Nosson Abergel** (joins in B1) | New from Montreal; his family is from Meknes, Morocco, like Yehuda's Savta; his father knows esrogim | Quiet, polite, a little French in his voice; notices more than he says | B1 on |
 
 **Grown-ups:** Rabbi Feldman (their rebbe, warm, loves a good question) · Mr. Halpern (the general studies teacher, science fair judge) · Zeidy Benaim (the attic and the old map) · Reb Shimon at the lighthouse (B5) · each boy's Abba and Ima.
 

@@ -19,7 +19,7 @@ var CORE_SKILLS = (typeof CORE_SKILLS !== 'undefined' && CORE_SKILLS) || {};
 var CORE_ID_RE = /^(READ|LANG|WRIT|SCI|SS)\.[A-Z]+\.L\d\d\.\d\d$/;
 var CORE_FILE_RE = /^CoreData[A-Z][A-Z0-9]*$/;
 var CORE_KIT_FILE = 'CoreKit';   /* src/CoreKit.html: the helper every data file uses, and the content store; it loads first */
-var CORE_TOOL_FILES = [CORE_KIT_FILE, 'CoreReader', 'CoreKitActs'];   /* job T's page tools (CoreReader.html: the book Reader; CoreKitActs.html: new activity kinds), before every data file (never scanned for lessons) */
+var CORE_TOOL_FILES = [CORE_KIT_FILE, 'CoreReader', 'CoreKitActs', 'CoreWrite', 'CoreUnits', 'CoreK1'];   /* job T's page tools (CoreReader.html: the book Reader; CoreKitActs.html: new activity kinds; CoreWrite.html: the Writing Workshop; CoreUnits.html: unit checks and test-out; CoreK1.html: new K-1 games on the K-1 path), before every data file (never scanned for lessons) */
 var CORE_MERGED_ = null;
 
 /* Which ladder an id belongs to (the same lists Placement.js uses). */

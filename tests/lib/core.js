@@ -50,6 +50,8 @@ function server() {
     if (parts.order.map(h => parts.parts[h]).join('') !== body) fail("the boy's page pieces (Speed.js) do not match msQuestToolsBody_ (Photos.js)");
     const reg = fs.readdirSync(B.SRC).filter(f => /^CoreData[A-Z][A-Z0-9]*\.js$/.test(f));
     reg.forEach(f => { const t = fs.readFileSync(path.join(B.SRC, f), 'utf8'), job = f.slice(8, -3); if (t.indexOf('CORE_SKILLS.' + job + ' = [') < 0) fail('src/' + f + ' must set CORE_SKILLS.' + job + ' (its own job only)'); });
+    try { const cw = require('./corewrite.js')(); cw.fails.forEach(x => fails.push(x)); if (!cw.fails.length) oks.push('writing inbox (server): draft, send, locked while the teacher has it, other boys kept out, send back needs a note, fix and resend, publish to his book, no money'); } catch (e) { fail('writing inbox server check crashed: ' + String(e).slice(0, 200)); }
+    try { const cu = require('./coreunits.js').server(); cu.fails.forEach(x => fails.push(x)); (cu.oks || []).forEach(o => oks.push(o)); } catch (e) { fail('unit checks server check crashed: ' + String(e).slice(0, 200)); }
     if (!r.problems.length) oks.push('core skills: ' + r.merged.added + ' new skill(s) from ' + reg.length + ' job list(s), ' + r.files.filter(f => /^CoreData/.test(f)).length + ' data file(s), no problems');
     return { fails, oks, rep: r };
   }
@@ -102,6 +104,7 @@ async function page(pg, rep) {
         const out = { steps: [] }, Q = s => document.querySelector(s), tick = () => new Promise(r => setTimeout(r, 60));
         const look = async name => { await new Promise(r => setTimeout(r, 380)); const el = Q('#crd'); const mains = el.querySelectorAll('.tlk-main').length, all = [...el.querySelectorAll('button')];
           out.steps.push({ name, mains, ownButtons: all.filter(b => !b.classList.contains('tlk')).length, wide: el.scrollWidth > innerWidth + 1 || (Q('#crd .crd-main') && Q('#crd .crd-main').scrollWidth > innerWidth + 1), exitTL: !!el.querySelector('.tlk-home.tlk-at-tl,.tlk-x.tlk-at-tl') }); };
+        if (!A.st) A.st = loadStudent({ id: 'TEST-01', name: 'Test Kid' });   /* the Reader keeps his page in his own state */
         try { if (A.st) delete (A.st.reads || {})['ZZTEST.KEY.01']; } catch (e) {}
         const pr = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 3 }); await new Promise(r => { const t = setInterval(() => { if (Q('#crd .crd-cover')) { clearInterval(t); r(); } }, 30); });
         await look('cover'); Q('#crd [data-crd=start]').click(); await tick(); await look('page 1');
@@ -139,10 +142,14 @@ async function page(pg, rep) {
     await pg.setViewportSize({ width: 1366, height: 768 });
     if (!fails.length) oks.push('Reader: cover, pages, tap a word for its meaning, Back from Grade 3, chapter done and kept, tap the sentence that proves it (miss names the step, no early answer), K-1 band; button system only, no sideways scroll at 1366 and 390');
   }
+  try { const k1 = await require('./corek1.js')(pg); k1.fails.forEach(f => fails.push(f)); k1.oks.forEach(o => oks.push(o)); } catch (e) { fail('K-1 games crashed: ' + String(e).slice(0, 200)); }
+  try { const un = await require('./coreunits.js').page(pg); un.fails.forEach(f => fails.push(f)); un.oks.forEach(o => oks.push(o)); } catch (e) { fail('unit checks (page) crashed: ' + String(e).slice(0, 200)); }
+  try { const cu = await require('./corewriteui.js')(pg); cu.fails.forEach(f => fails.push(f)); cu.oks.forEach(o => oks.push(o)); } catch (e) { fail('Writing Workshop screens crashed: ' + String(e).slice(0, 200)); }
   await pg.setViewportSize({ width: 390, height: 844 });
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push('390px: ' + f)); } catch (e) { fail('new activity kinds (390 px) crashed: ' + String(e).slice(0, 200)); }
   await pg.setViewportSize({ width: 1366, height: 768 });
   try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push(f)); ca.oks.forEach(o => oks.push(o)); } catch (e) { fail('new activity kinds crashed: ' + String(e).slice(0, 200)); }
+  try { const rk = await require('./corereadkinds.js')(pg); rk.fails.forEach(f => fails.push(f)); rk.oks.forEach(o => oks.push(o)); } catch (e) { fail('read and proof kinds crashed: ' + String(e).slice(0, 200)); }
   if (!fails.length) oks.push('core skills (page): ' + got.mine.length + ' core lesson(s) loaded, no clash' + (notYet.length ? '; listed, no lesson yet (hidden from boys): ' + notYet.length : ''));
   return { fails, oks };
 }

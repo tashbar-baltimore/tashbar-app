@@ -45,7 +45,7 @@ function picsCheck() {
   const tmp = path.join(os.tmpdir(), 'tl-screens-' + process.pid + '.json');
   try {
     execFileSync('python3', [path.join(B.ROOT, 'tools', 'pics-screens.py'), tmp], { stdio: 'pipe' });
-    const out = execFileSync('node', [path.join(B.ROOT, 'tools', 'pics-check.js'), path.join(B.SRC, 'RealPics.html'), tmp, path.join(B.ROOT, 'web', 'pics')], { stdio: 'pipe' }).toString().trim().split('\n').pop();
+    const out = execFileSync('node', [path.join(B.ROOT, 'tools', 'pics-check.js'), path.join(B.SRC, 'RealPics.html'), tmp, path.join(B.ROOT, 'art', 'pics')], { stdio: 'pipe' }).toString().trim().split('\n').pop();
     ok('pictures: ' + out);
   } catch (e) {
     const lines = String((e.stdout || '') + (e.stderr || '') || e).trim().split('\n');
@@ -67,6 +67,10 @@ const FAKE = ({ tools, parts }) => {
 
 async function openPage(browser, html, init, throttle, staffSession) {
   const ctx = await browser.newContext({ viewport: { width: 1366, height: 768 } }); if (staffSession) await ctx.addInitScript(() => { try { sessionStorage.setItem('tl-session', JSON.stringify({ role: 'staff', sid: null, at: Date.now(), token: 't' })); } catch (e) {} }); if (init) await ctx.addInitScript(FAKE, init); else await ctx.addInitScript(FAKE, { tools: { css: '', js: '' }, parts: { order: [], parts: {} } });
+  /* the test boy is an active boy: code taps are not pointer events, so without this the real 5-quiet-minutes auto sign-out (src/SignOutBar.html)
+     fires in the middle of long runs and wipes A.st / A.play ("Cannot set properties of null", "skipped Your turn"). A synthetic wheel event is what
+     SignOutBar counts as activity; nothing else in the app listens for it, and it changes nothing on the page. */
+  await ctx.addInitScript(() => { setInterval(() => { try { document.documentElement.dispatchEvent(new WheelEvent('wheel', { bubbles: true })); } catch (e) {} }, 30000); });
   const pg = await ctx.newPage(); const errs = [];
   pg.on('pageerror', e => errs.push('page error: ' + String(e).slice(0, 240)));
   pg.on('console', m => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push('console error: ' + m.text().slice(0, 240)); });

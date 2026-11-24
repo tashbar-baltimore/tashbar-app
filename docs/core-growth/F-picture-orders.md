@@ -1,8 +1,8 @@
 # Job F · picture orders
 
-How this works (`docs/CORE-GROWTH-PROMPT.md`, section 6): F writes the orders, the HoS's image account makes them, F checks every picture against its order and the Family Life and picture rules, converts it to WebP (at most 1,100 px wide, at most 200 KB), and adds it by pull request with a line in `web/pics/SOURCES.md`: "made for Tashbar Baltimore with an AI image tool, owned by the school". Until a picture arrives, the screen keeps its coded placeholder (emoji and tiles), never an empty box.
+How this works (`docs/CORE-GROWTH-PROMPT.md`, section 6): F writes the orders, the HoS's image account makes them, F checks every picture against its order and the Family Life and picture rules, converts it to WebP (at most 1,100 px wide, at most 200 KB), and adds it by pull request with a line in `art/CATALOG.md`: "made for Tashbar Baltimore with an AI image tool, owned by the school". Until a picture arrives, the screen keeps its coded placeholder (emoji and tiles), never an empty box.
 
-Orders go by email to the HoS's image account (HoS instruction, 2026-11-24). F checks for replies every hour.
+Orders go by email to the HoS's image account (HoS instruction, 2026-11-24; the address is not written in the repository). F checks for replies every hour. From order 2 on, orders follow job T's format and band style sheets (`docs/core-growth/STYLE-SHEETS.md`).
 
 ## Style for every F picture (until job T's band style sheets exist)
 - Warm watercolor storybook look, soft daylight colors, clean shapes, friendly faces. The same style in every picture.
@@ -16,7 +16,21 @@ Orders go by email to the HoS's image account (HoS instruction, 2026-11-24). F c
 - **K1 (K–1), the Peretz family on Maple Street:** Eli (5, round face, curly brown hair, blue kippah), his big brother Shmuli (6, straight black hair, glasses, green kippah), Abba (dark beard, baker's apron, runs Peretz Bakery), Zeidy Avraham (white beard, black hat, straw-hat on the farm), Pita the gray donkey.
 - **B23 (2–3), the Shabbos Street Club:** Naftali (8, red hair, freckles, carries a notebook), Avi (8, dark curly hair, big smile, loves maps), Chaim (9, tall, glasses, always with a book), Dovid (7, smallest, brave, sneakers), and Naftali's Zaidy (white beard, watchmaker's apron, kind eyes).
 
-## Order 1 (2026-11-24): Grade 2 Unit 1 and the two casts
+## Order 1 (2026-11-24) · status: LIVE (7 of 8), 1 REDO
+Arrived 06:06 UTC, all 8 checked by eye and zoomed. Files follow job T's naming (`docs/core-growth/STYLE-SHEETS.md`): `core-f-…webp`.
+
+| # | Arrived as | Status | Live file and screen |
+|---|---|---|---|
+| 1 | f-cast-k1 | LIVE (library only) | `core-f-cast-k1.webp`: K1 cast reference (Abba Peretz, Eli, Shmuli). Watercolor, not the K1 style; use as a reference, not on K–1 screens. |
+| 2 | f-cast-b23 | LIVE (library only) | `core-f-cast-b23.webp`: B23 cast reference (the Shabbos Street Club and Zaidy) |
+| 3 | f-g2-u1-opener | LIVE | `core-f-g2u1-opener.webp` on `READ.PHON.L03.05|@today` until order 1 #5 is redone. The clock faces were softened (their numerals count as text). |
+| 4 | f-g2-open-door | LIVE | `core-f-l0304-today.webp` on `READ.PHON.L03.04|@today` |
+| 5 | f-g2-slide-line | **REDO** | The small arched window at the end of the hall has one vertical and one horizontal bar: a plain cross. Ask again with no crossing window bars. |
+| 6 | f-g2-silent-e | LIVE | `core-f-l0306-today.webp` on `READ.PHON.L03.06|@today` |
+| 7 | f-g2-syllable-snip | LIVE | `core-f-l0301-today.webp` on `READ.PHON.L03.01|@today` |
+| 8 | f-g2-garden | LIVE | `core-f-flu0301-today.webp` on `READ.FLU.L03.01|@today` |
+
+### What was asked (order 1)
 | # | File name | Screen | Prompt |
 |---|---|---|---|
 | 1 | `f-cast-k1.webp` | K1 cast reference (all K–1 stories) | Warm watercolor storybook picture: a cozy kosher bakery on a quiet street. A kind father with a dark beard and a baker's apron hands a warm braided challah to two little boys: a 5-year-old with curly brown hair and a blue kippah, and a 6-year-old with straight black hair, glasses and a green kippah, both wearing tzitzis. Shelves of round breads and rolls behind them. Soft morning light. No words or letters anywhere. Boys and men only. |

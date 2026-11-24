@@ -1,0 +1,494 @@
+<script>
+/* CoreDataC451.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 4 Unit 4.1 "Prove it!" (docs/core-growth/C45-map.md). Short lesson passages (under 300 words) go in PASS under c45_ keys;
+   each lesson teaches on one passage and checks on a different, cold passage. Cast: the Glen Avenue Crew (C45-map.md section 5). */
+(function () {
+  var P = {
+    c45_sukkah: { title: 'The Sukkah on Glen Avenue', text: 'On the night after Yom Kippur, Abba and Yehuda Benaim carried the sukkah boards up from the basement. There were eight boards, each one painted white with blue trim. Yehuda\'s job was to hold each board straight while Abba screwed them together. It took them almost two hours. By the time they finished, the moon was high, and Yehuda\'s arms ached.\nThe next morning, Savta came out with a bowl of dates and a ball of string. She showed Yehuda how to tie the dates so they would hang from the s\'chach like little brown lanterns. "In Morocco," she said, "my father hung dates and pomegranates in our sukkah every year." Yehuda tied twelve strings of dates. When his little sisters saw them, they clapped and asked if they could eat one.\n"After Yom Tov," said Savta, laughing.' },
+    c45_bakery: { title: 'Friday at the Bakery', text: 'Every Friday, Tzvi Hirsch Gold wakes up at five o\'clock. His family owns the kosher bakery on the corner of Glen Avenue, and Friday is the busiest day of the week. Tzvi Hirsch\'s job is to fold the bakery boxes. He folds sixty boxes before davening. His Abba braids the challah dough, and the big oven heats up to four hundred degrees.\nBy seven o\'clock, the first trays come out, golden and shiny. People line up outside before the door even opens. Everyone wants fresh challah for Shabbos. Old Mr. Weiss always buys two round challos with raisins. Rabbi Feldman buys six small rolls for his children.\nAt eight, Tzvi Hirsch eats one warm roll and runs to catch the school bus. He is tired all morning, but he never complains. He says the smell of fresh challah is worth it.' },
+    c45_bees: { title: 'Bees in Winter', text: 'When the weather turns cold, most insects hide or die. Honeybees do something different. They stay awake all winter inside the hive.\nThe bees crowd together in a tight ball called a winter cluster. The queen bee stays in the middle of the ball. The worker bees on the outside shiver their wing muscles without flying. All that shivering makes heat. On the coldest days, the middle of the cluster can be as warm as a summer afternoon.\nThe bees take turns. A bee on the cold outside slowly works her way in, and a warm bee moves out.\nTo keep shivering, the bees need energy. They eat the honey they stored in the summer. A strong hive can eat about thirty pounds of honey in one winter. That is why a good beekeeper never takes all the honey in the fall.' },
+    c45_chess: { title: 'The Last Move', text: 'Binyamin Yusupov sat across the chessboard from his Zeidy. The kitchen was quiet except for the ticking of the clock above the sink. Zeidy had won the last six games in a row.\nBinyamin had only his king, a rook and two pawns left. Zeidy had a queen. Binyamin\'s hands were cold, and he kept rubbing them on his knees. He had not said a word in ten minutes.\nThen he saw it. If he moved his rook all the way across the board, Zeidy\'s king would have nowhere to go. Binyamin checked the move three times. He touched the rook, lifted it, and set it down with a soft click.\n"Check," he whispered. "And I think it\'s mate."\nZeidy leaned forward and looked at the board for a long time. Slowly, a smile spread across his face. He reached over and shook Binyamin\'s hand.\n"Seven games," said Zeidy. "It took you seven games. Next time it will take you six."' },
+    c45_leaves: { title: 'Why Leaves Change Color', text: 'In the summer, most leaves are green. They are green because they are full of chlorophyll. Chlorophyll is a green material that helps a leaf use sunlight to make food for the tree.\nIn the fall, the days get shorter and cooler. The tree gets ready to rest for the winter, so it stops making chlorophyll. As the green fades away, other colors that were hiding in the leaf all summer begin to show. Yellow and orange were there the whole time, covered up by the green.\nSome trees, like maples, also make a brand new red color in the fall. Sunny days and cool nights make the reds brightest.\nAt last, the tree grows a thin wall where each leaf meets its branch. Water can no longer reach the leaf. It dries up, turns brown, and falls to the ground.' },
+    c45_tower: { title: 'The Tower on the Hill', text: 'High on a hill in Baltimore stands a tall stone tower. It looks like a castle from a storybook, but it was built for a very plain reason: water.\nMore than one hundred years ago, the city needed a way to push water up into the houses on the hills. Workers pumped water into a tall pipe inside the tower. Because the water stood so high, its weight pushed it down and out through pipes, all the way into people\'s kitchens.\nThe builders did not want an ugly pipe sticking up over the city. So they wrapped it in a beautiful tower with arched windows and a pointed roof. Today the pipe is empty. Newer pumps do the work. But the tower still stands, and on clear days people can see it from miles away.' },
+    c45_owls: { title: 'How Owls Hunt at Night', text: 'An owl can catch a mouse in the dark. How does it do it?\nFirst, an owl has huge eyes. They take in much more light than our eyes do, so the owl can see when the night looks black to us.\nSecond, an owl hears better than almost any other bird. One of its ears sits a little higher than the other. A sound reaches one ear a tiny bit before the other ear. That helps the owl tell exactly where the sound came from, even under the snow.\nThird, an owl flies without a sound. The edges of its feathers are soft and fringed, like a comb. They break up the air, so the wings do not whoosh. The mouse never hears it coming.' },
+    c45_esrog: { title: 'The Missing Esrog (from Chapter 1)', text: 'When the bell rang again, the boys ran back up the stairs, red-cheeked and loud. They burst into the room. Then they stopped.\nRabbi Feldman was not there. His black coat still hung on the hook by the door. But the hook next to it, where his hat always hung, was empty.\nThe silver box sat on the desk where he had left it. The lid was open. Dovid reached it first. He looked inside and turned pale.\n"It\'s empty," he said. "The esrog is gone."\nYehuda leaned close to the box. The white cloth lay inside, folded neatly in half. It still smelled of lemons, strong and fresh. Yehuda thought about that. If you were stealing something, would you stop to fold the cloth?' },
+    c45_snow: { title: 'A Quiet Morning', text: 'Avrumi woke up and lay still. The room was strangely bright, and the street outside was completely silent. No cars. No bus. Not even the usual garbage truck.\nHe heard the scrape, scrape, scrape of a shovel. When he went downstairs, Abba\'s boots stood by the door in a puddle of water, and Abba\'s cheeks were bright red. Ima was on the phone. "So no school at all today?" she said. "Thank you for calling."\nAvrumi\'s little brother ran past him in two sweaters, a hat and one mitten, shouting, "Where is my other mitten?"\nOn the kitchen table stood a pot of hot cocoa and seven mugs. Next to it lay Abba\'s gloves, soaking wet, and a long list in Ima\'s writing: "sled, scarves, extra socks, carrots for the nose."' },
+    c45_nosson: { title: 'The Missing Esrog (from Chapter 2)', text: '"That," said Tzvi Hirsch, folding his arms, "is exactly what we want to know."\nNosson\'s cheeks turned pink. He put the magnifying glass down on the rebbe\'s desk very carefully, the way you put down something that is not yours, and walked to his seat without another word.\nYehuda looked at Nosson, who was reading his book, or pretending to. Nosson\'s shoulders were hunched up near his ears. He turned a page, then turned it back.\nTzvi Hirsch leaned forward. His face was red. "You see?" he whispered. "He took it. Case closed."\nYehuda felt his stomach tighten. He did not like the feeling. He looked down at his notebook, then over at Nosson, then down again. Binyamin, who sat next to him, said nothing at all. He only shook his head slowly, the way he did when someone made a bad move in chess.' },
+    c45_spell: { title: 'The Last Word', text: 'Only two boys were left on the stage: Eli and Shloimy. The whole school sat in rows, and nobody made a sound.\n"Eli," said the judge, "your word is necessary."\nEli wiped his hands on his pants. He closed his eyes for a moment. Then he spelled it slowly, one letter at a time, and stopped.\nThe judge smiled. "Correct."\nEli let out a long breath, and his shoulders dropped. In the third row, his little brother jumped up and down, waving both arms over his head.\nShloimy, waiting for his turn, stared at the floor. He kept twisting the button on his shirt around and around. When the judge called his name, his voice came out as a squeak, and a few boys laughed. Shloimy\'s ears turned red.' },
+    c45_gadget: { title: 'Dovid\'s Basement Laboratory', text: 'Dovid Lerner\'s basement is an unbelievable place. There are batteries, magnets, flashlights and a broken computer keyboard. On the wall hangs a calendar covered in reminders, and on the workbench sits a notebook full of drawings.\nDovid\'s newest invention is a remarkable alarm for the sukkah. When the wind blows too hard, a little fan spins, a wire touches a magnet, and a buzzer sounds. Then everyone knows to bring the cushions inside before they get wet.\nHis sister calls the basement a disaster. Dovid calls it a laboratory. His Abba, an engineer, calls it wonderful, as long as Dovid puts the tools back.' },
+    c45_hunters: { title: 'The Hurricane Hunters', text: 'Most pilots stay far away from storms. The hurricane hunters fly right into them.\nThese pilots fly special airplanes into the middle of a hurricane. The ride is bumpy and dangerous. Inside the plane, scientists watch computer screens and measure the wind, the rain and the temperature.\nThey drop small instruments out of the plane. Each instrument falls through the storm on a little parachute and sends information back to the plane.\nWith that information, forecasters can predict where the hurricane will travel next. Then families in its path have time to get ready and stay safe. It is uncomfortable work, but it is important.' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+  /* Grades 4-5 reading checks (E45 band, a passage on the card): the question was the large default size in a narrow column, and
+     the automatic word pictures pushed the choices below the fold at 1366x768 (issue #296). Only E45 cards that show a passage change. */
+  try { if (!document.getElementById('c45-css')) { var st = document.createElement('style'); st.id = 'c45-css';
+    st.textContent = 'body.ob-on.ob-b-E45 .play.ob-play .stage.withp .qtext{font-size:22px !important;line-height:1.35 !important;flex:1 1 100% !important;order:2 !important;min-width:0 !important;width:auto !important;max-width:none !important}' +
+      'body.ob-on.ob-b-E45 .play.ob-play .stage.withp .qrow{flex-wrap:wrap !important;justify-content:flex-end !important}' +
+      'body.ob-on.ob-b-E45 .play.ob-play .stage.withp .pxrow{display:none !important}' +
+      '@media (max-width:760px){body.ob-on.ob-b-E45 .play.ob-play .stage.withp{grid-template-columns:minmax(0,1fr) !important;display:grid !important}' +
+      'body.ob-on.ob-b-E45 .play.ob-play .stage.withp > *{min-width:0 !important;max-width:100% !important}}';
+    document.head.appendChild(st); } } catch (e) {}
+
+  var RT = 'Right there: one sentence holds it', TS = 'Think and search: pieces from 2+ places', NT = 'Not in the text at all';
+  var LESSONS = {
+    'READ.COMP.L05.05':{name:'Where Does the Answer Live?',
+      teach:[
+        {p:'c45_sukkah', q:'"How many boards were there?" Where does the answer live?', o:[RT, TS, NT], how:'Find the key word "boards". Read that one sentence. Is the whole answer there?'},
+        {p:'c45_sukkah', q:'"What two jobs did Yehuda do?" Where does the answer live?', o:[TS, RT, NT], how:'Find each job. Is the first job in the same sentence as the second? Count the places.'},
+        {p:'c45_sukkah', q:'Think and search: why did Yehuda\'s arms ache?', o:['He held boards straight for almost two hours.', 'The moon was high.', 'He tied twelve strings of dates.'], how:'Join two sentences: what his job was, and how long it took.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_bakery', q:'Sort each question: where does its answer live?', bins:[{id:'rt', label:'Right there'}, {id:'ts', label:'Think and search'}],
+          items:[{label:'What time does Tzvi Hirsch wake up?', bin:'rt'}, {label:'How hot does the oven get?', bin:'rt'}, {label:'How many boxes does he fold?', bin:'rt'}, {label:'Why is the bakery so busy on Friday?', bin:'ts'}, {label:'What does Tzvi Hirsch do from five to eight?', bin:'ts'}, {label:'Why is he tired, and why doesn\'t he mind?', bin:'ts'}],
+          h:'Find the key word. If one sentence holds the whole answer, it is right there.', how:'Right there: the key word and the answer sit in one sentence. Think and search: you need two or more places.'},
+        {t:'pairs', p:'c45_bakery', q:'Right there! Match each question to its answer.', pairs:[['What does Abba braid?', 'the challah dough'], ['What does Mr. Weiss buy?', 'two round challos with raisins'], ['What does Rabbi Feldman buy?', 'six small rolls'], ['When does Tzvi Hirsch eat a roll?', 'at eight']],
+          h:'Find the name or key word from the question. The answer is in that sentence.', how:'Point to the key word in the story. Read only that sentence. The answer is right there.'},
+        {t:'spotall', p:'c45_bakery', q:'Think and search: why is Friday so busy? Tap every piece that helps.', cells:[{label:'Friday is the busiest day of the week', ok:true}, {label:'People line up before the door opens', ok:true}, {label:'Everyone wants fresh challah for Shabbos', ok:true}, {label:'He folds sixty boxes', ok:false}, {label:'He runs to catch the school bus', ok:false}],
+          h:'Ask of each piece: does it tell why so many people come?', how:'A think-and-search answer has pieces in different places. Tap each piece that answers why.'},
+        {t:'order', p:'c45_bakery', q:'Build a think-and-search answer: what does Tzvi Hirsch do on Friday morning?', tiles:['He wakes up at five,', 'folds sixty boxes before davening,', 'eats a warm roll at eight,', 'and runs for the bus.'],
+          h:'Find each piece in the story. Put them in the order they happen.', how:'Collect the pieces from different sentences. Put them in time order: five, before davening, eight.'},
+        {t:'sort', p:'c45_bakery', q:'Mistake Detective. "Why is Tzvi Hirsch tired, and why doesn\'t he mind?" Whole answer, or only one piece?', bins:[{id:'w', label:'Whole answer'}, {id:'o', label:'Only one piece'}],
+          items:[{label:'He wakes at five and works hard, but loves the smell of challah.', bin:'w'}, {label:'He wakes up at five.', bin:'o'}, {label:'He loves the smell of challah.', bin:'o'}, {label:'He gets up early to work, and the challah smell is worth it to him.', bin:'w'}],
+          h:'The question asks two things. Does the answer give both?', how:'A think-and-search question can have two parts. One piece is the trap. Check every part.'},
+        {t:'type', p:'c45_bakery', q:'Right there: how many boxes does Tzvi Hirsch fold before davening? Type the number.', a:'60', alt:['sixty'], kb:'abc',
+          h:'Find the word "boxes". Read that sentence.', how:'Find the key word "boxes". The number is in the same sentence.'}
+      ],
+      check:[
+        {p:'c45_bees', q:'"What do the bees eat in winter?" Where does the answer live?', o:[RT, TS, NT]},
+        {p:'c45_bees', q:'"Why does a beekeeper leave honey?" Where does the answer live?', o:[TS, RT, NT]},
+        {p:'c45_bees', q:'"How do bees stay warm, and with what energy?" Answer: "They shiver." Whole?', o:['Only one piece', 'Whole answer', 'Not in the text at all']}
+      ],
+      re:[
+        {p:'c45_sukkah', q:'"What color was the trim?" One sentence holds it. What kind of question is it?', o:['Right there', 'Think and search', 'Not in the text'], how:'Find "trim". The whole answer is in that one sentence.'},
+        {p:'c45_sukkah', q:'"What did Savta and Yehuda do with the dates?" How many places do you need?', o:['Two or more places: think and search', 'One sentence: right there', 'It is not in the story'], how:'Savta showed him how. Yehuda tied them. Those are two sentences.'},
+        {p:'c45_sukkah', q:'Which answer has EVERY piece of "What two jobs did Yehuda do?"', o:['He held the boards straight and tied twelve strings of dates.', 'He tied twelve strings of dates.', 'He held the boards straight.'], how:'The question asks for two jobs. Count the jobs in each answer.'}
+      ]},
+    'READ.COMP.L05.06':{name:'Prove It!',
+      teach:[
+        {p:'c45_chess', q:'Binyamin was nervous. Which sentence proves it?', o:['Binyamin\'s hands were cold, and he kept rubbing them on his knees.', 'Binyamin Yusupov sat across the chessboard from his Zeidy.', 'He touched the rook, lifted it, and set it down with a soft click.'], how:'Say the answer first: he was nervous. Then look for a sentence that SHOWS it. Does it prove it, or only talk about him?'},
+        {p:'c45_chess', q:'Binyamin was careful with his winning move. Which sentence proves it?', o:['Binyamin checked the move three times.', 'Then he saw it.', 'Zeidy had won the last six games in a row.'], how:'Careful means checking before you act. Find the sentence where he checks.'},
+        {p:'c45_chess', q:'Zeidy was proud of Binyamin. Which sentence proves it best?', o:['Slowly, a smile spread across his face. He reached over and shook Binyamin\'s hand.', 'Zeidy leaned forward and looked at the board.', 'Zeidy had a queen.'], how:'Proud is a feeling. Look for what Zeidy does after the move. Which action shows it?'}
+      ],
+      practice:[
+        {t:'pairs', p:'c45_bakery', q:'Match each answer to the sentence that proves it.', pairs:[['Tzvi Hirsch works hard.', 'He folds sixty boxes before davening.'], ['The bakery is popular.', 'People line up outside before the door even opens.'], ['Tzvi Hirsch loves the bakery.', 'He says the smell of fresh challah is worth it.']],
+          h:'Read the answer. Then find the sentence that shows it is true.', how:'Proof is a sentence from the text that makes the answer true. Match each answer to its proof.'},
+        {t:'sort', p:'c45_bakery', q:'Mistake Detective. "Friday is busy at the bakery." Proof, or just about the bakery?', bins:[{id:'p', label:'Proves it'}, {id:'n', label:'About the bakery, but not proof'}],
+          items:[{label:'Friday is the busiest day of the week.', bin:'p'}, {label:'People line up before the door even opens.', bin:'p'}, {label:'The big oven heats up to four hundred degrees.', bin:'n'}, {label:'His family owns the kosher bakery.', bin:'n'}],
+          h:'Ask: does this sentence show that Friday is BUSY?', how:'A sentence can be about the same place and still not prove the answer. Ask: does it make the answer true?'},
+        {t:'spotall', p:'c45_chess', q:'Zeidy is a strong chess player. Tap every sentence that proves it.', cells:[{label:'Zeidy had won the last six games in a row.', ok:true}, {label:'Binyamin sat across the chessboard.', ok:false}, {label:'"It took you seven games."', ok:true}, {label:'The clock was ticking above the sink.', ok:false}],
+          h:'Ask of each sentence: does it show Zeidy is hard to beat?', how:'Tap every sentence that makes the answer true. Leave the ones that are only about the scene.'},
+        {t:'order', p:'c45_chess', q:'Build a proof answer: why did Binyamin win?', tiles:['Binyamin won', 'because he moved his rook across the board', 'and Zeidy\'s king had nowhere to go.'],
+          h:'Answer first, then "because", then the proof from the text.', how:'A proof answer has three parts: the answer, the word because, then what the text says.'},
+        {t:'sort', p:'c45_chess', q:'Which sentences prove "Binyamin was nervous"?', bins:[{id:'p', label:'Proves he was nervous'}, {id:'n', label:'Does not prove it'}],
+          items:[{label:'His hands were cold.', bin:'p'}, {label:'He kept rubbing them on his knees.', bin:'p'}, {label:'The kitchen was quiet.', bin:'n'}, {label:'Zeidy had a queen.', bin:'n'}],
+          h:'Nervous people show it with their body. Find what Binyamin does.', how:'Look for clues in what the character does and feels in his body. A fact about the room is not proof.'},
+        {t:'pairs', p:'c45_sukkah', q:'Sukkah story: match each answer to its proof.', pairs:[['The sukkah took a long time.', 'It took them almost two hours.'], ['Savta likes old family ways.', '"In Morocco, my father hung dates..."'], ['The sisters liked the dates.', 'They clapped and asked if they could eat one.']],
+          h:'Find the sentence that makes each answer true.', how:'Read the answer. Find the sentence that shows it, not just one that has the same words.'}
+      ],
+      check:[
+        {p:'c45_leaves', q:'Claim: chlorophyll makes leaves green. Proof? "They are full of chlorophyll."', o:['Proves it', 'Not proof', 'Not in the text']},
+        {p:'c45_leaves', q:'Claim: the yellow was there all along. Proof? "The days get shorter and cooler."', o:['Not proof', 'Proves it', 'Not in the text']},
+        {p:'c45_leaves', q:'Claim: a leaf falls when water stops. Proof? "Water can no longer reach the leaf."', o:['Proves it', 'Not proof', 'Not in the text']}
+      ],
+      re:[
+        {p:'c45_chess', q:'"Binyamin was brave." Which sentence proves it?', o:['He touched the rook, lifted it, and set it down with a soft click.', 'The kitchen was quiet.', 'Zeidy had a queen.'], how:'Brave means he did it even though he was nervous. Find the sentence where he acts.'},
+        {p:'c45_bakery', q:'"Tzvi Hirsch is tired in school." Which sentence proves it?', o:['He is tired all morning, but he never complains.', 'He eats one warm roll.', 'The first trays come out by seven.'], how:'Find the key word tired. Is it in a sentence about school time?'},
+        {p:'c45_sukkah', q:'"Yehuda worked hard." Which sentence proves it best?', o:['By the time they finished, the moon was high, and Yehuda\'s arms ached.', 'There were eight boards.', 'Savta came out with a bowl of dates.'], how:'Hard work leaves a mark. Which sentence shows what it did to Yehuda?'}
+      ]},
+    'READ.COMP.L05.07':{name:'Quote It or Say It',
+      teach:[
+        {p:'c45_tower', q:'Which one QUOTES the text exactly?', o:['The text says, "It looks like a castle from a storybook."', 'The text says, "It looks like a castle in a story."', 'The text says the tower looks like a castle.'], how:'A quote copies the exact words, inside quotation marks. Check each word against the text.'},
+        {p:'c45_tower', q:'Which one SAYS IT in your own words?', o:['The city built the tower to push water into houses on the hills.', '"Workers pumped water into a tall pipe inside the tower."', 'The tower was built as a home for a king.'], how:'Own words keep the meaning but use new words, and no quotation marks. It must still match the text.'},
+        {p:'c45_tower', q:'Why was the pipe wrapped in a tower? Pick the best proof.', o:['The text says, "The builders did not want an ugly pipe sticking up over the city."', 'The text says, "Today the pipe is empty."', 'The text says it is very old.'], how:'Pick a quote that answers the question. Exact words, in quotation marks.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_tower', q:'Sort each one: a quote, or own words?', bins:[{id:'q', label:'Quote (exact words)'}, {id:'o', label:'Own words'}],
+          items:[{label:'"Today the pipe is empty."', bin:'q'}, {label:'"Newer pumps do the work."', bin:'q'}, {label:'The pipe has no water in it now.', bin:'o'}, {label:'New machines push the water today.', bin:'o'}],
+          h:'Quotation marks and the very same words? It is a quote.', how:'A quote has quotation marks and the text\'s exact words. Own words say the same idea in new words.'},
+        {t:'sort', p:'c45_tower', q:'Mistake Detective. Is each quote copied right?', bins:[{id:'r', label:'Exact: right'}, {id:'w', label:'Changed: mistake'}],
+          items:[{label:'"It looks like a castle from a storybook."', bin:'r'}, {label:'"It looks like a castle from a fairy tale."', bin:'w'}, {label:'"The tower still works."', bin:'w'}, {label:'"But the tower still stands."', bin:'r'}],
+          h:'Check every word against the text, one by one.', how:'Inside quotation marks, every word must match the text. One changed word makes it a mistake.'},
+        {t:'pairs', p:'c45_tower', q:'Match each quote to the same idea in own words.', pairs:[['"It was built for a very plain reason: water."', 'It was built to hold water.'], ['"Today the pipe is empty."', 'There is no water in it now.'], ['"People can see it from miles away."', 'It can be seen from far off.']],
+          h:'Read the quote. Which own-words line means the same thing?', how:'Own words keep the meaning. Match the quote to the line that says the same idea.'},
+        {t:'order', p:'c45_tower', q:'Build a sentence with a quote: how did water reach the kitchens?', tiles:['The text says,', '"its weight pushed it down', 'and out through pipes."'],
+          h:'Start with "The text says," then open the quotation marks.', how:'A quote sentence: who says it, a comma, then the exact words inside quotation marks.'},
+        {t:'spotall', p:'c45_tower', q:'Own words: tap every line that matches what the text says.', cells:[{label:'The tower hid a water pipe.', ok:true}, {label:'Water was pumped up high so it could flow to homes.', ok:true}, {label:'Kings used to live in the tower.', ok:false}, {label:'The tower still pumps water today.', ok:false}],
+          h:'Own words must still be TRUE to the text. Check each one.', how:'Own words change the words, not the facts. Tap only the lines the text agrees with.'},
+        {t:'type', p:'c45_tower', q:'Copy the exact word: "The builders did not want an ___ pipe." Type the missing word.', a:'ugly', kb:'abc',
+          h:'Find the sentence about the builders. Copy the word exactly.', how:'A quote copies the text exactly. Find the sentence and copy the word letter by letter.'}
+      ],
+      check:[
+        {p:'c45_owls', q:'Copied exactly? "The mouse never hears the owl."', o:['Changed: mistake', 'Exact: right']},
+        {p:'c45_owls', q:'Avi wrote: Its ears sit at different heights. Quote or own words?', o:['Own words', 'Quote (exact words)']},
+        {p:'c45_owls', q:'Copied exactly? "The edges of its feathers are soft and fringed"', o:['Exact: right', 'Changed: mistake']}
+      ],
+      re:[
+        {p:'c45_tower', q:'What makes a quote a quote?', o:['The exact words, inside quotation marks', 'Any words about the text', 'Your own words, inside quotation marks'], how:'Exact words plus quotation marks.'},
+        {p:'c45_tower', q:'Which is own words for "Newer pumps do the work"?', o:['Newer machines push the water now.', '"Newer pumps do the work."', 'The tower is empty and old.'], how:'Same meaning, new words, no quotation marks.'},
+        {p:'c45_tower', q:'Which quote is copied right?', o:['"Today the pipe is empty."', '"Today the pipe is dry."', '"Now the pipe is empty."'], how:'Check each word against the text.'}
+      ]},
+    'READ.COMP.L05.08':{name:'Inference Ladder',
+      teach:[
+        {p:'c45_esrog', q:'Clue: his coat is still on the hook. What I know: nobody goes far outside in the cold without a coat. Inference?', o:['Rabbi Feldman is still somewhere close by.', 'Rabbi Feldman went home.', 'Rabbi Feldman lost his coat.'], how:'Climb the ladder: clue (from the text) + what I know (from life) = inference.'},
+        {p:'c45_esrog', q:'Clue: the cloth is folded neatly and smells fresh. What can we infer?', o:['The esrog was taken out carefully, a short time ago.', 'The esrog was grabbed by a thief in a hurry.', 'The esrog was never in the box.'], how:'What do people do when they are careful? What does a fresh smell tell you about time?'},
+        {p:'c45_esrog', q:'Dovid "turned pale." What does the clue tell us?', o:['Dovid was shocked and scared.', 'Dovid was cold from recess.', 'Dovid was happy.'], how:'Clue: turned pale. What I know: faces go pale with a sudden fright. Put them together.'}
+      ],
+      practice:[
+        {t:'pairs', p:'c45_esrog', q:'Match each clue to the inference it supports.', pairs:[['The hat is gone, the coat is not.', 'The rebbe went somewhere close.'], ['The cloth is folded neatly.', 'Whoever took it was careful.'], ['The cloth still smells strongly of lemons.', 'The esrog was taken out a short time ago.']],
+          h:'For each clue, add what you know from life. Which inference does it lead to?', how:'Clue + what I know = inference. Match each clue to where it leads.'},
+        {t:'order', p:'c45_esrog', q:'Build the inference ladder from the bottom up.', tiles:['Clue: the cloth is folded neatly.', 'I know: a thief in a hurry does not fold things.', 'So: someone took the esrog out carefully.'],
+          h:'Bottom rung: the clue. Middle: what you know. Top: the inference.', how:'Every ladder starts with a clue from the text, then what you know, then the inference on top.'},
+        {t:'sort', p:'c45_esrog', q:'Mistake Detective. Is each one an inference with a clue, or a wild guess?', bins:[{id:'i', label:'Inference (has a clue)'}, {id:'g', label:'Wild guess (no clue)'}],
+          items:[{label:'The rebbe is close by, because his coat is here.', bin:'i'}, {label:'The esrog was taken carefully, because the cloth is folded.', bin:'i'}, {label:'A bird flew in and ate the esrog.', bin:'g'}, {label:'The rebbe took it to sell it.', bin:'g'}],
+          h:'Ask: which clue in the text holds this up?', how:'An inference stands on a clue. If no clue holds it up, it is a guess.'},
+        {t:'spotall', p:'c45_esrog', q:'Inference: "Something surprising happened in the room." Tap every clue that supports it.', cells:[{label:'Then they stopped.', ok:true}, {label:'Dovid turned pale.', ok:true}, {label:'The esrog is gone.', ok:true}, {label:'The boys ran up the stairs.', ok:false}],
+          h:'Which sentences show surprise or something unusual?', how:'Tap every clue that holds up the inference. Ordinary things are not clues.'},
+        {t:'sort', p:'c45_esrog', q:'Which part of the ladder is it?', bins:[{id:'c', label:'Clue (from the text)'}, {id:'k', label:'What I know (from life)'}, {id:'n', label:'Inference'}],
+          items:[{label:'His coat is still on the hook.', bin:'c'}, {label:'People wear coats when they go outside in the cold.', bin:'k'}, {label:'He stepped out somewhere close.', bin:'n'}, {label:'Dovid turned pale.', bin:'c'}, {label:'Faces go pale when people are frightened.', bin:'k'}, {label:'Dovid was frightened.', bin:'n'}],
+          h:'Is it in the text? A clue. From your life? What I know. The idea you get? Inference.', how:'Three rungs: clue (in the text), what I know (from life), inference (your new idea).'},
+        {t:'type', p:'c45_esrog', q:'Yehuda asks: "If you were stealing something, would you stop to ___ the cloth?" Type the missing clue word.', a:'fold', kb:'abc',
+          h:'Find the question Yehuda asks himself at the end.', how:'Find the last sentences. Yehuda\'s clue is what someone did to the cloth.'}
+      ],
+      check:[
+        {p:'c45_snow', q:'No cars, no bus, a shovel. "It snowed a lot." Inference or wild guess?', o:['Inference (has a clue)', 'Wild guess (no clue)']},
+        {p:'c45_snow', q:'"Abba\'s boots stood in a puddle." Which rung of the ladder?', o:['Clue (from the text)', 'What I know (from life)', 'Inference']},
+        {p:'c45_snow', q:'"They are going to the beach today." Inference or wild guess?', o:['Wild guess (no clue)', 'Inference (has a clue)']}
+      ],
+      re:[
+        {p:'c45_esrog', q:'An inference is...', o:['a clue from the text plus what I know', 'a wild guess', 'a sentence copied from the text'], how:'Climb the ladder: clue + what I know.'},
+        {p:'c45_esrog', q:'Which is a CLUE from the text?', o:['The hook where his hat hung was empty.', 'The rebbe is upstairs.', 'Rebbeim like esrogim.'], how:'A clue is written in the text. Find it there.'},
+        {p:'c45_esrog', q:'Clue: the hat is gone. Know: people take a hat when they step out. Inference?', o:['He stepped out for a short time.', 'He is sick.', 'He gave his hat away.'], how:'Put the clue and what you know together.'}
+      ]},
+    'READ.COMP.L05.09':{name:'Feelings Detective',
+      teach:[
+        {p:'c45_nosson', q:'"Nosson\'s cheeks turned pink." How does Nosson feel?', o:['embarrassed', 'excited', 'sleepy'], how:'The text does not say the feeling. Look at his body: pink cheeks. When do cheeks turn pink?'},
+        {p:'c45_nosson', q:'Nosson turned a page, then turned it back. What does that show?', o:['He was too upset to really read.', 'He loves the book.', 'He reads very fast.'], how:'Look at what he does. Does a calm reader turn a page and then turn it back?'},
+        {p:'c45_nosson', q:'How does Tzvi Hirsch feel about Nosson?', o:['angry and sure Nosson did it', 'sorry for Nosson', 'bored'], how:'Look at three things: his arms, his face and his words. Put the clues together.'}
+      ],
+      practice:[
+        {t:'pairs', p:'c45_nosson', q:'Match each clue to the feeling it shows.', pairs:[['Cheeks turned pink', 'embarrassed'], ['Folding his arms, face red', 'angry'], ['Shoulders hunched near his ears', 'upset and worried'], ['His stomach tightened', 'uneasy']],
+          h:'Picture each clue on a real boy. What would he be feeling?', how:'Bodies show feelings: faces, shoulders, hands, stomach. Match each clue to its feeling.'},
+        {t:'sort', p:'c45_nosson', q:'Where does each clue come from: body, actions, or words?', bins:[{id:'b', label:'His body'}, {id:'a', label:'What he does'}, {id:'w', label:'What he says'}],
+          items:[{label:'Nosson\'s cheeks turned pink.', bin:'b'}, {label:'He turned a page, then turned it back.', bin:'a'}, {label:'"Case closed."', bin:'w'}, {label:'He walked to his seat without a word.', bin:'a'}, {label:'Yehuda felt his stomach tighten.', bin:'b'}],
+          h:'Is it a body part? Something he does? Words in quotation marks?', how:'Authors show feelings three ways: the body, actions, and words. Sort each clue.'},
+        {t:'sort', p:'c45_nosson', q:'Mistake Detective. A good feeling answer, or a mistake?', bins:[{id:'g', label:'Good: has a clue'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Nosson is embarrassed: his cheeks turned pink.', bin:'g'}, {label:'Tzvi Hirsch is angry: he folded his arms and his face was red.', bin:'g'}, {label:'Nosson is happy: he walked to his seat.', bin:'m'}, {label:'Yehuda is hungry: his stomach tightened.', bin:'m'}],
+          h:'Does the clue really fit the feeling? Think about the whole scene.', how:'Check the clue AND the scene. A tight stomach while blaming a friend is not hunger.'},
+        {t:'spotall', p:'c45_nosson', q:'"Nosson is upset." Tap every clue that shows it.', cells:[{label:'His shoulders were hunched up near his ears.', ok:true}, {label:'He turned a page, then turned it back.', ok:true}, {label:'His cheeks turned pink.', ok:true}, {label:'Tzvi Hirsch folded his arms.', ok:false}],
+          h:'Only clues about Nosson count.', how:'Tap every clue that shows the feeling of this character, not someone else.'},
+        {t:'order', p:'c45_nosson', q:'Build a feeling answer with proof.', tiles:['Yehuda feels uneasy', 'because his stomach tightened', 'when Tzvi Hirsch blamed Nosson.'],
+          h:'Feeling first, then the body clue, then when it happened.', how:'A feeling answer: who and the feeling, then because, then the clue and when.'},
+        {t:'type', p:'c45_nosson', q:'Which body part shows Nosson is worried? "His ___ were hunched up near his ears."', a:'shoulders', kb:'abc',
+          h:'Find the sentence about hunching.', how:'Find the body clue in the text and copy the word.'}
+      ],
+      check:[
+        {p:'c45_spell', q:'"Eli\'s shoulders dropped." Where does this clue come from?', o:['His body', 'What he says', 'What he does']},
+        {p:'c45_spell', q:'Shloimy kept twisting his shirt button. How does he feel?', o:['nervous', 'proud', 'angry']},
+        {p:'c45_spell', q:'The boys laughed. Shloimy\'s ears turned red. How does he feel?', o:['embarrassed', 'excited', 'bored']}
+      ],
+      re:[
+        {p:'c45_nosson', q:'Authors show feelings through...', o:['the body, actions and words', 'only the word "feels"', 'the title'], how:'Look at three places: the body, what he does, what he says.'},
+        {p:'c45_nosson', q:'"His face was red. He folded his arms." Feeling?', o:['angry', 'calm', 'cold'], how:'Picture a boy with a red face and folded arms.'},
+        {p:'c45_nosson', q:'Nosson walked to his seat "without another word." Why?', o:['He felt hurt and did not want to argue.', 'He forgot how to talk.', 'He was late.'], how:'Clue: silent right after being blamed. What do you know about how that feels?'}
+      ]},
+    'READ.FLU.L05.02':{name:'Long Word Breaker',
+      teach:[
+        {p:'c45_gadget', q:'How do you break "unbelievable" into beats?', o:['un-be-liev-a-ble', 'unb-el-ievab-le', 'unbe-lievable'], how:'Take off the prefix and suffix first. Then give each vowel sound its own beat.'},
+        {p:'c45_gadget', q:'"Remarkable": what comes off first?', o:['re- at the start and -able at the end', 'just the first letter', 'nothing: read it all at once'], how:'Look for parts you know at the start and end: re-, un-, -able, -tion, -ful. Cover them, read the middle, then put it back together.'},
+        {p:'c45_gadget', q:'"Magnet" has two consonants in the middle. Where do you split it?', o:['mag-net', 'ma-gnet', 'magn-et'], how:'Two consonants between two vowels: split between them. Each part gets one vowel.'}
+      ],
+      practice:[
+        {t:'order', p:'c45_gadget', q:'Build "invention" from its beats.', tiles:['in', 'ven', 'tion'],
+          h:'Say it slowly: in... ven... tion.', how:'Every beat has one vowel sound. -tion says "shun" at the end.'},
+        {t:'sort', p:'c45_gadget', q:'Sort: how many beats in each word?', bins:[{id:'2', label:'2 beats'}, {id:'3', label:'3 beats'}, {id:'4', label:'4 or more beats'}],
+          items:[{label:'magnet', bin:'2'}, {label:'basement', bin:'2'}, {label:'remarkable', bin:'4'}, {label:'calendar', bin:'3'}, {label:'laboratory', bin:'4'}, {label:'buzzer', bin:'2'}],
+          h:'Count the vowel sounds, not the vowel letters.', how:'Each beat has one vowel sound. Say the word slowly and count.'},
+        {t:'sort', p:'c45_gadget', q:'Mistake Detective. Is each word broken right?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'dis-as-ter', bin:'r'}, {label:'re-mind-ers', bin:'r'}, {label:'dis-ast-er', bin:'w'}, {label:'remi-nde-rs', bin:'w'}],
+          h:'Does each beat have one vowel sound? Are the known parts kept whole?', how:'Keep prefixes and suffixes whole. Every beat needs a vowel. A beat with no vowel is a mistake.'},
+        {t:'pairs', p:'c45_gadget', q:'Match each word to its prefix or suffix.', pairs:[['unbelievable', 'un-'], ['reminders', 're-'], ['wonderful', '-ful'], ['invention', '-tion']],
+          h:'Look at the start and the end of each word.', how:'Prefixes come at the start. Suffixes come at the end. Find the part you already know.'},
+        {t:'spotall', p:'c45_gadget', q:'Tap every word that has a suffix you can take off first.', cells:[{label:'wonderful', ok:true}, {label:'remarkable', ok:true}, {label:'invention', ok:true}, {label:'magnet', ok:false}, {label:'basement', ok:true}],
+          h:'Look at the end: -ful, -able, -tion, -ment.', how:'Suffixes you know: -ful, -able, -tion, -ment, -ing, -ed. Cover them first.'},
+        {t:'type', p:'c45_gadget', q:'How many beats in "computer"? Type the number.', a:'3', alt:['three'], kb:'abc',
+          h:'Say it slowly and clap: com... pu... ter.', how:'Clap each vowel sound. Count the claps.'}
+      ],
+      check:[
+        {p:'c45_hunters', q:'"uncomfortable" broken as un-com-fort-a-ble. Right, or a mistake?', o:['Right', 'Mistake']},
+        {p:'c45_hunters', q:'"Information": what part do you know at the end?', o:['-tion', '-mat', '-in']},
+        {p:'c45_hunters', q:'How many beats in "instrument"?', o:['3', '2', '4']}
+      ],
+      re:[
+        {p:'c45_gadget', q:'Every beat in a word has...', o:['one vowel sound', 'two consonants', 'a capital letter'], how:'Say the word slowly. Each beat has one vowel sound.'},
+        {p:'c45_gadget', q:'In a long word, what do you look for first?', o:['prefixes and suffixes you know', 'the middle letter', 'the longest letter'], how:'Cover the start and end parts first.'},
+        {p:'c45_gadget', q:'Split "basket" (two consonants in the middle).', o:['bas-ket', 'ba-sket', 'bask-et'], how:'Split between the two middle consonants.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L05.05':{
+      hook:'Some answers sit in one sentence. Others are hiding in pieces all over the page.',
+      big:'Before you answer, ask: does one sentence hold the whole answer, or do I need to search in two or more places?',
+      intro:['Find the key word from the question in the text.', 'Read that sentence. Does it hold the WHOLE answer? Then it is right there.', 'If not, keep searching. Collect every piece, then put them together: think and search.'],
+      ex:[{q:'"How many boards were there?"', steps:['Key word: boards.', 'Sentence: "There were eight boards."', 'One sentence holds it all. Right there: eight.'], a:'Right there: eight boards'},
+          {q:'"Why did Yehuda\'s arms ache?"', steps:['Key word: arms. "Yehuda\'s arms ached." But why?', 'Search back: his job was to hold each board straight.', 'Search more: it took almost two hours.', 'Put the pieces together.'], a:'Think and search: he held boards for almost two hours'}],
+      oops:{q:'"What two jobs did Yehuda do?"', wrong:'He tied dates.', right:'He held the boards and tied the dates.', why:'That is only one piece. A think-and-search answer needs every piece.'},
+      idea:['Right there is like finding your coat on its hook. Think and search is like packing for camp: the things are in different rooms.'],
+      try:{q:'"Where did Savta\'s father hang dates?" Where does the answer live?', o:['Right there', 'Think and search', 'Not in the text'], a:'Right there', steps:['Key word: father.', 'One sentence: "In Morocco, my father hung dates..." It holds it all.']}
+    },
+    'READ.COMP.L05.06':{
+      hook:'Anyone can say an answer. A good reader can point to the sentence that proves it.',
+      big:'Proof is a sentence from the text that makes your answer true, not just a sentence with the same words.',
+      intro:['Say your answer first.', 'Find sentences about it. For each one ask: does this make my answer TRUE?', 'Pick the sentence that shows it best. Then say: "I know because the text says..."'],
+      ex:[{q:'"Binyamin was nervous." Prove it.', steps:['Answer: he was nervous.', 'Sentences about him: he sat down; his hands were cold; he rubbed them on his knees.', 'Which one SHOWS nervous? Cold hands, rubbing them.', 'I know because the text says his hands were cold and he kept rubbing them.'], a:'"Binyamin\'s hands were cold, and he kept rubbing them on his knees."'},
+          {q:'"Friday is busy at the bakery." Prove it.', steps:['Answer: Friday is busy.', '"The oven heats to 400 degrees." About the bakery, but does it show busy? No.', '"People line up before the door even opens." Yes, that shows busy.'], a:'"People line up outside before the door even opens."'}],
+      oops:{q:'"Friday is busy." Proof?', wrong:'"His family owns the kosher bakery."', right:'"People line up before the door even opens."', why:'The first sentence is about the bakery, but it does not show busy. Proof must make the answer true.'},
+      idea:['Proof is like a receipt. You say "I paid", and the receipt shows it.'],
+      try:{q:'"Zeidy was proud." Which sentence proves it?', o:['A smile spread across his face and he shook Binyamin\'s hand.', 'Zeidy leaned forward.', 'Zeidy had a queen.'], a:'A smile spread across his face and he shook Binyamin\'s hand.', steps:['Proud is a feeling.', 'Find what Zeidy does that shows the feeling.']}
+    },
+    'READ.COMP.L05.07':{
+      hook:'There are two ways to use a text as proof: copy its exact words, or say its idea your way.',
+      big:'A quote copies the exact words inside quotation marks. Own words keep the same meaning in new words.',
+      intro:['To quote: copy every word exactly, and put quotation marks around it.', 'Start with "The text says," and a comma.', 'To say it in your own words: change the words, keep the meaning, no quotation marks.', 'Both must be true to the text.'],
+      ex:[{q:'Quote it: why was the tower built?', steps:['Find the sentence: "It was built for a very plain reason: water."', 'Copy it exactly. Check each word.', 'Add the start: The text says, "...water."'], a:'The text says, "It was built for a very plain reason: water."'},
+          {q:'Say it: what happens today?', steps:['The text says, "Today the pipe is empty. Newer pumps do the work."', 'New words, same meaning.', 'Check it is still true.'], a:'Now the pipe is dry, and new machines move the water.'}],
+      oops:{q:'Quote: "It looks like a castle from a storybook."', wrong:'"It looks like a castle in a fairy tale."', right:'"It looks like a castle from a storybook."', why:'Inside quotation marks, every word must be the text\'s word.'},
+      idea:['A quote is a photo of the words. Own words is a drawing of the idea.'],
+      try:{q:'Which is a correct quote?', o:['"Newer pumps do the work."', '"New pumps do the job."', 'New pumps do the work now.'], a:'"Newer pumps do the work."', steps:['Find the sentence.', 'Check each word.', 'Look for the quotation marks.']}
+    },
+    'READ.COMP.L05.08':{
+      hook:'Authors do not tell you everything. They leave clues, and good readers climb up to the answer.',
+      big:'Clue from the text + what I know from life = inference.',
+      intro:['Bottom rung: find a clue, something the text really says.', 'Middle rung: add what you know from life.', 'Top rung: put them together. That is your inference.', 'Check it: does a clue hold it up? If not, it is a wild guess.'],
+      ex:[{q:'Where is Rabbi Feldman?', steps:['Clue: his coat is still on the hook, but his hat is gone.', 'I know: people take a coat to go far outside, a hat to step out.', 'Inference: he stepped out somewhere close, inside the building.'], a:'He is somewhere close by.'},
+          {q:'How was the esrog taken?', steps:['Clue: the cloth is folded neatly.', 'I know: a thief in a hurry does not fold things.', 'Inference: someone took it out carefully.'], a:'Carefully, not grabbed.'}],
+      oops:{q:'Where is the rebbe?', wrong:'He went home sick.', right:'He is close by. His coat is here.', why:'No clue says he is sick. An inference must stand on a clue.'},
+      idea:['A detective never says "I think" without "because". The because is the clue.'],
+      try:{q:'Dovid "turned pale." Inference?', o:['He was frightened.', 'He was cold.', 'He was hungry.'], a:'He was frightened.', steps:['Clue: turned pale, right when he saw the empty box.', 'I know: faces go pale with a sudden fright.']}
+    },
+    'READ.COMP.L05.09':{
+      hook:'Good authors almost never write "he was sad". They show it, and you figure it out.',
+      big:'Find the feeling from three kinds of clues: the body, what the character does, and what he says.',
+      intro:['Look at the body: face, cheeks, shoulders, hands, stomach.', 'Look at actions: what does he do, and how?', 'Listen to his words and how he says them.', 'Name the feeling, then prove it: "He feels ___ because ___."'],
+      ex:[{q:'How does Nosson feel?', steps:['Body: his cheeks turned pink.', 'Action: he walked to his seat without a word.', 'This happened right after he was blamed.', 'Feeling: embarrassed and hurt.'], a:'Embarrassed and hurt'},
+          {q:'How does Tzvi Hirsch feel?', steps:['Body: his face was red. Action: he folded his arms.', 'Words: "Case closed."', 'Feeling: angry, and sure he is right.'], a:'Angry and very sure'}],
+      oops:{q:'"Yehuda felt his stomach tighten."', wrong:'He was hungry.', right:'He felt uneasy.', why:'Look at the whole scene. His friend was blaming someone. That is not a hungry moment.'},
+      idea:['Be a feelings detective: freeze the scene like a photo, and look at each boy\'s face and hands.'],
+      try:{q:'"His shoulders were hunched up near his ears." Feeling?', o:['worried and upset', 'relaxed', 'proud'], a:'worried and upset', steps:['Picture hunched shoulders.', 'When do we pull our shoulders up?']}
+    },
+    'READ.FLU.L05.02':{
+      hook:'A long word looks scary. Break it into beats, and it is just a few short words in a row.',
+      big:'Take off the parts you know, give each vowel sound its own beat, then read it smoothly.',
+      intro:['Cover the prefix at the start (un-, re-, dis-) and the suffix at the end (-able, -tion, -ful, -ment).', 'Find the vowel sounds in the middle. Each one is a beat.', 'Two consonants between vowels? Split between them: mag-net.', 'Read beat by beat, then say it fast.'],
+      ex:[{q:'unbelievable', steps:['Cover un- and -able.', 'Middle: believ = be-liev.', 'Beats: un-be-liev-a-ble.', 'Fast: unbelievable!'], a:'un-be-liev-a-ble'},
+          {q:'invention', steps:['Cover -tion (says shun).', 'Middle: inven = in-ven (split between n and v).', 'Beats: in-ven-tion.'], a:'in-ven-tion'}],
+      oops:{q:'disaster', wrong:'dis-ast-er', right:'dis-as-ter', why:'Two consonants between vowels, s and t: split between them, as-ter.'},
+      idea:['A long word is a train: each car is one beat, and each car needs a driver, a vowel.'],
+      try:{q:'Break "reminders".', o:['re-mind-ers', 'rem-ind-ers', 'remi-nders'], a:'re-mind-ers', steps:['Cover re- and -ers.', 'Middle: mind.']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.COMP.L05.05':{ band:'E45', pic:'🔎', today:'Find where the answer lives before you answer',
+      why:'Some answers sit in one sentence. Others hide in pieces. Know which, and you will not miss half.',
+      ready:[{q:'"Avi found his siddur in the shul." Where was the siddur?', o:['in the shul','Avi','his siddur'], a:'in the shul'},
+             {q:'"On Sunday, Zeidy built a shtender." When did Zeidy build it?', o:['on Sunday','a shtender','Zeidy'], a:'on Sunday'}],
+      bridge:'READ.COMP.L04.01', bridgeName:'Five Questions',
+      watch:{ q:'The Sukkah on Glen Avenue', m:{type:'scene', e:'🛖', t:'There were eight boards, white with blue trim. Yehuda held each board straight while Abba screwed them together. It took almost two hours. By the end, Yehuda\'s arms ached.'}, steps:[
+        {t:'Question 1: "How many boards were there?" I find the key word: boards.'},
+        {t:'One sentence: "There were eight boards." It holds the whole answer. That is RIGHT THERE.'},
+        {t:'Question 2: "Why did his arms ache?" The ache sentence does not say why.'},
+        {t:'I search back. Piece 1: he held each board. Piece 2: it took two hours. I join them. That is THINK AND SEARCH.'}],
+        a:'Right there: one sentence. Think and search: pieces from two or more places.' },
+      oops:{ q:'"What two jobs did Yehuda do?"', wrong:'He tied dates.', right:'He held the boards and tied the dates.', why:'Only one piece. A think-and-search answer needs every piece.' },
+      ways:['worked example','question-answer types (QAR)','sort and build','Mistake Detective','tap the reason'], done:'You can tell where an answer lives, and find every piece!',
+      board:{ one:'Right there = one sentence. Think and search = pieces from 2+ places.', activity:'Question cards: boys hold up 1 finger (right there) or 2+ fingers (think and search), then point to the sentences.', mistakes:['Stopping after one piece of a think-and-search answer','Answering from memory instead of the sentence','Picking a sentence with the key word that does not answer the question'] },
+      do:[
+        {type:'sort', bins:['Right there','Think and search'], cards:[['How many boards were there?',0],['What color was the trim?',0],['What two jobs did Yehuda do?',1],['Why did his arms ache?',1]],
+          say:'Where does each answer live? Sort the questions.', how:'One sentence holds it? Right there. Need two places? Think and search.'},
+        {type:'listen', q:'He held each board straight. It took almost two hours.', hear:'Why did Yehuda\'s arms ache?', o:['He held boards for two hours','He held a board','The moon was high'], a:'He held boards for two hours',
+          say:'Join the two sentences. Why did his arms ache?', how:'Read both sentences. Join the job and the time.',
+          why:{q:'Why is this a think-and-search answer?', o:['It needs two sentences','It is one word','It is not in the story'], a:'It needs two sentences'}}],
+      your:[
+        {type:'sort', mis:true, q:'"What two jobs did Yehuda do?"', bins:['Whole answer','Only one piece'], cards:[['held boards and tied dates',0],['tied dates',1],['held boards',1],['held each board and tied twelve date strings',0]],
+          say:'Mistake Detective: whole answer, or only one piece?', how:'Count the jobs in each card. One job is the trap.'},
+        {type:'match', q:'Tzvi Hirsch wakes at five. He folds sixty boxes. Abba braids challah.', pairs:[['When does he wake?','at five'],['How many boxes?','sixty'],['What does Abba braid?','challah']],
+          say:'Right there! Match each question to its answer.', how:'Find the key word. The answer is in that sentence.'},
+        {type:'tiles', q:'Why is Friday busy? Shabbos is coming. People want fresh challah.', w:['Shabbos is coming,','so people line up','for fresh challah.'], extra:['the oven is hot'],
+          say:'Build a think-and-search answer from the pieces.', how:'Join the reason and what people do. Leave out what does not answer why.',
+          why:{q:'Why did you need two sentences?', o:['The reason and the people are in different places','The answer is in the title','You can guess it'], a:'The reason and the people are in different places'}},
+        {type:'match', q:'The bus leaves at 8:10. It stops on Glen Avenue.', pairs:[['When does the bus leave?','8:10'],['Where does it stop?','Glen Avenue']],
+          say:'Right there again. Match each question to its answer.', how:'Find when and where words. Each answer sits in one sentence.'},
+        {type:'listen', q:'Dovid oiled the bike chain. Then the wheels spun fast.', hear:'Why did the wheels spin fast? Where does the answer live?', o:['Think and search','Right there'], a:'Think and search',
+          say:'Challenge! Right there, or think and search?', how:'Does one sentence say why? Or do you join two?',
+          why:{q:'What tells you it is think and search?', o:['You join the oil and the fast wheels','One sentence says why','The word Dovid'], a:'You join the oil and the fast wheels'}}] },
+    'READ.COMP.L05.06':{ band:'E45', pic:'🧾', today:'Point to the sentence that proves your answer',
+      why:'Saying an answer is easy. Proving it from the text makes you sure, and makes others believe you.',
+      ready:[{q:'"There were eight boards." How many boards? Where does it live?', o:['Right there','Think and search','Not in the text'], a:'Right there'},
+             {q:'"He held each board. It took two hours." Why was he tired?', o:['He held boards for two hours','There were boards','It was night'], a:'He held boards for two hours'}],
+      bridge:'READ.COMP.L05.05', bridgeName:'Where Does the Answer Live?',
+      watch:{ q:'The Last Move', m:{type:'scene', e:'♟️', t:'Binyamin\'s hands were cold, and he kept rubbing them on his knees. He had not said a word in ten minutes. Then he saw the move. He checked it three times.'}, steps:[
+        {t:'My answer: Binyamin was nervous. Now I need proof.'},
+        {t:'"He checked it three times." That shows careful, not nervous. Not my proof.'},
+        {t:'"His hands were cold, and he kept rubbing them." His body shows he is nervous. That is proof!'},
+        {t:'I say it: "He was nervous. I know because his hands were cold and he kept rubbing them."'}],
+        a:'Proof is a sentence that makes the answer TRUE.' },
+      oops:{ q:'"Friday is busy at the bakery." Proof?', wrong:'"His family owns the kosher bakery."', right:'"People line up before the door even opens."', why:'Same topic, but it does not show busy. Proof makes the answer true.' },
+      ways:['worked example','evidence','sort and match','Mistake Detective','tap the reason','chavrusa'], done:'You can prove your answer with the text! Tell your chavrusa your proof.',
+      board:{ one:'Answer, then "I know because the text says..."', activity:'Hold up the book: one boy says an answer, his chavrusa must put a finger on the proof sentence.', mistakes:['Picking a sentence with the same words that does not prove the answer','Proving with what you think instead of what the text says','Picking the first sentence about the topic'] },
+      do:[
+        {type:'match', pairs:[['He was nervous.','His hands were cold.'],['He was careful.','He checked it three times.'],['Zeidy was proud.','He smiled and shook his hand.']],
+          say:'Match each answer to the sentence that proves it.', how:'Read the answer. Find the sentence that makes it true.'},
+        {type:'sort', mis:true, q:'Answer: "Friday is busy at the bakery."', bins:['Proves it','Not proof'], cards:[['People line up before it opens.',0],['Friday is the busiest day.',0],['The oven gets very hot.',1],['His family owns the bakery.',1]],
+          say:'Mistake Detective: real proof, or just about the bakery?', how:'Ask: does this sentence show that Friday is BUSY?'}],
+      your:[
+        {type:'listen', q:'Zeidy had won the last six games in a row.', hear:'What does this sentence prove?', o:['Zeidy is a strong player','Zeidy likes chess sets','The kitchen is quiet'], a:'Zeidy is a strong player',
+          say:'This is proof. What answer does it prove?', how:'Ask: what does winning six games in a row show?',
+          why:{q:'Why does it prove Zeidy is strong?', o:['Six wins in a row is hard','Zeidy is old','The game is long'], a:'Six wins in a row is hard'}},
+        {type:'sort', q:'Answer: "Binyamin was nervous."', bins:['Proves it','Not proof'], cards:[['His hands were cold.',0],['He rubbed his hands on his knees.',0],['The clock ticked above the sink.',1],['Zeidy had a queen.',1]],
+          say:'Which sentences prove Binyamin was nervous?', how:'Look at what Binyamin does with his body. A fact about the room is not proof.'},
+        {type:'tiles', q:'Why did Binyamin win?', w:['He won','because his rook','trapped Zeidy\'s king.'], extra:['Zeidy is old'],
+          say:'Build a proof answer: answer, because, then proof.', how:'Start with the answer. Then because. Then what the text says.',
+          why:{q:'Why do we add "because"?', o:['It joins the answer to its proof','It makes it longer','It is a rule for chess'], a:'It joins the answer to its proof'}},
+        {type:'match', q:'Sukkah story', pairs:[['It took a long time.','It took almost two hours.'],['The sisters liked the dates.','They clapped.'],['Yehuda worked hard.','His arms ached.']],
+          say:'Match each answer to its proof.', how:'Find the sentence that makes each answer true.'},
+        {type:'listen', q:'Challenge: which proves "Tzvi Hirsch loves the bakery"?', hear:'Which sentence proves that Tzvi Hirsch loves the bakery?', o:['The challah smell is worth it to him','He wakes up at five','The oven is hot'], a:'The challah smell is worth it to him',
+          say:'Challenge! Which sentence proves he loves the bakery?', how:'Waking early shows hard work. Which one shows love?'}] },
+    'READ.COMP.L05.07':{ band:'E45', pic:'💬', today:'Quote the exact words, or say it your way',
+      why:'Proof works two ways: the text\'s exact words, or its idea in yours. Each has rules.',
+      ready:[{q:'"Friday is busy." Which sentence proves it?', o:['People line up before it opens.','The oven is hot.','His family owns it.'], a:'People line up before it opens.'},
+             {q:'Proof is a sentence that...', o:['makes the answer true','has the same words','comes first'], a:'makes the answer true'}],
+      bridge:'READ.COMP.L05.06', bridgeName:'Prove It!',
+      watch:{ q:'The Tower on the Hill', m:{type:'scene', e:'🗼', t:'It looks like a castle from a storybook, but it was built for a very plain reason: water. Today the pipe is empty. Newer pumps do the work.'}, steps:[
+        {t:'Quote it: I copy the exact words. The text says, "It was built for a very plain reason: water."'},
+        {t:'I check each word against the text. Every word matches, and I used quotation marks.'},
+        {t:'Say it: "Today the pipe is empty. Newer pumps do the work." In my words: now the pipe is dry, and new machines move the water.'},
+        {t:'Own words: new words, same meaning, no quotation marks. And still true to the text.'}],
+        a:'Quote = exact words in quotation marks. Own words = same idea, new words.' },
+      oops:{ q:'Quote: "It looks like a castle from a storybook."', wrong:'"It looks like a castle in a fairy tale."', right:'"It looks like a castle from a storybook."', why:'Inside quotation marks, every word must match the text.' },
+      ways:['worked example','evidence','sort and build','Mistake Detective','tap the reason'], done:'You can quote exactly, or say it in your own words!',
+      board:{ one:'Quote = exact words + quotation marks. Own words = same meaning, new words.', activity:'One boy reads a sentence aloud; his chavrusa quotes it back exactly, then says it in his own words.', mistakes:['Changing a word inside quotation marks','Forgetting the quotation marks','Own words that change the facts'] },
+      do:[
+        {type:'sort', bins:['Quote','Own words'], cards:[['"Today the pipe is empty."',0],['"Newer pumps do the work."',0],['Now there is no water in it.',1],['New machines move the water.',1]],
+          say:'Quote or own words? Sort each one.', how:'Quotation marks and the exact words? A quote. New words? Own words.'},
+        {type:'match', pairs:[['"Today the pipe is empty."','There is no water in it now.'],['"Newer pumps do the work."','New machines push the water.'],['"People can see it from miles away."','You can see it from far off.']],
+          say:'Match each quote to the same idea in own words.', how:'Read the quote. Find the line that means the same thing.'}
+      ],
+      your:[
+        {type:'sort', mis:true, q:'Text: "It looks like a castle from a storybook."', bins:['Exact: right','Changed: mistake'], cards:[['"It looks like a castle from a storybook."',0],['"It looks like a castle in a story."',1],['"It looks like a palace from a storybook."',1]],
+          say:'Mistake Detective: is each quote copied right?', how:'Check every word against the text. One changed word is a mistake.'},
+        {type:'tiles', q:'How did the water reach the kitchens?', w:['The text says,','"its weight pushed it down','and out through pipes."'], extra:['and up to the roof."'],
+          say:'Build a sentence with a quote.', how:'Who says it, a comma, then the exact words inside quotation marks.',
+          why:{q:'Why must the words be exact?', o:['A quote is the text\'s own words','It sounds better','It is shorter'], a:'A quote is the text\'s own words'}},
+        {type:'listen', q:'Text: "The builders did not want an ugly pipe sticking up over the city."', hear:'Which is own words that stay true?', o:['They did not want the pipe to look bad.','They wanted a tall pipe.','"They did not want an ugly pipe."'], a:'They did not want the pipe to look bad.',
+          say:'Which own words stay true to the text?', how:'Own words: new words, same meaning, no quotation marks.',
+          why:{q:'Why is the quoted choice wrong here?', o:['It changed words inside quotation marks','It is too short','It is about water'], a:'It changed words inside quotation marks'}},
+        {type:'sort', q:'Own words must stay true.', bins:['True to the text','Not true'], cards:[['The tower hid a water pipe.',0],['Water flowed down to homes.',0],['Kings lived in the tower.',1],['It still pumps water today.',1]],
+          say:'Do these own words match the text?', how:'Own words change the words, never the facts.'},
+        {type:'listen', q:'Challenge: own words for "Newer pumps do the work."', hear:'Which one says it in own words?', o:['Modern machines move the water now.','"Newer pumps do the work."','The tower is very old.'], a:'Modern machines move the water now.',
+          say:'Challenge! Which one is own words?', how:'Own words: no quotation marks, same meaning.'}] },
+    'READ.COMP.L05.08':{ band:'E45', pic:'🪜', today:'Climb the inference ladder: clue + what I know',
+      why:'Authors leave clues instead of telling you everything. Climb up to the answer like a detective.',
+      ready:[{q:'"His hands were cold. He kept rubbing them." This proves he was...', o:['nervous','hungry','sleepy'], a:'nervous'},
+             {q:'Proof must come from...', o:['the text','a guess','the title only'], a:'the text'}],
+      bridge:'READ.COMP.L05.06', bridgeName:'Prove It!',
+      watch:{ q:'The Missing Esrog', m:{type:'scene', e:'🍋', t:'Rabbi Feldman was not there. His black coat still hung on the hook. But the hook where his hat always hung was empty.'}, steps:[
+        {t:'Question: where is Rabbi Feldman? The text does not say. I need a ladder.'},
+        {t:'Bottom rung, the clue: his coat is still here, but his hat is gone.'},
+        {t:'Middle rung, what I know: you wear a coat to go far in the cold. A hat to step out.'},
+        {t:'Top rung, the inference: he stepped out somewhere close. I can prove it with the clue.'}],
+        a:'Clue + what I know = inference.' },
+      oops:{ q:'Where is the rebbe?', wrong:'He went home sick.', right:'He is close by. His coat is here.', why:'No clue says sick. An inference stands on a clue.' },
+      ways:['worked example','inference ladder','sort and build','Mistake Detective','tap the reason'], done:'You can climb the inference ladder like a detective!',
+      board:{ one:'Clue + what I know = inference.', activity:'Draw a 3-rung ladder on the board. Boys bring clue cards and life cards; the class builds the top rung together.', mistakes:['A wild guess with no clue','Copying a sentence and calling it an inference','Forgetting what I know from life'] },
+      do:[
+        {type:'tiles', w:['Clue: the cloth is folded.','I know: thieves rush.','So: it was taken carefully.'], extra:['So: a bird took it.'],
+          say:'Build the ladder from the bottom rung up.', how:'Clue first, then what you know, then the inference on top.'},
+        {type:'sort', mis:true, bins:['Inference with a clue','Wild guess'], cards:[['He is close: his coat is here.',0],['It was taken carefully: the cloth is folded.',0],['A bird ate the esrog.',1],['The rebbe sold it.',1]],
+          say:'Mistake Detective: inference with a clue, or wild guess?', how:'Ask: which clue holds it up? No clue means a guess.'}],
+      your:[
+        {type:'match', pairs:[['The coat is still here.','He is close by.'],['The cloth smells fresh.','It was just taken.'],['Dovid turned pale.','He was frightened.']],
+          say:'Match each clue to its inference.', how:'Add what you know from life to each clue.'},
+        {type:'listen', q:'Tzvi Hirsch yawned all morning. Flour was on his sleeve.', hear:'What can you infer about his morning?', o:['He worked early at the bakery','He slept late','He went swimming'], a:'He worked early at the bakery',
+          say:'Climb the ladder. What can you infer?', how:'Yawning and flour. What do you know about bakers?',
+          why:{q:'Which rung did you add yourself?', o:['Bakers use flour, and early work makes you tired','Flour was on his sleeve','He yawned'], a:'Bakers use flour, and early work makes you tired'}},
+        {type:'sort', bins:['Clue','What I know','Inference'], cards:[['His hat is gone.',0],['People take a hat to step out.',1],['He stepped out for a bit.',2]],
+          say:'Which rung of the ladder is each card?', how:'In the text: clue. From life: what I know. The new idea: inference.'},
+        {type:'match', pairs:[['A wet umbrella by the door.','It is raining.'],['Sukkah boards in the yard.','Sukkos is coming.'],['A long line at the bakery.','Many people want challah.']],
+          say:'Match each clue to its inference.', how:'Each clue plus what you know points to one idea.'},
+        {type:'listen', q:'A white cloth on the table. Candlesticks shining. Soup smells.', hear:'What day is coming?', o:['Shabbos','A school day','Purim'], a:'Shabbos',
+          say:'Challenge! What day is coming?', how:'Find all three clues. What do you know about Friday at home?',
+          why:{q:'Which clue helps most?', o:['The shining candlesticks','The soup','The table'], a:'The shining candlesticks'}}] },
+    'READ.COMP.L05.09':{ band:'E45', pic:'🫣', today:'Find a feeling the author shows, not tells',
+      why:'Authors rarely write "he was sad". Spot the clues, and the story comes alive.',
+      ready:[{q:'Clue + what I know = ...', o:['an inference','a quote','a title'], a:'an inference'},
+             {q:'"The coat is still here." Inference?', o:['He is close by','He went home','He is cold'], a:'He is close by'}],
+      bridge:'READ.COMP.L05.08', bridgeName:'Inference Ladder',
+      watch:{ q:'The Missing Esrog', m:{type:'scene', e:'📖', t:'Nosson\'s cheeks turned pink. He put the magnifying glass down very carefully and walked to his seat without another word.'}, steps:[
+        {t:'The text never says how Nosson feels. I look for clues.'},
+        {t:'His body: his cheeks turned pink. Cheeks go pink when we feel embarrassed.'},
+        {t:'His action: he walked away without a word, right after he was blamed.'},
+        {t:'Feeling: embarrassed and hurt. I prove it: his cheeks turned pink, and he went silent.'}],
+        a:'Body + actions + words = the feeling.' },
+      oops:{ q:'"Yehuda felt his stomach tighten."', wrong:'He was hungry.', right:'He felt uneasy.', why:'Look at the scene. His friend was blaming someone. Not a hungry moment.' },
+      ways:['worked example','inference','match and sort','Mistake Detective','tap the reason'], done:'You can find feelings the author shows!',
+      board:{ one:'Body + actions + words = the feeling.', activity:'Freeze frame: two boys act a line from the story; the class names the feeling and points to the clue.', mistakes:['Taking a body clue literally (tight stomach = hungry)','Naming a feeling with no clue','Using another character\'s clue'] },
+      do:[
+        {type:'match', pairs:[['Cheeks turned pink','embarrassed'],['Arms folded, face red','angry'],['Shoulders hunched up','worried']],
+          say:'Match each body clue to its feeling.', how:'Picture a real boy with that clue. What is he feeling?'},
+        {type:'sort', mis:true, bins:['Good: clue fits','Mistake'], cards:[['Pink cheeks: embarrassed',0],['Red face, folded arms: angry',0],['Tight stomach: hungry',1],['Walked away silently: happy',1]],
+          say:'Mistake Detective: does the clue fit the feeling?', how:'Check the clue and the scene. Does the feeling really fit?'}],
+      your:[
+        {type:'listen', q:'Dovid kicked a stone all the way home. He did not say hello.', hear:'How does Dovid feel?', o:['upset','excited','proud'], a:'upset',
+          say:'Read the clues. How does Dovid feel?', how:'Look at what he does, and what he does NOT do.',
+          why:{q:'Which clue shows it best?', o:['He did not say hello','He walked home','He saw a stone'], a:'He did not say hello'}},
+        {type:'sort', bins:['Body','Action','Words'], cards:[['His cheeks turned pink.',0],['He turned a page back.',1],['"Case closed."',2],['His stomach tightened.',0]],
+          say:'Where does each clue come from?', how:'A body part, something he does, or words he says?'},
+        {type:'tiles', w:['Nosson feels hurt','because he went silent','after he was blamed.'], extra:['because he is new.'],
+          say:'Build a feeling answer with proof.', how:'The feeling, then because, then the clue and when.'},
+        {type:'match', pairs:[['Yawning and rubbing his eyes','tired'],['Jumping and cheering','excited'],['Biting his lip','nervous']],
+          say:'Match each action to its feeling.', how:'Picture the action. What feeling goes with it?'},
+        {type:'listen', q:'Avrumi grinned and held up his drawing for everyone to see.', hear:'How does Avrumi feel?', o:['proud','embarrassed','worried'], a:'proud',
+          say:'Challenge! How does Avrumi feel?', how:'Look at his face and what he does with the drawing.',
+          why:{q:'What do you know that helps?', o:['People show off work they are proud of','Drawings are paper','Grins are small'], a:'People show off work they are proud of'}}] },
+    'READ.FLU.L05.02':{ band:'E45', pic:'🚂', today:'Break a long word into beats, then read it',
+      why:'Grade 4 books are full of long words. Break them into beats, and none can stop you.',
+      ready:[{q:'How many beats in "sukkah"?', o:['2','1','3'], a:'2'},
+             {q:'Which part is a suffix: "help-ful"?', o:['-ful','help','h'], a:'-ful'}],
+      bridge:'READ.PHON.L04.01', bridgeName:'Word Parts',
+      watch:{ q:'unbelievable', m:{type:'tiles', w:['un','be','liev','a','ble'], hi:[0,3,4]}, steps:[
+        {t:'A long word! First I cover the parts I know: un- at the start, -able at the end.'},
+        {t:'The middle is "believ". It has two vowel sounds: be-liev.'},
+        {t:'Each vowel sound gets one beat: un-be-liev-a-ble. Five beats.'},
+        {t:'Now I say it fast: unbelievable! One more: in-ven-tion, invention.'}],
+        a:'un-be-liev-a-ble' },
+      oops:{ q:'disaster', wrong:'dis-ast-er', right:'dis-as-ter', why:'Two consonants between vowels, s and t: split between them, as-ter.' },
+      ways:['worked example','word building','sort and match','Mistake Detective','tap the reason'], done:'You can break a long word into beats and read it!',
+      board:{ one:'Cover the parts you know. One vowel sound = one beat.', activity:'Clap and slide: the class claps each beat of a long word, then slides a hand to say it fast.', mistakes:['Splitting a prefix or suffix in half','A beat with no vowel','Counting vowel letters instead of vowel sounds'] },
+      do:[
+        {type:'tiles', hear:'invention', w:['in','ven','tion'], extra:['vin'],
+          say:'Build invention, one beat at a time.', how:'Say it slowly: in, ven, shun. One vowel sound per beat.'},
+        {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['dis-as-ter',0],['re-mind-ers',0],['dis-ast-er',1],['remi-nde-rs',1]],
+          say:'Mistake Detective: is each word broken right?', how:'Keep known parts whole. Every beat needs one vowel.'}],
+      your:[
+        {type:'match', pairs:[['unbelievable','un-'],['wonderful','-ful'],['invention','-tion']],
+          say:'Match each word to the part you know.', how:'Look at the start and the end of each word.'},
+        {type:'listen', hear:'remarkable', o:['re-mark-a-ble','rem-ark-able','re-markable'], a:'re-mark-a-ble',
+          say:'Listen. Which shows its beats the right way?', how:'Cover re- and -able. Each beat has one vowel sound.',
+          why:{q:'Why is re- its own beat?', o:['It is a prefix with one vowel sound','It is the longest part','It has no vowel'], a:'It is a prefix with one vowel sound'}},
+        {type:'sort', bins:['2 beats','3 beats','4 or more'], cards:[['magnet',0],['buzzer',0],['calendar',1],['computer',1],['laboratory',2]],
+          say:'Sort the words by how many beats.', how:'Say each word slowly and clap the vowel sounds.'},
+        {type:'tiles', hear:'basement', w:['base','ment'], extra:['bas'],
+          say:'Build basement from its beats.', how:'Find the suffix -ment. The rest is base.',
+          why:{q:'What did you cover first?', o:['The suffix -ment','The letter b','The middle'], a:'The suffix -ment'}},
+        {type:'listen', hear:'laboratory', o:['lab-o-ra-to-ry','la-bor-at-ory','labo-ratory'], a:'lab-o-ra-to-ry',
+          say:'Challenge! Which shows laboratory in beats?', how:'Clap it slowly. Count every vowel sound. Five beats.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
