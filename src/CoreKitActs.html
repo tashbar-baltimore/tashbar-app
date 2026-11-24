@@ -81,7 +81,7 @@
     how: function (d) { return 'Read each sentence. Which one shows ' + (d.look || 'the answer') + '? Tap it.'; },
     label: function (d) { return 'Find the proof: ' + S(d.q); },
     view: function (d, s, c) { var a = T.evidence.ans(d);
-      return '<div class="cka-pass">' + d.p.map(function (x, i) { return '<button class="cka-s' + (s.hit[i] ? ' yes' : '') + (s.bad === i ? ' cka-shake' : '') + ((c.hint) && a[0] === i ? ' obk-pulse' : '') + '" data-obk="sent" data-k="' + i + '">' + E(x) + '</button>'; }).join('') + '</div>'; },
+      return '<div class="cka-pass">' + d.p.map(function (x, i) { return '<button class="cka-s' + (s.hit[i] ? ' yes' : '') + (s.bad === i ? ' cka-shake' : '') + ((c.hint) && a.filter(function (j) { return !s.hit[j]; })[0] === i ? ' obk-pulse' : '') + '" data-obk="sent" data-k="' + i + '">' + E(x) + '</button>'; }).join('') + '</div>'; },
     tap: function (d, s, act, k) { if (act !== 'sent') return; var i = +k, a = T.evidence.ans(d); s.bad = -1;
       if (a.indexOf(i) >= 0) { s.hit[i] = 1; return Object.keys(s.hit).length >= a.length ? 'ok' : undefined; }
       s.bad = i; s.msg = 'That sentence does not prove it. Look for the words that tell ' + (d.look || 'the answer') + '.'; return 'bump'; },
@@ -90,7 +90,7 @@
 
   /* ---------- combine: two short sentences become one strong one ---------- */
   T.combine = {
-    made: function (d, j) { if (d.r && S(j) === S(d.j)) return S(d.r); var a = S(d.a).replace(/[.!?]\s*$/, ''), b = lowFirst(S(d.b)); return a + (/^(because|when|after|before|until|if|since)$/i.test(S(j)) ? ' ' : ', ') + j + ' ' + b; },
+    made: function (d, j) { if (d.r && S(j) === S(d.j)) return S(d.r); var a = S(d.a).replace(/[.!?]\s*$/, ''), b = lowFirst(S(d.b)); return a + (/^(because|when|after|before|until|if|since|although|though|while|unless|whereas|once|as)$/i.test(S(j)) ? ' ' : ', ') + j + ' ' + b; },
     err: function (d) { if (!d.a || !d.b) return 'a and b are the two short sentences'; if (!isArr(d.o) || d.o.length < 2 || d.o.length > 4) return 'o must be 2 to 4 joining words'; if (d.o.map(S).indexOf(S(d.j)) < 0) return 'j (the right joining word) must be one of o'; return ''; },
     opts: function (d) { return d.o; },
     init: function (d) { return { order: shufNot(d.o.map(S)), pick: '', bad: '' }; },
