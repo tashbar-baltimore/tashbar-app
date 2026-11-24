@@ -25,7 +25,7 @@
     var lv = Number(/\.L0(\d)\./.exec(g.id)[1]); if (g.grade !== lv - 1) return 'grade must be ' + (lv - 1) + ' for a .L0' + lv + '. id';
     if (!g.name || String(g.name).length > 30) return 'name is needed (30 letters at most)';
     if (!Array.isArray(g.acts) || g.acts.length < 4 || g.acts.length > 8) return 'acts must be 4 to 8 Activity Kit activities';
-    if (W.OBK) { for (var i = 0; i < g.acts.length; i++) { var e = OBK.err(g.acts[i], 'K1'); if (e) return 'act ' + (i + 1) + ': ' + e;
+    if (W.OBK) { for (var i = 0; i < g.acts.length; i++) { var e = OBK.err(g.acts[i], 'K1'); if (e) return 'act ' + (i + 1) + ': ' + e; if (OBK.types[g.acts[i].type].reader) return 'act ' + (i + 1) + ': ' + g.acts[i].type + ' opens the Reader; a K-1 game has no Reader';
       var sw = String(g.acts[i].say || OBK.say(g.acts[i]) || '').trim().split(/\s+/).length; if (sw > 12) return 'act ' + (i + 1) + ': the spoken line has more than 12 words'; } }
     if (new Set(g.acts.map(function (a) { return a.type; })).size < 3) return 'use 3 or more kinds of activity';
     return '';
