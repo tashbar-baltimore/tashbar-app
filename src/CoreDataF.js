@@ -23,5 +23,8 @@ CORE_SKILLS.F = [
   ["READ.PA.L02.02", "Long or Short?", "Hear long and short vowel sounds", { after: "READ.PHON.L02.22", std: "RF.1.2a", file: "CoreDataF2", min: 5 }],
   ["READ.PHON.L03.13", "Drop the E", "Drop the silent e, then add -ing or -ed", { after: "READ.PHON.L03.11", std: "L.2.2d", file: "CoreDataF1", min: 7 }],
   ["READ.PHON.L03.14", "Double It", "Double the last letter before -ing or -ed", { after: "READ.PHON.L03.13", std: "L.2.2d", file: "CoreDataF1", min: 7 }],
-  ["READ.PHON.L03.15", "Y to I", "Change y to i before -es or -ed", { after: "READ.PHON.L03.14", std: "L.2.2d", file: "CoreDataF1", min: 7 }]
+  ["READ.PHON.L03.15", "Y to I", "Change y to i before -es or -ed", { after: "READ.PHON.L03.14", std: "L.2.2d", file: "CoreDataF1", min: 7 }],
+  ["READ.PHON.L03.16", "Helpful Endings", "Read words that end in -ful, -less, -ly and -ness", { after: "READ.PHON.L03.15", std: "RF.2.3d", file: "CoreDataF1", min: 7 }],
+  ["READ.PHON.L03.17", "Prefix Peel", "Read long words that start with un-, re-, pre- or dis-", { after: "READ.PHON.L03.16", std: "RF.2.3d", file: "CoreDataF1", min: 7 }],
+  ["READ.FLU.L03.04", "Just-Right Speed", "Read at talking speed: not too fast, not too slow", { after: "READ.PHON.L03.17", std: "RF.2.4b", file: "CoreDataF1", min: 7 }]
 ];
