@@ -61,7 +61,7 @@ body.ob-on:not(.ob-b-K1) .wrap{ max-width:none !important; }
 .ob:not(.ob-K1) .ob-main:has(> .ob-today) > .rt{ max-width:100% !important; width:100%; }
 .ob:not(.ob-K1) .ob-main:has(> .ob-today) > .ob-today{ font-size:calc(var(--fs) * 1.9); }
 /* Watch me, Mistake Detective: the question (and its picture) on the left, the steps on the right */
-.ob:not(.ob-K1) .ob-main > .rt-watch{ max-width:100% !important; }
+.ob:not(.ob-K1) .ob-main > .rt-watch{ zoom:calc(1 / var(--bw-z)); }   /* the picture rule: a WATCH ME picture is never taller than a third of the screen (tests/lib/teachpics.js) */
 .ob:not(.ob-K1) .ob-main:has(> .ob-steps) > .ob-bigpic.sm{ font-size:120px; }
 .ob:not(.ob-K1) .ob-main:has(> .ob-oops) > .ob-why{ font-size:calc(var(--fs) * 1.1); }
 .ob:not(.ob-K1) .ob-oops .ob-wrong,.ob:not(.ob-K1) .ob-oops .ob-right{ font-size:calc(var(--fs) * 1.3); padding:20px; }
@@ -87,7 +87,7 @@ body.ob-on .play.ob-play:not(.ob-K1) > .ob-qtag{ zoom:calc(var(--bw-z) - .2); ma
 body.ob-on .play.ob-play:not(.ob-K1) .qcard.bw-split{ display:grid; grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); column-gap:40px; align-items:center; }
 .qcard.bw-split > .bw-l,.qcard.bw-split > .bw-r{ display:flex; flex-direction:column; gap:14px; min-width:0; }
 .qcard.bw-split > .bw-l{ align-self:start; }
-.qcard.bw-split > .bw-r > .opts{ grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:0; }
+.qcard.bw-split > .bw-r > .opts{ margin-top:0; } .qcard.bw-split > .bw-r > .opts:has(> :nth-child(4)){ grid-template-columns:repeat(2,minmax(0,1fr)); }
 .qcard.bw-split > .bw-r > *{ margin-top:0; }
 .qcard.bw-split > .bw-l > .qrow{ order:-2; flex-wrap:wrap; } .qcard.bw-split > .bw-l > .qrow > .qtext{ flex:1 1 100%; min-width:0; } .qcard.bw-split > .bw-r > :is(.ob-peek,.how){ order:-2; } .qcard.bw-split > .bw-r > .ob-peek{ align-self:flex-start; } .qcard.bw-split > .bw-l > :is(.pxrow,.tlpic,.rp,.akwe){ order:-1; }
 /* ---------- the workbook (Block Builders): the page grows to fill the screen ---------- */
