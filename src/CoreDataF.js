@@ -41,5 +41,14 @@ CORE_SKILLS.F = [
   ["READ.PA.L01.14", "Change the End", "Change the last or middle sound to make a new word", { after: "READ.PHON.L01.22", std: "RF.K.2e", file: "CoreDataFH1", min: 4 }],
   ["WRIT.HAND.L01.09", "Write f, l, u, r", "Form the letters f, l, u and r", { after: "WRIT.HAND.L01.04", std: "L.K.1a", file: "CoreDataFH1", min: 5 }],
   ["WRIT.HAND.L01.10", "Write b, j, w", "Form the letters b, j and w", { after: "WRIT.HAND.L01.09", std: "L.K.1a", file: "CoreDataFH1", min: 5 }],
-  ["WRIT.HAND.L01.11", "Write y, v, z, x, q", "Form the letters y, v, z, x and q", { after: "WRIT.HAND.L01.10", std: "L.K.1a", file: "CoreDataFH1", min: 5 }]
+  ["WRIT.HAND.L01.11", "Write y, v, z, x, q", "Form the letters y, v, z, x and q", { after: "WRIT.HAND.L01.10", std: "L.K.1a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.23", "One More: -s", "Read words with -s that means more than one", { after: "READ.PA.L01.14", std: "RF.K.3", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.24", "Cap or Cat?", "Check every letter to tell look-alike words apart", { after: "READ.PHON.L01.23", std: "RF.K.3d", file: "CoreDataFH1", min: 5 }],
+  ["READ.FLU.L01.08", "Heart Words: said, was, you", "Read the heart words like, and, you, said and was", { after: "READ.PHON.L01.24", std: "RF.K.3c", file: "CoreDataFH1", min: 5 }],
+  ["READ.FLU.L01.09", "Smooth Like Talking", "Read a sentence smoothly, like talking", { after: "READ.FLU.L01.08", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["WRIT.HAND.L01.12", "Big Letters", "Write capitals for names and the first word", { after: "WRIT.HAND.L01.11", std: "L.K.1a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.25", "Long or Short?", "Hear long a, which says its name, and short a", { after: "READ.FLU.L01.09", std: "RF.K.3b", file: "CoreDataFH1", min: 5 }],
+  ["READ.PHON.L01.26", "Shhh, Ch, Th", "Know that sh, ch and th are two letters, one sound", { after: "READ.PHON.L01.25", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
+  ["READ.PA.L01.15", "Four Sounds", "Blend and chop words with four sounds", { after: "READ.PHON.L01.26", std: "RF.K.2d", file: "CoreDataFH1", min: 4 }],
+  ["READ.FLU.L01.10", "Heart Words: have, of, they", "Read the heart words have, of, they and are", { after: "READ.PA.L01.15", std: "RF.K.3c", file: "CoreDataFH1", min: 5 }]
 ];
