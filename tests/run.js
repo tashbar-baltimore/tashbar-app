@@ -254,6 +254,8 @@ async function staffTests(browser) {
   try { const v = require('./lib/v2check.js')(); v.fails.forEach(fail); v.oks.forEach(ok); } catch (e) { fail('2.0 check crashed: ' + String(e).slice(0, 200)); }
   try { const c = await require('./lib/canteen.js')(); c.fails.forEach(fail); if (!c.fails.length) ok('canteen on the Firebase engine: sell, same sale charged once, crew cashier, two kiosks at once, last sale, undo'); report.timings.canteenSaleMs = c.ms.sale; }
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  try { const sl = await require('./lib/saveload.js')(); sl.fails.forEach(fail); sl.oks.forEach(ok); }   /* a class saving lessons at once: no "busy" (MS_State/MS_Evidence row-merge) */
+  catch (e) { fail('class saving test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const cs = require('./lib/core.js').server(); cs.fails.forEach(fail); cs.oks.forEach(ok); } catch (e) { fail('core skills check crashed: ' + String(e).slice(0, 200)); }   /* CORE GROWTH: the one way to add a skill (src/CoreSkills.js) */
   try { const k = require('./lib/kidmap.js')(); k.fails.forEach(fail); if (!k.fails.length) ok("boy's own map (kmMyMap): rides with sign-in, only his own data, goal now, unit, Kodesh, growth; staff and bad tokens refused"); report.timings.kidMapMs = k.ms.map; report.timings.kidSignInWithMapMs = k.ms.signIn; }
   catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
