@@ -282,7 +282,7 @@ Opener: the club's first meeting. Naftali's notes are a mess, and Chaim shows hi
 |---|---|---|---|---|---|---|---|
 | 1 | WRIT.ESSAY.L03.01 *(new)* | POW Power | plan with POW: Pick my idea, Organize my notes, Write and say more | W.2.5 | S, W, C | build | 8 |
 | 2 | WRIT.PARA.L03.04 *(new)* | Topic Sentence | write a first sentence that tells what the paragraph is about | W.2.2 | T, E, C | build | 7 |
-| 3 | WRIT.PARA.L03.05 *(new)* | Belongs or Not? | keep the details that belong and cut the one that does not | W.2.2 | M, B (`sort`), C | build | 7 |
+| 3 | WRIT.PARA.L03.05 *(new)* | Keep It or Cut It | keep the details that belong and cut the one that does not | W.2.2 | M, B (`sort`), C | build | 7 |
 | 4 | WRIT.PARA.L03.06 *(new)* | Closing Sentence | end the paragraph by saying the main idea again | W.2.2 | W, E, C | build | 7 |
 | 5 | WRIT.SENT.L03.01 | Spice It Up | add describing words in his own paragraph to help the reader see it (bridge: G `LANG.SENT.L03.03`) | W.2.5 | T, B, C | rebuild | 7 |
 
