@@ -17,8 +17,8 @@ module.exports = async function oiltrail(pg) {
     if (!tlOilTapOn()) f('in season, a tap with no bought tap blast drops the olive (the free splash steps aside)');
     const blade = typeof bladeOn === 'function' ? bladeOn() : null; if (blade === true) f('in season the free glowing streak must step aside');
     const eng = TL_OIL.engine(); if (!eng) f('in season the oil must be running for a signed-in boy');
-    const cv = [...document.querySelectorAll('canvas')].filter(c => c.style.zIndex === '2147483199');
-    if (cv.length < 2 || cv.some(c => getComputedStyle(c).pointerEvents !== 'none')) f('its two canvases must let every click through (pointer-events none)');
+    const ob = document.getElementById('tl-oil'), cv = ob ? [...ob.querySelectorAll('canvas')] : [];
+    if (!ob || getComputedStyle(ob).pointerEvents !== 'none' || cv.length < 2 || cv.some(c => getComputedStyle(c).pointerEvents !== 'none')) f('its box and two canvases must let every click through (pointer-events none)');
     /* a bought trail wins */
     const was = window.tlStoreTrailOn; window.tlStoreTrailOn = () => true; if (tlOilOn()) f('a boy who bought a trail keeps his own (no oil)'); window.tlStoreTrailOn = was;
     /* a canvas a boy draws on is never covered in oil */
@@ -32,19 +32,19 @@ module.exports = async function oiltrail(pg) {
     if (hpfx) { fx = 0; P('pointerdown', 30, 700); await sleep(30); P('pointermove', 200, 600); P('pointerup', 220, 590); await sleep(60); if (fx) f('a swipe must not fire the tap splash (it fired ' + fx + ' pieces)');
       fx = 0; P('pointerdown', 30, 700); await sleep(40); P('pointerup', 31, 700); await sleep(60); if (!fx) f('a real tap must fire the tap splash'); }
     window.TL_OIL_OFF = undefined; TL_OIL.sync(); await sleep(30);
-    const e2 = TL_OIL.engine(); if (e2 && typeof Touch === 'function') { const o0 = e2.olives(), tgt = document.body;
-      const T = (type, x, y) => { const t = new Touch({ identifier: 7, target: tgt, clientX: x, clientY: y }); tgt.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchend' ? [] : [t], changedTouches: [t] })); };
-      T('touchstart', 30, 700); await sleep(30); T('touchend', 220, 590); await sleep(30);
+    /* the new engine (2026-11-24) works on pointer events; a quick swipe whose finger lifts far away is a swipe (the lift point counts), a real tap drops an olive */
+    const e2 = TL_OIL.engine(); if (e2) { const o0 = e2.olives();
+      const PT = (el, type, x, y, id) => el.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: id, pointerType: 'touch', isPrimary: true, clientX: x, clientY: y }));
+      PT(document.body, 'pointerdown', 30, 700, 61); await sleep(30); PT(document.body, 'pointerup', 220, 590, 61); await sleep(30);
       if (e2.olives() !== o0) f('a quick swipe with few touch points must not drop an olive');
-      T('touchstart', 30, 700); await sleep(30); T('touchend', 31, 700); await sleep(30);
+      PT(document.body, 'pointerdown', 30, 700, 62); await sleep(30); PT(document.body, 'pointerup', 31, 700, 62); await sleep(30);
       if (e2.olives() !== o0 + 1) f('a real tap on empty space must drop one olive');
       /* HoS 2026-11-24: a tap on a button drops an olive too, and the button still works; a writing box never gets one */
       const btn = document.createElement('button'); btn.textContent = 'x'; let clicked = 0; btn.onclick = () => clicked++; btn.style.cssText = 'position:fixed;left:10px;top:10px;z-index:9'; document.body.appendChild(btn);
-      const TB = (type, el) => { const t = new Touch({ identifier: 8, target: el, clientX: 15, clientY: 15 }); el.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchend' ? [] : [t], changedTouches: [t] })); };
-      const o1 = e2.olives(); TB('touchstart', btn); await sleep(30); TB('touchend', btn); btn.click(); await sleep(30);
+      const o1 = e2.olives(); PT(btn, 'pointerdown', 15, 15, 63); await sleep(30); PT(btn, 'pointerup', 15, 15, 63); btn.click(); await sleep(30);
       if (e2.olives() !== o1 + 1) f('a tap on a button must drop an olive too'); if (!clicked) f('the button must still work under the olive');
       const ta = document.createElement('textarea'); ta.style.cssText = 'position:fixed;left:10px;top:60px'; document.body.appendChild(ta);
-      const o2 = e2.olives(); TB('touchstart', ta); await sleep(30); TB('touchend', ta); await sleep(30);
+      const o2 = e2.olives(); PT(ta, 'pointerdown', 15, 65, 64); await sleep(30); PT(ta, 'pointerup', 15, 65, 64); await sleep(30);
       if (e2.olives() !== o2) f('a tap in a writing box must never drop an olive'); btn.remove(); ta.remove(); }
     mo.disconnect();
     window.TL_OIL_DAY = undefined; TL_OIL.sync();

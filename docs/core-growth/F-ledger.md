@@ -27,7 +27,7 @@ A boy who tests out of a skill skips it, so a fast boy needs fewer minutes. That
 |---|---|---|---|---|
 | K | 3 games (`READ.PA.L01.07`–`.09`) | 0 | ≈ 0.25 (3 × 5 min) | 36 |
 | 1 | 2 games (`READ.PHON.L02.22`, `READ.PA.L02.02`) | 0 | ≈ 0.2 (2 × 6 min) | 52 |
-| 2 | 13 (`READ.PHON.L03.04`–`.11`, `READ.LV.L03.03`–`.06` new; `READ.PHON.L03.01` rebuilt) | 0 | ≈ 2.6 (13 × 7 min + review) | 20 |
+| 2 | 16 (`READ.PHON.L03.04`–`.11`, `.13`–`.15`, `READ.LV.L03.03`–`.06` new; `READ.PHON.L03.01` rebuilt) | 0 | ≈ 3.2 (16 × 7 min + review) | 20 |
 
 Existing lessons count only once they pass the standard (prompt, section 2).
 

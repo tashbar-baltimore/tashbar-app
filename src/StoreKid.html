@@ -360,7 +360,8 @@ const TAPS={'tap-rainbow':{cols:RAINBOW,kind:'rainbow'},'tap-stars':{cols:['#FAC
    star). tests/lib/storefx.js fails if two items share a name, a picture, an effect or nearly the same app colors. */
 const TAP_OF={'trail':{cols:['#FFF7AE','#FDE047','#FACC15'],kind:'starpop'},'trail-rainbow':{cols:RAINBOW,kind:'ribbon'},'trail-comet':{cols:['#FDBA74','#F97316','#FDE047'],kind:'comet'},'trail-sparkle':{cols:['#FDE68A','#FFFFFF','#C4B5FD'],em:['✨'],kind:'sparkle'},
  'trail-bubbles':{cols:['#7DD3FC','#E0F2FE'],kind:'bubbles'},'hol-honey':{cols:['#F59E0B','#EF4444'],em:['🍎','🍯']},'hol-flames':{cols:['#F97316','#FACC15'],em:['🕯️','✨'],kind:'flames'},
- 'hol-sea':{cols:['#38BDF8','#0EA5E9'],em:['🌊','💧']},'hol-bonfire':{cols:['#F97316','#FB923C','#FACC15','#EF4444'],kind:'fireworks'},'hol-donuts':{cols:['#F9A8D4','#FDE68A'],em:['🍩']}};
+ 'hol-sea':{cols:['#38BDF8','#0EA5E9'],em:['🌊','💧']},'hol-bonfire':{cols:['#F97316','#FB923C','#FACC15','#EF4444'],kind:'fireworks'},'hol-donuts':{cols:['#F9A8D4','#FDE68A'],em:['🍩']},
+ 'hol-jelly':{cols:['#C8102E','#F3C074'],kind:'jellypop'}};   /* its tap: the jelly donut that splats (JellyTrail.html draws it; HomePlus steps aside) */
 const TRAIL_OF={'tap-rainbow':null,'tap-stars':null,'tap-confetti':{conf:true,gap:12},'tap-fireworks':{fw:true,gap:9},'tap-gold':{em:['🪙'],gap:32},'hol-sukkah':{em:['🍋','🌿'],gap:32},
  'hol-fruit':{em:['🍇','🫒','🌾'],gap:32},'hol-masks':{em:['🎉','🎭'],gap:32},'hol-arrows':{em:['🏹'],gap:34},'hol-flowers':{em:['🌸','🌼'],gap:30}};
 function trailOf(id){ return TRAILS[id]||TRAIL_OF[id]||null; }
@@ -371,7 +372,8 @@ window.tlStoreTrailOn=()=>{ try{ return !!(A.st&&wornTrail()); }catch(e){ return
 window.tlTapStyle=()=>{ try{ if(!A.st) return null; return wornTap()||null; }catch(e){ return null; } };
 /* trails: follow the mouse (pointer events) and the finger (touch events, which keep coming while the page scrolls) */
 const TRAILS={'trail':{em:['⭐','✨','🌟'],gap:30},'trail-rainbow':{rb:true,gap:7},'trail-comet':{comet:true,gap:7},'trail-sparkle':{em:['✨'],gap:22,small:true},'trail-bubbles':{em:['🫧'],gap:34,up:true},
- 'hol-honey':{em:['🍎','🍯'],gap:34},'hol-flames':{em:['🔥','✨','🕯️'],gap:28,up:true},'hol-sea':{em:['🌊','💧'],gap:30},'hol-bonfire':{spark:true,gap:12},'hol-donuts':{donut:true,gap:30}};
+ 'hol-honey':{em:['🍎','🍯'],gap:34},'hol-flames':{em:['🔥','✨','🕯️'],gap:28,up:true},'hol-sea':{em:['🌊','💧'],gap:30},'hol-bonfire':{spark:true,gap:12},'hol-donuts':{donut:true,gap:30},
+ 'hol-jelly':{jelly:true,gap:9999}};   /* HoS 2026-11-24: the Sufganiyah jelly trail draws itself (JellyTrail.html); these dots never do */
 /* Chanukah rolling donuts: small real donuts (a ring with a hole), five frostings, that roll away from the finger in random directions */
 const DONUTS=[['#F9A8D4','#FFFFFF'],['#7C4A2D','#FDE68A'],['#FFFFFF','#F43F5E'],['#3B82F6','#FFFFFF'],['#E8A33D','#7C2D12']];
 function donutSvg(k){ const f=DONUTS[k%DONUTS.length], ring='M10 1a9 9 0 1 0 .01 0zM10 7a3 3 0 1 1-.01 0z', top='M10 2.6a7.4 7.4 0 1 0 .01 0zM10 6.4a3.6 3.6 0 1 1-.01 0z';
@@ -387,6 +389,7 @@ let TL=null, TLIVE=0, thue=0, tk=0; const TCAP=90;
    tap blast's swipe splashes) and ends with a tap "poof". The very same drawing code the boy gets after he buys it. One card plays at a
    time (the cards in view take turns); tap a window to replay it. Reduced motion: no autoplay. */
 function pvRun(el){ try{ if(!el||el._run) return; const r=el.getBoundingClientRect(); if(r.width<40||r.bottom<10||r.top>innerHeight-10) return; el._run=1;
+  if(trailOf(el.dataset.pv)&&trailOf(el.dataset.pv).jelly&&window.TL_JELLY){ const pv=[...el.querySelectorAll('.pvs')]; pv.forEach(x=>x.style.opacity='0'); TL_JELLY.preview(el); setTimeout(()=>{ pv.forEach(x=>x.style.opacity=''); el._run=0; },3000); return; }   /* the real jelly engine in the card */
   const id=el.dataset.pv, tr=trailOf(id), tp=tapOf(id), f=el.querySelector('.f'), x0=r.left+22, x1=r.right-34, yc=r.top+r.height/2-4, amp=r.height*.2, dur=1150, t0=performance.now();
   let lp=null, ls=null; f.style.opacity='1'; const bl=(!tr&&tp)?pvBlade(el,tp.cols||RAINBOW):null, still=el.querySelector('.pvrb'); if(still) still.style.opacity='0';
   const step=now=>{ const k=Math.min(1,(now-t0)/dur), e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2, x=x0+(x1-x0)*e, y=yc+Math.sin(e*Math.PI*2)*amp;
@@ -428,6 +431,7 @@ function pvStatic(id,emo){ try{ const tr=trailOf(id), tp=tapOf(id), P=t=>[8+t*72
   if(tr){ const n=tr.donut?7:tr.em?(tr.small?11:8):(tr.conf?16:tr.fw?18:22);
    for(let k=0;k<n;k++){ const t=k/(n-1)*.92, p=P(t), o=(.3+.7*t/.92).toFixed(2);
     if(tr.donut) h+=at(p,0,0,`width:16px;height:16px;opacity:${o}`,donutSvg(k));
+    else if(tr.jelly) h+=at(p,0,0,`width:${Math.round(9+9*t)}px;height:${Math.round(7+7*t)}px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF8A98,#C8102E 45%,#6E0414);box-shadow:0 0 0 2px rgba(200,16,46,.25);opacity:${o}`);
     else if(tr.em) h+=at(p,0,tr.up?-6*(1-t):0,`font-size:${Math.round((tr.small?10:13)+5*t)}px;opacity:${o}`,tr.em[k%tr.em.length]);
     else if(tr.rb) h+=at(p,0,0,`width:${Math.round(6+8*t)}px;height:${Math.round(6+8*t)}px;border-radius:50%;background:hsl(${Math.round(t*320)},95%,58%);opacity:${o}`);
     else if(tr.conf) h+=at(p,(k%3-1)*4,(k%2?6:-2)+t*4,`width:5px;height:8px;border-radius:1px;background:${['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'][k%5]};transform:translate(-50%,-50%) rotate(${k*47}deg);opacity:${o}`);
@@ -438,7 +442,8 @@ function pvStatic(id,emo){ try{ const tr=trailOf(id), tp=tapOf(id), P=t=>[8+t*72
   if(!tr&&tp){ const sc=tp.cols||RAINBOW; for(let k=0;k<6;k++){ const t=.08+k*.15, p=P(t), o=(.35+.6*t).toFixed(2); h+=tp.em?at(p,0,0,`font-size:${10+k}px;opacity:${o}`,tp.em[k%tp.em.length]):at(p,0,0,`width:${7+k}px;height:${7+k}px;border-radius:50%;border:2px solid ${sc[k%sc.length]};opacity:${o}`); } }
   const e=P(1), K=tp&&tp.kind, cols=(tp&&tp.cols)||RAINBOW, em=tp&&tp.em;
   if(!tp){ h+=`<i class="pvs pvtip" style="left:${e[0]}%;top:${e[1]}%"></i>`; return h; }
-  if(K==='rainbow'){ cols.forEach((c,k)=>{ const r=6+k*3.2; h+=at(e,0,0,`width:${r*2}px;height:${r*2}px;border-radius:50%;border:2px solid ${c}`); }); }
+  if(K==='jellypop'){ h+=at(e,0,0,'width:30px;height:26px;border-radius:50%;background:radial-gradient(circle at 55% 38%,#C8102E 15%,#FFF7ED 19%,#F3C074 32%,#B96B2B 80%,#7C3C12);box-shadow:0 2px 4px rgba(0,0,0,.35)'); for(let k=0;k<8;k++){ const a=k/8*Math.PI*2, d=22; h+=at(e,Math.cos(a)*d,Math.sin(a)*d,`width:${k%2?5:8}px;height:${k%2?5:8}px;border-radius:50%;background:#C8102E`); } }
+  else if(K==='rainbow'){ cols.forEach((c,k)=>{ const r=6+k*3.2; h+=at(e,0,0,`width:${r*2}px;height:${r*2}px;border-radius:50%;border:2px solid ${c}`); }); }
   else if(K==='fireworks'){ for(let k=0;k<14;k++){ const a=k/14*Math.PI*2, d=18; h+=at(e,Math.cos(a)*d,Math.sin(a)*d,`width:2.5px;height:11px;border-radius:2px;background:${cols[k%cols.length]};box-shadow:0 0 5px ${cols[k%cols.length]};transform:translate(-50%,-50%) rotate(${Math.round(a*57.3+90)}deg)`); } h+=at(e,0,0,'width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff'); }
   else if(K==='confetti'){ for(let k=0;k<14;k++){ const a=k/14*Math.PI*2+.3, d=10+(k%3)*7; h+=at(e,Math.cos(a)*d,Math.sin(a)*d+4,`width:6px;height:9px;border-radius:1.5px;background:${cols[k%cols.length]};transform:translate(-50%,-50%) rotate(${k*53}deg)`); } }
   else if(K==='coins'){ [[0,-14],[-16,-2],[15,-4],[-8,12],[10,12]].forEach(([dx,dy],k)=>{ h+=at(e,dx,dy,`font-size:${15-k%2*2}px;transform:translate(-50%,-50%) rotate(${k*25-30}deg)`,'🪙'); }); }
@@ -457,7 +462,7 @@ setInterval(()=>{ try{ if(!T.open||T.tab==='canteen'||rmo()) return; const box=d
   const vis=[...box.querySelectorAll('.stpv')].filter(el=>{ const r=el.getBoundingClientRect(); return r.top>=br.top-10&&r.bottom<=br.bottom+10; }); if(!vis.length) return;
   pvRun(vis[PVI++%vis.length]); }catch(e){} },1500);
 document.addEventListener('click',e=>{ const el=e.target&&e.target.closest&&e.target.closest('.stpv'); if(el){ e.stopPropagation(); el._run=0; pvRun(el); } },true);
-function tdot(x,y,t){ if(t.donut){ donut(x,y); return; } if(TLIVE>=TCAP) return; const e=document.createElement('i'); TLIVE++;
+function tdot(x,y,t){ if(t.jelly) return; if(t.donut){ donut(x,y); return; } if(TLIVE>=TCAP) return; const e=document.createElement('i'); TLIVE++;
   if(t.em){ e.className='stem'; e.textContent=t.em[tk++%t.em.length]; e.style.fontSize=(t.small?13:18)+'px'; e.style.left=x+'px'; e.style.top=y+'px'; document.body.appendChild(e);
     e.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:`translate(-50%,${t.up?-(18+Math.random()*16):(10+Math.random()*20)}px) scale(.3)`,opacity:0}],{duration:t.up?900:700,easing:'ease-out'}).onfinish=()=>{ e.remove(); TLIVE--; }; return; }
   if(t.conf){ const c=['#F43F5E','#22C55E','#3B82F6','#FACC15','#A855F7'][tk++%5]; e.className='sttr'; e.style.cssText+=`;width:6px;height:9px;border-radius:1.5px;left:${x-3}px;top:${y-4}px;background:${c}`; document.body.appendChild(e);

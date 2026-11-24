@@ -35,5 +35,17 @@ CORE_SKILLS.W48 = [
   ["WRIT.PARA.L06.05", "Slow Motion", "Slow down the big moment and speed past the boring part", { after: "WRIT.PARA.L06.04", std: "W.5.3b", file: "CoreDataW487", min: 9 }],
   ["WRIT.PARA.L06.06", "Time Jumps", "Move through time with phrases and clauses", { after: "WRIT.PARA.L06.05", std: "W.5.3c", file: "CoreDataW487", min: 7 }],
   ["WRIT.PARA.L06.07", "Picture Words", "Choose one exact verb and words that fit", { after: "WRIT.PARA.L06.06", std: "W.5.3d", file: "CoreDataW487", min: 8 }],
-  ["WRIT.PARA.L06.08", "It Follows", "End with a conclusion that grows out of the events", { after: "WRIT.PARA.L06.07", std: "W.5.3e", file: "CoreDataW487", min: 7 }]
+  ["WRIT.PARA.L06.08", "It Follows", "End with a conclusion that grows out of the events", { after: "WRIT.PARA.L06.07", std: "W.5.3e", file: "CoreDataW487", min: 7 }],
+  ["WRIT.ESSAY.L07.05", "Hook and Orient", "Open a story so the reader knows who, where, and why to care", { after: "WRIT.PARA.L07.03", std: "W.6.3a", file: "CoreDataW488", min: 9 }],
+  ["WRIT.ESSAY.L07.06", "Whose Eyes?", "Choose a point of view and keep it", { after: "WRIT.ESSAY.L07.05", std: "W.6.3a", file: "CoreDataW488", min: 8 }],
+  ["WRIT.PARA.L07.04", "Flashback and Back", "Signal a flashback and the return to now", { after: "WRIT.ESSAY.L07.06", std: "W.6.3c", file: "CoreDataW488", min: 8 }],
+  ["WRIT.PARA.L07.05", "Ending That Lands", "End a story with a resolution or reflection that ties back", { after: "WRIT.PARA.L07.04", std: "W.6.3e", file: "CoreDataW488", min: 8 }],
+  ["WRIT.ESSAY.L08.04", "Cause and Effect", "Organize an information piece by cause and effect", { after: "WRIT.PARA.L08.04", std: "W.7.2a", file: "CoreDataW489", min: 9 }],
+  ["WRIT.PARA.L08.05", "Precise and Technical", "Use precise words and keep the same topic word", { after: "WRIT.ESSAY.L08.04", std: "W.7.2d", file: "CoreDataW489", min: 8 }],
+  ["WRIT.PARA.L08.06", "Objective Tone", "Keep an information piece objective: no opinion clues or loaded words", { after: "WRIT.PARA.L08.05", std: "W.7.2e", file: "CoreDataW489", min: 8 }],
+  ["WRIT.PARA.L08.07", "Bring It Home", "Conclude by joining the points into one takeaway and why it matters", { after: "WRIT.PARA.L08.06", std: "W.7.2f", file: "CoreDataW489", min: 8 }],
+  ["WRIT.ESSAY.L09.04", "Big Idea, Many Parts", "Organize a piece from several sources into one big idea and categories", { after: "WRIT.PARA.L09.02", std: "W.8.2a", file: "CoreDataW4810", min: 9 }],
+  ["WRIT.PARA.L09.03", "Well-Chosen Facts", "Pick the telling facts, from different sources, for each point", { after: "WRIT.ESSAY.L09.04", std: "W.8.2b", file: "CoreDataW4810", min: 9 }],
+  ["WRIT.PARA.L09.04", "Varied Transitions", "Join sources with transitions that show agree, differ or add", { after: "WRIT.PARA.L09.03", std: "W.8.2c", file: "CoreDataW4810", min: 8 }],
+  ["WRIT.PARA.L09.05", "Implications", "Conclude with what the facts mean and why it matters", { after: "WRIT.PARA.L09.04", std: "W.8.2f", file: "CoreDataW4810", min: 8 }]
 ];

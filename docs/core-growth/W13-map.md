@@ -42,11 +42,11 @@ Writing is one part of a boy's core day. Reading foundations (F), comprehension 
 | Per grade | K (L01) | Gr 1 (L02) | Gr 2 (L03) | Gr 3 (L04) |
 |---|---|---|---|---|
 | Units | 6 | 6 | 6 | 6 |
-| Small skill lessons | 18 (4–5 min) | 21 (5 min) | 26 (7 min) | 32 (7 min) |
+| Small skill lessons | 20 (4–5 min) | 21 (5 min) | 26 (7 min) | 31 (7 min) |
 | Writing pieces | 30 (a picture and 1–3 sentences; ≈ 12 min) | 30 (a picture and 2–5 sentences; ≈ 15 min) | 14 (sentences, then paragraphs, a letter, stories; ≈ 50 min over 2–3 days) | 14 (paragraphs, stories, a short report, a letter; ≈ 60 min over 2–3 days) |
 | Quick writes (K–1: "say it, draw it"; Gr 2–3: 2–5 sentences about the day's text) | 30 (3 min) | 40 (4 min) | 40 (5 min) | 40 (6 min) |
 | Unit checks | 6 (5 min) | 6 (6 min) | 6 (10 min) | 6 (10 min) |
-| **Expected hours for a typical boy** | **≈ 9.5** | **≈ 12.5** | **≈ 19** | **≈ 23** |
+| **Expected hours for a typical boy** | **≈ 9.6** | **≈ 12.5** | **≈ 19** | **≈ 23** |
 
 The prompt's piece counts (30 for K–1, 14 for Grades 2–3) are planned exactly.
 
@@ -111,17 +111,17 @@ K–1 pieces are drawn and told, then written on paper, then shown to Rebbe. See
 ### Kindergarten (L01) · "Eli's Picture Book"
 The K cast is the Peretz family (section 7). Eli is 5 and makes a picture book about his week. Every unit adds pages to *his* book, and the boy's own pictures and sentences go in **his** book alongside.
 
-**K U1 · Draw It, Tell It** (W.K.2, W.K.3, SL.K.5)
+**K U1 · Draw It, Tell It** (W.K.2, W.K.3, W.K.5, SL.K.5, SL.K.6). Drawing and talking only: like job F's K Unit 1, nothing asks him to read.
 Opener: Eli shows Zeidy a page with a goat and no words. Zeidy: "Tell me about it!" Every picture has a story to tell.
 
 | # | Id | Game name | He learns to … | Std | Ways | Status | Min |
 |---|---|---|---|---|---|---|---|
 | 1 | WRIT.PARA.L01.01 *(new)* | Plan with a Picture | draw first to plan what he will say | W.K.3 / SL.K.5 | D, W, C | build | 5 |
 | 2 | WRIT.PARA.L01.02 *(new)* | Tell a Friend First | say his sentence out loud before writing it | W.K.2 / SL.K.6 | R, M, C | build | 5 |
-| 3 | WRIT.PARA.L01.03 *(new)* | Label It | label the parts of his picture (goat, barn, Zeidy) | W.K.2 | B, T, C | build | 5 |
-| 4 | WRIT.PARA.L01.04 *(new)* | Caption It | add a caption that tells what is happening | W.K.2 | E, M, C | build | 5 |
+| 3 | WRIT.PARA.L01.03 *(new)* | Picture and Words Match | make his words tell about his picture | W.K.2 | M, E, C | build | 5 |
+| 4 | WRIT.PARA.L01.04 *(new)* | Tell Me More | add a detail when a friend asks a question | W.K.5 | R, B, C | build | 5 |
 
-Real task: **K pieces 1–5**. These are a labelled picture of his home, a labelled picture of the bakery, a captioned picture of Shabbos, and two free choice.
+Real task: **K pieces 1–5**: a picture he tells about (his home, the bakery, Shabbos, two free choice), told to a friend or Rebbe.
 Quick talks: 5. Unit check: 1.
 
 **K U2 · My First Sentences** (W.K.2, L.K.2 as used in writing)
@@ -130,11 +130,13 @@ Bridge: G's "Whole Thought" (`LANG.SENT.L01.01`).
 
 | # | Id | Game name | He learns to … | Std | Ways | Status | Min |
 |---|---|---|---|---|---|---|---|
-| 1 | WRIT.SENT.L01.01 | My First Sentence | write a sentence with a capital, spaces and a period | W.K.2 | W, B, C | rebuild | 5 |
-| 2 | WRIT.SENT.L01.02 *(new)* | Word by Word | write a sentence one word at a time, saying each word (sound boxes for new words) | W.K.2 | R, B (`dictation`), C | build | 5 |
-| 3 | WRIT.SENT.L01.03 *(new)* | Point and Read | reread his sentence pointing to each word, and fix a missing word | W.K.5 | M, Q, C | build | 4 |
+| 1 | WRIT.PARA.L01.05 *(new)* | Label It | label the parts of his picture (goat, barn, Zeidy) once he knows letter sounds | W.K.2 | B, T, C | build | 5 |
+| 2 | WRIT.PARA.L01.06 *(new)* | Caption It | add a caption that tells what is happening | W.K.2 | E, M, C | build | 5 |
+| 3 | WRIT.SENT.L01.01 | My First Sentence | write a sentence with a capital, spaces and a period | W.K.2 | W, B, C | rebuild | 5 |
+| 4 | WRIT.SENT.L01.02 *(new)* | Word by Word | write a sentence one word at a time, saying each word (sound boxes for new words) | W.K.2 | R, B (`dictation`), C | build | 5 |
+| 5 | WRIT.SENT.L01.03 *(new)* | Point and Read | reread his sentence pointing to each word, and fix a missing word | W.K.5 | M, Q, C | build | 4 |
 
-Real task: **K pieces 6–10**, a picture and one sentence each ("I see …", "I can …", "We go to …").
+Real task: **K pieces 6–10**: a labelled picture of his home, a captioned picture of Shabbos, then a picture and one sentence each ("I see …", "I can …", "We go to …").
 Quick talks: 5. Unit check: 1.
 
 **K U3 · What Happened?** (W.K.3)
@@ -184,7 +186,7 @@ Opener: Eli's book is almost done. His friend Ovadia asks, "Where is the donkey?
 Real task: **K pieces 26–30**: a "favorite part" page for three listen-along stories, and a class "We learned about …" page from a job F information book (shared research, W.K.7). Publish *My Picture Book*.
 Quick talks: 5. Unit check: 1.
 
-**Kindergarten totals:** 18 small skills (1 rebuild, 17 new), 30 pieces, 30 quick talks, 6 unit checks.
+**Kindergarten totals:** 20 small skills (1 rebuild, 19 new; the K WRIT.PARA ids after Unit 2 are 2 higher than shown), 30 pieces, 30 quick talks, 6 unit checks.
 
 ---
 
@@ -440,7 +442,7 @@ Real task: **Gr 3 piece 12**: a letter to a real reader. **Gr 3 pieces 13–14**
 
 **Grade 3 totals:** 31 small skills (3 rebuilds, 28 new), 14 pieces, 40 quick writes, 6 unit checks.
 
-**W13 in all: 96 small skills (9 rebuilds, 87 new), 88 pieces, 150 quick writes, 24 unit checks.**
+**W13 in all: 98 small skills (9 rebuilds, 89 new), 88 pieces, 150 quick writes, 24 unit checks.**
 
 ## 5. How a W13 small skill lesson looks (One Bite shape)
 

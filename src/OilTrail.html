@@ -1,78 +1,106 @@
 <script>
-/* OilTrail.html — CHANUKAH OLIVE OIL TRAIL (HoS 2026-11-23, made in Claude Chat with the owner; look and timings kept exactly).
-   1. THE ENGINE: oil-trail.js from the handoff, unchanged except: its comments use slash-star (HtmlService rule: no slash-slash in this
-      file), and "export function createOilTrail" is a plain function exposed as window.TL_OIL.create.
+/* OilTrail.html — CHANUKAH OLIVE OIL TRAIL (HoS 2026-11-23; NEW ENGINE 2026-11-24 from Claude Chat: "much clearer on a white background").
+   The old engine is gone (it could not bend what is under the oil and looked washed out on bright screens); this is the new one.
+   1. THE ENGINE: olive-oil-trail.js from the handoff, unchanged except: its comments use slash-star (HtmlService rule: no slash-slash in
+      this file); "export function createOliveOilTrail" is a plain function exposed as window.TL_OIL.create; and three small app additions,
+      each marked "Tashbar": eventTarget (where it listens for the finger, default the container as in the handoff), the lift point counts
+      as movement (a quick swipe on a Chromebook touchscreen with few move events is a swipe, never a tap: HoS 2026-11-23), and an olive
+      counter olives() for the tests.
    2. THE APP RULE (HoS 2026-11-23): from 23 Nov 2026 through 3 Tevet 5787 the oil is every signed-in boy's DEFAULT trail: it replaces
-      the free glowing streak and the free tap splash (HomePlus.html asks window.tlOilOn()). A boy who BOUGHT a trail or tap blast keeps
-      his own. After Chanukah the default goes back to the streak (and the oil becomes a store item, a separate change).
-      Background: on every page of the home a snapshot of the screen (light bending, see LIGHT BENDING below); in lessons null, a see-through golden film.
-      Anything a boy draws on (every canvas, writing boxes) gets data-no-oil, so the oil never gets in the way of tracing or games.
+      the free glowing streak and the free tap splash (HomePlus.html asks window.tlOilOn / tlOilTapOn). A boy who BOUGHT a trail or tap
+      blast keeps his own. An olive on EVERY tap, buttons too (HoS 2026-11-24); never where a boy types or draws.
+      LIGHT BENDING: on every page of the boy's home (#gm) the oil bends a half-size snapshot of the screen (html2canvas from our own
+      /vendor/, taken when the boy is idle); in lessons it bends the plain page colour.
    Test switch: window.TL_OIL_DAY = a Date to pretend today is that day (tests only). Off switch: window.TL_OIL = false before load.
    No slash-slash in this file (HtmlService rule). */
 (function(){
 if(window.TL_OIL===false||window.TL_OIL) return;
 
-/*
- * oil-trail.js: Hanukkah olive oil trail (Fruit-Ninja style).
- * Plain JS, no dependencies. Mouse, touch (up to 2 fingers) and pen.
+/**
+ * olive-oil-trail.js — Tashbar olive oil finger trail (Hanukkah).
+ * Plain JavaScript (ES module). No TypeScript, no dependencies.
  *
- *   const oil = createOilTrail({ background: '/images/map-bg.jpg' });
- *   oil.setEnabled(false);       (stop drawing; existing oil fades away)
- *   oil.setBackground(img);      (what the oil bends: image, canvas, URL or draw function)
- *   oil.clear();                 (wipe the oil now)
- *   oil.destroy();               (remove everything)
+ * What it does
+ *   - Swipe: a thick, glossy golden olive-oil trail that lags behind the finger, thins,
+ *     breaks into beads and drips.
+ *   - Tap: a green olive pops up, cracks and is crushed into pieces; the pit rolls away,
+ *     flesh chunks fly and stick, and oil bursts out with flying droplets and a splash ring.
+ *   - The oil BENDS LIGHT: it refracts whatever is underneath it (text, cards, background),
+ *     like a lens, and tints it gold by absorbing blue light, like real oil. This works on
+ *     dark AND bright, colourful screens.
  *
- * Two canvases sit on top of the page with pointer-events: none, so every
- * click and tap still reaches the app underneath.
+ * How the light bending works (read this before wiring it up)
+ *   WebGL cannot read the web page that sits under it. So the engine is given a PICTURE of
+ *   what is under the oil (the "backdrop"): a <canvas> or <img> the same shape as the
+ *   container. The oil shader samples that picture with a bent offset, which is what makes
+ *   the text underneath warp. If no backdrop is given, the oil still works but has nothing
+ *   to bend (it refracts a flat colour).
+ *   You supply the picture with the `captureBackdrop` option: an (async) function that
+ *   returns a canvas/image of exactly the area covered by the container. The React wrapper
+ *   (OliveOilTrail.jsx) does this for you with html2canvas.
+ *   Call `refreshBackdrop()` whenever what's under the oil changes (the wrapper does this
+ *   automatically on resize and when the wrapped content changes).
+ *
+ * Usage (no framework)
+ *   import { createOliveOilTrail } from './olive-oil-trail.js';
+ *   const trail = createOliveOilTrail(containerEl, { captureBackdrop: async () => myCanvas });
+ *   trail.setOptions({ thickness: 1.2, drips: 0.5 });
+ *   trail.clear();
+ *   trail.destroy();
+ *
+ *   containerEl must have a size. The engine adds two absolutely positioned canvases
+ *   inside it (pointer-events: none) and listens for pointer events on it.
  */
 
 const DEFAULTS = {
-  container: null,       /* element to put the canvases in (default: document.body) */
-  zIndex: 9999,
-  enabled: true,
-  background: null,      /* see setBackground(); null = oil is see-through but does not bend the page */
-  thickness: 1,          /* 0.6 to 1.6 */
-  drips: 1,              /* 0 (none) to 2 */
-  dprCap: 2,             /* max device pixel ratio for the canvases */
-  hoverTrail: true,      /* a mouse leaves oil just by moving, without pressing */
-  crackOnTap: true,      /* a quick tap drops an olive that gets crushed */
-  /* taps on these never crack an olive; [data-no-oil] also blocks the trail entirely */
-  ignore: 'button, a, input, select, textarea, label, [role="button"], [contenteditable], [data-no-oil]',
+  thickness: 1,       /* trail thickness, 0.6 – 1.6 */
+  drips: 1,           /* how much the oil drips, 0 (none) – 2 */
+  maxDpr: 2,          /* cap on devicePixelRatio (keeps Chromebooks fast) */
+  hoverTrail: true,   /* a mouse leaves a trail just by moving (no button needed) */
+  tapToPop: true,     /* a quick tap drops an olive that cracks and bursts */
+  captureBackdrop: null,  /* () => HTMLCanvasElement | HTMLImageElement | Promise<…> | null */
+  backdropColor: null,    /* flat colour to refract until/unless a backdrop picture exists */
+  ignoreSelector: 'button, a, input, select, textarea, label, [role="button"], [data-no-oil]',
+  zIndex: 10,
+  eventTarget: null,  /* Tashbar: where to listen for the finger (default: the container) */
 };
 
-function createOilTrail(options = {}) {
+function createOliveOilTrail(container, options = {}) {
+  if (!container) throw new Error('createOliveOilTrail: container element is required');
   const o = { ...DEFAULTS, ...options };
-  let enabled = !!o.enabled, thick = o.thickness, dripAmt = o.drips;
-  const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduced) dripAmt = 0;
+  if (getComputedStyle(container).position === 'static') container.style.position = 'relative';
 
-  /* ---------------------------------------------------------------- canvases */
-  const host = o.container || document.body;
-  const mk = () => {
+  /* two layers: WebGL oil (bottom) and 2D olives/droplets/pits (top) */
+  const makeLayer = (z) => {
     const c = document.createElement('canvas');
     c.setAttribute('aria-hidden', 'true');
-    Object.assign(c.style, { position: 'fixed', left: '0', top: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: String(o.zIndex) });
-    host.appendChild(c);
+    c.setAttribute('data-oil-layer', '');
+    Object.assign(c.style, { position: 'absolute', left: '0', top: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: String(z) });
+    container.appendChild(c);
     return c;
   };
-  const glc = mk();                       /* the oil itself (WebGL) */
-  const canvas = mk();                    /* olives, pits, flesh, droplets (2D, on top) */
+  const glc = makeLayer(o.zIndex);
+  const canvas = makeLayer(o.zIndex + 1);
   const ctx = canvas.getContext('2d');
-  const off = document.createElement('canvas'), octx = off.getContext('2d');
+  const off = document.createElement('canvas');     /* used only by the no-WebGL fallback */
+  const octx = off.getContext('2d');
 
-  /* ---------------------------------------------------------------- simulation constants */
-  const CELL = 2;          /* css px per simulation cell */
-  const T = 0.32;          /* surface threshold */
-  const MAXH = 2.4;        /* max oil thickness */
-  const HALF_LIFE = 430;   /* ms for the oil to thin by half */
+  const CELL = 2;                 /* css px per simulation cell */
+  const T = 0.32;                 /* surface threshold */
+  const MAXH = 2.4;               /* max oil thickness */
+  const HALF_LIFE = 430;          /* ms for the oil to thin by half */
   let W = 0, Hh = 0, H = null, Tmp = null, rowOn = null, img = null, dpr = 1, vw = 0, vh = 0;
+  let thick = o.thickness, dripAmt = o.drips;
+  let destroyed = false, lastBackdrop = null, bdToken = 0, bdTimer = 0;
+  let olivesDropped = 0;          /* Tashbar: counted for the tests */
 
-  /* ---------------------------------------------------------------- WebGL renderer */
+  /* ================================================================
+      WebGL oil with refraction of the backdrop picture
+     ================================================================ */
   let gl = null;
   try { gl = glc.getContext('webgl', { premultipliedAlpha: true, alpha: true, antialias: false }); } catch (e) { gl = null; }
-  let glProg = null, glTex = null, bgTex = null, uTex, uK, uH, uRes, uDpr, uHasBg, pack = null, prevY0 = 1e9, prevY1 = -1;
-  const scene = document.createElement('canvas'), sctx = scene.getContext('2d');
-  let bgSource = null, bgImage = null, hasBg = false;
+  let glProg = null, glTex = null, bgTex = null, uTex, uK, uH, uRes, uDpr, uView, pack = null, prevY0 = 1e9, prevY1 = -1;
+  let aimX = 0, aimY = 0, viewX = 0, viewY = 0;   /* viewing angle, from where the pointer is */
 
   function setupGL() {
     const deriv = !!gl.getExtension('OES_standard_derivatives');
@@ -80,7 +108,7 @@ function createOilTrail(options = {}) {
     const fs = (deriv ? '#extension GL_OES_standard_derivatives : enable\n' : '') + `
 precision highp float;
 uniform sampler2D u_h; uniform vec2 u_tex; uniform float u_k; uniform float u_hpx;
-uniform sampler2D u_bg; uniform vec2 u_res; uniform float u_dpr; uniform float u_hasBg;
+uniform sampler2D u_bg; uniform vec2 u_res; uniform float u_dpr; uniform vec2 u_view;
 const float T = ${T.toFixed(3)}; const float MAXH = ${MAXH.toFixed(3)};
 float dec(vec2 t){ vec4 c = texture2D(u_h, (t + 0.5) / u_tex); return (c.r * 65280.0 + c.g * 255.0) / 65535.0 * MAXH; }
 float hAt(vec2 p){
@@ -91,10 +119,13 @@ void main(){
   vec2 p = vec2(gl_FragCoord.x, u_hpx - gl_FragCoord.y) * u_k;
   float h = hAt(p);
   if (h < T * 0.55) {
-    /* soft shadow under the oil, with a warm caustic glow inside it */
-    vec2 so = vec2(1.0, 1.7);
-    float sh = smoothstep(T * 0.8, T * 1.5, hAt(p - so)) * 0.24;
-    float ca = smoothstep(T * 1.4, T * 3.0, hAt(p - so * 0.7)) * 0.32;
+    /* soft shadow the oil casts on the screen below it (adds depth) */
+    vec2 so = vec2(1.0 + u_view.x * 1.2, 1.7 + u_view.y * 1.2);
+    float hs = hAt(p - so);
+    float sh = smoothstep(T * 0.8, T * 1.5, hs) * 0.24;
+    /* caustic: light focused through thick oil makes a warm glow inside the shadow */
+    float hc = hAt(p - so * 0.7);
+    float ca = smoothstep(T * 1.4, T * 3.0, hc) * 0.32;
     if (sh < 0.004 && ca < 0.004) discard;
     gl_FragColor = vec4(vec3(1.0, 0.93, 0.45) * ca * 0.8, sh * 0.8);
     return;
@@ -103,8 +134,9 @@ void main(){
   float gx = (hAt(p + vec2(e, 0.0)) - hAt(p - vec2(e, 0.0))) / (2.0 * e) * 5.2;
   float gy = (hAt(p + vec2(0.0, e)) - hAt(p - vec2(0.0, e))) / (2.0 * e) * 5.2;
   vec3 n = normalize(vec3(-gx, -gy, 1.0));
-  vec3 V = vec3(0.0, 0.0, 1.0);
-  vec3 L = normalize(vec3(-0.55, -0.75, 0.9));
+  /* the viewing angle follows the pointer, so highlights and reflections slide like real glass */
+  vec3 V = normalize(vec3(u_view * 0.7, 1.0));
+  vec3 L = normalize(vec3(-0.55 - u_view.x * 0.6, -0.75 - u_view.y * 0.6, 0.9));
   vec3 HV = normalize(L + V);
   vec3 HV2 = normalize(normalize(vec3(0.7, 0.2, 1.6)) + V);
   float dif = max(0.0, dot(n, L));
@@ -112,34 +144,56 @@ void main(){
   float sp2 = pow(max(0.0, dot(n, HV2)), 8.0);
   float aw = ${deriv ? 'max(fwidth(h) * 0.9, 0.003)' : '0.02'};
   float edge = smoothstep(T - aw, T + aw, h);
+  float film = 0.0;
   float th = clamp((h - T) / 1.3, 0.0, 1.0);
   float fres = 1.0 - n.z;
   float shade = 0.62 + 0.5 * dif;
-  /* golden olive oil with a hint of green, a little deeper where thick and at the rim */
+  /* golden olive oil: pale gold where thin, deep amber-gold where thick, darker at the rim */
   vec3 oilc = vec3(240.0 - 50.0 * th - 50.0 * fres, 228.0 - 42.0 * th - 52.0 * fres, 112.0 - 80.0 * th - 45.0 * fres) / 255.0 * shade;
-  float s = sp * 0.55 + sp2 * 0.06;
+  /* light bends through the oil like a lens: what's underneath is shifted by the slope of a smoothed
+     surface, so text under the oil warps but stays readable; the curved rims bend it hardest */
+  vec2 suv = gl_FragCoord.xy / u_res;
+  float e2 = 7.5;
+  float rx = (hAt(p + vec2(e2, 0.0)) - hAt(p - vec2(e2, 0.0))) / (2.0 * e2);
+  float ry = (hAt(p + vec2(0.0, e2)) - hAt(p - vec2(0.0, e2))) / (2.0 * e2);
+  vec2 bpx = vec2(rx, -ry) * (380.0 + 260.0 * th);                   /* thick oil is a stronger lens */
+  float bl = length(bpx); if (bl > 130.0) bpx *= 130.0 / bl;
+  vec2 bend = bpx * u_dpr / u_res;
+  /* a drop of oil is a convex lens: it pulls the view in toward its middle, so what's under it is MAGNIFIED
+     (and on very thick, round drops it flips, like a real water drop). Colours split only very slightly. */
+  vec3 under = vec3(
+    texture2D(u_bg, suv + bend * 1.03).r,
+    texture2D(u_bg, suv + bend).g,
+    texture2D(u_bg, suv + bend * 0.97).b);
+  float lum = dot(under, vec3(0.299, 0.587, 0.114));
+  float bright = smoothstep(0.15, 0.75, lum);                          /* 0 on dark screens, 1 on light ones */
+  /* colour like real olive oil: it ABSORBS blue (and a little green) light passing through it,
+     more where it's thicker. Strong on light screens (reads as clear gold), gentle on dark
+     screens (stays glassy instead of muddy). */
+  vec3 absorb = exp(-vec3(0.04, 0.16, 1.25) * (0.45 + 1.2 * th + 0.5 * fres) * mix(0.32, 1.0, bright));
+  float body = (0.04 + 0.08 * th + 0.14 * fres) * mix(1.4, 0.6, bright);   /* clear: you see straight through the oil */
+  vec3 col = mix(under * absorb * mix(1.15, 1.04, bright), oilc, clamp(body, 0.0, 0.3));
+  /* real liquid edge: where the surface curves steeply, light is bent away and the edge goes dark */
+  col *= 1.0 - 0.32 * smoothstep(0.62, 0.96, fres) * mix(0.6, 1.0, bright);
+  float s = sp * 0.16 + sp2 * 0.015;                                  /* glare toned way down: the bending gives the 3-D look */
+  col += vec3(1.0, 0.98, 0.9) * s;
+  /* reflected room: dim version of what's under it, warm light above, a soft window streak */
   vec3 R = reflect(-V, n);
-  vec3 env = mix(vec3(0.16, 0.08, 0.36), vec3(1.0, 0.86, 0.55), smoothstep(-0.25, 0.55, -R.y));
-  float win = smoothstep(0.09, 0.0, abs(R.x + 0.3)) * smoothstep(0.05, 0.45, -R.y);
-  vec3 glow = vec3(1.0, 0.98, 0.9) * s + env * (0.04 + 0.16 * fres) + vec3(1.0, 0.96, 0.85) * win * 0.16;
-  if (u_hasBg > 0.5) {
-    /* refraction: what's underneath is shifted by the surface slope */
-    vec2 suv = gl_FragCoord.xy / u_res;
-    vec2 bend = vec2(n.x, -n.y) * (14.0 + 22.0 * th) * u_dpr / u_res;
-    vec3 under = texture2D(u_bg, suv - bend).rgb;
-    vec3 tint = mix(vec3(1.0, 0.97, 0.66), vec3(0.93, 0.9, 0.36), th);
-    float body = 0.08 + 0.18 * th + 0.22 * fres;
-    vec3 col = mix(under * tint * 1.1, oilc, clamp(body, 0.0, 0.45)) + glow;
-    gl_FragColor = vec4(clamp(col, 0.0, 1.0) * edge, edge);
-  } else {
-    /* no background given: a see-through golden film, the real page shows through */
-    float ta = clamp(0.16 + 0.24 * th + 0.3 * fres, 0.0, 0.6);
-    vec3 col = oilc * ta + glow;
-    gl_FragColor = vec4(clamp(col, 0.0, 1.0) * edge, ta * edge);
-  }
+  vec3 env = mix(under * 0.55, vec3(1.0, 0.86, 0.55), smoothstep(-0.25, 0.55, -R.y));
+  float win = smoothstep(0.09, 0.0, abs(R.x + 0.3 + u_view.x * 0.35)) * smoothstep(0.05, 0.45, -R.y);
+  col += env * (0.02 + 0.08 * fres) * (1.0 - bright);                /* dark screens: a faint warm glow on the rims */
+  col = mix(col, env, (0.01 + 0.05 * fres) * bright);                 /* light screens: a faint reflection instead */
+  col += vec3(1.0, 0.96, 0.85) * win * 0.05;
+  /* a crisp lit rim on the side facing the light (the meniscus catching it) */
+  float rimLit = smoothstep(0.22, 0.6, fres) * max(0.0, dot(normalize(n.xy + 1e-4), normalize(vec2(-0.55, -0.75))));
+  col += vec3(1.0, 0.92, 0.6) * rimLit * 0.12;
+  /* light focused inside thick oil: a faint warm glow in the core */
+  col += vec3(1.0, 0.8, 0.28) * th * th * (1.0 - fres) * 0.1;
+  float a = edge + film * 0.0;
+  gl_FragColor = vec4(clamp(col, 0.0, 1.0) * a, a);
 }`;
-    const sh = (type, src) => { const x = gl.createShader(type); gl.shaderSource(x, src); gl.compileShader(x);
-      if (!gl.getShaderParameter(x, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(x)); return x; };
+    const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o);
+      if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
     glProg = gl.createProgram();
     gl.attachShader(glProg, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(glProg, sh(gl.FRAGMENT_SHADER, fs));
     gl.linkProgram(glProg);
@@ -149,68 +203,75 @@ void main(){
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
     const loc = gl.getAttribLocation(glProg, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     uTex = gl.getUniformLocation(glProg, 'u_tex'); uK = gl.getUniformLocation(glProg, 'u_k'); uH = gl.getUniformLocation(glProg, 'u_hpx');
-    uRes = gl.getUniformLocation(glProg, 'u_res'); uDpr = gl.getUniformLocation(glProg, 'u_dpr'); uHasBg = gl.getUniformLocation(glProg, 'u_hasBg');
     gl.uniform1i(gl.getUniformLocation(glProg, 'u_h'), 0);
     gl.uniform1i(gl.getUniformLocation(glProg, 'u_bg'), 1);
-    const tex = (unit, filter) => {
-      const t = gl.createTexture(); gl.activeTexture(unit); gl.bindTexture(gl.TEXTURE_2D, t);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      return t;
-    };
-    bgTex = tex(gl.TEXTURE1, gl.LINEAR);
-    glTex = tex(gl.TEXTURE0, gl.NEAREST);
+    uRes = gl.getUniformLocation(glProg, 'u_res'); uDpr = gl.getUniformLocation(glProg, 'u_dpr'); uView = gl.getUniformLocation(glProg, 'u_view');
+    bgTex = gl.createTexture(); gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, bgTex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.activeTexture(gl.TEXTURE0);
+    glTex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, glTex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
   }
-  if (gl) { try { setupGL(); } catch (e) { console.warn('OilTrail: WebGL off, using 2D fallback.', e); gl = null; } }
+  if (gl) { try { setupGL(); } catch (e) { console.warn('WebGL oil off:', e); gl = null; } }
 
-  /* ---------------------------------------------------------------- background (for the light-bending) */
-  /* src can be: an image URL, an <img>, a <canvas>/ImageBitmap/<video>, or a function (ctx, width, height) that draws it. */
-  function setBackground(src) {
-    bgSource = src || null; bgImage = null;
-    if (typeof src === 'string') {
-      const im = new Image(); im.crossOrigin = 'anonymous'; im.decoding = 'async';
-      im.onload = () => { if (bgSource === src) { bgImage = im; drawScene(); kick(); } };
-      im.onerror = () => console.warn('OilTrail: could not load background', src);
-      im.src = src;
-    } else if (src && typeof src !== 'function') {
-      bgImage = src;
-      if (src instanceof HTMLImageElement && !src.complete) src.addEventListener('load', () => { drawScene(); kick(); }, { once: true });
+  /* ---------------------------------------------------------------- the backdrop (what the oil bends) */
+  function flatColor() {
+    if (o.backdropColor) return o.backdropColor;
+    /* first non-transparent background going up from the container */
+    for (let el = container; el; el = el.parentElement) {
+      const bg = getComputedStyle(el).backgroundColor;
+      if (bg && bg !== 'transparent' && !/rgba\([^)]*,\s*0\)$/.test(bg)) return bg;
     }
-    drawScene(); kick();
+    return '#ffffff';
   }
-  function drawScene() {
+  function uploadBackdrop(src) {
     if (!gl) return;
-    const c = sctx;
-    let ok = false;
-    if (typeof bgSource === 'function' || bgImage) {
-      scene.width = glc.width; scene.height = glc.height;
-      c.setTransform(dpr, 0, 0, dpr, 0, 0);
-      c.clearRect(0, 0, vw, vh);
-      try {
-        if (typeof bgSource === 'function') { bgSource(c, vw, vh); ok = true; }
-        else {
-          const iw = bgImage.naturalWidth || bgImage.videoWidth || bgImage.width, ih = bgImage.naturalHeight || bgImage.videoHeight || bgImage.height;
-          if (iw && ih) {
-            /* same as CSS background-size: cover; background-position: center */
-            const k = Math.max(vw / iw, vh / ih);
-            c.drawImage(bgImage, (vw - iw * k) / 2, (vh - ih * k) / 2, iw * k, ih * k);
-            ok = true;
-          }
-        }
-      } catch (e) { console.warn('OilTrail: background draw failed', e); ok = false; }
-    }
-    hasBg = ok;
-    gl.useProgram(glProg);
-    gl.uniform1f(uHasBg, hasBg ? 1 : 0);
-    if (!ok) return;
     gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, bgTex);
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-    try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, scene); }
-    catch (e) { console.warn('OilTrail: background blocked (cross-origin image?)', e); hasBg = false; gl.uniform1f(uHasBg, 0); }
+    let ok = false;
+    if (src) {
+      try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src); ok = true; }
+      catch (e) { console.warn('olive-oil-trail: backdrop could not be used (cross-origin image?) — bending a flat colour instead.', e); }
+    }
+    if (!ok) {
+      const c = document.createElement('canvas'); c.width = c.height = 2;
+      const x = c.getContext('2d'); x.fillStyle = flatColor(); x.fillRect(0, 0, 2, 2);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, c);
+    }
     gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
     gl.activeTexture(gl.TEXTURE0);
+    kick();
+  }
+  async function refreshBackdrop() {
+    if (destroyed || !gl) return;
+    const token = ++bdToken;
+    let src = null;
+    if (o.captureBackdrop) {
+      try { src = await o.captureBackdrop(); } catch (e) { console.warn('olive-oil-trail: captureBackdrop failed', e); }
+    }
+    if (destroyed || token !== bdToken) return;
+    lastBackdrop = src || null;
+    uploadBackdrop(lastBackdrop);
+  }
+  function scheduleBackdrop(ms = 250) { clearTimeout(bdTimer); bdTimer = setTimeout(refreshBackdrop, ms); }
+
+  /* ---------------------------------------------------------------- size */
+  function resize() {
+    const r = container.getBoundingClientRect();
+    vw = Math.max(1, Math.round(r.width)); vh = Math.max(1, Math.round(r.height));
+    dpr = Math.min(window.devicePixelRatio || 1, o.maxDpr);
+    canvas.width = Math.round(vw * dpr); canvas.height = Math.round(vh * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    W = Math.ceil(vw / CELL) + 2; Hh = Math.ceil(vh / CELL) + 2;
+    H = new Float32Array(W * Hh); Tmp = new Float32Array(W * Hh); rowOn = new Uint8Array(Hh);
+    off.width = W; off.height = Hh; img = octx.createImageData(W, Hh);
+    if (gl) resizeGL(); else { glc.width = glc.height = 1; }
+    kick();
+    scheduleBackdrop(150);   /* the picture under the oil changed size too */
   }
 
   function resizeGL() {
@@ -221,41 +282,30 @@ void main(){
     gl.viewport(0, 0, glc.width, glc.height);
     gl.uniform2f(uTex, W, Hh); gl.uniform1f(uK, 1 / (dpr * CELL)); gl.uniform1f(uH, glc.height);
     gl.uniform2f(uRes, glc.width, glc.height); gl.uniform1f(uDpr, dpr);
-    drawScene();
+    uploadBackdrop(lastBackdrop);
     prevY0 = 1e9; prevY1 = -1;
   }
   function drawGL(y0, y1) {
-    /* upload only the rows that changed (this frame's band plus last frame's) */
     const a0 = Math.max(0, Math.min(prevY0, y1 >= 0 ? y0 : 1e9)), a1 = Math.min(Hh - 1, Math.max(prevY1, y1));
     if (a1 >= a0) {
       for (let y = a0; y <= a1; y++) {
         const row = y * W;
         for (let x = 0; x < W; x++) {
-          const q = (H[row + x] / MAXH * 65535) | 0, i4 = (row + x) * 4;
-          pack[i4] = q >> 8; pack[i4 + 1] = q & 255;
+          const q = (H[row + x] / MAXH * 65535) | 0, o = (row + x) * 4;
+          pack[o] = q >> 8; pack[o + 1] = q & 255;
         }
       }
       gl.bindTexture(gl.TEXTURE_2D, glTex);
       gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, a0, W, a1 - a0 + 1, gl.RGBA, gl.UNSIGNED_BYTE, pack.subarray(a0 * W * 4, (a1 + 1) * W * 4));
     }
     prevY0 = y1 >= 0 ? y0 : 1e9; prevY1 = y1;
+    gl.uniform2f(uView, viewX, viewY);
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     if (y1 >= 0) gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 
-  function resize() {
-    vw = innerWidth; vh = innerHeight;
-    dpr = Math.min(window.devicePixelRatio || 1, o.dprCap);
-    canvas.width = Math.round(vw * dpr); canvas.height = Math.round(vh * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    W = Math.ceil(vw / CELL) + 2; Hh = Math.ceil(vh / CELL) + 2;
-    H = new Float32Array(W * Hh); Tmp = new Float32Array(W * Hh); rowOn = new Uint8Array(Hh);
-    off.width = W; off.height = Hh; img = octx.createImageData(W, Hh);
-    if (gl) resizeGL();
-    kick();
-  }
 
-  /* ---------------------------------------------------------------- oil */
+  /* add a soft round blob of oil (sim coords) */
   function stamp(cx, cy, r, amp) {
     const x0 = Math.max(1, Math.floor(cx - r)), x1 = Math.min(W - 2, Math.ceil(cx + r));
     const y0 = Math.max(1, Math.floor(cy - r)), y1 = Math.min(Hh - 2, Math.ceil(cy + r));
@@ -265,17 +315,19 @@ void main(){
       for (let x = x0; x <= x1; x++) {
         const d2 = (x - cx) * (x - cx) + (y - cy) * (y - cy);
         if (d2 >= r2) continue;
-        const f = 1 - d2 / r2, i = y * W + x, v = H[i] + amp * f * f;
+        const f = 1 - d2 / r2, i = y * W + x;
+        const v = H[i] + amp * f * f;
         H[i] = v > MAXH ? MAXH : v; hit = true;
       }
       if (hit) rowOn[y] = 1;
     }
   }
 
+  /* ---- strokes ---- */
   const strokes = new Map();
   let lastStampDist = 0;
   function addPoint(s, x, y, t) {
-    /* viscous lag: the oil trails behind the finger like thick liquid, then catches up */
+    /* viscous lag: the oil blob trails behind the finger like thick liquid, then catches up */
     s.tx = x; s.ty = y;
     if (s.bx === undefined) { s.bx = x; s.by = y; }
     s.bx += (x - s.bx) * 0.3; s.by += (y - s.by) * 0.3;
@@ -288,12 +340,17 @@ void main(){
       s.w += (target - s.w) * 0.3;
       const steps = Math.ceil(d / (CELL * 0.5));
       const amp = 0.55 + 0.35 / (1 + speed);                          /* slow = more oil */
-      for (let k = 1; k <= steps; k++) stamp((s.last.x + dx * k / steps) / CELL, (s.last.y + dy * k / steps) / CELL, s.w / 2 / CELL, amp * 0.42);
+      for (let k = 1; k <= steps; k++) {
+        const px = s.last.x + dx * k / steps, py = s.last.y + dy * k / steps;
+        stamp(px / CELL, py / CELL, s.w / 2 / CELL, amp * 0.42);
+      }
+      /* drips start where the stroke is slow and thick */
       lastStampDist += d;
-      if (dripAmt > 0 && lastStampDist > 70 / dripAmt && Math.random() < 0.55 && speed < 2.2) {
+      if (lastStampDist > 70 / Math.max(dripAmt, 0.01) && dripAmt > 0 && Math.random() < 0.55 && speed < 2.2) {
         lastStampDist = 0;
         addDrip(x / CELL + (Math.random() - 0.5) * 2, (y + s.w * 0.25) / CELL, 1.6 + Math.random() * 1.1, 0.9 + Math.random() * 1.2);
       }
+      /* a few flicked droplets on fast swipes */
       if (speed > 1.8 && Math.random() < 0.07) {
         const a = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.8, v = 160 + Math.random() * 200;
         addDroplet(x, y, Math.cos(a) * v, Math.sin(a) * v, 1.6 + Math.random() * 1.6);
@@ -302,43 +359,99 @@ void main(){
     s.last = { x, y, t };
   }
 
-  const drips = [], drops = [];
+  /* ---- drips: run down slowly, leaving a thin line with a bead at the front ---- */
+  const drips = [];
   function addDrip(x, y, r, vol) { if (drips.length < 40) drips.push({ x, y, r, vol, vy: 0, ph: Math.random() * 6 }); }
+
+  /* ---- flying droplets (drawn as beads, then land as oil) ---- */
+  const drops = [];
   function addDroplet(x, y, vx, vy, r) { if (drops.length < 90) drops.push({ x, y, vx, vy, r, t: 0, land: 0.12 + Math.random() * 0.16 }); }
 
-  /* ---------------------------------------------------------------- olives */
-  const olives = [], shards = [], pits = [], rings = [], chunks = [];
+  /* ================================================================
+      Olives
+     ================================================================ */
+  const olives = [], halves = [], pits = [], rings = [], chunks = [];
+  const OLIVE_DROP = 60, OLIVE_SQUISH = 130, OLIVE_POP = OLIVE_DROP + OLIVE_SQUISH;   /* a quick, hard crush */
+  const smoothK = (a, b, x) => { const t = Math.max(0, Math.min(1, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  /* golden oil beading out of the cracks as the olive is squeezed, running down its side */
+  function drawSeep(c, cracks, p, k) {
+    const g = smoothK(0.35, 1, k);
+    if (g <= 0) return;
+    cracks.forEach((cr, ci) => {
+      const segs = cr.length / 2 - 1, at = Math.min(segs, Math.max(1, Math.round(p * segs * 0.7)));
+      const x = cr[at * 2], y = cr[at * 2 + 1], r = 1 + 2.4 * g * (0.7 + 0.3 * ((ci * 7) % 3) / 2), run = 7 * g * g * (ci % 2 ? 0.6 : 1);
+      /* a thin run of oil down the skin, ending in a bead */
+      c.strokeStyle = 'rgba(214,196,60,0.75)'; c.lineWidth = r * 0.9; c.lineCap = 'round';
+      c.beginPath(); c.moveTo(x, y); c.quadraticCurveTo(x + 1.2, y + run * 0.5, x + 0.6, y + run); c.stroke();
+      const bg = c.createRadialGradient(x + 0.6 - r * 0.35, y + run - r * 0.4, 0.1, x + 0.6, y + run, r);
+      bg.addColorStop(0, 'rgba(255,250,200,0.95)'); bg.addColorStop(0.55, 'rgba(225,205,70,0.9)'); bg.addColorStop(1, 'rgba(150,135,25,0.85)');
+      c.fillStyle = bg; c.beginPath(); c.arc(x + 0.6, y + run, r, 0, Math.PI * 2); c.fill();
+      c.fillStyle = 'rgba(255,255,240,0.95)'; c.beginPath(); c.arc(x + 0.6 - r * 0.35, y + run - r * 0.4, r * 0.28, 0, Math.PI * 2); c.fill();
+    });
+  }
   function olivePath(c) {
-    c.beginPath(); c.moveTo(0, -21);
-    c.bezierCurveTo(10, -21, 16.5, -10, 16.5, 2);
-    c.bezierCurveTo(16.5, 14, 9.5, 22.5, 0, 22.5);
-    c.bezierCurveTo(-9.5, 22.5, -16.5, 14, -16.5, 2);
-    c.bezierCurveTo(-16.5, -10, -10, -21, 0, -21);
+    c.beginPath();
+    /* a real olive is slightly lopsided: fuller on one side, a little pointed at the tip */
+    c.moveTo(0.5, -21);
+    c.bezierCurveTo(10.5, -21, 17.2, -10, 17, 2.5);
+    c.bezierCurveTo(16.6, 14.5, 9.2, 22.8, -0.5, 22.6);
+    c.bezierCurveTo(-9.6, 22.3, -16, 13.6, -15.8, 1.8);
+    c.bezierCurveTo(-15.6, -10, -9.6, -21, 0.5, -21);
     c.closePath();
   }
   function makeSpecks() {
     const s = [];
-    for (let i = 0; i < 26; i++) { const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()); s.push(Math.cos(a) * r * 14, Math.sin(a) * r * 19 + 1, 0.35 + Math.random() * 0.5); }
+    for (let i = 0; i < 26; i++) {
+      const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random());
+      s.push(Math.cos(a) * r * 14, Math.sin(a) * r * 19 + 1, 0.25 + Math.random() * 0.45);
+    }
+    for (let i = 0; i < 18; i++) {   /* more, finer lenticels (the pale pores on olive skin) */
+      const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random());
+      s.push(Math.cos(a) * r * 14.5, Math.sin(a) * r * 19.5 + 1, 0.18 + Math.random() * 0.22);
+    }
+    /* uneven ripening: soft yellow-green and darker patches */
+    s.blotches = [];
+    for (let i = 0; i < 7; i++) s.blotches.push([(Math.random() - 0.5) * 26, (Math.random() - 0.5) * 34, 5 + Math.random() * 8, Math.random() < 0.55]);
     return s;
   }
   function drawOliveSkin(c, specks) {
+    /* contact shadow */
     c.save(); c.fillStyle = 'rgba(0,0,0,0.28)'; c.filter = 'blur(4px)';
     c.beginPath(); c.ellipse(2, 23, 14, 4, 0, 0, Math.PI * 2); c.fill(); c.restore();
+    /* body: glossy green olive, lit from the upper left */
     olivePath(c);
     const g = c.createRadialGradient(-5, -8, 1, 1, 2, 27);
-    g.addColorStop(0, '#c3d86e'); g.addColorStop(0.3, '#86a437'); g.addColorStop(0.64, '#56751c'); g.addColorStop(1, '#253608');
+    g.addColorStop(0, '#c6d76a'); g.addColorStop(0.22, '#93ab3c'); g.addColorStop(0.55, '#5f7d21'); g.addColorStop(0.85, '#38500f'); g.addColorStop(1, '#1d2b05');
     c.fillStyle = g; c.fill();
     c.save(); olivePath(c); c.clip();
+    /* mottled ripening patches */
+    for (const [bx, by, br, light] of (specks.blotches || [])) {
+      const bg = c.createRadialGradient(bx, by, 0, bx, by, br);
+      bg.addColorStop(0, light ? 'rgba(200,205,90,0.22)' : 'rgba(40,60,8,0.22)'); bg.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = bg; c.fillRect(bx - br, by - br, br * 2, br * 2);
+    }
+    /* darker underside (ambient occlusion where it sits) */
+    const ao = c.createLinearGradient(0, 4, 0, 23);
+    ao.addColorStop(0, 'rgba(15,25,0,0)'); ao.addColorStop(1, 'rgba(15,25,0,0.45)');
+    c.fillStyle = ao; c.fillRect(-20, -24, 40, 50);
+    /* waxy bloom: a broad, soft satin sheen */
+    const wb = c.createRadialGradient(-6, -6, 0, -6, -6, 16);
+    wb.addColorStop(0, 'rgba(235,245,210,0.2)'); wb.addColorStop(1, 'rgba(235,245,210,0)');
+    c.fillStyle = wb; c.fillRect(-20, -24, 40, 50);
+    /* warm wine-red glow from light passing through the skin */
     const ss = c.createRadialGradient(6, 12, 2, 6, 12, 20);
     ss.addColorStop(0, 'rgba(210,220,90,0.28)'); ss.addColorStop(1, 'rgba(210,220,90,0)');
     c.fillStyle = ss; c.fillRect(-20, -24, 40, 50);
+    /* faint green-brown blush near the stem (half-ripe) */
     const gb = c.createRadialGradient(0, -18, 1, 0, -16, 12);
     gb.addColorStop(0, 'rgba(150,140,50,0.4)'); gb.addColorStop(1, 'rgba(150,140,50,0)');
     c.fillStyle = gb; c.fillRect(-20, -24, 40, 30);
+    /* tiny pale pores */
     for (let i = 0; i < specks.length; i += 3) {
       c.fillStyle = `rgba(235,245,190,${0.2 * specks[i + 2]})`;
       c.beginPath(); c.arc(specks[i], specks[i + 1], specks[i + 2], 0, Math.PI * 2); c.fill();
     }
+    /* soft window reflection + sharp glint */
     c.save(); c.translate(-7, -8); c.rotate(-0.45);
     const hl = c.createLinearGradient(0, -8, 0, 8);
     hl.addColorStop(0, 'rgba(255,255,255,0.7)'); hl.addColorStop(1, 'rgba(255,255,255,0.05)');
@@ -346,11 +459,16 @@ void main(){
     c.restore();
     c.fillStyle = 'rgba(255,255,255,0.95)';
     c.beginPath(); c.ellipse(-4.2, -14.5, 1.3, 0.9, -0.5, 0, Math.PI * 2); c.fill();
+    /* rim light on the lower right edge */
     c.strokeStyle = 'rgba(240,255,190,0.22)'; c.lineWidth = 1.6;
     c.beginPath(); c.ellipse(1, 2, 15.4, 20.2, 0, 0.1, 1.3); c.stroke();
     c.restore();
-    c.fillStyle = '#5a4a38'; c.beginPath(); c.ellipse(0, -20.4, 2.6, 1.2, 0, 0, Math.PI * 2); c.fill();
-    c.fillStyle = '#20140c'; c.beginPath(); c.ellipse(0, -20.5, 1.2, 0.6, 0, 0, Math.PI * 2); c.fill();
+    /* stem scar */
+    c.fillStyle = '#6b5a3c'; c.beginPath(); c.ellipse(0.5, -20.4, 2.8, 1.3, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#2a1c10'; c.beginPath(); c.ellipse(0.5, -20.5, 1.3, 0.65, 0, 0, Math.PI * 2); c.fill();
+    /* a tiny stub of stem */
+    c.strokeStyle = '#5b4a2a'; c.lineWidth = 1.3; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(0.5, -20.6); c.quadraticCurveTo(1.2, -23, 2.6, -24.2); c.stroke();
   }
   function drawCracks(c, cracks, p) {
     c.lineCap = 'round'; c.lineJoin = 'round';
@@ -388,11 +506,32 @@ void main(){
     c.fillStyle = 'rgba(255,245,225,0.75)'; c.beginPath(); c.ellipse(-1.5, -4.5, 0.8, 2.3, 0.2, 0, Math.PI * 2); c.fill();
     c.restore();
   }
-  /* one crushed piece: a jagged wedge of green skin with pale flesh along the broken edges */
+  function drawHalf(c, side, specks) {
+    c.save();
+    c.beginPath(); c.rect(side < 0 ? -26 : 0, -26, 26, 52); c.clip();
+    c.translate(side * 1.2, 0);
+    drawOliveSkin(c, specks);
+    /* the cut face: purple-brown flesh near the skin, lighter inside, glistening with oil */
+    c.save(); c.scale(0.5, 1); olivePath(c); c.restore();
+    const f = c.createRadialGradient(0, 2, 2, 0, 2, 20);
+    f.addColorStop(0, '#f2f1c6'); f.addColorStop(0.6, '#dcdc95'); f.addColorStop(1, '#8aa23a');
+    c.fillStyle = f; c.fill();
+    /* flesh fibres */
+    c.strokeStyle = 'rgba(255,255,225,0.18)'; c.lineWidth = 0.6;
+    for (let k = -2; k <= 2; k++) { c.beginPath(); c.moveTo(k * 1.4, -17); c.quadraticCurveTo(k * 2.4, 2, k * 1.4, 19); c.stroke(); }
+    /* empty pit hollow with oil pooled in it */
+    c.save(); c.translate(side * 1.4, 1); c.scale(1.08, 1.05); pitPath(c); c.restore();
+    c.fillStyle = 'rgba(150,150,70,0.45)'; c.fill();
+    c.fillStyle = 'rgba(222,208,64,0.85)'; c.beginPath(); c.ellipse(side * 1.6, 5, 2.4, 3.8, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = 'rgba(255,250,230,0.95)'; c.beginPath(); c.ellipse(side * 0.9, 3.2, 0.7, 1.4, 0, 0, Math.PI * 2); c.fill();
+    c.restore();
+  }
+
+  /* one crushed piece: a jagged wedge of green skin, with pale flesh showing along the broken edges */
   function drawShard(c, poly, specks) {
-    const trace = () => { c.beginPath(); c.moveTo(poly[0], poly[1]); for (let j = 2; j < poly.length; j += 2) c.lineTo(poly[j], poly[j + 1]); c.closePath(); };
-    c.save(); trace(); c.clip(); drawOliveSkin(c, specks); c.restore();
-    c.save(); olivePath(c); c.clip(); trace(); c.clip();
+    const tracePoly = () => { c.beginPath(); c.moveTo(poly[0], poly[1]); for (let j = 2; j < poly.length; j += 2) c.lineTo(poly[j], poly[j + 1]); c.closePath(); };
+    c.save(); tracePoly(); c.clip(); drawOliveSkin(c, specks); c.restore();
+    c.save(); olivePath(c); c.clip(); tracePoly(); c.clip();
     const n = poly.length / 2;
     c.beginPath(); c.moveTo(poly[(n - 1) * 2], poly[(n - 1) * 2 + 1]);
     for (let j = n - 2; j >= n - 3; j--) c.lineTo(poly[j * 2], poly[j * 2 + 1]);
@@ -403,20 +542,25 @@ void main(){
     c.strokeStyle = 'rgba(250,250,215,0.85)'; c.lineWidth = 1.4; c.stroke();
     c.restore();
   }
-  let olivesDropped = 0;   /* Tashbar: counted for tests/lib/oiltrail.js */
+
   function crack(x, y) {
-    if (olives.length > 6) return; olivesDropped++;
+    if (olives.length > 6) return;
     const cracks = [], base = Math.random() * Math.PI * 2;
     for (let k = 0; k < 3; k++) {
-      const a = base + k * 2.1 + (Math.random() - 0.5) * 0.6, pts = [], nx = -Math.sin(a), ny = Math.cos(a);
-      for (let s = 0; s <= 5; s++) { const r = 1 + (s / 5) * 19, j = s ? (Math.random() - 0.5) * 6 : 0; pts.push(Math.cos(a) * r * 0.8 + nx * j, Math.sin(a) * r + ny * j); }
+      const a = base + k * 2.1 + (Math.random() - 0.5) * 0.6, pts = [];
+      const nx = -Math.sin(a), ny = Math.cos(a);
+      for (let s = 0; s <= 5; s++) {
+        const r = 1 + (s / 5) * 19, j = s ? (Math.random() - 0.5) * 6 : 0;
+        pts.push(Math.cos(a) * r * 0.8 + nx * j, Math.sin(a) * r + ny * j);
+      }
       cracks.push(pts);
     }
     olives.push({ x, y, t: 0, rot: -0.35 + Math.random() * 0.25, cracks, specks: makeSpecks() });
+    olivesDropped++;   /* Tashbar */
     kick();
   }
-  function crush(ol) {
-    /* 5 uneven shards, a pit that falls away, flesh chunks and an oil splash */
+  function split(o) {
+    /* the olive is crushed into 5 uneven skin-and-flesh shards (not two halves) */
     const n = 5, cuts = []; let acc = Math.random() * Math.PI * 2;
     for (let k = 0; k < n; k++) { cuts.push(acc); acc += (Math.PI * 2 / n) * (0.7 + Math.random() * 0.6); }
     const jit = () => (Math.random() - 0.5) * 3.5;
@@ -426,121 +570,115 @@ void main(){
       for (let j = 1; j <= 3; j++) { const r = (j / 3) * 26; poly.push(Math.cos(a0) * r * 0.75 + jit(), Math.sin(a0) * r + jit()); }
       for (let j = 1; j < 6; j++) { const a = a0 + (a1 - a0) * j / 6; poly.push(Math.cos(a) * 26, Math.sin(a) * 30); }
       for (let j = 3; j >= 1; j--) { const r = (j / 3) * 26; poly.push(Math.cos(a1) * r * 0.75 + jit(), Math.sin(a1) * r + jit()); }
-      const sp = 150 + Math.random() * 130, dir = mid + ol.rot;
-      shards.push({ x: ol.x, y: ol.y, rot: ol.rot, t: 0, poly, vx: Math.cos(dir) * sp, vy: Math.sin(dir) * sp - 150, vr: (Math.random() - 0.5) * 10, flip: 0.6 + Math.random(), specks: ol.specks });
+      const sp = 190 + Math.random() * 150, dir = mid + o.rot;
+      halves.push({ x: o.x, y: o.y + 6, rot: o.rot, t: 0, poly, vx: Math.cos(dir) * sp * 1.25, vy: Math.sin(dir) * sp * 0.55 - 70, vr: (Math.random() - 0.5) * 10, flip: 0.6 + Math.random(), specks: o.specks });
     }
     const dir = Math.random() < 0.5 ? -1 : 1;
-    pits.push({ x: ol.x, y: ol.y, t: 0, ang: ol.rot, vx: dir * (120 + Math.random() * 80), vy: -260 - Math.random() * 60 });
+    /* the pit pops out with a small hop, then falls down the screen */
+    pits.push({ x: o.x + dir * 4, y: o.y + 2, t: 0, ang: o.rot, vx: dir * (30 + Math.random() * 40), vy: -170 - Math.random() * 60 });
+    /* chunks of olive flesh burst out; small bits stick where they land */
     for (let i = 0; i < 13; i++) {
-      const a = Math.random() * Math.PI * 2, v = 120 + Math.random() * 260, size = i < 5 ? 4.5 + Math.random() * 2.5 : 2 + Math.random() * 1.8, pts = [];
+      const a = Math.random() * Math.PI * 2, v = 120 + Math.random() * 260, size = i < 5 ? 4.5 + Math.random() * 2.5 : 2 + Math.random() * 1.8;
+      const pts = [];
       for (let k = 0; k < 7; k++) { const aa = (k / 7) * Math.PI * 2, rr = size * (0.6 + Math.random() * 0.45); pts.push(Math.cos(aa) * rr, Math.sin(aa) * rr); }
-      chunks.push({ x: ol.x, y: ol.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 120, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 14,
+      chunks.push({ x: o.x, y: o.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 120, rot: Math.random() * 6, vr: (Math.random() - 0.5) * 14,
         size, pts, t: 0, stick: size < 4.5 ? 0.16 + Math.random() * 0.2 : 99, stuck: false, life: 0.65 + Math.random() * 0.3 });
     }
-    stamp(ol.x / CELL, (ol.y + 6) / CELL, 7 * thick, 1.3);
-    for (let i = 0; i < 11; i++) { const a = Math.random() * Math.PI * 2, v = 120 + Math.random() * 240; addDroplet(ol.x, ol.y, Math.cos(a) * v, Math.sin(a) * v - 70, 1.6 + Math.random() * 2.4); }
-    rings.push({ x: ol.x, y: ol.y, t: 0 });
+    /* oil bursts out: a puddle where the olive was, plus flying droplets */
+    stamp(o.x / CELL, (o.y + 8) / CELL, 9 * thick, 1.5);
+    for (const side of [-1, 1]) {                                     /* pressed out sideways in two gushes */
+      const len = 14 + Math.random() * 8;
+      for (let j = 0; j <= len; j++) stamp(o.x / CELL + side * (4 + j), (o.y + 12) / CELL + j * 0.12, (3.4 - 2.2 * j / len) * thick, 0.55);
+      stamp(o.x / CELL + side * (6 + len), (o.y + 12) / CELL + len * 0.12, 2.6 * thick, 0.9);   /* bead at the end */
+    }
+    for (let i = 0; i < 16; i++) {
+      const side = i % 2 ? 1 : -1, a = (side > 0 ? 0 : Math.PI) + (Math.random() - 0.5) * 1.3, v = 140 + Math.random() * 260;
+      addDroplet(o.x, o.y + 4, Math.cos(a) * v, Math.sin(a) * v - 90, 1.6 + Math.random() * 2.4);
+    }
+    rings.push({ x: o.x, y: o.y, t: 0 });
   }
 
-  /* ---------------------------------------------------------------- input */
-  const blocked = e => e.target && e.target.closest && e.target.closest('[data-no-oil]');
-  const ignoredTap = e => e.target && e.target.closest && e.target.closest(o.ignore);
+  /* ================================================================
+      Input (coordinates are relative to the container)
+     ================================================================ */
+  const local = (e) => { const r = container.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const ignored = (e) => o.ignoreSelector && e.target && e.target.closest && e.target.closest(o.ignoreSelector);
   function onDown(e) {
-    if (!enabled || blocked(e)) return;
+    if (ignored(e)) return;
     let touches = 0; strokes.forEach(s => { if (s.down) touches++; });
     if (touches >= 2) return;
-    const s = { down: true, w: 16 * thick, last: null, sx: e.clientX, sy: e.clientY, st: performance.now(), moved: 0, tap: !ignoredTap(e) };
-    strokes.set(e.pointerId, s);
-    addPoint(s, e.clientX, e.clientY, performance.now());
+    const [x, y] = local(e), now = performance.now();
+    strokes.set(e.pointerId, { down: true, w: 16 * thick, last: null, sx: x, sy: y, st: now, moved: 0 });
+    addPoint(strokes.get(e.pointerId), x, y, now);
     kick();
   }
   function onMove(e) {
-    if (!enabled) return;
     let s = strokes.get(e.pointerId);
     if (!s) {
-      if (e.pointerType !== 'mouse' || !o.hoverTrail || blocked(e)) return;
+      if (e.pointerType !== 'mouse' || !o.hoverTrail || ignored(e)) return;
       s = { down: false, w: 16 * thick, last: null, moved: 0 }; strokes.set(e.pointerId, s);
     }
+    const r = container.getBoundingClientRect();
     const list = e.getCoalescedEvents ? e.getCoalescedEvents() : [];
-    if (list.length) for (const c of list) addPoint(s, c.clientX, c.clientY, performance.now());
-    else addPoint(s, e.clientX, e.clientY, performance.now());
-    if (s.down) s.moved = Math.max(s.moved, Math.hypot(e.clientX - s.sx, e.clientY - s.sy));
+    if (list.length) for (const c of list) addPoint(s, c.clientX - r.left, c.clientY - r.top, performance.now());
+    else addPoint(s, e.clientX - r.left, e.clientY - r.top, performance.now());
+    if (s.down) s.moved = Math.max(s.moved, Math.hypot(e.clientX - r.left - s.sx, e.clientY - r.top - s.sy));
     kick();
   }
   function onUp(e) {
     const s = strokes.get(e.pointerId);
     if (!s) return;
-    /* Tashbar 2026-11-23: also measure where the finger lifted (a slow touchscreen reports few moves, so a quick swipe looked like a tap) */
-    if (s.down && s.sx !== undefined) s.moved = Math.max(s.moved, Math.hypot(e.clientX - s.sx, e.clientY - s.sy));
-    if (enabled && o.crackOnTap && s.down && s.tap && e.type === 'pointerup' && s.moved < 10 && performance.now() - s.st < 400) crack(e.clientX, e.clientY);
+    if (s.down && s.sx !== undefined) { const [lx, ly] = local(e); s.moved = Math.max(s.moved, Math.hypot(lx - s.sx, ly - s.sy)); }   /* Tashbar: where the finger lifted counts too (slow Chromebook touchscreens) */
+    if (o.tapToPop && s.down && e.type === 'pointerup' && s.moved < 10 && performance.now() - s.st < 400) { const [x, y] = local(e); crack(x, y); }
     if (e.pointerType === 'mouse') { s.down = false; s.last = null; s.bx = s.tx = undefined; } else strokes.delete(e.pointerId);
   }
   function onLeave(e) { const s = strokes.get(e.pointerId); if (s) { s.last = null; s.bx = s.tx = undefined; } }
-  /* Tashbar 2026-11-23 (Chromebook touchscreens): a finger is followed through TOUCH events. The browser stops a finger's pointer events
-     (pointercancel) as soon as a swipe starts scrolling the page, so with pointer events alone the oil stopped partway through a swipe.
-     Pointer events from a finger are ignored; the same rules (2 fingers, data-no-oil, a tap drops an olive) apply. */
-  const touchKey = t => 't' + t.identifier;
-  function onTouchStart(e) {
-    if (!enabled) return;
-    for (const t of e.changedTouches) {
-      let touches = 0; strokes.forEach(s => { if (s.down) touches++; }); if (touches >= 2) break;
-      const ev = { target: t.target || e.target };
-      if (blocked(ev)) continue;
-      const s = { down: true, w: 16 * thick, last: null, sx: t.clientX, sy: t.clientY, st: performance.now(), moved: 0, tap: !ignoredTap(ev) };
-      strokes.set(touchKey(t), s); addPoint(s, t.clientX, t.clientY, performance.now());
-    }
-    kick();
-  }
-  function onTouchMove(e) {
-    if (!enabled) return;
-    for (const t of e.changedTouches) { const s = strokes.get(touchKey(t)); if (!s) continue; addPoint(s, t.clientX, t.clientY, performance.now()); s.moved = Math.max(s.moved, Math.hypot(t.clientX - s.sx, t.clientY - s.sy)); }
-    kick();
-  }
-  function onTouchEnd(e) {
-    for (const t of e.changedTouches) { const s = strokes.get(touchKey(t)); if (!s) continue; strokes.delete(touchKey(t));
-      s.moved = Math.max(s.moved, Math.hypot(t.clientX - s.sx, t.clientY - s.sy));
-      if (enabled && o.crackOnTap && s.tap && e.type === 'touchend' && s.moved < 10 && performance.now() - s.st < 400) crack(t.clientX, t.clientY); }
-  }
-  const fromFinger = e => e.pointerType === 'touch';
-  const onDownP = e => { if (!fromFinger(e)) onDown(e); }, onMoveP = e => { if (!fromFinger(e)) onMove(e); }, onUpP = e => { if (!fromFinger(e)) onUp(e); };
-  const opt = { passive: true };
-  addEventListener('touchstart', onTouchStart, opt); addEventListener('touchmove', onTouchMove, opt);
-  addEventListener('touchend', onTouchEnd, opt); addEventListener('touchcancel', onTouchEnd, opt);
-  addEventListener('pointerdown', onDownP, opt);
-  addEventListener('pointermove', onMoveP, opt);
-  addEventListener('pointerup', onUpP, opt);
-  addEventListener('pointercancel', onUpP, opt);
-  document.addEventListener('pointerleave', onLeave, opt);
-  addEventListener('resize', resize);
+  const evt = o.eventTarget || container;   /* Tashbar: the app listens on the window (the screen-sized box catches no taps) */
+  evt.addEventListener('pointerdown', onDown);
+  evt.addEventListener('pointermove', onMove);
+  evt.addEventListener('pointerup', onUp);
+  evt.addEventListener('pointercancel', onUp);
+  evt.addEventListener('pointerleave', onLeave);
+  const ro = new ResizeObserver(() => resize());
+  ro.observe(container);
 
-  /* ---------------------------------------------------------------- frame loop */
-  let raf = 0, last = 0, dead = false;
-  function kick() { if (!raf && !dead) { last = performance.now(); raf = requestAnimationFrame(frame); } }
-  const norm = (x, y, z) => { const l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; };
-  const Lc = norm(-0.55, -0.75, 0.9), HVc = norm(-0.55, -0.75, 1.9), HV2c = norm(0.7, 0.2, 1.6);
+  /* ================================================================
+      Frame loop
+     ================================================================ */
+  let raf = 0, last = 0;
+  function kick() { if (!raf && !destroyed && W) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+
+  /* lighting */
+  const L = norm(-0.55, -0.75, 0.9), HV = norm(-0.55, -0.75, 1.9), HV2 = norm(0.7, 0.2, 1.6);
+  function norm(x, y, z) { const l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; }
 
   function frame(now) {
     const dt = Math.min((now - last) / 1000, 0.05); last = now;
     let busy = false;
+    /* viewing angle (kept still: the background never tilts) */
+    viewX += (aimX - viewX) * Math.min(1, dt * 4); viewY += (aimY - viewY) * Math.min(1, dt * 4);
+    if (Math.abs(aimX - viewX) + Math.abs(aimY - viewY) > 0.002) busy = true;
     /* let lagging oil catch up to where the finger stopped */
-    strokes.forEach(s => { if (s.tx !== undefined && s.last && Math.hypot(s.tx - s.bx, s.ty - s.by) > 1.5) { addPoint(s, s.tx, s.ty, now); busy = true; } });
+    strokes.forEach(s => {
+      if (s.tx !== undefined && s.last && Math.hypot(s.tx - s.bx, s.ty - s.by) > 1.5) { addPoint(s, s.tx, s.ty, now); busy = true; }
+    });
 
-    /* drips crawl down, leaving a thin line with a bead at the front */
+    /* drips: slide down, bead at the front */
     for (let i = drips.length - 1; i >= 0; i--) {
       const d = drips[i];
       if (d.vol <= 0) { drips.splice(i, 1); continue; }
       busy = true;
-      d.vy = Math.min(d.vy + 6 * dt, 4.5 + d.r * 1.2);
+      d.vy = Math.min(d.vy + 6 * dt, 4.5 + d.r * 1.2);               /* cells/s: thick oil crawls */
       d.y += d.vy * dt; d.x += Math.sin(now / 400 + d.ph) * 0.04;
       const k = dt * 60;
-      stamp(d.x, d.y, d.r * 0.42, 0.045 * k);
-      stamp(d.x, d.y + d.r * 0.5, d.r * 1.15, 0.08 * k);
+      stamp(d.x, d.y, d.r * 0.42, 0.045 * k);                        /* thin, stringy line behind */
+      stamp(d.x, d.y + d.r * 0.5, d.r * 1.15, 0.08 * k);             /* heavy bead at the front */
       d.vol -= dt * 1.15;
       if (d.y > Hh) d.vol = 0;
     }
 
-    /* thin the oil over time; the thin film goes first so lines break into beads */
-    const decay = Math.pow(0.5, (dt * 1000) / HALF_LIFE), thinRate = 0.26 * dt;
+    /* thin the oil over time + note which rows still have any */
+    const decay = Math.pow(0.5, (dt * 1000) / HALF_LIFE), thinRate = 0.26 * dt; /* thin film goes first, so lines break into beads */
     let y0 = Hh, y1 = -1;
     for (let y = 0; y < Hh; y++) {
       if (!rowOn[y]) continue;
@@ -555,16 +693,20 @@ void main(){
       if (any) { if (y < y0) y0 = y; y1 = y; } else rowOn[y] = 0;
     }
 
-    /* light smoothing keeps the surface glassy; thick oil sags downward */
+    /* gentle smoothing every frame keeps the oil glassy and round (no lumps) */
     if (y1 >= 0) {
       const a0 = Math.max(1, y0 - 1), a1 = Math.min(Hh - 2, y1 + 1);
       const b0 = Math.max(1, a0 - 1), b1 = Math.min(Hh - 2, a1 + 1);
       for (let y = b0; y <= b1; y++) { const r = y * W; for (let x = 1; x < W - 1; x++) { const i = r + x; Tmp[i] = (H[i - 1] + 2 * H[i] + H[i + 1]) * 0.25; } }
       for (let y = a0; y <= a1; y++) { const r = y * W; for (let x = 1; x < W - 1; x++) { const i = r + x; H[i] = H[i] * 0.72 + 0.28 * (Tmp[i - W] + 2 * Tmp[i] + Tmp[i + W]) * 0.25; } rowOn[y] = 1; }
       for (let y = b0; y <= b1; y++) { if (y < a0 || y > a1) { const r = y * W; for (let x = 0; x < W; x++) Tmp[r + x] = 0; } }
+      /* gravity: thick oil slowly sags downward, like real liquid on glass */
       for (let y = a1; y >= a0; y--) {
         const r = y * W;
-        for (let x = 1; x < W - 1; x++) { const i = r + x, ex = H[i] - 0.9; if (ex > 0) { const m = ex * 0.45 * dt; H[i] -= m; H[i + W] += m; } }
+        for (let x = 1; x < W - 1; x++) {
+          const i = r + x, ex = H[i] - 0.9;
+          if (ex > 0) { const m = ex * 0.45 * dt; H[i] -= m; H[i + W] += m; }   /* slow, syrupy sag */
+        }
       }
       rowOn[Math.min(Hh - 2, a1 + 1)] = 1;
       y0 = a0; y1 = Math.min(Hh - 2, a1 + 1);
@@ -572,36 +714,41 @@ void main(){
 
     ctx.clearRect(0, 0, vw, vh);
 
+    /* shade the oil */
     if (gl) { drawGL(y0, y1); if (y1 >= 0) busy = true; }
     else if (y1 >= 0) {
-      /* 2D fallback (no WebGL): same lighting at simulation resolution, smoothed up */
       busy = true;
-      const px = img.data, ys = Math.max(1, y0 - 1), ye = Math.min(Hh - 2, y1 + 1);
+      const px = img.data;
+      const ys = Math.max(1, y0 - 1), ye = Math.min(Hh - 2, y1 + 1);
       for (let y = ys; y <= ye; y++) {
         const row = y * W;
         for (let x = 1; x < W - 1; x++) {
-          const i = row + x, h = H[i], q = i * 4;
-          if (h < T * 0.75) { px[q + 3] = 0; continue; }
+          const i = row + x, h = H[i], o = i * 4;
+          if (h < T * 0.75) { px[o + 3] = 0; continue; }
           const gx = (H[i + 1] - H[i - 1]) * 2.6, gy = (H[i + W] - H[i - W]) * 2.6;
           const nl = Math.sqrt(gx * gx + gy * gy + 1), nx = -gx / nl, ny = -gy / nl, nz = 1 / nl;
-          const dif = Math.max(0, nx * Lc[0] + ny * Lc[1] + nz * Lc[2]);
-          let sp = Math.max(0, nx * HVc[0] + ny * HVc[1] + nz * HVc[2]); sp *= sp; sp *= sp; sp *= sp; sp *= sp; sp *= sp;
-          let sp2 = Math.max(0, nx * HV2c[0] + ny * HV2c[1] + nz * HV2c[2]); sp2 *= sp2; sp2 *= sp2; sp2 *= sp2;
-          const edge = Math.min(1, Math.max(0, (h - T * 0.75) / (T * 0.55)));
-          const th = Math.min(1, (h - T) / 1.3), fres = 1 - nz, shade = 0.62 + 0.5 * dif;
+          const dif = Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]);
+          let sp = Math.max(0, nx * HV[0] + ny * HV[1] + nz * HV[2]); sp = sp * sp; sp = sp * sp; sp = sp * sp; sp = sp * sp; sp *= sp; /* ^32 */
+          let sp2 = Math.max(0, nx * HV2[0] + ny * HV2[1] + nz * HV2[2]); sp2 = sp2 * sp2; sp2 = sp2 * sp2; sp2 *= sp2; /* ^8 */
+          const edge = Math.min(1, Math.max(0, (h - T * 0.75) / (T * 0.55)));   /* soft surface edge */
+          const th = Math.min(1, (h - T) / 1.3);                                  /* thickness 0..1 */
+          const fres = 1 - nz;                                                    /* steep sides = rim */
+          /* colour: pale gold where thin, deep amber where thick, darker at the rim */
+          const shade = 0.62 + 0.5 * dif;
           let r = (240 - 50 * th - 50 * fres) * shade, g = (228 - 42 * th - 52 * fres) * shade, b = (112 - 80 * th - 45 * fres) * shade;
-          let a = (0.18 + 0.26 * th + 0.35 * fres) * edge;
-          const s = sp * 0.55 + sp2 * 0.06;
-          r += 255 * s; g += 250 * s; b += 230 * s; a = Math.min(1, a + s * 0.6 * edge);
-          px[q] = r; px[q + 1] = g; px[q + 2] = b; px[q + 3] = a * 255;
+          let a = (0.3 + 0.38 * th + 0.55 * fres) * edge;
+          const s = sp * 1.25 + sp2 * 0.18;
+          r += 255 * s; g += 250 * s; b += 230 * s; a = Math.min(1, a + s * 0.9 * edge);
+          px[o] = r; px[o + 1] = g; px[o + 2] = b; px[o + 3] = a * 255;
         }
       }
+      /* clear the rows just outside the active band so nothing stale shows */
       octx.putImageData(img, 0, 0, 0, ys, W, ye - ys + 1);
       ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(off, 0, ys, W, ye - ys + 1, 0, ys * CELL, W * CELL, (ye - ys + 1) * CELL);
     }
 
-    /* flying droplets, which land as oil */
+    /* flying droplets */
     for (let i = drops.length - 1; i >= 0; i--) {
       const d = drops[i]; d.t += dt;
       if (d.t >= d.land) {
@@ -626,34 +773,44 @@ void main(){
       ctx.beginPath(); ctx.arc(r.x, r.y, 12 + 44 * (1 - Math.pow(1 - k, 3)), 0, Math.PI * 2); ctx.stroke();
     }
 
-    /* olives: pop, crack, then crush */
+    /* olives: pop, crack, split */
     for (let i = olives.length - 1; i >= 0; i--) {
-      const ol = olives[i]; ol.t += dt * 1000;
-      if (ol.t >= 150) { olives.splice(i, 1); crush(ol); continue; }
+      const o = olives[i]; o.t += dt * 1000;
+      if (o.t >= OLIVE_POP) { olives.splice(i, 1); split(o); continue; }
       busy = true;
-      const s = ol.t < 70 ? 1 + 0.25 * (ol.t / 70) : 1.25 - 0.25 * Math.min(1, (ol.t - 70) / 80);
-      ctx.save(); ctx.translate(ol.x, ol.y); ctx.scale(s * 1.25, s * 1.25); ctx.rotate(ol.rot);
-      drawOliveSkin(ctx, ol.specks);
-      const p = Math.max(0, Math.min(1, (ol.t - 40) / 80));
-      if (p > 0) drawCracks(ctx, ol.cracks, p);
+      /* drop in, then a quick hard press: it flattens and cracks (bottom stays planted), then crushes */
+      let sx, sy, k = 0;
+      if (o.t < OLIVE_DROP) { const d = o.t / OLIVE_DROP, c1 = 1.9; const e = 1 + (c1 + 1) * Math.pow(d - 1, 3) + c1 * Math.pow(d - 1, 2); sx = sy = 0.5 + 0.5 * e; }
+      else {
+        k = (o.t - OLIVE_DROP) / OLIVE_SQUISH;
+        const q = Math.pow(k, 1.7);                                   /* pressure builds fast, like a press coming down */
+        const wob = Math.sin(k * 40) * 0.018 * k;
+        sx = 1 + 0.26 * q + wob; sy = 1 - 0.3 * q - wob;
+        /* oil squeezed out pools under the olive (real oil, so it bends what's under it too) */
+        if (k > 0.3) stamp(o.x / CELL + (Math.random() - 0.5) * 6, (o.y + 26 * sy) / CELL, 2.5 + 5 * k, 0.12 * dt * 60);
+      }
+      ctx.save(); ctx.translate(o.x, o.y + 22.5 * 1.25 * (1 - sy)); ctx.scale(sx, sy); ctx.scale(1.25, 1.25); ctx.rotate(o.rot);
+      drawOliveSkin(ctx, o.specks);
+      const p = smoothK(0.05, 0.8, k);
+      if (p > 0) { drawCracks(ctx, o.cracks, p); drawSeep(ctx, o.cracks, p, k); }
       ctx.restore();
     }
 
-    /* shards fly out, tumble and fade */
-    for (let i = shards.length - 1; i >= 0; i--) {
-      const h = shards[i]; h.t += dt * 1000;
-      if (h.t >= 600) { shards.splice(i, 1); continue; }
+    /* halves: spring out, fall, fade */
+    for (let i = halves.length - 1; i >= 0; i--) {
+      const h = halves[i]; h.t += dt * 1000;
+      if (h.t >= 600) { halves.splice(i, 1); continue; }
       busy = true;
       h.vy += 1500 * dt; h.x += h.vx * dt; h.y += h.vy * dt; h.rot += h.vr * dt;
       const sp = 1 + 0.18 * Math.exp(-h.t / 90) * Math.sin(h.t / 22);
       ctx.save(); ctx.globalAlpha = 1 - Math.pow(h.t / 600, 2);
       ctx.translate(h.x, h.y); ctx.rotate(h.rot); ctx.scale(sp * 1.25, sp * 1.25);
-      ctx.scale(Math.max(0.12, Math.abs(Math.cos(h.t * 0.011 * h.flip))), 1);
+      ctx.scale(Math.max(0.12, Math.abs(Math.cos(h.t * 0.011 * h.flip))), 1);   /* tumbling in depth */
       drawShard(ctx, h.poly, h.specks);
       ctx.restore();
     }
 
-    /* flesh chunks: fly, spin, the small ones splat and stick */
+    /* flesh chunks: fly, spin, and the small ones splat and stick */
     for (let i = chunks.length - 1; i >= 0; i--) {
       const ch = chunks[i]; ch.t += dt;
       if (ch.t >= ch.life) { chunks.splice(i, 1); continue; }
@@ -672,7 +829,7 @@ void main(){
       fg.addColorStop(0, '#f1f2b8'); fg.addColorStop(0.6, '#c9cf68'); fg.addColorStop(1, '#6f8a26');
       ctx.fillStyle = fg; ctx.fill();
       ctx.strokeStyle = 'rgba(90,120,30,0.35)'; ctx.lineWidth = 0.6; ctx.stroke();
-      if (ch.size > 4.5) {
+      if (ch.size > 4.5) {                                             /* a strip of green skin on the big chunks */
         ctx.strokeStyle = '#4d6a17'; ctx.lineWidth = 1.6;
         ctx.beginPath(); ctx.moveTo(ch.pts[0], ch.pts[1]); ctx.lineTo(ch.pts[2], ch.pts[3]); ctx.lineTo(ch.pts[4], ch.pts[5]); ctx.stroke();
       }
@@ -681,47 +838,58 @@ void main(){
       ctx.restore();
     }
 
-    /* the pit pops out and falls away with gravity, rolling end over end */
+    /* pits: pop out with a small hop, then fall straight down the screen under gravity (no rolling or spinning) */
     for (let i = pits.length - 1; i >= 0; i--) {
       const p = pits[i]; p.t += dt * 1000;
-      if (p.y > vh + 40 || p.t >= 2500) { pits.splice(i, 1); continue; }
+      if (p.y > vh + 40 || p.t >= 4000) { pits.splice(i, 1); continue; }
       busy = true;
-      p.vy += 1000 * dt; p.x += p.vx * dt; p.y += p.vy * dt;
-      p.vx *= Math.exp(-0.6 * dt);
-      p.ang += (p.vx / 10 + p.vy / 22) * dt;
-      if (Math.random() < 0.25) stamp(p.x / CELL, p.y / CELL, 1.2, 0.3);
-      ctx.save();
+      p.vy += 1500 * dt; p.x += p.vx * dt; p.y += p.vy * dt;           /* gravity pulls it straight down */
+      p.vx *= Math.exp(-1.2 * dt);                                      /* barely drifts sideways */
+      if (p.t < 500 && Math.random() < 0.5) stamp(p.x / CELL, p.y / CELL, 1.1, 0.22);   /* a few oily drips shed right after it pops out */
+      ctx.save(); ctx.globalAlpha = 1;
       ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 6 * dpr; ctx.shadowOffsetY = 3 * dpr;
       ctx.translate(p.x, p.y); ctx.rotate(p.ang); ctx.scale(1.6, 1.6);
       drawPit(ctx);
       ctx.restore();
     }
 
-    raf = busy || drips.length ? requestAnimationFrame(frame) : 0;
+    raf = !destroyed && (busy || drips.length) ? requestAnimationFrame(frame) : 0;
   }
 
-  /* ---------------------------------------------------------------- public API */
   resize();
-  if (o.background) setBackground(o.background);
-  else if (gl) gl.uniform1f(uHasBg, 0);
+  refreshBackdrop();
 
+  /* ---------------------------------------------------------------- public API */
   return {
-    setEnabled(on) { enabled = !!on; if (!enabled) strokes.clear(); },
+    /** change options live, e.g. { thickness: 1.3, drips: 0 } */
+    setOptions(next = {}) {
+      Object.assign(o, next);
+      if ('thickness' in next) thick = +next.thickness;
+      if ('drips' in next) dripAmt = +next.drips;
+      if ('captureBackdrop' in next || 'backdropColor' in next) refreshBackdrop();
+    },
+    /** re-take the picture of what is under the oil (call after the content underneath changes) */
+    refreshBackdrop,
+    /** wipe all oil, olives and effects */
+    clear() {
+      H.fill(0); rowOn.fill(1);
+      drips.length = drops.length = chunks.length = olives.length = halves.length = pits.length = rings.length = 0;
+      kick();
+    },
+    /** drop and crack an olive at a point (container coordinates, css px) */
+    popAt(x, y) { crack(x, y); },
+    /** Tashbar: how many olives have dropped (tests) */
     olives() { return olivesDropped; },
-    setBackground,
-    refreshBackground() { drawScene(); kick(); },   /* call if a draw-function background changed */
-    setThickness(v) { thick = Math.min(1.6, Math.max(0.6, +v || 1)); },
-    setDrips(v) { dripAmt = reduced ? 0 : Math.min(2, Math.max(0, +v || 0)); },
-    clear() { H.fill(0); rowOn.fill(1); drips.length = drops.length = chunks.length = 0; kick(); },
+    /** remove canvases and listeners */
     destroy() {
-      dead = true;
-      if (raf) cancelAnimationFrame(raf); raf = 0;
-      removeEventListener('pointerdown', onDownP); removeEventListener('pointermove', onMoveP);
-      removeEventListener('pointerup', onUpP); removeEventListener('pointercancel', onUpP);
-      removeEventListener('touchstart', onTouchStart); removeEventListener('touchmove', onTouchMove);
-      removeEventListener('touchend', onTouchEnd); removeEventListener('touchcancel', onTouchEnd);
-      document.removeEventListener('pointerleave', onLeave); removeEventListener('resize', resize);
-      if (gl) { const lose = gl.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext(); }
+      destroyed = true;
+      cancelAnimationFrame(raf); raf = 0; clearTimeout(bdTimer); ro.disconnect();
+      evt.removeEventListener('pointerdown', onDown);
+      evt.removeEventListener('pointermove', onMove);
+      evt.removeEventListener('pointerup', onUp);
+      evt.removeEventListener('pointercancel', onUp);
+      evt.removeEventListener('pointerleave', onLeave);
+      if (gl) { const ext = gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); }
       glc.remove(); canvas.remove();
     },
   };
@@ -749,63 +917,59 @@ window.tlOilOn = function () { return window.TL_OIL_OFF !== true && signedIn() &
 /* HomePlus asks this before its free tap splash: the olive is the free tap during the oil season (a bought tap blast still wins) */
 window.tlOilTapOn = function () { return window.tlOilOn() && !boughtTap(); };
 
-/* LIGHT BENDING ON THE HOME SCREEN (HoS 2026-11-23, option 1): the oil can only bend a picture of what is behind it, so on the home screen
-   (which rarely changes) a snapshot of the screen is taken with html2canvas (served from our own site, /vendor/, loaded only when needed)
-   a moment after the home appears, and again when it changes or scrolls. Everywhere else, or if the helper cannot load, the oil is the
-   plain see-through film. The oil's own canvases are left out of the snapshot. */
+/* LIGHT BENDING (HoS 2026-11-23: "not bending on the homepage or anywhere else"): on every page of the boy's home (#gm) a half-size snapshot
+   of the screen is taken with html2canvas (our own /vendor/ copy, loaded only when needed) once he has been idle 1.5 s (taps, keys and
+   scrolling count as busy; moving the mouse to pour oil does not), and retaken when the page changes. Lessons: the plain page colour. */
 const VENDOR = '/vendor/html2canvas.min.js';
-let h2c = null, snapSig = '', snapTimer = 0, snapping = false, hasSnap = false;
-/* the screen changed = the app redrew it: counted cheaply by wrapping render() */
-let redraws = 0; try { if (typeof render === 'function') { const _r = render; render = function () { redraws++; const r = _r.apply(this, arguments); setTimeout(watchHome, 0); return r; }; } } catch (e) {}   /* a new screen drops the old snapshot at once */
-/* HoS 2026-11-23 ("not bending on the homepage or anywhere else"): every page of the boy's home (the home, My map, My work, My things,
-   Arcade, Store, Canteen: all drawn in #gm) gets the bending. Lessons keep the see-through film (a pause there would interrupt learning). */
+let h2c = null, snap = null, snapSig = '', snapTimer = 0, snapping = false, lastInput = 0, gmChanges = 0, gmWatched = null, scrolls = 0, redraws = 0;
+['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(t => addEventListener(t, () => { lastInput = performance.now(); }, { capture: true, passive: true }));
+addEventListener('scroll', () => { scrolls++; }, { capture: true, passive: true });
+try { if (typeof render === 'function') { const _r = render; render = function () { redraws++; const r = _r.apply(this, arguments); setTimeout(watch, 0); return r; }; } } catch (e) {}
+const gmObs = typeof MutationObserver === 'function' ? new MutationObserver(() => { gmChanges++; }) : null;
 function onHome() { try { const gm = document.getElementById('gm'); return A.view === 'hub' && !!gm && document.body.classList.contains('gm-on') && getComputedStyle(gm).display !== 'none' && !A.overlay && !document.querySelector('.tt-ov,#tlstore,.overlay,#pl-ov'); } catch (e) { return false; } }
 function loadH2c() {
   if (window.html2canvas) return Promise.resolve(window.html2canvas);
   if (!h2c) h2c = new Promise((ok, no) => { const s = document.createElement('script'); s.src = VENDOR; s.async = true; s.onload = () => window.html2canvas ? ok(window.html2canvas) : no(new Error('no html2canvas')); s.onerror = no; document.head.appendChild(s); });
   return h2c;
 }
-/* the snapshot is heavy work for a school Chromebook (about 0.7 s at 4x slow), so it waits until there has been no tap, key or scroll for 1.5 s
-   (moving the mouse does not count), takes only the home panel (#gm, the whole screen) at half size, and skips scripts and hidden parts */
-let lastInput = 0;
-/* only taps, keys and scrolling count as busy: moving the mouse to pour oil must not keep the snapshot from ever being taken (HoS 2026-11-23) */
-['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(t => addEventListener(t, () => { lastInput = performance.now(); }, { capture: true, passive: true }));
-/* a page inside the home scrolls on its own (not the window): count those scrolls so the snapshot is retaken */
-let scrolls = 0; addEventListener('scroll', () => { scrolls++; }, { capture: true, passive: true });
-/* the home's pages switch inside #gm without a full redraw: watch #gm itself for changes (new page, new tiles) */
-let gmChanges = 0, gmWatched = null; const gmObs = typeof MutationObserver === 'function' ? new MutationObserver(() => { gmChanges++; if (hasSnap && eng) { eng.setBackground(null); hasSnap = false; } }) : null;
-function watchGm() { const gm = document.getElementById('gm'); if (!gmObs || !gm || gm === gmWatched) return; gmObs.disconnect(); gmObs.observe(gm, { childList: true, subtree: true }); gmWatched = gm; }
 function noAnim(d) { const st = d.createElement('style'); st.textContent = '*,*::before,*::after{animation:none!important;transition:none!important}'; d.head.appendChild(st); }
-function snap() {
-  if (!eng || snapping || !onHome()) return;
-  if (performance.now() - lastInput < 1500) { clearTimeout(snapTimer); snapTimer = setTimeout(snap, 500); return; }
+function takeSnap() {
+  if (!eng || snapping || !onHome() || window.TL_OIL_NOBEND) return;
+  if (performance.now() - lastInput < 1500) { clearTimeout(snapTimer); snapTimer = setTimeout(takeSnap, 500); return; }
   const gm = document.getElementById('gm'); if (!gm) return;
   snapping = true; const sig = snapSig;
   loadH2c().then(fn => fn(gm, { onclone: noAnim, backgroundColor: null, scale: 0.5, logging: false, useCORS: true,
       ignoreElements: el => { if (el.tagName === 'SCRIPT' || el.tagName === 'NOSCRIPT') return true;
-        if (el.tagName === 'CANVAS' && (el.style.zIndex === '2147483199' || el.id === 'hpblade')) return true;
+        if (el.hasAttribute && (el.hasAttribute('data-oil-layer') || el.hasAttribute('data-jelly-layer') || el.id === 'tl-oil' || el.id === 'tl-jelly' || el.id === 'hpblade')) return true;
         if (el.tagName === 'STYLE' || el.tagName === 'LINK') return false;   /* many of the app's style sheets sit in the body: keep them all */
         if (!document.body.contains(el) || el === document.body) return false;
         return !(el === gm || el.contains(gm) || gm.contains(el)); } }))
-    .then(c => { snapping = false; if (eng && onHome() && sig === snapSig) { eng.setBackground(c); hasSnap = true; } })
+    .then(c => { snapping = false; if (eng && onHome() && sig === snapSig) { snap = c; eng.refreshBackdrop(); } })
     .catch(e => { snapping = false; window.TL_OIL_NOBEND = true; console.warn('OilTrail: no light bending (snapshot helper)', e && e.message); });
 }
-function watchHome() {
-  if (!eng || window.TL_OIL_NOBEND) return; watchGm();
+function watch() {
+  if (!eng) return;
+  const gm = document.getElementById('gm'); if (gmObs && gm && gm !== gmWatched) { gmObs.disconnect(); gmObs.observe(gm, { childList: true, subtree: true }); gmWatched = gm; }
   const home = onHome(), sig = home ? [innerWidth, innerHeight, scrollX, scrollY, redraws, scrolls, gmChanges].join(',') : '';
-  if (!home) { if (hasSnap) { eng.setBackground(null); hasSnap = false; } snapSig = ''; return; }
-  if (sig !== snapSig) { snapSig = sig; if (hasSnap) { eng.setBackground(null); hasSnap = false; } clearTimeout(snapTimer); snapTimer = setTimeout(snap, 1500); }
+  if (sig !== snapSig) { snapSig = sig; if (snap) { snap = null; eng.refreshBackdrop(); } if (home) { clearTimeout(snapTimer); snapTimer = setTimeout(takeSnap, 1500); } }
 }
 
-let eng = null;
+let eng = null, box = null;
 function sync() {
   const on = window.tlOilOn();
   if (on && !eng) {
-    try { eng = createOilTrail({ zIndex: 2147483199, crackOnTap: !boughtTap(),
-      /* HoS 2026-11-24: an olive on EVERY tap, buttons too (not only empty space); never where a boy types or draws */
-      ignore: 'input, select, textarea, [contenteditable], [data-no-oil]', dprCap: /CrOS/.test(navigator.userAgent) ? 1.5 : 2 }); }   /* Chromebooks: lighter drawing (the handoff's advice) */ catch (e) { console.warn('OilTrail', e); window.TL_OIL_OFF = true; return; }
+    try {
+      box = document.createElement('div'); box.id = 'tl-oil'; box.setAttribute('aria-hidden', 'true');
+      box.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;pointer-events:none;z-index:2147483199';
+      document.body.appendChild(box);
+      eng = createOliveOilTrail(box, { eventTarget: window, zIndex: 1, tapToPop: !boughtTap(), maxDpr: /CrOS/.test(navigator.userAgent) ? 1.5 : 2,   /* Chromebooks: lighter drawing */
+        /* HoS 2026-11-24: an olive on EVERY tap, buttons too (not only empty space); never where a boy types or draws */
+        ignoreSelector: 'input, select, textarea, [contenteditable], [data-no-oil]',
+        captureBackdrop: () => snap });
+    } catch (e) { console.warn('OilTrail', e); window.TL_OIL_OFF = true; if (box) box.remove(); box = null; eng = null; return; }
   }
-  if (eng) { eng.setEnabled(on); if (on) watchHome(); }
+  if (!on && eng) { eng.destroy(); eng = null; if (box) box.remove(); box = null; snap = null; snapSig = ''; return; }
+  if (eng) { eng.setOptions({ tapToPop: !boughtTap() }); watch(); }
 }
 /* anything a boy draws or plays on (every canvas, writing boxes) blocks the oil, marked just before the engine sees the touch */
 addEventListener('pointerdown', function (e) {
@@ -814,6 +978,6 @@ addEventListener('pointerdown', function (e) {
   if (area && !area.hasAttribute('data-no-oil')) area.setAttribute('data-no-oil', '');
 }, { capture: true, passive: true });
 setInterval(sync, 500);
-window.TL_OIL = { create: createOilTrail, sync: sync, inSeason: inSeason, engine: () => eng, bending: () => hasSnap };
+window.TL_OIL = { create: createOliveOilTrail, sync: sync, inSeason: inSeason, engine: () => eng, bending: () => !!snap };
 })();
 </script>
