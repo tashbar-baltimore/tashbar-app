@@ -210,6 +210,13 @@ function moneyEnsure_(sid) { moneyLegacy_(sid); moneyInterest_(sid); }
 function moneyDailyGoal_(sid) {
   var today = moneyDay_(), key = 'daily3:' + sid + ':' + today;
   if (moneyHasKey_(key)) return null;
+  /* TODAY'S LIST (Core Growth job D, HoS 2026-11-24 "if you do everything, you get your bonus"; DailyPlan.js): a boy on the list gets
+     the SAME bonus (same rule, same key, so the chest follows) when the WHOLE list is done, checked from his paid rows. TEST- boys only
+     while TDL_LIVE is 'test'; every other boy keeps "3 lessons" below. */
+  if (typeof tdlOn_ === 'function' && tdlOn_(sid)) {
+    var L = null; try { L = tdlStatus_(sid); } catch (e) { L = null; }
+    return L && L.complete ? moneyEarn_(sid, 'dailyGoal', key, '', '', "Daily bonus · You finished today's list") : null;
+  }
   var n = moneyRowsFor_(sid).filter(function (r) { return moneyDay_(r.at) === today && (r.key.indexOf('ms:' + sid + ':Mastered ') === 0 || r.key.indexOf('finish:') === 0); }).length;
   return n >= 3 ? moneyEarn_(sid, 'dailyGoal', key, '', '', 'Daily goal: 3 lessons today') : null;
 }
