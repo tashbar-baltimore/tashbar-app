@@ -28,6 +28,7 @@ const ID_RE = /^[A-Z][A-Z0-9]*(\.[A-Z0-9]+){1,3}$/;
 const BAND = { 0: [20, 400], 1: [30, 600], 2: [80, 800], 3: [150, 900], 4: [300, 1500], 5: [500, 1500], 6: [500, 2500], 7: [600, 2500], 8: [800, 2500] };
 
 /* split a paragraph into sentences: ends at . ! ? (and a closing quote) followed by a space and a capital, a quote or a digit */
+const SAID = /^ (?:[A-Z][a-z]+(?: [A-Z][a-z]+)?|he|she|they|I|we|Zaidy|Bubby|Mommy|Tatty) (?:said|asked|called|shouted|whispered|laughed|answered|cried|added|replied|yelled|explained|told)\b/i;
 function sentences(p) {
   const out = []; let s = '';
   const t = p.replace(/\s+/g, ' ').trim();
@@ -36,7 +37,8 @@ function sentences(p) {
     if (/[.!?]/.test(t[i])) {
       let j = i + 1; while (j < t.length && /["'”’)]/.test(t[j])) { s += t[j]; j++; }
       if (j >= t.length || (t[j] === ' ' && /["'“‘A-Z0-9(]/.test(t[j + 1] || ''))) {
-        if (!/\b(Mr|Mrs|Dr|St|Mt|R|Rabbi|Rav|No|vs)\.$/.test(s.trim())) { out.push(s.trim()); s = ''; }
+        const tag = /[!?,]["”’']$/.test(s) && SAID.test(t.slice(j));   /* "Look!" Dovid said.  stays one sentence */
+        if (!tag && !/\b(Mr|Mrs|Dr|St|Mt|R|Rabbi|Rav|No|vs)\.$/.test(s.trim())) { out.push(s.trim()); s = ''; }
       }
       i = j - 1;
     }
@@ -81,7 +83,7 @@ function check(T, pics) {
   if (/\bG[o0]d\b|\bLord\b|\bJehovah\b|\bYahweh\b/i.test(flat) || /י[֑-ׇ]*ה[֑-ׇ]*ו[֑-ׇ]*ה/.test(flat)) p.push('never write the Divine Name (use Hashem, or ה׳ in Hebrew)');
   T.pages.forEach((pg, i) => pg.forEach((par, j) => par.s.forEach(s => { if (s.length > 400) p.push('page ' + (i + 1) + ', paragraph ' + (j + 1) + ': a sentence over 400 letters (missing a full stop?)'); })));
   const low = T.pages.map(pg => pg.map(par => par.s.join(' ')).join(' ')).join(' ').toLowerCase();
-  Object.keys(T.glossary).forEach(w => { if (low.indexOf(w) < 0) p.push('word "' + w + '" is not in the text'); if (T.glossary[w].length > 120) p.push('meaning of "' + w + '" is longer than 120 letters'); });
+  Object.keys(T.glossary).forEach(w => { if (!/^[a-z0-9’'\-]+$/.test(w)) p.push('word "' + w + '" must be one word, written as it is in the text'); else if (!new RegExp('(^|[^a-z0-9])' + w.replace(/[-’']/g, '.') + '([^a-z0-9]|$)').test(low)) p.push('word "' + w + '" is not in the text (write it exactly as it appears, for example "gasped", not "gasp")'); if (T.glossary[w].length > 120) p.push('meaning of "' + w + '" is longer than 120 letters'); });
   if (T.pic && pics && !pics.has(T.pic)) p.push('picture ' + T.pic + ' is not in web/pics');
   if (Buffer.byteLength(JSON.stringify(T)) > 60 * 1024) p.push('over 60 KB: split it into chapters');
   return p;

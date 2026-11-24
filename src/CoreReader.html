@@ -1,0 +1,282 @@
+<script>
+/* CoreReader.html: the BOOK READER (Core Growth job T, T-3, 2026-11-24). Every story, chapter, article, poem and play from the content store.
+   Calm, clear page while he reads; the energy goes to the cover, the page turn and the "chapter done" moment (each 1 second or less, tap to skip). */
+(function () { if (document.getElementById('crd-css')) return; var s = document.createElement('style'); s.id = 'crd-css'; s.textContent = `
+#crd{position:fixed;inset:0;z-index:2147483500;display:flex;flex-direction:column;background:#FBF6EA;color:#1F2633;font-family:Georgia,"Iowan Old Style","Palatino Linotype",serif;-webkit-font-smoothing:antialiased}
+#crd *{box-sizing:border-box}
+#crd .crd-top{display:flex;align-items:center;gap:10px;padding:10px 14px;min-height:64px;border-bottom:1px solid #EADFC6;background:#FFFDF7;position:relative}
+#crd .crd-top .tlk-at-tl{position:static}
+#crd .crd-ttl{flex:1;min-width:0;text-align:center;font:600 15px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;color:#5A5040;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#crd .crd-tools{display:flex;align-items:center;gap:8px}
+#crd .crd-tools .tlk-tool.on{outline:3px solid #E0AE4F;outline-offset:2px}
+#crd .crd-main{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;perspective:1400px}
+#crd .crd-page{max-width:760px;margin:0 auto;padding:26px 22px 40px;transform-origin:left center}
+#crd .crd-page.turn{animation:crdTurn .32s cubic-bezier(.2,.8,.3,1)}
+#crd .crd-page.turnb{animation:crdTurnB .32s cubic-bezier(.2,.8,.3,1)}
+@keyframes crdTurn{from{opacity:0;transform:rotateY(-9deg) translateX(40px)}to{opacity:1;transform:none}}
+@keyframes crdTurnB{from{opacity:0;transform:rotateY(9deg) translateX(-40px)}to{opacity:1;transform:none}}
+#crd p{margin:0 0 1em;line-height:1.7}
+#crd.b-K1 .crd-page{font-size:30px}#crd.b-K1 p{line-height:1.6}
+#crd.b-B23 .crd-page{font-size:25px}
+#crd.b-E45 .crd-page{font-size:21px}
+#crd.b-M68 .crd-page{font-size:19px}
+#crd .crd-who{display:block;font:700 .72em/1.2 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A5A12;margin-bottom:2px}
+#crd.k-poem p{white-space:normal;font-style:italic}
+#crd .crd-s{border-radius:6px;transition:background .15s}
+#crd .crd-s.on{background:#FFF0B8;box-shadow:0 0 0 3px #FFF0B8}
+#crd .crd-w.on{background:#FFD45C;border-radius:4px;box-shadow:0 0 0 2px #FFD45C}
+#crd .crd-g{color:#1D4E9E;text-decoration:underline dotted 2px;text-underline-offset:4px;cursor:pointer}
+#crd.pick .crd-s{cursor:pointer;outline:2px dashed transparent}
+#crd.pick .crd-s:focus-visible{background:#EAF1FF;outline-color:#9DB7E8}@media (hover:hover){#crd.pick .crd-s:hover{background:#EAF1FF;outline-color:#9DB7E8}}
+#crd .crd-s.yes{background:#DDF4E6;box-shadow:0 0 0 3px #3FA36B}
+#crd .crd-s.no{animation:crdNo .3s}
+#crd .crd-s.near{background:#EAF1FF}
+@keyframes crdNo{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+#crd .crd-bub{position:fixed;z-index:2147483501;max-width:300px;padding:12px 14px;border-radius:14px;background:#1F2633;color:#fff;font:500 16px/1.35 system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#crd .crd-bub b{display:block;font-size:18px;margin-bottom:2px;color:#FFD45C}
+#crd .crd-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #EADFC6;background:#FFFDF7}
+#crd .crd-foot .crd-sp{flex:1}
+#crd .crd-ask{max-width:760px;margin:0 auto;width:100%;padding:12px 16px;background:#EEF3FF;border-top:1px solid #C9D7F2;font:500 17px/1.4 system-ui,sans-serif}
+#crd .crd-ask .crd-q{font-weight:700;font-size:19px;margin-bottom:4px}
+#crd .crd-ask .crd-how{color:#33415C;font-size:15px}
+#crd .crd-ask .crd-fb{margin-top:6px;font-weight:600}
+#crd .crd-ask .crd-fb.ok{color:#0E7A4F}#crd .crd-ask .crd-fb.miss{color:#8A4B00}
+/* cover: the most energy (depth that follows his finger, gone with reduce motion) */
+#crd .crd-cover{min-height:100%;display:grid;place-items:center;padding:24px;background:radial-gradient(120% 90% at 50% 0%,#2C4E8C 0%,#18284A 60%,#0E1830 100%);color:#fff;overflow:hidden}
+#crd .crd-cover.k-article{background:radial-gradient(120% 90% at 50% 0%,#1F6E5A 0%,#123F35 65%,#0A261F 100%)}
+#crd .crd-cover.k-poem,#crd .crd-cover.k-play{background:radial-gradient(120% 90% at 50% 0%,#7A3E8C 0%,#41204D 65%,#24112B 100%)}
+#crd .crd-card{width:min(560px,100%);text-align:center;transform-style:preserve-3d;transition:transform .25s ease-out}
+#crd .crd-art{position:relative;width:min(420px,82vw);aspect-ratio:4/3;margin:0 auto 18px;border-radius:18px;box-shadow:0 30px 60px rgba(0,0,0,.45);transform:translateZ(40px);overflow:hidden;background:#24365F}
+#crd .crd-art img{width:100%;height:100%;object-fit:cover;display:block}
+#crd .crd-art .crd-art-ph{position:absolute;inset:0;display:grid;place-items:center;font-size:84px;background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,0) 60%)}
+#crd .crd-cover h1{margin:6px 0 6px;font-size:clamp(28px,5vw,44px);line-height:1.1;transform:translateZ(60px);text-shadow:0 4px 20px rgba(0,0,0,.4)}
+#crd .crd-cover .crd-sub{font:600 14px/1.3 system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#FFD45C;transform:translateZ(30px)}
+#crd .crd-cover .crd-meta{margin:10px 0 18px;transform:translateZ(20px)}
+#crd .crd-cover .crd-meta .tlk-pill{margin:0 4px}
+/* end: the win moment */
+#crd .crd-end{min-height:100%;display:grid;place-items:center;text-align:center;padding:24px}
+#crd .crd-end h2{font-size:clamp(28px,5vw,40px);margin:8px 0}
+#crd .crd-star{font-size:72px;display:inline-block;animation:crdPop .7s cubic-bezier(.2,1.6,.4,1)}
+@keyframes crdPop{from{transform:scale(.2) rotate(-30deg);opacity:0}to{transform:none;opacity:1}}
+#crd .crd-end .tlk-pill{margin:4px}
+@media (max-width:480px){#crd .crd-page{padding:18px 16px 30px}#crd.b-B23 .crd-page{font-size:22px}#crd.b-E45 .crd-page{font-size:19px}#crd.b-M68 .crd-page{font-size:18px}#crd.b-K1 .crd-page{font-size:26px}#crd .crd-ttl{font-size:13px}}
+@media (prefers-reduced-motion:reduce){#crd .crd-page.turn,#crd .crd-page.turnb,#crd .crd-star,#crd .crd-s.no{animation:none}#crd .crd-card{transition:none;transform:none!important}}
+`; (document.head || document.documentElement).appendChild(s); })();
+
+/* TLCORE.reader.open(textId, opts) -> Promise of { id, page, pages, done, proof }
+   opts:
+     grade      the boy's grade (K = 0); sets the band (type size, read-aloud on its own for K-1, Back for Grade 3 and up). Default: the text's grade.
+     exit       'home' (a full page: the house, top left) or 'x' (inside a lesson: the X, top left). Default 'home'.
+     page       start at this page (0 = first). Default: where he stopped last time.
+     ask        "tap the sentence that proves it": { q: 'Which sentence shows Avi was surprised?', proof: [sentence numbers] or 'words in the sentence',
+                how: 'Find the words that tell how Avi felt.', look: 'how Avi felt' }. The whole text is the answer area.
+                Opens on the page that holds the proof. Ends with proof = { right, tries } (no answer is shown before his own tries).
+   Sentence numbers are TLCORE.textSentences(text) order. Progress is kept in the boy's state (st.reads[id] = last page, or 'd' when done).
+   Uses only the button system (window.TLK). No money here. */
+(function () {
+  var W = window, C = W.TLCORE = W.TLCORE || {}, R = C.reader = {};
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var RM = false; try { RM = W.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+  var S = null;
+  function band(g) { g = Number(g); return g <= 1 ? 'K1' : g <= 3 ? 'B23' : g <= 5 ? 'E45' : 'M68'; }
+  function K() { return W.TLK || null; }
+  function btn(kind, text, attrs) { var k = K(); if (k && k[kind]) return k[kind](text, attrs); return '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
+  function pill(kind, text) { var k = K(); return k ? k.pill(kind, text) : '<span>' + esc(text) + '</span>'; }
+  function st() { try { return (typeof A !== 'undefined' && A && A.st) ? A.st : null; } catch (e) { return null; } }
+  function keep(id, v, save) {
+    var s = st(); if (!s) return;
+    var r = s.reads = s.reads || {}; if (r[id] === 'd' && v !== 'd') return; delete r[id]; r[id] = v;
+    var ks = Object.keys(r); while (ks.length > 150) { delete r[ks.shift()]; }
+    if (save) { try { if (typeof saveStudent === 'function') saveStudent(s); } catch (e) {} }   /* saved once, when he leaves or finishes (not at every page turn) */
+  }
+  function lastPage(id) { var s = st(); var v = s && s.reads && s.reads[id]; return typeof v === 'number' ? v : 0; }
+
+  /* ---------- the page ---------- */
+  function wordsHtml(sent, gl) {
+    return sent.replace(/[^\s]+/g, function (tok) {
+      var m = /^([("“‘']*)([A-Za-z0-9’'\-֐-׿]+)(.*)$/.exec(tok); if (!m) return esc(tok);
+      var w = m[2], low = w.toLowerCase().replace(/[’']s$/, ''), g = !gl ? '' : gl[low] != null ? low : (gl[w.toLowerCase()] != null ? w.toLowerCase() : '');
+      return esc(m[1]) + '<span class="crd-w' + (g ? ' crd-g' : '') + '" data-crdw="' + esc(g || w) + '"' + (g ? ' data-crdg="1" role="button" tabindex="0"' : '') + '>' + esc(w) + '</span>' + esc(m[3]);
+    });
+  }
+  function pageHtml() {
+    var t = S.t, pg = t.pages[S.p] || [], n = S.first[S.p], gl = S.ask && !S.ask.over ? null : (t.glossary || {});   /* on a question screen the sentence is the button, not the word */
+    return pg.map(function (par) {
+      var h = par.s.map(function (x) { var i = n++; return '<span class="crd-s" data-crds="' + i + '"' + (S.ask ? ' role="button" tabindex="0"' : '') + '>' + wordsHtml(x, gl) + '</span>'; }).join(' ');
+      return '<p>' + (par.who ? '<span class="crd-who">' + esc(par.who) + '</span>' : '') + h + '</p>';
+    }).join('');
+  }
+  function top() {
+    var k = K(), young = S.g <= 3, ex = S.o.exit === 'x' ? (k ? k.x('data-crd="exit"', 'tl') : '') : (k ? k.home('data-crd="exit"', 'tl', young) : '');
+    var tools = (k ? k.tool('🔊', (k.WORDS && k.WORDS.readToMe) || 'Read it to me', 'data-crd="read"' + (S.reading ? ' class="on"' : '')) : '');
+    var prog = S.view === 'page' ? pill('prog', 'Page ' + (S.p + 1) + ' of ' + S.t.pages.length) : '';
+    return '<div class="crd-top">' + ex + '<div class="crd-ttl">' + esc(S.t.title) + (S.t.chapter ? ' · Chapter ' + S.t.chapter : '') + '</div><div class="crd-tools">' + prog + (S.view === 'page' ? tools : '') + '</div></div>';
+  }
+  function foot() {
+    var last = S.p >= S.t.pages.length - 1, back = S.p > 0 && S.g >= 3 ? btn('quiet', '‹ Back', 'data-crd="back"') : '';
+    if (S.ask && !S.ask.over) return '';   /* a question screen: no paging and no Back; the question opens on the page that holds the proof */
+    return '<div class="crd-foot">' + back + '<span class="crd-sp"></span>' + btn('main', S.ask && S.ask.over ? 'Next' : (last ? 'Next' : 'Next'), 'data-crd="' + (S.ask && S.ask.over ? 'finish' : 'next') + '"') + '</div>';
+  }
+  function askHtml() {
+    var a = S.ask; if (!a) return '';
+    return '<div class="crd-ask" role="region" aria-label="Question">' + (a.over ? '' : '<div style="margin-bottom:6px">' + pill('now', 'Tap the sentence that proves it') + '</div>') + '<div class="crd-q">' + esc(a.q) + '</div>' + (a.how ? '<div class="crd-how">' + esc(a.how) + '</div>' : '') +
+      (a.fb ? '<div class="crd-fb ' + (a.ok ? 'ok' : 'miss') + '" role="status">' + esc(a.fb) + '</div>' : '') + '</div>';
+  }
+  function coverHtml() {
+    var t = S.t, emo = { story: '📖', chapter: '📖', article: '🔎', poem: '🎵', play: '🎭', letter: '✉️', speech: '🎤', fable: '🦊' }[t.kind] || '📖';
+    var art = t.pic ? '<img alt="" src="/pics/' + esc(t.pic) + '" onerror="this.remove()">' : '';
+    var sub = t.kind === 'chapter' ? esc(t.book) + ' · Chapter ' + t.chapter : t.topic ? esc(t.topic) : esc(t.kind);
+    return '<div class="crd-cover k-' + esc(t.kind) + '"><div class="crd-card" data-crd="tilt"><div class="crd-art"><div class="crd-art-ph" aria-hidden="true">' + emo + '</div>' + art + '</div>' +
+      '<div class="crd-sub">' + sub + '</div><h1>' + esc(t.title) + '</h1><div class="crd-meta">' + pill('prog', t.pages.length + (t.pages.length === 1 ? ' page' : ' pages')) + (S.p > 0 ? pill('now', 'Keep going: page ' + (S.p + 1)) : '') + '</div>' +
+      btn('main', 'Start', 'data-crd="start"') + '</div></div>';
+  }
+  function endHtml() {
+    var t = S.t;
+    return '<div class="crd-end"><div><div class="crd-star" aria-hidden="true">⭐</div><h2>' + (t.kind === 'chapter' ? 'Chapter ' + t.chapter + ' done!' : 'You read it all!') + '</h2>' +
+      '<div>' + pill('prog', t.words + ' words read') + (S.tapped ? pill('prog', S.tapped + (S.tapped === 1 ? ' new word' : ' new words')) : '') + '</div><p style="font-size:18px;margin:14px 0 18px">' + esc(t.title) + '</p>' + btn('main', 'Next', 'data-crd="finish"') + '</div></div>';
+  }
+  function draw(dir) {
+    stopRead();
+    var el = S.el;
+    el.className = 'b-' + S.band + ' k-' + S.t.kind + (S.ask && !S.ask.over && S.view === 'page' ? ' pick' : '');
+    var body = S.view === 'cover' ? coverHtml() : S.view === 'end' ? endHtml() : '<div class="crd-page' + (dir && !RM ? (dir > 0 ? ' turn' : ' turnb') : '') + '" lang="en">' + pageHtml() + '</div>';
+    el.innerHTML = top() + '<div class="crd-main" data-crd-scroll="1">' + body + '</div>' + (S.view === 'page' ? askHtml() + foot() : '');
+    var m = el.querySelector('.crd-main'); if (m) m.scrollTop = 0;
+    if (S.view === 'page') { if (!S.ask) keep(S.t.id, S.p); if (S.ask && S.ask.marks) S.ask.marks.forEach(function (x) { var s = el.querySelector('[data-crds="' + x[0] + '"]'); if (s) s.classList.add(x[1]); });
+      if (S.ask && S.ask.shake != null) { var sh = el.querySelector('[data-crds="' + S.ask.shake + '"]'); if (sh) { if (!RM) sh.classList.add('no'); if (!S.ask.over) try { sh.focus({ preventScroll: true }); } catch (e) {} } S.ask.shake = null; } if (S.band === 'K1' && !S.ask) { var me = S, pg0 = S.p; setTimeout(function () { if (S === me && S.view === 'page' && S.p === pg0) readPage(); }, 400); } }
+    var f = el.querySelector('.tlk-main'); if (f) try { f.focus({ preventScroll: true }); } catch (e) {}
+  }
+
+  /* ---------- read it to me: the sentence lights up, and each word as it is said ---------- */
+  function stopRead() { if (!S) return; S.reading = false; S.rq = null; clearInterval(S.tick); try { speechSynthesis.cancel(); } catch (e) {} if (S.el) { [].forEach.call(S.el.querySelectorAll('.crd-s.on,.crd-w.on'), function (x) { x.classList.remove('on'); }); var b = S.el.querySelector('[data-crd=read]'); if (b) b.classList.remove('on'); } }
+  function readPage() {
+    if (!S || S.view !== 'page') return; stopRead();
+    var list = [].slice.call(S.el.querySelectorAll('.crd-s')); if (!list.length) return;
+    S.reading = true; var b = S.el.querySelector('[data-crd=read]'); if (b) b.classList.add('on');
+    var k = 0, run = S.rq = {};
+    function next() {
+      if (!S || S.rq !== run) return;
+      [].forEach.call(S.el.querySelectorAll('.crd-s.on,.crd-w.on'), function (x) { x.classList.remove('on'); });
+      if (k >= list.length) { stopRead(); return; }
+      var s = list[k++], ws = [].slice.call(s.querySelectorAll('.crd-w')), text = s.textContent, gotB = false, wi = 0;
+      s.classList.add('on'); try { s.scrollIntoView({ block: 'nearest', behavior: RM ? 'auto' : 'smooth' }); } catch (e) {}
+      var lit = function (i) { ws.forEach(function (w, j) { w.classList.toggle('on', j === i); }); };
+      var starts = [], pos = 0; ws.forEach(function (w) { var at = text.indexOf(w.textContent, pos); starts.push(at); pos = at + w.textContent.length; });
+      clearInterval(S.tick);
+      var done = false, fin = function () { if (done) return; done = true; clearInterval(S.tick); setTimeout(next, 120); };
+      try {
+        var u = new SpeechSynthesisUtterance(text); u.rate = S.band === 'K1' ? .82 : S.band === 'B23' ? .88 : .95;
+        u.onboundary = function (e) { if (e.name && e.name !== 'word') return; gotB = true; var i = 0; while (i + 1 < starts.length && starts[i + 1] <= e.charIndex) i++; lit(i); };
+        u.onend = fin; u.onerror = fin;
+        speechSynthesis.speak(u);
+        S.tick = setInterval(function () { if (gotB || !S || S.rq !== run) return; if (wi < ws.length) lit(wi++); }, S.band === 'K1' ? 520 : 400);
+        setTimeout(function () { if (!done && S && S.rq === run && !speechSynthesis.speaking) fin(); }, 1500 + text.length * 90);
+      } catch (e) { var i = 0; S.tick = setInterval(function () { if (!S || S.rq !== run) return; if (i < ws.length) lit(i++); else fin(); }, 360); }
+    }
+    next();
+  }
+  function sayWord(w) { try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(w); u.rate = .85; speechSynthesis.speak(u); } catch (e) {} }
+
+  /* ---------- tap a word: its meaning (a robust-vocabulary word), or just hear it (Grade 3 and down) ---------- */
+  function bubble(el, w) {
+    closeBubble(); var mean = (S.t.glossary || {})[w]; if (!mean) return;
+    if (!S.seen[w]) { S.seen[w] = 1; S.tapped++; }
+    var r = el.getBoundingClientRect(), b = document.createElement('div'); b.className = 'crd-bub'; b.setAttribute('role', 'status');
+    b.innerHTML = '<b>' + esc(w) + '</b>' + esc(mean); S.el.appendChild(b);
+    var x = Math.max(8, Math.min(innerWidth - b.offsetWidth - 8, r.left + r.width / 2 - b.offsetWidth / 2)), y = r.bottom + 8; if (y + b.offsetHeight > innerHeight - 8) y = r.top - b.offsetHeight - 8;
+    b.style.left = x + 'px'; b.style.top = y + 'px'; S.bub = b; if (!S.reading) sayWord(w + '. ' + mean);
+  }
+  function closeBubble() { if (S && S.bub) { S.bub.remove(); S.bub = null; } }
+
+  /* ---------- tap the sentence that proves it ---------- */
+  function isProof(i) { var a = S.ask; return a.proofIdx.indexOf(i) >= 0; }
+  function pickSentence(i) {
+    var a = S.ask; if (!a || a.over) return; a.tries++; a.marks = a.marks || [];
+    var el = S.el.querySelector('[data-crds="' + i + '"]');
+    if (isProof(i)) { a.ok = true; a.over = true; a.fb = a.tries === 1 ? 'Yes! That sentence proves it.' : 'Yes! You found the proof.'; a.marks.push([i, 'yes']); try { if (typeof SFX !== 'undefined' && SFX.right) SFX.right(0); } catch (e) {} draw(); return; }
+    a.ok = false;
+    if (a.tries >= 3) { a.over = true; a.fb = 'Here is the proof. Read it again and see how it shows the answer.'; a.proofIdx.forEach(function (j) { a.marks.push([j, 'yes']); }); goToSentence(a.proofIdx[0]); sayWord(a.proofIdx.map(function (j) { return S.sents[j].s; }).join(' ')); return; }
+    a.fb = a.tries === 1 ? 'That sentence does not say it. Look for the words that tell ' + (a.look || 'the answer') + '.' : 'Not that one. The proof is in a sentence with a blue glow. Read those slowly.';
+    if (a.tries === 2) {   /* a soft glow on the part of the page that holds the proof: never fewer than 3 sentences, so the glow is a hint and not the answer */
+      var p0 = a.proofIdx[0], tgt = S.sents[p0], near = []; S.sents.forEach(function (x, j) { if (x.page === tgt.page && x.par === tgt.par) near.push(j); });
+      var lo = near[0], hi = near[near.length - 1]; while (hi - lo + 1 < 3) { var moved = false; if (lo > 0 && S.sents[lo - 1].page === tgt.page) { lo--; moved = true; } if (hi - lo + 1 < 3 && hi + 1 < S.sents.length && S.sents[hi + 1].page === tgt.page) { hi++; moved = true; } if (!moved) break; }
+      for (var j2 = lo; j2 <= hi; j2++) if (a.marks.every(function (m) { return m[0] !== j2; })) a.marks.push([j2, 'near']); }
+    a.shake = i;
+    try { if (typeof SFX !== 'undefined' && SFX.wrong) SFX.wrong(); } catch (e) {}
+    draw();
+  }
+  function goToSentence(i) { var x = S.sents[i]; if (x && x.page !== S.p) { var d = x.page > S.p ? 1 : -1; S.p = x.page; draw(d); } else draw(); }
+
+  function finish(done) {
+    if (!S) return; var res = { id: S.t.id, page: S.p, pages: S.t.pages.length, done: !!done, words: S.tapped, proof: S.ask ? { right: !!S.ask.ok && S.ask.over, tries: S.ask.tries } : null };
+    if (!S.ask) keep(S.t.id, done ? 'd' : S.p, true);   /* a question never changes where he stopped reading, or marks the chapter done */
+    stopRead(); closeBubble(); var r = S.resolve, el = S.el; S = null; document.removeEventListener('keydown', onKey, true);
+    if (el) el.remove(); try { document.body.classList.remove('crd-open'); } catch (e) {}
+    r(res);
+  }
+  function onKey(e) {
+    if (!S) return;
+    if (e.key === 'Escape') { e.preventDefault(); if (S.bub) closeBubble(); else if (!(S.ask && !S.ask.over)) finish(false); return; }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('[data-crds]') && S.ask && !S.ask.over) { e.preventDefault(); pickSentence(Number(e.target.getAttribute('data-crds'))); return; }
+    if ((e.key === 'Enter' || e.key === ' ') && e.target && e.target.matches && e.target.matches('[data-crdg]')) { e.preventDefault(); bubble(e.target, e.target.getAttribute('data-crdw')); return; }
+    if (e.key === 'ArrowRight' && S.view === 'page' && S.p < S.t.pages.length - 1 && !(S.ask && !S.ask.over)) { e.preventDefault(); S.p++; draw(1); }
+    else if (e.key === 'ArrowLeft' && S.view === 'page' && S.p > 0 && S.g >= 3 && !(S.ask && !S.ask.over)) { e.preventDefault(); S.p--; draw(-1); }
+  }
+  function onClick(e) {
+    if (!S) return;
+    var t = e.target.closest('[data-crd],[data-crds],[data-crdw]');
+    if (S.bub && !(t && t.hasAttribute('data-crdg'))) closeBubble();
+    if (!t) return;
+    var act = t.getAttribute('data-crd');
+    if (act === 'exit') return finish(false);
+    if (act === 'start') { S.view = 'page'; draw(1); return; }
+    if (act === 'read') { if (S.reading) stopRead(); else readPage(); return; }
+    if (act === 'next') { if (S.p < S.t.pages.length - 1) { S.p++; draw(1); } else { S.view = 'end'; if (!S.ask) keep(S.t.id, 'd'); draw(); } return; }
+    if (act === 'back') { if (S.p > 0) { S.p--; draw(-1); } return; }
+    if (act === 'finish') return finish(true);
+    if (S.ask && !S.ask.over && t.hasAttribute('data-crds') && !t.hasAttribute('data-crdw')) return pickSentence(Number(t.getAttribute('data-crds')));
+    if (t.hasAttribute('data-crdw')) {
+      if (t.hasAttribute('data-crdg')) { e.stopPropagation(); return bubble(t, t.getAttribute('data-crdw')); }
+      if (S.ask && !S.ask.over) { var s = t.closest('[data-crds]'); if (s) return pickSentence(Number(s.getAttribute('data-crds'))); }
+      if (S.g <= 3 && !S.reading) sayWord(t.textContent);
+    }
+  }
+  function onMove(e) {
+    if (!S || RM || S.view !== 'cover') return; var c = S.el.querySelector('.crd-card'); if (!c) return;
+    var p = e.touches ? e.touches[0] : e, x = (p.clientX / innerWidth - .5), y = (p.clientY / innerHeight - .5);
+    c.style.transform = 'rotateY(' + (x * 14).toFixed(2) + 'deg) rotateX(' + (-y * 10).toFixed(2) + 'deg)';
+  }
+
+  R.open = function (id, opts) {
+    opts = opts || {};
+    if (S) finish(false);
+    return C.text(id).then(function (t) {
+      return new Promise(function (resolve) {
+        var sents = C.textSentences(t), first = [], n = 0; t.pages.forEach(function (pg) { first.push(n); pg.forEach(function (par) { n += par.s.length; }); });
+        var g = opts.grade != null && opts.grade !== '' && !isNaN(Number(opts.grade)) ? Number(opts.grade) : t.grade;
+        var ask = null;
+        if (opts.ask && opts.ask.q) {
+          var pr = opts.ask.proof, idx = [];
+          if (Array.isArray(pr)) idx = pr.map(Number).filter(function (i) { return i >= 0 && i < sents.length; });
+          else if (pr) { var low = String(pr).toLowerCase(); sents.forEach(function (x, i) { if (x.s.toLowerCase().indexOf(low) >= 0) idx.push(i); });
+            if (idx.length > 1) { console.error('Reader: the proof "' + pr + '" matches ' + idx.length + ' sentences in ' + id + '; write words from ONE sentence'); idx = []; } }
+          if (idx.length) ask = { q: opts.ask.q, how: opts.ask.how, look: opts.ask.look, proofIdx: idx, tries: 0, over: false, ok: false, fb: '', marks: [] };
+          else console.error('Reader: the proof for "' + opts.ask.q + '" is not in ' + id);
+        }
+        var start = opts.page != null ? Number(opts.page) : lastPage(id); if (!(start >= 0 && start < t.pages.length)) start = 0;
+        if (ask) start = sents[ask.proofIdx[0]].page;   /* a question opens on its page, like a passage question */
+        var el = document.createElement('div'); el.id = 'crd'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', t.title);
+        S = { t: t, o: opts, g: g, band: band(g), p: start, first: first, sents: sents, ask: ask, el: el, view: ask ? 'page' : 'cover', resolve: resolve, seen: {}, tapped: 0, reading: false };
+        document.body.appendChild(el); try { document.body.classList.add('crd-open'); } catch (e) {}
+        el.addEventListener('click', onClick); el.addEventListener('pointermove', onMove); el.addEventListener('touchmove', onMove, { passive: true });
+        el.querySelector && el.addEventListener('scroll', closeBubble, true);
+        document.addEventListener('keydown', onKey, true);
+        draw();
+      });
+    });
+  };
+  R.close = function () { if (S) finish(false); };
+  R.isOpen = function () { return !!S; };
+  R.state = function () { return S ? { id: S.t.id, view: S.view, page: S.p, band: S.band, ask: S.ask ? { tries: S.ask.tries, over: S.ask.over, ok: S.ask.ok, proof: S.ask.proofIdx } : null, reading: S.reading } : null; };
+})();
+</script>
