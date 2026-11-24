@@ -1,0 +1,302 @@
+<script>
+/* CoreDataW483.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 6 (L07), Unit 1 "Make Your Case". Cast for Grades 6-8:
+   The Beacon newsroom (docs/core-growth/W48-map.md section 7). In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L07.04':{name:'Best Evidence',
+  teach:[
+    {how:'Evidence must be RELEVANT: it proves THIS claim, not just the same topic. Ask: if this is true, does it make my claim stronger?', q:'Claim: Our school should start a recycling program. Which evidence is relevant?', o:['The city says recycling cuts a school’s trash by about a third.','Plastic was first made over a hundred years ago.','Recycling trucks are usually green.']},
+    {how:'Evidence must also be CREDIBLE: it comes from a source you can trust, like an expert, an official record or a careful study. A rumor, an ad, or "everyone knows" is NOT CREDIBLE.', q:'Same claim. Which evidence is not credible?', o:['Everyone knows recycling is the best thing ever.','The city’s waste report counts the trash schools throw out.','A science teacher measured our lunchroom trash for a week.']},
+    {how:'Strong evidence is BOTH relevant AND credible. Test every piece twice: Does it prove my claim? Can I trust where it came from?', q:'Claim: The Beacon should come out every week. Which evidence is relevant and credible?', o:['In a survey, 45 of 60 boys in our grade said they want a weekly Beacon.','Eli says weekly would be awesome.','Newspapers were invented a long time ago.']}
+  ],
+  practice:[
+    {t:'sort', q:'Claim: Our yeshiva should add a second recess. Sort each piece of evidence.', bins:[{id:'G',label:'✅ Relevant and credible'},{id:'R',label:'🎯 Not relevant'},{id:'C',label:'❓ Not credible'}],
+      items:[{label:'A study found students focus better after a short break.',bin:'G'},{label:'Recess was invented in the 1800s.',bin:'R'},{label:'My friend heard breaks make you smarter.',bin:'C'},{label:'The office counted fewer interruptions on two-recess days.',bin:'G'}],
+      h:'Two tests. Does it prove THIS claim? Can you trust where it came from?'},
+    {t:'pairs', q:'Match each source to how much you can trust it.', pairs:[['The city’s official trash report','Credible: an official record'],['An ad for a recycling company','Not credible: it wants to sell'],['A rumor in the hallway','Not credible: nobody checked it']],
+      h:'Who made it, and do they know the facts? Do they want something from you?'},
+    {t:'spotall', q:'Claim: The school library should stay open after Mincha. Tap every piece of evidence that is RELEVANT.', cells:[{label:'Twenty boys asked Mr. Gross for more library time.',ok:true},{label:'The library has 3,000 books nobody can borrow after 3.',ok:true},{label:'The library has blue carpet.',ok:false},{label:'Libraries started in ancient times.',ok:false}],
+      h:'Relevant evidence makes THIS claim stronger. Same topic is not enough.'},
+    {t:'sort', q:'Sneaky ones! Claim: The Beacon should add a sports page. Sort each piece.', bins:[{id:'G',label:'✅ Strong evidence'},{id:'M',label:'⚠️ Mistake'}],
+      items:[{label:'In our survey, 41 of 60 boys asked for sports news.',bin:'G'},{label:'Sports pages are the best, obviously.',bin:'M'},{label:'The Beacon is printed on Thursdays.',bin:'M'},{label:'The school’s league has 6 teams and no news coverage.',bin:'G'}],
+      h:'"Obviously" is not proof. A fact about the paper is not proof about sports.'},
+    {t:'order', q:'Build a sentence of strong evidence. Tap the tiles in order.', tiles:['According to','the school nurse,','most boys','sleep under 8 hours.'],
+      h:'Name the trusted source first. Then the fact.'},
+    {t:'spotall', q:'Tap every source that is usually CREDIBLE.', cells:[{label:'an official report',ok:true},{label:'an expert in the field',ok:true},{label:'a careful survey',ok:true},{label:'an ad',ok:false},{label:'"everyone says"',ok:false}],
+      h:'Credible sources know the facts and do not want to sell you something.'},
+    {t:'write', q:'Your turn to write. Claim: Our school should plant a garden. Write ONE piece of evidence that is relevant and credible, and name its source.', min:0, checks:['🎯 My evidence proves THIS claim.','✅ I named a source you can trust.','❓ I did not use a rumor, an ad, or "everyone knows".'], h:'Think: who would really know? A science teacher, a study, a city report? Start with "According to…".'}
+  ],
+  check:[
+    {q:'Claim: Boys should drink more water at school. Evidence: “An ad from a bottled-water company says boys need more water.” Is it relevant and credible, not relevant, or not credible?', o:['not credible','not relevant','relevant and credible'], h:'It is about water. But who made it, and do they want to sell you something?'},
+    {q:'Claim: Our school should add a second recess. Evidence: “A history book says recess was longer fifty years ago.” Is it relevant and credible, not relevant, or not credible?', o:['not relevant','not credible','relevant and credible'], h:'It is about recess and the source is real. But does it prove a second recess would help us now?'},
+    {t:'order', q:'Build a sentence of strong evidence. Tap the tiles in order.', tiles:['According to','a city study,','school gardens','raise science grades.'], h:'Name the trusted source first. Then the fact.'}
+  ],
+  re:[
+    {how:'A new way: a lawyer brings evidence to court. The judge asks two things: is it about THIS case, and can we trust it?', q:'The judge’s two questions are about…', o:['relevant and credible','long and short','old and new']},
+    {how:'A simpler step: first test RELEVANT only. Cover the source and ask: if this is true, is my claim stronger?', q:'Claim: we need a bigger lunchroom. Which is relevant?', o:['Forty boys eat standing up every day.','The lunchroom is painted yellow.','Lunch is at noon.']},
+    {how:'The skill underneath: State a claim with reasons (Level 7). Evidence backs up a reason for a claim.', q:'Evidence backs up a…', o:['reason for the claim','title','greeting']}
+  ]},
+
+  'WRIT.PARA.L07.01':{name:'Glue Words',
+  teach:[
+    {how:'Glue words show HOW your ideas connect. Some ADD A REASON: "In addition," "Furthermore," "Another reason is".', q:'“The Beacon should be weekly. ___, more boys would read the news on time.” Which glue adds a reason?', o:['In addition,','As a result,','This shows that']},
+    {how:'Some SHOW A RESULT: "As a result," "Consequently," "Because of this,". Others POINT TO PROOF: "For example," or "For instance," bring in the evidence, and "This shows that" or "This demonstrates that" explain the evidence right after it.', q:'“The library closes at 3. Consequently, …” What does "Consequently" show?', o:['a result','a new reason','a piece of proof']},
+    {how:'The mistake: using glue that does not match the connection, like "However" when you are adding, or "As a result" with no cause before it. Read the two sentences, decide the connection, THEN pick the glue.', q:'“We collected 200 cans. ___, the food pantry could feed ten families.” Which glue fits?', o:['As a result,','However,','For example,']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each glue word by its job.', bins:[{id:'A',label:'➕ Adds a reason'},{id:'R',label:'➡️ Shows a result'},{id:'P',label:'🔎 Points to proof'}],
+      items:[{label:'Furthermore,',bin:'A'},{label:'Consequently,',bin:'R'},{label:'This demonstrates that',bin:'P'},{label:'Another reason is',bin:'A'},{label:'Because of this,',bin:'R'},{label:'For instance,',bin:'P'}],
+      h:'Does it add one more reason, show what happened because of something, or point to the evidence?'},
+    {t:'pairs', q:'Match each pair of ideas to the glue that fits.', pairs:[['Reason 1 … then Reason 2','In addition,'],['A cause … then what it caused','As a result,'],['A claim … then evidence for it','For example,']],
+      h:'Decide the connection first. Then pick the glue.'},
+    {t:'spotall', q:'Akiva’s editorial: “Weekly issues are timely. Furthermore, they keep news fresh. Consequently, more boys read them. However, weekly news stays fresh.” Tap every glue word that FITS.', cells:[{label:'Furthermore,',ok:true},{label:'Consequently,',ok:true},{label:'However,',ok:false}],
+      h:'Read the sentence before and after each glue word. Does the connection match?'},
+    {t:'sort', q:'Glue mistakes! Sort each sentence pair.', bins:[{id:'G',label:'✅ Glue fits'},{id:'M',label:'⚠️ Mistake: wrong glue'}],
+      items:[{label:'The rain stopped. As a result, the game went on.',bin:'G'},{label:'The rain stopped. However, the game went on.',bin:'M'},{label:'Eli practiced daily. Because of this, he won.',bin:'G'},{label:'Eli practiced daily. For example, he won.',bin:'M'}],
+      h:'Is the second sentence a result, a contrast, or an example? Does the glue say the same thing?'},
+    {t:'order', q:'Build a sentence that shows a result. Tap the tiles in order.', tiles:['We raised $500.','As a result,','two families','got new coats.'],
+      h:'First the cause. Then the result glue. Then what happened.'},
+    {t:'spotall', q:'Tap every glue word that ADDS a reason.', cells:[{label:'In addition,',ok:true},{label:'Furthermore,',ok:true},{label:'Another reason is',ok:true},{label:'Consequently,',ok:false},{label:'This shows that',ok:false}],
+      h:'Adding glue says: here is one more reason.'},
+    {t:'write', q:'Your turn to write. Claim: Our class should visit an old-age home before Pesach. Write two reasons joined with glue, and one sentence that shows a result.', min:0, checks:['➕ I joined two reasons with adding glue.','➡️ I used result glue after a cause.','🔎 Every glue word fits the connection.'], h:'Try: "First, … In addition, … As a result, …".'}
+  ],
+  check:[
+    {q:'“The school bought new chairs. ___, the boys sit up straighter.” What should the glue show?', o:['a result','a new reason','a piece of proof'], h:'Is the second sentence what happened BECAUSE of the first?'},
+    {q:'“Chess teaches patience. ___, it teaches planning.” What should the glue do?', o:['add a reason','show a result','point to proof'], h:'Is the second sentence one more reason, or what happened because of the first?'},
+    {t:'order', q:'Build two sentences: a claim, then glue that points to proof. Tap the tiles in order.', tiles:['The garden works.','For instance,','it grew','40 tomatoes.'], h:'Claim first. Then the proof glue. Then the evidence.'}
+  ],
+  re:[
+    {how:'A new way: glue words are like the signs on a highway: "next exit", "road ends", "detour". They tell the reader where the road goes.', q:'Which glue is like "here comes what happened because of it"?', o:['As a result,','In addition,','For example,']},
+    {how:'A simpler step: say the connection in plain words first: "and also", "so", or "for proof". Then pick the glue.', q:'"So" is a plain word for which kind of glue?', o:['shows a result','adds a reason','points to proof']},
+    {how:'The skill underneath: Point, Proof, Explain (Level 6). "This shows that" points to proof.', q:'"This shows that" starts the…', o:['explain','hook','greeting']}
+  ]},
+
+  'WRIT.PARA.L07.02':{name:'Formal Voice',
+  teach:[
+    {how:'An argument for adults uses a FORMAL voice: serious, clear, respectful. No slang, no "you guys", no vague words like "stuff" or "things", and no shouting with "!!!" or "the worst ever".', q:'Which sentence uses a formal voice?', o:['The cafeteria line takes too long for many students.','The cafeteria line is SO annoying, you guys!!!','Lunch lines are the worst thing ever.']},
+    {how:'INFORMAL voice is fine with friends, but in an argument it makes you sound less serious. Fix it: replace slang with exact words, replace "the worst ever" with a fact.', q:'Fix it: “The bus is super late like every day.” Which is the formal fix?', o:['The bus arrives at least ten minutes late most days.','The bus is really, really late.','The bus is late, ugh.']},
+    {how:'A formal voice still has feeling. "This is a serious problem" is formal and strong. Formal does not mean boring; it means respectful and exact.', q:'Which sentence is formal AND strong?', o:['This is a serious problem for our whole school.','This is a big deal, guys.','Whatever, it is fine.']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each sentence: formal or informal?', bins:[{id:'F',label:'🎩 Formal'},{id:'I',label:'😎 Informal'}],
+      items:[{label:'Many students agree with this plan.',bin:'F'},{label:'Everybody totally loves this.',bin:'I'},{label:'The evidence shows a clear problem.',bin:'F'},{label:'This is so cool, you guys.',bin:'I'}],
+      h:'Formal: serious, exact, respectful. Informal: slang, shouting, talking to "you guys".'},
+    {t:'pairs', q:'Match each informal phrase to its formal fix.', pairs:[['a ton of boys','many students'],['super late','ten minutes late'],['waited forever','waited 20 minutes']],
+      h:'Replace slang with exact, respectful words.'},
+    {t:'spotall', q:'Gavriel’s letter to Rabbi Rosen: tap every phrase that is NOT formal.', cells:[{label:'you guys',ok:true},{label:'so awesome',ok:true},{label:'I respectfully ask',ok:false},{label:'for these reasons',ok:false},{label:'!!!',ok:true}],
+      h:'A letter to the menahel needs a formal voice. Tap the slang and the shouting.'},
+    {t:'sort', q:'Formal mistakes! Sort each "fix".', bins:[{id:'G',label:'✅ Good formal fix'},{id:'M',label:'⚠️ Mistake'}],
+      items:[{label:'The gym is too small for two classes.',bin:'G'},{label:'The gym is, like, way too small.',bin:'M'},{label:'Students waited twenty minutes in line.',bin:'G'},{label:'Students waited FOREVER!!!',bin:'M'}],
+      h:'A good fix uses exact words and facts, not slang or shouting.'},
+    {t:'order', q:'Build a formal sentence. Tap the tiles in order.', tiles:['For these reasons,','I respectfully ask','for a later','start time.'],
+      h:'Start with the linking phrase. Then the polite request. Then what you ask for.'},
+    {t:'spotall', q:'Tap every word or phrase that fits a formal argument.', cells:[{label:'therefore',ok:true},{label:'many students',ok:true},{label:'evidence shows',ok:true},{label:'totally',ok:false},{label:'stuff',ok:false}],
+      h:'Formal words are exact and respectful.'},
+    {t:'write', q:'Your turn to write. Rewrite this in a formal voice: “Recess is way too short and it’s honestly the worst, you guys!!!”', min:0, checks:['🎩 No slang and no "you guys".','🔢 I used an exact fact instead of "the worst".','❗ No shouting: one period at the end.'], h:'Say how long recess is. Then say why that is a problem, calmly.'}
+  ],
+  check:[
+    {q:'Yoni writes to the shul’s rav: “The new library has a lot of good stuff in it.” Which word makes it informal?', o:['stuff','library','new'], h:'Look for a vague word that a formal writer would replace with exact words.'},
+    {q:'Benny writes in an editorial: “The evidence shows that students need more time to eat.” Is it formal or informal?', o:['formal','informal'], h:'Is it serious, exact and respectful?'},
+    {t:'order', q:'Build a formal sentence. Tap the tiles in order.', tiles:['Therefore,','our class','requests','a longer recess.'], h:'Start with the linking word. Then who asks. Then what.'}
+  ],
+  re:[
+    {how:'A new way: think how you speak to the menahel in his office, and how you speak at recess. An argument is the office voice.', q:'An argument for adults uses the…', o:['office voice','recess voice','whisper voice']},
+    {how:'A simpler step: find just ONE slang word and replace it with an exact word.', q:'Replace the slang: “a ton of boys”', o:['many boys','tons of dudes','so many boys!!!']},
+    {how:'The skill underneath: Who Is Reading? (Level 6). Formal words fit a teacher, a rav or a company.', q:'A letter to a company needs words that are…', o:['formal','friendly','simple, for a little child']}
+  ]},
+
+  'WRIT.PARA.L07.03':{name:'Close the Case',
+  teach:[
+    {how:'The conclusion of an argument must FOLLOW FROM THE ARGUMENT: say the claim again with force, remind the reader of the strongest reason, and tell him what to do.', q:'Argument: the library should stay open after Mincha. Which conclusion follows from the argument?', o:['For these reasons, keeping the library open would give every boy more time to learn.','Libraries are very old.','I am not sure, but maybe it is fine either way.']},
+    {how:'Mistake 1: a NEW ARGUMENT at the end, like a new reason you never proved. The conclusion closes the case; it does not open a new one. Move a new reason into a body paragraph, or cut it.', q:'Which closing sentence is a new argument?', o:['Also, the library needs new carpet.','Therefore, the library should stay open after Mincha.','More time with books means more learning for all of us.']},
+    {how:'Mistake 2: WEAKENING THE CLAIM: "but maybe I am wrong" or "it does not really matter". A lawyer never ends by doubting his own case. Mistake 3: JUST STOPPING, with no call to action.', q:'Which closing sentence weakens the claim?', o:['But maybe it does not really matter.','For these reasons, the library should stay open.','Every boy deserves the chance to read more.']}
+  ],
+  practice:[
+    {t:'sort', q:'Argument: The Beacon should come out every week. Sort each closing sentence.', bins:[{id:'F',label:'⚖️ Follows from the argument'},{id:'N',label:'🆕 New argument'},{id:'W',label:'📉 Weakens the claim'}],
+      items:[{label:'For these reasons, a weekly Beacon would keep every boy informed.',bin:'F'},{label:'Also, the paper should be printed in color.',bin:'N'},{label:'But monthly is probably fine too.',bin:'W'},{label:'Weekly news means no boy misses what matters.',bin:'F'}],
+      h:'Follows: the claim and the strongest reason again. New argument: something not proved yet. Weakens: doubts the claim.'},
+    {t:'pairs', q:'Match each closing job to its sentence.', pairs:[['Say the claim with force','Therefore, our school must start recycling.'],['Recall the strongest reason','We could cut our trash by a third.'],['Tell the reader what to do','Bring your empty bottles to the blue bins.']],
+      h:'A strong close has three jobs: claim, strongest reason, action.'},
+    {t:'spotall', q:'Tap every phrase that can start a strong closing.', cells:[{label:'For these reasons,',ok:true},{label:'Therefore,',ok:true},{label:'In conclusion,',ok:true},{label:'But maybe',ok:false},{label:'Also,',ok:false}],
+      h:'Strong closing words sum up. "But maybe" weakens; "Also" starts something new.'},
+    {t:'sort', q:'Argument: The school should add a second recess. Sort each closing sentence.', bins:[{id:'G',label:'✅ Strong close'},{id:'M',label:'⚠️ Mistake'}],
+      items:[{label:'Therefore, a second recess would help every boy focus.',bin:'G'},{label:'Recess could also have better balls.',bin:'M'},{label:'But I guess one recess is okay.',bin:'M'},{label:'Ask Rabbi Rosen to try it for one month.',bin:'G'}],
+      h:'A strong close follows from the argument and never doubts it.'},
+    {t:'order', q:'Put the conclusion in order: claim, strongest reason, action. Tap the sentences in order.', tiles:['Therefore, our class should visit the old-age home before Pesach.','The residents told us our last visit was their happiest day.','Sign up with Mr. Gross by Friday.'], extra:['Also, the home has a garden.'],
+      h:'Claim first. Then the strongest reason. Then what to do. Leave out the new argument.'},
+    {t:'pairs', q:'Match each closing mistake to its fix.', pairs:[['It adds a new argument.','Move it into a body paragraph, or cut it.'],['It weakens the claim.','Say the claim with confidence.'],['It just stops.','Add a call to action.']],
+      h:'What would make the case close strongly?'},
+    {t:'write', q:'Your turn to write. Argument: Our yeshiva should start a chesed club. Write a conclusion of two or three sentences: claim, strongest reason, action.', min:0, checks:['⚖️ I said the claim again with force.','🆕 I added no new argument.','📉 I did not doubt my own claim.'], h:'Start with "For these reasons,". End by telling the reader exactly what to do.'}
+  ],
+  check:[
+    {q:'Argument: Our grade should learn typing. Closing: “But maybe typing is not that important after all.” Does it follow from the argument, add a new argument, or weaken the claim?', o:['weakens the claim','new argument','follows from the argument'], h:'Does it doubt the claim?'},
+    {q:'Argument: The shul should add a boys’ shiur on Shabbos afternoon. Closing: “For these reasons, a Shabbos shiur would give boys a place to learn during long Shabbos afternoons.” Does it follow from the argument, add a new argument, or weaken the claim?', o:['follows from the argument','new argument','weakens the claim'], h:'Does it say the claim again with its reason?'},
+    {t:'order', q:'Put the conclusion in order: claim, strongest reason, action. Tap the sentences in order.', tiles:['Therefore, our school should collect coats for families in need.','Last winter, forty children in our city had no warm coat.','Bring a coat to the front office this week.'], extra:['Also, the school needs new lockers.'], h:'Claim first. Then the strongest reason. Then the action.'}
+  ],
+  re:[
+    {how:'A new way: a lawyer’s closing speech. He repeats what he proved, reminds the jury of the best evidence, and asks for a verdict. He never adds a surprise or doubts himself.', q:'A lawyer’s closing never…', o:['doubts his own case','repeats what he proved','asks for a verdict']},
+    {how:'A simpler step: start with "For these reasons," and finish the sentence with your claim.', q:'Claim: we need a bigger lunchroom. Finish: For these reasons,…', o:['our school should build a bigger lunchroom.','lunch is at noon.','maybe it is fine.']},
+    {how:'The skill underneath: Strong Finish (Level 6). A conclusion restates, sums up and ends with a final thought.', q:'A conclusion should NOT add a…', o:['new point','final thought','restated main idea']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L07.04':{hook:'In court, "trust me" loses. What wins?', big:'Strong evidence is relevant (it proves this claim) and credible (from a source you can trust).',
+    intro:['Test 1: does it prove THIS claim?','Test 2: can you trust the source?','Credible: experts, records, careful studies.','Not credible: rumors, ads, "everyone knows".'],
+    ex:[{q:'Claim: our school should recycle.',steps:['City report: relevant and credible.','"Plastic is old": not relevant.','"Everyone knows": not credible.'],a:'The city says recycling cuts a school’s trash by about a third.'},
+        {q:'Claim: The Beacon should be weekly.',steps:['A survey of our grade: relevant and credible.'],a:'In a survey, 45 of 60 boys said they want a weekly Beacon.'}],
+    oops:{q:'Claim: our school should recycle.',wrong:'Everyone knows recycling is the best thing ever.',right:'The city’s waste report counts what schools throw out.',why:'"Everyone knows" has no source. Evidence needs a source you can check.'},
+    idea:['A judge asks two questions: is it about this case, and can we trust it?'],
+    try:{q:'Which source is credible?',o:['an official report','an ad','a rumor'],a:'an official report',steps:['Who knows the facts and wants nothing from you?']}},
+  'WRIT.PARA.L07.01':{hook:'Why do some arguments flow, and others feel like a pile of sentences?', big:'Glue words show how ideas connect: they add a reason, show a result, or point to proof.',
+    intro:['Decide the connection first.','Adding: In addition, Furthermore.','Result: As a result, Consequently.','Proof: For example, For instance bring it; This shows, This demonstrates explain it.'],
+    ex:[{q:'Weekly is timely. ___, it is shorter.',steps:['One more reason.','Adding glue.'],a:'In addition,'},
+        {q:'We collected 200 cans. ___, ten families ate.',steps:['What happened because of it.','Result glue.'],a:'As a result,'}],
+    oops:{q:'The rain stopped. ___, the game went on.',wrong:'However,',right:'As a result,',why:'"However" shows a contrast. The game going on is a result.'},
+    idea:['Glue words are highway signs that tell the reader where the road goes.'],
+    try:{q:'Which glue adds a reason?',o:['In addition,','As a result,','This shows that'],a:'In addition,',steps:['Which one says "one more"?']}},
+  'WRIT.PARA.L07.02':{hook:'Would the menahel take your argument seriously if it said "you guys"?', big:'An argument uses a formal voice: serious, exact and respectful, with no slang or shouting.',
+    intro:['No slang or "you guys".','No vague words: stuff, things.','No shouting: no "!!!", no "the worst ever".','Use exact words and facts.'],
+    ex:[{q:'The bus is super late like every day.',steps:['Slang: super, like.','Replace with a fact.'],a:'The bus arrives at least ten minutes late most days.'},
+        {q:'Lunch lines are the worst thing ever.',steps:['Exaggeration.','Replace it with an exact fact.'],a:'The lunch line takes twenty minutes, which cuts into recess.'}],
+    oops:{q:'A letter to the menahel.',wrong:'The gym is, like, way too small, you guys!!!',right:'The gym is too small for two classes at once.',why:'Slang and shouting make an argument sound less serious.'},
+    idea:['An argument uses the office voice, not the recess voice.'],
+    try:{q:'Formal fix for "a ton of boys"?',o:['many students','tons of dudes','so many boys!!!'],a:'many students',steps:['Exact and respectful.']}},
+  'WRIT.PARA.L07.03':{hook:'How does a good lawyer end his case?', big:'An argument’s conclusion follows from the argument: claim with force, strongest reason, and a call to action.',
+    intro:['Say the claim again with force.','Recall the strongest reason.','Tell the reader what to do.','No new argument, and never doubt your claim.'],
+    ex:[{q:'Argument: keep the library open after Mincha.',steps:['Claim with force.','Strongest reason: more learning.'],a:'For these reasons, keeping the library open would give every boy more time to learn.'},
+        {q:'Argument: start recycling.',steps:['Claim, reason, action.'],a:'Bring your empty bottles to the blue bins.'}],
+    oops:{q:'The end of the library argument.',wrong:'But maybe it does not really matter.',right:'For these reasons, the library should stay open.',why:'Doubting your own claim at the end undoes the whole argument.'},
+    idea:['A lawyer’s closing repeats what he proved and asks for a verdict.'],
+    try:{q:'Which starts a strong close?',o:['For these reasons,','But maybe','Also,'],a:'For these reasons,',steps:['Which one sums up?']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L07.04':{s:'Test 1: if this is true, is THIS claim stronger? (relevant)\nTest 2: can you trust where it came from? (credible)\nTrusted: experts, official records, careful studies.\nNot trusted: rumors, ads, "everyone knows".'},
+  'WRIT.PARA.L07.01':{s:'Read the two ideas.\nDecide the connection: one more reason, a result, or proof.\nThen pick the glue: In addition, Furthermore / As a result, Consequently / For example, For instance bring proof; This shows, This demonstrates explain it.\nThe glue must match the connection.'},
+  'WRIT.PARA.L07.02':{s:'Look for slang, "you guys" and shouting.\nReplace slang and vague words (stuff, things) with exact ones.\nReplace "the worst ever" with a fact.\nSerious and respectful is formal.'},
+  'WRIT.PARA.L07.03':{s:'Start strong: For these reasons, Therefore, or In conclusion.\nSay the claim again with force, and recall the strongest reason.\nTell the reader what to do: a call to action.\nNo new argument, never doubt your claim, never just stop.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L07.04':{ band:'M68', pic:'🔍', today:'Choose evidence that is relevant and credible', why:'Readers, teachers and judges believe evidence they can check. A rumor loses the argument.',
+    ready:[{q:'A claim is…', o:['what you want to prove','a quote','a title','a greeting'], a:'what you want to prove'}],
+    bridge:'WRIT.ESSAY.L07.01', bridgeName:'State a claim with reasons',
+    watch:{ q:'Claim: Our school should start a recycling program.', m:{type:'scene', e:'📰', t:'Akiva is writing an editorial for The Beacon.'}, steps:[
+      {t:'Test 1, relevant: does it prove THIS claim?'},
+      {t:'"Plastic was made a century ago." Same topic, but not relevant.'},
+      {t:'Test 2, credible: can we trust the source?'},
+      {t:'"Everyone knows recycling is great." No source. Not credible.'},
+      {t:'"The city says recycling cuts school trash by a third." Both tests pass.'},
+      {t:'Teach it back: tell your chavrusa the two tests.'}], a:'The city says recycling cuts a school’s trash by about a third.' },
+    oops:{ q:'Claim: our school should recycle.', wrong:'Everyone knows recycling is the best thing ever.', right:'The city’s report counts the trash schools throw out.', why:'"Everyone knows" has no source. Evidence needs a source you can check.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can choose evidence that is relevant and credible.',
+    board:{ one:'Two tests: relevant (proves this claim) and credible (a source you can trust).', activity:'Chavrusas get 6 evidence cards for one claim and sort them into keep and toss, saying which test each card fails.', mistakes:['Evidence on the same topic that does not prove the claim','"Everyone knows" as a source','An ad used as proof'] },
+    do:[
+      {type:'sort', q:'Claim: our yeshiva should add a second recess.', bins:['Strong evidence','Mistake: weak'], cards:[['A study: breaks help focus.',0],['Recess began in the 1800s.',1],['My friend heard it helps.',1],['Office count: fewer interruptions.',0]], mis:true,
+        say:'Strong evidence, or weak? Sort each card.', how:'Strong: proves this claim AND has a source you can trust.'},
+      {type:'match', pairs:[['The city’s trash report','Credible: a record'],['An ad for a company','Not credible: it sells'],['A hallway rumor','Not credible: unchecked']],
+        say:'Match each source to how much you can trust it.', how:'Who made it? Do they know the facts? Do they want something?'}],
+    your:[
+      {type:'tiles', q:'Claim: boys need earlier bedtimes.', w:['According to','the nurse,','most boys','are too tired.'], extra:['everyone says'],
+        say:'Build it: the trusted source first, then the fact.', how:'Name who knows. Then what they found.'},
+      {type:'sort', q:'Claim: The Beacon should add a sports page.', bins:['Relevant','Not relevant'], cards:[['41 of 60 boys asked for sports.',0],['The league has no news coverage.',0],['The Beacon prints on Thursdays.',1],['The paper is blue.',1]],
+        say:'Does each fact prove this claim?', how:'Same newspaper is not enough. Does it prove boys want sports news?'},
+      {type:'match', pairs:[['Relevant','It proves this claim.'],['Credible','You can trust the source.'],['Not credible','A rumor or an ad.']],
+        say:'Match each word to what it means.', how:'Relevant is about the claim. Credible is about the source.'},
+      {type:'sort', bins:['Credible source','Not credible'], cards:[['an official report',0],['an expert',0],['an ad',1],['"everyone says"',1]],
+        say:'Can you trust each source?', how:'Trusted sources know the facts and want nothing from you.'},
+      {type:'tiles', q:'Claim: school gardens help science.', w:['A city study','found','gardens raise','test scores.'], extra:['it is cool'],
+        say:'Build the evidence sentence.', how:'Who found it first. Then what they found.'}] },
+
+  'WRIT.PARA.L07.01':{ band:'M68', pic:'🔗', today:'Glue your ideas together with the right words', why:'Glue words turn a pile of sentences into an argument the reader can follow.',
+    ready:[{q:'"This shows that" starts the…', o:['explain','hook','greeting','title'], a:'explain'}],
+    bridge:'WRIT.ESSAY.L07.02', bridgeName:'Quote evidence and explain it',
+    watch:{ q:'Claim: The Beacon should come out every week.', m:{type:'scene', e:'📰', t:'Eli is arguing for a weekly Beacon at the staff meeting.'}, steps:[
+      {t:'Reason 1: weekly news is timely.'},
+      {t:'Adding glue for reason 2: "In addition, issues are shorter."'},
+      {t:'Result glue: "As a result, more boys read every page."'},
+      {t:'Proof glue: "For example, 50 boys read every issue."'},
+      {t:'Explain glue: "This shows that weekly news works."'},
+      {t:'Teach it back: tell your chavrusa the three glue jobs.'}], a:'In addition, … As a result, … This shows that …' },
+    oops:{ q:'The rain stopped. ___, the game went on.', wrong:'However,', right:'As a result,', why:'"However" shows a contrast. The game going on is a result.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can join ideas with glue words that match the connection.',
+    board:{ one:'Decide the connection, then pick the glue: adds a reason, shows a result, points to proof.', activity:'Read sentence pairs aloud; the class holds up a card: ADD, RESULT or PROOF.', mistakes:['"However" when adding','"As a result" with no cause','"For example" before a result'] },
+    do:[
+      {type:'match', pairs:[['Reason 1 … Reason 2','In addition,'],['A cause … what it caused','As a result,'],['A claim … its evidence','For example,']],
+        say:'Match each connection to the glue that fits.', how:'Decide the connection first. Then the glue.'},
+      {type:'sort', bins:['Glue fits','Mistake: wrong glue'], cards:[['Rain stopped. As a result, we played.',0],['Rain stopped. However, we played.',1],['He practiced. Because of this, he won.',0],['He practiced. For example, he won.',1]], mis:true,
+        say:'Does the glue fit? Sort each pair.', how:'Is the second idea a result, a contrast or an example?'}],
+    your:[
+      {type:'tiles', q:'Show a result.', w:['We gave $500.','As a result,','two families','got coats.'], extra:['However,'],
+        say:'Build a sentence that shows a result.', how:'Cause first. Then the result glue. Then what happened.'},
+      {type:'sort', bins:['Adds a reason','Shows a result','Points to proof'], cards:[['Furthermore,',0],['Consequently,',1],['For instance,',2],['In addition,',0],['As a result,',1]],
+        say:'Sort each glue word by its job.', how:'One more reason? What happened? Or the evidence?'},
+      {type:'match', pairs:[['Chess teaches patience.','In addition, it teaches planning.'],['We collected 200 cans.','As a result, ten families ate.'],['Boys love the Beacon.','For example, 50 read every issue.']],
+        say:'Match each sentence to the one that follows.', how:'Read the glue word. Does it fit the connection?'},
+      {type:'sort', q:'Akiva’s editorial.', bins:['Glue fits','Mistake'], cards:[['Furthermore, news stays fresh.',0],['Consequently, more boys read.',0],['However, weekly is timely.',1]],
+        say:'Does each glue word fit the argument?', how:'Read before and after. Does the connection match?'},
+      {type:'tiles', q:'Add a reason.', w:['Weekly news','is timely.','In addition,','it is short.'], extra:['As a result,'],
+        say:'Build a sentence that adds a reason.', how:'First reason. Adding glue. Next reason.'}] },
+
+  'WRIT.PARA.L07.02':{ band:'M68', pic:'🎩', today:'Write your argument in a formal voice', why:'Adults take an argument seriously when it sounds serious, exact and respectful.',
+    ready:[{q:'A letter to a company needs words that are…', o:['formal','friendly','simple','silly'], a:'formal'}],
+    bridge:'WRIT.PARA.L06.03', bridgeName:'Who Is Reading?',
+    watch:{ q:'Gavriel writes to Rabbi Rosen about the gym.', m:{type:'scene', e:'🏫', t:'Two classes share one small gym, and Gavriel wants to fix it.'}, steps:[
+      {t:'First draft: "The gym is, like, way too small, you guys!!!"'},
+      {t:'Cut the slang: "like", "way", "you guys".'},
+      {t:'Cut the shouting: one period, no "!!!".'},
+      {t:'Add an exact fact: "too small for two classes at once."'},
+      {t:'Teach it back: tell your chavrusa the three fixes.'}], a:'The gym is too small for two classes at once.' },
+    oops:{ q:'A letter to the menahel', wrong:'This is the worst thing ever, seriously!!!', right:'Students wait 20 minutes for lunch every day.', why:'Exaggeration and shouting sound less serious. An exact fact sounds strong.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can write an argument in a formal voice.',
+    board:{ one:'Formal voice: no slang, no shouting, exact facts, respectful.', activity:'Chavrusas rewrite three text-message sentences as one formal paragraph and read it aloud.', mistakes:['Slang like "way" and "totally"','"You guys"','Shouting with "!!!" or "the worst ever"'] },
+    do:[
+      {type:'sort', q:'A letter to the menahel.', bins:['Formal','Mistake: informal'], cards:[['Many students agree.',0],['Everybody totally loves it.',1],['The evidence shows a problem.',0],['This is so cool, you guys.',1]], mis:true,
+        say:'Formal or informal? Sort each sentence.', how:'Formal is serious, exact and respectful. Slang is informal.'},
+      {type:'tiles', q:'Build a formal request.', w:['Therefore,','I ask','for a later','start time.'], extra:['you guys'],
+        say:'Build a formal sentence from the tiles.', how:'Linking word first. Then the polite request. Then what.'}],
+    your:[
+      {type:'match', pairs:[['a ton of boys','many students'],['super late','ten minutes late'],['waited forever','waited 20 minutes']],
+        say:'Match each informal phrase to its formal fix.', how:'Replace slang with exact, respectful words.'},
+      {type:'sort', bins:['Good formal fix','Mistake'], cards:[['The gym is too small.',0],['The gym is, like, tiny.',1],['We waited 20 minutes.',0],['We waited FOREVER!!!',1]],
+        say:'Good formal fix, or a mistake?', how:'Exact facts, no slang, no shouting.'},
+      {type:'tiles', q:'Make it formal.', w:['Lunch lines','take','twenty','minutes.'], extra:['forever!!!'],
+        say:'Build the formal version.', how:'Use the exact time, not "forever".'},
+      {type:'match', pairs:[['you guys','Rabbi Rosen'],['totally','completely'],['!!!','one period']],
+        say:'Match each informal piece to its formal swap.', how:'What would a serious writer use instead?'},
+      {type:'sort', bins:['Formal word','Informal word'], cards:[['therefore',0],['evidence shows',0],['totally',1],['stuff',1]],
+        say:'Sort each word: formal or informal?', how:'Formal words are exact and respectful.'}] },
+
+  'WRIT.PARA.L07.03':{ band:'M68', pic:'⚖️', today:'Close your case with a strong conclusion', why:'The last words are the ones the reader remembers when he decides.',
+    ready:[{q:'A conclusion should NOT add a…', o:['new point','final thought','restated idea','strong claim'], a:'new point'}],
+    bridge:'WRIT.ESSAY.L06.04', bridgeName:'Strong Finish',
+    watch:{ q:'Argument: the library should stay open after Mincha.', m:{type:'scene', e:'📚', t:'Yoni finishes his Beacon editorial about library hours.'}, steps:[
+      {t:'Job 1: say the claim again with force.'},
+      {t:'Job 2: recall the strongest reason: more learning time.'},
+      {t:'Job 3: tell the reader what to do: sign the request.'},
+      {t:'Never end with "but maybe I am wrong".'},
+      {t:'Teach it back: tell your chavrusa the three jobs.'}], a:'For these reasons, keeping the library open would give every boy more time to learn. Sign the request at the office.' },
+    oops:{ q:'The end of the library argument', wrong:'But maybe it does not really matter.', right:'For these reasons, the library should stay open.', why:'Doubting your own claim at the end undoes the whole argument.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can close an argument: claim, strongest reason, action.',
+    board:{ one:'Close the case: claim with force, strongest reason, call to action. No new argument, no doubt.', activity:'Each boy reads only his last sentence; the class says FOLLOWS, NEW or WEAK.', mistakes:['A new argument at the end','"But maybe I am wrong"','Just stopping'] },
+    do:[
+      {type:'match', pairs:[['Claim with force','Our school must recycle.'],['Strongest reason','It cuts trash by a third.'],['Call to action','Use the blue bins.']],
+        say:'Match each closing job to its sentence.', how:'Claim, strongest reason, action.'},
+      {type:'sort', q:'Argument: The Beacon should be weekly.', bins:['Follows','Mistake: new argument','Mistake: weakens'], cards:[['Weekly keeps every boy informed.',0],['Also, print it in color.',1],['But monthly is fine too.',2]], mis:true,
+        say:'Follows, new argument, or weakens? Sort each.', how:'Follows: the claim again. New: not proved yet. Weakens: doubts it.'}],
+    your:[
+      {type:'tiles', q:'A strong closing sentence.', w:['Therefore,','our class','should start','a chesed club.'], extra:['but maybe'],
+        say:'Build a strong closing sentence.', how:'Closing words first. Then the claim with force.'},
+      {type:'sort', q:'Argument: add a second recess.', bins:['Strong close','Mistake'], cards:[['A second recess helps focus.',0],['Recess needs new balls.',1],['I guess one is okay.',1],['Try it for one month.',0]],
+        say:'Strong close, or a mistake?', how:'It follows from the argument and never doubts it.'},
+      {type:'match', pairs:[['It adds a new argument.','Move it to the body.'],['It weakens the claim.','Say it with confidence.'],['It just stops.','Add a call to action.']],
+        say:'Match each closing mistake to its fix.', how:'What would close the case strongly?'},
+      {type:'sort', bins:['Strong start','Mistake'], cards:[['For these reasons,',0],['Therefore,',0],['But maybe',1],['Also,',1]],
+        say:'Can each phrase start a strong close?', how:'Strong closing words sum up. "But maybe" doubts. "Also" adds.'},
+      {type:'tiles', q:'A call to action.', w:['Please bring','a warm coat','to the office.'], extra:['maybe'],
+        say:'Build a call to action.', how:'Tell the reader politely what to bring, and where.'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

@@ -11,5 +11,9 @@ CORE_SKILLS.W48 = [
   ["WRIT.ESSAY.L06.02", "Hook the Reader", "Open a piece with a question, a surprising fact or a short scene", { after: "WRIT.ESSAY.L06.01", std: "W.5.2a", file: "CoreDataW482", min: 8 }],
   ["WRIT.ESSAY.L06.03", "Point, Proof, Explain", "Build a body paragraph: a point, proof, and how the proof shows it", { after: "WRIT.ESSAY.L06.02", std: "W.5.2b", file: "CoreDataW482", min: 9 }],
   ["WRIT.ESSAY.L06.04", "Strong Finish", "End a piece by restating the big idea and leaving a final thought", { after: "WRIT.ESSAY.L06.03", std: "W.5.2e", file: "CoreDataW482", min: 8 }],
-  ["WRIT.PARA.L06.03", "Who Is Reading?", "Choose words that fit the reader: a friend, a teacher or a little brother", { after: "WRIT.ESSAY.L06.04", std: "W.5.4", file: "CoreDataW482", min: 7 }]
+  ["WRIT.PARA.L06.03", "Who Is Reading?", "Choose words that fit the reader: a friend, a teacher or a little brother", { after: "WRIT.ESSAY.L06.04", std: "W.5.4", file: "CoreDataW482", min: 7 }],
+  ["WRIT.ESSAY.L07.04", "Best Evidence", "Choose evidence that is relevant and credible", { after: "WRIT.ESSAY.L07.01", std: "W.6.1b", file: "CoreDataW483", min: 9 }],
+  ["WRIT.PARA.L07.01", "Glue Words", "Link claim, reasons and proof with the right glue words", { after: "WRIT.ESSAY.L07.02", std: "W.6.1c", file: "CoreDataW483", min: 8 }],
+  ["WRIT.PARA.L07.02", "Formal Voice", "Write an argument in a formal voice: no slang, no shouting, exact words", { after: "WRIT.PARA.L07.01", std: "W.6.1d", file: "CoreDataW483", min: 8 }],
+  ["WRIT.PARA.L07.03", "Close the Case", "End an argument: claim with force, strongest reason, call to action", { after: "WRIT.PARA.L07.02", std: "W.6.1e", file: "CoreDataW483", min: 8 }]
 ];
