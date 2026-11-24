@@ -67,6 +67,23 @@ The tool makes this. You fill in `LESSONS`:
 - **Long texts** (stories, chapters, articles over about 300 words) do **not** go in this file. They go in the content store (job T builds it next; this note will say how). A short passage inside a question is fine.
 - No `//` comments in `.html` files: use `/* */`.
 
+## New activity kinds for reading, words and writing
+Besides the first ten kinds (`docs/ONE-BITE-PLAYBOOK.md`, section 10), a lesson's `do` and `your` can use these seven (`src/CoreKitActs.html`). They are played by tap only, at any size. A miss always says what to look at next. `say`, `how`, `q`, `pic`, `why` and `mis:true` work as before.
+
+| Kind | Data | He does |
+|---|---|---|
+| `evidence` | `{type:'evidence', q:'Which sentence shows Dovid was surprised?', p:['Dovid walked to shul.','Dovid gasped.','He sat down.'], a:1, look:'how Dovid felt'}` (2–8 sentences; `a` is the number from 0, or a list) | taps the sentence that proves it. For a long text, use the Reader with `ask` instead. |
+| `combine` | `{type:'combine', a:'Avi was tired.', b:'He kept walking.', o:['but','so','because'], j:'but'}` (`r` = the joined sentence, made if left out) | picks the joining word, and the two sentences snap into one strong sentence (sentence combining, *Writing Next*) |
+| `storymap` | `{type:'storymap', slots:['Who','Where','Problem','Solution'], cards:['Dovid and Zaidy','the shul','The key is missing','Biscuit had it'], extra:['a cake']}` (card *i* goes in box *i*) | taps a card, then its box, then Check |
+| `parts` | `{type:'parts', parts:['un','help','ful'], extra:['re'], mean:'not helpful'}` (`roles` made if left out: prefix, root, suffix) | snaps the word parts into the colored prefix, root and suffix places. The word lights up with its meaning. |
+| `cloze` | `{type:'cloze', t:'The ant carried a ___ twice its size.', o:['crumb','cloud','song'], a:'crumb'}` | taps a word into the gap, reads it, then Check |
+| `dictation` | `{type:'dictation', hear:'The cat sat on the mat.', w:['The','cat','sat','on','the','mat.'], extra:['sit']}` (`w` joined with spaces must equal `hear`) | hears the sentence (🔊 again), then builds it from word tiles, capital letter and end mark included |
+| `order` | `{type:'order', steps:['Dovid saw paw prints.','He followed them.','He found Biscuit.']}` (2–6 strips) | taps each strip into the next numbered place, then Check |
+
+Quality-gate tips:
+- A `combine` or `cloze` whose wrong choices are the mistake boys really make counts as the **mistake activity** when you mark it `mis:true`. An `evidence` with a tempting wrong sentence counts the same way.
+- K–1 lessons get 3 choices at most here too.
+
 ## What happens at start-up (so you know what you get)
 `src/CoreSkills.js` reads every `CORE_SKILLS.<Job>` list and:
 - puts each skill into its ladder in `Placement.js` (`READ_K8`, `LANG_K8`, `SCI_K8`, `SS_K12`) at its place. That gives you the boy's map and path, placement, the staff grid, "Give him this skill", the Library and the Pathfinder level lists;
