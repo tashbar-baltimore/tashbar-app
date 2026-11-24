@@ -1,0 +1,44 @@
+<script>
+/* CoreDataW134.html: Core Growth job W13, Grade 1 games (K-1 boys get games only; docs/core-growth/HOW-TO-ADD-A-K1-GAME.md).
+   Keep this file under 150 KB. W13 = Writing K-3 (docs/core-growth/W13-map.md). This file: Grade 1 (L02), Unit 1 "How Writers Work".
+   Every instruction is spoken (say). Choices are pictures, or short words a Grade 1 boy can sound out (job F's Grade 1 units).
+   Cast: the Peretz family on Maple Street (docs/core-growth/F-map.md section 8): Shmuli (Grade 1) keeps a writing notebook; Eli (K),
+   Abba's bakery, Zeidy's farm, friends Akiva and Ovadia, Rebbe Gutman. The skills are listed in src/CoreDataW13.js with no engine
+   lesson, the same way job F lists its K-1 games: a Grade 1 boy plays the game. */
+(function () {
+  var LESSONS = {
+  };
+  var TEACH = {}, HOWTO = {}, BITE = {};
+  var K1G = [
+    { id:'WRIT.PARA.L02.01', grade:1, name:'Pick a Topic', pic:'🎯', after:'READ.PA.L02.02', acts:[
+      {type:'listen', hear:'Shmuli helps in Abba’s bakery every Friday.', o:['🥖','🚀','🐧'], a:'🥖', say:'Pick a topic you know a lot about. What should Shmuli pick?', how:'Writers pick what they know well. What does Shmuli do every week?'},
+      {type:'sort', bins:['👍','🤷'], cards:[['🍞',0],['🐐',0],['🌋',1],['🚀',1]], say:'Shmuli knows the bakery and Zeidy’s farm. Does he know this?', how:'Thumbs up if Shmuli knows a lot about it.'},
+      {type:'listen', hear:'Akiva has never seen a whale. He picks whales.', o:['👍','👎'], a:'👎', mis:true, say:'Careful! Is that a good topic for Akiva?', how:'A good topic is something you know a lot about.'},
+      {type:'match', pairs:[['👦🐐','🌾'],['👦🥖','🔥'],['👦⚽','🥅']], say:'Each boy picks what he knows. Match him to his topic.', how:'Look at what each boy loves. Find what goes with it.'},
+      {type:'findall', grid:['🕯️','🐋','🍞','🦖','🐐','🌋'], find:['🕯️','🍞','🐐'], findSay:'topic Shmuli knows well', say:'Tap every topic Shmuli knows a lot about.', how:'He knows Shabbos, the bakery and Zeidy’s farm.'}]},
+
+    { id:'WRIT.PARA.L02.02', grade:1, name:'Plan in Boxes', pic:'🗂️', after:'WRIT.PARA.L02.01', acts:[
+      {type:'storymap', slots:['1','2','3'], cards:['🥣','🖐️','🍞'], say:'Shmuli plans: mix the dough, braid it, bake it. Fill the boxes.', how:'Box 1 is first. Box 2 is next. Box 3 is last.'},
+      {type:'listen', hear:'First the egg, then the chick, then the hen.', o:['🥚','🐥','🐔'], a:'🥚', say:'Shmuli plans the hen story. What goes in box 1?', how:'Listen for what comes first.'},
+      {type:'storymap', slots:['1','2','3'], cards:['🌱','🌻','🐝'], extra:['🚗'], mis:true, say:'Careful! One picture is not part of the plan. Plan the garden.', how:'Seed, then flower, then the bee comes. The car does not belong.'},
+      {type:'sort', bins:['1','3'], cards:[['☁️',0],['🌈',1],['🥚',0],['🐔',1]], say:'Does it go in the first box, or the last box?', how:'What happens first? What happens at the end?'},
+      {type:'listen', hear:'Why do writers plan in boxes?', o:['🗺️','😴','🎈'], a:'🗺️', say:'A plan is like a map. Tap the map!', how:'A plan shows the way, like a map.'}]},
+
+    { id:'WRIT.SENT.L02.02', grade:1, name:'Say, Write, Read Back', pic:'🔁', after:'WRIT.PARA.L02.02', acts:[
+      {type:'tiles', w:['I','see','a','big','dog.'], hear:'I see a big dog.', pic:'🐕', say:'Shmuli says it, then writes it. Build his sentence.', how:'Say it slowly. Tap each word in order.'},
+      {type:'listen', hear:'The cat on the mat.', o:['sat','dog','red'], a:'sat', mis:true, say:'Careful! Shmuli reads it back. Which word is missing?', how:'Read it back. What did the cat do?'},
+      {type:'match', pairs:[['🗣️','say it'],['✏️','write it'],['👀','read it back']], say:'Say it, write it, read it back. Match each one.', how:'Mouth is say. Pencil is write. Eyes is read back.'},
+      {type:'listen', hear:'Eli has a red hat.', o:['🎩','👟','🐶'], a:'🎩', say:'Shmuli reads his sentence back. What does Eli have?', how:'Read it back. Does it say what you meant?'},
+      {type:'tiles', w:['Abba','has','a','hot','bun.'], extra:['dog'], hear:'Abba has a hot bun.', pic:'🥯', say:'Say it with Shmuli. Now build it.', how:'Say each word. Tap them in order.'}]},
+
+    { id:'WRIT.PARA.L02.03', grade:1, name:'Stay on Topic', pic:'🎯', after:'WRIT.SENT.L02.02', acts:[
+      {type:'listen', hear:'My topic is Zeidy’s farm. The goat eats hay.', o:['👍','👎'], a:'👍', say:'Does this sentence stay on the topic?', how:'Is it about Zeidy’s farm?'},
+      {type:'listen', hear:'My topic is Zeidy’s farm. I have a new bike.', o:['👍','👎'], a:'👎', mis:true, say:'Careful! Does this sentence stay on the topic?', how:'Is a bike part of Zeidy’s farm?'},
+      {type:'findall', grid:['🐐','🚀','🐔','🍕','🌾','🎮'], find:['🐐','🐔','🌾'], findSay:'thing on Zeidy’s farm', say:'Topic: Zeidy’s farm. Tap what stays on topic.', how:'Would you see it on the farm?'},
+      {type:'sort', bins:['🕯️','⚽'], cards:[['🍞',0],['🥅',1],['🐟',0],['🏟️',1]], say:'Two topics: Shabbos, or a ball game. Sort each one.', how:'Does it go with Shabbos, or with the game?'},
+      {type:'match', pairs:[['🏫','✏️'],['🏪','🛒'],['🌧️','☂️']], say:'Match each topic to a sentence picture that stays on it.', how:'What goes with the topic?'}]}
+  ];
+  if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
