@@ -75,7 +75,7 @@ export const UNITS = [
       { id: 'u7g3', name: 'Sound Match', kind: 'soundmatch', icon: 'fish' },   /* Beis comes back; Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
       { id: 'u7g4', name: 'Find the Mistake', kind: 'mistake', icon: 'think' },
       { id: 'u7g5', name: 'Show what you know', kind: 'mastery', icon: 'trophy', mastery: true },
-      { id: 'u7g6', name: 'Review: Alef-Beis Train', kind: 'train', icon: 'train', review: true, order: ['pei', 'fei', 'tzadik', 'kuf', 'reish'] },   /* five cars, so the letters are big enough on a phone */
+      { id: 'u7g6', name: 'Review: Look-Alikes', kind: 'sorter', icon: 'pair', review: true, pairs: [['kaf', 'pei'], ['pei', 'fei']] },   /* Unit 6's look-alikes come back */
       { id: 'u7g7', name: 'Bonus: letter rain', kind: 'bonus', icon: 'rocket', bonus: true },
     ] },
 ];

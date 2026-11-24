@@ -12,16 +12,16 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4 + l.userData.below;   /* Kuf's long leg stands above the stand */ p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
-  const PS = () => P ? (peds.length > 3 ? .5 : .62) : (peds.length > 3 ? .88 : 1);
+  const PS = () => P ? (peds.length > 3 ? .74 : .62) : (peds.length > 3 ? .88 : 1);
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
   const cardBack = E.mesh(E.rbox(2.05, 2.05, .08, .2), E.M(0xffe9b8, { roughness: .4, clearcoat: .6, depthWrite: false }), 0, 0, -.35, false); cardBack.renderOrder = -1; card.add(cardBack);   /* a white card behind the picture, so it never melts into the painting */
   const hint = E.glowSprite('#fff7b0', 2.8, 0); E.scene.add(hint);
   let pic = null, word = null, P = false, gap = 2.3, cardHome = new THREE.Vector3(), busy = true, dragging = false, enabled = false, help = struggled, mistakes = 0, missed = false, onDone = null, idx = 0;
   E.onLayout(p => { P = p; gap = p ? (peds.length > 3 ? 1.12 : 1.45) : (peds.length > 3 ? 2.05 : 2.3); kid.visible = !p;   /* on a phone there's no room for Shloimy beside the stands */
-    if (p) { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
+    if (p) { if (peds.length > 3) { E.camBase.set(0, 8.5, 10.5); E.camTarget.set(0, .8, .8); cardHome.set(0, 2.3, -2.6); } else { E.camBase.set(0, 2.8, 10.6); E.camTarget.set(0, 2.4, 0); cardHome.set(0, 3.9, 2.2); } kid.position.set(-1.5, 0, 2.6); kid.scale.setScalar(.6); }
     else { E.camBase.set(0, 2.6, 9.5); E.camTarget.set(0, 1.9, 0); cardHome.set(0, 3.15, 2.2);   /* higher when a raised Kuf stands below */   /* well above the letters, so it never seems to belong to one */ kid.position.set(-4.4, 0, 1.2); kid.scale.setScalar(1); }
-    const m = peds.length; peds.forEach((pd, i) => { pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* right to left: Gimmel, Daled, Hei, then Beis */
+    const m = peds.length, two = P && m > 3; peds.forEach((pd, i) => { if (two) pd.position.set(i % 2 ? -1.0 : 1.0, 0, i < 2 ? -1.4 : 2.6); else pd.position.set(((m - 1) / 2 - i) * gap, 0, .6); pd.scale.setScalar(PS()); });   /* on a phone, four stands in two rows of two, right to left, top row first */   /* right to left: Gimmel, Daled, Hei, then Beis */
     if (card.visible && !dragging && !busy) card.position.copy(cardHome);
   });
   E.onFrame(t => {
@@ -87,10 +87,10 @@ export default function setup(E, { struggled, unit, game = {} }) {
       const pd = peds.find(x => x.userData.key === 'ches'), c = E.letter('chaf', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 2.75 * pd.scale.x, .6)); c.scale.setScalar(.75 * pd.scale.x); E.scene.add(c); await E.popIn(c, .75 * pd.scale.x);   /* well above its partner, smaller, so the two never look like one tall letter */
       await E.say('This is Chaf. Kaf without its dot.'); E.hop(L.ches, .3); await E.say('Chaf sounds just like Ches!'); }
     if (keys.includes('pei') && unit.letters.includes('fei')) {   /* Fei has no picture: it stands beside Pei and says f */
-      const pd = peds.find(x => x.userData.key === 'pei'), c = E.letter('fei', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 2.6 : 2.1) * pd.scale.x, .6)); c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);   /* just above its partner, a little smaller, so the two never look like one tall letter */
+      const pd = peds.find(x => x.userData.key === 'pei'), c = E.letter('fei', 1.2); if (P && peds.length > 3) c.position.set(0, 1.2, .6); else c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 2.6 : 2.1) * pd.scale.x, .6));   /* two rows on a phone: between the rows */ c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);   /* just above its partner, a little smaller, so the two never look like one tall letter */
       await E.say('This is Fei. Pei without its dot.'); E.hop(c, .3); await E.say(['Fei says', S(E.LETTERS.fei.snd), '.']); }
     if (keys.includes('kuf') && !keys.includes('kaf') && unit.letters.includes('kuf')) {   /* Kaf is never a stand beside Kuf (both say k): it joins Kuf at the end */
-      const pd = peds.find(x => x.userData.key === 'kuf'), c = E.letter('kaf', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 3.0 : 2.6) * pd.scale.x, .6)); c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);
+      const pd = peds.find(x => x.userData.key === 'kuf'), c = E.letter('kaf', 1.2); if (P && peds.length > 3) c.position.set(0, 1.2, .6); else c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 3.0 : 2.6) * pd.scale.x, .6));   /* two rows on a phone: Kaf between the rows */ c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);
       await E.say('This is Kaf.'); E.hop(c, .3); await E.say('Kuf sounds just like Kaf!'); }
     const stars = mistakes <= 1 ? 3 : mistakes <= 3 ? 2 : 1;
     return { stars, line: stars >= 2 ? 'Great matching! Every picture found its letter.' : null };

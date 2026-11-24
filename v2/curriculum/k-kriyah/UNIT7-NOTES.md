@@ -16,7 +16,7 @@
 | 4 | Sound Match | Tzipor and tzav (turtle) go to Tzadik, kof and kubiyos (blocks) to Kuf, rakeves and rimon (pomegranate) to Reish, and bayis to Beis. At the end Kaf appears above Kuf: "Kuf sounds just like Kaf!" |
 | 5 | Find the Mistake | The demo: "Yaakov says this is a Hei" (it is a Kuf, with the long leg). Then "Yaakov says this is a Reish. Is he right?" An orange arrow points at the corner or the leg. |
 | 6 | Show what you know (mastery check) | 9 questions, including "Which letter says k?" with Kuf (Kaf is never on screen then). Reish stands beside Daled, and Kuf beside Hei. Kuf and Kaf never stand together, since both say k. |
-| 7 | Review: Alef-Beis Train | The train carries Pei, Fei, Tzadik, Kuf, Reish. He puts each car in order. |
+| 7 | Review: Look-Alikes | Kaf and Pei (the little tongue), then Pei and Fei (the dot): the spaced review of Unit 6. |
 | 8 | Bonus: letter rain | Three short rounds: Tzadik, Kuf, Reish. |
 
 ## Decisions I made on my own (each one line, so you can say yes or change it)
@@ -25,7 +25,7 @@
 3. **Sound Match instead of Letter Hunt.** The Letter Hunt's world is a sukkah; Sound Match fits the playroom and practises the new sounds.
 4. **Hei and Kuf are look-alikes too:** "Hei has a short leg. Kuf has a long leg."
 5. **Kaf is never a stand beside Kuf in Sound Match,** since both say k and the boy could not tell which one a picture goes to. Beis (bayis) comes back instead. At the end Kaf appears above Kuf: "This is Kaf. Kuf sounds just like Kaf!"
-6. **The review is the Alef-Beis Train** with five cars, Pei to Reish, so the letters are big enough on a phone.
+6. **The review is Unit 6's look-alikes** (Kaf/Pei, Pei/Fei) in the Look-Alike Detective. A train of the newest letters was too small to read on a phone.
 7. **What to look for, in the same words in every game:** Daled has a corner; Reish is round on top. Hei has a short leg; Kuf has a long leg.
 
 ## For the rebbe (every sound and rule used in Unit 7)
