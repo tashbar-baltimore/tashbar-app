@@ -138,6 +138,10 @@ async function page(pg, rep) {
     await pg.setViewportSize({ width: 1366, height: 768 });
     if (!fails.length) oks.push('Reader: cover, pages, tap a word for its meaning, Back from Grade 3, chapter done and kept, tap the sentence that proves it (miss names the step, no early answer), K-1 band; button system only, no sideways scroll at 1366 and 390');
   }
+  await pg.setViewportSize({ width: 390, height: 844 });
+  try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push('390px: ' + f)); } catch (e) { fail('new activity kinds (390 px) crashed: ' + String(e).slice(0, 200)); }
+  await pg.setViewportSize({ width: 1366, height: 768 });
+  try { const ca = await require('./coreacts.js')(pg); ca.fails.forEach(f => fails.push(f)); ca.oks.forEach(o => oks.push(o)); } catch (e) { fail('new activity kinds crashed: ' + String(e).slice(0, 200)); }
   if (!fails.length) oks.push('core skills (page): ' + got.mine.length + ' core lesson(s) loaded, no clash' + (notYet.length ? '; listed, no lesson yet (hidden from boys): ' + notYet.length : ''));
   return { fails, oks };
 }
