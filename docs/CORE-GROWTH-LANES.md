@@ -36,7 +36,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | F | K–1 listen-along stories (70, in topic sets) and their understanding lessons | TAKEN | https://claude.ai/code/session_01NmKrTm3jGfbvY1A8rzjhHV | 2026-11-24 19:45 UTC: claimed; reading F-map section 6 and the K–1 game path, then the first topic set |
 | F | Grade 2 Units 4–6 (lessons, word-study readers, Readers' Theatre) | OPEN | | |
 | C45 | Grade 5, Units 5.4–5.6 (lessons and topic-set texts; see `docs/core-growth/C45-map.md`) | OPEN | | |
-| C45 | Grade 5, Units 5.7–5.9 | OPEN | | |
+| C45 | Grade 5, Units 5.7–5.9 | TAKEN | https://claude.ai/code/session_01884AzEWr482Hjj7zSABGE2 | 2026-11-24 20:30 UTC: claimed; reading C45-map.md (Units 5.7–5.9) and the live 5.1–5.4 lessons to match their pattern |
 | C45 | Books B2 *Lost on the Ridge Trail* and B5 *Shabbos at the Lighthouse* (after B1 sets the pattern) | OPEN | | |
 | C45 | Fluency passages, Grades 4 and 5 (50, from the unit texts) | OPEN | | |
 | G | Grades 6–8 (L07–L09), Units 1–6 (see `docs/core-growth/G-map.md`) | OPEN | | |
