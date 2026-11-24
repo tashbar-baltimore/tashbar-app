@@ -7,10 +7,10 @@ Job T wrote this note (2026-11-24). It is for jobs W13 and W48, and for any job 
 ## What the boy does (`src/CoreWrite.html`)
 1. **Plan.** He sees the task, the **strategy card** (for example POW + TREE) and the plan boxes (the organizer). Next waits until every box has a few words, and says which box is still empty.
 2. **Write.** His plan stays one tap away (beside the writing on a Chromebook, folded on a phone). Sentence starters drop in where he is typing. A word counter shows how far he has come. Next waits for the task's minimum words.
-3. **Fix.** His **checklist**: the app checks every line it can and ticks it by itself (✓), and he must meet every line before Next. A line the app cannot check, like "I read it out loud to myself", he ticks himself. 🔊 reads his writing back to him. A piece sent back by his teacher opens here, with the teacher's note on top.
+3. **Fix.** His **checklist**: the app checks every line it can and ticks it by itself (✓), and he must meet every line before Next. A line the app cannot check, like "I read it out loud to myself", he ticks himself. 🔊 reads his writing back to him. A piece sent back by his teacher opens here, with the teacher's note on top; it stays "sent back" (note and all) until he sends it again.
 4. **Finish.** He gives it a title and picks a picture, sees it as a book page, and taps **Send**.
 
-His draft is kept on the Chromebook as he types and on the server at each step, so nothing is lost. **My book** (`TLCORE.write.book()`) shows every piece his teacher published, with its picture and the teacher's note, and pieces sent back to fix. There is no money anywhere in the workshop.
+His draft is kept on the Chromebook as he types and on the server at each step; when the two differ, the newer one wins, and what he is typing is never replaced. A boy has one open piece per task. **My book** (`TLCORE.write.book()`) shows every piece his teacher published, with its picture and the teacher's note, and pieces sent back to fix. There is no money anywhere in the workshop.
 
 ## What the teacher does (`src/CoreWriteStaff.html`)
 In the staff portal, go to **Reports → ✍️ Writing inbox**. Pieces waiting are on top. Open one to see his piece, his plan and his checklist. Score each rubric row from 1 (not yet) to 4 (strong) and write a short note. Then choose:
@@ -21,7 +21,7 @@ In the staff portal, go to **Reports → ✍️ Writing inbox**. Pieces waiting 
 A task is plain data in your job's data file. Open it from a lesson, a unit's real task or a button, with:
 
 ```js
-TLCORE.write.open(TASK, { grade: 5 }).then(function (r) { /* r.sent, r.id */ });
+TLCORE.write.open(TASK, { grade: 5, exit: 'x' /* inside a lesson: the X asks "Leave this lesson?"; leave it out for the house */ }).then(function (r) { /* r.sent, r.id */ });
 ```
 
 ```js
@@ -61,6 +61,8 @@ var TASK = {
 | `first: 'topic'` | his first sentence uses the key words of that plan box |
 | `plan: true` | every plan box's key words appear in his writing |
 | `self: true` | he ticks it himself (use this only for things the app cannot see) |
+
+A plan box with very short words ("a dog", "Yes!") is still checked by its own words, so a checklist line can always be met, and a line that is not met says which plan box to use.
 
 `TLCORE.write.err(task)` returns `''` or what is wrong. It is checked when the task opens, and a broken task never opens.
 
