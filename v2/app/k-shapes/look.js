@@ -282,7 +282,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   }
   /* small sharp things scattered just outside the stage (grass tufts, little flowers, toys) */
   function scatter(n, rMin, rMax, seed, make) {
-    if (FAST) return;
+    if (FAST) make = (x, z, R, i) => { if (i % 4 === 0) mesh(G.box, pm(TOY[i % TOY.length]), x, 0.22, z, 0.44, 0.44, 0.44); };   /* the test: a few plain toy blocks instead */
     const R = rng(seed || 17);
     for (let i = 0; i < n; i++) { const a = R() * Math.PI * 2, r = rMin + R() * (rMax - rMin), x = Math.cos(a) * r, z = Math.sin(a) * r * 0.9 - 0.6;
       if (z > 2 && Math.abs(x) < 7.5) continue;   /* keep the front clear (the toy box, Mendy) */
@@ -1273,7 +1273,7 @@ export function createLook({ renderer, scene, camera, FAST, world }) {
   /* Tatty and Mommy */
   let fam = null;
   L.family = (on, clap) => {
-    if (FAST) on = false;   /* the automatic test does not need them (quicker on a test machine) */
+    if (FAST && !clap) on = false;   /* the automatic test sees them only at the end (quicker on a test machine) */
     if (!fam) { fam = [L.makeAdult('mommy'), L.makeAdult('tatty')]; fam.forEach(f => { f.visible = false; }); }
     fam.forEach((f, i) => { f.visible = on; if (on) { f.scale.setScalar(0.9); L.pop(f, 0.9); if (clap) f.userData.clap = 4; } });
     return fam;
