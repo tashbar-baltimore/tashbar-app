@@ -844,3 +844,24 @@ Every file here must be public domain or freely licensed. One line per file: fil
 - skeleton-whole-wide.webp | https://pixabay.com/vectors/skeleton-bones-human-person-9663605/ | Pixabay Content License | BlenderTimer
 - duck-swimming-among-koi-fish.webp | https://pixabay.com/photos/mallard-water-bird-aquatic-bird-6725473/ | Pixabay Content License | Lancier
 - dove-sitting-on-its-nest.webp | https://www.flickr.com/photos/14884524@N08/3461696246 | CC BY 2.0 | Kilarin
+- core-c45-cast-yehuda.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-cast-avrumi.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-cast-dovid.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-cast-binyamin.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-cast-tzvi.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-b1-cover.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-u41-opener.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-b1-ch1-silverbox.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-b1-ch2-list.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-b1-ch4-gomez.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-sukkah.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-bakery.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-bees.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-leaves.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-tower.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-owls.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-snow.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-spell.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-gadget.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-p-hunters.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
+- core-c45-u51-opener.webp | C45 picture order 1 (docs/core-growth/C45-picture-orders.md), 2026-11-24 | made for Tashbar Baltimore with an AI image tool, owned by the school | Tashbar Baltimore
