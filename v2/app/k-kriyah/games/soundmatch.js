@@ -69,7 +69,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const rest = words.filter(w => w !== first).sort(() => Math.random() - .5), deck = [first, ...rest];
   return async () => {
     E.setProgress(deck.length, 0);
-    if (game.review) await E.say('Remember Gimmel, Daled and Hei? Let\u2019s match again!');
+    if (game.review) { const nm = keys.map(k => E.LETTERS[k].name); await E.say('Remember ' + nm.slice(0, -1).join(', ') + ' and ' + nm[nm.length - 1] + '? Let\u2019s match again!'); }   /* names the letters on the stands */
     await E.say('Each picture goes to the letter it starts with.');
     await showCard(first);
     const k0 = WORDS[first].letter, pd0 = peds.find(pd => pd.userData.key === k0);

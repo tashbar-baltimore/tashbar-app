@@ -87,7 +87,9 @@ export default function setup(E, { struggled, unit, game = {} }) {
   }
   async function roundOne() {
     E.setProgress(2, 0);
-    await E.say('All aboard the Alef-Beis train!'); if (game.order) await E.say('This train starts at ' + E.LETTERS[ORDER[0]].name + '.');
+    await E.say('All aboard the Alef-Beis train!'); if (game.order) { const all = [...unit.known, ...unit.letters], before = all.slice(0, all.indexOf(ORDER[0]));   /* sing up to where this train starts */
+      for (const k of before) { E.sfx.drum(); await E.say(E.LETTERS[k].name + ',', false); }
+      await E.say('Then comes ' + E.LETTERS[ORDER[0]].name + '! This train starts there.'); }
     await E.say('Listen to the order.'); await chant();
     await E.say('Watch me. ' + E.LETTERS[ORDER[0]].name + ' goes first.');
     const c0 = cars.find(c => c.userData.key === ORDER[0]);   /* the demo: Alef goes first */ let [x, y] = E.toScreen(c0.position); E.hand.at(x, y); await E.wait(350);
