@@ -105,7 +105,7 @@ export function makePictures(E) {
     chatul: ['cat', .82], chamor: ['donkey', .79], taleh: ['lamb', .91], tavas: ['peacock', 1.06], yonah: ['dove', 1.1], yad: ['hand', .91], kadur: ['beachball', 1], kelev: ['dog', .94], limon: ['lemon', .86], mayim: ['water', .85],
     melafefon: ['cucumber', 1.16], nemalah: ['ant', 1.06] };
   const tex = f => texCache[f] || (texCache[f] = (() => { const t = new THREE.TextureLoader().load('art/obj/' + f + '.webp'); t.colorSpace = THREE.SRGBColorSpace; return t; })());
-  for (const [w, [f, a]] of Object.entries(IMG)) P[w] = () => { const g = new THREE.Group(), h = 1.35, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex(f), transparent: true, alphaTest: .4 }));
+  for (const [w, [f, a]] of Object.entries(IMG)) P[w] = () => { const g = new THREE.Group(), h = 1.7, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex(f), transparent: true, alphaTest: .4 }));
     sp.scale.set(h * a, h, 1); g.add(sp); g.userData.card = sp; return g; };
   return P;
 }

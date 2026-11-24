@@ -15,13 +15,13 @@ export default function setup(E, { struggled, unit }) {
   const pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), pedTop = [E.M(0xff7aa8, { roughness: .25, clearcoat: 1 }), E.M(0x46c3ff, { roughness: .25, clearcoat: 1 }), E.M(0xffcf3a, { roughness: .25, clearcoat: 1 })];
   for (let i = 0; i < 3; i++) { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), pedTop[i], 0, .55, 0)); E.scene.add(p); peds.push(p); }
   keys.forEach(k => { L[k] = E.letter(k, 1.6); E.scene.add(L[k]); L[k].visible = false; });
-  const LS = () => E.portrait ? .66 : 1;   /* letter size: smaller on a phone so the three never overlap */
+  const LS = () => E.portrait ? .62 : .86;   /* letter size: small enough that wide letters (Mem, Nun) never touch */
   const glow = E.glowSprite('#fff7b0', 3, 0); E.scene.add(glow);
   let set = keys.slice(0, 3), slot = {}, gap = 2.3, active = false, glowOn = null, resolveQ = null, hidden = null;
   set.forEach((k, i) => slot[k] = i);
   const slotPos = i => new THREE.Vector3((1 - i) * gap, 0, .6);   /* right to left */
   E.onLayout(p => {
-    gap = p ? 1.5 : 2.3; keys.forEach(k => L[k].scale.setScalar(LS()));
+    gap = p ? 1.55 : 2.55; keys.forEach(k => L[k].scale.setScalar(LS()));
     if (p) { E.camBase.set(0, 2.6, 10.2); E.camTarget.set(0, 1.9, 0); rebbe.visible = false;   /* a phone has no room for him beside the letters */ peds.forEach(x => x.scale.setScalar(.62)); }
     else { E.camBase.set(0, 2.4, 9.5); E.camTarget.set(0, 1.4, 0); rebbe.visible = true; rebbe.position.set(-4.3, 0, .2); rebbe.scale.setScalar(1.45); peds.forEach(x => x.scale.setScalar(1)); }
     place(false);
