@@ -6,7 +6,7 @@ The half-year target per Grade 4–8 is 3 Science units and 1 Social Studies uni
 
 | Grade | Units live | Lessons rebuilt | Texts (S) | Investigations / 3D | Short writes | Minutes built | Half-year target |
 |---|---|---|---|---|---|---|---|
-| 4 | 0 | 0 | 0 | 0 | 0 | 0 | ≈ 550 |
+| 4 | 0 (S4.1 in progress) | 4 | 3 | 0 | 0 | 79 | ≈ 550 |
 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | ≈ 550 |
 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | ≈ 550 |
 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | ≈ 550 |
@@ -14,3 +14,4 @@ The half-year target per Grade 4–8 is 3 Science units and 1 Social Studies uni
 
 ## Log
 - 2026-11-24: map written. Nothing built yet.
+- 2026-11-24: Grade 4, Unit S4.1 Sun, Moon and Tides, part 1. 4 lessons rebuilt (SCI.SKY.L05.01–04, 4 × 10 min) and 3 texts (S.SKY4.01–03, 513–551 words, 13 min each with questions): 79 minutes. Next for S4.1: the investigation and short write, and the unit check.

@@ -49,6 +49,15 @@ function obkStep(wrong) {
       if (s.sel < 0) return tap('card', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); return tap('box', i); }
     case 'parts': case 'dictation': case 'order': { if (OBK.ready(d, s)) return check(); const list = d.parts || d.w || d.steps, i = s.slots.indexOf(-1), want = S(list[i]);
       return tap(d.type === 'parts' ? 'part' : d.type === 'order' ? 'strip' : 'tile', s.pool.findIndex((x, jj) => x === want && !s.used[jj])); }
+    /* the two Reader kinds (src/CoreKitActs.html): the book opens over the lesson; read every page to the end, or tap the proof sentence */
+    case 'read': case 'proof': { const R = window.TLCORE && TLCORE.reader, cr = document.getElementById('crd'), cq = sel => cr && cr.querySelector(sel);
+      if (R && R.isOpen() && cr) { const st = R.state();
+        if (d.type === 'proof' && st.ask && !st.ask.over) { const pf = st.ask.proof[0], all = [...cr.querySelectorAll('[data-crds]')].map(x => +x.getAttribute('data-crds'));
+          const i = w && st.ask.tries === 0 ? all.find(k => st.ask.proof.indexOf(k) < 0) : pf; return click(cq('[data-crds="' + i + '"]')) ? 'proof' : 'no proof sentence on the page'; }
+        return click(cq('[data-crd=start]') || cq('[data-crd=next]') || cq('[data-crd=finish]')) ? 'page' : 'no way forward in the book'; }
+      if (s.busy) return 'book opening';
+      if (s.msg && /did not open/.test(s.msg)) return 'no book: ' + s.msg;
+      return tap('open'); }
   }
   return 'unknown type ' + d.type;
 }
@@ -109,6 +118,7 @@ module.exports = async function oneBiteTests(pg) {
           if (key !== lastKey) { lastKey = key; const e = kitScreen(p, id + ' ' + st + ' ' + (k.i + 1) + ' (' + k.acts[k.i].type + ')'); if (e) { s.err = e; break; } o.kitTypes[k.acts[k.i].type] = 1; }
           const wrong = st === 'your' && opt.wrongAt === k.i; const a = window.__obkStep(wrong);
           if (/^no |missing|unknown|nokit/.test(a)) { s.err = st + ' ' + (k.i + 1) + ' (' + k.acts[k.i].type + '): ' + a; break; }
+          if (/^(book opening|page|proof|open)$/.test(a)) { s.screens--; await sleep(40); continue; }   /* the book (a Reader kind) loads and turns its pages: these steps do not count as screens */
           await sleep(2); continue; }
         if (st !== 'q') { seen[st] = 1;
           const dots = document.querySelectorAll('#app .ob-dots li').length, go = document.querySelectorAll('#app .ob-foot .ob-go').length, say = document.querySelector('#app .ob-say');
