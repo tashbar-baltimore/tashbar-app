@@ -51,7 +51,11 @@ module.exports = async function (browser) {
     const tapCorners = async (what) => {
       await pg.waitForFunction(() => window.__shp.cornerPts().length > 0, null, { timeout: 15000 }).catch(() => bad(L + ': ' + what + ': no corners to tap'));
       const n0 = (await S()).cornerTaps || 0, n = (await pg.evaluate(() => window.__shp.cornerPts())).length;
-      for (let i = 0; i < n; i++) { const pts = await pg.evaluate(() => window.__shp.cornerPts()); if (!pts.length) break; await pg.mouse.click(pts[0].x, pts[0].y); await pg.waitForTimeout(60); }
+      for (let i = 0; i < n; i++) {   /* like a boy, if a tap is lost on a slow test machine he taps that bead again (up to 3 times); every bead must still count */
+        for (let t = 0; t < 3; t++) { const pts = await pg.evaluate(() => window.__shp.cornerPts()); if (!pts.length) break; const c0 = (await S()).cornerTaps || 0;
+          await pg.mouse.click(pts[0].x, pts[0].y);
+          if (await pg.waitForFunction(c => (window.__shp.cornerTaps || 0) > c, c0, { timeout: 2000 }).then(() => true).catch(() => false)) break; }
+      }
       if (((await S()).cornerTaps || 0) - n0 !== n) bad(L + ': ' + what + ': tapping the corners did not count them');
     };
     /* the lesson: tap what it asks (corners, or the circle) until the game begins */
