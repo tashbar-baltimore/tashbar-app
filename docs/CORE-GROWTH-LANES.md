@@ -18,7 +18,7 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 | 4 | **C45 · Comprehension Gr 4–5** | TAKEN | https://claude.ai/code/session_01JPKZXEMq9S1KawXgCw533p | 2026-11-24 | 2026-11-24 03:17 UTC | Skill map + ledger in review (`docs/core-growth/C45-map.md`); next: Units 4.1 + 5.1 and Book B1 ch. 1–3, lessons once T's how-to is merged | T for lesson PRs; can start the map now |
 | 5 | **W48 · Writing Gr 4–8** | TAKEN | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf | 2026-11-24 | 2026-11-24 03:15 UTC | Skill map and ledger written (`docs/core-growth/W48-map.md`, `W48-ledger.md`); next: Unit 1 lessons once job T's how-to is on main | T (Writing Workshop); can start the map now |
 | 6 | **C23 · Comprehension Gr 2–3** | OPEN | | | | | T for lesson PRs; can start the map now |
-| 7 | **G · Grammar and words K–8** | OPEN | | | | | T for lesson PRs; can start the map now |
+| 7 | **G · Grammar and words K–8** | TAKEN | https://claude.ai/code/session_013qbMrgAu9CyoyPphT4PmMj | 2026-11-24 | 2026-11-24 04:10 UTC | Skill map and ledger written (`docs/core-growth/G-map.md`, `G-ledger.md`); next: rebuild the 2 to-fix lessons, then Unit 1 of every grade | T for lesson PRs; can start the map now |
 | 8 | **C68 · Comprehension Gr 6–8** | OPEN | | | | | T for lesson PRs; can start the map now |
 | 9 | **W13 · Writing K–3** | OPEN | | | | | T (Writing Workshop); can start the map now |
 | 10 | **S · Science and Social Studies** | OPEN | | | | | the core map of a band; can start the map now |
@@ -35,6 +35,8 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | C45 | Grade 5, Units 5.7–5.9 | OPEN | | |
 | C45 | Books B2 *Lost on the Ridge Trail* and B5 *Shabbos at the Lighthouse* (after B1 sets the pattern) | OPEN | | |
 | C45 | Fluency passages, Grades 4 and 5 (50, from the unit texts) | OPEN | | |
+| G | Grades 6–8 (L07–L09), Units 1–6 (see `docs/core-growth/G-map.md`) | OPEN | | |
+| G | Word Work sets for C45 and C68 texts (Grades 4–8), once their Shared texts are listed | OPEN | | |
 
 ## Casts (recurring characters, one per band)
 | Band | Cast note | Written by |
