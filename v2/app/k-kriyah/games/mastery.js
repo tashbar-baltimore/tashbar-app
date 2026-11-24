@@ -66,7 +66,7 @@ export default function setup(E, { struggled, unit }) {
     for (const c of mix(keys)) if (out.length < 3 && ok(c)) out.push(c);
     return mix(out);
   }
-  async function showSet(k) { set = pick(k); mix([0, 1, 2]).forEach((s, i) => slot[set[i]] = s); E.sfx.whoosh(); await place(true); }
+  async function showSet(k) { set = pick(k); if (keys.length > 3) { set.sort((a, b) => E.AB(a) - E.AB(b)); set.forEach((c, i) => slot[c] = i); } else mix([0, 1, 2]).forEach((s, i) => slot[set[i]] = s);   /* right to left in Alef-Beis order; with only three letters (Unit 1) they mix, so the place doesn't give the answer */ E.sfx.whoosh(); await place(true); }
 
   const line = q => q.by === 'quiet' ? 'Which letter is quiet? Tap it.' : q.by === 'sound' ? ['Which letter says', S(E.LETTERS[q.k].snd), '? Tap it.'] : 'Tap ' + E.LETTERS[q.k].name + '.';
   const explain = k => k === 'alef' ? 'That is Alef. Alef is quiet.' : k === 'beis' ? ['That is Beis. It has a dot. Beis says', S('b')] : k === 'veis' ? ['That is Veis. No dot. Veis says', S('v')] : k === 'kaf' ? ['That is Kaf. It has a dot. Kaf says', S('k')] : k === 'chaf' ? ['No dot: Chaf. It says', S('ch')]

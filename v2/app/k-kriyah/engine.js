@@ -343,6 +343,8 @@ export const FLAT = { alef: '\u05D0', beis: '\u05D1\u05BC', veis: '\u05D1', gimm
 const REF_H = 64.7, REF_CY = 32.35;
 const DOT_AT = { 'ב': [24, 29.6], 'כ': [22, 29.6] };
 export const sameShape = (a, b) => LETTERS[a].ch === LETTERS[b].ch;
+/* a letter's place in the Alef-Beis (for putting things in order, right to left) */
+export const AB = k => Object.keys(LETTERS).indexOf(k);
 export function letter(key, height = 2.6, color = 'blue') {
   const L = LETTERS[key], { g: geo, c } = letterGeo(L.ch); const bb = geo.boundingBox, W = bb.max.x - bb.min.x, s = height / REF_H, oy = (c.y - REF_CY) * s;   /* every letter on the same lines: Yud stays small, up at the top */
   const grp = new THREE.Group(), m = new THREE.Mesh(geo, letterMats(color)); m.castShadow = true; m.receiveShadow = true; m.scale.setScalar(s); m.position.y = oy; grp.add(m);

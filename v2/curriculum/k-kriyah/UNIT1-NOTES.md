@@ -11,8 +11,8 @@
 | Stone | Game | What he does |
 |---|---|---|
 | 1 | Mendy's first day (opener story) | Tatty walks Mendy to cheder; the rebbe shows Alef (Abba starts with Alef; Alef is quiet). The house turns into Beis with Mendy as the dot; Mendy goes out and it's Veis. A short chant, then he taps each letter. |
-| 2 | Look-Alike Detective | Drags (or taps) each letter to its house: Beis to the house where Mendy is home, Veis to the empty one. |
-| 3 | Feel the Shape | Runs his finger along the glowing road on each big letter. Touch only, not writing. |
+| 2 | Feel the Shape | Runs his finger along the glowing road on each big letter, Alef first. Touch only, not writing. |
+| 3 | Look-Alike Detective | Drags (or taps) each letter to its house: Beis to the house where Mendy is home (on the right), Veis to the empty one (on the left). |
 | 4 | Letter Hunt | Finds every Beis hidden in the sukkah, then every Veis. |
 | 5 | Find the Mistake | "Yaakov says this is a Beis. Is he right?" Taps yes or no, then drags the right letter onto Yaakov's sign. |
 | 6 | Show what you know (mastery check) | "Hear it, tap it": 9 questions by name and by sound, mixed. |
