@@ -1,0 +1,67 @@
+<script>
+/* CoreDataFH2.html: Core Growth job F, HELPER 2 (Helpers wanted: "F · Grade 1 Units 7-12"), Grade 1 games (docs/core-growth/F-map.md section 4).
+   Keep this file under 150 KB. A Grade 1 boy gets games only (HoS 2026-11-22), so every skill here is a K-1 game on the Grade 1
+   Reading path (docs/core-growth/HOW-TO-ADD-A-K1-GAME.md), not a question lesson. The skill rows are in src/CoreDataF.js (file CoreDataFH2).
+   F's rules for every game (F-map section 2): sounds are written as sounds in anything the voice says (ay, ee, oh), never a bare
+   consonant letter; letter names for a team are spelled with a dash (a-i, o-w); no "count the pictures"; one right tile order; the voice never
+   reads a word the boy is asked to read (a listen piece plays a word he must FIND, a dictation plays a sentence he must BUILD); later pieces are
+   harder; the boy's likely mistake is one piece (mis:true); no real word offered as a wrong spelling.
+   Taught before Unit 7 (F-map Units 1-6): short vowels, sh ch th wh ck, blends, -ff -ll -ss -ng -nk, silent e, -s -ed -ing, and the K and
+   Grade 1 heart words (the a I is to we he me my go no so like and you said was have of they are what where when who there could would
+   should does done some come). Path order: Unit 7 follows the Vowel Teams 1 game (READ.LV.L02.02), each game after the one before it.
+   Cast: Shmuli Peretz (Grade 1), Zeidy and Bubby's farm, Abba's bakery (F-map section 8). */
+(function () {
+  var LESSONS = {};
+  var K1G = [
+    /* ===== Grade 1 Unit 7 · Vowel teams 1 (F-map section 4). Piece 1 of each game is the guided build (ghost tiles show the team). ===== */
+    { id:'READ.LV.L02.06', grade:1, name:'Train on the Way', pic:'🚂', after:'READ.LV.L02.02', acts:[
+      {type:'tiles', w:['r','ai','n'], extra:['ay'], hear:'rain', pic:'🌧️', say:'A-i is a team. Two letters, one sound: ay. Build rain.', how:'Say rain slowly: rrr, ay, nnn. Ay is one tile, a-i.'},
+      {type:'listen', hear:'wait', o:['wait','wet','way'], a:'wait', say:'Now find it. Tap the word you hear.', how:'Say it slowly. Find the a-i team in the middle.'},
+      {type:'sort', bins:['ai: in the middle','ay: at the end'], cards:[['nail',0],['day',1],['tail',0],['play',1],['sail',0],['stay',1]], say:'Ay in the middle? A-i. Ay at the end? A-y.', how:'Find the ay sound. Is it in the middle or at the end?'},
+      {type:'tiles', w:['t','r','ai','n'], extra:['ay'], hear:'train', pic:'🚂', say:'Shmuli rides a train to Zeidy. Build train.', how:'The ay sound is in the middle, so use a-i.'},
+      {type:'tiles', w:['p','l','ay'], extra:['ai'], hear:'play', mis:true, say:'Shmuli wants a-i at the end. Is that right? Build play.', how:'Ay at the very end is spelled a-y. Words do not end with a-i.'},
+      {type:'match', pairs:[['snail','🐌'],['mail','📬'],['paint','🎨']], say:'Chug your arms like a train! Now read and match.', how:'Sound it out. The a-i team says ay.'},
+      {type:'findall', grid:['say','sat','gray','grab','tray','trap'], find:['say','gray','tray'], findSay:'word that says ay', say:'Tap every word with the ay sound.', how:'Look for the a-y team. One a alone says aa.'},
+      {type:'dictation', hear:'We play in the rain.', w:['We','play','in','the','rain.'], extra:['plai'], say:'Listen. Build it. Pick the right spelling.', how:'Play ends with a-y. Rain has a-i in the middle.'}]},
+
+    { id:'READ.LV.L02.07', grade:1, name:'Green Tree, Sweet Peach', pic:'🌳', after:'READ.LV.L02.06', acts:[
+      {type:'tiles', w:['s','ee','d'], extra:['e'], hear:'seed', pic:'🌱', say:'E-e is a team. Two letters, one sound: ee. Build seed.', how:'Say seed slowly: sss, ee, duh. Ee is one tile.'},
+      {type:'listen', hear:'seat', o:['seat','set','sat'], a:'seat', say:'E-a says ee too. Tap the word you hear.', how:'Seat has the long ee sound. Look for e-a.'},
+      {type:'sort', bins:['ee','ea'], cards:[['feet',0],['leaf',1],['green',0],['team',1],['deep',0],['beach',1]], say:'Both teams say ee. Which team is in each word?', how:'Look for the two vowels side by side.'},
+      {type:'match', pairs:[['tree','🌳'],['peach','🍑'],['bee','🐝']], say:'Stand tall like a tree! Now read and match.', how:'Sound it out. The team says ee.'},
+      {type:'findall', grid:['bed','bead','men','mean','ten','teen'], find:['bead','mean','teen'], findSay:'word with the long ee sound', mis:true, say:'Careful! One e, or a team? Find every long ee.', how:'One e alone says eh. E-e or e-a says ee.'},
+      {type:'tiles', w:['t','ee','th'], extra:['e'], hear:'teeth', say:'Shmuli brushes his teeth. Build teeth.', how:'Long ee needs a team. One e alone says eh.'},
+      {type:'listen', q:'Shmuli feeds the ___ in the pen.', hear:'Read it all.', o:['sheep','beach','teeth'], a:'sheep', say:'Read it. Which word fits?', how:'Read each word in the gap. Which one makes sense?'},
+      {type:'dictation', hear:'I see a green tree.', w:['I','see','a','green','tree.'], extra:['grean'], say:'Listen. Build it. Pick the right spelling.', how:'Green and tree both use the e-e team.'}]},
+
+    { id:'READ.LV.L02.08', grade:1, name:'Boat in the Snow', pic:'⛵', after:'READ.LV.L02.07', acts:[
+      {type:'tiles', w:['g','oa','t'], extra:['ow'], hear:'goat', pic:'🐐', say:'O-a is a team. Two letters, one sound: oh. Build goat.', how:'Say goat slowly: guh, oh, tuh. Oh is one tile.'},
+      {type:'listen', hear:'boat', o:['boat','bat','but'], a:'boat', say:'O-w says oh too. Tap the word you hear.', how:'Boat has the long oh sound. Look for o-a.'},
+      {type:'sort', bins:['oa: in the middle','ow: at the end'], cards:[['road',0],['snow',1],['toad',0],['grow',1],['loaf',0],['slow',1]], say:'Oh in the middle? O-a. Oh at the end? O-w.', how:'Find the oh sound. Is it in the middle or at the end?'},
+      {type:'tiles', w:['f','l','oa','t'], extra:['ow'], hear:'float', say:'Shmuli\'s toy boat can float. Build float.', how:'The oh sound is in the middle, so use o-a.'},
+      {type:'tiles', w:['s','n','ow'], extra:['oa'], hear:'snow', pic:'❄️', mis:true, say:'Shmuli wants o-a at the end. Is that right? Build snow.', how:'Oh at the very end is spelled o-w. Words do not end with o-a.'},
+      {type:'match', pairs:[['coat','🧥'],['soap','🧼'],['snowman','⛄']], say:'Zip up your coat! Now read and match.', how:'Sound it out. The team says oh.'},
+      {type:'evidence', q:'Where is the goat?', p:['Shmuli feeds the goat.','The goat is in the snow.','The goat is so slow.'], a:1, look:'where the goat is', say:'Read it. Tap the sentence that tells where the goat is.', how:'Read each one. Which one tells a place?'},
+      {type:'dictation', hear:'Show me the boat.', w:['Show','me','the','boat.'], extra:['Shoa'], say:'Listen. Build it. Pick the right spelling.', how:'Show ends with o-w. Boat has o-a in the middle.'}]},
+
+    { id:'READ.LV.L02.09', grade:1, name:'Which Team? Spell It!', pic:'✏️', after:'READ.LV.L02.08', acts:[
+      {type:'tiles', w:['d','ay'], extra:['ai'], hear:'day', say:'Ay at the end? Use a-y. Build day.', how:'Day ends with the ay sound. At the end, use a-y.'},
+      {type:'sort', bins:['At the end','In the middle'], cards:[['ay',0],['ai',1],['ow',0],['oa',1]], say:'Jump if a team can end a word! Now sort.', how:'A-y and o-w can sit at the end. A-i and o-a stay in the middle.'},
+      {type:'listen', hear:'snow', o:['snow','snoa','sno'], a:'snow', say:'Oh at the end is often o-w. Find snow.', how:'Snow ends with oh, spelled o-w. Go and no are heart words.'},
+      {type:'tiles', w:['p','ai','n','t'], extra:['ay'], hear:'paint', say:'Abba will paint the bakery sign. Build paint.', how:'In the middle, ay is spelled a-i.'},
+      {type:'sort', bins:['Yes 👍','No 👎'], cards:[['play',0],['plai',1],['boat',0],['bowt',1],['rain',0],['rayn',1],['rane',1]], mis:true, say:'Shmuli spelled these. Is each one spelled right?', how:'Where is the sound? Which team goes there? Rain uses a-i, not a quiet e.'},
+      {type:'listen', q:'Shmuli waits to get on the ___.', hear:'Read it all.', o:['train','trayn','tran'], a:'train', say:'Read it. Which spelling is right?', how:'Ay in the middle needs a team: a-i.'},
+      {type:'dictation', hear:'Stay in the boat.', w:['Stay','in','the','boat.'], extra:['Stai','bowt'], say:'Listen. Build it. Pick the right spellings.', how:'Stay ends with a-y. Boat has o-a in the middle.'}]},
+
+    { id:'READ.FLU.L02.08', grade:1, name:'Does It Make Sense?', pic:'🤔', after:'READ.LV.L02.09', acts:[
+      {type:'listen', q:'Shmuli rides the ___ to Zeidy.', hear:'Read it all.', o:['train','rain','tray'], a:'train', say:'Good readers ask: does it make sense? Which word fits?', how:'Try each word in the gap. Read the whole sentence.'},
+      {type:'sort', bins:['Makes sense 👍','Oops 👎'], cards:[['We sail in a boat.',0],['We sail in a goat.',1],['The cat ran up the tree.',0],['The cat ran up the three.',1]], mis:true, say:'Shmuli read too fast! Does each one make sense?', how:'Read it all. If it sounds silly, a word is wrong.'},
+      {type:'listen', q:'Zeidy feeds the got.', hear:'Read it all.', o:['goat','got','gate'], a:'goat', say:'Stop! Hold up your hand. Which word did Shmuli mean?', how:'Got does not make sense. Find a word that looks like it and makes sense.'},
+      {type:'evidence', q:'Which one is silly?', p:['Shmuli has his red coat.','He runs to the gate.','He sees a goat on the red.'], a:2, look:'a silly word', say:'Tap the sentence that does not make sense.', how:'Read each one. Which one sounds silly?'},
+      {type:'tiles', q:'He sees a goat on the ___.', w:['r','oa','d'], extra:['e'], say:'Red is silly. Fix it! Build the word that makes sense.', how:'A goat can walk on it. Read the sentence with your word.'},
+      {type:'dictation', hear:'Stop, go back and read it.', w:['Stop,','go','back','and','read','it.'], extra:['bak','raed'], say:'Listen. Build the reading rule.', how:'Read has the e-a team. Say it softly, then tap in order.'}]}
+  ];
+  if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
+  if (window.TLCORE) TLCORE.add('F', LESSONS, {});
+})();
+</script>

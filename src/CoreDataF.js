@@ -50,5 +50,10 @@ CORE_SKILLS.F = [
   ["READ.PHON.L01.25", "Long or Short?", "Hear long a, which says its name, and short a", { after: "READ.FLU.L01.09", std: "RF.K.3b", file: "CoreDataFH1", min: 5 }],
   ["READ.PHON.L01.26", "Shhh, Ch, Th", "Know that sh, ch and th are two letters, one sound", { after: "READ.PHON.L01.25", std: "RF.K.3a", file: "CoreDataFH1", min: 5 }],
   ["READ.PA.L01.15", "Four Sounds", "Blend and chop words with four sounds", { after: "READ.PHON.L01.26", std: "RF.K.2d", file: "CoreDataFH1", min: 4 }],
-  ["READ.FLU.L01.10", "Heart Words: have, of, they", "Read the heart words have, of, they and are", { after: "READ.PA.L01.15", std: "RF.K.3c", file: "CoreDataFH1", min: 5 }]
+  ["READ.FLU.L01.10", "Heart Words: have, of, they", "Read the heart words have, of, they and are", { after: "READ.PA.L01.15", std: "RF.K.3c", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L02.06", "Train on the Way", "Read and spell the ay sound with ai and ay", { after: "READ.LV.L02.02", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.07", "Green Tree, Sweet Peach", "Read ee and ea, which both say ee", { after: "READ.LV.L02.06", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.08", "Boat in the Snow", "Read and spell the oh sound with oa and ow", { after: "READ.LV.L02.07", std: "RF.1.3c", file: "CoreDataFH2", min: 6 }],
+  ["READ.LV.L02.09", "Which Team? Spell It!", "Pick the right vowel team to spell a word", { after: "READ.LV.L02.08", std: "L.1.2d", file: "CoreDataFH2", min: 6 }],
+  ["READ.FLU.L02.08", "Does It Make Sense?", "Check that a sentence makes sense, and go back to fix a misread word", { after: "READ.LV.L02.09", std: "RF.1.4c", file: "CoreDataFH2", min: 6 }]
 ];
