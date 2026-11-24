@@ -99,6 +99,8 @@
  +'body:not(.gm-on):not(.gm-nav):not(.gm-lesson):not(.hp-dark) #tlmenu.open .cm-bub{box-shadow:0 6px 16px rgba(20,8,60,.22),0 0 0 1px rgba(74,47,196,.14)}'
  +'#tlmenu.open .cm-bub:hover{background:#f7f4ff}'
  +'#tlmenu .cm-bub.danger{color:var(--cm-danger)}'
+ /* HoS 2026-11-24 ("the kids can't find it"): Sign out is a pill with the words, not the door picture (button system: words or an icon) */
+ +'#tlmenu .cm-word .cm-inner{font-size:15px;font-weight:800;white-space:nowrap;letter-spacing:.01em}'
  +'#tlmenu .cm-inner{display:flex;align-items:center;justify-content:center;width:100%;height:100%;transition:transform .08s}'
  +'#tlmenu .cm-bub:active .cm-inner,#tlmenu .cm-sub:active{transform:scale(.84)}'
  +'#tlmenu .cm-sub{flex:none;position:relative;width:44px;height:44px;border:none;padding:0;background:transparent;border-radius:22px;color:var(--cm-accent);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .08s;-webkit-tap-highlight-color:transparent;font:inherit}'
@@ -126,7 +128,7 @@
  var ST='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
  var root=document.createElement('nav'); root.id='tlmenu'; root.className='cm'; root.setAttribute('aria-label','Menu'); root.style.display='none';
  root.innerHTML=
-  '<button type="button" class="cm-bub danger" data-item="signout" aria-label="Sign out" data-label="Sign out"><span class="cm-inner">'+SVG(22,'<path d="M9 4H5.5Q4 4 4 5.5v11Q4 18 5.5 18H9" '+ST+'/><path d="M14 7l4 4-4 4M18 11H9" '+ST+'/>')+'</span></button>'
+  '<button type="button" class="cm-bub danger cm-word" data-item="signout"><span class="cm-inner">Sign out</span></button>'
  +'<button type="button" class="cm-bub" data-item="message" aria-label="Message my rebbe" data-label="Message my rebbe"><span class="cm-inner">'+SVG(22,'<rect x="3" y="5" width="16" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 6.5l7 5.5 7-5.5" '+ST+'/>')+'</span></button>'
  +'<button type="button" class="cm-bub" data-item="sound" aria-label="Sound" data-label="Sound on"><span class="cm-inner" data-sound-icon></span></button>'
  +'<div class="cm-bub" data-item="music"><span class="cm-inner" style="justify-content:flex-start">'
@@ -151,7 +153,7 @@
  /* which dot each bubble comes out of: -1 top, 0 middle, 1 bottom */
  var ORDER=[{id:'close',dot:-1},{id:'music',dot:0},{id:'sound',dot:0},{id:'message',dot:1},{id:'signout',dot:1}];
  var trigger=root.querySelector('.cm-trigger'), el=function(id){ return root.querySelector('[data-item="'+id+'"]'); };
- var state={open:false,songLoaded:false,playing:false,soundOn:sndOn(),showNext:true};
+ var state={open:false,songLoaded:false,playing:false,soundOn:sndOn(),showNext:true,showPlay:true};
 
  /* the app's real actions */
  var actions={
@@ -163,14 +165,15 @@
   nextSong:function(){ act('munext'); }
  };
 
- /* very small phones (under 340 px): the music pill keeps play/pause but drops next, so sign out never runs off the left edge */
- function groupWidth(){ return 44+(state.songLoaded?40:0)+(state.songLoaded&&state.showNext?40:0); }
+ /* small phones: the music pill drops next (under 420 px), then play/pause (under 360 px), so the Sign out pill never runs off the left edge */
+ var SIGNOUT_W=92;
+ function groupWidth(){ return 44+(state.songLoaded&&state.showPlay?40:0)+(state.songLoaded&&state.showNext?40:0); }
  function layout(instant){
   root.style.right='calc('+(window.innerWidth>=700?22:18)+'px + env(safe-area-inset-right,0px))';
-  var sn=window.innerWidth>=340; if(sn!==state.showNext){ state.showNext=sn; renderIcons(); }
+  var sn=window.innerWidth>=420, sp=window.innerWidth>=360; if(sn!==state.showNext||sp!==state.showPlay){ state.showNext=sn; state.showPlay=sp; renderIcons(); }
   var cx=T.closeCenterX, prevW=0;
   ORDER.forEach(function(it,i){
-   var w=it.id==='music'?groupWidth():44; if(i>0) cx=cx-prevW/2-T.gap-w/2; prevW=w;
+   var w=it.id==='music'?groupWidth():it.id==='signout'?SIGNOUT_W:44; if(i>0) cx=cx-prevW/2-T.gap-w/2; prevW=w;
    var b=el(it.id), inner=b.querySelector('.cm-inner'), tr;
    b.style.left=(cx-w/2)+'px'; b.style.width=w+'px';
    if(state.open){ var d=T.openDelay[it.id];
@@ -199,7 +202,7 @@
   var p=root.querySelector('[data-play-icon]'), playing=state.songLoaded&&state.playing, pv=playing?'pause':'play';
   if(p.dataset.v!==pv){ p.dataset.v=pv; p.innerHTML=playing?ICONS.pause:ICONS.play; }
   var pb=root.querySelector('[data-action="playPause"]'); pb.setAttribute('aria-label',playing?'Pause':'Play'); pb.dataset.label=playing?'Pause':'Play';
-  root.querySelector('[data-extra="play"]').classList.toggle('on',state.songLoaded);
+  root.querySelector('[data-extra="play"]').classList.toggle('on',state.songLoaded&&state.showPlay);
   root.querySelector('[data-extra="next"]').classList.toggle('on',state.songLoaded&&state.showNext);
   root.querySelector('[data-note]').classList.toggle('cm-bop',playing);
  }
