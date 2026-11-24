@@ -35,24 +35,32 @@
   function cloth(open) { $('flash').classList.toggle('open', open); if (open) NK.sound.cloth(); }
   function ready() { var c = $('check'); c.classList.toggle('dim', H.count() === 0); c.classList.toggle('ready', H.count() > 0 && GAME.phase === 'answer'); }
   function hooks() {
-    GAME.right = function () { return FR.fingerMoves(H, R.n).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
-    GAME.wrong = function () { var w = R.n < 5 ? R.n + 1 : R.n - 1; return FR.fingerMoves(H, w).map(function (i) { return { tap: '#bighand .fg[data-f="' + i + '"]' }; }).concat([{ tap: '#check' }]); };
+    GAME.right = function () { return FR.fingerTaps(H, R.n, '#bighand').concat([{ tap: '#check' }]); };
+    GAME.wrong = function () { var w = R.n < 5 ? R.n + 1 : R.n - 1; return FR.fingerTaps(H, w, '#bighand').concat([{ tap: '#check' }]); };
   }
   async function check() {
     NK.unlock(); if (GAME.phase !== 'answer') return; var have = H.count(); if (!have) { FR.say('Raise some fingers first.'); return; }
     GAME.phase = 'busy'; FR.lock(true); H.lock(true); cloth(true);
     var d = done; done = null;
-    if (have === R.n) { await FR.yes($('bighand'), FR.pick(['Yes!', 'Right!', 'Good eyes!'])); d(true); return; }
-    FR.oops($('bighand')); await FR.say("Let's look."); if (card.L) await FR.showShape(card, true); else await FR.say(FR.Word(R.n) + ' fingers.');
-    d(false);
+    if (have === R.n) { await FR.yes($('bighand'), FR.pick(['Yes!', 'Right!', 'Good eyes!'])); d(!R.fixing); return; }
+    if (R.fixing) { await FR.say(FR.Word(R.n) + '. Good trying!'); d(false); return; }
+    FR.oops($('bighand')); await FR.say("Let's look."); if (card.L) await FR.showShape(card, true); else await FR.say(FR.Word(R.n) + (R.n === 1 ? ' finger.' : ' fingers.'));
+    R.fixing = true; done = d; await FR.say('Show me again.'); GAME.phase = 'answer'; FR.lock(false); H.lock(false); ready(); hooks();
   }
   FR.game({
-    id: 'u1-check', title: 'Show Me!', rounds: 8,
+    id: 'u1-check', title: 'Show Me!', rounds: 8, practice: 'fingers.html',
     hero: '<svg viewBox="0 0 100 100"><path d="M30 14h40v18c0 14-9 24-20 24S30 46 30 32z" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><path d="M30 20H18c0 12 6 18 14 18M70 20h12c0 12-6 18-14 18" fill="none" stroke="#C26A00" stroke-width="4"/><rect x="44" y="56" width="12" height="14" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><rect x="32" y="70" width="36" height="12" rx="4" fill="url(#nkGold)" stroke="#C26A00" stroke-width="4"/><circle cx="42" cy="26" r="4" fill="#fff" opacity=".9"/></svg>',
     init: function (F) { H = F.fingers(0, true); $('bighand').appendChild(H.el); H.onChange = ready; H.lock(true); $('check').addEventListener('click', check); },
     reset: function (F) { plan = F.shuffle([1, 2, 3, 4, 5, 2, 3, 4]); },
-    demo: async function (F) { await F.say("Let's show what you learned!"); await F.say('Peek, then show me on the hand.'); },
-    endSay: function (s) { return s >= 2 ? 'Unit one is done! You see how many fast!' : 'Good try! Let\'s practice and try again.'; },
+    demo: async function (F) {
+      await F.say("Let's show what you learned! Watch me.");
+      if (card) card.remove(); card = F.card(2, 'apple'); card.style.cssText = 'position:absolute;inset:0;border:0;box-shadow:none;background:none'; $('flash').insertBefore(card, $('flash').firstChild);
+      cloth(true); await F.wait(1100); cloth(false); await F.wait(300);
+      await F.say('Two! I tap the hand two times.');
+      for (var k = 0; k < 2; k++) { await F.handTo(H.el, .5, .75); await F.handTap(); H.finger(k).classList.remove('down'); NK.sound.pop(); }
+      await F.handTo($('check')); await F.handTap(); cloth(true); await F.yes($('bighand'), 'Yes! Two!'); H.set(0);
+    },
+    endSay: function (s) { return s >= 2 ? 'Unit one is done! You see how many fast!' : 'Good try! Let\'s practice with Finger Flash.'; },
     round: function (F, i) {
       return new Promise(async function (res) {
         var n = plan[i]; R = { n: n }; H.set(0); H.lock(true); GAME.phase = 'flash'; F.lock(true); ready();

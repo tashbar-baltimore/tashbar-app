@@ -19,7 +19,7 @@
 .qcard.done{ border-color:#7BE0A4; background:radial-gradient(circle at 50% 35%,#FFFFFF,#E3FBEB); }
 .qcard .tick{ position:absolute; right:-10px; top:-10px; width:44px; height:44px; }
 .hero .qcard{ position:absolute; width:46%; }
-@media (max-width:760px), (max-aspect-ratio:4/5){ .row3 .qcard{ width:min(30vw,30vh); border-radius:20px; } .row3{ gap:8px; } .mid svg{ width:36px; height:36px; } }
+@media (max-width:760px), (max-aspect-ratio:4/5){ .stage{ grid-template-rows:none; grid-template-columns:1fr auto 1fr; } .row3{ flex-direction:column; gap:12px; width:auto; } .row3 .qcard{ width:min(40vw,25vh); border-radius:22px; } .mid{ transform:rotate(-90deg); } .mid svg{ width:36px; height:36px; } }
 </style>
 </head>
 <body>
@@ -73,7 +73,7 @@
   }
 
   FR.game({
-    id: 'match', title: 'Match it!', rounds: 5,
+    id: 'match', title: 'Match it!', rounds: 5, bonusSay: 'Bonus! Big numbers!',
     hero: '<div class="qcard dice" style="left:2%;top:10%;transform:rotate(-8deg)"><i class="dot" style="left:30%;top:30%"></i><i class="dot" style="left:70%;top:30%"></i><i class="dot" style="left:50%;top:70%"></i></div>' +
           '<div class="qcard" style="right:2%;top:22%;transform:rotate(7deg)"><svg class="q" viewBox="0 0 100 100" style="left:50%;top:28%"><use href="#nkApple"/></svg><svg class="q" viewBox="0 0 100 100" style="left:28%;top:70%"><use href="#nkApple"/></svg><svg class="q" viewBox="0 0 100 100" style="left:72%;top:70%"><use href="#nkApple"/></svg></div>',
     init: function (F) { F.dragTap({ sources: '#src .qcard', targets: '#tgt .qcard', drop: drop }); },
@@ -86,7 +86,7 @@
       $('s0').classList.add('done'); t.classList.add('done');
       await F.yes(t, 'Two dots. Two apples. Same!');
     },
-    reset: function () { easy = 0; },
+    reset: function (F, again, slow) { easy = slow ? 5 : 0; },
     bonus: function (F) {
       return new Promise(function (res) {
         R = { nums: [3, 4, 5], misses: 0, left: 3 }; deal(F.shuffle([3, 4, 5]), 'fingers', 'candle');
