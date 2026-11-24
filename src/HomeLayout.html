@@ -256,7 +256,7 @@ function shelf(key){ const o=SUB[key]; if(!o||!o.I) return; closeShelf(); css();
  const row=(x,n)=>'<button type="button" class="hlx-book '+x.state+'"'+DS(playDs(o,x.id))+' data-q="'+E(NM(x.id).toLowerCase())+'"><span class="num">'+(n||'')+'</span><span class="tx"><b>'+E(NM(x.id))+'</b><small>'+(x.state==='done'?'✓ Done · tap to review':x.state==='next'?'▶ Your next lesson':'Coming up')+'</small></span><span class="go">'+(x.state==='done'?'↺':'▶')+'</span></button>';
  const ord=o.kind!=='panel';
  const d=document.createElement('div'); d.id='hlx-shelf'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-label',o.t+': all lessons'); d.style.setProperty('--bg',BG[o.bg]);
- d.innerHTML='<div class="sh-in"><div class="sh-hd"><span class="ic" aria-hidden="true">'+o.ic+'</span><div class="t"><small>My Library</small><h2>'+E(o.t)+'</h2><div class="sh-bar"><i style="width:'+Math.max(2,I.pct)+'%"></i></div><span class="sh-cnt">'+(ord?I.done+' of '+I.tot+' lessons done':I.done+' lessons done')+'</span></div><button type="button" class="sh-x" data-hlxshelfx="1" aria-label="Close">✕</button></div>'
+ d.innerHTML='<div class="sh-in"><div class="sh-hd"><span class="ic" aria-hidden="true">'+o.ic+'</span><div class="t"><small>My Library</small><h2>'+E(o.t)+'</h2><div class="sh-bar"><i style="width:'+Math.max(2,I.pct)+'%"></i></div><span class="sh-cnt">'+(ord?I.done+' of '+I.tot+' lessons done':I.done+' lessons done')+'</span></div>'+(window.TLK?TLK.x('data-hlxshelfx="1"',''):'<button type="button" class="sh-x" data-hlxshelfx="1" aria-label="Close">✕</button>')+'</div>'
   +'<div class="sh-tools"><input type="search" class="sh-q" placeholder="Find a lesson in '+E(o.t)+'…" aria-label="Find a lesson in '+E(o.t)+'">'+(I.ds?'<button type="button" class="sh-open"'+DS(I.ds)+'>Open the '+E(o.t)+' page</button>':'')+'</div>'
   +(nx?'<div class="sh-sec"><h3>▶ Up next</h3><div class="sh-next">'+row(nx,ord?L.indexOf(nx)+1:'')+'</div></div>':'')
   +(ord?'<div class="sh-sec"><h3>📚 Every lesson, in order</h3><div class="sh-list">'+L.map((x,i)=>row(x,i+1)).join('')+'</div></div>'
@@ -264,7 +264,7 @@ function shelf(key){ const o=SUB[key]; if(!o||!o.I) return; closeShelf(); css();
        +'<div class="sh-sec"><h3>🏆 Done</h3>'+(done.length?'<div class="sh-list">'+done.map(x=>row(x,'✓')).join('')+'</div>':'<p class="sh-none">Your finished lessons will line up here. Start one above!</p>')+'</div>'))
   +'</div>';
  document.body.appendChild(d); document.body.classList.add('hlx-noscroll'); try{ if(typeof SND!=='undefined'&&SND.tap) SND.tap(); }catch(e){}
- setTimeout(()=>{ const f=d.querySelector('.sh-next .hlx-book')||d.querySelector('.sh-x'); f&&f.focus(); },40);
+ setTimeout(()=>{ const f=d.querySelector('.sh-next .hlx-book')||d.querySelector('[data-hlxshelfx]'); f&&f.focus(); },40);
  d.querySelector('.sh-q').addEventListener('input',ev=>{ const q=ev.target.value.trim().toLowerCase(); d.querySelectorAll('.sh-list .hlx-book').forEach(b=>{ b.hidden=!!q&&b.dataset.q.indexOf(q)<0; }); }); }
 function closeShelf(){ document.querySelectorAll('#hlx-shelf').forEach(x=>x.remove()); document.body.classList.remove('hlx-noscroll'); }
 window.tlLibShelf=shelf;

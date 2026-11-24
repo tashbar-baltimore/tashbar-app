@@ -11,7 +11,9 @@
    ROW-MERGE TABS (MERGE below: one row per boy, e.g. Pathfinder sessions and answers): another save to the same tab
    does NOT force a rerun. The transaction re-reads the blocks it writes and goes ahead when (1) every row this run
    changed is still exactly as this run read it, and (2) no row added by someone else meanwhile belongs to the same
-   boy (key column) as a row this run writes. New rows are moved down to the tab's current end. Otherwise: rerun. */
+   boy (key column) as a row this run writes. New rows are moved down to the tab's current end. Otherwise: rerun.
+   MS_State (one progress row per boy, key = boy) and MS_Evidence (his answers, key = boy) joined 2026-11-24: before, a class saving
+   lessons together made every save start over and some got "The school server is busy" (tests/lib/saveload.js). */
 const crypto = require('crypto');
 const { createRuntime } = require('./runtime.js');
 const enc = v => JSON.stringify(v, (k, x) => x, 0);
@@ -23,7 +25,7 @@ const perFor = name => (/Evidence|Money|Ledger|Log|Audit|History|Throttle/i.test
    these columns with a row this run writes. Pathfinder tabs: the boy (or his session). TL Money: the boy, AND the pay-once key
    (col 10), because Money.js checks some keys across the whole ledger; the ledger is only ever added to (rows removed only for
    made-up practice boys, which the shift counter catches). */
-const MERGE = { PF_Sessions: [2], PF_Ksessions: [2], PF_Answers: [3], PF_Results: [3], PF_Queue: [3], PF_Sound: [9], 'TL Money': [3, 10] };
+const MERGE = { MS_State: [1], MS_Evidence: [2], PF_Sessions: [2], PF_Ksessions: [2], PF_Answers: [3], PF_Results: [3], PF_Queue: [3], PF_Sound: [9], 'TL Money': [3, 10] };
 const blank = r => !r || r.every(x => x === '' || x === undefined || x === null);
 
 class FsServer {

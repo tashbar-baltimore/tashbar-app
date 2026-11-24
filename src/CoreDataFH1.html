@@ -5,8 +5,8 @@
    F's rules for every game (F-map section 2): sounds are written as sounds in anything the voice says (fff, lll, uh, rrr, buh), never a bare
    consonant letter; no "count the pictures"; one right tile order; the voice never reads a word the boy is asked to read; cold practice
    (later pieces are harder); the boy's likely mistake is one piece (mis:true). Letters already taught by Unit 6: m a s t p i n c k o d g h e.
-   Path order: each game names the game it comes after on the K path, so Units 6, 7 and 8 sit in skill order around the existing
-   Chop It and Read CVC games, before Snap Words (Unit 9). Cast: the Peretz family on Maple Street (F-map section 8). */
+   Path order: each game names the game it comes after on the K path, so Units 6-10 sit in skill order around the existing
+   Chop It, Read CVC and Snap Words games, before Tiny Tales. Cast: the Peretz family on Maple Street (F-map section 8). */
 (function () {
   var LESSONS = {};
   var K1G = [
@@ -130,7 +130,79 @@
       {type:'trace', glyph:'z', name:'the letter for zzz', say:'Zzz: across, slant down, across again.', how:'Line across the top. Slant back. Line across the bottom.'},
       {type:'tiles', w:['f','o','x'], extra:['s'], hear:'fox', say:'Write it with tiles! Build fox.', how:'Fff, ah, ks. The cross says ks.'},
       {type:'trace', glyph:'x', name:'the letter for ks', say:'Ks: one slant down, then cross it with another.', how:'Slant one way. Then slant the other way across it.'},
-      {type:'trace', glyph:'q', name:'the letter for kw', say:'For kw: a circle, then down with a tail.', how:'Round like a ball. Then a line down that flicks out.'}]}
+      {type:'trace', glyph:'q', name:'the letter for kw', say:'For kw: a circle, then down with a tail.', how:'Round like a ball. Then a line down that flicks out.'}]},
+
+    /* ===== K Unit 9 · Reading real sentences ===== */
+    { id:'READ.PHON.L01.23', grade:0, name:'One More: -s', pic:'🐾', after:'WRIT.HAND.L01.11', acts:[
+      {type:'listen', hear:'cats', o:['🐱','🐱🐱'], a:'🐱🐱', say:'One cat, or more? Listen for sss at the end.', how:'Hear sss at the end? That means more than one.'},
+      {type:'sort', bins:['🐱','🐱🐱'], cards:[['cat',0],['cats',1],['pin',0],['pins',1],['hats',1],['bug',0]], say:'One or more? Read each word to the end.', how:'Look at the end. Sss or zzz at the end means more.'},
+      {type:'tiles', w:['c','a','t','s'], extra:['p'], hear:'cats', say:'Build cats. Do not forget the end!', how:'Kuh, aa, tuh, sss. Four tiles.'},
+      {type:'listen', hear:'pins', o:['pin','pins','pit'], a:'pins', mis:true, say:'Careful! Listen all the way to the end.', how:'Pin or pins? Hear the zzz at the end.'},
+      {type:'match', pairs:[['bug','🐛'],['bugs','🐛🐛'],['hats','🎩🎩']], say:'Read each word. One, or more than one? Match it.', how:'Look at the end of the word first.'},
+      {type:'dictation', hear:'I see the dogs.', w:['I','see','the','dogs.'], extra:['dog.'], say:'Listen. Build it. Dogs means more than one.', how:'Say it softly. Listen for zzz at the end.'}]},
+
+    { id:'READ.PHON.L01.24', grade:0, name:'Cap or Cat?', pic:'🧢', after:'READ.PHON.L01.23', acts:[
+      {type:'match', pairs:[['cap','🧢'],['cat','🐱'],['can','🥫']], say:'They start the same. Check the last letter. Match.', how:'Read to the very end before you tap.'},
+      {type:'listen', hear:'bed', o:['bed','bad','bid'], a:'bed', mis:true, say:'Careful! These look alike. Check the middle letter.', how:'Look at the middle letter. Say its sound.'},
+      {type:'findall', pic:'🦊', grid:['fox','fix','fox','box','fan','fox'], find:'fox', findSay:'word that names the picture', say:'Tap every word that names the picture.', how:'Check every letter: first, middle, last.'},
+      {type:'sort', bins:['🐛','🛁','🚌'], cards:[['bug',0],['tub',1],['bus',2]], say:'They all have uh. Check the first and last letters.', how:'Read every letter. Then find the picture.'},
+      {type:'tiles', w:['p','e','t'], extra:['n','g'], hear:'pet', say:'Build pet. Check the last tile!', how:'Puh, eh, tuh. The last sound is tuh.'}]},
+
+    { id:'READ.FLU.L01.08', grade:0, name:'Heart Words: said, was, you', pic:'❤️', after:'READ.FLU.L01.01', acts:[
+      {type:'listen', hear:'said', o:['said','sad','sat'], a:'said', mis:true, say:'Careful! Said does not say sa-id. It says sed. Tap said.', how:'Sss and duh are normal. The middle is the heart part.'},
+      {type:'findall', grid:['was','saw','was','wag','was','as'], find:'was', findSay:'was', say:'Was is a heart word. It says wuz. Tap every was.', how:'Wuh comes first. Saw has the same letters backwards!'},
+      {type:'listen', hear:'you', o:['you','yes','yum'], a:'you', say:'You is a heart word. It says yoo. Tap you.', how:'Yuh, then oo. Three letters, and it says yoo.'},
+      {type:'listen', hear:'like', o:['like','lit','lip'], a:'like', say:'Like is a heart word. It rhymes with bike. Tap like.', how:'Lll, then kuh. The last letter is quiet.'},
+      {type:'dictation', hear:'I like you.', w:['I','like','you.'], say:'Listen. Like and you are heart words. Build it.', how:'Say it softly. Tap the words in order.'},
+      {type:'listen', hear:'and', o:['and','an','ant'], a:'and', say:'And joins things: Abba and Moishy. Tap and.', how:'Aa, nnn, duh. Look for duh at the end.'},
+      {type:'dictation', hear:'The cat was sad.', w:['The','cat','was','sad.'], extra:['saw'], say:'Listen. Build it with the heart word was.', how:'Was starts with wuh. Saw starts with sss.'}]},
+
+    { id:'READ.FLU.L01.09', grade:0, name:'Smooth Like Talking', pic:'🐇', after:'READ.FLU.L01.08', acts:[
+      {type:'listen', hear:'Dan can run to the bus.', o:['🐢','🐇'], a:'🐇', say:'Listen. Choppy like a turtle, or smooth like talking?', how:'Smooth reading sounds just like talking.'},
+      {type:'dictation', hear:'Ben has a big red bus.', w:['Ben','has','a','big','red','bus.'], say:'Listen. Build it. Then read it smoothly, three times.', how:'Say it softly. Tap the words in order.'},
+      {type:'listen', hear:'The. Cat. Sat. On. The. Mat.', o:['🐢','🐇'], a:'🐢', mis:true, say:'Careful! Stops after every word are choppy. Listen again.', how:'A stop after every word is turtle reading.'},
+      {type:'sort', bins:['🐛','🦊'], cards:[['A bug is on a rug.',0],['A fox ran to his den.',1],['The bug can hop.',0],['The fox can dig a pit.',1]], say:'Read each one smoothly. Is it about the bug or the fox?', how:'Read it like you are talking. Then pick its box.'},
+      {type:'dictation', hear:'The sun is hot.', w:['The','sun','is','hot.'], say:'Build it. Read it to Abba three times, smoothly!', how:'Say it softly. Tap the words in order.'}]},
+
+    { id:'WRIT.HAND.L01.12', grade:0, name:'Big Letters', pic:'✏️', after:'READ.FLU.L01.09', acts:[
+      {type:'trace', glyph:'D', name:'big D', say:'Big duh: a tall line down, then a big round belly.', how:'Line down first. Then curve from the top to the bottom.'},
+      {type:'sort', bins:['✅','❌'], cards:[['Dan',0],['dan',1],['Ben',0],['ben',1]], mis:true, say:'Careful! Names start with a big letter. Right or wrong?', how:'Look at the first letter. Is it big?'},
+      {type:'trace', glyph:'B', name:'big B', say:'Big buh: a tall line, then two bumps.', how:'Line down. Then a bump on top and a bump on the bottom.'},
+      {type:'match', pairs:[['D','d'],['B','b'],['I','i']], say:'Big letter, little letter. Match them.', how:'Say the sound of each one. Find its partner.'},
+      {type:'trace', glyph:'T', name:'big T', say:'Big tuh: a tall line down, then a line across the top.', how:'Line down. Then a long line across the top.'},
+      {type:'dictation', hear:'Tal can hop.', w:['Tal','can','hop.'], extra:['tal'], say:'Listen. Build it. A name gets a big letter.', how:'Names and the first word start with a big letter.'},
+      {type:'trace', glyph:'I', name:'big I', say:'The word I: a line down, a hat and shoes.', how:'Line down. Then a short line on top and on the bottom.'}]},
+
+    /* ===== K Unit 10 · Long and short; my first chapter ===== */
+    { id:'READ.PHON.L01.25', grade:0, name:'Long or Short?', pic:'🎂', after:'WRIT.HAND.L01.12', acts:[
+      {type:'sort', bins:['🍎','🎂'], cards:[['🐱',0],['🚂',1],['🎩',0],['🍇',1],['🦇',0],['🐍',1]], say:'Short like apple, or long like cake? Sort them.', how:'Say it. Does the middle say ay, its own name?'},
+      {type:'listen', hear:'snake', o:['🍎','🎂'], a:'🎂', say:'Is snake short like apple, or long like cake?', how:'Say snake slowly. Hear ay in the middle?'},
+      {type:'findall', grid:['🚂','🐱','🍇','🎩','🐍','🦇'], find:['🚂','🍇','🐍'], findSay:'picture that says ay', say:'Tap every picture that says ay, like cake.', how:'Say each one. Long ay says its name.'},
+      {type:'listen', hear:'man', o:['🍎','🎂'], a:'🍎', mis:true, say:'Careful! Not every one is long. Man: short or long?', how:'Say man slowly. Aa, like apple: short.'},
+      {type:'findall', grid:['🦀','✈️','🎒','🍰','🧢','🚂'], find:['🦀','🎒','🧢'], findSay:'picture that says aa', say:'Now tap every picture with short aa, like apple.', how:'Say each one. Short aa sounds like apple.'}]},
+
+    { id:'READ.PHON.L01.26', grade:0, name:'Shhh, Ch, Th', pic:'🤫', after:'READ.PHON.L01.25', acts:[
+      {type:'listen', hear:'ship', o:['sh','ch','th'], a:'sh', say:'Ship starts with shhh. Two letters make one sound.', how:'Shhh, like a quiet finger. Find the two letters.'},
+      {type:'sort', bins:['sh','ch'], cards:[['🚢',0],['🐚',0],['🧀',1],['🪑',1],['🍒',1]], say:'Shhh or chuh? Put each picture in its box.', how:'Shhh is quiet. Chuh is a sneeze: chuh, chuh!'},
+      {type:'listen', hear:'thumb', o:['th','sh','t'], a:'th', say:'Which two letters start thumb? Put your tongue out!', how:'Thhh: your tongue peeks between your teeth.'},
+      {type:'findall', grid:['ship','sip','shop','sit','shed','sad'], find:['ship','shop','shed'], findSay:'word that starts with shhh', mis:true, say:'Careful! Sss is not shhh. Look for two letters.', how:'Shhh needs two letters together at the start.'},
+      {type:'tiles', w:['ch','i','n'], extra:['sh'], hear:'chin', say:'Build chin. Chuh is one tile.', how:'Chuh, ih, nnn. Three sounds, three tiles.'},
+      {type:'match', pairs:[['fish','🐟'],['ship','🚢'],['bath','🛁']], say:'Two letters, one sound. Read each word and match.', how:'Find the two letters that stick together. Then blend.'}]},
+
+    { id:'READ.PA.L01.15', grade:0, name:'Four Sounds', pic:'🐸', after:'READ.PHON.L01.26', acts:[
+      {type:'listen', hear:'fff... rrr... ah... guh', o:['🐸','🐟','🦊'], a:'🐸', say:'Four sounds this time! Push them together.', how:'Say the four sounds faster and faster.'},
+      {type:'tiles', w:['h','a','n','d'], extra:['m'], hear:'hand', say:'Hand has four sounds. Build it.', how:'Hhh, aa, nnn, duh. Four tiles.'},
+      {type:'listen', hear:'stop', o:['3','4','5'], a:'4', mis:true, say:'Careful! Sss and tuh are two sounds. How many in stop?', how:'Say stop slowly. Hold up a finger for each sound.'},
+      {type:'sort', bins:['3','4'], cards:[['🦀',1],['🐱',0],['🥁',1],['🐟',0],['☀️',0]], say:'Three sounds or four? Hold up a finger for each.', how:'Say it slowly. One finger for each sound.'},
+      {type:'listen', hear:'tuh... eh... nnn... tuh', o:['⛺','🐔','🧸'], a:'⛺', say:'Push the four sounds together. What is it?', how:'Say the sounds faster and faster.'}]},
+
+    { id:'READ.FLU.L01.10', grade:0, name:'Heart Words: have, of, they', pic:'❤️', after:'READ.PA.L01.15', acts:[
+      {type:'listen', hear:'have', o:['have','hat','had'], a:'have', say:'Have is a heart word. Its last letter is quiet.', how:'Hhh, aa, vvv. The last letter makes no sound.'},
+      {type:'findall', grid:['of','off','of','on','of','if'], find:'of', findSay:'of', say:'Of is a heart word. It says uv! Tap every of.', how:'Just two letters. Off has three.'},
+      {type:'listen', hear:'they', o:['they','the','then'], a:'they', mis:true, say:'Careful! They and the look alike. They says thay.', how:'The has three letters. Then ends with nnn. They does not.'},
+      {type:'listen', hear:'are', o:['are','am','an'], a:'are', say:'Are is a heart word. It says ar. Tap are.', how:'Three letters. The last one is quiet.'},
+      {type:'dictation', hear:'They are my pals.', w:['They','are','my','pals.'], say:'Listen. Build it with heart words.', how:'Say it softly. Tap the words in order.'},
+      {type:'dictation', hear:'We have a dog.', w:['We','have','a','dog.'], say:'Listen. Build it. Then read it smoothly.', how:'Say it softly. Tap the words in order.'}]}
   ];
   if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
   if (window.TLCORE) TLCORE.add('F', LESSONS, {});

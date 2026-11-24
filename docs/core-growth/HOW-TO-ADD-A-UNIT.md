@@ -23,12 +23,19 @@ if (window.TLCORE && TLCORE.units) TLCORE.units.add({
   review: ['READ.COMP.L05.03', 'READ.VOC.L05.02'],   /* 2-3 skills from earlier units (at most 4) */
   n: 10                                   /* questions in the unit check (6-12; default 10) */
   /* items: [{ skill: 'READ.COMP.L06.13', type: 'evidence', ... }]   optional: your own Activity Kit questions for a skill */
+  /* task: { id: 'C45.PROJ.01', ... }   optional: the unit's real task (a Writing Workshop task, HOW-TO-ADD-A-WRITING-TASK.md) */
 });
 ```
 
 **Where the questions come from:** each skill's own **check** questions of the tap kinds "choose one" and "put in order" (most Reading and Language lessons have them), or your own `items` in any Activity Kit kind, with the `skill` they test. A skill with neither is left out of the check. Write good check questions and the unit check is good too.
 
 **Keep it cold:** the unit check should not repeat the exact question he just answered in the lesson's Show me. Give each skill more than 3 check questions where you can, or add `items`.
+
+## The unit project (its real task)
+A unit's real writing or hands-on task (prompt section 3, step 2) goes in `task`: a Writing Workshop task, for example "Model the moon's phases with a lamp and a ball, then tell what you saw". `TLCORE.units.err` refuses a task that `TLCORE.write.err` refuses.
+- **"Unit cleared!"** then shows **Start your project** and **Later**. Start opens his piece in the Workshop, and his draft is kept if he stops.
+- **`TLCORE.units.projects()`** gives a Promise of his open projects: units he passed whose piece is not sent yet, as `[{ unit, title, unitTitle, task }]`. The daily plan (job D) can give each one a line of his list. **`TLCORE.units.project(unitId)`** opens one.
+- The teacher reads, scores and publishes it in the writing inbox, like any piece. No money.
 
 ## When the boy meets it
 **On for every boy** (HoS decision 2026-11-24; the switch is `CU_LIVE` in `src/CoreUnits.html` and `src/CoreChecks.js`: `'on'`, `'test'` for TEST- boys only, or `'off'`):
