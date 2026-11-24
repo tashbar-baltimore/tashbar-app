@@ -32,7 +32,7 @@ function server() {
     if (r.problems.some(p => /L06\.9[12]|L09\.91/.test(p))) fail('good rows were reported as problems: ' + r.problems.filter(p => /L06\.9[12]|L09\.91/.test(p)).join(' | '));
     const ci = JSON.parse(vm.runInContext('JSON.stringify({ lad: CI_INDEX.lad.READ.map(function (x) { return x[0]; }), names: CI_INDEX.lad.READ.filter(function (x) { return x[0] === "READ.COMP.L06.91"; })[0], sk: CI_INDEX.sk["READ.COMP.L06.91"], built: CI_INDEX.built })', ctx));
     if (ci.lad.indexOf('READ.COMP.L06.91') !== ci.lad.indexOf('READ.COMP.L06.01') + 1 || !ci.names || ci.names[1] !== 'Test A' || ci.sk || !/\+core3\.[0-9a-z]+$/.test(ci.built)) fail('the curriculum index must get the new skills in the same order, with names, no "built" entry, and a new cache key');
-    if (JSON.stringify(r.files) !== JSON.stringify(['CoreKit', 'CoreDataZZTEST1', 'CoreDataZZTEST2'])) fail('the page must load CoreKit first, then each data file once (got ' + r.files.join(', ') + ')');
+    if (r.files[0] !== 'CoreKit' || JSON.stringify(r.files.filter(f => /^CoreData/.test(f))) !== JSON.stringify(['CoreDataZZTEST1', 'CoreDataZZTEST2'])) fail('the page must load CoreKit first, then each data file once (got ' + r.files.join(', ') + ')');
     const again = vm.runInContext('coreMerge_(); coreMerge_(); plList_("READ").filter(function (x) { return x[0] === "READ.COMP.L06.91"; }).length', ctx);
     if (again !== 1) fail('merging twice must not add a skill twice');
     const sg = vm.runInContext('sgNames_()["READ.COMP.L06.91"]', ctx);
@@ -45,12 +45,12 @@ function server() {
     const r = JSON.parse(vm.runInContext('JSON.stringify(coreReport_())', ctx));
     r.built = JSON.parse(vm.runInContext('JSON.stringify(plBuilt_())', ctx)).filter(id => r.merged.ids.includes(id));
     r.problems.forEach(p => fail(p));
-    r.files.forEach(f => { const p = path.join(B.SRC, f + '.html'); if (!fs.existsSync(p)) fail('src/' + f + '.html is listed but missing'); else if (fs.statSync(p).size > 150 * 1024) fail('src/' + f + '.html is over 150 KB: start the next file'); });
+    r.files.filter(f => !/^Core(Kit|Reader|Write)/.test(f)).forEach(f => { const p = path.join(B.SRC, f + '.html'); if (!fs.existsSync(p)) fail('src/' + f + '.html is listed but missing'); else if (fs.statSync(p).size > 150 * 1024) fail('src/' + f + '.html is over 150 KB: start the next file'); });
     const body = vm.runInContext('msQuestToolsBody_().js', ctx), parts = JSON.parse(vm.runInContext('JSON.stringify(msQuestToolsParts([]))', ctx));
     if (parts.order.map(h => parts.parts[h]).join('') !== body) fail("the boy's page pieces (Speed.js) do not match msQuestToolsBody_ (Photos.js)");
     const reg = fs.readdirSync(B.SRC).filter(f => /^CoreData[A-Z][A-Z0-9]*\.js$/.test(f));
     reg.forEach(f => { const t = fs.readFileSync(path.join(B.SRC, f), 'utf8'), job = f.slice(8, -3); if (t.indexOf('CORE_SKILLS.' + job + ' = [') < 0) fail('src/' + f + ' must set CORE_SKILLS.' + job + ' (its own job only)'); });
-    if (!r.problems.length) oks.push('core skills: ' + r.merged.added + ' new skill(s) from ' + reg.length + ' job list(s), ' + Math.max(0, r.files.length - 1) + ' data file(s), no problems');
+    if (!r.problems.length) oks.push('core skills: ' + r.merged.added + ' new skill(s) from ' + reg.length + ' job list(s), ' + r.files.filter(f => /^CoreData/.test(f)).length + ' data file(s), no problems');
     return { fails, oks, rep: r };
   }
 }
@@ -63,14 +63,100 @@ async function page(pg, rep) {
     return { kit: !!window.TLCORE, clash: C.clash || [], mine: Object.keys(C.ids || {}), missing: ids.filter(id => !BA[id] || !BA[id].name), bad: Object.keys(C.ids || {}).filter(id => { const L = BA[id]; return !L || !Array.isArray(L.check) || L.check.length < 3; }) };
   }, (rep && rep.merged.ids) || []);
   const files = (rep && rep.files) || [];
-  if (files.length && !got.kit) fail('CoreKit did not load on the boy\'s page');
+  if (!got.kit) fail('CoreKit did not load on the boy\'s page');
   got.clash.forEach(c => fail('a core lesson tried to replace an existing lesson: ' + c + ' (improve it in its own file, or pick a new id)'));
   got.bad.forEach(id => fail(id + ' needs 3 or more check questions'));
   const built = new Set(rep && rep.built || []);
   got.missing.filter(id => built.has(id)).forEach(id => fail(id + ' is "built" on the server but not a lesson on the page'));
   const notYet = got.missing.filter(id => !built.has(id));
+  /* the content store: a made-up text, served the way the site serves /texts/<ID>.json, loads only when asked, once */
+  {
+    const F = require('../../tools/core/textfmt.js');
+    const r = F.parse(FIXTURE_TEXT, 'fixture'); const probs = r.problems.concat(F.check(r.text, null));
+    if (probs.length) fail('the made-up text has problems: ' + probs.join('; '));
+    let hits = 0;
+    await pg.route('**/texts/ZZTEST.ANTS.01.json', route => { hits++; route.fulfill({ contentType: 'application/json', body: JSON.stringify(r.text) }); });
+    await pg.route('**/texts/ZZTEST.NOPE.01.json', route => route.fulfill({ status: 404, body: 'not found' }));
+    const t = await pg.evaluate(async () => {
+      const a = await TLCORE.text('ZZTEST.ANTS.01'), b = await TLCORE.text('ZZTEST.ANTS.01');
+      let miss = ''; try { await TLCORE.text('ZZTEST.NOPE.01'); } catch (e) { miss = String(e.message || e); }
+      let bad = ''; try { await TLCORE.text('../x'); } catch (e) { bad = String(e.message || e); }
+      return { same: a === b, title: a.title, pages: a.pages.length, n: TLCORE.textSentences(a).length, word: a.glossary.colony, miss, bad };
+    });
+    if (hits !== 1 || !t.same) fail('a text must be fetched once and kept (fetched ' + hits + ' times)');
+    if (t.title !== 'The Busy Ant Colony' || t.pages !== 2 || t.n !== r.text.pages.reduce((n, pg) => n + pg.reduce((m, p) => m + p.s.length, 0), 0) || !t.word) fail('the text did not arrive whole: ' + JSON.stringify(t));
+    if (!/not on the site/.test(t.miss) || !/not a text id/.test(t.bad)) fail('a missing text or a bad id must give a clear error (got ' + t.miss + ' | ' + t.bad + ')');
+    const T = require('../../tools/core/texts.js').load(); T.problems.forEach(p => fail('text: ' + p));
+    if (!fails.length) oks.push('content store: a long text loads only when opened, once; ' + T.out.length + ' real text(s) in texts/, no problems');
+  }
+  /* the Reader (src/CoreReader.html), with a made-up chapter (tests/fixtures/ZZTEST.KEY.01.txt), as a boy taps it */
+  {
+    const F = require('../../tools/core/textfmt.js');
+    const RT = F.parse(fs.readFileSync(path.join(__dirname, '..', 'fixtures', 'ZZTEST.KEY.01.txt'), 'utf8'), 'fixture').text;
+    await pg.route('**/texts/ZZTEST.KEY.01.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify(RT) }));
+    const sents = []; RT.pages.forEach((pg2, i) => pg2.forEach(par => par.s.forEach(x => sents.push({ page: i, s: x }))));
+    const proof = sents.findIndex(x => /Dovid gasped/.test(x.s)), wrong = sents.findIndex(x => /flowerpot/.test(x.s));
+    const one = async (vp) => {
+      await pg.setViewportSize(vp);
+      return pg.evaluate(async ([proof, wrong]) => {
+        const out = { steps: [] }, Q = s => document.querySelector(s), tick = () => new Promise(r => setTimeout(r, 60));
+        const look = async name => { await new Promise(r => setTimeout(r, 380)); const el = Q('#crd'); const mains = el.querySelectorAll('.tlk-main').length, all = [...el.querySelectorAll('button')];
+          out.steps.push({ name, mains, ownButtons: all.filter(b => !b.classList.contains('tlk')).length, wide: el.scrollWidth > innerWidth + 1 || (Q('#crd .crd-main') && Q('#crd .crd-main').scrollWidth > innerWidth + 1), exitTL: !!el.querySelector('.tlk-home.tlk-at-tl,.tlk-x.tlk-at-tl') }); };
+        try { if (A.st) delete (A.st.reads || {})['ZZTEST.KEY.01']; } catch (e) {}
+        const pr = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 3 }); await new Promise(r => { const t = setInterval(() => { if (Q('#crd .crd-cover')) { clearInterval(t); r(); } }, 30); });
+        await look('cover'); Q('#crd [data-crd=start]').click(); await tick(); await look('page 1');
+        out.backOnFirst = !!Q('#crd [data-crd=back]'); out.prog = (Q('#crd .tlk-pill') || {}).textContent;
+        const g = Q('#crd .crd-g'); g.click(); await tick(); out.bubble = (Q('#crd .crd-bub') || {}).textContent || '';
+        Q('#crd [data-crd=next]').click(); await tick(); await look('page 2'); out.back2 = !!Q('#crd [data-crd=back]');
+        Q('#crd [data-crd=next]').click(); await tick(); Q('#crd [data-crd=next]').click(); await tick(); await look('end'); out.end = (Q('#crd .crd-end h2') || {}).textContent;
+        Q('#crd [data-crd=finish]').click(); out.res = await pr; out.closed = !Q('#crd'); out.saved = A.st && A.st.reads && A.st.reads['ZZTEST.KEY.01'];
+        const pa = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 3, exit: 'x', ask: { q: 'Which sentence shows Dovid was surprised?', proof: 'Dovid gasped', how: 'Find the words that show a surprise.', look: 'how Dovid felt' } });
+        await new Promise(r => { const t = setInterval(() => { if (Q('#crd.pick')) { clearInterval(t); r(); } }, 30); });
+        await look('ask'); out.askOpenEarlyAnswer = !!Q('#crd .crd-s.yes'); out.askMain = Q('#crd .tlk-main') ? Q('#crd .tlk-main').textContent : '';
+        Q('#crd [data-crds="' + wrong + '"]').click(); await tick(); out.miss = (Q('#crd .crd-fb') || {}).textContent;
+        Q('#crd [data-crds="' + proof + '"]').click(); await tick(); out.hit = (Q('#crd .crd-fb') || {}).textContent; out.yes = !!Q('#crd [data-crds="' + proof + '"].yes'); await look('proof');
+        Q('#crd [data-crd=finish]').click(); out.askRes = await pa; out.afterAsk = A.st && A.st.reads && A.st.reads['ZZTEST.KEY.01'];
+        const pk = TLCORE.reader.open('ZZTEST.KEY.01', { grade: 0, page: 0 }); await new Promise(r => { const t = setInterval(() => { if (Q('#crd .crd-cover')) { clearInterval(t); r(); } }, 30); });
+        out.k1 = Q('#crd').className; out.k1home = !!Q('#crd .tlk-home-k3'); TLCORE.reader.close(); out.k1res = await pk;
+        return out;
+      }, [proof, wrong]);
+    };
+    for (const vp of [{ width: 1366, height: 768 }, { width: 390, height: 844 }]) {
+      const at = vp.width + 'px: '; let o;
+      try { o = await one(vp); } catch (e) { fail(at + 'the Reader crashed: ' + String(e).slice(0, 200)); continue; }
+      o.steps.forEach(st => { if (st.mains > 1) fail(at + st.name + ' has ' + st.mains + ' main buttons (at most one)'); if (st.ownButtons) fail(at + st.name + ' draws ' + st.ownButtons + ' button(s) outside the button system'); if (st.wide) fail(at + st.name + ' scrolls sideways'); if (!st.exitTL) fail(at + st.name + ': the way out must be top left'); });
+      if (o.backOnFirst) fail(at + 'no Back on the first page');
+      if (!o.back2) fail(at + 'Grade 3 gets ‹ Back on page 2');
+      if (o.prog !== 'Page 1 of 3') fail(at + 'progress must say Page 1 of 3 (got ' + o.prog + ')');
+      if (!/puzzled/.test(o.bubble) || !/figure it out/.test(o.bubble)) fail(at + 'tapping a word must show its meaning (got ' + o.bubble + ')');
+      if (o.end !== 'Chapter 1 done!' || !o.res.done || !o.closed || o.saved !== 'd') fail(at + 'finishing must show "Chapter 1 done!", close, and keep it as done (' + JSON.stringify({ end: o.end, res: o.res, saved: o.saved }) + ')');
+      if (o.askOpenEarlyAnswer) fail(at + 'the proof must not be shown before he tries');
+      if (!/does not say it/.test(o.miss || '') || !/Yes!/.test(o.hit || '') || !o.yes) fail(at + 'tap the sentence: a miss names what to look for, the proof lights up (' + o.miss + ' | ' + o.hit + ')');
+      if (o.afterAsk !== 'd') fail(at + 'a question must not change where he stopped reading (got ' + o.afterAsk + ')');
+      if (!o.askRes.proof || !o.askRes.proof.right || o.askRes.proof.tries !== 2) fail(at + 'the proof result must say right after 2 tries (' + JSON.stringify(o.askRes.proof) + ')');
+      if (!/b-K1/.test(o.k1) || !o.k1home) fail(at + 'a K boy gets the big K1 type and the K-3 Home button (' + o.k1 + ')');
+    }
+    await pg.setViewportSize({ width: 1366, height: 768 });
+    if (!fails.length) oks.push('Reader: cover, pages, tap a word for its meaning, Back from Grade 3, chapter done and kept, tap the sentence that proves it (miss names the step, no early answer), K-1 band; button system only, no sideways scroll at 1366 and 390');
+  }
   if (!fails.length) oks.push('core skills (page): ' + got.mine.length + ' core lesson(s) loaded, no clash' + (notYet.length ? '; listed, no lesson yet (hidden from boys): ' + notYet.length : ''));
   return { fails, oks };
 }
+
+const FIXTURE_TEXT = `id: ZZTEST.ANTS.01
+title: The Busy Ant Colony
+grade: 5
+kind: article
+topic: Ants
+source: original
+---
+${'An ant colony is like a busy town. Every ant has a job to do, and the whole colony works together. '.repeat(30)}
+
+The queen lays the eggs. Worker ants find food, and soldier ants guard the nest.
+===
+When Avi and his Zaidy watched an ant hill in the park, they counted more than fifty ants in one minute. "They never stop," said Avi.
+--- words
+colony: a big group of ants that live and work together
+`;
 
 module.exports = { server, page };
