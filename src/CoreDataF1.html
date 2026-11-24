@@ -1,0 +1,212 @@
+<script>
+/* CoreDataF1.html: Core Growth job F (Foundations K-2), lesson data, file 1.
+   Grade 2 Unit 1 "Syllables and long-vowel review" (docs/core-growth/F-map.md, section 5).
+   Added only through TLCORE.add (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Sounds are written as sounds in spoken lines.
+   In every choice list the right answer is written FIRST (the engine shuffles). */
+(function () {
+  var OPEN = 'Open: the vowel says its name', CLOSED = 'Closed: the vowel is short';
+  var REAL = 'Real word: keep it', SLIDE = 'Not a word: slide the line';
+  var LONGB = 'Long: split before', SHORTB = 'Short: slide after';
+  var SE = 'Silent e: long', NOSE = 'No silent e: short';
+
+  var LESSONS = {
+    'READ.PHON.L03.04':{name:'Open Door, Closed Door',
+      teach:[
+        {q:'Hi ends with the vowel i. Is the door open or closed?', o:[OPEN, CLOSED], how:'Look at the last letter. A vowel at the end means the door is open.'},
+        {q:'Hit ends with t. Is the door open or closed?', o:[CLOSED, OPEN], how:'Look at the last letter. A consonant at the end closes the door.'},
+        {q:'Hi is open. How does the i sound?', o:['long i, like its name','short i, like it'], how:'Open door: the vowel says its own name.'}
+      ],
+      practice:[
+        {t:'sort', q:'Open or closed? Sort each word.', bins:[{id:'o',label:OPEN},{id:'c',label:CLOSED}], items:[{label:'we',bin:'o'},{label:'wet',bin:'c'},{label:'so',bin:'o'},{label:'sob',bin:'c'},{label:'be',bin:'o'},{label:'bed',bin:'c'}], h:'Look at the last letter. Vowel: open. Consonant: closed.'},
+        {t:'pairs', q:'Match each word to its vowel sound.', pairs:[['hi','long i'],['hip','short i'],['no','long o'],['not','short o']], h:'Read the last letter first. Then say the vowel.'},
+        {t:'spotall', q:'Tap every open syllable.', cells:[{label:'me',ok:true},{label:'met',ok:false},{label:'go',ok:true},{label:'got',ok:false},{label:'she',ok:true},{label:'shed',ok:false}], h:'An open syllable ends with a vowel. Tap only those.'},
+        {t:'sort', q:'Look at the FIRST part. Open or closed?', bins:[{id:'o',label:OPEN},{id:'c',label:CLOSED}], items:[{label:'ti | ger',bin:'o'},{label:'nap | kin',bin:'c'},{label:'ro | bot',bin:'o'},{label:'bas | ket',bin:'c'},{label:'mu | sic',bin:'o'},{label:'rab | bit',bin:'c'}], h:'Cover the second part. Does the first part end with a vowel?'},
+        {t:'pairs', q:'Match the first part to its vowel sound.', pairs:[['ti | ger','long i'],['pic | nic','short i'],['ro | bot','long o'],['hot | dog','short o']], h:'First part ends with a vowel: long. With a consonant: short.'},
+        {t:'order', q:'Build the word: open part first, then closed part.', tiles:['ro','bot'], h:'Which part keeps its door open? That one makes the long o.'}
+      ],
+      check:[
+        {q:'The first part of "lady" is "la". Is it open or closed?', o:[OPEN, CLOSED]},
+        {q:'Look at "fun". Is it open or closed?', o:[CLOSED, OPEN]},
+        {q:'The first part of "pilot" is "pi". How does the i sound?', o:['long i, like its name','short i, like it']}
+      ],
+      re:[
+        {q:'Look at "he". Is it open or closed?', o:[OPEN, CLOSED]},
+        {q:'Look at "hen". Is it open or closed?', o:[CLOSED, OPEN]},
+        {q:'The first part of "tulip" is "tu". How does the u sound?', o:['long u, like its name','short u, like up']}
+      ]},
+
+    'READ.PHON.L03.05':{name:'Slide the Line',
+      teach:[
+        {q:'Robot has one consonant in the middle. Where do I split first?', o:['before it: ro | bot','after it: rob | ot'], how:'One consonant in the middle? Try the split before it first.'},
+        {q:'Ca | bin is not a real word. What do I do?', o:['slide the line: cab | in','read it long anyway: ca | bin'], how:'Not a word? Slide the line after the consonant and read it short.'},
+        {q:'Which split makes a real word: lem | on or le | mon?', o:['lem | on','le | mon'], how:'Say both. Keep the one that is a real word.'}
+      ],
+      practice:[
+        {t:'sort', q:'Real word, or slide the line?', bins:[{id:'r',label:REAL},{id:'s',label:SLIDE}], items:[{label:'ro | bot',bin:'r'},{label:'ca | bin',bin:'s'},{label:'mu | sic',bin:'r'},{label:'se | ven',bin:'s'},{label:'ti | ger',bin:'r'},{label:'wa | gon',bin:'s'}], h:'Read the first part long. Is it a word you know?'},
+        {t:'pairs', q:'Match each word to the right split.', pairs:[['moment','mo | ment'],['wagon','wag | on'],['tulip','tu | lip'],['robin','rob | in']], h:'Try long first. Not a word? Slide the line.'},
+        {t:'order', q:'Build the word "cabin" from its parts.', tiles:['cab','in'], h:'Try ca-bin first. Not a word? Slide the line after b.'},
+        {t:'spotall', q:'Tap every split that makes a real word.', cells:[{label:'pi | lot',ok:true},{label:'pil | ot',ok:false},{label:'mu | sic',ok:true},{label:'mus | ic',ok:false},{label:'lem | on',ok:true},{label:'le | mon',ok:false}], h:'Say each split. Tap only the real words.'},
+        {t:'sort', q:'Long first part or short first part?', bins:[{id:'l',label:LONGB},{id:'s',label:SHORTB}], items:[{label:'spider',bin:'l'},{label:'planet',bin:'s'},{label:'frozen',bin:'l'},{label:'visit',bin:'s'},{label:'silent',bin:'l'},{label:'never',bin:'s'}], h:'Try the long way first. If it is not a word, it is short.'},
+        {t:'order', q:'Build the word "tiger" from its parts.', tiles:['ti','ger'], h:'Split before the g. Is the first part open? Then it is long.'}
+      ],
+      check:[
+        {q:'Read "ca | mel" with a long a, like its name. Is it a real word?', o:[SLIDE, REAL]},
+        {q:'Read "so | da" with a long o, like its name. Is it a real word?', o:[REAL, SLIDE]},
+        {q:'Read "comet". Long first part or short first part?', o:[SHORTB, LONGB]}
+      ],
+      re:[
+        {q:'Read "fe | ver" with a long e, like its name. Is it a real word?', o:[REAL, SLIDE]},
+        {q:'Read "li | mit" with a long i, like its name. Is it a real word?', o:[SLIDE, REAL]},
+        {q:'Read "baker". Long first part or short first part?', o:[LONGB, SHORTB]}
+      ]},
+
+    'READ.PHON.L03.06':{name:'Silent E in Long Words',
+      teach:[
+        {q:'Read "cup | cake". How does the u sound?', o:['short: it is closed','long: it says its name'], how:'Look at the end of cup. A consonant closes the door.'},
+        {q:'Cupcake: which vowel says its name?', o:['a','u'], how:'Find the part with the quiet e. Its vowel says its name.'},
+        {q:'Read "in | vite". How does the i in vite sound?', o:['long: it says its name','short: it is closed'], how:'Vite ends with a quiet e, so the i is long.'}
+      ],
+      practice:[
+        {t:'sort', q:'Long vowel or short vowel? Sort the parts.', bins:[{id:'l',label:'Long: silent e'},{id:'s',label:'Short: closed'}], items:[{label:'cake',bin:'l'},{label:'cup',bin:'s'},{label:'vite',bin:'l'},{label:'in',bin:'s'},{label:'shine',bin:'l'},{label:'sun',bin:'s'}], h:'Look for the quiet e at the end of the part.'},
+        {t:'pairs', q:'Match each word to its picture.', pairs:[['pancake','🥞'],['bedtime','🛏️'],['sunrise','🌅'],['inside','🏠']], h:'Split it, read each part, then put it together.'},
+        {t:'order', q:'Build the word "concrete".', tiles:['con','crete'], h:'Split between n and c. Which part has a quiet e?'},
+        {t:'spotall', q:'Tap every part with a long vowel.', cells:[{label:'tile',ok:true},{label:'tip',ok:false},{label:'pine',ok:true},{label:'pin',ok:false},{label:'cube',ok:true},{label:'cub',ok:false}], h:'A quiet e at the end makes the vowel long.'},
+        {t:'sort', q:'Does the word have a silent e part?', bins:[{id:'y',label:SE},{id:'n',label:NOSE}], items:[{label:'mistake',bin:'y'},{label:'dentist',bin:'n'},{label:'sunshine',bin:'y'},{label:'basket',bin:'n'},{label:'reptile',bin:'y'},{label:'napkin',bin:'n'}], h:'Split it. Check EACH part for a quiet e.'},
+        {t:'order', q:'Build the word "pancake".', tiles:['pan','cake'], h:'Pan is closed: short a. Cake has a quiet e: long a.'}
+      ],
+      check:[
+        {q:'Read "trombone". How does the o in bone sound?', o:['long: it says its name','short: it is closed']},
+        {q:'Read "tadpole". How does the a sound?', o:['short: it is closed','long: it says its name']},
+        {q:'Read "combine". Which vowel says its name?', o:['i','o']}
+      ],
+      re:[
+        {q:'Read "dislike". How does the first i sound?', o:['short: it is closed','long: it says its name']},
+        {q:'Does the word "muffin" have a silent e part?', o:[NOSE, SE]},
+        {q:'Read "inflate". Which vowel says its name?', o:['a','i']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.PHON.L03.04':{ hook:'Every syllable is a little room with a door. Is it open or closed?',
+      big:'An open syllable ends with a vowel, and the vowel says its name. A closed syllable ends with a consonant, and the vowel is short.',
+      intro:['Look at the last letter of the part.','Vowel at the end: the door is open. Hi, go, me.','Consonant at the end: the door is closed. Hit, got, met.','Open: long. Closed: short. Big words too: ti | ger, nap | kin.'],
+      ex:[{q:'Read: so', steps:['The last letter is o, a vowel.','The door is open.','O says its name: so.'], a:'so (long o)'},
+          {q:'Read: sob', steps:['The last letter is b, a consonant.','The door is closed.','O is short, like hot: sob.'], a:'sob (short o)'}],
+      oops:{ q:'Read: me', wrong:'meh, with a short e', right:'mee, with a long e', why:'Me ends with the vowel. The door is open, so e says its name.' },
+      idea:['Hold your hand open for an open syllable, and make a fist for a closed one.'],
+      'try':{ q:'Look at "we". Is it open or closed?', o:[OPEN, CLOSED], a:OPEN, steps:['Look at the last letter.','It is e, a vowel.','Open door.'] } },
+    'READ.PHON.L03.05':{ hook:'A long word with one consonant in the middle? Here is a trick that works on hundreds of words.',
+      big:'With one consonant between two vowels, split before it and read the first part long. If that is not a real word, slide the line after it and read it short.',
+      intro:['Find the two vowels.','One consonant between them? Split before it.','Read the first part long. Is it a word?','No? Slide the line and read it short.'],
+      ex:[{q:'Read: robot', steps:['Vowels o and o. One consonant, b, between them.','Split before b: ro | bot.','Ro is open: long o. Robot! A real word.'], a:'ro | bot'},
+          {q:'Read: wagon', steps:['Split before g: wa | gon. Way-gon? Not a word.','Slide the line: wag | on.','Wag is closed: short a. Wagon!'], a:'wag | on'}],
+      oops:{ q:'Read: lemon', wrong:'lee | mon', right:'lem | on', why:'Lee-mon is not a real word. Slide the line after m and read it short.' },
+      idea:['Think of a sliding door: try it one way, and if it does not open, slide it the other way.'],
+      'try':{ q:'Which split makes a real word?', o:['mo | ment','mom | ent'], a:'mo | ment', steps:['Split before m: mo | ment.','Mo is open: long o.','Moment! A real word.'] } },
+    'READ.PHON.L03.06':{ hook:'Cupcake, sunshine, pancake: long words that are really two short ones.',
+      big:'Split a long word between the two middle consonants. The long vowel is in the part with the quiet e.',
+      intro:['Find the two consonants in the middle. Split between them.','Sh, ch and th stay together: sun | shine.','Read each part.','A part with a quiet e at the end: the vowel says its name.','Put the parts together.'],
+      ex:[{q:'Read: cupcake', steps:['p and c are in the middle. Split: cup | cake.','Cup is closed: short u.','Cake has a quiet e: long a. Cupcake!'], a:'cup | cake'},
+          {q:'Read: invite', steps:['n and v are in the middle. Split: in | vite.','In is closed: short i.','Vite has a quiet e: long i. Invite!'], a:'in | vite'}],
+      oops:{ q:'Read: invite', wrong:'in | vit, with a short i', right:'in | vite, with a long i', why:'The e at the end is quiet, but it makes the i say its name.' },
+      idea:['The silent e reaches back over one letter and taps the vowel: "Say your name!"'],
+      'try':{ q:'Read "sunshine". How does the i in shine sound?', o:['long: it says its name','short: it is closed'], a:'long: it says its name', steps:['Split: sun | shine.','Shine ends with a quiet e.','The i says its name.'] } }
+  };
+
+  var HOWTO = {
+    'READ.PHON.L03.04':{ s:'Look at the last letter of the part.\nVowel at the end: open, long.\nConsonant at the end: closed, short.',
+      q:{ 'The first part of "lady" is "la". Is it open or closed?':'Look at the end of the first part.\nIs it a vowel or a consonant?\nVowel: open. Consonant: closed.',
+          'Look at "fun". Is it open or closed?':'Find the last letter.\nIs it a vowel or a consonant?\nVowel: open. Consonant: closed.',
+          'The first part of "pilot" is "pi". How does the i sound?':'Look at the end of the part.\nOpen part: the vowel says its name.\nClosed part: the vowel is short.',
+          'Look at "he". Is it open or closed?':'Find the last letter.\nVowel: open. Consonant: closed.',
+          'Look at "hen". Is it open or closed?':'Find the last letter.\nVowel: open. Consonant: closed.',
+          'The first part of "tulip" is "tu". How does the u sound?':'Look at the end of the part.\nOpen: long. Closed: short.' } },
+    'READ.PHON.L03.05':{ s:'Find the two vowels.\nOne consonant between them? Split before it and read it long.\nNot a word? Slide the line and read it short.',
+      q:{ 'Read "ca | mel" with a long a, like its name. Is it a real word?':'Read the first part long, like its name.\nIs it a word you know?\nIf not, the line needs to slide.',
+          'Read "so | da" with a long o, like its name. Is it a real word?':'Read the first part long, like its name.\nIs it a word you know?\nIf not, the line needs to slide.',
+          'Read "fe | ver" with a long e, like its name. Is it a real word?':'Read the first part long, like its name.\nIs it a word you know?',
+          'Read "li | mit" with a long i, like its name. Is it a real word?':'Read the first part long, like its name.\nIs it a word you know?',
+          'Read "comet". Long first part or short first part?':'Split before the m and read it long.\nIs it a real word?\nIf not, slide the line: short.',
+          'Read "baker". Long first part or short first part?':'Split before the k and read it long.\nIs it a real word?\nIf not, slide the line: short.' } },
+    'READ.PHON.L03.06':{ s:'Split between the two middle consonants.\nRead each part.\nA quiet e at the end of a part: long vowel.',
+      q:{ 'Read "trombone". How does the o in bone sound?':'Split between the two middle consonants.\nLook at the end of that part.\nQuiet e or closed?',
+          'Read "tadpole". How does the a sound?':'Split between the two middle consonants.\nFind the part with the a.\nDoes it end with a consonant?',
+          'Read "combine". Which vowel says its name?':'Split between the two middle consonants.\nRead each part.\nWhich part ends with a quiet e?',
+          'Read "dislike". How does the first i sound?':'Split between the two middle consonants.\nLook at the first part. Does it end with a consonant?',
+          'Does the word "muffin" have a silent e part?':'Split the word into its parts.\nCheck each part for a quiet e.',
+          'Read "inflate". Which vowel says its name?':'Split between the two middle consonants.\nRead each part.\nWhich part ends with a quiet e?' } }
+  };
+
+  var BITE = {
+    'READ.PHON.L03.04':{ band:'B23', pic:'🚪', today:'Read open and closed syllables',
+      why:'Every long word is built from these two kinds of parts. Know them, and big words get easy.',
+      ready:[{q:'Which word has a short a, like apple?', o:['cat','cake','car'], a:'cat'},{q:'Which word has a long o?', o:['bone','bun','bin'], a:'bone'}],
+      bridge:'READ.LV.L02.01', bridgeName:'Silent E',
+      watch:{ q:'hi and hit', m:{type:'tiles',w:['h','i'],hi:[1]}, steps:[
+        {t:'Hi ends with i. Open door: i says its name!', m:{type:'tiles',w:['h','i'],hi:[1]}},
+        {t:'Hit ends with t. Closed door: short i. Hit!', m:{type:'tiles',w:['h','i','t'],hi:[2]}},
+        {t:'Go is open. Got is closed. Look at the last letter!', m:{type:'tiles',w:['g','o','t'],hi:[2]}},
+        {t:'Big words too! Ti is open: long i. Ger, tiger!', m:{type:'tiles',w:['ti','ger'],hi:[0]}},
+        {t:'Sing it with Naftali and his Zaidy. Open, close your hand!', m:{type:'chant', lines:['Open door: the vowel says its name!','Closed door: it is short, not the same!']}}], a:'Open: the vowel says its name. Closed: the vowel is short.' },
+      oops:{ q:'Read: me', wrong:'meh (short e)', right:'mee (long e)', why:'Me ends with the vowel. The door is open, so e says its name.' },
+      ways:['think-aloud','chant with hand moves','sort','build with tiles','Mistake Detective'], done:'You can tell open from closed, and read both!',
+      board:{ one:'Open syllable: ends with a vowel, the vowel is long. Closed: ends with a consonant, the vowel is short.', activity:'Open hand, closed fist: boys show the door for each word the rebbe reads.', mistakes:['Reading every vowel short','Looking at the first letter instead of the last','Reading me as meh'] },
+      do:[
+        {type:'sort', bins:['Open: says its name','Closed: short'], cards:[['go',0],['got',1],['we',0],['wet',1]], say:'Look at the last letter. Open or closed?', how:'Ends with a vowel? Open and long. A consonant? Closed and short.'},
+        {type:'listen', hear:'Which word is open?', o:['she','shed','shell'], a:'she', say:'Read each word. Which one has an open door?', how:'Look at the last letter of each word. Which one ends with a vowel?'}],
+      your:[
+        {type:'sort', bins:['First part open','First part closed'], cards:[['ti | ger',0],['nap | kin',1],['ro | bot',0],['bas | ket',1],['mu | sic',0],['rab | bit',1]], say:'Big words! Is the first part open or closed?', how:'Cover the second part. Does the first part end with a vowel?'},
+        {type:'listen', q:'Yossi read "tiger" to Abba: "tig-er".', hear:'Is Yossi right?', o:['No: ti is open','No: ger is open','Yes, tig-er'], a:'No: ti is open', mis:true, say:'Mistake Detective! Is Yossi right?', how:'Cover ger. Look at the last letter of ti. Is the door open or closed?'},
+        {type:'tiles', w:['ro','bot'], extra:['rob'], hear:'robot', pic:'🤖', say:'Build robot from its two parts.', how:'Say robot slowly. Does the first part end with a vowel or a consonant?'},
+        {type:'match', pairs:[['be','long e'],['bet','short e'],['no','long o'],['not','short o']], say:'Read each word. Match it to its vowel sound.', how:'Last letter a vowel: long. A consonant: short.'},
+        {type:'findall', grid:['ba','nap','ze','bas','lo','rab','pi','hot'], find:['ba','ze','lo','pi'], findSay:'open first part', say:'Tap every open first part.', how:'Check the last letter. Vowel at the end? Tap it.'}] },
+
+    'READ.PHON.L03.05':{ band:'B23', pic:'🤖', today:'Split a word with one middle consonant',
+      why:'Robot, tiger, wagon, lemon: one trick lets you read hundreds of long words.',
+      ready:[{q:'Is "ro" open or closed?', o:['open','closed'], a:'open'},{q:'Is "cab" open or closed?', o:['closed','open'], a:'closed'}],
+      bridge:'READ.PHON.L03.04', bridgeName:'Open Door, Closed Door',
+      watch:{ q:'robot and wagon', m:{type:'tiles',w:['ro','bot'],hi:[0]}, steps:[
+        {t:'Robot. One consonant, b, is in the middle. Split before it.', m:{type:'tiles',w:['ro','bot'],hi:[0]}},
+        {t:'Ro is open: long o. Robot! A real word.', m:{type:'tiles',w:['ro','bot'],hi:[0]}},
+        {t:'Wagon. Split before g: way-gon? Not a word!', m:{type:'tiles',w:['wa','gon'],hi:[0]}},
+        {t:'Slide the line after g: wag, on. Short a. Wagon!', m:{type:'tiles',w:['wag','on'],hi:[0]}},
+        {t:'Chant it with Avi!', m:{type:'chant', lines:['Split before, and read it long.','Not a word? Then slide it along!']}}], a:'Try ro | bot (long) first. Not a word? Slide: wag | on (short).' },
+      oops:{ q:'Read: lemon', wrong:'lee | mon', right:'lem | on', why:'Lee-mon is not a real word. Slide the line after m and read it short.' },
+      ways:['think-aloud','chant','build with tiles','sort','Mistake Detective'], done:'You can split a long word and slide the line when you need to!',
+      board:{ one:'One consonant between two vowels: split before it, read long. Not a word? Slide the line, read short.', activity:'Sliding-door cards: boys move a paper line on robot, cabin, music, lemon.', mistakes:['Keeping a split that is not a real word','Always splitting after the consonant','Reading both parts short'] },
+      do:[
+        {type:'tiles', w:['mu','sic'], extra:['mus'], hear:'music', pic:'🎵', say:'Build music from its two parts.', how:'One consonant in the middle? Split before it. Read the first part long.'},
+        {type:'listen', hear:'pilot', o:['pi | lot','pil | ot'], a:'pi | lot', pic:'✈️', say:'Listen. Which split makes the word you hear?', how:'Read both splits. Keep the one that sounds like a real word.'}],
+      your:[
+        {type:'sort', bins:['Real word','Not a word: slide it'], cards:[['ra | dish',1],['pa | per',0],['vi | sit',1],['ze | ro',0],['ro | bin',1],['mo | ment',0]], say:'Which splits need a slide?', how:'Read the first part long. Not a word? It needs a slide.'},
+        {type:'listen', q:'Dovid read seven to Savta as "see-ven".', hear:'Is Dovid right?', o:['No: sev | en','Yes, see-ven','No: se | vin'], a:'No: sev | en', mis:true, say:'Mistake Detective! Is he right?', how:'Try the first part long. Is it a word? If not, what do you do?'},
+        {type:'sort', bins:['Long: split before','Short: slide after'], cards:[['spider',0],['planet',1],['frozen',0],['visit',1],['silent',0],['never',1]], say:'Challenge! Long first part or short?', how:'Try long first. If it is not a word, it is short.'},
+        {type:'match', pairs:[['robin','short o'],['total','long o'],['habit','short a'],['paper','long a']], say:'Match each word to its first vowel sound.', how:'Try the first part long. Not a word? Slide the line: short.'},
+        {type:'tiles', w:['cab','in'], extra:['ca'], hear:'cabin', say:'Build cabin. Try the first part long first!', how:'Read the first part long. Is it a word? If not, slide the line.'}] },
+
+    'READ.PHON.L03.06':{ band:'B23', pic:'🧁', today:'Read long words with a silent e',
+      why:'Cupcake, sunshine, invite: big words are just two small parts you already know.',
+      ready:[{q:'Which word has a silent e?', o:['cake','cat','cap'], a:'cake'},{q:'Nap ends with p. Open or closed?', o:['closed','open'], a:'closed'}],
+      bridge:'READ.LV.L02.01', bridgeName:'Silent E',
+      watch:{ q:'cupcake and invite', m:{type:'tiles',w:['cup','cake'],hi:[0]}, steps:[
+        {t:'Shimon and Ima bake cupcakes for Shabbos. Split: cup, cake.', m:{type:'tiles',w:['cup','cake'],hi:[0]}},
+        {t:'Cup is closed: short u. Cake: quiet e, long a!', m:{type:'tiles',w:['cup','cake'],hi:[1]}},
+        {t:'Invite: in, vite. Quiet e: long i. Invite!', m:{type:'tiles',w:['in','vite'],hi:[1]}},
+        {t:'Stand up! Clap once for each part, and sing.', m:{type:'chant', lines:['Split it in two, read part by part.','A quiet e at the end: the vowel says its name!']}}], a:'cup | cake, in | vite: the part with the quiet e is long.' },
+      oops:{ q:'Read: invite', wrong:'in | vit (short i)', right:'in | vite (long i)', why:'The e at the end is quiet, but it makes the i say its name.' },
+      ways:['think-aloud','clap and chant','build with tiles','sort','Mistake Detective'], done:'You can read long words with a silent e!',
+      board:{ one:'Split between the middle consonants. A part with a quiet e has a long vowel.', activity:'Cut word cards (cupcake, sunshine, pancake) in two and read each half.', mistakes:['Reading the silent e part short (in-vit)','Saying the e out loud','Splitting in the wrong place'] },
+      do:[
+        {type:'tiles', w:['pan','cake'], extra:['pane','cak'], hear:'pancake', pic:'🥞', say:'Build pancake from its two parts.', how:'Say each part. Which part is closed? Which has a quiet e?'},
+        {type:'sort', bins:['Long: silent e','Short: closed'], cards:[['sun | rise',0],['sun | set',1],['in | side',0],['nap | kin',1]], say:'Is the vowel in the last part long or short?', how:'Look for a quiet e at the end of the part.'}],
+      your:[
+        {type:'listen', q:'Moishe read reptile as "rep-til".', hear:'Is Moishe right?', o:['No: rep | tile','Yes, rep-til','No: rep | teel'], a:'No: rep | tile', mis:true, say:'Mistake Detective! Did Moishe read it right?', how:'Look at the last part. Does it end with a quiet e? What does a quiet e do?'},
+        {type:'sort', bins:['Has a silent e part','No silent e part'], cards:[['mistake',0],['dentist',1],['sunshine',0],['basket',1],['reptile',0],['napkin',1]], say:'Challenge! Does it have a silent e part?', how:'Split it. Check EACH part for a quiet e.'},
+        {type:'tiles', w:['con','crete'], extra:['cret'], hear:'concrete', say:'Build the word concrete.', how:'Split between n and c. Which part has a quiet e?'},
+        {type:'findall', grid:['vite','vit','shine','sun','cake','cak','bone','kin'], find:['vite','shine','cake','bone'], findSay:'part with a long vowel', say:'Tap every part with a long vowel.', how:'A quiet e at the end makes the vowel say its name.'},
+        {type:'match', pairs:[['bedtime','long i'],['napkin','short i'],['escape','long a'],['catnap','short a']], say:'Match each word to the vowel in its last part.', how:'Split it. Does the last part end with a quiet e?'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('F', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

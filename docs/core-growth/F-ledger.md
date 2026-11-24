@@ -27,9 +27,11 @@ A boy who tests out of a skill skips it, so a fast boy needs fewer minutes. That
 |---|---|---|---|---|
 | K | 0 | 0 | 0 | 36 |
 | 1 | 0 | 0 | 0 | 52 |
-| 2 | 0 | 0 | 0 | 20 |
+| 2 | 4 (`READ.PHON.L03.04`, `.05`, `.06` new; `READ.PHON.L03.01` rebuilt) | 0 | ≈ 0.8 (4 × 7 min + review) | 20 |
 
-Existing lessons count only once they pass the standard (prompt, section 2). None is counted yet.
+Existing lessons count only once they pass the standard (prompt, section 2).
+
+**Waiting:** `READ.FLU.L03.01` Fluent Flyer (Grade 2 Unit 1) needs a new, cold check story in its content pack before it can pass; it is the next F pull request.
 
 ## Left out on purpose
 - K little readers in Units 1–2: a boy cannot yet decode text, so "readers" there would be filler. Listen-along stories take that time.
