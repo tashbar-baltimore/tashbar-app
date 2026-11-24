@@ -30,26 +30,29 @@
   --tlk-subj-bg:#FCE7F3;  --tlk-subj-fg:#9D174D;
 }
 /* ---------- buttons (two classes, so a screen's "footer buttons are links" style can never win over them) ---------- */
-.tlk.tlk-main,.tlk.tlk-quiet,.tlk.tlk-x,.tlk.tlk-home,.tlk.tlk-tool,.tlk.tlk-tile{
+.tlk.tlk-main,.tlk.tlk-quiet,.tlk.tlk-x,.tlk.tlk-home,.tlk.tlk-back,.tlk.tlk-tool,.tlk.tlk-tile{
   -webkit-appearance:none;appearance:none;box-sizing:border-box;margin:0;cursor:pointer;text-decoration:none;font-family:inherit;line-height:1.15;
   -webkit-tap-highlight-color:transparent;transition:background-color .12s,color .12s,box-shadow .15s,transform .12s,border-color .12s;
   display:inline-flex;align-items:center;justify-content:center;gap:8px;vertical-align:middle}
 .tlk.tlk-main{min-height:52px;padding:0 26px;border-radius:14px;border:0;background:var(--tlk-gold);color:var(--tlk-gold-ink);font-weight:700;font-size:18px;box-shadow:var(--tlk-lift-gold)}
 .tlk.tlk-quiet{min-height:52px;padding:0 22px;border-radius:14px;border:1.5px solid var(--tlk-line);background:var(--tlk-white);color:var(--tlk-ink);font-weight:600;font-size:17px;box-shadow:var(--tlk-lift)}
-.tlk.tlk-x,.tlk.tlk-home{width:var(--tlk-round);height:var(--tlk-round);min-width:var(--tlk-round);padding:0;border-radius:50%;border:1.5px solid var(--tlk-line);background:var(--tlk-white);color:var(--tlk-ink);box-shadow:var(--tlk-lift)}
+.tlk.tlk-x,.tlk.tlk-home,.tlk.tlk-back{width:var(--tlk-round);height:var(--tlk-round);min-width:var(--tlk-round);padding:0;border-radius:50%;border:1.5px solid var(--tlk-line);background:var(--tlk-white);color:var(--tlk-ink);box-shadow:var(--tlk-lift)}
 .tlk.tlk-x svg{width:16px;height:16px;display:block}
-.tlk.tlk-home svg{width:20px;height:20px;display:block}
+.tlk.tlk-home svg{width:20px;height:20px;display:block}.tlk.tlk-back svg{width:20px;height:20px;display:block}
 /* K-3 (HoS 2026-11-23): a bigger Home with the house AND the word, the one exception to "icon or words" (young boys need it bigger) */
 .tlk.tlk-home.tlk-home-k3{width:auto;min-width:0;height:52px;padding:0 18px 0 14px;border-radius:16px;font-weight:700;font-size:17px;gap:8px}
 .tlk.tlk-home.tlk-home-k3 svg{width:24px;height:24px}
+/* BACK (HoS 2026-11-24): the same round button with an arrow; K-3 the bigger one with the arrow and the word "Back", like their Home */
+.tlk.tlk-back.tlk-back-k3{width:auto;min-width:0;height:52px;padding:0 18px 0 14px;border-radius:16px;font-weight:700;font-size:17px;gap:8px}
+.tlk.tlk-back.tlk-back-k3 svg{width:24px;height:24px}
 .tlk.tlk-tool{width:48px;height:48px;min-width:48px;padding:0;border-radius:50%;border:0;background:var(--tlk-purple);color:#fff;font-size:20px;box-shadow:var(--tlk-lift-purple)}
 .tlk.tlk-tool svg{width:22px;height:22px;display:block}
 .tlk.tlk-tile{display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:0;overflow:hidden;border-radius:18px;border:1.5px solid var(--tlk-line);background:var(--tlk-white);color:var(--tlk-ink);text-align:left;box-shadow:var(--tlk-lift)}
 .tlk.tlk-main.tlk-wide,.tlk.tlk-quiet.tlk-wide{width:100%}
 .tlk.tlk-main.tlk-small,.tlk.tlk-quiet.tlk-small{min-height:44px;padding:0 16px;font-size:15px;border-radius:12px}
 /* tapped: the shadow drops and the button settles onto the page */
-.tlk:is(.tlk-main,.tlk-quiet,.tlk-x,.tlk-home,.tlk-tool,.tlk-tile):active:not([disabled]){box-shadow:var(--tlk-settled);transform:translateY(2px)}
-.tlk:is(.tlk-main,.tlk-quiet,.tlk-x,.tlk-home,.tlk-tool,.tlk-tile):focus-visible{outline:3px solid #FDE047;outline-offset:3px}
+.tlk:is(.tlk-main,.tlk-quiet,.tlk-x,.tlk-home,.tlk-back,.tlk-tool,.tlk-tile):active:not([disabled]){box-shadow:var(--tlk-settled);transform:translateY(2px)}
+.tlk:is(.tlk-main,.tlk-quiet,.tlk-x,.tlk-home,.tlk-back,.tlk-tool,.tlk-tile):focus-visible{outline:3px solid #FDE047;outline-offset:3px}
 .tlk:is(.tlk-main,.tlk-quiet)[disabled]{background:#E5E7EB;color:#9CA3AF;border-color:#E5E7EB;box-shadow:none;cursor:default}
 /* where the out-buttons sit: X on a pop-up top right; X in a lesson and the HOUSE on a full page top left */
 .tlk-at-tr{position:absolute;top:12px;right:12px;z-index:2}
@@ -68,7 +71,7 @@
 /* ---------- the question pop-up: a main button and a quiet "Not now", no X ---------- */
 .tlk-ask{display:grid;gap:12px;justify-items:center;text-align:center}
 .tlk-ask .tlk-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
-@media (prefers-reduced-motion:reduce){.tlk:is(.tlk-main,.tlk-quiet,.tlk-x,.tlk-home,.tlk-tool,.tlk-tile){transition:none}}
+@media (prefers-reduced-motion:reduce){.tlk:is(.tlk-main,.tlk-quiet,.tlk-x,.tlk-home,.tlk-back,.tlk-tool,.tlk-tile){transition:none}}
 </style>
 <script>
 /* window.TLK: the button system as small helpers that return HTML, so every screen writes the same buttons.
@@ -80,21 +83,26 @@ var A=function(a){ return a?' '+a:''; };
 /* the X and the house are drawn so their middle is exactly the middle of the circle */
 var X_SVG='<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
 var HOME_SVG='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3.25 8.75 10 2.75l6.75 6v7.5a1 1 0 0 1-1 1H12.6v-4.6H7.4v4.6H4.25a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>';
+/* the back arrow: shaft 4.25-15.75 and head 4.75-15.25 around (10,10), so it sits exactly in the middle */
+var BACK_SVG='<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.75 10H4.25M9.5 4.75 4.25 10l5.25 5.25" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 /* the fixed words (HoS 2026-11-23): one word for one moment, on every screen */
 var WORDS={ start:'Start', next:'Next', back:'‹ Back', check:'Check', buyIt:'Buy it', send:'Send', notNow:'Not now',
   keepLearning:'Keep learning', leave:'Leave', leaveLesson:'Leave this lesson?', tryAgain:'Try again', money:'My money', canteenMoney:'canteen money',
   close:'Close', home:'Home', readToMe:'Read it to me' };
 var KINDS={ money:1, prog:1, now:1, rank:1, lock:1, subj:1 };
-window.TLK={ X_SVG:X_SVG, HOME_SVG:HOME_SVG, WORDS:WORDS, KINDS:KINDS,
+window.TLK={ X_SVG:X_SVG, HOME_SVG:HOME_SVG, BACK_SVG:BACK_SVG, WORDS:WORDS, KINDS:KINDS,
   /* MAIN: the one thing to do now (words only) */
   main:function(text,attrs,extra){ return '<button type="button" class="tlk tlk-main'+(extra?' '+extra:'')+'"'+A(attrs)+'>'+esc(text)+'</button>'; },
   /* QUIET: every other choice (words only) */
   quiet:function(text,attrs,extra){ return '<button type="button" class="tlk tlk-quiet'+(extra?' '+extra:'')+'"'+A(attrs)+'>'+esc(text)+'</button>'; },
   /* X: closes a pop-up (place "tr") or leaves a lesson (place "tl"; the screen asks "Leave this lesson?" first) */
   x:function(attrs,place,label){ return '<button type="button" class="tlk tlk-x'+(place?' tlk-at-'+place:'')+'" aria-label="'+esc(label||WORDS.close)+'"'+A(attrs)+'>'+X_SVG+'</button>'; },
-  /* HOUSE: leaves a full page (My map, My work, My things), top left. young = a K-3 boy: the bigger button with the house and "Home".
+  /* HOUSE: leaves a full page (My map, My work, My profile), top left. young = a K-3 boy: the bigger button with the house and "Home".
      TLK.young(grade): true for K (0) through grade 3. */
   home:function(attrs,place,young){ return '<button type="button" class="tlk tlk-home'+(young?' tlk-home-k3':'')+(place===''?'':' tlk-at-'+(place||'tl'))+'" aria-label="'+WORDS.home+'"'+A(attrs)+'>'+HOME_SVG+(young?'<span>'+WORDS.home+'</span>':'')+'</button>'; },
+  /* BACK (HoS 2026-11-24): back to the menu page he came from (only on a page he reached from another menu; never on the home or a pop-up).
+     Grade 4+: round 44 px, the arrow only. young = a K-3 boy: the bigger button with the arrow and the word "Back". Top left, before the house. */
+  back:function(attrs,place,young){ return '<button type="button" class="tlk tlk-back'+(young?' tlk-back-k3':'')+(place===''?'':' tlk-at-'+(place||'tl'))+'" aria-label="Back"'+A(attrs)+'>'+BACK_SVG+(young?'<span>Back</span>':'')+'</button>'; },
   young:function(grade){ var g=Number(grade); return grade!=null&&grade!==''&&!isNaN(g)&&g<=3; },
   /* TOOL: a round button with one icon (Read it to me, music, hint); its name shows on hold or hover */
   tool:function(icon,label,attrs){ return '<button type="button" class="tlk tlk-tool" aria-label="'+esc(label)+'" title="'+esc(label)+'"'+A(attrs)+'>'+icon+'</button>'; },

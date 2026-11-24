@@ -23,5 +23,17 @@ CORE_SKILLS.W48 = [
   ["WRIT.ESSAY.L09.02", "Claim vs Counterclaim", "Tell your claim from the other side, and state the other side fairly at its strongest", { before: "WRIT.RES.L09.01", std: "W.8.1a", file: "CoreDataW485", min: 9 }],
   ["WRIT.ESSAY.L09.03", "Rebuttal", "Answer a counterclaim: show it is mistaken, show it matters less, or concede and outweigh", { after: "WRIT.ESSAY.L09.02", std: "W.8.1a", file: "CoreDataW485", min: 9 }],
   ["WRIT.PARA.L09.01", "Spot the Weak Link", "Name the weak link in an argument: overgeneralizing, false cause, attacking the person, either-or", { after: "WRIT.ESSAY.L09.03", std: "W.8.1b", file: "CoreDataW485", min: 9 }],
-  ["WRIT.PARA.L09.02", "Evidence Ladder", "Rank evidence from a single story up to several careful sources that agree", { after: "WRIT.PARA.L09.01", std: "W.8.1b", file: "CoreDataW485", min: 8 }]
+  ["WRIT.PARA.L09.02", "Evidence Ladder", "Rank evidence from a single story up to several careful sources that agree", { after: "WRIT.PARA.L09.01", std: "W.8.1b", file: "CoreDataW485", min: 8 }],
+  ["WRIT.ESSAY.L05.01", "POW + WWW", "Plan a story with POW and the W-W-W questions", { before: "WRIT.PARA.L05.03", std: "W.4.3a", file: "CoreDataW486", min: 9 }],
+  ["WRIT.PARA.L05.10", "Open the Scene", "Start a story with who, where and the problem", { after: "WRIT.ESSAY.L05.01", std: "W.4.3a", file: "CoreDataW486", min: 8 }],
+  ["WRIT.PARA.L05.11", "Then What?", "Order story events with time words", { after: "WRIT.PARA.L05.10", std: "W.4.3c", file: "CoreDataW486", min: 7 }],
+  ["WRIT.PARA.L05.12", "Five-Senses Camera", "Add details the reader can see, hear, smell, taste and touch", { after: "WRIT.PARA.L05.03", std: "W.4.3d", file: "CoreDataW486", min: 8 }],
+  ["WRIT.PARA.L05.13", "Show the Feeling", "Show a feeling with actions, face and words, not just a feeling word", { after: "WRIT.PARA.L05.12", std: "W.4.3b", file: "CoreDataW486", min: 8 }],
+  ["WRIT.PARA.L05.14", "Story Ending", "End a story with how it worked out and what the character learned", { after: "WRIT.PARA.L05.13", std: "W.4.3e", file: "CoreDataW486", min: 7 }],
+  ["WRIT.ESSAY.L06.05", "Story Mountain", "Plan a story: problem, rising events, turning point, end", { after: "WRIT.PARA.L06.03", std: "W.5.3a", file: "CoreDataW487", min: 9 }],
+  ["WRIT.PARA.L06.04", "Dialogue + Action", "Mix what characters say with what they do, and punctuate it", { after: "WRIT.ESSAY.L06.05", std: "W.5.3b", file: "CoreDataW487", min: 8 }],
+  ["WRIT.PARA.L06.05", "Slow Motion", "Slow down the big moment and speed past the boring part", { after: "WRIT.PARA.L06.04", std: "W.5.3b", file: "CoreDataW487", min: 9 }],
+  ["WRIT.PARA.L06.06", "Time Jumps", "Move through time with phrases and clauses", { after: "WRIT.PARA.L06.05", std: "W.5.3c", file: "CoreDataW487", min: 7 }],
+  ["WRIT.PARA.L06.07", "Picture Words", "Choose one exact verb and words that fit", { after: "WRIT.PARA.L06.06", std: "W.5.3d", file: "CoreDataW487", min: 8 }],
+  ["WRIT.PARA.L06.08", "It Follows", "End with a conclusion that grows out of the events", { after: "WRIT.PARA.L06.07", std: "W.5.3e", file: "CoreDataW487", min: 7 }]
 ];

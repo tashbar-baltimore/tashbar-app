@@ -25,5 +25,12 @@ CORE_SKILLS.C45 = [
   ["READ.LIT.L06.04", "Theme in a Poem", "Find the theme in what the speaker thinks about", { std: "RL.5.2", file: "CoreDataC454", min: 8 }],
   ["READ.LIT.L06.05", "Summary with a Theme", "Summarize a story and end with its theme", { std: "RL.5.2", file: "CoreDataC454", min: 8 }],
   ["READ.LIT.L06.06", "Keep Yourself Out", "Summarize without your own opinion", { std: "RL.5.2", file: "CoreDataC454", min: 8 }],
-  ["READ.FLU.L06.02", "Who Is Talking?", "Read dialogue with the right speaker and voice", { after: "READ.LIT.L06.06", std: "RF.5.4b", file: "CoreDataC454", min: 8 }]
+  ["READ.FLU.L06.02", "Who Is Talking?", "Read dialogue with the right speaker and voice", { after: "READ.LIT.L06.06", std: "RF.5.4b", file: "CoreDataC454", min: 8 }],
+  ["READ.LIT.L05.03", "Story Map", "Map the characters, setting, problem, events and solution", { after: "READ.FLU.L05.03", std: "RL.4.3", file: "CoreDataC455", min: 8 }],
+  ["READ.LIT.L05.04", "Trait Detective", "Find a character's trait from what he does and says", { std: "RL.4.3", file: "CoreDataC455", min: 8 }],
+  ["READ.LIT.L05.05", "Why Did He Do It?", "Figure out why a character does what he does", { std: "RL.4.3", file: "CoreDataC455", min: 8 }],
+  ["READ.LIT.L05.06", "What Did He Learn?", "Find the theme in the lesson the character learns", { std: "RL.4.2", file: "CoreDataC455", min: 8 }],
+  ["READ.LIT.L06.07", "Where It Happens Matters", "See how the setting shapes what happens", { after: "READ.FLU.L06.02", std: "RL.5.3", file: "CoreDataC456", min: 8 }],
+  ["READ.LIT.L06.08", "Changed by Each Other", "Show how two characters change each other", { std: "RL.5.3", file: "CoreDataC456", min: 8 }],
+  ["READ.LIT.L06.09", "The Turning Point", "Find the turning point on the plot mountain", { std: "RL.5.5", file: "CoreDataC456", min: 8 }]
 ];

@@ -16,11 +16,11 @@ Read `docs/CORE-GROWTH-PROMPT.md` first. It explains how to claim a job (section
 | 2 | **D · The daily plan** (replace "3 lessons, then the Arcade" with today's list of material to cover; daily bonus when the whole list is done; every payment says what it is for) | TAKEN | https://claude.ai/code/session_01TScHB4zG82RAGTetxXcxpj | 2026-11-24 | 2026-11-24 02:45 UTC | Plan in #284; building today's list for TEST- boys (server list check, daily bonus on the whole list, My work rows) | none; can start now |
 | 3 | **F · Foundations K–2** | TAKEN | https://claude.ai/code/session_01JPKZXHjMHR8MBsBECX3W7A | 2026-11-24 | 2026-11-24 10:45 UTC | Grade 2 Units 1–2 live (9 lessons) with pictures; Unit 3 (air/are/ear, consonant-le, tch/dge) PR open; Unit 4 (soft c, soft g, quiet letters) reviewed and tested, next PR; Fluent Flyer waits on issue #310; picture order 2 ready to send | T for lesson PRs; can start the map now |
 | 4 | **C45 · Comprehension Gr 4–5** | TAKEN | https://claude.ai/code/session_01JPKZXEMq9S1KawXgCw533p | 2026-11-24 | 2026-11-24 09:35 UTC | Live: Units 4.1, 4.2 (Gr 4) and 5.1, 5.2 (Gr 5), 22 lessons; Books B1 (10 ch.) and B4 ch. 1–6 plus the Deserts set in `texts/C45/`; picture order 1 done (25 in `art/`). Now: Unit 4.3 (story builders) + 5.3. Running totals in `docs/core-growth/C45-ledger.md` | T for lesson PRs; can start the map now |
-| 5 | **W48 · Writing Gr 4–8** | TAKEN | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf | 2026-11-24 | 2026-11-24 11:30 UTC | Unit 1 live for Gr 4–7 (#313, #319, #327, #338) with Gr 4–5 pictures (#334); Gr 8 Unit 1 in a PR; Gr 6–8 pictures approved, next; then Unit 2 of every grade | T (Writing Workshop); can start the map now |
+| 5 | **W48 · Writing Gr 4–8** | TAKEN | https://claude.ai/code/session_01HB2X6dqysjU6rtBkKPF5Xf | 2026-11-24 | 2026-11-24 13:00 UTC | Unit 1 live for Gr 4–8 with pictures (#313 #319 #327 #338 #341 #334 #344); Unit 2 Gr 4–5 in a PR; next: Unit 2 Gr 6–8, then Unit 3 | T (Writing Workshop); can start the map now |
 | 6 | **C23 · Comprehension Gr 2–3** | OPEN | | | | | T for lesson PRs; can start the map now |
-| 7 | **G · Grammar and words K–8** | TAKEN | https://claude.ai/code/session_013qbMrgAu9CyoyPphT4PmMj | 2026-11-24 | 2026-11-24 06:35 UTC | Unit 1 Gr 2–8 live (#315, 20 lessons); 2 to-fix lessons fixed (#308); Unit 2 Gr 2–8 (13 lessons) in review PR; next: Unit 3, then K–1 when the game-path note is ready | T for lesson PRs; can start the map now |
+| 7 | **G · Grammar and words K–8** | TAKEN | https://claude.ai/code/session_013qbMrgAu9CyoyPphT4PmMj | 2026-11-24 | 2026-11-24 13:50 UTC | Units 1–3 Gr 2–8 live (#315, #321, #346; 45 lessons); 2 to-fix lessons fixed (#308); Unit 4 Gr 2–8 (17 lessons) in PR; next: Unit 5, then K–1 | T for lesson PRs; can start the map now |
 | 8 | **C68 · Comprehension Gr 6–8** | TAKEN | https://claude.ai/code/session_01F5TiU4gVh7WZ9cRWBJEpNU | 2026-11-24 | 2026-11-24 05:00 UTC | Skill map + ledger in review (`docs/core-growth/C68-map.md`, `C68-ledger.md`); next: Units 6.1, 7.1, 8.1 skill lessons (`src/CoreDataC681.html`) and W1/W4/W7 ch. 1–4 | T for lesson PRs; can start the map now |
-| 9 | **W13 · Writing K–3** | OPEN | | | | | T (Writing Workshop); can start the map now |
+| 9 | **W13 · Writing K–3** | TAKEN | https://claude.ai/code/session_01884AzDu2mcQ4Gee5HstyGK | 2026-11-24 | 2026-11-24 13:30 UTC | Claimed; writing the K–3 writing skill map (docs/core-growth/W13-map.md) | T (Writing Workshop); can start the map now |
 | 10 | **S · Science and Social Studies** | OPEN | | | | | the core map of a band; can start the map now |
 | 11 | **V · Verifier** (reviews, takes no building job) | OPEN | | | | | starts when the first lesson PR opens |
 
@@ -45,6 +45,10 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | C68 | Grade 8, Units 8.5–8.8 (lessons and topic-set texts) | OPEN | | |
 | C68 | Longer works W2 *Snowbound* and W6 *The Flood* (after W1 sets the pattern) | OPEN | | |
 | C68 | Adapted public-domain works W5 (Verne), W8 (Conan Doyle), W9 (Stevenson) | OPEN | | |
+| W13 | Grade 3, Units 4–6 (lessons, pieces and unit checks; see `docs/core-growth/W13-map.md`) | OPEN | | |
+| W13 | Grade 2, Units 5–6 | OPEN | | |
+| W13 | K–1 picture-piece prompts (60), ready for job T's K–1 writing step | OPEN | | |
+| W13 | Grade 2–3 quick-write prompts (80, two per C23 text) | OPEN | | |
 
 ## Casts (recurring characters, one per band)
 | Band | Cast note | Written by |

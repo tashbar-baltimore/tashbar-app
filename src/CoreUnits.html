@@ -8,12 +8,12 @@
      win moment. 8 of 10 (80%) passes and opens the next unit. A miss names the skill, and "Practice" opens exactly that small lesson.
    Questions come from each skill's own check questions (tap kinds: choose one, put in order), or from unit.items (Activity Kit tap kinds).
    No money, no mastery: a pre-check or unit check pays nothing (an HoS DECISION would be needed). Buttons only from window.TLK.
-   Switch window.CU_LIVE: 'test' (TEST- boys only, the default), 'on', 'off'. With it on, starting the first lesson of a unit offers the
+   Switch window.CU_LIVE: 'on' (every boy, the default: HoS decision 2026-11-24), 'test' (TEST- boys only), 'off'. With it on, starting the first lesson of a unit offers the
    pre-check, and starting a unit whose earlier unit is finished but not passed opens that unit's check first.
    No double slash in this file. */
 (function () {
   var W = window, C = W.TLCORE = W.TLCORE || {}, U = C.units = C.units || {};
-  if (W.CU_LIVE == null) W.CU_LIVE = 'test';
+  if (W.CU_LIVE == null) W.CU_LIVE = 'on';   /* HoS DECISION 2026-11-24: "Turn unit checks on for everyone." */
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var RM = false; try { RM = W.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var LIST = U.list = U.list || [], BY = U.byId = U.byId || {}, OF = U.ofSkill = U.ofSkill || {}, S = null, MINE = null;
@@ -170,7 +170,7 @@
   /* the answer to question i, for the tests (never shown to a boy) */
   U.__solve = function () { if (!S || S.view !== 'q') return null; var q = S.qs[S.i]; return q.kind === 'mc' ? { pick: q.o.indexOf(q.a) } : q.kind === 'order' ? { order: q.tiles.map(function (x) { return S.ord.pool.indexOf(x); }) } : null; };
 
-  /* ---------- the hooks: before a lesson starts (TEST- boys only while CU_LIVE is 'test') ---------- */
+  /* ---------- the hooks: before a lesson starts (every boy while CU_LIVE is 'on') ---------- */
   /* The hook never waits on the network and never leaves a lesson button doing nothing:
      - it acts only when his unit results are already loaded (they load in the background as soon as a TEST- boy is signed in);
      - a lesson is always (re)started through the WHOLE chain of add-ons (window.startMission, so One Bite still takes over), with a one-time pass;
