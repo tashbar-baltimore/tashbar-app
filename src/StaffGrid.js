@@ -25,7 +25,8 @@ function sgQuest_() {
   var page = HtmlService.createHtmlOutputFromFile('QuestPage').getContent(), bar = '';
   try { bar = HtmlService.createHtmlOutputFromFile('UiKit').getContent(); } catch (e) { bar = ''; }   /* 2026-11-23 HoS: THE BUTTON SYSTEM, first, so every part can use it (window.TLK, docs/BUTTON-SYSTEM.md) */
   try { bar += HtmlService.createHtmlOutputFromFile('SignOutBar').getContent(); } catch (e) {}
-  try { bar += HtmlService.createHtmlOutputFromFile('OilTrail').getContent(); } catch (e) {}   /* 2026-11-23 HoS: Chanukah olive oil, the default trail through 3 Tevet 5787 (window.tlOilOn) */
+  try { bar += HtmlService.createHtmlOutputFromFile('OilTrail').getContent(); } catch (e) {}
+  try { bar += HtmlService.createHtmlOutputFromFile('JellyTrail').getContent(); } catch (e) {}   /* 2026-11-24 HoS: the Sufganiyah jelly trail, a Chanukah store item (window.tlJellyOn) */   /* 2026-11-23 HoS: Chanukah olive oil, the default trail through 3 Tevet 5787 (window.tlOilOn) */
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderCard').getContent(); } catch (e) {}
   try { bar += HtmlService.createHtmlOutputFromFile('FireLinks').getContent(); } catch (e) {}   /* EVERYTHING ON FIREBASE: links from web.app carry the sign-in (FireBridge.js) */
   try { bar += HtmlService.createHtmlOutputFromFile('PathfinderGo').getContent(); } catch (e) {}   /* v7.2 Stage 5: opens the first lesson after a TEST boy's Pathfinder day-1 screens (inert otherwise) */

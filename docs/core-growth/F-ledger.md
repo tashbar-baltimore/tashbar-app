@@ -27,11 +27,13 @@ A boy who tests out of a skill skips it, so a fast boy needs fewer minutes. That
 |---|---|---|---|---|
 | K | 3 games (`READ.PA.L01.07`–`.09`) | 0 | ≈ 0.25 (3 × 5 min) | 36 |
 | 1 | 2 games (`READ.PHON.L02.22`, `READ.PA.L02.02`) | 0 | ≈ 0.2 (2 × 6 min) | 52 |
-| 2 | 13 (`READ.PHON.L03.04`–`.11`, `READ.LV.L03.03`–`.06` new; `READ.PHON.L03.01` rebuilt) | 0 | ≈ 2.6 (13 × 7 min + review) | 20 |
+| 2 | 19 (`READ.PHON.L03.04`–`.11`, `.13`–`.17`, `READ.LV.L03.03`–`.06`, `READ.FLU.L03.04` new; `READ.PHON.L03.01` rebuilt) | 0 | ≈ 3.8 (19 × 7 min + review) | 20 |
 
 Existing lessons count only once they pass the standard (prompt, section 2).
 
-**Waiting:** `READ.FLU.L03.01` Fluent Flyer (Grade 2 Unit 1) needs a new, cold check story in its content pack before it can pass; it is the next F pull request.
+**Waiting:** `READ.FLU.L03.01` Fluent Flyer (Grade 2 Unit 1) needs a new, cold check story in its content pack before it can pass (issue #310). `READ.FLU.L03.04` Just-Right Speed did not need it: its checks are about reading speed, not about a passage.
+
+**Still to build in Grade 2 (map):** `READ.PHON.L03.12` (ph), `READ.FLU.L03.02` (scoop and read), `READ.FLU.L03.03` (who is talking?), Unit 6 (`READ.FLU.L03.05`–`.07`, `READ.PHON.L03.18`, `WRIT.HAND.L03.01`) and the six unit checks.
 
 ## Left out on purpose
 - K little readers in Units 1–2: a boy cannot yet decode text, so "readers" there would be filler. Listen-along stories take that time.

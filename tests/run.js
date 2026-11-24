@@ -74,7 +74,11 @@ async function openPage(browser, html, init, throttle, staffSession) {
   const pg = await ctx.newPage(); const errs = [];
   pg.on('pageerror', e => errs.push('page error: ' + String(e).slice(0, 240)));
   pg.on('console', m => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push('console error: ' + m.text().slice(0, 240)); });
-  await pg.route('**/*', r => r.request().url() === 'http://app.test/' ? r.fulfill({ contentType: 'text/html', body: html }) : r.abort());
+  /* the content store (job T): /texts/<ID>.json is served from texts/ the way web/build.js publishes it, so a lesson can open a real text */
+  const TXP = [path.join(__dirname, '..', 'tools', 'core', 'texts.js'), path.join(process.cwd(), 'tools', 'core', 'texts.js')].find(p => fs.existsSync(p));
+  let TX = null; const realText = id => { if (!TX) { TX = {}; try { require(TXP).load().out.forEach(t => { TX[t.id] = t; }); } catch (e) {} } return TX[id]; };
+  await pg.route('**/*', r => { const u = r.request().url(); if (u === 'http://app.test/') return r.fulfill({ contentType: 'text/html', body: html });
+    const m = /\/texts\/([A-Za-z0-9.]+)\.json$/.exec(u), t = m && realText(m[1]); return t ? r.fulfill({ contentType: 'application/json', body: JSON.stringify(t) }) : r.abort(); });
   if (throttle) { const cdp = await ctx.newCDPSession(pg); await cdp.send('Emulation.setCPUThrottlingRate', { rate: throttle }); }
   return { ctx, pg, errs };
 }
@@ -230,6 +234,8 @@ async function kidTests(browser) {
   /* CHANUKAH OLIVE OIL (tests/lib/oiltrail.js, src/OilTrail.html, HoS 2026-11-23) */
   try { const ot = await require('./lib/oiltrail.js')(pg); ot.fails.forEach(fail); ot.oks.forEach(ok); }
   catch (e) { fail('olive oil test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  /* CHANUKAH SUFGANIYAH JELLY TRAIL (tests/lib/jellytrail.js, src/JellyTrail.html, HoS 2026-11-24) */
+  try { const jt = await require('./lib/jellytrail.js')(pg); jt.fails.forEach(fail); jt.oks.forEach(ok); } catch (e) { fail('jelly trail test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const sf = require('./lib/storefx.js'), n = sf.names(), e = await sf.effects(pg); n.fails.concat(e.fails).forEach(fail);
     if (!n.fails.length && !e.fails.length) ok('store Fun tab: ' + n.count + ' items, no two share a name, picture, tap blast, trail or app colors (closest app colors: ' + (e.closest && e.closest.d) + ')'); }
   catch (e) { fail('store check crashed: ' + String(e && e.stack || e).slice(0, 300)); }
