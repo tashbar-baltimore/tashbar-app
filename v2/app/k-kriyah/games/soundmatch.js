@@ -11,7 +11,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   const L = {}, peds = [], pedM = E.M(0xffffff, { roughness: .25, clearcoat: .8 }), tops = [0xff7aa8, 0x46c3ff, 0xffcf3a];
   keys.forEach((k, i) => { const p = new THREE.Group(); p.add(E.mesh(new THREE.CylinderGeometry(.75, .85, .5, 32), pedM, 0, .25, 0)); p.add(E.mesh(new THREE.CylinderGeometry(.78, .78, .12, 32), E.M(tops[i % 3], { roughness: .25, clearcoat: 1 }), 0, .55, 0));
     const l = E.letter(k, 1.4); l.position.y = 1.4; p.add(l); L[k] = l; p.userData.key = k; E.scene.add(p); peds.push(p); });
-  const PS = () => P ? (peds.length > 3 ? .5 : .62) : (peds.length > 3 ? .88 : 1);
+  const PS = () => P ? (peds.length > 3 ? .6 : .62) : (peds.length > 3 ? .88 : 1);
   const card = new THREE.Group(); E.scene.add(card); card.visible = false;
   const cardGlow = E.glowSprite('#ffffff', 2.6, .7); cardGlow.position.z = -.4; card.add(cardGlow);
   const cardBack = E.mesh(E.rbox(2.05, 2.05, .08, .2), E.M(0xffe9b8, { roughness: .4, clearcoat: .6, depthWrite: false }), 0, 0, -.35, false); cardBack.renderOrder = -1; card.add(cardBack);   /* a white card behind the picture, so it never melts into the painting */
@@ -43,7 +43,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
   E.onPointer('up', () => { if (!dragging) return; dragging = false; peds.forEach(pd => pd.scale.setScalar(PS())); drop(nearest()); });
 
   async function showCard(w) {
-    word = w; if (pic) card.remove(pic); pic = PIC[w](); card.add(pic); cardBack.scale.x = pic.userData.card ? Math.max(1, (pic.userData.card.scale.x + .35) / 2.05) : 1;   /* a wide picture (the cloud) gets a wider card */ card.position.copy(cardHome); card.rotation.set(0, 0, 0); missed = false;
+    word = w; if (pic) card.remove(pic); pic = PIC[w](); card.add(pic); const wide = pic.userData.card && pic.userData.card.scale.x > 2.2; pic.scale.setScalar(wide ? .78 : 1); cardBack.scale.x = pic.userData.card ? Math.max(1, (pic.userData.card.scale.x * (wide ? .78 : 1) + .35) / 2.05) : 1;   /* a wide picture (the cloud) is a little smaller, on a wider card */   /* a wide picture (the cloud) gets a wider card */ card.position.copy(cardHome); card.rotation.set(0, 0, 0); missed = false;
     await E.popIn(card, P ? .9 : .85); busy = false;
     await E.say(WORDS[w].say);
   }
@@ -86,7 +86,7 @@ export default function setup(E, { struggled, unit, game = {} }) {
       const pd = peds.find(x => x.userData.key === 'ches'), c = E.letter('chaf', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 2.75 * pd.scale.x, .6)); c.scale.setScalar(.75 * pd.scale.x); E.scene.add(c); await E.popIn(c, .75 * pd.scale.x);   /* well above its partner, smaller, so the two never look like one tall letter */
       await E.say('This is Chaf. Kaf without its dot.'); E.hop(L.ches, .3); await E.say('Chaf sounds just like Ches!'); }
     if (keys.includes('pei') && unit.letters.includes('fei')) {   /* Fei has no picture: it stands beside Pei and says f */
-      const pd = peds.find(x => x.userData.key === 'pei'), c = E.letter('fei', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, 2.1 * pd.scale.x, .6)); c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);   /* just above its partner, a little smaller, so the two never look like one tall letter */
+      const pd = peds.find(x => x.userData.key === 'pei'), c = E.letter('fei', 1.2); c.position.copy(top(pd)).add(new THREE.Vector3(0, (P ? 2.6 : 2.1) * pd.scale.x, .6)); c.scale.setScalar(.85 * pd.scale.x); E.scene.add(c); await E.popIn(c, .85 * pd.scale.x);   /* just above its partner, a little smaller, so the two never look like one tall letter */
       await E.say('This is Fei. Pei without its dot.'); E.hop(c, .3); await E.say(['Fei says', S(E.LETTERS.fei.snd), '.']); }
     if (keys.includes('kaf') && keys.includes('kuf') && unit.letters.includes('kuf')) {   /* Kuf and Kaf say the same sound */
       E.hop(L.kuf, .3); await E.wait(200); E.hop(L.kaf, .3); await E.say('Kuf sounds just like Kaf!'); }

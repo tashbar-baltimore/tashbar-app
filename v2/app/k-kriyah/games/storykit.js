@@ -32,7 +32,7 @@ export function makeStory(E, unit, script) {
     Object.fromEntries(row.map(l => ['row-' + l.userData.key, E.toScreen(E.worldPos(l))])));
   async function morph(picObj, k) {
     const from = E.worldPos(picObj), s0 = picObj.scale.x, l = L[k]; E.sfx.sparkle(); E.sfx.whoosh(); E.sparkle(from.clone().add(new THREE.Vector3(0, 0, .5)), 36, 1.4);
-    l.position.set(0, 1.6, .6); l.visible = true; l.scale.setScalar(.01); glow.position.set(0, 1.6, -.3);
+    l.position.set(P ? .35 : 0, 1.6, .6); l.visible = true; l.scale.setScalar(.01); glow.position.set(P ? .35 : 0, 1.6, -.3);
     await E.tween(1300, q => { picObj.scale.setScalar(Math.max(.001, s0 * (1 - q))); picObj.rotation.y = q * 3; l.scale.setScalar(.01 + q * .99); l.rotation.y = (1 - q) * Math.PI * 2; glow.material.opacity = q * .8; });
     picObj.visible = false; float(l);
   }
@@ -41,10 +41,10 @@ export function makeStory(E, unit, script) {
     const p0 = l.position.clone(), to = new THREE.Vector3(gap * ((n - 1) / 2 - i), P ? 4.4 : 3.6, -.5);
     await E.tween(600, q => { l.position.lerpVectors(p0, to, q); l.scale.setScalar(1 - q * (1 - (P ? .28 : .5))); glow.material.opacity = .8 * (1 - q); }); float(l);
   }
-  const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(0, 1.6, .6), q)); };
+  const toCentre = async o => { const p0 = o.position.clone(); await E.tween(500, q => o.position.lerpVectors(p0, new THREE.Vector3(P ? .35 : 0, 1.6, .6), q)); };
   const say = async (who, line) => { if (who) { who.mood('wave'); setTimeout(() => who.mood('calm'), 1100 * E.F); } await E.say(line); };
   return async () => {
-    boy.position.set(P ? -1.5 : -2.0, 0, 1.4); if (grown) grown.position.set(P ? -2.0 : -3.9, 0, P ? .2 : .6); if (P) { boy.scale.setScalar(.75); if (grown) grown.scale.multiplyScalar(.75); }   /* on a phone both are smaller, clear of the big letter */
+    boy.position.set(P ? -1.3 : -2.0, 0, 1.4); if (grown) grown.position.set(P ? -1.75 : -3.9, 0, P ? .2 : .6); if (P) { boy.scale.setScalar(.75); if (grown) grown.scale.multiplyScalar(.75); }   /* on a phone both are smaller, clear of the big letter */
     E.setProgress(steps, 0);
     for (const line of script.intro) await say(boy, line);
     for (const [si, st] of script.steps.entries()) {
@@ -81,7 +81,7 @@ export function makeStory(E, unit, script) {
     }
     E.setProgress(steps, steps - 1);
     /* every letter so far, right to left (two lines on a phone when there are many), and the chant */
-    const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? (all.length > 16 ? .58 : .5) : (all.length > 20 ? .78 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
+    const all = [...unit.known, ...unit.letters], many = all.length > 9, sz = P ? .5 : (all.length > 20 ? .78 : all.length > 12 ? .85 : many ? .7 : .82), gap = P ? (many ? .4 : .46) : (many ? .62 : .82);
     const nl = P && many ? Math.ceil(all.length / 7) : all.length > 20 ? 3 : all.length > 12 ? 2 : 1, per = Math.ceil(all.length / nl), lines = Array.from({ length: nl }, (_, i) => all.slice(i * per, (i + 1) * per));   /* more lines (right to left, top line first) when they would not fit: on a phone, 8 letters a line at most */
     lines.forEach((ks, li) => { const made = ks.map(k => E.letter(k, sz)), widths = made.map(l => l.userData.width), total = widths.reduce((a, b) => a + b, 0) + gap * .45 * (ks.length - 1);
       let x = total / 2; made.forEach((l, i) => { x -= widths[i] / 2; l.position.set(x, lines.length > 1 ? (P ? (lines.length > 2 ? 3.1 - li * (lines.length > 3 ? .85 : 1.0) : 2.3 - li * 1.1) : (lines.length > 2 ? 3.0 - li * 1.15 : 2.55 - li * 1.4)) : 1.5, .4); x -= widths[i] / 2 + gap * .45; l.visible = false; E.scene.add(l); row.push(l); }); });
