@@ -30,7 +30,7 @@
     if (new Set(g.acts.map(function (a) { return a.type; })).size < 3) return 'use 3 or more kinds of activity';
     return '';
   };
-  K.add = function (g) { if (!g || K.games[g.id]) return false; if (W.OBK) { var e = K.err(g); if (e) { console.error('K-1 game ' + (g && g.id) + ': ' + e); return false; } }
+  K.add = function (g) { if (!g || K.games[g.id]) return false; if (W.OBK) { var e = K.err(g); if (e) { (K.rejected = K.rejected || []).push((g && g.id) + ': ' + e); console.warn('K-1 game ' + (g && g.id) + ': ' + e); return false; } }   /* tests/lib/corek1.js fails on any refused game */
     K.games[g.id] = g; K.list.push(g); install(); return true; };
 
   /* ---------- join the game pack's path ---------- */
@@ -121,7 +121,7 @@
   }
   function play(id) {
     var g = K.games[id]; if (!g || !W.OBK) return;
-    var e = K.err(g); if (e) { console.error('K-1 game ' + id + ': ' + e); return; }
+    var e = K.err(g); if (e) { (K.rejected = K.rejected || []).push(id + ': ' + e); console.warn('K-1 game ' + id + ': ' + e); return; }
     if (G) close(); css(); try { OBK.css(); } catch (er) {}
     var el = document.createElement('div'); el.id = 'k1cov'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', g.name); document.documentElement.appendChild(el);   /* outside body: the K-1 home hides every other child of body (K1Only.html, body.k1-home) */
     document.addEventListener('keydown', onKey, true);
