@@ -53,7 +53,7 @@ Then the 20 pictures (file name = `core-` + the name below + `.webp`):
 | 19 | c45-u51-opener | Unit 5.1 opener "Quote to prove it" (Grade 5) | 16:9 | A dusty attic in warm light; Yehuda (11) kneels by a flat wooden box and unfolds an old hand-drawn map of a harbor city in brown ink; Avrumi looks over his shoulder. |
 | 20 | c45-p-tomthumb | passage "The Race Between a Horse and a Train" (Grade 5) | 16:9 | 1830: a tiny early steam locomotive racing a horse pulling a passenger car on parallel tracks; men in old-fashioned clothes and hats cheering; steam and dust. Men only. |
 
-## Order 2 (2026-11-24) · status: 6 of 7 in `art/` (b4-ch2-map asked to be redrawn: the map must be the harbor city, the photo the burned building)
+## Order 2 (2026-11-24) · status: COMPLETE (all 7 in `art/`; b4-ch2-map was redrawn once)
 Book B4 *The Map in Zeidy's Attic*, cover and chapters 1–6 (Grade 5, so the boys are 11). Extra cast: **Zeidy Benaim** (about 75, white beard, flat cap, warm smile, cardigan), **Yehuda's Abba** (about 40, short dark beard, black kippah), **Mr. Pollack** (archivist, about 60, glasses, gray cardigan, white cotton gloves). No women or girls (Savta, Ima, the sisters and the librarian stay in the words only). The map must show **no letters** (the three Hebrew letters in the story are not drawn).
 
 | # | File name | Goes on | Size | Prompt (add the style sheet and picture rules above) |
