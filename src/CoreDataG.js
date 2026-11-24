@@ -48,5 +48,22 @@ CORE_SKILLS.G = [
   ["LANG.GRAM.L06.06", "Wow! Oops!", "Interjections: strong with !, mild with a comma", { std: "L.5.1a", file: "CoreDataG4", min: 7 }],
   ["LANG.USE.L07.02", "Standard English Fix", "Fix slang and common errors for formal writing", { after: "LANG.USE.L07.01", std: "L.6.1e", file: "CoreDataG4", min: 8 }],
   ["LANG.SENT.L08.02", "Sharpen the Sentence", "Strong verbs, no empty words, no \"There was\"", { after: "LANG.USE.L08.01", std: "L.7.3a", file: "CoreDataG4", min: 8 }],
-  ["LANG.MECH.L09.02", "Leave It Out…", "An ellipsis to shorten a quote fairly", { after: "LANG.MECH.L09.01", std: "L.8.2b", file: "CoreDataG4", min: 7 }]
+  ["LANG.MECH.L09.02", "Leave It Out…", "An ellipsis to shorten a quote fairly", { after: "LANG.MECH.L09.01", std: "L.8.2b", file: "CoreDataG4", min: 7 }],
+  ["LANG.MECH.L03.02", "Big Names", "Capitals for holidays, places and names of things", { before: "LANG.MECH.L03.01", std: "L.2.2a", file: "CoreDataG5", min: 7 }],
+  ["LANG.MECH.L03.03", "Dear and Love", "Commas in a letter's greeting and closing", { after: "LANG.MECH.L03.01", std: "L.2.2b", file: "CoreDataG5", min: 6 }],
+  ["LANG.USE.L03.01", "Talk or Write?", "Talking with friends vs writing for school", { after: "LANG.MECH.L03.03", std: "L.2.3a", file: "CoreDataG5", min: 6 }],
+  ["LANG.MECH.L04.03", "Street, City, State", "Commas in addresses", { after: "LANG.MECH.L04.02", std: "L.3.2b", file: "CoreDataG5", min: 6 }],
+  ["LANG.MECH.L04.04", "The Boys' Bikes", "Plural possessives", { after: "LANG.MECH.L04.03", std: "L.3.2d", file: "CoreDataG5", min: 7 }],
+  ["LANG.MECH.L04.05", "Add the Ending", "Spelling with -ed, -ing, -s when the base word changes", { after: "LANG.MECH.L04.04", std: "L.3.2e", file: "CoreDataG5", min: 7 }],
+  ["LANG.MECH.L05.02", "\"Quote,\" He Said", "Commas and quotation marks with a speaker tag, before and after", { after: "LANG.MECH.L05.01", std: "L.4.2b", file: "CoreDataG5", min: 8 }],
+  ["LANG.MECH.L05.03", "Capital Rules Review", "Capitals in titles, names and places", { after: "LANG.MECH.L05.02", std: "L.4.2a", file: "CoreDataG5", min: 7 }],
+  ["LANG.USE.L05.04", "Formal or Friendly?", "Choose formal or friendly style for the reader", { after: "LANG.USE.L05.03", std: "L.4.3c", file: "CoreDataG5", min: 7 }],
+  ["LANG.MECH.L06.05", "Book or Chapter?", "Underline or italics for long works, quotation marks for short works", { after: "LANG.MECH.L06.01", std: "L.5.2d", file: "CoreDataG5", min: 7 }],
+  ["READ.VOC.L07.02", "Aud, Vis, Port", "Use the Greek and Latin roots aud, vis and port to find meaning", { after: "READ.VOC.L07.01", std: "L.6.4b", file: "CoreDataG5", min: 9 }],
+  ["READ.VOC.L07.03", "Clue to Meaning", "Use definition, example and contrast clues in the sentence and paragraph", { after: "READ.VOC.L07.02", std: "L.6.4a", file: "CoreDataG5", min: 8 }],
+  ["READ.VOC.L07.04", "Check Your Guess", "Verify a guessed meaning in a dictionary: the right sense and part of speech", { after: "READ.VOC.L07.03", std: "L.6.4d", file: "CoreDataG5", min: 7 }],
+  ["READ.VOC.L08.03", "Bell, Belli: War Words", "Use the Latin roots bell (war) and pac (peace), and spot false friends", { after: "READ.VOC.L08.01", std: "L.7.4b", file: "CoreDataG5", min: 9 }],
+  ["READ.VOC.L08.04", "Check It Twice", "Verify an inferred meaning with the sentence test and the dictionary", { after: "READ.VOC.L08.02", std: "L.7.4d", file: "CoreDataG5", min: 7 }],
+  ["LANG.SENT.L09.01", "Style Moves", "Use parallel structure in lists and pairs", { after: "LANG.MECH.L09.02", std: "L.8.3a", file: "CoreDataG5", min: 9 }],
+  ["LANG.SENT.L09.02", "Emphasis", "Put the important part at the end of the sentence", { std: "L.8.3a", file: "CoreDataG5", min: 8 }]
 ];
