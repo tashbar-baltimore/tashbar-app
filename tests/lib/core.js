@@ -89,7 +89,6 @@ async function page(pg, rep) {
     const T = require('../../tools/core/texts.js').load(); T.problems.forEach(p => fail('text: ' + p));
     if (!fails.length) oks.push('content store: a long text loads only when opened, once; ' + T.out.length + ' real text(s) in texts/, no problems');
   }
-<<<<<<< HEAD
   /* the Reader (src/CoreReader.html), with a made-up chapter (tests/fixtures/ZZTEST.KEY.01.txt), as a boy taps it */
   {
     const F = require('../../tools/core/textfmt.js');
@@ -140,8 +139,6 @@ async function page(pg, rep) {
     await pg.setViewportSize({ width: 1366, height: 768 });
     if (!fails.length) oks.push('Reader: cover, pages, tap a word for its meaning, Back from Grade 3, chapter done and kept, tap the sentence that proves it (miss names the step, no early answer), K-1 band; button system only, no sideways scroll at 1366 and 390');
   }
-=======
->>>>>>> origin/main
   if (!fails.length) oks.push('core skills (page): ' + got.mine.length + ' core lesson(s) loaded, no clash' + (notYet.length ? '; listed, no lesson yet (hidden from boys): ' + notYet.length : ''));
   return { fails, oks };
 }
