@@ -30,7 +30,7 @@
  function css(){ if(document.getElementById('bbx-css')) return; const s=document.createElement('style'); s.id='bbx-css'; s.textContent=`
 #bbx{position:fixed;inset:0;z-index:2147482000;background:#e9edf4;color:#1d2433;font:16px/1.4 'Nunito','Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;-webkit-user-select:none;user-select:none}
 #bbx *{box-sizing:border-box}
-#bbx button{font:inherit;color:inherit;cursor:pointer}
+#bbx button:not(.tlk){font:inherit;color:inherit;cursor:pointer}
 .bbx-top{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;background:#1d2433;color:#fff;min-height:56px}
 .bbx-top .t{flex:1;min-width:0;font-weight:800;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bbx-top .t small{display:block;font-weight:600;font-size:12px;opacity:.75}
@@ -435,7 +435,7 @@ body.bbx-open>:not(#bbx):not(script):not(style):not(#bbx-pad){visibility:hidden!
    ${sib&&sc/g.length<.8?`<p style="color:#a85a12;font-weight:800">Sheet B has the same job with new numbers. One more try makes it strong!</p>`:''}
    <div class="bbx-cta">${sib?`<button type="button" class="bbx-btn ${sc/g.length<.8?'y':''}" data-bb="job" data-j="${sib.id}" data-direct="1">📄 Sheet B: more practice</button>`:''}${nx?`<button type="button" class="bbx-btn go" data-bb="job" data-j="${nx.id}">▶ Next job</button>`:''}<button type="button" class="bbx-btn" data-bb="home">📘 My workbook</button></div></div></div>`; }
 
- function topHTML(){ const j=X.job; if(X.view==='home') return `<button type="button" class="bbx-ib" data-bb="close" aria-label="Close">✕</button><div class="t">📘 My Workbook<small>Block Builders</small></div><button type="button" class="bbx-ib" data-bb="mute">${X.mute?'🔇':'🔊'}</button>`;
+ function topHTML(){ const j=X.job; if(X.view==='home') return `${window.TLK?TLK.home('data-bb="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button type="button" class="bbx-ib" data-bb="close" aria-label="Home">🏠</button>'}<div class="t">📘 My Workbook<small>Block Builders</small></div><button type="button" class="bbx-ib" data-bb="mute">${X.mute?'🔇':'🔊'}</button>`;
   const sec=secOf(j.sec); const g=X.cj?X.cj.filter(c=>c.graded):[], okN=g.filter(c=>X.ok[c.id]).length;
   return `<button type="button" class="bbx-ib" data-bb="home" aria-label="Back to my workbook">◀ 📘</button><div class="t">Job ${j.n} · ${E(j.title)}<small>${E(sec.name)}${j.sheet?' · Sheet '+j.sheet:''}</small></div>${X.view==='page'&&!X.pencil?`<span class="bbx-ib bbx-star">⭐ ${okN}/${g.length}</span>`:''}<button type="button" class="bbx-ib" data-bb="mute">${X.mute?'🔇':'🔊'}</button>`; }
  function toolsHTML(){ const T=(k,lab)=>`<button type="button" class="bbx-tl${X.tool===k?' on':''}" data-tool="${k}">${lab}</button>`;

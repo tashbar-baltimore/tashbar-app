@@ -108,7 +108,7 @@ async function page(pg, map) {
     const mid = M.subjects.MATH.now, rid = M.subjects.READ.now, items = [{ k: 'READ', n: 2, c: 0, ids: [], w: 'READ', name: 'Reading' }, { k: 'LANG', n: 1, c: 0, ids: [], w: 'LANG', name: 'Writing' },
       { k: 'MATH', n: 1, c: 0, ids: [], w: 'MATH', name: 'Math' }, { k: 'KODESH', n: 1, c: 0, ids: [], w: 'K:CHU', name: 'Kodesh' }, { k: 'KNOW', n: 1, c: 0, ids: [], w: 'SCI', name: 'Science' }];
     window.TL_TDL.by[sid] = { v: 1, on: true, items, done: 0, total: 6, complete: false, paid: false }; render(); await sleep(30);
-    const gm = document.getElementById('gm'); const go = async t => { const h = document.querySelector('#gm-nav [data-gmnav=home]'); if (h) { h.click(); await sleep(30); } const b = gm.querySelector('.gm-hts [data-gmnav=' + t + ']'); if (b) { b.click(); await sleep(30); } };
+    const gm = document.getElementById('gm'); const go = async t => { const h = document.querySelector('#gm .tlk-home[data-gmnav=home]'); if (h) { h.click(); await sleep(30); } const b = gm.querySelector('.gm-hts [data-gmnav=' + t + ']'); if (b) { b.click(); await sleep(30); } };
     await go('home'); o.homeLine = (gm.querySelector('.gm-hi p') || {}).textContent || '';
     await go('missions'); o.rows = gm.querySelectorAll('.gm-rd:not(.final):not(.rebbe)').length; o.live = gm.querySelectorAll('.gm-rd.live').length; o.head = (gm.querySelector('.gm-marq') || {}).textContent || '';
     o.first = (gm.querySelector('.gm-rd.live') || {}).dataset ? gm.querySelector('.gm-rd.live').dataset.id : ''; o.next = (gm.querySelector('.gm-cta .gm-play') || {}).textContent || ''; o.timer = /minute|timer|⏱/i.test(gm.textContent);
