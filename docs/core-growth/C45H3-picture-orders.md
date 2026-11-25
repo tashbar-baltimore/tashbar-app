@@ -23,7 +23,15 @@ The Glen Avenue Crew looks exactly as in `C45-picture-orders.md` (Yehuda, Avrumi
 | Captain Ray Turner (about 55) | big man, gray mustache, sunburned face, yellow rain jacket |
 | Cody Turner (13) | thin, freckled, life jacket |
 
-## Order 1 (2026-11-25) · status: SENT
+## Order 1 (2026-11-25) · status: 21 of 24 IN `art/`; 3 sent back for a redraw
+All 24 came back the same morning. Each was checked against its order and the picture rules. Three were sent back:
+- **#11 b2-ch10:** Scout is drawn as a German shepherd. She must be the same brown, floppy-eared dog as in #9.
+- **#17 b5-ch5:** the boys stand outside on rocks. In the story the lighthouse stands in open water and the boys stay inside.
+- **#18 b5-ch6:** a boy draws on the fogged window on Shabbos. The story was fixed so that he traces the shape in the air; the order was written before that fix.
+
+Until the redraws come, those three chapters have no picture of their own. Ridge Trail ch. 1–3 and Lighthouse ch. 1 now use their new pictures instead of the library photos.
+
+Cast note for the next order: in the B5 pictures the curly-haired boy looks like Yehuda, who is not on the trip. Nosson has neatly combed dark hair.
 | # | File name | Goes on | Size | Prompt |
 |---|---|---|---|---|
 | 1 | core-c45-b2-cover.webp | Book B2 cover, *Lost on the Ridge Trail* | 825×1100 | Two 10-year-old frum boys, Tzvi Hirsch (blond, round face) and Avrumi (red hair, round glasses), stand on a bare gray rock high on a forested mountain at dawn; fog fills the valley below; a bright orange rain poncho flaps on a branch beside them; a long arrow of white stones on the rock points to them. Brave and hopeful. |
@@ -43,7 +51,7 @@ The Glen Avenue Crew looks exactly as in `C45-picture-orders.md` (Yehuda, Avrumi
 | 15 | core-c45-b5-ch3.webp | Lighthouse ch. 3 | 1100×825 | Inside a small cozy lighthouse cottage at dusk: an old man with a white beard lights two small Shabbos candles on a white tablecloth; four boys in oversized borrowed shirts stand around the table; rain on the shutters. |
 | 16 | core-c45-b5-ch4.webp | Lighthouse ch. 4 | 1100×825 | Shabbos meal in the lighthouse cottage: round challos with sesame seeds, a plastic cup of grape juice, paper plates; the boys sing with their eyes shining; the old man taps his foot; the storm outside the window. |
 | 17 | core-c45-b5-ch5.webp | Lighthouse ch. 5 | 1100×825 | The old keeper climbs narrow iron stairs to the lantern room holding a big flashlight; below, four boys stand very still, watching; the windows are dark with rain. |
-| 18 | core-c45-b5-ch6.webp | Lighthouse ch. 6 | 1100×825 | Four boys press their faces to a rain-streaked window at night; far out on the black water, a tiny green light on a small fishing boat; one boy draws a little boat and an arrow in the fog on the glass. |
+| 18 | core-c45-b5-ch6.webp | Lighthouse ch. 6 | 1100×825 | Four boys press their faces to a rain-streaked window at night; far out on the black water, a tiny green light on a small fishing boat; one boy traces a little boat shape in the air with his finger (NOT on the glass). |
 | 19 | core-c45-b5-ch7.webp | Lighthouse ch. 7 | 1100×825 | Sunrise over a calm gray bay full of floating logs; an old man in a tallis davens at the window of the lighthouse; boys asleep in a row on blankets on the floor behind him. |
 | 20 | core-c45-b5-ch8.webp | Lighthouse ch. 8 | 1100×825 | Shabbos afternoon; the old man sits by the window telling a story; four boys sit on the floor around him, listening; an old leather logbook lies open on the table. |
 | 21 | core-c45-b5-ch9.webp | Lighthouse ch. 9 | 1100×825 | A big fishing captain in a yellow rain jacket shakes hands with the boys in the small lighthouse cottage; his teenage son with a bandaged hand stands beside him. |
