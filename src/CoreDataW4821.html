@@ -1,0 +1,396 @@
+<script>
+/* CoreDataW4821.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 5 (L06), Unit 5 "Research and Revise". Cast: the Glen Avenue Crew. The sources are practice sources made up for these lessons.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.RES.L06.01':{name:'Many Sources',
+  teach:[
+    {how:'The Crew is writing a research report for the Gazette: “How did people keep food cold before fridges?” Yehuda has three practice sources, made up for these lessons: the book Cold Without a Plug, by Aaron Kessler; the book Kitchens Long Ago, by Natan Dahan; and the article “Ice by Wagon,” by Daniel Mendez, in Science Corner Magazine. One source can be wrong, or leave something out. So FIND THE ANSWER IN MORE THAN ONE SOURCE. Kessler says that in winter, workers cut big blocks of ice from frozen lakes. Dahan says the same. When two sources give the same answer, they AGREE, and you can trust the fact more.', q:'Kessler: workers cut ice from frozen lakes in winter. Dahan: workers cut ice from frozen lakes in winter. What do the two sources do?', o:['agree','disagree','only one source']},
+    {how:'Sometimes two sources DISAGREE. Yehuda asks: when did most American homes get an electric fridge? Mendez says in the 1930s. Dahan says in the 1940s. Do not just pick the one you like. CHECK A THIRD SOURCE. Kessler says in the 1940s. Now two of three sources agree: in the 1940s. That is the answer Yehuda uses. (It is true: in the 1940s, most American homes got an electric fridge.)', q:'Two sources disagree. What do you do?', o:['check a third source','pick the one you like','use both answers']},
+    {how:'Two mistakes. ONE SOURCE ONLY: you find a fact in one source and stop. You never checked it. PICKING A SIDE: two sources disagree, and you choose one without checking a third. A fact you checked in two sources that agree is CHECKED IN TWO SOURCES. That is the kind of fact that goes in the report.', q:'Avrumi reads in Kessler that root cellars kept carrots cool. He writes it in the report and never looks anywhere else. Which mistake is it?', o:['one source only','picking a side','nothing, it is checked']}
+  ],
+  practice:[
+    {t:'sort', q:'Yehuda’s notes from two sources. Sort each one: do the sources agree or disagree?', bins:[{id:'A',label:'🤝 Agree'},{id:'D',label:'↔️ Disagree'}],
+      items:[{label:'Kessler: ice was packed in sawdust. Dahan: ice was packed in sawdust.',bin:'A'},{label:'Mendez: an iceman brought ice in a wagon. Dahan: an iceman brought ice in a wagon.',bin:'A'},{label:'Kessler: the ice lasted into the summer. Dahan: it lasted into the summer.',bin:'A'},{label:'Mendez: most homes got a fridge in the 1930s. Dahan: in the 1940s.',bin:'D'},{label:'Mendez: in the 1930s. Kessler: in the 1940s.',bin:'D'}],
+      h:'Read both answers. Same answer? They agree. Different answers? They disagree.'},
+    {t:'pairs', q:'Match each case to the next step.', pairs:[['Two sources agree','Use the fact'],['Two sources disagree','Check a third source'],['Only one source so far','Find a second source'],['A third source agrees with one of them','Use the answer two sources agree on']],
+      h:'Agree: use it. Disagree: a third source. Only one: find another.'},
+    {t:'order', q:'Put the checking steps in order. Tap the steps in order.', tiles:['Ask your question.','Find the answer in one source.','Look for it in a second source.','If the two disagree, check a third.'], extra:['Pick the answer you like best.'],
+      h:'Question first. Then one source, a second, and a third only if they disagree.'},
+    {t:'spotall', q:'Tap every fact Yehuda has found in TWO sources that agree.', cells:[{label:'Ice was cut from frozen lakes. (Kessler and Dahan)',ok:true},{label:'Ice was packed in sawdust. (Kessler and Dahan)',ok:true},{label:'An iceman brought ice in a wagon. (Mendez and Dahan)',ok:true},{label:'Melted ice dripped into a pan. (Mendez only)',ok:false},{label:'Root cellars kept potatoes cool. (Kessler only)',ok:false}],
+      h:'Count the sources after each fact. Two? It is checked. One? Not yet.'},
+    {t:'sort', q:'Sort each boy’s work: checked the right way, or a mistake?', bins:[{id:'R',label:'✅ Checked the right way'},{id:'O',label:'❌ Mistake: one source only'},{id:'P',label:'❌ Mistake: picking a side'}],
+      items:[{label:'Dovid finds the iceman in Mendez and in Dahan. They agree, so he uses it.',bin:'R'},{label:'Mendez and Dahan disagree about the fridge. Tzvi Hirsch checks Kessler too.',bin:'R'},{label:'Avrumi reads about root cellars in Kessler and stops there.',bin:'O'},{label:'Binyamin likes “the 1930s” better, so he uses Mendez and checks nothing more.',bin:'P'},{label:'Mendez and Dahan disagree. Yehuda just uses Dahan without checking a third.',bin:'P'}],
+      h:'How many sources did he check? When two disagreed, did he check a third?'},
+    {t:'order', q:'Build Yehuda’s sentence for the report. Tap the parts in order.', tiles:['Two of my three sources','say that most homes','got an electric fridge','in the 1940s.'], extra:['I like the 1930s,'],
+      h:'Start with how many sources agree. Then what they say.'},
+    {t:'write', q:'Your turn. Yehuda found the drip pan only in Mendez: “Melted ice dripped into a pan someone had to empty.” Write what he should do next, step by step. Then write the sentence he can use once two sources agree.', min:0, checks:['🔎 I said to look for the fact in a second source.','↔️ I said what to do if the two disagree: check a third.','✅ My report sentence uses only a fact two sources agree on.'], h:'One source is not enough. Find a second. If they disagree, find a third.'}
+  ],
+  check:[
+    {q:'Tzvi Hirsch reads two library books about root cellars. Both say a root cellar stays cool because it is under the ground. What do the two books do?', o:['agree','disagree','one source only'], h:'Do both books give the same answer?'},
+    {q:'Binyamin reads one article that says the iceman came every day, and another that says twice a week. He uses “every day” because it sounds better. Which mistake is it?', o:['picking a side','one source only','nothing, it is checked'], h:'The two sources disagree. Did he check a third, or just choose one?'},
+    {t:'order', q:'Put Binyamin’s fix in order. Tap the sentences in order.', tiles:['Two articles disagree about the iceman.','So Binyamin checks a third source.','It says the iceman came twice a week.','Now two sources agree, so he uses that.'], extra:['He picks every day.'], h:'They disagree, so he checks a third. Then two agree, and he uses it.'}
+  ],
+  re:[
+    {how:'A new way: you ask a man on the street for directions to the shul, and he points left. You ask another, and he points right. You do not just pick one. You ask a third man.', q:'Two people point different ways. You…', o:['ask a third person','follow the one you like','go home']},
+    {how:'A simpler step: make a check chart. Write each fact on a line. Next to it, write the name of each source that says it. Two names that agree? The fact is checked.', q:'A fact has two source names next to it, and they agree. It is…', o:['checked in two sources','one source only','picking a side']},
+    {how:'The skill underneath: Two Texts, One Piece (this year), where you used a detail from each of two texts about one point. Now you go further: you look for the SAME answer in more than one source to check it, and when two sources disagree, you check a third. (In Grade 8 you will join many sources into one big idea.)', q:'When two sources disagree, you…', o:['check a third source','use both answers','stop looking']}
+  ]},
+
+  'WRIT.RES.L06.02':{name:'Note Cards',
+  teach:[
+    {how:'In Grade 4 you took notes in key words, not copied sentences. Now you go further, with NOTE CARDS. Rule one: ONE FACT PER CARD. Why? Later you will sort your cards into groups, one group for each paragraph. A card with two facts cannot go in two piles at once. Yehuda uses the practice sources made up for this unit: Cold Without a Plug, by Aaron Kessler; Kitchens Long Ago, by Natan Dahan; and “Ice by Wagon,” by Daniel Mendez.', q:'Which is ONE fact for one card?', o:['Workers cut ice from frozen lakes in winter.','Workers cut ice from lakes, and the iceman brought it in a wagon.','Ice, iceman, icebox, root cellar.']},
+    {how:'Rule two: write the fact in YOUR OWN WORDS, the way you did in Proof from the Text. Read, cover the page, and write it your way, keeping the meaning. Rule three: put the SOURCE at the bottom of every card: the title and the author’s last name. A card: “Ice packed in sawdust lasted into the summer. Source: Cold Without a Plug, Kessler.” Now you will always know where each fact came from.', q:'Which card is complete?', o:['Melted ice dripped into a pan someone had to empty. Source: “Ice by Wagon,” Mendez','Melted ice dripped into a pan someone had to empty.','Source: “Ice by Wagon,” Mendez']},
+    {how:'Three mistakes. TWO FACTS ON ONE CARD: split it into two cards. NO SOURCE: you will not know where it came from, and you cannot list it later. COPIED WORDS: the whole sentence is copied from the source. Kessler wrote: “The blocks were packed in sawdust inside an icehouse.” A card that says exactly that is copied. Cover it and use your own words: “Icehouses kept the ice in sawdust.”', q:'Mendez wrote: “The iceman drove his wagon from house to house with blocks of ice.” Dovid’s card says exactly that, with the source. Which mistake is it?', o:['copied words','no source','two facts on one card']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each card: one fact, or two facts?', bins:[{id:'O',label:'1️⃣ One fact'},{id:'T',label:'2️⃣ Two facts'}],
+      items:[{label:'Ice was cut from frozen lakes in winter.',bin:'O'},{label:'Sawdust kept the ice from melting.',bin:'O'},{label:'An icebox had a block of ice at the top.',bin:'O'},{label:'The iceman came, and the ice lasted all summer.',bin:'T'},{label:'Root cellars kept carrots cool, and springhouses kept milk cool.',bin:'T'}],
+      h:'Count the facts. An “and” that joins two facts means two cards.'},
+    {t:'pairs', q:'Match each sentence from a source to the card in Yehuda’s own words.', pairs:[['Kessler: “In winter, men sawed big blocks of ice out of frozen lakes and ponds.”','Workers cut ice from frozen lakes in winter.'],['Kessler: “The blocks were packed in sawdust inside an icehouse.”','Icehouses kept the ice in sawdust.'],['Mendez: “The iceman drove his wagon from house to house with blocks of ice.”','An iceman brought ice to homes in a wagon.'],['Dahan: “A springhouse was a small house built over a cold stream.”','Cold stream water ran under a springhouse.']],
+      h:'Find the same meaning in different words.'},
+    {t:'order', q:'Put the steps for making one note card in order. Tap the steps in order.', tiles:['Read one sentence in the source.','Cover it, and pick ONE fact.','Write that fact in your own words.','Write the source at the bottom.'], extra:['Copy the whole page.'],
+      h:'Read, cover, write the fact, then the source.'},
+    {t:'spotall', q:'Tap every card that is complete: one fact, own words, and a source.', cells:[{label:'Ice packed in sawdust lasted into the summer. Source: Cold Without a Plug, Kessler',ok:true},{label:'A springhouse kept milk cool. Source: Kitchens Long Ago, Dahan',ok:true},{label:'Melted ice dripped into a pan. Source: “Ice by Wagon,” Mendez',ok:true},{label:'Root cellars kept carrots cool.',ok:false},{label:'Ice was cut in winter, and the iceman sold it. Source: Dahan',ok:false}],
+      h:'Check three things: one fact, own words, a source.'},
+    {t:'sort', q:'Sort each card: a good card, or a mistake?', bins:[{id:'G',label:'✅ Good card'},{id:'T',label:'❌ Mistake: two facts on one card'},{id:'N',label:'❌ Mistake: no source'}],
+      items:[{label:'An icebox had ice at the top. Source: Kitchens Long Ago, Dahan',bin:'G'},{label:'Root cellars kept carrots cool. Source: Cold Without a Plug, Kessler',bin:'G'},{label:'An icebox had ice at the top, and the iceman came by wagon. Source: Dahan',bin:'T'},{label:'Ice packed in sawdust lasted into the summer.',bin:'N'},{label:'A springhouse sat over a cold stream.',bin:'N'}],
+      h:'Is there more than one fact? Is there a source at the bottom?'},
+    {t:'spotall', q:'Avrumi’s card has two facts: “The iceman brought ice in a wagon, and melted ice dripped into a pan. Source: Mendez.” Tap every card that splits it the right way.', cells:[{label:'An iceman brought ice to homes in a wagon. Source: “Ice by Wagon,” Mendez',ok:true},{label:'Melted ice in an icebox dripped into a pan. Source: “Ice by Wagon,” Mendez',ok:true},{label:'The iceman came, and the ice melted. Source: Mendez',ok:false},{label:'Melted ice dripped into a pan.',ok:false}],
+      h:'Each new card needs one fact AND the source.'},
+    {t:'write', q:'Your turn. Dahan wrote: “Families kept potatoes and carrots in a root cellar, a room dug under the ground, where it stayed cool.” Make TWO note cards from it.', min:0, checks:['1️⃣ Each card has only one fact.','✍️ Each fact is in my own words.','📚 Each card has the source: Kitchens Long Ago, Dahan.'], h:'Fact 1: what a root cellar is. Fact 2: what families kept there. Cover the sentence before you write.'}
+  ],
+  check:[
+    {q:'Binyamin’s card: “Ice was cut from lakes in winter, and the iceman brought it in a wagon. Source: Kitchens Long Ago, Dahan.” Which mistake is it?', o:['two facts on one card','no source','copied words'], h:'Count the facts on the card.'},
+    {q:'Tzvi Hirsch’s card: “A springhouse sat over a cold stream.” Nothing else is on the card. Which mistake is it?', o:['no source','two facts on one card','copied words'], h:'Look at the bottom of the card. What is missing?'},
+    {t:'order', q:'Put Tzvi Hirsch’s fix in order. Tap the sentences in order.', tiles:['His card has no source.','So he finds the fact again in Dahan’s book.','Then he writes the source at the bottom.','Now the card has one fact and its source.'], extra:['He adds two more facts.'], h:'What is missing? Find where the fact came from, write the source, then the card is complete.'}
+  ],
+  re:[
+    {how:'A new way: a note card is like one brick. One fact per brick. Bricks can be moved into any wall, but only if each one is a single brick.', q:'One note card holds…', o:['one fact','a whole page','three facts']},
+    {how:'A simpler step: fold a page into small boxes. One box, one fact. Under each fact, write the title of the book you read it in.', q:'Under each fact, write…', o:['the source','a joke','another fact']},
+    {how:'The skill underneath: Notes, Not Copies (Grade 4), where you took key-word notes, and Proof from the Text (this year), where a fact in your own words got a source tag. Now you go further: one fact per card, in your own words, and the source on every card, so you can sort the cards later and always know where each fact came from. (In Grade 6, Notes to Outline turns the cards into an outline.)', q:'Every note card has one fact and…', o:['its source','a quote','a picture']}
+  ]},
+
+  'WRIT.RES.L06.03':{name:'Source List',
+  teach:[
+    {how:'In Grade 4 you listed each source as Title, by Author. Now you go further. At the end of the report comes a SOURCE LIST: one line for every source you USED. Where do you find them? On your note cards: read the source at the bottom of each card. A book you never opened does not go on the list. For a BOOK, write the title and the author: “Cold Without a Plug, by Aaron Kessler.” (These are the practice sources made up for this unit.)', q:'Which is a full line for a book?', o:['Kitchens Long Ago, by Natan Dahan','Kitchens Long Ago','by Natan Dahan']},
+    {how:'A book line stays Title, by Author, just as in Grade 4. The new Grade 5 step is the ARTICLE line: write the title in quotation marks, the author, AND WHERE IT APPEARED: the magazine or newspaper. “Ice by Wagon,” by Daniel Mendez, in Science Corner Magazine. Without the magazine, the reader cannot find the article.', q:'Which line for the article is complete?', o:['“Ice by Wagon,” by Daniel Mendez, in Science Corner Magazine','“Ice by Wagon,” by Daniel Mendez','Science Corner Magazine']},
+    {how:'Two mistakes. A SOURCE LEFT OUT: a source on your note cards is not on the list. A PART LEFT OUT: a line has no author, or an article line does not say where it appeared. When every source is there with every part, the list is complete.', q:'Yehuda’s note cards come from Kessler, Mendez and Dahan. His list has only Kessler and Mendez. Which mistake is it?', o:['a source left out','a part left out','nothing, the list is complete']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each part of a source line: title, author, or where it appeared?', bins:[{id:'T',label:'📕 Title'},{id:'A',label:'✍️ Author'},{id:'W',label:'📰 Where it appeared'}],
+      items:[{label:'Cold Without a Plug',bin:'T'},{label:'Kitchens Long Ago',bin:'T'},{label:'“Ice by Wagon”',bin:'T'},{label:'Aaron Kessler',bin:'A'},{label:'Natan Dahan',bin:'A'},{label:'Daniel Mendez',bin:'A'},{label:'Science Corner Magazine',bin:'W'}],
+      h:'A person’s name is the author. A magazine is where it appeared. The rest is a title.'},
+    {t:'pairs', q:'Match each kind of source to what its line needs.', pairs:[['A book','the title and the author'],['An article','the title, the author, and where it appeared'],['Every source on your note cards','one line on the list'],['A book you never opened','no line at all']],
+      h:'A book: two parts. An article: three parts. Only sources you used.'},
+    {t:'order', q:'Build the line for Mendez’s article. Tap the parts in order.', tiles:['“Ice by Wagon,”','by Daniel Mendez,','in Science Corner Magazine'], extra:['in the 1940s'],
+      h:'Title first, then the author, then where it appeared.'},
+    {t:'spotall', q:'Tap every line that is complete.', cells:[{label:'Cold Without a Plug, by Aaron Kessler',ok:true},{label:'Kitchens Long Ago, by Natan Dahan',ok:true},{label:'“Ice by Wagon,” by Daniel Mendez, in Science Corner Magazine',ok:true},{label:'Cold Without a Plug',ok:false},{label:'“Ice by Wagon,” by Daniel Mendez',ok:false},{label:'by Natan Dahan',ok:false}],
+      h:'A book needs the title and the author. An article also needs where it appeared.'},
+    {t:'sort', q:'Sort each list or line: complete, or a mistake?', bins:[{id:'C',label:'✅ Complete'},{id:'P',label:'❌ Mistake: a part left out'},{id:'S',label:'❌ Mistake: a source left out'}],
+      items:[{label:'Cards: Kessler, Mendez, Dahan. List: all three, with every part.',bin:'C'},{label:'Kitchens Long Ago, by Natan Dahan',bin:'C'},{label:'“Ice by Wagon,” by Daniel Mendez (no magazine)',bin:'P'},{label:'Kitchens Long Ago (no author)',bin:'P'},{label:'Cards: Kessler, Mendez, Dahan. List: Kessler and Mendez.',bin:'S'},{label:'Cards: Kessler and Mendez. List: Kessler only.',bin:'S'}],
+      h:'Check every part of the line. Then check: is every card’s source on the list?'},
+    {t:'spotall', q:'Yehuda looks at his note cards and his desk. Tap every source that goes on his list.', cells:[{label:'Cold Without a Plug, Kessler (on 4 of his cards)',ok:true},{label:'“Ice by Wagon,” Mendez (on 3 of his cards)',ok:true},{label:'Kitchens Long Ago, Dahan (on 5 of his cards)',ok:true},{label:'A book on the shelf he never opened',ok:false},{label:'A magazine he did not use',ok:false}],
+      h:'Is the source on his note cards? Then it goes on the list.'},
+    {t:'write', q:'Your turn. Write Yehuda’s whole source list for his report: one line for each of the three practice sources.', min:0, checks:['📚 All three sources from the note cards are on my list.','✍️ Each book line has the title and the author.','📰 The article line also says where it appeared.'], h:'Look at the bottom of each note card. Book: title, by author. Article: “title,” by author, in the magazine.'}
+  ],
+  check:[
+    {q:'Dovid used the book Machines at Home, by Avi Levitan. His list says only: “Machines at Home.” Which mistake is it?', o:['a part left out','a source left out','nothing, the list is complete'], h:'A book line needs two parts. Are both there?'},
+    {q:'Tzvi Hirsch’s note cards come from three sources. His source list has two lines. Which mistake is it?', o:['a source left out','a part left out','nothing, the list is complete'], h:'Count the sources on the cards and the lines on the list.'},
+    {t:'order', q:'Binyamin used the article “Old Ways to Keep Milk Cold,” by Shmuel Navon, in Science Corner Magazine. Build his line. Tap the parts in order.', tiles:['“Old Ways to Keep Milk Cold,”','by Shmuel Navon,','in Science Corner Magazine'], extra:['my favorite part'], h:'Title, author, then where it appeared.'}
+  ],
+  re:[
+    {how:'A new way: at a siyum, the boy who finished thanks everyone who helped him learn, by name. A source list does the same for every source that helped your report.', q:'A source list names…', o:['every source you used','only your favorite source','books you did not open']},
+    {how:'A simpler step: lay out all your note cards. Read the source at the bottom of each one. Write each new source once, then fill in every part.', q:'Where do you find the sources for your list?', o:['on your note cards','in your head','on the cover of the report']},
+    {how:'The skill underneath: Where I Found It (Grade 4), where you listed the title and author of each book, and Note Cards (this unit), where every card got its source. Now you go further: every source from your cards goes on one list at the end, books and articles, and an article line also says where it appeared. (In Grade 7, Cite It teaches a standard format.)', q:'An article line also tells…', o:['where it appeared','the color of the cover','your opinion']}
+  ]},
+
+  'WRIT.ESSAY.L06.09':{name:'Revise the Whole Thing',
+  teach:[
+    {how:'Yehuda has a first draft of his report, “How did people keep food cold before fridges?” In Grade 4, ARMS revised sentences. Now you revise the whole piece. Before he fixes any word or spelling, Yehuda REVISES THE WHOLE THING. He reads the whole report, top to bottom, and asks three big questions. ORDER: are the paragraphs in the best order? MISSING: is a part missing: an opener, a body paragraph that answers the question, an ending? FIT: does every paragraph fit the question? Fixing words and spelling comes later.', q:'Which is a question for revising the whole thing?', o:['Are the paragraphs in the best order?','Is “icebox” spelled right?','Is there a comma after “In winter”?']},
+    {how:'Yehuda’s draft: an opener; then a paragraph about the iceman bringing ice to homes; then a paragraph about workers cutting ice from frozen lakes; then a paragraph about his favorite ice-pop flavors; then a paragraph about root cellars. And then it just stops. ORDER: the ice is cut first, and only then brought to homes. He moves the ice-cutting paragraph before the iceman. MISSING: there is no ending. He adds one: in the 1940s most homes got an electric fridge, but people kept food cold long before.', q:'The iceman paragraph comes before the ice-cutting paragraph. What should Yehuda fix?', o:['the order','a missing part','spelling only']},
+    {how:'FIT: the ice-pop paragraph does not answer the question, so Yehuda cuts it. Now the report goes: opener, cutting ice, the iceman, root cellars, ending. The big mistake: SPELLING ONLY. A boy fixes a few spellings and commas and says “Revised!” But the order, the missing parts and the fit were never checked. Revise the whole thing first. Then edit the words.', q:'Avrumi fixes three spelling mistakes in his report and says, “Revised!” Which mistake is it?', o:['spelling only','a missing part','the order']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each fix: a whole-piece fix, or a small word fix?', bins:[{id:'W',label:'🔁 Whole-piece fix'},{id:'S',label:'✏️ Small word fix'}],
+      items:[{label:'Move the ice-cutting paragraph before the iceman.',bin:'W'},{label:'Add an ending.',bin:'W'},{label:'Cut the paragraph about ice pops.',bin:'W'},{label:'Fix the spelling of “sawdust.”',bin:'S'},{label:'Add a comma after “In winter”.',bin:'S'}],
+      h:'Does it change the parts of the report, or just one word or mark?'},
+    {t:'pairs', q:'Match each problem in a draft to its fix.', pairs:[['The iceman paragraph comes before the ice-cutting paragraph.','Move the ice-cutting paragraph first.'],['The report just stops.','Add an ending.'],['A paragraph about ice-pop flavors.','Cut it: it does not fit.'],['It starts with a fact about sawdust.','Add an opener that asks the question.']],
+      h:'Out of order: move. Missing: add. Off the question: cut.'},
+    {t:'order', q:'Put Yehuda’s revised report in the best order. Tap the paragraphs in order.', tiles:['Opener: how did people keep food cold before fridges?','First, in winter, workers cut ice and stored it in icehouses.','Then the iceman brought that ice to homes for the icebox.','Ending: in the 1940s fridges came, but people kept food cold long before.'], extra:['My favorite ice-pop flavors.'],
+      h:'The opener asks the question. “First” and “Then” show the order. The ending comes last.'},
+    {t:'spotall', q:'The question: how did people keep food cold before fridges? Tap every paragraph that fits it.', cells:[{label:'Ice was cut in winter and stored in sawdust in icehouses.',ok:true},{label:'The iceman brought ice to homes for the icebox.',ok:true},{label:'Root cellars under the ground kept potatoes and carrots cool.',ok:true},{label:'A springhouse over a cold stream kept milk cool.',ok:true},{label:'Yehuda’s favorite ice-pop flavors.',ok:false},{label:'How Dovid’s Abba fixed their new fridge last week.',ok:false}],
+      h:'Does the paragraph tell how people kept food cold BEFORE fridges?'},
+    {t:'sort', q:'Name each problem: wrong order, a missing part, or does not fit?', bins:[{id:'O',label:'🔀 Wrong order'},{id:'M',label:'➕ A missing part'},{id:'F',label:'✂️ Does not fit'}],
+      items:[{label:'The ending comes before the opener.',bin:'O'},{label:'The iceman paragraph comes before the ice-cutting paragraph.',bin:'O'},{label:'There is no ending at all.',bin:'M'},{label:'There is no opener; it starts with a fact about sawdust.',bin:'M'},{label:'A paragraph about a trip to the zoo.',bin:'F'},{label:'A paragraph about ice-pop flavors.',bin:'F'}],
+      h:'Is the part in the wrong place, not there at all, or off the question?'},
+    {t:'spotall', q:'Tap every question Yehuda asks when he revises the WHOLE thing (before editing words).', cells:[{label:'Are the paragraphs in the best order?',ok:true},{label:'Is a part missing: an opener, a body paragraph, an ending?',ok:true},{label:'Does every paragraph fit the question?',ok:true},{label:'Is every word spelled right?',ok:false},{label:'Did I use enough exclamation marks?',ok:false}],
+      h:'Revising the whole thing is about the parts: order, missing, fit. Spelling comes later.'},
+    {t:'write', q:'Your turn. Binyamin’s draft, “How did people keep milk cold before fridges?” has these paragraphs: (1) springhouses over cold streams, (2) his favorite kind of cheese, (3) an opener that asks the question, (4) iceboxes with a block of ice at the top. There is no ending. Write his revised plan: one line for each paragraph, in the best order, with what you cut and what you added.', min:0, checks:['🔀 I put the paragraphs in the best order, opener first.','✂️ I cut the paragraph that does not fit.','➕ I added the missing ending.'], h:'Opener first. Cut the cheese paragraph: it does not answer the question. Add an ending.'}
+  ],
+  check:[
+    {q:'Dovid’s report: how did families wash clothes before washing machines? His paragraphs: hanging the clothes to dry, then scrubbing them on a washboard, then heating the water. But the water was heated first, then the clothes were scrubbed, then hung to dry. What should he fix?', o:['the order','a missing part','spelling only'], h:'Are the paragraphs in the order things happened?'},
+    {q:'Dovid’s report has an opener and three body paragraphs. Then it just stops. What is missing?', o:['an ending','an opener','a body paragraph'], h:'He has an opener and a body. What part comes last?'},
+    {t:'order', q:'Put Dovid’s revised report in order. Tap the paragraphs in order.', tiles:['Opener: how did families wash clothes before washing machines?','First, they heated water in a big pot.','Next, they scrubbed the clothes on a washboard.','Last, they hung the clothes on a line to dry.'], extra:['My favorite shirt.'], h:'The opener asks the question. Then follow “First,” “Next” and “Last.”'}
+  ],
+  re:[
+    {how:'A new way: before painting a house, a builder walks through the whole house. Are the rooms in the right place? Is a wall missing? Does a room belong to someone else’s house? Only then does he paint.', q:'Before painting, a builder checks…', o:['the whole house','one nail','the paint color']},
+    {how:'A simpler step: write one line for each paragraph on a sticky note. Lay the notes out in a row. Move a note, add a note, or take one away. Then revise the report to match.', q:'A sticky note for a paragraph that does not fit the question gets…', o:['cut','moved to the top','colored in']},
+    {how:'The skill underneath: Three-Part Piece (this year), where you planned an opening, a body and a closing, and Revise with ARMS (Grade 4), where you revised sentences. Now you go further: you revise the WHOLE piece: the order of the paragraphs, the parts that are missing, and whether every paragraph fits the question.', q:'Revising the whole thing checks the order, the missing parts and…', o:['the fit','the spelling','the handwriting']}
+  ]},
+
+  'WRIT.ESSAY.L06.10':{name:'Peer Feedback',
+  teach:[
+    {how:'A chavrusa helps you see what you missed. When Dovid reads the first draft of Yehuda’s report, he gives three things. One PRAISE: name one exact thing that works. “Your opener, with the question about milk, made me want to read on.” Not “It’s good.” A praise says WHAT is good, so the writer knows to keep it. Our words should build a chavrusa up: the Torah warns us never to hurt someone with words (ona’as devarim).', q:'Which is a specific praise?', o:['Your question about milk made me want to read on.','It’s good.','I like it a lot.']},
+    {how:'One QUESTION: ask what you, the reader, wondered. “How long did one block of ice last in the icebox?” One PUSH: one next step he can do. “Next, try adding an ending that tells when fridges came.” Each one must be SPECIFIC (it names a part of the piece) and KIND (it helps him, and never puts him or his work down).', q:'Which is a push?', o:['Next, try moving the ice-cutting paragraph before the iceman.','How long did one block of ice last?','Your opener is strong.']},
+    {how:'Two mistakes. TOO GENERAL: “It’s good.” “Fix it.” “Make it better.” The writer does not know what to keep or what to fix. NOT KIND: “Your iceman part is so boring.” “You always mess up.” Those words put him down, and they do not help him revise. A kind comment helps him; it never puts him down. Say it specifically, the way you would want to hear it.', q:'Tzvi Hirsch reads Binyamin’s report and says, “Nice.” That is all. Which mistake is it?', o:['too general','not kind','a push']}
+  ],
+  practice:[
+    {t:'sort', q:'Dovid’s comments on Yehuda’s report. Sort each one: praise, question or push?', bins:[{id:'P',label:'👍 Praise'},{id:'Q',label:'❓ Question'},{id:'U',label:'➡️ Push'}],
+      items:[{label:'Your opener with the milk question pulled me in.',bin:'P'},{label:'Your iceman paragraph is easy to picture.',bin:'P'},{label:'How long did one block of ice last?',bin:'Q'},{label:'What did families do with the melted water?',bin:'Q'},{label:'Next, try adding an ending about fridges.',bin:'U'},{label:'Next, try moving the iceman after the ice-cutting.',bin:'U'}],
+      h:'Praise names what works. A question asks what you wondered. A push gives one next step.'},
+    {t:'pairs', q:'Match each too-general comment to a specific, kind one.', pairs:[['It’s good.','Your milk question at the start pulled me in.'],['Fix the order.','Move the ice-cutting paragraph before the iceman.'],['I didn’t get it.','What happened to the melted ice?'],['Add more.','Add an ending about the 1940s.']],
+      h:'Find the comment that names the exact part.'},
+    {t:'order', q:'Put Dovid’s feedback in order. Tap the sentences in order.', tiles:['First, a praise: your milk question pulled me in.','Next, a question: how long did one block last?','Last, a push: add an ending about fridges.'], extra:['Also, it’s good.'],
+      h:'Praise first, then a question, then one push.'},
+    {t:'spotall', q:'Tap every comment that is specific AND kind.', cells:[{label:'Your sawdust fact surprised me.',ok:true},{label:'Why did the ice need sawdust?',ok:true},{label:'Next, try adding your source list at the end.',ok:true},{label:'It’s fine.',ok:false},{label:'Your iceman part is so boring.',ok:false},{label:'Make it better.',ok:false}],
+      h:'Does it name a part of the report? Does it help, without putting him down? Both checks must pass.'},
+    {t:'sort', q:'Sort each comment: specific and kind, or a mistake?', bins:[{id:'S',label:'✅ Specific and kind'},{id:'G',label:'❌ Mistake: too general'},{id:'K',label:'❌ Mistake: not kind'}],
+      items:[{label:'Your root cellar paragraph has great facts.',bin:'S'},{label:'Next, try cutting the ice-pop paragraph; it does not answer the question.',bin:'S'},{label:'It’s good.',bin:'G'},{label:'Fix it.',bin:'G'},{label:'Your iceman part is so boring.',bin:'K'},{label:'Your ending is a mess, like always.',bin:'K'}],
+      h:'Does it put him down? Not kind. Does it fail to name a part? Too general.'},
+    {t:'spotall', q:'Tap every push Yehuda can act on today.', cells:[{label:'Next, try adding an ending about the 1940s.',ok:true},{label:'Next, try moving the iceman paragraph after the ice-cutting paragraph.',ok:true},{label:'Next, try cutting the ice-pop paragraph.',ok:true},{label:'Make it better.',ok:false},{label:'Change stuff.',ok:false}],
+      h:'Does the push say exactly what to do?'},
+    {t:'write', q:'Your turn. Avrumi’s draft, “Cold Under the Ground,” opens: “Have you ever stood in a cool cellar on a hot day?” Then a paragraph says root cellars kept potatoes and carrots cool. Then a paragraph says springhouses kept milk cool. There is no ending. Write Avrumi one praise, one question and one push.', min:0, checks:['👍 My praise names one exact part that works.','❓ My question asks something I wondered as a reader.','➡️ My push gives one next step, and every comment is kind.'], h:'Praise: maybe the opener. Question: what did you wonder? Push: what part is missing?'}
+  ],
+  check:[
+    {q:'Tzvi Hirsch reads Binyamin’s report on oil lamps. He says, “The part where the smoke turned the ceiling black made me see it.” What kind of comment is it?', o:['praise','question','push'], h:'Does it name what works, ask something, or give a next step?'},
+    {q:'Binyamin reads Tzvi Hirsch’s report and says only, “It’s fine.” Which mistake is it?', o:['too general','not kind','a push'], h:'Does it name any part of the report?'},
+    {t:'order', q:'Put Binyamin’s better feedback in order. Tap the sentences in order.', tiles:['First, a praise: your candle opener is clear.','Next, a question: what did oil lamps burn?','Last, a push: add your source list.'], extra:['Also, it is boring.'], h:'First a praise, next a question, last a push.'}
+  ],
+  re:[
+    {how:'A new way: a good coach does not just say “good game.” He names the one pass that worked, asks why you ran left, and gives you one drill for tomorrow.', q:'A good coach names…', o:['one exact thing to keep and one to work on','only the score','nothing at all']},
+    {how:'A simpler step: use three sentence starters. Praise: “I liked how you…” Question: “I wondered…” Push: “Next, try…”', q:'Which starter is for a push?', o:['Next, try…','I liked how you…','I wondered…']},
+    {how:'The skill underneath: Revise the Whole Thing (this unit), where you checked your OWN piece for order, missing parts and fit. Now you go further: you read a chavrusa’s piece and give him one praise, one question and one push, each specific and kind, so he knows what to keep and what to revise.', q:'Each comment must be specific and…', o:['kind','long','funny']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.RES.L06.01':{hook:'What if the book you read got it wrong?', big:'Find the answer in more than one source. If two sources agree, use it. If they disagree, check a third.',
+    intro:['One source can be wrong or leave things out.','Find the answer in a second source.','Agree? Use it.','Disagree? Check a third source.'],
+    ex:[{q:'Were the ice blocks packed in sawdust?',steps:['Kessler: yes, in sawdust.','Dahan: yes, in sawdust.'],a:'They agree. Yehuda uses it.'},
+        {q:'When did most homes get an electric fridge?',steps:['Mendez: in the 1930s. Dahan: in the 1940s. They disagree.','Check a third: Kessler says in the 1940s.'],a:'Two of three agree: in the 1940s.'}],
+    oops:{q:'Avrumi’s root cellar fact.',wrong:'Root cellars kept carrots cool. (I read it in Kessler and stopped.)',right:'Root cellars kept carrots cool. (Kessler says it, and a second source agrees.)',why:'One source only can be wrong. Check the fact in a second source before you use it.'},
+    idea:['Two sources agree? Use it. They disagree? Check a third.'],
+    try:{q:'Mendez and Dahan disagree. What does Yehuda do next?',o:['check a third source','pick the one he likes','use both answers'],a:'check a third source',steps:['Do not pick a side. Look in one more source.']}},
+  'WRIT.RES.L06.02':{hook:'How can a stack of small cards turn into a whole report?', big:'Make note cards: one fact per card, in your own words, with the source on every card.',
+    intro:['One fact per card.','Read, cover, and write it in your own words.','The source goes at the bottom: title and author.','Mistakes: two facts, no source, copied words.'],
+    ex:[{q:'Kessler: “The blocks were packed in sawdust inside an icehouse.”',steps:['Cover it. One fact: ice was kept in sawdust.','Own words: Icehouses kept the ice in sawdust.'],a:'Source: Cold Without a Plug, Kessler'},
+        {q:'A card with two facts: the iceman, and the drip pan.',steps:['Card 1: An iceman brought ice to homes in a wagon.','Card 2: Melted ice dripped into a pan.'],a:'Each card gets the source: “Ice by Wagon,” Mendez.'}],
+    oops:{q:'Dovid’s card.',wrong:'An iceman brought ice in a wagon, and melted ice dripped into a pan.',right:'An iceman brought ice to homes in a wagon. Source: “Ice by Wagon,” Mendez',why:'Two facts were squeezed onto one card, and there was no source. Make two cards, each with its source.'},
+    idea:['One card: one fact, your words, the source.'],
+    try:{q:'Which card is complete?',o:['A springhouse kept milk cool. Source: Kitchens Long Ago, Dahan','A springhouse kept milk cool.','Springhouses and root cellars kept food cool.'],a:'A springhouse kept milk cool. Source: Kitchens Long Ago, Dahan',steps:['Check: one fact, own words, a source.']}},
+  'WRIT.RES.L06.03':{hook:'Your reader wants to check a fact. Where does he look?', big:'Write a source list: one line for every source you used, with the title and author, and for an article, where it appeared.',
+    intro:['Find your sources on your note cards.','Book: the title and the author.','Article: the title, the author, and where it appeared.','Every source you used, and only those.'],
+    ex:[{q:'A book on Yehuda’s cards.',steps:['Title: Cold Without a Plug.','Author: Aaron Kessler.'],a:'Cold Without a Plug, by Aaron Kessler'},
+        {q:'An article on Yehuda’s cards.',steps:['Title: “Ice by Wagon.” Author: Daniel Mendez.','Where it appeared: Science Corner Magazine.'],a:'“Ice by Wagon,” by Daniel Mendez, in Science Corner Magazine'}],
+    oops:{q:'Yehuda’s article line.',wrong:'“Ice by Wagon,” by Daniel Mendez',right:'“Ice by Wagon,” by Daniel Mendez, in Science Corner Magazine',why:'An article line needs where it appeared too, or the reader cannot find it. That is a part left out.'},
+    idea:['Every source you used: title, author, and where an article appeared.'],
+    try:{q:'Which line is complete for a book?',o:['Kitchens Long Ago, by Natan Dahan','Kitchens Long Ago','by Natan Dahan'],a:'Kitchens Long Ago, by Natan Dahan',steps:['A book line needs the title and the author.']}},
+  'WRIT.ESSAY.L06.09':{hook:'Can a report with perfect spelling still be a mess?', big:'Revise the whole piece: put the paragraphs in the best order, add any missing part, and cut what does not fit. Then edit the words.',
+    intro:['Read the whole piece, top to bottom.','Order: are the paragraphs in the best order?','Missing: an opener, a body paragraph, an ending?','Fit: does every paragraph answer the question?'],
+    ex:[{q:'The iceman paragraph comes before the ice-cutting paragraph.',steps:['The ice was cut first, then brought to homes.','That is the order.'],a:'Move the ice-cutting paragraph before the iceman.'},
+        {q:'A paragraph about ice-pop flavors.',steps:['Does it tell how people kept food cold before fridges?','No. It does not fit.'],a:'Cut it.'}],
+    oops:{q:'Avrumi’s revising.',wrong:'I fixed “sawdust” and two commas. Revised!',right:'I moved the ice paragraph first and added an ending. Then I fixed “sawdust.”',why:'That was spelling only. First revise the whole thing: order, missing parts and fit. Then fix the words.'},
+    idea:['Order, missing parts, fit. Then the words.'],
+    try:{q:'Yehuda’s report just stops after the root cellars. What should he fix?',o:['a missing part','the order','spelling only'],a:'a missing part',steps:['Opener, body, and… what comes last?']}},
+  'WRIT.ESSAY.L06.10':{hook:'What do you say when your chavrusa asks, “So, what did you think?”', big:'Give a chavrusa one praise, one question and one push, each specific and kind.',
+    intro:['Praise: one exact thing that works.','Question: something you wondered as a reader.','Push: one next step he can do.','Specific and kind: never “It’s good” or “It’s bad.”'],
+    ex:[{q:'Dovid reads Yehuda’s opener.',steps:['What works? The question about milk.','Say it exactly.'],a:'Praise: your milk question made me want to read on.'},
+        {q:'Dovid sees the report has no ending.',steps:['What is one next step?','Say it kindly, with “Next, try”.'],a:'Push: next, try adding an ending about when fridges came.'}],
+    oops:{q:'Avrumi’s feedback.',wrong:'It’s good. Fix the end.',right:'Your iceman part is clear. What happened to the melted ice? Next, try adding an ending about fridges.',why:'“It’s good” and “Fix the end” are too general. Name the exact part, ask one question, and give one clear push.'},
+    idea:['One praise, one question, one push: specific and kind.'],
+    try:{q:'“How long did one block of ice last?” What kind of comment is it?',o:['question','praise','push'],a:'question',steps:['Does it name what works, ask something, or give a next step?']}},
+  };
+  var HOWTO = {
+  'WRIT.RES.L06.01':{s:'Write your question.\nFind the answer in one source.\nLook for the same answer in a second source.\nThey agree? Use it.\nThey disagree? Check a third source, and use the answer two sources agree on.'},
+  'WRIT.RES.L06.02':{s:'Read one sentence in the source.\nCover it. Pick ONE fact.\nWrite that fact in your own words.\nWrite the source at the bottom: title and author.\nTwo facts? Make two cards.'},
+  'WRIT.RES.L06.03':{s:'Lay out your note cards. Read the source on each one.\nWrite each source once.\nBook: Title, by Author.\nArticle: “Title,” by Author, in the magazine or newspaper.\nCheck: every card’s source is on the list, with every part.'},
+  'WRIT.ESSAY.L06.09':{s:'Read the whole piece, top to bottom.\nOrder: move any paragraph that is out of place.\nMissing: add an opener, a body paragraph or an ending.\nFit: cut any paragraph that does not answer the question.\nOnly then, fix words and spelling.'},
+  'WRIT.ESSAY.L06.10':{s:'Read your chavrusa’s whole piece.\nPraise: “I liked how you…” Name one exact part.\nQuestion: “I wondered…” Ask what you wanted to know.\nPush: “Next, try…” Give one next step.\nCheck: is each one specific and kind?'},
+  };
+  var BITE = {
+  'WRIT.RES.L06.01':{ band:'E45', pic:'🔎', today:'Check a fact in more than one source', why:'A fact that two sources agree on is a fact you can trust.',
+    ready:[{q:'In Two Texts, One Piece you used details from…', o:['two texts','one text','no text'], a:'two texts'}],
+    bridge:'WRIT.ESSAY.L06.08', bridgeName:'Two Texts, One Piece',
+    watch:{ q:'Yehuda checks a fact for his report', m:{type:'scene', e:'📚', t:'Yehuda sits in the yeshiva library with three practice sources about keeping food cold before fridges.'}, steps:[
+      {t:'QUESTION: when did most homes get an electric fridge?'},
+      {t:'SOURCE 1: Mendez says in the 1930s.'},
+      {t:'SOURCE 2: Dahan says in the 1940s. They disagree.'},
+      {t:'DO NOT PICK A SIDE: check a third source.'},
+      {t:'SOURCE 3: Kessler says in the 1940s.'},
+      {t:'USE IT: two of three agree, in the 1940s.'}], a:'Find the answer in two sources. If they disagree, check a third.' },
+    oops:{ q:'Avrumi’s root cellar fact', wrong:'Root cellars kept carrots cool. (I read it in Kessler and stopped.)', right:'Root cellars kept carrots cool. (Kessler says it, and a second source agrees.)', why:'One source can be wrong. Check the fact in a second source before you use it.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can check a fact in more than one source, and check a third when two disagree.',
+    board:{ one:'Two sources agree? Use it. They disagree? Check a third.', activity:'Three boys each hold a “source” card with an answer. The class compares the first two; if they disagree, the class calls on the third.', mistakes:['Stopping after one source','Picking the answer you like when sources disagree','Not noticing that two sources disagree'] },
+    do:[
+      {type:'sort', q:'Two sources on each fact.', bins:['Agree','Disagree'], cards:[['Both: ice cut from lakes.',0],['Both: packed in sawdust.',0],['1930s and 1940s.',1],['Both: iceman with a wagon.',0]],
+        say:'Do the two sources agree? Sort each one.', how:'Same answer in both? They agree.',
+        why:{q:'Why does "1930s and 1940s" go in Disagree?', o:['The two sources give different answers','Both say the same thing','Only one source says it','It is not about fridges'], a:'The two sources give different answers'}},
+      {type:'match', q:'How did each boy check?', pairs:[['Used one source and stopped.','One source only'],['Chose the answer he liked.','Picking a side'],['Checked two, then a third.','Checked the right way']], mis:true,
+        say:'Match each boy’s work to what it is.', how:'How many sources? Did he check a third when they disagreed?'}],
+    your:[
+      {type:'tiles', q:'The checking steps.', w:['Source 1','Source 2','Disagree?','Source 3'], extra:['Stop'],
+        say:'Put the checking steps in order.', how:'One source, then a second. If they disagree, a third.'},
+      {type:'sort', bins:['Checked','Not checked yet'], cards:[['Ice cut from lakes: Kessler, Dahan.',0],['Iceman: Mendez, Dahan.',0],['Drip pan: Mendez only.',1],['Root cellar: Kessler only.',1]],
+        say:'Is each fact checked in two sources? Sort them.', how:'Count the sources. Two that agree means checked.',
+        why:{q:'Why is "Drip pan: Mendez only" not checked yet?', o:['Only one source says it so far','Two sources agree','The sources disagree','It is not a fact'], a:'Only one source says it so far'}},
+      {type:'match', pairs:[['Two sources agree','Use the fact'],['Two sources disagree','Check a third source'],['Only one source','Find a second source']],
+        say:'Match each case to the next step.', how:'Agree: use it. Disagree: a third. One: find another.',
+        why:{q:'Why check a third source when two disagree?', o:['It shows which answer two sources agree on','It makes the report longer','The third is always right','You like it more'], a:'It shows which answer two sources agree on'}},
+      {type:'tiles', q:'Two sources agree on the fridge.', w:['Kessler and','Dahan both','say 1940s.'], extra:['Mendez only'],
+        say:'Build the sentence about two sources that agree.', how:'Name both sources, then what they both say.'},
+      {type:'sort', bins:['Use it now','Check more first'], cards:[['Two sources agree.',0],['Two of three agree.',0],['One source so far.',1],['Two sources disagree.',1]],
+        say:'Use it now, or check more? Sort each one.', how:'Do two sources agree? Then use it.',
+        why:{q:'Why check more when two sources disagree?', o:['You do not know yet which is right','They agree already','One source is enough','The report is too long'], a:'You do not know yet which is right'}}] },
+
+  'WRIT.RES.L06.02':{ band:'E45', pic:'🗂️', today:'Make note cards: one fact, your words, the source', why:'One fact per card lets you sort your facts later, and the source tells you where each one came from.',
+    ready:[{q:'In Proof from the Text, a fact in your own words still gets…', o:['a source tag','quotation marks','a title page'], a:'a source tag'}],
+    bridge:'WRIT.PARA.L06.10', bridgeName:'Proof from the Text',
+    watch:{ q:'Yehuda makes note cards from Mendez’s article', m:{type:'scene', e:'🗂️', t:'Yehuda sits at the dining room table with a stack of small cards and the practice article “Ice by Wagon.”'}, steps:[
+      {t:'READ: “The iceman drove his wagon from house to house with blocks of ice.”'},
+      {t:'COVER IT: what is the one fact?'},
+      {t:'WRITE: An iceman brought ice to homes in a wagon.'},
+      {t:'SOURCE: “Ice by Wagon,” Mendez.'},
+      {t:'NEXT CARD: melted ice dripped into a pan.'},
+      {t:'CHECK: one fact, my words, the source.'}], a:'One fact per card, in your own words, with the source at the bottom.' },
+    oops:{ q:'Dovid’s card', wrong:'An iceman brought ice in a wagon, and melted ice dripped into a pan.', right:'An iceman brought ice to homes in a wagon. Source: “Ice by Wagon,” Mendez', why:'Two facts were squeezed onto one card, and there was no source. Make two cards, each with its source.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can make note cards with one fact, your own words and the source.',
+    board:{ one:'One card: one fact, your words, the source.', activity:'Read a sentence aloud. Boys cover the book, write one fact on a card in their own words, and add the source. Partners check the three parts.', mistakes:['Two facts on one card','No source on the card','Copied words from the book'] },
+    do:[
+      {type:'sort', q:'Yehuda’s cards.', bins:['One fact','Two facts'], cards:[['Ice was cut from frozen lakes.',0],['Sawdust kept the ice cold.',0],['The iceman came; ice lasted all summer.',1],['Root cellars and springhouses kept food cool.',1]],
+        say:'One fact or two? Sort each card.', how:'Count the facts. More than one? Make two cards.',
+        why:{q:'Why does "Root cellars and springhouses kept food cool" have two facts?', o:['It tells about two different things','It has a source','It is copied','It is one fact'], a:'It tells about two different things'}},
+      {type:'match', q:'Fix the card.', pairs:[['Two facts on one card','Make two cards'],['No source on the card','Write the source at the bottom'],['Copied the whole sentence','Cover it; use your own words']], mis:true,
+        say:'Match each mistake to its fix.', how:'What is wrong with the card? What fixes it?'}],
+    your:[
+      {type:'tiles', q:'Make one card.', w:['Read','Cover it','Write fact','Add source'], extra:['Copy it'],
+        say:'Put the note card steps in order.', how:'Read, cover, write the fact, then add the source.'},
+      {type:'sort', bins:['Good card','Needs a fix'], cards:[['An icebox had ice at the top. Source: Dahan',0],['Ice lasted into summer. Source: Kessler',0],['Ice lasted into summer.',1],['The iceman came, and the ice melted.',1]],
+        say:'Good card, or needs a fix? Sort them.', how:'One fact, your words, and a source? Then it is good.',
+        why:{q:'Why does "Ice lasted into summer." need a fix?', o:['It has no source','It has two facts','It is copied','It is too short'], a:'It has no source'}},
+      {type:'match', q:'Which source wrote these words?', pairs:[['“The iceman drove his wagon”','Mendez'],['“a small house built over a cold stream”','Dahan'],['“packed in sawdust inside an icehouse”','Kessler']],
+        say:'Match each source’s words to its author.', how:'Which source wrote these exact words?',
+        why:{q:'Why write the source on every card?', o:['So you always know where the fact came from','So the card looks full','So you can copy it','So it is longer'], a:'So you always know where the fact came from'}},
+      {type:'tiles', q:'The source line for Dahan’s book.', w:['Source:','Kitchens','Long Ago,','Dahan'], extra:['Kessler'],
+        say:'Build the source line for Dahan’s book.', how:'Write Source, the title, then the author.'},
+      {type:'sort', q:'Kessler wrote: “The blocks were packed in sawdust inside an icehouse.”', bins:['Own words','Copied'], cards:[['Icehouses kept the ice in sawdust.',0],['In the icehouse, the ice sat in sawdust.',0],['The blocks were packed in sawdust inside an icehouse.',1],['The blocks were packed in sawdust.',1]],
+        say:'Own words, or copied? Sort each card.', how:'Same words in the same order? It is copied.',
+        why:{q:'Why is "The blocks were packed in sawdust." copied?', o:['It uses Kessler’s exact words','It has two facts','It has a source','It is about ice'], a:'It uses Kessler’s exact words'}}] },
+
+  'WRIT.RES.L06.03':{ band:'E45', pic:'📋', today:'Write a source list for your report', why:'A source list shows the reader where every fact came from, so he can check it too.',
+    ready:[{q:'Each note card has one fact and…', o:['its source','a picture','two more facts'], a:'its source'}],
+    bridge:'WRIT.RES.L06.02', bridgeName:'Note Cards',
+    watch:{ q:'Yehuda writes his source list', m:{type:'scene', e:'📋', t:'Yehuda spreads his note cards on the table and reads the source at the bottom of each one.'}, steps:[
+      {t:'CARDS: Kessler, Mendez, Dahan. Three sources.'},
+      {t:'BOOK: Cold Without a Plug, by Aaron Kessler.'},
+      {t:'BOOK: Kitchens Long Ago, by Natan Dahan.'},
+      {t:'ARTICLE: “Ice by Wagon,” by Daniel Mendez,'},
+      {t:'WHERE: in Science Corner Magazine.'},
+      {t:'CHECK: every card’s source is on the list.'}], a:'One line for every source you used: title and author, and for an article, where it appeared.' },
+    oops:{ q:'Yehuda’s article line', wrong:'“Ice by Wagon,” by Daniel Mendez', right:'“Ice by Wagon,” by Daniel Mendez, in Science Corner Magazine', why:'An article line needs where it appeared too, or the reader cannot find it.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can write a source list with every source you used and every part.',
+    board:{ one:'Every source you used: title, author, and where an article appeared.', activity:'Boys hold up note cards. The class reads the source on each and builds the list on the board, checking every part.', mistakes:['A source from the cards left off the list','No author','An article with no magazine named'] },
+    do:[
+      {type:'sort', q:'Parts of a source line.', bins:['Title','Author','Where it appeared'], cards:[['Cold Without a Plug',0],['Aaron Kessler',1],['Science Corner Magazine',2],['Natan Dahan',1],['Kitchens Long Ago',0]],
+        say:'Title, author or where? Sort each part.', how:'A person’s name is the author. A magazine is where.',
+        why:{q:'Why is "Science Corner Magazine" where it appeared?', o:['It is the magazine the article was in','It is the author','It is the title of a book','It is a fact'], a:'It is the magazine the article was in'}},
+      {type:'match', q:'Check the list.', pairs:[['Kitchens Long Ago','A part left out'],['List: 2 sources. Cards: 3.','A source left out'],['Cold Without a Plug, by Aaron Kessler','Complete']], mis:true,
+        say:'Match each list problem to what it is.', how:'Is every part there? Is every card’s source there?'}],
+    your:[
+      {type:'tiles', q:'The line for Dahan’s book.', w:['Kitchens','Long Ago,','by Natan','Dahan'], extra:['Mendez'],
+        say:'Build the line for Dahan’s book.', how:'Title first, then by and the author.'},
+      {type:'sort', bins:['Goes on the list','Leave it off'], cards:[['Kessler: on my cards',0],['Mendez: on my cards',0],['Dahan: on my cards',0],['A book I never opened',1]],
+        say:'Does it go on the list? Sort each one.', how:'Used it? It goes on. Never used it? Leave it off.',
+        why:{q:'Why leave off a book you never opened?', o:['You did not use it','It has no title','It is too long','It is an article'], a:'You did not use it'}},
+      {type:'match', pairs:[['A book','Title and author'],['An article','Title, author, where it appeared']],
+        say:'Match each source to what its line needs.', how:'An article needs one more part: where it appeared.',
+        why:{q:'Why does an article need where it appeared?', o:['So the reader can find the magazine','So it looks longer','Books need it too','It takes the place of the author'], a:'So the reader can find the magazine'}},
+      {type:'tiles', q:'Dovid’s book: Life Before Fridges, by Ezra Nadler.', w:['Life Before','Fridges,','by Ezra','Nadler'], extra:['Mendez'],
+        say:'Build the line for Dovid’s book.', how:'Title first, then by and the author.'},
+      {type:'sort', bins:['Complete line','Part left out'], cards:[['Cold Without a Plug, by Aaron Kessler',0],['“Ice by Wagon,” by Daniel Mendez, in Science Corner Magazine',0],['Kitchens Long Ago',1],['“Ice by Wagon,” by Daniel Mendez',1]],
+        say:'Complete, or a part left out? Sort each line.', how:'Book: title and author. Article: add where it appeared.',
+        why:{q:'Why is "“Ice by Wagon,” by Daniel Mendez" missing a part?', o:['It does not say where the article appeared','It has no author','It has no title','It is a book'], a:'It does not say where the article appeared'}}] },
+
+  'WRIT.ESSAY.L06.09':{ band:'E45', pic:'🔁', today:'Revise the whole piece: order, missing parts, fit', why:'A report makes sense only when its parts are in order, nothing is missing, and every part fits.',
+    ready:[{q:'Which part ends a three-part piece?', o:['the closing','the opening','the hook'], a:'the closing'}],
+    bridge:'WRIT.ESSAY.L06.01', bridgeName:'Three-Part Piece',
+    watch:{ q:'Yehuda revises his report', m:{type:'scene', e:'📄', t:'Yehuda lays the pages of his report on the floor of his room, one paragraph on each page.'}, steps:[
+      {t:'READ IT ALL: the whole report, top to bottom.'},
+      {t:'ORDER: the iceman comes before the ice is cut. Move it.'},
+      {t:'FIT: ice-pop flavors do not answer the question. Cut it.'},
+      {t:'MISSING: no ending. Add one about the 1940s.'},
+      {t:'CHECK: opener, cutting ice, the iceman, root cellars, ending.'},
+      {t:'LATER: now fix words and spelling.'}], a:'Revise the whole thing first: order, missing parts, fit. Then edit the words.' },
+    oops:{ q:'Avrumi’s revising', wrong:'I fixed “sawdust” and two commas. Revised!', right:'I moved the ice paragraph first and added an ending. Then I fixed “sawdust.”', why:'Fixing spelling is not revising the whole thing. First check order, missing parts and fit.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can revise a whole piece for order, missing parts and fit.',
+    board:{ one:'Revise the whole thing: order, missing parts, fit. Spelling comes later.', activity:'Boys hold the paragraphs of a report on big cards, out of order. The class moves them, spots the missing ending, and sends the card that does not fit back to its seat.', mistakes:['Fixing only spelling','Leaving paragraphs out of order','Keeping a paragraph that does not fit'] },
+    do:[
+      {type:'sort', q:'Fixes for Yehuda’s report.', bins:['Whole piece','Small fix'], cards:[['Move a paragraph.',0],['Add an ending.',0],['Fix a spelling.',1],['Add a comma.',1]],
+        say:'Whole piece, or a small fix? Sort each one.', how:'Does it change the parts, or just one word?',
+        why:{q:'Why is "Add an ending" a whole-piece fix?', o:['It adds a missing part','It fixes spelling','It adds a comma','It changes one word'], a:'It adds a missing part'}},
+      {type:'match', q:'Problems in the draft.', pairs:[['Iceman before the ice is cut','Wrong order'],['The report just stops','A missing part'],['Ice-pop flavors','Does not fit']], mis:true,
+        say:'Match each problem to its name.', how:'Out of place, not there, or off the question?'}],
+    your:[
+      {type:'tiles', q:'Yehuda’s report, in order.', w:['Opener','Cut ice','Iceman','Ending'], extra:['Ice pops'],
+        say:'Put the report’s parts in the best order.', how:'Open, cut the ice, bring it home, then end.'},
+      {type:'sort', q:'How did people keep food cold before fridges?', bins:['Fits','Does not fit'], cards:[['Icehouses and sawdust',0],['The iceman’s wagon',0],['Root cellars',0],['Ice-pop flavors',1],['A trip to the zoo',1]],
+        say:'Does it fit the question? Sort each paragraph.', how:'Does it tell how people kept food cold?',
+        why:{q:'Why does "Ice-pop flavors" not fit?', o:['It does not answer the question','It is too short','It is in the wrong order','It has a source'], a:'It does not answer the question'}},
+      {type:'match', pairs:[['Wrong order','Move it'],['A missing part','Add it'],['Does not fit','Cut it']],
+        say:'Match each problem to its fix.', how:'Out of place: move. Missing: add. Off the question: cut.',
+        why:{q:'Why cut a paragraph that does not fit?', o:['It pulls the reader away from the question','It has bad spelling','It is the ending','It is too short'], a:'It pulls the reader away from the question'}},
+      {type:'tiles', q:'Fixing a piece, step by step.', w:['Read it all','Revise','Edit words'], extra:['Skip it'],
+        say:'Put the steps of fixing a piece in order.', how:'Read the whole piece, revise the parts, then edit words.'},
+      {type:'sort', bins:['Revised','Spelling only'], cards:[['Moved a paragraph, added an ending.',0],['Cut a paragraph that did not fit.',0],['Fixed three spellings, nothing else.',1],['Added two commas, nothing else.',1]],
+        say:'Revised, or spelling only? Sort each boy’s work.', how:'Did he change the parts, or only small words?',
+        why:{q:'Why is "Fixed three spellings, nothing else" not revising?', o:['The parts were never checked','The spelling is wrong','It added an ending','It moved a paragraph'], a:'The parts were never checked'}}] },
+
+  'WRIT.ESSAY.L06.10':{ band:'E45', pic:'🤝', today:'Give a chavrusa one praise, one question, one push', why:'Specific, kind words show a writer what to keep and what to fix.',
+    ready:[{q:'Revising the whole thing checks the order, the missing parts and…', o:['the fit','the spelling','the handwriting'], a:'the fit'}],
+    bridge:'WRIT.ESSAY.L06.09', bridgeName:'Revise the Whole Thing',
+    watch:{ q:'Dovid gives Yehuda feedback', m:{type:'scene', e:'🤝', t:'Dovid and Yehuda sit side by side at a classroom desk, reading the first draft of Yehuda’s report together.'}, steps:[
+      {t:'READ: the whole report, slowly.'},
+      {t:'PRAISE: your milk question made me want to read on.'},
+      {t:'QUESTION: how long did one block of ice last?'},
+      {t:'PUSH: next, try adding an ending about the 1940s.'},
+      {t:'CHECK: is each one specific and kind?'},
+      {t:'YEHUDA: says thank you, and picks his first fix.'}], a:'One praise, one question, one push: each one specific and kind.' },
+    oops:{ q:'Avrumi’s feedback', wrong:'It’s good. Fix the end.', right:'Your iceman part is clear. What happened to the melted ice? Next, try adding an ending about fridges.', why:'“It’s good” and “Fix the end” are too general. Name the exact part, ask one question, and give one clear push.' },
+    ways:['frum-family scene','worked example','sort it','match it','word tiles','tap the reason','Mistake Detective'], done:'You can give a chavrusa one praise, one question and one push, specific and kind.',
+    board:{ one:'One praise, one question, one push: specific and kind.', activity:'Pairs swap drafts. Each boy writes a praise, a question and a push on three colored slips. The writer reads them and picks his first fix.', mistakes:['Too general: “It’s good.”','Not kind: “This is boring.”','Ten pushes at once instead of one'] },
+    do:[
+      {type:'sort', q:'Dovid’s comments.', bins:['Praise','Question','Push'], cards:[['Your opener pulled me in.',0],['How long did one block last?',1],['Next, try adding an ending.',2],['Your iceman part is clear.',0],['What happened to the melted ice?',1],['Next, try moving the iceman.',2]],
+        say:'Praise, question or push? Sort each one.', how:'Praise names what works. A question asks. A push gives a next step.',
+        why:{q:'Why is "Next, try adding an ending" a push?', o:['It gives one next step','It names what works','It asks something','It is too general'], a:'It gives one next step'}},
+      {type:'match', q:'What kind of comment?', pairs:[['It’s good.','Too general'],['Your iceman part is so boring.','Not kind'],['Your milk question pulled me in.','Specific and kind']], mis:true,
+        say:'Match each comment to what it is.', how:'Does it name a part? Is it kind?'}],
+    your:[
+      {type:'tiles', q:'The three kinds of feedback.', w:['Praise','Question','Push'], extra:['Put-down'],
+        say:'Put the three kinds of feedback in order.', how:'Start with praise, then a question, then one push.'},
+      {type:'sort', bins:['Specific and kind','Too general','Not kind'], cards:[['Your sawdust fact surprised me.',0],['Nice.',1],['Fix it.',1],['Your iceman part is so boring.',2]],
+        say:'Specific and kind? Sort each comment.', how:'Does it name a part? Does it put him down?',
+        why:{q:'Why is "Fix it." too general?', o:['It does not say what to fix','It is not kind','It is a question','It names a part'], a:'It does not say what to fix'}},
+      {type:'match', pairs:[['Praise','Names one thing that works'],['Question','Asks what the reader wondered'],['Push','Gives one next step']],
+        say:'Match each kind to its job.', how:'Praise keeps, a question asks, a push moves forward.',
+        why:{q:'Why give only one push?', o:['One clear step is easy to start','Pushes are not kind','He needs ten','Praise is enough'], a:'One clear step is easy to start'}},
+      {type:'tiles', q:'A kind, specific push.', w:['Next, try','adding an','ending about','fridges.'], extra:['It’s bad.'],
+        say:'Build a kind, specific push.', how:'Start with Next, try. Then the exact part to add.'},
+      {type:'sort', bins:['Can act on it','Too general'], cards:[['Move the iceman after the ice.',0],['Add your source list.',0],['Make it better.',1],['Change stuff.',1]],
+        say:'Can Yehuda act on it? Sort each push.', how:'Does it say exactly what to do?',
+        why:{q:'Why can Yehuda act on "Add your source list"?', o:['It names one exact thing to do','It is a praise','It is a question','It is long'], a:'It names one exact thing to do'}}] },
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
