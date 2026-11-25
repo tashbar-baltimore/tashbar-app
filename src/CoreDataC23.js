@@ -8,6 +8,3 @@ CORE_SKILLS.C23 = [
   ["READ.COMP.L03.05", "Who, What, Where, When", "Find who, what, where and when in a story", { std: "RL.2.1", file: "CoreDataC231", min: 8 }],
   ["READ.COMP.L03.06", "Why and How", "Answer why and how questions with the words of the story", { std: "RL.2.1", file: "CoreDataC231", min: 8 }]
 ];
-/* Data files that upgrade EXISTING skills to One Bite lessons (TLCORE.upgrade; docs/core-growth/HOW-TO-ADD-A-SKILL.md). */
-var CORE_DATA_FILES = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {};
-CORE_DATA_FILES.C23 = ['CoreDataC231'];
