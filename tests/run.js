@@ -73,7 +73,6 @@ async function openPage(browser, html, init, throttle, staffSession) {
   await ctx.addInitScript(() => { setInterval(() => { try { document.documentElement.dispatchEvent(new WheelEvent('wheel', { bubbles: true })); } catch (e) {} }, 30000); });
   const pg = await ctx.newPage(); const errs = [];
   pg.on('pageerror', e => errs.push('page error: ' + String(e).slice(0, 240)));
-  pg.on('console', m => { if (/^OB[ST] /.test(m.text())) process.stdout.write('[' + new Date().toISOString().slice(11, 19) + '] ' + m.text() + '\n'); });
   pg.on('console', m => { if (m.type() === 'error' && !/Failed to load resource/.test(m.text())) errs.push('console error: ' + m.text().slice(0, 240)); });
   /* the content store (job T): /texts/<ID>.json is served from texts/ the way web/build.js publishes it, so a lesson can open a real text */
   const TXP = [path.join(__dirname, '..', 'tools', 'core', 'texts.js'), path.join(process.cwd(), 'tools', 'core', 'texts.js')].find(p => fs.existsSync(p));

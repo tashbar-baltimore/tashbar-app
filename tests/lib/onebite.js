@@ -157,7 +157,6 @@ module.exports = async function oneBiteTests(pg) {
         your: [{ type: 'tiles', w: ['2', '4', '6', '8'] }, { type: 'count', n: 12, pic: 'art:apple', o: ['11', '12', '13', '14'] }, { type: 'tenframe', n: 13, start: 9 }] } },
       { name: 'ten-frame take-away (start > n, n = 0), \\n line breaks in cards, a thin Hebrew letter traced', want: { kit: 5, your: 3 }, bite: { do: [{ type: 'tenframe', n: 4, start: 9 }, { type: 'sort', bins: ['Ball on top', 'Box on top'], cards: [['⚽\n📦', 0], ['📦\n⚽', 1]] }],
         your: [{ type: 'tenframe', n: 0, start: 3 }, { type: 'match', pairs: [['one hundred thirteen', '113'], ['one hundred four', '104'], ['seventeen', '17']] }, { type: 'trace', glyph: 'ז', name: 'Zayin', he: true }] } } ];
-    console.log('OBS fixtures');
     for (const f of fixtures) {
       ONE_BITE[FIX] = Object.assign({}, base, f.bite);
       try { const s = await play(FIX, f.opt); if (s.err) o.bad.push('Activity Kit (' + f.name + '): ' + s.err);
@@ -191,9 +190,7 @@ module.exports = async function oneBiteTests(pg) {
       /* the boy's page signs out after 5 minutes with no tap (SignOutBar.html IDLE); scripted clicks are not taps, and with 260+ bites
          this loop runs longer than that, so the test boy was signed out mid-run (A.st null). Count each lesson as a tap. */
       try { document.dispatchEvent(new Event('pointerdown')); } catch (e) {}
-      const __t = Date.now(); console.log('OBS ' + id);
       try { s = await play(id); } catch (e) { s = { err: String(e && e.stack || e).slice(0, 200) }; }
-      console.log('OBT ' + id + ' ' + (Date.now() - __t) + ' ' + (s.err || 'ok'));
       if (s.err) o.bad.push(id + ': ' + s.err); else { o.played++; o.mastered++; o.kitActs += s.kit || 0; }
       o.steps[id] = s.screens; }
     try { A.overlay = null; A.play = null; A.res = null; A.st = loadStudent({ id: 'BOY-77', name: 'Made-up Boy B' }); A.view = 'hub'; render(); const id = ids[0] || Object.keys(BANK_ALL)[0];
