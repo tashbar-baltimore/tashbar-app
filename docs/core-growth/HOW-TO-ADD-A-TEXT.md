@@ -36,6 +36,8 @@ queen: the one ant that lays all the eggs
 - **words** (optional): the robust-vocabulary words for this text, 5–8 of them, each with a kid-friendly meaning of 120 letters at most. A boy taps the word in the Reader to see its meaning. Each one must be **one word, written exactly as it appears in the text** ("gasped", not "gasp"); the check refuses anything else.
 - **Pages:** a page is what fits on one screen of the Reader. Aim for about 80–150 words a page for Grades 2–3, 150–250 for 4–5 and 200–300 for 6–8. K–1 pages are 1–3 sentences.
 
+**A picture on each page (K–1 listen-along stories).** Put `[pic: name.webp]` (a picture in `art/pics` with its catalog row) or `[pic: 🐐🌾]` (a few emoji, no letters) on its own line inside a page. The Reader shows it above that page's words. Example: `texts/F/F.LA.K01.txt`.
+
 ## 2. Check it
 ```bash
 node tools/core/texts.js check

@@ -1,0 +1,44 @@
+<script>
+/* CoreDataW133.html: Core Growth job W13, Kindergarten games (K-1 boys get games only; docs/core-growth/HOW-TO-ADD-A-K1-GAME.md).
+   Keep this file under 150 KB. W13 = Writing K-3 (docs/core-growth/W13-map.md). This file: Kindergarten (L01), Unit 1 "Draw It, Tell It".
+   Kindergarten Unit 1 is drawing and talking only: a K boy cannot read yet, so nothing here asks him to read a word. Every
+   instruction is spoken (say), choices are pictures, and the teaching is in the spoken lines. Cast: the Peretz family on Maple Street
+   (docs/core-growth/F-map.md section 8): Eli (K), Shmuli (Grade 1), Zeidy's farm with Pita the donkey, friends Ovadia and Akiva.
+   The skills are listed in src/CoreDataW13.js with no engine lesson, the same way job F lists its K-1 games: a K boy plays the game. */
+(function () {
+  var LESSONS = {
+  };
+  var TEACH = {}, HOWTO = {}, BITE = {};
+  var K1G = [
+    { id:'WRIT.PARA.L01.01', grade:0, name:'Plan with a Picture', pic:'🖍️', after:'READ.PA.L01.09', acts:[
+      {type:'listen', hear:'Eli will write about Zeidy’s goat.', o:['🐐','🚗','🍕'], a:'🐐', say:'Writers draw first. The picture plans the words! What should Eli draw?', how:'Listen. What is Eli writing about? Draw that.'},
+      {type:'sort', bins:['🐐','🍞'], cards:[['🚜',0],['🥖',1],['🐓',0],['🥐',1]], say:'Goat page or bakery page? Put each picture there.', how:'Does it belong at the farm, or at the bakery?'},
+      {type:'listen', hear:'Eli will write about Bubby’s garden.', o:['🌻','🐐','⚽'], a:'🌻', mis:true, say:'Eli loves goats. But what will he write about?', how:'Draw what you will write about, not just what you like.'},
+      {type:'findall', grid:['🕯️','🍞','⚽','🐟','🧸','🍽️'], find:['🕯️','🍞','🐟','🍽️'], findSay:'thing for the Shabbos table', say:'On Sunday, Eli draws the Shabbos table. Tap what belongs.', how:'Would you see it on the Shabbos table?'},
+      {type:'match', pairs:[['🐐','🌾'],['🐟','🌊'],['🐝','🌸']], say:'Draw it with what it needs. Then you know your words.', how:'What does it need? Draw them side by side.'}]},
+
+    { id:'WRIT.PARA.L01.02', grade:0, name:'Tell a Friend First', pic:'🗣️', after:'WRIT.PARA.L01.01', acts:[
+      {type:'listen', hear:'The goat eats hay.', o:['🐐','🐔','🍞'], a:'🐐', say:'Before you write, tell it: who, and what they do. Who?', how:'A telling says who, and what they do. Who is it?'},
+      {type:'listen', hear:'Goat.', o:['👍','👎'], a:'👎', mis:true, say:'Careful! A telling needs who and a doing. Is this whole?', how:'A telling says who, and what they do.'},
+      {type:'findall', grid:['🐔','🐐','🐄','🐟','🐝','🐑'], find:['🐔','🐐'], findSay:'farm friend in Shmuli’s sentence', say:'Say it with Shmuli: The hen and the goat play. Tap them.', how:'Listen again. Which animals did he say?'},
+      {type:'tiles', w:['👴','🐐','🌾'], extra:['🍕'], hear:'Zeidy gives the goat hay.', say:'Say it first. Then put Eli’s pictures in order.', how:'Say it slowly. What comes first? Then next?'},
+      {type:'listen', hear:'Pita the donkey runs to Zeidy.', o:['🏃','😴','🍽️'], a:'🏃', say:'Ovadia tells his sentence. What does Pita do?', how:'A telling says who, and what they do. Listen for the doing.'}]},
+
+    { id:'WRIT.PARA.L01.03', grade:0, name:'Picture and Words Match', pic:'🖼️', after:'WRIT.PARA.L01.02', acts:[
+      {type:'listen', pic:'🐐', hear:'The goat eats hay.', o:['👍','👎'], a:'👍', say:'Writers’ words tell about their picture. Do these words match?', how:'Look at the picture. Listen. Do they go together?'},
+      {type:'listen', pic:'🐄', hear:'The goat eats hay.', o:['👍','👎'], a:'👎', mis:true, say:'Careful! Look at the picture. Do these words match it?', how:'The words must tell about the picture.'},
+      {type:'listen', hear:'The hen sits on her eggs.', o:['🐔','🐟','🚗'], a:'🐔', say:'Which picture goes with these words?', how:'Listen to the words. Find the picture they tell about.'},
+      {type:'findall', grid:['☀️','🌙','🐐','⚽','🍞','🌳'], find:['☀️','🌙'], findSay:'picture that matches Eli’s words', say:'Eli wrote: I see the sun and the moon. Tap them.', how:'Listen to his words. Tap only what he wrote about.'},
+      {type:'sort', bins:['👍','👎'], cards:[['🐐',0],['⚽',1],['🌾',0],['🚀',1]], say:'Eli wrote: The goat eats hay. Does each picture match?', how:'Is it in his words? Then it belongs in his picture.'}]},
+
+    { id:'WRIT.PARA.L01.04', grade:0, name:'Tell Me More', pic:'➕', after:'WRIT.PARA.L01.03', acts:[
+      {type:'listen', hear:'Eli says: I see a goat. Ovadia asks: what does it eat?', o:['🐐🌾','🐐','🐔'], a:'🐐🌾', say:'Tell more about the same thing. Which picture answers Ovadia?', how:'More is the goat, and what it eats.'},
+      {type:'findall', grid:['🐔','🚀','🐑','🍕','🌻','🐳'], find:['🐔','🐑','🌻'], findSay:'thing on Zeidy’s farm', say:'Eli drew Zeidy’s farm. Tap things he can add.', how:'Add more things from the farm. That tells more.'},
+      {type:'match', pairs:[['🐐','🌾'],['🐔','🥚'],['🐟','🌊']], say:'Tell more! Match each picture to a detail that goes with it.', how:'What goes with it? Add it to tell more.'},
+      {type:'listen', hear:'Eli tells more about his goat. He adds: my shoe is red.', o:['👍','👎'], a:'👎', mis:true, say:'Careful! Does that tell more about the goat?', how:'Tell more about the same thing.'},
+      {type:'tiles', w:['🐐','🌾','🌳'], hear:'The goat eats hay under the tree.', say:'Eli told more. Put his pictures in order.', how:'Listen. What did Eli say first? Then next?'}]}
+  ];
+  if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

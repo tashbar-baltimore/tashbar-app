@@ -9,7 +9,10 @@
    after = the game it comes after on that path (left out: the end of the path). The game pack's own list and window are not changed: its list()
    gets the new games spliced in, and its open() sends a new game to this player. His stars are saved where that pack saves its scores
    (st.klr for KR, st.g1r for G1R), so K1Only.html unlocks the next game the same way (2 stars or more passes). No money, no mastery,
-   no evidence rows (the same as the K-1 game packs). Buttons from window.TLK. No double slash in this file. */
+   no evidence rows (the same as the K-1 game packs). Buttons from window.TLK. No double slash in this file.
+   LISTEN-ALONG STORY (Core Growth job F helper, 2026-11-24): one piece may be { type: 'story', text: 'F.LA.K01', say: 'Listen to Eli and the goats.' }.
+   It shows the book with one big button; the Reader (src/CoreReader.html, K-1 band) opens over the game, reads every page aloud with the
+   words lighting up and the page's picture, and the piece is done when he reaches the end. Then the game's other pieces ask about the story. */
 (function () {
   var W = window, C = W.TLCORE = W.TLCORE || {}, K = C.k1 = C.k1 || { games: {}, list: [] };
   var PACK = { 0: { g: 'KR', st: 'klr' }, 1: { g: 'G1R', st: 'g1r' } };
@@ -18,18 +21,23 @@
   var G = null;
   function T() { return W.TLK || null; }
   function btn(kind, text, attrs) { var k = T(); return k && k[kind] ? k[kind](text, attrs) : '<button type="button" ' + attrs + '>' + esc(text) + '</button>'; }
-  function say(t) { try { if (W.K1O && typeof K1O.voice === 'function') { K1O.voice(String(t || ''), function () {}); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(String(t || '')); u.rate = .85; speechSynthesis.speak(u); } catch (e) {} }   /* the same teacher voice as the K-1 home */
+  function say(t, done) { var fin = false, end = function () { if (fin) return; fin = true; if (done) try { done(); } catch (e) {} };   /* done: called once the line has finished (or failed), so the word he must find never plays on top of the teacher */
+    try { if (W.K1O && typeof K1O.voice === 'function') { K1O.voice(String(t || ''), end); return; } speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(String(t || '')); u.rate = .85; u.onend = end; u.onerror = end; speechSynthesis.speak(u); } catch (e) { end(); } }   /* the same teacher voice as the K-1 home */
 
   K.err = function (g) {
     if (!g || !/^(READ|LANG|WRIT)\.[A-Z]+\.L0[12]\.\d\d(\.[a-z])?$/.test(String(g.id || ''))) return 'id must be a K-1 reading or writing skill id (level L01 or L02)';
     var lv = Number(/\.L0(\d)\./.exec(g.id)[1]); if (g.grade !== lv - 1) return 'grade must be ' + (lv - 1) + ' for a .L0' + lv + '. id';
     if (!g.name || String(g.name).length > 30) return 'name is needed (30 letters at most)';
     if (!Array.isArray(g.acts) || g.acts.length < 4 || g.acts.length > 8) return 'acts must be 4 to 8 Activity Kit activities';
-    if (W.OBK) { for (var i = 0; i < g.acts.length; i++) { var e = OBK.err(g.acts[i], 'K1'); if (e) return 'act ' + (i + 1) + ': ' + e; if (OBK.types[g.acts[i].type].reader && g.acts[i].type !== 'read') return 'act ' + (i + 1) + ': ' + g.acts[i].type + ' opens the Reader; a K-1 game opens a book only with read';
+    for (var si = 0; si < g.acts.length; si++) { var sa = g.acts[si]; if (sa && sa.type === 'story') { if (!STORY_ID.test(String(sa.text || ''))) return 'act ' + (si + 1) + ': a story needs text: a text id from texts/ (like F.LA.K01)';
+      if (String(sa.say || STORY_SAY).trim().split(/\s+/).length > 12) return 'act ' + (si + 1) + ': the spoken line has more than 12 words'; } }
+    if (g.acts.filter(function (a) { return a && a.type === 'story'; }).length > 1) return 'one story at most in a game';
+    if (W.OBK) { for (var i = 0; i < g.acts.length; i++) { if (g.acts[i] && g.acts[i].type === 'story') continue; var e = OBK.err(g.acts[i], 'K1'); if (e) return 'act ' + (i + 1) + ': ' + e; if (OBK.types[g.acts[i].type].reader) return 'act ' + (i + 1) + ': ' + g.acts[i].type + ' opens the Reader; a K-1 game has no Reader';
       var sw = String(g.acts[i].say || OBK.say(g.acts[i]) || '').trim().split(/\s+/).length; if (sw > 12) return 'act ' + (i + 1) + ': the spoken line has more than 12 words'; } }
     if (new Set(g.acts.map(function (a) { return a.type; })).size < 3) return 'use 3 or more kinds of activity';
     return '';
   };
+  var STORY_ID = /^[A-Z][A-Z0-9]*(\.[A-Z0-9]+){1,3}$/, STORY_SAY = 'Listen to the story.';
   K.add = function (g) { if (!g || K.games[g.id]) return false; if (W.OBK) { var e = K.err(g); if (e) { (K.rejected = K.rejected || []).push((g && g.id) + ': ' + e); console.warn('K-1 game ' + (g && g.id) + ': ' + e); return false; } }   /* tests/lib/corek1.js fails on any refused game */
     K.games[g.id] = g; K.list.push(g); install(); return true; };
 
@@ -60,23 +68,40 @@
         '<h2>' + (n >= 2 ? 'You did it!' : 'Good trying!') + '</h2><p>' + esc(g.name) + '</p><div class="k1c-acts">' + btn('main', 'Next', 'data-k1c="done"') + btn('quiet', 'Play again', 'data-k1c="again"') + '</div></div>';
       return;
     }
-    var d = g.acts[G.i], s = G.s, k2 = T(), check = OBK.isCheck(d);
+    var d = g.acts[G.i], s = G.s, k2 = T(), story = d.type === 'story', check = !story && OBK.isCheck(d);
     var dots = g.acts.map(function (_, i) { return '<i class="' + (i < G.i ? (G.firsts[i] ? 'on' : 'ok') : i === G.i ? 'now' : '') + '"></i>'; }).join('');
     el.innerHTML = '<div class="k1c-top">' + (k2 ? k2.x('data-k1c="x"', 'tl', 'Close the game') : '') + '<div class="k1c-dots" aria-label="' + (G.i + 1) + ' of ' + g.acts.length + '">' + dots + '</div>' +
-      (k2 ? k2.tool('🔊', 'Hear it again', 'data-k1c="say"') : '') + '</div>' +
+      (k2 ? (story ? '' : k2.tool('💡', 'How to do it', 'data-k1c="how"')) + k2.tool('🔊', 'Hear it again', 'data-k1c="say"') : '') + '</div>' +
       '<div class="k1c-play">' + (d.pic && d.type !== 'count' ? '<div class="k1c-pic" aria-hidden="true">' + OBK.pic(d.pic) + '</div>' : '') + (d.q ? '<div class="k1c-q">' + esc(d.q) + '</div>' : '') +
-      '<h2 class="k1c-say">' + esc(OBK.say(d)) + '</h2><div class="obk obk-' + esc(d.type) + (G.shake ? ' obk-shake' : '') + '">' + OBK.view(d, s, ctx()) + '</div>' +
-      (s.msg && !s.over ? '<p class="k1c-msg" role="status">' + esc(s.msg) + '</p>' : '') + (s.over && s.ok ? '<p class="k1c-yay" role="status">⭐ Yes!</p>' : '') + '</div>' +
+      '<h2 class="k1c-say">' + esc(sayOf(d)) + '</h2>' + (story ? storyHtml(d, s) : '<div class="obk obk-' + esc(d.type) + (G.shake ? ' obk-shake' : '') + '">' + OBK.view(d, s, ctx()) + '</div>') +
+      (s.msg && !s.over ? '<p class="k1c-msg" role="status">' + esc(s.msg) + '</p>' : '') + (G.help && !story && !s.over ? '<p class="k1c-how" role="note">💡 ' + esc(OBK.how(d)) + '</p>' : '') + (s.over && s.ok ? '<p class="k1c-yay" role="status">⭐ Yes!</p>' : '') + '</div>' +
       (check && !s.over ? '<div class="k1c-foot">' + btn('main', 'Check', 'data-k1c="check"' + (OBK.ready(d, s) ? '' : ' aria-disabled="true"')) + '</div>' : '') +
       (s.over ? '<div class="k1c-foot">' + btn('main', 'Next', 'data-k1c="next"') + '</div>' : '');
     G.shake = false;
-    try { OBK.mount(el.querySelector('.obk'), d, s, ctx()); } catch (e) {}
+    if (!story) try { OBK.mount(el.querySelector('.obk'), d, s, ctx()); } catch (e) {}
+  }
+  function sayOf(d) { return d.type === 'story' ? String(d.say || STORY_SAY) : OBK.say(d); }
+  function storyHtml(d, s) {   /* the book: its title (once loaded) and one big button; when he has listened to the end, Next */
+    return '<div class="k1c-book"><div class="k1c-bk" aria-hidden="true">📖</div><div class="k1c-bt">' + esc(s.title || '') + '</div>' +
+      (s.over ? '' : btn('main', s.left ? 'Keep listening ▶' : 'Listen ▶', 'data-k1c="story"' + (s.busy ? ' aria-disabled="true"' : ''))) + '</div>';
+  }
+  function openStory() {
+    var d = G.g.acts[G.i], s = G.s, me = G; if (s.busy || s.over || !C.reader || !C.reader.open) return; s.busy = true; s.msg = '';
+    try { speechSynthesis.cancel(); } catch (e) {} G.el.style.visibility = 'hidden';   /* the Reader opens on top; the game waits underneath */
+    var back = function (r, fail) { if (G !== me || G.s !== s) return; G.el.style.visibility = ''; s.busy = false;
+      if (r && r.done) return right();
+      s.left = !fail; s.msg = fail ? 'The story did not open. Tap Listen again.' : 'Listen to the end of the story. Then we play!'; say(s.msg); draw(); };
+    C.reader.open(d.text, { exit: 'x', grade: G.g.grade }).then(function (r) { back(r, false); }, function () { back(null, true); });
   }
   function start(i) {
-    G.i = i; G.s = OBK.init(G.g.acts[i], ctx()); G.view = 'act'; draw();
-    if (G.g.acts[i].type === 'read' && W.TLCORE && TLCORE.text) { var bs = G.s; TLCORE.text(G.g.acts[i].text).then(function (t) { if (G && G.s === bs && t && t.title) { bs.title = t.title; draw(); } }).catch(function () {}); }   /* the book card shows its title */
-    var d = G.g.acts[i]; say(OBK.say(d));
-    if ((d.type === 'listen' || (d.type === 'tiles' && d.hear)) && W.OBK.hear) setTimeout(function () { if (G && G.i === i) try { OBK.hear(d); } catch (e) {} }, 1400);
+    var d = G.g.acts[i];
+    if (d.type === 'story') { G.i = i; G.s = { misses: 0, over: false, ok: false, busy: false, left: false, title: '' }; G.view = 'act'; draw(); say(sayOf(d));
+      var ss = G.s; if (C.text) C.text(d.text).then(function (t) { if (G && G.s === ss) { ss.title = t.title; draw(); } }).catch(function () {}); return; }
+    G.i = i; G.s = OBK.init(d, ctx()); G.help = false; G.view = 'act';
+    if (d.type === 'dictation') G.s.heard = true;   /* the kit would play the sentence after 0.7 s, on top of the teacher; it plays below, after her line */
+    draw();
+    var here = function () { return G && G.i === i && G.view === 'act'; };
+    say(OBK.say(d), function () { if (!here() || !(d.type === 'listen' || d.type === 'dictation' || (d.type === 'tiles' && d.hear)) || !W.OBK.hear) return; setTimeout(function () { if (here()) try { OBK.hear(d); } catch (e) {} }, 250); });
   }
   function right() {
     var s = G.s; s.over = true; s.ok = true; G.firsts[G.i] = s.misses === 0;
@@ -88,11 +113,12 @@
     var s = G.s, d = G.g.acts[G.i]; s.misses++; G.shake = !RM;
     try { if (typeof SND !== 'undefined' && SND.wrong) SND.wrong(); } catch (e) {}
     if (s.misses >= 3) { OBK.solve(d, s); s.over = true; s.ok = false; s.msg = ''; G.firsts[G.i] = false; say('Here it is. Look!'); draw(); return; }
-    s.msg = msg || s.msg || 'Try again!'; say(s.msg); draw();
+    s.msg = msg || s.msg || 'Try again!'; var st = d.type === 'story'; G.help = !st; say(st ? s.msg : s.msg + ' ' + OBK.how(d)); draw();   /* a wrong try opens the How to do it line (playbook section 10) */
   }
   function next() {
     if (G.i < G.g.acts.length - 1) return start(G.i + 1);
-    var n = G.firsts.filter(Boolean).length, r = n / G.g.acts.length;
+    var play = G.g.acts.map(function (x, i) { return x.type === 'story' ? -1 : i; }).filter(function (i) { return i >= 0; });   /* stars come from the pieces he plays; listening to the story is not scored */
+    var n = play.filter(function (i) { return G.firsts[i]; }).length, r = play.length ? n / play.length : 1;
     G.stars = r >= .9 ? 3 : r >= .7 ? 2 : r >= .5 ? 1 : 0; G.view = 'end';
     try { var st = A.st, key = packOf(G.g).st; if (st) { if (!st[key] || typeof st[key] !== 'object') st[key] = {}; st[key][G.g.id] = Math.max(Number(st[key][G.g.id]) || 0, G.stars); if (typeof saveStudent === 'function') saveStudent(st); } } catch (e) {}
     say(G.stars >= 2 ? 'You did it! ' + G.stars + ' stars!' : 'Good trying! Let us play it again.');
@@ -110,26 +136,17 @@
     var a = t.getAttribute('data-k1c');
     if (a === 'x' || a === 'done') return close();
     if (a === 'again') { G.firsts = []; return start(0); }
-    if (a === 'say') { var dd = G.g.acts[G.i]; say(OBK.say(dd)); return; }
+    if (a === 'how') { var dh = G.g.acts[G.i]; if (G.view !== 'act' || dh.type === 'story') return; G.help = true; say(OBK.how(dh)); return draw(); }
+    if (a === 'say') { var dd = G.g.acts[G.i]; say(sayOf(dd)); return; }
+    if (a === 'story') { if (G.view === 'act' && G.g.acts[G.i].type === 'story') openStory(); return; }
     if (a === 'next') return next();
     if (a === 'check') { if (t.getAttribute('aria-disabled') === 'true') { say('Finish it first.'); return; } var j = OBK.judge(G.g.acts[G.i], G.s); if (j && j.soft) { G.s.msg = j.msg; say(j.msg); return draw(); } return j && j.ok ? right() : miss(j && j.msg); }   /* soft: nothing done yet (trace), not a miss */
     if (G.view !== 'act' || G.s.over) return;
     var oa = t.getAttribute('data-obk'); if (!oa) return;
     var d = G.g.acts[G.i];
-    if (d.type === 'read' && oa === 'open') return book(d);   /* a little book (HoS 2026-11-24: K boys get little-book games) */
     if (oa === 'hear') { try { OBK.hear(d); } catch (er) {} return; }
     var r = OBK.tap(d, G.s, oa, t.getAttribute('data-k'), null, ctx());
     if (r === 'ok') return right(); if (r === 'bump' || r === 'miss') return miss(G.s.msg); draw();   /* the kit says 'miss' for a wrong listen or count pick */
-  }
-  /* ---------- a little book inside a K-1 game (HoS 2026-11-24, yes to little-book games on the K path) ----------
-     The read piece opens the book Reader over the game (the game hides while the book is open, because it sits above the Reader).
-     Reading to the end is right; closing the book early leaves the piece open with a line that says to read to the end. */
-  function book(d) {
-    var s = G.s; if (s.busy || s.over || !W.TLCORE || !W.TLCORE.reader) return; s.busy = true; s.msg = ''; draw();
-    var me = G, el = G.el; el.style.visibility = 'hidden'; try { speechSynthesis.cancel(); } catch (e) {}
-    var back = function (done, fail) { if (G !== me) return; el.style.visibility = ''; s.busy = false;
-      if (done) return right(); s.msg = fail ? 'The book did not open. Tap it again.' : 'Read to the very end of the book. Then you get your star!'; say(s.msg); draw(); };
-    W.TLCORE.reader.open(d.text, { exit: 'x', grade: G.g.grade, page: 0 }).then(function (r) { back(!!(r && r.done), false); }, function () { back(false, true); });
   }
   function play(id) {
     var g = K.games[id]; if (!g || !W.OBK) return;
@@ -148,18 +165,19 @@
 
   function css() { if (document.getElementById('k1c-css')) return; var s = document.createElement('style'); s.id = 'k1c-css'; s.textContent = '' +
     '#k1cov{position:fixed;inset:0;z-index:2147483646;display:flex;flex-direction:column;background:linear-gradient(180deg,#BDE7FF 0%,#E8F6FF 45%,#FFF6D8 100%);color:#1F2A44;font:22px/1.35 "Nunito",system-ui,sans-serif}#k1cov *{box-sizing:border-box}' +
+    '#k1cov .k1c-book{display:flex;flex-direction:column;align-items:center;gap:14px;margin:10px auto;padding:22px 26px;max-width:420px;border-radius:26px;background:#FFF;box-shadow:0 10px 30px rgba(31,42,68,.14)}#k1cov .k1c-bk{font-size:96px;line-height:1}#k1cov .k1c-bt{font-size:26px;font-weight:800;text-align:center;min-height:1.3em}' +
     '#k1cov .k1c-top{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:68px}#k1cov .k1c-top .tlk-at-tl{position:static}' +
     '#k1cov .k1c-dots{flex:1;display:flex;justify-content:center;gap:8px}#k1cov .k1c-dots i{width:22px;height:22px;border-radius:50%;background:rgba(31,42,68,.15)}#k1cov .k1c-dots i.now{background:#FFC83D;box-shadow:0 0 0 4px rgba(255,200,61,.35)}#k1cov .k1c-dots i.on{background:#2FBF71}#k1cov .k1c-dots i.ok{background:#8FD9B1}' +
     '#k1cov .k1c-play{flex:1;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 16px 20px}' +
-    '#k1cov .k1c-pic{font-size:80px;line-height:1}#k1cov .k1c-q{font:900 40px/1.1 inherit}#k1cov .k1c-say{margin:0;text-align:center;font:900 28px/1.25 inherit;max-width:760px}' +
-    '#k1cov .obk{width:100%;max-width:900px}#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:76px;min-width:76px;font-size:30px}#k1cov .k1c-top .tlk{width:76px;height:76px;min-width:76px}#k1cov .k1c-msg{margin:0;font-weight:800;color:#8A4B00}#k1cov .k1c-yay{margin:0;font:900 34px/1 inherit;color:#0E7A4F;animation:k1cPop .5s cubic-bezier(.2,1.6,.4,1)}' +
+    '#k1cov .k1c-pic{font-size:80px;line-height:1}#k1cov .k1c-q{font-weight:900;font-size:40px;line-height:1.1}#k1cov .k1c-say{margin:0;text-align:center;font:900 28px/1.25 inherit;max-width:760px}' +
+    '#k1cov .obk{width:100%;max-width:900px}#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:76px;min-width:76px;font-size:30px}#k1cov .k1c-how{margin:10px auto 0;max-width:760px;padding:10px 16px;border-radius:14px;background:#FFF3C4;color:#1F2A44;font-weight:700;font-size:22px;line-height:1.3;text-align:center}#k1cov .k1c-top .tlk{width:76px;height:76px;min-width:76px}#k1cov .k1c-msg{margin:0;font-weight:800;color:#8A4B00}#k1cov .k1c-yay{margin:0;font:900 34px/1 inherit;color:#0E7A4F;animation:k1cPop .5s cubic-bezier(.2,1.6,.4,1)}' +
     '#k1cov .k1c-foot{display:flex;justify-content:center;padding:12px 16px calc(14px + env(safe-area-inset-bottom))}#k1cov .k1c-foot .tlk-main{min-width:220px;min-height:76px;font-size:28px}#k1cov [aria-disabled=true].tlk-main{opacity:.5}' +
     '#k1cov .k1c-end{flex:1;display:grid;place-items:center;align-content:center;gap:10px;text-align:center;padding:20px}#k1cov .k1c-end h2{font:900 44px/1.1 inherit;margin:0}' +
     '#k1cov .k1c-big span{font-size:84px;filter:grayscale(1) opacity(.3);display:inline-block}#k1cov .k1c-big span.on{filter:none;animation:k1cPop .6s cubic-bezier(.2,1.6,.4,1) both}#k1cov .k1c-big span.on:nth-child(2){animation-delay:.15s}#k1cov .k1c-big span.on:nth-child(3){animation-delay:.3s}' +
     '#k1cov .k1c-acts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}#k1cov .k1c-acts .tlk{min-height:72px;font-size:26px;min-width:180px}' +
     '@keyframes k1cPop{from{transform:scale(.2);opacity:0}to{transform:none;opacity:1}}@media (prefers-reduced-motion:reduce){#k1cov .k1c-yay,#k1cov .k1c-big span.on{animation:none}}' +
     '@media (min-width:900px){#k1cov .obk [data-obk]:not([data-obk=hear]){min-height:104px;min-width:104px;font-size:44px}#k1cov .k1c-say{font-size:34px}}' +
-    '@media (max-width:480px){#k1cov .k1c-say{font-size:24px}#k1cov .k1c-q{font-size:32px}#k1cov .k1c-pic{font-size:64px}}';
+    '@media (max-width:480px){#k1cov .k1c-top{gap:8px;padding:10px}#k1cov .k1c-top .tlk{width:56px;height:56px;min-width:56px}#k1cov .k1c-dots{gap:5px}#k1cov .k1c-dots i{width:14px;height:14px}#k1cov .k1c-how{font-size:19px}#k1cov .k1c-say{font-size:24px}#k1cov .k1c-q{font-size:32px}#k1cov .k1c-pic{font-size:64px}}';
     (document.head || document.documentElement).appendChild(s); }
 })();
 </script>

@@ -32,5 +32,22 @@ CORE_SKILLS.C45 = [
   ["READ.LIT.L05.06", "What Did He Learn?", "Find the theme in the lesson the character learns", { std: "RL.4.2", file: "CoreDataC455", min: 8 }],
   ["READ.LIT.L06.07", "Where It Happens Matters", "See how the setting shapes what happens", { after: "READ.FLU.L06.02", std: "RL.5.3", file: "CoreDataC456", min: 8 }],
   ["READ.LIT.L06.08", "Changed by Each Other", "Show how two characters change each other", { std: "RL.5.3", file: "CoreDataC456", min: 8 }],
-  ["READ.LIT.L06.09", "The Turning Point", "Find the turning point on the plot mountain", { std: "RL.5.5", file: "CoreDataC456", min: 8 }]
+  ["READ.LIT.L06.09", "The Turning Point", "Find the turning point on the plot mountain", { std: "RL.5.5", file: "CoreDataC456", min: 8 }],
+  ["READ.COMP.L06.10", "Sum Up an Article", "Sum up an article with its big ideas and key details", { after: "READ.LIT.L06.09", std: "RI.5.2", file: "CoreDataC458", min: 8 }],
+  ["READ.COMP.L06.11", "Link Map", "Show how two ideas or events connect", { std: "RI.5.3", file: "CoreDataC458", min: 8 }],
+  ["READ.COMP.L06.12", "Explain It with the Text", "Explain using the text's own details", { std: "RI.5.3", file: "CoreDataC458", min: 8 }],
+  ["READ.FLU.L06.03", "Pace It", "Slow down for the hard parts, read the easy parts smoothly", { std: "RF.5.4b", file: "CoreDataC458", min: 8 }],
+  ["READ.COMP.L05.14", "Signal Words", "Use signal words to see how a text is built", { after: "READ.LIT.L05.06", std: "RI.4.5", file: "CoreDataC457", min: 8 }],
+  ["READ.COMP.L05.15", "How and Why", "Explain a process step by step, and why", { after: "READ.COMP.L05.14", std: "RI.4.3", file: "CoreDataC457", min: 8 }],
+  ["READ.COMP.L05.16", "Pick the Organizer", "Pick the organizer that fits how a text is built", { after: "READ.COMP.L05.15", std: "RI.4.5", file: "CoreDataC457", min: 8 }],
+  ["READ.FLU.L05.04", "Punctuation Tells Your Voice", "Let punctuation tell your voice what to do", { after: "READ.COMP.L05.16", std: "RF.4.4b", file: "CoreDataC457", min: 8 }],
+  ["READ.COMP.L05.17", "Predict and Check", "Predict with clues, then check what really happens", { after: "READ.FLU.L05.04", std: "RL.4.1", file: "CoreDataC459", min: 8 }],
+  ["READ.COMP.L05.18", "Ask a Good Question", "Ask thick and thin questions while you read", { after: "READ.COMP.L05.17", std: "RL.4.1", file: "CoreDataC459", min: 8 }],
+  ["READ.COMP.L05.19", "Clarify It", "Fix a confusing part: reread, read on, or look at word parts", { after: "READ.COMP.L05.18", std: "RF.4.4c", file: "CoreDataC459", min: 8 }],
+  ["READ.COMP.L05.20", "The Best Summary", "Pick a summary that is not too long and not too short", { after: "READ.COMP.L05.19", std: "RL.4.2", file: "CoreDataC459", min: 8 }],
+  ["READ.COMP.L05.21", "Reading Coach", "Predict, question, clarify and summarize as you read", { after: "READ.COMP.L05.20", std: "RL.4.10", file: "CoreDataC459", min: 10 }],
+  ["READ.COMP.L06.13", "Built Two Ways", "Compare how two texts on one topic are built", { after: "READ.FLU.L06.03", std: "RI.5.5", file: "CoreDataC4510", min: 8 }],
+  ["READ.LIT.L06.10", "One Chapter, Whole Book", "See how one chapter fits the whole book", { std: "RL.5.5", file: "CoreDataC4510", min: 8 }],
+  ["READ.LIT.L06.11", "Stanzas and Scenes", "See how stanzas or scenes fit together", { std: "RL.5.5", file: "CoreDataC4510", min: 8 }],
+  ["READ.FLU.L06.04", "Poetry Aloud", "Read a poem with its rhythm and pauses", { std: "RF.5.4b", file: "CoreDataC4510", min: 8 }]
 ];

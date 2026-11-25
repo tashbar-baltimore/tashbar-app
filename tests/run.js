@@ -112,7 +112,7 @@ async function kidTests(browser) {
     return out; });
   report.counts.lessons = audit.skills; report.counts.checkAnswersNeverTaught = audit.untaught.length; report.untaught = audit.untaught;
   audit.broken.forEach(b => fail('broken lesson: ' + b)); if (!audit.broken.length) ok(audit.skills + ' lessons build with well-formed questions');
-  const all = await pg.evaluate(() => { window.OB_LIVE = 'off'; return Object.keys(BANK_ALL); }); let ids = [];   /* the engine's own flow; One Bite has its own test below */
+  const all = await pg.evaluate(() => { window.OB_LIVE = 'off'; window.TL_CHEM_SING = false; return Object.keys(BANK_ALL); }); let ids = [];   /* the engine's own flow; One Bite has its own test below. The Chemdas song screen (TorahTracks.html) waits for a tap before LK.CHEM.L04.* starts, so it is switched off here like One Bite. */
   if (process.env.ALL) ids = all; else { const n = Math.max(1, Number(process.env.SAMPLE || 40)); const step = Math.max(1, Math.floor(all.length / n)); for (let i = 0; i < all.length && ids.length < n; i += step) ids.push(all[i]);
     (process.env.PLAY || '').split(',').filter(Boolean).forEach(p => all.filter(id => id.indexOf(p) === 0).forEach(id => { if (ids.indexOf(id) < 0) ids.push(id); })); }
   let done = 0;
@@ -258,6 +258,8 @@ async function staffTests(browser) {
   try { const v = require('./lib/v2check.js')(); v.fails.forEach(fail); v.oks.forEach(ok); } catch (e) { fail('2.0 check crashed: ' + String(e).slice(0, 200)); }
   try { const c = await require('./lib/canteen.js')(); c.fails.forEach(fail); if (!c.fails.length) ok('canteen on the Firebase engine: sell, same sale charged once, crew cashier, two kiosks at once, last sale, undo'); report.timings.canteenSaleMs = c.ms.sale; }
   catch (e) { fail('canteen test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
+  try { const sl = await require('./lib/saveload.js')(); sl.fails.forEach(fail); sl.oks.forEach(ok); }   /* a class saving lessons at once: no "busy" (MS_State/MS_Evidence row-merge) */
+  catch (e) { fail('class saving test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const cs = require('./lib/core.js').server(); cs.fails.forEach(fail); cs.oks.forEach(ok); } catch (e) { fail('core skills check crashed: ' + String(e).slice(0, 200)); }   /* CORE GROWTH: the one way to add a skill (src/CoreSkills.js) */
   try { const k = require('./lib/kidmap.js')(); k.fails.forEach(fail); if (!k.fails.length) ok("boy's own map (kmMyMap): rides with sign-in, only his own data, goal now, unit, Kodesh, growth; staff and bad tokens refused"); report.timings.kidMapMs = k.ms.map; report.timings.kidSignInWithMapMs = k.ms.signIn; }
   catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
@@ -265,6 +267,7 @@ async function staffTests(browser) {
   catch (e) { fail('staff card test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const d = require('./lib/dailyplan.js').server(); d.fails.forEach(fail); d.oks.forEach(ok); }
   catch (e) { fail("today's list test crashed: " + String(e && e.stack || e).slice(0, 300)); }
+  try { const fc = require('./lib/flagchecker.js')(); fc.fails.forEach(fail); fc.oks.forEach(ok); } catch (e) { fail('flag checker check crashed: ' + String(e).slice(0, 200)); }   /* HoS 2026-11-24: docs/FLAG-CHECKER.md */
   try { const l = require('./lib/levelpass.js')(); l.fails.forEach(fail); if (!l.fails.length) ok('level checks and the 🎫 Level Pass: 25% before the check, full pay after, known skills skipped and not paid, one check per level, staff placement wins, no check = never cut'); report.timings.levelCheckStartMs = l.ms.start; report.timings.levelCheckSaveMs = l.ms.save; }
   catch (e) { fail('level pass test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   await browser.close();
