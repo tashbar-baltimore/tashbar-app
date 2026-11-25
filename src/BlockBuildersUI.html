@@ -58,7 +58,7 @@
 .bbx-job.done{border-color:#8fd3a8;background:#effaf3}
 .bbx-job.soon{opacity:.55;cursor:default}
 .bbx-sh{display:flex;gap:4px;margin-top:auto}.bbx-sh span{font-size:11px;font-weight:800;border-radius:8px;padding:2px 6px;background:#e6eaf2}.bbx-sh span.d{background:#1f9d55;color:#fff}.bbx-sh span.p{background:#ffd9b0}
-.bbx-soon{color:#5b6475;font-size:14px;background:#f6f7fa;border:1px dashed #cfd5e0;border-radius:12px;padding:10px 12px}
+.bbx-soon{color:#5b6475;font-size:14px;padding:4px 0}.bbx-job small .tlk-pill{font-size:12px;padding:2px 8px;margin-left:4px}.bbx-job.soon .tlk-pill{white-space:normal}.bbx-soon .tlk-pill{white-space:normal}
 /* watch me */
 .bbx-say{display:flex;gap:12px;align-items:center;background:#e6efff;border-radius:16px;padding:12px 14px;font-size:18px;font-weight:700}
 .bbx-av{flex:none;width:54px;text-align:center;font-size:12px;font-weight:900}
@@ -417,6 +417,8 @@ body.bbx-open>:not(#bbx):not(script):not(style):not(#bbx-pad){visibility:hidden!
  function colVars(){ const w=window.innerWidth; const map={1:1,2:w<520?1:2,3:w<520?2:3,4:w<520?2:w<760?3:4,6:w<520?3:w<760?4:6}; return Object.keys(map).map(k=>`--bbc${k}:${map[k]}`).join(';'); }
 
  /* ---------------- screens ---------------- */
+ /* button system step 5: labels a boy only reads (Next, Page on the way) are kit pills, flat, never a button */
+ function L(k,t){ return window.TLK?TLK.pill(k,t):E(t); }
  function homeHTML(){ const bk=B(), nx=nextJob(), m=me();
   let h=`<div class="bbx-wrap"><div class="bbx-cover"><h1>📘 ${E(bk.title)}</h1><p>${E(bk.sub)}</p><div class="who">Hi, builder! Let’s get to work! · This book belongs to: <b>${E(m.name||'me')}</b></div><div class="bl">${rods(3,4)}</div>${nx?`<div><button type="button" class="bbx-next" data-bb="job" data-j="${nx.id}">▶ Next: Job ${nx.n} · ${E(nx.title)}</button></div>`:'<div class="who">🏆 Every page here is done. Amazing building!</div>'}</div>`;
   bk.sections.forEach(s=>{ const js=jobsOf(s.k); const nums=[]; js.forEach(j=>{ if(nums.indexOf(j.n)<0) nums.push(j.n); });
@@ -424,11 +426,11 @@ body.bbx-open>:not(#bbx):not(script):not(style):not(#bbx-pad){visibility:hidden!
    h+=`<div class="bbx-sec"><h2><span>${s.ico}</span>${E(s.name)}</h2><div class="sub">${E(s.sub)} · ${E(s.pages)}</div>`;
    if(s.of) h+=`<div class="bbx-bar"><i style="width:${Math.round(doneN/s.of*100)}%;background:${s.color}"></i></div>`;
    h+='<div class="bbx-jobs">';
-   for(let n=1;n<=s.of;n++){ const two=js.filter(j=>j.n===n); if(!two.length){ h+=`<div class="bbx-job soon"><small>Job ${n}</small><b>📦 Page on the way</b></div>`; continue; }
+   for(let n=1;n<=s.of;n++){ const two=js.filter(j=>j.n===n); if(!two.length){ h+=`<div class="bbx-job soon"><small>Job ${n}</small>${L('lock','Page on the way')}</div>`; continue; }
     const a=two.find(j=>!j.sheet||j.sheet==='A')||two[0]; const isNext=nx&&nx.id===a.id; const d=jobDone(a);
-    h+=`<button type="button" class="bbx-job${isNext?' next':''}${d?' done':''}" data-bb="job" data-j="${a.id}"><small>Job ${n}${isNext?' · ▶ next':''}</small><b>${E(a.title)}</b><div class="bbx-sh">${two.map(j=>{ const p=pageState(j.id); return `<span class="${p&&p.done?'d':p?'p':''}">${j.sheet?j.sheet+' ':''}${p&&p.done?'★'.repeat(stars(p.score,p.total)):p?'…':''}</span>`; }).join('')}</div></button>`; }
+    h+=`<button type="button" class="bbx-job${isNext?' next':''}${d?' done':''}" data-bb="job" data-j="${a.id}"><small>Job ${n}${isNext?' '+L('now','Next'):''}</small><b>${E(a.title)}</b><div class="bbx-sh">${two.map(j=>{ const p=pageState(j.id); return `<span class="${p&&p.done?'d':p?'p':''}">${j.sheet?j.sheet+' ':''}${p&&p.done?'★'.repeat(stars(p.score,p.total)):p?'…':''}</span>`; }).join('')}</div></button>`; }
    h+='</div>';
-   if(!s.of) h+=`<div class="bbx-soon">📦 These pages are on the way. Keep building!</div>`;
+   if(!s.of) h+=`<div class="bbx-soon">${L('lock','These pages are on the way. Keep building!')}</div>`;
    h+='</div>'; });
   return h+'</div>'; }
  function doneHTML(){ if(X.pencil){ const nx=nextJob(); return `<div class="bbx-wrap"><div class="bbx-done"><div class="stars">✏️</div><h2>Page done, builder!</h2><p style="font-size:18px;font-weight:700">You wrote it, checked it and fixed it, just like a real builder. Your rebbe will look at your page.</p><div class="bbx-cta">${nx?`<button type="button" class="bbx-btn go" data-bb="job" data-j="${nx.id}">▶ Next job</button>`:''}<button type="button" class="bbx-btn" data-bb="home">📘 My workbook</button></div></div></div>`; }

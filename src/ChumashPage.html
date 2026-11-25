@@ -110,6 +110,7 @@ body.oh-sky #chm-ov{right:var(--skyw,96px)}
 #chm-ov .chm-hero .nm{font-family:'Times New Roman',serif;font-size:34px;font-weight:700;color:#5a2e06}
 #chm-ov .chm-lv{display:inline-flex;gap:6px;align-items:center;margin-top:6px;font-size:14px}
 #chm-ov .chm-lv b{background:#5a2e06;color:#fff;border-radius:999px;padding:3px 10px}
+#chm-ov .chm-pl2{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}#chm-ov .chm-hero .tlk-pill{white-space:normal}
 #chm-ov .chm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin:10px 0}
 #chm-ov .chm-act{border:2px solid #e3c98f;background:#fff;border-radius:16px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
 #chm-ov .chm-act:hover{border-color:#b98a2c}
@@ -188,10 +189,11 @@ function draw(){ const ov=document.getElementById('chm-ov'); if(!ov) return;
   if(C.view!=='q') ov.scrollTop=C.keepScroll?ov.scrollTop:0; C.keepScroll=false; }); }
 function stars(n){ return '<span class="stars">'+'★'.repeat(n||0)+'☆'.repeat(3-(n||0))+'</span>'; }
 function homeHTML(d){ const L=LV[C.lv], ps=PS(C.name), wk=weekParsha()===C.name;
- let h='<div class="chm-hero"><div class="nm">פָּרָשַׁת '+E(HEBOF(C.name))+'</div><div>Parshas '+E(C.name)+(wk?' · <b>this week\'s Parsha from your rebbe</b>':'')+' · '+d.p.length+' pesukim</div>'
-  +'<div class="chm-lv"><b>Level '+C.lv+' · שָׁלָב '+L.h+'</b> '+E(L.t)+'</div>'
-  +(C.rebbeNew?'<div style="margin-top:6px">⭐ Your rebbe put you on Level '+C.lv+'!</div>':'')
-  +((ps.m||[]).length?'<div style="margin-top:6px">🏅 Mastered at level '+ps.m.join(', ')+'</div>':'')+'</div>';
+ const P=(k,t)=>window.TLK?TLK.pill(k,t):'<b>'+E(t)+'</b>';   /* button system step 5: information is kit pills, flat, never a button */
+ let h='<div class="chm-hero"><div class="nm">פָּרָשַׁת '+E(HEBOF(C.name))+'</div><div class="chm-pl2">'+P('subj','Parshas '+C.name)+(wk?P('now','This week\'s Parsha from your rebbe'):'')+P('prog',d.p.length+' pesukim')+'</div>'
+  +'<div class="chm-lv">'+P('rank','Level '+C.lv+' · שָׁלָב '+L.h)+' '+E(L.t)+'</div>'
+  +(C.rebbeNew?'<div style="margin-top:6px">'+P('now','Your rebbe put you on Level '+C.lv+'!')+'</div>':'')
+  +((ps.m||[]).length?'<div style="margin-top:6px">'+P('rank','Mastered at level '+ps.m.join(', '))+'</div>':'')+'</div>';
  h+='<div class="chm-grid"><button class="chm-act big" data-chm="start" data-k="test"><div class="ic">🏆</div><div class="t">Parsha Bechina · Level '+C.lv+'</div><div class="d">10 questions from everything in your level. Get 8 to master Parshas '+E(C.name)+'.</div></button>';
  L.k.forEach(k=>{ const K=KIND[k]; h+='<button class="chm-act" data-chm="'+(k==='read'?'read':'start')+'" data-k="'+k+'"><div class="ic">'+K[0]+'</div><div class="t">'+K[1]+'</div><div class="d">'+E(K[2])+'</div>'+(k!=='read'?stars(ps.k[k]):'')+'</button>'; });
  h+='</div>';
