@@ -66,8 +66,8 @@ _From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 s
 | B8 | P1 | Picture chips that mean nothing (e.g. blue circles labelled "Chaim"/"ZEIDY" in READ.FLU.L03.19, a gift labelled "gives" and a hammer labelled "Build" in WRIT.ESSAY.L07.09): audit the chip pictures on Core Growth lessons and fix or remove | OPEN | | | |
 | B9 | P1 | Small text bugs: WRIT.ESSAY.L07.09 ready check reads "In Quote evidence and explain it, after the evidence you…" (src/CoreDataW4823.html:183); SS.HIST.L09.01 title and the line under it repeat; console note "TL_QA_1CC_FIX20: box changed or missing, skipped: LANG.USE.L05.01" on every lesson | OPEN | | | |
 | B10 | P1 | K–1 polish: K book pages (READ.LV.L01.08 "The Wet Dog") have no pictures; one wrong tap of 3 gives 1 star and "Good trying!" (harsh for K); Gr 1 plan boxes say "Tap a card, then here" (a Gr 1 boy can't read it; say it out loud or show a picture cue) | OPEN | | | |
-| C1a | P2 | C23 Comprehension Grade 2 (nothing built): map, ledger, units with texts and unit checks | OPEN | | | |
-| C1b | P2 | C23 Comprehension Grade 3 | OPEN | | | |
+| C1a | P2 | C23 Comprehension Grade 2 (nothing built): map, ledger, units with texts and unit checks | TAKEN | https://claude.ai/code/session_01884AzCfwh1MCak9Ybr1uZi | 2026-11-25 19:45 | Claimed as Core Growth job C23 (CORE-GROWTH-LANES.md row 6): map and ledger first, then Grade 2 Unit 1 |
+| C1b | P2 | C23 Comprehension Grade 3 | TAKEN | https://claude.ai/code/session_01884AzCfwh1MCak9Ybr1uZi | 2026-11-25 19:45 | Claimed with C1a as job C23: Grade 3 Unit 1 after the map |
 | C2a | P2 | C68 Comprehension Grade 6 Units 6.1–6.4 (none live) | OPEN | | | |
 | C2b | P2 | C68 Grade 7 Units 7.1–7.4 | OPEN | | | |
 | C2c | P2 | C68 Grade 8 Units 8.1–8.4 | OPEN | | | |
