@@ -307,6 +307,25 @@
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('W13', { bite: UP });
   /* Units: W13.U<grade><unit>: W13.U22 = Grade 2, Unit 2 (docs/core-growth/HOW-TO-ADD-A-UNIT.md) */
+  /* The unit's real task (map: Gr 2 piece 3): a true story, planned with W-W-W, in the Writing Workshop. It opens from "Unit cleared!";
+     his teacher scores it in the writing inbox (docs/core-growth/HOW-TO-ADD-A-WRITING-TASK.md). */
+  var PIECE = { id: 'W13.G2.P3', title: 'The Day I Helped', grade: 2, kind: 'story',
+    prompt: 'Write a true story about a day you helped someone: Zeidy, Bubby, your Rebbe, a neighbor, or your family before Shabbos. Plan it with W-W-W, What = 2, How = 2. Tell what you did, thought and felt, use time words, and end with how it was solved and how you felt.',
+    strategy: { name: 'W-W-W, What = 2, How = 2', steps: [['W', 'Who is in it?'], ['W', 'When is it?'], ['W', 'Where is it?'], ['What', 'What does he want to do?'], ['What', 'What happens then?'], ['How', 'How does it end?'], ['How', 'How does he feel?']] },
+    plan: [ { k: 'who', label: 'Who?', hint: 'Bubby and I' }, { k: 'when', label: 'When?', hint: 'Friday morning' }, { k: 'where', label: 'Where?', hint: 'in her kitchen' },
+            { k: 'want', label: 'What does he want to do?', hint: 'help Bubby bake' }, { k: 'happen', label: 'What happens then?', hint: 'the flour spills' },
+            { k: 'end', label: 'How does it end?', hint: 'we clean up and bake' }, { k: 'feel', label: 'How does he feel?', hint: 'proud' } ],
+    starters: ['One', 'First,', 'Next,', 'I thought,', 'After that,', 'Finally,', 'I felt'],
+    min: 40,
+    checks: [
+      { t: 'I wrote at least 6 sentences.', sentences: 6 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I used time words.', any: ['first', 'next', 'then', 'after that', 'later', 'finally'] },
+      { t: 'I told how I felt.', any: ['felt', 'happy', 'proud', 'glad', 'relieved', 'worried'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['A beginning that tells who and where', 'A middle with a problem and what I did and thought', 'Time words that move the story along', 'An ending: how it was solved and how I felt'],
+    pics: ['🤝', '🍞', '🕯️', '🧹'] };
   if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U22', title: 'Real Stories', c: 'WRIT', grade: 2,
     skills: ['WRIT.ESSAY.L03.02', 'WRIT.PARA.L03.03', 'WRIT.PARA.L03.07', 'WRIT.PARA.L03.08', 'WRIT.PARA.L03.09'],
     review: ['WRIT.ESSAY.L03.01', 'WRIT.PARA.L03.04', 'WRIT.PARA.L03.06'], n: 10,
@@ -317,6 +336,6 @@
       { skill: 'WRIT.PARA.L03.08', type: 'cloze', t: 'First, we set the table. ___, we lit the candles.', o: ['Next', 'Finally', 'Once upon a time'], a: 'Next', say: 'Pick the time word for the middle.', how: 'It is not the first thing, and not the last.' },
       { skill: 'WRIT.PARA.L03.09', type: 'evidence', q: 'Problem: on Erev Sukkos, the sukkah wall fell in the wind. Which is the best ending?', p: ['The wind blew.', 'Abba and I fixed it, and we felt proud.', 'The end.'], a: 1, look: 'the solution and a feeling', say: 'Tap the best ending.', how: 'Which one solves it and tells a feeling?' },
       { skill: 'WRIT.PARA.L03.09', type: 'cloze', t: 'Chaim found his siddur at last, and he felt ___.', o: ['relieved', 'bored', 'angry'], a: 'relieved', say: 'Pick the feeling that fits.', how: 'How do you feel when a problem is fixed?' }
-    ] });
+    ], task: PIECE });
 })();
 </script>
