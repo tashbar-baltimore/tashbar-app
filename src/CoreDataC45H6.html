@@ -1,11 +1,411 @@
 <script>
-/* CoreDataC45H6.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
-   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
-   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite. */
+/* CoreDataC45H6.html: Core Growth job C45 (helper piece: fluency passages, Grade 5), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md).
+   Keep this file under 150 KB. No double slash in this file (HtmlService rule).
+   "Read It 3 Times" lessons: each one opens a fluency passage from the content store (texts/C45/C45.FL5.*) with the "read"
+   kind: read 1 = listen to the Reader's voice and follow the lit words, read 2 = read along with it, read 3 = read it alone, out loud
+   (no recording and no timers, HoS 2026-11-24). Then hands-on work on one fluency skill (end marks, phrasing, character voices, stress,
+   pace, poems, self-correcting) on the same passage. Show me checks the skill on a different, cold passage (PASS, c45f_ keys).
+   Plan and minutes: docs/core-growth/C45H-fluency.md. Cast: the Glen Avenue Crew (docs/core-growth/C45-map.md, section 5). */
 (function () {
-  var LESSONS = {
+  var READ3 = 'Read it 3 times. 1: tap 🔊 and follow the lit words. 2: read along with the voice. 3: read it alone, out loud. Then tap Next.';
+  var P = {
+c45f_hoses: { title: "The Hoses That Did Not Fit (a play)", text: "CAPTAIN: Right here, on this corner. There's a hydrant. Hook up your hose and start pumping!\nNARRATOR: The Washington firemen pull their hose to the hydrant. They try to screw it on. They turn it. They turn it again.\nWASHINGTON FIREMAN: Captain, it won't fit!\nCAPTAIN: Then tie it on! Wrap it! Do anything!\nNARRATOR: The firemen wrap the joints with rags and canvas. Water sprays out everywhere." },
+    c45f_basement: { title: "The Basement Flood (a play)", text: "NARRATOR: Late Friday afternoon, water starts pouring into the Katz family's basement.\nABBA: The pipe burst! Avrumi, the shutoff valve!\nAVRUMI: Where is it? I can't find it!\nABBA: Behind the washing machine! Turn it to the right!\nNARRATOR: Avrumi squeezes behind the machine and turns the wheel. Slowly, the water stops.\nAVRUMI: Done! Is that all of it?\nABBA: That's all of it. Now, quick, the towels. Shabbos is in one hour." },
+    c45f_extra: { title: "Extra! Extra!", text: "For two days, mister, two whole days, the fire ate up the city. Banks, hotels, newspapers, stores, all gone! Fifteen hundred buildings!\nWas anybody killed? That's the miracle, mister. In the whole terrible fire, almost nobody died.\nNow the mayor says Baltimore will build again, better than before. Wider streets! Stronger buildings! Hoses that fit!" },
+    c45f_snowcry: { title: "Big Snow!", text: "Extra! Extra! Big snow in Baltimore! Two feet in one night! Schools closed! Trains stopped! Milk wagons stuck on Charles Street! How deep is it, mister? Up to a horse's belly, that's how deep! Read it here, one cent! Extra!" },
+    c45f_trainpoem: { title: "The Firemen's Train", text: "Clackety-clack on the iron rail,\nover the river and up the vale,\nforty long miles through the winter gray,\nfaster, faster, and on its way!\nThey reach for the hydrant, they turn and they twist:\nthe hose will not fit, and the water is missed." },
+    c45f_nighttrain: { title: "Night Train", text: "Clickety-clack, the train goes on,\npast sleeping towns till early dawn.\nThe conductor calls, \"Next stop, Wilmington!\"\nA baby yawns. The lights are dim.\nClickety-clack, then slow, then slower,\nthe brakes go hiss, the speed gets lower,\nand there it is, the station sign:\nwe're here at last, and right on time." },
+    c45f_bulb: { title: "The Bulb That Lasted", text: "So Edison and his workers tested material after material: platinum wire, paper, fishing line, cork, even hair. They tested thousands of things. Over and over, the light glowed and then went dark.\nThen, in October 1879, they tried a plain cotton sewing thread, baked until it turned to carbon.\nThe thread glowed. It kept glowing. One hour. Five hours. Ten hours." },
+    c45f_burr: { title: "The Burr on the Dog", text: "In 1941, a Swiss engineer named George de Mestral came home from a walk with his dog. Both of them were covered in prickly burrs. He looked at a burr under a microscope and saw tiny hooks. Could he make a fastener like that? He tried cotton. It wore out. He tried other cloths. They failed. Then he tried nylon, and the hooks held. Today we call his invention Velcro." },
+    c45f_windmill: { title: "Dovid's Windmill", text: "And then came the problem. The wind blew, the blades turned, and the light glowed so weakly that you could barely see it. I was so disappointed that I didn't even want to eat supper. Well, I ate supper. But slowly.\nSo we made two changes. We put the windmill on a taller pole, above the roof of the shed. And I made the blades longer, so they could catch more wind." },
+    c45f_volcano: { title: "Dear Zeidy", text: "Dear Zeidy,\nOur science fair is next week. I built a model volcano from clay, and I was so proud of it. Then I poured in the baking soda and vinegar, and nothing happened. Nothing! Not even a fizz. I asked Mr. Halpern why. He said, \"How fresh is your baking soda?\" It was older than me. I bought a new box, and this time it bubbled right over the top!\nLove, Moishe" },
   };
-  var TEACH = {}, HOWTO = {}, BITE = {};
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+'READ.FLU.L06.26':{name:"Read It 3 Times: Hoses That Did Not Fit",
+      teach:[
+        {p:"c45f_hoses", q:"CAPTAIN: \"Then tie it on! Wrap it! Do anything!\" How should the captain sound?", o:["Urgent and fast, rising", "Calm and slow", "Plain and steady, like a storyteller"], how:"Three short orders, each one more desperate."},
+        {p:"c45f_hoses", q:"NARRATOR: \"They try to screw it on. They turn it. They turn it again.\" How should the narrator read it?", o:["Plain and steady, like a storyteller", "Urgent and fast, rising", "Like a question"], how:"The narrator tells what happens; the short sentences slow it down."},
+        {p:"c45f_hoses", q:"Which part do you NOT say out loud?", o:["the name before each line", "the narrator's words", "the captain's words"], how:"Names only tell you whose turn it is."}
+      ],
+      practice:[
+        {t:"pairs", p:"c45f_hoses", q:"Match each role to its voice.", pairs:[["CAPTAIN", "Urgent and fast, rising"], ["NARRATOR", "Plain and steady, like a storyteller"], ["WASHINGTON FIREMAN", "Puzzled, then worried"]],
+          h:"How does each one feel?", how:"Each role gets its own voice."},
+        {t:"sort", p:"c45f_hoses", q:"Mistake Detective. Readers' Theatre: right, or a mistake?", bins:[{id:"r", label:"Right"}, {id:"m", label:"Mistake"}],
+          items:[{label:"\"Do anything!\" urgent and rising", bin:"r"}, {label:"The narrator shouting like the captain", bin:"m"}, {label:"\"It won't fit!\" puzzled and worried", bin:"r"}, {label:"Reading \"CAPTAIN:\" out loud", bin:"m"}],
+          h:"Who tells, and who is in the action?", how:"Roles feel; the narrator tells; names are not read."},
+        {t:"order", p:"c45f_hoses", q:"Put the scene in order.", tiles:["The train arrives.", "They try the hydrant.", "The hose won't fit.", "They wrap it in canvas."],
+          h:"From arriving to wrapping.", how:"Follow the trouble as it grows."},
+        {t:"spotall", p:"c45f_hoses", q:"Tap every line that should sound urgent.", cells:[{label:"Then tie it on!", ok:true}, {label:"Wrap it!", ok:true}, {label:"Do anything!", ok:true}, {label:"They turn it.", ok:false}],
+          h:"Which lines are desperate orders?", how:"Urgent lines are short, fast and strong."},
+        {t:"sort", p:"c45f_hoses", q:"Narrator, or character?", bins:[{id:"n", label:"Narrator"}, {id:"c", label:"Character"}],
+          items:[{label:"Water sprays out everywhere.", bin:"n"}, {label:"Only a little reaches the fire.", bin:"n"}, {label:"Captain, it won't fit!", bin:"c"}, {label:"We're losing most of the water!", bin:"c"}],
+          h:"Who says it?", how:"Narrator lines tell; character lines feel."},
+        {t:"pairs", p:"c45f_hoses", q:"Match each word to its meaning.", pairs:[["hydrant", "a street pipe for fire water"], ["canvas", "a thick, strong cloth"], ["joints", "where two parts connect"]],
+          h:"Think back to the play.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_basement", q:"Find the first line Avrumi says. How should it sound?", o:["Urgent and fast, rising", "Plain and steady, like a storyteller", "Calm and slow"], how:"What is happening in the basement?"},
+        {p:"c45f_basement", q:"Find the narrator's line about the water stopping. How should it be read?", o:["Plain and steady, like a storyteller", "Urgent and fast, rising", "Like a question"], how:"Who says that line?"},
+        {p:"c45f_basement", q:"Find the line that tells how much time is left. Which words should Abba stress?", o:["one hour", "the towels", "Now, quick"], how:"Which words show why they must hurry?"}
+      ],
+      re:[
+        {p:"c45f_hoses", q:"An order in an emergency is read...", o:["Urgent and fast, rising", "slowly"], how:"Danger speeds the voice."},
+        {p:"c45f_hoses", q:"A narrator line is read...", o:["Plain and steady, like a storyteller", "shouted"], how:"He tells."},
+        {p:"c45f_hoses", q:"\"Shabbos is in one hour.\" Stress...", o:["one hour", "Shabbos is"], how:"Stress the words that show the hurry."}
+      ]},
+
+    'READ.FLU.L06.27':{name:"Read It 3 Times: Extra! Extra!",
+      teach:[
+        {p:"c45f_extra", q:"\"Banks, hotels, newspapers, stores, all gone!\" How do you read a list like this?", o:["Quick, but each one clear", "All mashed together", "Very slow and sleepy"], how:"A newsboy is fast, but every word must be heard."},
+        {p:"c45f_extra", q:"\"Was anybody killed? That's the miracle, mister.\" How do you read \"That's the miracle, mister.\"?", o:["After a little pause, strong and proud", "Rushed, with no pause", "Like a question"], how:"He asks, waits, then gives the big news."},
+        {p:"c45f_extra", q:"\"Wider streets! Stronger buildings! Hoses that fit!\" How should these sound?", o:["Loud and bright, one at a time", "Soft and slow", "Like questions"], how:"He is shouting good news to sell papers."}
+      ],
+      practice:[
+        {t:"sort", p:"c45f_extra", q:"Mistake Detective. Good newsboy, or a mistake?", bins:[{id:"r", label:"Good newsboy"}, {id:"m", label:"Mistake"}],
+          items:[{label:"A little pause before \"That's the miracle\"", bin:"r"}, {label:"Mumbling the list", bin:"m"}, {label:"Each list word clear", bin:"r"}, {label:"\"Extra! Extra!\" soft and shy", bin:"m"}],
+          h:"Would a passerby stop to buy?", how:"Loud, clear, quick, with pauses for big news."},
+        {t:"order", p:"c45f_extra", q:"Put the newsboy's story in order.", tiles:["The fire starts.", "It burns two days.", "Firemen come from other cities.", "Baltimore will build again."],
+          h:"From the start to the hope.", how:"A good news story runs in order."},
+        {t:"pairs", p:"c45f_extra", q:"Match each number to its fact.", pairs:[["Fifteen hundred", "buildings burned"], ["two", "days of fire"], ["two cents", "price of the paper"]],
+          h:"Find each number in the call.", how:"Numbers are said loud and clear."},
+        {t:"spotall", p:"c45f_extra", q:"Tap every shout that sells hope.", cells:[{label:"Wider streets!", ok:true}, {label:"Stronger buildings!", ok:true}, {label:"Hoses that fit!", ok:true}, {label:"all gone!", ok:false}],
+          h:"Which shouts are about the future?", how:"Good-news shouts are bright."},
+        {t:"sort", p:"c45f_extra", q:"Bright shout, or serious news?", bins:[{id:"b", label:"Loud and bright, one at a time"}, {id:"s", label:"Serious"}],
+          items:[{label:"Extra! Extra!", bin:"b"}, {label:"Wider streets!", bin:"b"}, {label:"Fifteen hundred buildings!", bin:"s"}, {label:"the fire ate up the city", bin:"s"}],
+          h:"Is it selling, or sad news?", how:"The newsboy changes his voice for each."},
+        {t:"pairs", p:"c45f_extra", q:"Match each word to its meaning.", pairs:[["soot", "black powder from smoke"], ["miracle", "a wonderful thing"], ["mayor", "the leader of a city"]],
+          h:"Think back to the call.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_snowcry", q:"Find the sentence right after the newsboy's question. How should he read it?", o:["After a little pause, strong and proud", "Soft and slow", "Like a question"], how:"Find the question first."},
+        {p:"c45f_snowcry", q:"Find the list of things the snow stopped. How do you read a list like that?", o:["Quick, but each one clear", "All mashed together", "Very slow and sleepy"], how:"Find the short shouts in a row."},
+        {p:"c45f_snowcry", q:"Find the price. How much is the paper?", o:["one cent", "two cents", "five cents"], how:"Read to the end of the call."}
+      ],
+      re:[
+        {p:"c45f_extra", q:"A newsboy's list is read...", o:["Quick, but each one clear", "mashed together"], how:"Every word heard."},
+        {p:"c45f_extra", q:"After a question, the big answer comes...", o:["After a little pause, strong and proud", "rushed"], how:"Let it land."},
+        {p:"c45f_extra", q:"A paper that costs one cent: say the price...", o:["one cent, loud and clear", "in a whisper"], how:"Sell it!"}
+      ]},
+
+    'READ.FLU.L06.28':{name:"Read It 3 Times: The Firemen's Train",
+      teach:[
+        {p:"c45f_trainpoem", q:"\"Clackety-clack on the iron rail,\" How should the train's rhythm sound?", o:["Even and steady, like wheels, but every word clear", "Banged so hard the words get lost", "Slow and sleepy"], how:"The beat is a train. The words still matter."},
+        {p:"c45f_trainpoem", q:"\"faster, faster, and on its way!\" How should it sound?", o:["Speeding up, building", "Slowing down", "Like a question"], how:"The words tell you: faster."},
+        {p:"c45f_trainpoem", q:"\"the hose will not fit, and the water is missed.\" How should your voice change?", o:["Slow down: the hope turns to trouble", "Speed up and cheer", "Stay exactly the same"], how:"Something goes wrong here."}
+      ],
+      practice:[
+        {t:"pairs", p:"c45f_trainpoem", q:"Match the rhyming words.", pairs:[["rail", "vale"], ["gray", "way"], ["twist", "missed"]],
+          h:"Look at the line ends.", how:"Rhymes keep the train's rhythm."},
+        {t:"sort", p:"c45f_trainpoem", q:"Mistake Detective. Smooth reader, or a mistake?", bins:[{id:"r", label:"Smooth"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Steady clackety-clack, clear words", bin:"r"}, {label:"Banging so hard the words get lost", bin:"m"}, {label:"Slowing at \"the hose will not fit\"", bin:"r"}, {label:"Same speed when the trouble comes", bin:"m"}],
+          h:"Does the rhythm help the words, or swallow them?", how:"The train rhythm carries the words; it never drowns them."},
+        {t:"order", p:"c45f_trainpoem", q:"Put the poem's story in order.", tiles:["The telegraph brings the news.", "The train races forty miles.", "The hose will not fit.", "Baltimore calls them friends."],
+          h:"From Washington to Baltimore.", how:"The poem tells a journey."},
+        {t:"spotall", p:"c45f_trainpoem", q:"Tap every train sound.", cells:[{label:"Clackety-clack", ok:true}, {label:"squeal", ok:true}, {label:"canvas", ok:false}, {label:"captain", ok:false}],
+          h:"Which words make a noise?", how:"Train sounds keep an even beat."},
+        {t:"sort", p:"c45f_trainpoem", q:"Racing part, or trouble part?", bins:[{id:"r", label:"Speeding up, building"}, {id:"t", label:"Slow down: the hope turns to trouble"}],
+          items:[{label:"faster, faster, and on its way!", bin:"r"}, {label:"over the river and up the vale", bin:"r"}, {label:"the hose will not fit", bin:"t"}, {label:"the water is missed", bin:"t"}],
+          h:"Is the train racing, or is something wrong?", how:"The speed follows the story."},
+        {t:"pairs", p:"c45f_trainpoem", q:"Match each word to its meaning.", pairs:[["telegraph", "a machine that sent messages by wire"], ["flatcars", "train cars with flat tops"], ["vale", "a valley"]],
+          h:"Think back to the poem.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_nighttrain", q:"Find the line the conductor calls out. Whose voice do you use for those words?", o:["the conductor's", "the baby's", "the narrator's"], how:"Look inside the quotation marks."},
+        {p:"c45f_nighttrain", q:"Find the line where the train starts to stop. How should your voice change?", o:["Slow down with the train", "Speed up", "Get louder"], how:"Find the words that tell the speed."},
+        {p:"c45f_nighttrain", q:"Find the last line. How should it sound?", o:["Happy and settled, the trip is done", "Rushed and tense", "Like a question"], how:"How does the trip end?"}
+      ],
+      re:[
+        {p:"c45f_trainpoem", q:"When a train poem says \"then slow, then slower\"...", o:["Slow down with the train", "speed up"], how:"Follow the words."},
+        {p:"c45f_trainpoem", q:"An ending like \"we're here at last\" sounds...", o:["Happy and settled, the trip is done", "rushed"], how:"The journey is over."},
+        {p:"c45f_trainpoem", q:"Words in quotation marks get...", o:["the conductor's voice when he speaks", "no voice"], how:"Quotation marks hold someone's words."}
+      ]},
+
+    'READ.FLU.L06.29':{name:"Read It 3 Times: The Bulb That Lasted",
+      teach:[
+        {p:"c45f_bulb", q:"\"platinum wire, paper, fishing line, cork, even hair.\" How do you read this list?", o:["Quick, but each one clear, with \"even hair\" a little surprised", "All mashed together", "Very slow and sleepy"], how:"A list of failures, ending with the strangest one."},
+        {p:"c45f_bulb", q:"\"Then, in October 1879, they tried a plain cotton sewing thread,\" Which word turns the story?", o:["Then", "plain", "sewing"], how:"Stress the turning word: the story changes here."},
+        {p:"c45f_bulb", q:"\"One hour. Five hours. Ten hours.\" How do you read them?", o:["Each one a little stronger, building up", "All the same, flat", "Like questions"], how:"The light keeps going, and the excitement grows."}
+      ],
+      practice:[
+        {t:"order", p:"c45f_bulb", q:"Put the glowing hours in order.", tiles:["One hour.", "Five hours.", "Ten hours.", "More than thirteen hours."],
+          h:"Count up.", how:"Each step builds the excitement."},
+        {t:"sort", p:"c45f_bulb", q:"Mistake Detective. Building reader, or a mistake?", bins:[{id:"r", label:"Building"}, {id:"m", label:"Mistake"}],
+          items:[{label:"Stressing the turning word \"Then\"", bin:"r"}, {label:"\"One hour. Five hours. Ten hours.\" all flat", bin:"m"}, {label:"Short, flat failure sentences", bin:"r"}, {label:"Reading the failures as if they were wins", bin:"m"}],
+          h:"Does the voice follow failure, then success?", how:"Flat for failures, building for success."},
+        {t:"pairs", p:"c45f_bulb", q:"Match each word to its meaning.", pairs:[["filament", "the thread that glows"], ["carbonized", "baked into carbon"], ["laboratory", "a room for experiments"]],
+          h:"Think back to the talk.", how:"Knowing the words lets you read them smoothly."},
+        {t:"spotall", p:"c45f_bulb", q:"Tap every material that failed.", cells:[{label:"platinum wire", ok:true}, {label:"paper", ok:true}, {label:"cork", ok:true}, {label:"cotton thread", ok:false}],
+          h:"Which ones went dark?", how:"The list before the turning point is all failures."},
+        {t:"sort", p:"c45f_bulb", q:"Failure, or success?", bins:[{id:"f", label:"Failure: short and flat"}, {id:"s", label:"Success: building up"}],
+          items:[{label:"the light glowed and then went dark", bin:"f"}, {label:"burned up and broke", bin:"f"}, {label:"It kept glowing.", bin:"s"}, {label:"It lasted more than thirteen hours.", bin:"s"}],
+          h:"Did it work?", how:"Your voice follows the story's turn."},
+        {t:"pairs", p:"c45f_bulb", q:"Match each time to what happened.", pairs:[["October 1879", "the cotton thread glows"], ["more than thirteen hours", "how long it lasted"], ["about a year later", "bamboo glows much longer"]],
+          h:"Find each time in the talk.", how:"Say dates and numbers clearly."}
+      ],
+      check:[
+        {p:"c45f_burr", q:"Find the sentence where the invention finally works. Which word starts it?", o:["Then", "He", "Today"], how:"Find where the hooks hold."},
+        {p:"c45f_burr", q:"Find what he saw under the microscope. What was it?", o:["tiny hooks", "tiny eggs", "tiny wires"], how:"Read the sentence about the microscope."},
+        {p:"c45f_burr", q:"Find the two short failure sentences after \"He tried cotton.\" How do you read them?", o:["Short and flat, with a stop after each", "Excited and loud", "Like questions"], how:"Did cotton work?"}
+      ],
+      re:[
+        {p:"c45f_bulb", q:"The word that turns a story, like \"Then\", is...", o:["stressed", "skipped"], how:"The turn matters."},
+        {p:"c45f_bulb", q:"\"It wore out.\" is a failure. Read it...", o:["Short and flat, with a stop after each", "loud"], how:"Failures are flat."},
+        {p:"c45f_bulb", q:"Under the microscope, the burr had...", o:["tiny hooks", "nothing"], how:"Look closely."}
+      ]},
+
+    'READ.FLU.L06.30':{name:"Read It 3 Times: Dovid's Windmill",
+      teach:[
+        {p:"c45f_windmill", q:"\"I was so disappointed that I didn't even want to eat supper.\" How should it sound?", o:["Flat and disappointed", "Happy and proud", "Like a question"], how:"How does Dovid feel?"},
+        {p:"c45f_windmill", q:"\"Well, I ate supper. But slowly.\" How do you read \"But slowly.\"?", o:["Plain, with a little pause before it", "Shouted", "Like a question"], how:"It is a tiny joke. Let it land."},
+        {p:"c45f_windmill", q:"\"So we made two changes.\" What does this sentence tell the listener?", o:["The fix is coming, so read it with new hope", "The letter is over", "Nothing important"], how:"The problem part ends; the fix part begins."}
+      ],
+      practice:[
+        {t:"order", p:"c45f_windmill", q:"Put Dovid's story in order.", tiles:["He wants a light in the shed.", "He builds a windmill.", "The light is too weak.", "A taller pole and longer blades.", "The light shines!"],
+          h:"Hope, problem, fix, success.", how:"Every good story has a problem in the middle."},
+        {t:"sort", p:"c45f_windmill", q:"Mistake Detective. Letter reader, or a mistake?", bins:[{id:"r", label:"Right"}, {id:"m", label:"Mistake"}],
+          items:[{label:"\"so disappointed\" flat and low", bin:"r"}, {label:"\"so disappointed\" happy and bouncy", bin:"m"}, {label:"A little pause before \"But slowly.\"", bin:"r"}, {label:"\"It shone!\" read flat", bin:"m"}],
+          h:"Does the voice follow Dovid's feelings?", how:"Disappointed, then funny, then proud."},
+        {t:"pairs", p:"c45f_windmill", q:"Match each problem to its fix.", pairs:[["the fence blocks the wind", "a taller pole"], ["short blades miss the wind", "longer blades"], ["no light in the shed", "a windmill and a battery"]],
+          h:"What did Dovid and Abba change?", how:"Read for meaning: each fix answers a problem."},
+        {t:"spotall", p:"c45f_windmill", q:"Tap every sentence that shows a feeling.", cells:[{label:"I was so disappointed", ok:true}, {label:"It shone!", ok:true}, {label:"Get comfortable.", ok:false}, {label:"Then I waited for the wind.", ok:false}],
+          h:"Where does Dovid tell how he feels?", how:"Feeling sentences need a feeling voice."},
+        {t:"sort", p:"c45f_windmill", q:"Problem part, or fix part?", bins:[{id:"p", label:"Flat and disappointed"}, {id:"f", label:"Hopeful and proud"}],
+          items:[{label:"you could barely see it", bin:"p"}, {label:"I didn't even want to eat supper", bin:"p"}, {label:"We put the windmill on a taller pole", bin:"f"}, {label:"It shone!", bin:"f"}],
+          h:"Is it going wrong, or getting fixed?", how:"The voice turns when the fix begins."},
+        {t:"pairs", p:"c45f_windmill", q:"Match each word to its meaning.", pairs:[["disappointed", "sad it did not work"], ["engineer", "a person who plans machines"], ["freely", "with nothing stopping it"]],
+          h:"Think back to the letter.", how:"Knowing the words lets you read them smoothly."}
+      ],
+      check:[
+        {p:"c45f_volcano", q:"Find the one-word sentence where nothing happens. How should it sound?", o:["Flat and disappointed", "Happy and proud", "Like a question"], how:"How does Moishe feel at that moment?"},
+        {p:"c45f_volcano", q:"Find the question Mr. Halpern asks. Whose voice reads it?", o:["Mr. Halpern's", "Moishe's", "Zeidy's"], how:"Look inside the quotation marks."},
+        {p:"c45f_volcano", q:"Find the short, funny sentence about the old baking soda. How do you read it?", o:["Plain, with a little pause before it", "Shouted", "Like a question"], how:"Is it big news, or Moishe smiling at himself?"}
+      ],
+      re:[
+        {p:"c45f_windmill", q:"\"Nothing!\" after a failed experiment sounds...", o:["Flat and disappointed", "happy"], how:"It did not work."},
+        {p:"c45f_windmill", q:"Words in quotation marks in a letter are read in...", o:["the voice of the one who said them, like Mr. Halpern's", "no voice"], how:"Someone is talking."},
+        {p:"c45f_windmill", q:"A tiny joke is read...", o:["Plain, with a little pause before it", "shouted"], how:"Let it land."}
+      ]},
+  };
+
+  var TEACH = {
+'READ.FLU.L06.26':{
+      hook:"A city is burning, help has arrived, and the hoses will not fit. Your voice has to carry the panic, and the narrator has to keep the story clear.",
+      big:"Read it 3 times. Let the urgency rise with each order, give each role its own voice, and keep the narrator plain and steady.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words. Watch the name tags.", "Read 2: read along. Find where the trouble grows.", "Read 3: read it alone, as every role.", "Captain: urgent and fast, rising. Narrator: plain and steady, like a storyteller. Stress the words that show the hurry."],
+      ex:[{q:"CAPTAIN: Then tie it on! Wrap it! Do anything!", steps:["Three orders, each shorter and more desperate.", "Urgent and fast, rising: Then tie it on! Wrap it! DO ANYTHING!"], a:"Rising urgency."},
+          {q:"NARRATOR: They try to screw it on. They turn it. They turn it again.", steps:["The narrator tells, plain and steady.", "The short sentences slow the moment down."], a:"Plain, with small stops."}],
+      oops:{q:"NARRATOR: Water sprays out everywhere.", wrong:"WATER SPRAYS EVERYWHERE!!! (narrator panicking)", right:"Water sprays out everywhere. (plain and steady)", why:"If the narrator panics too, nobody can follow the story."},
+      idea:["The narrator is the calm voice on the radio while the firemen shout."],
+      try:{q:"NARRATOR: Only a little reaches the fire. Read it...", o:["Plain and steady, like a storyteller", "Urgent and fast, rising"], a:"Plain and steady, like a storyteller", steps:["Who says it?"]}
+    },
+    'READ.FLU.L06.27':{
+      hook:"Before radio, newsboys shouted the news on every corner. If you could not hear him, you did not buy the paper.",
+      big:"Read it 3 times. Be loud, clear and quick, read lists so each word is heard, and pause before the big news.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the lists and the questions.", "Read 3: read it alone, like a newsboy on the corner.", "Lists: quick, but each one clear. After a question: after a little pause, strong and proud. Good news: loud and bright, one at a time."],
+      ex:[{q:"Banks, hotels, newspapers, stores, all gone!", steps:["Four things in a row.", "Quick, but each one clear.", "Then \"all gone!\" strong."], a:"A clear, quick list."},
+          {q:"Was anybody killed? That's the miracle, mister.", steps:["He asks.", "A little pause.", "Then the big news, strong and proud."], a:"Pause, then the news."}],
+      oops:{q:"Was anybody killed? That's the miracle, mister.", wrong:"wasanybodykilledthatsthemiraclemister", right:"Was anybody killed? (pause) That's the miracle, mister.", why:"Without the pause, the miracle gets lost."},
+      idea:["A newsboy's pause is like a drumroll before the big news."],
+      try:{q:"\"Wider streets! Stronger buildings!\" Read them...", o:["Loud and bright, one at a time", "Soft and slow"], a:"Loud and bright, one at a time", steps:["He is selling hope."]}
+    },
+    'READ.FLU.L06.28':{
+      hook:"This poem rides a train: you can hear the wheels. But a train rhythm can swallow the words if you let it.",
+      big:"Read it 3 times. Keep the clackety beat even, keep every word clear, speed up with the train, and slow down when the trouble comes.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the train sounds and the turn.", "Read 3: read it alone, riding the train.", "Even and steady, like wheels, but every word clear; slow down: the hope turns to trouble; at the end of a trip, happy and settled, the trip is done."],
+      ex:[{q:"Clackety-clack on the iron rail, over the river and up the vale,", steps:["An even beat, like wheels.", "But rail, river, vale are all clear."], a:"Steady and clear."},
+          {q:"They reach for the hydrant, they turn and they twist: the hose will not fit, and the water is missed.", steps:["The hope turns to trouble.", "Slow down. Let the bad news land."], a:"Slow at the turn."}],
+      oops:{q:"Clackety-clack on the iron rail,", wrong:"CLACK-e-ty-CLACK on the I-ron RAIL (banging so the words get lost)", right:"Clackety-clack on the iron rail, (steady, every word clear)", why:"A train rhythm should carry the words, not swallow them."},
+      idea:["The beat is the train; the words are the passengers. Don't throw the passengers off."],
+      try:{q:"\"then slow, then slower\" in a train poem...", o:["Slow down with the train", "Speed up"], a:"Slow down with the train", steps:["Follow the words."]}
+    },
+    'READ.FLU.L06.29':{
+      hook:"Thousands of tries went dark. Then one glowed, and kept glowing. Read it so the listener feels that moment.",
+      big:"Read it 3 times. Read the failures short and flat, stress the word that turns the story, and build as success grows.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the turning word.", "Read 3: read it alone, like a boy giving his report.", "Failures: short and flat, with a stop after each. The turn: stress \"Then\". Success: each one a little stronger, building up."],
+      ex:[{q:"Over and over, the light glowed and then went dark.", steps:["Another failure.", "Flat and a little tired."], a:"Flat."},
+          {q:"The thread glowed. It kept glowing. One hour. Five hours. Ten hours.", steps:["Success!", "Each one a little stronger, building up."], a:"Building."}],
+      oops:{q:"One hour. Five hours. Ten hours.", wrong:"onehourfivehourstenhours (flat and rushed)", right:"One hour. Five hours. TEN hours.", why:"If the hours don't build, the listener misses the excitement."},
+      idea:["A turning word is a hinge: the whole story swings on it."],
+      try:{q:"\"It wore out.\" after a try. Read it...", o:["Short and flat, with a stop after each", "Excited and loud"], a:"Short and flat, with a stop after each", steps:["Did it work?"]}
+    },
+    'READ.FLU.L06.30':{
+      hook:"A letter about a project is a story: a hope, a problem, a fix and a win. Your voice should travel the whole road.",
+      big:"Read it 3 times. Let your voice follow Dovid's feelings: hopeful, flat and disappointed, funny, then proud.",
+      intro:["Read 1: listen to the Reader's voice and follow the lit words.", "Read 2: read along. Find the problem and the fix.", "Read 3: read it alone, like Dovid telling his cousin.", "Flat and disappointed for the problem; plain, with a little pause before it, for a tiny joke; proud and excited for the win; a quoted question in the voice of the one who asked."],
+      ex:[{q:"I was so disappointed that I didn't even want to eat supper. Well, I ate supper. But slowly.", steps:["Flat and disappointed.", "Then a tiny joke.", "Plain, with a little pause before it: But slowly."], a:"Feeling, then a joke."},
+          {q:"It shone!", steps:["The fix worked.", "Proud and excited."], a:"Proud."}],
+      oops:{q:"I was so disappointed that I didn't even want to eat supper.", wrong:"(happy and bouncy)", right:"(flat and low)", why:"A happy voice on sad words confuses the listener."},
+      idea:["A letter's feelings are like weather: cloudy, then sunny. Let the listener feel the sun come out."],
+      try:{q:"\"Nothing!\" after a failed experiment...", o:["Flat and disappointed", "Happy and proud"], a:"Flat and disappointed", steps:["Did it work?"]}
+    },
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+'READ.FLU.L06.26':{ band:"E45", pic:"🚒", today:"Read a fire play with rising urgency",
+      why:"In an emergency scene, the voices tell the audience how bad things are. The narrator keeps them following.",
+      ready:[{q:"In a play, the names are...", o:["not read aloud", "read loudly"], a:"not read aloud"},
+             {q:"Three short orders in a row usually...", o:["build up", "slow down"], a:"build up"}],
+      bridge:"READ.COMP.L06.15", bridgeName:"Why Accounts Differ",
+      watch:{ q:"Baltimore, February 7, 1904", m:{type:"scene", e:"🚒", t:"WASHINGTON FIREMAN: Captain, it won't fit! CAPTAIN: Then tie it on! Wrap it! Do anything!"}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words. I watch the name tags."},
+        {t:"Read 2: I read along. I find where the trouble grows."},
+        {t:"Read 3: I read alone. The captain: urgent and fast, rising. The fireman: puzzled, then worried."},
+        {t:"The narrator: plain and steady, like a storyteller, even when the water sprays everywhere."}],
+        a:"Rising urgency for the roles, a calm narrator." },
+      oops:{ q:"NARRATOR: Water sprays out everywhere.", wrong:"WATER SPRAYS EVERYWHERE!!!", right:"Water sprays out everywhere. (plain)", why:"If the narrator panics, nobody can follow." },
+      ways:["repeated reading with a model", "Readers' Theatre", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"Your voices made the fire feel real! Read the play in threes: captain, fireman, narrator.",
+      board:{ key:"Show me answers (for the rebbe): Urgent and fast, rising · Plain and steady, like a storyteller · one hour", one:"Read it 3 times. Urgency rises with each order. Narrator plain and steady. Names not read.", activity:"Readers' Theatre in threes; then talk: how did the hose problem change the country?", mistakes:["Narrator panicking", "Flat orders", "Names read aloud"] },
+      do:[
+        {type:"read", text:"C45.FL5.16", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"match", pairs:[["CAPTAIN", "Urgent and fast, rising"], ["NARRATOR", "Plain and steady, like a storyteller"], ["WASHINGTON FIREMAN", "Puzzled, then worried"]],
+          say:"Match each role to the voice it needs.", how:"How does each one feel in the scene?",
+          why:{q:"Why is the narrator plain?", o:["He tells the story so we can follow it", "He is not worried at all", "He is asleep"], a:"He tells the story so we can follow it"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Right", "Mistake"], cards:[["\"Do anything!\" urgent and rising", 0], ["The narrator shouting like the captain", 1], ["\"It won't fit!\" puzzled and worried", 0], ["Reading \"CAPTAIN:\" out loud", 1]],
+          say:"Mistake Detective: Readers' Theatre right, or a mistake?", how:"Roles feel; the narrator tells; names are not read."},
+        {type:"listen", q:"\"Then tie it on! Wrap it! Do anything!\"", hear:"Then tie it on! Wrap it! Do anything!", o:["Urgent and fast, rising", "Calm and slow", "Plain and steady, like a storyteller"], a:"Urgent and fast, rising",
+          say:"Listen, then decide: how should the captain sound?", how:"Three orders, each one more desperate.",
+          why:{q:"Why rising?", o:["Each order is more desperate", "He is getting sleepy", "It is a question"], a:"Each order is more desperate"}},
+        {type:"proof", text:"C45.FL5.16", q:"Which line shows the captain is sad about the wasted help?", proof:"we couldn't use it", look:"the captain's line near the end",
+          say:"Open the play. Find the line that proves it.", how:"Look near the end, after the narrator counts the buildings."},
+        {type:"tiles", w:["By the time it stops,", "at the Jones Falls river,", "more than fifteen hundred buildings", "are gone."], extra:["river more than"],
+          say:"Build the narrator's line in clear scoops.", how:"Each scoop is one idea. Watch for a broken scoop."},
+        {type:"order", steps:["The train arrives.", "The hose won't fit.", "They wrap it in canvas.", "The fire stops at the Jones Falls."],
+          say:"Put the scene in order.", how:"Follow the trouble from the train to the river."}] },
+
+    'READ.FLU.L06.27':{ band:"E45", pic:"📰", today:"Read a newsboy's call: loud, clear and quick",
+      why:"A newsboy has seconds to make people stop. Clear lists and well-timed pauses do the selling.",
+      ready:[{q:"A list of things is read...", o:["each one clear", "all mashed together"], a:"each one clear"},
+             {q:"Before big news, a speaker often...", o:["pauses", "rushes"], a:"pauses"}],
+      bridge:"READ.FLU.L06.26", bridgeName:"Read It 3 Times: Hoses That Did Not Fit",
+      watch:{ q:"On the corner, February 1904", m:{type:"scene", e:"📰", t:"Was anybody killed? That's the miracle, mister. In the whole terrible fire, almost nobody died."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the lists and the questions."},
+        {t:"Read 3: I read alone, like a newsboy. Banks, hotels, newspapers, stores: quick, but each one clear."},
+        {t:"\"Was anybody killed?\" Then, after a little pause, strong and proud: \"That's the miracle, mister.\""}],
+        a:"Loud, clear, quick, and a pause before the big news." },
+      oops:{ q:"Was anybody killed? That's the miracle, mister.", wrong:"wasanybodykilledthatsthemiracle", right:"Was anybody killed? (pause) That's the miracle, mister.", why:"Without the pause, the miracle gets lost." },
+      ways:["repeated reading with a model", "speech aloud", "find the proof", "Mistake Detective", "tap the reason", "word grid", "chavrusa"], done:"Papers sold! Be the newsboy for your chavrusa, and see if he would buy one.",
+      board:{ key:"Show me answers (for the rebbe): After a little pause, strong and proud · Quick, but each one clear · one cent", one:"Read it 3 times. Loud and clear. Lists quick but clear. Pause before the big news.", activity:"Street corner: each boy writes three headline shouts about today's class and calls them out.", mistakes:["Mumbled lists", "No pause before the big news", "A shy, soft call"] },
+      do:[
+        {type:"read", text:"C45.FL5.17", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"sort", mis:true, bins:["Good newsboy", "Mistake"], cards:[["A little pause before \"That's the miracle\"", 0], ["Mumbling the list", 1], ["Each list word clear", 0], ["\"Extra! Extra!\" soft and shy", 1]],
+          say:"Mistake Detective: good newsboy, or a mistake?", how:"Would a passerby stop and buy?",
+          why:{q:"Why must a newsboy be clear?", o:["People only buy what they can hear", "He is angry", "It is Shabbos"], a:"People only buy what they can hear"}}],
+      your:[
+        {type:"evidence", q:"Which sentence needs a little pause before it?", p:["Read all about it!", "Was anybody killed?", "That's the miracle, mister.", "Two cents, mister?"], a:2, look:"the big answer after a question",
+          say:"Read each one. Which is the big answer?", how:"Find the question, then the answer to it.",
+          why:{q:"How should it sound?", o:["After a little pause, strong and proud", "Rushed, with no pause", "Like a question"], a:"After a little pause, strong and proud"}},
+        {type:"listen", q:"\"Banks, hotels, newspapers, stores, all gone!\"", hear:"Banks, hotels, newspapers, stores, all gone!", o:["Quick, but each one clear", "All mashed together", "Very slow and sleepy"], a:"Quick, but each one clear",
+          say:"Listen, then decide: how should the list sound?", how:"Fast, but every word heard."},
+        {type:"findall", grid:["Wider streets!", "mister", "Stronger buildings!", "glowing", "Hoses that fit!", "smoke"], find:["Wider streets!", "Stronger buildings!", "Hoses that fit!"], findSay:"the hopeful shouts",
+          say:"Tap every shout about a better future.", how:"Which shouts are about building again?"},
+        {type:"order", steps:["The Hurst building blows up.", "The fire burns for two days.", "Firemen come from other cities.", "The fire stops at the Jones Falls."],
+          say:"Put the newsboy's story in order.", how:"Follow the fire from start to end."},
+        {type:"proof", text:"C45.FL5.17", q:"Which sentence tells how the fire was finally stopped?", proof:"the firemen made a stand at the Jones Falls", look:"the answer to \"And how did it stop?\"",
+          say:"Open the call. Find the sentence that proves it.", how:"Find the question about how it stopped, then read the next sentence."}] },
+
+    'READ.FLU.L06.28':{ band:"E45", pic:"🚂", today:"Read a train poem without losing the words",
+      why:"A strong rhythm makes a poem exciting, but the story lives in the words. Keep both.",
+      ready:[{q:"\"faster, faster\" tells your voice to...", o:["speed up", "slow down"], a:"speed up"},
+             {q:"Sing-song banging makes the words...", o:["get lost", "clearer"], a:"get lost"}],
+      bridge:"READ.FLU.L06.27", bridgeName:"Read It 3 Times: Extra! Extra!",
+      watch:{ q:"Forty miles to Baltimore", m:{type:"scene", e:"🚂", t:"Clackety-clack on the iron rail, over the river and up the vale, forty long miles through the winter gray, faster, faster, and on its way!"}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the train sounds and the turn."},
+        {t:"Read 3: I read alone. Even and steady, like wheels, but every word clear. Faster, faster: speeding up, building."},
+        {t:"\"the hose will not fit\": slow down, the hope turns to trouble. At a trip's end: happy and settled, the trip is done."}],
+        a:"A steady train beat that carries every word." },
+      oops:{ q:"Clackety-clack on the iron rail,", wrong:"CLACK-e-ty-CLACK on the I-ron RAIL", right:"Clackety-clack on the iron rail, (steady, clear)", why:"Banging so hard the words get lost is the sing-song mistake." },
+      ways:["repeated reading with a model", "poetry aloud", "story map", "Mistake Detective", "tap the reason", "chavrusa"], done:"All aboard and every word clear! Read the poem to your chavrusa while he taps a steady train beat.",
+      board:{ key:"Show me answers (for the rebbe): the conductor's · Slow down with the train · Happy and settled, the trip is done", one:"Read it 3 times. Steady train beat, clear words. Speed up with the train; slow at the trouble.", activity:"Train beat: half the class taps clackety-clack softly; the other half reads over it, clearly.", mistakes:["Banging the beat", "One speed for the whole poem", "Missing the turn at the hydrant"] },
+      do:[
+        {type:"read", text:"C45.FL5.18", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"listen", q:"\"Clackety-clack on the iron rail,\"", hear:"Clackety-clack on the iron rail,", o:["Even and steady, like wheels, but every word clear", "Banged so hard the words get lost", "Slow and sleepy"], a:"Even and steady, like wheels, but every word clear",
+          say:"Listen, then decide: how should the train line sound?", how:"The beat is a train; the words still matter.",
+          why:{q:"Why keep the words clear?", o:["The story is in the words", "The train is quiet", "It is a question"], a:"The story is in the words"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Smooth", "Mistake"], cards:[["Steady beat, clear words", 0], ["Banging so the words get lost", 1], ["Slowing at \"the hose will not fit\"", 0], ["Same speed when trouble comes", 1]],
+          say:"Mistake Detective: smooth reader, or a mistake?", how:"Does the rhythm carry the words, or swallow them?"},
+        {type:"evidence", q:"Which line turns the poem from hope to trouble?", p:["forty long miles through the winter gray,", "Into the station of brick and steel.", "the hose will not fit, and the water is missed.", "Baltimore called them \"brother\" and \"friend.\""], a:2, look:"where things go wrong",
+          say:"Read each line. Where does the trouble start?", how:"Find the line where the firemen's plan fails.",
+          why:{q:"How should that line sound?", o:["Slow down: the hope turns to trouble", "Speed up and cheer", "Stay exactly the same"], a:"Slow down: the hope turns to trouble"}},
+        {type:"match", pairs:[["town", "down"], ["fed", "ahead"], ["rail", "vale"], ["high", "sky"]],
+          say:"Match the rhyming words.", how:"Say each word. Which ones sound alike at the end?"},
+        {type:"storymap", slots:["Where they start", "How they travel", "What goes wrong", "How it ends"], cards:["Washington", "by train, on flatcars", "the hose will not fit", "Baltimore calls them friends"], extra:["by ship"],
+          say:"Map the firemen's journey.", how:"Follow the poem from start to end."},
+        {type:"order", steps:["The telegraph brings the news.", "The train races forty miles.", "The hose will not fit.", "They fight all through the night."],
+          say:"Put the poem's story in order.", how:"From Washington to Baltimore."}] },
+
+    'READ.FLU.L06.29':{ band:"E45", pic:"💡", today:"Read an invention talk, building to success",
+      why:"Stories of invention are full of failures. Reading them well makes the success shine.",
+      ready:[{q:"A word like \"Then\" that turns a story is...", o:["stressed", "skipped"], a:"stressed"},
+             {q:"How do you say 1879?", o:["eighteen seventy-nine", "one eight seven nine"], a:"eighteen seventy-nine"}],
+      bridge:"READ.LIT.L06.14", bridgeName:"Pictures and Sound",
+      watch:{ q:"Menlo Park, October 1879", m:{type:"scene", e:"💡", t:"The thread glowed. It kept glowing. One hour. Five hours. Ten hours."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the failures and the turning word."},
+        {t:"Read 3: I read alone. Failures: short and flat, with a stop after each. Then I stress the turn: Then."},
+        {t:"One hour. Five hours. Ten hours: each one a little stronger, building up."}],
+        a:"Flat failures, a stressed turn, success that builds." },
+      oops:{ q:"One hour. Five hours. Ten hours.", wrong:"onehourfivehourstenhours", right:"One hour. Five hours. TEN hours.", why:"If the hours don't build, the excitement is lost." },
+      ways:["repeated reading with a model", "speech aloud", "word parts", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"The light stayed on, and your voice made it glow! Give your chavrusa the report, and stress the turning word.",
+      board:{ key:"Show me answers (for the rebbe): Then · tiny hooks · Short and flat, with a stop after each", one:"Read it 3 times. Failures flat. Stress the turning word. Success builds.", activity:"Failure and success cards: pairs sort sentences from the talk, then read the failures flat and the successes building.", mistakes:["Flat counting of the hours", "Failures read like wins", "No stress on the turn"] },
+      do:[
+        {type:"read", text:"C45.FL5.19", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"order", steps:["One hour.", "Five hours.", "Ten hours.", "More than thirteen hours."],
+          say:"Put the glowing hours in order.", how:"Count up as the thread keeps glowing.",
+          why:{q:"How should these be read?", o:["Each one a little stronger, building up", "All the same, flat", "Like questions"], a:"Each one a little stronger, building up"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Building", "Mistake"], cards:[["Stressing the turning word \"Then\"", 0], ["The hours all flat", 1], ["Short, flat failure sentences", 0], ["Failures read like wins", 1]],
+          say:"Mistake Detective: building reader, or a mistake?", how:"Flat for failures, building for success."},
+        {type:"evidence", q:"Which sentence turns the story from failure to success?", p:["They tested thousands of things.", "Over and over, the light glowed and then went dark.", "Then, in October 1879, they tried a plain cotton sewing thread, baked until it turned to carbon.", "Thank you."], a:2, look:"the turning word",
+          say:"Read each one. Where does the story turn?", how:"Look for the word that changes the story.",
+          why:{q:"Which word do you stress there?", o:["Then", "plain", "sewing"], a:"Then"}},
+        {type:"listen", q:"\"So the testing went on.\"", hear:"So the testing went on.", o:["Determined: not giving up", "Excited and loud", "Like a question"], a:"Determined: not giving up",
+          say:"Listen, then decide: how should this line sound?", how:"Thirteen hours was not enough. What do they do?"},
+        {type:"proof", text:"C45.FL5.19", q:"Which sentence shows the famous quote may not be exact?", proof:"Nobody knows for sure", look:"right after the quote about failing",
+          say:"Open the talk. Find the sentence that proves it.", how:"Look right after \"People say that Edison once said\"."},
+        {type:"parts", parts:["carbon", "ized"], mean:"baked until it turns into carbon",
+          say:"Build the science word from the talk.", how:"Find the main word first, then the ending."}] },
+
+    'READ.FLU.L06.30':{ band:"E45", pic:"🌬️", today:"Read a project letter with all its feelings",
+      why:"A letter about a project is a story with a problem. Your voice should carry the listener through it.",
+      ready:[{q:"\"I was so disappointed\" sounds...", o:["low and flat", "bright and bouncy"], a:"low and flat"},
+             {q:"Before a tiny joke, you...", o:["pause a little", "shout"], a:"pause a little"}],
+      bridge:"READ.FLU.L06.29", bridgeName:"Read It 3 Times: The Bulb That Lasted",
+      watch:{ q:"Dovid's letter to Pinny", m:{type:"scene", e:"🌬️", t:"I was so disappointed that I didn't even want to eat supper. Well, I ate supper. But slowly."}, steps:[
+        {t:"Read 1: I listen to the Reader's voice and follow the lit words."},
+        {t:"Read 2: I read along. I find the hope, the problem and the fix."},
+        {t:"Read 3: I read alone. The problem: flat and disappointed. The tiny joke: plain, with a little pause before it."},
+        {t:"\"It shone!\" Proud and excited. Abba's questions: in the voice of the one who asked."}],
+        a:"Hope, problem, joke, fix, pride: your voice travels the road." },
+      oops:{ q:"I was so disappointed that I didn't even want to eat supper.", wrong:"(happy and bouncy)", right:"(flat and low)", why:"A happy voice on sad words confuses the listener." },
+      ways:["repeated reading with a model", "letter aloud", "story map", "find the proof", "Mistake Detective", "tap the reason", "chavrusa"], done:"Your voice made the light come on! Write your chavrusa three lines about a project of yours: a hope, a problem and a fix.",
+      board:{ key:"Show me answers (for the rebbe): Flat and disappointed · Mr. Halpern's · Plain, with a little pause before it", one:"Read it 3 times. Hope, flat problem, tiny joke with a pause, proud success.", activity:"Problem and fix: pairs read the letter; the listener raises a hand when the voice turns from problem to fix.", mistakes:["One voice for every feeling", "No pause before the joke", "A flat \"It shone!\""] },
+      do:[
+        {type:"read", text:"C45.FL5.20", say:"Read it 3 times: listen, read along, then alone.", how:READ3},
+        {type:"storymap", slots:["Hope", "Problem", "Fix", "Success"], cards:["a light for the shed", "the light glowed weakly", "a taller pole and longer blades", "the light shone"], extra:["a broken window"],
+          say:"Map the letter: hope, problem, fix, success.", how:"Every good story has a problem in the middle.",
+          why:{q:"Why does your voice change at the fix?", o:["The story turns from problem to hope", "The letter is over", "Dovid is angry"], a:"The story turns from problem to hope"}}],
+      your:[
+        {type:"sort", mis:true, bins:["Right", "Mistake"], cards:[["\"so disappointed\" flat and low", 0], ["\"so disappointed\" happy and bouncy", 1], ["A little pause before \"But slowly.\"", 0], ["\"It shone!\" read flat", 1]],
+          say:"Mistake Detective: letter reader, or a mistake?", how:"Does the voice follow Dovid's feelings?"},
+        {type:"evidence", q:"Which sentence is a tiny joke that needs a pause before it?", p:["The garden shed behind our house has no electricity.", "I was so disappointed that I didn't even want to eat supper.", "Well, I ate supper.", "And then came the problem."], a:2, look:"where Dovid smiles at himself",
+          say:"Read each one. Where does Dovid smile at himself?", how:"Right after he says he didn't want to eat.",
+          why:{q:"How should it be read?", o:["Plain, with a little pause before it", "Shouted", "Like a question"], a:"Plain, with a little pause before it"}},
+        {type:"listen", q:"\"It shone!\"", hear:"It shone!", o:["Proud and excited", "Flat and disappointed", "Like a question"], a:"Proud and excited",
+          say:"Listen, then decide: how should Dovid sound here?", how:"What just happened in the shed?"},
+        {type:"proof", text:"C45.FL5.20", q:"Which sentence explains why the taller pole helped?", proof:"Higher up, it blows freely", look:"where the wind is stronger",
+          say:"Open the letter. Find the sentence that proves it.", how:"Look where Dovid thinks about Abba's questions."},
+        {type:"match", pairs:[["the fence blocks the wind", "a taller pole"], ["short blades miss the wind", "longer blades"], ["no light in the shed", "a windmill and a battery"]],
+          say:"Match each problem to its fix.", how:"What did Dovid and Abba change, and why?"}] },
+  };
+
   if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
