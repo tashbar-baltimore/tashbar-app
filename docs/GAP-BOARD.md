@@ -33,12 +33,12 @@ _From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 s
 ## Gaps (top to bottom = priority)
 | ID | Priority | Gap | Status | Owner (session link) | Last update (UTC) | Where I am / proof (PR links) |
 |---|---|---|---|---|---|---|
-| A1 | P0 (top: coordinator 25 Nov) | Test check at its 45-min limit (3 runs cut off on 25 Nov: #649, #651, #662; 12 of the last 25 passing runs took over 35 min, none under 25): make it reliably under 25 min without weakening any check | OPEN | | | |
-| A5 | P0 | docs/CORE-GROWTH-LANES.md on main still has merge-conflict marks (lines 40–46, from #484): keep the newest C45 helper rows, remove the marks, and add a test that fails on conflict marks in any text file | OPEN | | | |
+| A1 | P0 (top: coordinator 25 Nov) | Test check at its 45-min limit (3 runs cut off on 25 Nov: #649, #651, #662; 12 of the last 25 passing runs took over 35 min, none under 25): make it reliably under 25 min without weakening any check | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 17:25 | Measuring where the time goes; fix on branch claude/peaceful-cerf-yx1pgz-test-speed |
+| A5 | P0 | docs/CORE-GROWTH-LANES.md on main still has merge-conflict marks (lines 40–46, from #484): keep the newest C45 helper rows, remove the marks, and add a test that fails on conflict marks in any text file | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 17:25 | Fixed + test on branch claude/peaceful-cerf-yx1pgz-lanes-marks; tests running, PR next |
 | D1 | HoS decision | Social Studies path (#432): `SS` next to `SCI` in src/CoreUnits.html + test; then a unit check, test-out and project for every live Social Studies Unit 1 (Gr 4–8) | OPEN | | | |
 | D2 | HoS decision | Science index names (#391, option a): rename the 64 Gr 6–8 names to the real lessons, keep the Torah-linked topics as planned skills, add a test | OPEN | | | |
 | D3 | HoS decision | 2.0 try-out inside 1.0: every open 2.0 PR playable at /try2/ for the right grades, refreshed every 3 hours; 2.0 itself unchanged | OPEN | | | |
-| A2 | P0 | Round 1 URGENT "right answer marked wrong" fixes (h__l, rep-til, skating rink, W48 "wanders off" checks, "rebbe sold it") + sweep for the same bug | OPEN | | | |
+| A2 | P0 | Round 1 URGENT "right answer marked wrong" fixes (h__l, rep-til, skating rink, W48 "wanders off" checks, "rebbe sold it") + sweep for the same bug | TAKEN | https://claude.ai/code/session_01A6aeyh1CSsqY5yDtX8XEGE (coordinator) | 2026-11-25 17:25 | Fixing the 5 URGENT cards, then the sweep; branch claude/peaceful-cerf-yx1pgz-a2-right-answers |
 | A3a | P0 | Writing engine: a write is never auto-right; grade minimums; test | OPEN | | | |
 | A3b | P0 | W48 (Gr 4–8): every live unit's real task is a Writing Workshop piece; real minimums | OPEN | | | |
 | A3c | P0 | W13 (Gr K–3): the same for the live W13 units | OPEN | | | |
@@ -79,7 +79,7 @@ _From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 s
 - **Daily play-through:** not yet done today.
 
 ## Re-review needed (for B1)
-Lesson PRs merged on 25 Nov whose score table shows a score below 4 that was "fixed" but never scored again (the rule: ship only when every score is 4 or 5). B1 re-scores these lessons first.
+Being re-scored now by fresh reviewers (coordinator, 25 Nov 17:25). Lesson PRs merged on 25 Nov whose score table shows a score below 4 that was "fixed" but never scored again (the rule: ship only when every score is 4 or 5). B1 re-scores these lessons first.
 - #473 Grade 8 Social Studies Unit 1 (a 2 and five 3s; sample pictures only)
 - #472 Grade 7 Social Studies Unit 1 (a 2 and two 3s; sample pictures only)
 - #467 Grade 6 Social Studies Unit 1 (five 3s; sample pictures only)
