@@ -116,6 +116,8 @@ const SCI_CFG = { std: 'not mapped yet', lanes: SCI_LANES, laneOf: prefLane(SCI_
   cross: [['INQ', 'MATT', 0], ['MATT', 'SKY', 1], ['MATT', 'LAND', 1], ['SKY', 'LAND', 0], ['LAND', 'PLANT', 1], ['PLANT', 'ANIM', 0], ['ANIM', 'BODY', 0]],
   plan: [['INQ', 5, 'Plan a Fair Test', 'Plan an experiment that changes one thing and keeps everything else the same.'], ['INQ', 7, 'Measure, Record, Graph', 'Collect measurements, record them in a table and make a graph.'],
     ['INQ', 9, 'Explain with Evidence', 'Write a conclusion that uses the data as evidence.']] };
+/* the planned Science topics kept in the index with no lesson yet (issue #391: Kiddush HaChodesh, the Molad, Kilayim, Shemitah, Birkas HaChamah, ...) */
+CI.lad.SCI.filter(r => /^SCI\.[A-Z]+\.L\d\d\.9\d$/.test(r[0])).forEach(r => { const lane = SCI_CFG.laneOf(r[0]); if (lane) SCI_CFG.plan.push([lane, Number(r[0].split('.')[2].slice(1)), r[1], r[2]]); });
 const KOD_LANES = [['KRI', 'LK.KRI', 'Kriyah', 'text', 'Reading Hebrew: letters, nekudos, then smooth reading.'], ['LSH', 'HEB.VOC|HEB.GRAM|HEB.READ', 'Lashon Hakodesh', 'text', 'Words, roots and grammar of Lashon Hakodesh.'],
   ['CHU', 'LK.CHU', 'Chumash', 'text', 'Reading and understanding the pesukim.'], ['RAS', 'LK.RAS', 'Rashi', 'text', 'Reading Rashi and his questions on the pasuk.'], ['MSH', 'LK.MSH', 'Mishnayos', 'text', 'Reading and understanding a Mishnah.'],
   ['GEM', 'LK.GEM', 'Gemara', 'text', 'The Gemara’s words, flow and reasoning.'], ['NAV', 'LK.NAV', 'Navi', 'text', 'The stories and lessons of Navi.'], ['TEF', 'LK.TEF', 'Tefillah', 'life', 'Davening: the words, their meaning and the order.'],

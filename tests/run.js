@@ -219,6 +219,8 @@ async function kidTests(browser) {
   catch (e) { fail('map home test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   /* CORE GROWTH (tests/lib/core.js, job T): every core lesson reached the page, no clash with an existing lesson */
   try { const cg = await require('./lib/core.js').page(pg); cg.fails.forEach(fail); cg.oks.forEach(ok); } catch (e) { fail('core skills page check crashed: ' + String(e).slice(0, 200)); }
+  /* SCIENCE INDEX NAMES (tests/lib/sciindex.js, issue #391): staff see the same name as the Science lesson a boy really gets */
+  try { const si = await require('./lib/sciindex.js').page(pg); si.fails.forEach(fail); si.oks.forEach(ok); } catch (e) { fail('science index page check crashed: ' + String(e).slice(0, 200)); }
   /* ONE BITE player (tests/lib/onebite.js) */
   try { const ob = await require('./lib/onebite.js')(pg); ob.fails.forEach(fail); ob.oks.forEach(ok); Object.assign(report.counts, ob.counts); }
   catch (e) { fail('One Bite test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
@@ -266,6 +268,7 @@ async function staffTests(browser) {
   try { const sl = await require('./lib/saveload.js')(); sl.fails.forEach(fail); sl.oks.forEach(ok); }   /* a class saving lessons at once: no "busy" (MS_State/MS_Evidence row-merge) */
   catch (e) { fail('class saving test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const cs = require('./lib/core.js').server(); cs.fails.forEach(fail); cs.oks.forEach(ok); } catch (e) { fail('core skills check crashed: ' + String(e).slice(0, 200)); }   /* CORE GROWTH: the one way to add a skill (src/CoreSkills.js) */
+  try { const si = require('./lib/sciindex.js').server(); si.fails.forEach(fail); si.oks.forEach(ok); } catch (e) { fail('science index check crashed: ' + String(e).slice(0, 200)); }   /* issue #391: index names = real Science lessons; planned topics kept */
   try { const k = require('./lib/kidmap.js')(); k.fails.forEach(fail); if (!k.fails.length) ok("boy's own map (kmMyMap): rides with sign-in, only his own data, goal now, unit, Kodesh, growth; staff and bad tokens refused"); report.timings.kidMapMs = k.ms.map; report.timings.kidSignInWithMapMs = k.ms.signIn; }
   catch (e) { fail('kid map test crashed: ' + String(e && e.stack || e).slice(0, 300)); }
   try { const sc = await require('./lib/staffcard.js')(browser); sc.fails.forEach(fail); sc.oks.forEach(ok); }
