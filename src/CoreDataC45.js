@@ -67,5 +67,13 @@ CORE_SKILLS.C45 = [
   ["READ.LIT.L06.33", "Lighthouse 4: A Lighthouse Shabbos", "Read Chapter 4 and see what job it does in the whole book", { after: "READ.FLU.L06.04", std: "RL.5.5", file: "CoreDataC45H32", min: 20 }],
   ["READ.LIT.L06.34", "Lighthouse 5: The Dark Light", "Read Chapter 5 and see how its scenes fit together", { std: "RL.5.5", file: "CoreDataC45H32", min: 20 }],
   ["READ.LIT.L06.35", "Lighthouse 6: Green Light on the Water", "Read Chapter 6 and see how the author builds suspense", { std: "RL.5.5", file: "CoreDataC45H32", min: 20 }],
-  ["READ.LIT.L06.36", "Lighthouse 7: The Keeper's Log", "Read Chapter 7 and compare how a log and a story are built", { std: "RI.5.5", file: "CoreDataC45H32", min: 20 }]
+  ["READ.LIT.L06.36", "Lighthouse 7: The Keeper's Log", "Read Chapter 7 and compare how a log and a story are built", { std: "RI.5.5", file: "CoreDataC45H32", min: 20 }],
+  ["READ.LIT.L05.37", "Ridge Trail 8: My Side of the Story", "Read Chapter 8, told by Tzvi Hirsch, and see what a first-person teller can know", { after: "READ.LIT.L05.36", std: "RL.4.6", file: "CoreDataC45H33", min: 20 }],
+  ["READ.LIT.L05.38", "Ridge Trail 9: Meanwhile, at Camp", "Read Chapter 9 and tell firsthand accounts from secondhand ones", { std: "RI.4.6", file: "CoreDataC45H33", min: 20 }],
+  ["READ.LIT.L05.39", "Ridge Trail 10: Two Sides of One Story", "Read the last chapter and compare two accounts of one event", { std: "RI.4.6", file: "CoreDataC45H33", min: 20 }],
+  ["READ.LIT.L06.37", "Lighthouse 8: S.G.", "Read Chapter 8 and see how the narrator's view colors his story", { after: "READ.COMP.L06.15", std: "RL.5.6", file: "CoreDataC45H33", min: 20 }],
+  ["READ.LIT.L06.38", "Lighthouse 9: The Captain's Story", "Read Chapter 9 and compare the same night told by another narrator", { std: "RL.5.6", file: "CoreDataC45H33", min: 20 }],
+  ["READ.LIT.L06.39", "Lighthouse 10: Four Accounts", "Read Chapter 10 and compare four accounts of one event", { std: "RI.5.6", file: "CoreDataC45H33", min: 20 }],
+  ["READ.LIT.L06.40", "Lighthouse 11: The 1904 Glow", "Read Chapter 11 and explain why accounts differ", { std: "RI.5.6", file: "CoreDataC45H33", min: 20 }],
+  ["READ.LIT.L06.41", "Lighthouse 12: The Wall of Many Eyes", "Read the last chapter and put the accounts and the theme together", { std: "RL.5.2", file: "CoreDataC45H33", min: 20 }]
 ];
