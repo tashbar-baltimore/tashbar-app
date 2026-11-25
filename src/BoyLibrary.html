@@ -17,7 +17,7 @@ function css(){ if(document.getElementById('bl-css')) return; const s=document.c
  '.bl-card .ic{font-size:34px}.bl-card small{display:block;font:500 13px system-ui;opacity:.85;margin-top:3px}'+
  '.bl-ov{position:fixed;inset:0;z-index:8800;background:#F7F1E3;color:#1E2A44;display:flex;flex-direction:column;font:16px/1.4 system-ui,sans-serif}'+
  '.bl-top{display:flex;align-items:center;gap:10px;padding:12px 16px;background:linear-gradient(135deg,#2563EB,#0EA5E9);color:#fff}.bl-top h2{margin:0 auto 0 0;font:800 22px/1.2 Georgia,serif}'+
- '.bl-top button{border:0;border-radius:12px;padding:10px 16px;font:700 16px system-ui;background:#F0B847;color:#16274A;cursor:pointer}'+
+ '.bl-top button:not(.tlk){border:0;border-radius:12px;padding:10px 16px;font:700 16px system-ui;background:#F0B847;color:#16274A;cursor:pointer}'+
  '.bl-tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 12px;background:#EFE5CC}.bl-tabs button{flex:0 0 auto;border:2px solid transparent;border-radius:14px;padding:8px 12px;font:700 15px system-ui;background:#fff;color:#1E2A44;cursor:pointer}'+
  '.bl-tabs button[aria-pressed="true"]{border-color:#2563EB;background:#2563EB;color:#fff}'+
  '.bl-body{flex:1;overflow:auto;padding:14px 12px 40px;max-width:900px;width:100%;margin:0 auto}'+
@@ -48,7 +48,7 @@ function openLib(){ BL.open=true; BL.tab=0; css(); load(); draw(); }
 function draw(){ let o=document.getElementById('bl-ov'); if(!o){ o=document.createElement('div'); o.id='bl-ov'; o.className='bl-ov'; o.setAttribute('role','dialog'); o.setAttribute('aria-label','My Library'); document.body.appendChild(o); document.body.style.overflow='hidden';
   o.addEventListener('click',e=>{ const t=e.target.closest('[data-bl]'); if(!t) return; const k=t.dataset.bl; if(k==='close') close(); else if(k==='tab'){ BL.tab=+t.dataset.i; draw(); } else if(k==='go') start(t.dataset.id); }); }
  const d=BL.d, first=String((A.st&&A.st.name)||'').split(' ')[0];
- let h='<div class="bl-top"><h2>📚 '+E(first?first+'’s Library':'My Library')+'</h2><button type="button" data-bl="close">Close</button></div>';
+ let h='<div class="bl-top"><h2>📚 '+E(first?first+'’s Library':'My Library')+'</h2>'+(window.TLK?TLK.x('data-bl="close"',''):'<button type="button" data-bl="close" aria-label="Close">✕</button>')+'</div>';
  if(!d||!d.on){ o.innerHTML=h+'<div class="bl-empty">'+(d?'Your Library is not open yet.':'Opening your Library…')+'</div>'; return; }
  const pk={}; (d.picks||[]).forEach(p=>{ pk[p[0]]=p; });
  const tabs=[{name:'For me',icon:'📌'}].concat(d.shelves); if(BL.tab>=tabs.length) BL.tab=0;

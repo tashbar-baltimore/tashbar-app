@@ -406,7 +406,7 @@ body.gm-nav .stkpis b{color:#39FF88!important}body.gm-nav .stkpis small,body.gm-
 #gm-room{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%);color:#fff;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
 #gm-room .hd{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#7B61FF;border-bottom:2px solid rgba(255,255,255,.1)}
 #gm-room .hd b{flex:1;font-size:20px;font-weight:900;font-style:italic;text-transform:uppercase}
-#gm-room .hd button{border:0;border-radius:14px;padding:10px 14px;font-family:inherit;font-weight:900;font-size:15px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 4px 0 #B36B00;cursor:pointer}
+#gm-room .hd button:not(.tlk){border:0;border-radius:14px;padding:10px 14px;font-family:inherit;font-weight:900;font-size:15px;color:#2B1400;background:linear-gradient(180deg,#FFF06A,#FFB800);box-shadow:0 4px 0 #B36B00;cursor:pointer}
 #gm-room .bd{flex:1;overflow:auto;padding:14px}
 #gm-room .bd>*{max-width:900px;margin-left:auto!important;margin-right:auto!important}
 #gm-room .bd .panel,#gm-room .bd section{border-radius:22px!important}
@@ -944,7 +944,7 @@ function stuffHTML(){ const M=document.querySelector('.hlx-mine'); if(!M) return
 function room(t){ try{ SND.tap(); }catch(e){} const map={bank:['.bank','🏦 My bank'],badges:['.badgepanel','🏅 My badges'],map:['.journey','🗺️ My journey map'],week:['.p3week','🚀 Look how far you\'ve come']}, m=map[t]; if(!m) return;
  let html=''; try{ const tpl=document.createElement('div'); tpl.innerHTML=(window.HP&&HP._vHub?HP._vHub():vHub()); const e=tpl.querySelector(m[0]); html=e?e.outerHTML:''; }catch(e){ html=''; }
  let r=document.getElementById('gm-room'); if(!r){ r=document.createElement('div'); r.id='gm-room'; r.setAttribute('role','dialog'); document.body.appendChild(r); }
- r.innerHTML=`<div class="hd"><b>${m[1]}</b><button type="button" data-gm="roomx">✕ Close</button></div><div class="bd">${html||'<p>Nothing here yet.</p>'}</div>`; }
+ r.innerHTML=`<div class="hd"><b>${m[1]}</b>${window.TLK?TLK.x('data-gm="roomx"',''):'<button type="button" data-gm="roomx" aria-label="Close">✕</button>'}</div><div class="bd">${html||'<p>Nothing here yet.</p>'}</div>`; }
 function noMapHTML(){ const lv=document.querySelector('#app [data-hp=levels]'), lg=document.querySelector('#app [data-hp=check]');
  return `<div class="gm-none"><div class="i">🗺️</div><h1>Your map is almost ready!</h1><p>Your rebbe or teacher sets your level. Until then, find your level or pick any lesson.</p>${lv?`<button type="button" class="gm-mini"${px(lv)}>🧭 Find my levels</button> `:''}<button type="button" class="gm-mini" data-gm="lib">📚 All my lessons</button></div>`; }
 /* ===== CELEBRATIONS: one short burst, only when he wins (never on its own). Reduced motion: no movement, same words. */
@@ -1131,6 +1131,9 @@ let pfWatch=null; setTimeout(function hook(){ const c=document.querySelector('.p
  const st2=document.createElement('style'); st2.id='gmw-css'; st2.textContent=`
 .overlay:has(.gmw){background:linear-gradient(180deg,#7B61FF 0%,#4F8CFF 48%,#22B8F0 100%)!important;backdrop-filter:none!important}
 .ocard:has(.gmw){background:transparent!important;box-shadow:none!important;border:0!important;max-width:560px!important;width:100%!important;padding:0!important}
+.ocard{position:relative}
+body:has(.overlay,#hlx-shelf,#lg-games,#gm-room,#tlstore,.hpdraw,.kkov,.tq-ov,.tt-ov,#bl-ov,.rpzoom,#tr-ov) :is(#pr-av,#bbx-door,#tlmenu){visibility:hidden!important}
+.ocard:has(>.tlk-x) .oband{padding-left:24px!important;padding-right:80px!important;box-sizing:border-box}
 .ocard:has(.gmw) .oband{display:none}
 .gmw{color:#fff;text-align:center;padding:8px 14px 14px;font-family:var(--display,'Rubik'),'Inter',system-ui,sans-serif}
 .gmw .k{font-size:13px;font-weight:900;letter-spacing:.16em;color:#FFE259}
