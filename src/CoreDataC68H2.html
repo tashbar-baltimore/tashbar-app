@@ -589,4 +589,256 @@
       {type:'evidence', skill:'READ.FLU.L09.04', q:'Which is the best first step with a dense paragraph?', p:['Read it once for the big idea.','Memorize every number first.','Skip to the last sentence.'], a:0, look:'read for sense first', how:'Sense first, then detail.'}
     ] });
 })();
+/* Unit 8.7 "Reading for Real Life" (topic set: Disasters and how people rebuild, texts/C68/C68.DIS.01-06): new skills READ.COMP.L09.17 (print, video or chart),
+   READ.COMP.L09.18 (news report or opinion piece), READ.COMP.L09.19 (check a claim against two sources) with TLCORE.add, and the existing
+   READ.COMP.L09.02 "Manual Reader" rebuilt as a One Bite lesson (TLCORE.upgrade). */
+(function () {
+  var LESSONS = {
+
+    /* ===== Unit 8.7, skill 2: print, video or chart ===== */
+    'READ.COMP.L09.17':{name:'Print, Video or Chart?',
+      teach:[
+        {q:'You want to show HOW the bridge twisted in the wind. Which form shows it best?', o:['a video','a chart','a printed list'], how:'Motion is best shown by a video: you see it happen.'},
+        {q:'You want to compare two cities\' death rates, week by week. Which form shows it best?', o:['a chart','a video','a poem'], how:'Numbers that change over time are clearest in a chart or graph.'},
+        {q:'You want to explain WHY the bridge fell. Which form explains it best?', o:['print: a written explanation','a chart','a photo'], how:'Causes and reasons need words. Print can explain step by step.'}
+      ],
+      practice:[
+        {t:'sort', q:'Which form tells each one best?', bins:[{id:'v',label:'a video'},{id:'c',label:'a chart'},{id:'p',label:'print: a written explanation'}], items:[{label:'how a tower sways in the wind',bin:'v'},{label:'rainfall in five cities, month by month',bin:'c'},{label:'why the dam failed',bin:'p'},{label:'what a flood wave looks like',bin:'v'},{label:'deaths per week in two cities',bin:'c'},{label:'what engineers recommend, and why',bin:'p'}], h:'Motion: video. Numbers over time: chart. Reasons: print.'},
+        {t:'pairs', q:'Match each form to what it does best.', pairs:[['a video','shows motion and sound'],['a chart','compares numbers at a glance'],['print: a written explanation','explains causes and reasons'],['a diagram','shows the parts and how they fit']], h:'What is each form good at?'},
+        {t:'spotall', q:'Tap every limit of a video.', cells:[{label:'it is hard to compare exact numbers',ok:true},{label:'it rarely explains why something happened',ok:true},{label:'you cannot easily go back to one detail',ok:true},{label:'it cannot show motion',ok:false}], h:'What is hard to learn from a film alone?'},
+        {t:'order', q:'Put the steps for choosing a form in order.', tiles:['Decide what you need to know.','Ask: is it motion, numbers or reasons?','Pick the form that shows it best.','Check it against another form.'], h:'Your question first. The form second.'},
+        {t:'sort', q:'The Tacoma Narrows Bridge. What did each source give best?', bins:[{id:'v',label:'the film'},{id:'p',label:'the engineers\' report'}], items:[{label:'the deck twisting like a ribbon',bin:'v'},{label:'the moment it broke away',bin:'v'},{label:'why the thin deck caught the wind',bin:'p'},{label:'advice for future builders',bin:'p'}], h:'Seeing it happen, or understanding why?'},
+        {t:'spotall', q:'Tap every strength of a chart.', cells:[{label:'you can compare at a glance',ok:true},{label:'you can see a change over time',ok:true},{label:'it shows a pattern in the numbers',ok:true},{label:'it tells you why the numbers changed',ok:false}], h:'What does a chart show, and what does it leave out?'}
+      ],
+      check:[
+        {q:'You want to show how a tsunami wave rushes onto a beach. Which form shows it best?', o:['a video','a table of numbers','a written list of dates']},
+        {q:'You want to compare snowfall in four towns over twelve months. Which form shows it best?', o:['a chart','a short film','one photo of each town']},
+        {q:'You want to explain why a levee failed, and show how high the river rose each hour. What should you use?', o:['a written report with a chart','a video alone','a single photo']}
+      ],
+      re:[
+        {q:'You want to show how a tornado spins across a field. Which form shows it best?', o:['a video','a table of numbers','a written list of dates']},
+        {q:'You want to compare how many trees three towns planted each year. Which form shows it best?', o:['a chart','a short film','one photo of each town']},
+        {q:'You want to explain why a roof fell in, and show how much snow fell each day. What should you use?', o:['a written report with a chart','a video alone','a single photo']}
+      ]},
+
+    /* ===== Unit 8.7, skill 3: news report or opinion piece ===== */
+    'READ.COMP.L09.18':{name:'News or Opinion?',
+      teach:[
+        {q:'A news report mostly gives...', o:['facts: who, what, when, where','the writer\'s feelings','advice about what to do'], how:'News answers who, what, when, where and how, in neutral words.'},
+        {q:'An opinion piece mostly gives...', o:['a claim the writer wants you to accept','only dates','a list of names'], how:'Opinion argues. Look for I, should, must, and strong words that judge.'},
+        {q:'"The careless club owners are to blame." Which kind of writing is this from?', o:['an opinion piece','a news report','a weather report'], how:'"Careless" and "to blame" judge people. That is opinion.'}
+      ],
+      practice:[
+        {t:'sort', q:'News report, or opinion piece?', bins:[{id:'n',label:'a news report'},{id:'o',label:'an opinion piece'}], items:[{label:'The dam failed at about three o\'clock.',bin:'n'},{label:'More than 2,200 people died.',bin:'n'},{label:'The club owners should have been punished.',bin:'o'},{label:'This was the worst failure of greed in history.',bin:'o'}], h:'Can it be checked? Or is the writer judging?'},
+        {t:'spotall', q:'"The greedy owners ignored every sensible warning." Tap every loaded word.', cells:[{label:'greedy',ok:true},{label:'sensible',ok:true},{label:'ignored every',ok:true},{label:'owners',ok:false},{label:'warning',ok:false}], h:'Which words judge, and which only name?'},
+        {t:'pairs', q:'Match each sign to what it shows.', pairs:[['a word that judges, like "reckless"','a loaded word'],['who, what, when, where','a news report'],['"should" and "must"','an opinion piece'],['a quote from a witness','a source in a news report']], h:'Is it reporting, or judging?'},
+        {t:'order', q:'Put the steps for telling news from opinion in order.', tiles:['Read the headline and first lines.','Look for facts you could check.','Look for loaded words and "should".','Decide: report or opinion?'], h:'Read first. Decide last.'},
+        {t:'sort', q:'Where would you find each sentence?', bins:[{id:'n',label:'a news report'},{id:'o',label:'an opinion piece'}], items:[{label:'The city closed its schools on October 3.',bin:'n'},{label:'Our leaders acted far too late.',bin:'o'},{label:'St. Louis stopped large gatherings.',bin:'n'},{label:'Every city must learn from St. Louis.',bin:'o'}], h:'Fact you could check, or a judgment?'},
+        {t:'spotall', q:'Tap every sign that a piece is an opinion piece.', cells:[{label:'the writer uses "I believe"',ok:true},{label:'it says what people should do',ok:true},{label:'it uses words that judge',ok:true},{label:'it gives a date and a place',ok:false}], h:'What shows the writer is arguing?'}
+      ],
+      check:[
+        {q:'"The storm reached the coast at 4 a.m. with winds of 90 miles per hour." This sentence is from...', o:['a news report','an opinion piece','a poem']},
+        {q:'"The town\'s leaders failed us, and they must resign." This sentence is from...', o:['an opinion piece','a news report','a recipe']},
+        {q:'"The stubborn mayor kept the shelters closed." This sentence is from...', o:['an opinion piece','a news report','a weather report']}
+      ],
+      re:[
+        {q:'"The bridge closed at 10 a.m., and no one was hurt." This sentence is from...', o:['a news report','an opinion piece','a poem']},
+        {q:'"This shameful delay cost lives, and it must never happen again." This sentence is from...', o:['an opinion piece','a news report','a recipe']},
+        {q:'"The lazy crew left the sandbags on the truck." This sentence is from...', o:['an opinion piece','a news report','a weather report']}
+      ]},
+
+    /* ===== Unit 8.7, skill 4: check a claim against two sources ===== */
+    'READ.COMP.L09.19':{name:'Check a Claim',
+      teach:[
+        {q:'Claim: "The parade caused Philadelphia\'s disaster." What is your first step?', o:['find what each source says about it','believe it, because it sounds right','look for a more exciting story'], how:'Check a claim against more than one careful source.'},
+        {q:'Both sources show the parade spread the flu, but one adds other causes. The claim is...', o:['partly supported','fully supported','not supported'], how:'If the sources show other causes too, the claim is only part of the story.'},
+        {q:'Why is a study of many cities stronger than a story of two?', o:['many cases show a pattern; two can be luck','two is always enough','stories are always wrong'], how:'More cases and careful numbers make stronger proof.'}
+      ],
+      practice:[
+        {t:'sort', q:'Claim: "Closing early saved St. Louis." Sort what the article says.', bins:[{id:'s',label:'supports the claim'},{id:'d',label:'adds doubt'}], items:[{label:'St. Louis\'s peak death rate was much lower.',bin:'s'},{label:'Cities that closed early tended to do better.',bin:'s'},{label:'The flu reached St. Louis later.',bin:'d'},{label:'Some early-closing cities still suffered badly.',bin:'d'}], h:'Does it back the claim, or show another cause?'},
+        {t:'pairs', q:'Match each verdict to what it means.', pairs:[['fully supported','careful sources agree, with no other cause'],['partly supported','true, but not the whole story'],['not supported','careful sources show it is wrong']], h:'How much of the claim do the sources back up?'},
+        {t:'order', q:'Put the steps for checking a claim in order.', tiles:['State the claim exactly.','Find what source A says.','Find what source B says.','Look for other causes.','Give a verdict.'], h:'Claim first. Verdict last.'},
+        {t:'spotall', q:'Tap every question a careful checker asks.', cells:[{label:'Do the sources agree on the facts?',ok:true},{label:'Is there another cause?',ok:true},{label:'How many cases were studied?',ok:true},{label:'Which story is more exciting?',ok:false}], h:'What would make you trust the claim more?'},
+        {t:'sort', q:'Claim: "The Johnstown dam broke only because of the storm." Sort the facts.', bins:[{id:'s',label:'supports the claim'},{id:'d',label:'adds doubt'}], items:[{label:'Six to ten inches of rain fell in one day.',bin:'s'},{label:'The club lowered the dam.',bin:'d'},{label:'Screens blocked the spillway.',bin:'d'},{label:'Water poured over the top.',bin:'s'}], h:'Was the storm the only cause?'},
+        {t:'pairs', q:'Match each claim to its verdict.', pairs:[['"The bridge fell in 1940."','fully supported'],['"Only the wind made the bridge fall."','partly supported'],['"People died when the bridge fell."','not supported']], h:'Check each claim against the report.'}
+      ],
+      check:[
+        {q:'Claim: "The new seawall saved the town." Source A: the town flooded less than its neighbors. Source B: the storm also turned away at the last hour. The claim is...', o:['partly supported','fully supported','not supported']},
+        {q:'Claim: "The library opened in 1962." A city history says 1962. The library\'s own records say 1962. The claim is...', o:['fully supported','partly supported','not supported']},
+        {q:'Claim: "The fire started in the bakery." Source A: it began in a barn. Source B: the bakery was closed that week, and the fire map starts at the barn. The claim is...', o:['not supported','fully supported','partly supported']}
+      ],
+      re:[
+        {q:'Claim: "The new pumps kept the street dry." Source A: the street stayed dry. Source B: the rain that week was also much lighter than usual. The claim is...', o:['partly supported','fully supported','not supported']},
+        {q:'Claim: "The shul was built in 1925." The cornerstone says 1925. The city records say 1925. The claim is...', o:['fully supported','partly supported','not supported']},
+        {q:'Claim: "The storm hit on a Tuesday." Source A: it hit on Thursday. Source B: the weather service log says Thursday night. The claim is...', o:['not supported','fully supported','partly supported']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L09.17':{ hook:'A film of a bridge twisting, a chart of a city\'s deaths, a report on why: each tells a different part of the truth.',
+      big:'Information comes in different forms, and each form is good at something different. A video shows motion and sound: you can watch the Tacoma Narrows Bridge twist like a ribbon. A chart compares numbers at a glance: you can see that Philadelphia\'s worst week was far worse than St. Louis\'s. Print, a written explanation, gives causes and reasons step by step: why the thin deck caught the wind. A diagram shows the parts and how they fit. To choose, first decide what you need to know: motion, numbers or reasons. Then pick the form that shows it best, and check it against another form, because each one leaves something out.',
+      intro:['Decide what you need to know.','Motion? Choose a video.','Numbers over time? Choose a chart.','Reasons? Choose print.'],
+      ex:[{q:'How did the bridge move before it fell?', steps:['I need to see motion.','A video shows it happen.','So the film tells this best.'], a:'a video'},
+          {q:'Why did the bridge fall?', steps:['I need causes and reasons.','A film shows what, not why.','The engineers\' written report explains it.'], a:'print: a written explanation'}],
+      oops:{ q:'"The film of the bridge shows everything. We do not need the report." Right?', wrong:'Yes: seeing is enough', right:'No: the film shows what happened; the report explains why', why:'Each form leaves something out. Use the one that fits your question, and check it with another.' },
+      idea:['Motion: video. Numbers: chart. Reasons: print. Two needs, reasons and numbers? Use a written report with a chart.'],
+      'try':{ q:'You want to explain WHY the bridge fell. Which form explains it best?', o:['print: a written explanation','a chart'], a:'print: a written explanation', steps:['Is the question about motion, numbers or reasons?','Reasons need words.'] } },
+    'READ.COMP.L09.18':{ hook:'Some writers tell you what happened. Others tell you what to think about it. Can you tell which is which?',
+      big:'A news report tells what happened: who, what, when, where and how, in neutral words, often with quotes from witnesses. An opinion piece argues: it makes a claim and wants you to agree. Its signs are words like I believe, should and must, and loaded words that judge, like careless, greedy or shameful. Both can be useful. A news report gives you facts to think with. An opinion piece shows you one way to think about them. The danger is mixing them up: taking a writer\'s judgment as if it were a plain fact. So before you trust a sentence, ask: could this be checked, or is the writer judging?',
+      intro:['Read the headline and the first lines.','Look for facts you could check.','Look for loaded words, I, should and must.','Decide: news report or opinion piece?'],
+      ex:[{q:'"The dam failed at about three o\'clock."', steps:['Can it be checked? Yes.','No loaded words.','It is reporting.'], a:'a news report'},
+          {q:'"The greedy owners should have been punished."', steps:['"Greedy" judges.','"Should" tells what ought to happen.','It is arguing.'], a:'an opinion piece'}],
+      oops:{ q:'"The article uses numbers, so it must be a news report." Right?', wrong:'Yes: numbers mean news', right:'No: opinion pieces use numbers too', why:'Check what the writer does with the numbers: report them, or use them to argue?' },
+      idea:['News reports what happened. Opinion argues about what it means.'],
+      'try':{ q:'"The careless club owners are to blame." Which kind of writing is this from?', o:['an opinion piece','a news report'], a:'an opinion piece', steps:['Find words that judge.','Careless, to blame: opinion.'] } },
+    'READ.COMP.L09.19':{ hook:'A dramatic story with a clear lesson is easy to believe. A careful reader checks it first.',
+      big:'A claim is a statement someone wants you to accept, like "The parade caused Philadelphia\'s disaster." To check it, find what at least two careful sources say. Do they agree on the facts? Do they show other causes too? How many cases did they study? Then give a verdict. Fully supported: careful sources agree, and nothing else explains it. Partly supported: true, but not the whole story. Not supported: careful sources show it is wrong. The 1918 flu article shows all of this. The parade did spread the flu. But Philadelphia was also a crowded port that the flu reached early, so "the parade alone caused it" is only partly supported.',
+      intro:['State the claim exactly.','Find what each source says.','Look for other causes.','Give a verdict: fully, partly or not supported.'],
+      ex:[{q:'Claim: "The parade alone caused Philadelphia\'s disaster."', steps:['Source: the parade spread the flu.','Source: the flu came early, with sailors, to a crowded port.','Other causes exist.'], a:'partly supported'},
+          {q:'Claim: "The Tacoma Narrows Bridge fell in 1940."', steps:['The report says November 7, 1940.','The film is from that day.','Both agree, nothing against it.'], a:'fully supported'}],
+      oops:{ q:'"One source says it, so the claim is proven." Right?', wrong:'Yes: it is written down', right:'No: check a second careful source and look for other causes', why:'One source can be wrong or tell only part of the story.' },
+      idea:['One source is a start. Two careful sources, and a look for other causes, make a verdict.'],
+      'try':{ q:'Both sources show the parade spread the flu, but one adds other causes. The claim is...', o:['partly supported','fully supported'], a:'partly supported', steps:['Is the parade part of the cause?','Is it the only cause?'] } }
+  };
+
+  var HOWTO = {
+    'READ.COMP.L09.17':{ s:'Decide what you need to know.\nMotion: video. Numbers: chart. Reasons: print.\nTwo needs? Use two forms together.',
+      q:{ 'You want to show how a tsunami wave rushes onto a beach. Which form shows it best?':'Is it about motion, numbers or reasons?',
+          'You want to compare snowfall in four towns over twelve months. Which form shows it best?':'Is it about motion, numbers or reasons?',
+          'You want to explain why a levee failed, and show how high the river rose each hour. What should you use?':'Two needs: reasons and numbers. Which choice covers both?',
+          'You want to show how a tornado spins across a field. Which form shows it best?':'Is it about motion, numbers or reasons?',
+          'You want to compare how many trees three towns planted each year. Which form shows it best?':'Is it about motion, numbers or reasons?',
+          'You want to explain why a roof fell in, and show how much snow fell each day. What should you use?':'Two needs: reasons and numbers. Which choice covers both?' } },
+    'READ.COMP.L09.18':{ s:'Could it be checked? That is news.\nDoes it judge, or say should? That is opinion.\nLook for loaded words.',
+      q:{ '"The storm reached the coast at 4 a.m. with winds of 90 miles per hour." This sentence is from...':'Could each part be checked?',
+          '"The town\'s leaders failed us, and they must resign." This sentence is from...':'Find "must" and words that judge.',
+          '"The stubborn mayor kept the shelters closed." This sentence is from...':'Which word judges, and which only name?',
+          '"The bridge closed at 10 a.m., and no one was hurt." This sentence is from...':'Could each part be checked?',
+          '"This shameful delay cost lives, and it must never happen again." This sentence is from...':'Find "must" and words that judge.',
+          '"The lazy crew left the sandbags on the truck." This sentence is from...':'Which word judges, and which only name?' } },
+    'READ.COMP.L09.19':{ s:'State the claim.\nWhat does each source say? Any other cause?\nVerdict: fully, partly or not supported.',
+      q:{ 'Claim: "The new seawall saved the town." Source A: the town flooded less than its neighbors. Source B: the storm also turned away at the last hour. The claim is...':'Is the seawall the only reason?',
+          'Claim: "The library opened in 1962." A city history says 1962. The library\'s own records say 1962. The claim is...':'Do both sources agree?',
+          'Claim: "The fire started in the bakery." Source A: it began in a barn. Source B: the bakery was closed that week, and the fire map starts at the barn. The claim is...':'Where do the sources say it started?',
+          'Claim: "The new pumps kept the street dry." Source A: the street stayed dry. Source B: the rain that week was also much lighter than usual. The claim is...':'Are the pumps the only reason?',
+          'Claim: "The shul was built in 1925." The cornerstone says 1925. The city records say 1925. The claim is...':'Do both sources agree?',
+          'Claim: "The storm hit on a Tuesday." Source A: it hit on Thursday. Source B: the weather service log says Thursday night. The claim is...':'What day do the sources give?' } }
+  };
+
+  var BITE = {
+    'READ.COMP.L09.17':{ band:'M68', pic:'🎞️', today:'Print, video or chart: which tells it best?',
+      why:'The same event can be filmed, charted or explained. Knowing what each form does best helps you learn more, and be fooled less.',
+      ready:[{q:'What does a chart usually show?', o:['numbers you can compare','a story with characters','a person\'s voice'], a:'numbers you can compare'}],
+      bridge:'READ.COMP.L09.02', bridgeName:'Manual Reader',
+      watch:{ q:'Why the Bridge Fell', m:{type:'scene', e:'🌉', t:'"The film became one of the most famous pieces of engineering film ever made, and it is still shown to engineering students today."'}, steps:[
+        {t:'Question 1: how did the bridge move? That is motion. The film shows it best.'},
+        {t:'Question 2: why did it twist? That is a reason. The written report explains it.'},
+        {t:'Question 3: how bad was each city\'s flu week by week? Numbers over time: a chart.'},
+        {t:'Each form leaves something out. The film cannot explain flutter. The report cannot show the twist.'},
+        {t:'So choose the form that fits your question. Often the best answer is two forms together: Gavriel puts a chart inside Benny\'s written report.'},
+        {t:'Teach it back: tell your chavrusa which form you would use for motion, numbers and reasons, and why.'}], a:'Motion: video. Numbers: chart. Reasons: print.' },
+      oops:{ q:'"The film shows the bridge falling, so it explains why it fell." Right?', wrong:'Yes: you can see the reason', right:'No: the film shows what; the report explains why', why:'A video shows motion. Causes need words, step by step.' },
+      ways:['worked example','compare forms','listen','chavrusa','sort','teach it back'], done:'You can choose the form that tells it best!',
+      board:{ one:'Motion: video. Numbers over time: chart. Causes and reasons: print. Parts: diagram. Each leaves something out.', activity:'Show the class one minute of a storm video, one chart of the same storm, and one paragraph about it. Boys list what each one taught them that the others did not.', mistakes:['Thinking a video explains why','Reading a chart without asking what it leaves out','Using one form for every question'] },
+      do:[
+        {type:'read', text:'C68.DIS.05', say:'Read the report on why the bridge fell.', how:'Notice what the film showed, and what the report explains.'},
+        {type:'sort', mis:true, bins:['The film shows it','The report explains it'], cards:[['the deck twisting',0],['why the wind pushed harder',1],['the deck crashing down',0],['why a deep truss is safer',1]], say:'Watch the trap! Which source gives each one?', how:'Seeing it happen, or understanding why?'}],
+      your:[
+        {type:'proof', text:'C68.DIS.05', q:'Which sentence tells how the twisting was recorded?', proof:'they filmed the twisting from the shore', look:'who recorded it, and how', say:'Find the proof in the report.', how:'Read the part about the morning of November 7.'},
+        {type:'match', pairs:[['a video','shows motion and sound'],['a chart','compares numbers at a glance'],['a diagram','shows the parts and how they fit']], say:'Match each form to its strength.', how:'What is each form good at?'},
+        {type:'evidence', q:'Which question is best answered by a chart?', p:['How many people died each week in Philadelphia and St. Louis?','What did the flood wave sound like?','Why did the club lower the dam?'], a:0, look:'numbers to compare', say:'Tap the question for a chart.', how:'Which one asks for numbers over time?'},
+        {type:'listen', hear:'Gavriel wants to show The Beacon\'s readers how base isolation pads let a building sway gently while the ground shakes hard.', o:['a video of a shake table test','a chart of earthquake dates','a list of building names'], a:'a video of a shake table test', cap:'Which form should Gavriel use?', say:'Listen. Which form fits best?', how:'Is it about motion, numbers or reasons?'},
+        {type:'cloze', t:'Causes and reasons are explained best in ___.', o:['print','a chart','a photo'], a:'print', say:'Challenge! Tap the word that fits.', how:'Which form can explain step by step?'}] },
+    'READ.COMP.L09.18':{ band:'M68', pic:'📰', today:'Tell a news report from an opinion piece',
+      why:'Some writers report what happened; others tell you what to think. A careful reader always knows which one he is reading.',
+      ready:[{q:'Which sentence could be checked?', o:['The dam broke in 1889.','The owners were wicked.','It was the saddest day ever.'], a:'The dam broke in 1889.'}],
+      bridge:'READ.COMP.L09.16', bridgeName:'Same Facts, Different Reading',
+      watch:{ q:'The Day the Dam Broke', m:{type:'scene', e:'🌊', t:'"On the afternoon of May 31, 1889, a wall of water as tall as a three-story building rushed down a narrow valley."'}, steps:[
+        {t:'First sentence: a date, a place, what happened. Facts you could check: reporting.'},
+        {t:'Now read the last paragraph. Does the writer report, or tell you what builders owe? That is the writer\'s lesson.'},
+        {t:'Look for signs of opinion: I, should, must, and loaded words that judge.'},
+        {t:'Most of this article reports. Its last paragraph gives the writer\'s lesson.'},
+        {t:'An editorial written in 1889 might say "the greedy club is to blame". That is pure opinion.'},
+        {t:'Teach it back: tell your chavrusa two signs of news and two signs of opinion.'}], a:'Facts you could check: news. Judging words and should: opinion.' },
+      oops:{ q:'"The writer gives numbers, so every sentence is a fact." Right?', wrong:'Yes: numbers make it news', right:'No: check each sentence for words that judge', why:'Opinion pieces use numbers too, and news articles sometimes end with a lesson.' },
+      ways:['worked example','read the whole article','Mistake Detective','find the proof','sort','teach it back'], done:'You can tell a news report from an opinion piece!',
+      board:{ one:'News: who, what, when, where, in neutral words. Opinion: a claim, I, should, must, loaded words.', activity:'Boys rewrite one opinion sentence as a news sentence (take out the loaded words), then one news sentence as an opinion sentence (add a judgment), and read both aloud.', mistakes:['Taking a judgment as a fact','Calling a piece news because it has numbers','Missing loaded words'] },
+      do:[
+        {type:'read', text:'C68.DIS.01', say:'Read "The Day the Dam Broke".', how:'Mark facts you could check. Mark any place the writer judges.'},
+        {type:'evidence', mis:true, q:'Which sentence is an opinion?', p:['The greedy club is to blame for every death.','The dam gave way at about three o\'clock.','More than 2,200 people lost their lives.'], a:0, look:'a sentence that judges', say:'Watch the trap! Which one is opinion?', how:'Which one could not be checked with a record?'}],
+      your:[
+        {type:'proof', text:'C68.DIS.01', q:'Which sentence says what the writer thinks builders owe others?', proof:'have a responsibility to build it well', look:'the writer\'s lesson at the end', say:'Find the proof in the article.', how:'Read the last paragraph.'},
+        {type:'sort', bins:['News report','Opinion piece'], cards:[['The storm dropped six inches of rain.',0],['The owners were heartless.',1],['"The club was careless," one survivor told reporters.',0],['The courts were cowardly.',1]], say:'Yoni checks lines for The Beacon. News or opinion?', how:'Can it be checked, or does it judge? A quote reports what someone said.'},
+        {type:'match', pairs:[['"reckless", "greedy", "shameful"','loaded words'],['who, what, when, where','signs of news'],['"should" and "must"','signs of opinion']], say:'Match each clue to what it shows.', how:'Does it report, or judge?'},
+        {type:'order', steps:['Read the headline and first lines.','Look for facts you could check.','Look for loaded words and "should".','Decide: report or opinion?'], say:'Put the steps in order.', how:'Read first. Decide last.'},
+        {type:'cloze', t:'A word like "greedy" that judges someone is a ___ word.', o:['loaded','neutral','checked'], a:'loaded', say:'Challenge! Tap the word that fits.', how:'Does the word judge, or only name?'}] },
+    'READ.COMP.L09.19':{ band:'M68', pic:'🧪', today:'Check a claim against two sources',
+      why:'Dramatic stories with clear lessons spread fast. A careful reader checks them against more than one source before he passes them on.',
+      ready:[{q:'Which is a claim?', o:['The parade caused the disaster.','The parade was on September 28.','Philadelphia is in Pennsylvania.'], a:'The parade caused the disaster.'}],
+      bridge:'READ.COMP.L09.03', bridgeName:'Fact Checker',
+      watch:{ q:'Two Cities and the 1918 Flu', m:{type:'scene', e:'🏙️', t:'"Should we conclude, then, that the parade alone caused Philadelphia\'s disaster?"'}, steps:[
+        {t:'The claim: "The parade alone caused Philadelphia\'s disaster."'},
+        {t:'Source 1, the study of many cities: crowds spread the flu. That supports the parade\'s part.'},
+        {t:'Source 2, careful historians: the flu came early to a crowded port, with sailors. That adds another cause.'},
+        {t:'So the parade was part of the cause, but not the only one.'},
+        {t:'Verdict: partly supported.'},
+        {t:'Teach it back: tell your chavrusa the claim, what each source said, and your verdict.'}], a:'Partly supported: the parade helped spread it, but it was not the only cause.' },
+      oops:{ q:'"The story of the two cities proves that closing early saves lives." Right?', wrong:'Yes: two cities are proof', right:'No: the study of many cities is the real proof', why:'Two cities can differ in many ways. A pattern across many cases is stronger.' },
+      ways:['worked example','read the topic set','find the proof','challenge round','sort','teach it back'], done:'You can check a claim against two sources and give a fair verdict!',
+      board:{ one:'State the claim. Find what two careful sources say. Look for other causes. Verdict: fully, partly or not supported.', activity:'Post three claims about the 1918 flu around the room. Groups find evidence in the article for each, then stand by the verdict sign they choose and defend it.', mistakes:['Trusting one dramatic story','Calling a claim proven when there are other causes','Ignoring how many cases were studied'] },
+      do:[
+        {type:'read', text:'C68.DIS.02', say:'Read "Two Cities and the 1918 Flu".', how:'Notice what supports the parade claim, and what adds doubt.'},
+        {type:'sort', mis:true, bins:['Points to the parade','Points to another cause'], cards:[['Hospitals filled within three days.',0],['The flu arrived early, with sailors.',1],['Philadelphia was a crowded port.',1],['Thousands fell sick within a week.',0]], say:'Watch the trap! Claim: the parade alone caused it.', how:'Does it point to the parade, or to another cause?'}],
+      your:[
+        {type:'proof', text:'C68.DIS.02', q:'Which sentence compares the two cities\' death rates at the worst point?', proof:'about eight times as high as in St. Louis', look:'the comparison from the 2007 study', say:'Find the proof in the article.', how:'Read the part about the 2007 study.'},
+        {type:'order', steps:['State the claim exactly.','Find what source A says.','Find what source B says.','Look for other causes.','Give a verdict.'], say:'Put the steps for checking a claim in order.', how:'Claim first. Verdict last.'},
+        {type:'match', pairs:[['fully supported','sources agree, nothing else explains it'],['partly supported','true, but not the whole story'],['not supported','careful sources show it is wrong']], say:'Match each verdict to its meaning.', how:'How much of the claim holds up?'},
+        {type:'evidence', q:'Eli claims the Tacoma Narrows Bridge fell in an earthquake. Which fact settles it?', p:['The report says it twisted apart in a steady wind.','The bridge was a suspension bridge.','It opened on July 1, 1940.'], a:0, look:'the cause the report gives', say:'Tap the fact that settles it.', how:'What does the report say made it fall?'},
+        {type:'cloze', t:'Some cities that closed early still suffered badly. That makes "closing saves lives" ___ supported.', o:['partly','fully','not'], a:'partly', say:'Challenge! Tap the word that fits.', how:'Is closing early the whole story?'}] }
+  };
+
+  /* The existing skill "Manual Reader" (READ.COMP.L09.02), rebuilt as a One Bite lesson. Its own questions stay as practice and Show me. */
+  var UP = {
+    'READ.COMP.L09.02':{ band:'M68', pic:'📋', today:'Read a safety guide and follow it exactly',
+      why:'In a real emergency, the people who read the guide carefully, before they need it, keep their families safe.',
+      ready:[{q:'In numbered steps, what does the number tell you?', o:['the order to do them','how important they are','how long they take'], a:'the order to do them'}],
+      bridge:'READ.FLU.L09.04', bridgeName:'Read It Twice',
+      watch:{ q:'Hurricane Ready: A Family Guide', m:{type:'scene', e:'🌀', t:'PART 1: KNOW THE WORDS. PART 2: THE WATER IS THE GREATEST DANGER. PART 3: MAKE A KIT. PART 4: MAKE A PLAN. PART 5: AFTER THE STORM.'}, steps:[
+        {t:'Read the headings first: Know the Words, the Water, Make a Kit, Make a Plan, After the Storm.'},
+        {t:'Find the key terms. A watch: possible, within 48 hours. A warning: expected, within 36 hours.'},
+        {t:'Notice the capital letters. A guide shouts the words you must not miss.'},
+        {t:'Find the action for each term. Watch: get ready. Warning: finish, and leave if told to.'},
+        {t:'Read the warnings: "Never walk or drive through flood water."'},
+        {t:'Teach it back: tell your chavrusa the difference between a watch and a warning, and what to do for each.'}], a:'Watch: possible, get ready. Warning: expected, act now.' },
+      oops:{ q:'"A hurricane warning just means it MIGHT come, so we can wait." Right?', wrong:'Yes: a warning is a maybe', right:'No: a warning means it is expected; act now', why:'A watch is "possible". A warning is "expected". Mixing them up can cost lives.' },
+      ways:['worked example','read the whole guide','Mistake Detective','retrieval','order','teach it back'], done:'You can read a safety guide and follow it exactly!',
+      board:{ one:'Read the headings first. Find the key terms. Find the action for each. Follow numbered steps in order. Never skip a warning.', activity:'Families make a kit list from the guide as homework. In class, boys compare lists and find what each one missed.', mistakes:['Mixing up watch and warning','Skipping the warnings in capital letters','Doing the steps out of order'] },
+      do:[
+        {type:'read', text:'C68.DIS.03', say:'Read "Hurricane Ready: A Family Guide".', how:'Read the headings first. Then read each part slowly.'},
+        {type:'sort', mis:true, bins:['Do it at a WATCH','Do it at a WARNING'], cards:[['check your kit',0],['fill the gas tank',0],['finish getting ready',1],['leave if you are told to',1]], say:'Watch the trap! Watch or warning?', how:'Watch: possible, get ready. Warning: expected, act.'}],
+      your:[
+        {type:'proof', text:'C68.DIS.03', q:'Which sentence tells what a hurricane warning means?', proof:'conditions are EXPECTED in your area', look:'the definition of a warning', say:'Find the proof in the guide.', how:'Read Part 1: Know the Words.'},
+        {type:'match', pairs:[['Part 1','what watch and warning mean'],['Part 3','what goes in the kit'],['Part 5','what to do after the storm']], say:'Match each part to its topic.', how:'Skim each heading.'},
+        {type:'evidence', q:'After the storm, which action does the guide warn against?', p:['Using a generator indoors.','Taking photos of damage.','Checking on neighbors.'], a:0, look:'a danger the guide names', say:'Tap the action to avoid.', how:'Read Part 5: After the Storm.'},
+        {type:'order', steps:['Wait until officials say it is safe.','Go back home.','Take photos of the damage.','Clean up.'], say:'Benny\'s family goes home. Put the steps in order.', how:'Read Part 5. Photos come before you clean up.'},
+        {type:'cloze', t:'Just ___ inches of moving water can knock a grown man off his feet.', o:['six','twenty','thirty-six'], a:'six', say:'Challenge! Tap the word that fits.', how:'Read Part 2 about flood water.'}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C68', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('C68', { bite: UP });
+
+  if (window.TLCORE && TLCORE.units && TLCORE.units.add) TLCORE.units.add({ id:'C68.U87', title:'Reading for Real Life', c:'READ', grade:8,
+    skills:['READ.COMP.L09.02','READ.COMP.L09.17','READ.COMP.L09.18','READ.COMP.L09.19'],
+    review:['READ.COMP.L09.15','READ.COMP.L09.16'], n:10,
+    items:[
+      {type:'evidence', skill:'READ.COMP.L09.02', q:'A flood guide says: "A flood WATCH means flooding is possible. A flood WARNING means flooding is happening or about to happen." The radio says "flood warning". What do you do?', p:['Act now: move to higher ground if told to.','Wait and see.','Check the weather next week.'], a:0, look:'what a warning means', how:'Warning: it is happening or about to. Act.'},
+      {type:'cloze', skill:'READ.COMP.L09.17', t:'To show how a landslide moves down a hill, the best form is a ___.', o:['video','table','list'], a:'video', how:'Is it motion, numbers or reasons?'},
+      {type:'evidence', skill:'READ.COMP.L09.18', q:'Which sentence is from an opinion piece?', p:['The mayor\'s lazy response put every family in danger.','The river crested at 22 feet on Sunday.','Three shelters opened downtown.'], a:0, look:'a word that judges', how:'Find the loaded word.'},
+      {type:'cloze', skill:'READ.COMP.L09.19', t:'Claim: "The levee held because of the new sandbags." But the river also rose less than expected. The claim is ___ supported.', o:['partly','fully','never'], a:'partly', how:'Is there another cause?'},
+      {type:'evidence', skill:'READ.COMP.L09.02', q:'A tornado guide says: "Go to the lowest floor. Stay away from windows. Cover your head." Where should a family go?', p:['the basement, away from windows','the top floor, to see the storm','outside, to the car'], a:0, look:'the guide\'s first step', how:'Read each step. What does "lowest floor" mean?'},
+      {type:'evidence', skill:'READ.COMP.L09.17', q:'Gavriel must show why a dam failed AND how fast the lake rose each hour. Which pair of forms is best?', p:['a written report with a chart','a video alone','a photo alone'], a:0, look:'two needs: reasons and numbers', how:'One form for reasons, one for numbers.'},
+      {type:'evidence', skill:'READ.COMP.L09.18', q:'A news report quotes a neighbor: "The builders were careless." Is the report itself an opinion piece?', p:['No: it reports what someone said','Yes: it contains a loaded word','Yes: every quote is the writer\'s view'], a:0, look:'who is speaking in the quote', how:'Whose words are in the quote marks?'},
+      {type:'cloze', skill:'READ.COMP.L09.19', t:'Claim: "The fire began at 2 a.m." The fire log says 2 a.m., and the alarm company says 2 a.m. The claim is ___ supported.', o:['fully','partly','not'], a:'fully', how:'Do both careful sources agree?'}
+    ] });
+})();
 </script>
