@@ -54,5 +54,9 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - Pictures: `docs/screens/store-buttons-before-*.jpg`, `store-buttons-after-*.jpg`. Check: `node tools/screens/info.js OUT TAG 5 storepop,storegive,storeask`.
 - Not changed: the old home's goal bar and store button (`goalBar`, `.stbtn`), which only show on the old home.
 
+## Done: a Sign out button on the home (25 Nov 2026)
+- HoS: the boys can't find how to sign out. The home (`homeHTML` in `src/GameMap.html`) now has ONE kit quiet "Sign out" (`data-gm="pfout"`, the same action as My profile's) on the "0 of 3 done today" line, right side. The home test allows exactly this one extra button.
+- Pictures: `docs/screens/home-signout-*.jpg`.
+
 ## Next
 - Not yet on kit labels: Mistake Detective's points and case dots, the old Trophies/My week rooms, Canteen, lesson screens. The Chumash/Workbook/Arena buttons are not on the kit yet.
