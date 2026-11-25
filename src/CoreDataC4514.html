@@ -1,0 +1,347 @@
+<script>
+/* CoreDataC4514.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 5 Unit 5.7 "Find it fast" (sources and visuals), topic set: Energy and electricity (docs/core-growth/C45-map.md).
+   Short lesson passages (under 300 words) go in PASS under c45_en keys; each lesson teaches on one passage and checks on a different, cold passage:
+   COMP.L06.16 enpower -> enbattery, COMP.L06.17 enshelf -> enshelf2, COMP.L06.18 ensave -> entimer, LIT.L06.14 enstorm -> enlantern.
+   Tables: a passage is plain text (each \n is a new line), so a table is a TABLE: title line and then one short "thing: number" line per row,
+   which reads well at 390 px and aloud. Facts kept careful: Faraday 1831 (a moving magnet makes current flow), Volta 1800 (zinc, copper,
+   salt-water cardboard), Edison's team 1879 (carbon from cotton thread, about 13 hours; later bamboo, more than 1,000 hours), Swan in
+   England at about the same time. Shabbos timers: only the basic common practice (set before Shabbos; on Shabbos we do not turn lights on
+   or off; questions go to a Rav). Watt numbers are rounded, typical label values. Every family and table here is made up.
+   The E45 passage-card style lives in CoreDataC451.html. */
+(function () {
+  var P = {
+    c45_enpower: { title: 'Where Does Electricity Come From?', text: 'When you flip a switch, a light turns on in an instant. But the electricity started its trip far away.\nMAKING IT SPIN\nMost electricity is made in power plants. Many power plants burn coal or natural gas to boil water. The hot steam rushes out and spins a big wheel with blades, called a turbine.\nMAGNETS AND WIRE\nThe turbine turns a generator. Inside the generator, magnets spin past coils of copper wire, and that pushes electricity through the wire. In 1831, a scientist named Michael Faraday found that a moving magnet can make electricity flow in a wire.\nWIND, WATER AND SUN\nSome power plants burn nothing at all. Wind can spin the blades of a wind turbine. At the Conowingo Dam on the Susquehanna River in Maryland, falling water spins turbines. Solar panels are different: they turn sunlight right into electricity, with nothing spinning.\nDOWN THE WIRES\nTall towers carry power lines across the land. Near your street, machines called transformers change the electricity so it is safe for homes. Then it runs through wires inside the walls, all the way to your switch.' },
+    c45_enbattery: { title: 'How a Battery Works', text: 'A flashlight, a remote and a toy car have something in common. Each one runs on a battery.\nTHE FIRST BATTERY\nIn 1800, a scientist in Italy named Alessandro Volta built the first battery. He stacked discs of zinc and copper, with pieces of cardboard soaked in salt water between them. Today we measure a battery\'s push in volts, a word that comes from his name.\nWHAT IS INSIDE\nA battery stores energy in chemicals. Every battery has two ends: a plus end and a minus end. Inside, the chemicals slowly change, and this pushes electricity out of the battery.\nA LOOP CALLED A CIRCUIT\nElectricity flows only in a closed loop, called a circuit. It leaves one end of the battery, runs through the wire and the bulb, and comes back to the other end. If the loop is broken, the light goes out.\nWHY BATTERIES GO DEAD\nWhen the chemicals are used up, the battery cannot push anymore. We say it is dead. A rechargeable battery is different: a charger pushes the chemicals back the way they were, so the battery can be used again and again.' },
+    c45_enshelf: { title: 'Dovid\'s Source Shelf: The First Light Bulbs', text: 'Dovid Lerner is writing a report on the first light bulbs. Mr. Halpern gave him four sources. Here is a short piece of each one.\nSOURCE 1: A DICTIONARY (Science Words for Kids)\nfilament (noun): the thin thread inside a bulb that glows when electricity runs through it.\nSOURCE 2: A HISTORY BOOK (Lighting Up the World)\nBefore electric lights, people read by candles, oil lamps and gas lamps. For many years, inventors tried to make an electric bulb, but the thin thread inside kept burning out. In 1879, in New Jersey, Thomas Edison\'s team made a bulb with a thread of baked cotton that glowed for many hours. In England, Joseph Swan made a glowing bulb at about the same time.\nSOURCE 3: A HOW-TO GUIDE (Safe Science at Home)\nHow to change a light bulb, with a grown-up: 1. Turn off the lamp and unplug it. 2. Wait until the old bulb is cool. 3. Twist it out. 4. Twist in the new bulb.\nSOURCE 4: A TABLE OF NUMBERS (How Long Bulbs Last)\nCotton bulb: about 13 hours\nBamboo bulb: over 1,000 hours\nOld-style: about 1,000 hours\nLED bulb: about 15,000 hours' },
+    c45_enshelf2: { title: 'Avrumi\'s Source Shelf: Shabbos Timers', text: 'Avrumi Katz wants to learn about Shabbos timers. Rabbi Feldman helped him find four sources. Here is a short piece of each one.\nSOURCE 1: A HOW-TO GUIDE (Your Plug-In Timer)\nSet the timer before Shabbos begins. 1. Turn the dial until the arrow points to the time now. 2. Push down the pins for the hours the lamp should be on. 3. Plug the timer into the wall, and plug the lamp into the timer.\nSOURCE 2: A DICTIONARY (Words for Young Builders)\ndial (noun): a round face with numbers or marks that turns to set a machine.\nSOURCE 3: A TABLE OF NUMBERS (The Katz Family\'s Friday Night Timers)\nDining room: off 11:30 PM\nLiving room lamp: off 10 PM\nBedroom lamp: off 9:00 PM\nSOURCE 4: A HISTORY BOOK (Clocks That Help at Home)\nSwitches run by a clock have been made for more than a hundred years. Over time, many Jewish families began to use them for Shabbos. A timer set before Shabbos turns the lights on and off by itself, so nobody touches a switch on Shabbos. For any question about timers, families ask a Rav.' },
+    c45_ensave: { title: 'Saving Energy at Home', text: 'Every machine in your home runs on electricity. A watt tells how fast a machine uses electricity. The more watts, the more electricity it uses each hour.\nAvrumi Katz wanted his family to use less electricity, so he made a table. He read the labels on things around the house. (The numbers are rounded.)\nTABLE: KATZ HOME WATTS\nOld-style bulb: 60 watts\nLED bulb: 9 watts\nCeiling fan: 40 watts\nFridge (running): 150 watts\nUrn (heating): 1,500 watts\nAvrumi showed the table to his Abba. That week, Abba changed every old-style bulb to an LED bulb. An LED bulb gives about the same light, but it stays much cooler, so less energy turns into wasted heat.\nThe urn\'s heater does not run all day. It turns on and off to keep the water hot.\nSmall habits help too. Turn off the light when you leave a room. Close the fridge door quickly, so the cold air stays inside.' },
+    c45_entimer: { title: 'How a Shabbos Timer Works', text: 'On Shabbos, we do not turn lights on or off. Yet in many Jewish homes, the lights go off at bedtime all by themselves. The secret is a Shabbos timer.\nA timer is a clock that works a switch. Some timers plug into the wall, and a lamp plugs into the timer. Others are built right into the wall. Around the dial of many timers are little pins. The pins mark the hours the lights should be on. When the dial turns to those hours, the switch clicks on. When the hours pass, it clicks off.\nThe timer is set before Shabbos begins. If a family has a question about a timer on Shabbos, they ask a Rav.\nTzvi Hirsch Gold made this table for his family\'s fridge, so nobody forgets.\nTABLE: GOLD FAMILY TIMERS\nDining room: off 11:30 PM\nKitchen light: on all night\nLiving room lamp: off 10 PM\nBedroom lamp: off 9:00 PM' },
+    c45_enstorm: { title: 'Lights Out on Glen Avenue (a story with pictures and sound)', text: 'This story comes with pictures and sound. Each part has a picture, a sound and the words of the story.\nPART 1\nPICTURE: Dovid Lerner sits at the kitchen table with his Chumash. Rain streams down the dark window. The clock on the wall says 8:15.\nSOUND: Rain drums on the roof. Thunder rumbles far away.\nWORDS: Dovid was finishing his homework while the storm grew louder.\nPART 2\nPICTURE: The kitchen is black. Only a flash of lightning shows the window.\nSOUND: CRACK! Then the fridge stops humming.\nWORDS: All at once, the lights went out.\nPART 3\nPICTURE: Abba holds up a lantern.\nSOUND: Soft, slow violin music begins.\nWORDS: "Don\'t worry," said Abba. "I knew this lantern would come in handy."\nPART 4\nPICTURE: Dovid and Abba sit close together in a circle of warm, golden light.\nSOUND: The music turns bright and cheerful. The rain patters gently now.\nWORDS: Dovid finished his homework by lantern light, and Abba learned beside him.' },
+    c45_enlantern: { title: 'Chess by Lantern Light (a story with pictures and sound)', text: 'This story comes with pictures and sound. Each part has a picture, a sound and the words of the story.\nPART 1\nPICTURE: Binyamin Yusupov and his Zeidy sit at a chessboard by the living room window. Snow falls outside. The clock on the wall says 7:40.\nSOUND: The wind whistles. A slow, gentle clarinet tune plays.\nWORDS: Binyamin had been staring at the board for a long time.\nPART 2\nPICTURE: The room goes dark. Only the white snow glows outside the window.\nSOUND: The fridge\'s low hum stops. Now there is only the wind.\nWORDS: The lights flickered and went out.\nPART 3\nPICTURE: Zeidy holds up a small battery lantern. Its light falls across the chessboard.\nSOUND: Quick, playful flute music begins.\nWORDS: "A good game does not need a power plant," said Zeidy with a smile.\nPART 4\nPICTURE: Binyamin slides his rook across the board in the golden light.\nSOUND: Click! The music rises, bright and happy.\nWORDS: "Check," whispered Binyamin.' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var MOOD = 'It sets the mood', FACT = 'It adds a fact the words leave out', CHG = 'It changes what happens';
+  var TB = 'In the table', WD = 'In the words', NA = 'Not in the article';
+  var R1 = 'Read one row', R2 = 'Compare two rows', RA = 'Compare every row';
+  var LESSONS = {
+    'READ.COMP.L06.16':{name:'Skim and Scan',
+      teach:[
+        {p:'c45_enpower', q:'You want to know what each part of this article is about. Skim or scan?', o:['Skim', 'Scan'], how:'Do you need one fact, or a quick look over every part? Think about what each word means.'},
+        {p:'c45_enpower', q:'"What spins a wind turbine?" Under which heading is the answer?', o:['WIND, WATER AND SUN', 'MAKING IT SPIN', 'DOWN THE WIRES'], how:'Pick the key word in the question. Read the headings. Which part is about that key word?'},
+        {p:'c45_enpower', q:'"When did Faraday find that magnets make electricity?" Scan for...', o:['A year', 'A name', 'A place'], how:'Look at the question word. What kind of answer does a "when" question need?'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_enpower', q:'Skim or scan? Sort each job.', bins:[{id:'k', label:'Skim'}, {id:'n', label:'Scan'}],
+          items:[{label:'See what each part of the article is about', bin:'k'}, {label:'Get a quick idea of the whole article', bin:'k'}, {label:'Find the word "transformers"', bin:'n'}, {label:'Find the year Faraday made his discovery', bin:'n'}, {label:'Check if the article says "solar"', bin:'n'}],
+          h:'The big picture, or one fact?', how:'Skim: a fast look over everything to see what it is about. Scan: a fast hunt for one word or fact.'},
+        {t:'pairs', p:'c45_enpower', q:'Match each question to the heading that holds its answer.', pairs:[['What do power plants burn?', 'MAKING IT SPIN'], ['What is inside a generator?', 'MAGNETS AND WIRE'], ['How do solar panels work?', 'WIND, WATER AND SUN'], ['What do transformers do?', 'DOWN THE WIRES']],
+          h:'Find the key word. Which part is about it?', how:'Pick the key word in each question. Skim the headings to find the part that holds that word.'},
+        {t:'spotall', p:'c45_enpower', q:'"How do the solar panels work?" Tap every good key word.', cells:[{label:'solar', ok:true}, {label:'panels', ok:true}, {label:'How', ok:false}, {label:'do', ok:false}, {label:'the', ok:false}],
+          h:'Which words name the thing you are asking about?', how:'Small question words are in almost every question. A key word names the thing the question is about.'},
+        {t:'sort', p:'c45_enpower', q:'Mistake Detective. Right, or a mistake?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Skim the headings to find the right part.', bin:'r'}, {label:'Pick the key word, then scan for it.', bin:'r'}, {label:'Read every word from the top to find one fact.', bin:'m'}, {label:'Scan for small words like "how" and "the."', bin:'m'}, {label:'Stop at the first heading you see, and guess.', bin:'m'}],
+          h:'Is it fast? Does it find the right spot?', how:'A fast reader does not read every word for one fact. He uses headings and one strong key word.'},
+        {t:'order', p:'c45_enpower', q:'Put the find-it-fast steps in order.', tiles:['Read the question and pick its key word.', 'Skim the headings to find the right part.', 'Scan that part for the key word.', 'Read that sentence closely.'],
+          h:'What must you know before you can look?', how:'First you need to know what you are looking for. Last, you read the answer carefully.'},
+        {t:'sort', p:'c45_enpower', q:'What should you scan for?', bins:[{id:'n', label:'A name'}, {id:'y', label:'A year'}, {id:'p', label:'A place'}],
+          items:[{label:'Who found that a moving magnet makes electricity?', bin:'n'}, {label:'When did Faraday make his discovery?', bin:'y'}, {label:'Where is the Conowingo Dam?', bin:'p'}, {label:'Where does falling water spin turbines?', bin:'p'}],
+          h:'Who, when, or where?', how:'Look at the question word. A who question needs a person, a when question needs a time, and a where question needs a spot on a map.'}
+      ],
+      check:[
+        {p:'c45_enbattery', q:'"What did Volta stack to build his battery?" Under which heading is the answer?', o:['THE FIRST BATTERY', 'WHAT IS INSIDE', 'A LOOP CALLED A CIRCUIT'], how:'Pick the key word in the question. Read the headings. Which part is about that key word?'},
+        {p:'c45_enbattery', q:'To find WHEN the first battery was built, scan for...', o:['A year', 'A name', 'A place'], how:'Look at the question word. What kind of answer does it need?'},
+        {p:'c45_enbattery', q:'"What does a charger do?" Under which heading is the answer?', o:['WHY BATTERIES GO DEAD', 'WHAT IS INSIDE', 'THE FIRST BATTERY'], how:'What is a charger for? Read every heading, then pick the part about it.'}
+      ],
+      re:[
+        {p:'c45_enpower', q:'A fast look over a whole text, to see what it is about, is...', o:['skimming', 'scanning', 'rereading'], how:'Big picture or one fact?'},
+        {p:'c45_enpower', q:'A fast hunt for one key word is...', o:['scanning', 'skimming', 'summarizing'], how:'Big picture or one fact?'},
+        {p:'c45_enpower', q:'To find which part holds an answer, first look at...', o:['the headings', 'the last line', 'every word'], how:'What tells you what each part is about?'}
+      ]},
+    'READ.COMP.L06.17':{name:'Which Source?',
+      teach:[
+        {p:'c45_enshelf', q:'"What does filament mean?" Which source answers it?', o:['A dictionary', 'A history book', 'A table of numbers'], how:'Ask: what kind of answer do I need? Then read each source piece.'},
+        {p:'c45_enshelf', q:'"About how many hours did the cotton-thread bulb glow?" Which source?', o:['A table of numbers', 'A history book', 'A how-to guide'], how:'The question asks for a number. Read each source piece. Which one gives numbers?'},
+        {p:'c45_enshelf', q:'"What did people use for light before bulbs?" Which source?', o:['A history book', 'A dictionary', 'A how-to guide'], how:'Ask: what kind of answer do I need? A meaning, steps, or something from long ago?'}
+      ],
+      practice:[
+        {t:'pairs', p:'c45_enshelf', q:'Match each question to the source that answers it.', pairs:[['What does "filament" mean?', 'A dictionary'], ['Who made a glowing bulb in England?', 'A history book'], ['How do you change a bulb safely?', 'A how-to guide'], ['How long does an LED bulb last?', 'A table of numbers']],
+          h:'What kind of answer does each question need?', how:'For each question, ask what kind of answer you need. Then find the source made for that kind.'},
+        {t:'sort', p:'c45_enshelf', q:'Which kind of source answers it?', bins:[{id:'d', label:'A dictionary'}, {id:'h', label:'A history book'}, {id:'g', label:'A how-to guide'}],
+          items:[{label:'What does "turbine" mean?', bin:'d'}, {label:'What does "generator" mean?', bin:'d'}, {label:'Who built the first battery?', bin:'h'}, {label:'What did people use for light long ago?', bin:'h'}, {label:'How do you make a lemon battery?', bin:'g'}],
+          h:'A meaning, the past, or steps?', how:'A dictionary tells meanings. A history book tells who did what, long ago. A how-to guide gives steps.'},
+        {t:'spotall', p:'c45_enshelf', q:'Tap every question the table of numbers can answer.', cells:[{label:'How long does an LED bulb last?', ok:true}, {label:'Which lasts longer, an old-style bulb or an LED bulb?', ok:true}, {label:'About how long did the cotton-thread bulb glow?', ok:true}, {label:'What does "filament" mean?', ok:false}, {label:'Who was Joseph Swan?', ok:false}],
+          h:'Read the table. What does each row tell?', how:'A table of numbers tells exact amounts. It cannot tell meanings or stories.'},
+        {t:'sort', p:'c45_enshelf', q:'Mistake Detective. Right, or a mistake?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Pick the source made for the kind of answer you need.', bin:'r'}, {label:'Use the table of numbers to find how long a bulb lasts.', bin:'r'}, {label:'Pick a source because its title has a word from your question.', bin:'m'}, {label:'Use the dictionary to learn who made the first bulb.', bin:'m'}, {label:'Any source will do, as long as it is about bulbs.', bin:'m'}],
+          h:'Does that kind of source hold that kind of answer?', how:'A title can trick you. Ask what kind of answer you need, then check what each source holds.'},
+        {t:'sort', p:'c45_enshelf', q:'Does a source on Dovid\'s shelf answer it?', bins:[{id:'y', label:'Answered on this shelf'}, {id:'n', label:'None of these sources'}],
+          items:[{label:'How do you change a bulb?', bin:'y'}, {label:'Where did Edison\'s team make its cotton bulb?', bin:'y'}, {label:'Where did Joseph Swan go to school?', bin:'n'}, {label:'How is the glass for a bulb made?', bin:'n'}],
+          h:'Read all four source pieces. Is the answer there?', how:'Sometimes no source on the shelf has the answer. Then you need a new source.'},
+        {t:'order', p:'c45_enshelf', q:'Put the steps for picking a source in order.', tiles:['Read your question.', 'Ask what kind of answer you need.', 'Pick the source made for that kind.', 'Find the answer and check it.'],
+          h:'What must you know before you pick?', how:'You cannot choose a source before you know your question.'}
+      ],
+      check:[
+        {p:'c45_enshelf2', q:'Which source tells what a "dial" is?', o:['A dictionary', 'A how-to guide', 'A history book'], how:'Ask: what kind of answer do I need? Then read each source piece.'},
+        {p:'c45_enshelf2', q:'Which source tells exactly when the bedroom lamp goes off?', o:['A table of numbers', 'A how-to guide', 'A history book'], how:'Ask: what kind of answer do I need? Then read each source piece.'},
+        {p:'c45_enshelf2', q:'Which source tells how families began to use timers for Shabbos?', o:['A history book', 'A how-to guide', 'A table of numbers'], how:'Ask: what kind of answer do I need? Then read each source piece.'}
+      ],
+      re:[
+        {p:'c45_enshelf', q:'To learn what a word means, use...', o:['a dictionary', 'a history book', 'a table of numbers'], how:'Which source tells meanings?'},
+        {p:'c45_enshelf', q:'To learn the steps to make or fix something, use...', o:['a how-to guide', 'a dictionary', 'a history book'], how:'Which source gives steps?'},
+        {p:'c45_enshelf', q:'Before you pick a source, ask...', o:['what kind of answer you need', 'which book is thickest', 'which title is longest'], how:'Think of the first two steps.'}
+      ]},
+    'READ.COMP.L06.18':{name:'Read the Table',
+      teach:[
+        {p:'c45_ensave', q:'How many watts does the fridge use? Where is the answer?', o:[TB, WD, NA], how:'Look for the fridge in the sentences, then in the table. Where is its number?'},
+        {p:'c45_ensave', q:'Which uses fewer watts, the fan or the old-style bulb? How do you find out?', o:[R2, R1, RA], how:'Count how many things the question asks about.'},
+        {p:'c45_ensave', q:'Why does an LED bulb waste less energy? Where is the answer?', o:[WD, TB, NA], how:'Look at the table, then the sentences. Which one tells about heat?'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_ensave', q:'Where is the answer?', bins:[{id:'t', label:TB}, {id:'w', label:WD}, {id:'n', label:NA}],
+          items:[{label:'How many watts the urn uses', bin:'t'}, {label:'How many watts an LED bulb uses', bin:'t'}, {label:'What a watt tells', bin:'w'}, {label:'Why the urn does not run all day', bin:'w'}, {label:'Who invented the LED bulb', bin:'n'}],
+          h:'A number from a row, a sentence, or nowhere?', how:'Check the table rows and the sentences. If neither one tells it, it is not in the article.'},
+        {t:'pairs', p:'c45_ensave', q:'Match each question to how you read the table.', pairs:[['How many watts does the fridge use?', R1], ['Which uses more, the fan or the old-style bulb?', R2], ['Which thing uses the most watts?', RA]],
+          h:'Does the question ask about one thing, two, or all?', how:'Count the things the question asks about. That tells you how many rows to read.'},
+        {t:'spotall', p:'c45_ensave', q:'Tap every question the table alone can answer.', cells:[{label:'How many watts does the urn use?', ok:true}, {label:'Which uses more, the fan or the fridge?', ok:true}, {label:'Which thing uses the fewest watts?', ok:true}, {label:'Why does the urn turn on and off?', ok:false}, {label:'What does a watt tell?', ok:false}],
+          h:'Can a row of numbers answer it?', how:'A table gives names and numbers. Reasons and meanings are told in sentences.'},
+        {t:'sort', p:'c45_ensave', q:'Mistake Detective. Right, or a mistake?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Read the table\'s title first.', bin:'r'}, {label:'To find the most, check every row.', bin:'r'}, {label:'The first row always has the biggest number.', bin:'m'}, {label:'A table tells you why things happen.', bin:'m'}, {label:'Skip the table, because the sentences tell everything.', bin:'m'}],
+          h:'Where do numbers live? Where do reasons live?', how:'Look at the Katz table. Is the biggest number at the top? Does any row say "because"?'},
+        {t:'order', p:'c45_ensave', q:'Put the table-reading steps in order.', tiles:['Read the title of the table.', 'Find the row for the thing you need.', 'Read across to its number.', 'Check that the number answers the question.'],
+          h:'What tells you what the whole table is about?', how:'Start with what the table is about. End by checking your answer.'},
+        {t:'sort', p:'c45_ensave', q:'How do you read the table for each question?', bins:[{id:'a', label:R1}, {id:'b', label:R2}, {id:'c', label:RA}],
+          items:[{label:'How many watts does the ceiling fan use?', bin:'a'}, {label:'How many watts does the urn use?', bin:'a'}, {label:'Does the LED bulb use less than the fan?', bin:'b'}, {label:'Which thing uses the fewest watts?', bin:'c'}, {label:'Which thing uses the most watts?', bin:'c'}],
+          h:'One thing, two things, or all of them?', how:'Count the things the question asks about.'}
+      ],
+      check:[
+        {p:'c45_entimer', q:'When does the living room lamp go off? Where is the answer?', o:[TB, WD, NA], how:'Look for the lamp in the sentences, then in the table.'},
+        {p:'c45_entimer', q:'What do the little pins on the dial do? Where is the answer?', o:[WD, TB, NA], how:'Look for the pins in the table, then in the sentences.'},
+        {p:'c45_entimer', q:'Which light goes off first? How do you find out?', o:[RA, R1, R2], how:'Count the things the question asks about.'}
+      ],
+      re:[
+        {p:'c45_ensave', q:'Before you read the rows of a table, read its...', o:['title', 'last row', 'biggest number'], how:'What tells you what the whole table is about?'},
+        {p:'c45_ensave', q:'Exact amounts in an article are often found...', o:['in a table', 'in the title of the article', 'nowhere'], how:'Think of the watts in the Katz home.'},
+        {p:'c45_ensave', q:'Reasons ("because...") in an article are usually found...', o:['in the sentences', 'in the table rows', 'in the numbers'], how:'Can a row of numbers say "because"?'}
+      ]},
+    'READ.LIT.L06.14':{name:'Pictures and Sound',
+      teach:[
+        {p:'c45_enstorm', q:'What does the soft, slow violin music in part 3 add?', o:[MOOD, FACT, CHG], how:'Does the music tell something new that is true, or change how the part feels?'},
+        {p:'c45_enstorm', q:'How do we learn that Dovid\'s homework is Chumash?', o:['The picture', 'The sound', 'The words'], how:'The words of part 1 say only "homework." Look at the other two lines of part 1.'},
+        {p:'c45_enstorm', q:'What does the clock on the wall in part 1 add?', o:[FACT, MOOD, CHG], how:'Read the words of part 1. Do they tell you what the clock tells you?'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_enstorm', q:'What does each picture or sound add?', bins:[{id:'m', label:MOOD}, {id:'f', label:FACT}],
+          items:[{label:'Soft, slow violin music begins.', bin:'m'}, {label:'The music turns bright and cheerful.', bin:'m'}, {label:'The clock on the wall says 8:15.', bin:'f'}, {label:'Then the fridge stops humming.', bin:'f'}],
+          h:'Does it change the feeling, or tell something new?', how:'Mood is how a part feels: scary, calm, happy. A fact is something true that the words never say.'},
+        {t:'pairs', p:'c45_enstorm', q:'Match each detail to the part of the story that tells it.', pairs:[['Dovid\'s homework is Chumash.', 'The picture'], ['The fridge stopped too.', 'The sound'], ['Abba knew the lantern would come in handy.', 'The words']],
+          h:'Look in the picture, the sound and the words.', how:'Each part has three lines: a picture, a sound and the words. Find which line tells the detail.'},
+        {t:'spotall', p:'c45_enstorm', q:'Tap every sound that makes the story feel tense or scary.', cells:[{label:'CRACK!', ok:true}, {label:'Thunder rumbles far away.', ok:true}, {label:'Soft, slow violin music begins.', ok:false}, {label:'The music turns bright and cheerful.', ok:false}, {label:'The rain patters gently now.', ok:false}],
+          h:'Imagine hearing each sound. How does it make you feel?', how:'Imagine each sound in a dark kitchen. Does it make your heart beat fast, or help you relax?'},
+        {t:'sort', p:'c45_enstorm', q:'Mistake Detective. Right, or a mistake?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'A picture can add a fact the words leave out.', bin:'r'}, {label:'Music can make a part feel calm or scary.', bin:'r'}, {label:'A picture only repeats the words, so skip it.', bin:'m'}, {label:'The violin music changes what happens in the story.', bin:'m'}],
+          h:'Think of the clock, the fridge and the violin.', how:'Check each line against the story. Did the music change what happened, or only the feeling?'},
+        {t:'order', p:'c45_enstorm', q:'Put the moods of the story in order, part 1 to part 4.', tiles:['Stormy and gloomy', 'Sudden and scary', 'Calm and gentle', 'Bright and cheerful'],
+          h:'Listen to the sound line of each part.', how:'Read the SOUND line of each part, in order. Ask how each one feels.'},
+        {t:'sort', p:'c45_enstorm', q:'Which part of the story tells it?', bins:[{id:'p', label:'The picture'}, {id:'s', label:'The sound'}, {id:'w', label:'The words'}],
+          items:[{label:'Dovid sits with his Chumash.', bin:'p'}, {label:'The clock says 8:15.', bin:'p'}, {label:'The fridge stops humming.', bin:'s'}, {label:'Rain drums on the roof.', bin:'s'}, {label:'All at once, the lights went out.', bin:'w'}],
+          h:'Is it a PICTURE line, a SOUND line, or a WORDS line?', how:'Find the detail in the story. Look at the label at the start of its line.'}
+      ],
+      check:[
+        {p:'c45_enlantern', q:'What does the quick, playful flute music in part 3 add?', o:[MOOD, FACT, CHG], how:'Does it tell something new that is true, or change how the part feels?'},
+        {p:'c45_enlantern', q:'What does the clock on the wall in part 1 add?', o:[FACT, MOOD, CHG], how:'Read the words of part 1. Do they tell you what the clock tells you?'},
+        {p:'c45_enlantern', q:'How do we learn that the fridge stopped too?', o:['The sound', 'The picture', 'The words'], how:'Read the picture, the sound and the words of part 2.'}
+      ],
+      re:[
+        {p:'c45_enstorm', q:'Soft, slow music in a story mostly...', o:['sets the mood', 'tells the time', 'changes what happens'], how:'Does music tell facts, or feelings?'},
+        {p:'c45_enstorm', q:'A clock in a picture that the words never mention...', o:['adds a fact', 'sets the mood', 'repeats the words'], how:'Did the words tell the time?'},
+        {p:'c45_enstorm', q:'To get everything from a story with pictures and sound, you...', o:['read the words, look, and listen', 'read only the words', 'skip to the end'], how:'Each part has three lines.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L06.16':{
+      hook:'A whole article, and you need one answer. Do you read every word? A fast reader finds it in seconds.',
+      big:'Skim the headings to find the right part, then scan that part for one key word to find the answer fast.',
+      intro:['Read the question and pick its key word: the word that names the thing.', 'Skim: run your eyes over the headings to see what each part is about.', 'Scan: hunt through that one part for your key word.', 'When you spot it, slow down and read that sentence closely.'],
+      ex:[{q:'"What do transformers do?"', steps:['Key word: transformers.', 'Skim the headings: DOWN THE WIRES is about getting electricity to homes.', 'Scan that part for "transformers."', 'Read that sentence: they change the electricity so it is safe for homes.'], a:'They make the electricity safe for homes.'},
+          {q:'"Who found that a moving magnet makes electricity?"', steps:['A who question: scan for a name.', 'Skim the headings: MAGNETS AND WIRE.', 'Scan that part for a name with a capital letter.'], a:'Michael Faraday.'}],
+      oops:{q:'Find what spins a wind turbine.', wrong:'Start at the top and read every word.', right:'Skim the headings, then scan WIND, WATER AND SUN for "wind."', why:'Reading every word is slow. The headings point to the right part.'},
+      idea:['Skimming is like looking at the signs over the aisles in a store. Scanning is like walking down one aisle to find the one thing you came for.', 'Skim the headings of a battery article: THE FIRST BATTERY, WHAT IS INSIDE, A LOOP CALLED A CIRCUIT, WHY BATTERIES GO DEAD. In five seconds you know its plan.'],
+      try:{q:'"Where is the Conowingo Dam?" What do you scan for?', o:['A place', 'A name', 'A year'], a:'A place', steps:['Look at the question word.', 'What kind of answer does "where" need?']}
+    },
+    'READ.COMP.L06.17':{
+      hook:'Four books on the shelf. Only one answers your question. Can you pick it in ten seconds?',
+      big:'Ask what kind of answer you need, then pick the source made for that kind of answer.',
+      intro:['Read your question.', 'Ask what kind of answer you need: a meaning, steps, the past, or exact numbers.', 'A dictionary gives meanings; a how-to guide gives steps; a history book tells who did what, long ago; a table of numbers gives exact amounts.', 'Pick that source, find the answer, and check it. If no source has it, find a new one.'],
+      ex:[{q:'"How do you change a light bulb?"', steps:['I need steps.', 'Which source gives steps? Safe Science at Home.', 'It is a how-to guide.'], a:'A how-to guide.'},
+          {q:'"How long does an LED bulb last?"', steps:['I need an exact number.', 'Which source lists exact amounts? How Long Bulbs Last.', 'Find the LED row: about 15,000 hours.'], a:'A table of numbers.'}],
+      oops:{q:'"How do you change a bulb?" Which source?', wrong:'Lighting Up the World. Its title has "Light" in it!', right:'Safe Science at Home: it gives the steps.', why:'Do not pick by one matching word. Pick by the kind of answer.'},
+      idea:['Picking a source is like picking a tool. You do not use a hammer to cut paper, even if both are in the same box.'],
+      try:{q:'"Who made a glowing bulb in England?" Which source?', o:['A history book', 'A dictionary', 'A how-to guide'], a:'A history book', steps:['What kind of answer do you need?', 'Which source tells who did what, long ago?']}
+    },
+    'READ.COMP.L06.18':{
+      hook:'Five machines, five numbers, one small table. It tells more than a whole page of sentences.',
+      big:'Read a table by its title and its rows: read one row for one thing, compare rows to compare things, and look in the sentences for reasons.',
+      intro:['Read the title: it tells what the whole table is about.', 'Find the row for the thing you need, and read across to its number.', 'One thing? Read one row. Two things? Compare two rows. The most or the least? Compare every row.', 'Numbers live in the table. Reasons and meanings live in the sentences.'],
+      ex:[{q:'"Which uses fewer watts, the fan or the fridge?"', steps:['Title: watts used in the Katz home.', 'Fan row: 40 watts.', 'Fridge row: 150 watts.', 'Compare: 40 is less than 150.'], a:'The fan.'},
+          {q:'"Why does an LED bulb waste less energy?"', steps:['No row says "because."', 'Look in the sentences: an LED bulb stays much cooler.'], a:'The answer is in the words, not the table.'}],
+      oops:{q:'Which thing uses the most watts?', wrong:'The old-style bulb. It is in the first row.', right:'The electric urn: check every row before you choose.', why:'The biggest number can be in any row.'},
+      idea:['A table is like a seating chart. Find the name on the left, then read across to his seat.'],
+      try:{q:'"How many watts does the LED bulb use?" How do you read the table?', o:['Read one row', 'Compare two rows', 'Compare every row'], a:'Read one row', steps:['How many things does the question ask about?']}
+    },
+    'READ.LIT.L06.14':{
+      hook:'Read "the lights went out" with spooky music, then with happy music. Same words, a whole new feeling!',
+      big:'Pictures and sound add to a story: some set the mood (how it feels), and some add facts the words leave out.',
+      intro:['Read the words of each part first.', 'Look at the picture: does it show something true that the words never say?', 'Listen to the sound: does it make the part feel scary, calm or happy?', 'Ask of each one: what does this add that the words do not?'],
+      ex:[{q:'Part 3: soft, slow violin music.', steps:['Does the music tell a new fact? No.', 'How does it make the part feel? Calm and safe.'], a:'It sets the mood.'},
+          {q:'Part 1: the clock on the wall says 8:15.', steps:['Do the words tell the time? No.', 'The picture tells us it is evening, 8:15.'], a:'It adds a fact the words leave out.'}],
+      oops:{q:'Part 1 picture: Dovid with his Chumash.', wrong:'The picture just repeats the words.', right:'It adds a fact: his homework is Chumash.', why:'The words say only "homework." The picture tells which one.'},
+      idea:['Pictures and sound are like the spices on Savta\'s fish. The fish is the same, but the taste is so much richer.'],
+      try:{q:'Part 4: the music turns bright and cheerful. What does it add?', o:['It sets the mood', 'It adds a fact the words leave out', 'It changes what happens'], a:'It sets the mood', steps:['Does it tell something new that is true?', 'Or does it change how the part feels?']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.COMP.L06.16':{ band:'E45', pic:'🔌', today:'Skim and scan to find answers fast',
+      why:'Big articles hide small answers. Fast readers know just where to look.',
+      ready:[{q:'A heading in an article tells you...', o:['what that part is about','the last word of the article','who wrote the article'], a:'what that part is about'},
+             {q:'Bold words in an article are often...', o:['key words','mistakes','jokes'], a:'key words'}],
+      bridge:'READ.COMP.L06.02', bridgeName:'Feature Finder',
+      watch:{ q:'Where Does Electricity Come From?', m:{type:'scene', e:'⚡', t:'Question: What spins the blades of a wind turbine?'}, steps:[
+        {t:'Read the question. Pick its key word: wind.'},
+        {t:'Skim the headings. WIND, WATER AND SUN fits.'},
+        {t:'Scan only that part for the word "wind."'},
+        {t:'Read closely: "Wind can spin the blades of a wind turbine."'}],
+        a:'Wind spins the blades. Found in seconds, not minutes!' },
+      oops:{ q:'Find what spins a wind turbine.', wrong:'Read every word from the top.', right:'Skim the headings, then scan for "wind."', why:'Reading every word is slow. Headings point to the right part.' },
+      ways:['worked example','Mistake Detective','tap the reason','retrieval','challenge','chavrusa'], done:'You can skim and scan to find answers fast! Ask your chavrusa a question, and race to find it.',
+      board:{ one:'Pick the key word, find the right heading, then hunt for the word inside that part.', activity:'Headline hunt: each pair gets a newspaper page and three question cards, and races to circle each answer using only headings and key words.', mistakes:['Reading every word from the top to find one fact','Hunting for small words like "how" or "the"','Guessing from the first heading without checking'] },
+      do:[
+        {type:'order', steps:['Read the question and pick its key word.','Skim the headings to find the right part.','Scan that part for the key word.','Read that sentence closely.'],
+          say:'Put the four find-it-fast steps in order.', how:'What must you know before you look? What do you do once you find it?',
+          why:{q:'Why skim the headings before you scan?', o:['They show which part to search','They are the longest lines','They tell who wrote it'], a:'They show which part to search'}},
+        {type:'sort', mis:true, q:'"How do the solar panels work?"', bins:['Good key word','Not a key word'], cards:[['solar',0],['panels',0],['How',1],['do',1],['the',1]],
+          say:'Tricky! Which words are good key words to scan for?', how:'Small question words are in every question. Pick words that name the thing.'}],
+      your:[
+        {type:'match', pairs:[['What do power plants burn?','MAKING IT SPIN'],['What is inside a generator?','MAGNETS AND WIRE'],['How do solar panels work?','WIND, WATER AND SUN'],['What do transformers do?','DOWN THE WIRES']],
+          say:'Match each question to the heading that holds its answer.', how:'Pick the key word in each question. Which heading\'s part is about it?',
+          why:{q:'Why does the solar question go under WIND, WATER AND SUN?', o:['Solar panels use sunlight','It is the longest heading','It is the first heading'], a:'Solar panels use sunlight'}},
+        {type:'evidence', q:'Scan for "transformers." Which sentence tells what they do?', p:['Tall towers carry power lines across the land.','Near your street, machines called transformers change the electricity so it is safe for homes.','Then it runs through wires inside the walls, all the way to your switch.'], a:1, look:'the key word "transformers"',
+          say:'Scan for the key word. Tap its sentence.', how:'Let your eyes skip along until they land on the key word.'},
+        {type:'sort', bins:['Skim','Scan'], cards:[['See what each part is about',0],['Get a quick idea of the whole article',0],['Find the word "transformers"',1],['Find the year Faraday made his discovery',1]],
+          say:'Skim or scan? Sort each job.', how:'Do you need the big picture, or one fact?'},
+        {type:'cloze', t:'To find WHO found that magnets make electricity, scan for ___.', o:['a name','a year','a place'], a:'a name',
+          say:'Fill the gap: what should you scan for?', how:'Think about what kind of word answers a "who" question.',
+          why:{q:'Why scan for that?', o:['A who question is answered by a person','Names always come first','Years are hard to read'], a:'A who question is answered by a person'}},
+        {type:'listen', q:'Challenge: "Where is the Conowingo Dam?"', hear:'What should you scan for to answer this question?', o:['A place','A year','A name'], a:'A place',
+          say:'Challenge! What should you scan for?', how:'Look at the question word. What kind of answer does it need?'}] },
+    'READ.COMP.L06.17':{ band:'E45', pic:'📚', today:'Pick the source that answers your question',
+      why:'The right source saves you an hour. The wrong one wastes it.',
+      ready:[{q:'A fast hunt for one key word is...', o:['scanning','skimming','summarizing'], a:'scanning'},
+             {q:'To find the right part of an article, look first at...', o:['the headings','the last line','the page number'], a:'the headings'}],
+      bridge:'READ.COMP.L06.16', bridgeName:'Skim and Scan',
+      watch:{ q:'Dovid\'s Source Shelf', m:{type:'scene', e:'💡', t:'Dovid asks: "How long did Edison\'s cotton-thread bulb glow?"'}, steps:[
+        {t:'Read the question. What kind of answer do I need?'},
+        {t:'"How long" needs an exact number of hours.'},
+        {t:'Which source is made of exact numbers? The table.'},
+        {t:'Find the row: cotton bulb, about 13 hours.'}],
+        a:'A table of numbers answers it: about 13 hours.' },
+      oops:{ q:'"How do you change a bulb?" Which source?', wrong:'Lighting Up the World. Its title has "Light" in it!', right:'Safe Science at Home: it gives the steps.', why:'Do not pick by one matching word. Pick by the kind of answer.' },
+      ways:['worked example','Mistake Detective','tap the reason','topic set (energy)','challenge','chavrusa'], done:'You can pick the source that answers your question! Ask your chavrusa which source tells how to set a timer.',
+      board:{ one:'Ask what kind of answer you need: a meaning, steps, the past, or exact amounts. Then pick the source made for it.', activity:'Source shelf: four real books stand on the table; a boy draws a question card and walks to the book that answers it, then says why.', mistakes:['Picking a source because its title shares one word with the question','Using a word book for a how or why question','Not noticing when no source on the shelf has the answer'] },
+      do:[
+        {type:'match', pairs:[['What does "filament" mean?','A dictionary'],['Who made a glowing bulb in England?','A history book'],['How do you change a bulb safely?','A how-to guide'],['How long does an LED bulb last?','A table of numbers']],
+          say:'Match each question to the source that answers it.', how:'For each question, ask: what kind of answer do I need?',
+          why:{q:'Why does the table answer the LED question?', o:['It lists exact hours for each bulb','It has the longest title','It tells the steps'], a:'It lists exact hours for each bulb'}},
+        {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['Pick the source made for the kind of answer you need.',0],['Use the table of numbers to find how long a bulb lasts.',0],['Pick a source because its title has a word from your question.',1],['Use the dictionary to learn who made the first bulb.',1]],
+          say:'Mistake Detective: right or mistake?', how:'Check each one: does that kind of source hold that kind of answer?'}],
+      your:[
+        {type:'evidence', q:'Dovid asks: "Who made a bulb in England?" Which line answers it?', p:['filament (noun): the thin thread inside a bulb that glows when electricity runs through it.','In England, Joseph Swan made a glowing bulb at about the same time.','LED bulb: about 15,000 hours'], a:1, look:'a person and a place',
+          say:'Tap the line that answers Dovid\'s question.', how:'A who question needs a person. Read all three lines.',
+          why:{q:'Why is this answer in the history book?', o:['It tells who did what, long ago','It gives word meanings','It lists exact amounts'], a:'It tells who did what, long ago'}},
+        {type:'sort', bins:['A dictionary','A history book','A how-to guide'], cards:[['What does "turbine" mean?',0],['What does "generator" mean?',0],['Who built the first battery?',1],['How do you make a lemon battery?',2]],
+          say:'Which source answers each question?', how:'Do you need a meaning, something from long ago, or steps?'},
+        {type:'cloze', t:'"Does a fan or a fridge use more watts?" Use ___.', o:['a table of numbers','a dictionary','a how-to guide'], a:'a table of numbers',
+          say:'Fill the gap: which source should Avi use?', how:'What kind of answer does a "which uses more" question need?',
+          why:{q:'Why that source?', o:['He must compare two exact amounts','He needs a word meaning','He needs steps'], a:'He must compare two exact amounts'}},
+        {type:'order', steps:['Read your question.','Ask what kind of answer you need.','Pick the source made for that kind.','Find the answer and check it.'],
+          say:'Put the source-picking steps in order.', how:'You cannot pick a source before you know your question.'},
+        {type:'listen', q:'Challenge: "Where did Joseph Swan go to school?"', hear:'Which of Dovid\'s four sources answers this question?', o:['None of these sources','A history book','A dictionary'], a:'None of these sources',
+          say:'Challenge! Which of Dovid\'s sources answers this?', how:'Think of each source piece. Does any of them tell this?'}] },
+    'READ.COMP.L06.18':{ band:'E45', pic:'📊', today:'Read a table inside an article',
+      why:'A table packs many numbers into a small space. Readers who use it learn fast.',
+      ready:[{q:'A table puts facts in...', o:['rows','rhymes','chapters'], a:'rows'},
+             {q:'A table\'s title tells...', o:['what the table is about','who reads it','the last number'], a:'what the table is about'}],
+      bridge:'READ.COMP.L05.04', bridgeName:'Read the Picture',
+      watch:{ q:'Saving Energy at Home', m:{type:'scene', e:'💡', t:'Question: Which uses fewer watts, the fan or the fridge?'}, steps:[
+        {t:'Read the title: watts used in the Katz home.'},
+        {t:'Find the fan row: 40 watts.'},
+        {t:'Find the fridge row: 150 watts.'},
+        {t:'Two things, two rows: 40 is less than 150.'}],
+        a:'The fan uses fewer watts.' },
+      oops:{ q:'"Why does an LED bulb waste less energy?"', wrong:'Look only in the table.', right:'Look in the sentences: an LED bulb stays much cooler.', why:'A table has no "because." Reasons are told in sentences.' },
+      ways:['worked example','Mistake Detective','evidence tap','tap the reason','challenge','chavrusa'], done:'You can read a table inside an article! Show your chavrusa how to find the biggest number.',
+      board:{ one:'Read the title, find the row, read across. Numbers sit in rows; reasons sit in sentences.', activity:'Class table: the boys count the lights in each room of the school, make a table on the board, and ask each other questions about it.', mistakes:['Thinking the first row has the biggest number','Looking for a reason inside the rows','Skipping the table and reading only the sentences'] },
+      do:[
+        {type:'evidence', q:'How many watts does the ceiling fan use? Tap its row.', p:['Old-style bulb: 60 watts','LED bulb: 9 watts','Ceiling fan: 40 watts','Fridge (running): 150 watts'], a:2, look:'the row that names the fan',
+          say:'Find the fan\'s row and tap it.', how:'Run your eyes down the left side until you see the thing you need.',
+          why:{q:'Why read just this one row?', o:['The question asks about one thing','The fan uses the most','It is the first row'], a:'The question asks about one thing'}},
+        {type:'sort', mis:true, bins:['In the table','In the words'], cards:[['How many watts the urn uses',0],['How many watts an LED bulb uses',0],['Why LED bulbs waste less energy',1],['What a watt tells',1]],
+          say:'Tricky! Is each answer in the table or the words?', how:'Picture the Katz table. Does a row tell this, or a sentence?'}],
+      your:[
+        {type:'match', pairs:[['How many watts does the fridge use?','Read one row'],['Which uses more, the fan or the old-style bulb?','Compare two rows'],['Which thing uses the most watts?','Compare every row']],
+          say:'Match each question to how you read the table.', how:'Count the things the question asks about: one, two, or all?',
+          why:{q:'Why compare every row to find the most?', o:['The biggest number could be in any row','The first row is always biggest','Only the title tells'], a:'The biggest number could be in any row'}},
+        {type:'cloze', t:'To find which thing uses the fewest watts, you ___.', o:['compare every row','read one row','read only the title'], a:'compare every row',
+          say:'Fill the gap: how do you find the fewest?', how:'Could the smallest number be hiding in any row?'},
+        {type:'storymap', slots:['Fewest watts','Most watts'], cards:['LED bulb: 9 watts','Urn (heating): 1,500 watts'], extra:['Ceiling fan: 40 watts','Fridge (running): 150 watts'],
+          say:'Compare every row. Fill in the fewest and the most.', how:'Look at every number before you choose.'},
+        {type:'sort', bins:['In the table','In the words','Not in the article'], cards:[['How many watts the fridge uses',0],['Why the urn does not run all day',1],['Who invented the LED bulb',2],['How to keep the cold air in the fridge',1]],
+          say:'Where is each answer? Sort it.', how:'Check the rows, then the sentences. Some answers are not there at all.'},
+        {type:'listen', q:'Challenge: Old-style bulb: 60 watts. LED bulb: 9 watts.', hear:'How many more watts does the old bulb use than the LED?', o:['51','60','9'], a:'51',
+          say:'Challenge! Compare two rows. How many more watts?', how:'Take the smaller number away from the bigger one.',
+          why:{q:'Which rows did you need?', o:['The old-style bulb and the LED bulb','The fan and the fridge','Every row'], a:'The old-style bulb and the LED bulb'}}] },
+    'READ.LIT.L06.14':{ band:'E45', pic:'🎻', today:'See what pictures and sound add to a story',
+      why:'A picture or a tune can make a story feel scary, cozy or happy.',
+      ready:[{q:'"My knees shook the whole time." This line shows...', o:['how he feels','where he is','what he knows'], a:'how he feels'},
+             {q:'Words like "gloomy" or "cheerful" tell how a scene...', o:['feels','ends','begins'], a:'feels'}],
+      bridge:'READ.LIT.L06.12', bridgeName:'The Narrator\'s View',
+      watch:{ q:'Lights Out on Glen Avenue', m:{type:'scene', e:'🔦', t:'Part 3: Abba holds up a lantern. Soft, slow violin music begins.'}, steps:[
+        {t:'Read the words of the part first.'},
+        {t:'Look at the picture. Does it add a new fact?'},
+        {t:'Listen to the sound. How does it make you feel?'},
+        {t:'Soft, slow violin music feels calm and safe.'}],
+        a:'The music sets the mood: calm and safe after the scare.' },
+      oops:{ q:'Part 1 picture: Dovid with his Chumash.', wrong:'The picture just repeats the words.', right:'It adds a fact: his homework is Chumash.', why:'The words say only "homework." The picture tells which one.' },
+      ways:['worked example','reading with sound','Mistake Detective','tap the reason','challenge','chavrusa'], done:'You can tell what pictures and sound add to a story! Read part 2 to your chavrusa with a spooky voice.',
+      board:{ one:'Ask of every picture and every sound: what does it add that the words do not?', activity:'Sound studio: boys read one short scene aloud three ways (plain, with a slow hum, with a happy tapping beat) and say how the feeling changed.', mistakes:['Skipping the pictures and sound','Thinking a picture only repeats the words','Mixing up how a part feels with what happens'] },
+      do:[
+        {type:'sort', bins:['It sets the mood','It adds a fact the words leave out'], cards:[['Soft, slow violin music begins.',0],['The music turns bright and cheerful.',0],['The clock on the wall says 8:15.',1],['Dovid sits with his Chumash.',1]],
+          say:'Sort each picture or sound by what it adds.', how:'Does it change how the part feels, or tell something new that is true?'},
+        {type:'evidence', mis:true, q:'Tricky! Which line adds a fact the words leave out?', p:['WORDS: All at once, the lights went out.','SOUND: CRACK! Then the fridge stops humming.','PICTURE: The kitchen is black.'], a:1, look:'something new that the words never say',
+          say:'Tricky! Tap the line that adds a new fact.', how:'Some lines only say again what the words say. Find one that tells something new.',
+          why:{q:'What new fact does it add?', o:['The fridge lost power too','The lights went out','It is dark'], a:'The fridge lost power too'}}],
+      your:[
+        {type:'match', pairs:[['Dovid\'s homework is Chumash.','The picture'],['The fridge stopped too.','The sound'],['Abba knew the lantern would come in handy.','The words']],
+          say:'Match each detail to the part of the story that tells it.', how:'Look at the picture, the sound and the words of each part.',
+          why:{q:'Why must you look at the pictures too?', o:['They tell things the words leave out','They are the biggest part','They have the title'], a:'They tell things the words leave out'}},
+        {type:'cloze', t:'Part 4 has bright, cheerful music. The ending feels ___.', o:['happy and safe','scary and dark','sad and lonely'], a:'happy and safe',
+          say:'Fill the gap: how does the music make the ending feel?', how:'Imagine hearing bright, cheerful music. What feeling does it bring?'},
+        {type:'storymap', slots:['The sound in part 2 feels','The sound in part 4 feels'], cards:['Sudden and scary','Bright and cheerful'], extra:['Silly and funny'],
+          say:'How does the sound make each part feel?', how:'Compare a loud CRACK! with gentle rain and cheerful music.'},
+        {type:'sort', bins:['Right','Mistake'], cards:[['A picture can add a fact the words leave out.',0],['Music can make a part feel calm or scary.',0],['A picture only repeats the words, so skip it.',1],['The violin music changes what happens.',1]],
+          say:'Mistake Detective: right or mistake?', how:'Think of the clock, the fridge and the violin.'},
+        {type:'listen', q:'Challenge: Part 2 gets fast, pounding drumbeats instead of CRACK!', hear:'What would fast, pounding drumbeats add to part 2?', o:['It sets the mood','It adds a fact the words leave out','It changes what happens'], a:'It sets the mood',
+          say:'Challenge! What would fast drumbeats add?', how:'Does a drumbeat tell a new fact, or change the feeling?',
+          why:{q:'What mood would the drums set?', o:['Tense and exciting','Sleepy and calm','Silly and funny'], a:'Tense and exciting'}}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

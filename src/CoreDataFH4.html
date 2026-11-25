@@ -1,0 +1,885 @@
+<script>
+/* CoreDataFH4.html: Core Growth job F (helper piece "Grade 2 Units 4-6"), lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataF.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 2 Unit 6 (F-map section 5): Poem Beat, Readers' Theatre, Fix It As You Go, Spell It Back, Neat Paragraph, and the unit check F.U26.
+   In every choice list the right answer is written FIRST (the engine shuffles). The fluency lessons use no voice recording and no timers.
+   Texts: texts/F/F.PO.01.txt (poem) and texts/F/F.RT.01.txt (Readers' Theatre play), opened in the Reader by the "read" activity. */
+(function () {
+  var BREATH = 'Tiny breath', STOP = 'Full stop';
+
+  var LESSONS = {
+    /* ===== G2 Unit 6, skill 1: read a poem with its beat ===== */
+    'READ.FLU.L03.05':{name:'Poem Beat',
+      teach:[
+        {q:'In a poem, which words often rhyme?', o:['the last words of the lines','the first words of the lines'], how:'Look at the end of each line. Do two of them sound the same at the end?'},
+        {q:'A line ends with a comma. What do you do?', o:['take a tiny breath and keep going','stop, like at a period'], how:'A comma or no mark: a tiny breath. A period: a full stop.'},
+        {q:'Clap "SUK-kah". Which part is strong?', o:['SUK','kah'], how:'Say it out loud. Which part do you say louder?'}
+      ],
+      practice:[
+        {t:'pairs', q:'Match each word to the word it rhymes with.', pairs:[['down','frown'],['cake','sake'],['know','go'],['chair','where']], h:'Say both words. Do they sound the same at the end?'},
+        {t:'sort', q:'At the end of this line: tiny breath, or full stop?', bins:[{id:'b',label:BREATH},{id:'s',label:STOP}], items:[{label:'Tap, tap, tap on the sukkah roof,',bin:'b'},{label:'and Avi starts to frown.',bin:'s'},{label:'Naftali looks up through the green,',bin:'b'},{label:'and watches raindrops go.',bin:'s'}], h:'Look at the very last mark. A period means stop.'},
+        {t:'spotall', q:'Tap every word that rhymes with "chair".', cells:[{label:'bear',ok:true},{label:'green',ok:false},{label:'where',ok:true},{label:'ground',ok:false},{label:'there',ok:true},{label:'floor',ok:false}], h:'Say each word with chair. Same sound at the end?'},
+        {t:'order', q:'Put the steps in order to read a poem.', tiles:['Find the rhyming words.','Clap the beat.','Read it with the beat and the breaths.'], h:'First look at the words. Then clap. Then read.'},
+        {t:'pairs', q:'Match each word to its strong beat.', pairs:[['RAIN-drops','RAIN'],['DANC-ing','DANC'],['CHAL-lah','CHAL']], h:'The strong part is in big letters.'},
+        {t:'sort', q:'Strong beat, or soft word?', bins:[{id:'s',label:'Strong beat'},{id:'w',label:'Soft word'}], items:[{label:'RAIN',bin:'s'},{label:'the',bin:'w'},{label:'SUN',bin:'s'},{label:'and',bin:'w'}], h:'Little words like the, and, on are soft. Important words get the beat.'}
+      ],
+      check:[
+        {q:'Read: "The snow came down without a sound, / and laid a blanket on the ground." Which word rhymes with "sound"?', o:['ground','blanket','snow']},
+        {q:'Read: "We walked along the river side / and saw the ducks swim by." Line 1 has no mark at its end. What do you do there?', o:['take a tiny breath and keep going','stop, like at a period','read the next line louder']},
+        {q:'Clap "Shabbos candles shining bright". In "shining", which part is strong?', o:['shin','ing','both the same']}
+      ],
+      re:[
+        {q:'Read: "The cat sat by the open door, / and then she curled up on the floor." Which word rhymes with "door"?', o:['floor','open','cat']},
+        {q:'Read: "Avi ran to catch the bus. / It did not wait for him." Line 1 ends with a period. What do you do there?', o:['stop, like at a period','take a tiny breath and keep going','read the next line louder']},
+        {q:'Clap "Happy boys are singing songs". In "happy", which part is strong?', o:['hap','py','both the same']}
+      ]},
+
+    /* ===== G2 Unit 6, skill 2: Readers' Theatre ===== */
+    'READ.FLU.L03.06':{name:'Readers\' Theatre',
+      teach:[
+        {q:'In a play, what does the name before the colon tell you?', o:['who says the line','how to say the line'], how:'AVI: Oh no! The name shows whose line it is.'},
+        {q:'What are the words in ( ) for?', o:['how to say the line','words you read out loud'], how:'(worried) tells your voice how to sound. You do not say it.'},
+        {q:'What is your cue?', o:['the line right before yours','your own line'], how:'When you hear your cue, it is your turn.'}
+      ],
+      practice:[
+        {t:'sort', q:'Say it out loud, or do not say it?', bins:[{id:'y',label:'Say it'},{id:'n',label:'Do not say it'}], items:[{label:'Oh no!',bin:'y'},{label:'AVI:',bin:'n'},{label:'(worried)',bin:'n'},{label:'I love gears!',bin:'y'}], h:'Say only the words. Names and ( ) words stay quiet.'},
+        {t:'pairs', q:'Match each ( ) word to how the voice sounds.', pairs:[['(whispering)','small and soft'],['(cheering)','loud and happy'],['(worried)','shaky and scared']], h:'The word in ( ) tells how the line sounds.'},
+        {t:'spotall', q:'You are Zeidy. Tap every line you read.', cells:[{label:'ZEIDY: Boys, my clock stopped.',ok:true},{label:'AVI: Oh no!',ok:false},{label:'ZEIDY: Go ahead, Naftali.',ok:true},{label:'CHAIM: It says here...',ok:false}], h:'Look for your name before the colon.'},
+        {t:'order', q:'Put the steps in order to read your part.', tiles:['Find your name.','Find your cue: the line before yours.','Wait for your cue.','Read your words in the right voice.'], h:'First find your part. Then wait. Then read.'},
+        {t:'pairs', q:'Match each line to whose line it is.', pairs:[['NAFTALI: I see a gap.','Naftali'],['DOVID: I found it.','Dovid'],['ZEIDY: Good Shabbos!','Zeidy']], h:'The name before the colon is the one talking.'},
+        {t:'sort', q:'Which voice fits the ( ) word?', bins:[{id:'s',label:'Soft voice'},{id:'l',label:'Loud voice'}], items:[{label:'(shyly)',bin:'s'},{label:'(cheering)',bin:'l'},{label:'(in a small voice)',bin:'s'},{label:'(shouting)',bin:'l'}], h:'Shy and small are soft. Cheering and shouting are loud.'}
+      ],
+      check:[
+        {q:'In a play: "MENDY: (yawning) Is it morning already?" What does Mendy leave out when he reads?', o:['the name and the ( ) words','the word morning','nothing, he reads it all']},
+        {q:'You read Yanky. Whose line is your cue? AVI: Where is the ball? / CHAIM: I think it rolled away. / YANKY: I see it!', o:['Chaim\'s line','Avi\'s line','your own line']},
+        {q:'NAFTALI: (in a tiny voice) I am scared of the dark. How should Naftali\'s line sound?', o:['small and soft','loud and happy','slow and sleepy']}
+      ],
+      re:[
+        {q:'In a play: "ZEIDY: (smiling) Come in, boys." What does Zeidy leave out when he reads?', o:['the name and the ( ) words','the word Come','nothing, he reads it all']},
+        {q:'You read Avi. Whose line is your cue? DOVID: I am hungry. / CHAIM: Here is an apple. / AVI: Save one for me!', o:['Chaim\'s line','Dovid\'s line','your own line']},
+        {q:'CHAIM: (shouting) We won the game! How should Chaim\'s line sound?', o:['loud and happy','small and soft','slow and sad']}
+      ]},
+
+    /* ===== G2 Unit 6, skill 3: fix it as you go (self-correct) ===== */
+    'READ.FLU.L03.07':{name:'Fix It As You Go',
+      teach:[
+        {q:'Avi read "We ate hot soap." What is wrong?', o:['soap does not make sense','nothing is wrong'], how:'Ask: does it make sense? Do we eat soap?'},
+        {q:'It did not make sense. What do you do?', o:['look at the letters again and reread','keep going fast'], how:'Stop. Look again. Reread the sentence.'},
+        {q:'Which word looks like n-e-s-t?', o:['nest','next'], how:'Look at every letter, all the way to the end.'}
+      ],
+      practice:[
+        {t:'sort', q:'Does the sentence make sense?', bins:[{id:'y',label:'Makes sense'},{id:'n',label:'No sense'}], items:[{label:'The cat drank milk.',bin:'y'},{label:'The cat drank mild.',bin:'n'},{label:'Avi rode his bike.',bin:'y'},{label:'Avi rode his bark.',bin:'n'}], h:'Read it like talking. Could that really happen?'},
+        {t:'pairs', q:'Match each wrong sentence to the word that fixes it.', pairs:[['Dovid rode his bake.','bike'],['The hen sat on her next.','nest'],['We ate hot soap.','soup'],['Mendy sat in a chain.','chair']], h:'Find the word with no sense. Which real word looks almost the same?'},
+        {t:'spotall', q:'Tap every reader who fixed his mistake.', cells:[{label:'Chaim stopped and reread.',ok:true},{label:'Yanky kept going.',ok:false},{label:'Moishe looked at the letters again.',ok:true},{label:'Mendy skipped the word.',ok:false}], h:'A good reader stops, looks again and rereads.'},
+        {t:'order', q:'Put the steps in order.', tiles:['I read a word.','I ask: does it make sense?','No! I look at the letters again.','I reread the sentence.'], h:'Read, ask, look again, reread.'},
+        {t:'pairs', q:'Match each word to the word it looks like.', pairs:[['horse','house'],['went','want'],['clock','click'],['duck','dock']], h:'Look at the letters. Only one or two are different.'},
+        {t:'sort', q:'Looks right, or looks wrong? The word is "ship".', bins:[{id:'y',label:'Looks right'},{id:'n',label:'Looks wrong'}], items:[{label:'ship',bin:'y'},{label:'shop',bin:'n'},{label:'sip',bin:'n'}], h:'Check every letter, in order.'}
+      ],
+      check:[
+        {q:'Yanky read: "The shop sailed on the sea." Which word does not make sense?', o:['shop','sailed','sea']},
+        {q:'Read: "Moishe fed the d_ck at the pond." Which word looks right AND makes sense?', o:['duck','deck','dock']},
+        {q:'Chaim read: "Zeidy sat in his chain to rest." It did not sound right. Which word should he look at again?', o:['chain','Zeidy','rest']}
+      ],
+      re:[
+        {q:'Naftali read: "We sleep in a bad at night." Which word does not make sense?', o:['bad','sleep','night']},
+        {q:'Read: "Zeidy fixed the cl_ck so it ticks again." Which word looks right AND makes sense?', o:['clock','click','cluck']},
+        {q:'Read: "After lunch, Shimon washed his hands with soup." Which word does not make sense?', o:['soup','lunch','hands']}
+      ]},
+
+    /* ===== G2 Unit 6, skill 4: spell it back (pattern dictation) ===== */
+    'READ.PHON.L03.18':{name:'Spell It Back',
+      teach:[
+        {q:'Catch: short a, then the ch sound. How do you spell the end?', o:['tch','ch'], how:'Right after a short vowel, ch is spelled tch.'},
+        {q:'Bake + ing. What happens to the e?', o:['drop the e: baking','keep the e: bakeing'], how:'Drop the silent e before -ing.'},
+        {q:'Hop + ing. What do you do?', o:['double the p: hopping','just add ing: hoping'], how:'Short vowel, one last letter: double it.'}
+      ],
+      practice:[
+        {t:'sort', q:'Which spelling pattern is in the word?', bins:[{id:'t',label:'tch or dge'},{id:'k',label:'kn or wr'},{id:'p',label:'ph'}], items:[{label:'bridge',bin:'t'},{label:'knee',bin:'k'},{label:'phone',bin:'p'},{label:'catch',bin:'t'},{label:'write',bin:'k'},{label:'graph',bin:'p'}], h:'Look for the letter team in each word.'},
+        {t:'pairs', q:'Match each word to its -ing word.', pairs:[['bake','baking'],['hop','hopping'],['read','reading']], h:'Silent e? Drop it. Short vowel and one last letter? Double it.'},
+        {t:'spotall', q:'Tap every word spelled the right way.', cells:[{label:'badge',ok:true},{label:'bage',ok:false},{label:'skipping',ok:true},{label:'skiping',ok:false},{label:'puppies',ok:true},{label:'puppys',ok:false},{label:'knot',ok:true},{label:'nott',ok:false},{label:'patch',ok:true},{label:'pach',ok:false},{label:'shaping',ok:true},{label:'shapeing',ok:false}], h:'Think of the pattern you learned for each sound.'},
+        {t:'order', q:'Listen: bridge. Build the word.', tiles:['b','r','i','dge'], h:'Short i, then the j sound. Which letters spell it?'},
+        {t:'pairs', q:'Match each word to its plural.', pairs:[['baby','babies'],['lady','ladies'],['dish','dishes']], h:'Ends in y after a consonant? Change y to i, then add es.'},
+        {t:'sort', q:'Double the last letter, or not?', bins:[{id:'d',label:'Double it'},{id:'n',label:'Do not double'}], items:[{label:'run + ing',bin:'d'},{label:'jump + ing',bin:'n'},{label:'sit + ing',bin:'d'},{label:'make + ing',bin:'n'}], h:'One short vowel and one last letter: double it.'}
+      ],
+      check:[
+        {q:'Pick the right spelling. Zeidy pinned a shiny ___ on his coat. (short a, then the j sound)', o:['badge','bage','badj']},
+        {q:'Pick the right spelling. Avi is ___ rope in the yard. (skip + ing)', o:['skipping','skiping','skippeing']},
+        {q:'Pick the right spelling. Two little ___ slept in the box. (more than one puppy)', o:['puppies','puppys','puppyes']}
+      ],
+      re:[
+        {q:'Pick the right spelling. Dovid tied a ___ in the rope. (a quiet k, then the n sound)', o:['knot','not','nott']},
+        {q:'Pick the right spelling. Abba sewed a ___ on Dovid\'s coat. (short a, then the ch sound)', o:['patch','pach','patsh']},
+        {q:'Pick the right spelling. Mendy is ___ the dough for challah. (shape + ing)', o:['shaping','shapeing','shapping']}
+      ]},
+
+    /* ===== G2 Unit 6, skill 5: a neat paragraph (handwriting) ===== */
+    'WRIT.HAND.L03.01':{name:'Neat Paragraph',
+      teach:[
+        {q:'How does the first line of a paragraph start?', o:['in a bit from the edge','right at the edge'], how:'Starting in a bit is called an indent.'},
+        {q:'What goes between two words?', o:['one finger space','no space'], how:'Put one finger down after each word.'},
+        {q:'Where do the letters sit?', o:['on the line','above the line'], how:'Every letter sits on the line, like a boy on a bench.'}
+      ],
+      practice:[
+        {t:'sort', q:'Tall letter, small letter, or tail letter?', bins:[{id:'t',label:'Tall'},{id:'s',label:'Small'},{id:'l',label:'Tail'}], items:[{label:'b',bin:'t'},{label:'a',bin:'s'},{label:'p',bin:'l'},{label:'k',bin:'t'},{label:'e',bin:'s'},{label:'j',bin:'l'}], h:'Tall letters reach the top line. Tails dip below.'},
+        {t:'pairs', q:'Match each part to its job.', pairs:[['indent','starts the first line'],['finger space','between words'],['the line','where letters sit']], h:'Think of how a neat page looks.'},
+        {t:'spotall', q:'Tap every neat line.', cells:[{label:'We ate lunch.',ok:true},{label:'Weatelunch.',ok:false},{label:'Avi ran to shul.',ok:true},{label:'A v i ran home.',ok:false}], h:'Spaces between words, none inside a word.'},
+        {t:'order', q:'Put the steps in order to copy a paragraph.', tiles:['Indent the first line.','Write the first word on the line.','Put one finger down after it.','Write the next word after your finger.'], h:'Start with the indent. End with the line that is full.'},
+        {t:'pairs', q:'Match each letter to where it goes.', pairs:[['d','up to the top line'],['o','up to the middle'],['q','tail below the line']], h:'Tall, small or tail?'},
+        {t:'pairs', q:'Match each word to its tail letter.', pairs:[['pond','p'],['bag','g'],['jam','j']], h:'Which letter dips below the line?'},
+        {t:'sort', q:'Fix it, or it is fine?', bins:[{id:'f',label:'Fix it'},{id:'o',label:'Fine'}], items:[{label:'letters float above the line',bin:'f'},{label:'one finger space between words',bin:'o'},{label:'half a word at the end of a line',bin:'f'},{label:'the first line is indented',bin:'o'}], h:'Neat means on the line, spaced, and whole words.'}
+      ],
+      check:[
+        {q:'Naftali is starting a new paragraph. Where does his first word go?', o:['in a bit from the left edge','right at the left edge','in the middle of the line']},
+        {q:'Which word has a letter that dips below the line?', o:['pond','tall','cake']},
+        {q:'Avi wrote "suk-" at a line end and "kah" below it. What went wrong?', o:['he split the word','he forgot the indent','he left no finger spaces']}
+      ],
+      re:[
+        {q:'Which letter is tall and reaches the top line?', o:['h','a','n']},
+        {q:'Which line is spaced right?', o:['Avi ran to shul.','Avirantoshul.','A vi ran to shul.']},
+        {q:'Mendy\'s letters float above the line. How should he fix it?', o:['sit every letter on the line','write bigger','add more spaces']}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.FLU.L03.05':{ hook:'Tap, tap, tap on the sukkah roof! Can you hear the beat?',
+      big:'A poem is made of lines. Many poems rhyme: the last words of two lines sound the same at the end, like down and frown. A poem has a beat, like a drum: the important words and parts are strong (RAIN-drops DANC-ing DOWN), and little words like the, and, on are soft. At the end of a line, look at the mark. A period means a full stop. A comma or no mark means a tiny breath, then keep going, so the meaning holds together. Read a poem with its beat, like a happy drum, but still make it sound like talking.',
+      intro:['Find the rhyming words at the ends of the lines.','Clap the beat: the strong parts are louder.','At a period, stop. At a comma or no mark, take a tiny breath.','Read it again with the beat. Make it sound like talking.'],
+      ex:[{q:'Find the rhyme: "the rain comes dancing down / and Avi starts to frown."', steps:['The last words are down and frown.','Down, frown: they sound the same at the end.','They rhyme!'], a:'down and frown'},
+          {q:'Clap the beat: raindrops dancing down', steps:['Say it slowly: rain-drops danc-ing down.','The strong parts are RAIN, DANC and DOWN.','RAIN-drops DANC-ing DOWN!'], a:'RAIN-drops DANC-ing DOWN'}],
+      oops:{ q:'Read: "Naftali looks up through the green, / and Avi starts to frown."', wrong:'Stops dead after green, like a period.', right:'A tiny breath after green, then keep going.', why:'A comma at the end of a line: a tiny breath, not a full stop.' },
+      idea:['A poem is like a song with no tune. The beat carries you along, and the rhymes ring like bells.'],
+      'try':{ q:'In a poem, which words often rhyme?', o:['the last words of the lines','the first words of the lines'], a:'the last words of the lines', steps:['Look at the end of each line.','Which words sound alike?'] } },
+    'READ.FLU.L03.06':{ hook:'Today you are an actor. Your voice is the whole show!',
+      big:'A play is a story told by talking. In Readers\' Theatre, each boy reads one part. The name before the colon tells whose line it is: AVI: Oh no! Words in ( ) tell how to say the line, like (worried) or (laughing). You never read the name or the ( ) words out loud. You read only the words, in the voice the ( ) asks for. Your cue is the line right before yours. When you hear it, it is your turn. Follow along the whole time, so you are ready.',
+      intro:['Find your name before the colon.','Find your cue: the line right before yours.','Read the ( ) word: how does your line sound?','On your cue, read only your words, in that voice.'],
+      ex:[{q:'AVI: (worried) Oh no!', steps:['AVI: Avi is talking.','(worried): a shaky, scared voice.','Avi reads only: Oh no!'], a:'Oh no!, in a worried voice'},
+          {q:'You are Naftali. CHAIM: It says here, every gear must turn the next gear. / NAFTALI: I see a gap.', steps:['Find NAFTALI.','The line before is Chaim\'s line.','Chaim\'s line is my cue. Then I read: I see a gap.'], a:'Chaim\'s line'}],
+      oops:{ q:'DOVID: (shyly) I found it.', wrong:'"Dovid shyly I found it."', right:'"I found it." in a shy voice.', why:'The name and the ( ) words are not said out loud.' },
+      idea:['The ( ) words are secret notes for the actor. Only the voice shows them.'],
+      'try':{ q:'What are the words in ( ) for?', o:['how to say the line','words you read out loud'], a:'how to say the line', steps:['Look at (worried).','Does Avi say it, or show it?'] } },
+    'READ.FLU.L03.07':{ hook:'"The horse ate hay" or "The house ate hay"? One letter changes everything!',
+      big:'Good readers check themselves as they go. After each sentence, ask two questions: Does it make sense? Does it look right? If a house is eating hay, something is wrong. Stop, look at the letters of the word again, all the way to the end, and reread the sentence. The word must match its letters AND make sense in the sentence. Fixing a mistake is not bad. It is what strong readers do.',
+      intro:['Read the sentence.','Ask: does it make sense?','No? Look at the letters of the word again.','Reread the sentence with the right word.'],
+      ex:[{q:'Avi read: "The hen sat on her next."', steps:['Does it make sense? A hen on a next? No.','Look again: n-e-s-t.','The hen sat on her nest!'], a:'nest'},
+          {q:'Naftali put on his coat and his h_t.', steps:['Hat, hot or hit? All look a bit right.','Which makes sense with a coat?','Hat!'], a:'hat'}],
+      oops:{ q:'Read: Dovid went to shul.', wrong:'Dovid want to shul, and keeps going.', right:'Dovid want... no! Dovid went to shul.', why:'It did not make sense, so stop and reread.' },
+      idea:['Your ears and your eyes work as a team: your ears check the sense, your eyes check the letters.'],
+      'try':{ q:'It did not make sense. What do you do?', o:['look at the letters again and reread','keep going fast'], a:'look at the letters again and reread', steps:['Stop.','Look again. Reread.'] } },
+    'READ.PHON.L03.18':{ hook:'Listen to Zeidy\'s sentence. Can you write it with no mistakes?',
+      big:'This year you learned many spelling patterns. Now you use them to spell words you hear. Right after a short vowel, ch is spelled tch (catch) and the j sound is spelled dge (bridge). Some words start with a quiet letter: kn (knee), wr (write). Ph says fff (phone). C before e, i or y says sss (city). To add -ing: drop a silent e (bake, baking) or double the last letter after a short vowel (hop, hopping). Y after a consonant turns to i before -es (baby, babies). Listen, think of the pattern, then spell.',
+      intro:['Listen to the whole word or sentence.','Say each word slowly in your head.','Think: which pattern spells this sound?','Spell it, then check every letter.'],
+      ex:[{q:'Spell: catch', steps:['C-a: short a.','Then the ch sound, right after a short vowel.','Short vowel, so tch: c-a-tch!'], a:'catch'},
+          {q:'Spell: hopping', steps:['Hop + ing.','Short o, one last letter p.','Double the p: h-o-pp-ing!'], a:'hopping'}],
+      oops:{ q:'Spell: catch', wrong:'cach', right:'catch', why:'Right after a short vowel, ch is spelled tch.' },
+      idea:['Each pattern is a tool in your spelling toolbox. Listen for the sound, then pick the right tool.'],
+      'try':{ q:'Bake + ing. What happens to the e?', o:['drop the e: baking','keep the e: bakeing'], a:'drop the e: baking', steps:['Bake ends in a silent e.','Drop it, then add ing.'] } },
+    'WRIT.HAND.L03.01':{ hook:'Make your writing so neat that Zeidy can read it without his glasses!',
+      big:'A neat paragraph is easy to read. The first line starts in a bit from the left edge: that is the indent. Every letter sits on the line. Tall letters (b, d, f, h, k, l, t) reach the top line, small letters (a, c, e, o) reach the middle, and tail letters (g, j, p, q, y) dip below the line. Leave one finger space between words. When a word will not fit at the end of a line, write the whole word on the next line, starting at the left edge.',
+      intro:['Indent the first line.','Sit every letter on the line: tall, small or tail.','Leave one finger space after each word.','A word does not fit? Move the whole word down.'],
+      ex:[{q:'Copy: Dovid ate his lunch.', steps:['Indent, then write Dovid.','Finger space. Write ate.','Finger space after each word, letters on the line.'], a:'Dovid ate his lunch.'},
+          {q:'"Shabbos" will not fit at the end of the line.', steps:['Do not split it.','Move the whole word to the next line.','Start it at the left edge.'], a:'Shabbos on the next line'}],
+      oops:{ q:'Copy: We ate lunch.', wrong:'Weatelunch.', right:'We ate lunch.', why:'Leave one finger space after each word.' },
+      idea:['Neat writing is a kindness: it helps the reader, just like speaking clearly helps a listener. If he split the word, the reader gets lost.'],
+      'try':{ q:'What goes between two words?', o:['one finger space','no space'], a:'one finger space', steps:['Look at a book.','What is between the words?'] } }
+  };
+
+  var HOWTO = {
+    'READ.FLU.L03.05':{ s:'Find the rhyming words at the ends of the lines.\nClap the beat: important parts are strong.\nPeriod: stop. Comma or no mark: tiny breath.',
+      q:{ 'Read: "The snow came down without a sound, / and laid a blanket on the ground." Which word rhymes with "sound"?':'Look at the last word of each line.\nSay it with sound. Same ending?',
+          'Read: "We walked along the river side / and saw the ducks swim by." Line 1 has no mark at its end. What do you do there?':'Look at the very end of line 1.\nIs there a period?',
+          'Clap "Shabbos candles shining bright". In "shining", which part is strong?':'Say shining slowly and clap it.\nWhich part do you say louder?',
+          'Read: "The cat sat by the open door, / and then she curled up on the floor." Which word rhymes with "door"?':'Look at the last word of each line.\nSay it with door. Same ending?',
+          'Read: "Avi ran to catch the bus. / It did not wait for him." Line 1 ends with a period. What do you do there?':'What does a period always tell you?',
+          'Clap "Happy boys are singing songs". In "happy", which part is strong?':'Say happy slowly and clap it.\nWhich part do you say louder?' } },
+    'READ.FLU.L03.06':{ s:'Find your name before the colon.\nYour cue is the line right before yours.\nSay only the words, in the voice the ( ) asks for.',
+      q:{ 'In a play: "MENDY: (yawning) Is it morning already?" What does Mendy leave out when he reads?':'Which parts stay quiet: the name, the ( ) words, or both?',
+          'You read Yanky. Whose line is your cue? AVI: Where is the ball? / CHAIM: I think it rolled away. / YANKY: I see it!':'Find YANKY.\nWhich line comes right before it?',
+          'NAFTALI: (in a tiny voice) I am scared of the dark. How should Naftali\'s line sound?':'Read the words in ( ).\nThey tell how the voice sounds.',
+          'In a play: "ZEIDY: (smiling) Come in, boys." What does Zeidy leave out when he reads?':'Which parts stay quiet: the name, the ( ) words, or both?',
+          'You read Avi. Whose line is your cue? DOVID: I am hungry. / CHAIM: Here is an apple. / AVI: Save one for me!':'Find AVI.\nWhich line comes right before it?',
+          'CHAIM: (shouting) We won the game! How should Chaim\'s line sound?':'Read the words in ( ).\nThey tell how the voice sounds.' } },
+    'READ.FLU.L03.07':{ s:'Ask: does it make sense?\nNo? Look at the letters of the word again.\nReread the sentence.',
+      q:{ 'Yanky read: "The shop sailed on the sea." Which word does not make sense?':'Read it like talking.\nWhich word could not really happen here?',
+          'Read: "Moishe fed the d_ck at the pond." Which word looks right AND makes sense?':'Try each word in the sentence.\nWhat do you feed at a pond?',
+          'Chaim read: "Zeidy sat in his chain to rest." It did not sound right. Which word should he look at again?':'Read it like talking.\nWhat do you sit in to rest?',
+          'Naftali read: "We sleep in a bad at night." Which word does not make sense?':'Read it like talking.\nWhich word could not really happen here?',
+          'Read: "Zeidy fixed the cl_ck so it ticks again." Which word looks right AND makes sense?':'Try each word in the sentence.\nWhat ticks?',
+          'Read: "After lunch, Shimon washed his hands with soup." Which word does not make sense?':'Read it like talking.\nWhat do you really wash your hands with?' } },
+    'READ.PHON.L03.18':{ s:'Say the word slowly.\nThink: which pattern spells this sound?\nCheck every letter.',
+      q:{ 'Pick the right spelling. Zeidy pinned a shiny ___ on his coat. (short a, then the j sound)':'Short a, then the j sound.\nHow is j spelled right after a short vowel?',
+          'Pick the right spelling. Avi is ___ rope in the yard. (skip + ing)':'Skip has a short i and one last letter.\nWhat do you do before -ing?',
+          'Pick the right spelling. Two little ___ slept in the box. (more than one puppy)':'Puppy ends in y after a consonant.\nWhat happens to the y?',
+          'Pick the right spelling. Dovid tied a ___ in the rope. (a quiet k, then the n sound)':'Start with the quiet k.\nThen spell the rest of the word.',
+          'Pick the right spelling. Abba sewed a ___ on Dovid\'s coat. (short a, then the ch sound)':'Short a, then the ch sound.\nHow is ch spelled right after a short vowel?',
+          'Pick the right spelling. Mendy is ___ the dough for challah. (shape + ing)':'Shape ends in a silent e.\nWhat happens to it before -ing?' } },
+    'WRIT.HAND.L03.01':{ s:'Indent the first line.\nSit every letter on the line.\nOne finger space after each word.',
+      q:{ 'Naftali is starting a new paragraph. Where does his first word go?':'Think of the word indent.\nWhat does the first line do?',
+          'Which word has a letter that dips below the line?':'Look at every letter in each word.\nWhich one has a tail?',
+          'Avi wrote "suk-" at a line end and "kah" below it. What went wrong?':'Look at the word sukkah.\nIs it whole on one line?',
+          'Which letter is tall and reaches the top line?':'Write each letter in the air.\nWhich one reaches up high?',
+          'Which line is spaced right?':'Look between the words and inside each word.',
+          'Mendy\'s letters float above the line. How should he fix it?':'Where should every letter sit?' } }
+  };
+
+  var BITE = {
+    'READ.FLU.L03.05':{ band:'B23', pic:'🥁', today:'Read a poem with its beat and rhymes',
+      why:'A poem read with its beat sounds like music, and it is fun to read again.',
+      ready:[{q:'Which word rhymes with cat?', o:['hat','cup','dog'], a:'hat'},{q:'What does a period tell you?', o:['stop','go faster'], a:'stop'}],
+      bridge:'READ.FLU.L03.04', bridgeName:'Just-Right Speed',
+      watch:{ q:'poem beat', m:{type:'scene', e:'🌧️', t:'Tap, tap, tap on the sukkah roof, / raindrops dancing down. / Naftali looks up through the green, / and Avi starts to frown.'}, steps:[
+        {t:'A poem is made of lines. Each line is a row.'},
+        {t:'Look at the last words: down and frown. They rhyme!'},
+        {t:'Clap the strong parts: RAIN-drops DANC-ing DOWN.'},
+        {t:'Little words like the and on are soft. Do not clap them hard.'},
+        {t:'A comma after roof? A tiny breath, then keep going.'},
+        {t:'A period? A full stop.'},
+        {t:'Tap the beat with Naftali!', m:{type:'chant', lines:['Tap, tap, tap on the sukkah roof,','the rain comes dancing down.','Clap the strong parts, breathe at the ends,','and read it all around!']}}], a:'Find the rhymes, clap the beat, and breathe at the line ends.' },
+      oops:{ q:'Read: "Naftali looks up through the green, / and Avi starts to frown."', wrong:'Stops dead after green.', right:'A tiny breath after green, then keep going.', why:'A comma at the end of a line: a tiny breath, not a full stop.' },
+      ways:['read the whole poem','clap and chant the beat','rhyme hunt','sort line ends','Mistake Detective'], done:'You can read a poem with its beat!',
+      board:{ one:'Find the rhymes, clap the beat, and breathe at the line ends: a period means stop.', activity:'Drum the poem: the rebbe reads "Rain on the Sukkah". Boys tap the strong beats on the desk, take a tiny breath at a comma, and freeze at a period. Then pairs read a verse to each other with the beat.', mistakes:['Stopping dead at every line end, even with no period','Clapping every word the same, little words too','Sing-song reading that loses the meaning'] },
+      do:[
+        {type:'read', text:'F.PO.01', say:'Open the poem. Read it with the beat.', how:'Clap the strong parts. Breathe at the line ends.'},
+        {type:'listen', q:'Avi stopped dead after "roof," like at a period.', hear:'The line ends with a comma. What should he do?', o:['tiny breath, keep going','full stop','skip a line'], a:'tiny breath, keep going', mis:true, say:'Mistake Detective! What should Avi do at the comma?', how:'A period means stop. A comma means a tiny breath.'}],
+      your:[
+        {type:'findall', grid:['bear','green','where','ground','there','floor'], find:['bear','where','there'], findSay:'word that rhymes with chair', say:'Tap every word that rhymes with chair.', how:'Say each word with chair. Same sound at the end?'},
+        {type:'sort', bins:[BREATH, STOP], cards:[['Tap, tap, tap on the sukkah roof,',0],['and Avi starts to frown.',1],['Naftali looks up through the green,',0],['and watches raindrops go.',1]], say:'Line end: tiny breath, or full stop?', how:'A period means stop. A comma or no mark: a tiny breath.'},
+        {type:'evidence', q:'Which way claps the beat right?', p:['RAIN-drops DANC-ing DOWN','rain-DROPS danc-ING down','RAIN-DROPS DANC-ING DOWN'], a:0, look:'the strong part of each word', say:'Tap the line that claps the beat right.', how:'Say each word. Which part is louder?'},
+        {type:'cloze', t:'The moon is up, the stars are bright. / Zeidy says, "Good ___!"', o:['night','day','evening'], a:'night', say:'Tap the word that rhymes.', how:'Which word sounds like bright at the end?'},
+        {type:'match', pairs:[['the challah and the cake!','for everybody\'s sake.'],['we sing the song we know.','and watches raindrops go.'],['it shines on every chair.','with sunshine everywhere.']], say:'Challenge! Match each line to its rhyming line.', how:'Say the last word of each line. Which ones ring alike?'}] },
+
+    'READ.FLU.L03.06':{ band:'B23', pic:'🎭', today:'Read your part in a play, on cue',
+      why:'In Readers\' Theatre, your voice makes the story come alive for everyone.',
+      ready:[{q:'What do quotation marks hold?', o:['words someone says','the title'], a:'words someone says'},{q:'"Shh," whispered Chaim. How does it sound?', o:['soft','loud'], a:'soft'}],
+      bridge:'READ.FLU.L03.03', bridgeName:'Who Is Talking?',
+      watch:{ q:'take a part', m:{type:'scene', e:'🕰️', t:'ZEIDY: (calmly) Boys, my big clock has stopped. / AVI: (worried) Oh no!'}, steps:[
+        {t:'A play is a story told by talking.'},
+        {t:'The name before the colon tells whose line it is. ZEIDY: Zeidy talks.'},
+        {t:'Words in ( ) tell how to say it. (calmly): a calm voice.'},
+        {t:'I do not say the name. I do not say the ( ) words.'},
+        {t:'I am Avi. Zeidy\'s line comes right before mine. That is my cue.'},
+        {t:'On my cue, I read: Oh no! In a worried voice.'},
+        {t:'Act it out with Avi!', m:{type:'move', t:'Stand up. Hands on your cheeks, and say "Oh no!" in a worried voice. Then cheer "It works!" with arms up high!'}}], a:'Find your name and your cue. Read only your words, in the ( ) voice.' },
+      oops:{ q:'DOVID: (shyly) I found it.', wrong:'"Dovid shyly I found it."', right:'"I found it." in a shy voice.', why:'The name and the ( ) words are not said out loud.' },
+      ways:['read the whole play','act out the voices','find your cue','sort say and not say','Mistake Detective'], done:'You can read your part in a play!',
+      board:{ one:'Find your name and your cue. Read only your words, in the voice the ( ) asks for.', activity:'Readers\' Theatre: six boys take the parts of "The Clock That Stopped" (Narrator, Zeidy, Avi, Naftali, Chaim, Dovid). Each boy marks his lines and his cue, then the group reads it twice, switching parts the second time.', mistakes:['Reading the name or the ( ) words out loud','Missing the cue because he stopped following along','Reading every line in the same flat voice'] },
+      do:[
+        {type:'read', text:'F.RT.01', say:'Open the play. Read every part.', how:'Read only the words. Use the voice in ( ).'},
+        {type:'listen', q:'Dovid read: "Dovid, shyly, I found it on the floor."', hear:'What should he say out loud?', o:['I found it on the floor.','Dovid I found it.','shyly I found it.'], a:'I found it on the floor.', mis:true, say:'Mistake Detective! What should Dovid say?', how:'The name and the ( ) words stay quiet.'}],
+      your:[
+        {type:'evidence', q:'You are Dovid. Which line is your cue?', p:['NAFTALI: One little gear is missing!','DOVID: Is it round and shiny?','AVI: Dovid! How do you know?'], a:0, look:'the line right before Dovid\'s', say:'Tap the line right before your part.', how:'Find DOVID. Which line comes just before it?'},
+        {type:'sort', bins:['Say it','Do not say it'], cards:[['Oh no!',0],['AVI:',1],['(worried)',1],['I love gears!',0]], say:'Say it out loud, or not?', how:'Say only the words. Names and ( ) words stay quiet.'},
+        {type:'match', pairs:[['(whispering)','small and soft'],['(cheering)','loud and happy'],['(worried)','shaky and scared']], say:'Match each ( ) word to its voice.', how:'The ( ) word tells how the voice sounds.'},
+        {type:'cloze', t:'ZEIDY: (laughing) You saved the day! Zeidy sounds ___.', o:['happy','sad','sleepy'], a:'happy', say:'Tap the word that fits.', how:'Read the ( ) word. How does laughing sound?'},
+        {type:'order', steps:['Find your name.','Find your cue: the line before yours.','Wait for your cue.','Read your words in the right voice.'], say:'Challenge! Put the actor\'s steps in order.', how:'First find your part. Then wait. Then read.'}] },
+
+    'READ.FLU.L03.07':{ band:'B23', pic:'🔧', today:'Catch a wrong word and fix it',
+      why:'Strong readers catch their own mistakes, so the story always makes sense.',
+      ready:[{q:'Which word is c-a-t?', o:['cat','cut'], a:'cat'},{q:'Does "The fish can fly a kite" make sense?', o:['no','yes'], a:'no'}],
+      bridge:'READ.FLU.L03.04', bridgeName:'Just-Right Speed',
+      watch:{ q:'fix it as you go', m:{type:'scene', e:'🐴', t:'The horse ate hay in the barn.'}, steps:[
+        {t:'I read: The house ate hay. Wait! A house cannot eat.'},
+        {t:'It does not make sense. So I stop.'},
+        {t:'I look at the letters again: h-o-r-s-e. Horse!'},
+        {t:'I reread: The horse ate hay in the barn. Now it makes sense.'},
+        {t:'Ask two questions: Does it make sense? Does it look right?'},
+        {t:'Fixing a mistake is what strong readers do.'},
+        {t:'Fix it with Zeidy!', m:{type:'move', t:'Read "The house ate hay." Put up a STOP hand. Point to your eyes to look again. Then read it right and give a thumbs up!'}}], a:'Ask: does it make sense? Does it look right? If not, stop, look again and reread.' },
+      oops:{ q:'Read: Dovid went to shul.', wrong:'Dovid want to shul, and keeps going.', right:'Stops, looks again: Dovid went to shul.', why:'It did not make sense, so stop and reread.' },
+      ways:['reread the play','stop, look, reread move','sense or no sense','match look-alike words','Mistake Detective'], done:'You can fix it as you go!',
+      board:{ one:'Ask: does it make sense? Does it look right? If not, stop, look again and reread.', activity:'Catch me: the rebbe reads a sentence with one word swapped for a look-alike (house for horse). Boys put up a STOP hand the moment it stops making sense, then a boy reads it right.', mistakes:['Reading on when it makes no sense','Guessing from the first letter only','Fixing the word but not rereading the sentence'] },
+      do:[
+        {type:'read', text:'F.RT.01', say:'Read the play. Check that every word makes sense.', how:'Does it make sense? Does it look right? If not, reread.'},
+        {type:'listen', q:'Dovid read: "The dog dug in the yarn."', hear:'Which word should Dovid look at again?', o:['yarn','dog','dug'], a:'yarn', mis:true, say:'Mistake Detective! Find Dovid\'s wrong word.', how:'Can a dog really dig there? Find the word that does not make sense.'}],
+      your:[
+        {type:'cloze', t:'Avi kicked the ball with his ___.', o:['foot','food','fort'], a:'foot', say:'Tap the word that looks right and makes sense.', how:'All look like fo__. What do you kick with?'},
+        {type:'match', pairs:[['Dovid rode his bake.','bike'],['The hen sat on her next.','nest'],['We ate hot soap.','soup']], say:'Match each sentence to the word that fixes it.', how:'Find the word with no sense. Which word looks almost the same?'},
+        {type:'order', steps:['I read a word.','I ask: does it make sense?','No! I look at the letters again.','I reread the sentence.'], say:'Put the steps in order.', how:'Read, ask, look again, reread.'},
+        {type:'sort', bins:['Makes sense','No sense'], cards:[['The cat drank milk.',0],['The cat drank mild.',1],['Avi rode his bike.',0],['Avi rode his bark.',1]], say:'Does the sentence make sense?', how:'Read it like talking. Could that really happen?'},
+        {type:'evidence', q:'Which sentence has a misread word?', p:['Chaim set the table.','Chaim ate soup at the cable.','Chaim set out the forks.'], a:1, look:'the sentence that makes no sense', say:'Challenge! Find the misread word.', how:'Read each one. Which could not really happen?'}] },
+
+    'READ.PHON.L03.18':{ band:'B23', pic:'✏️', today:'Hear a sentence and spell its pattern words right',
+      why:'When you can spell what you hear, you can write anything you want to say.',
+      ready:[{q:'Which says sss?', o:['c in city','c in cat'], a:'c in city'},{q:'Which is right?', o:['knee','nee'], a:'knee'}],
+      bridge:'READ.PHON.L03.08', bridgeName:'Catch the Bridge',
+      watch:{ q:'spell it back', m:{type:'tiles', w:['c','a','tch'], hi:[2]}, steps:[
+        {t:'I hear: catch. Short a, then the ch sound.', m:{type:'tiles', w:['c','a','tch'], hi:[2]}},
+        {t:'Right after a short vowel, ch is spelled tch.'},
+        {t:'I hear: hopping. Short o and one p. Double it!', m:{type:'tiles', w:['h','o','pp','ing'], hi:[2]}},
+        {t:'I hear: babies. Baby ends in y. Change y to i, add es.', m:{type:'tiles', w:['b','a','b','ies'], hi:[3]}},
+        {t:'I hear: knee. It starts with a quiet k.', m:{type:'tiles', w:['kn','ee'], hi:[0]}},
+        {t:'I hear: city. C before i says sss.', m:{type:'tiles', w:['c','i','t','y'], hi:[0]}},
+        {t:'Listen, think of the pattern, spell, then check.'},
+        {t:'Spell it in the air with Chaim!', m:{type:'move', t:'Stand up. Say "catch" and write c-a-t-c-h in the air with your finger. Clap on the t-c-h. Now try "bridge"!'}}], a:'Listen, think of the pattern, spell it, then check every letter.' },
+      oops:{ q:'Spell: catch', wrong:'cach', right:'catch', why:'Right after a short vowel, ch is spelled tch.' },
+      ways:['think-aloud','spell in the air','hear and build a sentence','spot the right spelling','Mistake Detective'], done:'You can spell it back!',
+      board:{ one:'Listen, think of the pattern, spell it, then check every letter.', activity:'Dictation: the rebbe says "Zeidy will fix the clock by the bridge." Boys write it on paper, then check each pattern word with a partner: dge, ck, capital letter and period.', mistakes:['ch for tch after a short vowel: cach','Keeping the silent e before -ing: bakeing','Not doubling after a short vowel: hoping for hopping'] },
+      do:[
+        {type:'dictation', hear:'Zeidy will fix the clock.', w:['Zeidy','will','fix','the','clock.'], extra:['klock.'], say:'Listen. Build the sentence you hear.', how:'Start with a capital. End with a period.'},
+        {type:'listen', q:'Avi spelled "hopping" as "hoping".', hear:'What went wrong?', o:['he did not double the p','he dropped an e','he left out the i'], a:'he did not double the p', mis:true, say:'Mistake Detective! What went wrong?', how:'Short o and one last letter. What do you do before -ing?'}],
+      your:[
+        {type:'tiles', w:['b','r','i','dge'], extra:['j'], hear:'bridge', say:'Listen. Build the word you hear.', how:'Short i, then the j sound. Which letters spell it?'},
+        {type:'findall', grid:['wrist','rist','graph','graf','fudge','fuj'], find:['wrist','graph','fudge'], findSay:'right spelling', say:'Tap every word spelled the right way.', how:'Think of the pattern for each sound.'},
+        {type:'dictation', hear:'Chaim is baking a cake.', w:['Chaim','is','baking','a','cake.'], extra:['bakeing'], say:'Listen. Build the sentence you hear.', how:'Bake + ing: what happens to the e?'},
+        {type:'cloze', t:'Two little ___ slept in the crib.', o:['babies','babys','babyes'], a:'babies', say:'Tap the right spelling.', how:'Baby ends in y. What happens before -es?'},
+        {type:'sort', bins:['Double it','Do not double'], cards:[['run + ing',0],['jump + ing',1],['sit + ing',0],['make + ing',1]], say:'Challenge! Double the last letter, or not?', how:'One short vowel and one last letter: double it.'}] },
+
+    'WRIT.HAND.L03.01':{ band:'B23', pic:'📝', today:'Learn the four rules of a neat paragraph',
+      why:'Neat writing lets your rebbe, your parents and you read every word.',
+      ready:[{q:'Which letter is tall?', o:['l','o'], a:'l'},{q:'What starts a sentence?', o:['a capital letter','a period'], a:'a capital letter'}],
+      bridge:'WRIT.HAND.L02.01', bridgeName:'Neat Lines',
+      watch:{ q:'a neat paragraph', m:{type:'scene', e:'📝', t:'Dovid ate his lunch in the sukkah. Then he helped Zeidy.'}, steps:[
+        {t:'First, the indent: I start in a bit from the left edge.'},
+        {t:'Every letter sits on the line, like boys on a bench.'},
+        {t:'Tall letters reach the top: b, d, f, h, k, l, t.'},
+        {t:'Small letters reach the middle: a, c, e, o. Tails dip below: g, j, p, q, y.'},
+        {t:'One finger space after each word.'},
+        {t:'No room for Shabbos? Move the whole word down.'},
+        {t:'Warm up your hand with Dovid!', m:{type:'move', t:'Wiggle your fingers. Make tall letters with arms up, small letters with hands on your belly, and tail letters by touching your toes!'}}], a:'Indent, letters on the line, finger spaces, and whole words.' },
+      oops:{ q:'Copy: We ate lunch.', wrong:'Weatelunch.', right:'We ate lunch.', why:'Leave one finger space after each word.' },
+      ways:['trace','tall, small and tail move','find the neat line','order the steps','Mistake Detective'], done:'You know the four rules! Now copy the Watch me paragraph on paper for your rebbe.',
+      board:{ one:'Indent, letters on the line, one finger space, and whole words only.', activity:'Copy it neat: the rebbe writes a 3-sentence paragraph about Sukkos. Boys copy it on lined paper, then check with a partner: indent? letters on the line? finger spaces? no split words?', mistakes:['No indent on the first line','No spaces, or spaces inside words','Splitting a word at the end of a line'] },
+      do:[
+        {type:'trace', glyph:'g', name:'letter g', say:'Trace the g. Its tail dips below the line.', how:'Round like a, then a tail down and curl.'},
+        {type:'listen', q:'Avi wrote "Shab" at a line end and "bos" below it.', hear:'How should he fix it?', o:['move the whole word down','write smaller','skip the word'], a:'move the whole word down', mis:true, say:'Mistake Detective! How should Avi fix it?', how:'Words stay whole. Where can the whole word go?'}],
+      your:[
+        {type:'sort', bins:['Tall','Small','Tail'], cards:[['b',0],['a',1],['p',2],['k',0],['e',1],['j',2]], say:'Tall letter, small letter, or tail letter?', how:'Tall reaches the top line. Tails dip below.'},
+        {type:'evidence', q:'Which line has a finger space between words?', p:['Dovidatehislunch.','Dovid ate his lunch.','D o v i d ate lunch.'], a:1, look:'spaces between words, none inside', say:'Tap the neatly spaced line.', how:'One space after each word. No spaces inside a word.'},
+        {type:'order', steps:['Indent the first line.','Write the first word on the line.','Put one finger down after it.','Write the next word after your finger.'], say:'Put the steps in order.', how:'Start with the indent.'},
+        {type:'trace', glyph:'y', name:'letter y', say:'Trace the y. Its tail dips below the line.', how:'A short slant down, then a long slant through the line.'},
+        {type:'findall', grid:['q','l','g','o','p','t'], find:['q','g','p'], findSay:'letter with a tail', say:'Challenge! Tap every letter with a tail.', how:'Which letters dip below the line?'}] }
+  };
+
+  /* ===== Grade 2 word-study little readers (F-map section 6): each lesson opens one or two readers in the Reader.
+     The boy reads, proves answers by tapping the sentence, and works the unit's pattern words. Check questions use NEW sentences (cold). ===== */
+  var RL = {
+
+    'READ.FLU.L03.08':{name:'Spice at the Store',
+      teach:[
+        {q:'Read "rice". What does the c say?', o:['sss','k'], how:'C before e, i or y says sss.'},
+        {q:'Read "cake". What does the c say?', o:['k','sss'], how:'C before a, o or u says k.'},
+        {q:'How do you read a little reader the best way?', o:['read it, then read it again smoother','read it once as fast as you can'], how:'Each time you reread, it gets smoother.'}
+      ],
+      practice:[
+        {t:'sort', q:'Soft c (sss) or hard c (k)?', bins:[{id:'s',label:'Soft c: sss'},{id:'h',label:'Hard c: k'}], items:[{label:'ice',bin:'s'},{label:'counter',bin:'h'},{label:'cents',bin:'s'},{label:'cake',bin:'h'},{label:'cinnamon',bin:'s'},{label:'cup',bin:'h'},{label:'pencil',bin:'s'}], h:'Look at the letter right after the c.'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['counter','where you pay'],['cinnamon','a sweet brown spice'],['freezer','a cold box for food'],['exactly','not more or less']], h:'Read the word. Think of the story.'},
+        {t:'spotall', q:'Tap every word with a soft c.', cells:[{label:'spice',ok:true},{label:'cat',ok:false},{label:'nice',ok:true},{label:'cold',ok:false},{label:'city',ok:true},{label:'cup',ok:false}], h:'C with e, i or y after it is soft.'},
+        {t:'order', q:'Put the story in order.', tiles:['The boys go to the corner store.','Chaim asks for rice and cinnamon.','Naftali pays fifty cents for ice.','The boys race home.'], h:'What happened first? What happened at the end?'},
+        {t:'pairs', q:'Match each boy to what he needed.', pairs:[['Chaim','rice and cinnamon'],['Naftali','ice']], h:'Think back to the story.'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'The ice cost fifty cents.',bin:'t'},{label:'The store was closed.',bin:'n'}], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "Yanky got a pack of juice." What does the c in juice say?', o:['sss','k','ch']},
+        {q:'Read: "Avi poured cereal into a bowl." What does the c in cereal say?', o:['sss','k','ch']},
+        {q:'Read: "Mendy can count to ten." What does the c in count say?', o:['k','sss','ch']}
+      ],
+      re:[
+        {q:'Read: "Yanky danced at his cousin\'s wedding." What does the c in danced say?', o:['sss','k','ch']},
+        {q:'Read: "Yanky drew a face on the paper." What does the c in face say?', o:['sss','k','ch']},
+        {q:'Read: "The cat sat on a rug." What does the c in cat say?', o:['k','sss','ch']}
+      ]},
+
+    'READ.FLU.L03.14':{name:'Ginger in the Cage',
+      teach:[
+        {q:'Read "gentle". What does the g say?', o:['j','g as in go'], how:'G before e, i or y often says j.'},
+        {q:'Read "gate". What does the g say?', o:['g as in go','j'], how:'G before a, o or u says g as in go.'},
+        {q:'A question asks where. What do you do?', o:['find the sentence that tells where','guess'], how:'Prove it with a sentence from the story.'}
+      ],
+      practice:[
+        {t:'sort', q:'Soft g (j) or hard g (g)?', bins:[{id:'s',label:'Soft g: j'},{id:'h',label:'Hard g: g'}], items:[{label:'gentle',bin:'s'},{label:'got',bin:'h'},{label:'huge',bin:'s'},{label:'gate',bin:'h'},{label:'large',bin:'s'},{label:'magic',bin:'s'}], h:'Look at the letter right after the g.'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['gerbil','a small furry pet'],['edge','the side of something'],['huge','very big'],['gentle','soft and calm']], h:'Read the word. Think of the story.'},
+        {t:'order', q:'Put the story in order.', tiles:['Ginger is not in her cage.','The boys put seeds by the rug.','Ginger comes out from under the coat.','Naftali shuts the gate.'], h:'What happened first? What happened at the end?'},
+        {t:'spotall', q:'Tap every word with a soft g.', cells:[{label:'cage',ok:true},{label:'go',ok:false},{label:'page',ok:true},{label:'game',ok:false}], h:'G with e, i or y after it is soft.'},
+        {t:'pairs', q:'Match each boy to what he did.', pairs:[['Dovid','found the open gate'],['Avi','had the seed idea'],['Naftali','shut the gate']], h:'Think back to the story.'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'Ginger is a gerbil.',bin:'t'},{label:'Ginger ran outside.',bin:'n'}], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "Shimon fed the large dog." What does the g in large say?', o:['j','g as in go','no sound']},
+        {q:'Read: "Moishe did a magic trick." What does the g in magic say?', o:['j','g as in go','no sound']},
+        {q:'Read: "Avi ran fast in the gym." What does the g in gym say?', o:['j','g as in go','no sound']}
+      ],
+      re:[
+        {q:'Read: "Wash your hands so no germs get on the bread." What does the g in germs say?', o:['j','g as in go','no sound']},
+        {q:'Read: "Mendy won the game." What does the g in game say?', o:['g as in go','j','no sound']},
+        {q:'Read: "Yanky stood on the stage." What does the g in stage say?', o:['j','g as in go','no sound']}
+      ]},
+
+    'READ.FLU.L03.09':{name:'Knots and a Wrapped Gift',
+      teach:[
+        {q:'Read "knot". Which letter is quiet?', o:['k','n','t'], how:'In kn, the k is quiet. You hear n.'},
+        {q:'Read "wrap". Which letter is quiet?', o:['w','r','p'], how:'In wr, the w is quiet. You hear r.'},
+        {q:'Read "lamb". Which letter is quiet?', o:['b','m','l'], how:'In mb at the end, the b is quiet.'}
+      ],
+      practice:[
+        {t:'sort', q:'Which quiet letter is in the word?', bins:[{id:'k',label:'quiet k'},{id:'w',label:'quiet w'},{id:'b',label:'quiet b'}], items:[{label:'knot',bin:'k'},{label:'wrap',bin:'w'},{label:'thumb',bin:'b'},{label:'knee',bin:'k'},{label:'write',bin:'w'},{label:'lamb',bin:'b'}], h:'Say the word. Which letter do you see but not hear?'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['wrap','cover with paper'],['knot','a tight tie in a string'],['knelt','went down on his knees'],['climb','go up, step by step']], h:'Read the word. Think of the story.'},
+        {t:'order', q:'Put the story in order.', tiles:['Zeidy wants to give a book.','Chaim wraps it, but the knot comes loose.','Avi ties a tight knot.','Dovid knocks on the door.'], h:'What happened first? What happened at the end?'},
+        {t:'spotall', q:'Tap every word with a quiet letter.', cells:[{label:'knock',ok:true},{label:'nod',ok:false},{label:'wrist',ok:true},{label:'rest',ok:false}], h:'Which word has a letter you see but do not hear?'},
+        {t:'pairs', q:'Match each word to its quiet letter.', pairs:[['knock','k'],['wrist','w'],['comb','b']], h:'Which letter do you see but not hear?'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'Avi tied the knot.',bin:'t'},{label:'The gift was a ball.',bin:'n'}], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "Dovid saw a wren in the tree." Which letter in wren is quiet?', o:['w','r','n']},
+        {q:'Read: "Avi used a knife to cut the bread." Which letter in knife is quiet?', o:['k','n','f']},
+        {q:'Read: "Naftali turned the knob." Which letter in knob is quiet?', o:['k','n','b']}
+      ],
+      re:[
+        {q:'Read: "Moishe wrote a note to his Zeidy." Which letter in wrote is quiet?', o:['w','r','t']},
+        {q:'Read: "The kitten had a little crumb on its nose." Which letter in crumb is quiet?', o:['b','m','c']},
+        {q:'Read: "Mendy scraped his knuckle on the fence." Which letter in knuckle is quiet?', o:['k','n','l']}
+      ]},
+
+    'READ.FLU.L03.15':{name:'The Photo Contest',
+      teach:[
+        {q:'Read "photo". What does ph say?', o:['fff','p'], how:'P and h side by side say fff.'},
+        {q:'Read "uphill". Do p and h say fff?', o:['no: up + hill','yes'], how:'P ends up and h starts hill.'},
+        {q:'A question asks what. What do you do?', o:['find the sentence that tells it','guess'], how:'Prove it with a sentence from the story.'}
+      ],
+      practice:[
+        {t:'spotall', q:'Tap every word where ph says fff.', cells:[{label:'phone',ok:true},{label:'trophy',ok:true},{label:'uphill',ok:false},{label:'dolphin',ok:true}], h:'Up + hill: p and h are in two parts.'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['trophy','a prize cup'],['contest','a game to see who does best'],['photo','a picture from a camera'],['workshop','a room for fixing things']], h:'Read the word. Think of the story.'},
+        {t:'order', q:'Put the story in order.', tiles:['Rabbi Feld tells about the contest.','Naftali takes a photo of Zeidy.','Rabbi Feld puts the photos on the wall.','The boys give the trophy to Zeidy.'], h:'What happened first? What happened at the end?'},
+        {t:'sort', q:'Ph says fff, or p and h in two parts?', bins:[{id:'f',label:'Ph says fff'},{id:'x',label:'Two parts'}], items:[{label:'elephant',bin:'f'},{label:'uphill',bin:'x'},{label:'graph',bin:'f'},{label:'cupholder',bin:'x'}], h:'Does p end one small word and h start the next?'},
+        {t:'pairs', q:'Match each boy to what he loves.', pairs:[['Dovid','dolphins'],['Chaim','elephants'],['all the boys','Zeidy']], h:'Think back to the story.'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'The photo of Zeidy won.',bin:'t'},{label:'There was a real elephant.',bin:'n'}], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "Chaim made a graph of the birds he saw." What does the ph in graph say?', o:['fff','p','h']},
+        {q:'Read: "Yanky sang the alphabet song." What does the ph in alphabet say?', o:['fff','p','h']},
+        {q:'Read: "Dovid cleaned the floor with the mophead." Do the p and h in mophead say fff?', o:['no','yes','only the h']}
+      ],
+      re:[
+        {q:'Read: "Mendy put on his headphones." What does the ph in headphones say?', o:['fff','p','h']},
+        {q:'Read: "The nephew came to visit." What does the ph in nephew say?', o:['fff','p','h']},
+        {q:'Read: "Moishe put his cup in the cupholder." Do the p and h in cupholder say fff?', o:['no','yes','only the h']}
+      ]},
+
+    'READ.FLU.L03.11':{name:'Baking Day',
+      teach:[
+        {q:'Bake + ing. How is it spelled?', o:['baking','bakeing'], how:'Drop the silent e, then add -ing.'},
+        {q:'Read "smiled". What is the base word?', o:['smile','smil'], how:'The silent e was dropped before -ed.'},
+        {q:'Read "rolling". Did the base word change?', o:['no: roll + ing','yes: an e was dropped'], how:'Roll has no silent e.'}
+      ],
+      practice:[
+        {t:'sort', q:'Was an e dropped?', bins:[{id:'d',label:'Dropped the e'},{id:'n',label:'Nothing changed'}], items:[{label:'baking',bin:'d'},{label:'rolling',bin:'n'},{label:'shaping',bin:'d'},{label:'braiding',bin:'n'},{label:'smiled',bin:'d'},{label:'played',bin:'n'},{label:'hope → hoping',bin:'d'}], h:'Find the base word first.'},
+        {t:'pairs', q:'Match each word to its base word.', pairs:[['braided','braid'],['raced','race'],['waving','wave'],['poking','poke']], h:'Take off the ending. Put back a dropped e if needed.'},
+        {t:'order', q:'Put the challah steps in order.', tiles:['rolling the dough','braiding the strands','brushing on egg','baking in the oven'], h:'Think back to Baking Day.'},
+        {t:'spotall', q:'Tap every word spelled right.', cells:[{label:'moved',ok:true},{label:'moveed',ok:false},{label:'baking',ok:true},{label:'bakeing',ok:false}], h:'Drop a silent e before -ed or -ing.'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['dough','soft flour and water'],['braiding','crossing strands over and under'],['tray','a flat pan']], h:'Read the word. Think of the story.'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'Avi braided a challah.',bin:'t'},{label:'They ate all the challahs.',bin:'n'}], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "Moishe was skating on the ice." What happened to the base word skate?', o:['dropped the e','doubled the letter','nothing changed']},
+        {q:'Read: "Shimon was riding his bike." What happened to the base word ride?', o:['dropped the e','doubled the letter','nothing changed']},
+        {q:'Read: "Mendy was waving to Zeidy." What is the base word of waving?', o:['wave','wav','wavv']}
+      ],
+      re:[
+        {q:'Read: "Dovid was hoping for snow." What is the base word of hoping?', o:['hope','hop','hopp']},
+        {q:'Read: "Avi was reading a book." What happened to the base word read?', o:['nothing changed','dropped the e','doubled the letter']},
+        {q:'Read: "Chaim was hiding behind the door." What happened to the base word hide?', o:['dropped the e','doubled the letter','nothing changed']}
+      ]},
+
+    'READ.FLU.L03.16':{name:'The Running Race',
+      teach:[
+        {q:'Hop + ing. How is it spelled?', o:['hopping','hoping'], how:'Short vowel and one last letter: double it.'},
+        {q:'Read "tripped". What is the base word?', o:['trip','tripe'], how:'Two p\'s: the p was doubled. The i is short.'},
+        {q:'Jump + ing. Double the p?', o:['no: jumping','yes: jumpping'], how:'Jump ends in two consonants. Do not double.'}
+      ],
+      practice:[
+        {t:'sort', q:'Double it, or not?', bins:[{id:'d',label:'Doubled the letter'},{id:'n',label:'Nothing changed'}], items:[{label:'hopping',bin:'d'},{label:'jumping',bin:'n'},{label:'running',bin:'d'},{label:'kicked',bin:'n'},{label:'clapped',bin:'d'},{label:'splashed',bin:'n'}], h:'Short vowel and one last letter? Double it.'},
+        {t:'pairs', q:'Match each word to its base word.', pairs:[['tripped','trip'],['flopped','flop'],['shopped','shop'],['grinning','grin']], h:'Take off the ending. Take off the doubled letter.'},
+        {t:'order', q:'Put the story in order.', tiles:['Dovid hops in a sack race.','Avi\'s kippah slips in the running race.','Rabbi Feld praises Avi.','The boys wade in the stream.'], h:'What happened first? What happened at the end?'},
+        {t:'spotall', q:'Tap every word spelled right.', cells:[{label:'swimming',ok:true},{label:'swiming',ok:false},{label:'clapping',ok:true},{label:'claping',ok:false}], h:'Double after a short vowel.'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['shallow','not deep'],['grinning','smiling a big smile'],['matter','to be important']], h:'Read the word. Think of the story.'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'Avi stopped to fix his kippah.',bin:'t'},{label:'Avi won the race.',bin:'n'}], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "Yanky was digging in the sand." What happened to the base word dig?', o:['doubled the letter','dropped the e','nothing changed']},
+        {q:'Read: "The frog was sitting on a rock." What happened to the base word sit?', o:['doubled the letter','dropped the e','nothing changed']},
+        {q:'Read: "Mendy was clapping for the band." What is the base word of clapping?', o:['clap','clapp','clape']}
+      ],
+      re:[
+        {q:'Read: "Yanky was shopping for apples." What is the base word of shopping?', o:['shop','shope','shopp']},
+        {q:'Read: "Avi was helping Zeidy." What happened to the base word help?', o:['nothing changed','doubled the letter','dropped the e']},
+        {q:'Read: "Chaim was stopping at every corner." What happened to the base word stop?', o:['doubled the letter','dropped the e','nothing changed']}
+      ]},
+
+    'READ.FLU.L03.12':{name:'Berries for the Babies',
+      teach:[
+        {q:'Baby + es. How is it spelled?', o:['babies','babys'], how:'After a consonant, the y changes to i before -es.'},
+        {q:'Cry + ed. How is it spelled?', o:['cried','cryed'], how:'The y changes to i before -ed.'},
+        {q:'Play + ed. Does the y change?', o:['no: played','yes: plaied'], how:'A vowel before the y? Keep the y.'}
+      ],
+      practice:[
+        {t:'pairs', q:'Match each word to its base word.', pairs:[['berries','berry'],['cried','cry'],['carried','carry'],['babies','baby']], h:'The i was a y. Change it back.'},
+        {t:'sort', q:'Did the y change to i?', bins:[{id:'c',label:'the y changes to i'},{id:'n',label:'nothing changed'}], items:[{label:'berries',bin:'c'},{label:'played',bin:'n'},{label:'tried',bin:'c'},{label:'stayed',bin:'n'}], h:'Consonant before the y? It changes. Vowel before the y? It stays.'},
+        {t:'order', q:'Put the story in order.', tiles:['The boys go to the berry patch.','Dovid checks a berry and tastes it.','The babies are crying.','The babies eat and giggle.'], h:'What happened first? What happened at the end?'},
+        {t:'spotall', q:'Tap every word spelled right.', cells:[{label:'puppies',ok:true},{label:'puppys',ok:false},{label:'fried',ok:true},{label:'fryed',ok:false}], h:'Consonant then y? Change y to i.'},
+        {t:'pairs', q:'Match each word to its base word.', pairs:[['ponies','pony'],['ladies','lady'],['ponds','pond']], h:'The i was a y. Change it back.'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['twins','two babies born the same day'],['patch','a small piece of land'],['giggled','laughed a silly laugh']], h:'Read the word. Think of the story.'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'The berries were checked.',bin:'t'},{label:'The babies did not like them.',bin:'n'}], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "The puppies ran to the door." What happened to the base word puppy?', o:['the y changes to i','the e was dropped','a letter was doubled']},
+        {q:'Read: "Shimon fried an egg for supper." What happened to the base word fry?', o:['the y changes to i','the e was dropped','a letter was doubled']},
+        {q:'Read: "Two ponies ate hay." What is the base word of ponies?', o:['pony','ponie','pon']}
+      ],
+      re:[
+        {q:'Read: "The ladies baked a cake for the shul." What is the base word of ladies?', o:['lady','ladie','lad']},
+        {q:'Read: "Avi sprayed the plants." What happened to the base word spray?', o:['nothing changed','the y changes to i','a letter was doubled']},
+        {q:'Read: "Mendy dried the dishes." What happened to the base word dry?', o:['the y changes to i','the e was dropped','nothing changed']}
+      ]},
+
+    'READ.FLU.L03.17':{name:'The Helpful Club',
+      teach:[
+        {q:'Read "careful". What does -ful add?', o:['full of: full of care','without care'], how:'-ful means full of.'},
+        {q:'Read "endless". What does -less add?', o:['without: no end','full of ends'], how:'-less means without.'},
+        {q:'Read "quickly". What does -ly tell?', o:['how','who'], how:'-ly tells how something is done.'}
+      ],
+      practice:[
+        {t:'sort', q:'Full of, or without?', bins:[{id:'f',label:'-ful: full of'},{id:'l',label:'-less: without'}], items:[{label:'helpful',bin:'f'},{label:'endless',bin:'l'},{label:'careful',bin:'f'},{label:'helpless',bin:'l'}], h:'-ful means full of. -less means without.'},
+        {t:'spotall', q:'Tap every word that ends in -ly or -ness.', cells:[{label:'quickly',ok:true},{label:'kindness',ok:true},{label:'quick',ok:false},{label:'softly',ok:true},{label:'sadness',ok:true}], h:'Look at the end of each word.'},
+        {t:'order', q:'Put the story in order.', tiles:['Mr. Gold\'s yard is full of leaves.','The boys rake the leaves.','Mr. Gold thanks them.','Mr. Gold tells a story.'], h:'What happened first? What happened at the end?'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['kindness','being good to others'],['endless','with no end'],['cane','a stick to help you walk']], h:'Read the word. Think of the story.'},
+        {t:'pairs', q:'Match each word to its base word.', pairs:[['helpful','help'],['softly','soft'],['kindness','kind']], h:'Take off the ending.'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['carefully','with care'],['cloudless','no clouds at all'],['thankful','full of thanks']], h:'Peel off the ending. What does it add?'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['fearless','not afraid at all'],['loudly','in a loud way']], h:'Peel off the ending. What does it add?'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'Chaim was careful with the flowers.',bin:'t'},{label:'Mr. Gold was angry.',bin:'n'}], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "The night was cloudless, and the stars were bright." What does cloudless mean?', o:['no clouds at all','full of clouds','clouds again']},
+        {q:'Read: "Avi carried the tray carefully." How did Avi carry it?', o:['with care','with no care','very fast']},
+        {q:'Read: "Mendy felt sadness when the trip was over." What is the base word of sadness?', o:['sad','sadd','ness']}
+      ],
+      re:[
+        {q:'Read: "Moishe was thankful for the gift." How did Moishe feel?', o:['full of thanks','without thanks','sad']},
+        {q:'Read: "Dovid was fearless on the slide." What does fearless mean?', o:['not afraid at all','full of fear','afraid again']},
+        {q:'Read: "Yanky spoke loudly." How did Yanky speak?', o:['in a loud way','very softly','not at all']}
+      ]},
+    'READ.FLU.L03.10':{name:'Treasure in the Garden',
+      teach:[
+        {q:'Read "celery". What does the c say?', o:['sss','k'], how:'C before e says sss.'},
+        {q:'Read "gem". What does the g say?', o:['j','g as in go'], how:'G before e often says j.'},
+        {q:'You read a sentence and it does not make sense. What do you do?', o:['reread it','skip it'], how:'Good readers fix it as they go.'}
+      ],
+      practice:[
+        {t:'sort', q:'Which pattern is in the word?', bins:[{id:'c',label:'soft c or g'},{id:'q',label:'quiet letter'},{id:'f',label:'ph'}], items:[{label:'celery',bin:'c'},{label:'knelt',bin:'q'},{label:'photo',bin:'f'},{label:'gem',bin:'c'},{label:'wrote',bin:'q'},{label:'phone',bin:'f'}], h:'Look for the letters that make the special sound.'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['gem','a shiny, special stone'],['smooth','with no bumps'],['treasure','something special you keep'],['library','a room full of books']], h:'Read the word. Think of the story.'},
+        {t:'order', q:'Put the story in order.', tiles:['Dovid finds a green stone.','Chaim looks in a book of rocks.','They learn it is sea glass.','Naftali makes a frame for it.'], h:'What happened first? What happened at the end?'},
+        {t:'spotall', q:'Tap every word with a soft c or soft g.', cells:[{label:'center',ok:true},{label:'glass',ok:false},{label:'page',ok:true},{label:'clink',ok:false}], h:'C or g with e, i or y after it is soft.'},
+        {t:'sort', q:'True or not true in the story?', bins:[{id:'t',label:'True'},{id:'n',label:'Not true'}], items:[{label:'The stone was sea glass.',bin:'t'},{label:'The stone was a real emerald.',bin:'n'},{label:'Avi took a photo.',bin:'t'},{label:'Naftali lost the glass.',bin:'n'}], h:'Think back to the story.'},
+        {t:'pairs', q:'Match each boy to what he did.', pairs:[['Dovid','dug up the glass'],['Chaim','found the answer in a book'],['Naftali','made the frame']], h:'Think back to the story.'}
+      ],
+      check:[
+        {q:'Read: "Mendy asked the price of the pen." What does the c in price say?', o:['sss','k','ch']},
+        {q:'Read: "Mendy scraped his knuckle on the fence." Which letter in knuckle is quiet?', o:['k','n','l']},
+        {q:'Read: "A plumber came to fix the sink." Which letter in plumber is quiet?', o:['b','m','p']}
+      ],
+      re:[
+        {q:'Read: "The giant ship came into the harbor." What sound does the g in giant make?', o:['j','g as in go','no sound']},
+        {q:'Read: "Yanky sang the alphabet song." What does the ph in alphabet say?', o:['fff','p','h']},
+        {q:'Read: "Three mice ran under the bed." What does the c in mice say?', o:['sss','k','ch']}
+      ]},
+    'READ.FLU.L03.13':{name:'Unpack and Repack',
+      teach:[
+        {q:'Read "unpack". What does un- mean?', o:['not, or the opposite','again'], how:'Un- means not, or undo.'},
+        {q:'Read "repack". What does re- mean?', o:['again','before'], how:'Re- means again.'},
+        {q:'Read "preplan". What does pre- mean?', o:['before','not'], how:'Pre- means before.'}
+      ],
+      practice:[
+        {t:'sort', q:'What does the prefix mean?', bins:[{id:'u',label:'un-, dis-: not'},{id:'r',label:'re-: again'},{id:'p',label:'pre-: before'}], items:[{label:'unhappy',bin:'u'},{label:'retell',bin:'r'},{label:'preplan',bin:'p'},{label:'dislike',bin:'u'},{label:'repack',bin:'r'},{label:'preheat',bin:'p'}], h:'Peel off the prefix. What does it mean?'},
+        {t:'pairs', q:'Match each word to what it means.', pairs:[['unzip','open the zipper'],['retell','tell again'],['dislike','not like'],['prepared','ready']], h:'Peel off the prefix. Then read the base word.'},
+        {t:'order', q:'Put the story in order.', tiles:['Dovid packs his own bag.','He unpacks it on the bench.','The boys help him repack it.','Dovid has his hat at the lake.'], h:'What happened first? What happened at the end?'},
+        {t:'spotall', q:'Tap every word that starts with a prefix.', cells:[{label:'unpack',ok:true},{label:'under',ok:false},{label:'redo',ok:true},{label:'read',ok:false}], h:'Peel off the start. Is a real word left?'},
+        {t:'sort', q:'What was in Dovid\'s bag at first?', bins:[{id:'y',label:'In his bag'},{id:'n',label:'Not in his bag'}], items:[{label:'a pillow',bin:'y'},{label:'a hat',bin:'n'},{label:'four cookies',bin:'y'},{label:'his lunch',bin:'n'}], h:'Think back to the bench.'},
+        {t:'pairs', q:'Match each prefix to its meaning.', pairs:[['un-','not'],['re-','again'],['pre-','before']], h:'You met each one in the story.'}
+      ],
+      check:[
+        {q:'Read: "Mendy had to rewrite his note." What does re- mean in rewrite?', o:['again','not','before']},
+        {q:'Read: "The lock was unsafe, so Zeidy fixed it." What does un- mean in unsafe?', o:['not','again','before']},
+        {q:'Read: "Chaim had to prepay for the trip to the zoo." What does pre- mean in prepay?', o:['before','again','not']}
+      ],
+      re:[
+        {q:'Read: "Avi will reheat the soup for supper." What does re- mean in reheat?', o:['again','not','before']},
+        {q:'Read: "Chaim was unable to reach the shelf." What does un- mean in unable?', o:['not','again','before']},
+        {q:'Read: "Dovid disagreed with Avi about the game." What does dis- mean in disagreed?', o:['not','again','before']}
+      ]}
+  };
+
+  function rteach(hook, big, intro, ex1, ex2, oops, idea, tr) { return { hook:hook, big:big, intro:intro, ex:[ex1, ex2], oops:oops, idea:[idea], 'try':tr }; }
+  var RT = {
+
+    'READ.FLU.L03.08': rteach('Rice, ice and cinnamon! A trip to the corner store.',
+      'A little reader is a short story made of the patterns you learned. This one is full of soft c: c before e, i or y says sss (rice, ice, cents, cinnamon). C before a, o or u says k (cake, counter, cup). Read the story once to find out what happens. Then read it again: the second time is smoother. When a question asks "why", find the sentence in the story that proves it.',
+      ['Read the story once to find out what happens.','Soft c or hard c? Look at the next letter.','Read it again, smoother.','To answer, find the sentence that proves it.'],
+      {q:'Read: cinnamon', steps:['C before i says sss.','sss-in-a-mon.','Cinnamon!'], a:'cinnamon'},
+      {q:'Read: counter', steps:['C before o says k.','k-oun-ter.','Counter!'], a:'counter'},
+      {q:'Read: cents', wrong:'k-ents', right:'sss-ents', why:'C before e says sss.'},
+      'The letter after the c is its boss: e, i or y makes it soft.',
+      {q:'Read "rice". What does the c say?', o:['sss','k'], a:'sss', steps:['Look after the c.','E comes next: soft c.']}),
+    'READ.FLU.L03.14': rteach('Ginger the gerbil is missing! Where can she be?',
+      'This little reader is full of soft g: g before e, i or y often says j (gentle, huge, giant, edge). G before a, o or u says g as in go (gate, got). Read the story once to find out where Ginger went. Read it again, smoother. Then prove your answer with a sentence from the story.',
+      ['Read the story once.','Soft g or hard g? Look at the next letter.','Read it again, smoother.','Prove your answer with a sentence.'],
+      {q:'Read: gentle', steps:['G before e often says j.','j-en-tle.','Gentle!'], a:'gentle'},
+      {q:'Read: gate', steps:['G before a says g as in go.','g-ate.','Gate!'], a:'gate'},
+      {q:'Read: huge', wrong:'hug-guh', right:'hyooj', why:'G before e often says j.'},
+      'G is soft with e, i or y after it, just like c.',
+      {q:'Read "gentle". What does the g say?', o:['j','g as in go'], a:'j', steps:['Look after the g.','E comes next: soft g.']}),
+    'READ.FLU.L03.09': rteach('A gift for Rabbi Feld\'s little boy, and a knot that will not hold!',
+      'This little reader has letters you see but do not hear: kn (knot, knee: the k is quiet), wr (wrap, write: the w is quiet) and mb (lamb, thumb: the b is quiet). Read past the quiet letter. Read the story once, then again so it sounds smooth, like talking. To answer a question, find the sentence that proves it.',
+      ['Read the story once.','Quiet letter? Read past it.','Read it again, smoother.','Find the sentence that proves your answer.'],
+      {q:'Read: knelt', steps:['Kn: the k is quiet.','n-elt.','Knelt!'], a:'knelt'},
+      {q:'Read: wrapped', steps:['Wr: the w is quiet.','r-apped.','Wrapped!'], a:'wrapped'},
+      {q:'Read: thumb', wrong:'thum-buh', right:'thum', why:'In mb at the end, the b is quiet.'},
+      'Quiet letters are old letters: long ago people said them, so the spelling still keeps them.',
+      {q:'Read "knot". Which letter is quiet?', o:['k','n','t'], a:'k', steps:['Kn at the start.','The k is quiet.']}),
+    'READ.FLU.L03.15': rteach('A photo contest at shul! What will the boys take a photo of?',
+      'This little reader is full of ph, which says fff: photo, phone, trophy, dolphin, elephant. But in a word like uphill, p ends one small word and h starts the next, so they do not say fff. Read the story once, then again smoother. Then prove your answers with a sentence from the story.',
+      ['Read the story once.','Ph side by side? Read fff.','Up + hill? No fff.','Prove answers with a sentence.'],
+      {q:'Read: trophy', steps:['Tr-o.','Ph says fff.','Tro-fee: trophy!'], a:'trophy'},
+      {q:'Read: elephant', steps:['El-e.','Ph says fff.','El-e-fant: elephant!'], a:'elephant'},
+      {q:'Read: photo', wrong:'puh-hoto', right:'fo-to', why:'P and h side by side say fff.'},
+      'Ph is two letters with one sound, like sh and ch.',
+      {q:'Read "photo". What does ph say?', o:['fff','p'], a:'fff', steps:['P and h side by side.','They say fff.']}),
+    'READ.FLU.L03.11': rteach('Challah for Shabbos! Watch the -ing and -ed words.',
+      'In this little reader many words end in -ing or -ed. Some base words dropped a silent e: bake, baking; smile, smiled; shape, shaping. Some did not change at all: roll, rolling; braid, braided. Find the base word first, then add the ending. Read the story once, then again smoother, and prove your answers.',
+      ['Find the base word.','Was a silent e dropped?','Read the base word, then the ending.','Prove answers with a sentence.'],
+      {q:'Read: shaping', steps:['Base word: shape. The e was dropped.','Shape + ing.','Shaping!'], a:'shaping'},
+      {q:'Read: braided', steps:['Base word: braid. Nothing changed.','Braid + ed.','Braided!'], a:'braided'},
+      {q:'Read: smiled', wrong:'smill-ed', right:'smile-d', why:'The base word is smile. The silent e was dropped.'},
+      'The silent e steps aside to let the ending in.',
+      {q:'Bake + ing. How is it spelled?', o:['baking','bakeing'], a:'baking', steps:['Bake has a silent e.','Drop it, add ing.']}),
+    'READ.FLU.L03.16': rteach('A sack race and a running race! Watch the doubled letters.',
+      'In this little reader many words double the last letter before -ing or -ed: hop, hopping; trip, tripped; flop, flopped. Double it when the base word has one short vowel and ends in one consonant. Do not double when it ends in two consonants: jump, jumping. Find the base word first. Read the story once, then again smoother, and prove your answers.',
+      ['Find the base word.','One short vowel and one last letter? It was doubled.','Two consonants at the end? Nothing doubled.','Prove answers with a sentence.'],
+      {q:'Read: tripped', steps:['Two p\'s: the p was doubled.','Base word: trip. Short i.','Trip + ed: tripped!'], a:'tripped'},
+      {q:'Read: jumping', steps:['Jump ends in m and p.','Nothing doubled.','Jump + ing: jumping!'], a:'jumping'},
+      {q:'Read: hopping', wrong:'hope-ing', right:'hop-ing', why:'Two p\'s mean the base word is hop, with a short o.'},
+      'The doubled letter is a guard: it keeps the vowel short.',
+      {q:'Hop + ing. How is it spelled?', o:['hopping','hoping'], a:'hopping', steps:['Hop: short o, one p.','Double the p, add ing.']}),
+    'READ.FLU.L03.12': rteach('Berries for twin babies! Watch the y change to i.',
+      'In this little reader, some words change at the end. After a consonant, the y changes to i before -es or -ed: berry, berries; baby, babies; cry, cried; carry, carried. But after a vowel the y stays: play, played. Find the base word, and you can read the whole word. Read the story once, then again smoother, and prove your answers.',
+      ['Find the base word.','Was a y changed to i?','Read the base word, then the ending.','Prove answers with a sentence.'],
+      {q:'Read: carried', steps:['The i was a y: carry.','Carry + ed.','Carried!'], a:'carried'},
+      {q:'Read: played', steps:['A before the y: the y stays.','Play + ed.','Played!'], a:'played'},
+      {q:'Read: berries', wrong:'ber-ree-es', right:'ber-reez', why:'Berry + es: the y turned to i, and -ies says eez.'},
+      'The y hides inside the i, waiting for you to find it.',
+      {q:'Baby + es. How is it spelled?', o:['babies','babys'], a:'babies', steps:['Y after a consonant.','Change y to i, add es.']}),
+    'READ.FLU.L03.17': rteach('Mr. Gold\'s yard is full of leaves. What will the boys do?',
+      'Suffixes are endings that add meaning. -ful means full of (helpful, careful). -less means without (endless, helpless). -ly tells how (quickly, softly). -ness makes a thing (kindness). Peel off the suffix, read the base word, then put them together. Read the story once, then again smoother, and prove your answers.',
+      ['Peel off the suffix.','Read the base word.','Put them together. What does it mean?','Prove answers with a sentence.'],
+      {q:'Read: kindness', steps:['Base word: kind.','-ness makes it a thing.','Kindness: being kind.'], a:'kindness'},
+      {q:'Read: softly', steps:['Base word: soft.','-ly tells how.','Softly: in a soft way.'], a:'softly'},
+      {q:'What does endless mean?', wrong:'full of ends', right:'with no end', why:'-less means without.'},
+      'A suffix is like a tail on a word: it changes what the word does.',
+      {q:'Read "careful". What does -ful add?', o:['full of: full of care','without care'], a:'full of: full of care', steps:['-ful means full of.','Careful: full of care.']}),
+    'READ.FLU.L03.10': rteach('Clink! Dovid\'s shovel hits something green. What is it?',
+      'This story mixes every pattern from this unit: soft c (celery, center), soft g (gem, page), quiet letters (knelt, wrote) and ph (photo). Read it once to find out what Dovid found. Read it again, smoother. If a word does not make sense, stop and reread. Then prove your answers with sentences from the story.',
+      ['Read the story once.','Use the patterns: soft c, soft g, quiet letters, ph.','Does it make sense? If not, reread.','Prove answers with a sentence from the story.'],
+      {q:'Read: center', steps:['C before e says sss.','sss-en-ter.','Center!'], a:'center'},
+      {q:'What was the stone really?', steps:['Find what Chaim read in the book.','"It is sea glass."','That sentence proves it.'], a:'sea glass'},
+      {q:'Read: gem', wrong:'g-em, with g as in go', right:'j-em', why:'G before e often says j.'},
+      'A treasure does not have to cost a lot. It is special because of who found it and the story it tells.',
+      {q:'Read "celery". What does the c say?', o:['sss','k'], a:'sss', steps:['E comes after the c.','Soft c says sss.']}),
+    'READ.FLU.L03.13': rteach('Dovid packed his own bag. What could go wrong?',
+      'A prefix is a part at the start of a word that changes its meaning. Un- and dis- mean not, or the opposite (unhappy, dislike). Re- means again (repack, retell). Pre- means before (preplan). Peel off the prefix, read the base word, then put them together. Read the story once, then again smoother, and prove your answers.',
+      ['Peel off the prefix.','Read the base word.','Put them together. What does it mean?','Prove answers with a sentence from the story.'],
+      {q:'Read: unpack', steps:['Peel off un-: not, or undo.','Base word: pack.','Unpack: take things out.'], a:'unpack'},
+      {q:'Read: retell', steps:['Peel off re-: again.','Base word: tell.','Retell: tell again.'], a:'retell'},
+      {q:'What does repack mean?', wrong:'not pack', right:'pack again', why:'Re- means again.'},
+      'Prefixes are like keys: learn a few and you can open many new words.',
+      {q:'Read "repack". What does re- mean?', o:['again','before'], a:'again', steps:['Peel off re-.','Re- means again.']})
+  };
+
+  var RH = {};
+  Object.keys(RL).forEach(function (id) { var q = {}; RL[id].check.concat(RL[id].re).forEach(function (x) {
+    q[x.q] = /" How did /.test(x.q) ? 'Find the word with -ly or -ful.\nWhat does that ending add to the base word?' :
+             /Do the p and h/.test(x.q) ? 'Look for two small words joined together.\nDoes p end one and h start the next?' :
+             /happened to the base word/.test(x.q) ? 'Compare the base word and the new word.\nWhat changed at the end?' :
+             /mean in/.test(x.q) ? 'Look at the start or the end of the word.\nWhat does that part mean?' :
+             /What does carefully tell/.test(x.q) ? 'Words that end in -ly tell about the action.' :
+             /the [cg] in /.test(x.q) ? 'Look at the letter right after it.\nIs it e, i or y?' :
+             /has a soft g/.test(x.q) ? 'Look at the letter right after each g.\nIs it e, i or y?' :
+             /base word/.test(x.q) ? 'Take off the ending.\nPut back a dropped e or y, or take off a doubled letter.' :
+             /quiet/.test(x.q) ? 'Say the word out loud.\nWhich letter do you see but not hear?' :
+             /soft c/.test(x.q) ? 'Look at the letter right after each c.\nIs it e, i or y?' :
+             /sound does the g/.test(x.q) ? 'Look at the letter right after the g.\nIs it e, i or y?' :
+             /ph in/.test(x.q) ? 'P and h side by side.\nWhat sound do they make together?' :
+             /mean\?/.test(x.q) ? 'Peel off the prefix or suffix.\nWhat does that part mean?' :
+             'Read the sentences again.\nFind the words that answer the question.'; });
+    RH[id] = { s:'Read the story once, then again smoother.\nUse the patterns you learned.\nProve your answer with a sentence.', q:q }; });
+
+  function rbite(o) { return { band:'B23', pic:o.pic, today:o.today, why:o.why, ready:o.ready, bridge:o.bridge, bridgeName:o.bridgeName,
+    watch:{ q:o.wq, m:{type:'scene', e:o.pic, t:o.wt}, steps:o.steps.concat([{t:'Read it again with Chaim!', m:{type:'move', t:o.move}}]), a:'Read it once, read it again smoother, and prove it with a sentence.' },
+    oops:o.oops, ways:['read a little reader','reread it smoother','prove it with a sentence','pattern hunt','Mistake Detective'], done:o.done,
+    board:{ one:o.one, activity:o.act, mistakes:o.mis }, do:o['do'], your:o.your }; }
+  var RB = {
+
+    'READ.FLU.L03.08': rbite({ id:'READ.FLU.L03.08', pic:'🌶️', today:'Read a story full of soft c',
+      why:'Real stories are where your new patterns come alive.',
+      ready:[{q:'Read "city". What does the c say?', o:['sss','k'], a:'sss'},{q:'Read "cup". What does the c say?', o:['k','sss'], a:'k'}],
+      bridge:'READ.PHON.L03.09', bridgeName:'City Cat', wq:'read and prove', wt:'Mommy needs rice and a bag of cinnamon.',
+      steps:[{t:'Rice: c before e says sss.'},{t:'Cinnamon: c before i says sss.'},{t:'Counter: c before o says k.'},{t:'I read the story once to find out what happens.'},{t:'Then I read it again. Now it sounds smooth.'}],
+      move:'Stand up. Read a line, then step forward and read it again, smoother. Three steps, three reads!',
+      oops:{ q:'Read: cents', wrong:'k-ents', right:'sss-ents', why:'C before e says sss.' }, done:'You read a story full of soft c!',
+      one:'Read it once, read it again smoother, and prove it with a sentence.', act:'Partner reading: pairs take turns reading a page of "Spice at the Corner Store" aloud, then ask each other one "why" question and point to the proof.', mis:['Reading soft c as k: kinnamon','Reading every c as sss: sss-ounter','Answering from memory instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.15', say:'Open the story. Read it.', how:'Soft c says sss. Read it once, then again.'},
+            {type:'listen', q:'Avi read "pencil" as "pen-kil".', hear:'What should the c say?', o:['sss','k','ch'], a:'sss', mis:true, say:'Mistake Detective! What should the c say?', how:'Look at the letter right after the c.'}],
+      your:[{type:'proof', text:'F.WR.15', q:'Why did Naftali need ice?', proof:'Our freezer is broken', look:'what was wrong at Naftali\'s house', say:'Find the sentence that proves it.', how:'Find what Naftali said about the ice.'},
+            {type:'findall', grid:['rice','cake','ice','cup','cents','cold'], find:['rice','ice','cents'], findSay:'soft c word', say:'Tap every word with a soft c.', how:'C with e, i or y after it is soft.'},
+            {type:'sort', bins:['Soft c: sss','Hard c: k'], cards:[['spice',0],['counter',1],['cinnamon',0],['come',1]], say:'Soft c or hard c?', how:'Look at the letter right after the c.'},
+            {type:'proof', text:'F.WR.15', q:'What did Mr. Benhamou ask the boys to save him?', proof:'save me a slice of that cake', look:'what Mr. Benhamou wanted', say:'Find the sentence that proves it.', how:'Find what Mr. Benhamou said at the end.'},
+            {type:'cloze', t:'Naftali paid fifty ___ for the ice.', o:['cents','sents','cense'], a:'cents', say:'Challenge! Tap the right spelling.', how:'Which letter says sss before e here?'}] }),
+    'READ.FLU.L03.14': rbite({ id:'READ.FLU.L03.14', pic:'🐹', today:'Read a story full of soft g',
+      why:'Soft g is in giant, gentle and huge. Now you can read them in a real story.',
+      ready:[{q:'Read "giant". What does the g say?', o:['j','g'], a:'j'},{q:'Read "go". What does the g say?', o:['g','j'], a:'g'}],
+      bridge:'READ.PHON.L03.10', bridgeName:'Giant Goat', wq:'read and prove', wt:'Ginger was a gentle gerbil with soft orange fur.',
+      steps:[{t:'Ginger, gentle, gerbil: g before i or e says j.'},{t:'Gate and got: g before a or o says g.'},{t:'Huge and edge: the e makes the g say j.'},{t:'I read the story once to find out where Ginger went.'},{t:'Then I read it again, smoother, and prove my answer.'}],
+      move:'Tiptoe like the boys waiting for Ginger. Freeze when you read the word gerbil!',
+      oops:{ q:'Read: huge', wrong:'hug-guh', right:'hyooj', why:'G before e often says j.' }, done:'You read a story full of soft g!',
+      one:'Soft g before e, i or y; prove it with a sentence.', act:'Find Ginger: the rebbe hides a paper gerbil. The boy who finds it reads the sentence that tells where Ginger was hiding.', mis:['Reading gentle with a hard g','Reading gate with a soft g','Guessing where Ginger was instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.16', say:'Open the story. Read it.', how:'Soft g often says j. Read it once, then again.'},
+            {type:'listen', q:'Dovid read "edge" as "ed-guh".', hear:'What should the g say?', o:['j','g as in go','no sound'], a:'j', mis:true, say:'Mistake Detective! What should the g say?', how:'Look at the letter right after the g.'}],
+      your:[{type:'proof', text:'F.WR.16', q:'Where was Ginger hiding?', proof:'old giant coat on the hook', look:'where the orange nose came from', say:'Find the sentence that proves it.', how:'Find the part where they see Ginger.'},
+            {type:'findall', grid:['cage','gate','page','got','huge','goat'], find:['cage','page','huge'], findSay:'soft g word', say:'Tap every word with a soft g.', how:'G with e, i or y after it is soft.'},
+            {type:'dictation', hear:'Dovid saw a huge giraffe.', w:['Dovid','saw','a','huge','giraffe.'], extra:['jiraffe.'], say:'Listen. Build the sentence you hear.', how:'Soft g can spell the j sound. Check each word.'},
+            {type:'proof', text:'F.WR.16', q:'What rule will Naftali write?', proof:'Always check the gate', look:'Naftali\'s new rule', say:'Find the sentence that proves it.', how:'Find what Naftali said at the end.'},
+            {type:'cloze', t:'Naftali put Ginger back in her ___.', o:['cage','cake','page'], a:'cage', say:'Challenge! Tap the word that fits.', how:'Which one makes sense for a gerbil?'}] }),
+    'READ.FLU.L03.09': rbite({ id:'READ.FLU.L03.09', pic:'🎁', today:'Read a story with quiet letters',
+      why:'Quiet letters are all over real books. Now you can read past them.',
+      ready:[{q:'Read "knee". Which letter is quiet?', o:['k','n'], a:'k'},{q:'Read "write". Which letter is quiet?', o:['w','r'], a:'w'}],
+      bridge:'READ.PHON.L03.11', bridgeName:'Knock, Write, Lamb', wq:'read and prove', wt:'Chaim wrapped the book. Then he tied a knot.',
+      steps:[{t:'Wrapped: the w is quiet. Rapped... wrapped!'},{t:'Knot: the k is quiet. Not... knot!'},{t:'Thumb and lamb: the b at the end is quiet.'},{t:'I read it once, then again smoother.'},{t:'Then I prove my answers with a sentence.'}],
+      move:'Put a finger on your lips for every quiet letter: k in knot, w in wrap, b in lamb!',
+      oops:{ q:'Read: thumb', wrong:'thum-buh', right:'thum', why:'In mb at the end, the b is quiet.' }, done:'You read a story with quiet letters!',
+      one:'Read past the quiet letter, and prove answers with a sentence.', act:'Quiet-letter hunt: pairs reread "Knots, Lambs and a Wrapped Gift" and list every word with a quiet letter.', mis:['Saying the k in knot or the b in lamb','Saying the w in wrap','Answering from memory instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.17', say:'Open the story. Read it.', how:'Read past the quiet letters. Read it once, then again.'},
+            {type:'listen', q:'Avi read "knock" as "k-nock".', hear:'Which letter should be quiet?', o:['k','n','ck'], a:'k', mis:true, say:'Mistake Detective! Which letter should be quiet?', how:'In kn at the start, one letter is quiet.'}],
+      your:[{type:'proof', text:'F.WR.17', q:'Why did Chaim\'s knot come loose?', proof:'My thumb keeps getting in the way', look:'what Chaim said about his knot', say:'Find the sentence that proves it.', how:'Find what Chaim said after the knot came loose.'},
+            {type:'findall', grid:['knot','not','wrist','rest','lamb','lap'], find:['knot','wrist','lamb'], findSay:'word with a quiet letter', say:'Tap every word with a quiet letter.', how:'Which word has a letter you see but do not hear?'},
+            {type:'order', steps:['Zeidy wants to give a book.','Chaim wraps it, but the knot comes loose.','Avi ties a tight knot.','Dovid knocks on the door.'], say:'Put the story in order.', how:'What happened first? What happened at the end?'},
+            {type:'sort', bins:['quiet k','quiet w','quiet b'], cards:[['knee',0],['write',1],['climb',2],['knelt',0]], say:'Which letter is quiet?', how:'Say the word. Which letter do you see but not hear?'},
+            {type:'cloze', t:'Chaim used a ___ to fix his hair.', o:['comb','com','coomb'], a:'comb', say:'Challenge! Tap the right spelling.', how:'This word ends with a quiet letter.'}] }),
+    'READ.FLU.L03.15': rbite({ id:'READ.FLU.L03.15', pic:'📸', today:'Read a story full of ph',
+      why:'Ph is in phone, photo and trophy. Now you can read them in a real story.',
+      ready:[{q:'Read "phone". What does ph say?', o:['fff','p'], a:'fff'},{q:'Read "fish". What does f say?', o:['fff','p'], a:'fff'}],
+      bridge:'READ.PHON.L03.12', bridgeName:'Phone and Photo', wq:'read and prove', wt:'The best photo wins a trophy.',
+      steps:[{t:'Photo: ph says fff.'},{t:'Trophy: ph in the middle says fff too.'},{t:'Dolphin and elephant: ph says fff.'},{t:'I read it once, then again smoother.'},{t:'Then I prove my answers with a sentence.'}],
+      move:'Hold up a pretend camera. Say "click!" every time you read a ph word!',
+      oops:{ q:'Read: photo', wrong:'puh-hoto', right:'fo-to', why:'P and h side by side say fff.' }, done:'You read a story full of ph!',
+      one:'Ph says fff; prove answers with a sentence.', act:'Photo hunt: pairs reread "The Photo Contest" and list every ph word, then tell each other why the boys chose Zeidy.', mis:['Reading ph as p-h','Reading uphill as u-fill','Answering from memory instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.18', say:'Open the story. Read it.', how:'Ph says fff. Read it once, then again.'},
+            {type:'listen', q:'Dovid read "trophy" as "trop-hee".', hear:'What should ph say?', o:['fff','p','h'], a:'fff', mis:true, say:'Mistake Detective! What should ph say?', how:'P and h side by side make one sound.'}],
+      your:[{type:'proof', text:'F.WR.18', q:'Who got the trophy in the end?', proof:'They gave it to Zeidy', look:'what the boys did with the trophy', say:'Find the sentence that proves it.', how:'Find the part at the very end.'},
+            {type:'findall', grid:['photo','uphill','phone','push','dolphin','path'], find:['photo','phone','dolphin'], findSay:'word where ph says fff', say:'Tap every word where ph says fff.', how:'Up + hill: p and h are in two parts.'},
+            {type:'match', pairs:[['trophy','a prize cup'],['contest','a game to see who does best'],['workshop','a room for fixing things']], say:'Match each word to its meaning.', how:'Read the word. Think of the story.'},
+            {type:'proof', text:'F.WR.18', q:'What was Zeidy doing in his workshop?', proof:'fixing a watch with a tiny tool', look:'what Zeidy was doing', say:'Find the sentence that proves it.', how:'Find the part in the workshop.'},
+            {type:'cloze', t:'Dovid loves ___ that swim in the sea.', o:['dolphins','dolfins','dolpins'], a:'dolphins', say:'Challenge! Tap the right spelling.', how:'Which letters spell fff in this word?'}] }),
+    'READ.FLU.L03.11': rbite({ id:'READ.FLU.L03.11', pic:'🍞', today:'Read a story with dropped-e endings',
+      why:'Baking, shaping, smiled: stories are full of these words.',
+      ready:[{q:'Bake + ing?', o:['baking','bakeing'], a:'baking'},{q:'Roll + ing?', o:['rolling','roleing'], a:'rolling'}],
+      bridge:'READ.PHON.L03.13', bridgeName:'Drop the E', wq:'read and prove', wt:'Chaim was rolling. Naftali was shaping.',
+      steps:[{t:'Rolling: roll + ing. Nothing changed.'},{t:'Shaping: shape + ing. The e was dropped.'},{t:'Smiled: smile + ed. The e was dropped.'},{t:'Find the base word, then add the ending.'},{t:'I read it once, then again smoother, then prove my answers.'}],
+      move:'Roll pretend dough on the desk, then braid it with your fingers: over, under, over!',
+      oops:{ q:'Read: smiled', wrong:'smill-ed', right:'smile-d', why:'The base word is smile. The silent e was dropped.' }, done:'You read a story full of endings!',
+      one:'Find the base word first, then add the ending. Prove answers with a sentence.', act:'Bake it: the rebbe reads "Baking Day" while boys act out rolling, shaping and braiding; then the class finds the proof for why the big challahs were saved.', mis:['Reading baked as bake-ed','Reading smiled as smill-ed','Answering from memory instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.20', say:'Open the story. Read it.', how:'Find the base word, then the ending.'},
+            {type:'listen', q:'Dovid read "taping" as "tapping".', hear:'What is the base word?', o:['tape','tap','tapp'], a:'tape', mis:true, say:'Mistake Detective! What is the base word?', how:'One p after a: was an e dropped?'}],
+      your:[{type:'proof', text:'F.WR.20', q:'Why could the boys not eat the big challahs?', proof:'These are for Shabbos', look:'what the challahs were for', say:'Find the sentence that proves it.', how:'Find what Avi\'s father said at the end.'},
+            {type:'findall', grid:['baking','rolling','shaping','played','smiled','looked'], find:['baking','shaping','smiled'], findSay:'word that dropped an e', say:'Tap every word that dropped an e.', how:'Find the base word. Did it end in a silent e?'},
+            {type:'order', steps:['rolling the dough','braiding the strands','brushing on egg','baking in the oven'], say:'Put the challah steps in order.', how:'Think back to Baking Day.'},
+            {type:'proof', text:'F.WR.20', q:'What did Avi\'s father brush on the challahs?', proof:'brushed them with egg', look:'what went on top', say:'Find the sentence that proves it.', how:'Find the part before the oven.'},
+            {type:'cloze', t:'The boys ___ to clean the table.', o:['raced','raceed','rased'], a:'raced', say:'Challenge! Tap the right spelling.', how:'Race ends in a silent e. What happens before -ed?'}] }),
+    'READ.FLU.L03.16': rbite({ id:'READ.FLU.L03.16', pic:'🏃', today:'Read a story with doubled letters',
+      why:'Hopping, tripped, running: now you can read them in a real story.',
+      ready:[{q:'Hop + ing?', o:['hopping','hoping'], a:'hopping'},{q:'Jump + ing?', o:['jumping','jumpping'], a:'jumping'}],
+      bridge:'READ.PHON.L03.14', bridgeName:'Double It', wq:'read and prove', wt:'Dovid started hopping. He hopped and hopped.',
+      steps:[{t:'Hopping: hop + ing. The p was doubled.'},{t:'Tripped: trip + ed. The p was doubled.'},{t:'Jumped: jump + ed. Two consonants: nothing doubled.'},{t:'The double letter keeps the vowel short.'},{t:'I read it once, then again smoother, then prove my answers.'}],
+      move:'Hop in place for hopping, then jog in place for running!',
+      oops:{ q:'Read: hopping', wrong:'hope-ing', right:'hop-ing', why:'Two p\'s mean the base word is hop, with a short o.' }, done:'You read a story full of doubled letters!',
+      one:'Two letters before the ending? The vowel is short. Prove answers with a sentence.', act:'Field day: one boy reads a sentence from "The Running Race" (hopping, tripped, flopped) and the class acts it out; then the class finds the sentence that shows what Avi did when his kippah slipped.', mis:['Reading hopping as hoping','Reading tripped as tripe-d','Answering from memory instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.21', say:'Open the story. Read it.', how:'Two letters before -ing? The vowel is short.'},
+            {type:'listen', q:'Avi read "napping" as "nape-ing".', hear:'What is the base word?', o:['nap','nape','napp'], a:'nap', mis:true, say:'Mistake Detective! What is the base word?', how:'Two p\'s keep the vowel short.'}],
+      your:[{type:'proof', text:'F.WR.21', q:'What did Avi do when his kippah slipped?', proof:'He stopped to fix it', look:'what Avi did right after it slipped', say:'Find the sentence that proves it.', how:'Find the part about his kippah.'},
+            {type:'findall', grid:['hopping','jumping','tripped','kicked','running','splashed'], find:['hopping','tripped','running'], findSay:'word with a doubled letter', say:'Tap every word with a doubled letter.', how:'Find the base word. Was its last letter doubled?'},
+            {type:'sort', bins:['Doubled','Not doubled'], cards:[['clapped',0],['jumped',1],['grinning',0],['kicked',1]], say:'Was the last letter doubled?', how:'Short vowel and one last letter? Double it.'},
+            {type:'proof', text:'F.WR.21', q:'What did Rabbi Feld say about what Avi did?', proof:'that is the best thing I saw all day', look:'what Rabbi Feld said', say:'Find the sentence that proves it.', how:'Find what Rabbi Feld said to Avi.'},
+            {type:'cloze', t:'Dovid ___ on the grass in the sack race.', o:['flopped','floped','flopt'], a:'flopped', say:'Challenge! Tap the right spelling.', how:'Flop has a short o. What do you do before -ed?'}] }),
+    'READ.FLU.L03.12': rbite({ id:'READ.FLU.L03.12', pic:'🫐', today:'Read a story where y changes to i',
+      why:'Berries, babies, cried: stories are full of these words.',
+      ready:[{q:'Baby + es?', o:['babies','babys'], a:'babies'},{q:'Play + ed?', o:['played','plaied'], a:'played'}],
+      bridge:'READ.PHON.L03.15', bridgeName:'Y to I', wq:'read and prove', wt:'Mommy said the babies could have a snack of soft berries.',
+      steps:[{t:'Babies: baby, y to i, add es.'},{t:'Berries: berry, y to i, add es.'},{t:'Cried: cry, y to i, add ed.'},{t:'Played: a vowel before the y, so it stays.'},{t:'I read it once, then again smoother, then prove my answers.'}],
+      move:'Pick pretend berries: reach up, check each one, and put it in the bag!',
+      oops:{ q:'Read: berries', wrong:'ber-ree-es', right:'ber-reez', why:'Berry + es: the y turned to i, and -ies says eez.' }, done:'You read a story where y changes to i!',
+      one:'Find the base word: change the i back to y. Prove answers with a sentence.', act:'Berry patch: the class lists foods we check before eating, then rereads "Berries for the Babies" and finds the proof for why the babies were crying.', mis:['Reading berries as berry-es','Spelling cried as cryed','Answering from memory instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.22', say:'Open the story. Read it.', how:'Change i back to y to find the base word.'},
+            {type:'listen', q:'Mendy wrote: "Chaim carryed the bag home."', hear:'What went wrong?', o:['the y should change to i','an e is missing','a letter should double'], a:'the y should change to i', mis:true, say:'Mistake Detective! What went wrong?', how:'Consonant before the y? What happens before -ed?'}],
+      your:[{type:'proof', text:'F.WR.22', q:'Why were the babies crying?', proof:'They were hungry', look:'how the babies felt', say:'Find the sentence that proves it.', how:'Find the part when the boys got home.'},
+            {type:'findall', grid:['berries','played','cried','stayed','babies','bush'], find:['berries','cried','babies'], findSay:'word where y changed to i', say:'Tap every word where y changed to i.', how:'Find the base word. Did it end in y?'},
+            {type:'sort', bins:['y changed to i','y stays'], cards:[['tried',0],['played',1],['carried',0],['stayed',1]], say:'Did the y change?', how:'Consonant before the y? It changes.'},
+            {type:'proof', text:'F.WR.22', q:'What did Chaim\'s mother do before the babies ate?', proof:'washed and checked the berries', look:'what Mommy did first', say:'Find the sentence that proves it.', how:'Find the part in the kitchen.'},
+            {type:'cloze', t:'The twins ___ when they were hungry.', o:['cried','cryed','cride'], a:'cried', say:'Challenge! Tap the right spelling.', how:'Cry ends in y after a consonant.'}] }),
+    'READ.FLU.L03.17': rbite({ id:'READ.FLU.L03.17', pic:'🍂', today:'Read a story with -ful, -less, -ly and -ness',
+      why:'Endings like -ful and -less change what a word means.',
+      ready:[{q:'What does -ful mean?', o:['full of','without'], a:'full of'},{q:'What does -less mean?', o:['without','full of'], a:'without'}],
+      bridge:'READ.PHON.L03.16', bridgeName:'Helpful Endings', wq:'read and prove', wt:'The boys worked quickly. Chaim was careful not to step on the flowers.',
+      steps:[{t:'Quickly: -ly tells how they worked.'},{t:'Careful: full of care.'},{t:'Endless: with no end.'},{t:'Kindness: -ness makes a thing, being kind.'},{t:'I read it once, then again smoother, then prove my answers.'}],
+      move:'Rake pretend leaves: rake quickly, then rake softly!',
+      oops:{ q:'What does endless mean?', wrong:'full of ends', right:'with no end', why:'-less means without.' }, done:'You read a story full of helpful endings!',
+      one:'Peel off the suffix, read the base word, then think what the ending adds.', act:'Kindness board: after reading "The Helpful Club", each boy names one helpful thing he can do this week, written with a -ful or -ly word (helpful, carefully).', mis:['Mixing up -ful and -less','Reading quickly as quick-lee with no meaning','Answering from memory instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.23', say:'Open the story. Read it.', how:'-ful is full of. -less is without.'},
+            {type:'listen', q:'Avi said "careless" means "full of care".', hear:'What does careless mean?', o:['without care','full of care','very careful'], a:'without care', mis:true, say:'Mistake Detective! What does careless mean?', how:'-less means without.'}],
+      your:[{type:'proof', text:'F.WR.23', q:'What did Naftali say Mr. Gold cannot do?', proof:'Mr. Gold cannot rake all of that', look:'what Naftali said about Mr. Gold', say:'Find the sentence that proves it.', how:'Find what Naftali said at the start.'},
+            {type:'findall', grid:['helpful','help','kindness','kind','quickly','quick'], find:['helpful','kindness','quickly'], findSay:'word with a suffix', say:'Tap every word with a suffix.', how:'Look at the end. Is a part added?'},
+            {type:'parts', parts:['spot','less'], extra:['ful'], mean:'without a spot', say:'Build the word that means without a spot.', how:'Which ending means without?'},
+            {type:'proof', text:'F.WR.23', q:'What did Mr. Gold call what the boys did?', proof:'This is a great kindness', look:'what Mr. Gold said on the porch', say:'Find the sentence that proves it.', how:'Find what Mr. Gold said when he saw his yard.'},
+            {type:'cloze', t:'Mr. Gold walked ___ with his cane.', o:['slowly','slowness','slowful'], a:'slowly', say:'Challenge! Tap the word that fits.', how:'Which word tells how he walked?'}] }),
+    'READ.FLU.L03.10': rbite({ id:'READ.FLU.L03.10', pic:'💎', today:'Read a story with every pattern from this unit',
+      why:'This story uses everything you learned in this unit. You are ready!',
+      ready:[{q:'Read "gem". What does the g say?', o:['j','g'], a:'j'},{q:'Read "wrote". Which letter is quiet?', o:['w','r'], a:'w'}],
+      bridge:'READ.PHON.L03.12', bridgeName:'Phone and Photo', wq:'read and prove', wt:'Dovid\'s shovel hit something hard. Clink!',
+      steps:[{t:'Celery and center: soft c says sss.'},{t:'Gem and page: soft g says j.'},{t:'Knelt and wrote: quiet letters.'},{t:'Photo: ph says fff.'},{t:'I read it once, then again smoother, then prove my answers.'}],
+      move:'Dig like Dovid! Scoop three times, and read one line after each scoop.',
+      oops:{ q:'Read: gem', wrong:'g-em, with g as in go', right:'j-em', why:'G before e often says j.' }, done:'You read a whole story with every pattern!',
+      one:'Use every pattern from the unit, read it again smoother, and prove it with a sentence.', act:'Treasure retell: the rebbe hides a "treasure" (a green paper gem). The boy who finds it retells "The Gem in the Garden" in 3 sentences, then the class finds the proof that it was sea glass.', mis:['Reading gem with a hard g','Saying the k in knelt','Guessing the answer instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.19', say:'Open the story. Read it.', how:'Use the patterns. Read it once, then again.'},
+            {type:'listen', q:'Avi read "celery" as "kel-er-y".', hear:'What should the c say?', o:['sss','k','ch'], a:'sss', mis:true, say:'Mistake Detective! What should the c say?', how:'Look at the letter right after the c.'}],
+      your:[{type:'proof', text:'F.WR.19', q:'What did Naftali say he would make?', proof:'I will make a frame for it', look:'Naftali\'s plan', say:'Find the sentence that proves it.', how:'Find what Naftali said at the end.'},
+            {type:'findall', grid:['celery','glass','page','knelt','photo','fell'], find:['celery','page','knelt','photo'], findSay:'word with a pattern from this unit', say:'Tap every word with a pattern from this unit.', how:'Soft c, soft g, a quiet letter or ph.'},
+            {type:'storymap', slots:['Who','Where','Problem','Solution'], cards:['Dovid','the garden','Dovid hopes it is a gem.','It is sea glass, a treasure'], extra:['the lake'], say:'Build the story map.', how:'Tap a card, then its box.'},
+            {type:'sort', bins:['Soft c or g','Quiet letter','ph'], cards:[['fence',0],['wreck',1],['elephant',2],['huge',0]], say:'Which pattern is in the word?', how:'Look for the letters that make the special sound.'},
+            {type:'cloze', t:'They hung the frame right in the ___ of the wall.', o:['center','cellar','cent'], a:'center', say:'Challenge! Tap the word that fits.', how:'Which word makes sense on a wall?'}] }),
+    'READ.FLU.L03.13': rbite({ id:'READ.FLU.L03.13', pic:'🎒', today:'Read a story full of prefixes',
+      why:'Prefixes are keys. Learn them, and you can open many new words.',
+      ready:[{q:'What does re- mean?', o:['again','not'], a:'again'},{q:'What does un- mean?', o:['not','again'], a:'not'}],
+      bridge:'READ.PHON.L03.17', bridgeName:'Prefix Peel', wq:'read and prove', wt:'Please unpack them on the bench.',
+      steps:[{t:'Unpack: un- means undo. Take things out.'},{t:'Repack: re- means again. Pack it again.'},{t:'Dislike: dis- means not. Not like.'},{t:'Preplan: pre- means before. Plan before.'},{t:'I read it once, then again smoother, then prove my answers.'}],
+      move:'Act it out: pack a pretend bag, unpack it, then repack it!',
+      oops:{ q:'What does repack mean?', wrong:'not pack', right:'pack again', why:'Re- means again.' }, done:'You read a whole story full of prefixes!',
+      one:'Peel off the prefix, read the base word, then put them together. Prove answers with a sentence.', act:'Pack the bag: the class makes a real trip list together, then reads "Unpack and Repack" aloud and finds the proof for what Dovid forgot.', mis:['Reading unhappy as un-hap-pee with no meaning','Mixing up re- (again) and pre- (before)','Answering from memory instead of finding the proof'],
+      'do':[{type:'read', text:'F.WR.24', say:'Open the story. Read it.', how:'Peel off the prefix, then read the base word.'},
+            {type:'listen', q:'Avi said "preheat" means "heat again".', hear:'What does preheat mean?', o:['heat before','heat again','not heat'], a:'heat before', mis:true, say:'Mistake Detective! What does preheat mean?', how:'Peel off pre-. What does it mean?'}],
+      your:[{type:'proof', text:'F.WR.24', q:'What was missing from Dovid\'s bag?', proof:'There was no hat, no water and no lunch', look:'what Dovid did not pack', say:'Find the sentence that proves it.', how:'Find the part when he unzipped the bag.'},
+            {type:'findall', grid:['unpack','under','repack','ready','dislike','dish'], find:['unpack','repack','dislike'], findSay:'word with a prefix', say:'Tap every word with a prefix.', how:'Peel off the start. Is a real word left?'},
+            {type:'proof', text:'F.WR.24', q:'What did Chaim say they should do first?', proof:'We can make a list first', look:'the plan', say:'Find the sentence that proves it.', how:'Find what Chaim said.'},
+            {type:'sort', bins:['not','again','before'], cards:[['unlock',0],['refill',1],['prewash',2],['disobey',0]], say:'What does the prefix mean?', how:'Peel off the prefix. What does it mean?'},
+            {type:'cloze', t:'Dovid\'s shoe came untied, so he had to ___ it.', o:['retie','pretie','untie'], a:'retie', say:'Challenge! Tap the word that fits.', how:'Peel off each prefix. Which one fits?'}] })
+  };
+
+  Object.keys(RL).forEach(function (k) { LESSONS[k] = RL[k]; TEACH[k] = RT[k]; HOWTO[k] = RH[k]; BITE[k] = RB[k]; });
+  if (window.TLCORE) TLCORE.add('F', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+  /* Grade 2 Unit 6 check (docs/core-growth/HOW-TO-ADD-A-UNIT.md): the end-of-Grade-2 word-study boss level. Handwriting (WRIT.HAND) is on the Language Arts path, so it is not in this Reading unit. */
+  if (window.TLCORE && TLCORE.units) {
+    TLCORE.units.add({ id: 'F.U26', title: 'Poems, Plays and Spelling', c: 'READ', grade: 2,
+      skills: ['READ.FLU.L03.05', 'READ.FLU.L03.06', 'READ.FLU.L03.07', 'READ.PHON.L03.18'],
+      review: ['READ.LV.L03.05', 'READ.PHON.L03.05', 'READ.PHON.L03.02'], n: 10,
+      items: [
+        { skill: 'READ.PHON.L03.18', type: 'cloze', t: 'Dovid found two ___ in his pocket.', o: ['pennies', 'pennys', 'pennyes'], a: 'pennies', how: 'Penny ends in y after a consonant. What happens before -es?' },
+        { skill: 'READ.FLU.L03.06', type: 'evidence', q: 'You read Moishe. Which line is your cue?', p: ['REUVEN: The bus is late.', 'SHIMON: Look, here it comes!', 'MOISHE: Hurry, boys!'], a: 1, look: 'the line right before Moishe\'s', how: 'Find MOISHE. Which line comes just before it?' },
+        { skill: 'READ.FLU.L03.05', type: 'cloze', t: 'The leaves come down, red and gold, / the wind is blowing, crisp and ___.', o: ['cold', 'warm', 'wet'], a: 'cold', how: 'Which word sounds like gold at the end?' },
+        { skill: 'READ.FLU.L03.07', type: 'evidence', q: 'Which sentence has a misread word?', p: ['Yanky drank a glass of milk.', 'Yanky drank a grass of milk.', 'Yanky put the glass away.'], a: 1, look: 'the sentence that makes no sense', how: 'Read each one. Which could not really happen?' }
+      ] });
+  }
+})();
+</script>

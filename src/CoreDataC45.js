@@ -49,5 +49,20 @@ CORE_SKILLS.C45 = [
   ["READ.COMP.L06.13", "Built Two Ways", "Compare how two texts on one topic are built", { after: "READ.FLU.L06.03", std: "RI.5.5", file: "CoreDataC4510", min: 8 }],
   ["READ.LIT.L06.10", "One Chapter, Whole Book", "See how one chapter fits the whole book", { std: "RL.5.5", file: "CoreDataC4510", min: 8 }],
   ["READ.LIT.L06.11", "Stanzas and Scenes", "See how stanzas or scenes fit together", { std: "RL.5.5", file: "CoreDataC4510", min: 8 }],
-  ["READ.FLU.L06.04", "Poetry Aloud", "Read a poem with its rhythm and pauses", { std: "RF.5.4b", file: "CoreDataC4510", min: 8 }]
+  ["READ.FLU.L06.04", "Poetry Aloud", "Read a poem with its rhythm and pauses", { std: "RF.5.4b", file: "CoreDataC4510", min: 8 }],
+  ["READ.LIT.L06.12", "The Narrator's View", "See how a narrator's view colors the story", { after: "READ.FLU.L06.04", std: "RL.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.LIT.L06.13", "Same Scene, Another Narrator", "Tell how a scene changes with another narrator", { std: "RL.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.COMP.L06.14", "One Event, Many Accounts", "Compare several accounts of one event", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.COMP.L06.15", "Why Accounts Differ", "Explain why accounts differ: who wrote it, what he saw, and why", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.LIT.L05.07", "What the Narrator Knows", "Tell what an I narrator can and cannot know", { after: "READ.COMP.L05.21", std: "RL.4.6", file: "CoreDataC4511", min: 8 }],
+  ["READ.COMP.L05.22", "Firsthand or Secondhand?", "Tell if the writer was there or heard it from others", { std: "RI.4.6", file: "CoreDataC4511", min: 8 }],
+  ["READ.COMP.L05.23", "Two Accounts, One Event", "Compare a firsthand and a secondhand account of one event", { std: "RI.4.6", file: "CoreDataC4511", min: 8 }],
+  ["READ.FLU.L05.05", "Does It Make Sense?", "Notice a misread, fix it and reread", { std: "RF.4.4c", file: "CoreDataC4511", min: 8 }],
+  ["READ.COMP.L06.16", "Skim and Scan", "Find the answer fast with headings and key words", { after: "READ.COMP.L06.15", std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
+  ["READ.COMP.L06.17", "Which Source?", "Pick the source that answers your question", { std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
+  ["READ.COMP.L06.18", "Read the Table", "Read a table or graph inside an article", { std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
+  ["READ.LIT.L06.14", "Pictures and Sound", "Tell what pictures and sound add to a story", { std: "RL.5.7", file: "CoreDataC4514", min: 8 }],
+  ["READ.COMP.L05.24", "What the Diagram Adds", "Tell what a diagram adds to the words", { after: "READ.FLU.L05.05", std: "RI.4.7", file: "CoreDataC4513", min: 8 }],
+  ["READ.COMP.L05.25", "Read the Map", "Read a map inside a text: its key, compass and labels", { after: "READ.COMP.L05.24", std: "RI.4.7", file: "CoreDataC4513", min: 8 }],
+  ["READ.LIT.L05.08", "Read It, Hear It", "Compare a story on the page with the story read aloud", { after: "READ.COMP.L05.25", std: "RL.4.7", file: "CoreDataC4513", min: 8 }]
 ];

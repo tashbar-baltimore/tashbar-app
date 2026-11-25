@@ -1,4 +1,4 @@
-/* Full pages (house top left): My map, Change subject, My work, My profile, All my lessons (from My profile), Chumash page, Workbook.
+/* Full pages (house top left): My map, Change subject, My work, My profile, All my lessons (from My profile), Chumash page, Workbook, a Workbook job, a Chumash inner page.
    node tools/screens/pages.js OUT TAG GRADE [ids]   (GRADE 2 = a K-3 boy, 5 = a grade 4+ boy). Made-up boy only. */
 const S = require('../../tests/lib/screens.js');
 const OUT = process.argv[2], TAG = process.argv[3] || 'before', GR = Number(process.argv[4] || 5), ONLY = process.argv[5];
@@ -13,6 +13,8 @@ const ITEMS = [
   ['lessons', nav(['more', 'lib'])],
   ['chumash', `tlChm.open()`],
   ['workbook', `BBX.openBook()`],
+  ['job', `(async()=>{ BBX.openBook(); await new Promise(r=>setTimeout(r,800)); const j=document.querySelector('#bbx [data-bb="job"]'); if(j) j.click(); })()`],
+  ['chumashin', `(async()=>{ tlChm.open(); await new Promise(r=>setTimeout(r,500)); const l=document.querySelector('#chm-ov [data-chm="levels"]'); if(l) l.click(); })()`],
 ];
 (async () => {
   for (const [w, h, nm] of [[1366, 768, 'cb'], [390, 844, 'ph']]) {
