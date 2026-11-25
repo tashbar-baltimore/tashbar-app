@@ -22,5 +22,8 @@ CORE_SKILLS.W13 = [
   ["WRIT.PARA.L01.05", "Label It", "Label the parts of his picture with words he sounds out", { after: "WRIT.PARA.L01.04", std: "W.K.2", file: "CoreDataW135", min: 5 }],
   ["WRIT.PARA.L01.06", "Caption It", "Add a caption that tells what is happening in his picture", { after: "WRIT.PARA.L01.05", std: "W.K.2", file: "CoreDataW135", min: 5 }],
   ["WRIT.SENT.L01.02", "Word by Word", "Write a sentence one word at a time, saying each word", { after: "WRIT.SENT.L01.01", std: "W.K.2", file: "CoreDataW135", min: 5 }],
-  ["WRIT.SENT.L01.03", "Point and Read", "Read his sentence back pointing to each word, and fix a missing word", { after: "WRIT.SENT.L01.02", std: "W.K.5", file: "CoreDataW135", min: 4 }]
+  ["WRIT.SENT.L01.03", "Point and Read", "Read his sentence back pointing to each word, and fix a missing word", { after: "WRIT.SENT.L01.02", std: "W.K.5", file: "CoreDataW135", min: 4 }],
+  ["WRIT.PARA.L02.04", "Zoom In", "Write about one small moment, not the whole day", { after: "WRIT.SENT.L02.01", std: "W.1.3", file: "CoreDataW136", min: 5 }],
+  ["WRIT.PARA.L02.05", "Time Words", "Use time words: first, then, after that, at the end", { after: "WRIT.PARA.L02.04", std: "W.1.3", file: "CoreDataW136", min: 5 }],
+  ["WRIT.PARA.L02.06", "Feeling Ending", "End a story with how it felt or what he learned", { after: "WRIT.PARA.L02.05", std: "W.1.3", file: "CoreDataW136", min: 5 }]
 ];

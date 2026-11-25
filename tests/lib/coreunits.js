@@ -46,6 +46,8 @@ function server() {
   if (!c2 || !c2.row.passed || c2.row.tries !== 2) f('9 of 10 must pass (' + JSON.stringify(c2) + ')');
   const c3 = res('cuSave', A.token, 'ZZTEST.U01', 'check', { right: 1, total: 10, missed: [show[1]] });
   if (!c3 || !c3.row.passed) f('a passed unit must stay passed');
+  const sx = res('cuSave', A.token, 'ZZTEST.U03', 'pre', { shown: ['SS.GEO.L05.01', 'SS.HIST.L05.02', 'SCI.SKY.L05.01', 'NOPE.X.L05.01'] });   /* Social Studies (#432): its skill ids are kept like Science's */
+  if (!sx || !sx.ok || sx.row.shown.join() !== 'SS.GEO.L05.01,SS.HIST.L05.02,SCI.SKY.L05.01') f('a Social Studies pre-check must keep its SS skill ids, and drop an unknown id (' + JSON.stringify(sx && sx.row && sx.row.shown) + ')');
   const m = res('cuMine', A.token); if (!m || !m.units || !m.units['ZZTEST.U01'] || !m.live) f('cuMine must give his units, and say the checks are on');
   if (res('cuMine', B.token).units['ZZTEST.U01'].pre !== true) f('boy B keeps his own row');
   if (!res('cuSave', 'cu-staff', 'ZZTEST.U01', 'pre', { shown: [] }).error) f('a staff token must be refused');
@@ -88,6 +90,7 @@ async function page(pg) {
       if (out.projBtn) Q('#cun [data-cu=project]').click(); else Q('#cun [data-cu=done]').click(); out.r1 = await p; await sleep(80);
       out.projOpen = !!document.getElementById('cwr') && TLCORE.write.state() && TLCORE.write.state().task; TLCORE.write.close();
       window.__cwPieces = [{ id: 'x', task: 'ZZTEST.PROJ.01', status: 'sent' }]; out.projAfterSend = (await U.projects()).length; window.__cwPieces = [];
+      out.ssOk = U.err(Object.assign({}, unit, { id: 'ZZTEST.U79', c: 'SS' })); out.xxBad = U.err(Object.assign({}, unit, { id: 'ZZTEST.U79', c: 'XX' }));   /* Social Studies has a path (#432); an unknown subject is still refused */
       out.badTask = U.err(Object.assign({}, unit, { id: 'ZZTEST.U78', task: { id: 'ZZTEST.PROJ.02', title: 'x' } }));
       /* 2. all wrong: practice the missed lesson */
       p = U.check(unit); await sleep(60); Q('#cun [data-cu=start]').click(); await sleep(20); await play(false); await look('almost'); out.almost = (Q('#cun .cu-end h2') || {}).textContent;
@@ -119,6 +122,7 @@ async function page(pg) {
     if (r.win !== 'Unit cleared!' || !r.r1.passed) fails.push(at + 'all right must clear the unit (' + r.win + ')');
     if (!r.projBtn || !r.r1.project || r.projOpen !== 'ZZTEST.PROJ.01') fails.push(at + '"Unit cleared!" must offer "Start your project", and it must open the unit\'s Writing Workshop piece (' + JSON.stringify({ btn: r.projBtn, open: r.projOpen }) + ')');
     if (JSON.stringify(r.projList) !== '["ZZTEST.PROJ.01"]' || r.projAfterSend !== 0) fails.push(at + 'TLCORE.units.projects() must list the project of a passed unit until its piece is sent (' + JSON.stringify([r.projList, r.projAfterSend]) + ')');
+    if (r.ssOk !== '' || !/^c must be READ, WRIT, SCI or SS/.test(r.xxBad || '')) fails.push(at + 'a Social Studies unit (c: SS) must be taken and an unknown subject refused (' + JSON.stringify([r.ssOk, r.xxBad]) + ')');
     if (!/^task \(the unit project\)/.test(r.badTask || '')) fails.push(at + 'a unit with a broken project task must be refused (' + r.badTask + ')');
     if (r.almost !== 'Almost there!' || r.r2.passed || !r.practice.length) fails.push(at + 'all wrong must say "Almost there!" with lessons to practice');
     if (!r.started || r.started[1] !== r.practice[0] || !r.started[3]) fails.push(at + '"Practice" must open exactly the missed lesson, as a One Bite lesson (' + JSON.stringify(r.started) + ')');
