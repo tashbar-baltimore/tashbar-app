@@ -111,5 +111,13 @@ CORE_SKILLS.F = [
   ["READ.LV.L01.15", "Book: Go, Van, Go!", "Read the little book Go, Van, Go! and tell what happened", { after: "READ.LV.L01.14", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
   ["READ.LV.L01.16", "Book: Zip Up!", "Read the little book Zip Up! and tell what happened", { after: "READ.LV.L01.15", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
   ["READ.LV.L01.17", "Book: The Quiz", "Read the little book The Quiz and tell what happened", { after: "READ.LV.L01.16", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
-  ["READ.LV.L01.18", "Book: The Red Wax", "Read the little book The Red Wax and tell what happened", { after: "READ.LV.L01.17", std: "RF.K.4", file: "CoreDataFH1", min: 5 }]
+  ["READ.LV.L01.18", "Book: The Red Wax", "Read the little book The Red Wax and tell what happened", { after: "READ.LV.L01.17", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.19", "Book: Six Pups", "Read the little book Six Pups and tell what happened", { after: "READ.LV.L01.18", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.20", "Book: The Bugs and the Bun", "Read the little book The Bugs and the Bun and tell what happened", { after: "READ.LV.L01.19", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.21", "Book: Six Hats", "Read the little book Six Hats and tell what happened", { after: "READ.LV.L01.20", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.22", "Book: Dig, Dig, Dig", "Read the little book Dig, Dig, Dig and tell what happened", { after: "READ.LV.L01.21", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.23", "Book: The Pup on the Bed", "Read the little book The Pup on the Bed and tell what happened", { after: "READ.LV.L01.22", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.24", "Book: The Big Hut", "Read the little book The Big Hut and tell what happened", { after: "READ.LV.L01.23", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.25", "Book: The Fox and the Hens", "Read the little book The Fox and the Hens and tell what happened", { after: "READ.LV.L01.24", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.LV.L01.26", "Book: Ten Red Pens", "Read the little book Ten Red Pens and tell what happened", { after: "READ.LV.L01.25", std: "RF.K.4", file: "CoreDataFH1", min: 5 }]
 ];
