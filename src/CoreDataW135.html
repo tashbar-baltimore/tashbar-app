@@ -1,0 +1,54 @@
+<script>
+/* CoreDataW135.html: Core Growth job W13, Kindergarten games (K-1 boys get games only; docs/core-growth/HOW-TO-ADD-A-K1-GAME.md).
+   Keep this file under 150 KB. W13 = Writing K-3 (docs/core-growth/W13-map.md). This file: Kindergarten (L01), Unit 2 "My First Sentences".
+   Opener idea (map): Shmuli reads Eli's caption out loud and it says "gotbrn"; Eli learns to write words with spaces, like a real book.
+   By Unit 2 a K boy knows his letter sounds (job F), so he builds short words from sound tiles and short sentences from word tiles
+   (I, see, a, can, the, we). Every instruction is spoken (say); the K-1 player also shows and speaks the "how" line after a wrong
+   tap or on the light-bulb button (#403), so a "how" line gives a way to think, never the answer.
+   Cast: the Peretz family on Maple Street (docs/core-growth/F-map.md section 8): Eli (K), Shmuli (Grade 1), Zeidy's farm, Bubby, Abba.
+   WRIT.SENT.L01.01 "My First Sentence" is an existing skill rebuilt here as a K game (no new row); the other four are new rows in
+   src/CoreDataW13.js. No engine lessons: a K boy plays the game. */
+(function () {
+  var LESSONS = {
+  };
+  var TEACH = {}, HOWTO = {}, BITE = {};
+  var K1G = [
+    { id:'WRIT.PARA.L01.05', grade:0, name:'Label It', pic:'🏷️', after:'WRIT.PARA.L01.04', acts:[
+      {type:'listen', pic:'🐔', hear:'Eli writes the word hen next to it.', o:['👍','👎'], a:'👍', say:'A label is a word that names a thing in your picture.', how:'Look at the picture. Does the word name it?'},
+      {type:'tiles', w:['h','e','n'], extra:['s'], hear:'hen', pic:'🐔', say:'Build the label for the hen. Stretch the word slowly.', how:'Say it slowly. Tap each sound you hear, in order.'},
+      {type:'listen', pic:'☀️', hear:'Eli labels the sun. He writes: hen.', o:['👍','👎'], a:'👎', mis:true, say:'Oops? Does Eli’s label name the thing in the picture?', how:'Say the picture’s name. Is that the word he wrote?'},
+      {type:'tiles', w:['s','u','n'], extra:['b'], hear:'sun', pic:'☀️', say:'Now label the sun. Say it, then build it.', how:'Stretch the word. Tap the first sound, then the next.'},
+      {type:'match', pairs:[['🛏️','bed'],['🎩','hat'],['🥤','cup']], say:'Match each picture to its label. Sound out each word.', how:'Say the picture. Listen for its first sound.'}]},
+
+    { id:'WRIT.PARA.L01.06', grade:0, name:'Caption It', pic:'💬', after:'WRIT.PARA.L01.05', acts:[
+      {type:'listen', hear:'Zeidy feeds the goat.', o:['👴🐐','👴🚜','🐐😴'], a:'👴🐐', say:'A caption tells what is happening. Which picture does it tell?', how:'Who is in the caption? What are they doing?'},
+      {type:'listen', pic:'🐟', hear:'Eli’s caption says: Fish.', o:['👍','👎'], a:'👎', mis:true, say:'Is that a caption? Does it tell what is happening?', how:'A caption tells who, and what they do.'},
+      {type:'findall', grid:['👨','🧒','🍞','🚀','⚽','🐟'], find:['👨','🧒','🍞'], findSay:'thing in the caption', say:'Caption: Abba and I bake challah. Tap what it tells.', how:'Listen again. Who is in it? What do they make?'},
+      {type:'tiles', w:['🧒','⚽','🥅'], hear:'Eli kicks the ball into the net.', say:'Say Eli’s caption. Then put the pictures in order.', how:'Say it slowly. What comes first? Then next?'},
+      {type:'listen', hear:'It is raining. We hold our umbrellas.', o:['🌧️☂️','☀️⚽','❄️⛄'], a:'🌧️☂️', say:'Listen to Eli’s caption. Which picture does it tell about?', how:'What is the weather in his caption?'}]},
+
+    { id:'WRIT.SENT.L01.01', grade:0, name:'My First Sentence', pic:'✏️', after:'WRIT.PARA.L01.06', acts:[
+      {type:'listen', hear:'A sentence starts with a big letter.', o:['S','s'], a:'S', say:'A sentence starts with a big letter. Tap the big one.', how:'Look at both. Which one is taller?'},
+      {type:'tiles', w:['I','see','a','hen.'], hear:'I see a hen.', pic:'🐔', say:'Build Eli’s sentence. Big letter first, a dot at the end.', how:'Say it slowly. Tap each word as you say it.'},
+      {type:'listen', hear:'Which one has spaces between the words?', o:['I see a hen.','Iseeahen.'], a:'I see a hen.', mis:true, say:'Shmuli read gotbrn! Which one has spaces between the words?', how:'Look for the little gaps between the words.'},
+      {type:'listen', hear:'Which one has a big letter and a dot?', o:['We see the sun.','we see the sun.','We see the sun'], a:'We see the sun.', say:'Which one has a big letter and a dot?', how:'Check the start. Then check the end.'},
+      {type:'sort', bins:['✅','❌'], cards:[['I see a cow.',0],['i see a cow.',1],['We can hop.',0],['We can hop',1]], say:'Does it have a big letter and a dot? Sort them.', how:'Look at the first letter. Look at the end.'}]},
+
+    { id:'WRIT.SENT.L01.02', grade:0, name:'Word by Word', pic:'👆', after:'WRIT.SENT.L01.01', acts:[
+      {type:'listen', hear:'I can hop.', o:['2','3','4'], a:'3', say:'Clap each word Eli says. How many words?', how:'Say it again. Clap once for each word.'},
+      {type:'dictation', hear:'I can hop.', w:['I','can','hop.'], say:'Say one word, write it. Then say the next word.', how:'Say the sentence. Tap one word each time you say one.'},
+      {type:'tiles', w:['h','o','p'], extra:['t'], hear:'hop', say:'A new word? Stretch it out, sound by sound.', how:'Say it slowly. Tap each sound you hear.'},
+      {type:'listen', hear:'Eli wanted to write: I can hop. He wrote: I can.', o:['👍','👎'], a:'👎', mis:true, say:'Did Eli write every word he said?', how:'Clap the words he said. Clap the words he wrote.'},
+      {type:'dictation', hear:'We see a bus.', w:['We','see','a','bus.'], say:'Say it, then write it word by word.', how:'Say one word. Tap it. Then say the next one.'}]},
+
+    { id:'WRIT.SENT.L01.03', grade:0, name:'Point and Read', pic:'👉', after:'WRIT.SENT.L01.02', acts:[
+      {type:'findall', grid:['I','⭐','can','🐔','run.','✏️'], find:['I','can','run.'], findSay:'word of Eli’s sentence', say:'Eli wrote: I can run. Point and tap each word.', how:'Words are made of letters. Say the sentence as you tap.'},
+      {type:'listen', pic:'🐔', hear:'Eli reads it back: I see a. Oh no!', o:['🐔','👍','🌙'], a:'🐔', mis:true, say:'Eli drew a hen. Which word did he forget?', how:'Look at his picture. What did he want to tell?'},
+      {type:'listen', hear:'Eli reads it back: I see a big.', o:['👍','👎'], a:'👎', say:'Point and read. Does Eli’s sentence make sense?', how:'Read it with your finger. Is a word missing?'},
+      {type:'tiles', w:['I','see','a','big','goat.'], pic:'🐐', hear:'I see a big goat.', say:'Fix it! Build the whole sentence, then read it back.', how:'Say it slowly. Tap each word as you say it.'},
+      {type:'listen', hear:'We go to shul.', o:['3','4','5'], a:'4', say:'Point and read: We go to shul. How many words?', how:'Point to each word as you say it. Count them.'}]}
+  ];
+  if (window.TLCORE && TLCORE.k1) K1G.forEach(function (g) { TLCORE.k1.add(g); });
+  if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
