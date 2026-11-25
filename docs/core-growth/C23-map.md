@@ -8,7 +8,7 @@ Owner: job C23 (see `docs/CORE-GROWTH-LANES.md`; gap rows C1a and C1b on `docs/G
 
 ## 1. What a Grade 2–3 boy has today
 
-The app has **7** Grade 2–3 lessons in this job's strands (comprehension and literature). **None of them is a One Bite lesson yet.** Each has its old practice and check questions, which a rebuild keeps (`TLCORE.upgrade`).
+The app has **7** Grade 2–3 lessons in this job's strands (comprehension and literature). **Correction (2026-11-25):** six of them already have a One Bite lesson in `src/OneBiteDataRead2.html`. `READ.LIT.L03.01` Retell It passes the quality gate and is used as it is. Five (`READ.COMP.L03.01`–`.03`, `READ.COMP.L04.01`, `READ.LIT.L04.01`) are on `tests/quality-baseline.json`; they are improved in their own file (gap B5 on `docs/GAP-BOARD.md`), not rebuilt here. Only `READ.LIT.L04.02` Character Clues has no One Bite lesson, so it is the one rebuild (`TLCORE.upgrade`).
 
 | Id | Name | Std | Grade |
 |---|---|---|---|
