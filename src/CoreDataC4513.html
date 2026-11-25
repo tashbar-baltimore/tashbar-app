@@ -1,11 +1,272 @@
 <script>
 /* CoreDataC4513.html: Core Growth job C45, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
    Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
-   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite. */
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   Grade 4 Unit 4.7 "Read the picture" (visuals), topic set: Bridges (docs/core-growth/C45-map.md). READ.COMP.L05.04 is not rebuilt here.
+   Short lesson passages go in PASS under c45_br keys. Each lesson teaches on its own passages and checks on a different, cold one:
+   What the Diagram Adds: the suspension bridge, the beam bridge -> the stone arch;
+   Read the Map: crossing the Bay (Chesapeake Bay Bridge), Avrumi's map to the footbridge -> the bridge fair map of the gym;
+   Read It, Hear It: The Bridge Test (page + class recording) -> The Last Ferry (page + class recording).
+   No picture library item fits yet, so every visual is built from plain lines the passage card shows clearly (a passage keeps its line
+   breaks): a diagram is its title plus numbered labels and arrows; a map is a compass line, a key and short map rows from north (top) to
+   south (bottom), each row read west (left) to east (right), kept short so a row never wraps at 390 px; a recording is a list of what you hear.
+   The E45 passage-card style lives in CoreDataC451.html. */
 (function () {
-  var LESSONS = {
+  var P = {
+    c45_brsusp: { title: 'How a Suspension Bridge Hangs', text: 'A suspension bridge hangs in the air, a little like a swing. Two tall towers rise high above the water. Two giant main cables run over the tops of the towers, from one end of the bridge to the other.\nHundreds of thinner cables, called hangers, drop straight down from the main cables. The hangers hold up the road. So the road does not sit on the cables. It hangs from them!\nThe heavy road pulls down on the hangers, and the hangers pull down on the main cables. The main cables carry that pull up and over the towers.\nA suspension bridge can stretch farther between its towers than any other kind of bridge. That is why engineers choose it to cross wide rivers and bays.\n\nTHE DIAGRAM: a suspension bridge, seen from the side\nLabel 1, Tower: a tall post. There is one near each end.\nLabel 2, Main cable: it dips lowest in the middle, between the towers.\nLabel 3, Hanger: a thin cable that holds up the road.\nLabel 4, Deck: the flat road that cars drive on.\nLabel 5, Anchorage: a huge block of concrete at each end. It holds the main cable tight.\nArrows: they point down from the deck, along the hangers.' },
+    c45_brbeam: { title: 'The Beam Bridge', text: 'The simplest bridge of all is a beam bridge. A log lying across a creek is a beam bridge! So is a plank across a puddle.\nA beam bridge is a long, stiff beam that rests on a support at each end. Long beam bridges rest on many supports, one after another, like a line of tables pushed together.\nWhen a heavy truck rolls onto a beam bridge, the beam bends a tiny bit. The truck\'s weight goes through the beam and down into the supports.\nBeam bridges are quick and cheap to build. But one beam cannot reach very far. If the gap is too wide, the beam sags in the middle, and it could even break.\n\nTHE DIAGRAM: a truck on a beam bridge, seen from the side\nLabel 1, Top of the beam: squeezed together. This push is called compression.\nLabel 2, Bottom of the beam: stretched apart. This pull is called tension.\nLabel 3, Support: there is one under each end of the beam.\nArrows: they point from the truck down into the supports.' },
+    c45_brarch: { title: 'Stone Arches That Last', text: 'More than two thousand years ago, builders in ancient Rome made bridges out of stone arches. Some of those bridges still stand today. How can stone, with no steel at all, last so long?\nThe secret is the curved shape. When a cart or a person crosses an arch bridge, the weight does not push straight down. The arch carries it along the curve, out to the ends.\nEvery stone in the arch is pressed tightly against its neighbors. The more weight on top, the tighter the stones squeeze together.\nWhile an arch is being built, it needs a wooden frame under it to hold the stones up. Once the last stone is in place, the builders take the frame away, and the arch stands by itself.\n\nTHE DIAGRAM: a stone arch bridge, seen from the side\nLabel 1, Keystone: the wedge-shaped stone at the very top.\nLabel 2, Arch stones: each one is a wedge, wider on the outside of the curve than on the inside.\nLabel 3, Abutment: a strong wall at each end that the arch pushes against.\nArrows: they run along the curve, down to the abutments at the ends.' },
+    c45_brbaymap: { title: 'Crossing the Bay', text: 'Before 1952, there was no road across the Chesapeake Bay in Maryland. To reach the Eastern Shore, families from Baltimore drove far around the top of the bay, or they waited in long lines for a ferry boat.\nThen, on July 30, 1952, the Chesapeake Bay Bridge opened. It is about 4.3 miles long. In the middle, it is so high that big ships can sail underneath.\nIn 1973, a second bridge opened right beside the first one. Most days, cars heading east use the older bridge, and cars heading west use the newer one.\n\nTHE MAP\nCompass rose: N is at the top, S at the bottom, W on the left, E on the right.\nKey: ● town or place · ═ bridge · ~ water · ▲ lighthouse\nNorth (top of the map)\n● Baltimore\n~ ~ Chesapeake Bay ~ ~\n▲ Sandy Point Shoal Lighthouse\n● Sandy Point ═══ ● Kent Island\n● Annapolis\nSouth (bottom of the map)' },
+    c45_brwalk: { title: 'Avrumi\'s Map to the Footbridge', text: 'Nosson Abergel is new on Glen Avenue. On Sunday, the boys were meeting at the little footbridge in the park, to test their model bridges over the stream. Nosson did not know the way, so Avrumi drew him a map.\n"Start at the star," Avrumi said. "Then just follow the map."\n\nTHE MAP\nCompass rose: N is at the top, S at the bottom, W on the left, E on the right.\nKey: ★ start · ▬ street · ┇ path · ~ stream · ═ footbridge · ■ building\nNorth (top of the map)\n~ stream ~ ═ ~ stream ~\n┇ park path, from the bakery up to the footbridge\n★■ Yeshiva ▬▬ Glen Ave ▬▬ ■ Bakery\nSouth (bottom of the map)' },
+    c45_brgym: { title: 'The Bridge Fair Map', text: 'Mr. Halpern drew this map of the gym for the Grade 4 bridge fair. Every boy\'s model bridge stands on its own table. Visitors come in through the front door and walk around to see them.\n\nTHE MAP\nCompass rose: N is at the top, S at the bottom, W on the left, E on the right.\nKey: ■ model table · ✚ first aid · ⚑ judges\' desk · ▯ door\nNorth (top of the map)\n▯ Front door · ⚑\n■ Dovid · ■ Avrumi · ■ Yehuda\n■ Binyamin · ✚ · ■ Nosson\n■ Tzvi Hirsch · ▯ Back door\nSouth (bottom of the map)' },
+    c45_brtest: { title: 'The Bridge Test', text: 'A story by Avrumi Katz\nDovid set his craft-stick bridge across the gap between two desks. Every boy in the class leaned in close.\n"One washer at a time," said Mr. Halpern. He hung a little bucket from the middle of the bridge.\nClink. Clink. Clink. The washers dropped in, one by one. The bridge did not move.\nTwenty washers. Thirty. Forty. Dovid held his breath.\n"It\'s bending," Tzvi Hirsch whispered.\nThen came a loud CRACK! The bridge snapped in the middle, and the bucket hit the floor.\nFor a long moment, nobody spoke. Then Dovid picked up the two halves and smiled.\n"Now I know where it is weak," he said. "Next time, I\'ll add triangles."\n\nTHE RECORDING: Mr. Halpern read this story aloud for the class listening corner. Here is what you hear:\n1. "Clink. Clink. Clink." comes slowly, with a pause after each one.\n2. Right after "The bridge did not move," you hear "Dovid held his breath."\n3. Tzvi Hirsch\'s words come in a soft whisper.\n4. "CRACK!" comes in a big, loud voice.\n5. After the bucket hits the floor, there are three seconds of silence.\n6. Soft drum music plays under the whole story.' },
+    c45_brferry: { title: 'The Last Ferry', text: 'A story by Yehuda Benaim\nIt was a summer morning in 1952. Shimon stood on the deck of the ferry boat with his Abba, watching the gulls swoop over the bay.\nThe ferry horn blew a long, low HOOOONK. Shimon covered his ears and laughed.\nNot far away, workers were finishing a giant new bridge across the water.\n"Soon nobody will need this old boat," Abba said quietly.\nShimon looked down at the gray water. He felt a little sad.\n"Then we must remember this ride," he said.\nAbba put an arm around his shoulders. Together they watched the shore of Kent Island come closer and closer.\n\nTHE RECORDING: Rabbi Feldman read this story aloud for the class listening corner. Here is what you hear:\n1. The horn sound comes long and low.\n2. Abba\'s words come in a quiet voice.\n3. Right after Abba\'s words, you hear "Then we must remember this ride."\n4. Soft violin music plays at the very end.' }
   };
-  var TEACH = {}, HOWTO = {}, BITE = {};
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var DG = 'Only the diagram', WD = 'Only the words', BO = 'Both the words and the diagram';
+  var KY = 'The key', CR = 'The compass rose', LB = 'The labels';
+  var FO = 'The recording follows the page', AD = 'The recording adds something', LO = 'The recording leaves something out';
+
+  var LESSONS = {
+    'READ.COMP.L05.24':{name:'What the Diagram Adds',
+      teach:[
+        {p:'c45_brsusp', q:'Where can you learn that the deck is the road cars drive on?', o:[DG, WD, BO], how:'Search the words for "deck". Then read every label. Where did you find it?'},
+        {p:'c45_brsusp', q:'Where can you learn that engineers use suspension bridges to cross wide rivers?', o:[WD, DG, BO], how:'Search the words first. Then read every label. Where did you find it?'},
+        {p:'c45_brsusp', q:'Where can you learn that the hangers hold up the road?', o:[BO, DG, WD], how:'Search the words, then read every label. Tap only after you have checked both places.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_brsusp', q:'Where does each fact show up?', bins:[{id:'d', label:DG}, {id:'w', label:WD}, {id:'b', label:BO}],
+          items:[{label:'A huge concrete block holds each cable end.', bin:'d'}, {label:'The main cable dips lowest in the middle.', bin:'d'}, {label:'There are hundreds of hangers.', bin:'w'}, {label:'It can stretch farther than any other bridge.', bin:'w'}, {label:'The hangers hold up the road.', bin:'b'}],
+          h:'For each fact, look in the words AND in the labels.', how:'Check two places every time: the words above, then the diagram labels below.'},
+        {t:'sort', p:'c45_brbeam', q:'Mistake Detective. Did each boy use the diagram well?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Eli: The diagram adds a new idea, compression.', bin:'r'}, {label:'Moishe: I skipped the diagram. It just repeats the words.', bin:'w'}, {label:'Shmuel: Only the words tell that a log can be a beam bridge.', bin:'r'}, {label:'Chaim: The diagram shows it all, so I skipped the words.', bin:'w'}],
+          h:'Does a good reader skip either part?', how:'The trap: skipping the diagram, or skipping the words. Each one can tell something the other leaves out.'},
+        {t:'pairs', p:'c45_brbeam', q:'Match each part of the diagram to what it shows.', pairs:[['Label 1, Top of the beam', 'squeezed together: compression'], ['Label 2, Bottom of the beam', 'stretched apart: tension'], ['Label 3, Support', 'one under each end'], ['The arrows', 'the weight goes down into the supports']],
+          h:'Read each label all the way to the end.', how:'Find the label in the diagram. Read what comes after its name.'},
+        {t:'spotall', p:'c45_brbeam', q:'Tap every fact that ONLY the diagram gives.', cells:[{label:'the top of the beam is squeezed', ok:true}, {label:'the bottom of the beam is stretched', ok:true}, {label:'that push is called compression', ok:true}, {label:'a log across a creek is a beam bridge', ok:false}, {label:'beam bridges are cheap to build', ok:false}, {label:'the weight goes into the supports', ok:false}],
+          h:'Look for each fact in the words too. If the words say it, it is not ONLY in the diagram.', how:'Find each fact in the diagram. Then search the words for it.'},
+        {t:'type', p:'c45_brsusp', q:'What is the block of concrete at each end called? Type the word from the diagram.', a:'anchorage', alt:['Anchorage', 'an anchorage', 'the anchorage'], kb:'abc',
+          h:'Read the labels one by one. Which one tells about concrete?', how:'The words never name it. Look at the labels.'},
+        {t:'order', p:'c45_brsusp', q:'Put the steps for reading a diagram in order.', tiles:['Read the title of the diagram.', 'Read each label and what it tells.', 'Follow the arrows.', 'Ask: what does it add to the words?'],
+          h:'You need to know what the drawing is before you read its parts.', how:'Title, labels, arrows, then the big question.'}
+      ],
+      check:[
+        {p:'c45_brarch', q:'Where can you learn the name of the stone at the very top of the arch?', o:[DG, WD, BO]},
+        {p:'c45_brarch', q:'Where can you learn that some old Roman bridges still stand today?', o:[WD, DG, BO]},
+        {p:'c45_brarch', q:'Where can you learn that the weight travels along the curve to the ends?', o:[BO, DG, WD]}
+      ],
+      re:[
+        {p:'c45_brsusp', q:'Each label on a diagram...', o:['names a part and tells about it', 'is a page number', 'tells the story\'s ending'], how:'Look at Label 4. What does it tell you?'},
+        {p:'c45_brbeam', q:'After you read a diagram, ask...', o:['What does it add to the words?', 'How many colors does it have?', 'Who drew it?'], how:'Think about why the writer put a diagram next to the words.'},
+        {q:'Can a diagram tell something the words never say?', o:['Yes, so read it too', 'No, never', 'Only in a math book'], how:'Think of compression in "The Beam Bridge".'}
+      ]},
+    'READ.COMP.L05.25':{name:'Read the Map',
+      teach:[
+        {p:'c45_brbaymap', q:'On this map, what does ═ stand for?', o:['a bridge', 'water', 'a town'], how:'Find the line that starts with "Key". Find the symbol there and read the word next to it.'},
+        {p:'c45_brbaymap', q:'Which way is Kent Island from Sandy Point?', o:['East', 'West', 'North'], how:'Both places are on one map row. Which is on the left, and which is on the right? Then read the compass rose.'},
+        {p:'c45_brbaymap', q:'Which part of the map tells you that the top of the map is north?', o:[CR, KY, LB], how:'Read each part of the map card. Which one talks about the top of the map?'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_brbaymap', q:'Which part of the map answers each question?', bins:[{id:'k', label:KY}, {id:'c', label:CR}, {id:'l', label:LB}],
+          items:[{label:'What does ═ stand for?', bin:'k'}, {label:'What does ~ stand for?', bin:'k'}, {label:'Which edge of the map is north?', bin:'c'}, {label:'Which side of the map is west?', bin:'c'}, {label:'What is the island called?', bin:'l'}, {label:'What is the lighthouse called?', bin:'l'}],
+          h:'Symbols, directions or names? Each question needs one of them.', how:'Ask: does this question want what a mark means, which way, or the name of a place?'},
+        {t:'sort', p:'c45_brbaymap', q:'Mistake Detective. Did each boy read the map right?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Eli: I read the key first, so I know what each symbol means.', bin:'r'}, {label:'Moishe: Left on a map is always east.', bin:'w'}, {label:'Shmuel: The compass rose says N is at the top.', bin:'r'}, {label:'Chaim: ● means Baltimore, so every ● is Baltimore.', bin:'w'}],
+          h:'Check each boy against the compass rose and the key.', how:'Two traps: guessing left and right, and mixing up a symbol with a name.'},
+        {t:'pairs', p:'c45_brwalk', q:'Match each symbol on Avrumi\'s map to what it means.', pairs:[['★', 'start'], ['═', 'footbridge'], ['~', 'stream'], ['■', 'building']],
+          h:'The key is on the line that starts with "Key".', how:'Find each symbol in the key. Read the word right after it.'},
+        {t:'spotall', p:'c45_brbaymap', q:'Tap every place that is NORTH of the bridge on this map.', cells:[{label:'Baltimore', ok:true}, {label:'Sandy Point Shoal Lighthouse', ok:true}, {label:'Annapolis', ok:false}, {label:'Kent Island', ok:false}, {label:'Sandy Point', ok:false}],
+          h:'North is at the top. Which rows are above the bridge row? The places at the two ends of the bridge sit on its own row.', how:'Find the bridge row. North is above it.'},
+        {t:'type', p:'c45_brwalk', q:'Nosson walks from the star to Gold\'s Bakery. Which way does he walk? Type it.', a:'East', alt:['east', 'E', 'e'], kb:'abc',
+          h:'Which end of the street is the star on? Which end is the bakery on?', how:'Find the star and the bakery on their row. Then use the compass rose.'},
+        {t:'order', p:'c45_brwalk', q:'Use the map. Put Nosson\'s walk in order.', tiles:['Start at the star by the yeshiva.', 'Walk along Glen Avenue to the bakery.', 'Take the park path north.', 'Cross the stream on the footbridge.'],
+          h:'Start at the star. End where the boys meet.', how:'Follow the symbols from the star, one step at a time.'}
+      ],
+      check:[
+        {p:'c45_brgym', q:'Yehuda sees ✚ on the gym map. Which part tells him what ✚ means?', o:[KY, CR, LB]},
+        {p:'c45_brgym', q:'Which way is Yehuda\'s table from Dovid\'s table?', o:['East', 'West', 'North', 'South']},
+        {p:'c45_brgym', q:'Which part of the map shows which table is Binyamin\'s?', o:[LB, KY, CR]}
+      ],
+      re:[
+        {p:'c45_brbaymap', q:'The key on a map tells...', o:['what each symbol means', 'which way is north', 'how old the map is'], how:'Think of ═ and ~ on the Bay map.'},
+        {p:'c45_brbaymap', q:'When N is at the top, east is...', o:['on the right', 'on the left', 'at the bottom'], how:'Remember where Kent Island is.'},
+        {q:'The labels on a map...', o:['name the places', 'show which way is north', 'tell what symbols mean'], how:'Think of the words Baltimore and Annapolis on the Bay map.'}
+      ]},
+    'READ.LIT.L05.08':{name:'Read It, Hear It',
+      teach:[
+        {p:'c45_brtest', q:'Tzvi Hirsch\'s words come in a soft whisper. Compare the recording with the page.', o:[FO, AD, LO], how:'Find Tzvi Hirsch\'s words on the page. Read the word right after them.'},
+        {p:'c45_brtest', q:'Soft drum music plays under the story. Compare the recording with the page.', o:[AD, FO, LO], how:'Search the whole page for music or drums. Did the writer put it there?'},
+        {p:'c45_brtest', q:'Recording line 2: "Dovid held his breath" comes right after "did not move". Compare.', o:[LO, FO, AD], how:'Find "The bridge did not move" on the page. Read what comes right after it.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45_brtest', q:'Compare each part of the recording with the page.', bins:[{id:'f', label:FO}, {id:'a', label:AD}, {id:'l', label:LO}],
+          items:[{label:'"Clink. Clink. Clink." comes slowly, with pauses.', bin:'f'}, {label:'Tzvi Hirsch\'s words come in a whisper.', bin:'f'}, {label:'"CRACK!" comes in a loud voice.', bin:'f'}, {label:'Three seconds of silence after the bucket falls', bin:'f'}, {label:'Soft drum music under the story', bin:'a'}, {label:'"Twenty washers. Thirty. Forty." is never heard.', bin:'l'}],
+          h:'For each part, find the same place on the page. Did the page tell the reader to do it?', how:'Hear a part, find it on the page, then decide.'},
+        {t:'sort', p:'c45_brtest', q:'Mistake Detective. Did each boy compare the right way?', bins:[{id:'r', label:'Right'}, {id:'w', label:'Mistake'}],
+          items:[{label:'Eli: The page says "a loud CRACK!" The loud voice follows it.', bin:'r'}, {label:'Moishe: The recording sounds different, so Mr. Halpern read it wrong.', bin:'w'}, {label:'Shmuel: The page has no music. The recording adds the drums.', bin:'r'}, {label:'Chaim: The page never says how to say Tzvi Hirsch\'s words.', bin:'w'}],
+          h:'Did each boy check the page before he decided?', how:'Two traps: calling every difference a mistake, and missing a clue word the page really has.'},
+        {t:'pairs', p:'c45_brtest', q:'Match each clue on the page to what the voice does.', pairs:[['"whispered"', 'a soft, quiet voice'], ['"a loud CRACK!"', 'a big, loud voice'], ['"Clink. Clink. Clink."', 'a pause after each word'], ['"For a long moment, nobody spoke."', 'a long silence']],
+          h:'Each clue tells the reader how to sound.', how:'Read the clue words. Picture how a good reader would sound.'},
+        {t:'spotall', p:'c45_brtest', q:'Tap every page clue that tells a reader how to use his voice.', cells:[{label:'whispered', ok:true}, {label:'a loud CRACK!', ok:true}, {label:'For a long moment, nobody spoke.', ok:true}, {label:'between two desks', ok:false}, {label:'a little bucket', ok:false}, {label:'the two halves', ok:false}],
+          h:'Does it tell about sound: loud, soft or silent?', how:'A voice clue tells how something sounds, or that it is quiet.'},
+        {t:'type', p:'c45_brtest', q:'Which word on the page tells the reader to use a soft voice? Type it.', a:'whispered', alt:['Whispered', 'whisper'], kb:'abc',
+          h:'Look at the words right after someone speaks.', how:'Find the word that tells HOW a boy said his words.'},
+        {t:'order', p:'c45_brtest', q:'Put the steps for comparing in order.', tiles:['Hear one part of the recording.', 'Find the same part on the page.', 'Compare the two.', 'Name it: follows, adds or leaves out.'],
+          h:'You cannot compare until you have both parts.', how:'Hear it, find it, compare it, name it.'}
+      ],
+      check:[
+        {p:'c45_brferry', q:'In the recording, the horn sound comes long and low. Compare it with the page.', o:[FO, AD, LO]},
+        {p:'c45_brferry', q:'In the recording, violin music plays at the end. Compare it with the page.', o:[AD, FO, LO]},
+        {p:'c45_brferry', q:'In the recording, "Then we must remember this ride" comes right after Abba\'s words.', o:[LO, FO, AD]}
+      ],
+      re:[
+        {p:'c45_brtest', q:'When a reader whispers because the page says "whispered", the recording...', o:['follows the page', 'adds something', 'leaves something out'], how:'Did the page tell him to do it?'},
+        {p:'c45_brtest', q:'Music the page never mentions is something the recording...', o:['adds', 'follows', 'leaves out'], how:'Is it on the page?'},
+        {q:'To compare a story heard with the story on the page, you...', o:['find each part on the page', 'only listen', 'only read'], how:'You need both to compare.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.COMP.L05.24':{
+      hook:'The words say a beam bridge holds a truck. But which part of the beam is squeezed? Only one place tells you.',
+      big:'A diagram is a drawing with labels. It can show things the words never say, so read the words and the diagram together.',
+      intro:['Read the words first.', 'Then read the diagram: its title, each label, and the arrows.', 'For each fact, ask: is it in the words, in the diagram, or in both places?', 'Then say what the diagram adds: new names, where the parts are, which way a push goes.'],
+      ex:[{q:'"The top of the beam is squeezed."', steps:['Search the words: no squeezing at all.', 'Read Label 1: "squeezed together".'], a:'The diagram adds it. The words never say it.'},
+          {q:'"The weight goes down into the supports."', steps:['The words: "down into the supports."', 'The arrows: "from the truck down into the supports."'], a:'Both tell it.'}],
+      oops:{q:'Moishe reads "The Beam Bridge".', wrong:'He skips the diagram. "It just repeats the words."', right:'He reads the labels and finds a new idea: compression.', why:'A diagram often shows what the words never say.'},
+      idea:['Words and a diagram are like two friends telling one story. One tells why. The other points and says, "Look, right here!"'],
+      try:{q:'Where do you learn the name "anchorage"?', o:['In a label of the diagram', 'In the words'], a:'In a label of the diagram', steps:['Search the words.', 'Read every label.']}
+    },
+    'READ.COMP.L05.25':{
+      hook:'Nosson is new on Glen Avenue. He has a map with stars, lines and squiggles. How will he find the footbridge?',
+      big:'A map has helpers: the key tells what each symbol means, the compass rose shows the directions, and the labels name the places.',
+      intro:['Read the title: what place does the map show?', 'Read the key: what does each symbol mean?', 'Find N on the compass rose. When N is at the top, east is on the right and west is on the left.', 'Read the labels to find the places. Then answer the question.'],
+      ex:[{q:'What does ═ mean on the Bay map?', steps:['Find the key.', 'Find ═ in it.', 'Read the word next to it.'], a:'═ means a bridge.'},
+          {q:'Which way is Kent Island from Sandy Point?', steps:['Find both labels on their row.', 'Sandy Point is on the left. Kent Island is on the right.', 'N is at the top, so the right side is east.'], a:'Kent Island is east of Sandy Point.'}],
+      oops:{q:'Moishe reads the Bay map.', wrong:'"Kent Island is on the right, so it is west."', right:'"N is at the top, so the right side is east."', why:'Do not guess left and right. Check the compass rose first.'},
+      idea:['A map is a picture of a place seen from above, like a bird flying over it.'],
+      try:{q:'On the Bay map, which way is Baltimore from Annapolis?', o:['North', 'South'], a:'North', steps:['Which one is higher on the map?', 'Where is N?']}
+    },
+    'READ.LIT.L05.08':{
+      hook:'The page says "CRACK!" Then you hear it read aloud, and the whole class jumps. What did the voice do?',
+      big:'When you hear a story read aloud, compare it with the page: does the voice follow the page, add something, or leave something out?',
+      intro:['Hear one part of the recording.', 'Find the same part on the page.', 'Did the page tell the reader to do it? Clue words like "whispered", "loud" and "nobody spoke" are directions for the voice.', 'Is it something new, like music? Is a part of the page missing?'],
+      ex:[{q:'Tzvi Hirsch\'s words come in a whisper.', steps:['Find his words on the page.', 'The next word is "whispered".', 'The page told the reader to whisper.'], a:'The voice follows the page.'},
+          {q:'Soft drum music plays.', steps:['Search the page for music.', 'There is none.'], a:'That is something new in the recording.'}],
+      oops:{q:'"Then came a loud CRACK!" The voice is loud.', wrong:'Mr. Halpern decided to add a loud voice.', right:'The loud voice follows the page.', why:'The page itself says "loud". Check the page before you call something new.'},
+      idea:['A story on the page is like sheet music. A reader aloud is the singer who brings it to life, and he may add a little of his own.'],
+      try:{q:'"For a long moment, nobody spoke." You hear three seconds of silence. Follows or adds?', o:['Follows', 'Adds'], a:'Follows', steps:['Find the sentence on the page.', 'Did it tell the reader to be quiet?']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.COMP.L05.24':{ band:'E45', pic:'🌉', today:'Find what a diagram adds to the words',
+      why:'A diagram can show you things the words never say.',
+      ready:[{q:'A label on a drawing...', o:['names a part','is a page number','is the book\'s title'], a:'names a part'},
+             {q:'An arrow on a diagram shows...', o:['which way something goes','the page to turn to','nothing at all'], a:'which way something goes'}],
+      bridge:'READ.COMP.L05.04', bridgeName:'Read the Picture',
+      watch:{ q:'The Beam Bridge', m:{type:'scene', e:'🌉', t:'Words: "The truck\'s weight goes down into the supports." Diagram, Label 1: "Top of the beam: squeezed together."'}, steps:[
+        {t:'First I read the words.'},
+        {t:'Then I read the diagram: its title, labels and arrows.'},
+        {t:'Words and arrows agree: the weight goes into the supports.'},
+        {t:'Is the top of the beam squeezed? The words never say.'},
+        {t:'Label 1 says it. The diagram gives me something new.'}],
+        a:'Read the words, read the diagram, then say what it adds.' },
+      oops:{ q:'Moishe reads "The Beam Bridge".', wrong:'He skips the diagram. "It just repeats the words."', right:'He reads every label and finds compression.', why:'A diagram often shows what the words never say.' },
+      ways:['worked example','labelled diagram','evidence tap','Mistake Detective','tap the reason','building knowledge: bridges','chavrusa'], done:'You can tell what a diagram adds! Tell your chavrusa one thing the beam diagram showed that the words did not.',
+      board:{ one:'Read the words, then the diagram: title, labels, arrows. Ask: what does it add?', activity:'Draw and label: pairs draw a beam bridge with a truck on it, add arrows for the weight, and label the squeezed top and the stretched bottom.', mistakes:['Skipping the diagram because it "just repeats the words"','Reading only the diagram and skipping the words','Reading a label\'s name but not what it tells'] },
+      do:[
+        {type:'evidence', q:'Which line gives something ONLY the diagram tells?', p:['Words: The truck\'s weight goes down into the supports.','Words: A log across a creek is a beam bridge.','Diagram, Label 1: Top of the beam: squeezed together.','Diagram arrows: from the truck down into the supports.'], a:2, look:'a label with an idea no Words line has',
+          say:'Tap the line that only the diagram gives.', how:'Take each diagram line. Do the Words lines say it too?',
+          why:{q:'Why is it new?', o:['The words never say the top is squeezed','The diagram is bigger','It has a number'], a:'The words never say the top is squeezed'}},
+        {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['Eli: The diagram adds a new idea, compression.',0],['Moishe: Skip the diagram. It repeats the words.',1],['Shmuel: I read the words and every label.',0],['Chaim: The diagram shows it all. Skip the words.',1]],
+          say:'Mistake Detective: who uses the diagram the right way?', how:'A good reader uses both parts. Each can tell something new.'}],
+      your:[
+        {type:'cloze', mis:true, t:'Moishe skipped the diagram, so he missed that the top of the beam is ___.', o:['squeezed','stretched','painted'], a:'squeezed',
+          say:'Pick the word that Label 1 gives.', how:'Top and bottom are different. Which label is about the top?',
+          why:{q:'Why did Moishe miss it?', o:['Only the diagram tells it','The words tell it twice','He read too slowly'], a:'Only the diagram tells it'}},
+        {type:'match', pairs:[['Tower','a tall post near each end'],['Hanger','a thin cable that holds up the road'],['Deck','the flat road cars drive on'],['Anchorage','a concrete block that holds the cable']],
+          say:'Match each label to what it tells.', how:'Picture the bridge from the side. Where is each part?'},
+        {type:'evidence', q:'Which line gives something ONLY the words tell?', p:['Words: Hundreds of thin hangers drop down from the main cables.','Words: The hangers hold up the road.','Diagram, Label 3: Hanger: a thin cable that holds up the road.','Diagram, Label 5: Anchorage: a huge block of concrete at each end.'], a:0, look:'a Words line no label matches',
+          say:'Tap the line that only the words give.', how:'Take each Words line. Does any label say it too?',
+          why:{q:'Why can\'t the diagram tell it?', o:['No label says how many hangers there are','The diagram has no hangers','Words are always longer'], a:'No label says how many hangers there are'}},
+        {type:'storymap', slots:['The words tell','The diagram adds'], cards:['why engineers choose suspension bridges','where each cable end is held tight'], extra:['what color the bridge is'],
+          say:'Fill the chart for the suspension bridge.', how:'Think back: which part gave a reason, and which part named a spot?'},
+        {type:'order', steps:['Read the title of the diagram.','Read each label and what it tells.','Follow the arrows.','Ask: what does it add to the words?'],
+          say:'Put the diagram steps in order.', how:'Know what the drawing is first. The big question comes last.'}] },
+    'READ.COMP.L05.25':{ band:'E45', pic:'🗺️', today:'Read a map with its key, compass and labels',
+      why:'A map in a text shows you where things are.',
+      ready:[{q:'A map shows...', o:['where places are','how a story ends','who wrote a book'], a:'where places are'},
+             {q:'On a map, N stands for...', o:['north','next','near'], a:'north'}],
+      bridge:'READ.COMP.L05.04', bridgeName:'Read the Picture',
+      watch:{ q:'Crossing the Bay', m:{type:'scene', e:'🗺️', t:'Key: ● town or place · ═ bridge. Map row: ● Sandy Point ═══ ● Kent Island'}, steps:[
+        {t:'First I read the key. ═ means a bridge.'},
+        {t:'Next I find N. It is at the top.'},
+        {t:'So right is east, and left is west.'},
+        {t:'The names tell me the places: Sandy Point, Kent Island.'},
+        {t:'Kent Island is on the right. It is east!'}],
+        a:'Kent Island is east of Sandy Point.' },
+      oops:{ q:'Moishe reads the Bay map.', wrong:'"Kent Island is on the right, so it is west."', right:'"N is at the top, so the right side is east."', why:'Do not guess left and right. Find N first.' },
+      ways:['worked example','map with key and compass','evidence tap','Mistake Detective','tap the reason','building knowledge: bridges','chavrusa'], done:'You can read a map in a text! Draw your chavrusa a map from the yeshiva to your house, with a key.',
+      board:{ one:'Symbols? Find their meaning under the title. Directions? Find N. Places? Read the names.', activity:'Map makers: pairs draw a map of the classroom with N at the top, a key of 4 symbols and names for 3 places, then swap and find each other\'s seats.', mistakes:['Guessing left and right without finding N','Mixing up a symbol with the name of one place','Skipping the key'] },
+      do:[
+        {type:'evidence', q:'Which line of the map card tells what ═ means?', p:['Compass rose: N is at the top, E on the right.','Key: ● town or place · ═ bridge · ~ water','● Sandy Point ═══ ● Kent Island','● Annapolis'], a:1, look:'the line that explains symbols',
+          say:'Tap the line that tells what each symbol means.', how:'One line pairs each mark with a word. Find it.',
+          why:{q:'Why read that line first?', o:['The key tells what each symbol means','It is the longest line','It names the towns'], a:'The key tells what each symbol means'}},
+        {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['Right is east when N is at the top.',0],['Left on a map is always east.',1],['A ● is a town. Its name tells which town.',0],['Every ● on the map is Baltimore.',1]],
+          say:'Mistake Detective: is each map reading right?', how:'Check each one against the compass rose and the key.'}],
+      your:[
+        {type:'cloze', mis:true, t:'N is at the top. Kent Island is on the right, so it is ___ of Sandy Point.', o:['east','west','north'], a:'east',
+          say:'Pick the direction that makes it true.', how:'Find N first. Then which side is the right side?',
+          why:{q:'How do you know?', o:['When N is at the top, right is east','Islands are always east','Kent Island is bigger'], a:'When N is at the top, right is east'}},
+        {type:'match', pairs:[['★','start'],['═','footbridge'],['~','stream'],['■','building']],
+          say:'Match each symbol on Avrumi\'s map to its meaning.', how:'Think back to the line that starts with "Key".'},
+        {type:'order', steps:['Start at the star by the yeshiva.','Walk along Glen Avenue to the bakery.','Take the park path north.','Cross the stream on the footbridge.'],
+          say:'Use Avrumi\'s map. Put Nosson\'s walk in order.', how:'Start at the star. End where the boys meet.'},
+        {type:'sort', bins:[KY, CR, LB], cards:[['What does ~ mean?',0],['Which side is west?',1],['What is the island called?',2],['What does ▲ mean?',0],['Which edge is south?',1]],
+          say:'Which map part answers each question?', how:'Does it ask what a mark means, which way, or a name?',
+          why:{q:'Why does "Which side is west?" go where it goes?', o:['It asks about a direction','It asks about a symbol','It asks for a name'], a:'It asks about a direction'}},
+        {type:'listen', q:'★ Yeshiva ▬ Glen Avenue ▬ ■ Bakery   (N is at the top)', hear:'Nosson walks from the star to the bakery. Which way does he walk?', o:['East','West','North','South'], a:'East',
+          say:'Listen. Which way does Nosson walk?', how:'Which end is the star on? Which end is the bakery on? Find N.'}] },
+    'READ.LIT.L05.08':{ band:'E45', pic:'🎧', today:'Compare a story on the page with the story heard',
+      why:'Then you can tell what a reader\'s voice does to a story.',
+      ready:[{q:'An exclamation mark ! tells your voice to...', o:['show a strong feeling','whisper','skip the line'], a:'show a strong feeling'},
+             {q:'A period at the end of a sentence tells your voice to...', o:['stop for a moment','shout','read faster'], a:'stop for a moment'}],
+      bridge:'READ.FLU.L05.04', bridgeName:'Punctuation Tells Your Voice',
+      watch:{ q:'The Bridge Test', m:{type:'scene', e:'🎧', t:'Page: "It\'s bending," Tzvi Hirsch whispered. Recording: his words come in a soft whisper.'}, steps:[
+        {t:'I hear one part of the recording.'},
+        {t:'I find the same part on the page.'},
+        {t:'The page says "whispered." The voice whispers.'},
+        {t:'So here the voice does just what the page says.'},
+        {t:'Drum music? The page never mentions music. That is new.'}],
+        a:'For each part, ask: does it follow, add, or leave out?' },
+      oops:{ q:'"Then came a loud CRACK!" The voice is loud.', wrong:'Mr. Halpern added a loud voice on his own.', right:'The loud voice does what the page says.', why:'The page itself says "loud". Check the page before you call something new.' },
+      ways:['listen and compare','worked example','evidence tap','Mistake Detective','tap the reason','repeated reading','chavrusa'], done:'You can compare a story read aloud with the page! Read "The Bridge Test" to your chavrusa. He listens for every voice clue.',
+      board:{ one:'Hear a part, find it on the page, compare: did the voice follow the page, add something, or skip something?', activity:'Radio play: pairs read "The Bridge Test" aloud, following every voice clue; the class lists each clue and how the readers used it.', mistakes:['Calling a voice "added" when the page asked for it','Calling every difference a mistake','Not noticing a sentence that was skipped'] },
+      do:[
+        {type:'sort', mis:true, bins:[FO, AD, LO], cards:[['Page: "whispered." Voice: a whisper.',0],['Page: no music. Recording: drums.',1],['Page: "Twenty washers. Thirty. Forty." Recording: not heard.',2],['Page: "a loud CRACK!" Voice: loud.',0]],
+          say:'Mistake Detective: check the page before you sort.', how:'For each card, did the page ask for it, not have it, or lose it?'},
+        {type:'listen', q:'Page: "The washers dropped in, one by one."', hear:'The washers dropped in.', o:['one by one','The washers','dropped in'], a:'one by one',
+          say:'Listen. What did the reader leave out?', how:'Read the page line. Listen again, word by word.',
+          why:{q:'How did you find it?', o:['I matched each word I heard to the page','The voice was loud','It was the first word'], a:'I matched each word I heard to the page'}}],
+      your:[
+        {type:'cloze', mis:true, t:'The page says "a loud CRACK!" A loud voice in the recording ___ the page.', o:['follows','adds to','leaves out'], a:'follows',
+          say:'Pick the word that makes the compare true.', how:'Read the page words. Did they ask for a big voice?',
+          why:{q:'Why not "adds to"?', o:['The page itself says loud','Loud is always added','The reader likes loud'], a:'The page itself says loud'}},
+        {type:'match', pairs:[['"whispered"','a soft, quiet voice'],['"a loud CRACK!"','a big, loud voice'],['"Clink. Clink. Clink."','a pause after each word'],['"nobody spoke"','a long silence']],
+          say:'Match each page clue to what the voice does.', how:'Each clue is a direction for the reader\'s voice.'},
+        {type:'listen', q:'Page: "Dovid held his breath."', hear:'Slowly, quietly, Dovid held his breath.', o:['Slowly, quietly','held his breath','Dovid'], a:'Slowly, quietly',
+          say:'Listen. What did the reader add?', how:'Read the page line. Which words did you hear that are not on it?',
+          why:{q:'How do you know they were added?', o:['Those words are not on the page','They were loud','They came at the end'], a:'Those words are not on the page'}},
+        {type:'evidence', q:'Which page sentence tells the reader to be silent for a while?', p:['Clink. Clink. Clink.','Every boy in the class leaned in close.','For a long moment, nobody spoke.','Then Dovid picked up the two halves and smiled.'], a:2, look:'a sentence about quiet',
+          say:'Tap the sentence that asks for silence.', how:'Which sentence tells you there was no sound?'},
+        {type:'order', steps:['Hear one part of the recording.','Find the same part on the page.','Compare the two.','Name it: follows, adds or leaves out.'],
+          say:'Put the compare steps in order.', how:'You cannot compare until you have both parts.'}] }
+  };
+
   if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
 })();
 </script>
