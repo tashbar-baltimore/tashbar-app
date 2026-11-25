@@ -21,3 +21,4 @@ The 14 existing Grade 6–8 lessons are inside these counts. None counts as buil
 
 ## Log
 - 2026-11-24 · Map written. Built: 0 hours.
+- 2026-11-25 · Helper (Grade 8, Units 8.5–8.8), file `src/CoreDataC68H2.html`: Unit 8.5 "Point of View and Irony". 4 new lessons (`READ.LIT.L09.09` 9, `READ.COMP.L09.14` 9, `READ.LIT.L09.10` 9, `READ.FLU.L09.02` 10), `READ.LIT.L09.01` rebuilt as a One Bite lesson (9), 2 texts (`C68.MYS.01` play 10, `C68.ARG.01` editorial and reply 15) and unit check `C68.U85` (10). Built: 81 min ≈ 1.4 h for Grade 8.
