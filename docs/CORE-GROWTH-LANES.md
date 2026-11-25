@@ -35,7 +35,7 @@ Job owners add pieces a second account can take. A helper claims a piece the sam
 | F | Grade 1 Units 7–12 (lessons and little readers) | TAKEN | https://claude.ai/code/session_01NmKrTjQd53TZ5L29Q6Ng5K | 2026-11-25 03:40 UTC: all games for Units 7–12 live (#416, 14 games; #429, 12 games; about 2.5 h for Grade 1). Left: little readers, which wait on a way for a K–1 boy to open a text on his games-only path |
 | F | K–1 listen-along stories (70, in topic sets) and their understanding lessons | TAKEN | https://claude.ai/code/session_01NmKrTm3jGfbvY1A8rzjhHV | 2026-11-24 19:45 UTC: claimed; reading F-map section 6 and the K–1 game path, then the first topic set |
 | F | Grade 2 Units 4–6 (lessons, word-study readers, Readers' Theatre) | OPEN | | |
-| C45 | Grade 5, Units 5.4–5.6 (lessons and topic-set texts; see `docs/core-growth/C45-map.md`) | OPEN | | |
+| C45 | Grade 5, Units 5.4–5.6 (lessons and topic-set texts; see `docs/core-growth/C45-map.md`) | TAKEN | https://claude.ai/code/session_01WBvMX2VjUdAxkDbzAAPJ2x | 2026-11-25 03:45 UTC: claimed; reading C45-map.md and what of 5.4 is already live, then building what is missing in `src/CoreDataC45H1.html` |
 | C45 | Grade 5, Units 5.7–5.9 | TAKEN | https://claude.ai/code/session_01884AzEWr482Hjj7zSABGE2 | 2026-11-24 20:30 UTC: claimed; reading C45-map.md (Units 5.7–5.9) and the live 5.1–5.4 lessons to match their pattern |
 | C45 | Books B2 *Lost on the Ridge Trail* and B5 *Shabbos at the Lighthouse* (after B1 sets the pattern) | OPEN | | |
 | C45 | Fluency passages, Grades 4 and 5 (50, from the unit texts) | OPEN | | |
