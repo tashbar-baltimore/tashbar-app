@@ -1,0 +1,429 @@
+<script>
+/* CoreDataC45H1.html: Core Growth job C45, helper file 1 (Helpers list: "C45 · Grade 5, Units 5.4–5.6"). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataC45.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Teacher Time and One Bite follow.
+   Grade 5 Unit 5.6 "Whose story is it?" (point of view), topic set: The Great Baltimore Fire of 1904 (docs/core-growth/C45-map.md):
+   the narrator colors the story, same scene with another narrator, one event and many accounts, why accounts differ, Readers' Theatre.
+   Long texts: texts/C45/C45.FIRE.01-05 (a firefighter's speech fifty years later, the make-believe Messenger on the first morning,
+   a shopkeeper's letter two days later, how the city rebuilt, why the hoses did not fit), opened with the read and proof kinds.
+   Short lesson passages (under 300 words) go in PASS under c45f_ keys; each lesson teaches on one passage and checks on a cold one:
+   LIT.L06.12 bakery -> chess, LIT.L06.13 oven -> snow, COMP.L06.14 accounts -> blackout, COMP.L06.15 scroll -> dog,
+   FLU.L06.05 hoseplay -> trainplay. c45f_scroll quotes Book B4 ch. 3 and 4 exactly; nothing from the later chapters.
+   History (checked against the B4 chapter 3 facts): Sunday February 7, 1904, a downtown warehouse; wind; about thirty hours; more than
+   1,500 buildings; about 140 acres; out-of-town hoses that did not fit; dynamite; stopped at the Jones Falls; no one known to have died
+   in the fire itself; a national hose standard in 1905. Characters outside the Glen Avenue Crew (Captain Briggs, Moshe Kaplan,
+   Mr. Hoffman, Reuven, Mr. Friedman, Mr. Tanaka) are made up and are not new recurring cast. */
+(function () {
+  var P = {
+    c45f_bakery: { title: 'Friday at the Bakery (told by Tzvi Hirsch Gold)', text: 'Friday morning in my family\'s bakery is the best morning of the week, and nobody can change my mind. By seven o\'clock, the line of customers already reaches the door. The big ovens roar like happy lions. Trays of golden challah slide out one after another, and the whole store smells as if Shabbos came early. My job is the bags. I snap a bag open, slide in two challos and twist the top, faster than anyone in Baltimore. Old Mr. Hoffman complains every single week that the line is too slow. I don\'t mind him. I hand him a warm rugelach, and he smiles, just a tiny bit. At ten o\'clock the ovens finally go quiet. There is flour on my yarmulka, on my shoes, even in my ears, and my feet ache. But when I look at the empty shelves, I feel as if I built something.' },
+    c45f_chess: { title: 'My First Tournament (told by Binyamin Yusupov)', text: 'The tournament hall was as silent as a cave. Forty tables stood in long rows, and on each one a chessboard waited. At nine o\'clock, a man with a whistle read out the names. Mine was called last. My opponent was already sitting down: a tall boy from Philadelphia who looked as if he had never lost a game in his life. I shook his hand. Mine was cold. When the clock started, it ticked like a hammer on my head. I moved my first pawn, and my hand shook so much that I almost knocked over my own king. Then I remembered what Zeidy Yusupov always says: "The board does not know who is scared. Just look at the squares." I took a slow breath, and I looked at the squares.' },
+    c45f_oven: { title: 'The Bang on Friday Morning (one scene, two tellers)', text: 'TOLD BY TZVI HIRSCH: At six-thirty on Friday morning, the big oven made a terrible BANG and went cold. Disaster! Two hundred challos were waiting, and we had no oven. I was sure that Shabbos in half of Baltimore was ruined. And what did Abba do? He just stood there and looked at his watch. Why wasn\'t he running? Then he picked up the phone and talked very quietly, and I could not hear a word.\nTOLD BY MR. GOLD, HIS ABBA: At six-thirty on Friday morning, the belt inside the big oven snapped with a bang. I have heard that bang three times in twenty years. I knew the new belt was in the back closet, and I knew Reuven the repairman gets up early. I looked at my watch. If Reuven came by seven, we would lose only half an hour. I called him. Across the room, Tzvi Hirsch was as white as flour. I wanted to tell him not to worry, but the line of customers was watching, so I gave him a wink instead.' },
+    c45f_snow: { title: 'The Snow Day (one scene, two tellers)', text: 'TOLD BY DOVID: I woke up, and the whole world was white! The radio said our school was closed. A SNOW DAY! I ran to the window. The snow was up to the car tires, the most snow I had ever seen in my whole life. I put on two pairs of socks and ran to get Nosson for a snowball fight.\nTOLD BY NOSSON: When I woke up, there were about six inches of snow outside. The radio said that our school was closed. In Montreal, where I grew up, school would never close for six inches of snow. We would just put on our boots and walk. But Dovid was at my door in two minutes, jumping up and down, so I got my boots. It was nice to see Baltimore so excited about a little snow.' },
+    c45f_accounts: { title: 'Three Accounts of the Great Baltimore Fire, 1904', text: 'THE FIREFIGHTER (Captain Briggs, telling it fifty years later): "I pushed the end of the hose against the hydrant and began to turn it. It would not turn. Our captain stood up and said, \'It doesn\'t fit.\' We wrapped the joint with canvas and held it together with our hands."\nTHE NEWSPAPER (The Messenger, Monday morning, while the fire still burned): "Our reporter saw firemen from out of town standing beside their engines with their hoses in their hands, unable to use them. He was told the hoses did not fit our hydrants. We cannot yet say how many engines had this trouble."\nTHE SHOPKEEPER (Moshe Kaplan, in a letter two days later): "Shloimy and I took the pushcart and hurried to the shop. We filled it with bolts of cloth. When we turned around at the corner, the roof of the building across from my shop was on fire. That was the last time I saw my shop."' },
+    c45f_blackout: { title: 'Three Accounts of the Night the Lights Went Out', text: 'ELI\'S DIARY, Thursday night: The lights went out in the middle of supper! At first my little brothers yelled, but then Abba lit the candles we keep in the drawer, and it felt like a party. Ima kept the soup hot on the gas stove. We played word games by candlelight until we fell asleep.\nTHE POWER COMPANY\'S NOTICE, Friday morning: During Thursday\'s storm, a large tree branch fell onto a power line on Glen Avenue at 6:15 p.m. About 3,200 homes lost power. Our crews removed the branch and repaired the line. Power came back at 11:40 p.m.\nTHE SHUL\'S NEWSLETTER, the next week: Thank you to everyone who came to Maariv by flashlight on Thursday night! Thank you also to the families with generators who kept their neighbors\' food cold until the power came back.' },
+    c45f_scroll: { title: 'Two Accounts of the Sefer Torah (from The Map in Zeidy\'s Attic)', text: 'ACCOUNT 1, The Messenger newspaper, February 10, 1904, two days after the fire: "Among the many losses was a small Hebrew congregation which met in a room on the top floor of the Hollander building, German Street. Nothing remains of the room. Its members fear that their sacred scroll was lost in the flames."\nACCOUNT 2, the minute book of another shul, March 13, 1904, five weeks after the fire: "It was decided that the members of the Cap-Makers\' Minyan, whose room was burned in the great fire, may daven with us until they find a home of their own. Their holy sefer Torah, which the young man Mordechai Rosen carried out of the fire with his own hands, wrapped in his tallis, will rest in our aron kodesh."' },
+    c45f_dog: { title: 'Two Accounts of the Dog on Glen Avenue', text: 'ACCOUNT 1, an email from a neighbor, 8:05 in the morning: "Be careful on Glen Avenue! A huge dog is running loose near the corner. It barked at me and chased a squirrel up a tree. Keep your children inside until someone catches it!"\nACCOUNT 2, a note from the dog\'s owner, Mr. Tanaka, 6:00 in the evening: "Thank you, neighbors! Our dog, Max, slipped out of the yard this morning when the wind blew the gate open. He is big, but he is gentle and loves children. Yehuda Benaim and his Abba found him in the park at noon and walked him home. He is safe now."' },
+    c45f_hoseplay: { title: 'The Hose That Would Not Fit (a play for Readers\' Theatre)', text: 'NARRATOR: Baltimore, Sunday night, February 7, 1904. The fire has burned since morning.\nCAPTAIN (shouting over the roar): Joe! Hook up the hose. Fast!\nJOE (pushing hard, then stopping): Captain... it won\'t turn.\nCAPTAIN: Let me try. (He pulls, then slowly stands up.) It doesn\'t fit. Our hose doesn\'t fit their hydrant.\nJOE (quietly): Then what do we do?\nCAPTAIN (firmly): We don\'t give up. Get the canvas. Wrap the joint, and hold it with both hands.\nNARRATOR: Water sprays everywhere. But some of it reaches the engine.\nJOE (laughing, soaking wet): Captain! The water\'s coming through!\nNARRATOR: Hours later, a baker pulls up in a wagon.\nMR. FRIEDMAN (kindly): Hot coffee and fresh bread, boys. No, no, put away your money.\nJOE (holding the warm bread in his cold hands): Thank you, sir.\nCAPTAIN: Rest five minutes, Joe. Then back to the hose.' },
+    c45f_trainplay: { title: 'The Last Train Home (a play for Readers\' Theatre)', text: 'NARRATOR: A Friday afternoon in winter. The crew is downtown, and Shabbos starts at 4:45.\nDOVID (looking at his watch): It\'s four o\'clock. The last train home leaves in six minutes!\nTZVI HIRSCH: Six minutes? Then why are we standing here? Run!\nNARRATOR: The boys race down the long platform.\nNOSSON (out of breath): I see it... the doors are closing...\nBINYAMIN (calling out): Please, wait for us!\nNARRATOR: The conductor holds the door open.\nTZVI HIRSCH (laughing and puffing): We made it! We made it!\nDOVID (sitting down slowly): Next time, we leave early.' }
+  };
+  try { if (typeof PASS !== 'undefined') Object.keys(P).forEach(function (k) { if (!PASS[k]) PASS[k] = P[k]; }); } catch (e) {}
+
+  var LESSONS = {
+    'READ.LIT.L06.12':{name:'The Narrator Colors It',
+      teach:[
+        {p:'c45f_bakery', q:'Who is telling this story?', o:['Tzvi Hirsch, who works in the bakery', 'Mr. Hoffman, a customer', 'Someone who is not in the story'], how:'Look for "I" and "my." Who is the "I"?'},
+        {p:'c45f_bakery', q:'How does Tzvi Hirsch feel about Friday at the bakery?', o:['He loves it', 'He is bored by it', 'He is afraid of it'], how:'Find the words he chooses for the ovens, the smell and his job. Are they happy words or sad words?'},
+        {p:'c45f_bakery', q:'"The big ovens roar like happy lions." Is that a fact anyone could see, or Tzvi Hirsch\'s coloring?', o:['His coloring: it shows how he feels', 'A fact anyone could see', 'Something Mr. Hoffman said'], how:'Would every person in the bakery describe the ovens this way?'}
+      ],
+      practice:[
+        {t:'sort', p:'c45f_bakery', q:'Fact anyone could see, or the narrator\'s coloring?', bins:[{id:'f', label:'A fact anyone could see'}, {id:'c', label:'The narrator\'s coloring'}],
+          items:[{label:'By seven o\'clock, the line reaches the door.', bin:'f'}, {label:'At ten o\'clock the ovens go quiet.', bin:'f'}, {label:'The best morning of the week', bin:'c'}, {label:'The ovens roar like happy lions.', bin:'c'}, {label:'faster than anyone in Baltimore', bin:'c'}],
+          h:'Could a camera show it? Then it is a fact. Does it show his feelings? Then it is coloring.', how:'A fact is what anyone in the room would see. Coloring is the narrator\'s feelings mixed into the words.'},
+        {t:'pairs', p:'c45f_bakery', q:'Match each colored phrase to what it shows about Tzvi Hirsch.', pairs:[['"roar like happy lions"', 'He finds the noise exciting'], ['"faster than anyone in Baltimore"', 'He is proud of his job'], ['"I feel as if I built something"', 'He feels his work matters'], ['"I don\'t mind him"', 'He is patient with Mr. Hoffman']],
+          h:'Ask: why would he choose these words?', how:'The words a narrator picks show what he feels and thinks.'},
+        {t:'spotall', p:'c45f_bakery', q:'Tap every phrase that shows Tzvi Hirsch loves Friday.', cells:[{label:'the best morning of the week', ok:true}, {label:'smells as if Shabbos came early', ok:true}, {label:'I feel as if I built something', ok:true}, {label:'my feet ache', ok:false}, {label:'Mr. Hoffman complains', ok:false}],
+          h:'Find the happy, proud words.', how:'Some details are not about loving it, like aching feet. Tap only the ones that show love.'},
+        {t:'sort', p:'c45f_bakery', q:'Mistake Detective. Fair reading, or a mistake?', bins:[{id:'r', label:'Fair reading'}, {id:'m', label:'Mistake: trusts the coloring as fact'}],
+          items:[{label:'Tzvi Hirsch loves Friday at the bakery.', bin:'r'}, {label:'Tzvi Hirsch is proud of how fast he bags.', bin:'r'}, {label:'Tzvi Hirsch is the fastest bagger in Baltimore.', bin:'m'}, {label:'Friday is the best morning of the week for everyone.', bin:'m'}],
+          h:'Is it about what he FEELS, or does it treat his feeling as a fact for everyone?', how:'A narrator\'s view is true about him, not about the whole world.'},
+        {t:'pairs', p:'c45f_bakery', q:'How would a tired, grumpy narrator tell the same facts? Match.', pairs:[['The ovens are loud.', 'The ovens bang and clatter.'], ['The line reaches the door.', 'The line crawls like a snail.'], ['There is flour on my shoes.', 'Flour gets all over everything.']],
+          h:'Same fact, grumpier words.', how:'Change the narrator, and the same fact gets new colors.'},
+        {t:'order', p:'c45f_bakery', q:'Put the steps for reading a narrator\'s view in order.', tiles:['Find out who is telling.', 'Find his colored words.', 'Ask what they show he feels.', 'Ask what the plain facts are.'],
+          h:'Start with "who," end with the plain facts.', how:'First the teller, then his words, then his feeling, then the facts under the feeling.'}
+      ],
+      check:[
+        {p:'c45f_chess', q:'How does Binyamin feel at the start of the tournament?', o:['Nervous and scared', 'Bored and sleepy', 'Proud and happy', 'Angry at his Zeidy']},
+        {p:'c45f_chess', q:'"The clock ticked like a hammer on my head." What is that?', o:['The narrator\'s coloring', 'A fact anyone could see', 'Something the tall boy said']},
+        {p:'c45f_chess', q:'Binyamin says the tall boy "looked as if he had never lost a game." What is that?', o:['His view, not a fact', 'A fact about the tall boy', 'A rule of the tournament']}
+      ],
+      re:[
+        {p:'c45f_bakery', q:'A narrator\'s colored words show...', o:['how he feels and what he thinks', 'only the facts', 'what everyone thinks'], how:'Whose feelings are in the words?'},
+        {p:'c45f_bakery', q:'A narrator says, "My hands shook, and my mouth went dry." He feels...', o:['nervous and scared', 'bored and sleepy', 'proud and happy'], how:'What do shaking hands and a dry mouth show?'},
+        {p:'c45f_bakery', q:'If a narrator says "the best morning of the week," that shows...', o:['his view, not a fact for everyone', 'a fact for everyone', 'a mistake in the story'], how:'Would everyone agree?'}
+      ]},
+    'READ.LIT.L06.13':{name:'Same Scene, Another Teller',
+      teach:[
+        {p:'c45f_oven', q:'What is the SAME in both tellings?', o:['The oven banged at six-thirty', 'How worried each one felt', 'What each one knew'], how:'Find the facts that both tellers say.'},
+        {p:'c45f_oven', q:'Why is Abba calm when the oven bangs?', o:['He knows what broke and how to fix it', 'He does not care about the challos', 'He did not hear the bang'], how:'Read what Abba knows that Tzvi Hirsch does not.'},
+        {p:'c45f_oven', q:'Why can\'t Tzvi Hirsch tell us about the belt in the closet?', o:['He cannot see inside Abba\'s thoughts', 'He was not in the bakery', 'He does not like Abba'], how:'A narrator can only tell what he sees, hears and thinks.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45f_oven', q:'Same in both tellings, or different?', bins:[{id:'s', label:'Same in both'}, {id:'d', label:'Different'}],
+          items:[{label:'The oven banged at six-thirty.', bin:'s'}, {label:'Abba looked at his watch.', bin:'s'}, {label:'Whether it was a disaster', bin:'d'}, {label:'Why the oven stopped', bin:'d'}],
+          h:'Facts stay. Feelings and knowing change.', how:'When the teller changes, the facts stay. What he feels and knows can change.'},
+        {t:'pairs', p:'c45f_oven', q:'Who would say it? Match.', pairs:[['"Disaster!"', 'Tzvi Hirsch, who does not know the fix'], ['"I have heard that bang before."', 'Abba, who has fixed it before'], ['"Why wasn\'t he running?"', 'Tzvi Hirsch, who cannot see Abba\'s plan']],
+          h:'Who knows the plan? Who does not?', how:'Each teller says what fits what he knows and feels.'},
+        {t:'pairs', p:'c45f_oven', q:'Match what Abba does to the real reason.', pairs:[['He looks at his watch.', 'He is counting the minutes until Reuven comes.'], ['He talks quietly on the phone.', 'He is calling the repairman.'], ['He winks.', 'He is telling his son not to worry.']],
+          h:'Read Abba\'s telling to see the reason for each action.', how:'The second teller explains what the first teller could not see.'},
+        {t:'sort', p:'c45f_oven', q:'Mistake Detective. Right, or a mistake?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Abba was calm because he knew the fix.', bin:'r'}, {label:'Tzvi Hirsch panicked because he did not know the plan.', bin:'r'}, {label:'A new teller means the oven did not really bang.', bin:'m'}, {label:'Abba was calm because he did not care.', bin:'m'}],
+          h:'The facts stay. The view changes.', how:'A new teller changes the feelings and what we learn, not what happened.'},
+        {t:'spotall', p:'c45f_oven', q:'Tap every detail only Abba could tell.', cells:[{label:'the belt snapped', ok:true}, {label:'I have heard that bang three times', ok:true}, {label:'the new belt was in the back closet', ok:true}, {label:'the oven made a bang', ok:false}, {label:'it was six-thirty', ok:false}],
+          h:'Which details live in Abba\'s head or his experience?', how:'Both tellers heard the bang. Only Abba knew the cause and the plan.'},
+        {t:'order', p:'c45f_oven', q:'Put the events in the order they really happened.', tiles:['The oven bangs at six-thirty.', 'Abba looks at his watch.', 'Abba calls Reuven.', 'Abba winks at Tzvi Hirsch.'],
+          h:'Use both tellings to build one timeline.', how:'Two tellers, one set of events. Put the events in order.'}
+      ],
+      check:[
+        {p:'c45f_snow', q:'Why do Dovid and Nosson tell the snow day so differently?', o:['They know different things', 'They saw different snow days', 'One of them is lying']},
+        {p:'c45f_snow', q:'"The radio said our school was closed." Is that the same in both tellings, or different?', o:['Same in both', 'Different', 'In neither telling']},
+        {p:'c45f_snow', q:'Only Nosson says, "In Montreal, school would never close for six inches of snow." Why can only he tell it?', o:['It is his own memory', 'Dovid did not hear the radio', 'It is a fact anyone could see']}
+      ],
+      re:[
+        {p:'c45f_oven', q:'When a new narrator tells the same scene, the facts...', o:['stay the same', 'all change', 'disappear'], how:'Did the oven still bang?'},
+        {p:'c45f_oven', q:'A narrator can only tell...', o:['what he sees, hears, knows and feels', 'what everyone is thinking', 'what happens in other cities'], how:'Can Tzvi Hirsch see inside Abba\'s head?'},
+        {p:'c45f_oven', q:'Two tellers can feel differently about one scene because they...', o:['They know different things', 'They saw different scenes', 'They both made mistakes'], how:'What did Abba know that his son did not?'}
+      ]},
+    'READ.COMP.L06.14':{name:'One Event, Many Accounts',
+      teach:[
+        {p:'c45f_accounts', q:'What do all three accounts tell about?', o:['The Great Baltimore Fire of 1904', 'A new bakery', 'A train trip'], how:'Read the title and the first words of each account.'},
+        {p:'c45f_accounts', q:'Which account was told by someone who turned the hose himself?', o:['The firefighter', 'The newspaper', 'The shopkeeper'], how:'Look for "I" and the hose.'},
+        {p:'c45f_accounts', q:'The newspaper also tells about the hoses. How did the reporter know?', o:['He was told by others', 'He turned the hose himself', 'He read it fifty years later'], how:'Find the words "He was told."'}
+      ],
+      practice:[
+        {t:'pairs', p:'c45f_accounts', q:'Match each account to where its writer was.', pairs:[['The firefighter', 'At the hydrant, with the hose'], ['The newspaper', 'In the crowds, asking and watching'], ['The shopkeeper', 'At his shop, with a pushcart']],
+          h:'Where was each writer standing?', how:'Each writer tells what he could see from where he was.'},
+        {t:'sort', p:'c45f_accounts', q:'Firsthand or secondhand?', bins:[{id:'f', label:'Firsthand: he was there and saw it'}, {id:'s', label:'Secondhand: he heard or read it'}],
+          items:[{label:'"I pushed the end of the hose against the hydrant."', bin:'f'}, {label:'"That was the last time I saw my shop."', bin:'f'}, {label:'"He was told the hoses did not fit our hydrants."', bin:'s'}],
+          h:'Did the writer do or see it himself?', how:'Firsthand uses I and we. Secondhand says what others told.'},
+        {t:'sort', p:'c45f_accounts', q:'What do the accounts share, and what is only in one?', bins:[{id:'b', label:'In two or more accounts'}, {id:'o', label:'Only in one account'}],
+          items:[{label:'The hoses did not fit.', bin:'b'}, {label:'The fire was in Baltimore in 1904.', bin:'b'}, {label:'A pushcart full of cloth', bin:'o'}, {label:'Canvas wrapped around the joint', bin:'o'}],
+          h:'Check each account for the detail.', how:'Similar details show what the accounts agree on. Details in only one show that writer\'s view.'},
+        {t:'sort', p:'c45f_accounts', q:'Mistake Detective. Right, or a mistake?', bins:[{id:'r', label:'Right'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Each writer tells most about what he cared about.', bin:'r'}, {label:'Two accounts agree the hoses did not fit.', bin:'r'}, {label:'The accounts differ, so one writer is lying.', bin:'m'}, {label:'Only the firefighter tells about the hoses.', bin:'m'}],
+          h:'Check each claim against all three accounts.', how:'Different does not mean lying. Each writer saw a different part.'},
+        {t:'order', p:'c45f_accounts', q:'Put the steps for comparing accounts in order.', tiles:['Find what event they all tell about.', 'Find who wrote each one and where he was.', 'Find what they agree on.', 'Find what is different, and why.'],
+          h:'Start with the event. End with the differences.', how:'Same event first, then the writers, then same, then different.'},
+        {t:'pairs', p:'c45f_accounts', q:'Match each account to what its writer cared about most.', pairs:[['The firefighter', 'Getting water on the fire'], ['The newspaper', 'Telling the whole city the news'], ['The shopkeeper', 'Saving his cloth and his shop']],
+          h:'What does each writer tell the most about?', how:'What a writer cares about shapes what he tells.'}
+      ],
+      check:[
+        {p:'c45f_blackout', q:'Eli\'s diary says the lights went out. The power company says so too. What does that show?', o:['Two accounts agree', 'One of them is lying', 'They tell about different nights']},
+        {p:'c45f_blackout', q:'The power company notice gives exact times and the cause. Why could it?', o:['It was written later, with time to check', 'Its writer was at Eli\'s supper', 'It was written in the middle of the storm']},
+        {p:'c45f_blackout', q:'Eli\'s diary tells most about candles and games. Why?', o:['Each writer tells most about what he cared about', 'Eli works for the power company', 'Eli wrote it a year later']}
+      ],
+      re:[
+        {p:'c45f_accounts', q:'A firsthand account is written by...', o:['someone who was there', 'someone who heard about it later', 'someone who made it up'], how:'Who saw it with his own eyes?'},
+        {p:'c45f_accounts', q:'When two accounts tell different details, it often means...', o:['each writer saw a different part', 'one is lying', 'they are about different events'], how:'Where was each writer standing?'},
+        {p:'c45f_accounts', q:'To compare accounts, first find...', o:['the event they all tell about', 'the longest account', 'the hardest word'], how:'What is the same topic?'}
+      ]},
+    'READ.COMP.L06.15':{name:'Why Accounts Differ',
+      teach:[
+        {p:'c45f_scroll', q:'The two accounts disagree. About what?', o:['Whether the sefer Torah was saved', 'Where the fire was', 'What year it was'], how:'Find what the newspaper fears and what the minute book says.'},
+        {p:'c45f_scroll', q:'When was each account written?', o:['The newspaper two days after; the minute book five weeks after', 'Both on the same day', 'The minute book first'], how:'Look at the date at the start of each account.'},
+        {p:'c45f_scroll', q:'Why did the minute book know more?', o:['It was written later, by a shul that took the minyan in', 'It was longer', 'It was a newspaper'], how:'Who wrote it, and when?'}
+      ],
+      practice:[
+        {t:'pairs', p:'c45f_scroll', q:'Match each question to the newspaper\'s answer.', pairs:[['Who wrote it?', 'A reporter who did not know the minyan'], ['When?', 'Two days after, while the city still smoked'], ['Why?', 'To tell the city the news fast']],
+          h:'Read the newspaper account again.', how:'Ask four questions about any account: who, where, when and why.'},
+        {t:'sort', p:'c45f_scroll', q:'Which reason explains each difference?', bins:[{id:'w', label:'When it was written'}, {id:'h', label:'Who wrote it'}],
+          items:[{label:'Two days after the fire, nobody knew yet.', bin:'w'}, {label:'Five weeks later, the shul knew the truth.', bin:'w'}, {label:'A reporter did not know the minyan.', bin:'h'}, {label:'The shul took the minyan in.', bin:'h'}],
+          h:'Is the reason about time, or about the person?', how:'Accounts differ because of who wrote them, where they were, when, and why.'},
+        {t:'sort', p:'c45f_scroll', q:'Mistake Detective. Good reason, or a mistake?', bins:[{id:'g', label:'Good reason they differ'}, {id:'m', label:'Mistake'}],
+          items:[{label:'The newspaper was written before the shul learned the truth.', bin:'g'}, {label:'The shul knew its own neighbors and their sefer Torah.', bin:'g'}, {label:'Old newspapers always lie.', bin:'m'}, {label:'The longer account is always right.', bin:'m'}],
+          h:'Does the reason explain WHY they knew different things?', how:'Look for who, where, when and why. Length and age do not decide.'},
+        {t:'order', p:'c45f_scroll', q:'Put these events in time order.', tiles:['The fire burns, February 7 and 8, 1904.', 'The Messenger prints its page, February 10.', 'The minute book records the sefer Torah, March 13.', 'Yehuda reads both, more than 100 years later.'],
+          h:'Follow the dates.', how:'An account written later can know more of the story.'},
+        {t:'pairs', p:'c45f_scroll', q:'Match each writer to why he wrote.', pairs:[['The reporter', 'To tell the city the news fast'], ['The shul\'s secretary', 'To record what the shul decided'], ['Moshe Kaplan', 'To tell his brother the family is safe']],
+          h:'What job did each writing do?', how:'Why someone writes shapes what he puts in.'},
+        {t:'spotall', p:'c45f_scroll', q:'Tap every clue that the newspaper was not sure.', cells:[{label:'fear', ok:true}, {label:'two days after the fire', ok:true}, {label:'Hollander building', ok:false}, {label:'German Street', ok:false}],
+          h:'Which words show guessing, or too little time?', how:'A word like "fear" means the writer is not sure. An early date means the story was not over.'}
+      ],
+      check:[
+        {p:'c45f_dog', q:'The email was written at 8:05, while the dog was still loose. So the email probably knows...', o:['the least', 'the most', 'the ending']},
+        {p:'c45f_dog', q:'Mr. Tanaka wrote at 6:00, after Max was safe at home. Which question best explains why he knew more?', o:['When he wrote it', 'How long his note is', 'What color his paper was']},
+        {p:'c45f_dog', q:'The 8:05 email calls Max "huge" and says to keep children inside. Which question best explains why?', o:['Who wrote it', 'How long it is', 'Where the email was sent']}
+      ],
+      re:[
+        {p:'c45f_scroll', q:'An account written while the event is still happening often knows...', o:['the least', 'the most', 'the ending'], how:'Was the story over yet?'},
+        {p:'c45f_scroll', q:'Four questions to ask about any account are...', o:['who, where, when and why', 'how long, how old, how big', 'red, blue, green'], how:'Think of the writer and his place and time.'},
+        {p:'c45f_scroll', q:'When two accounts disagree, a good reader...', o:['asks who knew more, and why', 'picks the longer one', 'says both are lying'], how:'Who was closer to the truth?'}
+      ]},
+    'READ.FLU.L06.05':{name:'Readers\' Theatre: Your Part',
+      teach:[
+        {p:'c45f_hoseplay', q:'You are JOE. Which words do you read aloud?', o:['it won\'t turn.', '(pushing hard, then stopping)', 'CAPTAIN'], how:'Words in parentheses are stage directions. They tell you how, but you do not say them.'},
+        {p:'c45f_hoseplay', q:'The Captain\'s first line says (shouting over the roar). How should it sound?', o:['Loud and urgent', 'Soft and sleepy', 'Slow and sad'], how:'The stage direction tells your voice what to do.'},
+        {p:'c45f_hoseplay', q:'"Captain... it won\'t turn." What do the three dots tell your voice?', o:['Stop for a moment, then go on', 'Shout the next word', 'Read it as a question'], how:'Three dots mean a break: he stops, then goes on.'}
+      ],
+      practice:[
+        {t:'sort', p:'c45f_hoseplay', q:'Read it aloud, or a stage direction you do not say?', bins:[{id:'r', label:'Read it aloud'}, {id:'d', label:'Stage direction: do not say it'}],
+          items:[{label:'Then what do we do?', bin:'r'}, {label:'We don\'t give up.', bin:'r'}, {label:'(laughing, soaking wet)', bin:'d'}, {label:'(He pulls, then slowly stands up.)', bin:'d'}],
+          h:'Words in parentheses are for your eyes, not your voice.', how:'Stage directions sit in parentheses. They tell you how to say a line.'},
+        {t:'pairs', p:'c45f_hoseplay', q:'Match each sign to what your voice does.', pairs:[['!', 'Strong and excited'], ['?', 'Goes up at the end'], ['...', 'Breaks off, then goes on'], ['(quietly)', 'Soft and low']],
+          h:'Which sign means a question? Which means a break?', how:'Marks and directions are signals for your voice.'},
+        {t:'sort', p:'c45f_hoseplay', q:'Mistake Detective. Good Readers\' Theatre, or a mistake?', bins:[{id:'g', label:'Good reading'}, {id:'m', label:'Mistake'}],
+          items:[{label:'Starts his line right after the line before', bin:'g'}, {label:'Follows along while others read', bin:'g'}, {label:'Reads "(shouting over the roar)" out loud', bin:'m'}, {label:'Reads every line flat, like a list', bin:'m'}],
+          h:'Would the audience understand and enjoy it?', how:'Say only the lines, with the feeling the direction gives, right on time.'},
+        {t:'order', p:'c45f_hoseplay', q:'Put the steps for getting ready to read your part in order.', tiles:['Find every line with your name.', 'Read the stage directions for your lines.', 'Practice each line with the right feeling.', 'Read the whole play with your group.'],
+          h:'First find your lines, last read with the group.', how:'Know your lines, know how to say them, practice, then read together.'},
+        {t:'pairs', p:'c45f_hoseplay', q:'Match each line to the feeling it needs.', pairs:[['"Joe! Hook up the hose. Fast!"', 'Urgent'], ['"Then what do we do?"', 'Worried and quiet'], ['"Captain! The water\'s coming through!"', 'Happy and excited']],
+          h:'Look at the directions and the marks.', how:'The scene and the marks tell you the feeling.'},
+        {t:'spotall', p:'c45f_hoseplay', q:'You are the CAPTAIN. Tap every line that is yours.', cells:[{label:'Joe! Hook up the hose. Fast!', ok:true}, {label:'We don\'t give up.', ok:true}, {label:'Rest five minutes, Joe.', ok:true}, {label:'Then what do we do?', ok:false}, {label:'Thank you, sir.', ok:false}],
+          h:'Find the name CAPTAIN before each line.', how:'Your name in capitals comes right before your line.'}
+      ],
+      check:[
+        {p:'c45f_trainplay', q:'In Dovid\'s first line, what is "(looking at his watch)"?', o:['Stage direction: do not say it', 'A line Dovid says aloud', 'The name of the play']},
+        {p:'c45f_trainplay', q:'TZVI HIRSCH (laughing and puffing): "We made it! We made it!" How should it sound?', o:['Happy and excited', 'Worried and quiet', 'Soft and low']},
+        {p:'c45f_trainplay', q:'NOSSON (out of breath): "I see it... the doors are closing..." What do the three dots tell your voice?', o:['Breaks off, then goes on', 'Goes up at the end', 'Strong and excited']}
+      ],
+      re:[
+        {p:'c45f_hoseplay', q:'Words in parentheses in a play are...', o:['stage directions you do not say', 'the most important lines', 'the title'], how:'Are they said by a character?'},
+        {p:'c45f_hoseplay', q:'Your name in capitals tells you...', o:['the next line is yours', 'you are the narrator', 'to stop reading'], how:'Look before each line.'},
+        {p:'c45f_hoseplay', q:'A good Readers\' Theatre reader...', o:['says his line on time, with feeling', 'reads the directions out loud', 'reads every line the same way'], how:'Think of the audience.'}
+      ]}
+  };
+
+  var TEACH = {
+    'READ.LIT.L06.12':{
+      hook:'Two boys can walk into the same room. One says "What a mess!" and one says "What fun!" The room did not change. The teller did.',
+      big:'A narrator who tells his own story colors it with his feelings. His word choices show how he sees things. A good reader enjoys the colors, and still sorts the plain facts from the narrator\'s view.',
+      intro:['Find out who is telling: look for "I" and "my."', 'Find the colored words: comparisons, big feelings, words like "best" and "worst."', 'Ask what those words show about how the narrator feels.', 'Ask what the plain facts are, the things anyone there could see.'],
+      ex:[{q:'"The big ovens roar like happy lions."', steps:['Who says it? Tzvi Hirsch, who loves the bakery.', 'The plain fact: the ovens are loud.', '"Happy lions" is his coloring: he finds the noise exciting.'], a:'The narrator\'s view: he loves the noise'},
+          {q:'"I snap a bag open... faster than anyone in Baltimore."', steps:['The plain fact: he bags challos quickly.', '"Faster than anyone in Baltimore" is a boast.', 'It shows he is proud, not that it is true.'], a:'The narrator\'s view: he is proud'}],
+      oops:{q:'"Friday is the best morning of the week." What can we learn?', wrong:'Friday is the best morning of the week.', right:'Tzvi Hirsch loves Fridays at the bakery.', why:'That is the narrator\'s view. It tells us about him, not about everyone.'},
+      idea:['A narrator is like a pair of colored glasses. Everything you see comes through his color.'],
+      try:{q:'"My little brother\'s room is a jungle of toys." What does this coloring show?', o:['The narrator thinks the room is very messy', 'Real animals live in the room', 'Nothing at all'], a:'The narrator thinks the room is very messy', steps:['Find the comparison.', 'Ask what feeling or view it gives.']}
+    },
+    'READ.LIT.L06.13':{
+      hook:'Ask two people at the same wedding what happened. You will hear two different stories, and both can be true.',
+      big:'When a different narrator tells the same scene, the facts stay the same, but what he notices, what he knows and how he feels can change. Comparing two tellers shows you more than either one alone.',
+      intro:['Find the facts both tellers share.', 'Find what each one feels.', 'Find what each one knows that the other does not.', 'Put them together: what really happened, and why each told it his way.'],
+      ex:[{q:'The oven bangs. Tzvi Hirsch tells it.', steps:['He hears a BANG and the oven goes cold.', 'He does not know why, or how to fix it.', 'So he tells it as a disaster.'], a:'Panic, because he does not know the plan'},
+          {q:'The oven bangs. Abba tells it.', steps:['He knows the belt snapped; it happened before.', 'He knows the new belt is in the closet.', 'So he tells it calmly and counts the minutes.'], a:'Calm, because he knows the fix'}],
+      oops:{q:'Abba tells the same scene very differently. What does that mean?', wrong:'The oven did not really bang.', right:'The bang was real. Abba knew more, so he felt calm.', why:'A new teller changes the view, not the facts.'},
+      idea:['A story is like a room with many windows. Each narrator looks through a different window.'],
+      try:{q:'Which sentence could only Abba tell?', o:['"I knew the new belt was in the back closet."', '"The oven made a bang."', '"It was Friday morning."'], a:'"I knew the new belt was in the back closet."', steps:['Who could see it or know it?', 'Is it a thought inside one person?']}
+    },
+    'READ.COMP.L06.14':{
+      hook:'One fire. Thousands of people saw it. Every one of them could tell you a different story about that night.',
+      big:'An account is one person\'s telling of an event. Different accounts of the same event agree on the big facts but tell different details, because each writer was in a different place, saw a different part and cared about different things. A firsthand account comes from someone who was there; a secondhand account comes from someone who heard or read about it.',
+      intro:['Name the event that all the accounts tell about.', 'For each account, ask: who wrote it, and where was he?', 'Find what the accounts agree on.', 'Find what is different, and explain it by the writer\'s place and point of view.'],
+      ex:[{q:'The firefighter and the newspaper both tell about the hoses.', steps:['Both say the hoses did not fit.', 'The firefighter turned the hose himself: firsthand.', 'The reporter "was told": secondhand.'], a:'They agree, but one saw it and one heard it'},
+          {q:'The shopkeeper never mentions hoses.', steps:['He was at his shop, not at a hydrant.', 'He cared most about his cloth and his family.', 'So he tells about the pushcart and the shop.'], a:'He tells the part he saw and cared about'}],
+      oops:{q:'The three accounts tell different details. What does that show?', wrong:'Two of the writers must be lying.', right:'Each writer saw and cared about a different part.', why:'Different is not the same as false. Check where each writer was.'},
+      idea:['Accounts are like puzzle pieces. Each one shows part of the picture. Put them together to see more.'],
+      try:{q:'The coach\'s report gives the final score. A player\'s diary tells how nervous he was. Why do they differ?', o:['Each writer cared about a different part', 'One of them is wrong', 'They are about different games'], a:'Each writer cared about a different part', steps:['Where was each writer?', 'What did each one care about?']}
+    },
+    'READ.COMP.L06.15':{
+      hook:'In The Map in Zeidy\'s Attic, a newspaper says the sefer Torah burned. A shul\'s book says it was saved. Who do you believe?',
+      big:'Accounts of the same event differ for reasons: who wrote it, where he was, when he wrote it, and why he wrote it. An account written while the event is still happening knows the least. A writer close to the people involved may know more. Ask these four questions before you decide what to believe.',
+      intro:['Find where the accounts disagree.', 'Ask four questions of each one: who, where, when and why.', 'Decide which writer was in a better place to know.', 'Explain the difference in your own words, with "because."'],
+      ex:[{q:'The Messenger, February 10, 1904', steps:['Who: a reporter who did not know the minyan.', 'When: two days after; the city was still smoking.', 'Its own word "fear" shows it was not sure.'], a:'It knew the least, because it was written first'},
+          {q:'The minute book, March 13, 1904', steps:['Who: another shul that took the minyan in.', 'When: five weeks later.', 'It names the young man who carried the sefer Torah.'], a:'It knew more, because of who wrote it and when'}],
+      oops:{q:'The newspaper and the minute book disagree. Why?', wrong:'Old newspapers always lie.', right:'The newspaper was written before the shul learned the truth the truth.', why:'Do not judge by age or length. Ask who, where, when and why.'},
+      idea:['An account is a photo taken at one moment from one spot. Move the camera or wait an hour, and the picture changes.'],
+      try:{q:'At recess, a boy says the class trip is canceled. That night, the principal\'s letter says it moved to Tuesday. Why do they differ?', o:['The boy heard a rumor early; the principal knew later', 'The letter is longer', 'Trips change by themselves'], a:'The boy heard a rumor early; the principal knew later', steps:['Who knew more?', 'Which one came later?']}
+    },
+    'READ.FLU.L06.05':{
+      hook:'In Readers\' Theatre, nobody has costumes. Your voice is the costume.',
+      big:'Readers\' Theatre is reading a play aloud in parts. A good reader finds his lines by his name, does not read the stage directions aloud but lets them guide his voice, reads with the feeling the scene needs, and comes in right on time after the line before.',
+      intro:['Find every line with your name in capitals.', 'Read the stage directions in parentheses. Do not say them; let them tell your voice how.', 'Look at the marks: ! is strong, ? goes up, ... breaks off.', 'Practice your lines, then read the whole play with your group, coming in right on time.'],
+      ex:[{q:'CAPTAIN (shouting over the roar): Joe! Hook up the hose. Fast!', steps:['My name is CAPTAIN, so this line is mine.', 'I do not say "(shouting over the roar)."', 'It tells me: loud and urgent. The ! says strong.'], a:'"Joe! Hook up the hose. Fast!" said loud and urgent'},
+          {q:'JOE (pushing hard, then stopping): Captain... it won\'t turn.', steps:['My name is JOE.', 'The direction says he stops, so I slow down.', 'The three dots: I break off, then say "it won\'t turn" quietly.'], a:'"Captain... it won\'t turn," slow and worried'}],
+      oops:{q:'JOE (quietly): Then what do we do?', wrong:'"Quietly, then what do we do?"', right:'"Then what do we do?" said softly, voice going up.', why:'Directions are for your eyes. Only the line is for your voice.'},
+      idea:['Stage directions are like notes on sheet music. The musician does not sing the notes; he plays them.'],
+      try:{q:'MR. FRIEDMAN (kindly): Hot coffee and fresh bread, boys. How do you read it?', o:['Warm and kind', 'Angry and loud', 'You say "kindly" too'], a:'Warm and kind', steps:['Read the direction.', 'Do not say it; let it lead your voice.']}
+    }
+  };
+
+  var HOWTO = {};
+
+  var BITE = {
+    'READ.LIT.L06.12':{ band:'E45', pic:'🥖', today:'See how the narrator colors the story',
+      why:'When you see the narrator\'s colors, you know what he feels and what really happened.',
+      ready:[{q:'A story told with "I" and "my" is told in...', o:['first person','third person','a play'], a:'first person'},
+             {q:'"I was scared." Who is scared?', o:['the narrator','the reader','every person in the story'], a:'the narrator'}],
+      bridge:'READ.LIT.L05.02', bridgeName:'Who\'s Telling?',
+      watch:{ q:'Friday at the Bakery (told by Tzvi Hirsch)', m:{type:'scene', e:'🥖', t:'Erev Shabbos at the Gold family bakery. The line reaches the door.'}, steps:[
+        {t:'Who is telling? Tzvi Hirsch. He says "I" and "my."'},
+        {t:'He says: "The big ovens roar like happy lions."'},
+        {t:'Plain fact: the ovens are loud.'},
+        {t:'His color: "happy lions." He loves the noise.'},
+        {t:'"Faster than anyone in Baltimore" is a boast, not a fact.'}],
+        a:'The narrator\'s words show his feelings. Sort them from the plain facts.' },
+      oops:{ q:'"Friday is the best morning of the week." What do we learn?', wrong:'Friday is the best morning for everyone.', right:'Tzvi Hirsch loves Fridays at the bakery.', why:'That is his view. It tells us about him.' },
+      ways:['worked example','fact or coloring sort','Mistake Detective','tap the reason','real reading (a letter from 1904)','retrieval'], done:'You can see how a narrator colors a story! Tell your chavrusa one colored phrase from Moshe Kaplan\'s letter.',
+      board:{ one:'A first-person narrator colors the story with his feelings. Enjoy the colors, and sort them from the plain facts.', activity:'Two highlighters: pairs read a first-person paragraph, mark plain facts in yellow and the narrator\'s coloring in pink, then say what the pink shows he feels.', mistakes:['Taking the narrator\'s boast as a fact','Missing the feeling hidden in a comparison','Thinking the narrator speaks for everyone'] },
+      do:[
+        {type:'sort', bins:['A fact anyone could see','The narrator\'s coloring'], cards:[['By seven, the line reaches the door.',0],['At ten, the ovens go quiet.',0],['The best morning of the week',1],['Ovens roar like happy lions.',1]],
+          say:'Fact anyone could see, or Tzvi Hirsch\'s coloring?', how:'Could a camera show it? Fact. Does it show his feeling? Coloring.',
+          why:{q:'Why is "happy lions" coloring?', o:['It shows how he feels about the noise','It tells the time','Real lions are in the bakery'], a:'It shows how he feels about the noise'}},
+        {type:'read', text:'C45.FIRE.03',
+          say:'Read Moshe Kaplan\'s letter from 1904.', how:'Moshe is the narrator. Notice the words that show his feelings.'}],
+      your:[
+        {type:'sort', mis:true, bins:['Fair reading','Mistake: trusts the coloring'], cards:[['Tzvi Hirsch loves Friday at the bakery.',0],['He is proud of how fast he bags.',0],['He is the fastest bagger in Baltimore.',1],['Friday is the best morning for everyone.',1]],
+          say:'Mistake Detective: fair reading, or trusting the coloring?', how:'His view is true about him, not about the whole world.'},
+        {type:'cloze', t:'Moshe writes, "Our neighbors have been like family." His words show that he feels ___.', o:['thankful','angry','bored'], a:'thankful',
+          say:'Fill the gap: how does Moshe feel about his neighbors?', how:'Think of how you feel about family who helps you.',
+          why:{q:'Which detail backs it up?', o:['Neighbors brought soup and kept his cloth dry','His shop burned','He wrote on Wednesday'], a:'Neighbors brought soup and kept his cloth dry'}},
+        {type:'match', pairs:[['"nothing left but ashes and four black walls"','He is heartbroken about his shop'],['"I was not afraid. Fires happen."','At first he is calm'],['"With Hashem\'s help, we will build too"','He has hope for the future']],
+          say:'Match each of Moshe\'s phrases to what it shows.', how:'Ask: why would Moshe pick these words?'},
+        {type:'proof', text:'C45.FIRE.03', q:'Find the sentence where Moshe\'s fear turns to relief at the Falls.', proof:'what it was like to see it stop', look:'how Moshe felt when the fire stopped',
+          say:'Open the letter. Tap where Moshe feels relief.', how:'Go to the part about the Falls. Find his feeling when the fire stopped.'},
+        {type:'listen', q:'Challenge: Mr. Hoffman tells it: "The line crawled like a snail, as always."', hear:'How does Mr. Hoffman feel about the line?', o:['Impatient','Delighted','Sleepy'], a:'Impatient',
+          say:'Challenge! How does Mr. Hoffman feel about the line?', how:'Listen for the comparison. What feeling does "a snail" give?',
+          why:{q:'Which words show it?', o:['"crawled like a snail"','"the line"','"Mr. Hoffman tells it"'], a:'"crawled like a snail"'}}] },
+    'READ.LIT.L06.13':{ band:'E45', pic:'🔔', today:'Compare the same scene told by another narrator',
+      why:'One scene from two narrators shows you more than either one alone.',
+      ready:[{q:'A narrator\'s colored words show...', o:['how he feels','only the facts','what everyone thinks'], a:'how he feels'},
+             {q:'Can a narrator tell what is inside another person\'s head?', o:['No, only his own thoughts','Yes, always','Only on Friday'], a:'No, only his own thoughts'}],
+      bridge:'READ.LIT.L06.12', bridgeName:'The Narrator Colors It',
+      watch:{ q:'The Bang on Friday Morning (one scene, two tellers)', m:{type:'scene', e:'🔔', t:'Six-thirty on Friday. The big oven bangs and goes cold.'}, steps:[
+        {t:'Tzvi Hirsch tells it: BANG! Disaster! Why isn\'t Abba running?'},
+        {t:'Abba tells it: the belt snapped. I have heard that bang before.'},
+        {t:'Same facts: the bang, the watch, the phone call.'},
+        {t:'Different: Abba knows the fix, so he is calm.'},
+        {t:'Tzvi Hirsch cannot see Abba\'s plan, so he panics.'}],
+        a:'A new narrator keeps the facts but changes what we see and feel.' },
+      oops:{ q:'Abba tells it calmly. What does that mean?', wrong:'The oven did not really bang.', right:'The bang was real. Abba knew the fix.', why:'A new teller changes the view, not the facts.' },
+      ways:['two-teller table','worked example','Mistake Detective','tap the reason','retrieval','challenge round'], done:'You can compare two tellers of one scene! Tell your chavrusa a scene from home from someone else\'s eyes.',
+      board:{ one:'Same scene, another narrator: the facts stay, but what he notices, knows and feels changes.', activity:'Swap the teller: pairs act out a short scene, then each one writes two sentences of it from his own character\'s eyes, and the class finds what stayed the same.', mistakes:['Thinking a new teller changes what happened','Thinking the calm teller does not care','Forgetting that a narrator cannot see inside another person\'s head'] },
+      do:[
+        {type:'sort', bins:['Same in both','Different'], cards:[['The oven banged at six-thirty.',0],['Abba looked at his watch.',0],['Whether it was a disaster',1],['Why the oven stopped',1]],
+          say:'Same in both tellings, or different?', how:'Facts stay. Feelings and knowing change.',
+          why:{q:'Why is "why the oven stopped" different?', o:['Only Abba knew about the belt','Tzvi Hirsch was not there','The oven stopped twice'], a:'Only Abba knew about the belt'}},
+        {type:'storymap', slots:['Tzvi Hirsch feels','Abba feels','Tzvi Hirsch knows','Abba knows'], cards:['Panic','Calm','Only that it banged','The new belt is in the closet'], extra:['Bored'],
+          say:'Fill in the two-teller table.', how:'For each teller: how does he feel, and what does he know?'}],
+      your:[
+        {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['Abba was calm because he knew the fix.',0],['Tzvi Hirsch panicked; he did not know the plan.',0],['A new teller means the oven never banged.',1],['Abba was calm because he did not care.',1]],
+          say:'Mistake Detective: right, or a mistake?', how:'The facts stay. The view changes.'},
+        {type:'evidence', q:'Tap every sentence only Abba could tell.', p:['The big oven made a terrible BANG and went cold.','He just stood there and looked at his watch.','The belt inside the big oven snapped.','I knew the new belt was in the back closet.','I could not hear a word.'], a:[2,3], look:'what only Abba knew',
+          say:'Tap every sentence only Abba could tell.', how:'Both heard the bang. Who knew why, and what was in the closet?',
+          why:{q:'Why only Abba?', o:['It is his own memory and plan','It is the longest sentence','It happened at night'], a:'It is his own memory and plan'}},
+        {type:'cloze', t:'Tzvi Hirsch could not tell us about the belt, because he could not see inside Abba\'s ___.', o:['head','watch','car'], a:'head',
+          say:'Fill the gap: why couldn\'t Tzvi Hirsch tell about the belt?', how:'A narrator tells what he sees, hears, knows and feels.'},
+        {type:'match', pairs:[['Abba looks at his watch.','He counts the minutes until the repairman comes.'],['Abba talks quietly on the phone.','He is calling the repairman.'],['Abba winks.','He tells his son not to worry.']],
+          say:'Match what Abba does to the real reason.', how:'Read Abba\'s telling to find the reason for each action.'},
+        {type:'listen', q:'Challenge: Reuven tells it: "Gold called at six-thirty-five. The belt again. I could fix it with my eyes closed."', hear:'How does Reuven see the problem?', o:['Easy to fix','A disaster','A mystery'], a:'Easy to fix',
+          say:'Challenge! How does Reuven the repairman see it?', how:'Listen to his words: "with my eyes closed."',
+          why:{q:'Why does he feel that way?', o:['He has fixed that belt before','He was not told about it','He likes challah'], a:'He has fixed that belt before'}}] },
+    'READ.COMP.L06.14':{ band:'E45', pic:'🔥', today:'Compare many accounts of one event',
+      why:'Each account shows one piece. Put the pieces together and you see the whole event.',
+      ready:[{q:'An account is...', o:['one person\'s telling of an event','a list of numbers','a made-up fairy tale'], a:'one person\'s telling of an event'},
+             {q:'Two texts on one topic can be...', o:['built and told in different ways','only told one way','never compared'], a:'built and told in different ways'}],
+      bridge:'READ.COMP.L06.13', bridgeName:'Built Two Ways',
+      watch:{ q:'Three Accounts of the Great Fire', m:{type:'scene', e:'🔥', t:'Baltimore, February 1904: a firefighter, a reporter and a shopkeeper each tell the fire.'}, steps:[
+        {t:'One event: the Great Baltimore Fire of 1904.'},
+        {t:'The firefighter turned the hose himself: firsthand.'},
+        {t:'The reporter "was told" about the hoses: secondhand.'},
+        {t:'Both agree: the hoses did not fit.'},
+        {t:'Shopkeeper: "We filled it with bolts of cloth... That was the last time I saw my shop."'}],
+        a:'Accounts agree on the big facts. Each writer adds the part he saw and cared about.' },
+      oops:{ q:'The accounts tell different details. What does that show?', wrong:'Two of the writers must be lying.', right:'Each writer saw a different part.', why:'Different is not false. Check where each writer was.' },
+      ways:['real reading (a firefighter\'s speech)','three-account table','worked example','Mistake Detective','tap the reason','topic set (the 1904 fire)'], done:'You can compare accounts of one event! Tell your chavrusa which account of the fire you trust most, and why.',
+      board:{ one:'Many accounts, one event. Find what they agree on, then explain each difference by who wrote it, where he was and what he cared about.', activity:'Eyewitness circle: three boys watch a short scene from three spots in the room, each writes two sentences, and the class finds what all three agree on and why the rest differs.', mistakes:['Thinking different accounts mean someone is lying','Mixing up firsthand and secondhand','Comparing details without naming the event first'] },
+      do:[
+        {type:'read', text:'C45.FIRE.01',
+          say:'Read Captain Briggs\'s account of the fire.', how:'Ask: where was he standing, and what did he see himself?'},
+        {type:'storymap', slots:['The firefighter tells most about','The reporter tells most about','The shopkeeper tells most about'], cards:['His own fight at the hydrant','What other people told him','Saving his cloth'], extra:['The new sewers'],
+          say:'Fill in the three-account table.', how:'Each writer tells most about the part he saw and cared about.'}],
+      your:[
+        {type:'sort', mis:true, bins:['Right','Mistake'], cards:[['Each writer tells most about what he cared about.',0],['Two accounts agree the hoses did not fit.',0],['The accounts differ, so someone is lying.',1],['Only the firefighter tells about the hoses.',1]],
+          say:'Mistake Detective: right, or a mistake?', how:'Different does not mean lying. Each writer saw a different part.'},
+        {type:'proof', text:'C45.FIRE.02', q:'Find the sentence that shows the reporter only heard about the hoses.', proof:'He was told the hoses did not fit', look:'how the reporter learned about the hoses',
+          say:'Open the newspaper. Tap how the reporter learned it.', how:'Find the part about firemen from out of town.'},
+        {type:'match', pairs:[['The firefighter','At the hydrant, with the hose'],['The reporter','In the crowds, asking people'],['The shopkeeper','At his shop, with a pushcart']],
+          say:'Match each writer to where he was.', how:'Each writer tells what he could see from where he stood.'},
+        {type:'cloze', t:'Captain Briggs saw the hose problem himself, so his account is ___.', o:['firsthand','secondhand','made up'], a:'firsthand',
+          say:'Fill the gap: what kind of account is the Captain\'s?', how:'Was he there, doing it himself?',
+          why:{q:'Which words prove it?', o:['"I pushed the end of the hose"','"He was told"','"People are saying"'], a:'"I pushed the end of the hose"'}},
+        {type:'listen', q:'Challenge: a city report, written months later, lists every street that burned.', hear:'What does this account add that the others do not?', o:['Exact facts for the whole city','How one family felt','A firefighter\'s cold hands'], a:'Exact facts for the whole city',
+          say:'Challenge! What does the city report add?', how:'Think of who wrote it, and how much time they had.',
+          why:{q:'Why could it list every street?', o:['It was written later, with time to check','The writer saw every street at once','It was written on the first night'], a:'It was written later, with time to check'}}] },
+    'READ.COMP.L06.15':{ band:'E45', pic:'📜', today:'Explain why accounts of one event differ',
+      why:'When two accounts disagree, the four questions help you find the truth.',
+      ready:[{q:'A firsthand account comes from...', o:['someone who was there','someone who heard about it','a made-up story'], a:'someone who was there'},
+             {q:'Two accounts of one event usually agree on...', o:['the big facts','every small detail','nothing at all'], a:'the big facts'}],
+      bridge:'READ.COMP.L06.14', bridgeName:'One Event, Many Accounts',
+      watch:{ q:'Two Accounts of the Sefer Torah', m:{type:'scene', e:'📜', t:'The Messenger says the scroll was lost. The shul\'s minute book says it was saved.'}, steps:[
+        {t:'They disagree: lost, or saved?'},
+        {t:'Ask who, where, when and why about each one.'},
+        {t:'The newspaper: a reporter, two days after, the city still smoking.'},
+        {t:'The minute book: a shul that took the minyan in, five weeks later.'},
+        {t:'Its own word "fear" shows the newspaper was not sure.'}],
+        a:'The newspaper knew the least, because it was written first, by someone farther away.' },
+      oops:{ q:'Why do the newspaper and the minute book disagree?', wrong:'Old newspapers always lie.', right:'The newspaper was written before the shul learned the truth.', why:'Ask who, where, when and why. Age and length do not decide.' },
+      ways:['real reading (the first-morning newspaper)','four-question table','Mistake Detective','sentence combining','tap the reason','retrieval'], done:'You can explain why accounts differ! Tell your chavrusa who, where, when and why about a news story you heard.',
+      board:{ one:'Accounts differ because of who wrote them, where they were, when they wrote, and why. The first account often knows the least.', activity:'Four-question table: groups get two accounts of one school event (one from that morning, one from a week later) and fill in who, where, when and why for each, then decide which knew more.', mistakes:['Deciding by length or by age','Calling the early account a liar','Forgetting to ask when it was written'] },
+      do:[
+        {type:'read', text:'C45.FIRE.02',
+          say:'Read the Messenger from the first morning of the fire.', how:'The fire is still burning. Notice what the reporter does not know yet.'},
+        {type:'storymap', slots:['Who wrote it','Where he was','When','How sure'], cards:['A reporter for the city paper','At the edges of the fire','While the fire still burned','Not sure: "not all of them can be true"'], extra:['A man who carried the scroll'],
+          say:'Fill in the table for this Messenger page.', how:'Think of the page you just read: who, where, when, and how sure?',
+          why:{q:'Why does "not all of them can be true" matter?', o:['It shows the writer was not sure','It is a scary sentence','It is the last line'], a:'It shows the writer was not sure'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Good reason they differ','Mistake'], cards:[['The newspaper was written before the shul learned the truth.',0],['The shul knew its own neighbors.',0],['Old newspapers always lie.',1],['The longer account is always right.',1]],
+          say:'Mistake Detective: good reason, or a mistake?', how:'Does it explain WHY they knew different things?'},
+        {type:'order', steps:['The fire burns, February 7 and 8.','The Messenger prints its page, February 10.','The minute book records the scroll, March 13.','Yehuda reads both, many years later.'],
+          say:'Put these events in time order.', how:'Follow the dates. Later accounts can know more.'},
+        {type:'proof', text:'C45.FIRE.02', q:'Find the sentence where the reporter warns that some stories may be false.', proof:'not all of them can be true', look:'the reporter warning about stories in the crowd',
+          say:'Open the newspaper. Tap the reporter\'s warning.', how:'Look in the part about stories passing through the crowds.'},
+        {type:'combine', a:'The Messenger feared the scroll was lost.', b:'The reporter wrote before the shul learned the truth.', o:['because','but','so'], j:'because',
+          say:'Join the two sentences to explain the difference.', how:'The second sentence gives the reason. Which word means "for this reason"?',
+          why:{q:'Why "because"?', o:['The second part tells the reason','It is the shortest word','It starts a question'], a:'The second part tells the reason'}},
+        {type:'listen', q:'Challenge: in 1950, a man wrote, "I was six when the fire came. The sky was red all night."', hear:'What should a reader keep in mind?', o:['He was little, and it was long ago','He must be wrong about everything','He was a reporter'], a:'He was little, and it was long ago',
+          say:'Challenge! What should you keep in mind about this account?', how:'Ask who wrote it and when.',
+          why:{q:'Which of the four questions helps here?', o:['When he wrote it, and how old he was','Why the sky is red','Where the paper was printed'], a:'When he wrote it, and how old he was'}}] },
+    'READ.FLU.L06.05':{ band:'E45', pic:'🎭', today:'Read your part in Readers\' Theatre',
+      why:'In a play read aloud, your voice is the costume. Read it right, and the scene comes alive.',
+      ready:[{q:'In a story, words inside quotation marks are...', o:['what someone says','the title','the narrator\'s thoughts'], a:'what someone says'},
+             {q:'"Help!" with an exclamation mark should sound...', o:['strong','sleepy','like a question'], a:'strong'}],
+      bridge:'READ.FLU.L06.02', bridgeName:'Who Is Talking?',
+      watch:{ q:'The Hose That Would Not Fit (a play)', m:{type:'scene', e:'🎭', t:'Sunday night, February 1904. A captain and a young fireman at a hydrant.'}, steps:[
+        {t:'CAPTAIN (shouting over the roar): "Joe! Hook up the hose. Fast!"'},
+        {t:'CAPTAIN in capitals: this line belongs to the Captain.'},
+        {t:'Parentheses: a stage direction. Do not say it.'},
+        {t:'It tells your voice: loud and urgent.'},
+        {t:'The ! at the end: strong. Come in right on time.'}],
+        a:'Say only your line, with the feeling the direction and the marks give.' },
+      oops:{ q:'JOE (quietly): Then what do we do?', wrong:'"Quietly, then what do we do?"', right:'"Then what do we do?" said softly, voice up.', why:'Directions are for your eyes, not your voice.' },
+      ways:['Readers\' Theatre','worked example','Mistake Detective','tap the reason','repeated reading','chavrusa reading'], done:'You can read your part in Readers\' Theatre! Read the hose play with your chavrusa: one is the Captain, one is Joe.',
+      board:{ one:'Find your lines by your name. Do not say the stage directions; let them guide your voice. Read with feeling, and come in on time.', activity:'Readers\' Theatre: groups of four read the hose play three times, switching parts, and the listeners hold up a card when a reader uses the direction well.', mistakes:['Reading the stage directions out loud','Reading every line flat','Coming in late because he was not following along'] },
+      do:[
+        {type:'sort', bins:['Read it aloud','Stage direction: do not say it'], cards:[['Then what do we do?',0],['We don\'t give up.',0],['(laughing, soaking wet)',1],['(He pulls, then slowly stands up.)',1]],
+          say:'Read it aloud, or a stage direction?', how:'Words in parentheses are for your eyes, not your voice.',
+          why:{q:'Why not say "(laughing, soaking wet)"?', o:['It tells how to say the line','It is too long','Joe is not in the play'], a:'It tells how to say the line'}},
+        {type:'evidence', q:'You are JOE. Tap every line you say aloud.', p:['CAPTAIN (shouting over the roar): Joe! Hook up the hose. Fast!','JOE (pushing hard, then stopping): Captain... it won\'t turn.','CAPTAIN: Let me try.','JOE (quietly): Then what do we do?','NARRATOR: Water sprays everywhere.','JOE (laughing, soaking wet): Captain! The water\'s coming through!'], a:[1,3,5], look:'the name JOE before the line',
+          say:'You are Joe. Tap every line that is yours.', how:'Find JOE in capitals before each line.',
+          why:{q:'Why not the NARRATOR line?', o:['It belongs to the narrator','It is too short','It has no stage direction'], a:'It belongs to the narrator'}}],
+      your:[
+        {type:'sort', mis:true, bins:['Good reading','Mistake'], cards:[['Starts his line right after the line before',0],['Follows along while others read',0],['Reads "(shouting over the roar)" out loud',1],['Reads every line flat, like a list',1]],
+          say:'Mistake Detective: good Readers\' Theatre, or a mistake?', how:'Would the audience understand and enjoy it?'},
+        {type:'match', pairs:[['!','Strong and excited'],['?','Goes up at the end'],['...','Breaks off, then goes on'],['(quietly)','Soft and low']],
+          say:'Match each sign to what your voice does.', how:'Marks and directions are signals for your voice.'},
+        {type:'order', steps:['Find every line with your name.','Read the stage directions for your lines.','Practice each line with the right feeling.','Read the whole play with your group.','Read it again, smoother each time.'],
+          say:'Put the steps for getting your part ready in order.', how:'Find your lines, learn how to say them, then read together.',
+          why:{q:'Why read it again at the end?', o:['Each time, it gets smoother','To finish faster','To skip the hard lines'], a:'Each time, it gets smoother'}},
+        {type:'evidence', q:'Which line needs the MOST excitement?', p:['NARRATOR: Hours later, a baker pulls up in a wagon.','JOE (laughing, soaking wet): Captain! The water\'s coming through!','CAPTAIN: Rest five minutes, Joe.'], a:1, look:'the happy moment, with a direction and an exclamation mark',
+          say:'Tap the line that needs the most excitement.', how:'Look for the direction and the marks that show joy.'},
+        {type:'listen', q:'CAPTAIN: Rest five minutes, Joe. Then back to the hose.', hear:'There is no direction. How should the Captain sound?', o:['Kind but firm','Panicked','Silly'], a:'Kind but firm',
+          say:'No direction here. How should the Captain sound?', how:'Think of the scene: Joe is cold and tired, and the fire still burns.',
+          why:{q:'Which clue tells you?', o:['He gives a rest, then says "back to the hose"','The word "five"','The name Joe'], a:'He gives a rest, then says "back to the hose"'}}] }
+  };
+
+  if (window.TLCORE) TLCORE.add('C45', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'C45.U56', title: 'Whose Story Is It?', c: 'READ', grade: 5,
+    skills: ['READ.LIT.L06.12', 'READ.LIT.L06.13', 'READ.COMP.L06.14', 'READ.COMP.L06.15', 'READ.FLU.L06.05'],
+    review: ['READ.COMP.L06.13', 'READ.LIT.L06.08', 'READ.COMP.L06.08'], n: 10 });
+})();
+</script>

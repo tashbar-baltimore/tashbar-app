@@ -31,7 +31,10 @@ Share of the 90 core hours (proposal): comprehension and fluency ≈ 35 h (this 
 | 2026-11-24 | #392 (live) | Unit 4.4 "How it happened" (Weather and storms): 4 small skill lessons (READ.COMP.L05.14–.16, READ.FLU.L05.04): signal words, process, organizers, punctuation voice; 12 weather passages | 32 | 0 |
 | 2026-11-24 | #425 (live) | Unit 4.5 "Reading coach": 5 small skill lessons (READ.COMP.L05.17–.21): predict, question, clarify, summarize, all four together; 10 new passages | 42 | 0 |
 | 2026-11-24 | (next PR) | Unit 5.5 "How texts are built" (moon and space): 4 small skill lessons (READ.COMP.L06.13, READ.LIT.L06.10–.11, READ.FLU.L06.04): compare structures, a chapter in the whole book, stanzas and scenes, poetry aloud; 10 new passages | 0 | 32 |
-| | | **Running total** | **194 / 2,095** | **176 / 2,169** |
+| 2026-11-25 | (helper, this PR) | Unit 5.6 "Whose story is it?" (Great Baltimore Fire of 1904): 5 small skill lessons (READ.LIT.L06.12–.13, READ.COMP.L06.14–.15, READ.FLU.L06.05): the narrator colors it, same scene from another teller, one event and many accounts, why accounts differ, Readers' Theatre; 10 short passages | 0 | 42 |
+| 2026-11-25 | (helper, this PR) | Fire topic set, 5 articles in `texts/C45/C45.FIRE.01–05` (3,266 words): 3 read in full inside the lessons above with proof questions (60 min); 2 reached by proof questions only, not yet counted | 0 | 60 |
+| 2026-11-25 | (helper, this PR) | Unit check C45.U56 (boss level) and its test-out pre-check | 0 | 16 |
+| | | **Running total** | **194 / 2,095** | **294 / 2,169** |
 
 **Written, not yet counted** (a boy cannot open them until job T's Reader activity is in a lesson): Book B1 *The Missing Esrog*, 10 chapters, 8,346 words (planned 200 min, Grade 4); the Deserts topic set, 5 articles, about 2,800 words (planned 100 min, Grade 4); Book B4 *The Map in Zeidy's Attic*, chapters 1–6 of 12, about 7,500 words (planned 120 of 240 min, Grade 5). All in `texts/C45/`.
 
