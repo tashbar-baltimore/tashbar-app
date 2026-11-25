@@ -59,5 +59,13 @@ CORE_SKILLS.C45 = [
   ["READ.LIT.L05.32", "Ridge Trail 3: Count the Seconds", "Read Chapter 3 and explain the steps the boys took, and why", { std: "RI.4.3", file: "CoreDataC45H3", min: 20 }],
   ["READ.LIT.L06.30", "Lighthouse 1: The Light on Iron Legs", "Read Chapter 1 and find two big ideas and the details that prove them", { after: "READ.FLU.L06.03", std: "RI.5.2", file: "CoreDataC45H3", min: 20 }],
   ["READ.LIT.L06.31", "Lighthouse 2: The Bay's Own Schedule", "Read Chapter 2 and link each idea to the one it leads to", { std: "RI.5.3", file: "CoreDataC45H3", min: 20 }],
-  ["READ.LIT.L06.32", "Lighthouse 3: Erev Shabbos at Sea", "Read Chapter 3 and explain why, using the text's own details", { std: "RI.5.3", file: "CoreDataC45H3", min: 20 }]
+  ["READ.LIT.L06.32", "Lighthouse 3: Erev Shabbos at Sea", "Read Chapter 3 and explain why, using the text's own details", { std: "RI.5.3", file: "CoreDataC45H3", min: 20 }],
+  ["READ.LIT.L05.33", "Ridge Trail 4: What We Have", "Read Chapter 4, predict what comes next with clues, then check", { after: "READ.COMP.L05.21", std: "RL.4.1", file: "CoreDataC45H32", min: 20 }],
+  ["READ.LIT.L05.34", "Ridge Trail 5: The Longest Night", "Read Chapter 5 and ask thin and thick questions as you read", { std: "RL.4.1", file: "CoreDataC45H32", min: 20 }],
+  ["READ.LIT.L05.35", "Ridge Trail 6: Signals", "Read Chapter 6 and fix the parts that confuse you: reread, read on, word parts", { std: "RF.4.4c", file: "CoreDataC45H32", min: 20 }],
+  ["READ.LIT.L05.36", "Ridge Trail 7: The Hum in the Sky", "Read Chapter 7 and sum it up: not too long, not too short", { std: "RL.4.2", file: "CoreDataC45H32", min: 20 }],
+  ["READ.LIT.L06.33", "Lighthouse 4: A Lighthouse Shabbos", "Read Chapter 4 and see what job it does in the whole book", { after: "READ.FLU.L06.04", std: "RL.5.5", file: "CoreDataC45H32", min: 20 }],
+  ["READ.LIT.L06.34", "Lighthouse 5: The Dark Light", "Read Chapter 5 and see how its scenes fit together", { std: "RL.5.5", file: "CoreDataC45H32", min: 20 }],
+  ["READ.LIT.L06.35", "Lighthouse 6: Green Light on the Water", "Read Chapter 6 and see how the author builds suspense", { std: "RL.5.5", file: "CoreDataC45H32", min: 20 }],
+  ["READ.LIT.L06.36", "Lighthouse 7: The Keeper's Log", "Read Chapter 7 and compare how a log and a story are built", { std: "RI.5.5", file: "CoreDataC45H32", min: 20 }]
 ];
