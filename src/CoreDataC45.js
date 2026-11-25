@@ -53,5 +53,11 @@ CORE_SKILLS.C45 = [
   ["READ.LIT.L06.12", "The Narrator's View", "See how a narrator's view colors the story", { after: "READ.FLU.L06.04", std: "RL.5.6", file: "CoreDataC4512", min: 8 }],
   ["READ.LIT.L06.13", "Same Scene, Another Narrator", "Tell how a scene changes with another narrator", { std: "RL.5.6", file: "CoreDataC4512", min: 8 }],
   ["READ.COMP.L06.14", "One Event, Many Accounts", "Compare several accounts of one event", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }],
-  ["READ.COMP.L06.15", "Why Accounts Differ", "Explain why accounts differ: who wrote it, what he saw, and why", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }]
+  ["READ.COMP.L06.15", "Why Accounts Differ", "Explain why accounts differ: who wrote it, what he saw, and why", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.LIT.L05.30", "Ridge Trail 1: Twenty Blue Marks", "Read Chapter 1 and follow how one thing causes the next", { after: "READ.FLU.L05.04", std: "RL.4.3", file: "CoreDataC45H3", min: 20 }],
+  ["READ.LIT.L05.31", "Ridge Trail 2: The Anvil Cloud", "Read Chapter 2 and put the events in order, with the choice that led to each", { std: "RL.4.3", file: "CoreDataC45H3", min: 20 }],
+  ["READ.LIT.L05.32", "Ridge Trail 3: Count the Seconds", "Read Chapter 3 and explain the steps the boys took, and why", { std: "RI.4.3", file: "CoreDataC45H3", min: 20 }],
+  ["READ.LIT.L06.30", "Lighthouse 1: The Light on Iron Legs", "Read Chapter 1 and find two big ideas and the details that prove them", { after: "READ.FLU.L06.03", std: "RI.5.2", file: "CoreDataC45H3", min: 20 }],
+  ["READ.LIT.L06.31", "Lighthouse 2: The Bay's Own Schedule", "Read Chapter 2 and link each idea to the one it leads to", { std: "RI.5.3", file: "CoreDataC45H3", min: 20 }],
+  ["READ.LIT.L06.32", "Lighthouse 3: Erev Shabbos at Sea", "Read Chapter 3 and explain why, using the text's own details", { std: "RI.5.3", file: "CoreDataC45H3", min: 20 }]
 ];
