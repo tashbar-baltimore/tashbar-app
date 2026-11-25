@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Equal parts: page to print</title>
+<!-- The paper page for rung FR1 "Equal parts" (Tashbar Math Ladder). Opened from the lesson's printer button.
+     The same skill as the lesson: equal parts are the same size (lay one on the other, or count the squares). -->
+<style>
+:root{ --ink:#1F2A44; --line:#C9D2DF; --choc:#8B5A2B; --cake:#E8B86B; --kugel:#EBC77D; --red:#D9534F; }
+*{ box-sizing:border-box; }
+body{ margin:0; background:#EEF1F5; color:var(--ink); font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+.tools{ display:flex; gap:12px; justify-content:center; padding:16px; flex-wrap:wrap; }
+.tools button,.tools a{ font:600 18px/1 system-ui,sans-serif; padding:14px 22px; border-radius:999px; border:0; cursor:pointer; text-decoration:none; color:#fff; background:#1E9E5A; box-shadow:0 4px 0 #157A45; }
+.tools a{ background:#fff; color:var(--ink); box-shadow:0 4px 0 #D8D1C2; }
+.page{ width:min(8.5in,100%); margin:0 auto 32px; background:#fff; padding:0.5in 0.55in; box-shadow:0 6px 24px rgba(0,0,0,.1); }
+header{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; border-bottom:3px solid var(--ink); padding-bottom:8px; flex-wrap:wrap; }
+h1{ margin:0; font-size:30px; }
+.name{ font-size:16px; white-space:nowrap; }
+.grown{ margin:12px 0 4px; padding:10px 14px; border:2px dashed #E3C770; border-radius:12px; background:#FFFBEA; font-size:14px; }
+.grown b{ text-transform:uppercase; letter-spacing:.05em; font-size:12px; color:#8A6400; }
+section{ margin-top:18px; break-inside:avoid; }
+h2{ font-size:19px; margin:0 0 8px; display:flex; gap:10px; align-items:center; }
+h2 .n{ display:inline-grid; place-items:center; width:30px; height:30px; border-radius:50%; background:var(--ink); color:#fff; font-size:16px; flex:none; }
+.row{ display:flex; flex-wrap:wrap; gap:18px 26px; align-items:flex-end; }
+.row figure{ margin:0; display:grid; justify-items:center; gap:4px; }
+.row figcaption{ font-size:13px; color:#5B6678; }
+.thumbs{ display:flex; gap:24px; align-items:center; }
+.thumbs svg{ width:54px; height:54px; }
+.fold{ display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+.box{ width:28px; height:28px; border:3px solid var(--ink); border-radius:6px; display:inline-block; vertical-align:middle; }
+@media print{ body{ background:#fff; } .tools{ display:none; } .page{ box-shadow:none; margin:0; width:auto; padding:0; } @page{ size:letter; margin:0.5in; } }
+@media (max-width:520px){ .page{ padding:20px 16px; } h1{ font-size:24px; } }
+</style>
+</head>
+<body>
+<div class="tools"><button id="go" type="button">Print this page</button><a href="equal-parts.html">Back to the lesson</a></div>
+<div class="page">
+  <header><h1>Equal parts</h1><div class="name">Name ____________________ &nbsp; Date __________</div></header>
+  <div class="grown"><b>For the grown-up</b><br>Equal parts are the same size. Your son can check two ways: lay one part on the other (do they match?), or count the squares in each part. Equal parts can look different and still be the same size.</div>
+
+  <section><h2><span class="n">1</span>Circle the ones cut into equal parts.</h2><div class="row" id="q1"></div></section>
+  <section><h2><span class="n">2</span>Draw one line. Make 2 equal parts.</h2><div class="row" id="q2"></div></section>
+  <section><h2><span class="n">3</span>Draw lines. Make 4 equal parts.</h2><div class="row" id="q3"></div></section>
+  <section><h2><span class="n">4</span>Mistake Detective: Yanky says these are halves. Is he right?</h2>
+    <div class="row"><figure id="q4"></figure><div class="thumbs" aria-label="Circle one">
+      <svg viewBox="0 0 64 64"><path d="M10 30h10v24H10zM24 30l10-18c2-3 7-2 7 2l-2 12h13c3 0 5 3 4 6l-5 16c-1 3-3 4-6 4H24z" fill="none" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round"/></svg>
+      <svg viewBox="0 0 64 64"><g transform="rotate(180 32 32)"><path d="M10 30h10v24H10zM24 30l10-18c2-3 7-2 7 2l-2 12h13c3 0 5 3 4 6l-5 16c-1 3-3 4-6 4H24z" fill="none" stroke="#1F2A44" stroke-width="3" stroke-linejoin="round"/></g></svg>
+      <span>Circle one.</span></div></div></section>
+  <section><h2><span class="n">5</span>Fold it!</h2>
+    <div class="fold"><svg viewBox="0 0 160 70" width="160" height="70"><rect x="4" y="6" width="70" height="58" fill="#fff" stroke="#1F2A44" stroke-width="3"/><path d="M39 6v58" stroke="#D9534F" stroke-width="3" stroke-dasharray="6 5"/><path d="M84 35h20" stroke="#1F2A44" stroke-width="3"/><path d="M100 28l8 7-8 7" fill="none" stroke="#1F2A44" stroke-width="3"/><rect x="116" y="6" width="35" height="58" fill="#fff" stroke="#1F2A44" stroke-width="3"/></svg>
+    <span>Fold a paper in half. Do the two parts match? <span class="box"></span> Yes</span></div></section>
+</div>
+<script>
+/* draw food made of squares, with the cuts as thick red lines (pieces(c, r) gives each square's part) */
+const COL = { bar: '#8B5A2B', cake: '#E8B86B', kugel: '#EBC77D' };
+function food(kind, cols, rows, pieces, cell) {
+  cell = cell || 26; const w = cols * cell, h = rows * cell, p = pieces || (() => 0);
+  let s = '<svg width="' + (w + 8) + '" height="' + (h + 8) + '" viewBox="-4 -4 ' + (w + 8) + ' ' + (h + 8) + '">';
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" rx="6" fill="' + COL[kind] + '"/>';
+  for (let c = 1; c < cols; c++) s += '<line x1="' + c * cell + '" y1="0" x2="' + c * cell + '" y2="' + h + '" stroke="rgba(0,0,0,.25)" stroke-width="1.5"/>';
+  for (let r = 1; r < rows; r++) s += '<line x1="0" y1="' + r * cell + '" x2="' + w + '" y2="' + r * cell + '" stroke="rgba(0,0,0,.25)" stroke-width="1.5"/>';
+  if (pieces) for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    if (c + 1 < cols && p(c, r) !== p(c + 1, r)) s += '<line x1="' + (c + 1) * cell + '" y1="' + r * cell + '" x2="' + (c + 1) * cell + '" y2="' + (r + 1) * cell + '" stroke="#D9534F" stroke-width="5" stroke-linecap="round"/>';
+    if (r + 1 < rows && p(c, r) !== p(c, r + 1)) s += '<line x1="' + c * cell + '" y1="' + (r + 1) * cell + '" x2="' + (c + 1) * cell + '" y2="' + (r + 1) * cell + '" stroke="#D9534F" stroke-width="5" stroke-linecap="round"/>';
+  }
+  s += '<rect x="0" y="0" width="' + w + '" height="' + h + '" rx="6" fill="none" stroke="#1F2A44" stroke-width="2.5"/></svg>';
+  return s;
+}
+const fig = (svg, cap) => '<figure>' + svg + (cap ? '<figcaption>' + cap + '</figcaption>' : '') + '</figure>';
+document.getElementById('q1').innerHTML = [
+  food('bar', 4, 2, c => c < 2 ? 0 : 1), food('cake', 4, 2, c => c < 3 ? 0 : 1),
+  food('kugel', 4, 2, (c, r) => r === 0 ? (c < 3 ? 0 : 1) : (c < 1 ? 0 : 1)), food('bar', 3, 2, c => c < 2 ? 0 : 1),
+  food('cake', 2, 2, (c, r) => c + 2 * r), food('kugel', 3, 2, (c, r) => r === 0 ? (c < 2 ? 0 : 1) : (c < 1 ? 0 : 1)),
+].map(s => fig(s)).join('');
+document.getElementById('q2').innerHTML = [food('bar', 4, 2), food('kugel', 3, 2), food('cake', 6, 1), food('bar', 5, 2)].map(s => fig(s)).join('');
+document.getElementById('q3').innerHTML = [food('cake', 4, 2), food('bar', 4, 1), food('kugel', 2, 2), food('cake', 8, 1, null, 26)].map(s => fig(s)).join('');
+document.getElementById('q4').innerHTML = food('kugel', 3, 2, c => c < 2 ? 0 : 1, 36);
+document.getElementById('go').onclick = () => window.print();
+</script>
+</body>
+</html>
