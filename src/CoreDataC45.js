@@ -49,5 +49,9 @@ CORE_SKILLS.C45 = [
   ["READ.COMP.L06.13", "Built Two Ways", "Compare how two texts on one topic are built", { after: "READ.FLU.L06.03", std: "RI.5.5", file: "CoreDataC4510", min: 8 }],
   ["READ.LIT.L06.10", "One Chapter, Whole Book", "See how one chapter fits the whole book", { std: "RL.5.5", file: "CoreDataC4510", min: 8 }],
   ["READ.LIT.L06.11", "Stanzas and Scenes", "See how stanzas or scenes fit together", { std: "RL.5.5", file: "CoreDataC4510", min: 8 }],
-  ["READ.FLU.L06.04", "Poetry Aloud", "Read a poem with its rhythm and pauses", { std: "RF.5.4b", file: "CoreDataC4510", min: 8 }]
+  ["READ.FLU.L06.04", "Poetry Aloud", "Read a poem with its rhythm and pauses", { std: "RF.5.4b", file: "CoreDataC4510", min: 8 }],
+  ["READ.LIT.L06.12", "The Narrator's View", "See how a narrator's view colors the story", { after: "READ.FLU.L06.04", std: "RL.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.LIT.L06.13", "Same Scene, Another Narrator", "Tell how a scene changes with another narrator", { std: "RL.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.COMP.L06.14", "One Event, Many Accounts", "Compare several accounts of one event", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }],
+  ["READ.COMP.L06.15", "Why Accounts Differ", "Explain why accounts differ: who wrote it, what he saw, and why", { std: "RI.5.6", file: "CoreDataC4512", min: 8 }]
 ];
