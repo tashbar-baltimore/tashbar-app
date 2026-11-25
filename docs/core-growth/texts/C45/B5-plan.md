@@ -25,7 +25,7 @@ C45 helper (claim #445). Units 5.4–5.6 (`docs/core-growth/C45-map.md`). Cast: 
 | A green light on a boat means its right side (starboard) | 6 | The boys work out which way *Miss Ellie* is drifting |
 | The 1904 keeper's log on the museum shelf: "A great red glow to the northwest all night" | 7 | A firsthand account of the Baltimore Fire from far away (ch. 11) |
 | The pencil note in its margin: "S.G. 1971: this light saved my life" | 7 | Reb Shimon's story (ch. 8) |
-| Reb Shimon's log says the backup lamp came on at 9:15; Captain Turner says 9:40 | 7, 9 | Why accounts differ (ch. 10) |
+| Reb Shimon's log says the backup lamp came on at 9:15; Captain Turner says 9:30 | 7, 9 | Why accounts differ (ch. 10) |
 
 **How the chapters are told:**
 - Third person, following Tzvi Hirsch, except where noted.
@@ -43,7 +43,7 @@ C45 helper (claim #445). Units 5.4–5.6 (`docs/core-growth/C45-map.md`). Cast: 
 6. **Green Light on the Water.** Green means the boat's right side. Binyamin works out that it is drifting toward the shallow shoal. Reb Shimon on the radio with the Coast Guard; the boys at the window with binoculars, calling out what they see. The Coast Guard boat is coming. *Hook: the green light is gone.*
 7. **The Keeper's Log** (built from Reb Shimon's log entries, with times). The long night, hour by hour: the rescue boat's searchlight, *Miss Ellie* found stuck on the edge of the shoal, the captain and his son safe; the boys asleep on the floor; dawn. Shacharis at the window; a calm gray bay full of floating logs. Shabbos morning, Nosson reads the old keeper's logbook on the shelf. *Hook: the entry for February 7, 1904, says "A great red glow to the northwest all night." In the margin, in newer pencil: "S.G. 1971: this light saved my life."*
 8. **S.G.** Shabbos afternoon. Reb Shimon tells his story in his own words: 1971, a young engine-room hand on a cargo ship in fog, and the light and bell of Kettle Shoal that warned them off the shoal. He calls the light "an old friend". *Hook: at seudah shlishis, a boat horn: the Coast Guard boat pulls up, and someone on board wants to meet the boys.*
-9. **The Captain's Story** (the same night, told by Captain Turner after Havdalah). His fear, his son, the dead engine, the dark where the light should have been, and the white flash every 6 seconds that told him exactly where he was. *Hook: "If your light hadn't come back on at 9:40, we would have hit those iron legs." Tzvi Hirsch frowns: the log says 9:15.*
+9. **The Captain's Story** (the same night, told by Captain Turner after Havdalah). His fear, his son, the dead engine, the dark where the light should have been, and the white flash every 6 seconds that told him exactly where he was. *Hook: "If your light hadn't come back on at 9:30, we would have hit those iron legs." Tzvi Hirsch frowns: the log says 9:15.*
 10. **Four Accounts.** Sunday in Baltimore. The crew lays out four accounts of one night:
     - the *Bay Courier* newspaper story ("a volunteer and four boys kept the light burning");
     - the Coast Guard's short report;
