@@ -107,3 +107,6 @@ CORE_SKILLS.G = [
   ["LANG.MECH.L08.02", "Spell It Right 7", "Choose -able/-ible and -ance/-ence by pattern, and spell commonly confused homophones", { after: "LANG.MECH.L08.01", std: "L.7.2b", file: "CoreDataG9", min: 7 }],
   ["LANG.MECH.L09.03", "Spell It Right 8", "Spell commonly misspelled words with memory tricks, and keep both letters when a prefix meets a root", { after: "LANG.MECH.L09.02", std: "L.8.2c", file: "CoreDataG9", min: 7 }]
 ];
+/* Data files that upgrade EXISTING skills to One Bite lessons (TLCORE.upgrade; docs/core-growth/HOW-TO-ADD-A-SKILL.md). */
+var CORE_DATA_FILES = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {};
+CORE_DATA_FILES.G = ['CoreDataGH1'];
