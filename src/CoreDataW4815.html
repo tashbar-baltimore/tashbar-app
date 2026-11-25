@@ -1,0 +1,304 @@
+<script>
+/* CoreDataW4815.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 8 (L09), Unit 3 "Voice and Reflection" (memoir). Cast: The Beacon newsroom.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L09.05':{name:'Memoir Moment',
+  teach:[
+    {how:'A MEMOIR is a true piece about the writer’s own life. For The Beacon’s last issue, “A moment that changed me”, every editor writes one. The hardest choice comes first: WHICH moment? Choose A MEMOIR MOMENT: it is small (a few minutes), it is true, and it means something big to you. Gavriel’s list: “my whole summer at camp”, “the afternoon in Zeidy’s sukkah on Chol Hamoed when he taught me to hold his camera steady”, “what I ate for lunch today”.', q:'Which one is a memoir moment?', o:['The afternoon in Zeidy’s sukkah on Chol Hamoed when he taught me to hold his camera steady.','My whole summer at camp.','What I ate for lunch today.']},
+    {how:'Two mistakes. TOO BIG: a whole day, a whole trip, a whole year. The writer rushes through everything, and the reader feels nothing. NO MEANING: small, but it changed nothing; it cannot answer “why does this matter to me?” Test every idea with two questions. 1) Can it happen in a few minutes? 2) Did it change how I think or act? Two yeses: a memoir moment.', q:'Eli’s idea: “my whole bar mitzvah year.” What is it?', o:['too big','a memoir moment','no meaning']},
+    {how:'Then ZOOM IN. Spend most of your words on those few minutes: what you saw, heard, said and felt. Sum up everything around them in one line (“We had spent the morning hanging decorations in the sukkah.”). In Grade 5 you slowed down the big moment of a made-up story. A memoir goes further: the moment is TRUE, and you choose it BECAUSE it changed you.', q:'Gavriel has 300 words. Where should most of them go?', o:['the few minutes with Zeidy and the camera','the drive to Zeidy’s house','the whole week of Sukkos']}
+  ],
+  practice:[
+    {t:'sort', q:'The editors list ideas for “A moment that changed me”. Sort each idea.', bins:[{id:'M',label:'🌱 A memoir moment'},{id:'B',label:'🍉 Too big: a whole day or year'},{id:'N',label:'🫥 No meaning: small, but it changed nothing'}],
+      items:[{label:'Gavriel: the minute Zeidy steadied my hands.',bin:'M'},{label:'Benny: a saved seat, first Shabbos in Baltimore.',bin:'M'},{label:'Eli: my whole bar mitzvah year.',bin:'B'},{label:'Akiva: our three-day class trip.',bin:'B'},{label:'Yoni: what I ate for lunch today.',bin:'N'},{label:'Gavriel: the minute I laced new shoelaces.',bin:'N'}],
+      h:'Ask two questions: can it happen in a few minutes? Did it change him?'},
+    {t:'pairs', q:'Match each word to what it means.', pairs:[['A memoir','A true piece about the writer’s own life'],['A memoir moment','Small, true, and it means something big'],['Zoom in','Spend most of your words on those few minutes']],
+      h:'The whole piece, the moment you choose, or how you tell it?'},
+    {t:'spotall', q:'Gavriel’s memoir. Tap every sentence that ZOOMS IN on his few minutes with Zeidy.', cells:[{label:'Zeidy’s camera was heavier than my whole schoolbag.',ok:true},{label:'His hand closed over mine. “Breathe out, then press.”',ok:true},{label:'He let go and stepped back. Click: his smile stayed sharp.',ok:true},{label:'Sukkos that year was a lot of fun.',ok:false},{label:'We visited many relatives over Yom Tov.',ok:false}],
+      h:'Is it a tiny piece of those few minutes, or a sum-up of the whole week?'},
+    {t:'sort', q:'Sneaky ones! Sort each plan for Gavriel’s memoir.', bins:[{id:'G',label:'✅ Zooms in on one moment'},{id:'W',label:'⚠️ Mistake: too big'},{id:'N',label:'⚠️ Mistake: no meaning'}],
+      items:[{label:'One line on the morning, then the camera lesson.',bin:'G'},{label:'The camera lesson, slowly, then why it mattered.',bin:'G'},{label:'Every part of Sukkos, from start to end.',bin:'W'},{label:'Breakfast, the drive, the sukkah, supper.',bin:'W'},{label:'A whole page on new shoelaces.',bin:'N'}],
+      h:'One moment that changed him? The whole day? Or a moment that changed nothing?'},
+    {t:'order', q:'Put the steps for choosing a memoir moment in order. Tap the steps in order.', tiles:['List a few true moments that still matter to you.','Cross out any that is a whole day, trip or year.','Of the ones left, choose the one that changed you most.','Zoom in: spend most of your words on those few minutes.'],
+      h:'You need a list before you can cross out. You need a moment before you can zoom in.'},
+    {t:'pairs', q:'Each topic is too big. Match it to the memoir moment hiding inside it.', pairs:[['My whole bar mitzvah year','The second my voice cracked at my first leining'],['My first year in a new city','When a boy I did not know saved me a seat'],['Sukkos at Zeidy’s house','The minute Zeidy steadied my hands on his camera']],
+      h:'Inside every big topic, find the few minutes that changed the boy.'},
+    {t:'write', q:'Your turn to write. List three true moments from your own life. Cross out any that is too big. Choose the one that changed you, write two sentences that zoom in on it, and one line on why it matters to you.', min:0, checks:['🌱 I chose a small, true moment, a few minutes long.','🔍 I zoomed in: what I saw, heard or felt.','💡 I wrote one line on why it matters to me.'], h:'Ask of each idea: a few minutes? Did it change me? Then spend your words there.'}
+  ],
+  check:[
+    {q:'Yoni wants to write his Beacon memoir about “my whole summer in the country with my cousins.” What is this idea?', o:['too big','a memoir moment','no meaning'], h:'Can it happen in a few minutes?'},
+    {q:'Akiva’s idea: “The second Rabbi Rosen handed me the newsroom key and said, ‘I trust you.’ I had never felt so grown up.” What is this idea?', o:['a memoir moment','too big','no meaning'], h:'Ask both questions: a few minutes? Did it change him?'},
+    {t:'order', q:'Akiva’s ideas. Put them from the biggest to the zoomed-in memoir moment. Tap the tiles in order.', tiles:['My whole year as editor','The day I got the job','The second Rabbi Rosen handed me the key'], h:'Start with the one that covers the most time. End with the few minutes.'}
+  ],
+  re:[
+    {how:'A new way: Gavriel says a good photo never shows the whole city. It zooms in on one face, and that face tells you about the city. A memoir moment is the one face, not the whole city.', q:'The one face in the photo is like…', o:['a memoir moment','a whole year','a list of events']},
+    {how:'A simpler step: ask two questions of each idea. 1) Did it happen in a few minutes? 2) Did it change how I think or act? Two yeses: a memoir moment. A no on the first: too big. A no on the second: no meaning.', q:'A moment happened in a few minutes, but it changed nothing. It has…', o:['no meaning','too big','a memoir moment']},
+    {how:'The skill underneath: Slow Motion (Grade 5). In a story, you slow down the big moment. A memoir goes further: the moment is true, you CHOOSE it from your whole life because it changed you, and only then do you zoom in.', q:'In Slow Motion, you slow down…', o:['the big moment','the boring part','every part the same']}
+  ]},
+
+  'WRIT.PARA.L09.06':{name:'Then and Now',
+  teach:[
+    {how:'A memoir has TWO VOICES. THE BOY THEN lives the scene: past tense, what he saw, heard and felt, and he does not know yet how it ends. THE WRITER NOW looks back: present tense, what he knows today. Gavriel: “My hands shook on the heavy camera.” That is the boy then. “I still breathe out before every photo I take for The Beacon.” That is the writer now.', q:'“Today I understand why Zeidy never rushed me.” Whose voice is this?', o:['the writer now','the boy then','Zeidy’s voice']},
+    {how:'Each frame gets its own SIGNAL and TENSE. The boy then: a time signal (“That Chol Hamoed,” “I was nine,”) and past tense. The writer now: a now signal (“Today,” “Looking back,” “Now I know”) and present tense. In Grade 6 a flashback went back and returned to more story. A memoir goes further: the NOW is not more story. It is the writer himself, thinking. The mistake is NO SIGNAL: the frames blur, and the reader cannot tell who is talking.', q:'Which sentence cuts to the writer now?', o:['Looking back, I see that Zeidy was in no hurry at all.','That Sukkos, Zeidy handed me his camera.','My hands shook.']},
+    {how:'The big mistake: THE BOY KNOWS TOO MUCH. The boy then cannot know what the writer knows now. “At nine, I knew this lesson would shape my life” is false to the moment. Let the boy be nervous, confused, even wrong, and save the understanding for the writer now: “I did not know yet that…”. WHEN TO CUT: stay in the scene most of the time. Cut to the writer now for a sentence or two at the turn, where the meaning shows, and at the end.', q:'Gavriel writes: “At nine, I already knew Zeidy was teaching me patience.” What went wrong?', o:['the boy knows too much','no signal','nothing, it is fine']}
+  ],
+  practice:[
+    {t:'sort', q:'Gavriel’s memoir. Sort each sentence by its voice.', bins:[{id:'T',label:'🧒 The boy then (the scene)'},{id:'N',label:'✍️ The writer now (looking back)'}],
+      items:[{label:'My hands shook on the heavy black camera.',bin:'T'},{label:'Zeidy laughed. “Breathe out, then press.”',bin:'T'},{label:'The first photo came out a gray blur.',bin:'T'},{label:'Today I still breathe out before every photo.',bin:'N'},{label:'Looking back, I see he was in no hurry at all.',bin:'N'},{label:'Now I know he was teaching more than cameras.',bin:'N'}],
+      h:'Past tense, inside the scene? Or a now signal and present tense, looking back?'},
+    {t:'pairs', q:'Match each signal to its job.', pairs:[['That Chol Hamoed, I was nine.','Opens the scene of the boy then'],['Looking back,','Cuts to the writer now'],['I did not know yet that…','Shows the boy knew less than the writer']],
+      h:'Does it open the past, cut to today, or show the gap between them?'},
+    {t:'spotall', q:'Eli’s memoir about his first time leining in shul. Tap every sentence in the voice of THE WRITER NOW.', cells:[{label:'Today I lein most weeks, and I still hear that crack.',ok:true},{label:'Looking back, I see why my father only nodded.',ok:true},{label:'Now I understand that the whole shul was with me.',ok:true},{label:'My voice cracked on the very first word.',ok:false},{label:'The yad shook in my sweaty fingers.',ok:false}],
+      h:'Look for a now signal and present tense.'},
+    {t:'sort', q:'Sneaky ones! Sort each passage.', bins:[{id:'G',label:'✅ Clear frames'},{id:'K',label:'⚠️ Mistake: the boy knows too much'},{id:'S',label:'⚠️ Mistake: no signal'}],
+      items:[{label:'I was nine. I did not know yet why he waited.',bin:'G'},{label:'My voice cracked. Today I lein most weeks.',bin:'G'},{label:'At nine, I knew this was the lesson of my life.',bin:'K'},{label:'At the bimah, I knew the crack would help me.',bin:'K'},{label:'My hands shook. I breathe out first, every time.',bin:'S'},{label:'The shutter clicked, and I see why he waited.',bin:'S'}],
+      h:'Could the boy know this yet? Does every cut to now have a signal, and does each frame keep its tense?'},
+    {t:'order', q:'Build Gavriel’s passage: the scene, then the cut. Tap the sentences in order.', tiles:['That Chol Hamoed, I was nine.','Zeidy put his heavy camera in my hands and waited.','I did not know yet what he was really teaching me.','Looking back, I see he was in no hurry at all.'],
+      h:'Open the scene with a time signal. Show the gap. Then cut to the writer now.'},
+    {t:'spotall', q:'When should Gavriel cut to the writer now? Tap every good place.', cells:[{label:'At the turn: right after the sharp photo clicks.',ok:true},{label:'At the very end of the memoir.',ok:true},{label:'In the middle of Zeidy’s sentence.',ok:false},{label:'After every sentence of the scene.',ok:false},{label:'Never: all scene, and no looking back.',ok:false}],
+      h:'Stay in the scene most of the time. Cut where the meaning shows, and at the end.'},
+    {t:'write', q:'Your turn to write. Take your own memoir moment (or Gavriel’s). Write three sentences as the boy then, with a time signal and past tense. Then cut to the writer now with a signal, in one or two sentences.', min:0, checks:['🧒 My scene is in past tense, and the boy does not know too much.','✍️ My cut to now has a signal: “Today,” “Looking back,” or “Now I know”.','✂️ I cut at a turn, for only a sentence or two.'], h:'Live the scene first. Then ask: what do I know now that the boy did not?'}
+  ],
+  check:[
+    {q:'Akiva’s memoir: “Today, every time I lock the newsroom, I feel that key’s weight again.” Whose voice is this?', o:['the writer now','the boy then','no signal'], h:'Is there a now signal and present tense?'},
+    {q:'Benny writes: “That first Shabbos, standing at the back of a new shul, I knew that the boy waving at me would become my best friend.” What went wrong?', o:['the boy knows too much','no signal','the writer now'], h:'Could Benny know that yet, on that first Shabbos?'},
+    {t:'order', q:'Build Benny’s cut to the writer now. Tap the tiles in order.', tiles:['Looking back,','I see that','the boy with the seat','was making room for me.'], h:'The now signal first. Then what the writer sees today.'}
+  ],
+  re:[
+    {how:'A new way: a film with a voice-over. The picture shows the boy back then. Over it, a grown man’s voice speaks from today. The picture is the boy then; the voice-over is the writer now.', q:'The voice-over is like…', o:['the writer now','the boy then','no signal']},
+    {how:'A simpler step: use two colors. Blue for every sentence of the boy then (past tense). Green for the writer now (present tense, with a now signal). Then check: does every green part start with a signal? Does any blue sentence know what only green can know?', q:'A blue sentence knows what only the writer knows now. That is…', o:['the boy knows too much','no signal','the writer now']},
+    {how:'The skill underneath: Flashback and Back (Grade 6). A signal takes the story back in time, and “Now,” returns to the story. A memoir goes further: its two frames are two VOICES, the boy who did not know yet and the writer who knows now, and you choose when to cut.', q:'In Flashback and Back, which signal returns the reader to the present?', o:['Now,','Two days earlier,','The night before,']}
+  ]},
+
+  'WRIT.PARA.L09.07':{name:'Voice',
+  teach:[
+    {how:'VOICE is how a writer sounds on the page, like a real person you could pick out of a crowd. You already own two pieces: exact words (Picture Words, Grade 5) and telling details (Precise Detail, Grade 7). Voice adds two tools of its own: rhythm, and your own lens. The same moment can be written in A FLAT VOICE or A REAL VOICE. Flat: “Zeidy gave me his camera. It was nice. I took a picture. It was good.” Real: “Zeidy’s camera was heavier than my schoolbag, and it smelled like old leather. I pressed. Blur.” Tool 1, WORD CHOICE, you know: exact words, never “nice”, “good” or “stuff”.', q:'Which sentence has a real voice?', o:['The camera smelled like old leather and Zeidy’s coat.','The camera was very nice.','It was a good camera and stuff.']},
+    {how:'Tool 2 is RHYTHM: mix short and long sentences. A long sentence carries the reader along; a short one stops him. “I held my breath, waited for Zeidy to nod, and pressed as softly as I could. Blur.” Tool 3 is YOUR LENS: of all the telling details, choose the ones only YOU would notice, because of who you are. Gavriel, a photographer, notices the light. Eli, who leins, notices the letters with no vowels.', q:'Which detail is something only Gavriel, the photographer, would notice?', o:['The light through the s’chach made stripes on Zeidy’s face.','The sukkah was nice.','It was Sukkos.']},
+    {how:'Two mistakes. A FLAT VOICE: plain words, every sentence the same length, details anyone would see. TRYING TOO HARD: fancy words he would never say (“the luminous apparatus”). In Grade 6 you used a formal voice for an argument. A memoir goes further: you choose your OWN voice for the job. It is neither formal nor slang; it is you, on your best day.', q:'“The magnificent, luminous apparatus trembled in my minuscule hands.” What is wrong?', o:['trying too hard','a flat voice','nothing, it is a real voice']}
+  ],
+  practice:[
+    {t:'sort', q:'Gavriel’s camera moment. Sort each sentence by its voice.', bins:[{id:'R',label:'🗣️ A real voice'},{id:'F',label:'😐 A flat voice'},{id:'T',label:'🎭 Trying too hard'}],
+      items:[{label:'Zeidy’s camera smelled like old leather.',bin:'R'},{label:'I pressed. Blur.',bin:'R'},{label:'It was a really nice camera.',bin:'F'},{label:'I took a picture and it was good.',bin:'F'},{label:'The ancient apparatus gleamed magnificently.',bin:'T'},{label:'My trembling digits caressed the device.',bin:'T'}],
+      h:'Would a real boy say it on his best day? Too plain? Or too fancy?'},
+    {t:'pairs', q:'Match each tool of voice to what it means.', pairs:[['Word choice','Exact words a real person would use'],['Rhythm','Short and long sentences, mixed'],['Your lens','Details only you would notice']],
+      h:'Is it about the words, the sentence lengths, or the details?'},
+    {t:'spotall', q:'Gavriel is the photographer. At Eli’s bar mitzvah seudah on Sunday night, tap every detail only GAVRIEL would notice.', cells:[{label:'The hall lights turned the cake gold.',ok:true},{label:'Eli blinked at the exact second I pressed.',ok:true},{label:'The candles threw long shadows across two tables.',ok:true},{label:'The kugel was still warm.',ok:false},{label:'Rabbi Rosen shook Eli’s hand twice.',ok:false}],
+      h:'Every detail here is exact. Which ones come from a photographer’s eye?'},
+    {t:'sort', q:'Sneaky ones! Rhythm. Sort each passage.', bins:[{id:'G',label:'✅ Rhythm that works'},{id:'M',label:'⚠️ Mistake: all the same length'}],
+      items:[{label:'I went up. I said it. I looked down. I started.',bin:'M'},{label:'I had practiced for weeks. Then: crack.',bin:'G'},{label:'It was hot. It was loud. It was long.',bin:'M'},{label:'I waited for the light on Zeidy’s face. Click.',bin:'G'},{label:'I held it. I pressed it. I looked at it.',bin:'M'}],
+      h:'Do the sentences change length, so a short one can hit hard?'},
+    {t:'order', q:'Build a passage with rhythm. Tap the sentences in order.', tiles:['I breathed out, the way Zeidy had shown me.','Then I waited for the light on his face to hold still.','I pressed.','Sharp.'],
+      h:'Two long sentences carry the reader. Two short ones stop him.'},
+    {t:'pairs', q:'Fix the flat voice. Match each flat sentence to its real-voice version.', pairs:[['It was nice.','It smelled like old leather.'],['I was nervous.','My finger shook on the button.'],['He said something to help.','“Breathe out,” he said, “then press.”']],
+      h:'Swap the plain word for an exact detail you could see, hear or touch.'},
+    {t:'write', q:'Your turn to write. Take your memoir moment (or Gavriel’s). First write it in a flat voice, in two sentences. Then write it again in a real voice, in three or four sentences.', min:0, checks:['🔤 Word choice: I used exact words, not “nice” or “good”.','🎵 Rhythm: I mixed long and short sentences.','👀 My lens: a detail only I would notice.'], h:'Read it aloud. Would you say it to a friend at the Shabbos table?'}
+  ],
+  check:[
+    {q:'Yoni bakes challah every Friday with his father, who is a baker. He writes: “I could tell by the smell that the dough needed two more minutes.” Which tool of voice is this?', o:['your lens','rhythm','a flat voice'], h:'Which detail could only a boy who bakes every week notice?'},
+    {q:'Benny’s memoir: “The shul was nice. The people were nice. The kiddush was good.” What voice is this?', o:['a flat voice','a real voice','trying too hard'], h:'Plain words? Every sentence the same length?'},
+    {t:'order', q:'Build Yoni’s passage with rhythm. Tap the sentences in order.', tiles:['My father kneaded the dough for a long time, humming a Shabbos niggun.','Then he slid the bowl to me.','My turn.'], h:'Start long. Then shorter. End on the short one that hits hard.'}
+  ],
+  re:[
+    {how:'A new way: when a friend calls, you know who it is before he says his name. His voice gives him away. A real voice in writing works the same way: the reader can hear the person.', q:'Knowing a friend by his voice on the phone is like…', o:['a real voice in writing','a flat voice','trying too hard']},
+    {how:'A simpler step: read it out loud. If it sounds like a form, it is a flat voice. If it sounds like a dictionary, you are trying too hard. If it sounds like you on your best day, it is your real voice.', q:'Read aloud, it sounds like a dictionary. It is…', o:['trying too hard','a flat voice','a real voice']},
+    {how:'The skill underneath: Formal Voice (Grade 6) and Precise Detail (Grade 7). A formal voice fits an argument; telling details fit a story. A memoir goes further: you choose your own voice, built from exact words, rhythm, and your own lens.', q:'An argument for adults uses a…', o:['formal voice','slang voice','shouting voice']}
+  ]},
+
+  'WRIT.PARA.L09.08':{name:'Reflection',
+  teach:[
+    {how:'A memoir does not end when the scene ends. It ends with A REFLECTION from the writer now. In Grade 7 your character showed a before and a now inside the story. Grade 7 used past tense: “Now I knew…”. A memoir goes further. The now is TODAY, in present tense: “Now I understand…”. And it adds a third beat: what you STILL DO because of it. Gavriel: “Back then I thought Zeidy was teaching me about cameras. Now I understand he was teaching me to slow down. Before every Beacon photo, I still breathe out first.”', q:'Which ending is a memoir reflection?', o:['Back then I thought it was about cameras. Now I understand it was about slowing down.','And that was the Sukkos Zeidy taught me to use his camera.','The lesson is: always be patient.']},
+    {how:'Two mistakes you know. A SUMMARY retells what happened; the reader was just there. A PASTED-ON MORAL (Grade 6) lectures: “The lesson is…”, “So always…”. One new mistake: TOO PERFECT. “Now I never rush anything, ever again” is not true of any real boy, so the reader stops believing you. A memoir is true, so the reflection may be honest and unfinished: “Some days I still rush.”', q:'“Since that day, I am perfectly patient, every single day.” What is this ending?', o:['too perfect','a reflection','a summary']},
+    {how:'Make it land in two ways. TIE IT TO A DETAIL from the moment, like the breath before the click. SHOW IT TODAY: what he does now because of it. “Before every Beacon photo, I still breathe out first. Some days I forget, and then I almost feel his hand on mine.”', q:'Which line ties to a detail and shows it today?', o:['Before every Beacon photo, I still breathe out first.','I learned a lot that day.','Cameras are very interesting.']}
+  ],
+  practice:[
+    {t:'sort', q:'Gavriel’s last lines. Sort each one.', bins:[{id:'R',label:'💭 A reflection'},{id:'S',label:'📋 A summary'},{id:'M',label:'📌 A pasted-on moral'}],
+      items:[{label:'Now I know he was teaching me to wait.',bin:'R'},{label:'Today I still breathe out before every photo.',bin:'R'},{label:'And that was the day I used Zeidy’s camera.',bin:'S'},{label:'So Zeidy helped me, and I took a photo.',bin:'S'},{label:'The lesson is: always be patient.',bin:'M'},{label:'So remember, boys, listen to your elders!',bin:'M'}],
+      h:'What he understands now? What happened, again? Or a lecture to the reader?'},
+    {t:'pairs', q:'Match each part of a reflection to its job.', pairs:[['Back then I thought…','What the boy believed'],['Now I understand…','What the writer knows today'],['Today I still…','Where it shows in his life now']],
+      h:'The boy then, the writer now, or his life today?'},
+    {t:'spotall', q:'Eli’s memoir about his first leining. Tap every line that REFLECTS: then and now, or his life today.', cells:[{label:'Back then I thought the crack meant I had failed.',ok:true},{label:'Now I see the shul wanted me, not a perfect voice.',ok:true},{label:'I nod at younger boys, the way my father nodded.',ok:true},{label:'Then I finished leining and sat down.',ok:false},{label:'The moral: never be afraid.',ok:false}],
+      h:'Does it show what he understands now, or how it lives in his life today?'},
+    {t:'sort', q:'Sneaky ones! Honest, or too perfect? Sort each line.', bins:[{id:'H',label:'✅ Honest reflection'},{id:'P',label:'⚠️ Mistake: too perfect'}],
+      items:[{label:'I am still learning to wait. I breathe out first.',bin:'H'},{label:'Some days I still rush. Then I feel his hand.',bin:'H'},{label:'Since then, I am patient with everything.',bin:'P'},{label:'Now I never rush anything, ever again.',bin:'P'},{label:'Since that day, I am never nervous.',bin:'P'}],
+      h:'Real life is not perfect. Could a real boy truly say this?'},
+    {t:'order', q:'Build Gavriel’s reflection. Tap the sentences in order.', tiles:['Back then, I thought Zeidy was teaching me about cameras.','Now I understand he was teaching me to slow down.','Before every Beacon photo, I still breathe out first.','Some days I forget, and then I almost feel his hand on mine.'],
+      h:'Then, now, today. The honest line comes last.'},
+    {t:'pairs', q:'Fix each ending. Match each draft to what it needs.', pairs:[['The lesson is: be patient.','Turn the moral into what YOU now understand'],['And that was the day I used his camera.','Add the gap: back then … now …'],['Now I understand patience.','Tie it to a detail and show it today']],
+      h:'A lecture? A retelling? Or true, but too general?'},
+    {t:'write', q:'Your turn to write. Write the last paragraph of your memoir (or Gavriel’s). Show the gap, tie it to a detail from the moment, and show it in your life today. No pasted-on moral, and nothing too perfect.', min:0, checks:['💭 I showed the gap: back then I thought … now I understand …','🔗 I tied it to a detail from the moment.','📌 No pasted-on moral, and nothing too perfect: honest is better.'], h:'Finish three starters: “Back then I thought…”, “Now I understand…”, “Today I still…”.'}
+  ],
+  check:[
+    {q:'Benny ends his memoir: “Back then I thought the boy who saved me a seat was just being polite. Now I understand he was making room for me, and today I save a seat for every new boy.” What is this ending?', o:['a reflection','a summary','a pasted-on moral'], h:'Does it show the gap between then and now?'},
+    {q:'Yoni ends his memoir about baking challah with his father: “Since that Friday, I have never once lost patience with anything.” What is this ending?', o:['too perfect','a reflection','a pasted-on moral'], h:'Could any real boy say this truthfully?'},
+    {t:'order', q:'Build Akiva’s reflection about the newsroom key. Tap the sentences in order.', tiles:['Back then, I thought the key was a prize.','Now I understand it was a promise to keep.','Today, I still lock the newsroom myself, every Thursday night.'], h:'Then, now, today.'}
+  ],
+  re:[
+    {how:'A new way: look at an old photo of yourself. You see the boy, and you know things he did not know yet. Saying what you know now, that he did not, is the reflection.', q:'Knowing what the boy in the old photo did not know is…', o:['the reflection','a summary','a pasted-on moral']},
+    {how:'A simpler step: finish three starters. “Back then I thought…” “Now I understand…” “Today I still…”. If your answer could end anyone’s memoir, make it more about you.', q:'Which starter shows where it lives in your life today?', o:['Today I still…','Back then I thought…','The lesson is…']},
+    {how:'The skill underneath: Reflective Ending (Grade 7). A character’s reflection was earned by one moment and showed a before and a now, inside the story. A memoir goes further: the real writer speaks today, adds what he still does, and stays honest, never too perfect.', q:'In Reflective Ending, a reflection is earned by…', o:['one real moment in the story','a lesson for everyone','a new problem']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L09.05':{hook:'Your whole life so far. One page. Which few minutes do you choose?', big:'A memoir starts with a memoir moment: small, true, and it means something big. Not a whole day or year, and not a moment that changed nothing. Then zoom in.',
+    intro:['A memoir: a true piece about the writer’s own life.','A memoir moment: a few minutes that changed him.','Too big: a whole day, trip or year.','No meaning: small, but it changed nothing.'],
+    ex:[{q:'Gavriel’s idea: all of Sukkos at Zeidy’s house.',steps:['A few minutes? No, a whole week: too big.','Which few minutes changed him?'],a:'The minute Zeidy steadied my hands on his camera.'},
+        {q:'Benny’s idea: the color of my new backpack.',steps:['A few minutes? Yes.','Did it change him? No: no meaning.'],a:'Choose another: the boy who saved me a seat on my first Shabbos.'}],
+    oops:{q:'Eli chooses his memoir topic.',wrong:'My whole bar mitzvah year.',right:'The second my voice cracked at my first leining.',why:'A whole year is too big to feel. A few minutes that changed him can fill a page.'},
+    idea:['Two questions: did it happen in a few minutes? Did it change me?'],
+    try:{q:'Which is a memoir moment?',o:['The minute Zeidy steadied my hands.','My whole summer at camp.','What I ate for lunch today.'],a:'The minute Zeidy steadied my hands.',steps:['A few minutes? Did it change him?']}},
+  'WRIT.PARA.L09.06':{hook:'The boy who lived it did not know yet. The writer does. Who is talking?', big:'A memoir moves between two voices: the boy then (the scene, past tense) and the writer now (looking back, present tense). Signal every cut, and never let the boy know too much.',
+    intro:['The boy then: the scene, past tense, does not know yet.','The writer now: looking back, present tense.','Signal the cut: “Today,” “Looking back,” “Now I know”.','Mistakes: the boy knows too much; no signal.'],
+    ex:[{q:'Gavriel’s scene: his hands shook on the camera.',steps:['Boy then: past tense, inside the scene.','Where does the meaning show? At the sharp photo.'],a:'Looking back, I see that Zeidy was in no hurry at all.'},
+        {q:'Fix: “At nine, I knew this would shape my life.”',steps:['Could a nine-year-old know this? No.','Give that knowing to the writer now.'],a:'At nine, I only knew my hands were shaking.'}],
+    oops:{q:'Eli at the bimah, in his memoir.',wrong:'At the bimah, I knew the crack would make me better.',right:'My voice cracked. Today I see it made me better.',why:'The boy then could not know that yet. Only the writer now can.'},
+    idea:['Mostly the boy then. A few lines of the writer now, at the turn and at the end.'],
+    try:{q:'“Now I know he was teaching more than cameras.” Whose voice?',o:['the writer now','the boy then','no signal'],a:'the writer now',steps:['Is there a now signal and present tense?']}},
+  'WRIT.PARA.L09.07':{hook:'Two boys write the same moment. Why do you remember only one?', big:'Write a memoir in a real voice: exact word choice, a rhythm of short and long sentences, and your own lens: details only you would notice. Not flat, and not trying too hard.',
+    intro:['Word choice: exact words a real person would use.','Rhythm: short and long sentences, mixed.','Your lens: details only you would notice.','Mistakes: a flat voice; trying too hard.'],
+    ex:[{q:'Flat: “Zeidy gave me his camera. It was nice.”',steps:['“Nice” is a plain word. What exactly?','Heavy, and it smelled of old leather.'],a:'Zeidy’s camera was heavier than my schoolbag, and it smelled like old leather.'},
+        {q:'Flat: “I pressed the button and the photo was blurry.”',steps:['Same length as every other sentence.','End on a short one.'],a:'I held my breath and pressed as softly as I could. Blur.'}],
+    oops:{q:'Gavriel tries to sound like a writer.',wrong:'The magnificent apparatus trembled in my minuscule hands.',right:'The heavy camera shook in my hands.',why:'Fancy words he would never say are trying too hard. A real voice sounds like you.'},
+    idea:['A real voice sounds like you on your best day.'],
+    try:{q:'“The shul was big. There were people there.” What voice?',o:['a flat voice','a real voice','trying too hard'],a:'a flat voice',steps:['Plain words? Details anyone would see?']}},
+  'WRIT.PARA.L09.08':{hook:'The scene is over. What does the boy know now that he did not know then?', big:'End a memoir with a reflection: back then I thought…, now I understand…, tied to a detail and shown in your life today. Not a summary, not a pasted-on moral, and never too perfect.',
+    intro:['A reflection: what the moment taught you, then and now.','A summary: what happened, told again.','A pasted-on moral: a lecture that could end anyone’s story.','Too perfect: a claim no real boy could keep.'],
+    ex:[{q:'Gavriel’s memoir is about the camera lesson.',steps:['Back then I thought: cameras.','Now I understand: slowing down.'],a:'Back then I thought Zeidy was teaching me about cameras. Now I understand he was teaching me to slow down.'},
+        {q:'Show it today, tied to a detail.',steps:['Which detail? The breath before the click.','What does he do now?'],a:'Before every Beacon photo, I still breathe out first.'}],
+    oops:{q:'Eli ends his memoir about his first leining.',wrong:'The moral: never be afraid of making mistakes.',right:'Back then I thought the crack meant I had failed. Now I see the shul wanted me, not a perfect voice.',why:'A pasted-on moral lectures the reader. A reflection tells what YOU now understand.'},
+    idea:['Back then I thought… Now I understand… Today I still…'],
+    try:{q:'“And that was the day I used Zeidy’s camera.” What is this ending?',o:['a summary','a reflection','a pasted-on moral'],a:'a summary',steps:['Does it say what he understands, or tell what happened again?']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L09.05':{s:'List a few true moments that still matter to you.\nAsk of each: did it happen in a few minutes? If not, it is too big.\nAsk: did it change how I think or act? If not, it has no meaning.\nChoose one, and zoom in: spend most of your words on those few minutes.'},
+  'WRIT.PARA.L09.06':{s:'Write the scene as the boy then: a time signal, past tense.\nLet the boy know only what he knew that day.\nCut to the writer now with a signal: “Today,” “Looking back,” “Now I know”, in present tense.\nCut only at the turn and at the end, for a sentence or two.'},
+  'WRIT.PARA.L09.07':{s:'Word choice: swap “nice”, “good” and “stuff” for exact words.\nRhythm: mix long sentences with short ones. End on a short one that hits hard.\nYour lens: add a detail only you would notice, because of who you are.\nRead it aloud. Not flat, not trying too hard: you, on your best day.'},
+  'WRIT.PARA.L09.08':{s:'Show the gap: “Back then I thought…” then “Now I understand…”.\nTie it to a detail from the moment.\nShow it today: “Today I still…”.\nNo summary, no pasted-on moral, nothing too perfect. Honest is better than perfect.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L09.05':{ band:'M68', pic:'📷', today:'Choose a small true moment that means something big', why:'A whole year says little. A few true minutes, told up close, can say everything.',
+    ready:[{q:'In Slow Motion, you slow down…', o:['the big moment','the boring part','every part the same','the ending only'], a:'the big moment'}],
+    bridge:'WRIT.PARA.L06.05', bridgeName:'Slow Motion',
+    watch:{ q:'The Beacon’s last issue: “A moment that changed me”.', m:{type:'scene', e:'📷', t:'Gavriel looks for his memoir moment: Chol Hamoed, Zeidy’s camera.'}, steps:[
+      {t:'List true moments: camp, Sukkos at Zeidy’s, the Chol Hamoed camera lesson.'},
+      {t:'Summer at camp? A whole summer. Too big. Cross it out.'},
+      {t:'All of Sukkos? A whole week. Still too big.'},
+      {t:'The minute Zeidy steadied my hands: a few minutes. It changed me.'},
+      {t:'Zoom in: his hand on mine, then he lets go and steps back.'},
+      {t:'Teach it back: tell your chavrusa the two questions.'}], a:'My memoir moment: the minute Zeidy steadied my hands on his camera.' },
+    oops:{ q:'Eli chooses his memoir topic.', wrong:'My whole bar mitzvah year.', right:'The second my voice cracked at my first leining.', why:'A whole year is too big to feel. A few minutes that changed him can fill a page.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can choose a small, true memoir moment and zoom in on it.',
+    board:{ one:'A memoir moment: small (a few minutes), true, and it changed you. Then zoom in.', activity:'Each boy lists five true moments; his chavrusa asks the two questions of each until one moment is left.', mistakes:['A topic too big: a whole day, trip or year','A small moment with no meaning','Choosing well, then rushing past it'] },
+    do:[
+      {type:'sort', q:'Gavriel’s memoir ideas.', bins:['A memoir moment','Mistake: too big'], cards:[['Zeidy steadying my hands',0],['All of Sukkos that year',1],['My first click of his camera',0],['Every visit to Zeidy',1]], mis:true,
+        say:'Memoir moment, or too big? Sort each.', how:'Can it happen in a few minutes?'},
+      {type:'match', pairs:[['A memoir','A true piece about my life'],['A memoir moment','Small, true, and it matters'],['Zoom in','Spend words on those minutes']],
+        say:'Match each word to what it means.', how:'The whole piece, the moment, or how to tell it?'}],
+    your:[
+      {type:'tiles', q:'The rule for a memoir moment.', w:['Small,','true, and','it changed','me.'], extra:['a whole day'],
+        say:'Build the rule for a memoir moment.', how:'Short in time first. Then true. Then what it did.'},
+      {type:'sort', q:'The editors’ ideas.', bins:['A memoir moment','Too big','No meaning'], cards:[['My voice cracked on word one.',0],['My whole bar mitzvah year.',1],['My lunch today.',2],['A boy saved me a seat.',0],['Our three-day class trip.',1]],
+        say:'Memoir moment, too big, or no meaning?', how:'A few minutes? Did it change him?'},
+      {type:'match', q:'Find the moment inside.', pairs:[['My bar mitzvah year','The second my voice cracked'],['My first year here','A boy saved me a seat'],['Sukkos at Zeidy’s','Zeidy steadied my hands']],
+        say:'Match each big topic to the moment inside.', how:'Find the few minutes that changed him.'},
+      {type:'tiles', q:'Zoom in on Gavriel’s moment.', w:['His hand','closed over','mine.'], extra:['we drove'],
+        say:'Build a zoomed-in sentence.', how:'Who moves first. Then what he does. Then whose hand.'},
+      {type:'sort', q:'Gavriel’s memoir. Where do the words go?', bins:['Zoom in: most words','Sum up: one line'], cards:[['Zeidy’s hand on mine',0],['The drive to Zeidy’s',1],['“Breathe out, then press.”',0],['Supper that night',1],['The click, and a sharp photo',0]],
+        say:'Zoom in, or sum it up in one line?', how:'Is it part of the few minutes that changed him?'}] },
+
+  'WRIT.PARA.L09.06':{ band:'M68', pic:'🕰️', today:'Move between the boy then and the writer now', why:'A memoir is two people talking: the boy who lived it, and the man he became.',
+    ready:[{q:'A flashback is over. Which signal returns to the present?', o:['Now,','The night before,','Meanwhile,','Two days earlier,'], a:'Now,'}],
+    bridge:'WRIT.PARA.L07.04', bridgeName:'Flashback and Back',
+    watch:{ q:'Gavriel’s memoir: the camera lesson in Zeidy’s sukkah on Chol Hamoed.', m:{type:'scene', e:'🕰️', t:'Gavriel rereads his draft with Mr. Gross.'}, steps:[
+      {t:'The boy then: “My hands shook on the heavy camera.” Past tense.'},
+      {t:'Draft: “At nine, I knew it was about patience.” Too much!'},
+      {t:'Fix: “I did not know yet what he was teaching me.”'},
+      {t:'At the turn, the sharp photo: cut with a signal.'},
+      {t:'The writer now: “Looking back, I see he was in no hurry.”'},
+      {t:'Teach it back: tell your chavrusa the two voices.'}], a:'I did not know yet what he was teaching me. Looking back, I see he was in no hurry at all.' },
+    oops:{ q:'Eli at the bimah, in his memoir.', wrong:'At the bimah, I knew the crack would make me better.', right:'My voice cracked. Today I see it made me better.', why:'The boy then could not know that yet. Only the writer now can.' },
+    ways:['worked example','word tiles','sort it','match it','Mistake Detective','teach it back'], done:'You can move between the boy then and the writer now, and signal each cut.',
+    board:{ one:'Two voices: the boy then (scene, past tense, does not know yet) and the writer now (looking back, present tense). Signal every cut.', activity:'Pairs highlight a memoir in two colors, then hunt for one sentence where the boy knows too much and move it to the writer now.', mistakes:['The boy then knows too much','A cut to now with no signal','Mixing tenses inside one frame'] },
+    do:[
+      {type:'tiles', q:'Cut to the writer now.', w:['Now I see','he was','patient.'], extra:['I was nine'],
+        say:'Build a cut to the writer now.', how:'The now signal first. Then what he knows today.'},
+      {type:'sort', q:'Gavriel at nine. Is it the real boy then?', bins:['The boy then','Mistake: knows too much'], cards:[['My hands shook.',0],['I knew it would shape my life.',1],['The photo was a gray blur.',0],['I knew he taught patience.',1]], mis:true,
+        say:'The real boy then, or knows too much?', how:'Could a nine-year-old know this yet?'}],
+    your:[
+      {type:'match', pairs:[['That Chol Hamoed, I was nine.','Opens the boy then'],['Looking back,','Cuts to the writer now'],['I did not know yet','The boy knew less']],
+        say:'Match each signal to its job.', how:'Open the scene, cut to now, or show the gap?'},
+      {type:'sort', q:'Eli’s first leining.', bins:['The boy then','The writer now'], cards:[['My voice cracked on word one.',0],['The yad shook in my hand.',0],['Today I lein most weeks.',1],['Now I see the shul was with me.',1],['My father only nodded.',0]],
+        say:'The boy then, or the writer now?', how:'Past tense in the scene? Or a now signal?'},
+      {type:'tiles', q:'Show the gap between then and now.', w:['I did not','know yet','why he','waited.'],
+        say:'Build the line that shows the gap.', how:'Who first. Then what he did not know.'},
+      {type:'match', q:'Fix each mistake.', pairs:[['At nine, I knew it all.','Let the boy not know yet'],['My hands shake as he handed it.','Keep the scene in past tense'],['I still do it. He let go of my hand.','Add a signal: “Today,”']],
+        say:'Match each mistake to its fix.', how:'Knows too much? Mixed tense? No signal?'},
+      {type:'sort', q:'Check each passage.', bins:['Clear frames','Knows too much','No signal'], cards:[['I was nine. Today I see why.',0],['At nine, I knew my future.',1],['Zeidy laughed. I see he was kind.',2],['That night, I lay awake.',0]],
+        say:'Clear, knows too much, or no signal?', how:'Can the boy know it? Is each frame signaled?'}] },
+
+  'WRIT.PARA.L09.07':{ band:'M68', pic:'🗣️', today:'Sound like a real person on the page', why:'A reader remembers a person, not a list of events. Your voice is that person.',
+    ready:[{q:'An argument for adults uses a…', o:['formal voice','slang voice','shouting voice','texting voice'], a:'formal voice'}],
+    bridge:'WRIT.PARA.L07.02', bridgeName:'Formal Voice',
+    watch:{ q:'Gavriel’s first draft: “Zeidy gave me his camera. It was nice.”', m:{type:'scene', e:'🗣️', t:'Benny reads Gavriel’s draft aloud in the newsroom.'}, steps:[
+      {t:'Read aloud, it sounds like a form. A flat voice.'},
+      {t:'Word choice: not “nice”. Heavy, and it smelled like old leather.'},
+      {t:'Rhythm: one long sentence, then a short one. “Blur.”'},
+      {t:'Your lens: a photographer sees light through the s’chach.'},
+      {t:'No fancy words he would never say. It still sounds like him.'},
+      {t:'Teach it back: tell your chavrusa the three tools.'}], a:'Zeidy’s camera was heavier than my schoolbag, and it smelled like old leather. I pressed. Blur.' },
+    oops:{ q:'Gavriel tries to sound like a writer.', wrong:'The magnificent apparatus trembled in my minuscule hands.', right:'The heavy camera shook in my hands.', why:'Fancy words he would never say are trying too hard. A real voice sounds like you.' },
+    ways:['worked example','sort it','word tiles','match it','Mistake Detective','teach it back'], done:'You can write in a real voice: word choice, rhythm and your lens.',
+    board:{ one:'A real voice: exact word choice, short and long sentences mixed, and your lens: details only you would notice.', activity:'Pairs get a flat paragraph; each boy rewrites one sentence with one tool, and the pair reads both versions aloud.', mistakes:['A flat voice: plain words, same-length sentences','Trying too hard: fancy words he would never say','Details anyone would see'] },
+    do:[
+      {type:'sort', q:'Gavriel’s camera moment.', bins:['A real voice','Mistake: a flat voice'], cards:[['It smelled like old leather.',0],['It was a nice camera.',1],['I pressed. Blur.',0],['I took a good picture.',1]], mis:true,
+        say:'Real voice, or a flat voice? Sort each.', how:'Exact words? Or plain ones anyone would use?'},
+      {type:'tiles', q:'End on a short one.', w:['I held','my breath.','Click.'], extra:['very nice'],
+        say:'Build the lines, and end short.', how:'The longer part first. The short one hits last.'}],
+    your:[
+      {type:'match', pairs:[['Word choice','Exact, real words'],['Rhythm','Short and long, mixed'],['Your lens','Details only you see']],
+        say:'Match each tool to what it means.', how:'Words, sentence lengths, or details?'},
+      {type:'sort', q:'Eli’s first leining.', bins:['A real voice','A flat voice','Trying too hard'], cards:[['The yad slipped in my fingers.',0],['It was a big day.',1],['The parchment gleamed majestically.',2],['The letters swam.',0],['I read it and it was fine.',1]],
+        say:'Real, flat, or trying too hard?', how:'Would a real boy say it on his best day?'},
+      {type:'tiles', q:'Upgrade the flat words.', w:['The camera','smelled like','old leather.'],
+        say:'Build a sentence with exact words.', how:'What is it? Then what it smelled like.'},
+      {type:'match', q:'Flat to real.', pairs:[['It was nice.','It smelled like old leather.'],['I was nervous.','My finger shook on the button.'],['He said something.','“Breathe out,” he said.']],
+        say:'Match each flat line to its real one.', how:'Swap the plain words for an exact detail.'},
+      {type:'sort', q:'Rhythm check.', bins:['Rhythm works','All the same length'], cards:[['I breathed out and pressed. Blur.',0],['I went up. I read. I sat down.',1],['I practiced for weeks. Then: crack.',0],['It was big. It was loud. I sat.',1]],
+        say:'Does the rhythm work, or all the same?', how:'Do the sentences change length?'}] },
+
+  'WRIT.PARA.L09.08':{ band:'M68', pic:'💭', today:'End a memoir with what you understand now', why:'The scene shows what happened. The reflection shows who you became.',
+    ready:[{q:'In Reflective Ending, a reflection is earned by…', o:['one real moment in the story','a lesson for everyone','a new problem','a summary'], a:'one real moment in the story'}],
+    bridge:'WRIT.PARA.L08.11', bridgeName:'Reflective Ending',
+    watch:{ q:'Gavriel’s memoir needs its last paragraph.', m:{type:'scene', e:'💭', t:'Gavriel and Akiva read the ending before The Beacon prints.'}, steps:[
+      {t:'Draft: “The lesson is: be patient.” A pasted-on moral. Cut it.'},
+      {t:'Back then I thought Zeidy was teaching me about cameras.'},
+      {t:'Now I understand he was teaching me to slow down.'},
+      {t:'Tie it to a detail: I still breathe out before every photo.'},
+      {t:'Stay honest: some days I forget, then I feel his hand.'},
+      {t:'Teach it back: tell your chavrusa then, now and today.'}], a:'Back then I thought Zeidy was teaching me about cameras. Now I understand he was teaching me to slow down. Before every Beacon photo, I still breathe out first.' },
+    oops:{ q:'Eli ends his memoir about his first leining.', wrong:'The moral: never be afraid of making mistakes.', right:'Back then I thought the crack meant I had failed. Now I see the shul wanted me.', why:'A pasted-on moral lectures the reader. A reflection tells what YOU now understand.' },
+    ways:['worked example','sort it','word tiles','match it','Mistake Detective','teach it back'], done:'You can end a memoir with an honest reflection: then, now and today.',
+    board:{ one:'A memoir reflection: back then I thought…, now I understand…, tied to a detail and shown in your life today.', activity:'Each boy writes a pasted-on moral on purpose; his chavrusa asks “What do YOU understand now?” until it becomes a real reflection.', mistakes:['A summary of what happened','A pasted-on moral that lectures the reader','Too perfect: “I never rush again, ever”'] },
+    do:[
+      {type:'sort', q:'Gavriel’s last lines.', bins:['A reflection','Mistake: a pasted-on moral'], cards:[['Now I know he taught me to wait.',0],['The lesson: always be patient.',1],['I still breathe out before photos.',0],['So remember to listen to Zeidy!',1]], mis:true,
+        say:'Reflection, or a pasted-on moral? Sort each.', how:'What he understands, or a lecture to the reader?'},
+      {type:'tiles', q:'Start the “now” part.', w:['Now I','understand','why.'], extra:['The lesson'],
+        say:'Build the start of the writer now.', how:'Begin with the words that open the gap.'}],
+    your:[
+      {type:'match', pairs:[['Back then I thought…','What the boy believed'],['Now I understand…','What the writer knows'],['Today I still…','Where it shows today']],
+        say:'Match each starter to its job.', how:'The boy then, the writer now, or today?'},
+      {type:'sort', q:'Eli’s last lines.', bins:['A reflection','A summary','A pasted-on moral'], cards:[['Now I see the shul wanted me.',0],['Then I finished and sat down.',1],['So never be afraid!',2],['I nod at younger boys now.',0],['That was my first leining.',1]],
+        say:'Reflection, summary, or a pasted-on moral?', how:'Understanding, retelling, or a lecture?'},
+      {type:'tiles', q:'Show it today.', w:['Today I','still','breathe out','first.'],
+        say:'Build the line that shows it today.', how:'Start with when. Then what he still does.'},
+      {type:'match', q:'Fix each ending.', pairs:[['The lesson is: be patient.','Say what YOU now understand'],['That was the day I used it.','Add back then … now …'],['Now I understand patience.','Tie it to a detail today']],
+        say:'Match each ending to its fix.', how:'A lecture? A retelling? Or too general?'},
+      {type:'sort', q:'Honest, or too perfect?', bins:['Honest','Too perfect'], cards:[['Some days I still rush.',0],['I never rush again, ever.',1],['I am still learning to wait.',0],['Now I am perfectly patient.',1]],
+        say:'Honest, or too perfect? Sort each.', how:'Could a real boy truly say this?'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

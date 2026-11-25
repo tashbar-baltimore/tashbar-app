@@ -112,7 +112,7 @@ async function kidTests(browser) {
     return out; });
   report.counts.lessons = audit.skills; report.counts.checkAnswersNeverTaught = audit.untaught.length; report.untaught = audit.untaught;
   audit.broken.forEach(b => fail('broken lesson: ' + b)); if (!audit.broken.length) ok(audit.skills + ' lessons build with well-formed questions');
-  const all = await pg.evaluate(() => { window.OB_LIVE = 'off'; return Object.keys(BANK_ALL); }); let ids = [];   /* the engine's own flow; One Bite has its own test below */
+  const all = await pg.evaluate(() => { window.OB_LIVE = 'off'; window.TL_CHEM_SING = false; return Object.keys(BANK_ALL); }); let ids = [];   /* the engine's own flow; One Bite has its own test below. The Chemdas song screen (TorahTracks.html) waits for a tap before LK.CHEM.L04.* starts, so it is switched off here like One Bite. */
   if (process.env.ALL) ids = all; else { const n = Math.max(1, Number(process.env.SAMPLE || 40)); const step = Math.max(1, Math.floor(all.length / n)); for (let i = 0; i < all.length && ids.length < n; i += step) ids.push(all[i]);
     (process.env.PLAY || '').split(',').filter(Boolean).forEach(p => all.filter(id => id.indexOf(p) === 0).forEach(id => { if (ids.indexOf(id) < 0) ids.push(id); })); }
   let done = 0;

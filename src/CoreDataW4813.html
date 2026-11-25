@@ -1,0 +1,375 @@
+<script>
+/* CoreDataW4813.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 6 (L07), Unit 3 "The Informative Essay". Cast: The Beacon newsroom.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L07.07':{name:'Pick the Pattern',
+  teach:[
+    {how:'An information essay answers a question. Before you write, pick the PATTERN that fits the question: the plan for your body paragraphs. There are four. DEFINITION answers "What is it?": say what group it belongs to, what makes it different, then its parts. CLASSIFICATION answers "What kinds are there?": one paragraph for each kind.', q:'Akiva’s question for The Beacon: “What kinds of trash end up in the Inner Harbor?” Which pattern fits?', o:['classification','definition','compare and contrast']},
+    {how:'COMPARE AND CONTRAST answers "How are two things alike and different?": first how they are alike, then how they differ. CAUSE AND EFFECT answers "Why does it happen?" or "What happens when…?": first the cause, what makes it happen, then the effect, what happens because of it. Here it is one of four patterns: one cause, one effect.', q:'Eli’s question: “Why does Mr. Trash Wheel catch the most trash after a heavy rain?” Which pattern fits?', o:['cause and effect','classification','definition']},
+    {how:'Find the CLUE WORDS in the question. "What is" → definition. "What kinds" or "What types" → classification. "alike", "different" or "compare" → compare and contrast. "Why" or "What happens when" → cause and effect. The mistake is the WRONG PATTERN: the question asks why, and the plan lists kinds. Every paragraph can be true, and the essay still misses the question.', q:'Question: “How is a trash wheel different from a skimmer boat?” Gavriel’s plan: 1) plastic bottles, 2) foam cups, 3) plastic bags. What went wrong?', o:['wrong pattern','pattern fits','too many paragraphs']}
+  ],
+  practice:[
+    {t:'pairs', q:'Match each question to the pattern that answers it.', pairs:[['What is a storm drain?','Definition'],['What kinds of boats work in the harbor?','Classification'],['How is a trash wheel like a skimmer boat?','Compare and contrast'],['What happens when a storm drain clogs?','Cause and effect']],
+      h:'Look at the first words of each question: What is, What kinds, like or different, What happens when.'},
+    {t:'sort', q:'Sort each question by the pattern that fits it.', bins:[{id:'D',label:'📖 Definition'},{id:'C',label:'🗂️ Classification'},{id:'E',label:'➡️ Cause and effect'}],
+      items:[{label:'What does “interceptor” mean?',bin:'D'},{label:'What is a barge?',bin:'D'},{label:'What types of trash float?',bin:'C'},{label:'What kinds of jobs keep the harbor clean?',bin:'C'},{label:'Why does trash float down the Jones Falls?',bin:'E'},{label:'What happens when the dumpster on the barge is full?',bin:'E'}],
+      h:'"What is" and "mean": definition. "What kinds" and "What types": classification. "Why" and "What happens when": cause and effect.'},
+    {t:'spotall', q:'Question: “Why does Mr. Trash Wheel catch the most trash after a heavy rain?” Tap every plan line that fits a cause-and-effect essay.', cells:[{label:'Cause: rain washes trash off the streets into storm drains and the stream.',ok:true},{label:'Effect: more trash floats down to the wheel.',ok:true},{label:'Kind 1: plastic bottles.',ok:false},{label:'Alike: both are machines.',ok:false},{label:'Part 1: the water wheel.',ok:false}],
+      h:'A cause-and-effect plan has a cause and an effect. Kinds, alike and parts belong to other patterns.'},
+    {t:'sort', q:'Sneaky ones! Each plan tries to answer its question. Does the pattern fit?', bins:[{id:'G',label:'✅ Pattern fits'},{id:'W',label:'⚠️ Wrong pattern'}],
+      items:[{label:'Q: What is a boom? Plan: the group it belongs to, what makes it different, its parts.',bin:'G'},{label:'Q: Why does the harbor get dirty after a storm? Plan: kinds of trash, one paragraph each.',bin:'W'},{label:'Q: How are a trash wheel and a skimmer boat alike and different? Plan: how they are alike, then how they differ.',bin:'G'},{label:'Q: What kinds of trash does the wheel catch? Plan: the cause, then the effect.',bin:'W'},{label:'Q: What happens when the belt stops? Plan: the cause, then the effect.',bin:'G'},{label:'Q: What is Mr. Trash Wheel? Plan: how it is like a skimmer boat, then how it differs.',bin:'W'}],
+      h:'Find the clue words in the question first. Then ask: does the plan follow that pattern?'},
+    {t:'order', q:'Build Akiva’s planning sentence. Tap the tiles in order.', tiles:['The question asks','“what kinds,”','so I will use','classification.'],
+      h:'The question first, then its clue words. Then the pattern you will use.'},
+    {t:'spotall', q:'Question: “What is Mr. Trash Wheel?” Tap every line that belongs in a definition plan.', cells:[{label:'Its group: a machine that catches floating trash.',ok:true},{label:'What makes it different: the stream’s current turns its wheel.',ok:true},{label:'Its parts: a water wheel, a conveyor belt and a dumpster.',ok:true},{label:'Why the harbor gets dirty after rain.',ok:false},{label:'How it is like a skimmer boat.',ok:false}],
+      h:'A definition plan: the group it belongs to, what makes it different, its parts.'},
+    {t:'write', q:'Your turn to write. Choose one question for The Beacon’s harbor feature: “What is a storm drain?”, “What kinds of trash does the wheel catch?”, “How is a trash wheel like a skimmer boat?” or “Why does the wheel catch the most trash after rain?”. Name the pattern, then write a plan: one line for each body paragraph.', min:0, checks:['🔎 I found the clue words in the question.','🧩 I named the pattern that fits.','🗂️ Each paragraph line follows that pattern.'], h:'Circle the clue words first. Then write the pattern’s plan: group, difference, parts; one kind each; alike, then different; or cause, then effect.'}
+  ],
+  check:[
+    {q:'Question: “How is a shul’s sukkah like a family’s sukkah, and how is it different?” Which pattern fits?', o:['compare and contrast','classification','definition'], h:'Look for the clue words: like, different.'},
+    {q:'Question: “What kinds of brachos do we say on food?” Which pattern fits?', o:['classification','cause and effect','compare and contrast'], h:'"What kinds" is the clue. Which pattern gives one paragraph for each kind?'},
+    {t:'order', q:'Question: “What is a lulav?” Build the planning sentence. Tap the tiles in order.', tiles:['The question asks','“what is,”','so I will use','definition.'], h:'The question and its clue words first. Then the pattern.'}
+  ],
+  re:[
+    {how:'A new way: the question is a lock, and each pattern is a key. "What is" opens with definition, "What kinds" with classification, "alike and different" with compare and contrast, "Why" with cause and effect.', q:'The question “What kinds of fish live in the harbor?” opens with…', o:['classification','definition','cause and effect']},
+    {how:'A simpler step: circle the first two or three words of the question. Match them to the clue list. Then write one plan line for each body paragraph.', q:'A question that starts “Why does…” points to…', o:['cause and effect','definition','classification']},
+    {how:'The skill underneath: Three-Part Piece (Grade 5): an opening, a body and an ending. Now you go further: you choose how the body is organized, so that it answers the question.', q:'The pattern decides how you organize…', o:['the body paragraphs','the title','the date']}
+  ]},
+
+  'WRIT.ESSAY.L07.08':{name:'Thesis Sentence',
+  teach:[
+    {how:'An information essay has one THESIS SENTENCE, usually at the end of the opening paragraph. It does two jobs. It STATES THE TOPIC: what the whole essay is about. And it PREVIEWS THE PARTS: it names the main parts, one for each body paragraph, so the reader knows what is coming. A thesis that does both previews the parts.', q:'Which thesis states the topic and previews the parts?', o:['Mr. Trash Wheel, a machine that catches trash in the Inner Harbor, works with three parts: a water wheel, a conveyor belt and a dumpster.','Mr. Trash Wheel is a machine in Baltimore.','In this essay I will tell you about Mr. Trash Wheel.']},
+    {how:'Name the parts IN THE SAME ORDER as the body paragraphs. If paragraph 1 is about the wheel, paragraph 2 the belt and paragraph 3 the dumpster, the thesis names them in that order. Keep the parts short and alike: three nouns, or three verbs.', q:'Eli’s body paragraphs: 1) the wheel, 2) the belt, 3) the dumpster. Which preview matches?', o:['a water wheel, a conveyor belt and a dumpster','a dumpster, a water wheel and a conveyor belt','a conveyor belt and some other things']},
+    {how:'Three mistakes. ANNOUNCES: "In this essay I will tell you about…" talks about the essay instead of the topic. AN OPINION: a word like best, should or amazing gives the writer’s view ("Every city should build a trash wheel."). That is a claim for an argument; an information thesis informs. TOPIC ONLY: a plain fact about the topic, with no opinion, that previews nothing ("Mr. Trash Wheel is a machine in Baltimore."). Check in that order: about the essay? a view? no parts?', q:'“Mr. Trash Wheel is the best machine in the world.” What is wrong with this thesis?', o:['an opinion','topic only','announces']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each thesis.', bins:[{id:'P',label:'🗺️ Previews the parts'},{id:'T',label:'📌 Topic only'},{id:'O',label:'💬 An opinion'}],
+      items:[{label:'The Inner Harbor stays cleaner thanks to three helpers: booms, trash wheels and skimmer boats.',bin:'P'},{label:'Mr. Trash Wheel works in Baltimore.',bin:'T'},{label:'Baltimore should build ten more trash wheels.',bin:'O'},{label:'Storm drains are found on city streets.',bin:'T'},{label:'Rain sends trash to the harbor in two steps: it washes trash into storm drains, and the drains empty into the stream.',bin:'P'},{label:'Working on a skimmer boat is the most exciting job in Baltimore.',bin:'O'}],
+      h:'First: is there an opinion word like best, should or most exciting? If not, are the parts named?'},
+    {t:'pairs', q:'Match each body-paragraph plan to the thesis that previews it.', pairs:[['1) the water wheel 2) the belt 3) the dumpster','Mr. Trash Wheel works with a water wheel, a conveyor belt and a dumpster.'],['1) plastic bottles 2) foam cups 3) plastic bags','Three kinds of trash fill Mr. Trash Wheel’s dumpster: plastic bottles, foam cups and plastic bags.'],['1) how they are alike 2) how they differ','A trash wheel and a skimmer boat share a job but work in different ways.']],
+      h:'Find the thesis that names the same parts, in the same order.'},
+    {t:'spotall', q:'Tap every thesis that previews the parts.', cells:[{label:'Mr. Trash Wheel gets its power from two places: the stream’s current and the sun.',ok:true},{label:'Booms, rakes and a belt work together to pull trash from the Jones Falls.',ok:true},{label:'Mr. Trash Wheel has googly eyes.',ok:false},{label:'In this essay I will explain trash.',ok:false},{label:'The harbor is in Baltimore.',ok:false}],
+      h:'Does the sentence name the main parts the essay will cover?'},
+    {t:'sort', q:'Thesis mistakes! Sort each one.', bins:[{id:'G',label:'✅ Previews the parts'},{id:'A',label:'⚠️ Announces'},{id:'T',label:'⚠️ Topic only'}],
+      items:[{label:'In this essay I will tell you about booms.',bin:'A'},{label:'This essay is about skimmer boats.',bin:'A'},{label:'Skimmer boats work in the harbor.',bin:'T'},{label:'A skimmer boat cleans the harbor in three steps: it finds the trash, scoops it up and unloads it.',bin:'G'},{label:'Booms are used in the harbor.',bin:'T'},{label:'A boom steers trash with two parts: a floating tube on top and a curtain below the water.',bin:'G'}],
+      h:'"In this essay" or "This essay is about" announces. A topic with no parts is topic only.'},
+    {t:'order', q:'Build Eli’s thesis. Tap the tiles in order.', tiles:['Mr. Trash Wheel','works with','a water wheel,','a conveyor belt','and a dumpster.'],
+      h:'The topic first. Then the parts, in the order of the body paragraphs.'},
+    {t:'spotall', q:'Body paragraphs: 1) where the trash comes from, 2) how the wheel catches it, 3) where it goes. Tap every thesis that previews them IN ORDER.', cells:[{label:'Harbor trash comes from city streets, gets caught by the wheel, and leaves on a barge.',ok:true},{label:'From the street to the wheel to the barge, harbor trash takes a three-stop trip.',ok:true},{label:'Harbor trash leaves on a barge, comes from city streets, and gets caught by the wheel.',ok:false},{label:'Trash is a problem.',ok:false},{label:'This essay is about trash.',ok:false}],
+      h:'First where it comes from, then the wheel, then where it goes.'},
+    {t:'write', q:'Your turn to write. Pick a topic you know well: your shul, a Yom Tov food, or a job in your house. List two or three body paragraphs, then write one thesis sentence.', min:0, checks:['📌 It states the topic.','🗺️ It previews each body paragraph, in order.','🚫 No "In this essay I will", and no opinion.'], h:'Write the list first. Then: topic + "has three parts:" (or "works in three steps:") + the list, in order.'}
+  ],
+  check:[
+    {q:'Thesis: “Our shul’s sukkah is the most beautiful in Baltimore.” What is wrong with it?', o:['an opinion','topic only','announces'], h:'Is there a word that gives the writer’s view, like most beautiful?'},
+    {q:'Thesis: “Shabbos challah comes together in three stages: the dough, the braiding and the baking.” Which describes it?', o:['previews the parts','topic only','announces'], h:'Does it name the topic? Does it name the main parts?'},
+    {t:'order', q:'Body paragraphs: 1) the kitchen 2) the bedrooms 3) the car. Build a thesis that previews them in order. Tap the tiles in order.', tiles:['Pesach cleaning','has three parts:','the kitchen,','the bedrooms','and the car.'], h:'The topic first. Then the parts, joined with commas and "and".'}
+  ],
+  re:[
+    {how:'A new way: a thesis is a table of contents in one sentence. A reader who reads only the thesis already knows what each paragraph will cover.', q:'A thesis works like…', o:['a table of contents','a title page','the last page']},
+    {how:'A simpler step: write your body-paragraph topics as a list first. Then join them: the topic + "has three parts:" + the list.', q:'To build a thesis fast, start from…', o:['the list of body paragraphs','a question to the reader','your favorite fact']},
+    {how:'The skill underneath: Umbrella Sentence (Grade 4). A topic sentence covers one paragraph. A thesis is a bigger umbrella: it covers the whole essay and names each part under it.', q:'A thesis covers…', o:['the whole essay','one paragraph','one sentence']}
+  ]},
+
+  'WRIT.PARA.L07.06':{name:'Develop the Point',
+  teach:[
+    {how:'In Grade 5 you backed a point with proof. Now DEVELOP it: a strong body paragraph uses several KINDS of support, and a good writer knows which kind he is using. A FACT gives a number, a date or a name that you could look up: "It has done this job since 2014." A DEFINITION explains a word the reader may not know: "A conveyor belt is a moving belt that carries things from place to place."', q:'“A barge is a flat boat that carries heavy loads.” What kind of support is this?', o:['a definition','a fact','a quote']},
+    {how:'A CONCRETE DETAIL paints what you would SEE or HEAR if you stood there, with no number: "Dripping bottles ride slowly up the belt." A QUOTE gives someone’s exact words, in quotation marks, with who said them. An EXAMPLE is one case that shows the point, often starting with "For example,".', q:'“For example, a bottle dropped on a street can ride the rain down the stream and up the belt.” What kind of support is this?', o:['an example','a concrete detail','a definition']},
+    {how:'Two mistakes. SAYS IT AGAIN, which you met in Say More: a sentence that repeats the point in new words. The new one is ONE KIND ONLY: three facts in a row, so the reader gets numbers but never sees it or learns the hard word. A developed paragraph uses at least three DIFFERENT kinds.', q:'Point: “The bakery is busy before Shabbos.” Support: “It sells 400 challos. It opens at 6:00. It has 12 workers.” What is the problem?', o:['one kind only','says it again','develops the point']}
+  ],
+  practice:[
+    {t:'sort', q:'Sort each sentence by its kind of support.', bins:[{id:'F',label:'🔢 Fact'},{id:'D',label:'📖 Definition'},{id:'C',label:'👀 Concrete detail'}],
+      items:[{label:'Mr. Trash Wheel has done this job since 2014.',bin:'F'},{label:'In one hour, the Beacon team picked up 104 pieces of trash along the Jones Falls.',bin:'F'},{label:'A boom is a floating fence that steers trash.',bin:'D'},{label:'The current is the steady push of moving water.',bin:'D'},{label:'Foam cups bob and spin toward the wheel.',bin:'C'},{label:'The rakes clank as they drag trash onto the belt.',bin:'C'}],
+      h:'A number or a date you can check: fact. A word explained: definition. Something you could see or hear: concrete detail.'},
+    {t:'spotall', q:'Tap every paragraph that uses ONE KIND ONLY.', cells:[{label:'Point: the Beacon team worked hard. Support: They met 5 times. They wrote 12 pages. They took 30 photos.',ok:true},{label:'Point: the chessed drive was a success. Support: It ran for 3 days. The boys brought 210 cans. They filled 9 boxes.',ok:true},{label:'Point: the belt lifts the trash. Support: A conveyor belt is a moving belt. Dripping bottles ride up it. Mr. Gross said, “The belt does the lifting.”',ok:false},{label:'Point: the wheel catches the most trash after rain. Support: A storm drain is a street opening for rainwater. Foam cups bob and spin toward the wheel. For example, after a storm, cups crowd the booms.',ok:false}], h:'Name the kind of each support sentence. Three facts with numbers, and nothing else? One kind only.'},
+    {t:'spotall', q:'Benny’s point: “Mr. Trash Wheel catches the most trash after a heavy rain.” Tap every sentence that DEVELOPS the point: it adds something new.', cells:[{label:'A storm drain is an opening in the street that carries rainwater away.',ok:true},{label:'Rain washes trash off the streets into the storm drains, and the drains empty into the Jones Falls.',ok:true},{label:'For example, after a storm, bottles and foam cups crowd the booms.',ok:true},{label:'The wheel really does catch lots of trash after it rains.',ok:false},{label:'After rain, it catches the most trash of all.',ok:false}],
+      h:'Does the sentence add a word, a fact, a picture or a case? Or does it only say the point again?'},
+    {t:'sort', q:'Sneaky ones! Point: “The belt lifts the trash out of the water.” Sort each sentence.', bins:[{id:'G',label:'✅ Develops the point'},{id:'S',label:'⚠️ Says it again'}],
+      items:[{label:'Dripping bottles ride slowly up the belt.',bin:'G'},{label:'The belt really does lift trash out.',bin:'S'},{label:'A conveyor belt is a moving belt that carries things from place to place.',bin:'G'},{label:'So, the trash gets lifted out by the belt.',bin:'S'},{label:'Mr. Gross said, “The stream does the pushing, and the belt does the lifting.”',bin:'G'},{label:'Lifting trash out of the water is what the belt does.',bin:'S'}],
+      h:'Read the point. Then ask: is anything new here, or is it the point in new words?'},
+    {t:'order', q:'Build a sentence that adds a definition. Tap the tiles in order.', tiles:['A boom','is a floating fence','that steers trash','to the wheel.'],
+      h:'The word first. Then what it is. Then what it does.'},
+    {t:'spotall', q:'Tap every QUOTE written the right way: exact words, in quotation marks, with who said them.', cells:[{label:'Mr. Gross said, “The stream does the pushing, and the belt does the lifting.”',ok:true},{label:'“I watched it for an hour,” Yoni said.',ok:true},{label:'Someone said the belt is good.',ok:false},{label:'Mr. Gross said the stream does the pushing.',ok:false},{label:'The belt does the lifting.',ok:false}],
+      h:'Look for quotation marks AND a name. Words with no quotation marks are not a quote.'},
+    {t:'write', q:'Your turn to write. Point: “The dumpster on the barge holds the trash until it leaves.” Write three or four sentences that develop it. Use at least three kinds of support, and name each one in brackets.', min:0, checks:['🧱 Every sentence adds something new.','🔢 I used at least three kinds: fact, definition, concrete detail, quote, example.','🏷️ I named the kind of each sentence.'], h:'Try: define "barge" (a flat boat that carries heavy loads). Add something you could see. Use the fact: when the dumpster is full, a boat tows it away and brings an empty one.'}
+  ],
+  check:[
+    {q:'Point: “Our shul’s new sukkah is big.” Support: “It seats 120 people. It is 30 feet long. It has 14 tables.” What is the problem?', o:['one kind only','says it again','develops the point'], h:'Name the kind of each sentence. Are there at least three different kinds?'},
+    {q:'Point: “The bakery is busy before Shabbos.” Sentence: “Trays of warm challah crowd every shelf.” What kind of support is this?', o:['a concrete detail','an example','a fact'], h:'No number, no word explained. Could you see it if you stood there?'},
+    {t:'order', q:'Point: “Bakeries are busy before Shabbos.” Build an example sentence. Tap the tiles in order.', tiles:['For example,','one bakery','baked 400 challos','last Friday.'], h:'"For example," first. Then who, what, and when.'}
+  ],
+  re:[
+    {how:'A new way: think of a museum guide. He gives a date (a fact), explains a hard word (a definition), points at something to look at (a concrete detail), repeats what an expert said (a quote), and tells one story (an example).', q:'When a guide explains a hard word, he gives…', o:['a definition','a quote','a fact']},
+    {how:'A simpler step: after your point, ask three questions. What word needs explaining? What would I see there? Who said something about it? Each answer is a new sentence.', q:'The question “What would I see there?” gives…', o:['a concrete detail','a definition','a quote']},
+    {how:'The skill underneath: Say More (Grade 4) and Point, Proof, Explain (Grade 5) gave you facts, examples and quotes. Now you go further: you add definitions and concrete details, use at least three different kinds, and name each one.', q:'Develop the Point goes further than Point, Proof, Explain by…', o:['using and naming several kinds of support','writing a longer title','adding an opinion']}
+  ]},
+
+  'WRIT.PARA.L07.07':{name:'Smooth Transitions',
+  teach:[
+    {how:'In Unit 1 your glue words linked sentences inside an argument. An essay also needs links BETWEEN PARAGRAPHS. The first sentence of a new paragraph is a BRIDGE: it POINTS BACK to the last paragraph and POINTS FORWARD to the new one. Last paragraph: the wheel. New paragraph: the belt. Bridge: "The wheel gives the power, but the conveyor belt does the lifting."', q:'In that bridge, which part points back to the last paragraph?', o:['The wheel gives the power','the conveyor belt does the lifting','but']},
+    {how:'Bridge starters help: "Once…," "After…," "Besides…," or "…, but…". "Once the belt has lifted the trash, the dumpster holds it." The "Once" part points back; the rest points forward. A bridge that does both POINTS BACK AND FORWARD.', q:'Last paragraph: the booms. New paragraph: the wheel. Which first sentence points back and forward?', o:['Once the booms steer the trash in, the wheel goes to work.','The wheel is turned by the current.','The booms steer the trash, as I said before.']},
+    {how:'Two mistakes. FORWARD ONLY: the new paragraph jumps in with no link back ("The dumpster sits on a barge."). A one-word link like "Next," or "Also," is sentence glue. It does not say what came before, so it is still forward only. BACK ONLY: the first sentence only repeats the last paragraph and never says what is new.', q:'Last paragraph: the belt. New paragraph: the dumpster. “Next, the dumpster sits on a barge.” What is it?', o:['forward only','back only','points back and forward']}
+  ],
+  practice:[
+    {t:'sort', q:'Last paragraph: the belt. New paragraph: the dumpster. Sort each first sentence.', bins:[{id:'B',label:'🌉 Points back and forward'},{id:'F',label:'⏩ Forward only'},{id:'K',label:'⏪ Back only'}],
+      items:[{label:'Once the belt has lifted the trash, the dumpster holds it.',bin:'B'},{label:'After its ride up the belt, the trash drops into a dumpster.',bin:'B'},{label:'The dumpster sits on a barge.',bin:'F'},{label:'Also, a dumpster sits on a barge.',bin:'F'},{label:'The belt lifts trash, as I said.',bin:'K'},{label:'That is how the belt lifts the trash out of the water.',bin:'K'}],
+      h:'Does it name the belt (back)? Does it name the dumpster (forward)? A bridge does both.'},
+    {t:'pairs', q:'Match each bridge to the two paragraphs it joins.', pairs:[['Once the booms steer the trash in, the wheel goes to work.','booms → wheel'],['The wheel gives the power, but the belt does the lifting.','wheel → belt'],['Once the belt has lifted the trash, the dumpster holds it.','belt → dumpster']],
+      h:'The first part names the last paragraph. The second part names the new one.'},
+    {t:'spotall', q:'Last paragraph: how the wheel catches trash. New paragraph: where the trash goes. Tap every first sentence that points back AND forward.', cells:[{label:'Once the wheel catches the trash, it still has to leave the harbor.',ok:true},{label:'Catching the trash is only half the job; next, it must leave the harbor.',ok:true},{label:'Trash leaves on a barge.',ok:false},{label:'Next, trash leaves the harbor.',ok:false},{label:'As the last paragraph showed, the wheel catches trash.',ok:false}],
+      h:'Look for the catching (back) AND the leaving (forward) in one sentence.'},
+    {t:'sort', q:'Bridge mistakes! Last paragraph: rain and storm drains. New paragraph: the booms. Sort each first sentence.', bins:[{id:'G',label:'✅ Points back and forward'},{id:'F',label:'⚠️ Forward only'},{id:'K',label:'⚠️ Back only'}],
+      items:[{label:'Once rain carries the trash down the stream, the booms steer it to the wheel.',bin:'G'},{label:'Booms are floating fences.',bin:'F'},{label:'Also, booms steer trash.',bin:'F'},{label:'Rain washes trash into storm drains, as I explained.',bin:'K'},{label:'The storm drains really do carry trash.',bin:'K'},{label:'The storm drains bring the trash, but the booms decide where it goes.',bin:'G'}],
+      h:'"Also," alone does not point back. Repeating the drains does not point forward.'},
+    {t:'order', q:'Build a bridge from the belt paragraph to the dumpster paragraph. Tap the tiles in order.', tiles:['Once the belt','has lifted the trash,','the dumpster','holds it.'],
+      h:'Point back to the belt first. Then point forward to the dumpster.'},
+    {t:'spotall', q:'Tap every paragraph opener that points back to what came before.', cells:[{label:'Once the trash is out of the water,',ok:true},{label:'After its ride up the belt,',ok:true},{label:'Besides turning the wheel,',ok:true},{label:'Also,',ok:false},{label:'Next,',ok:false}],
+      h:'Does the opener name what the last paragraph was about?'},
+    {t:'write', q:'Your turn to write. Pick two paragraphs of the harbor feature: the wheel → the belt, or the belt → the dumpster. Write the first sentence of the second paragraph: a bridge.', min:0, checks:['⏪ It points back to the last paragraph.','⏩ It points forward to the new one.','🚫 It is not just "Next," or "Also,".'], h:'Start with "Once…," or "After…," and name what the last paragraph did. Then say what the new paragraph is about.'}
+  ],
+  check:[
+    {q:'An essay about building a sukkah. Last paragraph: the walls. New paragraph: the s’chach. “Once the walls are standing, it is time to lay the s’chach.” What is it?', o:['points back and forward','forward only','back only'], h:'Does it name the walls? Does it name the s’chach?'},
+    {q:'Same essay. Last paragraph: the s’chach. New paragraph: the decorations. “Also, there are decorations.” What is it?', o:['forward only','back only','points back and forward'], h:'Does "Also," say anything about the s’chach?'},
+    {t:'order', q:'Build a bridge from the s’chach paragraph to the decorations paragraph. Tap the tiles in order.', tiles:['Once the s’chach','is on top,','the boys hang','the decorations.'], h:'Point back to the s’chach first. Then forward to the decorations.'}
+  ],
+  re:[
+    {how:'A new way: a bridge sentence is like a real bridge across a river. One end stands on the bank behind you, the last paragraph. The other end stands on the bank ahead, the new one.', q:'A bridge sentence stands on…', o:['the last paragraph and the new one','the title','the reader’s question']},
+    {how:'A simpler step: write "Once [what the last paragraph did]," then add what the new paragraph is about.', q:'“Once the wheel catches the trash,” points…', o:['back','forward','nowhere']},
+    {how:'The skill underneath: Glue Words (Grade 6, Unit 1). Glue words link sentences inside a paragraph. Now you go further: a bridge sentence links whole paragraphs, back and forward.', q:'Glue words link sentences. A bridge sentence links…', o:['paragraphs','letters','titles']}
+  ]},
+
+  'WRIT.PARA.L07.08':{name:'Charts and Captions',
+  teach:[
+    {how:'Some information is easier to SEE than to read. A GRAPHIC can show it. A CHART turns numbers into bars, so the reader SEES AT A GLANCE which is biggest or smallest. A TABLE lines up SEVERAL FACTS about each thing in rows and columns, often words, not just one number. A DIAGRAM shows parts or steps, with labels and arrows. Pick the graphic that fits the job.', q:'Gavriel wants readers to see at a glance which kind of trash the team picked up most. Which graphic fits?', o:['a chart','a diagram','a table']},
+    {how:'A graphic must ADD INFORMATION: something the reader learns, or sees better than in the words. A cute smiling fish next to the harbor essay is DECORATION ONLY: it looks nice but teaches nothing. Ask: what does the reader learn from it?', q:'Which graphic adds information to the harbor feature?', o:['a diagram of trash going from street to drain to stream to wheel','a drawing of a smiling sun','a border of stars around the page']},
+    {how:'Every graphic needs a CAPTION: one line under it that SAYS WHAT IT SHOWS, the topic and what is counted or compared. "Trash the Beacon team picked up in one hour, by kind" says what it shows. "Look at this!" or "Chart" is a VAGUE CAPTION.', q:'Caption under the table of the trash wheel and the skimmer boat: “Cool facts!” What is wrong?', o:['a vague caption','decoration only','says what it shows']}
+  ],
+  practice:[
+    {t:'sort', q:'Which graphic fits each piece of information?', bins:[{id:'C',label:'📊 Chart'},{id:'T',label:'🔲 Table'},{id:'D',label:'➡️ Diagram'}],
+      items:[{label:'which kind of trash the team picked up most, at a glance',bin:'C'},{label:'which grade brought the most cans to the chessed drive, at a glance',bin:'C'},{label:'how a trash wheel and a skimmer boat differ in power, moving and crew',bin:'T'},{label:'the name, year and place of each trash wheel',bin:'T'},{label:'the parts of Mr. Trash Wheel, with labels',bin:'D'},{label:'the path trash takes from a street to the wheel',bin:'D'}],
+      h:'Which number is biggest, at a glance: chart. Several facts about each thing, in rows: table. Parts or steps: diagram.'},
+    {t:'pairs', q:'Match each graphic to the caption that says what it shows.', pairs:[['📊 🍶 42 · 🍫 35 · 🥤 19 · 🛍️ 8','Trash the Beacon team picked up in one hour, by kind'],['🔲 wheel | boat: power, moving, crew','How a trash wheel and a skimmer boat compare'],['➡️ street → drain → stream → wheel','How trash travels from a street to the wheel']],
+      h:'Numbers by kind? Two things side by side? Steps with arrows?'},
+    {t:'spotall', q:'Tap every graphic that ADDS INFORMATION to the harbor feature.', cells:[{label:'a chart of the trash the team picked up',ok:true},{label:'a diagram of the wheel’s parts, with labels',ok:true},{label:'a table comparing the wheel and a skimmer boat',ok:true},{label:'a clip-art wave in the corner',ok:false},{label:'a smiley face next to the title',ok:false}],
+      h:'What would the reader learn from it? If nothing, it is decoration only.'},
+    {t:'sort', q:'Caption mistakes! Sort each caption.', bins:[{id:'G',label:'✅ Says what it shows'},{id:'V',label:'⚠️ Vague caption'}],
+      items:[{label:'Trash the Beacon team picked up in one hour, by kind',bin:'G'},{label:'Look at this!',bin:'V'},{label:'Chart',bin:'V'},{label:'How trash travels from a city street to Mr. Trash Wheel',bin:'G'},{label:'Wow, so much trash!',bin:'V'},{label:'How a trash wheel and a skimmer boat compare',bin:'G'}],
+      h:'Does the caption name the topic and what is counted or shown?'},
+    {t:'order', q:'Build a caption that says what it shows. Tap the tiles in order.', tiles:['Trash','the Beacon team','picked up in one hour,','by kind'],
+      h:'What is counted first. Then who, when, and how it is split.'},
+    {t:'spotall', q:'Gavriel’s bar chart: 🍶 Bottles ▮▮▮▮▮▮▮▮ 42 · 🍫 Wrappers ▮▮▮▮▮▮▮ 35 · 🥤 Foam cups ▮▮▮▮ 19 · 🛍️ Bags ▮▮ 8. Tap every fact the chart shows.', cells:[{label:'Bottles were the most common kind.',ok:true},{label:'The team picked up more wrappers than foam cups.',ok:true},{label:'Bags were the least common kind.',ok:true},{label:'The team picked up the trash on a rainy day.',ok:false},{label:'Mr. Trash Wheel started in 2014.',ok:false}],
+      h:'Read only the bars and numbers. Is the fact there?'},
+    {t:'write', q:'Your turn to write. Plan a graphic for The Beacon’s harbor feature, or for a topic you know. Describe it in words or emoji (bars, rows, or arrows), then write its caption.', min:0, checks:['📊 I chose a chart, a table or a diagram that fits.','➕ It adds information the words alone do not show.','🏷️ My caption says what it shows.'], h:'Biggest number at a glance: bars. Several facts about each thing: rows. Steps: arrows. Then finish the line "This shows…" and use it as your caption.'}
+  ],
+  check:[
+    {q:'An essay about the Pesach seder. Which graphic fits “the steps of the seder, from Kadesh to Nirtzah, in order”?', o:['a diagram','a chart','a table'], h:'Parts or steps: which graphic shows them?'},
+    {q:'An essay about the yeshiva’s chessed drive. Caption under a bar chart: “Great job, everyone!” What is wrong?', o:['a vague caption','decoration only','says what it shows'], h:'Does the caption say what the chart counts?'},
+    {t:'order', q:'Build a caption that says what it shows. Tap the tiles in order.', tiles:['Cans collected','in the chessed drive,','by grade'], h:'What is counted first. Then where. Then how it is split.'}
+  ],
+  re:[
+    {how:'A new way: think of a weather page. The map with arrows shows the storm’s path, and the line under it says what the map shows. Words, graphic and caption work together.', q:'The line under a weather map is…', o:['a caption','a chart','a title page']},
+    {how:'A simpler step: ask, "What will the reader learn from this graphic?" If the answer is nothing, cut it. Then finish the line "This shows…" and use it as the caption.', q:'A graphic that teaches the reader nothing is…', o:['decoration only','a diagram','a caption']},
+    {how:'The skill underneath: Develop the Point (this unit). Facts, definitions, details, quotes and examples develop a point in words. Now you go further: a graphic develops it with something the reader can see.', q:'A graphic that adds information helps…', o:['develop the point','end the essay','write the title']}
+  ]}
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L07.07':{hook:'Can every paragraph be true and the essay still miss the question?', big:'Find the clue words in the question, then organize by the pattern that fits: definition, classification, compare and contrast, or cause and effect.',
+    intro:['"What is" → definition: its group, what makes it different, its parts.','"What kinds" → classification: one paragraph for each kind.','"Alike" or "different" → compare and contrast.','"Why" or "What happens when" → cause and effect.'],
+    ex:[{q:'Question: "What kinds of trash end up in the harbor?"',steps:['Clue words: "What kinds".','One paragraph for each kind.'],a:'Classification'},
+        {q:'Question: "Why does the wheel catch the most trash after rain?"',steps:['Clue word: "Why".','First the cause, then the effect.'],a:'Cause and effect'}],
+    oops:{q:'Question: “Why does the wheel catch the most trash after rain?”',wrong:'Plan: plastic bottles, foam cups, plastic bags.',right:'Plan: the cause (rain washes street trash down the stream), then the effect (more trash reaches the wheel).',why:'"Why" asks for cause and effect. A list of kinds is true, but it answers a different question.'},
+    idea:['The question is a lock and the pattern is the key: find the clue words, and the right key fits.'],
+    try:{q:'Which pattern fits “How is a trash wheel like a skimmer boat?”',o:['compare and contrast','definition','classification'],a:'compare and contrast',steps:['Clue word: "like". Two things, alike and different.']}},
+  'WRIT.ESSAY.L07.08':{hook:'How can one sentence give the reader the whole map of your essay?', big:'A thesis sentence states the topic and previews the main parts, in the same order as the body paragraphs, with no announcing and no opinion.',
+    intro:['State the topic: what the whole essay is about.','Preview the parts: one for each body paragraph.','Name them in the same order as the body paragraphs.','No "In this essay I will", and no opinion.'],
+    ex:[{q:'Body paragraphs: the wheel, the belt, the dumpster.',steps:['Topic: Mr. Trash Wheel.','Parts in order: wheel, belt, dumpster.'],a:'Mr. Trash Wheel works with three parts: a water wheel, a conveyor belt and a dumpster.'},
+        {q:'"This essay is about booms."',steps:['It talks about the essay: it announces.','Name the topic and the parts instead.'],a:'A boom steers trash with two parts: a floating tube on top and a curtain below the water.'}],
+    oops:{q:'Write a thesis about skimmer boats.',wrong:'In this essay I will tell you about skimmer boats.',right:'A skimmer boat cleans the harbor in three steps: it finds the trash, scoops it up and unloads it.',why:'"In this essay I will" talks about the essay. A real thesis names the topic and previews the parts.'},
+    idea:['A thesis is a table of contents in one sentence.'],
+    try:{q:'“Mr. Trash Wheel works in Baltimore.” What is it?',o:['topic only','previews the parts','an opinion'],a:'topic only',steps:['Does it name the parts the essay will cover? No.']}},
+  'WRIT.PARA.L07.06':{hook:'What turns a thin paragraph into one the reader remembers?', big:'Develop each point with different kinds of support, facts, definitions, concrete details, quotes and examples, and know which kind each sentence is.',
+    intro:['Fact: a number, a date or a name you could look up.','Definition: explains a word.','Concrete detail: what you would see or hear, with no number.','Quote: exact words with who said them. Example: one case, "For example,".'],
+    ex:[{q:'"A barge is a flat boat that carries heavy loads."',steps:['It explains a word: barge.'],a:'Definition'},
+        {q:'"Foam cups bob and spin toward the wheel."',steps:['No number, no word explained.','You could see it if you stood there.'],a:'Concrete detail'}],
+    oops:{q:'Point: the belt lifts trash out of the water. What comes next?',wrong:'The belt really does lift the trash out.',right:'Dripping bottles ride slowly up the belt.',why:'The first one says the point again. The second adds a concrete detail the reader can see.'},
+    idea:['Each sentence after the point brings a new tool from the toolbox: fact, definition, concrete detail, quote, example.'],
+    try:{q:'“Mr. Gross said, ‘The stream does the pushing, and the belt does the lifting.’” What kind of support?',o:['a quote','an example','a fact'],a:'a quote',steps:['Exact words? Quotation marks? Who said them? Yes.']}},
+  'WRIT.PARA.L07.07':{hook:'How does a reader cross from one paragraph to the next without tripping?', big:'The first sentence of a new paragraph is a bridge: it points back to the last paragraph and forward to the new one.',
+    intro:['Point back: name what the last paragraph was about.','Point forward: name what the new paragraph is about.','Starters: "Once…," "After…," "Besides…," "…, but…".','"Next," or "Also," alone is forward only.'],
+    ex:[{q:'Last paragraph: the wheel. New paragraph: the belt.',steps:['Back: the wheel gives the power.','Forward: the belt does the lifting.'],a:'The wheel gives the power, but the conveyor belt does the lifting.'},
+        {q:'"Also, the dumpster sits on a barge."',steps:['"Also," does not say what came before.'],a:'Forward only'}],
+    oops:{q:'Last paragraph: the belt. Start the dumpster paragraph.',wrong:'Next, the dumpster sits on a barge.',right:'Once the belt has lifted the trash, the dumpster holds it until a boat takes it away.',why:'"Next," jumps forward with no link back. "Once the belt has lifted the trash" ties the two paragraphs together.'},
+    idea:['A bridge sentence has two ends: one on the paragraph behind, one on the paragraph ahead.'],
+    try:{q:'“The belt lifts trash, as I said.” What is it?',o:['back only','forward only','points back and forward'],a:'back only',steps:['Does it say anything about the new paragraph? No.']}},
+  'WRIT.PARA.L07.08':{hook:'When is a picture worth more than a paragraph?', big:'Add a chart, a table or a diagram only when it adds information, and give it a caption that says what it shows.',
+    intro:['Chart: bars, so the reader sees at a glance which number is biggest.','Table: several facts about each thing, in rows and columns.','Diagram: parts or steps, with labels and arrows.','Caption: one line that says what it shows.'],
+    ex:[{q:'Show the path trash takes from a street to the wheel.',steps:['Steps in order, with arrows: a diagram.','Caption: say what it shows.'],a:'street → storm drain → Jones Falls → booms → Mr. Trash Wheel. Caption: How trash travels from a city street to Mr. Trash Wheel'},
+        {q:'A smiling fish beside the title.',steps:['What does the reader learn from it? Nothing.'],a:'Decoration only'}],
+    oops:{q:'Caption for the bar chart of the team’s trash count.',wrong:'Look at all this trash!',right:'Trash the Beacon team picked up in one hour, by kind',why:'"Look at all this trash!" does not say what the chart shows. Name the topic and what is counted.'},
+    idea:['A graphic earns its place only if the reader learns something from it, and the caption tells him what.'],
+    try:{q:'Which graphic fits “which kind of trash was most common, at a glance”?',o:['a chart','a diagram','a table'],a:'a chart',steps:['Numbers to see at a glance: a chart.']}}
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L07.07':{s:'Read the question. Circle the clue words.\n"What is" → definition. "What kinds" → classification.\n"Alike", "different" → compare and contrast. "Why", "What happens when" → cause and effect.\nPlan each body paragraph by that pattern. Check: does the plan answer the question?'},
+  'WRIT.ESSAY.L07.08':{s:'List your body paragraphs first.\nState the topic, then name each part, in the same order.\nKeep the parts short and alike: three nouns or three verbs.\nNo "In this essay I will". No opinion words like best or should.'},
+  'WRIT.PARA.L07.06':{s:'Write your point first.\nAdd at least three kinds of support: fact, definition, concrete detail, quote, example.\nName each kind. A fact has a number, date or name to look up; a concrete detail paints what you would see or hear.\nCut any sentence that only says the point again.'},
+  'WRIT.PARA.L07.07':{s:'Read what the last paragraph was about.\nStart the new paragraph with a bridge: point back, then point forward.\nTry "Once…," "After…," "Besides…," or "…, but…".\n"Next," or "Also," alone is not a bridge.'},
+  'WRIT.PARA.L07.08':{s:'Ask: what will the reader learn from a graphic? If nothing, leave it out.\nBiggest number at a glance: chart. Several facts about each thing: table. Parts or steps: diagram.\nDescribe it in words or emoji: bars, rows, or arrows.\nCaption: one line that says what it shows.'}
+  };
+  var BITE = {
+  'WRIT.ESSAY.L07.07':{ band:'M68', pic:'🧩', today:'Pick the pattern that fits the question', why:'When the plan fits the question, every paragraph answers what the reader asked.',
+    ready:[{q:'A three-part piece has…', o:['an opening, a body and an ending','only a title','three titles','three endings'], a:'an opening, a body and an ending'}],
+    bridge:'WRIT.ESSAY.L06.01', bridgeName:'Three-Part Piece',
+    watch:{ q:'Plan The Beacon’s harbor feature.', m:{type:'scene', e:'🗞️', t:'Mr. Gross gives Akiva the feature’s question: “What is Mr. Trash Wheel?”'}, steps:[
+      {t:'Read the question: "What is Mr. Trash Wheel?"'},
+      {t:'Clue words: "What is". That means definition.'},
+      {t:'Its group: a machine that catches floating trash.'},
+      {t:'What makes it different: the stream’s current turns its wheel.'},
+      {t:'Its parts: a water wheel, a conveyor belt and a dumpster.'},
+      {t:'Teach it back: tell your chavrusa the four patterns and their clue words.'}], a:'Definition: its group, what makes it different, then its three parts.' },
+    oops:{ q:'Question: “Why does the wheel catch the most trash after rain?”', wrong:'Plan: plastic bottles, foam cups, plastic bags.', right:'Plan: the cause (rain washes street trash down the stream), then the effect (more trash reaches the wheel).', why:'"Why" asks for cause and effect. A list of kinds is true, but it answers a different question.' },
+    ways:['worked example','match it','sort it','word tiles','Mistake Detective','teach it back'], done:'You can pick the pattern that fits the question.',
+    board:{ one:'The clue words in the question choose the pattern: what is, what kinds, alike and different, why.', activity:'Chavrusas write five questions about their shul or street; the partner names the pattern for each and the clue words that show it.', mistakes:['Listing kinds when the question asks why','Defining when the question asks to compare','Mixing two patterns in one plan'] },
+    do:[
+      {type:'match', pairs:[['What is…?','Definition'],['What kinds…?','Classification'],['How alike and different?','Compare and contrast'],['Why…?','Cause and effect']],
+        say:'Match each question clue to its pattern.', how:'Look at the first words of the question.'},
+      {type:'sort', bins:['Pattern fits','Mistake: wrong pattern'], cards:[['Why after rain? Plan: the cause, then the effect.',0],['Why after rain? Plan: bottles, cups, bags.',1],['What kinds of trash? Plan: one paragraph per kind.',0],['What is a boom? Plan: the cause, then the effect.',1],['Wheel vs. boat: alike, different? Plan: alike, then different.',0]], mis:true,
+        say:'Does the plan fit the question? Sort each card.', how:'Find the clue words first. Then check the plan.'}],
+    your:[
+      {type:'tiles', q:'The rule for a “why” question.', w:['“Why”','means','cause and','effect.'], extra:['kinds'],
+        say:'Build the rule for a why question.', how:'The clue word first. Then the pattern it means.'},
+      {type:'sort', bins:['Definition','Classification','Cause and effect'], cards:[['What is a barge?',0],['What types of trash float?',1],['Why do storm drains carry trash?',2],['What does “current” mean?',0],['What kinds of jobs keep the harbor clean?',1],['What happens when a storm drain clogs?',2]],
+        say:'Sort each question by the pattern that fits.', how:'What is: definition. What kinds: classification. Why: cause and effect.'},
+      {type:'match', pairs:[['Definition','its group, what makes it different, its parts'],['Classification','one paragraph for each kind'],['Compare and contrast','alike, then different'],['Cause and effect','the cause, then the effect']],
+        say:'Match each pattern to its plan.', how:'What is each body paragraph about?'},
+      {type:'tiles', q:'The plan for “What kinds?”', w:['One','paragraph','for each','kind.'], extra:['cause'],
+        say:'Build the classification plan.', how:'How many paragraphs first. Then what each one holds.'},
+      {type:'sort', bins:['Compare and contrast','Cause and effect'], cards:[['How is a sukkah like a tent?',0],['What happens when the belt stops?',1],['How do the wheel and the boat differ?',0],['Why does rain bring trash?',1]],
+        say:'Sort: compare and contrast, or cause and effect?', how:'Like or differ: compare. Why or what happens when: cause.'}] },
+
+  'WRIT.ESSAY.L07.08':{ band:'M68', pic:'🗺️', today:'Write a thesis that previews the essay', why:'A reader who sees the map at the start never gets lost in the middle.',
+    ready:[{q:'A topic sentence is like an umbrella because…', o:['every detail fits under it','it is the shortest sentence','it comes last','it asks a question'], a:'every detail fits under it'}],
+    bridge:'WRIT.PARA.L05.06', bridgeName:'Umbrella Sentence',
+    watch:{ q:'Eli writes the thesis for the harbor feature.', m:{type:'scene', e:'✍️', t:'Eli has three body paragraphs planned: the wheel, the belt, the dumpster.'}, steps:[
+      {t:'Draft 1: "In this essay I will tell you about a trash wheel."'},
+      {t:'That announces. It talks about the essay, not the topic.'},
+      {t:'Topic: Mr. Trash Wheel, a machine that catches trash in the Inner Harbor.'},
+      {t:'Preview: a water wheel, a conveyor belt and a dumpster.'},
+      {t:'Same order as the paragraphs: wheel, belt, dumpster. Good.'},
+      {t:'Teach it back: tell your chavrusa the two jobs of a thesis.'}], a:'Mr. Trash Wheel, a machine that catches trash in the Inner Harbor, works with three parts: a water wheel, a conveyor belt and a dumpster.' },
+    oops:{ q:'Write a thesis about skimmer boats.', wrong:'In this essay I will tell you about skimmer boats.', right:'A skimmer boat cleans the harbor in three steps: it finds the trash, scoops it up and unloads it.', why:'"In this essay I will" talks about the essay. A real thesis names the topic and previews the parts.' },
+    ways:['worked example','sort it','word tiles','match it','Mistake Detective','teach it back'], done:'You can write a thesis that previews the essay.',
+    board:{ one:'A thesis states the topic and previews the parts, in the order of the body paragraphs.', activity:'Chavrusas swap essay plans; each writes the other’s thesis, and the planner checks that every paragraph is named, in order.', mistakes:['"In this essay I will tell you about…"','A topic with no preview','An opinion instead of information'] },
+    do:[
+      {type:'sort', bins:['Previews the parts','Mistake'], cards:[['A boom has a float and a curtain.',0],['This essay is about booms.',1],['Booms are the best.',1],['Mr. Trash Wheel has a wheel, a belt and a dumpster.',0],['Mr. Trash Wheel is in Baltimore.',1]], mis:true,
+        say:'Does each thesis preview the parts? Sort each one.', how:'Topic and parts: previews. No parts, or an opinion: mistake.'},
+      {type:'tiles', q:'Paragraphs: 1) wheel 2) belt 3) dumpster.', w:['wheel,','belt and','dumpster.'], extra:['I will'],
+        say:'Preview the parts in the same order.', how:'Follow the paragraph plan: first, second, third.'}],
+    your:[
+      {type:'match', pairs:[['Previews the parts','Mr. Trash Wheel has a wheel, a belt and a dumpster.'],['Topic only','Mr. Trash Wheel is in Baltimore.'],['Announces','In this essay I will tell you about it.'],['An opinion','Every city should build one.']],
+        say:'Match each label to a thesis.', how:'Parts named? Topic only? About the essay? A view?'},
+      {type:'tiles', q:'A thesis about skimmer boats.', w:['Skimmers','find, scoop','and unload','trash.'], extra:['I will'],
+        say:'Build a thesis that previews three steps.', how:'The topic first. Then the steps, in order.'},
+      {type:'sort', bins:['Previews the parts','Announces','An opinion'], cards:[['A boom has a float and a curtain.',0],['This essay will explain booms.',1],['Booms are amazing.',2],['Rain washes trash into drains, then the stream.',0],['I am going to write about drains.',1],['Every street needs more drains.',2]],
+        say:'Sort each thesis by what it does.', how:'About the essay: announces. Best, should, amazing: opinion.'},
+      {type:'match', pairs:[['1) bottles 2) cups 3) bags','bottles, cups and bags'],['1) alike 2) different','share a job, differ in how'],['1) cause 2) effect','rain, then more trash']],
+        say:'Match each plan to its preview.', how:'The same parts, in the same order.'},
+      {type:'tiles', q:'Paragraphs: 1) cups 2) bottles 3) bags.', w:['Trash wheels','catch cups,','bottles','and bags.'], extra:['I will'],
+        say:'Build a thesis that previews the three kinds, in order.', how:'The topic first. Then the kinds, in the paragraph order.'}] },
+
+  'WRIT.PARA.L07.06':{ band:'M68', pic:'🧱', today:'Develop a point with five kinds of support', why:'A point with no support is just a sentence. Support makes the reader believe it and see it.',
+    ready:[{q:'In Point, Proof, Explain, the proof…', o:['backs up the point','starts the paragraph','ends the essay','asks a question'], a:'backs up the point'}],
+    bridge:'WRIT.ESSAY.L06.03', bridgeName:'Point, Proof, Explain',
+    watch:{ q:'Benny develops a body paragraph for the harbor feature.', m:{type:'scene', e:'🧱', t:'Benny’s point: “The conveyor belt lifts the trash out of the water.”'}, steps:[
+      {t:'Point: the conveyor belt lifts the trash out of the water.'},
+      {t:'Definition: a conveyor belt is a moving belt that carries things from place to place.'},
+      {t:'Concrete detail: dripping bottles ride slowly up the belt.'},
+      {t:'Quote: Mr. Gross said, “The stream does the pushing, and the belt does the lifting.”'},
+      {t:'Check: three kinds, and no sentence says the point again.'},
+      {t:'Teach it back: tell your chavrusa the five kinds of support.'}], a:'The conveyor belt lifts the trash out of the water. A conveyor belt is a moving belt that carries things from place to place. Dripping bottles ride slowly up the belt. Mr. Gross said, “The stream does the pushing, and the belt does the lifting.”' },
+    oops:{ q:'Point: the belt lifts trash out of the water. What comes next?', wrong:'The belt really does lift the trash out.', right:'Dripping bottles ride slowly up the belt.', why:'The first one says the point again. The second adds a concrete detail the reader can see.' },
+    ways:['worked example','match it','sort it','word tiles','Mistake Detective','teach it back'], done:'You can develop a point with different kinds of support, and name each one.',
+    board:{ one:'After the point, every sentence adds a fact, a definition, a concrete detail, a quote or an example.', activity:'One chavrusa reads a paragraph sentence by sentence; the other names the kind of support, or calls "says it again".', mistakes:['Sentences that say the point again','One kind only: three facts in a row','A quote with no speaker or no quotation marks'] },
+    do:[
+      {type:'match', pairs:[['Definition','explains a word'],['Concrete detail','what you would see or hear'],['Quote','exact words, with who said them'],['One kind only','three facts in a row']],
+        say:'Match each kind of support, or mistake, to its meaning.', how:'Explains a word? Shows a picture? Own words? All facts?'},
+      {type:'sort', bins:['Adds something new','Mistake: says it again'], cards:[['Dripping bottles ride up the belt.',0],['The belt really does lift trash.',1],['A conveyor belt is a moving belt.',0],['So the belt lifts the trash out.',1]], mis:true,
+        say:'Point: the belt lifts trash. Sort each sentence.', how:'Does it add a fact, word, picture, quote or example?'}],
+    your:[
+      {type:'tiles', q:'Add a definition of “boom”.', w:['A boom is','a floating','fence.'], extra:['spins'],
+        say:'Build a sentence that explains the word boom.', how:'The word first. Then what it is.'},
+      {type:'sort', bins:['Fact','Definition','Concrete detail'], cards:[['It has worked since 2014.',0],['The team picked up 104 pieces in one hour.',0],['A barge is a flat boat that carries heavy loads.',1],['The current is the push of moving water.',1],['Foam cups spin toward the wheel.',2],['The rakes clank and drip.',2]],
+        say:'Sort each sentence by its kind.', how:'A number or date? A word explained? Something to see or hear?'},
+      {type:'match', pairs:[['Mr. Gross said, “The belt does the lifting.”','Quote'],['For example, one bottle floated down the stream.','Example'],['A storm drain is a street opening for rainwater.','Definition']],
+        say:'Match each sentence to its kind.', how:'Quotation marks? "For example"? A word explained?'},
+      {type:'tiles', q:'Add an example.', w:['For example,','one bottle','floated down','the stream.'], extra:['said'],
+        say:'Build an example sentence.', how:'"For example," first. Then the one case.'},
+      {type:'sort', bins:['Quote','Example'], cards:[['Mr. Gross said, “The belt does the lifting.”',0],['For example, foam cups crowd the booms after rain.',1],['“I watched it for an hour,” Yoni said.',0],['For example, a foam cup rode the rain to the wheel.',1]],
+        say:'Sort each sentence: quote or example?', how:'Exact words with a speaker: quote. One case: example.'}] },
+
+  'WRIT.PARA.L07.07':{ band:'M68', pic:'🌉', today:'Link paragraphs with a bridge sentence', why:'When each paragraph reaches back to the last one, the reader crosses without getting lost.',
+    ready:[{q:'Which glue word adds a reason?', o:['In addition,','As a result,','This shows that','For example,'], a:'In addition,'}],
+    bridge:'WRIT.PARA.L07.01', bridgeName:'Glue Words',
+    watch:{ q:'Yoni joins the belt paragraph to the dumpster paragraph.', m:{type:'scene', e:'🌉', t:'Paragraph 2 is about the belt. Paragraph 3 is about the dumpster on the barge.'}, steps:[
+      {t:'Draft: "Next, the dumpster sits on a barge."'},
+      {t:'"Next," jumps forward. Nothing points back to the belt.'},
+      {t:'Point back: "Once the belt has lifted the trash,"'},
+      {t:'Point forward: "the dumpster holds it until a boat takes it away."'},
+      {t:'Check: one end on the belt, one end on the dumpster.'},
+      {t:'Teach it back: tell your chavrusa the two ends of a bridge.'}], a:'Once the belt has lifted the trash, the dumpster holds it until a boat takes it away.' },
+    oops:{ q:'Last paragraph: the belt. Start the dumpster paragraph.', wrong:'Next, the dumpster sits on a barge.', right:'Once the belt has lifted the trash, the dumpster holds it until a boat takes it away.', why:'"Next," jumps forward with no link back. "Once the belt has lifted the trash" ties the two paragraphs together.' },
+    ways:['worked example','sort it','word tiles','match it','Mistake Detective','teach it back'], done:'You can link paragraphs with a bridge that points back and forward.',
+    board:{ one:'The first sentence of a new paragraph points back to the last one and forward to the new one.', activity:'Chavrusas cover the first sentence of each paragraph in an essay; the partner writes a bridge for each gap, then they compare.', mistakes:['"Next," or "Also," as the only link','A new paragraph that jumps in with no link back','A first sentence that only repeats the last paragraph'] },
+    do:[
+      {type:'sort', bins:['Points back and forward','Mistake: forward only'], cards:[['Once the belt lifts it, the dumpster holds it.',0],['Next, a dumpster sits on a barge.',1],['After its ride up the belt, the trash drops into a dumpster.',0],['Also, there is a dumpster.',1]], mis:true,
+        say:'Does each first sentence point back too? Sort them.', how:'Does it name the belt paragraph? Then it points back.'},
+      {type:'tiles', q:'Point back to the belt.', w:['Once','the belt','lifts it,'], extra:['Next,'],
+        say:'Build the part that points back.', how:'Start with Once. Then name the last paragraph.'}],
+    your:[
+      {type:'match', pairs:[['Points back and forward','Once the belt lifts it, the dumpster holds it.'],['Forward only','Next, the dumpster sits on a barge.'],['Back only','The belt lifts trash, as I said.']],
+        say:'Match each label to a first sentence.', how:'Back? Forward? Or both?'},
+      {type:'sort', bins:['Can point back','Forward only'], cards:[['Once the trash is out,',0],['After its ride up the belt,',0],['Besides turning the wheel,',0],['Next,',1],['Also,',1]],
+        say:'Which openers point back to the last paragraph?', how:'Does the opener name what came before?'},
+      {type:'tiles', q:'Join the wheel to the belt.', w:['The wheel','turns,','but the belt','lifts.'], extra:['Also,'],
+        say:'Build a bridge from the wheel to the belt.', how:'Back to the wheel first. Then forward to the belt.'},
+      {type:'match', pairs:[['booms → wheel','Once the booms steer trash in, the wheel turns.'],['wheel → belt','The wheel turns, but the belt lifts.'],['belt → dumpster','Once the belt lifts it, the dumpster holds it.']],
+        say:'Match each bridge to the paragraphs it joins.', how:'What does it point back to? What forward?'},
+      {type:'sort', bins:['Points back and forward','Back only'], cards:[['Once the drains empty into the stream, the booms steer the trash.',0],['Rain fills the drains, as I said.',1],['The drains really do fill up.',1],['The drains bring the trash, but the booms steer it.',0]],
+        say:'Last: the drains. New: the booms. Does it point forward too?', how:'Does it name the booms? Then it points forward.'}] },
+
+  'WRIT.PARA.L07.08':{ band:'M68', pic:'📊', today:'Add a graphic with a caption that explains it', why:'A reader sees in one glance what a paragraph takes a minute to say.',
+    ready:[{q:'Which sentence is a concrete detail?', o:['Foam cups spin toward the wheel.','It has worked since 2014.','A barge is a flat boat.','Mr. Gross said, “The belt does the lifting.”'], a:'Foam cups spin toward the wheel.'}],
+    bridge:'WRIT.PARA.L07.06', bridgeName:'Develop the Point',
+    watch:{ q:'Gavriel adds a graphic to the harbor feature.', m:{type:'scene', e:'📊', t:'In one hour along the Jones Falls, the Beacon team picked up 42 bottles, 35 wrappers, 19 foam cups and 8 bags.'}, steps:[
+      {t:'Which kind is most? Readers should see it at a glance: a chart.'},
+      {t:'Bars: 🍶 42 · 🍫 35 · 🥤 19 · 🛍️ 8.'},
+      {t:'Does it add information? Yes: bottles were the most common.'},
+      {t:'Caption draft: "Look at this!" Too vague.'},
+      {t:'Caption: "Trash the Beacon team picked up in one hour, by kind."'},
+      {t:'Teach it back: tell your chavrusa the three graphics and the caption rule.'}], a:'A bar chart, with the caption: Trash the Beacon team picked up in one hour, by kind.' },
+    oops:{ q:'Caption for the bar chart of the team’s trash count.', wrong:'Look at all this trash!', right:'Trash the Beacon team picked up in one hour, by kind', why:'"Look at all this trash!" does not say what the chart shows. Name the topic and what is counted.' },
+    ways:['worked example','match it','sort it','word tiles','Mistake Detective','teach it back'], done:'You can add a graphic that adds information, with a caption that says what it shows.',
+    board:{ one:'A chart, table or diagram goes in only if it adds information, with a caption that says what it shows.', activity:'Chavrusas trade graphics with the captions covered; each writes a caption, then they compare which one says more exactly what it shows.', mistakes:['A picture that is decoration only','A vague caption like "Look at this!"','A chart for steps, or a diagram for numbers'] },
+    do:[
+      {type:'match', pairs:[['Chart','shows at a glance which number is biggest'],['Table','several facts about each thing, in rows'],['Diagram','parts or steps, with arrows']],
+        say:'Match each graphic to its job.', how:'Numbers? Facts side by side? Parts or steps?'},
+      {type:'sort', bins:['Says what it shows','Mistake: vague caption'], cards:[['Trash picked up in one hour, by kind',0],['Look at this!',1],['How trash travels to the wheel',0],['Chart',1]], mis:true,
+        say:'Does each caption say what it shows?', how:'Does it name the topic and what is shown?'}],
+    your:[
+      {type:'tiles', q:'A caption for the bar chart.', w:['Trash','picked up','in one hour,','by kind'], extra:['so much'],
+        say:'Build a caption that says what it shows.', how:'What is counted first. Then when, then how it is split.'},
+      {type:'sort', bins:['Chart','Table','Diagram'], cards:[['which kind of trash was most common',0],['which grade brought the most cans',0],['the wheel and the boat: power, moving, crew',1],['each trash wheel’s name, year and place',1],['the path from street to wheel',2],['the parts of the wheel, labeled',2]],
+        say:'Which graphic fits each piece of information?', how:'Biggest number at a glance: chart. Several facts in rows: table. Parts or steps: diagram.'},
+      {type:'match', pairs:[['🍶 ▮▮▮▮▮▮▮▮ 42 · 🛍️ ▮▮ 8','Bottles and bags, counted'],['street → drain → stream → wheel','How trash travels to the wheel'],['😊🐟','Decoration only']],
+        say:'Match each graphic to what it shows.', how:'What does the reader learn from it?'},
+      {type:'tiles', q:'A caption for the diagram.', w:['How trash','travels','to the wheel'], extra:['cool'],
+        say:'Build the caption for the diagram.', how:'Say what the arrows show, from start to end.'},
+      {type:'sort', bins:['Adds information','Decoration only'], cards:[['a chart of the trash count',0],['a smiling fish',1],['a diagram of the wheel’s parts',0],['a border of stars',1],['a table: wheel and boat',0]],
+        say:'Does each graphic add information?', how:'What would the reader learn from it?'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>
