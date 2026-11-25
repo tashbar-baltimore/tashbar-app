@@ -189,8 +189,9 @@ async function oneBiteSetup(worker) {
 }
 
 /* pg: the kid page. more: extra kid pages opened the same way (tests/run.js), used only to play the real bites side by side so the
-   kit finishes in time; every bite is still played, start to finish, with the same checks, on exactly one page. */
-module.exports = async function oneBiteTests(pg, more) {
+   kit finishes in time; every bite is still played, start to finish, with the same checks, on exactly one page.
+   part (tests/run.js PART): this run plays only the bites part.mine picks; the other parts' runs play the rest. */
+module.exports = async function oneBiteTests(pg, more, part) {
   const out = { fails: [], oks: [], counts: {} }, pages = [pg].concat(more || []);
   const size = pg.viewportSize();
   /* step 1, on every page: the player helpers (the main page also runs the well-formed checks and the Activity Kit fixtures) */
@@ -199,7 +200,7 @@ module.exports = async function oneBiteTests(pg, more) {
     return page.evaluate(oneBiteSetup, worker); };
   const [r] = await Promise.all(pages.map((page, k) => setup(page, k > 0)));
   /* step 2: every real bite (and 6 auto-bites) to mastered, the list shared out over the pages */
-  const list = r.list || [], parts = pages.length;
+  const list = (r.list || []).filter(part ? part.mine : () => true), parts = pages.length;
   const got = await Promise.all(pages.map((page, k) => page.evaluate(async ({ list, part, parts }) => {
     const res = []; window.OB_LIVE = 'test';
     for (let i = part; i < list.length; i += parts) { const id = list[i]; let s;
@@ -221,7 +222,7 @@ module.exports = async function oneBiteTests(pg, more) {
   r.bad.forEach(b => out.fails.push('One Bite: ' + b));
   if (r.notTest !== false) out.fails.push('One Bite: a boy who is not a TEST- boy must not get One Bite while OB_LIVE is "test" (got ' + r.notTest + ')');
   out.counts = { oneBiteHandWritten: r.bites, oneBiteWithActivities: r.kitBites, oneBitePlayed: r.played, oneBiteMastered: r.mastered };
-  if (!out.fails.length) out.oks.push('One Bite: ' + r.bites + ' hand-written bites well-formed (' + r.kitBites + ' with activities); Activity Kit: all ' + Object.keys(r.kitTypes).length + ' activity types played by tap at 390 px, 3-in-a-row stop works; ' + r.mastered + ' of ' + (r.played) + ' bites played through all 6 steps to Bite Done (one button, 6 dots, read-aloud, no pop-ups); real boys untouched while in test');
+  if (!out.fails.length) out.oks.push('One Bite: ' + r.bites + ' hand-written bites well-formed (' + r.kitBites + ' with activities); Activity Kit: all ' + Object.keys(r.kitTypes).length + ' activity types played by tap at 390 px, 3-in-a-row stop works; ' + r.mastered + ' of ' + (r.played) + ' bites' + ((part && part.tag) || '') + ' played through all 6 steps to Bite Done (one button, 6 dots, read-aloud, no pop-ups); real boys untouched while in test');
   return out;
 };
 module.exports.obkStep = obkStep;
