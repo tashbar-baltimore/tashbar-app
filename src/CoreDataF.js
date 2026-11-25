@@ -116,5 +116,15 @@ CORE_SKILLS.F = [
   ["READ.LV.L01.15", "Book: Go, Van, Go!", "Read the little book Go, Van, Go! and tell what happened", { after: "READ.LV.L01.14", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
   ["READ.LV.L01.16", "Book: Zip Up!", "Read the little book Zip Up! and tell what happened", { after: "READ.LV.L01.15", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
   ["READ.LV.L01.17", "Book: The Quiz", "Read the little book The Quiz and tell what happened", { after: "READ.LV.L01.16", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
-  ["READ.LV.L01.18", "Book: The Red Wax", "Read the little book The Red Wax and tell what happened", { after: "READ.LV.L01.17", std: "RF.K.4", file: "CoreDataFH1", min: 5 }]
+  ["READ.LV.L01.18", "Book: The Red Wax", "Read the little book The Red Wax and tell what happened", { after: "READ.LV.L01.17", std: "RF.K.4", file: "CoreDataFH1", min: 5 }],
+  ["READ.FLU.L03.08", "Spice at the Store", "Read a little story full of soft c, and prove what happened", { after: "READ.PHON.L03.10", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.14", "Ginger in the Cage", "Read a little story full of soft g, and prove what happened", { after: "READ.FLU.L03.08", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.09", "Knots and a Wrapped Gift", "Read a little story with quiet letters, and prove what happened", { after: "READ.PHON.L03.11", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.15", "The Photo Contest", "Read a little story full of ph, and prove what happened", { after: "READ.PHON.L03.12", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.10", "Treasure in the Garden", "Read a little story with every pattern from Unit 4", { after: "READ.FLU.L03.15", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.11", "Baking Day", "Read a little story with dropped-e endings", { after: "READ.PHON.L03.13", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.16", "The Running Race", "Read a little story with doubled letters", { after: "READ.PHON.L03.14", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.12", "Berries for the Babies", "Read a little story where y changes to i", { after: "READ.PHON.L03.15", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.17", "The Helpful Club", "Read a little story with -ful, -less, -ly and -ness", { after: "READ.PHON.L03.16", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }],
+  ["READ.FLU.L03.13", "Unpack and Repack", "Read a little story full of prefixes", { after: "READ.PHON.L03.17", std: "RF.2.4a", file: "CoreDataFH4", min: 12 }]
 ];
