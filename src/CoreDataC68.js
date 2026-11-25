@@ -18,6 +18,14 @@ CORE_SKILLS.C68 = [
   ["READ.LIT.L08.10", "How the Parts Fit", "How setting, people and plot change each other", { std: "RL.7.3", file: "CoreDataC68H1", min: 9 }],
   ["READ.LIT.L08.11", "Keep Them Reading", "How an author builds suspense", { std: "RL.7.5", file: "CoreDataC68H1", min: 9 }],
   ["READ.LIT.L08.12", "What the Whole Story Says", "State a theme and prove it from the whole story", { std: "RL.7.2", file: "CoreDataC68H1", min: 9 }],
+  ["READ.LIT.L08.21", "Flood 1: Setting Sets the Stakes", "Read The Flood, Chapter 1: how the setting sets up what could be lost", { std: "RL.7.3", file: "CoreDataC68H6", min: 20 }],
+  ["READ.LIT.L08.22", "Flood 2: Planted Clues", "Read Chapter 2: details planted early that matter later", { std: "RL.7.5", file: "CoreDataC68H6", min: 20 }],
+  ["READ.LIT.L08.23", "Flood 3: Why He Chose", "Read Chapter 3: what a character's choices show about him", { std: "RL.7.3", file: "CoreDataC68H6", min: 20 }],
+  ["READ.LIT.L08.24", "Flood 4: Pacing the Night", "Read Chapter 4: how pacing builds suspense", { std: "RL.7.5", file: "CoreDataC68H6", min: 20 }],
+  ["READ.LIT.L08.25", "Flood 5: The Turning Point", "Read Chapter 5: the choice that turns the story", { std: "RL.7.3", file: "CoreDataC68H6", min: 20 }],
+  ["READ.LIT.L08.26", "Flood 6: Story and History", "Read Chapter 6: what the novel keeps from history and what it invents", { std: "RL.7.9", file: "CoreDataC68H6", min: 20 }],
+  ["READ.LIT.L08.27", "Flood 7: A Theme Grows", "Read Chapter 7 on your own: how a theme grows", { std: "RL.7.2", file: "CoreDataC68H6", min: 20 }],
+  ["READ.LIT.L08.28", "Flood 8: What the Book Says", "Read Chapter 8: the whole book's theme, with three proofs", { std: "RL.7.2", file: "CoreDataC68H6", min: 20 }],
   ["READ.LIT.L09.09", "Dramatic Irony", "When we know more than the character: spot it and say what it does", { after: "READ.LIT.L09.01", std: "RL.8.6", file: "CoreDataC68H2", min: 9 }],
   ["READ.COMP.L09.14", "Answer the Other Side", "How an author states, concedes and refutes the other side", { std: "RI.8.6", file: "CoreDataC68H2", min: 9 }],
   ["READ.LIT.L09.10", "Watson Tells It", "How the narrator shapes a mystery: what he sees and what he misses", { std: "RL.8.6", file: "CoreDataC68H2", min: 9 }],
@@ -35,4 +43,4 @@ CORE_SKILLS.C68 = [
 ];
 /* Data files that upgrade EXISTING skills to One Bite lessons (TLCORE.upgrade; docs/core-growth/HOW-TO-ADD-A-SKILL.md). */
 var CORE_DATA_FILES = (typeof CORE_DATA_FILES !== 'undefined' && CORE_DATA_FILES) || {};
-CORE_DATA_FILES.C68 = ['CoreDataC68H1', 'CoreDataC68H2', 'CoreDataC68H3'];
+CORE_DATA_FILES.C68 = ['CoreDataC68H1', 'CoreDataC68H2', 'CoreDataC68H3', 'CoreDataC68H6'];
