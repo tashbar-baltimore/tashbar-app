@@ -79,5 +79,13 @@ CORE_SKILLS.W48 = [
   ["WRIT.ESSAY.L06.07", "Same and Different", "Plan a compare-and-contrast piece, block or point by point", { after: "WRIT.PARA.L06.12", std: "W.5.2a", file: "CoreDataW4817", min: 9 }],
   ["WRIT.PARA.L06.13", "In Contrast", "Link compared things with alike and different words", { after: "WRIT.ESSAY.L06.07", std: "W.5.2c", file: "CoreDataW4817", min: 7 }],
   ["WRIT.PARA.L06.14", "Quote It Right", "Weave a few exact words into your own sentence, and punctuate quotes", { after: "WRIT.PARA.L06.13", std: "W.5.2b", file: "CoreDataW4817", min: 8 }],
-  ["WRIT.ESSAY.L06.08", "Two Texts, One Piece", "Use a detail from each of two texts on one point, and name both", { after: "WRIT.PARA.L06.14", std: "W.5.9", file: "CoreDataW4817", min: 9 }]
+  ["WRIT.ESSAY.L06.08", "Two Texts, One Piece", "Use a detail from each of two texts on one point, and name both", { after: "WRIT.PARA.L06.14", std: "W.5.9", file: "CoreDataW4817", min: 9 }],
+  ["WRIT.RES.L07.01", "Narrow the Question", "Turn a big topic into one question a short report can answer", { after: "WRIT.PARA.L07.08", std: "W.6.7", file: "CoreDataW4818", min: 8 }],
+  ["WRIT.RES.L07.02", "Quote or Paraphrase?", "Choose when to quote and when to put it in your own words", { after: "WRIT.RES.L07.01", std: "W.6.8", file: "CoreDataW4818", min: 9 }],
+  ["WRIT.RES.L07.03", "Credit the Source", "Name the source inside your paragraph with a signal phrase", { after: "WRIT.RES.L07.02", std: "W.6.8", file: "CoreDataW4818", min: 8 }],
+  ["WRIT.RES.L07.04", "Notes to Outline", "Turn sorted notes into an outline with a source for each line", { after: "WRIT.RES.L07.03", std: "W.6.7", file: "CoreDataW4818", min: 9 }],
+  ["WRIT.RES.L08.01", "Follow-Up Questions", "Let one answer lead to a sharper next question", { after: "WRIT.PARA.L08.11", std: "W.7.7", file: "CoreDataW4819", min: 8 }],
+  ["WRIT.RES.L08.02", "Search Smart", "Choose search words, and choose which result to open", { after: "WRIT.RES.L08.01", std: "W.7.8", file: "CoreDataW4819", min: 8 }],
+  ["WRIT.RES.L08.03", "No Copying", "Write notes in your own words, not patchwriting", { after: "WRIT.RES.L08.02", std: "W.7.8", file: "CoreDataW4819", min: 9 }],
+  ["WRIT.RES.L08.04", "Cite It", "Write a source entry in a standard format for a book and a web page", { after: "WRIT.RES.L08.03", std: "W.7.8", file: "CoreDataW4819", min: 8 }]
 ];
