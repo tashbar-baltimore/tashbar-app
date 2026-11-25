@@ -31,7 +31,7 @@
   ],
   check:[
     {q:'Eli’s report: “The new library opened near the yeshiva. Because of this, boys can borrow books after Maariv, the chess club has a room, and the Beacon staff has a quiet room to write.” Which is it: one cause, many effects; a chain; or flipped?', o:['one cause, many effects','a chain','flipped'], h:'Does every effect come straight from the one cause, or does each effect cause the next?'},
-    {q:'Yoni writes: “The streets flooded, which led to three days of heavy rain.” Which is it: one cause, many effects; a chain; or flipped?', o:['flipped','a chain','one cause, many effects'], h:'Which one really made the other happen? Is it written first?'},
+    {q:'Eli writes: “The crowd cheered, which led to Benny scoring the winning point.” Which is it: one cause, many effects; a chain; or flipped?', o:['flipped','a chain','one cause, many effects'], h:'Which one really made the other happen? Is it written first?'},
     {t:'order', q:'Build a chain from the first cause to the last effect. Tap the sentences in order.', tiles:['Leaves fell into the storm drains.','This blocked the drains.','As a result, the street flooded.'], extra:['Also, leaves are pretty.'], h:'Start with the first cause. Each next sentence is caused by the one before it.'}
   ],
   re:[
@@ -52,7 +52,7 @@
       h:'Is there an exact topic word? If yes, does the sentence tell the reader what it means?'},
     {t:'pairs', q:'Match each vague phrase to the precise topic word.', pairs:[['the stuff that makes dough puffy','yeast'],['the big lake that holds city water','reservoir'],['the back edge of a sefer','spine']],
       h:'What word would an expert use?'},
-    {t:'spotall', q:'Tap every sentence that EXPLAINS its topic word.', cells:[{label:'A sofer writes on klaf, parchment made from the skin of a kosher animal.',ok:true},{label:'The pages are sewn in groups called signatures.',ok:true},{label:'Black ice, which is clear ice on a road, is hard to see.',ok:true},{label:'The binder glued the signatures.',ok:false},{label:'Yeast makes carbon dioxide.',ok:false}],
+    {t:'spotall', q:'Tap every sentence that EXPLAINS its topic word.', cells:[{label:'A sofer writes on klaf, parchment made from the skin of a kosher animal.',ok:true},{label:'The pages are sewn in groups called signatures.',ok:true},{label:'Black ice, which is a thin, clear layer of ice on a road, is hard to see.',ok:true},{label:'The binder glued the signatures.',ok:false},{label:'Yeast makes carbon dioxide.',ok:false}],
       h:'Look for a comma explanation, "called", or "which is".'},
     {t:'sort', q:'Sneaky ones! Gavriel’s piece on binding a sefer. The sentences come in order. Sort each one.', bins:[{id:'G',label:'✅ Good'},{id:'M',label:'⚠️ Mistake'}],
       items:[{label:'The binder sews the pages together at the spine, the back edge of the sefer.',bin:'G'},{label:'Then the binder glues the thingies.',bin:'M'},{label:'Next, he trims the text block.',bin:'M'},{label:'Last, he covers the spine with cloth.',bin:'G'}],
@@ -98,9 +98,9 @@
     {t:'write', q:'Your turn to write. Topic: how a snowstorm closes school, or why bread rises. Write three objective sentences. Then read them again and cut any opinion clue.', min:0, checks:['📏 Every sentence is a fact a reader could check.','✂️ No "I think", no "the best", no loaded words like "finally" or "only".','🗣️ If I gave someone’s view, I named who said it.'], h:'Ask about each sentence: could the reader check it? If it tells what YOU feel, cut it or swap in a fact.'}
   ],
   check:[
-    {q:'Benny’s report on the snowstorm: “The city took a whole two days to plow our street.” Is it objective, opinion, or slang?', o:['opinion','objective','slang'], h:'Could the reader check every word, or does one word judge quietly?'},
-    {q:'Eli’s report on the fire drill: “The fire chief said the drill went ‘very well.’” Is it objective, opinion, or slang?', o:['objective','opinion','slang'], h:'Whose view is it? Did the writer name who said it?'},
-    {t:'order', q:'Eli wrote: “The bus crawled in late again.” Rebuild it as an objective sentence. Tap the tiles in order.', tiles:['The bus','arrived','at 8:40.'], extra:['crawled'], h:'Who, what, when. Leave out the word that judges.'}
+    {q:'Benny’s report on the snowstorm: “The city’s plows barely touched our street.” Is it objective, an opinion, or a named view?', o:['opinion','objective','a named view'], h:'Could the reader check every word, or does one word judge quietly?'},
+    {q:'Eli’s report on the fire drill: “The fire chief said the drill went ‘very well.’” Is it objective, an opinion, or an unnamed view?', o:['objective','opinion','an unnamed view'], h:'Whose view is it? Did the writer name who said it?'},
+    {t:'order', q:'Eli wrote: “The bus crawled in late again.” The bus log says 8:40. Rebuild it as an objective sentence. Tap the tiles in order.', tiles:['The bus','arrived','at 8:40.'], extra:['crawled'], h:'Who, what, when. Leave out the word that judges.'}
   ],
   re:[
     {how:'A new way: the scale in the grocery. It does not say "a lovely, heavy watermelon". It just says "12 pounds". An objective writer is like the scale.', q:'A writer who gives only facts, like a scale, is…', o:['objective','an opinion','slang']},
@@ -193,18 +193,19 @@
     ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can organize an explanation by cause and effect.',
     board:{ one:'Cause and effect: one cause with many effects, or a chain (A → B → C), each link marked by a signal word.', activity:'Chavrusas lay out cause and effect cards as a fan (one cause, many effects) or a row (a chain), then read it aloud with signal words.', mistakes:['A flipped link: the effect written as the cause','Effects listed with no signal words','Calling a chain "one cause, many effects"'] },
     do:[
-      {type:'sort', q:'Snow-day links.', bins:['Cause first','Mistake: flipped'], cards:[['Ice formed, which led to no buses.',0],['School closed, which led to snow.',1],['Bread rose; as a result, yeast made gas.',1],['Snow fell; as a result, roads iced.',0]], mis:true,
-        say:'Is the cause first? Sort each link.', how:'Which one really made the other happen? It goes first.'},
-      {type:'tiles', q:'Put the snow-day chain in order.', w:['Heavy snow','icy roads','no buses'], extra:['sunshine'],
-        say:'Build the chain: first cause first.', how:'Each step causes the next one.'}],
+      {type:'sort', q:'Snow-day links.', bins:['Cause first','Mistake: flipped'], cards:[['Ice formed, which led to cancelled buses.',0],['School closed, which led to snow.',1],['Bread rose; as a result, yeast made gas.',1],['Snow fell; as a result, roads iced.',0]], mis:true,
+        say:'Is the cause first? Sort each link.', how:'Which one really made the other happen? It goes first.',
+        why:{q:'Teach it back: your chavrusa asks, "What are the two cause-and-effect plans?"', o:['One cause with many effects, and a chain','A cause, and a flipped cause','A question, and an answer'], a:'One cause with many effects, and a chain'}},
+      {type:'order', q:'Put the snow-day chain in order.', steps:['Heavy snow fell.','This led to icy roads.','As a result, buses stayed home.'], extra:['School closed, which led to snow.'],
+        say:'Build the chain: first cause first.', how:'Each sentence is caused by the one before it. Skip the flipped link.'}],
     your:[
       {type:'match', pairs:[['the cause','what makes it happen'],['the effect','what happens because of it'],['a chain','each effect causes the next']],
         say:'Match each word to what it means.', how:'Did it make something happen, or did it happen?'},
       {type:'sort', bins:['One cause, many effects','A chain'], cards:[['Drought: low lake, brown lawns, small crops.',0],['Yeast made gas, which made bubbles, which raised dough.',1],['Heat wave: dry garden, warm rooms, full pool.',0],['Snow led to ice, which led to no buses.',1]],
         say:'Which plan is each one? Sort it.', how:'Straight from one cause, or each causing the next?'},
-      {type:'tiles', q:'Why bread rises.', w:['yeast eats','makes gas','dough rises'], extra:['oven cools'],
-        say:'Put the bread chain in order.', how:'What happens first? What does that cause?'},
-      {type:'match', pairs:[['Snow fell,','which led to icy roads.'],['The power went out.','As a result, the fridge warmed.'],['The pipes froze.','Because of this, one cracked.']],
+      {type:'evidence', q:'Benny’s explainer on why bread rises. Tap the flipped link.', p:['Bread rises because of yeast.','Yeast eats the sugar in the dough.','This makes a gas called carbon dioxide.','The dough rose, which led to the gas forming bubbles.','As a result, the baked loaf is light and soft.'], a:3, look:'an effect written as if it were the cause', mis:true,
+        say:'Tap the link that is written backwards.', how:'Ask of each link: which really made the other happen?'},
+      {type:'match', pairs:[['Snow fell,','which led to icy roads.'],['The power went out on Erev Shabbos.','As a result, Ima’s cholent pot went cold.'],['The pipes froze.','Because of this, one cracked.']],
         say:'Match each cause to its effect.', how:'Which effect does each cause really make?'},
       {type:'sort', bins:['Links cause to effect','Does not'], cards:[['because of this,',0],['which led to',0],['for example,',1],['as a result,',0],['however,',1]],
         say:'Does each word link a cause to an effect?', how:'Does it say "this made that happen"?'}] },
@@ -225,18 +226,19 @@
       {type:'match', pairs:[['the stuff that puffs dough','yeast'],['the big lake for city water','reservoir'],['the back edge of a sefer','spine']],
         say:'Match each vague phrase to its topic word.', how:'What word would an expert use?'},
       {type:'sort', q:'The first time each word appears.', bins:['Precise and explained','Mistake'], cards:[['A sofer writes on klaf, parchment from a kosher animal.',0],['The binder trims the text block.',1],['The thingies get glued.',1],['Pages form groups called signatures.',0]], mis:true,
-        say:'Will the reader understand each word? Sort it.', how:'Vague, or never explained? That is a mistake.'}],
+        say:'Will the reader understand each word? Sort it.', how:'Vague, or never explained? That is a mistake.',
+        why:{q:'Teach it back: your chavrusa asks, "What are the three ways to explain a word?"', o:['A comma, "called", or "which is"','Bold, italics, or capitals','A picture, a chart, or a list'], a:'A comma, "called", or "which is"'}}],
     your:[
-      {type:'tiles', q:'Explain the topic word with "which is".', w:['Black ice,','which is','clear ice,','is slippery.'],
-        say:'Build a sentence that explains black ice.', how:'Topic word first. Then "which is" and what it is.'},
-      {type:'match', pairs:[['a comma','klaf, parchment from …'],['"called"','groups called signatures'],['"which is"','black ice, which is …']],
-        say:'Match each way to explain with an example.', how:'Look for the comma, "called", or "which is".'},
+      {type:'tiles', q:'Explain the topic word with "which is".', w:['A flurry,','which is a','light snow,','fell today.'], extra:['stuff'],
+        say:'Build a sentence that explains a flurry.', how:'Topic word first. Then "which is" and what it is.'},
+      {type:'evidence', q:'Benny’s water piece. Tap the sentence with a topic word he never explained.', p:['Baltimore’s water starts as rain.','Rain fills reservoirs, lakes made to store drinking water.','Pipes carry the water to a filtration plant, a building that cleans it.','Inside, the water goes through aeration.','Clean water then flows from the plant to every home.'], a:3, look:'a topic word with no explanation',
+        say:'Tap the sentence a new reader cannot understand.', how:'Find each topic word. Did Benny explain it the first time?'},
       {type:'sort', q:'The first time each word appears.', bins:['Precise and explained','Not explained','Vague'], cards:[['Yeast, a tiny living thing, makes gas.',0],['A nor’easter hit the city.',1],['The puffy stuff makes gas.',2],['The baker adds malt.',1],['Gluten, a wheat protein, traps gas.',0]],
         say:'Sort each sentence by how clear it is.', how:'Is there a topic word? Is it explained the first time?'},
-      {type:'tiles', q:'Explain the topic word with commas.', w:['The spine,','the back','of a sefer,','holds pages.'],
+      {type:'tiles', q:'Explain the topic word with commas.', w:['The spine,','the back','of a sefer,','holds pages.'], extra:['the thing'],
         say:'Build a sentence that explains the spine.', how:'Topic word first. Then what it means, between commas.'},
-      {type:'match', pairs:[['cold air pushing out warm air','cold front'],['the truck that clears snow','snowplow'],['a windy, blinding snowstorm','blizzard']],
-        say:'Match each vague phrase to the precise word.', how:'What would a weather reporter say?'}] },
+      {type:'sort', q:'Benny explained “reservoir” in sentence 1. Now it comes again.', bins:['Good second time','Mistake'], cards:[['The reservoir holds rain from many streams.',0],['The big water lake holds rain from many streams.',1],['The water place feeds the pipes.',1],['The reservoir, a lake made to store water, feeds the pipes.',1],['The reservoir feeds the pipes.',0]],
+        say:'Is each second use right? Sort it.', how:'After the first time: the same word, with no explaining.'}] },
 
   'WRIT.PARA.L08.06':{ band:'M68', pic:'📏', today:'Keep your report objective: facts, not feelings', why:'Readers trust a report that lets the facts speak.',
     ready:[{q:'A fact is something you can…', o:['check','feel','guess','like'], a:'check'}],
@@ -252,10 +254,11 @@
     ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can keep an informative piece objective.',
     board:{ one:'Objective: facts the reader can check. Cut opinion clues and loaded words (finally, crawled, only) or swap in a fact; name anyone whose view you give.', activity:'Chavrusas read a report aloud; the listener says "Fact!" or "Feeling!" after each sentence, then they fix the feelings together.', mistakes:['"I think" or "the best" in an informative piece','A loaded word (finally, crawled, only) hiding in a fact','"Everyone agrees": a view with no name'] },
     do:[
-      {type:'tiles', q:'Fix: "The dough rose amazingly fast."', w:['The dough','doubled in','an hour.'], extra:['amazingly'],
-        say:'Build the fact with no feeling words.', how:'Cut the clue word. Keep what you can check.'},
+      {type:'tiles', q:'Fix: "Sadly, only ten boys came to the shiur."', w:['Ten boys','came to','the shiur.'], extra:['only'],
+        say:'Build the fact with no loaded words.', how:'"Sadly" and "only" judge quietly. Cut them. Keep the count.'},
       {type:'sort', q:'Benny’s fixes.', bins:['Now objective','Mistake: still opinion'], cards:[['Yeast is a tiny living thing.',0],['Yeast is a truly wonderful thing.',1],['Everyone agrees gluten is key.',1],['Gluten traps the gas.',0]], mis:true,
-        say:'Did Benny fix each opinion? Sort it.', how:'A clue, a loaded word or a view with no name: still opinion.'}],
+        say:'Did Benny fix each opinion? Sort it.', how:'A clue, a loaded word or a view with no name: still opinion.',
+        why:{q:'Teach it back: your chavrusa asks, "What is a loaded word?"', o:['A word that judges quietly, like "finally" or "only"','A long word with many letters','A topic word an expert uses'], a:'A word that judges quietly, like "finally" or "only"'}}],
     your:[
       {type:'match', pairs:[['I feel the lake is huge.','The reservoir holds billions of gallons.'],['Sewing pages is boring.','The binder sews each group of pages.'],['Snow days are the best!','School closed for one day.']],
         say:'Match each opinion to its objective fix.', how:'Cut the feeling. Keep a fact.'},
@@ -265,8 +268,8 @@
         say:'Fact or feeling? Sort each sentence.', how:'Could the reader check it?'},
       {type:'match', pairs:[['Objective','a fact the reader can check'],['A loaded word','judges quietly: finally, only'],['An unnamed view','"Everyone agrees …"']],
         say:'Match each word to what it means.', how:'Whose view is it, and can it be checked?'},
-      {type:'sort', q:'Akiva’s water report.', bins:['Objective','Opinion'], cards:[['Pipes carry water to the city.',0],['Our water is the best anywhere.',1],['Rain fills the reservoirs.',0],['Water pipes are boring.',1]],
-        say:'Test each sentence in Akiva’s report.', how:'Look for clue words like best and boring.'}] },
+      {type:'evidence', q:'Gavriel’s snow report. Tap the sentence with a hidden loaded word.', p:['The storm began at 9 p.m. on Motzei Shabbos.','By morning, ten inches of snow covered Baltimore.','The city plowed the main roads first.','Our side street had to wait a whole day.','Rabbi Rosen said the roads were too icy for buses.'], a:3, look:'a word that judges quietly',
+        say:'Tap the sentence that judges quietly.', how:'Could the reader check every word? Look for "a whole", "only", "finally".'}] },
 
   'WRIT.PARA.L08.07':{ band:'M68', pic:'🏠', today:'End with one takeaway and why it matters', why:'The ending is what the reader remembers and uses.',
     ready:[{q:'A strong finish says … again.', o:['the main point','a new fact','the title','a joke'], a:'the main point'}],
@@ -283,19 +286,20 @@
     board:{ one:'Two moves: join the key points into one takeaway ("In short,"), then why it matters ("Knowing this,"). No new fact, no opinion rant, no copied opening.', activity:'Chavrusas list a piece’s key points on cards, fold them into one takeaway sentence, add "Knowing this,", and explain what they cut.', mistakes:['A list of the points instead of one takeaway','A brand-new fact or an opinion rant','Copying the opening word for word'] },
     do:[
       {type:'sort', q:'Yoni’s sefer piece opened: "A sefer is held together in three steps."', bins:['Brings it home','Mistake: new fact','Mistake: copies the opening'], cards:[['In short, sewing and a cover make a sefer last.',0],['Also, paper was invented in China.',1],['A sefer is held together in three steps.',2],['Knowing this, open a sefer gently.',0]], mis:true,
-        say:'Does each line belong in the ending? Sort it.', how:'One takeaway and why it matters belong. Nothing new, no copies.'},
-      {type:'match', pairs:[['In short, one night of snow can shut a school.','one takeaway'],['Knowing this, families plan.','why it matters'],['Also, snowflakes have six sides.','adds a new fact']],
+        say:'Does each line belong in the ending? Sort it.', how:'One takeaway and why it matters belong. Nothing new, no copies.',
+        why:{q:'Teach it back: your chavrusa asks, "What are the two moves?"', o:['One takeaway, then why it matters','A new fact, then a feeling','Copy the opening, then say "The end"'], a:'One takeaway, then why it matters'}},
+      {type:'match', pairs:[['In short, one snowy night can shut a school.','one takeaway'],['Knowing this, families plan.','why it matters'],['Also, snowflakes have six sides.','adds a new fact']],
         say:'Match each line to its name.', how:'Joins the points? Useful to the reader? Or new?'}],
     your:[
-      {type:'tiles', q:'One takeaway: why bread rises.', w:['In short,','yeast makes','gas that','lifts dough.'],
+      {type:'tiles', q:'One takeaway: why bread rises.', w:['In short,','yeast makes','gas that','lifts dough.'], extra:['Also,'],
         say:'Build the takeaway sentence.', how:'Start with "In short,". Then join the key chain.'},
       {type:'sort', bins:['One takeaway','Mistake: just a list'], cards:[['In short, snow can ice roads and shut a school.',0],['Snow fell. Roads iced. School closed.',1],['To sum up, sewn pages keep a sefer whole.',0],['Yeast. Gas. Gluten. Rising.',1]],
         say:'One takeaway, or just a list? Sort each.', how:'Does one sentence show how the points fit together?'},
       {type:'match', pairs:[['Move 1','join the key points into one takeaway'],['Move 2','say why it matters'],['Cut it','a new fact, a rant, a copied opening']],
         say:'Match each move to its job.', how:'What comes first? What comes second? What goes?'},
-      {type:'tiles', q:'A piece on black ice. Why it matters.', w:['Knowing it,','drivers can','watch for','black ice.'],
-        say:'Build a why-it-matters sentence.', how:'Start like "Knowing this,". Then who, then what they can do.'},
-      {type:'sort', q:'Akiva’s water ending.', bins:['Brings it home','Mistake'], cards:[['In short, our tap water is stored, cleaned rain.',0],['Also, some reservoirs have fish.',1],['Water is the most amazing thing!',1],['Knowing this, save water in dry years.',0]],
+      {type:'order', q:'Akiva’s short piece on black ice. Put it in order, ending with the two moves.', steps:['Black ice forms when rain freezes on a cold road.','It is clear, so drivers cannot see it.','In short, black ice is dangerous because it forms quietly and hides in plain sight.','Knowing this, drivers can slow down on cold, wet nights.'], extra:['Also, hail can be as big as a golf ball.'],
+        say:'Order the piece: facts, takeaway, then why it matters.', how:'Facts first. Then "In short,". Then "Knowing this,". Leave out the new fact.'},
+      {type:'sort', q:'Akiva’s water ending.', bins:['Brings it home','Mistake'], cards:[['In short, our tap water is rain that was stored and cleaned.',0],['Also, some reservoirs have fish.',1],['Water is the most amazing thing!',1],['Knowing this, save water in dry years.',0]],
         say:'Test each line of Akiva’s ending.', how:'A new fact or a feeling? Then it is a mistake.'}] }
   };
   if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
