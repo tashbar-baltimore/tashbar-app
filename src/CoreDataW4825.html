@@ -1,0 +1,228 @@
+<script>
+/* CoreDataW4825.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 8 (L09), Unit 5 "Writing for the Real World". Cast: The Beacon newsroom. (The One Bite upgrade of the older Business Letter lesson WRIT.ESSAY.L09.01 is held back until its old questions are fixed.)
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.ESSAY.L09.06':{name:'Speech That Moves',
+  teach:[
+    {how:'A reader can read a line twice. A listener hears it ONCE, so a speech is written for the ear. You already know how to open (Hook the Reader) and how to close (Close the Case). A speech uses them both: a HOOK, THREE POINTS, and a CLOSE. Today you learn three tools only a speaker needs. Tool 1 is SIGNPOSTS: words that tell the listener where he is. “First,” “Second,” “Finally,” “My last point is this.” A reader can see a new paragraph start. A listener cannot, so you say it. Benny is writing the eighth-grade graduation speech. Part of it: “First, an empty page takes courage. Second, no one fills a page alone. Finally, the next page is ours.”', q:'In Benny’s lines, which words are the signposts?', o:['First, Second, Finally','empty, page, courage','takes, fills, is']},
+    {how:'Tool 2 is the KEY LINE: one short line that holds the whole speech. Say it right after the hook, and say it again at the very end. In an essay, saying a thing twice is extra. In a speech, it is the line the listener takes home. Benny’s key line: “Every page starts empty.” Tool 3 is SHORT SENTENCES. Use the BREATH TEST: can you say the sentence in one easy breath, about 15 words or fewer? If not, it is TOO LONG TO SAY ALOUD. Split it.', q:'Which line passes the breath test?', o:['In sixth grade, none of us could write a headline.','When we first came to The Beacon in sixth grade, the year the printer broke three times and Mr. Gross became our adviser, none of us could write a headline.','When we came in sixth grade, which was the year that Mr. Gross became our adviser, none of us, not one, could write a headline at all.']},
+    {how:'Three mistakes. NO SIGNPOSTS: three points in a row with nothing to mark them, so the listener cannot tell where one ends. TOO LONG TO SAY ALOUD: an essay sentence read out loud; the listener loses the start before you reach the end. NO KEY LINE: the speech ends, and the listener cannot say in one line what it was about. A speech that is READY TO SPEAK has a hook, a key line, three signposted points, short sentences, and a close that says the key line again.', q:'Yoni reads his essay aloud as a speech. One sentence has 38 words and two “which” parts. What is wrong?', o:['too long to say aloud','no signposts','no key line']}
+  ],
+  practice:[
+    {t:'sort', q:'Breath test! Sort each line from Benny’s first draft.', bins:[{id:'B',label:'🫁 Passes the breath test'},{id:'L',label:'⚠️ Too long to say aloud'}],
+      items:[{label:'Who remembers our first empty page?',bin:'B'},{label:'In sixth grade, none of us could write a headline.',bin:'B'},{label:'The printer broke three times that year, and we kept going.',bin:'B'},{label:'Our parents, who drove us to every late meeting and waited in the car while we argued about headlines, deserve our thanks.',bin:'L'},{label:'When we came to The Beacon in sixth grade, the year Mr. Gross became our adviser, none of us, not one, could write a headline at all.',bin:'L'},{label:'So, friends, every page starts empty.',bin:'B'}],
+      h:'Say each line in your head. Do you need a second breath before the end? About 15 words is the limit.'},
+    {t:'pairs', q:'Match each speech tool to its job.', pairs:[['signposts','tell the listener which point he is on'],['key line','the one line the listener takes home'],['breath test','can you say it in one easy breath?'],['hook','grabs the listener with the first words']],
+      h:'Which tool marks the points? Which one is said twice? Which one checks length?'},
+    {t:'spotall', q:'Benny’s middle. Tap every SIGNPOST.', cells:[{label:'First,',ok:true},{label:'My second point is this:',ok:true},{label:'Finally,',ok:true},{label:'an empty page',ok:false},{label:'because',ok:false},{label:'our rebbeim',ok:false}],
+      h:'A signpost tells the listener which point he is on: first, second, last.'},
+    {t:'sort', q:'Sneaky speech parts! Sort each one.', bins:[{id:'G',label:'✅ Ready to speak'},{id:'N',label:'⚠️ Mistake: no signposts'},{id:'L',label:'⚠️ Mistake: too long to say aloud'},{id:'K',label:'⚠️ Mistake: no key line'}],
+      items:[{label:'“First, an empty page takes courage. Second, no one fills a page alone.” (Benny’s middle)',bin:'G'},{label:'“We were scared. Our rebbeim helped us. Mesivta starts in September.” (the middle: three points)',bin:'N'},{label:'“Our parents, who drove us to every late meeting and waited in the car while we argued about headlines, deserve our thanks.”',bin:'L'},{label:'“Finally, the next page is ours. Every page starts empty.”',bin:'G'},{label:'“Courage helped us. Friends helped us. Hope will help us.” (the middle: three points)',bin:'N'},{label:'“The Beacon, which began as one page that we printed on the office printer that broke three times, now has twelve pages.”',bin:'L'},{label:'A hook, three signposted points, then “Thank you, and goodnight.” (no one line to take home)',bin:'K'},{label:'A close that thanks everyone but never says “Every page starts empty.” (no one line comes back)',bin:'K'}],
+      h:'First take the breath test. Then ask: can the listener hear where each point starts? For a whole speech, ask last: does one line come back at the end?'},
+    {t:'order', q:'Build the plan of Benny’s speech. Tap the parts in order.', tiles:['Hook: a question','Key line','First point','Second point','Third point','Close: the key line again'], extra:['A new fourth point'],
+      h:'Grab him, give him the key line, three points, then send him home with the key line.'},
+    {t:'pairs', q:'Each long line fails the breath test. Match it to its spoken fix.', pairs:[['Our parents, who drove us to every late meeting and waited in the car while we argued, deserve our thanks.','Our parents drove us to every late meeting. They waited while we argued. Thank you.'],['The Beacon, which began as one page that we printed on the office printer, now has twelve pages.','The Beacon began as one page on the office printer. Now it has twelve.'],['Mr. Gross, who read every draft we wrote, even the ones we handed in late at night, never once lost patience.','Mr. Gross read every draft we wrote, even late at night. He never lost patience.']],
+      h:'Find the fix that keeps the same facts, cut into short sentences.'},
+    {t:'write', q:'Your turn to write. Write a one-minute speech (about 120 words) for your own graduation or siyum. Start with a hook, then your key line. Give three points with signposts. Close with the key line again.', min:0, checks:['🪧 Each of my three points starts with a signpost: First, Second, Finally.','🔁 I say my key line after the hook and again at the very end.','🫁 Every sentence passes the breath test.'], h:'Write the key line first, in six words or fewer. Then the three points. Then the hook. Read it aloud: split any line that needs a second breath.'}
+  ],
+  check:[
+    {q:'Yoni practices his speech for the siyum. A listener says, “I got lost. Were you still on your first reason?” What does Yoni need?', o:['signposts','a key line','the breath test'], h:'The listener could not tell where each point started. Which tool marks that?'},
+    {q:'Eli’s speech for the chessed fair has this line: “The fair, which the seventh grade, who worked on it since Chanukah, planned with Rabbi Rosen, raised money for two families.” What is wrong?', o:['too long to say aloud','no signposts','no key line'], h:'Take the breath test. Can you say it in one easy breath?'},
+    {t:'order', q:'Build Akiva’s short speech at The Beacon’s last meeting. Tap the lines in order.', tiles:['“Who held the door for you today?”','“Here is my message: say thank you.”','“First, thank your parents.”','“Second, thank your rebbeim.”','“Finally, thank the people no one sees.”','“So today, say thank you.”'], extra:['“Also, one more thing.”'], h:'Hook, key line, three signposted points, then the key line again to close.'}
+  ],
+  re:[
+    {how:'A new way: a tour guide on a bus. “First, on your left, the harbor. Next, the old train station. Our last stop is the museum.” The riders cannot flip back a page, so the guide tells them where they are. A speaker does the same with signposts.', q:'Why does the guide say “Our last stop”?', o:['so the riders know where they are','to make the trip longer','to sound fancy']},
+    {how:'A simpler step: write only the key line and three signposts on a card. “Every page starts empty. First… Second… Finally…” Fill in one short sentence after each signpost. That is the skeleton of the speech.', q:'What goes on the card first?', o:['the key line','the longest sentence','the names of every guest']},
+    {how:'The skill underneath: Hook the Reader (Grade 5) and Close the Case (Grade 6). You can open a piece with a hook and close an argument with force. Now you go further: you write for the EAR. A listener hears each line once, so you add signposts, repeat one key line, and keep every sentence short enough for one breath.', q:'What is new in a speech, beyond the hook and the close?', o:['signposts, a key line, and short sentences','a title and headings','footnotes']}
+  ]},
+  'WRIT.PARA.L09.09':{name:'Cut the Extra',
+  teach:[
+    {how:'The Beacon’s final issue has one page left, and every article must fit. Gavriel’s job: make each sentence CONCISE: the same meaning in the fewest words. He hunts DEADWOOD, words that do no work. Kind 1: a WORDY PHRASE, a long way to say a short thing. “in order to” becomes “to.” (You learned “in order to” as a linking word. It still works, but “to” does the same job.) “due to the fact that” becomes “because.” “at this point in time” becomes “now.” “The fact that” can almost always go: “The fact that the sale raised $640 surprised us” becomes “The sale’s $640 surprised us.” Kind 2: an EMPTY WORD: “very,” “really,” “basically,” “actually.” Cut it, or trade two words for one strong one: “very tired” becomes “exhausted.”', q:'Gavriel’s line: “In order to fit the page, we cut two photos.” What does “In order to” become?', o:['To','Because','Now']},
+    {how:'Kind 3: SAID TWICE. Some phrases say one idea two times: “past history” (all history is past), “end result,” “free gift,” “each and every,” “7 p.m. in the evening.” Keep one. A whole sentence can be said twice too: “The siyum was on Thursday. It took place on Thursday.” Cut the copy. In Precise and Technical (Grade 7) you chose the exact topic word, and in Voice (this year) you chose words that sound like you. Now you go further: in every sentence, you take out the words that do no work.', q:'Yoni’s line: “The end result was a full page.” Which word says the idea a second time, and can go?', o:['end','result','page']},
+    {how:'The rule: KEEP THE MEANING. Cut words, never facts: who, what, when, where, how many and why all stay. Two mistakes. CUT TOO MUCH: “The sale moved.” Where to? Why? The facts are gone. STILL WORDY: he cut “very” but left “due to the fact that.” TIGHT AND CLEAR keeps every fact in fewer words. Tuvia’s line: “Due to the fact that it rained very hard on Sunday, the book sale was moved inside to the gym.” Tight and clear: “Because it poured on Sunday, the book sale moved to the gym.”', q:'Gavriel trims it to: “The book sale moved to the gym.” Which is it: tight and clear, still wordy, or cut too much?', o:['cut too much','tight and clear','still wordy']}
+  ],
+  practice:[
+    {t:'sort', q:'Words from The Beacon’s book-sale article. Cut or keep?', bins:[{id:'D',label:'✂️ Deadwood: cut or shrink'},{id:'K',label:'📌 A fact: keep'}],
+      items:[{label:'in order to',bin:'D'},{label:'due to the fact that',bin:'D'},{label:'very',bin:'D'},{label:'each and every',bin:'D'},{label:'$640',bin:'K'},{label:'on Sunday',bin:'K'},{label:'for the new cheder’s library',bin:'K'}],
+      h:'Ask: if I cut it, does the reader lose a fact? If yes, keep it.'},
+    {t:'pairs', q:'Match each wordy phrase to its short form.', pairs:[['in order to','to'],['due to the fact that','because'],['at this point in time','now'],['in spite of the fact that','although']],
+      h:'Say the long phrase. What one short word means the same thing?'},
+    {t:'spotall', q:'Tap every phrase that says the same idea TWICE.', cells:[{label:'past history',ok:true},{label:'end result',ok:true},{label:'free gift',ok:true},{label:'7 p.m. in the evening',ok:true},{label:'new cheder',ok:false},{label:'final issue',ok:false}],
+      h:'Does one word already mean the other? History is always past. A gift is always free.'},
+    {t:'sort', q:'Sneaky trims! Tuvia’s line: “Due to the fact that it rained very hard on Sunday, the book sale was moved inside to the gym.” Sort each try.', bins:[{id:'T',label:'✅ Tight and clear'},{id:'W',label:'⚠️ Mistake: still wordy'},{id:'C',label:'⚠️ Mistake: cut too much'}],
+      items:[{label:'Because it poured on Sunday, the book sale moved to the gym.',bin:'T'},{label:'Due to the fact that it poured on Sunday, the book sale was moved inside to the gym.',bin:'W'},{label:'The book sale moved.',bin:'C'},{label:'On Sunday, a downpour moved the book sale to the gym.',bin:'T'},{label:'Because it rained really, really hard on Sunday, the book sale was basically moved to the gym.',bin:'W'},{label:'It rained on Sunday.',bin:'C'}],
+      h:'First check the facts: Sunday, rain, book sale, gym. All there? Then hunt for deadwood that is left.'},
+    {t:'order', q:'Tighten Yoni’s line: “In order to cool off, each and every player basically drank water at halftime.” Tap the tight version in order.', tiles:['To cool off,','every player','drank water','at halftime.'], extra:['basically'],
+      h:'“In order to” becomes “To.” “Each and every” becomes “every.” “Basically” does no work.'},
+    {t:'pairs', q:'Match each example to its problem.', pairs:[['in order to','a wordy phrase'],['very','an empty word'],['past history','said twice'],['“The sale moved.”','cut too much']],
+      h:'Long way to say it? A word that adds nothing? One idea two times? Or a fact that went missing?'},
+    {t:'write', q:'Your turn to write. Take a paragraph you wrote this year, about 80 words. Cut the deadwood until it is about 60 words, with every fact still there. Write the new paragraph.', min:0, checks:['✂️ I shrank every wordy phrase and cut every empty word.','🔁 Nothing is said twice.','📌 Every fact is still there: who, what, when, where, how many, why.'], h:'Circle “in order to,” “the fact that,” “very” and “really” first. Then hunt for one idea said twice. Last, check that no fact went missing.'}
+  ],
+  check:[
+    {q:'Shimshon’s sports report: “Our team won the game. We were the winners of the game.” What is the extra?', o:['said twice','a wordy phrase','cut too much'], h:'Do the two sentences tell the reader the same thing?'},
+    {q:'Akiva cuts “At 7:30 p.m. on Tuesday, Rabbi Rosen will speak about Pirkei Avos in the beis medrash” down to “Rabbi Rosen will speak.” Is it tight and clear, still wordy, or cut too much?', o:['cut too much','tight and clear','still wordy'], h:'Check the facts: when, where, about what. Are they still there?'},
+    {t:'order', q:'Tighten this line: “In order to help the new cheder, we collected very many sefarim.” Tap the tight version in order.', tiles:['To help','the new cheder,','we collected','many sefarim.'], extra:['in order'], h:'“In order to” becomes “To.” “Very many” becomes “many.”'}
+  ],
+  re:[
+    {how:'A new way: packing for camp. Your bag is full, so you take out the third pair of sneakers and the extra flashlight. But you never take out your tefillin. Cutting writing works the same way: cut what does no work, keep what matters.', q:'In writing, what is like the tefillin you never take out?', o:['the facts','the word “very”','“in order to”']},
+    {how:'A simpler step: hunt for just three phrases: “in order to,” “the fact that,” and “very.” Circle them. Shrink or cut each one. Then read the sentence again: did every fact stay?', q:'“In order to win, we practiced.” Circle it and shrink it. What is left?', o:['To win, we practiced.','We practiced.','In order, we practiced.']},
+    {how:'The skill underneath: Precise and Technical (Grade 7). You chose the exact topic word and used it the same way every time. Now you go further: you take out every word that does no work (wordy phrases, empty words, ideas said twice) and keep every fact.', q:'Precise and Technical taught you to…', o:['use the exact topic word','cut wordy phrases','write a speech']}
+  ]},
+  'WRIT.ESSAY.L09.07':{name:'Editor’s Desk',
+  teach:[
+    {how:'Tuvia Sasson, a sixth grader, wrote his first article for The Beacon. Akiva, the editor, sits at the editor’s desk with it: “The sixth grade had a book sale. It was very, very fun. Each boy brought books from home. On Sunday it rained, so we moved it to the gym. It raised $640. Every shelf in my house is lighter now. The money is to help the new cheder buy library books.” In Peer Feedback (Grade 5) you gave a chavrusa comments. Now you go further: the editor MAKES THE CHANGE himself, and writes an EDITOR’S NOTE for each change: WHAT he changed, and WHY it helps the reader.', q:'At the editor’s desk, who makes the change?', o:['the editor, with a note for each change','the writer, after a comment','nobody: the editor only praises']},
+    {how:'Four steps. READ the whole piece as its reader. CHOOSE the few changes that help the reader most (two or three, not twenty). CHANGE it yourself. NOTE each change, WHAT AND WHY: “I changed ___ because the reader ___.” Akiva’s three changes and notes. 1. “I moved the purpose to your first sentence, because the reader should know why the sale happened right away.” 2. “I cut ‘It was very, very fun,’ because it tells the reader nothing he can see.” 3. “I changed ‘we moved it’ to ‘we moved the sale,’ because the reader could think ‘it’ meant the rain.”', q:'Which part of note 3 is the WHY?', o:['because the reader could think ‘it’ meant the rain','I changed ‘we moved it’','to ‘we moved the sale’']},
+    {how:'It is still Tuvia’s article. Akiva KEEPS what works: “Every shelf in my house is lighter now” is Tuvia’s voice, the best line in the piece. And he never changes a fact; if he doubts one, he asks Tuvia. Two mistakes. NO WHY: “Fixed it.” “Better now.” The writer cannot learn from a change he does not understand. TOOK OVER: the editor changes the writer’s facts, his meaning or his voice, like rewriting the shelf line as “Many books were given,” or turning $640 into “about $700.” A GOOD NOTE says what and why, and the piece still sounds like its writer.', q:'Akiva’s helper changes Tuvia’s shelf line to “Many books were given.” His note: “I changed your line because mine sounds more like a newspaper.” Which mistake is it?', o:['took over','no why','cut too much']}
+  ],
+  practice:[
+    {t:'sort', q:'Editor’s notes on Tuvia’s article. Sort each one.', bins:[{id:'G',label:'✅ Good note: what and why'},{id:'N',label:'⚠️ Mistake: no why'}],
+      items:[{label:'I moved the purpose to your first sentence, because the reader should know why the sale happened right away.',bin:'G'},{label:'Fixed your beginning.',bin:'N'},{label:'I changed “we moved it” to “we moved the sale,” because the reader could think “it” meant the rain.',bin:'G'},{label:'Better now.',bin:'N'},{label:'I cut “It was very, very fun,” because it tells the reader nothing he can see.',bin:'G'},{label:'I changed some words in the middle.',bin:'N'}],
+      h:'Does the note say WHAT changed, and WHY it helps the reader? Look for “because.”'},
+    {t:'pairs', q:'Match each change Akiva made to its reason.', pairs:[['moved the purpose to the first sentence','the reader learns why the sale happened right away'],['cut “It was very, very fun.”','it tells the reader nothing he can see'],['changed “it” to “the sale”','the reader could think “it” meant the rain']],
+      h:'For each change, ask: what would confuse or slow the reader without it?'},
+    {t:'spotall', q:'Tap every change that is the editor’s to make.', cells:[{label:'cut “very, very fun”',ok:true},{label:'changed “it” to “the sale”',ok:true},{label:'moved the purpose to the first sentence',ok:true},{label:'changed $640 to “about $700”',ok:false},{label:'rewrote the shelf line as “Many books were given.”',ok:false},{label:'cut “Every shelf in my house is lighter now.”',ok:false}],
+      h:'A good change helps the reader. It never changes the writer’s facts or his voice.'},
+    {t:'sort', q:'Sneaky edits! Sort each change and its note.', bins:[{id:'G',label:'✅ Good note: what and why'},{id:'N',label:'⚠️ Mistake: no why'},{id:'T',label:'⚠️ Mistake: took over'}],
+      items:[{label:'Cut “It was very, very fun.” Note: “It tells the reader nothing he can see.”',bin:'G'},{label:'Moved the purpose up. Note: “Fixed it.”',bin:'N'},{label:'Changed $640 to “about $700.” Note: “A bigger number sounds better.”',bin:'T'},{label:'Changed “it” to “the sale.” Note: “The reader could think ‘it’ meant the rain.”',bin:'G'},{label:'Rewrote the whole article. Note: “This is how I would say it.”',bin:'T'},{label:'Cut a sentence. Note: “Better now.”',bin:'N'}],
+      h:'First: did the change keep his facts and voice? If not, he took over. Then: does the note give a reason?'},
+    {t:'order', q:'Build Akiva’s note for change 1. Tap the parts in order.', tiles:['I moved','the purpose','to your first sentence,','because the reader','should know it right away.'], extra:['Better now.'],
+      h:'What he changed first, then “because,” then how it helps the reader.'},
+    {t:'pairs', q:'Match each step at the editor’s desk to what you do.', pairs:[['Read','the whole piece, as its reader'],['Choose','the few changes that help most'],['Change','make the fix yourself'],['Note','what you changed, and why']],
+      h:'Read first. Choose before you change. The note comes last.'},
+    {t:'write', q:'Your turn to edit. Tuvia’s second draft: “The siyum was really nice. Rabbi Rosen spoke. He said the boys should be proud. Then they ate. It was on Thursday.” Rewrite it with two or three changes. Then write an editor’s note for each change.', min:0, checks:['✏️ I made two or three changes that help the reader.','📝 Each note says what I changed, and why, with “because.”','🎙️ I kept Tuvia’s facts, and it still sounds like him.'], h:'Read it as a reader. Where are you slowed down or confused? Fix those spots only. For each one, write: I changed ___ because the reader ___.'}
+  ],
+  check:[
+    {q:'Gavriel edits Shimshon Ohana’s article on the eighth-grade siyum. He moves two sentences and writes one note: “I changed this part. It’s better now.” Which is it?', o:['no why','what and why','took over'], h:'Does the note say why the change helps the reader?'},
+    {q:'Eli edits the same article. He changes “84 boys” to “about 100 boys.” His note: “I changed the number, because a bigger number makes the siyum sound more exciting.” Which is it?', o:['took over','what and why','no why'], h:'Whose fact is the number? Is it the editor’s to change?'},
+    {t:'order', q:'Build Gavriel’s note for Shimshon. Tap the parts in order.', tiles:['I changed “he”','to “Rabbi Rosen,”','because the reader','could not tell who spoke.'], extra:['It’s better now.'], h:'What changed, then “because,” then how it helps the reader.'}
+  ],
+  re:[
+    {how:'A new way: a tailor fixing a suit. He takes in the sleeves so the suit fits. He does not change the color or make it his own style, because it is the customer’s suit. And he tells the customer what he took in, and why.', q:'Why does the tailor not change the color?', o:['it is the customer’s suit','color is hard to change','he likes the color']},
+    {how:'A simpler step: one change, one note. Find the ONE spot where the reader gets stuck. Fix it. Then finish this sentence: “I changed ___ because the reader ___.”', q:'What word joins the what to the why?', o:['because','and','also']},
+    {how:'The skill underneath: Peer Feedback (Grade 5), and Revise for Reader and Edit Like a Pro (Grade 7). You gave a chavrusa comments, and you revised and edited your OWN piece. Now you go further: you revise SOMEONE ELSE’S piece, you make each change yourself, you write what and why for each one, and you keep his facts and his voice.', q:'What is new at the editor’s desk?', o:['you change his piece and explain each change','you give one praise, one question, one push','you edit your own piece in three passes']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.ESSAY.L09.06':{hook:'A reader can read a line twice. A listener hears it once. How do you make it stick?', big:'A speech that moves: a hook, a key line, three signposted points, short sentences, and a close that says the key line again.',
+    intro:['A listener hears each line once: write for the ear.','Signposts: First, Second, Finally.','Key line: say it after the hook, and again at the end.','Breath test: every sentence fits in one easy breath.'],
+    ex:[{q:'Benny’s three points.',steps:['Mark each one for the ear.','First… Second… Finally…'],a:'First, an empty page takes courage. Second, no one fills a page alone. Finally, the next page is ours.'},
+        {q:'“Our parents, who drove us to every late meeting and waited in the car while we argued, deserve our thanks.”',steps:['Breath test: 19 words. It needs two breaths.','Split it into short sentences.'],a:'Our parents drove us to every late meeting. They waited while we argued. Thank you.'}],
+    oops:{q:'Benny reads an essay aloud.',wrong:'Three points in a row, no signposts, and a 30-word sentence.',right:'“First…” “Second…” “Finally…” and short sentences.',why:'A listener cannot look back. Tell him where he is, and keep each line to one breath.'},
+    idea:['If the listener remembers one line, make it your key line.'],
+    try:{q:'Eli’s speech: “We worked. We learned. We grew.” The listener asks, “Which point was that?” What is missing?',o:['signposts','a key line','a hook'],a:'signposts',steps:['Can he hear where each point starts?']}},
+  'WRIT.PARA.L09.09':{hook:'One page left in the final issue, and three articles to fit. What do you cut?', big:'Cut the extra: shrink wordy phrases, cut empty words and anything said twice, and keep every fact.',
+    intro:['Wordy phrase: “in order to” becomes “to.”','Empty word: cut “very,” “really,” “basically.”','Said twice: “past history” becomes “history.”','Keep the meaning: never cut a fact.'],
+    ex:[{q:'“Due to the fact that it rained very hard on Sunday, the book sale was moved inside to the gym.”',steps:['“Due to the fact that” becomes “Because.” “Rained very hard” becomes “poured.”','“Moved inside to the gym” says inside twice: “moved to the gym.”'],a:'Because it poured on Sunday, the book sale moved to the gym.'},
+        {q:'“The siyum is on Thursday at 7 p.m. in the evening.”',steps:['“7 p.m.” already means evening.','Cut “in the evening.”'],a:'The siyum is on Thursday at 7 p.m.'}],
+    oops:{q:'Gavriel trims Tuvia’s line.',wrong:'“The book sale moved.”',right:'“Because it poured on Sunday, the book sale moved to the gym.”',why:'Cut words, never facts. When, why and where must stay.'},
+    idea:['Every word must do a job. If it does none, it goes.'],
+    try:{q:'“At this point in time, the final issue is basically done.”',o:['still wordy','tight and clear','cut too much'],a:'still wordy',steps:['Find the wordy phrase and the empty word.']}},
+  'WRIT.ESSAY.L09.07':{hook:'A younger boy hands you his first article. You can fix it. Can you explain every fix?', big:'At the editor’s desk you revise someone else’s piece, make each change yourself, and write what you changed and why.',
+    intro:['Read the whole piece as its reader.','Choose the two or three changes that help most.','Make each change yourself.','Note each one: “I changed ___ because the reader ___.”'],
+    ex:[{q:'Tuvia: “On Sunday it rained, so we moved it to the gym.”',steps:['A reader could think “it” means the rain.','Change it to “the sale,” and say why.'],a:'I changed “we moved it” to “we moved the sale,” because the reader could think “it” meant the rain.'},
+        {q:'Tuvia: “Every shelf in my house is lighter now.”',steps:['Does it confuse the reader? No.','It is his voice, and it works.'],a:'Keep it. Not every line needs a change.'}],
+    oops:{q:'Akiva’s helper edits Tuvia’s article.',wrong:'He changes $640 to “about $700.” Note: “Sounds better.”',right:'He keeps $640, and asks Tuvia if he doubts it.',why:'The facts and the voice belong to the writer. An editor who changes them took over.'},
+    idea:['Change what helps the reader; explain every change; keep the writer’s facts and voice.'],
+    try:{q:'A note says only: “Fixed your ending.”',o:['no why','what and why','took over'],a:'no why',steps:['Does it say why the change helps the reader?']}},
+  };
+  var HOWTO = {
+  'WRIT.ESSAY.L09.06':{s:'Write your key line first: six words or fewer.\nOpen with a hook, then say the key line.\nGive three points, each with a signpost: First, Second, Finally.\nTake the breath test on every sentence. Close with the key line again.'},
+  'WRIT.PARA.L09.09':{s:'Circle wordy phrases: “in order to,” “due to the fact that,” “the fact that.” Shrink them.\nCut empty words: “very,” “really,” “basically.”\nCut anything said twice.\nCheck every fact is still there: who, what, when, where, how many, why.'},
+  'WRIT.ESSAY.L09.07':{s:'Read the whole piece as its reader.\nChoose the two or three changes that help the reader most.\nMake each change yourself. Keep the writer’s facts and voice.\nWrite a note for each: “I changed ___ because the reader ___.”'},
+  };
+  var BITE = {
+  'WRIT.ESSAY.L09.06':{ band:'M68', pic:'🎤', today:'Write a short speech the listener can follow and remember', why:'A listener hears each line once, so a speech is written for the ear.',
+    ready:[{q:'In Close the Case, an argument ends with…', o:['a call to action','a new reason','a doubt','a joke'], a:'a call to action'}],
+    bridge:'WRIT.PARA.L07.03', bridgeName:'Close the Case',
+    watch:{ q:'How does Benny write the eighth-grade graduation speech?', m:{type:'scene', e:'🎤', t:'Graduation night. Parents, rebbeim and Rabbi Rosen fill the hall. Benny has one minute.'}, steps:[
+      {t:'Hook: a question. “Who remembers our first empty page?”'},
+      {t:'Key line, right after the hook: “Every page starts empty.”'},
+      {t:'Three points with signposts: First… Second… Finally…'},
+      {t:'Breath test: every sentence fits in one easy breath.'},
+      {t:'Close: thank the people who helped, then the key line again.'},
+      {t:'Teach it back: tell your chavrusa the three speech tools.'}], a:'Hook, key line, three signposted points, short sentences, and the key line again at the end.' },
+    oops:{ q:'Benny’s first draft.', wrong:'Our parents, who drove us to every late meeting and waited in the car while we argued about headlines, deserve our thanks.', right:'Our parents drove us to every late meeting. They waited in the car. Thank you.', why:'Too long to say aloud. A listener loses the start before the end.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can write a short speech with a hook, three signposted points, and a key line.',
+    board:{ one:'A speech is for the ear: a hook, a key line, three points with signposts, short sentences, and the key line again at the close.', activity:'One chavrusa reads a short speech aloud with no signposts; the other tries to say the three points. Then they add First, Second, Finally and try again.', mistakes:['No signposts: three points the listener cannot tell apart','Too long to say aloud: an essay sentence read out loud','No key line: nothing to take home'] },
+    do:[
+      {type:'sort', q:'Sneaky lines! Take the breath test.', bins:['One breath','Mistake: too long to say aloud'], cards:[['In sixth grade, none of us could write a headline.',0],['Our parents, who drove us to every late meeting and waited in the car, deserve all our thanks.',1],['The printer broke three times, and we kept going.',0],['The Beacon, which began as one page we printed on a printer that broke three times, now has twelve.',1]], mis:true,
+        say:'Can you say it in one breath? Sort each line.', how:'About 15 words is the limit for one breath.'},
+      {type:'tiles', q:'Put the plan of Benny’s speech in order.', w:['Hook','Key line','Points'], extra:['New point'],
+        say:'Put the plan of the speech in order.', how:'Grab him, give the key line, then the points.'}],
+    your:[
+      {type:'match', pairs:[['signposts','tell him which point he is on'],['key line','the line he takes home'],['breath test','one easy breath per sentence'],['hook','grabs him with the first words']],
+        say:'Match each speech tool to its job.', how:'Which one marks points, sticks, checks length, or grabs?'},
+      {type:'sort', q:'Benny’s lines.', bins:['Signpost','Key line','Hook'], cards:[['First,',0],['My last point is this:',0],['Every page starts empty.',1],['Who remembers our first empty page?',2],['Finally,',0]],
+        say:'Signpost, key line, or hook? Sort Benny’s lines.', how:'A question grabs. A short line repeats. A signpost counts.'},
+      {type:'tiles', q:'Build Benny’s close.', w:['So,','every page','starts','empty.'], extra:['Also,'],
+        say:'Build the close. It says the key line again.', how:'Start with So. End with the key line.'},
+      {type:'sort', q:'Speech parts. Ready, or a mistake?', bins:['Ready to speak','No signposts','Too long to say aloud'], cards:[['“First, an empty page takes courage.”',0],['“We were scared. Rebbeim helped. Mesivta starts soon.” (three points)',1],['“Our parents, who waited in the car every night while we argued about headlines, deserve our thanks.”',2],['“Finally, the next page is ours.”',0],['“Courage helped. Friends helped. Hope will help.” (three points)',1]],
+        say:'Ready, or a mistake? Sort each speech part.', how:'Breath test first. Then: can he hear where points start?'},
+      {type:'match', pairs:[['hook','“Who remembers our first empty page?”'],['first point','“First, an empty page takes courage.”'],['close','“So, friends, every page starts empty.”']],
+        say:'Match each part of the speech to Benny’s line.', how:'Beginning, middle, or end of the speech?'}] },
+  'WRIT.PARA.L09.09':{ band:'M68', pic:'✂️', today:'Cut the extra words and keep the meaning', why:'Short, tight sentences fit the page and save the reader’s time.',
+    ready:[{q:'In Precise and Technical, you use…', o:['the exact topic word','a longer word','a new word each time','slang'], a:'the exact topic word'}],
+    bridge:'WRIT.PARA.L08.05', bridgeName:'Precise and Technical',
+    watch:{ q:'How does Gavriel make an article fit the final issue?', m:{type:'scene', e:'✂️', t:'One page left. Gavriel trims the book-sale article line by line.'}, steps:[
+      {t:'Wordy phrase: “Due to the fact that” becomes “Because.”'},
+      {t:'Empty words: “very hard” becomes “poured.”'},
+      {t:'Said twice: “moved inside to the gym” becomes “moved to the gym.”'},
+      {t:'Check the facts: Sunday, rain, book sale, gym. All still there.'},
+      {t:'New line: “Because it poured on Sunday, the book sale moved to the gym.”'},
+      {t:'Teach it back: tell your chavrusa the three kinds of deadwood.'}], a:'Shrink wordy phrases, cut empty words and anything said twice, and keep every fact.' },
+    oops:{ q:'Gavriel trims too hard.', wrong:'The book sale moved.', right:'Because it poured on Sunday, the book sale moved to the gym.', why:'Cut too much. Cut words, never facts: when, why and where must stay.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can cut the extra words from a sentence and keep every fact.',
+    board:{ one:'Cut the extra: shrink wordy phrases, cut empty words, cut what is said twice. Never cut a fact.', activity:'Chavrusas get a wordy paragraph. One crosses out the deadwood; the other checks that every fact is still there.', mistakes:['Cut too much: a fact went missing','Still wordy: one phrase cut, another left','Cut a word that was a fact, like “on Sunday”'] },
+    do:[
+      {type:'sort', q:'Sneaky trims of Tuvia’s line. Tight, or cut too much?', bins:['Tight and clear','Mistake: cut too much'], cards:[['Because it poured on Sunday, the book sale moved to the gym.',0],['The book sale moved.',1],['On Sunday, a downpour moved the book sale to the gym.',0],['It rained on Sunday.',1]], mis:true,
+        say:'Did every fact stay? Sort each trimmed line.', how:'Look for Sunday, rain, book sale and gym.'},
+      {type:'match', pairs:[['in order to','to'],['due to the fact that','because'],['at this point in time','now']],
+        say:'Match each wordy phrase to its short form.', how:'Say the long phrase. Which short word means it?'}],
+    your:[
+      {type:'tiles', q:'Tighten: “Due to the fact that it poured, we moved inside.”', w:['Because','it poured,','we moved','inside.'], extra:['due to'],
+        say:'Build the tight version of the sentence.', how:'“Due to the fact that” becomes “Because.”'},
+      {type:'sort', q:'Three kinds of deadwood.', bins:['Wordy phrase','Empty word','Said twice'], cards:[['in order to',0],['due to the fact that',0],['very',1],['really',1],['past history',2],['end result',2]],
+        say:'Which kind of deadwood is it? Sort each one.', how:'Long way to say it? Adds nothing? One idea twice?'},
+      {type:'match', pairs:[['past history','history'],['free gift','gift'],['end result','result'],['7 p.m. in the evening','7 p.m.']],
+        say:'Each says one idea twice. Match it to its fix.', how:'Keep the word that carries the meaning.'},
+      {type:'tiles', q:'Tighten: “In order to help the cheder, we basically sold books.”', w:['To help','the cheder,','we sold','books.'], extra:['in order'],
+        say:'Build the tight version. Keep every fact.', how:'“In order to” becomes “To.” “Basically” does no work.'},
+      {type:'sort', q:'Words from the book-sale article.', bins:['Keep: a fact','Cut: deadwood'], cards:[['$640',0],['on Sunday',0],['for the new cheder',0],['basically',1],['each and every',1],['the fact that',1]],
+        say:'Keep the fact, or cut the deadwood? Sort each.', how:'If the reader loses a fact, keep it.'}] },
+  'WRIT.ESSAY.L09.07':{ band:'M68', pic:'📝', today:'Revise someone else’s piece and explain each change', why:'A good editor makes the piece better and teaches the writer why.',
+    ready:[{q:'In Revise for Reader, you read your draft as…', o:['a new reader','the writer','a speller','a judge'], a:'a new reader'}],
+    bridge:'WRIT.ESSAY.L08.07', bridgeName:'Revise for Reader',
+    watch:{ q:'How does Akiva edit Tuvia’s first article?', m:{type:'scene', e:'📝', t:'Tuvia, a sixth grader, wrote about the book sale for the new cheder. Akiva sits at the editor’s desk.'}, steps:[
+      {t:'Read the whole piece as its reader.'},
+      {t:'Choose the few changes that help most: the purpose is buried at the end.'},
+      {t:'Change it: move the purpose to the first sentence.'},
+      {t:'Note it: “I moved the purpose up, because the reader should know why right away.”'},
+      {t:'Keep what works: “Every shelf in my house is lighter now” stays.'},
+      {t:'Teach it back: tell your chavrusa what a good note needs.'}], a:'Make the change yourself, note what and why, and keep the writer’s facts and voice.' },
+    oops:{ q:'Akiva’s helper edits Tuvia’s article.', wrong:'Changes $640 to “about $700.” Note: “Sounds better.”', right:'Keeps $640. If he doubts it, he asks Tuvia.', why:'Took over. The facts and the voice belong to the writer.' },
+    ways:['worked example','sort it','match it','word tiles','Mistake Detective','teach it back'], done:'You can revise someone else’s piece and explain each change.',
+    board:{ one:'At the editor’s desk: read as the reader, choose a few changes, make them, and note each one: what and why. Keep the writer’s facts and voice.', activity:'Chavrusas swap short drafts, make two changes each, and write “I changed ___ because the reader ___.” Then each writer reads the notes aloud.', mistakes:['No why: “Fixed it.”','Took over: changed his fact or his number','Took over: flattened his best line into the editor’s style'] },
+    do:[
+      {type:'sort', q:'Sneaky notes! Which ones give a why?', bins:['What and why','Mistake: no why'], cards:[['I cut “very, very fun,” because it tells the reader nothing.',0],['Fixed your beginning.',1],['I changed “it” to “the sale,” because “it” could mean the rain.',0],['Better now.',1]], mis:true,
+        say:'Does the note say why? Sort each note.', how:'Look for “because” and a reason about the reader.'},
+      {type:'match', pairs:[['moved the purpose up','the reader learns why right away'],['cut “very, very fun”','it tells the reader nothing'],['changed “it” to “the sale”','“it” could mean the rain']],
+        say:'Match each change Akiva made to its reason.', how:'What would confuse the reader without the change?'}],
+    your:[
+      {type:'tiles', q:'Build the rule: a good editor’s note says…', w:['what I did,','then why','it helps','the reader.'], extra:['it sounds'],
+        say:'Build the rule for a good editor’s note.', how:'What comes first, then why.'},
+      {type:'sort', q:'Changes to Tuvia’s article and their notes.', bins:['What and why','No why','Took over'], cards:[['Cut “very, very fun”: it tells the reader nothing.',0],['Moved the purpose up. “Fixed it.”',1],['$640 became “about $700”: “sounds better.”',2],['“It” became “the sale”: “it” could mean the rain.',0],['Rewrote it all: “This is how I would say it.”',2],['Cut a sentence. “Better now.”',1]],
+        say:'Good note, no why, or took over? Sort each.', how:'Facts and voice kept? Then: is there a reason?'},
+      {type:'match', pairs:[['“The siyum was really nice.”','cut it: it shows the reader nothing'],['“It was on Thursday.”','move the day to the start'],['“Then they ate.”','say who ate: the boys']],
+        say:'Match each line of Tuvia’s draft to its change.', how:'What would slow or confuse the reader?'},
+      {type:'sort', q:'Lines from Tuvia’s article.', bins:['Change it','Leave it: it works'], cards:[['It was very, very fun.',0],['On Sunday it rained, so we moved it to the gym.',0],['Every shelf in my house is lighter now.',1],['It raised $640.',1]],
+        say:'Change it, or leave it? Sort Tuvia’s lines.', how:'Does it confuse or slow the reader? If not, leave it.'},
+      {type:'match', pairs:[['“Fixed it.”','add the why'],['$640 changed to $700','put back his number'],['his best line flattened','put back his words'],['a fact you doubt','ask the writer']],
+        say:'Match each problem to what the editor should do.', how:'Explain, put it back, or ask the writer.'}] }
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

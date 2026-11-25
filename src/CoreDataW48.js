@@ -107,5 +107,8 @@ CORE_SKILLS.W48 = [
   ["WRIT.ESSAY.L08.06", "Compare Two Texts", "Compare what two texts say, how they say it, and why they differ", { after: "WRIT.RES.L08.04", std: "W.7.9", file: "CoreDataW4824", min: 9 }],
   ["WRIT.PARA.L08.12", "Theme Statement", "Write a theme as a sentence about life and prove it", { after: "WRIT.ESSAY.L08.06", std: "W.7.9", file: "CoreDataW4824", min: 9 }],
   ["WRIT.ESSAY.L08.07", "Revise for Reader", "Find and fix what will confuse a new reader", { after: "WRIT.PARA.L08.12", std: "W.7.5", file: "CoreDataW4824", min: 9 }],
-  ["WRIT.ESSAY.L08.08", "Edit Like a Pro", "Edit a whole piece in three passes", { after: "WRIT.ESSAY.L08.07", std: "W.7.5", file: "CoreDataW4824", min: 8 }]
+  ["WRIT.ESSAY.L08.08", "Edit Like a Pro", "Edit a whole piece in three passes", { after: "WRIT.ESSAY.L08.07", std: "W.7.5", file: "CoreDataW4824", min: 8 }],
+  ["WRIT.ESSAY.L09.06", "Speech That Moves", "Write a short speech: hook, key line, signposted points, close", { after: "WRIT.RES.L09.03", std: "W.8.4", file: "CoreDataW4825", min: 9 }],
+  ["WRIT.PARA.L09.09", "Cut the Extra", "Make writing concise: cut extra words, keep every fact", { after: "WRIT.ESSAY.L09.06", std: "W.8.5", file: "CoreDataW4825", min: 8 }],
+  ["WRIT.ESSAY.L09.07", "Editor's Desk", "Revise someone else's piece and explain each change", { after: "WRIT.PARA.L09.09", std: "W.8.5", file: "CoreDataW4825", min: 9 }]
 ];
