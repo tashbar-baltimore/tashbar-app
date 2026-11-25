@@ -61,5 +61,8 @@ CORE_SKILLS.C45 = [
   ["READ.COMP.L06.16", "Skim and Scan", "Find the answer fast with headings and key words", { after: "READ.COMP.L06.15", std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
   ["READ.COMP.L06.17", "Which Source?", "Pick the source that answers your question", { std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
   ["READ.COMP.L06.18", "Read the Table", "Read a table or graph inside an article", { std: "RI.5.7", file: "CoreDataC4514", min: 8 }],
-  ["READ.LIT.L06.14", "Pictures and Sound", "Tell what pictures and sound add to a story", { std: "RL.5.7", file: "CoreDataC4514", min: 8 }]
+  ["READ.LIT.L06.14", "Pictures and Sound", "Tell what pictures and sound add to a story", { std: "RL.5.7", file: "CoreDataC4514", min: 8 }],
+  ["READ.COMP.L05.24", "What the Diagram Adds", "Tell what a diagram adds to the words", { after: "READ.FLU.L05.05", std: "RI.4.7", file: "CoreDataC4513", min: 8 }],
+  ["READ.COMP.L05.25", "Read the Map", "Read a map inside a text: its key, compass and labels", { after: "READ.COMP.L05.24", std: "RI.4.7", file: "CoreDataC4513", min: 8 }],
+  ["READ.LIT.L05.08", "Read It, Hear It", "Compare a story on the page with the story read aloud", { after: "READ.COMP.L05.25", std: "RL.4.7", file: "CoreDataC4513", min: 8 }]
 ];
