@@ -13,7 +13,6 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - K–1 game ✕ is 84 px (size of its speaker button), Moshe's decision 24 Nov.
 
 ## Not done
-- Deferred: Arena (⬅ Back + ✕) and Review (✕ + Done).
 - Seen, not changed: story "For the Shabbos table" box (white words on pale yellow); Spark Path cannot be reached from the new home and opens under it (no z-index on #tr-ov).
 - Picture zoom ✕ was never seen in a picture (could not reach a lesson with a real picture).
 
@@ -24,5 +23,10 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - Tests: `tests/run.js` now checks ONE kit house top left on every page but the home and no HOME bar.
 - Pictures: `docs/screens/house-before-*.jpg`, `house-after-*.jpg`. Check: `node tools/screens/pages.js OUT TAG GRADE`.
 
+## Done: step 3, Arena and Mistake Detective (25 Nov 2026)
+- Arena (`src/ArenaPage.html` `outBtns()`): kit house top left; kit Back before it on inner pages (they come from the Arena menu). Phone: the title moves under the buttons when Back is there.
+- Mistake Detective review (`src/Review.html`): kit ✕ top left (`TLK.x`). Corner dots, profile and Workbook hide behind it (`#mdx.on` in the GameMap hide list). Its end buttons ("New cases", "Done") are not changed.
+- Pictures: `docs/screens/arena-before-*.jpg`, `arena-after-*.jpg`. Check: `node tools/screens/arena.js OUT TAG GRADE`.
+
 ## Next
-- Workbook job pages still have the old `◀ 📘` back to the workbook (top left); Chumash inner pages still have `⬅ parsha`. Not changed (not in step 2). Arena and Review: see "Not done".
+- Workbook job pages still have the old `◀ 📘` back to the workbook (top left); Chumash inner pages still have `⬅ parsha`. Not changed (not in step 2).
