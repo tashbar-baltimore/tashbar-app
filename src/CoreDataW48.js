@@ -99,5 +99,13 @@ CORE_SKILLS.W48 = [
   ["WRIT.RES.L06.03", "Source List", "List every source you used, with title and author", { after: "WRIT.RES.L06.02", std: "W.5.8", file: "CoreDataW4821", min: 7 }],
   ["WRIT.ESSAY.L06.09", "Revise the Whole Thing", "Revise the whole piece for order and missing parts", { after: "WRIT.RES.L06.03", std: "W.5.5", file: "CoreDataW4821", min: 9 }],
   ["WRIT.ESSAY.L06.10", "Peer Feedback", "Give a chavrusa one praise, one question, one push", { after: "WRIT.ESSAY.L06.09", std: "W.5.5", file: "CoreDataW4821", min: 8 }],
-  ["WRIT.RES.L09.04", "Works Cited", "List every source in one format, in ABC order, with a hanging indent", { before: "WRIT.RES.L09.03", std: "W.8.8", file: "CoreDataW4822", min: 8 }]
+  ["WRIT.RES.L09.04", "Works Cited", "List every source in one format, in ABC order, with a hanging indent", { before: "WRIT.RES.L09.03", std: "W.8.8", file: "CoreDataW4822", min: 8 }],
+  ["WRIT.ESSAY.L07.09", "Claim About a Character", "Make a claim about a character and prove it with two details and an explanation", { after: "WRIT.RES.L07.04", std: "W.6.9", file: "CoreDataW4823", min: 9 }],
+  ["WRIT.PARA.L07.09", "RACE Answer", "Answer a reading question: Restate, Answer, Cite, Explain", { after: "WRIT.ESSAY.L07.09", std: "W.6.9", file: "CoreDataW4823", min: 9 }],
+  ["WRIT.PARA.L07.10", "The Author's Craft", "Write about why an author made a choice", { after: "WRIT.PARA.L07.09", std: "W.6.9", file: "CoreDataW4823", min: 9 }],
+  ["WRIT.ESSAY.L07.10", "Revise for Argument", "Revise so every paragraph proves the claim", { after: "WRIT.PARA.L07.10", std: "W.6.5", file: "CoreDataW4823", min: 9 }],
+  ["WRIT.ESSAY.L08.06", "Compare Two Texts", "Compare what two texts say, how they say it, and why they differ", { after: "WRIT.RES.L08.04", std: "W.7.9", file: "CoreDataW4824", min: 9 }],
+  ["WRIT.PARA.L08.12", "Theme Statement", "Write a theme as a sentence about life and prove it", { after: "WRIT.ESSAY.L08.06", std: "W.7.9", file: "CoreDataW4824", min: 9 }],
+  ["WRIT.ESSAY.L08.07", "Revise for Reader", "Find and fix what will confuse a new reader", { after: "WRIT.PARA.L08.12", std: "W.7.5", file: "CoreDataW4824", min: 9 }],
+  ["WRIT.ESSAY.L08.08", "Edit Like a Pro", "Edit a whole piece in three passes", { after: "WRIT.ESSAY.L08.07", std: "W.7.5", file: "CoreDataW4824", min: 8 }]
 ];
