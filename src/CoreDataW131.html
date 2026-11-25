@@ -28,9 +28,9 @@
     {t:'write', q:'Your turn. Use POW. Pick an idea you know a lot about. Write 3 notes. Then write one sentence that says more.', min:0, checks:['P: I picked something I know a lot about.','O: I wrote 3 short notes.','W: I wrote a sentence that says more.'], h:'Pick first. Notes are a few words. Then turn one note into a sentence.'}
   ],
   check:[
-    {q:'Chaim picked his idea: the shul library. What should he do next?', o:['Organize my notes','Write the ending','Pick another idea'], h:'Say POW: P, then O, then W. He did P.'},
+    {q:'Yossi helps in Zeidy’s bakery every week, but he picked “the moon”. He knows only a little about it. Which POW step went wrong?', o:['Pick my idea','Organize my notes','Write and say more'], h:'Which step is about choosing what to write about?'},
     {q:'Dovid’s note: “On Shabbos we eat lunch at the big table with all my cousins.” What is it?', o:['too long for a note','a good note','not about his idea'], h:'A note is just a few words. Is it a few words, or a whole long sentence?'},
-    {q:'Avi’s note: fresh pita. Avi writes: “Mr. Benhamou sells fresh pita that is still warm.” What did he do?', o:['says more','says less','just a note'], h:'Says more: the reader can see what, where or how.'}
+    {q:'Dovid’s note: snow boots. Dovid writes: “I have boots.” What did he do?', o:['says less','says more','just a note'], h:'Says more: the reader can see what, where or how. Can you see it?'}
   ],
   re:[
     {how:'A new way: POW is like going on a trip. Pick where to go. Pack your bag. Then go!', q:'In POW, packing your bag is like…', o:['Organize my notes','Pick my idea','Write and say more']},
@@ -61,7 +61,7 @@
   check:[
     {q:'Naftali sweeps. Avi wipes the table. Dovid takes out the trash. Topic sentence: “The club cleans up the clubhouse.”', o:['just right','just one detail','a question'], h:'Does it tell about all three details? Is it only one? Does it ask?'},
     {q:'Abba bakes challah. Ima sets the table. Yossi polishes the becher. Topic sentence: “Yossi polishes the becher.”', o:['just one detail','just right','a question'], h:'Does it tell about all three details, or only one?'},
-    {q:'Chaim has bird books, a bird feeder and a bird list. Topic sentence: “Chaim has a bird feeder.”', o:['just one detail','just right','a question'], h:'Does it tell about all three details, or only one?'}
+    {q:'Chaim has bird books, a bird feeder and a bird list. Topic sentence: “Does Chaim like birds?”', o:['a question','just right','just one detail'], h:'Does it tell, or does it ask? Look at the end mark.'}
   ],
   re:[
     {how:'A new way: the topic sentence is the name on a box. The details are the things inside the box.', q:'Inside the box: siddur, tallis bag, kippah. What is the best name for the box?', o:['Things I take to shul','Kippah','Toys']},
@@ -273,7 +273,7 @@
     ways:['worked example','movement','sort it','match it','build with tiles','tap the sentence','fill the gap','Mistake Detective'], done:'You can end a paragraph with a closing sentence!',
     board:{ one:'The closing sentence says the big idea again in new words.', activity:'Read a topic sentence. Boys call out closing words, then the big idea a new way.', mistakes:['Copying the topic sentence','Adding a new detail at the end','Just stopping with no closing'] },
     do:[
-      {type:'order', steps:['The club had a busy Sunday.','They fixed a clock and painted the feeder.','That is why Sunday was so busy.'],
+      {type:'order', steps:['The club had a busy Sunday.','They fixed a clock and painted the feeder.','In the end, the club got a lot done in one day.'],
         say:'Put the paragraph in order, topic to closing.', how:'Topic sentence first. Then the detail. The closing goes last.'},
       {type:'sort', q:'Topic: Zeidy fixes old clocks.', bins:['Good closing','Copy','New detail'], cards:[['In the end, Zeidy can fix any old clock.',0],['Zeidy fixes old clocks.',1],['Zeidy also likes soup.',2],['Now you know who fixes our clocks.',0]], mis:true,
         say:'Mistake Detective! Good closing, copy, or new detail?', how:'Same idea in new words is good. Same words is a copy.'}],
@@ -292,8 +292,29 @@
 
   if (window.TLCORE) TLCORE.add('W13', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
   /* Units: W13.U<grade><unit> (K = 0): W13.U21 = Grade 2, Unit 1 (docs/core-growth/HOW-TO-ADD-A-UNIT.md) */
+  /* The unit's real task (map: Gr 2 piece 1): a Writing Workshop piece. It opens from "Unit cleared!"; his teacher scores it
+     in the writing inbox (docs/core-growth/HOW-TO-ADD-A-WRITING-TASK.md). It is never marked right just for being typed. */
+  var PIECE = { id: 'W13.G2.P1', title: 'A Place I Know Well', grade: 2, kind: 'information',
+    prompt: 'Write a paragraph for the club notebook about a place you know well: your room, your shul, or your kitchen on Erev Shabbos. Plan it with POW. Start with a topic sentence, give three details that belong, and end with a closing sentence in new words.',
+    strategy: { name: 'POW', steps: [['P', 'Pick my idea'], ['O', 'Organize my notes'], ['W', 'Write and say more']] },
+    plan: [ { k: 'topic', label: 'Topic sentence', hint: 'My kitchen on Erev Shabbos is busy.' },
+            { k: 'd1', label: 'Detail 1 (a note)', hint: 'challah in the oven' },
+            { k: 'd2', label: 'Detail 2 (a note)', hint: 'candlesticks shine' },
+            { k: 'd3', label: 'Detail 3 (a note)', hint: 'Abba sets the table' },
+            { k: 'close', label: 'Closing sentence', hint: 'That is why…' } ],
+    starters: ['My favorite place is', 'First,', 'There is', 'Also,', 'That is why', 'In the end,'],
+    min: 30,
+    checks: [
+      { t: 'I wrote at least 5 sentences.', sentences: 5 },
+      { t: 'My first sentence is my topic sentence.', first: 'topic' },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'My closing says the big idea in new words, not a copy.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['A topic sentence that tells what it is about', 'Three details that belong', 'A closing sentence in new words', 'Capitals and end marks'],
+    pics: ['🏠', '🕍', '🍞', '🕯️'] };
   if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'W13.U21', title: 'Writers Plan', c: 'WRIT', grade: 2,
     skills: ['WRIT.ESSAY.L03.01', 'WRIT.PARA.L03.04', 'WRIT.PARA.L03.05', 'WRIT.PARA.L03.06', 'WRIT.SENT.L03.01'],
-    review: ['WRIT.SENT.L02.01', 'LANG.SENT.L03.02', 'LANG.SENT.L03.03'], n: 8 });
+    review: ['WRIT.SENT.L02.01', 'LANG.SENT.L03.02', 'LANG.SENT.L03.03'], n: 8, task: PIECE });
 })();
 </script>
