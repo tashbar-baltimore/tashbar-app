@@ -98,5 +98,6 @@ CORE_SKILLS.W48 = [
   ["WRIT.RES.L06.02", "Note Cards", "One fact per card, in your own words, with its source", { after: "WRIT.RES.L06.01", std: "W.5.8", file: "CoreDataW4821", min: 8 }],
   ["WRIT.RES.L06.03", "Source List", "List every source you used, with title and author", { after: "WRIT.RES.L06.02", std: "W.5.8", file: "CoreDataW4821", min: 7 }],
   ["WRIT.ESSAY.L06.09", "Revise the Whole Thing", "Revise the whole piece for order and missing parts", { after: "WRIT.RES.L06.03", std: "W.5.5", file: "CoreDataW4821", min: 9 }],
-  ["WRIT.ESSAY.L06.10", "Peer Feedback", "Give a chavrusa one praise, one question, one push", { after: "WRIT.ESSAY.L06.09", std: "W.5.5", file: "CoreDataW4821", min: 8 }]
+  ["WRIT.ESSAY.L06.10", "Peer Feedback", "Give a chavrusa one praise, one question, one push", { after: "WRIT.ESSAY.L06.09", std: "W.5.5", file: "CoreDataW4821", min: 8 }],
+  ["WRIT.RES.L09.04", "Works Cited", "List every source in one format, in ABC order, with a hanging indent", { before: "WRIT.RES.L09.03", std: "W.8.8", file: "CoreDataW4822", min: 8 }]
 ];
