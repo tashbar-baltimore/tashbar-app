@@ -32,8 +32,8 @@ Grade 4: `READ.FLU.L05.11`–`.35`. Grade 5: `READ.FLU.L06.11`–`.35`. (`.05`�
 | G4-9 | 4.3 | READ.FLU.L05.19 | C45.FL4.09 The Sukkah in the Wind | poem | self-correct: does it make sense? | built |
 | G4-10–12 | 4.4 | .20–.22 | weather: A Cloud in a Jar, Counting the Thunder, The Snow Day Phone Call | speech, poem, play | | batch 2 |
 | G4-13–15 | 4.5 | .23–.25 | camp: Rules of the Trail, Campfire Night, Dear Zeidy from Camp | speech, poem, letter | | batch 2 |
-| G4-16–17 | 4.6 | .26–.27 | the first airplanes | | | |
-| G4-18–19 | 4.7 | .28–.29 | bridges | | | |
+| G4-16–17 | 4.6 | .26–.27 | airplanes: Twelve Seconds, If I Could Fly | play, poem | | batch 3 |
+| G4-18–19 | 4.7 | .28–.29 | bridges: Fourteen Years (Brooklyn Bridge), Bridges | speech, poem | | batch 3 |
 | G4-20–22 | 4.8 | .30–.32 | poems, a play, fables | | | |
 | G4-23–25 | 4.9 | .33–.35 | honeybees | | | |
 | G5-1 | 5.1 | READ.FLU.L06.11 | C45.FL5.01 A Letter with a Lion Stamp | letter | long sentences in phrases | built |
@@ -47,8 +47,8 @@ Grade 4: `READ.FLU.L05.11`–`.35`. Grade 5: `READ.FLU.L06.11`–`.35`. (`.05`�
 | G5-9 | 5.3 | READ.FLU.L06.19 | C45.FL5.09 A Letter at the End of the Year | letter | self-correct with the words around it | built |
 | G5-10–12 | 5.4 | .20–.22 | oceans: A River in the Ocean, The Tide, A Letter from the Deep Ocean | speech, poem, letter | | batch 2 |
 | G5-13–15 | 5.5 | .23–.25 | moon and space: Galileo Looks Up, The Eagle Has Landed, Footprints on the Moon | speech, play, poem | | batch 2 |
-| G5-16–18 | 5.6 | .26–.28 | the 1904 fire (Readers' Theatre) | | | |
-| G5-19–20 | 5.7 | .29–.30 | energy | | | |
+| G5-16–18 | 5.6 | .26–.28 | the 1904 fire: The Hoses That Did Not Fit, Extra! Extra!, The Firemen's Train | play, speech, poem | | batch 3 |
+| G5-19–20 | 5.7 | .29–.30 | energy: The Bulb That Lasted, Dovid's Windmill | speech, letter | | batch 3 |
 | G5-21–22 | 5.8 | .31–.32 | germs | | | |
 | G5-23–25 | 5.9 | .33–.35 | Book B6 / stories | | | |
 
@@ -61,7 +61,8 @@ A passage of about 330 words read 3 times is about 8 minutes at Grade 4–5 spee
 |---|---|---|
 | Batch 1 (Units x.1–x.3), LIVE #484 | 9 passages, ≈ 143 min | 9 passages, ≈ 143 min |
 | Batch 2 (Units 4.4–4.5, 5.4–5.5) | 6 passages, ≈ 95 min | 6 passages, ≈ 95 min |
-| **Running total** | **15 / 25** | **15 / 25** |
+| Batch 3 (Units 4.6–4.7, 5.6–5.7) | 4 passages, ≈ 62 min | 5 passages, ≈ 80 min |
+| **Running total** | **19 / 25** | **20 / 25** |
 
 ## Notes for job T, V and the HoS
 - **The Reader's voice is a computer voice.** It reads at one speed with one voice, so read 1 models smooth word reading, not expression. The lessons never claim it shows stress, character voices or timing; the boy adds those himself in reads 2 and 3. Recorded model reads (in `art/sounds/`) would make read 1 a true model: a decision for the HoS or job T.
