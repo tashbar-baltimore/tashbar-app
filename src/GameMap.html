@@ -1002,7 +1002,7 @@ function sync(){
   const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false; if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; } show(true,true); if(first) g.scrollTop=0; return; }
  const p=pick(ws), cur=ws.find(w=>w.k===GM.world)||p; GM.world=cur.k;
  const html=`<div class="gm-sky"></div><div class="gm-in"><div class="gm-top">${hud()}</div>
- <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${pill('subj',cur.name+' · Level '+cur.level)}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?pill('prog',l+' to the boss'):pill('now','Boss now!'); })():pill('prog','Cleared')}</div>${GM.view==='tree'?'<button type="button" class="gm-chg" data-gm="tree">🗺️ Back to my path</button>':ws.length>1?'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>':''}</div>
+ <div class="gm-unit"><div><b>${cur.icon} ${esc(cur.unitName)}</b><small>${pill('subj',cur.name+' · Level '+cur.level)}</small></div><div class="left">${cur.now?(()=>{ const l=cur.ids.length-cur.ids.indexOf(cur.now)-1; return l?pill('prog',l+' to the boss'):pill('now','Boss now!'); })():pill('prog','Cleared')}</div>${GM.view==='tree'?(window.TLK?TLK.quiet('Back to my path','data-gm="tree"','tlk-small'):'<button type="button" class="gm-chg" data-gm="tree">Back to my path</button>'):ws.length>1?(window.TLK?TLK.quiet('Change subject','data-gmnav="subjects"','tlk-small'):'<button type="button" class="gm-chg" data-gmnav="subjects">Change subject</button>'):''}</div>
  ${GM.view==='tree'?treeHTML(cur):pathHTML(cur)}</div>${GM.view==='tree'?(cur.now?`<div class="gm-cta"><button type="button" class="gm-play gm-play2" data-gm="play" data-id="${esc(cur.now)}">▶ Play<small>${esc(nm(cur.now)[0])}</small></button></div>`:''):goalHTML(cur,p&&cur.k===p.k)}`;
  const first=!document.body.classList.contains('gm-on')||GM.rescroll; GM.rescroll=false;
  if(html!==GM.sig){ GM.sig=html; g.innerHTML=html; }
@@ -1233,7 +1233,7 @@ body #gm .gm-more{background:#fff;color:#047857}
 /* INFORMATION ON THE KIT (button system step 5): the labels on the home tiles, My map, My work and the money page are kit pills and boxes.
    Their holders are flat (no shadow, no outline), so nothing a boy only reads looks like something to tap. The money by the house is a pill, not a button. */
 #gm .gm-hud .gm-mny{display:inline-flex;flex:none}#gm .gm-hud .gm-mny .tlk-pill{font-size:16px;padding:7px 12px}
-#gm .gm-ht .bdg,#gm .gm-ht.work.now .bdg{background:none;box-shadow:none;padding:0;border-radius:0;letter-spacing:0}
+body #gm .gm-ht .bdg,body #gm .gm-ht.work.now .bdg{background:none;box-shadow:none;padding:0;border-radius:8px;letter-spacing:0;display:flex}
 #gm .gm-ht .bdg .tlk-pill{font-size:14px;padding:6px 10px}
 #gm .gm-ht .bot small .tlk-pill{font-size:15px;white-space:normal}
 #gm .gm-hi p .tlk-pill{font-size:17px;padding:5px 12px}
