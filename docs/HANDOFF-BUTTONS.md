@@ -58,5 +58,10 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - HoS: the boys can't find how to sign out. The home (`homeHTML` in `src/GameMap.html`) now has ONE kit quiet "Sign out" (`data-gm="pfout"`, the same action as My profile's) on the "0 of 3 done today" line, right side. The home test allows exactly this one extra button.
 - Pictures: `docs/screens/home-signout-*.jpg`.
 
+## Done: step 7, Arena, Chumash and Workbook buttons on the kit (25 Nov 2026)
+- Arena (`src/ArenaPage.html`), Chumash (`src/ChumashPage.html`), Workbook (`src/BlockBuildersUI.html`): plain action buttons are `TLK.main` (the one thing to do now) / `TLK.quiet`, words only (no ▶ ⬅ ✏️ 📘 inside). The whole Workbook is on the kit: job cards are kit tiles with pills (Next / Done / sheet stars), tools Tap/Pen/Eraser/Undo/Clear are quiet buttons (the chosen one a `now` label), 🔊 "Read it to me" is `TLK.tool`, the sound on/off is a separate tool (🔔/🔕) so it never looks like Read it to me.
+- Not changed: Arena home's big colored tiles and topic cards, Chumash activity cards (they are cards, not yet `tlk-tile`), Workbook pen colors and answer chips.
+- Pictures: `docs/screens/step7-after-*.jpg`. Check: `node tools/screens/step7.js OUT TAG GRADE` (made-up Chumash Parsha, since the real one comes from Drive).
+
 ## Next
-- Not yet on kit labels: Mistake Detective's points and case dots, the old Trophies/My week rooms, Canteen, lesson screens. The Chumash/Workbook/Arena buttons are not on the kit yet.
+- Not yet on kit labels: Mistake Detective's points and case dots, the old Trophies/My week rooms, Canteen, lesson screens. Arena home tiles and Chumash activity cards are not kit tiles yet.

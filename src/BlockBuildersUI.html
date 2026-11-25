@@ -37,7 +37,7 @@
 #bbx button:not(.tlk){font:inherit;color:inherit;cursor:pointer}
 .bbx-top{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;background:#1d2433;color:#fff;min-height:56px}
 .bbx-top .tlk{flex:none}
-@media (max-width:520px){.bbx-top:has(.tlk-back.tlk-back-k3){flex-wrap:wrap}.bbx-top:has(.tlk-back.tlk-back-k3) .t{flex:1 1 100%;order:2}}
+@media (max-width:520px){.bbx-top:has(.tlk-back.tlk-back-k3){flex-wrap:wrap}.bbx-top:has(.tlk-back.tlk-back-k3) .t{flex:1 1 calc(100% - 140px);order:2}.bbx-top:has(.tlk-back.tlk-back-k3) .tlk-pill{order:3}.bbx-top:has(.tlk-back.tlk-back-k3) .tlk-tool{margin-left:auto}}
 .bbx-top .t{flex:1;min-width:0;font-weight:800;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bbx-top .t small{display:block;font-weight:600;font-size:12px;opacity:.75}
 .bbx-ib{border:0;background:rgba(255,255,255,.14);color:#fff!important;border-radius:12px;min-width:44px;height:44px;padding:0 12px;font-weight:800;font-size:16px;display:inline-flex;align-items:center;gap:6px}
@@ -64,11 +64,12 @@
 .bbx-sh{display:flex;gap:4px;margin-top:auto}.bbx-sh span{font-size:11px;font-weight:800;border-radius:8px;padding:2px 6px;background:#e6eaf2}.bbx-sh span.d{background:#1f9d55;color:#fff}.bbx-sh span.p{background:#ffd9b0}
 .bbx-soon{color:#5b6475;font-size:14px;padding:4px 0}
 /* button system step 7 (Workbook, HoS 2026-11-25: "do the whole labeling and button system there"): buttons are the kit's, labels are kit pills; holders flat */
-.bbx-jt{padding:10px 12px;min-height:88px;gap:4px}.bbx-jt small{color:#5b6475;font-size:12px;font-weight:700}.bbx-jt b{font-size:14px;line-height:1.2}
+#bbx .tlk.bbx-jt{padding:10px 12px;min-height:88px;gap:4px}.bbx-jt small{color:#5b6475;font-size:12px;font-weight:700}.bbx-jt b{font-size:14px;line-height:1.2}
 .bbx-jt .bbx-sh{display:flex;flex-wrap:wrap;gap:4px;margin-top:auto}.bbx-jt .bbx-sh .tlk-pill{font-size:11px;padding:2px 6px}
-.bbx-cover{box-shadow:none}.bbx-cover .who{background:none;padding:0}
+.bbx-cover{box-shadow:none}#bbx .bbx-cover .who{background:none;padding:0;border:0;box-shadow:none;font-size:17px;line-height:1.35}
 .bbx-tools{align-items:center}.bbx-tools .tlk-pill{font-size:14px;padding:8px 12px}
 .bbx-top .tlk-pill{flex:none}
+#bbx .bbx-ph:has(.tlk-tool){align-items:center}#bbx .bbx-ph .tlk.tlk-tool{width:44px;height:44px;min-width:44px;font-size:17px}
 .bbx-pnote{border:0}.bbx-done{box-shadow:none}.bbx-job small .tlk-pill{font-size:12px;padding:2px 8px;margin-left:4px}.bbx-job.soon .tlk-pill{white-space:normal}.bbx-soon .tlk-pill{white-space:normal}
 /* watch me */
 .bbx-say{display:flex;gap:12px;align-items:center;background:#e6efff;border-radius:16px;padding:12px 14px;font-size:18px;font-weight:700}
@@ -450,9 +451,9 @@ body.bbx-open>:not(#bbx):not(script):not(style):not(#bbx-pad){visibility:hidden!
    ${sib&&sc/g.length<.8?`<p style="color:#a85a12;font-weight:800">Sheet B has the same job with new numbers. One more try makes it strong!</p>`:''}
    <div class="bbx-cta">${sib?KB(0,'Sheet B: more practice',`data-bb="job" data-j="${sib.id}" data-direct="1"`):''}${nx?KB(1,'Next job',`data-bb="job" data-j="${nx.id}"`):''}${KB(0,'My workbook','data-bb="home"')}</div></div></div>`; }
 
- function topHTML(){ const j=X.job; if(X.view==='home') return `${window.TLK?TLK.home('data-bb="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button type="button" class="bbx-ib" data-bb="close" aria-label="Home">🏠</button>'}<div class="t">📘 My Workbook<small>Block Builders</small></div>${KT(X.mute?'🔇':'🔊',X.mute?'Sound off: turn it on':'Sound on: turn it off','data-bb="mute"')}`;
+ function topHTML(){ const j=X.job; if(X.view==='home') return `${window.TLK?TLK.home('data-bb="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button type="button" class="bbx-ib" data-bb="close" aria-label="Home">🏠</button>'}<div class="t">📘 My Workbook<small>Block Builders</small></div>${KT(X.mute?'🔕':'🔔',X.mute?'Sound off: turn it on':'Sound on: turn it off','data-bb="mute"')}`;
   const sec=secOf(j.sec); const g=X.cj?X.cj.filter(c=>c.graded):[], okN=g.filter(c=>X.ok[c.id]).length;
-  return `${window.TLK?TLK.back('data-bb="home"','',TLK.young(window.TL_MAP&&TL_MAP.grade))+TLK.home('data-bb="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button type="button" class="bbx-ib" data-bb="home" aria-label="Back to my workbook">◀ 📘</button>'}<div class="t">Job ${j.n} · ${E(j.title)}<small>${E(sec.name)}${j.sheet?' · Sheet '+j.sheet:''}</small></div>${X.view==='page'&&!X.pencil?KL('prog',okN+' of '+g.length+' right'):''}${KT(X.mute?'🔇':'🔊',X.mute?'Sound off: turn it on':'Sound on: turn it off','data-bb="mute"')}`; }
+  return `${window.TLK?TLK.back('data-bb="home"','',TLK.young(window.TL_MAP&&TL_MAP.grade))+TLK.home('data-bb="close"','',TLK.young(window.TL_MAP&&TL_MAP.grade)):'<button type="button" class="bbx-ib" data-bb="home" aria-label="Back to my workbook">◀ 📘</button>'}<div class="t">Job ${j.n} · ${E(j.title)}<small>${E(sec.name)}${j.sheet?' · Sheet '+j.sheet:''}</small></div>${X.view==='page'&&!X.pencil?KL('prog',okN+' of '+g.length+' right'):''}${KT(X.mute?'🔕':'🔔',X.mute?'Sound off: turn it on':'Sound on: turn it off','data-bb="mute"')}`; }
  function toolsHTML(){ const T=(k,lab)=>X.tool===k?KL('now',lab):KB(0,lab,`data-tool="${k}"`,'tlk-small');
   return `<div class="bbx-tools">${T('tap','Tap')}${T('pen','Pen')}${['#1d2433','#2a6fdb','#d64545'].map(c=>`<button type="button" class="bbx-tl${X.color===c&&X.tool==='pen'?' on':''}" data-color="${c}" aria-label="pen color"><i style="background:${c}"></i></button>`).join('')}${T('erase','Eraser')}${KB(0,'Undo','data-bb="undo"','tlk-small')}${KB(0,'Clear pen','data-bb="clear"','tlk-small')}${X.job.ex?KB(0,'Watch me','data-bb="watch"','tlk-small'):''}${X.pencil?KL('now','Pencil page')+KB(0,'Stop pencil page','data-bb="pencil"','tlk-small'):KB(0,'Pencil page','data-bb="pencil" title="Write every answer with the pen, like on paper"','tlk-small')}</div>`; }
 
