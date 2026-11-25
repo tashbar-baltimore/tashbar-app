@@ -813,6 +813,8 @@ Object.assign(TL_DO, (function(){
    if (/rude|hurry/i.test(q)) return 'He was not nice, but you can still stay calm and kind.\nDo not answer rudely, and do not skip him.\nPick the answer that is polite and helps him.';
    if (/for free/i.test(q)) return 'The snacks belong to the canteen, not to you.\nGiving it free, or charging someone else, is like taking.\nPick the answer that is kind and honest.';
    if (/shy|can.t reach/i.test(q)) return 'Every customer counts, even the small ones.\nThink how you would want to be treated.\nPick the answer that helps him now, with a smile.';
+   if (/types his code/i.test(q)) return 'A boy\'s code is private, like a key to his money.\nOnly he may type it. Never ask for it or guess it.\nPick the answer that keeps his code his own.';
+   if (/but the snack costs/i.test(q)) return 'He paid more than the snack costs. The extra is his money.\nKeeping it, even a little, is not honest.\nPick the answer that gets his money back to him.';
    return ''; }) },
 
  'VOC.CREW.02': { s: 'Think about the steps at the kiosk: pick the boy, add items, tap Buy once.\nThe kiosk will not sell more than a boy has.\nPick the answer that keeps every sale right and honest.',
@@ -869,7 +871,7 @@ Object.assign(TL_DO, (function(){
     return 'Profit = price we sell for − what it cost us.\nIn cents: ' + p + ' − ' + c + ' = ? cents.\nType it as dollars (100 cents is $1).'; }
    if ((m = q.match(/^([\w ]+): price \$(\d+\.\d\d), cost \$(\d+\.\d\d)\. ([\w ]+): price \$(\d+\.\d\d), cost \$(\d+\.\d\d)/i))){
     var p1 = cents(+m[2]), c1 = cents(+m[3]), p2 = cents(+m[5]), c2 = cents(+m[6]);
-    return 'Profit = price − cost. Think in cents.\n' + m[1] + ': ' + p1 + ' − ' + c1 + ' = ' + (p1 - c1) + ' cents. ' + m[4] + ': ' + p2 + ' − ' + c2 + ' = ' + (p2 - c2) + ' cents.\nWhich profit is bigger, or are they the same? Tap your answer.'; }
+    return 'Profit = price − cost. Think in cents.\n' + m[1] + ': ' + p1 + ' − ' + c1 + ' = ? cents. ' + m[4] + ': ' + p2 + ' − ' + c2 + ' = ? cents.\nWhich profit is bigger, or are they the same? Tap your answer.'; }
    if ((m = q.match(/Profit on one [\w ]+ is \$(\d+\.\d\d)\. We sold (\d+)/i))){ var e = cents(+m[1]);
     return 'Total profit = profit on one × how many we sold.\nIn cents: ' + e + ' × ' + m[2] + ' = ? cents.\nType it as dollars (100 cents is $1).'; }
    return ''; }) },

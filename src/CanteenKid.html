@@ -12,12 +12,13 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
   const nm=()=>{ try{ return PICK(TLB); }catch(e){ return PICK(['Moshe','Dovid','Yosef','Chaim','Eli','Shmuel']); } };
   const SNACK=[['pretzels','🥨'],['water','💧'],['chips','🥔'],['lollipop','🍭'],['granola bar','🥣'],['apple juice','🧃'],['cookie','🍪'],['popcorn','🍿']];
   const price=()=>PICK([0.25,0.5,0.75,1,1.25,1.5,1.75,2]);
+  const DK={}; const deck=(key,n)=>{ let d=DK[key]; if(!d||!d.length){ d=DK[key]=[]; for(let i=0;i<n;i++) d.splice(RI(0,i),0,i); } return d.pop(); };   /* flag fix 2026-11-24: each scenario once before any repeats */
   const CREW={
   'VOC.CREW.01':{name:'Honest Service', how:[
     'Welcome to the Canteen Crew! A cashier is trusted with other boys’ money. Honesty (yashrus) and a kind word turn a snack line into a kiddush Hashem.',
     'Three rules: (1) Every sale is charged exactly right, never more, never less. (2) Every customer is treated with respect, even when he is rude or slow. (3) Friends pay like everyone else.',
     'Worked example: your friend says “Just give me a free bag of pretzels, nobody will know.” You smile and say: “I can’t give away the canteen’s food. I can ring it up for you.” That is honest AND friendly.'],
-    gen(){ const x=nm(), k=RI(0,5);
+    gen(){ const x=nm(), k=deck('c1',6);
       if(k===0) return MX(`${x} is your good friend. He asks you to give him a snack for free. What do you do?`, op('Kindly say no and offer to ring it up',['Give it, he is your friend','Give it but charge someone else']), 'Rule 2 and 3: friends pay like everyone else. Say no kindly, then offer to ring it up.');
       if(k===1) return MX(`You charged ${x} ${$m(1.5)} but the snack costs ${$m(1)}. You notice after he walks away. What do you do?`, op('Tell the staff so the extra is given back',['Keep quiet, it is small','Keep the extra for the canteen']), 'Rule 1: every sale is charged exactly right. The 50¢ belongs to him. Tell the staff so they can void and fix it.');
       if(k===2) return MX(`A boy in line is rude and says “Hurry up!” What is the best answer?`, op('“Sure, I’m going as fast as I can. What would you like?”',['“Wait your turn!”','Ignore him and serve someone else']), 'Rule 2: respect every customer, even a rude one. Stay calm and friendly.');
@@ -28,7 +29,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
     'The kiosk is the canteen’s cash register. When you run it well, the line moves fast and every boy pays the right amount from his Canteen Cash.',
     'The steps, in order: 1) The boy taps his name. 2) The boy types his own 4-digit code. 3) He sees his Canteen Cash. 4) Tap items into the cart. 5) Check the total and “Left after”. 6) Tap Buy ONE time. 7) Read the new balance with him.',
     'Worked example: Dovid taps his name and types his code. He has $3.00. He wants chips ($1.00) and water ($0.50). Total $1.50, left after $1.50. You tap Buy once and say: “Done! You have $1.50 left.”'],
-    gen(){ const k=RI(0,5);
+    gen(){ const k=deck('c2',6);
       const steps=['Tap his name','Type his code','Add items to the cart','Tap Buy'];
       if(k===0){ const i=RI(0,2); return MX(`What comes right after “${steps[i]}”?`, op(steps[i+1],steps.filter((s,j)=>j!==i+1).slice(0,2)), 'Say the steps in order: name, code, cart, Buy. Which one comes next?'); }
       if(k===1){ const b=PICK([1,1.5,2,2.5]), c=r2(b+PICK([0.25,0.5,1])); return MX(`A boy has ${$m(b)} Canteen Cash. His cart costs ${$m(c)}. What happens?`, op('Buy is blocked; take something out',['It goes through and he owes money','You pay the difference']), `Compare: is ${$m(c)} more than ${$m(b)}? If the cart costs more than he has, the kiosk blocks Buy.`); }
@@ -71,7 +72,7 @@ Sent to the Quest page by msQuestTools() (Photos.gs), own eval. Anyone may edit:
     gen(){ const k=RI(0,3), [s,e]=PICK(SNACK), pr=PICK([0.75,1,1.25,1.5,2]), co=r2(pr-PICK([0.15,0.25,0.35,0.5]));
       if(k===0) return N(`${e} ${s} costs the canteen ${$m(co)}. We sell it for ${$m(pr)}. What is the profit on one? (Type dollars)`, r2(pr-co), `Profit = price − cost: ${$m(pr)} − ${$m(co)}.`, {pic:e});
       if(k===1){ const q=RI(2,6), p=r2(pr-co); return N(`Profit on one ${s} is ${$m(p)}. We sold ${q}. What is the total profit? (Type dollars)`, r2(p*q), `Total profit = profit on one × how many: ${$m(p)} × ${q}.`); }
-      if(k===2){ const a=[s,pr,co], [s2]=PICK(SNACK.filter(x=>x[0]!==s)), pr2=PICK([0.5,1,1.5,2]), co2=r2(pr2-PICK([0.1,0.2,0.3,0.6])); const p1=r2(pr-co), p2=r2(pr2-co2); if(p1===p2) return N(`${s}: price ${$m(pr)}, cost ${$m(co)}. Profit on one? (Type dollars)`, p1, 'Profit = price − cost.');
+      if(k===2){ const a=[s,pr,co], [s2]=PICK(SNACK.filter(x=>x[0]!==s)), pr2=PICK([0.5,1,1.5,2]), co2=r2(pr2-PICK([0.1,0.2,0.3,0.6].filter(d=>d<pr2))); const p1=r2(pr-co), p2=r2(pr2-co2); if(p1===p2) return N(`${s}: price ${$m(pr)}, cost ${$m(co)}. Profit on one? (Type dollars)`, p1, 'Profit = price − cost.');
         return MX(`${s}: price ${$m(pr)}, cost ${$m(co)}. ${s2}: price ${$m(pr2)}, cost ${$m(co2)}. Which one earns more profit on each sale?`, op(p1>p2?s:s2,[p1>p2?s2:s,'They are the same']), `Work out each profit (price − cost): ${s} = ${$m(p1)}, ${s2} = ${$m(p2)}. Which is bigger?`); }
       return MX(`A snack costs the canteen ${$m(co)}. Which price makes a profit?`, op($m(r2(co+0.25)),[$m(co),$m(r2(Math.max(0,co-0.1)))]), `A profit means the price is MORE than the cost (${$m(co)}).`); }}
   };

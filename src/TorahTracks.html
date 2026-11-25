@@ -3961,7 +3961,7 @@ function css(){ if(document.getElementById('tt-css')) return; const s=document.c
 body.oh-sky .tt-ov{right:var(--skyw,96px)}
 body.oh-sky .tt-pv{right:var(--skyw,96px)}
 .tt-hd{position:sticky;top:0;z-index:2;display:flex;gap:8px;align-items:center;padding:10px 14px;background:var(--c);color:#fff;box-shadow:0 2px 8px #0003}
-.tt-hd h2{margin:0;font-size:19px;flex:1}.tt-hd button{border:0;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer;background:#fff;color:#111}
+.tt-hd h2{margin:0;font-size:19px;flex:1}.tt-hd button:not(.tlk){border:0;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer;background:#fff;color:#111}
 .tt-in{max-width:720px;margin:0 auto;padding:14px 14px 90px}
 .tt-guide{display:flex;gap:10px;align-items:flex-start;background:#fff;border:2px solid var(--c);border-radius:18px;padding:12px;margin:6px 0 16px;box-shadow:0 3px 10px #0001}
 .tt-guide .av{font-size:40px;line-height:1}.tt-guide b{color:var(--c)}.tt-guide p{margin:4px 0 0;font-size:15px;line-height:1.45}
@@ -3997,7 +3997,7 @@ function shut(){ document.querySelectorAll('.tt-ov,.tt-pv').forEach(x=>x.remove(
 function map(k){ const R=REG[k]; if(!R) return; shut(); try{ if(A.st){ A.st.ttLast=k; } }catch(e){} const L=ids(k), x=nextIn(k);
  const ov=document.createElement('div'); ov.className='tt-ov'; ov.style.cssText='--c:'+R[0]+';--b:'+R[1];
  const gd=x?'Next stop: <b>'+E(short(TT[x].name))+'</b>. '+E(opener(x)):'You traveled this whole land. Mazel tov! Review any station, or pick a new land.';
- ov.innerHTML='<div class="tt-hd"><h2>'+R[2]+' '+E(R[3])+'</h2><button data-tj="pass">🛂</button><button data-tj="x">✕</button></div><div class="tt-in">'
+ ov.innerHTML='<div class="tt-hd"><h2>'+R[2]+' '+E(R[3])+'</h2><button data-tj="pass">🛂</button>'+(window.TLK?TLK.x('data-tj="x"',''):'<button data-tj="x" aria-label="Close">✕</button>')+'</div><div class="tt-in">'
   +'<div class="tt-guide"><div class="av">🧑‍🏫</div><div><b>Your guide</b><p>'+gd+'</p></div></div>'
   +'<div class="tt-path">'+L.map((id,i)=>{ const ok=done(id), nx=id===x; return '<button type="button" class="tt-st'+(i%2?' r':'')+(ok?' ok':'')+(nx?' nx':'')+'" data-tj="pv" data-id="'+id+'"><span class="tt-dot">'+(ok?'✓':(nx?'⭐':(i+1)))+'</span><span class="tt-lb"><b>'+E(short(TT[id].name))+'</b><small>'+GR[lvl(id)]+(ok?' · stamped ✓':'')+'</small></span></button>'; }).join('')+'</div></div>';
  document.body.appendChild(ov); try{ if(typeof SND!=='undefined') SND.tap(); }catch(e){}
@@ -4008,7 +4008,7 @@ function preview(id){ const k=id.split('.')[1], R=REG[k]; document.querySelector
   +'<div class="row"><button class="c" data-tj="pvx">Back to the map</button><button class="s" data-tj="go" data-id="'+id+'">'+(done(id)?'Review ▶':'Start this station ▶')+'</button></div>';
  document.body.appendChild(pv); }
 function passport(){ shut(); const ov=document.createElement('div'); ov.className='tt-ov'; ov.style.cssText='--c:#4338ca;--b:#eef2ff'; const n=stamps(), tot=Object.keys(TT).length;
- ov.innerHTML='<div class="tt-hd"><h2>🛂 My Torah Passport · '+n+' of '+tot+'</h2><button data-tj="x">✕</button></div><div class="tt-in">'
+ ov.innerHTML='<div class="tt-hd"><h2>🛂 My Torah Passport · '+n+' of '+tot+'</h2>'+(window.TLK?TLK.x('data-tj="x"',''):'<button data-tj="x" aria-label="Close">✕</button>')+'</div><div class="tt-in">'
   +'<div class="tt-guide"><div class="av">🧑‍🏫</div><div><b>Your guide</b><p>'+(n?'You have '+n+' stamp'+(n===1?'':'s')+'. Every stamp is Torah you carry with you forever.':'Your passport is waiting for its first stamp. Pick a land and start traveling!')+'</p></div></div>'
   +Object.keys(REG).map(k=>{ const R=REG[k]; return '<div class="tt-reg" style="color:'+R[0]+'">'+R[2]+' '+E(R[3])+'</div><div class="tt-ppbook">'+ids(k).map(id=>'<div class="tt-stamp'+(done(id)?' on':'')+'" style="--sc:'+R[0]+'"><span class="e">'+R[2]+'</span>'+E(short(TT[id].name))+'</div>').join('')+'</div>'; }).join('')+'</div>';
  document.body.appendChild(ov); }

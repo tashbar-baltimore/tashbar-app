@@ -18,7 +18,7 @@ So a flag never changes anything on its own. Every hour, a Claude Code session (
 ## Each hourly run, step by step (for the checker session)
 
 ### 0. Finish last hour's work first
-List open pull requests whose branch starts with `claude/` and whose title starts with `Flag fix:`. If one has a failed `test` check, read the failing test, fix it on the same branch and push. If it cannot be fixed in this run, close the pull request. Then run `mark` with `open` for its questions, adding "fix did not pass the tests; still open".
+List open pull requests whose branch starts with `claude/` and whose title starts with `Flag fix:`. If one has a failed `test` check, read the failing test, fix it on the same branch and push. If it cannot be fixed in this run, close the pull request. Then run `mark` with `reopen` for its questions (with an `upTo` of now), adding "fix did not pass the tests; still open". `reopen` puts reports marked `fixed` back to `open`.
 
 ### 1. Read the flags
 - Use the GitHub MCP tool `actions_run_trigger` to run workflow `flag-checker.yml` on `main` with `action=list`.
@@ -61,7 +61,7 @@ Read the question with what surrounds it: its answer, its choices, the "How to d
 
 Be fair both ways. Never mark a question `fine` only because few boys flagged it, and never "fix" a good question only because a boy said it was wrong. Many reports, many wrong answers and clear notes all point toward a real problem.
 
-`before` matters. If it says `fine` and new reports keep coming, look again with fresh eyes. Several boys hitting the same thing is a real signal.
+`before` matters. If it says `fine` and new reports keep coming, look again with fresh eyes. Several boys hitting the same thing is a real signal. If it says `open: ...`, you already looked at it and left it for a person. Do not investigate it again unless new reports or notes add something; leave it open.
 
 ### 3. Fix the real problems (one pull request for this run)
 - Make the smallest change that fixes it. If a question cannot be made good, take it out, and keep the lesson valid (the minimum number of questions, kinds and so on).

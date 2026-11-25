@@ -131,5 +131,27 @@
           say:'Tap the sentence that proves it.', how:'Look for a measurement, not just a fact.'}] }
   };
   if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
+  /* Unit S6.1: the unit check (boss level) and test-out, and the unit project: a shake-table engineering test, then a short write */
+  var PROJECT = { id: 'S.PROJ6.01', title: 'The Shake Table Test', grade: 6, kind: 'information',
+    prompt: 'Be an engineer! Use blocks, cups or sugar cubes on a baking tray. Build two towers the same height: one thin, one with a wide base. Gently shake the tray side to side, the same way, ten times. Which tower stands? Then change the weaker tower to make it stronger and test again. Write what you predicted, what you did, what you saw, and why, using what you learned about earthquakes and how engineers help buildings ride out the shaking.',
+    strategy: { name: 'Predict, Do, See, Explain', steps: [['P', 'Predict: which tower will stand?'], ['D', 'Do it: how did I build and test them?'], ['S', 'See: what happened to each tower?'], ['E', 'Explain: why did one stand?']] },
+    plan: [ { k: 'predict', label: 'P · I predicted', hint: 'I thought the ___ tower would…' },
+            { k: 'do', label: 'D · What I did', hint: 'Same height, same shakes, only the base changed. I…' },
+            { k: 'see', label: 'S · What I saw', hint: 'The thin tower…' },
+            { k: 'explain', label: 'E · Why it happens', hint: 'Shaking pushes the top side to side, so…' } ],
+    starters: ['I predicted that', 'First, I built', 'Then I shook', 'I saw that', 'This happened because', 'To make it stronger, I'],
+    min: 80,
+    checks: [
+      { t: 'I wrote at least 6 sentences.', sentences: 6 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I explained why, with "because".', any: ['because'] },
+      { t: 'I told what I changed to make the weaker tower stronger (wider, heavier, tape…).', any: ['wider', 'heavier', 'weight', 'tape', 'pads'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I did the test safely, with a grown-up nearby, away from glass.', self: true },
+      { t: 'I read it out loud to myself.', self: true } ],
+    rubric: ['I made a clear prediction', 'I told how I built and tested, in order', 'I told exactly what I saw', 'I explained it with earthquake science and engineering'],
+    pics: ['🏗️', '🧱', '📏', '🌍'] };
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'S.U03', title: 'The Restless Earth', c: 'SCI', grade: 6,
+    skills: ['SCI.LAND.L07.01', 'SCI.LAND.L07.02', 'SCI.LAND.L07.03', 'SCI.LAND.L07.04'], n: 8, task: PROJECT });
 })();
 </script>

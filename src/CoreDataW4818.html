@@ -1,0 +1,304 @@
+<script>
+/* CoreDataW4818.html: Core Growth job W48, lesson data (docs/core-growth/HOW-TO-ADD-A-SKILL.md). Keep this file under 150 KB.
+   Every lesson listed for this file in src/CoreDataW48.js goes in LESSONS, written  'ID':{name:'...', teach:[...], practice:[...], check:[...], re:[...]}
+   (the server finds a lesson by that exact shape: quoted id, colon, brace, name first). Optional: Teacher Time, How-to boxes, One Bite.
+   W48 = Writing Grades 4-8 (docs/core-growth/W48-map.md). This file: Grade 6 (L07), Unit 4 "Research Desk". Cast: The Beacon newsroom. The sources are practice sources made up for these lessons.
+   In engine lessons the FIRST choice in o is the right one. */
+(function () {
+  var LESSONS = {
+  'WRIT.RES.L07.01':{name:'Narrow the Question',
+  teach:[
+    {how:'A research report starts with a QUESTION. A boy who starts with a big TOPIC, like “water”, could fill a whole book and never finish. So NARROW it in three steps. TOPIC: water. ONE PART: Baltimore’s drinking water. ONE QUESTION about that part: “How does Baltimore’s water get from the reservoirs to our kitchen faucet?” A short report can answer that in about three body paragraphs.', q:'Mr. Gross gives The Beacon the topic “water.” Which is a narrowed question a short report can answer?', o:['How does Baltimore’s water get from the reservoirs to our kitchen faucet?','What is everything about water?','Is water important?']},
+    {how:'Before you research, TEST the question three ways. RIGHT SIZE: not so big it fills a book, and not so small that one fact answers it (“How many reservoirs does Baltimore have?”). Can you answer it in about three paragraphs? NOT YES/NO: it starts with how, why or what, so the answer is more than one word. CAN BE FOUND: your sources can really answer it. The Beacon team has three practice sources, made up for these lessons: a library book, a web page about the city’s water, and Gavriel’s interview with an engineer. A question that passes all three tests is READY TO RESEARCH.', q:'The team’s sources: a library book, the city’s water web page and an engineer. Which question can those sources answer?', o:['How does a filtration plant clean the water?','What will Baltimore’s water be like in the year 2500?','What did every family in Baltimore talk about at the Shabbos table last week?']},
+    {how:'Four mistakes. TOO BIG: the answer would fill a whole book (“How does water work all over the world?”). YES/NO: the answer is one word (“Does Baltimore have reservoirs?”). TOO SMALL: one fact answers it, so there is nothing to research (“How many reservoirs does Baltimore have?”). CAN’T BE FOUND: no source could know it, like the far future or a private fact (“Which boy in our yeshiva drank the most water this week?”). Fix each one: shrink it to one part, turn it into a how or why question that needs more than one fact, or ask what your sources can answer.', q:'Yoni’s question: “Does Baltimore clean its water?” Which mistake is it?', o:['yes/no','too big','can’t be found']}
+  ],
+  practice:[
+    {t:'sort', q:'Each question has a mistake. Sort it.', bins:[{id:'T',label:'📚 Too big'},{id:'Y',label:'🔘 Yes/no'},{id:'C',label:'🚫 Can’t be found'}],
+      items:[{label:'What is the history of all the water on earth?',bin:'T'},{label:'How do all the cities in the world get water?',bin:'T'},{label:'Is the water in Baltimore clean?',bin:'Y'},{label:'Does a filtration plant use sand?',bin:'Y'},{label:'What will the reservoirs look like in 300 years?',bin:'C'},{label:'Which boy in our class drank the most water last year?',bin:'C'}],
+      h:'Would the answer fill a book? Is it one word? Could any source really know it?'},
+    {t:'pairs', q:'Step 1 to step 2: match each big topic to ONE PART of it.', pairs:[['Water','Baltimore’s drinking water'],['Boats','the skimmer boats in the Inner Harbor'],['Bread','how a bakery braids challah'],['Trains','the train that carries freight past our yeshiva']],
+      h:'The part is a smaller piece of the same topic, small enough for one short report.'},
+    {t:'spotall', q:'Tap every question that is READY TO RESEARCH for a short Beacon report.', cells:[{label:'How does a filtration plant clean the water?',ok:true},{label:'Why does a city build dams on rivers?',ok:true},{label:'How do water pipes reach each house on our street?',ok:true},{label:'Does our shul have a sink?',ok:false},{label:'How does water work everywhere?',ok:false}],
+      h:'Run the three tests on each one: right size, not yes/no, can be found.'},
+    {t:'sort', q:'Sneaky ones! Is the question ready, or does it need fixing?', bins:[{id:'G',label:'✅ Ready to research'},{id:'N',label:'⚠️ Needs fixing'}],
+      items:[{label:'Why do the reservoirs need dams?',bin:'G'},{label:'How does chlorine help clean the water?',bin:'G'},{label:'How do workers test the water each day?',bin:'G'},{label:'How many reservoirs does Baltimore have?',bin:'N'},{label:'How did every person in history get water?',bin:'N'},{label:'What was every Baltimore family’s favorite drink yesterday?',bin:'N'}],
+      h:'A question can sound serious and still fail a test. Check all three: size, yes/no, can be found. Too small counts too: one fact answers it.'},
+    {t:'order', q:'Build Akiva’s narrowed question. Tap the tiles in order.', tiles:['How does','Baltimore’s water','get from the reservoirs','to our kitchen faucet?'],
+      h:'The question word first. Then what you are asking about. Then from where, and to where.'},
+    {t:'pairs', q:'Match each weak question to the fix that makes it ready to research.', pairs:[['Does Baltimore have reservoirs?','How do Baltimore’s reservoirs store water?'],['What is everything about water?','How does Baltimore’s water reach our faucet?'],['What will our water be like in 300 years?','How do workers keep our water clean today?']],
+      h:'Yes/no: turn it into a how question. Too big: shrink it to one part. Can’t be found: ask what your sources can answer.'},
+    {t:'write', q:'Your turn to write. Pick a big topic for a Beacon report: your shul, Shabbos food, the yeshiva bus, or the harbor. Write the topic, then one part of it, then one question. Under it, write the three tests and say how your question passes each one.', min:0, checks:['🔍 I narrowed it: topic, one part, one question.','❓ It is a how, why or what question, not yes/no.','📚 It fits in about three paragraphs, and a real source can answer it.'], h:'Zoom in twice. Then put “How does” or “Why does” in front of the part. Name a source that could answer it: a book, a web page, or a person to interview.'}
+  ],
+  check:[
+    {q:'Benny wants to write about Pesach for The Beacon. His question: “What is everything about Pesach?” Which mistake is it?', o:['too big','yes/no','can’t be found'], h:'Could the answer fill a whole book?'},
+    {q:'Eli’s question for a report on the yeshiva’s new bus: “What will the bus look like in 50 years?” Which mistake is it?', o:['can’t be found','too big','yes/no'], h:'Could any book, web page or person really know the answer?'},
+    {t:'order', q:'Topic: the yeshiva library. Zoom in from topic to question. Tap the tiles in order.', tiles:['The yeshiva library','Its new seforim','How does the library choose new seforim?'], h:'The whole topic first. Then one part. Then the question about that part.'}
+  ],
+  re:[
+    {how:'A new way: think of a map on a phone. The topic is the whole city. Zoom in to one street: one part. Zoom in again to one house: the question. You can describe one house well; you cannot describe a whole city in three paragraphs.', q:'The narrowed question is like…', o:['zooming in on one house','looking at the whole city','closing the map']},
+    {how:'A simpler step: write the topic. Under it, write one part of it. Then put “How does” or “Why does” in front of that part.', q:'To turn a part into a question that is not yes/no, start with…', o:['How does or Why does','Is or Does','The end']},
+    {how:'The skill underneath: a question you can answer, not too big and not yes/no (Grade 4), and Pick the Pattern (this year), where the question chose the plan. Now you go further: you narrow a big topic step by step, topic, one part, one question, check that it is not too small either, and test that your own sources can answer it in a short report.', q:'Narrow the Question goes further by also asking…', o:['Can my sources answer it?','Is it funny?','Is it long?']}
+  ]},
+
+  'WRIT.RES.L07.02':{name:'Quote or Paraphrase?',
+  teach:[
+    {how:'You know two ways to use a source. QUOTE: his exact words, inside quotation marks. PARAPHRASE: the same meaning in your own words. Now you learn to CHOOSE. Most notes are PLAIN FACTS: where, what, when, the steps. Anyone would say them about the same way, so PARAPHRASE them. The book says: “Rain and melting snow fill the reservoirs.” Paraphrase: Mr. Weiss explains that the reservoirs fill up when it rains and when the snow melts.', q:'The web page says: “Water travels from the reservoirs to a filtration plant through large underground pipes.” Quote it or paraphrase it?', o:['paraphrase it','quote it','leave it out']},
+    {how:'QUOTE only when the EXACT WORDS MATTER. Three reasons. A STRONG PHRASE: a WORD PICTURE that compares one thing to another, so sharp that your own words would be weaker. Mr. Weiss writes: “The reservoirs are the city’s savings account of water.” AN EXPERT’S OWN WORDS: a person who works in the field gives his own view, what he thinks from his work. There is no word picture; the words matter because HE said them. Mr. Haddad, the engineer: “Nobody notices clean water until it stops.” A DEFINITION: the exact meaning of a word. Ask: would my own words lose something?', q:'Which note should the Beacon team quote?', o:['Mr. Haddad: “Every glass of water has taken a long trip before it reaches your table.”','Web page: “Dirt settles to the bottom.”','Book: “Rain and melting snow fill the reservoirs.”']},
+    {how:'Two mistakes. A WASTED QUOTE: a plain fact copied inside quotation marks. It adds nothing, and the paragraph turns into a pile of other people’s sentences. A LOST PHRASE: a strong phrase or an expert’s view squeezed into plain words, so its power is gone. “Mr. Haddad said people do not think about water much” loses his own view.', q:'Eli writes: The web page says, “Clean water is pumped into water mains.” What is wrong?', o:['a wasted quote','a lost phrase','nothing, it fits']}
+  ],
+  practice:[
+    {t:'sort', q:'The Beacon team’s notes. Quote it or paraphrase it?', bins:[{id:'Q',label:'💬 Quote it'},{id:'P',label:'✏️ Paraphrase it'}],
+      items:[{label:'Book: “The reservoirs are the city’s savings account of water.”',bin:'Q'},{label:'Mr. Haddad: “Nobody notices clean water until it stops.”',bin:'Q'},{label:'Book: “A reservoir is a lake that people make by building a dam across a river.”',bin:'Q'},{label:'Web page: “Water travels from the reservoirs to a filtration plant through large underground pipes.”',bin:'P'},{label:'Web page: “A small amount of chlorine is added to kill germs.”',bin:'P'},{label:'Book: “Rain and melting snow fill the reservoirs.”',bin:'P'}],
+      h:'Ask: would my own words lose something? A strong phrase, an expert’s view or a definition: quote it. A plain fact: paraphrase it.'},
+    {t:'pairs', q:'Match each reason to the note that shows it.', pairs:[['A strong phrase','“The reservoirs are the city’s savings account of water.”'],['An expert’s own words','Mr. Haddad: “Nobody notices clean water until it stops.”'],['A definition','“A water main is a big pipe under the street that carries water to many homes.”'],['A plain fact','“Rain and melting snow fill the reservoirs.”']],
+      h:'A word picture that compares? An expert’s view from his work? The meaning of a word? Or a plain fact anyone could say?'},
+    {t:'spotall', q:'Tap every sentence where the writer CHOSE RIGHT.', cells:[{label:'The city’s web page explains that sand and gravel filter the water as it flows through them.',ok:true},{label:'Mr. Weiss calls the reservoirs “the city’s savings account of water.”',ok:true},{label:'Mr. Haddad said, “Nobody notices clean water until it stops.”',ok:true},{label:'Mr. Weiss writes, “Rain and melting snow fill the reservoirs.”',ok:false},{label:'Mr. Haddad said water is important.',ok:false}],
+      h:'A plain fact in quotation marks is a wasted quote. Strong words turned plain are a lost phrase.'},
+    {t:'sort', q:'Sneaky ones! Sort each sentence.', bins:[{id:'G',label:'✅ Good choice'},{id:'W',label:'⚠️ A wasted quote'},{id:'L',label:'⚠️ A lost phrase'}],
+      items:[{label:'Mr. Weiss calls the reservoirs “the city’s savings account of water.”',bin:'G'},{label:'The city’s web page explains that a little chlorine goes into the water to get rid of germs.',bin:'G'},{label:'The web page says, “Clean water is pumped into water mains.”',bin:'W'},{label:'Mr. Weiss writes, “Rain and melting snow fill the reservoirs.”',bin:'W'},{label:'Mr. Haddad said that people do not think about water much.',bin:'L'},{label:'Mr. Weiss says the reservoirs hold a lot of water.',bin:'L'}],
+      h:'Quotation marks around a plain fact: wasted. A sharp phrase or a view gone flat: lost. Remember the originals: “savings account of water” and “Nobody notices clean water until it stops.”'},
+    {t:'order', q:'Build Gavriel’s sentence. Weave in the strong phrase. Tap the tiles in order.', tiles:['Mr. Weiss calls','the reservoirs','“the city’s savings','account of water.”'],
+      h:'Who first, then what he calls them. His exact words go last, inside the quotation marks.'},
+    {t:'spotall', q:'Lines from Gavriel’s interview with Mr. Haddad. Tap every line the team should QUOTE.', cells:[{label:'“Every glass of water has taken a long trip before it reaches your table.”',ok:true},{label:'“Nobody notices clean water until it stops.”',ok:true},{label:'“A water main is a big pipe under the street that carries water to many homes.”',ok:true},{label:'“We test the water every day.”',ok:false},{label:'“Smaller pipes branch off the mains into each house.”',ok:false}],
+      h:'A strong phrase, his own view, or a definition: quote. A plain fact about the job: paraphrase.'},
+    {t:'write', q:'Your turn to write. Pick two notes from the Beacon team’s sources: one plain fact, and one strong phrase, expert’s view or definition. Write a sentence for each. Paraphrase the plain fact. Quote the other, and say who said it.', min:0, checks:['✏️ I paraphrased the plain fact in my own words.','💬 I quoted only words that matter: a strong phrase, an expert’s own words or a definition.','🔤 My quote is his exact words, inside quotation marks.'], h:'Plain facts to choose from: rain and melting snow fill the reservoirs; workers test the water every day. Words to quote: “the city’s savings account of water” or “Nobody notices clean water until it stops.”'}
+  ],
+  check:[
+    {q:'A report on a bakery. Mr. Peretz, the baker, explains: “Proofing is the time the dough rests and rises before it bakes.” Quote it or paraphrase it?', o:['quote it','paraphrase it','leave it out'], h:'Does it give the exact meaning of a word?'},
+    {q:'Same report. Benny writes: Mr. Peretz said, “The bakery opens at 5:00 in the morning.” What is wrong?', o:['a wasted quote','a lost phrase','nothing, it fits'], h:'Is the quote a plain fact anyone could say the same way?'},
+    {t:'order', q:'Mr. Peretz said: “We light the ovens every morning before sunrise.” Paraphrase the plain fact. Tap the tiles in order.', tiles:['Mr. Peretz says','that before sunrise,','the bakers','light the ovens.'], h:'Who said it first. Then when. Then who does what.'}
+  ],
+  re:[
+    {how:'A new way: quotes are like spices. A pinch, where it counts, makes the dish. A whole pot of spice ruins it. Plain facts are the main food: cook them in your own words.', q:'Quotes are like…', o:['spices: a pinch, where it counts','the main food','the plate']},
+    {how:'A simpler step: for each note, ask one question: would my own words lose something? If not, paraphrase it. If yes, because it is a strong phrase, an expert’s view or a definition, quote it.', q:'If your own words would lose nothing…', o:['paraphrase it','quote it','copy it all']},
+    {how:'The skill underneath: Proof from the Text and Quote It Right (Grade 5) taught you HOW to write a fact in your own words and HOW to weave in a quote. Now you go further: for every note you CHOOSE which one fits, by a rule, and you avoid wasted quotes and lost phrases.', q:'Quote or Paraphrase? goes further by teaching you to…', o:['choose which one fits each note','punctuate a quote','find a book']}
+  ]},
+
+  'WRIT.RES.L07.03':{name:'Credit the Source',
+  teach:[
+    {how:'In Grade 5 you wrote “According to the article,” before a fact. That tells the reader you used a source, but not WHICH one. Now give FULL CREDIT inside your paragraph: a SIGNAL PHRASE (who, plus a verb like explains, reports or says) with the AUTHOR or the TITLE. “In his book Where Our Water Begins, Nathan Weiss explains that…” “The city’s web page From Reservoir to Faucet reports that…” “Engineer Yosef Haddad told The Beacon, …” In Quote or Paraphrase? we wrote “the web page”; now name it.', q:'Which sentence gives full credit?', o:['In his book Where Our Water Begins, Nathan Weiss explains that the reservoirs fill up when it rains and when the snow melts.','According to a book, rain and melting snow fill the reservoirs.','Rain and melting snow fill the reservoirs.']},
+    {how:'In Grade 5 you learned that a fact in your own words still gets a tag. Now most of your report is paraphrased, so this matters more than ever: every borrowed fact gets a signal phrase with the author or the title. Why does the reader need it? To CHECK the fact himself. To judge how much to TRUST it: an engineer at a filtration plant, or a stranger online? And to see which words and ideas are YOURS, so you never pass off someone else’s work as your own.', q:'Gavriel paraphrased a fact from the web page: the water passes through sand and gravel. Does it need credit?', o:['yes, a paraphrased fact needs credit too','no, only quotes need credit','no, because he changed the words']},
+    {how:'Two mistakes. NO CREDIT: a borrowed fact or quote sits alone, as if you found it yourself. VAGUE CREDIT: “According to the article,” “I read online that,” “A book says,” “Experts say.” The reader cannot tell which source, so he cannot check it. Fix both the same way: a signal phrase with the author or the title.', q:'Yoni writes: “I read online that a small amount of chlorine kills germs in the water.” Which mistake is it?', o:['vague credit','no credit','full credit']}
+  ],
+  practice:[
+    {t:'sort', q:'Every fact below came from the Beacon team’s sources. Sort each sentence.', bins:[{id:'F',label:'✅ Full credit'},{id:'V',label:'🌫️ Vague credit'},{id:'N',label:'🚫 No credit'}],
+      items:[{label:'In his book Where Our Water Begins, Nathan Weiss explains that Baltimore’s water comes from three reservoirs outside the city.',bin:'F'},{label:'The city’s web page From Reservoir to Faucet reports that workers put a little chlorine in the water so germs cannot survive.',bin:'F'},{label:'According to the article, the water passes through sand and gravel.',bin:'V'},{label:'A website says water mains run under the streets.',bin:'V'},{label:'Workers test the water every day.',bin:'N'},{label:'Smaller pipes branch off the mains into each house.',bin:'N'}],
+      h:'An author or a title: full. Just “the article” or “a website”: vague. Nothing at all: no credit.'},
+    {t:'pairs', q:'Match each source to its signal phrase.', pairs:[['a fact from the library book','In his book Where Our Water Begins, Nathan Weiss explains that'],['a fact from the city web page','The city’s web page From Reservoir to Faucet reports that'],['words from the interview','Engineer Yosef Haddad told The Beacon,']],
+      h:'A book: name the author. A web page: name its title. An interview: name the person and his job.'},
+    {t:'spotall', q:'Tap every piece of the Beacon report that NEEDS CREDIT.', cells:[{label:'a quote from Mr. Haddad',ok:true},{label:'a fact from the book, in your own words',ok:true},{label:'a fact from the web page, in your own words',ok:true},{label:'your own topic sentence',ok:false},{label:'your own bridge sentence between two paragraphs',ok:false}],
+      h:'Did it come from a source? Then it needs credit, even in your own words.'},
+    {t:'sort', q:'Sneaky ones! Is the credit full, or does it need more?', bins:[{id:'F',label:'✅ Full credit'},{id:'M',label:'⚠️ Needs more'}],
+      items:[{label:'Nathan Weiss writes that the reservoirs fill up when it rains and when the snow melts.',bin:'F'},{label:'Mr. Haddad, an engineer at a filtration plant, says workers test the water every day.',bin:'F'},{label:'The web page From Reservoir to Faucet explains that water mains run under the streets.',bin:'F'},{label:'According to the book, rain and melting snow fill the reservoirs.',bin:'M'},{label:'Experts say workers test the water every day.',bin:'M'},{label:'Someone said, “Nobody notices clean water until it stops.”',bin:'M'}],
+      h:'Could the reader find this exact source? “The book”, “experts” and “someone” do not say which one.'},
+    {t:'order', q:'Build Benny’s sentence with full credit. Tap the tiles in order.', tiles:['In his book Where Our Water Begins,','Nathan Weiss','calls the reservoirs','“the city’s savings account of water.”'],
+      h:'Where first, then who. Then what he calls them, in his exact words.'},
+    {t:'spotall', q:'Tap every reason a reader needs the credit.', cells:[{label:'to check the fact himself',ok:true},{label:'to judge how much to trust it',ok:true},{label:'to see which words and ideas are the writer’s own',ok:true},{label:'to make the paragraph longer',ok:false},{label:'to show how many books the writer read',ok:false}],
+      h:'Think like the reader: what can he do once he knows where a fact came from?'},
+    {t:'write', q:'Your turn to write. Write two or three sentences for the Beacon’s water report: one paraphrased fact and one quote, from two different sources. Give each one full credit.', min:0, checks:['📣 Each borrowed piece has a signal phrase.','✍️ Each names the author or the title.','🧾 I credited the paraphrased fact too, not only the quote.'], h:'Try “In his book Where Our Water Begins, Nathan Weiss explains that…” for a fact, and “Engineer Yosef Haddad told The Beacon,” before a quote.'}
+  ],
+  check:[
+    {q:'A report on the yeshiva’s new sefer Torah. Yoni writes: “According to the article, the sofer worked on it for a year.” What kind of credit is this?', o:['vague credit','full credit','no credit'], h:'Which article? Could the reader find it?'},
+    {q:'Eli writes: “In his book The Sofer’s Craft, Rabbi Dovid Stein explains that a sofer writes with a quill.” What kind of credit is this?', o:['full credit','vague credit','no credit'], h:'Is there a signal phrase? Does it name the author or the title?'},
+    {t:'order', q:'Build a sentence that credits a paraphrased fact. Tap the tiles in order.', tiles:['Rabbi Stein','explains in his book','that a sofer','writes with a quill.'], h:'Who first, then the verb. Then the fact.'}
+  ],
+  re:[
+    {how:'A new way: credit is like the return address on an envelope. It tells the reader exactly who sent the fact, so he can write back and check it. “A book” is like an envelope with no address.', q:'A signal phrase works like…', o:['a return address on an envelope','a stamp','the color of the envelope']},
+    {how:'A simpler step: before every borrowed fact or quote, write WHO plus a verb: “Weiss explains that,” “The city’s web page reports that,” “Mr. Haddad says.”', q:'A signal phrase is…', o:['who, plus a verb like explains or says','a question','the last word']},
+    {how:'The skill underneath: Proof from the Text (Grade 5), where a source tag like “According to the article,” went before a fact or a quote. Now you go further: you name the author or the title so the reader can find that exact source, you spot vague credit, and you can say why the reader needs it.', q:'Credit the Source goes further than “According to the article,” by…', o:['naming the author or the title','adding a picture','using more quotes']}
+  ]},
+
+  'WRIT.RES.L07.04':{name:'Notes to Outline',
+  teach:[
+    {how:'Your notes are sorted into groups. Now turn them into an OUTLINE: the plan of the whole report. Each group becomes a MAIN POINT: one for each body paragraph, written as a short sentence, in the order the report will go. For “How does Baltimore’s water get from the reservoirs to our kitchen faucet?”: I. The reservoirs store the water. II. A filtration plant cleans it. III. Pipes carry it to our homes.', q:'Which is a main point for the water report?', o:['A filtration plant cleans the water.','Chlorine kills germs.','Water.']},
+    {how:'Under each main point go its SUB-POINTS: the facts that prove or explain it, marked A, B, C. After every sub-point, write its SOURCE in brackets, (book), (web page) or (interview), so you know whom to credit when you write. II. A filtration plant cleans it. A. Dirt settles to the bottom (web page). B. The water passes through sand and gravel (web page). C. Workers test it every day (interview).', q:'“Chlorine kills germs (web page).” Where does it go?', o:['a sub-point under II, a filtration plant','a main point of its own','under I, the reservoirs']},
+    {how:'Three mistakes. A FACT AS A MAIN POINT: one small fact made into a whole paragraph (“II. Chlorine kills germs.”). UNDER THE WRONG POINT: a fact about pipes placed under the reservoirs. NO SOURCE: a sub-point with nothing in brackets, so later you cannot credit it. Check every line: main point, sub-point under the right point, source in brackets.', q:'Under “I. The reservoirs store the water,” Akiva wrote: “C. Water mains run under the streets (web page).” Which mistake is it?', o:['under the wrong point','no source','a fact as a main point']}
+  ],
+  practice:[
+    {t:'sort', q:'Main point or sub-point? Sort each line of the water report outline.', bins:[{id:'M',label:'🏛️ Main point'},{id:'S',label:'🔹 Sub-point'}],
+      items:[{label:'The reservoirs store the water.',bin:'M'},{label:'A filtration plant cleans it.',bin:'M'},{label:'Pipes carry it to our homes.',bin:'M'},{label:'Rain and melting snow fill the reservoirs.',bin:'S'},{label:'Dirt settles to the bottom.',bin:'S'},{label:'Smaller pipes branch off the mains into each house.',bin:'S'}],
+      h:'Could it fill a whole paragraph? Main point. Is it one fact? Sub-point.'},
+    {t:'pairs', q:'Match each sub-point to the main point it belongs under.', pairs:[['Rain and melting snow fill the reservoirs.','I. The reservoirs store the water.'],['The water passes through sand and gravel.','II. A filtration plant cleans it.'],['Water mains run under the streets.','III. Pipes carry it to our homes.']],
+      h:'Ask: what is this fact about? Reservoirs, the plant, or pipes?'},
+    {t:'spotall', q:'Tap every sub-point written the right way: a fact with its source in brackets.', cells:[{label:'Workers test the water every day (interview).',ok:true},{label:'A small amount of chlorine kills germs (web page).',ok:true},{label:'Rain and melting snow fill the reservoirs (book).',ok:true},{label:'Water mains run under the streets.',ok:false},{label:'Smaller pipes branch into each house (somewhere).',ok:false}],
+      h:'Look at the end of each line. Does it name one of the team’s three sources?'},
+    {t:'sort', q:'Outline mistakes! Sort each line.', bins:[{id:'R',label:'✅ Right'},{id:'W',label:'⚠️ Under the wrong point'},{id:'N',label:'⚠️ No source'}],
+      items:[{label:'Under I (reservoirs): Rain and melting snow fill them (book).',bin:'R'},{label:'Under II (plant): Dirt settles to the bottom (web page).',bin:'R'},{label:'Under I (reservoirs): Chlorine kills germs (web page).',bin:'W'},{label:'Under II (plant): Smaller pipes branch off into each house (interview).',bin:'W'},{label:'Under III (pipes): Water mains run under the streets.',bin:'N'},{label:'Under II (plant): Workers test the water every day.',bin:'N'}],
+      h:'First check: is the fact about that main point? Then check: is there a source in brackets?'},
+    {t:'order', q:'Put these outline lines in order. Tap them in order.', tiles:['I. The reservoirs store it.','A. Rain and snow fill them (book).','II. The plant cleans it.','A. Sand and gravel filter it (web page).'],
+      h:'Main point I, then its sub-point. Then main point II, then its sub-point.'},
+    {t:'spotall', q:'A Beacon report: “How do the boys build the yeshiva sukkah?” Tap every line that is a MAIN POINT.', cells:[{label:'The boys put up the walls.',ok:true},{label:'They lay the s’chach on top.',ok:true},{label:'They hang the decorations.',ok:true},{label:'One wall has a window.',ok:false},{label:'The s’chach is made of bamboo mats.',ok:false}],
+      h:'A main point covers a whole step: a whole paragraph. One small fact is a sub-point.'},
+    {t:'write', q:'Your turn to write. Outline the Beacon’s water report from the team’s notes: Rain and melting snow fill the reservoirs (book). People make a reservoir by building a dam across a river (book). Dirt settles to the bottom (web page). Chlorine kills germs (web page). Water mains run under the streets (web page). Smaller pipes branch off the mains into each house (interview). Workers test the water every day (interview). Write three main points (I, II, III), sub-points under each (A, B…), and a source after every sub-point.', min:0, checks:['🏛️ Three main points, in the order the water travels.','🔹 Each sub-point sits under the right main point.','📚 Every sub-point has its source in brackets.'], h:'Main points: the reservoirs, the plant, the pipes. Then place each note under the one it is about, and copy its source.'}
+  ],
+  check:[
+    {q:'An outline on building the yeshiva sukkah. Under “II. They lay the s’chach on top,” Yoni wrote: “A. Each wall is a wood panel (Mr. Gross).” Which mistake is it?', o:['under the wrong point','no source','a fact as a main point'], h:'Is the fact about the s’chach?'},
+    {q:'Same outline. Eli wrote main point “III. The ushpizin picture hangs by the door.” Which mistake is it?', o:['a fact as a main point','under the wrong point','no source'], h:'Could that one fact fill a whole paragraph?'},
+    {t:'order', q:'Put the sukkah outline lines in order. Tap them in order.', tiles:['I. The boys put up the walls.','A. Wood panels (Mr. Gross).','II. They lay the s’chach.','A. Bamboo mats (Mr. Gross).'], h:'Main point I and its fact. Then main point II and its fact.'}
+  ],
+  re:[
+    {how:'A new way: an outline is like a building. The main points are the floors. The sub-points are the rooms on each floor. The sources are the name plates on the doors.', q:'In the building, the sub-points are…', o:['the rooms on each floor','the floors','the roof']},
+    {how:'A simpler step: write each group name as a short sentence. Those are I, II, III. Copy each note under its group as A, B, C, with its source in brackets.', q:'Each group of notes becomes…', o:['a main point','a sub-point','a source']},
+    {how:'The skill underneath: Group It (Grade 4): sort facts into named groups, one group for each paragraph. Now you go further: you write each group as a main point in report order, put its facts under it as sub-points, and carry the source of every fact, ready to credit.', q:'Notes to Outline goes further than Group It by adding…', o:['the source for each sub-point','more pictures','a title page']}
+  ]},
+  };
+  var TEACH = {
+  'WRIT.RES.L07.01':{hook:'Why does a report about “water” never get finished?', big:'Narrow a big topic in three steps, topic, one part, one question, then test it: right size, not yes/no, and can be found.',
+    intro:['Topic: the big subject, like water.','One part: a piece of it, like Baltimore’s drinking water.','One question: how or why, about that part.','Test: right size (not too big, not too small)? Not yes/no? Can be found?'],
+    ex:[{q:'Topic: water.',steps:['One part: Baltimore’s drinking water.','Question: how does it reach our faucet?'],a:'How does Baltimore’s water get from the reservoirs to our kitchen faucet?'},
+        {q:'“Does Baltimore have reservoirs?”',steps:['The answer is one word: yes/no.','Turn it into a how question.'],a:'How do Baltimore’s reservoirs store water?'}],
+    oops:{q:'Gavriel’s question for the water report.',wrong:'How does water work all over the world?',right:'How does a filtration plant clean Baltimore’s water?',why:'The first is too big: it would fill a whole book. The second is one part, a how question, and the engineer and the web page can answer it.'},
+    idea:['Zoom in: topic, one part, one question. Then test it before you research.'],
+    try:{q:'“What will Baltimore’s water be like in 300 years?” What is wrong?',o:['can’t be found','yes/no','too big'],a:'can’t be found',steps:['No source can know the far future.']}},
+  'WRIT.RES.L07.02':{hook:'Why does a report full of quotes sound like nobody wrote it?', big:'Paraphrase plain facts. Quote only when the exact words matter: a strong phrase, an expert’s own words, or a definition.',
+    intro:['A plain fact (where, what, when, the steps): paraphrase it.','A strong phrase, a word picture that compares: quote it.','An expert’s own words, his view from his work: quote it.','A definition: quote it. Ask: would my own words lose something?'],
+    ex:[{q:'Book: “Rain and melting snow fill the reservoirs.”',steps:['A plain fact. My own words lose nothing.'],a:'Paraphrase it: Mr. Weiss explains that the reservoirs fill up when it rains and when the snow melts.'},
+        {q:'Mr. Haddad: “Nobody notices clean water until it stops.”',steps:['An expert’s own view, from his work at a filtration plant.','My own words would lose it.'],a:'Quote it'}],
+    oops:{q:'Use the web page note: “Clean water is pumped into water mains.”',wrong:'The web page says, “Clean water is pumped into water mains.”',right:'The city’s web page explains that pumps push the clean water into water mains.',why:'It is a plain fact, so the quote is wasted. Say it in your own words, and save quotes for words that matter.'},
+    idea:['Quote the words that matter. Paraphrase everything else.'],
+    try:{q:'Book: “A reservoir is a lake that people make by building a dam across a river.” Quote it or paraphrase it?',o:['quote it','paraphrase it','leave it out'],a:'quote it',steps:['It is a definition: the exact meaning matters.']}},
+  'WRIT.RES.L07.03':{hook:'If a reader wants to check your fact, can he find where it came from?', big:'Credit every borrowed fact and quote inside your paragraph, with a signal phrase plus the author or the title, so the reader can check it and trust it.',
+    intro:['Signal phrase: who, plus a verb: explains, reports, says.','Name the author or the title, not just “the article.”','Credit paraphrased facts too, not only quotes.','Why: the reader can check it, judge it, and see what is yours.'],
+    ex:[{q:'A paraphrased fact from the web page.',steps:['Signal phrase plus the title.'],a:'The city’s web page From Reservoir to Faucet reports that workers put a little chlorine in the water so germs cannot survive.'},
+        {q:'“According to the article, water mains run under the streets.”',steps:['Which article? The reader cannot check it.'],a:'Vague credit'}],
+    oops:{q:'Use the fact that workers test the water every day.',wrong:'Workers test the water every day.',right:'Mr. Haddad, an engineer at a filtration plant, says workers test the water every day.',why:'The fact came from the interview. With no credit, the reader thinks you found it yourself, and he cannot check it.'},
+    idea:['Every borrowed piece wears a name tag: who said it, or where it was written.'],
+    try:{q:'“A website says the water passes through sand and gravel.” What kind of credit is this?',o:['vague credit','full credit','no credit'],a:'vague credit',steps:['Which website? The reader cannot find it.']}},
+  'WRIT.RES.L07.04':{hook:'How does a pile of notes turn into a report that almost writes itself?', big:'Turn sorted notes into an outline: main points (I, II, III) in report order, sub-points (A, B, C) under the right one, and the source of each in brackets.',
+    intro:['Main point: one for each body paragraph, a short sentence.','Put the main points in the order the report will go.','Sub-point: a fact that proves or explains it, marked A, B, C.','Source in brackets after every sub-point.'],
+    ex:[{q:'A group of notes: dirt settles; sand and gravel; chlorine.',steps:['What are they all about? The plant cleaning the water.'],a:'II. A filtration plant cleans it.'},
+        {q:'“Water mains run under the streets.” From the web page.',steps:['A fact about pipes: it goes under III.','Add where it came from.'],a:'Under III: A. Water mains run under the streets (web page).'}],
+    oops:{q:'Outline the plant paragraph.',wrong:'II. Chlorine kills germs.',right:'II. A filtration plant cleans it. A. Dirt settles to the bottom (web page). B. Chlorine kills germs (web page).',why:'Chlorine is one small fact: a sub-point. The main point must cover the whole paragraph.'},
+    idea:['Main points are the floors, sub-points are the rooms, and every room has a name plate: its source.'],
+    try:{q:'“Smaller pipes branch off the mains into each house (interview).” Main point or sub-point?',o:['sub-point','main point','a source'],a:'sub-point',steps:['One fact, about pipes: it goes under III.']}},
+  };
+  var HOWTO = {
+  'WRIT.RES.L07.01':{s:'Write your big topic.\nZoom in: write one part of it.\nTurn that part into a how or why question.\nTest it: fits in about three paragraphs, not one fact? Not yes/no? Can your sources answer it?'},
+  'WRIT.RES.L07.02':{s:'Read the note. Ask: would my own words lose something?\nA plain fact (where, what, when, the steps): paraphrase it.\nA strong phrase, an expert’s own view, or a definition: quote it, his exact words in quotation marks.\nCheck: is most of your paragraph in your own words?'},
+  'WRIT.RES.L07.03':{s:'Find every borrowed piece: quotes AND facts in your own words.\nPut a signal phrase before it: who, plus explains, reports or says.\nName the author or the title, not just “the article.”\nAsk: could my reader find this source and check it?'},
+  'WRIT.RES.L07.04':{s:'Name each group of notes with a short sentence. Those are your main points: I, II, III.\nPut them in the order the report will go.\nUnder each one, list its facts as sub-points: A, B, C.\nAfter every sub-point, write its source in brackets.'},
+  };
+  var BITE = {
+  'WRIT.RES.L07.01':{ band:'M68', pic:'🔍', today:'Narrow a big topic into one question', why:'A question the right size can be answered well, so the report gets finished.',
+    ready:[{q:'A question that starts “What kinds…” points to…', o:['classification','cause and effect','definition','compare and contrast'], a:'classification'}],
+    bridge:'WRIT.ESSAY.L07.07', bridgeName:'Pick the Pattern',
+    watch:{ q:'Akiva narrows the Beacon’s research topic.', m:{type:'scene', e:'🚰', t:'Mr. Gross writes one word on the newsroom board: “Water.”'}, steps:[
+      {t:'Topic: water. That could fill a whole book.'},
+      {t:'One part: Baltimore’s drinking water.'},
+      {t:'Draft: “Does Baltimore have clean water?” That is yes/no.'},
+      {t:'Fix: “How does Baltimore’s water get from the reservoirs to our kitchen faucet?”'},
+      {t:'Test: about three paragraphs? Yes. The book, the web page and the engineer can answer it.'},
+      {t:'Teach it back: tell your chavrusa the three steps and the three tests.'}], a:'How does Baltimore’s water get from the reservoirs to our kitchen faucet?' },
+    oops:{ q:'Gavriel’s question for the water report.', wrong:'How does water work all over the world?', right:'How does a filtration plant clean Baltimore’s water?', why:'The first is too big: it would fill a whole book. The second is one part, a how question, and the engineer and the web page can answer it.' },
+    ways:['worked example','match it','sort it','word tiles','Mistake Detective','teach it back'], done:'You can narrow a big topic into one question a short report can answer.',
+    board:{ one:'Zoom in from topic to one part to one question, then test it: right size, not yes/no, can be found.', activity:'Each chavrusa writes one big topic; the partner narrows it to a question, and the writer tests it with the three tests.', mistakes:['A question so big it fills a book, or so small one fact answers it','A yes/no question','A question no source can answer'] },
+    do:[
+      {type:'match', pairs:[['Too big','How does water work everywhere?'],['Yes/no','Does Baltimore have reservoirs?'],['Can’t be found','What will our water be like in 300 years?']],
+        say:'Match each mistake to a question.', how:'A whole book? A one-word answer? No source could know?'},
+      {type:'sort', bins:['Ready to research','Mistake'], cards:[['How does a filtration plant clean water?',0],['Is our water clean?',1],['How does water work everywhere?',1],['How do pipes reach each house?',0],['What will water be like in 300 years?',1]], mis:true,
+        say:'Is each question ready to research? Sort it.', how:'Test it: right size, not yes/no, can be found.'}],
+    your:[
+      {type:'tiles', q:'A why question about the reservoirs.', w:['Why did','Baltimore','build','dams?'], extra:['Is'],
+        say:'Build a why question about the reservoirs.', how:'The question words first. Then who, then what it did.'},
+      {type:'sort', bins:['Too big','Yes/no','Can’t be found'], cards:[['What is the story of all water?',0],['How does every city get water?',0],['Is a filtration plant big?',1],['Does water need pipes?',1],['What will pipes be like in 500 years?',2],['Who drank the most water in 2020?',2]],
+        say:'Which mistake does each question make?', how:'A whole book? A one-word answer? Nobody could know?'},
+      {type:'match', pairs:[['Water','Baltimore’s drinking water'],['Boats','the Inner Harbor skimmer boats'],['Bread','how a bakery braids challah']],
+        say:'Match each big topic to one part of it.', how:'Find the smaller piece of the same topic.'},
+      {type:'tiles', q:'Fix “Does Baltimore have reservoirs?”', w:['How do','reservoirs','store','water?'], extra:['Does'],
+        say:'Turn the yes/no question into a how question.', how:'Start with How do. Then what they do.'},
+      {type:'sort', bins:['Ready to research','Needs fixing'], cards:[['How is chlorine used in the water?',0],['How many reservoirs are there?',1],['Why are water mains under the street?',0],['How did every city ever get water?',1]],
+        say:'Is it ready, or does it need fixing?', how:'Run the three tests on each one.'}] },
+
+  'WRIT.RES.L07.02':{ band:'M68', pic:'⚖️', today:'Choose: quote it or paraphrase it', why:'Quotes are strongest when they are few. Your own words carry the facts.',
+    ready:[{q:'In a woven quote, the quotation marks go around…', o:['only his exact words','the whole sentence','your own words','the speaker’s name'], a:'only his exact words'}],
+    bridge:'WRIT.PARA.L06.14', bridgeName:'Quote It Right',
+    watch:{ q:'Eli chooses for two notes in the water report.', m:{type:'scene', e:'📝', t:'Eli has two notes: one from Mr. Weiss’s book, one from the interview with Mr. Haddad.'}, steps:[
+      {t:'Book: “Rain and melting snow fill the reservoirs.” A plain fact.'},
+      {t:'Paraphrase: Mr. Weiss explains that the reservoirs fill up when it rains and when the snow melts.'},
+      {t:'Mr. Haddad: “Nobody notices clean water until it stops.” An expert’s own words.'},
+      {t:'My own words would lose it. Quote it, exactly.'},
+      {t:'Check: most of the paragraph is in my own words.'},
+      {t:'Teach it back: tell your chavrusa the three reasons to quote.'}], a:'Mr. Weiss explains that the reservoirs fill up when it rains and when the snow melts. Engineer Haddad says, “Nobody notices clean water until it stops.”' },
+    oops:{ q:'Use the web page note: “Clean water is pumped into water mains.”', wrong:'The web page says, “Clean water is pumped into water mains.”', right:'The city’s web page explains that pumps push the clean water into water mains.', why:'It is a plain fact, so the quote is wasted. Say it in your own words, and save quotes for words that matter.' },
+    ways:['worked example','match it','sort it','word tiles','Mistake Detective','teach it back'], done:'You can choose when to quote and when to paraphrase.',
+    board:{ one:'Paraphrase plain facts; quote only a strong phrase, an expert’s own words or a definition.', activity:'One chavrusa reads notes aloud; the partner says “quote it” or “paraphrase it” and gives the reason.', mistakes:['A wasted quote: a plain fact in quotation marks','A lost phrase: strong words made plain','A paragraph that is mostly quotes'] },
+    do:[
+      {type:'match', pairs:[['A strong phrase','“the city’s savings account of water”'],['An expert’s own words','Engineer Haddad: “Nobody notices clean water until it stops.”'],['A plain fact','Rain and melting snow fill the reservoirs.']],
+        say:'Match each kind of note to an example.', how:'A word picture? An engineer’s view? A plain fact?'},
+      {type:'sort', bins:['Good choice','Mistake'], cards:[['Mr. Weiss calls them “the city’s savings account of water.”',0],['Mr. Weiss writes, “Rain and melting snow fill the reservoirs.”',1],['Mr. Haddad said people do not think about water much.',1],['The web page explains that chlorine kills germs.',0]], mis:true,
+        say:'Did the writer choose right? Sort each sentence.', how:'A plain fact in quotes, or strong words lost: mistake.'}],
+    your:[
+      {type:'tiles', q:'Paraphrase: “Rain and melting snow fill the reservoirs.”', w:['Reservoirs','fill up when','it rains and','snow melts.'], extra:['“Rain'],
+        say:'Build a paraphrase of the plain fact.', how:'Start with what gets filled. Then when.'},
+      {type:'sort', bins:['Quote it','Paraphrase it'], cards:[['the city’s savings account of water',0],['Nobody notices clean water until it stops.',0],['Rain and melting snow fill the reservoirs.',1],['Workers test the water every day.',1],['Chlorine is added to kill germs.',1]],
+        say:'Quote it or paraphrase it? Sort each note.', how:'Would your own words lose something?'},
+      {type:'match', pairs:[['A wasted quote','The web page says, “Clean water is pumped into water mains.”'],['A lost phrase','Mr. Haddad said people forget about water.'],['A good choice','Mr. Weiss calls them “the city’s savings account of water.”']],
+        say:'Match each label to a sentence.', how:'A plain fact quoted? Strong words lost? Or right?'},
+      {type:'tiles', q:'The rule for quotes.', w:['Quote it','when the','exact words','matter.'], extra:['always'],
+        say:'Build the rule for when to quote.', how:'What to do first. Then when.'},
+      {type:'sort', bins:['A strong phrase','A definition','A plain fact'], cards:[['the city’s savings account of water',0],['A reservoir is a lake that people make by building a dam across a river.',1],['A water main is a big pipe under the street that carries water to many homes.',1],['Rain and melting snow fill the reservoirs.',2],['Workers test the water every day.',2]],
+        say:'Strong phrase, definition, or plain fact? Sort each note.', how:'A word picture? The meaning of a word? A plain fact?'}] },
+
+  'WRIT.RES.L07.03':{ band:'M68', pic:'🏷️', today:'Credit the source inside your paragraph', why:'A reader who knows where a fact came from can check it and trust it.',
+    ready:[{q:'“According to the article,” is…', o:['a source tag','a quote','a title','an opinion'], a:'a source tag'}],
+    bridge:'WRIT.PARA.L06.10', bridgeName:'Proof from the Text',
+    watch:{ q:'Gavriel credits the sources in his paragraph.', m:{type:'scene', e:'🏷️', t:'Gavriel’s draft: “The water passes through sand and gravel. Workers test it every day.”'}, steps:[
+      {t:'Both facts are borrowed. Neither one has credit.'},
+      {t:'Fact 1 came from the city’s web page, From Reservoir to Faucet.'},
+      {t:'Credit: “The city’s web page From Reservoir to Faucet explains that…”'},
+      {t:'Fact 2 came from the interview: “Mr. Haddad, an engineer at a filtration plant, says…”'},
+      {t:'Check: could a reader find both sources? Yes.'},
+      {t:'Teach it back: tell your chavrusa why a reader needs the credit.'}], a:'The city’s web page From Reservoir to Faucet explains that the water passes through sand and gravel. Mr. Haddad, an engineer at a filtration plant, says workers test it every day.' },
+    oops:{ q:'Use the fact that workers test the water every day.', wrong:'Workers test the water every day.', right:'Mr. Haddad, an engineer at a filtration plant, says workers test the water every day.', why:'The fact came from the interview. With no credit, the reader thinks you found it yourself, and he cannot check it.' },
+    ways:['worked example','match it','sort it','word tiles','Mistake Detective','teach it back'], done:'You can credit every source inside your paragraph, and say why the reader needs it.',
+    board:{ one:'Every borrowed fact or quote gets a signal phrase with the author or the title.', activity:'Chavrusas trade paragraphs and underline every borrowed piece; the partner checks each one for full credit.', mistakes:['No credit for a paraphrased fact','Vague credit: “According to the article,”','Credit for quotes only'] },
+    do:[
+      {type:'match', pairs:[['Full credit','Nathan Weiss writes that the reservoirs fill up from rain and snow.'],['Vague credit','A book says rain and snow fill the reservoirs.'],['No credit','Rain and snow fill the reservoirs.']],
+        say:'Match each label to a sentence.', how:'An author or title? Just “a book”? Nothing?'},
+      {type:'sort', bins:['Full credit','Mistake'], cards:[['Mr. Haddad says workers test the water daily.',0],['I read online that chlorine kills germs.',1],['The water passes through sand and gravel.',1],['The web page From Reservoir to Faucet says pipes carry it.',0]], mis:true,
+        say:'All these facts are borrowed. Is the credit full?', how:'Look for a name or a title before the fact.'}],
+    your:[
+      {type:'tiles', q:'Credit the book’s author.', w:['In his book,','Weiss','explains','that…'], extra:['Someone'],
+        say:'Build a signal phrase that names the author.', how:'Where first. Then who. Then the verb.'},
+      {type:'sort', bins:['Needs credit','Your own'], cards:[['a quote from Mr. Haddad',0],['a book fact in your words',0],['a web page fact in your words',0],['your topic sentence',1],['your bridge sentence',1]],
+        say:'Which pieces need credit?', how:'Did it come from a source? Then credit it.'},
+      {type:'match', pairs:[['library book','In his book, Weiss explains that'],['city web page','The web page From Reservoir to Faucet says'],['interview','Engineer Yosef Haddad told The Beacon,']],
+        say:'Match each source to its signal phrase.', how:'Book: the author. Web page: the title. Interview: the person.'},
+      {type:'tiles', q:'Why the reader needs credit.', w:['So he','can check','the fact','himself.'], extra:['longer'],
+        say:'Build the reason a reader needs credit.', how:'Who first. Then what he can do.'},
+      {type:'sort', bins:['Full credit','Vague credit','No credit'], cards:[['Weiss writes that the city has three reservoirs.',0],['Mr. Haddad says the water is tested daily.',0],['According to the article, mains run under streets.',1],['Experts say chlorine kills germs.',1],['Workers test the water every day.',2],['Smaller pipes reach each house.',2]],
+        say:'Full, vague, or no credit? Sort each one.', how:'A name or title? A vague “article”? Nothing?'}] },
+
+  'WRIT.RES.L07.04':{ band:'M68', pic:'🗂️', today:'Turn sorted notes into an outline', why:'With an outline, every paragraph knows its point, its facts and its sources before you write.',
+    ready:[{q:'In Group It, one group of facts becomes…', o:['one paragraph','one sentence','the title','the ending'], a:'one paragraph'}],
+    bridge:'WRIT.ESSAY.L05.04', bridgeName:'Group It',
+    watch:{ q:'Yoni outlines the water report.', m:{type:'scene', e:'🗂️', t:'Yoni’s notes sit in three piles: the reservoirs, the plant, the pipes.'}, steps:[
+      {t:'Main points, in the order the water travels: reservoirs, plant, pipes.'},
+      {t:'I. The reservoirs store the water.'},
+      {t:'A. Rain and melting snow fill them (book).'},
+      {t:'II. A filtration plant cleans it. A. Dirt settles to the bottom (web page).'},
+      {t:'Check: every sub-point is under the right point, with its source.'},
+      {t:'Teach it back: tell your chavrusa what goes in an outline: main points, sub-points, sources.'}], a:'I. The reservoirs store the water. A. Rain and melting snow fill them (book). II. A filtration plant cleans it. A. Dirt settles to the bottom (web page). III. Pipes carry it to our homes. A. Water mains run under the streets (web page).' },
+    oops:{ q:'Outline the plant paragraph.', wrong:'II. Chlorine kills germs.', right:'II. A filtration plant cleans it. A. Dirt settles to the bottom (web page). B. Chlorine kills germs (web page).', why:'Chlorine is one small fact: a sub-point. The main point must cover the whole paragraph.' },
+    ways:['worked example','match it','sort it','word tiles','Mistake Detective','teach it back'], done:'You can turn sorted notes into an outline with main points, sub-points and sources.',
+    board:{ one:'Main points I, II, III in report order; sub-points A, B, C under the right one; a source after every sub-point.', activity:'Chavrusas cut a short outline into strips and mix them; the partner rebuilds it and checks each source.', mistakes:['A small fact made into a main point','A sub-point under the wrong main point','A sub-point with no source'] },
+    do:[
+      {type:'match', pairs:[['I. The reservoirs','Rain and snow fill them.'],['II. The plant','Dirt settles to the bottom.'],['III. The pipes','Mains run under the streets.']],
+        say:'Match each sub-point to its main point.', how:'What is the fact about?'},
+      {type:'sort', bins:['Right','Mistake'], cards:[['Under I: Rain and snow fill them (book).',0],['Under I: Chlorine kills germs (web page).',1],['Under II: Dirt settles (web page).',0],['Under III: Mains run under the streets.',1]], mis:true,
+        say:'Is each outline line right? Sort it.', how:'The right main point? A source in brackets?'}],
+    your:[
+      {type:'tiles', q:'The main points, in order.', w:['Reservoirs,','the plant,','the pipes'], extra:['chlorine,'],
+        say:'Put the main points in the order the water travels.', how:'Where does the water start? Where does it end?'},
+      {type:'sort', bins:['Main point','Sub-point'], cards:[['The reservoirs store the water.',0],['The plant cleans it.',0],['Pipes carry it to our homes.',0],['Chlorine kills germs.',1],['Dirt settles to the bottom.',1],['Mains run under the streets.',1]],
+        say:'Main point or sub-point? Sort each line.', how:'Does it cover a whole paragraph, or one fact?'},
+      {type:'match', pairs:[['I. Baking','The rugelach bake for 20 minutes.'],['II. Selling','A table stands by the front door.'],['III. Giving','The money goes to tzedakah.']],
+        say:'A bake sale outline. Match each fact to its main point.', how:'What is each fact about?'},
+      {type:'tiles', q:'A sub-point with its source.', w:['B. Chlorine','kills germs','(web page)'], extra:['(somewhere)'],
+        say:'Build a sub-point with its source.', how:'The letter and the fact first. Then the source.'},
+      {type:'sort', bins:['Right','Wrong point','No source'], cards:[['Under II: Dirt settles (web page).',0],['Under I: Rain and snow fill them (book).',0],['Under I: Mains run under streets (web page).',1],['Under III: Chlorine kills germs (web page).',1],['Under II: Workers test it daily.',2],['Under III: Smaller pipes reach each house.',2]],
+        say:'Right, wrong point, or no source? Sort each line.', how:'Check the main point first. Then the brackets.'}] },
+  };
+  if (window.TLCORE) TLCORE.add('W48', LESSONS, { teach: TEACH, howto: HOWTO, bite: BITE });
+})();
+</script>

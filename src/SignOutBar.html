@@ -245,7 +245,7 @@
  var ROOM_SEL='button,a[href],[role="button"],[onclick],input,select,textarea,[data-tj],[data-act]';
  function clickable(n){ for(var i=0;n&&n!==document.body&&i<6;i++,n=n.parentElement){ if(n.matches&&n.matches(ROOM_SEL)) return n; } return null; }
  function makeRoom(){
-  if(state.open||root.style.display==='none') return;
+  if(state.open||root.style.display==='none'||getComputedStyle(root).visibility==='hidden') return;   /* dots hidden behind a pop-up: nothing to make room for */
   var t=trigger.getBoundingClientRect(), W=document.documentElement.clientWidth, R=Math.min(t.right,W-1), L=t.left-6, found=[];
   [.15,.5,.85].forEach(function(fx){ [.15,.5,.85].forEach(function(fy){
    var st=document.elementsFromPoint(t.left+(R-t.left)*fx,t.top+t.height*fy), top=null;

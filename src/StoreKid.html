@@ -60,7 +60,7 @@ body.tl-cashpill #hpjar{display:none!important}
 .sttabs button.on{background:#F8FAF5;color:#065F46}
 .stbody{flex:1;overflow:auto;padding:18px 22px 28px}
 .stx{position:absolute;top:14px;right:14px;z-index:3;border:0;border-radius:999px;background:#fff;color:#065F46;font:800 17px system-ui,sans-serif;padding:9px 15px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2)}
-.sthead .stbal{right:120px}
+.sthead .stbal{right:76px}.sthead>h2{margin-right:64px}
 .stintro{margin:0 0 14px;color:#4B5563;font-size:16px}
 .stgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .stpv{position:relative;height:74px;margin:0 0 4px;border-radius:14px;background:radial-gradient(120% 140% at 20% 0%,#3B1E8F,#1C0F5A 60%,#120A3D);overflow:hidden;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
@@ -118,7 +118,7 @@ body.st-theme-ocean{background:linear-gradient(180deg,#BAE6FD,#0369A1 85%) fixed
 body.st-theme-gold{background:linear-gradient(160deg,#FEF3C7,#E9C46A 50%,#B08968) fixed!important}
 .sttrail{position:fixed;z-index:10007;pointer-events:none;font-size:16px}
 .stpop{position:fixed;z-index:10006;pointer-events:none;font-size:46px}
-@media (max-width:600px){.sthead h2{font-size:22px}.sthead .stbal{position:static;text-align:left;margin-top:6px}.stbal b{font-size:26px}.stbody{padding:14px}.stgoalbar{flex-wrap:wrap}.stgoalbar .t{flex:1 1 180px}.stgoalbar button{flex:1 1 100%}.stweek{gap:4px}}
+@media (max-width:600px){.sthead h2{font-size:22px}.sthead>h2,.sthead>small{margin-right:64px}.sthead>small{display:block}.sthead .stbal{position:static;text-align:left;margin-top:6px}.stbal b{font-size:26px}.stbody{padding:14px}.stgoalbar{flex-wrap:wrap}.stgoalbar .t{flex:1 1 180px}.stgoalbar button{flex:1 1 100%}.stweek{gap:4px}}
 .st-frame-rainbow{padding:2px 12px;border-radius:12px;animation:strbw 2.4s linear infinite}@keyframes strbw{0%{box-shadow:0 0 0 3px #EF4444,0 0 16px rgba(239,68,68,.6)}20%{box-shadow:0 0 0 3px #F59E0B,0 0 16px rgba(245,158,11,.6)}40%{box-shadow:0 0 0 3px #22C55E,0 0 16px rgba(34,197,94,.6)}60%{box-shadow:0 0 0 3px #3B82F6,0 0 16px rgba(59,130,246,.6)}80%{box-shadow:0 0 0 3px #A855F7,0 0 16px rgba(168,85,247,.6)}100%{box-shadow:0 0 0 3px #EF4444,0 0 16px rgba(239,68,68,.6)}}
 .stshelf{margin:18px 0 8px;font:900 20px var(--display,system-ui),system-ui,sans-serif;color:#1F2937}.stshelf:first-child{margin-top:4px}.stshelf small{display:block;font:700 14px var(--body,system-ui),system-ui,sans-serif;color:#6B7280}
 .stcard .soon{display:block;margin-top:6px;font-weight:800;font-size:14px;color:#7C3AED}
@@ -228,7 +228,7 @@ window.tlStore=openStore;
 function draw(){ if(!T.open) return; let o=document.getElementById('tlstore'); const keep=o&&o.querySelector('.stbody')?o.querySelector('.stbody').scrollTop:0;
   if(!o){ o=document.createElement('div'); o.id='tlstore'; o.className='stov'; document.body.appendChild(o); }
   const I=T.info, bal=Number(A.st.balance)||0;
-  o.innerHTML=`<div class="stbox" role="dialog" aria-modal="true" aria-label="Tashbar Store"><button class="stx" data-st="close" aria-label="Close the store">✕ Close</button>
+  o.innerHTML=`<div class="stbox" role="dialog" aria-modal="true" aria-label="Tashbar Store">${window.TLK?TLK.x('data-st="close"','tr'):'<button class="stx" data-st="close" aria-label="Close the store">✕</button>'}
    <div class="sthead"><h2>🏪 Tashbar Store</h2><small>Spend it, save it, or give it. Everything here is paid with your Tashbar cash.</small>
    <div class="stbal"><span>Your cash</span><b>${$(bal)}</b></div>${I&&I.pf<1&&window.tlQuarterHTML?window.tlQuarterHTML(I.pf,true):''}
    <div class="sttabs" role="tablist">${TABS.map(t=>`<button role="tab" aria-selected="${T.tab===t[0]}" class="${T.tab===t[0]?'on':''}" data-st="tab" data-t="${t[0]}">${t[1]}</button>`).join('')}</div></div>

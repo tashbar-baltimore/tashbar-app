@@ -1,0 +1,164 @@
+<script>
+/* CoreDataS4.html: Core Growth job S, Grade 7 Science, Unit S7.1 "Cells: Building Blocks" (docs/core-growth/S-map.md).
+   One Bite lessons for the EXISTING cell skills SCI.PLANT.L08.01-04 (the real cell lessons; issue #391 on index names). TLCORE.upgrade:
+   their own questions stay, and are the practice bank and the "Show me" check. Band M68: each Watch me ends with a teach-it-back step.
+   Texts: texts/S/S.CELL7.01-03. Cast: The Beacon newsroom (W48-map.md section 7). Keep under 150 KB. No double slash in this file. */
+(function () {
+  var TELL = 'Read every page. Tap a blue word to see what it means. Tap Next at the end.';
+  var PROOF = 'Open the book. Find the sentence that proves it.';
+  var BITE = {
+    'SCI.PLANT.L08.01':{ band:'M68', pic:'🦠', today:'Discover the cell, the building block of life',
+      why:'A leaf, a fish and you are all built from cells. Know the cell, and you know how life is built.',
+      ready:[{q:'Which one is a living thing?', o:['a mushroom','a rock','a spoon'], a:'a mushroom'},
+             {q:'What does a magnifying glass do?', o:['makes things look bigger','makes things hot','makes things move'], a:'makes things look bigger'}],
+      watch:{ q:'Hooke’s little rooms', m:{type:'scene', e:'🔬', t:'In 1665, Robert Hooke looked at a thin slice of cork. He saw rows of tiny boxes, and called them cells.'}, steps:[
+        {t:'Cell theory: every living thing is made of cells. The cell is the smallest unit of life.'},
+        {t:'Sizes: atoms are far smaller than a cell. A leaf is made of millions of cells.'},
+        {t:'Rule 3: every cell comes from a cell that splits: 1, 2, 4, 8, 16.'},
+        {t:'Antonie van Leeuwenhoek saw one-celled "little animals" in 1674. 2000 − 1674 = 326 years.'},
+        {t:'Teach it back: tell a chavrusa the three rules of the cell theory.'}],
+        a:'Living things are made of cells, and every cell comes from a cell that split.' },
+      oops:{ q:'Where do new cells come from?', wrong:'From water and sunlight.', right:'From a cell that splits in two.', why:'Cells are never made from scratch. Every cell comes from another cell.' },
+      ways:['read to learn','worked example','sort and order','Mistake Detective','teach it back'], done:'You know what living things are built from, and where every cell comes from!',
+      board:{ one:'Cell theory: all living things are made of cells; the cell is the smallest unit of life; every cell comes from a cell.', activity:'Pass one paper "cell" around the room. Each boy who gets it tears it in two and passes both halves on. Count the cells after 4 splits.', mistakes:['Thinking cells come from food or water','Thinking a cell is a part inside living things, not what they are made of','Mixing up cells and atoms'] },
+      do:[
+        {type:'read', text:'S.CELL7.01', say:'Open the book. Read about things too small to see.', how:TELL},
+        {type:'sort', bins:['One cell','Many cells'], cards:[['a bacterium',0],['a yeast cell',0],['an amoeba',0],['an oak tree',1],['a goldfish',1],['a person',1]],
+          say:'One cell, or many cells? Sort them.', how:'Ask: can you see it without a microscope?'}],
+      your:[
+        {type:'cloze', t:'A bacterium splits every 20 minutes. After 80 minutes, 1 has become ___.', o:['16','8','80'], a:'16',
+          say:'Double it each time. Tap the answer.', how:'How many splits fit in 80 minutes? Double that many times.'},
+        {type:'sort', mis:true, q:'Gavriel wrote some cell facts. Mistake Detective: true, or a mix-up?', bins:['True','Mix-up'], cards:[['New cells come from dust in the air',1],['A cell is the smallest thing that is alive',0],['The cork cells Hooke saw were full of life',1],['Every cell comes from a cell that split',0]],
+          say:'Mistake Detective! Fix Gavriel’s cell facts.', how:'Ask: where do cells come from? Was the cork alive?'},
+        {type:'order', steps:['🔬 Hooke names cells','👀 Leeuwenhoek sees “little animals”','📜 scientists write the cell theory','🧫 today we estimate about 37 trillion cells in a man'],
+          say:'Put the story of the cell in order.', how:'Follow the story from long ago to today.'},
+        {type:'match', pairs:[['cell','the smallest unit of life'],['bacterium','a living thing of just one cell'],['cell theory','three rules about cells'],['Robert Hooke','named cells in 1665']],
+          say:'Match each word to what it means.', how:'Think back to the text. Each word has one meaning.'},
+        {type:'proof', text:'S.CELL7.01', q:'What fact explains why food left out can spoil fast?', proof:'Some bacteria can split every 20 minutes', look:'how fast bacteria grow',
+          say:PROOF, how:'Find the page about cells splitting.'}] },
+
+    'SCI.PLANT.L08.02':{ band:'M68', pic:'🔬', today:'Use a microscope, and work out how much it magnifies',
+      why:'A whole world lives in a drop of water. The microscope is your door into it.',
+      ready:[{q:'Which tool makes far things look closer?', o:['a telescope','a ruler','a scale'], a:'a telescope'},
+             {q:'What is 10 × 10?', o:['100','20','1,000'], a:'100'}],
+      watch:{ q:'Know your tool', m:{type:'scene', e:'🔬', t:'Mr. Gross set the new microscope on the table. "Before you look at anything," he said, "you need to know your tool."'}, steps:[
+        {t:'Parts: the eyepiece you look into, the objective lenses, the stage, the clips, the light and two focus knobs.'},
+        {t:'Total magnification: multiply the two lenses. A 15× eyepiece and a 10× lens: 150 times.'},
+        {t:'Multiply, never add: 15 and 10 make 150, not 25.'},
+        {t:'Always start on the lowest lens. Big knob first. Then switch up and sharpen with the small knob.'},
+        {t:'Teach it back: tell a chavrusa how to find the total magnification.'}],
+        a:'Multiply the two lenses, and always start on low power.' },
+      oops:{ q:'A 10× eyepiece and a 40× lens. What is the total?', wrong:'50 times. You add them.', right:'400 times. You multiply them.', why:'Each lens enlarges what the other already enlarged, so you multiply.' },
+      ways:['read to learn','worked example','put in order','Mistake Detective','teach it back'], done:'You can run a microscope, and work out how much it magnifies!',
+      board:{ one:'Total magnification = eyepiece × objective lens. Always start on the lowest lens.', activity:'Make an onion-skin slide: thin skin, one drop of water, a cover slip. Draw what you see and write the magnification.', mistakes:['Adding the lens numbers instead of multiplying','Starting on the highest lens','Using a thick sample that light cannot pass through'] },
+      do:[
+        {type:'read', text:'S.CELL7.02', say:'Open the book. Read about life under the microscope.', how:TELL},
+        {type:'match', pairs:[['eyepiece','the lens you look into'],['objective lens','the lens near the slide'],['stage','where the slide lies'],['focus knob','makes the picture sharp']],
+          say:'Match each microscope part to its job.', how:'Picture the microscope from top to bottom.'}],
+      your:[
+        {type:'order', steps:['🪟 place the slide on the stage','🔍 click the lowest lens into place','🔄 focus with the big knob','🔬 switch up and sharpen with the small knob'],
+          say:'Put the steps for a new slide in order.', how:'Low power first, and the big knob before the small one.'},
+        {type:'evidence', mis:true, q:'Mistake Detective: which sentence shows Eli’s mistake?', p:['Eli started on the lowest lens.','Eli added 10 and 40 and wrote 50 times.','Eli used a thin onion skin.','Eli carried the microscope with two hands.'], a:1, look:'the step done wrong',
+          say:'Mistake Detective! Tap the sentence with Eli’s mistake.', how:'Check each step: did he follow the microscope rules?'},
+        {type:'cloze', t:'A 15× eyepiece and a 20× lens make ___ times.', o:['300','35','150'], a:'300',
+          say:'Multiply the lenses. Tap the answer.', how:'Multiply the eyepiece number by the lens number.'},
+        {type:'evidence', q:'Which sentence explains why you multiply the lens numbers?', p:['Notice that you multiply, not add.','A 10× eyepiece and a 40× lens do not make 50 times.','Each lens enlarges what the other lens already enlarged.','At 400 times, a single cell can look as big as a coin.'], a:2, look:'the reason, not the rule',
+          say:'Tap the sentence that proves it.', how:'Find the sentence that tells WHY, not only what to do.'},
+        {type:'proof', text:'S.CELL7.02', q:'Why does a thick chunk of potato look dark under the microscope?', proof:'A good sample is thin and flat, so light can pass through it', look:'what a good sample is like',
+          say:PROOF, how:'Find the page about making a slide.'}] },
+
+    'SCI.PLANT.L08.03':{ band:'M68', pic:'🥬', today:'Tell a plant cell from an animal cell',
+      why:'Plants stand tall and make their own food. Their cells show you how.',
+      ready:[{q:'What do plants need to make food?', o:['sunlight','darkness','salt'], a:'sunlight'},
+             {q:'What happens to a plant with no water?', o:['it droops','it grows taller','it turns blue'], a:'it droops'}],
+      watch:{ q:'The droopy celery', m:{type:'scene', e:'🥬', t:'Benny’s little brother Yehoshua left a stalk of celery on the counter for two days. It went soft and droopy.'}, steps:[
+        {t:'Both kinds of cell have a membrane, cytoplasm and a nucleus.'},
+        {t:'Plant extra 1: a stiff cell wall, so a plant cell is boxy. Animal cells are round or uneven.'},
+        {t:'Plant extras 2 and 3: green chloroplasts that make food, and a big vacuole full of water.'},
+        {t:'Droopy celery: its vacuoles lost water. In cold water they fill up, and it stands crisp.'},
+        {t:'Teach it back: tell a chavrusa the three plant-only parts.'}],
+        a:'Plant cells have a wall, chloroplasts and a big vacuole. Animal cells have none of these.' },
+      oops:{ q:'A cell is round, with no green dots and no stiff wall.', wrong:'A plant cell.', right:'An animal cell.', why:'Plant cells have stiff walls and green chloroplasts. This cell has neither.' },
+      ways:['read to learn','compare and sort','model it','Mistake Detective','teach it back'], done:'You can tell a plant cell from an animal cell, and you know why celery droops!',
+      board:{ one:'Plant cells only: cell wall (boxy), chloroplasts (green, make food), big vacuole (water). Animal cells: round or uneven.', activity:'Two stalks of celery: one in water, one on the counter overnight. Compare them, then put the droopy one in water.', mistakes:['Thinking animal cells have walls','Thinking every green thing in a cell is a nucleus','Thinking a droopy plant is dead'] },
+      do:[
+        {type:'read', text:'S.CELL7.03', say:'Open the book. Read about the busy city of a cell.', how:TELL},
+        {type:'sort', bins:['Only in plant cells','In both kinds'], cards:[['cell wall',0],['chloroplasts',0],['big vacuole',0],['cell membrane',1],['nucleus',1],['cytoplasm',1]],
+          say:'Only in plant cells, or in both kinds? Sort them.', how:'Plants have three extras. Everything else, both have.'}],
+      your:[
+        {type:'match', pairs:[['cell wall','a stiff box around the cell'],['chloroplast','a green part that makes food'],['vacuole','a sac that stores water'],['membrane','the gate that lets things in and out']],
+          say:'Match each cell part to what it is like.', how:'Think back to Benny’s city.'},
+        {type:'sort', mis:true, q:'Benny labeled some cell sketches. Mistake Detective: right label, or wrong?', bins:['Right label','Wrong label'], cards:[['round, no wall: “plant cell”',1],['boxy, with green dots: “plant cell”',0],['uneven, not green: “animal cell”',0],['stiff wall, big vacuole: “animal cell”',1]],
+          say:'Mistake Detective! Check Benny’s cell labels.', how:'Look for the plant clues: a wall, green dots, a big vacuole.'},
+        {type:'cloze', t:'Inside chloroplasts, a plant uses sunlight, water and carbon dioxide to make ___.', o:['sugar','salt','soil'], a:'sugar',
+          say:'Which word fits? Tap it into the gap.', how:'This is photosynthesis: the plant makes its own food.'},
+        {type:'proof', text:'S.CELL7.03', q:'What had happened inside the droopy celery?', proof:'their vacuoles had shrunk', look:'what the cells lost',
+          say:PROOF, how:'Find the page about Yehoshua’s celery.'},
+        {type:'evidence', q:'Which sentence tells a clue that a cell is from a plant?', p:['Both plant cells and animal cells have a cell membrane.','Chloroplasts are what make leaves green.','All the other parts float in it, the way buildings sit on the land of a city.','It also keeps harmful things out.'], a:1, look:'a part only plants have',
+          say:'Tap the clue that proves it.', how:'Find a part only plants have.'}] },
+
+    'SCI.PLANT.L08.04':{ band:'M68', pic:'🏙️', today:'Learn the job of each cell part, like a city',
+      why:'Every part of a cell has a job. Know the jobs, and you know how a cell stays alive.',
+      ready:[{q:'Where are a city’s plans kept?', o:['city hall','the park','the river'], a:'city hall'},
+             {q:'What gives a city its electricity?', o:['a power plant','a bakery','a school'], a:'a power plant'}],
+      watch:{ q:'A cell is a busy city', m:{type:'scene', e:'🏙️', t:'Benny wrote: "A cell is like a busy city. Every part has a job, and the city only works when every part does it."'}, steps:[
+        {t:'Membrane: the gate. Cytoplasm: the jelly all the parts float in.'},
+        {t:'Nucleus: city hall, the control center. It holds the instructions, written in DNA.'},
+        {t:'Mitochondria: the power plants. Sugar comes in the gate, floats through the jelly, and they release its energy.'},
+        {t:'Counting parts: 15 chloroplasts and 4 mitochondria. 15 − 4 = 11 more chloroplasts.'},
+        {t:'Cells team up: cell → tissue → organ → system.'},
+        {t:'Teach it back: tell a chavrusa each part and its city job.'}],
+        a:'Gate, city hall, power plants: every part of the cell has its job.' },
+      oops:{ q:'Which part releases energy from food?', wrong:'The nucleus, because it controls everything.', right:'The mitochondria, the power plants.', why:'The nucleus gives the orders. The mitochondria make the power.' },
+      ways:['find the proof','model it','put in order','Mistake Detective','teach it back'], done:'You know every part of the cell city, and its job!',
+      board:{ one:'Membrane = gate. Cytoplasm = the jelly. Nucleus = city hall (DNA). Mitochondria = power plants.', activity:'Build a cell city on paper: label the gate, city hall and power plants, and trace a bit of sugar from the gate to the power plant.', mistakes:['Thinking the nucleus makes the energy','Thinking the membrane is stiff like a wall','Forgetting animal cells have mitochondria too'] },
+      do:[
+        {type:'proof', text:'S.CELL7.03', q:'Where are the cell’s instructions written?', proof:'written in a long, coiled material called DNA', look:'what the nucleus holds',
+          say:PROOF, how:'Find the page about the control center.'},
+        {type:'match', pairs:[['membrane','the gate'],['nucleus','city hall: the control center'],['mitochondria','the power plants'],['cytoplasm','the land the city sits on']],
+          say:'Match each cell part to its city job.', how:'Think of Benny’s city: gate, city hall, power, land.'}],
+      your:[
+        {type:'sort', mis:true, q:'Eli mixed up some cell jobs. Mistake Detective: true, or a mix-up?', bins:['True','Mix-up'], cards:[['The nucleus releases energy from food',1],['Mitochondria are the power plants',0],['The membrane is the control center',1],['The nucleus holds the DNA',0]],
+          say:'Mistake Detective! Fix Eli’s cell jobs.', how:'Ask: who gives orders? Who makes power? Who is the gate?'},
+        {type:'order', steps:['🔬 cell','🧱 tissue','❤️ organ','🩸 system'],
+          say:'Order them from smallest to biggest.', how:'Each level is built from the one before it.'},
+        {type:'cloze', t:'A model has 20 chloroplasts and 6 mitochondria. That is ___ more chloroplasts.', o:['14','26','6'], a:'14',
+          say:'Find the difference. Tap the answer.', how:'Take the smaller number away from the bigger one.'},
+        {type:'evidence', q:'Which sentence shows what the cell does with the energy?', p:['The cell then uses that energy to move, grow and do its work.','Both plant cells and animal cells have a cell membrane.','Chloroplasts are what make leaves green.','It also keeps harmful things out.'], a:0, look:'what happens after the energy is released',
+          say:'Tap the sentence that proves it.', how:'Find what comes after the mitochondria do their job.'},
+        {type:'proof', text:'S.CELL7.03', q:'What does the cell membrane let in?', proof:'like water, food and oxygen', look:'what passes the gate',
+          say:PROOF, how:'Find the page about the gate.'}] }
+  };
+  if (window.TLCORE && TLCORE.upgrade) TLCORE.upgrade('S', { bite: BITE });
+  /* Unit S7.1: the unit check (boss level) and test-out, and the unit project: build a model plant cell, then a short write */
+  var PROJECT = { id: 'S.PROJ7.01', title: 'A Cell in a Box', grade: 7, kind: 'information',
+    prompt: 'Be a scientist! Build a model of a plant cell from things at home. A small plastic tub is the cell wall. A zip bag inside it is the cell membrane. Fill the bag with water (cytoplasm) and seal it well, on a tray. Add a marble or bottle cap for the nucleus, small green beads or buttons for chloroplasts, a small water balloon for the vacuole, and a few rubber bands for mitochondria. Then write what each part of your model stands for, what its job is, and how an animal cell would be different.',
+    strategy: { name: 'Part, Job, Compare', steps: [['P', 'Part: what did I use, and what part does it stand for?'], ['J', 'Job: what does that part do in a real cell?'], ['C', 'Compare: what would an animal cell not have?']] },
+    plan: [ { k: 'build', label: 'P · How I built it', hint: 'I used a plastic tub for the cell wall and…' },
+            { k: 'jobs', label: 'J · The jobs of the parts', hint: 'In my model, the ___ stands for the nucleus. In a real cell, it…' },
+            { k: 'compare', label: 'C · An animal cell', hint: 'An animal cell would be missing… so its shape…' } ],
+    starters: ['To build my cell, I used', 'The nucleus', 'The chloroplasts', 'The vacuole', 'An animal cell is different because', 'My model is not perfect because'],
+    min: 90,
+    checks: [
+      { t: 'I wrote at least 7 sentences.', sentences: 7 },
+      { t: 'I used every part of my plan.', plan: true },
+      { t: 'I told the real job of the parts (gate, control, power, food, water…).', any: ['gate', 'control', 'instructions', 'power', 'energy', 'sunlight', 'makes food', 'photosynthesis', 'stiff', 'stores water'] },
+      { t: 'I told what an animal cell does not have, and its shape.', any: ['round', 'uneven', 'no wall', 'no cell wall', 'no chloroplast'] },
+      { t: 'Every sentence starts with a capital and ends with . ! or ?', caps: true },
+      { t: 'I told one way my model is not like a real cell.', self: true },
+      { t: 'I built it with a grown-up’s OK and cleaned up after.', self: true } ],
+    rubric: ['I told what each part of my model stands for', 'I told the real job of each part', 'I compared a plant cell to an animal cell', 'I used the right science words'],
+    pics: ['🔬', '🌱', '📦', '🧫'] };
+  if (window.TLCORE && TLCORE.units) TLCORE.units.add({ id: 'S.U04', title: 'Cells: Building Blocks', c: 'SCI', grade: 7,
+    skills: ['SCI.PLANT.L08.01', 'SCI.PLANT.L08.02', 'SCI.PLANT.L08.03', 'SCI.PLANT.L08.04'], n: 8, task: PROJECT,
+    items: [   /* one fresh question per skill: these skills have only 1 or 2 check questions of the tap kinds a unit check can use */
+      { skill: 'SCI.PLANT.L08.01', type: 'cloze', t: 'Every living thing is made of one or more ___.', o: ['cells', 'leaves', 'bones'], a: 'cells',
+        say: 'Tap the word that fits the gap.', how: 'Think of the cell theory: what is every living thing built from?' },
+      { skill: 'SCI.PLANT.L08.02', type: 'cloze', t: 'A 20× eyepiece and a 5× lens make things look ___ times bigger.', o: ['100', '25', '15'], a: '100',
+        say: 'Multiply. Tap the answer into the gap.', how: 'Multiply the eyepiece number by the lens number.' },
+      { skill: 'SCI.PLANT.L08.03', type: 'evidence', q: 'Which sentence proves this is a plant cell?', p: ['It has a membrane around it.', 'It has a nucleus near the middle.', 'It has green chloroplasts and a stiff wall.', 'It is full of cytoplasm.'], a: 2, look: 'parts only a plant cell has',
+        say: 'Tap the sentence that proves it.', how: 'Both kinds of cell share some parts. Find the plant-only ones.' },
+      { skill: 'SCI.PLANT.L08.04', type: 'cloze', t: 'Busy muscle cells have many ___, to release lots of energy.', o: ['mitochondria', 'vacuoles', 'cell walls'], a: 'mitochondria',
+        say: 'Tap the word that fits the gap.', how: 'Which part releases energy from food? Busy cells need more of it.' } ] });
+})();
+</script>
