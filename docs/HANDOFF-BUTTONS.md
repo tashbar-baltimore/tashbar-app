@@ -17,9 +17,12 @@ Rules: `docs/BUTTON-SYSTEM.md` (binding; kit `src/UiKit.html` `window.TLK`; test
 - Seen, not changed: story "For the Shabbos table" box (white words on pale yellow); Spark Path cannot be reached from the new home and opens under it (no z-index on #tr-ov).
 - Picture zoom ✕ was never seen in a picture (could not reach a lesson with a real picture).
 
-## Next: step 2, the house top left on full pages (decided)
-- Replace the big yellow HOME bar `#gm-nav` (src/GameMap.html) with `TLK.home(attrs,'tl',TLK.young(grade))`: grade 4+ round 44 px house; K–3 bigger "🏠 Home".
-- Pages: My map, My work, My profile (GameMap), the Chumash page (`src/ChumashPage.html`, its ✕ top left `data-chm="close"`), the Block Builders Workbook (`src/BlockBuildersUI.html`, `.bbx-ib data-bb="close"`).
-- Back (`TLK.back`) sits before the house, only where the rules say (My profile → All my lessons, Skill tree, My week; My map → Change subject). Back already exists from #358; keep it.
-- Never on the home itself, never on a pop-up. Top left always means "out"; corner dots stay top right.
-- Check: house/back not touching anything (copy `tools/screens/overlap.js` for `.tlk-home,.tlk-back`), K–3 and grade 4+ boys, 1366×768 and 390 px.
+## Done: step 2, the house top left on full pages (25 Nov 2026)
+- The big yellow HOME bar `#gm-nav` is gone (`navHTML` returns nothing, `#gm-nav{display:none}`). Every full page in `src/GameMap.html` (My map, Change subject, My work, My profile, All my lessons, Store page, Arcade, ...) has `hud()` = Back (only when `GM.from` is set) + `TLK.home('data-gmnav="home"','',TLK.young(grade))` + the money chip, top left. Never on the home.
+- Chumash page (`src/ChumashPage.html`) and the Block Builders Workbook home (`src/BlockBuildersUI.html`): the old ✕ became the kit house (same `data-chm="close"` / `data-bb="close"`). `#bbx button` is now `#bbx button:not(.tlk)` so it does not restyle the kit.
+- Phone, My map with the Workbook door: the money chip moves under the house so the door does not cover it.
+- Tests: `tests/run.js` now checks ONE kit house top left on every page but the home and no HOME bar.
+- Pictures: `docs/screens/house-before-*.jpg`, `house-after-*.jpg`. Check: `node tools/screens/pages.js OUT TAG GRADE`.
+
+## Next
+- Workbook job pages still have the old `◀ 📘` back to the workbook (top left); Chumash inner pages still have `⬅ parsha`. Not changed (not in step 2). Arena and Review: see "Not done".

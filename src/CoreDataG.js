@@ -100,5 +100,10 @@ CORE_SKILLS.G = [
   ["READ.VOC.L09.06", "Academic Words 8", "Use the research words source, cite, synthesize, credible and paraphrase", { after: "READ.VOC.L09.05", std: "L.8.6", file: "CoreDataG7", min: 7 }],
   ["READ.VOC.L05.06", "As Brave as a Lion", "Tell a simile (like or as) from a metaphor (is) and explain what each means", { after: "READ.VOC.L05.05", std: "L.4.5a", file: "CoreDataG8", min: 8 }],
   ["READ.VOC.L07.07", "Part and Whole", "Solve analogies with part/whole, item/category, cause/effect and tool/use relationships", { after: "READ.VOC.L07.06", std: "L.6.5b", file: "CoreDataG8", min: 8 }],
-  ["READ.VOC.L08.07", "Analogy Ladder", "Use synonym, antonym and analogy relationships to understand words", { after: "READ.VOC.L08.06", std: "L.7.5b", file: "CoreDataG8", min: 8 }]
+  ["READ.VOC.L08.07", "Analogy Ladder", "Use synonym, antonym and analogy relationships to understand words", { after: "READ.VOC.L08.06", std: "L.7.5b", file: "CoreDataG8", min: 8 }],
+  ["LANG.MECH.L06.03", "Comma in a Series", "Use commas to separate words and phrases in a series (with the comma before and)", { after: "LANG.MECH.L06.01", std: "L.5.2a", file: "CoreDataG9", min: 7 }],
+  ["LANG.MECH.L06.04", "Opening Comma", "Use a comma after an introductory word, long phrase, or clause", { after: "LANG.MECH.L06.03", std: "L.5.2b", file: "CoreDataG9", min: 7 }],
+  ["LANG.MECH.L07.02", "Spell It Right", "Spell with the ie/ei, consonant-doubling, and soft c/g patterns, and know their exceptions", { after: "LANG.MECH.L07.01", std: "L.6.2b", file: "CoreDataG9", min: 7 }],
+  ["LANG.MECH.L08.02", "Spell It Right 7", "Choose -able/-ible and -ance/-ence by pattern, and spell commonly confused homophones", { after: "LANG.MECH.L08.01", std: "L.7.2b", file: "CoreDataG9", min: 7 }],
+  ["LANG.MECH.L09.03", "Spell It Right 8", "Spell commonly misspelled words with memory tricks, and keep both letters when a prefix meets a root", { after: "LANG.MECH.L09.02", std: "L.8.2c", file: "CoreDataG9", min: 7 }]
 ];
