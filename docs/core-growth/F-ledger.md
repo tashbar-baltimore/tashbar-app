@@ -55,6 +55,7 @@ The F owner built the Units 4–5 lessons and checks. This helper builds Unit 6,
 | Unit 6 lessons | `READ.FLU.L03.05` Poem Beat, `.06` Readers' Theatre, `.07` Fix It As You Go, `READ.PHON.L03.18` Spell It Back, `WRIT.HAND.L03.01` Neat Paragraph | 5 × 12 = 60 (Readers' Theatre 8 + 5) → **61** |
 | Fluency texts | `F.PO.01` *Rain on the Sukkah* (poem), `F.RT.01` *The Clock That Stopped* (Readers' Theatre, 6 parts) | 2 × 8 = **16** |
 | Unit check | `F.U26` Poems, Plays and Spelling (the end-of-Grade-2 boss level) | **8** |
-| **Total so far** | | **85 min ≈ 1.4 h** |
+| Word-study little readers | `F.WR.15`–`.24` (10 stories, 160–210 words, Units 4–5 patterns), each with its own read-and-prove lesson: `READ.FLU.L03.08`–`.17` | 10 × 18 (first read + rereads, per the Grade 2 reader row) = **180** |
+| **Total so far** | | **265 min ≈ 4.4 h** |
 
-Next: Readers' Theatre scripts 2–3 and poems, then the Grade 2 word-study little readers (25, 150–300 words, only taught patterns).
+Next: Readers' Theatre scripts 2–3 and little reader 25 (written and reviewed, next PR). The map's readers 1–14 (Units 1–3) belong to the F owner's units; this helper piece covers 15–25.
