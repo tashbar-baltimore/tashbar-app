@@ -46,3 +46,15 @@ Each listen-along game is one story (read aloud, rich words) plus its understand
 |---|---|---|---|
 | K | 4 stories, topic set "Eli's First Week" (`F.LA.K01`–`K04`), each with its game: `READ.LIT.L01.01` Who Is in the Story?, `.02` Where Is the Story?, `.03` Problem and Fix, `.04` Retell It | 4 × (10 + 5) = **60** | 40 stories and fact books (400 min) + their 12 understanding skills |
 | 1 | 0 | 0 | 30 stories and fact books (300 min) |
+
+## Helper: Grade 2 Units 4–6 (`src/CoreDataFH4.html`, `texts/F/F.PO.*`, `texts/F/F.RT.*`)
+The F owner built the Units 4–5 lessons and checks. This helper builds Unit 6, the Grade 2 word-study little readers and the Readers' Theatre scripts. Minutes as above: Grade 2 lesson 7 (+ 5 review), fluency text 8, unit check 8.
+
+| Piece | Built | Minutes |
+|---|---|---|
+| Unit 6 lessons | `READ.FLU.L03.05` Poem Beat, `.06` Readers' Theatre, `.07` Fix It As You Go, `READ.PHON.L03.18` Spell It Back, `WRIT.HAND.L03.01` Neat Paragraph | 5 × 12 = 60 (Readers' Theatre 8 + 5) → **61** |
+| Fluency texts | `F.PO.01` *Rain on the Sukkah* (poem), `F.RT.01` *The Clock That Stopped* (Readers' Theatre, 6 parts) | 2 × 8 = **16** |
+| Unit check | `F.U26` Poems, Plays and Spelling (the end-of-Grade-2 boss level) | **8** |
+| **Total so far** | | **85 min ≈ 1.4 h** |
+
+Next: Readers' Theatre scripts 2–3 and poems, then the Grade 2 word-study little readers (25, 150–300 words, only taught patterns).
