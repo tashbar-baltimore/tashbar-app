@@ -24,19 +24,20 @@ The shared list of gaps for every builder account working toward the finish line
 - `tests/quality-baseline.json` goes from 101 toward 0.
 
 ## Ledger (hours of new core learning built / target)
-_From `node tools/core/ledger.js`, 2026-11-25 13:50 UTC. Grade 1 shows 0 because the counter misses the K–1 games (gap B6); 26 Grade 1 games are live._
+_From `node tools/core/ledger.js`, 2026-11-25 17:15 UTC (coordinator). Grade 1 shows 0 because the counter misses the K–1 games (gap B6); 26 Grade 1 games are live._
 
 | K | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
 |---|---|---|---|---|---|---|---|---|
-| 4.1/68 | 0*/68 | 9.8/90 | 2.6/90 | 13.4/90 | 11.1/90 | 4.1/90 | 3.7/90 | 3.8/90 |
+| 4.1/68 | 0*/68 | 9.8/90 | 2.6/90 | 21.8/90 | 20.6/90 | 4.7/90 | 6.0/90 | 9.2/90 |
 
 ## Gaps (top to bottom = priority)
 | ID | Priority | Gap | Status | Owner (session link) | Last update (UTC) | Where I am / proof (PR links) |
 |---|---|---|---|---|---|---|
+| A1 | P0 (top: coordinator 25 Nov) | Test check at its 45-min limit (3 runs cut off on 25 Nov: #649, #651, #662; 12 of the last 25 passing runs took over 35 min, none under 25): make it reliably under 25 min without weakening any check | OPEN | | | |
+| A5 | P0 | docs/CORE-GROWTH-LANES.md on main still has merge-conflict marks (lines 40–46, from #484): keep the newest C45 helper rows, remove the marks, and add a test that fails on conflict marks in any text file | OPEN | | | |
 | D1 | HoS decision | Social Studies path (#432): `SS` next to `SCI` in src/CoreUnits.html + test; then a unit check, test-out and project for every live Social Studies Unit 1 (Gr 4–8) | OPEN | | | |
 | D2 | HoS decision | Science index names (#391, option a): rename the 64 Gr 6–8 names to the real lessons, keep the Torah-linked topics as planned skills, add a test | OPEN | | | |
 | D3 | HoS decision | 2.0 try-out inside 1.0: every open 2.0 PR playable at /try2/ for the right grades, refreshed every 3 hours; 2.0 itself unchanged | OPEN | | | |
-| A1 | P0 | Test check near its 45-min limit (2 runs cancelled): make it reliably under 25 min without weakening any check | OPEN | | | |
 | A2 | P0 | Round 1 URGENT "right answer marked wrong" fixes (h__l, rep-til, skating rink, W48 "wanders off" checks, "rebbe sold it") + sweep for the same bug | OPEN | | | |
 | A3a | P0 | Writing engine: a write is never auto-right; grade minimums; test | OPEN | | | |
 | A3b | P0 | W48 (Gr 4–8): every live unit's real task is a Writing Workshop piece; real minimums | OPEN | | | |
@@ -69,3 +70,21 @@ _From `node tools/core/ledger.js`, 2026-11-25 13:50 UTC. Grade 1 shows 0 because
 | C6 | P2 | C45: unit checks for Units 4.1–4.7 and 5.1–5.5; bring back from closed #456 only what #450 lacks | OPEN | | | |
 | C7 | P2 | Remaining OPEN helper rows in CORE-GROWTH-LANES.md (C68 W2/W6, W13 prompt sets) | OPEN | | | |
 | C8 | P3 | Science Unit 2 for Grades 4–8 | OPEN | | | |
+
+## Coordinator notes (25 Nov 17:15 UTC)
+- **Stuck:** claim PR #476 (C68 helper W5/W8/W9) has not gone live: its test run was cut off at the 45-minute limit (#662). Its owner should not re-push just to retry; it goes in with the next run after A1, or one careful re-push.
+- **Core Growth owners near the 48-hour stale line** (CORE-GROWTH-LANES.md): D (last update 24 Nov 02:45), C68 owner (24 Nov 05:00; Units 6.1/7.1/8.1 not live, see C2), F owner (24 Nov 10:45), V (24 Nov 17:35). They become OPEN on 26 Nov at those times unless updated.
+- **C3 (W13 Units 2–6):** the W13 owner is active and building Unit 2 (#487, Kindergarten). A C3 worker starts with the OPEN W13 helper rows (Grade 3 Units 4–6, Grade 2 Units 5–6), not Unit 2.
+- **Collisions:** none between open 1.0 PRs (#476, #482, #486 and #487 each change a different row or unit).
+- **Daily play-through:** not yet done today.
+
+## Re-review needed (for B1)
+Lesson PRs merged on 25 Nov whose score table shows a score below 4 that was "fixed" but never scored again (the rule: ship only when every score is 4 or 5). B1 re-scores these lessons first.
+- #473 Grade 8 Social Studies Unit 1 (a 2 and five 3s; sample pictures only)
+- #472 Grade 7 Social Studies Unit 1 (a 2 and two 3s; sample pictures only)
+- #467 Grade 6 Social Studies Unit 1 (five 3s; sample pictures only)
+- #484 C45 "Read It 3 Times" fluency batch 1 (three 3s)
+- #480 W13 Grade 1 Unit 1 (a 3)
+- #475 W13 Grade 2 Unit 1 polish (a 3; only 2 of 4 lessons pictured)
+- #474 C68 Grade 8 Unit 8.5 (a 3)
+Also: the unit checks in #483 and #481 were not fully scored.
